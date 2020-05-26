@@ -2,41 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339FD1E1A80
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 07:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 024351E1A85
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 07:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725959AbgEZFA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 01:00:59 -0400
-Received: from mga03.intel.com ([134.134.136.65]:62330 "EHLO mga03.intel.com"
+        id S1726350AbgEZFDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 01:03:33 -0400
+Received: from mga06.intel.com ([134.134.136.31]:25382 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725812AbgEZFA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 01:00:58 -0400
-IronPort-SDR: ejeu2yOh4nVKpmTIzFuEjifcexs6Q2kIW3YM5phykdDySfTdDOF4ZRewBNHjaCFXqJw4TQjh6x
- qtzQaucT3+kA==
+        id S1725815AbgEZFDb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 01:03:31 -0400
+IronPort-SDR: GCB3HUxtDZ9ZVZyFH2wkkTsQVfOL3SfQHFo+K7t/Dbsbb+GGBYtSKYKoky80ATmE8PgYkwQO75
+ V/EsFYStnN4A==
 X-Amp-Result: UNKNOWN
 X-Amp-Original-Verdict: FILE UNKNOWN
 X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2020 21:58:08 -0700
-IronPort-SDR: AEbkcCodRj6HhUTvCJUZzLEjsjm5i+q3jdcwtjbeUNLbxEtfzUPBFFxvPHdaYR0QcfYkCL3U7I
- vUDuS1DZHvMg==
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2020 21:58:33 -0700
+IronPort-SDR: 6q797wvraBUvGNx6LA4Nq6wBHv+HalchdJOxSFUdDqKNpR3zYYO9KOlpkeItP5qx+v/IrfcoGW
+ OtCGKbkf1xEg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,436,1583222400"; 
-   d="xz'?scan'208";a="375591479"
+   d="yaml'?scan'208";a="413687971"
 Received: from shao2-debian.sh.intel.com (HELO localhost) ([10.239.13.3])
-  by fmsmga001.fm.intel.com with ESMTP; 25 May 2020 21:58:05 -0700
-Date:   Tue, 26 May 2020 12:57:43 +0800
+  by orsmga004.jf.intel.com with ESMTP; 25 May 2020 21:58:28 -0700
+Date:   Tue, 26 May 2020 12:58:06 +0800
 From:   kernel test robot <rong.a.chen@intel.com>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Jaegeuk Kim <jaegeuk@kernel.org>, lkp@lists.01.org
-Subject: [f2fs] b783564847: WARNING:at_kernel/sched/core.c:#__might_sleep
-Message-ID: <20200526045742.GO12456@shao2-debian>
+To:     Sidong Yang <realwakka@gmail.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sidong Yang <realwakka@gmail.com>,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, lkp@lists.01.org
+Subject: [drm] 8e984da3e5:
+ WARNING:at_drivers/gpu/drm/drm_modeset_lock.c:#drm_warn_on_modeset_not_all_locked[drm]
+Message-ID: <20200526045806.GP12456@shao2-debian>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="1SVgZ+3xbDF9VW5n"
+Content-Type: multipart/mixed; boundary="0et/Au7PJwzVwd4K"
 Content-Disposition: inline
-In-Reply-To: <20200515021554.226835-1-jaegeuk@kernel.org>
+In-Reply-To: <20200520114156.26480-1-realwakka@gmail.com>
 User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -44,7 +50,7 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---1SVgZ+3xbDF9VW5n
+--0et/Au7PJwzVwd4K
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 
@@ -52,22 +58,22 @@ Greeting,
 
 FYI, we noticed the following commit (built with gcc-7):
 
-commit: b78356484793c82e07fe6f7ca3b62b1f18651267 ("[PATCH] f2fs: flush dirty meta pages when flushing them")
-url: https://github.com/0day-ci/linux/commits/Jaegeuk-Kim/f2fs-flush-dirty-meta-pages-when-flushing-them/20200515-101937
-base: https://git.kernel.org/cgit/linux/kernel/git/jaegeuk/f2fs.git dev-test
+commit: 8e984da3e5752f18c24c39240338fec8c8c9c971 ("[PATCH] drm: Replace deprecated function in drm_crtc_helper")
+url: https://github.com/0day-ci/linux/commits/Sidong-Yang/drm-Replace-deprecated-function-in-drm_crtc_helper/20200521-021130
 
-in testcase: xfstests
+
+in testcase: rcutorture
 with following parameters:
 
-	disk: 4HDD
-	fs: f2fs
-	test: generic-group13
+	runtime: 300s
+	test: default
+	torture_type: tasks
 
-test-description: xfstests is a regression test suite for xfs and other files ystems.
-test-url: git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git
+test-description: rcutorture is rcutorture kernel module load/unload test.
+test-url: https://www.kernel.org/doc/Documentation/RCU/torture.txt
 
 
-on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
+on test machine: 32 threads AMD Opteron(TM) Processor 6276 with 128G memory
 
 caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
 
@@ -78,71 +84,48 @@ If you fix the issue, kindly add following tag
 Reported-by: kernel test robot <rong.a.chen@intel.com>
 
 
-[   20.432705] WARNING: CPU: 0 PID: 819 at kernel/sched/core.c:6763 __might_sleep+0x71/0x80
-[   20.433992] Modules linked in: dm_mod f2fs sr_mod cdrom intel_rapl_msr sg bochs_drm drm_vram_helper drm_ttm_helper ttm ppdev intel_rapl_common drm_kms_helper crct10dif_pclmul ata_generic pata_acpi crc32_pclmul crc32c_intel snd_pcm ghash_clmulni_intel snd_timer syscopyarea sysfillrect snd sysimgblt fb_sys_fops aesni_intel crypto_simd soundcore cryptd glue_helper ata_piix joydev drm pcspkr libata serio_raw i2c_piix4 parport_pc parport floppy ip_tables
-[   20.438562] CPU: 0 PID: 819 Comm: umount Not tainted 5.6.0-11895-gb78356484793c #1
-[   20.439391] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-[   20.440584] RIP: 0010:__might_sleep+0x71/0x80
-[   20.440981] Code: 5c 41 5d 5d e9 90 fe ff ff 48 8b 90 08 22 00 00 48 8b 70 10 48 c7 c7 f8 84 b3 85 c6 05 f9 0e 74 01 01 48 89 d1 e8 4f fd fc ff <0f> 0b eb c7 66 66 2e 0f 1f 84 00 00 00 00 00 66 66 66 66 90 8b 05
-[   20.443456] RSP: 0018:ffff98170098ba08 EFLAGS: 00010282
-[   20.444212] RAX: 0000000000000000 RBX: ffffffffc05d35b8 RCX: 0000000000000000
-[   20.445253] RDX: 0000000000000001 RSI: ffff89343fc19b88 RDI: ffff89343fc19b88
-[   20.446408] RBP: ffff98170098ba20 R08: 0000000000000000 R09: 0000000000aaaaaa
-[   20.447608] R10: 0000000000000040 R11: ffff89330c48f360 R12: 00000000000001df
-[   20.448834] R13: 0000000000000000 R14: ffff8933bad80178 R15: ffffc9ec06e7c000
-[   20.449985] FS:  00007f63193b7e40(0000) GS:ffff89343fc00000(0000) knlGS:0000000000000000
-[   20.451319] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   20.452099] CR2: 000055ace9a90350 CR3: 00000001bc424000 CR4: 00000000000406f0
-[   20.452801] Call Trace:
-[   20.453125]  f2fs_sync_meta_pages+0x1a1/0x2c0 [f2fs]
-[   20.453593]  ? __mod_lruvec_state+0x3f/0x100
-[   20.454182]  ? xas_load+0x8/0x80
-[   20.454554]  ? __xa_set_mark+0x5b/0x80
-[   20.454910]  ? f2fs_wait_on_all_pages+0xc0/0xf0 [f2fs]
-[   20.455382]  f2fs_wait_on_all_pages+0xc0/0xf0 [f2fs]
-[   20.455963]  ? finish_wait+0x80/0x80
-[   20.456524]  do_checkpoint+0x5ac/0xe10 [f2fs]
-[   20.457178]  ? _cond_resched+0x19/0x30
-[   20.457739]  ? down_write+0x21/0x50
-[   20.458273]  ? __submit_merged_write_cond+0x15e/0x190 [f2fs]
-[   20.459117]  f2fs_write_checkpoint+0x70e/0x780 [f2fs]
-[   20.459878]  f2fs_sync_fs+0x9f/0x130 [f2fs]
-[   20.461543]  sync_filesystem+0x71/0x90
-[   20.463113]  generic_shutdown_super+0x22/0x120
-[   20.464775]  kill_block_super+0x21/0x50
-[   20.466362]  kill_f2fs_super+0x79/0xd0 [f2fs]
-[   20.467985]  ? unregister_shrinker+0x69/0x80
-[   20.469591]  deactivate_locked_super+0x3f/0x70
-[   20.471187]  cleanup_mnt+0xb8/0x150
-[   20.472670]  task_work_run+0x83/0xc0
-[   20.474149]  exit_to_usermode_loop+0xeb/0xf0
-[   20.475697]  do_syscall_64+0x1c8/0x1f0
-[   20.479190]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[   20.480880] RIP: 0033:0x7f6318c9bd77
-[   20.482341] Code: 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d f1 00 2b 00 f7 d8 64 89 01 48
-[   20.487088] RSP: 002b:00007ffeb69f34b8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-[   20.489270] RAX: 0000000000000000 RBX: 000055e86e241060 RCX: 00007f6318c9bd77
-[   20.491359] RDX: 0000000000000001 RSI: 0000000000000000 RDI: 000055e86e241240
-[   20.493444] RBP: 000055e86e241240 R08: 000055e86e2425e0 R09: 0000000000000014
-[   20.495482] R10: 00000000000006b4 R11: 0000000000000246 R12: 00007f631919de64
-[   20.497496] R13: 0000000000000000 R14: 0000000000000000 R15: 00007ffeb69f3740
-[   20.499472] ---[ end trace fedf2c5128b96899 ]---
+[   25.591666] WARNING: CPU: 0 PID: 351 at drivers/gpu/drm/drm_modeset_lock.c:185 drm_warn_on_modeset_not_all_locked+0x6c/0x80 [drm]
+[   25.605759] Modules linked in: kvm mgag200(+) irqbypass fjes(-) drm_vram_helper drm_ttm_helper crct10dif_pclmul ttm crc32_pclmul crc32c_intel drm_kms_helper syscopyarea ghash_clmulni_intel ata_generic sysfillrect snd_pcm ahci pata_acpi sysimgblt libahci aesni_intel pata_atiixp fb_sys_fops snd_timer ipmi_si crypto_simd ipmi_devintf cryptd snd uas drm libata soundcore glue_helper sp5100_tco ipmi_msghandler usb_storage pcspkr serio_raw fam15h_power k10temp i2c_piix4 joydev acpi_cpufreq ip_tables
+[   25.649431] CPU: 0 PID: 351 Comm: kworker/0:3 Not tainted 5.7.0-rc6-00038-g8e984da3e5752 #1
+[   25.657779] Hardware name: Supermicro H8DGU/H8DGU, BIOS 2.0        09/08/11  
+[   25.664920] Workqueue: events work_for_cpu_fn
+[   25.669316] RIP: 0010:drm_warn_on_modeset_not_all_locked+0x6c/0x80 [drm]
+[   25.676642] Code: 01 00 00 e8 e6 c2 cb c0 84 c0 74 1a 49 8d bc 24 78 01 00 00 e8 d5 c2 cb c0 84 c0 74 0d 5b 5d 41 5c c3 0f 0b eb c8 0f 0b eb e2 <0f> 0b 5b 5d 41 5c c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 0f 1f
+[   25.695432] RSP: 0018:ffffc90006b7bce8 EFLAGS: 00010246
+[   25.700671] RAX: 0000000000000000 RBX: ffff88a01cb65ad8 RCX: 0000000000000000
+[   25.707804] RDX: ffff88a01cb67050 RSI: ffffc90006b7bd48 RDI: ffff88a01cb65978
+[   25.710825] ata4: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
+[   25.714940] RBP: ffff88a01cb65ae8 R08: ffff88a01cb67050 R09: ffff888107c06d80
+[   25.714942] R10: ffffc90006aebca8 R11: 00000000000001c6 R12: ffff88a01cb65800
+[   25.714944] R13: ffff8887ef4ae000 R14: ffffc90022000000 R15: ffff88a01cb65800
+[   25.714947] FS:  0000000000000000(0000) GS:ffff8887ffc00000(0000) knlGS:0000000000000000
+[   25.714949] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   25.714952] CR2: 00007f98040d8000 CR3: 0000000feeb20000 CR4: 00000000000406f0
+[   25.714958] Call Trace:
+[   25.766039]  __drm_helper_disable_unused_functions+0x18/0xe0 [drm_kms_helper]
+[   25.773197]  drm_helper_disable_unused_functions+0x68/0xb0 [drm_kms_helper]
+[   25.780172]  drm_fbdev_client_hotplug+0x159/0x1b0 [drm_kms_helper]
+[   25.786378]  drm_fbdev_generic_setup+0x9b/0x110 [drm_kms_helper]
+[   25.792402]  mgag200_driver_load+0x377/0x4c0 [mgag200]
+[   25.797550]  mga_pci_probe+0x79/0xd0 [mgag200]
+[   25.802004]  local_pci_probe+0x42/0x90
+[   25.805769]  work_for_cpu_fn+0x16/0x20
+[   25.809550]  process_one_work+0x1b0/0x3e0
+[   25.813580]  ? move_linked_works+0x6e/0xa0
+[   25.817713]  worker_thread+0x1e5/0x3b0
+[   25.821467]  ? process_one_work+0x3e0/0x3e0
+[   25.825653]  kthread+0x12c/0x150
+[   25.828886]  ? kthread_park+0x90/0x90
+[   25.832581]  ret_from_fork+0x22/0x40
+[   25.836166] ---[ end trace 29e2fb1609eae123 ]---
 
 
 To reproduce:
 
-        # build kernel
-	cd linux
-	cp config-5.6.0-11895-gb78356484793c .config
-	make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 olddefconfig prepare modules_prepare bzImage modules
-	make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 INSTALL_MOD_PATH=<mod-install-dir> modules_install
-	cd <mod-install-dir>
-	find lib/ | cpio -o -H newc --quiet | gzip > modules.cgz
-
-
         git clone https://github.com/intel/lkp-tests.git
         cd lkp-tests
-        bin/lkp qemu -k <bzImage> -m modules.cgz job-script # job-script is attached in this email
+        bin/lkp install job.yaml  # job file is attached in this email
+        bin/lkp run     job.yaml
 
 
 
@@ -150,13 +133,13 @@ Thanks,
 Rong Chen
 
 
---1SVgZ+3xbDF9VW5n
+--0et/Au7PJwzVwd4K
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="config-5.6.0-11895-gb78356484793c"
+Content-Disposition: attachment; filename="config-5.7.0-rc6-00038-g8e984da3e5752"
 
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/x86_64 5.6.0 Kernel Configuration
+# Linux/x86_64 5.7.0-rc6 Kernel Configuration
 #
 
 #
@@ -164,11 +147,11 @@ Content-Disposition: attachment; filename="config-5.6.0-11895-gb78356484793c"
 #
 CONFIG_CC_IS_GCC=y
 CONFIG_GCC_VERSION=70500
+CONFIG_LD_VERSION=234000000
 CONFIG_CLANG_VERSION=0
 CONFIG_CC_CAN_LINK=y
 CONFIG_CC_HAS_ASM_GOTO=y
 CONFIG_CC_HAS_ASM_INLINE=y
-CONFIG_CC_HAS_WARN_MAYBE_UNINITIALIZED=y
 CONFIG_IRQ_WORK=y
 CONFIG_BUILDTIME_TABLE_SORT=y
 CONFIG_THREAD_INFO_IN_TASK=y
@@ -870,11 +853,9 @@ CONFIG_KVM_INTEL=m
 CONFIG_KVM_AMD=m
 CONFIG_KVM_AMD_SEV=y
 CONFIG_KVM_MMU_AUDIT=y
-CONFIG_VHOST_NET=m
-# CONFIG_VHOST_SCSI is not set
-CONFIG_VHOST_VSOCK=m
-CONFIG_VHOST=m
-# CONFIG_VHOST_CROSS_ENDIAN_LEGACY is not set
+CONFIG_AS_AVX512=y
+CONFIG_AS_SHA1_NI=y
+CONFIG_AS_SHA256_NI=y
 
 #
 # General architecture-dependent options
@@ -984,11 +965,7 @@ CONFIG_ARCH_HAS_MEM_ENCRYPT=y
 CONFIG_ARCH_HAS_GCOV_PROFILE_ALL=y
 # end of GCOV-based kernel profiling
 
-CONFIG_PLUGIN_HOSTCC="g++"
 CONFIG_HAVE_GCC_PLUGINS=y
-CONFIG_GCC_PLUGINS=y
-# CONFIG_GCC_PLUGIN_LATENT_ENTROPY is not set
-# CONFIG_GCC_PLUGIN_RANDSTRUCT is not set
 # end of General architecture-dependent options
 
 CONFIG_RT_MUTEXES=y
@@ -1087,6 +1064,7 @@ CONFIG_ARCH_USE_QUEUED_SPINLOCKS=y
 CONFIG_QUEUED_SPINLOCKS=y
 CONFIG_ARCH_USE_QUEUED_RWLOCKS=y
 CONFIG_QUEUED_RWLOCKS=y
+CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE=y
 CONFIG_ARCH_HAS_SYNC_CORE_BEFORE_USERMODE=y
 CONFIG_ARCH_HAS_SYSCALL_WRAPPER=y
 CONFIG_FREEZER=y
@@ -1116,6 +1094,7 @@ CONFIG_SPARSEMEM_VMEMMAP_ENABLE=y
 CONFIG_SPARSEMEM_VMEMMAP=y
 CONFIG_HAVE_MEMBLOCK_NODE_MAP=y
 CONFIG_HAVE_FAST_GUP=y
+CONFIG_NUMA_KEEP_MEMINFO=y
 CONFIG_MEMORY_ISOLATION=y
 CONFIG_HAVE_BOOTMEM_INFO_NODE=y
 CONFIG_MEMORY_HOTPLUG=y
@@ -4235,6 +4214,7 @@ CONFIG_LPC_SCH=m
 CONFIG_MFD_INTEL_LPSS=y
 CONFIG_MFD_INTEL_LPSS_ACPI=y
 CONFIG_MFD_INTEL_LPSS_PCI=y
+# CONFIG_MFD_IQS62X is not set
 # CONFIG_MFD_JANZ_CMODIO is not set
 # CONFIG_MFD_KEMPLD is not set
 # CONFIG_MFD_88PM800 is not set
@@ -5319,7 +5299,7 @@ CONFIG_SND_HDA_DSP_LOADER=y
 CONFIG_SND_HDA_COMPONENT=y
 CONFIG_SND_HDA_I915=y
 CONFIG_SND_HDA_EXT_CORE=m
-CONFIG_SND_HDA_PREALLOC_SIZE=0
+CONFIG_SND_HDA_PREALLOC_SIZE=512
 CONFIG_SND_INTEL_NHLT=y
 CONFIG_SND_INTEL_DSP_CONFIG=m
 # CONFIG_SND_SPI is not set
@@ -6346,6 +6326,15 @@ CONFIG_VIRTIO_PCI_LEGACY=y
 CONFIG_VIRTIO_BALLOON=y
 CONFIG_VIRTIO_INPUT=m
 # CONFIG_VIRTIO_MMIO is not set
+# CONFIG_VDPA is not set
+CONFIG_VHOST_IOTLB=m
+CONFIG_VHOST_DPN=y
+CONFIG_VHOST=m
+CONFIG_VHOST_MENU=y
+CONFIG_VHOST_NET=m
+# CONFIG_VHOST_SCSI is not set
+CONFIG_VHOST_VSOCK=m
+# CONFIG_VHOST_CROSS_ENDIAN_LEGACY is not set
 
 #
 # Microsoft Hyper-V guest support
@@ -6617,6 +6606,7 @@ CONFIG_MAILBOX=y
 CONFIG_PCC=y
 # CONFIG_ALTERA_MBOX is not set
 CONFIG_IOMMU_IOVA=y
+CONFIG_IOASID=y
 CONFIG_IOMMU_API=y
 CONFIG_IOMMU_SUPPORT=y
 
@@ -7056,6 +7046,11 @@ CONFIG_HID_SENSOR_DEVICE_ROTATION=m
 # end of Triggers - standalone
 
 #
+# Linear and angular position sensors
+#
+# end of Linear and angular position sensors
+
+#
 # Digital potentiometers
 #
 # CONFIG_AD5272 is not set
@@ -7152,6 +7147,7 @@ CONFIG_NTB_TRANSPORT=m
 # CONFIG_VME_BUS is not set
 CONFIG_PWM=y
 CONFIG_PWM_SYSFS=y
+# CONFIG_PWM_DEBUG is not set
 # CONFIG_PWM_LPSS_PCI is not set
 # CONFIG_PWM_LPSS_PLATFORM is not set
 # CONFIG_PWM_PCA9685 is not set
@@ -7646,10 +7642,6 @@ CONFIG_LSM="lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,appar
 # Memory initialization
 #
 CONFIG_INIT_STACK_NONE=y
-# CONFIG_GCC_PLUGIN_STRUCTLEAK_USER is not set
-# CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF is not set
-# CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF_ALL is not set
-# CONFIG_GCC_PLUGIN_STACKLEAK is not set
 # CONFIG_INIT_ON_ALLOC_DEFAULT_ON is not set
 # CONFIG_INIT_ON_FREE_DEFAULT_ON is not set
 # end of Memory initialization
@@ -7870,7 +7862,7 @@ CONFIG_CRYPTO_DEV_PADLOCK_SHA=m
 # CONFIG_CRYPTO_DEV_ATMEL_ECC is not set
 # CONFIG_CRYPTO_DEV_ATMEL_SHA204A is not set
 CONFIG_CRYPTO_DEV_CCP=y
-CONFIG_CRYPTO_DEV_CCP_DD=m
+CONFIG_CRYPTO_DEV_CCP_DD=y
 CONFIG_CRYPTO_DEV_SP_CCP=y
 CONFIG_CRYPTO_DEV_CCP_CRYPTO=m
 CONFIG_CRYPTO_DEV_SP_PSP=y
@@ -8057,7 +8049,6 @@ CONFIG_DEBUG_INFO=y
 CONFIG_DEBUG_INFO_REDUCED=y
 # CONFIG_DEBUG_INFO_SPLIT is not set
 # CONFIG_DEBUG_INFO_DWARF4 is not set
-# CONFIG_DEBUG_INFO_BTF is not set
 # CONFIG_GDB_SCRIPTS is not set
 CONFIG_ENABLE_MUST_CHECK=y
 CONFIG_FRAME_WARN=2048
@@ -8358,7 +8349,7 @@ CONFIG_TEST_BPF=m
 # end of Kernel Testing and Coverage
 # end of Kernel hacking
 
---1SVgZ+3xbDF9VW5n
+--0et/Au7PJwzVwd4K
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: attachment; filename=job-script
 
@@ -8366,80 +8357,62 @@ Content-Disposition: attachment; filename=job-script
 
 export_top_env()
 {
-	export suite='xfstests'
-	export testcase='xfstests'
+	export suite='rcutorture'
+	export testcase='rcutorture'
 	export category='functional'
-	export need_memory='1G'
-	export job_origin='/lkp/lkp/.src-20200519-102733/allot/cyclic:vm-p1:linux-devel:devel-hourly/vm-snb/xfstests-generic-part1.yaml'
+	export need_memory='300MB'
+	export runtime=300
+	export job_origin='/lkp/lkp/.src-20200520-135839/allot/cyclic:p2:linux-devel:devel-hourly/lkp-opteron1/rcutorture.yaml'
 	export queue_cmdline_keys='branch
 commit
 queue_at_least_once'
 	export queue='validate'
-	export testbox='vm-snb-8'
-	export tbox_group='vm-snb'
-	export nr_vm=64
-	export submit_id='5ec76278b4914f24942c6716'
-	export job_file='/lkp/jobs/scheduled/vm-snb-8/xfstests-4HDD-f2fs-generic-group13-debian-x86_64-20191114.cgz-b78356484793c82e07fe6f7ca3b62b1f18651267-20200522-9364-1l6oe0b-2.yaml'
-	export id='b4ad5d66e4548a437e7c176c346835a820a83865'
+	export testbox='lkp-opteron1'
+	export tbox_group='lkp-opteron1'
+	export submit_id='5ec6c66b77eb0b193647beef'
+	export job_file='/lkp/jobs/scheduled/lkp-opteron1/rcutorture-300s-default-tasks-debian-x86_64-20191114.cgz-8e984da3e5752f18c24c39240338fec8c8c9c971-20200522-6454-mc4v1l-8.yaml'
+	export id='bab627dd1741243ab1658212c1a77518315243b2'
 	export queuer_version='/lkp-src'
-	export model='qemu-system-x86_64 -enable-kvm -cpu SandyBridge'
-	export nr_cpu=2
-	export memory='8G'
-	export hdd_partitions='/dev/vda /dev/vdb /dev/vdc /dev/vdd /dev/vde /dev/vdf'
-	export swap_partitions='/dev/vdg'
-	export need_kconfig='CONFIG_BLK_DEV_SD
-CONFIG_SCSI
-CONFIG_BLOCK=y
-CONFIG_SATA_AHCI
-CONFIG_SATA_AHCI_PLATFORM
-CONFIG_ATA
-CONFIG_PCI=y
-CONFIG_F2FS_FS=m
-CONFIG_F2FS_FS_XATTR=y
-CONFIG_F2FS_FS_SECURITY=y
-CONFIG_FS_ENCRYPTION=y
-CONFIG_EXT4_ENCRYPTION=y ~ v(4\.|5\.0)
-CONFIG_F2FS_FS_ENCRYPTION=y ~ v(4\.|5\.0)
-CONFIG_XFS_RT=y
-CONFIG_XFS_DEBUG=y
-CONFIG_FAULT_INJECTION=y
-CONFIG_FAIL_MAKE_REQUEST=y
-CONFIG_FAULT_INJECTION_DEBUG_FS=y
-CONFIG_DM_LOG_WRITES=m
-CONFIG_XFS_ONLINE_SCRUB=y ~ v(4\.1[5-9]|4\.20|5\.)
-CONFIG_XFS_ONLINE_REPAIR=y ~ v(4\.1[8-9]|4\.20|5\.)
-CONFIG_KVM_GUEST=y
-CONFIG_F2FS_FS'
-	export need_modules=true
-	export commit='b78356484793c82e07fe6f7ca3b62b1f18651267'
-	export ssh_base_port=23032
+	export model='Opteron'
+	export nr_cpu=32
+	export memory='128G'
+	export nr_hdd_partitions=8
+	export hdd_partitions='/dev/disk/by-id/ata-WDC_WD60EFRX-68L0BN1_WD-WX31DB5L63TN-part*'
+	export rootfs_partition='/dev/disk/by-id/ata-ST1000DM003-1CH162_Z1DAS0H7-part1'
+	export brand='AMD Opteron(TM) Processor 6276'
+	export need_kconfig='CONFIG_RCU_TORTURE_TEST
+CONFIG_SECURITY_LOADPIN_ENABLED=n'
+	export commit='8e984da3e5752f18c24c39240338fec8c8c9c971'
+	export need_kconfig_hw='CONFIG_IGB=y
+CONFIG_SATA_AHCI'
 	export kconfig='x86_64-rhel-7.6'
 	export compiler='gcc-7'
-	export enqueue_time='2020-05-22 13:26:20 +0800'
-	export _id='5ec76278b4914f24942c6716'
-	export _rt='/result/xfstests/4HDD-f2fs-generic-group13/vm-snb/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/b78356484793c82e07fe6f7ca3b62b1f18651267'
+	export enqueue_time='2020-05-22 02:20:29 +0800'
+	export _id='5ec6c66e77eb0b193647bef5'
+	export _rt='/result/rcutorture/300s-default-tasks/lkp-opteron1/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c24c39240338fec8c8c9c971'
 	export user='lkp'
-	export head_commit='03e347ff8c7cc4864d4664dfebb9f1515a929bac'
+	export head_commit='d0edf98c01ebe0790295cf888a2976d2d04377b1'
 	export base_commit='b9bbe6ed63b2b9f2c9ee5cbd0f2c946a2723f4ce'
-	export branch='linux-devel/devel-hourly-2020052115'
+	export branch='linux-devel/devel-hourly-2020052107'
 	export rootfs='debian-x86_64-20191114.cgz'
-	export result_root='/result/xfstests/4HDD-f2fs-generic-group13/vm-snb/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/b78356484793c82e07fe6f7ca3b62b1f18651267/3'
+	export result_root='/result/rcutorture/300s-default-tasks/lkp-opteron1/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c24c39240338fec8c8c9c971/8'
 	export scheduler_version='/lkp/lkp/.src-20200521-230648'
 	export LKP_SERVER='inn'
 	export arch='x86_64'
-	export max_uptime=3600
+	export max_uptime=1500
 	export initrd='/osimage/debian/debian-x86_64-20191114.cgz'
 	export bootloader_append='root=/dev/ram0
 user=lkp
-job=/lkp/jobs/scheduled/vm-snb-8/xfstests-4HDD-f2fs-generic-group13-debian-x86_64-20191114.cgz-b78356484793c82e07fe6f7ca3b62b1f18651267-20200522-9364-1l6oe0b-2.yaml
+job=/lkp/jobs/scheduled/lkp-opteron1/rcutorture-300s-default-tasks-debian-x86_64-20191114.cgz-8e984da3e5752f18c24c39240338fec8c8c9c971-20200522-6454-mc4v1l-8.yaml
 ARCH=x86_64
 kconfig=x86_64-rhel-7.6
-branch=linux-devel/devel-hourly-2020052115
-commit=b78356484793c82e07fe6f7ca3b62b1f18651267
-BOOT_IMAGE=/pkg/linux/x86_64-rhel-7.6/gcc-7/b78356484793c82e07fe6f7ca3b62b1f18651267/vmlinuz-5.6.0-11895-gb78356484793c
-max_uptime=3600
-RESULT_ROOT=/result/xfstests/4HDD-f2fs-generic-group13/vm-snb/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/b78356484793c82e07fe6f7ca3b62b1f18651267/3
+branch=linux-devel/devel-hourly-2020052107
+commit=8e984da3e5752f18c24c39240338fec8c8c9c971
+BOOT_IMAGE=/pkg/linux/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c24c39240338fec8c8c9c971/vmlinuz-5.7.0-rc6-00038-g8e984da3e5752
+max_uptime=1500
+RESULT_ROOT=/result/rcutorture/300s-default-tasks/lkp-opteron1/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c24c39240338fec8c8c9c971/8
 LKP_SERVER=inn
+nokaslr
 selinux=0
 debug
 apic=debug
@@ -8461,18 +8434,19 @@ earlyprintk=ttyS0,115200
 console=ttyS0,115200
 vga=normal
 rw'
-	export modules_initrd='/pkg/linux/x86_64-rhel-7.6/gcc-7/b78356484793c82e07fe6f7ca3b62b1f18651267/modules.cgz'
-	export bm_initrd='/osimage/deps/debian-x86_64-20180403.cgz/run-ipconfig_2018-04-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/lkp_2019-08-05.cgz,/osimage/deps/debian-x86_64-20180403.cgz/rsync-rootfs_2018-04-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/fs_2020-01-02.cgz,/osimage/deps/debian-x86_64-20180403.cgz/xfstests_20200409.cgz,/osimage/pkg/debian-x86_64-20180403.cgz/xfstests-x86_64-9a31cef-1_20200518.cgz'
+	export modules_initrd='/pkg/linux/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c24c39240338fec8c8c9c971/modules.cgz'
+	export bm_initrd='/osimage/deps/debian-x86_64-20180403.cgz/run-ipconfig_2018-04-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/lkp_2019-08-05.cgz,/osimage/deps/debian-x86_64-20180403.cgz/rsync-rootfs_2018-04-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/hw_2020-01-02.cgz'
 	export lkp_initrd='/osimage/user/lkp/lkp-x86_64.cgz'
 	export site='inn'
 	export LKP_CGI_PORT=80
 	export LKP_CIFS_PORT=139
-	export repeat_to=4
+	export last_kernel='4.20.0'
+	export repeat_to=12
 	export schedule_notify_address=
 	export queue_at_least_once=1
-	export kernel='/pkg/linux/x86_64-rhel-7.6/gcc-7/b78356484793c82e07fe6f7ca3b62b1f18651267/vmlinuz-5.6.0-11895-gb78356484793c'
-	export dequeue_time='2020-05-22 13:26:38 +0800'
-	export job_initrd='/lkp/jobs/scheduled/vm-snb-8/xfstests-4HDD-f2fs-generic-group13-debian-x86_64-20191114.cgz-b78356484793c82e07fe6f7ca3b62b1f18651267-20200522-9364-1l6oe0b-2.cgz'
+	export kernel='/pkg/linux/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c24c39240338fec8c8c9c971/vmlinuz-5.7.0-rc6-00038-g8e984da3e5752'
+	export dequeue_time='2020-05-22 03:03:30 +0800'
+	export job_initrd='/lkp/jobs/scheduled/lkp-opteron1/rcutorture-300s-default-tasks-debian-x86_64-20191114.cgz-8e984da3e5752f18c24c39240338fec8c8c9c971-20200522-6454-mc4v1l-8.cgz'
 
 	[ -n "$LKP_SRC" ] ||
 	export LKP_SRC=/lkp/${user:-lkp}/src
@@ -8488,17 +8462,13 @@ run_job()
 
 	export_top_env
 
-	run_setup nr_hdd=4 $LKP_SRC/setup/disk
-
-	run_setup fs='f2fs' $LKP_SRC/setup/fs
-
 	run_monitor $LKP_SRC/monitors/wrapper kmsg
 	run_monitor $LKP_SRC/monitors/wrapper heartbeat
 	run_monitor $LKP_SRC/monitors/wrapper meminfo
 	run_monitor $LKP_SRC/monitors/wrapper oom-killer
 	run_monitor $LKP_SRC/monitors/plain/watchdog
 
-	run_test test='generic-group13' $LKP_SRC/tests/wrapper xfstests
+	run_test test='default' torture_type='tasks' $LKP_SRC/tests/wrapper rcutorture
 }
 
 extract_stats()
@@ -8506,11 +8476,11 @@ extract_stats()
 	export stats_part_begin=
 	export stats_part_end=
 
-	$LKP_SRC/stats/wrapper xfstests
+	$LKP_SRC/stats/wrapper rcutorture
 	$LKP_SRC/stats/wrapper kmsg
 	$LKP_SRC/stats/wrapper meminfo
 
-	$LKP_SRC/stats/wrapper time xfstests.time
+	$LKP_SRC/stats/wrapper time rcutorture.time
 	$LKP_SRC/stats/wrapper dmesg
 	$LKP_SRC/stats/wrapper kmsg
 	$LKP_SRC/stats/wrapper last_state
@@ -8520,420 +8490,3322 @@ extract_stats()
 
 "$@"
 
---1SVgZ+3xbDF9VW5n
-Content-Type: application/x-xz
-Content-Disposition: attachment; filename="dmesg.xz"
-Content-Transfer-Encoding: base64
-
-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
-6wRJsHzEscRn+wIAAAAABFla
-
---1SVgZ+3xbDF9VW5n
+--0et/Au7PJwzVwd4K
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=xfstests
+Content-Disposition: attachment; filename=dmesg
+Content-Transfer-Encoding: quoted-printable
 
-2020-05-22 13:27:08 export TEST_DIR=/fs/vda
-2020-05-22 13:27:08 export TEST_DEV=/dev/vda
-2020-05-22 13:27:08 export FSTYP=f2fs
-2020-05-22 13:27:08 export SCRATCH_MNT=/fs/scratch
-2020-05-22 13:27:08 mkdir /fs/scratch -p
-2020-05-22 13:27:08 export SCRATCH_DEV=/dev/vdd
-2020-05-22 13:27:08 export MKFS_OPTIONS=-f
-2020-05-22 13:27:08 sed "s:^:generic/:" //lkp/benchmarks/xfstests/tests/generic-group13
-2020-05-22 13:27:08 ./check generic/019 generic/059 generic/094 generic/126 generic/162 generic/194 generic/225 generic/256 generic/289 generic/321 generic/353 generic/383 generic/418 generic/451 generic/490 generic/525 generic/555 generic/585
-FSTYP         -- f2fs
-PLATFORM      -- Linux/x86_64 vm-snb-8 5.6.0-11895-gb78356484793c #1 SMP Sun May 17 16:44:37 CST 2020
-MKFS_OPTIONS  -- -f /dev/vdd
-MOUNT_OPTIONS -- -o acl,user_xattr /dev/vdd /fs/scratch
+Decompressing Linux... Parsing ELF... No relocation needed... done.
+Booting the kernel.
+[    0.000000] Linux version 5.7.0-rc6-00038-g8e984da3e5752 (kbuild@9fbbb50=
+dcc0b) (gcc version 7.5.0 (Ubuntu 7.5.0-6ubuntu2), GNU ld (GNU Binutils for=
+ Debian) 2.34) #1 SMP Thu May 21 13:04:46 CST 2020
+[    0.000000] Command line: ip=3D::::lkp-opteron1::dhcp root=3D/dev/ram0 u=
+ser=3Dlkp job=3D/lkp/jobs/scheduled/lkp-opteron1/rcutorture-300s-default-ta=
+sks-debian-x86_64-20191114.cgz-8e984da3e5752f18c24c39240338fec8c8c9c971-202=
+00522-6454-mc4v1l-8.yaml ARCH=3Dx86_64 kconfig=3Dx86_64-rhel-7.6 branch=3Dl=
+inux-devel/devel-hourly-2020052107 commit=3D8e984da3e5752f18c24c39240338fec=
+8c8c9c971 BOOT_IMAGE=3D/pkg/linux/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c24=
+c39240338fec8c8c9c971/vmlinuz-5.7.0-rc6-00038-g8e984da3e5752 max_uptime=3D1=
+500 RESULT_ROOT=3D/result/rcutorture/300s-default-tasks/lkp-opteron1/debian=
+-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c24c39240338fec8=
+c8c9c971/8 LKP_SERVER=3Dinn nokaslr selinux=3D0 debug apic=3Ddebug sysrq_al=
+ways_enabled rcupdate.rcu_cpu_stall_timeout=3D100 net.ifnames=3D0 printk.de=
+vkmsg=3Don panic=3D-1 softlockup_panic=3D1 nmi_watchdog=3Dpanic oops=3Dpani=
+c load_ramdisk=3D2 prompt_ramdisk=3D0 drbd.minor_count=3D8 systemd.log_leve=
+l=3Derr ignore_loglevel console=3Dtty0 earlyprintk=3DttyS0,115200 console=
+=3DttyS0,115
+[    0.000000] random: get_random_u32 called from bsp_init_amd+0x20d/0x2d0 =
+with crng_init=3D0
+[    0.000000] x86/fpu: Supporting XSAVE feature 0x001: 'x87 floating point=
+ registers'
+[    0.000000] x86/fpu: Supporting XSAVE feature 0x002: 'SSE registers'
+[    0.000000] x86/fpu: Supporting XSAVE feature 0x004: 'AVX registers'
+[    0.000000] x86/fpu: xstate_offset[2]:  576, xstate_sizes[2]:  256
+[    0.000000] x86/fpu: Enabled xstate features 0x7, context size is 832 by=
+tes, using 'standard' format.
+[    0.000000] BIOS-provided physical RAM map:
+[    0.000000] BIOS-e820: [mem 0x0000000000000100-0x000000000009a7ff] usable
+[    0.000000] BIOS-e820: [mem 0x000000000009a800-0x000000000009ffff] reser=
+ved
+[    0.000000] BIOS-e820: [mem 0x00000000000e6000-0x00000000000fffff] reser=
+ved
+[    0.000000] BIOS-e820: [mem 0x0000000000100000-0x00000000dfe9ffff] usable
+[    0.000000] BIOS-e820: [mem 0x00000000dfea0000-0x00000000dfeb1fff] ACPI =
+data
+[    0.000000] BIOS-e820: [mem 0x00000000dfeb2000-0x00000000dfedffff] ACPI =
+NVS
+[    0.000000] BIOS-e820: [mem 0x00000000dfee0000-0x00000000efffffff] reser=
+ved
+[    0.000000] BIOS-e820: [mem 0x00000000ffe00000-0x00000000ffffffff] reser=
+ved
+[    0.000000] BIOS-e820: [mem 0x0000000100000000-0x000000201fffffff] usable
+[    0.000000] printk: debug: ignoring loglevel setting.
+[    0.000000] printk: bootconsole [earlyser0] enabled
+[    0.000000] NX (Execute Disable) protection: active
+[    0.000000] SMBIOS 2.6 present.
+[    0.000000] DMI: Supermicro H8DGU/H8DGU, BIOS 2.0        09/08/11 =20
+[    0.000000] tsc: Fast TSC calibration using PIT
+[    0.000000] tsc: Detected 2300.042 MHz processor
+[    0.010032] e820: update [mem 0x00000000-0x00000fff] usable =3D=3D> rese=
+rved
+[    0.016555] e820: remove [mem 0x000a0000-0x000fffff] usable
+[    0.032085] AGP: No AGP bridge found
+[    0.035577] last_pfn =3D 0x2020000 max_arch_pfn =3D 0x400000000
+[    0.041040] MTRR default type: uncachable
+[    0.045017] MTRR fixed ranges enabled:
+[    0.048745]   00000-9FFFF write-back
+[    0.052299]   A0000-EFFFF uncachable
+[    0.055851]   F0000-FFFFF write-protect
+[    0.059664] MTRR variable ranges enabled:
+[    0.063652]   0 base 000000000000 mask FFFF80000000 write-back
+[    0.069460]   1 base 000080000000 mask FFFFC0000000 write-back
+[    0.075266]   2 base 0000C0000000 mask FFFFE0000000 write-back
+[    0.081071]   3 disabled
+[    0.083585]   4 disabled
+[    0.086098]   5 disabled
+[    0.088612]   6 disabled
+[    0.091125]   7 disabled
+[    0.093639] TOM2: 0000002020000000 aka 131584M
+[    0.102302] x86/PAT: Configuration [0-7]: WB  WC  UC- UC  WB  WP  UC- WT=
+ =20
+[    0.109378] e820: update [mem 0xe0000000-0xffffffff] usable =3D=3D> rese=
+rved
+[    0.115933] last_pfn =3D 0xdfea0 max_arch_pfn =3D 0x400000000
+[    0.121305] Scan for SMP in [mem 0x00000000-0x000003ff]
+[    0.126540] Scan for SMP in [mem 0x0009fc00-0x0009ffff]
+[    0.131737] Scan for SMP in [mem 0x000f0000-0x000fffff]
+[    0.150011] found SMP MP-table at [mem 0x000ff780-0x000ff78f]
+[    0.155584]   mpc: fd790-fdb84
+[    0.173448] Using GB pages for direct mapping
+[    0.177633] BRK [0x201f401000, 0x201f401fff] PGTABLE
+[    0.182575] BRK [0x201f402000, 0x201f402fff] PGTABLE
+[    0.187512] BRK [0x201f403000, 0x201f403fff] PGTABLE
+[    0.192564] BRK [0x201f404000, 0x201f404fff] PGTABLE
+[    0.197818] BRK [0x201f405000, 0x201f405fff] PGTABLE
+[    0.202715] BRK [0x201f406000, 0x201f406fff] PGTABLE
+[    0.207762] RAMDISK: [mem 0x200cfe2000-0x201cffffff]
+[    0.212558] ACPI: Early table checksum verification disabled
+[    0.218188] ACPI: RSDP 0x00000000000FA110 000024 (v02 ACPIAM)
+[    0.223905] ACPI: XSDT 0x00000000DFEA0100 00006C (v01 SMCI            20=
+110908 MSFT 00000097)
+[    0.232403] ACPI: FACP 0x00000000DFEA0290 0000F4 (v03 090811 FACP2038 20=
+110908 MSFT 00000097)
+[    0.240894] ACPI BIOS Warning (bug): 32/64X length mismatch in FADT/Gpe0=
+Block: 64/32 (20200326/tbfadt-569)
+[    0.250513] ACPI: DSDT 0x00000000DFEA06B0 005B74 (v01 1A811  1A811000 00=
+000000 INTL 20051117)
+[    0.259007] ACPI: FACS 0x00000000DFEB2000 000040
+[    0.263600] ACPI: FACS 0x00000000DFEB2000 000040
+[    0.268194] ACPI: APIC 0x00000000DFEA0390 000158 (v01 090811 APIC2038 20=
+110908 MSFT 00000097)
+[    0.276686] ACPI: MCFG 0x00000000DFEA04F0 00003C (v01 090811 OEMMCFG  20=
+110908 MSFT 00000097)
+[    0.285180] ACPI: OEMB 0x00000000DFEB2040 000075 (v01 090811 OEMB2038 20=
+110908 MSFT 00000097)
+[    0.293675] ACPI: HPET 0x00000000DFEAA6B0 000038 (v01 090811 OEMHPET  20=
+110908 MSFT 00000097)
+[    0.302168] ACPI: IVRS 0x00000000DFEAA6F0 0000C0 (v01 AMD    RD890S   00=
+202031 AMD  00000000)
+[    0.310661] ACPI: SRAT 0x00000000DFEAA7B0 000320 (v02 AMD    AGESA    00=
+000001 AMD  00000001)
+[    0.319169] ACPI: SLIT 0x00000000DFEAAAD0 00003C (v01 AMD    AGESA    00=
+000001 AMD  00000001)
+[    0.327649] ACPI: SSDT 0x00000000DFEAAB10 005204 (v01 A M I  POWERNOW 00=
+000001 AMD  00000001)
+[    0.336151] ACPI: Local APIC address 0xfee00000
+[    0.340657] mapped APIC to ffffffffff5fc000 (        fee00000)
+[    0.346552] SRAT: PXM 0 -> APIC 0x20 -> Node 0
+[    0.350875] SRAT: PXM 0 -> APIC 0x21 -> Node 0
+[    0.355295] SRAT: PXM 0 -> APIC 0x22 -> Node 0
+[    0.359716] SRAT: PXM 0 -> APIC 0x23 -> Node 0
+[    0.364135] SRAT: PXM 0 -> APIC 0x24 -> Node 0
+[    0.368555] SRAT: PXM 0 -> APIC 0x25 -> Node 0
+[    0.372975] SRAT: PXM 0 -> APIC 0x26 -> Node 0
+[    0.377395] SRAT: PXM 0 -> APIC 0x27 -> Node 0
+[    0.381816] SRAT: PXM 1 -> APIC 0x28 -> Node 1
+[    0.386235] SRAT: PXM 1 -> APIC 0x29 -> Node 1
+[    0.390656] SRAT: PXM 1 -> APIC 0x2a -> Node 1
+[    0.395076] SRAT: PXM 1 -> APIC 0x2b -> Node 1
+[    0.399497] SRAT: PXM 1 -> APIC 0x2c -> Node 1
+[    0.403917] SRAT: PXM 1 -> APIC 0x2d -> Node 1
+[    0.408337] SRAT: PXM 1 -> APIC 0x2e -> Node 1
+[    0.412757] SRAT: PXM 1 -> APIC 0x2f -> Node 1
+[    0.417177] SRAT: PXM 2 -> APIC 0x40 -> Node 2
+[    0.421596] SRAT: PXM 2 -> APIC 0x41 -> Node 2
+[    0.426017] SRAT: PXM 2 -> APIC 0x42 -> Node 2
+[    0.430438] SRAT: PXM 2 -> APIC 0x43 -> Node 2
+[    0.434857] SRAT: PXM 2 -> APIC 0x44 -> Node 2
+[    0.439278] SRAT: PXM 2 -> APIC 0x45 -> Node 2
+[    0.443698] SRAT: PXM 2 -> APIC 0x46 -> Node 2
+[    0.448118] SRAT: PXM 2 -> APIC 0x47 -> Node 2
+[    0.452539] SRAT: PXM 3 -> APIC 0x48 -> Node 3
+[    0.456958] SRAT: PXM 3 -> APIC 0x49 -> Node 3
+[    0.461379] SRAT: PXM 3 -> APIC 0x4a -> Node 3
+[    0.465799] SRAT: PXM 3 -> APIC 0x4b -> Node 3
+[    0.470218] SRAT: PXM 3 -> APIC 0x4c -> Node 3
+[    0.474639] SRAT: PXM 3 -> APIC 0x4d -> Node 3
+[    0.479059] SRAT: PXM 3 -> APIC 0x4e -> Node 3
+[    0.483479] SRAT: PXM 3 -> APIC 0x4f -> Node 3
+[    0.487903] ACPI: SRAT: Node 0 PXM 0 [mem 0x00000000-0x0009ffff]
+[    0.493882] ACPI: SRAT: Node 0 PXM 0 [mem 0x00100000-0xdfffffff]
+[    0.499860] ACPI: SRAT: Node 0 PXM 0 [mem 0x100000000-0x81fffffff]
+[    0.506014] ACPI: SRAT: Node 1 PXM 1 [mem 0x820000000-0x101fffffff]
+[    0.512254] ACPI: SRAT: Node 2 PXM 2 [mem 0x1020000000-0x181fffffff]
+[    0.518581] ACPI: SRAT: Node 3 PXM 3 [mem 0x1820000000-0x201fffffff]
+[    0.524917] NUMA: Initialized distance table, cnt=3D4
+[    0.529765] NUMA: Node 0 [mem 0x00000000-0x0009ffff] + [mem 0x00100000-0=
+xdfffffff] -> [mem 0x00000000-0xdfffffff]
+[    0.539990] NUMA: Node 0 [mem 0x00000000-0xdfffffff] + [mem 0x100000000-=
+0x81fffffff] -> [mem 0x00000000-0x81fffffff]
+[    0.550501] NODE_DATA(0) allocated [mem 0x81ffd5000-0x81fffffff]
+[    0.556504] NODE_DATA(1) allocated [mem 0x101ffd5000-0x101fffffff]
+[    0.562667] NODE_DATA(2) allocated [mem 0x181ffd5000-0x181fffffff]
+[    0.568839] NODE_DATA(3) allocated [mem 0x201ffd4000-0x201fffefff]
+[    0.575392] cma: Reserved 200 MiB at 0x0000002000400000
+[    0.580825] Zone ranges:
+[    0.583184]   DMA      [mem 0x0000000000001000-0x0000000000ffffff]
+[    0.589338]   DMA32    [mem 0x0000000001000000-0x00000000ffffffff]
+[    0.595492]   Normal   [mem 0x0000000100000000-0x000000201fffffff]
+[    0.601653]   Device   empty
+[    0.604504] Movable zone start for each node
+[    0.608758] Early memory node ranges
+[    0.612306]   node   0: [mem 0x0000000000001000-0x0000000000099fff]
+[    0.618548]   node   0: [mem 0x0000000000100000-0x00000000dfe9ffff]
+[    0.624789]   node   0: [mem 0x0000000100000000-0x000000081fffffff]
+[    0.631033]   node   1: [mem 0x0000000820000000-0x000000101fffffff]
+[    0.637273]   node   2: [mem 0x0000001020000000-0x000000181fffffff]
+[    0.643514]   node   3: [mem 0x0000001820000000-0x000000201fffffff]
+[    0.649775] Zeroed struct page in unavailable ranges: 455 pages
+[    0.649778] Initmem setup node 0 [mem 0x0000000000001000-0x000000081ffff=
+fff]
+[    0.662662] On node 0 totalpages: 8388153
+[    0.666648]   DMA zone: 64 pages used for memmap
+[    0.671241]   DMA zone: 21 pages reserved
+[    0.675229]   DMA zone: 3993 pages, LIFO batch:0
+[    0.680017]   DMA32 zone: 14267 pages used for memmap
+[    0.684892]   DMA32 zone: 913056 pages, LIFO batch:63
+[    0.732433]   Normal zone: 116736 pages used for memmap
+[    0.737484]   Normal zone: 7471104 pages, LIFO batch:63
+[    0.744205] Initmem setup node 1 [mem 0x0000000820000000-0x000000101ffff=
+fff]
+[    0.751075] On node 1 totalpages: 8388608
+[    0.755072]   Normal zone: 131072 pages used for memmap
+[    0.760259]   Normal zone: 8388608 pages, LIFO batch:63
+[    0.767019] Initmem setup node 2 [mem 0x0000001020000000-0x000000181ffff=
+fff]
+[    0.773895] On node 2 totalpages: 8388608
+[    0.777879]   Normal zone: 131072 pages used for memmap
+[    0.783080]   Normal zone: 8388608 pages, LIFO batch:63
+[    0.789838] Initmem setup node 3 [mem 0x0000001820000000-0x000000201ffff=
+fff]
+[    0.796707] On node 3 totalpages: 8388608
+[    0.800691]   Normal zone: 131072 pages used for memmap
+[    0.805891]   Normal zone: 8388608 pages, LIFO batch:63
+[    0.812984] ACPI: PM-Timer IO Port: 0x808
+[    0.816824] ACPI: Local APIC address 0xfee00000
+[    0.821349] ACPI: LAPIC_NMI (acpi_id[0xff] dfl dfl lint[0x1])
+[    0.827049] ACPI: LAPIC_NMI (acpi_id[0x01] high edge lint[0x1])
+[    0.832952] IOAPIC[0]: apic_id 0, version 33, address 0xfec00000, GSI 0-=
+23
+[    0.839790] ACPI: INT_SRC_OVR (bus 0 bus_irq 0 global_irq 2 dfl dfl)
+[    0.846117] Int: type 0, pol 0, trig 0, bus 00, IRQ 00, APIC ID 0, APIC =
+INT 02
+[    0.853309] ACPI: INT_SRC_OVR (bus 0 bus_irq 9 global_irq 9 low level)
+[    0.859810] Int: type 0, pol 3, trig 3, bus 00, IRQ 09, APIC ID 0, APIC =
+INT 09
+[    0.867004] ACPI: IRQ0 used by override.
+[    0.870902] Int: type 0, pol 0, trig 0, bus 00, IRQ 01, APIC ID 0, APIC =
+INT 01
+[    0.878096] Int: type 0, pol 0, trig 0, bus 00, IRQ 03, APIC ID 0, APIC =
+INT 03
+[    0.885291] Int: type 0, pol 0, trig 0, bus 00, IRQ 04, APIC ID 0, APIC =
+INT 04
+[    0.892483] Int: type 0, pol 0, trig 0, bus 00, IRQ 05, APIC ID 0, APIC =
+INT 05
+[    0.899678] Int: type 0, pol 0, trig 0, bus 00, IRQ 06, APIC ID 0, APIC =
+INT 06
+[    0.906872] Int: type 0, pol 0, trig 0, bus 00, IRQ 07, APIC ID 0, APIC =
+INT 07
+[    0.914064] Int: type 0, pol 0, trig 0, bus 00, IRQ 08, APIC ID 0, APIC =
+INT 08
+[    0.921257] ACPI: IRQ9 used by override.
+[    0.925158] Int: type 0, pol 0, trig 0, bus 00, IRQ 0a, APIC ID 0, APIC =
+INT 0a
+[    0.932351] Int: type 0, pol 0, trig 0, bus 00, IRQ 0b, APIC ID 0, APIC =
+INT 0b
+[    0.939545] Int: type 0, pol 0, trig 0, bus 00, IRQ 0c, APIC ID 0, APIC =
+INT 0c
+[    0.946739] Int: type 0, pol 0, trig 0, bus 00, IRQ 0d, APIC ID 0, APIC =
+INT 0d
+[    0.953932] Int: type 0, pol 0, trig 0, bus 00, IRQ 0e, APIC ID 0, APIC =
+INT 0e
+[    0.961126] Int: type 0, pol 0, trig 0, bus 00, IRQ 0f, APIC ID 0, APIC =
+INT 0f
+[    0.968320] Using ACPI (MADT) for SMP configuration information
+[    0.974215] ACPI: HPET id: 0x8300 base: 0xfed00000
+[    0.978988] smpboot: Allowing 32 CPUs, 0 hotplug CPUs
+[    0.984013] mapped IOAPIC to ffffffffff5fb000 (fec00000)
+[    0.989316] PM: hibernation: Registered nosave memory: [mem 0x00000000-0=
+x00000fff]
+[    0.996836] PM: hibernation: Registered nosave memory: [mem 0x0009a000-0=
+x0009afff]
+[    1.004374] PM: hibernation: Registered nosave memory: [mem 0x0009b000-0=
+x0009ffff]
+[    1.011915] PM: hibernation: Registered nosave memory: [mem 0x000a0000-0=
+x000e5fff]
+[    1.019454] PM: hibernation: Registered nosave memory: [mem 0x000e6000-0=
+x000fffff]
+[    1.026997] PM: hibernation: Registered nosave memory: [mem 0xdfea0000-0=
+xdfeb1fff]
+[    1.034535] PM: hibernation: Registered nosave memory: [mem 0xdfeb2000-0=
+xdfedffff]
+[    1.042076] PM: hibernation: Registered nosave memory: [mem 0xdfee0000-0=
+xefffffff]
+[    1.049615] PM: hibernation: Registered nosave memory: [mem 0xf0000000-0=
+xffdfffff]
+[    1.057156] PM: hibernation: Registered nosave memory: [mem 0xffe00000-0=
+xffffffff]
+[    1.064698] [mem 0xf0000000-0xffdfffff] available for PCI devices
+[    1.070762] Booting paravirtualized kernel on bare hardware
+[    1.076313] clocksource: refined-jiffies: mask: 0xffffffff max_cycles: 0=
+xffffffff, max_idle_ns: 1910969940391419 ns
+[    1.098719] setup_percpu: NR_CPUS:8192 nr_cpumask_bits:32 nr_cpu_ids:32 =
+nr_node_ids:4
+[    1.111405] percpu: Embedded 56 pages/cpu s192512 r8192 d28672 u262144
+[    1.117773] pcpu-alloc: s192512 r8192 d28672 u262144 alloc=3D1*2097152
+[    1.124081] pcpu-alloc: [0] 00 01 02 03 04 05 06 07 [1] 08 09 10 11 12 1=
+3 14 15=20
+[    1.131449] pcpu-alloc: [2] 16 17 18 19 20 21 22 23 [3] 24 25 26 27 28 2=
+9 30 31=20
+[    1.138907] Built 4 zonelists, mobility grouping on.  Total pages: 33029=
+673
+[    1.145750] Policy zone: Normal
+[    1.148873] Kernel command line: ip=3D::::lkp-opteron1::dhcp root=3D/dev=
+/ram0 user=3Dlkp job=3D/lkp/jobs/scheduled/lkp-opteron1/rcutorture-300s-def=
+ault-tasks-debian-x86_64-20191114.cgz-8e984da3e5752f18c24c39240338fec8c8c9c=
+971-20200522-6454-mc4v1l-8.yaml ARCH=3Dx86_64 kconfig=3Dx86_64-rhel-7.6 bra=
+nch=3Dlinux-devel/devel-hourly-2020052107 commit=3D8e984da3e5752f18c24c3924=
+0338fec8c8c9c971 BOOT_IMAGE=3D/pkg/linux/x86_64-rhel-7.6/gcc-7/8e984da3e575=
+2f18c24c39240338fec8c8c9c971/vmlinuz-5.7.0-rc6-00038-g8e984da3e5752 max_upt=
+ime=3D1500 RESULT_ROOT=3D/result/rcutorture/300s-default-tasks/lkp-opteron1=
+/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c24c39240=
+338fec8c8c9c971/8 LKP_SERVER=3Dinn nokaslr selinux=3D0 debug apic=3Ddebug s=
+ysrq_always_enabled rcupdate.rcu_cpu_stall_timeout=3D100 net.ifnames=3D0 pr=
+intk.devkmsg=3Don panic=3D-1 softlockup_panic=3D1 nmi_watchdog=3Dpanic oops=
+=3Dpanic load_ramdisk=3D2 prompt_ramdisk=3D0 drbd.minor_count=3D8 systemd.l=
+og_level=3Derr ignore_loglevel console=3Dtty0 earlyprintk=3DttyS0,115200 co=
+nsole=3Dtt
+[    1.149539] sysrq: sysrq always enabled.
+[    1.241416] mem auto-init: stack:off, heap alloc:off, heap free:off
+[    1.269548] AGP: Checking aperture...
+[    1.282928] AGP: No AGP bridge found
+[    1.286333] AGP: Node 0: aperture [bus addr 0xd4000000-0xd7ffffff] (64MB)
+[    1.293088] Aperture pointing to e820 RAM. Ignoring.
+[    1.298028] AGP: Your BIOS doesn't leave an aperture memory hole
+[    1.304009] AGP: Please enable the IOMMU option in the BIOS setup
+[    1.310075] AGP: This costs you 64MB of RAM
+[    1.314242] AGP: Mapping aperture over RAM [mem 0xd4000000-0xd7ffffff] (=
+65536KB)
+[    1.321608] PM: hibernation: Registered nosave memory: [mem 0xd4000000-0=
+xd7ffffff]
+[    1.536304] Memory: 4061328K/134215908K available (14339K kernel code, 2=
+460K rwdata, 4768K rodata, 2568K init, 5024K bss, 2535864K reserved, 204800=
+K cma-reserved)
+[    1.551907] SLUB: HWalign=3D64, Order=3D0-3, MinObjects=3D0, CPUs=3D32, =
+Nodes=3D4
+[    1.558389] ftrace: allocating 44145 entries in 173 pages
+[    1.616949] ftrace: allocated 173 pages with 5 groups
+[    1.622546] rcu: Hierarchical RCU implementation.
+[    1.627081] rcu: 	RCU restricting CPUs from NR_CPUS=3D8192 to nr_cpu_ids=
+=3D32.
+[    1.633928] 	RCU CPU stall warnings timeout set to 100 (rcu_cpu_stall_ti=
+meout).
+[    1.641206] 	Tasks RCU enabled.
+[    1.644327] rcu: RCU calculated value of scheduler-enlistment delay is 1=
+00 jiffies.
+[    1.651953] rcu: Adjusting geometry for rcu_fanout_leaf=3D16, nr_cpu_ids=
+=3D32
+[    1.667863] NR_IRQS: 524544, nr_irqs: 680, preallocated irqs: 16
+[    1.674527] Console: colour dummy device 80x25
+[    1.679705] printk: console [tty0] enabled
+[    1.683646] printk: console [ttyS0] enabled
+[    1.683646] printk: console [ttyS0] enabled
+[    1.691963] printk: bootconsole [earlyser0] disabled
+[    1.691963] printk: bootconsole [earlyser0] disabled
+[    1.701956] mempolicy: Enabling automatic NUMA balancing. Configure with=
+ numa_balancing=3D or the kernel.numa_balancing sysctl
+[    1.713224] ACPI: Core revision 20200326
+[    1.717271] ACPI BIOS Warning (bug): Incorrect checksum in table [OEMB] =
+- 0xB1, should be 0xAE (20200326/tbprint-177)
+[    1.728083] clocksource: hpet: mask: 0xffffffff max_cycles: 0xffffffff, =
+max_idle_ns: 133484873504 ns
+[    1.737250] APIC: Switch to symmetric I/O mode setup
+[    1.783514] Switched APIC routing to physical flat.
+[    1.788406] masked ExtINT on CPU#0
+[    1.792005] ENABLING IO-APIC IRQs
+[    1.795337] init IO_APIC IRQs
+[    1.798318]  apic 0 pin 0 not connected
+[    1.802218] IOAPIC[0]: Set routing entry (0-1 -> 0xef -> IRQ 1 Mode:0 Ac=
+tive:0 Dest:32)
+[    1.810244] IOAPIC[0]: Set routing entry (0-2 -> 0x30 -> IRQ 0 Mode:0 Ac=
+tive:0 Dest:32)
+[    1.818249] IOAPIC[0]: Set routing entry (0-3 -> 0xef -> IRQ 3 Mode:0 Ac=
+tive:0 Dest:32)
+[    1.826259] IOAPIC[0]: Set routing entry (0-4 -> 0xef -> IRQ 4 Mode:0 Ac=
+tive:0 Dest:32)
+[    1.834264] IOAPIC[0]: Set routing entry (0-5 -> 0xef -> IRQ 5 Mode:0 Ac=
+tive:0 Dest:32)
+[    1.842277] IOAPIC[0]: Set routing entry (0-6 -> 0xef -> IRQ 6 Mode:0 Ac=
+tive:0 Dest:32)
+[    1.850283] IOAPIC[0]: Set routing entry (0-7 -> 0xef -> IRQ 7 Mode:0 Ac=
+tive:0 Dest:32)
+[    1.858292] IOAPIC[0]: Set routing entry (0-8 -> 0xef -> IRQ 8 Mode:0 Ac=
+tive:0 Dest:32)
+[    1.866301] IOAPIC[0]: Set routing entry (0-9 -> 0xef -> IRQ 9 Mode:1 Ac=
+tive:1 Dest:32)
+[    1.874307] IOAPIC[0]: Set routing entry (0-10 -> 0xef -> IRQ 10 Mode:0 =
+Active:0 Dest:32)
+[    1.882492] IOAPIC[0]: Set routing entry (0-11 -> 0xef -> IRQ 11 Mode:0 =
+Active:0 Dest:32)
+[    1.890669] IOAPIC[0]: Set routing entry (0-12 -> 0xef -> IRQ 12 Mode:0 =
+Active:0 Dest:32)
+[    1.898860] IOAPIC[0]: Set routing entry (0-13 -> 0xef -> IRQ 13 Mode:0 =
+Active:0 Dest:32)
+[    1.907052] IOAPIC[0]: Set routing entry (0-14 -> 0xef -> IRQ 14 Mode:0 =
+Active:0 Dest:32)
+[    1.915232] IOAPIC[0]: Set routing entry (0-15 -> 0xef -> IRQ 15 Mode:0 =
+Active:0 Dest:32)
+[    1.923409]  apic 0 pin 16 not connected
+[    1.927332]  apic 0 pin 17 not connected
+[    1.931280]  apic 0 pin 18 not connected
+[    1.935204]  apic 0 pin 19 not connected
+[    1.939131]  apic 0 pin 20 not connected
+[    1.943057]  apic 0 pin 21 not connected
+[    1.946981]  apic 0 pin 22 not connected
+[    1.950907]  apic 0 pin 23 not connected
+[    1.955229] ..TIMER: vector=3D0x30 apic1=3D0 pin1=3D2 apic2=3D-1 pin2=3D=
+-1
+[    1.966234] clocksource: tsc-early: mask: 0xffffffffffffffff max_cycles:=
+ 0x21275cd9627, max_idle_ns: 440795323243 ns
+[    1.976756] Calibrating delay loop (skipped), value calculated using tim=
+er frequency.. 4600.08 BogoMIPS (lpj=3D2300042)
+[    1.977755] pid_max: default: 32768 minimum: 301
+[    1.978925] LSM: Security Framework initializing
+[    1.979807] Yama: becoming mindful.
+[    1.980827] AppArmor: AppArmor initialized
+[    2.017132] Dentry cache hash table entries: 8388608 (order: 14, 6710886=
+4 bytes, vmalloc)
+[    2.035862] Inode-cache hash table entries: 4194304 (order: 13, 33554432=
+ bytes, vmalloc)
+[    2.037416] Mount-cache hash table entries: 131072 (order: 8, 1048576 by=
+tes, vmalloc)
+[    2.039018] Mountpoint-cache hash table entries: 131072 (order: 8, 10485=
+76 bytes, vmalloc)
+Poking KASLR using RDTSC...
+[    2.043714] LVT offset 1 assigned for vector 0xf9
+[    2.043765] Last level iTLB entries: 4KB 512, 2MB 1024, 4MB 512
+[    2.044755] Last level dTLB entries: 4KB 1024, 2MB 1024, 4MB 512, 1GB 0
+[    2.045762] Spectre V1 : Mitigation: usercopy/swapgs barriers and __user=
+ pointer sanitization
+[    2.046763] Spectre V2 : Mitigation: Full AMD retpoline
+[    2.047755] Spectre V2 : Spectre v2 / SpectreRSB mitigation: Filling RSB=
+ on context switch
+[    2.048764] Speculative Store Bypass: Mitigation: Speculative Store Bypa=
+ss disabled via prctl and seccomp
+[    2.051462] Freeing SMP alternatives memory: 40K
+[    2.058647] Using local APIC timer interrupts.
+[    2.058647] calibrating APIC timer ...
+[    2.160848] ... lapic delta =3D 1250022
+[    2.161752] ... PM-Timer delta =3D 357961
+[    2.161752] ... PM-Timer result ok
+[    2.161752] ..... delta 1250022
+[    2.161752] ..... mult: 53687091
+[    2.161752] ..... calibration result: 200003
+[    2.161752] ..... CPU clock speed is 2300.0039 MHz.
+[    2.161752] ..... host bus clock speed is 200.0003 MHz.
+[    2.161769] smpboot: CPU0: AMD Opteron(TM) Processor 6276 (family: 0x15,=
+ model: 0x1, stepping: 0x2)
+[    2.163323] Performance Events: Fam15h core perfctr, AMD PMU driver.
+[    2.163756] ... version:                0
+[    2.164755] ... bit width:              48
+[    2.165755] ... generic registers:      6
+[    2.166755] ... value mask:             0000ffffffffffff
+[    2.167755] ... max period:             00007fffffffffff
+[    2.168755] ... fixed-purpose events:   0
+[    2.169755] ... event mask:             000000000000003f
+[    2.170884] rcu: Hierarchical SRCU implementation.
+[    2.173761] NMI watchdog: Enabled. Permanently consumes one hw-PMU count=
+er.
+[    2.176745] smp: Bringing up secondary CPUs ...
+[    2.177062] x86: Booting SMP configuration:
+[    2.177759] .... node  #0, CPUs:        #1
+[    0.286433] masked ExtINT on CPU#1
+[    2.188093]   #2
+[    0.286433] masked ExtINT on CPU#2
+[    2.196962]   #3
+[    0.286433] masked ExtINT on CPU#3
+[    2.205824]   #4
+[    0.286433] masked ExtINT on CPU#4
+[    2.214009]   #5
+[    0.286433] masked ExtINT on CPU#5
+[    2.223011]   #6
+[    0.286433] masked ExtINT on CPU#6
+[    2.232011]   #7
+[    0.286433] masked ExtINT on CPU#7
+[    2.241108] .... node  #1, CPUs:    #8
+[    0.286433] masked ExtINT on CPU#8
+[    2.252022]   #9
+[    0.286433] masked ExtINT on CPU#9
+[    2.261030]  #10
+[    0.286433] masked ExtINT on CPU#10
+[    2.270018]  #11
+[    0.286433] masked ExtINT on CPU#11
+[    2.279033]  #12
+[    0.286433] masked ExtINT on CPU#12
+[    2.288035]  #13
+[    0.286433] masked ExtINT on CPU#13
+[    2.297033]  #14
+[    0.286433] masked ExtINT on CPU#14
+[    2.306038]  #15
+[    0.286433] masked ExtINT on CPU#15
+[    2.315149] .... node  #2, CPUs:   #16
+[    0.286433] masked ExtINT on CPU#16
+[    0.286433] smpboot: CPU 16 Converting physical 0 to logical die 1
+[    2.391023]  #17
+[    0.286433] masked ExtINT on CPU#17
+[    2.400023]  #18
+[    0.286433] masked ExtINT on CPU#18
+[    2.409023]  #19
+[    0.286433] masked ExtINT on CPU#19
+[    2.418024]  #20
+[    0.286433] masked ExtINT on CPU#20
+[    2.427022]  #21
+[    0.286433] masked ExtINT on CPU#21
+[    2.436023]  #22
+[    0.286433] masked ExtINT on CPU#22
+[    2.445021]  #23
+[    0.286433] masked ExtINT on CPU#23
+[    2.454143] .... node  #3, CPUs:   #24
+[    0.286433] masked ExtINT on CPU#24
+[    2.464048]  #25
+[    0.286433] masked ExtINT on CPU#25
+[    2.472786]  #26
+[    0.286433] masked ExtINT on CPU#26
+[    2.481806]  #27
+[    0.286433] masked ExtINT on CPU#27
+[    2.490838]  #28
+[    0.286433] masked ExtINT on CPU#28
+[    2.499042]  #29
+[    0.286433] masked ExtINT on CPU#29
+[    2.508041]  #30
+[    0.286433] masked ExtINT on CPU#30
+[    2.516035]  #31
+[    0.286433] masked ExtINT on CPU#31
+[    2.523895] smp: Brought up 4 nodes, 32 CPUs
+[    2.524759] smpboot: Max logical packages: 2
+[    2.525762] smpboot: Total of 32 processors activated (147197.34 BogoMIP=
+S)
+[    2.786765] node 3 initialised, 8098168 pages in 255ms
+[    2.881785] node 0 initialised, 7306766 pages in 350ms
+[    2.926776] node 2 initialised, 8224273 pages in 395ms
+[    2.928780] node 1 initialised, 8224272 pages in 397ms
+[    2.951125] devtmpfs: initialized
+[    2.952818] x86/mm: Memory block size: 512MB
+[    2.967848] PM: Registering ACPI NVS region [mem 0xdfeb2000-0xdfedffff] =
+(188416 bytes)
+[    2.969050] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xfffffff=
+f, max_idle_ns: 1911260446275000 ns
+[    2.969841] futex hash table entries: 8192 (order: 7, 524288 bytes, vmal=
+loc)
+[    2.974358] pinctrl core: initialized pinctrl subsystem
+[    2.974865] PM: RTC time: 19:03:28, date: 2020-05-21
+[    2.975758] thermal_sys: Registered thermal governor 'fair_share'
+[    2.975759] thermal_sys: Registered thermal governor 'bang_bang'
+[    2.976755] thermal_sys: Registered thermal governor 'step_wise'
+[    2.977755] thermal_sys: Registered thermal governor 'user_space'
+[    2.979280] NET: Registered protocol family 16
+[    2.981476] audit: initializing netlink subsys (disabled)
+[    2.981812] audit: type=3D2000 audit(1590087807.022:1): state=3Dinitiali=
+zed audit_enabled=3D0 res=3D1
+[    2.990760] cpuidle: using governor menu
+[    2.993326] ACPI: bus type PCI registered
+[    2.997760] acpiphp: ACPI Hot Plug PCI Controller Driver version: 0.5
+[    3.004068] PCI: MMCONFIG for domain 0000 [bus 00-ff] at [mem 0xe0000000=
+-0xefffffff] (base 0xe0000000)
+[    3.013760] PCI: MMCONFIG at [mem 0xe0000000-0xefffffff] reserved in E820
+[    3.020794] PCI: Using configuration type 1 for base access
+[    3.041788] HugeTLB registered 1.00 GiB page size, pre-allocated 0 pages
+[    3.047761] HugeTLB registered 2.00 MiB page size, pre-allocated 0 pages
+[    3.064034] ACPI: Added _OSI(Module Device)
+[    3.068758] ACPI: Added _OSI(Processor Device)
+[    3.072757] ACPI: Added _OSI(3.0 _SCP Extensions)
+[    3.077756] ACPI: Added _OSI(Processor Aggregator Device)
+[    3.082757] ACPI: Added _OSI(Linux-Dell-Video)
+[    3.087756] ACPI: Added _OSI(Linux-Lenovo-NV-HDMI-Audio)
+[    3.092757] ACPI: Added _OSI(Linux-HPI-Hybrid-Graphics)
+[    3.109206] ACPI: 2 ACPI AML tables successfully acquired and loaded
+[    3.118565] ACPI: Interpreter enabled
+[    3.122797] ACPI: (supports S0 S1 S4 S5)
+[    3.126757] ACPI: Using IOAPIC for interrupt routing
+[    3.131815] PCI: Using host bridge windows from ACPI; if necessary, use =
+"pci=3Dnocrs" and report a bug
+[    3.140820] ACPI: Enabled 4 GPEs in block 00 to 1F
+[    3.161212] ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 00-ff])
+[    3.167791] acpi PNP0A08:00: _OSC: OS supports [ExtendedConfig ASPM Cloc=
+kPM Segments MSI HPX-Type3]
+[    3.176779] acpi PNP0A08:00: _OSC failed (AE_NOT_FOUND); disabling ASPM
+[    3.183876] PCI host bridge to bus 0000:00
+[    3.188760] pci_bus 0000:00: root bus resource [io  0x0000-0x0cf7 window]
+[    3.194761] pci_bus 0000:00: root bus resource [io  0x0d00-0xffff window]
+[    3.201758] pci_bus 0000:00: root bus resource [mem 0x000a0000-0x000bfff=
+f window]
+[    3.209758] pci_bus 0000:00: root bus resource [mem 0x000d0000-0x000dfff=
+f window]
+[    3.216757] pci_bus 0000:00: root bus resource [mem 0xf0000000-0xfebffff=
+f window]
+[    3.224758] pci_bus 0000:00: root bus resource [bus 00-ff]
+[    3.229780] pci 0000:00:00.0: [1002:5a12] type 00 class 0x060000
+[    3.235863] pci 0000:00:00.2: [1002:5a23] type 00 class 0x080600
+[    3.242011] pci 0000:00:04.0: [1002:5a18] type 01 class 0x060400
+[    3.248845] pci 0000:00:04.0: PME# supported from D0 D3hot D3cold
+[    3.254975] pci 0000:00:0b.0: [1002:5a1f] type 01 class 0x060400
+[    3.260832] pci 0000:00:0b.0: PME# supported from D0 D3hot D3cold
+[    3.266969] pci 0000:00:11.0: [1002:4390] type 00 class 0x010601
+[    3.273784] pci 0000:00:11.0: reg 0x10: [io  0xd000-0xd007]
+[    3.278767] pci 0000:00:11.0: reg 0x14: [io  0xc000-0xc003]
+[    3.284767] pci 0000:00:11.0: reg 0x18: [io  0xb000-0xb007]
+[    3.289769] pci 0000:00:11.0: reg 0x1c: [io  0xa000-0xa003]
+[    3.295766] pci 0000:00:11.0: reg 0x20: [io  0x9000-0x900f]
+[    3.300767] pci 0000:00:11.0: reg 0x24: [mem 0xfe9fa400-0xfe9fa7ff]
+[    3.308019] pci 0000:00:12.0: [1002:4397] type 00 class 0x0c0310
+[    3.313784] pci 0000:00:12.0: reg 0x10: [mem 0xfe9f6000-0xfe9f6fff]
+[    3.320022] pci 0000:00:12.1: [1002:4398] type 00 class 0x0c0310
+[    3.326783] pci 0000:00:12.1: reg 0x10: [mem 0xfe9f7000-0xfe9f7fff]
+[    3.333023] pci 0000:00:12.2: [1002:4396] type 00 class 0x0c0320
+[    3.338783] pci 0000:00:12.2: reg 0x10: [mem 0xfe9fa800-0xfe9fa8ff]
+[    3.345859] pci 0000:00:12.2: supports D1 D2
+[    3.349757] pci 0000:00:12.2: PME# supported from D0 D1 D2 D3hot
+[    3.355960] pci 0000:00:13.0: [1002:4397] type 00 class 0x0c0310
+[    3.361779] pci 0000:00:13.0: reg 0x10: [mem 0xfe9f8000-0xfe9f8fff]
+[    3.368021] pci 0000:00:13.1: [1002:4398] type 00 class 0x0c0310
+[    3.374779] pci 0000:00:13.1: reg 0x10: [mem 0xfe9f9000-0xfe9f9fff]
+[    3.381015] pci 0000:00:13.2: [1002:4396] type 00 class 0x0c0320
+[    3.386756] pci 0000:00:13.2: reg 0x10: [mem 0xfe9fac00-0xfe9facff]
+[    3.393858] pci 0000:00:13.2: supports D1 D2
+[    3.397757] pci 0000:00:13.2: PME# supported from D0 D1 D2 D3hot
+[    3.403960] pci 0000:00:14.0: [1002:4385] type 00 class 0x0c0500
+[    3.409939] pci 0000:00:14.1: [1002:439c] type 00 class 0x01018a
+[    3.415781] pci 0000:00:14.1: reg 0x10: [io  0x0000-0x0007]
+[    3.421767] pci 0000:00:14.1: reg 0x14: [io  0x0000-0x0003]
+[    3.427766] pci 0000:00:14.1: reg 0x18: [io  0x0000-0x0007]
+[    3.432754] pci 0000:00:14.1: reg 0x1c: [io  0x0000-0x0003]
+[    3.438766] pci 0000:00:14.1: reg 0x20: [io  0xff00-0xff0f]
+[    3.443780] pci 0000:00:14.1: legacy IDE quirk: reg 0x10: [io  0x01f0-0x=
+01f7]
+[    3.451757] pci 0000:00:14.1: legacy IDE quirk: reg 0x14: [io  0x03f6]
+[    3.457757] pci 0000:00:14.1: legacy IDE quirk: reg 0x18: [io  0x0170-0x=
+0177]
+[    3.464757] pci 0000:00:14.1: legacy IDE quirk: reg 0x1c: [io  0x0376]
+[    3.471973] pci 0000:00:14.3: [1002:439d] type 00 class 0x060100
+[    3.477810] pci 0000:00:14.4: [1002:4384] type 01 class 0x060401
+[    3.484001] pci 0000:00:14.5: [1002:4399] type 00 class 0x0c0310
+[    3.490779] pci 0000:00:14.5: reg 0x10: [mem 0xfe9fb000-0xfe9fbfff]
+[    3.497031] pci 0000:00:18.0: [1022:1600] type 00 class 0x060000
+[    3.502848] pci 0000:00:18.1: [1022:1601] type 00 class 0x060000
+[    3.508920] pci 0000:00:18.2: [1022:1602] type 00 class 0x060000
+[    3.515928] pci 0000:00:18.3: [1022:1603] type 00 class 0x060000
+[    3.521924] pci 0000:00:18.4: [1022:1604] type 00 class 0x060000
+[    3.527915] pci 0000:00:18.5: [1022:1605] type 00 class 0x060000
+[    3.533919] pci 0000:00:19.0: [1022:1600] type 00 class 0x060000
+[    3.539936] pci 0000:00:19.1: [1022:1601] type 00 class 0x060000
+[    3.545918] pci 0000:00:19.2: [1022:1602] type 00 class 0x060000
+[    3.552915] pci 0000:00:19.3: [1022:1603] type 00 class 0x060000
+[    3.558922] pci 0000:00:19.4: [1022:1604] type 00 class 0x060000
+[    3.564914] pci 0000:00:19.5: [1022:1605] type 00 class 0x060000
+[    3.570827] pci 0000:00:1a.0: [1022:1600] type 00 class 0x060000
+[    3.576937] pci 0000:00:1a.1: [1022:1601] type 00 class 0x060000
+[    3.583916] pci 0000:00:1a.2: [1022:1602] type 00 class 0x060000
+[    3.589920] pci 0000:00:1a.3: [1022:1603] type 00 class 0x060000
+[    3.595928] pci 0000:00:1a.4: [1022:1604] type 00 class 0x060000
+[    3.601926] pci 0000:00:1a.5: [1022:1605] type 00 class 0x060000
+[    3.607926] pci 0000:00:1b.0: [1022:1600] type 00 class 0x060000
+[    3.613932] pci 0000:00:1b.1: [1022:1601] type 00 class 0x060000
+[    3.620917] pci 0000:00:1b.2: [1022:1602] type 00 class 0x060000
+[    3.626923] pci 0000:00:1b.3: [1022:1603] type 00 class 0x060000
+[    3.632925] pci 0000:00:1b.4: [1022:1604] type 00 class 0x060000
+[    3.638836] pci 0000:00:1b.5: [1022:1605] type 00 class 0x060000
+[    3.645025] pci 0000:07:00.0: [8086:10c9] type 00 class 0x020000
+[    3.651784] pci 0000:07:00.0: reg 0x10: [mem 0xfeb60000-0xfeb7ffff]
+[    3.657767] pci 0000:07:00.0: reg 0x14: [mem 0xfeb40000-0xfeb5ffff]
+[    3.663766] pci 0000:07:00.0: reg 0x18: [io  0xe400-0xe41f]
+[    3.669767] pci 0000:07:00.0: reg 0x1c: [mem 0xfeb1c000-0xfeb1ffff]
+[    3.675786] pci 0000:07:00.0: reg 0x30: [mem 0xfeb20000-0xfeb3ffff pref]
+[    3.682847] pci 0000:07:00.0: PME# supported from D0 D3hot D3cold
+[    3.688795] pci 0000:07:00.0: reg 0x184: [mem 0x00000000-0x00003fff 64bi=
+t]
+[    3.695758] pci 0000:07:00.0: VF(n) BAR0 space: [mem 0x00000000-0x0001ff=
+ff 64bit] (contains BAR0 for 8 VFs)
+[    3.705776] pci 0000:07:00.0: reg 0x190: [mem 0x00000000-0x00003fff 64bi=
+t]
+[    3.712764] pci 0000:07:00.0: VF(n) BAR3 space: [mem 0x00000000-0x0001ff=
+ff 64bit] (contains BAR3 for 8 VFs)
+[    3.722794] pci 0000:07:00.1: [8086:10c9] type 00 class 0x020000
+[    3.728783] pci 0000:07:00.1: reg 0x10: [mem 0xfebe0000-0xfebfffff]
+[    3.734770] pci 0000:07:00.1: reg 0x14: [mem 0xfebc0000-0xfebdffff]
+[    3.740767] pci 0000:07:00.1: reg 0x18: [io  0xe800-0xe81f]
+[    3.746767] pci 0000:07:00.1: reg 0x1c: [mem 0xfeb9c000-0xfeb9ffff]
+[    3.752784] pci 0000:07:00.1: reg 0x30: [mem 0xfeba0000-0xfebbffff pref]
+[    3.759848] pci 0000:07:00.1: PME# supported from D0 D3hot D3cold
+[    3.765792] pci 0000:07:00.1: reg 0x184: [mem 0x00000000-0x00003fff 64bi=
+t]
+[    3.772759] pci 0000:07:00.1: VF(n) BAR0 space: [mem 0x00000000-0x0001ff=
+ff 64bit] (contains BAR0 for 8 VFs)
+[    3.782777] pci 0000:07:00.1: reg 0x190: [mem 0x00000000-0x00003fff 64bi=
+t]
+[    3.789758] pci 0000:07:00.1: VF(n) BAR3 space: [mem 0x00000000-0x0001ff=
+ff 64bit] (contains BAR3 for 8 VFs)
+[    3.799010] pci 0000:00:04.0: PCI bridge to [bus 07]
+[    3.804761] pci 0000:00:04.0:   bridge window [io  0xe000-0xefff]
+[    3.810759] pci 0000:00:04.0:   bridge window [mem 0xfeb00000-0xfebfffff]
+[    3.817832] pci 0000:02:00.0: [10b5:8624] type 01 class 0x060400
+[    3.823783] pci 0000:02:00.0: reg 0x10: [mem 0xfeae0000-0xfeafffff]
+[    3.829863] pci 0000:02:00.0: PME# supported from D0 D3hot D3cold
+[    3.838789] pci 0000:00:0b.0: PCI bridge to [bus 02-06]
+[    3.844763] pci 0000:00:0b.0:   bridge window [io  0x1000-0x2fff]
+[    3.850759] pci 0000:00:0b.0:   bridge window [mem 0xfea00000-0xfeafffff]
+[    3.856761] pci 0000:00:0b.0:   bridge window [mem 0xf0000000-0xf05fffff=
+ 64bit pref]
+[    3.864769] pci 0000:03:04.0: [10b5:8624] type 01 class 0x060400
+[    3.870874] pci 0000:03:04.0: PME# supported from D0 D3hot D3cold
+[    3.877890] pci 0000:03:05.0: [10b5:8624] type 01 class 0x060400
+[    3.883885] pci 0000:03:05.0: PME# supported from D0 D3hot D3cold
+[    3.889904] pci 0000:03:08.0: [10b5:8624] type 01 class 0x060400
+[    3.895880] pci 0000:03:08.0: PME# supported from D0 D3hot D3cold
+[    3.901898] pci 0000:02:00.0: PCI bridge to [bus 03-06]
+[    3.907761] pci 0000:02:00.0:   bridge window [io  0x1000-0x2fff]
+[    3.913764] pci 0000:02:00.0:   bridge window [mem 0xf0000000-0xf05fffff=
+ 64bit pref]
+[    3.921822] pci 0000:03:04.0: PCI bridge to [bus 06]
+[    3.926822] pci 0000:03:05.0: PCI bridge to [bus 05]
+[    3.931761] pci 0000:03:05.0:   bridge window [io  0x1000-0x1fff]
+[    3.937763] pci 0000:03:05.0:   bridge window [mem 0xf0000000-0xf01fffff=
+ 64bit pref]
+[    3.944819] pci 0000:03:08.0: PCI bridge to [bus 04]
+[    3.950761] pci 0000:03:08.0:   bridge window [io  0x2000-0x2fff]
+[    3.956763] pci 0000:03:08.0:   bridge window [mem 0xf0200000-0xf03fffff=
+ 64bit pref]
+[    3.963792] pci_bus 0000:01: extended config space not accessible
+[    3.970812] pci 0000:01:04.0: [102b:0532] type 00 class 0x030000
+[    3.976782] pci 0000:01:04.0: reg 0x10: [mem 0xfc000000-0xfcffffff pref]
+[    3.982770] pci 0000:01:04.0: reg 0x14: [mem 0xfdffc000-0xfdffffff]
+[    3.989769] pci 0000:01:04.0: reg 0x18: [mem 0xfe000000-0xfe7fffff]
+[    3.995805] pci 0000:01:04.0: reg 0x30: [mem 0x00000000-0x0000ffff pref]
+[    4.002930] pci 0000:00:14.4: PCI bridge to [bus 01] (subtractive decode)
+[    4.009763] pci 0000:00:14.4:   bridge window [mem 0xfdf00000-0xfe7fffff]
+[    4.015760] pci 0000:00:14.4:   bridge window [mem 0xfc000000-0xfcffffff=
+ pref]
+[    4.023758] pci 0000:00:14.4:   bridge window [io  0x0000-0x0cf7 window]=
+ (subtractive decode)
+[    4.031758] pci 0000:00:14.4:   bridge window [io  0x0d00-0xffff window]=
+ (subtractive decode)
+[    4.040758] pci 0000:00:14.4:   bridge window [mem 0x000a0000-0x000bffff=
+ window] (subtractive decode)
+[    4.049757] pci 0000:00:14.4:   bridge window [mem 0x000d0000-0x000dffff=
+ window] (subtractive decode)
+[    4.058758] pci 0000:00:14.4:   bridge window [mem 0xf0000000-0xfebfffff=
+ window] (subtractive decode)
+[    4.069256] ACPI: PCI Interrupt Link [LNKA] (IRQs 4 7 10 11 12 14 15) *0=
+, disabled.
+[    4.076849] ACPI: PCI Interrupt Link [LNKB] (IRQs 4 7 10 11 12 14 15) *0=
+, disabled.
+[    4.084789] ACPI: PCI Interrupt Link [LNKC] (IRQs 4 7 10 11 12 14 15) *0=
+, disabled.
+[    4.092845] ACPI: PCI Interrupt Link [LNKD] (IRQs 4 7 10 11 12 14 15) *0=
+, disabled.
+[    4.100848] ACPI: PCI Interrupt Link [LNKE] (IRQs 4 7 10 11 12 14 15) *0=
+, disabled.
+[    4.108871] ACPI: PCI Interrupt Link [LNKF] (IRQs 4 7 10 11 12 14 15) *0=
+, disabled.
+[    4.115835] ACPI: PCI Interrupt Link [LNKG] (IRQs 4 7 10 11 12 14 15) *0=
+, disabled.
+[    4.123844] ACPI: PCI Interrupt Link [LNKH] (IRQs 4 7 10 11 12 14 15) *0=
+, disabled.
+[    4.132181] iommu: Default domain type: Translated=20
+[    4.136808] pci 0000:01:04.0: vgaarb: setting as boot VGA device
+[    4.137752] pci 0000:01:04.0: vgaarb: VGA device added: decodes=3Dio+mem=
+,owns=3Dio+mem,locks=3Dnone
+[    4.151759] pci 0000:01:04.0: vgaarb: bridge control possible
+[    4.157755] vgaarb: loaded
+[    4.160036] SCSI subsystem initialized
+[    4.163807] ACPI: bus type USB registered
+[    4.167789] usbcore: registered new interface driver usbfs
+[    4.173775] usbcore: registered new interface driver hub
+[    4.179752] usbcore: registered new device driver usb
+[    4.184831] pps_core: LinuxPPS API ver. 1 registered
+[    4.189756] pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo =
+Giometti <giometti@linux.it>
+[    4.198764] PTP clock support registered
+[    4.202904] EDAC MC: Ver: 3.0.0
+[    4.206809] PCI: Using ACPI for IRQ routing
+[    4.221171] PCI: pci_cache_line_size set to 64 bytes
+[    4.226867] e820: reserve RAM buffer [mem 0x0009a800-0x0009ffff]
+[    4.232757] e820: reserve RAM buffer [mem 0xdfea0000-0xdfffffff]
+[    4.239055] NetLabel: Initializing
+[    4.242756] NetLabel:  domain hash size =3D 128
+[    4.246755] NetLabel:  protocols =3D UNLABELED CIPSOv4 CALIPSO
+[    4.252786] NetLabel:  unlabeled traffic allowed by default
+[    4.258316] hpet0: at MMIO 0xfed00000, IRQs 2, 8, 0, 0
+[    4.263757] hpet0: 4 comparators, 32-bit 14.318180 MHz counter
+[    4.272154] clocksource: Switched to clocksource tsc-early
+[    4.371820] VFS: Disk quotas dquot_6.6.0
+[    4.375840] VFS: Dquot-cache hash table entries: 512 (order 0, 4096 byte=
+s)
+[    4.383062] AppArmor: AppArmor Filesystem Enabled
+[    4.387820] pnp: PnP ACPI init
+[    4.391278] system 00:00: Plug and Play ACPI device, IDs PNP0c02 (active)
+[    4.398263] system 00:01: [mem 0xf6000000-0xf6003fff] could not be reser=
+ved
+[    4.405246] system 00:01: Plug and Play ACPI device, IDs PNP0c02 (active)
+[    4.412454] pnp 00:02: Plug and Play ACPI device, IDs PNP0b00 (active)
+[    4.419331] system 00:03: [io  0x0a10-0x0a1f] has been reserved
+[    4.425275] system 00:03: Plug and Play ACPI device, IDs PNP0c02 (active)
+[    4.432349] system 00:04: [mem 0xfec00000-0xfec00fff] could not be reser=
+ved
+[    4.439327] system 00:04: [mem 0xfee00000-0xfee00fff] has been reserved
+[    4.445954] system 00:04: Plug and Play ACPI device, IDs PNP0c02 (active)
+[    4.453296] system 00:05: [io  0x0ca2-0x0ca3] could not be reserved
+[    4.459580] system 00:05: [io  0x0550-0x0551] has been reserved
+[    4.465508] system 00:05: [io  0x04d0-0x04d1] has been reserved
+[    4.471438] system 00:05: [io  0x040b] has been reserved
+[    4.476760] system 00:05: [io  0x04d6] has been reserved
+[    4.482079] system 00:05: [io  0x0c00-0x0c01] has been reserved
+[    4.488007] system 00:05: [io  0x0c14] has been reserved
+[    4.493327] system 00:05: [io  0x0c50-0x0c51] has been reserved
+[    4.499255] system 00:05: [io  0x0c52] has been reserved
+[    4.504577] system 00:05: [io  0x0c6c] has been reserved
+[    4.509900] system 00:05: [io  0x0c6f] has been reserved
+[    4.515221] system 00:05: [io  0x0cd0-0x0cd1] has been reserved
+[    4.521149] system 00:05: [io  0x0cd2-0x0cd3] has been reserved
+[    4.527077] system 00:05: [io  0x0cd4-0x0cd5] has been reserved
+[    4.533005] system 00:05: [io  0x0cd6-0x0cd7] has been reserved
+[    4.538934] system 00:05: [io  0x0cd8-0x0cdf] has been reserved
+[    4.544863] system 00:05: [io  0x0800-0x089f] has been reserved
+[    4.550790] system 00:05: [io  0x0b00-0x0b0f] has been reserved
+[    4.556718] system 00:05: [io  0x0b20-0x0b3f] has been reserved
+[    4.562646] system 00:05: [io  0x0900-0x090f] has been reserved
+[    4.568574] system 00:05: [io  0x0910-0x091f] has been reserved
+[    4.574503] system 00:05: [io  0xfe00-0xfefe] has been reserved
+[    4.580432] system 00:05: [mem 0xffb80000-0xffbfffff] has been reserved
+[    4.587054] system 00:05: [mem 0xfec10000-0xfec1001f] has been reserved
+[    4.593681] system 00:05: Plug and Play ACPI device, IDs PNP0c02 (active)
+[    4.600814] pnp 00:06: [dma 0 disabled]
+[    4.604785] pnp 00:06: Plug and Play ACPI device, IDs PNP0501 (active)
+[    4.611636] pnp 00:07: [dma 0 disabled]
+[    4.615579] pnp 00:07: Plug and Play ACPI device, IDs PNP0501 (active)
+[    4.622324] system 00:08: [mem 0xe0000000-0xefffffff] has been reserved
+[    4.628958] system 00:08: Plug and Play ACPI device, IDs PNP0c02 (active)
+[    4.636164] system 00:09: [mem 0x00000000-0x0009ffff] could not be reser=
+ved
+[    4.643140] system 00:09: [mem 0x000c0000-0x000cffff] could not be reser=
+ved
+[    4.650107] system 00:09: [mem 0x000e0000-0x000fffff] could not be reser=
+ved
+[    4.657073] system 00:09: [mem 0x00100000-0xdfffffff] could not be reser=
+ved
+[    4.664040] system 00:09: [mem 0xfec00000-0xffffffff] could not be reser=
+ved
+[    4.671015] system 00:09: Plug and Play ACPI device, IDs PNP0c01 (active)
+[    4.678036] pnp: PnP ACPI: found 10 devices
+[    4.690999] clocksource: acpi_pm: mask: 0xffffff max_cycles: 0xffffff, m=
+ax_idle_ns: 2085701024 ns
+[    4.699961] pci 0000:03:05.0: bridge window [mem 0x00100000-0x000fffff] =
+to [bus 05] add_size 200000 add_align 100000
+[    4.710492] pci 0000:03:08.0: bridge window [mem 0x00100000-0x000fffff] =
+to [bus 04] add_size 200000 add_align 100000
+[    4.721014] pci 0000:02:00.0: bridge window [mem 0x00100000-0x002fffff] =
+to [bus 03-06] add_size 400000 add_align 100000
+[    4.731815] pci 0000:07:00.0: BAR 7: no space for [mem size 0x00020000 6=
+4bit]
+[    4.738959] pci 0000:07:00.0: BAR 7: failed to assign [mem size 0x000200=
+00 64bit]
+[    4.746449] pci 0000:07:00.0: BAR 10: no space for [mem size 0x00020000 =
+64bit]
+[    4.753675] pci 0000:07:00.0: BAR 10: failed to assign [mem size 0x00020=
+000 64bit]
+[    4.761255] pci 0000:07:00.1: BAR 7: no space for [mem size 0x00020000 6=
+4bit]
+[    4.768391] pci 0000:07:00.1: BAR 7: failed to assign [mem size 0x000200=
+00 64bit]
+[    4.775883] pci 0000:07:00.1: BAR 10: no space for [mem size 0x00020000 =
+64bit]
+[    4.783109] pci 0000:07:00.1: BAR 10: failed to assign [mem size 0x00020=
+000 64bit]
+[    4.790687] pci 0000:07:00.0: BAR 7: no space for [mem size 0x00020000 6=
+4bit]
+[    4.797827] pci 0000:07:00.0: BAR 7: failed to assign [mem size 0x000200=
+00 64bit]
+[    4.805315] pci 0000:07:00.0: BAR 10: no space for [mem size 0x00020000 =
+64bit]
+[    4.812541] pci 0000:07:00.0: BAR 10: failed to assign [mem size 0x00020=
+000 64bit]
+[    4.820118] pci 0000:07:00.1: BAR 7: no space for [mem size 0x00020000 6=
+4bit]
+[    4.827257] pci 0000:07:00.1: BAR 7: failed to assign [mem size 0x000200=
+00 64bit]
+[    4.834749] pci 0000:07:00.1: BAR 10: no space for [mem size 0x00020000 =
+64bit]
+[    4.841976] pci 0000:07:00.1: BAR 10: failed to assign [mem size 0x00020=
+000 64bit]
+[    4.849553] pci 0000:00:04.0: PCI bridge to [bus 07]
+[    4.854534] pci 0000:00:04.0:   bridge window [io  0xe000-0xefff]
+[    4.860640] pci 0000:00:04.0:   bridge window [mem 0xfeb00000-0xfebfffff]
+[    4.867443] pci 0000:02:00.0: BAR 14: no space for [mem size 0x00600000]
+[    4.874145] pci 0000:02:00.0: BAR 14: failed to assign [mem size 0x00600=
+000]
+[    4.881202] pci 0000:02:00.0: BAR 14: no space for [mem size 0x00200000]
+[    4.887926] pci 0000:02:00.0: BAR 14: failed to assign [mem size 0x00200=
+000]
+[    4.894985] pci 0000:03:05.0: BAR 14: no space for [mem size 0x00200000]
+[    4.901689] pci 0000:03:05.0: BAR 14: failed to assign [mem size 0x00200=
+000]
+[    4.908745] pci 0000:03:08.0: BAR 14: no space for [mem size 0x00200000]
+[    4.915453] pci 0000:03:08.0: BAR 14: failed to assign [mem size 0x00200=
+000]
+[    4.922507] pci 0000:03:08.0: BAR 14: no space for [mem size 0x00200000]
+[    4.929215] pci 0000:03:08.0: BAR 14: failed to assign [mem size 0x00200=
+000]
+[    4.936272] pci 0000:03:05.0: BAR 14: no space for [mem size 0x00200000]
+[    4.942979] pci 0000:03:05.0: BAR 14: failed to assign [mem size 0x00200=
+000]
+[    4.950034] pci 0000:03:04.0: PCI bridge to [bus 06]
+[    4.955018] pci 0000:03:05.0: PCI bridge to [bus 05]
+[    4.959994] pci 0000:03:05.0:   bridge window [io  0x1000-0x1fff]
+[    4.966100] pci 0000:03:05.0:   bridge window [mem 0xf0000000-0xf01fffff=
+ 64bit pref]
+[    4.973854] pci 0000:03:08.0: PCI bridge to [bus 04]
+[    4.978827] pci 0000:03:08.0:   bridge window [io  0x2000-0x2fff]
+[    4.984934] pci 0000:03:08.0:   bridge window [mem 0xf0200000-0xf03fffff=
+ 64bit pref]
+[    4.992690] pci 0000:02:00.0: PCI bridge to [bus 03-06]
+[    4.997920] pci 0000:02:00.0:   bridge window [io  0x1000-0x2fff]
+[    5.004027] pci 0000:02:00.0:   bridge window [mem 0xf0000000-0xf05fffff=
+ 64bit pref]
+[    5.011783] pci 0000:00:0b.0: PCI bridge to [bus 02-06]
+[    5.017013] pci 0000:00:0b.0:   bridge window [io  0x1000-0x2fff]
+[    5.023116] pci 0000:00:0b.0:   bridge window [mem 0xfea00000-0xfeafffff]
+[    5.029909] pci 0000:00:0b.0:   bridge window [mem 0xf0000000-0xf05fffff=
+ 64bit pref]
+[    5.037666] pci 0000:01:04.0: BAR 6: assigned [mem 0xfdf00000-0xfdf0ffff=
+ pref]
+[    5.044895] pci 0000:00:14.4: PCI bridge to [bus 01]
+[    5.049873] pci 0000:00:14.4:   bridge window [mem 0xfdf00000-0xfe7fffff]
+[    5.056666] pci 0000:00:14.4:   bridge window [mem 0xfc000000-0xfcffffff=
+ pref]
+[    5.063901] pci_bus 0000:00: Some PCI device resources are unassigned, t=
+ry booting with pci=3Drealloc
+[    5.072952] pci_bus 0000:00: resource 4 [io  0x0000-0x0cf7 window]
+[    5.079138] pci_bus 0000:00: resource 5 [io  0x0d00-0xffff window]
+[    5.085326] pci_bus 0000:00: resource 6 [mem 0x000a0000-0x000bffff windo=
+w]
+[    5.092206] pci_bus 0000:00: resource 7 [mem 0x000d0000-0x000dffff windo=
+w]
+[    5.099088] pci_bus 0000:00: resource 8 [mem 0xf0000000-0xfebfffff windo=
+w]
+[    5.105972] pci_bus 0000:07: resource 0 [io  0xe000-0xefff]
+[    5.111553] pci_bus 0000:07: resource 1 [mem 0xfeb00000-0xfebfffff]
+[    5.117827] pci_bus 0000:02: resource 0 [io  0x1000-0x2fff]
+[    5.123408] pci_bus 0000:02: resource 1 [mem 0xfea00000-0xfeafffff]
+[    5.129683] pci_bus 0000:02: resource 2 [mem 0xf0000000-0xf05fffff 64bit=
+ pref]
+[    5.136933] pci_bus 0000:03: resource 0 [io  0x1000-0x2fff]
+[    5.142510] pci_bus 0000:03: resource 2 [mem 0xf0000000-0xf05fffff 64bit=
+ pref]
+[    5.149740] pci_bus 0000:05: resource 0 [io  0x1000-0x1fff]
+[    5.155321] pci_bus 0000:05: resource 2 [mem 0xf0000000-0xf01fffff 64bit=
+ pref]
+[    5.162548] pci_bus 0000:04: resource 0 [io  0x2000-0x2fff]
+[    5.168129] pci_bus 0000:04: resource 2 [mem 0xf0200000-0xf03fffff 64bit=
+ pref]
+[    5.175358] pci_bus 0000:01: resource 1 [mem 0xfdf00000-0xfe7fffff]
+[    5.181632] pci_bus 0000:01: resource 2 [mem 0xfc000000-0xfcffffff pref]
+[    5.188342] pci_bus 0000:01: resource 4 [io  0x0000-0x0cf7 window]
+[    5.194528] pci_bus 0000:01: resource 5 [io  0x0d00-0xffff window]
+[    5.200718] pci_bus 0000:01: resource 6 [mem 0x000a0000-0x000bffff windo=
+w]
+[    5.207599] pci_bus 0000:01: resource 7 [mem 0x000d0000-0x000dffff windo=
+w]
+[    5.214480] pci_bus 0000:01: resource 8 [mem 0xf0000000-0xfebfffff windo=
+w]
+[    5.221633] NET: Registered protocol family 2
+[    5.226895] tcp_listen_portaddr_hash hash table entries: 65536 (order: 8=
+, 1048576 bytes, vmalloc)
+[    5.236706] TCP established hash table entries: 524288 (order: 10, 41943=
+04 bytes, vmalloc)
+[    5.247238] TCP bind hash table entries: 65536 (order: 8, 1048576 bytes,=
+ vmalloc)
+[    5.255197] TCP: Hash tables configured (established 524288 bind 65536)
+[    5.262184] UDP hash table entries: 65536 (order: 9, 2097152 bytes, vmal=
+loc)
+[    5.270429] UDP-Lite hash table entries: 65536 (order: 9, 2097152 bytes,=
+ vmalloc)
+[    5.279185] NET: Registered protocol family 1
+[    5.284534] RPC: Registered named UNIX socket transport module.
+[    5.290471] RPC: Registered udp transport module.
+[    5.295188] RPC: Registered tcp transport module.
+[    5.299918] RPC: Registered tcp NFSv4.1 backchannel transport module.
+[    5.306846] IOAPIC[0]: Set routing entry (0-16 -> 0xef -> IRQ 16 Mode:1 =
+Active:1 Dest:32)
+[    5.315482] IOAPIC[0]: Set routing entry (0-16 -> 0xef -> IRQ 16 Mode:1 =
+Active:1 Dest:32)
+[    5.324092] IOAPIC[0]: Set routing entry (0-17 -> 0xef -> IRQ 17 Mode:1 =
+Active:1 Dest:32)
+[    5.332681] IOAPIC[0]: Set routing entry (0-18 -> 0xef -> IRQ 18 Mode:1 =
+Active:1 Dest:32)
+[    5.341279] IOAPIC[0]: Set routing entry (0-18 -> 0xef -> IRQ 18 Mode:1 =
+Active:1 Dest:32)
+[    5.349872] IOAPIC[0]: Set routing entry (0-19 -> 0xef -> IRQ 19 Mode:1 =
+Active:1 Dest:32)
+[    5.358479] IOAPIC[0]: Set routing entry (0-18 -> 0xef -> IRQ 18 Mode:1 =
+Active:1 Dest:32)
+[    5.367091] pci 0000:01:04.0: Video device with shadowed ROM at [mem 0x0=
+00c0000-0x000dffff]
+[    5.375448] PCI: CLS 64 bytes, default 64
+[    5.379580] Trying to unpack rootfs image as initramfs...
+[   16.039632] Freeing initrd memory: 262264K
+[   16.044436] IOAPIC[0]: Set routing entry (0-16 -> 0xef -> IRQ 16 Mode:1 =
+Active:1 Dest:32)
+[   16.052784] pci 0000:00:00.0: Adding to iommu group 0
+[   16.058482] pci 0000:00:04.0: Adding to iommu group 1
+[   16.064137] pci 0000:00:0b.0: Adding to iommu group 2
+[   16.069798] pci 0000:00:11.0: Adding to iommu group 3
+[   16.075518] pci 0000:00:12.0: Adding to iommu group 4
+[   16.081208] pci 0000:00:12.1: Adding to iommu group 4
+[   16.086313] pci 0000:00:12.2: Adding to iommu group 4
+[   16.091490] pci 0000:00:13.0: Adding to iommu group 5
+[   16.097158] pci 0000:00:13.1: Adding to iommu group 5
+[   16.102263] pci 0000:00:13.2: Adding to iommu group 5
+[   16.107372] pci 0000:00:14.0: Adding to iommu group 6
+[   16.113056] pci 0000:00:14.1: Enabling fixed DMA alias to 11.0
+[   16.118916] pci 0000:00:14.1: Adding to iommu group 3
+[   16.124026] pci 0000:00:14.3: Adding to iommu group 7
+[   16.129691] pci 0000:00:14.4: Adding to iommu group 8
+[   16.135388] pci 0000:00:14.5: Adding to iommu group 9
+[   16.141085] pci 0000:07:00.0: Adding to iommu group 10
+[   16.146895] pci 0000:07:00.1: Adding to iommu group 11
+[   16.152633] pci 0000:02:00.0: Adding to iommu group 12
+[   16.158448] pci 0000:03:04.0: Adding to iommu group 13
+[   16.164205] pci 0000:03:05.0: Adding to iommu group 14
+[   16.170006] pci 0000:03:08.0: Adding to iommu group 15
+[   16.175719] pci 0000:01:04.0: Adding to iommu group 8
+[   16.224705] pci 0000:00:00.2: AMD-Vi: Found IOMMU cap 0x40
+[   16.230205] AMD-Vi: Interrupt remapping enabled
+[   16.235032] AMD-Vi: Lazy IO/TLB flushing enabled
+[   16.246815] amd_uncore: AMD NB counters detected
+[   16.253167] LVT offset 0 assigned for vector 0x400
+[   16.258839] perf: AMD IBS detected (0x000000ff)
+[   16.281207] Initialise system trusted keyrings
+[   16.285680] Key type blacklist registered
+[   16.290013] workingset: timestamp_bits=3D36 max_order=3D25 bucket_order=
+=3D0
+[   16.300276] zbud: loaded
+[   16.303749] 9p: Installing v9fs 9p2000 file system support
+[   16.320549] NET: Registered protocol family 38
+[   16.325013] Key type asymmetric registered
+[   16.329124] Asymmetric key parser 'x509' registered
+[   16.334027] Block layer SCSI generic (bsg) driver version 0.4 loaded (ma=
+jor 246)
+[   16.341735] io scheduler mq-deadline registered
+[   16.346285] io scheduler kyber registered
+[   16.351096] atomic64_test: passed for x86-64 platform with CX8 and with =
+SSE
+[   16.358985] IOAPIC[0]: Set routing entry (0-19 -> 0xef -> IRQ 19 Mode:1 =
+Active:1 Dest:32)
+[   16.368924] shpchp: Standard Hot Plug PCI Controller Driver version: 0.4
+[   16.375960] input: Power Button as /devices/LNXSYSTM:00/LNXSYBUS:00/PNP0=
+C0C:00/input/input0
+[   16.384366] ACPI: Power Button [PWRB]
+[   16.388119] input: Power Button as /devices/LNXSYSTM:00/LNXPWRBN:00/inpu=
+t/input1
+[   16.395619] ACPI: Power Button [PWRF]
+[   16.410598] ERST DBG: ERST support is disabled.
+[   16.415412] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+[   16.421820] 00:06: ttyS0 at I/O 0x3f8 (irq =3D 4, base_baud =3D 115200) =
+is a 16550A
+[   16.429309] 00:07: ttyS2 at I/O 0x3e8 (irq =3D 4, base_baud =3D 115200) =
+is a 16550A
+[   16.437700] Non-volatile memory driver v1.3
+[   16.441970] Linux agpgart interface v0.103
+[   16.451547] rdac: device handler registered
+[   16.455871] hp_sw: device handler registered
+[   16.460164] emc: device handler registered
+[   16.464541] alua: device handler registered
+[   16.468981] libphy: Fixed MDIO Bus: probed
+[   16.473287] e1000: Intel(R) PRO/1000 Network Driver - version 7.3.21-k8-=
+NAPI
+[   16.480342] e1000: Copyright (c) 1999-2006 Intel Corporation.
+[   16.486138] e1000e: Intel(R) PRO/1000 Network Driver - 3.2.6-k
+[   16.491982] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
+[   16.497961] igb: Intel(R) Gigabit Ethernet Network Driver - version 5.6.=
+0-k
+[   16.504930] igb: Copyright (c) 2007-2014 Intel Corporation.
+[   16.705875] igb 0000:07:00.0: added PHC on eth0
+[   16.710435] igb 0000:07:00.0: Intel(R) Gigabit Ethernet Network Connecti=
+on
+[   16.717316] igb 0000:07:00.0: eth0: (PCIe:2.5Gb/s:Width x4) 00:25:90:4b:=
+0a:86
+[   16.724460] igb 0000:07:00.0: eth0: PBA No: Unknown
+[   16.729346] igb 0000:07:00.0: Using MSI-X interrupts. 8 rx queue(s), 8 t=
+x queue(s)
+[   16.737079] IOAPIC[0]: Set routing entry (0-17 -> 0xef -> IRQ 17 Mode:1 =
+Active:1 Dest:32)
+[   16.931934] igb 0000:07:00.1: added PHC on eth1
+[   16.936482] igb 0000:07:00.1: Intel(R) Gigabit Ethernet Network Connecti=
+on
+[   16.943360] igb 0000:07:00.1: eth1: (PCIe:2.5Gb/s:Width x4) 00:25:90:4b:=
+0a:87
+[   16.950501] igb 0000:07:00.1: eth1: PBA No: Unknown
+[   16.955391] igb 0000:07:00.1: Using MSI-X interrupts. 8 rx queue(s), 8 t=
+x queue(s)
+[   16.963026] ixgbe: Intel(R) 10 Gigabit PCI Express Network Driver - vers=
+ion 5.1.0-k
+[   16.970702] ixgbe: Copyright (c) 1999-2016 Intel Corporation.
+[   16.976645] i40e: Intel(R) Ethernet Connection XL710 Network Driver - ve=
+rsion 2.8.20-k
+[   16.984576] i40e: Copyright (c) 2013 - 2019 Intel Corporation.
+[   16.990867] usbcore: registered new interface driver catc
+[   16.996291] usbcore: registered new interface driver kaweth
+[   17.001869] pegasus: v0.9.3 (2013/04/25), Pegasus/Pegasus II USB Etherne=
+t driver
+[   17.009285] usbcore: registered new interface driver pegasus
+[   17.014961] usbcore: registered new interface driver rtl8150
+[   17.020641] usbcore: registered new interface driver asix
+[   17.026062] usbcore: registered new interface driver cdc_ether
+[   17.031912] usbcore: registered new interface driver cdc_eem
+[   17.037592] usbcore: registered new interface driver dm9601
+[   17.043185] usbcore: registered new interface driver smsc75xx
+[   17.048957] usbcore: registered new interface driver smsc95xx
+[   17.054722] usbcore: registered new interface driver gl620a
+[   17.060315] usbcore: registered new interface driver net1080
+[   17.065992] usbcore: registered new interface driver plusb
+[   17.071494] usbcore: registered new interface driver rndis_host
+[   17.077432] usbcore: registered new interface driver cdc_subset
+[   17.083369] usbcore: registered new interface driver zaurus
+[   17.088961] usbcore: registered new interface driver MOSCHIP usb-etherne=
+t driver
+[   17.096378] usbcore: registered new interface driver int51x1
+[   17.102054] usbcore: registered new interface driver ipheth
+[   17.107651] usbcore: registered new interface driver sierra_net
+[   17.113677] ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
+[   17.120224] ehci-pci: EHCI PCI platform driver
+[   17.125017] ehci-pci 0000:00:12.2: EHCI Host Controller
+[   17.130384] ehci-pci 0000:00:12.2: new USB bus registered, assigned bus =
+number 1
+[   17.137796] ehci-pci 0000:00:12.2: applying AMD SB700/SB800/Hudson-2/3 E=
+HCI dummy qh workaround
+[   17.146508] ehci-pci 0000:00:12.2: debug port 1
+[   17.151144] ehci-pci 0000:00:12.2: irq 17, io mem 0xfe9fa800
+[   17.163797] ehci-pci 0000:00:12.2: USB 2.0 started, EHCI 1.00
+[   17.169666] usb usb1: New USB device found, idVendor=3D1d6b, idProduct=
+=3D0002, bcdDevice=3D 5.07
+[   17.177945] usb usb1: New USB device strings: Mfr=3D3, Product=3D2, Seri=
+alNumber=3D1
+[   17.185170] usb usb1: Product: EHCI Host Controller
+[   17.190055] usb usb1: Manufacturer: Linux 5.7.0-rc6-00038-g8e984da3e5752=
+ ehci_hcd
+[   17.197547] usb usb1: SerialNumber: 0000:00:12.2
+[   17.202430] hub 1-0:1.0: USB hub found
+[   17.206211] hub 1-0:1.0: 6 ports detected
+[   17.210921] ehci-pci 0000:00:13.2: EHCI Host Controller
+[   17.216248] ehci-pci 0000:00:13.2: new USB bus registered, assigned bus =
+number 2
+[   17.223658] ehci-pci 0000:00:13.2: applying AMD SB700/SB800/Hudson-2/3 E=
+HCI dummy qh workaround
+[   17.232373] ehci-pci 0000:00:13.2: debug port 1
+[   17.236982] ehci-pci 0000:00:13.2: irq 19, io mem 0xfe9fac00
+[   17.248797] ehci-pci 0000:00:13.2: USB 2.0 started, EHCI 1.00
+[   17.254663] usb usb2: New USB device found, idVendor=3D1d6b, idProduct=
+=3D0002, bcdDevice=3D 5.07
+[   17.262942] usb usb2: New USB device strings: Mfr=3D3, Product=3D2, Seri=
+alNumber=3D1
+[   17.270167] usb usb2: Product: EHCI Host Controller
+[   17.275056] usb usb2: Manufacturer: Linux 5.7.0-rc6-00038-g8e984da3e5752=
+ ehci_hcd
+[   17.282545] usb usb2: SerialNumber: 0000:00:13.2
+[   17.286788] tsc: Refined TSC clocksource calibration: 2299.999 MHz
+[   17.287411] hub 2-0:1.0: USB hub found
+[   17.293422] clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x212=
+7345424d, max_idle_ns: 440795318347 ns
+[   17.297145] hub 2-0:1.0: 6 ports detected
+[   17.311363] clocksource: Switched to clocksource tsc
+[   17.311736] ohci_hcd: USB 1.1 'Open' Host Controller (OHCI) Driver
+[   17.322577] ohci-pci: OHCI PCI platform driver
+[   17.327319] ohci-pci 0000:00:12.0: OHCI PCI host controller
+[   17.333022] ohci-pci 0000:00:12.0: new USB bus registered, assigned bus =
+number 3
+[   17.340490] ohci-pci 0000:00:12.0: irq 16, io mem 0xfe9f6000
+[   17.401906] usb usb3: New USB device found, idVendor=3D1d6b, idProduct=
+=3D0001, bcdDevice=3D 5.07
+[   17.410176] usb usb3: New USB device strings: Mfr=3D3, Product=3D2, Seri=
+alNumber=3D1
+[   17.417405] usb usb3: Product: OHCI PCI host controller
+[   17.422636] usb usb3: Manufacturer: Linux 5.7.0-rc6-00038-g8e984da3e5752=
+ ohci_hcd
+[   17.430125] usb usb3: SerialNumber: 0000:00:12.0
+[   17.435141] hub 3-0:1.0: USB hub found
+[   17.438930] hub 3-0:1.0: 3 ports detected
+[   17.443506] ohci-pci 0000:00:12.1: OHCI PCI host controller
+[   17.449208] ohci-pci 0000:00:12.1: new USB bus registered, assigned bus =
+number 4
+[   17.456648] ohci-pci 0000:00:12.1: irq 16, io mem 0xfe9f7000
+[   17.517905] usb usb4: New USB device found, idVendor=3D1d6b, idProduct=
+=3D0001, bcdDevice=3D 5.07
+[   17.526179] usb usb4: New USB device strings: Mfr=3D3, Product=3D2, Seri=
+alNumber=3D1
+[   17.533409] usb usb4: Product: OHCI PCI host controller
+[   17.538648] usb usb4: Manufacturer: Linux 5.7.0-rc6-00038-g8e984da3e5752=
+ ohci_hcd
+[   17.546137] usb usb4: SerialNumber: 0000:00:12.1
+[   17.551057] hub 4-0:1.0: USB hub found
+[   17.554843] hub 4-0:1.0: 3 ports detected
+[   17.559407] IOAPIC[0]: Set routing entry (0-18 -> 0xef -> IRQ 18 Mode:1 =
+Active:1 Dest:32)
+[   17.567635] ohci-pci 0000:00:13.0: OHCI PCI host controller
+[   17.573320] ohci-pci 0000:00:13.0: new USB bus registered, assigned bus =
+number 5
+[   17.580787] ohci-pci 0000:00:13.0: irq 18, io mem 0xfe9f8000
+[   17.641908] usb usb5: New USB device found, idVendor=3D1d6b, idProduct=
+=3D0001, bcdDevice=3D 5.07
+[   17.650191] usb usb5: New USB device strings: Mfr=3D3, Product=3D2, Seri=
+alNumber=3D1
+[   17.657425] usb usb5: Product: OHCI PCI host controller
+[   17.662655] usb usb5: Manufacturer: Linux 5.7.0-rc6-00038-g8e984da3e5752=
+ ohci_hcd
+[   17.670145] usb usb5: SerialNumber: 0000:00:13.0
+[   17.675171] hub 5-0:1.0: USB hub found
+[   17.678960] hub 5-0:1.0: 3 ports detected
+[   17.683517] ohci-pci 0000:00:13.1: OHCI PCI host controller
+[   17.699321] ohci-pci 0000:00:13.1: new USB bus registered, assigned bus =
+number 6
+[   17.706819] ohci-pci 0000:00:13.1: irq 18, io mem 0xfe9f9000
+[   17.767899] usb usb6: New USB device found, idVendor=3D1d6b, idProduct=
+=3D0001, bcdDevice=3D 5.07
+[   17.776175] usb usb6: New USB device strings: Mfr=3D3, Product=3D2, Seri=
+alNumber=3D1
+[   17.783398] usb usb6: Product: OHCI PCI host controller
+[   17.788634] usb usb6: Manufacturer: Linux 5.7.0-rc6-00038-g8e984da3e5752=
+ ohci_hcd
+[   17.796126] usb usb6: SerialNumber: 0000:00:13.1
+[   17.801000] hub 6-0:1.0: USB hub found
+[   17.804780] hub 6-0:1.0: 3 ports detected
+[   17.809333] ohci-pci 0000:00:14.5: OHCI PCI host controller
+[   17.814928] usb 3-1: new full-speed USB device number 2 using ohci-pci
+[   17.821629] ohci-pci 0000:00:14.5: new USB bus registered, assigned bus =
+number 7
+[   17.829092] ohci-pci 0000:00:14.5: irq 18, io mem 0xfe9fb000
+[   17.890899] usb usb7: New USB device found, idVendor=3D1d6b, idProduct=
+=3D0001, bcdDevice=3D 5.07
+[   17.899177] usb usb7: New USB device strings: Mfr=3D3, Product=3D2, Seri=
+alNumber=3D1
+[   17.906405] usb usb7: Product: OHCI PCI host controller
+[   17.911640] usb usb7: Manufacturer: Linux 5.7.0-rc6-00038-g8e984da3e5752=
+ ohci_hcd
+[   17.919146] usb usb7: SerialNumber: 0000:00:14.5
+[   17.924116] hub 7-0:1.0: USB hub found
+[   17.927929] hub 7-0:1.0: 2 ports detected
+[   17.932247] uhci_hcd: USB Universal Host Controller Interface driver
+[   17.938795] usbcore: registered new interface driver usbserial_generic
+[   17.945346] usbserial: USB Serial support registered for generic
+[   17.951440] i8042: PNP: No PS/2 controller found.
+[   17.956161] i8042: Probing ports directly.
+[   17.962998] serio: i8042 KBD port at 0x60,0x64 irq 1
+[   17.967980] serio: i8042 AUX port at 0x60,0x64 irq 12
+[   17.973290] mousedev: PS/2 mouse device common for all mice
+[   17.979137] rtc_cmos 00:02: RTC can wake from S4
+[   17.984113] rtc_cmos 00:02: registered as rtc0
+[   17.988686] rtc_cmos 00:02: setting system clock to 2020-05-21T19:03:43 =
+UTC (1590087823)
+[   17.996844] rtc_cmos 00:02: alarms up to one month, y3k, 114 bytes nvram=
+, hpet irqs
+[   18.004616] iTCO_wdt: Intel TCO WatchDog Timer Driver v1.11
+[   18.010228] iTCO_vendor_support: vendor-support=3D0
+[   18.012891] usb 3-1: New USB device found, idVendor=3D14dd, idProduct=3D=
+1005, bcdDevice=3D 0.00
+[   18.015518] hid: raw HID events driver (C) Jiri Kosina
+[   18.023127] usb 3-1: New USB device strings: Mfr=3D1, Product=3D2, Seria=
+lNumber=3D3
+[   18.023132] usb 3-1: Product: D2CIM-VUSB
+[   18.023136] usb 3-1: Manufacturer: Raritan
+[   18.023139] usb 3-1: SerialNumber: EFFB212D0A6EA58
+[   18.058443] input: Raritan D2CIM-VUSB Keyboard as /devices/pci0000:00/00=
+00:00:12.0/usb3/3-1/3-1:1.0/0003:14DD:1005.0001/input/input3
+[   18.059784] usb 5-3: new full-speed USB device number 2 using ohci-pci
+[   18.122124] input: Raritan D2CIM-VUSB Mouse as /devices/pci0000:00/0000:=
+00:12.0/usb3/3-1/3-1:1.0/0003:14DD:1005.0001/input/input4
+[   18.133983] hid-generic 0003:14DD:1005.0001: input,hidraw0: USB HID v1.1=
+1 Keyboard [Raritan D2CIM-VUSB] on usb-0000:00:12.0-1/input0
+[   18.145942] usbcore: registered new interface driver usbhid
+[   18.151524] usbhid: USB HID core driver
+[   18.155450] x86/pm: family 0x15 cpu detected, MSR saving is needed durin=
+g suspending.
+[   18.163488] drop_monitor: Initializing network drop monitor service
+[   18.169924] Initializing XFRM netlink socket
+[   18.174590] NET: Registered protocol family 10
+[   18.179943] Segment Routing with IPv6
+[   18.183654] NET: Registered protocol family 17
+[   18.188195] 9pnet: Installing 9P2000 support
+[   18.192493] mpls_gso: MPLS GSO support
+[   18.199697] microcode: CPU0: patch_level=3D0x06000613
+[   18.204602] microcode: CPU1: patch_level=3D0x06000613
+[   18.209505] microcode: CPU2: patch_level=3D0x06000613
+[   18.214403] microcode: CPU3: patch_level=3D0x06000613
+[   18.219306] microcode: CPU4: patch_level=3D0x06000613
+[   18.224198] microcode: CPU5: patch_level=3D0x06000613
+[   18.229101] microcode: CPU6: patch_level=3D0x06000613
+[   18.234001] microcode: CPU7: patch_level=3D0x06000613
+[   18.238904] microcode: CPU8: patch_level=3D0x06000613
+[   18.239896] usb 5-3: New USB device found, idVendor=3D0557, idProduct=3D=
+2221, bcdDevice=3D 0.01
+[   18.243803] microcode: CPU9: patch_level=3D0x06000613
+[   18.243824] microcode: CPU10: patch_level=3D0x06000613
+[   18.252002] usb 5-3: New USB device strings: Mfr=3D1, Product=3D2, Seria=
+lNumber=3D0
+[   18.256891] microcode: CPU11: patch_level=3D0x06000613
+[   18.261861] usb 5-3: Product: Hermon USB hidmouse Device
+[   18.269006] microcode: CPU12: patch_level=3D0x06000613
+[   18.273969] usb 5-3: Manufacturer: Winbond Electronics Corp
+[   18.279286] microcode: CPU13: patch_level=3D0x06000613
+[   18.289574] input: Winbond Electronics Corp Hermon USB hidmouse Device a=
+s /devices/pci0000:00/0000:00:13.0/usb5/5-3/5-3:1.0/0003:0557:2221.0002/inp=
+ut/input7
+[   18.289836] microcode: CPU14: patch_level=3D0x06000613
+[   18.289846] microcode: CPU15: patch_level=3D0x06000613
+[   18.295043] hid-generic 0003:0557:2221.0002: input,hidraw1: USB HID v1.0=
+0 Mouse [Winbond Electronics Corp Hermon USB hidmouse Device] on usb-0000:0=
+0:13.0-3/input0
+[   18.308827] microcode: CPU16: patch_level=3D0x06000613
+[   18.317564] input: Winbond Electronics Corp Hermon USB hidmouse Device a=
+s /devices/pci0000:00/0000:00:13.0/usb5/5-3/5-3:1.1/0003:0557:2221.0003/inp=
+ut/input8
+[   18.318786] microcode: CPU17: patch_level=3D0x06000613
+[   18.357228] microcode: CPU18: patch_level=3D0x06000613
+[   18.362214] microcode: CPU19: patch_level=3D0x06000613
+[   18.367203] microcode: CPU20: patch_level=3D0x06000613
+[   18.372190] microcode: CPU21: patch_level=3D0x06000613
+[   18.377178] microcode: CPU22: patch_level=3D0x06000613
+[   18.382182] microcode: CPU23: patch_level=3D0x06000613
+[   18.385109] hid-generic 0003:0557:2221.0003: input,hidraw2: USB HID v1.0=
+0 Keyboard [Winbond Electronics Corp Hermon USB hidmouse Device] on usb-000=
+0:00:13.0-3/input1
+[   18.387171] microcode: CPU24: patch_level=3D0x06000613
+[   18.406908] microcode: CPU25: patch_level=3D0x06000613
+[   18.411894] microcode: CPU26: patch_level=3D0x06000613
+[   18.416875] microcode: CPU27: patch_level=3D0x06000613
+[   18.421865] microcode: CPU28: patch_level=3D0x06000613
+[   18.426843] microcode: CPU29: patch_level=3D0x06000613
+[   18.431831] microcode: CPU30: patch_level=3D0x06000613
+[   18.436807] microcode: CPU31: patch_level=3D0x06000613
+[   18.441858] microcode: Microcode Update Driver: v2.2.
+[   18.441865] IPI shorthand broadcast: enabled
+[   18.451234] ... APIC ID:      20000000 (20)
+[   18.452229] ... APIC VERSION: 80050010
+[   18.452229] 000000000000000000000000000000000000000000000000000000000000=
+0000
+[   18.452229] 000000000000000000000000000000000000000000000000000000000000=
+0000
+[   18.471771] 000000000000000000000000000000000000000000000000000000002000=
+1000
+[   18.480329] number of MP IRQ sources: 15.
+[   18.480384] usb 1-5: new high-speed USB device number 3 using ehci-pci
+[   18.484378] number of IO-APIC #0 registers: 24.
+[   18.484379] testing the IO APIC.......................
+[   18.484386] IO APIC #0......
+[   18.503509] .... register #00: 00000000
+[   18.507354] .......    : physical APIC id: 00
+[   18.511723] .......    : Delivery Type: 0
+[   18.515745] .......    : LTS          : 0
+[   18.519767] .... register #01: 00178021
+[   18.523613] .......     : max redirection entries: 17
+[   18.528676] .......     : PRQ implemented: 1
+[   18.532956] .......     : IO APIC version: 21
+[   18.537323] .... register #02: 00000000
+[   18.541162] .......     : arbitration: 00
+[   18.545176] .... IRQ redirection table:
+[   18.549015] IOAPIC 0:
+[   18.551300]  pin00, disabled, edge , high, V(00), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.559164]  pin01, enabled , edge , high, V(01), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.567000]  pin02, enabled , edge , high, V(02), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.574838]  pin03, disabled, edge , high, V(00), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.582677]  pin04, disabled, edge , high, V(00), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.590512]  pin05, disabled, edge , high, V(00), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.598348]  pin06, disabled, edge , high, V(00), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.606183]  pin07, disabled, edge , high, V(00), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.614021]  pin08, enabled , edge , high, V(08), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.620765] usb 1-5: New USB device found, idVendor=3D05e3, idProduct=3D=
+0719, bcdDevice=3D 0.15
+[   18.621874]  pin09, enabled , level, low , V(09), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.630044] usb 1-5: New USB device strings: Mfr=3D0, Product=3D1, Seria=
+lNumber=3D2
+[   18.630048] usb 1-5: Product: USB Storage
+[   18.637894]  pin0a, disabled, edge , high, V(00), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.645032] usb 1-5: SerialNumber: 000000000033
+[   18.649050]  pin0b, disabled, edge , high, V(00), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.669273]  pin0c, enabled , edge , high, V(0C), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.677116]  pin0d, disabled, edge , high, V(00), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.684958]  pin0e, disabled, edge , high, V(00), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.692795]  pin0f, disabled, edge , high, V(00), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.700628]  pin10, enabled , level, low , V(10), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.708466]  pin11, enabled , level, low , V(11), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.716310]  pin12, enabled , level, low , V(12), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.724150]  pin13, enabled , level, low , V(13), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.731986]  pin14, disabled, edge , high, V(00), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.739821]  pin15, disabled, edge , high, V(00), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.747655]  pin16, disabled, edge , high, V(00), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.755490]  pin17, disabled, edge , high, V(00), IRR(0), S(0), physical=
+, D(00), M(0)
+[   18.763322] IRQ to pin mappings:
+[   18.766563] IRQ0 -> 0:2
+[   18.769022] IRQ1 -> 0:1
+[   18.771483] IRQ3 -> 0:3
+[   18.773935] IRQ4 -> 0:4
+[   18.776389] IRQ5 -> 0:5
+[   18.778849] IRQ6 -> 0:6
+[   18.781304] IRQ7 -> 0:7
+[   18.783765] IRQ8 -> 0:8
+[   18.786228] IRQ9 -> 0:9
+[   18.788689] IRQ10 -> 0:10
+[   18.791322] IRQ11 -> 0:11
+[   18.793957] IRQ12 -> 0:12
+[   18.796591] IRQ13 -> 0:13
+[   18.799218] IRQ14 -> 0:14
+[   18.801853] IRQ15 -> 0:15
+[   18.804487] IRQ16 -> 0:16
+[   18.807114] IRQ17 -> 0:17
+[   18.809749] IRQ18 -> 0:18
+[   18.812385] IRQ19 -> 0:19
+[   18.815021] .................................... done.
+[   18.820184] sched_clock: Marking stable (18534729777, 285433966)->(19264=
+930881, -444767138)
+[   18.828924] registered taskstats version 1
+[   18.833075] Loading compiled-in X.509 certificates
+[   18.842194] Loaded X.509 cert 'Build time autogenerated kernel key: e752=
+188ca8f9a1997a3032ed224d559fa09e15ac'
+[   18.852225] zswap: loaded using pool lzo/zbud
+[   18.857073] Key type ._fscrypt registered
+[   18.861105] Key type .fscrypt registered
+[   18.865040] Key type fscrypt-provisioning registered
+[   18.878489] Key type big_key registered
+[   18.886585] Key type encrypted registered
+[   18.890623] AppArmor: AppArmor sha1 policy hashing enabled
+[   18.896156] ima: No TPM chip found, activating TPM-bypass!
+[   18.901665] ima: Allocated hash algorithm: sha1
+[   18.906223] ima: No architecture policies found
+[   18.910795] evm: Initialising EVM extended attributes:
+[   18.915951] evm: security.selinux
+[   18.919280] evm: security.apparmor
+[   18.922691] evm: security.ima
+[   18.925682] evm: security.capability
+[   18.929272] evm: HMAC attrs: 0x1
+[   18.933349] PM:   Magic number: 4:102:92
+[   18.937419]  container: hash matches
+[   18.941018] memory memory245: hash matches
+[   21.419290] igb 0000:07:00.0 eth0: igb: eth0 NIC Link is Up 1000 Mbps Fu=
+ll Duplex, Flow Control: RX
+[   21.429821] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
+[   21.441797] Sending DHCP requests .., OK
+[   24.057928] IP-Config: Got DHCP answer from 192.168.2.5, my address is 1=
+92.168.2.29
+[   24.065607] IP-Config: Complete:
+[   24.068846]      device=3Deth0, hwaddr=3D00:25:90:4b:0a:86, ipaddr=3D192=
+=2E168.2.29, mask=3D255.255.255.0, gw=3D192.168.2.200
+[   24.079109]      host=3Dlkp-opteron1, domain=3Dlkp.intel.com, nis-domain=
+=3D(none)
+[   24.086073]      bootserver=3D192.168.2.200, rootserver=3D192.168.2.200,=
+ rootpath=3D
+[   24.086075]      nameserver0=3D192.168.2.200
+[   24.273293] Freeing unused decrypted memory: 2040K
+[   24.279720] Freeing unused kernel image (initmem) memory: 2568K
+[   24.285662] Write protecting the kernel read-only data: 22528k
+[   24.293247] Freeing unused kernel image (text/rodata gap) memory: 2044K
+[   24.300797] Freeing unused kernel image (rodata/data gap) memory: 1376K
+[   24.307452] rodata_test: all tests were successful
+[   24.312275] Run /init as init process
+[   24.315962]   with arguments:
+[   24.318942]     /init
+[   24.321230]     nokaslr
+[   24.323698]   with environment:
+[   24.326846]     HOME=3D/
+[   24.329211]     TERM=3Dlinux
+[   24.331924]     user=3Dlkp
+[   24.334489]     job=3D/lkp/jobs/scheduled/lkp-opteron1/rcutorture-300s-d=
+efault-tasks-debian-x86_64-20191114.cgz-8e984da3e5752f18c24c39240338fec8c8c=
+9c971-20200522-6454-mc4v1l-8.yaml
+[   24.350410]     ARCH=3Dx86_64
+[   24.353211]     kconfig=3Dx86_64-rhel-7.6
+[   24.357060]     branch=3Dlinux-devel/devel-hourly-2020052107
+[   24.362581]     commit=3D8e984da3e5752f18c24c39240338fec8c8c9c971
+[   24.368509]     BOOT_IMAGE=3D/pkg/linux/x86_64-rhel-7.6/gcc-7/8e984da3e5=
+752f18c24c39240338fec8c8c9c971/vmlinuz-5.7.0-rc6-00038-g8e984da3e5752
+[   24.381028]     max_uptime=3D1500
+[   24.384179]     RESULT_ROOT=3D/result/rcutorture/300s-default-tasks/lkp-=
+opteron1/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c=
+24c39240338fec8c8c9c971/8
+[   24.399394]     LKP_SERVER=3Dinn
+[   24.402457]     prompt_ramdisk=3D0
+[   24.405716]     vga=3Dnormal
+[   24.416526] systemd[1]: RTC configured in localtime, applying delta of 4=
+80 minutes to system time.
+[   24.436041] random: systemd: uninitialized urandom read (16 bytes read)
+[   24.443525] random: systemd: uninitialized urandom read (16 bytes read)
+[   24.450307] random: systemd: uninitialized urandom read (16 bytes read)
 
-generic/019	_check_generic_filesystem: filesystem on /dev/vdd is inconsistent
-(see /lkp/benchmarks/xfstests/results//generic/019.full for details)
 
-generic/059	 4s
-generic/094	 9s
-generic/126	 3s
-generic/162	[not run] Dedupe not supported by scratch filesystem type: f2fs
-generic/194	[not run] Reflink not supported by scratch filesystem type: f2fs
-generic/225	 12s
-generic/256	 81s
-generic/289	[not run] Reflink not supported by scratch filesystem type: f2fs
-generic/321	 5s
-generic/353	[not run] Reflink not supported by scratch filesystem type: f2fs
-generic/383	 4s
-generic/418	 18s
-generic/451	 32s
-generic/490	 1s
-generic/525	[not run] filesystem does not support huge file size
-generic/555	 2s
-generic/585	 4s
-Ran: generic/019 generic/059 generic/094 generic/126 generic/162 generic/194 generic/225 generic/256 generic/289 generic/321 generic/353 generic/383 generic/418 generic/451 generic/490 generic/525 generic/555 generic/585
-Not run: generic/162 generic/194 generic/289 generic/353 generic/525
-Failures: generic/019
-Failed 1 of 18 tests
+         Mounting RPC Pipe File System...
+         Starting Load Kernel Modules...
+         Mounting POSIX Message Queue File System...
+         Starting Remount Root and Kernel File Systems...
+         Starting Journal Service...
+         Mounting Debug File System...
+         Mounting Huge Pages File System...
+         Starting udev Coldplug all Devices...
+         Starting Load/Save Random Seed...
+         Starting Apply Kernel Variables...
+         Mounting Configuration File System...
+         Starting Create Static Device Nodes in /dev...
+         Starting udev Kernel Device Manager...
+         Starting Preprocess NFS configuration...
+         Starting Raise network interfaces...
+         Starting Flush Journal to Persistent Storage...
+[   24.794775] acpi_cpufreq: overriding BIOS provided _PSD data
+         Starting Create Volatile Files and Directories...
+[   24.850528] piix4_smbus 0000:00:14.0: SMBus Host Controller at 0xb00, re=
+vision 0
+m] Started Creat
+[   24.867845] input: PC Speaker as /devices/platform/pcspkr/input/input9
+e Volatile Files and Directories
+[   24.876320] usb-storage 1-5:1.0: USB Mass Storage device detected
+=2E
+[   24.883900] sp5100_tco: SP5100/SB800 TCO WatchDog Timer Driver
+[   24.883928] scsi host0: usb-storage 1-5:1.0
+[   24.894193] usbcore: registered new interface driver usb-storage
+         Starting Update UTMP about System Boot/Shutdown...
+         Starting RPC bind portmap service...
+[   24.911162] random: fast init done
+         Starting Network Time Synchronization...
+ D-Bus System Message Bus Socket
+[   24.992839] usbcore: registered new interface driver uas
+=2E
+[   25.000402] cryptd: max_cpu_qlen set to 1000
+0m] Reached target Sockets.
+[   25.011835] libata version 3.00 loaded.
+         Starting Permit User Sessions...
+         Starting System Logging Service...
+         Starting Load CPU microcode update...
+[   25.072794] ipmi_si: IPMI System Interface driver
+[   25.077746] ipmi_si dmi-ipmi-si.0: ipmi_platform: probing via SMBIOS
+[   25.084140] ipmi_platform: ipmi_si: SMBIOS: io 0xca2 regsize 1 spacing 1=
+ irq 0
+[   25.091800] ipmi_si: Adding SMBIOS-specified kcs state machine
+         Startin
+[   25.098013] AVX version of gcm_enc/dec engaged.
+g LSB: Execute t
+[   25.098056] ipmi_si: Trying SMBIOS-specified kcs state machine at i/o ad=
+dress 0xca2, slave address 0x20, irq 0
+he kexec -e comm
+[   25.101085] scsi host1: pata_atiixp
+and to reboot sy
+[   25.101333] scsi host2: pata_atiixp
+stem...
+[   25.101411] ata1: PATA max UDMA/100 cmd 0x1f0 ctl 0x3f6 bmdma 0xff00 irq=
+ 14
+[   25.101414] ata2: PATA max UDMA/100 cmd 0x170 ctl 0x376 bmdma 0xff08 irq=
+ 15
+[   25.103894] AES CTR mode by8 optimization enabled
+         Starting LSB: Start and
+[   25.147155] ahci 0000:00:11.0: version 3.0
+ stop bmc-watchd
+[   25.151870] IOAPIC[0]: Set routing entry (0-22 -> 0xef -> IRQ 22 Mode:1 =
+Active:1 Dest:32)
+og...
+[   25.161318] ahci 0000:00:11.0: AHCI 0001.0100 32 slots 4 ports 3 Gbps 0x=
+f impl SATA mode
+[   25.169806] ahci 0000:00:11.0: flags: 64bit ncq sntf ilck pm led clo pmp=
+ pio slum part ccc=20
+         Starting OpenBSD Secure Shell server...
+         Starting LKP bootstrap...
+[   25.190835] ipmi_si dmi-ipmi-si.0: The BMC does not support clearing the=
+ recv irq bit, compensating, but the BMC needs to be fixed.
+[   25.191016] scsi host3: ahci
+         Startin
+[   25.206276] scsi host4: ahci
+g /etc/rc.local=20
+[   25.210307] scsi host5: ahci
+Compatibility...
+[   25.214458] scsi host6: ahci
 
+[   25.218636] ata3: SATA max UDMA/133 abar m1024@0xfe9fa400 port 0xfe9fa50=
+0 irq 22
+[   25.226114] ata4: SATA max UDMA/133 abar m1024@0xfe9fa400 port 0xfe9fa58=
+0 irq 22
+[   25.229506] ipmi_si dmi-ipmi-si.0: IPMI message handler: Found new BMC (=
+man_id: 0x00b980, prod_id: 0xa811, dev_id: 0x20)
+[   25.233560] ata5: SATA max UDMA/133 abar m1024@0xfe9fa400 port 0xfe9fa60=
+0 irq 22
+[   25.233563] ata6: SATA max UDMA/133 abar m1024@0xfe9fa400 port 0xfe9fa68=
+0 irq 22
+[   24.924030] rc.local[617]: mkdir: cannot create directory '/var/lock/lkp=
+-bootstrap.lock': File exists
+         Starting Login Service...
+LKP: HOSTNAME lkp-
+[   25.280323] Error: Driver 'pcspkr' is already registered, aborting...
+opteron1, MAC 00:25:90:4b:0a:86, kernel 5.7.0-rc6-00038-g8e984da3e5752 1, s=
+erial console /dev/ttyS0
+         Starting LSB: Load kernel image with kexec...
+[   25.432334] ipmi_si dmi-ipmi-si.0: IPMI kcs interface initialized
+[   25.441655] mgag200 0000:01:04.0: vgaarb: deactivate vga console
+[   25.447925] IOAPIC[0]: Set routing entry (0-20 -> 0xef -> IRQ 20 Mode:1 =
+Active:1 Dest:32)
+[   25.540412] ata6: SATA link down (SStatus 0 SControl 300)
+[   25.545898] ata5: SATA link down (SStatus 0 SControl 300)
+[   25.563875] [TTM] Zone  kernel: Available graphics memory: 66008148 KiB
+[   25.570515] [TTM] Zone   dma32: Available graphics memory: 2097152 KiB
+[   25.577071] [TTM] Initializing pool allocator
+[   25.581499] [TTM] Initializing DMA pool allocator
+[   25.586978] ------------[ cut here ]------------
+[   25.591666] WARNING: CPU: 0 PID: 351 at drivers/gpu/drm/drm_modeset_lock=
+=2Ec:185 drm_warn_on_modeset_not_all_locked+0x6c/0x80 [drm]
+[   25.605759] Modules linked in: kvm mgag200(+) irqbypass fjes(-) drm_vram=
+_helper drm_ttm_helper crct10dif_pclmul ttm crc32_pclmul crc32c_intel drm_k=
+ms_helper syscopyarea ghash_clmulni_intel ata_generic sysfillrect snd_pcm a=
+hci pata_acpi sysimgblt libahci aesni_intel pata_atiixp fb_sys_fops snd_tim=
+er ipmi_si crypto_simd ipmi_devintf cryptd snd uas drm libata soundcore glu=
+e_helper sp5100_tco ipmi_msghandler usb_storage pcspkr serio_raw fam15h_pow=
+er k10temp i2c_piix4 joydev acpi_cpufreq ip_tables
+[   25.649431] CPU: 0 PID: 351 Comm: kworker/0:3 Not tainted 5.7.0-rc6-0003=
+8-g8e984da3e5752 #1
+[   25.657779] Hardware name: Supermicro H8DGU/H8DGU, BIOS 2.0        09/08=
+/11 =20
+[   25.664920] Workqueue: events work_for_cpu_fn
+[   25.669316] RIP: 0010:drm_warn_on_modeset_not_all_locked+0x6c/0x80 [drm]
+[   25.676642] Code: 01 00 00 e8 e6 c2 cb c0 84 c0 74 1a 49 8d bc 24 78 01 =
+00 00 e8 d5 c2 cb c0 84 c0 74 0d 5b 5d 41 5c c3 0f 0b eb c8 0f 0b eb e2 <0f=
+> 0b 5b 5d 41 5c c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 0f 1f
+[   25.695432] RSP: 0018:ffffc90006b7bce8 EFLAGS: 00010246
+[   25.700671] RAX: 0000000000000000 RBX: ffff88a01cb65ad8 RCX: 00000000000=
+00000
+[   25.707804] RDX: ffff88a01cb67050 RSI: ffffc90006b7bd48 RDI: ffff88a01cb=
+65978
+[   25.710825] ata4: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
+[   25.714940] RBP: ffff88a01cb65ae8 R08: ffff88a01cb67050 R09: ffff888107c=
+06d80
+[   25.714942] R10: ffffc90006aebca8 R11: 00000000000001c6 R12: ffff88a01cb=
+65800
+[   25.714944] R13: ffff8887ef4ae000 R14: ffffc90022000000 R15: ffff88a01cb=
+65800
+[   25.714947] FS:  0000000000000000(0000) GS:ffff8887ffc00000(0000) knlGS:=
+0000000000000000
+[   25.714949] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   25.714952] CR2: 00007f98040d8000 CR3: 0000000feeb20000 CR4: 00000000000=
+406f0
+[   25.714958] Call Trace:
+[   25.766039]  __drm_helper_disable_unused_functions+0x18/0xe0 [drm_kms_he=
+lper]
+[   25.773197]  drm_helper_disable_unused_functions+0x68/0xb0 [drm_kms_help=
+er]
+[   25.780172]  drm_fbdev_client_hotplug+0x159/0x1b0 [drm_kms_helper]
+[   25.786378]  drm_fbdev_generic_setup+0x9b/0x110 [drm_kms_helper]
+[   25.792402]  mgag200_driver_load+0x377/0x4c0 [mgag200]
+[   25.797550]  mga_pci_probe+0x79/0xd0 [mgag200]
+[   25.802004]  local_pci_probe+0x42/0x90
+[   25.805769]  work_for_cpu_fn+0x16/0x20
+[   25.809550]  process_one_work+0x1b0/0x3e0
+[   25.813580]  ? move_linked_works+0x6e/0xa0
+[   25.817713]  worker_thread+0x1e5/0x3b0
+[   25.821467]  ? process_one_work+0x3e0/0x3e0
+[   25.825653]  kthread+0x12c/0x150
+[   25.828886]  ? kthread_park+0x90/0x90
+[   25.832581]  ret_from_fork+0x22/0x40
+[   25.836166] ---[ end trace 29e2fb1609eae123 ]---
+[   25.840870] ata3: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
+[   25.840938] ------------[ cut here ]------------
+[   25.851679] WARNING: CPU: 0 PID: 351 at drivers/gpu/drm/drm_crtc_helper.=
+c:108 drm_helper_encoder_in_use+0xda/0xf0 [drm_kms_helper]
+[   25.865288] Modules linked in: kvm mgag200(+) irqbypass fjes(-) drm_vram=
+_helper drm_ttm_helper crct10dif_pclmul ttm crc32_pclmul crc32c_intel drm_k=
+ms_helper syscopyarea ghash_clmulni_intel ata_generic sysfillrect snd_pcm a=
+hci pata_acpi sysimgblt libahci aesni_intel pata_atiixp fb_sys_fops snd_tim=
+er ipmi_si crypto_simd ipmi_devintf cryptd snd uas drm libata soundcore glu=
+e_helper sp5100_tco ipmi_msghandler usb_storage pcspkr serio_raw fam15h_pow=
+er k10temp i2c_piix4 joydev acpi_cpufreq ip_tables
+[   25.908958] CPU: 0 PID: 351 Comm: kworker/0:3 Tainted: G        W       =
+  5.7.0-rc6-00038-g8e984da3e5752 #1
+[   25.918701] Hardware name: Supermicro H8DGU/H8DGU, BIOS 2.0        09/08=
+/11 =20
+[   25.925836] Workqueue: events work_for_cpu_fn
+[   25.930207] RIP: 0010:drm_helper_encoder_in_use+0xda/0xf0 [drm_kms_helpe=
+r]
+[   25.937122] Code: 48 8d bd 98 01 00 00 e8 b4 28 b1 c0 84 c0 0f 85 7b ff =
+ff ff 0f 0b e9 74 ff ff ff 48 89 e7 e8 5d c9 e5 ff b8 01 00 00 00 eb 92 <0f=
+> 0b eb d2 e8 ed 30 ab c0 66 66 2e 0f 1f 84 00 00 00 00 00 66 90
+[   25.941078] scsi 0:0:0:0: CD-ROM            TEAC     DV-28S-W         1.=
+2A PQ: 0 ANSI: 0
+[   25.955923] RSP: 0018:ffffc90006b7bcd8 EFLAGS: 00010246
+[   25.955925] RAX: 0000000000000000 RBX: ffff8887ef4ae778 RCX: 00000000000=
+00000
+[   25.955927] RDX: ffffffffc040b180 RSI: ffffc90006b7bd48 RDI: ffff88a01cb=
+65978
+[   25.955928] RBP: ffff88a01cb65800 R08: ffff88a01cb67050 R09: ffff888107c=
+06d80
+[   25.955930] R10: ffffc90006aebca8 R11: 00000000000001c6 R12: ffff88a01cb=
+65ab8
+[   25.955931] R13: ffff8887ef4ae000 R14: ffffc90022000000 R15: ffff88a01cb=
+65800
+[   25.955933] FS:  0000000000000000(0000) GS:ffff8887ffc00000(0000) knlGS:=
+0000000000000000
+[   25.955935] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   25.955937] CR2: 00007f98040d8000 CR3: 0000000feeb20000 CR4: 00000000000=
+406f0
+[   25.955941] Call Trace:
+[   26.028434]  ? drm_warn_on_modeset_not_all_locked+0x5b/0x80 [drm]
+[   26.035159]  __drm_helper_disable_unused_functions+0x3f/0xe0 [drm_kms_he=
+lper]
+[   26.042311]  drm_helper_disable_unused_functions+0x68/0xb0 [drm_kms_help=
+er]
+[   26.049289]  drm_fbdev_client_hotplug+0x159/0x1b0 [drm_kms_helper]
+[   26.055509]  drm_fbdev_generic_setup+0x9b/0x110 [drm_kms_helper]
+[   26.061523]  mgag200_driver_load+0x377/0x4c0 [mgag200]
+[   26.066671]  mga_pci_probe+0x79/0xd0 [mgag200]
+[   26.071161]  local_pci_probe+0x42/0x90
+[   26.074928]  work_for_cpu_fn+0x16/0x20
+[   26.078681]  process_one_work+0x1b0/0x3e0
+[   26.082721]  ? move_linked_works+0x6e/0xa0
+[   26.086821]  worker_thread+0x1e5/0x3b0
+[   26.090572]  ? process_one_work+0x3e0/0x3e0
+[   26.094759]  kthread+0x12c/0x150
+[   26.097990]  ? kthread_park+0x90/0x90
+[   26.101677]  ret_from_fork+0x22/0x40
+[   26.105257] ---[ end trace 29e2fb1609eae124 ]---
+[   26.109979] ------------[ cut here ]------------
+[   26.114610] WARNING: CPU: 0 PID: 351 at drivers/gpu/drm/drm_crtc_helper.=
+c:148 drm_helper_crtc_in_use+0xa3/0xb0 [drm_kms_helper]
+[   26.127944] Modules linked in: kvm mgag200(+) irqbypass fjes(-) drm_vram=
+_helper drm_ttm_helper crct10dif_pclmul ttm crc32_pclmul crc32c_intel drm_k=
+ms_helper syscopyarea ghash_clmulni_intel ata_generic sysfillrect snd_pcm a=
+hci pata_acpi sysimgblt libahci aesni_intel pata_atiixp fb_sys_fops snd_tim=
+er ipmi_si crypto_simd ipmi_devintf cryptd snd uas drm libata soundcore glu=
+e_helper sp5100_tco ipmi_msghandler usb_storage pcspkr serio_raw fam15h_pow=
+er k10temp i2c_piix4 joydev acpi_cpufreq ip_tables
+[   26.171627] CPU: 0 PID: 351 Comm: kworker/0:3 Tainted: G        W       =
+  5.7.0-rc6-00038-g8e984da3e5752 #1
+[   26.181358] Hardware name: Supermicro H8DGU/H8DGU, BIOS 2.0        09/08=
+/11 =20
+[   26.188503] Workqueue: events work_for_cpu_fn
+[   26.192873] RIP: 0010:drm_helper_crtc_in_use+0xa3/0xb0 [drm_kms_helper]
+[   26.199528] Code: 28 03 00 00 48 85 c0 74 a1 48 83 78 28 00 75 98 8b 05 =
+a1 64 9a c2 85 c0 75 9a 48 8d bd 78 01 00 00 e8 e1 27 b1 c0 84 c0 75 8a <0f=
+> 0b eb 86 66 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 55 53 48 89
+[   26.218312] RSP: 0018:ffffc90006b7bce8 EFLAGS: 00010246
+[   26.223542] RAX: 0000000000000000 RBX: ffff88a01cb67000 RCX: 00000000000=
+00000
+[   26.230675] RDX: ffffffffc040b180 RSI: 0000000000000217 RDI: ffff88a01cb=
+65978
+[   26.237807] RBP: ffff88a01cb65800 R08: ffff88a01cb65a78 R09: ffff888107c=
+06d80
+[   26.244941] R10: ffffc90006aebca8 R11: 00000000000001c6 R12: ffff88a01cb=
+67000
+[   26.252075] R13: ffff8887ef4ae000 R14: ffffc90022000000 R15: ffff88a01cb=
+65800
+[   26.259217] FS:  0000000000000000(0000) GS:ffff8887ffc00000(0000) knlGS:=
+0000000000000000
+[   26.267303] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   26.273049] CR2: 00007f98040d8000 CR3: 0000000feeb20000 CR4: 00000000000=
+406f0
+[   26.280183] Call Trace:
+[   26.282650]  __drm_helper_disable_unused_functions+0xaf/0xe0 [drm_kms_he=
+lper]
+[   26.289816]  drm_helper_disable_unused_functions+0x68/0xb0 [drm_kms_help=
+er]
+[   26.296795]  drm_fbdev_client_hotplug+0x159/0x1b0 [drm_kms_helper]
+[   26.302991]  drm_fbdev_generic_setup+0x9b/0x110 [drm_kms_helper]
+[   26.309032]  mgag200_driver_load+0x377/0x4c0 [mgag200]
+[   26.314178]  mga_pci_probe+0x79/0xd0 [mgag200]
+[   26.318625]  local_pci_probe+0x42/0x90
+[   26.322384]  work_for_cpu_fn+0x16/0x20
+[   26.326162]  process_one_work+0x1b0/0x3e0
+[   26.330176]  ? move_linked_works+0x6e/0xa0
+[   26.334275]  worker_thread+0x1e5/0x3b0
+[   26.338028]  ? process_one_work+0x3e0/0x3e0
+[   26.342248]  kthread+0x12c/0x150
+[   26.345497]  ? kthread_park+0x90/0x90
+[   26.349166]  ret_from_fork+0x22/0x40
+[   26.352780] ---[ end trace 29e2fb1609eae125 ]---
+[   26.357457] ata4.00: ATA-9: ST1000DM003-1CH162, CC49, max UDMA/133
+[   26.363692] ata4.00: 1953525168 sectors, multi 16: LBA48 NCQ (depth 32),=
+ AA
+[   26.370738] ata3.00: ATA-9: WDC WD60EFRX-68L0BN1, 82.00A82, max UDMA/133
+[   26.377494] ata3.00: 11721045168 sectors, multi 16: LBA48 NCQ (depth 32)=
+, AA
+[   26.385327] ata4.00: configured for UDMA/133
+[   26.389801] ata3.00: configured for UDMA/133
+[   26.394353] scsi 3:0:0:0: Direct-Access     ATA      WDC WD60EFRX-68L 0A=
+82 PQ: 0 ANSI: 5
+[   26.402988] scsi 4:0:0:0: Direct-Access     ATA      ST1000DM003-1CH1 CC=
+49 PQ: 0 ANSI: 5
+[   26.475473] kvm: Nested Virtualization enabled
+[   26.479986] SVM: kvm: Nested Paging enabled
+[   26.518326] MCE: In-kernel MCE decoding enabled.
+[   26.521283] scsi 0:0:0:0: Attached scsi generic sg0 type 5
+[   26.528601] scsi 3:0:0:0: Attached scsi generic sg1 type 0
+[   26.534212] scsi 4:0:0:0: Attached scsi generic sg2 type 0
+[   26.540288] EDAC amd64: F15h detected (node 0).
+[   26.545004] EDAC amd64: Node 0: DRAM ECC enabled.
+[   26.549736] EDAC amd64: MCT channel count: 2
+[   26.554292] EDAC MC0: Giving out device to module amd64_edac controller =
+F15h: DEV 0000:00:18.3 (INTERRUPT)
+[   26.563986] EDAC MC: DCT0 chip selects:
+[   26.567886] EDAC amd64: MC: 0:     0MB 1:     0MB
+[   26.572651] EDAC amd64: MC: 2:  8192MB 3:  8192MB
+[   26.577416] EDAC amd64: MC: 4:     0MB 5:     0MB
+[   26.582159] EDAC amd64: MC: 6:     0MB 7:     0MB
+[   26.582981] mgag200 0000:01:04.0: VGA-1: EDID is invalid:
+[   26.586930] EDAC MC: DCT1 chip selects:
+[   26.592328] 	[00] BAD  00 ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff
+[   26.592335] 	[00] BAD  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+[   26.592337] 	[00] BAD  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+[   26.592338] 	[00] BAD  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+[   26.592339] 	[00] BAD  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+[   26.592340] 	[00] BAD  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+[   26.592342] 	[00] BAD  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+[   26.592343] 	[00] BAD  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+[   26.623009] sd 4:0:0:0: [sdb] 1953525168 512-byte logical blocks: (1.00 =
+TB/932 GiB)
+[   26.623032] sd 3:0:0:0: [sda] 11721045168 512-byte logical blocks: (6.00=
+ TB/5.46 TiB)
+[   26.623065] sd 3:0:0:0: [sda] 4096-byte physical blocks
+[   26.623091] sd 3:0:0:0: [sda] Write Protect is off
+[   26.623095] sd 3:0:0:0: [sda] Mode Sense: 00 3a 00 00
+[   26.623138] sd 3:0:0:0: [sda] Write cache: enabled, read cache: enabled,=
+ doesn't support DPO or FUA
+[   26.628947] EDAC amd64: MC: 0:     0MB 1:     0MB
+[   26.628949] EDAC amd64: MC: 2:  8192MB 3:  8192MB
+[   26.628950] EDAC amd64: MC: 4:     0MB 5:     0MB
+[   26.628951] EDAC amd64: MC: 6:     0MB 7:     0MB
+[   26.628952] EDAC amd64: using x8 syndromes.
+[   26.629000] EDAC amd64: F15h detected (node 1).
+[   26.635559] sd 4:0:0:0: [sdb] 4096-byte physical blocks
+[   26.642208] EDAC amd64: Node 1: DRAM ECC enabled.
+[   26.648747] sd 4:0:0:0: [sdb] Write Protect is off
+[   26.656349] EDAC amd64: MCT channel count: 2
+[   26.664186] sd 4:0:0:0: [sdb] Mode Sense: 00 3a 00 00
+[   26.664236] sd 4:0:0:0: [sdb] Write cache: enabled, read cache: enabled,=
+ doesn't support DPO or FUA
+[   26.669640] EDAC MC1: Giving out device to module amd64_edac controller =
+F15h: DEV 0000:00:19.3 (INTERRUPT)
+[   26.688885] sr 0:0:0:0: [sr0] scsi3-mmc drive: 24x/24x cd/rw xa/form2 cd=
+da tray
+[   26.693125] EDAC MC: DCT0 chip selects:
+[   26.693126] EDAC amd64: MC: 0:     0MB 1:     0MB
+[   26.693127] EDAC amd64: MC: 2:  8192MB 3:  8192MB
+[   26.693128] EDAC amd64: MC: 4:     0MB 5:     0MB
+[   26.693129] EDAC amd64: MC: 6:     0MB 7:     0MB
+[   26.693130] EDAC MC: DCT1 chip selects:
+[   26.693130] EDAC amd64: MC: 0:     0MB 1:     0MB
+[   26.693131] EDAC amd64: MC: 2:  8192MB 3:  8192MB
+[   26.693132] EDAC amd64: MC: 4:     0MB 5:     0MB
+[   26.693135] EDAC amd64: MC: 6:     0MB 7:     0MB
+[   26.697851] cdrom: Uniform CD-ROM driver Revision: 3.20
+[   26.816710] EDAC amd64: using x8 syndromes.
+[   26.816733] fbcon: mgag200drmfb (fb0) is primary device
+[   26.816736] EDAC amd64: F15h detected (node 2).
+[   26.816862] EDAC amd64: Node 2: DRAM ECC enabled.
+[   26.816863] EDAC amd64: MCT channel count: 2
+[   26.817013] EDAC MC2: Giving out device to module amd64_edac controller =
+F15h: DEV 0000:00:1a.3 (INTERRUPT)
+[   26.817014] EDAC MC: DCT0 chip selects:
+[   26.817015] EDAC amd64: MC: 0:     0MB 1:     0MB
+[   26.817017] EDAC amd64: MC: 2:  8192MB 3:  8192MB
+[   26.817018] EDAC amd64: MC: 4:     0MB 5:     0MB
+[   26.817018] EDAC amd64: MC: 6:     0MB 7:     0MB
+[   26.817019] EDAC MC: DCT1 chip selects:
+[   26.817020] EDAC amd64: MC: 0:     0MB 1:     0MB
+[   26.817021] EDAC amd64: MC: 2:  8192MB 3:  8192MB
+[   26.817022] EDAC amd64: MC: 4:     0MB 5:     0MB
+[   26.817023] EDAC amd64: MC: 6:     0MB 7:     0MB
+[   26.817023] EDAC amd64: using x8 syndromes.
+[   26.817025] EDAC amd64: F15h detected (node 3).
+[   26.817097] EDAC amd64: Node 3: DRAM ECC enabled.
+[   26.817097] EDAC amd64: MCT channel count: 2
+[   26.817245] EDAC MC3: Giving out device to module amd64_edac controller =
+F15h: DEV 0000:00:1b.3 (INTERRUPT)
+[   26.817246] EDAC MC: DCT0 chip selects:
+[   26.817247] EDAC amd64: MC: 0:     0MB 1:     0MB
+[   26.817248] EDAC amd64: MC: 2:  8192MB 3:  8192MB
+[   26.817249] EDAC amd64: MC: 4:     0MB 5:     0MB
+[   26.817250] EDAC amd64: MC: 6:     0MB 7:     0MB
+[   26.817250] EDAC MC: DCT1 chip selects:
+[   26.817251] EDAC amd64: MC: 0:     0MB 1:     0MB
+[   26.817252] EDAC amd64: MC: 2:  8192MB 3:  8192MB
+[   26.817253] EDAC amd64: MC: 4:     0MB 5:     0MB
+[   26.817254] EDAC amd64: MC: 6:     0MB 7:     0MB
+[   26.817254] EDAC amd64: using x8 syndromes.
+[   26.817270] EDAC PCI0: Giving out device to module amd64_edac controller=
+ EDAC PCI controller: DEV 0000:00:18.2 (POLLED)
+[   26.817270] AMD64 EDAC driver v3.5.0
+[   27.148022]  sdb: sdb1
+[   27.149246] sd 4:0:0:0: [sdb] Attached SCSI disk
+[   27.177205]  sda: sda1 sda2 sda3 sda4 sda5 sda6 sda7 sda8
+[   27.179415] sd 3:0:0:0: [sda] Attached SCSI disk
+[   27.227750] sr 0:0:0:0: Attached scsi CD-ROM sr0
+[   27.244880] Console: switching to colour frame buffer device 128x48
+[   27.404769] raid6: sse2x4   gen()  7741 MB/s
+[   27.406480] mgag200 0000:01:04.0: fb0: mgag200drmfb frame buffer device
+[   27.428777] raid6: sse2x4   xor()  3057 MB/s
+[   28.011776] raid6: sse2x2   gen()  6877 MB/s
+[   28.033778] raid6: sse2x2   xor()  3186 MB/s
+[   28.055775] raid6: sse2x1   gen()  4801 MB/s
+[   28.077770] raid6: sse2x1   xor()  2458 MB/s
+[   28.082874] raid6: using algorithm sse2x4 gen() 7741 MB/s
+[   28.089128] raid6: .... xor() 3057 MB/s, rmw enabled
+[   28.094933] raid6: using ssse3x2 recovery algorithm
+[   28.102091] [drm] Initialized mgag200 1.0.0 20110418 for 0000:01:04.0 on=
+ minor 0
+[   28.114618] hrtimer: interrupt took 10204251 ns
+[   28.330686] xor: automatically using best checksumming function   avx   =
+   =20
+[   28.755963] Btrfs loaded, crc32c=3Dcrc32c-intel
+[   28.857484] BTRFS: device label PKG4 devid 4 transid 187186 /dev/sda sca=
+nned by systemd-udevd (541)
+[   28.867837] BTRFS: device label LKP-ROOTFS devid 1 transid 23914 /dev/sd=
+b1 scanned by systemd-udevd (492)
+[   29.147136] random: crng init done
+[   29.149709] BTRFS: device label LKP-ROOTFS devid 1 transid 7 /dev/sda1 s=
+canned by systemd-udevd (539)
+[   29.152165] random: 7 urandom warning(s) missed due to ratelimiting
+[   31.924813] BTRFS info (device sdb1): disk space caching is enabled
+[   31.932672] BTRFS info (device sdb1): has skinny extents
+         Starting Preprocess NFS configuration...
+         Starting Notify NFS peers of a restart...
+         Starting NFS status monitor for NFSv2/3 locking....
+[   35.764142] Kernel tests: Boot OK!
+[   35.764146]=20
+[   36.292255] tasks-torture:--- Start of test: nreaders=3D31 nfakewriters=
+=3D4 stat_interval=3D60 verbose=3D1 test_no_idle_hz=3D1 shuffle_interval=3D=
+3 stutter=3D5 irqreader=3D1 fqs_duration=3D0 fqs_holdoff=3D0 fqs_stutter=3D=
+3 test_boost=3D1/0 test_boost_interval=3D7 test_boost_duration=3D4 shutdown=
+_secs=3D0 stall_cpu=3D0 stall_cpu_holdoff=3D10 stall_cpu_irqsoff=3D0 n_barr=
+ier_cbs=3D0 onoff_interval=3D0 onoff_holdoff=3D0
+[   36.329068] tasks-torture: Creating rcu_torture_writer task
+[   36.336833] tasks-torture: rcu_torture_writer task started
+[   36.337675] tasks-torture: Creating rcu_torture_fakewriter task
+[   36.355955] rcu_torture_writer: Testing expedited GPs.
+[   36.355956] rcu_torture_writer: Testing asynchronous GPs.
+[   36.355957] rcu_torture_writer: Testing normal GPs.
+[   36.659933] tasks-torture: Creating rcu_torture_fakewriter task
+[   36.659939] tasks-torture: rcu_torture_fakewriter task started
+[   36.684705] tasks-torture: Creating rcu_torture_fakewriter task
+[   36.684718] tasks-torture: rcu_torture_fakewriter task started
+[   36.758805] tasks-torture: Creating rcu_torture_fakewriter task
+[   36.758811] tasks-torture: rcu_torture_fakewriter task started
+[   36.781026] tasks-torture: Creating rcu_torture_reader task
+[   36.781044] tasks-torture: rcu_torture_fakewriter task started
+[   36.851451] tasks-torture: Creating rcu_torture_reader task
+[   36.851455] tasks-torture: rcu_torture_reader task started
+[   36.871940] tasks-torture: Creating rcu_torture_reader task
+[   36.871945] tasks-torture: rcu_torture_reader task started
+[   36.940839] tasks-torture: Creating rcu_torture_reader task
+[   36.940841] tasks-torture: rcu_torture_reader task started
+[   36.983603] tasks-torture: Creating rcu_torture_reader task
+[   36.983608] tasks-torture: rcu_torture_reader task started
+[   37.004176] tasks-torture: Creating rcu_torture_reader task
+[   37.004185] tasks-torture: rcu_torture_reader task started
+[   37.068324] tasks-torture: Creating rcu_torture_reader task
+[   37.068330] tasks-torture: rcu_torture_reader task started
+[   37.110832] tasks-torture: rcu_torture_reader task started
+[   37.110848] tasks-torture: Creating rcu_torture_reader task
+[   37.154194] tasks-torture: Creating rcu_torture_reader task
+[   37.154208] tasks-torture: rcu_torture_reader task started
+[   37.194972] tasks-torture: Creating rcu_torture_reader task
+[   37.194979] tasks-torture: rcu_torture_reader task started
+[   37.235677] tasks-torture: rcu_torture_reader task started
+[   37.235698] tasks-torture: Creating rcu_torture_reader task
+[   37.277664] tasks-torture: Creating rcu_torture_reader task
+[   37.277670] tasks-torture: rcu_torture_reader task started
+[   37.315284] tasks-torture: rcu_torture_reader task started
+[   37.315292] tasks-torture: Creating rcu_torture_reader task
+[   37.359957] tasks-torture: Creating rcu_torture_reader task
+[   37.359963] tasks-torture: rcu_torture_reader task started
+[   37.398933] tasks-torture: rcu_torture_reader task started
+[   37.398947] tasks-torture: Creating rcu_torture_reader task
+[   37.440705] tasks-torture: Creating rcu_torture_reader task
+[   37.440711] tasks-torture: rcu_torture_reader task started
+[   37.479165] tasks-torture: Creating rcu_torture_reader task
+[   37.479170] tasks-torture: rcu_torture_reader task started
+[   37.521749] tasks-torture: rcu_torture_reader task started
+[   37.521764] tasks-torture: Creating rcu_torture_reader task
+[   37.569473] tasks-torture: rcu_torture_reader task started
+[   37.569491] tasks-torture: Creating rcu_torture_reader task
+[   37.619293] tasks-torture: rcu_torture_reader task started
+[   37.619303] tasks-torture: Creating rcu_torture_reader task
+[   37.666325] tasks-torture: Creating rcu_torture_reader task
+[   37.666335] tasks-torture: rcu_torture_reader task started
+[   37.710933] tasks-torture: Creating rcu_torture_reader task
+[   37.710941] tasks-torture: rcu_torture_reader task started
+[   37.761796] tasks-torture: Creating rcu_torture_reader task
+[   37.761913] tasks-torture: rcu_torture_reader task started
+[   37.781801] tasks-torture: rcu_torture_reader task started
+[   37.781871] tasks-torture: Creating rcu_torture_reader task
+[   37.782126] tasks-torture: Creating rcu_torture_reader task
+[   37.782178] tasks-torture: rcu_torture_reader task started
+[   37.782273] tasks-torture: Creating rcu_torture_reader task
+[   37.782311] tasks-torture: rcu_torture_reader task started
+[   37.782472] tasks-torture: Creating rcu_torture_reader task
+[   37.782481] tasks-torture: rcu_torture_reader task started
+[   37.782648] tasks-torture: Creating rcu_torture_reader task
+[   37.782685] tasks-torture: rcu_torture_reader task started
+[   37.782945] tasks-torture: Creating rcu_torture_reader task
+[   37.782952] tasks-torture: rcu_torture_reader task started
+[   37.783180] tasks-torture: Creating rcu_torture_reader task
+[   37.783223] tasks-torture: rcu_torture_reader task started
+[   37.783359] tasks-torture: Creating rcu_torture_reader task
+[   37.783365] tasks-torture: rcu_torture_reader task started
+[   37.783502] tasks-torture: Creating rcu_torture_stats task
+[   37.783530] tasks-torture: rcu_torture_reader task started
+[   37.783646] tasks-torture: Creating torture_shuffle task
+[   37.783668] tasks-torture: rcu_torture_stats task started
+[   37.783798] tasks-torture: Creating torture_stutter task
+[   37.783878] tasks-torture: torture_shuffle task started
+[   37.784008] tasks-torture: rcu_torture_fwd_prog_init: Disabled, unsuppor=
+ted by RCU flavor under test
+[   37.784034] tasks-torture: torture_stutter task started
+[   44.271200] install debs round one: dpkg -i --force-confdef --force-depe=
+nds /opt/deb/ntpdate_1%3a4.2.8p10+dfsg-3+deb9u2_amd64.deb
+[   44.271205]=20
+[   44.296248] /opt/deb/gawk_1%3a4.1.4+dfsg-1_amd64.deb
+[   44.296270]=20
+[   44.325527] Selecting previously unselected package ntpdate.
+[   44.325549]=20
+[   44.357489] (Reading database ... 16205 files and directories currently =
+installed.)
+[   44.357502]=20
+[   44.395255] Preparing to unpack .../ntpdate_1%3a4.2.8p10+dfsg-3+deb9u2_a=
+md64.deb ...
+[   44.395273]=20
+[   44.431676] Unpacking ntpdate (1:4.2.8p10+dfsg-3+deb9u2) ...
+[   44.431689]=20
+[   44.461939] Selecting previously unselected package gawk.
+[   44.461949]=20
+[   44.492041] Preparing to unpack .../gawk_1%3a4.1.4+dfsg-1_amd64.deb ...
+[   44.492069]=20
+[   44.523687] Unpacking gawk (1:4.1.4+dfsg-1) ...
+[   44.523702]=20
+[   44.550837] Setting up ntpdate (1:4.2.8p10+dfsg-3+deb9u2) ...
+[   44.550859]=20
+[   44.579794] Setting up gawk (1:4.1.4+dfsg-1) ...
+[   44.579796]=20
+[   44.608370] 22 May 03:04:28 ntpdate[747]: step time server 192.168.1.1 o=
+ffset 28830.676303 sec
+[   44.608392]=20
+[   44.647243] /lkp/lkp/src/bin/run-lkp
+[   44.647253]=20
+[   47.746965] RESULT_ROOT=3D/result/rcutorture/300s-default-tasks/lkp-opte=
+ron1/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c24c3=
+9240338fec8c8c9c971/8
+[   47.746970]=20
+[   48.394462] job=3D/lkp/jobs/scheduled/lkp-opteron1/rcutorture-300s-defau=
+lt-tasks-debian-x86_64-20191114.cgz-8e984da3e5752f18c24c39240338fec8c8c9c97=
+1-20200522-6454-mc4v1l-8.yaml
+[   48.394466]=20
+[   51.463204] result_service=3Dinn:/result, RESULT_MNT=3D/inn/result, RESU=
+LT_ROOT=3D/inn/result/rcutorture/300s-default-tasks/lkp-opteron1/debian-x86=
+_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c24c39240338fec8c8c9=
+c971/8
+[   51.463208]=20
+[   51.506170] mount.nfs: try 1 time... mount.nfs -o vers=3D3 inn:/result /=
+inn/result
+[   51.506204]=20
+[   51.560753] run-job /lkp/jobs/scheduled/lkp-opteron1/rcutorture-300s-def=
+ault-tasks-debian-x86_64-20191114.cgz-8e984da3e5752f18c24c39240338fec8c8c9c=
+971-20200522-6454-mc4v1l-8.yaml
+[   51.560784]=20
+[   57.558818] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp/cgi-bin/lkp-jobfile-append-var?job_file=3D/lk=
+p/jobs/scheduled/lkp-opteron1/rcutorture-300s-default-tasks-debian-x86_64-2=
+0191114.cgz-8e984da3e5752f18c24c39240338fec8c8c9c971-20200522-6454-mc4v1l-8=
+=2Eyaml&job_state=3Drunning -O /dev/null
+[   57.558823]=20
+[   57.606732] target ucode:=20
+[   57.606735]=20
+[   57.623623] IPMI Device Information
+[   57.623625]=20
+[   57.646483] BMC ARP Control         : ARP Responses Enabled, Gratuitous =
+ARP Disabled
+[   57.646486]=20
+[   57.683832] 2020-05-22 03:04:32 modprobe rcutorture torture_type=3Dtasks
+[   57.683834]=20
+[   57.711815] 2020-05-22 03:04:34 sleep 300
+[   57.711818]=20
+[  101.254826] tasks-torture: rtc: 000000009af11687 ver: 143 tfle: 0 rta: 1=
+43 rtaf: 0 rtf: 134 rtmbe: 0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 3=
+93773 onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=3D1000) barrier: 0/0:0
+[  101.278402] tasks-torture: Reader Pipe:  3258675309 89 0 0 0 0 0 0 0 0 0
+[  101.287714] tasks-torture: Reader Batch:  3258675398 0 0 0 0 0 0 0 0 0 0
+[  101.297009] tasks-torture: Free-Block Circulation:  142 142 141 140 139 =
+138 137 136 135 134 0
+[  162.694821] tasks-torture: rtc: 00000000a5ee4cb9 ver: 366 tfle: 0 rta: 3=
+66 rtaf: 0 rtf: 357 rtmbe: 0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 7=
+84865 onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=3D1000) barrier: 0/0:0
+[  162.718577] tasks-torture: Reader Pipe:  6501720892 190 0 0 0 0 0 0 0 0 0
+[  162.728030] tasks-torture: Reader Batch:  6501721082 0 0 0 0 0 0 0 0 0 0
+[  162.737423] tasks-torture: Free-Block Circulation:  365 365 364 363 362 =
+361 360 359 358 357 0
+[  224.134805] tasks-torture: rtc: 00000000cf9996e5 ver: 567 tfle: 0 rta: 5=
+67 rtaf: 0 rtf: 558 rtmbe: 0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 1=
+176154 onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=3D1000) barrier: 0/0:0
+[  224.158892] tasks-torture: Reader Pipe:  9741805460 236 0 0 0 0 0 0 0 0 0
+[  224.168533] tasks-torture: Reader Batch:  9741805696 0 0 0 0 0 0 0 0 0 0
+[  224.178073] tasks-torture: Free-Block Circulation:  566 566 565 564 563 =
+562 561 560 559 558 0
+[  285.574806] tasks-torture: rtc: 00000000a5ee4cb9 ver: 766 tfle: 0 rta: 7=
+66 rtaf: 0 rtf: 757 rtmbe: 0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 1=
+567210 onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=3D1000) barrier: 0/0:0
+[  285.599061] tasks-torture: Reader Pipe:  12986139114 289 0 0 0 0 0 0 0 0=
+ 0
+[  285.608904] tasks-torture: Reader Batch:  12986139403 0 0 0 0 0 0 0 0 0 0
+[  285.618616] tasks-torture: Free-Block Circulation:  765 765 764 763 762 =
+761 760 759 758 757 0
+[  337.869503] 2020-05-22 03:09:34 rmmod rcutorture
+[  337.869506]=20
+[  337.875973] tasks-torture: Stopping torture_shuffle task
+[  337.904151] tasks-torture: Stopping torture_shuffle
+[  337.920898] tasks-torture: Stopping torture_stutter task
+[  338.951763] tasks-torture: Stopping torture_stutter
+[  338.951770] tasks-torture: Stopping rcu_torture_writer
+[  338.951776] tasks-torture: Stopping rcu_torture_fakewriter
+[  338.951778] tasks-torture: Stopping rcu_torture_reader
+[  338.951781] tasks-torture: Stopping rcu_torture_reader
+[  338.951783] tasks-torture: Stopping rcu_torture_fakewriter
+[  338.951786] tasks-torture: Stopping rcu_torture_reader
+[  338.951789] tasks-torture: Stopping rcu_torture_reader
+[  338.951791] tasks-torture: Stopping rcu_torture_fakewriter
+[  338.951794] tasks-torture: Stopping rcu_torture_reader
+[  338.951797] tasks-torture: Stopping rcu_torture_reader
+[  338.951799] tasks-torture: Stopping rcu_torture_reader
+[  338.951801] tasks-torture: Stopping rcu_torture_reader
+[  338.951803] tasks-torture: Stopping rcu_torture_reader
+[  338.951805] tasks-torture: Stopping rcu_torture_reader
+[  338.951807] tasks-torture: Stopping rcu_torture_reader
+[  338.951808] tasks-torture: Stopping rcu_torture_fakewriter
+[  338.951810] tasks-torture: Stopping rcu_torture_reader
+[  338.951812] tasks-torture: Stopping rcu_torture_reader
+[  338.951814] tasks-torture: Stopping rcu_torture_reader
+[  338.951817] tasks-torture: Stopping rcu_torture_reader
+[  338.951819] tasks-torture: Stopping rcu_torture_reader
+[  338.951821] tasks-torture: Stopping rcu_torture_reader
+[  338.951824] tasks-torture: Stopping rcu_torture_reader
+[  338.951827] tasks-torture: Stopping rcu_torture_reader
+[  338.951829] tasks-torture: Stopping rcu_torture_reader
+[  338.951831] tasks-torture: Stopping rcu_torture_reader
+[  338.951833] tasks-torture: Stopping rcu_torture_reader
+[  338.951837] tasks-torture: Stopping rcu_torture_reader
+[  338.951838] tasks-torture: Stopping rcu_torture_reader
+[  338.951840] tasks-torture: Stopping rcu_torture_reader
+[  338.951842] tasks-torture: Stopping rcu_torture_reader
+[  338.951843] tasks-torture: Stopping rcu_torture_reader
+[  338.951845] tasks-torture: Stopping rcu_torture_reader
+[  338.951846] tasks-torture: Stopping rcu_torture_reader
+[  338.951848] tasks-torture: Stopping rcu_torture_reader
+[  338.952814] tasks-torture: Stopping rcu_torture_reader
+[  338.959889] rcu: rcu_sched: wait state: RCU_GP_WAIT_FQS(5) ->state: 0x40=
+2 delta ->gp_activity 2 ->gp_req_activity 7 ->gp_wake_time 7 ->gp_wake_seq =
+38952 ->gp_seq 38953 ->gp_seq_needed 38956 ->gp_flags 0x0
+[  340.061179] rcu: 	rcu_node 16:31 ->gp_seq 38957 ->gp_seq_needed 38964
+[  340.111505] rcu: 	cpu 16 ->gp_seq_needed 38964
+[  340.143426] rcu: 	cpu 17 ->gp_seq_needed 38960
+[  340.166642] rcu: 	cpu 18 ->gp_seq_needed 38964
+[  340.193959] rcu: 	cpu 19 ->gp_seq_needed 38964
+[  340.223991] rcu: 	cpu 20 ->gp_seq_needed 38964
+[  340.250472] rcu: 	cpu 21 ->gp_seq_needed 38964
+[  340.285855] rcu: 	cpu 22 ->gp_seq_needed 38964
+[  340.314263] rcu: 	cpu 23 ->gp_seq_needed 38964
+[  340.351917] rcu: 	cpu 24 ->gp_seq_needed 38964
+[  340.387830] rcu: 	cpu 25 ->gp_seq_needed 38964
+[  340.420281] rcu: 	cpu 26 ->gp_seq_needed 38964
+[  340.461871] rcu: 	cpu 27 ->gp_seq_needed 38964
+[  340.494276] rcu: 	cpu 28 ->gp_seq_needed 38964
+[  340.523698] rcu: 	cpu 29 ->gp_seq_needed 38964
+[  340.554067] rcu: 	cpu 30 ->gp_seq_needed 38964
+[  340.584437] rcu: 	cpu 31 ->gp_seq_needed 38960
+[  340.613883] tasks-torture: Stopping rcu_torture_writer task
+[  340.650281] tasks-torture: Stopping rcu_torture_reader task
+[  340.685495] tasks-torture: Stopping rcu_torture_reader task
+[  340.728679] tasks-torture: Stopping rcu_torture_reader task
+[  340.769538] tasks-torture: Stopping rcu_torture_reader task
+[  340.807485] tasks-torture: Stopping rcu_torture_reader task
+[  340.843481] tasks-torture: Stopping rcu_torture_reader task
+[  340.884384] tasks-torture: Stopping rcu_torture_reader task
+[  340.925861] tasks-torture: Stopping rcu_torture_reader task
+[  340.963967] tasks-torture: Stopping rcu_torture_reader task
+[  341.011598] tasks-torture: Stopping rcu_torture_reader task
+[  341.094918] tasks-torture: Stopping rcu_torture_reader task
+[  341.166520] tasks-torture: Stopping rcu_torture_reader task
+[  341.275806] tasks-torture: Stopping rcu_torture_reader task
+[  341.328850] tasks-torture: Stopping rcu_torture_reader task
+[  341.345994] tasks-torture: Stopping rcu_torture_reader task
+[  341.364582] tasks-torture: Stopping rcu_torture_reader task
+[  341.380794] tasks-torture: Stopping rcu_torture_reader task
+[  341.396805] tasks-torture: Stopping rcu_torture_reader task
+[  341.412668] tasks-torture: Stopping rcu_torture_reader task
+[  341.431713] tasks-torture: Stopping rcu_torture_reader task
+[  341.456348] tasks-torture: Stopping rcu_torture_reader task
+[  341.477850] tasks-torture: Stopping rcu_torture_reader task
+[  341.495684] tasks-torture: Stopping rcu_torture_reader task
+[  341.511693] tasks-torture: Stopping rcu_torture_reader task
+[  341.527730] tasks-torture: Stopping rcu_torture_reader task
+[  341.544546] tasks-torture: Stopping rcu_torture_reader task
+[  341.559953] tasks-torture: Stopping rcu_torture_reader task
+[  341.575662] tasks-torture: Stopping rcu_torture_reader task
+[  341.589986] tasks-torture: Stopping rcu_torture_reader task
+[  341.605916] tasks-torture: Stopping rcu_torture_reader task
+[  341.620690] tasks-torture: Stopping rcu_torture_reader task
+[  341.635253] tasks-torture: Stopping rcu_torture_fakewriter task
+[  341.650355] tasks-torture: Stopping rcu_torture_fakewriter task
+[  341.666322] tasks-torture: Stopping rcu_torture_fakewriter task
+[  341.681432] tasks-torture: Stopping rcu_torture_fakewriter task
+[  341.696695] tasks:  End-test grace-period state: g0 f0x0
+[  341.711789] tasks-torture: Stopping rcu_torture_stats task
+[  341.726516] tasks-torture: rtc: 0000000000000000 VER: 941 tfle: 0 rta: 9=
+41 rtaf: 0 rtf: 932 rtmbe: 0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 1=
+892755 onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=3D1000) barrier: 0/0:0
+[  341.772895] tasks-torture: Reader Pipe:  15688149095 329 0 0 0 0 0 0 0 0=
+ 0
+[  341.790654] tasks-torture: Reader Batch:  15688149424 0 0 0 0 0 0 0 0 0 0
+[  341.808331] tasks-torture: Free-Block Circulation:  940 940 939 938 937 =
+936 935 934 933 932 0
+[  341.830147] tasks-torture: Stopping rcu_torture_stats
+[  342.124805] tasks-torture: rtc: 0000000000000000 VER: 941 tfle: 0 rta: 9=
+41 rtaf: 0 rtf: 932 rtmbe: 0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 1=
+892755 onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=3D1000) barrier: 0/0:0
+[  342.144929] tasks-torture: Reader Pipe:  15688149095 329 0 0 0 0 0 0 0 0=
+ 0
+[  342.152708] tasks-torture: Reader Batch:  15688149424 0 0 0 0 0 0 0 0 0 0
+[  342.160411] tasks-torture: Free-Block Circulation:  940 940 939 938 937 =
+936 935 934 933 932 0
+[  342.169894] tasks-torture:--- End of test: SUCCESS: nreaders=3D31 nfakew=
+riters=3D4 stat_interval=3D60 verbose=3D1 test_no_idle_hz=3D1 shuffle_inter=
+val=3D3 stutter=3D5 irqreader=3D1 fqs_duration=3D0 fqs_holdoff=3D0 fqs_stut=
+ter=3D3 test_boost=3D1/0 test_boost_interval=3D7 test_boost_duration=3D4 sh=
+utdown_secs=3D0 stall_cpu=3D0 stall_cpu_holdoff=3D10 stall_cpu_irqsoff=3D0 =
+n_barrier_cbs=3D0 onoff_interval=3D0 onoff_holdoff=3D0
+[  344.877060]=20
+[   36.292255] tasks-torture:--- Start of test: nreaders=3D31 nfakewriters=
+=3D4 stat_interval=3D60 verbose=3D1 test_no_idle_hz=3D1 shuffle_interval=3D=
+3 stutter=3D5 irqreader=3D1 fqs_duration=3D0 fqs_holdoff=3D0 fqs_stutter=3D=
+3 test_boost=3D1/0 test_boost_interval=3D7 test_boost_duration=3D4 shutdown=
+_secs=3D0 stall_cpu=3D0 stall_cpu_holdoff=3D10 stall_cpu_irqsoff=3D0 n_barr=
+ier_cbs=3D0 onoff_interval=3D0 onoff_holdoff=3D0
+[  344.877064]=20
+[  344.939778]=20
+[   36.329068] tasks-torture: Creating rcu_torture_writer task
+[  344.939783]=20
+[  344.978703]=20
+[   36.336833] tasks-torture: rcu_torture_writer task started
+[  344.978715]=20
+[  345.015342]=20
+[   36.337675] tasks-torture: Creating rcu_torture_fakewriter task
+[  345.015367]=20
+[  345.049619]=20
+[   36.659933] tasks-torture: Creating rcu_torture_fakewriter task
+[  345.049625]=20
+[  345.085466]=20
+[   36.659939] tasks-torture: rcu_torture_fakewriter task started
+[  345.085477]=20
+[  345.119818]=20
+[   36.684705] tasks-torture: Creating rcu_torture_fakewriter task
+[  345.119823]=20
+[  345.153857]=20
+[   36.684718] tasks-torture: rcu_torture_fakewriter task started
+[  345.153873]=20
+[  345.189127]=20
+[   36.758805] tasks-torture: Creating rcu_torture_fakewriter task
+[  345.189144]=20
+[  345.223410]=20
+[   36.758811] tasks-torture: rcu_torture_fakewriter task started
+[  345.223412]=20
+[  345.258570]=20
+[   36.781026] tasks-torture: Creating rcu_torture_reader task
+[  345.258592]=20
+[  345.293299]=20
+[   36.781044] tasks-torture: rcu_torture_fakewriter task started
+[  345.293321]=20
+[  345.328022]=20
+[   36.851451] tasks-torture: Creating rcu_torture_reader task
+[  345.328043]=20
+[  345.362795]=20
+[   36.851455] tasks-torture: rcu_torture_reader task started
+[  345.362805]=20
+[  345.396566]=20
+[   36.871940] tasks-torture: Creating rcu_torture_reader task
+[  345.396597]=20
+[  345.431770]=20
+[   36.871945] tasks-torture: rcu_torture_reader task started
+[  345.431809]=20
+[  345.466117]=20
+[   36.940839] tasks-torture: Creating rcu_torture_reader task
+[  345.466139]=20
+[  345.501371]=20
+[   36.940841] tasks-torture: rcu_torture_reader task started
+[  345.501377]=20
+[  345.535563]=20
+[   36.983603] tasks-torture: Creating rcu_torture_reader task
+[  345.535577]=20
+[  345.569990]=20
+[   36.983608] tasks-torture: rcu_torture_reader task started
+[  345.569998]=20
+[  345.604896]=20
+[   37.004176] tasks-torture: Creating rcu_torture_reader task
+[  345.604913]=20
+[  345.637724]=20
+[   37.004185] tasks-torture: rcu_torture_reader task started
+[  345.637732]=20
+[  345.671070]=20
+[   37.068324] tasks-torture: Creating rcu_torture_reader task
+[  345.671078]=20
+[  345.702644]=20
+[   37.068330] tasks-torture: rcu_torture_reader task started
+[  345.702658]=20
+[  345.735282]=20
+[   37.110832] tasks-torture: rcu_torture_reader task started
+[  345.735284]=20
+[  345.768794]=20
+[   37.110848] tasks-torture: Creating rcu_torture_reader task
+[  345.768814]=20
+[  345.802182]=20
+[   37.154194] tasks-torture: Creating rcu_torture_reader task
+[  345.802201]=20
+[  345.835781]=20
+[   37.154208] tasks-torture: rcu_torture_reader task started
+[  345.835783]=20
+[  345.869015]=20
+[   37.194972] tasks-torture: Creating rcu_torture_reader task
+[  345.869026]=20
+[  345.901969]=20
+[   37.194979] tasks-torture: rcu_torture_reader task started
+[  345.901976]=20
+[  345.934670]=20
+[   37.235677] tasks-torture: rcu_torture_reader task started
+[  345.934684]=20
+[  345.967512]=20
+[   37.235698] tasks-torture: Creating rcu_torture_reader task
+[  345.967525]=20
+[  346.000628]=20
+[   37.277664] tasks-torture: Creating rcu_torture_reader task
+[  346.000632]=20
+[  346.035143]=20
+[   37.277670] tasks-torture: rcu_torture_reader task started
+[  346.035149]=20
+[  346.070194]=20
+[   37.315284] tasks-torture: rcu_torture_reader task started
+[  346.070219]=20
+[  346.108604]=20
+[   37.315292] tasks-torture: Creating rcu_torture_reader task
+[  346.108621]=20
+[  346.146953]=20
+[   37.359957] tasks-torture: Creating rcu_torture_reader task
+[  346.146977]=20
+[  346.184473]=20
+[   37.359963] tasks-torture: rcu_torture_reader task started
+[  346.184475]=20
+[  346.221857]=20
+[   37.398933] tasks-torture: rcu_torture_reader task started
+[  346.221860]=20
+[  346.258503]=20
+[   37.398947] tasks-torture: Creating rcu_torture_reader task
+[  346.258526]=20
+[  346.291576]=20
+[   37.440705] tasks-torture: Creating rcu_torture_reader task
+[  346.291604]=20
+[  346.325175]=20
+[   37.440711] tasks-torture: rcu_torture_reader task started
+[  346.325193]=20
+[  346.358700]=20
+[   37.479165] tasks-torture: Creating rcu_torture_reader task
+[  346.358704]=20
+[  346.392235]=20
+[   37.479170] tasks-torture: rcu_torture_reader task started
+[  346.392245]=20
+[  346.424627]=20
+[   37.521749] tasks-torture: rcu_torture_reader task started
+[  346.424630]=20
+[  346.457821]=20
+[   37.521764] tasks-torture: Creating rcu_torture_reader task
+[  346.457824]=20
+[  346.491291]=20
+[   37.569473] tasks-torture: rcu_torture_reader task started
+[  346.491293]=20
+[  346.524982]=20
+[   37.569491] tasks-torture: Creating rcu_torture_reader task
+[  346.524988]=20
+[  346.558578]=20
+[   37.619293] tasks-torture: rcu_torture_reader task started
+[  346.558595]=20
+[  346.591861]=20
+[   37.619303] tasks-torture: Creating rcu_torture_reader task
+[  346.591887]=20
+[  346.624956]=20
+[   37.666325] tasks-torture: Creating rcu_torture_reader task
+[  346.624978]=20
+[  346.658163]=20
+[   37.666335] tasks-torture: rcu_torture_reader task started
+[  346.658185]=20
+[  346.691559]=20
+[   37.710933] tasks-torture: Creating rcu_torture_reader task
+[  346.691576]=20
+[  346.725381]=20
+[   37.710941] tasks-torture: rcu_torture_reader task started
+[  346.725392]=20
+[  346.758539]=20
+[   37.761796] tasks-torture: Creating rcu_torture_reader task
+[  346.758547]=20
+[  346.791562]=20
+[   37.761913] tasks-torture: rcu_torture_reader task started
+[  346.791579]=20
+[  346.824574]=20
+[   37.781801] tasks-torture: rcu_torture_reader task started
+[  346.824587]=20
+[  346.857698]=20
+[   37.781871] tasks-torture: Creating rcu_torture_reader task
+[  346.857710]=20
+[  346.890485]=20
+[   37.782126] tasks-torture: Creating rcu_torture_reader task
+[  346.890492]=20
+[  346.923326]=20
+[   37.782178] tasks-torture: rcu_torture_reader task started
+[  346.923329]=20
+[  346.955952]=20
+[   37.782273] tasks-torture: Creating rcu_torture_reader task
+[  346.955960]=20
+[  346.988626]=20
+[   37.782311] tasks-torture: rcu_torture_reader task started
+[  346.988642]=20
+[  347.021813]=20
+[   37.782472] tasks-torture: Creating rcu_torture_reader task
+[  347.021816]=20
+[  347.054796]=20
+[   37.782481] tasks-torture: rcu_torture_reader task started
+[  347.054798]=20
+[  347.088212]=20
+[   37.782648] tasks-torture: Creating rcu_torture_reader task
+[  347.088228]=20
+[  347.121075]=20
+[   37.782685] tasks-torture: rcu_torture_reader task started
+[  347.121080]=20
+[  347.153744]=20
+[   37.782945] tasks-torture: Creating rcu_torture_reader task
+[  347.153759]=20
+[  347.185793]=20
+[   37.782952] tasks-torture: rcu_torture_reader task started
+[  347.185795]=20
+[  347.220630]=20
+[   37.783180] tasks-torture: Creating rcu_torture_reader task
+[  347.220634]=20
+[  347.257418]=20
+[   37.783223] tasks-torture: rcu_torture_reader task started
+[  347.257421]=20
+[  347.293266]=20
+[   37.783359] tasks-torture: Creating rcu_torture_reader task
+[  347.293271]=20
+[  347.330404]=20
+[   37.783365] tasks-torture: rcu_torture_reader task started
+[  347.330408]=20
+[  347.364162]=20
+[   37.783502] tasks-torture: Creating rcu_torture_stats task
+[  347.364164]=20
+[  347.397284]=20
+[   37.783530] tasks-torture: rcu_torture_reader task started
+[  347.397287]=20
+[  347.431420]=20
+[   37.783646] tasks-torture: Creating torture_shuffle task
+[  347.431422]=20
+[  347.461201]=20
+[   37.783668] tasks-torture: rcu_torture_stats task started
+[  347.461204]=20
+[  347.494179]=20
+[   37.783798] tasks-torture: Creating torture_stutter task
+[  347.494181]=20
+[  347.527989]=20
+[   37.783878] tasks-torture: torture_shuffle task started
+[  347.527991]=20
+[  347.594019]=20
+[   37.784008] tasks-torture: rcu_torture_fwd_prog_init: Disabled, unsuppor=
+ted by RCU flavor under test
+[  347.594021]=20
+[  347.642469]=20
+[   37.784034] tasks-torture: torture_stutter task started
+[  347.642471]=20
+[  347.686795]=20
+[  101.254826] tasks-torture: rtc: 000000009af11687 ver: 143 tfle: 0 rta: 1=
+43 rtaf: 0 rtf: 134 rtmbe: 0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 3=
+93773 onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=3D1000) barrier: 0/0:0
+[  347.686798]=20
+[  347.753313]=20
+[  101.278402] tasks-torture: Reader Pipe:  3258675309 89 0 0 0 0 0 0 0 0 0
+[  347.753315]=20
+[  347.791575]=20
+[  101.287714] tasks-torture: Reader Batch:  3258675398 0 0 0 0 0 0 0 0 0 0
+[  347.791577]=20
+[  347.830594]=20
+[  101.297009] tasks-torture: Free-Block Circulation:  142 142 141 140 139 =
+138 137 136 135 134 0
+[  347.830596]=20
+[  347.886443]=20
+[  162.694821] tasks-torture: rtc: 00000000a5ee4cb9 ver: 366 tfle: 0 rta: 3=
+66 rtaf: 0 rtf: 357 rtmbe: 0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 7=
+84865 onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=3D1000) barrier: 0/0:0
+[  347.886447]=20
+[  347.986205]=20
+[  162.718577] tasks-torture: Reader Pipe:  6501720892 190 0 0 0 0 0 0 0 0 0
+[  347.986207]=20
+[  348.046775]=20
+[  162.728030] tasks-torture: Reader Batch:  6501721082 0 0 0 0 0 0 0 0 0 0
+[  348.046777]=20
+[  348.122136]=20
+[  162.737423] tasks-torture: Free-Block Circulation:  365 365 364 363 362 =
+361 360 359 358 357 0
+[  348.122138]=20
+[  348.208895]=20
+[  224.134805] tasks-torture: rtc: 00000000cf9996e5 ver: 567 tfle: 0 rta: 5=
+67 rtaf: 0 rtf: 558 rtmbe: 0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 1=
+176154 onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=3D1000) barrier: 0/0:0
+[  348.208898]=20
+[  348.348404]=20
+[  224.158892] tasks-torture: Reader Pipe:  9741805460 236 0 0 0 0 0 0 0 0 0
+[  348.348406]=20
+[  348.415396]=20
+[  224.168533] tasks-torture: Reader Batch:  9741805696 0 0 0 0 0 0 0 0 0 0
+[  348.415399]=20
+[  348.490383]=20
+[  224.178073] tasks-torture: Free-Block Circulation:  566 566 565 564 563 =
+562 561 560 559 558 0
+[  348.490385]=20
+[  348.579143]=20
+[  285.574806] tasks-torture: rtc: 00000000a5ee4cb9 ver: 766 tfle: 0 rta: 7=
+66 rtaf: 0 rtf: 757 rtmbe: 0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 1=
+567210 onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=3D1000) barrier: 0/0:0
+[  348.579145]=20
+[  348.725425]=20
+[  285.599061] tasks-torture: Reader Pipe:  12986139114 289 0 0 0 0 0 0 0 0=
+ 0
+[  348.725427]=20
+[  348.807389]=20
+[  285.608904] tasks-torture: Reader Batch:  12986139403 0 0 0 0 0 0 0 0 0 0
+[  348.807391]=20
+[  348.849674]=20
+[  285.618616] tasks-torture: Free-Block Circulation:  765 765 764 763 762 =
+761 760 759 758 757 0
+[  348.849689]=20
+[  348.893086]=20
+[  337.875973] tasks-torture: Stopping torture_shuffle task
+[  348.893113]=20
+[  348.927181]=20
+[  337.904151] tasks-torture: Stopping torture_shuffle
+[  348.927187]=20
+[  348.960281]=20
+[  337.920898] tasks-torture: Stopping torture_stutter task
+[  348.960300]=20
+[  348.993478]=20
+[  338.951763] tasks-torture: Stopping torture_stutter
+[  348.993484]=20
+[  349.025811]=20
+[  338.951770] tasks-torture: Stopping rcu_torture_writer
+[  349.025821]=20
+[  349.059745]=20
+[  338.951776] tasks-torture: Stopping rcu_torture_fakewriter
+[  349.059762]=20
+[  349.093663]=20
+[  338.951778] tasks-torture: Stopping rcu_torture_reader
+[  349.093667]=20
+[  349.125893]=20
+[  338.951781] tasks-torture: Stopping rcu_torture_reader
+[  349.125901]=20
+[  349.158776]=20
+[  338.951783] tasks-torture: Stopping rcu_torture_fakewriter
+[  349.158782]=20
+[  349.192878]=20
+[  338.951786] tasks-torture: Stopping rcu_torture_reader
+[  349.192895]=20
+[  349.225363]=20
+[  338.951789] tasks-torture: Stopping rcu_torture_reader
+[  349.225369]=20
+[  349.257955]=20
+[  338.951791] tasks-torture: Stopping rcu_torture_fakewriter
+[  349.257958]=20
+[  349.293636]=20
+[  338.951794] tasks-torture: Stopping rcu_torture_reader
+[  349.293648]=20
+[  349.330625]=20
+[  338.951797] tasks-torture: Stopping rcu_torture_reader
+[  349.330642]=20
+[  349.367265]=20
+[  338.951799] tasks-torture: Stopping rcu_torture_reader
+[  349.367272]=20
+[  349.403948]=20
+[  338.951801] tasks-torture: Stopping rcu_torture_reader
+[  349.403952]=20
+[  349.440156]=20
+[  338.951803] tasks-torture: Stopping rcu_torture_reader
+[  349.440163]=20
+[  349.473915]=20
+[  338.951805] tasks-torture: Stopping rcu_torture_reader
+[  349.473923]=20
+[  349.505951]=20
+[  338.951807] tasks-torture: Stopping rcu_torture_reader
+[  349.505956]=20
+[  349.538253]=20
+[  338.951808] tasks-torture: Stopping rcu_torture_fakewriter
+[  349.538263]=20
+[  349.571514]=20
+[  338.951810] tasks-torture: Stopping rcu_torture_reader
+[  349.571517]=20
+[  349.603446]=20
+[  338.951812] tasks-torture: Stopping rcu_torture_reader
+[  349.603450]=20
+[  349.634854]=20
+[  338.951814] tasks-torture: Stopping rcu_torture_reader
+[  349.634857]=20
+[  349.666556]=20
+[  338.951817] tasks-torture: Stopping rcu_torture_reader
+[  349.666558]=20
+[  349.698531]=20
+[  338.951819] tasks-torture: Stopping rcu_torture_reader
+[  349.698536]=20
+[  349.729342]=20
+[  338.951821] tasks-torture: Stopping rcu_torture_reader
+[  349.729350]=20
+[  349.761378]=20
+[  338.951824] tasks-torture: Stopping rcu_torture_reader
+[  349.761381]=20
+[  349.793200]=20
+[  338.951827] tasks-torture: Stopping rcu_torture_reader
+[  349.793206]=20
+[  349.824498]=20
+[  338.951829] tasks-torture: Stopping rcu_torture_reader
+[  349.824503]=20
+[  349.855483]=20
+[  338.951831] tasks-torture: Stopping rcu_torture_reader
+[  349.855486]=20
+[  349.888517]=20
+[  338.951833] tasks-torture: Stopping rcu_torture_reader
+[  349.888533]=20
+[  349.921695]=20
+[  338.951837] tasks-torture: Stopping rcu_torture_reader
+[  349.921702]=20
+[  349.953322]=20
+[  338.951838] tasks-torture: Stopping rcu_torture_reader
+[  349.953328]=20
+[  349.984667]=20
+[  338.951840] tasks-torture: Stopping rcu_torture_reader
+[  349.984672]=20
+[  350.015933]=20
+[  338.951842] tasks-torture: Stopping rcu_torture_reader
+[  350.015935]=20
+[  350.047814]=20
+[  338.951843] tasks-torture: Stopping rcu_torture_reader
+[  350.047820]=20
+[  350.079511]=20
+[  338.951845] tasks-torture: Stopping rcu_torture_reader
+[  350.079516]=20
+[  350.111170]=20
+[  338.951846] tasks-torture: Stopping rcu_torture_reader
+[  350.111173]=20
+[  350.142670]=20
+[  338.951848] tasks-torture: Stopping rcu_torture_reader
+[  350.142680]=20
+[  350.175930]=20
+[  338.952814] tasks-torture: Stopping rcu_torture_reader
+[  350.175935]=20
+[  350.224760]=20
+[  340.613883] tasks-torture: Stopping rcu_torture_writer task
+[  350.224763]=20
+[  350.273123]=20
+[  340.650281] tasks-torture: Stopping rcu_torture_reader task
+[  350.273125]=20
+[  350.319132]=20
+[  340.685495] tasks-torture: Stopping rcu_torture_reader task
+[  350.319134]=20
+[  350.356573]=20
+[  340.728679] tasks-torture: Stopping rcu_torture_reader task
+[  350.356575]=20
+[  350.393635]=20
+[  340.769538] tasks-torture: Stopping rcu_torture_reader task
+[  350.393637]=20
+[  350.431697]=20
+[  340.807485] tasks-torture: Stopping rcu_torture_reader task
+[  350.431699]=20
+[  350.471107]=20
+[  340.843481] tasks-torture: Stopping rcu_torture_reader task
+[  350.471108]=20
+[  350.511018]=20
+[  340.884384] tasks-torture: Stopping rcu_torture_reader task
+[  350.511019]=20
+[  350.548366]=20
+[  340.925861] tasks-torture: Stopping rcu_torture_reader task
+[  350.548368]=20
+[  350.585002]=20
+[  340.963967] tasks-torture: Stopping rcu_torture_reader task
+[  350.585004]=20
+[  350.622155]=20
+[  341.011598] tasks-torture: Stopping rcu_torture_reader task
+[  350.622157]=20
+[  350.659414]=20
+[  341.094918] tasks-torture: Stopping rcu_torture_reader task
+[  350.659416]=20
+[  350.696804]=20
+[  341.166520] tasks-torture: Stopping rcu_torture_reader task
+[  350.696806]=20
+[  350.732853]=20
+[  341.275806] tasks-torture: Stopping rcu_torture_reader task
+[  350.732855]=20
+[  350.769930]=20
+[  341.328850] tasks-torture: Stopping rcu_torture_reader task
+[  350.769932]=20
+[  350.832808]=20
+[  341.345994] tasks-torture: Stopping rcu_torture_reader task
+[  350.832811]=20
+[  350.869448]=20
+[  341.364582] tasks-torture: Stopping rcu_torture_reader task
+[  350.869452]=20
+[  350.902747]=20
+[  341.380794] tasks-torture: Stopping rcu_torture_reader task
+[  350.902770]=20
+[  350.936400]=20
+[  341.396805] tasks-torture: Stopping rcu_torture_reader task
+[  350.936408]=20
+[  350.970208]=20
+[  341.412668] tasks-torture: Stopping rcu_torture_reader task
+[  350.970212]=20
+[  351.003678]=20
+[  341.431713] tasks-torture: Stopping rcu_torture_reader task
+[  351.003683]=20
+[  351.037131]=20
+[  341.456348] tasks-torture: Stopping rcu_torture_reader task
+[  351.037135]=20
+[  351.070634]=20
+[  341.477850] tasks-torture: Stopping rcu_torture_reader task
+[  351.070638]=20
+[  351.104126]=20
+[  341.495684] tasks-torture: Stopping rcu_torture_reader task
+[  351.104130]=20
+[  351.137039]=20
+[  341.511693] tasks-torture: Stopping rcu_torture_reader task
+[  351.137045]=20
+[  351.170623]=20
+[  341.527730] tasks-torture: Stopping rcu_torture_reader task
+[  351.170630]=20
+[  351.204295]=20
+[  341.544546] tasks-torture: Stopping rcu_torture_reader task
+[  351.204303]=20
+[  351.237475]=20
+[  341.559953] tasks-torture: Stopping rcu_torture_reader task
+[  351.237483]=20
+[  351.270790]=20
+[  341.575662] tasks-torture: Stopping rcu_torture_reader task
+[  351.270792]=20
+[  351.304269]=20
+[  341.589986] tasks-torture: Stopping rcu_torture_reader task
+[  351.304273]=20
+[  351.338973]=20
+[  341.605916] tasks-torture: Stopping rcu_torture_reader task
+[  351.338977]=20
+[  351.388761]=20
+[  341.620690] tasks-torture: Stopping rcu_torture_reader task
+[  351.388763]=20
+[  351.476054]=20
+[  341.635253] tasks-torture: Stopping rcu_torture_fakewriter task
+[  351.476059]=20
+[  351.514174]=20
+[  341.650355] tasks-torture: Stopping rcu_torture_fakewriter task
+[  351.514182]=20
+[  351.548979]=20
+[  341.666322] tasks-torture: Stopping rcu_torture_fakewriter task
+[  351.548983]=20
+[  351.584003]=20
+[  341.681432] tasks-torture: Stopping rcu_torture_fakewriter task
+[  351.584007]=20
+[  351.618794]=20
+[  341.711789] tasks-torture: Stopping rcu_torture_stats task
+[  351.618797]=20
+[  351.667419]=20
+[  341.726516] tasks-torture: rtc: 0000000000000000 VER: 941 tfle: 0 rta: 9=
+41 rtaf: 0 rtf: 932 rtmbe: 0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 1=
+892755 onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=3D1000) barrier: 0/0:0
+[  351.667456]=20
+[  351.743499]=20
+[  341.772895] tasks-torture: Reader Pipe:  15688149095 329 0 0 0 0 0 0 0 0=
+ 0
+[  351.743517]=20
+[  351.782714]=20
+[  341.790654] tasks-torture: Reader Batch:  15688149424 0 0 0 0 0 0 0 0 0 0
+[  351.782735]=20
+[  351.823141]=20
+[  341.808331] tasks-torture: Free-Block Circulation:  940 940 939 938 937 =
+936 935 934 933 932 0
+[  351.823167]=20
+[  351.866200]=20
+[  341.830147] tasks-torture: Stopping rcu_torture_stats
+[  351.866208]=20
+[  351.909785]=20
+[  342.124805] tasks-torture: rtc: 0000000000000000 VER: 941 tfle: 0 rta: 9=
+41 rtaf: 0 rtf: 932 rtmbe: 0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 1=
+892755 onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=3D1000) barrier: 0/0:0
+[  351.909792]=20
+[  351.986840]=20
+[  342.144929] tasks-torture: Reader Pipe:  15688149095 329 0 0 0 0 0 0 0 0=
+ 0
+[  351.986868]=20
+[  352.025894]=20
+[  342.152708] tasks-torture: Reader Batch:  15688149424 0 0 0 0 0 0 0 0 0 0
+[  352.025904]=20
+[  352.065324]=20
+[  342.160411] tasks-torture: Free-Block Circulation:  940 940 939 938 937 =
+936 935 934 933 932 0
+[  352.065340]=20
+[  352.439546]=20
+[  342.169894] tasks-torture:--- End of test: SUCCESS: nreaders=3D31 nfakew=
+riters=3D4 stat_interval=3D60 verbose=3D1 test_no_idle_hz=3D1 shuffle_inter=
+val=3D3 stutter=3D5 irqreader=3D1 fqs_duration=3D0 fqs_holdoff=3D0 fqs_stut=
+ter=3D3 test_boost=3D1/0 test_boost_interval=3D7 test_boost_duration=3D4 sh=
+utdown_secs=3D0 stall_cpu=3D0 stall_cpu_holdoff=3D10 stall_cpu_irqsoff=3D0 =
+n_barrier_cbs=3D0 onoff_interval=3D0 onoff_holdoff=3D0
+[  352.439551]=20
+[  352.530158] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp/cgi-bin/lkp-jobfile-append-var?job_file=3D/lk=
+p/jobs/scheduled/lkp-opteron1/rcutorture-300s-default-tasks-debian-x86_64-2=
+0191114.cgz-8e984da3e5752f18c24c39240338fec8c8c9c971-20200522-6454-mc4v1l-8=
+=2Eyaml&job_state=3Dpost_run -O /dev/null
+[  352.530259]=20
+[  352.632630] kill 876 vmstat --timestamp -n 10=20
+[  352.632645]=20
+[  352.667558] kill 874 dmesg --follow --decode=20
+[  352.667589]=20
+[  352.695419] wait for background processes: 879 883 meminfo oom-killer
+[  352.695439]=20
+[  354.401714] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp/cgi-bin/lkp-jobfile-append-var?job_file=3D/lk=
+p/jobs/scheduled/lkp-opteron1/rcutorture-300s-default-tasks-debian-x86_64-2=
+0191114.cgz-8e984da3e5752f18c24c39240338fec8c8c9c971-20200522-6454-mc4v1l-8=
+=2Eyaml&loadavg=3D14.71%2011.84%205.33%203/348%202125&start_time=3D15900878=
+72&end_time=3D1590088178&version=3D/lkp/lkp/.src-20200521-230720:4ca4d5bb:4=
+f036203c& -O /dev/null
+[  354.401719]=20
+[  354.500398] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp/cgi-bin/lkp-jobfile-append-var?job_file=3D/lk=
+p/jobs/scheduled/lkp-opteron1/rcutorture-300s-default-tasks-debian-x86_64-2=
+0191114.cgz-8e984da3e5752f18c24c39240338fec8c8c9c971-20200522-6454-mc4v1l-8=
+=2Eyaml&job_state=3Dfinished -O /dev/null
+[  354.500459]=20
+[  354.610314] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp/cgi-bin/lkp-post-run?job_file=3D/lkp/jobs/sch=
+eduled/lkp-opteron1/rcutorture-300s-default-tasks-debian-x86_64-20191114.cg=
+z-8e984da3e5752f18c24c39240338fec8c8c9c971-20200522-6454-mc4v1l-8.yaml -O /=
+dev/null
+[  354.610353]=20
+[  356.873658] getting new job...
+[  356.873661]=20
+[  356.949787] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp/cgi-bin/gpxelinux.cgi?hostname=3Dlkp-opteron1=
+&mac=3D00:25:90:4b:0a:86&last_kernel=3D/pkg/linux/x86_64-rhel-7.6/gcc-7/8e9=
+84da3e5752f18c24c39240338fec8c8c9c971/vmlinuz-5.7.0-rc6-00038-g8e984da3e575=
+2&lkp_wtmp -O /tmp/next-job-lkp
+[  356.949820]=20
+         Starting watchdog daemon...
+         Starting Update UTMP about System Runlevel Changes...
+[  362.442992] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp//lkp/jobs/scheduled/lkp-opteron1/rcutorture-3=
+00s-default-tasks-debian-x86_64-20191114.cgz-8e984da3e5752f18c24c39240338fe=
+c8c8c9c971-20200522-6454-mc4v1l-9.cgz -O /tmp/next-job.cgz
+[  362.442995]=20
+[  362.520896] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp/cgi-bin/lkp-wtmp?tbox_name=3Dlkp-opteron1&tbo=
+x_state=3Dkexec_to_next_job -O /dev/null
+[  362.520899]=20
+[  362.764747] downloading kernel image ...
+[  362.764767]=20
+[  362.838416] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp/cgi-bin/lkp-jobfile-append-var?job_file=3D/lk=
+p/jobs/scheduled/lkp-opteron1/rcutorture-300s-default-tasks-debian-x86_64-2=
+0191114.cgz-8e984da3e5752f18c24c39240338fec8c8c9c971-20200522-6454-mc4v1l-9=
+=2Eyaml&job_state=3Dwget_kernel -O /dev/null
+[  362.838418]=20
+[  363.056147] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp/pkg/linux/x86_64-rhel-7.6/gcc-7/8e984da3e5752=
+f18c24c39240338fec8c8c9c971/vmlinuz-5.7.0-rc6-00038-g8e984da3e5752 -N -P /o=
+pt/rootfs/tmp/pkg/linux/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c24c39240338f=
+ec8c8c9c971
+[  363.056150]=20
+[  363.269930] downloading initrds ...
+[  363.269932]=20
+[  363.296243] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp/cgi-bin/lkp-jobfile-append-var?job_file=3D/lk=
+p/jobs/scheduled/lkp-opteron1/rcutorture-300s-default-tasks-debian-x86_64-2=
+0191114.cgz-8e984da3e5752f18c24c39240338fec8c8c9c971-20200522-6454-mc4v1l-9=
+=2Eyaml&job_state=3Dwget_initrd -O /dev/null
+[  363.296246]=20
+[  363.457769] 21 blocks
+[  363.457775]=20
+[  363.624237] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp/osimage/debian/debian-x86_64-20191114.cgz -N =
+-P /opt/rootfs/tmp/osimage/debian
+[  363.624239]=20
+[  364.165403] /opt/rootfs/tmp/osimage/debian/debian-x86_64-20191114.cgz is=
+n't modified
+[  364.165407]=20
+[  364.196850] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp/lkp/jobs/scheduled/lkp-opteron1/rcutorture-30=
+0s-default-tasks-debian-x86_64-20191114.cgz-8e984da3e5752f18c24c39240338fec=
+8c8c9c971-20200522-6454-mc4v1l-9.cgz -N -P /opt/rootfs/tmp/lkp/jobs/schedul=
+ed/lkp-opteron1
+[  364.196853]=20
+[  364.223220] 21 blocks
+[  364.223224]=20
+[  364.240388] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp/osimage/user/lkp/lkp-x86_64.cgz -N -P /opt/ro=
+otfs/tmp/osimage/user/lkp
+[  364.240390]=20
+[  364.518949] /opt/rootfs/tmp/osimage/user/lkp/lkp-x86_64.cgz isn't modifi=
+ed
+[  364.518951]=20
+[  364.543261] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp/osimage/deps/debian-x86_64-20180403.cgz/run-i=
+pconfig_2018-04-03.cgz -N -P /opt/rootfs/tmp/osimage/deps/debian-x86_64-201=
+80403.cgz
+[  364.543264]=20
+[  364.672584] /opt/rootfs/tmp/osimage/deps/debian-x86_64-20180403.cgz/run-=
+ipconfig_2018-04-03.cgz isn't modified
+[  364.672587]=20
+[  364.710329] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp/osimage/deps/debian-x86_64-20180403.cgz/lkp_2=
+019-08-05.cgz -N -P /opt/rootfs/tmp/osimage/deps/debian-x86_64-20180403.cgz
+[  364.710332]=20
+[  364.776564] /opt/rootfs/tmp/osimage/deps/debian-x86_64-20180403.cgz/lkp_=
+2019-08-05.cgz isn't modified
+[  364.776566]=20
+[  364.821475] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp/osimage/deps/debian-x86_64-20180403.cgz/rsync=
+-rootfs_2018-04-03.cgz -N -P /opt/rootfs/tmp/osimage/deps/debian-x86_64-201=
+80403.cgz
+[  364.821478]=20
+[  364.893393] /opt/rootfs/tmp/osimage/deps/debian-x86_64-20180403.cgz/rsyn=
+c-rootfs_2018-04-03.cgz isn't modified
+[  364.893395]=20
+[  364.940273] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp/osimage/deps/debian-x86_64-20180403.cgz/hw_20=
+20-01-02.cgz -N -P /opt/rootfs/tmp/osimage/deps/debian-x86_64-20180403.cgz
+[  364.940276]=20
+[  365.007251] /opt/rootfs/tmp/osimage/deps/debian-x86_64-20180403.cgz/hw_2=
+020-01-02.cgz isn't modified
+[  365.007253]=20
+[  365.058072] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp/pkg/linux/x86_64-rhel-7.6/gcc-7/8e984da3e5752=
+f18c24c39240338fec8c8c9c971/modules.cgz -N -P /opt/rootfs/tmp/pkg/linux/x86=
+_64-rhel-7.6/gcc-7/8e984da3e5752f18c24c39240338fec8c8c9c971
+[  365.058074]=20
+[  366.349258] /opt/rootfs/tmp/pkg/linux/x86_64-rhel-7.6/gcc-7/8e984da3e575=
+2f18c24c39240338fec8c8c9c971/modules.cgz isn't modified
+[  366.349261]=20
+[  367.384911] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp/cgi-bin/lkp-jobfile-append-var?job_file=3D/lk=
+p/jobs/scheduled/lkp-opteron1/rcutorture-300s-default-tasks-debian-x86_64-2=
+0191114.cgz-8e984da3e5752f18c24c39240338fec8c8c9c971-20200522-6454-mc4v1l-9=
+=2Eyaml&last_kernel=3D5.7.0-rc6-00038-g8e984da3e5752 -O /dev/null
+[  367.384915]=20
+[  367.640831] /usr/bin/wget -q --timeout=3D1800 --tries=3D1 --local-encodi=
+ng=3DUTF-8 http://inn:80/~lkp/cgi-bin/lkp-jobfile-append-var?job_file=3D/lk=
+p/jobs/scheduled/lkp-opteron1/rcutorture-300s-default-tasks-debian-x86_64-2=
+0191114.cgz-8e984da3e5752f18c24c39240338fec8c8c9c971-20200522-6454-mc4v1l-9=
+=2Eyaml&job_state=3Dbooting -O /dev/null
+[  367.640834]=20
+[  368.026913] LKP: kexec loading...
+[  368.026917]=20
+[  368.063667] kexec --noefi -l /opt/rootfs/tmp/pkg/linux/x86_64-rhel-7.6/g=
+cc-7/8e984da3e5752f18c24c39240338fec8c8c9c971/vmlinuz-5.7.0-rc6-00038-g8e98=
+4da3e5752 --initrd=3D/opt/rootfs/tmp/initrd-concatenated
+[  368.063670]=20
+[  374.458323] --append=3Dip=3D::::lkp-opteron1::dhcp root=3D/dev/ram0 user=
+=3Dlkp job=3D/lkp/jobs/scheduled/lkp-opteron1/rcutorture-300s-default-tasks=
+-debian-x86_64-20191114.cgz-8e984da3e5752f18c24c39240338fec8c8c9c971-202005=
+22-6454-mc4v1l-9.yaml ARCH=3Dx86_64 kconfig=3Dx86_64-rhel-7.6 branch=3Dlinu=
+x-devel/devel-hourly-2020052107 commit=3D8e984da3e5752f18c24c39240338fec8c8=
+c9c971 BOOT_IMAGE=3D/pkg/linux/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c24c39=
+240338fec8c8c9c971/vmlinuz-5.7.0-rc6-00038-g8e984da3e5752 max_uptime=3D1500=
+ RESULT_ROOT=3D/result/rcutorture/300s-default-tasks/lkp-opteron1/debian-x8=
+6_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c24c39240338fec8c8c=
+9c971/9 LKP_SERVER=3Dinn nokaslr selinux=3D0 debug apic=3Ddebug sysrq_alway=
+s_enabled rcupdate.rcu_cpu_stall_timeout=3D100 net.ifnames=3D0 printk.devkm=
+sg=3Don panic=3D-1 softlockup_panic=3D1 nmi_watchdog=3Dpanic oops=3Dpanic l=
+oad_ramdisk=3D2 prompt_ramdisk=3D0 drbd.minor_count=3D8 systemd.l
+[  374.458327]=20
+LKP: rebooting
+[  376.867058] kvm: exiting hardware virtualization
+[  377.222834] sd 4:0:0:0: [sdb] Synchronizing SCSI cache
+[  377.248116] sd 3:0:0:0: [sda] Synchronizing SCSI cache
+[  377.737491] usb 5-3: USB disconnect, device number 2
+Starting new kernel
 
---1SVgZ+3xbDF9VW5n--
+--0et/Au7PJwzVwd4K
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=rcutorture
+
+2020-05-22 03:04:32 modprobe rcutorture torture_type=tasks
+2020-05-22 03:04:34 sleep 300
+2020-05-22 03:09:34 rmmod rcutorture
+[   36.292255] tasks-torture:--- Start of test: nreaders=31 nfakewriters=4 stat_interval=60 verbose=1 test_no_idle_hz=1 shuffle_interval=3 stutter=5 irqreader=1 fqs_duration=0 fqs_holdoff=0 fqs_stutter=3 test_boost=1/0 test_boost_interval=7 test_boost_duration=4 shutdown_secs=0 stall_cpu=0 stall_cpu_holdoff=10 stall_cpu_irqsoff=0 n_barrier_cbs=0 onoff_interval=0 onoff_holdoff=0
+[   36.329068] tasks-torture: Creating rcu_torture_writer task
+[   36.336833] tasks-torture: rcu_torture_writer task started
+[   36.337675] tasks-torture: Creating rcu_torture_fakewriter task
+[   36.659933] tasks-torture: Creating rcu_torture_fakewriter task
+[   36.659939] tasks-torture: rcu_torture_fakewriter task started
+[   36.684705] tasks-torture: Creating rcu_torture_fakewriter task
+[   36.684718] tasks-torture: rcu_torture_fakewriter task started
+[   36.758805] tasks-torture: Creating rcu_torture_fakewriter task
+[   36.758811] tasks-torture: rcu_torture_fakewriter task started
+[   36.781026] tasks-torture: Creating rcu_torture_reader task
+[   36.781044] tasks-torture: rcu_torture_fakewriter task started
+[   36.851451] tasks-torture: Creating rcu_torture_reader task
+[   36.851455] tasks-torture: rcu_torture_reader task started
+[   36.871940] tasks-torture: Creating rcu_torture_reader task
+[   36.871945] tasks-torture: rcu_torture_reader task started
+[   36.940839] tasks-torture: Creating rcu_torture_reader task
+[   36.940841] tasks-torture: rcu_torture_reader task started
+[   36.983603] tasks-torture: Creating rcu_torture_reader task
+[   36.983608] tasks-torture: rcu_torture_reader task started
+[   37.004176] tasks-torture: Creating rcu_torture_reader task
+[   37.004185] tasks-torture: rcu_torture_reader task started
+[   37.068324] tasks-torture: Creating rcu_torture_reader task
+[   37.068330] tasks-torture: rcu_torture_reader task started
+[   37.110832] tasks-torture: rcu_torture_reader task started
+[   37.110848] tasks-torture: Creating rcu_torture_reader task
+[   37.154194] tasks-torture: Creating rcu_torture_reader task
+[   37.154208] tasks-torture: rcu_torture_reader task started
+[   37.194972] tasks-torture: Creating rcu_torture_reader task
+[   37.194979] tasks-torture: rcu_torture_reader task started
+[   37.235677] tasks-torture: rcu_torture_reader task started
+[   37.235698] tasks-torture: Creating rcu_torture_reader task
+[   37.277664] tasks-torture: Creating rcu_torture_reader task
+[   37.277670] tasks-torture: rcu_torture_reader task started
+[   37.315284] tasks-torture: rcu_torture_reader task started
+[   37.315292] tasks-torture: Creating rcu_torture_reader task
+[   37.359957] tasks-torture: Creating rcu_torture_reader task
+[   37.359963] tasks-torture: rcu_torture_reader task started
+[   37.398933] tasks-torture: rcu_torture_reader task started
+[   37.398947] tasks-torture: Creating rcu_torture_reader task
+[   37.440705] tasks-torture: Creating rcu_torture_reader task
+[   37.440711] tasks-torture: rcu_torture_reader task started
+[   37.479165] tasks-torture: Creating rcu_torture_reader task
+[   37.479170] tasks-torture: rcu_torture_reader task started
+[   37.521749] tasks-torture: rcu_torture_reader task started
+[   37.521764] tasks-torture: Creating rcu_torture_reader task
+[   37.569473] tasks-torture: rcu_torture_reader task started
+[   37.569491] tasks-torture: Creating rcu_torture_reader task
+[   37.619293] tasks-torture: rcu_torture_reader task started
+[   37.619303] tasks-torture: Creating rcu_torture_reader task
+[   37.666325] tasks-torture: Creating rcu_torture_reader task
+[   37.666335] tasks-torture: rcu_torture_reader task started
+[   37.710933] tasks-torture: Creating rcu_torture_reader task
+[   37.710941] tasks-torture: rcu_torture_reader task started
+[   37.761796] tasks-torture: Creating rcu_torture_reader task
+[   37.761913] tasks-torture: rcu_torture_reader task started
+[   37.781801] tasks-torture: rcu_torture_reader task started
+[   37.781871] tasks-torture: Creating rcu_torture_reader task
+[   37.782126] tasks-torture: Creating rcu_torture_reader task
+[   37.782178] tasks-torture: rcu_torture_reader task started
+[   37.782273] tasks-torture: Creating rcu_torture_reader task
+[   37.782311] tasks-torture: rcu_torture_reader task started
+[   37.782472] tasks-torture: Creating rcu_torture_reader task
+[   37.782481] tasks-torture: rcu_torture_reader task started
+[   37.782648] tasks-torture: Creating rcu_torture_reader task
+[   37.782685] tasks-torture: rcu_torture_reader task started
+[   37.782945] tasks-torture: Creating rcu_torture_reader task
+[   37.782952] tasks-torture: rcu_torture_reader task started
+[   37.783180] tasks-torture: Creating rcu_torture_reader task
+[   37.783223] tasks-torture: rcu_torture_reader task started
+[   37.783359] tasks-torture: Creating rcu_torture_reader task
+[   37.783365] tasks-torture: rcu_torture_reader task started
+[   37.783502] tasks-torture: Creating rcu_torture_stats task
+[   37.783530] tasks-torture: rcu_torture_reader task started
+[   37.783646] tasks-torture: Creating torture_shuffle task
+[   37.783668] tasks-torture: rcu_torture_stats task started
+[   37.783798] tasks-torture: Creating torture_stutter task
+[   37.783878] tasks-torture: torture_shuffle task started
+[   37.784008] tasks-torture: rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test
+[   37.784034] tasks-torture: torture_stutter task started
+[  101.254826] tasks-torture: rtc: 000000009af11687 ver: 143 tfle: 0 rta: 143 rtaf: 0 rtf: 134 rtmbe: 0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 393773 onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=1000) barrier: 0/0:0
+[  101.278402] tasks-torture: Reader Pipe:  3258675309 89 0 0 0 0 0 0 0 0 0
+[  101.287714] tasks-torture: Reader Batch:  3258675398 0 0 0 0 0 0 0 0 0 0
+[  101.297009] tasks-torture: Free-Block Circulation:  142 142 141 140 139 138 137 136 135 134 0
+[  162.694821] tasks-torture: rtc: 00000000a5ee4cb9 ver: 366 tfle: 0 rta: 366 rtaf: 0 rtf: 357 rtmbe: 0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 784865 onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=1000) barrier: 0/0:0
+[  162.718577] tasks-torture: Reader Pipe:  6501720892 190 0 0 0 0 0 0 0 0 0
+[  162.728030] tasks-torture: Reader Batch:  6501721082 0 0 0 0 0 0 0 0 0 0
+[  162.737423] tasks-torture: Free-Block Circulation:  365 365 364 363 362 361 360 359 358 357 0
+[  224.134805] tasks-torture: rtc: 00000000cf9996e5 ver: 567 tfle: 0 rta: 567 rtaf: 0 rtf: 558 rtmbe: 0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 1176154 onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=1000) barrier: 0/0:0
+[  224.158892] tasks-torture: Reader Pipe:  9741805460 236 0 0 0 0 0 0 0 0 0
+[  224.168533] tasks-torture: Reader Batch:  9741805696 0 0 0 0 0 0 0 0 0 0
+[  224.178073] tasks-torture: Free-Block Circulation:  566 566 565 564 563 562 561 560 559 558 0
+[  285.574806] tasks-torture: rtc: 00000000a5ee4cb9 ver: 766 tfle: 0 rta: 766 rtaf: 0 rtf: 757 rtmbe: 0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 1567210 onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=1000) barrier: 0/0:0
+[  285.599061] tasks-torture: Reader Pipe:  12986139114 289 0 0 0 0 0 0 0 0 0
+[  285.608904] tasks-torture: Reader Batch:  12986139403 0 0 0 0 0 0 0 0 0 0
+[  285.618616] tasks-torture: Free-Block Circulation:  765 765 764 763 762 761 760 759 758 757 0
+[  337.875973] tasks-torture: Stopping torture_shuffle task
+[  337.904151] tasks-torture: Stopping torture_shuffle
+[  337.920898] tasks-torture: Stopping torture_stutter task
+[  338.951763] tasks-torture: Stopping torture_stutter
+[  338.951770] tasks-torture: Stopping rcu_torture_writer
+[  338.951776] tasks-torture: Stopping rcu_torture_fakewriter
+[  338.951778] tasks-torture: Stopping rcu_torture_reader
+[  338.951781] tasks-torture: Stopping rcu_torture_reader
+[  338.951783] tasks-torture: Stopping rcu_torture_fakewriter
+[  338.951786] tasks-torture: Stopping rcu_torture_reader
+[  338.951789] tasks-torture: Stopping rcu_torture_reader
+[  338.951791] tasks-torture: Stopping rcu_torture_fakewriter
+[  338.951794] tasks-torture: Stopping rcu_torture_reader
+[  338.951797] tasks-torture: Stopping rcu_torture_reader
+[  338.951799] tasks-torture: Stopping rcu_torture_reader
+[  338.951801] tasks-torture: Stopping rcu_torture_reader
+[  338.951803] tasks-torture: Stopping rcu_torture_reader
+[  338.951805] tasks-torture: Stopping rcu_torture_reader
+[  338.951807] tasks-torture: Stopping rcu_torture_reader
+[  338.951808] tasks-torture: Stopping rcu_torture_fakewriter
+[  338.951810] tasks-torture: Stopping rcu_torture_reader
+[  338.951812] tasks-torture: Stopping rcu_torture_reader
+[  338.951814] tasks-torture: Stopping rcu_torture_reader
+[  338.951817] tasks-torture: Stopping rcu_torture_reader
+[  338.951819] tasks-torture: Stopping rcu_torture_reader
+[  338.951821] tasks-torture: Stopping rcu_torture_reader
+[  338.951824] tasks-torture: Stopping rcu_torture_reader
+[  338.951827] tasks-torture: Stopping rcu_torture_reader
+[  338.951829] tasks-torture: Stopping rcu_torture_reader
+[  338.951831] tasks-torture: Stopping rcu_torture_reader
+[  338.951833] tasks-torture: Stopping rcu_torture_reader
+[  338.951837] tasks-torture: Stopping rcu_torture_reader
+[  338.951838] tasks-torture: Stopping rcu_torture_reader
+[  338.951840] tasks-torture: Stopping rcu_torture_reader
+[  338.951842] tasks-torture: Stopping rcu_torture_reader
+[  338.951843] tasks-torture: Stopping rcu_torture_reader
+[  338.951845] tasks-torture: Stopping rcu_torture_reader
+[  338.951846] tasks-torture: Stopping rcu_torture_reader
+[  338.951848] tasks-torture: Stopping rcu_torture_reader
+[  338.952814] tasks-torture: Stopping rcu_torture_reader
+[  340.613883] tasks-torture: Stopping rcu_torture_writer task
+[  340.650281] tasks-torture: Stopping rcu_torture_reader task
+[  340.685495] tasks-torture: Stopping rcu_torture_reader task
+[  340.728679] tasks-torture: Stopping rcu_torture_reader task
+[  340.769538] tasks-torture: Stopping rcu_torture_reader task
+[  340.807485] tasks-torture: Stopping rcu_torture_reader task
+[  340.843481] tasks-torture: Stopping rcu_torture_reader task
+[  340.884384] tasks-torture: Stopping rcu_torture_reader task
+[  340.925861] tasks-torture: Stopping rcu_torture_reader task
+[  340.963967] tasks-torture: Stopping rcu_torture_reader task
+[  341.011598] tasks-torture: Stopping rcu_torture_reader task
+[  341.094918] tasks-torture: Stopping rcu_torture_reader task
+[  341.166520] tasks-torture: Stopping rcu_torture_reader task
+[  341.275806] tasks-torture: Stopping rcu_torture_reader task
+[  341.328850] tasks-torture: Stopping rcu_torture_reader task
+[  341.345994] tasks-torture: Stopping rcu_torture_reader task
+[  341.364582] tasks-torture: Stopping rcu_torture_reader task
+[  341.380794] tasks-torture: Stopping rcu_torture_reader task
+[  341.396805] tasks-torture: Stopping rcu_torture_reader task
+[  341.412668] tasks-torture: Stopping rcu_torture_reader task
+[  341.431713] tasks-torture: Stopping rcu_torture_reader task
+[  341.456348] tasks-torture: Stopping rcu_torture_reader task
+[  341.477850] tasks-torture: Stopping rcu_torture_reader task
+[  341.495684] tasks-torture: Stopping rcu_torture_reader task
+[  341.511693] tasks-torture: Stopping rcu_torture_reader task
+[  341.527730] tasks-torture: Stopping rcu_torture_reader task
+[  341.544546] tasks-torture: Stopping rcu_torture_reader task
+[  341.559953] tasks-torture: Stopping rcu_torture_reader task
+[  341.575662] tasks-torture: Stopping rcu_torture_reader task
+[  341.589986] tasks-torture: Stopping rcu_torture_reader task
+[  341.605916] tasks-torture: Stopping rcu_torture_reader task
+[  341.620690] tasks-torture: Stopping rcu_torture_reader task
+[  341.635253] tasks-torture: Stopping rcu_torture_fakewriter task
+[  341.650355] tasks-torture: Stopping rcu_torture_fakewriter task
+[  341.666322] tasks-torture: Stopping rcu_torture_fakewriter task
+[  341.681432] tasks-torture: Stopping rcu_torture_fakewriter task
+[  341.711789] tasks-torture: Stopping rcu_torture_stats task
+[  341.726516] tasks-torture: rtc: 0000000000000000 VER: 941 tfle: 0 rta: 941 rtaf: 0 rtf: 932 rtmbe: 0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 1892755 onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=1000) barrier: 0/0:0
+[  341.772895] tasks-torture: Reader Pipe:  15688149095 329 0 0 0 0 0 0 0 0 0
+[  341.790654] tasks-torture: Reader Batch:  15688149424 0 0 0 0 0 0 0 0 0 0
+[  341.808331] tasks-torture: Free-Block Circulation:  940 940 939 938 937 936 935 934 933 932 0
+[  341.830147] tasks-torture: Stopping rcu_torture_stats
+[  342.124805] tasks-torture: rtc: 0000000000000000 VER: 941 tfle: 0 rta: 941 rtaf: 0 rtf: 932 rtmbe: 0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 1892755 onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=1000) barrier: 0/0:0
+[  342.144929] tasks-torture: Reader Pipe:  15688149095 329 0 0 0 0 0 0 0 0 0
+[  342.152708] tasks-torture: Reader Batch:  15688149424 0 0 0 0 0 0 0 0 0 0
+[  342.160411] tasks-torture: Free-Block Circulation:  940 940 939 938 937 936 935 934 933 932 0
+[  342.169894] tasks-torture:--- End of test: SUCCESS: nreaders=31 nfakewriters=4 stat_interval=60 verbose=1 test_no_idle_hz=1 shuffle_interval=3 stutter=5 irqreader=1 fqs_duration=0 fqs_holdoff=0 fqs_stutter=3 test_boost=1/0 test_boost_interval=7 test_boost_duration=4 shutdown_secs=0 stall_cpu=0 stall_cpu_holdoff=10 stall_cpu_irqsoff=0 n_barrier_cbs=0 onoff_interval=0 onoff_holdoff=0
+
+--0et/Au7PJwzVwd4K
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="job.yaml"
+
+---
+
+#! jobs/rcutorture.yaml
+suite: rcutorture
+testcase: rcutorture
+category: functional
+need_memory: 300MB
+runtime: 300s
+rcutorture:
+  test: default
+  torture_type: tasks
+job_origin: "/lkp/lkp/.src-20200520-135839/allot/cyclic:p2:linux-devel:devel-hourly/lkp-opteron1/rcutorture.yaml"
+
+#! queue options
+queue_cmdline_keys:
+- branch
+- commit
+queue: bisect
+testbox: lkp-opteron1
+tbox_group: lkp-opteron1
+submit_id: 5ec66a13756b5f29a9aaffa7
+job_file: "/lkp/jobs/scheduled/lkp-opteron1/rcutorture-300s-default-tasks-debian-x86_64-20191114.cgz-8e984da3e5752f18c24c39240338fec8c8c9c971-20200521-10665-1bkpay7-0.yaml"
+id: e7ace88e7c59e0d92d3e4ed080839677a16cce7d
+queuer_version: "/lkp-src"
+
+#! hosts/lkp-opteron1
+model: Opteron
+nr_cpu: 32
+memory: 128G
+nr_hdd_partitions: 8
+hdd_partitions: "/dev/disk/by-id/ata-WDC_WD60EFRX-68L0BN1_WD-WX31DB5L63TN-part*"
+rootfs_partition: "/dev/disk/by-id/ata-ST1000DM003-1CH162_Z1DAS0H7-part1"
+brand: AMD Opteron(TM) Processor 6276
+
+#! include/category/functional
+kmsg: 
+heartbeat: 
+meminfo: 
+
+#! include/rcutorture
+need_kconfig:
+- CONFIG_RCU_TORTURE_TEST
+- CONFIG_SECURITY_LOADPIN_ENABLED=n
+
+#! include/queue/cyclic
+commit: 8e984da3e5752f18c24c39240338fec8c8c9c971
+
+#! include/testbox/lkp-opteron1
+need_kconfig_hw:
+- CONFIG_IGB=y
+- CONFIG_SATA_AHCI
+
+#! default params
+kconfig: x86_64-rhel-7.6
+compiler: gcc-7
+enqueue_time: 2020-05-21 19:46:33.364556040 +08:00
+_id: 5ec66a13756b5f29a9aaffa7
+_rt: "/result/rcutorture/300s-default-tasks/lkp-opteron1/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c24c39240338fec8c8c9c971"
+
+#! schedule options
+user: lkp
+head_commit: d0edf98c01ebe0790295cf888a2976d2d04377b1
+base_commit: b9bbe6ed63b2b9f2c9ee5cbd0f2c946a2723f4ce
+branch: linux-devel/devel-hourly-2020052107
+rootfs: debian-x86_64-20191114.cgz
+result_root: "/result/rcutorture/300s-default-tasks/lkp-opteron1/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c24c39240338fec8c8c9c971/0"
+scheduler_version: "/lkp/lkp/.src-20200521-152632"
+LKP_SERVER: inn
+arch: x86_64
+max_uptime: 1500
+initrd: "/osimage/debian/debian-x86_64-20191114.cgz"
+bootloader_append:
+- root=/dev/ram0
+- user=lkp
+- job=/lkp/jobs/scheduled/lkp-opteron1/rcutorture-300s-default-tasks-debian-x86_64-20191114.cgz-8e984da3e5752f18c24c39240338fec8c8c9c971-20200521-10665-1bkpay7-0.yaml
+- ARCH=x86_64
+- kconfig=x86_64-rhel-7.6
+- branch=linux-devel/devel-hourly-2020052107
+- commit=8e984da3e5752f18c24c39240338fec8c8c9c971
+- BOOT_IMAGE=/pkg/linux/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c24c39240338fec8c8c9c971/vmlinuz-5.7.0-rc6-00038-g8e984da3e5752
+- max_uptime=1500
+- RESULT_ROOT=/result/rcutorture/300s-default-tasks/lkp-opteron1/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c24c39240338fec8c8c9c971/0
+- LKP_SERVER=inn
+- nokaslr
+- selinux=0
+- debug
+- apic=debug
+- sysrq_always_enabled
+- rcupdate.rcu_cpu_stall_timeout=100
+- net.ifnames=0
+- printk.devkmsg=on
+- panic=-1
+- softlockup_panic=1
+- nmi_watchdog=panic
+- oops=panic
+- load_ramdisk=2
+- prompt_ramdisk=0
+- drbd.minor_count=8
+- systemd.log_level=err
+- ignore_loglevel
+- console=tty0
+- earlyprintk=ttyS0,115200
+- console=ttyS0,115200
+- vga=normal
+- rw
+modules_initrd: "/pkg/linux/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c24c39240338fec8c8c9c971/modules.cgz"
+bm_initrd: "/osimage/deps/debian-x86_64-20180403.cgz/run-ipconfig_2018-04-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/lkp_2019-08-05.cgz,/osimage/deps/debian-x86_64-20180403.cgz/rsync-rootfs_2018-04-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/hw_2020-01-02.cgz"
+lkp_initrd: "/osimage/user/lkp/lkp-x86_64.cgz"
+site: inn
+
+#! /lkp/lkp/.src-20200520-135839/include/site/inn
+LKP_CGI_PORT: 80
+LKP_CIFS_PORT: 139
+oom-killer: 
+watchdog: 
+
+#! runtime status
+last_kernel: 5.7.0-rc6-08134-g03e347ff8c7cc
+schedule_notify_address: 
+
+#! user overrides
+kernel: "/pkg/linux/x86_64-rhel-7.6/gcc-7/8e984da3e5752f18c24c39240338fec8c8c9c971/vmlinuz-5.7.0-rc6-00038-g8e984da3e5752"
+dequeue_time: 2020-05-21 19:52:55.643889251 +08:00
+
+#! /lkp/lkp/.src-20200521-152632/include/site/inn
+job_state: finished
+loadavg: 21.00 13.94 6.19 4/352 2131
+start_time: '1590062048'
+end_time: '1590062353'
+version: "/lkp/lkp/.src-20200521-152726:ddd4c73b:8dc584c7e"
+
+--0et/Au7PJwzVwd4K
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=reproduce
+
+ "modprobe" "rcutorture" "torture_type=tasks"
+ "sleep" "300"
+ "rmmod" "rcutorture"
+
+--0et/Au7PJwzVwd4K--
