@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B887C1E2DEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C22771E2C6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403862AbgEZTGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:06:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33910 "EHLO mail.kernel.org"
+        id S2404382AbgEZTO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:14:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391542AbgEZTFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:05:52 -0400
+        id S2392218AbgEZTOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:14:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1C6320776;
-        Tue, 26 May 2020 19:05:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 588D9208A7;
+        Tue, 26 May 2020 19:14:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519951;
-        bh=PHb8uiGUuaopmLvAPELAmxO1WXO3/KVmXp4Yu4YIYDM=;
+        s=default; t=1590520490;
+        bh=W0NrlpBBLbhhjgg9G7Odx/xWAoRBKox2cXnYyWaIKGY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GgEPwmLqODzgQ8EYQEToCIVirVB0jhz3bZIy++c+7Y0Qx5qb7RLHf45ztt9H6sdKI
-         rAU8+SG+97VpNB03t+jpNN5a5nZQw8e0e7dz4LTalrQBl4/yUjrh4nHf727Dm3vSA4
-         s08H3ApSmMGrdILolPBjSUootJXA2SnmcXKhbykw=
+        b=I+9RhNuSqPBIULSUug94rTx4a8+H4mwmEPcRm/+I0uZcw2nYALWhF/5dQWYj2gJR7
+         3OsQ+2C/VxuTUaufK5e9/G/w5HC9TVpYWIYWnIMZVSfN/Y0OixcwB4HUPkpCzk+LHT
+         yGeDzMtGNd8PNJB37RmzX40gmLUwM2OCyCkwZTxg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ashwin H <ashwinh@vmware.com>
-Subject: [PATCH 4.19 81/81] make user_access_begin() do access_ok()
+        stable@vger.kernel.org, Saravana Kannan <saravanak@google.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.6 099/126] driver core: Fix SYNC_STATE_ONLY device link implementation
 Date:   Tue, 26 May 2020 20:53:56 +0200
-Message-Id: <20200526183936.018034220@linuxfoundation.org>
+Message-Id: <20200526183946.089959904@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
-References: <20200526183923.108515292@linuxfoundation.org>
+In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
+References: <20200526183937.471379031@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,191 +43,184 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Saravana Kannan <saravanak@google.com>
 
-commit 594cc251fdd0d231d342d88b2fdff4bc42fb0690 upstream.
+commit 21c27f06587d2c18150d27ca2382a509ec55c482 upstream.
 
-Originally, the rule used to be that you'd have to do access_ok()
-separately, and then user_access_begin() before actually doing the
-direct (optimized) user access.
+When SYNC_STATE_ONLY support was added in commit 05ef983e0d65 ("driver
+core: Add device link support for SYNC_STATE_ONLY flag"),
+device_link_add() incorrectly skipped adding the new SYNC_STATE_ONLY
+device link to the supplier's and consumer's "device link" list.
 
-But experience has shown that people then decide not to do access_ok()
-at all, and instead rely on it being implied by other operations or
-similar.  Which makes it very hard to verify that the access has
-actually been range-checked.
+This causes multiple issues:
+- The device link is lost forever from driver core if the caller
+  didn't keep track of it (caller typically isn't expected to). This is
+  a memory leak.
+- The device link is also never visible to any other code path after
+  device_link_add() returns.
 
-If you use the unsafe direct user accesses, hardware features (either
-SMAP - Supervisor Mode Access Protection - on x86, or PAN - Privileged
-Access Never - on ARM) do force you to use user_access_begin().  But
-nothing really forces the range check.
+If we fix the "device link" list handling, that exposes a bunch of
+issues.
 
-By putting the range check into user_access_begin(), we actually force
-people to do the right thing (tm), and the range check vill be visible
-near the actual accesses.  We have way too long a history of people
-trying to avoid them.
+1. The device link "status" state management code rightfully doesn't
+handle the case where a DL_FLAG_MANAGED device link exists between a
+supplier and consumer, but the consumer manages to probe successfully
+before the supplier. The addition of DL_FLAG_SYNC_STATE_ONLY links break
+this assumption. This causes device_links_driver_bound() to throw a
+warning when this happens.
 
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Ashwin H <ashwinh@vmware.com>
+Since DL_FLAG_SYNC_STATE_ONLY device links are mainly used for creating
+proxy device links for child device dependencies and aren't useful once
+the consumer device probes successfully, this patch just deletes
+DL_FLAG_SYNC_STATE_ONLY device links once its consumer device probes.
+This way, we avoid the warning, free up some memory and avoid
+complicating the device links "status" state management code.
+
+2. Creating a DL_FLAG_STATELESS device link between two devices that
+already have a DL_FLAG_SYNC_STATE_ONLY device link will result in the
+DL_FLAG_STATELESS flag not getting set correctly. This patch also fixes
+this.
+
+Lastly, this patch also fixes minor whitespace issues.
+
+Cc: stable@vger.kernel.org
+Fixes: 05ef983e0d65 ("driver core: Add device link support for SYNC_STATE_ONLY flag")
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Link: https://lore.kernel.org/r/20200519063000.128819-1-saravanak@google.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/uaccess.h             |   11 ++++++++++-
- drivers/gpu/drm/i915/i915_gem_execbuffer.c |   15 +++++++++++++--
- include/linux/uaccess.h                    |    2 +-
- kernel/compat.c                            |    6 ++----
- kernel/exit.c                              |    6 ++----
- lib/strncpy_from_user.c                    |    9 +++++----
- lib/strnlen_user.c                         |    9 +++++----
- 7 files changed, 38 insertions(+), 20 deletions(-)
+ drivers/base/core.c |   61 +++++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 39 insertions(+), 22 deletions(-)
 
---- a/arch/x86/include/asm/uaccess.h
-+++ b/arch/x86/include/asm/uaccess.h
-@@ -711,7 +711,16 @@ extern struct movsl_mask {
-  * checking before using them, but you have to surround them with the
-  * user_access_begin/end() pair.
-  */
--#define user_access_begin()	__uaccess_begin()
-+static __must_check inline bool user_access_begin(const bool type,
-+                                                  const void __user *ptr,
-+                                                  size_t len)
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -360,13 +360,12 @@ struct device_link *device_link_add(stru
+ 
+ 		if (flags & DL_FLAG_STATELESS) {
+ 			kref_get(&link->kref);
++			link->flags |= DL_FLAG_STATELESS;
+ 			if (link->flags & DL_FLAG_SYNC_STATE_ONLY &&
+-			    !(link->flags & DL_FLAG_STATELESS)) {
+-				link->flags |= DL_FLAG_STATELESS;
++			    !(link->flags & DL_FLAG_STATELESS))
+ 				goto reorder;
+-			} else {
++			else
+ 				goto out;
+-			}
+ 		}
+ 
+ 		/*
+@@ -433,12 +432,16 @@ struct device_link *device_link_add(stru
+ 	    flags & DL_FLAG_PM_RUNTIME)
+ 		pm_runtime_resume(supplier);
+ 
++	list_add_tail_rcu(&link->s_node, &supplier->links.consumers);
++	list_add_tail_rcu(&link->c_node, &consumer->links.suppliers);
++
+ 	if (flags & DL_FLAG_SYNC_STATE_ONLY) {
+ 		dev_dbg(consumer,
+ 			"Linked as a sync state only consumer to %s\n",
+ 			dev_name(supplier));
+ 		goto out;
+ 	}
++
+ reorder:
+ 	/*
+ 	 * Move the consumer and all of the devices depending on it to the end
+@@ -449,12 +452,9 @@ reorder:
+ 	 */
+ 	device_reorder_to_tail(consumer, NULL);
+ 
+-	list_add_tail_rcu(&link->s_node, &supplier->links.consumers);
+-	list_add_tail_rcu(&link->c_node, &consumer->links.suppliers);
+-
+ 	dev_dbg(consumer, "Linked as a consumer to %s\n", dev_name(supplier));
+ 
+- out:
++out:
+ 	device_pm_unlock();
+ 	device_links_write_unlock();
+ 
+@@ -829,6 +829,13 @@ static void __device_links_supplier_defe
+ 		list_add_tail(&sup->links.defer_sync, &deferred_sync);
+ }
+ 
++static void device_link_drop_managed(struct device_link *link)
 +{
-+	if (unlikely(!access_ok(type, ptr, len)))
-+		return 0;
-+	__uaccess_begin();
-+	return 1;
++	link->flags &= ~DL_FLAG_MANAGED;
++	WRITE_ONCE(link->status, DL_STATE_NONE);
++	kref_put(&link->kref, __device_link_del);
 +}
-+#define user_access_begin(t, a, b) user_access_begin(t, a, b)
- #define user_access_end()	__uaccess_end()
- 
- #define unsafe_put_user(x, ptr, err_label)					\
---- a/drivers/gpu/drm/i915/i915_gem_execbuffer.c
-+++ b/drivers/gpu/drm/i915/i915_gem_execbuffer.c
-@@ -1604,7 +1604,9 @@ static int eb_copy_relocations(const str
- 		 * happened we would make the mistake of assuming that the
- 		 * relocations were valid.
- 		 */
--		user_access_begin();
-+		if (!user_access_begin(VERIFY_WRITE, urelocs, size))
-+			goto end_user;
 +
- 		for (copied = 0; copied < nreloc; copied++)
- 			unsafe_put_user(-1,
- 					&urelocs[copied].presumed_offset,
-@@ -2649,7 +2651,16 @@ i915_gem_execbuffer2_ioctl(struct drm_de
- 		unsigned int i;
+ /**
+  * device_links_driver_bound - Update device links after probing its driver.
+  * @dev: Device to update the links for.
+@@ -842,7 +849,7 @@ static void __device_links_supplier_defe
+  */
+ void device_links_driver_bound(struct device *dev)
+ {
+-	struct device_link *link;
++	struct device_link *link, *ln;
+ 	LIST_HEAD(sync_list);
  
- 		/* Copy the new buffer offsets back to the user's exec list. */
--		user_access_begin();
+ 	/*
+@@ -882,18 +889,35 @@ void device_links_driver_bound(struct de
+ 	else
+ 		__device_links_queue_sync_state(dev, &sync_list);
+ 
+-	list_for_each_entry(link, &dev->links.suppliers, c_node) {
++	list_for_each_entry_safe(link, ln, &dev->links.suppliers, c_node) {
++		struct device *supplier;
++
+ 		if (!(link->flags & DL_FLAG_MANAGED))
+ 			continue;
+ 
+-		WARN_ON(link->status != DL_STATE_CONSUMER_PROBE);
+-		WRITE_ONCE(link->status, DL_STATE_ACTIVE);
++		supplier = link->supplier;
++		if (link->flags & DL_FLAG_SYNC_STATE_ONLY) {
++			/*
++			 * When DL_FLAG_SYNC_STATE_ONLY is set, it means no
++			 * other DL_MANAGED_LINK_FLAGS have been set. So, it's
++			 * save to drop the managed link completely.
++			 */
++			device_link_drop_managed(link);
++		} else {
++			WARN_ON(link->status != DL_STATE_CONSUMER_PROBE);
++			WRITE_ONCE(link->status, DL_STATE_ACTIVE);
++		}
+ 
 +		/*
-+		 * Note: count * sizeof(*user_exec_list) does not overflow,
-+		 * because we checked 'count' in check_buffer_count().
-+		 *
-+		 * And this range already got effectively checked earlier
-+		 * when we did the "copy_from_user()" above.
++		 * This needs to be done even for the deleted
++		 * DL_FLAG_SYNC_STATE_ONLY device link in case it was the last
++		 * device link that was preventing the supplier from getting a
++		 * sync_state() call.
 +		 */
-+		if (!user_access_begin(VERIFY_WRITE, user_exec_list, count * sizeof(*user_exec_list)))
-+			goto end_user;
-+
- 		for (i = 0; i < args->buffer_count; i++) {
- 			if (!(exec2_list[i].offset & UPDATE))
- 				continue;
---- a/include/linux/uaccess.h
-+++ b/include/linux/uaccess.h
-@@ -267,7 +267,7 @@ extern long strncpy_from_unsafe(char *ds
- 	probe_kernel_read(&retval, addr, sizeof(retval))
- 
- #ifndef user_access_begin
--#define user_access_begin() do { } while (0)
-+#define user_access_begin(type, ptr, len) access_ok(type, ptr, len)
- #define user_access_end() do { } while (0)
- #define unsafe_get_user(x, ptr, err) do { if (unlikely(__get_user(x, ptr))) goto err; } while (0)
- #define unsafe_put_user(x, ptr, err) do { if (unlikely(__put_user(x, ptr))) goto err; } while (0)
---- a/kernel/compat.c
-+++ b/kernel/compat.c
-@@ -354,10 +354,9 @@ long compat_get_bitmap(unsigned long *ma
- 	bitmap_size = ALIGN(bitmap_size, BITS_PER_COMPAT_LONG);
- 	nr_compat_longs = BITS_TO_COMPAT_LONGS(bitmap_size);
- 
--	if (!access_ok(VERIFY_READ, umask, bitmap_size / 8))
-+	if (!user_access_begin(VERIFY_READ, umask, bitmap_size / 8))
- 		return -EFAULT;
- 
--	user_access_begin();
- 	while (nr_compat_longs > 1) {
- 		compat_ulong_t l1, l2;
- 		unsafe_get_user(l1, umask++, Efault);
-@@ -384,10 +383,9 @@ long compat_put_bitmap(compat_ulong_t __
- 	bitmap_size = ALIGN(bitmap_size, BITS_PER_COMPAT_LONG);
- 	nr_compat_longs = BITS_TO_COMPAT_LONGS(bitmap_size);
- 
--	if (!access_ok(VERIFY_WRITE, umask, bitmap_size / 8))
-+	if (!user_access_begin(VERIFY_WRITE, umask, bitmap_size / 8))
- 		return -EFAULT;
- 
--	user_access_begin();
- 	while (nr_compat_longs > 1) {
- 		unsigned long m = *mask++;
- 		unsafe_put_user((compat_ulong_t)m, umask++, Efault);
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -1617,10 +1617,9 @@ SYSCALL_DEFINE5(waitid, int, which, pid_
- 	if (!infop)
- 		return err;
- 
--	if (!access_ok(VERIFY_WRITE, infop, sizeof(*infop)))
-+	if (!user_access_begin(VERIFY_WRITE, infop, sizeof(*infop)))
- 		return -EFAULT;
- 
--	user_access_begin();
- 	unsafe_put_user(signo, &infop->si_signo, Efault);
- 	unsafe_put_user(0, &infop->si_errno, Efault);
- 	unsafe_put_user(info.cause, &infop->si_code, Efault);
-@@ -1745,10 +1744,9 @@ COMPAT_SYSCALL_DEFINE5(waitid,
- 	if (!infop)
- 		return err;
- 
--	if (!access_ok(VERIFY_WRITE, infop, sizeof(*infop)))
-+	if (!user_access_begin(VERIFY_WRITE, infop, sizeof(*infop)))
- 		return -EFAULT;
- 
--	user_access_begin();
- 	unsafe_put_user(signo, &infop->si_signo, Efault);
- 	unsafe_put_user(0, &infop->si_errno, Efault);
- 	unsafe_put_user(info.cause, &infop->si_code, Efault);
---- a/lib/strncpy_from_user.c
-+++ b/lib/strncpy_from_user.c
-@@ -115,10 +115,11 @@ long strncpy_from_user(char *dst, const
- 
- 		kasan_check_write(dst, count);
- 		check_object_size(dst, count, false);
--		user_access_begin();
--		retval = do_strncpy_from_user(dst, src, count, max);
--		user_access_end();
--		return retval;
-+		if (user_access_begin(VERIFY_READ, src, max)) {
-+			retval = do_strncpy_from_user(dst, src, count, max);
-+			user_access_end();
-+			return retval;
-+		}
+ 		if (defer_sync_state_count)
+-			__device_links_supplier_defer_sync(link->supplier);
++			__device_links_supplier_defer_sync(supplier);
+ 		else
+-			__device_links_queue_sync_state(link->supplier,
+-							&sync_list);
++			__device_links_queue_sync_state(supplier, &sync_list);
  	}
- 	return -EFAULT;
- }
---- a/lib/strnlen_user.c
-+++ b/lib/strnlen_user.c
-@@ -114,10 +114,11 @@ long strnlen_user(const char __user *str
- 		unsigned long max = max_addr - src_addr;
- 		long retval;
  
--		user_access_begin();
--		retval = do_strnlen_user(str, count, max);
--		user_access_end();
--		return retval;
-+		if (user_access_begin(VERIFY_READ, str, max)) {
-+			retval = do_strnlen_user(str, count, max);
-+			user_access_end();
-+			return retval;
-+		}
- 	}
- 	return 0;
+ 	dev->links.status = DL_DEV_DRIVER_BOUND;
+@@ -903,13 +927,6 @@ void device_links_driver_bound(struct de
+ 	device_links_flush_sync_list(&sync_list, dev);
  }
+ 
+-static void device_link_drop_managed(struct device_link *link)
+-{
+-	link->flags &= ~DL_FLAG_MANAGED;
+-	WRITE_ONCE(link->status, DL_STATE_NONE);
+-	kref_put(&link->kref, __device_link_del);
+-}
+-
+ /**
+  * __device_links_no_driver - Update links of a device without a driver.
+  * @dev: Device without a drvier.
 
 
