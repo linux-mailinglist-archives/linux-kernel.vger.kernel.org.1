@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C1E1E2C76
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 426121E2C7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404387AbgEZTPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:15:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46584 "EHLO mail.kernel.org"
+        id S2404410AbgEZTPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:15:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392251AbgEZTPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:15:08 -0400
+        id S2404393AbgEZTPO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:15:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA108208A7;
-        Tue, 26 May 2020 19:15:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2826220776;
+        Tue, 26 May 2020 19:15:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520508;
-        bh=dx72DlEhizNWX/XIZA22NubdAcBm3H7jRg6ps1o/qVE=;
+        s=default; t=1590520513;
+        bh=7IACNEB+1M0tSKpRru+93NDuVZNrVl4F0ZbxYmbGCuc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vWn0ogPYS0qPCmq25pkcGUETJUbN415O3HG1jLRgEANXqg/vPoP7zYuyoMvBG7T91
-         dDywiQZsRp3M3jzp8N+SQz2uawsmj3/M0NdNhfp1o9gfxmSfiUdII3XPLJX/X8j7eP
-         P6ccYIbFxGG3bUmFVK3/1QXwf1C6fy6HCXX5OXJc=
+        b=raaEr+J/QHz4yETjemd1r4Li+xQ3Irthp55VClsiZNjWrjsqM2z9EImdgePZE2Ydd
+         8hqXwqIzcz/eHPyr77kTp3QbAO/VqAeC1sZavjcKDt5wFLIEy5DsT9Vck9p2GltNVK
+         E4Jnk1iPOYhy/URvLGtwEspgargvuLKJl8k7p+eA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Philipp Rudo <prudo@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH 5.6 106/126] s390/kaslr: add support for R_390_JMP_SLOT relocation type
-Date:   Tue, 26 May 2020 20:54:03 +0200
-Message-Id: <20200526183946.546777067@linuxfoundation.org>
+        stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.6 107/126] device-dax: dont leak kernel memory to user space after unloading kmem
+Date:   Tue, 26 May 2020 20:54:04 +0200
+Message-Id: <20200526183946.613425167@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
 References: <20200526183937.471379031@linuxfoundation.org>
@@ -45,41 +48,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gerald Schaefer <gerald.schaefer@de.ibm.com>
+From: David Hildenbrand <david@redhat.com>
 
-commit 4c1cbcbd6c56c79de2c07159be4f55386bb0bef2 upstream.
+commit 60858c00e5f018eda711a3aa84cf62214ef62d61 upstream.
 
-With certain kernel configurations, the R_390_JMP_SLOT relocation type
-might be generated, which is not expected by the KASLR relocation code,
-and the kernel stops with the message "Unknown relocation type".
+Assume we have kmem configured and loaded:
 
-This was found with a zfcpdump kernel config, where CONFIG_MODULES=n
-and CONFIG_VFIO=n. In that case, symbol_get() is used on undefined
-__weak symbols in virt/kvm/vfio.c, which results in the generation
-of R_390_JMP_SLOT relocation types.
+  [root@localhost ~]# cat /proc/iomem
+  ...
+  140000000-33fffffff : Persistent Memory$
+    140000000-1481fffff : namespace0.0
+    150000000-33fffffff : dax0.0
+      150000000-33fffffff : System RAM
 
-Fix this by handling R_390_JMP_SLOT similar to R_390_GLOB_DAT.
+Assume we try to unload kmem. This force-unloading will work, even if
+memory cannot get removed from the system.
 
-Fixes: 805bc0bc238f ("s390/kernel: build a relocatable kernel")
-Cc: <stable@vger.kernel.org> # v5.2+
-Signed-off-by: Gerald Schaefer <gerald.schaefer@de.ibm.com>
-Reviewed-by: Philipp Rudo <prudo@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+  [root@localhost ~]# rmmod kmem
+  [   86.380228] removing memory fails, because memory [0x0000000150000000-0x0000000157ffffff] is onlined
+  ...
+  [   86.431225] kmem dax0.0: DAX region [mem 0x150000000-0x33fffffff] cannot be hotremoved until the next reboot
+
+Now, we can reconfigure the namespace:
+
+  [root@localhost ~]# ndctl create-namespace --force --reconfig=namespace0.0 --mode=devdax
+  [  131.409351] nd_pmem namespace0.0: could not reserve region [mem 0x140000000-0x33fffffff]dax
+  [  131.410147] nd_pmem: probe of namespace0.0 failed with error -16namespace0.0 --mode=devdax
+  ...
+
+This fails as expected due to the busy memory resource, and the memory
+cannot be used.  However, the dax0.0 device is removed, and along its
+name.
+
+The name of the memory resource now points at freed memory (name of the
+device):
+
+  [root@localhost ~]# cat /proc/iomem
+  ...
+  140000000-33fffffff : Persistent Memory
+    140000000-1481fffff : namespace0.0
+    150000000-33fffffff : �_�^7_��/_��wR��WQ���^��� ...
+    150000000-33fffffff : System RAM
+
+We have to make sure to duplicate the string.  While at it, remove the
+superfluous setting of the name and fixup a stale comment.
+
+Fixes: 9f960da72b25 ("device-dax: "Hotremove" persistent memory that is used like normal RAM")
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Vishal Verma <vishal.l.verma@intel.com>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: <stable@vger.kernel.org>	[5.3]
+Link: http://lkml.kernel.org/r/20200508084217.9160-2-david@redhat.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/s390/kernel/machine_kexec_reloc.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/dax/kmem.c |   14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
---- a/arch/s390/kernel/machine_kexec_reloc.c
-+++ b/arch/s390/kernel/machine_kexec_reloc.c
-@@ -28,6 +28,7 @@ int arch_kexec_do_relocs(int r_type, voi
- 		break;
- 	case R_390_64:		/* Direct 64 bit.  */
- 	case R_390_GLOB_DAT:
-+	case R_390_JMP_SLOT:
- 		*(u64 *)loc = val;
- 		break;
- 	case R_390_PC16:	/* PC relative 16 bit.	*/
+--- a/drivers/dax/kmem.c
++++ b/drivers/dax/kmem.c
+@@ -22,6 +22,7 @@ int dev_dax_kmem_probe(struct device *de
+ 	resource_size_t kmem_size;
+ 	resource_size_t kmem_end;
+ 	struct resource *new_res;
++	const char *new_res_name;
+ 	int numa_node;
+ 	int rc;
+ 
+@@ -48,11 +49,16 @@ int dev_dax_kmem_probe(struct device *de
+ 	kmem_size &= ~(memory_block_size_bytes() - 1);
+ 	kmem_end = kmem_start + kmem_size;
+ 
+-	/* Region is permanently reserved.  Hot-remove not yet implemented. */
+-	new_res = request_mem_region(kmem_start, kmem_size, dev_name(dev));
++	new_res_name = kstrdup(dev_name(dev), GFP_KERNEL);
++	if (!new_res_name)
++		return -ENOMEM;
++
++	/* Region is permanently reserved if hotremove fails. */
++	new_res = request_mem_region(kmem_start, kmem_size, new_res_name);
+ 	if (!new_res) {
+ 		dev_warn(dev, "could not reserve region [%pa-%pa]\n",
+ 			 &kmem_start, &kmem_end);
++		kfree(new_res_name);
+ 		return -EBUSY;
+ 	}
+ 
+@@ -63,12 +69,12 @@ int dev_dax_kmem_probe(struct device *de
+ 	 * unknown to us that will break add_memory() below.
+ 	 */
+ 	new_res->flags = IORESOURCE_SYSTEM_RAM;
+-	new_res->name = dev_name(dev);
+ 
+ 	rc = add_memory(numa_node, new_res->start, resource_size(new_res));
+ 	if (rc) {
+ 		release_resource(new_res);
+ 		kfree(new_res);
++		kfree(new_res_name);
+ 		return rc;
+ 	}
+ 	dev_dax->dax_kmem_res = new_res;
+@@ -83,6 +89,7 @@ static int dev_dax_kmem_remove(struct de
+ 	struct resource *res = dev_dax->dax_kmem_res;
+ 	resource_size_t kmem_start = res->start;
+ 	resource_size_t kmem_size = resource_size(res);
++	const char *res_name = res->name;
+ 	int rc;
+ 
+ 	/*
+@@ -102,6 +109,7 @@ static int dev_dax_kmem_remove(struct de
+ 	/* Release and free dax resources */
+ 	release_resource(res);
+ 	kfree(res);
++	kfree(res_name);
+ 	dev_dax->dax_kmem_res = NULL;
+ 
+ 	return 0;
 
 
