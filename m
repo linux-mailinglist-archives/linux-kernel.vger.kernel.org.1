@@ -2,81 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D886E1E327E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F99C1E3284
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391985AbgEZW32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 18:29:28 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:36300 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389638AbgEZW31 (ORCPT
+        id S2392019AbgEZW3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 18:29:44 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3912 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389482AbgEZW3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 18:29:27 -0400
-Received: by mail-il1-f193.google.com with SMTP id 17so22166641ilj.3;
-        Tue, 26 May 2020 15:29:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sbT3ScDzCNYAABtOVikLEAX2UZzl2ocd0JdfNC4PAf4=;
-        b=Nge8vjCsPZgXrNtZ7GW7HNrRwslUQfJV2UKZ6ocMiEDpvHqVC1QtMSG/sjAdxLsa9D
-         k0h4vEmdWVvNs3PvP/rJpjRaKm8v8A7f1u16mTJrBSNwrI0/R98F+1nU9GM+ad0+Th1u
-         4Sl6Yj+DAeLSkmwPJu7eCGAGDLxzWazRiBzE50IEor8SaQZxNHjs/vDz8y5NsmQ+6seq
-         JQBH3H2FtQBVP12o/+sI9Gkdb/inqSKkFqinRKy/Z4J4dhmwYBCM3RbgkmA+VA/PvVbO
-         Wd9pHUTYZmxXNaXyOFpkmskEViy3N328a3acvZfF/HT5bjnmwdeYsyrSk6taR3sZ0DY9
-         +vUQ==
-X-Gm-Message-State: AOAM530L5593GryveJfLnoO2rkWgMmO+a4HHat6ODoSx/qH8hZnDkWpE
-        ggP85C7je4redlC1DKAoaw==
-X-Google-Smtp-Source: ABdhPJxbJBYMTPujWSrd9WkU1HS+aI+DKsGyYjvo8BHOroiHv7F6z1GiS2D/YnAZd53VHzDlzxztOA==
-X-Received: by 2002:a92:8c4c:: with SMTP id o73mr3210366ild.172.1590532166547;
-        Tue, 26 May 2020 15:29:26 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id g6sm651047ile.38.2020.05.26.15.29.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 15:29:25 -0700 (PDT)
-Received: (nullmailer pid 500386 invoked by uid 1000);
-        Tue, 26 May 2020 22:29:24 -0000
-Date:   Tue, 26 May 2020 16:29:24 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jonathan Albrieux <jonathan.albrieux@gmail.com>
-Cc:     Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-iio@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        ~postmarketos/upstreaming@lists.sr.ht, devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 3/5] dt-bindings: iio: magnetometer: ak8975: add gpio
- reset support
-Message-ID: <20200526222924.GA500332@bogus>
-References: <20200525151117.32540-1-jonathan.albrieux@gmail.com>
- <20200525151117.32540-4-jonathan.albrieux@gmail.com>
+        Tue, 26 May 2020 18:29:42 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ecd97fc0001>; Tue, 26 May 2020 15:28:12 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 26 May 2020 15:29:41 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 26 May 2020 15:29:41 -0700
+Received: from [10.2.171.79] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 26 May
+ 2020 22:29:36 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+CC:     Christoph Hellwig <hch@lst.de>, <nouveau@lists.freedesktop.org>,
+        <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Jerome Glisse" <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Jason Gunthorpe" <jgg@mellanox.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, <willy@infradead.org>
+Subject: Re: [PATCH 4/6] mm/hmm: add output flag for compound page mapping
+Date:   Tue, 26 May 2020 18:29:34 -0400
+X-Mailer: MailMate (1.13.1r5685)
+Message-ID: <B0BF5621-FEF9-446C-AAD9-81EFA1416EB1@nvidia.com>
+In-Reply-To: <1ec0511f-e6eb-3e11-ad6d-ad4e5b107464@nvidia.com>
+References: <20200508192009.15302-1-rcampbell@nvidia.com>
+ <20200508192009.15302-5-rcampbell@nvidia.com> <20200508195129.GA19740@lst.de>
+ <1ec0511f-e6eb-3e11-ad6d-ad4e5b107464@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200525151117.32540-4-jonathan.albrieux@gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: multipart/signed;
+        boundary="=_MailMate_4B5C64C4-2994-4ABE-B17A-646474CC0806_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1590532092; bh=cwtuAIOq+85ZyiwcNHD3iSzFYHUjU2pYVvKab5S4Qb8=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:X-Mailer:Message-ID:
+         In-Reply-To:References:MIME-Version:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type;
+        b=OJ4yu8141xYfTos05JStvkCXdsYzpSd0C8gJhS4DYokuTujNxJRM/AzYDbvvN2/Fx
+         EJJXr3Ns5xanby9PR2ZxO8jI1rf5Gva/sivcLkLdx32TNggJOswgyx/hDR8ErNr8ip
+         /rjWMzOVsngLZ4eAkJAl0u/brqBX7PpcR5oU5G2vFMR1uqh+IY47scqn3LWtFnL9ng
+         wXGhk9k1xgHsZTzzZ9DB/SrwYmUYX8m5q01lF6IgmjFa+t2sR5kI3kqneBCEG9PYZx
+         wFmtQu2AkihWQfZB/HlrB/gPFg0Bp10HUSMKw9+qHvpRMZjTIXiIspuuSWvRc9j0nI
+         GXPq2w9P3Rs9A==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 May 2020 17:10:37 +0200, Jonathan Albrieux wrote:
-> Add reset-gpio support.
-> 
-> Without reset's deassertion during ak8975_power_on(), driver's probe fails
-> on ak8975_who_i_am() while checking for device identity for AK09911 chip.
-> 
-> AK09911 has an active low reset gpio to handle register's reset.
-> AK09911 datasheet says that, if not used, reset pin should be connected
-> to VID. This patch emulates this situation.
-> 
-> Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
-> ---
->  .../bindings/iio/magnetometer/asahi-kasei,ak8975.yaml      | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
+--=_MailMate_4B5C64C4-2994-4ABE-B17A-646474CC0806_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+On 8 May 2020, at 16:06, Ralph Campbell wrote:
+
+> On 5/8/20 12:51 PM, Christoph Hellwig wrote:
+>> On Fri, May 08, 2020 at 12:20:07PM -0700, Ralph Campbell wrote:
+>>> hmm_range_fault() returns an array of page frame numbers and flags fo=
+r
+>>> how the pages are mapped in the requested process' page tables. The P=
+FN
+>>> can be used to get the struct page with hmm_pfn_to_page() and the pag=
+e size
+>>> order can be determined with compound_order(page) but if the page is =
+larger
+>>> than order 0 (PAGE_SIZE), there is no indication that the page is map=
+ped
+>>> using a larger page size. To be fully general, hmm_range_fault() woul=
+d need
+>>> to return the mapping size to handle cases like a 1GB compound page b=
+eing
+>>> mapped with 2MB PMD entries. However, the most common case is the map=
+ping
+>>> size the same as the underlying compound page size.
+>>> Add a new output flag to indicate this so that callers know it is saf=
+e to
+>>> use a large device page table mapping if one is available.
+>>
+>> Why do you need the flag?  The caller should be able to just use
+>> page_size() (or willys new thp_size helper).
+>>
+>
+> The question is whether or not a large page can be mapped with smaller
+> page table entries with different permissions. If one process has a 2MB=
+
+> page mapped with 4K PTEs with different read/write permissions, I don't=
+ think
+> it would be OK for a device to map the whole 2MB with write access enab=
+led.
+> The flag is supposed to indicate that the whole page can be mapped by t=
+he
+> device with the indicated read/write permissions.
+
+If hmm_range_fault() only walks one VMA at a time, you would not have thi=
+s permission
+issue, right? Since all pages from one VMA should have the same permissio=
+n.
+But it seems that hmm_range_fault() deals with pages across multiple VMAs=
+=2E
+Maybe we should make hmm_range_fault() bail out early when it encounters
+a VMA with a different permission than the existing ones?
+
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_4B5C64C4-2994-4ABE-B17A-646474CC0806_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl7NmE8PHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKjycP/3XJhZ/XUzVmTxYQ6iRjWJrpB2rP0Qm21PvT
+aJJd4WglE/dotbUGatNjl86bKqfhWVyQSbwPFnsc94YTkkAazZh8FspW6mV2WdQ+
+1itzDfkls+hAAXuJcWOOnw23UY5+y8Hy/tfsrqr0sP6UNvJ3wuyXDMBmbQVSyvur
+Aa6SAZNJv7LG1YdCJfCI3X92aSziGBd7s3/1Kz2AUagsvP20T4jygQo+6lgepNzy
+hEdUKBstpN1T3sRVom1n4BYJK+kDrRVfiYdCFrhJ9ZTIu3K9snEWrsMRSnx7wSX2
+dxSZwVx+dqOokDM5DhYZWyif1X0/JZzq7v0P4BNuUJkpXZrCutqQP6nvGxsR+QVX
+5GgkLzeUOUqnFJvljtiSkwjUPRblljGFo9WDGEnrVNTDG7uZf56Qz6SdQPwLR9GK
+Vsk8saRYhZ6YHPE8QtuByliBhzzZfIUK7oafU8e/1QEo/0zFdL+QEbfUR61/nHpK
+WkHcnZRxJ5EGmfGGk4dYq+soIl+0g3oMWIDQ2QFMA1RPf3pzOR595P5ldo6KgPSo
+N+euHyai7HSurTxdE4JgN27uM9/d9yq0X3uQGwW/a/Fq3EhiAiUJnfd4s375Wd2y
+qcsaP5rxatQo0EeVnGs2vwXgG3f3vFYVhs4FRRogl5EEQE36Y81uLm+pZmjoKfyf
+eGcZSDTZ
+=zDv+
+-----END PGP SIGNATURE-----
+
+--=_MailMate_4B5C64C4-2994-4ABE-B17A-646474CC0806_=--
