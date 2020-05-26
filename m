@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E292B1E2C65
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC371E2B7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392182AbgEZTOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:14:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45432 "EHLO mail.kernel.org"
+        id S2391522AbgEZTFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:05:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392165AbgEZTOa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:14:30 -0400
+        id S2391036AbgEZTFg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:05:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3C2E20776;
-        Tue, 26 May 2020 19:14:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 989A9208A7;
+        Tue, 26 May 2020 19:05:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520470;
-        bh=dw6to2wRQ3SmfWu7X9TKk6vCDa1Vn/DKpM9BwBWsZAc=;
+        s=default; t=1590519936;
+        bh=Lgi7w1xxCl7mtt8YFNnBDnOTXM6T1vM2qt5Wvl8ZwjI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uR68SBQSt5qWhpjlFuijJ6XvO0HGyXqKP80f64pIJHtnSGfvhKTjKKO+vCTPHaS1D
-         J+c/Jnlc53nBvSAb0giYFjMB7wclRaVrGGi49uxgkacLBGcty+yM6Nj8TWTDmyTLm0
-         oaXAjk4nRHdJngYRwJeaNq3WlWsI/w/TqEJWRVLw=
+        b=N/VdL1xRM0jYR9TRS93baEeA7v4uq3gdQFq9jkE1hDZf6+Ys8GgyBuJm8R5Z76e47
+         cMvFxBYevX+I6BCBvAHEKg4n4EasJzz1g0C7EX9hH4lGjyjtjui8QfoTYG1Hn5sNow
+         sNHhsTqgFrBbt4+BQ2bRYDUvxnhk3e8O9cMsudcU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wei Yongjun <weiyongjun1@huawei.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH 5.6 092/126] staging: kpc2000: fix error return code in kp2000_pcie_probe()
-Date:   Tue, 26 May 2020 20:53:49 +0200
-Message-Id: <20200526183945.637923263@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 75/81] iio: adc: stm32-adc: Use dma_request_chan() instead dma_request_slave_channel()
+Date:   Tue, 26 May 2020 20:53:50 +0200
+Message-Id: <20200526183935.381021331@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
-References: <20200526183937.471379031@linuxfoundation.org>
+In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
+References: <20200526183923.108515292@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,50 +45,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-commit b17884ccf29e127b16bba6aea1438c851c9f5af1 upstream.
+[ Upstream commit 735404b846dffcb320264f62b76e6f70012214dd ]
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function. Also
-removed var 'rv' since we can use 'err' instead.
+dma_request_slave_channel() is a wrapper on top of dma_request_chan()
+eating up the error code.
 
-Fixes: 7dc7967fc39a ("staging: kpc2000: add initial set of Daktronics drivers")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: stable <stable@vger.kernel.org>
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20200506134735.102041-1-weiyongjun1@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+By using dma_request_chan() directly the driver can support deferred
+probing against DMA.
 
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Acked-by: Fabrice Gasnier <fabrice.gasnier@st.com>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/kpc2000/kpc2000/core.c |    9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/iio/adc/stm32-adc.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
---- a/drivers/staging/kpc2000/kpc2000/core.c
-+++ b/drivers/staging/kpc2000/kpc2000/core.c
-@@ -298,7 +298,6 @@ static int kp2000_pcie_probe(struct pci_
- {
- 	int err = 0;
- 	struct kp2000_device *pcard;
--	int rv;
- 	unsigned long reg_bar_phys_addr;
- 	unsigned long reg_bar_phys_len;
- 	unsigned long dma_bar_phys_addr;
-@@ -445,11 +444,11 @@ static int kp2000_pcie_probe(struct pci_
- 	if (err < 0)
- 		goto err_release_dma;
+diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+index 24d5d049567a..d85caedda02e 100644
+--- a/drivers/iio/adc/stm32-adc.c
++++ b/drivers/iio/adc/stm32-adc.c
+@@ -1688,9 +1688,21 @@ static int stm32_adc_dma_request(struct iio_dev *indio_dev)
+ 	struct dma_slave_config config;
+ 	int ret;
  
--	rv = request_irq(pcard->pdev->irq, kp2000_irq_handler, IRQF_SHARED,
--			 pcard->name, pcard);
--	if (rv) {
-+	err = request_irq(pcard->pdev->irq, kp2000_irq_handler, IRQF_SHARED,
-+			  pcard->name, pcard);
-+	if (err) {
- 		dev_err(&pcard->pdev->dev,
--			"%s: failed to request_irq: %d\n", __func__, rv);
-+			"%s: failed to request_irq: %d\n", __func__, err);
- 		goto err_disable_msi;
- 	}
+-	adc->dma_chan = dma_request_slave_channel(&indio_dev->dev, "rx");
+-	if (!adc->dma_chan)
++	adc->dma_chan = dma_request_chan(&indio_dev->dev, "rx");
++	if (IS_ERR(adc->dma_chan)) {
++		ret = PTR_ERR(adc->dma_chan);
++		if (ret != -ENODEV) {
++			if (ret != -EPROBE_DEFER)
++				dev_err(&indio_dev->dev,
++					"DMA channel request failed with %d\n",
++					ret);
++			return ret;
++		}
++
++		/* DMA is optional: fall back to IRQ mode */
++		adc->dma_chan = NULL;
+ 		return 0;
++	}
  
+ 	adc->rx_buf = dma_alloc_coherent(adc->dma_chan->device->dev,
+ 					 STM32_DMA_BUFFER_SIZE,
+-- 
+2.25.1
+
 
 
