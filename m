@@ -2,99 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 850491E2FD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 22:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8DE1E2FD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 22:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390964AbgEZUP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 16:15:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44264 "EHLO
+        id S2391043AbgEZURr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 16:17:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389565AbgEZUP6 (ORCPT
+        with ESMTP id S2389684AbgEZURq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 16:15:58 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C8D3C03E96D;
-        Tue, 26 May 2020 13:15:58 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id x29so4098512qtv.4;
-        Tue, 26 May 2020 13:15:58 -0700 (PDT)
+        Tue, 26 May 2020 16:17:46 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 298B8C03E96E
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 13:17:45 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id z1so5202122qtn.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 13:17:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=lca.pw; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=OIlePaEo2DB2lWCSsF6hOGAO/zJmXGR+8z88QbPZwuA=;
-        b=vGsBr5wQpHw68zyoZJvgzHNbkgx9psh74mtNJxqpEOgwrQpmej8EZzHAX4XhlgkBAw
-         LMMIEgnCRPb4utbn/CnS0mmTr+9tLCJAcYDlmkThNex0SAFcxXvxSps/IwKCuihbUAKw
-         /YcMZCmkST4MESr2kDzOSDrPgMTVh1fkmousvPmqj4Hy3X3bCPQ3tan68m6KlRjj6Vfw
-         lyXF9bpOir119aygoHP9wIQ4fbD1LqHyTM0finKJh1dqqGmjdDn+ChV2eLSCqAIhqsiL
-         PW+Vqyz2HPxXk9Fl5HlmTArOGH2iJoMyRZoYlGJgHisGrNuaCiLCovFib5xYjl8eju23
-         E5Vw==
+        bh=TtkW2GUFnPpiz7qVt/cSaWSJ76KcZz2gc93YfJwXduw=;
+        b=FFmP067Z/dKjzMX+2ihP1I79sITHHCno0zw2IhWiXoD204KcJrfB7eO12GKNOTfgp+
+         yckSRnXHRTeVSY8D0IMyYeql1tShtI4P6SARzNqI3UKb/53c4NBaEy5PEwJk2Ki5q+8O
+         ozzeqkdCvncVAZOlJHS76Ya/EXm7QZia4oAx9Jl95d3Bz0bzree3y/ZBpTsNZAelKSuB
+         8BN01nvKpbjenAWnHm09bnxNfpOf2L74PYacN9fIiDKmtZwMmOqUnhO+7u1ycRtWgo0p
+         nYnpN4xvgiPRqpxbzO3oTd6zVhXngTd4LkLJ4qxcsCxXjI/2L4cCmaUEc8Fx/dgVLnIg
+         JD6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=OIlePaEo2DB2lWCSsF6hOGAO/zJmXGR+8z88QbPZwuA=;
-        b=G3Tubp4O6NyRlMp5HODukT/RmnuLxpnnTsxzEpImLqwAD8jTDmnb1NCxfC/yZWRVlx
-         6SOpey42TZiZ3VHsOqQ1MjFrKL9NuNKQU/lSVMc+6Rasmt6flDJS6ldQEsmIQ8dcocKq
-         WdmhI7tRXSsmIqX94PdcIx71kkXkl7bIxBRze06jC+iwknfyE6nBRl1KW2fCZ7gsjVR1
-         J0JyQyMdwGgYuvts8VfG4Mx+eo3ujlBDooN7ZcLGr8b1nNM+0K1eUT1djToy6cAFUmWa
-         YZ+t2/IRIVtcjq6T3E3BNNyf7gAS2P/mbDVUpM1QUu3Mjl5kuvHEPabCaLt5k+Nf7pKD
-         BL4g==
-X-Gm-Message-State: AOAM530MGvst9Tk6MMf/GDbGp+j4x4jI/sq6UnNasBPBo+SjYcOwKNHJ
-        tlTS79jkaE0YirVI3nVLZks=
-X-Google-Smtp-Source: ABdhPJwFsA+W7dNO8mOZJWz3XFO0b2jYFQzH2q6iPEOBfPshIJIwCkAhbjiGdUBp1YGreDe/vpnRNw==
-X-Received: by 2002:ac8:260b:: with SMTP id u11mr626092qtu.380.1590524157306;
-        Tue, 26 May 2020 13:15:57 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:85c0])
-        by smtp.gmail.com with ESMTPSA id d7sm518184qkk.26.2020.05.26.13.15.55
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TtkW2GUFnPpiz7qVt/cSaWSJ76KcZz2gc93YfJwXduw=;
+        b=cGwSYw54WX4sRyh7cSBKDOUUjuHrGfugWfGtVDRIHDcIz7t5LMIACBtMtCxG8wXM/s
+         GOvfZG4Z95h7lSt7i9emAt6ktOh2EoRHZQCJnn+L8SJsNA9vDGuGB2a9Dg5txatWeDu7
+         sJKxfInYuCWtmX6cw89tdgBeIm7EbLyt0N9YZcpoggAWQ0EUz3Vf0Yte+bMES11TYZWu
+         rWPsFlosb25L4H13mmGHiGR6EA0JtNha/5yiel7oOWitSF1RoyEi5j7FdqtjD2dml+b9
+         aFa0mILIX36ubIgTdNI4n/CoFCbSo1Em0CyMgT74f5P/7X8a1JwqnTNlDt9BCty6e7ga
+         GLPg==
+X-Gm-Message-State: AOAM530WJxvG/sN0CDgiQa/jbvDzRpFojTHpXjfd/Gct05bvOZuQqWbM
+        vWty1QQDZtWE4THvF7cUy+VdOQ==
+X-Google-Smtp-Source: ABdhPJwhsVDzO8DaQhS5idIFMXGII+ODR/JGDETK0D2aCahvEUMefu3bNJqlukDBy119VjTp68hR+g==
+X-Received: by 2002:ac8:d87:: with SMTP id s7mr621968qti.210.1590524262863;
+        Tue, 26 May 2020 13:17:42 -0700 (PDT)
+Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id m126sm552618qke.99.2020.05.26.13.17.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 13:15:56 -0700 (PDT)
-Date:   Tue, 26 May 2020 16:15:54 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Boris Burkov <boris@bur.io>
-Cc:     Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH cgroup/for-5.8] cgroup: add cpu.stat file to root cgroup
-Message-ID: <20200526201554.GH83516@mtj.thefacebook.com>
-References: <20200526200800.3969430-1-boris@bur.io>
+        Tue, 26 May 2020 13:17:41 -0700 (PDT)
+Date:   Tue, 26 May 2020 16:17:39 -0400
+From:   Qian Cai <cai@lca.pw>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will.deacon@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] locking/lockdep: Increase MAX_LOCKDEP_ENTRIES by half
+Message-ID: <20200526201739.GG991@lca.pw>
+References: <20200526174349.8312-1-longman@redhat.com>
+ <20200526185850.GE991@lca.pw>
+ <20200526195630.GF325280@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200526200800.3969430-1-boris@bur.io>
+In-Reply-To: <20200526195630.GF325280@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Tue, May 26, 2020 at 01:08:00PM -0700, Boris Burkov wrote:
-> Currently, the root cgroup does not have a cpu.stat file. Add one which
-> is consistent with /proc/stat to capture global cpu statistics that
-> might not fall under cgroup accounting.
+On Tue, May 26, 2020 at 09:56:30PM +0200, Peter Zijlstra wrote:
+> On Tue, May 26, 2020 at 02:58:50PM -0400, Qian Cai wrote:
 > 
-> We haven't done this in the past because the data are already presented
-> in /proc/stat and we didn't want to add overhead from collecting root
-> cgroup stats when cgroups are configured, but no cgroups have been
-> created.
+> > I still don't understand why reading all sysfs files on this system
+> > could increase that much, but here is the lockdep file after
+> > running sysfs read to see if you could spot anything obviously,
+> > 
+> > https://cailca.github.io/files/lockdep.txt
 > 
-> By keeping the data consistent with /proc/stat, I think we avoid the
-> first problem, while improving the usability of cgroups stats.
-> We avoid the second problem by computing the contents of cpu.stat from
-> existing data collected for /proc/stat anyway.
+> 00000000f011a2a5 OPS:      20 FD:   45 BD:    1 .+.+: kn->active#834
 > 
-> Signed-off-by: Boris Burkov <boris@bur.io>
-> Suggested-by: Tejun Heo <tj@kernel.org>
+> is that somewhere near the number of CPUs you have?
 
-If there are any objections, please holler. I'll wait a few days and
-route it through the cgroup tree.
+834? No.
 
-Thanks.
+# lscpu
+Architecture:        x86_64
+CPU op-mode(s):      32-bit, 64-bit
+Byte Order:          Little Endian
+CPU(s):              128
+On-line CPU(s) list: 0-127
+Thread(s) per core:  2
+Core(s) per socket:  32
+Socket(s):           2
+NUMA node(s):        8
+Vendor ID:           AuthenticAMD
+CPU family:          23
+Model:               1
+Model name:          AMD EPYC 7601 32-Core Processor
+Stepping:            2
+CPU MHz:             2932.801
+CPU max MHz:         2200.0000
+CPU min MHz:         1200.0000
+BogoMIPS:            4391.87
+Virtualization:      AMD-V
+L1d cache:           32K
+L1i cache:           64K
+L2 cache:            512K
+L3 cache:            8192K
+NUMA node0 CPU(s):   0-7,64-71
+NUMA node1 CPU(s):   8-15,72-79
+NUMA node2 CPU(s):   16-23,80-87
+NUMA node3 CPU(s):   24-31,88-95
+NUMA node4 CPU(s):   32-39,96-103
+NUMA node5 CPU(s):   40-47,104-111
+NUMA node6 CPU(s):   48-55,112-119
+NUMA node7 CPU(s):   56-63,120-127
 
--- 
-tejun
+> 
+> Anyway, there's very long "kn->active#..." chains in there, which seems
+> to suggest some annotation is all sorts of buggered.
