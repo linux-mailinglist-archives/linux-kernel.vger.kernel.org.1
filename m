@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A73D1E1926
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 03:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8EC1E1924
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 03:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388532AbgEZBmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 21:42:46 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:33216 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388442AbgEZBmp (ORCPT
+        id S2388485AbgEZBmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 21:42:39 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:46947 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388442AbgEZBmi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 21:42:45 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Tzg710u_1590457352;
-Received: from localhost(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0Tzg710u_1590457352)
+        Mon, 25 May 2020 21:42:38 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R471e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0Tzg711O_1590457355;
+Received: from localhost(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0Tzg711O_1590457355)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 26 May 2020 09:42:33 +0800
+          Tue, 26 May 2020 09:42:35 +0800
 From:   Lai Jiangshan <laijs@linux.alibaba.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
@@ -24,10 +24,12 @@ Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
         Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         "H. Peter Anvin" <hpa@zytor.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>
-Subject: [RFC PATCH V2 4/7] x86/hw_breakpoint: Prevent data breakpoints on user_pcid_flush_mask
-Date:   Tue, 26 May 2020 01:42:18 +0000
-Message-Id: <20200526014221.2119-5-laijs@linux.alibaba.com>
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>
+Subject: [RFC PATCH V2 5/7] x86/entry: don't shift stack on #DB
+Date:   Tue, 26 May 2020 01:42:19 +0000
+Message-Id: <20200526014221.2119-6-laijs@linux.alibaba.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200526014221.2119-1-laijs@linux.alibaba.com>
 References: <20200525152517.GY325280@hirez.programming.kicks-ass.net>
@@ -39,13 +41,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The percpu user_pcid_flush_mask is used for CPU entry
-If a data breakpoint on it, it will cause an unwanted #DB.
-Protect the full cpu_tlbstate structure to be sure.
-
-There are some other percpu data used in CPU entry, but they are
-either in already-protected cpu_tss_rw or are safe to trigger #DB
-(espfix_waddr, espfix_stack).
+debug_enter() will disable #DB, there should be no recursive #DB.
 
 Cc: Andy Lutomirski <luto@kernel.org>
 Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
@@ -53,38 +49,66 @@ Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: x86@kernel.org
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/kernel/hw_breakpoint.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/x86/entry/entry_64.S        | 17 -----------------
+ arch/x86/kernel/asm-offsets_64.c |  1 -
+ 2 files changed, 18 deletions(-)
 
-diff --git a/arch/x86/kernel/hw_breakpoint.c b/arch/x86/kernel/hw_breakpoint.c
-index 7d3966b9aa12..67ef8e24af6a 100644
---- a/arch/x86/kernel/hw_breakpoint.c
-+++ b/arch/x86/kernel/hw_breakpoint.c
-@@ -33,6 +33,7 @@
- #include <asm/debugreg.h>
- #include <asm/user.h>
- #include <asm/desc.h>
-+#include <asm/tlbflush.h>
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index 265ff97b3961..8ecaeee53653 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -396,11 +396,6 @@ SYM_CODE_END(\asmsym)
+ 	idtentry \vector asm_\cfunc \cfunc has_error_code=0
+ .endm
  
- /* Per cpu debug control register value */
- DEFINE_PER_CPU(unsigned long, cpu_dr7);
-@@ -268,6 +269,16 @@ static inline bool within_cpu_entry(unsigned long addr, unsigned long end)
- 				(unsigned long)&per_cpu(cpu_tss_rw, cpu),
- 				sizeof(struct tss_struct)))
- 			return true;
-+
-+		/*
-+		 * cpu_tlbstate.user_pcid_flush_mask is used for CPU entry.
-+		 * If a data breakpoint on it, it will cause an unwanted #DB.
-+		 * Protect the full cpu_tlbstate structure to be sure.
-+		 */
-+		if (within_area(addr, end,
-+				(unsigned long)&per_cpu(cpu_tlbstate, cpu),
-+				sizeof(struct tlb_state)))
-+			return true;
- 	}
+-/*
+- * MCE and DB exceptions
+- */
+-#define CPU_TSS_IST(x) PER_CPU_VAR(cpu_tss_rw) + (TSS_ist + (x) * 8)
+-
+ /**
+  * idtentry_mce_db - Macro to generate entry stubs for #MC and #DB
+  * @vector:		Vector number
+@@ -416,10 +411,6 @@ SYM_CODE_END(\asmsym)
+  * If hits in kernel mode then it needs to go through the paranoid
+  * entry as the exception can hit any random state. No preemption
+  * check on exit to keep the paranoid path simple.
+- *
+- * If the trap is #DB then the interrupt stack entry in the IST is
+- * moved to the second stack, so a potential recursion will have a
+- * fresh IST.
+  */
+ .macro idtentry_mce_db vector asmsym cfunc
+ SYM_CODE_START(\asmsym)
+@@ -445,16 +436,8 @@ SYM_CODE_START(\asmsym)
  
- 	return false;
+ 	movq	%rsp, %rdi		/* pt_regs pointer */
+ 
+-	.if \vector == X86_TRAP_DB
+-		subq	$DB_STACK_OFFSET, CPU_TSS_IST(IST_INDEX_DB)
+-	.endif
+-
+ 	call	\cfunc
+ 
+-	.if \vector == X86_TRAP_DB
+-		addq	$DB_STACK_OFFSET, CPU_TSS_IST(IST_INDEX_DB)
+-	.endif
+-
+ 	jmp	paranoid_exit
+ 
+ 	/* Switch to the regular task stack and use the noist entry point */
+diff --git a/arch/x86/kernel/asm-offsets_64.c b/arch/x86/kernel/asm-offsets_64.c
+index c2a47016f243..472378330169 100644
+--- a/arch/x86/kernel/asm-offsets_64.c
++++ b/arch/x86/kernel/asm-offsets_64.c
+@@ -57,7 +57,6 @@ int main(void)
+ 	BLANK();
+ #undef ENTRY
+ 
+-	OFFSET(TSS_ist, tss_struct, x86_tss.ist);
+ 	DEFINE(DB_STACK_OFFSET, offsetof(struct cea_exception_stacks, DB_stack) -
+ 	       offsetof(struct cea_exception_stacks, DB1_stack));
+ 	BLANK();
 -- 
 2.20.1
 
