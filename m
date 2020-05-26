@@ -2,50 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC371E2E78
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7473E1E2B90
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403809AbgEZTBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:01:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56170 "EHLO mail.kernel.org"
+        id S2391587AbgEZTGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:06:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403797AbgEZTBm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:01:42 -0400
+        id S2403875AbgEZTGM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:06:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34E5C2084C;
-        Tue, 26 May 2020 19:01:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF24D20776;
+        Tue, 26 May 2020 19:06:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519701;
-        bh=exwDoKqglk05Dqmr7hl1WwibewZcm/lnYHdAHOBm8xw=;
+        s=default; t=1590519971;
+        bh=WvgeDUlBuFvjwO26UKDgxLQqw5bDZjtGnMdSOqGdDts=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AWFwlDUWDAUUX1JoPenvUzgGn/IHz9npMQlfzfaNgChkYRFAAPPUdAuMLWpidcNT0
-         auReHGYDP1rvb8WH0syv4lO0Ovdr72ZMeK3RJu9nzuJktK6e0YrzqbLs0OT5HiN9kn
-         dQLLLFYTCM3ivfyxZcnZJ9VCRghjNkfGB04l9Q8w=
+        b=hPNV5Wn8kqRw6h0rux8Um2+MiL0UAd7ciXfSMHpEW4fpqGo7nVySXGpkUWSN7SaTM
+         gFeGqbNNIVXIQOe38uHBcphAfEFsvlANUZwkh+IaO3hm/caGwtZsYBviLTG68p8Myl
+         iVPWS2g9WYf0wAZeRdycX/go8L007nl4TZNdb4F8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 43/59] ubsan: build ubsan.c more conservatively
+        stable@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Pedro dAquino Filocre F S Barbuda 
+        <pbarbuda@microsoft.com>, Vishal Verma <vishal.l.verma@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 53/81] libnvdimm/btt: Fix LBA masking during free list population
 Date:   Tue, 26 May 2020 20:53:28 +0200
-Message-Id: <20200526183921.075930036@linuxfoundation.org>
+Message-Id: <20200526183932.993059888@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
-References: <20200526183907.123822792@linuxfoundation.org>
+In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
+References: <20200526183923.108515292@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -55,69 +46,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Vishal Verma <vishal.l.verma@intel.com>
 
-commit af700eaed0564d5d3963a7a51cb0843629d7fe3d upstream.
+[ Upstream commit 9dedc73a4658ebcc0c9b58c3cb84e9ac80122213 ]
 
-objtool points out several conditions that it does not like, depending
-on the combination with other configuration options and compiler
-variants:
+The Linux BTT implementation assumes that log entries will never have
+the 'zero' flag set, and indeed it never sets that flag for log entries
+itself.
 
-stack protector:
-  lib/ubsan.o: warning: objtool: __ubsan_handle_type_mismatch()+0xbf: call to __stack_chk_fail() with UACCESS enabled
-  lib/ubsan.o: warning: objtool: __ubsan_handle_type_mismatch_v1()+0xbe: call to __stack_chk_fail() with UACCESS enabled
+However, the UEFI spec is ambiguous on the exact format of the LBA field
+of a log entry, specifically as to whether it should include the
+additional flag bits or not. While a zero bit doesn't make sense in the
+context of a log entry, other BTT implementations might still have it set.
 
-stackleak plugin:
-  lib/ubsan.o: warning: objtool: __ubsan_handle_type_mismatch()+0x4a: call to stackleak_track_stack() with UACCESS enabled
-  lib/ubsan.o: warning: objtool: __ubsan_handle_type_mismatch_v1()+0x4a: call to stackleak_track_stack() with UACCESS enabled
+If an implementation does happen to have it set, we would happily read
+it in as the next block to write to for writes. Since a high bit is set,
+it pushes the block number out of the range of an 'arena', and we fail
+such a write with an EIO.
 
-kasan:
-  lib/ubsan.o: warning: objtool: __ubsan_handle_type_mismatch()+0x25: call to memcpy() with UACCESS enabled
-  lib/ubsan.o: warning: objtool: __ubsan_handle_type_mismatch_v1()+0x25: call to memcpy() with UACCESS enabled
+Follow the robustness principle, and tolerate such implementations by
+stripping out the zero flag when populating the free list during
+initialization. Additionally, use the same stripped out entries for
+detection of incomplete writes and map restoration that happens at this
+stage.
 
-The stackleak and kasan options just need to be disabled for this file
-as we do for other files already.  For the stack protector, we already
-attempt to disable it, but this fails on clang because the check is
-mixed with the gcc specific -fno-conserve-stack option.  According to
-Andrey Ryabinin, that option is not even needed, dropping it here fixes
-the stackprotector issue.
+Add a sysfs file 'log_zero_flags' that indicates the ability to accept
+such a layout to userspace applications. This enables 'ndctl
+check-namespace' to recognize whether the kernel is able to handle zero
+flags, or whether it should attempt a fix-up under the --repair option.
 
-Link: http://lkml.kernel.org/r/20190722125139.1335385-1-arnd@arndb.de
-Link: https://lore.kernel.org/lkml/20190617123109.667090-1-arnd@arndb.de/t/
-Link: https://lore.kernel.org/lkml/20190722091050.2188664-1-arnd@arndb.de/t/
-Fixes: d08965a27e84 ("x86/uaccess, ubsan: Fix UBSAN vs. SMAP")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Reported-by: Dexuan Cui <decui@microsoft.com>
+Reported-by: Pedro d'Aquino Filocre F S Barbuda <pbarbuda@microsoft.com>
+Tested-by: Dexuan Cui <decui@microsoft.com>
+Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/Makefile |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/nvdimm/btt.c      | 25 +++++++++++++++++++------
+ drivers/nvdimm/btt.h      |  2 ++
+ drivers/nvdimm/btt_devs.c |  8 ++++++++
+ 3 files changed, 29 insertions(+), 6 deletions(-)
 
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -256,7 +256,8 @@ obj-$(CONFIG_UCS2_STRING) += ucs2_string
- obj-$(CONFIG_UBSAN) += ubsan.o
+diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
+index d78cfe82ad5c..1064a703ccec 100644
+--- a/drivers/nvdimm/btt.c
++++ b/drivers/nvdimm/btt.c
+@@ -542,8 +542,8 @@ static int arena_clear_freelist_error(struct arena_info *arena, u32 lane)
+ static int btt_freelist_init(struct arena_info *arena)
+ {
+ 	int new, ret;
+-	u32 i, map_entry;
+ 	struct log_entry log_new;
++	u32 i, map_entry, log_oldmap, log_newmap;
  
- UBSAN_SANITIZE_ubsan.o := n
--CFLAGS_ubsan.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
-+KASAN_SANITIZE_ubsan.o := n
-+CFLAGS_ubsan.o := $(call cc-option, -fno-stack-protector) $(DISABLE_STACKLEAK_PLUGIN)
+ 	arena->freelist = kcalloc(arena->nfree, sizeof(struct free_entry),
+ 					GFP_KERNEL);
+@@ -555,16 +555,22 @@ static int btt_freelist_init(struct arena_info *arena)
+ 		if (new < 0)
+ 			return new;
  
- obj-$(CONFIG_SBITMAP) += sbitmap.o
++		/* old and new map entries with any flags stripped out */
++		log_oldmap = ent_lba(le32_to_cpu(log_new.old_map));
++		log_newmap = ent_lba(le32_to_cpu(log_new.new_map));
++
+ 		/* sub points to the next one to be overwritten */
+ 		arena->freelist[i].sub = 1 - new;
+ 		arena->freelist[i].seq = nd_inc_seq(le32_to_cpu(log_new.seq));
+-		arena->freelist[i].block = le32_to_cpu(log_new.old_map);
++		arena->freelist[i].block = log_oldmap;
  
+ 		/*
+ 		 * FIXME: if error clearing fails during init, we want to make
+ 		 * the BTT read-only
+ 		 */
+-		if (ent_e_flag(log_new.old_map)) {
++		if (ent_e_flag(log_new.old_map) &&
++				!ent_normal(log_new.old_map)) {
++			arena->freelist[i].has_err = 1;
+ 			ret = arena_clear_freelist_error(arena, i);
+ 			if (ret)
+ 				dev_err_ratelimited(to_dev(arena),
+@@ -572,7 +578,7 @@ static int btt_freelist_init(struct arena_info *arena)
+ 		}
+ 
+ 		/* This implies a newly created or untouched flog entry */
+-		if (log_new.old_map == log_new.new_map)
++		if (log_oldmap == log_newmap)
+ 			continue;
+ 
+ 		/* Check if map recovery is needed */
+@@ -580,8 +586,15 @@ static int btt_freelist_init(struct arena_info *arena)
+ 				NULL, NULL, 0);
+ 		if (ret)
+ 			return ret;
+-		if ((le32_to_cpu(log_new.new_map) != map_entry) &&
+-				(le32_to_cpu(log_new.old_map) == map_entry)) {
++
++		/*
++		 * The map_entry from btt_read_map is stripped of any flag bits,
++		 * so use the stripped out versions from the log as well for
++		 * testing whether recovery is needed. For restoration, use the
++		 * 'raw' version of the log entries as that captured what we
++		 * were going to write originally.
++		 */
++		if ((log_newmap != map_entry) && (log_oldmap == map_entry)) {
+ 			/*
+ 			 * Last transaction wrote the flog, but wasn't able
+ 			 * to complete the map write. So fix up the map.
+diff --git a/drivers/nvdimm/btt.h b/drivers/nvdimm/btt.h
+index db3cb6d4d0d4..ddff49c707b0 100644
+--- a/drivers/nvdimm/btt.h
++++ b/drivers/nvdimm/btt.h
+@@ -44,6 +44,8 @@
+ #define ent_e_flag(ent) (!!(ent & MAP_ERR_MASK))
+ #define ent_z_flag(ent) (!!(ent & MAP_TRIM_MASK))
+ #define set_e_flag(ent) (ent |= MAP_ERR_MASK)
++/* 'normal' is both e and z flags set */
++#define ent_normal(ent) (ent_e_flag(ent) && ent_z_flag(ent))
+ 
+ enum btt_init_state {
+ 	INIT_UNCHECKED = 0,
+diff --git a/drivers/nvdimm/btt_devs.c b/drivers/nvdimm/btt_devs.c
+index e341498876ca..9486acc08402 100644
+--- a/drivers/nvdimm/btt_devs.c
++++ b/drivers/nvdimm/btt_devs.c
+@@ -159,11 +159,19 @@ static ssize_t size_show(struct device *dev,
+ }
+ static DEVICE_ATTR_RO(size);
+ 
++static ssize_t log_zero_flags_show(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	return sprintf(buf, "Y\n");
++}
++static DEVICE_ATTR_RO(log_zero_flags);
++
+ static struct attribute *nd_btt_attributes[] = {
+ 	&dev_attr_sector_size.attr,
+ 	&dev_attr_namespace.attr,
+ 	&dev_attr_uuid.attr,
+ 	&dev_attr_size.attr,
++	&dev_attr_log_zero_flags.attr,
+ 	NULL,
+ };
+ 
+-- 
+2.25.1
+
 
 
