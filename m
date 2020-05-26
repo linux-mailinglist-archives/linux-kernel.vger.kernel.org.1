@@ -2,50 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90D41E2B34
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB581E2B98
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389876AbgEZTCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:02:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57808 "EHLO mail.kernel.org"
+        id S2391199AbgEZTGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:06:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390512AbgEZTCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:02:50 -0400
+        id S2403815AbgEZTGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:06:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8DAD208B3;
-        Tue, 26 May 2020 19:02:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C59C20873;
+        Tue, 26 May 2020 19:06:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519769;
-        bh=k35D95v8qmSYVPExxFNvXGV1WmuOz8fXUT0Z2szsg3g=;
+        s=default; t=1590519998;
+        bh=r/ZhJS3TFnJvUkfTEaJFVxbdWUpnvSUCDvWHnEm187c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qfWnK8EM4PLgBxJalnwuVPHVte/tV4ktmB2ICDogyGGJKKYdxkscOO3oFgUi8tJhS
-         o+YW1J+naXRVUWM7za0IuxJOv95d5SIjbG62mpYvzL9UcQmt17JzbRCCtYTNBCunqp
-         jip/9eXagpkttS5rG+UHJhch34xd4o1f4VESIVVw=
+        b=pWFyoEKShB8j7mse37uxZiz4IpO1xvYs2vGg7v7YCpyck0n1kfKkmHEi1aPy9guXn
+         6X3iPMEuTHkRtBGbSp+Z5P/G+eqU7WuEissMO39k4TF2rz2QmZZGBuyQV0iNifNv57
+         AaNwMrsPeNA0TH3R7HP0LhrxFiIcnoELZQnV2eh8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 02/81] ubsan: build ubsan.c more conservatively
+        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 019/111] net: drop_monitor: use IS_REACHABLE() to guard net_dm_hw_report()
 Date:   Tue, 26 May 2020 20:52:37 +0200
-Message-Id: <20200526183923.677631870@linuxfoundation.org>
+Message-Id: <20200526183934.486055216@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
-References: <20200526183923.108515292@linuxfoundation.org>
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -55,69 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-commit af700eaed0564d5d3963a7a51cb0843629d7fe3d upstream.
+[ Upstream commit 1cd9b3abf5332102d4d967555e7ed861a75094bf ]
 
-objtool points out several conditions that it does not like, depending
-on the combination with other configuration options and compiler
-variants:
+In net/Kconfig, NET_DEVLINK implies NET_DROP_MONITOR.
 
-stack protector:
-  lib/ubsan.o: warning: objtool: __ubsan_handle_type_mismatch()+0xbf: call to __stack_chk_fail() with UACCESS enabled
-  lib/ubsan.o: warning: objtool: __ubsan_handle_type_mismatch_v1()+0xbe: call to __stack_chk_fail() with UACCESS enabled
+The original behavior of the 'imply' keyword prevents NET_DROP_MONITOR
+from being 'm' when NET_DEVLINK=y.
 
-stackleak plugin:
-  lib/ubsan.o: warning: objtool: __ubsan_handle_type_mismatch()+0x4a: call to stackleak_track_stack() with UACCESS enabled
-  lib/ubsan.o: warning: objtool: __ubsan_handle_type_mismatch_v1()+0x4a: call to stackleak_track_stack() with UACCESS enabled
+With the planned Kconfig change that relaxes the 'imply', the
+combination of NET_DEVLINK=y and NET_DROP_MONITOR=m would be allowed.
 
-kasan:
-  lib/ubsan.o: warning: objtool: __ubsan_handle_type_mismatch()+0x25: call to memcpy() with UACCESS enabled
-  lib/ubsan.o: warning: objtool: __ubsan_handle_type_mismatch_v1()+0x25: call to memcpy() with UACCESS enabled
+Use IS_REACHABLE() to avoid the vmlinux link error for this case.
 
-The stackleak and kasan options just need to be disabled for this file
-as we do for other files already.  For the stack protector, we already
-attempt to disable it, but this fails on clang because the check is
-mixed with the gcc specific -fno-conserve-stack option.  According to
-Andrey Ryabinin, that option is not even needed, dropping it here fixes
-the stackprotector issue.
-
-Link: http://lkml.kernel.org/r/20190722125139.1335385-1-arnd@arndb.de
-Link: https://lore.kernel.org/lkml/20190617123109.667090-1-arnd@arndb.de/t/
-Link: https://lore.kernel.org/lkml/20190722091050.2188664-1-arnd@arndb.de/t/
-Fixes: d08965a27e84 ("x86/uaccess, ubsan: Fix UBSAN vs. SMAP")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Acked-by: Neil Horman <nhorman@tuxdriver.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/Makefile |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/net/drop_monitor.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -269,7 +269,8 @@ obj-$(CONFIG_UCS2_STRING) += ucs2_string
- obj-$(CONFIG_UBSAN) += ubsan.o
+diff --git a/include/net/drop_monitor.h b/include/net/drop_monitor.h
+index 2ab668461463..f68bc373544a 100644
+--- a/include/net/drop_monitor.h
++++ b/include/net/drop_monitor.h
+@@ -19,7 +19,7 @@ struct net_dm_hw_metadata {
+ 	struct net_device *input_dev;
+ };
  
- UBSAN_SANITIZE_ubsan.o := n
--CFLAGS_ubsan.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
-+KASAN_SANITIZE_ubsan.o := n
-+CFLAGS_ubsan.o := $(call cc-option, -fno-stack-protector) $(DISABLE_STACKLEAK_PLUGIN)
- 
- obj-$(CONFIG_SBITMAP) += sbitmap.o
- 
+-#if IS_ENABLED(CONFIG_NET_DROP_MONITOR)
++#if IS_REACHABLE(CONFIG_NET_DROP_MONITOR)
+ void net_dm_hw_report(struct sk_buff *skb,
+ 		      const struct net_dm_hw_metadata *hw_metadata);
+ #else
+-- 
+2.25.1
+
 
 
