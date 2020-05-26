@@ -2,105 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858F81E2147
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 13:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC721E2135
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 13:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732023AbgEZLuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 07:50:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732012AbgEZLuQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 07:50:16 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E79C03E96D
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 04:50:16 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id x11so7609222plv.9
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 04:50:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=rzP5fzn/E340EPlW7gDpFBlyEkfSVaF1oJz6fYo76k8=;
-        b=cSls9zjl0whNH0eR/l2i02O95OOhgGrNGwM26ZGFvkQW9VtZxJfxlywizJRke/rmbm
-         DjeTG2qfQRIUFCJCYqf3IQGjZY5BYNOiPnuTiljaUSiUooWYyRzwspOmUiqDqG0M0ZC0
-         NH/f8WAxs2sULx5ClU2rSJ/IVPF1eLlml+6rdIo1i25jIwEm+AfsqPAhvJRo8r0X4r3K
-         IiHWdbIh+eGq5kqb6u0B/VzWcIY6fcWtE+dhbKonQdK7ew/58LBw5We1pNCxs/7oweP5
-         Jjm4EUWxVNg2+Xy8U6NcCfQFYKXK3ubEYUyGEqX5s/R/MQ0L946l4eUlakQO2SpHpvOw
-         LfPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=rzP5fzn/E340EPlW7gDpFBlyEkfSVaF1oJz6fYo76k8=;
-        b=C4NoJBo/6mcEzVh4oaLWpaXZkVxmtg3m8wIX224e0t7exaVLM6G/aQscB5KJx+IfIu
-         vv4udL70HbiMFvBKYKXv3jsJna7KWHuhLdYYyetffapTSt8ASRIpuJb8pP3CoJ1ikJwd
-         alBxn5Jm//gzoJCzDm4glweYBn2Irjz0ydQ9P2EuIlvhcFFsqwbGM74eB3LwRwTPvss4
-         y1b19iJQdyU4rL8LUeh59Ug86wmtbHG+gMxQL097YfrrQnXDWJLlSnQL9yrmQyFN3BOf
-         bKphMYg4MlVX4FBTrbE97Ghn0PzfTnZadL7LG2eFWKcbKB2VJtNNkAk/ENPYxUhg3Rf3
-         tYjQ==
-X-Gm-Message-State: AOAM530YrzRBy2QPCQUuKZoxdrywqv7oSlHk41R8e+v06Lwe/AOSVW62
-        PL1Kz+Ba7VcU846bx39Hu3dXig==
-X-Google-Smtp-Source: ABdhPJzHFiU9uQ9tpgEPP89QRh+ApddGGVo2/M4MgxGlH4yKc3wRc1jVL2ox1xaiLvr1T78JAyGRGQ==
-X-Received: by 2002:a17:90a:4809:: with SMTP id a9mr26082742pjh.196.1590493816386;
-        Tue, 26 May 2020 04:50:16 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.9])
-        by smtp.gmail.com with ESMTPSA id c12sm15586567pjm.46.2020.05.26.04.50.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 May 2020 04:50:16 -0700 (PDT)
-From:   Zhangfei Gao <zhangfei.gao@linaro.org>
-To:     Joerg Roedel <joro@8bytes.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        jean-philippe <jean-philippe@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>
-Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        Zhangfei Gao <zhangfei.gao@linaro.org>
-Subject: [PATCH 2/2] iommu: calling pci_fixup_iommu in iommu_fwspec_init
-Date:   Tue, 26 May 2020 19:49:09 +0800
-Message-Id: <1590493749-13823-3-git-send-email-zhangfei.gao@linaro.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1590493749-13823-1-git-send-email-zhangfei.gao@linaro.org>
-References: <1590493749-13823-1-git-send-email-zhangfei.gao@linaro.org>
+        id S1731909AbgEZLtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 07:49:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:49816 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726756AbgEZLtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 07:49:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 16B8630E;
+        Tue, 26 May 2020 04:49:32 -0700 (PDT)
+Received: from gaia (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B510E3F6C4;
+        Tue, 26 May 2020 04:49:29 -0700 (PDT)
+Date:   Tue, 26 May 2020 12:49:27 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Keqian Zhu <zhukeqian1@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        wanghaibin.wang@huawei.com, zhengxiang9@huawei.com,
+        Peng Liang <liangpeng10@huawei.com>
+Subject: Re: [RFC PATCH 2/7] KVM: arm64: Set DBM bit of PTEs if hw DBM enabled
+Message-ID: <20200526114926.GD17051@gaia>
+References: <20200525112406.28224-1-zhukeqian1@huawei.com>
+ <20200525112406.28224-3-zhukeqian1@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200525112406.28224-3-zhukeqian1@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Calling pci_fixup_iommu in iommu_fwspec_init, which alloc
-iommu_fwnode. Some platform devices appear as PCI but are
-actually on the AMBA bus, and they need fixup in
-drivers/pci/quirks.c handling iommu_fwnode.
-So calling pci_fixup_iommu after iommu_fwnode is allocated.
+On Mon, May 25, 2020 at 07:24:01PM +0800, Keqian Zhu wrote:
+> diff --git a/arch/arm64/include/asm/pgtable-prot.h b/arch/arm64/include/asm/pgtable-prot.h
+> index 1305e28225fc..f9910ba2afd8 100644
+> --- a/arch/arm64/include/asm/pgtable-prot.h
+> +++ b/arch/arm64/include/asm/pgtable-prot.h
+> @@ -79,6 +79,7 @@ extern bool arm64_use_ng_mappings;
+>  	})
+>  
+>  #define PAGE_S2			__pgprot(_PROT_DEFAULT | PAGE_S2_MEMATTR(NORMAL) | PTE_S2_RDONLY | PAGE_S2_XN)
+> +#define PAGE_S2_DBM		__pgprot(_PROT_DEFAULT | PAGE_S2_MEMATTR(NORMAL) | PTE_S2_RDONLY | PAGE_S2_XN | PTE_DBM)
 
-Signed-off-by: Zhangfei Gao <zhangfei.gao@linaro.org>
----
- drivers/iommu/iommu.c | 4 ++++
- 1 file changed, 4 insertions(+)
+You don't need a new page permission (see below).
 
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 7b37542..fb84c42 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -2418,6 +2418,10 @@ int iommu_fwspec_init(struct device *dev, struct fwnode_handle *iommu_fwnode,
- 	fwspec->iommu_fwnode = iommu_fwnode;
- 	fwspec->ops = ops;
- 	dev_iommu_fwspec_set(dev, fwspec);
-+
-+	if (dev_is_pci(dev))
-+		pci_fixup_device(pci_fixup_iommu, to_pci_dev(dev));
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(iommu_fwspec_init);
+>  #define PAGE_S2_DEVICE		__pgprot(_PROT_DEFAULT | PAGE_S2_MEMATTR(DEVICE_nGnRE) | PTE_S2_RDONLY | PTE_S2_XN)
+>  
+>  #define PAGE_NONE		__pgprot(((_PAGE_DEFAULT) & ~PTE_VALID) | PTE_PROT_NONE | PTE_RDONLY | PTE_NG | PTE_PXN | PTE_UXN)
+> diff --git a/virt/kvm/arm/mmu.c b/virt/kvm/arm/mmu.c
+> index e3b9ee268823..dc97988eb2e0 100644
+> --- a/virt/kvm/arm/mmu.c
+> +++ b/virt/kvm/arm/mmu.c
+> @@ -1426,6 +1426,10 @@ static void stage2_wp_ptes(pmd_t *pmd, phys_addr_t addr, phys_addr_t end)
+>  	pte = pte_offset_kernel(pmd, addr);
+>  	do {
+>  		if (!pte_none(*pte)) {
+> +#ifdef CONFIG_ARM64_HW_AFDBM
+> +			if (kvm_hw_dbm_enabled() && !kvm_s2pte_dbm(pte))
+> +				kvm_set_s2pte_dbm(pte);
+> +#endif
+>  			if (!kvm_s2pte_readonly(pte))
+>  				kvm_set_s2pte_readonly(pte);
+>  		}
+
+Setting the DBM bit is equivalent to marking the page writable. The
+actual writable pte bit (S2AP[1] or HAP[2] as we call them in Linux for
+legacy reasons) tells you whether the page has been dirtied but it is
+still writable if you set DBM. Doing this in stage2_wp_ptes()
+practically means that you no longer have read-only pages at S2. There
+are several good reasons why you don't want to break this. For example,
+the S2 pte may already be read-only for other reasons (CoW).
+
+I think you should only set the DBM bit if the pte was previously
+writable. In addition, any permission change to the S2 pte must take
+into account the DBM bit and clear it while transferring the dirty
+status to the underlying page. I'm not deeply familiar with all these
+callbacks into KVM but two such paths are kvm_unmap_hva_range() and the
+kvm_mmu_notifier_change_pte().
+
+
+> @@ -1827,7 +1831,15 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>  
+>  		ret = stage2_set_pmd_huge(kvm, memcache, fault_ipa, &new_pmd);
+>  	} else {
+> -		pte_t new_pte = kvm_pfn_pte(pfn, mem_type);
+> +		pte_t new_pte;
+> +
+> +#ifdef CONFIG_ARM64_HW_AFDBM
+> +		if (kvm_hw_dbm_enabled() &&
+> +		    pgprot_val(mem_type) == pgprot_val(PAGE_S2)) {
+> +			mem_type = PAGE_S2_DBM;
+> +		}
+> +#endif
+> +		new_pte = kvm_pfn_pte(pfn, mem_type);
+>  
+>  		if (writable) {
+>  			new_pte = kvm_s2pte_mkwrite(new_pte);
+
+That's wrong here. Basically for any fault you get, you just turn the S2
+page writable. The point of DBM is that you don't get write faults at
+all if you have a writable page. So, as I said above, only set the DBM
+bit if you stored a writable S2 pte (kvm_s2pte_mkwrite()).
+
 -- 
-2.7.4
-
+Catalin
