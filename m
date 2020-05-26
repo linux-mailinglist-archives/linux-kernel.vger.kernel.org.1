@@ -2,40 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 696BD1E2EF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8F71E2EB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390005AbgEZS5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:57:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50074 "EHLO mail.kernel.org"
+        id S2389936AbgEZTbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:31:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389988AbgEZS46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:56:58 -0400
+        id S2389843AbgEZS7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:59:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1818920849;
-        Tue, 26 May 2020 18:56:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9CA9C2084C;
+        Tue, 26 May 2020 18:59:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519418;
-        bh=EOaxjKkUyiBJyXsGrFvIdVTBaS4PGnhdU6vFvfAhFj4=;
+        s=default; t=1590519563;
+        bh=6PeqxmiV1MiN/fs54FhFk/6krLO8JfdqfaCb9/lsmHU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HcTA1ppO5+ZPC4dbFuSjrKlkm+olGMVg8wySYkW5sL2jBYCIJy87fPid52BTjTdnX
-         H1aEYSSuQsNTkqEK6ektAG0G3012LdbJZxSGaxc6y+/eyhJ+LDbpy9Atezt8/9drRv
-         kseN04cuFVn2sRkzV32yLcI7R0BvpERDCl7QT/MQ=
+        b=b8hfWdsHXZbiVl7scwZ6ukY6C5cIh6Scf31RzxDy4sUCoXJX909OyefGZx4Z6QQFs
+         n2blSnlOhgV7imGtKLZRiFaZLaPmHF05dLqXoRzHZRO3EdMHAsxTISdfYJwHiWieNV
+         itMbE1oWs9roezEfVlwhivMdxsoCodwxja9fcBfA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dragos Bogdan <dragos.bogdan@analog.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.4 62/65] staging: iio: ad2s1210: Fix SPI reading
-Date:   Tue, 26 May 2020 20:53:21 +0200
-Message-Id: <20200526183928.588655660@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 53/64] ubsan: build ubsan.c more conservatively
+Date:   Tue, 26 May 2020 20:53:22 +0200
+Message-Id: <20200526183930.759269921@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183905.988782958@linuxfoundation.org>
-References: <20200526183905.988782958@linuxfoundation.org>
+In-Reply-To: <20200526183913.064413230@linuxfoundation.org>
+References: <20200526183913.064413230@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,63 +55,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dragos Bogdan <dragos.bogdan@analog.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 5e4f99a6b788047b0b8a7496c2e0c8f372f6edf2 upstream.
+commit af700eaed0564d5d3963a7a51cb0843629d7fe3d upstream.
 
-If the serial interface is used, the 8-bit address should be latched using
-the rising edge of the WR/FSYNC signal.
+objtool points out several conditions that it does not like, depending
+on the combination with other configuration options and compiler
+variants:
 
-This basically means that a CS change is required between the first byte
-sent, and the second one.
-This change splits the single-transfer transfer of 2 bytes into 2 transfers
-with a single byte, and CS change in-between.
+stack protector:
+  lib/ubsan.o: warning: objtool: __ubsan_handle_type_mismatch()+0xbf: call to __stack_chk_fail() with UACCESS enabled
+  lib/ubsan.o: warning: objtool: __ubsan_handle_type_mismatch_v1()+0xbe: call to __stack_chk_fail() with UACCESS enabled
 
-Note fixes tag is not accurate, but reflects a point beyond which there
-are too many refactors to make backporting straight forward.
+stackleak plugin:
+  lib/ubsan.o: warning: objtool: __ubsan_handle_type_mismatch()+0x4a: call to stackleak_track_stack() with UACCESS enabled
+  lib/ubsan.o: warning: objtool: __ubsan_handle_type_mismatch_v1()+0x4a: call to stackleak_track_stack() with UACCESS enabled
 
-Fixes: b19e9ad5e2cb ("staging:iio:resolver:ad2s1210 general driver cleanup.")
-Signed-off-by: Dragos Bogdan <dragos.bogdan@analog.com>
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+kasan:
+  lib/ubsan.o: warning: objtool: __ubsan_handle_type_mismatch()+0x25: call to memcpy() with UACCESS enabled
+  lib/ubsan.o: warning: objtool: __ubsan_handle_type_mismatch_v1()+0x25: call to memcpy() with UACCESS enabled
+
+The stackleak and kasan options just need to be disabled for this file
+as we do for other files already.  For the stack protector, we already
+attempt to disable it, but this fails on clang because the check is
+mixed with the gcc specific -fno-conserve-stack option.  According to
+Andrey Ryabinin, that option is not even needed, dropping it here fixes
+the stackprotector issue.
+
+Link: http://lkml.kernel.org/r/20190722125139.1335385-1-arnd@arndb.de
+Link: https://lore.kernel.org/lkml/20190617123109.667090-1-arnd@arndb.de/t/
+Link: https://lore.kernel.org/lkml/20190722091050.2188664-1-arnd@arndb.de/t/
+Fixes: d08965a27e84 ("x86/uaccess, ubsan: Fix UBSAN vs. SMAP")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/staging/iio/resolver/ad2s1210.c |   17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ lib/Makefile |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/staging/iio/resolver/ad2s1210.c
-+++ b/drivers/staging/iio/resolver/ad2s1210.c
-@@ -125,17 +125,24 @@ static int ad2s1210_config_write(struct
- static int ad2s1210_config_read(struct ad2s1210_state *st,
- 		       unsigned char address)
- {
--	struct spi_transfer xfer = {
--		.len = 2,
--		.rx_buf = st->rx,
--		.tx_buf = st->tx,
-+	struct spi_transfer xfers[] = {
-+		{
-+			.len = 1,
-+			.rx_buf = &st->rx[0],
-+			.tx_buf = &st->tx[0],
-+			.cs_change = 1,
-+		}, {
-+			.len = 1,
-+			.rx_buf = &st->rx[1],
-+			.tx_buf = &st->tx[1],
-+		},
- 	};
- 	int ret = 0;
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -230,6 +230,7 @@ obj-$(CONFIG_UCS2_STRING) += ucs2_string
+ obj-$(CONFIG_UBSAN) += ubsan.o
  
- 	ad2s1210_set_mode(MOD_CONFIG, st);
- 	st->tx[0] = address | AD2S1210_MSB_IS_HIGH;
- 	st->tx[1] = AD2S1210_REG_FAULT;
--	ret = spi_sync_transfer(st->sdev, &xfer, 1);
-+	ret = spi_sync_transfer(st->sdev, xfers, 2);
- 	if (ret < 0)
- 		return ret;
- 	st->old_data = true;
+ UBSAN_SANITIZE_ubsan.o := n
+-CFLAGS_ubsan.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
++KASAN_SANITIZE_ubsan.o := n
++CFLAGS_ubsan.o := $(call cc-option, -fno-stack-protector) $(DISABLE_STACKLEAK_PLUGIN)
+ 
+ obj-$(CONFIG_SBITMAP) += sbitmap.o
 
 
