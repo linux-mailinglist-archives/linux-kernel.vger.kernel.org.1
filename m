@@ -2,101 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8500F1E25BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 17:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40BFA1E25B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 17:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731228AbgEZPl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 11:41:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730125AbgEZPlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 11:41:36 -0400
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97EB4208C7;
-        Tue, 26 May 2020 15:41:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590507695;
-        bh=gZ8aNmKdT4zxOHADWbLT5Y6H7LmM9caifHy5dcL7o1w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Rz0KVAKpuQWjbYVqG4KX84a/Z2Zt/9Ql+miy0TU2C8vgkSO0PKYNUlF+XR1rC8KGE
-         mh5sj0zdQJcaRR4rzJF+iAFeCl4Ewnku9jGmDJ+IE0NVkPLvrYsaAFvztrx3rMj64U
-         L8w9Hs820XIx3lSpLEb6FRx8eXc56ZIvb4NDhCtw=
-Received: by mail-ot1-f54.google.com with SMTP id v17so16702199ote.0;
-        Tue, 26 May 2020 08:41:35 -0700 (PDT)
-X-Gm-Message-State: AOAM531xjewdXXNAVed+SjfPj9YTZrP3lN95WPzw0Rc1y+0tzutO1EXp
-        gCDL/Rq61GcR6zkBErk9lAWLWoG/xXoKvawOTw==
-X-Google-Smtp-Source: ABdhPJyw5d4vkXtjRoAzpvfuHmTQkWPHTHP8fjfXFmWwTl18r8lTB38VHOpsCiY4+6yITwPGZ8kGTMGihvRi8sPe2BQ=
-X-Received: by 2002:a05:6830:18d9:: with SMTP id v25mr1226309ote.107.1590507694863;
- Tue, 26 May 2020 08:41:34 -0700 (PDT)
+        id S1729817AbgEZPlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 11:41:40 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:58594 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729309AbgEZPli (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 11:41:38 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 73C28803086D;
+        Tue, 26 May 2020 15:41:33 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id obwMDeLfvhXk; Tue, 26 May 2020 18:41:32 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 5/7] watchdog: dw_wdt: Support devices with asynch clocks
+Date:   Tue, 26 May 2020 18:41:21 +0300
+Message-ID: <20200526154123.24402-6-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20200526154123.24402-1-Sergey.Semin@baikalelectronics.ru>
+References: <20200526154123.24402-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-References: <20200522220103.908307-1-anders.roxell@linaro.org>
- <20200524222025.GA3116034@ubuntu-s3-xlarge-x86> <292277.1590449865@turing-police>
- <20200526053850.GA2368760@ubuntu-s3-xlarge-x86>
-In-Reply-To: <20200526053850.GA2368760@ubuntu-s3-xlarge-x86>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 26 May 2020 09:41:20 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJ9LnCpH92bXfk4ryXrTgzbPM03=PYLTzQXazuznJM=hg@mail.gmail.com>
-Message-ID: <CAL_JsqJ9LnCpH92bXfk4ryXrTgzbPM03=PYLTzQXazuznJM=hg@mail.gmail.com>
-Subject: Re: [PATCH] power: reset: vexpress: fix build issue
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     =?UTF-8?Q?Valdis_Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        "open list:MEDIA DRIVERS FOR RENESAS - FCP" 
-        <linux-renesas-soc@vger.kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-" On Mon, May 25, 2020 at 11:38 PM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> On Mon, May 25, 2020 at 07:37:45PM -0400, Valdis Kl=C4=93tnieks wrote:
-> > On Sun, 24 May 2020 15:20:25 -0700, Nathan Chancellor said:
-> >
-> > > arm-linux-gnueabi-ld: drivers/power/reset/vexpress-poweroff.o: in fun=
-ction `vexpress_reset_probe':
-> > > vexpress-poweroff.c:(.text+0x36c): undefined reference to `devm_regma=
-p_init_vexpress_config'
-> >
-> > The part I can't figure out is that git blame tells me there's already =
-an
-> > export:
-> >
-> > 3b9334ac835bb (Pawel Moll      2014-04-30 16:46:29 +0100 154)   return =
-regmap;
-> > 3b9334ac835bb (Pawel Moll      2014-04-30 16:46:29 +0100 155) }
-> > b33cdd283bd91 (Arnd Bergmann   2014-05-26 17:25:22 +0200 156) EXPORT_SY=
-MBOL_GPL(devm_regmap_init_vexpress_config);
-> > 3b9334ac835bb (Pawel Moll      2014-04-30 16:46:29 +0100 157)
-> >
-> > but I can't figure out where or if drivers/power/reset/vexpress-powerof=
-f.c gets
-> > a MODULE_LICENSE from...
->
-> Correct, it is exported but that file is being built as a module whereas
-> the file requiring it is beign builtin. As far as I understand, that
-> will not work, hence the error.
->
-> The issue with this patch is that ARCH_VEXPRESS still just selects
-> POWER_RESET_VEXPRESS, which ignores "depends on", hence the Kconfig
-> warning and not fixing the error.
->
-> I am not that much of a Kconfig guru to come up with a solution. I am
-> just reporting it because arm allmodconfig is broken on -next due to
-> this.
+DW Watchdog IP core can be synthesised with asynchronous timer/APB
+clocks support (WDT_ASYNC_CLK_MODE_ENABLE == 1). In this case
+separate clock signals are supposed to be used to feed watchdog timer
+and APB interface of the device. Currently the driver supports
+the synchronous mode only. Since there is no way to determine which
+mode was actually activated for device from its registers, we have to
+rely on the platform device configuration data. If optional "pclk"
+clock source is supplied, we consider the device working in asynchronous
+mode, otherwise the driver falls back to the synchronous configuration.
 
-Commit "ARM: vexpress: Don't select VEXPRESS_CONFIG" needs to be
-reverted. I've asked Arnd to revert it.
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: linux-mips@vger.kernel.org
+Cc: devicetree@vger.kernel.org
 
-Anders patch is still needed for arm64.
+---
 
-Rob
+Changelog v2:
+- Rearrange SoBs.
+---
+ drivers/watchdog/dw_wdt.c | 48 +++++++++++++++++++++++++++++++++++----
+ 1 file changed, 43 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/watchdog/dw_wdt.c b/drivers/watchdog/dw_wdt.c
+index 693c0d1fd796..efbc36872670 100644
+--- a/drivers/watchdog/dw_wdt.c
++++ b/drivers/watchdog/dw_wdt.c
+@@ -68,6 +68,7 @@ struct dw_wdt_timeout {
+ struct dw_wdt {
+ 	void __iomem		*regs;
+ 	struct clk		*clk;
++	struct clk		*pclk;
+ 	unsigned long		rate;
+ 	struct dw_wdt_timeout	timeouts[DW_WDT_NUM_TOPS];
+ 	struct watchdog_device	wdd;
+@@ -274,6 +275,7 @@ static int dw_wdt_suspend(struct device *dev)
+ 	dw_wdt->control = readl(dw_wdt->regs + WDOG_CONTROL_REG_OFFSET);
+ 	dw_wdt->timeout = readl(dw_wdt->regs + WDOG_TIMEOUT_RANGE_REG_OFFSET);
+ 
++	clk_disable_unprepare(dw_wdt->pclk);
+ 	clk_disable_unprepare(dw_wdt->clk);
+ 
+ 	return 0;
+@@ -287,6 +289,12 @@ static int dw_wdt_resume(struct device *dev)
+ 	if (err)
+ 		return err;
+ 
++	err = clk_prepare_enable(dw_wdt->pclk);
++	if (err) {
++		clk_disable_unprepare(dw_wdt->clk);
++		return err;
++	}
++
+ 	writel(dw_wdt->timeout, dw_wdt->regs + WDOG_TIMEOUT_RANGE_REG_OFFSET);
+ 	writel(dw_wdt->control, dw_wdt->regs + WDOG_CONTROL_REG_OFFSET);
+ 
+@@ -393,9 +401,18 @@ static int dw_wdt_drv_probe(struct platform_device *pdev)
+ 	if (IS_ERR(dw_wdt->regs))
+ 		return PTR_ERR(dw_wdt->regs);
+ 
+-	dw_wdt->clk = devm_clk_get(dev, NULL);
+-	if (IS_ERR(dw_wdt->clk))
+-		return PTR_ERR(dw_wdt->clk);
++	/*
++	 * Try to request the watchdog dedicated timer clock source. It must
++	 * be supplied if asynchronous mode is enabled. Otherwise fallback
++	 * to the common timer/bus clocks configuration, in which the very
++	 * first found clock supply both timer and APB signals.
++	 */
++	dw_wdt->clk = devm_clk_get(dev, "tclk");
++	if (IS_ERR(dw_wdt->clk)) {
++		dw_wdt->clk = devm_clk_get(dev, NULL);
++		if (IS_ERR(dw_wdt->clk))
++			return PTR_ERR(dw_wdt->clk);
++	}
+ 
+ 	ret = clk_prepare_enable(dw_wdt->clk);
+ 	if (ret)
+@@ -407,10 +424,27 @@ static int dw_wdt_drv_probe(struct platform_device *pdev)
+ 		goto out_disable_clk;
+ 	}
+ 
++	/*
++	 * Request APB clock if device is configured with async clocks mode.
++	 * In this case both tclk and pclk clocks are supposed to be specified.
++	 * Alas we can't know for sure whether async mode was really activated,
++	 * so the pclk phandle reference is left optional. If it couldn't be
++	 * found we consider the device configured in synchronous clocks mode.
++	 */
++	dw_wdt->pclk = devm_clk_get_optional(dev, "pclk");
++	if (IS_ERR(dw_wdt->pclk)) {
++		ret = PTR_ERR(dw_wdt->pclk);
++		goto out_disable_clk;
++	}
++
++	ret = clk_prepare_enable(dw_wdt->pclk);
++	if (ret)
++		goto out_disable_clk;
++
+ 	dw_wdt->rst = devm_reset_control_get_optional_shared(&pdev->dev, NULL);
+ 	if (IS_ERR(dw_wdt->rst)) {
+ 		ret = PTR_ERR(dw_wdt->rst);
+-		goto out_disable_clk;
++		goto out_disable_pclk;
+ 	}
+ 
+ 	reset_control_deassert(dw_wdt->rst);
+@@ -449,10 +483,13 @@ static int dw_wdt_drv_probe(struct platform_device *pdev)
+ 
+ 	ret = watchdog_register_device(wdd);
+ 	if (ret)
+-		goto out_disable_clk;
++		goto out_disable_pclk;
+ 
+ 	return 0;
+ 
++out_disable_pclk:
++	clk_disable_unprepare(dw_wdt->pclk);
++
+ out_disable_clk:
+ 	clk_disable_unprepare(dw_wdt->clk);
+ 	return ret;
+@@ -464,6 +501,7 @@ static int dw_wdt_drv_remove(struct platform_device *pdev)
+ 
+ 	watchdog_unregister_device(&dw_wdt->wdd);
+ 	reset_control_assert(dw_wdt->rst);
++	clk_disable_unprepare(dw_wdt->pclk);
+ 	clk_disable_unprepare(dw_wdt->clk);
+ 
+ 	return 0;
+-- 
+2.26.2
+
