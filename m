@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ECCB1E2DB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 608E61E2B08
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404492AbgEZTXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:23:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38092 "EHLO mail.kernel.org"
+        id S2390268AbgEZTBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:01:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391818AbgEZTJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:09:02 -0400
+        id S2390911AbgEZTBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:01:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33C8D20776;
-        Tue, 26 May 2020 19:09:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BEAA82086A;
+        Tue, 26 May 2020 19:01:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520141;
-        bh=2zQbOFk7UokBnaJoU3QOA1uEDUj2qmeb2ZaGzIM4pvA=;
+        s=default; t=1590519676;
+        bh=jxpV9bwZNr00uF7Pt1uZ/SNrypyG2VMQGrhaC84nUkg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cZxOUDHsIs0pd1dXDqk7hWQjjHiEEh8+1HiPE79R4xnVdGiryDgPIhkLg7AF07/14
-         jPslJpCRm546M5ZUNk7VrkY/j5l3f3ottlEu7ZY+iigIb/+4VrfW84RFN07C5O1PyZ
-         sul8lTtYp3gbnbkZ/n8IJQpnveNeiaIDNBaJ0tBU=
+        b=Ccf5vE5Mq84fOKCLoc1tZ8AH/5wZy8rH98yVE9iQmse8PYsMVmpE9HmIVbYyfiCtL
+         soLCSJdws52SoTZ64IKXy6J1xU2m0W65UgpUzXUq1ZRthu4ldTN/7VrOub1PDwjxDG
+         F9FdgSRfNpS292+Qab5KuI+JNqv3DGjFKaNGNyR4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juliet Kim <julietk@linux.vnet.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Krzysztof Struczynski <krzysztof.struczynski@huawei.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 034/111] ibmvnic: Skip fatal error reset after passive init
-Date:   Tue, 26 May 2020 20:52:52 +0200
-Message-Id: <20200526183936.067512660@linuxfoundation.org>
+Subject: [PATCH 4.14 08/59] ima: Fix return value of ima_write_policy()
+Date:   Tue, 26 May 2020 20:52:53 +0200
+Message-Id: <20200526183910.008888439@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
-References: <20200526183932.245016380@linuxfoundation.org>
+In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
+References: <20200526183907.123822792@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juliet Kim <julietk@linux.vnet.ibm.com>
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-[ Upstream commit f9c6cea0b38518741c8dcf26ac056d26ee2fd61d ]
+[ Upstream commit 2e3a34e9f409ebe83d1af7cd2f49fca7af97dfac ]
 
-During MTU change, the following events may happen.
-Client-driven CRQ initialization fails due to partner’s CRQ closed,
-causing client to enqueue a reset task for FATAL_ERROR. Then passive
-(server-driven) CRQ initialization succeeds, causing client to
-release CRQ and enqueue a reset task for failover. If the passive
-CRQ initialization occurs before the FATAL reset task is processed,
-the FATAL error reset task would try to access a CRQ message queue
-that was freed, causing an oops. The problem may be most likely to
-occur during DLPAR add vNIC with a non-default MTU, because the DLPAR
-process will automatically issue a change MTU request.
+This patch fixes the return value of ima_write_policy() when a new policy
+is directly passed to IMA and the current policy requires appraisal of the
+file containing the policy. Currently, if appraisal is not in ENFORCE mode,
+ima_write_policy() returns 0 and leads user space applications to an
+endless loop. Fix this issue by denying the operation regardless of the
+appraisal mode.
 
-Fix this by not processing fatal error reset if CRQ is passively
-initialized after client-driven CRQ initialization fails.
-
-Signed-off-by: Juliet Kim <julietk@linux.vnet.ibm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: stable@vger.kernel.org # 4.10.x
+Fixes: 19f8a84713edc ("ima: measure and appraise the IMA policy itself")
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Reviewed-by: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ security/integrity/ima/ima_fs.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index e1ab2feeae53..aaa03ce5796f 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -2086,7 +2086,8 @@ static void __ibmvnic_reset(struct work_struct *work)
- 				rc = do_hard_reset(adapter, rwi, reset_state);
- 				rtnl_unlock();
- 			}
--		} else {
-+		} else if (!(rwi->reset_reason == VNIC_RESET_FATAL &&
-+				adapter->from_passive_init)) {
- 			rc = do_reset(adapter, rwi, reset_state);
- 		}
- 		kfree(rwi);
+diff --git a/security/integrity/ima/ima_fs.c b/security/integrity/ima/ima_fs.c
+index 2c4e83f6409e..d37f9ac46670 100644
+--- a/security/integrity/ima/ima_fs.c
++++ b/security/integrity/ima/ima_fs.c
+@@ -340,8 +340,7 @@ static ssize_t ima_write_policy(struct file *file, const char __user *buf,
+ 		integrity_audit_msg(AUDIT_INTEGRITY_STATUS, NULL, NULL,
+ 				    "policy_update", "signed policy required",
+ 				    1, 0);
+-		if (ima_appraise & IMA_APPRAISE_ENFORCE)
+-			result = -EACCES;
++		result = -EACCES;
+ 	} else {
+ 		result = ima_parse_add_rule(data);
+ 	}
 -- 
 2.25.1
 
