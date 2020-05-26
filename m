@@ -2,101 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4381E3338
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:55:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DFB11E333D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391661AbgEZWyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 18:54:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390643AbgEZWyL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 18:54:11 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AFD6C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 15:54:11 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id o13so17751149otl.5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 15:54:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LEHNWK8k/WlKd/8yjTqdnOjSrmU4aZjgbRQ++Ul02Xg=;
-        b=dCO1xrzi0FPAWYqrdZOyUT+c/dMweAuDyqZx6Dxc2vTZrbHGBztMxwokRhPX7h2kXe
-         NY2znQa3Mv/CqlLeezbkglUAbqpY5EYMSKWfFwW4Ool0KK3p5iKDhOQedzv6RqzFQ1bj
-         tzuIu4W8wXOunwyqWeXTh818xHVxA7NaTqZFw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LEHNWK8k/WlKd/8yjTqdnOjSrmU4aZjgbRQ++Ul02Xg=;
-        b=e4y7HbOY8FGVCjEy4ETkzIHqpoVJ0Vn0h+VQW7GEcAnhJOWBg8wROorHzpMUVW2ORx
-         9Hq43Mczrb/ffwWSFH16jCztte0L/sB+y9HDL8RIynvuX9KMAm60BZ7z+Fzb1K0hNvCn
-         EuLXeYY8eL/TsXbd1w6FYLT0AalyNKaxS9YIvMnKOCxAu3MdQn+BJT5ICnD0mVoeKahn
-         UPW24zXSVBkY+sgma/zkPOPHa4Bdqpgnf1fJOFUZw7JGHMBqMHdwCr/9MaxdAv5+mSe0
-         lLhO8eytyDrwEUgg0z7+bd3hZdFKC6ob+/53/sNrow1d0riMk/KKN7rYa37P5aWtXcwc
-         zllA==
-X-Gm-Message-State: AOAM530idd7WFfEfUfjCtEkvnmLJj/1jCTqbCWV6C0PiT3AtGpGmSzSg
-        lCXdy9uEt+rZB5fl1CFlBAsOEA==
-X-Google-Smtp-Source: ABdhPJw1cJr5CHPF51MyYej6TFwjVU3SaGqzYM86Q204jUDeqG09h+cKjMQZSffPwfieLy7b6dDF2Q==
-X-Received: by 2002:a9d:3b8b:: with SMTP id k11mr2542662otc.208.1590533650634;
-        Tue, 26 May 2020 15:54:10 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id i13sm396851ood.15.2020.05.26.15.54.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 May 2020 15:54:09 -0700 (PDT)
-Subject: Re: [PATCH] MAINTAINERS: Update my maintainer entries to reorder
- email addresses
-To:     Joe Perches <joe@perches.com>, mchehab+huawei@kernel.org,
-        davem@davemloft.net, robh@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, skhan@linuxfoundation.org
-References: <20200523021928.67126-1-skhan@linuxfoundation.org>
- <7366c990d4352e093ff7d17953079d7f0420c3a9.camel@perches.com>
- <661f53a3-b15c-76b0-f220-0d292b0843d5@linuxfoundation.org>
- <b0854ec2906323d34514875a58a79d4cb74e44b0.camel@perches.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <ea204501-84a3-badb-63f6-0a9d2fe12b19@linuxfoundation.org>
-Date:   Tue, 26 May 2020 16:54:08 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2404339AbgEZW4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 18:56:40 -0400
+Received: from mga09.intel.com ([134.134.136.24]:48785 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2403871AbgEZW4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 18:56:39 -0400
+IronPort-SDR: WiNmythZeTkv+UnxAK1L21KVBLh5KteDTCOCd7O3G4IB81RLplh2PiL4xZzBna+sxU6UwkmSJt
+ fOldxf1rPADA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 15:56:39 -0700
+IronPort-SDR: jaBeJwY0QiEdv3Ad31krOqeRjlyuTvvt+ud6cRqTdtjZKKqjedfiLzXFJlezsSunho/2Ho0oSA
+ OOO86bAcsa9w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,439,1583222400"; 
+   d="scan'208";a="266627591"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 26 May 2020 15:56:33 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jdiUq-0001O5-V7; Wed, 27 May 2020 06:56:32 +0800
+Date:   Wed, 27 May 2020 06:55:34 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ 187b96db5ca79423618dfa29a05c438c34f9e1f0
+Message-ID: <5ecd9e66.eL85aAXlwCtHmsbI%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <b0854ec2906323d34514875a58a79d4cb74e44b0.camel@perches.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/20 4:27 PM, Joe Perches wrote:
-> On Tue, 2020-05-26 at 11:04 -0600, Shuah Khan wrote:
->> On 5/22/20 8:26 PM, Joe Perches wrote:
->>> On Fri, 2020-05-22 at 20:19 -0600, Shuah Khan wrote:
->>>> get_maintainer.pl picks only the first email address found in the file.
->>>> Reorder my email addresses so it finds my linuxfoundation.org email.
->>>
->>> OK.
-> []
->> Sadly, people that don't run get_maintainer.pl, leave alone running it
->> with --noremove-duplicates option. So your suggestion doesn't really
->> help me.
->>
->> My preference is to get patches to both Inboxes if possible which isn't
->> possible unless -noremove-duplicate is default. Having this option as
->> default probably will annoy lot of people . So I am not asking for
->> that.
->>
->> That being said, I don't understand your comment. Are you recommending
->> using just one email in these entries?
-> 
-> Yes.  And maybe set an autoforward rule in that email to
-> forward the received email to your other address.
-> 
-> 
-Sounds good.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
+branch HEAD: 187b96db5ca79423618dfa29a05c438c34f9e1f0  x86/unwind/orc: Fix unwind_get_return_address_ptr() for inactive tasks
 
-thanks,
--- Shuah
+elapsed time: 5936m
 
+configs tested: 106
+configs skipped: 74
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+sh                          landisk_defconfig
+arc                              allyesconfig
+c6x                        evmc6472_defconfig
+mips                          ath25_defconfig
+arm                         s3c2410_defconfig
+sh                           se7722_defconfig
+arc                        vdk_hs38_defconfig
+arm                          gemini_defconfig
+sh                          sdk7786_defconfig
+powerpc                      ppc64e_defconfig
+h8300                               defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20200526
+i386                 randconfig-a004-20200526
+i386                 randconfig-a003-20200526
+i386                 randconfig-a006-20200526
+i386                 randconfig-a002-20200526
+i386                 randconfig-a005-20200526
+x86_64               randconfig-a015-20200526
+x86_64               randconfig-a013-20200526
+x86_64               randconfig-a016-20200526
+x86_64               randconfig-a012-20200526
+x86_64               randconfig-a014-20200526
+x86_64               randconfig-a011-20200526
+i386                 randconfig-a013-20200526
+i386                 randconfig-a015-20200526
+i386                 randconfig-a012-20200526
+i386                 randconfig-a011-20200526
+i386                 randconfig-a016-20200526
+i386                 randconfig-a014-20200526
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                               defconfig
+sparc64                           allnoconfig
+sparc                            allyesconfig
+sparc64                             defconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                                  defconfig
+um                               allyesconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
