@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1331E2B42
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73841E2AF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390667AbgEZTDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:03:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58580 "EHLO mail.kernel.org"
+        id S2390067AbgEZTA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:00:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390271AbgEZTDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:03:20 -0400
+        id S2390725AbgEZTAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:00:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 77418208A7;
-        Tue, 26 May 2020 19:03:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4037B20873;
+        Tue, 26 May 2020 19:00:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519799;
-        bh=Dgq3p6bbhPKRPAoq7iflPSQKnWlh1GWu+U2jg9fzKQo=;
+        s=default; t=1590519623;
+        bh=LD/o2ex+Rt0c8iOqqjBxp9ea9Wl/TTj5tKRfuQmvYvg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1SqIAYXcReQiGzR3+nOXNDMxsU1QDBF+B2NTo7aYrUAS6swY1xXETZ8u59h8JGKVd
-         yz5HD5JJEknRptEp5t31WCAwMI/hiGKMNdx4SJmdxSCui2xkdY20pmbZDgaujrOT8P
-         pS5pR+tdpgGgat7E0U4CC1M+GLc16CbKU+CPNDHw=
+        b=cYo1aNISYvy8tl+Ry5xRm/Z15q7A8Plz3uFKlHOsVnCK3eCzdm+w3LJpFefvXKEZm
+         IZYf8aS1JZpgxVje/keIh7Eq0XHS9lCDn5e5P+7XyxeLs8DjFnDFav8wsr4jnBu0Gr
+         e0HN7Go+sJblF8qnVRSoWBhiyn2W4dZUzmXI6xMY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 22/81] vhost/vsock: fix packet delivery order to monitoring devices
+Subject: [PATCH 4.14 12/59] ubi: Fix seq_file usage in detailed_erase_block_info debugfs file
 Date:   Tue, 26 May 2020 20:52:57 +0200
-Message-Id: <20200526183929.430407142@linuxfoundation.org>
+Message-Id: <20200526183912.327039242@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
-References: <20200526183923.108515292@linuxfoundation.org>
+In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
+References: <20200526183907.123822792@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefano Garzarella <sgarzare@redhat.com>
+From: Richard Weinberger <richard@nod.at>
 
-[ Upstream commit 107bc0766b9feb5113074c753735a3f115c2141f ]
+[ Upstream commit 0e7572cffe442290c347e779bf8bd4306bb0aa7c ]
 
-We want to deliver packets to monitoring devices before it is
-put in the virtqueue, to avoid that replies can appear in the
-packet capture before the transmitted packet.
+3bfa7e141b0b ("fs/seq_file.c: seq_read(): add info message about buggy .next functions")
+showed that we don't use seq_file correctly.
+So make sure that our ->next function always updates the position.
 
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 7bccd12d27b7 ("ubi: Add debugfs file for tracking PEB state")
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vhost/vsock.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/mtd/ubi/debug.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
-index bac1365cc81b..7891bd40ebd8 100644
---- a/drivers/vhost/vsock.c
-+++ b/drivers/vhost/vsock.c
-@@ -182,14 +182,14 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
- 			break;
- 		}
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index 7bc96294ae4d..b108e1f04bf6 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -405,9 +405,6 @@ static void *eraseblk_count_seq_start(struct seq_file *s, loff_t *pos)
+ {
+ 	struct ubi_device *ubi = s->private;
  
--		vhost_add_used(vq, head, sizeof(pkt->hdr) + payload_len);
--		added = true;
+-	if (*pos == 0)
+-		return SEQ_START_TOKEN;
 -
--		/* Deliver to monitoring devices all correctly transmitted
--		 * packets.
-+		/* Deliver to monitoring devices all packets that we
-+		 * will transmit.
- 		 */
- 		virtio_transport_deliver_tap_pkt(pkt);
+ 	if (*pos < ubi->peb_count)
+ 		return pos;
  
-+		vhost_add_used(vq, head, sizeof(pkt->hdr) + payload_len);
-+		added = true;
-+
- 		pkt->off += payload_len;
- 		total_len += payload_len;
+@@ -421,8 +418,6 @@ static void *eraseblk_count_seq_next(struct seq_file *s, void *v, loff_t *pos)
+ {
+ 	struct ubi_device *ubi = s->private;
  
+-	if (v == SEQ_START_TOKEN)
+-		return pos;
+ 	(*pos)++;
+ 
+ 	if (*pos < ubi->peb_count)
+@@ -444,11 +439,8 @@ static int eraseblk_count_seq_show(struct seq_file *s, void *iter)
+ 	int err;
+ 
+ 	/* If this is the start, print a header */
+-	if (iter == SEQ_START_TOKEN) {
+-		seq_puts(s,
+-			 "physical_block_number\terase_count\tblock_status\tread_status\n");
+-		return 0;
+-	}
++	if (*block_number == 0)
++		seq_puts(s, "physical_block_number\terase_count\n");
+ 
+ 	err = ubi_io_is_bad(ubi, *block_number);
+ 	if (err)
 -- 
 2.25.1
 
