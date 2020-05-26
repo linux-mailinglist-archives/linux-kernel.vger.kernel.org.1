@@ -2,68 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0793C1E2F7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E954A1E2F9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390041AbgEZT4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:56:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389442AbgEZT4h (ORCPT
+        id S2390700AbgEZT5G convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 May 2020 15:57:06 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:35515 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389442AbgEZT5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:56:37 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B07BC03E96D
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 12:56:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=l4mg12U4fZfWWKSxX7s1XyiI8EaUXhtofn/a97kc9q8=; b=cHOx5G+kPvNaBLGQnq5ltqXfmT
-        uDI/en9u0J07hTA2Hcai4XZGAH2qTK4xBCgVqIy1mjt8CyOgUwBf6/gb/tmPXGUGE5cr24oei4bik
-        TQ/Hai5meajkcUqqvWs+TgKxe6KFLzBdchy8wDNr2RX+h28PXTBzxGhjmww0lijnz97l/7THEl6W+
-        I6wPFq9S0ZVuy1/hicrYglAqKhrLrfWeYUYxRuvZgG27DAKqqkRv7FwzkbZ1NgCT5a+ust6haO0lO
-        9VWhM1DP+gbhKTY1BqnLk0aEezEpf4M5ChGdYB7+ykvsZXUw6TjOIzgqE9igmrrj2COPjf3t6tp8E
-        NLPWUWeA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jdfge-0007NQ-3E; Tue, 26 May 2020 19:56:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5C5F5300478;
-        Tue, 26 May 2020 21:56:30 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 218E22BBAA8F8; Tue, 26 May 2020 21:56:30 +0200 (CEST)
-Date:   Tue, 26 May 2020 21:56:30 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Qian Cai <cai@lca.pw>
-Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will.deacon@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] locking/lockdep: Increase MAX_LOCKDEP_ENTRIES by half
-Message-ID: <20200526195630.GF325280@hirez.programming.kicks-ass.net>
-References: <20200526174349.8312-1-longman@redhat.com>
- <20200526185850.GE991@lca.pw>
+        Tue, 26 May 2020 15:57:05 -0400
+Received: by mail-qt1-f195.google.com with SMTP id z1so5140867qtn.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 12:57:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Tv568JygARptrMAgf1Gov6V8e1gDgQj+1HZxw3kgZEU=;
+        b=EC90a24b9pMqem3twU7qcw3qTFK2sxJAO29od3RERXuOPaCrvzaLnC3GlVERe23+cL
+         WkzumxmAuYhMLKCYNOAgYxaPwfV1fr0etq6Cgms/FDNLwjoZG4tUkQZUildE8Ka6PtXr
+         ztn3MS7nTAxXmDM+522qIz6vjstirJBKkBMjCiTjBRw5x4oqvF07q26k+BP3zGE8/rLC
+         9S2oMBQiHBLxo93AGyhfOuX89GoFk4ebK1f73mAfpS/ikX61DzUy5qMwnHo4TMynaCtW
+         uhmG2vvGFBVXDiuChk3gMeh/cdk0DCcet+2o+FUPKZfUEEbdM7apJYXAW0Q4THicM4RK
+         2Jkw==
+X-Gm-Message-State: AOAM531q/k/Xs4sGSwG+EiNdi4d59dbG+ZsrBPMPLB2Zk8odZWdyvHSR
+        XxcvZXdj9d3vvMiAVQBFWLxSsEp65vw=
+X-Google-Smtp-Source: ABdhPJykhwJLkZfOYIhmNNxk/Nz55+Qszo5T+bjgb7h6PcQnjIJ7F+Hna3F5Gfd8TeZb9z0qp6FsxA==
+X-Received: by 2002:ac8:342b:: with SMTP id u40mr520776qtb.59.1590523022967;
+        Tue, 26 May 2020 12:57:02 -0700 (PDT)
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com. [209.85.222.173])
+        by smtp.gmail.com with ESMTPSA id b189sm504877qkg.110.2020.05.26.12.57.01
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 May 2020 12:57:02 -0700 (PDT)
+Received: by mail-qk1-f173.google.com with SMTP id z80so22058050qka.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 12:57:01 -0700 (PDT)
+X-Received: by 2002:a37:ecc:: with SMTP id 195mr457918qko.469.1590523021692;
+ Tue, 26 May 2020 12:57:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200526185850.GE991@lca.pw>
+References: <20200518221904.GA22274@embeddedor> <202005181529.C0CB448FBB@keescook>
+ <CADRPPNR-Croux9FgnrQJJmdF2jNnuAmC+2xMJSgSbkbRv9u8Mw@mail.gmail.com>
+ <202005202022.588918E61@keescook> <CADRPPNTuUUVOHs76JVzELcsyRH_LSi2PGML1t2wob+45LJCXvA@mail.gmail.com>
+ <VE1PR04MB67682776BDC5682B3B330D6A91B30@VE1PR04MB6768.eurprd04.prod.outlook.com>
+In-Reply-To: <VE1PR04MB67682776BDC5682B3B330D6A91B30@VE1PR04MB6768.eurprd04.prod.outlook.com>
+From:   Li Yang <leoyang.li@nxp.com>
+Date:   Tue, 26 May 2020 14:56:33 -0500
+X-Gmail-Original-Message-ID: <CADRPPNSX9cRjuogv1W1TCGzdn0uJWZ3_QBrjDKfdHgaSq0JLdQ@mail.gmail.com>
+Message-ID: <CADRPPNSX9cRjuogv1W1TCGzdn0uJWZ3_QBrjDKfdHgaSq0JLdQ@mail.gmail.com>
+Subject: Re: [PATCH] soc: fsl: qe: Replace one-element array and use
+ struct_size() helper
+To:     Qiang Zhao <qiang.zhao@nxp.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 02:58:50PM -0400, Qian Cai wrote:
+On Sun, May 24, 2020 at 9:49 PM Qiang Zhao <qiang.zhao@nxp.com> wrote:
+>
+> On Wed, May 23, 2020 at 5:22 PM Li Yang <leoyang.li@nxp.com>
+> > -----Original Message-----
+> > From: Li Yang <leoyang.li@nxp.com>
+> > Sent: 2020年5月23日 5:22
+> > To: Kees Cook <keescook@chromium.org>
+> > Cc: Gustavo A. R. Silva <gustavoars@kernel.org>; Qiang Zhao
+> > <qiang.zhao@nxp.com>; linuxppc-dev <linuxppc-dev@lists.ozlabs.org>;
+> > moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE
+> > <linux-arm-kernel@lists.infradead.org>; lkml <linux-kernel@vger.kernel.org>;
+> > Gustavo A. R. Silva <gustavo@embeddedor.com>
+> > Subject: Re: [PATCH] soc: fsl: qe: Replace one-element array and use
+> > struct_size() helper
+> >
+> > On Wed, May 20, 2020 at 10:24 PM Kees Cook <keescook@chromium.org>
+> > wrote:
+> > >
+> > > On Wed, May 20, 2020 at 06:52:21PM -0500, Li Yang wrote:
+> > > > On Mon, May 18, 2020 at 5:57 PM Kees Cook <keescook@chromium.org>
+> > wrote:
+> > > > > Hm, looking at this code, I see a few other things that need to be
+> > > > > fixed:
+> > > > >
+> > > > > 1) drivers/tty/serial/ucc_uart.c does not do a be32_to_cpu() conversion
+> > > > >    on the length test (understandably, a little-endian system has never
+> > run
+> > > > >    this code since it's ppc specific), but it's still wrong:
+> > > > >
+> > > > >         if (firmware->header.length != fw->size) {
+> > > > >
+> > > > >    compare to the firmware loader:
+> > > > >
+> > > > >         length = be32_to_cpu(hdr->length);
+> > > > >
+> > > > > 2) drivers/soc/fsl/qe/qe.c does not perform bounds checking on the
+> > > > >    per-microcode offsets, so the uploader might send data outside the
+> > > > >    firmware buffer. Perhaps:
+> > > >
+> > > > We do validate the CRC for each microcode, it is unlikely the CRC
+> > > > check can pass if the offset or length is not correct.  But you are
+> > > > probably right that it will be safer to check the boundary and fail
+> > >
+> > > Right, but a malicious firmware file could still match CRC but trick
+> > > the kernel code.
+> > >
+> > > > quicker before we actually start the CRC check.  Will you come up
+> > > > with a formal patch or you want us to deal with it?
+> > >
+> > > It sounds like Gustavo will be sending one, though I don't think
+> > > either of us have the hardware to test it with, so if you could do
+> > > that part, that would be great! :)
+> >
+> > That will be great.  I think Zhao Qiang can help with the testing part.
+> >
+>
+> Now the firmware are loaded in uboot, and kernel will do nothing for it.
+> So testing on it maybe need some extra codes both in driver and dts.
+> In the meanwhile, I am so busy on some high priority work that maybe test work
+> could not be done in time.
+> Once I am free, I will do it.
 
-> I still don't understand why reading all sysfs files on this system
-> could increase that much, but here is the lockdep file after
-> running sysfs read to see if you could spot anything obviously,
-> 
-> https://cailca.github.io/files/lockdep.txt
+Thanks.  You are right that most of the QE drivers doesn't support
+requesting firmware in kernel except the ucc_uart.  So it probably can
+be tested with that driver without requiring code change.
 
-00000000f011a2a5 OPS:      20 FD:   45 BD:    1 .+.+: kn->active#834
-
-is that somewhere near the number of CPUs you have?
-
-Anyway, there's very long "kn->active#..." chains in there, which seems
-to suggest some annotation is all sorts of buggered.
+>
+> Best Regards
+> Qiang Zhao
