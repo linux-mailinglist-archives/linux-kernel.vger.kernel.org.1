@@ -2,112 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 542E71E1FB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 12:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42EEE1E1FC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 12:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731881AbgEZKdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 06:33:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50112 "EHLO mail.kernel.org"
+        id S1731910AbgEZKeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 06:34:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33820 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731745AbgEZKdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 06:33:10 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A27020776;
-        Tue, 26 May 2020 10:33:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590489189;
-        bh=pq8On3WUlO+xI1ImWpqd/5ofHohCbw1G+yEvp3sHefs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qkE3vJD9pAkF3cpL6g/1BJ8bDOux9VE1YndQK4NqxcMh4hT2fmc40ZL5t9TsMrLkG
-         qbQSJclWxYQTHsvHpBI2AXOJrwu3R5UBhsw9393Ad6ubNcE9wVhHthIvjWc46dgnlQ
-         JIsvvXdejMOAtF4xzU3albNtewmk9ma1rOo0IF+Y=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        target-devel@vger.kernel.org
-Subject: [PATCH rdma-next v3 0/6] Add Enhanced Connection Established (ECE)
-Date:   Tue, 26 May 2020 13:32:58 +0300
-Message-Id: <20200526103304.196371-1-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1728515AbgEZKeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 06:34:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 98A59ACAC;
+        Tue, 26 May 2020 10:34:22 +0000 (UTC)
+Subject: Re: [PATCH v3 14/19] mm: memcg/slab: deprecate memcg_kmem_get_cache()
+To:     Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org
+References: <20200422204708.2176080-1-guro@fb.com>
+ <20200422204708.2176080-15-guro@fb.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <25aaef88-ebad-0f11-14b8-fcfd1bb8ff2a@suse.cz>
+Date:   Tue, 26 May 2020 12:34:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200422204708.2176080-15-guro@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+"deprecate" means it still exist but shouldn't get new callers, no?
+maybe just "remove" or "inline ... into its caller"
 
-Changelog:
- v3:
- * Rebased on top of ebd6e96b33a2 RDMA/ipoib: Remove can_sleep parameter from iboib_mcast_alloc
- * Updated rdma_reject patch to include newly added RTR ulp
- * Remove empty hunks added by rebase
- * Changed signature of rdma_reject so kernel users will provide reason by themselves
- * Squashed UAPI patch to other patches which add functionality
- * Removed define of the IBTA reason from UAPI
- v2: https://lore.kernel.org/linux-rdma/20200413141538.935574-1-leon@kernel.org/
- * Rebased on latest rdma-next and removed already accepted patches.
- * Updated all rdma_reject in-kernel users to provide reject reason.
- v1: Dropped field_avail patch in favor of mass conversion to use function
-     which already exists in the kernel code.
- https://lore.kernel.org/lkml/20200310091438.248429-1-leon@kernel.org
- v0: https://lore.kernel.org/lkml/20200305150105.207959-1-leon@kernel.org
+On 4/22/20 10:47 PM, Roman Gushchin wrote:
+> The memcg_kmem_get_cache() function became really trivial, so
+> let's just inline it into the single call point:
+> memcg_slab_pre_alloc_hook().
+> 
+> It will make the code less bulky and can also help the compiler
+> to generate a better code.
+> 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
 
-Enhanced Connection Established or ECE is new negotiation scheme
-introduced in IBTA v1.4 to exchange extra information about nodes
-capabilities and later negotiate them at the connection establishment
-phase.
-
-The RDMA-CM messages (REQ, REP, SIDR_REQ and SIDR_REP) were extended
-to carry two fields, one new and another gained new functionality:
- * VendorID is a new field that indicates that common subset of vendor
-   option bits are supported as indicated by that VendorID.
- * AttributeModifier already exists, but overloaded to indicate which
-   vendor options are supported by this VendorID.
-
-This is kernel part of such functionality which is responsible to get data
-from librdmacm and properly create and handle RDMA-CM messages.
-
-Thanks
-
-Leon Romanovsky (6):
-  RDMA/cm: Add Enhanced Connection Establishment (ECE) bits
-  RDMA/ucma: Extend ucma_connect to receive ECE parameters
-  RDMA/ucma: Deliver ECE parameters through UCMA events
-  RDMA/cm: Send and receive ECE parameter over the wire
-  RDMA/cma: Connect ECE to rdma_accept
-  RDMA/cma: Provide ECE reject reason
-
- drivers/infiniband/core/cm.c            | 39 ++++++++++++++---
- drivers/infiniband/core/cma.c           | 57 ++++++++++++++++++++++---
- drivers/infiniband/core/cma_priv.h      |  1 +
- drivers/infiniband/core/ucma.c          | 49 +++++++++++++++++----
- drivers/infiniband/ulp/isert/ib_isert.c |  4 +-
- drivers/infiniband/ulp/rtrs/rtrs-srv.c  |  2 +-
- drivers/infiniband/ulp/srpt/ib_srpt.c   |  3 +-
- drivers/nvme/target/rdma.c              |  3 +-
- include/rdma/ib_cm.h                    |  9 +++-
- include/rdma/ibta_vol1_c12.h            |  6 +++
- include/rdma/rdma_cm.h                  |  9 +++-
- include/uapi/rdma/rdma_user_cm.h        | 11 ++++-
- net/rds/ib_cm.c                         |  4 +-
- 13 files changed, 170 insertions(+), 27 deletions(-)
-
---
-2.26.2
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
