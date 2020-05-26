@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8E71E2F16
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B05991E2EC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403816AbgEZTdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:33:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48868 "EHLO mail.kernel.org"
+        id S1728935AbgEZTbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:31:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389732AbgEZS4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:56:08 -0400
+        id S2389646AbgEZS6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:58:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A7A802086A;
-        Tue, 26 May 2020 18:56:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6ACBE2086A;
+        Tue, 26 May 2020 18:58:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519368;
-        bh=/y+QFQyJ/kREw8sHAXYswzLJNRZURqb3Y2G8HC42tgI=;
+        s=default; t=1590519514;
+        bh=TBLo4dLq5VDRFNhsmD0LzmJsQnZuiQGTpDo2FwyX2f4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k0rEQ30L/fapCAZHWNYeiHWeKrBJlkeYPoTkt03eObRtJtCgb4PLu+L0onpzQ4TV1
-         yr3pw637llNIJ5qOAIxgKWGaxIhVAfckWqpdfbUMGL5Ni0H645vwN+kHAJpbz21hW3
-         v0vesIHM/XvDqm1it3Dza2u00H4EUMHBH0fDBBQQ=
+        b=VcsXZpgfI49T2NUvNTlPkX8CpkXNyvhiApcseN6QV1NESGeSf+nndiCbR8xP3AJhV
+         FcxEPQEsRBiA+hrc3M/mmXDjBD8yuU92R76UAW4KjRe7nJkkxjRFaDy0wpUT8kZobX
+         Fp9cTWAD7ynhZZFRF+XdT2zqkRRvekN/yDd3FspI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org, greg@kroah.com
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Asbjoern Sloth Toennesen <asbjorn@asbjorn.st>,
+        stable@vger.kernel.org, Guillaume Nault <g.nault@alphalink.fr>,
         "David S. Miller" <davem@davemloft.net>,
         Giuliano Procida <gprocida@google.com>
-Subject: [PATCH 4.4 40/65] net: l2tp: deprecate PPPOL2TP_MSG_* in favour of L2TP_MSG_*
-Date:   Tue, 26 May 2020 20:52:59 +0200
-Message-Id: <20200526183919.654519563@linuxfoundation.org>
+Subject: [PATCH 4.9 32/64] l2tp: remove useless duplicate session detection in l2tp_netlink
+Date:   Tue, 26 May 2020 20:53:01 +0200
+Message-Id: <20200526183923.094609162@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183905.988782958@linuxfoundation.org>
-References: <20200526183905.988782958@linuxfoundation.org>
+In-Reply-To: <20200526183913.064413230@linuxfoundation.org>
+References: <20200526183913.064413230@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,69 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Asbjørn Sloth Tønnesen <asbjorn@asbjorn.st>
+From: Guillaume Nault <g.nault@alphalink.fr>
 
-commit 47c3e7783be4e142b861d34b5c2e223330b05d8a upstream.
+commit af87ae465abdc070de0dc35d6c6a9e7a8cd82987 upstream.
 
-PPPOL2TP_MSG_* and L2TP_MSG_* are duplicates, and are being used
-interchangeably in the kernel, so let's standardize on L2TP_MSG_*
-internally, and keep PPPOL2TP_MSG_* defined in UAPI for compatibility.
+There's no point in checking for duplicate sessions at the beginning of
+l2tp_nl_cmd_session_create(); the ->session_create() callbacks already
+return -EEXIST when the session already exists.
 
-Signed-off-by: Asbjoern Sloth Toennesen <asbjorn@asbjorn.st>
+Furthermore, even if l2tp_session_find() returns NULL, a new session
+might be created right after the test. So relying on ->session_create()
+to avoid duplicate session is the only sane behaviour.
+
+Signed-off-by: Guillaume Nault <g.nault@alphalink.fr>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Giuliano Procida <gprocida@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- Documentation/networking/l2tp.txt |    8 ++++----
- include/uapi/linux/if_pppol2tp.h  |   13 ++++++-------
- 2 files changed, 10 insertions(+), 11 deletions(-)
+ net/l2tp/l2tp_netlink.c |    5 -----
+ 1 file changed, 5 deletions(-)
 
---- a/Documentation/networking/l2tp.txt
-+++ b/Documentation/networking/l2tp.txt
-@@ -177,10 +177,10 @@ setsockopt on the PPPoX socket to set a
+--- a/net/l2tp/l2tp_netlink.c
++++ b/net/l2tp/l2tp_netlink.c
+@@ -513,11 +513,6 @@ static int l2tp_nl_cmd_session_create(st
+ 		goto out;
+ 	}
+ 	session_id = nla_get_u32(info->attrs[L2TP_ATTR_SESSION_ID]);
+-	session = l2tp_session_find(net, tunnel, session_id);
+-	if (session) {
+-		ret = -EEXIST;
+-		goto out;
+-	}
  
- The following debug mask bits are available:
- 
--PPPOL2TP_MSG_DEBUG    verbose debug (if compiled in)
--PPPOL2TP_MSG_CONTROL  userspace - kernel interface
--PPPOL2TP_MSG_SEQ      sequence numbers handling
--PPPOL2TP_MSG_DATA     data packets
-+L2TP_MSG_DEBUG    verbose debug (if compiled in)
-+L2TP_MSG_CONTROL  userspace - kernel interface
-+L2TP_MSG_SEQ      sequence numbers handling
-+L2TP_MSG_DATA     data packets
- 
- If enabled, files under a l2tp debugfs directory can be used to dump
- kernel state about L2TP tunnels and sessions. To access it, the
---- a/include/uapi/linux/if_pppol2tp.h
-+++ b/include/uapi/linux/if_pppol2tp.h
-@@ -17,6 +17,7 @@
- 
- #include <linux/types.h>
- 
-+#include <linux/l2tp.h>
- 
- /* Structure used to connect() the socket to a particular tunnel UDP
-  * socket over IPv4.
-@@ -89,14 +90,12 @@ enum {
- 	PPPOL2TP_SO_REORDERTO	= 5,
- };
- 
--/* Debug message categories for the DEBUG socket option */
-+/* Debug message categories for the DEBUG socket option (deprecated) */
- enum {
--	PPPOL2TP_MSG_DEBUG	= (1 << 0),	/* verbose debug (if
--						 * compiled in) */
--	PPPOL2TP_MSG_CONTROL	= (1 << 1),	/* userspace - kernel
--						 * interface */
--	PPPOL2TP_MSG_SEQ	= (1 << 2),	/* sequence numbers */
--	PPPOL2TP_MSG_DATA	= (1 << 3),	/* data packets */
-+	PPPOL2TP_MSG_DEBUG	= L2TP_MSG_DEBUG,
-+	PPPOL2TP_MSG_CONTROL	= L2TP_MSG_CONTROL,
-+	PPPOL2TP_MSG_SEQ	= L2TP_MSG_SEQ,
-+	PPPOL2TP_MSG_DATA	= L2TP_MSG_DATA,
- };
- 
- 
+ 	if (!info->attrs[L2TP_ATTR_PEER_SESSION_ID]) {
+ 		ret = -EINVAL;
 
 
