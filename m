@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127201E2EC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F0F1E2F18
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390343AbgEZS60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:58:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51862 "EHLO mail.kernel.org"
+        id S2404241AbgEZTdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:33:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390308AbgEZS6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:58:20 -0400
+        id S2389705AbgEZS4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:56:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B0AF2086A;
-        Tue, 26 May 2020 18:58:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 50847208B6;
+        Tue, 26 May 2020 18:56:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519499;
-        bh=xE5aZIstMBB2VgftsNKnCNd85SFqZ0Fspg9GZnXYNk0=;
+        s=default; t=1590519362;
+        bh=O6m7d4JmFmQOQvDC8Pcbvpu1uaUd2naCs1xGgWdYlCc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vKSrmIvMIIEhq5vEIy1BpnvT4Ht0hNVSalKymmpVWctXrubWLnXZ+vY/sifXBgxXN
-         hF27eAY1fqpvjRu645bmKzXiLe0yZ/7LAuYzqVuvM/+LaA55mc7r7S0AdWpTUgJvgp
-         qBqEwunlJKf3lbZfvIdZonC0dGgtFDqN0hWZYqr8=
+        b=H6Quc7gVAfUMX5EtuDQ6ssH1GpMw7uWfJqocw8hzSa2h9byQAuq4wCaF2hx6MxTLL
+         plFz5+IO1FTluUn0Yi5xhu1A6Y5f72PB4wbwV3lL+dbgSdwEoHvAFylW8i+3bvUCQx
+         +ZkPYlWZzGBoxsL6SXOQ3X/vcr7ndbEsg291Qug8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org, greg@kroah.com
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Asbjoern Sloth Toennesen <asbjorn@asbjorn.st>,
+        stable@vger.kernel.org, Guillaume Nault <g.nault@alphalink.fr>,
         "David S. Miller" <davem@davemloft.net>,
+        Nicolas Schier <n.schier@avm.de>,
         Giuliano Procida <gprocida@google.com>
-Subject: [PATCH 4.9 27/64] net: l2tp: export debug flags to UAPI
-Date:   Tue, 26 May 2020 20:52:56 +0200
-Message-Id: <20200526183921.452774132@linuxfoundation.org>
+Subject: [PATCH 4.4 38/65] l2tp: dont use l2tp_tunnel_find() in l2tp_ip and l2tp_ip6
+Date:   Tue, 26 May 2020 20:52:57 +0200
+Message-Id: <20200526183919.007164109@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183913.064413230@linuxfoundation.org>
-References: <20200526183913.064413230@linuxfoundation.org>
+In-Reply-To: <20200526183905.988782958@linuxfoundation.org>
+References: <20200526183905.988782958@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,73 +45,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Asbjørn Sloth Tønnesen <asbjorn@asbjorn.st>
+From: Guillaume Nault <g.nault@alphalink.fr>
 
-commit 41c43fbee68f4f9a2a9675d83bca91c77862d7f0 upstream.
+commit 8f7dc9ae4a7aece9fbc3e6637bdfa38b36bcdf09 upstream.
 
-Move the L2TP_MSG_* definitions to UAPI, as it is part of
-the netlink API.
+Using l2tp_tunnel_find() in l2tp_ip_recv() is wrong for two reasons:
 
-Signed-off-by: Asbjoern Sloth Toennesen <asbjorn@asbjorn.st>
+  * It doesn't take a reference on the returned tunnel, which makes the
+    call racy wrt. concurrent tunnel deletion.
+
+  * The lookup is only based on the tunnel identifier, so it can return
+    a tunnel that doesn't match the packet's addresses or protocol.
+
+For example, a packet sent to an L2TPv3 over IPv6 tunnel can be
+delivered to an L2TPv2 over UDPv4 tunnel. This is worse than a simple
+cross-talk: when delivering the packet to an L2TP over UDP tunnel, the
+corresponding socket is UDP, where ->sk_backlog_rcv() is NULL. Calling
+sk_receive_skb() will then crash the kernel by trying to execute this
+callback.
+
+And l2tp_tunnel_find() isn't even needed here. __l2tp_ip_bind_lookup()
+properly checks the socket binding and connection settings. It was used
+as a fallback mechanism for finding tunnels that didn't have their data
+path registered yet. But it's not limited to this case and can be used
+to replace l2tp_tunnel_find() in the general case.
+
+Fix l2tp_ip6 in the same way.
+
+Fixes: 0d76751fad77 ("l2tp: Add L2TPv3 IP encapsulation (no UDP) support")
+Fixes: a32e0eec7042 ("l2tp: introduce L2TPv3 IP encapsulation support for IPv6")
+Signed-off-by: Guillaume Nault <g.nault@alphalink.fr>
 Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Nicolas Schier <n.schier@avm.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Giuliano Procida <gprocida@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/uapi/linux/l2tp.h |   17 ++++++++++++++++-
- net/l2tp/l2tp_core.h      |   10 ----------
- 2 files changed, 16 insertions(+), 11 deletions(-)
+ net/l2tp/l2tp_ip.c  |   22 ++++++++--------------
+ net/l2tp/l2tp_ip6.c |   23 ++++++++---------------
+ 2 files changed, 16 insertions(+), 29 deletions(-)
 
---- a/include/uapi/linux/l2tp.h
-+++ b/include/uapi/linux/l2tp.h
-@@ -108,7 +108,7 @@ enum {
- 	L2TP_ATTR_VLAN_ID,		/* u16 */
- 	L2TP_ATTR_COOKIE,		/* 0, 4 or 8 bytes */
- 	L2TP_ATTR_PEER_COOKIE,		/* 0, 4 or 8 bytes */
--	L2TP_ATTR_DEBUG,		/* u32 */
-+	L2TP_ATTR_DEBUG,		/* u32, enum l2tp_debug_flags */
- 	L2TP_ATTR_RECV_SEQ,		/* u8 */
- 	L2TP_ATTR_SEND_SEQ,		/* u8 */
- 	L2TP_ATTR_LNS_MODE,		/* u8 */
-@@ -175,6 +175,21 @@ enum l2tp_seqmode {
- 	L2TP_SEQ_ALL = 2,
- };
+--- a/net/l2tp/l2tp_ip.c
++++ b/net/l2tp/l2tp_ip.c
+@@ -122,6 +122,7 @@ static int l2tp_ip_recv(struct sk_buff *
+ 	unsigned char *ptr, *optr;
+ 	struct l2tp_session *session;
+ 	struct l2tp_tunnel *tunnel = NULL;
++	struct iphdr *iph;
+ 	int length;
  
-+/**
-+ * enum l2tp_debug_flags - debug message categories for L2TP tunnels/sessions
-+ *
-+ * @L2TP_MSG_DEBUG: verbose debug (if compiled in)
-+ * @L2TP_MSG_CONTROL: userspace - kernel interface
-+ * @L2TP_MSG_SEQ: sequence numbers
-+ * @L2TP_MSG_DATA: data packets
-+ */
-+enum l2tp_debug_flags {
-+	L2TP_MSG_DEBUG		= (1 << 0),
-+	L2TP_MSG_CONTROL	= (1 << 1),
-+	L2TP_MSG_SEQ		= (1 << 2),
-+	L2TP_MSG_DATA		= (1 << 3),
-+};
-+
- /*
-  * NETLINK_GENERIC related info
-  */
---- a/net/l2tp/l2tp_core.h
-+++ b/net/l2tp/l2tp_core.h
-@@ -23,16 +23,6 @@
- #define L2TP_HASH_BITS_2	8
- #define L2TP_HASH_SIZE_2	(1 << L2TP_HASH_BITS_2)
+ 	if (!pskb_may_pull(skb, 4))
+@@ -180,23 +181,16 @@ pass_up:
+ 		goto discard;
  
--/* Debug message categories for the DEBUG socket option */
--enum {
--	L2TP_MSG_DEBUG		= (1 << 0),	/* verbose debug (if
--						 * compiled in) */
--	L2TP_MSG_CONTROL	= (1 << 1),	/* userspace - kernel
--						 * interface */
--	L2TP_MSG_SEQ		= (1 << 2),	/* sequence numbers */
--	L2TP_MSG_DATA		= (1 << 3),	/* data packets */
--};
+ 	tunnel_id = ntohl(*(__be32 *) &skb->data[4]);
+-	tunnel = l2tp_tunnel_find(net, tunnel_id);
+-	if (tunnel) {
+-		sk = tunnel->sock;
+-		sock_hold(sk);
+-	} else {
+-		struct iphdr *iph = (struct iphdr *) skb_network_header(skb);
 -
- struct sk_buff;
+-		read_lock_bh(&l2tp_ip_lock);
+-		sk = __l2tp_ip_bind_lookup(net, iph->daddr, 0, tunnel_id);
+-		if (!sk) {
+-			read_unlock_bh(&l2tp_ip_lock);
+-			goto discard;
+-		}
++	iph = (struct iphdr *)skb_network_header(skb);
  
- struct l2tp_stats {
+-		sock_hold(sk);
++	read_lock_bh(&l2tp_ip_lock);
++	sk = __l2tp_ip_bind_lookup(net, iph->daddr, 0, tunnel_id);
++	if (!sk) {
+ 		read_unlock_bh(&l2tp_ip_lock);
++		goto discard;
+ 	}
++	sock_hold(sk);
++	read_unlock_bh(&l2tp_ip_lock);
+ 
+ 	if (!xfrm4_policy_check(sk, XFRM_POLICY_IN, skb))
+ 		goto discard_put;
+--- a/net/l2tp/l2tp_ip6.c
++++ b/net/l2tp/l2tp_ip6.c
+@@ -134,6 +134,7 @@ static int l2tp_ip6_recv(struct sk_buff
+ 	unsigned char *ptr, *optr;
+ 	struct l2tp_session *session;
+ 	struct l2tp_tunnel *tunnel = NULL;
++	struct ipv6hdr *iph;
+ 	int length;
+ 
+ 	if (!pskb_may_pull(skb, 4))
+@@ -193,24 +194,16 @@ pass_up:
+ 		goto discard;
+ 
+ 	tunnel_id = ntohl(*(__be32 *) &skb->data[4]);
+-	tunnel = l2tp_tunnel_find(net, tunnel_id);
+-	if (tunnel) {
+-		sk = tunnel->sock;
+-		sock_hold(sk);
+-	} else {
+-		struct ipv6hdr *iph = ipv6_hdr(skb);
+-
+-		read_lock_bh(&l2tp_ip6_lock);
+-		sk = __l2tp_ip6_bind_lookup(net, &iph->daddr,
+-					    0, tunnel_id);
+-		if (!sk) {
+-			read_unlock_bh(&l2tp_ip6_lock);
+-			goto discard;
+-		}
++	iph = ipv6_hdr(skb);
+ 
+-		sock_hold(sk);
++	read_lock_bh(&l2tp_ip6_lock);
++	sk = __l2tp_ip6_bind_lookup(net, &iph->daddr, 0, tunnel_id);
++	if (!sk) {
+ 		read_unlock_bh(&l2tp_ip6_lock);
++		goto discard;
+ 	}
++	sock_hold(sk);
++	read_unlock_bh(&l2tp_ip6_lock);
+ 
+ 	if (!xfrm6_policy_check(sk, XFRM_POLICY_IN, skb))
+ 		goto discard_put;
 
 
