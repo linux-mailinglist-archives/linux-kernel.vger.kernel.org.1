@@ -2,275 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2F41E2D18
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0141D1E2D82
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392432AbgEZTTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:19:21 -0400
-Received: from sonic309-27.consmr.mail.ne1.yahoo.com ([66.163.184.153]:34228
-        "EHLO sonic309-27.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392425AbgEZTTS (ORCPT
+        id S2392324AbgEZTUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:20:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392115AbgEZTUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:19:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1590520757; bh=McQf4xkfVmcPDoX/8Wv0zGs9ac8orRRGPfVxajFbeb4=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=gikCS1Pc7edctO/bqMR2mDoeyJavWGougEkmPf7Pmf0qtOrEcNfH08diLU8e6dswdFM+wo1uZIrenHbHDnVuJkE5r5w4t3FG5M2IiYVdGXAcV2xQSBRDlR1hZzlUnYe8LHWee+M5PxmFJAwwUXRdw3XhqWqzwv3JOY64wDtVfCXXqaWH8wED0ALaz+e+7CPemUthwrrsNPNN9m4aXrmwn9UXfZh6i6zbpNyO2uFeBqNGljRt96wDK/WdZz7rytROTgDkcwUbkpFlpKgsaEofagoxl2darceDflXiK7n5196aVXdHT7wnSgNsssg/tUCqEzO3iqmvXGC1ELyo1O/AbA==
-X-YMail-OSG: 63H.NUwVM1ltrxyZXq.kNvHWQVKP9oB7tvvKHWWND.WGLsOXmb0kRAmRzErbrNC
- YJxgD.t8xjb3E06QRiX3xSKBvcyLfHU4POA8S9Vz.AfqSYdBxSAxpNzppss1An4Z2X9FzciioJI9
- b3QtIp1vVt7F.EjxCYxCK8iPYt2YozMnXZRcCgveiHVn7D9KT9FV1VtgYkEz9kTNP.WMf7dpNcRH
- .HWILw1XRpWZx8Ko7bh1pmthcXiAPa99otauyAV1ktzTTZ1drPGpFEJnEIE4gh_S_eFdQpsFbt2o
- z6avzfzJbW6lMCsAtTL34fGTPVfUTDhqpwljkYtWDYzqG2MzILkTW1Se7z35tT1fDCrJFH2SV.02
- CrKYAFRGr6V_KFep5ws4nqojqU12Z4Ga1QFnzc59TDbHtgn2KGOVy7v_J_BpfTcO.uEPfrGb0dPL
- OyfkK9aBLas6WuflAunL2z3tmCWWOaiL7dF0WS1dwKfh.hIH6H33rJqS29XdJEGOz7W1hHKmeJ4Z
- _HW1bpwCbqOTAL2uByZnFCATeFauM3J.rf.sHO1J.LVll8EAHM9HSEyg2zpmj7FAJbCRVkjVEq9Z
- jQ7zkDEhUIuVOJVoWteq41kceo.UUHto4oV_LsEbumKTbH0cgmQyqCbV.32qzQj8YmAg3PJxCI7K
- geCrdTT8bCbphFrqx5TQzdSkKhw0B_q5zek.be8gAEQL5kGYUwLL5TJd8OqXbC_B7ZEIS6Kf4CNs
- nq1nW9sxg94lDSvmnWaBrRoJfZYzKY7qUKto534ObYyb4Y92nQVt9Lp.TFxJMtPVFJBGnrRxVCv0
- xeDQ2RrEUg9QGlhQaibFEbwug2JAANzhHJ3rQhebibtC1HL7Vreu1of1rUJxoOeLfl_GnJi93F5y
- txg.gzHebwHNejRwXTC_C9mKPl9iscqe_hkI.LYBQgE_TcFvv2AjfENwxtoYJHoVWf6ijRhdHXPE
- vMb0vpr2hU0Iz91PF.JHRQY7QGQ6dl66oxW9E6qq1l.qsmDPDgpRgTAKvWIV133xBsH4NwKrkbSZ
- DHi3CKitadYWgEhef2nJIU4Xu8zPegH4rwdHXvoQalj8aPpvzz05VyF.4yXa82EaWJlv_nBBZDzc
- FhTZgJWrvFjqZuWl94zE6jIzTOlkzeb94eGwapEvdM7TZ62NtG2f7XnoJLRHCgoj8JLVozzi2UJQ
- 3C6CkFSp.ytn6KCSgV7TEZ0a41oBnmoUV7UotmMyCr0iV0NXeuCN0IP6ElzzukptPEYdnJpawAWb
- mEBbhJTm_OwrvX76lT6cFv7LAanePIFUOcrc0iDUUWb_Bs3ipHI2wuwe9ppEQ.mADCfoblZZTnIL
- jd_C6ky2wjCdzDec6TCic6vXPqBhkY4nSP5_vwWzBui5PmLy.yTRjWretx6vaMimv.myWXHjgGAB
- YEQnctxEJLcC6dDTrDQn4heI-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ne1.yahoo.com with HTTP; Tue, 26 May 2020 19:19:17 +0000
-Received: by smtp404.mail.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 74c883f4172faf6794e783c66f95f465;
-          Tue, 26 May 2020 19:19:11 +0000 (UTC)
-Subject: Re: [PATCH] capabilities: Introduce CAP_RESTORE
-To:     Christine Flood <chf@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Adrian Reber <areber@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Pavel Emelyanov <ovzxemul@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        =?UTF-8?B?TWljaGHFgiBDxYJhcGnFhHNraQ==?= <mclapinski@google.com>,
-        Kamil Yurtsever <kyurtsever@google.com>,
-        Dirk Petersen <dipeit@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Radostin Stoyanov <rstoyanov1@gmail.com>,
-        Cyrill Gorcunov <gorcunov@openvz.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Aaron Goidel <acgoide@tycho.nsa.gov>,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
-        Eric Paris <eparis@parisplace.org>,
-        Jann Horn <jannh@google.com>, "Haley, Andrew" <aph@redhat.com>,
-        "Bhole, Deepak" <dbhole@redhat.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20200522055350.806609-1-areber@redhat.com>
- <dc86dffb-c7f8-15bb-db4e-be135da650cc@schaufler-ca.com>
- <20200525080541.GF104922@dcbz.redhat.com>
- <877dwybxvi.fsf@x220.int.ebiederm.org>
- <CALKUemw0UZ67yaDwAomHh0n8QZfjd52QvgEXTJ4R3JSrQjZX9g@mail.gmail.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Autocrypt: addr=casey@schaufler-ca.com; keydata=
- mQINBFzV9HABEAC/mmv3jeJyF7lR7QhILYg1+PeBLIMZv7KCzBSc/4ZZipoWdmr77Lel/RxQ
- 1PrNx0UaM5r6Hj9lJmJ9eg4s/TUBSP67mTx+tsZ1RhG78/WFf9aBe8MSXxY5cu7IUwo0J/CG
- vdSqACKyYPV5eoTJmnMxalu8/oVUHyPnKF3eMGgE0mKOFBUMsb2pLS/enE4QyxhcZ26jeeS6
- 3BaqDl1aTXGowM5BHyn7s9LEU38x/y2ffdqBjd3au2YOlvZ+XUkzoclSVfSR29bomZVVyhMB
- h1jTmX4Ac9QjpwsxihT8KNGvOM5CeCjQyWcW/g8LfWTzOVF9lzbx6IfEZDDoDem4+ZiPsAXC
- SWKBKil3npdbgb8MARPes2DpuhVm8yfkJEQQmuLYv8GPiJbwHQVLZGQAPBZSAc7IidD2zbf9
- XAw1/SJGe1poxOMfuSBsfKxv9ba2i8hUR+PH7gWwkMQaQ97B1yXYxVEkpG8Y4MfE5Vd3bjJU
- kvQ/tOBUCw5zwyIRC9+7zr1zYi/3hk+OG8OryZ5kpILBNCo+aePeAJ44znrySarUqS69tuXd
- a3lMPHUJJpUpIwSKQ5UuYYkWlWwENEWSefpakFAIwY4YIBkzoJ/t+XJHE1HTaJnRk6SWpeDf
- CreF3+LouP4njyeLEjVIMzaEpwROsw++BX5i5vTXJB+4UApTAQARAQABtChDYXNleSBTY2hh
- dWZsZXIgPGNhc2V5QHNjaGF1Zmxlci1jYS5jb20+iQJUBBMBCAA+FiEEC+9tH1YyUwIQzUIe
- OKUVfIxDyBEFAlzV9HACGwMFCRLMAwAFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQOKUV
- fIxDyBG6ag/6AiRl8yof47YOEVHlrmewbpnlBTaYNfJ5cZflNRKRX6t4bp1B2YV1whlDTpiL
- vNOwFkh+ZE0eI5M4x8Gw2Oiok+4Q5liA9PHTozQYF+Ia+qdL5EehfbLGoEBqklpGvG3h8JsO
- 7SvONJuFDgvab/U/UriDYycJwzwKZuhVtK9EMpnTtUDyP3DY+Q8h7MWsniNBLVXnh4yBIEJg
- SSgDn3COpZoFTPGKE+rIzioo/GJe8CTa2g+ZggJiY/myWTS3quG0FMvwvNYvZ4I2g6uxSl7n
- bZVqAZgqwoTAv1HSXIAn9muwZUJL03qo25PFi2gQmX15BgJKQcV5RL0GHFHRThDS3IyadOgK
- P2j78P8SddTN73EmsG5OoyzwZAxXfck9A512BfVESqapHurRu2qvMoUkQaW/2yCeRQwGTsFj
- /rr0lnOBkyC6wCmPSKXe3dT2mnD5KnCkjn7KxLqexKt4itGjJz4/ynD/qh+gL7IPbifrQtVH
- JI7cr0fI6Tl8V6efurk5RjtELsAlSR6fKV7hClfeDEgLpigHXGyVOsynXLr59uE+g/+InVic
- jKueTq7LzFd0BiduXGO5HbGyRKw4MG5DNQvC//85EWmFUnDlD3WHz7Hicg95D+2IjD2ZVXJy
- x3LTfKWdC8bU8am1fi+d6tVEFAe/KbUfe+stXkgmfB7pxqW5Ag0EXNX0cAEQAPIEYtPebJzT
- wHpKLu1/j4jQcke06Kmu5RNuj1pEje7kX5IKzQSs+CPH0NbSNGvrA4dNGcuDUTNHgb5Be9hF
- zVqRCEvF2j7BFbrGe9jqMBWHuWheQM8RRoa2UMwQ704mRvKr4sNPh01nKT52ASbWpBPYG3/t
- WbYaqfgtRmCxBnqdOx5mBJIBh9Q38i63DjQgdNcsTx2qS7HFuFyNef5LCf3jogcbmZGxG/b7
- yF4OwmGsVc8ufvlKo5A9Wm+tnRjLr/9Mn9vl5Xa/tQDoPxz26+aWz7j1in7UFzAarcvqzsdM
- Em6S7uT+qy5jcqyuipuenDKYF/yNOVSNnsiFyQTFqCPCpFihOnuaWqfmdeUOQHCSo8fD4aRF
- emsuxqcsq0Jp2ODq73DOTsdFxX2ESXYoFt3Oy7QmIxeEgiHBzdKU2bruIB5OVaZ4zWF+jusM
- Uh+jh+44w9DZkDNjxRAA5CxPlmBIn1OOYt1tsphrHg1cH1fDLK/pDjsJZkiH8EIjhckOtGSb
- aoUUMMJ85nVhN1EbU/A3DkWCVFEA//Vu1+BckbSbJKE7Hl6WdW19BXOZ7v3jo1q6lWwcFYth
- esJfk3ZPPJXuBokrFH8kqnEQ9W2QgrjDX3et2WwZFLOoOCItWxT0/1QO4ikcef/E7HXQf/ij
- Dxf9HG2o5hOlMIAkJq/uLNMvABEBAAGJAjwEGAEIACYWIQQL720fVjJTAhDNQh44pRV8jEPI
- EQUCXNX0cAIbDAUJEswDAAAKCRA4pRV8jEPIEWkzEACKFUnpp+wIVHpckMfBqN8BE5dUbWJc
- GyQ7wXWajLtlPdw1nNw0Wrv+ob2RCT7qQlUo6GRLcvj9Fn5tR4hBvR6D3m8aR0AGHbcC62cq
- I7LjaSDP5j/em4oVL2SMgNTrXgE2w33JMGjAx9oBzkxmKUqprhJomPwmfDHMJ0t7y39Da724
- oLPTkQDpJL1kuraM9TC5NyLe1+MyIxqM/8NujoJbWeQUgGjn9uxQAil7o/xSCjrWCP3kZDID
- vd5ZaHpdl8e1mTExQoKr4EWgaMjmD/a3hZ/j3KfTVNpM2cLfD/QwTMaC2fkK8ExMsz+rUl1H
- icmcmpptCwOSgwSpPY1Zfio6HvEJp7gmDwMgozMfwQuT9oxyFTxn1X3rn1IoYQF3P8gsziY5
- qtTxy2RrgqQFm/hr8gM78RhP54UPltIE96VywviFzDZehMvuwzW//fxysIoK97Y/KBZZOQs+
- /T+Bw80Pwk/dqQ8UmIt2ffHEgwCTbkSm711BejapWCfklxkMZDp16mkxSt2qZovboVjXnfuq
- wQ1QL4o4t1hviM7LyoflsCLnQFJh6RSBhBpKQinMJl/z0A6NYDkQi6vEGMDBWX/M2vk9Jvwa
- v0cEBfY3Z5oFgkh7BUORsu1V+Hn0fR/Lqq/Pyq+nTR26WzGDkolLsDr3IH0TiAVH5ZuPxyz6
- abzjfg==
-Message-ID: <b7797029-2fd3-3773-a51a-bf073a96c848@schaufler-ca.com>
-Date:   Tue, 26 May 2020 12:19:08 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <CALKUemw0UZ67yaDwAomHh0n8QZfjd52QvgEXTJ4R3JSrQjZX9g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-X-Mailer: WebService/1.1.15959 hermes_yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.6)
+        Tue, 26 May 2020 15:20:36 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 095D0C03E96E
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 12:20:36 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id w10so26006303ljo.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 12:20:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=JfF6l7LMx459ERvdO2nN2IW/+d2ZQx/5sEZb/9TJPe4=;
+        b=gsPtEcFyaZ2rKhAoYUQ6j60QBCgFTXEiJEAUvn6qAIaSzREiIsPnFBLajsfwmrMLDo
+         nxMGvK23w72VOgMobqIQk9bZ8LKvoCWGeUrmjFpyXjQJ8yP/UpQy5dDHwWKXXqWpAi/s
+         Ywk6oawv1Pf58xHRhPLJiT9ciOw2Hq1yrbqh7ze/AQF805r4TIpw5kKn5R/aFnWbaRY/
+         JO5EHJXnga7X2q5ipf0v/QGA+75vcNty9uLqyjLVcBe3F0td8Rw9uyeG9DzfB9q09IDI
+         4EEFt3FyUfteoAnyM7Tisk8CuiMuWUudyEJpwDy5+kisRbsqcmNokxeV1nletpSoFEm/
+         r8mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=JfF6l7LMx459ERvdO2nN2IW/+d2ZQx/5sEZb/9TJPe4=;
+        b=mw1HDg5v5cJLdsMKO82OQnxc+rpuntS2zZI7EYXremx7sqktQ9A5cD2juuboD8xee2
+         X8+NxpGUCHDEmKGRnv+Mf6AGgpL+/0sBHNG4W4L4s15bmLhrSw0TR6B0ak9L/LNyiYt7
+         0tzxU3nZ8gcNhkmo7sn8CgoSMO9LszSMYKc7xOQfyMZLna4t1arzdKPCORxZNh7xi9Il
+         HshOU212uQ6H/FWKrPanBqQCmyB3YjQHM4MYp/1eeFObZXy4o3x3KODu+Oor0t2QleHf
+         EvvE+iPzY0fQIzrUhPfH/MJ+gX62+c4tPFHJ9c/8y9dqjmRvkn53NBfIGYgh/LSRIk+P
+         3n4A==
+X-Gm-Message-State: AOAM532TOE7zdiEH+znrrO75+9LMb67BiMHnYRKMLBs3r8iPeii1Vpzy
+        ScGdl6LoqadSBvqLKEPaygHWUqgLMvA=
+X-Google-Smtp-Source: ABdhPJzBG2M9RQOiO6jFCVOTGmhqxnYhcD27yu9YfRo3sjWafwiiyZ9QsdRlW49fl7rDD4rQ5Q3gxA==
+X-Received: by 2002:a2e:b5cf:: with SMTP id g15mr1210420ljn.212.1590520834156;
+        Tue, 26 May 2020 12:20:34 -0700 (PDT)
+Received: from localhost.localdomain ([176.59.41.83])
+        by smtp.gmail.com with ESMTPSA id i8sm180483lfo.62.2020.05.26.12.20.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2020 12:20:33 -0700 (PDT)
+From:   Maxim Uvarov <maxim.uvarov@linaro.org>
+To:     linux-kernel@vger.kernel.org, tee-dev@lists.linaro.org
+Cc:     peterhuewe@gmx.de, jarkko.sakkinen@linux.intel.com, jgg@ziepe.ca,
+        gregkh@linuxfoundation.org, jens.wiklander@linaro.org,
+        linux-integrity@vger.kernel.org, arnd@linaro.org,
+        sumit.garg@linaro.org, Maxim Uvarov <maxim.uvarov@linaro.org>
+Subject: [PATCHv4 0/3] optee: register drivers on optee bus
+Date:   Tue, 26 May 2020 22:20:26 +0300
+Message-Id: <20200526192029.863-1-maxim.uvarov@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/2020 12:01 PM, Christine Flood wrote:
+v4: - sysfs entry is optee-ta-uuid (Jerome Forissier, Sumit Garg)
+    - added Documentation/ABI/testing/sysfs-bus-optee-devices (Greg Kroah-Hartman)
+v3: - support tee-suppicant restart (Jens Wiklander)
+    - description and comments (Jarkko Sakkinen)
+    - do not name optee drivers by index in sysfs (Sumit Garg)
+v2: - write TEE with capital letters.
+    - declare __optee_enumerate_device() as static.
 
-Please do not top-post on this list.
+Maxim Uvarov (3):
+  optee: do drivers initialization before and after tee-supplicant run
+  optee: use uuid for sysfs driver entry
+  tpm_ftpm_tee: register driver on TEE bus
 
-> Java applications suffer from slow startup times due to dynamic class l=
-oading and warming up the Just In Time compilers.=C2=A0 Not all Java user=
-s have root access on their machines.=C2=A0 Enabling CRIU in user mode so=
-lves this problem for us.=C2=A0 We are about to release a user library th=
-at will allow check pointing Java from within Java.=C2=A0 Having to run t=
-his as root would severely limit its utility.
+ .../ABI/testing/sysfs-bus-optee-devices       |  8 +++
+ MAINTAINERS                                   |  2 +
+ drivers/char/tpm/tpm_ftpm_tee.c               | 70 ++++++++++++++++---
+ drivers/tee/optee/core.c                      | 28 +++++++-
+ drivers/tee/optee/device.c                    | 23 +++---
+ drivers/tee/optee/optee_private.h             | 10 ++-
+ 6 files changed, 118 insertions(+), 23 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-optee-devices
 
-The performance of dynamic loading is a well understood issue.
-Please don't conflate that with the security issues involved.
-Security is *not* the basic problem. If you are having problems
-with application start-up performance you really should be be
-addressing that directly rather than implementing sophisticated
-workarounds that require system security changes.
-
->
->
-> Christine
->
-> On Tue, May 26, 2020 at 10:05 AM Eric W. Biederman <ebiederm@xmission.c=
-om <mailto:ebiederm@xmission.com>> wrote:
->
->     Adrian Reber <areber@redhat.com <mailto:areber@redhat.com>> writes:=
-
->
->     > On Fri, May 22, 2020 at 09:40:37AM -0700, Casey Schaufler wrote:
->
->     >> What are the other blockers? Are you going to suggest additional=
- new
->     >> capabilities to clear them?
->     >
->     > As mentioned somewhere else access to /proc/<pid>/map_files/ woul=
-d be
->     > helpful. Right now I am testing with a JVM and it works without r=
-oot
->     > just with the attached patch. Without access to /proc/<pid>/map_f=
-iles/
->     > not everything CRIU can do will actually work, but we are a lot c=
-loser
->     > to what our users have been asking for.
->
->     The current permission checks on /proc/<pid>/map_files/ are simply
->     someone being over-cautious.
->
->     Someone needs to think through the threat landscape and figure out =
-what
->     permission checks are actually needed.
->
->     Making the permission check ns_capable instead of capable is a
->     no-brainer.=C2=A0 Figuring out which user_ns to test against might =
-be a
->     we bit harder.
->
->     We could probably even allow the owner of the process to open the f=
-iles
->     but that requires someone doing the work of thinking through how
->     being able to opening files that you have mmaped might be a problem=
-=2E
->
->     >> > There are probably a few more things guarded by CAP_SYS_ADMIN =
-required
->     >> > to run checkpoint/restore as non-root,
->     >>
->     >> If you need CAP_SYS_ADMIN anyway you're not gaining anything by
->     >> separating out CAP_RESTORE.
->     >
->     > No, as described we can checkpoint and restore a JVM with this pa=
-tch and
->     > it also solves the problem the set_ns_last_pid fork() loop daemon=
- tries
->     > to solve. It is not enough to support the full functionality of C=
-RIU as
->     > map_files is also important, but we do not need CAP_SYS_ADMIN and=
-
->     > CAP_RESTORE. Only CAP_RESTORE would be necessary.
->     >
->     > With a new capability users can enable checkpoint/restore as non-=
-root
->     > without giving CRIU access to any of the other possibilities offe=
-red by
->     > CAP_SYS_ADMIN. Setting a PID and map_files have been introduced f=
-or CRIU
->     > and used to live behind CONFIG_CHECKPOINT_RESTORE. Having a capab=
-ility
->     > for checkpoint/restore would make it easier for CRIU users to run=
- it as
->     > non-root and make it very clear what is possible when giving CRIU=
- the
->     > new capability. No other things would be allowed than necessary f=
-or
->     > checkpoint/restore. Setting a PID is most important for the resto=
-re part
->     > and reading map_files would be helpful during checkpoint. So it a=
-ctually
->     > should be called CAP_CHECKPOINT_RESTORE as Christian mentioned in=
-
->     > another email.
->
->     Please if one is for checkpoint and one is for restore asking for a=
- pair
->     of capabilities is probably more appropriate.
->
->     >> >=C2=A0 but by applying this patch I can
->     >> > already checkpoint and restore processes as non-root. As there=
- are
->     >> > already multiple workarounds I would prefer to do it correctly=
- in the
->     >> > kernel to avoid that CRIU users are starting to invent more wo=
-rkarounds.
->     >>
->     >> You've presented a couple of really inappropriate implementation=
-s
->     >> that would qualify as workarounds. But the other two are complet=
-ely
->     >> appropriate within the system security policy. They don't "get a=
-round"
->     >> the problem, they use existing mechanisms as they are intended.
->     >
->     > I agree with the user namespace approach to be appropriate, but n=
-ot the
->     > CAP_SYS_ADMIN approach as CRIU only needs a tiny subset (2 things=
-) of
->     > what CAP_SYS_ADMIN allows.
->
->
->     If we are only talking 2 things can you please include in your patc=
-hset
->     a patch enabling those 2 things?
->
->     But even more than this we need a request that asks not for the lea=
-st
->     you can possibly ask for but asks for what you need to do a good jo=
-b.
->
->     I am having visions of a recurring discussion that says can we add =
-one
->     more permission check to CAP_RESTORE or CAP_CHECKPOINT when they ar=
-e
->     things we could know today.
->
->     Eric
->
+-- 
+2.17.1
 
