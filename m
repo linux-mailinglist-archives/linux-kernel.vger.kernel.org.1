@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 646771E2B70
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED71C1E2E1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391468AbgEZTFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:05:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32916 "EHLO mail.kernel.org"
+        id S2403909AbgEZT0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:26:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389967AbgEZTFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:05:06 -0400
+        id S2390840AbgEZTFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:05:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 661B820873;
-        Tue, 26 May 2020 19:05:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C9D7D208B3;
+        Tue, 26 May 2020 19:05:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519905;
-        bh=KOOqmjkT3/NHkepUVqMyX89PGaVwj5+wi37xbhKpEEo=;
+        s=default; t=1590519908;
+        bh=rFP8p2t9V1tathkMCAdLBHRoFCWbEz2WeWGI5ORolCs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qJsz0WOWI7xhqXZX0E1aNWalmXkZ4sajY0+cBz2jvTGDpYE05SyPyeoHEbkautWTu
-         3BxIh4BN88Gy9rwbOdwGdPq/4fXHbnZYwwArc3Pd5QA7CeUKtb6n+C22V+dKmJP5Eu
-         PKEqIL48nj9Q+/xgA2wWcJjwgNtSqlTWod92O1gE=
+        b=Vp5GUUKCehXBeoo9F/ef87PWArab8bA9aGdQmgxp8biXHH/N+2pzicVaBARyrJc40
+         7e0c8x7og7JitCTcsYjE12F/u42MtcF+RqMbOvZvAz+qjfsYsZRyAjSRMUyJIVkOjA
+         i6OAEJYgOlnh+weyoHGhbGz3vENkXn3VnW7gvOPA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 64/81] Revert "gfs2: Dont demote a glock until its revokes are written"
-Date:   Tue, 26 May 2020 20:53:39 +0200
-Message-Id: <20200526183934.175831135@linuxfoundation.org>
+        stable@vger.kernel.org, Dragos Bogdan <dragos.bogdan@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.19 65/81] staging: iio: ad2s1210: Fix SPI reading
+Date:   Tue, 26 May 2020 20:53:40 +0200
+Message-Id: <20200526183934.270943125@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
 References: <20200526183923.108515292@linuxfoundation.org>
@@ -43,48 +45,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Dragos Bogdan <dragos.bogdan@analog.com>
 
-[ Upstream commit b14c94908b1b884276a6608dea3d0b1b510338b7 ]
+commit 5e4f99a6b788047b0b8a7496c2e0c8f372f6edf2 upstream.
 
-This reverts commit df5db5f9ee112e76b5202fbc331f990a0fc316d6.
+If the serial interface is used, the 8-bit address should be latched using
+the rising edge of the WR/FSYNC signal.
 
-This patch fixes a regression: patch df5db5f9ee112 allowed function
-run_queue() to bypass its call to do_xmote() if revokes were queued for
-the glock. That's wrong because its call to do_xmote() is what is
-responsible for calling the go_sync() glops functions to sync both
-the ail list and any revokes queued for it. By bypassing the call,
-gfs2 could get into a stand-off where the glock could not be demoted
-until its revokes are written back, but the revokes would not be
-written back because do_xmote() was never called.
+This basically means that a CS change is required between the first byte
+sent, and the second one.
+This change splits the single-transfer transfer of 2 bytes into 2 transfers
+with a single byte, and CS change in-between.
 
-It "sort of" works, however, because there are other mechanisms like
-the log flush daemon (logd) that can sync the ail items and revokes,
-if it deems it necessary. The problem is: without file system pressure,
-it might never deem it necessary.
+Note fixes tag is not accurate, but reflects a point beyond which there
+are too many refactors to make backporting straight forward.
 
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: b19e9ad5e2cb ("staging:iio:resolver:ad2s1210 general driver cleanup.")
+Signed-off-by: Dragos Bogdan <dragos.bogdan@analog.com>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/gfs2/glock.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/staging/iio/resolver/ad2s1210.c |   17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
-index f8a5eef3d014..ccdd8c821abd 100644
---- a/fs/gfs2/glock.c
-+++ b/fs/gfs2/glock.c
-@@ -636,9 +636,6 @@ __acquires(&gl->gl_lockref.lock)
- 			goto out_unlock;
- 		if (nonblock)
- 			goto out_sched;
--		smp_mb();
--		if (atomic_read(&gl->gl_revokes) != 0)
--			goto out_sched;
- 		set_bit(GLF_DEMOTE_IN_PROGRESS, &gl->gl_flags);
- 		GLOCK_BUG_ON(gl, gl->gl_demote_state == LM_ST_EXCLUSIVE);
- 		gl->gl_target = gl->gl_demote_state;
--- 
-2.25.1
-
+--- a/drivers/staging/iio/resolver/ad2s1210.c
++++ b/drivers/staging/iio/resolver/ad2s1210.c
+@@ -114,17 +114,24 @@ static int ad2s1210_config_write(struct
+ static int ad2s1210_config_read(struct ad2s1210_state *st,
+ 				unsigned char address)
+ {
+-	struct spi_transfer xfer = {
+-		.len = 2,
+-		.rx_buf = st->rx,
+-		.tx_buf = st->tx,
++	struct spi_transfer xfers[] = {
++		{
++			.len = 1,
++			.rx_buf = &st->rx[0],
++			.tx_buf = &st->tx[0],
++			.cs_change = 1,
++		}, {
++			.len = 1,
++			.rx_buf = &st->rx[1],
++			.tx_buf = &st->tx[1],
++		},
+ 	};
+ 	int ret = 0;
+ 
+ 	ad2s1210_set_mode(MOD_CONFIG, st);
+ 	st->tx[0] = address | AD2S1210_MSB_IS_HIGH;
+ 	st->tx[1] = AD2S1210_REG_FAULT;
+-	ret = spi_sync_transfer(st->sdev, &xfer, 1);
++	ret = spi_sync_transfer(st->sdev, xfers, 2);
+ 	if (ret < 0)
+ 		return ret;
+ 
 
 
