@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 374CC1E2B0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 077DB1E2D0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389890AbgEZTBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:01:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55748 "EHLO mail.kernel.org"
+        id S2404372AbgEZTTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:19:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390204AbgEZTB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:01:27 -0400
+        id S2404272AbgEZTN3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:13:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03B5A20849;
-        Tue, 26 May 2020 19:01:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A00B2208B6;
+        Tue, 26 May 2020 19:13:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519686;
-        bh=ixT+xyhnmjq0jPoZhX8b/v+1/Caxq23mw4srXvPfX3w=;
+        s=default; t=1590520407;
+        bh=iYFk1IVqarP0wBU+3sOEVMVVHNI79VEJUXRz36qO7hs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vh7NUHJLXEjRvIEzghTKHBC6nmayoYnGGEoKS1QU/cM/ZNRPpgIsA6XeUBunybkoQ
-         PsLFnaqjjB+xhpbYhLrd+8tOpPyFNZeO+NwGo0Aixd7IJFT7K98E4Ozoa6MnGSxwXH
-         UWNe5ELCfEnk29VvN9a4j1RhiB0XsXpmVqBl19CE=
+        b=DwUfoc6GtjHdNaUwziGuWXasQLNuc2K7fNveAMN6MTfElPDiY4pNmBcnF+GrskmxX
+         /O89sPGVosHIwsE5+W07+lFiLfJJj6HZUC8bFO8qG1Jo8BmI0mc3n0W+pk+tXjFwpR
+         IP2MUoMp3F423enSX+iFcjzP+iazlC72wxt+/BBA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        John Johansen <john.johansen@canonical.com>
-Subject: [PATCH 4.14 37/59] apparmor: Fix aa_label refcnt leak in policy_update
+        stable@vger.kernel.org, Brent Lu <brent.lu@intel.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.6 065/126] ALSA: pcm: fix incorrect hw_base increase
 Date:   Tue, 26 May 2020 20:53:22 +0200
-Message-Id: <20200526183919.409222748@linuxfoundation.org>
+Message-Id: <20200526183943.631088293@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
-References: <20200526183907.123822792@linuxfoundation.org>
+In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
+References: <20200526183937.471379031@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,53 +43,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Brent Lu <brent.lu@intel.com>
 
-commit c6b39f070722ea9963ffe756bfe94e89218c5e63 upstream.
+commit e7513c5786f8b33f0c107b3759e433bc6cbb2efa upstream.
 
-policy_update() invokes begin_current_label_crit_section(), which
-returns a reference of the updated aa_label object to "label" with
-increased refcount.
+There is a corner case that ALSA keeps increasing the hw_ptr but DMA
+already stop working/updating the position for a long time.
 
-When policy_update() returns, "label" becomes invalid, so the refcount
-should be decreased to keep refcount balanced.
+In following log we can see the position returned from DMA driver does
+not move at all but the hw_ptr got increased at some point of time so
+snd_pcm_avail() will return a large number which seems to be a buffer
+underrun event from user space program point of view. The program
+thinks there is space in the buffer and fill more data.
 
-The reference counting issue happens in one exception handling path of
-policy_update(). When aa_may_manage_policy() returns not NULL, the
-refcnt increased by begin_current_label_crit_section() is not decreased,
-causing a refcnt leak.
+[  418.510086] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 4096 avail 12368
+[  418.510149] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 6910 avail 9554
+...
+[  418.681052] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 15102 avail 1362
+[  418.681130] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 16464 avail 0
+[  418.726515] sound pcmC0D5p: pos 96 hw_ptr 16464 appl_ptr 16464 avail 16368
 
-Fix this issue by jumping to "end_section" label when
-aa_may_manage_policy() returns not NULL.
+This is because the hw_base will be increased by runtime->buffer_size
+frames unconditionally if the hw_ptr is not updated for over half of
+buffer time. As the hw_base increases, so does the hw_ptr increased
+by the same number.
 
-Fixes: 5ac8c355ae00 ("apparmor: allow introspecting the loaded policy pre internal transform")
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Signed-off-by: John Johansen <john.johansen@canonical.com>
+The avail value returned from snd_pcm_avail() could exceed the limit
+(buffer_size) easily becase the hw_ptr itself got increased by same
+buffer_size samples when the corner case happens. In following log,
+the buffer_size is 16368 samples but the avail is 21810 samples so
+CRAS server complains about it.
+
+[  418.851755] sound pcmC0D5p: pos 96 hw_ptr 16464 appl_ptr 27390 avail 5442
+[  418.926491] sound pcmC0D5p: pos 96 hw_ptr 32832 appl_ptr 27390 avail 21810
+
+cras_server[1907]: pcm_avail returned frames larger than buf_size:
+sof-glkda7219max: :0,5: 21810 > 16368
+
+By updating runtime->hw_ptr_jiffies each time the HWSYNC is called,
+the hw_base will keep the same when buffer stall happens at long as
+the interval between each HWSYNC call is shorter than half of buffer
+time.
+
+Following is a log captured by a patched kernel. The hw_base/hw_ptr
+value is fixed in this corner case and user space program should be
+aware of the buffer stall and handle it.
+
+[  293.525543] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 4096 avail 12368
+[  293.525606] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 6880 avail 9584
+[  293.525975] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 10976 avail 5488
+[  293.611178] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 15072 avail 1392
+[  293.696429] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 16464 avail 0
+...
+[  381.139517] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 16464 avail 0
+
+Signed-off-by: Brent Lu <brent.lu@intel.com>
+Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/1589776238-23877-1-git-send-email-brent.lu@intel.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- security/apparmor/apparmorfs.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/core/pcm_lib.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/security/apparmor/apparmorfs.c
-+++ b/security/apparmor/apparmorfs.c
-@@ -426,7 +426,7 @@ static ssize_t policy_update(u32 mask, c
- 	 */
- 	error = aa_may_manage_policy(label, ns, mask);
- 	if (error)
--		return error;
-+		goto end_section;
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -433,6 +433,7 @@ static int snd_pcm_update_hw_ptr0(struct
  
- 	data = aa_simple_write_to_buffer(buf, size, size, pos);
- 	error = PTR_ERR(data);
-@@ -434,6 +434,7 @@ static ssize_t policy_update(u32 mask, c
- 		error = aa_replace_profiles(ns, label, mask, data);
- 		aa_put_loaddata(data);
+  no_delta_check:
+ 	if (runtime->status->hw_ptr == new_hw_ptr) {
++		runtime->hw_ptr_jiffies = curr_jiffies;
+ 		update_audio_tstamp(substream, &curr_tstamp, &audio_tstamp);
+ 		return 0;
  	}
-+end_section:
- 	end_current_label_crit_section(label);
- 
- 	return error;
 
 
