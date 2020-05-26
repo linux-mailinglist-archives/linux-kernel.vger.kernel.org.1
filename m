@@ -2,171 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 664AC1E3212
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A261E3214
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391883AbgEZWK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 18:10:27 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:43576 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389342AbgEZWKY (ORCPT
+        id S2391919AbgEZWKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 18:10:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391894AbgEZWKa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 18:10:24 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 04QMA0wk031463;
-        Tue, 26 May 2020 15:10:01 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=WEjCwj6MpzH6ukKsonI+KU8xiXcZtxYFsn53IjGzYNo=;
- b=DrYv4A9P5pJwARW5gupjX5Iqk3Y/PeUGvXgKybMXcPBVXvp54tvkwMCps7Zd3MI9zGsk
- r+gZF749lm08Ge9bnrBZfJwDSCGM3LcmFo3FUZEiqtgieerBcvZFVPdddX7lLu1HIaGB
- ahfcgmWY0m3WzzNRMksx+tDa/Jg4avyUwts= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 316yb155ex-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 26 May 2020 15:10:01 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 26 May 2020 15:09:55 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nRUuJRUr+/L0AHa+MBaz6kaD/UwGr8L+uOlqTM1JCyntToXXNwyeRWqK8f6nQdc4KG06hFcCY6e6JPnl1zmtUhdY2Z071ImVFISQBqEuguD3qdPDH8/yzCHiTm8ZroaTl9XgK0NcwXEyX/12ripOltbcul07+lhXYQuKU5PhKrK6UySFYA7JL06cxvTFE8EsjegATn72hR3RBpPAH7/ZiXTUlswSfWzPo+QY4zzvAsr5InpLTtbQuSOQwkWQ0WIOE9Pv+OLZAnGQdn0zQ9UFoKnxFsrSDIOnucwe3bTTh1madQ69oDyNRdpEB53TnBexjs/xmfRCLOPzAyxUTUyHuA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WEjCwj6MpzH6ukKsonI+KU8xiXcZtxYFsn53IjGzYNo=;
- b=eyE4DOtSAZ0fOupAMynGg9wgzl1Yw5/OXjnJftnCDsIjzC73osjk7IJduDEshsZ4d4GejK+cKrbwqCgSMtfYEty2XLEVTuSEhccsKaqYo15JFxDfw0M7c1wgWbalvHP/2tkUr3rgfeYnxv86mDH3LU895Ii/8VPFNnfl7QCboCHWLEJsXvx9pbO9ZhDxuWVNmh6QEKOnHDmtdLeQQLHuXd9MdD5cbccsRmEBjjfLGRvOMeIQxgIK6qA4cop+aax3Jh0W5yQe19nKaPIYgeDNsiVuplqQs/9PHLUfhZleGNwI7vBnQHmjWVcgVV00y4vNGL+mb5tZNavW1yYEBUfHrQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WEjCwj6MpzH6ukKsonI+KU8xiXcZtxYFsn53IjGzYNo=;
- b=RdYrG5axbh/O8D5kUGKMAjKake41TVY6ckG7ihnQS/afRbztsdUpy8mHny1B3Sno5quvXBLRFOTMGmcaFXOBCwSEDTNhaIueLEoD2fSjpnklMmnSHelc0VelfgkhIr4LGwbBDxpeMNOY4kuR/nBPKdurYFR2kIxFSH6UoJJm2ek=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB3254.namprd15.prod.outlook.com (2603:10b6:a03:110::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.23; Tue, 26 May
- 2020 22:09:51 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::bdf1:da56:867d:f8a2]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::bdf1:da56:867d:f8a2%7]) with mapi id 15.20.3045.016; Tue, 26 May 2020
- 22:09:51 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        "Masami Hiramatsu" <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Jiri Olsa" <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>
-Subject: Re: [RFC] perf/core: allow ftrace for functions in
- kernel/event/core.c
-Thread-Topic: [RFC] perf/core: allow ftrace for functions in
- kernel/event/core.c
-Thread-Index: AQHWM6ViVS5deg/n5kWgZSYX+yJPDqi65OeAgAACB4CAAAIsgIAAAuWAgAABdQA=
-Date:   Tue, 26 May 2020 22:09:51 +0000
-Message-ID: <196BAA45-AD7A-4DAE-A4C8-CED3DF2C6E17@fb.com>
-References: <20200526212826.4097888-1-songliubraving@fb.com>
- <20200526213913.GG2483@worktop.programming.kicks-ass.net>
- <A9B20D93-748B-4789-801E-91720E2D4F28@fb.com>
- <20200526215415.GH2483@worktop.programming.kicks-ass.net>
- <20200526180437.45aed950@gandalf.local.home>
-In-Reply-To: <20200526180437.45aed950@gandalf.local.home>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.80.23.2.2)
-authentication-results: goodmis.org; dkim=none (message not signed)
- header.d=none;goodmis.org; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:7e06]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 03698b4a-fe29-4cd3-29d7-08d801c1831b
-x-ms-traffictypediagnostic: BYAPR15MB3254:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB32542B4AD7E826CD22AECA98B3B00@BYAPR15MB3254.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 041517DFAB
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: azeNGXG9nZmQNenYColia0X58KstFdz9vK4e3gj5xSfe4oYkH3C9ZcnVLm/5zKf9OG/J47FiYjiZtCWjxILxN+yHO+HTuLvEdWG/oVGGTcQTJEodx7f4py35sJaF4hbKmBsZ2YFVXrwUoNkfOG+LW3toWIGFqYAwForeBbGHz/IyXhgHueKjD+HtptYFNVKYjWlmnx5BEWE2k6z+CfKoiiWbfLtApA9V69e7wLRxF2moIrI6t0luCTQ+/cHWuXm4lOTs0wI/5+LW4CxaSyrUD3QgObOYpAki24d94ghsqEKrDuvQX3pLolYwYKIlcFUyufwA2ETPBxo5Lg3pUIYUJw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(376002)(346002)(136003)(366004)(396003)(36756003)(71200400001)(6916009)(6486002)(6512007)(5660300002)(316002)(54906003)(66446008)(33656002)(64756008)(2906002)(478600001)(7416002)(66556008)(4326008)(86362001)(66476007)(8676002)(76116006)(6506007)(8936002)(66946007)(53546011)(2616005)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: CGZ3S/SeDcymKvnxKQ81znUi1KgLp1mBneUMFgB4YmdwWAN9kcu5Zufev8brQ//+wmtMgUPBQxhBWApWcVpWqzu09aLsZQemOlezwRqLQL/Bnwq8ZOBf8n+bxgaMCSKc1Y6MOVBY+ZhUe8bA9okrdEVNODF9dttyBoKy/WdZNuJY0kEftYUXsXgXFqrV2FpOdFlDAgvQRKRH5UjcHBTndI7F/4Poldj22vsl1a556iA/v38BNbNeKC+sT+GCn6dWMH632LZ11XluLoZAhyWiMsBce58sEZ0codMnFS2M+h/G0otz1ndXEVDgctWIEhnF1IjNcYapD4IV1r+gIXcdW1pLlkGrm+8Fn3zouP8p1/hRw9eCdsmTaYXqPtAe0yzOiBtYdahAAXR3Tnf4TXRLnBWrR77fGOiEzhk1fHklGADy87woqtUyw5U912QpLBlSXFWwYMb5mtMTBQFIxPAOWZmemoHM/K8uX97Qnh5J1KkBj1nMnfoRyReahxGrwKprC9LBnLVO9AS6a1BX6WtyFw==
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <727EA5194B08C14EA1CD69904AAC3B11@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Tue, 26 May 2020 18:10:30 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63119C03E96D
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 15:10:29 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id e125so13267479lfd.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 15:10:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=S8Sh+DjtPEAcfjFCLlA/An7vGsa0j6xUtlJx+u0SHCo=;
+        b=iaJc4Q0dVmQB2Nw7TDPjM5G/drSQCJ1I0yTkAzs35+wOBGWa8Y7ejBHHXXwVKMTMQ+
+         NkNdap9tqvkiIP9m0q7O1axUE2lvJgI92jZ0IOXLF2XRcaUzTSo/ftuzFdVXnVzObmWy
+         0CMdIgFTfIsBa7I+hhkQf7Fal4GZRNCYXpv14mQOa8XieWI923D6i4MsqVe56fxN2ZF6
+         rHv8DGtKKWb9J8y+3Z1O0+vbmnh2k4VRBjNiHod5ZDOy54y/27IGfws3tAvpafBWD1L+
+         Yi4zJuYg5k5tLPgIEIsylRkz7gp6zK4NNvnxczcZ7BEQ7VnR3CUUIWchfSRdBsju+uqK
+         jSdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S8Sh+DjtPEAcfjFCLlA/An7vGsa0j6xUtlJx+u0SHCo=;
+        b=HEWSV6qnN5Pt7I0+x8a/eYrx4pR57PY8J1sJgs/68/bHJOR0Zyr9fIQAIZSueL364g
+         CBCI5waUdrye3MjyH/FChSb/N15FFNsSDVeLx7AVZEjpTxMr17gLZUKxkeMJxYNVMP8J
+         +WPoe8RxAX2Q8t26um8zZTQ0bqizR9jwv8hj/6bH0nnTUE9KJVw4RDuJ4wps6ln2a6R1
+         horyPMH35IMGZUxUKOmJC8rCO0m3DaD+pkLGmJKF4l5r2n3qaPHRFHsGWQoA2zKIGPGK
+         wtxNqP3UV2DMhYfWHi94NLe4o6hrXyhMa4jYtZyGgVYjs93ZpJk8EUah6x1vn9wD4bYa
+         2DRQ==
+X-Gm-Message-State: AOAM5333tUchbAlgc3jamTPd/Yzs9m8DsAhr4+WGCQqiSauvNcszCE58
+        gKhucoiAih4ziM7aBhe/7gNW0g==
+X-Google-Smtp-Source: ABdhPJwnVJa8vgBbkVQ2tVPyuo9o5O4stVIJ3HJJkVTe15rtWt8oFnTtiz5Ih+h4GOvl+rvxKsG0aQ==
+X-Received: by 2002:a19:5f4e:: with SMTP id a14mr1482768lfj.57.1590531027702;
+        Tue, 26 May 2020 15:10:27 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id n2sm278570lfl.53.2020.05.26.15.10.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2020 15:10:27 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id D850A10230F; Wed, 27 May 2020 01:10:27 +0300 (+03)
+Date:   Wed, 27 May 2020 01:10:27 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Rientjes <rientjes@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [RFC 16/16] KVM: Unmap protected pages from direct mapping
+Message-ID: <20200526221027.ixxahg6ya2z5fppy@box>
+References: <20200522125214.31348-1-kirill.shutemov@linux.intel.com>
+ <20200522125214.31348-17-kirill.shutemov@linux.intel.com>
+ <20200526061638.GA48741@kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 03698b4a-fe29-4cd3-29d7-08d801c1831b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 May 2020 22:09:51.1537
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pJiSXg6COIXps6JQXFYmm/vtLqHEvODJSPvRmjXV1WXnwjD2F3tdC2YLZa9qLA8f3xkT7kz59NneIvvps85YCA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3254
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-05-26_02:2020-05-26,2020-05-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- clxscore=1015 adultscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999
- cotscore=-2147483648 spamscore=0 priorityscore=1501 suspectscore=0
- bulkscore=0 malwarescore=0 lowpriorityscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005260171
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200526061638.GA48741@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 26, 2020 at 09:16:38AM +0300, Mike Rapoport wrote:
+> On Fri, May 22, 2020 at 03:52:14PM +0300, Kirill A. Shutemov wrote:
+> > If the protected memory feature enabled, unmap guest memory from
+> > kernel's direct mappings.
+> > 
+> > Migration and KSM is disabled for protected memory as it would require a
+> > special treatment.
+> > 
+> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > ---
+> >  arch/x86/mm/pat/set_memory.c |  1 +
+> >  include/linux/kvm_host.h     |  3 ++
+> >  mm/huge_memory.c             |  9 +++++
+> >  mm/ksm.c                     |  3 ++
+> >  mm/memory.c                  | 13 +++++++
+> >  mm/rmap.c                    |  4 ++
+> >  virt/kvm/kvm_main.c          | 74 ++++++++++++++++++++++++++++++++++++
+> >  7 files changed, 107 insertions(+)
+> > 
+> > diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
+> > index 6f075766bb94..13988413af40 100644
+> > --- a/arch/x86/mm/pat/set_memory.c
+> > +++ b/arch/x86/mm/pat/set_memory.c
+> > @@ -2227,6 +2227,7 @@ void __kernel_map_pages(struct page *page, int numpages, int enable)
+> >  
+> >  	arch_flush_lazy_mmu_mode();
+> >  }
+> > +EXPORT_SYMBOL_GPL(__kernel_map_pages);
+> >  
+> >  #ifdef CONFIG_HIBERNATION
+> >  bool kernel_page_present(struct page *page)
+> > diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> > index b6944f88033d..e1d7762b615c 100644
+> > --- a/include/linux/kvm_host.h
+> > +++ b/include/linux/kvm_host.h
+> > @@ -705,6 +705,9 @@ int kvm_protect_all_memory(struct kvm *kvm);
+> >  int kvm_protect_memory(struct kvm *kvm,
+> >  		       unsigned long gfn, unsigned long npages, bool protect);
+> >  
+> > +void kvm_map_page(struct page *page, int nr_pages);
+> > +void kvm_unmap_page(struct page *page, int nr_pages);
+> > +
+> >  int gfn_to_page_many_atomic(struct kvm_memory_slot *slot, gfn_t gfn,
+> >  			    struct page **pages, int nr_pages);
+> >  
+> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > index c3562648a4ef..d8a444a401cc 100644
+> > --- a/mm/huge_memory.c
+> > +++ b/mm/huge_memory.c
+> > @@ -33,6 +33,7 @@
+> >  #include <linux/oom.h>
+> >  #include <linux/numa.h>
+> >  #include <linux/page_owner.h>
+> > +#include <linux/kvm_host.h>
+> 
+> This does not seem right... 
 
+I agree. I try to find a more clean way to deal with it.
 
-> On May 26, 2020, at 3:04 PM, Steven Rostedt <rostedt@goodmis.org> wrote:
->=20
-> On Tue, 26 May 2020 23:54:15 +0200
-> Peter Zijlstra <peterz@infradead.org> wrote:
->=20
->> On Tue, May 26, 2020 at 09:46:29PM +0000, Song Liu wrote:
->>>=20
->>>=20
->>>> On May 26, 2020, at 2:39 PM, Peter Zijlstra <peterz@infradead.org> wro=
-te:
->>>>=20
->>>> On Tue, May 26, 2020 at 02:28:26PM -0700, Song Liu wrote: =20
->>>>> It is useful to trace functions in kernel/event/core.c. Allow ftrace =
-for
->>>>> them by removing $(CC_FLAGS_FTRACE) from Makefile. =20
->>>>=20
->>>> Did you try using the ftrace event with perf with this on? =20
->>>=20
->>> I have tried a few things, like=20
->>>=20
->>>  perf stat -e probe:perf_read -I 1000
->>>  perf record -e probe:__x64_sys_perf_event_open -aR
->>>=20
->>> They all work fine.=20
->>>=20
->>> Do you have some tricky functions that we should double check? =20
->>=20
->> I've no idea what probe: does. iirc there's something like
->> ftrace:function that is like regular function tracing.
->>=20
->> At some point using that made the kernel really sick due to recursion
->> between ftrace and perf. Quite possibly that's been fixed, dunno.
->=20
-> In the early days there was a lot of issues with recursions, but I added =
-a
-> lot of recursion protection since then. I'll give this patch a spin and s=
-ee
-> if I can make it crash.
+> >  #include <asm/tlb.h>
+> >  #include <asm/pgalloc.h>
+> > @@ -650,6 +651,10 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
+> >  		spin_unlock(vmf->ptl);
+> >  		count_vm_event(THP_FAULT_ALLOC);
+> >  		count_memcg_events(memcg, THP_FAULT_ALLOC, 1);
+> > +
+> > +		/* Unmap page from direct mapping */
+> > +		if (vma_is_kvm_protected(vma))
+> > +			kvm_unmap_page(page, HPAGE_PMD_NR);
+> 
+> ... and neither does this.
+> 
+> I think the map/unmap primitives shoud be a part of the generic mm and
+> not burried inside KVM.
 
-Thanks!=20
+Well, yes. Except, kvm_map_page() also clears the page before bringing it
+back to direct mappings. Not sure yet how to deal with it.
 
-Song=
+> >  	return 0;
+> > @@ -1886,6 +1891,10 @@ int zap_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
+> >  			page_remove_rmap(page, true);
+> >  			VM_BUG_ON_PAGE(page_mapcount(page) < 0, page);
+> >  			VM_BUG_ON_PAGE(!PageHead(page), page);
+> > +
+> > +			/* Map the page back to the direct mapping */
+> > +			if (vma_is_kvm_protected(vma))
+> > +				kvm_map_page(page, HPAGE_PMD_NR);
+> >  		} else if (thp_migration_supported()) {
+> >  			swp_entry_t entry;
+> >  
+> > diff --git a/mm/ksm.c b/mm/ksm.c
+> > index 281c00129a2e..942b88782ac2 100644
+> > --- a/mm/ksm.c
+> > +++ b/mm/ksm.c
+> > @@ -527,6 +527,9 @@ static struct vm_area_struct *find_mergeable_vma(struct mm_struct *mm,
+> >  		return NULL;
+> >  	if (!(vma->vm_flags & VM_MERGEABLE) || !vma->anon_vma)
+> >  		return NULL;
+> > +	/* TODO */
+> 
+> Probably this is not something that should be done. For a security
+> sensitive environment that wants protected memory, KSM woudn't be
+> relevant anyway...
+
+Hm. True.
+
+> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> > index 71aac117357f..defc33d3a124 100644
+> > --- a/virt/kvm/kvm_main.c
+> > +++ b/virt/kvm/kvm_main.c
+> > @@ -51,6 +51,7 @@
+> >  #include <linux/io.h>
+> >  #include <linux/lockdep.h>
+> >  #include <linux/kthread.h>
+> > +#include <linux/pagewalk.h>
+> >  
+> >  #include <asm/processor.h>
+> >  #include <asm/ioctl.h>
+> > @@ -2718,6 +2719,72 @@ void kvm_vcpu_mark_page_dirty(struct kvm_vcpu *vcpu, gfn_t gfn)
+> >  }
+> >  EXPORT_SYMBOL_GPL(kvm_vcpu_mark_page_dirty);
+> >  
+> > +void kvm_map_page(struct page *page, int nr_pages)
+> > +{
+> > +	int i;
+> > +
+> > +	/* Clear page before returning it to the direct mapping */
+> > +	for (i = 0; i < nr_pages; i++) {
+> > +		void *p = map_page_atomic(page + i);
+> > +		memset(p, 0, PAGE_SIZE);
+> > +		unmap_page_atomic(p);
+> > +	}
+> > +
+> > +	kernel_map_pages(page, nr_pages, 1);
+> > +}
+> > +EXPORT_SYMBOL_GPL(kvm_map_page);
+> > +
+> > +void kvm_unmap_page(struct page *page, int nr_pages)
+> > +{
+> > +	kernel_map_pages(page, nr_pages, 0);
+> > +}
+> > +EXPORT_SYMBOL_GPL(kvm_unmap_page);
+> > +
+> > +static int adjust_direct_mapping_pte_range(pmd_t *pmd, unsigned long addr,
+> > +					   unsigned long end,
+> > +					   struct mm_walk *walk)
+> > +{
+> > +	bool protect = (bool)walk->private;
+> > +	pte_t *pte;
+> > +	struct page *page;
+> > +
+> > +	if (pmd_trans_huge(*pmd)) {
+> > +		page = pmd_page(*pmd);
+> > +		if (is_huge_zero_page(page))
+> > +			return 0;
+> > +		VM_BUG_ON_PAGE(total_mapcount(page) != 1, page);
+> > +		/* XXX: Would it fail with direct device assignment? */
+> > +		VM_BUG_ON_PAGE(page_count(page) != 1, page);
+> > +		kernel_map_pages(page, HPAGE_PMD_NR, !protect);
+> > +		return 0;
+> > +	}
+> > +
+> > +	pte = pte_offset_map(pmd, addr);
+> > +	for (; addr != end; pte++, addr += PAGE_SIZE) {
+> > +		pte_t entry = *pte;
+> > +
+> > +		if (!pte_present(entry))
+> > +			continue;
+> > +
+> > +		if (is_zero_pfn(pte_pfn(entry)))
+> > +			continue;
+> > +
+> > +		page = pte_page(entry);
+> > +
+> > +		VM_BUG_ON_PAGE(page_mapcount(page) != 1, page);
+> > +		/* XXX: Would it fail with direct device assignment? */
+> > +		VM_BUG_ON_PAGE(page_count(page) !=
+> > +			       total_mapcount(compound_head(page)), page);
+> > +		kernel_map_pages(page, 1, !protect);
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct mm_walk_ops adjust_direct_mapping_ops = {
+> > +	.pmd_entry	= adjust_direct_mapping_pte_range,
+> > +};
+> > +
+> 
+> All this seem to me an addition to set_memory APIs rather then KVM.
+
+Emm?.. I don't think walking userspace mapping is set_memory thing.
+And kernel_map_pages() is VMM interface already.
+
+-- 
+ Kirill A. Shutemov
