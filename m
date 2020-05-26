@@ -2,78 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC5E61E21E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 14:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 064871E21E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 14:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388926AbgEZM3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 08:29:37 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:47342 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728195AbgEZM3h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 08:29:37 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 1DD8F1C02D5; Tue, 26 May 2020 14:29:35 +0200 (CEST)
-Date:   Tue, 26 May 2020 14:29:34 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     jacek.anaszewski@gmail.com, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
-Subject: (dt review needed) Re: [PATCH v25 01/16] dt: bindings: Add
- multicolor class dt bindings documention
-Message-ID: <20200526122934.GB4600@amd>
-References: <20200504211344.13221-1-dmurphy@ti.com>
- <20200504211344.13221-2-dmurphy@ti.com>
- <c6dfde9b-e1a7-1959-1413-16ebff803536@ti.com>
+        id S2389076AbgEZMbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 08:31:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388433AbgEZMa7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 08:30:59 -0400
+Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CAF2C208C3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 12:30:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590496258;
+        bh=5/SVqVi0YEdMCJmqhHdu4IDKtCwy0jXqz4i9FcBsuH4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AG0an2TnXZ/DeP5Jmydbm6MjPyFTxAzDCiUGkl4A5VzLV32NZIcz8dCfKtv3F4hOC
+         HaQf8FVCh5/5nXRD+8lQ83GDeUYk0XxVaO0AKr2RYbSC0ZjIQ7oH1P3MlY2gGgm/a1
+         W8d8eape8Qn0FTUCb48Jn3OFb7OeEy9g53xwqnAU=
+Received: by mail-io1-f50.google.com with SMTP id s18so7773057ioe.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 05:30:58 -0700 (PDT)
+X-Gm-Message-State: AOAM532QRmTLz9Wc8To8BaYDE/579HYDAaNbKQ6jUEs2W9I8/RQWWU4a
+        +yN5RWakFQH3So3Up5kA1c5dFK3TiqIxttiJAcU=
+X-Google-Smtp-Source: ABdhPJxSyU/yErhKKPg5PQ3lRiM4fMNculwc5Nk1hMliEDJWDeT/yvuyc4QW9Mn8TIlXSfSj+j9rGuz0DHOst8Ri9hY=
+X-Received: by 2002:a02:3341:: with SMTP id k1mr763821jak.74.1590496258034;
+ Tue, 26 May 2020 05:30:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="RASg3xLB4tUQ4RcS"
-Content-Disposition: inline
-In-Reply-To: <c6dfde9b-e1a7-1959-1413-16ebff803536@ti.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20200524212816.243139-1-nivedita@alum.mit.edu>
+ <20200525225918.1624470-1-nivedita@alum.mit.edu> <CA+icZUVa8FhhwHgXn1o_hFmgqFG6-KE1F+qvkdCzQjmSSSDWDw@mail.gmail.com>
+In-Reply-To: <CA+icZUVa8FhhwHgXn1o_hFmgqFG6-KE1F+qvkdCzQjmSSSDWDw@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 26 May 2020 14:30:47 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHVFgRsbssJQD2C0GZnOgG=rMYbPGJQtiKhSw6sZj5PaA@mail.gmail.com>
+Message-ID: <CAMj1kXHVFgRsbssJQD2C0GZnOgG=rMYbPGJQtiKhSw6sZj5PaA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] x86/boot: Remove runtime relocations from
+ compressed kernel
+To:     sedat.dilek@gmail.com
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 26 May 2020 at 14:29, Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> On Tue, May 26, 2020 at 12:59 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> >
+> > The compressed kernel currently contains bogus runtime relocations in
+> > the startup code in head_{32,64}.S, which are generated by the linker,
+> > but must not actually be processed at runtime.
+> >
+> > This generates warnings when linking with the BFD linker, and errors
+> > with LLD, which defaults to erroring on runtime relocations in read-only
+> > sections. It also requires the -z noreloc-overflow hack for the 64-bit
+> > kernel, which prevents us from linking it as -pie on an older BFD linker
+> > (<= 2.26) or on LLD, because the locations that are to be apparently
+> > relocated are only 32-bits in size and so cannot normally have
+> > R_X86_64_RELATIVE relocations.
+> >
+> > This series aims to get rid of these relocations. It is based on
+> > efi/next, where the latest patches touch the head code to eliminate the
+> > global offset table.
+> >
+> > The first patch is an independent fix for LLD, to avoid an orphan
+> > section in arch/x86/boot/setup.elf.
+> >
+> > The second patch gets rid of almost all the relocations. It uses
+> > standard PIC addressing technique for 32-bit, i.e. loading a register
+> > with the address of _GLOBAL_OFFSET_TABLE_ and then using GOTOFF
+> > references to access variables. For 64-bit, there is 32-bit code that
+> > cannot use RIP-relative addressing, and also cannot use the 32-bit
+> > method, since GOTOFF references are 64-bit only. This is instead handled
+> > using a macro to replace a reference like gdt with (gdt-startup_32)
+> > instead. The assembler will generate a PC32 relocation entry, with
+> > addend set to (.-startup_32), and these will be replaced with constants
+> > at link time. This works as long as all the code using such references
+> > lives in the same section as startup_32, i.e. in .head.text.
+> >
+> > The third patch addresses a remaining issue with the BFD linker, which
+> > insists on generating runtime relocations for absolute symbols. We use
+> > z_input_len and z_output_len, defined in the generated piggy.S file, as
+> > symbols whose absolute "addresses" are actually the size of the
+> > compressed payload and the size of the decompressed kernel image
+> > respectively. LLD does not generate relocations for these two symbols,
+> > but the BFD linker does, prior to the upcoming 2.35. To get around this,
+> > piggy.S is extended to also define two u32 variables (in .rodata) with
+> > the lengths, and the head code is modified to use those instead of the
+> > symbol addresses.
+> >
+> > An alternative way to handle z_input_len/z_output_len would be to just
+> > include piggy.S in head_{32,64}.S instead of as a separate object file,
+> > since the GNU assembler doesn't generate relocations for symbols set to
+> > constants.
+> >
+> > The last patch adds a check in the linker script to ensure that no
+> > runtime relocations get reintroduced. Since the GOT has been eliminated
+> > as well, the compressed kernel has no runtime relocations whatsoever any
+> > more.
+> >
+> > Changes from v1:
+> > - Add .text.* to setup.ld instead of just .text.startup
+> > - Rename the la() macro introduced in the second patch for 64-bit to
+> >   rva(), and rework the explanatory comment.
+> > - In the last patch, check both .rel.dyn and .rela.dyn, instead of just
+> >   one per arch.
+> >
+>
+> Hi,
+>
+> I would like to test this patchset v2 on top of Linux v5.7-rc7 together with:
+>
+> [1] x86/boot: Discard .discard.unreachable for arch/x86/boot/compressed/vmlinux
+> [2] x86/boot: Correct relocation destination on old linkers
+>
+> I tried to pull efi/next on top of Linux v5.7-rc7 and cleaned up the
+> merge problems, but I am not sure I did it correctly.
+> So, which patches are really relevant from efi/next?
+>
+> What's your suggestions?
+>
 
---RASg3xLB4tUQ4RcS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+efi/next is here:
 
-Hi!
+https://git.kernel.org/pub/scm/linux/kernel/git/efi/efi.git/log/?h=next
 
-> Rob
-
-> Can you re-review this series for dt-bindings?
->=20
-> https://lore.kernel.org/patchwork/project/lkml/list/?series=3D441958
->=20
-> I know you may reviewed them before and may have acked them but they have
-> changed enough that I did not feel right about keeping your ack.
-
-Changed subject to grab Rob's attention. It would be nice to get this
-to 5.8...
-
-Best regards,
-
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---RASg3xLB4tUQ4RcS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl7NC64ACgkQMOfwapXb+vKkJwCbBpDTPMsFzHgNXagcFz/BSWs0
-uw4An0wzlxdQPnZRgold+ZkjHEc/T8rz
-=Yzuu
------END PGP SIGNATURE-----
-
---RASg3xLB4tUQ4RcS--
+You'll need the top 3 patches.
