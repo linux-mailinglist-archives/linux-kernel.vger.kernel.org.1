@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 418F31E31B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 23:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BBE71E3195
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 23:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391482AbgEZV41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 17:56:27 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:59984 "EHLO
+        id S2390577AbgEZVzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 17:55:52 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:59986 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390057AbgEZVzs (ORCPT
+        with ESMTP id S2389384AbgEZVzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 17:55:48 -0400
+        Tue, 26 May 2020 17:55:50 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 9E9CF803086E;
-        Tue, 26 May 2020 21:55:39 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 2ED9A8030877;
+        Tue, 26 May 2020 21:55:40 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id KCV9AUaEzgVv; Wed, 27 May 2020 00:55:39 +0300 (MSK)
+        with ESMTP id Z0qVl-qB3sNO; Wed, 27 May 2020 00:55:39 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
         Wolfram Sang <wsa@the-dreams.de>
@@ -31,9 +31,9 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 05/12] i2c: designware: Use `-y` to build multi-object modules
-Date:   Wed, 27 May 2020 00:55:21 +0300
-Message-ID: <20200526215528.16417-6-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v3 06/12] i2c: designware: slave: Set DW I2C core module dependency
+Date:   Wed, 27 May 2020 00:55:22 +0300
+Message-ID: <20200526215528.16417-7-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20200526215528.16417-1-Sergey.Semin@baikalelectronics.ru>
 References: <20200526215528.16417-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -45,12 +45,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 4f8272802739 ("Documentation: update kbuild loadable modules
-goals & examples") `-objs` is fitted for building host programs, lets
-change DW I2C core, platform and PCI driver kbuild directives to using
-`-y`, which more straightforward for device drivers. By doing so we can
-discard the ifeq construction in favor to the more natural and less bulky
-`<module>-$(CONFIG_X) += x.o`
+DW APB I2C slave code in fact depends on the DW I2C driver core, but not
+on the platform code. Yes, the I2C slave interface is currently supported
+by the platform version of the IP core, but it doesn't make it dependent
+on it. So make sure the DW APB I2C slave config is only available if the
+I2C_DESIGNWARE_CORE config is enabled.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
@@ -62,38 +61,23 @@ Cc: Rob Herring <robh+dt@kernel.org>
 Cc: linux-mips@vger.kernel.org
 Cc: devicetree@vger.kernel.org
 ---
- drivers/i2c/busses/Makefile | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ drivers/i2c/busses/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/Makefile b/drivers/i2c/busses/Makefile
-index 25d60889713c..c6813d7b2780 100644
---- a/drivers/i2c/busses/Makefile
-+++ b/drivers/i2c/busses/Makefile
-@@ -48,16 +48,15 @@ obj-$(CONFIG_I2C_CADENCE)	+= i2c-cadence.o
- obj-$(CONFIG_I2C_CBUS_GPIO)	+= i2c-cbus-gpio.o
- obj-$(CONFIG_I2C_CPM)		+= i2c-cpm.o
- obj-$(CONFIG_I2C_DAVINCI)	+= i2c-davinci.o
--obj-$(CONFIG_I2C_DESIGNWARE_CORE)	+= i2c-designware-core.o
--i2c-designware-core-objs := i2c-designware-common.o i2c-designware-master.o
--ifeq ($(CONFIG_I2C_DESIGNWARE_SLAVE),y)
--i2c-designware-core-objs += i2c-designware-slave.o
--endif
--obj-$(CONFIG_I2C_DESIGNWARE_PLATFORM)	+= i2c-designware-platform.o
--i2c-designware-platform-objs := i2c-designware-platdrv.o
-+obj-$(CONFIG_I2C_DESIGNWARE_CORE)			+= i2c-designware-core.o
-+i2c-designware-core-y					:= i2c-designware-common.o
-+i2c-designware-core-y					+= i2c-designware-master.o
-+i2c-designware-core-$(CONFIG_I2C_DESIGNWARE_SLAVE) 	+= i2c-designware-slave.o
-+obj-$(CONFIG_I2C_DESIGNWARE_PLATFORM)			+= i2c-designware-platform.o
-+i2c-designware-platform-y 				:= i2c-designware-platdrv.o
- i2c-designware-platform-$(CONFIG_I2C_DESIGNWARE_BAYTRAIL) += i2c-designware-baytrail.o
--obj-$(CONFIG_I2C_DESIGNWARE_PCI)	+= i2c-designware-pci.o
--i2c-designware-pci-objs := i2c-designware-pcidrv.o
-+obj-$(CONFIG_I2C_DESIGNWARE_PCI)			+= i2c-designware-pci.o
-+i2c-designware-pci-y					:= i2c-designware-pcidrv.o
- obj-$(CONFIG_I2C_DIGICOLOR)	+= i2c-digicolor.o
- obj-$(CONFIG_I2C_EFM32)		+= i2c-efm32.o
- obj-$(CONFIG_I2C_EG20T)		+= i2c-eg20t.o
+diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
+index 2ddca08f8a76..b907d4046942 100644
+--- a/drivers/i2c/busses/Kconfig
++++ b/drivers/i2c/busses/Kconfig
+@@ -540,8 +540,8 @@ config I2C_DESIGNWARE_PLATFORM
+ 
+ config I2C_DESIGNWARE_SLAVE
+ 	bool "Synopsys DesignWare Slave"
++	depends on I2C_DESIGNWARE_CORE
+ 	select I2C_SLAVE
+-	depends on I2C_DESIGNWARE_PLATFORM
+ 	help
+ 	  If you say yes to this option, support will be included for the
+ 	  Synopsys DesignWare I2C slave adapter.
 -- 
 2.26.2
 
