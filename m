@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8AB1E2AA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1601E2AA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389415AbgEZS5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:57:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51040 "EHLO mail.kernel.org"
+        id S2390190AbgEZS5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:57:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390160AbgEZS5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:57:45 -0400
+        id S2390178AbgEZS5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:57:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 440E3208B6;
-        Tue, 26 May 2020 18:57:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A96B7208B6;
+        Tue, 26 May 2020 18:57:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519464;
-        bh=nm1ATIczXGIiGta7zDSAVmr6SdgBJxCdqlek2HZTNcw=;
+        s=default; t=1590519467;
+        bh=xVPAJUL4QixcC19EI5mfeY1zN8jTKfRe8D0KerT+vcI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ncpl5o4ve1utfkUYOYKOFiqa/vsgjdIDvKYZtkoVQ9jWzlDFOCUcy8xJDAQl78L1I
-         7UgLmw6yJmR5s0W/ST5fjqPG4xScgFqAj/c5Z3dGV0xvB3gl8UyOwfagQjDzlBjSA5
-         naz95YjSlDpe/Wa4H33dyrhjJQkUBSgV/P8dv9uQ=
+        b=M56idmHYalBkOAsrFH0Po9EaRe1recr3EihJhg+L/AP0dMcdHRRupvMGx1CIZuA+5
+         PGVo4aNiPbRl1Jw93s00AM9phe2S4j8hwjO/xC0fLUZHVB8xXSJjUR4JQ4Rv5xdKAg
+         xAsgpzk0SfgRTmZ8oFHZgyf5de1JBPpj04TyuKJc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>,
+        stable@vger.kernel.org,
+        Yoshiyuki Kurauchi <ahochauwaaaaa@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 14/64] component: Silence bind error on -EPROBE_DEFER
-Date:   Tue, 26 May 2020 20:52:43 +0200
-Message-Id: <20200526183918.259474177@linuxfoundation.org>
+Subject: [PATCH 4.9 15/64] gtp: set NLM_F_MULTI flag in gtp_genl_dump_pdp()
+Date:   Tue, 26 May 2020 20:52:44 +0200
+Message-Id: <20200526183918.407241731@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200526183913.064413230@linuxfoundation.org>
 References: <20200526183913.064413230@linuxfoundation.org>
@@ -43,51 +45,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Hilliard <james.hilliard1@gmail.com>
+From: Yoshiyuki Kurauchi <ahochauwaaaaa@gmail.com>
 
-[ Upstream commit 7706b0a76a9697021e2bf395f3f065c18f51043d ]
+[ Upstream commit 846c68f7f1ac82c797a2f1db3344a2966c0fe2e1 ]
 
-If a component fails to bind due to -EPROBE_DEFER we should not log an
-error as this is not a real failure.
+In drivers/net/gtp.c, gtp_genl_dump_pdp() should set NLM_F_MULTI
+flag since it returns multipart message.
+This patch adds a new arg "flags" in gtp_genl_fill_info() so that
+flags can be set by the callers.
 
-Fixes messages like:
-vc4-drm soc:gpu: failed to bind 3f902000.hdmi (ops vc4_hdmi_ops): -517
-vc4-drm soc:gpu: master bind failed: -517
-
-Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-Link: https://lore.kernel.org/r/20200411190241.89404-1-james.hilliard1@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Yoshiyuki Kurauchi <ahochauwaaaaa@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/component.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/net/gtp.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/base/component.c b/drivers/base/component.c
-index 08da6160e94d..55f0856bd9b5 100644
---- a/drivers/base/component.c
-+++ b/drivers/base/component.c
-@@ -162,7 +162,8 @@ static int try_to_bring_up_master(struct master *master,
- 	ret = master->ops->bind(master->dev);
- 	if (ret < 0) {
- 		devres_release_group(master->dev, NULL);
--		dev_info(master->dev, "master bind failed: %d\n", ret);
-+		if (ret != -EPROBE_DEFER)
-+			dev_info(master->dev, "master bind failed: %d\n", ret);
- 		return ret;
+diff --git a/drivers/net/gtp.c b/drivers/net/gtp.c
+index a9e8a7356c41..fe844888e0ed 100644
+--- a/drivers/net/gtp.c
++++ b/drivers/net/gtp.c
+@@ -1108,11 +1108,11 @@ static struct genl_family gtp_genl_family = {
+ };
+ 
+ static int gtp_genl_fill_info(struct sk_buff *skb, u32 snd_portid, u32 snd_seq,
+-			      u32 type, struct pdp_ctx *pctx)
++			      int flags, u32 type, struct pdp_ctx *pctx)
+ {
+ 	void *genlh;
+ 
+-	genlh = genlmsg_put(skb, snd_portid, snd_seq, &gtp_genl_family, 0,
++	genlh = genlmsg_put(skb, snd_portid, snd_seq, &gtp_genl_family, flags,
+ 			    type);
+ 	if (genlh == NULL)
+ 		goto nlmsg_failure;
+@@ -1208,8 +1208,8 @@ static int gtp_genl_get_pdp(struct sk_buff *skb, struct genl_info *info)
+ 		goto err_unlock;
  	}
  
-@@ -431,8 +432,9 @@ static int component_bind(struct component *component, struct master *master,
- 		devres_release_group(component->dev, NULL);
- 		devres_release_group(master->dev, NULL);
+-	err = gtp_genl_fill_info(skb2, NETLINK_CB(skb).portid,
+-				 info->snd_seq, info->nlhdr->nlmsg_type, pctx);
++	err = gtp_genl_fill_info(skb2, NETLINK_CB(skb).portid, info->snd_seq,
++				 0, info->nlhdr->nlmsg_type, pctx);
+ 	if (err < 0)
+ 		goto err_unlock_free;
  
--		dev_err(master->dev, "failed to bind %s (ops %ps): %d\n",
--			dev_name(component->dev), component->ops, ret);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(master->dev, "failed to bind %s (ops %ps): %d\n",
-+				dev_name(component->dev), component->ops, ret);
- 	}
- 
- 	return ret;
+@@ -1252,6 +1252,7 @@ static int gtp_genl_dump_pdp(struct sk_buff *skb,
+ 				    gtp_genl_fill_info(skb,
+ 					    NETLINK_CB(cb->skb).portid,
+ 					    cb->nlh->nlmsg_seq,
++					    NLM_F_MULTI,
+ 					    cb->nlh->nlmsg_type, pctx)) {
+ 					cb->args[0] = i;
+ 					cb->args[1] = j;
 -- 
 2.25.1
 
