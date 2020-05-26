@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE921E2B5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 109401E2D5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391367AbgEZTEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:04:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60006 "EHLO mail.kernel.org"
+        id S2403905AbgEZTIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:08:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391355AbgEZTEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:04:23 -0400
+        id S2391467AbgEZTId (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:08:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6FEAB208A7;
-        Tue, 26 May 2020 19:04:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 20271208B3;
+        Tue, 26 May 2020 19:08:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519862;
-        bh=sEoCjZlqKfa6vt6v2CMQeBLb5LvhqTwVsJNGIM7aBLU=;
+        s=default; t=1590520112;
+        bh=hNhJJ72biHjlOV8Ry/wGyzVaCZlDK8hJNpZZazDmRnM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2E4VJOkm1kFI2XBv4NFRq5MfF6482BWPKK9UvyIjpGUsuRBiGKGoX5wAJLzT564gm
-         IolPztio6dEUfbhtvVNBg9yziM5yRvX3eE8TyYr9uBr7NTBdTtFGPllhrSjdDJOocL
-         syxdnOGTtJVedtxF9Mrl7LLOymofmFE/KHkowPeM=
+        b=KURIh+rPQbNJg94tAkutfCrt1Q1tojC0F1wNyBRQhDcgDC6SOQyqGWyw6r0l5tnJQ
+         yk5q5e/D4lrpZpYQWLsuVZeQxD5pEcRQqdhMhsGsNUfuP8/EWJugsv7WHg79gocJX2
+         Y/bz6iVPofQvk4oijLaijC5F2gZX2FFzL5AZvIwk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        John Johansen <john.johansen@canonical.com>
-Subject: [PATCH 4.19 45/81] apparmor: Fix aa_label refcnt leak in policy_update
+        stable@vger.kernel.org, Lee Duncan <lduncan@suse.com>,
+        Laurence Oberman <loberman@redhat.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        "Ewan D. Milne" <emilne@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.4 062/111] scsi: qla2xxx: Do not log message when reading port speed via sysfs
 Date:   Tue, 26 May 2020 20:53:20 +0200
-Message-Id: <20200526183932.024405117@linuxfoundation.org>
+Message-Id: <20200526183938.719233478@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
-References: <20200526183923.108515292@linuxfoundation.org>
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,53 +46,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Ewan D. Milne <emilne@redhat.com>
 
-commit c6b39f070722ea9963ffe756bfe94e89218c5e63 upstream.
+commit fb9024b0646939e59d8a0b6799b317070619795a upstream.
 
-policy_update() invokes begin_current_label_crit_section(), which
-returns a reference of the updated aa_label object to "label" with
-increased refcount.
+Calling ql_log() inside qla2x00_port_speed_show() is causing messages to be
+output to the console for no particularly good reason.  The sysfs read
+routine should just return the information to userspace.  The only reason
+to log a message is when the port speed actually changes, and this already
+occurs elsewhere.
 
-When policy_update() returns, "label" becomes invalid, so the refcount
-should be decreased to keep refcount balanced.
-
-The reference counting issue happens in one exception handling path of
-policy_update(). When aa_may_manage_policy() returns not NULL, the
-refcnt increased by begin_current_label_crit_section() is not decreased,
-causing a refcnt leak.
-
-Fix this issue by jumping to "end_section" label when
-aa_may_manage_policy() returns not NULL.
-
-Fixes: 5ac8c355ae00 ("apparmor: allow introspecting the loaded policy pre internal transform")
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Signed-off-by: John Johansen <john.johansen@canonical.com>
+Link: https://lore.kernel.org/r/20200504175416.15417-1-emilne@redhat.com
+Fixes: 4910b524ac9e ("scsi: qla2xxx: Add support for setting port speed")
+Cc: <stable@vger.kernel.org> # v5.1+
+Reviewed-by: Lee Duncan <lduncan@suse.com>
+Reviewed-by: Laurence Oberman <loberman@redhat.com>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Ewan D. Milne <emilne@redhat.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- security/apparmor/apparmorfs.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/scsi/qla2xxx/qla_attr.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
---- a/security/apparmor/apparmorfs.c
-+++ b/security/apparmor/apparmorfs.c
-@@ -424,7 +424,7 @@ static ssize_t policy_update(u32 mask, c
- 	 */
- 	error = aa_may_manage_policy(label, ns, mask);
- 	if (error)
--		return error;
-+		goto end_section;
- 
- 	data = aa_simple_write_to_buffer(buf, size, size, pos);
- 	error = PTR_ERR(data);
-@@ -432,6 +432,7 @@ static ssize_t policy_update(u32 mask, c
- 		error = aa_replace_profiles(ns, label, mask, data);
- 		aa_put_loaddata(data);
+--- a/drivers/scsi/qla2xxx/qla_attr.c
++++ b/drivers/scsi/qla2xxx/qla_attr.c
+@@ -1775,9 +1775,6 @@ qla2x00_port_speed_show(struct device *d
+ 		return -EINVAL;
  	}
-+end_section:
- 	end_current_label_crit_section(label);
  
- 	return error;
+-	ql_log(ql_log_info, vha, 0x70d6,
+-	    "port speed:%d\n", ha->link_data_rate);
+-
+ 	return scnprintf(buf, PAGE_SIZE, "%s\n", spd[ha->link_data_rate]);
+ }
+ 
 
 
