@@ -2,86 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 273FD1E257B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 17:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4821E258E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 17:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729882AbgEZPaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 11:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728166AbgEZPaH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 11:30:07 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D394CC03E96D;
-        Tue, 26 May 2020 08:30:07 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id ci23so1476146pjb.5;
-        Tue, 26 May 2020 08:30:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=an9KhWgQP+/Fji7KQ32EAN6LrJ7/yGHMUcaJcF1rPZo=;
-        b=Y2DzLyU7ga/1gd25vfMIXc2hsI4Jl/HI4zlSDDOkQhLjym0fyD97OT9l7rWdxoJrU/
-         Gj3F2USd8BzEhDLGRw4nN84mi1/lfHKsxlGsJm9d94hKH33e8JCz7bkqWE8HVxS4xfr4
-         kAeeO3cgUL5AngjhHOzIJtBVGgGNQTTrZiUP4eoo0qO2kjoiAgOkH9JXshk4ySA7B9nm
-         NGOAQj/xKe6K/sQFiMrsghgYJtRxXOTgrssil/3FzmV+HDJh+i+9JQgKdGxxcj1vJgg4
-         TO2EIHLXV2MBQbfLSoYVohMTVpFDuQjuWApEa67mCt0rdBj589x73BosdSLh22w07/cP
-         bVuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition:user-agent;
-        bh=an9KhWgQP+/Fji7KQ32EAN6LrJ7/yGHMUcaJcF1rPZo=;
-        b=H3p2ezEY4iU4dCARpXoi0L2dE25UDT594Op/0xu/wisewzZH1ZCl/SeWflS4KyJ8+H
-         1BALIF6udSxb0mWhWet5hwvZaGxcA80iFG9+KzBBpaF8YFuNOz2Ql7o/A1JVVTzXLWgF
-         gaRIMVNE07UVo1jjXLJnI8PqpixG1TpeNwD+jJcQuChXORpwrGkCvCZUIDoL34Z7kLPR
-         qoQKCvXVaEVcPzytbUnzs9o8iEohQTdJJboxHb/RK9gI1aTwMO4sQxH58ztIUUeJFG+u
-         86W/9IXR4i1OJB/srZssn5ixhqM0N8c1FmeWzgW6tEvwt0FitJNBY5pH36uNAYrZgFNc
-         1O0Q==
-X-Gm-Message-State: AOAM533N5ZiZ8znZKpIRfGrJGY7UOEjjkOZKdpaH6DmQufUb/KbFXA2P
-        UCKyonAyP9VKagoow3aBZno=
-X-Google-Smtp-Source: ABdhPJw607K5Yy3cpbQj7QtR27NhBpQq/vORS80zd+2iyq/bZjMIWObM4XLjhk4EssLGpG1TV8rNyw==
-X-Received: by 2002:a17:90a:297:: with SMTP id w23mr17965652pja.140.1590507007342;
-        Tue, 26 May 2020 08:30:07 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f18sm69423pga.75.2020.05.26.08.30.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 26 May 2020 08:30:06 -0700 (PDT)
-Date:   Tue, 26 May 2020 08:30:04 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Will Deacon <will@kernel.org>
-Cc:     Brian Cain <bcain@codeaurora.org>, linux-hexagon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] compiler/gcc: Raise minimum GCC version for kernel
- builds to 4.8
-Message-ID: <20200526153004.GA74229@roeck-us.net>
+        id S1730008AbgEZPe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 11:34:59 -0400
+Received: from mga18.intel.com ([134.134.136.126]:15153 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728830AbgEZPe6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 11:34:58 -0400
+IronPort-SDR: O98dEh0Zvs/+K6vTlRDfSSCjltkJmlzmKswzVnq0RyUT94PZJKDdBMJQj9HvLFBlOOMeBx4GkH
+ OpNUAr/9PZNw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 08:34:57 -0700
+IronPort-SDR: TN5+3JgQvkZsl+te3qpnFMymhcJOiGLgqzwCX0HYuGRWB1PS0ilM83NsiGKythrEDG/n5LfGZi
+ V63i28NHf6cw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,437,1583222400"; 
+   d="scan'208";a="291234586"
+Received: from unknown (HELO [10.254.102.121]) ([10.254.102.121])
+  by fmsmga004.fm.intel.com with ESMTP; 26 May 2020 08:34:56 -0700
+Subject: Re: [PATCH] ASoC: Intel: sst: Fix runtime PM imbalance in
+ sst_power_control
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Allison Randal <allison@lohutok.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20200525070701.3888-1-dinghao.liu@zju.edu.cn>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <922ac37c-0a5a-dff7-0cd7-d3487cf9ff00@linux.intel.com>
+Date:   Tue, 26 May 2020 08:25:44 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200525070701.3888-1-dinghao.liu@zju.edu.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 09:41:37PM +0100, Will Deacon wrote:
-> It is very rare to see versions of GCC prior to 4.8 being used to build
-> the mainline kernel. These old compilers are also known to have codegen
-> issues which can lead to silent miscompilation:
-> 
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=58145
-> 
-> Raise the minimum GCC version to 4.8 for building the kernel and remove
-> some tautological Kconfig dependencies as a consequence.
 
-My hexagon compiler is v4.6.1, and I have been unable to find a more
-recent version. Does anyone happen to have a pointer to a hexagon toolchain
-with gcc 4.8 or later ?
 
-Thanks,
-Guenter
+On 5/25/20 2:06 AM, Dinghao Liu wrote:
+> When sst_load_fw() returns an error code, a pairing runtime
+> PM usage counter decrement is needed to keep the counter
+> balanced.
+> 
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+>   sound/soc/intel/atom/sst/sst_drv_interface.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/sound/soc/intel/atom/sst/sst_drv_interface.c b/sound/soc/intel/atom/sst/sst_drv_interface.c
+> index 762495385d5c..3897985b254f 100644
+> --- a/sound/soc/intel/atom/sst/sst_drv_interface.c
+> +++ b/sound/soc/intel/atom/sst/sst_drv_interface.c
+> @@ -150,6 +150,7 @@ static int sst_power_control(struct device *dev, bool state)
+>   		if ((ctx->sst_state == SST_RESET) && (usage_count == 1)) {
+>   			ret = sst_load_fw(ctx);
+>   			if (ret) {
+> +				pm_runtime_put_sync(dev);
+>   				dev_err(dev, "FW download fail %d\n", ret);
+>   				sst_set_fw_state_locked(ctx, SST_RESET);
+>   				ret = sst_pm_runtime_put(ctx);
+
+this change doesn't seem quite right, if you look the code below there 
+is no PM imbalance, is there?
+
+int sst_pm_runtime_put(struct intel_sst_drv *sst_drv)
+{
+	int ret;
+
+	pm_runtime_mark_last_busy(sst_drv->dev);
+	ret = pm_runtime_put_autosuspend(sst_drv->dev);
+	if (ret < 0)
+		return ret;
+	return 0;
+}
+
