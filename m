@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CAF51E2B12
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3C61E2C5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389615AbgEZTBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:01:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55998 "EHLO mail.kernel.org"
+        id S2404376AbgEZTOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:14:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403769AbgEZTBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:01:37 -0400
+        id S2404338AbgEZTOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:14:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E31FB20849;
-        Tue, 26 May 2020 19:01:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE297208B6;
+        Tue, 26 May 2020 19:14:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519696;
-        bh=il/4o51wW092OuGEyB1YyPj7Iaz57uDjzAjl7G8Mr48=;
+        s=default; t=1590520455;
+        bh=hFig9hmtta8baLq9l4NUzE2/ChNeohb5Mi97YN1hjHw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JXloKKSF3Ez7mLaD0jIvkq7VFzJQ2k0yFIoiyWtUgvkkPzG/W049SRA+YOeC9k6qU
-         ZQFEvq2scXMybfB6cPLOPgj7TPpe2xsGm4V+YmyFDihuqV08DfOwA/tnhMjX9gY2/c
-         1XpeeF6Kpjd0fCi3maJ/8S7derfyIIAnwL2nI+h0=
+        b=XIOXt7c95bmHbZ8819qMrR1361QYOLMjsZXHYEFDS9j/CDtnA+tOydgptCYLBn3mJ
+         a10XEk4VeD5qU05O6nz/SW8yWaHuZuKsyzIPntXQrgPLvfjYpX4XsM7vEbabyu0/wX
+         jwB78Ca+lQZHAYjP9zALYlVfKTUkv+rDMoWXV6ps=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 41/59] powerpc/64s: Disable STRICT_KERNEL_RWX
+        stable@vger.kernel.org, "Bryant G. Ly" <bryangly@gmail.com>,
+        Bart van Assche <bvanassche@acm.org>,
+        Bodo Stroesser <bstroesser@ts.fujitsu.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.6 069/126] scsi: target: Put lun_ref at end of tmr processing
 Date:   Tue, 26 May 2020 20:53:26 +0200
-Message-Id: <20200526183920.506643993@linuxfoundation.org>
+Message-Id: <20200526183943.975359174@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
-References: <20200526183907.123822792@linuxfoundation.org>
+In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
+References: <20200526183937.471379031@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,50 +45,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Bodo Stroesser <bstroesser@ts.fujitsu.com>
 
-[ Upstream commit 8659a0e0efdd975c73355dbc033f79ba3b31e82c ]
+commit f2e6b75f6ee82308ef7b00f29e71e5f1c6b3d52a upstream.
 
-Several strange crashes have been eventually traced back to
-STRICT_KERNEL_RWX and its interaction with code patching.
+Testing with Loopback I found that, after a Loopback LUN has executed a
+TMR, I can no longer unlink the LUN.  The rm command hangs in
+transport_clear_lun_ref() at wait_for_completion(&lun->lun_shutdown_comp)
+The reason is, that transport_lun_remove_cmd() is not called at the end of
+target_tmr_work().
 
-Various paths in our ftrace, kprobes and other patching code need to
-be hardened against patching failures, otherwise we can end up running
-with partially/incorrectly patched ftrace paths, kprobes or jump
-labels, which can then cause strange crashes.
+It seems, that in other fabrics this call happens implicitly when the
+fabric drivers call transport_generic_free_cmd() during their
+->queue_tm_rsp().
 
-Although fixes for those are in development, they're not -rc material.
+Unfortunately Loopback seems to not comply to the common way
+of calling transport_generic_free_cmd() from ->queue_*().
+Instead it calls transport_generic_free_cmd() from its
+  ->check_stop_free() only.
 
-There also seem to be problems with the underlying strict RWX logic,
-which needs further debugging.
+But the ->check_stop_free() is called by
+transport_cmd_check_stop_to_fabric() after it has reset the se_cmd->se_lun
+pointer.  Therefore the following transport_generic_free_cmd() skips the
+transport_lun_remove_cmd().
 
-So for now disable STRICT_KERNEL_RWX on 64-bit to prevent people from
-enabling the option and tripping over the bugs.
+So this patch re-adds the transport_lun_remove_cmd() at the end of
+target_tmr_work(), which was removed during commit 2c9fa49e100f ("scsi:
+target/core: Make ABORT and LUN RESET handling synchronous").
 
-Fixes: 1e0fc9d1eb2b ("powerpc/Kconfig: Enable STRICT_KERNEL_RWX for some configs")
-Cc: stable@vger.kernel.org # v4.13+
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200520133605.972649-1-mpe@ellerman.id.au
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+For fabrics using transport_generic_free_cmd() in the usual way the double
+call to transport_lun_remove_cmd() doesn't harm, as
+transport_lun_remove_cmd() checks for this situation and does not release
+lun_ref twice.
+
+Link: https://lore.kernel.org/r/20200513153443.3554-1-bstroesser@ts.fujitsu.com
+Fixes: 2c9fa49e100f ("scsi: target/core: Make ABORT and LUN RESET handling synchronous")
+Cc: stable@vger.kernel.org
+Tested-by: Bryant G. Ly <bryangly@gmail.com>
+Reviewed-by: Bart van Assche <bvanassche@acm.org>
+Signed-off-by: Bodo Stroesser <bstroesser@ts.fujitsu.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/powerpc/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/target/target_core_transport.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index b74c3a68c0ad..679e1e3c1695 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -141,7 +141,7 @@ config PPC
- 	select ARCH_HAS_GCOV_PROFILE_ALL
- 	select ARCH_HAS_SCALED_CPUTIME		if VIRT_CPU_ACCOUNTING_NATIVE
- 	select ARCH_HAS_SG_CHAIN
--	select ARCH_HAS_STRICT_KERNEL_RWX	if ((PPC_BOOK3S_64 || PPC32) && !HIBERNATION)
-+	select ARCH_HAS_STRICT_KERNEL_RWX	if (PPC32 && !HIBERNATION)
- 	select ARCH_HAS_TICK_BROADCAST		if GENERIC_CLOCKEVENTS_BROADCAST
- 	select ARCH_HAS_UBSAN_SANITIZE_ALL
- 	select ARCH_HAS_ZONE_DEVICE		if PPC_BOOK3S_64
--- 
-2.25.1
-
+--- a/drivers/target/target_core_transport.c
++++ b/drivers/target/target_core_transport.c
+@@ -3349,6 +3349,7 @@ static void target_tmr_work(struct work_
+ 
+ 	cmd->se_tfo->queue_tm_rsp(cmd);
+ 
++	transport_lun_remove_cmd(cmd);
+ 	transport_cmd_check_stop_to_fabric(cmd);
+ 	return;
+ 
 
 
