@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD9D1E2DF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A28F01E2DFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391656AbgEZTGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:06:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34718 "EHLO mail.kernel.org"
+        id S2404117AbgEZTZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:25:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391615AbgEZTG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:06:29 -0400
+        id S2391643AbgEZTGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:06:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CB63208A7;
-        Tue, 26 May 2020 19:06:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E430E20873;
+        Tue, 26 May 2020 19:06:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519989;
-        bh=7aRW87m6EIHEtIfH685cdeFH9ykaBvHaUsl8sCOyeJo=;
+        s=default; t=1590519991;
+        bh=GUuK0ABC3jZqZ0Rvg0S0uULvtjY5PAQW5rWG5iALkwQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QKi7yNUm9B39AwRItpoDA3ye1dxlAENtFWhnlKef/y8hgvH2Eeps26XlPlfb5fbhF
-         FT6kuGV/PBV0VIoeslfljOZwWV4WfX7RiaCeOdUtqTgWAv0pnEGn9XQtbLFpUNUlpE
-         Aa3LbPad1nl8M9np8n2OekcQ9ClKmaOlGilunTy4=
+        b=x5eThrGP46roDrv21WTXox8Gs6MKSH5Jc7/EiADHPkw2kz1ija8t4tN8WD5r4ieGT
+         pPOAtofMIRiBAbm6ysaSo5anbBD4e6ZvA6/eIGeBOs0tFYFt/rhF3JTG6LOsThUUGU
+         iQVxriMneE80SdsTtzpYIwMMf0E0zcL0oF3tywJ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 015/111] ubi: Fix seq_file usage in detailed_erase_block_info debugfs file
-Date:   Tue, 26 May 2020 20:52:33 +0200
-Message-Id: <20200526183934.037307639@linuxfoundation.org>
+Subject: [PATCH 5.4 016/111] afs: Dont unlock fetched data pages until the op completes successfully
+Date:   Tue, 26 May 2020 20:52:34 +0200
+Message-Id: <20200526183934.153530259@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
 References: <20200526183932.245016380@linuxfoundation.org>
@@ -43,58 +45,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Weinberger <richard@nod.at>
+From: David Howells <dhowells@redhat.com>
 
-[ Upstream commit 0e7572cffe442290c347e779bf8bd4306bb0aa7c ]
+[ Upstream commit 9d1be4f4dc5ff1c66c86acfd2c35765d9e3776b3 ]
 
-3bfa7e141b0b ("fs/seq_file.c: seq_read(): add info message about buggy .next functions")
-showed that we don't use seq_file correctly.
-So make sure that our ->next function always updates the position.
+Don't call req->page_done() on each page as we finish filling it with
+the data coming from the network.  Whilst this might speed up the
+application a bit, it's a problem if there's a network failure and the
+operation has to be reissued.
 
-Fixes: 7bccd12d27b7 ("ubi: Add debugfs file for tracking PEB state")
-Signed-off-by: Richard Weinberger <richard@nod.at>
+If this happens, an oops occurs because afs_readpages_page_done() clears
+the pointer to each page it unlocks and when a retry happens, the
+pointers to the pages it wants to fill are now NULL (and the pages have
+been unlocked anyway).
+
+Instead, wait till the operation completes successfully and only then
+release all the pages after clearing any terminal gap (the server can
+give us less data than we requested as we're allowed to ask for more
+than is available).
+
+KASAN produces a bug like the following, and even without KASAN, it can
+oops and panic.
+
+    BUG: KASAN: wild-memory-access in _copy_to_iter+0x323/0x5f4
+    Write of size 1404 at addr 0005088000000000 by task md5sum/5235
+
+    CPU: 0 PID: 5235 Comm: md5sum Not tainted 5.7.0-rc3-fscache+ #250
+    Hardware name: ASUS All Series/H97-PLUS, BIOS 2306 10/09/2014
+    Call Trace:
+     memcpy+0x39/0x58
+     _copy_to_iter+0x323/0x5f4
+     __skb_datagram_iter+0x89/0x2a6
+     skb_copy_datagram_iter+0x129/0x135
+     rxrpc_recvmsg_data.isra.0+0x615/0xd42
+     rxrpc_kernel_recv_data+0x1e9/0x3ae
+     afs_extract_data+0x139/0x33a
+     yfs_deliver_fs_fetch_data64+0x47a/0x91b
+     afs_deliver_to_call+0x304/0x709
+     afs_wait_for_call_to_complete+0x1cc/0x4ad
+     yfs_fs_fetch_data+0x279/0x288
+     afs_fetch_data+0x1e1/0x38d
+     afs_readpages+0x593/0x72e
+     read_pages+0xf5/0x21e
+     __do_page_cache_readahead+0x128/0x23f
+     ondemand_readahead+0x36e/0x37f
+     generic_file_buffered_read+0x234/0x680
+     new_sync_read+0x109/0x17e
+     vfs_read+0xe6/0x138
+     ksys_read+0xd8/0x14d
+     do_syscall_64+0x6e/0x8a
+     entry_SYSCALL_64_after_hwframe+0x49/0xb3
+
+Fixes: 196ee9cd2d04 ("afs: Make afs_fs_fetch_data() take a list of pages")
+Fixes: 30062bd13e36 ("afs: Implement YFS support in the fs client")
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/ubi/debug.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ fs/afs/fsclient.c  | 8 ++++----
+ fs/afs/yfsclient.c | 8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-index a1dff92ceedf..8a83072401a7 100644
---- a/drivers/mtd/ubi/debug.c
-+++ b/drivers/mtd/ubi/debug.c
-@@ -392,9 +392,6 @@ static void *eraseblk_count_seq_start(struct seq_file *s, loff_t *pos)
- {
- 	struct ubi_device *ubi = s->private;
+diff --git a/fs/afs/fsclient.c b/fs/afs/fsclient.c
+index 6805a469d13c..0a4fed9e706b 100644
+--- a/fs/afs/fsclient.c
++++ b/fs/afs/fsclient.c
+@@ -385,8 +385,6 @@ static int afs_deliver_fs_fetch_data(struct afs_call *call)
+ 		ASSERTCMP(req->offset, <=, PAGE_SIZE);
+ 		if (req->offset == PAGE_SIZE) {
+ 			req->offset = 0;
+-			if (req->page_done)
+-				req->page_done(req);
+ 			req->index++;
+ 			if (req->remain > 0)
+ 				goto begin_page;
+@@ -440,11 +438,13 @@ static int afs_deliver_fs_fetch_data(struct afs_call *call)
+ 		if (req->offset < PAGE_SIZE)
+ 			zero_user_segment(req->pages[req->index],
+ 					  req->offset, PAGE_SIZE);
+-		if (req->page_done)
+-			req->page_done(req);
+ 		req->offset = 0;
+ 	}
  
--	if (*pos == 0)
--		return SEQ_START_TOKEN;
--
- 	if (*pos < ubi->peb_count)
- 		return pos;
++	if (req->page_done)
++		for (req->index = 0; req->index < req->nr_pages; req->index++)
++			req->page_done(req);
++
+ 	_leave(" = 0 [done]");
+ 	return 0;
+ }
+diff --git a/fs/afs/yfsclient.c b/fs/afs/yfsclient.c
+index 39230880f372..8af7f093305d 100644
+--- a/fs/afs/yfsclient.c
++++ b/fs/afs/yfsclient.c
+@@ -497,8 +497,6 @@ static int yfs_deliver_fs_fetch_data64(struct afs_call *call)
+ 		ASSERTCMP(req->offset, <=, PAGE_SIZE);
+ 		if (req->offset == PAGE_SIZE) {
+ 			req->offset = 0;
+-			if (req->page_done)
+-				req->page_done(req);
+ 			req->index++;
+ 			if (req->remain > 0)
+ 				goto begin_page;
+@@ -556,11 +554,13 @@ static int yfs_deliver_fs_fetch_data64(struct afs_call *call)
+ 		if (req->offset < PAGE_SIZE)
+ 			zero_user_segment(req->pages[req->index],
+ 					  req->offset, PAGE_SIZE);
+-		if (req->page_done)
+-			req->page_done(req);
+ 		req->offset = 0;
+ 	}
  
-@@ -408,8 +405,6 @@ static void *eraseblk_count_seq_next(struct seq_file *s, void *v, loff_t *pos)
- {
- 	struct ubi_device *ubi = s->private;
- 
--	if (v == SEQ_START_TOKEN)
--		return pos;
- 	(*pos)++;
- 
- 	if (*pos < ubi->peb_count)
-@@ -431,11 +426,8 @@ static int eraseblk_count_seq_show(struct seq_file *s, void *iter)
- 	int err;
- 
- 	/* If this is the start, print a header */
--	if (iter == SEQ_START_TOKEN) {
--		seq_puts(s,
--			 "physical_block_number\terase_count\tblock_status\tread_status\n");
--		return 0;
--	}
-+	if (*block_number == 0)
-+		seq_puts(s, "physical_block_number\terase_count\n");
- 
- 	err = ubi_io_is_bad(ubi, *block_number);
- 	if (err)
++	if (req->page_done)
++		for (req->index = 0; req->index < req->nr_pages; req->index++)
++			req->page_done(req);
++
+ 	_leave(" = 0 [done]");
+ 	return 0;
+ }
 -- 
 2.25.1
 
