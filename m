@@ -2,89 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EC51E2ADE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 642A81E2A4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390585AbgEZS7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:59:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53558 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390555AbgEZS7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:59:38 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B7A6F208B6;
-        Tue, 26 May 2020 18:59:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519578;
-        bh=M9qRowqm/saiFkWC37zh2qKz39SS2qco/qONgG6lAWo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ElBJvdXw5YDI6E2/qJ/i1QxluHcymNJUBs27dfWcGm14qnMz22rVE/0XCKwpXTY30
-         AgwS1SNFK/vL9W6xoAhsiPqU4xgVQghSaP1og2zdUXqxksm/i/vdksmof0JE3V2Gsd
-         d7VjLWlE981C05CC1wlT50NN5rz2bhWqkeahIcJY=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 58/64] Revert "gfs2: Dont demote a glock until its revokes are written"
-Date:   Tue, 26 May 2020 20:53:27 +0200
-Message-Id: <20200526183931.185221353@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183913.064413230@linuxfoundation.org>
-References: <20200526183913.064413230@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S2389081AbgEZSxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:53:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387398AbgEZSxo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:53:44 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49667C03E96D
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 11:53:44 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id q9so181868pjm.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 11:53:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AYEornrO55/O2vkyg63H37SzJb1PbET1/v8+PaIhXQo=;
+        b=AOPfMzy1y5kg7hzg+86dXzbMaVe2uPjkfrP4bDpqJDouSIpAHMxHVg5Hw7LCx3K8mX
+         ceoZkjrcunBiURVcY78tKen5WyGec5pB7lwjAvx2p4sA1gyx4iRFm/HFSGV8wlOlv963
+         XPNm6o61oAkLxWQwdyu/fQdcl36Utl+1sQ2mo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AYEornrO55/O2vkyg63H37SzJb1PbET1/v8+PaIhXQo=;
+        b=tR7ap2/jnnyFGoUUYBzn4AQ1viAKC2ojUgtjs5fEe72hp85fVN0O+S/LEcjskRnnF6
+         eM1+F+CjMOGBKMwFYXV1/TtS1I2L7njR8FZHuvyCPqevRYKQqZ0n8OSPgafMGafLZfcW
+         35uR68x1cz69Q3DM1b5oPRhpmMuoQii6xN9vj7VcHJLQb+wfBldnLuZMCs4sZRk4VmB/
+         ICKGYDEnxvCZlRRZ3gUgou12dS7MPsdjAYKO3L8kadTv+k4TkhShSyI224tMGzoiG0n/
+         +wJo5Axm9Ma1DDH+0Bi7rBQ4A90/afO/ISMi4upKCL2CNKbwXdt0jzMmbjBLFL0ssP1y
+         uB1A==
+X-Gm-Message-State: AOAM533N3NaAK2nMQAbbuhjLwv/I/du+yhxpxCge1HP0hLo0kvwa4WDz
+        x1kmaGdjK0gJwC+oUPxnND7V/Q==
+X-Google-Smtp-Source: ABdhPJxigxbh0j3FBrPPeAHkeEdoUZ/QL4FFN27PHoJXsS+9pWwsXNha36wP7KDhgEp5oXlux78RAQ==
+X-Received: by 2002:a17:902:9f97:: with SMTP id g23mr2480589plq.30.1590519223726;
+        Tue, 26 May 2020 11:53:43 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:4cc0:7eee:97c9:3c1a])
+        by smtp.gmail.com with ESMTPSA id nl8sm242133pjb.13.2020.05.26.11.53.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 May 2020 11:53:43 -0700 (PDT)
+From:   Gwendal Grignou <gwendal@chromium.org>
+To:     groeck@chromium.org, bleung@chromium.org,
+        enric.balletbo@collabora.com, twawrzynczak@chromium.org
+Cc:     linux-kernel@vger.kernel.org,
+        Gwendal Grignou <gwendal@chromium.org>
+Subject: [PATCH v2] platform: cros_ec_debugfs: control uptime information request
+Date:   Tue, 26 May 2020 11:53:28 -0700
+Message-Id: <20200526185328.231840-1-gwendal@chromium.org>
+X-Mailer: git-send-email 2.27.0.rc0.183.gde8f92d652-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+When EC does not support uptime command (EC_CMD_GET_UPTIME_INFO),
+do not create the uptime sysfs entry point.
+User space application will not probe the file needlessly.
 
-[ Upstream commit b14c94908b1b884276a6608dea3d0b1b510338b7 ]
+The EC console log will not contain EC_CMD_GET_UPTIME_INFO anymore.
 
-This reverts commit df5db5f9ee112e76b5202fbc331f990a0fc316d6.
-
-This patch fixes a regression: patch df5db5f9ee112 allowed function
-run_queue() to bypass its call to do_xmote() if revokes were queued for
-the glock. That's wrong because its call to do_xmote() is what is
-responsible for calling the go_sync() glops functions to sync both
-the ail list and any revokes queued for it. By bypassing the call,
-gfs2 could get into a stand-off where the glock could not be demoted
-until its revokes are written back, but the revokes would not be
-written back because do_xmote() was never called.
-
-It "sort of" works, however, because there are other mechanisms like
-the log flush daemon (logd) that can sync the ail items and revokes,
-if it deems it necessary. The problem is: without file system pressure,
-it might never deem it necessary.
-
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
 ---
- fs/gfs2/glock.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/platform/chrome/cros_ec_debugfs.c | 24 +++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
-index adc1a97cfe96..efd44d5645d8 100644
---- a/fs/gfs2/glock.c
-+++ b/fs/gfs2/glock.c
-@@ -548,9 +548,6 @@ __acquires(&gl->gl_lockref.lock)
- 			goto out_unlock;
- 		if (nonblock)
- 			goto out_sched;
--		smp_mb();
--		if (atomic_read(&gl->gl_revokes) != 0)
--			goto out_sched;
- 		set_bit(GLF_DEMOTE_IN_PROGRESS, &gl->gl_flags);
- 		GLOCK_BUG_ON(gl, gl->gl_demote_state == LM_ST_EXCLUSIVE);
- 		gl->gl_target = gl->gl_demote_state;
+diff --git a/drivers/platform/chrome/cros_ec_debugfs.c b/drivers/platform/chrome/cros_ec_debugfs.c
+index 6ae484989d1f5..303a8c4686f89 100644
+--- a/drivers/platform/chrome/cros_ec_debugfs.c
++++ b/drivers/platform/chrome/cros_ec_debugfs.c
+@@ -243,6 +243,25 @@ static ssize_t cros_ec_pdinfo_read(struct file *file,
+ 				       read_buf, p - read_buf);
+ }
+ 
++static bool cros_ec_uptime_is_supported(struct cros_ec_device *ec_dev)
++{
++	struct {
++		struct cros_ec_command cmd;
++		struct ec_response_uptime_info resp;
++	} __packed msg = {};
++	int ret;
++
++	msg.cmd.command = EC_CMD_GET_UPTIME_INFO;
++	msg.cmd.insize = sizeof(msg.resp);
++
++	ret = cros_ec_cmd_xfer_status(ec_dev, &msg.cmd);
++	if (ret == -EPROTO && msg.cmd.result == EC_RES_INVALID_COMMAND)
++		return false;
++
++	/* Other errors maybe a transient error, do not rule about support. */
++	return true;
++}
++
+ static ssize_t cros_ec_uptime_read(struct file *file, char __user *user_buf,
+ 				   size_t count, loff_t *ppos)
+ {
+@@ -445,8 +464,9 @@ static int cros_ec_debugfs_probe(struct platform_device *pd)
+ 	debugfs_create_file("pdinfo", 0444, debug_info->dir, debug_info,
+ 			    &cros_ec_pdinfo_fops);
+ 
+-	debugfs_create_file("uptime", 0444, debug_info->dir, debug_info,
+-			    &cros_ec_uptime_fops);
++	if (cros_ec_uptime_is_supported(ec->ec_dev))
++		debugfs_create_file("uptime", 0444, debug_info->dir, debug_info,
++				    &cros_ec_uptime_fops);
+ 
+ 	debugfs_create_x32("last_resume_result", 0444, debug_info->dir,
+ 			   &ec->ec_dev->last_resume_result);
 -- 
-2.25.1
-
-
+2.27.0.rc0.183.gde8f92d652-goog
 
