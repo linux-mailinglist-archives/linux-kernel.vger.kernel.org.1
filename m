@@ -2,85 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 576491E28A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 19:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CEAC1E289A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 19:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389503AbgEZRYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 13:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388844AbgEZRXo (ORCPT
+        id S2389428AbgEZRYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 13:24:16 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:54259 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388662AbgEZRYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 13:23:44 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF73C03E96D;
-        Tue, 26 May 2020 10:23:43 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id dh1so9783207qvb.13;
-        Tue, 26 May 2020 10:23:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SYQZMFTEBJ18xeJeS1buRtQuG/fExe+cZBQxRWLCEdI=;
-        b=DBB2dXXyQS8i2KL6fgI0iY3v+kzmXamXskvxCjgHOeueAxTFhY4qC9ElWV+f2i479K
-         QgcXP98W5NFfdi6cLmwRIm5jRaajZ8Xq7c0jS72HCWME/8Aas5rcXPl/uwSEOB+PWYmO
-         Z3J++foQU1ozkoo2brpOSl+duSw8dye0KsWj/pmWQjzzjVRDRm7PUb6cnoCrFBZvZwMW
-         InpmBDBrFiYlJd+AhV8vkCA3HCv+Ri0pjM+wDegKgRiYKUdb2EOcEM6peCwi5NR1/peF
-         tGUKznRKDoHnuAvvD+pPYLR7nxGJWvxFBE7FlmmQc/4cwA0CRXHJEEDCXEqIH6PsKNep
-         vYRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=SYQZMFTEBJ18xeJeS1buRtQuG/fExe+cZBQxRWLCEdI=;
-        b=n7+QUx2OtX1zV0w2oYk0t7Pef67ElN6QPRgQKAHQOc9kLv8K7Ozbqa8zM9UuucCvEv
-         WY+3Gj0lpo1uLHr+4saZL53Y5Ebj6Z0GJTTFf1Rhm7Wzx3oO3Qx1BBo//GOouIcW+A8u
-         O50yZorojILT/RlDB8I4MfeTDnubo6r5qO/LRBlUHDUhXwEV/XcolkzVcdAbMarB1D5s
-         7M7pqdU2HNNKGN7OhWFXGJhYeYe4bsq+MYn57/yRco3IKTRwxCqbzRrEuVlCZR6CJQQi
-         VnXZVWzJFMTMsSioeZeU5YubTi/seKIW9yst7FFeP3CrAuEwXk0MEcDhkn5hOuyr0dHn
-         IrpQ==
-X-Gm-Message-State: AOAM532doG7CK3oRbmPA1EDfzOkVsbLyBSx4qu1NptfTr7Ld7E+b586t
-        oCdmE8sKOqqQd/v7g0l0XUc=
-X-Google-Smtp-Source: ABdhPJxNcrcKF+fqaOMGL5W+NexLSdpNhiaupcVndx+6tqKzg2Z+N1bEowXKJaoJNYdwASCyIlLg3w==
-X-Received: by 2002:ad4:4d03:: with SMTP id l3mr21657230qvl.158.1590513823004;
-        Tue, 26 May 2020 10:23:43 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:85c0])
-        by smtp.gmail.com with ESMTPSA id d56sm277843qtb.54.2020.05.26.10.23.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 10:23:42 -0700 (PDT)
-Date:   Tue, 26 May 2020 13:23:40 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Wu Bo <wubo40@huawei.com>
-Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, Markus.Elfring@web.de,
-        linux-kernel@vger.kernel.org, liuzhiqiang26@huawei.com,
-        linfeilong@huawei.com
-Subject: Re: [PATCH] blkcg:Fix memory leaks in blkg_conf_prep()
-Message-ID: <20200526172340.GD83516@mtj.thefacebook.com>
-References: <1589805366-328489-1-git-send-email-wubo40@huawei.com>
+        Tue, 26 May 2020 13:24:11 -0400
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 048C510AB;
+        Tue, 26 May 2020 13:24:09 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Tue, 26 May 2020 13:24:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=N+2HgG
+        4kGwu+YjXYKXb+GfVj8egbu/mj++VICG8Oszo=; b=YIZRmfxqcVE3kvuGbPKBoq
+        aWnC2jlvWdbp2Lt+f/NVV4DkUFyQuSyGZMKzMgHuCEl3/s+OkYUb47jUx/u484wx
+        Z7qqK+0MIrCZ6Os/tkm6HspzXzxOf6Lt0kWLcphVkycKP+6iZ6DKCUscvaUbG/iX
+        zF1CLYq+6DK7dMscg9jL6u2f59/Y9WDLlQPlkTBUwqBhEdx8F72vo3QZJYqKrXOo
+        PzZV26QaY5sS+M+WQCC7Ru2RlthukPareVdqMxb5WiNZYOtwvPleQBu/pw05tQK/
+        Usz9d2rzzVzgFAKuegM6VUSe+e9HSZi3rLmQ/FgaVG2uwq3OW395VJyGQWixqCcA
+        ==
+X-ME-Sender: <xms:uFDNXoOKWlvBO4sOMkY-NgvlA80NCydWVcLBYHM9cQIZOZIckaphDw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddvvddgudduudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujggfsehgtderredtredvnecuhfhrohhmpeghohhj
+    thgvkhcurfhorhgtiiihkhcuoeifohhjuhesihhnvhhishhisghlvghthhhinhhgshhlrg
+    gsrdgtohhmqeenucggtffrrghtthgvrhhnpedtudevvdffheejveekieetjeduueduffeg
+    heffffejgeeuteehtdegudetgeetteenucfkphepledurddugeehrdduieelrdeiheenuc
+    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpeifohhjuhes
+    ihhnvhhishhisghlvghthhhinhhgshhlrggsrdgtohhm
+X-ME-Proxy: <xmx:uFDNXu_HuNBaUwtbrVQMbyHId1nCU_d2i4qlTdMzZtV4PmyBkKsTrQ>
+    <xmx:uFDNXvQyAmwbSFm0SU5C80ugDB_oI_J4ZSrvvLET6WmkjoDviQuY-w>
+    <xmx:uFDNXgtWisxh10JbgC0YHmik5NZIgRAC41gJH1uCGOL72lkR-HfemQ>
+    <xmx:uVDNXo4AfRDmgMAtfuWyQkE0gRCE15mhx5uo1Bp9f5Mg0MKiIbEDKg>
+Received: from mail-itl.localdomain (91-145-169-65.internetia.net.pl [91.145.169.65])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 15AAF30665C7;
+        Tue, 26 May 2020 13:24:08 -0400 (EDT)
+Received: by mail-itl.localdomain (Postfix, from userid 1000)
+        id F1DA25CF91; Tue, 26 May 2020 19:24:03 +0200 (CEST)
+Date:   Tue, 26 May 2020 19:24:03 +0200
+From:   Wojtek Porczyk <woju@invisiblethingslab.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Andi Kleen <ak@linux.intel.com>
+Cc:     Andi Kleen <andi@firstfloor.org>, x86@kernel.org,
+        keescook@chromium.org, linux-kernel@vger.kernel.org,
+        sashal@kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v1] x86: Pin cr4 FSGSBASE
+Message-ID: <20200526172403.GA14256@invisiblethingslab.com>
+References: <20200526052848.605423-1-andi@firstfloor.org>
+ <20200526065618.GC2580410@kroah.com>
+ <20200526154835.GW499505@tassilo.jf.intel.com>
+ <20200526163235.GA42137@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="azLHFNyN32YCQGCU"
 Content-Disposition: inline
-In-Reply-To: <1589805366-328489-1-git-send-email-wubo40@huawei.com>
+In-Reply-To: <20200526163235.GA42137@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 08:36:06PM +0800, Wu Bo wrote:
-> From: Wu Bo <wubo40@huawei.com>
-> 
-> If a call of the function blkg_lookup_check() failed,
-> we should be release the previously allocated block group 
-> before jumping to the lable 'fail_unlock' in the implementation of 
-> the function blkg_conf_prep().
-> 
-> Suggested-by: Markus Elfring <Markus.Elfring@web.de>
-> Signed-off-by: Wu Bo <wubo40@huawei.com>
 
-Acked-by: Tejun Heo <tj@kernel.org>
+--azLHFNyN32YCQGCU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks.
+On Tue, May 26, 2020 at 06:32:35PM +0200, Greg KH wrote:
+> On Tue, May 26, 2020 at 08:48:35AM -0700, Andi Kleen wrote:
+> > On Tue, May 26, 2020 at 08:56:18AM +0200, Greg KH wrote:
+> > > On Mon, May 25, 2020 at 10:28:48PM -0700, Andi Kleen wrote:
+> > > > From: Andi Kleen <ak@linux.intel.com>
+> > > >=20
+> > > > Since there seem to be kernel modules floating around that set
+> > > > FSGSBASE incorrectly, prevent this in the CR4 pinning. Currently
+> > > > CR4 pinning just checks that bits are set, this also checks
+> > > > that the FSGSBASE bit is not set, and if it is clears it again.
+> > >=20
+> > > So we are trying to "protect" ourselves from broken out-of-tree kernel
+> > > modules now? =20
+> >=20
+> > Well it's a specific case where we know they're opening a root hole
+> > unintentionally. This is just an pragmatic attempt to protect the users=
+ in the=20
+> > short term.
+>=20
+> Can't you just go and fix those out-of-tree kernel modules instead?
+> What's keeping you all from just doing that instead of trying to force
+> the kernel to play traffic cop?
 
--- 
-tejun
+We'd very much welcome any help really, but we're under impression that this
+couldn't be done correctly in a module, so this hack occured.
+
+This was written in 2015 as part of original (research) codebase for those
+reasons:
+- A module is easier to deploy by scientists, who are no kernel developers =
+and
+  no sysadmins either, so applying patchset and recompiling kernel is a big
+  ask.
+- It has no implications on security in SGX/Graphene threat model and in
+  expected deployment scenario.
+- This had no meaning to the actual research being done, so it wasn't cared
+  about.
+
+Let me expand the second point, because I understand both the module and the
+explanation looks wrong.
+
+Graphene is intended to be run in a cloud, where the CPU time is sold in
+a form of virtual machine, so the VM kernel, which would load this module, =
+is
+not trusted by hardware owner, so s/he don't care. But the owner of the
+enclave also doesn't care, because SGX' threat model assumes adversary who =
+is
+capable of arbitrary code execution in both kernel and userspace outside
+enclave. So the kernel immediately outside the enclave is a no-man's land,
+untrusted by both sides and forsaken, reduced to a compatibility layer
+between x86 and ELF.
+
+I acknowledge this is unusual threat model and certainly to mainline
+developers, who rarely encounter userspace that is more trusted than kernel.
+
+What we've failed at is to properly explain this, because if someone loads
+this module outside of this expected scenario, will certainly be exposed to
+a gaping root hole. Therefore we acknowledge this patch and as part of
+Graphene we'll probably maintain a patchset, until the support is upstream.
+Right now this will take us some time to change from our current kernel
+interfaces.
+
+
+--=20
+pozdrawiam / best regards
+Wojtek Porczyk
+Graphene / Invisible Things Lab
+=20
+ I do not fear computers,
+ I fear lack of them.
+    -- Isaac Asimov
+
+--azLHFNyN32YCQGCU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEaO0VFfpr0tEF6hYkv2vZMhA6I1EFAl7NULMACgkQv2vZMhA6
+I1HeVhAAopSXwAHYY1jjElt533B4ztTXw4rQVCXIs+nC3wCUerQ0Qib79WmofOBZ
+lcl/BUsIF+qo+yL7FagLcqnxGg5AGBYxJ9KXiFb/iha3jpRYLZpFyxAEr/Y+LCh3
+zmChvR+UYmONCapQDDW6B3IVMyLqeTUPxZ26kHOt2MMQyb+aGhtSPfxnFLtN0MHg
+2ST5TqOWQ+izMVu4xTOuuGZBs131oodfkC1s58KOF/r6OIdBx9zGbNBQeFS1OwXA
+bYLOijvk0Q9lMPyqq7FKJuHN2dH2uP/liLOosN+OUCfjQRbz34KptMakOSZ/FJTf
+2mUWq59579kkKfW9J5nwfj27I7vUejutXDy/YFImga4HwxqGQGbXIFtlDOEdKZ7U
+aXKugpGmqfzQnyUFbeLBetdkb3Lq0H8qEOLUpHPQiHrriMm7m/7q9hEDtzplk+WJ
+Yj5gLQlIyDaMO63PRi+tR6K8s9p2E9JL/hCOUtjptEWGjzDVptoFDKWXeGe8M9ak
+caGjZRQihWkjyzvG2/f4s3/0zJ6aA1NE909X9W7hPKY6y60WJkUySXFCkSpsO/GN
+1C6s/O7nOmLeHd1IHclpNbDLMxxRtoFMb7KPjAXsFsC2Zx8Pz+1TM094TGyggWcI
+7DD8dQRMKd+IayyDmuMrmULLRLqoThIbHVKAn0OUtZDvqnHvk24=
+=OSfl
+-----END PGP SIGNATURE-----
+
+--azLHFNyN32YCQGCU--
