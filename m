@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF771E2B14
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB7D1E2C80
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390377AbgEZTBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:01:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56316 "EHLO mail.kernel.org"
+        id S2404436AbgEZTP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:15:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390347AbgEZTBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:01:47 -0400
+        id S2404399AbgEZTP0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:15:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 08A022086A;
-        Tue, 26 May 2020 19:01:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 378B82053B;
+        Tue, 26 May 2020 19:15:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519706;
-        bh=KypJwFIz/vzWZNXCRkyD48q9Lx03p7GF7t2fIGPVXEY=;
+        s=default; t=1590520525;
+        bh=85MRjDuphd+B7adNDduYkYSTVwOmbRTDqL773PNxNGM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=chb4HGiT9ivYtTKixwLWR36J4/YaWwj93kjJ9sP5EOtA2Ozjhf0RjnD/sIpZZiclh
-         hhwHm4d9PuzuMpkupNpIHYYu554B75pN5PzwWe+N0sZhmQlS8TBMCEYxjbgDp9AeMS
-         kawIIYjaljVL8MdnBjDdqfwl+jycP7RqaHMg9qc8=
+        b=H9Qzdf0gEuQ97AXzgVXM0487uUj02dMRIQuT6dPEDqXEavXA3yfWtdIHQRB5LAkEt
+         Jg0GKfXmdIu0R28gBBGlNZB0x/Ka/htSzfNqLYS/gyhByvdvbG+FeEuv/SGPCt+vvw
+         dWkYS0tm3M2YGU2tBwVGeI0XNRiP/p5ndx41DyTQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Pedro dAquino Filocre F S Barbuda 
-        <pbarbuda@microsoft.com>, Vishal Verma <vishal.l.verma@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 45/59] libnvdimm/btt: Fix LBA masking during free list population
-Date:   Tue, 26 May 2020 20:53:30 +0200
-Message-Id: <20200526183921.484936862@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        John Johansen <john.johansen@canonical.com>
+Subject: [PATCH 5.6 074/126] apparmor: Fix use-after-free in aa_audit_rule_init
+Date:   Tue, 26 May 2020 20:53:31 +0200
+Message-Id: <20200526183944.435819124@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
-References: <20200526183907.123822792@linuxfoundation.org>
+In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
+References: <20200526183937.471379031@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,153 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vishal Verma <vishal.l.verma@intel.com>
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-[ Upstream commit 9dedc73a4658ebcc0c9b58c3cb84e9ac80122213 ]
+commit c54d481d71c6849e044690d3960aaebc730224cc upstream.
 
-The Linux BTT implementation assumes that log entries will never have
-the 'zero' flag set, and indeed it never sets that flag for log entries
-itself.
+In the implementation of aa_audit_rule_init(), when aa_label_parse()
+fails the allocated memory for rule is released using
+aa_audit_rule_free(). But after this release, the return statement
+tries to access the label field of the rule which results in
+use-after-free. Before releasing the rule, copy errNo and return it
+after release.
 
-However, the UEFI spec is ambiguous on the exact format of the LBA field
-of a log entry, specifically as to whether it should include the
-additional flag bits or not. While a zero bit doesn't make sense in the
-context of a log entry, other BTT implementations might still have it set.
+Fixes: 52e8c38001d8 ("apparmor: Fix memory leak of rule on error exit path")
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Signed-off-by: John Johansen <john.johansen@canonical.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-If an implementation does happen to have it set, we would happily read
-it in as the next block to write to for writes. Since a high bit is set,
-it pushes the block number out of the range of an 'arena', and we fail
-such a write with an EIO.
-
-Follow the robustness principle, and tolerate such implementations by
-stripping out the zero flag when populating the free list during
-initialization. Additionally, use the same stripped out entries for
-detection of incomplete writes and map restoration that happens at this
-stage.
-
-Add a sysfs file 'log_zero_flags' that indicates the ability to accept
-such a layout to userspace applications. This enables 'ndctl
-check-namespace' to recognize whether the kernel is able to handle zero
-flags, or whether it should attempt a fix-up under the --repair option.
-
-Cc: Dan Williams <dan.j.williams@intel.com>
-Reported-by: Dexuan Cui <decui@microsoft.com>
-Reported-by: Pedro d'Aquino Filocre F S Barbuda <pbarbuda@microsoft.com>
-Tested-by: Dexuan Cui <decui@microsoft.com>
-Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvdimm/btt.c      | 25 +++++++++++++++++++------
- drivers/nvdimm/btt.h      |  2 ++
- drivers/nvdimm/btt_devs.c |  8 ++++++++
- 3 files changed, 29 insertions(+), 6 deletions(-)
+ security/apparmor/audit.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
-index 61e519f1d768..c46b7e1b0132 100644
---- a/drivers/nvdimm/btt.c
-+++ b/drivers/nvdimm/btt.c
-@@ -541,8 +541,8 @@ static int arena_clear_freelist_error(struct arena_info *arena, u32 lane)
- static int btt_freelist_init(struct arena_info *arena)
- {
- 	int new, ret;
--	u32 i, map_entry;
- 	struct log_entry log_new;
-+	u32 i, map_entry, log_oldmap, log_newmap;
+--- a/security/apparmor/audit.c
++++ b/security/apparmor/audit.c
+@@ -197,8 +197,9 @@ int aa_audit_rule_init(u32 field, u32 op
+ 	rule->label = aa_label_parse(&root_ns->unconfined->label, rulestr,
+ 				     GFP_KERNEL, true, false);
+ 	if (IS_ERR(rule->label)) {
++		int err = PTR_ERR(rule->label);
+ 		aa_audit_rule_free(rule);
+-		return PTR_ERR(rule->label);
++		return err;
+ 	}
  
- 	arena->freelist = kcalloc(arena->nfree, sizeof(struct free_entry),
- 					GFP_KERNEL);
-@@ -554,16 +554,22 @@ static int btt_freelist_init(struct arena_info *arena)
- 		if (new < 0)
- 			return new;
- 
-+		/* old and new map entries with any flags stripped out */
-+		log_oldmap = ent_lba(le32_to_cpu(log_new.old_map));
-+		log_newmap = ent_lba(le32_to_cpu(log_new.new_map));
-+
- 		/* sub points to the next one to be overwritten */
- 		arena->freelist[i].sub = 1 - new;
- 		arena->freelist[i].seq = nd_inc_seq(le32_to_cpu(log_new.seq));
--		arena->freelist[i].block = le32_to_cpu(log_new.old_map);
-+		arena->freelist[i].block = log_oldmap;
- 
- 		/*
- 		 * FIXME: if error clearing fails during init, we want to make
- 		 * the BTT read-only
- 		 */
--		if (ent_e_flag(log_new.old_map)) {
-+		if (ent_e_flag(log_new.old_map) &&
-+				!ent_normal(log_new.old_map)) {
-+			arena->freelist[i].has_err = 1;
- 			ret = arena_clear_freelist_error(arena, i);
- 			if (ret)
- 				dev_err_ratelimited(to_dev(arena),
-@@ -571,7 +577,7 @@ static int btt_freelist_init(struct arena_info *arena)
- 		}
- 
- 		/* This implies a newly created or untouched flog entry */
--		if (log_new.old_map == log_new.new_map)
-+		if (log_oldmap == log_newmap)
- 			continue;
- 
- 		/* Check if map recovery is needed */
-@@ -579,8 +585,15 @@ static int btt_freelist_init(struct arena_info *arena)
- 				NULL, NULL, 0);
- 		if (ret)
- 			return ret;
--		if ((le32_to_cpu(log_new.new_map) != map_entry) &&
--				(le32_to_cpu(log_new.old_map) == map_entry)) {
-+
-+		/*
-+		 * The map_entry from btt_read_map is stripped of any flag bits,
-+		 * so use the stripped out versions from the log as well for
-+		 * testing whether recovery is needed. For restoration, use the
-+		 * 'raw' version of the log entries as that captured what we
-+		 * were going to write originally.
-+		 */
-+		if ((log_newmap != map_entry) && (log_oldmap == map_entry)) {
- 			/*
- 			 * Last transaction wrote the flog, but wasn't able
- 			 * to complete the map write. So fix up the map.
-diff --git a/drivers/nvdimm/btt.h b/drivers/nvdimm/btt.h
-index 2609683c4167..c3e6a5da2ec7 100644
---- a/drivers/nvdimm/btt.h
-+++ b/drivers/nvdimm/btt.h
-@@ -44,6 +44,8 @@
- #define ent_e_flag(ent) (!!(ent & MAP_ERR_MASK))
- #define ent_z_flag(ent) (!!(ent & MAP_TRIM_MASK))
- #define set_e_flag(ent) (ent |= MAP_ERR_MASK)
-+/* 'normal' is both e and z flags set */
-+#define ent_normal(ent) (ent_e_flag(ent) && ent_z_flag(ent))
- 
- enum btt_init_state {
- 	INIT_UNCHECKED = 0,
-diff --git a/drivers/nvdimm/btt_devs.c b/drivers/nvdimm/btt_devs.c
-index e610dd890263..76a74e292fd7 100644
---- a/drivers/nvdimm/btt_devs.c
-+++ b/drivers/nvdimm/btt_devs.c
-@@ -159,11 +159,19 @@ static ssize_t size_show(struct device *dev,
- }
- static DEVICE_ATTR_RO(size);
- 
-+static ssize_t log_zero_flags_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "Y\n");
-+}
-+static DEVICE_ATTR_RO(log_zero_flags);
-+
- static struct attribute *nd_btt_attributes[] = {
- 	&dev_attr_sector_size.attr,
- 	&dev_attr_namespace.attr,
- 	&dev_attr_uuid.attr,
- 	&dev_attr_size.attr,
-+	&dev_attr_log_zero_flags.attr,
- 	NULL,
- };
- 
--- 
-2.25.1
-
+ 	*vrule = rule;
 
 
