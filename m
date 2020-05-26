@@ -2,74 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45FD41E1CB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 09:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F961E1CB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 09:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731723AbgEZH6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 03:58:40 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:40772 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726971AbgEZH6j (ORCPT
+        id S1731725AbgEZH7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 03:59:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726971AbgEZH7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 03:58:39 -0400
-Received: by mail-oi1-f194.google.com with SMTP id v128so17899918oia.7;
-        Tue, 26 May 2020 00:58:38 -0700 (PDT)
+        Tue, 26 May 2020 03:59:04 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A5D8C03E97E
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 00:59:04 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id q11so7275454wrp.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 00:59:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=zYdjgpNGKkhHUaPVM1/nhRkNBCVbxfKW4NHkKWtwJ2Y=;
+        b=n/dXU9fyQ+2u0G9SXzRKn0Sd6pJTChNHgO3T/qJJlCgWgMb4CS573tIEQx+xoycpt5
+         ZH5fEO/STnba6a5noZgK+uleLYZg24fRK4RpI+M93bAfb7iWvfyTECnKeAx3Hs1Nyy8z
+         3k6qYlbQlDVjbj7whcev/TQosfr+iCL0jQikOosi/J4RO2+fyTg6NguWXboOJsI/tsAm
+         8p2GrWuV0sCQbUNji569BEikqLrJI2tJSONaEZf5CDhmIWZwRenMEDB1rC10eiprVUO7
+         djKXcWdnhf+v+kzsegrbQjmBD4aVi//DZxmrvgOt1Z4TYdJ9h3i+v/dLSIU26jWEA2gk
+         sp8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vsURDC42TSy6y23dlOiFzYIYBJQzEtPc2OlE7GC+Vns=;
-        b=Kt8AkJKjOVkEfo6wfsyppIPlYmnqCXHnYpeatwG+1PKFHZdOydKJRtL7Vt26EWHgVz
-         T633pFbpk5OGqSj//EgAtPt3KMXWP3IECp0QXQ5CJT8zexXWi3ixjio1BvBPXpHbhzNM
-         GhVUYX29wlJAlCOoX05ZdywxMfsbLTNkXRP89EmWSBUjdznIVlhYCwMuQCDd3qOaL30l
-         59r95/AXkeNYYcussFoKGx4EDqOfxzoUDbPQml/ShrX96PhnCUPg451BBiHfMwd1ZI0I
-         eEIPqhtMkpbfbYypxiMJljEhEXKDWAhpQLoN6aQnsroz//j5LGjUH0106Zx6XvsTvoJy
-         Gnuw==
-X-Gm-Message-State: AOAM533vU7JUwOFXxTFvhQXoLOz/2gh5E3DbRYs2wGRLQv3ZNbAZQKga
-        J3PYDhr9UBKjmuNBsW2Wt4mE2g92bPTrk0uLAas=
-X-Google-Smtp-Source: ABdhPJzz2vDoCU5nnj3rrgngnH6zyoxkynMR40cvCYpworU05mERbFwmbsYX2ELTq/5hLIDmaBMk8L0g8VNIzzFqgA4=
-X-Received: by 2002:aca:210a:: with SMTP id 10mr12878772oiz.153.1590479918473;
- Tue, 26 May 2020 00:58:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=zYdjgpNGKkhHUaPVM1/nhRkNBCVbxfKW4NHkKWtwJ2Y=;
+        b=oGjGbVafD7iVCrsJZtIJQjpyJ9MvN5Epk2edRA2T19Ho70Q+lKGq69XMOdVsC1EFGL
+         xOjI3E5Az4IQM8TGfTWuG6W776+WhUGkAg4QJxtV77yH3FeIkMU6nHIPWu0qP8kDZiTb
+         CWCg0zsItAO4h+m2rdWX7DYDw66Cm/4b/OdEjLD7fHGLLvIVTi2DqcQAAFU3bOmPBiV+
+         jlRDUo6e349zM+mTp45VG3Q4Gnxy6i9eFHwP6/Z1UZOxTDUcEVPlHPbp8Bp2ycgdBPXq
+         H0qd6f14QzcHB27PXk8AhwioHW0X8qvPp5Go/IXhfn/ecH5DWUOUrmOo+embM2l+OZ7J
+         SUwQ==
+X-Gm-Message-State: AOAM532vqObHgAZcD9eiCFDxktktalkNGk29uaOkZ2TGm1lIFKB84tOi
+        kKYbzRF/IsLokeBbwJlLW0ENbg==
+X-Google-Smtp-Source: ABdhPJzjh8siprJLpdOwjtzMP60lf7tTZJoWmJAVMzTka0tpDJqO/GhIRtY1OB3npRBX5C5TYEDnUw==
+X-Received: by 2002:adf:a51c:: with SMTP id i28mr1970108wrb.78.1590479943335;
+        Tue, 26 May 2020 00:59:03 -0700 (PDT)
+Received: from dell ([95.149.164.102])
+        by smtp.gmail.com with ESMTPSA id d6sm22344913wrj.90.2020.05.26.00.59.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2020 00:59:02 -0700 (PDT)
+Date:   Tue, 26 May 2020 08:59:01 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Amelie Delaunay <amelie.delaunay@st.com>
+Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] mfd: stmfx: disable irq in suspend to avoid spurious
+ interrupt
+Message-ID: <20200526075901.GG3628@dell>
+References: <20200422090833.9743-1-amelie.delaunay@st.com>
+ <20200422090833.9743-4-amelie.delaunay@st.com>
 MIME-Version: 1.0
-References: <1590420129-7531-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1590420129-7531-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <1590420129-7531-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 26 May 2020 09:58:27 +0200
-Message-ID: <CAMuHMdW4OUrm4nbrozj6Rp8L7527sQWmZS-0xa7+sak2CXBu1Q@mail.gmail.com>
-Subject: Re: [PATCH 4/4] ARM: dts: r8a7742-iwg21d-q7: Add RWDT support
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200422090833.9743-4-amelie.delaunay@st.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 25, 2020 at 5:23 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Enable RWDT and use 60 seconds as default timeout.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+On Wed, 22 Apr 2020, Amelie Delaunay wrote:
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v5.9.
+> When STMFX supply is stopped, spurious interrupt can occur. To avoid that,
+> disable the interrupt in suspend before disabling the regulator and
+> re-enable it at the end of resume.
+> 
+> Fixes: 06252ade9156 ("mfd: Add ST Multi-Function eXpander (STMFX) core driver")
+> Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+> ---
+>  drivers/mfd/stmfx.c       | 6 ++++++
+>  include/linux/mfd/stmfx.h | 1 +
+>  2 files changed, 7 insertions(+)
 
-Gr{oetje,eeting}s,
+Applied, thanks.
 
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
