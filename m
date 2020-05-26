@@ -2,122 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46CA41E304D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 22:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1365A1E30CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 23:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404004AbgEZUv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 16:51:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403963AbgEZUv5 (ORCPT
+        id S2390039AbgEZVBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 17:01:55 -0400
+Received: from relmlor2.renesas.com ([210.160.252.172]:12474 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2389124AbgEZVBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 16:51:57 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5199DC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 13:51:57 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 185so2419958pgb.10
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 13:51:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=84c4yBEfXJR9rBcq5OPzXonTT8+NleW6lQ5k1QA/SLU=;
-        b=ADDgO1yJRKDfKrGbkZJ9Xr9tGv3Rlpo6s7dhDWnowov+fTczDmRjlZ8m7luMhkwmEv
-         phefTQDM8DcjAtqX+1hjqSLZEFpLEN6zcLXzUGxjhhG1P+QZui7TitfW0z91ggcqO4dm
-         xYuQKIzB2ZPYMkYHDnV5GdRLxeKmbJrHncpFTM1MqLsKzsrd4la/sHAOiI0gV3pDgp/I
-         QPTAuOxTnBbs5Z4j+EdHy7avfJNZ3GsSSGQKcILDa41Idlnau5+NyIP0iZRkFa6OUdWp
-         UAHKpjTDv//bLiUMEM+EYtUsptnVpyeB67qSDBmyF2iY6BS08Xk8OprKXnKCZEP5000A
-         PBFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=84c4yBEfXJR9rBcq5OPzXonTT8+NleW6lQ5k1QA/SLU=;
-        b=WRjWIJuJyh7nBo3W1PRD/UdmuljDqCS2OqXkG879JVaR6sDQNJCkOD6YbYLcwLiiXE
-         LSO6VTk3lnYcrwh/oNpNvAhb9HVTqiJwWt6926xzdlfq1SeZbfo0lZOAXWvXIDcEP6qe
-         r5dgrqEJl10MU//6ZMp7gdP4uUPfC67xDnRwgTrwvI7QZ5+BjpWdY+uGj9ZX4nwI0GOl
-         U+4V3to+PYUgPnqSOfkQWWTwgumrrZDMDEC6RsCuNh8bYQ1b015uo7PtTHIJw2LAPc0T
-         901DVW2rPqEYWQtm/lJ9IHxYoDMRApK8rJOKDwmhTDGebcTKTv0jNjzM1BwSZ8bkKu7m
-         CXzw==
-X-Gm-Message-State: AOAM531Ph9q8YN8+F8nM924omsSUhWxOPiJbCTvNA59GBnZKcD/JTcBC
-        rgQaLBko+HbazfI7cfMFyDo=
-X-Google-Smtp-Source: ABdhPJzgMbTszipak4xmw5QtemttiLGjdNZ+kzvDA9nvx2w0FqIaoOqfVu1/VzcOknAOPsTgO1cTow==
-X-Received: by 2002:a05:6a00:46:: with SMTP id i6mr647621pfk.146.1590526316742;
-        Tue, 26 May 2020 13:51:56 -0700 (PDT)
-Received: from jordon-HP-15-Notebook-PC.domain.name ([171.48.17.249])
-        by smtp.gmail.com with ESMTPSA id v22sm380239pfu.172.2020.05.26.13.51.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 May 2020 13:51:56 -0700 (PDT)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        David1.Zhou@amd.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH] drm/radeon: Convert get_user_pages() --> pin_user_pages()
-Date:   Wed, 27 May 2020 02:30:02 +0530
-Message-Id: <1590526802-3008-1-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        Tue, 26 May 2020 17:01:55 -0400
+X-IronPort-AV: E=Sophos;i="5.73,437,1583161200"; 
+   d="scan'208";a="47867520"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie6.idc.renesas.com with ESMTP; 27 May 2020 06:01:53 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 8B82C40DAAC6;
+        Wed, 27 May 2020 06:01:50 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     alsa-devel@alsa-project.org, linux-renesas-soc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH 0/2] RZ/G1H enable sound support
+Date:   Tue, 26 May 2020 22:01:42 +0100
+Message-Id: <1590526904-13855-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This code was using get_user_pages(), in a "Case 2" scenario
-(DMA/RDMA), using the categorization from [1]. That means that it's
-time to convert the get_user_pages() + release_pages() calls to
-pin_user_pages() + unpin_user_pages() calls.
+Hi All,
 
-There is some helpful background in [2]: basically, this is a small
-part of fixing a long-standing disconnect between pinning pages, and
-file systems' use of those pages.
+This patch series adds support for sound in R8A7742 SoC DT.
 
-[1] Documentation/core-api/pin_user_pages.rst
+Cheers,
+Prabhakar
 
-[2] "Explicit pinning of user-space pages":
-    https://lwn.net/Articles/807108/
+Lad Prabhakar (2):
+  dt-bindings: ASoC: renesas,rsnd: Add r8a7742 support
+  ARM: dts: r8a7742: Add audio support
 
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-Cc: John Hubbard <jhubbard@nvidia.com>
+ .../devicetree/bindings/sound/renesas,rsnd.txt     |   1 +
+ arch/arm/boot/dts/r8a7742.dtsi                     | 284 +++++++++++++++++++++
+ 2 files changed, 285 insertions(+)
 
-Hi,
-
-I'm compile tested this, but unable to run-time test, so any testing
-help is much appriciated.
----
- drivers/gpu/drm/radeon/radeon_ttm.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/radeon/radeon_ttm.c
-index 5d50c9e..e927de2 100644
---- a/drivers/gpu/drm/radeon/radeon_ttm.c
-+++ b/drivers/gpu/drm/radeon/radeon_ttm.c
-@@ -506,7 +506,7 @@ static int radeon_ttm_tt_pin_userptr(struct ttm_tt *ttm)
- 		uint64_t userptr = gtt->userptr + pinned * PAGE_SIZE;
- 		struct page **pages = ttm->pages + pinned;
- 
--		r = get_user_pages(userptr, num_pages, write ? FOLL_WRITE : 0,
-+		r = pin_user_pages(userptr, num_pages, write ? FOLL_WRITE : 0,
- 				   pages, NULL);
- 		if (r < 0)
- 			goto release_pages;
-@@ -535,7 +535,7 @@ static int radeon_ttm_tt_pin_userptr(struct ttm_tt *ttm)
- 	kfree(ttm->sg);
- 
- release_pages:
--	release_pages(ttm->pages, pinned);
-+	unpin_user_pages(ttm->pages, pinned);
- 	return r;
- }
- 
-@@ -562,7 +562,7 @@ static void radeon_ttm_tt_unpin_userptr(struct ttm_tt *ttm)
- 			set_page_dirty(page);
- 
- 		mark_page_accessed(page);
--		put_page(page);
-+		unpin_user_page(page);
- 	}
- 
- 	sg_free_table(ttm->sg);
 -- 
-1.9.1
+2.7.4
 
