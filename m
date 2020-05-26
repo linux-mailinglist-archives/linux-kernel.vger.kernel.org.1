@@ -2,84 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0EE1E1C7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 09:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C791E1C96
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 09:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731646AbgEZHqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 03:46:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731446AbgEZHqp (ORCPT
+        id S1731671AbgEZH43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 03:56:29 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:36027 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726638AbgEZH40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 03:46:45 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD21C03E97E;
-        Tue, 26 May 2020 00:46:45 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id u5so9625399pgn.5;
-        Tue, 26 May 2020 00:46:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9hP2gJKDW99uKK2ci16iXnlfh+TatIfa89bbfH5MoI4=;
-        b=IhzaWHQ1IZn6kk5fS4iMMRliwb3dMakoIny3kYQoKhPJfWBCrUDuqY1zF35nu+X3uM
-         IIMZHSik2wI24wf1Rbv55Zfau50NYOZqwT5E3HJ44qFUyMAbvbwjtiMrX7FzQXecd9kx
-         lGIyMAkM6o6NpxpWeGv6qArvRioOMHh8MYr9HAxc+AY0J3ndgjB/AAgwouQuApmwW/2x
-         0i5kA8i2KdLS9Cry6afAJIVKO38W+8pxUNG0/aCJmn9FuhIrJGeaz0t9TNXu05wmWp60
-         LvOyWZwuhdmVr8GBpjVVjopbyWV+x35/HsE+p0t5/nrUupNP/bELGe190S/g6BN5d+FF
-         rd4A==
+        Tue, 26 May 2020 03:56:26 -0400
+Received: by mail-ot1-f67.google.com with SMTP id h7so15585735otr.3;
+        Tue, 26 May 2020 00:56:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9hP2gJKDW99uKK2ci16iXnlfh+TatIfa89bbfH5MoI4=;
-        b=uRmDtXbyOahAa3SYUMBb1yl32ZIAJT/jzxrwSvu/H4++4ktPLDGFq78CVrR9jwdLDj
-         InlBPtAb266AIyvad/S7ZyiqTPm/ruVQaSrfjRilRf7aOII9ni3BtA+qHJQl46tvvVqr
-         KP7NV4Txn1Z0fh/HOesSiZG6n9cNorbpL1OP8F3aYdRIV8vJspy1YONcGtLs7SjE4tvC
-         5aEOYZOC8+e/c8ePAocRgEv+QKOz06U4hVMwK8sE6fhTZ2GSOFdLuO+QR3MJQVBxe2Pq
-         7HGezlcNj2J5U5sFLpnKntNzqVgsAPx9wTcrzJ0D/q9i3G8XIWuIfuYoB9c65AwJyIUK
-         cvLA==
-X-Gm-Message-State: AOAM533pwkYb4tFmtHiOCjns4kthOd6+8zt4Zy+OLDzqX2LCSmczI3Nv
-        4U12wZ3MBCf/mdE22Jpe/D9e1ep9sZBZckXKoOc=
-X-Google-Smtp-Source: ABdhPJyxzAObFo2fGXgOG0DTaZEGiMDEiM/XhPzUWJLhBUpA9j5+1D9nbFN8JF/guHMeGKz5o2jOHBt1rP1W7jAGnnM=
-X-Received: by 2002:aa7:99c8:: with SMTP id v8mr17942364pfi.36.1590479205218;
- Tue, 26 May 2020 00:46:45 -0700 (PDT)
+        bh=csDDCNL611WbHdWFs8526ifl/n2MkndYxm5xUkbs6mE=;
+        b=Fg4GKd7CybnOOb1CE1IWT2l/vKxITY5riHO2e/q3K+KppUjBNc8F61x1oXKSQzoeYR
+         /lOQxPXgpU29ir5OmDVGdvJEojxnOP7jfkpBZs54Ydef4ZMIXS+za15Stnz/uQI9zX/x
+         9ff8qpUv8ArV/38yUFDV+ArZW8wIjVm3ZfXWCN9jN4L5QyWA3EX55vyxXA7nJlXvWSDb
+         CzUsZYappVqeFHMQxvvzwyY0RplxGN6UYyhQEbXfvGqMbblR35XxgdqmaJlmvUW84Zqe
+         Jh6xD+aYhz51LVuqRvs+9zts08ANgKs/qa7XkBHtL7bkMAPtd3LpPXLOJJAZjl83tBQm
+         0MIQ==
+X-Gm-Message-State: AOAM5319C9dxOiEGUG74HU1FosNwQxGUUwG1k0bw7spZDbsJveza9MVw
+        Euqmk9osmKyfmq6ZQiHb/WR+gNGWxqbPyLgEqyA=
+X-Google-Smtp-Source: ABdhPJyMWhODmPbddD8N7snI+n0OkCQkbaSwnNAeVADmYuSIH0vc12ascJTRhbCwGR1jc7GrNqHLdwxXCv/E1W8H/3g=
+X-Received: by 2002:a05:6830:1151:: with SMTP id x17mr3687otq.250.1590479785513;
+ Tue, 26 May 2020 00:56:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <1590378348-8115-1-git-send-email-dillon.minfei@gmail.com> <1590378348-8115-7-git-send-email-dillon.minfei@gmail.com>
-In-Reply-To: <1590378348-8115-7-git-send-email-dillon.minfei@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 26 May 2020 10:46:33 +0300
-Message-ID: <CAHp75VebSZa6mwAETnM0t42RQCp4iM6_SNjmy3TB48ixsGKV8g@mail.gmail.com>
-Subject: Re: [PATCH v5 6/8] drm/panel: Add ilitek ili9341 panel driver
-To:     dillon.minfei@gmail.com,
-        =?UTF-8?Q?Noralf_Tr=C3=B8nnes?= <noralf@tronnes.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+References: <1590420129-7531-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1590420129-7531-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1590420129-7531-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 26 May 2020 09:56:13 +0200
+Message-ID: <CAMuHMdW=5ZNz8sC9aDGcy3tjBMqXVHzLooei4LYWo44mOs4-dQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] ARM: dts: r8a7742-iwg21d-q7: Enable scifb2 node
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-clk <linux-clk@vger.kernel.org>
+        Prabhakar <prabhakar.csengg@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 25, 2020 at 6:46 AM <dillon.minfei@gmail.com> wrote:
+On Mon, May 25, 2020 at 5:23 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Enable scifb2 interface on iWave RZ/G1H carrier board.
 >
-> From: dillon min <dillon.minfei@gmail.com>
->
->     This driver combine tiny/ili9341.c mipi_dbi_interface driver
->     with mipi_dpi_interface driver, can support ili9341 with serial
->     mode or parallel rgb interface mode by register configuration.
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
 
-Noralf told once that this driver should be unified with mi0283qt.c.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.9.
 
-So, what should we do here?
+Gr{oetje,eeting}s,
 
--- 
-With Best Regards,
-Andy Shevchenko
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
