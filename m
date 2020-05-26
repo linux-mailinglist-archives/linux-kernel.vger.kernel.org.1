@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E911E2B20
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D22C1E2CD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391065AbgEZTCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:02:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56928 "EHLO mail.kernel.org"
+        id S2392349AbgEZTRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:17:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403815AbgEZTCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:02:14 -0400
+        id S2392141AbgEZTOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:14:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7547E20849;
-        Tue, 26 May 2020 19:02:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D7D83208B6;
+        Tue, 26 May 2020 19:14:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519733;
-        bh=c12BwEXWJ5Nu5rhjeaqvBJv87i+JvJvCDPFzsV+LjxY=;
+        s=default; t=1590520447;
+        bh=UB225bkBOAb7NVsN5iNweXrXSv5RIdCjD+JX39Q3gRE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Epfhh69VKjegnBUoBV2qJthu45KSQZo85lS4hzKTnYyDM4bhXizxDadCl1sGkXzJN
-         kat9T/xQNawu7hro3YOLCgmOYSjY9I1R53YBc2w2JP+DTFL26b4uvV+4J665CaqcIm
-         uXhoHq6nNvOi5J4MqVNoNe4TE4l7LE1QApaHh/7E=
+        b=tJ3tFuJYBoHexEuYnmkMtbQe4yu6FobuERHmrqYJYlsS77VX1swtCmVbqIa/Btj70
+         Lyy+SyqFwbSYMTAPa4b7nOv8DMprSDzSeyoZorPCXnzSnMk67EjxNLyfMKirZwRgCl
+         HekKb2b8AbRCKa9hez1kCZJ/sBrIza6F4P/nFYbg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        Alexandre Bounine <alex.bou9@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 55/59] rapidio: fix an error in get_user_pages_fast() error handling
-Date:   Tue, 26 May 2020 20:53:40 +0200
-Message-Id: <20200526183923.849955495@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: [PATCH 5.6 084/126] drm/i915: Propagate error from completed fences
+Date:   Tue, 26 May 2020 20:53:41 +0200
+Message-Id: <20200526183945.105425987@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
-References: <20200526183907.123822792@linuxfoundation.org>
+In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
+References: <20200526183937.471379031@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,48 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Hubbard <jhubbard@nvidia.com>
+From: Chris Wilson <chris@chris-wilson.co.uk>
 
-commit ffca476a0a8d26de767cc41d62b8ca7f540ecfdd upstream.
+commit bc850943486887e3859597a266767f95db90aa72 upstream.
 
-In the case of get_user_pages_fast() returning fewer pages than
-requested, rio_dma_transfer() does not quite do the right thing.  It
-attempts to release all the pages that were requested, rather than just
-the pages that were pinned.
+We need to preserve fatal errors from fences that are being terminated
+as we hook them up.
 
-Fix the error handling so that only the pages that were successfully
-pinned are released.
-
-Fixes: e8de370188d0 ("rapidio: add mport char device driver")
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Matt Porter <mporter@kernel.crashing.org>
-Cc: Alexandre Bounine <alex.bou9@gmail.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/20200517235620.205225-2-jhubbard@nvidia.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: ef4688497512 ("drm/i915: Propagate fence errors")
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Cc: Matthew Auld <matthew.auld@intel.com>
+Reviewed-by: Matthew Auld <matthew.auld@intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200506162136.3325-1-chris@chris-wilson.co.uk
+(cherry picked from commit 24fe5f2ab2478053d50a3bc629ada895903a5cbc)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/rapidio/devices/rio_mport_cdev.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/gpu/drm/i915/i915_request.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/rapidio/devices/rio_mport_cdev.c
-+++ b/drivers/rapidio/devices/rio_mport_cdev.c
-@@ -904,6 +904,11 @@ rio_dma_transfer(struct file *filp, u32
- 				rmcd_error("pinned %ld out of %ld pages",
- 					   pinned, nr_pages);
- 			ret = -EFAULT;
-+			/*
-+			 * Set nr_pages up to mean "how many pages to unpin, in
-+			 * the error handler:
-+			 */
-+			nr_pages = pinned;
- 			goto err_pg;
- 		}
+--- a/drivers/gpu/drm/i915/i915_request.c
++++ b/drivers/gpu/drm/i915/i915_request.c
+@@ -947,8 +947,10 @@ i915_request_await_request(struct i915_r
+ 	GEM_BUG_ON(to == from);
+ 	GEM_BUG_ON(to->timeline == from->timeline);
  
+-	if (i915_request_completed(from))
++	if (i915_request_completed(from)) {
++		i915_sw_fence_set_error_once(&to->submit, from->fence.error);
+ 		return 0;
++	}
+ 
+ 	if (to->engine->schedule) {
+ 		ret = i915_sched_node_add_dependency(&to->sched,
 
 
