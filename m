@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA7D1E2D9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4594A1E2B89
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392152AbgEZTWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:22:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39326 "EHLO mail.kernel.org"
+        id S2403814AbgEZTGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:06:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391912AbgEZTKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:10:10 -0400
+        id S2391587AbgEZTF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:05:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4760C20873;
-        Tue, 26 May 2020 19:10:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 911EE20776;
+        Tue, 26 May 2020 19:05:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520209;
-        bh=XSQb4Zp5cDsFHLtoAkY8MQ1hc/uoWgOtYUAeCqjEU30=;
+        s=default; t=1590519956;
+        bh=xOXi9QnILk5id+/EduROfF8p82+tBxnekVsIOyBvAVI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eQ1tzH2AraEMXV0NW/y1Rik0di3J1CZcOPJS4DBOzY6LK1ne7kaCJBcBi5xzjxD7F
-         IEuzKIarOo3U9WyY5liAKNHF7dsJzGWrLBP8SoR1tHm27ZmZobHDX4SvJO4PX/R8xd
-         EXe77+eprVvE84O0Iro+nVmaf7FbMgsRT7u037ns=
+        b=miRPFDCj9Zljtsc/eg7eqYo2OQlnsNPePn2olnkHpOJYkG1QK5xm9EqWu3veqKeKK
+         yDR/aFurusClI7qUcfy2CgGz6GKk+g+SuejUhf5kyRc2ZkSNGaHDprp6OviD5INJB3
+         cjMhhl+qkrAMUhqzo40y8HImm33vx53w02oajcbs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Colin Xu <colin.xu@intel.com>
-Subject: [PATCH 5.4 074/111] drm/i915/gvt: Init DPLL/DDI vreg for virtual display instead of inheritance.
+        stable@vger.kernel.org, Juliet Kim <julietk@linux.vnet.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 57/81] Revert "net/ibmvnic: Fix EOI when running in XIVE mode"
 Date:   Tue, 26 May 2020 20:53:32 +0200
-Message-Id: <20200526183939.874072051@linuxfoundation.org>
+Message-Id: <20200526183933.434785972@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
-References: <20200526183932.245016380@linuxfoundation.org>
+In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
+References: <20200526183923.108515292@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,103 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Xu <colin.xu@intel.com>
+From: Juliet Kim <julietk@linux.vnet.ibm.com>
 
-commit f965b68188ab59a40a421ced1b05a2fea638465c upstream.
+[ Upstream commit 284f87d2f3871247d08a2b6a24466ae905079913 ]
 
-Init value of some display vregs rea inherited from host pregs. When
-host display in different status, i.e. all monitors unpluged, different
-display configurations, etc., GVT virtual display setup don't consistent
-thus may lead to guest driver consider display goes malfunctional.
+This reverts commit 11d49ce9f7946dfed4dcf5dbde865c78058b50ab
+(“net/ibmvnic: Fix EOI when running in XIVE mode.”) since that
+has the unintended effect of changing the interrupt priority
+and emits warning when running in legacy XICS mode.
 
-The added init vreg values are based on PRMs and fixed by calcuation
-from current configuration (only PIPE_A) and the virtual EDID.
-
-Fixes: 04d348ae3f0a ("drm/i915/gvt: vGPU display virtualization")
-Acked-by: Zhenyu Wang <zhenyuw@linux.intel.com>
-Signed-off-by: Colin Xu <colin.xu@intel.com>
-Signed-off-by: Zhenyu Wang <zhenyuw@linux.intel.com>
-Link: http://patchwork.freedesktop.org/patch/msgid/20200508060506.216250-1-colin.xu@intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Juliet Kim <julietk@linux.vnet.ibm.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/i915/gvt/display.c |   49 +++++++++++++++++++++++++++++++++----
- 1 file changed, 44 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/ibm/ibmvnic.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/drivers/gpu/drm/i915/gvt/display.c
-+++ b/drivers/gpu/drm/i915/gvt/display.c
-@@ -207,14 +207,41 @@ static void emulate_monitor_status_chang
- 				SKL_FUSE_PG_DIST_STATUS(SKL_PG0) |
- 				SKL_FUSE_PG_DIST_STATUS(SKL_PG1) |
- 				SKL_FUSE_PG_DIST_STATUS(SKL_PG2);
--		vgpu_vreg_t(vgpu, LCPLL1_CTL) |=
--				LCPLL_PLL_ENABLE |
--				LCPLL_PLL_LOCK;
--		vgpu_vreg_t(vgpu, LCPLL2_CTL) |= LCPLL_PLL_ENABLE;
--
-+		/*
-+		 * Only 1 PIPE enabled in current vGPU display and PIPE_A is
-+		 *  tied to TRANSCODER_A in HW, so it's safe to assume PIPE_A,
-+		 *   TRANSCODER_A can be enabled. PORT_x depends on the input of
-+		 *   setup_virtual_dp_monitor, we can bind DPLL0 to any PORT_x
-+		 *   so we fixed to DPLL0 here.
-+		 * Setup DPLL0: DP link clk 1620 MHz, non SSC, DP Mode
-+		 */
-+		vgpu_vreg_t(vgpu, DPLL_CTRL1) =
-+			DPLL_CTRL1_OVERRIDE(DPLL_ID_SKL_DPLL0);
-+		vgpu_vreg_t(vgpu, DPLL_CTRL1) |=
-+			DPLL_CTRL1_LINK_RATE(DPLL_CTRL1_LINK_RATE_1620, DPLL_ID_SKL_DPLL0);
-+		vgpu_vreg_t(vgpu, LCPLL1_CTL) =
-+			LCPLL_PLL_ENABLE | LCPLL_PLL_LOCK;
-+		vgpu_vreg_t(vgpu, DPLL_STATUS) = DPLL_LOCK(DPLL_ID_SKL_DPLL0);
-+		/*
-+		 * Golden M/N are calculated based on:
-+		 *   24 bpp, 4 lanes, 154000 pixel clk (from virtual EDID),
-+		 *   DP link clk 1620 MHz and non-constant_n.
-+		 * TODO: calculate DP link symbol clk and stream clk m/n.
-+		 */
-+		vgpu_vreg_t(vgpu, PIPE_DATA_M1(TRANSCODER_A)) = 63 << TU_SIZE_SHIFT;
-+		vgpu_vreg_t(vgpu, PIPE_DATA_M1(TRANSCODER_A)) |= 0x5b425e;
-+		vgpu_vreg_t(vgpu, PIPE_DATA_N1(TRANSCODER_A)) = 0x800000;
-+		vgpu_vreg_t(vgpu, PIPE_LINK_M1(TRANSCODER_A)) = 0x3cd6e;
-+		vgpu_vreg_t(vgpu, PIPE_LINK_N1(TRANSCODER_A)) = 0x80000;
+diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
+index 8a1916443235..abfd990ba4d8 100644
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -2731,10 +2731,12 @@ static int enable_scrq_irq(struct ibmvnic_adapter *adapter,
+ 
+ 	if (adapter->resetting &&
+ 	    adapter->reset_reason == VNIC_RESET_MOBILITY) {
+-		struct irq_desc *desc = irq_to_desc(scrq->irq);
+-		struct irq_chip *chip = irq_desc_get_chip(desc);
++		u64 val = (0xff000000) | scrq->hw_irq;
+ 
+-		chip->irq_eoi(&desc->irq_data);
++		rc = plpar_hcall_norets(H_EOI, val);
++		if (rc)
++			dev_err(dev, "H_EOI FAILED irq 0x%llx. rc=%ld\n",
++				val, rc);
  	}
  
- 	if (intel_vgpu_has_monitor_on_port(vgpu, PORT_B)) {
-+		vgpu_vreg_t(vgpu, DPLL_CTRL2) &=
-+			~DPLL_CTRL2_DDI_CLK_OFF(PORT_B);
-+		vgpu_vreg_t(vgpu, DPLL_CTRL2) |=
-+			DPLL_CTRL2_DDI_CLK_SEL(DPLL_ID_SKL_DPLL0, PORT_B);
-+		vgpu_vreg_t(vgpu, DPLL_CTRL2) |=
-+			DPLL_CTRL2_DDI_SEL_OVERRIDE(PORT_B);
- 		vgpu_vreg_t(vgpu, SFUSE_STRAP) |= SFUSE_STRAP_DDIB_DETECTED;
- 		vgpu_vreg_t(vgpu, TRANS_DDI_FUNC_CTL(TRANSCODER_A)) &=
- 			~(TRANS_DDI_BPC_MASK | TRANS_DDI_MODE_SELECT_MASK |
-@@ -235,6 +262,12 @@ static void emulate_monitor_status_chang
- 	}
- 
- 	if (intel_vgpu_has_monitor_on_port(vgpu, PORT_C)) {
-+		vgpu_vreg_t(vgpu, DPLL_CTRL2) &=
-+			~DPLL_CTRL2_DDI_CLK_OFF(PORT_C);
-+		vgpu_vreg_t(vgpu, DPLL_CTRL2) |=
-+			DPLL_CTRL2_DDI_CLK_SEL(DPLL_ID_SKL_DPLL0, PORT_C);
-+		vgpu_vreg_t(vgpu, DPLL_CTRL2) |=
-+			DPLL_CTRL2_DDI_SEL_OVERRIDE(PORT_C);
- 		vgpu_vreg_t(vgpu, SDEISR) |= SDE_PORTC_HOTPLUG_CPT;
- 		vgpu_vreg_t(vgpu, TRANS_DDI_FUNC_CTL(TRANSCODER_A)) &=
- 			~(TRANS_DDI_BPC_MASK | TRANS_DDI_MODE_SELECT_MASK |
-@@ -255,6 +288,12 @@ static void emulate_monitor_status_chang
- 	}
- 
- 	if (intel_vgpu_has_monitor_on_port(vgpu, PORT_D)) {
-+		vgpu_vreg_t(vgpu, DPLL_CTRL2) &=
-+			~DPLL_CTRL2_DDI_CLK_OFF(PORT_D);
-+		vgpu_vreg_t(vgpu, DPLL_CTRL2) |=
-+			DPLL_CTRL2_DDI_CLK_SEL(DPLL_ID_SKL_DPLL0, PORT_D);
-+		vgpu_vreg_t(vgpu, DPLL_CTRL2) |=
-+			DPLL_CTRL2_DDI_SEL_OVERRIDE(PORT_D);
- 		vgpu_vreg_t(vgpu, SDEISR) |= SDE_PORTD_HOTPLUG_CPT;
- 		vgpu_vreg_t(vgpu, TRANS_DDI_FUNC_CTL(TRANSCODER_A)) &=
- 			~(TRANS_DDI_BPC_MASK | TRANS_DDI_MODE_SELECT_MASK |
+ 	rc = plpar_hcall_norets(H_VIOCTL, adapter->vdev->unit_address,
+-- 
+2.25.1
+
 
 
