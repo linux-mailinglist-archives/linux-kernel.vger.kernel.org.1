@@ -2,103 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E9B1E28C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 19:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3DF11E28D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 19:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389609AbgEZR0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 13:26:02 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:28035 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388803AbgEZR0B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 13:26:01 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1590513960; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=Im6hIGPpJqtxzbNyAwrxrzA8oUaUroHuS60646TlJzw=; b=d2apTG1am+hSxfRzHh5UFIdIWVDS9omKduDIiW5j72X4WOrHWbKiH39HbqFnr3jJLXGYBsTM
- 6NtLxTkpT182o3rDBnTFMmdhqWZ7vHrhEukg7N3DBh8DnOpTSt6EoHCrp13NzwR31O1ZZHp0
- wmnDmbFa/uKBhzEzw451Oarrggk=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5ecd51185086732481df4755 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 May 2020 17:25:44
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5B8AEC433AD; Tue, 26 May 2020 17:25:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.8.176] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 85926C433CA;
-        Tue, 26 May 2020 17:25:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 85926C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [PATCH v4 0/4] scsi: ufs: Fix WriteBooster and cleanup UFS driver
-To:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, avri.altman@wdc.com,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com
-Cc:     beanhuo@micron.com, cang@codeaurora.org, matthias.bgg@gmail.com,
-        bvanassche@acm.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Virtual_Global_UFS_Upstream@mediatek.com
-References: <20200522083212.4008-1-stanley.chu@mediatek.com>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <a18ed057-e35b-b1b9-9ce2-718d7c3961fd@codeaurora.org>
-Date:   Tue, 26 May 2020 10:25:41 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
-MIME-Version: 1.0
-In-Reply-To: <20200522083212.4008-1-stanley.chu@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1728673AbgEZR2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 13:28:07 -0400
+Received: from mga09.intel.com ([134.134.136.24]:26901 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728339AbgEZR2H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 13:28:07 -0400
+IronPort-SDR: etK1ewcjgIuCNPdb3foguoktaV/uxLdhqLmgzcPZUZ0jzOsyOs5WK//wkVdj/GXvJ7kLE3o4nv
+ xDVBQr0qLLkg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 10:28:06 -0700
+IronPort-SDR: qb9dzuLpKdVY1btB3YXpyKlC3hjxoqruoGUWD6uXa6iwm601KVXZIDqdUhskdl/I1cJpG3vnWe
+ LAiUr20S8W2A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,437,1583222400"; 
+   d="scan'208";a="468384377"
+Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
+  by fmsmga005.fm.intel.com with ESMTP; 26 May 2020 10:28:06 -0700
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     "Thomas Gleixner" <tglx@linutronix.de>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "Borislav Petkov" <bp@alien8.de>, "Ingo Molnar" <mingo@redhat.com>,
+        "Tony Luck" <tony.luck@intel.com>,
+        "Ravi V Shankar" <ravi.v.shankar@intel.com>
+Cc:     "x86" <x86@kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>
+Subject: [PATCH] x86/split_lock: Add Tigerlake CPU models
+Date:   Tue, 26 May 2020 10:26:07 -0700
+Message-Id: <1590513967-46432-1-git-send-email-fenghua.yu@intel.com>
+X-Mailer: git-send-email 2.5.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/22/2020 1:32 AM, Stanley Chu wrote:
-> Hi,
-> 
-> This patch set fixes some WriteBooster issues and do small cleanup in UFS driver
-> 
-> v3 -> v4
->    - Squash patch [4] and [5] (Asutosh)
->    - Fix commit message in patch [4]
-> 
-> v2 -> v3
->    - Introduce patch [5] to fix possible VCC power drain during runtime suspend (Asutosh)
-> 
-> v1 -> v2
->    - Remove dummy new line in patch [4] (Asutosh)
->    - Add more limitation to allow WriteBooster flush during Hibern8 in runtime-suspend. Now the device power mode is kept as Active power mode only if link is put in Hibern8 or Auto-Hibern8 is enabled during runtime-suspend (Asutosh)
-> 
-> Stanley Chu (4):
->    scsi: ufs: Remove unnecessary memset for dev_info
->    scsi: ufs: Allow WriteBooster on UFS 2.2 devices
->    scsi: ufs: Fix index of attributes query for WriteBooster feature
->    scsi: ufs: Fix WriteBooster flush during runtime suspend
-> 
->   drivers/scsi/ufs/ufs-sysfs.c | 13 ++++-
->   drivers/scsi/ufs/ufs.h       |  2 +-
->   drivers/scsi/ufs/ufshcd.c    | 99 +++++++++++++++++++++++++-----------
->   drivers/scsi/ufs/ufshcd.h    |  3 +-
->   4 files changed, 82 insertions(+), 35 deletions(-)
-> 
+Tigerlake CPUs support split lock detection. Enumerate the feature by
+the split lock support bit in the CORE_CAPABILITIES MSR.
 
-This set looks good to me.
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+---
+ arch/x86/kernel/cpu/intel.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
-
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index a19a680542ce..0717b12d7f05 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -1138,6 +1138,8 @@ static const struct x86_cpu_id split_lock_cpu_ids[] __initconst = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT,	1),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_D,	1),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_L,	1),
++	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE_L,		1),
++	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE,		1),
+ 	{}
+ };
+ 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
+2.19.1
+
