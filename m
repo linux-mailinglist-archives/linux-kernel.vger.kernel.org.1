@@ -2,38 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F0A1E2B81
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBD11E2D6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391552AbgEZTFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:05:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33810 "EHLO mail.kernel.org"
+        id S2390932AbgEZTKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:10:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391039AbgEZTFq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:05:46 -0400
+        id S2403989AbgEZTJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:09:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD29F20776;
-        Tue, 26 May 2020 19:05:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC5E720873;
+        Tue, 26 May 2020 19:09:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519946;
-        bh=6S1ZVz/Nu5RytmAE3pYQv0MP7oNAREJUuYy1rCPjnqw=;
+        s=default; t=1590520197;
+        bh=SbiT9tShyeJeTrafTHaX26vSwjPfBaUpDXmf1AKE84s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1vUQUahlpKw073u36B4W8Jg3PG+mUZF2R/QHAk1IHh5DLH8lK4VGgm5IC/7HmaP5L
-         peNT1Y2xVeW5gQMe1sFTYGgF3Rr4Sb0i5vyPz1W6kYwzcpA6nGFBi1gxqgWITaj+2K
-         e5ZYzQ+VXX5aQkcRpXiiT5qMAVngMHHMpQJOLQ6k=
+        b=zfaUG+JjtHxf0EpzqiNj4ItmoMeNVDuY4/eaWbRdg5bI60D6M+pZ26rJMabtOQtdn
+         ywb6WypMK0jCQreOJqSJrYUrkVwcZzhLgxhUSfaExxl//qRcwQp3+oPIHjLTvyPDlp
+         wtD6/WFEHGMekYVr0wSZkWTK4ETbcmSCeNeVKMAs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 79/81] rxrpc: Trace discarded ACKs
+        stable@vger.kernel.org, kernel test robot <rong.a.chen@intel.com>,
+        Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Qian Cai <cai@lca.pw>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 096/111] kasan: disable branch tracing for core runtime
 Date:   Tue, 26 May 2020 20:53:54 +0200
-Message-Id: <20200526183935.810869824@linuxfoundation.org>
+Message-Id: <20200526183942.024415645@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
-References: <20200526183923.108515292@linuxfoundation.org>
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,100 +50,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Marco Elver <elver@google.com>
 
-[ Upstream commit d1f129470e6cb79b8b97fecd12689f6eb49e27fe ]
+commit 33cd65e73abd693c00c4156cf23677c453b41b3b upstream.
 
-Add a tracepoint to track received ACKs that are discarded due to being
-outside of the Tx window.
+During early boot, while KASAN is not yet initialized, it is possible to
+enter reporting code-path and end up in kasan_report().
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+While uninitialized, the branch there prevents generating any reports,
+however, under certain circumstances when branches are being traced
+(TRACE_BRANCH_PROFILING), we may recurse deep enough to cause kernel
+reboots without warning.
+
+To prevent similar issues in future, we should disable branch tracing
+for the core runtime.
+
+[elver@google.com: remove duplicate DISABLE_BRANCH_PROFILING, per Qian Cai]
+  Link: https://lore.kernel.org/lkml/20200517011732.GE24705@shao2-debian/
+  Link: http://lkml.kernel.org/r/20200522075207.157349-1-elver@google.com
+Reported-by: kernel test robot <rong.a.chen@intel.com>
+Signed-off-by: Marco Elver <elver@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Qian Cai <cai@lca.pw>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r//20200517011732.GE24705@shao2-debian/
+Link: http://lkml.kernel.org/r/20200519182459.87166-1-elver@google.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- include/trace/events/rxrpc.h | 35 +++++++++++++++++++++++++++++++++++
- net/rxrpc/input.c            | 12 ++++++++++--
- 2 files changed, 45 insertions(+), 2 deletions(-)
+ mm/kasan/Makefile  |    8 ++++----
+ mm/kasan/generic.c |    1 -
+ mm/kasan/tags.c    |    1 -
+ 3 files changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/include/trace/events/rxrpc.h b/include/trace/events/rxrpc.h
-index 0924119bcfa4..bc5b232440b6 100644
---- a/include/trace/events/rxrpc.h
-+++ b/include/trace/events/rxrpc.h
-@@ -1549,6 +1549,41 @@ TRACE_EVENT(rxrpc_notify_socket,
- 		      __entry->serial)
- 	    );
+--- a/mm/kasan/Makefile
++++ b/mm/kasan/Makefile
+@@ -14,10 +14,10 @@ CFLAGS_REMOVE_tags.o = $(CC_FLAGS_FTRACE
+ # Function splitter causes unnecessary splits in __asan_load1/__asan_store1
+ # see: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63533
  
-+TRACE_EVENT(rxrpc_rx_discard_ack,
-+	    TP_PROTO(unsigned int debug_id, rxrpc_serial_t serial,
-+		     rxrpc_seq_t first_soft_ack, rxrpc_seq_t call_ackr_first,
-+		     rxrpc_seq_t prev_pkt, rxrpc_seq_t call_ackr_prev),
-+
-+	    TP_ARGS(debug_id, serial, first_soft_ack, call_ackr_first,
-+		    prev_pkt, call_ackr_prev),
-+
-+	    TP_STRUCT__entry(
-+		    __field(unsigned int,	debug_id	)
-+		    __field(rxrpc_serial_t,	serial		)
-+		    __field(rxrpc_seq_t,	first_soft_ack)
-+		    __field(rxrpc_seq_t,	call_ackr_first)
-+		    __field(rxrpc_seq_t,	prev_pkt)
-+		    __field(rxrpc_seq_t,	call_ackr_prev)
-+			     ),
-+
-+	    TP_fast_assign(
-+		    __entry->debug_id		= debug_id;
-+		    __entry->serial		= serial;
-+		    __entry->first_soft_ack	= first_soft_ack;
-+		    __entry->call_ackr_first	= call_ackr_first;
-+		    __entry->prev_pkt		= prev_pkt;
-+		    __entry->call_ackr_prev	= call_ackr_prev;
-+			   ),
-+
-+	    TP_printk("c=%08x r=%08x %08x<%08x %08x<%08x",
-+		      __entry->debug_id,
-+		      __entry->serial,
-+		      __entry->first_soft_ack,
-+		      __entry->call_ackr_first,
-+		      __entry->prev_pkt,
-+		      __entry->call_ackr_prev)
-+	    );
-+
- #endif /* _TRACE_RXRPC_H */
+-CFLAGS_common.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
+-CFLAGS_generic.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
+-CFLAGS_generic_report.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
+-CFLAGS_tags.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
++CFLAGS_common.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector) -DDISABLE_BRANCH_PROFILING
++CFLAGS_generic.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector) -DDISABLE_BRANCH_PROFILING
++CFLAGS_generic_report.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector) -DDISABLE_BRANCH_PROFILING
++CFLAGS_tags.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector) -DDISABLE_BRANCH_PROFILING
  
- /* This part must be outside protection */
-diff --git a/net/rxrpc/input.c b/net/rxrpc/input.c
-index d9beb28fc32f..4cc3b54ebc49 100644
---- a/net/rxrpc/input.c
-+++ b/net/rxrpc/input.c
-@@ -879,8 +879,12 @@ static void rxrpc_input_ack(struct rxrpc_call *call, struct sk_buff *skb,
+ obj-$(CONFIG_KASAN) := common.o init.o report.o
+ obj-$(CONFIG_KASAN_GENERIC) += generic.o generic_report.o quarantine.o
+--- a/mm/kasan/generic.c
++++ b/mm/kasan/generic.c
+@@ -15,7 +15,6 @@
+  */
  
- 	/* Discard any out-of-order or duplicate ACKs (outside lock). */
- 	if (before(first_soft_ack, call->ackr_first_seq) ||
--	    before(prev_pkt, call->ackr_prev_seq))
-+	    before(prev_pkt, call->ackr_prev_seq)) {
-+		trace_rxrpc_rx_discard_ack(call->debug_id, sp->hdr.serial,
-+					   first_soft_ack, call->ackr_first_seq,
-+					   prev_pkt, call->ackr_prev_seq);
- 		return;
-+	}
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+-#define DISABLE_BRANCH_PROFILING
  
- 	buf.info.rxMTU = 0;
- 	ioffset = offset + nr_acks + 3;
-@@ -892,8 +896,12 @@ static void rxrpc_input_ack(struct rxrpc_call *call, struct sk_buff *skb,
+ #include <linux/export.h>
+ #include <linux/interrupt.h>
+--- a/mm/kasan/tags.c
++++ b/mm/kasan/tags.c
+@@ -12,7 +12,6 @@
+  */
  
- 	/* Discard any out-of-order or duplicate ACKs (inside lock). */
- 	if (before(first_soft_ack, call->ackr_first_seq) ||
--	    before(prev_pkt, call->ackr_prev_seq))
-+	    before(prev_pkt, call->ackr_prev_seq)) {
-+		trace_rxrpc_rx_discard_ack(call->debug_id, sp->hdr.serial,
-+					   first_soft_ack, call->ackr_first_seq,
-+					   prev_pkt, call->ackr_prev_seq);
- 		goto out;
-+	}
- 	call->acks_latest_ts = skb->tstamp;
- 	call->acks_latest = sp->hdr.serial;
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+-#define DISABLE_BRANCH_PROFILING
  
--- 
-2.25.1
-
+ #include <linux/export.h>
+ #include <linux/interrupt.h>
 
 
