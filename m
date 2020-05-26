@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF261E2E2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 840731E2BB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391331AbgEZTEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:04:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59594 "EHLO mail.kernel.org"
+        id S2391746AbgEZTHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:07:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391321AbgEZTEG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:04:06 -0400
+        id S2391735AbgEZTHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:07:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA3C6208B3;
-        Tue, 26 May 2020 19:04:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 80DE3208A7;
+        Tue, 26 May 2020 19:07:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519845;
-        bh=iOAwMRBSlHy9XiMQy0/QkkEIEB2ri9V80CPULmrxMVo=;
+        s=default; t=1590520071;
+        bh=J7uV9nvaboK0dfMn3PziHprNy+pfNzX7Mjny4qZ2sSo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uygF6mnmu44+2LXYNRceyW+TN36NBtQTgyvjz0SOBjvv77JxjDDUDg7jDJ9VzW1zQ
-         6118+ll/58SGgEifAKaHw5Jhhx49jrBkeliDy9wkg/PXPVLrieXxfXPfJb0Oni8nFZ
-         Epiap2+T8yvheLW5zodJnSntRk5XEYpO9Lb8rDEU=
+        b=OqxY2p6rqEX2mdWBBo4JofZ1NjuobRZt3PPMn0I4px/fUmXmwzTpjjaeuoAcDd4PT
+         sQqF/rIPs32cLa+NanIRp7/7IFz7Wg+SbxnUUYCCfk3I7ypAL8+AFg3Gv1GgLD2TX/
+         iPGYaBBdggNL7vb9VKvXjBtP4MnFgOVnJVgFZ5Vw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Monakov <amonakov@ispras.ru>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org, Joerg Roedel <jroedel@suse.de>,
+        stable@vger.kernel.org, Gavin Shan <gshan@redhat.com>,
+        Shay Agroskin <shayagr@amazon.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 12/81] iommu/amd: Fix over-read of ACPI UID from IVRS table
-Date:   Tue, 26 May 2020 20:52:47 +0200
-Message-Id: <20200526183927.467526457@linuxfoundation.org>
+Subject: [PATCH 5.4 030/111] net/ena: Fix build warning in ena_xdp_set()
+Date:   Tue, 26 May 2020 20:52:48 +0200
+Message-Id: <20200526183935.653888540@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
-References: <20200526183923.108515292@linuxfoundation.org>
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,80 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Monakov <amonakov@ispras.ru>
+From: Gavin Shan <gshan@redhat.com>
 
-[ Upstream commit e461b8c991b9202b007ea2059d953e264240b0c9 ]
+[ Upstream commit caec66198d137c26f0d234abc498866a58c64150 ]
 
-IVRS parsing code always tries to read 255 bytes from memory when
-retrieving ACPI device path, and makes an assumption that firmware
-provides a zero-terminated string. Both of those are bugs: the entry
-is likely to be shorter than 255 bytes, and zero-termination is not
-guaranteed.
+This fixes the following build warning in ena_xdp_set(), which is
+observed on aarch64 with 64KB page size.
 
-With Acer SF314-42 firmware these issues manifest visibly in dmesg:
+   In file included from ./include/net/inet_sock.h:19,
+      from ./include/net/ip.h:27,
+      from drivers/net/ethernet/amazon/ena/ena_netdev.c:46:
+   drivers/net/ethernet/amazon/ena/ena_netdev.c: In function         \
+   ‘ena_xdp_set’:                                                    \
+   drivers/net/ethernet/amazon/ena/ena_netdev.c:557:6: warning:      \
+   format ‘%lu’                                                      \
+   expects argument of type ‘long unsigned int’, but argument 4      \
+   has type ‘int’                                                    \
+   [-Wformat=] "Failed to set xdp program, the current MTU (%d) is   \
+   larger than the maximum allowed MTU (%lu) while xdp is on",
 
-AMD-Vi: ivrs, add hid:AMDI0020, uid:\_SB.FUR0\xf0\xa5, rdevid:160
-AMD-Vi: ivrs, add hid:AMDI0020, uid:\_SB.FUR1\xf0\xa5, rdevid:160
-AMD-Vi: ivrs, add hid:AMDI0020, uid:\_SB.FUR2\xf0\xa5, rdevid:160
-AMD-Vi: ivrs, add hid:AMDI0020, uid:\_SB.FUR3>\x83e\x8d\x9a\xd1...
-
-The first three lines show how the code over-reads adjacent table
-entries into the UID, and in the last line it even reads garbage data
-beyond the end of the IVRS table itself.
-
-Since each entry has the length of the UID (uidl member of ivhd_entry
-struct), use that for memcpy, and manually add a zero terminator.
-
-Avoid zero-filling hid and uid arrays up front, and instead ensure
-the uid array is always zero-terminated. No change needed for the hid
-array, as it was already properly zero-terminated.
-
-Fixes: 2a0cb4e2d423c ("iommu/amd: Add new map for storing IVHD dev entry type HID")
-
-Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: iommu@lists.linux-foundation.org
-Link: https://lore.kernel.org/r/20200511102352.1831-1-amonakov@ispras.ru
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Gavin Shan <gshan@redhat.com>
+Acked-by: Shay Agroskin <shayagr@amazon.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/amd_iommu_init.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/amazon/ena/ena_netdev.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iommu/amd_iommu_init.c b/drivers/iommu/amd_iommu_init.c
-index 2557ed112bc2..c7d0bb3b4a30 100644
---- a/drivers/iommu/amd_iommu_init.c
-+++ b/drivers/iommu/amd_iommu_init.c
-@@ -1334,8 +1334,8 @@ static int __init init_iommu_from_acpi(struct amd_iommu *iommu,
- 		}
- 		case IVHD_DEV_ACPI_HID: {
- 			u16 devid;
--			u8 hid[ACPIHID_HID_LEN] = {0};
--			u8 uid[ACPIHID_UID_LEN] = {0};
-+			u8 hid[ACPIHID_HID_LEN];
-+			u8 uid[ACPIHID_UID_LEN];
- 			int ret;
- 
- 			if (h->type != 0x40) {
-@@ -1352,6 +1352,7 @@ static int __init init_iommu_from_acpi(struct amd_iommu *iommu,
- 				break;
- 			}
- 
-+			uid[0] = '\0';
- 			switch (e->uidf) {
- 			case UID_NOT_PRESENT:
- 
-@@ -1366,8 +1367,8 @@ static int __init init_iommu_from_acpi(struct amd_iommu *iommu,
- 				break;
- 			case UID_IS_CHARACTER:
- 
--				memcpy(uid, (u8 *)(&e->uid), ACPIHID_UID_LEN - 1);
--				uid[ACPIHID_UID_LEN - 1] = '\0';
-+				memcpy(uid, &e->uid, e->uidl);
-+				uid[e->uidl] = '\0';
- 
- 				break;
- 			default:
+diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.h b/drivers/net/ethernet/amazon/ena/ena_netdev.h
+index dc02950a96b8..28412f11a9ca 100644
+--- a/drivers/net/ethernet/amazon/ena/ena_netdev.h
++++ b/drivers/net/ethernet/amazon/ena/ena_netdev.h
+@@ -68,7 +68,7 @@
+  * 16kB.
+  */
+ #if PAGE_SIZE > SZ_16K
+-#define ENA_PAGE_SIZE SZ_16K
++#define ENA_PAGE_SIZE (_AC(SZ_16K, UL))
+ #else
+ #define ENA_PAGE_SIZE PAGE_SIZE
+ #endif
 -- 
 2.25.1
 
