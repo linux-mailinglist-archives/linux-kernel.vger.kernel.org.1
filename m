@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4E81E2BD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AFD01E2AF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391844AbgEZTJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:09:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38204 "EHLO mail.kernel.org"
+        id S2390728AbgEZTAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:00:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391538AbgEZTJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:09:09 -0400
+        id S2390713AbgEZTAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:00:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC0F2208A7;
-        Tue, 26 May 2020 19:09:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C5D4D2084C;
+        Tue, 26 May 2020 19:00:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520149;
-        bh=qW1bDtDy0PK1OW718f5W77RyQ058t8EKD324HEPQDNQ=;
+        s=default; t=1590519621;
+        bh=1hhvVgdm9opQ+gaf4P/jU13te9UpgdJ3/KNQEmyx8cE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fgiYsM8zR1FYXhbjnpSaYK/UJ8HQAh0RHBK/Obx4iegw/oVEE/HHMzFfzQKFRmjIj
-         bpRE6A1oX1MK0xXEruYLCjz+LnuhiTKCUwAdHjcohp+DNVHIFir0gsM8r0MECPRyTK
-         69I2DKnfxaJ6CFj420GuhcXUWoukR0wjf9nW6foM=
+        b=ZwQvWZQ0tZB7lZJqMwDbDlZCAatzhyVbj9P5LJqhH5tcjYu8bn3Uhq5iDWIXSAYfU
+         shC7hVb2n8NBDJUYvAUQbVI3DQRUDB/GlLKR21Dv9R/pXb272rRAvwiArgIAdlipoq
+         SSwNC7nGzOYgLz+gHBm+gloV7oe00MoI/yJ6fchs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Yoshiyuki Kurauchi <ahochauwaaaaa@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 037/111] gtp: set NLM_F_MULTI flag in gtp_genl_dump_pdp()
-Date:   Tue, 26 May 2020 20:52:55 +0200
-Message-Id: <20200526183936.396273783@linuxfoundation.org>
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 11/59] i2c: mux: demux-pinctrl: Fix an error handling path in i2c_demux_pinctrl_probe()
+Date:   Tue, 26 May 2020 20:52:56 +0200
+Message-Id: <20200526183911.757755672@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
-References: <20200526183932.245016380@linuxfoundation.org>
+In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
+References: <20200526183907.123822792@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,59 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshiyuki Kurauchi <ahochauwaaaaa@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 846c68f7f1ac82c797a2f1db3344a2966c0fe2e1 ]
+[ Upstream commit e9d1a0a41d4486955e96552293c1fcf1fce61602 ]
 
-In drivers/net/gtp.c, gtp_genl_dump_pdp() should set NLM_F_MULTI
-flag since it returns multipart message.
-This patch adds a new arg "flags" in gtp_genl_fill_info() so that
-flags can be set by the callers.
+A call to 'i2c_demux_deactivate_master()' is missing in the error handling
+path, as already done in the remove function.
 
-Signed-off-by: Yoshiyuki Kurauchi <ahochauwaaaaa@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 50a5ba876908 ("i2c: mux: demux-pinctrl: add driver")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/gtp.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/i2c/muxes/i2c-demux-pinctrl.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/gtp.c b/drivers/net/gtp.c
-index 3a53d222bfcc..d89ec99abcd6 100644
---- a/drivers/net/gtp.c
-+++ b/drivers/net/gtp.c
-@@ -1172,11 +1172,11 @@ out_unlock:
- static struct genl_family gtp_genl_family;
- 
- static int gtp_genl_fill_info(struct sk_buff *skb, u32 snd_portid, u32 snd_seq,
--			      u32 type, struct pdp_ctx *pctx)
-+			      int flags, u32 type, struct pdp_ctx *pctx)
- {
- 	void *genlh;
- 
--	genlh = genlmsg_put(skb, snd_portid, snd_seq, &gtp_genl_family, 0,
-+	genlh = genlmsg_put(skb, snd_portid, snd_seq, &gtp_genl_family, flags,
- 			    type);
- 	if (genlh == NULL)
- 		goto nlmsg_failure;
-@@ -1230,8 +1230,8 @@ static int gtp_genl_get_pdp(struct sk_buff *skb, struct genl_info *info)
- 		goto err_unlock;
- 	}
- 
--	err = gtp_genl_fill_info(skb2, NETLINK_CB(skb).portid,
--				 info->snd_seq, info->nlhdr->nlmsg_type, pctx);
-+	err = gtp_genl_fill_info(skb2, NETLINK_CB(skb).portid, info->snd_seq,
-+				 0, info->nlhdr->nlmsg_type, pctx);
- 	if (err < 0)
- 		goto err_unlock_free;
- 
-@@ -1274,6 +1274,7 @@ static int gtp_genl_dump_pdp(struct sk_buff *skb,
- 				    gtp_genl_fill_info(skb,
- 					    NETLINK_CB(cb->skb).portid,
- 					    cb->nlh->nlmsg_seq,
-+					    NLM_F_MULTI,
- 					    cb->nlh->nlmsg_type, pctx)) {
- 					cb->args[0] = i;
- 					cb->args[1] = j;
+diff --git a/drivers/i2c/muxes/i2c-demux-pinctrl.c b/drivers/i2c/muxes/i2c-demux-pinctrl.c
+index 33ce032cb701..0c637ae81404 100644
+--- a/drivers/i2c/muxes/i2c-demux-pinctrl.c
++++ b/drivers/i2c/muxes/i2c-demux-pinctrl.c
+@@ -270,6 +270,7 @@ static int i2c_demux_pinctrl_probe(struct platform_device *pdev)
+ err_rollback_available:
+ 	device_remove_file(&pdev->dev, &dev_attr_available_masters);
+ err_rollback:
++	i2c_demux_deactivate_master(priv);
+ 	for (j = 0; j < i; j++) {
+ 		of_node_put(priv->chan[j].parent_np);
+ 		of_changeset_destroy(&priv->chan[j].chgset);
 -- 
 2.25.1
 
