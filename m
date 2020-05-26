@@ -2,44 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA811E26DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 18:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B611E26BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 18:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388510AbgEZQY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 12:24:27 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:35182 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726930AbgEZQYZ (ORCPT
+        id S1729919AbgEZQTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 12:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728280AbgEZQTt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 12:24:25 -0400
+        Tue, 26 May 2020 12:19:49 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC06C03E96D
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 09:19:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=S3JSzd4qxhZQql7zHNLOO4rOyqI0Rs91xMwgjbky3rE=; b=tP0inwqbIVkR8BMeC+ExrLqtvM
-        mqToMXdPVtRaowx3ByEmBoiCBOXiuqvUNYm7/M0l9RiuGhffIMVutV9mIRBl8FpB6KEnQXQ1cG7hm
-        j4LLXGp/a2p2giODfGnCr1pTUw2/6LqcYsdP4fqIgNUk8hv/OUmB4xrdx95wwn8Tulv/BXvqXSNtP
-        VHyz+F4dYmJlkvK4NZ+BHRGhC5a9bMwOKzRNkuBke5rT+p0HWORPaA7ETJ7ro+ylh8/bBw5Rg1F3K
-        zpLLqgG4ikfwl8fvRc6QBlUVzD664VwX+e2HdP7uqW4J9y9Lchh/7QZG/5/GLtRf+QNLPqWMBHye5
-        hjfVEUig==;
+        bh=8afjZgc+ZxZyr9cWTVCTisT80ltrjNVBpyip7riNXmw=; b=ZaZAMUhOd+4giRubqNVM5e3pHY
+        neTV2Uc8BBLtfzeO0pNdFIMZoSgEUUeaQamscjEClj3lue0It/szyaU4QD4W4sLmHxhVzWqiL7tXc
+        stIAlaeT+sYFnjvtrmsJ9zAwq2GJtvsoeL4HSBAqI15YTeCY/l4jrM1t42SyioEaDFIyqGJVtlqMl
+        Z4Y4e9yhODPaITb0I0t4NNSJsU2nGouyLzmkF9gJlmZHy4i9XO+8DXpzJmSkAfdfMQ4f3vuxuBBwP
+        lSX/VHcb7AsT+Gn6HTsh/8pnUxV3r/nCdK6/LJ1a8BFcjVSYFSBiddjPaoqZaEDqlUY30DgsIwNaC
+        vpRonofA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jdcIv-0005Tg-87; Tue, 26 May 2020 16:19:49 +0000
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jdcIq-0000Ec-5L; Tue, 26 May 2020 16:19:44 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6CC48306108;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A269C3069A1;
         Tue, 26 May 2020 18:19:41 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 489A720FF792C; Tue, 26 May 2020 18:19:41 +0200 (CEST)
-Message-ID: <20200526161907.836818381@infradead.org>
+        id 4ED9420FF793B; Tue, 26 May 2020 18:19:41 +0200 (CEST)
+Message-ID: <20200526161907.895109676@infradead.org>
 User-Agent: quilt/0.66
-Date:   Tue, 26 May 2020 18:10:59 +0200
+Date:   Tue, 26 May 2020 18:11:00 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     tglx@linutronix.de, frederic@kernel.org
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, cai@lca.pw,
         mgorman@techsingularity.net, peterz@infradead.org
-Subject: [RFC][PATCH 2/7] smp: Optimize flush_smp_call_function_queue()
+Subject: [RFC][PATCH 3/7] smp: Move irq_work_run() out of flush_smp_call_function_queue()
 References: <20200526161057.531933155@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,74 +51,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The call_single_queue can contain (two) different callbacks,
-synchronous and asynchronous. The current interrupt handler runs them
-in-order, which means that remote CPUs that are waiting for their
-synchronous call can be delayed by running asynchronous callbacks.
-
-Rework the interrupt handler to first run the synchonous callbacks.
+This ensures flush_smp_call_function_queue() is strictly about
+call_single_queue.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/smp.c |   27 +++++++++++++++++++++++----
- 1 file changed, 23 insertions(+), 4 deletions(-)
+ kernel/smp.c |   17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
 --- a/kernel/smp.c
 +++ b/kernel/smp.c
-@@ -209,9 +209,9 @@ void generic_smp_call_function_single_in
-  */
- static void flush_smp_call_function_queue(bool warn_cpu_offline)
+@@ -84,6 +84,7 @@ int smpcfd_dying_cpu(unsigned int cpu)
+ 	 * still pending.
+ 	 */
+ 	flush_smp_call_function_queue(false);
++	irq_work_run();
+ 	return 0;
+ }
+ 
+@@ -191,6 +192,14 @@ static int generic_exec_single(int cpu,
+ void generic_smp_call_function_single_interrupt(void)
  {
--	struct llist_head *head;
--	struct llist_node *entry;
- 	call_single_data_t *csd, *csd_next;
-+	struct llist_node *entry, *prev;
-+	struct llist_head *head;
- 	static bool warned;
- 
- 	lockdep_assert_irqs_disabled();
-@@ -235,21 +235,40 @@ static void flush_smp_call_function_queu
- 				csd->func);
- 	}
- 
-+	/*
-+	 * First; run all SYNC callbacks, people are waiting for us.
-+	 */
-+	prev = NULL;
- 	llist_for_each_entry_safe(csd, csd_next, entry, llist) {
- 		smp_call_func_t func = csd->func;
- 		void *info = csd->info;
- 
- 		/* Do we wait until *after* callback? */
- 		if (csd->flags & CSD_FLAG_SYNCHRONOUS) {
-+			if (prev) {
-+				prev->next = &csd_next->llist;
-+			} else {
-+				entry = &csd_next->llist;
-+			}
- 			func(info);
- 			csd_unlock(csd);
- 		} else {
--			csd_unlock(csd);
--			func(info);
-+			prev = &csd->llist;
- 		}
- 	}
- 
- 	/*
-+	 * Second; run all !SYNC callbacks.
-+	 */
-+	llist_for_each_entry_safe(csd, csd_next, entry, llist) {
-+		smp_call_func_t func = csd->func;
-+		void *info = csd->info;
-+
-+		csd_unlock(csd);
-+		func(info);
-+	}
+ 	flush_smp_call_function_queue(true);
 +
 +	/*
- 	 * Handle irq works queued remotely by irq_work_queue_on().
- 	 * Smp functions above are typically synchronous so they
- 	 * better run first since some other CPUs may be busy waiting
++	 * Handle irq works queued remotely by irq_work_queue_on().
++	 * Smp functions above are typically synchronous so they
++	 * better run first since some other CPUs may be busy waiting
++	 * for them.
++	 */
++	irq_work_run();
+ }
+ 
+ /**
+@@ -267,14 +276,6 @@ static void flush_smp_call_function_queu
+ 		csd_unlock(csd);
+ 		func(info);
+ 	}
+-
+-	/*
+-	 * Handle irq works queued remotely by irq_work_queue_on().
+-	 * Smp functions above are typically synchronous so they
+-	 * better run first since some other CPUs may be busy waiting
+-	 * for them.
+-	 */
+-	irq_work_run();
+ }
+ 
+ /*
 
 
