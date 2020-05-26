@@ -2,110 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA3C1E33BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 01:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1391E33C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 01:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726161AbgEZXbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 19:31:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725896AbgEZXbO (ORCPT
+        id S1726282AbgEZXdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 19:33:12 -0400
+Received: from smtprelay0097.hostedemail.com ([216.40.44.97]:45352 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725857AbgEZXdM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 19:31:14 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB3AC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 16:31:14 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id b6so26697356ljj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 16:31:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=guzman.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NUHQ87HXBhNLKdg5M4S8WpnQd9u0DanCJ6FWlFhn50g=;
-        b=kMBEkytO421Sme01FUYPg/RhFeCsWxOBXVi7dHrRMP/yX14dsQeccuifaus5xaz/9e
-         wjjpnmeM9D+ccEq+VUAB48plmUqyKLQSBCKqiLDJ28D9pzenSdcyuoNl08yWm5uNOqIg
-         AR2sai4gvUcXNsVVu12PJ6aQYJhyLkKAXuNqY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NUHQ87HXBhNLKdg5M4S8WpnQd9u0DanCJ6FWlFhn50g=;
-        b=EFPma9yCXNzUJzZ3aS39JYzgB6C4IHTLxnwQswyGyGyu0XVSSsmDwHKlnqwwMEg4ik
-         26NoPMXxRvWfv4MBYJwd+fl35jwYQJuFaa00IbgXrCMiY+MOUCRUywUU79b/3A8WYoT9
-         MVUGfXrTXh0CSRLLl1rcGFteg9m89hbflV78q7uKVfVOYAJoDnreMEaTkF9Udy+TVWUx
-         YQfrwqEr0+KWMzoTpiY6dxx23IfmSFfh86GRl9p5QHYQFaw9XJ7F7vDSZ/Ck+1VVFlhp
-         tdfMgC2s3qkirI/TsnvWn1AO/Ct5zp8gPbH0d7OD+zBoUHqymW9B6AoLzuViOiPoaDn1
-         iG6g==
-X-Gm-Message-State: AOAM533GZCd7Gky5y1BcCz0qbL0t4zDgqWtu1X5DMlW2xIRnPY2RBOE7
-        HLJ7ZqnBYQJtOUgXC0cK1JFyeA7kcEznsPPU2U4HYQ==
-X-Google-Smtp-Source: ABdhPJyR5HMQaW5UuV5jbkhlc66/+xKqzQdlsnkgoPumeuNFswLStR1xI7PXaz9cnvI14E06uxSyqrbryw1y/M5jLZ4=
-X-Received: by 2002:a2e:8654:: with SMTP id i20mr1474327ljj.79.1590535872825;
- Tue, 26 May 2020 16:31:12 -0700 (PDT)
+        Tue, 26 May 2020 19:33:12 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 59788837F24D;
+        Tue, 26 May 2020 23:33:11 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:560:599:800:960:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1434:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2692:2693:2828:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:7809:7901:7903:7974:9010:10004:10226:10400:10450:10455:10848:11232:11658:11914:12048:12296:12297:12663:12740:12760:12895:13019:13255:13439:13891:14096:14097:14181:14659:14721:19904:19999:21080:21220:21324:21325:21433:21451:21627:21660:21819:30003:30022:30029:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: hate02_240191e26d4d
+X-Filterd-Recvd-Size: 3226
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf19.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 26 May 2020 23:33:10 +0000 (UTC)
+Message-ID: <fd6892ca0191b67491416318958d1ece23e840ff.camel@perches.com>
+Subject: Re: [PATCH] MAINTAINERS: Update my maintainer entries to reorder
+ email addresses
+From:   Joe Perches <joe@perches.com>
+To:     Shuah Khan <skhan@linuxfoundation.org>, mchehab+huawei@kernel.org,
+        davem@davemloft.net, robh@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org
+Date:   Tue, 26 May 2020 16:33:09 -0700
+In-Reply-To: <ea204501-84a3-badb-63f6-0a9d2fe12b19@linuxfoundation.org>
+References: <20200523021928.67126-1-skhan@linuxfoundation.org>
+         <7366c990d4352e093ff7d17953079d7f0420c3a9.camel@perches.com>
+         <661f53a3-b15c-76b0-f220-0d292b0843d5@linuxfoundation.org>
+         <b0854ec2906323d34514875a58a79d4cb74e44b0.camel@perches.com>
+         <ea204501-84a3-badb-63f6-0a9d2fe12b19@linuxfoundation.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-References: <20200526183213.20720-1-mario.limonciello@dell.com>
- <1590520454.11810.40.camel@HansenPartnership.com> <ccf055cbf1a14f28bc95a6b02e29a2f6@AUSX13MPC105.AMER.DELL.COM>
- <1590521924.15108.1.camel@HansenPartnership.com> <da3027a2aa9d1b7110a65de919e88f42ef2e13bb.camel@guzman.io>
- <1590534370.15108.17.camel@HansenPartnership.com>
-In-Reply-To: <1590534370.15108.17.camel@HansenPartnership.com>
-From:   Alex Guzman <alex@guzman.io>
-Date:   Tue, 26 May 2020 16:31:01 -0700
-Message-ID: <CAJ7-PMaoFyi89OFgYsNknc2d0Fr4RHLmmHo-puNiKchM=0mU6w@mail.gmail.com>
-Subject: Re: [PATCH] tpm: Revert "tpm: fix invalid locking in NONBLOCKING mode"
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Mario Limonciello <Mario.Limonciello@dell.com>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 4:06 PM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
->
-> On Tue, 2020-05-26 at 15:19 -0700, Alex Guzman wrote:
-> [...]
-> > When using your patch, I get a hang when trying to use tpm2_getcap,
-> > and dmesg shows some info.
->
-> Are you sure it's all applied?  This
->
-> > [  570.913803]  tpm_tcg_write_bytes+0x2f/0x40
-> > [  570.913805]  release_locality+0x49/0x220
-> > [  570.913807]  tpm_relinquish_locality+0x1f/0x40
-> > [  570.913808]  tpm_chip_stop+0x21/0x40
-> > [  570.913810]  tpm_put_ops+0x9/0x30
-> > [  570.913811]  tpm_common_write+0x179/0x190
-> > [  570.913813]  vfs_write+0xb1/0x1a0
->
-> Implies an unmatched tpm_put_ops() in the async write path, as though
-> this hunk:
->
-> > @@ -211,11 +202,19 @@ ssize_t tpm_common_write(struct file *file,
-> > const char __user *buf,
-> >         if (file->f_flags & O_NONBLOCK) {
-> >                 priv->command_enqueued = true;
-> >                 queue_work(tpm_dev_wq, &priv->async_work);
-> > -               tpm_put_ops(priv->chip);
-> >                 mutex_unlock(&priv->buffer_mutex);
-> >                 return size;
-> >         }
->
-> Is missing.  I actually booted the patch in my TPM based VM and it all
-> seems to work OK when I execute tpm2_getcap (I verified it's using
-> O_NONBLOCK) and tssgetcapability in sync mode.
->
-> James
->
+On Tue, 2020-05-26 at 16:54 -0600, Shuah Khan wrote:
+> On 5/26/20 4:27 PM, Joe Perches wrote:
+> > On Tue, 2020-05-26 at 11:04 -0600, Shuah Khan wrote:
+> > > On 5/22/20 8:26 PM, Joe Perches wrote:
+> > > > On Fri, 2020-05-22 at 20:19 -0600, Shuah Khan wrote:
+> > > > > get_maintainer.pl picks only the first email address found in the file.
+> > > > > Reorder my email addresses so it finds my linuxfoundation.org email.
+> > > > 
+> > > > OK.
+> > []
+> > > Sadly, people that don't run get_maintainer.pl, leave alone running it
+> > > with --noremove-duplicates option. So your suggestion doesn't really
+> > > help me.
+> > > 
+> > > My preference is to get patches to both Inboxes if possible which isn't
+> > > possible unless -noremove-duplicate is default. Having this option as
+> > > default probably will annoy lot of people . So I am not asking for
+> > > that.
+> > > 
+> > > That being said, I don't understand your comment. Are you recommending
+> > > using just one email in these entries?
+> > 
+> > Yes.  And maybe set an autoforward rule in that email to
+> > forward the received email to your other address.
+> > 
+> > 
+> Sounds good.
 
-Oh, I did miss that bit. The patch had issues applying for some reason
-and I missed the single-line removal when I was looking at the diff.
+Another option would be to write your name
+slightly differently in the 2 entries.
 
-I gave it a spin on my machine again. getcap seems to work correctly
-with and without having the async config flag set for tpm2-tss. The
-pkcs11 plugin seems to work correctly again too. :)
+For instance, add "(LF)" to the linuxfoundation.org entry like:
+
+CPU POWER MONITORING SUBSYSTEM
+M:	Thomas Renninger <trenn@suse.com>
+M:	Shuah Khan <shuah@kernel.org>
+M:	Shuah Khan (LF) <skhan@linuxfoundation.org>
+L:	linux-pm@vger.kernel.org
+S:	Maintained
+F:	tools/power/cpupower/
+
+and then the get_maintainer.pl script won't
+collapse the equally named but with different
+email addresses into a single entry:
+
+$ ./scripts/get_maintainer.pl -f tools/power/cpupower/
+Thomas Renninger <trenn@suse.com> (maintainer:CPU POWER MONITORING SUBSYSTEM)
+Shuah Khan <shuah@kernel.org> (maintainer:CPU POWER MONITORING SUBSYSTEM)
+"Shuah Khan (LF)" <skhan@linuxfoundation.org> (maintainer:CPU POWER MONITORING SUBSYSTEM)
+linux-pm@vger.kernel.org (open list:CPU POWER MONITORING SUBSYSTEM)
+linux-kernel@vger.kernel.org (open list)
+
+
+
