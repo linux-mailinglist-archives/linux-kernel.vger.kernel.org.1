@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1601E2AA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F01961E2A64
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390190AbgEZS5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:57:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51076 "EHLO mail.kernel.org"
+        id S2389531AbgEZSza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:55:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390178AbgEZS5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:57:47 -0400
+        id S2389505AbgEZSz2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:55:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A96B7208B6;
-        Tue, 26 May 2020 18:57:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 724A820849;
+        Tue, 26 May 2020 18:55:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519467;
-        bh=xVPAJUL4QixcC19EI5mfeY1zN8jTKfRe8D0KerT+vcI=;
+        s=default; t=1590519327;
+        bh=FqIUcj0/zvBYNmeMXGFKy3xHDAfAvI/YMYfqC8HiR6s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M56idmHYalBkOAsrFH0Po9EaRe1recr3EihJhg+L/AP0dMcdHRRupvMGx1CIZuA+5
-         PGVo4aNiPbRl1Jw93s00AM9phe2S4j8hwjO/xC0fLUZHVB8xXSJjUR4JQ4Rv5xdKAg
-         xAsgpzk0SfgRTmZ8oFHZgyf5de1JBPpj04TyuKJc=
+        b=oVFLyRh6YGGyTju0o37v0LIgChb0+aBf91sqWfncVNgEEI9gnpz2I6E1HawAgGzNH
+         STbXWW2bGcc2hmijlQffXFxsglaaLmlf3Y3uZr9+CF4pruQXYnD6Ydn34eabhRlAtC
+         VOxunMiCRPPztw793szzQaH8gFEs7WUEIu2rMDnU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Yoshiyuki Kurauchi <ahochauwaaaaa@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Mathias Krause <minipli@googlemail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 15/64] gtp: set NLM_F_MULTI flag in gtp_genl_dump_pdp()
+Subject: [PATCH 4.4 25/65] padata: set cpu_index of unused CPUs to -1
 Date:   Tue, 26 May 2020 20:52:44 +0200
-Message-Id: <20200526183918.407241731@linuxfoundation.org>
+Message-Id: <20200526183915.603271344@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183913.064413230@linuxfoundation.org>
-References: <20200526183913.064413230@linuxfoundation.org>
+In-Reply-To: <20200526183905.988782958@linuxfoundation.org>
+References: <20200526183905.988782958@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,59 +45,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshiyuki Kurauchi <ahochauwaaaaa@gmail.com>
+From: Mathias Krause <minipli@googlemail.com>
 
-[ Upstream commit 846c68f7f1ac82c797a2f1db3344a2966c0fe2e1 ]
+[ Upstream commit 1bd845bcb41d5b7f83745e0cb99273eb376f2ec5 ]
 
-In drivers/net/gtp.c, gtp_genl_dump_pdp() should set NLM_F_MULTI
-flag since it returns multipart message.
-This patch adds a new arg "flags" in gtp_genl_fill_info() so that
-flags can be set by the callers.
+The parallel queue per-cpu data structure gets initialized only for CPUs
+in the 'pcpu' CPU mask set. This is not sufficient as the reorder timer
+may run on a different CPU and might wrongly decide it's the target CPU
+for the next reorder item as per-cpu memory gets memset(0) and we might
+be waiting for the first CPU in cpumask.pcpu, i.e. cpu_index 0.
 
-Signed-off-by: Yoshiyuki Kurauchi <ahochauwaaaaa@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Make the '__this_cpu_read(pd->pqueue->cpu_index) == next_queue->cpu_index'
+compare in padata_get_next() fail in this case by initializing the
+cpu_index member of all per-cpu parallel queues. Use -1 for unused ones.
+
+Signed-off-by: Mathias Krause <minipli@googlemail.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/gtp.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ kernel/padata.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/gtp.c b/drivers/net/gtp.c
-index a9e8a7356c41..fe844888e0ed 100644
---- a/drivers/net/gtp.c
-+++ b/drivers/net/gtp.c
-@@ -1108,11 +1108,11 @@ static struct genl_family gtp_genl_family = {
- };
+diff --git a/kernel/padata.c b/kernel/padata.c
+index 8aef48c3267b..4f860043a8e5 100644
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -461,8 +461,14 @@ static void padata_init_pqueues(struct parallel_data *pd)
+ 	struct padata_parallel_queue *pqueue;
  
- static int gtp_genl_fill_info(struct sk_buff *skb, u32 snd_portid, u32 snd_seq,
--			      u32 type, struct pdp_ctx *pctx)
-+			      int flags, u32 type, struct pdp_ctx *pctx)
- {
- 	void *genlh;
- 
--	genlh = genlmsg_put(skb, snd_portid, snd_seq, &gtp_genl_family, 0,
-+	genlh = genlmsg_put(skb, snd_portid, snd_seq, &gtp_genl_family, flags,
- 			    type);
- 	if (genlh == NULL)
- 		goto nlmsg_failure;
-@@ -1208,8 +1208,8 @@ static int gtp_genl_get_pdp(struct sk_buff *skb, struct genl_info *info)
- 		goto err_unlock;
- 	}
- 
--	err = gtp_genl_fill_info(skb2, NETLINK_CB(skb).portid,
--				 info->snd_seq, info->nlhdr->nlmsg_type, pctx);
-+	err = gtp_genl_fill_info(skb2, NETLINK_CB(skb).portid, info->snd_seq,
-+				 0, info->nlhdr->nlmsg_type, pctx);
- 	if (err < 0)
- 		goto err_unlock_free;
- 
-@@ -1252,6 +1252,7 @@ static int gtp_genl_dump_pdp(struct sk_buff *skb,
- 				    gtp_genl_fill_info(skb,
- 					    NETLINK_CB(cb->skb).portid,
- 					    cb->nlh->nlmsg_seq,
-+					    NLM_F_MULTI,
- 					    cb->nlh->nlmsg_type, pctx)) {
- 					cb->args[0] = i;
- 					cb->args[1] = j;
+ 	cpu_index = 0;
+-	for_each_cpu(cpu, pd->cpumask.pcpu) {
++	for_each_possible_cpu(cpu) {
+ 		pqueue = per_cpu_ptr(pd->pqueue, cpu);
++
++		if (!cpumask_test_cpu(cpu, pd->cpumask.pcpu)) {
++			pqueue->cpu_index = -1;
++			continue;
++		}
++
+ 		pqueue->pd = pd;
+ 		pqueue->cpu_index = cpu_index;
+ 		cpu_index++;
 -- 
 2.25.1
 
