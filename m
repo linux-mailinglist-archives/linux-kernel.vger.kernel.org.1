@@ -2,83 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D098A1E1944
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 04:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF3261E21E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 14:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388499AbgEZCJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 22:09:00 -0400
-Received: from emcscan.emc.com.tw ([192.72.220.5]:48817 "EHLO
-        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388417AbgEZCI7 (ORCPT
+        id S2389052AbgEZMar convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 May 2020 08:30:47 -0400
+Received: from correo.yucatan.gob.mx ([187.141.74.27]:27238 "EHLO
+        antispam.yucatan.gob.mx" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2388433AbgEZMar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 22:08:59 -0400
-X-Greylist: delayed 580 seconds by postgrey-1.27 at vger.kernel.org; Mon, 25 May 2020 22:08:58 EDT
-X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
-   d="scan'208";a="35733622"
-Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
-  by emcscan.emc.com.tw with ESMTP; 26 May 2020 09:59:17 +0800
-Received: from 192.168.10.23
-        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(20966:0:AUTH_RELAY)
-        (envelope-from <jingle.wu@emc.com.tw>); Tue, 26 May 2020 09:59:16 +0800 (CST)
-Received: from 49.216.87.26
-        by webmail.emc.com.tw with Mail2000 ESMTPA Server V7.00(2480:0:AUTH_LOGIN)
-        (envelope-from <jingle.wu@emc.com.tw>); Tue, 26 May 2020 09:59:15 +0800 (CST)
-From:   "Jingle.Wu" <jingle.wu@emc.com.tw>
-To:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        dmitry.torokhov@gmail.com
-Cc:     phoenix@emc.com.tw, dave.wang@emc.com.tw, josh.chen@emc.com.tw,
-        "Jingle.Wu" <jingle.wu@emc.com.tw>
-Subject: [PATCH] Input: elantench - Remove read registers in attr Signed-off-by: Jingle Wu <jingle.wu@emc.com.tw>
-Date:   Wed, 27 May 2020 01:59:40 +0800
-Message-Id: <20200526175940.4298-1-jingle.wu@emc.com.tw>
-X-Mailer: git-send-email 2.17.1
+        Tue, 26 May 2020 08:30:47 -0400
+X-Greylist: delayed 11322 seconds by postgrey-1.27 at vger.kernel.org; Tue, 26 May 2020 08:30:46 EDT
+Received: from correo.yucatan.gob.mx ([192.168.25.101])
+        by antispam.yucatan.gob.mx  with ESMTP id 04Q9FIKC028923-04Q9FIKF028923
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=CAFAIL);
+        Tue, 26 May 2020 04:15:18 -0500
+From:   Felipe Francisco Romero Ruiz <felipe.romero@yucatan.gob.mx>
+To:     "NO-REPLY@MICROSOFT.NET" <NO-REPLY@MICROSOFT.NET>
+Subject: 10 of your incoming messages has been suspended 
+Thread-Topic: 10 of your incoming messages has been suspended 
+Thread-Index: AdYzPipqxavqh0t7TKaAkXoQ0OHJfg==
+Date:   Tue, 26 May 2020 09:15:17 +0000
+Message-ID: <9B5224426D8A9A4F8725FFD78A10E7DA4CFD8A62@SRV-MAILBOX-02.gobierno1.yucatan.gob.mx>
+Accept-Language: es-ES, es-MX, en-US
+Content-Language: es-ES
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [196.171.56.112]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
----
- drivers/input/mouse/elantech.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+MICROSOFT NOTIFICATION MEMO
 
-diff --git a/drivers/input/mouse/elantech.c b/drivers/input/mouse/elantech.c
-index 2d8434b7b623..5bdf2b19118e 100644
---- a/drivers/input/mouse/elantech.c
-+++ b/drivers/input/mouse/elantech.c
-@@ -1280,7 +1280,7 @@ static ssize_t elantech_set_int_attr(struct psmouse *psmouse,
- 			    elantech_show_int_attr,			       \
- 			    elantech_set_int_attr)
- 
--ELANTECH_INT_ATTR(reg_07, 0x07);
-+/*ELANTECH_INT_ATTR(reg_07, 0x07);
- ELANTECH_INT_ATTR(reg_10, 0x10);
- ELANTECH_INT_ATTR(reg_11, 0x11);
- ELANTECH_INT_ATTR(reg_20, 0x20);
-@@ -1289,13 +1289,13 @@ ELANTECH_INT_ATTR(reg_22, 0x22);
- ELANTECH_INT_ATTR(reg_23, 0x23);
- ELANTECH_INT_ATTR(reg_24, 0x24);
- ELANTECH_INT_ATTR(reg_25, 0x25);
--ELANTECH_INT_ATTR(reg_26, 0x26);
-+ELANTECH_INT_ATTR(reg_26, 0x26);*/
- ELANTECH_INFO_ATTR(debug);
- ELANTECH_INFO_ATTR(paritycheck);
- ELANTECH_INFO_ATTR(crc_enabled);
- 
- static struct attribute *elantech_attrs[] = {
--	&psmouse_attr_reg_07.dattr.attr,
-+	/*&psmouse_attr_reg_07.dattr.attr,
- 	&psmouse_attr_reg_10.dattr.attr,
- 	&psmouse_attr_reg_11.dattr.attr,
- 	&psmouse_attr_reg_20.dattr.attr,
-@@ -1304,7 +1304,7 @@ static struct attribute *elantech_attrs[] = {
- 	&psmouse_attr_reg_23.dattr.attr,
- 	&psmouse_attr_reg_24.dattr.attr,
- 	&psmouse_attr_reg_25.dattr.attr,
--	&psmouse_attr_reg_26.dattr.attr,
-+	&psmouse_attr_reg_26.dattr.attr,*/
- 	&psmouse_attr_debug.dattr.attr,
- 	&psmouse_attr_paritycheck.dattr.attr,
- 	&psmouse_attr_crc_enabled.dattr.attr,
--- 
-2.17.1
+10 of your incoming messages has been suspended and your email box account will  be suspended now because your email box account has not been verified for this year. do click on verify now below to verify your email box account
 
+<https://bility12.wixsite.com/mysite>VERIFY NOW<https://vibe330.wixsite.com/mysite>
+
+Thanks for your understanding
+
+Microsoft Verification Team
+
+Microsoft Outlook Copyright © 2020 .Inc . All rights reserved.
