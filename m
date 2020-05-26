@@ -2,282 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A261E3214
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D531E3210
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391919AbgEZWKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 18:10:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391894AbgEZWKa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 18:10:30 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63119C03E96D
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 15:10:29 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id e125so13267479lfd.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 15:10:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=S8Sh+DjtPEAcfjFCLlA/An7vGsa0j6xUtlJx+u0SHCo=;
-        b=iaJc4Q0dVmQB2Nw7TDPjM5G/drSQCJ1I0yTkAzs35+wOBGWa8Y7ejBHHXXwVKMTMQ+
-         NkNdap9tqvkiIP9m0q7O1axUE2lvJgI92jZ0IOXLF2XRcaUzTSo/ftuzFdVXnVzObmWy
-         0CMdIgFTfIsBa7I+hhkQf7Fal4GZRNCYXpv14mQOa8XieWI923D6i4MsqVe56fxN2ZF6
-         rHv8DGtKKWb9J8y+3Z1O0+vbmnh2k4VRBjNiHod5ZDOy54y/27IGfws3tAvpafBWD1L+
-         Yi4zJuYg5k5tLPgIEIsylRkz7gp6zK4NNvnxczcZ7BEQ7VnR3CUUIWchfSRdBsju+uqK
-         jSdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S8Sh+DjtPEAcfjFCLlA/An7vGsa0j6xUtlJx+u0SHCo=;
-        b=HEWSV6qnN5Pt7I0+x8a/eYrx4pR57PY8J1sJgs/68/bHJOR0Zyr9fIQAIZSueL364g
-         CBCI5waUdrye3MjyH/FChSb/N15FFNsSDVeLx7AVZEjpTxMr17gLZUKxkeMJxYNVMP8J
-         +WPoe8RxAX2Q8t26um8zZTQ0bqizR9jwv8hj/6bH0nnTUE9KJVw4RDuJ4wps6ln2a6R1
-         horyPMH35IMGZUxUKOmJC8rCO0m3DaD+pkLGmJKF4l5r2n3qaPHRFHsGWQoA2zKIGPGK
-         wtxNqP3UV2DMhYfWHi94NLe4o6hrXyhMa4jYtZyGgVYjs93ZpJk8EUah6x1vn9wD4bYa
-         2DRQ==
-X-Gm-Message-State: AOAM5333tUchbAlgc3jamTPd/Yzs9m8DsAhr4+WGCQqiSauvNcszCE58
-        gKhucoiAih4ziM7aBhe/7gNW0g==
-X-Google-Smtp-Source: ABdhPJwnVJa8vgBbkVQ2tVPyuo9o5O4stVIJ3HJJkVTe15rtWt8oFnTtiz5Ih+h4GOvl+rvxKsG0aQ==
-X-Received: by 2002:a19:5f4e:: with SMTP id a14mr1482768lfj.57.1590531027702;
-        Tue, 26 May 2020 15:10:27 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id n2sm278570lfl.53.2020.05.26.15.10.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 15:10:27 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id D850A10230F; Wed, 27 May 2020 01:10:27 +0300 (+03)
-Date:   Wed, 27 May 2020 01:10:27 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
+        id S2391865AbgEZWKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 18:10:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389342AbgEZWKE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 18:10:04 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC034208DB;
+        Tue, 26 May 2020 22:10:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590531003;
+        bh=SsvOkxLMv/S1KzSLisVQKnBkLtGH3XxkFsrJE7K5ZgY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=B25T2XTSp49WHOItNKMMaAa1fknkYxhENl0q0GlerH0ovzJA8t+Ue9KGqE0S+UszY
+         P9BatjKhnX7M4Z6xK6NOf+Uu645KROysrll3k1aJFSNHeR3p3s3vlma9+6BK7yAA04
+         rnvwW330isNvNFAG+dPHLJ8M3wzyV2ACOO0iYXDU=
+Date:   Tue, 26 May 2020 17:14:59 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [RFC 16/16] KVM: Unmap protected pages from direct mapping
-Message-ID: <20200526221027.ixxahg6ya2z5fppy@box>
-References: <20200522125214.31348-1-kirill.shutemov@linux.intel.com>
- <20200522125214.31348-17-kirill.shutemov@linux.intel.com>
- <20200526061638.GA48741@kernel.org>
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH][next] ice: Replace one-element arrays with flexible-arrays
+Message-ID: <20200526221459.GA31611@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200526061638.GA48741@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 09:16:38AM +0300, Mike Rapoport wrote:
-> On Fri, May 22, 2020 at 03:52:14PM +0300, Kirill A. Shutemov wrote:
-> > If the protected memory feature enabled, unmap guest memory from
-> > kernel's direct mappings.
-> > 
-> > Migration and KSM is disabled for protected memory as it would require a
-> > special treatment.
-> > 
-> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > ---
-> >  arch/x86/mm/pat/set_memory.c |  1 +
-> >  include/linux/kvm_host.h     |  3 ++
-> >  mm/huge_memory.c             |  9 +++++
-> >  mm/ksm.c                     |  3 ++
-> >  mm/memory.c                  | 13 +++++++
-> >  mm/rmap.c                    |  4 ++
-> >  virt/kvm/kvm_main.c          | 74 ++++++++++++++++++++++++++++++++++++
-> >  7 files changed, 107 insertions(+)
-> > 
-> > diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-> > index 6f075766bb94..13988413af40 100644
-> > --- a/arch/x86/mm/pat/set_memory.c
-> > +++ b/arch/x86/mm/pat/set_memory.c
-> > @@ -2227,6 +2227,7 @@ void __kernel_map_pages(struct page *page, int numpages, int enable)
-> >  
-> >  	arch_flush_lazy_mmu_mode();
-> >  }
-> > +EXPORT_SYMBOL_GPL(__kernel_map_pages);
-> >  
-> >  #ifdef CONFIG_HIBERNATION
-> >  bool kernel_page_present(struct page *page)
-> > diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> > index b6944f88033d..e1d7762b615c 100644
-> > --- a/include/linux/kvm_host.h
-> > +++ b/include/linux/kvm_host.h
-> > @@ -705,6 +705,9 @@ int kvm_protect_all_memory(struct kvm *kvm);
-> >  int kvm_protect_memory(struct kvm *kvm,
-> >  		       unsigned long gfn, unsigned long npages, bool protect);
-> >  
-> > +void kvm_map_page(struct page *page, int nr_pages);
-> > +void kvm_unmap_page(struct page *page, int nr_pages);
-> > +
-> >  int gfn_to_page_many_atomic(struct kvm_memory_slot *slot, gfn_t gfn,
-> >  			    struct page **pages, int nr_pages);
-> >  
-> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > index c3562648a4ef..d8a444a401cc 100644
-> > --- a/mm/huge_memory.c
-> > +++ b/mm/huge_memory.c
-> > @@ -33,6 +33,7 @@
-> >  #include <linux/oom.h>
-> >  #include <linux/numa.h>
-> >  #include <linux/page_owner.h>
-> > +#include <linux/kvm_host.h>
-> 
-> This does not seem right... 
+The current codebase makes use of one-element arrays in the following
+form:
 
-I agree. I try to find a more clean way to deal with it.
+struct something {
+    int length;
+    u8 data[1];
+};
 
-> >  #include <asm/tlb.h>
-> >  #include <asm/pgalloc.h>
-> > @@ -650,6 +651,10 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
-> >  		spin_unlock(vmf->ptl);
-> >  		count_vm_event(THP_FAULT_ALLOC);
-> >  		count_memcg_events(memcg, THP_FAULT_ALLOC, 1);
-> > +
-> > +		/* Unmap page from direct mapping */
-> > +		if (vma_is_kvm_protected(vma))
-> > +			kvm_unmap_page(page, HPAGE_PMD_NR);
-> 
-> ... and neither does this.
-> 
-> I think the map/unmap primitives shoud be a part of the generic mm and
-> not burried inside KVM.
+struct something *instance;
 
-Well, yes. Except, kvm_map_page() also clears the page before bringing it
-back to direct mappings. Not sure yet how to deal with it.
+instance = kmalloc(sizeof(*instance) + size, GFP_KERNEL);
+instance->length = size;
+memcpy(instance->data, source, size);
 
-> >  	return 0;
-> > @@ -1886,6 +1891,10 @@ int zap_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
-> >  			page_remove_rmap(page, true);
-> >  			VM_BUG_ON_PAGE(page_mapcount(page) < 0, page);
-> >  			VM_BUG_ON_PAGE(!PageHead(page), page);
-> > +
-> > +			/* Map the page back to the direct mapping */
-> > +			if (vma_is_kvm_protected(vma))
-> > +				kvm_map_page(page, HPAGE_PMD_NR);
-> >  		} else if (thp_migration_supported()) {
-> >  			swp_entry_t entry;
-> >  
-> > diff --git a/mm/ksm.c b/mm/ksm.c
-> > index 281c00129a2e..942b88782ac2 100644
-> > --- a/mm/ksm.c
-> > +++ b/mm/ksm.c
-> > @@ -527,6 +527,9 @@ static struct vm_area_struct *find_mergeable_vma(struct mm_struct *mm,
-> >  		return NULL;
-> >  	if (!(vma->vm_flags & VM_MERGEABLE) || !vma->anon_vma)
-> >  		return NULL;
-> > +	/* TODO */
-> 
-> Probably this is not something that should be done. For a security
-> sensitive environment that wants protected memory, KSM woudn't be
-> relevant anyway...
+but the preferred mechanism to declare variable-length types such as
+these ones is a flexible array member[1][2], introduced in C99:
 
-Hm. True.
+struct foo {
+        int stuff;
+        struct boo array[];
+};
 
-> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> > index 71aac117357f..defc33d3a124 100644
-> > --- a/virt/kvm/kvm_main.c
-> > +++ b/virt/kvm/kvm_main.c
-> > @@ -51,6 +51,7 @@
-> >  #include <linux/io.h>
-> >  #include <linux/lockdep.h>
-> >  #include <linux/kthread.h>
-> > +#include <linux/pagewalk.h>
-> >  
-> >  #include <asm/processor.h>
-> >  #include <asm/ioctl.h>
-> > @@ -2718,6 +2719,72 @@ void kvm_vcpu_mark_page_dirty(struct kvm_vcpu *vcpu, gfn_t gfn)
-> >  }
-> >  EXPORT_SYMBOL_GPL(kvm_vcpu_mark_page_dirty);
-> >  
-> > +void kvm_map_page(struct page *page, int nr_pages)
-> > +{
-> > +	int i;
-> > +
-> > +	/* Clear page before returning it to the direct mapping */
-> > +	for (i = 0; i < nr_pages; i++) {
-> > +		void *p = map_page_atomic(page + i);
-> > +		memset(p, 0, PAGE_SIZE);
-> > +		unmap_page_atomic(p);
-> > +	}
-> > +
-> > +	kernel_map_pages(page, nr_pages, 1);
-> > +}
-> > +EXPORT_SYMBOL_GPL(kvm_map_page);
-> > +
-> > +void kvm_unmap_page(struct page *page, int nr_pages)
-> > +{
-> > +	kernel_map_pages(page, nr_pages, 0);
-> > +}
-> > +EXPORT_SYMBOL_GPL(kvm_unmap_page);
-> > +
-> > +static int adjust_direct_mapping_pte_range(pmd_t *pmd, unsigned long addr,
-> > +					   unsigned long end,
-> > +					   struct mm_walk *walk)
-> > +{
-> > +	bool protect = (bool)walk->private;
-> > +	pte_t *pte;
-> > +	struct page *page;
-> > +
-> > +	if (pmd_trans_huge(*pmd)) {
-> > +		page = pmd_page(*pmd);
-> > +		if (is_huge_zero_page(page))
-> > +			return 0;
-> > +		VM_BUG_ON_PAGE(total_mapcount(page) != 1, page);
-> > +		/* XXX: Would it fail with direct device assignment? */
-> > +		VM_BUG_ON_PAGE(page_count(page) != 1, page);
-> > +		kernel_map_pages(page, HPAGE_PMD_NR, !protect);
-> > +		return 0;
-> > +	}
-> > +
-> > +	pte = pte_offset_map(pmd, addr);
-> > +	for (; addr != end; pte++, addr += PAGE_SIZE) {
-> > +		pte_t entry = *pte;
-> > +
-> > +		if (!pte_present(entry))
-> > +			continue;
-> > +
-> > +		if (is_zero_pfn(pte_pfn(entry)))
-> > +			continue;
-> > +
-> > +		page = pte_page(entry);
-> > +
-> > +		VM_BUG_ON_PAGE(page_mapcount(page) != 1, page);
-> > +		/* XXX: Would it fail with direct device assignment? */
-> > +		VM_BUG_ON_PAGE(page_count(page) !=
-> > +			       total_mapcount(compound_head(page)), page);
-> > +		kernel_map_pages(page, 1, !protect);
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct mm_walk_ops adjust_direct_mapping_ops = {
-> > +	.pmd_entry	= adjust_direct_mapping_pte_range,
-> > +};
-> > +
-> 
-> All this seem to me an addition to set_memory APIs rather then KVM.
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on. So, replace
+the one-element array with a flexible-array member.
 
-Emm?.. I don't think walking userspace mapping is set_memory thing.
-And kernel_map_pages() is VMM interface already.
+Also, make use of the sizeof_field() and offsetof() helpers to simplify
+some macros and properly calcualte the size of the structures that
+contain flexible-array members.
 
+This issue was found with the help of Coccinelle and, audited and fixed
+_manually_.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ .../net/ethernet/intel/ice/ice_adminq_cmd.h   |  6 ++---
+ drivers/net/ethernet/intel/ice/ice_switch.c   | 22 +++++++++----------
+ 2 files changed, 13 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/ice/ice_adminq_cmd.h b/drivers/net/ethernet/intel/ice/ice_adminq_cmd.h
+index 586d69491268a..faa21830e40d8 100644
+--- a/drivers/net/ethernet/intel/ice/ice_adminq_cmd.h
++++ b/drivers/net/ethernet/intel/ice/ice_adminq_cmd.h
+@@ -570,7 +570,7 @@ struct ice_sw_rule_lkup_rx_tx {
+ 	 * lookup-type
+ 	 */
+ 	__le16 hdr_len;
+-	u8 hdr[1];
++	u8 hdr[];
+ } __packed;
+ 
+ /* Add/Update/Remove large action command/response entry
+@@ -580,7 +580,7 @@ struct ice_sw_rule_lkup_rx_tx {
+ struct ice_sw_rule_lg_act {
+ 	__le16 index; /* Index in large action table */
+ 	__le16 size;
+-	__le32 act[1]; /* array of size for actions */
++	__le32 act[]; /* array of size for actions */
+ 	/* Max number of large actions */
+ #define ICE_MAX_LG_ACT	4
+ 	/* Bit 0:1 - Action type */
+@@ -640,7 +640,7 @@ struct ice_sw_rule_lg_act {
+ struct ice_sw_rule_vsi_list {
+ 	__le16 index; /* Index of VSI/Prune list */
+ 	__le16 number_vsi;
+-	__le16 vsi[1]; /* Array of number_vsi VSI numbers */
++	__le16 vsi[]; /* Array of number_vsi VSI numbers */
+ };
+ 
+ /* Query VSI list command/response entry */
+diff --git a/drivers/net/ethernet/intel/ice/ice_switch.c b/drivers/net/ethernet/intel/ice/ice_switch.c
+index 0156b73df1b1f..e3e2ee7bec9e7 100644
+--- a/drivers/net/ethernet/intel/ice/ice_switch.c
++++ b/drivers/net/ethernet/intel/ice/ice_switch.c
+@@ -30,24 +30,22 @@ static const u8 dummy_eth_header[DUMMY_ETH_HDR_LEN] = { 0x2, 0, 0, 0, 0, 0,
+ 
+ #define ICE_SW_RULE_RX_TX_ETH_HDR_SIZE \
+ 	(sizeof(struct ice_aqc_sw_rules_elem) - \
+-	 sizeof(((struct ice_aqc_sw_rules_elem *)0)->pdata) + \
+-	 sizeof(struct ice_sw_rule_lkup_rx_tx) + DUMMY_ETH_HDR_LEN - 1)
++	 sizeof_field(struct ice_aqc_sw_rules_elem, pdata) + \
++	 sizeof(struct ice_sw_rule_lkup_rx_tx) + DUMMY_ETH_HDR_LEN)
+ #define ICE_SW_RULE_RX_TX_NO_HDR_SIZE \
+ 	(sizeof(struct ice_aqc_sw_rules_elem) - \
+-	 sizeof(((struct ice_aqc_sw_rules_elem *)0)->pdata) + \
+-	 sizeof(struct ice_sw_rule_lkup_rx_tx) - 1)
++	 sizeof_field(struct ice_aqc_sw_rules_elem, pdata) + \
++	 sizeof(struct ice_sw_rule_lkup_rx_tx))
+ #define ICE_SW_RULE_LG_ACT_SIZE(n) \
+ 	(sizeof(struct ice_aqc_sw_rules_elem) - \
+-	 sizeof(((struct ice_aqc_sw_rules_elem *)0)->pdata) + \
+-	 sizeof(struct ice_sw_rule_lg_act) - \
+-	 sizeof(((struct ice_sw_rule_lg_act *)0)->act) + \
+-	 ((n) * sizeof(((struct ice_sw_rule_lg_act *)0)->act)))
++	 sizeof_field(struct ice_aqc_sw_rules_elem, pdata) + \
++	 offsetof(struct ice_sw_rule_lg_act, act) + \
++	 ((n) * sizeof(__le32)))
+ #define ICE_SW_RULE_VSI_LIST_SIZE(n) \
+ 	(sizeof(struct ice_aqc_sw_rules_elem) - \
+-	 sizeof(((struct ice_aqc_sw_rules_elem *)0)->pdata) + \
+-	 sizeof(struct ice_sw_rule_vsi_list) - \
+-	 sizeof(((struct ice_sw_rule_vsi_list *)0)->vsi) + \
+-	 ((n) * sizeof(((struct ice_sw_rule_vsi_list *)0)->vsi)))
++	 sizeof_field(struct ice_aqc_sw_rules_elem, pdata) + \
++	 offsetof(struct ice_sw_rule_vsi_list, vsi) + \
++	 ((n) * sizeof(__le16)))
+ 
+ /**
+  * ice_init_def_sw_recp - initialize the recipe book keeping tables
 -- 
- Kirill A. Shutemov
+2.26.2
+
