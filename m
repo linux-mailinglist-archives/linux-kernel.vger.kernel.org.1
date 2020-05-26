@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2D31E2BDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F9F1E2C5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:14:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391876AbgEZTJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:09:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38556 "EHLO mail.kernel.org"
+        id S2404355AbgEZTOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:14:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391862AbgEZTJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:09:25 -0400
+        id S2391491AbgEZTOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:14:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 59102208A7;
-        Tue, 26 May 2020 19:09:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C1EBA208C3;
+        Tue, 26 May 2020 19:14:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520164;
-        bh=GhCaJpooWSavZpBdhK6aphQyLv9d4skXugYJfXJu21A=;
+        s=default; t=1590520450;
+        bh=GR4XF5IayHHOWsrG6kqSq2PX5IKhSrpqsMZUsiFItGw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tVBsWBxnQAfguqmq4rvtVKEF4LhCWddSWuo4dQRdh7fVUJI3xeilj5+FxT4I2IBt4
-         YVahPmvFodLA4ZiT5Vf4LzA5035HcC6RuhBmzgcW1h2bF50fxylJ9QXOKFC9PyJLl0
-         4BYSQgR+/YRsUtcakIYsRMkQUfpITnemZv/f3ei0=
+        b=dmY6+2QoZX5/dp+eGpEK/Sw2TEEQ9vUCo7W9963EMwYZbFC8k6ZSFdlhy/PUCuuhr
+         2cbywhaQj8YQ5t09xYjS7FRpH6wNeTkoXcpZuhI/NO+Nbc45IMMDDmzyvPHjQp9im5
+         HjOpxh9rRE2WUhIUpIHHz2jiQebRWQ42efJDySc8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oscar Carter <oscar.carter@gmx.com>
-Subject: [PATCH 5.4 084/111] staging: greybus: Fix uninitialized scalar variable
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 085/126] Revert "gfs2: Dont demote a glock until its revokes are written"
 Date:   Tue, 26 May 2020 20:53:42 +0200
-Message-Id: <20200526183940.881819668@linuxfoundation.org>
+Message-Id: <20200526183945.170356478@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
-References: <20200526183932.245016380@linuxfoundation.org>
+In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
+References: <20200526183937.471379031@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oscar Carter <oscar.carter@gmx.com>
+From: Bob Peterson <rpeterso@redhat.com>
 
-commit 34625c1931f8204c234c532b446b9f53c69f4b68 upstream.
+[ Upstream commit b14c94908b1b884276a6608dea3d0b1b510338b7 ]
 
-In the "gb_tty_set_termios" function the "newline" variable is declared
-but not initialized. So the "flow_control" member is not initialized and
-the OR / AND operations with itself results in an undefined value in
-this member.
+This reverts commit df5db5f9ee112e76b5202fbc331f990a0fc316d6.
 
-The purpose of the code is to set the flow control type, so remove the
-OR / AND self operator and set the value directly.
+This patch fixes a regression: patch df5db5f9ee112 allowed function
+run_queue() to bypass its call to do_xmote() if revokes were queued for
+the glock. That's wrong because its call to do_xmote() is what is
+responsible for calling the go_sync() glops functions to sync both
+the ail list and any revokes queued for it. By bypassing the call,
+gfs2 could get into a stand-off where the glock could not be demoted
+until its revokes are written back, but the revokes would not be
+written back because do_xmote() was never called.
 
-Addresses-Coverity-ID: 1374016 ("Uninitialized scalar variable")
-Fixes: e55c25206d5c9 ("greybus: uart: Handle CRTSCTS flag in termios")
-Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200510101426.23631-1-oscar.carter@gmx.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+It "sort of" works, however, because there are other mechanisms like
+the log flush daemon (logd) that can sync the ail items and revokes,
+if it deems it necessary. The problem is: without file system pressure,
+it might never deem it necessary.
 
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/greybus/uart.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/gfs2/glock.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
---- a/drivers/staging/greybus/uart.c
-+++ b/drivers/staging/greybus/uart.c
-@@ -537,9 +537,9 @@ static void gb_tty_set_termios(struct tt
- 	}
- 
- 	if (C_CRTSCTS(tty) && C_BAUD(tty) != B0)
--		newline.flow_control |= GB_SERIAL_AUTO_RTSCTS_EN;
-+		newline.flow_control = GB_SERIAL_AUTO_RTSCTS_EN;
- 	else
--		newline.flow_control &= ~GB_SERIAL_AUTO_RTSCTS_EN;
-+		newline.flow_control = 0;
- 
- 	if (memcmp(&gb_tty->line_coding, &newline, sizeof(newline))) {
- 		memcpy(&gb_tty->line_coding, &newline, sizeof(newline));
+diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
+index 19ebc6cd0f2b..d0eceaff3cea 100644
+--- a/fs/gfs2/glock.c
++++ b/fs/gfs2/glock.c
+@@ -645,9 +645,6 @@ __acquires(&gl->gl_lockref.lock)
+ 			goto out_unlock;
+ 		if (nonblock)
+ 			goto out_sched;
+-		smp_mb();
+-		if (atomic_read(&gl->gl_revokes) != 0)
+-			goto out_sched;
+ 		set_bit(GLF_DEMOTE_IN_PROGRESS, &gl->gl_flags);
+ 		GLOCK_BUG_ON(gl, gl->gl_demote_state == LM_ST_EXCLUSIVE);
+ 		gl->gl_target = gl->gl_demote_state;
+-- 
+2.25.1
+
 
 
