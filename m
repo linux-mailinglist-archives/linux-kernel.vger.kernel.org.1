@@ -2,89 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFBA1E1E58
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 11:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5259D1E1E6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 11:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388473AbgEZJWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 05:22:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
+        id S2388672AbgEZJW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 05:22:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388425AbgEZJWV (ORCPT
+        with ESMTP id S2388636AbgEZJWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 05:22:21 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42852C08C5C1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 02:22:20 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id w10so23661706ljo.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 02:22:20 -0700 (PDT)
+        Tue, 26 May 2020 05:22:53 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA27C08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 02:22:53 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id v16so23641246ljc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 02:22:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=VakK3K1bdraH2CNaKAl1HsIOSqvOwW4BrMU1GIVbMHI=;
-        b=MnxWolw9+48E82BoH0W4h0NGW8qNWn6yMAn4GAyxdbSVePnsGeI36UvX1g9L5RRBi8
-         GmM11E2y1xIjISz2igNjVGdMCjBKrM7dGLaLrpPJt/vhSsAhQ32ci4eQ/Joq+sj/zxf+
-         ZdBlienAY0XqjGtuVjQqycVSNEJFq7gk7pteYStezGwHhU3RBvGrWZg6O7UAPFBTZra5
-         jMQ40HcgtLQwdQekePnYsX3Zhvn/0w52mgrC1lbXvcqldPEHypNpf2kG9KIh8jqLkT1i
-         yvd1yL6iKiKNNxyS2HcwW4tOv/FS/YwC/HTfDTNd7pS7xmbG5epLeZYMGoTsofuPO8k6
-         5KzQ==
+        bh=kHtMUTjIpKGUVpTGb6eXqa1GBMsHXSe04tQOYQTSzwk=;
+        b=oEtC9JqLK6JUL+a09fup+E3zmswBCXWI3NHfhAeye40YMT/bZyDqHtuU4TEwB9FFaA
+         PQyMqRt1usaUnx4ouAZuqxXbnvHXqIwQQQPVDsiNGWmZMtk4/0BiERce+XhIUzzEIG9f
+         7YLBwF5B3zkUWkw0rrxo1FMolJJWsHiFs581btuKT1U/A1xmOuhWyS/10UwH/J8G5VrU
+         lUN+3WznXNQ1n7yqOWXLAfW6fjDVbaBVuSMErOAUqdmMV3ykZ12gG3B5FLQ1VSVGngjQ
+         WLz1ev/VKjH5X8ibPWTK8CEfNUv8+zvKU/GaOOYg9qOZxC+vlFi0QQ36SuGx+ZrpOifC
+         njFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=VakK3K1bdraH2CNaKAl1HsIOSqvOwW4BrMU1GIVbMHI=;
-        b=Ujvl3k0YRAU2sfeOX1mNzbCF0rNYCJBNHLP011YGv5fwx++v34+pksyoOtY8p1/10/
-         t4JJNFsK3jOPj6f4232X2k2XmoAzUxQDIjErB0sBa2oT6G6vQF7XCzgt61bY64yVaWAY
-         dscSN0rzBjmtADLL5xjsymZDE68J8gGZaXt3Ro5hBwx073rS7KDUrhZRKvPJDs75dK9w
-         dfZ9Nnr38ngGT8F6AZ3FYNM8X5HFQgJXhgy23o4qBQoYka7Rl9I9eg0yF2Ql7zMtia42
-         2frrTgdacUiiBqsxlUmn4pDYqNkB2+84LHvCDawmk+nr+eK+CE7doN17EN7pn7pvfs83
-         42pA==
-X-Gm-Message-State: AOAM5318HVf2hD7yc7xiM4XUhevL/yGNXaokUdre4sGM5jnoNM33KSQG
-        nVCblRO1SoiepL30dUVidm9CKt3qN0S0PpkIcpUgcw==
-X-Google-Smtp-Source: ABdhPJw8pZgJaIXNUkLHn6B/J6FuTQ9hom3jWdzfr1ToPBwixrVD38ffTLrjv381+a2u7Q5Qz7hclK+v3FW2m0rQXNA=
-X-Received: by 2002:a05:651c:32d:: with SMTP id b13mr146695ljp.283.1590484938670;
- Tue, 26 May 2020 02:22:18 -0700 (PDT)
+        bh=kHtMUTjIpKGUVpTGb6eXqa1GBMsHXSe04tQOYQTSzwk=;
+        b=lyDUg694/7l3EVVjaYc+g0Dep4iPR5my35o0qJ9hc35k1Fj/AyFhR6wu1Y1KENbT2k
+         6UmEyAbH+0uRt+wCNNoV/eoRlfOocK0c6ohUaqP3cvcKJ3VE5Vomz9lShQn4pqTAu+9O
+         yTjMsqLhGZG3mNh/K0zA+QWT343OGLL2bJv6+WvRYc8BfUEq8+RNcGAXL/7zELCSpgT7
+         lZwhBPavGi+hzi7Ew1Vab4ekUllOtn5N1j2WwWledMctSD05GJfkJJjMb1qh/DF4w1el
+         ARxoVv9g6qL5C+UWYPkg1y8ow3BwYGP8zx+3jtUhR8kfE4CiGgZmrvKN0/3/gOhdaUBM
+         Ca4Q==
+X-Gm-Message-State: AOAM533IIz5roacRt3bKwqHMDBUQyVrqfvII2N49FkyPuKP/YwBVi16I
+        92K2Y+OrVi+Z73pj88jCG6BnHbzUmXQpjsyJvEXuho++8bw=
+X-Google-Smtp-Source: ABdhPJym48nO1qx6Xam2hpUVXTrGYHOl37dIdmsOtBDTKVNSlX2HngDefNjA8Df4YLq2vZMNOewwm8FZbTbAdvC9Nb4=
+X-Received: by 2002:a2e:1451:: with SMTP id 17mr188903lju.30.1590484971486;
+ Tue, 26 May 2020 02:22:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200525151117.32540-1-jonathan.albrieux@gmail.com> <20200525151117.32540-4-jonathan.albrieux@gmail.com>
-In-Reply-To: <20200525151117.32540-4-jonathan.albrieux@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 26 May 2020 11:22:07 +0200
-Message-ID: <CACRpkdZo4PsC9Y8seMfS33escA6ZVKWwnbW2BCFOKiX2gY8RDw@mail.gmail.com>
-Subject: Re: [PATCH v6 3/5] dt-bindings: iio: magnetometer: ak8975: add gpio
- reset support
-To:     Jonathan Albrieux <jonathan.albrieux@gmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Hartmut Knaack <knaack.h@gmx.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
+References: <20200521064743.4769-1-maxim.uvarov@linaro.org>
+ <20200521064743.4769-4-maxim.uvarov@linaro.org> <20200522171451.GD10319@linux.intel.com>
+ <CAD8XO3bA0oTqwQOU9byb-Vk73S4uP7dTUaOZyEmUJmj6rk3UuQ@mail.gmail.com>
+ <20200522200346.GB150221@linux.intel.com> <CAD8XO3bmorhde9YaEUrd07U__01NC9wAE1O6ALijASbbJudHPQ@mail.gmail.com>
+In-Reply-To: <CAD8XO3bmorhde9YaEUrd07U__01NC9wAE1O6ALijASbbJudHPQ@mail.gmail.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Tue, 26 May 2020 14:52:39 +0530
+Message-ID: <CAFA6WYMe8xOPwsBuxoKb0e4kAhXfTjwYGVd7fNUR07hgQ_9TJg@mail.gmail.com>
+Subject: Re: [PATCHv2 2/2] tpm_ftpm_tee: register driver on TEE bus
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     Maxim Uvarov <maxim.uvarov@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>,
+        peterhuewe@gmx.de, jgg@ziepe.ca,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        linux-integrity@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Joakim Bech <joakim.bech@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 25, 2020 at 5:13 PM Jonathan Albrieux
-<jonathan.albrieux@gmail.com> wrote:
++ Thiru (original author), Ilias, Joakim
 
-> Add reset-gpio support.
->
-> Without reset's deassertion during ak8975_power_on(), driver's probe fails
-> on ak8975_who_i_am() while checking for device identity for AK09911 chip.
->
-> AK09911 has an active low reset gpio to handle register's reset.
-> AK09911 datasheet says that, if not used, reset pin should be connected
-> to VID. This patch emulates this situation.
->
-> Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
+Hi Jarkko,
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+On Mon, 25 May 2020 at 12:20, Maxim Uvarov <maxim.uvarov@linaro.org> wrote:
+>
+> On Fri, 22 May 2020 at 23:03, Jarkko Sakkinen
+> <jarkko.sakkinen@linux.intel.com> wrote:
+> >
+> > On Fri, May 22, 2020 at 10:29:44PM +0300, Maxim Uvarov wrote:
+> > > On Fri, 22 May 2020 at 20:15, Jarkko Sakkinen
+> > > <jarkko.sakkinen@linux.intel.com> wrote:
+> > > >
+> > > > On Thu, May 21, 2020 at 09:47:43AM +0300, Maxim Uvarov wrote:
+> > > > > Register driver on TEE bus. module tee registers bus,
+> > > >
+> > > > "on the TEE bus"
+> > > >
+> > > > "The module tee"
+> > > >
+> > > > > and module optee calls optee_enumerate_devices() to scan
+> > > > > all devices on the bus. Trusted Application for this driver
+> > > >
+> > > > Looking at drivers/tee, it shows that tee and optee are in fact the same
+> > > > module as opposed to what your commit message says.
+> > > >
+> > >
+> > > In the current kernel it's 2 different modules.
+> > >
+> > > > > can be Early TA's (can be compiled into optee-os). In that
+> > > > > case it will be on OPTEE bus before linux booting. Also
+> > > > > optee-suplicant application is needed to be loaded between
+> > > > > OPTEE module and ftpm module to maintain functionality
+> > > > > for fTPM driver.
+> > > >
+> > > > Why is this needed and why things worked before having this?
 
-Yours,
-Linus Walleij
+If you remembered earlier discussions when this driver was added,
+tee-supplicant dependency concern was raised at that time too. But the
+response from author [1] was to use a workaround in firmware to
+overcome the initialization issue of fTPM driver.
+
+Basically while using upstream OP-TEE, fTPM NV RAM is implemented via
+RPMB secure storage [2]. So any fTPM operation dependent on NV RAM may
+fail without access to RPMB secure storage.
+
+And during kernel boot, RPMB access isn't available (there were some
+prior efforts [3] around this but unfortunately didn't land in
+upstream) due to which we need to rely on user mode tee-supplicant for
+corresponding access.
+
+So we should only register fTPM device when the underlying
+infrastructure is working, which is something this patch-set addresses
+via registering fTPM device only when the tee-supplicant is up and
+running.
+
+[1] https://lkml.org/lkml/2019/7/4/779
+[2] https://optee.readthedocs.io/en/latest/architecture/secure_storage.html#rpmb-secure-storage
+[3] https://lwn.net/Articles/682276/
+
+> > > >
+> > >
+> > > Before these changes user space has to drive boot sequence. I.e.  tee
+> > > and optee modules loads, then application tee-supplicant has to start
+> > > and only then module ftpm can be loaded. The reason for that is
+> > > storage services are implemented in userspace and driver needs them.
+> >
+> > Is the TPM implementation uploaded to TEE from user space and or what
+> > storage are we talking about? Not sure how these storage services
+> > connect to the TPM.
+
+Please see my response above.
+
+-Sumit
+
+> >
+> > /Jarkko
+>
+> Jakko,
+> tee-supplicant application provides state machine over callbacks with
+> RPC messages.
+> https://github.com/OP-TEE/optee_client/blob/master/tee-supplicant/src/tee_supplicant.c#L614
+> It also allocates shm. Without running tee-supplicant
+> tee_client_open_session() will fail.
+> optee_open_session()->get_msg_arg()->tee_shm_alloc()->...
+> Optee team wanted to remove some dependencies from tee-supplicant with
+> moving code
+> to the kernel. But for now I think that should be out of the scope of
+> current patches due to
+> they fix driver initialization on tee bus without breaking current
+> functionality.
+>
+> Maxim.
