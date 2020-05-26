@@ -2,230 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6691E2FBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 22:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29BB1E2FC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 22:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390808AbgEZUEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 16:04:05 -0400
-Received: from mga01.intel.com ([192.55.52.88]:15698 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728113AbgEZUEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 16:04:04 -0400
-IronPort-SDR: MiTOwbw7ouWO+BpP0LNzlaShPvhGR410SbQVf2j+OEz4ShKwj3rmBDs+2eSRe0yzZKrKJRFx0T
- jDvTKXIKEVLQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 13:04:03 -0700
-IronPort-SDR: mdtb4Xu5R1BhrDr1elWB+chnOvdo/F5DDNDq6NWcnDYWyLuDo/BN88KMPePqErtd4O3WMsvb+J
- sCCqlTgyij7Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,437,1583222400"; 
-   d="scan'208";a="255257249"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 26 May 2020 13:04:02 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jdfnt-000Bn9-G6; Wed, 27 May 2020 04:04:01 +0800
-Date:   Wed, 27 May 2020 04:03:40 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2020.05.25a] BUILD SUCCESS
- 1e9451642683146552713c5ce6d269ae378eacd5
-Message-ID: <5ecd761c.RHxS0wigFYlU2ROG%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S2390907AbgEZUKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 16:10:07 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:43335 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390075AbgEZUKG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 16:10:06 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 61EE1582186;
+        Tue, 26 May 2020 16:10:05 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 26 May 2020 16:10:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
+        :to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=LHN0JqCZjAhlY7hB0/Y3fto1Fs
+        QcamBNWhl7bqCCYFQ=; b=Tf85u/C9df53lBvUWR+YDqK8pTkDrlYwLiHV44qbkS
+        mnHeugttyrDec7o60NcUtnABRLdccSQKc7t59jSSHpVbVIAJrtb9dFc/tI/VCFik
+        ZmenzZbrOUgnS/E5bPrTAnCfY2QUl2V5PbiPLZ6nLYZR3eKjZUKpp9FCkaJb30yO
+        xHPJ/DJA2342C4+6ldrjdpka0rNkcWmswGMP/nbsL8819nj+hYgfqCBTdhVTldJq
+        ZE556X5zBI1eSwczYvHj0naUQeMjaUmhbdB4D/ZL+psVh7Pz15JWuFIRB//rpR0r
+        2AIZr2SY0irzoSvvg65uX40vdxoYuEbvGN3spSfXJEug==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=LHN0JqCZjAhlY7hB0
+        /Y3fto1FsQcamBNWhl7bqCCYFQ=; b=wAS94y4Q5SKaY0h7NxjaHI5iBN210i57D
+        RMFJcWHfxHh4bN4m9zPx+8tecS3ekBMEiCwemkO5TjYMCd7bknJVCfTtp2A6Wr6o
+        TIAbO0h/HNHYhSlcdKB/c5NuXReBNeMfDL5B+uAz/G0R/84JOwTj4keSLoe7nT4n
+        0QWEJS7F/+XmhW8SAZjxGkxgHr8TUORJZsw7QuJscdG8dSLaJAv1JoutVw9numCH
+        WnY8Q6xN3xtlFgw3Dia2CU7YIiCCRAcZVfh5WoLmyyg0d3nExliI4pMUPGipDn5T
+        eFk9/hflNNQBnrXsfAA1IWt+S/KtY7yCCB0VMBe1DR+aLxSumqazA==
+X-ME-Sender: <xms:nHfNXvzvgJWk2x4WlFsZz-UClafeoFkQkptLBMsFIKSFBqMXIcFcNQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddvvddgudegudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepuehorhhishcu
+    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeduie
+    dtleeuieejfeelffevleeifefgjeejieegkeduudetfeekffeftefhvdejveenucfkphep
+    udeifedruddugedrudefvddrfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:nHfNXnSyyIsZBlxSCMNbdkEG1E3tQqTXJTVONmF8030q1O0ZXj-ydQ>
+    <xmx:nHfNXpWLGOd-pMCdyDaaxXz9nJRXOvhse5SyYxQrIL7nnShk2AC5Og>
+    <xmx:nHfNXpi4Gpu-We6KpAe9ni5ySGUOw17NCUsTrr3NZT5M22clv9tYqg>
+    <xmx:nXfNXrDBU16_PYsN6sR67J4sQ25VoMHjDPQ_poglN5Woy4lEo9dJvfYuU4YLPnSS>
+Received: from localhost (unknown [163.114.132.3])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7FB2E3280068;
+        Tue, 26 May 2020 16:10:03 -0400 (EDT)
+From:   Boris Burkov <boris@bur.io>
+To:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Boris Burkov <boris@bur.io>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH cgroup/for-5.8] cgroup: add cpu.stat file to root cgroup
+Date:   Tue, 26 May 2020 13:08:00 -0700
+Message-Id: <20200526200800.3969430-1-boris@bur.io>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.05.25a
-branch HEAD: 1e9451642683146552713c5ce6d269ae378eacd5  fixup! torture: Add refperf to the rcutorture scripting
+Currently, the root cgroup does not have a cpu.stat file. Add one which
+is consistent with /proc/stat to capture global cpu statistics that
+might not fall under cgroup accounting.
 
-i386-tinyconfig vmlinux size:
+We haven't done this in the past because the data are already presented
+in /proc/stat and we didn't want to add overhead from collecting root
+cgroup stats when cgroups are configured, but no cgroups have been
+created.
 
-========================================================================================
- TOTAL  TEXT                                                                            
-========================================================================================
-  -224  -224  8747b07d1944 Merge branch 'kcsan-dev.2020.04.13c' into HEAD               
-     0     0  03e8e094dad9 Merge branch 'lkmm-dev.2020.05.16a' into HEAD                
-     0     0  17e0ee2a3ec9 torture:  Remove qemu dependency on EFI firmware             
-     0     0  c58148777978 torture: Add script to smoke-test commits in a branch        
-   +38   +38  396a79cc6818 fork: Annotate a data race in vm_area_dup()                  
-     0     0  8035e0fc710a x86/mm/pat: Mark an intentional data race                    
-     0     0  d7a51c24ee4b rculist: Add ASSERT_EXCLUSIVE_ACCESS() to __list_splice_init 
-     0     0  e5efa2f1b7b6 locktorture: Use true and false to assign to bool variables  
-     0     0  7514d7f181ab srcu: Fix a typo in comment "amoritized"->"amortized"        
-     0     0  9dbd776542e3 rcu: Simplify the calculation of rcu_state.ncpus             
-     0     0  df12d657bcc0 docs: RCU: Convert checklist.txt to ReST                     
-     0     0  fdfeb779e1bd docs: RCU: Convert lockdep-splat.txt to ReST                 
-     0     0  68b5951f7eb2 docs: RCU: Convert lockdep.txt to ReST                       
-     0     0  ce9edc0c8a82 docs: RCU: Convert rculist_nulls.txt to ReST                 
-     0     0  1bee818b03c7 docs: RCU: Convert torture.txt to ReST                       
-     0     0  9100131711bc docs: RCU: Convert rcuref.txt to ReST                        
-     0     0  080f194cfa87 docs: RCU: Convert stallwarn.txt to ReST                     
-     0     0  6999f47d8456 docs: RCU: Don't duplicate chapter names in rculist_nulls.rs 
-     0     0  55ce2e8178f2 rcutorture: Add races with task-exit processing              
-     0     0  1c60a5e52538 torture: Set configfile variable to current scenario         
-     0     0  9969401f1706 rcutorture: Handle non-statistic bang-string error messages  
-     0     0  6f099e1b362b rcutorture: NULL rcu_torture_current earlier in cleanup code 
-     0     0  6816417616c4 kcsan: Add test suite                                        
-     0     0  848d16e04f52 doc: Timer problems can cause RCU CPU stall warnings         
-     0     0  2364a9f967ec rcu: Add callbacks-invoked counters                          
-     0     0  2775724beeef rcu: Add comment documenting rcu_callback_map's purpose      
-     0     0  bfd78bca7bdf Revert b8c17e6664c4 ("rcu: Maintain special bits at bottom o 
-     0     0  8903088434e7 rcu/tree: Add better tracing for dyntick-idle                
-     0     0  c0601bb42994 rcu/tree: Clean up dynticks counter usage                    
-     0     0  3f3baaf3ac07 rcu/tree: Remove dynticks_nmi_nesting counter                
-     0     0  725e4ad9e020 trace: events: rcu: Change description of rcu_dyntick trace  
-    +1     0  a9b73fda34ec torture: Remove whitespace from identify_qemu_vcpus output   
-     0     0  6267bacdff81 torture: Add --allcpus argument to the kvm.sh script         
-    -1     0  5c6aa32472cb rcu: Grace-period-kthread related sleeps to idle priority    
-    +1     0  f334f4fee6e2 rcu: Priority-boost-related sleeps to idle priority          
-    -1     0  d49cb59f19b6 rcu: No-CBs-related sleeps to idle priority                  
-    +1     0  4cc4ce9b67ec rcu: Expedited grace-period sleeps to idle priority          
-     0     0  cef0575caddb rcu-tasks: Convert sleeps to idle priority                   
-     0     0  988aef3524e2 fs/btrfs: Add cond_resched() for try_release_extent_mapping( 
-     0     0  70ca490c7ab3 locking/osq_lock: Annotate a data race in osq_lock           
-     0     0  80fa4f7b355d doc: Tasks RCU must protect instructions before trampoline   
-     0     0  1b397c884f7a doc: Update comment from rsp->rcu_gp_seq to rsp->gp_seq      
-     0     0  dedad0a2118a tick/nohz: Narrow down noise while setting current task's ti 
-     0     0  3055759634b2 rcu: fix some kernel-doc warnings                            
-     0     0  cf10e7d90417 rcu: Remove initialized but unused rnp from check_slow_task( 
-     0     0  af17eef88571 rcu: Mark rcu_nmi_enter() call to rcu_cleanup_after_idle() n 
-     0     0  55f712e9bd7b rcuperf: Remove useless while loops around wait_event        
-     0     0  786a25497743 refperf: Add a test to measure performance of read-side sync 
-     0     0  dc58d3c31f1f rcuperf: Add comments explaining the high reader overhead    
-     0     0  a694aa3fc22c torture: Add refperf to the rcutorture scripting             
-     0     0  d63e4a8d14d5 refperf: Add holdoff parameter to allow CPUs to come online  
-     0     0  543387f1e59c refperf: Hoist function-pointer calls out of the loop        
-     0     0  cb0ec0168301 fixup! torture: Add refperf to the rcutorture scripting      
-     0     0  a24ecaed52b8 rcuperf: Allow decimal nanoseconds                           
-     0     0  bb1200344bee fixup! torture: Add refperf to the rcutorture scripting      
-     0     0  4446795bbe35 refperf: Convert nreaders to a module parameter              
-     0     0  e05c9b634e0a refperf: Provide module parameter to specify number of exper 
-     0     0  7b58622407bf refperf: Dynamically allocate experiment-summary output buff 
-     0     0  4612778894d8 refperf: Dynamically allocate thread-summary output buffer   
-     0     0  1e9451642683 fixup! torture: Add refperf to the rcutorture scripting      
-  -176  -177  b1fcf9b83c41..1e9451642683 (ALL COMMITS)                                  
-========================================================================================
+By keeping the data consistent with /proc/stat, I think we avoid the
+first problem, while improving the usability of cgroups stats.
+We avoid the second problem by computing the contents of cpu.stat from
+existing data collected for /proc/stat anyway.
 
-elapsed time: 1148m
-
-configs tested: 103
-configs skipped: 1
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-sh                           se7722_defconfig
-arc                        vdk_hs38_defconfig
-arm                          gemini_defconfig
-sh                          sdk7786_defconfig
-powerpc                      ppc64e_defconfig
-h8300                               defconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-i386                              allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-arc                              allyesconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20200526
-i386                 randconfig-a004-20200526
-i386                 randconfig-a003-20200526
-i386                 randconfig-a006-20200526
-i386                 randconfig-a002-20200526
-i386                 randconfig-a005-20200526
-x86_64               randconfig-a015-20200526
-x86_64               randconfig-a013-20200526
-x86_64               randconfig-a016-20200526
-x86_64               randconfig-a012-20200526
-x86_64               randconfig-a014-20200526
-x86_64               randconfig-a011-20200526
-i386                 randconfig-a013-20200526
-i386                 randconfig-a015-20200526
-i386                 randconfig-a012-20200526
-i386                 randconfig-a011-20200526
-i386                 randconfig-a016-20200526
-i386                 randconfig-a014-20200526
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
-
+Signed-off-by: Boris Burkov <boris@bur.io>
+Suggested-by: Tejun Heo <tj@kernel.org>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ kernel/cgroup/cgroup.c |  1 -
+ kernel/cgroup/rstat.c  | 60 ++++++++++++++++++++++++++++++++++++------
+ 2 files changed, 52 insertions(+), 9 deletions(-)
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 557a9b9d2244..b8a75169c3e4 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -4881,7 +4881,6 @@ static struct cftype cgroup_base_files[] = {
+ 	},
+ 	{
+ 		.name = "cpu.stat",
+-		.flags = CFTYPE_NOT_ON_ROOT,
+ 		.seq_show = cpu_stat_show,
+ 	},
+ #ifdef CONFIG_PSI
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index 41ca996568df..b6397a186ce9 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -389,18 +389,62 @@ void __cgroup_account_cputime_field(struct cgroup *cgrp,
+ 	cgroup_base_stat_cputime_account_end(cgrp, rstatc);
+ }
+ 
++/*
++ * compute the cputime for the root cgroup by getting the per cpu data
++ * at a global level, then categorizing the fields in a manner consistent
++ * with how it is done by __cgroup_account_cputime_field for each bit of
++ * cpu time attributed to a cgroup.
++ */
++static void root_cgroup_cputime(struct task_cputime *cputime)
++{
++	int i;
++
++	cputime->stime = 0;
++	cputime->utime = 0;
++	cputime->sum_exec_runtime = 0;
++	for_each_possible_cpu(i) {
++		struct kernel_cpustat kcpustat;
++		u64 *cpustat = kcpustat.cpustat;
++		u64 user = 0;
++		u64 sys = 0;
++
++		kcpustat_cpu_fetch(&kcpustat, i);
++
++		user += cpustat[CPUTIME_USER];
++		user += cpustat[CPUTIME_NICE];
++		cputime->utime += user;
++
++		sys += cpustat[CPUTIME_SYSTEM];
++		sys += cpustat[CPUTIME_IRQ];
++		sys += cpustat[CPUTIME_SOFTIRQ];
++		cputime->stime += sys;
++
++		cputime->sum_exec_runtime += user;
++		cputime->sum_exec_runtime += sys;
++		cputime->sum_exec_runtime += cpustat[CPUTIME_STEAL];
++		cputime->sum_exec_runtime += cpustat[CPUTIME_GUEST];
++		cputime->sum_exec_runtime += cpustat[CPUTIME_GUEST_NICE];
++	}
++}
++
+ void cgroup_base_stat_cputime_show(struct seq_file *seq)
+ {
+ 	struct cgroup *cgrp = seq_css(seq)->cgroup;
+ 	u64 usage, utime, stime;
+-
+-	if (!cgroup_parent(cgrp))
+-		return;
+-
+-	cgroup_rstat_flush_hold(cgrp);
+-	usage = cgrp->bstat.cputime.sum_exec_runtime;
+-	cputime_adjust(&cgrp->bstat.cputime, &cgrp->prev_cputime, &utime, &stime);
+-	cgroup_rstat_flush_release();
++	struct task_cputime cputime;
++
++	if (cgroup_parent(cgrp)) {
++		cgroup_rstat_flush_hold(cgrp);
++		usage = cgrp->bstat.cputime.sum_exec_runtime;
++		cputime_adjust(&cgrp->bstat.cputime, &cgrp->prev_cputime,
++			       &utime, &stime);
++		cgroup_rstat_flush_release();
++	} else {
++		root_cgroup_cputime(&cputime);
++		usage = cputime.sum_exec_runtime;
++		utime = cputime.utime;
++		stime = cputime.stime;
++	}
+ 
+ 	do_div(usage, NSEC_PER_USEC);
+ 	do_div(utime, NSEC_PER_USEC);
+-- 
+2.24.1
+
