@@ -2,74 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF9E1E2DBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 170111E2E46
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404536AbgEZTX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:23:56 -0400
-Received: from mout.gmx.net ([212.227.15.18]:36483 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404527AbgEZTXx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:23:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1590521031;
-        bh=Lci+jQawl8c8OvJkMVS3BSHSPIYtCtie4ClFMQvOiFc=;
-        h=X-UI-Sender-Class:To:From:Subject:Date;
-        b=NAsyf310YJ3pl4J9JtjFPE6e3bTxh9cs0I3bBA5h2XwrnMsO3KT31s0AgvpzjIRys
-         3YaPIT+BR0B61agsTopcc0T8yRujRSEv+6K2kued0XPTHrB/gSswan1LQNwcr8JVUd
-         iVCiofiCRGBpY6gPF45Py8BiPxM0y810RYcwC+l0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from obelix.fritz.box ([46.142.6.196]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MWih0-1jWy8l2RGy-00X7Ro; Tue, 26
- May 2020 21:23:51 +0200
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-From:   Ronald Warsow <rwarsow@gmx.de>
-Subject: Re: [PATCH 5.6 000/126] 5.6.15-rc1 review
-Message-ID: <db05fccd-0221-2227-babe-64b1e16b4656@gmx.de>
-Date:   Tue, 26 May 2020 21:23:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2392477AbgEZT2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:28:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391202AbgEZT2S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:28:18 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73119C03E96D;
+        Tue, 26 May 2020 12:28:18 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id d7so1844518lfi.12;
+        Tue, 26 May 2020 12:28:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QrcGKTg+lKbJyhERjQv/zxn6Uu3KQSzIsUaJsnqYfyc=;
+        b=mTkq7n/TLagy92SuI0VEMoZ+njzOoBXS3XFdNx+YwnbU81pmdX2Ju15JrHVkneV9qx
+         qARhi4X9mjfzmHxel+9an7U36kJB3aTUiz3doUi+JtR4oz8L/f5yh9N2Y5MxNaeUCeCk
+         cXzBlrzk6+NqpPDzyavPqj+S86CYNetEb09h7uvzxyHA3eO7nB+nfAKE/IG5Gc9cJ9sG
+         Z/S78wDM29J2TUIWxlO2ErzKrn45YNlGTqK8p05LdbEHjDv7DBykL0s8Z7wCxG4gQSS1
+         /nWv9cjA4yhq49kCJrqc3LBQkw37at5A28Y3oA/Ozp2p/OsY9Ah8UVgomYWFzc4Znr3V
+         lp5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QrcGKTg+lKbJyhERjQv/zxn6Uu3KQSzIsUaJsnqYfyc=;
+        b=GvhYi3eSLClZQl5iCsItLdbaQD5Lvi3z1664T2bk1S6v7AxIBQKeYJXSzjjB/qGZdd
+         dWBErGDvC8qwikkpd7VRyO+qxHS9b+4ItfdUsUbLCXQ6k442TM08fQ1cbBjXoL/i6I00
+         R67Zv+SvWzQGQ5YAT7oBPA5zPp+ad9dPk0guUlmQCzcn4p+qNog8lmPYuLbsOLoCWR1l
+         U3Am+bgR1j1LdsJTWpv9MzNH1EVcgtH0yJGJXwoJh2hPbuOs3MD31ThGpl1INZZ2ifck
+         otVosijEOquYNUKlM09Bz87JrIdRS1oTI9BeZkPGuS4G13duv8HKweSq/WsIDyW0f2ld
+         pqbQ==
+X-Gm-Message-State: AOAM530vV2amv/VgqkHFO4WZkbiOpOxFzlqoFRD9YjwfAYNPpGzAQGAc
+        D6EJIbu5Ly9N7Q72XLKqPqAURVE0yaKWmSuGbBU=
+X-Google-Smtp-Source: ABdhPJzzgZIK9MYtnILHFWXqommHhyqNi1MobdmTz+W3sHVTlNfIdxpWNgsxv2PqOGLjN4V1MfBjjwFESNwU5fLaa+8=
+X-Received: by 2002:ac2:53a2:: with SMTP id j2mr1167787lfh.139.1590521296780;
+ Tue, 26 May 2020 12:28:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:nd/r8N99KsO1y2QW5Sy2d53cc6FZx3PgiGxAw1X3hEkcRdB58Wh
- UCOaCtMXWB4+GsWlEc5/UUnWoPYRaXa8e/7N6rzqzKbg0M4n6nVIkZu5pNOPoDj0LvbNJ76
- LVjjKJm5Pc4QEdSB97b8nAf9nd1lTTxiYMOy7Y49+MRXQwmzYKkLHV4jGHAcvVIfBlN/EM6
- e/S9cPi4/9Vdc2QMYjwbw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:k4nX9Q9sCx4=:Due9qigGzlBS4yn0mAgAhm
- duSkQEBgc4DsEQuD/JarvAUoUMmAHwUOMDAxjlkmZjohn1JYB4rdczSw+MdZFd0YqhYFRDWUk
- VqPPDHdvWVwupABLGzVSEoPbCGths6xMrY9VHXwMQ/IwLHYZy0ecwmKdQTARMALMYX1SXT+v7
- i2WZcD8saTKafopSWruNRoxgeVW3nvMyXYt4KklpI7m/bYrDYgewV2IVHqOdytuUJNdeSSfBv
- Q7giuP3fPsD3jzym4r29vT/E0rGhwe3zn5hOcgKfKUH4GCpqHNEmptYBBtdujJyX21QDbSfA2
- cINqql2E3FXfsvr2b/ltOMj6Q9vUNZmsrE2G0drnvWSfG9rp/CdWhMJPwMGyq9otZ5eSpc+KQ
- yTPVoSDN3Rh2fIasX69Ms6mO2Su7VST5+K10YYIFb/4vY3h+PGHEaRKfpLGUsnj5JruA3lZhG
- SMt88ZEwDurwgZHCfrgr6Q96g7ujjFWGURZfExgciteIU80wrdmNEZTxfRNlckVcuy+hMXxPg
- hU8r6GTmvbuF1/bxngnYNxf7TBaJnBpnWs6cNKGUKhniW65eZG/rR1xZwEldbvvZ0U9TUahxa
- pqM2HaR72gXxt+NsLbQWExxbeX7FmRfyO9xXNVrs7IpuHvLePAFuYfXSSRSOfh8gKkpFwPcC3
- 8vOON7hdcLD4nkcs0DcPFL2qFZvNBT+PDlDM/ysAPIGcHGNal3HOwYDZAv4OhYvKl7NPiJoPF
- sTApteQ4hTcyBIkM2pT9tNP6mIO1Sf+y0+Vf+/3NONk/FORJ7yr4wdYHJUlaptLikNItYPpw+
- Vdmun6j4qBFJbhw2iki2vNmSM1aqCtH2G/CQpi0kaJOLcDYluju5FHN6FXi5AIHUmUeDDo54s
- +/vn6dltN+wgsdbx58KN9cuKyCHEqqnr2fXCD2ES6MFYmkWC9Dj2Z8F8VO5lK7Atxd+DsBbxi
- pBma1ZCujdLmMhF0vyxaTY4Qbt18KGkUP08s7FL+XVcLU7YeCKgIu6UwbBbhiKk9QxsrkM5Qt
- 5vcosdRDq5orxdR9l/5iLnB4D61Yx39v6PkHT7rovSXpwfi8iX6ZAM6aNYdPNWzqy6GvOsyas
- r0O1INCmul/n4cNY1E6EVDim1FIP6lzlf2+HJR4J0o9NZ4gFGXmDBtl5dlFC5n3QxYK3o5T+J
- PUhA2uy+9tiP9PoMLPABbfulZqxNa1jruscK6QTg8GlhWADVfLJIQXfMTWhuoZSlP9AqtdkfS
- pIaA6wTM2FPr3w1r1
+References: <20200523014347.193290-1-jhubbard@nvidia.com>
+In-Reply-To: <20200523014347.193290-1-jhubbard@nvidia.com>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Wed, 27 May 2020 00:58:05 +0530
+Message-ID: <CAFqt6zYmYQ93jbKNAjDpiH7exjyGv8E-2xHW++yV5CiYMyL5ew@mail.gmail.com>
+Subject: Re: [PATCH 1/1] vfio/spapr_tce: convert get_user_pages() --> pin_user_pages()
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hallo
+Hi John,
 
-5.6.15-rc1 compiles, boots and works without errors here on an
-Intel-i7-6700-box
+On Sat, May 23, 2020 at 7:13 AM John Hubbard <jhubbard@nvidia.com> wrote:
+>
+> This code was using get_user_pages*(), in a "Case 2" scenario
+> (DMA/RDMA), using the categorization from [1]. That means that it's
+> time to convert the get_user_pages*() + put_page() calls to
+> pin_user_pages*() + unpin_user_pages() calls.
+>
+> There is some helpful background in [2]: basically, this is a small
+> part of fixing a long-standing disconnect between pinning pages, and
+> file systems' use of those pages.
+>
+> [1] Documentation/core-api/pin_user_pages.rst
+>
+> [2] "Explicit pinning of user-space pages":
+>     https://lwn.net/Articles/807108/
+>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Cornelia Huck <cohuck@redhat.com>
+> Cc: kvm@vger.kernel.org
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> ---
+>
+> Hi,
+>
+> I'm compile-tested this, but am not able to run-time test, so any
+> testing help is much appreciated!
+>
+> thanks,
+> John Hubbard
+> NVIDIA
+>
+>  drivers/vfio/vfio_iommu_spapr_tce.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/vfio/vfio_iommu_spapr_tce.c b/drivers/vfio/vfio_iommu_spapr_tce.c
+> index 16b3adc508db..fe888b5dcc00 100644
+> --- a/drivers/vfio/vfio_iommu_spapr_tce.c
+> +++ b/drivers/vfio/vfio_iommu_spapr_tce.c
+> @@ -383,7 +383,7 @@ static void tce_iommu_unuse_page(struct tce_container *container,
+>         struct page *page;
+>
+>         page = pfn_to_page(hpa >> PAGE_SHIFT);
+> -       put_page(page);
+> +       unpin_user_page(page);
+>  }
+>
+>  static int tce_iommu_prereg_ua_to_hpa(struct tce_container *container,
+> @@ -486,7 +486,7 @@ static int tce_iommu_use_page(unsigned long tce, unsigned long *hpa)
+>         struct page *page = NULL;
+>         enum dma_data_direction direction = iommu_tce_direction(tce);
+>
+> -       if (get_user_pages_fast(tce & PAGE_MASK, 1,
+> +       if (pin_user_pages_fast(tce & PAGE_MASK, 1,
+>                         direction != DMA_TO_DEVICE ? FOLL_WRITE : 0,
+>                         &page) != 1)
+>                 return -EFAULT;
 
-Thanks !
+There are few places where nr_pages is passed as 1 to get_user_pages_fast().
+With similar conversion those will be changed to pin_user_pages_fast().
 
-=2D-
-regards
-
-Ronald
+Does it make sense to add an inline like - pin_user_page_fast(), similar to
+get_user_page_fast_only() ( now merged in linux-next) ?
