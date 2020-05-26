@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D101E2E5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C43701E2BDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390464AbgEZTC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:02:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57188 "EHLO mail.kernel.org"
+        id S2391881AbgEZTJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:09:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390269AbgEZTCZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:02:25 -0400
+        id S2391868AbgEZTJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:09:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 275F420849;
-        Tue, 26 May 2020 19:02:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C689820776;
+        Tue, 26 May 2020 19:09:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519744;
-        bh=H63YJtgJZbKb64vMUxzAPQwIpPLNoz1QOyiyGbsojyM=;
+        s=default; t=1590520167;
+        bh=6TK3IWSATAnn3NvTP6YgPeDQIjWNEzJ6PkevqoxNBcI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a3SpKxXT3UYhD1YAJO6bSCvnIcqqhsV9MG5E3FFRwXnC/TAQhd64QU2SZqIAk9goY
-         pRCZ2x7T54urCI2lvRWoReq5fV282BU4abc4Wc5PrJU5wxVz4Wy2DRuydkDbzBIBgy
-         rI9CT4fTRjOIglyM9Xb9R3gXjlTyhFAHeJJ4c36M=
+        b=G/OxFyUFflEontY/hnTq0brIbaVxdkjEmRvm7DuPkUrvN2FTQOy99Fp7OepVSxYNV
+         Z8SW9hGo+4uu0w0Vr5m3zufXWRtcc6JPBkQrEGBHvaA2hmNMUFEANfo/Fdj750R0ZN
+         nlV1PC3HE1/Ub7Y5gNy/Rf4ht3TJ7gvIEvG+HCbA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 58/59] iio: adc: stm32-adc: Use dma_request_chan() instead dma_request_slave_channel()
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.4 085/111] iio: sca3000: Remove an erroneous get_device()
 Date:   Tue, 26 May 2020 20:53:43 +0200
-Message-Id: <20200526183924.580101506@linuxfoundation.org>
+Message-Id: <20200526183940.972381398@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
-References: <20200526183907.123822792@linuxfoundation.org>
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,54 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 735404b846dffcb320264f62b76e6f70012214dd ]
+commit 928edefbc18cd8433f7df235c6e09a9306e7d580 upstream.
 
-dma_request_slave_channel() is a wrapper on top of dma_request_chan()
-eating up the error code.
+This looks really unusual to have a 'get_device()' hidden in a 'dev_err()'
+call.
+Remove it.
 
-By using dma_request_chan() directly the driver can support deferred
-probing against DMA.
+While at it add a missing \n at the end of the message.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Acked-by: Fabrice Gasnier <fabrice.gasnier@st.com>
+Fixes: 574fb258d636 ("Staging: IIO: VTI sca3000 series accelerometer driver (spi)")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: <Stable@vger.kernel.org>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/iio/adc/stm32-adc.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ drivers/iio/accel/sca3000.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-index 3cfb2d4b2441..9a243f06389d 100644
---- a/drivers/iio/adc/stm32-adc.c
-+++ b/drivers/iio/adc/stm32-adc.c
-@@ -1633,9 +1633,21 @@ static int stm32_adc_dma_request(struct iio_dev *indio_dev)
- 	struct dma_slave_config config;
- 	int ret;
+--- a/drivers/iio/accel/sca3000.c
++++ b/drivers/iio/accel/sca3000.c
+@@ -980,7 +980,7 @@ static int sca3000_read_data(struct sca3
+ 	st->tx[0] = SCA3000_READ_REG(reg_address_high);
+ 	ret = spi_sync_transfer(st->us, xfer, ARRAY_SIZE(xfer));
+ 	if (ret) {
+-		dev_err(get_device(&st->us->dev), "problem reading register");
++		dev_err(&st->us->dev, "problem reading register\n");
+ 		return ret;
+ 	}
  
--	adc->dma_chan = dma_request_slave_channel(&indio_dev->dev, "rx");
--	if (!adc->dma_chan)
-+	adc->dma_chan = dma_request_chan(&indio_dev->dev, "rx");
-+	if (IS_ERR(adc->dma_chan)) {
-+		ret = PTR_ERR(adc->dma_chan);
-+		if (ret != -ENODEV) {
-+			if (ret != -EPROBE_DEFER)
-+				dev_err(&indio_dev->dev,
-+					"DMA channel request failed with %d\n",
-+					ret);
-+			return ret;
-+		}
-+
-+		/* DMA is optional: fall back to IRQ mode */
-+		adc->dma_chan = NULL;
- 		return 0;
-+	}
- 
- 	adc->rx_buf = dma_alloc_coherent(adc->dma_chan->device->dev,
- 					 STM32_DMA_BUFFER_SIZE,
--- 
-2.25.1
-
 
 
