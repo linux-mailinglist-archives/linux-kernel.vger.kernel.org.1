@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 427B91E2D12
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6DB1E2B5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392414AbgEZTTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:19:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43266 "EHLO mail.kernel.org"
+        id S2391374AbgEZTE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:04:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404202AbgEZTNW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:13:22 -0400
+        id S2389427AbgEZTEZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:04:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2EACE208B3;
-        Tue, 26 May 2020 19:13:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D4A0620849;
+        Tue, 26 May 2020 19:04:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520401;
-        bh=RgtwO8P4ThNDooONmVCNihMiiHEBUmQW2apUetaPoEw=;
+        s=default; t=1590519865;
+        bh=14eDN6iWkvLygluEYtdkN4nLLdQl8xArd15UGUNLXjM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VkMzTTWWnBYENAit+Zv2Jf+Ut2C1UMnfbVnbl6VE19s7dscGlt+XYEOeIc1fwZjIl
-         XGgQNhPD/bqEX9DZUUJu5H9SxtKotOgTzvmcBDhs99524M7nfDOjI7hp5QgVlLOpXM
-         74aOxtSaO8pgWrWB71HiCjg2Vr/v4xnskcHicTeE=
+        b=DpJCz9zjKivoTIThrn/4hQrTJJuSoNJNH2eWILPA6XAut+DvLdmNMhy1dYphPa6bB
+         pRHJMrtVvsd+HK6HkaUU+t23rneBgFHTn6LxLTYEQj2i3/C7bOvn06qFZu68NcpEWW
+         uAw1HrrS0gSYWU8rdjgKh7W+6ZHLUMfPLrVsbEk8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-Subject: [PATCH 5.6 063/126] bpf: Add bpf_probe_read_{user, kernel}_str() to do_refine_retval_range
-Date:   Tue, 26 May 2020 20:53:20 +0200
-Message-Id: <20200526183943.453926113@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH 4.19 46/81] dmaengine: tegra210-adma: Fix an error handling path in tegra_adma_probe()
+Date:   Tue, 26 May 2020 20:53:21 +0200
+Message-Id: <20200526183932.153406200@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
-References: <20200526183937.471379031@linuxfoundation.org>
+In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
+References: <20200526183923.108515292@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,39 +46,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 47cc0ed574abcbbde0cf143ddb21a0baed1aa2df upstream.
+commit 3a5fd0dbd87853f8bd2ea275a5b3b41d6686e761 upstream.
 
-Given bpf_probe_read{,str}() BPF helpers are now only available under
-CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE, we need to add the drop-in
-replacements of bpf_probe_read_{kernel,user}_str() to do_refine_retval_range()
-as well to avoid hitting the same issue as in 849fa50662fbc ("bpf/verifier:
-refine retval R0 state for bpf_get_stack helper").
+Commit b53611fb1ce9 ("dmaengine: tegra210-adma: Fix crash during probe")
+has moved some code in the probe function and reordered the error handling
+path accordingly.
+However, a goto has been missed.
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/bpf/20200515101118.6508-3-daniel@iogearbox.net
+Fix it and goto the right label if 'dma_async_device_register()' fails, so
+that all resources are released.
+
+Fixes: b53611fb1ce9 ("dmaengine: tegra210-adma: Fix crash during probe")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+Acked-by: Thierry Reding <treding@nvidia.com>
+Link: https://lore.kernel.org/r/20200516214205.276266-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/bpf/verifier.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/dma/tegra210-adma.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4113,7 +4113,9 @@ static int do_refine_retval_range(struct
+--- a/drivers/dma/tegra210-adma.c
++++ b/drivers/dma/tegra210-adma.c
+@@ -793,7 +793,7 @@ static int tegra_adma_probe(struct platf
+ 	ret = dma_async_device_register(&tdma->dma_dev);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "ADMA registration failed: %d\n", ret);
+-		goto irq_dispose;
++		goto rpm_put;
+ 	}
  
- 	if (ret_type != RET_INTEGER ||
- 	    (func_id != BPF_FUNC_get_stack &&
--	     func_id != BPF_FUNC_probe_read_str))
-+	     func_id != BPF_FUNC_probe_read_str &&
-+	     func_id != BPF_FUNC_probe_read_kernel_str &&
-+	     func_id != BPF_FUNC_probe_read_user_str))
- 		return 0;
- 
- 	/* Error case where ret is in interval [S32MIN, -1]. */
+ 	ret = of_dma_controller_register(pdev->dev.of_node,
 
 
