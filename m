@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB831E2B68
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EBAD1E2B0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391414AbgEZTEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:04:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60608 "EHLO mail.kernel.org"
+        id S2389858AbgEZTBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:01:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391410AbgEZTEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:04:48 -0400
+        id S2389833AbgEZTBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:01:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 26C9B20E65;
-        Tue, 26 May 2020 19:04:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A3D9F20849;
+        Tue, 26 May 2020 19:01:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519887;
-        bh=QUJlVGNioV1dIbnsMinW6SWdcfVxvx0IG1RhC0AISco=;
+        s=default; t=1590519669;
+        bh=XJJyoQtDvFZe4chBEWSdTN/XbaT92U3oizYWFpXeESA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RhuyXZBYCvTS5km36ddvoTp57d2mnhjukNxQHmDhYhitnEQZNniXUBozfMIC+vdtO
-         ANWWYnLrW7sEVPOirymfvDM2viOYGUZgZnobOGiWmc16X5H2CLTmdL1Fsxq39P/gAC
-         YIa8wTJ7GkbkK+w7q0iSs0ko2gIkuQODzDPN+ygA=
+        b=zgPFCbQ42cu0IBU5bkkTDxPL0+tGHUYiYNlO1ygS/zAQnF+CZ5tLQ8g4SL9AHX4xk
+         VbnP7LbYCJW7QSBAzYhubOOCO/0qqAoZ+ckL0IMyNixyeAsFZic1LoXLkbuyvdXDwf
+         ixzZeZPyuQa4zQnqxj5oK54ypG1gW6Pq2ZF7WUfg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Fr=C3=A9d=C3=A9ric=20Pierret=20 ?= 
-        <frederic.pierret@qubes-os.org>, Kees Cook <keescook@chromium.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 15/81] gcc-common.h: Update for GCC 10
+        stable@vger.kernel.org, Mathias Krause <minipli@googlemail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Ben Hutchings <ben@decadent.org.uk>
+Subject: [PATCH 4.14 05/59] padata: ensure padata_do_serial() runs on the correct CPU
 Date:   Tue, 26 May 2020 20:52:50 +0200
-Message-Id: <20200526183928.072339746@linuxfoundation.org>
+Message-Id: <20200526183908.707547348@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
-References: <20200526183923.108515292@linuxfoundation.org>
+In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
+References: <20200526183907.123822792@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,87 +44,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frédéric Pierret (fepitre) <frederic.pierret@qubes-os.org>
+From: Mathias Krause <minipli@googlemail.com>
 
-[ Upstream commit c7527373fe28f97d8a196ab562db5589be0d34b9 ]
+commit 350ef88e7e922354f82a931897ad4a4ce6c686ff upstream.
 
-Remove "params.h" include, which has been dropped in GCC 10.
+If the algorithm we're parallelizing is asynchronous we might change
+CPUs between padata_do_parallel() and padata_do_serial(). However, we
+don't expect this to happen as we need to enqueue the padata object into
+the per-cpu reorder queue we took it from, i.e. the same-cpu's parallel
+queue.
 
-Remove is_a_helper() macro, which is now defined in gimple.h, as seen
-when running './scripts/gcc-plugin.sh g++ g++ gcc':
+Ensure we're not switching CPUs for a given padata object by tracking
+the CPU within the padata object. If the serial callback gets called on
+the wrong CPU, defer invoking padata_reorder() via a kernel worker on
+the CPU we're expected to run on.
 
-In file included from <stdin>:1:
-./gcc-plugins/gcc-common.h:852:13: error: redefinition of ‘static bool is_a_helper<T>::test(U*) [with U = const gimple; T = const ggoto*]’
-  852 | inline bool is_a_helper<const ggoto *>::test(const_gimple gs)
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from ./gcc-plugins/gcc-common.h:125,
-                 from <stdin>:1:
-/usr/lib/gcc/x86_64-redhat-linux/10/plugin/include/gimple.h:1037:1: note: ‘static bool is_a_helper<T>::test(U*) [with U = const gimple; T = const ggoto*]’ previously declared here
- 1037 | is_a_helper <const ggoto *>::test (const gimple *gs)
-      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+Signed-off-by: Mathias Krause <minipli@googlemail.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Ben Hutchings <ben@decadent.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Add -Wno-format-diag to scripts/gcc-plugins/Makefile to avoid
-meaningless warnings from error() formats used by plugins:
-
-scripts/gcc-plugins/structleak_plugin.c: In function ‘int plugin_init(plugin_name_args*, plugin_gcc_version*)’:
-scripts/gcc-plugins/structleak_plugin.c:253:12: warning: unquoted sequence of 2 consecutive punctuation characters ‘'-’ in format [-Wformat-diag]
-  253 |   error(G_("unknown option '-fplugin-arg-%s-%s'"), plugin_name, argv[i].key);
-      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Signed-off-by: Frédéric Pierret (fepitre) <frederic.pierret@qubes-os.org>
-Link: https://lore.kernel.org/r/20200407113259.270172-1-frederic.pierret@qubes-os.org
-[kees: include -Wno-format-diag for plugin builds]
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/gcc-plugins/Makefile     | 1 +
- scripts/gcc-plugins/gcc-common.h | 4 ++++
- 2 files changed, 5 insertions(+)
+ include/linux/padata.h |    2 ++
+ kernel/padata.c        |   20 +++++++++++++++++++-
+ 2 files changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/scripts/gcc-plugins/Makefile b/scripts/gcc-plugins/Makefile
-index aa0d0ec6936d..9e95862f2788 100644
---- a/scripts/gcc-plugins/Makefile
-+++ b/scripts/gcc-plugins/Makefile
-@@ -11,6 +11,7 @@ else
-   HOST_EXTRACXXFLAGS += -I$(GCC_PLUGINS_DIR)/include -I$(src) -std=gnu++98 -fno-rtti
-   HOST_EXTRACXXFLAGS += -fno-exceptions -fasynchronous-unwind-tables -ggdb
-   HOST_EXTRACXXFLAGS += -Wno-narrowing -Wno-unused-variable
-+  HOST_EXTRACXXFLAGS += -Wno-format-diag
-   export HOST_EXTRACXXFLAGS
- endif
+--- a/include/linux/padata.h
++++ b/include/linux/padata.h
+@@ -37,6 +37,7 @@
+  * @list: List entry, to attach to the padata lists.
+  * @pd: Pointer to the internal control structure.
+  * @cb_cpu: Callback cpu for serializatioon.
++ * @cpu: Cpu for parallelization.
+  * @seq_nr: Sequence number of the parallelized data object.
+  * @info: Used to pass information from the parallel to the serial function.
+  * @parallel: Parallel execution function.
+@@ -46,6 +47,7 @@ struct padata_priv {
+ 	struct list_head	list;
+ 	struct parallel_data	*pd;
+ 	int			cb_cpu;
++	int			cpu;
+ 	int			info;
+ 	void                    (*parallel)(struct padata_priv *padata);
+ 	void                    (*serial)(struct padata_priv *padata);
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -133,6 +133,7 @@ int padata_do_parallel(struct padata_ins
+ 	padata->cb_cpu = cb_cpu;
  
-diff --git a/scripts/gcc-plugins/gcc-common.h b/scripts/gcc-plugins/gcc-common.h
-index 17f06079a712..9ad76b7f3f10 100644
---- a/scripts/gcc-plugins/gcc-common.h
-+++ b/scripts/gcc-plugins/gcc-common.h
-@@ -35,7 +35,9 @@
- #include "ggc.h"
- #include "timevar.h"
+ 	target_cpu = padata_cpu_hash(pd);
++	padata->cpu = target_cpu;
+ 	queue = per_cpu_ptr(pd->pqueue, target_cpu);
  
-+#if BUILDING_GCC_VERSION < 10000
- #include "params.h"
-+#endif
+ 	spin_lock(&queue->parallel.lock);
+@@ -376,10 +377,21 @@ void padata_do_serial(struct padata_priv
+ 	int cpu;
+ 	struct padata_parallel_queue *pqueue;
+ 	struct parallel_data *pd;
++	int reorder_via_wq = 0;
  
- #if BUILDING_GCC_VERSION <= 4009
- #include "pointer-set.h"
-@@ -847,6 +849,7 @@ static inline gimple gimple_build_assign_with_ops(enum tree_code subcode, tree l
- 	return gimple_build_assign(lhs, subcode, op1, op2 PASS_MEM_STAT);
+ 	pd = padata->pd;
+ 
+ 	cpu = get_cpu();
++
++	/* We need to run on the same CPU padata_do_parallel(.., padata, ..)
++	 * was called on -- or, at least, enqueue the padata object into the
++	 * correct per-cpu queue.
++	 */
++	if (cpu != padata->cpu) {
++		reorder_via_wq = 1;
++		cpu = padata->cpu;
++	}
++
+ 	pqueue = per_cpu_ptr(pd->pqueue, cpu);
+ 
+ 	spin_lock(&pqueue->reorder.lock);
+@@ -396,7 +408,13 @@ void padata_do_serial(struct padata_priv
+ 
+ 	put_cpu();
+ 
+-	padata_reorder(pd);
++	/* If we're running on the wrong CPU, call padata_reorder() via a
++	 * kernel worker.
++	 */
++	if (reorder_via_wq)
++		queue_work_on(cpu, pd->pinst->wq, &pqueue->reorder_work);
++	else
++		padata_reorder(pd);
  }
+ EXPORT_SYMBOL(padata_do_serial);
  
-+#if BUILDING_GCC_VERSION < 10000
- template <>
- template <>
- inline bool is_a_helper<const ggoto *>::test(const_gimple gs)
-@@ -860,6 +863,7 @@ inline bool is_a_helper<const greturn *>::test(const_gimple gs)
- {
- 	return gs->code == GIMPLE_RETURN;
- }
-+#endif
- 
- static inline gasm *as_a_gasm(gimple stmt)
- {
--- 
-2.25.1
-
 
 
