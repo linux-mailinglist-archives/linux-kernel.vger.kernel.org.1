@@ -2,95 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 598651E33CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 01:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9AB1E33D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 01:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726433AbgEZXl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 19:41:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbgEZXl5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 19:41:57 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C59DC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 16:41:57 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id c185so8538495qke.7
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 16:41:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=massaru-org.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=hXQqv/v9vEVYiQfhG65G3PbZzCVHsVLEfF5BwtCgffQ=;
-        b=CCE+sc2PHzbrIdaja5D95876TdFmtlvMwrZdxapWFx+gcP/UjUcuZDtdW6X4Awh3gM
-         iDH0DKaGQmql1ZEmlKdncgkvW68rzQ1bPsMyzzYKfBbgD2zPwIQWVtCvqAXtDs+FJPdA
-         r23b/rRw7qmQYzX/W2pp1jT6jlCz+DkheqodVzvs9yq4YBSeULxIaqAH29A5PDJ4xkVZ
-         teWED5H5O9Tvd8vecCa1b+szTWTEh4M8rktKSOgtu3BBMsvpexasFyyOkCrs/idNOsa2
-         q1Z/MiBe7s4wdzL/XOmY8r6qC23mZzD1FtqZgxFcATDrNDni5s2h85YRRP5drFYU+FQf
-         SRdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=hXQqv/v9vEVYiQfhG65G3PbZzCVHsVLEfF5BwtCgffQ=;
-        b=Xf27lEurxSqpFuK74JAxSILIWkMls+ExoKq5AJwFwVi1dOngpE9oQGPZ+9vvOUJNj5
-         DAJQYrSTb+vFowtIYNv7Jx/ZsLkdZkXSsnjbpc+OWqxR1vw8I17oYNoTkkBZputmVsQ8
-         qy2Oe/Iz7a8IXruyfjlbex4KDL5jx9WPcWpbDywkurMXZ3cZ5MP48askdF/8HYJyfICD
-         H963M+wZo2AGfMdV+nwKyzAijOb7Cz5LZ0KSOECNcFtQkxKrLtl+Mjgy+WpQf7r9aWKb
-         slxMM5DqwY+JZOTHdv5RVB+j4Mtq3oRatMmELISk9b1pDOGBrhY17wL4LEGSmjCwfRQW
-         uFzg==
-X-Gm-Message-State: AOAM5300Hu1oAhkCmkxUMAObbLUfozJeVORrESLopOXcWkLz1JXDAB7u
-        7KWGFXi5Q0TC6g1pLbJ1v9y67w==
-X-Google-Smtp-Source: ABdhPJyE14ZUR04SAQDVd8MHMq53V+KJw3CgOd4MvBhRY9xxbeFMhUtX1Xb318fAiIuunVXvHq0vMQ==
-X-Received: by 2002:a37:8302:: with SMTP id f2mr1397002qkd.220.1590536516733;
-        Tue, 26 May 2020 16:41:56 -0700 (PDT)
-Received: from bbking.lan ([2804:14c:4a5:36c::cd2])
-        by smtp.gmail.com with ESMTPSA id k43sm1150727qtk.67.2020.05.26.16.41.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 16:41:56 -0700 (PDT)
-Message-ID: <adc28ceff89a7fffb8b6af4badc850b29b9e6207.camel@massaru.org>
-Subject: Re: [fixup] kunit: use --build_dir=.kunit as default
-From:   Vitor Massaru Iha <vitor@massaru.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>, kunit-dev@googlegroups.com
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        brendanhiggins@google.com,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Date:   Tue, 26 May 2020 20:41:53 -0300
-In-Reply-To: <ace26347-a78e-1bd1-86f5-f8e644aa93ec@linuxfoundation.org>
-References: <20200526183436.47026-1-vitor@massaru.org>
-         <ace26347-a78e-1bd1-86f5-f8e644aa93ec@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
+        id S1726469AbgEZXmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 19:42:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726326AbgEZXmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 19:42:05 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D66D0207D8;
+        Tue, 26 May 2020 23:42:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590536525;
+        bh=QEWird265mk1GlMLo+zNPmoKJzyahnxjMwGIEmQdINw=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=lp5l750Xyu1zmTDS6FhIoTi8xDIbgFtvRddgxIS6cvkkZQ1qPF926joakdkigxkO/
+         tNI+1L7g8SAFZ7U8wnp5gRB9G7kuBguloHo+rZOPthCOwBEQtsbXplNTUjo9sye9pI
+         pAzYBYjpkvxjsWXU7cFbDb+mOdPBFUZxTa3R18Ek=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200516080806.1459784-1-natechancellor@gmail.com>
+References: <20200516080806.1459784-1-natechancellor@gmail.com>
+Subject: Re: [PATCH 1/2] clk: bcm2835: Fix return type of bcm2835_register_gate
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-clk@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Nathan Chancellor <natechancellor@gmail.com>
+Date:   Tue, 26 May 2020 16:42:04 -0700
+Message-ID: <159053652408.88029.5210144839543172586@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-05-26 at 16:29 -0600, Shuah Khan wrote:
-> On 5/26/20 12:34 PM, Vitor Massaru Iha wrote:
-> > To make KUnit easier to use, and to avoid overwriting object and
-> > .config files, the default KUnit build directory is set to .kunit
-> > 
-> >   * Related bug: https://bugzilla.kernel.org/show_bug.cgi?id=205221
-> > 
-> > Fixed up minor merge conflicts - Shuah Khan <
-> > skhan@linuxfoundation.org>
-> > 
-> > Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
-> > Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-> > Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> > ---
-> > version after merge on kunit brach:
-> >   * fix identation (tabs instead of spaces)
-> 
-> You mentioned spaces breaking python. Please include the python
-> errors and make it clear in the change log what is fixes.
+Quoting Nathan Chancellor (2020-05-16 01:08:06)
+> bcm2835_register_gate is used as a callback for the clk_register member
+> of bcm2835_clk_desc, which expects a struct clk_hw * return type but
+> bcm2835_register_gate returns a struct clk *.
+>=20
+> This discrepancy is hidden by the fact that bcm2835_register_gate is
+> cast to the typedef bcm2835_clk_register by the _REGISTER macro. This
+> turns out to be a control flow integrity violation, which is how this
+> was noticed.
+>=20
+> Change the return type of bcm2835_register_gate to be struct clk_hw *
+> and use clk_hw_register_gate to do so. This should be a non-functional
+> change as clk_register_gate calls clk_hw_register_gate anyways but this
+> is needed to avoid issues with further changes.
+>=20
+> Fixes: b19f009d4510 ("clk: bcm2835: Migrate to clk_hw based registration =
+and OF APIs")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1028
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> ---
 
-Of course, I will add this.
-> 
-> thanks,
-> -- Shuah
-> 
+Thanks. Applied to clk-next.
 
+>=20
+> base-commit: bdecf38f228bcca73b31ada98b5b7ba1215eb9c9
+
+Please don't base on some random linux-next commit though.
