@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A66C1E2C36
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B011E2BC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404229AbgEZTNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:13:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42864 "EHLO mail.kernel.org"
+        id S2391785AbgEZTI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:08:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404202AbgEZTNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:13:07 -0400
+        id S2391772AbgEZTIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:08:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 99C19208E4;
-        Tue, 26 May 2020 19:13:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2203720873;
+        Tue, 26 May 2020 19:08:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520387;
-        bh=hH8VdHMcoSdW4iq/P16jtsTULNtxfV93v0SaSsDH9LE=;
+        s=default; t=1590520096;
+        bh=ojTa6PyRzyTqOkqh7CqgyBIbIUw+O6XKOpmVdqSXPtY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EHeI8+mvXSQZExErAIENdH7ASEPaaxm2vhizyZay6eohQNrQywlxv6ymzxsMFz0Pj
-         4vPA/TTBiVCvTW8euh2rcCV913jbveJsyRoaudMamWIABzNHw5wqT2BWZ3NKevCt2z
-         loACtYOnyg0xtghEOI4f4G6tlh0k+3Bq65PKq2Wo=
+        b=CUw8/DYHQHdYiaolNJ7WBKtZRAj906aYgYQJX0W39sTpGVlTNV8eCXRn3PI6TzmkK
+         o5nTlAleCQu8rjGVdBx1gssOYv8LrnDUV3GdnIl+pfaTnPjTckAFtuFIUctd+D06IM
+         kDr1M0Zx8Lunc79Z5QLFb7L/MXqMQSC9KsDDRxpw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Pozulp <pozulp.kernel@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 058/126] ALSA: hda/realtek: Add quirk for Samsung Notebook
+        stable@vger.kernel.org, Jim Mattson <jmattson@google.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.4 057/111] KVM: x86: Fix pkru save/restore when guest CR4.PKE=0, move it to x86.c
 Date:   Tue, 26 May 2020 20:53:15 +0200
-Message-Id: <20200526183942.983034908@linuxfoundation.org>
+Message-Id: <20200526183938.252763486@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
-References: <20200526183937.471379031@linuxfoundation.org>
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,62 +44,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Pozulp <pozulp.kernel@gmail.com>
+From: Babu Moger <babu.moger@amd.com>
 
-[ Upstream commit 14425f1f521fdfe274a7bb390637c786432e08b4 ]
+commit 37486135d3a7b03acc7755b63627a130437f066a upstream.
 
-Some models of the Samsung Notebook 9 have very quiet and distorted
-headphone output. This quirk changes the VREF value of the ALC298
-codec NID 0x1a from default HIZ to new 100.
+Though rdpkru and wrpkru are contingent upon CR4.PKE, the PKRU
+resource isn't. It can be read with XSAVE and written with XRSTOR.
+So, if we don't set the guest PKRU value here(kvm_load_guest_xsave_state),
+the guest can read the host value.
 
-[ adjusted to 5.7-base and rearranged in SSID order -- tiwai ]
+In case of kvm_load_host_xsave_state, guest with CR4.PKE clear could
+potentially use XRSTOR to change the host PKRU value.
 
-Signed-off-by: Mike Pozulp <pozulp.kernel@gmail.com>
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207423
-Link: https://lore.kernel.org/r/20200510032838.1989130-1-pozulp.kernel@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+While at it, move pkru state save/restore to common code and the
+host_pkru field to kvm_vcpu_arch.  This will let SVM support protection keys.
+
+Cc: stable@vger.kernel.org
+Reported-by: Jim Mattson <jmattson@google.com>
+Signed-off-by: Babu Moger <babu.moger@amd.com>
+Message-Id: <158932794619.44260.14508381096663848853.stgit@naples-babu.amd.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- sound/pci/hda/patch_realtek.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/x86/include/asm/kvm_host.h |    1 +
+ arch/x86/kvm/vmx/vmx.c          |   18 ------------------
+ arch/x86/kvm/x86.c              |   17 +++++++++++++++++
+ 3 files changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 368ed3678fc2..b377aca71cbf 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6095,6 +6095,7 @@ enum {
- 	ALC285_FIXUP_HP_GPIO_LED,
- 	ALC285_FIXUP_HP_MUTE_LED,
- 	ALC236_FIXUP_HP_MUTE_LED,
-+	ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET,
- };
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -550,6 +550,7 @@ struct kvm_vcpu_arch {
+ 	unsigned long cr4;
+ 	unsigned long cr4_guest_owned_bits;
+ 	unsigned long cr8;
++	u32 host_pkru;
+ 	u32 pkru;
+ 	u32 hflags;
+ 	u64 efer;
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -1360,7 +1360,6 @@ void vmx_vcpu_load(struct kvm_vcpu *vcpu
  
- static const struct hda_fixup alc269_fixups[] = {
-@@ -7251,6 +7252,13 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc236_fixup_hp_mute_led,
- 	},
-+	[ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET] = {
-+		.type = HDA_FIXUP_VERBS,
-+		.v.verbs = (const struct hda_verb[]) {
-+			{ 0x1a, AC_VERB_SET_PIN_WIDGET_CONTROL, 0xc5 },
-+			{ }
-+		},
-+	},
- };
+ 	vmx_vcpu_pi_load(vcpu, cpu);
  
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -7446,6 +7454,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x10ec, 0x10f2, "Intel Reference board", ALC700_FIXUP_INTEL_REFERENCE),
- 	SND_PCI_QUIRK(0x10f7, 0x8338, "Panasonic CF-SZ6", ALC269_FIXUP_HEADSET_MODE),
- 	SND_PCI_QUIRK(0x144d, 0xc109, "Samsung Ativ book 9 (NP900X3G)", ALC269_FIXUP_INV_DMIC),
-+	SND_PCI_QUIRK(0x144d, 0xc169, "Samsung Notebook 9 Pen (NP930SBE-K01US)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
-+	SND_PCI_QUIRK(0x144d, 0xc176, "Samsung Notebook 9 Pro (NP930MBE-K04US)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
- 	SND_PCI_QUIRK(0x144d, 0xc740, "Samsung Ativ book 8 (NP870Z5G)", ALC269_FIXUP_ATIV_BOOK_8),
- 	SND_PCI_QUIRK(0x1458, 0xfa53, "Gigabyte BXBT-2807", ALC283_FIXUP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1462, 0xb120, "MSI Cubi MS-B120", ALC283_FIXUP_HEADSET_MIC),
--- 
-2.25.1
-
+-	vmx->host_pkru = read_pkru();
+ 	vmx->host_debugctlmsr = get_debugctlmsr();
+ }
+ 
+@@ -6521,11 +6520,6 @@ static void vmx_vcpu_run(struct kvm_vcpu
+ 
+ 	kvm_load_guest_xcr0(vcpu);
+ 
+-	if (static_cpu_has(X86_FEATURE_PKU) &&
+-	    kvm_read_cr4_bits(vcpu, X86_CR4_PKE) &&
+-	    vcpu->arch.pkru != vmx->host_pkru)
+-		__write_pkru(vcpu->arch.pkru);
+-
+ 	pt_guest_enter(vmx);
+ 
+ 	atomic_switch_perf_msrs(vmx);
+@@ -6614,18 +6608,6 @@ static void vmx_vcpu_run(struct kvm_vcpu
+ 
+ 	pt_guest_exit(vmx);
+ 
+-	/*
+-	 * eager fpu is enabled if PKEY is supported and CR4 is switched
+-	 * back on host, so it is safe to read guest PKRU from current
+-	 * XSAVE.
+-	 */
+-	if (static_cpu_has(X86_FEATURE_PKU) &&
+-	    kvm_read_cr4_bits(vcpu, X86_CR4_PKE)) {
+-		vcpu->arch.pkru = rdpkru();
+-		if (vcpu->arch.pkru != vmx->host_pkru)
+-			__write_pkru(vmx->host_pkru);
+-	}
+-
+ 	kvm_put_guest_xcr0(vcpu);
+ 
+ 	vmx->nested.nested_run_pending = 0;
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -832,11 +832,25 @@ void kvm_load_guest_xcr0(struct kvm_vcpu
+ 			xsetbv(XCR_XFEATURE_ENABLED_MASK, vcpu->arch.xcr0);
+ 		vcpu->guest_xcr0_loaded = 1;
+ 	}
++
++	if (static_cpu_has(X86_FEATURE_PKU) &&
++	    (kvm_read_cr4_bits(vcpu, X86_CR4_PKE) ||
++	     (vcpu->arch.xcr0 & XFEATURE_MASK_PKRU)) &&
++	    vcpu->arch.pkru != vcpu->arch.host_pkru)
++		__write_pkru(vcpu->arch.pkru);
+ }
+ EXPORT_SYMBOL_GPL(kvm_load_guest_xcr0);
+ 
+ void kvm_put_guest_xcr0(struct kvm_vcpu *vcpu)
+ {
++	if (static_cpu_has(X86_FEATURE_PKU) &&
++	    (kvm_read_cr4_bits(vcpu, X86_CR4_PKE) ||
++	     (vcpu->arch.xcr0 & XFEATURE_MASK_PKRU))) {
++		vcpu->arch.pkru = rdpkru();
++		if (vcpu->arch.pkru != vcpu->arch.host_pkru)
++			__write_pkru(vcpu->arch.host_pkru);
++	}
++
+ 	if (vcpu->guest_xcr0_loaded) {
+ 		if (vcpu->arch.xcr0 != host_xcr0)
+ 			xsetbv(XCR_XFEATURE_ENABLED_MASK, host_xcr0);
+@@ -8222,6 +8236,9 @@ static int vcpu_enter_guest(struct kvm_v
+ 	trace_kvm_entry(vcpu->vcpu_id);
+ 	guest_enter_irqoff();
+ 
++	/* Save host pkru register if supported */
++	vcpu->arch.host_pkru = read_pkru();
++
+ 	fpregs_assert_state_consistent();
+ 	if (test_thread_flag(TIF_NEED_FPU_LOAD))
+ 		switch_fpu_return();
 
 
