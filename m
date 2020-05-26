@@ -2,96 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC901E2527
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 17:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3F31E2528
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 17:14:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729550AbgEZPOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 11:14:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53494 "EHLO
+        id S1729707AbgEZPOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 11:14:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728205AbgEZPOE (ORCPT
+        with ESMTP id S1728110AbgEZPOT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 11:14:04 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E823C03E96D;
-        Tue, 26 May 2020 08:14:04 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jdbHD-0004uA-PJ; Tue, 26 May 2020 17:13:59 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 4491B1C00FA;
-        Tue, 26 May 2020 17:13:59 +0200 (CEST)
-Date:   Tue, 26 May 2020 15:13:59 -0000
-From:   "tip-bot2 for YueHaibing" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/io_apic: Remove unused function mp_init_irq_at_boot()
-Cc:     YueHaibing <yuehaibing@huawei.com>, Borislav Petkov <bp@suse.de>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200508140808.49428-1-yuehaibing@huawei.com>
-References: <20200508140808.49428-1-yuehaibing@huawei.com>
+        Tue, 26 May 2020 11:14:19 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66ECDC03E96D
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 08:14:19 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id l3so9576988qvo.7
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 08:14:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=date:from:to:cc:message-id:mime-version:content-disposition;
+        bh=ZDO8NXyaQFNCEy6nCSy2VSUmYSTkbpyph4TcP4XLFw8=;
+        b=sAilYivZH/ALD5MndGVZInwDWu6gaOe6BKZRJt7rgFNzUhWtMnXtgvzdX8Hfp7TNdp
+         JxVzzJc8DnEEWQ3CxZYzvspXykqt/b/tvq8FjrC3vLL+DPBc/Ql62udXMkHqkLZgzPiF
+         u5vz4Xfr3yHI2ac4nRkjUiJeqn4m5UEHTj7zT6JscfWRpZ3qcdRq1I2nYlKtNQfp2EU5
+         9BpSFqGum87sW21kiX20vn6vg11qboXWoOMa6ffilOrYAeESnuzCrD8/SEYmI/DsoMh3
+         vNku898sZThWe2QW/MCQqRMDO27zirhckN//AvrkWFqfdy8Xq+euhxGtK+rL46CFjgjj
+         kTJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:mime-version
+         :content-disposition;
+        bh=ZDO8NXyaQFNCEy6nCSy2VSUmYSTkbpyph4TcP4XLFw8=;
+        b=pqOKCZQEMVXY+K+GfTHYBymDmV2BkNxAtVV9vJ6q7eNkfJLsbXRTDmhjUdX9JvnzgI
+         Qxdmv4uGtNyQRX9djXZp4AGS8e7XYzyXLmGhyc9r6wr1GaMqnT6DBluVA0j5hvT/jTDu
+         6SZf07AnOVRqHU1ZONwWTGyJtlHG2m+rM+3cM73zKbKNdpjhISG4uoDK6R14YVr0mmwO
+         brXJmLrdxBsI5yz20ATKLQXohm+tU+9VhSC4VxzPIfO1RoqmkBimH3N2DD3mjbF1mPwT
+         ma0SA91ZGtBeJB48gWugBT1QOBBybGLuRuruTfxGk2xKrOIRvlNw8MW+nVNFRW6Rnym8
+         9jcg==
+X-Gm-Message-State: AOAM533KRoAsLKPqMsOrqGdb0e3SCAHnsBJg4nY2mT0IRN5N9NQZzWZn
+        yNxjH/JDKpWLGx2rSv+/wi/CTA==
+X-Google-Smtp-Source: ABdhPJwIJStGcpYnqcYMyonjLhLE1BbZdOwREeA7Z1YtSWh+/WhigYcKRIkR4+RI9gtyIRYmdYp56w==
+X-Received: by 2002:a0c:dc83:: with SMTP id n3mr21074687qvk.42.1590506058577;
+        Tue, 26 May 2020 08:14:18 -0700 (PDT)
+Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id u7sm1977011qku.119.2020.05.26.08.14.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2020 08:14:18 -0700 (PDT)
+Date:   Tue, 26 May 2020 11:14:16 -0400
+From:   Qian Cai <cai@lca.pw>
+To:     Don Brace <don.brace@microsemi.com>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Scott Teel <scott.teel@microsemi.com>,
+        Kevin Barnett <kevin.barnett@microsemi.com>,
+        esc.storagedev@microsemi.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Message-ID: <20200526151416.GB991@lca.pw>
 MIME-Version: 1.0
-Message-ID: <159050603911.17951.11028887642635728430.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
+Bcc: 
+Subject: UBSAN: array-index-out-of-bounds in drivers/scsi/hpsa.c:4421:7
+Reply-To: 
 
-Commit-ID:     fd52a75ca3545c965ff58a78b6ff0b0dc7d8d228
-Gitweb:        https://git.kernel.org/tip/fd52a75ca3545c965ff58a78b6ff0b0dc7d8d228
-Author:        YueHaibing <yuehaibing@huawei.com>
-AuthorDate:    Fri, 08 May 2020 22:08:08 +08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 26 May 2020 17:01:20 +02:00
+The commit 64ce60cab246 ("hpsa: correct skipping masked peripherals")
+trigger an UBSAN warning below.
 
-x86/io_apic: Remove unused function mp_init_irq_at_boot()
+When i == 0 in hpsa_update_scsi_devices(),
 
-There are no callers in-tree anymore since
+for (i = 0; i < nphysicals + nlogicals + 1; i++) {
+...
+        int phys_dev_index = i - (raid_ctlr_position == 0);
 
-  ef9e56d894ea ("x86/ioapic: Remove obsolete post hotplug update")
+It ends up calling LUN[-1].
 
-so remove it.
+&physdev_list->LUN[phys_dev_index]
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200508140808.49428-1-yuehaibing@huawei.com
----
- arch/x86/kernel/apic/io_apic.c | 13 -------------
- 1 file changed, 13 deletions(-)
+Should there by a test of underflow to set phys_dev_index == 0 in this case?
 
-diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
-index 913c886..ce61e3e 100644
---- a/arch/x86/kernel/apic/io_apic.c
-+++ b/arch/x86/kernel/apic/io_apic.c
-@@ -154,19 +154,6 @@ static inline bool mp_is_legacy_irq(int irq)
- 	return irq >= 0 && irq < nr_legacy_irqs();
- }
- 
--/*
-- * Initialize all legacy IRQs and all pins on the first IOAPIC
-- * if we have legacy interrupt controller. Kernel boot option "pirq="
-- * may rely on non-legacy pins on the first IOAPIC.
-- */
--static inline int mp_init_irq_at_boot(int ioapic, int irq)
--{
--	if (!nr_legacy_irqs())
--		return 0;
--
--	return ioapic == 0 || mp_is_legacy_irq(irq);
--}
--
- static inline struct irq_domain *mp_ioapic_irqdomain(int ioapic)
- {
- 	return ioapics[ioapic].irqdomain;
+[  118.395557][   T13] hpsa can't handle SMP requests
+[  118.444870][   T13] ================================================================================
+[  118.486725][   T13] UBSAN: array-index-out-of-bounds in drivers/scsi/hpsa.c:4421:7
+[  118.521606][   T13] index -1 is out of range for type 'struct ext_report_lun_entry [1024]'
+[  118.559481][   T13] CPU: 0 PID: 13 Comm: kworker/0:1 Not tainted 5.7.0-rc6-next-20200522+ #3
+[  118.598179][   T13] Hardware name: HP ProLiant BL660c Gen9, BIOS I38 10/17/2018
+[  118.632882][   T13] Workqueue: events work_for_cpu_fn
+[  118.656492][   T13] Call Trace:
+[  118.670899][   T13]  dump_stack+0x10b/0x17f
+[  118.690216][   T13]  __ubsan_handle_out_of_bounds+0xd2/0x110
+[  118.712593][  T378] bnx2x 0000:41:00.1: 63.008 Gb/s available PCIe bandwidth (8.0 GT/s PCIe x8 link)
+[  118.716249][   T13]  hpsa_update_scsi_devices+0x28e3/0x2cc0 [hpsa]
+[  118.786774][   T13]  hpsa_scan_start+0x228/0x260 [hpsa]
+[  118.810663][   T13]  ? _raw_spin_unlock_irqrestore+0x6a/0x80
+[  118.836529][   T13]  do_scsi_scan_host+0x8a/0x110
+[  118.858104][   T13]  scsi_scan_host+0x222/0x280
+[  118.879287][   T13]  ? hpsa_scsi_do_inquiry+0xcd/0xe0 [hpsa]
+[  118.907707][   T13]  hpsa_init_one+0x1b79/0x27c0 [hpsa]
+[  118.934818][   T13]  ? hpsa_find_device_by_sas_rphy+0xd0/0xd0 [hpsa]
+[  118.964279][   T13]  local_pci_probe+0x82/0xe0
+[  118.985405][   T13]  ? pci_name+0x70/0x70
+[  119.004244][   T13]  work_for_cpu_fn+0x3a/0x60
+[  119.024672][   T13]  process_one_work+0x49f/0x8f0
+[  119.046431][   T13]  process_scheduled_works+0x72/0xa0
+[  119.069906][   T13]  worker_thread+0x463/0x5b0
+[  119.090347][   T13]  kthread+0x21d/0x240
+[  119.108531][   T13]  ? pr_cont_work+0xa0/0xa0
+[  119.128450][   T13]  ? __write_once_size+0x30/0x30
+[  119.150405][   T13]  ret_from_fork+0x27/0x40
