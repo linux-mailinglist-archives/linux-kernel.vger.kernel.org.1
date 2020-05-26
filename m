@@ -2,112 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE231E1F99
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 12:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 773671E1FA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 12:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731875AbgEZK0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 06:26:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:48738 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726944AbgEZK0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 06:26:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AD43E1FB;
-        Tue, 26 May 2020 03:26:21 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AA5113F52E;
-        Tue, 26 May 2020 03:26:19 -0700 (PDT)
-Date:   Tue, 26 May 2020 11:26:11 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Jiping Ma <jiping.ma2@windriver.com>
-Cc:     will.deacon@arm.com, paul.gortmaker@windriver.com,
-        catalin.marinas@arm.com, bruce.ashfield@gmail.com,
-        yue.tao@windriver.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, zhe.he@windriver.com
-Subject: Re: [PATCH][V3] arm64: perf: Get the wrong PC value in REGS_ABI_32
- mode
-Message-ID: <20200526102611.GA1363@C02TD0UTHF1T.local>
-References: <1589165527-188401-1-git-send-email-jiping.ma2@windriver.com>
+        id S1731906AbgEZK2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 06:28:06 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:44525 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731815AbgEZK2G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 06:28:06 -0400
+Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 04QARV5x024991;
+        Tue, 26 May 2020 19:27:31 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 04QARV5x024991
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1590488851;
+        bh=qnm3rcWAxInWSd7vhesNxTx/sKbpy8dqFftwYTjfELU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=d4f/9aYrEJvJeK4t8MaEjo9TogMD/5uYTpgPmWaN2UzL3ND0LOZ291eMctSBAYfPB
+         tn0rQSIsqcfowRTILhKel6fIWTKHEw2Zqyf6bEBz/jvIh7ZgU3jpcmixTohAIVdF21
+         gzTrrpsiUJOSfi8FYxqwJ3ltxmBBFW5pNFkU0LXLG7K/eWaigsevlu3mUX97bN1oa5
+         pQsOV9bQhxyEZyrc+9/dxELDBWniO81dxhLTMRdluThaGeWY4gOX6vi5kqxpEYU4kZ
+         7o/3IarHny//KBzkWoGf+7DWC9yHZ9vkgbInaWm3MCkInK00WNe8EjQMdoBZw+dZgv
+         W8a9C6I2zx2qg==
+X-Nifty-SrcIP: [209.85.217.41]
+Received: by mail-vs1-f41.google.com with SMTP id a68so624949vsd.8;
+        Tue, 26 May 2020 03:27:31 -0700 (PDT)
+X-Gm-Message-State: AOAM533KelBniSuk8/zirtrylh2GKidzg8V74O2YqCgpqSUPI/VnANqh
+        oM7m0g76QIJPFewJZKVhCDiRWz0UNf0LULLrIcE=
+X-Google-Smtp-Source: ABdhPJx6dRlphU0QbxVwiuH+rp3NeV+cpYYVA6E440luhUT6tySW9m+6bHSUuCg6QiYsLdDdqazD4C7FT7S2ugwji2k=
+X-Received: by 2002:a67:f3c3:: with SMTP id j3mr294296vsn.155.1590488850516;
+ Tue, 26 May 2020 03:27:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1589165527-188401-1-git-send-email-jiping.ma2@windriver.com>
+References: <CAKwvOd=jOr4ZaLx-dSNTqZnGRATY1PZktUfu4JGWKRwRH=Ujnw@mail.gmail.com>
+ <20200521220041.87368-1-ndesaulniers@google.com>
+In-Reply-To: <20200521220041.87368-1-ndesaulniers@google.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 26 May 2020 19:26:54 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARtO5Pr2nxpoORSHDFWHbjP0waOmrn_TZ+rXhmYm+TORw@mail.gmail.com>
+Message-ID: <CAK7LNARtO5Pr2nxpoORSHDFWHbjP0waOmrn_TZ+rXhmYm+TORw@mail.gmail.com>
+Subject: Re: [PATCH v3] Makefile: support compressed debug info
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        Nick Clifton <nickc@redhat.com>,
+        David Blaikie <blaikie@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Changbin Du <changbin.du@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 10:52:07AM +0800, Jiping Ma wrote:
-> Modified the patch subject and the change description.
-> 
-> PC value is get from regs[15] in REGS_ABI_32 mode, but correct PC
-> is regs->pc(regs[PERF_REG_ARM64_PC]) in arm64 kernel, which caused
-> that perf can not parser the backtrace of app with dwarf mode in the 
-> 32bit system and 64bit kernel.
-> 
-> Signed-off-by: Jiping Ma <jiping.ma2@windriver.com>
+On Fri, May 22, 2020 at 7:00 AM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> As debug information gets larger and larger, it helps significantly save
+> the size of vmlinux images to compress the information in the debug
+> information sections. Note: this debug info is typically split off from
+> the final compressed kernel image, which is why vmlinux is what's used
+> in conjunction with GDB. Minimizing the debug info size should have no
+> impact on boot times, or final compressed kernel image size.
+>
+> All of the debug sections will have a `C` flag set.
+> $ readelf -S <object file>
+>
+> $ bloaty vmlinux.gcc75.compressed.dwarf4 -- \
+>     vmlinux.gcc75.uncompressed.dwarf4
+>
+>     FILE SIZE        VM SIZE
+>  --------------  --------------
+>   +0.0%     +18  [ = ]       0    [Unmapped]
+>  -73.3%  -114Ki  [ = ]       0    .debug_aranges
+>  -76.2% -2.01Mi  [ = ]       0    .debug_frame
+>  -73.6% -2.89Mi  [ = ]       0    .debug_str
+>  -80.7% -4.66Mi  [ = ]       0    .debug_abbrev
+>  -82.9% -4.88Mi  [ = ]       0    .debug_ranges
+>  -70.5% -9.04Mi  [ = ]       0    .debug_line
+>  -79.3% -10.9Mi  [ = ]       0    .debug_loc
+>  -39.5% -88.6Mi  [ = ]       0    .debug_info
+>  -18.2%  -123Mi  [ = ]       0    TOTAL
+>
+> $ bloaty vmlinux.clang11.compressed.dwarf4 -- \
+>     vmlinux.clang11.uncompressed.dwarf4
+>
+>     FILE SIZE        VM SIZE
+>  --------------  --------------
+>   +0.0%     +23  [ = ]       0    [Unmapped]
+>  -65.6%    -871  [ = ]       0    .debug_aranges
+>  -77.4% -1.84Mi  [ = ]       0    .debug_frame
+>  -82.9% -2.33Mi  [ = ]       0    .debug_abbrev
+>  -73.1% -2.43Mi  [ = ]       0    .debug_str
+>  -84.8% -3.07Mi  [ = ]       0    .debug_ranges
+>  -65.9% -8.62Mi  [ = ]       0    .debug_line
+>  -86.2% -40.0Mi  [ = ]       0    .debug_loc
+>  -42.0% -64.1Mi  [ = ]       0    .debug_info
+>  -22.1%  -122Mi  [ = ]       0    TOTAL
+>
+> For x86_64 defconfig + LLVM=1 (before):
+> Elapsed (wall clock) time (h:mm:ss or m:ss): 3:22.03
+> Maximum resident set size (kbytes): 43856
+>
+> For x86_64 defconfig + LLVM=1 (after):
+> Elapsed (wall clock) time (h:mm:ss or m:ss): 3:32.52
+> Maximum resident set size (kbytes): 1566776
+>
+> Suggested-by: David Blaikie <blaikie@google.com>
+> Suggested-by: Nick Clifton <nickc@redhat.com>
+> Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Reviewed-by: Fangrui Song <maskray@google.com>
+> Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Thanks for this.
 
 
-> ---
->  arch/arm64/kernel/perf_regs.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/arm64/kernel/perf_regs.c b/arch/arm64/kernel/perf_regs.c
-> index 0bbac61..0ef2880 100644
-> --- a/arch/arm64/kernel/perf_regs.c
-> +++ b/arch/arm64/kernel/perf_regs.c
-> @@ -32,6 +32,10 @@ u64 perf_reg_value(struct pt_regs *regs, int idx)
->  	if ((u32)idx == PERF_REG_ARM64_PC)
->  		return regs->pc;
->  
-> +	if (perf_reg_abi(current) == PERF_SAMPLE_REGS_ABI_32
-> +		&& idx == 15)
-> +		return regs->pc;
+Suggested-by seems strange to me, but
+I decided to not be worried too much.
 
-I think there are some more issues here, and we may need a more
-substantial rework. For a compat thread, we always expose
-PERF_SAMPLE_REGS_ABI_32 via per_reg_abi(), but for some reason
-perf_reg_value() also munges the compat SP/LR into their ARM64
-equivalents, which don't exist in the 32-bit sample ABI. We also don't
-zero the regs that don't exist in 32-bit (including the aliasing PC).
+Applied to linux-kbuild.
 
-I reckon what we should do is have seperate functions for the two ABIs,
-to ensure we don't conflate them, e.g.
+Thanks.
 
-u64 perf_reg_value_abi32(struct pt_regs *regs, int idx)
-{
-	if ((u32)idx > PERF_REG_ARM32_PC)
-		return 0;
-	if (idx == PERF_REG_ARM32_PC)
-		return regs->pc;
-	
-	/*
-	 * Compat SP and LR already in-place
-	 */
-	return regs->regs[idx];
-}
 
-u64 perf_reg_value_abi64(struct pt_regs *regs, int idx)
-{
-	if ((u32)idx > PERF_REG_ARM64_MAX)
-		return 0;
-	if ((u32)idx == PERF_REG_ARM64_SP)
-		return regs->sp;
-	if ((u32)idx == PERF_REG_ARM64_PC)
-		return regs->pc;
-	
-	reutrn regs->regs[idx];
-}
 
-u64 perf_reg_value(struct pt_regs *regs, int idx)
-{
-	if (compat_user_mode(regs))
-		return perf_reg_value_abi32(regs, idx);
-	else
-		return perf_reg_value_abi64(regs, idx);
-}
 
-Thanks,
-Mark.
+-- 
+Best Regards
+Masahiro Yamada
