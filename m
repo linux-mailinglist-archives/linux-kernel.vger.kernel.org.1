@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC111E2E8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB3D1E2E37
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404388AbgEZTaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:30:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55124 "EHLO mail.kernel.org"
+        id S2392580AbgEZT1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:27:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390844AbgEZTAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:00:55 -0400
+        id S2391288AbgEZTDx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:03:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B27D3208B8;
-        Tue, 26 May 2020 19:00:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4AE0D20849;
+        Tue, 26 May 2020 19:03:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519654;
-        bh=cKvKhSaa6iR9xR6fOOVGDBo+K/GETrYvN5MflaL2/UM=;
+        s=default; t=1590519832;
+        bh=o6xEWP3l3NxJIyh56Zls/j+EDwwS16Hn5+vt1XvPQsE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tgoKSYVBm/DfF+TrYIDE2FfFSRazmfJKDM/BlgXBYAsUniR7TGUUz0k+QUhOpXsay
-         kaiF5X9y6frqqdc3LL2tr7vDIV92qbAWqc+Byech7AlRgktbnHd/qN+5ov+GQ4zpN5
-         mS8T4csexpIkUMnzs9jAlUbsFpsd5f/goeizDHL8=
+        b=pX9EnXe0AU+26DftWl1+iXW0wmAZ8sUa65Z1WZe3SNkiKE8rL1QEMZz1g7uGJyaKK
+         WpY1gemp1Hapetu8VqVNVZZtp8LukXxMrVijIIJVnfWHzdJ00F8zQW0jjxS519dCab
+         u/TmhGE5XgN4oE6aj2CU3ks+H2K4NBPpfa+PsSG0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+db339689b2101f6f6071@syzkaller.appspotmail.com
-Subject: [PATCH 4.14 23/59] USB: core: Fix misleading driver bug report
-Date:   Tue, 26 May 2020 20:53:08 +0200
-Message-Id: <20200526183915.966278367@linuxfoundation.org>
+        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 34/81] ARM: futex: Address build warning
+Date:   Tue, 26 May 2020 20:53:09 +0200
+Message-Id: <20200526183931.170337844@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
-References: <20200526183907.123822792@linuxfoundation.org>
+In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
+References: <20200526183923.108515292@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,67 +44,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit ac854131d9844f79e2fdcef67a7707227538d78a ]
+[ Upstream commit 8101b5a1531f3390b3a69fa7934c70a8fd6566ad ]
 
-The syzbot fuzzer found a race between URB submission to endpoint 0
-and device reset.  Namely, during the reset we call usb_ep0_reinit()
-because the characteristics of ep0 may have changed (if the reset
-follows a firmware update, for example).  While usb_ep0_reinit() is
-running there is a brief period during which the pointers stored in
-udev->ep_in[0] and udev->ep_out[0] are set to NULL, and if an URB is
-submitted to ep0 during that period, usb_urb_ep_type_check() will
-report it as a driver bug.  In the absence of those pointers, the
-routine thinks that the endpoint doesn't exist.  The log message looks
-like this:
+Stephen reported the following build warning on a ARM multi_v7_defconfig
+build with GCC 9.2.1:
 
-------------[ cut here ]------------
-usb 2-1: BOGUS urb xfer, pipe 2 != type 2
-WARNING: CPU: 0 PID: 9241 at drivers/usb/core/urb.c:478
-usb_submit_urb+0x1188/0x1460 drivers/usb/core/urb.c:478
+kernel/futex.c: In function 'do_futex':
+kernel/futex.c:1676:17: warning: 'oldval' may be used uninitialized in this function [-Wmaybe-uninitialized]
+ 1676 |   return oldval == cmparg;
+      |          ~~~~~~~^~~~~~~~~
+kernel/futex.c:1652:6: note: 'oldval' was declared here
+ 1652 |  int oldval, ret;
+      |      ^~~~~~
 
-Now, although submitting an URB while the device is being reset is a
-questionable thing to do, it shouldn't count as a driver bug as severe
-as submitting an URB for an endpoint that doesn't exist.  Indeed,
-endpoint 0 always exists, even while the device is in its unconfigured
-state.
+introduced by commit a08971e9488d ("futex: arch_futex_atomic_op_inuser()
+calling conventions change").
 
-To prevent these misleading driver bug reports, this patch updates
-usb_disable_endpoint() to avoid clearing the ep_in[] and ep_out[]
-pointers when the endpoint being disabled is ep0.  There's no danger
-of leaving a stale pointer in place, because the usb_host_endpoint
-structure being pointed to is stored permanently in udev->ep0; it
-doesn't get deallocated until the entire usb_device structure does.
+While that change should not make any difference it confuses GCC which
+fails to work out that oldval is not referenced when the return value is
+not zero.
 
-Reported-and-tested-by: syzbot+db339689b2101f6f6071@syzkaller.appspotmail.com
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+GCC fails to properly analyze arch_futex_atomic_op_inuser(). It's not the
+early return, the issue is with the assembly macros. GCC fails to detect
+that those either set 'ret' to 0 and set oldval or set 'ret' to -EFAULT
+which makes oldval uninteresting. The store to the callsite supplied oldval
+pointer is conditional on ret == 0.
 
-Link: https://lore.kernel.org/r/Pine.LNX.4.44L0.2005011558590.903-100000@netrider.rowland.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The straight forward way to solve this is to make the store unconditional.
+
+Aside of addressing the build warning this makes sense anyway because it
+removes the conditional from the fastpath. In the error case the stored
+value is uninteresting and the extra store does not matter at all.
+
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lkml.kernel.org/r/87pncao2ph.fsf@nanos.tec.linutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/core/message.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/include/asm/futex.h | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/core/message.c b/drivers/usb/core/message.c
-index 00e80cfe614c..298c91f83aee 100644
---- a/drivers/usb/core/message.c
-+++ b/drivers/usb/core/message.c
-@@ -1082,11 +1082,11 @@ void usb_disable_endpoint(struct usb_device *dev, unsigned int epaddr,
+diff --git a/arch/arm/include/asm/futex.h b/arch/arm/include/asm/futex.h
+index ffebe7b7a5b7..91ca80035fc4 100644
+--- a/arch/arm/include/asm/futex.h
++++ b/arch/arm/include/asm/futex.h
+@@ -163,8 +163,13 @@ arch_futex_atomic_op_inuser(int op, int oparg, int *oval, u32 __user *uaddr)
+ 	preempt_enable();
+ #endif
  
- 	if (usb_endpoint_out(epaddr)) {
- 		ep = dev->ep_out[epnum];
--		if (reset_hardware)
-+		if (reset_hardware && epnum != 0)
- 			dev->ep_out[epnum] = NULL;
- 	} else {
- 		ep = dev->ep_in[epnum];
--		if (reset_hardware)
-+		if (reset_hardware && epnum != 0)
- 			dev->ep_in[epnum] = NULL;
- 	}
- 	if (ep) {
+-	if (!ret)
+-		*oval = oldval;
++	/*
++	 * Store unconditionally. If ret != 0 the extra store is the least
++	 * of the worries but GCC cannot figure out that __futex_atomic_op()
++	 * is either setting ret to -EFAULT or storing the old value in
++	 * oldval which results in a uninitialized warning at the call site.
++	 */
++	*oval = oldval;
+ 
+ 	return ret;
+ }
 -- 
 2.25.1
 
