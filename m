@@ -2,136 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF051E1D03
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 10:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A488F1E1D0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 10:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728380AbgEZINv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 04:13:51 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:58694 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727011AbgEZINu (ORCPT
+        id S1729387AbgEZIQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 04:16:44 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:52432 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726926AbgEZIQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 04:13:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590480828;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=F6dY7b577fJbY2Wvy6nSoJBff9CB2njzSCj4WHlFr/M=;
-        b=COoLYTQXrxNESnoPE4odcpJXhQxVybogSq5szfo1Cl3iCOtNraWbFmikJavySvAkUN+vqz
-        Qynd/IZfl5j1V5lqJUkvW2ZNV8rr+hkZ119QSSI6yubpsSgdL9Vk4a/Z1BkydkCfOstN3g
-        claNDsRX3r3d6NKRyUOHYNWXqjm+ukg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-33-RfyK_COPMb2ZHsotDGds_g-1; Tue, 26 May 2020 04:13:43 -0400
-X-MC-Unique: RfyK_COPMb2ZHsotDGds_g-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2913E800688;
-        Tue, 26 May 2020 08:13:42 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.195.145])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E971179C45;
-        Tue, 26 May 2020 08:13:39 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Subject: [PATCH] mm/gup: correct pin_user_pages.rst location
-Date:   Tue, 26 May 2020 10:13:38 +0200
-Message-Id: <20200526081338.179532-1-vkuznets@redhat.com>
+        Tue, 26 May 2020 04:16:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=e2MwWe7Ixqq38W0YV5HpIWiJs7gWWp0umQ/6FgHLKss=; b=uZAIMZI4tKYflTVu4AkMQ8ugSL
+        i0wE2fZF3kQP9C4bNOFFwKZVeKPshT0KB0qNTE7PIMLM9MjrNBldjeMNNLHK82hitFWTHPDhrfSJG
+        /B34llj/JtKVzQeCf5Xzc8ksZTsotqI3aMzvBLpD+mcdOvrArgUVK57tAtSEZwk1s88MvBGf1+WJt
+        lIBrCnga/ICVWtmz0pxDGV4qF4OGzGpPV+6uQXxjWyK0jUT09fvFkswgOqKAE/9raQxwK7TCTxugS
+        q5KFMzHgflz6GWMssFtGnw0Xir81UC2tA1jGd9qCqzAbXyQylwMDCVpsDfz/k2/p+R07Nb799EmT2
+        jXqEDU3A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jdUin-0003ao-2Y; Tue, 26 May 2020 08:14:01 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F0BDF30280E;
+        Tue, 26 May 2020 10:13:50 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A514020BE0DF0; Tue, 26 May 2020 10:13:50 +0200 (CEST)
+Date:   Tue, 26 May 2020 10:13:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Cc:     "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 07/25] lockdep: Add preemption disabled assertion API
+Message-ID: <20200526081350.GI317569@hirez.programming.kicks-ass.net>
+References: <20200519214547.352050-1-a.darwish@linutronix.de>
+ <20200519214547.352050-8-a.darwish@linutronix.de>
+ <20200522175503.GQ325280@hirez.programming.kicks-ass.net>
+ <20200523145942.vjk3z6pbj6yicqa4@linutronix.de>
+ <20200523224132.GD2483@worktop.programming.kicks-ass.net>
+ <20200525102241.GF325303@hirez.programming.kicks-ass.net>
+ <20200526005231.GA377571@debian-buster-darwi.lab.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200526005231.GA377571@debian-buster-darwi.lab.linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pin_user_pages.rst lives in Documentation/core-api/, not Documentation/vm/,
-adjust all links accordingly.
+On Tue, May 26, 2020 at 02:52:31AM +0200, Ahmed S. Darwish wrote:
+> Peter Zijlstra <peterz@infradead.org> wrote:
 
-Fixes: 3faa52c03f44 ("mm/gup: track FOLL_PIN pages")
-Fixes: eddb1c228f79 ("mm/gup: introduce pin_user_pages*() and FOLL_PIN")
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- include/linux/mm.h |  4 ++--
- mm/gup.c           | 18 +++++++++---------
- 2 files changed, 11 insertions(+), 11 deletions(-)
+> > +#define lockdep_assert_irqs_enabled()					\
+> > +do {									\
+> > +	WARN_ON_ONCE(debug_locks && !this_cpu_read(hardirqs_enabled));	\
+> > +} while (0)
+> >
+> 
+> Given that lockdep_off() is defined at lockdep.c as:
+> 
+>   void lockdep_off(void)
+>   {
+>         current->lockdep_recursion += LOCKDEP_OFF;
+>   }
+> 
+> This would imply that all of the macros:
+> 
+>   - lockdep_assert_irqs_enabled()
+>   - lockdep_assert_irqs_disabled()
+>   - lockdep_assert_in_irq()
+>   - lockdep_assert_preemption_disabled()
+>   - lockdep_assert_preemption_enabled()
+> 
+> will do the lockdep checks *even if* lockdep_off() was called.
+> 
+> This doesn't sound right. Even if all of the above macros call sites
+> didn't care about lockdep_off()/on(), it is semantically incoherent.
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 5a323422d783..1f2850465f59 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1219,7 +1219,7 @@ void unpin_user_pages(struct page **pages, unsigned long npages);
-  * used to track the pincount (instead using of the GUP_PIN_COUNTING_BIAS
-  * scheme).
-  *
-- * For more information, please see Documentation/vm/pin_user_pages.rst.
-+ * For more information, please see Documentation/core-api/pin_user_pages.rst.
-  *
-  * @page:	pointer to page to be queried.
-  * @Return:	True, if it is likely that the page has been "dma-pinned".
-@@ -2834,7 +2834,7 @@ struct page *follow_page(struct vm_area_struct *vma, unsigned long address,
-  * releasing pages: get_user_pages*() pages must be released via put_page(),
-  * while pin_user_pages*() pages must be released via unpin_user_page().
-  *
-- * Please see Documentation/vm/pin_user_pages.rst for more information.
-+ * Please see Documentation/core-api/pin_user_pages.rst for more information.
-  */
- 
- static inline int vm_fault_to_errno(vm_fault_t vm_fault, int foll_flags)
-diff --git a/mm/gup.c b/mm/gup.c
-index 87a6a59fe667..87a3a4b400f9 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -2845,10 +2845,10 @@ EXPORT_SYMBOL_GPL(get_user_pages_fast);
-  * the arguments here are identical.
-  *
-  * FOLL_PIN means that the pages must be released via unpin_user_page(). Please
-- * see Documentation/vm/pin_user_pages.rst for further details.
-+ * see Documentation/core-api/pin_user_pages.rst for further details.
-  *
-- * This is intended for Case 1 (DIO) in Documentation/vm/pin_user_pages.rst. It
-- * is NOT intended for Case 2 (RDMA: long-term pins).
-+ * This is intended for Case 1 in Documentation/core-api/pin_user_pages.rst
-+ * (DIO). It is NOT intended for Case 2 (RDMA: long-term pins).
-  */
- int pin_user_pages_fast(unsigned long start, int nr_pages,
- 			unsigned int gup_flags, struct page **pages)
-@@ -2885,10 +2885,10 @@ EXPORT_SYMBOL_GPL(pin_user_pages_fast);
-  * the arguments here are identical.
-  *
-  * FOLL_PIN means that the pages must be released via unpin_user_page(). Please
-- * see Documentation/vm/pin_user_pages.rst for details.
-+ * see Documentation/core-api/pin_user_pages.rst for details.
-  *
-- * This is intended for Case 1 (DIO) in Documentation/vm/pin_user_pages.rst. It
-- * is NOT intended for Case 2 (RDMA: long-term pins).
-+ * This is intended for Case 1 in Documentation/core-api/pin_user_pages.rst
-+ * (DIO). It is NOT intended for Case 2 (RDMA: long-term pins).
-  */
- long pin_user_pages_remote(struct task_struct *tsk, struct mm_struct *mm,
- 			   unsigned long start, unsigned long nr_pages,
-@@ -2921,10 +2921,10 @@ EXPORT_SYMBOL(pin_user_pages_remote);
-  * FOLL_PIN is set.
-  *
-  * FOLL_PIN means that the pages must be released via unpin_user_page(). Please
-- * see Documentation/vm/pin_user_pages.rst for details.
-+ * see Documentation/core-api/pin_user_pages.rst for details.
-  *
-- * This is intended for Case 1 (DIO) in Documentation/vm/pin_user_pages.rst. It
-- * is NOT intended for Case 2 (RDMA: long-term pins).
-+ * This is intended for Case 1 in Documentation/core-api/pin_user_pages.rst
-+ * (DIO). It is NOT intended for Case 2 (RDMA: long-term pins).
-  */
- long pin_user_pages(unsigned long start, unsigned long nr_pages,
- 		    unsigned int gup_flags, struct page **pages,
--- 
-2.25.4
+lockdep_off() is an abomination and really should not exist.
+
+That dm-cache-target.c thing, for example, is atrocious shite that will
+explode on -rt. Whoever wrote that needs a 'medal'.
+
+People using it deserve all the pain they get.
+
+Also; IRQ state _should_ be tracked irrespective of tracking lock
+dependencies -- I see that that currently isn't entirely the case, lemme
+go fix that.
 
