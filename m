@@ -2,253 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D22B1E1C93
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 09:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 690A41E1C97
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 09:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731659AbgEZH4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 03:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726638AbgEZH4X (ORCPT
+        id S1731679AbgEZH4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 03:56:40 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:35183 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726638AbgEZH4j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 03:56:23 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B6EC03E97E
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 00:56:22 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id r125so11728524lff.13
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 00:56:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=AtWHuosc9HAs7V0XgYn9L7UDDWbHNp6VCR80p4XmsVw=;
-        b=qanV7sDDW1MwY4EYyMAkOy/Tzpftn+EgnnyUedacmpn+L2FLjAspN9M5D2ByqHFZZQ
-         pw2dJaJl9A1HU7KHplJfCJQTs2JLkHEzaSWZRkfGtW0i6zKSP1zfautFjniLFL6fnTFz
-         DD/oqvMkZ1FSgH/OxzLWGMsqmjMWn31L1mHPLdcMDLaS0CMaWQVPJWeznY2BP788NUMm
-         lDd9CAur1GA682oMaru/+s9DVAbVYRKZajWpQgTYRBfPwUsCcU81NVx88RiFMKq+kISI
-         KJk+WuAQP8kz22C6cyQf4yamd46oZMPkCk5N9dZYIUBihSI6f+4KRgyeN+L4ZQXwR26d
-         88gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=AtWHuosc9HAs7V0XgYn9L7UDDWbHNp6VCR80p4XmsVw=;
-        b=Zr5DMG0t6NWfScebY58k5Rn4XF5+S85EB3JuNG6ncU82QrkFJSAwgQaq1lMLhGp+yq
-         iERxZwoN/+DlWmKrljq8THdwEECEntwNfs+Se2bmGzmAImdNoAcwYG9JHKDucBFkOO98
-         ehz4SS0o63oGzGZZVWmOg92R/94pgqJXpaakyC857CvZ5cdjSdabtM3IyXT6WP0Dj0Ea
-         50bzYYbZCcwsG815yOnyBWAiQnFC4jK5MgukHLjRHQNXLgi9z9TTj4l/i6McQlLwz+8l
-         5kFendExNsdoskEANBU5Pzusp0zPEe4nwuAAccqXcy9OEjTwJFAZp4nmiGUFvMxeiZGK
-         2Z/Q==
-X-Gm-Message-State: AOAM531Qq35hosyx+xhlpw/mogteBGQr0KKqLNA7/Hh3USpAe4zMFLFh
-        1QiBG3I+/KAxxWSb61o3t8k=
-X-Google-Smtp-Source: ABdhPJxZGCDCooMNe8jLQcmljQQKcm3bwfAgWH53ylVHSOAVyG1ED1Ou+kiP4C98yecYCI6GWKQdPQ==
-X-Received: by 2002:ac2:5457:: with SMTP id d23mr8834074lfn.18.1590479781207;
-        Tue, 26 May 2020 00:56:21 -0700 (PDT)
-Received: from a-barsegyan ([85.249.97.232])
-        by smtp.gmail.com with ESMTPSA id f16sm251102lfa.10.2020.05.26.00.56.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 00:56:20 -0700 (PDT)
-Date:   Tue, 26 May 2020 10:56:18 +0300
-From:   Artur Barsegyan <a.barsegyan96@gmail.com>
-To:     Manfred Spraul <manfred@colorfullife.com>
-Cc:     skutepov@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
-        Lu Shuaibing <shuaibinglu@126.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ipc/msg.c: wake up senders until there is a queue empty
- capacity
-Message-ID: <20200526075618.GA19866@a-barsegyan>
-References: <20200523203448.84235-1-a.barsegyan96@gmail.com>
- <0410a00b-fb20-cbaa-4a29-c7752a469fdd@colorfullife.com>
+        Tue, 26 May 2020 03:56:39 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id E90A95C0058;
+        Tue, 26 May 2020 03:56:37 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 26 May 2020 03:56:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm2; bh=Z
+        u9qqU+I+thjV7ih0gjMq+r1LnUk7vFMdi7Yew8UXJA=; b=xneF9++arCV/I77rR
+        8tDgoctxQlEU8NQEX4Ez381uoRVlHrFxRnwUQt6j/dmP6Tz8QrKj9xh5oi+qGkf7
+        7CLIYDqQ50alvXSblYSOK35/JoV/lycqKEVACaq07FM1XhYkpvld9OKDf/T/nPIX
+        oMstbQijFskdWwMkeXr/L2Fnmx/NYkholzSYmB/zk3JRxq7ZopMK+ZAuxGOx9sg8
+        mCq6aiv4ZETpLj26t5tOZPj5jQii2pHk7fvadHK1pjYXIK78++k/8Tt+BbMH++3h
+        7EErQaTF1K5uUuSQwYOnu2tyg9OvX8rmlI8SaZrEx1Slq9L911h5oOyeS1SglYLp
+        fVUzQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=Zu9qqU+I+thjV7ih0gjMq+r1LnUk7vFMdi7Yew8UX
+        JA=; b=p0cu4g70VqbywSbgNEoJJGrVh0fks3lfYnbqF9+Dt5jSYkkdic/bllsTh
+        O77J/jq4X9lj2+sAWxFz++C7TzM2ywsTdVLknidD6RSBd1EpubjQWs3WLfG+Z3sm
+        1uPZ0UDxrl9ndLRGaUxZ9lIRmtBR7jWDaUnO95RPsbBhVgo/3BKz/A9/MJH3imaG
+        fmPXLLginST6wZlqGI1y9Ip4j96L2TPbclo22ejhobOsAGAW9xGlzdqn5We3osZ6
+        GTOOr4sFK35zy3jbiTbFHO5hwrAbhp/2Ida66TJgNMpP9x4I8iIHiAoelkRHfJVc
+        yxlj9AyEOox/5lmzjM4IVsdnB96qA==
+X-ME-Sender: <xms:scvMXtW6yirSIt1uH7W78oOy4M0e6wqkOFer8qkJJ2MiaZMPRuFJ2A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddvuddguddvvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggugfgjsehtqhertddttddvnecuhfhrohhmpeforgig
+    ihhmvgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrf
+    grthhtvghrnhepgfejtedtjefggfffvdetuedthedtheegheeuteekfeeghfdtteejkeel
+    udegvddunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:scvMXtkGf5broUr6pAbTdzLfNgFpIixxtsz-1ba5es1lu3Sy8OiVXA>
+    <xmx:scvMXpY4qalIlkQ9EWDOhnvEhEoTtynFhThong14ufMKt6lp0SZrYA>
+    <xmx:scvMXgVID8mORfqJf9rT0xHxW6GJ7TqUIm3trViClXYj0w8pmMOhJQ>
+    <xmx:tcvMXsyv-p5n67fNuL0DwsQ7uh4PB8z8SzI0caVkb1jgVU5OHgqEQA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E28AD328005E;
+        Tue, 26 May 2020 03:56:32 -0400 (EDT)
+Date:   Tue, 26 May 2020 09:56:30 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/2] iommu/sun50i: Constify sun50i_iommu_ops
+Message-ID: <20200526075630.wjevamadh5mcnleb@gilmour.lan>
+References: <20200525214958.30015-1-rikard.falkeborn@gmail.com>
+ <20200525214958.30015-3-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0410a00b-fb20-cbaa-4a29-c7752a469fdd@colorfullife.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200525214958.30015-3-rikard.falkeborn@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Manfred!
+On Mon, May 25, 2020 at 11:49:58PM +0200, Rikard Falkeborn wrote:
+> The struct sun50i_iommu_ops is not modified and can be made const to
+> allow the compiler to put it in read-only memory.
+>=20
+> Before:
+>    text    data     bss     dec     hex filename
+>   14358    2501      64   16923    421b drivers/iommu/sun50i-iommu.o
+>=20
+> After:
+>    text    data     bss     dec     hex filename
+>   14726    2117      64   16907    420b drivers/iommu/sun50i-iommu.o
+>=20
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
-Thank you, for your review. I've reviewed your patch.
+Acked-by: Maxime Ripard <mripard@kernel.org>
 
-I forgot about the case with different message types. At now with your patch,
-a sender will force message consuming if that doesn't hold own capacity.
-
-I have measured queue throughput and have pushed the results to:
-https://github.com/artur-barsegyan/systemv_queue_research
-
-But I'm confused about the next thought: in general loop in the do_msgsnd()
-function, we doesn't check pipeline sending availability. Your case will be
-optimized if we check the pipeline sending inside the loop.
-
-On Sun, May 24, 2020 at 03:21:31PM +0200, Manfred Spraul wrote:
-> Hello Artur,
-> 
-> On 5/23/20 10:34 PM, Artur Barsegyan wrote:
-> > Take into account the total size of the already enqueued messages of
-> > previously handled senders before another one.
-> > 
-> > Otherwise, we have serious degradation of receiver throughput for
-> > case with multiple senders because another sender wakes up,
-> > checks the queue capacity and falls into sleep again.
-> > 
-> > Each round-trip wastes CPU time a lot and leads to perceptible
-> > throughput degradation.
-> > 
-> > Source code of:
-> > 	- sender/receiver
-> > 	- benchmark script
-> > 	- ready graphics of before/after results
-> > 
-> > is located here: https://github.com/artur-barsegyan/systemv_queue_research
-> 
-> Thanks for analyzing the issue!
-> 
-> > Signed-off-by: Artur Barsegyan <a.barsegyan96@gmail.com>
-> > ---
-> >   ipc/msg.c | 4 +++-
-> >   1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/ipc/msg.c b/ipc/msg.c
-> > index caca67368cb5..52d634b0a65a 100644
-> > --- a/ipc/msg.c
-> > +++ b/ipc/msg.c
-> > @@ -214,6 +214,7 @@ static void ss_wakeup(struct msg_queue *msq,
-> >   	struct msg_sender *mss, *t;
-> >   	struct task_struct *stop_tsk = NULL;
-> >   	struct list_head *h = &msq->q_senders;
-> > +	size_t msq_quota_used = 0;
-> >   	list_for_each_entry_safe(mss, t, h, list) {
-> >   		if (kill)
-> > @@ -233,7 +234,7 @@ static void ss_wakeup(struct msg_queue *msq,
-> >   		 * move the sender to the tail on behalf of the
-> >   		 * blocked task.
-> >   		 */
-> > -		else if (!msg_fits_inqueue(msq, mss->msgsz)) {
-> > +		else if (!msg_fits_inqueue(msq, msq_quota_used + mss->msgsz)) {
-> >   			if (!stop_tsk)
-> >   				stop_tsk = mss->tsk;
-> > @@ -241,6 +242,7 @@ static void ss_wakeup(struct msg_queue *msq,
-> >   			continue;
-> >   		}
-> > +		msq_quota_used += mss->msgsz;
-> >   		wake_q_add(wake_q, mss->tsk);
-> 
-> You have missed the case of a do_msgsnd() that doesn't enqueue the message:
-> 
-> Situation:
-> 
-> - 2 messages of type 1 in the queue (2x8192 bytes, queue full)
-> 
-> - 6 senders waiting to send messages of type 2
-> 
-> - 6 receivers waiting to get messages of type 2.
-> 
-> If now a receiver reads one message of type 1, then all 6 senders can send.
-> 
-> WIth your patch applied, only one sender sends the message to one receiver,
-> and the remaining 10 tasks continue to sleep.
-> 
-> 
-> Could you please check and (assuming that you agree) run your benchmarks
-> with the patch applied?
-> 
-> --
-> 
->     Manfred
-> 
-> 
-> 
-
-> From fe2f257b1950a19bf5c6f67e71aa25c2f13bcdc3 Mon Sep 17 00:00:00 2001
-> From: Manfred Spraul <manfred@colorfullife.com>
-> Date: Sun, 24 May 2020 14:47:31 +0200
-> Subject: [PATCH 2/2] ipc/msg.c: Handle case of senders not enqueuing the
->  message
-> 
-> The patch "ipc/msg.c: wake up senders until there is a queue empty
-> capacity" avoids the thundering herd problem by wakeing up
-> only as many potential senders as there is free space in the queue.
-> 
-> This patch is a fix: If one of the senders doesn't enqueue its message,
-> then a search for further potential senders must be performed.
-> 
-> Signed-off-by: Manfred Spraul <manfred@colorfullife.com>
-> ---
->  ipc/msg.c | 21 +++++++++++++++++++++
->  1 file changed, 21 insertions(+)
-> 
-> diff --git a/ipc/msg.c b/ipc/msg.c
-> index 52d634b0a65a..f6d5188db38a 100644
-> --- a/ipc/msg.c
-> +++ b/ipc/msg.c
-> @@ -208,6 +208,12 @@ static inline void ss_del(struct msg_sender *mss)
->  		list_del(&mss->list);
->  }
->  
-> +/*
-> + * ss_wakeup() assumes that the stored senders will enqueue the pending message.
-> + * Thus: If a woken up task doesn't send the enqueued message for whatever
-> + * reason, then that task must call ss_wakeup() again, to ensure that no
-> + * wakeup is lost.
-> + */
->  static void ss_wakeup(struct msg_queue *msq,
->  		      struct wake_q_head *wake_q, bool kill)
->  {
-> @@ -843,6 +849,7 @@ static long do_msgsnd(int msqid, long mtype, void __user *mtext,
->  	struct msg_queue *msq;
->  	struct msg_msg *msg;
->  	int err;
-> +	bool need_wakeup;
->  	struct ipc_namespace *ns;
->  	DEFINE_WAKE_Q(wake_q);
->  
-> @@ -869,6 +876,7 @@ static long do_msgsnd(int msqid, long mtype, void __user *mtext,
->  
->  	ipc_lock_object(&msq->q_perm);
->  
-> +	need_wakeup = false;
->  	for (;;) {
->  		struct msg_sender s;
->  
-> @@ -898,6 +906,13 @@ static long do_msgsnd(int msqid, long mtype, void __user *mtext,
->  		/* enqueue the sender and prepare to block */
->  		ss_add(msq, &s, msgsz);
->  
-> +		/* Enqueuing a sender is actually an obligation:
-> +		 * The sender must either enqueue the message, or call
-> +		 * ss_wakeup(). Thus track that we have added our message
-> +		 * to the candidates for the message queue.
-> +		 */
-> +		need_wakeup = true;
-> +
->  		if (!ipc_rcu_getref(&msq->q_perm)) {
->  			err = -EIDRM;
->  			goto out_unlock0;
-> @@ -935,12 +950,18 @@ static long do_msgsnd(int msqid, long mtype, void __user *mtext,
->  		msq->q_qnum++;
->  		atomic_add(msgsz, &ns->msg_bytes);
->  		atomic_inc(&ns->msg_hdrs);
-> +
-> +		/* we have fulfilled our obligation, no need for wakeup */
-> +		need_wakeup = false;
->  	}
->  
->  	err = 0;
->  	msg = NULL;
->  
->  out_unlock0:
-> +	if (need_wakeup)
-> +		ss_wakeup(msq, &wake_q, false);
-> +
->  	ipc_unlock_object(&msq->q_perm);
->  	wake_up_q(&wake_q);
->  out_unlock1:
-> -- 
-> 2.26.2
-> 
-
+Thanks!
+Maxime
