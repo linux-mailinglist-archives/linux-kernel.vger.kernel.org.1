@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 417EF1E2AE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A479A1E2AE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390601AbgEZS7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:59:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53752 "EHLO mail.kernel.org"
+        id S2390635AbgEZS77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:59:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389478AbgEZS7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:59:48 -0400
+        id S2389977AbgEZS74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:59:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 11F8320849;
-        Tue, 26 May 2020 18:59:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59B3220849;
+        Tue, 26 May 2020 18:59:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519588;
-        bh=bTdwv1vyZUg+549OUWqfF6B+jLil2PTqgnQIUtA4yM4=;
+        s=default; t=1590519595;
+        bh=NebaGoNend4UooMfkkfS/aWjy97aPsiF5iAluBswIgI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m4Mq2OxfDUn9Gt7GvuyVA7fawxkg2rd/3mSlKWQVkLdcs1XAnsn+zzUAzWvvUYM9h
-         P8Fp50hRuscDNyzvRGROALMusvV3QfxtXO3dubfUOc4FtgKv+EuZBQ9ZkdiqqdCglF
-         fDh+iLvpH4meYIYyAF++bFP31/QGV91wsUC7riu0=
+        b=FzS/gNIFFTUI7nCISV3Ig91/4H1DA0yXd65z6YfRiBHNAhNvv+enMSK5/LzeBMxKN
+         cgYiyviXi8VBdQ3QeziPMIoEG3zVIMExoHqiIFAUNHQ3CNUnPl5S94QDdPFrmvzhDO
+         wVg9yCPWH0d/zKfdYnHbof6WKQqup7CmcqGNcUyY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?=E4=BA=BF=E4=B8=80?= <teroincn@gmail.com>,
-        Alexander Usyskin <alexander.usyskin@intel.com>,
-        Tomas Winkler <tomas.winkler@intel.com>
-Subject: [PATCH 4.9 62/64] mei: release me_cl object reference
-Date:   Tue, 26 May 2020 20:53:31 +0200
-Message-Id: <20200526183931.584298265@linuxfoundation.org>
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 64/64] iio: sca3000: Remove an erroneous get_device()
+Date:   Tue, 26 May 2020 20:53:33 +0200
+Message-Id: <20200526183931.808755173@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200526183913.064413230@linuxfoundation.org>
 References: <20200526183913.064413230@linuxfoundation.org>
@@ -45,42 +46,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Usyskin <alexander.usyskin@intel.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit fc9c03ce30f79b71807961bfcb42be191af79873 upstream.
+[ Upstream commit 928edefbc18cd8433f7df235c6e09a9306e7d580 ]
 
-Allow me_cl object to be freed by releasing the reference
-that was acquired  by one of the search functions:
-__mei_me_cl_by_uuid_id() or __mei_me_cl_by_uuid()
+This looks really unusual to have a 'get_device()' hidden in a 'dev_err()'
+call.
+Remove it.
 
-Cc: <stable@vger.kernel.org>
-Reported-by: 亿一 <teroincn@gmail.com>
-Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-Link: https://lore.kernel.org/r/20200512223140.32186-1-tomas.winkler@intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+While at it add a missing \n at the end of the message.
 
+Fixes: 574fb258d636 ("Staging: IIO: VTI sca3000 series accelerometer driver (spi)")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/mei/client.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/staging/iio/accel/sca3000_ring.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/misc/mei/client.c
-+++ b/drivers/misc/mei/client.c
-@@ -276,6 +276,7 @@ void mei_me_cl_rm_by_uuid(struct mei_dev
- 	down_write(&dev->me_clients_rwsem);
- 	me_cl = __mei_me_cl_by_uuid(dev, uuid);
- 	__mei_me_cl_del(dev, me_cl);
-+	mei_me_cl_put(me_cl);
- 	up_write(&dev->me_clients_rwsem);
- }
+diff --git a/drivers/staging/iio/accel/sca3000_ring.c b/drivers/staging/iio/accel/sca3000_ring.c
+index d1cb9b9cf22b..391cbcc4ed77 100644
+--- a/drivers/staging/iio/accel/sca3000_ring.c
++++ b/drivers/staging/iio/accel/sca3000_ring.c
+@@ -56,7 +56,7 @@ static int sca3000_read_data(struct sca3000_state *st,
+ 	st->tx[0] = SCA3000_READ_REG(reg_address_high);
+ 	ret = spi_sync_transfer(st->us, xfer, ARRAY_SIZE(xfer));
+ 	if (ret) {
+-		dev_err(get_device(&st->us->dev), "problem reading register");
++		dev_err(&st->us->dev, "problem reading register");
+ 		goto error_free_rx;
+ 	}
  
-@@ -297,6 +298,7 @@ void mei_me_cl_rm_by_uuid_id(struct mei_
- 	down_write(&dev->me_clients_rwsem);
- 	me_cl = __mei_me_cl_by_uuid_id(dev, uuid, id);
- 	__mei_me_cl_del(dev, me_cl);
-+	mei_me_cl_put(me_cl);
- 	up_write(&dev->me_clients_rwsem);
- }
- 
+-- 
+2.25.1
+
 
 
