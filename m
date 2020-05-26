@@ -2,97 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 280081E3311
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6BE1E32F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404653AbgEZWvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 18:51:53 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:60366 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404608AbgEZWvt (ORCPT
+        id S2392078AbgEZWvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 18:51:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390388AbgEZWvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 18:51:49 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id CEECE8030879;
-        Tue, 26 May 2020 22:51:45 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id zWst2UV7r8ga; Wed, 27 May 2020 01:51:45 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 10/10] dmaengine: dw: Initialize max_sg_nents with nollp flag
-Date:   Wed, 27 May 2020 01:50:21 +0300
-Message-ID: <20200526225022.20405-11-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200526225022.20405-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200526225022.20405-1-Sergey.Semin@baikalelectronics.ru>
+        Tue, 26 May 2020 18:51:13 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532ABC061A0F;
+        Tue, 26 May 2020 15:51:13 -0700 (PDT)
+Received: from apollo.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 4BBB52304C;
+        Wed, 27 May 2020 00:51:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1590533471;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=AhPiYjAu0nngaams1opch4LrZG/bNldjM7CNAO3Dyqc=;
+        b=MfIOl0yrxRPEJTv5pNElXPlP2Az8rndkXB26zsouASCQdlUAzGDcI48F04REOoUN4bpWLe
+        pV2zSHCb72ZQ11A4XE7geH67rcDvn7MeZLU8M1nXDz+FzwI6PQw7eRJFtfo/FzmJfG0SEe
+        zTNUIulJrbNSbtWklS9tlOBw/YgLivQ=
+From:   Michael Walle <michael@walle.cc>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Michael Walle <michael@walle.cc>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Alex Marginean <alexandru.marginean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>
+Subject: [PATCH net-next v2 0/2] net: enetc: remove bootloader dependency
+Date:   Wed, 27 May 2020 00:50:48 +0200
+Message-Id: <20200526225050.5997-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Multi-block support provides a way to map the kernel-specific SG-table so
-the DW DMA device would handle it as a whole instead of handling the
-SG-list items or so called LLP block items one by one. So if true LLP
-list isn't supported by the DW DMA engine, then soft-LLP mode will be
-utilized to load and execute each LLP-block one by one. The soft-LLP mode
-of the DMA transactions execution might not work well for some DMA
-consumers like SPI due to its Tx and Rx buffers inter-dependency. Let's
-expose the nollp flag indicating the soft-LLP mode by means of the
-max_sg_nents capability, so the DMA consumer would be ready to somehow
-workaround errors caused by such mode being utilized.
+These patches were picked from the following series:
+https://lore.kernel.org/netdev/1567779344-30965-1-git-send-email-claudiu.manoil@nxp.com/
+They have never been resent. I've picked them up, addressed Andrews
+comments, fixed some more bugs and asked Claudiu if I can keep their SOB
+tags; he agreed. I've tested this on our board which happens to have a
+bootloader which doesn't do the enetc setup in all cases.
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Cc: devicetree@vger.kernel.org
+changes since v1:
+ - mdiobus id is '"imdio-%s", dev_name(dev)' because the plain dev_name()
+   is used by the emdio.
+ - use mdiobus_write() instead of imdio->write(imdio, ..), since this is
+   already a full featured mdiobus
+ - set phy_mask to ~0 to avoid scanning the bus
+ - use phy_interface_mode_is_rgmii(phy_mode) to also include the RGMII
+   modes with pad delays.
+ - move enetc_imdio_init() to enetc_pf.c, there shouldn't be any other
+   users, should it?
+ - renamed serdes to SerDes
+ - printing the error code of mdiobus_register() in the error path
+ - call mdiobus_unregister() on _remove()
+ - call devm_mdiobus_free() if mdiobus_register() fails, since an
+   error is not fatal
 
----
+Alex Marginean (1):
+  net: enetc: Use DT protocol information to set up the ports
 
-Changelog v3:
-- This is a new patch created as a result of the discussion with Vinud and
-  Andy in the framework of DW DMA burst and LLP capabilities.
----
- drivers/dma/dw/core.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Claudiu Manoil (1):
+  net: enetc: Initialize SerDes for SGMII and SXGMII protocols
 
-diff --git a/drivers/dma/dw/core.c b/drivers/dma/dw/core.c
-index 29c4ef08311d..b850eb7fd084 100644
---- a/drivers/dma/dw/core.c
-+++ b/drivers/dma/dw/core.c
-@@ -1054,6 +1054,15 @@ static void dwc_caps(struct dma_chan *chan, struct dma_slave_caps *caps)
- 	struct dw_dma_chan *dwc = to_dw_dma_chan(chan);
- 
- 	caps->max_burst = dwc->max_burst;
-+
-+	/*
-+	 * It might be crucial for some devices to have the hardware
-+	 * accelerated multi-block transfers supported, aka LLPs in DW DMAC
-+	 * notation. So if LLPs are supported then max_sg_nents is set to
-+	 * zero which means unlimited number of SG entries can be handled in a
-+	 * single DMA transaction, otherwise it's just one SG entry.
-+	 */
-+	caps->max_sg_nents = dwc->nollp;
- }
- 
- int do_dma_probe(struct dw_dma_chip *chip)
+ .../net/ethernet/freescale/enetc/enetc_hw.h   |  17 ++
+ .../net/ethernet/freescale/enetc/enetc_pf.c   | 151 +++++++++++++++---
+ .../net/ethernet/freescale/enetc/enetc_pf.h   |   4 +
+ 3 files changed, 148 insertions(+), 24 deletions(-)
+
 -- 
-2.26.2
+2.20.1
 
