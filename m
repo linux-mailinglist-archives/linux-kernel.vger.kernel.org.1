@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C021F1E2B1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130421E2C4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390195AbgEZTCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:02:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56660 "EHLO mail.kernel.org"
+        id S2392022AbgEZTOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:14:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403815AbgEZTCC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:02:02 -0400
+        id S2404338AbgEZTNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:13:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40C5A2084C;
-        Tue, 26 May 2020 19:02:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B504620E65;
+        Tue, 26 May 2020 19:13:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519721;
-        bh=vD5WoP4lTdpRbN/IxdmcqV8p9UNc8KxGm1x8FKbUuus=;
+        s=default; t=1590520432;
+        bh=njKcPTjoQBNCYX4BTTtw03AqYv4zf24tEVwE3YxaWT0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NAKF/OvSQ+ii/nDKEjCiYH2nrdsKqNxYG40mz5RgOX8Cq/aoGNcH2Ac6i0SmdXU1F
-         GGYqnQUlzXal5EcYtfFEO/cjO5EMubCpcqtOQa+kezpvQvFq2s5rdB72jkXSUfzQS7
-         4wTmst5TBc2uxr90HjMKuzGy7Zc/Iza427CPIveg=
+        b=hZA6a6bh644QlPU8OaOyQDCvvH2qFibq84mB7tTqi41AGVSkeP+jNSGPMcv2aEDxY
+         5MuX4bCVh47R3+nXV62dQnRqA3kLFByL9FnwZgr1DUmh2S4xzbUYgoLqlmAtDVc1Sx
+         3ZHbVlUhDgyNvvCrn072/ZXouEfvpzwwK7TC9eLs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dragos Bogdan <dragos.bogdan@analog.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.14 50/59] staging: iio: ad2s1210: Fix SPI reading
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Lucas Stach <l.stach@pengutronix.de>
+Subject: [PATCH 5.6 078/126] drm/etnaviv: Fix a leak in submit_pin_objects()
 Date:   Tue, 26 May 2020 20:53:35 +0200
-Message-Id: <20200526183922.637497629@linuxfoundation.org>
+Message-Id: <20200526183944.710343541@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
-References: <20200526183907.123822792@linuxfoundation.org>
+In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
+References: <20200526183937.471379031@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,63 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dragos Bogdan <dragos.bogdan@analog.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 5e4f99a6b788047b0b8a7496c2e0c8f372f6edf2 upstream.
+commit ad99cb5e783bb03d512092db3387ead9504aad3d upstream.
 
-If the serial interface is used, the 8-bit address should be latched using
-the rising edge of the WR/FSYNC signal.
+If the mapping address is wrong then we have to release the reference to
+it before returning -EINVAL.
 
-This basically means that a CS change is required between the first byte
-sent, and the second one.
-This change splits the single-transfer transfer of 2 bytes into 2 transfers
-with a single byte, and CS change in-between.
-
-Note fixes tag is not accurate, but reflects a point beyond which there
-are too many refactors to make backporting straight forward.
-
-Fixes: b19e9ad5e2cb ("staging:iio:resolver:ad2s1210 general driver cleanup.")
-Signed-off-by: Dragos Bogdan <dragos.bogdan@analog.com>
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Fixes: 088880ddc0b2 ("drm/etnaviv: implement softpin")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/iio/resolver/ad2s1210.c |   17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/staging/iio/resolver/ad2s1210.c
-+++ b/drivers/staging/iio/resolver/ad2s1210.c
-@@ -126,17 +126,24 @@ static int ad2s1210_config_write(struct
- static int ad2s1210_config_read(struct ad2s1210_state *st,
- 				unsigned char address)
- {
--	struct spi_transfer xfer = {
--		.len = 2,
--		.rx_buf = st->rx,
--		.tx_buf = st->tx,
-+	struct spi_transfer xfers[] = {
-+		{
-+			.len = 1,
-+			.rx_buf = &st->rx[0],
-+			.tx_buf = &st->tx[0],
-+			.cs_change = 1,
-+		}, {
-+			.len = 1,
-+			.rx_buf = &st->rx[1],
-+			.tx_buf = &st->tx[1],
-+		},
- 	};
- 	int ret = 0;
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c
+@@ -238,8 +238,10 @@ static int submit_pin_objects(struct etn
+ 		}
  
- 	ad2s1210_set_mode(MOD_CONFIG, st);
- 	st->tx[0] = address | AD2S1210_MSB_IS_HIGH;
- 	st->tx[1] = AD2S1210_REG_FAULT;
--	ret = spi_sync_transfer(st->sdev, &xfer, 1);
-+	ret = spi_sync_transfer(st->sdev, xfers, 2);
- 	if (ret < 0)
- 		return ret;
- 	st->old_data = true;
+ 		if ((submit->flags & ETNA_SUBMIT_SOFTPIN) &&
+-		     submit->bos[i].va != mapping->iova)
++		     submit->bos[i].va != mapping->iova) {
++			etnaviv_gem_mapping_unreference(mapping);
+ 			return -EINVAL;
++		}
+ 
+ 		atomic_inc(&etnaviv_obj->gpu_active);
+ 
 
 
