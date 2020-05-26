@@ -2,156 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49EEF1E2825
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 19:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AEA11E2838
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 19:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388860AbgEZRO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 13:14:27 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:43339 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388767AbgEZROT (ORCPT
+        id S2388664AbgEZRPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 13:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728444AbgEZRPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 13:14:19 -0400
-Received: by mail-il1-f199.google.com with SMTP id v14so18161308ilm.10
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 10:14:17 -0700 (PDT)
+        Tue, 26 May 2020 13:15:41 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8825BC03E96D
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 10:15:41 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id q24so64744pjd.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 10:15:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KFoVzkvbQynz7c/K/VwkndwYFQcJfuWz16Y0zNXAEz0=;
+        b=hTjubfhEr0q9DI8N6bmdoQ87CgpHW0E9LtOmvK6qQzHZOyR68D56maqkNWOhMs9y9Y
+         73saDiBPaDUaZVcezBXYLktqCuuoOqDXLGyWpcMic4IrbEGPJw5LsEcJ3py/lB0UT9vH
+         al6jZ+ruMlQ9eTL600kDbJT1YJ8t7zOgWWlVHWreGqr0JyveBkteJmJlR6Mov9phJ+ZK
+         P7s83bdPdjBalGCvtwp07ihWgXUL4FkiMQ0gaupSI8gwphpwdxChJr0s0IJ7uIJr0Jjz
+         t/shZn+chRQ6TkNLWX0bSEwiz49AHrl2s81p6ZDuXYNOLtHhuRZzs7oOw017Kt50j0Kr
+         CglQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=hoPwsjIqSK0KAB7KQ3f3MXEUCtZiAG9yK7r33w+GosI=;
-        b=d4Vfj15Xa6RSxmgc1jsgvp2T3cw4hUfTMcWObU9yQpLrLBEVpB2GvUD0G6C/nb0w8u
-         +6uIUtaGtk3oZA8GwlG10R13hqtWQTlpMdKV/mo97PYjbqcWdLrYkoft3FsMHtpOytzY
-         GUtCvIUQuCz6diHWtOlSo8YjbKjXociXSo/ccfTa89G+zB2BvJccaW3mYvKh9LRiWotw
-         JgJrc+4zw5no8uZjn108FwLg72NQHYmy6Zthv4hNkUEvQUmGXtXYfVaNXMVTkt0P30U/
-         6Yyf6FbeGyUp6VapDu1hkA6JOOoY5dlOnttMSNPyyHKDrsRCsRlslPAwpAKK/qSXMIS1
-         O0Pw==
-X-Gm-Message-State: AOAM53257Bo+eu8sRUpfsNVZQ7JyNWny+SFzHkc5llMYVNImsIkQY5i/
-        odoDhXUTP/2rs4nFY8gFgfivmV8l8CIEVJvsk8GT3LEHQ2+A
-X-Google-Smtp-Source: ABdhPJx6XS3O91EfkGOLsIdQjU7Xl6bSrKSmD8nN3gbbqVb3ZgbvCWh1yrJvuSmZp9e3d8TxhUgNx8Qb8fnDKPSuDAZ/6G37IWSD
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=KFoVzkvbQynz7c/K/VwkndwYFQcJfuWz16Y0zNXAEz0=;
+        b=Jz4Uxl6l+qsHkZWR9NpRPTkiAuyJYNmaJu74dWhsJs0A5w5715QKuHY2tgsXObTkRl
+         AMjfrzf05kxNH9LTVvb8+I/KYNiBPG6WdZPqA65yb13zbzpw4hmuuM49808Wes9w7jAA
+         BFvOaikS4Xweao2J5W9AS2POfWE2f1wyuZoyVwwtCedHJi5WcEnvLG63jkkjNIObrOAW
+         jmGOhzafKDCPBIEcxqKu6E7v8Z7LlpbCRlq4TzPTBjtOzqJYFwdym+F3UXfygg8GxnUn
+         0rrzArQxOe+1U/SuW+MxvZmVUe6lLNlHzM1BklK3sIaY67Es0JFXkc/5G6qEaYnshrZz
+         KQ+w==
+X-Gm-Message-State: AOAM531nrKDhbsiPiJflA2JIaJ41cbMXR1CgakW/PotEX6/79avihc2D
+        DGvZ+UL+txB9+L3GUgyXec0=
+X-Google-Smtp-Source: ABdhPJxVMfBLfi6Juu7J0L9kLYkKBiIt0zXA+IKtxPU9unbfed5JgOOaRpWUWPSfMc+OW1RkSXIR8A==
+X-Received: by 2002:a17:902:7783:: with SMTP id o3mr1972367pll.286.1590513340990;
+        Tue, 26 May 2020 10:15:40 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n205sm137044pfd.50.2020.05.26.10.15.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 May 2020 10:15:40 -0700 (PDT)
+Subject: Re: [PATCH v5 04/18] sparc32: mm: Reduce allocation size for PMD and
+ PTE tables
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        elver@google.com, tglx@linutronix.de, paulmck@kernel.org,
+        mingo@kernel.org, peterz@infradead.org,
+        "David S. Miller" <davem@davemloft.net>
+References: <20200517000750.GA157503@roeck-us.net>
+ <20200518083715.GA31383@willie-the-truck>
+ <20200520170306.GG1118872@kernel.org>
+ <6034a1b5-d4f6-c836-142c-9b3b06db3246@roeck-us.net>
+ <20200520195110.GH1118872@kernel.org>
+ <c80c04a4-75d0-6a47-3813-dea9325b6623@roeck-us.net>
+ <20200524123256.GN1118872@kernel.org>
+ <20200526132634.GC27166@willie-the-truck>
+ <20200526140126.GD27166@willie-the-truck>
+ <b75f988a-a132-cf05-cbd6-8b00e4bbcc3c@roeck-us.net>
+ <20200526162921.GE48741@kernel.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <786c8e05-ac62-7c23-d29d-3afa0239c318@roeck-us.net>
+Date:   Tue, 26 May 2020 10:15:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:5a4a:: with SMTP id o71mr2063560ilb.217.1590513256308;
- Tue, 26 May 2020 10:14:16 -0700 (PDT)
-Date:   Tue, 26 May 2020 10:14:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a728b105a69039ce@google.com>
-Subject: WARNING: locking bug in dev_mc_seq_show
-From:   syzbot <syzbot+f3a0e80c34b3fc28ac5e@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, andriin@fb.com, ast@kernel.org,
-        bp@alien8.de, bpf@vger.kernel.org, christian.brauner@ubuntu.com,
-        cyphar@cyphar.com, daniel@iogearbox.net,
-        dave.hansen@linux.intel.com, davem@davemloft.net, hpa@zytor.com,
-        jakub.kicinski@netronome.com, jiri@mellanox.com, kafai@fb.com,
-        keescook@chromium.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, luto@kernel.org,
-        mhiramat@kernel.org, mingo@redhat.com, netdev@vger.kernel.org,
-        peterz@infradead.org, rostedt@goodmis.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        x86@kernel.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200526162921.GE48741@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 5/26/20 9:29 AM, Mike Rapoport wrote:
+> On Tue, May 26, 2020 at 09:18:54AM -0700, Guenter Roeck wrote:
+>> On 5/26/20 7:01 AM, Will Deacon wrote:
+>>> On Tue, May 26, 2020 at 02:26:35PM +0100, Will Deacon wrote:
+>>>> On Sun, May 24, 2020 at 03:32:56PM +0300, Mike Rapoport wrote:
+>>>>> On Thu, May 21, 2020 at 04:02:11PM -0700, Guenter Roeck wrote:
+>>>>>> On 5/20/20 12:51 PM, Mike Rapoport wrote:
+>>>>>>> On Wed, May 20, 2020 at 12:03:31PM -0700, Guenter Roeck wrote:
+>>>>>>>> With above patch applied on top of Ira's patch, I get:
+>>>>>>>>
+>>>>>>>> BUG: spinlock recursion on CPU#0, S01syslogd/139
+>>>>>>>>  lock: 0xf5448350, .magic: dead4ead, .owner: S01syslogd/139, .owner_cpu: 0
+>>>>>>>> CPU: 0 PID: 139 Comm: S01syslogd Not tainted 5.7.0-rc6-next-20200518-00002-gb178d2d56f29-dirty #1
+>>>>>>>> [f0067a64 :
+>>>>>>>> do_raw_spin_lock+0xa8/0xd8 ]
+>>>>>>>> [f00d5034 :
+>>>>>>>> copy_page_range+0x328/0x804 ]
+>>>>>>>> [f0025be4 :
+>>>>>>>> dup_mm+0x334/0x434 ]
+>>>>>>>> [f0027124 :
+>>>>>>>> copy_process+0x1224/0x12b0 ]
+>>>>>>>> [f0027344 :
+>>>>>>>> _do_fork+0x54/0x30c ]
+>>>>>>>> [f0027670 :
+>>>>>>>> do_fork+0x5c/0x6c ]
+>>>>>>>> [f000de44 :
+>>>>>>>> sparc_do_fork+0x18/0x38 ]
+>>>>>>>> [f000b7f4 :
+>>>>>>>> do_syscall+0x34/0x40 ]
+>>>>>>>> [5010cd4c :
+>>>>>>>> 0x5010cd4c ]
+>>>>>>>>
+>>>>>>>> Looks like yet another problem.
+>>>>>>>
+>>>>>>> I've checked the patch above on top of the mmots which already has Ira's
+>>>>>>> patches and it booted fine. I've used sparc32_defconfig to build the
+>>>>>>> kernel and qemu-system-sparc with default machine and CPU. 
+>>>>>>>
+>>>>>>
+>>>>>> Try sparc32_defconfig+SMP.
+>>>>>  
+>>>>> I see a differernt problem, but this could be related:
+>>>>>
+>>>>> INIT: version 2.86 booting
+>>>>> rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
+>>>>> 	(detected by 0, t=5252 jiffies, g=-935, q=3)
+>>>>> rcu: All QSes seen, last rcu_sched kthread activity 5252 (-68674--73926), jiffies_till_next_fqs=1, root ->qsmask 0x0
+>>>>> rcu: rcu_sched kthread starved for 5252 jiffies! g-935 f0x2 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
+>>>>> rcu: 	Unless rcu_sched kthread gets sufficient CPU time, OOM is now expected behavior.
+>>>>> rcu: RCU grace-period kthread stack dump:
+>>>>> rcu_sched       R  running task        0    10      2 0x00000000
+>>>>>
+>>>>> I'm running a bit old debian [1] with qemu-img-sparc.
+>>>>>
+>>>>> My bisect pointed at commit 8c8f3156dd40 ("sparc32: mm: Reduce
+>>>>> allocation size for PMD and PTE tables"). The commit ID is valid for
+>>>>> next-20200522.
+>>>>
+>>>> Can you try the diff below please?
+>>>
+>>> Actually, that's racy. New version below!
+>>>
+>>
+>> Applied on top of next-20200526, with defconfig+SMP, I still get:
+>>
+>> BUG: Bad page state in process swapper/0  pfn:0069f
+>>
+>> many times. Did I have to revert something else ? Sorry, I lost track.
+>  
+> The bad page messages are fixed by [1], but this is not in mmotm or
+> linux-next. This is not related to SMP hangs.
+> 
+> [1] https://lore.kernel.org/lkml/20200524165358.27188-1-rppt@kernel.org/
+> 
 
-syzbot found the following crash on:
+With that applied, all boot tests pass for me (including tests with
+"-smp 2" on SS-10).
 
-HEAD commit:    44456565 Merge tag 'io_uring-5.7-2020-05-22' of git://git...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1656ef06100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c33c7f7c5471fd39
-dashboard link: https://syzkaller.appspot.com/bug?extid=f3a0e80c34b3fc28ac5e
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17123f06100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12ac4e72100000
+Guenter
 
-The bug was bisected to:
+>> Note that "-smp 2" on SS-10 works for me (with the same page state
+>> messages).
+>>
+>> Guenter
+>>
+>>
+>>> Will
+>>>
+>>> --->8
+>>>
+>>> diff --git a/arch/sparc/mm/srmmu.c b/arch/sparc/mm/srmmu.c
+>>> index c861c0f0df73..068029471aa4 100644
+>>> --- a/arch/sparc/mm/srmmu.c
+>>> +++ b/arch/sparc/mm/srmmu.c
+>>> @@ -363,11 +363,16 @@ pgtable_t pte_alloc_one(struct mm_struct *mm)
+>>>  
+>>>  	if ((ptep = pte_alloc_one_kernel(mm)) == 0)
+>>>  		return NULL;
+>>> +
+>>>  	page = pfn_to_page(__nocache_pa((unsigned long)ptep) >> PAGE_SHIFT);
+>>> -	if (!pgtable_pte_page_ctor(page)) {
+>>> -		__free_page(page);
+>>> -		return NULL;
+>>> +
+>>> +	spin_lock(&mm->page_table_lock);
+>>> +	if (page_ref_inc_return(page) == 2 && !pgtable_pte_page_ctor(page)) {
+>>> +		page_ref_dec(page);
+>>> +		ptep = NULL;
+>>>  	}
+>>> +	spin_unlock(&mm->page_table_lock);
+>>> +
+>>>  	return ptep;
+>>>  }
+>>>  
+>>> @@ -376,7 +381,12 @@ void pte_free(struct mm_struct *mm, pgtable_t ptep)
+>>>  	struct page *page;
+>>>  
+>>>  	page = pfn_to_page(__nocache_pa((unsigned long)ptep) >> PAGE_SHIFT);
+>>> -	pgtable_pte_page_dtor(page);
+>>> +
+>>> +	spin_lock(&mm->page_table_lock);
+>>> +	if (page_ref_dec_return(page) == 1)
+>>> +		pgtable_pte_page_dtor(page);
+>>> +	spin_unlock(&mm->page_table_lock);
+>>> +
+>>>  	srmmu_free_nocache(ptep, SRMMU_PTE_TABLE_SIZE);
+>>>  }
+>>>  
+>>> diff --git a/mm/Kconfig b/mm/Kconfig
+>>> index c1acc34c1c35..97458119cce8 100644
+>>> --- a/mm/Kconfig
+>>> +++ b/mm/Kconfig
+>>> @@ -192,6 +192,9 @@ config MEMORY_HOTREMOVE
+>>>  # Default to 4 for wider testing, though 8 might be more appropriate.
+>>>  # ARM's adjust_pte (unused if VIPT) depends on mm-wide page_table_lock.
+>>>  # PA-RISC 7xxx's spinlock_t would enlarge struct page from 32 to 44 bytes.
+>>> +# SPARC32 allocates multiple pte tables within a single page, and therefore
+>>> +# a per-page lock leads to problems when multiple tables need to be locked
+>>> +# at the same time (e.g. copy_page_range()).
+>>>  # DEBUG_SPINLOCK and DEBUG_LOCK_ALLOC spinlock_t also enlarge struct page.
+>>>  #
+>>>  config SPLIT_PTLOCK_CPUS
+>>> @@ -199,6 +202,7 @@ config SPLIT_PTLOCK_CPUS
+>>>  	default "999999" if !MMU
+>>>  	default "999999" if ARM && !CPU_CACHE_VIPT
+>>>  	default "999999" if PARISC && !PA20
+>>> +	default "999999" if SPARC32
+>>>  	default "4"
+>>>  
+>>>  config ARCH_ENABLE_SPLIT_PMD_PTLOCK
+>>>
+>>
+> 
 
-commit 75a1a607bb7e6d918be3aca11ec2214a275392f4
-Author: Daniel Borkmann <daniel@iogearbox.net>
-Date:   Fri Nov 1 23:17:57 2019 +0000
-
-    uaccess: Add strict non-pagefault kernel-space read function
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14dbf8ce100000
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=16dbf8ce100000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12dbf8ce100000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+f3a0e80c34b3fc28ac5e@syzkaller.appspotmail.com
-Fixes: 75a1a607bb7e ("uaccess: Add strict non-pagefault kernel-space read function")
-
-------------[ cut here ]------------
-DEBUG_LOCKS_WARN_ON(1)
-WARNING: CPU: 0 PID: 7235 at kernel/locking/lockdep.c:183 hlock_class kernel/locking/lockdep.c:183 [inline]
-WARNING: CPU: 0 PID: 7235 at kernel/locking/lockdep.c:183 check_wait_context kernel/locking/lockdep.c:4029 [inline]
-WARNING: CPU: 0 PID: 7235 at kernel/locking/lockdep.c:183 __lock_acquire+0x1aab/0x2c30 kernel/locking/lockdep.c:4305
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 7235 Comm: syz-executor379 Not tainted 5.7.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1e9/0x30e lib/dump_stack.c:118
- panic+0x264/0x7a0 kernel/panic.c:221
- __warn+0x209/0x210 kernel/panic.c:582
- report_bug+0x1ac/0x2d0 lib/bug.c:195
- fixup_bug arch/x86/kernel/traps.c:175 [inline]
- do_error_trap+0xca/0x1c0 arch/x86/kernel/traps.c:267
- do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
- invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-RIP: 0010:hlock_class kernel/locking/lockdep.c:183 [inline]
-RIP: 0010:check_wait_context kernel/locking/lockdep.c:4029 [inline]
-RIP: 0010:__lock_acquire+0x1aab/0x2c30 kernel/locking/lockdep.c:4305
-Code: 13 08 00 0f 85 8d ea ff ff 31 db 48 c7 c7 99 82 e5 88 48 c7 c6 d3 4f ea 88 31 c0 e8 7f d6 ec ff 48 ba 00 00 00 00 00 fc ff df <0f> 0b e9 81 ea ff ff 31 db e9 70 ea ff ff 48 c7 c1 30 ed 55 8b 80
-RSP: 0018:ffffc90001ad74f0 EFLAGS: 00010046
-RAX: 43109e3dc9d77000 RBX: 0000000000000000 RCX: ffff888096498280
-RDX: dffffc0000000000 RSI: 0000000000000001 RDI: ffffffff815cd136
-RBP: ffffc90001ad7658 R08: ffffffff817912a6 R09: fffffbfff125cd0b
-R10: fffffbfff125cd0b R11: 0000000000000000 R12: ffff888096498bb8
-R13: 1ffff11012c93177 R14: 0000000000000607 R15: 0000000000000000
- lock_acquire+0x169/0x480 kernel/locking/lockdep.c:4934
- __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
- _raw_spin_lock_bh+0x31/0x40 kernel/locking/spinlock.c:175
- spin_lock_bh include/linux/spinlock.h:358 [inline]
- netif_addr_lock_bh include/linux/netdevice.h:4172 [inline]
- dev_mc_seq_show+0x40/0x220 net/core/net-procfs.c:325
- seq_read+0x950/0xce0 fs/seq_file.c:247
- pde_read fs/proc/inode.c:292 [inline]
- proc_reg_read+0x27f/0x3a0 fs/proc/inode.c:304
- do_loop_readv_writev fs/read_write.c:715 [inline]
- do_iter_read+0x44b/0x550 fs/read_write.c:936
- vfs_readv+0xc2/0x120 fs/read_write.c:1054
- kernel_readv fs/splice.c:365 [inline]
- default_file_splice_read+0x579/0xa40 fs/splice.c:422
- do_splice_to fs/splice.c:892 [inline]
- splice_direct_to_actor+0x3c1/0xb40 fs/splice.c:971
- do_splice_direct+0x201/0x340 fs/splice.c:1080
- do_sendfile+0x809/0xfe0 fs/read_write.c:1521
- __do_sys_sendfile64 fs/read_write.c:1582 [inline]
- __se_sys_sendfile64 fs/read_write.c:1568 [inline]
- __x64_sys_sendfile64+0x164/0x1a0 fs/read_write.c:1568
- do_syscall_64+0xf3/0x1b0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x448b99
-Code: e8 cc 14 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 ab 0e fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007feaf3cdbd18 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
-RAX: ffffffffffffffda RBX: 00000000006dec58 RCX: 0000000000448b99
-RDX: 0000000000000000 RSI: 0000000000000008 RDI: 0000000000000007
-RBP: 00000000006dec50 R08: 65732f636f72702f R09: 65732f636f72702f
-R10: 000000000000edc0 R11: 0000000000000246 R12: 00000000006dec5c
-R13: 00007feaf3cdbd20 R14: 00007feaf3cdbd20 R15: 00000000006dec5c
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
