@@ -2,113 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E581E1A73
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 06:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 125F31E1ABF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 07:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726048AbgEZEgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 00:36:36 -0400
-Received: from ozlabs.org ([203.11.71.1]:59261 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725773AbgEZEgg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 00:36:36 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49WLl50fF7z9sRK;
-        Tue, 26 May 2020 14:36:32 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1590467794;
-        bh=4v8ocGM/APo2sSgppiU/a6nI3q4TeGO4rhe21S8OGMo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=V5Uh8HJBzGV7gcBzXAj8zRUgdsUcf4HxCOU4Fwqb2ObX2nf/TFqzbFgXYhx85LoTq
-         dxT277ChkPmq147KLwFVatU9YyVLPr4En646pqvi8T4NuqUqHCPzttLvknIIhTQdoo
-         4CbsVgsjR8qbRXpx908nBDiUMXdexy5CtcNTWlPNu5dsEzGWQAJVOI/xnUOFJMT0an
-         iJaTRq6aT/r/m8ZhVuAqFGToaMk2ra6wcB0shi+Pp8dZicO7MB9xwPNuFtCYPSgtAq
-         l0OU9lYL5dpeS0gum+9XqlTGVetUQJLJCx6tXhAjAH7rJ6+tQMf0pWOjnDrLC68RrF
-         ex0qYuxE8keGw==
-Date:   Tue, 26 May 2020 14:36:30 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     David Sterba <dsterba@suse.cz>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: linux-next: build failure after merge of the block tree
-Message-ID: <20200526143630.7e7fbc79@canb.auug.org.au>
-In-Reply-To: <c0e6af76-46d8-ccf0-3874-0751f7622caf@kernel.dk>
-References: <20200525150837.54fe6977@canb.auug.org.au>
-        <c0e6af76-46d8-ccf0-3874-0751f7622caf@kernel.dk>
+        id S1726598AbgEZFoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 01:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725263AbgEZFoj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 01:44:39 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A9CC061A0E;
+        Mon, 25 May 2020 22:44:39 -0700 (PDT)
+Received: by ozlabs.org (Postfix, from userid 1003)
+        id 49WNFb23Kfz9sRY; Tue, 26 May 2020 15:44:35 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ozlabs.org; s=201707;
+        t=1590471875; bh=j0PNgC0xr6mRDHCZ2htDfbQsT0XH5gFzuCdilAoQCBw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H05nUKbvRSIH+7O5N9VUsnkHeRklB48VujBczf2Xtd7k/msK8glVNwOfwKFhBxaM2
+         RMEhFP3061zuW6+4Tyn4tcDNAEbnpgE5y/GbpnLgkqD9inO7dRTJ8JdJazRZlG5By1
+         dDTw25f7q0+rjMvV86X6zTMCLnL9GISRBtWJGAOBofFztGdhMaHaSDnzVJeKDOeTRr
+         P/gT1fm1rSHSwWvDzu+Yy/x7JV3Y4U7YJfxqHFYoVKLC8zIAnftSk9Bv7oB4+ke1/z
+         t+6gHdzDMsO3E/gW5yqaeDf4mGpMKKUTqOEkTCh4o4CEB+cdOrXQUL3itzvvSsvIix
+         ogkCA1YC4CmqQ==
+Date:   Tue, 26 May 2020 14:36:56 +1000
+From:   Paul Mackerras <paulus@ozlabs.org>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     pbonzini@redhat.com, tsbogend@alpha.franken.de, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, borntraeger@de.ibm.com,
+        frankja@linux.ibm.com, david@redhat.com, cohuck@redhat.com,
+        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        sean.j.christopherson@intel.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        christoffer.dall@arm.com, peterx@redhat.com, thuth@redhat.com,
+        chenhuacai@gmail.com, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/7] KVM: PPC: Remove redundant kvm_run from vcpu_arch
+Message-ID: <20200526043656.GA282305@thinks.paulus.ozlabs.org>
+References: <20200427043514.16144-1-tianjia.zhang@linux.alibaba.com>
+ <20200427043514.16144-4-tianjia.zhang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/pxLirPxGa6MugXWK9gm1DQd";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200427043514.16144-4-tianjia.zhang@linux.alibaba.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/pxLirPxGa6MugXWK9gm1DQd
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Apr 27, 2020 at 12:35:10PM +0800, Tianjia Zhang wrote:
+> The 'kvm_run' field already exists in the 'vcpu' structure, which
+> is the same structure as the 'kvm_run' in the 'vcpu_arch' and
+> should be deleted.
+> 
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-Hi all,
+This looks fine.
 
-On Mon, 25 May 2020 13:03:44 -0600 Jens Axboe <axboe@kernel.dk> wrote:
->
-> On 5/24/20 11:08 PM, Stephen Rothwell wrote:
-> >=20
-> > After merging the block tree, today's linux-next build (arm
-> > multi_v7_defconfig) failed like this:
-> >=20
-> > mm/filemap.c: In function 'generic_file_buffered_read':
-> > mm/filemap.c:2075:9: error: 'written' undeclared (first use in this fun=
-ction); did you mean 'writeb'?
-> >  2075 |     if (written) {
-> >       |         ^~~~~~~
-> >       |         writeb
-> >=20
-> > Caused by commit
-> >=20
-> >   23d513106fd8 ("mm: support async buffered reads in generic_file_buffe=
-red_read()")
-> >=20
-> > from the block tree interacting with commit
-> >=20
-> >   6e66f10f2cac ("fs: export generic_file_buffered_read()")
-> >=20
-> > from the btrfs tree.
-> >=20
-> > [Aside: that btrfs tree commit talks about "correct the comments and va=
-riable
-> >     names", but changes "written" to "copied" in the function definition
-> >     but to "already_read" in the header file declaration ...]
-> >=20
-> > I ave applied the following merge fix patch: =20
->=20
-> Looks like a frivolous change... Thanks for fixing this up Stephen.
+I assume each architecture sub-maintainer is taking the relevant
+patches from this series via their tree - is that right?
 
-The variable name change has been removed from the btrfs tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/pxLirPxGa6MugXWK9gm1DQd
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7MnM4ACgkQAVBC80lX
-0GxN0QgAkrTNBQkQoE+E8c1r8/lTP6z3sg4vMtkaNdAvj1KqOvGJ8nDw99s4APYR
-v4KnZ64ZjgK6Rc0mTwK05QRG80OvzLLTewpyINAT5bMzq9SjP3TIbKeYu1gINDZC
-nZD6mhryuq56q5gL4ifP+yshLjVg4kH8kn5rkREH+DK1uK1q4nUD+mfO871wUtCY
-CMVMC5pvRf+jOpgpYzAq+mLuEXfoVVkNCrBnqZuXpAKi29e878NTsrz9t9QkblxD
-1XZFaymjGGQ2f+nTSdjcBbhur/io3fQsrdpt5J/WgTlMnJMXK8yHPhRWPRZ98OjG
-cehbze+Hm6NMqtV9mN9wYanu//NgVA==
-=HJ9b
------END PGP SIGNATURE-----
-
---Sig_/pxLirPxGa6MugXWK9gm1DQd--
+Reviewed-by: Paul Mackerras <paulus@ozlabs.org>
