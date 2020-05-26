@@ -2,263 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38DBA1E2A79
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1EA11E2DD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389751AbgEZS4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:56:11 -0400
-Received: from mga09.intel.com ([134.134.136.24]:33088 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389716AbgEZS4F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:56:05 -0400
-IronPort-SDR: tD8NyE+PbRtH1YSPlpiJ5yDbOvAxj9EZTAaEQN0SwlRZEmZ3ui8x4OFYVwV8UMlJaf8Nb+tW60
- AwT/ywjFHBVA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 11:56:04 -0700
-IronPort-SDR: MzdCeHkdVMgMBimDENZlcd+/zit7KYuu0VESQWkRVNAEnrDpf+FxtWMJmncJUgT+aD1SRPYCAE
- z9zOWDWUPT4g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,437,1583222400"; 
-   d="scan'208";a="468454053"
-Received: from dspatli-mobl.amr.corp.intel.com (HELO ellie) ([10.212.21.42])
-  by fmsmga006.fm.intel.com with ESMTP; 26 May 2020 11:56:03 -0700
-From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To:     Murali Karicheri <m-karicheri2@ti.com>, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        nsekhar@ti.com, grygorii.strashko@ti.com
-Subject: Re: [net-next RFC PATCH 00/13] net: hsr: Add PRP driver
-In-Reply-To: <5feae5ae-af46-f4b6-fe91-91a19036112b@ti.com>
-References: <20200506163033.3843-1-m-karicheri2@ti.com> <87r1vdkxes.fsf@intel.com> <5feae5ae-af46-f4b6-fe91-91a19036112b@ti.com>
-Date:   Tue, 26 May 2020 11:56:03 -0700
-Message-ID: <87a71ule4c.fsf@intel.com>
+        id S2392449AbgEZTYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:24:52 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:24566 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403898AbgEZTHV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:07:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1590520041; x=1622056041;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=YIt6AL12a3C5b+12pAPxl2an5c1FAkLevMmwCT632D0=;
+  b=Ctp/VWvopVWFTlX5iGXAjVDaShxtM64ozPoMV02DMbqNmmGrt2d5Ychs
+   atZG4UgLDp+t6Kcd/KG2DVNGX3cnBhf/som0O2padyWH0XzykwsWcxKP8
+   N0m+6+cc/cJ+DOX/jFH97p7NPviHEtkQWvgYgNaNWObY3g8za6oRFgmDv
+   U=;
+IronPort-SDR: KZ53qbEU54y20zeVN8G/Z3rMs2wmEyyu52wxzr0pjanhUchwX4iHFDsCXksnrj02AU19IRi8/J
+ qrQeVSuChVQQ==
+X-IronPort-AV: E=Sophos;i="5.73,437,1583193600"; 
+   d="scan'208";a="32235504"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 26 May 2020 18:35:53 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com (Postfix) with ESMTPS id AE5F5A1D05;
+        Tue, 26 May 2020 18:35:51 +0000 (UTC)
+Received: from EX13D16EUB001.ant.amazon.com (10.43.166.28) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 26 May 2020 18:35:51 +0000
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.208) by
+ EX13D16EUB001.ant.amazon.com (10.43.166.28) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 26 May 2020 18:35:41 +0000
+Subject: Re: [PATCH v3 04/18] nitro_enclaves: Init PCI device driver
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        "Alexander Graf" <graf@amazon.de>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Stefan Hajnoczi" <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        "Uwe Dannowski" <uwed@amazon.de>, <kvm@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>
+References: <20200525221334.62966-1-andraprs@amazon.com>
+ <20200525221334.62966-5-andraprs@amazon.com>
+ <20200526064819.GC2580530@kroah.com>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <b4bd54ca-8fe2-8ebd-f4fc-012ed2ac498a@amazon.com>
+Date:   Tue, 26 May 2020 21:35:33 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200526064819.GC2580530@kroah.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.162.208]
+X-ClientProxiedBy: EX13D29UWC003.ant.amazon.com (10.43.162.80) To
+ EX13D16EUB001.ant.amazon.com (10.43.166.28)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Murali Karicheri <m-karicheri2@ti.com> writes:
+CgpPbiAyNi8wNS8yMDIwIDA5OjQ4LCBHcmVnIEtIIHdyb3RlOgo+IE9uIFR1ZSwgTWF5IDI2LCAy
+MDIwIGF0IDAxOjEzOjIwQU0gKzAzMDAsIEFuZHJhIFBhcmFzY2hpdiB3cm90ZToKPj4gVGhlIE5p
+dHJvIEVuY2xhdmVzIFBDSSBkZXZpY2UgaXMgdXNlZCBieSB0aGUga2VybmVsIGRyaXZlciBhcyBh
+IG1lYW5zIG9mCj4+IGNvbW11bmljYXRpb24gd2l0aCB0aGUgaHlwZXJ2aXNvciBvbiB0aGUgaG9z
+dCB3aGVyZSB0aGUgcHJpbWFyeSBWTSBhbmQKPj4gdGhlIGVuY2xhdmVzIHJ1bi4gSXQgaGFuZGxl
+cyByZXF1ZXN0cyB3aXRoIHJlZ2FyZCB0byBlbmNsYXZlIGxpZmV0aW1lLgo+Pgo+PiBTZXR1cCB0
+aGUgUENJIGRldmljZSBkcml2ZXIgYW5kIGFkZCBzdXBwb3J0IGZvciBNU0ktWCBpbnRlcnJ1cHRz
+Lgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBBbGV4YW5kcnUtQ2F0YWxpbiBWYXNpbGUgPGxleG52QGFt
+YXpvbi5jb20+Cj4+IFNpZ25lZC1vZmYtYnk6IEFsZXhhbmRydSBDaW9ib3RhcnUgPGFsY2lvYUBh
+bWF6b24uY29tPgo+PiBTaWduZWQtb2ZmLWJ5OiBBbmRyYSBQYXJhc2NoaXYgPGFuZHJhcHJzQGFt
+YXpvbi5jb20+Cj4+IC0tLQo+PiBDaGFuZ2Vsb2cKPj4KPj4gdjIgLT4gdjMKPj4KPj4gKiBSZW1v
+dmUgdGhlIEdQTCBhZGRpdGlvbmFsIHdvcmRpbmcgYXMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXIg
+aXMgYWxyZWFkeSBpbgo+PiBwbGFjZS4KPj4gKiBSZW1vdmUgdGhlIFdBUk5fT04gY2FsbHMuCj4+
+ICogUmVtb3ZlIGxpbnV4L2J1ZyBpbmNsdWRlIHRoYXQgaXMgbm90IG5lZWRlZC4KPj4gKiBVcGRh
+dGUgc3RhdGljIGNhbGxzIHNhbml0eSBjaGVja3MuCj4+ICogUmVtb3ZlICJyYXRlbGltaXRlZCIg
+ZnJvbSB0aGUgbG9ncyB0aGF0IGFyZSBub3QgaW4gdGhlIGlvY3RsIGNhbGwgcGF0aHMuCj4+ICog
+VXBkYXRlIGt6ZnJlZSgpIGNhbGxzIHRvIGtmcmVlKCkuCj4+Cj4+IHYxIC0+IHYyCj4+Cj4+ICog
+QWRkIGxvZyBwYXR0ZXJuIGZvciBORS4KPj4gKiBVcGRhdGUgUENJIGRldmljZSBzZXR1cCBmdW5j
+dGlvbnMgdG8gcmVjZWl2ZSBQQ0kgZGV2aWNlIGRhdGEgc3RydWN0dXJlIGFuZAo+PiB0aGVuIGdl
+dCBwcml2YXRlIGRhdGEgZnJvbSBpdCBpbnNpZGUgdGhlIGZ1bmN0aW9ucyBsb2dpYy4KPj4gKiBS
+ZW1vdmUgdGhlIEJVR19PTiBjYWxscy4KPj4gKiBBZGQgdGVhcmRvd24gZnVuY3Rpb24gZm9yIE1T
+SS1YIHNldHVwLgo+PiAqIFVwZGF0ZSBnb3RvIGxhYmVscyB0byBtYXRjaCB0aGVpciBwdXJwb3Nl
+Lgo+PiAqIEltcGxlbWVudCBUT0RPIGZvciBORSBQQ0kgZGV2aWNlIGRpc2FibGUgc3RhdGUgY2hl
+Y2suCj4+ICogVXBkYXRlIGZ1bmN0aW9uIG5hbWUgZm9yIE5FIFBDSSBkZXZpY2UgcHJvYmUgLyBy
+ZW1vdmUuCj4+IC0tLQo+PiAgIGRyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9uZV9wY2lfZGV2
+LmMgfCAyNTIgKysrKysrKysrKysrKysrKysrKysrKysKPj4gICAxIGZpbGUgY2hhbmdlZCwgMjUy
+IGluc2VydGlvbnMoKykKPj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy92aXJ0L25pdHJv
+X2VuY2xhdmVzL25lX3BjaV9kZXYuYwo+Pgo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy92aXJ0L25p
+dHJvX2VuY2xhdmVzL25lX3BjaV9kZXYuYyBiL2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9u
+ZV9wY2lfZGV2LmMKPj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPj4gaW5kZXggMDAwMDAwMDAwMDAw
+Li4wYjY2MTY2Nzg3YjYKPj4gLS0tIC9kZXYvbnVsbAo+PiArKysgYi9kcml2ZXJzL3ZpcnQvbml0
+cm9fZW5jbGF2ZXMvbmVfcGNpX2Rldi5jCj4+IEBAIC0wLDAgKzEsMjUyIEBACj4+ICsvLyBTUERY
+LUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMAo+PiArLyoKPj4gKyAqIENvcHlyaWdodCAyMDIw
+IEFtYXpvbi5jb20sIEluYy4gb3IgaXRzIGFmZmlsaWF0ZXMuIEFsbCBSaWdodHMgUmVzZXJ2ZWQu
+Cj4+ICsgKi8KPj4gKwo+PiArLyogTml0cm8gRW5jbGF2ZXMgKE5FKSBQQ0kgZGV2aWNlIGRyaXZl
+ci4gKi8KPj4gKwo+PiArI2luY2x1ZGUgPGxpbnV4L2RlbGF5Lmg+Cj4+ICsjaW5jbHVkZSA8bGlu
+dXgvZGV2aWNlLmg+Cj4+ICsjaW5jbHVkZSA8bGludXgvbGlzdC5oPgo+PiArI2luY2x1ZGUgPGxp
+bnV4L211dGV4Lmg+Cj4+ICsjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+Cj4+ICsjaW5jbHVkZSA8
+bGludXgvbml0cm9fZW5jbGF2ZXMuaD4KPj4gKyNpbmNsdWRlIDxsaW51eC9wY2kuaD4KPj4gKyNp
+bmNsdWRlIDxsaW51eC90eXBlcy5oPgo+PiArI2luY2x1ZGUgPGxpbnV4L3dhaXQuaD4KPj4gKwo+
+PiArI2luY2x1ZGUgIm5lX21pc2NfZGV2LmgiCj4+ICsjaW5jbHVkZSAibmVfcGNpX2Rldi5oIgo+
+PiArCj4+ICsjZGVmaW5lIERFRkFVTFRfVElNRU9VVF9NU0VDUyAoMTIwMDAwKSAvKiAxMjAgc2Vj
+ICovCj4+ICsKPj4gKyNkZWZpbmUgTkUgIm5pdHJvX2VuY2xhdmVzOiAiCj4gV2h5IGlzIHRoaXMg
+bmVlZGVkPyAgVGhlIGRldl8qIGZ1bmN0aW9ucyBzaG91bGQgZ2l2ZSB5b3UgYWxsIHRoZQo+IGlu
+Zm9ybWF0aW9uIHRoYXQgeW91IG5lZWQgdG8gcHJvcGVybHkgZGVzY3JpYmUgdGhlIGRyaXZlciBh
+bmQgZGV2aWNlIGluCj4gcXVlc3Rpb24uICBObyBleHRyYSAicHJlZml4ZXMiIHNob3VsZCBiZSBu
+ZWVkZWQgYXQgYWxsLgoKVGhpcyB3YXMgbmVlZGVkIHRvIGhhdmUgYW4gaWRlbnRpZmllciBmb3Ig
+dGhlIG92ZXJhbGwgTkUgbG9naWMgLSBQQ0kgCmRldiwgaW9jdGwgYW5kIG1pc2MgZGV2LgoKVGhl
+IGlvY3RsIGFuZCBtaXNjIGRldiBsb2dpYyBoYXMgcHJfKiBsb2dzLCBidXQgSSBjYW4gdXBkYXRl
+IHRoZW0gdG8gCmRldl8qIHdpdGggbWlzYyBkZXYsIHRoZW4gcmVtb3ZlIHRoaXMgcHJlZml4LgoK
+VGhhbmsgeW91LgoKQW5kcmEKCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciAoUm9tYW5pYSkg
+Uy5SLkwuIHJlZ2lzdGVyZWQgb2ZmaWNlOiAyN0EgU2YuIExhemFyIFN0cmVldCwgVUJDNSwgZmxv
+b3IgMiwgSWFzaSwgSWFzaSBDb3VudHksIDcwMDA0NSwgUm9tYW5pYS4gUmVnaXN0ZXJlZCBpbiBS
+b21hbmlhLiBSZWdpc3RyYXRpb24gbnVtYmVyIEoyMi8yNjIxLzIwMDUuCg==
 
-> Hi Vinicius,
->
-> On 5/21/20 1:31 PM, Vinicius Costa Gomes wrote:
->> Murali Karicheri <m-karicheri2@ti.com> writes:
->> 
-> ------------ Snip-------------
->
->>>    - prefix all common code with hsr_prp
->>>    - net/hsr -> renamed to net/hsr-prp
->>>    - All common struct types, constants, functions renamed with
->>>      hsr{HSR}_prp{PRP} prefix.
->> 
->> I don't really like these prefixes, I am thinking of when support for
->> IEEE 802.1CB is added, do we rename this to "hsr_prp_frer"?
->> 
->> And it gets even more complicated, and using 802.1CB you can configure
->> the tagging method and the stream identification function so a system
->> can interoperate in a HSR or PRP network.
->> 
->> So, I see this as different methods of achieving the same result, which
->> makes me think that the different "methods/types" (HSR and PRP in your
->> case) should be basically different implementations of a "struct
->> hsr_ops" interface. With this hsr_ops something like this:
->> 
->>     struct hsr_ops {
->>            int (*handle_frame)()
->>            int (*add_port)()
->>            int (*remove_port)()
->>            int (*setup)()
->>            void (*teardown)()
->>     };
->> 
->
-> Thanks for your response!
->
-> I agree with you that the prefix renaming is ugly. However I wasn't
-> sure if it is okay to use a hsr prefixed code to handle PRP as
-> well as it may not be intuitive to anyone investigating the code. For
-> the same reason, handling 802.1CB specifc functions using the hsr_
-> prefixed code. If that is okay, then patch 1-6 are unnecessary. We could
-> also add some documentation at the top of the file to indicate that
-> both hsr and prp are implemented in the code or something like that.
-> BTW, I need to investigate more into 802.1CB and this was not known
-> when I developed this code few years ago.
-
-I think for now it's better to make it clear how similar PRP and HSR
-are.
-
-As for the renaming, I am afraid that this boat has sailed, as the
-netlink API already uses HSR_ and it's better to reuse that than create
-a new family for, at least conceptually, the same thing (PRP and
-802.1CB). And this is important bit, the userspace API.
-
-And even for 802.1CB using name "High-availability Seamless Redudancy"
-is as good as any, if very pompous.
-
->
-> Main difference between HSR and PRP is how they handle the protocol tag
-> or rct and create or handle the protocol specific part in the frame.
-> For that part, we should be able to define ops() like you have
-> suggested, instead of doing if check throughout the code. Hope that
-> is what you meant by hsr_ops() for this. Again shouldn't we use some 
-> generic name like proto_ops or red_ops instead of hsr_ops() and assign
-> protocol specific implementaion to them? i.e hsr_ or prp_
-> or 802.1CB specific functions assigned to the function pointers. For
-> now I see handle_frame(), handle_sv_frame, create_frame(), 
-> create_sv_frame() etc implemented differently (This is currently part of
-> patch 11 & 12). So something like
->
->     struct proto_ops {
-> 	int (*handle_frame)();
-> 	int (*create_frame)();
-> 	int (*handle_sv_frame)();
-> 	int (*create_sv_frame)();
->     };
-
-That's it. That was the idea I was trying to communicate :-)
-
->
-> and call dev->proto_ops->handle_frame() to process a frame from the
-> main hook. proto_ops gets initialized to of the set if implementation
-> at device or interface creation in hsr_dev_finalize().
->
->>>
->>> Please review this and provide me feedback so that I can work to
->>> incorporate them and send a formal patch series for this. As this
->>> series impacts user space, I am not sure if this is the right
->>> approach to introduce a new definitions and obsolete the old
->>> API definitions for HSR. The current approach is choosen
->>> to avoid redundant code in iproute2 and in the netlink driver
->>> code (hsr_netlink.c). Other approach we discussed internally was
->>> to Keep the HSR prefix in the user space and kernel code, but
->>> live with the redundant code in the iproute2 and hsr netlink
->>> code. Would like to hear from you what is the best way to add
->>> this feature to networking core. If there is any other
->>> alternative approach possible, I would like to hear about the
->>> same.
->> 
->> Why redudant code is needed in the netlink parts and in iproute2 when
->> keeping the hsr prefix?
->
-> May be this is due to the specific implementation that I chose.
-> Currently I have separate netlink socket for HSR and PRP which may
-> be an overkill since bith are similar protocol.
->
-> Currently hsr inteface is created as
->
-> ip link add name hsr0 type hsr slave1 eth0 slave2 eth1 supervision 0
->
-> So I have implemented similar command for prp
->
-> ip link add name prp0 type prp slave1 eth0 slave2 eth1 supervision 0
->
-> In patch 7/13 I renamed existing HSR netlink socket attributes that
-> defines the hsr interface with the assumption that we can obsolete
-> the old definitions in favor of new common definitions with the
-> HSR_PRP prefix. Then I have separate code for creating prp
-> interface and related functions, even though they are similar.
-> So using common definitions, I re-use the code in netlink and
-> iproute2 (see patch 8 and 9 to re-use the code). PRP netlink
-> socket code in patch 10 which register prp_genl_family similar
-> to HSR.
-
-Deprecating an userspace API is hard and takes a long time. So let's
-avoid that if it makes sense.
-
->
-> +static struct genl_family prp_genl_family __ro_after_init = {
-> +	.hdrsize = 0,
-> +	.name = "PRP",
-> +	.version = 1,
-> +	.maxattr = HSR_PRP_A_MAX,
-> +	.policy = prp_genl_policy,
-> +	.module = THIS_MODULE,
-> +	.ops = prp_ops,
-> +	.n_ops = ARRAY_SIZE(prp_ops),
-> +	.mcgrps = prp_mcgrps,
-> +	.n_mcgrps = ARRAY_SIZE(prp_mcgrps),
-> +};
-> +
-> +int __init prp_netlink_init(void)
-> +{
-> +	int rc;
-> +
-> +	rc = rtnl_link_register(&prp_link_ops);
-> +	if (rc)
-> +		goto fail_rtnl_link_register;
-> +
-> +	rc = genl_register_family(&prp_genl_family);
-> +	if (rc)
-> +		goto fail_genl_register_family;
->
->
-> If we choose to re-use the existing HSR_ uapi defines, then should we
-> re-use the hsr netlink socket interface for PRP as well and
-> add additional attribute for differentiating the protocol specific
-> part?
-
-Yes, that seems the way to go.
-
->
-> i.e introduce protocol attribute to existing HSR uapi defines for
-> netlink socket to handle creation of prp interface.
->
-> enum {
-> 	HSR_A_UNSPEC,
-> 	HSR_A_NODE_ADDR,
-> 	HSR_A_IFINDEX,
-> 	HSR_A_IF1_AGE,
-> 	HSR_A_IF2_AGE,
-> 	HSR_A_NODE_ADDR_B,
-> 	HSR_A_IF1_SEQ,
-> 	HSR_A_IF2_SEQ,
-> 	HSR_A_IF1_IFINDEX,
-> 	HSR_A_IF2_IFINDEX,
-> 	HSR_A_ADDR_B_IFINDEX,
-> +       HSR_A_PROTOCOL  <====if missing it is HSR (backward 	
-> 			     compatibility)
->                               defines HSR or PRP or 802.1CB in future.
-> 	__HSR_A_MAX,
-> };
->
-> So if ip link command is
->
-> ip link add name <if name> type <proto> slave1 eth0 slave2 eth1 
-> supervision 0
->
-> Add HSR_A_PROTOCOL attribute with HSR/PRP specific value.
->
-> This way, the iprout2 code mostly remain the same as hsr, but will
-> change a bit to introduced this new attribute if user choose proto as
-> 'prp' vs 'hsr'
-
-Sounds good, I think.
-
->
-> BTW, I have posted the existing iproute2 code also to the mailing list
-> with title 'iproute2: Add PRP support'.
->
-> If re-using hsr code with existing prefix is fine for PRP or any future
-> protocol such as 801.1B, then I will drop patch 1-6 that are essentially
-> doing some renaming and re-use existing hsr netlink code for PRP with
-> added attribute to differentiate the protocol at the driver as described
-> above along with proto_ops and re-spin the series.
-
-If I forget that HSR is also the name of a protocol, what the acronym
-means makes sense for 802.1CB, so it's not too bad, I think.
-
->
-> Let me know.
->
-> Regards,
->
-> Murali
-
-
-Cheers,
--- 
-Vinicius
