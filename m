@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5521E2C2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C69C1E2AFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392127AbgEZTMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:12:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42362 "EHLO mail.kernel.org"
+        id S2390881AbgEZTA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:00:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392120AbgEZTMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:12:44 -0400
+        id S2390829AbgEZTAw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:00:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E1D2E20888;
-        Tue, 26 May 2020 19:12:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 490D12084C;
+        Tue, 26 May 2020 19:00:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520364;
-        bh=mRhGw7qR37r16r1P8tKnMThQNVCj3v9b08mSdxj9QVw=;
+        s=default; t=1590519651;
+        bh=ILwT70Cu0LJH0/kO36gQlvNSSlI2KrmFVUhgvqYSduo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VJsRYzAHsSAyv2RkEueQuJhihezuf0K/VUdhFwZp2G2fj71q0uOz3YmReskcMFzlf
-         lurQdBf3ldjlNzjIf2AzqbLLu28D7YeNKfeFF7qXx1Fz7XQ+W3iuuMQ/v80I2B8d2M
-         DFGMQTSwmJ7OQdL2TJsXXjM8JdHyglUjxFJ0m5Tc=
+        b=0A+u7XT2VrDkDr1tiQcKBeomIqCHU5MaSkcMoq2HEDH3+vIV1EOpe+bNNb8nI4BvN
+         96lTEZOlKSCJ/1xg59gSYrXPounRu73jyawvIppVXPXR1Duu6PDBxWrmLCCivi/fs9
+         8KjhKu31G2k4aKsyo3SRmslpejtUp0XErUn9bhhU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roman Li <roman.li@amd.com>,
-        Zhan Liu <Zhan.Liu@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Wu Bo <wubo40@huawei.com>,
+        "Yan, Zheng" <zyan@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 050/126] drm/amd/display: fix counter in wait_for_no_pipes_pending
+Subject: [PATCH 4.14 22/59] ceph: fix double unlock in handle_cap_export()
 Date:   Tue, 26 May 2020 20:53:07 +0200
-Message-Id: <20200526183942.236469362@linuxfoundation.org>
+Message-Id: <20200526183915.566662300@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
-References: <20200526183937.471379031@linuxfoundation.org>
+In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
+References: <20200526183907.123822792@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,43 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roman Li <roman.li@amd.com>
+From: Wu Bo <wubo40@huawei.com>
 
-[ Upstream commit 80797dd6f1a525d1160c463d6a9f9d29af182cbb ]
+[ Upstream commit 4d8e28ff3106b093d98bfd2eceb9b430c70a8758 ]
 
-[Why]
-Wait counter is not being reset for each pipe.
+If the ceph_mdsc_open_export_target_session() return fails, it will
+do a "goto retry", but the session mutex has already been unlocked.
+Re-lock the mutex in that case to ensure that we don't unlock it
+twice.
 
-[How]
-Move counter reset into pipe loop scope.
-
-Signed-off-by: Roman Li <roman.li@amd.com>
-Reviewed-by: Zhan Liu <Zhan.Liu@amd.com>
-Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Wu Bo <wubo40@huawei.com>
+Reviewed-by: "Yan, Zheng" <zyan@redhat.com>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ fs/ceph/caps.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
-index 188e51600070..b3987124183a 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
-@@ -803,11 +803,10 @@ static void disable_dangling_plane(struct dc *dc, struct dc_state *context)
- static void wait_for_no_pipes_pending(struct dc *dc, struct dc_state *context)
- {
- 	int i;
--	int count = 0;
--	struct pipe_ctx *pipe;
- 	PERF_TRACE();
- 	for (i = 0; i < MAX_PIPES; i++) {
--		pipe = &context->res_ctx.pipe_ctx[i];
-+		int count = 0;
-+		struct pipe_ctx *pipe = &context->res_ctx.pipe_ctx[i];
+diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
+index 1b5a50848b5b..589cfe3ed873 100644
+--- a/fs/ceph/caps.c
++++ b/fs/ceph/caps.c
+@@ -3502,6 +3502,7 @@ retry:
+ 		WARN_ON(1);
+ 		tsession = NULL;
+ 		target = -1;
++		mutex_lock(&session->s_mutex);
+ 	}
+ 	goto retry;
  
- 		if (!pipe->plane_state)
- 			continue;
 -- 
 2.25.1
 
