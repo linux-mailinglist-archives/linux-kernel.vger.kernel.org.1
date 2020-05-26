@@ -2,163 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36DD01E2996
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7DD1E2980
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729147AbgEZSDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:03:47 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:59199 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728151AbgEZSDr (ORCPT
+        id S1728461AbgEZSBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:01:20 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:56774 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726930AbgEZSBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:03:47 -0400
-Received: from methusalix.internal.home.lespocky.de ([92.117.38.248]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis)
- id 1MqbDs-1jHnZO2ljU-00mdJw; Tue, 26 May 2020 20:02:54 +0200
-Received: from lemmy.internal.home.lespocky.de ([192.168.243.176] helo=lemmy.home.lespocky.de)
-        by methusalix.internal.home.lespocky.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93.0.4)
-        (envelope-from <alex@home.lespocky.de>)
-        id 1jddub-00014I-G9; Tue, 26 May 2020 20:02:51 +0200
-Received: (nullmailer pid 21056 invoked by uid 2001);
-        Tue, 26 May 2020 18:02:49 -0000
-From:   Alexander Dahl <post@lespocky.de>
-To:     x86@kernel.org
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Alan Jenkins <alan.christopher.jenkins@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Florian Wolters <florian@florian-wolters.de>,
-        Alexander Dahl <post@lespocky.de>, stable@vger.kernel.org
-Subject: [PATCH v3] dma: Fix max PFN arithmetic overflow on 32 bit systems
-Date:   Tue, 26 May 2020 19:57:49 +0200
-Message-Id: <20200526175749.20742-1-post@lespocky.de>
-X-Mailer: git-send-email 2.20.1
+        Tue, 26 May 2020 14:01:20 -0400
+Received: by mail-il1-f200.google.com with SMTP id v87so18193959ill.23
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 11:01:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Sd8nmkms1/N9z7AdzgC+R46KNkX+9L8bcWhvBuXIhMY=;
+        b=Xl2WCQcrNq6IeUDFRg4Ckc1xat1ZXhyxjMfO4olX4jD3UeJRjSjFed/N3G+9h3x8eo
+         07PQXblY1JdpDNmJ8CK25wLRpX/cf5IHydjZKHY2AlMljAraDW29tYw6mP2sxvqgOu+N
+         Znar3LxbuA85UpMQqal3IUkVoEDH+AVCJvCGqj2ECksbbrLf/wKlvsqllYZ8VdoWKmTI
+         kswxYRy/4Fe1RI5C5RmKtajXvDwbKJ5uUf1Kd/fSu/5oeEfBmMNjWwGW1et5T/L3k5+A
+         fZm9dcNRk1wC9XoEVLoc5i0gIxkOhPxVkwvm7vdoyB4MC5/5bXsCiyJQIqR5lCAYnNhh
+         /eEg==
+X-Gm-Message-State: AOAM531dvSgJzs44a+16tiJAER3CPzXUmkWr27x8r68ZsXbm7Li7dqVH
+        EXT0CgW/wcdr3TMfiD3GZcHNc3DSkg92MQ0F84auFgQ67g/r
+X-Google-Smtp-Source: ABdhPJyxU0VH7iNc//c7Sjkr4WsJ1d5JTA5CIgPyVmwZ4YpHfw6jWhbSuzpPc4YvdZEnklzJESDhxknh2HX5YWBaeoiYHoWsN9nT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scan-Signature: da60a1f87c2bd0fec1a92ee75d71daf0
-X-Spam-Score: -2.9 (--)
-X-Provags-ID: V03:K1:RU0d4InmKG43aVsuzP1TdFNT000xXVh0lJi3Xhuudqtalhc25M0
- xrTsa0sXhkoBbi8Bf1GXwburAlDeTBs8b6toisYHzR8wvRgJ9w6m1JjofqU/liNHR6hqt7/
- 48hSjW2bZCgyFjEyQP4mMduSvaLpBlu05UWXNnR6Fxz5SwsUCre6es2vOz66+/LQMSknaHT
- CYpOOaghPKt40QB77o+3Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wlxuTnZ1S80=:DGndYjAOdRIaa7nc1mImo4
- I6csZf45XfygC8KkBDX9LtzgkOXv3lV9fRbVyyjflaHlrT3J42VwyEjh1IAAjH4md4cRwiRJM
- EoO/voisoUjz0/CNsyivmJpMHDGIN08u0HLv92/I0D8KtqYL7AIiPJFre5EOubZBpUOpZn0Yv
- eXs9ViwG94jfeIVdcDCo6YAw4Ycfw5rOjJG6FU2fUC4pf9BNIVZOM13/LIBwwz8Ccr5wXBLP1
- OkvhXigbXMWEKe6blytvb5147FRSOhdclR1aeQ992Igdh4rTWFY5um5BoxhUsNHxHFwzCbULj
- 2OeA0h6m5xZWImJrbr4e0yEziRFTS9Ube+4fynboKld7b7K3BM+jzuRVL+TrWuzpBar1/rxme
- p2WqWPQ4FbIUGteohwAkJeGuOkF3NfAQWcL7EMRQLxkSPgwXlRtyyDGpOHG8HbaZFZVEKtCNU
- E+VSD0QX2ABRy+z70H8BGlRotGYbVc/+URJVEzjgyYBKuJmyU33vVi2+GCXx1H0AOFoXScIdq
- PNJ5cm0dcHg5sFkdsxU0+79iiUU443g1xekCC23x8lP4VqDhi0ky/RyZu/bxWeV1j+N2AU9ZD
- 5my+Iob6aB090X0xN+JXztsF/zdf/mvMMH9XT9XqzCzQNKK6OTQa7/zxTdip0HO8MDIPGFw50
- LJO66lfCsdcA2uJwoagtBFfNmjU0DCS+/84m7ABriJ1F4YQT948KyFr5SlpZeeG2DehacuLi3
- cljsg069LnfwpovUOIdriub9VEglpUXivHtbTuOuu4PabkQVWvfhipLBxNsiRfwpei86mMaF8
- TrnCph4xZNgL5Qk43x0u21xY7zDWMMedM/xHERJH2rBEv5ldksEQX3MkN3Be7f81PVJ0k2L
+X-Received: by 2002:a6b:ea11:: with SMTP id m17mr17504736ioc.149.1590516078244;
+ Tue, 26 May 2020 11:01:18 -0700 (PDT)
+Date:   Tue, 26 May 2020 11:01:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000da764a05a690e1cc@google.com>
+Subject: KASAN: use-after-free Read in cdev_put
+From:   syzbot <syzbot+2af7aca9f40c4c773068@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The intermediate result of the old term (4UL * 1024 * 1024 * 1024) is
-4 294 967 296 or 0x100000000 which is no problem on 64 bit systems.  The
-patch does not change the later overall result of 0x100000 for
-MAX_DMA32_PFN.  The new calculation yields the same result, but does not
-require 64 bit arithmetic.
+Hello,
 
-On 32 bit systems the old calculation suffers from an arithmetic
-overflow in that intermediate term in braces: 4UL aka unsigned long int
-is 4 byte wide and an arithmetic overflow happens (the 0x100000000 does
-not fit in 4 bytes), the in braces result is truncated to zero, the
-following right shift does not alter that, so MAX_DMA32_PFN evaluates to
-0 on 32 bit systems.
+syzbot found the following crash on:
 
-That wrong value is a problem in a comparision against MAX_DMA32_PFN in
-the init code for swiotlb in 'pci_swiotlb_detect_4gb()' to decide if
-swiotlb should be active.  That comparison yields the opposite result,
-when compiling on 32 bit systems.
+HEAD commit:    c11d28ab Add linux-next specific files for 20200522
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13abef06100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3f6dbdea4159fb66
+dashboard link: https://syzkaller.appspot.com/bug?extid=2af7aca9f40c4c773068
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
 
-This was not possible before 1b7e03ef7570 ("x86, NUMA: Enable emulation
-on 32bit too") when that MAX_DMA32_PFN was first made visible to x86_32
-(and which landed in v3.0).
+Unfortunately, I don't have any reproducer for this crash yet.
 
-In practice this wasn't a problem, unless you activated CONFIG_SWIOTLB
-on x86 (32 bit).
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+2af7aca9f40c4c773068@syzkaller.appspotmail.com
 
-However for ARCH=x86 (32 bit) and if you have set CONFIG_IOMMU_INTEL,
-since c5a5dc4cbbf4 ("iommu/vt-d: Don't switch off swiotlb if bounce page
-is used") there's a dependency on CONFIG_SWIOTLB, which was not
-necessarily active before.  That landed in v5.4, where we noticed it in
-the fli4l Linux distribution.  We have CONFIG_IOMMU_INTEL active on both
-32 and 64 bit kernel configs there (I could not find out why, so let's
-just say historical reasons).
+==================================================================
+BUG: KASAN: use-after-free in kobject_put+0x296/0x2f0 lib/kobject.c:745
+Read of size 1 at addr ffff88808e2391c4 by task syz-executor.1/11174
 
-The effect is at boot time 64 MiB (default size) were allocated for
-bounce buffers now, which is a noticeable amount of memory on small
-systems like pcengines ALIX 2D3 with 256 MiB memory, which are still
-frequently used as home routers.
+CPU: 0 PID: 11174 Comm: syz-executor.1 Not tainted 5.7.0-rc6-next-20200522-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xd3/0x413 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ kobject_put+0x296/0x2f0 lib/kobject.c:745
+ cdev_put.part.0+0x32/0x50 fs/char_dev.c:365
+ cdev_put+0x1b/0x30 fs/char_dev.c:363
+ __fput+0x69b/0x880 fs/file_table.c:284
+ task_work_run+0xf4/0x1b0 kernel/task_work.c:123
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_usermode_loop+0x2fa/0x360 arch/x86/entry/common.c:165
+ prepare_exit_to_usermode arch/x86/entry/common.c:196 [inline]
+ syscall_return_slowpath arch/x86/entry/common.c:279 [inline]
+ do_syscall_64+0x6b1/0x7d0 arch/x86/entry/common.c:305
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+RIP: 0033:0x416621
+Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 04 1b 00 00 c3 48 83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
+RSP: 002b:00007fff6b522200 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 0000000000000005 RCX: 0000000000416621
+RDX: 0000000000000000 RSI: 00000000000000d0 RDI: 0000000000000004
+RBP: 0000000000000001 R08: 00000000551800d0 R09: 00000000551800d4
+R10: 00007fff6b5222f0 R11: 0000000000000293 R12: 0000000000792bd0
+R13: 000000000004e9c2 R14: ffffffffffffffff R15: 000000000078bf0c
 
-We noticed this effect when migrating from kernel v4.19 (LTS) to v5.4
-(LTS) in fli4l and got that kernel messages for example:
+Allocated by task 11177:
+ save_stack+0x1b/0x40 mm/kasan/common.c:48
+ set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc mm/kasan/common.c:494 [inline]
+ __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:467
+ kmem_cache_alloc_trace+0x153/0x7d0 mm/slab.c:3551
+ kmalloc include/linux/slab.h:555 [inline]
+ kzalloc include/linux/slab.h:669 [inline]
+ evdev_connect+0x80/0x4d0 drivers/input/evdev.c:1352
+ input_attach_handler+0x194/0x200 drivers/input/input.c:1031
+ input_register_device.cold+0xf5/0x246 drivers/input/input.c:2229
+ uinput_create_device drivers/input/misc/uinput.c:364 [inline]
+ uinput_ioctl_handler.isra.0+0x1210/0x1d80 drivers/input/misc/uinput.c:870
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ ksys_ioctl+0x11a/0x180 fs/ioctl.c:753
+ __do_sys_ioctl fs/ioctl.c:762 [inline]
+ __se_sys_ioctl fs/ioctl.c:760 [inline]
+ __x64_sys_ioctl+0x6f/0xb0 fs/ioctl.c:760
+ do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
 
-  Linux version 5.4.22 (buildroot@buildroot) (gcc version 7.3.0 (Buildroot 2018.02.8)) #1 SMP Mon Nov 26 23:40:00 CET 2018
-  …
-  Memory: 183484K/261756K available (4594K kernel code, 393K rwdata, 1660K rodata, 536K init, 456K bss , 78272K reserved, 0K cma-reserved, 0K highmem)
-  …
-  PCI-DMA: Using software bounce buffering for IO (SWIOTLB)
-  software IO TLB: mapped [mem 0x0bb78000-0x0fb78000] (64MB)
+Freed by task 11174:
+ save_stack+0x1b/0x40 mm/kasan/common.c:48
+ set_track mm/kasan/common.c:56 [inline]
+ kasan_set_free_info mm/kasan/common.c:316 [inline]
+ __kasan_slab_free+0xf7/0x140 mm/kasan/common.c:455
+ __cache_free mm/slab.c:3426 [inline]
+ kfree+0x109/0x2b0 mm/slab.c:3757
+ device_release+0x71/0x200 drivers/base/core.c:1541
+ kobject_cleanup lib/kobject.c:701 [inline]
+ kobject_release lib/kobject.c:732 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x1c8/0x2f0 lib/kobject.c:749
+ kobject_cleanup lib/kobject.c:701 [inline]
+ kobject_release lib/kobject.c:732 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x1c8/0x2f0 lib/kobject.c:749
+ cdev_put.part.0+0x32/0x50 fs/char_dev.c:365
+ cdev_put+0x1b/0x30 fs/char_dev.c:363
+ __fput+0x69b/0x880 fs/file_table.c:284
+ task_work_run+0xf4/0x1b0 kernel/task_work.c:123
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_usermode_loop+0x2fa/0x360 arch/x86/entry/common.c:165
+ prepare_exit_to_usermode arch/x86/entry/common.c:196 [inline]
+ syscall_return_slowpath arch/x86/entry/common.c:279 [inline]
+ do_syscall_64+0x6b1/0x7d0 arch/x86/entry/common.c:305
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
 
-The initial analysis and the suggested fix was done by user 'sourcejedi'
-at stackoverflow and explicitly marked as GPLv2 for inclusion in the
-Linux kernel:
+The buggy address belongs to the object at ffff88808e239000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 452 bytes inside of
+ 2048-byte region [ffff88808e239000, ffff88808e239800)
+The buggy address belongs to the page:
+page:ffffea0002388e40 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0
+flags: 0xfffe0000000200(slab)
+raw: 00fffe0000000200 ffffea00029d3dc8 ffffea00027ec908 ffff8880aa000e00
+raw: 0000000000000000 ffff88808e239000 0000000100000001 0000000000000000
+page dumped because: kasan: bad access detected
 
-  https://unix.stackexchange.com/a/520525/50007
+Memory state around the buggy address:
+ ffff88808e239080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88808e239100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88808e239180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                           ^
+ ffff88808e239200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88808e239280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
-The new calculation, which does not suffer from that overflow, is the
-same as for arch/mips now as suggested by Robin Murphy.
 
-The fix was tested by fli4l users on round about two dozen different
-systems, including both 32 and 64 bit archs, bare metal and virtualized
-machines.
-
-Fixes: 1b7e03ef7570 ("x86, NUMA: Enable emulation on 32bit too")
-Fixes: https://web.nettworks.org/bugs/browse/FFL-2560
-Fixes: https://unix.stackexchange.com/q/520065/50007
-Reported-by: Alan Jenkins <alan.christopher.jenkins@gmail.com>
-Suggested-by: Robin Murphy <robin.murphy@arm.com>
-Signed-off-by: Alexander Dahl <post@lespocky.de>
-Cc: stable@vger.kernel.org
 ---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Notes:
-    v3:
-      - rewritten commit message to better explain that arithmetic overflow
-        and added Fixes tag (Greg Kroah-Hartman)
-      - rebased on v5.7-rc7
-    
-    v2:
-      - use the same calculation as with arch/mips (Robin Murphy)
-
- arch/x86/include/asm/dma.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/dma.h b/arch/x86/include/asm/dma.h
-index 00f7cf45e699..8e95aa4b0d17 100644
---- a/arch/x86/include/asm/dma.h
-+++ b/arch/x86/include/asm/dma.h
-@@ -74,7 +74,7 @@
- #define MAX_DMA_PFN   ((16UL * 1024 * 1024) >> PAGE_SHIFT)
- 
- /* 4GB broken PCI/AGP hardware bus master zone */
--#define MAX_DMA32_PFN ((4UL * 1024 * 1024 * 1024) >> PAGE_SHIFT)
-+#define MAX_DMA32_PFN (1UL << (32 - PAGE_SHIFT))
- 
- #ifdef CONFIG_X86_32
- /* The maximum address that we can perform a DMA transfer to on this platform */
--- 
-2.20.1
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
