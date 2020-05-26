@@ -2,104 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A84EF1E29A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5D31E29B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388274AbgEZSHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:07:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52540 "EHLO
+        id S2388953AbgEZSIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:08:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728497AbgEZSHP (ORCPT
+        with ESMTP id S1728285AbgEZSIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:07:15 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546BBC03E96D;
-        Tue, 26 May 2020 11:07:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=WWC1kKHrVuEMdArPfAi+QV3k9NA3yhSI+2WZIe2uBMk=; b=SAwBuIkba3TDTbw9zVFFvtz/dV
-        dNQ36jvkyDBS2zQFDXQ6/W4n9iP4mnJ4Ls9dMtnni4Kx4rPwV6nduCEx4tSUsr21b3TU7zkk2gN/7
-        DeJYAR85x2SNaAOJqaha8kU653IRM+X4ixrtlAwg/xtqxkd23Fi81TVvzMTba9dj70sPSYe1hrOEY
-        78yNfsQnzMYwPENxSryuGQRvRd1Dai4sy7ItWz5u3Wfx4pvBEaSm+js24q5KBZVKQpKdJnTmvor9t
-        tMthAs3Dwu3rmZ+nQnm4ZcfaKqF35H0k2qAoA63i4mWQ09tTdqt3rW7iFwRX2LX9EsT1gEe+8fz3L
-        qqUM3qnA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jddyt-0004p4-1v; Tue, 26 May 2020 18:07:15 +0000
-Subject: Re: [PATCH] topology: Fix cpumask_of_node macro for
- CONFIG_NEED_MULTIPLE_NODES=n
-To:     Guenter Roeck <linux@roeck-us.net>, Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>
-References: <20200526174443.207610-1-linux@roeck-us.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <45fda375-3691-e722-000f-188dd13d2e0b@infradead.org>
-Date:   Tue, 26 May 2020 11:07:14 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 26 May 2020 14:08:50 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB04C03E96D
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 11:08:49 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id v17so17136419ote.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 11:08:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yOePJEqzOpldNpBCP7tiQal13VtjOaSKu8Mf0AiyKEI=;
+        b=LHerMhrRjDvYSPQcdFKJwGDWO70nXCx2w6vo4xJFPsObj1NbvulOFG+pHyD9nelhm+
+         oFhF5Kc1UQ0qk6XEEY9UviM6dksasQ7oeWtIGzXqwTd/m6CIelrPhzxK75SH/FYEzp10
+         UNLNtypTCz+DotDxXL4ej6Z6N3tjkwfKcV5JLDaOqWoRIVvr5x9Vu3iMjP+8WXuJoLEb
+         +7dhYyiLkAebECLI/eQSvFX1zljc/KNYsd9Rpql7ilm5FM7jGUOnDZfw9ZW3oIVCsa/n
+         DwqyfAo4ygntvZiXRLWBnDBAFyJsrX9GJPtm9t2fPTEpORoXe8ZfWfDnFUdL+vddh6Wz
+         fOfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yOePJEqzOpldNpBCP7tiQal13VtjOaSKu8Mf0AiyKEI=;
+        b=LF3UdXfdlOMXNroi6S9pgjVxEHhupbLaH2JAkyPBHD+AUD09iWCZHdkdlrWhsQeYSc
+         +o/4WWm252sHfOAEROY9M8sLTl1uBkchGrq+UTKZrn4U1z2q7DOmXl1gmjnvYbJu8o/a
+         /YT86kTN18VuxMTvUsur+j3iUKbUM1IB8jDO2Xn0XxlgcYAOVRNIJMmw5a9tNpRdNTXn
+         5PYrMh33KDsnx7oVd3WzJ2XmjIT5qz4ixiFPEg0W7QcAfYDWkoiMSB0dviHwajsevGug
+         jzu6WzTFVqANftign+lylgyOGB2N1xIHekr7twFzu57ayIW4tnwz9FQVYdPDHweUmsbq
+         97mQ==
+X-Gm-Message-State: AOAM533sGs7ONBB7F1vH5yoHwNZflD7bWZwOa05QiHPAfX/DM2b7Wq0e
+        VCC7YvLEH0m9qJZlBQvGyDhQm3y2kKfl6GG1rpM2kg==
+X-Google-Smtp-Source: ABdhPJxcmaAVdh0ujGCGKr1HPyMWjwhEp+FeToSzOp+e8yyxq5YqQRrbEqpSGpnZ5yZPxLPF+Bdrvd+HbqtPIbUOGUk=
+X-Received: by 2002:a9d:66d5:: with SMTP id t21mr1907974otm.231.1590516528738;
+ Tue, 26 May 2020 11:08:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200526174443.207610-1-linux@roeck-us.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <6144404cb26d1f797fd7e87b124bcaf8@walle.cc> <20200526070518.107333-1-saravanak@google.com>
+ <CAGETcx-b4+a8U=Qd0mKaB9JUBaj178694QshqZVrAa_x6AgcAg@mail.gmail.com> <dac3da8b373f131e53e18083f6fac5b0@walle.cc>
+In-Reply-To: <dac3da8b373f131e53e18083f6fac5b0@walle.cc>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 26 May 2020 11:08:12 -0700
+Message-ID: <CAGETcx_iHs5xsXq81k4YRzrFxs2j01u3HzfnSNU9Vxs8ZTGGuA@mail.gmail.com>
+Subject: Re: [PATCH v1] driver core: Update device link status correctly for
+ SYNC_STATE_ONLY links
+To:     Michael Walle <michael@walle.cc>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/20 10:44 AM, Guenter Roeck wrote:
-> The following compile error is seen in linux-next if
-> NUMA=n and CONFIG_NEED_MULTIPLE_NODES=n.
-> 
->   CC      drivers/hwmon/amd_energy.o
-> In file included from ../arch/x86/include/asm/cpumask.h:5:0,
->                  from ../arch/x86/include/asm/msr.h:11,
->                  from ../arch/x86/include/asm/processor.h:22,
->                  from ../arch/x86/include/asm/cpu_device_id.h:16,
->                  from ../drivers/hwmon/amd_energy.c:6:
-> ../drivers/hwmon/amd_energy.c: In function 'amd_energy_read':
-> ../include/asm-generic/topology.h:51:36: error:
-> 			void value not ignored as it ought to be
->      #define cpumask_of_node(node) ((void)node, cpu_online_mask)
-> ../include/linux/cpumask.h:618:72: note:
-> 			in definition of macro 'cpumask_first_and'
->  #define cpumask_first_and(src1p, src2p) cpumask_next_and(-1, (src1p), (src2p))
->                                                                         ^~~~~
-> ../drivers/hwmon/amd_energy.c:194:6: note: in expansion of macro 'cpumask_of_node'
-> 
-> cpumask_of_node() is missing () around the 'node' parameter.
-> 
-> Fixes: b339752d054f ("cpumask: fix spurious cpumask_of_node() on non-NUMA multi-node configs")
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Tejun Heo <tj@kernel.org>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+On Tue, May 26, 2020 at 4:04 AM Michael Walle <michael@walle.cc> wrote:
+>
+> Hi Saravana,
+>
+> Am 2020-05-26 09:07, schrieb Saravana Kannan:
+> >> Greg,
+> >>
+> >> I think this is the issue Michael ran into. I'd like him to test the
+> >> fix
+> >> before it's pulled in.
+> >>
+> >> Michael,
+> >>
+> >> If you can test this on the branch you saw the issue in and give a
+> >> Tested-by if it works, that'd be great.
+>
+> Unfortunately, now I'm triggering another WARN_ON() in
+> device_links_driver_bound():
+>    WARN_ON(link->status != DL_STATE_DORMANT);
+>
+> I've attached two bootlog one based on linux-next-20200525 with this
+> patch applied and another one where your previous debug printfs are
+> applied, too.
+>
+> Let me know, if you need any other debug outputs.
 
+Can you make the same debug changes I did for the other WARN and get
+me the logs?
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-
-Thanks.
-
-> ---
->  include/asm-generic/topology.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/asm-generic/topology.h b/include/asm-generic/topology.h
-> index 238873739550..5aa8705df87e 100644
-> --- a/include/asm-generic/topology.h
-> +++ b/include/asm-generic/topology.h
-> @@ -48,7 +48,7 @@
->    #ifdef CONFIG_NEED_MULTIPLE_NODES
->      #define cpumask_of_node(node)	((node) == 0 ? cpu_online_mask : cpu_none_mask)
->    #else
-> -    #define cpumask_of_node(node)	((void)node, cpu_online_mask)
-> +    #define cpumask_of_node(node)	((void)(node), cpu_online_mask)
->    #endif
->  #endif
->  #ifndef pcibus_to_node
-> 
-
-
--- 
-~Randy
+Thanks,
+Saravana
