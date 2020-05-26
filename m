@@ -2,89 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491521E1AFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 08:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D611E1B00
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 08:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgEZGI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 02:08:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726207AbgEZGI5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 02:08:57 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10EA2C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 23:08:57 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id bs4so16634843edb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 23:08:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V5YTh51mOSkEuxU21BvSuS/w+t0LyTN4bdZGeF4brQo=;
-        b=fWV/9lztW7nmFrKNP0PJ4RtoJAO6nrDX3GUlHhH4zIRcu804CcMll+BcR/TH+zTrIi
-         VbimfFrLLAZRbnIDe4AovAH/2WLLd6lnUM9Mmhm0hZjDtq/EUCKd36hg6LZq+np9n/oj
-         PIaajG/lFoLSUHfjAO5tASEwXekSEHmOnEB94=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V5YTh51mOSkEuxU21BvSuS/w+t0LyTN4bdZGeF4brQo=;
-        b=UwiDd00w4nwt1OtWOlwiRqmR8g+n2+bGEji4+I9fjkEr5isJ/jJoPdUOz59GNgWwNJ
-         tVMVfWAZO70ZbFqLrHe4MZ1hQuzh87e/yZ7fEtxDuMBOiT0W/7b4T3mrfP8ywogzSFZZ
-         nXkirvQ0qhIC1pQihKfKUJV3cac2bmmUzcVh86QOJ6fWV224BNZ/4TqwdMMsLJssCNEv
-         gtYK9JL5vEo430pbJbtoP8ifikfch0mnr906Z2pId/zXPd75xikf93tlW2xd4YgdzUG+
-         09smnPcs+ECdQGF3DzeMZEPKVd9Hs6Dv7RDXUDVpBAbAd0o2OVjA/hZoOgaTCuSyGarF
-         VMtQ==
-X-Gm-Message-State: AOAM532oxC2T6mJ8GCZySbcoT1Ab9NaGYQElW/0SQfix9JHnPzdk47Y0
-        z5qKA1+q6eQD1mcTXgRcrbpaArM1eEmLIy/2FVqDLg==
-X-Google-Smtp-Source: ABdhPJzib02G90pJOtMeOUHnKCP2wPTxzVpDsQuhN4DT9I2bM+InsgjG5fVPNFXE6LDET7T6rqwFER52/c6lbAlIXeA=
-X-Received: by 2002:a05:6402:b38:: with SMTP id bo24mr18800566edb.24.1590473335434;
- Mon, 25 May 2020 23:08:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200524233942.8702-1-sargun@sargun.me> <20200524233942.8702-5-sargun@sargun.me>
- <20200525142043.jkdsfabntqusizxz@wittgenstein>
-In-Reply-To: <20200525142043.jkdsfabntqusizxz@wittgenstein>
-From:   Sargun Dhillon <sargun@sargun.me>
-Date:   Mon, 25 May 2020 23:08:19 -0700
-Message-ID: <CAMp4zn_JFEVQd3PpOod=R11fSFOQYVWpS3bVQensOQyhc=BQag@mail.gmail.com>
-Subject: Re: [PATCH 4/5] seccomp: Add SECCOMP_ADDFD_FLAG_MOVE flag to add fd ioctl
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Kees Cook <keescook@chromium.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Jann Horn <jannh@google.com>, Robert Sesek <rsesek@google.com>,
-        Chris Palmer <palmer@google.com>,
-        Matt Denton <mpdenton@google.com>,
-        Kees Cook <keescook@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726971AbgEZGL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 02:11:27 -0400
+Received: from mga06.intel.com ([134.134.136.31]:16985 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726207AbgEZGL0 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 02:11:26 -0400
+IronPort-SDR: aZsdxTGTJrWmyYYcZSpi6a5uefnPhSbiIU/Ki9Bq9Q2e6wQeLN9g0PU/0InK+C9bXs4agmgYmg
+ c5gaflRnSQsQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2020 23:11:25 -0700
+IronPort-SDR: +zmhc9xuCLCqBLBT3xguOAlET9BGwCBxKJR37kJq/FxDldUMyoEV2EtGTwysjrYvhHw/fOhuTl
+ yVI2ON6VqPEg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,436,1583222400"; 
+   d="scan'208";a="291068638"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.118])
+  by fmsmga004.fm.intel.com with ESMTP; 25 May 2020 23:11:23 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH v4 0/7] perf: Stream comparison
+Date:   Tue, 26 May 2020 14:09:13 +0800
+Message-Id: <20200526060920.26490-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > + * they are created in. Specifcally, sockets, and their interactions with the
-> > + * net_cls and net_prio cgroup v1 controllers. This "moves" the file descriptor
-> > + * so that it takes on the cgroup controller's configuration in the process
-> > + * that the file descriptor is being added to.
-> > + */
-> > +#define SECCOMP_ADDFD_FLAG_MOVE              (1UL << 1)
->
-> I'm not happy about the name because "moving" has much more to do with
-> transferring ownership than what we are doing here. After a "move" the
-> fd shouldn't be valid anymore. But that might just be my thinking.
->
-> But why make this opt-in and not do it exactly like when you send around
-> fds and make this mandatory?
+Sometimes, a small change in a hot function reducing the cycles of
+this function, but the overall workload doesn't get faster. It is
+interesting where the cycles are moved to.
 
-Based upon Tycho's comments in an offline thread, I'm going to make
-this the default
-(setting the cgroup metadata) to mirror what SCM_RIGHTS does, and then
-if we come
-up with a good use case where we need to preserve *cgroup v1*
-metadata, then we can
-add an opt-out flag in the future.
+What it would like is to diff before/after streams. The stream is the
+branch history which is aggregated by the branch records from perf
+samples. For example, the callchains aggregated from the branch records.
+By browsing the hot stream, we can understand the hot code path.
+
+By browsing the hot streams, we can understand the hot code path.
+By comparing the cycles variation of same streams between old perf
+data and new perf data, we can understand if the cycles are moved
+to other codes.
+
+The before stream is the stream in perf.data.old. The after stream
+is the stream in perf.data.
+
+Diffing before/after streams compares top N hottest streams between
+two perf data files.
+
+If all entries of one stream in perf.data.old are fully matched with
+all entries of another stream in perf.data, we think two streams
+are matched, otherwise the streams are not matched.
+
+For example,
+
+   cycles: 1, hits: 26.80%                 cycles: 1, hits: 27.30%
+--------------------------              --------------------------
+             main div.c:39                           main div.c:39
+             main div.c:44                           main div.c:44
+
+The above streams are matched and we can see for the same streams the
+cycles (1) are equal and the callchain hit percents are slightly changed
+(26.80% vs. 27.30%). That's expected.
+
+Now let's see examples.
+
+perf record -b ...      Generate perf.data.old with branch data
+perf record -b ...      Generate perf.data with branch data
+perf diff --stream
+
+[ Matched hot streams ]
+
+hot chain pair 1:
+            cycles: 1, hits: 27.77%                  cycles: 1, hits: 9.24%
+        ---------------------------              --------------------------
+                      main div.c:39                           main div.c:39
+                      main div.c:44                           main div.c:44
+
+hot chain pair 2:
+           cycles: 34, hits: 20.06%                cycles: 27, hits: 16.98%
+        ---------------------------              --------------------------
+          __random_r random_r.c:360               __random_r random_r.c:360
+          __random_r random_r.c:388               __random_r random_r.c:388
+          __random_r random_r.c:388               __random_r random_r.c:388
+          __random_r random_r.c:380               __random_r random_r.c:380
+          __random_r random_r.c:357               __random_r random_r.c:357
+              __random random.c:293                   __random random.c:293
+              __random random.c:293                   __random random.c:293
+              __random random.c:291                   __random random.c:291
+              __random random.c:291                   __random random.c:291
+              __random random.c:291                   __random random.c:291
+              __random random.c:288                   __random random.c:288
+                     rand rand.c:27                          rand rand.c:27
+                     rand rand.c:26                          rand rand.c:26
+                           rand@plt                                rand@plt
+                           rand@plt                                rand@plt
+              compute_flag div.c:25                   compute_flag div.c:25
+              compute_flag div.c:22                   compute_flag div.c:22
+                      main div.c:40                           main div.c:40
+                      main div.c:40                           main div.c:40
+                      main div.c:39                           main div.c:39
+
+hot chain pair 3:
+             cycles: 9, hits: 4.48%                  cycles: 6, hits: 4.51%
+        ---------------------------              --------------------------
+          __random_r random_r.c:360               __random_r random_r.c:360
+          __random_r random_r.c:388               __random_r random_r.c:388
+          __random_r random_r.c:388               __random_r random_r.c:388
+          __random_r random_r.c:380               __random_r random_r.c:380
+
+[ Hot streams in old perf data only ]
+
+hot chain 1:
+            cycles: 18, hits: 6.75%
+         --------------------------
+          __random_r random_r.c:360
+          __random_r random_r.c:388
+          __random_r random_r.c:388
+          __random_r random_r.c:380
+          __random_r random_r.c:357
+              __random random.c:293
+              __random random.c:293
+              __random random.c:291
+              __random random.c:291
+              __random random.c:291
+              __random random.c:288
+                     rand rand.c:27
+                     rand rand.c:26
+                           rand@plt
+                           rand@plt
+              compute_flag div.c:25
+              compute_flag div.c:22
+                      main div.c:40
+
+hot chain 2:
+            cycles: 29, hits: 2.78%
+         --------------------------
+              compute_flag div.c:22
+                      main div.c:40
+                      main div.c:40
+                      main div.c:39
+
+[ Hot streams in new perf data only ]
+
+hot chain 1:
+                                                     cycles: 4, hits: 4.54%
+                                                 --------------------------
+                                                              main div.c:42
+                                                      compute_flag div.c:28
+
+hot chain 2:
+                                                     cycles: 5, hits: 3.51%
+                                                 --------------------------
+                                                              main div.c:39
+                                                              main div.c:44
+                                                              main div.c:42
+                                                      compute_flag div.c:28
+
+ v4:
+ ---
+ The previous version is too huge and it's hard for reviewing.
+
+ 1. V4 removes the code which supports the source line mapping
+    table. Now we only supports the basic functionality for 
+    stream comparison.
+
+ 2. Refactor the code in a generic way.
+ 
+ v3:
+ ---
+ v2 has 14 patches, it's hard to review.
+ v3 is only 7 patches for basic stream comparison.
+
+Jin Yao (7):
+  perf util: Create streams
+  perf util: Get the evsel_streams by evsel_idx
+  perf util: Compare two streams
+  perf util: Link stream pair
+  perf util: Calculate the sum of total streams hits
+  perf util: Report hot streams
+  perf diff: Support hot streams comparison
+
+ tools/perf/Documentation/perf-diff.txt |   4 +
+ tools/perf/builtin-diff.c              | 133 +++++++++-
+ tools/perf/util/Build                  |   1 +
+ tools/perf/util/callchain.c            |  99 +++++++
+ tools/perf/util/callchain.h            |   9 +
+ tools/perf/util/stream.c               | 343 +++++++++++++++++++++++++
+ tools/perf/util/stream.h               |  42 +++
+ 7 files changed, 618 insertions(+), 13 deletions(-)
+ create mode 100644 tools/perf/util/stream.c
+ create mode 100644 tools/perf/util/stream.h
+
+-- 
+2.17.1
+
