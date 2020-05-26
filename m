@@ -2,135 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E7E1E2869
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 19:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0367D1E2848
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 19:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389143AbgEZRTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 13:19:25 -0400
-Received: from mail-bn8nam11on2083.outbound.protection.outlook.com ([40.107.236.83]:48578
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388874AbgEZRTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 13:19:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XCZrc7yv4RENxcbg01cUSfVLI+OZN/0VfoUI+gwFoyKSE1wcql1fSq4WeNMW/ZkDxo6ZURwDBc+XeQHtfSBkPA2cGNhtFeDHu5OIClkfAHYIAtD3Glfar7Og22noa6rpk9RWJAL4WQfy0nv+RQGQPYIyDEPPcZbI5uupPcTVtxS+jWxxcIjbKVT7IEQ2FGgyJ34+2Iqrc3KrL281iIZX278l/i3nn4c61rSXCZ4OTbLuOrgdFOedoPp6ndttya0GXfR7Ht1HPl5dX//E53iCYFVZAjq7diQviZy4aOxGdpsAuK3iiWe6O5mN/8fNeaqvUJDOQunjJPaE/83aWxPIZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GElZCByPklEnoQ8Cdo2ms75WRk4lBT8yiCJV32eEMDs=;
- b=kKs6NnNWHtfUPvFsRUitGYjtWGivR/1phAFAfeWGT+vHjAK2I8sAqL/Vi81+hMYs95XyiI2hrTlOx1Eyw+gIh6LMuvFMUq2tvAQep51j8GmKOkrRnQ1QVkIjVZxLdiPqcPFywW1eXCMil6l15tPImH9QIZkTKeKHO6eJFFCU/c7QvuRPv+fZzN2ZbLqj7zezNLlEFxgRb1xbtRj+g8FKp9VstzHTuqZAB3vmNCAZZIsxDPMOgDAvsFemWrZWyHT7gPAd5K+Da9Ktu8UsB8EB5y4ULZ1zH42YOm6pMJyov1MhSYzngsJmzDixET+P5tHJa+v4X9B0DqCnw0lP3F58RQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
- dkim=pass header.d=silabs.com; arc=none
+        id S1729330AbgEZRSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 13:18:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728581AbgEZRSi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 13:18:38 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2283C03E96E
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 10:18:38 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id h129so21039261ybc.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 10:18:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GElZCByPklEnoQ8Cdo2ms75WRk4lBT8yiCJV32eEMDs=;
- b=HXKvEoFZ+DmgbaEwvrEPUdzvSarppuPxF9Ylc5IqxVATXZ52Hw2+jZdhXP/xC0ZoEZWVvrAUq3Nu1cnSpjpCz4axCJq0AjCSAftP/zQGWikn23w/i/b3dyhqvzeTmAG6rciZwxDBLNpbDdt1VrqpNXWGQlVYXjuaBnpGAPkFf9A=
-Authentication-Results: driverdev.osuosl.org; dkim=none (message not signed)
- header.d=none;driverdev.osuosl.org; dmarc=none action=none
- header.from=silabs.com;
-Received: from SN6PR11MB2718.namprd11.prod.outlook.com (2603:10b6:805:63::18)
- by SN6PR11MB2750.namprd11.prod.outlook.com (2603:10b6:805:54::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.25; Tue, 26 May
- 2020 17:18:57 +0000
-Received: from SN6PR11MB2718.namprd11.prod.outlook.com
- ([fe80::c504:2d66:a8f7:2336]) by SN6PR11MB2718.namprd11.prod.outlook.com
- ([fe80::c504:2d66:a8f7:2336%7]) with mapi id 15.20.3021.029; Tue, 26 May 2020
- 17:18:57 +0000
-From:   Jerome Pouiller <Jerome.Pouiller@silabs.com>
-To:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
-        <jerome.pouiller@silabs.com>
-Subject: [PATCH 10/10] staging: wfx: allow to run nl80211 vendor commands with 'iw'
-Date:   Tue, 26 May 2020 19:18:21 +0200
-Message-Id: <20200526171821.934581-11-Jerome.Pouiller@silabs.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526171821.934581-1-Jerome.Pouiller@silabs.com>
-References: <20200526171821.934581-1-Jerome.Pouiller@silabs.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-ClientProxiedBy: PR1PR01CA0007.eurprd01.prod.exchangelabs.com
- (2603:10a6:102::20) To SN6PR11MB2718.namprd11.prod.outlook.com
- (2603:10b6:805:63::18)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc-42.home (2a01:e35:2435:66a0:544b:f17b:7ae8:fb7) by PR1PR01CA0007.eurprd01.prod.exchangelabs.com (2603:10a6:102::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17 via Frontend Transport; Tue, 26 May 2020 17:18:55 +0000
-X-Mailer: git-send-email 2.26.2
-X-Originating-IP: [2a01:e35:2435:66a0:544b:f17b:7ae8:fb7]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 469e27ff-2d0a-4bdb-287f-08d80198df6c
-X-MS-TrafficTypeDiagnostic: SN6PR11MB2750:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR11MB2750AAEF8328A9D45290DD7293B00@SN6PR11MB2750.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:220;
-X-Forefront-PRVS: 041517DFAB
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 36udSgpgpoOqIZ8zH9GZ+plAMD9dD8KsbqJkbww7Iw4e+uCIc4o2VRqncR8JbizYmpvR/r9FetdLJis4sMMBK/v0nkplhQehpOx89JttHNwrUU2ZMLjqfKepPDOzx2PiaJJhkvUGDWPljLNC7Aec1g+BL0PdwnEFpUGPQTd6PuS3slPrv4H6a19NEy9lzhtkAu7i4b1PrcFQfWYFbNiNOhmIVnn7Z+HCF1ErTQyyAocId+PO54Bie1CUEplPCE5x2iLXxACKMdxOPSQntwwLoGn1qtXEJ0vHgE68biN2hYgYCP4atCqRfrT5OfjWkJUv
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB2718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(376002)(366004)(39860400002)(136003)(346002)(4326008)(6512007)(316002)(8676002)(8936002)(2616005)(6486002)(2906002)(107886003)(1076003)(86362001)(6666004)(186003)(16526019)(5660300002)(66574014)(36756003)(54906003)(66556008)(478600001)(8886007)(6506007)(66946007)(66476007)(52116002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: eW0X11/5NdJVp/L4tPsi5E49ykg/A4QckvE3A9nCGKT2P4aDXu6pzFOAneEH9IDSaXSKJsJDnSJXRTg2TxxNHkDTKd21kD0LKlHj0W6KhNfgqv+qh2A3Pj1UBFL964NIPXKd4bYSZQ+KiQcxR9c4nInOmSN++ic2oJlth1LtxCjY1L6gbv3tZ7veHsmhn7kFLBDPl/6fA9LomakmHds0vrJ8cRVuzfjcMbHWR5Ij/LpA86H7Dvdwvzs4l0ELzjnRDE5105LWzfERdshGxirwdQY7/hU+HKyyW759CMPQfu4SHvNLmyXHF8Xf+pSBub75+zibUyf/v4PCg21lTS46Ng0aFv4U8Z0iAwyyS93zQmjsIrEDzU/1yyXJ6E0W3V5hk66ZqRKJOR59oYvhyWIzBTd2UmCToChhotg6+fo1louMHgAOCt90rirKOdtCW82xkp0GmyCF9+RWG4V/shv3VYAV3puH4foOGd591X2EMp5AqVZXlG2Nxh23VBxUzX7DeqHX/tPGnCmJk/iuL+opsaLkBLR9p+Y69i3pNS6BA54=
-X-OriginatorOrg: silabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 469e27ff-2d0a-4bdb-287f-08d80198df6c
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2020 17:18:56.9508
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QS6X02ty43r+ZuKDqxZ7ukRsJnf6Zf6CT41EZyDxkfDUCENdsCjmPp5wnGT07rkbuOpGOJVelJA1rOwqsGF4Bg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2750
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=qz8XL5HjRypO1RoMKqirUSXQ6SNzxq1AQO7Af1uk7eg=;
+        b=aV+EtZWfxq8hZz390kw22ff2bERfaAxS+NwmsZdiIUYAvoCIzy6goI4eJRxT3jrPh8
+         xZYkVZxurB1Lv/uWfUfFZ3pJ5UsvfeEIXy854tkDM9LazUXsuIeOmUybAr4CYx3HQmVF
+         qyGFlExpbOoOyFc7nVlxMSoptdyr/Q9z8Xo/uO/3QgOoZd9/YiPasUywI8nfmj9Vlg8u
+         IVLFQthtuCm0vWlOg2NN9zs23tyOQBP6RENrKAVbXKWf/MOCFN11o2vkNBkxIN20dZzL
+         RqrWSqv9lpx2dbFJ6M0CSj/EZEFGfKqE1UBO6lue5FJgw9NbeGY1eKIIgrXnUwRlX98o
+         rIBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=qz8XL5HjRypO1RoMKqirUSXQ6SNzxq1AQO7Af1uk7eg=;
+        b=qQ0IOYNruWacdowNpzmZBI4aG53UWDMRN45KusL8EukNReVW4oR1Bv/Q5FFz4k99ZJ
+         +M7ys2vgZSWNfcmllZi/QvFBc/MgDWjIOA6NkpX7IKFNkg7uYGimxGavSJPzehgBjC/W
+         cbtwqz0NrNsUmmYBhA4B/i5rFD8K7XBZ3ZWfgMQCs1wLaqD+1Dopdqqhn+hgO8viAwkG
+         +oirJyAl0AwX6UD0nZesjeYLiaugHp2p11G6fBXEOcv5z5Ub6cKjsHqoy/fmk0KAImv8
+         bRriIxFIdHf/1o4W9Bjo1/Oso9/QSfqKil4kAAJrUbkexPiDxDZTJIMtk07CUkoWpRYL
+         6v2A==
+X-Gm-Message-State: AOAM531yEdexj9CT4UXVOjpkmnMphHZ/9mAjNGpIs+n9lwyNcKtMkpOz
+        2JbGZ8jHkyakCT5juIQHkZFHPEPmN+Whmq6c0T4=
+X-Google-Smtp-Source: ABdhPJxDPm+wkkMpsgRhYQTwpsCoaf6b9kFkH+TSAz8TH+6AQcwtg18bXA+ESWI7ZJpAj2iTVtikPUMoMUzhnggZv7s=
+X-Received: by 2002:a25:253:: with SMTP id 80mr3241130ybc.405.1590513517344;
+ Tue, 26 May 2020 10:18:37 -0700 (PDT)
+Date:   Tue, 26 May 2020 10:18:29 -0700
+In-Reply-To: <CAK7LNASkcLx-K+W1va9WxfxZ=7H-w65QbyBt=88dzK1NrrM_PQ@mail.gmail.com>
+Message-Id: <20200526171830.151966-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+References: <CAK7LNASkcLx-K+W1va9WxfxZ=7H-w65QbyBt=88dzK1NrrM_PQ@mail.gmail.com>
+X-Mailer: git-send-email 2.27.0.rc0.183.gde8f92d652-goog
+Subject: [PATCH v5] Makefile: support compressed debug info
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        Nick Clifton <nickc@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        David Blaikie <blaikie@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Changbin Du <changbin.du@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSsOpcsO0bWUgUG91aWxsZXIgPGplcm9tZS5wb3VpbGxlckBzaWxhYnMuY29tPgoKSW4g
-Y3VycmVudCBjb2RlLCB0aGUgbmw4MDIxMSB2ZW5kb3IgZXh0ZW5zaW9ucyBwcm92aWRlZCBieSB0
-aGUgZHJpdmVyCnVzZSB0aGUgbmV3IEFQSVsxXS4gSXQgcmVxdWlyZXMgdG8gcGFjayB0aGUgbmV0
-bGluayBhdHRyaWJ1dGVzIGludG8gYQpOTEFfTkVTVEVELgoKVW5mb3J0dW5hdGVseSwgaXQgaXMg
-bm90IHRoZSB3YXkgdGhlIGNvbW1hbmQgJ2l3IHZlbmRvcicgd29ya3MuCgpUaGlzIHBhdGNoLCBh
-ZGQgZXh0cmEgdmVuZG9yIGNvbW1hbmRzIHRoYXQgY2FuIGJlIGNhbGxlZCB3aXRoCidpdyB2ZW5k
-b3InLgoKWzFdIHNlZSBjb21taXQgOTAxYmI5ODkxODU1MTYgKCJubDgwMjExOiByZXF1aXJlIGFu
-ZCB2YWxpZGF0ZSB2ZW5kb3IKICAgIGNvbW1hbmQgcG9saWN5IikKClNpZ25lZC1vZmYtYnk6IErD
-qXLDtG1lIFBvdWlsbGVyIDxqZXJvbWUucG91aWxsZXJAc2lsYWJzLmNvbT4KLS0tCiBkcml2ZXJz
-L3N0YWdpbmcvd2Z4L25sODAyMTFfdmVuZG9yLmggfCAyMiArKysrKysrKysrKysrKysrKysrKysr
-CiAxIGZpbGUgY2hhbmdlZCwgMjIgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-c3RhZ2luZy93Zngvbmw4MDIxMV92ZW5kb3IuaCBiL2RyaXZlcnMvc3RhZ2luZy93Zngvbmw4MDIx
-MV92ZW5kb3IuaAppbmRleCAwZmYzYmY3M2YwYWQzLi5iODA1YjRhYTk1MWEwIDEwMDY0NAotLS0g
-YS9kcml2ZXJzL3N0YWdpbmcvd2Z4L25sODAyMTFfdmVuZG9yLmgKKysrIGIvZHJpdmVycy9zdGFn
-aW5nL3dmeC9ubDgwMjExX3ZlbmRvci5oCkBAIC0yMyw4ICsyMywxMSBAQCBpbnQgd2Z4X25sX3B0
-YV9wYXJhbXMoc3RydWN0IHdpcGh5ICp3aXBoeSwgc3RydWN0IHdpcmVsZXNzX2RldiAqd2lkZXYs
-CiAKIGVudW0gewogCVdGWF9OTDgwMjExX1NVQkNNRF9QU19USU1FT1VUICAgICAgICAgICAgICAg
-ICAgID0gMHgxMCwKKwlXRlhfTkw4MDIxMV9TVUJDTURfUFNfVElNRU9VVF9DT01QQVQgICAgICAg
-ICAgICA9IDB4MTEsCiAJV0ZYX05MODAyMTFfU1VCQ01EX0JVUk5fUFJFVkVOVF9ST0xMQkFDSyAg
-ICAgICAgPSAweDIwLAorCVdGWF9OTDgwMjExX1NVQkNNRF9CVVJOX1BSRVZFTlRfUk9MTEJBQ0tf
-Q09NUEFUID0gMHgyMSwKIAlXRlhfTkw4MDIxMV9TVUJDTURfUFRBX1BBUk1TICAgICAgICAgICAg
-ICAgICAgICA9IDB4MzAsCisJV0ZYX05MODAyMTFfU1VCQ01EX1BUQV9QQVJNU19DT01QQVQgICAg
-ICAgICAgICAgPSAweDMxLAogfTsKIAogZW51bSB7CkBAIC01MywxOCArNTYsMzcgQEAgc3RhdGlj
-IGNvbnN0IHN0cnVjdCB3aXBoeV92ZW5kb3JfY29tbWFuZCB3Znhfbmw4MDIxMV92ZW5kb3JfY29t
-bWFuZHNbXSA9IHsKIAkJLnBvbGljeSA9IHdmeF9ubF9wb2xpY3ksCiAJCS5kb2l0ID0gd2Z4X25s
-X3BzX3RpbWVvdXQsCiAJCS5tYXhhdHRyID0gV0ZYX05MODAyMTFfQVRUUl9NQVggLSAxLAorCX0s
-IHsKKwkJLy8gQ29tcGF0IHdpdGggaXcKKwkJLmluZm8udmVuZG9yX2lkID0gV0ZYX05MODAyMTFf
-SUQsCisJCS5pbmZvLnN1YmNtZCA9IFdGWF9OTDgwMjExX1NVQkNNRF9QU19USU1FT1VUX0NPTVBB
-VCwKKwkJLmZsYWdzID0gV0lQSFlfVkVORE9SX0NNRF9ORUVEX1dERVYsCisJCS5wb2xpY3kgPSBW
-RU5ET1JfQ01EX1JBV19EQVRBLAorCQkuZG9pdCA9IHdmeF9ubF9wc190aW1lb3V0LAogCX0sIHsK
-IAkJLmluZm8udmVuZG9yX2lkID0gV0ZYX05MODAyMTFfSUQsCiAJCS5pbmZvLnN1YmNtZCA9IFdG
-WF9OTDgwMjExX1NVQkNNRF9CVVJOX1BSRVZFTlRfUk9MTEJBQ0ssCiAJCS5wb2xpY3kgPSB3Znhf
-bmxfcG9saWN5LAogCQkuZG9pdCA9IHdmeF9ubF9idXJuX2FudGlyb2xsYmFjaywKIAkJLm1heGF0
-dHIgPSBXRlhfTkw4MDIxMV9BVFRSX01BWCAtIDEsCisJfSwgeworCQkvLyBDb21wYXQgd2l0aCBp
-dworCQkuaW5mby52ZW5kb3JfaWQgPSBXRlhfTkw4MDIxMV9JRCwKKwkJLmluZm8uc3ViY21kID0g
-V0ZYX05MODAyMTFfU1VCQ01EX0JVUk5fUFJFVkVOVF9ST0xMQkFDS19DT01QQVQsCisJCS5wb2xp
-Y3kgPSBWRU5ET1JfQ01EX1JBV19EQVRBLAorCQkuZG9pdCA9IHdmeF9ubF9idXJuX2FudGlyb2xs
-YmFjaywKIAl9LCB7CiAJCS5pbmZvLnZlbmRvcl9pZCA9IFdGWF9OTDgwMjExX0lELAogCQkuaW5m
-by5zdWJjbWQgPSBXRlhfTkw4MDIxMV9TVUJDTURfUFRBX1BBUk1TLAogCQkucG9saWN5ID0gd2Z4
-X25sX3BvbGljeSwKIAkJLmRvaXQgPSB3ZnhfbmxfcHRhX3BhcmFtcywKIAkJLm1heGF0dHIgPSBX
-RlhfTkw4MDIxMV9BVFRSX01BWCAtIDEsCisJfSwgeworCQkvLyBDb21wYXQgd2l0aCBpdworCQku
-aW5mby52ZW5kb3JfaWQgPSBXRlhfTkw4MDIxMV9JRCwKKwkJLmluZm8uc3ViY21kID0gV0ZYX05M
-ODAyMTFfU1VCQ01EX1BUQV9QQVJNU19DT01QQVQsCisJCS5wb2xpY3kgPSBWRU5ET1JfQ01EX1JB
-V19EQVRBLAorCQkuZG9pdCA9IHdmeF9ubF9wdGFfcGFyYW1zLAogCX0sCiB9OwogCi0tIAoyLjI2
-LjIKCg==
+As debug information gets larger and larger, it helps significantly save
+the size of vmlinux images to compress the information in the debug
+information sections. Note: this debug info is typically split off from
+the final compressed kernel image, which is why vmlinux is what's used
+in conjunction with GDB. Minimizing the debug info size should have no
+impact on boot times, or final compressed kernel image size.
+
+All of the debug sections will have a `C` flag set.
+$ readelf -S <object file>
+
+$ bloaty vmlinux.gcc75.compressed.dwarf4 -- \
+    vmlinux.gcc75.uncompressed.dwarf4
+
+    FILE SIZE        VM SIZE
+ --------------  --------------
+  +0.0%     +18  [ = ]       0    [Unmapped]
+ -73.3%  -114Ki  [ = ]       0    .debug_aranges
+ -76.2% -2.01Mi  [ = ]       0    .debug_frame
+ -73.6% -2.89Mi  [ = ]       0    .debug_str
+ -80.7% -4.66Mi  [ = ]       0    .debug_abbrev
+ -82.9% -4.88Mi  [ = ]       0    .debug_ranges
+ -70.5% -9.04Mi  [ = ]       0    .debug_line
+ -79.3% -10.9Mi  [ = ]       0    .debug_loc
+ -39.5% -88.6Mi  [ = ]       0    .debug_info
+ -18.2%  -123Mi  [ = ]       0    TOTAL
+
+$ bloaty vmlinux.clang11.compressed.dwarf4 -- \
+    vmlinux.clang11.uncompressed.dwarf4
+
+    FILE SIZE        VM SIZE
+ --------------  --------------
+  +0.0%     +23  [ = ]       0    [Unmapped]
+ -65.6%    -871  [ = ]       0    .debug_aranges
+ -77.4% -1.84Mi  [ = ]       0    .debug_frame
+ -82.9% -2.33Mi  [ = ]       0    .debug_abbrev
+ -73.1% -2.43Mi  [ = ]       0    .debug_str
+ -84.8% -3.07Mi  [ = ]       0    .debug_ranges
+ -65.9% -8.62Mi  [ = ]       0    .debug_line
+ -86.2% -40.0Mi  [ = ]       0    .debug_loc
+ -42.0% -64.1Mi  [ = ]       0    .debug_info
+ -22.1%  -122Mi  [ = ]       0    TOTAL
+
+For x86_64 defconfig + LLVM=1 (before):
+Elapsed (wall clock) time (h:mm:ss or m:ss): 3:22.03
+Maximum resident set size (kbytes): 43856
+
+For x86_64 defconfig + LLVM=1 (after):
+Elapsed (wall clock) time (h:mm:ss or m:ss): 3:32.52
+Maximum resident set size (kbytes): 1566776
+
+Thanks to:
+Nick Clifton helped us to provide the minimal binutils version.
+Sedat Dilet found an increase in size of debug .deb package.
+
+Cc: Nick Clifton <nickc@redhat.com>
+Cc: Sedat Dilek <sedat.dilek@gmail.com>
+Suggested-by: David Blaikie <blaikie@google.com>
+Reviewed-by: Fangrui Song <maskray@google.com>
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+Changes V4 -> V5:
+* Drop unrelated hunk from a dirty tree.
+
+Changes V3 -> V4:
+* Add thanks line to commit message as per Masahiro.
+* Swap Sugguested-by to Cc for two lines in commit message, as per
+  Masahiro.
+
+Changes V2 -> V3:
+* Fix blaikie@'s email addr.
+* Fix Fangrui's Reviewed-by tag as per Masahiro.
+* Fix help text as per Masahiro.
+* Fix -Wa$(comma)foo as per Masahiro.
+
+Changes V1 -> V2:
+* rebase on linux-next.
+* Add assembler flags as per Fangrui.
+* Add note about KDEB_COMPRESS+scripts/package/builddeb
+  as per Sedat and Masahiro.
+* Add note about bintutils version requirements as per Nick C.
+* Add note about measured increased build time and max RSS.
+ Makefile          |  6 ++++++
+ lib/Kconfig.debug | 17 +++++++++++++++++
+ 2 files changed, 23 insertions(+)
+
+diff --git a/Makefile b/Makefile
+index 71687bfe1cd9..be8835296754 100644
+--- a/Makefile
++++ b/Makefile
+@@ -822,6 +822,12 @@ DEBUG_CFLAGS	+= $(call cc-option, -femit-struct-debug-baseonly) \
+ 		   $(call cc-option,-fno-var-tracking)
+ endif
+ 
++ifdef CONFIG_DEBUG_INFO_COMPRESSED
++DEBUG_CFLAGS	+= -gz=zlib
++KBUILD_AFLAGS	+= -Wa,--compress-debug-sections=zlib
++KBUILD_LDFLAGS	+= --compress-debug-sections=zlib
++endif
++
+ KBUILD_CFLAGS += $(DEBUG_CFLAGS)
+ export DEBUG_CFLAGS
+ 
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index b8f023e054b9..7fc82dcf814b 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -225,6 +225,23 @@ config DEBUG_INFO_REDUCED
+ 	  DEBUG_INFO build and compile times are reduced too.
+ 	  Only works with newer gcc versions.
+ 
++config DEBUG_INFO_COMPRESSED
++	bool "Compressed debugging information"
++	depends on DEBUG_INFO
++	depends on $(cc-option,-gz=zlib)
++	depends on $(as-option,-Wa$(comma)--compress-debug-sections=zlib)
++	depends on $(ld-option,--compress-debug-sections=zlib)
++	help
++	  Compress the debug information using zlib.  Requires GCC 5.0+ or Clang
++	  5.0+, binutils 2.26+, and zlib.
++
++	  Users of dpkg-deb via scripts/package/builddeb may find an increase in
++	  size of their debug .deb packages with this config set, due to the
++	  debug info being compressed with zlib, then the object files being
++	  recompressed with a different compression scheme. But this is still
++	  preferable to setting $KDEB_COMPRESS to "none" which would be even
++	  larger.
++
+ config DEBUG_INFO_SPLIT
+ 	bool "Produce split debuginfo in .dwo files"
+ 	depends on DEBUG_INFO
+-- 
+2.27.0.rc0.183.gde8f92d652-goog
+
