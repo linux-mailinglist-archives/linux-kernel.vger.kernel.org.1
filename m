@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE7361E2ABD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2332B1E2A7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390352AbgEZS6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:58:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51960 "EHLO mail.kernel.org"
+        id S2389773AbgEZS4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:56:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390335AbgEZS6Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:58:25 -0400
+        id S2389759AbgEZS4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:56:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 475362086A;
-        Tue, 26 May 2020 18:58:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E276208B3;
+        Tue, 26 May 2020 18:56:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519504;
-        bh=BAvep3PmXZLiCXP5MEY+bRx/YxrD0lyJ4OTPWspaBeA=;
+        s=default; t=1590519373;
+        bh=0rmIYhCI32PjklALZqYNsZSL7GFUZ3f9KGHDP0j7TdQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LtTtRL4ABsqyDlaPOkr9IoDvEQ+oGJ91/9nANsy6uoXBXOPBBPlSfQROI5skh22rj
-         fQP5TRch21meXVZHYkg8FSA32tmKkNY2huZrRLNxsI/f5NvG8xG6rw4hgCFdKGPVnM
-         EOE5Cz8O9kf2nxdMWwQR3X7ZGWihX4L/4QPWWw9M=
+        b=ufr68fdXnMaBPcl7aht0ZMdPv1Vw2PHl7qcm/7acOKSngWkh52eQ5KsEtpGmnweMJ
+         buis1PZGcyT8cdA7/gGt+SVpRqQulYMW1YDPFBsAJWXSdhaSYeQWXI9ZdQJuzsixRE
+         b0ekJqRh0IhBVVmN/UxeRsCea4CE3hUM2YXPBahw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org, greg@kroah.com
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Asbjoern Sloth Toennesen <asbjorn@asbjorn.st>,
         "David S. Miller" <davem@davemloft.net>,
         Giuliano Procida <gprocida@google.com>
-Subject: [PATCH 4.9 29/64] net: l2tp: ppp: change PPPOL2TP_MSG_* => L2TP_MSG_*
-Date:   Tue, 26 May 2020 20:52:58 +0200
-Message-Id: <20200526183922.121259449@linuxfoundation.org>
+Subject: [PATCH 4.4 41/65] net: l2tp: ppp: change PPPOL2TP_MSG_* => L2TP_MSG_*
+Date:   Tue, 26 May 2020 20:53:00 +0200
+Message-Id: <20200526183920.096536213@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183913.064413230@linuxfoundation.org>
-References: <20200526183913.064413230@linuxfoundation.org>
+In-Reply-To: <20200526183905.988782958@linuxfoundation.org>
+References: <20200526183905.988782958@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -59,15 +59,16 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/net/l2tp/l2tp_ppp.c
 +++ b/net/l2tp/l2tp_ppp.c
-@@ -231,14 +231,14 @@ static void pppol2tp_recv(struct l2tp_se
+@@ -230,7 +230,7 @@ static void pppol2tp_recv(struct l2tp_se
+ 
  	if (sk->sk_state & PPPOX_BOUND) {
  		struct pppox_sock *po;
- 
 -		l2tp_dbg(session, PPPOL2TP_MSG_DATA,
 +		l2tp_dbg(session, L2TP_MSG_DATA,
  			 "%s: recv %d byte data frame, passing to ppp\n",
  			 session->name, data_len);
  
+@@ -253,7 +253,7 @@ static void pppol2tp_recv(struct l2tp_se
  		po = pppox_sk(sk);
  		ppp_input(&po->chan, skb);
  	} else {
@@ -76,7 +77,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			 "%s: recv %d byte data frame, passing to L2TP socket\n",
  			 session->name, data_len);
  
-@@ -251,7 +251,7 @@ static void pppol2tp_recv(struct l2tp_se
+@@ -266,7 +266,7 @@ static void pppol2tp_recv(struct l2tp_se
  	return;
  
  no_sock:
@@ -85,7 +86,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	kfree_skb(skb);
  }
  
-@@ -782,7 +782,7 @@ out_no_ppp:
+@@ -797,7 +797,7 @@ out_no_ppp:
  	/* This is how we get the session context from the socket. */
  	sk->sk_user_data = session;
  	sk->sk_state = PPPOX_CONNECTED;
@@ -94,7 +95,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  		  session->name);
  
  end:
-@@ -833,7 +833,7 @@ static int pppol2tp_session_create(struc
+@@ -848,7 +848,7 @@ static int pppol2tp_session_create(struc
  	ps = l2tp_session_priv(session);
  	ps->tunnel_sock = tunnel->sock;
  
@@ -103,7 +104,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  		  session->name);
  
  	error = 0;
-@@ -995,7 +995,7 @@ static int pppol2tp_session_ioctl(struct
+@@ -1010,7 +1010,7 @@ static int pppol2tp_session_ioctl(struct
  	struct l2tp_tunnel *tunnel = session->tunnel;
  	struct pppol2tp_ioc_stats stats;
  
@@ -112,7 +113,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  		 "%s: pppol2tp_session_ioctl(cmd=%#x, arg=%#lx)\n",
  		 session->name, cmd, arg);
  
-@@ -1018,7 +1018,7 @@ static int pppol2tp_session_ioctl(struct
+@@ -1033,7 +1033,7 @@ static int pppol2tp_session_ioctl(struct
  		if (copy_to_user((void __user *) arg, &ifr, sizeof(struct ifreq)))
  			break;
  
@@ -121,7 +122,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			  session->name, session->mtu);
  		err = 0;
  		break;
-@@ -1034,7 +1034,7 @@ static int pppol2tp_session_ioctl(struct
+@@ -1049,7 +1049,7 @@ static int pppol2tp_session_ioctl(struct
  
  		session->mtu = ifr.ifr_mtu;
  
@@ -130,7 +131,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			  session->name, session->mtu);
  		err = 0;
  		break;
-@@ -1048,7 +1048,7 @@ static int pppol2tp_session_ioctl(struct
+@@ -1063,7 +1063,7 @@ static int pppol2tp_session_ioctl(struct
  		if (put_user(session->mru, (int __user *) arg))
  			break;
  
@@ -139,7 +140,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			  session->name, session->mru);
  		err = 0;
  		break;
-@@ -1063,7 +1063,7 @@ static int pppol2tp_session_ioctl(struct
+@@ -1078,7 +1078,7 @@ static int pppol2tp_session_ioctl(struct
  			break;
  
  		session->mru = val;
@@ -148,7 +149,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			  session->name, session->mru);
  		err = 0;
  		break;
-@@ -1073,7 +1073,7 @@ static int pppol2tp_session_ioctl(struct
+@@ -1088,7 +1088,7 @@ static int pppol2tp_session_ioctl(struct
  		if (put_user(ps->flags, (int __user *) arg))
  			break;
  
@@ -157,7 +158,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			  session->name, ps->flags);
  		err = 0;
  		break;
-@@ -1083,7 +1083,7 @@ static int pppol2tp_session_ioctl(struct
+@@ -1098,7 +1098,7 @@ static int pppol2tp_session_ioctl(struct
  		if (get_user(val, (int __user *) arg))
  			break;
  		ps->flags = val;
@@ -166,7 +167,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			  session->name, ps->flags);
  		err = 0;
  		break;
-@@ -1100,7 +1100,7 @@ static int pppol2tp_session_ioctl(struct
+@@ -1115,7 +1115,7 @@ static int pppol2tp_session_ioctl(struct
  		if (copy_to_user((void __user *) arg, &stats,
  				 sizeof(stats)))
  			break;
@@ -175,7 +176,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			  session->name);
  		err = 0;
  		break;
-@@ -1128,7 +1128,7 @@ static int pppol2tp_tunnel_ioctl(struct
+@@ -1143,7 +1143,7 @@ static int pppol2tp_tunnel_ioctl(struct
  	struct sock *sk;
  	struct pppol2tp_ioc_stats stats;
  
@@ -184,7 +185,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  		 "%s: pppol2tp_tunnel_ioctl(cmd=%#x, arg=%#lx)\n",
  		 tunnel->name, cmd, arg);
  
-@@ -1171,7 +1171,7 @@ static int pppol2tp_tunnel_ioctl(struct
+@@ -1186,7 +1186,7 @@ static int pppol2tp_tunnel_ioctl(struct
  			err = -EFAULT;
  			break;
  		}
@@ -193,7 +194,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			  tunnel->name);
  		err = 0;
  		break;
-@@ -1261,7 +1261,7 @@ static int pppol2tp_tunnel_setsockopt(st
+@@ -1276,7 +1276,7 @@ static int pppol2tp_tunnel_setsockopt(st
  	switch (optname) {
  	case PPPOL2TP_SO_DEBUG:
  		tunnel->debug = val;
@@ -202,7 +203,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			  tunnel->name, tunnel->debug);
  		break;
  
-@@ -1289,7 +1289,7 @@ static int pppol2tp_session_setsockopt(s
+@@ -1304,7 +1304,7 @@ static int pppol2tp_session_setsockopt(s
  			break;
  		}
  		session->recv_seq = val ? -1 : 0;
@@ -211,7 +212,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			  "%s: set recv_seq=%d\n",
  			  session->name, session->recv_seq);
  		break;
-@@ -1307,7 +1307,7 @@ static int pppol2tp_session_setsockopt(s
+@@ -1322,7 +1322,7 @@ static int pppol2tp_session_setsockopt(s
  				PPPOL2TP_L2TP_HDR_SIZE_NOSEQ;
  		}
  		l2tp_session_set_header_len(session, session->tunnel->version);
@@ -220,7 +221,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			  "%s: set send_seq=%d\n",
  			  session->name, session->send_seq);
  		break;
-@@ -1318,20 +1318,20 @@ static int pppol2tp_session_setsockopt(s
+@@ -1333,20 +1333,20 @@ static int pppol2tp_session_setsockopt(s
  			break;
  		}
  		session->lns_mode = val ? -1 : 0;
@@ -244,7 +245,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			  "%s: set reorder_timeout=%d\n",
  			  session->name, session->reorder_timeout);
  		break;
-@@ -1412,7 +1412,7 @@ static int pppol2tp_tunnel_getsockopt(st
+@@ -1427,7 +1427,7 @@ static int pppol2tp_tunnel_getsockopt(st
  	switch (optname) {
  	case PPPOL2TP_SO_DEBUG:
  		*val = tunnel->debug;
@@ -253,7 +254,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			  tunnel->name, tunnel->debug);
  		break;
  
-@@ -1435,31 +1435,31 @@ static int pppol2tp_session_getsockopt(s
+@@ -1450,31 +1450,31 @@ static int pppol2tp_session_getsockopt(s
  	switch (optname) {
  	case PPPOL2TP_SO_RECVSEQ:
  		*val = session->recv_seq;
