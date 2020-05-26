@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCA41E2D86
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D04431E2B09
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392015AbgEZTVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:21:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41522 "EHLO mail.kernel.org"
+        id S2390920AbgEZTBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:01:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391255AbgEZTMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:12:01 -0400
+        id S2389606AbgEZTBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:01:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8419920888;
-        Tue, 26 May 2020 19:12:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4501A20849;
+        Tue, 26 May 2020 19:01:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520321;
-        bh=t8k+A26nle/JylAK0rDU4ayMbCakUSWlwZOpncrVqrs=;
+        s=default; t=1590519673;
+        bh=2Wkf2sDeBwlGM90ugJjm6IKq3I5w/ZLDn2af8lthKGQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q2n+d2RwbvWrfb3mLb4vk8KeJHniK9PRqBeptFbLz4F20bht8z8EoJtOfmgEFxaby
-         I1ushbBoi9DMBjuNvptukq3nx3DGha9dx6MEVojCi5Jq/JADfaZWK0yCEu1DcffxC3
-         ZRuYzxFcIZvWEVardXIz5tnt2Nb7b5qg7RJQvX+0=
+        b=agiULiORgsA1uwBE+Ceuny5wFL+BOBhkwrAo2lds4lTL4hq/kj08NaNTbtwGxcCUg
+         MzRC6a3uAfoVTPNwcKnu9wj1Ruwv9i+yaYF93yS+FQqd11VGFrwPfjXUroXVHOJFMe
+         7ryglR7o7KEX5yMFWsF6eC1uX87/3R3GuaYMx/Yw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>,
+        stable@vger.kernel.org,
+        Krzysztof Struczynski <krzysztof.struczynski@huawei.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 034/126] component: Silence bind error on -EPROBE_DEFER
-Date:   Tue, 26 May 2020 20:52:51 +0200
-Message-Id: <20200526183940.715734254@linuxfoundation.org>
+Subject: [PATCH 4.14 07/59] evm: Check also if *tfm is an error pointer in init_desc()
+Date:   Tue, 26 May 2020 20:52:52 +0200
+Message-Id: <20200526183909.739823448@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
-References: <20200526183937.471379031@linuxfoundation.org>
+In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
+References: <20200526183907.123822792@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,51 +46,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Hilliard <james.hilliard1@gmail.com>
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-[ Upstream commit 7706b0a76a9697021e2bf395f3f065c18f51043d ]
+[ Upstream commit 53de3b080d5eae31d0de219617155dcc34e7d698 ]
 
-If a component fails to bind due to -EPROBE_DEFER we should not log an
-error as this is not a real failure.
+This patch avoids a kernel panic due to accessing an error pointer set by
+crypto_alloc_shash(). It occurs especially when there are many files that
+require an unsupported algorithm, as it would increase the likelihood of
+the following race condition:
 
-Fixes messages like:
-vc4-drm soc:gpu: failed to bind 3f902000.hdmi (ops vc4_hdmi_ops): -517
-vc4-drm soc:gpu: master bind failed: -517
+Task A: *tfm = crypto_alloc_shash() <= error pointer
+Task B: if (*tfm == NULL) <= *tfm is not NULL, use it
+Task B: rc = crypto_shash_init(desc) <= panic
+Task A: *tfm = NULL
 
-Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-Link: https://lore.kernel.org/r/20200411190241.89404-1-james.hilliard1@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This patch uses the IS_ERR_OR_NULL macro to determine whether or not a new
+crypto context must be created.
+
+Cc: stable@vger.kernel.org
+Fixes: d46eb3699502b ("evm: crypto hash replaced by shash")
+Co-developed-by: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
+Signed-off-by: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/component.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ security/integrity/evm/evm_crypto.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/base/component.c b/drivers/base/component.c
-index c7879f5ae2fb..53b19daca750 100644
---- a/drivers/base/component.c
-+++ b/drivers/base/component.c
-@@ -256,7 +256,8 @@ static int try_to_bring_up_master(struct master *master,
- 	ret = master->ops->bind(master->dev);
- 	if (ret < 0) {
- 		devres_release_group(master->dev, NULL);
--		dev_info(master->dev, "master bind failed: %d\n", ret);
-+		if (ret != -EPROBE_DEFER)
-+			dev_info(master->dev, "master bind failed: %d\n", ret);
- 		return ret;
+diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
+index f1f030ae363b..73791d22ae07 100644
+--- a/security/integrity/evm/evm_crypto.c
++++ b/security/integrity/evm/evm_crypto.c
+@@ -90,7 +90,7 @@ static struct shash_desc *init_desc(char type)
+ 		algo = evm_hash;
  	}
  
-@@ -610,8 +611,9 @@ static int component_bind(struct component *component, struct master *master,
- 		devres_release_group(component->dev, NULL);
- 		devres_release_group(master->dev, NULL);
- 
--		dev_err(master->dev, "failed to bind %s (ops %ps): %d\n",
--			dev_name(component->dev), component->ops, ret);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(master->dev, "failed to bind %s (ops %ps): %d\n",
-+				dev_name(component->dev), component->ops, ret);
- 	}
- 
- 	return ret;
+-	if (*tfm == NULL) {
++	if (IS_ERR_OR_NULL(*tfm)) {
+ 		mutex_lock(&mutex);
+ 		if (*tfm)
+ 			goto out;
 -- 
 2.25.1
 
