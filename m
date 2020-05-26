@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271F71E2CE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CAF51E2B12
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392384AbgEZTSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:18:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44274 "EHLO mail.kernel.org"
+        id S2389615AbgEZTBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:01:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404319AbgEZTNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:13:47 -0400
+        id S2403769AbgEZTBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:01:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D520E20888;
-        Tue, 26 May 2020 19:13:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E31FB20849;
+        Tue, 26 May 2020 19:01:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520427;
-        bh=zWsa3AUmB//Wf1mTtlrz0g0Yvlc+DxhzDn2A2kufhjo=;
+        s=default; t=1590519696;
+        bh=il/4o51wW092OuGEyB1YyPj7Iaz57uDjzAjl7G8Mr48=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jfsa/Bm7+FMcIc5vGsqdDjJ/Jw0Z0NHp8xd0aauJRzz4xgHAGhDDLzr09nCEc+imn
-         pdqewc35sMv7ck+LCGE7bpK9HcSFrhZTx5WRoONgNvdSoDyfvCfPTIVh+X1LOENQj4
-         bEOaxeo1APGi+Py1a6bKN65sFeH0OvZaOYJsasMw=
+        b=JXloKKSF3Ez7mLaD0jIvkq7VFzJQ2k0yFIoiyWtUgvkkPzG/W049SRA+YOeC9k6qU
+         ZQFEvq2scXMybfB6cPLOPgj7TPpe2xsGm4V+YmyFDihuqV08DfOwA/tnhMjX9gY2/c
+         1XpeeF6Kpjd0fCi3maJ/8S7derfyIIAnwL2nI+h0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lee Duncan <lduncan@suse.com>,
-        Laurence Oberman <loberman@redhat.com>,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        "Ewan D. Milne" <emilne@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.6 068/126] scsi: qla2xxx: Do not log message when reading port speed via sysfs
-Date:   Tue, 26 May 2020 20:53:25 +0200
-Message-Id: <20200526183943.897738690@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 41/59] powerpc/64s: Disable STRICT_KERNEL_RWX
+Date:   Tue, 26 May 2020 20:53:26 +0200
+Message-Id: <20200526183920.506643993@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
-References: <20200526183937.471379031@linuxfoundation.org>
+In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
+References: <20200526183907.123822792@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,41 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ewan D. Milne <emilne@redhat.com>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-commit fb9024b0646939e59d8a0b6799b317070619795a upstream.
+[ Upstream commit 8659a0e0efdd975c73355dbc033f79ba3b31e82c ]
 
-Calling ql_log() inside qla2x00_port_speed_show() is causing messages to be
-output to the console for no particularly good reason.  The sysfs read
-routine should just return the information to userspace.  The only reason
-to log a message is when the port speed actually changes, and this already
-occurs elsewhere.
+Several strange crashes have been eventually traced back to
+STRICT_KERNEL_RWX and its interaction with code patching.
 
-Link: https://lore.kernel.org/r/20200504175416.15417-1-emilne@redhat.com
-Fixes: 4910b524ac9e ("scsi: qla2xxx: Add support for setting port speed")
-Cc: <stable@vger.kernel.org> # v5.1+
-Reviewed-by: Lee Duncan <lduncan@suse.com>
-Reviewed-by: Laurence Oberman <loberman@redhat.com>
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Ewan D. Milne <emilne@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Various paths in our ftrace, kprobes and other patching code need to
+be hardened against patching failures, otherwise we can end up running
+with partially/incorrectly patched ftrace paths, kprobes or jump
+labels, which can then cause strange crashes.
 
+Although fixes for those are in development, they're not -rc material.
+
+There also seem to be problems with the underlying strict RWX logic,
+which needs further debugging.
+
+So for now disable STRICT_KERNEL_RWX on 64-bit to prevent people from
+enabling the option and tripping over the bugs.
+
+Fixes: 1e0fc9d1eb2b ("powerpc/Kconfig: Enable STRICT_KERNEL_RWX for some configs")
+Cc: stable@vger.kernel.org # v4.13+
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200520133605.972649-1-mpe@ellerman.id.au
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_attr.c |    3 ---
- 1 file changed, 3 deletions(-)
+ arch/powerpc/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/scsi/qla2xxx/qla_attr.c
-+++ b/drivers/scsi/qla2xxx/qla_attr.c
-@@ -1777,9 +1777,6 @@ qla2x00_port_speed_show(struct device *d
- 		return -EINVAL;
- 	}
- 
--	ql_log(ql_log_info, vha, 0x70d6,
--	    "port speed:%d\n", ha->link_data_rate);
--
- 	return scnprintf(buf, PAGE_SIZE, "%s\n", spd[ha->link_data_rate]);
- }
- 
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index b74c3a68c0ad..679e1e3c1695 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -141,7 +141,7 @@ config PPC
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+ 	select ARCH_HAS_SCALED_CPUTIME		if VIRT_CPU_ACCOUNTING_NATIVE
+ 	select ARCH_HAS_SG_CHAIN
+-	select ARCH_HAS_STRICT_KERNEL_RWX	if ((PPC_BOOK3S_64 || PPC32) && !HIBERNATION)
++	select ARCH_HAS_STRICT_KERNEL_RWX	if (PPC32 && !HIBERNATION)
+ 	select ARCH_HAS_TICK_BROADCAST		if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
+ 	select ARCH_HAS_ZONE_DEVICE		if PPC_BOOK3S_64
+-- 
+2.25.1
+
 
 
