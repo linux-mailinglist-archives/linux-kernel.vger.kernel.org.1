@@ -2,50 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8674C1E245B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 16:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 675471E246A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 16:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728686AbgEZOox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 10:44:53 -0400
-Received: from ms.lwn.net ([45.79.88.28]:36976 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727007AbgEZOow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 10:44:52 -0400
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 846722AE;
-        Tue, 26 May 2020 14:44:52 +0000 (UTC)
-Date:   Tue, 26 May 2020 08:44:51 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: Re: linux-next: Signed-off-by missing for commit in the jc_docs
- tree
-Message-ID: <20200526084451.69a3bd45@lwn.net>
-In-Reply-To: <20200526080122.5a91c78a@canb.auug.org.au>
-References: <20200526080122.5a91c78a@canb.auug.org.au>
-Organization: LWN.net
+        id S1729316AbgEZOrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 10:47:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbgEZOrI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 10:47:08 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C375CC03E96D;
+        Tue, 26 May 2020 07:47:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0Lm8kIZucM9N101SLlLcwGvyzcwDFh9rh0/kpGAsWR8=; b=iFU/FK7WgcwuU1nzH+IvLCDEOD
+        YW7VLT4NCbBO4cOYoghFHPWsHEwrpF4u0zer832+q3IxpnxJl8WDMI88a5n0shvG+FnLOoglo6l7m
+        nBwOdx29rjE2SXhYw9An4k+rTcd3zEWAbd4T3H/2czviIm9e1FgwaCa4ecfsOuFylZmMf66QNPWs+
+        6mzmPJOUafuLVb3g45f1LeBEz6HRq9V37zOT3LER8/BKQPtI/WSburZIopEnE2UKazsrtlu2QzVH1
+        Pd3yDpx5Z4HpRq6oYD/qL7uamCmt81uIRkA46myiz5qRqe1u7cgEMkkmlUNal1fWdOAApqtTrftfn
+        UyN0pNcQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jdaqq-0005YE-Ty; Tue, 26 May 2020 14:46:44 +0000
+Date:   Tue, 26 May 2020 07:46:44 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Zhangfei Gao <zhangfei.gao@linaro.org>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        jean-philippe <jean-philippe@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/2] PCI: Introduce PCI_FIXUP_IOMMU
+Message-ID: <20200526144644.GA20784@infradead.org>
+References: <1590493749-13823-1-git-send-email-zhangfei.gao@linaro.org>
+ <1590493749-13823-2-git-send-email-zhangfei.gao@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1590493749-13823-2-git-send-email-zhangfei.gao@linaro.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 May 2020 08:01:22 +1000
-Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On Tue, May 26, 2020 at 07:49:08PM +0800, Zhangfei Gao wrote:
+> Some platform devices appear as PCI but are actually on the AMBA bus,
+> and they need fixup in drivers/pci/quirks.c handling iommu_fwnode.
+> Here introducing PCI_FIXUP_IOMMU, which is called after iommu_fwnode
+> is allocated, instead of reusing PCI_FIXUP_FINAL since it will slow
+> down iommu probing as all devices in fixup final list will be
+> reprocessed.
 
-> Commit
-> 
->   1fe411077207 ("Replace HTTP links with HTTPS ones: documentation")
-> 
-> is missing a Signed-off-by from its author.
-
-Argh, I don't know how I missed that.  Thanks for catching it, it will be
-fixed up.
-
-jon
+Who is going to use this?  I don't see a single user in the series.
