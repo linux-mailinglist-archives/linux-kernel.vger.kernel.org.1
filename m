@@ -2,101 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 331711E320B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05CF81E3213
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391789AbgEZWIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 18:08:13 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:35962 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389342AbgEZWIN (ORCPT
+        id S2391900AbgEZWKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 18:10:30 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:62188 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2391578AbgEZWK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 18:08:13 -0400
-Received: by mail-io1-f68.google.com with SMTP id y18so3370683iow.3;
-        Tue, 26 May 2020 15:08:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mXe3eMhOfw8Yi0mzveU2UUdf9WbJiPX68762lf2f3m8=;
-        b=lnGpxnl4Ptsii9Oal3CfKvRrQ6E70G0Es5XwkC6aYwMTShppiSQ48V2buS2xEMJp6n
-         n4foNO7lb0Uc7qLZ0usrc3jicmeTmeeP4PTChZbNlACtK+7zrJiwMYFYL0JaVhRd0yLe
-         R3iA1MagoO3zpwnt2OJrlbNjN0e0Q+9HxnTAN0VCylBabiegqtd7QLTd+zxeAkKByrjE
-         wYmryKC5xRhvPvJBes4T5RW2v2bK9R0hsvC+YNiJR6N88MqISKcW/bWDggbIqV+KXb7Q
-         skAnadg8HoE/Z/iRTVZM+jw1Jqp4vo+7yY5czD10RjY+T9ZXeohDV9kbqS8Bwc0fjGlm
-         52Dg==
-X-Gm-Message-State: AOAM532IsBhhZ2JVWIK7JNQXwfKh0tOtgAKH9tZxtA/80Aacwiz3OXgt
-        zSqSIkDytsg8jsDa/D51nw==
-X-Google-Smtp-Source: ABdhPJxua5/2ASeh+JDi3H6ENvlO5duKzfxD0bd/FxftWvnUVDU7fZZVP6RJWTWfF7tnoEbMyFvyDA==
-X-Received: by 2002:a02:b782:: with SMTP id f2mr3009396jam.91.1590530891856;
-        Tue, 26 May 2020 15:08:11 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id o70sm677282ild.3.2020.05.26.15.08.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 15:08:10 -0700 (PDT)
-Received: (nullmailer pid 467130 invoked by uid 1000);
-        Tue, 26 May 2020 22:08:08 -0000
-Date:   Tue, 26 May 2020 16:08:08 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     daniel@ffwll.ch, linux-arm-msm@vger.kernel.org, jonas@kwiboo.se,
-        linus.walleij@linaro.org, devicetree@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, robh+dt@kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>, a.hajda@samsung.com,
-        narmstrong@baylibre.com,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-gpio@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        robdclark@chromium.org, jeffrey.l.hugo@gmail.com,
-        jernej.skrabec@siol.net, airlied@linux.ie, spanda@codeaurora.org,
-        Laurent.pinchart@ideasonboard.com, swboyd@chromium.org,
-        bgolaszewski@baylibre.com, bjorn.andersson@linaro.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/3] dt-bindings: drm/bridge: ti-sn65dsi86: Convert to
- yaml
-Message-ID: <20200526220808.GA467074@bogus>
-References: <20200513215902.261547-1-dianders@chromium.org>
- <20200513145807.v6.2.Ifcdc4ecb12742a27862744ee1e8753cb95a38a7f@changeid>
+        Tue, 26 May 2020 18:10:27 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 04QM8g6p006561;
+        Tue, 26 May 2020 15:08:45 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=lLrqFXOa2xXI54ecWTnzNhJNwm/ZGZtyng1ZSlrdymg=;
+ b=Lisgty72EiZbHbrBlLCs2i/Gl8yKDjvlQJxs4kuEu/aoPWm4MNs/oVg2ry/bm7HVViAj
+ RyGRQLh1zdIjqdKXAN7QY6Z62goehMvy1N+VcOIN3oqyGTnyAH34TEVyr4FN/5xQLmqn
+ Qf+UDN7mCI4zzIdglvKn7sY4hfldXngc1K0= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 316ygpnmqe-6
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 26 May 2020 15:08:45 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 26 May 2020 15:08:38 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gCCmI4pSjbN89GGdP/EkuZRXgwEWwYgiamZieJ/Kct/1bqiRq7vOlPYOUCjlik22ssug9Dr2hdD59FO/q/xnGrukrIT0a3sUbybsldCHpZXYW/ZRG1vkJ6+/0uQ9108QFB36EkSpY4dN/Cc+NJIUjN3R/3mAFx4QescdMVc+/M7KxU9N3UPqNiQRqfo6YJmE1HIq7XAgJySVNFq+L6r/vly1s5y5Sen+7iwHp8Ocu3wGymc/FxwzHinV6fNw+YE0oJ3/jRZeqp49CBp9GcZOV+ODBzII4ednK5keYVZKvGPktDqr/puRb2sWlgj1yhoFbqULPlLGQbiTavgoIF6KTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lLrqFXOa2xXI54ecWTnzNhJNwm/ZGZtyng1ZSlrdymg=;
+ b=h+yCMoA+pNV5p7+B55vX/7mqCRr0vKM9uGK5zAsPdLysEVUk2vo4pfYSvkOn+UwA9py9LltmSsFR6yyq9BGxb9N5KCGN9AxqR5ytPJjqlw14Fi7NZaZX2fVptjldQmDqtst2Sa/qZruoYr5BLgko9ARQleJ2UhnQ3Zh/omScq/oWGlLYGHiahXL9NDeGDQI1d1FSNVqLiXcGXrArFaveKohZja6s+YYEDDc0iRRj9gw1eaNdXZp66Dlkf8b2cpsf5Pc9I7MxUpyGc05Ce4E50sGBTyrLVo6AvW0aJDrE5cToMHZOxIHUSBt57cJK5P+W1TJ91iR0FE3q8tSCTOmFlQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lLrqFXOa2xXI54ecWTnzNhJNwm/ZGZtyng1ZSlrdymg=;
+ b=MoR0AyYxS5m6LwofwZh3iK45MpH7rWrVnQL9HmnbVzHaqgG9BbK3vm0U3usFTrqlxcZ8fFf28V+wKWYB5cD9leVtjnfMsaI6ysogSXLxWnwi3H0St+8asq/SiDxVC3QMrWaE1myW5/jmnFsu3s0QJq+RNWHx5Hm89G794sPF+hs=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB2917.namprd15.prod.outlook.com (2603:10b6:a03:f5::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17; Tue, 26 May
+ 2020 22:08:38 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::bdf1:da56:867d:f8a2]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::bdf1:da56:867d:f8a2%7]) with mapi id 15.20.3045.016; Tue, 26 May 2020
+ 22:08:37 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        "Masami Hiramatsu" <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Jiri Olsa" <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>
+Subject: Re: [RFC] perf/core: allow ftrace for functions in
+ kernel/event/core.c
+Thread-Topic: [RFC] perf/core: allow ftrace for functions in
+ kernel/event/core.c
+Thread-Index: AQHWM6ViVS5deg/n5kWgZSYX+yJPDqi65OeAgAACB4CAAAIsgIAABAOA
+Date:   Tue, 26 May 2020 22:08:37 +0000
+Message-ID: <226406AB-1245-4F4E-879C-B3B0320811DD@fb.com>
+References: <20200526212826.4097888-1-songliubraving@fb.com>
+ <20200526213913.GG2483@worktop.programming.kicks-ass.net>
+ <A9B20D93-748B-4789-801E-91720E2D4F28@fb.com>
+ <20200526215415.GH2483@worktop.programming.kicks-ass.net>
+In-Reply-To: <20200526215415.GH2483@worktop.programming.kicks-ass.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.80.23.2.2)
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:7e06]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1ddd179c-52a1-43ef-f20b-08d801c1576a
+x-ms-traffictypediagnostic: BYAPR15MB2917:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB29171B1CC082B2BBA8A055E1B3B00@BYAPR15MB2917.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 041517DFAB
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 9SYAsdiAxpeYQ6PShRXEqBahByQnRWUHD1HGKHxJkrjt+UakPW6Aun1lsFkHdIhkOCePgHIV/k9dR3JSopW5Ld66s9jkvox0b7ycBe3JqCgOZqQ/ehy5Bel0aIrnVxhrNrVi3TU4CCfNczzJeWPS0KPRKatWqCqShr/F/YA0X9EF2RxMRDG3cWX5dHDd5qByocNCoAkSkCxvAGkQTPbnwlF9tvgI+YH/4afbLPbZI2yN7JvaHZh6gN/YzdClrPUfZM++404Fsd8sNOqakJcw4OLpBDfHxDjqNik/T9vTOi3GcEPO+rffJcCPrYWJxWCB
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(39860400002)(136003)(346002)(396003)(366004)(66946007)(6512007)(54906003)(53546011)(71200400001)(6506007)(186003)(86362001)(4326008)(316002)(6486002)(5660300002)(2616005)(478600001)(64756008)(2906002)(6916009)(66446008)(66556008)(76116006)(36756003)(33656002)(8676002)(8936002)(66476007)(7416002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: nZX0pTOPUh1RNsIyxZQk1/F4LiYkgKdTGCDo7T7qFZWVJsj8Q5ar2DdMgjnkCrqsCqYH3cGjsBGppiK4pDEvw9NwFb9gkTGc9wleNuqtD4WCM3Qr2tIjlrqjhzRLGcHzNuRdrLa3vDIM3orm6ScQkrXC7e9R908nEgO5h0FVHlNQ76GdPJWmjyDUMxnEWW50I2zlpLX0L49P1Ot2YwieaESqAjCRA7O8DDrIFTM9m4dWj88NEnRQABefoPWy+mPYPxCP9v54tQGjs03X1I/mYZYTsraWNKuRPIfPZw9eC2ykNMe50YeNuZHHVdGO2f8rKupKy0VOFcCpnZNce1P2iUHko6Dza53+NEtLAYoWxNcpF8PL3ViYTPXf8W3qf3ckD8f5GU1dlswOiLTAnfGmwQ0F6qDG7I090v0A0YE2ZJv0dAhK5WpPT+zIoGZAVuE3llmJm7yxkFvuxgLu8AelBhfBmXdBvC/rhaWB6MVgEyu84ffFb4nXo6u6FjjUUMmbz9nP0EvDV2z1KIZyKGFA9g==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <0CB12D5A4073D946B2F7E1764B231177@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200513145807.v6.2.Ifcdc4ecb12742a27862744ee1e8753cb95a38a7f@changeid>
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ddd179c-52a1-43ef-f20b-08d801c1576a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 May 2020 22:08:37.8288
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: j2f6nC6Hiu7d1kdd6ZNMkIodVdeVHs77qeQUTAHj+f60PWvLIs8dH19r5b6zUBIPEOfdkZh0QQdypB5wk5OFyg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2917
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-05-26_02:2020-05-26,2020-05-26 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ spamscore=0 mlxscore=0 bulkscore=0 cotscore=-2147483648 mlxlogscore=999
+ phishscore=0 adultscore=0 priorityscore=1501 clxscore=1015 impostorscore=0
+ lowpriorityscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005260171
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 May 2020 14:59:01 -0700, Douglas Anderson wrote:
-> This moves the bindings over, based a lot on toshiba,tc358768.yaml.
-> Unless there's someone known to be better, I've set the maintainer in
-> the yaml as the first person to submit bindings.
-> 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> ---
-> I removed Stephen's review tag on v5 since I squashed in a bunch of
-> other stuff.
-> 
-> Changes in v6: None
-> Changes in v5:
-> - Squash https://lore.kernel.org/r/20200506140208.v2.2.I0a2bca02b09c1fcb6b09479b489736d600b3e57f@changeid/
-> 
-> Changes in v4: None
-> Changes in v3: None
-> Changes in v2:
-> - specification => specifier.
-> - power up => power.
-> - Added back missing suspend-gpios.
-> - data-lanes and lane-polarities are are the right place now.
-> - endpoints don't need to be patternProperties.
-> - Specified more details for data-lanes and lane-polarities.
-> - Added old example back in, fixing bugs in it.
-> - Example i2c bus is just called "i2c", not "i2c1" now.
-> 
->  .../bindings/display/bridge/ti,sn65dsi86.txt  |  87 ------
->  .../bindings/display/bridge/ti,sn65dsi86.yaml | 285 ++++++++++++++++++
->  2 files changed, 285 insertions(+), 87 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.txt
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+
+> On May 26, 2020, at 2:54 PM, Peter Zijlstra <peterz@infradead.org> wrote:
+>=20
+> On Tue, May 26, 2020 at 09:46:29PM +0000, Song Liu wrote:
+>>=20
+>>=20
+>>> On May 26, 2020, at 2:39 PM, Peter Zijlstra <peterz@infradead.org> wrot=
+e:
+>>>=20
+>>> On Tue, May 26, 2020 at 02:28:26PM -0700, Song Liu wrote:
+>>>> It is useful to trace functions in kernel/event/core.c. Allow ftrace f=
+or
+>>>> them by removing $(CC_FLAGS_FTRACE) from Makefile.
+>>>=20
+>>> Did you try using the ftrace event with perf with this on?
+>>=20
+>> I have tried a few things, like=20
+>>=20
+>>  perf stat -e probe:perf_read -I 1000
+>>  perf record -e probe:__x64_sys_perf_event_open -aR
+>>=20
+>> They all work fine.=20
+>>=20
+>> Do you have some tricky functions that we should double check?
+>=20
+> I've no idea what probe: does. iirc there's something like
+> ftrace:function that is like regular function tracing.
+
+Those are kprobes. I have CONFIG_HAVE_KPROBES_ON_FTRACE=3Dy in .config.=20
+
+>=20
+> At some point using that made the kernel really sick due to recursion
+> between ftrace and perf. Quite possibly that's been fixed, dunno.
+
+I also tried on ctx_sched_out() and event_sched_out(). They also work
+as expected.=20
+
+Thanks,
+Song
+
