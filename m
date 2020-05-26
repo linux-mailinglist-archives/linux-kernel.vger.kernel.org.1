@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6FD1E2B11
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58DC01E2BCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403792AbgEZTBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:01:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55936 "EHLO mail.kernel.org"
+        id S2391190AbgEZTIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:08:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403766AbgEZTBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:01:33 -0400
+        id S2391806AbgEZTIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:08:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A7F7208A7;
-        Tue, 26 May 2020 19:01:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A4C8D20776;
+        Tue, 26 May 2020 19:08:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519693;
-        bh=bPxqR0PLtI2XhTEKDMmR4d8gFqmhTzEniP59wxMePZ4=;
+        s=default; t=1590520125;
+        bh=Pb3w8EfsuE0U2OZBSl6Xdlzscep5epzAj1g46ZuRWZs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WG4qyIP6FZepDFN7HTnmH4QHrOolPXobIPGE2MUZnfrX2HPkj/1Gzorf8DDPPFHyk
-         /XDPzCK2aNDMK+0YB6h4ytbc7OwF3oXnhuffWFXbZB0J5PJ8Vr03igWGynTrrQZqik
-         z6lEQ6F4oEOzZrvuhv5qBcmQe1rbOLFF+9/VB93k=
+        b=IuFaiC7vmQj6z+mhYuzWds/vnuUO0dMKLXr0yIFzl6ZpbegtUGZRrXkX4mU6K63RQ
+         jMKgEmpdyFfzOIzM4YPAoYJn078VgUHS0OfiLJFMNUbtyEf6QVkhP81up3zBltHe7N
+         /rfRk5ZzHiXDONAyfg88dO8PkGtuoxEyJ9+W1a0o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Russell Currey <ruscur@russell.cc>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 40/59] powerpc: Remove STRICT_KERNEL_RWX incompatibility with RELOCATABLE
+        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        John Johansen <john.johansen@canonical.com>
+Subject: [PATCH 5.4 067/111] apparmor: fix potential label refcnt leak in aa_change_profile
 Date:   Tue, 26 May 2020 20:53:25 +0200
-Message-Id: <20200526183920.239637537@linuxfoundation.org>
+Message-Id: <20200526183939.201163831@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
-References: <20200526183907.123822792@linuxfoundation.org>
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russell Currey <ruscur@russell.cc>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-[ Upstream commit c55d7b5e64265fdca45c85b639013e770bde2d0e ]
+commit a0b845ffa0d91855532b50fc040aeb2d8338dca4 upstream.
 
-I have tested this with the Radix MMU and everything seems to work, and
-the previous patch for Hash seems to fix everything too.
-STRICT_KERNEL_RWX should still be disabled by default for now.
+aa_change_profile() invokes aa_get_current_label(), which returns
+a reference of the current task's label.
 
-Please test STRICT_KERNEL_RWX + RELOCATABLE!
+According to the comment of aa_get_current_label(), the returned
+reference must be put with aa_put_label().
+However, when the original object pointed by "label" becomes
+unreachable because aa_change_profile() returns or a new object
+is assigned to "label", reference count increased by
+aa_get_current_label() is not decreased, causing a refcnt leak.
 
-Signed-off-by: Russell Currey <ruscur@russell.cc>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20191224064126.183670-2-ruscur@russell.cc
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix this by calling aa_put_label() before aa_change_profile() return
+and dropping unnecessary aa_get_current_label().
+
+Fixes: 9fcf78cca198 ("apparmor: update domain transitions that are subsets of confinement at nnp")
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Signed-off-by: John Johansen <john.johansen@canonical.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/powerpc/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ security/apparmor/domain.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 6b73ef2bba2e..b74c3a68c0ad 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -141,7 +141,7 @@ config PPC
- 	select ARCH_HAS_GCOV_PROFILE_ALL
- 	select ARCH_HAS_SCALED_CPUTIME		if VIRT_CPU_ACCOUNTING_NATIVE
- 	select ARCH_HAS_SG_CHAIN
--	select ARCH_HAS_STRICT_KERNEL_RWX	if ((PPC_BOOK3S_64 || PPC32) && !RELOCATABLE && !HIBERNATION)
-+	select ARCH_HAS_STRICT_KERNEL_RWX	if ((PPC_BOOK3S_64 || PPC32) && !HIBERNATION)
- 	select ARCH_HAS_TICK_BROADCAST		if GENERIC_CLOCKEVENTS_BROADCAST
- 	select ARCH_HAS_UBSAN_SANITIZE_ALL
- 	select ARCH_HAS_ZONE_DEVICE		if PPC_BOOK3S_64
--- 
-2.25.1
-
+--- a/security/apparmor/domain.c
++++ b/security/apparmor/domain.c
+@@ -1334,6 +1334,7 @@ int aa_change_profile(const char *fqname
+ 		ctx->nnp = aa_get_label(label);
+ 
+ 	if (!fqname || !*fqname) {
++		aa_put_label(label);
+ 		AA_DEBUG("no profile name");
+ 		return -EINVAL;
+ 	}
+@@ -1352,8 +1353,6 @@ int aa_change_profile(const char *fqname
+ 			op = OP_CHANGE_PROFILE;
+ 	}
+ 
+-	label = aa_get_current_label();
+-
+ 	if (*fqname == '&') {
+ 		stack = true;
+ 		/* don't have label_parse() do stacking */
 
 
