@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 452C91E2D88
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C961E2C10
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404302AbgEZTVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:21:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41018 "EHLO mail.kernel.org"
+        id S2391849AbgEZTLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:11:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390092AbgEZTLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:11:36 -0400
+        id S2391544AbgEZTLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:11:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 63FEE208A7;
-        Tue, 26 May 2020 19:11:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CBAD820888;
+        Tue, 26 May 2020 19:11:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520295;
-        bh=PEqJ5eyUtSxJhYnhnCrIAr5eo6UL8Kd/34b2Bw2Fusg=;
+        s=default; t=1590520298;
+        bh=iBUom3UexuJtoL9Ox33IMnAZayXMsAmGh1AfuUlcV8s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r1OVpryCH45zhYJVL2bMGKrfVaS7xyF4RamV3TU7C41GjICqt703cSGv4oy/v95eE
-         F0dOZKz5+DNk2R8NP2nvyKlqGX/nBUwJBPCCXCEZOS29z6K6CVJ/b2V0GykamTExeW
-         CtV2jx2qmobuE70diEZ7cD35zwrtPX4KrIokTE9o=
+        b=q3Hb/W73i1gCgu1ukd8EdKOixenga+i5bPAvIArA+XsWEcPLY48xEB6ZuYHvFjyzl
+         8QxvgNCBOIZJa/TxdUVF0BA1F4DVjD66vMHYruyRgiwSyE3buk6sOkUDPE3KUFu7zW
+         E/xl69YSLVb8U8067Tve0Nu4ACTPjdUcUImfme4g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        stable@vger.kernel.org,
+        Krzysztof Struczynski <krzysztof.struczynski@huawei.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
         Mimi Zohar <zohar@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 003/126] ima: Set file->f_mode instead of file->f_flags in ima_calc_file_hash()
-Date:   Tue, 26 May 2020 20:52:20 +0200
-Message-Id: <20200526183937.776295899@linuxfoundation.org>
+Subject: [PATCH 5.6 004/126] evm: Check also if *tfm is an error pointer in init_desc()
+Date:   Tue, 26 May 2020 20:52:21 +0200
+Message-Id: <20200526183937.860467687@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
 References: <20200526183937.471379031@linuxfoundation.org>
@@ -47,68 +48,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Roberto Sassu <roberto.sassu@huawei.com>
 
-[ Upstream commit 0014cc04e8ec077dc482f00c87dfd949cfe2b98f ]
+[ Upstream commit 53de3b080d5eae31d0de219617155dcc34e7d698 ]
 
-Commit a408e4a86b36 ("ima: open a new file instance if no read
-permissions") tries to create a new file descriptor to calculate a file
-digest if the file has not been opened with O_RDONLY flag. However, if a
-new file descriptor cannot be obtained, it sets the FMODE_READ flag to
-file->f_flags instead of file->f_mode.
+This patch avoids a kernel panic due to accessing an error pointer set by
+crypto_alloc_shash(). It occurs especially when there are many files that
+require an unsupported algorithm, as it would increase the likelihood of
+the following race condition:
 
-This patch fixes this issue by replacing f_flags with f_mode as it was
-before that commit.
+Task A: *tfm = crypto_alloc_shash() <= error pointer
+Task B: if (*tfm == NULL) <= *tfm is not NULL, use it
+Task B: rc = crypto_shash_init(desc) <= panic
+Task A: *tfm = NULL
 
-Cc: stable@vger.kernel.org # 4.20.x
-Fixes: a408e4a86b36 ("ima: open a new file instance if no read permissions")
+This patch uses the IS_ERR_OR_NULL macro to determine whether or not a new
+crypto context must be created.
+
+Cc: stable@vger.kernel.org
+Fixes: d46eb3699502b ("evm: crypto hash replaced by shash")
+Co-developed-by: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
+Signed-off-by: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
 Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Reviewed-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/integrity/ima/ima_crypto.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ security/integrity/evm/evm_crypto.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/security/integrity/ima/ima_crypto.c b/security/integrity/ima/ima_crypto.c
-index 7967a6904851..e8fa23cd4a6c 100644
---- a/security/integrity/ima/ima_crypto.c
-+++ b/security/integrity/ima/ima_crypto.c
-@@ -413,7 +413,7 @@ int ima_calc_file_hash(struct file *file, struct ima_digest_data *hash)
- 	loff_t i_size;
- 	int rc;
- 	struct file *f = file;
--	bool new_file_instance = false, modified_flags = false;
-+	bool new_file_instance = false, modified_mode = false;
+diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
+index d485f6fc908e..302adeb2d37b 100644
+--- a/security/integrity/evm/evm_crypto.c
++++ b/security/integrity/evm/evm_crypto.c
+@@ -93,7 +93,7 @@ static struct shash_desc *init_desc(char type, uint8_t hash_algo)
+ 		algo = hash_algo_name[hash_algo];
+ 	}
  
- 	/*
- 	 * For consistency, fail file's opened with the O_DIRECT flag on
-@@ -433,13 +433,13 @@ int ima_calc_file_hash(struct file *file, struct ima_digest_data *hash)
- 		f = dentry_open(&file->f_path, flags, file->f_cred);
- 		if (IS_ERR(f)) {
- 			/*
--			 * Cannot open the file again, lets modify f_flags
-+			 * Cannot open the file again, lets modify f_mode
- 			 * of original and continue
- 			 */
- 			pr_info_ratelimited("Unable to reopen file for reading.\n");
- 			f = file;
--			f->f_flags |= FMODE_READ;
--			modified_flags = true;
-+			f->f_mode |= FMODE_READ;
-+			modified_mode = true;
- 		} else {
- 			new_file_instance = true;
- 		}
-@@ -457,8 +457,8 @@ int ima_calc_file_hash(struct file *file, struct ima_digest_data *hash)
- out:
- 	if (new_file_instance)
- 		fput(f);
--	else if (modified_flags)
--		f->f_flags &= ~FMODE_READ;
-+	else if (modified_mode)
-+		f->f_mode &= ~FMODE_READ;
- 	return rc;
- }
- 
+-	if (*tfm == NULL) {
++	if (IS_ERR_OR_NULL(*tfm)) {
+ 		mutex_lock(&mutex);
+ 		if (*tfm)
+ 			goto out;
 -- 
 2.25.1
 
