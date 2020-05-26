@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F9F1E2C5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8CE1E2B74
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404355AbgEZTOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:14:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44842 "EHLO mail.kernel.org"
+        id S2391484AbgEZTFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:05:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391491AbgEZTOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:14:11 -0400
+        id S2391473AbgEZTFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:05:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1EBA208C3;
-        Tue, 26 May 2020 19:14:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE14A20849;
+        Tue, 26 May 2020 19:05:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520450;
-        bh=GR4XF5IayHHOWsrG6kqSq2PX5IKhSrpqsMZUsiFItGw=;
+        s=default; t=1590519913;
+        bh=Ll3i88I6dH+M1vcXVswOh7ONTIPk/HSwLa9ixcVzbH0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dmY6+2QoZX5/dp+eGpEK/Sw2TEEQ9vUCo7W9963EMwYZbFC8k6ZSFdlhy/PUCuuhr
-         2cbywhaQj8YQ5t09xYjS7FRpH6wNeTkoXcpZuhI/NO+Nbc45IMMDDmzyvPHjQp9im5
-         HjOpxh9rRE2WUhIUpIHHz2jiQebRWQ42efJDySc8=
+        b=JCCN8qb8zBMhDwJ8vdO6wjtSgiqwkkqykP/f5FsXz21c4z+M5P0yETJm4EC+435xY
+         +kbBneKf0hInsU2ANCEi6533WU2zm+9dUfoK3KnamjP2SyljGssKpiqs5NgBV/fYtK
+         1IHrzdBxxeZ0ixFEAo7QXDan+0jxJwZNTDcG9hrc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 085/126] Revert "gfs2: Dont demote a glock until its revokes are written"
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.19 67/81] iio: sca3000: Remove an erroneous get_device()
 Date:   Tue, 26 May 2020 20:53:42 +0200
-Message-Id: <20200526183945.170356478@linuxfoundation.org>
+Message-Id: <20200526183934.481786762@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
-References: <20200526183937.471379031@linuxfoundation.org>
+In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
+References: <20200526183923.108515292@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,48 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit b14c94908b1b884276a6608dea3d0b1b510338b7 ]
+commit 928edefbc18cd8433f7df235c6e09a9306e7d580 upstream.
 
-This reverts commit df5db5f9ee112e76b5202fbc331f990a0fc316d6.
+This looks really unusual to have a 'get_device()' hidden in a 'dev_err()'
+call.
+Remove it.
 
-This patch fixes a regression: patch df5db5f9ee112 allowed function
-run_queue() to bypass its call to do_xmote() if revokes were queued for
-the glock. That's wrong because its call to do_xmote() is what is
-responsible for calling the go_sync() glops functions to sync both
-the ail list and any revokes queued for it. By bypassing the call,
-gfs2 could get into a stand-off where the glock could not be demoted
-until its revokes are written back, but the revokes would not be
-written back because do_xmote() was never called.
+While at it add a missing \n at the end of the message.
 
-It "sort of" works, however, because there are other mechanisms like
-the log flush daemon (logd) that can sync the ail items and revokes,
-if it deems it necessary. The problem is: without file system pressure,
-it might never deem it necessary.
+Fixes: 574fb258d636 ("Staging: IIO: VTI sca3000 series accelerometer driver (spi)")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/glock.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/iio/accel/sca3000.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
-index 19ebc6cd0f2b..d0eceaff3cea 100644
---- a/fs/gfs2/glock.c
-+++ b/fs/gfs2/glock.c
-@@ -645,9 +645,6 @@ __acquires(&gl->gl_lockref.lock)
- 			goto out_unlock;
- 		if (nonblock)
- 			goto out_sched;
--		smp_mb();
--		if (atomic_read(&gl->gl_revokes) != 0)
--			goto out_sched;
- 		set_bit(GLF_DEMOTE_IN_PROGRESS, &gl->gl_flags);
- 		GLOCK_BUG_ON(gl, gl->gl_demote_state == LM_ST_EXCLUSIVE);
- 		gl->gl_target = gl->gl_demote_state;
--- 
-2.25.1
-
+--- a/drivers/iio/accel/sca3000.c
++++ b/drivers/iio/accel/sca3000.c
+@@ -982,7 +982,7 @@ static int sca3000_read_data(struct sca3
+ 	st->tx[0] = SCA3000_READ_REG(reg_address_high);
+ 	ret = spi_sync_transfer(st->us, xfer, ARRAY_SIZE(xfer));
+ 	if (ret) {
+-		dev_err(get_device(&st->us->dev), "problem reading register");
++		dev_err(&st->us->dev, "problem reading register\n");
+ 		return ret;
+ 	}
+ 
 
 
