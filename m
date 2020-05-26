@@ -2,47 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B611E26BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 18:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6B11E26DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 18:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729919AbgEZQTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 12:19:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728280AbgEZQTt (ORCPT
+        id S2388681AbgEZQY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 12:24:29 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:35178 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728450AbgEZQYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 12:19:49 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC06C03E96D
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 09:19:49 -0700 (PDT)
+        Tue, 26 May 2020 12:24:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=8afjZgc+ZxZyr9cWTVCTisT80ltrjNVBpyip7riNXmw=; b=ZaZAMUhOd+4giRubqNVM5e3pHY
-        neTV2Uc8BBLtfzeO0pNdFIMZoSgEUUeaQamscjEClj3lue0It/szyaU4QD4W4sLmHxhVzWqiL7tXc
-        stIAlaeT+sYFnjvtrmsJ9zAwq2GJtvsoeL4HSBAqI15YTeCY/l4jrM1t42SyioEaDFIyqGJVtlqMl
-        Z4Y4e9yhODPaITb0I0t4NNSJsU2nGouyLzmkF9gJlmZHy4i9XO+8DXpzJmSkAfdfMQ4f3vuxuBBwP
-        lSX/VHcb7AsT+Gn6HTsh/8pnUxV3r/nCdK6/LJ1a8BFcjVSYFSBiddjPaoqZaEDqlUY30DgsIwNaC
-        vpRonofA==;
+        bh=Kdhc7G0MOHSHyTSs18tW/2Sp/VNPCGM39F2FG5g0xA0=; b=fMkz3cuyOKIigiaOFaLhqZGDoc
+        yuG4u+ptyI23uLEzyZQYTdoNve9a/ohhhnF3SGysE8oOYoQmTiy45J++y05Sy+YRXtK2dG4DJfr7A
+        VZZ72S6aevWhlSdR/o8Uha0DNmbX/ylhhmNP+5sY4Cd6qRzzxyGJgr/3FTSa8sbIcxM8roujI6FnT
+        t/Iq5yNJYuMrz3j6QW5l5Fhf/1gzvJ9KW0NeWzBRCdbZ5uKA7dwA45tm5448WrvcA2zncOJBO4pC/
+        1VXPu9rTYwUN+MGSNZmj6U1AtFSpCmVcgslboaIxOvOPqkpNR6BaruXhvp+8NhdfcBHD2rB9dbQmn
+        eAUy2XDA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jdcIq-0000Ec-5L; Tue, 26 May 2020 16:19:44 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jdcIv-0005Tf-8K; Tue, 26 May 2020 16:19:49 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A269C3069A1;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 72A8E3062EA;
         Tue, 26 May 2020 18:19:41 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 4ED9420FF793B; Tue, 26 May 2020 18:19:41 +0200 (CEST)
-Message-ID: <20200526161907.895109676@infradead.org>
+        id 55EE320FF793C; Tue, 26 May 2020 18:19:41 +0200 (CEST)
+Message-ID: <20200526161907.953304789@infradead.org>
 User-Agent: quilt/0.66
-Date:   Tue, 26 May 2020 18:11:00 +0200
+Date:   Tue, 26 May 2020 18:11:01 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     tglx@linutronix.de, frederic@kernel.org
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, cai@lca.pw,
         mgorman@techsingularity.net, peterz@infradead.org
-Subject: [RFC][PATCH 3/7] smp: Move irq_work_run() out of flush_smp_call_function_queue()
+Subject: [RFC][PATCH 4/7] smp: Optimize send_call_function_single_ipi()
 References: <20200526161057.531933155@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,53 +48,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This ensures flush_smp_call_function_queue() is strictly about
-call_single_queue.
+Just like the ttwu_queue_remote() IPI, make use of _TIF_POLLING_NRFLAG
+to avoid sending IPIs to idle CPUs.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/smp.c |   17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ kernel/sched/core.c  |   10 ++++++++++
+ kernel/sched/idle.c  |    1 +
+ kernel/sched/sched.h |    2 ++
+ kernel/smp.c         |   16 +++++++++++++++-
+ 4 files changed, 28 insertions(+), 1 deletion(-)
 
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2296,6 +2296,16 @@ static void wake_csd_func(void *info)
+ 	sched_ttwu_pending();
+ }
+ 
++void send_call_function_single_ipi(int cpu)
++{
++	struct rq *rq = cpu_rq(cpu);
++
++	if (!set_nr_if_polling(rq->idle))
++		arch_send_call_function_single_ipi(cpu);
++	else
++		trace_sched_wake_idle_without_ipi(cpu);
++}
++
+ /*
+  * Queue a task on the target CPUs wake_list and wake the CPU via IPI if
+  * necessary. The wakee CPU on receipt of the IPI will queue the task
+--- a/kernel/sched/idle.c
++++ b/kernel/sched/idle.c
+@@ -289,6 +289,7 @@ static void do_idle(void)
+ 	 */
+ 	smp_mb__after_atomic();
+ 
++	flush_smp_call_function_from_idle();
+ 	sched_ttwu_pending();
+ 	schedule_idle();
+ 
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1506,6 +1506,8 @@ static inline void unregister_sched_doma
+ }
+ #endif
+ 
++extern void flush_smp_call_function_from_idle(void);
++
+ #else
+ 
+ static inline void sched_ttwu_pending(void) { }
 --- a/kernel/smp.c
 +++ b/kernel/smp.c
-@@ -84,6 +84,7 @@ int smpcfd_dying_cpu(unsigned int cpu)
- 	 * still pending.
+@@ -135,6 +135,8 @@ static __always_inline void csd_unlock(c
+ 
+ static DEFINE_PER_CPU_SHARED_ALIGNED(call_single_data_t, csd_data);
+ 
++extern void send_call_function_single_ipi(int cpu);
++
+ /*
+  * Insert a previously allocated call_single_data_t element
+  * for execution on the given CPU. data must already have
+@@ -178,7 +180,7 @@ static int generic_exec_single(int cpu,
+ 	 * equipped to do the right thing...
  	 */
- 	flush_smp_call_function_queue(false);
-+	irq_work_run();
+ 	if (llist_add(&csd->llist, &per_cpu(call_single_queue, cpu)))
+-		arch_send_call_function_single_ipi(cpu);
++		send_call_function_single_ipi(cpu);
+ 
  	return 0;
  }
- 
-@@ -191,6 +192,14 @@ static int generic_exec_single(int cpu,
- void generic_smp_call_function_single_interrupt(void)
- {
- 	flush_smp_call_function_queue(true);
-+
-+	/*
-+	 * Handle irq works queued remotely by irq_work_queue_on().
-+	 * Smp functions above are typically synchronous so they
-+	 * better run first since some other CPUs may be busy waiting
-+	 * for them.
-+	 */
-+	irq_work_run();
- }
- 
- /**
-@@ -267,14 +276,6 @@ static void flush_smp_call_function_queu
- 		csd_unlock(csd);
- 		func(info);
+@@ -278,6 +280,18 @@ static void flush_smp_call_function_queu
  	}
--
--	/*
--	 * Handle irq works queued remotely by irq_work_queue_on().
--	 * Smp functions above are typically synchronous so they
--	 * better run first since some other CPUs may be busy waiting
--	 * for them.
--	 */
--	irq_work_run();
  }
  
++void flush_smp_call_function_from_idle(void)
++{
++	unsigned long flags;
++
++	if (llist_empty(this_cpu_ptr(&call_single_queue)))
++		return;
++
++	local_irq_save(flags);
++	flush_smp_call_function_queue(true);
++	local_irq_restore(flags);
++}
++
  /*
+  * smp_call_function_single - Run a function on a specific CPU
+  * @func: The function to run. This must be fast and non-blocking.
 
 
