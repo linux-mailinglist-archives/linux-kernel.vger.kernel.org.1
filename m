@@ -2,90 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680E81E3281
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1A91E3289
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391999AbgEZW3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 18:29:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389482AbgEZW3l (ORCPT
+        id S2392028AbgEZWaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 18:30:39 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:38609 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389911AbgEZWaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 18:29:41 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB14C03E96D
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 15:29:40 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id b18so17723116oti.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 15:29:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5wqB25Ndtf7G896Xqr2DU1ONCjpaiNIvRfUkDhIp+o4=;
-        b=ajCuuPdVNqJkiWUnn8o03t9TsMo7OEm3Qkfy9klzyZhl3i1I3ekfHr0s9Zn3xB8saQ
-         KsS8XImoIfanBQsGd/FJI/5xiiDtBWFT7WfsF7PAbZAWWtlc37D0g9zX0Irm3bp5N0By
-         533c/c/rF8H6sPab+sGruZq3Kx8M7fEalWda8=
+        Tue, 26 May 2020 18:30:39 -0400
+Received: by mail-il1-f196.google.com with SMTP id q18so1017415ilm.5;
+        Tue, 26 May 2020 15:30:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5wqB25Ndtf7G896Xqr2DU1ONCjpaiNIvRfUkDhIp+o4=;
-        b=bvcGI2VZ0VT286b0uqVUW2rRaRlMUWeVzsJOciRHtTTIMUDVqL1Frd7XdBJ1nI1zdU
-         hhBX2Gkj8fcxJBcUKQTuDI02HKyNFVHDl+FY+QdP4t6/LQ6iuDCYpiFH3vE1TmVXIGhv
-         NwVGwTThKlupaA/J0vmpCklwhUdhEmnhMLm6TaTgqLntTQaAAEFyAbzPPCVUoV7bfP8W
-         OKFIX4PONgewkJsOJSg6HlxZgj4mKf5of9l6I+2kE0CFiVUU3fsT8FyE+TwgzZtqCrhj
-         D5s9E3WV45e3uxRpgo4Xd2Mhz9JufA4Cno+WPi9MAyZL7vsNVNKFqGFNMwCA33YN8gmU
-         ZKyw==
-X-Gm-Message-State: AOAM530VMMh9F/CxsUusXugY3jdj92NcT/g3RnwhJKwrWocwDm/PIhts
-        PMME+8ZlKHwOH96x0+n3YnG9nQ==
-X-Google-Smtp-Source: ABdhPJw2UJGheVoQlPvhb7lYFGjKDjL07dSv/0TUE+bFEqIDtMMdHttQ9hsCTHmFNvxtgVQFW6OFrQ==
-X-Received: by 2002:a9d:6092:: with SMTP id m18mr2402145otj.117.1590532179333;
-        Tue, 26 May 2020 15:29:39 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id d21sm282371otp.46.2020.05.26.15.29.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 May 2020 15:29:38 -0700 (PDT)
-Subject: Re: [fixup] kunit: use --build_dir=.kunit as default
-To:     Vitor Massaru Iha <vitor@massaru.org>, kunit-dev@googlegroups.com
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        brendanhiggins@google.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org
-References: <20200526183436.47026-1-vitor@massaru.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <ace26347-a78e-1bd1-86f5-f8e644aa93ec@linuxfoundation.org>
-Date:   Tue, 26 May 2020 16:29:37 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uvZTRh4Nznd0Zmmmm65kfOWsQMC5SMuK+6+fcBdpZ+o=;
+        b=nLFrzrVEmchqA51F0NmNNbqC5YWQ8frUQMqzkAS/uPOEupW0eCy9Gun7O5wecXAeo8
+         MngXnykc+BW1xZ0XpvQ8nqA1UNyWaUFd9oI6R5O/BqaEGBTeng20GaAO6Bzq19hBFcQE
+         hrQ248neZgzTeAOU9y2+D7CBMXwH2n+4io/P9SkbpwhV9VCjAiNuWXvC1ZCrhTZP6Ngb
+         Rnjt0LbDNg3zdTsGSuJJpCLCRUsqjupp4kL3twm4bC1WNp57x8CnZf51Kj1w9byBoGLE
+         qm9hAazWk2wL5z+QBHztqQNJjBXsr7Aqq7DUYgEi4BkX801M6QBX1/o73oQvVzEBZRB+
+         UjVw==
+X-Gm-Message-State: AOAM530b4ftmvdXcPbCaQwgqVBZ54E5STL6rHrox/jvXUNjCix3e6qnS
+        5fwykwE0kd1Ho3Fd01nb2A==
+X-Google-Smtp-Source: ABdhPJwRtqirt7lGaLtmACWvkh34S4Us9xy9DiuauaFs+bstalYo6Fnb7i5OYZ0/Fc1Btdw9dnvvUQ==
+X-Received: by 2002:a92:b111:: with SMTP id t17mr3386857ilh.241.1590532238328;
+        Tue, 26 May 2020 15:30:38 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id k64sm689960ila.4.2020.05.26.15.30.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2020 15:30:37 -0700 (PDT)
+Received: (nullmailer pid 502377 invoked by uid 1000);
+        Tue, 26 May 2020 22:30:36 -0000
+Date:   Tue, 26 May 2020 16:30:36 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
+        Linux-imx@nxp.com, mturquette@baylibre.com, shawnguo@kernel.org,
+        kernel@pengutronix.de, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, sboyd@kernel.org,
+        linux-kernel@vger.kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com
+Subject: Re: [PATCH V5 1/5] dt-bindings: clock: Convert i.MX6Q clock to
+ json-schema
+Message-ID: <20200526223036.GA502298@bogus>
+References: <1589328684-1397-1-git-send-email-Anson.Huang@nxp.com>
+ <1589328684-1397-2-git-send-email-Anson.Huang@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20200526183436.47026-1-vitor@massaru.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1589328684-1397-2-git-send-email-Anson.Huang@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/20 12:34 PM, Vitor Massaru Iha wrote:
-> To make KUnit easier to use, and to avoid overwriting object and
-> .config files, the default KUnit build directory is set to .kunit
+On Wed, 13 May 2020 08:11:20 +0800, Anson Huang wrote:
+> Convert the i.MX6Q clock binding to DT schema format using json-schema.
 > 
->   * Related bug: https://bugzilla.kernel.org/show_bug.cgi?id=205221
-> 
-> Fixed up minor merge conflicts - Shuah Khan <skhan@linuxfoundation.org>
-> 
-> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
-> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+> Acked-by: Stephen Boyd <sboyd@kernel.org>
 > ---
-> version after merge on kunit brach:
->   * fix identation (tabs instead of spaces)
+> Changes since V4:
+> 	- add descriptions for interrupts and each item of it.
+> ---
+>  .../devicetree/bindings/clock/imx6q-clock.txt      | 41 ------------
+>  .../devicetree/bindings/clock/imx6q-clock.yaml     | 72 ++++++++++++++++++++++
+>  2 files changed, 72 insertions(+), 41 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/clock/imx6q-clock.txt
+>  create mode 100644 Documentation/devicetree/bindings/clock/imx6q-clock.yaml
+> 
 
-You mentioned spaces breaking python. Please include the python
-errors and make it clear in the change log what is fixes.
-
-thanks,
--- Shuah
-
+Applied, thanks!
