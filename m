@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190221E2B52
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB581E2BBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391296AbgEZTD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:03:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59368 "EHLO mail.kernel.org"
+        id S2391770AbgEZTIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:08:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391290AbgEZTDz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:03:55 -0400
+        id S2391759AbgEZTIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:08:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B77EB2086A;
-        Tue, 26 May 2020 19:03:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE42720873;
+        Tue, 26 May 2020 19:08:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519835;
-        bh=MgS8dJEJYRvZH0MHw3icB1uv47t7SYbpkKLLw87vcbE=;
+        s=default; t=1590520086;
+        bh=WBxyDzMmnFA4KyanDL3XnUYR19fpVFQJ3tQF/gixq+A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L/ndcUcXaMZD5RXEOsam9gSXikkJ/lNmBapKg9O9LHdFBicbXKeJDBvsBgWU7aju0
-         9qHoPjOsv43R1DAPAikGTEsVAGfIBqkEpDaLvsQBI6yaelT9OVHiv7zKiQ+bah0kag
-         FJdEKPuh593a+D07NrHZKCeRWexvv52sh5Sgj1nU=
+        b=T45JNgslbg+nc2VjdYmHF6NH8j6Pc87rdj0qRTS2Ip1sxtqSYYrhILSce9OMbRAz8
+         No9jLXh7M9W+06NRSS4tnyI5feHwl6AsW+KWouyD5vHFaR1uzveQEDxLgAKspLzjDf
+         d/wWZebElr5knMISRKGF98lJeNz6A2zA1Ig4YFag=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 35/81] padata: Replace delayed timer with immediate workqueue in padata_reorder
-Date:   Tue, 26 May 2020 20:53:10 +0200
-Message-Id: <20200526183931.267161783@linuxfoundation.org>
+        stable@vger.kernel.org, Mike Pozulp <pozulp.kernel@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 053/111] ALSA: hda/realtek: Add quirk for Samsung Notebook
+Date:   Tue, 26 May 2020 20:53:11 +0200
+Message-Id: <20200526183937.869609953@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
-References: <20200526183923.108515292@linuxfoundation.org>
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,305 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Herbert Xu <herbert@gondor.apana.org.au>
+From: Mike Pozulp <pozulp.kernel@gmail.com>
 
-[ Upstream commit 6fc4dbcf0276279d488c5fbbfabe94734134f4fa ]
+[ Upstream commit 14425f1f521fdfe274a7bb390637c786432e08b4 ]
 
-The function padata_reorder will use a timer when it cannot progress
-while completed jobs are outstanding (pd->reorder_objects > 0).  This
-is suboptimal as if we do end up using the timer then it would have
-introduced a gratuitous delay of one second.
+Some models of the Samsung Notebook 9 have very quiet and distorted
+headphone output. This quirk changes the VREF value of the ALC298
+codec NID 0x1a from default HIZ to new 100.
 
-In fact we can easily distinguish between whether completed jobs
-are outstanding and whether we can make progress.  All we have to
-do is look at the next pqueue list.
+[ adjusted to 5.7-base and rearranged in SSID order -- tiwai ]
 
-This patch does that by replacing pd->processed with pd->cpu so
-that the next pqueue is more accessible.
-
-A work queue is used instead of the original try_again to avoid
-hogging the CPU.
-
-Note that we don't bother removing the work queue in
-padata_flush_queues because the whole premise is broken.  You
-cannot flush async crypto requests so it makes no sense to even
-try.  A subsequent patch will fix it by replacing it with a ref
-counting scheme.
-
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-[dj: - adjust context
-     - corrected setup_timer -> timer_setup to delete hunk
-     - skip padata_flush_queues() hunk, function already removed
-       in 4.19]
-Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Signed-off-by: Mike Pozulp <pozulp.kernel@gmail.com>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207423
+Link: https://lore.kernel.org/r/20200510032838.1989130-1-pozulp.kernel@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/padata.h | 13 ++----
- kernel/padata.c        | 95 ++++++++----------------------------------
- 2 files changed, 22 insertions(+), 86 deletions(-)
+ sound/pci/hda/patch_realtek.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/include/linux/padata.h b/include/linux/padata.h
-index 5d13d25da2c8..d803397a28f7 100644
---- a/include/linux/padata.h
-+++ b/include/linux/padata.h
-@@ -24,7 +24,6 @@
- #include <linux/workqueue.h>
- #include <linux/spinlock.h>
- #include <linux/list.h>
--#include <linux/timer.h>
- #include <linux/notifier.h>
- #include <linux/kobject.h>
- 
-@@ -85,18 +84,14 @@ struct padata_serial_queue {
-  * @serial: List to wait for serialization after reordering.
-  * @pwork: work struct for parallelization.
-  * @swork: work struct for serialization.
-- * @pd: Backpointer to the internal control structure.
-  * @work: work struct for parallelization.
-- * @reorder_work: work struct for reordering.
-  * @num_obj: Number of objects that are processed by this cpu.
-  * @cpu_index: Index of the cpu.
-  */
- struct padata_parallel_queue {
-        struct padata_list    parallel;
-        struct padata_list    reorder;
--       struct parallel_data *pd;
-        struct work_struct    work;
--       struct work_struct    reorder_work;
-        atomic_t              num_obj;
-        int                   cpu_index;
- };
-@@ -122,10 +117,10 @@ struct padata_cpumask {
-  * @reorder_objects: Number of objects waiting in the reorder queues.
-  * @refcnt: Number of objects holding a reference on this parallel_data.
-  * @max_seq_nr:  Maximal used sequence number.
-+ * @cpu: Next CPU to be processed.
-  * @cpumask: The cpumasks in use for parallel and serial workers.
-+ * @reorder_work: work struct for reordering.
-  * @lock: Reorder lock.
-- * @processed: Number of already processed objects.
-- * @timer: Reorder timer.
-  */
- struct parallel_data {
- 	struct padata_instance		*pinst;
-@@ -134,10 +129,10 @@ struct parallel_data {
- 	atomic_t			reorder_objects;
- 	atomic_t			refcnt;
- 	atomic_t			seq_nr;
-+	int				cpu;
- 	struct padata_cpumask		cpumask;
-+	struct work_struct		reorder_work;
- 	spinlock_t                      lock ____cacheline_aligned;
--	unsigned int			processed;
--	struct timer_list		timer;
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index dab0c5b6bb61..736ddab16512 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6095,6 +6095,7 @@ enum {
+ 	ALC285_FIXUP_HP_GPIO_LED,
+ 	ALC285_FIXUP_HP_MUTE_LED,
+ 	ALC236_FIXUP_HP_MUTE_LED,
++	ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET,
  };
  
- /**
-diff --git a/kernel/padata.c b/kernel/padata.c
-index c280cb153915..47dc31ce15ac 100644
---- a/kernel/padata.c
-+++ b/kernel/padata.c
-@@ -167,23 +167,12 @@ EXPORT_SYMBOL(padata_do_parallel);
-  */
- static struct padata_priv *padata_get_next(struct parallel_data *pd)
- {
--	int cpu, num_cpus;
--	unsigned int next_nr, next_index;
- 	struct padata_parallel_queue *next_queue;
- 	struct padata_priv *padata;
- 	struct padata_list *reorder;
-+	int cpu = pd->cpu;
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -7251,6 +7252,13 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc236_fixup_hp_mute_led,
+ 	},
++	[ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET] = {
++		.type = HDA_FIXUP_VERBS,
++		.v.verbs = (const struct hda_verb[]) {
++			{ 0x1a, AC_VERB_SET_PIN_WIDGET_CONTROL, 0xc5 },
++			{ }
++		},
++	},
+ };
  
--	num_cpus = cpumask_weight(pd->cpumask.pcpu);
--
--	/*
--	 * Calculate the percpu reorder queue and the sequence
--	 * number of the next object.
--	 */
--	next_nr = pd->processed;
--	next_index = next_nr % num_cpus;
--	cpu = padata_index_to_cpu(pd, next_index);
- 	next_queue = per_cpu_ptr(pd->pqueue, cpu);
--
- 	reorder = &next_queue->reorder;
- 
- 	spin_lock(&reorder->lock);
-@@ -194,7 +183,8 @@ static struct padata_priv *padata_get_next(struct parallel_data *pd)
- 		list_del_init(&padata->list);
- 		atomic_dec(&pd->reorder_objects);
- 
--		pd->processed++;
-+		pd->cpu = cpumask_next_wrap(cpu, pd->cpumask.pcpu, -1,
-+					    false);
- 
- 		spin_unlock(&reorder->lock);
- 		goto out;
-@@ -217,6 +207,7 @@ static void padata_reorder(struct parallel_data *pd)
- 	struct padata_priv *padata;
- 	struct padata_serial_queue *squeue;
- 	struct padata_instance *pinst = pd->pinst;
-+	struct padata_parallel_queue *next_queue;
- 
- 	/*
- 	 * We need to ensure that only one cpu can work on dequeueing of
-@@ -248,7 +239,6 @@ static void padata_reorder(struct parallel_data *pd)
- 		 * so exit immediately.
- 		 */
- 		if (PTR_ERR(padata) == -ENODATA) {
--			del_timer(&pd->timer);
- 			spin_unlock_bh(&pd->lock);
- 			return;
- 		}
-@@ -267,70 +257,29 @@ static void padata_reorder(struct parallel_data *pd)
- 
- 	/*
- 	 * The next object that needs serialization might have arrived to
--	 * the reorder queues in the meantime, we will be called again
--	 * from the timer function if no one else cares for it.
-+	 * the reorder queues in the meantime.
- 	 *
--	 * Ensure reorder_objects is read after pd->lock is dropped so we see
--	 * an increment from another task in padata_do_serial.  Pairs with
-+	 * Ensure reorder queue is read after pd->lock is dropped so we see
-+	 * new objects from another task in padata_do_serial.  Pairs with
- 	 * smp_mb__after_atomic in padata_do_serial.
- 	 */
- 	smp_mb();
--	if (atomic_read(&pd->reorder_objects)
--			&& !(pinst->flags & PADATA_RESET))
--		mod_timer(&pd->timer, jiffies + HZ);
--	else
--		del_timer(&pd->timer);
- 
--	return;
-+	next_queue = per_cpu_ptr(pd->pqueue, pd->cpu);
-+	if (!list_empty(&next_queue->reorder.list))
-+		queue_work(pinst->wq, &pd->reorder_work);
- }
- 
- static void invoke_padata_reorder(struct work_struct *work)
- {
--	struct padata_parallel_queue *pqueue;
- 	struct parallel_data *pd;
- 
- 	local_bh_disable();
--	pqueue = container_of(work, struct padata_parallel_queue, reorder_work);
--	pd = pqueue->pd;
-+	pd = container_of(work, struct parallel_data, reorder_work);
- 	padata_reorder(pd);
- 	local_bh_enable();
- }
- 
--static void padata_reorder_timer(struct timer_list *t)
--{
--	struct parallel_data *pd = from_timer(pd, t, timer);
--	unsigned int weight;
--	int target_cpu, cpu;
--
--	cpu = get_cpu();
--
--	/* We don't lock pd here to not interfere with parallel processing
--	 * padata_reorder() calls on other CPUs. We just need any CPU out of
--	 * the cpumask.pcpu set. It would be nice if it's the right one but
--	 * it doesn't matter if we're off to the next one by using an outdated
--	 * pd->processed value.
--	 */
--	weight = cpumask_weight(pd->cpumask.pcpu);
--	target_cpu = padata_index_to_cpu(pd, pd->processed % weight);
--
--	/* ensure to call the reorder callback on the correct CPU */
--	if (cpu != target_cpu) {
--		struct padata_parallel_queue *pqueue;
--		struct padata_instance *pinst;
--
--		/* The timer function is serialized wrt itself -- no locking
--		 * needed.
--		 */
--		pinst = pd->pinst;
--		pqueue = per_cpu_ptr(pd->pqueue, target_cpu);
--		queue_work_on(target_cpu, pinst->wq, &pqueue->reorder_work);
--	} else {
--		padata_reorder(pd);
--	}
--
--	put_cpu();
--}
--
- static void padata_serial_worker(struct work_struct *serial_work)
- {
- 	struct padata_serial_queue *squeue;
-@@ -384,9 +333,8 @@ void padata_do_serial(struct padata_priv *padata)
- 
- 	cpu = get_cpu();
- 
--	/* We need to run on the same CPU padata_do_parallel(.., padata, ..)
--	 * was called on -- or, at least, enqueue the padata object into the
--	 * correct per-cpu queue.
-+	/* We need to enqueue the padata object into the correct
-+	 * per-cpu queue.
- 	 */
- 	if (cpu != padata->cpu) {
- 		reorder_via_wq = 1;
-@@ -396,12 +344,12 @@ void padata_do_serial(struct padata_priv *padata)
- 	pqueue = per_cpu_ptr(pd->pqueue, cpu);
- 
- 	spin_lock(&pqueue->reorder.lock);
--	atomic_inc(&pd->reorder_objects);
- 	list_add_tail(&padata->list, &pqueue->reorder.list);
-+	atomic_inc(&pd->reorder_objects);
- 	spin_unlock(&pqueue->reorder.lock);
- 
- 	/*
--	 * Ensure the atomic_inc of reorder_objects above is ordered correctly
-+	 * Ensure the addition to the reorder list is ordered correctly
- 	 * with the trylock of pd->lock in padata_reorder.  Pairs with smp_mb
- 	 * in padata_reorder.
- 	 */
-@@ -409,13 +357,7 @@ void padata_do_serial(struct padata_priv *padata)
- 
- 	put_cpu();
- 
--	/* If we're running on the wrong CPU, call padata_reorder() via a
--	 * kernel worker.
--	 */
--	if (reorder_via_wq)
--		queue_work_on(cpu, pd->pinst->wq, &pqueue->reorder_work);
--	else
--		padata_reorder(pd);
-+	padata_reorder(pd);
- }
- EXPORT_SYMBOL(padata_do_serial);
- 
-@@ -471,14 +413,12 @@ static void padata_init_pqueues(struct parallel_data *pd)
- 			continue;
- 		}
- 
--		pqueue->pd = pd;
- 		pqueue->cpu_index = cpu_index;
- 		cpu_index++;
- 
- 		__padata_list_init(&pqueue->reorder);
- 		__padata_list_init(&pqueue->parallel);
- 		INIT_WORK(&pqueue->work, padata_parallel_worker);
--		INIT_WORK(&pqueue->reorder_work, invoke_padata_reorder);
- 		atomic_set(&pqueue->num_obj, 0);
- 	}
- }
-@@ -506,12 +446,13 @@ static struct parallel_data *padata_alloc_pd(struct padata_instance *pinst,
- 
- 	padata_init_pqueues(pd);
- 	padata_init_squeues(pd);
--	timer_setup(&pd->timer, padata_reorder_timer, 0);
- 	atomic_set(&pd->seq_nr, -1);
- 	atomic_set(&pd->reorder_objects, 0);
- 	atomic_set(&pd->refcnt, 1);
- 	pd->pinst = pinst;
- 	spin_lock_init(&pd->lock);
-+	pd->cpu = cpumask_first(pcpumask);
-+	INIT_WORK(&pd->reorder_work, invoke_padata_reorder);
- 
- 	return pd;
- 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -7446,6 +7454,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x10ec, 0x10f2, "Intel Reference board", ALC700_FIXUP_INTEL_REFERENCE),
+ 	SND_PCI_QUIRK(0x10f7, 0x8338, "Panasonic CF-SZ6", ALC269_FIXUP_HEADSET_MODE),
+ 	SND_PCI_QUIRK(0x144d, 0xc109, "Samsung Ativ book 9 (NP900X3G)", ALC269_FIXUP_INV_DMIC),
++	SND_PCI_QUIRK(0x144d, 0xc169, "Samsung Notebook 9 Pen (NP930SBE-K01US)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
++	SND_PCI_QUIRK(0x144d, 0xc176, "Samsung Notebook 9 Pro (NP930MBE-K04US)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
+ 	SND_PCI_QUIRK(0x144d, 0xc740, "Samsung Ativ book 8 (NP870Z5G)", ALC269_FIXUP_ATIV_BOOK_8),
+ 	SND_PCI_QUIRK(0x1458, 0xfa53, "Gigabyte BXBT-2807", ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1462, 0xb120, "MSI Cubi MS-B120", ALC283_FIXUP_HEADSET_MIC),
 -- 
 2.25.1
 
