@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 046CB1E2B23
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6181E2B75
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391086AbgEZTCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:02:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57126 "EHLO mail.kernel.org"
+        id S2391022AbgEZTFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:05:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391068AbgEZTCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:02:22 -0400
+        id S2391478AbgEZTFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:05:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF550208A7;
-        Tue, 26 May 2020 19:02:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 26809208B8;
+        Tue, 26 May 2020 19:05:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519742;
-        bh=6CTDi3al0Q/3yK2SyadCrdfzsLUV+RIHWoudrYcmdTk=;
+        s=default; t=1590519915;
+        bh=iJEzzmF0Ft5H2GY7TTk0kkGMH07ZfnxhaYQX2yvZEUo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WbihwtIGY/cUEAMBcrN7KzQdvr0ncmBYwnv+shR4iGE5IbczbgNpQ2XiafVAg9/s9
-         PrTXjxRj84fbqNADEBK1P1K/Ola0j0fjYRrY9SAxsz7ZEdUD0bxzf5LKMNtPLGsLNy
-         doEG42unkrKFUoh4Of2TfPP+6ZIULI95Hrr4mZbE=
+        b=CQ/eAYKyg37gZ4UI8EVocSaoNOsnAC3+5/SyB7qqr9xh8c0CcIvx/A0XpIqvVXnM9
+         7TNT4OnKUJLZRZ689Bn4oaab9k6K5DU7rADs9OkxeI4Wwyuk2rRCeRwB4YFC3b3b4c
+         OGuks/zYAGP/76la0prQ0CcubY6MoLWB6zckxd6w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 4.14 57/59] x86/unwind/orc: Fix unwind_get_return_address_ptr() for inactive tasks
-Date:   Tue, 26 May 2020 20:53:42 +0200
-Message-Id: <20200526183924.293521788@linuxfoundation.org>
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.19 68/81] iio: dac: vf610: Fix an error handling path in vf610_dac_probe()
+Date:   Tue, 26 May 2020 20:53:43 +0200
+Message-Id: <20200526183934.600440442@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
-References: <20200526183907.123822792@linuxfoundation.org>
+In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
+References: <20200526183923.108515292@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,70 +45,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 187b96db5ca79423618dfa29a05c438c34f9e1f0 upstream.
+commit aad4742fbf0a560c25827adb58695a4497ffc204 upstream.
 
-Normally, show_trace_log_lvl() scans the stack, looking for text
-addresses to print.  In parallel, it unwinds the stack with
-unwind_next_frame().  If the stack address matches the pointer returned
-by unwind_get_return_address_ptr() for the current frame, the text
-address is printed normally without a question mark.  Otherwise it's
-considered a breadcrumb (potentially from a previous call path) and it's
-printed with a question mark to indicate that the address is unreliable
-and typically can be ignored.
+A call to 'vf610_dac_exit()' is missing in an error handling path.
 
-Since the following commit:
-
-  f1d9a2abff66 ("x86/unwind/orc: Don't skip the first frame for inactive tasks")
-
-... for inactive tasks, show_trace_log_lvl() prints *only* unreliable
-addresses (prepended with '?').
-
-That happens because, for the first frame of an inactive task,
-unwind_get_return_address_ptr() returns the wrong return address
-pointer: one word *below* the task stack pointer.  show_trace_log_lvl()
-starts scanning at the stack pointer itself, so it never finds the first
-'reliable' address, causing only guesses to being printed.
-
-The first frame of an inactive task isn't a normal stack frame.  It's
-actually just an instance of 'struct inactive_task_frame' which is left
-behind by __switch_to_asm().  Now that this inactive frame is actually
-exposed to callers, fix unwind_get_return_address_ptr() to interpret it
-properly.
-
-Fixes: f1d9a2abff66 ("x86/unwind/orc: Don't skip the first frame for inactive tasks")
-Reported-by: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200522135435.vbxs7umku5pyrdbk@treble
+Fixes: 1b983bf42fad ("iio: dac: vf610_dac: Add IIO DAC driver for Vybrid SoC")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kernel/unwind_orc.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/iio/dac/vf610_dac.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/x86/kernel/unwind_orc.c
-+++ b/arch/x86/kernel/unwind_orc.c
-@@ -255,12 +255,19 @@ EXPORT_SYMBOL_GPL(unwind_get_return_addr
+--- a/drivers/iio/dac/vf610_dac.c
++++ b/drivers/iio/dac/vf610_dac.c
+@@ -234,6 +234,7 @@ static int vf610_dac_probe(struct platfo
+ 	return 0;
  
- unsigned long *unwind_get_return_address_ptr(struct unwind_state *state)
- {
-+	struct task_struct *task = state->task;
-+
- 	if (unwind_done(state))
- 		return NULL;
+ error_iio_device_register:
++	vf610_dac_exit(info);
+ 	clk_disable_unprepare(info->clk);
  
- 	if (state->regs)
- 		return &state->regs->ip;
- 
-+	if (task != current && state->sp == task->thread.sp) {
-+		struct inactive_task_frame *frame = (void *)task->thread.sp;
-+		return &frame->ret_addr;
-+	}
-+
- 	if (state->sp)
- 		return (unsigned long *)state->sp - 1;
- 
+ 	return ret;
 
 
