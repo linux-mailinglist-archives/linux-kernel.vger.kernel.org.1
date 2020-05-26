@@ -2,123 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5D31E31B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 23:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0277A1E31C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 23:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391391AbgEZV40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 17:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390131AbgEZV4Y (ORCPT
+        id S2391618AbgEZV5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 17:57:12 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:63630 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389257AbgEZV5M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 17:56:24 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75564C03E96D
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 14:56:24 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id z13so16779692ljn.7
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 14:56:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KxA9UmGJJnl7Bb+4Hp5hGEl722cKfUNLx8ou3ZEhvTQ=;
-        b=Rdj07d1EbBsd4yaGts4o+yqzcD6soXFmwEnvmWnKKkkMxr4IzXZCRjUTJqQ0b010v3
-         QCViqtYyatK+6gpTvUUspFrQ+zruGqU7KH44vMYy2OZ3Zz/zaly4trhle/tcrtMgZMnm
-         LnEITkjaw/mB9K1DttC+YgzADHQ/izR/asILurcN7rLch/r/ZUjle2DQa17WJYFuL7H9
-         yfWZ+EOFZPbQkSb/D/+GXzEViwlKYd4HKr0NRPce3hroQ0JffQtCKP79tgSShlUSHbm7
-         UkQQ0zKl4bK/mvTBH0UJYqgNftgHENuCLJzhnIk6dqfK20eYm7k60qJVlizWE2dv5ebi
-         QR6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KxA9UmGJJnl7Bb+4Hp5hGEl722cKfUNLx8ou3ZEhvTQ=;
-        b=qz9acLiS1q5pLgIZwUdGzigoYZWMi3FzVkKOK2ZqKvETOffkZAhAczDmex5lrXadW0
-         u2rgaJ1c+6Au6I+6OOlWL9nL/p9cQxuW0h3JPtuGR0ORWS5u0XJScyILDY9/LexPUSX+
-         sSA6geER44tG5QVhb8k6/NloCnMMUNQhLw4cPSpD7s1ePlzsBGrkcKiqJ/QVW1W/beP0
-         wQTAjJ3rIeCltQSeBDbEJ8PshHYOk7QQrndoU9Irs41fE9HLGY29Ga/y814b2mBhfK8r
-         ol6tzVNKZ8X2Ki0upGl4d9tv3O1pkudWpVeO+Aa7sh91N+9wPN89tDVY0So7hNn3vv1r
-         LZMQ==
-X-Gm-Message-State: AOAM533ZUgWhiP/uT5QLeLiOdkwpZXhDQHiP8tr5rqM3BZdbPxS2lVgA
-        RBNI95S+UkYSGBS92t3TeNewMw==
-X-Google-Smtp-Source: ABdhPJyBJffVuN8Gxouh7odL35w4h73NN8hmaj17eT0JxNv7QR2g36h9/tqS3jaVBhyIz8dNFQkR1g==
-X-Received: by 2002:a2e:8091:: with SMTP id i17mr1625888ljg.141.1590530182839;
-        Tue, 26 May 2020 14:56:22 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id w24sm218345ljo.136.2020.05.26.14.56.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 14:56:22 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 850B710230F; Wed, 27 May 2020 00:56:22 +0300 (+03)
-Date:   Wed, 27 May 2020 00:56:22 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [RFC 06/16] KVM: Use GUP instead of copy_from/to_user() to
- access guest memory
-Message-ID: <20200526215622.r455gfohtufr45vj@box>
-References: <20200522125214.31348-1-kirill.shutemov@linux.intel.com>
- <20200522125214.31348-7-kirill.shutemov@linux.intel.com>
- <20200526061459.GC13247@kernel.org>
+        Tue, 26 May 2020 17:57:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590530231; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Reply-To: Sender;
+ bh=Lx+JlsYWqs8sfPrQRTmH7W6Ju5CUj4LarP9b9J9tMIM=; b=OhiFuqL884sUy4VJsoO6MwbcPoU6ckp5T9xSYQBue688BgQhAY2/EzQu9ubxbj2MV0I+ng6L
+ hywkEjsXWdgRxYfNZAiAHy79Dk0tgnjMxwqcWKaUidIxvEYVvI6hBdYVJkdAj7ydsZIewvrU
+ zAlRLVGVuPaEU4moWtHX2HHRR/c=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5ecd90b6809d904967d341b8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 May 2020 21:57:10
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B3277C433A0; Tue, 26 May 2020 21:57:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from BCAIN (104-54-226-75.lightspeed.austtx.sbcglobal.net [104.54.226.75])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bcain)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 074FDC433C6;
+        Tue, 26 May 2020 21:57:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 074FDC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=bcain@codeaurora.org
+Reply-To: <bcain@codeaurora.org>
+From:   "Brian Cain" <bcain@codeaurora.org>
+To:     "'Nick Desaulniers'" <ndesaulniers@google.com>,
+        "'Guenter Roeck'" <linux@roeck-us.net>
+Cc:     "'Will Deacon'" <will@kernel.org>, <linux-hexagon@vger.kernel.org>,
+        "'LKML'" <linux-kernel@vger.kernel.org>,
+        "'Thomas Gleixner'" <tglx@linutronix.de>,
+        "'Masahiro Yamada'" <masahiroy@kernel.org>,
+        "'Peter Zijlstra'" <peterz@infradead.org>,
+        "'Arnd Bergmann'" <arnd@arndb.de>, <sidneym@codeaurora.org>
+References: <20200526153004.GA74229@roeck-us.net> <CAKwvOdnrsCCt_HU+fows6kBCs2jGcikDtMm_otQSKFEgqfojJw@mail.gmail.com>
+In-Reply-To: <CAKwvOdnrsCCt_HU+fows6kBCs2jGcikDtMm_otQSKFEgqfojJw@mail.gmail.com>
+Subject: RE: [PATCH] compiler/gcc: Raise minimum GCC version for kernel builds to 4.8
+Date:   Tue, 26 May 2020 16:57:07 -0500
+Message-ID: <04ca01d633a8$9abb8070$d0328150$@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200526061459.GC13247@kernel.org>
+Content-Type: text/plain;
+        charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQKN1vNw91W6igT881KSGz5ZWBjxSQIw8CjPpzoaY0A=
+Content-Language: en-us
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 09:14:59AM +0300, Mike Rapoport wrote:
-> On Fri, May 22, 2020 at 03:52:04PM +0300, Kirill A. Shutemov wrote:
-> > New helpers copy_from_guest()/copy_to_guest() to be used if KVM memory
-> > protection feature is enabled.
-> > 
-> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > ---
-> >  include/linux/kvm_host.h |  4 +++
-> >  virt/kvm/kvm_main.c      | 78 ++++++++++++++++++++++++++++++++++------
-> >  2 files changed, 72 insertions(+), 10 deletions(-)
-> > 
-> >  static int __kvm_read_guest_page(struct kvm_memory_slot *slot, gfn_t gfn,
-> > -				 void *data, int offset, int len)
-> > +				 void *data, int offset, int len,
-> > +				 bool protected)
-> >  {
-> >  	int r;
-> >  	unsigned long addr;
-> > @@ -2257,7 +2297,10 @@ static int __kvm_read_guest_page(struct kvm_memory_slot *slot, gfn_t gfn,
-> >  	addr = gfn_to_hva_memslot_prot(slot, gfn, NULL);
-> >  	if (kvm_is_error_hva(addr))
-> >  		return -EFAULT;
-> > -	r = __copy_from_user(data, (void __user *)addr + offset, len);
-> > +	if (protected)
-> > +		r = copy_from_guest(data, addr + offset, len);
-> > +	else
-> > +		r = __copy_from_user(data, (void __user *)addr + offset, len);
-> 
-> Maybe always use copy_{from,to}_guest() and move the 'if (protected)'
-> there?
-> If kvm is added to memory slot, it cab be the passed to copy_{to,from}_guest.
+> -----Original Message-----
+> From: linux-hexagon-owner@vger.kernel.org <linux-hexagon-
+> owner@vger.kernel.org> On Behalf Of Nick Desaulniers
+...
+> On Tue, May 26, 2020 at 8:30 AM Guenter Roeck <linux@roeck-us.net> =
+wrote:
+> >
+> > On Mon, May 11, 2020 at 09:41:37PM +0100, Will Deacon wrote:
+> > > It is very rare to see versions of GCC prior to 4.8 being used to
+> > > build the mainline kernel. These old compilers are also known to
+> > > have codegen issues which can lead to silent miscompilation:
+> > >
+> > > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D58145
+> > >
+> > > Raise the minimum GCC version to 4.8 for building the kernel and
+> > > remove some tautological Kconfig dependencies as a consequence.
+> >
+> > My hexagon compiler is v4.6.1, and I have been unable to find a more
+> > recent version. Does anyone happen to have a pointer to a hexagon
+> > toolchain with gcc 4.8 or later ?
+>=20
+> IIUC, hexagon moved to LLVM, though that target still has issues =
+building the
+> kernel.
+> =
+https://github.com/ClangBuiltLinux/linux/issues?q=3Dis%3Aopen+is%3Aissue+=
+lab
+> el%3A%22%5BARCH%5D+hexagon%22
 
-Right, Vitaly has pointed me to this already.
+Indeed, we did move to llvm.  The build works with the clang_rt-builtins =
+lib.  But that issue indicates that it's an unnecessary wart to require =
+that.  From what I understand, other arches contribute these builtins =
+content to the kernel build, so we'll do the same.
 
--- 
- Kirill A. Shutemov
+I'll prioritize this update.
+
+-Brian
+
