@@ -2,104 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E881E26A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 18:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC891E26B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 18:18:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729675AbgEZQQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 12:16:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35040 "EHLO
+        id S1728830AbgEZQSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 12:18:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728361AbgEZQQ0 (ORCPT
+        with ESMTP id S1728294AbgEZQST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 12:16:26 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DDABC03E96D
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 09:16:25 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id j10so5381630wrw.8
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 09:16:25 -0700 (PDT)
+        Tue, 26 May 2020 12:18:19 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B36C03E96D
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 09:18:19 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id b71so20997400ilg.8
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 09:18:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QAvGGfTFG25ElrhD3qboczTVRvpcoz4/MxDPrOFLyQc=;
-        b=jUQs/+XrgKVA+BxYtYwJ9+JuBcKfqE7sTotIk1cJwTjNDdph4q8//KIKCWFWJXjuqF
-         bNvHT1mXU4vgLFZtgKfBQQ9XcnIDBptu/akIqUTWHm0cOtz2BEJS1ruk4/MNa1eH4klt
-         ZuFTkQLr8+q2ITQVc1NPo2IdaUCyWjFec4BlJyZFu2utsBGt4sDUF8vR2Fhu2Czulcg3
-         05T0h5z1DCFPvdQ5za1lUYlAooFdl+a+ZXRSnTlenUopOjd9D60o6A+qkKmbBYHacvu7
-         pAgh6ITLIy49AYE+6r1dZg7eAuTHLpX0avsd1ygJ2UgVJBrR1haYqXWV9/vSq/g2zOtc
-         35YA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=W2wCu2SdkHFkQ1Ckp39G9Z9PbrnS7bq9ACqqoB/0oa0=;
+        b=t5yTsL+h2v6+Ce1k3GlaF5U0JrOWNaUPUg/e1r1fcDTUHtAK5AnNjKMAhyWAOHlLI/
+         xxJDCc9kLYKPIdB8NbL3qbEES2tg+Fpsmjiscv77V2oH2qwD6dLsBAByDOzObFY3Iqu1
+         u33Pm/cHUJUpMWEb0wEa8zA85tblduq1Aj5yENvu3jXcAKpYTIue9wxmkvZ4wVmwHyOX
+         7W+OPgEGiyGjkGqIpXxeAK7Oy0q5SCtyPv79OrunKD2WCopoKMsGkb/mVHAD7aElf0TE
+         v6RRFvUsk2Vz3c1kn59aRZnd4+Il4p0okDB++weWCUGWM71V42o/K0dc+6sl7htA/fae
+         oZ2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QAvGGfTFG25ElrhD3qboczTVRvpcoz4/MxDPrOFLyQc=;
-        b=LRpL1kwwdCFD7o0NoIrmT1uL/N3joosYFKEg4R8umYezI9KlZ7wXPdVBLjX/Ec1j13
-         IjdM7fAsBIhCaOppRLnYlhufVI8v2CtFreXQJdICE3ZnM6TYGIVX+fLU+CQCyS6zAez2
-         9sqnmXLMB7yzL3ZDeGo/EEmODkCz303DFzCG/Wq+aTBeFBiv0zybXPodN7jeEJPaXLCe
-         /X3nTkTsi9NoTT3hYEHs43c0pqy4qXpI6hmkRnu6KjbLaIhVF9UAfP8rln/wEQRwgDfg
-         +ivr54MPLwLT6G6keimCnJb5zU3Ziz7X3sSGdKmbnOrwhZrEL5O3q6rLCrE3Pd+WkTc2
-         DTSQ==
-X-Gm-Message-State: AOAM5333NpYyS+P0pPW6enWD60JqY1YUAyLXsmzpQUOlCj1mjU7nbw0D
-        NQQrYmpIqrHso9B74S/iTycphw==
-X-Google-Smtp-Source: ABdhPJw+Wg0GW1oC/oNFNRUHFRzDIfJRTiTYdwrWZ2pGrP6gCaf6ehHa7I8kx27W+5CJXurje+VdMQ==
-X-Received: by 2002:a5d:5585:: with SMTP id i5mr17353654wrv.112.1590509783661;
-        Tue, 26 May 2020 09:16:23 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id q13sm268377wrn.84.2020.05.26.09.16.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 09:16:22 -0700 (PDT)
-Date:   Tue, 26 May 2020 17:16:21 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, sumit.garg@linaro.org, jason.wessel@windriver.com,
-        dianders@chromium.org, kgdb-bugreport@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, will@kernel.org
-Subject: Re: x86/entry vs kgdb
-Message-ID: <20200526161621.7ucj5jn6rm5yednb@holly.lan>
-References: <20200525083605.GB317569@hirez.programming.kicks-ass.net>
- <20200525091832.GE325303@hirez.programming.kicks-ass.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=W2wCu2SdkHFkQ1Ckp39G9Z9PbrnS7bq9ACqqoB/0oa0=;
+        b=Y0di3fUq2is1tSg3F/pW+ounzvub7Xqs3vMX02DmZ/EiAv37oMeG4jGLdVdfPCDVId
+         49ItDVdMA/XmFMIicyCfSGNh8hX9KjqieSmmopxJJjMu8+X6q601PxN9rdzdAD2ksoOA
+         LP/91j67MZ8E26hjW2DprlhWWJiTfZmyFuciNqnxlLvTKVVpjvuOE+l3AKjUmm99pccE
+         x8Sd7J/HGCBINWRyo0z5jYcx0bjTBYR7hO4PsAfZCZQeF2XJ3IiJj6TfWx6G2eT6DaKR
+         L4QDDMgyE6P+8BnBt4gnitXykSiet+MNdDKJ5v7+awbgvhEKkgjjq6EZt8S6sIIpaLOA
+         HoBA==
+X-Gm-Message-State: AOAM533d1wCT3SbS3LE4hFSj+GcTTCYdQ+i5sVdUmpOR4TpWzUBZyXBk
+        tb7UBUndELu8vge5UU0XGtCQ7Ex6PaYCfhF8CLw=
+X-Google-Smtp-Source: ABdhPJykHuavW6UtEQRUWuCrUgwkuPBC0czhoJQVGm4eoWyDiIj2oNgHKKrpwlJ0ewPymE+knZ8REsyv6WVfZ7jQHqM=
+X-Received: by 2002:a92:5893:: with SMTP id z19mr1947013ilf.255.1590509898761;
+ Tue, 26 May 2020 09:18:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200525091832.GE325303@hirez.programming.kicks-ass.net>
+References: <20200524212816.243139-1-nivedita@alum.mit.edu>
+ <20200525225918.1624470-1-nivedita@alum.mit.edu> <CA+icZUVa8FhhwHgXn1o_hFmgqFG6-KE1F+qvkdCzQjmSSSDWDw@mail.gmail.com>
+ <CAMj1kXHVFgRsbssJQD2C0GZnOgG=rMYbPGJQtiKhSw6sZj5PaA@mail.gmail.com>
+ <CA+icZUWyFDgieQswvfhWemzymDh_UiVqH2uH52a+0otcr2Pd4w@mail.gmail.com>
+ <CA+icZUVKRZPFX_Q8RRJnFsHrkM5VbiWUEam+6O5XSzgNaqAzPg@mail.gmail.com>
+ <CA+icZUWTKJ=-OGJPzqm6HNQMkB1uS_B0ydU-9Xa035wB7vA4iw@mail.gmail.com>
+ <CA+icZUU54K8z2--6fS=LEaMJGgeWfudViT7ETMsSYF1i59_4mg@mail.gmail.com> <CA+icZUWH9fFURgbiCuRr5-mc5s=Ft97_TMP4YofDMX5zEu4_eA@mail.gmail.com>
+In-Reply-To: <CA+icZUWH9fFURgbiCuRr5-mc5s=Ft97_TMP4YofDMX5zEu4_eA@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Tue, 26 May 2020 18:18:07 +0200
+Message-ID: <CA+icZUV2fvwQTnzUmWCiv4unzFb7HjUSTrYgHeYd0dgFi=oLMw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] x86/boot: Remove runtime relocations from
+ compressed kernel
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 25, 2020 at 11:18:32AM +0200, Peter Zijlstra wrote:
-> On Mon, May 25, 2020 at 10:36:05AM +0200, Peter Zijlstra wrote:
-> > Hi!
-> > 
-> > Since you seem to care about kgdb, I figured you might want to fix this
-> > before I mark it broken on x86 (we've been considering doing that for a
-> > while).
-> > 
-> > AFAICT the whole debugreg usage of kgdb-x86_64 is completely hosed; it
-> > doesn't respsect the normal exclusion zones as per arch_build_bp_info().
-> > 
-> > That is, breakpoints must never be in:
-> > 
-> >   - in the cpu_entry_area
-> >   - in .entry.text
-> >   - in .noinstr.text
-> >   - in anything else marked NOKPROBE
-> > 
-> > by not respecting these constraints it is trivial to completely and
-> > utterly hose the machine. The entry rework that is current underway will
-> > explicitly not deal with #DB triggering in any of those places.
-> 
-> This also very much includes single stepping those bits.  Which KGDB
-> obviously also does not respects.
+On Tue, May 26, 2020 at 5:07 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
 
-For breakpoints there's already a pre-poke validation hook that
-architectures can override if they want to. I can modify the default
-implementation to include checking the nokprobe list.
+...
 
-Stepping is a bit more complex. There are hooks for some of the
-underlying work but not pre-step validation hook. I'll see if we can add
-one.
+> > > patchset to previous build:
+> > >
+> > > $ git log --no-merges --oneline 5.7.0-rc7-1-amd64-clang..5.7.0-rc7-2-amd64-clang
+> > > 8b74901cb9e5 (for-5.7/x86-boot-remove-runtime-relocations-from-compressed-kernel-v2-nivedita76)
+> > > x86/boot: Check that there are no runtime relocations
+> > > 83fb1bc3b076 x86/boot: Remove runtime relocations from head_{32,64}.S
+> > > fede23dacbbd x86/boot: Remove run-time relocations from .head.text code
+> > > 3e5ea481b8fb x86/boot: Add .text.* to setup.ld
+> > > bec910ba3d67 x86/boot/compressed: Get rid of GOT fixup code
+> > > be834cee6f39 x86/boot/compressed: Force hidden visibility for all
+> > > symbol references
+> > > 9b7c7d8d2d7b x86/boot/compressed: Move .got.plt entries out of the .got section
+> > > ba6a49f806a0 (for-5.7/kbuild-compressed-debug-info) Makefile: support
+> > > compressed debug info
+> > > a1fb11944d11 (for-5.7/x86-boot-nivedita76) x86/boot: Correct
+> > > relocation destination on old linkers
+> > > c70e3890058f (for-5.7/x86-build-maskray) x86/boot: Discard
+> > > .discard.unreachable for arch/x86/boot/compressed/vmlinux
 
+...
 
-Daniel.
+> This works:
+>
+> [ arch/x86/boot/compressed/Makefile ]
+>
+> -KBUILD_CFLAGS += -include hidden.h
+> +KBUILD_CFLAGS += -include ./arch/x86/boot/compressed/hidden.h
+>
+> $ ll arch/x86/boot/bzImage arch/x86/boot/compressed/vmlinux
+> -rw-r--r-- 1 dileks dileks 6,5M Mai 26 17:05 arch/x86/boot/bzImage
+> -rwxr-xr-x 1 dileks dileks 6,5M Mai 26 17:05 arch/x86/boot/compressed/vmlinux
+>
+
+I was able to build/link and boot on bare metal.
+
+root@iniza:~# cat /proc/version
+Linux version 5.7.0-rc7-2-amd64-clang (sedat.dilek@gmail.com@iniza)
+(clang version 10.0.1rc1, LLD 10.0.1rc1) #2~bullseye+dileks1 SMP
+2020-05-26
+
+- Sedat -
