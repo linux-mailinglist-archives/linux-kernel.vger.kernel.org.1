@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2AB1E3154
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 23:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F521E3156
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 23:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390583AbgEZVmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 17:42:45 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:45416 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390364AbgEZVml (ORCPT
+        id S2390988AbgEZVmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 17:42:51 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:64302 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390672AbgEZVmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 17:42:41 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 04QLdwNU019454
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 14:42:40 -0700
+        Tue, 26 May 2020 17:42:46 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04QLcXYi015428
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 14:42:45 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=cugBKwoeKftvWxkJwY+OzQ/BYGIKUP/EFF3JonuT84o=;
- b=gWasY5pjp51sC3dsCLbc8ZZMZ8Ra8inxc7+yqqZhiwNInQpsJhN/KK/82QDfqGBOrMed
- 7d1DAS3O63KVGKmrBe1+wkHmy4tEOX47cgx21Md1qqwCO/ngchk6tcCESKEh4rloVjmg
- e6LQcUT1N7O3XFVLCHvYK3cpj65l5stRK3E= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 316yb14wk5-2
+ bh=wbquLkDWd+jSBPQsBqWUCVroQQK3q3IhJTGisdxlqr0=;
+ b=PxXR2mHX+Gso7BUTxI+NIJ2DDOXNm4/4CPEtuhhtEB5R4jF24e7PYyc/3WZLb3WmbBQ2
+ qe85ihFvDAbpyo+VCd6/gKrCMOWx6OWJUY1ZcSNG51Mpr3Fp1YjfzN6AOLkRc1EuWHyk
+ 14QRnptXp90QDQwXJ3mxuftYHTSBUFvZlnM= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3171nhmx1g-10
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 14:42:40 -0700
-Received: from intmgw002.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 14:42:45 -0700
+Received: from intmgw002.41.prn1.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 26 May 2020 14:42:39 -0700
+ 15.1.1979.3; Tue, 26 May 2020 14:42:42 -0700
 Received: by devvm1291.vll0.facebook.com (Postfix, from userid 111017)
-        id 68ED115EA7D8; Tue, 26 May 2020 14:42:33 -0700 (PDT)
+        id 6E7DF15EA7DA; Tue, 26 May 2020 14:42:33 -0700 (PDT)
 Smtp-Origin-Hostprefix: devvm
 From:   Roman Gushchin <guro@fb.com>
 Smtp-Origin-Hostname: devvm1291.vll0.facebook.com
@@ -43,9 +43,9 @@ CC:     Johannes Weiner <hannes@cmpxchg.org>,
         Vlastimil Babka <vbabka@suse.cz>, <kernel-team@fb.com>,
         <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>
 Smtp-Origin-Cluster: vll0c01
-Subject: [PATCH v4 09/19] mm: memcg/slab: charge individual slab objects instead of pages
-Date:   Tue, 26 May 2020 14:42:17 -0700
-Message-ID: <20200526214227.989341-10-guro@fb.com>
+Subject: [PATCH v4 10/19] mm: memcg/slab: deprecate memory.kmem.slabinfo
+Date:   Tue, 26 May 2020 14:42:18 -0700
+Message-ID: <20200526214227.989341-11-guro@fb.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200526214227.989341-1-guro@fb.com>
 References: <20200526214227.989341-1-guro@fb.com>
@@ -56,10 +56,10 @@ Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
  definitions=2020-05-26_02:2020-05-26,2020-05-26 signatures=0
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- clxscore=1015 adultscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999
- cotscore=-2147483648 spamscore=0 priorityscore=1501 suspectscore=2
- bulkscore=0 malwarescore=0 lowpriorityscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
+ lowpriorityscore=0 spamscore=0 clxscore=1015 impostorscore=0
+ malwarescore=0 mlxlogscore=755 adultscore=0 mlxscore=0 bulkscore=0
+ suspectscore=0 cotscore=-2147483648 priorityscore=1501 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
  definitions=main-2005260166
 X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
@@ -67,291 +67,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch to per-object accounting of non-root slab objects.
+Deprecate memory.kmem.slabinfo.
 
-Charging is performed using obj_cgroup API in the pre_alloc hook.
-Obj_cgroup is charged with the size of the object and the size
-of metadata: as now it's the size of an obj_cgroup pointer.
-If the amount of memory has been charged successfully, the actual
-allocation code is executed. Otherwise, -ENOMEM is returned.
+An empty file will be presented if corresponding config options are
+enabled.
 
-In the post_alloc hook if the actual allocation succeeded,
-corresponding vmstats are bumped and the obj_cgroup pointer is saved.
-Otherwise, the charge is canceled.
+The interface is implementation dependent, isn't present in cgroup v2,
+and is generally useful only for core mm debugging purposes. In other
+words, it doesn't provide any value for the absolute majority of users.
 
-On the free path obj_cgroup pointer is obtained and used to uncharge
-the size of the releasing object.
+A drgn-based replacement can be found in tools/cgroup/slabinfo.py .
+It does support cgroup v1 and v2, mimics memory.kmem.slabinfo output
+and also allows to get any additional information without a need
+to recompile the kernel.
 
-Memcg and lruvec counters are now representing only memory used
-by active slab objects and do not include the free space. The free
-space is shared and doesn't belong to any specific cgroup.
-
-Global per-node slab vmstats are still modified from (un)charge_slab_page=
-()
-functions. The idea is to keep all slab pages accounted as slab pages
-on system level.
+If a drgn-based solution is too slow for a task, a bpf-based tracing
+tool can be used, which can easily keep track of all slab allocations
+belonging to a memory cgroup.
 
 Signed-off-by: Roman Gushchin <guro@fb.com>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slab.h | 173 ++++++++++++++++++++++++------------------------------
- 1 file changed, 77 insertions(+), 96 deletions(-)
+ mm/memcontrol.c  |  3 ---
+ mm/slab_common.c | 31 ++++---------------------------
+ 2 files changed, 4 insertions(+), 30 deletions(-)
 
-diff --git a/mm/slab.h b/mm/slab.h
-index 8bca0cb4b928..f219a29052d9 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -352,72 +352,6 @@ static inline struct mem_cgroup *memcg_from_slab_pag=
-e(struct page *page)
- 	return NULL;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index ed12bff81ea5..eca03e13c7ec 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5052,9 +5052,6 @@ static struct cftype mem_cgroup_legacy_files[] =3D =
+{
+ 	(defined(CONFIG_SLAB) || defined(CONFIG_SLUB_DEBUG))
+ 	{
+ 		.name =3D "kmem.slabinfo",
+-		.seq_start =3D memcg_slab_start,
+-		.seq_next =3D memcg_slab_next,
+-		.seq_stop =3D memcg_slab_stop,
+ 		.seq_show =3D memcg_slab_show,
+ 	},
+ #endif
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index b578ae29c743..3c89c2adc930 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -1523,35 +1523,12 @@ void dump_unreclaimable_slab(void)
  }
 =20
--/*
-- * Charge the slab page belonging to the non-root kmem_cache.
-- * Can be called for non-root kmem_caches only.
-- */
--static __always_inline int memcg_charge_slab(struct page *page,
--					     gfp_t gfp, int order,
--					     struct kmem_cache *s)
+ #if defined(CONFIG_MEMCG_KMEM)
+-void *memcg_slab_start(struct seq_file *m, loff_t *pos)
 -{
--	unsigned int nr_pages =3D 1 << order;
--	struct mem_cgroup *memcg;
--	struct lruvec *lruvec;
--	int ret;
+-	struct mem_cgroup *memcg =3D mem_cgroup_from_seq(m);
 -
--	rcu_read_lock();
--	memcg =3D READ_ONCE(s->memcg_params.memcg);
--	while (memcg && !css_tryget_online(&memcg->css))
--		memcg =3D parent_mem_cgroup(memcg);
--	rcu_read_unlock();
--
--	if (unlikely(!memcg || mem_cgroup_is_root(memcg))) {
--		mod_node_page_state(page_pgdat(page), cache_vmstat_idx(s),
--				    nr_pages << PAGE_SHIFT);
--		percpu_ref_get_many(&s->memcg_params.refcnt, nr_pages);
--		return 0;
--	}
--
--	ret =3D memcg_kmem_charge(memcg, gfp, nr_pages);
--	if (ret)
--		goto out;
--
--	lruvec =3D mem_cgroup_lruvec(memcg, page_pgdat(page));
--	mod_lruvec_state(lruvec, cache_vmstat_idx(s), nr_pages << PAGE_SHIFT);
--
--	percpu_ref_get_many(&s->memcg_params.refcnt, nr_pages);
--out:
--	css_put(&memcg->css);
--	return ret;
+-	mutex_lock(&slab_mutex);
+-	return seq_list_start(&memcg->kmem_caches, *pos);
 -}
 -
--/*
-- * Uncharge a slab page belonging to a non-root kmem_cache.
-- * Can be called for non-root kmem_caches only.
-- */
--static __always_inline void memcg_uncharge_slab(struct page *page, int o=
-rder,
--						struct kmem_cache *s)
+-void *memcg_slab_next(struct seq_file *m, void *p, loff_t *pos)
 -{
--	unsigned int nr_pages =3D 1 << order;
--	struct mem_cgroup *memcg;
--	struct lruvec *lruvec;
+-	struct mem_cgroup *memcg =3D mem_cgroup_from_seq(m);
 -
--	rcu_read_lock();
--	memcg =3D READ_ONCE(s->memcg_params.memcg);
--	if (likely(!mem_cgroup_is_root(memcg))) {
--		lruvec =3D mem_cgroup_lruvec(memcg, page_pgdat(page));
--		mod_lruvec_state(lruvec, cache_vmstat_idx(s),
--				 -(nr_pages << PAGE_SHIFT));
--		memcg_kmem_uncharge(memcg, nr_pages);
--	} else {
--		mod_node_page_state(page_pgdat(page), cache_vmstat_idx(s),
--				    -(nr_pages << PAGE_SHIFT));
--	}
--	rcu_read_unlock();
--
--	percpu_ref_put_many(&s->memcg_params.refcnt, nr_pages);
+-	return seq_list_next(p, &memcg->kmem_caches, pos);
 -}
 -
- static inline int memcg_alloc_page_obj_cgroups(struct page *page,
- 					       struct kmem_cache *s, gfp_t gfp)
+-void memcg_slab_stop(struct seq_file *m, void *p)
+-{
+-	mutex_unlock(&slab_mutex);
+-}
+-
+ int memcg_slab_show(struct seq_file *m, void *p)
  {
-@@ -438,6 +372,47 @@ static inline void memcg_free_page_obj_cgroups(struc=
-t page *page)
- 	page->obj_cgroups =3D NULL;
- }
-=20
-+static inline size_t obj_full_size(struct kmem_cache *s)
-+{
+-	struct kmem_cache *s =3D list_entry(p, struct kmem_cache,
+-					  memcg_params.kmem_caches_node);
+-	struct mem_cgroup *memcg =3D mem_cgroup_from_seq(m);
+-
+-	if (p =3D=3D memcg->kmem_caches.next)
+-		print_slabinfo_header(m);
+-	cache_show(s, m);
 +	/*
-+	 * For each accounted object there is an extra space which is used
-+	 * to store obj_cgroup membership. Charge it too.
++	 * Deprecated.
++	 * Please, take a look at tools/cgroup/slabinfo.py .
 +	 */
-+	return s->size + sizeof(struct obj_cgroup *);
-+}
-+
-+static inline struct kmem_cache *memcg_slab_pre_alloc_hook(struct kmem_c=
-ache *s,
-+						struct obj_cgroup **objcgp,
-+						size_t objects, gfp_t flags)
-+{
-+	struct kmem_cache *cachep;
-+
-+	cachep =3D memcg_kmem_get_cache(s, objcgp);
-+	if (is_root_cache(cachep))
-+		return s;
-+
-+	if (obj_cgroup_charge(*objcgp, flags, objects * obj_full_size(s))) {
-+		memcg_kmem_put_cache(cachep);
-+		cachep =3D NULL;
-+	}
-+
-+	return cachep;
-+}
-+
-+static inline void mod_objcg_state(struct obj_cgroup *objcg,
-+				   struct pglist_data *pgdat,
-+				   int idx, int nr)
-+{
-+	struct mem_cgroup *memcg;
-+	struct lruvec *lruvec;
-+
-+	rcu_read_lock();
-+	memcg =3D obj_cgroup_memcg(objcg);
-+	lruvec =3D mem_cgroup_lruvec(memcg, pgdat);
-+	mod_memcg_lruvec_state(lruvec, idx, nr);
-+	rcu_read_unlock();
-+}
-+
- static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
- 					      struct obj_cgroup *objcg,
- 					      size_t size, void **p)
-@@ -452,6 +427,10 @@ static inline void memcg_slab_post_alloc_hook(struct=
- kmem_cache *s,
- 			off =3D obj_to_index(s, page, p[i]);
- 			obj_cgroup_get(objcg);
- 			page_obj_cgroups(page)[off] =3D objcg;
-+			mod_objcg_state(objcg, page_pgdat(page),
-+					cache_vmstat_idx(s), obj_full_size(s));
-+		} else {
-+			obj_cgroup_uncharge(objcg, obj_full_size(s));
- 		}
- 	}
- 	obj_cgroup_put(objcg);
-@@ -470,6 +449,11 @@ static inline void memcg_slab_free_hook(struct kmem_=
-cache *s, struct page *page,
- 	off =3D obj_to_index(s, page, p);
- 	objcg =3D page_obj_cgroups(page)[off];
- 	page_obj_cgroups(page)[off] =3D NULL;
-+
-+	obj_cgroup_uncharge(objcg, obj_full_size(s));
-+	mod_objcg_state(objcg, page_pgdat(page), cache_vmstat_idx(s),
-+			-obj_full_size(s));
-+
- 	obj_cgroup_put(objcg);
+ 	return 0;
  }
-=20
-@@ -511,17 +495,6 @@ static inline struct mem_cgroup *memcg_from_slab_pag=
-e(struct page *page)
- 	return NULL;
- }
-=20
--static inline int memcg_charge_slab(struct page *page, gfp_t gfp, int or=
-der,
--				    struct kmem_cache *s)
--{
--	return 0;
--}
--
--static inline void memcg_uncharge_slab(struct page *page, int order,
--				       struct kmem_cache *s)
--{
--}
--
- static inline int memcg_alloc_page_obj_cgroups(struct page *page,
- 					       struct kmem_cache *s, gfp_t gfp)
- {
-@@ -532,6 +505,13 @@ static inline void memcg_free_page_obj_cgroups(struc=
-t page *page)
- {
- }
-=20
-+static inline struct kmem_cache *memcg_slab_pre_alloc_hook(struct kmem_c=
-ache *s,
-+						struct obj_cgroup **objcgp,
-+						size_t objects, gfp_t flags)
-+{
-+	return NULL;
-+}
-+
- static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
- 					      struct obj_cgroup *objcg,
- 					      size_t size, void **p)
-@@ -569,32 +549,33 @@ static __always_inline int charge_slab_page(struct =
-page *page,
- 					    gfp_t gfp, int order,
- 					    struct kmem_cache *s)
- {
--	int ret;
--
--	if (is_root_cache(s)) {
--		mod_node_page_state(page_pgdat(page), cache_vmstat_idx(s),
--				    PAGE_SIZE << order);
--		return 0;
--	}
-+#ifdef CONFIG_MEMCG_KMEM
-+	if (memcg_kmem_enabled() && !is_root_cache(s)) {
-+		int ret;
-=20
--	ret =3D memcg_alloc_page_obj_cgroups(page, s, gfp);
--	if (ret)
--		return ret;
-+		ret =3D memcg_alloc_page_obj_cgroups(page, s, gfp);
-+		if (ret)
-+			return ret;
-=20
--	return memcg_charge_slab(page, gfp, order, s);
-+		percpu_ref_get_many(&s->memcg_params.refcnt, 1 << order);
-+	}
-+#endif
-+	mod_node_page_state(page_pgdat(page), cache_vmstat_idx(s),
-+			    PAGE_SIZE << order);
-+	return 0;
- }
-=20
- static __always_inline void uncharge_slab_page(struct page *page, int or=
-der,
- 					       struct kmem_cache *s)
- {
--	if (is_root_cache(s)) {
--		mod_node_page_state(page_pgdat(page), cache_vmstat_idx(s),
--				    -(PAGE_SIZE << order));
--		return;
-+#ifdef CONFIG_MEMCG_KMEM
-+	if (memcg_kmem_enabled() && !is_root_cache(s)) {
-+		memcg_free_page_obj_cgroups(page);
-+		percpu_ref_put_many(&s->memcg_params.refcnt, 1 << order);
- 	}
--
--	memcg_free_page_obj_cgroups(page);
--	memcg_uncharge_slab(page, order, s);
-+#endif
-+	mod_node_page_state(page_pgdat(page), cache_vmstat_idx(s),
-+			    -(PAGE_SIZE << order));
- }
-=20
- static inline struct kmem_cache *cache_from_obj(struct kmem_cache *s, vo=
-id *x)
-@@ -666,7 +647,7 @@ static inline struct kmem_cache *slab_pre_alloc_hook(=
-struct kmem_cache *s,
-=20
- 	if (memcg_kmem_enabled() &&
- 	    ((flags & __GFP_ACCOUNT) || (s->flags & SLAB_ACCOUNT)))
--		return memcg_kmem_get_cache(s, objcgp);
-+		return memcg_slab_pre_alloc_hook(s, objcgp, size, flags);
-=20
- 	return s;
- }
+ #endif
 --=20
 2.25.4
 
