@@ -2,121 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 944EC1E1FFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 12:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319D01E2014
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 12:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388672AbgEZKn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 06:43:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388622AbgEZKn1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 06:43:27 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32979C03E97E
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 03:43:27 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id t11so9920052pgg.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 03:43:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8vLgjzSO/LxApXStr6hj3HmlT19nlNPyYTwZYXJ6lsI=;
-        b=JO05icFZ2oOl/2ZydYLDpoc/seP84LVDwFA4hznRqc7Lu0yJLk0v/w6NbHZzhsxjuS
-         gg4jMSyfdmLwLM60OHlDX4Y3MVOV5TzoPG6xd9yxGCw0ja35SqLsoypvbzE31UCzcSqq
-         OcRIb0hIT5TTpShmMiKtTmXK7rs/ssU+M4bDNUVZhCvFWzRlyEcirejoD5UfZKvX9S1D
-         Csq7H849+0mQBVi8tr5j0FQW0W+huh+OIzF9MT9AoRLcmTt9ZGDiGrrZbmZLlhGiqTUe
-         pBl4aglramB7+ZeBDEIXs8Rg3R6u5K6cUYUYIU3VpEHNEvdbbuyaAXJc7R6aQoO0Mlzk
-         vfcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8vLgjzSO/LxApXStr6hj3HmlT19nlNPyYTwZYXJ6lsI=;
-        b=clKzp994yPIRb8+a2rXiFIeUOWjGD+3FPj2JxipBNlr1nBsupc4ta8GVLIrJtU4nXq
-         p1iIXkfDyDKIVsc7BrP4/qL1t8D0XI1krvj3/pi5vSs7+g0lfuudJhI98IA0EtijF5aj
-         XiiO2geKEnXvIp8S4GDkyagA9ghw1mztGPhvRoeOT8MMI/eUFFY9DO7E1r+jMc3HPW8X
-         JdoIBaqFi0bBDIprAPqxGljPA6t37ih5PGyfaZJu2O5Yh9FqNLaKs1oeTfKdvgWp7eLv
-         HtrrLWeKCxoeSy/AMkr+7gCVDGcsY97fquiFBc9sV0RIuBB7wU7+ctSvsBiO5FpkL1Si
-         VSLw==
-X-Gm-Message-State: AOAM533J1WtegY0pmEbqJ7Hw5XtkifEqRlecHF7ATUa7IPeEBj5j/SRt
-        ReDoeVgqO/TNuURw/f8y1+dDHQ==
-X-Google-Smtp-Source: ABdhPJxiGuXC9T8/0vvEp1ide6CNqP2MI7swVISrxEein7BriB8dAwfiHIb1d2IH6djWdEDEo+E4iQ==
-X-Received: by 2002:a65:67d0:: with SMTP id b16mr437917pgs.91.1590489806616;
-        Tue, 26 May 2020 03:43:26 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id s15sm13277931pgv.5.2020.05.26.03.43.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 26 May 2020 03:43:26 -0700 (PDT)
-Date:   Tue, 26 May 2020 18:43:37 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Al Grant <al.grant@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>
-Subject: Re: [PATCH v7 0/3] perf arm-spe: Add support for synthetic events
-Message-ID: <20200526104337.GA7154@leoy-ThinkPad-X240s>
-References: <20200504115625.12589-1-leo.yan@linaro.org>
- <20200522030919.GE32389@leoy-ThinkPad-X240s>
- <20200526102602.GA27166@willie-the-truck>
+        id S2388723AbgEZKtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 06:49:04 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5284 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726977AbgEZKtE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 06:49:04 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 1B41DDB73B7C7464554A;
+        Tue, 26 May 2020 18:49:02 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 26 May 2020 18:48:55 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <axboe@kernel.dk>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH] blk-mq: Explicitly zero-init blk_mq_tags.active_queues
+Date:   Tue, 26 May 2020 18:45:00 +0800
+Message-ID: <1590489900-121753-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200526102602.GA27166@willie-the-truck>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
+As is good practice, explicitly zero-init atomic_t type
+blk_mq_tags.active_queues.
 
-On Tue, May 26, 2020 at 11:26:03AM +0100, Will Deacon wrote:
-> On Fri, May 22, 2020 at 11:09:19AM +0800, Leo Yan wrote:
-> > On Mon, May 04, 2020 at 07:56:22PM +0800, Leo Yan wrote:
-> > > This patch set is to support synthetic events with enabling Arm SPE
-> > > decoder.  Since before Xiaojun Tan (Hisilicon) and James Clark (Arm)
-> > > have contributed much for this task, so this patch set is based on their
-> > > privous work and polish for the version 7.
-> > > 
-> > > The main work in this version is to polished the core patch "perf
-> > > arm-spe: Support synthetic events", e.g. rewrite the code to calculate
-> > > ip, packet generation for multiple types (L1 data cache, Last level
-> > > cache, TLB, remote access, etc).  It also heavily refactors code for
-> > > data structure and program flow, which removed unused fields in
-> > > structure and polished the program flow to achieve neat code as
-> > > possible.
-> > > 
-> > > This patch set has been checked with checkpatch.pl, though it leaves
-> > > several warnings, but these warnings are delibarately kept after
-> > > reviewing.  Some warnings ask to add maintainer (so far it's not
-> > > necessary), and some warnings complaint for patch 02 "perf auxtrace:
-> > > Add four itrace options" for the text format, since need to keep the
-> > > consistency with the same code format in the source code, this is why
-> > > this patch doesn't get rid of checkpatch warnings.
-> > 
-> > Gentle ping ...
-> > 
-> > It would be appreciate if can get some review for this patch set.
-> 
-> I was hoping that James Clark would have a look, since he was the last
-> person to go near the userspace side of SPE.
+Signed-off-by: John Garry <john.garry@huawei.com>
 
-Yes, I have offline synced with James and James has verified this
-patch set at his side.
+diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+index 586c9d6e904a..cbbd0af9f3b0 100644
+--- a/block/blk-mq-tag.c
++++ b/block/blk-mq-tag.c
+@@ -469,6 +469,7 @@ struct blk_mq_tags *blk_mq_init_tags(unsigned int total_tags,
+ 
+ 	tags->nr_tags = total_tags;
+ 	tags->nr_reserved_tags = reserved_tags;
++	atomic_set(&tags->active_queues, 0);
+ 
+ 	return blk_mq_init_bitmap_tags(tags, node, alloc_policy);
+ }
+-- 
+2.16.4
 
-I don't want to rush to ask Arnaldo to merge patches, so just
-want to get wider reviewing if possible; otherwise, I will rebase this
-patch set and resend to ML.
-
-Thanks,
-Leo
