@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C86B1E2DBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6FD1E2B11
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404030AbgEZTXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:23:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37724 "EHLO mail.kernel.org"
+        id S2403792AbgEZTBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:01:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403917AbgEZTIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:08:43 -0400
+        id S2403766AbgEZTBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:01:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3C181208B3;
-        Tue, 26 May 2020 19:08:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A7F7208A7;
+        Tue, 26 May 2020 19:01:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520122;
-        bh=85MRjDuphd+B7adNDduYkYSTVwOmbRTDqL773PNxNGM=;
+        s=default; t=1590519693;
+        bh=bPxqR0PLtI2XhTEKDMmR4d8gFqmhTzEniP59wxMePZ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h7Nx3MbpX1ix4BLJ+N7Zi2fEaU3HGga2ly5zXpamR0V6mT1n0ppNuQzy0SwVRU3I9
-         D0F1qB9RTXipmJ0LjN8oIFDgSWZebC5ZzeWuQpuA2wj4EIn32dsrRpyDt8M5VHoLAD
-         pekjKoh5XPH/Pgq8D3vp7IGjmLBLHFr5aP9tWczM=
+        b=WG4qyIP6FZepDFN7HTnmH4QHrOolPXobIPGE2MUZnfrX2HPkj/1Gzorf8DDPPFHyk
+         /XDPzCK2aNDMK+0YB6h4ytbc7OwF3oXnhuffWFXbZB0J5PJ8Vr03igWGynTrrQZqik
+         z6lEQ6F4oEOzZrvuhv5qBcmQe1rbOLFF+9/VB93k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Navid Emamdoost <navid.emamdoost@gmail.com>,
-        John Johansen <john.johansen@canonical.com>
-Subject: [PATCH 5.4 066/111] apparmor: Fix use-after-free in aa_audit_rule_init
-Date:   Tue, 26 May 2020 20:53:24 +0200
-Message-Id: <20200526183939.103196673@linuxfoundation.org>
+        stable@vger.kernel.org, Russell Currey <ruscur@russell.cc>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 40/59] powerpc: Remove STRICT_KERNEL_RWX incompatibility with RELOCATABLE
+Date:   Tue, 26 May 2020 20:53:25 +0200
+Message-Id: <20200526183920.239637537@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
-References: <20200526183932.245016380@linuxfoundation.org>
+In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
+References: <20200526183907.123822792@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,38 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
+From: Russell Currey <ruscur@russell.cc>
 
-commit c54d481d71c6849e044690d3960aaebc730224cc upstream.
+[ Upstream commit c55d7b5e64265fdca45c85b639013e770bde2d0e ]
 
-In the implementation of aa_audit_rule_init(), when aa_label_parse()
-fails the allocated memory for rule is released using
-aa_audit_rule_free(). But after this release, the return statement
-tries to access the label field of the rule which results in
-use-after-free. Before releasing the rule, copy errNo and return it
-after release.
+I have tested this with the Radix MMU and everything seems to work, and
+the previous patch for Hash seems to fix everything too.
+STRICT_KERNEL_RWX should still be disabled by default for now.
 
-Fixes: 52e8c38001d8 ("apparmor: Fix memory leak of rule on error exit path")
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-Signed-off-by: John Johansen <john.johansen@canonical.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Please test STRICT_KERNEL_RWX + RELOCATABLE!
 
+Signed-off-by: Russell Currey <ruscur@russell.cc>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20191224064126.183670-2-ruscur@russell.cc
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/apparmor/audit.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/powerpc/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/security/apparmor/audit.c
-+++ b/security/apparmor/audit.c
-@@ -197,8 +197,9 @@ int aa_audit_rule_init(u32 field, u32 op
- 	rule->label = aa_label_parse(&root_ns->unconfined->label, rulestr,
- 				     GFP_KERNEL, true, false);
- 	if (IS_ERR(rule->label)) {
-+		int err = PTR_ERR(rule->label);
- 		aa_audit_rule_free(rule);
--		return PTR_ERR(rule->label);
-+		return err;
- 	}
- 
- 	*vrule = rule;
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 6b73ef2bba2e..b74c3a68c0ad 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -141,7 +141,7 @@ config PPC
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+ 	select ARCH_HAS_SCALED_CPUTIME		if VIRT_CPU_ACCOUNTING_NATIVE
+ 	select ARCH_HAS_SG_CHAIN
+-	select ARCH_HAS_STRICT_KERNEL_RWX	if ((PPC_BOOK3S_64 || PPC32) && !RELOCATABLE && !HIBERNATION)
++	select ARCH_HAS_STRICT_KERNEL_RWX	if ((PPC_BOOK3S_64 || PPC32) && !HIBERNATION)
+ 	select ARCH_HAS_TICK_BROADCAST		if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
+ 	select ARCH_HAS_ZONE_DEVICE		if PPC_BOOK3S_64
+-- 
+2.25.1
+
 
 
