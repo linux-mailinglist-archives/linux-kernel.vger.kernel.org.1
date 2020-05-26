@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7071E2BB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF91C1E2C24
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391722AbgEZTHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:07:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36484 "EHLO mail.kernel.org"
+        id S2392100AbgEZTMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:12:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390824AbgEZTHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:07:41 -0400
+        id S2392087AbgEZTMc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:12:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DAAA720776;
-        Tue, 26 May 2020 19:07:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 58B32208A7;
+        Tue, 26 May 2020 19:12:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520061;
-        bh=vVCIltNcz/8Jdr774CvbyozkDPjMp8YtsaGVK8ZabrA=;
+        s=default; t=1590520351;
+        bh=rrjn21lIwbVsYMAky8QjM0Drt8vWHEafCQYkuckifaw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GXP1YY71utGVaHbg0bJcraWdmybeCV86LkQk640SPImMJBqR6KAeqkMuxMgBoxxNa
-         URR6fm8fWn4RViFE4geKyHSaxGi4Qc/Fv8U+0VMXTowlsSoL27camRRbwcQye7/xPE
-         NrjSxgqjXSCzx1odgzXXYbm1HKZqkr3mAxXA0qm4=
+        b=qkgNua5pCGOq3E8HksnHhNxR9LX3bP88zTrCMNzL9E5Tiak/rbaTf6Hc2kcdKxvxi
+         lEzBcosnhZXGSRm0FjLDQqmDsdNXoby54dmhU9wJqSld3ecOEHXqNvr1BXylQQwsLI
+         9FemQQNeeAGNTY9llZeGsh90bTm+ggbM4fNh6Epo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Harry Wentland <Harry.Wentland@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Maxim Petrov <mmrmaximuzz@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 044/111] drm/amd/display: Prevent dpcd reads with passive dongles
+Subject: [PATCH 5.6 045/126] stmmac: fix pointer check after utilization in stmmac_interrupt
 Date:   Tue, 26 May 2020 20:53:02 +0200
-Message-Id: <20200526183937.105105322@linuxfoundation.org>
+Message-Id: <20200526183941.778481795@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
-References: <20200526183932.245016380@linuxfoundation.org>
+In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
+References: <20200526183937.471379031@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,61 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aurabindo Pillai <aurabindo.pillai@amd.com>
+From: Maxim Petrov <mmrmaximuzz@gmail.com>
 
-[ Upstream commit e6142dd511425cb827b5db869f489eb81f5f994d ]
+[ Upstream commit f42234ffd531ca6b13d9da02faa60b72eccf8334 ]
 
-[why]
-During hotplug, a DP port may be connected to the sink through
-passive adapter which does not support DPCD reads. Issuing reads
-without checking for this condition will result in errors
+The paranoidal pointer check in IRQ handler looks very strange - it
+really protects us only against bogus drivers which request IRQ line
+with null pointer dev_id. However, the code fragment is incorrect
+because the dev pointer is used before the actual check which leads
+to undefined behavior. Remove the check to avoid confusing people
+with incorrect code.
 
-[how]
-Ensure the link is in aux_mode before initiating operation that result
-in a DPCD read.
-
-Signed-off-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Reviewed-by: Harry Wentland <Harry.Wentland@amd.com>
-Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Maxim Petrov <mmrmaximuzz@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c   | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 99906435dcf7..9f30343262f3 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -1422,17 +1422,22 @@ amdgpu_dm_update_connector_after_detect(struct amdgpu_dm_connector *aconnector)
- 		dc_sink_retain(aconnector->dc_sink);
- 		if (sink->dc_edid.length == 0) {
- 			aconnector->edid = NULL;
--			drm_dp_cec_unset_edid(&aconnector->dm_dp_aux.aux);
-+			if (aconnector->dc_link->aux_mode) {
-+				drm_dp_cec_unset_edid(
-+					&aconnector->dm_dp_aux.aux);
-+			}
- 		} else {
- 			aconnector->edid =
--				(struct edid *) sink->dc_edid.raw_edid;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 7da18c9afa01..d564459290ce 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -3988,7 +3988,7 @@ static int stmmac_set_features(struct net_device *netdev,
+ /**
+  *  stmmac_interrupt - main ISR
+  *  @irq: interrupt number.
+- *  @dev_id: to pass the net device pointer.
++ *  @dev_id: to pass the net device pointer (must be valid).
+  *  Description: this is the main driver interrupt service routine.
+  *  It can call:
+  *  o DMA service routine (to manage incoming frame reception and transmission
+@@ -4012,11 +4012,6 @@ static irqreturn_t stmmac_interrupt(int irq, void *dev_id)
+ 	if (priv->irq_wake)
+ 		pm_wakeup_event(priv->device, 0);
+ 
+-	if (unlikely(!dev)) {
+-		netdev_err(priv->dev, "%s: invalid dev pointer\n", __func__);
+-		return IRQ_NONE;
+-	}
 -
-+				(struct edid *)sink->dc_edid.raw_edid;
- 
- 			drm_connector_update_edid_property(connector,
--					aconnector->edid);
--			drm_dp_cec_set_edid(&aconnector->dm_dp_aux.aux,
--					    aconnector->edid);
-+							   aconnector->edid);
-+
-+			if (aconnector->dc_link->aux_mode)
-+				drm_dp_cec_set_edid(&aconnector->dm_dp_aux.aux,
-+						    aconnector->edid);
- 		}
-+
- 		amdgpu_dm_update_freesync_caps(connector, aconnector->edid);
- 
- 	} else {
+ 	/* Check if adapter is up */
+ 	if (test_bit(STMMAC_DOWN, &priv->state))
+ 		return IRQ_HANDLED;
 -- 
 2.25.1
 
