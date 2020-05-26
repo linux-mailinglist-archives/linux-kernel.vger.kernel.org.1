@@ -2,69 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7948E1E3274
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67FC31E3276
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390562AbgEZW1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 18:27:22 -0400
-Received: from smtprelay0004.hostedemail.com ([216.40.44.4]:34966 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389382AbgEZW1W (ORCPT
+        id S2391853AbgEZW2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 18:28:05 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:34792 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2389382AbgEZW2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 18:27:22 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 43B8718029139;
-        Tue, 26 May 2020 22:27:21 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:560:599:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2692:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:7901:7903:7974:10004:10400:10848:11232:11658:11914:12048:12296:12297:12663:12740:12760:12895:13069:13072:13076:13255:13311:13357:13439:14659:14721:14777:21080:21324:21325:21433:21627:21660:21819:30003:30022:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:52,LUA_SUMMARY:none
-X-HE-Tag: rain73_061635826d4d
-X-Filterd-Recvd-Size: 1963
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf09.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 26 May 2020 22:27:19 +0000 (UTC)
-Message-ID: <b0854ec2906323d34514875a58a79d4cb74e44b0.camel@perches.com>
-Subject: Re: [PATCH] MAINTAINERS: Update my maintainer entries to reorder
- email addresses
-From:   Joe Perches <joe@perches.com>
-To:     Shuah Khan <skhan@linuxfoundation.org>, mchehab+huawei@kernel.org,
-        davem@davemloft.net, robh@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org
-Date:   Tue, 26 May 2020 15:27:18 -0700
-In-Reply-To: <661f53a3-b15c-76b0-f220-0d292b0843d5@linuxfoundation.org>
-References: <20200523021928.67126-1-skhan@linuxfoundation.org>
-         <7366c990d4352e093ff7d17953079d7f0420c3a9.camel@perches.com>
-         <661f53a3-b15c-76b0-f220-0d292b0843d5@linuxfoundation.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        Tue, 26 May 2020 18:28:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590532083;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Zot0MumI80M6LltNRVCk3AF2xaXS+BMw2uFnGlBjtsM=;
+        b=THZ2Sw3HZIJByQpON/sLWnQvVX3zsU5Bc7slCeroGFjkbjQyxFXFbkMzucN+ohkEzkfGTT
+        QkA1ZTJJiLZqZiMPJ5sUeLiHP+/8zrZ4ITCi3R0vHGWALJ+jBvYPDEO9Lyyyf+zHcxrKge
+        wRDibxsVFGyIuV2izzWCPnTRdm/SZmQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-276-cqUthT54M8-0PC-lCpDbEg-1; Tue, 26 May 2020 18:27:59 -0400
+X-MC-Unique: cqUthT54M8-0PC-lCpDbEg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EDA9B800688;
+        Tue, 26 May 2020 22:27:57 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-115-53.rdu2.redhat.com [10.10.115.53])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0F62760C05;
+        Tue, 26 May 2020 22:27:55 +0000 (UTC)
+Subject: Re: [PATCH] locking/lockdep: Increase MAX_LOCKDEP_ENTRIES by half
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Qian Cai <cai@lca.pw>, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will.deacon@arm.com>, linux-kernel@vger.kernel.org
+References: <20200526174349.8312-1-longman@redhat.com>
+ <20200526185850.GE991@lca.pw>
+ <20200526195630.GF325280@hirez.programming.kicks-ass.net>
+ <b88d5379-687d-8c14-40ae-221c79500996@redhat.com>
+ <20200526212707.GE2483@worktop.programming.kicks-ass.net>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <7be0bc35-37cc-a325-ad1c-3017f6526768@redhat.com>
+Date:   Tue, 26 May 2020 18:27:55 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
+In-Reply-To: <20200526212707.GE2483@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-05-26 at 11:04 -0600, Shuah Khan wrote:
-> On 5/22/20 8:26 PM, Joe Perches wrote:
-> > On Fri, 2020-05-22 at 20:19 -0600, Shuah Khan wrote:
-> > > get_maintainer.pl picks only the first email address found in the file.
-> > > Reorder my email addresses so it finds my linuxfoundation.org email.
-> > 
-> > OK.
-[]
-> Sadly, people that don't run get_maintainer.pl, leave alone running it
-> with --noremove-duplicates option. So your suggestion doesn't really
-> help me.
-> 
-> My preference is to get patches to both Inboxes if possible which isn't
-> possible unless -noremove-duplicate is default. Having this option as
-> default probably will annoy lot of people . So I am not asking for
-> that.
-> 
-> That being said, I don't understand your comment. Are you recommending
-> using just one email in these entries?
+On 5/26/20 5:27 PM, Peter Zijlstra wrote:
+> On Tue, May 26, 2020 at 04:30:58PM -0400, Waiman Long wrote:
+>> On 5/26/20 3:56 PM, Peter Zijlstra wrote:
+>>> On Tue, May 26, 2020 at 02:58:50PM -0400, Qian Cai wrote:
+>>>
+>>>> I still don't understand why reading all sysfs files on this system
+>>>> could increase that much, but here is the lockdep file after
+>>>> running sysfs read to see if you could spot anything obviously,
+>>>>
+>>>> https://cailca.github.io/files/lockdep.txt
+>>> 00000000f011a2a5 OPS:      20 FD:   45 BD:    1 .+.+: kn->active#834
+>>>
+>>> is that somewhere near the number of CPUs you have?
+>>>
+>>> Anyway, there's very long "kn->active#..." chains in there, which seems
+>>> to suggest some annotation is all sorts of buggered.
+>>>
+>> It is actually one active lock per instance of the kerfs_node structures.
+>> That means more than 800 sysfs files are accessed in some way. As we could
+>> have much more than 800 sysfs files in the system, we could easily overwhelm
+>> the lockdep tables if we really try to access all of them.
+> A lock per instance is crazy, that's not what lockdep is made for.
+> Fixing this seems like a far better idea than increasing the numbers.
 
-Yes.  And maybe set an autoforward rule in that email to
-forward the received email to your other address.
+Thinking about it, one lock per sysfs file does make sense as access to 
+those sysfs files can invoke vastly different code path and unifying 
+them into one single lock can easily lead to false positive warning.
 
+Cheers,
+Longman
 
