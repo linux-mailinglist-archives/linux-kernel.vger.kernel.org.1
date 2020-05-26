@@ -2,186 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136541E2F3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC65B1E2F3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389354AbgEZTns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:43:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389149AbgEZTnr (ORCPT
+        id S2389742AbgEZTpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:45:20 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:9690 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389360AbgEZTpU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:43:47 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7C6C03E96D
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 12:43:47 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id i190so21822093ybg.6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 12:43:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:subject:from:to:cc;
-        bh=NB9RZ9RdGXFtR3wmsPCT6ld5ryX9VoyfJ5DeVtdIcp4=;
-        b=DvoIrwwa78TAogla+2FdL0rlzEgjXB4Rktgb0EQfAjrM3lcuA3qcnO5ktM4NJonKRb
-         r/T8uZVm+rcjvnuqzBHnXluB89n/xQ+zMmkEpEa9XRatFZCfA8MZB2gsF8x/FHtHkYJJ
-         x0h0LZyuiiUZf5q8fkaq5Dyrrinm6JiQYECdF58MCZFD8RYBk7dNqFG7Yv+09E3PsukJ
-         EdGm/bUl1VEnfOl4pWIKP3OAOLtBpuAadyf9Q4Hhrz7mxDNNWRrFrDiRdE4RQUWhcyPO
-         r3prxi/Y8vIlVbJOu7n3n0ZNGXS1pcBOVycAw9PGtgZY3Na3CC1Ovk728BeQGCAHJgTM
-         Q8pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version:subject
-         :from:to:cc;
-        bh=NB9RZ9RdGXFtR3wmsPCT6ld5ryX9VoyfJ5DeVtdIcp4=;
-        b=oIgicTHaB6DYemOkZREiJYLinmr9erPX3J4Y+f6QACCCKIbnx+XsiRMW98OB9tn3RK
-         DiY0Q8ZMM6sxoEQGf7VXyUTpAJw39UOfWunZ13PRptqO1/vj6lZ4RyUr7vJgcEIbR+jS
-         5d63TBiRuPcsBH3yGsND3jOtBRiFuuGnCDcdeqMS67zZbxo5c+I+jnVKz2PkMMN23Zkf
-         Xlw95Mg4+yCoWCYRqkhmI3J6tMBodAImn3diXNkJoHjKay86QswCXL3uLhnTKtKjaMsN
-         HXEsm95Ohy9M0WARBEwYvf4xI3npKYemxUV//f7qPgtJMcQXHffZGPd0/ZJnVlF3YV3g
-         X56w==
-X-Gm-Message-State: AOAM532T+9sCLjkzh9HWSn2DIhAkrvgsYkka2O4De9CrXzWKA7Spf0pi
-        5332N6IjiktNTRghpfZHjR5KH4A6jVgCtWs=
-X-Google-Smtp-Source: ABdhPJw1fzBBUe7e46QkrW4zeZNwEH2qryRHXS1NUbIAjeMeDUYPkZVrk34n/VXE9bqbU5HulxGFA9gSaEqHbUo=
-X-Received: by 2002:a5b:14a:: with SMTP id c10mr4152627ybp.227.1590522226385;
- Tue, 26 May 2020 12:43:46 -0700 (PDT)
-Date:   Tue, 26 May 2020 12:43:28 -0700
-In-Reply-To: <6144404cb26d1f797fd7e87b124bcaf8@walle.cc>
-Message-Id: <20200526194328.258722-1-saravanak@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.27.0.rc0.183.gde8f92d652-goog
-Subject: [PATCH v2] driver core: Update device link status correctly for
- SYNC_STATE_ONLY links
-From:   Saravana Kannan <saravanak@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     Michael Walle <michael@walle.cc>, kernel-team@android.com,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 26 May 2020 15:45:20 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ecd717c0000>; Tue, 26 May 2020 12:43:56 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 26 May 2020 12:45:19 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 26 May 2020 12:45:19 -0700
+Received: from [10.2.50.17] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 26 May
+ 2020 19:45:18 +0000
+Subject: Re: [PATCH 1/1] vfio/spapr_tce: convert get_user_pages() -->
+ pin_user_pages()
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>, <kvm@vger.kernel.org>
+References: <20200523014347.193290-1-jhubbard@nvidia.com>
+ <CAFqt6zYmYQ93jbKNAjDpiH7exjyGv8E-2xHW++yV5CiYMyL5ew@mail.gmail.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <40a4e26f-b89b-a3db-6936-f94b9bb4fc9d@nvidia.com>
+Date:   Tue, 26 May 2020 12:45:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
+MIME-Version: 1.0
+In-Reply-To: <CAFqt6zYmYQ93jbKNAjDpiH7exjyGv8E-2xHW++yV5CiYMyL5ew@mail.gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1590522236; bh=/XnNrvzb9RLbuq2lH//zFeUnFIDYaIiAnPILKTFB44A=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=ZkEgKRfrAfi9lRHILxBG7yG6OSKh6fkLuxThz66yrmzGY/6rYE2zNqc4TBJJtIwdz
+         lghpnqH4YUsDN/NppuiFUu5Rgqo+2z8ZY/0gOSDjnwFPrMmGtdVgzAgRCsDk/58Y5q
+         LdkVddbL8/CIz47hUA3EWTqnrdiwZOhfys7ris0SpU3jP21kg0ckJY34mOhoER+jP8
+         nlI0NxtieLK3p9p1Q1p7R+XlHR1Ux6wFyCIb8KpSEygIJYyg9PJKGNzu4RCNtrU5kj
+         RnmV5uOG5VnTn9c2I79MRJfAg1g8eSdoONeVfapKgB9gfLt1LjkfjqmQOk1Mu8U+MG
+         I14CdS/mnKs9Q==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When SYNC_STATE_ONLY support was added in commit 05ef983e0d65 ("driver
-core: Add device link support for SYNC_STATE_ONLY flag"),
-SYNC_STATE_ONLY links were treated similar to STATELESS links in terms
-of not blocking consumer probe if the supplier hasn't probed yet.
+On 2020-05-26 12:28, Souptick Joarder wrote:
+>> @@ -486,7 +486,7 @@ static int tce_iommu_use_page(unsigned long tce, unsigned long *hpa)
+>>          struct page *page = NULL;
+>>          enum dma_data_direction direction = iommu_tce_direction(tce);
+>>
+>> -       if (get_user_pages_fast(tce & PAGE_MASK, 1,
+>> +       if (pin_user_pages_fast(tce & PAGE_MASK, 1,
+>>                          direction != DMA_TO_DEVICE ? FOLL_WRITE : 0,
+>>                          &page) != 1)
+>>                  return -EFAULT;
+> 
+> There are few places where nr_pages is passed as 1 to get_user_pages_fast().
+> With similar conversion those will be changed to pin_user_pages_fast().
+> 
+> Does it make sense to add an inline like - pin_user_page_fast(), similar to
+> get_user_page_fast_only() ( now merged in linux-next) ?
+> 
 
-That caused a SYNC_STATE_ONLY device link's status to not get updated.
-Since SYNC_STATE_ONLY device link is no longer useful once the
-consumer probes, commit 21c27f06587d ("driver core: Fix
-SYNC_STATE_ONLY device link implementation") addresses the status
-update issue by deleting the SYNC_STATE_ONLY device link instead of
-complicating the status update code.
+Perhaps not *just* yet, IMHO. There are only two places so far: here, and
+dax_lock_page(). And we don't expect that many places, either, because
+pin_user_pages*(), unlike get_user_pages(), is more likely to operate on
+a bunch of pages at once. Although, that could change if we look into the
+remaining call sites and find more single-page cases that need a gup-to-pup
+conversion.
 
-However, there are still some cases where we need to update the status
-of a SYNC_STATE_ONLY device link. This is because a SYNC_STATE_ONLY
-device link can later get converted into a normal MANAGED device link
-when a normal MANAGED device link is created between a supplier and
-consumer that already have a SYNC_STATE_ONLY device link between them.
+get_user_pages*() has a few more situations (Case 4, in
+Documentation/core-api/pin_user_pages.rst: struct page manipulation) in
+which it operates on single pages. Those will remain get_user_pages*()
+calls, or perhaps change to get_user_page().
 
-If a SYNC_STATE_ONLY device link's status isn't maintained correctly
-till it's converted to a normal MANAGED device link, then the normal
-MANAGED device link will end up with a wrong link status. This can cause
-a warning stack trace[1] when the consumer device probes successfully.
 
-This commit fixes the SYNC_STATE_ONLY device link status update issue
-where it wouldn't transition correctly from DL_STATE_DORMANT or
-DL_STATE_AVAILABLE to DL_STATE_CONSUMER_PROBE. It also resets the status
-back to DL_STATE_DORMANT or DL_STATE_AVAILABLE if the consumer probe
-fails.
-
-[1] - https://lore.kernel.org/lkml/20200522204120.3b3c9ed6@apollo/
-Fixes: 05ef983e0d65 ("driver core: Add device link support for SYNC_STATE_ONLY flag")
-Fixes: 21c27f06587d ("driver core: Fix SYNC_STATE_ONLY device link implementation")
-Reported-by: Michael Walle <michael@walle.cc>
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
-
-v1->v2:
-- Added code to "revert" the link status if consumer probe fails
-
-Greg,
-
-I think this is the issue Michael ran into. I'd like him to test the fix
-before it's pulled in.
-
-Michael,
-
-If you can test this on the branch you saw the issue in and give a
-Tested-by if it works, that'd be great.
-
-Thanks,
-Saravana
-
- drivers/base/core.c | 34 ++++++++++++++++++++++++++--------
- 1 file changed, 26 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 791b7530599f..a3d7e2318b5f 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -646,9 +646,17 @@ static void device_links_missing_supplier(struct device *dev)
- {
- 	struct device_link *link;
- 
--	list_for_each_entry(link, &dev->links.suppliers, c_node)
--		if (link->status == DL_STATE_CONSUMER_PROBE)
-+	list_for_each_entry(link, &dev->links.suppliers, c_node) {
-+		if (link->status != DL_STATE_CONSUMER_PROBE)
-+			continue;
-+
-+		if (link->supplier->links.status == DL_DEV_DRIVER_BOUND) {
- 			WRITE_ONCE(link->status, DL_STATE_AVAILABLE);
-+		} else {
-+			WARN_ON(!(link->status & DL_FLAG_SYNC_STATE_ONLY));
-+			WRITE_ONCE(link->status, DL_STATE_DORMANT);
-+		}
-+	}
- }
- 
- /**
-@@ -687,11 +695,11 @@ int device_links_check_suppliers(struct device *dev)
- 	device_links_write_lock();
- 
- 	list_for_each_entry(link, &dev->links.suppliers, c_node) {
--		if (!(link->flags & DL_FLAG_MANAGED) ||
--		    link->flags & DL_FLAG_SYNC_STATE_ONLY)
-+		if (!(link->flags & DL_FLAG_MANAGED))
- 			continue;
- 
--		if (link->status != DL_STATE_AVAILABLE) {
-+		if (link->status != DL_STATE_AVAILABLE &&
-+		    !(link->flags & DL_FLAG_SYNC_STATE_ONLY)) {
- 			device_links_missing_supplier(dev);
- 			ret = -EPROBE_DEFER;
- 			break;
-@@ -952,11 +960,21 @@ static void __device_links_no_driver(struct device *dev)
- 		if (!(link->flags & DL_FLAG_MANAGED))
- 			continue;
- 
--		if (link->flags & DL_FLAG_AUTOREMOVE_CONSUMER)
-+		if (link->flags & DL_FLAG_AUTOREMOVE_CONSUMER) {
- 			device_link_drop_managed(link);
--		else if (link->status == DL_STATE_CONSUMER_PROBE ||
--			 link->status == DL_STATE_ACTIVE)
-+			continue;
-+		}
-+
-+		if (link->status != DL_STATE_CONSUMER_PROBE &&
-+		    link->status != DL_STATE_ACTIVE)
-+			continue;
-+
-+		if (link->supplier->links.status == DL_DEV_DRIVER_BOUND) {
- 			WRITE_ONCE(link->status, DL_STATE_AVAILABLE);
-+		} else {
-+			WARN_ON(!(link->status & DL_FLAG_SYNC_STATE_ONLY));
-+			WRITE_ONCE(link->status, DL_STATE_DORMANT);
-+		}
- 	}
- 
- 	dev->links.status = DL_DEV_NO_DRIVER;
+thanks,
 -- 
-2.27.0.rc0.183.gde8f92d652-goog
-
+John Hubbard
+NVIDIA
