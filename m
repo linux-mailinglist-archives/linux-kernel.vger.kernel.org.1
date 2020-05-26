@@ -2,92 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F8021E1E69
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 11:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 026ED1E1E73
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 11:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388654AbgEZJWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 05:22:54 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:52848 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388425AbgEZJWx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 05:22:53 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 6BB7C1C02C5; Tue, 26 May 2020 11:22:51 +0200 (CEST)
-Date:   Tue, 26 May 2020 11:22:50 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Flavio Suligoi <f.suligoi@asem.it>
-Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: leds: fix macro names for pca955x
-Message-ID: <20200526092250.GB12838@amd>
-References: <20200526092052.24172-1-f.suligoi@asem.it>
+        id S1731747AbgEZJYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 05:24:14 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:56052 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728758AbgEZJYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 05:24:14 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 03A374E93101BAE2F0CA;
+        Tue, 26 May 2020 17:24:11 +0800 (CST)
+Received: from [10.174.151.115] (10.174.151.115) by smtp.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 26 May
+ 2020 17:24:04 +0800
+Subject: Re: [v2 2/2] crypto: virtio: Fix use-after-free in
+ virtio_crypto_skcipher_finalize_req()
+To:     Markus Elfring <Markus.Elfring@web.de>,
+        <linux-crypto@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        Gonglei <arei.gonglei@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+CC:     Corentin Labbe <clabbe@baylibre.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+References: <20200526031956.1897-1-longpeng2@huawei.com>
+ <20200526031956.1897-3-longpeng2@huawei.com>
+ <0248e0f6-7648-f08d-afa2-170ad2e724b7@web.de>
+ <03d3387f-c886-4fb9-e6f2-9ff8dc6bb80a@huawei.com>
+ <8aab4c6b-7d41-7767-4945-e8af1dec902b@web.de>
+From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>
+Message-ID: <321c79df-6397-bbf1-0047-b0b10e5af353@huawei.com>
+Date:   Tue, 26 May 2020 17:24:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="oC1+HKm2/end4ao3"
-Content-Disposition: inline
-In-Reply-To: <20200526092052.24172-1-f.suligoi@asem.it>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <8aab4c6b-7d41-7767-4945-e8af1dec902b@web.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.151.115]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---oC1+HKm2/end4ao3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue 2020-05-26 11:20:52, Flavio Suligoi wrote:
-> The documentation reports the wrong macro names
-> related to the pca9532 instead of the pca955x
->=20
-> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+On 2020/5/26 17:01, Markus Elfring wrote:
+>>>> … Thus release specific resources before
+>>>
+>>> Is there a need to improve also this information another bit?
+>>>
+>> You mean the last two paragraph is redundant ?
+> 
+> No.
+> 
+> I became curious if you would like to choose a more helpful information
+> according to the wording “specific resources”.
+> 
+> Regards,
+> Markus
+> 
+Hi Markus,
 
-Nothing obviously wrong, but why did you send it twice within half an
-hour?
-								Pavel
+I respect your work, but please let us to focus on the code itself. I think
+experts in this area know what these patches want to solve after look at the code.
 
->  Documentation/devicetree/bindings/leds/leds-pca955x.txt | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/leds/leds-pca955x.txt b/Do=
-cumentation/devicetree/bindings/leds/leds-pca955x.txt
-> index 7984efb767b4..7a5830f8d5ab 100644
-> --- a/Documentation/devicetree/bindings/leds/leds-pca955x.txt
-> +++ b/Documentation/devicetree/bindings/leds/leds-pca955x.txt
-> @@ -26,9 +26,9 @@ LED sub-node properties:
->  		from 0 to 15 for the pca9552
->  		from 0 to  3 for the pca9553
->  - type: (optional) either
-> -	PCA9532_TYPE_NONE
-> -	PCA9532_TYPE_LED
-> -	PCA9532_TYPE_GPIO
-> +	PCA955X_TYPE_NONE
-> +	PCA955X_TYPE_LED
-> +	PCA955X_TYPE_GPIO
->  	see dt-bindings/leds/leds-pca955x.h (default to LED)
->  - label : (optional)
->  	see Documentation/devicetree/bindings/leds/common.txt
+I hope experts in the thread could review the code when you free, thanks :)
 
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---oC1+HKm2/end4ao3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl7M3+oACgkQMOfwapXb+vL1iQCgnMFgoyAI93TGZbBPfLRftwVb
-ZD8An2uhQlu0n1Bcfem0zYVqj+KELHWc
-=BxPE
------END PGP SIGNATURE-----
-
---oC1+HKm2/end4ao3--
+---
+Regards,
+Longpeng(Mike)
