@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 027911E2B8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB5051E2B1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391572AbgEZTGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:06:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34278 "EHLO mail.kernel.org"
+        id S2389182AbgEZTCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:02:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403867AbgEZTGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:06:10 -0400
+        id S2391036AbgEZTCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:02:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 75E5A20776;
-        Tue, 26 May 2020 19:06:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C4492086A;
+        Tue, 26 May 2020 19:02:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519968;
-        bh=H3zYurp4vws08k5KeeuCCQoUZXnK6XFe5PA6kHN1Gm0=;
+        s=default; t=1590519726;
+        bh=Ll3i88I6dH+M1vcXVswOh7ONTIPk/HSwLa9ixcVzbH0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D1pkQgGh3cyaKGm99TzyjpviPVa13cHx3170afuQMpyeOmciUVU57Rzp9da1WDNk2
-         ROm4wzUOPyJV7Dx3G1ry4unN5WPXKmS5nVxNoQ5y1xwgiBRpeuSK5dxI5ZAwhWFRES
-         6jVfJqNRuds42JvArtB9EYMx7LKwA9uBhAyMZ8tc=
+        b=YQYWI2bBoseELmkKgvSXn/1a/a/KV71/BncWCt7Twx/mVgS00Yaz3jpkSYXYzD57t
+         7Q30iZaEh4Zuii65dad5IEGVq/WhWNhcV1CwRyclT5AVJ3uk/agyzmBEg0Ba2vlAy5
+         PacRVNNX3i5O/ff1KlK2n6iPVYX4X3XBrJ7U1fck=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>,
-        Evan Green <evgreen@chromium.org>,
-        Ryan Case <ryandcase@chromium.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 62/81] tty: serial: qcom_geni_serial: Fix wrap around of TX buffer
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.14 52/59] iio: sca3000: Remove an erroneous get_device()
 Date:   Tue, 26 May 2020 20:53:37 +0200
-Message-Id: <20200526183933.937416893@linuxfoundation.org>
+Message-Id: <20200526183923.000245316@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
-References: <20200526183923.108515292@linuxfoundation.org>
+In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
+References: <20200526183907.123822792@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,76 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Kaehlcke <mka@chromium.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 3c66eb4ba18dd1cab0d1bde651cde6d8bdb47696 ]
+commit 928edefbc18cd8433f7df235c6e09a9306e7d580 upstream.
 
-Before commit a1fee899e5bed ("tty: serial: qcom_geni_serial: Fix
-softlock") the size of TX transfers was limited to the TX FIFO size,
-and wrap arounds of the UART circular buffer were split into two
-transfers. With the commit wrap around are allowed within a transfer.
-The TX FIFO of the geni serial port uses a word size of 4 bytes. In
-case of a circular buffer wrap within a transfer the driver currently
-may write an incomplete word to the FIFO, with some bytes containing
-data from the circular buffer and others being zero. Since the
-transfer isn't completed yet the zero bytes are sent as if they were
-actual data.
+This looks really unusual to have a 'get_device()' hidden in a 'dev_err()'
+call.
+Remove it.
 
-Handle wrap arounds of the TX buffer properly and ensure that words
-written to the TX FIFO always contain valid data (unless the transfer
-is completed).
+While at it add a missing \n at the end of the message.
 
-Fixes: a1fee899e5bed ("tty: serial: qcom_geni_serial: Fix softlock")
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-Reviewed-by: Evan Green <evgreen@chromium.org>
-Tested-by: Ryan Case <ryandcase@chromium.org>
+Fixes: 574fb258d636 ("Staging: IIO: VTI sca3000 series accelerometer driver (spi)")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/tty/serial/qcom_geni_serial.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
-index 4458419f053b..0d405cc58e72 100644
---- a/drivers/tty/serial/qcom_geni_serial.c
-+++ b/drivers/tty/serial/qcom_geni_serial.c
-@@ -705,7 +705,7 @@ static void qcom_geni_serial_handle_tx(struct uart_port *uport, bool done,
- 	avail *= port->tx_bytes_pw;
- 
- 	tail = xmit->tail;
--	chunk = min3(avail, pending, (size_t)(UART_XMIT_SIZE - tail));
-+	chunk = min(avail, pending);
- 	if (!chunk)
- 		goto out_write_wakeup;
- 
-@@ -727,19 +727,21 @@ static void qcom_geni_serial_handle_tx(struct uart_port *uport, bool done,
- 
- 		memset(buf, 0, ARRAY_SIZE(buf));
- 		tx_bytes = min_t(size_t, remaining, port->tx_bytes_pw);
--		for (c = 0; c < tx_bytes ; c++)
--			buf[c] = xmit->buf[tail + c];
-+
-+		for (c = 0; c < tx_bytes ; c++) {
-+			buf[c] = xmit->buf[tail++];
-+			tail &= UART_XMIT_SIZE - 1;
-+		}
- 
- 		iowrite32_rep(uport->membase + SE_GENI_TX_FIFOn, buf, 1);
- 
- 		i += tx_bytes;
--		tail += tx_bytes;
- 		uport->icount.tx += tx_bytes;
- 		remaining -= tx_bytes;
- 		port->tx_remaining -= tx_bytes;
+---
+ drivers/iio/accel/sca3000.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/iio/accel/sca3000.c
++++ b/drivers/iio/accel/sca3000.c
+@@ -982,7 +982,7 @@ static int sca3000_read_data(struct sca3
+ 	st->tx[0] = SCA3000_READ_REG(reg_address_high);
+ 	ret = spi_sync_transfer(st->us, xfer, ARRAY_SIZE(xfer));
+ 	if (ret) {
+-		dev_err(get_device(&st->us->dev), "problem reading register");
++		dev_err(&st->us->dev, "problem reading register\n");
+ 		return ret;
  	}
  
--	xmit->tail = tail & (UART_XMIT_SIZE - 1);
-+	xmit->tail = tail;
- 
- 	/*
- 	 * The tx fifo watermark is level triggered and latched. Though we had
--- 
-2.25.1
-
 
 
