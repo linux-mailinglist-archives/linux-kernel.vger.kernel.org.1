@@ -2,139 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FEF01E258C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 17:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6B01E2592
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 17:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729936AbgEZPea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 11:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729088AbgEZPea (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 11:34:30 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03F83C03E96D
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 08:34:29 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id b190so10317219pfg.6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 08:34:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8W11mCFaZlqqgwjd6pr/5BoHKN+oaQPu3yE26VkZIxk=;
-        b=kgFR34KBsx0oI1+MKKstfa5lW1H5kQ16Y3jO42RlsqGTyZe7QT5tmf1xmKgWNZI6ub
-         XyrEvbKspvwFeI1YqvY+nWDW2SVEsc2mJiHS0OKG0sbHzL+pYMGEGFTVbP8Y9eVmH9Wc
-         o65pnCp6nWc1vf1fxko35nOU3W0XLc3OwdzFU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8W11mCFaZlqqgwjd6pr/5BoHKN+oaQPu3yE26VkZIxk=;
-        b=A1HjMxxMupb9F3l4d3wfXjBrEn8oRl2G4lO1Ctt52MGv6/YtKtvSB0AM4j8Bx8Gu5/
-         y7ERwa9JRdoXt2YkAsFl+AVizRtmefREKlZEkY1xOGklmBqETPDgDoC6aZdeTiQrEjaN
-         sJqwNxwCyzRh06prKDKFsFqfeZYOdW9wfeVS9yzSM80E4N1lURk3DZWUFpM4qKuuoVL0
-         /T5/SER5VqQIHBcZ+DGrOXazpww4Kb84i27ekPY3hEY0iyaMlr4w1Y/pExLvPRmE3376
-         j1DTiz7PzxS13Rx8rqAxybmfTAK7cWcwZGhGT4px0ZxTE2JCWRmsFLdXoozRWaYFmduB
-         Mctw==
-X-Gm-Message-State: AOAM530wRnnA6sf/bXS49D7tfebnO4r30IaJZds9ieS3T097Q6a+71YN
-        REfJkCdOhzZx9+6vie9Rr1GGCA==
-X-Google-Smtp-Source: ABdhPJwvQUuJk+3JmCR8WIBdZSU/GvEbA9MR1r4bCTHrtiDU0sJOoFq1RbVUiRntAYHcL1SgZGUWCA==
-X-Received: by 2002:a63:c34a:: with SMTP id e10mr1608669pgd.412.1590507268516;
-        Tue, 26 May 2020 08:34:28 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
-        by smtp.gmail.com with ESMTPSA id r1sm83636pgb.37.2020.05.26.08.34.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 May 2020 08:34:27 -0700 (PDT)
-Date:   Tue, 26 May 2020 08:34:25 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Zijun Hu <zijuhu@codeaurora.org>
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
-        rjliao@codeaurora.org
-Subject: Re: [PATCH v2] bluetooth: hci_qca: Fix qca6390 enable failure after
- warm reboot
-Message-ID: <20200526153425.GD4525@google.com>
-References: <1590461850-9908-1-git-send-email-zijuhu@codeaurora.org>
+        id S1729527AbgEZPgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 11:36:37 -0400
+Received: from mga12.intel.com ([192.55.52.136]:51208 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727898AbgEZPgh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 11:36:37 -0400
+IronPort-SDR: 43cyAXVZHP1C88E8i17p0KAM9JwfSeFRQNqD1P6IvcW+aCOlQK3UjxrTB3dm+2v0nqpmnD+/wT
+ 9Wza9nDI37OA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 08:36:36 -0700
+IronPort-SDR: 4EhNy3eDS8wkgCtFNcGOZyBbow78wWY/Ff7B279t7rKURPh8t3+pfsZHOgvKD6XQoj+gUfaPFL
+ xphpp55/Tm5Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,437,1583222400"; 
+   d="scan'208";a="442123122"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.157]) ([10.237.72.157])
+  by orsmga005.jf.intel.com with ESMTP; 26 May 2020 08:36:33 -0700
+Subject: Re: [PATCH] perf tools: Fix debuginfo search for Ubuntu
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Travis Downs <travis.downs@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+References: <20200526152910.1587-1-adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <e6b51637-5713-02fb-4eda-c1f2f0cd8288@intel.com>
+Date:   Tue, 26 May 2020 18:36:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <20200526152910.1587-1-adrian.hunter@intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1590461850-9908-1-git-send-email-zijuhu@codeaurora.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 10:57:30AM +0800, Zijun Hu wrote:
-> Warm reboot can not restore qca6390 controller baudrate
-> to default due to lack of controllable BT_EN pin or power
-> supply, so fails to download firmware after warm reboot.
+On 26/05/20 6:29 pm, Adrian Hunter wrote:
+> Reportedly, from 19.10 Ubuntu has begun mixing up the location of some
+> debug symbol files, putting files expected to be in
+> /usr/lib/debug/usr/lib into /usr/lib/debug/lib instead. Fix by adding
+> another dso_binary_type.
 > 
-> Fixed by sending EDL_SOC_RESET VSC to reset controller
-> within added device shutdown implementation.
+> Example on Ubuntu 20.04
 > 
-> Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
+>   Before:
+> 
+>     $ perf record -e intel_pt//u uname
+>     Linux
+>     [ perf record: Woken up 1 times to write data ]
+>     [ perf record: Captured and wrote 0.030 MB perf.data ]
+>     $ perf script --call-trace | head -5
+>            uname 14003 [005] 15321.764958566:  cbr: 42 freq: 4219 MHz (156%)
+>            uname 14003 [005] 15321.764958566: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )          7f1e71cc4100
+>            uname 14003 [005] 15321.764961566: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )              7f1e71cc4df0
+>            uname 14003 [005] 15321.764961900: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )              7f1e71cc4e18
+>            uname 14003 [005] 15321.764963233: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )              7f1e71cc5128
+> 
+>   After:
+> 
+>     $ perf script --call-trace | head -5
+>            uname 14003 [005] 15321.764958566:  cbr: 42 freq: 4219 MHz (156%)
+>            uname 14003 [005] 15321.764958566: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )      _start
+>            uname 14003 [005] 15321.764961566: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )          _dl_start
+>            uname 14003 [005] 15321.764961900: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )          _dl_start
+>            uname 14003 [005] 15321.764963233: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )          _dl_start
+> 
+> Reported-by: Travis Downs <travis.downs@gmail.com>
+> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: stable@vger.kernel.org
 > ---
->  drivers/bluetooth/hci_qca.c | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
+>  tools/perf/util/dso.c          | 14 ++++++++++++++
+>  tools/perf/util/dso.h          |  1 +
+>  tools/perf/util/probe-finder.c |  1 +
+>  tools/perf/util/symbol.c       |  2 ++
+>  4 files changed, 18 insertions(+)
 > 
-> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-> index e4a6823..b479e51 100644
-> --- a/drivers/bluetooth/hci_qca.c
-> +++ b/drivers/bluetooth/hci_qca.c
-> @@ -1975,6 +1975,32 @@ static void qca_serdev_remove(struct serdev_device *serdev)
->  	hci_uart_unregister_device(&qcadev->serdev_hu);
->  }
+> diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
+> index e68e1375e3c0..15b635d6c83c 100644
+> --- a/tools/perf/util/dso.c
+> +++ b/tools/perf/util/dso.c
+> @@ -47,6 +47,7 @@ char dso__symtab_origin(const struct dso *dso)
+>  		[DSO_BINARY_TYPE__BUILD_ID_CACHE_DEBUGINFO]	= 'D',
+>  		[DSO_BINARY_TYPE__FEDORA_DEBUGINFO]		= 'f',
+>  		[DSO_BINARY_TYPE__UBUNTU_DEBUGINFO]		= 'u',
+> +		[DSO_BINARY_TYPE__MIXEDUP_UBUNTU_DEBUGINFO]	= 'x',
+>  		[DSO_BINARY_TYPE__OPENEMBEDDED_DEBUGINFO]	= 'o',
+>  		[DSO_BINARY_TYPE__BUILDID_DEBUGINFO]		= 'b',
+>  		[DSO_BINARY_TYPE__SYSTEM_PATH_DSO]		= 'd',
+> @@ -129,6 +130,19 @@ int dso__read_binary_type_filename(const struct dso *dso,
+>  		snprintf(filename + len, size - len, "%s", dso->long_name);
+>  		break;
 >  
-> +static void qca_serdev_shutdown(struct device *dev)
-> +{
-> +	int res;
+> +	case DSO_BINARY_TYPE__MIXEDUP_UBUNTU_DEBUGINFO:
+> +		/*
+> +		 * Ubuntu can mixup /usr/lib with /lib, putting debuginfo in
+> +		 * /usr/lib/debug/lib when it is expected to be in
+> +		 * /usr/lib/debug/usr/lib
+> +		 */
+> +		if (strlen(dso->long_name) < 9 ||
+> +		    strncmp(dso->long_name, "/usr/lib/", 9))
+> +			ret = -1;
 
-nit: 'ret' would be a more standard name
+Oops, pushed send too soon.  That should be:
 
-> +	int timeout = msecs_to_jiffies(CMD_TRANS_TIMEOUT_MS);
-> +	struct serdev_device *serdev = to_serdev_device(dev);
-> +	struct qca_serdev *qcadev = serdev_device_get_drvdata(serdev);
-> +	const u8 ibs_wake_cmd[] = { 0xFD };
-> +	const u8 edl_reset_soc_cmd[] = { 0x01, 0x00, 0xFC, 0x01, 0x05 };
+		if (strlen(dso->long_name) < 9 ||
+		    strncmp(dso->long_name, "/usr/lib/", 9)) {
+			ret = -1;
+			break;
+		}
+
+> +		len = __symbol__join_symfs(filename, size, "/usr/lib/debug");
+> +		snprintf(filename + len, size - len, "%s", dso->long_name + 4);
+> +		break;
 > +
-> +	if (qcadev->btsoc_type == QCA_QCA6390) {
-> +		serdev_device_write_flush(serdev);
-> +		res = serdev_device_write_buf(serdev,
-> +				ibs_wake_cmd, sizeof(ibs_wake_cmd));
-> +		BT_DBG("%s: send ibs_wake_cmd res = %d", __func__, res);
-
-Why use BT_DBG regardless of the result, instead of using BT_ERR/WARN only
-in the failure case? And does it actually make sense to continue in case of
-an error?
-
-> +		serdev_device_wait_until_sent(serdev, timeout);
-> +		usleep_range(8000, 10000);
-> +
-> +		serdev_device_write_flush(serdev);
-> +		res = serdev_device_write_buf(serdev,
-> +				edl_reset_soc_cmd, sizeof(edl_reset_soc_cmd));
-> +		BT_DBG("%s: send edl_reset_soc_cmd res = %d", __func__, res);
-
-ditto
-
-> +		serdev_device_wait_until_sent(serdev, timeout);
-> +		usleep_range(8000, 10000);
-> +	}
-> +}
-> +
->  static int __maybe_unused qca_suspend(struct device *dev)
->  {
->  	struct hci_dev *hdev = container_of(dev, struct hci_dev, dev);
-> @@ -2100,6 +2126,7 @@ static struct serdev_device_driver qca_serdev_driver = {
->  		.name = "hci_uart_qca",
->  		.of_match_table = of_match_ptr(qca_bluetooth_of_match),
->  		.acpi_match_table = ACPI_PTR(qca_bluetooth_acpi_match),
-> +		.shutdown = qca_serdev_shutdown,
->  		.pm = &qca_pm_ops,
->  	},
+>  	case DSO_BINARY_TYPE__OPENEMBEDDED_DEBUGINFO:
+>  	{
+>  		const char *last_slash;
+> diff --git a/tools/perf/util/dso.h b/tools/perf/util/dso.h
+> index 42b3a278ac59..8b7958f02609 100644
+> --- a/tools/perf/util/dso.h
+> +++ b/tools/perf/util/dso.h
+> @@ -30,6 +30,7 @@ enum dso_binary_type {
+>  	DSO_BINARY_TYPE__BUILD_ID_CACHE_DEBUGINFO,
+>  	DSO_BINARY_TYPE__FEDORA_DEBUGINFO,
+>  	DSO_BINARY_TYPE__UBUNTU_DEBUGINFO,
+> +	DSO_BINARY_TYPE__MIXEDUP_UBUNTU_DEBUGINFO,
+>  	DSO_BINARY_TYPE__BUILDID_DEBUGINFO,
+>  	DSO_BINARY_TYPE__SYSTEM_PATH_DSO,
+>  	DSO_BINARY_TYPE__GUEST_KMODULE,
+> diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
+> index e4cff49384f4..55924255c535 100644
+> --- a/tools/perf/util/probe-finder.c
+> +++ b/tools/perf/util/probe-finder.c
+> @@ -101,6 +101,7 @@ enum dso_binary_type distro_dwarf_types[] = {
+>  	DSO_BINARY_TYPE__UBUNTU_DEBUGINFO,
+>  	DSO_BINARY_TYPE__OPENEMBEDDED_DEBUGINFO,
+>  	DSO_BINARY_TYPE__BUILDID_DEBUGINFO,
+> +	DSO_BINARY_TYPE__MIXEDUP_UBUNTU_DEBUGINFO,
+>  	DSO_BINARY_TYPE__NOT_FOUND,
 >  };
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+>  
+> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+> index 7725c83996f4..44d81f90b604 100644
+> --- a/tools/perf/util/symbol.c
+> +++ b/tools/perf/util/symbol.c
+> @@ -79,6 +79,7 @@ static enum dso_binary_type binary_type_symtab[] = {
+>  	DSO_BINARY_TYPE__SYSTEM_PATH_KMODULE,
+>  	DSO_BINARY_TYPE__SYSTEM_PATH_KMODULE_COMP,
+>  	DSO_BINARY_TYPE__OPENEMBEDDED_DEBUGINFO,
+> +	DSO_BINARY_TYPE__MIXEDUP_UBUNTU_DEBUGINFO,
+>  	DSO_BINARY_TYPE__NOT_FOUND,
+>  };
+>  
+> @@ -1529,6 +1530,7 @@ static bool dso__is_compatible_symtab_type(struct dso *dso, bool kmod,
+>  	case DSO_BINARY_TYPE__SYSTEM_PATH_DSO:
+>  	case DSO_BINARY_TYPE__FEDORA_DEBUGINFO:
+>  	case DSO_BINARY_TYPE__UBUNTU_DEBUGINFO:
+> +	case DSO_BINARY_TYPE__MIXEDUP_UBUNTU_DEBUGINFO:
+>  	case DSO_BINARY_TYPE__BUILDID_DEBUGINFO:
+>  	case DSO_BINARY_TYPE__OPENEMBEDDED_DEBUGINFO:
+>  		return !kmod && dso->kernel == DSO_TYPE_USER;
 > 
+
