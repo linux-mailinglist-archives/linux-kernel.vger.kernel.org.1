@@ -2,84 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C501E1A6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 06:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59EDE1E1A71
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 06:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726211AbgEZEeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 00:34:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42844 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725267AbgEZEeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 00:34:07 -0400
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4C86420888
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 04:34:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590467646;
-        bh=qVTX+YX6F63Pfda7rmUlj2X1xHs0/WE2NmKhekGoR4c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=X3mIzEKB7mcZaev42a2ZKCpl88KbBF3koEsBuTfutF0aNomXIwk8GWjU31Y8hxmvP
-         WHlzIWm3SpPB+tf/tPjuEkfq0JpmExhrJFHAtDGDWXbzlMTF/rNG3pSlf7i75RdGGZ
-         ZOZgcZmX/1BVm0bqUtBrTwdRBpLkldMYdJKOCSco=
-Received: by mail-wr1-f47.google.com with SMTP id y17so10624634wrn.11
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 21:34:06 -0700 (PDT)
-X-Gm-Message-State: AOAM5300JzYn2TrC1kNYyfZJV3jGiGQEMtXfQrkvZswSlPT3xpaVkEJn
-        STLSnQvxz6JYZeKXSF/V73E/3tj5elkIw18Q9lXghQ==
-X-Google-Smtp-Source: ABdhPJyBjYggt/4KvjVWHQUq2FU5fdBEKAOA4JrMSrmL6UCDPJYYioUa9sg8atAzSdADhoX+JjRirTc6yjh2k8K8ppg=
-X-Received: by 2002:adf:ea11:: with SMTP id q17mr16108387wrm.75.1590467644721;
- Mon, 25 May 2020 21:34:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200521200513.656533920@linutronix.de>
-In-Reply-To: <20200521200513.656533920@linutronix.de>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 25 May 2020 21:33:53 -0700
-X-Gmail-Original-Message-ID: <CALCETrVYBj3KQTCeDt9V=4yTYVqs4X5_TKx=v8=Z5w=q0Ay8cw@mail.gmail.com>
-Message-ID: <CALCETrVYBj3KQTCeDt9V=4yTYVqs4X5_TKx=v8=Z5w=q0Ay8cw@mail.gmail.com>
-Subject: Re: [patch V9 00/39] x86/entry: Rework leftovers (was part V)
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
+        id S1726750AbgEZEfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 00:35:21 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:36090 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725891AbgEZEfR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 00:35:17 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R911e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0TzgjMIS_1590467711;
+Received: from localhost(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0TzgjMIS_1590467711)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 26 May 2020 12:35:12 +0800
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
         Andy Lutomirski <luto@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
+Subject: [PATCH 0/2] x86/entry: simplify RESTORE_CR3
+Date:   Tue, 26 May 2020 04:35:05 +0000
+Message-Id: <20200526043507.51977-1-laijs@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 1:31 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Folks!
->
-> This is V9 of the rework series. V7 and V8 were never posted but I used the
-> version numbers for tags while fixing up 0day complaints. The last posted
-> version was V6 which can be found here:
+When I searched percpu data touched by entry code for #DB
+protection[1], it seems to me RESTORE_CR3() does too much work,
+this patchset simplifies it.
 
-The whole pile is Acked-by: Andy Lutomirski <luto@kernel.org>
+Patch 1 enhances 21e944591102("x86/mm: Optimize RESTORE_CR3") for
+kernel CR3.
 
-Go test on Linus' new AMD laptop!
+Patch 2 *reverts* 21e944591102("x86/mm: Optimize RESTORE_CR3") for
+User CR3.
 
---Andy
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: x86@kernel.org
+Link: https://lore.kernel.org/lkml/20200525145102.122557-1-laijs@linux.alibaba.com
+Lai Jiangshan (2):
+  x86/entry: Don't write to CR3 when restoring to kernel CR3
+  x86/entry: always flush user CR3 in RESTORE_CR3
+
+ arch/x86/entry/calling.h  | 36 ++++++++----------------------------
+ arch/x86/entry/entry_64.S |  6 +++---
+ 2 files changed, 11 insertions(+), 31 deletions(-)
+
+-- 
+2.20.1
+
