@@ -2,128 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C351E2FFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 22:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF241E3004
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 22:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391240AbgEZUaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 16:30:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389367AbgEZUaM (ORCPT
+        id S2390814AbgEZUak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 16:30:40 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:50744 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389853AbgEZUaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 16:30:12 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1070C061A0F;
-        Tue, 26 May 2020 13:30:10 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id h21so25267862ejq.5;
-        Tue, 26 May 2020 13:30:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+HLyQeHEwRkmBN7Mz1fWdkXpoemib6Ct8xH1uqDFVgM=;
-        b=jXqpT17hC9igpJGL8HqGKNSS1UpVOL7bro0lhrsTvwHSTf3+2sZmgHAZq3AmMUN1u4
-         qmFWaqtO5r5SV/aJJGR7/gy/iFe3UC1WIkMs/RVrQtoHON7mQ81GTCHXFax3O1QnW8e4
-         SsLD/tkyohqFtjaLi7YLYiqi3eq0y7ZCtPWuY0S0xMWuH4oF/EMAWtIJdgYvFx4x9g4P
-         AMQGTDivXwDTtuctM3ElwNCTec3EHAb9u2PA8KUWGMC8i5HmPwR5VxsktsrLlZSRtD6H
-         mO+B/1E5RbIv/5q2xI4e5ROZOCsZY/1nyzUZtts/2X4titAry4ZX5yFDy2AWNPlSxaie
-         vfmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+HLyQeHEwRkmBN7Mz1fWdkXpoemib6Ct8xH1uqDFVgM=;
-        b=HzahqeuM/5oOeNICFhbJ3D5GpauYfCS+y3SzhcoChM39CC2o6cs8esNg3Ovt5Pjg8U
-         T6jqAoGS5tCHhw/IV7En5Ldw0sOwdwQ1DVWH+A89vToFWIxROMBp53rmIkfB0M7zi0RC
-         JbEOQouuH0PlmaSJO62J0YmOy6PFk1YRgrjDih9PJJoFBVRrW+y2J+DOIMQq9VD0roMA
-         dLiFkiITq1Sk6fYu5Jb0RxqVMQFtjNVd58tYLgyp+bMhnffztP5JFjg6Jyo1D/9nj9cw
-         WjXc8iYHRErsIgscMZmgN9wSschQaDuF10OaeUBT6YnmPqelCQzz3YSI+Xf0EPqfhqEq
-         dKLg==
-X-Gm-Message-State: AOAM532SRkwexiRDULhg3mNlxxdR5TCjo/O9XPNc9NPKhr/gEwNkH0VU
-        wndP5dFVAVOLHafNgJMsR1k=
-X-Google-Smtp-Source: ABdhPJxqtvm6ZozNr3OfWjYHXrv9+mhZTQjYNNza+YL7N1NIhEwIs64tPCmgerGMOLsrKUYhFRDdAw==
-X-Received: by 2002:a17:906:4815:: with SMTP id w21mr2784486ejq.533.1590525009201;
-        Tue, 26 May 2020 13:30:09 -0700 (PDT)
-Received: from localhost.localdomain (p200300f137189200428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3718:9200:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id ce16sm735517ejb.76.2020.05.26.13.30.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 13:30:08 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        narmstrong@baylibre.com
-Cc:     hanjie.lin@amlogic.com, yue.wang@amlogic.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        "kernelci.org bot" <bot@kernelci.org>
-Subject: [PATCH for-5.8 2/2] usb: dwc3: meson-g12a: fix USB2 PHY initialization on G12A and A1 SoCs
-Date:   Tue, 26 May 2020 22:29:43 +0200
-Message-Id: <20200526202943.715220-3-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526202943.715220-1-martin.blumenstingl@googlemail.com>
-References: <20200526202943.715220-1-martin.blumenstingl@googlemail.com>
+        Tue, 26 May 2020 16:30:39 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04QKUbYM016821;
+        Tue, 26 May 2020 15:30:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1590525037;
+        bh=bUtjmq+vCeN+yyZ2frxjxBtWg3uF+0uE+Hea46w07Yw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=mPNejwfIOp7a+O2GHD1Br/NCn66lBhYoz0ZOF/ujiLp+TUMqIDOrZMwRbGfOLMUkK
+         E6h3M9hWpDr1CrmRZIkBIL1IclGbQf2tp8m+U+06oEz2O1Ovqpdt8djIDxvixmnCFq
+         alg0fADluDVxW5DNsg5bfDsdr4QC58e5kZMLPuJ0=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04QKUb4K042829;
+        Tue, 26 May 2020 15:30:37 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 26
+ May 2020 15:30:37 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 26 May 2020 15:30:37 -0500
+Received: from [10.250.65.13] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04QKUatA000933;
+        Tue, 26 May 2020 15:30:36 -0500
+Subject: Re: [PATCH 1/2] dt-bindings: power: Add BQ27561 compatible
+To:     <sre@kernel.org>, <afd@ti.com>, <pali@kernel.org>
+CC:     <linux-pm@vger.kernel.org>, <robh@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+References: <20200515174454.21866-1-dmurphy@ti.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <2d2a8c1f-8030-20d4-c16a-3bd0965166d3@ti.com>
+Date:   Tue, 26 May 2020 15:30:36 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200515174454.21866-1-dmurphy@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dwc3_meson_g12a_usb2_init_phy() crashes with NULL pointer on an SM1
-board (which uses the same USB setup as G12A) dereference as reported
-by the Kernel CI bot. This is because of the following call flow:
-  dwc3_meson_g12a_probe
-    priv->drvdata->setup_regmaps
-      dwc3_meson_g12a_setup_regmaps
-        priv->usb2_ports is still 0 so priv->u2p_regmap[i] will be NULL
-    dwc3_meson_g12a_get_phys
-      initializes priv->usb2_ports
-    priv->drvdata->usb_init
-      dwc3_meson_g12a_usb_init
-        dwc3_meson_g12a_usb_init_glue
-          dwc3_meson_g12a_usb2_init
-            priv->drvdata->usb2_init_phy
-              dwc3_meson_g12a_usb2_init_phy
-                dereferences priv->u2p_regmap[i]
+Bump to series
 
-Call priv->drvdata->setup_regmaps only after dwc3_meson_g12a_get_phys so
-priv->usb2_ports is initialized and the regmaps will be set up
-correctly. This fixes the NULL dereference later on.
-
-Fixes: 013af227f58a97 ("usb: dwc3: meson-g12a: handle the phy and glue registers separately")
-Reported-by: "kernelci.org bot" <bot@kernelci.org>
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- drivers/usb/dwc3/dwc3-meson-g12a.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/usb/dwc3/dwc3-meson-g12a.c b/drivers/usb/dwc3/dwc3-meson-g12a.c
-index ce5388338389..1f7f4d88ed9d 100644
---- a/drivers/usb/dwc3/dwc3-meson-g12a.c
-+++ b/drivers/usb/dwc3/dwc3-meson-g12a.c
-@@ -708,11 +708,7 @@ static int dwc3_meson_g12a_probe(struct platform_device *pdev)
- 		return PTR_ERR(base);
- 
- 	priv->drvdata = of_device_get_match_data(&pdev->dev);
--
- 	priv->dev = dev;
--	ret = priv->drvdata->setup_regmaps(priv, base);
--	if (ret)
--		return ret;
- 
- 	priv->vbus = devm_regulator_get_optional(dev, "vbus");
- 	if (IS_ERR(priv->vbus)) {
-@@ -749,6 +745,10 @@ static int dwc3_meson_g12a_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_disable_clks;
- 
-+	ret = priv->drvdata->setup_regmaps(priv, base);
-+	if (ret)
-+		return ret;
-+
- 	if (priv->vbus) {
- 		ret = regulator_enable(priv->vbus);
- 		if (ret)
--- 
-2.26.2
-
+On 5/15/20 12:44 PM, Dan Murphy wrote:
+> Add the Texas Instruments bq27561 battery monitor to the bq27xxx
+> binding.
+>
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
+> This patch has a dependency on the yaml conversion - https://lore.kernel.org/patchwork/patch/1240876/
+>
+>   Documentation/devicetree/bindings/power/supply/bq27xxx.yaml | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml b/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
+> index 03d1020a2e47..51cb1f685dcf 100644
+> --- a/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
+> +++ b/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
+> @@ -49,6 +49,7 @@ properties:
+>         - ti,bq27426
+>         - ti,bq27441
+>         - ti,bq27621
+> +      - ti,bq27561
+>   
+>     reg:
+>       maxItems: 1
