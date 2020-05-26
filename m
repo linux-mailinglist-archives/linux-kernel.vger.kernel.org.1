@@ -2,93 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19D61E22CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 15:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4551E22D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 15:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731503AbgEZNNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 09:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727034AbgEZNNE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 09:13:04 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB3A8C03E96D
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 06:13:03 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id r125so12236082lff.13
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 06:13:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=ephXh0Ws1vURS05DtHce4Quc+oR69mUIgptnvs16X8Y=;
-        b=jEA8gNdvAp3D9dKLQEp9DZLm40+NpEOW7y8uZvLh+BBMAcCwnzYhWjzJeSnuec+YZT
-         AhFOjrUBrKElgJx8HIAxjPqTKPswQjBiphJD75YykqKli8Bgw7YDfJdTM9cxh7hudrYJ
-         NSs0Tp4EWIfU4ugQXYz3I+ySjLx47qgQR7XKa7y1E/30m0lyuZG3p9P1jAEQDdUDgwEC
-         tO0i1Ws5P9nODmjlibYciJ0A+K3YbwsdcpLUGlkXhWf6iKgpRUbLVZXpFbMoQgCHEgGz
-         4dzPNha4SLQvxy2SytgG2C9emeUmq54LLNS9jPY6nBXugEJhj74HvZWZ+4MawN2F4CrZ
-         5MNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=ephXh0Ws1vURS05DtHce4Quc+oR69mUIgptnvs16X8Y=;
-        b=ELjqgKHg2iAwhtgcXEbr0JPexmGuTJ9VJkR3uXXi+maMzngXI49TJ4qnrhSTu/m6mz
-         P1YBQgX/weMQG/QHNvYbp4wyYxVJ4CdpGp0M5nT90qWyLpTmCbZEciIo0vfZpmaODPoL
-         UUQ3UYa7Wom130nAltV1gDhc3SFMRoE90zv2mH3/GrngB2mmmnDmjSLd6S0oZtPaREpM
-         yZXJXpk91zd/bPG9+CEOIgD9QGjY0ox2IIOuTybapuPHvnW2VFkXLmnxI+sAdZq2giuI
-         OkDRQOHXHwBLgrdIaBPog0o12Q7UexFCV49RJAk6CCqfMq7z5vPtMbys41MrcYb6YY5Z
-         vZ5g==
-X-Gm-Message-State: AOAM531M0QeIGo4TnM+saPjbn+5VNOBKkPFtCWmrUfMPYr7Q4L5XDRZP
-        2YwEiD4dyAH5/TGjFY88dgdf8A==
-X-Google-Smtp-Source: ABdhPJyXJJ3riQvr5hQMbP/Mq5TfkYaYDNtogu+2req5gEPqavseH0MGWZYipsgXfPkNKPdEkVm74w==
-X-Received: by 2002:a19:c751:: with SMTP id x78mr521867lff.82.1590498782293;
-        Tue, 26 May 2020 06:13:02 -0700 (PDT)
-Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
-        by smtp.gmail.com with ESMTPSA id f18sm4952339lfh.49.2020.05.26.06.13.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 06:13:01 -0700 (PDT)
-Date:   Tue, 26 May 2020 15:12:59 +0200
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     arm@kernel.org, soc@kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        tee-dev@lists.linaro.org, John Hubbard <jhubbard@nvidia.com>
-Subject: [GIT PULL] tee subsystem pin_user_pages for v5.8
-Message-ID: <20200526131259.GA97001@jade>
+        id S1729288AbgEZNRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 09:17:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59010 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727009AbgEZNRM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 09:17:12 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ACFA42084C;
+        Tue, 26 May 2020 13:17:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590499031;
+        bh=egI/LvLS2AXB3+lf2+0PQAeIwQPh1OllZaCbHGvcvDU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RSR614FCRHoFfDR65URe9ilJwa4jTUBvqwrElqhm1tALkKH0XLyolqxid1Ya6lIqe
+         FywkMzprZJtWrBDKwkIhL9ImnNUFTSTMeMZ+4tAzwY4qICHDh3ML+srhaibw6pJo+H
+         j8eyoEFK9WFns94nrlaRP3+Wy3XzptIwtxvAkDjY=
+Date:   Tue, 26 May 2020 15:17:08 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Alexander Graf <graf@amazon.de>
+Cc:     Andra Paraschiv <andraprs@amazon.com>,
+        linux-kernel@vger.kernel.org,
+        Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>, kvm@vger.kernel.org,
+        ne-devel-upstream@amazon.com
+Subject: Re: [PATCH v3 07/18] nitro_enclaves: Init misc device providing the
+ ioctl interface
+Message-ID: <20200526131708.GA9296@kroah.com>
+References: <20200525221334.62966-1-andraprs@amazon.com>
+ <20200525221334.62966-8-andraprs@amazon.com>
+ <20200526065133.GD2580530@kroah.com>
+ <72647fa4-79d9-7754-9843-a254487703ea@amazon.de>
+ <20200526123300.GA2798@kroah.com>
+ <59007eb9-fad3-9655-a856-f5989fa9fdb3@amazon.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <59007eb9-fad3-9655-a856-f5989fa9fdb3@amazon.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello arm-soc maintainers,
+On Tue, May 26, 2020 at 02:44:18PM +0200, Alexander Graf wrote:
+> 
+> 
+> On 26.05.20 14:33, Greg KH wrote:
+> > 
+> > On Tue, May 26, 2020 at 01:42:41PM +0200, Alexander Graf wrote:
+> > > 
+> > > 
+> > > On 26.05.20 08:51, Greg KH wrote:
+> > > > 
+> > > > On Tue, May 26, 2020 at 01:13:23AM +0300, Andra Paraschiv wrote:
+> > > > > +#define NE "nitro_enclaves: "
+> > > > 
+> > > > Again, no need for this.
+> > > > 
+> > > > > +#define NE_DEV_NAME "nitro_enclaves"
+> > > > 
+> > > > KBUILD_MODNAME?
+> > > > 
+> > > > > +#define NE_IMAGE_LOAD_OFFSET (8 * 1024UL * 1024UL)
+> > > > > +
+> > > > > +static char *ne_cpus;
+> > > > > +module_param(ne_cpus, charp, 0644);
+> > > > > +MODULE_PARM_DESC(ne_cpus, "<cpu-list> - CPU pool used for Nitro Enclaves");
+> > > > 
+> > > > Again, please do not do this.
+> > > 
+> > > I actually asked her to put this one in specifically.
+> > > 
+> > > The concept of this parameter is very similar to isolcpus= and maxcpus= in
+> > > that it takes CPUs away from Linux and instead donates them to the
+> > > underlying hypervisor, so that it can spawn enclaves using them.
+> > > 
+> > >  From an admin's point of view, this is a setting I would like to keep
+> > > persisted across reboots. How would this work with sysfs?
+> > 
+> > How about just as the "initial" ioctl command to set things up?  Don't
+> > grab any cpu pools until asked to.  Otherwise, what happens when you
+> > load this module on a system that can't support it?
+> 
+> That would give any user with access to the enclave device the ability to
+> remove CPUs from the system. That's clearly a CAP_ADMIN task in my book.
 
-Please pull this small patch converting the tee subsystem to use
-pin_user_pages() instead of get_user_pages().
+Ok, what's wrong with that?
 
-Thanks,
-Jens
+> Hence this whole split: The admin defines the CPU Pool, users can safely
+> consume this pool to spawn enclaves from it.
 
-The following changes since commit ae83d0b416db002fe95601e7f97f64b59514d936:
+But having the admin define that at module load / boot time, is a major
+pain.  What tools do they have that allow them to do that easily?
 
-  Linux 5.7-rc2 (2020-04-19 14:35:30 -0700)
+> So I really don't think an ioctl would be a great user experience. Same for
+> a sysfs file - although that's probably slightly better than the ioctl.
 
-are available in the Git repository at:
+You already are using ioctls to control this thing, right?  What's wrong
+with "one more"? :)
 
-  git://git.linaro.org:/people/jens.wiklander/linux-tee.git tags/tee-pin-user-pages-for-5.8
+> Other options I can think of:
+> 
+>   * sysctl (for modules?)
 
-for you to fetch changes up to 37f6b4d5f47b600ec4ab6682c005a44a1bfca530:
+Ick.
 
-  tee: convert get_user_pages() --> pin_user_pages() (2020-05-26 10:42:41 +0200)
+>   * module parameter (as implemented here)
 
-----------------------------------------------------------------
-Converts tee subsystem to use pin_user_pages() instead of get_user_pages()
+Ick.
 
-----------------------------------------------------------------
-John Hubbard (1):
-      tee: convert get_user_pages() --> pin_user_pages()
+>   * proc file (deprecated FWIW)
 
- drivers/tee/tee_shm.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+Ick.
+
+> The key is the tenant split: Admin sets the pool up, user consumes. This
+> setup should happen (early) on boot, so that system services can spawn
+> enclaves.
+
+But it takes more than jus this initial "split up" to set the pool up,
+right?  Why not make this part of that initial process?  What makes this
+so special you have to do this at module load time only?
+
+thanks,
+
+greg k-h
