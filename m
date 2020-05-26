@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2081E2B72
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2D31E2BDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391474AbgEZTFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:05:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33042 "EHLO mail.kernel.org"
+        id S2391876AbgEZTJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:09:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389956AbgEZTFL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:05:11 -0400
+        id S2391862AbgEZTJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:09:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 452CF20873;
-        Tue, 26 May 2020 19:05:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59102208A7;
+        Tue, 26 May 2020 19:09:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519910;
+        s=default; t=1590520164;
         bh=GhCaJpooWSavZpBdhK6aphQyLv9d4skXugYJfXJu21A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eYGoOlKG+l018svu/vr/pKrO+UZLAPcDRdJTTRFHCdCbg9al4QMmFKQl+yq75e31E
-         ch6pTlg1rWwfFyF0sTdcucEFDi2QFmEo85IPSdLQlEm/5iRDHVR02E+wWjv7NEOfWv
-         91c2+gwSXcRDEdeAFtFUuW2soratWUodz+SJ4bkw=
+        b=tVBsWBxnQAfguqmq4rvtVKEF4LhCWddSWuo4dQRdh7fVUJI3xeilj5+FxT4I2IBt4
+         YVahPmvFodLA4ZiT5Vf4LzA5035HcC6RuhBmzgcW1h2bF50fxylJ9QXOKFC9PyJLl0
+         4BYSQgR+/YRsUtcakIYsRMkQUfpITnemZv/f3ei0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Oscar Carter <oscar.carter@gmx.com>
-Subject: [PATCH 4.19 66/81] staging: greybus: Fix uninitialized scalar variable
-Date:   Tue, 26 May 2020 20:53:41 +0200
-Message-Id: <20200526183934.368362793@linuxfoundation.org>
+Subject: [PATCH 5.4 084/111] staging: greybus: Fix uninitialized scalar variable
+Date:   Tue, 26 May 2020 20:53:42 +0200
+Message-Id: <20200526183940.881819668@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
-References: <20200526183923.108515292@linuxfoundation.org>
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
