@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 614F51E2A74
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7554C1E2A72
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389696AbgEZS4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:56:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48354 "EHLO mail.kernel.org"
+        id S2389683AbgEZSz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:55:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389656AbgEZSzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:55:50 -0400
+        id S2389671AbgEZSzx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:55:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C5BB2086A;
-        Tue, 26 May 2020 18:55:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 830232086A;
+        Tue, 26 May 2020 18:55:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519350;
-        bh=n8JzTrgt8/GRTvq0YxeCtfXMInbGbWxSeb5qkncRORI=;
+        s=default; t=1590519353;
+        bh=NOUY2cFAxW4NOpv/x7vgV6FUGdxcy+oqZ/7YtptmUIs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bwTWq3tatA17Ap5lbjuRcRSPb5UByjSEUGhObHAWojI+yYlSTCWSdy7lBVf38lZHW
-         CpYh3EsRvY6ruYd8nCQEjXAo8BT/NyoKtDMsJryRLauqL0dNLf1Jpx9Fb9MPMsHqLf
-         qD3tEeQcb7WcdsV8R3t1ldgJgE03tr3Eb6UtXd5Y=
+        b=TL+EsfELdovadTz759QINdor245D5BTQ0UsNIvvO4L6bRMyzrhzEE3oBGbciiu2KQ
+         23GN93SvgsOjxv1s9Mrbwx9yCrnj7MWVxHthYwFlIZ9jrOXX17egzV+H6OohT1Vo+Z
+         A22r3kR2pWejRYWx3kQODCwW0lmoSFg/+HkBvN78=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, greg@kroah.com
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 33/65] libnvdimm/btt: Remove unnecessary code in btt_freelist_init
-Date:   Tue, 26 May 2020 20:52:52 +0200
-Message-Id: <20200526183917.991691326@linuxfoundation.org>
+        stable@vger.kernel.org, Guillaume Nault <g.nault@alphalink.fr>,
+        "David S. Miller" <davem@davemloft.net>,
+        Giuliano Procida <gprocida@google.com>
+Subject: [PATCH 4.4 34/65] l2tp: lock socket before checking flags in connect()
+Date:   Tue, 26 May 2020 20:52:53 +0200
+Message-Id: <20200526183918.173764337@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200526183905.988782958@linuxfoundation.org>
 References: <20200526183905.988782958@linuxfoundation.org>
@@ -44,51 +44,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vishal Verma <vishal.l.verma@intel.com>
+From: Guillaume Nault <g.nault@alphalink.fr>
 
-[ Upstream commit 2f8c9011151337d0bc106693f272f9bddbccfab2 ]
+commit 0382a25af3c771a8e4d5e417d1834cbe28c2aaac upstream.
 
-We call btt_log_read() twice, once to get the 'old' log entry, and again
-to get the 'new' entry. However, we have no use for the 'old' entry, so
-remove it.
+Socket flags aren't updated atomically, so the socket must be locked
+while reading the SOCK_ZAPPED flag.
 
-Cc: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This issue exists for both l2tp_ip and l2tp_ip6. For IPv6, this patch
+also brings error handling for __ip6_datagram_connect() failures.
+
+Signed-off-by: Guillaume Nault <g.nault@alphalink.fr>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Giuliano Procida <gprocida@google.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvdimm/btt.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ include/net/ipv6.h  |    2 ++
+ net/ipv6/datagram.c |    4 +++-
+ net/l2tp/l2tp_ip.c  |   19 ++++++++++++-------
+ net/l2tp/l2tp_ip6.c |   16 +++++++++++-----
+ 4 files changed, 28 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
-index 957234272ef7..727eaf203463 100644
---- a/drivers/nvdimm/btt.c
-+++ b/drivers/nvdimm/btt.c
-@@ -443,9 +443,9 @@ static int btt_log_init(struct arena_info *arena)
+--- a/include/net/ipv6.h
++++ b/include/net/ipv6.h
+@@ -915,6 +915,8 @@ int compat_ipv6_setsockopt(struct sock *
+ int compat_ipv6_getsockopt(struct sock *sk, int level, int optname,
+ 			   char __user *optval, int __user *optlen);
  
- static int btt_freelist_init(struct arena_info *arena)
++int __ip6_datagram_connect(struct sock *sk, struct sockaddr *addr,
++			   int addr_len);
+ int ip6_datagram_connect(struct sock *sk, struct sockaddr *addr, int addr_len);
+ int ip6_datagram_connect_v6_only(struct sock *sk, struct sockaddr *addr,
+ 				 int addr_len);
+--- a/net/ipv6/datagram.c
++++ b/net/ipv6/datagram.c
+@@ -40,7 +40,8 @@ static bool ipv6_mapped_addr_any(const s
+ 	return ipv6_addr_v4mapped(a) && (a->s6_addr32[3] == 0);
+ }
+ 
+-static int __ip6_datagram_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
++int __ip6_datagram_connect(struct sock *sk, struct sockaddr *uaddr,
++			   int addr_len)
  {
--	int old, new, ret;
-+	int new, ret;
- 	u32 i, map_entry;
--	struct log_entry log_new, log_old;
-+	struct log_entry log_new;
+ 	struct sockaddr_in6	*usin = (struct sockaddr_in6 *) uaddr;
+ 	struct inet_sock	*inet = inet_sk(sk);
+@@ -213,6 +214,7 @@ out:
+ 	fl6_sock_release(flowlabel);
+ 	return err;
+ }
++EXPORT_SYMBOL_GPL(__ip6_datagram_connect);
  
- 	arena->freelist = kcalloc(arena->nfree, sizeof(struct free_entry),
- 					GFP_KERNEL);
-@@ -453,10 +453,6 @@ static int btt_freelist_init(struct arena_info *arena)
- 		return -ENOMEM;
+ int ip6_datagram_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
+ {
+--- a/net/l2tp/l2tp_ip.c
++++ b/net/l2tp/l2tp_ip.c
+@@ -321,21 +321,24 @@ static int l2tp_ip_connect(struct sock *
+ 	struct sockaddr_l2tpip *lsa = (struct sockaddr_l2tpip *) uaddr;
+ 	int rc;
  
- 	for (i = 0; i < arena->nfree; i++) {
--		old = btt_log_read(arena, i, &log_old, LOG_OLD_ENT);
--		if (old < 0)
--			return old;
+-	if (sock_flag(sk, SOCK_ZAPPED)) /* Must bind first - autobinding does not work */
+-		return -EINVAL;
 -
- 		new = btt_log_read(arena, i, &log_new, LOG_NEW_ENT);
- 		if (new < 0)
- 			return new;
--- 
-2.25.1
-
+ 	if (addr_len < sizeof(*lsa))
+ 		return -EINVAL;
+ 
+ 	if (ipv4_is_multicast(lsa->l2tp_addr.s_addr))
+ 		return -EINVAL;
+ 
+-	rc = ip4_datagram_connect(sk, uaddr, addr_len);
+-	if (rc < 0)
+-		return rc;
+-
+ 	lock_sock(sk);
+ 
++	/* Must bind first - autobinding does not work */
++	if (sock_flag(sk, SOCK_ZAPPED)) {
++		rc = -EINVAL;
++		goto out_sk;
++	}
++
++	rc = __ip4_datagram_connect(sk, uaddr, addr_len);
++	if (rc < 0)
++		goto out_sk;
++
+ 	l2tp_ip_sk(sk)->peer_conn_id = lsa->l2tp_conn_id;
+ 
+ 	write_lock_bh(&l2tp_ip_lock);
+@@ -343,7 +346,9 @@ static int l2tp_ip_connect(struct sock *
+ 	sk_add_bind_node(sk, &l2tp_ip_bind_table);
+ 	write_unlock_bh(&l2tp_ip_lock);
+ 
++out_sk:
+ 	release_sock(sk);
++
+ 	return rc;
+ }
+ 
+--- a/net/l2tp/l2tp_ip6.c
++++ b/net/l2tp/l2tp_ip6.c
+@@ -383,9 +383,6 @@ static int l2tp_ip6_connect(struct sock
+ 	int	addr_type;
+ 	int rc;
+ 
+-	if (sock_flag(sk, SOCK_ZAPPED)) /* Must bind first - autobinding does not work */
+-		return -EINVAL;
+-
+ 	if (addr_len < sizeof(*lsa))
+ 		return -EINVAL;
+ 
+@@ -402,10 +399,18 @@ static int l2tp_ip6_connect(struct sock
+ 			return -EINVAL;
+ 	}
+ 
+-	rc = ip6_datagram_connect(sk, uaddr, addr_len);
+-
+ 	lock_sock(sk);
+ 
++	 /* Must bind first - autobinding does not work */
++	if (sock_flag(sk, SOCK_ZAPPED)) {
++		rc = -EINVAL;
++		goto out_sk;
++	}
++
++	rc = __ip6_datagram_connect(sk, uaddr, addr_len);
++	if (rc < 0)
++		goto out_sk;
++
+ 	l2tp_ip6_sk(sk)->peer_conn_id = lsa->l2tp_conn_id;
+ 
+ 	write_lock_bh(&l2tp_ip6_lock);
+@@ -413,6 +418,7 @@ static int l2tp_ip6_connect(struct sock
+ 	sk_add_bind_node(sk, &l2tp_ip6_bind_table);
+ 	write_unlock_bh(&l2tp_ip6_lock);
+ 
++out_sk:
+ 	release_sock(sk);
+ 
+ 	return rc;
 
 
