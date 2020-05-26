@@ -2,82 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA4B1E24E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 17:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B45971E24F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 17:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729893AbgEZPDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 11:03:23 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:44103 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728442AbgEZPDX (ORCPT
+        id S1729249AbgEZPH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 11:07:28 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:26709 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728442AbgEZPH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 11:03:23 -0400
-Received: from localhost (lfbn-tou-1-1075-236.w90-76.abo.wanadoo.fr [90.76.143.236])
-        (Authenticated sender: antoine.tenart@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 1A381100003;
-        Tue, 26 May 2020 15:03:15 +0000 (UTC)
-From:   Antoine Tenart <antoine.tenart@bootlin.com>
-To:     davem@davemloft.net, andrew@lunn.ch, f.fainelli@gmail.com,
-        hkallweit1@gmail.com
-Cc:     Antoine Tenart <antoine.tenart@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alexandre.belloni@bootlin.com, thomas.petazzoni@bootlin.com,
-        allan.nielsen@microchip.com, vladimir.oltean@nxp.com
-Subject: [PATCH net-next 2/2] net: mscc: allow offloading timestamping operations to the PHY
-Date:   Tue, 26 May 2020 17:01:49 +0200
-Message-Id: <20200526150149.456719-3-antoine.tenart@bootlin.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526150149.456719-1-antoine.tenart@bootlin.com>
-References: <20200526150149.456719-1-antoine.tenart@bootlin.com>
+        Tue, 26 May 2020 11:07:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590505647;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=80gBzVUfUjSNrL5/Z0KCUykiDhfwVHhwxfTTQc/kPNs=;
+        b=ZhOjvuuASohjL0xm5JsL0GPsrRlmNv6sFEE9+ubh5xeGwDRjAC5x/xYIq3EkdmspHRKjo5
+        fvrBk0ad0qVDNBBamat3R65YDwti5+deV/czz6dgLorUGI2pmnrA+D0+HRvLWvDN1szdle
+        kNXwbBfcQKSHYNyLOmaEHLobVhyDNmY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-294-H5emKm5INRa0_x_D_nK6aQ-1; Tue, 26 May 2020 11:07:25 -0400
+X-MC-Unique: H5emKm5INRa0_x_D_nK6aQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2091F107ACF5;
+        Tue, 26 May 2020 15:07:24 +0000 (UTC)
+Received: from plouf.redhat.com (ovpn-112-129.ams2.redhat.com [10.36.112.129])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BED4760F88;
+        Tue, 26 May 2020 15:07:19 +0000 (UTC)
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+To:     Jiri Kosina <jikos@kernel.org>, kai.heng.feng@canonical.com
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] HID: multitouch: enable multi-input as a quirk for some devices
+Date:   Tue, 26 May 2020 17:07:17 +0200
+Message-Id: <20200526150717.324783-1-benjamin.tissoires@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support for offloading timestamping operations not only
-to the Ocelot switch (as already supported) but to compatible PHYs.
-When both the PHY and the Ocelot switch support timestamping operations,
-the PHY implementation is chosen as the timestamp will happen closer to
-the medium.
+Two touchpad/trackstick combos are currently not behaving properly.
+They define a mouse emulation collection, as per Win8 requirements,
+but also define a separate mouse collection for the trackstick.
 
-Signed-off-by: Antoine Tenart <antoine.tenart@bootlin.com>
+The way the kernel currently treat the collections is that it
+merges both in one device. However, given that the first mouse
+collection already defines X,Y and left, right buttons, when
+mapping the events from the second mouse collection, hid-multitouch
+sees that these events are already mapped, and simply ignores them.
+
+To be able to report events from the tracktick, add a new quirked
+class for it, and manually add the 2 devices we know about.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=207235
+Cc: stable@vger.kernel.org
+Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 ---
- drivers/net/ethernet/mscc/ocelot.c       | 5 ++++-
- drivers/net/ethernet/mscc/ocelot_board.c | 3 ++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ drivers/hid/hid-multitouch.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/drivers/net/ethernet/mscc/ocelot.c b/drivers/net/ethernet/mscc/ocelot.c
-index 2151c08a57c7..9cfe1fd98c30 100644
---- a/drivers/net/ethernet/mscc/ocelot.c
-+++ b/drivers/net/ethernet/mscc/ocelot.c
-@@ -1204,7 +1204,10 @@ static int ocelot_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
- 	struct ocelot *ocelot = priv->port.ocelot;
- 	int port = priv->chip_port;
+diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
+index 03c720b47306..39e4da7468e1 100644
+--- a/drivers/hid/hid-multitouch.c
++++ b/drivers/hid/hid-multitouch.c
+@@ -69,6 +69,7 @@ MODULE_LICENSE("GPL");
+ #define MT_QUIRK_ASUS_CUSTOM_UP		BIT(17)
+ #define MT_QUIRK_WIN8_PTP_BUTTONS	BIT(18)
+ #define MT_QUIRK_SEPARATE_APP_REPORT	BIT(19)
++#define MT_QUIRK_FORCE_MULTI_INPUT	BIT(20)
  
--	if (ocelot->ptp) {
-+	/* If the attached PHY device isn't capable of timestamping operations,
-+	 * use our own (when possible).
-+	 */
-+	if (!phy_has_hwtstamp(dev->phydev) && ocelot->ptp) {
- 		switch (cmd) {
- 		case SIOCSHWTSTAMP:
- 			return ocelot_hwstamp_set(ocelot, port, ifr);
-diff --git a/drivers/net/ethernet/mscc/ocelot_board.c b/drivers/net/ethernet/mscc/ocelot_board.c
-index 67a8d61c926a..4a15d2ff8b70 100644
---- a/drivers/net/ethernet/mscc/ocelot_board.c
-+++ b/drivers/net/ethernet/mscc/ocelot_board.c
-@@ -189,7 +189,8 @@ static irqreturn_t ocelot_xtr_irq_handler(int irq, void *arg)
- 			skb->offload_fwd_mark = 1;
+ #define MT_INPUTMODE_TOUCHSCREEN	0x02
+ #define MT_INPUTMODE_TOUCHPAD		0x03
+@@ -189,6 +190,7 @@ static void mt_post_parse(struct mt_device *td, struct mt_application *app);
+ #define MT_CLS_WIN_8				0x0012
+ #define MT_CLS_EXPORT_ALL_INPUTS		0x0013
+ #define MT_CLS_WIN_8_DUAL			0x0014
++#define MT_CLS_WIN_8_FORCE_MULTI_INPUT		0x0015
  
- 		skb->protocol = eth_type_trans(skb, dev);
--		netif_rx(skb);
-+		if (!skb_defer_rx_timestamp(skb))
-+			netif_rx(skb);
- 		dev->stats.rx_bytes += len;
- 		dev->stats.rx_packets++;
- 	} while (ocelot_read(ocelot, QS_XTR_DATA_PRESENT) & BIT(grp));
+ /* vendor specific classes */
+ #define MT_CLS_3M				0x0101
+@@ -279,6 +281,15 @@ static const struct mt_class mt_classes[] = {
+ 			MT_QUIRK_CONTACT_CNT_ACCURATE |
+ 			MT_QUIRK_WIN8_PTP_BUTTONS,
+ 		.export_all_inputs = true },
++	{ .name = MT_CLS_WIN_8_FORCE_MULTI_INPUT,
++		.quirks = MT_QUIRK_ALWAYS_VALID |
++			MT_QUIRK_IGNORE_DUPLICATES |
++			MT_QUIRK_HOVERING |
++			MT_QUIRK_CONTACT_CNT_ACCURATE |
++			MT_QUIRK_STICKY_FINGERS |
++			MT_QUIRK_WIN8_PTP_BUTTONS |
++			MT_QUIRK_FORCE_MULTI_INPUT,
++		.export_all_inputs = true },
+ 
+ 	/*
+ 	 * vendor specific classes
+@@ -1714,6 +1725,11 @@ static int mt_probe(struct hid_device *hdev, const struct hid_device_id *id)
+ 	if (id->group != HID_GROUP_MULTITOUCH_WIN_8)
+ 		hdev->quirks |= HID_QUIRK_MULTI_INPUT;
+ 
++	if (mtclass->quirks & MT_QUIRK_FORCE_MULTI_INPUT) {
++		hdev->quirks &= ~HID_QUIRK_INPUT_PER_APP;
++		hdev->quirks |= HID_QUIRK_MULTI_INPUT;
++	}
++
+ 	timer_setup(&td->release_timer, mt_expired_timeout, 0);
+ 
+ 	ret = hid_parse(hdev);
+@@ -1926,6 +1942,11 @@ static const struct hid_device_id mt_devices[] = {
+ 		MT_USB_DEVICE(USB_VENDOR_ID_DWAV,
+ 			USB_DEVICE_ID_DWAV_EGALAX_MULTITOUCH_C002) },
+ 
++	/* Elan devices */
++	{ .driver_data = MT_CLS_WIN_8_FORCE_MULTI_INPUT,
++		HID_DEVICE(BUS_I2C, HID_GROUP_MULTITOUCH_WIN_8,
++			USB_VENDOR_ID_ELAN, 0x313a) },
++
+ 	/* Elitegroup panel */
+ 	{ .driver_data = MT_CLS_SERIAL,
+ 		MT_USB_DEVICE(USB_VENDOR_ID_ELITEGROUP,
+@@ -2056,6 +2077,11 @@ static const struct hid_device_id mt_devices[] = {
+ 		MT_USB_DEVICE(USB_VENDOR_ID_STANTUM_STM,
+ 			USB_DEVICE_ID_MTP_STM)},
+ 
++	/* Synaptics devices */
++	{ .driver_data = MT_CLS_WIN_8_FORCE_MULTI_INPUT,
++		HID_DEVICE(BUS_I2C, HID_GROUP_MULTITOUCH_WIN_8,
++			USB_VENDOR_ID_SYNAPTICS, 0xce08) },
++
+ 	/* TopSeed panels */
+ 	{ .driver_data = MT_CLS_TOPSEED,
+ 		MT_USB_DEVICE(USB_VENDOR_ID_TOPSEED2,
 -- 
-2.26.2
+2.25.1
 
