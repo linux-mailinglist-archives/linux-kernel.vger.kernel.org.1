@@ -2,152 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B451E25E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 17:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3D61E25F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 17:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730279AbgEZPqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 11:46:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728303AbgEZPqv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 11:46:51 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8756FC03E96D;
-        Tue, 26 May 2020 08:46:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=f5trgiJH5V/8C2C/LXnwvUAj6Z8CNkwv12V2Vhc+Pn4=; b=B57VcRK1h7jmKgXnMJAs+RL/9Q
-        HL21I+jvKaM0Z6V3jxHUi2GruRwLyizy9RoGE8/ZCNHtcadJBRc0z/6UcqFgZsEE/Iz1/A3okBmy/
-        dHU9C75GHE2f8cn6DfAioBeoDy2ZVfJtJw1zC5yedsZGJUsjIhiNHLEdbiG6KZ2GF55iy+y+Tq51o
-        KnIj6SndpsBmssq20QfWfVtYhKpedxFz1WZ94oG7k0JLgEjKPhjNqUCHXTb4SjVW0cUnOFyyJqAKy
-        gC+EcvLdWl1C6dgWEQG6v227zmcgmm9ppKvgC7OZ0xTwvUlhtrpYR1SU52icI5aaLX6NMiag2HBN5
-        vQXhQyCQ==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jdbn1-0003Kd-02; Tue, 26 May 2020 15:46:51 +0000
-Subject: Re: linux-next: Tree for May 26 (drivers/crypto/chelsio/chcr_ktls.c)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>
-References: <20200526203932.732df7c6@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <ca9f612e-1cd7-d2b8-d1f0-497ffcbd5de5@infradead.org>
-Date:   Tue, 26 May 2020 08:46:49 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1729519AbgEZPsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 11:48:43 -0400
+Received: from mga11.intel.com ([192.55.52.93]:27189 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727061AbgEZPsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 11:48:43 -0400
+IronPort-SDR: KRGgT9oQ9Der3d4hH0ZOEIRyfDJ/B0MadeUpkkdeFxVPFONYKYN4Rzy5k9BTQ2kcaM1Qy9NXlO
+ 18i8V+SKrtoA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 08:48:36 -0700
+IronPort-SDR: 9r1wevZOJJL4X3ZpDu4uVOXS/LfIhzSY80MVMsGu9VilwjF0IoSxDNFLoHZusveuLa+8k+eaiu
+ g5y9tOhzbybQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,437,1583222400"; 
+   d="scan'208";a="256491252"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
+  by fmsmga008.fm.intel.com with ESMTP; 26 May 2020 08:48:36 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id 06777301C5F; Tue, 26 May 2020 08:48:36 -0700 (PDT)
+Date:   Tue, 26 May 2020 08:48:35 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Andi Kleen <andi@firstfloor.org>, x86@kernel.org,
+        keescook@chromium.org, linux-kernel@vger.kernel.org,
+        sashal@kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v1] x86: Pin cr4 FSGSBASE
+Message-ID: <20200526154835.GW499505@tassilo.jf.intel.com>
+References: <20200526052848.605423-1-andi@firstfloor.org>
+ <20200526065618.GC2580410@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20200526203932.732df7c6@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200526065618.GC2580410@kroah.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/20 3:39 AM, Stephen Rothwell wrote:
-> Hi all,
+On Tue, May 26, 2020 at 08:56:18AM +0200, Greg KH wrote:
+> On Mon, May 25, 2020 at 10:28:48PM -0700, Andi Kleen wrote:
+> > From: Andi Kleen <ak@linux.intel.com>
+> > 
+> > Since there seem to be kernel modules floating around that set
+> > FSGSBASE incorrectly, prevent this in the CR4 pinning. Currently
+> > CR4 pinning just checks that bits are set, this also checks
+> > that the FSGSBASE bit is not set, and if it is clears it again.
 > 
-> News: there will be no linux-next release tomorrow.
+> So we are trying to "protect" ourselves from broken out-of-tree kernel
+> modules now?  
+
+Well it's a specific case where we know they're opening a root hole
+unintentionally. This is just an pragmatic attempt to protect the users in the 
+short term.
+
+> Why stop with this type of check, why not just forbid them
+> entirely if we don't trust them?  :)
+
+Would be pointless -- lots of people rely on them, so such a rule
+wouldn't survive very long in production kernels.
+
+> > diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+> > index bed0cb83fe24..1f5b7871ae9a 100644
+> > --- a/arch/x86/kernel/cpu/common.c
+> > +++ b/arch/x86/kernel/cpu/common.c
+> > @@ -385,6 +385,11 @@ void native_write_cr4(unsigned long val)
+> >  		/* Warn after we've set the missing bits. */
+> >  		WARN_ONCE(bits_missing, "CR4 bits went missing: %lx!?\n",
+> >  			  bits_missing);
+> > +		if (val & X86_CR4_FSGSBASE) {
+> > +			WARN_ONCE(1, "CR4 unexpectedly set FSGSBASE!?\n");
 > 
-> Changes since 20200525:
+> Like this will actually be noticed by anyone who calls this?  What is a
+> user supposed to do about this?
+
+In the long term they would need to apply the proper patches
+for FSGSBASE.
+
 > 
+> What about those systems that panic-on-warn?
 
-on i386:
+I assume they're ok with "panic on root hole"
 
-when CONFIG_IPV6 is not set/enabled:
+> 
+> > +			val &= ~X86_CR4_FSGSBASE;
+> 
+> So you just prevented them from setting this, thereby fixing up their
+> broken code that will never be fixed because you did this?  Why do this?
 
+If they rely on the functionality they will apply the proper patches
+then. Or at least they will be aware that they have a root hole,
+which they are currently not.
 
-  CC      drivers/crypto/chelsio/chcr_ktls.o
-In file included from ../include/linux/tcp.h:19:0,
-                 from ../include/net/tls.h:41,
-                 from ../drivers/crypto/chelsio/chcr_ktls.h:8,
-                 from ../drivers/crypto/chelsio/chcr_ktls.c:6:
-../drivers/crypto/chelsio/chcr_ktls.c: In function 'chcr_ktls_act_open_req6':
-../include/net/sock.h:380:37: error: 'struct sock_common' has no member named 'skc_v6_rcv_saddr'; did you mean 'skc_rcv_saddr'?
- #define sk_v6_rcv_saddr __sk_common.skc_v6_rcv_saddr
-                                     ^
-../drivers/crypto/chelsio/chcr_ktls.c:257:37: note: in expansion of macro 'sk_v6_rcv_saddr'
-  cpl->local_ip_hi = *(__be64 *)&sk->sk_v6_rcv_saddr.in6_u.u6_addr8[0];
-                                     ^~~~~~~~~~~~~~~
-../include/net/sock.h:380:37: error: 'struct sock_common' has no member named 'skc_v6_rcv_saddr'; did you mean 'skc_rcv_saddr'?
- #define sk_v6_rcv_saddr __sk_common.skc_v6_rcv_saddr
-                                     ^
-../drivers/crypto/chelsio/chcr_ktls.c:258:37: note: in expansion of macro 'sk_v6_rcv_saddr'
-  cpl->local_ip_lo = *(__be64 *)&sk->sk_v6_rcv_saddr.in6_u.u6_addr8[8];
-                                     ^~~~~~~~~~~~~~~
-../include/net/sock.h:379:34: error: 'struct sock_common' has no member named 'skc_v6_daddr'; did you mean 'skc_daddr'?
- #define sk_v6_daddr  __sk_common.skc_v6_daddr
-                                  ^
-../drivers/crypto/chelsio/chcr_ktls.c:259:36: note: in expansion of macro 'sk_v6_daddr'
-  cpl->peer_ip_hi = *(__be64 *)&sk->sk_v6_daddr.in6_u.u6_addr8[0];
-                                    ^~~~~~~~~~~
-../include/net/sock.h:379:34: error: 'struct sock_common' has no member named 'skc_v6_daddr'; did you mean 'skc_daddr'?
- #define sk_v6_daddr  __sk_common.skc_v6_daddr
-                                  ^
-../drivers/crypto/chelsio/chcr_ktls.c:260:36: note: in expansion of macro 'sk_v6_daddr'
-  cpl->peer_ip_lo = *(__be64 *)&sk->sk_v6_daddr.in6_u.u6_addr8[8];
-                                    ^~~~~~~~~~~
-../drivers/crypto/chelsio/chcr_ktls.c: In function 'chcr_setup_connection':
-../include/net/sock.h:379:34: error: 'struct sock_common' has no member named 'skc_v6_daddr'; did you mean 'skc_daddr'?
- #define sk_v6_daddr  __sk_common.skc_v6_daddr
-                                  ^
-../drivers/crypto/chelsio/chcr_ktls.c:295:27: note: in expansion of macro 'sk_v6_daddr'
-       ipv6_addr_type(&sk->sk_v6_daddr) == IPV6_ADDR_MAPPED)) {
-                           ^~~~~~~~~~~
-../include/net/sock.h:380:37: error: 'struct sock_common' has no member named 'skc_v6_rcv_saddr'; did you mean 'skc_rcv_saddr'?
- #define sk_v6_rcv_saddr __sk_common.skc_v6_rcv_saddr
-                                     ^
-../drivers/crypto/chelsio/chcr_ktls.c:302:29: note: in expansion of macro 'sk_v6_rcv_saddr'
-           (const u32 *)&sk->sk_v6_rcv_saddr.in6_u.u6_addr8,
-                             ^~~~~~~~~~~~~~~
-../drivers/crypto/chelsio/chcr_ktls.c: In function 'chcr_ktls_dev_del':
-../include/net/sock.h:379:34: error: 'struct sock_common' has no member named 'skc_v6_daddr'; did you mean 'skc_daddr'?
- #define sk_v6_daddr  __sk_common.skc_v6_daddr
-                                  ^
-../drivers/crypto/chelsio/chcr_ktls.c:400:26: note: in expansion of macro 'sk_v6_daddr'
-        (const u32 *)&sk->sk_v6_daddr.in6_u.u6_addr8,
-                          ^~~~~~~~~~~
-../drivers/crypto/chelsio/chcr_ktls.c: In function 'chcr_ktls_dev_add':
-../include/net/sock.h:379:34: error: 'struct sock_common' has no member named 'skc_v6_daddr'; did you mean 'skc_daddr'?
- #define sk_v6_daddr  __sk_common.skc_v6_daddr
-                                  ^
-../drivers/crypto/chelsio/chcr_ktls.c:494:27: note: in expansion of macro 'sk_v6_daddr'
-       ipv6_addr_type(&sk->sk_v6_daddr) == IPV6_ADDR_MAPPED)) {
-                           ^~~~~~~~~~~
-In file included from ../arch/x86/include/asm/string.h:3:0,
-                 from ../include/linux/string.h:20,
-                 from ../arch/x86/include/asm/page_32.h:35,
-                 from ../arch/x86/include/asm/page.h:14,
-                 from ../arch/x86/include/asm/thread_info.h:12,
-                 from ../include/linux/thread_info.h:38,
-                 from ../arch/x86/include/asm/preempt.h:7,
-                 from ../include/linux/preempt.h:78,
-                 from ../include/linux/spinlock.h:51,
-                 from ../include/linux/wait.h:9,
-                 from ../include/linux/wait_bit.h:8,
-                 from ../include/linux/fs.h:6,
-                 from ../include/linux/highmem.h:5,
-                 from ../drivers/crypto/chelsio/chcr_ktls.c:5:
-../include/net/sock.h:379:34: error: 'struct sock_common' has no member named 'skc_v6_daddr'; did you mean 'skc_daddr'?
- #define sk_v6_daddr  __sk_common.skc_v6_daddr
-                                  ^
-../arch/x86/include/asm/string_32.h:182:45: note: in definition of macro 'memcpy'
- #define memcpy(t, f, n) __builtin_memcpy(t, f, n)
-                                             ^
-../drivers/crypto/chelsio/chcr_ktls.c:497:22: note: in expansion of macro 'sk_v6_daddr'
-   memcpy(daaddr, sk->sk_v6_daddr.in6_u.u6_addr8, 16);
-                      ^~~~~~~~~~~
-
-
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+-Andi
