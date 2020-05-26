@@ -2,90 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D151E2361
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 15:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8FD1E236D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 15:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731612AbgEZNvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 09:51:14 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:57774 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731354AbgEZNvN (ORCPT
+        id S1729404AbgEZNxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 09:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726930AbgEZNxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 09:51:13 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 065F78030869;
-        Tue, 26 May 2020 13:51:09 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id UtXTcM7PrmFW; Tue, 26 May 2020 16:51:08 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Sebastian Reichel <sre@kernel.org>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 2/2] power: reset: syscon-reboot: Add parental syscon support
-Date:   Tue, 26 May 2020 16:51:01 +0300
-Message-ID: <20200526135102.21236-3-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200526135102.21236-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200526135102.21236-1-Sergey.Semin@baikalelectronics.ru>
+        Tue, 26 May 2020 09:53:37 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7839CC03E96D
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 06:53:37 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id t8so1367246pju.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 06:53:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uMNgaG6xJWfxbhj/av+CAUmXsi69iufIz9696TQYiKc=;
+        b=uWQHN09LppWoFpxMndAZIfR7haL72VD3ldLDHtqItNHm8e3D2dphntouLS+B4WonTK
+         MiABkJicdNbsTfvcIuG+/m1tqjP8dJnp3Q46OCsHLzKD7xYKg/i76wDy045kdcnMaeDf
+         YnVgCeRMf6ML38RhjEyeJK/4/sHk1WfPeJTVHZuPDr8XAB4Jloab/aee1KKgTcVxemnV
+         GI3pPVNS1U4Uqd+ApGQoq5U1towXyetLmNY2OPBHIIzzl6HomNiNUI+G3ilSFUHVxtzM
+         1IvbCeYmLPjOemFVFSuVAe4z3aqTMGjR5zyYghh9jnp2Fr9ob7kK63VKy354ugUPepI0
+         zK/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uMNgaG6xJWfxbhj/av+CAUmXsi69iufIz9696TQYiKc=;
+        b=pJfVgYSZBtRzoRGl3Jo0pWRDyjHA4btiaqq8BU9yV8oEEwk7PlZqxRxP1+78AxzK3g
+         It4bPlgJykSOARbJF3M3tQtyVFqz/A654F4lNLHj3WlpWy6Ig/PqfTTu+ij+y/u9yVPr
+         QsQm+WFy3zxVx6o4v11vP5zmrwsa5kkpfqmLYcqtAHTJxPliMO1Xe/H9JjKCOTtqQM+k
+         2mXLiRliDwVdveIWF86VZYC+7pYc0xlGUkcPSL/yRVPTMSAGuvWMAel9wzxlW8Hnmia9
+         vuuX2o/K+m/dbbkcHoT2ZWnHjsZFB5sehmJHLzv+/gNK8DeHgZx00MUNbkpM4D4H0NmY
+         jRlg==
+X-Gm-Message-State: AOAM530YfA7V/8klfORqDD2hrLZMprIYg6fevqlR9Mp0coldb35rK8Z2
+        z0V6/R9HDpnAUDsQlXEomfgXxA==
+X-Google-Smtp-Source: ABdhPJxh34GNEboejhY3krw53dAsQQkEXHaHUfhIgeQl3e+VNf16EWSQ3J7RwvcUhsTlRNuNIeslWw==
+X-Received: by 2002:a17:90a:ad08:: with SMTP id r8mr27366554pjq.154.1590501217028;
+        Tue, 26 May 2020 06:53:37 -0700 (PDT)
+Received: from ?IPv6:2605:e000:100e:8c61:a9e6:df54:e55e:4c47? ([2605:e000:100e:8c61:a9e6:df54:e55e:4c47])
+        by smtp.gmail.com with ESMTPSA id b4sm12253334pfo.140.2020.05.26.06.53.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 May 2020 06:53:36 -0700 (PDT)
+Subject: Re: linux-next: build failure after merge of the block tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Sterba <dsterba@suse.cz>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Christoph Hellwig <hch@lst.de>
+References: <20200525150837.54fe6977@canb.auug.org.au>
+ <c0e6af76-46d8-ccf0-3874-0751f7622caf@kernel.dk>
+ <20200526143630.7e7fbc79@canb.auug.org.au>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <b2418ce5-839d-43d4-e5ea-416be9f63b1a@kernel.dk>
+Date:   Tue, 26 May 2020 07:53:34 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <20200526143630.7e7fbc79@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since normally syscon-reboot block is supposed to be a part of a system
-controller, lets look for the syscon regmap in a parental DT node if
-regmap property isn't specified. DT binding from now considers the regmap
-property as deprecated.
+On 5/25/20 10:36 PM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> On Mon, 25 May 2020 13:03:44 -0600 Jens Axboe <axboe@kernel.dk> wrote:
+>>
+>> On 5/24/20 11:08 PM, Stephen Rothwell wrote:
+>>>
+>>> After merging the block tree, today's linux-next build (arm
+>>> multi_v7_defconfig) failed like this:
+>>>
+>>> mm/filemap.c: In function 'generic_file_buffered_read':
+>>> mm/filemap.c:2075:9: error: 'written' undeclared (first use in this function); did you mean 'writeb'?
+>>>  2075 |     if (written) {
+>>>       |         ^~~~~~~
+>>>       |         writeb
+>>>
+>>> Caused by commit
+>>>
+>>>   23d513106fd8 ("mm: support async buffered reads in generic_file_buffered_read()")
+>>>
+>>> from the block tree interacting with commit
+>>>
+>>>   6e66f10f2cac ("fs: export generic_file_buffered_read()")
+>>>
+>>> from the btrfs tree.
+>>>
+>>> [Aside: that btrfs tree commit talks about "correct the comments and variable
+>>>     names", but changes "written" to "copied" in the function definition
+>>>     but to "already_read" in the header file declaration ...]
+>>>
+>>> I ave applied the following merge fix patch:  
+>>
+>> Looks like a frivolous change... Thanks for fixing this up Stephen.
+> 
+> The variable name change has been removed from the btrfs tree.
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Cc: devicetree@vger.kernel.org
+Thanks - I'd encourage that name changing late in the merge window
+instead. The change is obviously fine, but a) it should not be done in
+an unrelated change, and b) it can be done without risking causing silly
+merge issues.
 
----
-
-Changelog v2:
-- This is a new patch created as a result of the discussion:
-  https://lore.kernel.org/linux-pm/20200306130402.1F4F0803079F@mail.baikalelectronics.ru/
-
-Changelog v3:
-- Resend
----
- drivers/power/reset/syscon-reboot.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/power/reset/syscon-reboot.c b/drivers/power/reset/syscon-reboot.c
-index 62fbba0df971..510e363381ca 100644
---- a/drivers/power/reset/syscon-reboot.c
-+++ b/drivers/power/reset/syscon-reboot.c
-@@ -51,8 +51,11 @@ static int syscon_reboot_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	ctx->map = syscon_regmap_lookup_by_phandle(dev->of_node, "regmap");
--	if (IS_ERR(ctx->map))
--		return PTR_ERR(ctx->map);
-+	if (IS_ERR(ctx->map)) {
-+		ctx->map = syscon_node_to_regmap(dev->parent->of_node);
-+		if (IS_ERR(ctx->map))
-+			return PTR_ERR(ctx->map);
-+	}
- 
- 	if (of_property_read_u32(pdev->dev.of_node, "offset", &ctx->offset))
- 		return -EINVAL;
 -- 
-2.26.2
+Jens Axboe
 
