@@ -2,427 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 078C91E299F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2D61E2999
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729707AbgEZSEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:04:32 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:14396 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727016AbgEZSEb (ORCPT
+        id S1729313AbgEZSET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:04:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727016AbgEZSES (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:04:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1590516270; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Xfh1nNONwpAzYD81zM7p0TzUtQwDo5KiPS/i7BkyBVQ=;
- b=kkY1cGBXPbUhfOWwXS9rx0jMKA96t6mxLafphqn2/8YuGnmtq3oPgWYd3kA9KO85vBrBY1Z8
- 1nIxnJ/QhpAWcaLnhyW05Do+gb0KgZoprE5Sp7xdBIW/+WZrBxewAdUliqP03M2oHC2g3nnx
- UojloMPIymng9ouva159xCkV9O0=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5ecd59f2bf0e32d25410c704 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 May 2020 18:03:30
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B74F3C43391; Tue, 26 May 2020 18:03:29 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rishabhb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 24A8DC433C6;
-        Tue, 26 May 2020 18:03:28 +0000 (UTC)
+        Tue, 26 May 2020 14:04:18 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56CA5C03E96D
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 11:04:18 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id x10so8980590plr.4
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 11:04:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=xN18P3pXk9ov3jRcuqdGEQKpjL9tqNKMSa/qU3w2Kps=;
+        b=ApLZTDpGOEg4R7/2rp5QFVKZE7iFxMEbcqJkKDrxsOipoLnv9LrxngGBL3toqQwBS3
+         k/iOjFfSmW5BYbXuZ6S5t8TsDCHTJvle4RUy7BjbbJb19eiSdGpKrWztU5ReBkO7xVwd
+         V0Z7R55BsYY9mIZ7kxZvncdiVbaYws8kC8HO2AtG6aC3qVoKsSSrzNkt8unBpMZgFFLd
+         L4kRIVrQR/TJnfaFA2xxA4nDQLZNy+xbYk1noHXpDA+U+mKpG+kgPy446qZ45nl6bQW8
+         +YYdbwc+xPMQIBujm5KHqIwqrLTKlClQnbS3zrUDECg5x/2j0qN3xcl68JeGWqXcIlZU
+         MwHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xN18P3pXk9ov3jRcuqdGEQKpjL9tqNKMSa/qU3w2Kps=;
+        b=c0ZwTgZCnFtnoOfqPv98smMf6G6Gy64cz3OxFTAA67p2bZTN7bJhC2EMI3omL+CeMn
+         ZYieiVlXaW+9jNEllc4Aq1L0DLlXC6CClTBpPErUmIe6UySQvOnujHOpr1GB8quL2a+h
+         oF7+aiBFdMs6tuZNJU4L09uI9lPVxTXvPmbPVhvqTtERYJHOIlN/P2t3LMAUwSH4DhCp
+         57fTWZLtIISPiFhqSdf8j7p547tiBZI7dPTTY+gHHa8YkU0JP2bAt6+DfQSVlNN1xKaA
+         YjU9sSU/Ru5vBEL/ITnXEkGhFFMN4d2fUy7pJxYBl02t/ofhx4XtwIje40SVEGdwc2lu
+         qj8Q==
+X-Gm-Message-State: AOAM5328cMalZ0CfjlwClSVRwUu1oaJEo+/LEXDWnUevSRZRCpFvwi5+
+        igVBKBFtl+Dp2OIT/q/kGIzWuWAg0ZTekg==
+X-Google-Smtp-Source: ABdhPJwB+MW5Pz7ukEC/Hy/cHj9Qc1/7Vhtx0AJkxRdqljuvOFbh9c3cmsvxMUa4x8by+v5qqbc0zg==
+X-Received: by 2002:a17:90a:4b47:: with SMTP id o7mr389452pjl.205.1590516257560;
+        Tue, 26 May 2020 11:04:17 -0700 (PDT)
+Received: from ?IPv6:2600:380:495a:792b:6476:7a3a:9257:12c7? ([2600:380:495a:792b:6476:7a3a:9257:12c7])
+        by smtp.gmail.com with ESMTPSA id u14sm196285pfc.87.2020.05.26.11.04.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 May 2020 11:04:17 -0700 (PDT)
+Subject: Re: [PATCH 1/6] io_uring: fix flush req->refs underflow
+To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1590513806.git.asml.silence@gmail.com>
+ <be790e01cf63bc0d04bc4577e15ef50ea2c3ac53.1590513806.git.asml.silence@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <82761dbe-d0c6-c14d-0898-1bb324d38b9e@kernel.dk>
+Date:   Tue, 26 May 2020 12:04:15 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <be790e01cf63bc0d04bc4577e15ef50ea2c3ac53.1590513806.git.asml.silence@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 26 May 2020 11:03:28 -0700
-From:   rishabhb@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-remoteproc@vger.kernel.org, ohad@wizery.com,
-        linux-kernel@vger.kernel.org, tsoni@codeaurora.org,
-        psodagud@codeaurora.org, sidgup@codeaurora.org
-Subject: Re: [PATCH v3 1/2] remoteproc: qcom: Add per subsystem SSR
- notification
-In-Reply-To: <20200519203852.GC408178@builder.lan>
-References: <1588112169-29447-1-git-send-email-rishabhb@codeaurora.org>
- <1588112169-29447-2-git-send-email-rishabhb@codeaurora.org>
- <20200519203852.GC408178@builder.lan>
-Message-ID: <d11d48031c90c400aaa3f70565362dfb@codeaurora.org>
-X-Sender: rishabhb@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-19 13:38, Bjorn Andersson wrote:
-> On Tue 28 Apr 15:16 PDT 2020, Rishabh Bhatnagar wrote:
-> 
->> Currently there is a single notification chain which is called 
->> whenever any
->> remoteproc shuts down. This leads to all the listeners being notified, 
->> and
->> is not an optimal design as kernel drivers might only be interested in
->> listening to notifications from a particular remoteproc. Create a 
->> global
->> list of remoteproc notification info data structures. This will hold 
->> the
->> name and notifier_list information for a particular remoteproc. The 
->> API
->> to register for notifications will use name argument to retrieve the
->> notification info data structure and the notifier block will be added 
->> to
->> that data structure's notification chain.
->> 
->> Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
->> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-> 
-> Thanks Rishabh, design wise I think this looks good now, just some code
-> style things below.
-> 
->> ---
->>  drivers/remoteproc/qcom_common.c      | 89 
->> ++++++++++++++++++++++++++++++-----
->>  drivers/remoteproc/qcom_common.h      | 10 +++-
->>  include/linux/remoteproc/qcom_rproc.h | 20 ++++++--
->>  3 files changed, 99 insertions(+), 20 deletions(-)
->> 
->> diff --git a/drivers/remoteproc/qcom_common.c 
->> b/drivers/remoteproc/qcom_common.c
->> index 60650bc..7cd17be 100644
->> --- a/drivers/remoteproc/qcom_common.c
->> +++ b/drivers/remoteproc/qcom_common.c
->> @@ -15,16 +15,18 @@
->>  #include <linux/rpmsg/qcom_glink.h>
->>  #include <linux/rpmsg/qcom_smd.h>
->>  #include <linux/soc/qcom/mdt_loader.h>
->> +#include <linux/remoteproc/qcom_rproc.h>
-> 
-> Please maintain alphabetical sort order.
-> 
->> 
->>  #include "remoteproc_internal.h"
->>  #include "qcom_common.h"
->> 
->> +#define MAX_NAME_LEN	20
->> +DEFINE_MUTEX(rproc_notif_lock);
-> 
-> Please rename this qcom_ssr_subsystem_lock
-> 
->> +
->>  #define to_glink_subdev(d) container_of(d, struct qcom_rproc_glink, 
->> subdev)
->>  #define to_smd_subdev(d) container_of(d, struct qcom_rproc_subdev, 
->> subdev)
->>  #define to_ssr_subdev(d) container_of(d, struct qcom_rproc_ssr, 
->> subdev)
->> 
->> -static BLOCKING_NOTIFIER_HEAD(ssr_notifiers);
-> 
-> Move the definition of rproc_notif_info, the new rproc_notif_info list
-> head and move the two lines above here as well.
-> 
->> -
->>  static int glink_subdev_start(struct rproc_subdev *subdev)
->>  {
->>  	struct qcom_rproc_glink *glink = to_glink_subdev(subdev);
->> @@ -174,39 +176,81 @@ void qcom_remove_smd_subdev(struct rproc *rproc, 
->> struct qcom_rproc_subdev *smd)
->>  }
->>  EXPORT_SYMBOL_GPL(qcom_remove_smd_subdev);
->> 
->> +struct rproc_notif_info *find_notif_info(const char *name)
-> 
-> Please make this qcom_ssr_get_subsystem(const char *name)
-> 
->> +{
->> +	struct rproc_notif_info *info;
->> +
->> +	/* Match in the global rproc_notif_list with name */
->> +	list_for_each_entry(info, &rproc_notif_list, list) {
->> +		if (!strncmp(info->name, name, strlen(name)))
-> 
-> strncmp(a, b, strlen(b)) is the same thing as strcmp(a, b), unless a is
-> shorted than b and not NUL terminated.
-> 
->> +			return info;
->> +	}
->> +	return NULL;
-> 
-> Both callers of this function will if NULL is returned allocate a new
-> subsystem object and attach to the list. If you do that here you can
-> remove the duplication between these.
-> 
->> +}
->> +
->>  /**
->>   * qcom_register_ssr_notifier() - register SSR notification handler
->> + * @name:	pointer to name which will be searched in the global 
->> notif_list
->>   * @nb:		notifier_block to notify for restart notifications
->>   *
->> - * Returns 0 on success, negative errno on failure.
->> + * Returns pointer to srcu notifier head on success, ERR_PTR on 
->> failure.
-> 
-> This shouldn't mention that the opaque pointer is of a type standard to
-> the kernel. Better just say that it returns a "subsystem cookie".
-> 
->>   *
->> - * This register the @notify function as handler for restart 
->> notifications. As
->> - * remote processors are stopped this function will be called, with 
->> the SSR
->> - * name passed as a parameter.
->> + * This registers the @nb notifier block as part the notifier chain 
->> for a
->> + * remoteproc associated with @name. The notifier block's callback
->> + * will be invoked when the particular remote processor is stopped.
->>   */
->> -int qcom_register_ssr_notifier(struct notifier_block *nb)
->> +void *qcom_register_ssr_notifier(const char *name, struct 
->> notifier_block *nb)
->>  {
->> -	return blocking_notifier_chain_register(&ssr_notifiers, nb);
->> +	struct rproc_notif_info *info;
->> +
->> +	mutex_lock(&rproc_notif_lock);
->> +	info = find_notif_info(name);
->> +	if (!info) {
->> +		info = kzalloc(sizeof(*info), GFP_KERNEL);
->> +		if (!info) {
->> +			mutex_unlock(&rproc_notif_lock);
->> +			return ERR_PTR(-ENOMEM);
->> +		}
->> +		info->name = kstrndup(name, MAX_NAME_LEN, GFP_KERNEL);
-> 
-> This is going to be a constant in a lot of cases, so please use
-> kstrdup_const(). Also what's the purpose of limiting the length of 
-> this?
-> 
->> +		srcu_init_notifier_head(&info->notifier_list);
->> +
->> +		/* Add to global notif list */
->> +		INIT_LIST_HEAD(&info->list);
->> +		list_add_tail(&info->list, &rproc_notif_list);
->> +	}
->> +
->> +	srcu_notifier_chain_register(&info->notifier_list, nb);
->> +	mutex_unlock(&rproc_notif_lock);
->> +	return &info->notifier_list;
->>  }
->>  EXPORT_SYMBOL_GPL(qcom_register_ssr_notifier);
->> 
->>  /**
->>   * qcom_unregister_ssr_notifier() - unregister SSR notification 
->> handler
->> + * @notify:	pointer to srcu notifier head
-> 
->       @subsystem: subsystem cookie returned from 
-> qcom_register_ssr_notifier
-> 
->>   * @nb:		notifier_block to unregister
->>   */
->> -void qcom_unregister_ssr_notifier(struct notifier_block *nb)
->> +int qcom_unregister_ssr_notifier(void *notify, struct notifier_block 
->> *nb)
->>  {
->> -	blocking_notifier_chain_unregister(&ssr_notifiers, nb);
->> +	if (!notify)
->> +		return -EINVAL;
-> 
-> qcom_register_ssr_notifier() will return a valid cookie or a ERR_PTR()
-> so if someone passes NULL here they did something wrong during
-> development...
-> 
-> So it's better to just remove this check and give the developer a nice
-> callstack directly pointing out their mistake, than forcing them to
-> chase where this -EINVAL comes from.
-> 
->> +
->> +	return srcu_notifier_chain_unregister(notify, nb);
->>  }
->>  EXPORT_SYMBOL_GPL(qcom_unregister_ssr_notifier);
->> 
->>  static void ssr_notify_unprepare(struct rproc_subdev *subdev)
->>  {
->>  	struct qcom_rproc_ssr *ssr = to_ssr_subdev(subdev);
->> +	struct rproc_notif_data data = {
->> +		.name = ssr->info->name,
->> +		.crashed = false,
->> +	};
->> 
->> -	blocking_notifier_call_chain(&ssr_notifiers, 0, (void *)ssr->name);
->> +	srcu_notifier_call_chain(&ssr->info->notifier_list, 0, &data);
-> 
-> Did we conclude on why you change blocking to srcu? Can we do it in a
-> separate patch?
-> 
-Since the notifier list needs to be dynamically added for every 
-subsystem using srcu
-notifier makes sense. I'm not sure if we can use blocking notifier 
-dynamically here.
->>  }
->> 
->> +
->>  /**
->>   * qcom_add_ssr_subdev() - register subdevice as restart notification 
->> source
->>   * @rproc:	rproc handle
->> @@ -214,12 +258,30 @@ static void ssr_notify_unprepare(struct 
->> rproc_subdev *subdev)
->>   * @ssr_name:	identifier to use for notifications originating from 
->> @rproc
->>   *
->>   * As the @ssr is registered with the @rproc SSR events will be sent 
->> to all
->> - * registered listeners in the system as the remoteproc is shut down.
->> + * registered listeners for the particular remoteproc when it is 
->> shutdown.
->>   */
->>  void qcom_add_ssr_subdev(struct rproc *rproc, struct qcom_rproc_ssr 
->> *ssr,
->>  			 const char *ssr_name)
->>  {
->> -	ssr->name = ssr_name;
->> +	struct rproc_notif_info *info;
->> +
->> +	mutex_lock(&rproc_notif_lock);
->> +	info = find_notif_info(ssr_name);
->> +	if (!info) {
->> +		info = kzalloc(sizeof(*info), GFP_KERNEL);
->> +		if (!info) {
->> +			mutex_unlock(&rproc_notif_lock);
->> +			return;
->> +		}
->> +		info->name = ssr_name;
->> +		srcu_init_notifier_head(&info->notifier_list);
->> +
->> +		/* Add to global notif_list */
->> +		INIT_LIST_HEAD(&info->list);
->> +		list_add_tail(&info->list, &rproc_notif_list);
->> +	}
->> +	mutex_unlock(&rproc_notif_lock);
->> +	ssr->info = info;
->>  	ssr->subdev.unprepare = ssr_notify_unprepare;
->> 
->>  	rproc_add_subdev(rproc, &ssr->subdev);
->> @@ -233,6 +295,7 @@ void qcom_add_ssr_subdev(struct rproc *rproc, 
->> struct qcom_rproc_ssr *ssr,
->>   */
->>  void qcom_remove_ssr_subdev(struct rproc *rproc, struct 
->> qcom_rproc_ssr *ssr)
->>  {
->> +	ssr->info = NULL;
-> 
-> Move this after rproc_remove_subdev() and rely on the core for this not
-> to race with the ssr_notify_unprepare().
-> 
->>  	rproc_remove_subdev(rproc, &ssr->subdev);
->>  }
->>  EXPORT_SYMBOL_GPL(qcom_remove_ssr_subdev);
-> 
-> It would be nice with a module_exit() that walks the rproc_notif_list
-> and free all the elements, if qcom_common.ko is rmmod'ed. Given that
-> this is uncommon I wouldn't mind to take that as a separate patch
-> though.
-> 
-Yes i can submit that as a separate patch.
->> diff --git a/drivers/remoteproc/qcom_common.h 
->> b/drivers/remoteproc/qcom_common.h
->> index 58de71e..0c1d288 100644
->> --- a/drivers/remoteproc/qcom_common.h
->> +++ b/drivers/remoteproc/qcom_common.h
->> @@ -24,10 +24,16 @@ struct qcom_rproc_subdev {
->>  	struct qcom_smd_edge *edge;
->>  };
->> 
->> +struct rproc_notif_info {
-> 
-> Please rename this struct qcom_ssr_subsystem
-> 
->> +	const char *name;
->> +	struct srcu_notifier_head notifier_list;
->> +	struct list_head list;
->> +};
->> +static LIST_HEAD(rproc_notif_list);
-> 
-> Please rename this list qcom_ssr_subsystem_list and as stated above 
-> move
-> it into qcom_common.c.
-> 
-> 
-> To allow using qcom_ssr_subsystem in the struct below simply forward
-> declare it here as:
-> 
-> struct qcom_ssr_subsystem;
-> 
->> +
->>  struct qcom_rproc_ssr {
->>  	struct rproc_subdev subdev;
->> -
->> -	const char *name;
->> +	struct rproc_notif_info *info;
->>  };
->> 
-> 
-> Regards,
-> Bjorn
-> 
->>  void qcom_add_glink_subdev(struct rproc *rproc, struct 
->> qcom_rproc_glink *glink);
->> diff --git a/include/linux/remoteproc/qcom_rproc.h 
->> b/include/linux/remoteproc/qcom_rproc.h
->> index fa8e386..3dc65c0 100644
->> --- a/include/linux/remoteproc/qcom_rproc.h
->> +++ b/include/linux/remoteproc/qcom_rproc.h
->> @@ -5,17 +5,27 @@
->> 
->>  #if IS_ENABLED(CONFIG_QCOM_RPROC_COMMON)
->> 
->> -int qcom_register_ssr_notifier(struct notifier_block *nb);
->> -void qcom_unregister_ssr_notifier(struct notifier_block *nb);
->> +struct rproc_notif_data {
->> +	const char *name;
->> +	bool crashed;
->> +};
->> +
->> +void *qcom_register_ssr_notifier(const char *name, struct 
->> notifier_block *nb);
->> +int qcom_unregister_ssr_notifier(void *notify, struct notifier_block 
->> *nb);
->> 
->>  #else
->> 
->> -static inline int qcom_register_ssr_notifier(struct notifier_block 
->> *nb)
->> +static inline void *qcom_register_ssr_notifier(const char *name,
->> +						struct notifier_block *nb)
->>  {
->> -	return 0;
->> +	return NULL;
->>  }
->> 
->> -static inline void qcom_unregister_ssr_notifier(struct notifier_block 
->> *nb) {}
->> +static inline int qcom_unregister_ssr_notifier(void *notify,
->> +						struct notifier_block *nb)
->> +{
->> +	return 0;
->> +}
->> 
->>  #endif
->> 
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
+On 5/26/20 11:34 AM, Pavel Begunkov wrote:
+> In io_uring_cancel_files(), after refcount_sub_and_test() leaves 0
+> req->refs, it calls io_put_req(), which would also put a ref. Call
+> io_free_req() instead.
+
+Needs a:
+
+Fixes: 2ca10259b418 ("io_uring: prune request from overflow list on flush")     
+
+I added it.
+
+-- 
+Jens Axboe
+
