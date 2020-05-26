@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 197F61E2D8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C53311E2C04
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404419AbgEZTVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:21:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40484 "EHLO mail.kernel.org"
+        id S2391136AbgEZTLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:11:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391427AbgEZTLL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:11:11 -0400
+        id S2392054AbgEZTLN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:11:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E1FF520888;
-        Tue, 26 May 2020 19:11:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E44D20776;
+        Tue, 26 May 2020 19:11:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520270;
-        bh=ECHHm1tjjPiVV5BIUfnlAx1LvvWnDMygf0UXIqwcJhQ=;
+        s=default; t=1590520272;
+        bh=ZrjVoD4ZwV/tZz4fxl1W6b/CNXJM9Tqt8/6U32PtV6w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2TZAVr4eSX95Ris7Vtv2FHOyiZz97dYZgt2LUinVpkQL9WL8FUhq37xy/JPeYkX4T
-         Yt7pItYTB826CIqj7yYOvXlWSqBRzEnAZ0CwVXDWLmz9jaS0du3SnBYN8b+Z/okP+W
-         n5fNgcruqVT7AB353aTAZP0KJL3XyCCb7XdapseY=
+        b=K3YJdsTmFfO33PSQx5exPSiVep7v7+WlrHuwikJUJX/Yadgqp+tp429hzh6pm9gTc
+         gVygQjGhYSX9Fp+44J0GZ7tjmWyXuoKGnYIh4GC6tu3Oi+4aH+NKjZiG/w7Vbkh403
+         l+EzO6DEYmuMYr58lPCObcbHEXLmWfOq8mdjEs8M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Monakov <amonakov@ispras.ru>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org, Joerg Roedel <jroedel@suse.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 014/126] iommu/amd: Fix over-read of ACPI UID from IVRS table
-Date:   Tue, 26 May 2020 20:52:31 +0200
-Message-Id: <20200526183938.780946925@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Raul E Rangel <rrangel@chromium.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 015/126] iommu/amd: Fix get_acpihid_device_id()
+Date:   Tue, 26 May 2020 20:52:32 +0200
+Message-Id: <20200526183938.877864948@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
 References: <20200526183937.471379031@linuxfoundation.org>
@@ -45,80 +46,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Monakov <amonakov@ispras.ru>
+From: Raul E Rangel <rrangel@chromium.org>
 
-[ Upstream commit e461b8c991b9202b007ea2059d953e264240b0c9 ]
+[ Upstream commit ea90228c7b2ae6646bb6381385229aabb6f14cd2 ]
 
-IVRS parsing code always tries to read 255 bytes from memory when
-retrieving ACPI device path, and makes an assumption that firmware
-provides a zero-terminated string. Both of those are bugs: the entry
-is likely to be shorter than 255 bytes, and zero-termination is not
-guaranteed.
+acpi_dev_hid_uid_match() expects a null pointer for UID if it doesn't
+exist. The acpihid_map_entry contains a char buffer for holding the
+UID. If no UID was provided in the IVRS table, this buffer will be
+zeroed. If we pass in a null string, acpi_dev_hid_uid_match() will
+return false because it will try and match an empty string to the ACPI
+UID of the device.
 
-With Acer SF314-42 firmware these issues manifest visibly in dmesg:
-
-AMD-Vi: ivrs, add hid:AMDI0020, uid:\_SB.FUR0\xf0\xa5, rdevid:160
-AMD-Vi: ivrs, add hid:AMDI0020, uid:\_SB.FUR1\xf0\xa5, rdevid:160
-AMD-Vi: ivrs, add hid:AMDI0020, uid:\_SB.FUR2\xf0\xa5, rdevid:160
-AMD-Vi: ivrs, add hid:AMDI0020, uid:\_SB.FUR3>\x83e\x8d\x9a\xd1...
-
-The first three lines show how the code over-reads adjacent table
-entries into the UID, and in the last line it even reads garbage data
-beyond the end of the IVRS table itself.
-
-Since each entry has the length of the UID (uidl member of ivhd_entry
-struct), use that for memcpy, and manually add a zero terminator.
-
-Avoid zero-filling hid and uid arrays up front, and instead ensure
-the uid array is always zero-terminated. No change needed for the hid
-array, as it was already properly zero-terminated.
-
-Fixes: 2a0cb4e2d423c ("iommu/amd: Add new map for storing IVHD dev entry type HID")
-
-Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: iommu@lists.linux-foundation.org
-Link: https://lore.kernel.org/r/20200511102352.1831-1-amonakov@ispras.ru
+Fixes: ae5e6c6439c3 ("iommu/amd: Switch to use acpi_dev_hid_uid_match()")
+Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Raul E Rangel <rrangel@chromium.org>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20200511103229.v2.1.I6f1b6f973ee6c8af1348611370c73a0ec0ea53f1@changeid
 Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/amd_iommu_init.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/iommu/amd_iommu.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iommu/amd_iommu_init.c b/drivers/iommu/amd_iommu_init.c
-index 2b9a67ecc6ac..5b81fd16f5fa 100644
---- a/drivers/iommu/amd_iommu_init.c
-+++ b/drivers/iommu/amd_iommu_init.c
-@@ -1329,8 +1329,8 @@ static int __init init_iommu_from_acpi(struct amd_iommu *iommu,
- 		}
- 		case IVHD_DEV_ACPI_HID: {
- 			u16 devid;
--			u8 hid[ACPIHID_HID_LEN] = {0};
--			u8 uid[ACPIHID_UID_LEN] = {0};
-+			u8 hid[ACPIHID_HID_LEN];
-+			u8 uid[ACPIHID_UID_LEN];
- 			int ret;
+diff --git a/drivers/iommu/amd_iommu.c b/drivers/iommu/amd_iommu.c
+index 500d0a8c966f..1d8634250afc 100644
+--- a/drivers/iommu/amd_iommu.c
++++ b/drivers/iommu/amd_iommu.c
+@@ -127,7 +127,8 @@ static inline int get_acpihid_device_id(struct device *dev,
+ 		return -ENODEV;
  
- 			if (h->type != 0x40) {
-@@ -1347,6 +1347,7 @@ static int __init init_iommu_from_acpi(struct amd_iommu *iommu,
- 				break;
- 			}
- 
-+			uid[0] = '\0';
- 			switch (e->uidf) {
- 			case UID_NOT_PRESENT:
- 
-@@ -1361,8 +1362,8 @@ static int __init init_iommu_from_acpi(struct amd_iommu *iommu,
- 				break;
- 			case UID_IS_CHARACTER:
- 
--				memcpy(uid, (u8 *)(&e->uid), ACPIHID_UID_LEN - 1);
--				uid[ACPIHID_UID_LEN - 1] = '\0';
-+				memcpy(uid, &e->uid, e->uidl);
-+				uid[e->uidl] = '\0';
- 
- 				break;
- 			default:
+ 	list_for_each_entry(p, &acpihid_map, list) {
+-		if (acpi_dev_hid_uid_match(adev, p->hid, p->uid)) {
++		if (acpi_dev_hid_uid_match(adev, p->hid,
++					   p->uid[0] ? p->uid : NULL)) {
+ 			if (entry)
+ 				*entry = p;
+ 			return p->devid;
 -- 
 2.25.1
 
