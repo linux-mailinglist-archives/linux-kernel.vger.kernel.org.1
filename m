@@ -2,184 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29BB1E2FC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 22:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA521E2FC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 22:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390907AbgEZUKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 16:10:07 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:43335 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390075AbgEZUKG (ORCPT
+        id S2390844AbgEZUJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 16:09:35 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:42874 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390815AbgEZUJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 16:10:06 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 61EE1582186;
-        Tue, 26 May 2020 16:10:05 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 26 May 2020 16:10:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
-        :to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=LHN0JqCZjAhlY7hB0/Y3fto1Fs
-        QcamBNWhl7bqCCYFQ=; b=Tf85u/C9df53lBvUWR+YDqK8pTkDrlYwLiHV44qbkS
-        mnHeugttyrDec7o60NcUtnABRLdccSQKc7t59jSSHpVbVIAJrtb9dFc/tI/VCFik
-        ZmenzZbrOUgnS/E5bPrTAnCfY2QUl2V5PbiPLZ6nLYZR3eKjZUKpp9FCkaJb30yO
-        xHPJ/DJA2342C4+6ldrjdpka0rNkcWmswGMP/nbsL8819nj+hYgfqCBTdhVTldJq
-        ZE556X5zBI1eSwczYvHj0naUQeMjaUmhbdB4D/ZL+psVh7Pz15JWuFIRB//rpR0r
-        2AIZr2SY0irzoSvvg65uX40vdxoYuEbvGN3spSfXJEug==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=LHN0JqCZjAhlY7hB0
-        /Y3fto1FsQcamBNWhl7bqCCYFQ=; b=wAS94y4Q5SKaY0h7NxjaHI5iBN210i57D
-        RMFJcWHfxHh4bN4m9zPx+8tecS3ekBMEiCwemkO5TjYMCd7bknJVCfTtp2A6Wr6o
-        TIAbO0h/HNHYhSlcdKB/c5NuXReBNeMfDL5B+uAz/G0R/84JOwTj4keSLoe7nT4n
-        0QWEJS7F/+XmhW8SAZjxGkxgHr8TUORJZsw7QuJscdG8dSLaJAv1JoutVw9numCH
-        WnY8Q6xN3xtlFgw3Dia2CU7YIiCCRAcZVfh5WoLmyyg0d3nExliI4pMUPGipDn5T
-        eFk9/hflNNQBnrXsfAA1IWt+S/KtY7yCCB0VMBe1DR+aLxSumqazA==
-X-ME-Sender: <xms:nHfNXvzvgJWk2x4WlFsZz-UClafeoFkQkptLBMsFIKSFBqMXIcFcNQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddvvddgudegudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepuehorhhishcu
-    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeduie
-    dtleeuieejfeelffevleeifefgjeejieegkeduudetfeekffeftefhvdejveenucfkphep
-    udeifedruddugedrudefvddrfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:nHfNXnSyyIsZBlxSCMNbdkEG1E3tQqTXJTVONmF8030q1O0ZXj-ydQ>
-    <xmx:nHfNXpWLGOd-pMCdyDaaxXz9nJRXOvhse5SyYxQrIL7nnShk2AC5Og>
-    <xmx:nHfNXpi4Gpu-We6KpAe9ni5ySGUOw17NCUsTrr3NZT5M22clv9tYqg>
-    <xmx:nXfNXrDBU16_PYsN6sR67J4sQ25VoMHjDPQ_poglN5Woy4lEo9dJvfYuU4YLPnSS>
-Received: from localhost (unknown [163.114.132.3])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7FB2E3280068;
-        Tue, 26 May 2020 16:10:03 -0400 (EDT)
-From:   Boris Burkov <boris@bur.io>
-To:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Boris Burkov <boris@bur.io>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [PATCH cgroup/for-5.8] cgroup: add cpu.stat file to root cgroup
-Date:   Tue, 26 May 2020 13:08:00 -0700
-Message-Id: <20200526200800.3969430-1-boris@bur.io>
-X-Mailer: git-send-email 2.24.1
+        Tue, 26 May 2020 16:09:35 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04QK9I4E110594;
+        Tue, 26 May 2020 15:09:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1590523758;
+        bh=a3Bn7e1phIBeu9GwEZi9rAuG8EpD69JqfaOzcTdsyh0=;
+        h=From:To:CC:Subject:Date;
+        b=AlZikyLtf+4jLs+qkoxYVYwpjE8XyEx0boIFPzAPeUiyUJiaxthsYumkRFRi1kky8
+         ptn6MIqERIUjs2P1z41byNUKjVw1Q3ayqAsG8mWqybMzKdbzfyL9d/XZ9G6zq7l1Ju
+         rAK3+4OhMIVw4t/Ltqkbw7DJ4FUc80D1ysMGejGE=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04QK9IRm086475
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 26 May 2020 15:09:18 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 26
+ May 2020 15:09:18 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 26 May 2020 15:09:18 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04QK9IAC092862;
+        Tue, 26 May 2020 15:09:18 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH 1/2] dt-bindings: sound: tlv320adcx140: Add GPI config property
+Date:   Tue, 26 May 2020 15:09:16 -0500
+Message-ID: <20200526200917.10385-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the root cgroup does not have a cpu.stat file. Add one which
-is consistent with /proc/stat to capture global cpu statistics that
-might not fall under cgroup accounting.
+Add an array property that configures the General Purpose Input (GPI)
+register.  The device has 4 GPI pins and each pin can be configured in 1
+of 7 different ways.
 
-We haven't done this in the past because the data are already presented
-in /proc/stat and we didn't want to add overhead from collecting root
-cgroup stats when cgroups are configured, but no cgroups have been
-created.
-
-By keeping the data consistent with /proc/stat, I think we avoid the
-first problem, while improving the usability of cgroups stats.
-We avoid the second problem by computing the contents of cpu.stat from
-existing data collected for /proc/stat anyway.
-
-Signed-off-by: Boris Burkov <boris@bur.io>
-Suggested-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
 ---
- kernel/cgroup/cgroup.c |  1 -
- kernel/cgroup/rstat.c  | 60 ++++++++++++++++++++++++++++++++++++------
- 2 files changed, 52 insertions(+), 9 deletions(-)
+ .../bindings/sound/tlv320adcx140.yaml         | 27 +++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 557a9b9d2244..b8a75169c3e4 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -4881,7 +4881,6 @@ static struct cftype cgroup_base_files[] = {
- 	},
- 	{
- 		.name = "cpu.stat",
--		.flags = CFTYPE_NOT_ON_ROOT,
- 		.seq_show = cpu_stat_show,
- 	},
- #ifdef CONFIG_PSI
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index 41ca996568df..b6397a186ce9 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -389,18 +389,62 @@ void __cgroup_account_cputime_field(struct cgroup *cgrp,
- 	cgroup_base_stat_cputime_account_end(cgrp, rstatc);
- }
+diff --git a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
+index daa6cc0e031b..e8a69b1c7ca9 100644
+--- a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
++++ b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
+@@ -86,6 +86,32 @@ properties:
+           maximum: 1
+         default: [0, 0, 0, 0]
  
-+/*
-+ * compute the cputime for the root cgroup by getting the per cpu data
-+ * at a global level, then categorizing the fields in a manner consistent
-+ * with how it is done by __cgroup_account_cputime_field for each bit of
-+ * cpu time attributed to a cgroup.
-+ */
-+static void root_cgroup_cputime(struct task_cputime *cputime)
-+{
-+	int i;
++  ti,gpi-config:
++    description: |
++       Defines the configuration for the general purpose input pins (GPI).
++       The array is defined as <GPI1 GPI2 GPI3 GPI4>.
 +
-+	cputime->stime = 0;
-+	cputime->utime = 0;
-+	cputime->sum_exec_runtime = 0;
-+	for_each_possible_cpu(i) {
-+		struct kernel_cpustat kcpustat;
-+		u64 *cpustat = kcpustat.cpustat;
-+		u64 user = 0;
-+		u64 sys = 0;
++       0 - (default) disabled
++       1 - GPIX is configured as a general-purpose input (GPI)
++       2 - GPIX is configured as a master clock input (MCLK)
++       3 - GPIX is configured as an ASI input for daisy-chain (SDIN)
++       4 - GPIX is configured as a PDM data input for channel 1 and channel
++            (PDMDIN1)
++       5 - GPIX is configured as a PDM data input for channel 3 and channel
++            (PDMDIN2)
++       6 - GPIX is configured as a PDM data input for channel 5 and channel
++            (PDMDIN3)
++       7 - GPIX is configured as a PDM data input for channel 7 and channel
++            (PDMDIN4)
 +
-+		kcpustat_cpu_fetch(&kcpustat, i);
++    allOf:
++      - $ref: /schemas/types.yaml#/definitions/uint32-array
++      - minItems: 1
++        maxItems: 4
++        items:
++          maximum: 1
++        default: [0, 0, 0, 0]
 +
-+		user += cpustat[CPUTIME_USER];
-+		user += cpustat[CPUTIME_NICE];
-+		cputime->utime += user;
-+
-+		sys += cpustat[CPUTIME_SYSTEM];
-+		sys += cpustat[CPUTIME_IRQ];
-+		sys += cpustat[CPUTIME_SOFTIRQ];
-+		cputime->stime += sys;
-+
-+		cputime->sum_exec_runtime += user;
-+		cputime->sum_exec_runtime += sys;
-+		cputime->sum_exec_runtime += cpustat[CPUTIME_STEAL];
-+		cputime->sum_exec_runtime += cpustat[CPUTIME_GUEST];
-+		cputime->sum_exec_runtime += cpustat[CPUTIME_GUEST_NICE];
-+	}
-+}
-+
- void cgroup_base_stat_cputime_show(struct seq_file *seq)
- {
- 	struct cgroup *cgrp = seq_css(seq)->cgroup;
- 	u64 usage, utime, stime;
--
--	if (!cgroup_parent(cgrp))
--		return;
--
--	cgroup_rstat_flush_hold(cgrp);
--	usage = cgrp->bstat.cputime.sum_exec_runtime;
--	cputime_adjust(&cgrp->bstat.cputime, &cgrp->prev_cputime, &utime, &stime);
--	cgroup_rstat_flush_release();
-+	struct task_cputime cputime;
-+
-+	if (cgroup_parent(cgrp)) {
-+		cgroup_rstat_flush_hold(cgrp);
-+		usage = cgrp->bstat.cputime.sum_exec_runtime;
-+		cputime_adjust(&cgrp->bstat.cputime, &cgrp->prev_cputime,
-+			       &utime, &stime);
-+		cgroup_rstat_flush_release();
-+	} else {
-+		root_cgroup_cputime(&cputime);
-+		usage = cputime.sum_exec_runtime;
-+		utime = cputime.utime;
-+		stime = cputime.stime;
-+	}
- 
- 	do_div(usage, NSEC_PER_USEC);
- 	do_div(utime, NSEC_PER_USEC);
+ required:
+   - compatible
+   - reg
+@@ -101,6 +127,7 @@ examples:
+         reg = <0x4c>;
+         ti,mic-bias-source = <6>;
+         ti,pdm-edge-select = <0 1 0 1>;
++        ti,gpi-config = <4 5 6 7>;
+         reset-gpios = <&gpio0 14 GPIO_ACTIVE_HIGH>;
+       };
+     };
 -- 
-2.24.1
+2.26.2
 
