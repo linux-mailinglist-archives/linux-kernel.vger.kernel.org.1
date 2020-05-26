@@ -2,111 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E988F1E187C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 02:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA041E1883
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 02:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729044AbgEZAbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 20:31:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58266 "EHLO
+        id S2388054AbgEZAhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 20:37:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgEZAbN (ORCPT
+        with ESMTP id S1726350AbgEZAhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 20:31:13 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15846C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 17:31:12 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id p4so8709710qvr.10
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 17:31:12 -0700 (PDT)
+        Mon, 25 May 2020 20:37:11 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD69C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 17:37:10 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id d3so7977976pln.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 17:37:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=c4nWWXi8qCXT9b5o9GmVwjoEsDaKwahe7vf3tGdNZwE=;
-        b=ZuhdvUk7sfvXRz7F/zug9z1Ai7NHAh6QTWSHAlrthly+E40qyNby2MBcN3J5zTcaJq
-         qhxLhCyDuPQM3S4wCNwm8DlOKBcLPdH/d7LCkdG4ByrcPomg2WSxYh+Iq2Si6UfKN25H
-         DKYH1/QdsGxp1B31R6qCgVWOz7P/qPTBUi0IFz5TgFfRgFEu4FbFcopVrtY/NVZb77fe
-         Dhb95g0gYo/IB3YQ87cD2gnpWvnr7UOSovzkjkWYpAeOBIxWvgmxhWm09C306C6sgJMK
-         SBAHugwgLhgR8kDfvdjYQE8T6nQNboRCt/zi64uE+qXpWPW2B+FxnR93C2/IZmS1oF2Y
-         0eog==
+         :content-disposition:in-reply-to;
+        bh=e0QmqwRh8HAG2Vlx7bh9P7hF+0B2FhgdgqTRYD2VzoE=;
+        b=hiBEnNOr6h1Pm4lIfBg3dTFLEu6bcZeu4DoHWFZ5FRJmqrbpYHea1/mCSu6yyPM4n7
+         eKhdO9Vu4hfvpi1hmO+Jn3jvjis6yFkltaF9ZvgC8evKNxR1WE2J12k9wjkX6KLMO/yS
+         OidjoPPnVBqcKPxQWPzeguo0dB+R2oN8JzApe2tKUn4/NgGZkf1DSoraA9PUe6jMTnHm
+         5QIisiCM9xBV/7DoUayEEhwPJlofm14ByDsDMpx/I7V12a55Pn2h1bGA5Z7AYCLN6CmJ
+         GPMbYfZ3e0d7cxJEifRtTKVKvEllU7V2dvBfVpxZOTqFduNSllX8dwdpLxhf8SESpH3D
+         xdTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=c4nWWXi8qCXT9b5o9GmVwjoEsDaKwahe7vf3tGdNZwE=;
-        b=Y7sGduKFyKYxO2WGEtg2eEvmWoDJS5klEXG8JOTxcqFwQijzL5A6YjLAUdXehyGLyi
-         skgS0OoO0vl0wbBVEjsC/NSLWFHZOPAAgFF20EF6ankRCX39nnXn84RY8lGWZOxZtsMe
-         ZCl0/ce6u3Uo2jIHw34c3+jtE6Jn1k2a0XLL7uARnzO79zu+i07qeuh3oXk+epm2ay5X
-         c2fa86t/Gds/8m60U0zMtr4cEXR2ism1ZB3Ur3fcXCF/nrPOlwhjnzbG0adYSc+X1hbF
-         qzHRsdARjUtgQ1aGiRXTqh82b6cF0IHLe8Q9sn8jGJUi9EIgAlYFKLTJvQLu70S1Aymq
-         LCbg==
-X-Gm-Message-State: AOAM532bb3oNXMA4O8s5qzyLjBGSjJ3O1guwuH9B9wOcURVdm4CVrujh
-        izpl1VPYx+ar+ngTnQbE38wq8w==
-X-Google-Smtp-Source: ABdhPJzxmy9Zc1nX8eync6kzxizMe3npjopcMH0OSdMUFzKfRkwzMRyC1VFYMIWlBlyT3HBB07pfaw==
-X-Received: by 2002:a0c:fb0e:: with SMTP id c14mr3846688qvp.63.1590453071286;
-        Mon, 25 May 2020 17:31:11 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id v69sm11854642qkb.96.2020.05.25.17.31.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 25 May 2020 17:31:10 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jdNUs-0001vu-5D; Mon, 25 May 2020 21:31:10 -0300
-Date:   Mon, 25 May 2020 21:31:10 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Divya Indi <divya.indi@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Kaike Wan <kaike.wan@intel.com>,
-        Gerd Rausch <gerd.rausch@oracle.com>,
-        =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>,
-        Srinivas Eeda <srinivas.eeda@oracle.com>,
-        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
-        Doug Ledford <dledford@redhat.com>
-Subject: Re: [PATCH] IB/sa: Resolving use-after-free in ib_nl_send_msg.
-Message-ID: <20200526003110.GJ744@ziepe.ca>
-References: <1589469084-15125-1-git-send-email-divya.indi@oracle.com>
- <1589469084-15125-2-git-send-email-divya.indi@oracle.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=e0QmqwRh8HAG2Vlx7bh9P7hF+0B2FhgdgqTRYD2VzoE=;
+        b=mGDiRYXo/ro5h525cWwOl8sv9xuKezjyOhaQrgl1grSm1na4qEyjTmp18Ou19Jyk1Y
+         s2gUieeWrGRSjwpkKqTBsR2TrYIu3yw022SYXjHNv8Unv8bsU6cTcSNRxnNBtEr43Qzd
+         mu16KhrSIdfHlYASJ6g+YEQ28kTLl5aqUa/a3z3OsTDTdyZAyusodfxFTtDnStvgz3ZG
+         ga6jffoPENyU8GwpnZ8G2ECV7bRnFYR54wGR8W0B6lK+tzT3Rdb9uQKrH1KTJhPYZlio
+         AR5VsQz1W4MqkEL89hkDkhH81D4LbpQ57rqPRNSXvbnVw1gYBvFXQfQDTeBVXRjJ4zwn
+         odUA==
+X-Gm-Message-State: AOAM532v8L4L/7TiPQLnA+hcNxFMmYwkrE+Py4Ex1Vux/DwoHGkRfATQ
+        dnTTRAcshxHPJJEkESs5s42bOw==
+X-Google-Smtp-Source: ABdhPJx2AfGd3Dwb0s2dusTIljpSmtiCpDiYPCxSsAALFRD3Kfg0lYlqbzPAnkkH8zcvNiXUohbewg==
+X-Received: by 2002:a17:902:740b:: with SMTP id g11mr26469332pll.158.1590453429992;
+        Mon, 25 May 2020 17:37:09 -0700 (PDT)
+Received: from google.com ([2620:15c:2ce:0:9efe:9f1:9267:2b27])
+        by smtp.gmail.com with ESMTPSA id e26sm12470490pgl.27.2020.05.25.17.37.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 May 2020 17:37:09 -0700 (PDT)
+Date:   Mon, 25 May 2020 17:37:03 -0700
+From:   Fangrui Song <maskray@google.com>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        clang-built-linux@googlegroups.com,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] x86/boot: Remove runtime relocations from compressed
+ kernel
+Message-ID: <20200526003703.qr2yq6fgxpl6wcua@google.com>
+References: <CAKwvOd=qB+EoJwfAYUA9Hg7f9op4Q4W+TDnht8pLRG5bPX=29Q@mail.gmail.com>
+ <20200524212816.243139-1-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <1589469084-15125-2-git-send-email-divya.indi@oracle.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200524212816.243139-1-nivedita@alum.mit.edu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 08:11:24AM -0700, Divya Indi wrote:
->  static void ib_nl_set_path_rec_attrs(struct sk_buff *skb,
->  				     struct ib_sa_query *query)
->  {
-> @@ -889,6 +904,15 @@ static int ib_nl_make_request(struct ib_sa_query *query, gfp_t gfp_mask)
->  		spin_lock_irqsave(&ib_nl_request_lock, flags);
->  		list_del(&query->list);
->  		spin_unlock_irqrestore(&ib_nl_request_lock, flags);
-> +	} else {
-> +		set_bit(IB_SA_NL_QUERY_SENT, (unsigned long *)&query->flags);
-> +
-> +		/*
-> +		 * If response is received before this flag was set
-> +		 * someone is waiting to process the response and release the
-> +		 * query.
-> +		 */
-> +		wake_up(&wait_queue);
->  	}
+On 2020-05-24, Arvind Sankar wrote:
+>The compressed kernel currently contains bogus runtime relocations in
+>the startup code in head_{32,64}.S, which are generated by the linker,
+>but must not actually be processed at runtime.
+>
+>This generates warnings when linking with the BFD linker, and errors
+>with LLD, which defaults to erroring on runtime relocations in read-only
+>sections. It also requires the -z noreloc-overflow hack for the 64-bit
+>kernel, which prevents us from linking it as -pie on an older BFD linker
+>(<= 2.26) or on LLD, because the locations that are to be apparently
+>relocated are only 32-bits in size and so cannot normally have
+>R_X86_64_RELATIVE relocations.
+>
+>This series aims to get rid of these relocations. It is based on
+>efi/next (efi-changes-for-v5.8), where the latest patches touch the
+>head code to eliminate the global offset table.
+>
+>The first patch is an independent fix for LLD, to avoid an orphan
+>section in arch/x86/boot/setup.elf [0].
+>
+>The second patch gets rid of almost all the relocations. It uses
+>standard PIC addressing technique for 32-bit, i.e. loading a register
+>with the address of _GLOBAL_OFFSET_TABLE_ and then using GOTOFF
+>references to access variables. For 64-bit, there is 32-bit code that
+>cannot use RIP-relative addressing, and also cannot use the 32-bit
+>method, since GOTOFF references are 64-bit only. This is instead handled
+>using a macro to replace a reference like gdt with (gdt-startup_32)
+>instead. The assembler will generate a PC32 relocation entry, with
+>addend set to (.-startup_32), and these will be replaced with constants
+>at link time. This works as long as all the code using such references
+>lives in the same section as startup_32, i.e. in .head.text.
+>
+>The third patch addresses a remaining issue with the BFD linker, which
+>insists on generating runtime relocations for absolute symbols. We use
+>z_input_len and z_output_len, defined in the generated piggy.S file, as
+>symbols whose absolute "addresses" are actually the size of the
+>compressed payload and the size of the decompressed kernel image
+>respectively. LLD does not generate relocations for these two symbols,
+>but the BFD linker does. To get around this, piggy.S is extended to also
+>define two u32 variables (in .rodata) with the lengths, and the head
+>code is modified to use those instead of the symbol addresses.
+>
+>An alternative way to handle z_input_len/z_output_len would be to just
+>include piggy.S in head_{32,64}.S instead of as a separate object file,
+>since the GNU assembler doesn't generate relocations for symbols set to
+>constants.
+>
+>The last patch adds a check in the linker script to ensure that no
+>runtime relocations get reintroduced. Since the GOT has been eliminated
+>as well, the compressed kernel has no runtime relocations whatsoever any
+>more.
+>
+>[0] https://lore.kernel.org/lkml/20200521152459.558081-1-nivedita@alum.mit.edu/
+>
+>Arvind Sankar (4):
+>  x86/boot: Add .text.startup to setup.ld
+>  x86/boot: Remove runtime relocations from .head.text code
+>  x86/boot: Remove runtime relocations from head_{32,64}.S
+>  x86/boot: Check that there are no runtime relocations
+>
+> arch/x86/boot/compressed/Makefile      | 36 +---------
+> arch/x86/boot/compressed/head_32.S     | 59 +++++++--------
+> arch/x86/boot/compressed/head_64.S     | 99 +++++++++++++++-----------
+> arch/x86/boot/compressed/mkpiggy.c     |  6 ++
+> arch/x86/boot/compressed/vmlinux.lds.S | 11 +++
+> arch/x86/boot/setup.ld                 |  2 +-
+> 6 files changed, 109 insertions(+), 104 deletions(-)
+>
+>-- 
+>2.26.2
 
-As far as I can see the issue here is that the request is put into the
-ib_nl_request_list before it is really ready to be in that list, eg
-ib_nl_send_msg() has actually completed and ownership of the memory
-has been transfered.
+All 4 commits look good.
 
-It appears to me the reason for this is simply because a spinlock is
-used for the ib_nl_request_lock and it cannot be held across
-ib_nl_send_msg().
-
-Convert that lock to a mutex and move the list_add to after the
-success of ib_nl_send_msg() and this bug should be fixed without
-adding jaunty atomics or a wait queue.
-
-This is a 'racy error unwind' bug class...
-
-Jason
+Reviewed-by: Fangrui Song <maskray@google.com>
