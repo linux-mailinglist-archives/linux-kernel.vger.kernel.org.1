@@ -2,181 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336DD1E26A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 18:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 094901E26AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 18:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729309AbgEZQPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 12:15:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727968AbgEZQPq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 12:15:46 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8977A20704;
-        Tue, 26 May 2020 16:15:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590509746;
-        bh=gUa5ba6GWA5xYBQnyy/CNy8dovH0TV4Cna3GtLzW9vY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dxyu26eVjFiFixuGaFBOBgSkGNA/ucV+JYGmxPBgVqBFbFp+o7oQ+9IHd8fOKdSQ7
-         W97sBK+yFe3QdSrh/xUBwFqIchtzbo5U2bqHUXi0ClsPL5YpSaZFuWvQtp4ZPiTGLe
-         8L/KCbeUs62iZrZQqOu3+UVI73JojwevT8hnH7wI=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7953340AFD; Tue, 26 May 2020 13:15:43 -0300 (-03)
-Date:   Tue, 26 May 2020 13:15:43 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Travis Downs <travis.downs@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH V2] perf tools: Fix debuginfo search for Ubuntu
-Message-ID: <20200526161543.GB14219@kernel.org>
-References: <20200526155207.9172-1-adrian.hunter@intel.com>
+        id S1729867AbgEZQQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 12:16:45 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:41747 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728303AbgEZQQo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 12:16:44 -0400
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 04QGGSbN002250;
+        Wed, 27 May 2020 01:16:28 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 04QGGSbN002250
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1590509789;
+        bh=uPjRTQwS5XbBmKTVTFnwC9LPX23TTVJM7S9st4N2Cx0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=F/XRqKR54cLVKukwd8/MV/+PjjWyWqs7ISl7wVH8wSoSqkggeLSyRhf2/8akLARbN
+         eLoH4GWiL1e0VjucWJgx9rjfSDRyfC0P4ye2o6d2gXcsnvFrcGC2wVv4n83z+QVzZA
+         cCFnfSM/tHZGytL220NBUWNCN6JqEui7tm/usrqkTIV4pLttVo7jXQjcAWK6zH5kSj
+         zW3yaTmBrDmEHTtD61OQNr/+lybeYMo198EreWnp03aetTvKVTmcCvlc0/IqeeGBCl
+         SbP0gRf856YYx3iu9ZZbS9KqrX6DWB4pduhbbbMxUOV5vghHqRrHMw2xMytk81WzII
+         CGCi9Csa852Gw==
+X-Nifty-SrcIP: [209.85.217.44]
+Received: by mail-vs1-f44.google.com with SMTP id b13so2676605vsm.13;
+        Tue, 26 May 2020 09:16:28 -0700 (PDT)
+X-Gm-Message-State: AOAM533oTKi9i4PXic8dubxEF2pBJWeObRE1MSs86E9SqgR2/J/x+Zj7
+        CZmm5mJxd28Aw4nVkeX84qYpuTuJbAgMfBKqUrs=
+X-Google-Smtp-Source: ABdhPJxavmIKiD1M2HJbOFH0B4qglDP86xzHproSsr1FZKQdun7AFDxHgu2+NwR7nOEZq0+9vHWqAa3EOL58nin+1Xw=
+X-Received: by 2002:a05:6102:1081:: with SMTP id s1mr1529406vsr.215.1590509787468;
+ Tue, 26 May 2020 09:16:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200526155207.9172-1-adrian.hunter@intel.com>
-X-Url:  http://acmel.wordpress.com
+References: <CAKwvOd=jOr4ZaLx-dSNTqZnGRATY1PZktUfu4JGWKRwRH=Ujnw@mail.gmail.com>
+ <20200521220041.87368-1-ndesaulniers@google.com> <CAK7LNARtO5Pr2nxpoORSHDFWHbjP0waOmrn_TZ+rXhmYm+TORw@mail.gmail.com>
+ <CAKwvOd=qNa4fLY7ymVwvC3TwCH4DNLyEfygoTfBJ2y19xffQUg@mail.gmail.com>
+In-Reply-To: <CAKwvOd=qNa4fLY7ymVwvC3TwCH4DNLyEfygoTfBJ2y19xffQUg@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 27 May 2020 01:15:51 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASkcLx-K+W1va9WxfxZ=7H-w65QbyBt=88dzK1NrrM_PQ@mail.gmail.com>
+Message-ID: <CAK7LNASkcLx-K+W1va9WxfxZ=7H-w65QbyBt=88dzK1NrrM_PQ@mail.gmail.com>
+Subject: Re: [PATCH v3] Makefile: support compressed debug info
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        Nick Clifton <nickc@redhat.com>,
+        David Blaikie <blaikie@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Changbin Du <changbin.du@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, May 26, 2020 at 06:52:07PM +0300, Adrian Hunter escreveu:
-> Reportedly, from 19.10 Ubuntu has begun mixing up the location of some
-> debug symbol files, putting files expected to be in
-> /usr/lib/debug/usr/lib into /usr/lib/debug/lib instead. Fix by adding
-> another dso_binary_type.
-> 
-> Example on Ubuntu 20.04
-> 
->   Before:
-> 
->     $ perf record -e intel_pt//u uname
->     Linux
->     [ perf record: Woken up 1 times to write data ]
->     [ perf record: Captured and wrote 0.030 MB perf.data ]
->     $ perf script --call-trace | head -5
->            uname 14003 [005] 15321.764958566:  cbr: 42 freq: 4219 MHz (156%)
->            uname 14003 [005] 15321.764958566: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )          7f1e71cc4100
->            uname 14003 [005] 15321.764961566: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )              7f1e71cc4df0
->            uname 14003 [005] 15321.764961900: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )              7f1e71cc4e18
->            uname 14003 [005] 15321.764963233: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )              7f1e71cc5128
-> 
->   After:
-> 
->     $ perf script --call-trace | head -5
->            uname 14003 [005] 15321.764958566:  cbr: 42 freq: 4219 MHz (156%)
->            uname 14003 [005] 15321.764958566: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )      _start
->            uname 14003 [005] 15321.764961566: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )          _dl_start
->            uname 14003 [005] 15321.764961900: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )          _dl_start
->            uname 14003 [005] 15321.764963233: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )          _dl_start
-> 
-> Reported-by: Travis Downs <travis.downs@gmail.com>
+On Wed, May 27, 2020 at 12:53 AM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> On Tue, May 26, 2020 at 3:28 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > > Suggested-by: David Blaikie <blaikie@google.com>
+> > > Suggested-by: Nick Clifton <nickc@redhat.com>
+> > > Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> > > Reviewed-by: Fangrui Song <maskray@google.com>
+> > > Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> >
+> >
+> >
+> > Suggested-by seems strange to me, but
+> > I decided to not be worried too much.
+>
+> Ah, sorry, Monday was a holiday.  I unplugged for the long weekend.
+> https://en.wikipedia.org/wiki/Memorial_Day
+>
+> I like the suggestion to simply say "thanks to ..." in the commit
+> message and will use that next time.  I was ok to send a v4 with it.
 
-Thanks, applied.
 
-- Arnaldo
+If you send v4, I will replace.
 
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: stable@vger.kernel.org
-> ---
-> 
-> 
-> Changes in V2:
-> 	Added  'break' after 'ret = -1'
-> 
-> 
->  tools/perf/util/dso.c          | 16 ++++++++++++++++
->  tools/perf/util/dso.h          |  1 +
->  tools/perf/util/probe-finder.c |  1 +
->  tools/perf/util/symbol.c       |  2 ++
->  4 files changed, 20 insertions(+)
-> 
-> diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
-> index e68e1375e3c0..be991cbbe9f8 100644
-> --- a/tools/perf/util/dso.c
-> +++ b/tools/perf/util/dso.c
-> @@ -47,6 +47,7 @@ char dso__symtab_origin(const struct dso *dso)
->  		[DSO_BINARY_TYPE__BUILD_ID_CACHE_DEBUGINFO]	= 'D',
->  		[DSO_BINARY_TYPE__FEDORA_DEBUGINFO]		= 'f',
->  		[DSO_BINARY_TYPE__UBUNTU_DEBUGINFO]		= 'u',
-> +		[DSO_BINARY_TYPE__MIXEDUP_UBUNTU_DEBUGINFO]	= 'x',
->  		[DSO_BINARY_TYPE__OPENEMBEDDED_DEBUGINFO]	= 'o',
->  		[DSO_BINARY_TYPE__BUILDID_DEBUGINFO]		= 'b',
->  		[DSO_BINARY_TYPE__SYSTEM_PATH_DSO]		= 'd',
-> @@ -129,6 +130,21 @@ int dso__read_binary_type_filename(const struct dso *dso,
->  		snprintf(filename + len, size - len, "%s", dso->long_name);
->  		break;
->  
-> +	case DSO_BINARY_TYPE__MIXEDUP_UBUNTU_DEBUGINFO:
-> +		/*
-> +		 * Ubuntu can mixup /usr/lib with /lib, putting debuginfo in
-> +		 * /usr/lib/debug/lib when it is expected to be in
-> +		 * /usr/lib/debug/usr/lib
-> +		 */
-> +		if (strlen(dso->long_name) < 9 ||
-> +		    strncmp(dso->long_name, "/usr/lib/", 9)) {
-> +			ret = -1;
-> +			break;
-> +		}
-> +		len = __symbol__join_symfs(filename, size, "/usr/lib/debug");
-> +		snprintf(filename + len, size - len, "%s", dso->long_name + 4);
-> +		break;
-> +
->  	case DSO_BINARY_TYPE__OPENEMBEDDED_DEBUGINFO:
->  	{
->  		const char *last_slash;
-> diff --git a/tools/perf/util/dso.h b/tools/perf/util/dso.h
-> index 42b3a278ac59..8b7958f02609 100644
-> --- a/tools/perf/util/dso.h
-> +++ b/tools/perf/util/dso.h
-> @@ -30,6 +30,7 @@ enum dso_binary_type {
->  	DSO_BINARY_TYPE__BUILD_ID_CACHE_DEBUGINFO,
->  	DSO_BINARY_TYPE__FEDORA_DEBUGINFO,
->  	DSO_BINARY_TYPE__UBUNTU_DEBUGINFO,
-> +	DSO_BINARY_TYPE__MIXEDUP_UBUNTU_DEBUGINFO,
->  	DSO_BINARY_TYPE__BUILDID_DEBUGINFO,
->  	DSO_BINARY_TYPE__SYSTEM_PATH_DSO,
->  	DSO_BINARY_TYPE__GUEST_KMODULE,
-> diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
-> index e4cff49384f4..55924255c535 100644
-> --- a/tools/perf/util/probe-finder.c
-> +++ b/tools/perf/util/probe-finder.c
-> @@ -101,6 +101,7 @@ enum dso_binary_type distro_dwarf_types[] = {
->  	DSO_BINARY_TYPE__UBUNTU_DEBUGINFO,
->  	DSO_BINARY_TYPE__OPENEMBEDDED_DEBUGINFO,
->  	DSO_BINARY_TYPE__BUILDID_DEBUGINFO,
-> +	DSO_BINARY_TYPE__MIXEDUP_UBUNTU_DEBUGINFO,
->  	DSO_BINARY_TYPE__NOT_FOUND,
->  };
->  
-> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-> index 7725c83996f4..44d81f90b604 100644
-> --- a/tools/perf/util/symbol.c
-> +++ b/tools/perf/util/symbol.c
-> @@ -79,6 +79,7 @@ static enum dso_binary_type binary_type_symtab[] = {
->  	DSO_BINARY_TYPE__SYSTEM_PATH_KMODULE,
->  	DSO_BINARY_TYPE__SYSTEM_PATH_KMODULE_COMP,
->  	DSO_BINARY_TYPE__OPENEMBEDDED_DEBUGINFO,
-> +	DSO_BINARY_TYPE__MIXEDUP_UBUNTU_DEBUGINFO,
->  	DSO_BINARY_TYPE__NOT_FOUND,
->  };
->  
-> @@ -1529,6 +1530,7 @@ static bool dso__is_compatible_symtab_type(struct dso *dso, bool kmod,
->  	case DSO_BINARY_TYPE__SYSTEM_PATH_DSO:
->  	case DSO_BINARY_TYPE__FEDORA_DEBUGINFO:
->  	case DSO_BINARY_TYPE__UBUNTU_DEBUGINFO:
-> +	case DSO_BINARY_TYPE__MIXEDUP_UBUNTU_DEBUGINFO:
->  	case DSO_BINARY_TYPE__BUILDID_DEBUGINFO:
->  	case DSO_BINARY_TYPE__OPENEMBEDDED_DEBUGINFO:
->  		return !kmod && dso->kernel == DSO_TYPE_USER;
-> -- 
-> 2.17.1
-> 
+Thanks.
+
+
+
+
 
 -- 
-
-- Arnaldo
+Best Regards
+Masahiro Yamada
