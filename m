@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A1C1E2B17
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550111E2DEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391027AbgEZTCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:02:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56546 "EHLO mail.kernel.org"
+        id S2403874AbgEZTGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:06:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391017AbgEZTB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:01:57 -0400
+        id S2391092AbgEZTF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:05:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E89B020849;
-        Tue, 26 May 2020 19:01:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B90F20776;
+        Tue, 26 May 2020 19:05:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519716;
-        bh=QerE36CISrCUueRSxCUY/hNwSK8W+jL8bcRw33Mi5pY=;
+        s=default; t=1590519958;
+        bh=mRxvmJxdQSgll9Gs2py6a241v8LCbk3tjj+w8cKD8rg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fY0yXwzoCDP18UZUCFzSjwiUkWCAGWkDB6Bi/yeWSUVCxLt4wkmDlf8anv1oMSS/X
-         OB7yv9dbymKADB8Gc8Y2u2ZfudNB4fq8/8NUSQBUmjH8153IHm67de2cMaaw+37YyR
-         UzwtpZP3bYIEzXSHmvN6miGu+mn9gFzYZbGvCDqY=
+        b=wl7Zbc8GKW06z3RUXeRFZgx9HB+RSwlxM3FShJlwBmgbihYhjI/3uAhfUZTHtwxZu
+         TuGoSBy5cLL7x9VIXLETzJG9SiR83Sg2o8sQtes91ysUczkn4iu/JQX9l/qck7VpFL
+         gdE9GhBt2VAacDbnbMUZ/GwwRL215Vy1FcYHjDCM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arjun Vynipadath <arjun@chelsio.com>,
-        Casey Leedom <leedom@chelsio.com>,
-        Ganesh Goudar <ganeshgr@chelsio.com>,
+        stable@vger.kernel.org, Doug Berger <opendmb@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 48/59] cxgb4/cxgb4vf: Fix mac_hlist initialization and free
+Subject: [PATCH 4.19 58/81] net: bcmgenet: code movement
 Date:   Tue, 26 May 2020 20:53:33 +0200
-Message-Id: <20200526183922.214934912@linuxfoundation.org>
+Message-Id: <20200526183933.528845980@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
-References: <20200526183907.123822792@linuxfoundation.org>
+In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
+References: <20200526183923.108515292@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,114 +45,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arjun Vynipadath <arjun@chelsio.com>
+From: Doug Berger <opendmb@gmail.com>
 
-[ Upstream commit b539ea60f5043b9acd7562f04fa2117f18776cbb ]
+[ Upstream commit a94cbf03eb514d4d64d8c4f4caa0616b7ce5040a ]
 
-Null pointer dereference seen when cxgb4vf driver is unloaded
-without bringing up any interfaces, moving mac_hlist initialization
-to driver probe and free the mac_hlist in remove to fix the issue.
+This commit switches the order of bcmgenet_suspend and bcmgenet_resume
+in the file to prevent the need for a forward declaration in the next
+commit and to make the review of that commit easier.
 
-Fixes: 24357e06ba51 ("cxgb4vf: fix memleak in mac_hlist initialization")
-Signed-off-by: Arjun Vynipadath <arjun@chelsio.com>
-Signed-off-by: Casey Leedom <leedom@chelsio.com>
-Signed-off-by: Ganesh Goudar <ganeshgr@chelsio.com>
+Signed-off-by: Doug Berger <opendmb@gmail.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/chelsio/cxgb4/cxgb4_main.c   | 19 ++++++++++---------
- .../ethernet/chelsio/cxgb4vf/cxgb4vf_main.c   |  6 +++---
- 2 files changed, 13 insertions(+), 12 deletions(-)
+ .../net/ethernet/broadcom/genet/bcmgenet.c    | 60 +++++++++----------
+ 1 file changed, 30 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-index 9d1438c3c3ca..6eb65b870da7 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-@@ -2241,8 +2241,6 @@ static int cxgb_up(struct adapter *adap)
- #if IS_ENABLED(CONFIG_IPV6)
- 	update_clip(adap);
- #endif
--	/* Initialize hash mac addr list*/
--	INIT_LIST_HEAD(&adap->mac_hlist);
- 	return err;
- 
-  irq_err:
-@@ -2256,8 +2254,6 @@ static int cxgb_up(struct adapter *adap)
- 
- static void cxgb_down(struct adapter *adapter)
- {
--	struct hash_mac_addr *entry, *tmp;
--
- 	cancel_work_sync(&adapter->tid_release_task);
- 	cancel_work_sync(&adapter->db_full_task);
- 	cancel_work_sync(&adapter->db_drop_task);
-@@ -2267,11 +2263,6 @@ static void cxgb_down(struct adapter *adapter)
- 	t4_sge_stop(adapter);
- 	t4_free_sge_resources(adapter);
- 
--	list_for_each_entry_safe(entry, tmp, &adapter->mac_hlist, list) {
--		list_del(&entry->list);
--		kfree(entry);
--	}
--
- 	adapter->flags &= ~FULL_INIT_DONE;
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+index 89cc146d2c5c..60abf9fab810 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+@@ -3616,36 +3616,6 @@ static int bcmgenet_remove(struct platform_device *pdev)
  }
  
-@@ -4970,6 +4961,9 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 			     (is_t5(adapter->params.chip) ? STATMODE_V(0) :
- 			      T6_STATMODE_V(0)));
- 
-+	/* Initialize hash mac addr list */
-+	INIT_LIST_HEAD(&adapter->mac_hlist);
-+
- 	for_each_port(adapter, i) {
- 		netdev = alloc_etherdev_mq(sizeof(struct port_info),
- 					   MAX_ETH_QSETS);
-@@ -5260,6 +5254,7 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- static void remove_one(struct pci_dev *pdev)
- {
- 	struct adapter *adapter = pci_get_drvdata(pdev);
-+	struct hash_mac_addr *entry, *tmp;
- 
- 	if (!adapter) {
- 		pci_release_regions(pdev);
-@@ -5303,6 +5298,12 @@ static void remove_one(struct pci_dev *pdev)
- 		if (adapter->num_uld || adapter->num_ofld_uld)
- 			t4_uld_mem_free(adapter);
- 		free_some_resources(adapter);
-+		list_for_each_entry_safe(entry, tmp, &adapter->mac_hlist,
-+					 list) {
-+			list_del(&entry->list);
-+			kfree(entry);
-+		}
-+
- #if IS_ENABLED(CONFIG_IPV6)
- 		t4_cleanup_clip_tbl(adapter);
- #endif
-diff --git a/drivers/net/ethernet/chelsio/cxgb4vf/cxgb4vf_main.c b/drivers/net/ethernet/chelsio/cxgb4vf/cxgb4vf_main.c
-index 26ba18ea08c6..fa116f0a107d 100644
---- a/drivers/net/ethernet/chelsio/cxgb4vf/cxgb4vf_main.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4vf/cxgb4vf_main.c
-@@ -715,9 +715,6 @@ static int adapter_up(struct adapter *adapter)
- 		if (adapter->flags & USING_MSIX)
- 			name_msix_vecs(adapter);
- 
--		/* Initialize hash mac addr list*/
--		INIT_LIST_HEAD(&adapter->mac_hlist);
+ #ifdef CONFIG_PM_SLEEP
+-static int bcmgenet_suspend(struct device *d)
+-{
+-	struct net_device *dev = dev_get_drvdata(d);
+-	struct bcmgenet_priv *priv = netdev_priv(dev);
+-	int ret = 0;
 -
- 		adapter->flags |= FULL_INIT_DONE;
- 	}
- 
-@@ -2936,6 +2933,9 @@ static int cxgb4vf_pci_probe(struct pci_dev *pdev,
- 	if (err)
- 		goto err_unmap_bar;
- 
-+	/* Initialize hash mac addr list */
-+	INIT_LIST_HEAD(&adapter->mac_hlist);
+-	if (!netif_running(dev))
+-		return 0;
+-
+-	netif_device_detach(dev);
+-
+-	bcmgenet_netif_stop(dev);
+-
+-	if (!device_may_wakeup(d))
+-		phy_suspend(dev->phydev);
+-
+-	/* Prepare the device for Wake-on-LAN and switch to the slow clock */
+-	if (device_may_wakeup(d) && priv->wolopts) {
+-		ret = bcmgenet_power_down(priv, GENET_POWER_WOL_MAGIC);
+-		clk_prepare_enable(priv->clk_wol);
+-	} else if (priv->internal_phy) {
+-		ret = bcmgenet_power_down(priv, GENET_POWER_PASSIVE);
+-	}
+-
+-	/* Turn off the clocks */
+-	clk_disable_unprepare(priv->clk);
+-
+-	return ret;
+-}
+-
+ static int bcmgenet_resume(struct device *d)
+ {
+ 	struct net_device *dev = dev_get_drvdata(d);
+@@ -3724,6 +3694,36 @@ static int bcmgenet_resume(struct device *d)
+ 	clk_disable_unprepare(priv->clk);
+ 	return ret;
+ }
 +
- 	/*
- 	 * Allocate our "adapter ports" and stitch everything together.
- 	 */
++static int bcmgenet_suspend(struct device *d)
++{
++	struct net_device *dev = dev_get_drvdata(d);
++	struct bcmgenet_priv *priv = netdev_priv(dev);
++	int ret = 0;
++
++	if (!netif_running(dev))
++		return 0;
++
++	netif_device_detach(dev);
++
++	bcmgenet_netif_stop(dev);
++
++	if (!device_may_wakeup(d))
++		phy_suspend(dev->phydev);
++
++	/* Prepare the device for Wake-on-LAN and switch to the slow clock */
++	if (device_may_wakeup(d) && priv->wolopts) {
++		ret = bcmgenet_power_down(priv, GENET_POWER_WOL_MAGIC);
++		clk_prepare_enable(priv->clk_wol);
++	} else if (priv->internal_phy) {
++		ret = bcmgenet_power_down(priv, GENET_POWER_PASSIVE);
++	}
++
++	/* Turn off the clocks */
++	clk_disable_unprepare(priv->clk);
++
++	return ret;
++}
+ #endif /* CONFIG_PM_SLEEP */
+ 
+ static SIMPLE_DEV_PM_OPS(bcmgenet_pm_ops, bcmgenet_suspend, bcmgenet_resume);
 -- 
 2.25.1
 
