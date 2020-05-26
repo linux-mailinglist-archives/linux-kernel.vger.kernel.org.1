@@ -2,100 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC0D1E1C1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 09:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6671E1BF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 09:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729824AbgEZHWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 03:22:51 -0400
-Received: from mail-m972.mail.163.com ([123.126.97.2]:33580 "EHLO
-        mail-m972.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726768AbgEZHWu (ORCPT
+        id S1731534AbgEZHH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 03:07:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729558AbgEZHH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 03:22:50 -0400
-X-Greylist: delayed 910 seconds by postgrey-1.27 at vger.kernel.org; Tue, 26 May 2020 03:22:50 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=bkSJj
-        PRUKYUDwFkyPzThVgbKD1YuAi6I43MZcpH/s8I=; b=Vqh+9szHVRs6SKbD3K4o3
-        O11U5YVtsRU8DxAs4N+AHZvRZvG2y1XxuOnULRU5qi0Hh82c2ESl7Ke/DZHYQZfu
-        FInuwilB9rNwQOy1wgQcSWsRei6YoZcY3V6bEcPcRqEKjUGGy3oKyWO6kapcfqT3
-        Rg4E0uJQYY3VZSNlFFFBoc=
-Received: from [172.20.10.2] (unknown [124.64.17.235])
-        by smtp2 (Coremail) with SMTP id GtxpCgAXauInwMxeX977Bg--.54S2;
-        Tue, 26 May 2020 15:07:28 +0800 (CST)
-Subject: Re: [PATCH] MIPS: Fix IRQ tracing when call handle_fpe()
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     paulburton@kernel.org, chenhc@lemote.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liulichao@loongson.cn
-References: <20200525033123.13114-1-yuanjunqing66@163.com>
- <20200525084234.GA5057@alpha.franken.de>
-From:   yuanjunqing <yuanjunqing66@163.com>
-Message-ID: <76f2c756-0ae4-83f5-becf-6f1b3319f6fd@163.com>
-Date:   Tue, 26 May 2020 15:07:16 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 26 May 2020 03:07:58 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C625BC03E97E
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 00:07:56 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id d26so15467007otc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 00:07:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hnyNZB6KjOSsGIcNelWALZYBHxkm1rsDpfOrdFIXkpY=;
+        b=pNu/5dT3Y9cf8fiWHDj3fGdEwHVV9BZdIBJUypSi5hleKltNa2+CrWdFuiJa3oOyuY
+         KPUpvrdqHCD0poNzOK9/yxv69TLWfdoYbnprEzOU+DA9XECshB2s/m0f/OacmBnMVKjt
+         GUilnF7165thVE6sOolwNU7nSthfIg8/97MXzyaaVgWqYe4G7dsKTPLYUBD7RtoHXbDh
+         eQVorXWRIT9L5Z7b50n05qrkjuHAtKClSS9ZlMZjjD/nFfmOcWjwHRy6On7TrRd6kfrL
+         NneC0ZfV1LfgLDIdaCcuyB2Ett7Gfi81Y+ye1HXXHl1I9/9dGdIm1U2waYiU2k5QXpBy
+         ZKZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hnyNZB6KjOSsGIcNelWALZYBHxkm1rsDpfOrdFIXkpY=;
+        b=RLUW/eg3G2uf+0QRHQGI9XMhmnQHL6rf01iB87l5xot0SXPBGcO98+syVkpytP+Z4j
+         45qVXVJXsMmdNzQ1H3Ow0OiuF+NP7oCKACp65/tSThsN/B41Xe5RMZfcgQ1sRHKDAK5D
+         RmzQTcrLU2hTUtBEVwOyio1oe+PcKnZ6QYv9HtPreCQaObN7mYqYNvUv1zvciSDTwQR5
+         5lcubuydsHKAaKKN8AUfMZc02FpsEFYM2fSTh9Wfb+ieQvMdT1r3DGYF6M+sU8EWXRGU
+         046vfo1mU5kIU7Mvtv2C2B56jz6wcszR6xopqe+chYAeYNiXtSB+AJGP2N+72hV12x65
+         R2fg==
+X-Gm-Message-State: AOAM531LyxyINMerjfKFcvQSZX4sbqLELMDcZJl0P/lUUQZRejZQ5FrO
+        c3kR5VDOVknE2XLyucJA9uoR0hbqS8wALgJg586iUg==
+X-Google-Smtp-Source: ABdhPJz4NQQooUdMBsKWjtTBCcoToZSnWHgRxs0F1hGcc5qof6Gm7+jYkiXKWBDtDXJAP7u06eN2uMeMtdXe1u7zrIw=
+X-Received: by 2002:a05:6830:18ec:: with SMTP id d12mr24890568otf.139.1590476875920;
+ Tue, 26 May 2020 00:07:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200525084234.GA5057@alpha.franken.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: GtxpCgAXauInwMxeX977Bg--.54S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7KF1ruF4rtw4rJrWkXw4Utwb_yoW8Jw47p3
-        y8C3Z5KF4qgrWjvrW7Cwn5GrW5Kw4kArWY9Fs5tay5X3WrXF4ktF4IqwsIgryq9r1kua1f
-        KFyqg34j9FsxA3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jN739UUUUU=
-X-Originating-IP: [124.64.17.235]
-X-CM-SenderInfo: h1xd0ypxqtx0rjwwqiywtou0bp/xtbBUQowXFaD7O3HBgABsj
+References: <6144404cb26d1f797fd7e87b124bcaf8@walle.cc> <20200526070518.107333-1-saravanak@google.com>
+In-Reply-To: <20200526070518.107333-1-saravanak@google.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 26 May 2020 00:07:20 -0700
+Message-ID: <CAGETcx-b4+a8U=Qd0mKaB9JUBaj178694QshqZVrAa_x6AgcAg@mail.gmail.com>
+Subject: Re: [PATCH v1] driver core: Update device link status correctly for
+ SYNC_STATE_ONLY links
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     Michael Walle <michael@walle.cc>,
+        Android Kernel Team <kernel-team@android.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-在 2020/5/25 下午4:42, Thomas Bogendoerfer 写道:
-> On Mon, May 25, 2020 at 11:31:23AM +0800, YuanJunQing wrote:
->>  Register "a1" is unsaved in this function,
->>  when CONFIG_TRACE_IRQFLAGS is enabled,
->>  the TRACE_IRQS_OFF macro will call trace_hardirqs_off(),
->>  and this may change register "a1".
->>  The variment of register "a1" may send SIGFPE signal
->>  to task when call do_fpe(),and this may kill the task.
->>
->> Signed-off-by: YuanJunQing <yuanjunqing66@163.com>
->> ---
->>  arch/mips/kernel/genex.S | 6 ++++--
->>  1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
->> index 8236fb291e3f..956a76429773 100644
->> --- a/arch/mips/kernel/genex.S
->> +++ b/arch/mips/kernel/genex.S
->> @@ -480,16 +480,18 @@ NESTED(nmi_handler, PT_SIZE, sp)
->>  	/* gas fails to assemble cfc1 for some archs (octeon).*/ \
->>  	.set	mips1
->>  	SET_HARDFLOAT
->> -	cfc1	a1, fcr31
->> +	cfc1	s0, fcr31
->>  	.set	pop
->>  	CLI
->>  	TRACE_IRQS_OFF
->> +	move    a1,s0
->>  	.endm
-> do we realy need to read fcr31 that early ? Wouldn't it work to
-> just move the cfc1 below TRACE_IRQS_OFF ?
+On Tue, May 26, 2020 at 12:05 AM Saravana Kannan <saravanak@google.com> wrote:
 >
-> Thomas.
+> When SYNC_STATE_ONLY support was added in commit 05ef983e0d65 ("driver
+> core: Add device link support for SYNC_STATE_ONLY flag"),
+> SYNC_STATE_ONLY links were treated similar to STATELESS links in terms
+> of not blocking consumer probe if the supplier hasn't probed yet.
+>
+> That caused a SYNC_STATE_ONLY device link's status to not get updated.
+> Since SYNC_STATE_ONLY device link is no longer useful once the
+> consumer probes, commit 21c27f06587d ("driver core: Fix
+> SYNC_STATE_ONLY device link implementation") addresses the status
+> update issue by deleting the SYNC_STATE_ONLY device link instead of
+> complicating the status update code.
+>
+> However, there are still some cases where we need to update the status
+> of a SYNC_STATE_ONLY device link.  A SYNC_STATE_ONLY device link can
+> later get converted into a normal MANAGED device link when a normal
+> MANAGED device link is created between a supplier and consumer that
+> already have a SYNC_STATE_ONLY device link between them. If a
+> SYNC_STATE_ONLY device link's status isn't maintained correctly till
+> it's converted to a normal MANAGED device link, then the normal
+> MANAGED device link will end up with a wrong link status. This can
+> cause a warning stack trace[1] when the consumer device probes.
+>
+> This commit fixes the SYNC_STATE_ONLY device link status update issue
+> where it wouldn't transition correctly from DL_STATE_AVAILABLE to
+> DL_STATE_CONSUMER_PROBE.
+>
+> [1] - https://lore.kernel.org/lkml/20200522204120.3b3c9ed6@apollo/
+> Fixes: 05ef983e0d65 ("driver core: Add device link support for SYNC_STATE_ONLY flag")
+> Fixes: 21c27f06587d ("driver core: Fix SYNC_STATE_ONLY device link implementation")
+> Reported-by: Michael Walle <michael@walle.cc>
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> ---
+> Greg,
+>
+> I think this is the issue Michael ran into. I'd like him to test the fix
+> before it's pulled in.
+>
+> Michael,
+>
+> If you can test this on the branch you saw the issue in and give a
+> Tested-by if it works, that'd be great.
+>
+> Thanks,
+> Saravana
+>
+>  drivers/base/core.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index 791b7530599f..9511be3f9a32 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -687,11 +687,11 @@ int device_links_check_suppliers(struct device *dev)
+>         device_links_write_lock();
+>
+>         list_for_each_entry(link, &dev->links.suppliers, c_node) {
+> -               if (!(link->flags & DL_FLAG_MANAGED) ||
+> -                   link->flags & DL_FLAG_SYNC_STATE_ONLY)
+> +               if (!(link->flags & DL_FLAG_MANAGED))
+>                         continue;
+>
+> -               if (link->status != DL_STATE_AVAILABLE) {
+> +               if (link->status != DL_STATE_AVAILABLE &&
+> +                   !(link->flags & DL_FLAG_SYNC_STATE_ONLY)) {
+>                         device_links_missing_supplier(dev);
+>                         ret = -EPROBE_DEFER;
+>                         break;
+> --
+> 2.27.0.rc0.183.gde8f92d652-goog
+>
 
+Adding stable@ that I forgot to add earlier.
 
- yes, it can work when we just move the cfc1 below TRACE_IRQS_OFF,
- and the code is written as follows.
-
- 	CLI
- 	TRACE_IRQS_OFF
- 	.set	mips1
- 	SET_HARDFLOAT
-	cfc1	a1, fcr31
- 	.set	pop
-       .endm
-
-
+-Saravana
