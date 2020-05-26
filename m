@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01EE1E2CB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 471B71E2D71
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392311AbgEZTRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:17:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46532 "EHLO mail.kernel.org"
+        id S2391938AbgEZTKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:10:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392244AbgEZTPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:15:07 -0400
+        id S2390942AbgEZTKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:10:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F0CCE208B6;
-        Tue, 26 May 2020 19:15:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 00244208B6;
+        Tue, 26 May 2020 19:10:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520505;
-        bh=1N1uBf/IhHOztDqLXjGe/zTKIQrWHXs1D8LTEPPjGA4=;
+        s=default; t=1590520222;
+        bh=jXEUcil0rT+2HSSRF1hUE7Nx8uOSS9Lc/yv3xd0bQjQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FH+dLHhgDEDyoZtwYES869HH3TWWGVBmC2WpcE0F9XEtTTX1UlRIKh3kHxEUmtxk2
-         m5J5N+SMuQNsGrAVl6P035LymeEpLnY8vpHmN0XLAQrmfss/k9CCp9mcYtGZSNviAv
-         5n6M+fqmHIfXyMxGoEiAATnXDTkHzn1mbW6XZ23s=
+        b=VDhS1s9RNssVj/VHx3iSgASXUgaGXNuPvp54cLzQ9lXHi9sCzAjaYGx+pGBu+48P4
+         l+zhQrVyRAU9a6Uphv1vpx/sMc3QO/q4KWjyErHTv8naP8cuHG/TFh2vWZ1Osy7Fve
+         KBrdJY2faJ/wQeHliNTA00NTdt+S4kKQ7xLI/mHw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Niklas Schnelle <schnelle@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH 5.6 105/126] s390/pci: Fix s390_mmio_read/write with MIO
-Date:   Tue, 26 May 2020 20:54:02 +0200
-Message-Id: <20200526183946.480389842@linuxfoundation.org>
+        stable@vger.kernel.org, Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 105/111] iio: adc: stm32-dfsdm: fix device used to request dma
+Date:   Tue, 26 May 2020 20:54:03 +0200
+Message-Id: <20200526183942.835400816@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
-References: <20200526183937.471379031@linuxfoundation.org>
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,335 +45,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Niklas Schnelle <schnelle@linux.ibm.com>
+From: Fabrice Gasnier <fabrice.gasnier@st.com>
 
-commit f058599e22d59e594e5aae1dc10560568d8f4a8b upstream.
+[ Upstream commit b455d06e6fb3c035711e8aab1ca18082ccb15d87 ]
 
-The s390_mmio_read/write syscalls are currently broken when running with
-MIO.
+DMA channel request should use device struct from platform device struct.
+Currently it's using iio device struct. But at this stage when probing,
+device struct isn't yet registered (e.g. device_register is done in
+iio_device_register). Since commit 71723a96b8b1 ("dmaengine: Create
+symlinks between DMA channels and slaves"), a warning message is printed
+as the links in sysfs can't be created, due to device isn't yet registered:
+- Cannot create DMA slave symlink
+- Cannot create DMA dma:rx symlink
 
-The new pcistb_mio/pcstg_mio/pcilg_mio instructions are executed
-similiarly to normal load/store instructions and do address translation
-in the current address space. That means inside the kernel they are
-aware of mappings into kernel address space while outside the kernel
-they use user space mappings (usually created through mmap'ing a PCI
-device file).
+Fix this by using device struct from platform device to request dma chan.
 
-Now when existing user space applications use the s390_pci_mmio_write
-and s390_pci_mmio_read syscalls, they pass I/O addresses that are mapped
-into user space so as to be usable with the new instructions without
-needing a syscall. Accessing these addresses with the old instructions
-as done currently leads to a kernel panic.
+Fixes: eca949800d2d ("IIO: ADC: add stm32 DFSDM support for PDM microphone")
 
-Also, for such a user space mapping there may not exist an equivalent
-kernel space mapping which means we can't just use the new instructions
-in kernel space.
-
-Instead of replicating user mappings in the kernel which then might
-collide with other mappings, we can conceptually execute the new
-instructions as if executed by the user space application using the
-secondary address space. This even allows us to directly store to the
-user pointer without the need for copy_to/from_user().
-
-Cc: stable@vger.kernel.org
-Fixes: 71ba41c9b1d9 ("s390/pci: provide support for MIO instructions")
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-Reviewed-by: Sven Schnelle <svens@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/include/asm/pci_io.h |   10 +
- arch/s390/pci/pci_mmio.c       |  213 ++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 219 insertions(+), 4 deletions(-)
+ drivers/iio/adc/stm32-dfsdm-adc.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
---- a/arch/s390/include/asm/pci_io.h
-+++ b/arch/s390/include/asm/pci_io.h
-@@ -8,6 +8,10 @@
- #include <linux/slab.h>
- #include <asm/pci_insn.h>
+diff --git a/drivers/iio/adc/stm32-dfsdm-adc.c b/drivers/iio/adc/stm32-dfsdm-adc.c
+index 4a9337a3f9a3..c2948defa785 100644
+--- a/drivers/iio/adc/stm32-dfsdm-adc.c
++++ b/drivers/iio/adc/stm32-dfsdm-adc.c
+@@ -62,7 +62,7 @@ enum sd_converter_type {
  
-+/* I/O size constraints */
-+#define ZPCI_MAX_READ_SIZE	8
-+#define ZPCI_MAX_WRITE_SIZE	128
-+
- /* I/O Map */
- #define ZPCI_IOMAP_SHIFT		48
- #define ZPCI_IOMAP_ADDR_BASE		0x8000000000000000UL
-@@ -140,7 +144,8 @@ static inline int zpci_memcpy_fromio(voi
- 
- 	while (n > 0) {
- 		size = zpci_get_max_write_size((u64 __force) src,
--					       (u64) dst, n, 8);
-+					       (u64) dst, n,
-+					       ZPCI_MAX_READ_SIZE);
- 		rc = zpci_read_single(dst, src, size);
- 		if (rc)
- 			break;
-@@ -161,7 +166,8 @@ static inline int zpci_memcpy_toio(volat
- 
- 	while (n > 0) {
- 		size = zpci_get_max_write_size((u64 __force) dst,
--					       (u64) src, n, 128);
-+					       (u64) src, n,
-+					       ZPCI_MAX_WRITE_SIZE);
- 		if (size > 8) /* main path */
- 			rc = zpci_write_block(dst, src, size);
- 		else
---- a/arch/s390/pci/pci_mmio.c
-+++ b/arch/s390/pci/pci_mmio.c
-@@ -11,6 +11,113 @@
- #include <linux/mm.h>
- #include <linux/errno.h>
- #include <linux/pci.h>
-+#include <asm/pci_io.h>
-+#include <asm/pci_debug.h>
-+
-+static inline void zpci_err_mmio(u8 cc, u8 status, u64 offset)
-+{
-+	struct {
-+		u64 offset;
-+		u8 cc;
-+		u8 status;
-+	} data = {offset, cc, status};
-+
-+	zpci_err_hex(&data, sizeof(data));
-+}
-+
-+static inline int __pcistb_mio_inuser(
-+		void __iomem *ioaddr, const void __user *src,
-+		u64 len, u8 *status)
-+{
-+	int cc = -ENXIO;
-+
-+	asm volatile (
-+		"       sacf 256\n"
-+		"0:     .insn   rsy,0xeb00000000d4,%[len],%[ioaddr],%[src]\n"
-+		"1:     ipm     %[cc]\n"
-+		"       srl     %[cc],28\n"
-+		"2:     sacf 768\n"
-+		EX_TABLE(0b, 2b) EX_TABLE(1b, 2b)
-+		: [cc] "+d" (cc), [len] "+d" (len)
-+		: [ioaddr] "a" (ioaddr), [src] "Q" (*((u8 __force *)src))
-+		: "cc", "memory");
-+	*status = len >> 24 & 0xff;
-+	return cc;
-+}
-+
-+static inline int __pcistg_mio_inuser(
-+		void __iomem *ioaddr, const void __user *src,
-+		u64 ulen, u8 *status)
-+{
-+	register u64 addr asm("2") = (u64 __force) ioaddr;
-+	register u64 len asm("3") = ulen;
-+	int cc = -ENXIO;
-+	u64 val = 0;
-+	u64 cnt = ulen;
-+	u8 tmp;
-+
-+	/*
-+	 * copy 0 < @len <= 8 bytes from @src into the right most bytes of
-+	 * a register, then store it to PCI at @ioaddr while in secondary
-+	 * address space. pcistg then uses the user mappings.
-+	 */
-+	asm volatile (
-+		"       sacf    256\n"
-+		"0:     llgc    %[tmp],0(%[src])\n"
-+		"       sllg    %[val],%[val],8\n"
-+		"       aghi    %[src],1\n"
-+		"       ogr     %[val],%[tmp]\n"
-+		"       brctg   %[cnt],0b\n"
-+		"1:     .insn   rre,0xb9d40000,%[val],%[ioaddr]\n"
-+		"2:     ipm     %[cc]\n"
-+		"       srl     %[cc],28\n"
-+		"3:     sacf    768\n"
-+		EX_TABLE(0b, 3b) EX_TABLE(1b, 3b) EX_TABLE(2b, 3b)
-+		:
-+		[src] "+a" (src), [cnt] "+d" (cnt),
-+		[val] "+d" (val), [tmp] "=d" (tmp),
-+		[len] "+d" (len), [cc] "+d" (cc),
-+		[ioaddr] "+a" (addr)
-+		:: "cc", "memory");
-+	*status = len >> 24 & 0xff;
-+
-+	/* did we read everything from user memory? */
-+	if (!cc && cnt != 0)
-+		cc = -EFAULT;
-+
-+	return cc;
-+}
-+
-+static inline int __memcpy_toio_inuser(void __iomem *dst,
-+				   const void __user *src, size_t n)
-+{
-+	int size, rc = 0;
-+	u8 status = 0;
-+	mm_segment_t old_fs;
-+
-+	if (!src)
-+		return -EINVAL;
-+
-+	old_fs = enable_sacf_uaccess();
-+	while (n > 0) {
-+		size = zpci_get_max_write_size((u64 __force) dst,
-+					       (u64 __force) src, n,
-+					       ZPCI_MAX_WRITE_SIZE);
-+		if (size > 8) /* main path */
-+			rc = __pcistb_mio_inuser(dst, src, size, &status);
-+		else
-+			rc = __pcistg_mio_inuser(dst, src, size, &status);
-+		if (rc)
-+			break;
-+		src += size;
-+		dst += size;
-+		n -= size;
-+	}
-+	disable_sacf_uaccess(old_fs);
-+	if (rc)
-+		zpci_err_mmio(rc, status, (__force u64) dst);
-+	return rc;
-+}
- 
- static long get_pfn(unsigned long user_addr, unsigned long access,
- 		    unsigned long *pfn)
-@@ -46,6 +153,20 @@ SYSCALL_DEFINE3(s390_pci_mmio_write, uns
- 
- 	if (length <= 0 || PAGE_SIZE - (mmio_addr & ~PAGE_MASK) < length)
- 		return -EINVAL;
-+
-+	/*
-+	 * Only support read access to MIO capable devices on a MIO enabled
-+	 * system. Otherwise we would have to check for every address if it is
-+	 * a special ZPCI_ADDR and we would have to do a get_pfn() which we
-+	 * don't need for MIO capable devices.
-+	 */
-+	if (static_branch_likely(&have_mio)) {
-+		ret = __memcpy_toio_inuser((void  __iomem *) mmio_addr,
-+					user_buffer,
-+					length);
-+		return ret;
-+	}
-+
- 	if (length > 64) {
- 		buf = kmalloc(length, GFP_KERNEL);
- 		if (!buf)
-@@ -56,7 +177,8 @@ SYSCALL_DEFINE3(s390_pci_mmio_write, uns
- 	ret = get_pfn(mmio_addr, VM_WRITE, &pfn);
- 	if (ret)
- 		goto out;
--	io_addr = (void __iomem *)((pfn << PAGE_SHIFT) | (mmio_addr & ~PAGE_MASK));
-+	io_addr = (void __iomem *)((pfn << PAGE_SHIFT) |
-+			(mmio_addr & ~PAGE_MASK));
- 
- 	ret = -EFAULT;
- 	if ((unsigned long) io_addr < ZPCI_IOMAP_ADDR_BASE)
-@@ -72,6 +194,78 @@ out:
- 	return ret;
+ struct stm32_dfsdm_dev_data {
+ 	int type;
+-	int (*init)(struct iio_dev *indio_dev);
++	int (*init)(struct device *dev, struct iio_dev *indio_dev);
+ 	unsigned int num_channels;
+ 	const struct regmap_config *regmap_cfg;
+ };
+@@ -1359,11 +1359,12 @@ static void stm32_dfsdm_dma_release(struct iio_dev *indio_dev)
+ 	}
  }
  
-+static inline int __pcilg_mio_inuser(
-+		void __user *dst, const void __iomem *ioaddr,
-+		u64 ulen, u8 *status)
-+{
-+	register u64 addr asm("2") = (u64 __force) ioaddr;
-+	register u64 len asm("3") = ulen;
-+	u64 cnt = ulen;
-+	int shift = ulen * 8;
-+	int cc = -ENXIO;
-+	u64 val, tmp;
-+
-+	/*
-+	 * read 0 < @len <= 8 bytes from the PCI memory mapped at @ioaddr (in
-+	 * user space) into a register using pcilg then store these bytes at
-+	 * user address @dst
-+	 */
-+	asm volatile (
-+		"       sacf    256\n"
-+		"0:     .insn   rre,0xb9d60000,%[val],%[ioaddr]\n"
-+		"1:     ipm     %[cc]\n"
-+		"       srl     %[cc],28\n"
-+		"       ltr     %[cc],%[cc]\n"
-+		"       jne     4f\n"
-+		"2:     ahi     %[shift],-8\n"
-+		"       srlg    %[tmp],%[val],0(%[shift])\n"
-+		"3:     stc     %[tmp],0(%[dst])\n"
-+		"       aghi    %[dst],1\n"
-+		"       brctg   %[cnt],2b\n"
-+		"4:     sacf    768\n"
-+		EX_TABLE(0b, 4b) EX_TABLE(1b, 4b) EX_TABLE(3b, 4b)
-+		:
-+		[cc] "+d" (cc), [val] "=d" (val), [len] "+d" (len),
-+		[dst] "+a" (dst), [cnt] "+d" (cnt), [tmp] "=d" (tmp),
-+		[shift] "+d" (shift)
-+		:
-+		[ioaddr] "a" (addr)
-+		: "cc", "memory");
-+
-+	/* did we write everything to the user space buffer? */
-+	if (!cc && cnt != 0)
-+		cc = -EFAULT;
-+
-+	*status = len >> 24 & 0xff;
-+	return cc;
-+}
-+
-+static inline int __memcpy_fromio_inuser(void __user *dst,
-+				     const void __iomem *src,
-+				     unsigned long n)
-+{
-+	int size, rc = 0;
-+	u8 status;
-+	mm_segment_t old_fs;
-+
-+	old_fs = enable_sacf_uaccess();
-+	while (n > 0) {
-+		size = zpci_get_max_write_size((u64 __force) src,
-+					       (u64 __force) dst, n,
-+					       ZPCI_MAX_READ_SIZE);
-+		rc = __pcilg_mio_inuser(dst, src, size, &status);
-+		if (rc)
-+			break;
-+		src += size;
-+		dst += size;
-+		n -= size;
-+	}
-+	disable_sacf_uaccess(old_fs);
-+	if (rc)
-+		zpci_err_mmio(rc, status, (__force u64) dst);
-+	return rc;
-+}
-+
- SYSCALL_DEFINE3(s390_pci_mmio_read, unsigned long, mmio_addr,
- 		void __user *, user_buffer, size_t, length)
+-static int stm32_dfsdm_dma_request(struct iio_dev *indio_dev)
++static int stm32_dfsdm_dma_request(struct device *dev,
++				   struct iio_dev *indio_dev)
  {
-@@ -86,12 +280,27 @@ SYSCALL_DEFINE3(s390_pci_mmio_read, unsi
+ 	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
  
- 	if (length <= 0 || PAGE_SIZE - (mmio_addr & ~PAGE_MASK) < length)
- 		return -EINVAL;
-+
-+	/*
-+	 * Only support write access to MIO capable devices on a MIO enabled
-+	 * system. Otherwise we would have to check for every address if it is
-+	 * a special ZPCI_ADDR and we would have to do a get_pfn() which we
-+	 * don't need for MIO capable devices.
-+	 */
-+	if (static_branch_likely(&have_mio)) {
-+		ret = __memcpy_fromio_inuser(
-+				user_buffer, (const void __iomem *)mmio_addr,
-+				length);
-+		return ret;
-+	}
-+
- 	if (length > 64) {
- 		buf = kmalloc(length, GFP_KERNEL);
- 		if (!buf)
- 			return -ENOMEM;
--	} else
-+	} else {
- 		buf = local_buf;
-+	}
+-	adc->dma_chan = dma_request_chan(&indio_dev->dev, "rx");
++	adc->dma_chan = dma_request_chan(dev, "rx");
+ 	if (IS_ERR(adc->dma_chan)) {
+ 		int ret = PTR_ERR(adc->dma_chan);
  
- 	ret = get_pfn(mmio_addr, VM_READ, &pfn);
- 	if (ret)
+@@ -1419,7 +1420,7 @@ static int stm32_dfsdm_adc_chan_init_one(struct iio_dev *indio_dev,
+ 					  &adc->dfsdm->ch_list[ch->channel]);
+ }
+ 
+-static int stm32_dfsdm_audio_init(struct iio_dev *indio_dev)
++static int stm32_dfsdm_audio_init(struct device *dev, struct iio_dev *indio_dev)
+ {
+ 	struct iio_chan_spec *ch;
+ 	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
+@@ -1446,10 +1447,10 @@ static int stm32_dfsdm_audio_init(struct iio_dev *indio_dev)
+ 	indio_dev->num_channels = 1;
+ 	indio_dev->channels = ch;
+ 
+-	return stm32_dfsdm_dma_request(indio_dev);
++	return stm32_dfsdm_dma_request(dev, indio_dev);
+ }
+ 
+-static int stm32_dfsdm_adc_init(struct iio_dev *indio_dev)
++static int stm32_dfsdm_adc_init(struct device *dev, struct iio_dev *indio_dev)
+ {
+ 	struct iio_chan_spec *ch;
+ 	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
+@@ -1493,17 +1494,17 @@ static int stm32_dfsdm_adc_init(struct iio_dev *indio_dev)
+ 	init_completion(&adc->completion);
+ 
+ 	/* Optionally request DMA */
+-	ret = stm32_dfsdm_dma_request(indio_dev);
++	ret = stm32_dfsdm_dma_request(dev, indio_dev);
+ 	if (ret) {
+ 		if (ret != -ENODEV) {
+ 			if (ret != -EPROBE_DEFER)
+-				dev_err(&indio_dev->dev,
++				dev_err(dev,
+ 					"DMA channel request failed with %d\n",
+ 					ret);
+ 			return ret;
+ 		}
+ 
+-		dev_dbg(&indio_dev->dev, "No DMA support\n");
++		dev_dbg(dev, "No DMA support\n");
+ 		return 0;
+ 	}
+ 
+@@ -1616,7 +1617,7 @@ static int stm32_dfsdm_adc_probe(struct platform_device *pdev)
+ 		adc->dfsdm->fl_list[adc->fl_id].sync_mode = val;
+ 
+ 	adc->dev_data = dev_data;
+-	ret = dev_data->init(iio);
++	ret = dev_data->init(dev, iio);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-- 
+2.25.1
+
 
 
