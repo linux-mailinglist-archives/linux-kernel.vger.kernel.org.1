@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7F5D1E2B69
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF2B1E2BD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391431AbgEZTEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:04:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60760 "EHLO mail.kernel.org"
+        id S2391828AbgEZTJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:09:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391425AbgEZTEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:04:50 -0400
+        id S2391819AbgEZTI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:08:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9EC7D20849;
-        Tue, 26 May 2020 19:04:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A4ED520776;
+        Tue, 26 May 2020 19:08:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519890;
-        bh=Ub87hYBSithHAOar1CQy77UO8pYDy8vZcFqeoAMQ33g=;
+        s=default; t=1590520139;
+        bh=8AJtd7XJLAdfUVy8MB+O0mDvZE4M9CTw6DQcKauIO0A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=td4W/CsiSECV5iEQrKPlWvfATt9ONBDIY6oR/k2x2vTb0Q/MfH3tTTQWDotBJ0ZfY
-         CCD9rhemvWzQ0IbhNZ03qquv+SZfravflva7shoMwBRZhcF8uyhoAcJ/95zFGM3FH9
-         erWifWLlqNyMl7JqPYPo4ktggXdCyeQ+N+QD6YrI=
+        b=pRe+mu3hMiWegLmKi/wDGhKHmJvzqZTc9HHNjJ/m4tEYuwj4DDLFfwz6ngeQr6y/3
+         VJC+8KBK3kGUnXTOZDXb1Bx5QSbfQHjoI84uu8+gyb9ob7EXycRJ7YEw9P4lkvvAgU
+         1Pw/lCt/9giUDMq+LbSejq09FOWxkJZjSU52lGUI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 16/81] HID: multitouch: add eGalaxTouch P80H84 support
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 033/111] x86/mm/cpa: Flush direct map alias during cpa
 Date:   Tue, 26 May 2020 20:52:51 +0200
-Message-Id: <20200526183928.199695992@linuxfoundation.org>
+Message-Id: <20200526183935.966457158@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
-References: <20200526183923.108515292@linuxfoundation.org>
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +45,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
+From: Rick Edgecombe <rick.p.edgecombe@intel.com>
 
-[ Upstream commit f9e82295eec141a0569649d400d249333d74aa91 ]
+[ Upstream commit ab5130186d7476dcee0d4e787d19a521ca552ce9 ]
 
-Add support for P80H84 touchscreen from eGalaxy:
+As an optimization, cpa_flush() was changed to optionally only flush
+the range in @cpa if it was small enough.  However, this range does
+not include any direct map aliases changed in cpa_process_alias(). So
+small set_memory_() calls that touch that alias don't get the direct
+map changes flushed. This situation can happen when the virtual
+address taking variants are passed an address in vmalloc or modules
+space.
 
-  idVendor           0x0eef D-WAV Scientific Co., Ltd
-  idProduct          0xc002
-  iManufacturer           1 eGalax Inc.
-  iProduct                2 eGalaxTouch P80H84 2019 vDIVA_1204_T01 k4.02.146
+In these cases, force a full TLB flush.
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Note this issue does not extend to cases where the set_memory_() calls are
+passed a direct map address, or page array, etc, as the primary target. In
+those cases the direct map would be flushed.
+
+Fixes: 935f5839827e ("x86/mm/cpa: Optimize cpa_flush_array() TLB invalidation")
+Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20200424105343.GA20730@hirez.programming.kicks-ass.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-ids.h        | 1 +
- drivers/hid/hid-multitouch.c | 3 +++
- 2 files changed, 4 insertions(+)
+ arch/x86/mm/pageattr.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index b2fff44c8109..ae145bdcd83d 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -378,6 +378,7 @@
- #define USB_DEVICE_ID_DWAV_EGALAX_MULTITOUCH_7349	0x7349
- #define USB_DEVICE_ID_DWAV_EGALAX_MULTITOUCH_73F7	0x73f7
- #define USB_DEVICE_ID_DWAV_EGALAX_MULTITOUCH_A001	0xa001
-+#define USB_DEVICE_ID_DWAV_EGALAX_MULTITOUCH_C002	0xc002
+diff --git a/arch/x86/mm/pageattr.c b/arch/x86/mm/pageattr.c
+index a19a71b4d185..281e584cfe39 100644
+--- a/arch/x86/mm/pageattr.c
++++ b/arch/x86/mm/pageattr.c
+@@ -42,7 +42,8 @@ struct cpa_data {
+ 	unsigned long	pfn;
+ 	unsigned int	flags;
+ 	unsigned int	force_split		: 1,
+-			force_static_prot	: 1;
++			force_static_prot	: 1,
++			force_flush_all		: 1;
+ 	struct page	**pages;
+ };
  
- #define USB_VENDOR_ID_ELAN		0x04f3
- #define USB_DEVICE_ID_TOSHIBA_CLICK_L9W	0x0401
-diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
-index 19dfd8acd0da..8baf10beb1d5 100644
---- a/drivers/hid/hid-multitouch.c
-+++ b/drivers/hid/hid-multitouch.c
-@@ -1909,6 +1909,9 @@ static const struct hid_device_id mt_devices[] = {
- 	{ .driver_data = MT_CLS_EGALAX_SERIAL,
- 		MT_USB_DEVICE(USB_VENDOR_ID_DWAV,
- 			USB_DEVICE_ID_DWAV_EGALAX_MULTITOUCH_A001) },
-+	{ .driver_data = MT_CLS_EGALAX,
-+		MT_USB_DEVICE(USB_VENDOR_ID_DWAV,
-+			USB_DEVICE_ID_DWAV_EGALAX_MULTITOUCH_C002) },
+@@ -352,10 +353,10 @@ static void cpa_flush(struct cpa_data *data, int cache)
+ 		return;
+ 	}
  
- 	/* Elitegroup panel */
- 	{ .driver_data = MT_CLS_SERIAL,
+-	if (cpa->numpages <= tlb_single_page_flush_ceiling)
+-		on_each_cpu(__cpa_flush_tlb, cpa, 1);
+-	else
++	if (cpa->force_flush_all || cpa->numpages > tlb_single_page_flush_ceiling)
+ 		flush_tlb_all();
++	else
++		on_each_cpu(__cpa_flush_tlb, cpa, 1);
+ 
+ 	if (!cache)
+ 		return;
+@@ -1584,6 +1585,8 @@ static int cpa_process_alias(struct cpa_data *cpa)
+ 		alias_cpa.flags &= ~(CPA_PAGES_ARRAY | CPA_ARRAY);
+ 		alias_cpa.curpage = 0;
+ 
++		cpa->force_flush_all = 1;
++
+ 		ret = __change_page_attr_set_clr(&alias_cpa, 0);
+ 		if (ret)
+ 			return ret;
+@@ -1604,6 +1607,7 @@ static int cpa_process_alias(struct cpa_data *cpa)
+ 		alias_cpa.flags &= ~(CPA_PAGES_ARRAY | CPA_ARRAY);
+ 		alias_cpa.curpage = 0;
+ 
++		cpa->force_flush_all = 1;
+ 		/*
+ 		 * The high mapping range is imprecise, so ignore the
+ 		 * return value.
 -- 
 2.25.1
 
