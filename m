@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4594A1E2B89
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D19511E2C83
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403814AbgEZTGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:06:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34004 "EHLO mail.kernel.org"
+        id S2404126AbgEZTPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:15:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391587AbgEZTF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:05:56 -0400
+        id S2404265AbgEZTP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:15:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 911EE20776;
-        Tue, 26 May 2020 19:05:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A333E20776;
+        Tue, 26 May 2020 19:15:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519956;
-        bh=xOXi9QnILk5id+/EduROfF8p82+tBxnekVsIOyBvAVI=;
+        s=default; t=1590520528;
+        bh=mjFcX86r91d1iZBtQKyPObyOrcy9aYox6OEArrqea7s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=miRPFDCj9Zljtsc/eg7eqYo2OQlnsNPePn2olnkHpOJYkG1QK5xm9EqWu3veqKeKK
-         yDR/aFurusClI7qUcfy2CgGz6GKk+g+SuejUhf5kyRc2ZkSNGaHDprp6OviD5INJB3
-         cjMhhl+qkrAMUhqzo40y8HImm33vx53w02oajcbs=
+        b=YrLiEuUUtlar+zMA/5GKJhpisvi4KFtdE9fXpqPVuP4jPOLP3s2lpiTXkF4pFPT4l
+         tZFlGkDndEzFVeHntyjRrMoh8cDeKusPv4oIISK8UKyubVHlho0JdgRr9PtgObAHVO
+         Wzcprwxauo35qQdYwF9XztDwIB1RL9fw+UtDrAcU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juliet Kim <julietk@linux.vnet.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 57/81] Revert "net/ibmvnic: Fix EOI when running in XIVE mode"
+        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        John Johansen <john.johansen@canonical.com>
+Subject: [PATCH 5.6 075/126] apparmor: fix potential label refcnt leak in aa_change_profile
 Date:   Tue, 26 May 2020 20:53:32 +0200
-Message-Id: <20200526183933.434785972@linuxfoundation.org>
+Message-Id: <20200526183944.505936788@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
-References: <20200526183923.108515292@linuxfoundation.org>
+In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
+References: <20200526183937.471379031@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juliet Kim <julietk@linux.vnet.ibm.com>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-[ Upstream commit 284f87d2f3871247d08a2b6a24466ae905079913 ]
+commit a0b845ffa0d91855532b50fc040aeb2d8338dca4 upstream.
 
-This reverts commit 11d49ce9f7946dfed4dcf5dbde865c78058b50ab
-(“net/ibmvnic: Fix EOI when running in XIVE mode.”) since that
-has the unintended effect of changing the interrupt priority
-and emits warning when running in legacy XICS mode.
+aa_change_profile() invokes aa_get_current_label(), which returns
+a reference of the current task's label.
 
-Signed-off-by: Juliet Kim <julietk@linux.vnet.ibm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+According to the comment of aa_get_current_label(), the returned
+reference must be put with aa_put_label().
+However, when the original object pointed by "label" becomes
+unreachable because aa_change_profile() returns or a new object
+is assigned to "label", reference count increased by
+aa_get_current_label() is not decreased, causing a refcnt leak.
+
+Fix this by calling aa_put_label() before aa_change_profile() return
+and dropping unnecessary aa_get_current_label().
+
+Fixes: 9fcf78cca198 ("apparmor: update domain transitions that are subsets of confinement at nnp")
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Signed-off-by: John Johansen <john.johansen@canonical.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ security/apparmor/domain.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index 8a1916443235..abfd990ba4d8 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -2731,10 +2731,12 @@ static int enable_scrq_irq(struct ibmvnic_adapter *adapter,
+--- a/security/apparmor/domain.c
++++ b/security/apparmor/domain.c
+@@ -1328,6 +1328,7 @@ int aa_change_profile(const char *fqname
+ 		ctx->nnp = aa_get_label(label);
  
- 	if (adapter->resetting &&
- 	    adapter->reset_reason == VNIC_RESET_MOBILITY) {
--		struct irq_desc *desc = irq_to_desc(scrq->irq);
--		struct irq_chip *chip = irq_desc_get_chip(desc);
-+		u64 val = (0xff000000) | scrq->hw_irq;
- 
--		chip->irq_eoi(&desc->irq_data);
-+		rc = plpar_hcall_norets(H_EOI, val);
-+		if (rc)
-+			dev_err(dev, "H_EOI FAILED irq 0x%llx. rc=%ld\n",
-+				val, rc);
+ 	if (!fqname || !*fqname) {
++		aa_put_label(label);
+ 		AA_DEBUG("no profile name");
+ 		return -EINVAL;
+ 	}
+@@ -1346,8 +1347,6 @@ int aa_change_profile(const char *fqname
+ 			op = OP_CHANGE_PROFILE;
  	}
  
- 	rc = plpar_hcall_norets(H_VIOCTL, adapter->vdev->unit_address,
--- 
-2.25.1
-
+-	label = aa_get_current_label();
+-
+ 	if (*fqname == '&') {
+ 		stack = true;
+ 		/* don't have label_parse() do stacking */
 
 
