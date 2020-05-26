@@ -2,89 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE6A1E1C6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 09:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0E711E1C77
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 09:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729550AbgEZHoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 03:44:17 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36968 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727042AbgEZHoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 03:44:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 4AC15B029;
-        Tue, 26 May 2020 07:44:16 +0000 (UTC)
-Subject: Re: [patch V9-1 13/39] x86/entry: Switch XEN/PV hypercall entry to
- IDTENTRY
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-References: <20200521200513.656533920@linutronix.de>
- <20200521202118.055270078@linutronix.de>
- <87y2pjrfaz.fsf@nanos.tec.linutronix.de>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <af0bf4de-f963-f3af-a055-4ea945de7f5d@suse.com>
-Date:   Tue, 26 May 2020 09:44:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1731633AbgEZHqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 03:46:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726350AbgEZHqb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 03:46:31 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7783DC061A0E
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 00:46:30 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id z18so23253796lji.12
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 00:46:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vQ87BRHcrbqQygTpbGAEYk24csbidXVhewCA+tV163o=;
+        b=pT0dqlfYxNrmxZdJ7WcBG4vZvY0NSYhHnfTgOqxbzTgplNWrJvfxj2dwhgG/ZYJ+d2
+         K+qSDuDx2TIaYLEHN/5AhVNqf2paivkjNzq8qsUwOCW+oYXLut0oPOFgkL0SK4pZJ7Tf
+         MdsveoS22AHeRiuF+n5JfJ92kQHFs74x1/InPAnwc3pD7tK66aYEiMxm/Doxseo3Ewu+
+         Ll9IxV6NfRNUOr+JV/pNljARCa8v5goHEUePN4aSQ8GVQgRVSGS5Yf+eCuCjm4KWAPz3
+         DSXkrVVMKfXnPOfBFu574U+SmKIKsOoPJf/vkXAaq3WZ9TWxReJXujA47v2tTuprGdUd
+         s/mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vQ87BRHcrbqQygTpbGAEYk24csbidXVhewCA+tV163o=;
+        b=rcG+k8CIGEvgCCyg1y9oZt6Q1x0q9hujweqzvK5pTBorEtrHm4inLhFNbnOvDHJHQL
+         0qtcrCJgIobJ/NYK0vpv14jZXfkIk9Z0ZxIA21YnyRAAVLJ4J/BCqPVBEej2PQ23qq+6
+         rE595mZAcHGlovbIapTS4ozyWU1fIdo3AeCgknWbCLISHbbeXkN+xDfnUipsqVOHdg+P
+         xeX1xNOR287C9ZmhwBI91ss7YAb8ur7+c0LvF3XXIGgS6G9sqq4MHNJ4PvAWqFTGZVjQ
+         AovmXMVT8TT064pEOc18B1Bby6buLAXqkoGDmlz3zDW6M1W1aAqy1J4+knxeCy129ay7
+         Ze3w==
+X-Gm-Message-State: AOAM530AXHJyTiYDF3QHSMs3xUYwJ0++PT33GHht4X5+ELMzUXSXdsws
+        54Cubau0bvqEtBBOcCpWHbWFtUUgtHGSB0UT5dVpmA==
+X-Google-Smtp-Source: ABdhPJyrR0ZnDKgzWGnWJfcKQzfDfE5kOqq6TuQGhpDG/FxS6lpzsuhsxTuhxNGYNouSj0csLuiPjgvGwKcVgeMt/Fk=
+X-Received: by 2002:a2e:2204:: with SMTP id i4mr1157007lji.110.1590479188783;
+ Tue, 26 May 2020 00:46:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87y2pjrfaz.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1590158071-15325-1-git-send-email-sumit.garg@linaro.org> <20200522160258.yq63iigp74u3ngtn@holly.lan>
+In-Reply-To: <20200522160258.yq63iigp74u3ngtn@holly.lan>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Tue, 26 May 2020 13:16:17 +0530
+Message-ID: <CAFA6WYPrB1m1YDf54-OFNWmmTOv+8T5ZyTx14fxqZ-Jvx6fQQQ@mail.gmail.com>
+Subject: Re: [RFC] kdb: Switch kdb_printf to use safer console poll APIs
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     kgdb-bugreport@lists.sourceforge.net,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.05.20 20:32, Thomas Gleixner wrote:
-> Convert the XEN/PV hypercall to IDTENTRY:
-> 
->    - Emit the ASM stub with DECLARE_IDTENTRY
->    - Remove the ASM idtentry in 64bit
->    - Remove the open coded ASM entry code in 32bit
->    - Remove the old prototypes
-> 
-> The handler stubs need to stay in ASM code as it needs corner case handling
-> and adjustment of the stack pointer.
-> 
-> Provide a new C function which invokes the entry/exit handling and calls
-> into the XEN handler on the interrupt stack if required.
-> 
-> The exit code is slightly different from the regular idtentry_exit() on
-> non-preemptible kernels. If the hypercall is preemptible and need_resched()
-> is set then XEN provides a preempt hypercall scheduling function.
-> 
-> Move this functionality into the entry code so it can use the existing
-> idtentry functionality.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+On Fri, 22 May 2020 at 21:33, Daniel Thompson
+<daniel.thompson@linaro.org> wrote:
+>
+> On Fri, May 22, 2020 at 08:04:31PM +0530, Sumit Garg wrote:
+> > In kgdb NMI context, polling driver APIs are more safer to use instead
+> > of console APIs since the polling drivers know they will execute from
+> > all sorts of crazy places. And for the most common use cases this would
+> > also result in no console handler ever being called. So switch to use
+> > polling driver APIs in case a particular console supports polling mode.
+>
+> This comment seems rather half hearted, not least because it doesn't
+> explain what the current problem is nor why using the polling API is
+> safer.
+>
 
-Acked-by: Juergen Gross <jgross@suse.com>
-Tested-by: Juergen Gross <jgross@suse.com>
+TBH, some sentences in the above comment were borrowed from your
+suggestion here [1]. But I agree that it doesn't portray the complete
+picture. So how about:
 
+====
+In kgdb NMI context, calling console handlers isn't safe due to locks
+used in those handlers which could lead to a deadlock. Although, using
+oops_in_progress increases the chance to bypass locks in most console
+handlers but it might not be sufficient enough in case a console uses
+more locks (VT/TTY is good example).
 
-Juergen
+So instead switch to use lockless polling driver APIs in case a
+particular console supports polling mode which is common for most kdb
+use-cases and would result in no console handler ever being called.
+====
+
+[1] https://lkml.org/lkml/2020/5/20/356
+
+> Compare the above against the advice in
+> https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes
+> and I think it comes up short. Perhaps also consider Ingo Molnar's much
+> more concise suggestion on describing changes:
+>
+> : Please use the customary changelog style we use in the kernel:
+> :   " Current code does (A), this has a problem when (B).
+> :   We can improve this doing (C), because (D)."
+> -- http://lkml.iu.edu/hypermail//linux/kernel/1311.1/01157.html
+
+Thanks for the pointers.
+
+>
+>
+> > Suggested-by: Daniel Thompson <daniel.thompson@linaro.org>
+> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > ---
+> >  kernel/debug/kdb/kdb_io.c | 39 +++++++++++++++++++++++++++++++++------
+> >  1 file changed, 33 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
+> > index 3a5a068..8e0d581 100644
+> > --- a/kernel/debug/kdb/kdb_io.c
+> > +++ b/kernel/debug/kdb/kdb_io.c
+> > @@ -24,6 +24,7 @@
+> >  #include <linux/kgdb.h>
+> >  #include <linux/kdb.h>
+> >  #include <linux/kallsyms.h>
+> > +#include <linux/tty_driver.h>
+> >  #include "kdb_private.h"
+> >
+> >  #define CMD_BUFLEN 256
+> > @@ -699,11 +700,24 @@ int vkdb_printf(enum kdb_msgsrc src, const char *fmt, va_list ap)
+> >                       }
+> >               }
+> >               for_each_console(c) {
+> > +                     int line;
+> > +                     struct tty_driver *p;
+> > +
+> >                       if (!(c->flags & CON_ENABLED))
+> >                               continue;
+> > -                     ++oops_in_progress;
+> > -                     c->write(c, cp, retlen - (cp - kdb_buffer));
+> > -                     --oops_in_progress;
+> > +                     p = c->device ? c->device(c, &line) : NULL;
+> > +                     if (p && p->ops && p->ops->poll_put_char) {
+>
+> What prevents this logic from matching an active console that hasn't
+> been selected as the polling driver?
+
+Yes you are correct and it could lead to invoking poll_put_char()
+without poll_init(). And we couldn't invoke poll_init() here as that
+still comes with locks and could sleep. So one way to overcome this
+would be to pass selected polling driver via dbg_io_ops and use
+polling APIs only if the underlying console driver matches that
+polling driver.
+
+>
+>
+> > +                             len = retlen - (cp - kdb_buffer);
+> > +                             cp2 = cp;
+> > +                             while (len--) {
+> > +                                     p->ops->poll_put_char(p, line, *cp2);
+> > +                                     cp2++;
+> > +                             }
+>
+> Assuming it is possible to identify the console that matches the
+> currently selected polling driver can't we just drop the
+> is_console test and get rid of this branch entirely.
+
+Have a look at my suggested approach above.
+
+>
+> The only reason for the is_console test is to avoid issuing messages
+> twice so if we are able to suppress the c->write() for the same UART
+> then is_console check becomes pointless and can go.
+
+I did consider removing is_console check but it looks like it's not
+only limited to polling drivers but also used at other places (see [1]
+[2]) as well.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/usb/early/ehci-dbgp.c#n1061
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/tty/serial/kgdb_nmi.c#n48
+
+>
+>
+> > +                     } else {
+> > +                             ++oops_in_progress;
+> > +                             c->write(c, cp, retlen - (cp - kdb_buffer));
+> > +                             --oops_in_progress;
+> > +                     }
+> >                       touch_nmi_watchdog();
+> >               }
+> >       }
+> > @@ -765,11 +779,24 @@ int vkdb_printf(enum kdb_msgsrc src, const char *fmt, va_list ap)
+> >                       }
+> >               }
+> >               for_each_console(c) {
+> > +                     int line;
+> > +                     struct tty_driver *p;
+> > +
+> >                       if (!(c->flags & CON_ENABLED))
+> >                               continue;
+> > -                     ++oops_in_progress;
+> > -                     c->write(c, moreprompt, strlen(moreprompt));
+> > -                     --oops_in_progress;
+> > +                     p = c->device ? c->device(c, &line) : NULL;
+> > +                     if (p && p->ops && p->ops->poll_put_char) {
+> > +                             len = strlen(moreprompt);
+> > +                             cp = moreprompt;
+> > +                             while (len--) {
+> > +                                     p->ops->poll_put_char(p, line, *cp);
+> > +                                     cp++;
+> > +                             }
+> > +                     } else {
+> > +                             ++oops_in_progress;
+> > +                             c->write(c, moreprompt, strlen(moreprompt));
+> > +                             --oops_in_progress;
+> > +                     }
+>
+> Maybe also consider pulling the string emit to a separate function.
+>
+
+Okay.
+
+-Sumit
+
+>
+> Daniel.
