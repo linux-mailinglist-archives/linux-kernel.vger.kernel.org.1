@@ -2,90 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB2A1E1E53
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 11:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D02B01E1E35
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 11:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388419AbgEZJWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 05:22:18 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:57308 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731622AbgEZJWP (ORCPT
+        id S1731713AbgEZJTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 05:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731600AbgEZJTR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 05:22:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=fbzELRYcJjrFmOciA2lLMrUinuLmeRjLnUksXmy8vX4=; b=kgFUWgIlVIcg3f3/mKjq51a4XJ
-        hqjU/+PU3gfDPjGGAcNeN4Zc/NJjbP4OIR8DaOk5PgRZW9TMyjilPXvbCcj36bmRwmAWQG+Nj14Qb
-        78ZtfqFcNCkGRLrXA71CGttYLtaHmHF7Q+BWp7UOCWG+AzIZxCNEVKuoF/XQPWwkWavyNcdSqMkhy
-        Pxqi6rWbPxnlhz9s8TI4Lcxfj9JCqWOXUakuSL3Sg8k63nPf11s+vRbkjLkUM8nwGkUjXrezZ17ye
-        HRNg0iOjOoz9Kk3Si0IC4Jz7gXA5rZkv3VePI5WVYruVQh50VnSiU/8YZxWPev4Ai+msA16tIdxSY
-        t6cLGvLQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jdViZ-0004up-CU; Tue, 26 May 2020 09:17:51 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Tue, 26 May 2020 05:19:17 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CD7C03E97E;
+        Tue, 26 May 2020 02:19:17 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0f91004890e1585abde4e7.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:9100:4890:e158:5abd:e4e7])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7522330047A;
-        Tue, 26 May 2020 11:17:45 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4DBD120BD4F39; Tue, 26 May 2020 11:17:45 +0200 (CEST)
-Date:   Tue, 26 May 2020 11:17:45 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Andi Kleen <andi@firstfloor.org>, x86@kernel.org,
-        keescook@chromium.org, linux-kernel@vger.kernel.org,
-        sashal@kernel.org, Andi Kleen <ak@linux.intel.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v1] x86: Pin cr4 FSGSBASE
-Message-ID: <20200526091745.GC325280@hirez.programming.kicks-ass.net>
-References: <20200526052848.605423-1-andi@firstfloor.org>
- <20200526065618.GC2580410@kroah.com>
- <20200526075736.GH317569@hirez.programming.kicks-ass.net>
- <20200526081752.GA2650351@kroah.com>
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E9AF21EC01CE;
+        Tue, 26 May 2020 11:19:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1590484754;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=3q+7t7sjlYH1ceIvNrmNgbY6YY9E6lQweSEw445KMuQ=;
+        b=iKa2bVBpMQp6StjjDbQaxUSuJ6wTp1s+D5je8Zka3UYOO595HcNgIRtDL9u0hOFnuPhGDR
+        MQnn6PnjduoWek/zB3TtJ35+Q0grOSS/8KmKwPz0q9/upZHz5W9p3CmZZPhGuWcO6Wb/Nn
+        Y120KdDXjix8h/C8LNwg7L1XZb/LHKU=
+Date:   Tue, 26 May 2020 11:19:09 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v3 64/75] x86/sev-es: Cache CPUID results for improved
+ performance
+Message-ID: <20200526091909.GB28228@zn.tnic>
+References: <20200428151725.31091-1-joro@8bytes.org>
+ <20200428151725.31091-65-joro@8bytes.org>
+ <20200520051637.GA16599@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200526081752.GA2650351@kroah.com>
+In-Reply-To: <20200520051637.GA16599@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 10:17:52AM +0200, Greg KH wrote:
-> On Tue, May 26, 2020 at 09:57:36AM +0200, Peter Zijlstra wrote:
-> > On Tue, May 26, 2020 at 08:56:18AM +0200, Greg KH wrote:
-> > > On Mon, May 25, 2020 at 10:28:48PM -0700, Andi Kleen wrote:
-> > > > From: Andi Kleen <ak@linux.intel.com>
-> > > > 
-> > > > Since there seem to be kernel modules floating around that set
-> > > > FSGSBASE incorrectly, prevent this in the CR4 pinning. Currently
-> > > > CR4 pinning just checks that bits are set, this also checks
-> > > > that the FSGSBASE bit is not set, and if it is clears it again.
-> > > 
-> > > So we are trying to "protect" ourselves from broken out-of-tree kernel
-> > > modules now?  Why stop with this type of check, why not just forbid them
-> > > entirely if we don't trust them?  :)
-> > 
-> > Oh, I have a bunch of patches pending for that :-)
-> 
-> Ah, I thought I had seen something like that go by a while ago.
-> 
-> It's sad that we have to write a "don't do stupid things" checker for
-> kernel modules now :(
+On Tue, May 19, 2020 at 10:16:37PM -0700, Sean Christopherson wrote:
+> The whole cache on-demand approach seems like overkill.  The number of CPUID
+> leaves that are invoked after boot with any regularity can probably be counted
+> on one hand.   IIRC glibc invokes CPUID to gather TLB/cache info, XCR0-based
+> features, and one or two other leafs.  A statically sized global array that's
+> arbitrarily index a la x86_capability would be just as simple and more
+> performant.  It would also allow fancier things like emulating CPUID 0xD in
+> the guest if you want to go down that road.
 
-Because people... they get stuff from the interweb and run it :/ The
-days that admins actually knew what they're doing is long long gone.
+And before we do any of that "caching" or whatnot, I'd like to see
+numbers justifying its existence. Because if it is only a couple of
+CPUID invocations and the boot delay is immeasurable, then it's not
+worth the effort.
 
-> > It will basically decode the module text and refuse to load the module
-> > for most CPL0 instruction.
-> 
-> Ok, so why would Andi's patch even be needed then?  Andi, why post this?
+-- 
+Regards/Gruss,
+    Boris.
 
-Andi's patch cures a particularly bad module that floats around that
-people use, probably without being aware that it's an insta-root hole.
-
-My patches will be a while (too many things in the fire :/) and will
-certainly not be for stable.
+https://people.kernel.org/tglx/notes-about-netiquette
