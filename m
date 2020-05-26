@@ -2,132 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A92E71E1D51
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 10:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3355E1E1D57
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 10:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731478AbgEZI26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 04:28:58 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:41445 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727879AbgEZI26 (ORCPT
+        id S1731428AbgEZIaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 04:30:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728467AbgEZIaD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 04:28:58 -0400
-Received: by mail-ot1-f66.google.com with SMTP id 63so15622042oto.8
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 01:28:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+sDfD5MvHqOVKsiOpWR4jEKoPv0NunhRnUgZ58ivMcM=;
-        b=LOIE6gp1VyIvtENQvxgqjOlRH04wbSeIr5tLNOUogEh/17fDslWt1nMFnqywt9t9Mk
-         H2i/lMhhb4t5bUiCOz62P3h8UJ6tZn15TBrKC+4sVvRWf7KXVl1NnJX34dDw+IUyJ4xf
-         GNh0COalPxr9nvlk+LTMotoYcvmDi9xY8Cx+fGhB9uvS6uqtv915mom+Hd78ZU5hQETx
-         ULWyQqEb/lVfYlLDQhw0jXX/6rgNlpsPmWRrjBWZBMwox6TnNiY+9DC70Hk7zLboM4xY
-         1rYOWGPE/NZKzs5IVPhVKElqWANYbru5cSjYVhpiIPlElAuXJ7qdAb9M7GMLJ0kZismK
-         WwXQ==
-X-Gm-Message-State: AOAM532lTwFtRB5n2fFK2pwzlbouwJ24rwMrajlWvco6IAO+AOs78Cv1
-        QYg+Jx0oYCuC1lFWEGHVFTM9FvZ6LP/5gBHHl98=
-X-Google-Smtp-Source: ABdhPJw4lPJ+FZJTfBnOyckv1D1aJQFKbIHgiBVLAHuea9bvEc8e6KHzf56i73OodCIN/41GFETLa2osQ1lgfr4ik4Y=
-X-Received: by 2002:a9d:4713:: with SMTP id a19mr51713otf.167.1590481735984;
- Tue, 26 May 2020 01:28:55 -0700 (PDT)
+        Tue, 26 May 2020 04:30:03 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A0B4C03E97E
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 01:30:02 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jdUy7-0000e8-RB; Tue, 26 May 2020 10:29:51 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jdUy0-0007Jc-3k; Tue, 26 May 2020 10:29:44 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        "John W. Linville" <linville@tuxdriver.com>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        David Jander <david@protonic.nl>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
+        Marek Vasut <marex@denx.de>,
+        Christian Herber <christian.herber@nxp.com>,
+        Amit Cohen <amitc@mellanox.com>,
+        Petr Machata <petrm@mellanox.com>
+Subject: [PATCH ethtool v1] netlink: add LINKSTATE SQI support
+Date:   Tue, 26 May 2020 10:29:42 +0200
+Message-Id: <20200526082942.28073-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <6144404cb26d1f797fd7e87b124bcaf8@walle.cc> <20200526070518.107333-1-saravanak@google.com>
-In-Reply-To: <20200526070518.107333-1-saravanak@google.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 26 May 2020 10:28:43 +0200
-Message-ID: <CAJZ5v0i9yyvf0JAAUfj1DiFPgHHUdXkE3T6fWSxFEB1Mo_fx3Q@mail.gmail.com>
-Subject: Re: [PATCH v1] driver core: Update device link status correctly for
- SYNC_STATE_ONLY links
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 9:05 AM Saravana Kannan <saravanak@google.com> wrote:
->
-> When SYNC_STATE_ONLY support was added in commit 05ef983e0d65 ("driver
-> core: Add device link support for SYNC_STATE_ONLY flag"),
-> SYNC_STATE_ONLY links were treated similar to STATELESS links in terms
-> of not blocking consumer probe if the supplier hasn't probed yet.
->
-> That caused a SYNC_STATE_ONLY device link's status to not get updated.
-> Since SYNC_STATE_ONLY device link is no longer useful once the
-> consumer probes, commit 21c27f06587d ("driver core: Fix
-> SYNC_STATE_ONLY device link implementation") addresses the status
-> update issue by deleting the SYNC_STATE_ONLY device link instead of
-> complicating the status update code.
->
-> However, there are still some cases where we need to update the status
-> of a SYNC_STATE_ONLY device link.  A SYNC_STATE_ONLY device link can
-> later get converted into a normal MANAGED device link when a normal
-> MANAGED device link is created between a supplier and consumer that
-> already have a SYNC_STATE_ONLY device link between them. If a
-> SYNC_STATE_ONLY device link's status isn't maintained correctly till
-> it's converted to a normal MANAGED device link, then the normal
-> MANAGED device link will end up with a wrong link status. This can
-> cause a warning stack trace[1] when the consumer device probes.
->
-> This commit fixes the SYNC_STATE_ONLY device link status update issue
-> where it wouldn't transition correctly from DL_STATE_AVAILABLE to
-> DL_STATE_CONSUMER_PROBE.
->
-> [1] - https://lore.kernel.org/lkml/20200522204120.3b3c9ed6@apollo/
-> Fixes: 05ef983e0d65 ("driver core: Add device link support for SYNC_STATE_ONLY flag")
-> Fixes: 21c27f06587d ("driver core: Fix SYNC_STATE_ONLY device link implementation")
-> Reported-by: Michael Walle <michael@walle.cc>
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+Some PHYs provide Signal Quality Index (SQI) if the link is in active
+state. This information can help to diagnose cable and system design
+related issues.
 
-Tentatively
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ netlink/desc-ethtool.c       |  2 ++
+ netlink/settings.c           | 16 ++++++++++++++++
+ uapi/linux/ethtool_netlink.h |  2 ++
+ 3 files changed, 20 insertions(+)
 
-Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+diff --git a/netlink/desc-ethtool.c b/netlink/desc-ethtool.c
+index 76c6f13..f4559ea 100644
+--- a/netlink/desc-ethtool.c
++++ b/netlink/desc-ethtool.c
+@@ -91,6 +91,8 @@ static const struct pretty_nla_desc __linkstate_desc[] = {
+ 	NLATTR_DESC_INVALID(ETHTOOL_A_LINKSTATE_UNSPEC),
+ 	NLATTR_DESC_NESTED(ETHTOOL_A_LINKSTATE_HEADER, header),
+ 	NLATTR_DESC_BOOL(ETHTOOL_A_LINKSTATE_LINK),
++	NLATTR_DESC_U32(ETHTOOL_A_LINKSTATE_SQI),
++	NLATTR_DESC_U32(ETHTOOL_A_LINKSTATE_SQI_MAX),
+ };
+ 
+ static const struct pretty_nla_desc __debug_desc[] = {
+diff --git a/netlink/settings.c b/netlink/settings.c
+index 8be5a22..a6b2fba 100644
+--- a/netlink/settings.c
++++ b/netlink/settings.c
+@@ -604,6 +604,22 @@ int linkstate_reply_cb(const struct nlmsghdr *nlhdr, void *data)
+ 		printf("\tLink detected: %s\n", val ? "yes" : "no");
+ 	}
+ 
++	if (tb[ETHTOOL_A_LINKSTATE_SQI]) {
++		uint32_t val = mnl_attr_get_u32(tb[ETHTOOL_A_LINKSTATE_SQI]);
++
++		print_banner(nlctx);
++		printf("\tSQI: %u", val);
++
++		if (tb[ETHTOOL_A_LINKSTATE_SQI_MAX]) {
++			uint32_t max;
++
++			max = mnl_attr_get_u32(tb[ETHTOOL_A_LINKSTATE_SQI_MAX]);
++			printf("/%u\n", max);
++		} else {
++			printf("\n");
++		}
++	}
++
+ 	return MNL_CB_OK;
+ }
+ 
+diff --git a/uapi/linux/ethtool_netlink.h b/uapi/linux/ethtool_netlink.h
+index ad6d3a0..98e236c 100644
+--- a/uapi/linux/ethtool_netlink.h
++++ b/uapi/linux/ethtool_netlink.h
+@@ -197,6 +197,8 @@ enum {
+ 	ETHTOOL_A_LINKSTATE_UNSPEC,
+ 	ETHTOOL_A_LINKSTATE_HEADER,		/* nest - _A_HEADER_* */
+ 	ETHTOOL_A_LINKSTATE_LINK,		/* u8 */
++	ETHTOOL_A_LINKSTATE_SQI,		/* u32 */
++	ETHTOOL_A_LINKSTATE_SQI_MAX,		/* u32 */
+ 
+ 	/* add new constants above here */
+ 	__ETHTOOL_A_LINKSTATE_CNT,
+-- 
+2.26.2
 
-->
-
-> ---
-> Greg,
->
-> I think this is the issue Michael ran into. I'd like him to test the fix
-> before it's pulled in.
->
-> Michael,
->
-> If you can test this on the branch you saw the issue in and give a
-> Tested-by if it works, that'd be great.
-
--> provided that the patch works.
-
-Thanks!
-
->  drivers/base/core.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 791b7530599f..9511be3f9a32 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -687,11 +687,11 @@ int device_links_check_suppliers(struct device *dev)
->         device_links_write_lock();
->
->         list_for_each_entry(link, &dev->links.suppliers, c_node) {
-> -               if (!(link->flags & DL_FLAG_MANAGED) ||
-> -                   link->flags & DL_FLAG_SYNC_STATE_ONLY)
-> +               if (!(link->flags & DL_FLAG_MANAGED))
->                         continue;
->
-> -               if (link->status != DL_STATE_AVAILABLE) {
-> +               if (link->status != DL_STATE_AVAILABLE &&
-> +                   !(link->flags & DL_FLAG_SYNC_STATE_ONLY)) {
->                         device_links_missing_supplier(dev);
->                         ret = -EPROBE_DEFER;
->                         break;
-> --
-> 2.27.0.rc0.183.gde8f92d652-goog
->
