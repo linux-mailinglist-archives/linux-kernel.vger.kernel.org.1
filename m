@@ -2,48 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8CE1E2BB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE931E2B4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391737AbgEZTHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:07:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36662 "EHLO mail.kernel.org"
+        id S2391266AbgEZTDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:03:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391725AbgEZTHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:07:49 -0400
+        id S2391252AbgEZTDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:03:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F20A20873;
-        Tue, 26 May 2020 19:07:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84C1620873;
+        Tue, 26 May 2020 19:03:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520068;
-        bh=REDsuEysCkGozpy/tAflcxRA3nXs5g++jF7F2KLZaHI=;
+        s=default; t=1590519823;
+        bh=ConqutJgbi4/Qis/DO2822iciViU/8gVeGfHmxkd1Do=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mUSKz0eNft7l939ZCYs/D7uvaDTMSnwJTdEkfvW/ZfGPZw7APLhDUuQ4kNunwDQJD
-         CF2EdTranoKgcnvTSYSnZdTzi3krr9UG26urKfBdPcIvv+wy0+2FMkaZXNclr81zYj
-         HUHvFO6wgEaj+H6kirxOh0D45D8WL9myqEoGSDwQ=
+        b=kEq6qboQlgXnww5+i6yAiN82cLZFHYhhqWKo8b1R9ssAembLOJcQhtyQgFMJO1F0G
+         sd/P6k4ghCvG2bY7yMqQJ6GBmraD+IbRrYFGm01Kw1UKiJjoiwOOfdBLl5ykm+zfxg
+         zcB25bRS8iH4sKSlsh2ISWWHq2IM0/oIouWMZBYI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Aymeric Agon-Rambosson <aymeric.agon@yandex.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Nikolay Borisov <n.borisov.lkml@gmail.com>,
-        Jackie Liu <liuyun01@kylinos.cn>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Wu Bo <wubo40@huawei.com>,
+        "Yan, Zheng" <zyan@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 047/111] scripts/gdb: repair rb_first() and rb_last()
+Subject: [PATCH 4.19 30/81] ceph: fix double unlock in handle_cap_export()
 Date:   Tue, 26 May 2020 20:53:05 +0200
-Message-Id: <20200526183937.360700066@linuxfoundation.org>
+Message-Id: <20200526183930.831806653@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
-References: <20200526183932.245016380@linuxfoundation.org>
+In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
+References: <20200526183923.108515292@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,54 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aymeric Agon-Rambosson <aymeric.agon@yandex.com>
+From: Wu Bo <wubo40@huawei.com>
 
-[ Upstream commit 50e36be1fb9572b2e4f2753340bdce3116bf2ce7 ]
+[ Upstream commit 4d8e28ff3106b093d98bfd2eceb9b430c70a8758 ]
 
-The current implementations of the rb_first() and rb_last() gdb
-functions have a variable that references itself in its instanciation,
-which causes the function to throw an error if a specific condition on
-the argument is met.  The original author rather intended to reference
-the argument and made a typo.  Referring the argument instead makes the
-function work as intended.
+If the ceph_mdsc_open_export_target_session() return fails, it will
+do a "goto retry", but the session mutex has already been unlocked.
+Re-lock the mutex in that case to ensure that we don't unlock it
+twice.
 
-Signed-off-by: Aymeric Agon-Rambosson <aymeric.agon@yandex.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Cc: Jan Kiszka <jan.kiszka@siemens.com>
-Cc: Kieran Bingham <kbingham@kernel.org>
-Cc: Douglas Anderson <dianders@chromium.org>
-Cc: Nikolay Borisov <n.borisov.lkml@gmail.com>
-Cc: Jackie Liu <liuyun01@kylinos.cn>
-Cc: Jason Wessel <jason.wessel@windriver.com>
-Link: http://lkml.kernel.org/r/20200427051029.354840-1-aymeric.agon@yandex.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Wu Bo <wubo40@huawei.com>
+Reviewed-by: "Yan, Zheng" <zyan@redhat.com>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/gdb/linux/rbtree.py | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/ceph/caps.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/scripts/gdb/linux/rbtree.py b/scripts/gdb/linux/rbtree.py
-index 39db889b874c..c4b991607917 100644
---- a/scripts/gdb/linux/rbtree.py
-+++ b/scripts/gdb/linux/rbtree.py
-@@ -12,7 +12,7 @@ rb_node_type = utils.CachedType("struct rb_node")
- 
- def rb_first(root):
-     if root.type == rb_root_type.get_type():
--        node = node.address.cast(rb_root_type.get_type().pointer())
-+        node = root.address.cast(rb_root_type.get_type().pointer())
-     elif root.type != rb_root_type.get_type().pointer():
-         raise gdb.GdbError("Must be struct rb_root not {}".format(root.type))
- 
-@@ -28,7 +28,7 @@ def rb_first(root):
- 
- def rb_last(root):
-     if root.type == rb_root_type.get_type():
--        node = node.address.cast(rb_root_type.get_type().pointer())
-+        node = root.address.cast(rb_root_type.get_type().pointer())
-     elif root.type != rb_root_type.get_type().pointer():
-         raise gdb.GdbError("Must be struct rb_root not {}".format(root.type))
+diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
+index 5241102b81a8..a2d4eed27f80 100644
+--- a/fs/ceph/caps.c
++++ b/fs/ceph/caps.c
+@@ -3632,6 +3632,7 @@ retry:
+ 		WARN_ON(1);
+ 		tsession = NULL;
+ 		target = -1;
++		mutex_lock(&session->s_mutex);
+ 	}
+ 	goto retry;
  
 -- 
 2.25.1
