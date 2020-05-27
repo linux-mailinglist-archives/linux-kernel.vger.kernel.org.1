@@ -2,95 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB2B1E4E78
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 21:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4777E1E4E7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 21:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728298AbgE0TpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 15:45:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37398 "EHLO
+        id S1728335AbgE0Tq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 15:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725872AbgE0TpW (ORCPT
+        with ESMTP id S1725872AbgE0Tq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 15:45:22 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DFADC05BD1E
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 12:45:22 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id x29so7065871qtv.4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 12:45:22 -0700 (PDT)
+        Wed, 27 May 2020 15:46:26 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E20FC05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 12:46:25 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id e4so7970020ljn.4
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 12:46:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=D80XpsA6hJ4kY4NNH02ZCQ+SxpQnIHKs3bcOMnCiqaA=;
-        b=hV9+5puqc8TazkxTs6psTgANjLuorgwlMEXYnsnhCo+mw9taU1spQGto8UthSQ0LTF
-         w8l/d+vh+tJ1UDVAWTP7pHdmCvXxbCfbVswIiQ9FaSUTGahXM/Emag2teZrIKyJZxBIm
-         blhjYl35v+2kYyF8Kx4bm0JVyTMQ8qO1o2HcJqthotpb7fz5qYTHu1ms8PT60qteiOHW
-         lBP12r117ByfuDvTHsRzh4Bui41TdIbWV4zSQ7f5iTWv9sbuob+9dFK8jqGnbx/0bh0a
-         Uw0ra6vaDjyO85emAlyD0v7cFz/NXx+4oHJpUYHInlCVQ0ZS2wv5cEGGrOQ9hmSo5LEb
-         X2zQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mWhAV+oalNjQE28LBxoMsLXJD6jlzY/ddZHzS5PvNwY=;
+        b=tgQVm3l2X8qPOygWBAnzNsgUIRIcVeW2WuBwqzLOuKVx3HMHaiOAay8Zivr02tExiz
+         6VtK81R3seVi6PTDTNkRw090IS5JYXDZklfI8TtuFyDUGIt3ZMtYFdKHVbX/lH+rpDAN
+         AsnFxXNdnRY0OKiSi/PctDt0ko1DsNswoTGUpzqg3RyPFA+1AxX6StlVcpuLUv4CTQZk
+         5wXe7T86+CQnb/J7QN2nApObS8C8S12EhYq707hVdn11Llw5MjPqTYIzgBLu0wjWENtI
+         4OQZvOVY0galy6YdtiwNnrOJGoB1KX9XEnCXCXiq6vtYNNo9CKQ/0VCj2w4ARspj9AQr
+         DKCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=D80XpsA6hJ4kY4NNH02ZCQ+SxpQnIHKs3bcOMnCiqaA=;
-        b=EMkZA7KFxZ3UOQIydnX3v55J1D/F8wWGKI4mroo4r5rD44qgCX8orxhyg/0d21IHlY
-         eOGTdtAJ8ZCnduQG8h3bLcQbAlp/EtzwN8nnXxYFPGb/6HikgxhDpEO4z8E08m1t+PU/
-         DlIy8AIwh6J7lzOmlEhExaiCwu44sdBvXM/Bv542g2ywUxmkmOjYlwL6hp1tDRDnoTWf
-         4EQaVT+1HkcJ6EhaKdbshqdUVIK21IukpBZhHoJrT91m+91Vy3Og/A0d/b0jpRkZRKn/
-         5zBecDRbX+u2rNKHDfKxasPuw5Oj9MQoZTuo6ekJnax09lt3itF6hABk0Fr/KLMIUS9X
-         dBzw==
-X-Gm-Message-State: AOAM533pi1AQim53uLUJ9s0Ow/ZKTusRNunIEXzr1EE0Y8ClqbdnSikJ
-        1XjNgySMkXILJprIpfjhdBp4LQ==
-X-Google-Smtp-Source: ABdhPJydAAdrWEqBz4+lafNXlZ92z44aShoyQMaDpyiLn4rtZVfccZmqkLHnU+QgCDyMuEQjPPnV5A==
-X-Received: by 2002:ac8:339c:: with SMTP id c28mr6210643qtb.9.1590608721295;
-        Wed, 27 May 2020 12:45:21 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:2535])
-        by smtp.gmail.com with ESMTPSA id l22sm2850802qki.45.2020.05.27.12.45.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2020 12:45:20 -0700 (PDT)
-Date:   Wed, 27 May 2020 15:44:55 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
-        Vlastimil Babka <vbabka@suse.cz>, kernel-team@fb.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 04/19] mm: slub: implement SLUB version of
- obj_to_index()
-Message-ID: <20200527194455.GB47905@cmpxchg.org>
-References: <20200526214227.989341-1-guro@fb.com>
- <20200526214227.989341-5-guro@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mWhAV+oalNjQE28LBxoMsLXJD6jlzY/ddZHzS5PvNwY=;
+        b=Qo8Rp3b6XFeqpJnzQ5D0tqbMQ4yHvLtq6sIH6o0SjOgz1oPz8TjE3vGEKBA5OCm131
+         EJ+GPiD2AXK4SL7LNIjyRjE6Hm7/PuTF3iysGUzr3wYZxfnnRCVi+PFfkkIsaDwCkh/D
+         bqrAG9Htn7GEofpDFv1ndKC3hJT0mvm4EJ/JnU1n0WyZTKPqC60JIK1IHFUYJ7ZpT0SR
+         KfuCLv4AFF1YtKICfDlubPOIeAz+1ViaR6XeVJjIfUwJ9z0ehKnVv0DhEwigltb9oYzR
+         5E3nRHgGmSD+3+j1kmctc3KrBbEHgTMsehGwX5IShjjwraJKroQlUbdgDpQaBvy4PD44
+         +5+w==
+X-Gm-Message-State: AOAM5303ykw9DGPHzC4BM8hwW5tPshDqnnJn1Klw6ygQ2n+YC5lcy5vG
+        rAT9cb4X87DW8KuKRJrezMFPd1nakDAFYV/EG1QqSg==
+X-Google-Smtp-Source: ABdhPJxOcdjgr3W3iJp2ZHQW3sk0rlBDc+qPkqLsHMJGAot3E0Nyk/3oLAFsChktA4ZzE+QNK+yp04GOTz4yqxubtcc=
+X-Received: by 2002:a2e:a58a:: with SMTP id m10mr3993911ljp.347.1590608783797;
+ Wed, 27 May 2020 12:46:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200526214227.989341-5-guro@fb.com>
+References: <20200527182958.252402-1-shakeelb@google.com> <20200527194148.GA47905@cmpxchg.org>
+In-Reply-To: <20200527194148.GA47905@cmpxchg.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 27 May 2020 12:46:12 -0700
+Message-ID: <CALvZod6tbWvCT9swej9+h_F3Z0v-Cw7KV6o_NARUPgke7K41qA@mail.gmail.com>
+Subject: Re: [PATCH resend 3/3] mm: fix LRU balancing effect of new
+ transparent huge pages
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Mel Gorman <mgorman@suse.de>, Roman Gushchin <guro@fb.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 02:42:12PM -0700, Roman Gushchin wrote:
-> This commit implements SLUB version of the obj_to_index() function,
-> which will be required to calculate the offset of obj_cgroup in the
-> obj_cgroups vector to store/obtain the objcg ownership data.
-> 
-> To make it faster, let's repeat the SLAB's trick introduced by
-> commit 6a2d7a955d8d ("[PATCH] SLAB: use a multiply instead of a
-> divide in obj_to_index()") and avoid an expensive division.
-> 
-> Vlastimil Babka noticed, that SLUB does have already a similar
-> function called slab_index(), which is defined only if SLUB_DEBUG
-> is enabled. The function does a similar math, but with a division,
-> and it also takes a page address instead of a page pointer.
-> 
-> Let's remove slab_index() and replace it with the new helper
-> __obj_to_index(), which takes a page address. obj_to_index()
-> will be a simple wrapper taking a page pointer and passing
-> page_address(page) into __obj_to_index().
-> 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+On Wed, May 27, 2020 at 12:42 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Wed, May 27, 2020 at 11:29:58AM -0700, Shakeel Butt wrote:
+> > From: Johannes Weiner <hannes@cmpxchg.org>
+> >
+> > Currently, THP are counted as single pages until they are split right
+> > before being swapped out. However, at that point the VM is already in
+> > the middle of reclaim, and adjusting the LRU balance then is useless.
+> >
+> > Always account THP by the number of basepages, and remove the fixup
+> > from the splitting path.
+> >
+> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
+>
+> This is now already in mm as part of the "mm: balance LRU lists based
+> on relative thrashing" series that I sent out last week and where it
+> was originally from.
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Oh sorry, I missed it.
