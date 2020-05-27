@@ -2,67 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72CF91E4D42
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01EDF1E4D51
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgE0Srj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 14:47:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56632 "EHLO
+        id S1727882AbgE0SsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 14:48:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726533AbgE0Srg (ORCPT
+        with ESMTP id S1726459AbgE0Srg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 May 2020 14:47:36 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36CDC008635;
-        Wed, 27 May 2020 11:41:12 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id r2so16902995ioo.4;
-        Wed, 27 May 2020 11:41:12 -0700 (PDT)
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372D7C008638
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 11:41:37 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id m18so30182510ljo.5
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 11:41:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anholt-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=80e9RnD9Ss8eOafGm0SPCkZYoQv72dsa4vHL2CNUsTI=;
+        b=QN1siCcUywmiFL5b2l7OO2oJrFZjy0oVoG39jF8U3zH1k9rEEmuBmleEe7rSCXVq9b
+         QDK/ZQZSsIFtjtyqvUKUGZpDAKKGE4YXN8HrzpU0lJnDxfXUnAFWPaerCMwA/UkQaGq6
+         NV6pwJVvRp8hgN5+JK1UdeoLeCp6e0a+/V5iE7yug/9UO4hqzlfLKMTtQBJjCHMPkpgM
+         gSOMNRg8jwdPUo7jOdYjVE95+JviMtUNl2EJK784jiP4U2WAA6mUOgpjejHB3we1xTko
+         lpHOf2J4ipaoutCd2b80OURfvWweVQlY47Ga3y1MboXT4o7ZqhvVwpWG0R0EOVn86EpA
+         5Adw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SZIP9gMLgQ3EMwU5hsVyfxacis5ozsWVrpZIFpNFZGc=;
-        b=G+4gJintsKdfnw7fRfaD8JBiK50z0248dtdyAiUCtgFne2vvp2IawDUNvMBn3A9gvs
-         mzywz4NvWqJDFSJ3+CHTEO5Al5lzUJf1cbR/czx2LwMpjGCTPeMKryhIqHI3mxE5i+uJ
-         Sjs0+Jnap5wVAZ+SXCyQ4ucCJdHQu0dSAWpRBXpjYbWamZ4oMKHGY1m6VKF0RM7rqyH9
-         YTCLP4GK3iyaRZm+KDUAkxI4kwaoZkbpKzgEqp7mtjn3t8NJTz2VG7QivKdnyO/i2msJ
-         c77ee5aWqlLxSQaoO2iZOL6ItyLLNhZNrpLtFlR1DNKgDUQkxRXGELllQ4cArbmdA5jc
-         g+rA==
-X-Gm-Message-State: AOAM533obs/Ln8JBjkH09fwceSH2cfUR4o9pXlmJVvzwFQwNFvJ85HD5
-        zaA6FsZof5iU6oTW7622YQ==
-X-Google-Smtp-Source: ABdhPJy9b/AK7GxNKc/ofJ9HvLdVBBl8IZ9/rlzqGnAPgtRfy+4FSAq2XENSvm4Jrr7coT1f/mQx8w==
-X-Received: by 2002:a02:90cd:: with SMTP id c13mr6859068jag.83.1590604872125;
-        Wed, 27 May 2020 11:41:12 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id g19sm1552123iom.21.2020.05.27.11.41.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2020 11:41:11 -0700 (PDT)
-Received: (nullmailer pid 2530396 invoked by uid 1000);
-        Wed, 27 May 2020 18:41:10 -0000
-Date:   Wed, 27 May 2020 12:41:10 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Qi Zheng <arch0.zheng@gmail.com>
-Cc:     devicetree@vger.kernel.org, frowand.list@gmail.com,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt/platform: Fix comment in of_dev_lookup()
-Message-ID: <20200527184110.GA2530290@bogus>
-References: <20200524152614.69393-1-arch0.zheng@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=80e9RnD9Ss8eOafGm0SPCkZYoQv72dsa4vHL2CNUsTI=;
+        b=ns/m4BkiKYrnzGTrKtqnMUvDWQF/VYfyi47tMQLBWR+KPhw1skNaDrDKkjr3GRCZGJ
+         o8IYTRDDo2EZVzihyx3U+yahpmTypgydVecUmiNSpfbBPtjs6PqPcq1sXVwX2ns7KSml
+         nDsKBLHlvEW9sTO1cjOKarJV6FCRliMRhgw0eR3iYcWZR0Uy1VxVGep2JLvor0YXfAQF
+         07oGbVMCVfHgHlNOudkw0vQX/GN1xIW2khUemgVk0DXypsllk2ewfNCfPYM4qwtV38yj
+         8G8M8wjd4eGdSuwqpHaugMLlTM59CzNuA7XKsI7PSyhTir+vgUo3sWSEGnrQBPPFPvSC
+         5PoQ==
+X-Gm-Message-State: AOAM533TDJ66uzNySvH11JOQTImwvWc4oe6EaKVQIf02b7sQlCzA3f/o
+        /2eyxbskulZoCnC+S94eMbF74M9aD5KFJO4yQTpGlQ==
+X-Google-Smtp-Source: ABdhPJzW+yK0neVV5ZLXfHZuKdL2m3iIwiXaA8c97nSmT8Xer0u16SBA/+K8iU8H0iefWgDrIbwvO/Ns2eUMghYcqCI=
+X-Received: by 2002:a2e:8186:: with SMTP id e6mr3868617ljg.252.1590604895724;
+ Wed, 27 May 2020 11:41:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200524152614.69393-1-arch0.zheng@gmail.com>
+References: <cover.aaf2100bd7da4609f8bcb8216247d4b4e4379639.1590594512.git-series.maxime@cerno.tech>
+ <020de18840a1075b2671736c6cc2e451030fad74.1590594512.git-series.maxime@cerno.tech>
+In-Reply-To: <020de18840a1075b2671736c6cc2e451030fad74.1590594512.git-series.maxime@cerno.tech>
+From:   Eric Anholt <eric@anholt.net>
+Date:   Wed, 27 May 2020 11:41:24 -0700
+Message-ID: <CADaigPXJ0BnMUp=XN6G92Tx=H9j55pmsBAujO2mcpiiTs-RHnQ@mail.gmail.com>
+Subject: Re: [PATCH v3 070/105] drm/vc4: hdmi: rework connectors and encoders
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 24 May 2020 23:26:14 +0800, Qi Zheng wrote:
-> The code is using of_dev_lookup() rather than of_devname_lookup().
-> 
-> Signed-off-by: Qi Zheng <arch0.zheng@gmail.com>
-> ---
->  drivers/of/platform.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+On Wed, May 27, 2020 at 8:51 AM Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> the vc4_hdmi driver has some custom structures to hold the data it needs to
+> associate with the drm_encoder and drm_connector structures.
+>
+> However, it allocates them separately from the vc4_hdmi structure which
+> makes it more complicated than it needs to be.
+>
+> Move those structures to be contained by vc4_hdmi and update the code
+> accordingly.
 
-Applied, thanks!
+
+> @@ -1220,7 +1219,7 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
+>         struct drm_device *drm = dev_get_drvdata(master);
+>         struct vc4_dev *vc4 = drm->dev_private;
+>         struct vc4_hdmi *hdmi;
+> -       struct vc4_hdmi_encoder *vc4_hdmi_encoder;
+> +       struct drm_encoder *encoder;
+>         struct device_node *ddc_node;
+>         u32 value;
+>         int ret;
+> @@ -1229,14 +1228,10 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
+>         if (!hdmi)
+>                 return -ENOMEM;
+>
+> -       vc4_hdmi_encoder = devm_kzalloc(dev, sizeof(*vc4_hdmi_encoder),
+> -                                       GFP_KERNEL);
+> -       if (!vc4_hdmi_encoder)
+> -               return -ENOMEM;
+> -       vc4_hdmi_encoder->base.type = VC4_ENCODER_TYPE_HDMI0;
+> -       hdmi->encoder = &vc4_hdmi_encoder->base.base;
+> -
+>         hdmi->pdev = pdev;
+> +       encoder = &hdmi->encoder.base.base;
+> +       encoder->base.type = VC4_ENCODER_TYPE_HDMI0;
+
+Wait, does this patch build?  setting struct drm_encoder->base.type =
+VC4_* seems very wrong, when previously we were setting struct
+vc4_hdmi_encoder->base.type (struct vc4_encoder->type).
+
+Other than this, patch 68-78 r-b.
