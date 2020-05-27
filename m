@@ -2,93 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1A41E3AE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 09:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D201E3AF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 09:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387636AbgE0Hsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 03:48:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51986 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387423AbgE0Hs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 03:48:29 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 23590207CB;
-        Wed, 27 May 2020 07:48:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590565709;
-        bh=o2RNuuLOPzIUQugqXI2pXs40dw3MxypX2JaA7iDkwY8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pni6+ov8tRzZ5DYViPK8gJK1/JIpPkaSWj18F4PfL9wWknwOagXXMykJH5HcwlvDQ
-         x3IiBKDcFTUwwSCMybSkdY/4dptm9ehSXmDPIAHI+/XDgYY1Knn4OLNEjNFyJBSJnJ
-         20ZlhzylGziKft32Jn5ApIezyaR0yfrkfHQwD5Sw=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jdqnb-00FdJT-Gw; Wed, 27 May 2020 08:48:27 +0100
+        id S2387654AbgE0HvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 03:51:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729052AbgE0HvH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 03:51:07 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B04C061A0F;
+        Wed, 27 May 2020 00:51:07 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id q24so1164448pjd.1;
+        Wed, 27 May 2020 00:51:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lVQfYsDAh0Z24p4AneVfNcvrH/seQIrLDjjV5CDfqUA=;
+        b=XmeGLa0EtTmu/2gSfi5c1sXBVVRgeLyoAEq8SYefdqXVvWWvvDqkvjb5c0GRxLaam0
+         IPOGn+/AI9uCkUQDuodifGbYvT0nB21tjPxt7rcb/xMOfxvUihM8QPdZrzScsq9HUbyD
+         uYE5zrQD99iTXQno+528dOCLB4oaD48/TmPeoARY9h2KDXV5UnvV/7YIY/OUzYaGca+7
+         WbgZM9dKTugi95NNUuo4ZADrHP49F29Fe+38KuUHP1SggGJwZkQQNsK22HhOXeIN0EJQ
+         ASm1MvGxC8/PqQ2LR24mKtVNw+708lyqi9770tCxMGKWUIjbPLDaJyeIPmplQQHpDEOs
+         ntyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lVQfYsDAh0Z24p4AneVfNcvrH/seQIrLDjjV5CDfqUA=;
+        b=EjgvLoqGijmR7OxIZYJfbvaLwq9i45K6XuMKB9HHvBm++D+wV4RlRYWusEP/doVkOs
+         XSloW+ZESO6IBYBUHLBr8bd1rDTCsxJ98JLC2oyCGODYUgfdTLl4mTuJx0RZOIExFMK8
+         3AgCuJQVbnl1nYvYJzjnoQ623xNz5zDpr9p0Px0H/Nvvzf4B+IbKAA2TPzNDQZb7bbfK
+         e5Oo/o+o0a4Ma0xnWTabNhDTsIPU+B0Oi0vnR+Yk7SLxiSqIfc0LWE94kwP3qYL2PIU4
+         RHmSyf9ZjLt2O7owxXWNGJD7oPdtIU2lJDqrQI6byK3Ok5uUDlMsMlLsDS5fDpV3rtXU
+         M1yQ==
+X-Gm-Message-State: AOAM533+2EW9ahqD1MuHxw8B5tufOcLLgv5RD34sWlPKpDdEiaGPH31/
+        PmU2JDFRvhFV+nHXn7QOnt0=
+X-Google-Smtp-Source: ABdhPJxr8ZxmDGZ+hM3kVqELCR7QP1gaFkHTm7tIQeOayjhIS9dRSFDLUX0jX/fgqWbW+MmD4eDv0g==
+X-Received: by 2002:a17:90a:2586:: with SMTP id k6mr3595800pje.121.1590565866882;
+        Wed, 27 May 2020 00:51:06 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:4111:8b00::1])
+        by smtp.gmail.com with ESMTPSA id 206sm1341234pfy.97.2020.05.27.00.51.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 00:51:06 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] net/mlx5e: Don't use err uninitialized in mlx5e_attach_decap
+Date:   Wed, 27 May 2020 00:50:22 -0700
+Message-Id: <20200527075021.3457912-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.27.0.rc0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 27 May 2020 08:48:27 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, will@kernel.org, catalin.marinas@arm.com,
-        james.morse@arm.com, suzuki.poulose@arm.com, drjones@redhat.com,
-        eric.auger@redhat.com, aarcange@redhat.com, shan.gavin@gmail.com
-Subject: Re: [PATCH RFCv2 0/9] kvm/arm64: Support Async Page Fault
-In-Reply-To: <987785b2-2533-c3d8-8f6a-4193aa82d502@redhat.com>
-References: <20200508032919.52147-1-gshan@redhat.com>
- <20200526130927.GH1363@C02TD0UTHF1T.local>
- <987785b2-2533-c3d8-8f6a-4193aa82d502@redhat.com>
-User-Agent: Roundcube Webmail/1.4.4
-Message-ID: <ae0f32fa338969d25dc3da56292e35ed@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: gshan@redhat.com, mark.rutland@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, pbonzini@redhat.com, will@kernel.org, catalin.marinas@arm.com, james.morse@arm.com, suzuki.poulose@arm.com, drjones@redhat.com, eric.auger@redhat.com, aarcange@redhat.com, shan.gavin@gmail.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-27 03:39, Gavin Shan wrote:
-> Hi Mark,
+Clang warns:
 
-[...]
+drivers/net/ethernet/mellanox/mlx5/core/en_tc.c:3712:6: warning:
+variable 'err' is used uninitialized whenever 'if' condition is false
+[-Wsometimes-uninitialized]
+        if (IS_ERR(d->pkt_reformat)) {
+            ^~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/mellanox/mlx5/core/en_tc.c:3718:6: note:
+uninitialized use occurs here
+        if (err)
+            ^~~
+drivers/net/ethernet/mellanox/mlx5/core/en_tc.c:3712:2: note: remove the
+'if' if its condition is always true
+        if (IS_ERR(d->pkt_reformat)) {
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/mellanox/mlx5/core/en_tc.c:3670:9: note: initialize
+the variable 'err' to silence this warning
+        int err;
+               ^
+                = 0
+1 warning generated.
 
->> Can you run tests with a real workload? For example, a kernel build
->> inside the VM?
->> 
-> 
-> Yeah, I agree it's far from a realistic workload. However, it's the 
-> test case
-> which was suggested when async page fault was proposed from day one, 
-> according
-> to the following document. On the page#34, you can see the benchmark, 
-> which is
-> similar to what we're doing.
-> 
-> https://www.linux-kvm.org/images/a/ac/2010-forum-Async-page-faults.pdf
+It is not wrong, err is only ever initialized in if statements but this
+one is not in one. Initialize err to 0 to fix this.
 
-My own question is whether this even makes any sense 10 years later.
+Fixes: 14e6b038afa0 ("net/mlx5e: Add support for hw decapsulation of MPLS over UDP")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1037
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The HW has massively changed, and this adds a whole lot of complexity
-to both the hypervisor and the guest. It also plays very ugly games
-with the exception model, which doesn't give me the warm fuzzy feeling
-that it's going to be great.
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+index fdb7d2686c35..6d0d4896fe0c 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+@@ -3667,7 +3667,7 @@ static int mlx5e_attach_decap(struct mlx5e_priv *priv,
+ 	struct mlx5e_decap_entry *d;
+ 	struct mlx5e_decap_key key;
+ 	uintptr_t hash_key;
+-	int err;
++	int err = 0;
+ 
+ 	parse_attr = attr->parse_attr;
+ 	if (sizeof(parse_attr->eth) > MLX5_CAP_ESW(priv->mdev, max_encap_header_size)) {
 
-> Ok. I will test with the workload to build kernel or another better one 
-> to
-> represent the case.
-
-Thanks,
-
-         M.
+base-commit: d3d9065ad99d0d8d732c950cc0a37a7883cd0c60
 -- 
-Jazz is not dead. It just smells funny...
+2.27.0.rc0
+
