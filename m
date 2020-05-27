@@ -2,246 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2886E1E4757
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 403661E4768
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389495AbgE0PaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 11:30:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729416AbgE0PaL (ORCPT
+        id S2389725AbgE0PbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 11:31:01 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:36642 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388145AbgE0Paz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 11:30:11 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0968AC05BD1E;
-        Wed, 27 May 2020 08:30:11 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id h9so9256963qtj.7;
-        Wed, 27 May 2020 08:30:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zkunrZ0oeTCMztxG/OegBl2pml7XGAS8duP4C52EX6I=;
-        b=Oap9h53IlxWOHi0RDCE66AdYN29wfAsbfyk1QJ8LaluzX9rvKMepwlSxjc73mIDafz
-         70p2spgj38vRS+A7COVFSdEnfquX4eT2K1O+d9J5DHQsDd42rCDKqkvBpPZJoPL0oM+8
-         eFsL1Kuklf2RdebuF6n8QOK76x6Rx5oQn7ITcZdgt7v7vLgXQIJalvgup7hOwdVPebRK
-         jWpSbb7AFjdj5pA9koQuF6Umyp3MisLlDy4qw5QuUd4AcckwSIGvuy6ssY/Rf4R/zg1L
-         SGO4P/6OFpvNxXznbm4ydRYLwBTlnzyO4qmfpQNj5y8gUsXVOP02M7EzPkZweaDWwjb/
-         Cz3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zkunrZ0oeTCMztxG/OegBl2pml7XGAS8duP4C52EX6I=;
-        b=qszY34hWm1gjn1UrBD5YFVOkqDj+V0DG1zT64cXbREbKsoILhdiQ1EchoyYi4T88Ao
-         zAuZ5egL9Q1xrvlU6mLtp3PUbD6AVjy55S9JUUz5OLe+cnMHXmCYscXLSPAbSBVvXOyv
-         3D064SUZ46cSRy95fI558GEh/FZwPAEOaMxl1tMBzrZos3TzOARn1Sn2ITh8K50mAwSt
-         O6Sl8xXjjrv/S9vwEAok/YJ2L9yUoxBZRL/I3CHGF7ku1YA5eJAsgKbDTuxK0LiEy+go
-         GT456IPNFzxb6gQ+3shU/emu2asHxNaT9CB5lK1WnngHmsHAEdG0SzPXrMC6RQI6lLdu
-         JTvw==
-X-Gm-Message-State: AOAM532A0jhEat4upnDmOLJsNcCB/p+PTsO8Y6KrMGWqjMyKyBsxync8
-        Kc9wUxcF+pIxmasuf43tpFg=
-X-Google-Smtp-Source: ABdhPJy7Aid9jgwaunjEzd/i0WniQ3PXIiToFKc9WwZdimCPt06wxXiwafiDs+QXwN+BKXf7pwycGA==
-X-Received: by 2002:ac8:710f:: with SMTP id z15mr4782320qto.71.1590593409980;
-        Wed, 27 May 2020 08:30:09 -0700 (PDT)
-Received: from ict14-OptiPlex-980 ([178.23.248.46])
-        by smtp.gmail.com with ESMTPSA id c186sm1744441qkd.102.2020.05.27.08.30.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 27 May 2020 08:30:09 -0700 (PDT)
-Date:   Wed, 27 May 2020 17:29:58 +0200
-From:   Jonathan Albrieux <jonathan.albrieux@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
+        Wed, 27 May 2020 11:30:55 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 5A5368030835;
+        Wed, 27 May 2020 15:30:49 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 1jIxSbMp979g; Wed, 27 May 2020 18:30:48 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Wolfram Sang <wsa@the-dreams.de>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
+        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
+        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Hartmut Knaack <knaack.h@gmx.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH v6 2/5] dt-bindings: iio: magnetometer: ak8975: convert
- format to yaml, add maintainer
-Message-ID: <20200527152958.GA21548@ict14-OptiPlex-980>
-References: <20200525151117.32540-1-jonathan.albrieux@gmail.com>
- <20200525151117.32540-3-jonathan.albrieux@gmail.com>
- <20200526222847.GA492828@bogus>
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v5 00/11] i2c: designeware: Add Baikal-T1 System I2C support
+Date:   Wed, 27 May 2020 18:30:35 +0300
+Message-ID: <20200527153046.6172-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200526222847.GA492828@bogus>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 04:28:47PM -0600, Rob Herring wrote:
-> On Mon, May 25, 2020 at 05:10:36PM +0200, Jonathan Albrieux wrote:
-> > Converts documentation from txt format to yaml.
-> 
-> I would have converted to yaml and do any re-formatting/wording, then 
-> added 'interrupts', but this is fine.
->
+Jarkko, Wolfram, the merge window is upon us, please review/merge in/whatever
+the patchset.
 
-Thank you, I'll keep that in mind for future works like this one
- 
-> 
-> > Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
-> > ---
-> >  .../bindings/iio/magnetometer/ak8975.txt      | 37 ---------
-> >  .../iio/magnetometer/asahi-kasei,ak8975.yaml  | 78 +++++++++++++++++++
-> >  2 files changed, 78 insertions(+), 37 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/iio/magnetometer/ak8975.txt
-> >  create mode 100644 Documentation/devicetree/bindings/iio/magnetometer/asahi-kasei,ak8975.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/iio/magnetometer/ak8975.txt b/Documentation/devicetree/bindings/iio/magnetometer/ak8975.txt
-> > deleted file mode 100644
-> > index 0576b9df0bf2..000000000000
-> > --- a/Documentation/devicetree/bindings/iio/magnetometer/ak8975.txt
-> > +++ /dev/null
-> > @@ -1,37 +0,0 @@
-> > -* AsahiKASEI AK8975 magnetometer sensor
-> > -
-> > -Required properties:
-> > -
-> > -  - compatible : should be "asahi-kasei,ak8975".
-> > -  - reg : the I2C address of the magnetometer.
-> > -
-> > -Optional properties:
-> > -
-> > -  - gpios : AK8975 has a "Data ready" pin (DRDY) which informs that data
-> > -      is ready to be read and is possible to listen on it. If used,
-> > -      this should be active high. Prefer interrupt over this.
-> > -
-> > -  - interrupts : interrupt for DRDY pin. Triggered on rising edge.
-> > -
-> > -  - vdd-supply: an optional regulator that needs to be on to provide VDD.
-> > -
-> > -  - mount-matrix: an optional 3x3 mounting rotation matrix.
-> > -
-> > -Example:
-> > -
-> > -ak8975@c {
-> > -        compatible = "asahi-kasei,ak8975";
-> > -        reg = <0x0c>;
-> > -        interrupt-parent = <&gpio6>;
-> > -        interrupts = <15 IRQ_TYPE_EDGE_RISING>;
-> > -        vdd-supply = <&ldo_3v3_gnss>;
-> > -        mount-matrix = "-0.984807753012208",  /* x0 */
-> > -                       "0",                   /* y0 */
-> > -                       "-0.173648177666930",  /* z0 */
-> > -                       "0",                   /* x1 */
-> > -                       "-1",                  /* y1 */
-> > -                       "0",                   /* z1 */
-> > -                       "-0.173648177666930",  /* x2 */
-> > -                       "0",                   /* y2 */
-> > -                       "0.984807753012208";   /* z2 */
-> > -};
-> > diff --git a/Documentation/devicetree/bindings/iio/magnetometer/asahi-kasei,ak8975.yaml b/Documentation/devicetree/bindings/iio/magnetometer/asahi-kasei,ak8975.yaml
-> > new file mode 100644
-> > index 000000000000..a603659d5fa5
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/iio/magnetometer/asahi-kasei,ak8975.yaml
-> > @@ -0,0 +1,78 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/iio/magnetometer/asahi-kasei,ak8975.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: AsahiKASEI AK8975 magnetometer sensor
-> > +
-> > +maintainers:
-> > +  - Jonathan Albrieux <jonathan.albrieux@gmail.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    oneOf:
-> > +      - const: asahi-kasei,ak8975
-> > +      - const: asahi-kasei,ak8963
-> > +      - const: asahi-kasei,ak09911
-> > +      - const: asahi-kasei,ak09912
-> 
-> These 4 can be an enum.
-> 
-> > +      - const: ak8975
-> > +        deprecated: true
-> > +      - const: ak8963
-> > +        deprecated: true
-> > +      - const: ak09911
-> > +        deprecated: true
-> > +      - const: ak09912
-> > +        deprecated: true
-> 
-> And these 4 can be an enum+deprecated.
-> 
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +    description: the I2C address of the magnetometer.
-> 
-> Don't need a description.
-> 
-> > +
-> > +  gpios:
-> > +    description: |
-> > +      AK8975 has a "Data ready" pin (DRDY) which informs that data
-> > +      is ready to be read and is possible to listen on it. If used,
-> > +      this should be active high. Prefer interrupt over this.
-> 
-> Need to define how many GPIOs (maxItems: 1).
-> 
+Initially this has been a small patchset which embedded the Baikal-T1
+System I2C support into the DW APB I2C driver as is by using a simplest
+way. After a short discussion with Andy we decided to implement what he
+suggested (introduce regmap-based accessors and create a glue driver) and
+even more than that to provide some cleanups of the code. So here is what
+this patchset consists of.
 
-Ok, I'll edit those fields as soon as possible, thank you,
+First of all we've found out that current implementation of scripts/dtc
+didn't support i2c dt nodes with 10bit and slave flags set in the
+reg property. You'll see an error if you try to dt_binding_check it.
+So the very first patch fixes the problem by adding these flags support
+into the check_i2c_bus_reg() method.
 
-Best regards,
-Jonathan Albrieux
+Traditionally we converted the plain text-based DT binding to the DT schema
+and added Baikal-T1 System I2C device support there. This required to mark
+the reg property redundant for Baikal-T1 I2C since its reg-space is
+indirectly accessed by means of the System Controller cmd/read/write
+registers.
 
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +    description: interrupt for DRDY pin. Triggered on rising edge.
-> > +
-> > +  vdd-supply:
-> > +    maxItems: 1
-> > +    description: |
-> > +      an optional regulator that needs to be on to provide VDD power to
-> > +      the sensor.
-> > +
-> > +  mount-matrix:
-> > +    description: an optional 3x3 mounting rotation matrix.
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/interrupt-controller/irq.h>
-> > +    i2c {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        magnetometer@c {
-> > +            compatible = "asahi-kasei,ak8975";
-> > +            reg = <0x0c>;
-> > +            interrupt-parent = <&gpio6>;
-> > +            interrupts = <15 IRQ_TYPE_EDGE_RISING>;
-> > +            vdd-supply = <&ldo_3v3_gnss>;
-> > +            mount-matrix = "-0.984807753012208",  /* x0 */
-> > +                           "0",                   /* y0 */
-> > +                           "-0.173648177666930",  /* z0 */
-> > +                           "0",                   /* x1 */
-> > +                           "-1",                  /* y1 */
-> > +                           "0",                   /* z1 */
-> > +                           "-0.173648177666930",  /* x2 */
-> > +                           "0",                   /* y2 */
-> > +                           "0.984807753012208";   /* z2 */
-> > +        };
-> > +    };
-> > -- 
-> > 2.17.1
-> > 
+Then as Andy suggested we replaced the Synopsys DW APB I2C common driver
+registers IO accessors into the regmap API methods. This doesn't change
+the code logic much, though in two places we managed to replace some bulky
+peaces of code with a ready-to-use regmap methods.
+
+Additionally before adding the glue layer API we initiated a set of cleanups:
+- Define components of the multi-object drivers (like i2c-designware-core.o
+  and i2c-designware-paltform.o) with using `-y` suffixed makefile
+  variables instead of `-objs` suffixed one. This is encouraged by
+  Documentation/kbuild/makefiles.rst text since `-objs` is supposed to be used
+  to build host programs.
+- Make DW I2C slave driver depended on the DW I2C core code instead of the
+  platform one, which it really is.
+- Move Intel Baytrail semaphore feature to the platform if-clause of the
+  kernel config.
+
+After this we finally can introduce the glue layer API for the DW APB I2C
+platform driver. So there are three methods exported from the driver:
+i2c_dw_plat_setup(), i2c_dw_plat_clear(), &i2c_dw_plat_dev_pm_ops to
+setup, cleanup and add PM operations to the glue driven I2C device. Before
+setting the platform DW I2C device up the glue probe code is supposed to
+create an instance of DW I2C device generic object and pre-initialize
+its `struct device` pointer together with optional platform-specific
+flags. In addition to that we converted the MSCC Ocelot SoC I2C specific
+code into the glue layer seeing it's really too specific and, which is more
+important, isn't that complicated so we could unpin it without much of
+worrying to break something.
+
+Meanwhile we discovered that MODEL_CHERRYTRAIL and MODEL_MASK actually
+were no longer used in the code. MODEL_MSCC flag has been discarded since
+the MSCC Ocelot I2C code conversion to the glue driver. So now we can get
+rid of all the MODEL-specific flags.
+
+Finally we introduced a glue driver with Baikal-T1 System I2C device
+support. The driver probe tries to find a syscon regmap, creates the DW
+APB I2C regmap based on it and passes it further to the DW I2C device
+descriptor. Then it does normal DW APB I2C platform setup by calling a
+generic setup method. Cleanup is straightforward. It's just calling a
+generic DW APB I2C clean method.
+
+This patchset is rebased and tested on the i2c/for-next (5.7-rc7):
+base-commit: 228f95c14949 ("Merge remote-tracking branch 'spi/for-5.8' into spi-next")
+
+Note new vendor prefix for Baikal-T1 System I2C device is added in the
+framework of the next patchset:
+https://lkml.org/lkml/2020/5/6/1047
+
+Changelog v2:
+- Fix the SoB tags.
+- Use a shorter summary describing the bindings convertion patch.
+- Patch "i2c: designware: Detect the FIFO size in the common code" has
+  been acked by Jarkko and applied by Wolfram to for-next so drop it from
+  the set.
+- Patch "i2c: designware: Discard i2c_dw_read_comp_param() function" has
+  been acked by Jarkko and applied by Wolfram to for-next so drop it from
+  the set.
+- Make sure that "mscc,ocelot-i2c" compatible node may have up to two
+  registers space defined in the DT node, while normal DW I2C controller
+  will have only one registers space.
+- Add "mscc,ocelot-i2c" DT schema example to test the previous fix.
+- Declare "unevaluatedProperties" property instead of
+  "additionalProperties" one in the DT schema.
+- Due to the previous fix we can now discard the dummy boolean properties
+  declaration, since the proper type evaluation will be performed by the
+  generic i2c-controller.yaml schema.
+- Refactor the DW I2C APB driver related series to address the Andies
+  notes.
+- Convert DW APB I2C driver to using regmap instead of handwritten
+  accessors.
+- Use `-y` to build multi-object DW APB drivers.
+- Fix DW APB I2C slave code dependency. It should depend on
+  I2C_DESIGNWARE_CORE instead I2C_DESIGNWARE_PLATFORM.
+- Move Baytrail semaphore config to the platform if-clause.
+- Introduce a glue-layer platform driver API.
+- Unpin Microsemi Ocelot I2C code into a glue driver.
+- Remove MODEL_CHERRYTRAIL and MODEL_MASK as no longer needed.
+- Add support for custom regmap passed from glue driver.
+- Add Baikal-T1 System I2C support in a dedicated glue layer driver.
+
+Link: https://lore.kernel.org/linux-i2c/20200510095019.20981-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v3:
+- Move fixes and less invasive patches to the head of the series.
+- Add patch "dt-bindings: i2c: Discard i2c-slave flag from the DW I2C
+  example" since Rob says the flag can be discarded until dtc is fixed.
+- Add patch "i2c: designware: Retrieve quirk flags as early as possible"
+  as a first preparation before adding Baikal-T1 System I2C support.
+- Add patch "i2c: designware: Move reg-space remapping into a dedicated
+  function" as a second preparation before adding Baikal-T1 System I2C
+  support.
+- Add patch "i2c: designware: Add Baikal-T1 System I2C support", which
+  integrates the Baikal-T1 I2C support into the DW I2C platform driver.
+- Get back the reg property being mandatory even if it's Baikal-T1 System
+  I2C DT node. Rob says it has to be in the DT node if there is a
+  dedicated registers range in the System Controller registers space.
+- Replace if-endif clause around the I2C_DESIGNWARE_BAYTRAIL config
+  with "depends on" operator.
+
+Link: https://lore.kernel.org/linux-i2c/20200526215528.16417-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v4:
+- Rebase on top of the i2c/for-next branch.
+- Use PTR_ERR_OR_ZERO() helper in the bt1_i2c_request_regs() and
+  in the dw_i2c_plat_request_regs() methods.
+- Discard devm_platform_get_and_ioremap_resource() utilization.
+- Discard patch "scripts/dtc: check: Add 10bit/slave i2c reg flags
+  support" since it must be merged in to the dtc upstream repository.
+
+Link: https://lore.kernel.org/linux-i2c/20200527120111.5781-1-Sergey.Semin@baikalelectronics.ru
+Changelog v5:
+- Replace or-assignment with just assignment operator when getting
+  the quirk flags.
+- Keep alphabetical order of the include statements.
+- Discard explicit u16-type cast in the dw_reg_write_word() method.
+
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+Cc: Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>
+Cc: Vadim Vlasov <V.Vlasov@baikalelectronics.ru>
+Cc: Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-i2c@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (11):
+  dt-bindings: i2c: Convert DW I2C binding to DT schema
+  dt-bindings: i2c: Discard i2c-slave flag from the DW I2C example
+  dt-bindings: i2c: dw: Add Baikal-T1 SoC I2C controller
+  i2c: designware: Use `-y` to build multi-object modules
+  i2c: designware: slave: Set DW I2C core module dependency
+  i2c: designware: Add Baytrail sem config DW I2C platform dependency
+  i2c: designware: Discard Cherry Trail model flag
+  i2c: designware: Convert driver to using regmap API
+  i2c: designware: Retrieve quirk flags as early as possible
+  i2c: designware: Move reg-space remapping into a dedicated function
+  i2c: designware: Add Baikal-T1 System I2C support
+
+ .../bindings/i2c/i2c-designware.txt           |  73 -------
+ .../bindings/i2c/snps,designware-i2c.yaml     | 156 +++++++++++++++
+ drivers/i2c/busses/Kconfig                    |  28 +--
+ drivers/i2c/busses/Makefile                   |  18 +-
+ drivers/i2c/busses/i2c-designware-common.c    | 178 +++++++++++++-----
+ drivers/i2c/busses/i2c-designware-core.h      |  28 +--
+ drivers/i2c/busses/i2c-designware-master.c    | 125 ++++++------
+ drivers/i2c/busses/i2c-designware-pcidrv.c    |   1 -
+ drivers/i2c/busses/i2c-designware-platdrv.c   |  96 +++++++++-
+ drivers/i2c/busses/i2c-designware-slave.c     |  77 ++++----
+ 10 files changed, 520 insertions(+), 260 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-designware.txt
+ create mode 100644 Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml
+
+-- 
+2.26.2
+
