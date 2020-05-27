@@ -2,132 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B18A1E3E2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 11:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59AD21E3E3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 12:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729642AbgE0J45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 05:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726086AbgE0J44 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 05:56:56 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C75EC061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 02:56:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qTmhp/04YIC3xuKgZgkBx4pbXjQ8GoI+myn03qcU1oI=; b=LoYridEsQCDHmseS8e5ZUg6QCW
-        OycaYhfR1jCNlrMcS0FIyRCUn5IxwQrVCmb0+UAO3I5Pw/FGTupATLAmWwVXtXQbye6VyIZhwbudh
-        Iipd5BqLHWbhyya+kBmzvPuo4keETHxmsWRlFWGpdZwkXnbwrKGo5nbrBvCBG3igdADeeCTHaQdDf
-        whm4NjKu/5xpuxrGU0eTt3iwD09QFE7adycCul4SJF/D8HCOshW1YCTw0jMuF7Pi2HgIyUzo3ms91
-        jI3Q4xzucKhR6xmUxsK7bfve69hvI54ffcnz3McYsBRYXu7enYZMHJkpGy5KV6bh2qGphRMiLPDRL
-        ThPI2OCg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jdsnp-0002cm-AS; Wed, 27 May 2020 09:56:49 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AF8BD3012C3;
-        Wed, 27 May 2020 11:56:45 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A027720FF792B; Wed, 27 May 2020 11:56:45 +0200 (CEST)
-Date:   Wed, 27 May 2020 11:56:45 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     tglx@linutronix.de, frederic@kernel.org
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, cai@lca.pw,
-        mgorman@techsingularity.net, paulmck@kernel.org
-Subject: Re: [RFC][PATCH 4/7] smp: Optimize send_call_function_single_ipi()
-Message-ID: <20200527095645.GH325280@hirez.programming.kicks-ass.net>
-References: <20200526161057.531933155@infradead.org>
- <20200526161907.953304789@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200526161907.953304789@infradead.org>
+        id S2387481AbgE0KAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 06:00:20 -0400
+Received: from foss.arm.com ([217.140.110.172]:34918 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729660AbgE0KAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 06:00:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 17F5E55D;
+        Wed, 27 May 2020 03:00:16 -0700 (PDT)
+Received: from e123648.arm.com (unknown [10.37.12.61])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B0B5C3F6C4;
+        Wed, 27 May 2020 03:00:05 -0700 (PDT)
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-omap@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-imx@nxp.com
+Cc:     Dietmar.Eggemann@arm.com, cw00.choi@samsung.com,
+        b.zolnierkie@samsung.com, rjw@rjwysocki.net, sudeep.holla@arm.com,
+        viresh.kumar@linaro.org, nm@ti.com, sboyd@kernel.org,
+        rui.zhang@intel.com, amit.kucheria@verdurent.com,
+        daniel.lezcano@linaro.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        rostedt@goodmis.org, qperret@google.com, bsegall@google.com,
+        mgorman@suse.de, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com, kernel@pengutronix.de, khilman@kernel.org,
+        agross@kernel.org, bjorn.andersson@linaro.org, robh@kernel.org,
+        matthias.bgg@gmail.com, steven.price@arm.com,
+        tomeu.vizoso@collabora.com, alyssa.rosenzweig@collabora.com,
+        airlied@linux.ie, daniel@ffwll.ch, liviu.dudau@arm.com,
+        lorenzo.pieralisi@arm.com, lukasz.luba@arm.com,
+        patrick.bellasi@matbug.net, orjan.eide@arm.com,
+        rdunlap@infradead.org, mka@chromium.org
+Subject: [PATCH v8 0/8] Add support for devices in the Energy Model
+Date:   Wed, 27 May 2020 10:58:46 +0100
+Message-Id: <20200527095854.21714-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 06:11:01PM +0200, Peter Zijlstra wrote:
-> Just like the ttwu_queue_remote() IPI, make use of _TIF_POLLING_NRFLAG
-> to avoid sending IPIs to idle CPUs.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  kernel/sched/core.c  |   10 ++++++++++
->  kernel/sched/idle.c  |    1 +
->  kernel/sched/sched.h |    2 ++
->  kernel/smp.c         |   16 +++++++++++++++-
->  4 files changed, 28 insertions(+), 1 deletion(-)
-> 
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -2296,6 +2296,16 @@ static void wake_csd_func(void *info)
->  	sched_ttwu_pending();
->  }
->  
-> +void send_call_function_single_ipi(int cpu)
-> +{
-> +	struct rq *rq = cpu_rq(cpu);
-> +
-> +	if (!set_nr_if_polling(rq->idle))
-> +		arch_send_call_function_single_ipi(cpu);
-> +	else
-> +		trace_sched_wake_idle_without_ipi(cpu);
-> +}
-> +
->  /*
->   * Queue a task on the target CPUs wake_list and wake the CPU via IPI if
->   * necessary. The wakee CPU on receipt of the IPI will queue the task
-> --- a/kernel/sched/idle.c
-> +++ b/kernel/sched/idle.c
-> @@ -289,6 +289,7 @@ static void do_idle(void)
->  	 */
->  	smp_mb__after_atomic();
->  
-> +	flush_smp_call_function_from_idle();
->  	sched_ttwu_pending();
->  	schedule_idle();
->  
+Hi all,
 
-Paul; the above patch basically allows smp_call_function_single() to run
-from the idle context (with IRQs disabled, obviously) instead of from an
-actual IRQ context.
+Background of this version:
+This is the v8 of the patch set and is has smaller scope. I had to split
+the series into two: EM changes and thermal changes due to devfreq
+dependencies. The patches from v7 9-14 which change devfreq cooling are
+going to be sent in separate patch series, just after this set get merged
+into mainline. These patches related to EM got acks and hopefully can go
+through linux-pm tree. The later thermal patches will go through thermal
+tree.
 
-This makes RCU unhappy (as reported by mingo):
+The idea and purpose of the Energy Model framework changes:
+This patch set introduces support for devices in the Energy Model (EM)
+framework. It will unify the power model for thermal subsystem. It will
+make simpler to add support for new devices willing to use more
+advanced features (like Intelligent Power Allocation). Now it should
+require less knowledge and effort for driver developer to add e.g.
+GPU driver with simple energy model. A more sophisticated energy model
+in the thermal framework is also possible, driver needs to provide
+a dedicated callback function. More information can be found in the
+updated documentation file.
 
- [ ] ------------[ cut here ]------------
- [ ] Not in hardirq as expected
- [ ] WARNING: CPU: 4 PID: 0 at kernel/rcu/tree.c:430 rcu_is_cpu_rrupt_from_idle+0xed/0x110
- [ ] Modules linked in:
- [ ] CPU: 4 PID: 0 Comm: swapper/4 Not tainted 5.7.0-rc7-00840-ga61d572-dirty #1
- [ ] Hardware name: Supermicro H8DG6/H8DGi/H8DG6/H8DGi, BIOS 2.0b       03/01/2012
- [ ] RIP: 0010:rcu_is_cpu_rrupt_from_idle+0xed/0x110
- [ ] Call Trace:
- [ ]  rcu_exp_handler+0x38/0x90
- [ ]  flush_smp_call_function_queue+0xce/0x230
- [ ]  flush_smp_call_function_from_idle+0x2f/0x60
- [ ]  do_idle+0x163/0x260
- [ ]  cpu_startup_entry+0x19/0x20
- [ ]  start_secondary+0x14f/0x1a0
- [ ] irq event stamp: 189300
- [ ] hardirqs last  enabled at (189299): [<ffffffff811d3e25>] tick_nohz_idle_exit+0x55/0xb0
- [ ] hardirqs last disabled at (189300): [<ffffffff811da5f5>] flush_smp_call_function_from_idle+0x25/0x60
- [ ] softirqs last  enabled at (189284): [<ffffffff811280a0>] irq_enter_rcu+0x70/0x80
- [ ] softirqs last disabled at (189283): [<ffffffff81128085>] irq_enter_rcu+0x55/0x80
+First 7 patches are refactoring Energy Model framework to add support
+of other devices that CPUs. They change:
+- naming convention from 'capacity' to 'performance' state,
+- API arguments adding device pointer and not rely only on cpumask,
+- change naming when 'cpu' was used, now it's a 'device'
+- internal structure to maintain registered devices
+- update users to the new API
+Patch 8 updates OPP framework helper function to be more generic, not
+CPU specific.
 
-This is rcu_is_cpu_rrupt_from_idle()'s lockdep_assert_in_irq() tripping
-up (it's comment is obviously a bit antiquated).
+The patch set is based on linux-pm branch linux-next 813946019dfd.
 
-Now, if I read that code correctly, it actually relies on
-rcu_irq_enter() and thus really wants to be in an interrupt. Is there
-any way this code can be made to work from the new context too?
+Changes:
+v8:
+- split the patch set in two: EM changes and thermal changes
+- re-based on top of linux-pm branch linux-next (asked by Daniel)
+- EM: changed comments content pointed out by Quentin
+- added Acked-by from Quentin to almost all EM patches
+v7 [7]:
+- EM: added em_perf_domain structure into struct device in order to simplify
+  code (suggested by Daniel)
+- EM: removed kref, em_pd, debug_dir from em_device (suggested by Daniel)
+- EM: refactored code and removed unsed functions
+- EM: refactored checking if EM exists for a CPU and deleted em_cpus_pd_exist()
+- EM: simplified em_pd_get() and em_cpu_get()
+- EM: removed em_debug_type_show()
+- EM: removed a few unused debug prints
+- EM: changed debug dir name in order to remove em_debug_type_show() and
+  em_debug_dev_show() functions
+- EM: removed em_dev_list and em_device since it is now possible to use
+  struct device
+- thermal: split patch 9/10 from v6 as requested by Daniel and created 5 new:
+-- patch v7 9/15 with only tracing change - exactly the same code so I keep
+   'Reviewed-by # for tracing code' from Steven Rostedt
+-- patch 10/15 and 11/14 takes more consistent state of devfreq device
+-- patch 12/15 which adds Energy Model register/unregister functions
+-- patch 13/15 adjust headers license into ne SPDX
+v6 [6]:
+- split patch 1/5 from v5 into smaller patches as requested by Daniel
+  and dropped ACK from Quentin which was in the old there
+- added function em_dev_register_perf_domain as suggested by Daniel, which
+  would help transition into the new API
+- changed 'cs' (capacity state) in different places into 'ps' (performance state),
+  since now there are many smaller patches (previously skipped because
+  of too big size of the patch with main features and left to do later)
+- changed cpumask_equal() to cpumask_intersects() when checking if 'cpus' coming
+  as an argument to registration function might overlap with already known;
+  this shouldn't be an issue when cpufreq policy is OK, but a check doesn't harm
+- added Reviewed-by from Alyssa into Panfrost related patch
+- dropped Matthias patch with PM QoS from the series since it's in the next now
+v5 [5]:
+- devfreq cooling: rebased on top of pending patch introducing PM QoS limits
+- devfreq cooling: added Matthias's patch to make this series build check pass
+- devfreq cooling: removed OPP disable code and switched to PM QoS
+- devfreq cooling: since thermal code always used a pointer to devfreq_dev_status,
+  switched to work on a local copy and avoid potential race when either busy_time or
+  total_time could change in the background
+- devfreq cooling: added _normalize_load() and handle all scenarios when
+  busy_time and total_time could have odd values (even raw counters)
+- Energy Model patch 2/4: removed prints from cpufreq drivers and added print inside
+  dev_pm_opp_of_register_em()
+- update patch 2/4 description to better reflect upcoming changes
+- collected ACK from Quentin for patch 1/4 and Reviewed-by from Steven for 4/4
+v4 [4]:
+- devfreq cooling: added two new registration functions, which will take care
+  of registering EM for the device and simplify drivers code
+  (suggested by Robin and Rob)
+- Energy Model: changed unregistering code, added kref to track usage, added
+  code freeing tables, added helper function
+- added return value to function dev_pm_opp_of_register_em() and updated
+  CPUFreq drivers code, added debug prints in case of failure
+- updated comments in devfreq cooling removing statement that only
+  simple_ondemand devfreq governor is supported to work with power extentions
+- fixed spelling in the documentation (reported by Randy)
+v3 [3]:
+- added back the cpumask 'cpus' in the em_perf_domain due potential cache misses
+- removed _is_cpu_em() since there is no need for it
+- changed function name from em_pd_energy() to em_cpu_energy(), which is
+  optimized for usage from the scheduler making some assumptions and not
+  validating arguments to speed-up, there is a comment stressing that it should
+  be used only for CPUs em_perf_domain
+- changed em_get_pd() to em_pd_get() which is now aligned with em_cpu_get()
+  naming
+- Energy Model: add code which checks if the EM is already registered for the
+  devfreq device
+- extended comment in em_cpu_get() describing the need for this function
+- fixed build warning reported on x86 by kbuild test robot in devfreq_cooling.c
+- updated documentation in the energy-model.rst
+- changed print messages from 'energy_model' to 'EM'
+- changed dev_warn to dev_dbg, should calm down test scripts in case the
+  platform has OPPs less efficient in the OPP table (some of them are there for
+  cooling reasons, we shouldn't warn in this case, debug info is enough)
+v2 [2]:
+- changed EM API em_register_perf_domain() adding cpumask_t pointer
+  as last argument (which was discussed with Dietmar and Quentin)
+- removed dependency on PM_OPP, thanks to the cpumask_t argument
+- removed enum em_type and em->type dependent code
+- em_get_pd() can handle CPU device as well as devfreq device
+- updated EM documentation
+- in devfreq cooling added code which prevents from race condition with
+  devfreq governors which are trying to use OPPs while thermal is in the middle
+  of disabling them.
+- in devfreq cooling added code which updates state of the devfreq device to
+  avoid working on stale data when governor has not updated it for a long time
+- in devfreq cooling added backward compatibility frequency table for drivers
+  which did not provide EM
+- added Steven's Reviewed-by to trace code in thermal
+- added another CPUFreq driver which needs to be updated to the new API
+The v1 can be found here [1].
 
-After all, all that really is different is not having gone throught he
-bother of setting up the IRQ context, nothing else changed -- it just so
-happens you actually relied on that ;/
+Regards,
+Lukasz Luba
+
+[1] https://lkml.org/lkml/2020/1/16/619
+[2] https://lkml.org/lkml/2020/2/6/377
+[3] https://lkml.org/lkml/2020/2/21/1910
+[4] https://lkml.org/lkml/2020/3/9/471
+[5] https://lkml.org/lkml/2020/3/18/351
+[6] https://lkml.org/lkml/2020/4/10/108
+[7] https://lkml.org/lkml/2020/5/11/326
+
+
+Lukasz Luba (8):
+  PM / EM: change naming convention from 'capacity' to 'performance'
+  PM / EM: introduce em_dev_register_perf_domain function
+  PM / EM: update callback structure and add device pointer
+  PM / EM: add support for other devices than CPUs in Energy Model
+  PM / EM: remove em_register_perf_domain
+  PM / EM: change name of em_pd_energy to em_cpu_energy
+  Documentation: power: update Energy Model description
+  OPP: refactor dev_pm_opp_of_register_em() and update related drivers
+
+ Documentation/power/energy-model.rst   | 135 ++++++------
+ drivers/cpufreq/cpufreq-dt.c           |   2 +-
+ drivers/cpufreq/imx6q-cpufreq.c        |   2 +-
+ drivers/cpufreq/mediatek-cpufreq.c     |   2 +-
+ drivers/cpufreq/omap-cpufreq.c         |   2 +-
+ drivers/cpufreq/qcom-cpufreq-hw.c      |   2 +-
+ drivers/cpufreq/scmi-cpufreq.c         |  11 +-
+ drivers/cpufreq/scpi-cpufreq.c         |   2 +-
+ drivers/cpufreq/vexpress-spc-cpufreq.c |   2 +-
+ drivers/opp/of.c                       |  76 ++++---
+ drivers/thermal/cpufreq_cooling.c      |  12 +-
+ include/linux/device.h                 |   5 +
+ include/linux/energy_model.h           | 149 +++++++------
+ include/linux/pm_opp.h                 |  15 +-
+ kernel/power/energy_model.c            | 285 ++++++++++++++++---------
+ kernel/sched/fair.c                    |   2 +-
+ kernel/sched/topology.c                |  20 +-
+ 17 files changed, 441 insertions(+), 283 deletions(-)
+
+-- 
+2.17.1
+
