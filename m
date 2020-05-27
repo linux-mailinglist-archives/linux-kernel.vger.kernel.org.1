@@ -2,114 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00831E3BE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB561E3BF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729515AbgE0I1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 04:27:41 -0400
-Received: from out28-220.mail.aliyun.com ([115.124.28.220]:50240 "EHLO
-        out28-220.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729349AbgE0I1k (ORCPT
+        id S1729553AbgE0I26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 04:28:58 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:46872 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729349AbgE0I25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 04:27:40 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08245211|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0548406-0.00016241-0.944997;FP=0|0|0|0|0|-1|-1|-1;HT=e01a16368;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.HeHIDqW_1590568053;
-Received: from 192.168.10.205(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.HeHIDqW_1590568053)
-          by smtp.aliyun-inc.com(10.147.44.145);
-          Wed, 27 May 2020 16:27:34 +0800
-Subject: Re: [PATCH v10 3/6] dt-bindings: clock: Add X1830 bindings.
-To:     Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        mturquette@baylibre.com, robh+dt@kernel.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com, paul@crapouillou.net
-References: <20200526144044.71413-1-zhouyanjie@wanyeetech.com>
- <20200526144044.71413-5-zhouyanjie@wanyeetech.com>
- <159056716225.88029.7227987261941853085@swboyd.mtv.corp.google.com>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <19e7793b-c7d1-e91f-c1d9-f3e7f6112360@wanyeetech.com>
-Date:   Wed, 27 May 2020 16:27:33 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.3.0
+        Wed, 27 May 2020 04:28:57 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04R8LbhT023059;
+        Wed, 27 May 2020 03:27:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=/Z2IFpwXCCw7IjOefH/qQAgu0CPZL8WWzPI10NwmY4A=;
+ b=a5dyhoCv/6DPxj5fo2SGX0JkkdUBxS0rsnSqVsPOHKh1aHARRnvT+DpKJCmJ6/6XpyVx
+ GS7ZuShlhnWa6uMoFpaMXrU/RldJW6s9TxMsjvfbGkUETNghYW2vbD1Awt+FHBr4jm9T
+ ZQ07zadzs8G7aiWtd09mKFQpEOAEgyKNlLeh8uiNUPuCvssZ7DnY1TLypo539Hn6rOZk
+ MJgxCqGIzqArZZ89fhXZPUsem929Y/argHYnC+J3MaNWADXDdu8AsYVbhYHv57q4iym4
+ xo5RvXmLoETvL2ImxMXN5866J3xCEOY8wv5vaiB6GLTRZDTGayTj+XW7rdlkRSPW7eTL UQ== 
+Authentication-Results: ppops.net;
+        spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 31708pw10m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 27 May 2020 03:27:56 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 27 May
+ 2020 09:27:55 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Wed, 27 May 2020 09:27:55 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2005D2AB;
+        Wed, 27 May 2020 08:27:55 +0000 (UTC)
+Date:   Wed, 27 May 2020 08:27:55 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+CC:     <kjlu@umn.edu>, Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Enrico Weigelt <info@metux.net>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ASoC: wm8962: Fix runtime PM imbalance on error
+Message-ID: <20200527082755.GI71940@ediswmail.ad.cirrus.com>
+References: <20200527024625.9937-1-dinghao.liu@zju.edu.cn>
 MIME-Version: 1.0
-In-Reply-To: <159056716225.88029.7227987261941853085@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200527024625.9937-1-dinghao.liu@zju.edu.cn>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-SPF-Result: fail
+X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com include:spf.protection.outlook.com
+ ip4:5.172.152.52 -all
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=18 phishscore=0
+ adultscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1011
+ mlxscore=0 spamscore=0 mlxlogscore=945 cotscore=-2147483648
+ priorityscore=1501 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005270063
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+On Wed, May 27, 2020 at 10:46:22AM +0800, Dinghao Liu wrote:
+> pm_runtime_get_sync() increments the runtime PM usage counter even
+> the call returns an error code. Thus a pairing decrement is needed
+> on the error handling path to keep the counter balanced.
+> 
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
 
-在 2020/5/27 下午4:12, Stephen Boyd 写道:
-> Quoting 周琰杰 (Zhou Yanjie) (2020-05-26 07:40:41)
->> Add the clock bindings for the X1830 Soc from Ingenic.
->>
->> Signed-off-by: \u5468\u7430\u6770 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->> Reviewed-by: Rob Herring <robh@kernel.org>
->> ---
->>
->> Notes:
->>      v2->v3:
->>      Adjust order from [3/5] in v2 to [4/5] in v3.
->>      
->>      v3->v4:
->>      Adjust order from [4/5] in v3 to [3/4] in v4.
->>      
->>      v4->v5:
->>      Rebase on top of kernel 5.6-rc1.
->>      
->>      v5->v6:
->>      Add missing part of X1830's CGU.
->>      
->>      v6->v7:
->>      No change.
->>      
->>      v7->v8:
->>      Rebase on top of linux-next.
->>      
->>      v8->v9:
->>      No change.
->>      
->>      v9->v10:
->>      Add missing "X1830_CLK_TCU".
->>
->>   .../devicetree/bindings/clock/ingenic,cgu.yaml     |  2 +
->>   include/dt-bindings/clock/x1830-cgu.h              | 55 ++++++++++++++++++++++
->>   2 files changed, 57 insertions(+)
->>   create mode 100644 include/dt-bindings/clock/x1830-cgu.h
->>
->> diff --git a/Documentation/devicetree/bindings/clock/ingenic,cgu.yaml b/Documentation/devicetree/bindings/clock/ingenic,cgu.yaml
-> This file is in Rob's DT tree staged for the next release, not in the
-> clk tree. Can you split this patch into two, one for the compatible
-> update and another for the header file update and send again? Then Rob
-> can pick up the yaml file change and I can pick up the header file
-> change.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-
-OK, I will do it right away.
-
-
-Thansk and best regards!
-
-
->> index 0281cd1d7e1b..a952d5811823 100644
->> --- a/Documentation/devicetree/bindings/clock/ingenic,cgu.yaml
->> +++ b/Documentation/devicetree/bindings/clock/ingenic,cgu.yaml
->> @@ -25,6 +25,7 @@ select:
->>             - ingenic,jz4770-cgu
->>             - ingenic,jz4780-cgu
->>             - ingenic,x1000-cgu
->> +          - ingenic,x1830-cgu
->>     required:
->>       - compatible
->>   
->> @@ -51,6 +52,7 @@ properties:
->>           - ingenic,jz4770-cgu
->>           - ingenic,jz4780-cgu
->>           - ingenic,x1000-cgu
->> +        - ingenic,x1830-cgu
->>         - const: simple-mfd
->>       minItems: 1
->>
+Thanks,
+Charles
