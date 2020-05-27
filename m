@@ -2,93 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160C41E43CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB2541E43D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388340AbgE0NeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:34:10 -0400
-Received: from elvis.franken.de ([193.175.24.41]:41218 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387901AbgE0NeK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:34:10 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jdwC8-0001yv-00; Wed, 27 May 2020 15:34:08 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 88D52C059B; Wed, 27 May 2020 15:33:56 +0200 (CEST)
-Date:   Wed, 27 May 2020 15:33:56 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Borislav Petkov <bp@suse.de>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Fangrui Song <maskray@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] MIPS: Move kernel head into a standalone section
-Message-ID: <20200527133356.GA16622@alpha.franken.de>
-References: <20200527063438.391949-1-jiaxun.yang@flygoat.com>
- <20200527063438.391949-3-jiaxun.yang@flygoat.com>
- <20200527115354.GC13965@alpha.franken.de>
- <20200527200522.23c4e86f@halation.net.flygoat.com>
+        id S2388383AbgE0Nfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:35:38 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:35437 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387664AbgE0Nfh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 09:35:37 -0400
+Received: from localhost.localdomain ([149.172.98.151]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MUD7D-1jUlQi0JwB-00RKHc; Wed, 27 May 2020 15:35:19 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Felix Fietkau <nbd@openwrt.org>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [net-next] mtk-star-emac: mark PM functions as __maybe_unused
+Date:   Wed, 27 May 2020 15:34:45 +0200
+Message-Id: <20200527133513.579367-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200527200522.23c4e86f@halation.net.flygoat.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:cjj7qKhbYdAc+XoRu26dmgr99+0Mva2jDkFaa+78wl0aZCmV0UC
+ ncWKQldljAs9dUqWY0pwFACTSCYn+/UUUoGqoBekQdJxfEOmZ8sl1HSxzBgSyVaAO/n82XN
+ AkaShtBDsW9lZ8jpzC0+KlPr+2Y837pRS9hMODZSl5LC0r0sD1Ic6quun77ngs6pdMvub+y
+ RyKC7kjWmzV29q58j/l4Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oj+4JOX6juU=:0m8IpO+rj+vvHLiYhZyv58
+ D4pCaNsPZ1/q70Tk2+JpIvmlDIZoPGimTin1lF+Sc16SU5olSM75WbhAaB7DcPnDWoTSgDxpT
+ Rs1v3nRGTX5OU7FHDg7T0TwbHPu8hz5P0lA7uSExtaCZ9MdwFbiBA4V5Uifyi7+mFGBB3Ku05
+ 1p2K/sQLMSkLJ7R5YWl9J1xgm9Q13Dpx9yCdIhSHCNIfbGhxl2xhR1kr/IAB6H+7X+b5MfncL
+ hilM5lyLg367eb/mY5vEOmG/BFU7qUYxOx51fTaKMD5piYkjGhe+VbbXk7wXmb8XFrunvAoaO
+ stSL9IuHMslwPrE8R9t0OuJyoyD4p9ORgUJAt/aNnOzVWToYoM2Bz2ptG+brORPXNpQleY0vU
+ ytUjSljBF9rh/7KWROwvrrIYKSfIksSCrriVubLuVKuTGEg4tF9VM0ENRChN6mstZXasxBdKb
+ 3kRtme4WFswSSMmttxf00aRO1IxGerzYscCJCqnR5KElnjHh9lUfU1rwx+E00RMappZji8y9N
+ wc7oMm2EMBKGmQRYKrNdCboJP3EUNkmaqMf8PmI8lbEUmT6We8ZYT4uqyejwDtqRDlgL+yCsf
+ oNg9rZBeBQB9urX3AOO68xlnOj4kSTQGcTYzdp1093vZpJINl9lErqkTeKoKWgRqeU0dZB9dI
+ 908SW4x0C349asxQQdKek789w1MRNkNgHYeeXo8yhlORH7/8e6gYpWQB6RjTBMZBs/Js+k4aP
+ UPfmHIS6Tj4wmqsdhSBh5MmevMDEqNlXA2lfa12XRaqCtpj8w97k/qOMQG5W9LGa5paADueGt
+ OMrDQ5hTnr6zTtfaIXcL+PRkXXI6gsp4NOpc4g/BJwgRSgpXJ0=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 08:05:22PM +0800, Jiaxun Yang wrote:
-> On Wed, 27 May 2020 13:53:54 +0200
-> Thomas Bogendoerfer <tsbogend@alpha.franken.de> wrote:
-> 
-> > On Wed, May 27, 2020 at 02:34:33PM +0800, Jiaxun Yang wrote:
-> > > That's what already done by Arm64 and other architectures.
-> > > That would allow us put more things like PE headers safely into
-> > > the header.
-> > > 
-> > > Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> > > ---
-> > >  arch/mips/kernel/head.S        | 4 ++--
-> > >  arch/mips/kernel/vmlinux.lds.S | 8 ++++++--
-> > >  2 files changed, 8 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/arch/mips/kernel/head.S b/arch/mips/kernel/head.S
-> > > index c7c2795837e7..8081a905a71c 100644
-> > > --- a/arch/mips/kernel/head.S
-> > > +++ b/arch/mips/kernel/head.S
-> > > @@ -59,6 +59,8 @@
-> > >  #endif
-> > >  	.endm
-> > >  
-> > > +	__HEAD
-> > > +_head:
-> > >  #ifndef CONFIG_NO_EXCEPT_FILL
-> > >  	/*
-> > >  	 * Reserved space for exception handlers.  
-> > 
-> > I'm adding the missing piece, why this change ist broken:
-> > 
-> >          * Necessary for machines which link their kernels at KSEG0.
-> > 
-> > by putting something in front of that will probably break platforms
-> > making use of "feature". If we can make sure, we don't need it
-> > anymore, we should first remove this and then add __HEAD part.
-> 
-> __HEAD is just marking the section of code.
-> It will not add anything to the binary.
+Without CONFIG_PM, the compiler warns about two unused functions:
 
-oops, should have looked it up first. You mentioned PE headers and
-I thought it will be added this way.
+drivers/net/ethernet/mediatek/mtk_star_emac.c:1472:12: error: unused function 'mtk_star_suspend' [-Werror,-Wunused-function]
+drivers/net/ethernet/mediatek/mtk_star_emac.c:1488:12: error: unused function 'mtk_star_resume' [-Werror,-Wunused-function]
 
-> Btw: I just noticed this patch may break relocatable kernel. I'll delay
-> it for next merge window.
+Mark these as __maybe_unused.
 
-ok.
+Fixes: 8c7bd5a454ff ("net: ethernet: mtk-star-emac: new driver")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/ethernet/mediatek/mtk_star_emac.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thomas.
-
+diff --git a/drivers/net/ethernet/mediatek/mtk_star_emac.c b/drivers/net/ethernet/mediatek/mtk_star_emac.c
+index b18ce47c4f2e..3223567fe1cb 100644
+--- a/drivers/net/ethernet/mediatek/mtk_star_emac.c
++++ b/drivers/net/ethernet/mediatek/mtk_star_emac.c
+@@ -1469,7 +1469,7 @@ static int mtk_star_mdio_init(struct net_device *ndev)
+ 	return ret;
+ }
+ 
+-static int mtk_star_suspend(struct device *dev)
++static __maybe_unused int mtk_star_suspend(struct device *dev)
+ {
+ 	struct mtk_star_priv *priv;
+ 	struct net_device *ndev;
+@@ -1485,7 +1485,7 @@ static int mtk_star_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int mtk_star_resume(struct device *dev)
++static __maybe_unused int mtk_star_resume(struct device *dev)
+ {
+ 	struct mtk_star_priv *priv;
+ 	struct net_device *ndev;
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.26.2
+
