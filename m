@@ -2,107 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1B71E4D5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C12B71E4D4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728075AbgE0Ssv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 14:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56620 "EHLO
+        id S1727028AbgE0Srw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 14:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726467AbgE0Srg (ORCPT
+        with ESMTP id S1726718AbgE0Srg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 May 2020 14:47:36 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF79C08C5C3;
-        Wed, 27 May 2020 11:29:13 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id h10so27159609iob.10;
-        Wed, 27 May 2020 11:29:13 -0700 (PDT)
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6FCC08C5C5
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 11:29:26 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id s135so20218097pfs.11
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 11:29:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FW8Q9Rorz9pPYc/xr3AkQmCBY01IskGBSmgwhtvJ9ZU=;
-        b=sZtyFQORrPLQ4OmmN95ukhbr9eaO4A0bRAoSlF5lwld76UrlDxnqypcamYyZpQ0AKV
-         zLq/+vZ7EKnSzTICk4F5MqdhPiIliA6GZHvGRUyHrAdiE4Y9Bl1oMG6fzDbyDcjb+2Ng
-         TPq4XyNGzDlZV03yi9zrIlFCURC3zvRe0M36EhkoPKGiMxmfrWuYVz9zCniCv/epCuLw
-         3WMd2NUY/g7cAvZtI+Kkuu5LLfQ5GLAcw9keDaFUOGQlgbYRgEp5woAZvDmgna+TyQHX
-         sEmUL/oBKUXwoxEBd0udHuvYcwFHsiDwJ85qcIqhsXrUap6I7Jhi+/kOV6fcFRHvrylS
-         iz5A==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=umlZmjF/xRJ/ByIszoMII6nD5KbkyV6mpjK0jZ/NaXE=;
+        b=TNW0I7VXkAn0j2BLWEim22wstMZleW6Z39EFJ2CSnOOxlUqvHExjE3VD6l2REop6DH
+         JNmHvRwF/gyW/TqMxOiIdiFim+3z2QSIRjoArucOgnQFFZsIhg01hmeTnBrS9n1mttvI
+         kTvEW1YOf7PvHic1t2ooTL6U9y2xWgoRlspZbgW/LwoZDgXWL6kY5ckbovNbIhx7oru2
+         VGwe9wM9i6MGKAO8kfngkzHfHuzihBhKjo9eenekHs2qSrFJ6J4R2i0WXkR8SI7Hmthb
+         z9zKpnmCB0G6B5XaB9rlX5KyP0+VF5pKd1G9JNmTkFa30dNY2goKO7NNMc6DRJMzx1co
+         F1+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FW8Q9Rorz9pPYc/xr3AkQmCBY01IskGBSmgwhtvJ9ZU=;
-        b=nQ5wCdAK6vlvjz9P0gHrFWqyYFAOsmz6oZDjU6Rv64iFAlMINxi2sFPQHBt92Dl1pa
-         4Kko3axL1GHpo7nkQb0j91D/5HbZP860xcR06ZbqYBeZIs9xKmqdiDMeufaJSRVhxKMi
-         NSvmmhogP6wnuptL/apuGfFSLEJvJX/PKEg1ZuhDy8CT+JHFGJ+6GPpfkTBdA+0cO/24
-         PhXNugVYhW0qCwNIO7GFAZub8ezWpbWs0L32GoV31hF2brfJJAQBdLIDM/daCPdISRx7
-         W4iPoYEV1cjKgx5rKe42e9uotmx6I/5SK3DnZQub0gPmZSb6BjLI7ZC304s/FgKbBID7
-         op2Q==
-X-Gm-Message-State: AOAM532Jb/Vnh/qzXOUqJNJlXtHZaKkXnjkSqH7J1O/V8NQuufSLs6Uz
-        8RvOhfQIPnV3AA6QpdP2TZkcEhBU8e+fw/7Idw==
-X-Google-Smtp-Source: ABdhPJwMhonBm2LfUtNamMbLFx30kjbOuifum2IycgYlpJGgwHftdyG08kcAUDL/v2FAUAHwx2hTCUduOaeaf68PHwY=
-X-Received: by 2002:a5d:9758:: with SMTP id c24mr21786555ioo.144.1590604152179;
- Wed, 27 May 2020 11:29:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200523120021.34996-1-ardb@kernel.org> <20200523120021.34996-3-ardb@kernel.org>
- <20200527143650.GA3103408@rani.riverdale.lan>
-In-Reply-To: <20200527143650.GA3103408@rani.riverdale.lan>
-From:   Brian Gerst <brgerst@gmail.com>
-Date:   Wed, 27 May 2020 14:29:01 -0400
-Message-ID: <CAMzpN2ikgiXdaJ8t2ivB90JhOQsa=ziV738wVsXo3JU4HjAbOw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] x86/boot/compressed: force hidden visibility for
- all symbol references
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=umlZmjF/xRJ/ByIszoMII6nD5KbkyV6mpjK0jZ/NaXE=;
+        b=r5btTuqyyfW2pumVYjjj3FvBDBxRBxcRbQ9bY8xwFGOzOSUsDxY9hm/ZTuDtqot8uY
+         xBKxstOMmEJkUinZi1nIYLM1XTjOZWUEHFASEHbcOCbLLDybleknqkVLU/fjfD6KOhi4
+         Q2Y3gGg01V+fa/hB/Ja3XdOUaGMWqMVBX8jw9dKv3E/5NK3jfUP0xgapPlZk/ICurvSS
+         GFePSlvIzz9QwQN52bSaTyGJLuphmpduEHBCzdcbpbR6rqr4NsZFFxL1D0Yu6t1dqovY
+         tBiKUTwoem2AhDeJLjZ74TYNxnh91+p9ai68/B9ydi6RdWICsT4ckVQeuZshp2MY6rks
+         rEYA==
+X-Gm-Message-State: AOAM531NuiQ+ZCERMK/qQ5S8qJ4l/tCVlgpI7YbXinvNO2dibvir+8j1
+        0HhI0egBL3Q26fklKkoe0rm59MdyfMOi9Q==
+X-Google-Smtp-Source: ABdhPJyN2FB/FWPyNcSELEB3nINQwo30vwWeEX0qSwroQp8Ua126Oy6z2xHpvU8JohPT3Gk/+oheDuMcri5w/A==
+X-Received: by 2002:a63:f305:: with SMTP id l5mr2461116pgh.387.1590604166120;
+ Wed, 27 May 2020 11:29:26 -0700 (PDT)
+Date:   Wed, 27 May 2020 11:29:14 -0700
+Message-Id: <20200527182916.249910-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.rc0.183.gde8f92d652-goog
+Subject: [PATCH resend 1/3] mm: swap: fix vmstats for huge pages
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Mel Gorman <mgorman@suse.de>, Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Rik van Riel <riel@surriel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 2:08 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
->
-> On Sat, May 23, 2020 at 02:00:20PM +0200, Ard Biesheuvel wrote:
-> > Eliminate all GOT entries in the decompressor binary, by forcing hidden
-> > visibility for all symbol references, which informs the compiler that
-> > such references will be resolved at link time without the need for
-> > allocating GOT entries.
-> >
-> > To ensure that no GOT entries will creep back in, add an assertion to
-> > the decompressor linker script that will fire if the .got section has
-> > a non-zero size.
-> >
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > ---
-> >  arch/x86/boot/compressed/Makefile      |  1 +
-> >  arch/x86/boot/compressed/hidden.h      | 19 +++++++++++++++++++
-> >  arch/x86/boot/compressed/vmlinux.lds.S |  1 +
-> >  3 files changed, 21 insertions(+)
-> >
-> > diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-> > index 5f7c262bcc99..aa9ed814e5fa 100644
-> > --- a/arch/x86/boot/compressed/Makefile
-> > +++ b/arch/x86/boot/compressed/Makefile
-> > @@ -40,6 +40,7 @@ KBUILD_CFLAGS += $(call cc-disable-warning, gnu)
-> >  KBUILD_CFLAGS += -Wno-pointer-sign
-> >  KBUILD_CFLAGS += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
-> >  KBUILD_CFLAGS += -fno-asynchronous-unwind-tables
-> > +KBUILD_CFLAGS += -include hidden.h
-> >
->
-> Ard, from the other thread [1] in case you missed it -- the plain
-> hidden.h fails to build in-tree. We need something like
->         KBUILD_CFLAGS += -include $(srctree)/$(src)/hidden.h
-> instead.
->
-> [1] https://lore.kernel.org/lkml/20200526153104.GC2190602@rani.riverdale.lan/
+Many of the callbacks called by pagevec_lru_move_fn() does not correctly
+update the vmstats for huge pages. Fix that. Also __pagevec_lru_add_fn()
+use the irq-unsafe alternative to update the stat as the irqs are
+already disabled.
 
-How about using -fvisibility=hidden instead of including this header?
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/swap.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
---
-Brian Gerst
+diff --git a/mm/swap.c b/mm/swap.c
+index a37bd7b202ac..3dbef6517cac 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -225,7 +225,7 @@ static void pagevec_move_tail_fn(struct page *page, struct lruvec *lruvec,
+ 		del_page_from_lru_list(page, lruvec, page_lru(page));
+ 		ClearPageActive(page);
+ 		add_page_to_lru_list_tail(page, lruvec, page_lru(page));
+-		(*pgmoved)++;
++		(*pgmoved) += hpage_nr_pages(page);
+ 	}
+ }
+ 
+@@ -285,7 +285,7 @@ static void __activate_page(struct page *page, struct lruvec *lruvec,
+ 		add_page_to_lru_list(page, lruvec, lru);
+ 		trace_mm_lru_activate(page);
+ 
+-		__count_vm_event(PGACTIVATE);
++		__count_vm_events(PGACTIVATE, hpage_nr_pages(page));
+ 		update_page_reclaim_stat(lruvec, file, 1);
+ 	}
+ }
+@@ -503,6 +503,7 @@ static void lru_deactivate_file_fn(struct page *page, struct lruvec *lruvec,
+ {
+ 	int lru, file;
+ 	bool active;
++	int nr_pages = hpage_nr_pages(page);
+ 
+ 	if (!PageLRU(page))
+ 		return;
+@@ -536,11 +537,11 @@ static void lru_deactivate_file_fn(struct page *page, struct lruvec *lruvec,
+ 		 * We moves tha page into tail of inactive.
+ 		 */
+ 		add_page_to_lru_list_tail(page, lruvec, lru);
+-		__count_vm_event(PGROTATED);
++		__count_vm_events(PGROTATED, nr_pages);
+ 	}
+ 
+ 	if (active)
+-		__count_vm_event(PGDEACTIVATE);
++		__count_vm_events(PGDEACTIVATE, nr_pages);
+ 	update_page_reclaim_stat(lruvec, file, 0);
+ }
+ 
+@@ -929,6 +930,7 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec,
+ {
+ 	enum lru_list lru;
+ 	int was_unevictable = TestClearPageUnevictable(page);
++	int nr_pages = hpage_nr_pages(page);
+ 
+ 	VM_BUG_ON_PAGE(PageLRU(page), page);
+ 
+@@ -966,13 +968,13 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec,
+ 		update_page_reclaim_stat(lruvec, page_is_file_lru(page),
+ 					 PageActive(page));
+ 		if (was_unevictable)
+-			count_vm_event(UNEVICTABLE_PGRESCUED);
++			__count_vm_events(UNEVICTABLE_PGRESCUED, nr_pages);
+ 	} else {
+ 		lru = LRU_UNEVICTABLE;
+ 		ClearPageActive(page);
+ 		SetPageUnevictable(page);
+ 		if (!was_unevictable)
+-			count_vm_event(UNEVICTABLE_PGCULLED);
++			__count_vm_events(UNEVICTABLE_PGCULLED, nr_pages);
+ 	}
+ 
+ 	add_page_to_lru_list(page, lruvec, lru);
+-- 
+2.27.0.rc0.183.gde8f92d652-goog
+
