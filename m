@@ -2,120 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EE131E4D14
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9721E4D38
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391965AbgE0S00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 14:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389214AbgE0S0Z (ORCPT
+        id S1725883AbgE0Spi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 14:45:38 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:37986 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389214AbgE0S1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 14:26:25 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E41FC08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 11:26:25 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id z18so30121198lji.12
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 11:26:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anholt-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QB7YwKLcAEW/NVxETJ/RRwZrpqw1ubcJORL5utvFFXU=;
-        b=jVDU6dAIH5AMHvUenFCLEWc4e55tCqNJdfkNlGCKtdQ94FJ2ncc6VGQQ6rttsFcAyl
-         dqtMPPBIon1Ieua2HOivG/UGPk9Ax02cmVxtlqyXA4gNg4qCWoTPim7JDk6SxP0y+Snc
-         KqNNJXD4/Fwdr13n9LZMd/DSXHh7ebYllwc7RsOiaeEfmid5gUShCMZoJaA/zHhugQ+3
-         vXiq57zCHznETZPv6jo2AMUFiicPgZ5MgBnBGNQ2/aZdxQdxbjj4kALa2fBrOfUuIFU2
-         2SKqQuH6ewCZ4tiwHO47DhJaRPS5pt/diRpda0vF7ojfHnwoJpJnohxNt+gtNrB5K2Ax
-         G+Zw==
+        Wed, 27 May 2020 14:27:10 -0400
+Received: by mail-il1-f196.google.com with SMTP id q18so3953698ilm.5;
+        Wed, 27 May 2020 11:27:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QB7YwKLcAEW/NVxETJ/RRwZrpqw1ubcJORL5utvFFXU=;
-        b=Qqptq0+Rv9Nk4S9QGPJMprte4Qahxqc3SUrNAGYxGzkffr5i6L5+xMl/Ue6AVLqJtv
-         0nDgTfOll1xWGDZiyzUxcfc0DVb2QzJ8zHCs/4d/YzN68HuLTdg1ZAECqjzjRYbxZteV
-         ElV4bdlAdMIgdfOBi7v892JCfBhEWZsMekjaVjEJ+Gf1/XTZ2n/4hJTsidBxVmglK1x8
-         EGEnbvtYD7osr6b3tZjzsNeU85nGkNSQRv7aD15RXKqkCUvT8zOFuNN9An40+ZkAE6T7
-         BdUSNfXOCFZNU6URNrAEUaktI3wijuypanJuinAqj9uEeUWmK0jhEXRDlYhK59Qf2yG8
-         gfJw==
-X-Gm-Message-State: AOAM533PdQhgj3i4uXybZRVlNU/tk3yQ00S6cwqPD7cu7RmgPjjk99Rt
-        gaV6yJp2YIfvkPOE4Xi+35is4OQIjs7RZyHUPv/XwA==
-X-Google-Smtp-Source: ABdhPJxA8oAlyNouzKzEzxB2DjfrFnm6s4bMaRIjUr0L/MTi6rlsrHzCde2XffFmTHZekkBhimOM52uiHfe7MBRTvrc=
-X-Received: by 2002:a2e:8186:: with SMTP id e6mr3843593ljg.252.1590603983554;
- Wed, 27 May 2020 11:26:23 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZvQhsfkFlA/Oh3QWp+W6frDo076kraj8anhhLdL6bbk=;
+        b=aig2ieMIF9q03HwH3YnNpItHS0FHpU62g0NvauvGbTi3gtShUxZzdgyazL1aMw70JK
+         EFMpwx0JY3RgVAgQKTk0Fh8rWMufawlU+480rkZhi3FU+0+1ztu1RoPOb793svN/xw4x
+         dBnoD3N0a4rn84UtRPhGdK8jeQ1o6Z16SyU+hrObe/vE1+B2hSi4Ilh7bc5Bnn9xfeh9
+         bUspnyP4UVnZVnSIyfj/MnB1nW4t7eYlV9C0TjlM+BeHdww/c4fwTvG1UO96CyB5PijX
+         DGHT0n8pkzEkg8t+wi0K0hpDN34YbbvClXJwcXDfF72rAXiYDpNNAelFxg17x2S4M9IQ
+         ootw==
+X-Gm-Message-State: AOAM533+AoyD672spkrjwgM3EEkA4nYDicaTlkoV9B+hmd22fyYTdsbw
+        0ntWadSNy9NHfGmaGrle3g==
+X-Google-Smtp-Source: ABdhPJyZguAbhJfNPR/1LeofmJy5ESLApTtq2YSIYTTvCksLfyA5dAI/XIdpU5e6VyT3XlOgIEiElQ==
+X-Received: by 2002:a92:495d:: with SMTP id w90mr6846331ila.275.1590604029523;
+        Wed, 27 May 2020 11:27:09 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id b22sm2051080ill.6.2020.05.27.11.27.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 11:27:08 -0700 (PDT)
+Received: (nullmailer pid 2511916 invoked by uid 1000);
+        Wed, 27 May 2020 18:27:08 -0000
+Date:   Wed, 27 May 2020 12:27:08 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Qi Zheng <arch0.zheng@gmail.com>
+Cc:     frowand.list@gmail.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] of/fdt: Remove redundant kbasename function call
+Message-ID: <20200527182708.GA2458626@bogus>
+References: <20200512154909.279788-1-arch0.zheng@gmail.com>
 MIME-Version: 1.0
-References: <cover.aaf2100bd7da4609f8bcb8216247d4b4e4379639.1590594512.git-series.maxime@cerno.tech>
- <afcc607bdcaf9ad38480f49cc1fa186ebe6f2d5a.1590594512.git-series.maxime@cerno.tech>
-In-Reply-To: <afcc607bdcaf9ad38480f49cc1fa186ebe6f2d5a.1590594512.git-series.maxime@cerno.tech>
-From:   Eric Anholt <eric@anholt.net>
-Date:   Wed, 27 May 2020 11:26:12 -0700
-Message-ID: <CADaigPUFP5QXCbE81kFnwJPGO1GjvmoaKK28BhbEUNnJ4Pc0jg@mail.gmail.com>
-Subject: Re: [PATCH v3 041/105] drm/vc4: crtc: Move HVS mode config to HVS file
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200512154909.279788-1-arch0.zheng@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 8:50 AM Maxime Ripard <maxime@cerno.tech> wrote:
->
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> ---
->  drivers/gpu/drm/vc4/vc4_crtc.c | 272 +-------------------------------
->  drivers/gpu/drm/vc4/vc4_drv.h  |   5 +-
->  drivers/gpu/drm/vc4/vc4_hvs.c  | 298 ++++++++++++++++++++++++++++++++++-
->  3 files changed, 309 insertions(+), 266 deletions(-)
+On Tue, May 12, 2020 at 11:49:09PM +0800, Qi Zheng wrote:
+> For version 1 to 3 of the device tree, this is the node full
+> path as a zero terminated string, starting with "/". The
+> following equation will not hold, since the node name has
+> been processed in the fdt_get_name().
+> 
+> 	*pathp == '/'
+> 
+> For version 16 and later, this is the node unit name only
+> (or an empty string for the root node). So the above
+> equation will still not hold.
+> 
+> So the kbasename() is redundant, just remove it.
 
+There's 2 occurrences of this. Can you remove the other one too.
 
->  static void vc4_crtc_mode_set_nofb(struct drm_crtc *crtc)
->  {
-> -       struct drm_device *dev = crtc->dev;
-> -       struct vc4_dev *vc4 = to_vc4_dev(dev);
->         struct vc4_crtc *vc4_crtc = to_vc4_crtc(crtc);
->         struct vc4_crtc_state *vc4_state = to_vc4_crtc_state(crtc->state);
-> -       struct drm_display_mode *mode = &crtc->state->adjusted_mode;
-> -       bool interlace = mode->flags & DRM_MODE_FLAG_INTERLACE;
->         bool debug_dump_regs = false;
->
->         if (debug_dump_regs) {
-> @@ -418,42 +372,10 @@ static void vc4_crtc_mode_set_nofb(struct drm_crtc *crtc)
->                 drm_print_regset32(&p, &vc4_crtc->regset);
->         }
->
-> -       if (vc4_crtc->data->hvs_output == 2) {
-> -               u32 dispctrl;
-> -               u32 dsp3_mux;
-> -
-> -               /*
-> -                * SCALER_DISPCTRL_DSP3 = X, where X < 2 means 'connect DSP3 to
-> -                * FIFO X'.
-> -                * SCALER_DISPCTRL_DSP3 = 3 means 'disable DSP 3'.
-> -                *
-> -                * DSP3 is connected to FIFO2 unless the transposer is
-> -                * enabled. In this case, FIFO 2 is directly accessed by the
-> -                * TXP IP, and we need to disable the FIFO2 -> pixelvalve1
-> -                * route.
-> -                */
-> -               if (vc4_state->feed_txp)
-> -                       dsp3_mux = VC4_SET_FIELD(3, SCALER_DISPCTRL_DSP3_MUX);
-> -               else
-> -                       dsp3_mux = VC4_SET_FIELD(2, SCALER_DISPCTRL_DSP3_MUX);
-> -
-> -               dispctrl = HVS_READ(SCALER_DISPCTRL) &
-> -                          ~SCALER_DISPCTRL_DSP3_MUX_MASK;
-> -               HVS_WRITE(SCALER_DISPCTRL, dispctrl | dsp3_mux);
-> -       }
-
-I just noticed, this block being moved looks like it should probably
-have been removed as part of patch #33.  Cleaning this up I think will
-impact the following patches.
+Rob
