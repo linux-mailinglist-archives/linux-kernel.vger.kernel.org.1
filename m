@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9DE1E3B7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1DA1E3B64
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387908AbgE0INY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 04:13:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42244 "EHLO
+        id S2387841AbgE0IM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 04:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729531AbgE0IMC (ORCPT
+        with ESMTP id S1729566AbgE0IMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 04:12:02 -0400
+        Wed, 27 May 2020 04:12:06 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC13DC03E97D;
-        Wed, 27 May 2020 01:12:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE16C061A0F;
+        Wed, 27 May 2020 01:12:06 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jdrAO-0002d5-B5; Wed, 27 May 2020 10:12:00 +0200
+        id 1jdrAS-0002cw-PD; Wed, 27 May 2020 10:12:04 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 4ED311C03A9;
-        Wed, 27 May 2020 10:11:57 +0200 (CEST)
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 992C51C04D5;
+        Wed, 27 May 2020 10:11:56 +0200 (CEST)
 Date:   Wed, 27 May 2020 08:11:56 -0000
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/entry/64: Move do_softirq_own_stack() to C
+Subject: [tip: x86/entry] x86/entry: Split out idtentry_exit_cond_resched()
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@kernel.org>,
         Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200521202117.870911120@linutronix.de>
-References: <20200521202117.870911120@linutronix.de>
+In-Reply-To: <20200521202117.962199649@linutronix.de>
+References: <20200521202117.962199649@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <159056711699.17951.2241474367551072856.tip-bot2@tip-bot2>
+Message-ID: <159056711648.17951.16924207554899786564.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -51,69 +51,74 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/entry branch of tip:
 
-Commit-ID:     4f41db23ef2593aec26e23e7f4bacc620e82f545
-Gitweb:        https://git.kernel.org/tip/4f41db23ef2593aec26e23e7f4bacc620e82f545
+Commit-ID:     08f086303b4eddc61da264c2e9a8a5ee7f260604
+Gitweb:        https://git.kernel.org/tip/08f086303b4eddc61da264c2e9a8a5ee7f260604
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 21 May 2020 22:05:24 +02:00
+AuthorDate:    Thu, 21 May 2020 22:05:25 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Tue, 26 May 2020 19:06:27 +02:00
 
-x86/entry/64: Move do_softirq_own_stack() to C
+x86/entry: Split out idtentry_exit_cond_resched()
 
-The first step to get rid of the ENTER/LEAVE_IRQ_STACK ASM macro maze.  Use
-the new C code helpers to move do_softirq_own_stack() out of ASM code.
+The XEN PV hypercall requires the ability of conditional rescheduling when
+preemption is disabled because some hypercalls take ages.
+
+Split out the rescheduling code from idtentry_exit_cond_rcu() so it can
+be reused for that.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Acked-by: Andy Lutomirski <luto@kernel.org>
-Link: https://lore.kernel.org/r/20200521202117.870911120@linutronix.de
+Link: https://lore.kernel.org/r/20200521202117.962199649@linutronix.de
 ---
- arch/x86/entry/entry_64.S | 13 -------------
- arch/x86/kernel/irq_64.c  |  6 ++++++
- 2 files changed, 6 insertions(+), 13 deletions(-)
+ arch/x86/entry/common.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 1597370..6b518be 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -1145,19 +1145,6 @@ SYM_FUNC_START(asm_call_on_stack)
- 	ret
- SYM_FUNC_END(asm_call_on_stack)
- 
--/* Call softirq on interrupt stack. Interrupts are off. */
--.pushsection .text, "ax"
--SYM_FUNC_START(do_softirq_own_stack)
--	pushq	%rbp
--	mov	%rsp, %rbp
--	ENTER_IRQ_STACK regs=0 old_rsp=%r11
--	call	__do_softirq
--	LEAVE_IRQ_STACK regs=0
--	leaveq
--	ret
--SYM_FUNC_END(do_softirq_own_stack)
--.popsection
--
- #ifdef CONFIG_XEN_PV
- /*
-  * A note on the "critical region" in our callback handler.
-diff --git a/arch/x86/kernel/irq_64.c b/arch/x86/kernel/irq_64.c
-index 12df3a4..d5f9df4 100644
---- a/arch/x86/kernel/irq_64.c
-+++ b/arch/x86/kernel/irq_64.c
-@@ -20,6 +20,7 @@
- #include <linux/sched/task_stack.h>
- 
- #include <asm/cpu_entry_area.h>
-+#include <asm/irq_stack.h>
- #include <asm/io_apic.h>
- #include <asm/apic.h>
- 
-@@ -70,3 +71,8 @@ int irq_init_percpu_irqstack(unsigned int cpu)
- 		return 0;
- 	return map_irq_stack(cpu);
+diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+index 2a80e4e..066215a 100644
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -583,6 +583,20 @@ bool noinstr idtentry_enter_cond_rcu(struct pt_regs *regs)
+ 	return false;
  }
-+
-+void do_softirq_own_stack(void)
+ 
++static void idtentry_exit_cond_resched(struct pt_regs *regs, bool may_sched)
 +{
-+	run_on_irqstack_cond(__do_softirq, NULL, NULL);
++	if (may_sched && !preempt_count()) {
++		/* Sanity check RCU and thread stack */
++		rcu_irq_exit_check_preempt();
++		if (IS_ENABLED(CONFIG_DEBUG_ENTRY))
++			WARN_ON_ONCE(!on_thread_stack());
++		if (need_resched())
++			preempt_schedule_irq();
++	}
++	/* Covers both tracing and lockdep */
++	trace_hardirqs_on();
 +}
++
+ /**
+  * idtentry_exit_cond_rcu - Handle return from exception with conditional RCU
+  *			    handling
+@@ -624,21 +638,7 @@ void noinstr idtentry_exit_cond_rcu(struct pt_regs *regs, bool rcu_exit)
+ 		}
+ 
+ 		instrumentation_begin();
+-
+-		/* Check kernel preemption, if enabled */
+-		if (IS_ENABLED(CONFIG_PREEMPTION)) {
+-			if (!preempt_count()) {
+-				/* Sanity check RCU and thread stack */
+-				rcu_irq_exit_check_preempt();
+-				if (IS_ENABLED(CONFIG_DEBUG_ENTRY))
+-					WARN_ON_ONCE(!on_thread_stack());
+-				if (need_resched())
+-					preempt_schedule_irq();
+-			}
+-		}
+-		/* Covers both tracing and lockdep */
+-		trace_hardirqs_on();
+-
++		idtentry_exit_cond_resched(regs, IS_ENABLED(CONFIG_PREEMPTION));
+ 		instrumentation_end();
+ 	} else {
+ 		/*
