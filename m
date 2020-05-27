@@ -2,100 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0221E4606
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 982AB1E45FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389309AbgE0Of4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 10:35:56 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2249 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389205AbgE0Of4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 10:35:56 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id B48B11895055C8A31AB1;
-        Wed, 27 May 2020 15:35:53 +0100 (IST)
-Received: from [127.0.0.1] (10.47.6.244) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 27 May
- 2020 15:35:52 +0100
-From:   John Garry <john.garry@huawei.com>
-Subject: Re: [PATCH V1 RESEND 1/3] perf/imx_ddr: Add system PMU identifier for
- userspace
-To:     Will Deacon <will@kernel.org>, Rob Herring <robh@kernel.org>
-CC:     Mark Rutland <mark.rutland@arm.com>, <devicetree@vger.kernel.org>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Zhangshaokun <zhangshaokun@hisilicon.com>
-References: <20200512073115.14177-1-qiangqing.zhang@nxp.com>
- <20200512073115.14177-2-qiangqing.zhang@nxp.com>
- <20200519185125.GB453195@bogus> <20200520073304.GA23534@willie-the-truck>
- <CAL_JsqJfQ0PFy5mmwSG4aM91ghq5xiAEPR2YZOymws+BfGa+uA@mail.gmail.com>
- <20200521130415.GB5949@willie-the-truck>
- <c3be06c5-781f-384f-768b-d809da99b7e0@huawei.com>
-Message-ID: <51aa7cbc-0ce2-b96d-b056-fcc6013ccecf@huawei.com>
-Date:   Wed, 27 May 2020 15:34:48 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S2389294AbgE0OfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 10:35:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389205AbgE0OfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 10:35:19 -0400
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C4497207D8;
+        Wed, 27 May 2020 14:35:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590590118;
+        bh=ZHtlGUdsxIEBDD/xsBrVNKXYYZ2i+BMLqDQbWpUZlVQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Kt7Bifq9PQAYdyS3oLP+3AgwaXJKnTd/D+XY1nMLTXHODDtOt1bkd6DfpX/XIaNKV
+         fiYm/Qr1XeJTcMpgvZRUiNpotgeHbumz8wl33tmu2JUojuQpdudrDlv3dOauHw9X/H
+         6HDd5bFq5NQuqMSJl73ny0fdoFgRbm3IHn22lA5s=
+Received: by mail-ot1-f44.google.com with SMTP id 63so19312581oto.8;
+        Wed, 27 May 2020 07:35:18 -0700 (PDT)
+X-Gm-Message-State: AOAM531C4wCKDOmD+m0HkDpi5DEaJGprO3YWd165t7zBOmvs0XCt7dyV
+        /BdrSPLXZWjWK2Fe7QwpwjIRqneoXqETUNnoWQ==
+X-Google-Smtp-Source: ABdhPJzgO0PBm+/AfLe7jnde5ihC21UEs5rp32++DKs0id2GuWNq7IxMhIZjtQ7ntkOjM6vINFi6FRy20LlfhlOWQyM=
+X-Received: by 2002:a05:6830:18d9:: with SMTP id v25mr4556571ote.107.1590590118113;
+ Wed, 27 May 2020 07:35:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c3be06c5-781f-384f-768b-d809da99b7e0@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.6.244]
-X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <20200526164652.2331-1-dmurphy@ti.com> <20200526164652.2331-2-dmurphy@ti.com>
+ <20200527014902.GA859634@bogus> <20200527133948.GA5011@amd>
+In-Reply-To: <20200527133948.GA5011@amd>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 27 May 2020 08:35:06 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+rS=awLC_maPGjeWhh1Sb9U31xfvLecVe9sPTh83eDBw@mail.gmail.com>
+Message-ID: <CAL_Jsq+rS=awLC_maPGjeWhh1Sb9U31xfvLecVe9sPTh83eDBw@mail.gmail.com>
+Subject: Re: [PATCH v25 01/16] dt: bindings: Add multicolor class dt bindings documention
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Dan Murphy <dmurphy@ti.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        devicetree@vger.kernel.org,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>>
->>>> I also really dislike this. What's the preferred way to identify the 
->>>> SoC
->>>> from userspace?
->>>
->>> /proc/cpuinfo? ;)
->>
->> The *SoC*!
->>
->>> For an non-firmware specific case, I'd say soc_device should be. I'd
->>> guess ACPI systems don't use it and for them it's dmidecode typically.
->>> The other problem I have with soc_device is it is optional.
->>
-> 
-> Hi Will,
-> 
->> John -- what do you think about using soc_device to expose this 
->> information,
->> with ACPI systems using DMI data instead?
-> 
-> Generally I don't think that DMI is reliable, and I saw this as the 
-> least preferred choice. I'm looking at the sysfs DMI info for my dev 
-> board, and I don't even see anything like a SoC identifier.
-> 
-> As for the event_source device sysfs identifier file, it would not 
-> always contain effectively the same as the SoC ID.
-> 
-> Certain PMUs which I'm interested in plan to have probe-able 
-> identification info available in future.
-> 
+On Wed, May 27, 2020 at 7:39 AM Pavel Machek <pavel@ucw.cz> wrote:
+>
+> Hi!
+>
+> Thanks for reviews!
+>
+> > > +additionalProperties: false
+> > > +...
+> > > diff --git a/drivers/leds/led-core.c b/drivers/leds/led-core.c
+> >
+> > This isn't a binding file. Belongs in another patch.
+>
+> These constants are directly related to the binding. It makes sense to
+> go in one patch...
 
-BTW, Shaokun now tells me that the HiSi uncore PMU HW have such 
-registers to identify the implementation. I didn't know.
+Yes, the header does go in this patch, but kernel subsystem files do not.
 
-So we could add that identifier file for those PMUs as proof-of-concept, 
-exposing that register.
+Part of the reason for separating is we generate a DT only repository
+which filters out all the kernel code. Ideally this is just filtering
+out commits and the commit messages still make sense.
 
-As for other PMUs which I'm interested in, again, future versions should 
-have such registers to self-identify.
-
-So using something derived from the DT compat string would hopefully be 
-the uncommon case.
-
-Cheers,
-John
+Rob
