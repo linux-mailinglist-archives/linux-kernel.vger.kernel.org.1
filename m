@@ -2,124 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6901E402A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F00741E402E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729472AbgE0Lgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 07:36:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726086AbgE0Lgu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 07:36:50 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0F89C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 04:36:49 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id r2so12435512ila.4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 04:36:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=z6go2Pe/0xHx8Ur0HnZIKTJ47Wq/ilnSzd2NqpRkWGw=;
-        b=L1YBq2nYL/jTkOPYDhIKkn6zmKuK7UFF9qeB/1ogdHqnN+IpWi07rXvId5L6YeWSC7
-         CWSjhp959giwzN/B1C7SPZSYBP1iCCYDKjEnJPZ/J1nqfSa0bqnUC4nY9q98tV/GqltA
-         hqyacD7MuaOXlBgaLqgLsNIqI6jApL+chkIVBvUwJO2isRB+Lf340oB1laD/sV0HaxQ9
-         LqdOjnfAsFKjGJA0oGsmQGxeNKyeUXQs7CDD4t6/a+zRj/LeWWo18YDYC8cpmTn752hu
-         VVGiJk+JXkZVG0v8hpokgwrolvfPtevcq5Sm9k6p/Dd/Toji8Zso/rzCMnUtinyp3BDu
-         eryA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=z6go2Pe/0xHx8Ur0HnZIKTJ47Wq/ilnSzd2NqpRkWGw=;
-        b=ZnZKRtp9ygjHlWGy02mSqscB0JmDim/5+JkttbKvgfDP0X3Yi4XQDXyv0zNZ/24lY7
-         RI6BWOUQzcK4Q+yiwDi+VL1ihZvRXcQJDlshmnWv2B2FnG3Y6zV/tusA3HrOYytg0bg5
-         cdMaSFYTQk3f7jN2pe1N6weXZAWmsv0EW+9clcMKrODkVsyIMyo/zXiBS76SERqdtRaH
-         i36rb9ZybO7KtPN0j5qKulaRMXFWP+BlBppV1NIzgFFdy7J6zjovg+3wbEDcUzkRc0h8
-         Qijd1NbBHBqEhP5F0juwAdcFxL6DpwN8rUjFsF7PlUcnDfE7TkCv8m/jw3f4GBGXyM8f
-         FT8Q==
-X-Gm-Message-State: AOAM533YKgaIUnTmtg46ruhnTd8rbAdpfNTuBp/hdrAZxOQvfPG6eMr1
-        FvI1xx+/7RbNFGzOYJH991PekpO1jz7CJr/qm+S5NC8YK+AINA==
-X-Google-Smtp-Source: ABdhPJwB+mlfql2WHcQXhCifPFDYtsAy/Xr6osuhagLy++BiiUrBpvsqG3x3l04er/kd4/cGO4nKI7FeqTa+/9eUlz0=
-X-Received: by 2002:a92:6608:: with SMTP id a8mr5465508ilc.204.1590579409205;
- Wed, 27 May 2020 04:36:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200527103236.148700-1-elver@google.com> <CAK8P3a1MFgRxm6=+9WZKNzN+Nc5fhrDso6orSNQaaa-0yqygYA@mail.gmail.com>
-In-Reply-To: <CAK8P3a1MFgRxm6=+9WZKNzN+Nc5fhrDso6orSNQaaa-0yqygYA@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Wed, 27 May 2020 13:36:41 +0200
-Message-ID: <CA+icZUWtzu0ONUSy0E27Mq1BrdO79qNaY3Si-PDhHZyF8M4S5g@mail.gmail.com>
-Subject: Re: [PATCH -tip] compiler_types.h: Optimize __unqual_scalar_typeof
- compilation time
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Marco Elver <elver@google.com>, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729657AbgE0LhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 07:37:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729506AbgE0LhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 07:37:11 -0400
+Received: from e123331-lin.nice.arm.com (amontpellier-657-1-18-247.w109-210.abo.wanadoo.fr [109.210.65.247])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47E26207D3;
+        Wed, 27 May 2020 11:37:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590579431;
+        bh=cSNlxUzk0MNNvImhPNGTduznUBJKKonX/iJwL6eba6Q=;
+        h=From:To:Cc:Subject:Date:From;
+        b=0lpjpCJAUvcWP3uE4bzBhrb1CA4JE/+j20vdEJ0Q6Fp4IY9X6hEQtgOfF7Afvxlco
+         vGO/CTH/IHkSy0OUAGM+PQysna3MWvxqFur8ScxiLHNtdjBmmpgx/yczMKU/zL2w5N
+         23nDZ6TZpQFACmCdjUZASBxc4dzprJIau03znPaM=
+From:   Ard Biesheuvel <ardb@kernel.org>
+To:     linux-acpi@vger.kernel.org
+Cc:     rjw@rjwysocki.net, lenb@kernel.org, linux-kernel@vger.kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH] ACPI: GED: use correct trigger type field in  _Exx / _Lxx handling
+Date:   Wed, 27 May 2020 13:37:00 +0200
+Message-Id: <20200527113700.3579-1-ardb@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 1:27 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Wed, May 27, 2020 at 12:33 PM Marco Elver <elver@google.com> wrote:
-> >
-> > If the compiler supports C11's _Generic, use it to speed up compilation
-> > times of __unqual_scalar_typeof(). GCC version 4.9 or later and
-> > all supported versions of Clang support the feature (the oldest
-> > supported compiler that doesn't support _Generic is GCC 4.8, for which
-> > we use the slower alternative).
-> >
-> > The non-_Generic variant relies on multiple expansions of
-> > __pick_integer_type -> __pick_scalar_type -> __builtin_choose_expr,
-> > which increases pre-processed code size, and can cause compile times to
-> > increase in files with numerous expansions of READ_ONCE(), or other
-> > users of __unqual_scalar_typeof().
-> >
-> > Summary of compile-time benchmarking done by Arnd Bergmann [1]:
-> >
-> >         <baseline normalized time>  clang-11   gcc-9
-> >         this patch                      0.78    0.91
-> >         ideal                           0.76    0.86
-> >
-> > [1] https://lkml.kernel.org/r/CAK8P3a3UYQeXhiufUevz=rwe09WM_vSTCd9W+KvJHJcOeQyWVA@mail.gmail.com
-> >
-> > Further compile-testing done with:
-> >         gcc 4.8, 4.9, 5.5, 6.4, 7.5, 8.4;
-> >         clang 9, 10.
-> >
-> > Reported-by: Arnd Bergmann <arnd@arndb.de>
-> > Signed-off-by: Marco Elver <elver@google.com>
->
-> This gives us back 80% of the performance drop on clang, and 50%
-> of the drop I saw with gcc, compared to current mainline.
->
-> Tested-by: Arnd Bergmann <arnd@arndb.de>
->
+Commit ea6f3af4c5e63f69 ("ACPI: GED: add support for _Exx / _Lxx handler
+methods") added a reference to the 'triggering' field of either the
+normal or the extended ACPI IRQ resource struct, but inadvertently used
+the wrong pointer in the latter case. Note that both pointers refer to the
+same union, and the 'triggering' field appears at the same offset in both
+struct types, so it currently happens to work by accident. But let's fix
+it nonetheless
 
-Hi Arnd,
+Fixes: ea6f3af4c5e63f69 ("ACPI: GED: add support for _Exx / _Lxx handler methods")
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ drivers/acpi/evged.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-with "mainline" you mean Linux-next aka Linux v5.8 - not v5.7?
-I have not seen __unqual_scalar_typeof(x) in compiler_types.h in Linux v5.7.
+diff --git a/drivers/acpi/evged.c b/drivers/acpi/evged.c
+index 6d7a522952bf..ccd900690b6f 100644
+--- a/drivers/acpi/evged.c
++++ b/drivers/acpi/evged.c
+@@ -94,7 +94,7 @@ static acpi_status acpi_ged_request_interrupt(struct acpi_resource *ares,
+ 		trigger = p->triggering;
+ 	} else {
+ 		gsi = pext->interrupts[0];
+-		trigger = p->triggering;
++		trigger = pext->triggering;
+ 	}
+ 
+ 	irq = r.start;
+-- 
+2.17.1
 
-Is there a speedup benefit also for Linux v5.7?
-Which patches do I need?
-
-Thanks.
-
-Regards,
-- Sedat -
