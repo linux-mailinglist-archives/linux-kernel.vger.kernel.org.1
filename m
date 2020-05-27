@@ -2,130 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3361E40FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C953F1E40D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729357AbgE0LyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 07:54:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728717AbgE0LyM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 07:54:12 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFCCAC08C5C1;
-        Wed, 27 May 2020 04:54:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=1BtgjbAHH+SQbPjyLwaeHytSSYLwREhV7BhkbEcaUa8=; b=xFub5XI7K0HyRPLsyCYQ2iZQr
-        V/ztTR54UukKwyzOYVEZOHh1rQy5o9j8jYMyeDDmapRpXWgrmDmOZ+yCPyk+MMpMMQbsbIJcqcYZT
-        FY+Xqg/wbKUdi5cE8nd5PzmI5VgUYgSCrVwtkhDzPlCq2Sy0LroTteWckME3z8m9iJd890Vt1PyA5
-        QSDYwvmxbkd042FNb1gFgp3KDv+ikC1ns3POIWS8UhG8aBxSv9iZJknigzW6h7trn1BjDynIvegED
-        c3vVBh4mzl6l1DsRVmxYGs8YWDTC/csU8GbLCnC1IpGnljVIPJUhd6gIe/0weL1eUTBHrkvU0LmgF
-        TLqHyrB7A==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37646)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jdud6-0002By-0W; Wed, 27 May 2020 12:53:52 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jdud2-0006Oo-1w; Wed, 27 May 2020 12:53:48 +0100
-Date:   Wed, 27 May 2020 12:53:48 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Schrempf Frieder <frieder.schrempf@kontron.de>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Enrico Weigelt <info@metux.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>
-Subject: Re: High interrupt latency with low power idle mode on i.MX6
-Message-ID: <20200527115347.GL1551@shell.armlinux.org.uk>
-References: <bc91129c-121c-a070-53b2-1f0bb6d4500a@kontron.de>
+        id S1729417AbgE0Lzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 07:55:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41872 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387927AbgE0Ly6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 07:54:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id DA392AC84;
+        Wed, 27 May 2020 11:54:57 +0000 (UTC)
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
+        gregkh@linuxfoundation.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        devel@driverdev.osuosl.org
+Subject: [RFC 43/50] staging: vchi: Get rid of vchi_bulk_queue_receive()
+Date:   Wed, 27 May 2020 13:53:48 +0200
+Message-Id: <20200527115400.31391-44-nsaenzjulienne@suse.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200527115400.31391-1-nsaenzjulienne@suse.de>
+References: <20200527115400.31391-1-nsaenzjulienne@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bc91129c-121c-a070-53b2-1f0bb6d4500a@kontron.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 10:39:12AM +0000, Schrempf Frieder wrote:
-> Hi,
-> 
-> on our i.MX6UL/ULL boards running mainline kernels, we see an issue with 
-> RS485 collisions on the bus. These are caused by the resetting of the 
-> RTS signal being delayed after each transmission. The TXDC interrupt 
-> takes several milliseconds to trigger and the slave on the bus already 
-> starts to send a reply in the meantime.
-> 
-> We found out that these delays only happen when the CPU is in "low power 
-> idle" mode (ARM power off). When we disable cpuidle state 2 or put some 
-> background load on the CPU everything works fine and the delays are gone.
-> 
-> echo 1 > /sys/devices/system/cpu/cpu0/cpuidle/state2/disable
-> 
-> It seems like also other interfaces (I2C, etc.) might be affected by 
-> these increased latencies, we haven't investigated this more closely, 
-> though.
-> 
-> We currently apply a patch to our kernel, that disables low power idle 
-> mode by default, but I'm wondering if there's a way to fix this 
-> properly? Any ideas?
+Its vchiq counterpart, vchiq_bulk_receive() is only used by vchi. We can
+then merge both functions by moving vchi_bulk_queue_receive()'s retry
+mechanism into vchiq_bulk_receive() and let services call the later.
 
-Let's examine a basic fact about power management:
+Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+---
+ .../vc04_services/interface/vchi/vchi.h       |  7 ----
+ .../interface/vchiq_arm/vchiq_arm.c           | 42 ++++++++++++-------
+ .../interface/vchiq_arm/vchiq_shim.c          | 38 -----------------
+ .../vc04_services/vchiq-mmal/mmal-vchiq.c     | 20 ++++-----
+ 4 files changed, 37 insertions(+), 70 deletions(-)
 
-The deeper PM modes that the system enters, the higher the latency to
-resume operation.
-
-So, I'm not surprised that you have higher latency when you allow the
-system to enter lower power modes.  Does that mean that the kernel
-should not permit entering lower power modes - no, it's policy and
-application dependent.
-
-If the hardware is designed to use software to manage the RTS signal
-to control the RS485 receiver, then I'm afraid that your report really
-does not surprise me - throwing that at software to manage is a really
-stupid idea, but it seems lots of people do this.  I've held this view
-since I worked on a safety critical system that used RS485 back in the
-1990s (London Underground Jubilee Line Extension public address system.)
-
-So, what we have here is several things that come together to create a
-problem:
-
-1) higher power savings produce higher latency to resume from
-2) lack of hardware support for RS485 half duplex communication needing
-   software support
-3) an application that makes use of RS485 half duplex communication
-   without disabling the higher latency power saving modes
-
-The question is, who should disable those higher latency power saving
-modes - the kernel, or userspace?
-
-The kernel knows whether it needs to provide software control of the
-RTS signal or not, but the kernel does not know the maximum permissible
-latency (which is application specific.)  So, the kernel doesn't have
-all the information it needs.  However, there is a QoS subsystem which
-may help you.
-
-There's also tweaks available via
-/sys/devices/system/cpu/cpu*/power/pm_qos_resume_latency_us
-
-which can be poked to configure the latency that is required, and will
-prevent the deeper PM states being entered.
-
+diff --git a/drivers/staging/vc04_services/interface/vchi/vchi.h b/drivers/staging/vc04_services/interface/vchi/vchi.h
+index d24e7027c08f..ca20b99122f2 100644
+--- a/drivers/staging/vc04_services/interface/vchi/vchi.h
++++ b/drivers/staging/vc04_services/interface/vchi/vchi.h
+@@ -58,13 +58,6 @@ extern int32_t vchi_held_msg_release(unsigned handle, struct vchiq_header *messa
+  * Global bulk API
+  *****************************************************************************/
+ 
+-// Routine to prepare interface for a transfer from the other side
+-extern int32_t vchi_bulk_queue_receive(unsigned handle,
+-				       void *data_dst,
+-				       uint32_t data_size,
+-				       enum vchiq_bulk_mode mode,
+-				       void *transfer_handle);
+-
+ // Routine to queue up data ready for transfer to the other (once they have signalled they are ready)
+ extern int32_t vchi_bulk_queue_transmit(unsigned handle,
+ 					const void *data_src,
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+index 4d98d4d3ee8a..084e98b4ca61 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+@@ -380,24 +380,36 @@ vchiq_bulk_transmit(unsigned int handle, const void *data,
+ }
+ EXPORT_SYMBOL(vchiq_bulk_transmit);
+ 
+-enum vchiq_status
+-vchiq_bulk_receive(unsigned int handle, void *data,
+-	unsigned int size, void *userdata, enum vchiq_bulk_mode mode)
++enum vchiq_status vchiq_bulk_receive(unsigned int handle, void *data,
++				     unsigned int size, void *userdata,
++				     enum vchiq_bulk_mode mode)
+ {
+ 	enum vchiq_status status;
+ 
+-	switch (mode) {
+-	case VCHIQ_BULK_MODE_NOCALLBACK:
+-	case VCHIQ_BULK_MODE_CALLBACK:
+-		status = vchiq_bulk_transfer(handle, data, size, userdata,
+-					     mode, VCHIQ_BULK_RECEIVE);
+-		break;
+-	case VCHIQ_BULK_MODE_BLOCKING:
+-		status = vchiq_blocking_bulk_transfer(handle,
+-			(void *)data, size, VCHIQ_BULK_RECEIVE);
+-		break;
+-	default:
+-		return VCHIQ_ERROR;
++	while (1) {
++		switch (mode) {
++		case VCHIQ_BULK_MODE_NOCALLBACK:
++		case VCHIQ_BULK_MODE_CALLBACK:
++			status = vchiq_bulk_transfer(handle, data, size, userdata,
++						     mode, VCHIQ_BULK_RECEIVE);
++			break;
++		case VCHIQ_BULK_MODE_BLOCKING:
++			status = vchiq_blocking_bulk_transfer(handle,
++				(void *)data, size, VCHIQ_BULK_RECEIVE);
++			break;
++		default:
++			return VCHIQ_ERROR;
++		}
++
++		/*
++		 * vchiq_*_bulk_transfer() may return VCHIQ_RETRY, so we need
++		 * to implement a retry mechanism since this function is
++		 * supposed to block until queued
++		 */
++		if (status != VCHIQ_RETRY)
++			break;
++
++		msleep(1);
+ 	}
+ 
+ 	return status;
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
+index 52654123463d..f69936a9eb29 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
+@@ -31,44 +31,6 @@ int vchi_queue_kernel_message(unsigned handle, void *data, unsigned int size)
+ }
+ EXPORT_SYMBOL(vchi_queue_kernel_message);
+ 
+-/***********************************************************
+- * Name: vchi_bulk_queue_receive
+- *
+- * Arguments:  VCHI_BULK_HANDLE_T handle,
+- *             void *data_dst,
+- *             const uint32_t data_size,
+- *             enum vchi_flags flags
+- *             void *bulk_handle
+- *
+- * Description: Routine to setup a rcv buffer
+- *
+- * Returns: int32_t - success == 0
+- *
+- ***********************************************************/
+-int32_t vchi_bulk_queue_receive(unsigned handle, void *data_dst,
+-				uint32_t data_size, enum vchiq_bulk_mode mode,
+-				void *bulk_handle)
+-{
+-	enum vchiq_status status;
+-
+-	while (1) {
+-		status = vchiq_bulk_receive(handle, data_dst, data_size,
+-					    bulk_handle, mode);
+-		/*
+-		 * vchiq_bulk_receive() may return VCHIQ_RETRY, so we need to
+-		 * implement a retry mechanism since this function is supposed
+-		 * to block until queued
+-		 */
+-		if (status != VCHIQ_RETRY)
+-			break;
+-
+-		msleep(1);
+-	}
+-
+-	return status;
+-}
+-EXPORT_SYMBOL(vchi_bulk_queue_receive);
+-
+ /***********************************************************
+  * Name: vchi_bulk_queue_transmit
+  *
+diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+index d35d2b50991b..b5d40074cdc7 100644
+--- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
++++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+@@ -277,7 +277,7 @@ static void buffer_work_cb(struct work_struct *work)
+  * VCHI will allow up to 4 bulk receives to be scheduled before blocking.
+  * If we block in the service_callback context then we can't process the
+  * VCHI_CALLBACK_BULK_RECEIVED message that would otherwise allow the blocked
+- * vchi_bulk_queue_receive() call to complete.
++ * vchiq_bulk_receive() call to complete.
+  */
+ static void buffer_to_host_work_cb(struct work_struct *work)
+ {
+@@ -293,19 +293,19 @@ static void buffer_to_host_work_cb(struct work_struct *work)
+ 		len = 8;
+ 	/* queue the bulk submission */
+ 	vchi_service_use(instance->service_handle);
+-	ret = vchi_bulk_queue_receive(instance->service_handle,
+-				      msg_context->u.bulk.buffer->buffer,
+-				      /* Actual receive needs to be a multiple
+-				       * of 4 bytes
+-				       */
+-				      (len + 3) & ~3,
+-				      VCHIQ_BULK_MODE_CALLBACK,
+-				      msg_context);
++	ret = vchiq_bulk_receive(instance->service_handle,
++				 msg_context->u.bulk.buffer->buffer,
++			         /* Actual receive needs to be a multiple
++			          * of 4 bytes
++			          */
++			         (len + 3) & ~3,
++			         msg_context,
++			         VCHIQ_BULK_MODE_CALLBACK);
+ 
+ 	vchi_service_release(instance->service_handle);
+ 
+ 	if (ret != 0)
+-		pr_err("%s: ctx: %p, vchi_bulk_queue_receive failed %d\n",
++		pr_err("%s: ctx: %p, vchiq_bulk_receive failed %d\n",
+ 		       __func__, msg_context, ret);
+ }
+ 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC for 0.8m (est. 1762m) line in suburbia: sync at 13.1Mbps down 424kbps up
+2.26.2
+
