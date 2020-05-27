@@ -2,85 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 128861E5136
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9DB1E5137
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 00:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725836AbgE0Wcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 18:32:47 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19485 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725385AbgE0Wcq (ORCPT
+        id S1725930AbgE0Wcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 18:32:48 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:4815 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725768AbgE0Wcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 May 2020 18:32:46 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5eceea340000>; Wed, 27 May 2020 15:31:16 -0700
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5eceea820001>; Wed, 27 May 2020 15:32:34 -0700
 Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
+  by hqpgpgate102.nvidia.com (PGP Universal service);
   Wed, 27 May 2020 15:32:46 -0700
 X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 27 May 2020 15:32:46 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 27 May
+        by hqpgpgate102.nvidia.com on Wed, 27 May 2020 15:32:46 -0700
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 27 May
  2020 22:32:46 +0000
-Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
  Transport; Wed, 27 May 2020 22:32:45 +0000
 Received: from sandstorm.nvidia.com (Not Verified[10.2.87.74]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5eceea8d0003>; Wed, 27 May 2020 15:32:45 -0700
+        id <B5eceea8d0004>; Wed, 27 May 2020 15:32:45 -0700
 From:   John Hubbard <jhubbard@nvidia.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 CC:     LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
         John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH 0/2] mm/gup: introduce pin_user_pages_locked(), use it in frame_vector.c
-Date:   Wed, 27 May 2020 15:32:41 -0700
-Message-ID: <20200527223243.884385-1-jhubbard@nvidia.com>
+Subject: [PATCH 1/2] mm/gup: introduce pin_user_pages_locked()
+Date:   Wed, 27 May 2020 15:32:42 -0700
+Message-ID: <20200527223243.884385-2-jhubbard@nvidia.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200527223243.884385-1-jhubbard@nvidia.com>
+References: <20200527223243.884385-1-jhubbard@nvidia.com>
 MIME-Version: 1.0
 X-NVConfidentiality: public
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1590618676; bh=3HVQJ69JpREzS+emj65oCEPFlHEr7iCFwnPdzvYkzb4=;
+        t=1590618754; bh=IycP13r0Bgehgro+i/kfeYy/gdTMPNNoxOMONjYdmKE=;
         h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
-         Content-Type;
-        b=cwrLkk4zDYCn1Y2kahQFb/QXzCbjO/4SwmkT300jDsKrjoc4Y3f59ST/jJawachim
-         VqGbwfn8mMCDtEucu/VghkEzX0r/v1fif6l+bXkWhQUSUOGM204Z4qCXcs4IsqMuet
-         mmL1JNoQrUWdD5dcwUP0O40X7nzyoUszDFWEy/wNbpIwEQCIAFZjEVSU+PrLiYPLsj
-         ZhlACmsC6x/D5krHvTYJZ3MraK6IMtymnSGR4Jmmv8N8xyZiXFLgalWFA8yWIuP+yl
-         QYA8Byl02HYvK3kwexZPIxL9UdFPHnD9wEy0PBmwVR9IgQavoPzLi6kjpUrg5y9Tpx
-         qiHNB/LsI/fOA==
+         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
+         Content-Transfer-Encoding:Content-Type;
+        b=h3hLoOZxMnWJnisFnZpNwUOKl3cIRfZkUKEo2EH5nn5TVuwgH/Sy9X6W048B9fWuN
+         TkjuhLSVPp/Ldd+oGSUph85GF/1ErZRBXCQ/8O0NJiayOKD3fe3ox+3hF3PALbLPx2
+         0HVWUlgM8m/4dlJ58ynDuhIGwEFUZywz8EFtwGxwBS5KGC1iikyZaU/weATU8wjHKO
+         qN8Uk8+jli6K/b+6N8ZYlmdOx8dxpohKKuzvTGwvksl+x2NMTk4JEx8G8Q06XdWkFY
+         jzKCcrUSFZWnategb3taYH2Iu3iCvdIXWvobdoPKM4a0lUMl+E0uJthGpSH0divnrx
+         e6gHD8gOfJ3hA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Introduce pin_user_pages_locked(), which is nearly identical to
+get_user_pages_locked() except that it sets FOLL_PIN and rejects
+FOLL_GET.
 
-This applies on top of the pin_user_pages_unlocked() patch that I sent
-earlier [1].
-
-This adds yet one more pin_user_pages*() variant, and uses that to
-convert mm/frame_vector.c.
-
-With this, along with maybe 20 or 30 other recent patches in various
-trees, we are close to having the relevant gup call sites
-converted--with the notable exception of the bio/block layer.
-
-
-[1] https://lore.kernel.org/r/20200518012157.1178336-2-jhubbard@nvidia.com
-
-John Hubbard (2):
-  mm/gup: introduce pin_user_pages_locked()
-  mm/gup: frame_vector: convert get_user_pages() --> pin_user_pages()
-
+Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+---
  include/linux/mm.h |  2 ++
- mm/frame_vector.c  |  7 +++----
  mm/gup.c           | 30 ++++++++++++++++++++++++++++++
- 3 files changed, 35 insertions(+), 4 deletions(-)
+ 2 files changed, 32 insertions(+)
 
-
-base-commit: 9cb1fd0efd195590b828b9b865421ad345a4a145
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 98be7289d7e9..d16951087c93 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1700,6 +1700,8 @@ long pin_user_pages(unsigned long start, unsigned lon=
+g nr_pages,
+ 		    struct vm_area_struct **vmas);
+ long get_user_pages_locked(unsigned long start, unsigned long nr_pages,
+ 		    unsigned int gup_flags, struct page **pages, int *locked);
++long pin_user_pages_locked(unsigned long start, unsigned long nr_pages,
++		    unsigned int gup_flags, struct page **pages, int *locked);
+ long get_user_pages_unlocked(unsigned long start, unsigned long nr_pages,
+ 		    struct page **pages, unsigned int gup_flags);
+ long pin_user_pages_unlocked(unsigned long start, unsigned long nr_pages,
+diff --git a/mm/gup.c b/mm/gup.c
+index 2f0a0b497c23..17418a949067 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -2992,3 +2992,33 @@ long pin_user_pages_unlocked(unsigned long start, un=
+signed long nr_pages,
+ 	return get_user_pages_unlocked(start, nr_pages, pages, gup_flags);
+ }
+ EXPORT_SYMBOL(pin_user_pages_unlocked);
++
++/*
++ * pin_user_pages_locked() is the FOLL_PIN variant of get_user_pages_locke=
+d().
++ * Behavior is the same, except that this one sets FOLL_PIN and rejects
++ * FOLL_GET.
++ */
++long pin_user_pages_locked(unsigned long start, unsigned long nr_pages,
++			   unsigned int gup_flags, struct page **pages,
++			   int *locked)
++{
++	/*
++	 * FIXME: Current FOLL_LONGTERM behavior is incompatible with
++	 * FAULT_FLAG_ALLOW_RETRY because of the FS DAX check requirement on
++	 * vmas.  As there are no users of this flag in this call we simply
++	 * disallow this option for now.
++	 */
++	if (WARN_ON_ONCE(gup_flags & FOLL_LONGTERM))
++		return -EINVAL;
++
++	/* FOLL_GET and FOLL_PIN are mutually exclusive. */
++	if (WARN_ON_ONCE(gup_flags & FOLL_GET))
++		return -EINVAL;
++
++	gup_flags |=3D FOLL_PIN;
++	return __get_user_pages_locked(current, current->mm, start, nr_pages,
++				       pages, NULL, locked,
++				       gup_flags | FOLL_TOUCH);
++}
++EXPORT_SYMBOL(pin_user_pages_locked);
++
 --=20
 2.26.2
 
