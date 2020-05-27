@@ -2,89 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 084D11E4457
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D67A11E4455
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388789AbgE0Ntm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:49:42 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:35201 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388082AbgE0Ntl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:49:41 -0400
-Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MV6G6-1jTNlu1Was-00S3bg; Wed, 27 May 2020 15:49:12 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        =?UTF-8?q?Valdis=20Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] binfmt_elf_fdpic: fix execfd build regression
-Date:   Wed, 27 May 2020 15:49:01 +0200
-Message-Id: <20200527134911.1024114-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.2
+        id S2388770AbgE0NtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:49:17 -0400
+Received: from mga18.intel.com ([134.134.136.126]:11584 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388082AbgE0NtQ (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 09:49:16 -0400
+IronPort-SDR: skwNYpY2nv5y9Rb7FpdaO7a/4EJMagyL5aFF3No1K/JPqdCN6bjP2UvdIUPxdkoDQqsd0xbXRZ
+ zP1dFb2WgO/w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 06:49:15 -0700
+IronPort-SDR: BxuuS2MK37yuMLoYpwK5GiQeXD2f446GJqObQzqghFwZHQZmX52Hj7YLDLysoE/hGrPqz8cs0E
+ XOwQzQB4EQtQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,441,1583222400"; 
+   d="scan'208";a="376032251"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.254.213.129]) ([10.254.213.129])
+  by fmsmga001.fm.intel.com with ESMTP; 27 May 2020 06:49:12 -0700
+Subject: Re: [PATCH v2 1/2] perf evlist: Ensure grouped events with same cpu
+ map
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20200525065559.6422-1-yao.jin@linux.intel.com>
+ <20200526115155.GE333164@krava>
+ <32c4663a-6934-2a2d-79e2-7a335e3629a2@linux.intel.com>
+ <d6986a15-1e21-3414-9d68-c265e7db03f4@linux.intel.com>
+ <20200527102805.GA420698@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <19b749fa-fa96-85ac-8c7d-10336ff7475a@linux.intel.com>
+Date:   Wed, 27 May 2020 21:49:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:tix/bfncLqcvkzlr2Of2L9H3YtX9HuSaEtBUOBjASBeKdIZtPlc
- c19hmm9NvcQ2JaefzsfnEUWJyO3nrW7CFvrGLHULdxI++jnQD/Z/pGh+4qgAi1HbAcJvN0O
- VnZO8X/B22cv2XXUBxD4mQE9MuYOp/S8/lvA+7ijEgeFpwbzoufDo6znkyk3/f9MNVIdCEr
- eF3abH2fY2h0cBWWMn7Pw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Glgg6CSdwOg=:ceJKDWPnefN0UE4Fib6v8Z
- 1qFH3+59/NZRv07wHGUu+MYuCx2FUK4dzIe8pSf2bVnjPBec4Mm7dWATe1n9dIZgeZqlVMu8H
- TCRkfEopCUc7HXdRfWxDKziLAS8pOG+dIrjG9YpwiIuQXTSF4vi2vBomxoMIb0xqMTgNmRShk
- amIoaAGPo0Do8cbe6xWVWZtzqWBELqrqxx+XOqVgqrmQwGKrcNh488GHIKvpV+JLWq2YE854G
- Szu4rZ8HEDnu2LKj4K7VnbQ0IyPo0aiBEAlatRQHPwlw7nBFsefaa60lkNUl0MLwfqBzWucqS
- k0tifPAcnMF24uyifrvsPiLL4mYOFEwFFjwr0+ljHZbhhAXjk8WeFKhdUH+8dMozLKzpKM7Ws
- UXaizqj19Khb7QEvJXIIl3em+xxuxphSrZEq+koV2PUvVdKm3yGlPGGbRhf0KjPjfxjuR4m/O
- Vp1qnUpIe+5uPtISKQgGoaUhosNyiAqIKta+4J19lnZMW28EllLr5AnAESjYU785AkrzYrRiA
- zG5ag3OcUvpd2cmJujiNoUmjam5zDI1eFyoIga8HOyvncnFqKJIlWqYB80prBmwjPozMehk15
- vGMbG1yDpq9kWAnm1ZHZC6BckGjupOZozQVM3VEZrpFWUR/CtXrN+wrC2qrt1kuKfpYOAgv7p
- 5hmuw4Q052AWWbTiedO142Miilw7YV7KcTQocca9+vpGQBFRmXxizoaHa4VkhgWgGY5nENYoK
- lGqY+jNtMUBCt0Q6eA2z2Od5eNuEicgcjhxBveeevpWC5sE89zJvj8An5+Cngw3QXlhNFlo7n
- 89qz4C5mdD32DUTEJkk81+1W1Hz8Cr2jN59sHNC/L/hwOVtXKk=
+In-Reply-To: <20200527102805.GA420698@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The change to bprm->have_execfd was incomplete, leading
-to a build failure:
+Hi Jiri,
 
-fs/binfmt_elf_fdpic.c: In function 'create_elf_fdpic_tables':
-fs/binfmt_elf_fdpic.c:591:27: error: 'BINPRM_FLAGS_EXECFD' undeclared
+On 5/27/2020 6:28 PM, Jiri Olsa wrote:
+> On Wed, May 27, 2020 at 02:31:03PM +0800, Jin, Yao wrote:
+> 
+> SNIP
+> 
+>>> Thanks
+>>> Jin Yao
+>>
+>> Issue is found!
+>>
+>> It looks we can't set "pos->leader = pos" in either for_each_group_member()
+>> or in for_each_group_evsel() because it may exit the iteration immediately.
+>>
+>> 	evlist__for_each_entry(evlist, evsel) {
+>> 		if (evsel->leader == evsel)
+>> 			continue;
+>>
+>> 		if (cpu_maps_matched(evsel->leader, evsel))
+>> 			continue;
+>>
+>> 		pr_warning("WARNING: event cpu maps are not fully matched, "
+>> 			   "disable group\n");
+>>
+>> 		for_each_group_member(pos, evsel->leader) {
+>> 			pos->leader = pos;
+>> 			pos->core.nr_members = 0;
+>> 		}
+>>
+>> Let me use the example of '{cycles,unc_cbo_cache_lookup.any_i}' again.
+>>
+>> In evlist:
+>> cycles,
+>> unc_cbo_cache_lookup.any_i,
+>> unc_cbo_cache_lookup.any_i,
+>> unc_cbo_cache_lookup.any_i,
+>> unc_cbo_cache_lookup.any_i,
+>>
+>> When we reach the for_each_group_member at first time, evsel is the first
+>> unc_cbo_cache_lookup.any_i and evsel->leader is cycles. pos is same as the
+>> evsel (the first unc_cbo_cache_lookup.any_i).
+>>
+>> Once we execute "pos->leader = pos;", it's actually "evsel->leader = evsel".
+>> So now evsel->leader is changed to the first unc_cbo_cache_lookup.any_i.
+>>
+>> In next iteration, pos is the second unc_cbo_cache_lookup.any_i. pos->leader
+>> is cycles but unfortunately evsel->leader has been changed to the first
+>> unc_cbo_cache_lookup.any_i. So iteration stops immediately.
+> 
+> hum, AFAICS the iteration will not break but continue to next evsel and
+> pass the 'continue' for another group member.. what do I miss?
+> 
+> jirka
+> 
 
-Change the last user of BINPRM_FLAGS_EXECFD in a corresponding
-way.
+Let me use this example again.
 
-Reported-by: Valdis Klētnieks <valdis.kletnieks@vt.edu>
-Fixes: b8a61c9e7b4a ("exec: Generic execfd support")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-I have no idea whether this is right, I only looked briefly at
-the commit that introduced the problem.
----
- fs/binfmt_elf_fdpic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+cycles,
+unc_cbo_cache_lookup.any_i,
+unc_cbo_cache_lookup.any_i,
+unc_cbo_cache_lookup.any_i,
+unc_cbo_cache_lookup.any_i,
 
-diff --git a/fs/binfmt_elf_fdpic.c b/fs/binfmt_elf_fdpic.c
-index bba3ad555b94..aaf332d32326 100644
---- a/fs/binfmt_elf_fdpic.c
-+++ b/fs/binfmt_elf_fdpic.c
-@@ -588,7 +588,7 @@ static int create_elf_fdpic_tables(struct linux_binprm *bprm,
- 	nitems = 1 + DLINFO_ITEMS + (k_platform ? 1 : 0) +
- 		(k_base_platform ? 1 : 0) + AT_VECTOR_SIZE_ARCH;
- 
--	if (bprm->interp_flags & BINPRM_FLAGS_EXECFD)
-+	if (bprm->have_execfd)
- 		nitems++;
- 
- 	csp = sp;
--- 
-2.26.2
+Yes, once for_each_group_member breaks (due to the issue in 'pos->leader = pos'), 
+evlist__for_each_entry will continue to the second unc_cbo_cache_lookup.any_i. But now evsel->leader 
+!= evsel (evsel->leader is "cycles"), so it will go to cpu_maps_matched.
 
+But actually we don't need to go to cpu_maps_matched again.
+
+for_each_group_member(pos, evsel->leader) {
+	pos->leader = pos;
+	pos->core.nr_members = 0;
+}
+
+If we solve the issue in above code, for_each_group_member doesn't break, the leaders of all members 
+in this group will be set to themselves.
+
+if (evsel->leader == evsel)
+	continue;
+
+So the iteration will continue to the next evsel.
+
+Thanks
+Jin Yao
