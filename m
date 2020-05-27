@@ -2,167 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6721E4109
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD311E4090
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729309AbgE0L6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 07:58:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40712 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728978AbgE0LyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 07:54:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 10013AC5B;
-        Wed, 27 May 2020 11:54:15 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
-        gregkh@linuxfoundation.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org
-Subject: [RFC 00/50] staging: vchiq: Getting rid of the vchi/vchiq split
+        id S2387519AbgE0LyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 07:54:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728710AbgE0Lx0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 07:53:26 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606D5C05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 04:53:26 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 802793C3; Wed, 27 May 2020 13:53:23 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        jroedel@suse.de
+Subject: [PATCH 02/10] iommu/amd: Unexport get_dev_data()
 Date:   Wed, 27 May 2020 13:53:05 +0200
-Message-Id: <20200527115400.31391-1-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <20200527115313.7426-3-joro@8bytes.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200527115313.7426-1-joro@8bytes.org>
+References: <20200527115313.7426-1-joro@8bytes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vchi acts as a mid layer between vchiq and its kernel services, while
-arguably providing little to no benefit: half of the functions exposed
-are a 1:1 copy of vchiq's, and the rest provide some functionality which
-can be easly integrated into vchiq without all the churn. Moreover it
-has been found in the past as a blockage to further fixes in vchiq as
-every change needed its vchi counterpart, if even possible.
+From: Joerg Roedel <jroedel@suse.de>
 
-Hence this series, which merges all vchi functionality into vchiq and
-provies a simpler and more concise API to services.
+This function is internal to the AMD IOMMU driver and only exported
+because the amd_iommu_v2 modules calls it. But the reason it is called
+from there could better be handled by amd_iommu_is_attach_deferred().
+So unexport get_dev_data() and use amd_iommu_is_attach_deferred()
+instead.
 
-I'm aware that kernel's vchi API tries to mimic its userspace
-counterpart (or vice versa). Obviously this breaks the parity, but I
-don't think it's a sane goal to have. There is little sense or gain from
-it, and adds impossible constraints to upstreaming the driver.
-
-Overall the series falls short of removing 1500 lines of code, which is
-pretty neat on itself.
-
-So far it has been tested trough bcm2835-camera, audio and vchiq-test. I
-can't do much about vc-sm-cma for now, but the changes are done in a way
-that shouldn't affect its behaviour.
-
-Note that the series builds up on RPi/Laurent's camera support series[1]
-and can't yet be merged. We'd have to coordinate here. We could either
-wait for the vc_sm_cma rework (if it's not going to take months and
-months to finish), or factor out all the vc-sm-cma stuff, merge that into
-the downstream kernel and take the rest of the series on top of
-Laurent's mmal-vchiq changes.
-
-Regards,
-Nicolas
-
-[1] https://lwn.net/ml/linux-media/20200504092611.9798-1-laurent.pinchart@ideasonboard.com/
-
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 ---
+ drivers/iommu/amd/amd_iommu_proto.h |  3 ++-
+ drivers/iommu/amd/iommu.c           |  9 +++++----
+ drivers/iommu/amd/iommu_v2.c        | 10 ++++------
+ 3 files changed, 11 insertions(+), 11 deletions(-)
 
-Nicolas Saenz Julienne (50):
-  staging: vchi: Get rid of vchi_service_destroy()
-  staging: vchi: Get rid of vchi_queue_user_message()
-  staging: vchiq: Move copy callback handling into vchiq
-  staging: vchi: Merge vchi_msg_queue() into vchi_queue_kernel_message()
-  staging: vchi: Get rid of vchi_service_set_option()
-  staging: vchi: Get rid of vchiq_status_to_vchi()
-  staging: vchi: Get rid of not implemented function declarations
-  staging: vchi: Get rid of C++ guards
-  staging: vchiq: move vchiq_release_message() into vchiq
-  staging: vchiq: Get rid of VCHIQ_SERVICE_OPENEND callback reason
-  staging: vchi: Get rid of all useless callback reasons
-  staging: vchi: Get rid of vchi_msg_peek()
-  staging: vchi: Get rid of struct vchi_instance_handle
-  staging: vchi: Unify struct shim_service and struct
-    vchi_service_handle
-  staging: vc04_services: bcm2835-audio: Use vchi_msg_hold()
-  staging: vchi: Get rid of vchi_msg_dequeue()
-  staging: vchi_common: Get rid of all unused definitions
-  staging: vc04_services: vc-sm-cma: Get rid of the multiple connections
-    option
-  staging: vchi: Get rid of unnecessary defines
-  staging: vc04_services: Get rid of vchi_cfg.h
-  staging: vchi: Get rid of flags argument in vchi_msg_hold()
-  staging: vchi: Use enum vchiq_bulk_mode instead of vchi's transmission
-    flags
-  staging: vchi: Use vchiq's enum vchiq_reason
-  staging: vchi: Get rid of effect less expression
-  staging: vchiq: Introduce vchiq_validate_params()
-  staging: vchiq: Move message queue into struct vchiq_service
-  staging: vchiq: Get rid of vchiq_util.h
-  staging: vchi: Expose struct vchi_service
-  staging: vchiq: Export vchiq_get_service_userdata()
-  staging: vchiq: Export vchiq_msg_queue_push
-  staging: vchi: Get rid of vchiq_shim's message callback
-  staging: vchiq: Don't use a typedef for vchiq_callback
-  staging: vchi: Use struct vchiq_service_params
-  staging: vchi: Get rid of struct vchi_service
-  staging: vchiq: Pass vchiq's message when holding a message
-  staging: vchi: Rework vchi_msg_hold() to match vchiq_msg_hold()
-  staging: vchiq: Unify fourcc definition mechanisms
-  staging: vchi: Get rid of struct vchiq_instance forward declaration
-  staging: vchi: Don't include vchiq_core.h
-  staging: vchiq: Get rid of unnecessary definitions in vchiq_if.h
-  staging: vchiq: Make vchiq_add_service() local
-  staging: vchiq: Move definitions only used by core into core header
-  staging: vchi: Get rid of vchi_bulk_queue_receive()
-  staging: vchi: Get rid of vchi_bulk_queue_transmit()
-  staging: vchi: Move vchi_queue_kernel_message() into vchiq
-  staging: vchiq: Get rid of vchi
-  staging: vchiq: Move conditional barrier definition into vchiq_core.h
-  staging: vchiq: Use vchiq.h as the main header file for services
-  staging: vchiq: Move defines into core header
-  staging: vchiq: Move vchiq.h into include directory
-
- drivers/staging/vc04_services/Makefile        |   4 +-
- .../vc04_services/bcm2835-audio/Makefile      |   2 +-
- .../bcm2835-audio/bcm2835-vchiq.c             | 100 ++-
- .../vc04_services/bcm2835-audio/bcm2835.h     |   4 +-
- .../bcm2835-audio/vc_vchi_audioserv_defs.h    |   5 +-
- .../linux/raspberrypi/vchiq.h}                |  71 +-
- .../vc04_services/interface/{vchi => }/TODO   |   0
- .../vc04_services/interface/vchi/vchi.h       | 240 ------
- .../vc04_services/interface/vchi/vchi_cfg.h   | 238 ------
- .../interface/vchi/vchi_common.h              | 138 ----
- .../vc04_services/interface/vchiq_arm/vchiq.h |  21 -
- .../interface/vchiq_arm/vchiq_2835_arm.c      |   1 +
- .../interface/vchiq_arm/vchiq_arm.c           |  86 +-
- .../interface/vchiq_arm/vchiq_core.c          | 110 ++-
- .../interface/vchiq_arm/vchiq_core.h          |  53 +-
- .../interface/vchiq_arm/vchiq_ioctl.h         |   2 +-
- .../interface/vchiq_arm/vchiq_shim.c          | 751 ------------------
- .../interface/vchiq_arm/vchiq_util.c          |  85 --
- .../interface/vchiq_arm/vchiq_util.h          |  50 --
- .../staging/vc04_services/vc-sm-cma/Makefile  |   1 -
- .../staging/vc04_services/vc-sm-cma/vc_sm.c   |  10 +-
- .../vc04_services/vc-sm-cma/vc_sm_cma_vchi.c  | 108 ++-
- .../vc04_services/vc-sm-cma/vc_sm_cma_vchi.h  |   5 +-
- .../vc04_services/vc-sm-cma/vc_sm_defs.h      |   3 -
- .../staging/vc04_services/vchiq-mmal/Makefile |   1 +
- .../vc04_services/vchiq-mmal/mmal-msg.h       |   1 -
- .../vc04_services/vchiq-mmal/mmal-vchiq.c     | 177 ++---
- 27 files changed, 419 insertions(+), 1848 deletions(-)
- rename drivers/staging/vc04_services/{interface/vchiq_arm/vchiq_if.h => include/linux/raspberrypi/vchiq.h} (55%)
- rename drivers/staging/vc04_services/interface/{vchi => }/TODO (100%)
- delete mode 100644 drivers/staging/vc04_services/interface/vchi/vchi.h
- delete mode 100644 drivers/staging/vc04_services/interface/vchi/vchi_cfg.h
- delete mode 100644 drivers/staging/vc04_services/interface/vchi/vchi_common.h
- delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq.h
- delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
- delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_util.c
- delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_util.h
-
+diff --git a/drivers/iommu/amd/amd_iommu_proto.h b/drivers/iommu/amd/amd_iommu_proto.h
+index 92c2ba6468a0..1c6c12c11368 100644
+--- a/drivers/iommu/amd/amd_iommu_proto.h
++++ b/drivers/iommu/amd/amd_iommu_proto.h
+@@ -92,5 +92,6 @@ static inline void *iommu_phys_to_virt(unsigned long paddr)
+ }
+ 
+ extern bool translation_pre_enabled(struct amd_iommu *iommu);
+-extern struct iommu_dev_data *get_dev_data(struct device *dev);
++extern bool amd_iommu_is_attach_deferred(struct iommu_domain *domain,
++					 struct device *dev);
+ #endif /* _ASM_X86_AMD_IOMMU_PROTO_H  */
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index 39155f550f18..8368f6b9c17f 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -280,11 +280,10 @@ static struct iommu_dev_data *find_dev_data(u16 devid)
+ 	return dev_data;
+ }
+ 
+-struct iommu_dev_data *get_dev_data(struct device *dev)
++static struct iommu_dev_data *get_dev_data(struct device *dev)
+ {
+ 	return dev->archdata.iommu;
+ }
+-EXPORT_SYMBOL(get_dev_data);
+ 
+ /*
+ * Find or create an IOMMU group for a acpihid device.
+@@ -2706,12 +2705,14 @@ static void amd_iommu_get_resv_regions(struct device *dev,
+ 	list_add_tail(&region->list, head);
+ }
+ 
+-static bool amd_iommu_is_attach_deferred(struct iommu_domain *domain,
+-					 struct device *dev)
++bool amd_iommu_is_attach_deferred(struct iommu_domain *domain,
++				  struct device *dev)
+ {
+ 	struct iommu_dev_data *dev_data = dev->archdata.iommu;
++
+ 	return dev_data->defer_attach;
+ }
++EXPORT_SYMBOL_GPL(amd_iommu_is_attach_deferred);
+ 
+ static void amd_iommu_flush_iotlb_all(struct iommu_domain *domain)
+ {
+diff --git a/drivers/iommu/amd/iommu_v2.c b/drivers/iommu/amd/iommu_v2.c
+index d6d85debd01b..9b6e038150c1 100644
+--- a/drivers/iommu/amd/iommu_v2.c
++++ b/drivers/iommu/amd/iommu_v2.c
+@@ -517,13 +517,12 @@ static int ppr_notifier(struct notifier_block *nb, unsigned long e, void *data)
+ 	struct amd_iommu_fault *iommu_fault;
+ 	struct pasid_state *pasid_state;
+ 	struct device_state *dev_state;
++	struct pci_dev *pdev = NULL;
+ 	unsigned long flags;
+ 	struct fault *fault;
+ 	bool finish;
+ 	u16 tag, devid;
+ 	int ret;
+-	struct iommu_dev_data *dev_data;
+-	struct pci_dev *pdev = NULL;
+ 
+ 	iommu_fault = data;
+ 	tag         = iommu_fault->tag & 0x1ff;
+@@ -534,12 +533,11 @@ static int ppr_notifier(struct notifier_block *nb, unsigned long e, void *data)
+ 					   devid & 0xff);
+ 	if (!pdev)
+ 		return -ENODEV;
+-	dev_data = get_dev_data(&pdev->dev);
+ 
+-	/* In kdump kernel pci dev is not initialized yet -> send INVALID */
+ 	ret = NOTIFY_DONE;
+-	if (translation_pre_enabled(amd_iommu_rlookup_table[devid])
+-		&& dev_data->defer_attach) {
++
++	/* In kdump kernel pci dev is not initialized yet -> send INVALID */
++	if (amd_iommu_is_attach_deferred(NULL, &pdev->dev)) {
+ 		amd_iommu_complete_ppr(pdev, iommu_fault->pasid,
+ 				       PPR_INVALID, tag);
+ 		goto out;
 -- 
-2.26.2
+2.17.1
 
