@@ -2,77 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4AB51E4DD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 21:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 833761E4DDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 21:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgE0TFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 15:05:03 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:36922 "EHLO mail.skyhub.de"
+        id S1728345AbgE0TG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 15:06:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725766AbgE0TFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 15:05:03 -0400
-Received: from zn.tnic (p200300ec2f0b8700dda2f727e1b752eb.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:8700:dda2:f727:e1b7:52eb])
+        id S1725766AbgE0TG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 15:06:26 -0400
+Received: from kernel.org (unknown [104.132.0.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DFFDF1EC02B3;
-        Wed, 27 May 2020 21:05:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1590606302;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=/hBQwlO36HqTw7b3/a9y2PU9fbwGlde7Xw6IvZwUL1k=;
-        b=Nd9abdxSIUPRqq0wm4UFeDxDA4cN2klC1VYeab2tmXCHyJBaaQSrgI7P9Te07A4B9DCe9k
-        GlIKjetw2s7t3wlqhp0Au822vwm0MGl1Yc3BqRAY3DAp6mNdo1BOPVDVgbqCLZGoXIh1ld
-        HLDYcv2h+g7BGIYFEqUr9pC6ErZtKRM=
-Date:   Wed, 27 May 2020 21:04:56 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, sunhaoyl@outlook.com,
-        x86@kernel.org
-Subject: Re: [PATCH] fs/binfmt_elf.c: allocate initialized memory in
- fill_thread_core_info()
-Message-ID: <20200527190456.GD1721@zn.tnic>
-References: <20200420153352.6682533e794f591dae7aafbc@linux-foundation.org>
- <202004201540.01C8F82B@keescook>
- <20200421034249.GB23230@ZenIV.linux.org.uk>
- <CAG_fn=VZZ7yUxtOGzuTLkr7wmfXWtKK9BHHYawj=rt9XWnCYvg@mail.gmail.com>
- <20200512010901.GQ23230@ZenIV.linux.org.uk>
- <20200512034400.GA1537486@ZenIV.linux.org.uk>
- <CAG_fn=Xopqwu8qpdH2xDHmGSy1utp7uyPn7s6btm0hdaV7JVRg@mail.gmail.com>
- <20200513033349.GR23230@ZenIV.linux.org.uk>
- <20200524234535.GA23230@ZenIV.linux.org.uk>
- <20200526223817.GA3819674@ZenIV.linux.org.uk>
+        by mail.kernel.org (Postfix) with ESMTPSA id AA26B2078C;
+        Wed, 27 May 2020 19:06:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590606385;
+        bh=aG2AdqsO+CyEMtyrHhPK09QZxRhGgxhiWdKnLjkZ3co=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=vda/BOl/7s8cKLqRnRSdBNZScYvIpTuDdK/zG0cH/MQl+p6hap9UgqzlB3sU14j7Q
+         PhKwh1t6C0GCWdMr5vmR1gNk1KLId9jU+UAxmuXzbd8bEfE3cQsEhuLCUTCfm/jwXv
+         SHbVfwauPCXrQfxRtE4pf66Nb1gQ1ZzvZxbpJDvU=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200526223817.GA3819674@ZenIV.linux.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1590590362-11570-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1590590362-11570-1-git-send-email-yangtiezhu@loongson.cn>
+Subject: Re: [PATCH v4 1/2] clk: hisilicon: Use correct return value about hisi_reset_init()
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Date:   Wed, 27 May 2020 12:06:24 -0700
+Message-ID: <159060638492.88029.3855641102752089121@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 11:38:17PM +0100, Al Viro wrote:
-> Folks, could you test the following?
-> 
-> copy_xstate_to_kernel(): don't leave parts of destination uninitialized
-> 
-> copy the corresponding pieces of init_fpstate into the gaps instead.
-> 
-> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Quoting Tiezhu Yang (2020-05-27 07:39:21)
+> The return value about hisi_reset_init() is not correct, fix it.
+>=20
+> Fixes: e9a2310fb689 ("reset: hisilicon: fix potential NULL pointer derefe=
+rence")
 
-Am I taking this through tip (would prefer to as there's other FPU stuff
-pending) or should I ack this so that you can send it upwards?
+hisi_reset_init() returns NULL on error in that commit. This patch
+doesn't make sense.
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>
