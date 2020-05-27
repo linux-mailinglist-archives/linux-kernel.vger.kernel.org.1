@@ -2,121 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E57F1E4078
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF6BF1E4070
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728662AbgE0LxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 07:53:19 -0400
-Received: from outils.crapouillou.net ([89.234.176.41]:41308 "EHLO
-        crapouillou.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728527AbgE0LxM (ORCPT
+        id S1728350AbgE0Lwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 07:52:53 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:57742 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbgE0Lwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 07:53:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1590580369; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=E7PJkzx1rkBGYKZjmGhQd3zFP46ZoIkig4Ci8PwwfcA=;
-        b=iwT2+hcXOPkYIeguIAaXiYnD15ANT9vIs79+gkB+6gSQJWQ3RkgJs/BR8fsuF771XftaFg
-        Xa9MNITI4RhJqmHeNfAJRRweiyzOSBb3mutlmdONB1nOM8mmdfYwzuestTbynnmLAPXcs4
-        XpQjnj1hWMzlBF+haZ+7Eesg+erMEU0=
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     od@zcrc.me, linux-pwm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH v3 4/4] pwm: jz4740: Add support for the JZ4725B
-Date:   Wed, 27 May 2020 13:52:25 +0200
-Message-Id: <20200527115225.10069-4-paul@crapouillou.net>
-In-Reply-To: <20200527115225.10069-1-paul@crapouillou.net>
-References: <20200527115225.10069-1-paul@crapouillou.net>
+        Wed, 27 May 2020 07:52:49 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jduby-0002aZ-Sb; Wed, 27 May 2020 11:52:42 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     QLogic-Storage-Upstream@cavium.com,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: qedf: remove redundant initialization of variable rc
+Date:   Wed, 27 May 2020 12:52:42 +0100
+Message-Id: <20200527115242.172344-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PWM hardware in the JZ4725B works the same as in the JZ4740, but has
-only six channels available.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+The variable rc is being initialized with a value that is never read
+and it is being updated later with a new value.  The initialization is
+redundant and can be removed.
+
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
+ drivers/scsi/qedf/qedf_fip.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Notes:
-    v2: Simply return -EINVAL if we can't get match data
-    v3: No change
-
- drivers/pwm/pwm-jz4740.c | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/pwm/pwm-jz4740.c b/drivers/pwm/pwm-jz4740.c
-index fe06ca8ce30f..5830ac2bdf6a 100644
---- a/drivers/pwm/pwm-jz4740.c
-+++ b/drivers/pwm/pwm-jz4740.c
-@@ -20,7 +20,9 @@
- #include <linux/pwm.h>
- #include <linux/regmap.h>
+diff --git a/drivers/scsi/qedf/qedf_fip.c b/drivers/scsi/qedf/qedf_fip.c
+index bb82f0875eca..ad6a56ce72a8 100644
+--- a/drivers/scsi/qedf/qedf_fip.c
++++ b/drivers/scsi/qedf/qedf_fip.c
+@@ -20,7 +20,7 @@ void qedf_fcoe_send_vlan_req(struct qedf_ctx *qedf)
+ #define MY_FIP_ALL_FCF_MACS        ((__u8[6]) { 1, 0x10, 0x18, 1, 0, 2 })
+ 	static u8 my_fcoe_all_fcfs[ETH_ALEN] = MY_FIP_ALL_FCF_MACS;
+ 	unsigned long flags = 0;
+-	int rc = -1;
++	int rc;
  
--#define NUM_PWM 8
-+struct soc_info {
-+	unsigned int num_pwms;
-+};
- 
- struct jz4740_pwm_chip {
- 	struct pwm_chip chip;
-@@ -36,7 +38,7 @@ static bool jz4740_pwm_can_use_chn(struct jz4740_pwm_chip *jz,
- 				   unsigned int channel)
- {
- 	/* Enable all TCU channels for PWM use by default except channels 0/1 */
--	u32 pwm_channels_mask = GENMASK(NUM_PWM - 1, 2);
-+	u32 pwm_channels_mask = GENMASK(jz->chip.npwm - 1, 2);
- 
- 	device_property_read_u32(jz->chip.dev->parent,
- 				 "ingenic,pwm-channels-mask",
-@@ -226,6 +228,11 @@ static int jz4740_pwm_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	struct jz4740_pwm_chip *jz4740;
-+	const struct soc_info *info;
-+
-+	info = device_get_match_data(dev);
-+	if (!info)
-+		return -EINVAL;
- 
- 	jz4740 = devm_kzalloc(dev, sizeof(*jz4740), GFP_KERNEL);
- 	if (!jz4740)
-@@ -239,7 +246,7 @@ static int jz4740_pwm_probe(struct platform_device *pdev)
- 
- 	jz4740->chip.dev = dev;
- 	jz4740->chip.ops = &jz4740_pwm_ops;
--	jz4740->chip.npwm = NUM_PWM;
-+	jz4740->chip.npwm = info->num_pwms;
- 	jz4740->chip.base = -1;
- 	jz4740->chip.of_xlate = of_pwm_xlate_with_flags;
- 	jz4740->chip.of_pwm_n_cells = 3;
-@@ -256,9 +263,18 @@ static int jz4740_pwm_remove(struct platform_device *pdev)
- 	return pwmchip_remove(&jz4740->chip);
- }
- 
-+static const struct soc_info __maybe_unused jz4740_soc_info = {
-+	.num_pwms = 8,
-+};
-+
-+static const struct soc_info __maybe_unused jz4725b_soc_info = {
-+	.num_pwms = 6,
-+};
-+
- #ifdef CONFIG_OF
- static const struct of_device_id jz4740_pwm_dt_ids[] = {
--	{ .compatible = "ingenic,jz4740-pwm", },
-+	{ .compatible = "ingenic,jz4740-pwm", .data = &jz4740_soc_info },
-+	{ .compatible = "ingenic,jz4725b-pwm", .data = &jz4725b_soc_info },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, jz4740_pwm_dt_ids);
+ 	skb = dev_alloc_skb(sizeof(struct fip_vlan));
+ 	if (!skb) {
 -- 
-2.26.2
+2.25.1
 
