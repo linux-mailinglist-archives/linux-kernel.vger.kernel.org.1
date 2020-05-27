@@ -2,65 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB12B1E3FC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 342B91E3F7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388291AbgE0LWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 07:22:47 -0400
-Received: from ns1.myhostingempire.com ([209.133.193.102]:12070 "EHLO
-        ns1.myhostingempire.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387839AbgE0LWq (ORCPT
+        id S1729997AbgE0LA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 07:00:59 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:13730 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728546AbgE0LA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 07:22:46 -0400
-X-Greylist: delayed 1402 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 May 2020 07:22:46 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=worldcrawler.com; s=default; h=Message-ID:Reply-To:Subject:To:From:Date:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:Sender:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=sZNKrvnCaMsa8Y14qgCMhmsrJGaeTkN9hwAY4t0LjBw=; b=opAIGEQVrIgbM4qY01cHQaRfe9
-        WaDtQG52yfhNAmOG1JLJNigsoM+TThx8VQbDbv03b8tNz8KgUHOUSIL/2N4N9Fq6fQ0TaiD9E9CL1
-        7zW/P0/PJ5UgdE8rPHi9UUcZOYeXveWHbAN9TRubE5n5s18PjGlGRDvNstlD//lRCfRjkWTvFrMCi
-        qM1aJrSEermgaoeoVrYWUW4myIn6LqBxKduaawV2mnJ2auN1yE7qfZlwHg7VbFk/vWifPvn6k9QwS
-        w0HrFeDcYjtF/caFccX59ygW/gn/xcJ31FevL1kvYc0zJMacQvvGyWaqoDrfJC610q30PqBrqkZbT
-        Y76ibKCg==;
-Received: from [::1] (port=9910 helo=ns1.myhostingempire.com)
-        by ns1.myhostingempire.com with esmtpa (Exim 4.93)
-        (envelope-from <office@worldcrawler.com>)
-        id 1jdtlV-0002hz-Jr; Wed, 27 May 2020 02:58:29 -0800
+        Wed, 27 May 2020 07:00:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590577257; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
+ Subject: Sender; bh=ymHDh98wpD0ql5S8OT+2qdYkMs5fUdlbcxfmzMaxXsQ=; b=CDrjnmobB1ARZBJ+b5ZwnX5owFY7MJd64rNwVf5mbx61PASw/X7LgqxZC9VgR2utdjr7yg6a
+ WGwHfCDtqClwwTRjEoOHF1p4E2ooWCzBrhgQaPOQqiAPy4whuE8fpEGK5ur6qprmUO07lSkE
+ qj/hM8UmLTsYJsmX3rK4spkkRwM=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5ece4841bf0e32d254554d32 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 May 2020 11:00:17
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E056AC433C6; Wed, 27 May 2020 11:00:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.0.104] (unknown [49.207.133.24])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sivaprak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 69A12C433C9;
+        Wed, 27 May 2020 11:00:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 69A12C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sivaprak@codeaurora.org
+Subject: Re: [PATCH V5 4/8] clk: qcom: Add DT bindings for ipq6018 apss clock
+ controller
+To:     Stephen Boyd <sboyd@kernel.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
+        jassisinghbrar@gmail.com, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com, robh+dt@kernel.org
+References: <1590314686-11749-1-git-send-email-sivaprak@codeaurora.org>
+ <1590314686-11749-5-git-send-email-sivaprak@codeaurora.org>
+ <159054661322.88029.16916819048155217664@swboyd.mtv.corp.google.com>
+From:   Sivaprakash Murugesan <sivaprak@codeaurora.org>
+Message-ID: <fc1a7c54-1c6f-2996-a610-4611e3788726@codeaurora.org>
+Date:   Wed, 27 May 2020 16:30:10 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <159054661322.88029.16916819048155217664@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 27 May 2020 11:58:29 +0100
-From:   SheemaKhaja WaheedUddin Subhani <office@worldcrawler.com>
-To:     undisclosed-recipients:;
-Subject: HELLO...
-Reply-To: sheema02@yahoo.com
-Mail-Reply-To: sheema02@yahoo.com
-Message-ID: <e4377327073811e83cca2df804ad8e71@worldcrawler.com>
-X-Sender: office@worldcrawler.com
-User-Agent: Roundcube Webmail/1.3.8
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - ns1.myhostingempire.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - worldcrawler.com
-X-Get-Message-Sender-Via: ns1.myhostingempire.com: authenticated_id: office@worldcrawler.com
-X-Authenticated-Sender: ns1.myhostingempire.com: office@worldcrawler.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
--- 
-Hello,
-I have a very vital information about your last name that has to do with 
-our late customer.Please get back to me for more details.
-Sheema.
+On 5/27/2020 8:00 AM, Stephen Boyd wrote:
+> Quoting Sivaprakash Murugesan (2020-05-24 03:04:42)
+>> add dt-binding for ipq6018 apss clock controller
+> Capitalize 'add' because it starts the sentence.
+ok.
+>
+>> Signed-off-by: Sivaprakash Murugesan <sivaprak@codeaurora.org>
+>> ---
+>>   include/dt-bindings/clock/qcom,apss-ipq.h | 12 ++++++++++++
+>>   1 file changed, 12 insertions(+)
+>>   create mode 100644 include/dt-bindings/clock/qcom,apss-ipq.h
+>>
+>> diff --git a/include/dt-bindings/clock/qcom,apss-ipq.h b/include/dt-bindings/clock/qcom,apss-ipq.h
+>> new file mode 100644
+>> index 0000000..77b6e05
+>> --- /dev/null
+>> +++ b/include/dt-bindings/clock/qcom,apss-ipq.h
+>> @@ -0,0 +1,12 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/*
+>> + * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+>> + */
+>> +
+>> +#ifndef _DT_BINDINGS_CLOCK_QCA_APSS_IPQ6018_H
+>> +#define _DT_BINDINGS_CLOCK_QCA_APSS_IPQ6018_H
+>> +
+>> +#define APCS_ALIAS0_CLK_SRC                    0
+>> +#define APCS_ALIAS0_CORE_CLK                   1
+> Will this be extended in the future? I hope that this is the only two
+> clks we expect to see in this file.
+yes you're right. these are the only two clocks.
