@@ -2,83 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8491E1E4251
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 14:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F001E425F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 14:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729577AbgE0MbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 08:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728859AbgE0MbQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 08:31:16 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C67BC08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 05:31:16 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jdvCA-0001lZ-I0; Wed, 27 May 2020 14:30:06 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id A9496100D19; Wed, 27 May 2020 14:30:04 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Wei Liu <wei.liu@kernel.org>, Boqun Feng <boqun.feng@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>
-Subject: Re: [patch V9 30/39] x86/entry: Convert various hypervisor vectors to IDTENTRY_SYSVEC
-In-Reply-To: <20200527083803.gpigonfy2kd2g5t4@debian>
-References: <20200521200513.656533920@linutronix.de> <20200521202119.647997594@linutronix.de> <20200527014616.GA123239@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net> <20200527083803.gpigonfy2kd2g5t4@debian>
-Date:   Wed, 27 May 2020 14:30:04 +0200
-Message-ID: <87mu5tpnlf.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+        id S1729910AbgE0Mcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 08:32:43 -0400
+Received: from mga07.intel.com ([134.134.136.100]:20409 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728337AbgE0Mcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 08:32:43 -0400
+IronPort-SDR: iNAQ9D7kTo/e+L8Bo9sbHyfc/RPtFSMS8/2zuhKtPd9aEyc48e3yQe3ebMOQ3LyXXqLXCaNG0a
+ kSA/Eqlw3EsA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 05:32:43 -0700
+IronPort-SDR: bC8ATACVYor4iaQNqvOb/bXKkpaisVzz0DtscTTSsjjhrpijO3/yplCe9GLymE5Q/NJE39TbmP
+ 7qAl9KeFHxLw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,441,1583222400"; 
+   d="scan'208";a="266819405"
+Received: from otc-lr-04.jf.intel.com ([10.54.39.143])
+  by orsmga003.jf.intel.com with ESMTP; 27 May 2020 05:32:43 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org
+Cc:     ak@linux.intel.com, Kan Liang <kan.liang@linux.intel.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] perf/x86/intel/uncore: Fix oops when counting IMC uncore events on some TGL
+Date:   Wed, 27 May 2020 05:30:47 -0700
+Message-Id: <1590582647-90675-1-git-send-email-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wei Liu <wei.liu@kernel.org> writes:
-> On Wed, May 27, 2020 at 09:46:16AM +0800, Boqun Feng wrote:
-> VMBus is being loaded. That gives me some clue.
->
-> I notice a hunk in the patch:
->
-> @@ -331,17 +327,19 @@ static void __init ms_hyperv_init_platfo
->         x86_platform.apic_post_init = hyperv_init;
->         hyperv_setup_mmu_ops();
->         /* Setup the IDT for hypervisor callback */
-> -       alloc_intr_gate(HYPERVISOR_CALLBACK_VECTOR, hyperv_callback_vector);
-> +       alloc_intr_gate(HYPERVISOR_CALLBACK_VECTOR, sysvec_hyperv_callback);
->
-> It is not using the asm variant.
->
-> Could this be the culprit? Thomas?
+From: Kan Liang <kan.liang@linux.intel.com>
 
-Of course ... Sorry
+When counting IMC uncore events on some TGL machines, an oops will be
+triggered.
+  [ 393.101262] BUG: unable to handle page fault for address:
+  ffffb45200e15858
+  [ 393.101269] #PF: supervisor read access in kernel mode
+  [ 393.101271] #PF: error_code(0x0000) - not-present page
+
+Current perf uncore driver still use the IMC MAP SIZE inherited from
+SNB, which is 0x6000.
+However, the offset of IMC uncore counters for some TGL machines is
+larger than 0x6000, e.g. 0xd8a0.
+
+Enlarge the IMC MAP SIZE for TGL to 0xe000.
+
+Fixes: fdb64822443e ("perf/x86: Add Intel Tiger Lake uncore support")
+Reported-by: Ammy Yi <ammy.yi@intel.com>
+Tested-by: Ammy Yi <ammy.yi@intel.com>
+Tested-by: Chao Qin <chao.qin@intel.com>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Cc: stable@vger.kernel.org
+---
+ arch/x86/events/intel/uncore_snb.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/events/intel/uncore_snb.c b/arch/x86/events/intel/uncore_snb.c
+index 3de1065..1038e9f 100644
+--- a/arch/x86/events/intel/uncore_snb.c
++++ b/arch/x86/events/intel/uncore_snb.c
+@@ -1085,6 +1085,7 @@ static struct pci_dev *tgl_uncore_get_mc_dev(void)
+ }
+ 
+ #define TGL_UNCORE_MMIO_IMC_MEM_OFFSET		0x10000
++#define TGL_UNCORE_PCI_IMC_MAP_SIZE		0xe000
+ 
+ static void tgl_uncore_imc_freerunning_init_box(struct intel_uncore_box *box)
+ {
+@@ -1112,7 +1113,7 @@ static void tgl_uncore_imc_freerunning_init_box(struct intel_uncore_box *box)
+ 	addr |= ((resource_size_t)mch_bar << 32);
+ #endif
+ 
+-	box->io_addr = ioremap(addr, SNB_UNCORE_PCI_IMC_MAP_SIZE);
++	box->io_addr = ioremap(addr, TGL_UNCORE_PCI_IMC_MAP_SIZE);
+ }
+ 
+ static struct intel_uncore_ops tgl_uncore_imc_freerunning_ops = {
+-- 
+2.7.4
+
