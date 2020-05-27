@@ -2,99 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04BC81E3AC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 09:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2F41E3AC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 09:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387565AbgE0HjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 03:39:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37162 "EHLO
+        id S2387638AbgE0Hk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 03:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387444AbgE0HjO (ORCPT
+        with ESMTP id S2387630AbgE0Hk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 03:39:14 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3246CC061A0F;
-        Wed, 27 May 2020 00:39:14 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id 131so3092746pfv.13;
-        Wed, 27 May 2020 00:39:14 -0700 (PDT)
+        Wed, 27 May 2020 03:40:27 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50293C03E97A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 00:40:27 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id r10so859068vsa.12
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 00:40:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hdoj3JJ/5JLP5p3ePdNfRX52Ttc8j3sVsRMMvrMaTIk=;
-        b=BprYPSq9xmBhWjDRNElxaRFVWEShMqprHmjjyIJrc8N16XlAsGIYyRv1JNKiSJByYu
-         gr8cQIRLs4rPFhAHqM+2yM0XG8L5aBrpralWp8waDBcl2/VPKkjIfH2MmfrJQeKaUsDL
-         RaSaVdNrS6S4X/0LjJ4X7FgFLF+xAl5+kuPgADYYa5hJmX78g0WSKnHFtTZd9UFAl1Ob
-         26zqAe/5MWJZx+do4gXxWW57nucincSqxItcfQHPcRqS9GiWgbcr4D8g1dbkaoj7QEpf
-         2aOmbIxI5545n1M+2iPPP+HwcIpHvU3IpcMFK1mEHq4NlXLj62cmvZRua8ZdBTxaw2vE
-         BDzA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=kbqsurmeGLoVyf5mF7tu7XoYvXzvCVwzyWVmHlzPe4E=;
+        b=Si4JZhkimRq0tm+S0xBFFj9UQR6H01BCBFEX58SlSkt5NhQYq8WpbbQ90ZS7sRbvdt
+         UYnqEkjXiB6si4N9NAzLEMhzZyuVY7gvJeAt7d+DjGLHfv1NhV9Upw+h7FjdRkO2Beff
+         7p5n177dMKgrOdFHMhvbTEWdJkrGdALSltOsLOhB4HjGcvk7I9jiSFIayoAvpDguYPp0
+         NbvXfL0oDukqvn/TZCrF3Nzqs7hr1e25krg9N9OnWi3Ca9Hb3lX3Sq8HzOlYXMQ29u/a
+         mLlihKNHaG+an3SMm8nZXq48K/CffY1MuI5fiUcM6atA6uenVJ0qKPiHl5yE/YMfJKq7
+         dxjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hdoj3JJ/5JLP5p3ePdNfRX52Ttc8j3sVsRMMvrMaTIk=;
-        b=q1bcxNlbxpI+6odyyyM4Vdf+yTW9XSeyZqHnK8szQpZQOIZG7uBD+K+ZXhJRLBMQmw
-         r0e6Niva67tmGpwrvsr9gU4mM3OVBO418jwMQ7z5sB79dKKOZQqIeglCjsxYYG+hHCmw
-         PjY2PI5W5H5qIeKwOG3hHfGngY7/knaK0E3RQhasl0rSxBDiYcmWrL+xVinsllogPvvK
-         NeiJVwx08K7z3GjxGNX3X0QjBcko2EJB2CIxu29n4t4yRaWa3iuLJNMbvshacT8mwrbh
-         eKS1WFOdYk3PR16Njh6297Jz3ip5TMLWoxwCyZ5DEE/DFqx/YHKjPl8emXzBVMgR0cTy
-         YuRQ==
-X-Gm-Message-State: AOAM533yvFlCS3JSN/d6fS3jB1mbUcltWEKMBlvZWim5p5Czjub2FPHr
-        SHcUlP0SlaHyoGNLXANPUHw9fCwPDVc=
-X-Google-Smtp-Source: ABdhPJwSOdP6lQD3E0LVW8K1PBoseWJJB+8I8vF1L4waxiipBMMFPGYt2JnXNkOo/mfbVqMNMS/Xsw==
-X-Received: by 2002:a65:49c8:: with SMTP id t8mr2827098pgs.335.1590565153244;
-        Wed, 27 May 2020 00:39:13 -0700 (PDT)
-Received: from ?IPv6:2404:7a87:83e0:f800:286d:5436:cc18:dcda? ([2404:7a87:83e0:f800:286d:5436:cc18:dcda])
-        by smtp.gmail.com with ESMTPSA id o18sm1478897pjp.4.2020.05.27.00.39.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 May 2020 00:39:12 -0700 (PDT)
-Subject: Re: [PATCH 4/4] exfat: standardize checksum calculation
-To:     Namjae Jeon <namjae.jeon@samsung.com>
-Cc:     kohada.tetsuhiro@dc.mitsubishielectric.co.jp,
-        mori.takahiro@ab.mitsubishielectric.co.jp,
-        motai.hirotaka@aj.mitsubishielectric.co.jp,
-        'Sungjong Seo' <sj1557.seo@samsung.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200525115052.19243-1-kohada.t2@gmail.com>
- <CGME20200525115121epcas1p2843be2c4af35d5d7e176c68af95052f8@epcas1p2.samsung.com>
- <20200525115052.19243-4-kohada.t2@gmail.com>
- <00d301d6332f$d4a52300$7def6900$@samsung.com>
-From:   Tetsuhiro Kohada <kohada.t2@gmail.com>
-Message-ID: <d0d2e4b3-436e-3bad-770c-21c9cbddf80e@gmail.com>
-Date:   Wed, 27 May 2020 16:39:10 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kbqsurmeGLoVyf5mF7tu7XoYvXzvCVwzyWVmHlzPe4E=;
+        b=j12Pd7343C3Rk0usUBAcyiL0AEFWf3XfIqjTKa+oWuF67dxtu/1ZcDINutgvRzToas
+         /Il592DXcrTEOp267YbdYUwnp5uS2L+UsR9GK9SiuOgavu6ns4So3J5tItUr7IDFfxkI
+         JgkJH14s7blg7iR+0BfjVLdlSuyDauxtBiQetb+cnHSpUsHbuQGZxiBqgh9ZmP1CoS+Q
+         o94F2quKE8CtR8TlKl22JUKrboSPzncTQoN7KrgddtZOcMV/ONgVKCPaO1Rj/rvEpfrp
+         KpKW64SxqEC9sUUEfWdxCOKQC+/wd99C59Up7DQ2IkJ+/b6ZqAeCMV+mob0b6Z3jNCH3
+         W3fw==
+X-Gm-Message-State: AOAM531w0WmpBSuerKpfEtm7kQE70qCEr0bP5pbDsIRRQ8sZgDXlkrlL
+        eGvwwk0amJ7xGXM5+LzKTGhlVYSK9zkVoyO9aFgklQ==
+X-Google-Smtp-Source: ABdhPJyYrXJaC6POxy5xkphIQg0LBSVr4X8J7p+I+CM9XauuFUaPtouHy9vmThZMgRn/CIU3XZZNYGTGnswZvhTDLCY=
+X-Received: by 2002:a67:690e:: with SMTP id e14mr3917779vsc.34.1590565226286;
+ Wed, 27 May 2020 00:40:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <00d301d6332f$d4a52300$7def6900$@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200526154334.21222-1-pali@kernel.org> <20200526154334.21222-2-pali@kernel.org>
+In-Reply-To: <20200526154334.21222-2-pali@kernel.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 27 May 2020 09:39:50 +0200
+Message-ID: <CAPDyKFq4KxT+m6nZbi9fM0Pf=JYkT7TTfERDxtUVX5qAiLAQBQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mmc: core: Export device/vendor ids from Common CIS
+ for SDIO cards
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for your comment.
+On Tue, 26 May 2020 at 17:43, Pali Roh=C3=A1r <pali@kernel.org> wrote:
+>
+> Device/vendor ids from Common CIS (Card Information Structure) may be
+> different as device/vendor ids from CIS on particular SDIO function.
+>
+> Export these "main" device/vendor ids for SDIO and SD combo cards at top
+> level mmc device in sysfs so userspace can do better identification of
+> connected SDIO and SD combo cards.
 
-> I can not apply this patch to exfat dev tree. Could you please check it ?
-> patching file fs/exfat/dir.c
-> Hunk #1 succeeded at 491 (offset -5 lines).
-> Hunk #2 succeeded at 500 (offset -5 lines).
-> Hunk #3 succeeded at 508 (offset -5 lines).
-> Hunk #4 FAILED at 600.
-> Hunk #5 succeeded at 1000 (offset -47 lines).
-> 1 out of 5 hunks FAILED -- saving rejects to file fs/exfat/dir.c.rej
-> patching file fs/exfat/exfat_fs.h
-> Hunk #1 succeeded at 137 (offset -2 lines).
-> Hunk #2 succeeded at 512 (offset -3 lines).
-> patching file fs/exfat/misc.c
-> patching file fs/exfat/nls.c
+What would userspace do with this information, more exactly?
 
-II tried applying patch to dev-tree (4c4dbb6ad8e8).
--The .patch file I sent
--mbox file downloaded from archive
-But I can't reproduce the error. (Both succeed)
-How do you reproduce the error?
+Isn't it just sufficient to give events per SDIO func, as we already
+do in sdio_bus_uevent()?
 
-BR
+Kind regards
+Uffe
+
+>
+> Signed-off-by: Pali Roh=C3=A1r <pali@kernel.org>
+> Reviewed-by: Marek Beh=C3=BAn <marek.behun@nic.cz>
+> ---
+>  drivers/mmc/core/bus.c  |  7 +++++++
+>  drivers/mmc/core/sd.c   | 26 +++++++++++++++++++++++++-
+>  drivers/mmc/core/sdio.c | 20 +++++++++++++++++++-
+>  3 files changed, 51 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/mmc/core/bus.c b/drivers/mmc/core/bus.c
+> index 103eea7cd..5d4b28b29 100644
+> --- a/drivers/mmc/core/bus.c
+> +++ b/drivers/mmc/core/bus.c
+> @@ -93,6 +93,13 @@ mmc_bus_uevent(struct device *dev, struct kobj_uevent_=
+env *env)
+>                         return retval;
+>         }
+>
+> +       if (card->type =3D=3D MMC_TYPE_SDIO || card->type =3D=3D MMC_TYPE=
+_SD_COMBO) {
+> +               retval =3D add_uevent_var(env, "SDIO_ID=3D%04X:%04X",
+> +                                       card->cis.vendor, card->cis.devic=
+e);
+> +               if (retval)
+> +                       return retval;
+> +       }
+> +
+>         if (card->type !=3D MMC_TYPE_SDIO) {
+>                 retval =3D add_uevent_var(env, "MMC_NAME=3D%s", mmc_card_=
+name(card));
+>                 if (retval)
+> diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+> index 76c7add36..ee1a51ff6 100644
+> --- a/drivers/mmc/core/sd.c
+> +++ b/drivers/mmc/core/sd.c
+> @@ -707,7 +707,12 @@ static ssize_t mmc_dsr_show(struct device *dev,
+>
+>  static DEVICE_ATTR(dsr, S_IRUGO, mmc_dsr_show, NULL);
+>
+> +MMC_DEV_ATTR(vendor, "0x%04x\n", card->cis.vendor);
+> +MMC_DEV_ATTR(device, "0x%04x\n", card->cis.device);
+> +
+>  static struct attribute *sd_std_attrs[] =3D {
+> +       &dev_attr_vendor.attr,
+> +       &dev_attr_device.attr,
+>         &dev_attr_cid.attr,
+>         &dev_attr_csd.attr,
+>         &dev_attr_scr.attr,
+> @@ -726,7 +731,26 @@ static struct attribute *sd_std_attrs[] =3D {
+>         &dev_attr_dsr.attr,
+>         NULL,
+>  };
+> -ATTRIBUTE_GROUPS(sd_std);
+> +
+> +static umode_t sd_std_is_visible(struct kobject *kobj, struct attribute =
+*attr,
+> +                                int index)
+> +{
+> +       struct device *dev =3D container_of(kobj, struct device, kobj);
+> +       struct mmc_card *card =3D mmc_dev_to_card(dev);
+> +
+> +       /* CIS vendor and device ids are available only for Combo cards *=
+/
+> +       if ((attr =3D=3D &dev_attr_vendor.attr || attr =3D=3D &dev_attr_d=
+evice.attr) &&
+> +           card->type !=3D MMC_TYPE_SD_COMBO)
+> +               return 0;
+> +
+> +       return attr->mode;
+> +}
+> +
+> +static const struct attribute_group sd_std_group =3D {
+> +       .attrs =3D sd_std_attrs,
+> +       .is_visible =3D sd_std_is_visible,
+> +};
+> +__ATTRIBUTE_GROUPS(sd_std);
+>
+>  struct device_type sd_type =3D {
+>         .groups =3D sd_std_groups,
+> diff --git a/drivers/mmc/core/sdio.c b/drivers/mmc/core/sdio.c
+> index ebb387aa5..d708e0fbc 100644
+> --- a/drivers/mmc/core/sdio.c
+> +++ b/drivers/mmc/core/sdio.c
+> @@ -27,6 +27,24 @@
+>  #include "sdio_ops.h"
+>  #include "sdio_cis.h"
+>
+> +MMC_DEV_ATTR(vendor, "0x%04x\n", card->cis.vendor);
+> +MMC_DEV_ATTR(device, "0x%04x\n", card->cis.device);
+> +MMC_DEV_ATTR(ocr, "0x%08x\n", card->ocr);
+> +MMC_DEV_ATTR(rca, "0x%04x\n", card->rca);
+> +
+> +static struct attribute *sdio_std_attrs[] =3D {
+> +       &dev_attr_vendor.attr,
+> +       &dev_attr_device.attr,
+> +       &dev_attr_ocr.attr,
+> +       &dev_attr_rca.attr,
+> +       NULL,
+> +};
+> +ATTRIBUTE_GROUPS(sdio_std);
+> +
+> +struct device_type sdio_type =3D {
+> +       .groups =3D sdio_std_groups,
+> +};
+> +
+>  static int sdio_read_fbr(struct sdio_func *func)
+>  {
+>         int ret;
+> @@ -598,7 +616,7 @@ static int mmc_sdio_init_card(struct mmc_host *host, =
+u32 ocr,
+>         /*
+>          * Allocate card structure.
+>          */
+> -       card =3D mmc_alloc_card(host, NULL);
+> +       card =3D mmc_alloc_card(host, &sdio_type);
+>         if (IS_ERR(card)) {
+>                 err =3D PTR_ERR(card);
+>                 goto err;
+> --
+> 2.20.1
+>
