@@ -2,231 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C81F1E4EDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E6D21E4EEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387523AbgE0UJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 16:09:52 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:46008 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387432AbgE0UJw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 16:09:52 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 5345E2A0494
-From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-To:     axboe@kernel.dk, corbet@lwn.net, linux-block@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel@collabora.com,
-        krisman@collabora.com,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-Subject: [PATCH] docs: block: Create blk-mq documentation
-Date:   Wed, 27 May 2020 17:09:39 -0300
-Message-Id: <20200527200939.77452-1-andrealmeid@collabora.com>
-X-Mailer: git-send-email 2.26.2
+        id S1728436AbgE0ULU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 16:11:20 -0400
+Received: from mout.web.de ([212.227.17.11]:60313 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726946AbgE0ULT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 16:11:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1590610261;
+        bh=CHV7SNSIIZzmGY3i8n8PgVpj3Nj1KoCxW/Gzc0jiBr8=;
+        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
+        b=GfIrViUQFiikAi7Qic8g6awgl7l7e3lC9z1+ZC76F8DCKcYCwI1tm5la5Cd+z2ZAQ
+         mMs/5qA+VJDno0FmtVThXZcikyGbM2bEj/Lplp7Gmr3HsJuFQhVMd0JRkfz+BhpVo/
+         M2IayMrUsuloABU74SfxIx9WqeIGdpUmmOJM3ioY=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.135.185.253]) by smtp.web.de (mrweb103
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0M6mTI-1iqM8v2Gm4-00wYgX; Wed, 27
+ May 2020 22:11:01 +0200
+To:     Chuhong Yuan <hslester96@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Chuhong Yuan <hslester95@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [PATCH] media: exynos4-is: Add missed check for
+ pinctrl_lookup_state()
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <9e5330d3-9f68-2538-6bd6-cc4c688e9e85@web.de>
+Date:   Wed, 27 May 2020 22:11:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:E0ncCqmnC3zi3ItR9C0IER0kl4BL2d120+xAIU464WkV7h3xbBR
+ jtRpR8xK2RG9pQApzkz0BQPA85iBqNhHvDcihVDeIuWa3endfeLIg570GHvTSMSje0E7S9u
+ L0K4RICfoFuLy+KsPSD2sadpJhV+us5k2WjJJy8GSHsZx76R8fLjFMI922+6hWTQcgs9DEF
+ Ljvi741rMrYBCAL/KYahA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:R9sKFzu2WYk=:D+BapHhaQTTkh/HkEA5gLs
+ 55HI6FXMc53defQsDSwfQGmpeD6V9jHqUymC5680rmQJQF9dj+PRBtDopIbZa3WYgJMhGWou4
+ ax/hTE7P8PNkTn5FG20cPS+eAZ76nuUZFViQTwTL98u5aQrVurr11xtooughAxojbbYW17921
+ nNV8LVWl+yAUJJ9joRhmW+bT2d/g9OVVHuTa9moUQMZiLFpZoa+XfS1grnIwLw0LoZOLf1bx3
+ XWwZYIwcQ1GHpmqBnttKTEd3y2cKP4NJIIV+UG20hgXRbkW/4JBvN51lfLiViU0ZpC4JZqo2F
+ wP81brd19HULAp7I7oh1mHbmoD/zdV5W8dmdqTDdQ7GtpsjNeqCq6JEL60hAT0R+d/zBoKmve
+ EEFZSaGh32Gnc5VZVhgOKU032TOhKbHXpKcJrl0CvFYbO21R68fe0j5nCELbkDf7ixvv+hS+b
+ HqosIuB3IKKBFvdUwoMlZLIt8YikHH5y5c5X9K131+bxANSJQ2LLK+r7Tm7BB1zDqwmDA2VJc
+ uGUeLVZfvSg1PoBtgwbrFj/xzURXmCCoNeHfkIqNqOrLpQbkLqoCVwJXU06ss48H9zHP1HWl4
+ oBfzif5HLGZ80Ilog+hmILSPEngZOShnCa+obp5KmXXNHqraI4hN97ZAWtiaS88sUJpgfdjRD
+ fiQ3FiWkGdclx0bETeKlttXrTcugTLAPRlMK369wr/beClx1a6fzbShnW36azvwcAwUTVA78q
+ bqvqSjFw0p6rxLFA0UqmJ3OVTAsVsRq2ct/IOFka/1kHMuNKqQElnBfDxjVMNHZxw4IB/xS1K
+ H4koE6T5TAY/CjAfQEUmP9Nuk1yGuNG+FDLtOjpWBvIfEu0ChO9h/qI7GWB904d98PtwIHYu7
+ f0aLhzVUwwxYL8rixxgspoeyMHCa9014O8tAWyZ/dVJIVQ2eMTMWdXd/ALFJX5M+UcDSyZSbc
+ leb5JOWRvrlJEB0oUr91yMZhya8PPPzsLCb4uhqb3+DcEWg37JO8xQ598HGtqhohQFZP3SFcu
+ 4egzmZ7UYWaNLktc57c3UUMmaDDhMV7OX//c4xXu8FSfx4CuPoOdi+4ufSqnn54ZUMA2f+aUy
+ zNEZFkG5fCX7NTKeIua1xHMK+RJrpUqFpOOkQDcoqXEdxT87tA7kdnVKCaHzy7Nb7s7F0u1Qb
+ 9ReBdrsJxHrX2rU5Iz9OHYoYXgEm3nLL6FBKGeNfkLIEXjn9ytssWRojCFRVn9K/O0S6vRNsh
+ AGhFknlT0gy+0IuYa
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create a documentation providing a background and explanation around the
-operation of the Multi-Queue Block IO Queueing Mechanism (blk-mq).
+> fimc_md_get_pinctrl() misses a check for pinctrl_lookup_state().
+> Add the missed check
 
-The reference for writing this documentation was the source code and
-"Linux Block IO: Introducing Multi-queue SSD Access on Multi-core
-Systems", by Axboe et al.
+Thanks for another completion of the exception handling.
 
-Signed-off-by: André Almeida <andrealmeid@collabora.com>
----
-Hello,
 
-This commit was tested using "make htmldocs" and the HTML output has
-been verified.
+>                      to fix it.
 
-Thanks,
-	André
----
- Documentation/block/blk-mq.rst | 154 +++++++++++++++++++++++++++++++++
- Documentation/block/index.rst  |   1 +
- 2 files changed, 155 insertions(+)
- create mode 100644 Documentation/block/blk-mq.rst
+I suggest to replace this wording by the tag =E2=80=9CFixes=E2=80=9D for t=
+he commit message.
 
-diff --git a/Documentation/block/blk-mq.rst b/Documentation/block/blk-mq.rst
-new file mode 100644
-index 000000000000..4c37b37df50e
---- /dev/null
-+++ b/Documentation/block/blk-mq.rst
-@@ -0,0 +1,154 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+================================================
-+Multi-Queue Block IO Queueing Mechanism (blk-mq)
-+================================================
-+
-+The Multi-Queue Block IO Queueing Mechanism is an API to enable fast storage
-+devices to achieve a huge number of input/output operations per second (IOPS)
-+through queueing and submitting IO requests to block devices simultaneously,
-+benefiting from the parallelism offered by modern storage devices.
-+
-+Introduction
-+============
-+
-+Background
-+----------
-+
-+Magnetic hard disks have been the de facto standard from the beginning of the
-+development of the kernel. The Block IO subsystem aimed to achieve the best
-+performance possible for those devices with a high penalty when doing random
-+access, and the bottleneck was the mechanical moving parts, a lot more slower
-+than any layer on the storage stack. One example of such optimization technique
-+involves ordering read/write requests accordingly to the current position of
-+the hard disk head.
-+
-+However, with the development of Solid State Drivers and Non-Volatile Memories
-+without mechanical parts nor random access penalty and capable of performing
-+high parallel access, the bottleneck of the stack had moved from the storage
-+device to the operating system. In order to  take advantage of the parallelism
-+in those devices design, the multi-queue mechanism was introduced.
-+
-+The former design had a single queue to store block IO requests with a single
-+lock, that did not scale well in SMP systems due to dirty data in cache and the
-+bottleneck of having a single lock for multiple processors. This setup also
-+suffered with congestion when different processes (or the same process, moving
-+to different CPUs) wanted to perform block IO. Instead of this, this API spawns
-+multiple queues with individual entry points local to the CPU, removing the
-+need for a lock. A deeper explanation on how this works is covered in the
-+following section (`Operation`_).
-+
-+Operation
-+---------
-+
-+When the userspace performs IO to a block device (reading or writing a file,
-+for instance), the blk-mq takes action: it will store and manage IO requests to
-+the block device, acting as a middleware between the userspace (and a file
-+system, if present) and the block device driver.
-+
-+The blk-mq has two group of queues: software staging queues and hardware
-+dispatch queues. When the request arrives the block layer, it will try the
-+shortest path possible: send it directly to the hardware queue. However, there
-+are two cases that it might not to do that: if there's an IO scheduler attached
-+at the layer or if we want to try to merge requests. In both cases, requests
-+will be sent to the software queue.
-+
-+Then, after the requests being processed at software queues, they will be
-+placed at the hardware queue, a second stage queue were the hardware has direct
-+access to process those requests. However, if the hardware has not enough
-+resources to accept more requests, it will place requests at temporary queue,
-+to be sent in the future, when the hardware is able.
-+
-+Software staging queues
-+~~~~~~~~~~~~~~~~~~~~~~~
-+
-+The block IO subsystem adds requests (represented by struct
-+:c:type:`blk_mq_ctx`) in the software staging queues in case that they weren't
-+sent directly to the driver. A request is a collection of BIOs. They arrived at
-+the block layer through the data structures struct :c:type:`bio`. The block
-+layer will then build a new structure from it, the struct :c:type:`request`
-+that will be used to communicate with the device driver. Each queue has its
-+owns lock and the number of queues is defined by a per-CPU or per-node basis.
-+
-+The staging queue can be used to merge requests for adjacent sectors. For
-+instance, requests for sector 3-6, 6-7, 7-9 can become one request for 3-9.
-+Even if random access to SSDs and NVMs have the same time of response compared
-+to sequential access, grouped requests for sequential access decreases the
-+number of individual requests. This technique of merging requests is called
-+plugging.
-+
-+Along with that, the requests can be reordered to ensure fairness of system
-+resources (e.g. to ensure that no application suffer from starvation) and/or to
-+improve IO performance, by an IO scheduler.
-+
-+IO Schedulers
-+^^^^^^^^^^^^^
-+
-+There are several schedulers implemented by the block layer, each one following
-+a heuristics to improve the IO performance. They are "pluggable" (as in plug
-+and play), in the sense of they can be selected at run time using sysfs. You
-+can read more about Linux's IO schedulers `here
-+<https://www.kernel.org/doc/html/latest/block/index.html>`_. The scheduling
-+happens only between requests in the same queue, so it is not possible to merge
-+requests from different queues, otherwise there would be cache trashing and a
-+need to have a lock for each queue. After the scheduling, the requests are
-+eligible to be sent to the hardware. One of the possibles schedulers to be
-+selected is the NOOP scheduler, the most straightforward one, that implements a
-+simple FIFO, without performing any reordering. This is useful in the following
-+scenarios: when scheduling will be performed in a next step somewhere in the
-+stack, like block devices controllers; the actual sector position of blocks are
-+transparent for the host, meaning it hasn't enough information to take a proper
-+decision; or the overhead of reordering is higher than the handicap of
-+non-sequential accesses.
-+
-+Hardware dispatch queues
-+~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+The hardware queue is a memory space shared with the block device (e.g. DMA)
-+where the hardware can access and dispatch requests (represented by struct
-+:c:type:`blk_mq_hw_ctx`). To run this queue, the block layer removes
-+requests from the associated software queues and tries to dispatch to the
-+hardware.
-+
-+If it's not possible to send the requests directly to hardware, they will be
-+added to a linked list (:c:type:`hctx->dispatched`) of requests. Then,
-+next time the block layer runs a queue, it will send the requests laying at the
-+:c:type:`dispatched` list first, to ensure a fairness dispatch with those
-+requests that were ready to be sent first. The number of hardware queues
-+depends on the number of hardware context supported by the hardware and its
-+device driver, but it will not be more than the number of cores of the system.
-+There is no reordering at this stage, and each software queues has a set of
-+hardware queues to send requests for.
-+
-+.. note::
-+
-+        Neither the block layer nor the device protocols guarantee
-+        the order of completion of requests. This must be handled by
-+        higher layers, like the filesystem.
-+
-+Tag-based completion
-+~~~~~~~~~~~~~~~~~~~~
-+
-+In order to indicate which request has been completed, every request is
-+identified by an integer, ranging from 0 to the dispatch queue size. This tag
-+is generated by the block layer and later reused by the device driver, removing
-+the need to create a redundant identifier. When a request is completed in the
-+drive, the tag is sent back to the block layer to notify it of the finalization.
-+This removes the need to do a linear search to find out which IO has been
-+completed.
-+
-+Further reading
-+---------------
-+
-+- `Linux Block IO: Introducing Multi-queue SSD Access on Multi-core Systems <http://kernel.dk/blk-mq.pdf>`_
-+
-+- `NOOP scheduler <https://en.wikipedia.org/wiki/Noop_scheduler>`_
-+
-+- `Null block device driver <https://www.kernel.org/doc/html/latest/block/null_blk.html>`_
-+
-+Source code documentation
-+=========================
-+
-+.. kernel-doc:: include/linux/blk-mq.h
-+
-+.. kernel-doc:: block/blk-mq.c
-diff --git a/Documentation/block/index.rst b/Documentation/block/index.rst
-index 3fa7a52fafa4..3a3f38322185 100644
---- a/Documentation/block/index.rst
-+++ b/Documentation/block/index.rst
-@@ -10,6 +10,7 @@ Block
-    bfq-iosched
-    biodoc
-    biovecs
-+   blk-mq
-    capability
-    cmdline-partition
-    data-integrity
--- 
-2.26.2
-
+Regards,
+Markus
