@@ -2,153 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 444331E34DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 03:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432DE1E34DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 03:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726803AbgE0BnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 21:43:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbgE0BnA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 21:43:00 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09670C061A0F;
-        Tue, 26 May 2020 18:43:00 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id 131so2648271pfv.13;
-        Tue, 26 May 2020 18:42:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TMYPzf1zyGGWbUzm30NY2XXvAZv7yIeZIH3rUZQbHZ0=;
-        b=aDhAuU759PeqA8cjkqHn8adpDLvzToq0LVho3g0nQGloHty1hnnswAJKFZJ4VDJEYm
-         I/NgUF6P23Emcgg9NkiXw6EyxQvVirYZRc9hzYzu0b+nldYFiQUvTlk1SRL5x68mORv9
-         IJk5wLdgxfD48NAvBxIDibign9kv0e5c/w61ygUcEDzgf9TC9/HAf2xwg/Q2FGZvIqLG
-         aKruAu7zdsgF6bPufeSPTDO2UQ4BViFGfGH1hDZ2KtiY8ZJHWyF0iC5IbdP8/ztZ944e
-         NrI3rT4/OeHL7QLQwJPnlDnXFw1ZTFSb+0dOqLsL8FtAOl+Pd0bJmgXuRCn01YmbJM7Y
-         lq1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=TMYPzf1zyGGWbUzm30NY2XXvAZv7yIeZIH3rUZQbHZ0=;
-        b=lOW+QcBuXb2foPHXh4g8OHya+GNMpPCn6udymgryA3loLK/wqYniU7G7KWwzMywCJB
-         fNVTUOU53MVOw2GmBXhrrwzsl8+qRLgaQIJrffmhiC+mNHL5m0Qd0vL7UBvbwLMKNpAp
-         7duH7raPhMzAMBIwq3joQQzntwMQoJD7PaBBEI3hnE47oC6zEOONpSmKsaZW/FlSNxMt
-         ROaokfbAKvTikX3OUYLAEF71Mz6UIDh5dr4R7Yky3Bb20j8AX4+PaplyWwS083k+HeVV
-         xaep4yH9azxG6nvnMEnSyYMKcHeNd81Mkm9+uoSKCvLMPU09LcvFKSBbPZbG0x4+b/hU
-         o7fA==
-X-Gm-Message-State: AOAM532xq2i4XTWRccF8ZhlDTNRbz7JXlmbgoy09krT/EegN2CborMCD
-        ahiyzXY/p4A3r7+XS5HmBSqvQjRB
-X-Google-Smtp-Source: ABdhPJypNKnsEraByPoOKKR2nH5/93q/md72DNbuMFLZxLPjVlTARJ8Qr8pYRvCyJAUtiW5Ce1mvHg==
-X-Received: by 2002:aa7:9ad9:: with SMTP id x25mr1595779pfp.179.1590543779087;
-        Tue, 26 May 2020 18:42:59 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k65sm623030pfd.156.2020.05.26.18.42.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 May 2020 18:42:58 -0700 (PDT)
-Subject: Re: [v1,1/1 1/2] Check the timeout module parameter is in the min-max
- range
-To:     yuechao.zhao@advantech.com.cn, 345351830@qq.com
-Cc:     amy.shih@advantech.com.tw, oakley.ding@advantech.com.tw,
-        jia.sui@advantech.com.cn, Jean Delvare <jdelvare@suse.com>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1590542319-35736-1-git-send-email-yuechao.zhao@advantech.com.cn>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <2f482f42-0977-db1d-704a-b6f83ad715ef@roeck-us.net>
-Date:   Tue, 26 May 2020 18:42:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726861AbgE0BoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 21:44:05 -0400
+Received: from mga09.intel.com ([134.134.136.24]:59084 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726842AbgE0BoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 21:44:05 -0400
+IronPort-SDR: pj4uXSQEHp7LhosaWVl4JNJwoAg3nxLB0vgVEiAG/91cgxLIE7f/oj+VXeSuA8FlYsAYR7z6ZK
+ 4TmaUyA/TVeQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 18:44:04 -0700
+IronPort-SDR: xF4NamqZOsUfFCvLw03Fj91Sa2iAEJ1DPzR8Hjbd2NynOMqmOFEDowii1ih4wd95HIlwHYfBHy
+ 8YnMVI6dUygw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,439,1583222400"; 
+   d="scan'208";a="255326666"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.107])
+  by fmsmga007.fm.intel.com with ESMTP; 26 May 2020 18:44:00 -0700
+Date:   Wed, 27 May 2020 09:43:59 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Andi Kleen <andi.kleen@intel.com>
+Cc:     Qian Cai <cai@lca.pw>, Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>, tim.c.chen@intel.com,
+        dave.hansen@intel.com, ying.huang@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] make vm_committed_as_batch aware of vm overcommit
+ policy
+Message-ID: <20200527014359.GA93879@shbuild999.sh.intel.com>
+References: <1588922717-63697-1-git-send-email-feng.tang@intel.com>
+ <20200521212726.GC6367@ovpn-112-192.phx2.redhat.com>
+ <20200526181459.GD991@lca.pw>
+ <20200527011413.GA610738@tassilo.jf.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1590542319-35736-1-git-send-email-yuechao.zhao@advantech.com.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200527011413.GA610738@tassilo.jf.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/20 6:18 PM, yuechao.zhao@advantech.com.cn wrote:
-> From: Yuechao Zhao <yuechao.zhao@advantech.com.cn>
+On Tue, May 26, 2020 at 06:14:13PM -0700, Andi Kleen wrote:
+> On Tue, May 26, 2020 at 02:14:59PM -0400, Qian Cai wrote:
+> > On Thu, May 21, 2020 at 05:27:26PM -0400, Qian Cai wrote:
+> > > On Fri, May 08, 2020 at 03:25:14PM +0800, Feng Tang wrote:
+> > > > When checking a performance change for will-it-scale scalability
+> > > > mmap test [1], we found very high lock contention for spinlock of
+> > > > percpu counter 'vm_committed_as':
+> > > > 
+> > > >     94.14%     0.35%  [kernel.kallsyms]         [k] _raw_spin_lock_irqsave
+> > > >     48.21% _raw_spin_lock_irqsave;percpu_counter_add_batch;__vm_enough_memory;mmap_region;do_mmap;
+> > > >     45.91% _raw_spin_lock_irqsave;percpu_counter_add_batch;__do_munmap;
+> > > > 
+> > > > Actually this heavy lock contention is not always necessary. The
+> > > > 'vm_committed_as' needs to be very precise when the strict
+> > > > OVERCOMMIT_NEVER policy is set, which requires a rather small batch
+> > > > number for the percpu counter.
+> > > > 
+> > > > So lift the batch number to 16X for OVERCOMMIT_ALWAYS and
+> > > > OVERCOMMIT_GUESS policies, and add a sysctl handler to adjust it
+> > > > when the policy is reconfigured.
+> > > > 
+> > > > Benchmark with the same testcase in [1] shows 53% improvement on a
+> > > > 8C/16T desktop, and 2097%(20X) on a 4S/72C/144T server. And no change
+> > > > for some platforms, due to the test mmap size of the case is bigger
+> > > > than the batch number computed, though the patch will help mmap/munmap
+> > > > generally.
+> > > > 
+> > > > [1] https://lkml.org/lkml/2020/3/5/57
+> > > > 
+> > > > There are some style complain from checkpatch for patch 3, as it
+> > > > follows the similar format of sibling functions
+> > > > 
+> > > > patch1: a cleanup for /proc/meminfo
+> > > > patch2: a preparation patch which also improve the accuracy of
+> > > >         vm_memory_committed
+> > > > patch3: the main change
+> > > > 
+> > > > Please help to review, thanks!
+> > > 
+> > > Reverted this series fixed a warning under memory pressue.
+> > 
+> > Andrew, Stephen, can you drop this series?
 > 
-> Check the return value of 'watchdog_init_timeout()' for checking the
-> timeout module parameter is in the min-max range.
+> Hope you're happy now.
 > 
-> Signed-off-by: Yuechao Zhao <yuechao.zhao@advantech.com.cn>
+> The warning is just not needed for the always case. The whole point
+> of the patch was to maintain these counters only approximately.
+> We could of course use _sum or _sum_positive in the warning, but that would
+> just be unnecessary overhead in this moderately hot path.
+> 
+> So this patch should fix it: (untested)
+> 
+> Possibly might need to move it even further down because the patch
+> also affected the _GUESS case.
 
-Please fix the subject. It should start with "hwmon: (nct7904)"
+Thanks Andi for the patch. And I agree that it could be after _GUESS
+case, as existig check for _GUESS is loose:
 
-> ---
->  drivers/hwmon/nct7904.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+	if (pages > totalram_pages() + total_swap_pages)
+	         goto error;
+
+Thanks,
+Feng
+
 > 
-> diff --git a/drivers/hwmon/nct7904.c b/drivers/hwmon/nct7904.c
-> index 18c95be..d069d59 100644
-> --- a/drivers/hwmon/nct7904.c
-> +++ b/drivers/hwmon/nct7904.c
-> @@ -1152,7 +1152,10 @@ static int nct7904_probe(struct i2c_client *client,
->  	data->wdt.max_timeout = MAX_TIMEOUT;
->  	data->wdt.parent = &client->dev;
+> 
+> diff --git a/mm/util.c b/mm/util.c
+> index 988d11e6c17c..fa78f90e29a1 100644
+> --- a/mm/util.c
+> +++ b/mm/util.c
+> @@ -798,10 +798,6 @@ int __vm_enough_memory(struct mm_struct *mm, long pages, int cap_sys_admin)
+>  {
+>  	long allowed;
 >  
-> -	watchdog_init_timeout(&data->wdt, timeout * 60, &client->dev);
-> +	ret = watchdog_init_timeout(&data->wdt, timeout * 60, &client->dev);
-> +	if (ret < 0)
-> +		return ret;
+> -	VM_WARN_ONCE(percpu_counter_read(&vm_committed_as) <
+> -			-(s64)vm_committed_as_batch * num_online_cpus(),
+> -			"memory commitment underflow");
+> -
+>  	vm_acct_memory(pages);
+>  
+>  	/*
+> @@ -810,6 +806,10 @@ int __vm_enough_memory(struct mm_struct *mm, long pages, int cap_sys_admin)
+>  	if (sysctl_overcommit_memory == OVERCOMMIT_ALWAYS)
+>  		return 0;
+>  
+> +	VM_WARN_ONCE(percpu_counter_read(&vm_committed_as) <
+> +			-(s64)vm_committed_as_batch * num_online_cpus(),
+> +			"memory commitment underflow");
 > +
-
-Why ? The idea of returning an error from watchdog_init_timeout
-is to give the driver a chance to select a default, not to refuse
-loading the driver.
-
->  	watchdog_set_nowayout(&data->wdt, nowayout);
->  	watchdog_set_drvdata(&data->wdt, data);
->  
-> 
-
+>  	if (sysctl_overcommit_memory == OVERCOMMIT_GUESS) {
+>  		if (pages > totalram_pages() + total_swap_pages)
+>  			goto error;
