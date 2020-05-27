@@ -2,150 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E3B1E4290
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 14:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3858F1E4293
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 14:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730110AbgE0MmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 08:42:24 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:57411 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728746AbgE0MmX (ORCPT
+        id S2387578AbgE0MoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 08:44:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387514AbgE0MoW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 08:42:23 -0400
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
-        by mailnew.west.internal (Postfix) with ESMTP id 311C6D1D;
-        Wed, 27 May 2020 08:42:22 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Wed, 27 May 2020 08:42:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=YAzT/i
-        0ebKx3FpLJN9H2EfUuYMjgSleYWEoLvMZTlsE=; b=vqHnJfYXRqig7SVo6y+0sT
-        K1+kSxInKVF3Tb3dsZYV9MV1LeL95oP0JUyuT3H8Z9eloOrAMEQnvhApifzzdd3P
-        DCnoCtgE6/ppISTecgqZkiTEGeADCsx0nSe26bqogtDQq3/MkWF2EdVI4CHPL++d
-        izQmOSHvkYipuM379y9OZDuIZO9fY5uHqgXedRESO7iXrgAUmKpE/RsiEhCQsmqe
-        16wgBagd/QYyeVVMemtIgWYH1+j05F8I9QMtBPf3QhjDP60xOzh3FQ21Xywz1QfC
-        nseda01f2Keu3akl16vx9dJ1Uq6q4/m4qkzbc0qWuep2403IW+VY+iHlMJo1f8GA
-        ==
-X-ME-Sender: <xms:LGDOXvAk0XHeHk6jpB8ZXa_blTWuypqUNuuwieV5CcKstxNVdj65sg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddvgedggeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjfgesghdtreertdervdenucfhrhhomhephghojhht
-    vghkucfrohhrtgiihihkuceofihojhhusehinhhvihhsihgslhgvthhhihhnghhslhgrsg
-    drtghomheqnecuggftrfgrthhtvghrnhepleejheekjeevheeljeekfefhvddvieetjeei
-    keetheeigeduhfdttdeihfdvleejnecuffhomhgrihhnpehrthhfugdrihhopdhgihhthh
-    husgdrtghomhenucfkphepledurddugeehrdduieelrdeiheenucevlhhushhtvghrufhi
-    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpeifohhjuhesihhnvhhishhisghlvg
-    hthhhinhhgshhlrggsrdgtohhm
-X-ME-Proxy: <xmx:LGDOXlh2ctKov0IoVlHx1a-Km4nWC6BLiMy7EmzVzEAN5cWwunMrxw>
-    <xmx:LGDOXqnLj9GsYEJfzE5h433zxrYzj3YztpjbRE8hfPS0I5bbfIc-iQ>
-    <xmx:LGDOXhz54v1Nf8IsKXCTMVJSvf-oDyzIHH5yUv_MeCUXhBUd6w39qQ>
-    <xmx:LWDOXnHwXDWy0VVphbBb80ndm8v0dOgNAL4Z1191amchCqX2_2H40xplqMg>
-Received: from mail-itl.localdomain (91-145-169-65.internetia.net.pl [91.145.169.65])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7937E3061DC5;
-        Wed, 27 May 2020 08:42:20 -0400 (EDT)
-Received: by mail-itl.localdomain (Postfix, from userid 1000)
-        id 017915D516; Wed, 27 May 2020 14:42:15 +0200 (CEST)
-Date:   Wed, 27 May 2020 14:42:15 +0200
-From:   Wojtek Porczyk <woju@invisiblethingslab.com>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Don Porter <porter@cs.unc.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        bp@alien8.de, luto@kernel.org, hpa@zytor.com,
-        dave.hansen@intel.com, tony.luck@intel.com,
-        ravi.v.shankar@intel.com, chang.seok.bae@intel.com
-Subject: Re: Re: [PATCH v12 00/18] Enable FSGSBASE instructions
-Message-ID: <20200527124215.GK14256@invisiblethingslab.com>
-References: <20200511045311.4785-1-sashal@kernel.org>
- <0186c22a8a6be1516df0703c421faaa581041774.camel@linux.intel.com>
- <20200515164013.GF29995@sasha-vm>
- <c566b89cc3ef6c164160cc56a820abac3fd70839.camel@linux.intel.com>
- <20200518153407.GA499505@tassilo.jf.intel.com>
- <371e6a92cad25cbe7a8489785efa7d3457ecef3b.camel@linux.intel.com>
- <87v9ksvoaq.fsf@nanos.tec.linutronix.de>
- <20200519164853.GA19706@linux.intel.com>
- <7eb45e02-03bf-0af0-c915-794bf49d66d7@cs.unc.edu>
- <1276588f1ea395bdedf8b5e3af15666f0095dc0d.camel@linux.intel.com>
+        Wed, 27 May 2020 08:44:22 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 331E2C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 05:44:22 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id dh1so11014563qvb.13
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 05:44:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:user-agent:in-reply-to:references:mime-version
+         :content-transfer-encoding:subject:to:cc:from:message-id;
+        bh=SG6R5fwcwu0F3wXBZAetFtlGMrCPJrWFQW7Tk4R8pX8=;
+        b=JO4hX5voxOSBXrFSDCfVw+fU62Ree4bW4Gy/nlNHSBO1n6UWZrpq8mvT8fC5YaJ2w1
+         pp8wQ8vb/F9udJvwHpWe0OBLKrmexHwi+TdPMmUSz0O3B5ID6xLVA0VOQciRNt7mvxGw
+         A4PABBg/oAvMzPdS/iJn2OAXDHb2XyuFGU6m+w0qAj2/Rq7/BWkMgSMex4/4wc1KvFmQ
+         gTp8vxtwz5eCDOe8de+CJNYDvfYEAlZMGHqhuV1Wxmgadjtdyamdj+3UodxPr1wGDl23
+         tEZ2ICPVIt7C5nqLMV6HGv0c6PWtdybcP0cFzzf6SXMxQrqy738pVMY7x3wOcgiztCAX
+         NZhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:user-agent:in-reply-to:references
+         :mime-version:content-transfer-encoding:subject:to:cc:from
+         :message-id;
+        bh=SG6R5fwcwu0F3wXBZAetFtlGMrCPJrWFQW7Tk4R8pX8=;
+        b=HEGcL2ZA49FKXc4h74GpiryyXsCvrL1ZwOuTrQBGoUkgr9t+GO5MXfrQRCTTXNXAzO
+         XU+efLu96USBwa7cVJHiKq8IEqwhSKJzCQiIrcoCAGg6tCnwvBVe/NOBsspmA3SbLOEg
+         GLjvvQY6zfijsL1XJtdfkHyCta/s8J2iC+ky6s0PAcVpTL9pa3V88XcOuVpLm6lodUgj
+         XhNxJ7ebHjeZvh8+NrCJtVBE8nsuvsrIwtCh2orn+rhGn245d2pIX/JBgGf+842gqW/3
+         S6tIWvJDbLC6JNdRHY89nQqR7vDocTlsUVDTM640ewQbSzZ8WwrqwVifRFzYVgUjHFsE
+         GvdA==
+X-Gm-Message-State: AOAM532Y49P4Ok7HyDG2WdGZDXZjj274htS3Zb0bkg3vlafy3tSnKI7J
+        kMQAAMDM096DVn6A9jVCTIU=
+X-Google-Smtp-Source: ABdhPJwakQCUE8zxEyozSmQIsktEcJrASJvgQJPKyDtIxsRIVMwLdjYWz6d4+l/FnbrcS94apfuEKg==
+X-Received: by 2002:a05:6214:1021:: with SMTP id k1mr3776904qvr.180.1590583461236;
+        Wed, 27 May 2020 05:44:21 -0700 (PDT)
+Received: from [192.168.86.185] ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id b11sm2275339qti.50.2020.05.27.05.44.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 May 2020 05:44:20 -0700 (PDT)
+Date:   Wed, 27 May 2020 09:43:40 -0300
+User-Agent: K-9 Mail for Android
+In-Reply-To: <xgl9367mndy6.fsf@arm.com>
+References: <20200522065330.34872-1-nick.gasson@arm.com> <20200526115547.GF333164@krava> <xgl9367mndy6.fsf@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Kynn+LdAwU9N+JqL"
-Content-Disposition: inline
-In-Reply-To: <1276588f1ea395bdedf8b5e3af15666f0095dc0d.camel@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] perf jvmti: remove redundant jitdump line table entries
+To:     Nick Gasson <nick.gasson@arm.com>, Jiri Olsa <jolsa@redhat.com>
+CC:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        linux-kernel@vger.kernel.org
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Message-ID: <FAA0E3A0-505F-4EEE-9509-A174FACB6AC6@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---Kynn+LdAwU9N+JqL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 27, 2020 at 11:20:08AM +0300, Jarkko Sakkinen wrote:
-> On Fri, 2020-05-22 at 16:14 -0400, Don Porter wrote:
-> > legacy code in SGX.  We have been following LKML discussions on this=20
-> > instruction for years, and hoping this feature would be supported by=20
-> > Linux, so that we can retire this module.  To our knowledge, every SGX=
-=20
->=20
-> Why have you followed this for years and never tried the patches?
+On May 27, 2020 2:29:05 AM GMT-03:00, Nick Gasson <nick=2Egasson@arm=2Ecom=
+> wrote:
+>On 05/26/20 19:55 PM, Jiri Olsa wrote:
+>> On Fri, May 22, 2020 at 02:53:30PM +0800, Nick Gasson wrote:
+>>> For each PC/BCI pair in the JVMTI compiler inlining record table,
+>the
+>>> jitdump plugin emits debug line table entries for every source line
+>in
+>>> the method preceding that BCI=2E Instead only emit one source line per
+>>> PC/BCI pair=2E Reported by Ian Rogers=2E This reduces the =2Edump size=
+ for
+>>> SPECjbb from ~230MB to ~40MB=2E
+>>>=20
+>>> Also fix an error in the DWARF line table state machine where
+>addresses
+>>> are incorrectly offset by -0x40 (GEN_ELF_TEXT_OFFSET)=2E This can be
+>seen
+>>> with `objdump -S` on the ELF files after perf inject=2E
+>>
+>> hi,
+>> I can't apply this on latest Arnaldo's perf/core:
+>>
+>> patching file jvmti/libjvmti=2Ec
+>> Hunk #1 FAILED at 32=2E
+>> Hunk #2 succeeded at 67 (offset -4 lines)=2E
+>> Hunk #3 FAILED at 85=2E
+>> Hunk #4 succeeded at 114 (offset -7 lines)=2E
+>>
+>
+>Sorry I based this on my earlier patch series below but I didn't
+>realise
+>that wasn't merged to perf/core yet=2E Could those patches be applied
+>first? I believe Ian added a Reviewed-by for all three=2E
+>
+>https://lore=2Ekernel=2Eorg/lkml/20200427061520=2E24905-3-nick=2Egasson@a=
+rm=2Ecom/T/
 
-For all the reasons stated before (we preferred a module, not a patchset, a=
-nd
-we didn't really care about implications), and because the general situation
-about kernel drivers is a mess: Intel made three, mutually incompatible lin=
-ux
-drivers [1] and we used SDK driver, which incidentally is also how people
-learn SGX programming in general.
-
-With three different drivers and unclear future directions, we chose to wait
-and see how the situation settles, so we stuck to the driver that was alrea=
-dy
-working.
-
-Also, we're no kernel developers and there were/still are more urgent things
-to fix in the graphene proper. For example we only recently have support for
-running non-debug enclaves using DCAP LE [2].
-
-[1] Here are my notes from when I was figuring out:
-    https://graphene.rtfd.io/en/latest/sgx-intro.html#linux-kernel-drivers
-
-[2] https://github.com/oscarlab/graphene/issues/881
-    https://github.com/oscarlab/graphene/pull/978
+I'll check, thanks
+- Arnaldo
 
 --=20
-pozdrawiam / best regards
-Wojtek Porczyk
-Graphene / Invisible Things Lab
-=20
- I do not fear computers,
- I fear lack of them.
-    -- Isaac Asimov
-
---Kynn+LdAwU9N+JqL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEaO0VFfpr0tEF6hYkv2vZMhA6I1EFAl7OYCgACgkQv2vZMhA6
-I1EnzRAAreQQvrt9oGbSrtNJ9t2bQRyG5l0jT7OhCTRWX5Wtfkv6q5KO4IkRodbW
-bBLhAs5kSo75oXiisJD+otDO03Do+wEeQIfGoPqewARqwPS90d/gcZUG7Wgyopvu
-beFRssdIwjf3SM/0GpvnUyHKdq5Ewk0REyrY2yrUVnFX82J13Cg8REuDREtOOdra
-HYeBwO84uRHGEG/Om3dBDRyujO0rWRB7w6etr6ZSEGhgPZV1Nq7fv/QMFCW0RTpm
-NapBcgjnKNARZSYw+cy/PR5SFad0qTdluwN/g4OUE4Daei2/NwoXjvNkRAMI7DB8
-itfPVPQqalunGSva2hWj1wwyGa3aToTsZGW/2wQXjijiDoaoGku49lg2DBkvphZs
-CIieYeX1y2NY7PUozLGbLEZ/lEFLfPIJSanBYh1vIsM0Q+HKD/HCandC2mw7gNLD
-QOH4LRflKm57UYhqtdokbQXKJAde992t+CMKtIg6snh/nIVo3HcIK0StQnMMdSn/
-T/GXLxxA3I9SoKN1+Ua50Qww/SDXw7LX+isWcNv7fTUtLrn0i47O//m1OlsZ1Qj9
-0qlRX5eec5xWmE/R+LwtVUSjGtLtpI4g5nWgpud/NVz6C8rcXVsTy1BeehrJCpXH
-ZmmO6W+WKlG7C8XiBKL4HZyzQr0lLFhTQ2oz/pIksiehue5QP+E=
-=rRZW
------END PGP SIGNATURE-----
-
---Kynn+LdAwU9N+JqL--
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
