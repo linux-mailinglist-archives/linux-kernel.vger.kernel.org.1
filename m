@@ -2,81 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C49FA1E4451
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7201E445A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388756AbgE0Ns0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:48:26 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:55735 "EHLO
+        id S2388798AbgE0Nts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:49:48 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:33607 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388082AbgE0NsZ (ORCPT
+        with ESMTP id S2388082AbgE0Ntr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:48:25 -0400
+        Wed, 27 May 2020 09:49:47 -0400
 Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
  (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MkpOZ-1jA3RJ26yV-00mKQD; Wed, 27 May 2020 15:48:22 +0200
+ 1MhUQ7-1j91G51nmt-00ehEl; Wed, 27 May 2020 15:48:50 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] io_uring: include linux/pagemap.h
-Date:   Wed, 27 May 2020 15:48:08 +0200
-Message-Id: <20200527134821.1001856-1-arnd@arndb.de>
+Subject: [PATCH] x86/entry: Fix unused-function warning
+Date:   Wed, 27 May 2020 15:48:33 +0200
+Message-Id: <20200527134847.1014162-1-arnd@arndb.de>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:AnkI1/UfaEFGuuR8lsmWfA+cClYJaFovoQxZjwHBUBeNDV1ahjf
- qLXvGr/UxePgpPoq/+t2mGbqkfaheo9uVoLBmzedRhUYWCUK1zt2kE/lg/3YJ0tpIsd23QW
- IngVAeSYbhPn8DNs+ychvJ0KMGIhJQZ7p6aTYnjMTJ1fN49PDw+Y9l+P7dfXkDfM6PNtnWi
- oqyW4MPRJAhQKAng6kIUQ==
+X-Provags-ID: V03:K1:rcxzRfm9RWNwTE4dnsLZHZdPXNdzdRgJGPsRh/Q/smTMbKuxO5b
+ m+9MKjIhN2OCFBeb0CCwv4hIPhQDIpa56DOnBqgE/Dsf4JkuYsbtcUd1xnuquwVBWp3pWbE
+ wmI+invZStS+QoGJh2zOMtgYqaafS10tA5rmSBkL42MaZEVsWNQ5mFeNwbgUZ+OK5X6hZji
+ X/gL4yAQVhs4EJ7EBmasA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gK33T4nZbcg=:4i9fO+/F8DhO4VXyAzWfXw
- whkM41Bswq1rWhra27aXsOYJKq/S2fL7K5f4KgkEuKFvZ4oOeXKl3Z6Sw3P3U8b0pXOjp1pOK
- sKrTRndtpb9r+za1DsbTjwxcpkJwcTo758EZ8n0FRpKH5EnnQEjhw7kbRjOj+Iz60P66TtLZf
- aEDd74dNLeWQcoQTx+h0EJCNjXZrR06p38eexslvi2kTQ++dJ5atQRw3RF6r1iHFouVELw2mU
- OLsVeabPzX1hGsgMTGsVorENIA2qrSv8EpFzeKgcqSYL9taF92vr4Gf3t7IhAblvklQmD/Pax
- ShxnxopSUhtjhRBrPcDBoFeC4ROak+kXgbcfxkRq6CmdkKJG9qUTKw/+D2wtSRA4IcYReDkci
- tH9OAkC9OAgasXz3oFo0v+w3x/ltOAe9NQc2aWQz2UPWMqmxp3sWSresDYO6muIvnrdUhZhdT
- +6v10eE/YjGgZrbx9CY5X/SJRl/N7iifxdi3SE34Q0YrUed6cBGNxf2HFFWqWQRkacqDfGcP7
- 39BliEHewgrmaaqf2eIp/8+JmPjaaDWR/OA1KhMY+hKfAxKgdXa6Z/jUW7i0ZplM4MC9nX1bq
- gxSa3ieQrGaapKVXlKQe7mDZsnGSV8rplzS+2tTtaMxfincOZMiEoDBSihmStkhy/+B71ewjp
- 8/n2nmZUgWQSqZ7sNbSRjsfFZ0ifcqXZBybM6QnAQ5OvUUcb53ASfEn4ZEEvVNq+B4LzpB4QI
- J6AfS/k6dEvP8vHdRKeXE7r0JNdSWe/gKz84e659q9nr/GcA41OupnDTtUClHjSpAoZLuNcbt
- 4lB5fjDlnOhEhillDubQa8+pfhkdduq9HiHKUuDenHuIwjTiY4=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:og2mAToSSgk=:KHcxmul/2+PEwZ7qd/g53Z
+ wFuZ3Q82LjTM8RWuWYqFcaIbC+eo99mqhrS9LkWgctft0WTvbJ4CtOiWAys/0Db85zc33JtiY
+ lYZV/sk1zRu+VoeFTWwZB/5GEpOg76XQDU401aPAyKrciU073/wJ+1OpEY3KaJ3NXlkxime7p
+ oSdJCk3/iBQDv1KwEA7XgvTfh+/KMkVTUN/EqJf2gOxbwItFuxRqTamEBnGUy51RX9XMNbmEj
+ aGZvL6cWyyWxUBXM+NTs211yfcYWn+0lP1ZfaS0bEtBM5DRtpm0aMCt3O4c/wgetHQ5EOHnd2
+ yb6GnoNSUgBsb8HT4cZmfOcBIYv7dz55ja+oBVwViVu60cefvSMmRkUpNXFGX8TikBk3ztsqy
+ O7ucK3GG9nap8OJJ8HbcrP3GHUSuCV6lkyleQ8trHeMgY18u5txFOg39TBTsC6KWVPX5Nl4m5
+ z/1O8k93esjAm9loPwMSiUkUDuzIIoM+Ar2cJX9apyF4GlEJ+xJWrY3eskO4VfteZU6er+07I
+ iEM7Zwhmz1/69UCyl87EYcDe9r/WyRpgM0FTawhRNulkDndS/EQUmBQhe7evqRVrfMBC+asZp
+ vTeG8/TRWM6E4xXb7uWxILLR6tvuiyncVHMD4TN/9KUumKavPfUSgUNmRJpNOdFh9gZuwYDv6
+ YsVZ+/u6JJ5qPWnKx03zCgqHuHlm04y8unia7zWheXwkLKgvKnFwB3IRujCFk6BXfSBnY9t7a
+ AEnUa62kZHi49AeAUE3fjGTckm06HIxk1+GEu56rvRTe77O/lVHro99KXiPSEwwY+2qq3WafC
+ 6bMyFWNA2oN+jFr48y8ND79lmwtIA9oGAeSSyWYYIo/VrpwKVU=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I observed a build regression in ARM randconfig builds:
+The new 'address' variable is only used in some configurations:
 
-fs/io_uring.c:500:26: error: field has incomplete type 'struct wait_page_queue'
-        struct wait_page_queue          wpq;
+arch/x86/kernel/traps.c:332:16: error: unused variable 'address' [-Werror,-Wunused-variable]
+        unsigned long address = read_cr2();
 
-Include the missing header file that defines the structure
-to make it build again.
+Change the #ifdef guard to cover this case as well.
 
-Fixes: ad9e8c18aaa2 ("io_uring: support true async buffered reads, if file provides it")
+Fixes: 095b7a3e7745 ("x86/entry: Convert double fault exception to IDTENTRY_DF")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- fs/io_uring.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/kernel/traps.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index d292b992f945..5e2a0a8809a5 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -55,6 +55,7 @@
- #include <linux/fdtable.h>
- #include <linux/mm.h>
- #include <linux/mman.h>
-+#include <linux/pagemap.h>
- #include <linux/percpu.h>
- #include <linux/slab.h>
- #include <linux/kthread.h>
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index 35298c1df32f..c9d0d466641a 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -328,7 +328,7 @@ DEFINE_IDTENTRY_DF(exc_double_fault)
+ 	static const char str[] = "double fault";
+ 	struct task_struct *tsk = current;
+ 
+-#ifdef CONFIG_X86_64
++#if defined(CONFIG_X86_64) && defined(CONFIG_VMAP_STACK)
+ 	unsigned long address = read_cr2();
+ #endif
+ 
 -- 
 2.26.2
 
