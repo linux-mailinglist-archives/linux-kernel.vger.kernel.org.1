@@ -2,102 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24FE1E4249
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 14:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8491E1E4251
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 14:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730036AbgE0M26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 08:28:58 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:32650 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728143AbgE0M25 (ORCPT
+        id S1729577AbgE0MbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 08:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728859AbgE0MbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 08:28:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590582536;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g9FxUpI3OzPM1e9gI4pX6q/XzrU1P17TZrLPSvSwy/4=;
-        b=bgl06NX7JFw6Oyrt3rS9fEIwh2v6pDOOQ3UXbwCMcY+loGcM9H+VgG0VncjtWKF71nceNW
-        RjuMQq0paj3/ya3PnoWEY4gTziKx0Ha2AjT/2YfPlmveXDnXEQ320TqPXIGljjFOsSh1eB
-        Pxea/daAgRcGLo0DdEQujRLFp+txrVM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-170-oAjDMN-xP067UrZLUINvoQ-1; Wed, 27 May 2020 08:28:54 -0400
-X-MC-Unique: oAjDMN-xP067UrZLUINvoQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 592A1107ACCA;
-        Wed, 27 May 2020 12:28:53 +0000 (UTC)
-Received: from starship (unknown [10.35.206.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DC70C5D9E5;
-        Wed, 27 May 2020 12:28:51 +0000 (UTC)
-Message-ID: <7240b1f9ef497fd040c7315d90711c642f709d16.camel@redhat.com>
-Subject: Re: KVM broken after suspend in most recent kernels.
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Brad Campbell <lists2009@fnarfbargle.com>
-Cc:     kvm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Wed, 27 May 2020 15:28:50 +0300
-In-Reply-To: <20200527051354.GL31696@linux.intel.com>
-References: <1f7a85cc-38a6-2a2e-cbe3-a5b9970b7b92@fnarfbargle.com>
-         <f726be8c-c7ef-bf6a-f31e-394969d35045@fnarfbargle.com>
-         <1f7b1c9a8d9cbb6f82e97f8ba7a13ce5b773e16f.camel@redhat.com>
-         <a45bc9d7-ad0b-2ff0-edcc-5283f591bc10@fnarfbargle.com>
-         <20200527051354.GL31696@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
+        Wed, 27 May 2020 08:31:16 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C67BC08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 05:31:16 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jdvCA-0001lZ-I0; Wed, 27 May 2020 14:30:06 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id A9496100D19; Wed, 27 May 2020 14:30:04 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Wei Liu <wei.liu@kernel.org>, Boqun Feng <boqun.feng@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        X86 ML <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Jason Chen CJ <jason.cj.chen@intel.com>,
+        Zhao Yakui <yakui.zhao@intel.com>,
+        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>
+Subject: Re: [patch V9 30/39] x86/entry: Convert various hypervisor vectors to IDTENTRY_SYSVEC
+In-Reply-To: <20200527083803.gpigonfy2kd2g5t4@debian>
+References: <20200521200513.656533920@linutronix.de> <20200521202119.647997594@linutronix.de> <20200527014616.GA123239@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net> <20200527083803.gpigonfy2kd2g5t4@debian>
+Date:   Wed, 27 May 2020 14:30:04 +0200
+Message-ID: <87mu5tpnlf.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-05-26 at 22:13 -0700, Sean Christopherson wrote:
-> On Mon, May 25, 2020 at 09:15:57PM +0800, Brad Campbell wrote:
-> > > When you mean that KVM is broken after suspend, you mean that you
-> > > can't
-> > > start new VMs after suspend, or do VMs that were running before
-> > > suspend
-> > > break?  I see the later on my machine. I have AMD system though,
-> > > so most
-> > > likely this is another bug.
-> > > 
-> > > Looking at the commit, I suspect that we indeed should set the
-> > > IA32_FEAT_CTL
-> > > after resume from ram, since suspend to ram might count as a
-> > > complete CPU
-> > > reset.
-> > > 
-> > 
-> > One of those "I should have clarified that" moments immediately
-> > after I
-> > pressed send.  I've not tried suspending with a VM running. It's
-> > "can't start
-> > new VMs after suspend".
-> 
-> Don't bother testing suspending with a VM, the only thing that will
-> be
-> different is that your system will hang on resume instead when
-> running a
-> VM.  If there are active VMs, KVM automatically re-enables VMX via
-> VMXON
-> after resume, and VMXON is what's faulting.
-> 
-> Odds are good the firmware simply isn't initializing IA32_FEAT_CTL,
-> ever.
-> The kernel handles the boot-time case, but I (obviously) didn't
-> consider
-> the suspend case.  I'll work on a patch.
+Wei Liu <wei.liu@kernel.org> writes:
+> On Wed, May 27, 2020 at 09:46:16AM +0800, Boqun Feng wrote:
+> VMBus is being loaded. That gives me some clue.
+>
+> I notice a hunk in the patch:
+>
+> @@ -331,17 +327,19 @@ static void __init ms_hyperv_init_platfo
+>         x86_platform.apic_post_init = hyperv_init;
+>         hyperv_setup_mmu_ops();
+>         /* Setup the IDT for hypervisor callback */
+> -       alloc_intr_gate(HYPERVISOR_CALLBACK_VECTOR, hyperv_callback_vector);
+> +       alloc_intr_gate(HYPERVISOR_CALLBACK_VECTOR, sysvec_hyperv_callback);
+>
+> It is not using the asm variant.
+>
+> Could this be the culprit? Thomas?
 
-This is exactly what I was thinking about this as well.
-
-Best regards,
-	Maxim Levitsky
-> 
-
+Of course ... Sorry
