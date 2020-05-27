@@ -2,140 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36281E408F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F041E4108
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387482AbgE0Lx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 07:53:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728527AbgE0Lx0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 07:53:26 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695FFC08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 04:53:26 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id A2F9E3D0; Wed, 27 May 2020 13:53:23 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        jroedel@suse.de
-Subject: [PATCH 03/10] iommu/amd: Let free_pagetable() not rely on domain->pt_root
+        id S1728297AbgE0L6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 07:58:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40730 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729304AbgE0LyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 07:54:14 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 785A2AC91;
+        Wed, 27 May 2020 11:54:15 +0000 (UTC)
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
+        gregkh@linuxfoundation.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        devel@driverdev.osuosl.org
+Subject: [RFC 01/50] staging: vchi: Get rid of vchi_service_destroy()
 Date:   Wed, 27 May 2020 13:53:06 +0200
-Message-Id: <20200527115313.7426-4-joro@8bytes.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200527115313.7426-1-joro@8bytes.org>
-References: <20200527115313.7426-1-joro@8bytes.org>
+Message-Id: <20200527115400.31391-2-nsaenzjulienne@suse.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200527115400.31391-1-nsaenzjulienne@suse.de>
+References: <20200527115400.31391-1-nsaenzjulienne@suse.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+The function has no users.
 
-Use 'struct domain_pgtable' instead to free_pagetable(). This solves
-the problem that amd_iommu_domain_direct_map() needs to restore
-domain->pt_root after the device table has been updated just to make
-free_pagetable release the domain page-table.
-
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 ---
- drivers/iommu/amd/iommu.c | 36 ++++++++++++++++--------------------
- 1 file changed, 16 insertions(+), 20 deletions(-)
+ .../vc04_services/interface/vchi/vchi.h       |  3 ---
+ .../interface/vchiq_arm/vchiq_shim.c          | 19 -------------------
+ 2 files changed, 22 deletions(-)
 
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index 8368f6b9c17f..c7e47a7f0d45 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -1391,20 +1391,19 @@ static struct page *free_sub_pt(unsigned long root, int mode,
- 	return freelist;
- }
- 
--static void free_pagetable(struct protection_domain *domain)
-+static void free_pagetable(struct domain_pgtable *pgtable)
- {
--	struct domain_pgtable pgtable;
- 	struct page *freelist = NULL;
- 	unsigned long root;
- 
--	amd_iommu_domain_get_pgtable(domain, &pgtable);
--	atomic64_set(&domain->pt_root, 0);
-+	if (pgtable->mode == PAGE_MODE_NONE)
-+		return;
- 
--	BUG_ON(pgtable.mode < PAGE_MODE_NONE ||
--	       pgtable.mode > PAGE_MODE_6_LEVEL);
-+	BUG_ON(pgtable->mode < PAGE_MODE_NONE ||
-+	       pgtable->mode > PAGE_MODE_6_LEVEL);
- 
--	root = (unsigned long)pgtable.root;
--	freelist = free_sub_pt(root, pgtable.mode, freelist);
-+	root = (unsigned long)pgtable->root;
-+	freelist = free_sub_pt(root, pgtable->mode, freelist);
- 
- 	free_page_list(freelist);
- }
-@@ -1823,12 +1822,16 @@ static void free_gcr3_table(struct protection_domain *domain)
-  */
- static void dma_ops_domain_free(struct protection_domain *domain)
- {
-+	struct domain_pgtable pgtable;
-+
- 	if (!domain)
- 		return;
- 
- 	iommu_put_dma_cookie(&domain->domain);
- 
--	free_pagetable(domain);
-+	amd_iommu_domain_get_pgtable(domain, &pgtable);
-+	atomic64_set(&domain->pt_root, 0);
-+	free_pagetable(&pgtable);
- 
- 	if (domain->id)
- 		domain_id_free(domain->id);
-@@ -2496,9 +2499,8 @@ static void amd_iommu_domain_free(struct iommu_domain *dom)
- 		break;
- 	default:
- 		amd_iommu_domain_get_pgtable(domain, &pgtable);
+diff --git a/drivers/staging/vc04_services/interface/vchi/vchi.h b/drivers/staging/vc04_services/interface/vchi/vchi.h
+index ff2b960d8cac..686cfc536012 100644
+--- a/drivers/staging/vc04_services/interface/vchi/vchi.h
++++ b/drivers/staging/vc04_services/interface/vchi/vchi.h
+@@ -83,9 +83,6 @@ extern uint32_t vchi_current_time(struct vchi_instance_handle *instance_handle);
+ /******************************************************************************
+  * Global service API
+  *****************************************************************************/
+-// Routine to destroy a service
+-extern int32_t vchi_service_destroy(const struct vchi_service_handle *handle);
 -
--		if (pgtable.mode != PAGE_MODE_NONE)
--			free_pagetable(domain);
-+		atomic64_set(&domain->pt_root, 0);
-+		free_pagetable(&pgtable);
- 
- 		if (domain->flags & PD_IOMMUV2_MASK)
- 			free_gcr3_table(domain);
-@@ -2796,7 +2798,6 @@ void amd_iommu_domain_direct_map(struct iommu_domain *dom)
- 	struct protection_domain *domain = to_pdomain(dom);
- 	struct domain_pgtable pgtable;
- 	unsigned long flags;
--	u64 pt_root;
- 
- 	spin_lock_irqsave(&domain->lock, flags);
- 
-@@ -2804,18 +2805,13 @@ void amd_iommu_domain_direct_map(struct iommu_domain *dom)
- 	amd_iommu_domain_get_pgtable(domain, &pgtable);
- 
- 	/* Update data structure */
--	pt_root = amd_iommu_domain_encode_pgtable(NULL, PAGE_MODE_NONE);
--	atomic64_set(&domain->pt_root, pt_root);
-+	atomic64_set(&domain->pt_root, 0);
- 
- 	/* Make changes visible to IOMMUs */
- 	update_domain(domain);
- 
--	/* Restore old pgtable in domain->ptroot to free page-table */
--	pt_root = amd_iommu_domain_encode_pgtable(pgtable.root, pgtable.mode);
--	atomic64_set(&domain->pt_root, pt_root);
--
- 	/* Page-table is not visible to IOMMU anymore, so free it */
--	free_pagetable(domain);
-+	free_pagetable(&pgtable);
- 
- 	spin_unlock_irqrestore(&domain->lock, flags);
+ // Routine to open a named service
+ extern int32_t vchi_service_open(struct vchi_instance_handle *instance_handle,
+ 				 struct service_creation *setup,
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
+index efdd3b1c7d85..9a040651bb9b 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
+@@ -642,25 +642,6 @@ int32_t vchi_service_close(const struct vchi_service_handle *handle)
  }
+ EXPORT_SYMBOL(vchi_service_close);
+ 
+-int32_t vchi_service_destroy(const struct vchi_service_handle *handle)
+-{
+-	int32_t ret = -1;
+-	struct shim_service *service = (struct shim_service *)handle;
+-
+-	if (service) {
+-		enum vchiq_status status = vchiq_remove_service(service->handle);
+-
+-		if (status == VCHIQ_SUCCESS) {
+-			service_free(service);
+-			service = NULL;
+-		}
+-
+-		ret = vchiq_status_to_vchi(status);
+-	}
+-	return ret;
+-}
+-EXPORT_SYMBOL(vchi_service_destroy);
+-
+ int32_t vchi_service_set_option(const struct vchi_service_handle *handle,
+ 				enum vchi_service_option option,
+ 				int value)
 -- 
-2.17.1
+2.26.2
 
