@@ -2,126 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC101E4A7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6E71E4A85
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728759AbgE0Qkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 12:40:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725613AbgE0Qkj (ORCPT
+        id S2390013AbgE0Qlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 12:41:32 -0400
+Received: from sonic307-15.consmr.mail.ne1.yahoo.com ([66.163.190.38]:34930
+        "EHLO sonic307-15.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729359AbgE0Qlb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 12:40:39 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4EFC05BD1E
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 09:40:38 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id q24so1721243pjd.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 09:40:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uHhJpfFsD/vONvAsVvtz6rjp43VNNhX+VTZ9/q4aMwo=;
-        b=qcAowrrtbV50Kn3dGfOetWYVLFdCRijJDVCzz2/S44hA4cbH0p9CfEm3wLDwR6D/Wp
-         btmYZ+MR9xXEjil125KcKvcbYdDApFmoGX/fbWkynMEgE0pY9g4bDWCqbLtzDuNIiGvv
-         fFmBKEX2N7z7AVUCqDjt8yIeleJGRXo0fpb+D5z1hr1fbXs/lNPteiXUn2/tSSS+obv1
-         y7PvAkgfEbd3DC8mu3TSgBa5z1lMr3fcQ3orU6lrHvzd5eaH3riVLqF70K7u1TVj+B3u
-         bIRCl9Kbeol6APv2lMwV1VFaz9I1mn9BfPyIvQt9KvlEejktLp8p4yrFa1Dj2DDaluRx
-         clVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uHhJpfFsD/vONvAsVvtz6rjp43VNNhX+VTZ9/q4aMwo=;
-        b=cJqfZwGtRjG5nMcDxRIqpW3bWpuhaYr18veBMHjgc+uIY5mS1C0qfOFqzUVbsAQBzt
-         bi8y/yjsfJhfeQvIODCI+WuQZA6y1G02O/eVfyWPL18W6WZkrTx/4H1K0GWiqjZptCbw
-         AWIUkto7KPyFfdLFHmhBPxQdkuwVlHx4ZgLszb7tLYMUVE/dZDz4oriB6yXHNVY8a8BD
-         ZK8VqjLMgnR9vvGD1PX30eAkI1mubbLtUeAN+AR/m/ppLU5AoJoMKBNjNkJZ2qFPgUAg
-         ihT3dPPu6RKySyuTBdPMOJ8k0k5czXvdGx9S3uyOudIPnFGLUbascSSxRW7MxRJR9AVT
-         ZZJA==
-X-Gm-Message-State: AOAM530cGMYFddKH0HHjYRTH1+ZBIUtIMeahog2MSlZLxT1BgZUqlCgt
-        6aJzQ+22c4Dpb1DDD9Xt9jE=
-X-Google-Smtp-Source: ABdhPJzHC3KCdoyjbJ2iHDHB8d0N/FagG0nsP6DiEt0Yt2XvH5VCJGNI8ILghdx3ImB45dPCOZVDlg==
-X-Received: by 2002:a17:90a:1aa3:: with SMTP id p32mr6262456pjp.4.1590597638410;
-        Wed, 27 May 2020 09:40:38 -0700 (PDT)
-Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::1])
-        by smtp.gmail.com with ESMTPSA id q145sm2425759pfq.128.2020.05.27.09.40.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2020 09:40:37 -0700 (PDT)
-Date:   Wed, 27 May 2020 09:40:35 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Dilip Kota <eswara.kota@linux.intel.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] phy: intel: fix enum type mismatch warning
-Message-ID: <20200527164035.GA1073507@ubuntu-s3-xlarge-x86>
-References: <20200527134518.908624-1-arnd@arndb.de>
+        Wed, 27 May 2020 12:41:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1590597689; bh=WFz2psKHCfQhmvtHPrIqBJFxV5x1yMU8wLknvksbfFM=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=VD4+c/WpVzlruHaW5np7TGoKLUdDWnPfRhfTk0obj3AVdoaEFxtYzwW1fdTmOpqQyYYjep26kiRR7/Xy+BKwSKV7tnMpIkUn/z7Wxsd1yujmf4llsizwQCVVrpxN/tthF6evcubQbN7cI3mJLa87T4OfjDm+GztWTpuMCRVkVuKN85imNynIUk8965dVR+Zc3IofaKhLweUjAlxAowVIYUH9AHKvi+0hgk0NhjE/HjcchzYZa0EXGBTBud/nbap35Ndx97UpRc/4FuP3Pkb9ucW2x7dmAX4VrGF3Bdkd4ZW8bTw3dVa4geKxF1vN31+VBGK4CkVfp6rGF+Z7jcv2Xg==
+X-YMail-OSG: 9u6BTg0VM1lMkijTQSIzP5WDh2TdWCnf_YcdA9GomtFLkBiK2ISamQRwEK8hmLD
+ L4b6dET2gJW98QlYlV.4s.hiy_IO3ctnrXltFOmpCp3QTV1taYlY.UmLOB07DwrBlPPNLRsHBhkz
+ XZzZRL1bWWhTVITf55rODQDT3Wut0Sok6hrLQAbKpwgPDC1K4dbZPv1oa6rdxS4ua8p1V3B3xOw_
+ 8RQr_eFE8N9QjAUPwU6BI4wzV...U.ICd0YL.lxYvnXqFHSKeQW_1LaPV5LiciJm6ghSNSYqsQz5
+ 2kxrL5pQAPeI4Hhzap7MEU9xAY5tOEP07TmKzXYaeFczvHnxXW0r1BpJxK83mpkHsErzlVZ22AKQ
+ O4LTS9THgZsrUPgZGtEXoBkoltkfsDD4jfLyPWk.BypRBFj2VlNB8EVnaVxrwbBUBP7Of_N7QwEz
+ 5ujEwfhvRJ2z8zTlZFZ0yjKx_fF7vL7_ovkKMPmQB87Ty41OmU.ONq9AY7XroRMmnN6j0G3QjxbJ
+ 1a82STOjNVWhQI7aA65R81264GkfHtBvcDOicYXxZhhi78gPkyiKvT4RGmqROJDGIt.58t0ZTUaw
+ KZQpsDkloSRxoZaEHYKBlm5u3A7GPnZIewBxfpIf73LIAGqXarRkwMnrQRNOi.9QQEZb8KS_CTNg
+ bDiWDN3t54Bnjrx6cpQnV9pFNVMdmD3tygPHAP8QJz_mo7_GmWo2HHNFecmsK.qa7jYVTcNU1MwR
+ 3GmJ0AJ4vObe7I0Z0OmpWuk.ujxpzMF_LQuFk.PgRJdFLyuMMK7gbEFLhuBZICB8RxqABpjzSJdK
+ xFwPDyG_Y6srXxLwz1xwAKT2qa867mlMpqBJ7L4ZGXF.ruD2Frxdbs4w0tiDJhnHwLVff4eDAd5Z
+ maLWnWK0avuyGd.He30MyvFSEXTpwIaUDiVVzyAkxAgf1hMBeqjAEuyttBC0HVA37KAWMmewDVJy
+ tXmQu_Bkqqsoc8TFW3arf0bMhItHWEha5M8TzAQGjZXc9rU8WZYMoOwymWwTyGdk6rp0.veWK0gq
+ oWvbqmBh7TBUm7MLCWyBOm8RuDIpRVfdZ8e7clw5ZUr5bPJ3epvBnKns65p6cJ4qZnk64j0X45Z0
+ GKNF6LA.ZGj1nL4DClLXW6f37D93IC8YJ1VdeS_isEl_VXJmxh4j7.fNuiI1QQsqYP9La.91wuGj
+ q265ZqfUGG.N3pa3Nk3CNjuKfzU.fWuw8PRukMWJM5eQvtiCch0rBf5D.CMh5QjnGEM0gPhTMF_y
+ RFs2TGDjnMRsKz1fp0aQNC38Q9MonIzc1XtvDQZ0RywjNgDInTtE7uHPNfs7Sor0k_qeelE24TXe
+ 2Wf6azcstzuMjO2tmwQA44QicJzgYdBPP8O0kni8_qDpFvF81g0HEnmpwGmc_FpomTz2ideLLolk
+ eAjWcQAZ2H.6csdexi912yeuGbD7hpO4su8P_Ij14asc0i6IF6Qcu.57FoedNpQBBLfL8Ot8seFR
+ .OBS0iUE4
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ne1.yahoo.com with HTTP; Wed, 27 May 2020 16:41:29 +0000
+Received: by smtp426.mail.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 0a021d393f0279ac5d0e653381de71d2;
+          Wed, 27 May 2020 16:41:26 +0000 (UTC)
+Subject: Re: [PATCH bpf-next 2/4] bpf: Implement bpf_local_storage for inodes
+To:     KP Singh <kpsingh@chromium.org>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Florent Revest <revest@chromium.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20200526163336.63653-1-kpsingh@chromium.org>
+ <20200526163336.63653-3-kpsingh@chromium.org>
+ <20200527050823.GA31860@infradead.org> <20200527123840.GA12958@google.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Autocrypt: addr=casey@schaufler-ca.com; keydata=
+ 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
+ abzjfg==
+Message-ID: <f933521f-6370-c9ba-d662-703c1ebc7c03@schaufler-ca.com>
+Date:   Wed, 27 May 2020 09:41:25 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200527134518.908624-1-arnd@arndb.de>
+In-Reply-To: <20200527123840.GA12958@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Mailer: WebService/1.1.15959 hermes_yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.6)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 03:45:06PM +0200, Arnd Bergmann wrote:
-> clang points out that a local variable is initialized with
-> an enum value of the wrong type:
-> 
-> drivers/phy/intel/phy-intel-combo.c:202:34: error: implicit conversion from enumeration type 'enum intel_phy_mode' to different enumeration type 'enum intel_combo_mode' [-Werror,-Wenum-conversion]
->         enum intel_combo_mode cb_mode = PHY_PCIE_MODE;
->                               ~~~~~~~   ^~~~~~~~~~~~~
-> 
-> From reading the code, it seems that this was not only the
-> wrong type, but not even supposed to be a code path that can
-> happen in practice.
-> 
-> Change the code to have no default phy mode but instead return an
-> error for invalid input.
-> 
-> Fixes: ac0a95a3ea78 ("phy: intel: Add driver support for ComboPhy")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/phy/intel/phy-intel-combo.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/phy/intel/phy-intel-combo.c b/drivers/phy/intel/phy-intel-combo.c
-> index c2a35be4cdfb..04f7b0d08742 100644
-> --- a/drivers/phy/intel/phy-intel-combo.c
-> +++ b/drivers/phy/intel/phy-intel-combo.c
-> @@ -199,7 +199,7 @@ static int intel_cbphy_pcie_dis_pad_refclk(struct intel_cbphy_iphy *iphy)
->  
->  static int intel_cbphy_set_mode(struct intel_combo_phy *cbphy)
->  {
-> -	enum intel_combo_mode cb_mode = PHY_PCIE_MODE;
-> +	enum intel_combo_mode cb_mode;
->  	enum aggregated_mode aggr = cbphy->aggr_mode;
->  	struct device *dev = cbphy->dev;
->  	enum intel_phy_mode mode;
-> @@ -224,6 +224,8 @@ static int intel_cbphy_set_mode(struct intel_combo_phy *cbphy)
->  
->  		cb_mode = SATA0_SATA1_MODE;
->  		break;
-> +	default:
-> +		return -EINVAL;
->  	}
->  
->  	ret = regmap_write(cbphy->hsiocfg, REG_COMBO_MODE(cbphy->bid), cb_mode);
-> -- 
-> 2.26.2
-> 
+On 5/27/2020 5:38 AM, KP Singh wrote:
+> On 26-May 22:08, Christoph Hellwig wrote:
+>> On Tue, May 26, 2020 at 06:33:34PM +0200, KP Singh wrote:
+>>> From: KP Singh <kpsingh@google.com>
+>>>
+>>> Similar to bpf_local_storage for sockets, add local storage for inode=
+s.
+>>> The life-cycle of storage is managed with the life-cycle of the inode=
+=2E
+>>> i.e. the storage is destroyed along with the owning inode.
+>>>
+>>> Since, the intention is to use this in LSM programs, the destruction =
+is
+>>> done after security_inode_free in __destroy_inode.
+>> NAK onbloating the inode structure.  Please find an out of line way
+>> to store your information.
+> The other alternative is to use lbs_inode (security blobs) and we can
+> do this without adding fields to struct inode.
 
-I sent an almost identical patch:
+This is the correct approach, and always has been. This isn't the
+first ( or second :( ) case where the correct behavior for an LSM
+has been pretty darn obvious, but you've taken a different approach
+for no apparent reason.
 
-https://lore.kernel.org/lkml/20200523035043.3305846-1-natechancellor@gmail.com/
+> Here is a rough diff (only illustrative, won't apply cleanly) of the
+> changes needed to this patch:
+>
+>  https://gist.github.com/sinkap/1d213d17fb82a5e8ffdc3f320ec37d79
 
-I left out the default case since clang warns when a switch on an enum
-does not handle all the values (compile time scream) versus a run time
-scream like yours.
+To do just a little nit-picking, please use bpf_inode() instead of
+bpf_inode_storage(). This is in keeping with the convention used by
+the other security modules. Sticking with the existing convention
+makes it easier for people (and tools) that work with multiple
+security modules.
 
-I don't have a preference for either so:
+> Once tracing has gets a whitelist based access to inode storage, I
+> guess it, too, can use bpf_local_storage for inodes
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Only within the BPF module. Your sentence above is slightly garbled,
+so I'm not really sure what you're saying, but if you're suggesting
+that tracing code outside of the BPF security module can use the
+BPF inode data, the answer is a resounding "no".
+
+>  if CONFIG_BPF_LSM
+> is enabled. Does this sound reasonable to the BPF folks?
+>
+> - KP
+>
+>
+
