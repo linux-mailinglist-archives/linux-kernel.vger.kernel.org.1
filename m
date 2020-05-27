@@ -2,97 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5F71E3E29
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 11:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D5D1E3E2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 11:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729631AbgE0J41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 05:56:27 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18638 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726086AbgE0J40 (ORCPT
+        id S1729658AbgE0J5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 05:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729645AbgE0J5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 05:56:26 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04R9avKN187802;
-        Wed, 27 May 2020 05:55:50 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 316vrwfvn9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 May 2020 05:55:50 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 04R9tibR003749;
-        Wed, 27 May 2020 09:55:50 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma02wdc.us.ibm.com with ESMTP id 316uf9p7ub-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 May 2020 09:55:50 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04R9tnt231654298
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 May 2020 09:55:49 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 759EEAC059;
-        Wed, 27 May 2020 09:55:49 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3624DAC05F;
-        Wed, 27 May 2020 09:55:47 +0000 (GMT)
-Received: from skywalker.linux.ibm.com (unknown [9.85.125.124])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 27 May 2020 09:55:46 +0000 (GMT)
-X-Mailer: emacs 27.0.91 (via feedmail 11-beta-1 I)
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-To:     Vaibhav Jain <vaibhav@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org
-Cc:     Vaibhav Jain <vaibhav@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v8 5/5] powerpc/papr_scm: Implement support for
- PAPR_SCM_PDSM_HEALTH
-In-Reply-To: <20200527041244.37821-6-vaibhav@linux.ibm.com>
-References: <20200527041244.37821-1-vaibhav@linux.ibm.com>
- <20200527041244.37821-6-vaibhav@linux.ibm.com>
-Date:   Wed, 27 May 2020 15:25:45 +0530
-Message-ID: <87pnap7lcu.fsf@linux.ibm.com>
+        Wed, 27 May 2020 05:57:06 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E96F1C061A0F;
+        Wed, 27 May 2020 02:57:05 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id w10so28201630ljo.0;
+        Wed, 27 May 2020 02:57:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jTJhwZSJoyE8wrAnL4MnSgyDxfzg5z5BsSA6iH2Lsr4=;
+        b=I/UHm7IDoWtRiKnycgBMtf56gDPpQrztOCVzmZO2cu1mUG+xbHnZbehIc1PDMmyz2n
+         ipHj41QkegdeoTMWOWO8A6VHn6DgveZ+lAyiYeWBzJwwAJyejmudwu2WGe8gCh5IVzc3
+         1tKpxNl5f9WCa13bPo4T65791GJSXC/SLHR8I78o73aZz0NGRMDY7Q4nDrao3SbnYWab
+         22zuvOQfGaK6eLadMZWrEWgajDmWY2ercb6vreHeixQnjC3KhxLd14NRXL+VfPv0Ohs1
+         NUxbcl0X0BmOQEI9cmhoNatcks3sc6LYGr+s9bibIJhB3CMQnyDQ3+O3cjiVeOey3lDf
+         erkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jTJhwZSJoyE8wrAnL4MnSgyDxfzg5z5BsSA6iH2Lsr4=;
+        b=dpqBOopuoD/IQqfwZUGyYyGUOIWFuNOPe39CI54DdeXYlFFcg+o71PA4/dxUoRGVcH
+         BXOgIKNp/Ca/KICuwLiaM6/UQQ2j4HjPlM2yyobmz8SAODHMPtdPrS7n1JygI2t96Nkr
+         VOiC8cQ8Ruc4XFRfoQIXNQHAVE6t+dS+JJ0Jjcfv94pk52rj7+9M6MNAb8+TEsOC326q
+         uu8pGpywTmgsqXVFvJdf1y50nsinl2bOWZR1bnNjUuGe23+rwVbq0PdhWjHOBTGauA8J
+         foiXRfvHubfyyNRcTyuYWm+YGEYh8MJIJfwVA7dOi+/RiWrhCTQvxIQrSJvCgpTbP75M
+         0YvA==
+X-Gm-Message-State: AOAM530U11RvQhCaXewIWXoyrWWXF7mIeFqojG2/PiUnmZ6u/KSvzxLk
+        Ebv4bEUuF4qnXS1kGWJo1+k=
+X-Google-Smtp-Source: ABdhPJzw5Z55iO0cTtVwUE5LkxageVrap6NYxPm2ll+URyAOP+9OobfaJ3meIyFBdtMHyQPG0lpeFg==
+X-Received: by 2002:a2e:9a0d:: with SMTP id o13mr2430084lji.15.1590573424447;
+        Wed, 27 May 2020 02:57:04 -0700 (PDT)
+Received: from bitter.drabanten.lan ([195.178.180.206])
+        by smtp.gmail.com with ESMTPSA id s8sm700499lfc.83.2020.05.27.02.57.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 02:57:03 -0700 (PDT)
+From:   Jonas Falkevik <jonas.falkevik@gmail.com>
+To:     marcelo.leitner@gmail.com, lucien.xin@gmail.com,
+        nhorman@tuxdriver.com, vyasevich@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, linux-sctp@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jonas Falkevik <jonas.falkevik@gmail.com>
+Subject: [PATCH v2] sctp: check assoc before SCTP_ADDR_{MADE_PRIM,ADDED} event
+Date:   Wed, 27 May 2020 11:56:40 +0200
+Message-Id: <20200527095640.270986-1-jonas.falkevik@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-05-27_03:2020-05-26,2020-05-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- cotscore=-2147483648 spamscore=0 malwarescore=0 clxscore=1015 mlxscore=0
- lowpriorityscore=0 suspectscore=0 priorityscore=1501 bulkscore=0
- phishscore=0 adultscore=0 mlxlogscore=873 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005270068
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vaibhav Jain <vaibhav@linux.ibm.com> writes:
+Make sure SCTP_ADDR_{MADE_PRIM,ADDED} are sent only for associations
+that have been established.
 
-> This patch implements support for PDSM request 'PAPR_SCM_PDSM_HEALTH'
-> that returns a newly introduced 'struct nd_papr_pdsm_health' instance
-> containing dimm health information back to user space in response to
-> ND_CMD_CALL. This functionality is implemented in newly introduced
-> papr_scm_get_health() that queries the scm-dimm health information and
-> then copies this information to the package payload whose layout is
-> defined by 'struct nd_papr_pdsm_health'.
->
-> The patch also introduces a new member 'struct papr_scm_priv.health'
-> thats an instance of 'struct nd_papr_pdsm_health' to cache the health
-> information of a nvdimm. As a result functions drc_pmem_query_health()
-> and flags_show() are updated to populate and use this new struct
-> instead of a u64 integer that was earlier used.
->
+These events are described in rfc6458#section-6.1
+SCTP_PEER_ADDR_CHANGE:
+This tag indicates that an address that is
+part of an existing association has experienced a change of
+state (e.g., a failure or return to service of the reachability
+of an endpoint via a specific transport address).
 
-Reviewed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Signed-off-by: Jonas Falkevik <jonas.falkevik@gmail.com>
+---
+Changes in v2:
+ - Check asoc state to be at least established.
+   Instead of associd being SCTP_FUTURE_ASSOC.
+ - Common check for all peer addr change event
 
-> Cc: "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
+ net/sctp/ulpevent.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
--aneesh
+diff --git a/net/sctp/ulpevent.c b/net/sctp/ulpevent.c
+index c82dbdcf13f2..77d5c36a8991 100644
+--- a/net/sctp/ulpevent.c
++++ b/net/sctp/ulpevent.c
+@@ -343,6 +343,9 @@ void sctp_ulpevent_nofity_peer_addr_change(struct sctp_transport *transport,
+ 	struct sockaddr_storage addr;
+ 	struct sctp_ulpevent *event;
+ 
++	if (asoc->state < SCTP_STATE_ESTABLISHED)
++		return;
++
+ 	memset(&addr, 0, sizeof(struct sockaddr_storage));
+ 	memcpy(&addr, &transport->ipaddr, transport->af_specific->sockaddr_len);
+ 
+-- 
+2.25.4
+
