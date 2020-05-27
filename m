@@ -2,140 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE401E41F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 14:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 969111E41FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 14:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728568AbgE0MWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 08:22:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726644AbgE0MWk (ORCPT
+        id S1729200AbgE0MYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 08:24:04 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:60570 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726638AbgE0MYD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 08:22:40 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A32C08C5C3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 05:22:40 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id v16so28679937ljc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 05:22:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9b4AFKGw4ZZqotl5s77CmzWTjWCoCCtFECSbH9IYsSA=;
-        b=m/5Y8vGmTNwpX4AY/6YSPBzyxbV9CKofpxuLOV0rT4OW1WUwRQh+L2hmPkrR89JHho
-         mp29JMpeTbkjSCFWI18PSTIgrgmgOjy6tersXf5zegumqtO4wPcztIOrlczKxAfBaip/
-         dkflMMQCcfol0dxbIx4Vta1k0hWUb/ffJAZUrQBY2F7BSIYH4RLzFuT9RagreGHhUs+E
-         3L0R+LudxVmrH/FaiNK0F4I8Vh+kXtqFQu+TEGgkAFqZTdN1Sg6Gr7h26V9rvn/PGWT1
-         Ny2xAtgPKwRyY+mbbM43KJUc8HGCnx2gqGjVEeQgynYclzEh+vg+qkDRfKBwTGMzbIHG
-         +zqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9b4AFKGw4ZZqotl5s77CmzWTjWCoCCtFECSbH9IYsSA=;
-        b=kve9g6eBl2NJz9oO9xw1W4l+2BJ8d6WlpZoL61sAAJ3uyNAQbTM/M+QUhYRWyKd/VK
-         O7197HUjFDJ3O80MvlnsGV6JdVb/TT3qM+StIJiW4Nu7LOCGPHp4gsV/eZ+eureXDJ9f
-         ZH3vdrxyrqq9f5o9ZUGAVO1wRpW/CvTdaxT9NhEi3T0fTEm1jx3/6RTxGRWVV5tqJR93
-         IeygpJfZxWzbjqAuZ39mNElOMfSBakhTPsR1wh8psPYj0yXU9aNMGnD5H8Qzx9XrT6FR
-         ibZ2nB/T7QobA9n9vRp5ZEape6AhS7AIeanuYhy5wKiQyeDL9o/u4PSOK46Foe968KD4
-         IQ+w==
-X-Gm-Message-State: AOAM533Rtb+BH7frKhq5j0/dhD9rVPB5kXXVEuuvoudXRGwsSJsDp36k
-        6qWT+UFJx3Kmkf9g/3rfKoCxIul6bg7AT/QapOBB9w==
-X-Google-Smtp-Source: ABdhPJxTsWDgeOe5Djkxbz5Vhm5vLbaAAlGQFkDtkkPWtJUSrez+RPSqeMSp1e9eKl58SCBsVQ5ilU3q78cT0eLqwnc=
-X-Received: by 2002:a2e:9510:: with SMTP id f16mr3179414ljh.111.1590582158421;
- Wed, 27 May 2020 05:22:38 -0700 (PDT)
+        Wed, 27 May 2020 08:24:03 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04RCNutA122607;
+        Wed, 27 May 2020 07:23:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1590582236;
+        bh=Vpls28zqWFv+m2tzlLEDxZh3MhqxOrWIWFXc0hTbBhU=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=GGpgcHcWLWt8PBvTah72vKywx522Jzw48hhG1JEeoQ+fNenGAeln8FLJeKtSd6Gfo
+         WBbTppo0OfL9zlyCBy0VdjL7TPki1YJF34drqsG2Rv7D4bSwLN3Bws1geCjUD0nPOj
+         mE0nPw7SXb+xk9HPGwYLIjMbecUC2RM6yHP3rNfg=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04RCNuQV039174
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 27 May 2020 07:23:56 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 27
+ May 2020 07:23:56 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 27 May 2020 07:23:56 -0500
+Received: from [10.250.65.13] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04RCNueD076213;
+        Wed, 27 May 2020 07:23:56 -0500
+Subject: Re: [PATCH net-next v3 4/4] net: dp83869: Add RGMII internal delay
+ configuration
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
+        <davem@davemloft.net>, <robh@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+References: <20200526174716.14116-1-dmurphy@ti.com>
+ <20200526174716.14116-5-dmurphy@ti.com> <20200527005224.GF782807@lunn.ch>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <c0867d48-6f04-104b-8192-d61d4464a65f@ti.com>
+Date:   Wed, 27 May 2020 07:23:56 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200526151619.8779-1-benjamin.gaignard@st.com>
- <jhjk10xu1tq.mognet@arm.com> <ab4340c0-bda3-e752-9073-e162e6325bb1@st.com>
-In-Reply-To: <ab4340c0-bda3-e752-9073-e162e6325bb1@st.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 27 May 2020 14:22:27 +0200
-Message-ID: <CAKfTPtBt6Ju-CnETnn6_FkgR0CAJ+jYnySz9OHP9X2hmxWHM7w@mail.gmail.com>
-Subject: Re: [RFC RESEND 0/3] Introduce cpufreq minimum load QoS
-To:     Benjamin GAIGNARD <benjamin.gaignard@st.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "viresh.kumar@linaro.org" <viresh.kumar@linaro.org>,
-        Hugues FRUCHET <hugues.fruchet@st.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        "pavel@ucw.cz" <pavel@ucw.cz>,
-        "len.brown@intel.com" <len.brown@intel.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200527005224.GF782807@lunn.ch>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 May 2020 at 13:17, Benjamin GAIGNARD
-<benjamin.gaignard@st.com> wrote:
->
->
->
-> On 5/27/20 12:09 PM, Valentin Schneider wrote:
-> > Hi Benjamin,
-> >
-> > On 26/05/20 16:16, Benjamin Gaignard wrote:
-> >> A first round [1] of discussions and suggestions have already be done on
-> >> this series but without found a solution to the problem. I resend it to
-> >> progress on this topic.
-> >>
-> > Apologies for sleeping on that previous thread.
-> >
-> > So what had been suggested over there was to use uclamp to boost the
-> > frequency of the handling thread; however if you use threaded IRQs you
-> > get RT threads, which already get the max frequency by default (at least
-> > with schedutil).
-> >
-> > Does that not work for you, and if so, why?
-> That doesn't work because almost everything is done by the hardware blocks
-> without charge the CPU so the thread isn't running. I have done the
-> tests with schedutil
-> and ondemand scheduler (which is the one I'm targeting). I have no
-> issues when using
-> performance scheduler because it always keep the highest frequencies.
+Andrew
 
-IMHO, the only way to ensure a min frequency for anything else than a
-thread is to use freq_qos_add_request() just like cpufreq cooling
-device but for the opposite QoS. This can be applied only on the
-frequency domain of the CPU which handles the interrupt.
-Have you also checked the wakeup latency of your idle state ?
+On 5/26/20 7:52 PM, Andrew Lunn wrote:
+>> @@ -218,6 +224,7 @@ static int dp83869_of_init(struct phy_device *phydev)
+>>   		ret = phy_read_mmd(phydev, DP83869_DEVADDR, DP83869_STRAP_STS1);
+>>   		if (ret < 0)
+>>   			return ret;
+>> +
+>>   		if (ret & DP83869_STRAP_MIRROR_ENABLED)
+>>   			dp83869->port_mirroring = DP83869_PORT_MIRRORING_EN;
+>>   		else
+> This random white space change does not belong in this patch.
+
+OK
+
+
+>> @@ -232,6 +239,20 @@ static int dp83869_of_init(struct phy_device *phydev)
+>>   				 &dp83869->tx_fifo_depth))
+>>   		dp83869->tx_fifo_depth = DP83869_PHYCR_FIFO_DEPTH_4_B_NIB;
+>>   
+>> +	ret = of_property_read_u32(of_node, "rx-internal-delay-ps",
+>> +				   &dp83869->rx_id_delay);
+>> +	if (ret) {
+>> +		dp83869->rx_id_delay = ret;
+>> +		ret = 0;
+>> +	}
+> This looks odd.
+>
+> If this optional property is not found, -EINVAL will be returned. It
+> could also return -ENODATA. You then assign this error value to
+> dp83869->rx_id_delay? I would of expected you to assign 2000, the
+> default value?
+
+Well the driver cannot assume this is the intended value.
+
+If the dt defines rgmii-rx/tx-id then these values are required not 
+optional.  That was the discussion on the binding.
+
+I set these to errno because when config_init is called the driver 
+verifies that the values are valid and present and if they
+
+are not then the PHY will fail to init.
+
+If we set the delay to default then the PHY may be programmed with the 
+wrong delay.
+
+
+>> +
+>> +	ret = of_property_read_u32(of_node, "tx-internal-delay-ps",
+>> +				   &dp83869->tx_id_delay);
+>> +	if (ret) {
+>> +		dp83869->tx_id_delay = ret;
+>> +		ret = 0;
+>> +	}
+>> +
+>>   	return ret;
+>>   }
+>>   #else
+>> @@ -367,10 +388,45 @@ static int dp83869_configure_mode(struct phy_device *phydev,
+>>   	return ret;
+>>   }
+>>   
+>> +static int dp83869_get_delay(struct phy_device *phydev)
+>> +{
+>> +	struct dp83869_private *dp83869 = phydev->priv;
+>> +	int delay_size = ARRAY_SIZE(dp83869_internal_delay);
+>> +	int tx_delay = 0;
+>> +	int rx_delay = 0;
+>> +
+>> +	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_TXID ||
+>> +	    phydev->interface == PHY_INTERFACE_MODE_RGMII_ID) {
+>> +		tx_delay = phy_get_delay_index(phydev,
+>> +					       &dp83869_internal_delay[0],
+>> +					       delay_size, dp83869->tx_id_delay,
+>> +					       false);
+>> +		if (tx_delay < 0) {
+>> +			phydev_err(phydev, "Tx internal delay is invalid\n");
+>> +			return tx_delay;
+>> +		}
+>> +	}
+>> +
+>> +	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_RXID ||
+>> +	    phydev->interface == PHY_INTERFACE_MODE_RGMII_ID) {
+>> +		rx_delay = phy_get_delay_index(phydev,
+>> +					       &dp83869_internal_delay[0],
+>> +					       delay_size, dp83869->rx_id_delay,
+>> +					       false);
+>> +		if (rx_delay < 0) {
+>> +			phydev_err(phydev, "Rx internal delay is invalid\n");
+>> +			return rx_delay;
+>> +		}
+>> +	}
+> So any PHY using these properties is going to pretty much reproduce
+> this code. Meaning is should all be in a helper.
+
+The issue here is that the phy_mode may only be rgmii-txid so you only 
+want to find the tx_delay and return.
+
+Same with the RXID.  How is the helper supposed to know what delay to 
+return and look for?
+
+The PHY also only needs to use the helper if the PHY is in certain modes.
+
+And the decision to use the checks is really based on the PHY driver.
+
+Not sure if other PHYs delays require both delays to be set or if the 
+delays are independent.
+
+The helper cannot assume this.
+
+Dan
+
 
 >
->
-> >
-> >> When start streaming from the sensor the CPU load could remain very low
-> >> because almost all the capture pipeline is done in hardware (i.e. without
-> >> using the CPU) and let believe to cpufreq governor that it could use lower
-> >> frequencies. If the governor decides to use a too low frequency that
-> >> becomes a problem when we need to acknowledge the interrupt during the
-> >> blanking time.
-> >> The delay to ack the interrupt and perform all the other actions before
-> >> the next frame is very short and doesn't allow to the cpufreq governor to
-> >> provide the required burst of power. That led to drop the half of the frames.
-> >>
-> >> To avoid this problem, DCMI driver informs the cpufreq governors by adding
-> >> a cpufreq minimum load QoS resquest.
-> >>
-> >> Benjamin
-> >>
-> >> [1] https://lkml.org/lkml/2020/4/24/360
-> >>
-> >> Benjamin Gaignard (3):
-> >>    PM: QoS: Introduce cpufreq minimum load QoS
-> >>    cpufreq: governor: Use minimum load QoS
-> >>    media: stm32-dcmi: Inform cpufreq governors about cpu load needs
-> >>
-> >>   drivers/cpufreq/cpufreq_governor.c        |   5 +
-> >>   drivers/media/platform/stm32/stm32-dcmi.c |   8 ++
-> >>   include/linux/pm_qos.h                    |  12 ++
-> >>   kernel/power/qos.c                        | 213 ++++++++++++++++++++++++++++++
-> >>   4 files changed, 238 insertions(+)
+>       Andrew
