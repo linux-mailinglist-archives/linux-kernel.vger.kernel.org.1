@@ -2,84 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B84FD1E3604
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 05:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07AC41E35FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 04:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728311AbgE0DAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 23:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbgE0DAC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 23:00:02 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A548FC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 20:00:01 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id s198so20544851oie.6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 20:00:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=Xs1c6/A8GmpgdbMBrIroEWmoFbf3qfcFFbhS2ULR81Q=;
-        b=ixexqur31WKaQt/jym3zWzUwfjPjAOFBciirOp4mzBVc+yCiOP875DhfeYfH64wjcL
-         4CMKXnL+A/Ylr81sV9QOpGFczFr8xY4kWEJPp7QZHj+HldFUTsJfo5c2o7SFA6De8bVe
-         oeD5eDrOEVmnnEZ58uZXhG2t4x+/zOl/7g3RSxyUCk9OzobKhR8W7c76/OuqXd9bRZs8
-         X3+DtRbPusmJ98fgr81WCBdVmUh9+Nb5yJQ2s8WbgfsOAVGYLkwVlO9nKsOfgW6DsRNX
-         0h/635sS94hFFbAVyEwpnuO/z2lQ9WfYwH1DKtgrKrYaMnk/Q9aNFhaeYxEAi1T82rTF
-         ag3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=Xs1c6/A8GmpgdbMBrIroEWmoFbf3qfcFFbhS2ULR81Q=;
-        b=EkNMwMhBBN01rwsu66pUO/NSKzO9rdSg8nTVQxuFCYl6eq9dcXJkTgZrsYcyCHoOfJ
-         T0Xv4TEDaiChgrojzugQhI3iRfcrSn44beCAlvZmCaLJlzTT9Bw7CH5jjfqy9I7Nh7A/
-         F17i/022Vntd0F9VDXmGKl0OHj+gZdz7Exw4VuwuSbDJgNW1WpjEk7cHIMVAwqw3JNc4
-         PnwkvV02WFNlCF0CA0DVBexDpUHW/go/I/QHhExWLHODtf3DyCUdhKLKFxF/KhxzUnN3
-         jmbZkHPirHsICtDmLYGxXLrzIDIZMzl+mA4IW8XZr42H+HrCZogydCEqyuU7WeHVli6i
-         FQ+A==
-X-Gm-Message-State: AOAM532nM1MKalxjilZZFYr38EyFfYwd5iQgRKF6AJdpeZHt6c2IiTJc
-        o2V9CGFnuJ5X1saUJuVWr32DDSAAQw/OZys2eh0=
-X-Google-Smtp-Source: ABdhPJxswlB2BE/84xMJ61mXNo8vk8h+Ics9W2VOvyrfbMQmnfFrpCdaKBJToR+paB3QtxdsAUcMewNG6ob654hUITs=
-X-Received: by 2002:a05:6808:7de:: with SMTP id f30mr1386092oij.86.1590548400941;
- Tue, 26 May 2020 20:00:00 -0700 (PDT)
+        id S1728317AbgE0C5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 22:57:34 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5286 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725948AbgE0C5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 22:57:34 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 6ABE37498ABE6535058E;
+        Wed, 27 May 2020 10:57:32 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 27 May 2020 10:57:25 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        "Liam Girdwood" <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Jaroslav Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+CC:     Wei Yongjun <weiyongjun1@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>
+Subject: [PATCH -next] ASoC: mmp-sspa: Fix return value check in asoc_mmp_sspa_probe()
+Date:   Wed, 27 May 2020 03:02:10 +0000
+Message-ID: <20200527030210.124393-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Reply-To: mrahmedmuzashah@gmail.com
-Received: by 2002:ac9:37ea:0:0:0:0:0 with HTTP; Tue, 26 May 2020 20:00:00
- -0700 (PDT)
-From:   "Mr.Ahmed Muzashah" <ahmedmuzashah@gmail.com>
-Date:   Wed, 27 May 2020 04:00:00 +0100
-X-Google-Sender-Auth: aVT0DAW5CWMG2BvxE7-9Jw9mEYw
-Message-ID: <CAFWjS_-oDeVinTHd7KKZL3jEzTBgLEjKVkZqZ88tun1dfMksZA@mail.gmail.com>
-Subject: Good day,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good Day,
+In case of error, the function devm_ioremap() returns NULL pointer not
+ERR_PTR(). The IS_ERR() test in the return value check should be
+replaced with NULL test.
 
-Please accept my apologies for writing you a surprise letter.I am Mr.
-Ahmed Muzashah, account Manager with an investment bank here in
-Burkina Faso.I have a very important business I want to discuss with
-you.There is a draft account opened in my firm by a long-time client
-of our bank.I have the opportunity of transferring the left over fund
-(15.8 Million UsDollars)Fiftheen Million Eight Hundred Thousand United
-States of American Dollars of one of my Bank clients who died at the
-collapsing of the world trade center at the United States on September
-11th 2001.
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ sound/soc/pxa/mmp-sspa.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-I want to invest this funds and introduce you to our bank for this
-deal.All I require is your honest co-operation and I guarantee you
-that this will be executed under a legitimate arrangement that will
-protect us from any breach of the law.I agree that 40% of this money
-will be for you as my foreign partner,50% for me while 10% is for
-establishing of foundation for the less privilleges in your country.If
-you are really interested in my proposal further details of the
-Transfer will be forwarded unto you as soon as I receive your
-willingness mail for a successful transfer.
+diff --git a/sound/soc/pxa/mmp-sspa.c b/sound/soc/pxa/mmp-sspa.c
+index 3e37ab625f8d..4255851c71c1 100644
+--- a/sound/soc/pxa/mmp-sspa.c
++++ b/sound/soc/pxa/mmp-sspa.c
+@@ -493,13 +493,13 @@ static int asoc_mmp_sspa_probe(struct platform_device *pdev)
+ 			return -ENODEV;
+ 
+ 		sspa->rx_base = devm_ioremap(&pdev->dev, res->start, 0x30);
+-		if (IS_ERR(sspa->rx_base))
+-			return PTR_ERR(sspa->rx_base);
++		if (!sspa->rx_base)
++			return -ENOMEM;
+ 
+ 		sspa->tx_base = devm_ioremap(&pdev->dev,
+ 					     res->start + 0x80, 0x30);
+-		if (IS_ERR(sspa->tx_base))
+-			return PTR_ERR(sspa->tx_base);
++		if (!sspa->tx_base)
++			return -ENOMEM;
+ 
+ 		sspa->clk = devm_clk_get(&pdev->dev, NULL);
+ 		if (IS_ERR(sspa->clk))
 
-Yours Sincerely,
-Mr.Ahmed Muzashah,
+
+
+
+
