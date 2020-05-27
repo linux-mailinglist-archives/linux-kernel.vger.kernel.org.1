@@ -2,126 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7201E50C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 23:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B994F1E50C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 23:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726419AbgE0V5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 17:57:54 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:52783 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726181AbgE0V5w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 17:57:52 -0400
-Received: from mail-qt1-f181.google.com ([209.85.160.181]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MfZ9C-1j6xHy3uqu-00fxxd for <linux-kernel@vger.kernel.org>; Wed, 27 May
- 2020 23:57:51 +0200
-Received: by mail-qt1-f181.google.com with SMTP id e16so14735098qtg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 14:57:50 -0700 (PDT)
-X-Gm-Message-State: AOAM533thycOgBc34efCHA6QTlA0jBnCflO0sQAlA0+xHTyuFQKRPHuw
-        9VaMnuklUJN7ShyfeCnRq1p7Zj9Uov827ljJnmE=
-X-Google-Smtp-Source: ABdhPJzip70H1KwYX1s5TKJluQwoj7pMFq4UElZk7BE7UqzNUerzc1aReF2z3NGYv6cclDoxnTuN1MbNjmBT6MxK6Nk=
-X-Received: by 2002:ac8:306d:: with SMTP id g42mr43805qte.18.1590616669783;
- Wed, 27 May 2020 14:57:49 -0700 (PDT)
+        id S1725939AbgE0V5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 17:57:43 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:49740 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725294AbgE0V5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 17:57:43 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D81951A0989;
+        Wed, 27 May 2020 23:57:41 +0200 (CEST)
+Received: from smtp.na-rdc02.nxp.com (usphx01srsp001v.us-phx01.nxp.com [134.27.49.11])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9F6DD1A0984;
+        Wed, 27 May 2020 23:57:41 +0200 (CEST)
+Received: from right.am.freescale.net (right.am.freescale.net [10.81.116.70])
+        by usphx01srsp001v.us-phx01.nxp.com (Postfix) with ESMTP id DE9AD40A5F;
+        Wed, 27 May 2020 14:57:40 -0700 (MST)
+From:   Li Yang <leoyang.li@nxp.com>
+To:     arm@kernel.org, soc@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        shawnguo@kernel.org
+Subject: [GIT PULL] soc/fsl drivers changes for next(v5.8)
+Date:   Wed, 27 May 2020 16:57:40 -0500
+Message-Id: <20200527215740.9279-1-leoyang.li@nxp.com>
+X-Mailer: git-send-email 2.25.1.377.g2d2118b
 MIME-Version: 1.0
-References: <20200527193730.930412-1-arnd@arndb.de> <20200527205658.GM5308@sirena.org.uk>
-In-Reply-To: <20200527205658.GM5308@sirena.org.uk>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 27 May 2020 23:57:33 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2WrCGFtYx52sMu2rsWQFq6kKhEFWGEk2Tn+4gEQTLxBw@mail.gmail.com>
-Message-ID: <CAK8P3a2WrCGFtYx52sMu2rsWQFq6kKhEFWGEk2Tn+4gEQTLxBw@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: rt5682: split i2c driver into separate module
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Akshu Agrawal <akshu.agrawal@amd.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:XOWVbmw7mJ1QwZ290rv4B4mHDMS3DenvOuVrg4mtVHmjtyD0yiN
- r3PsVGQSz5jDzRKYK9j2Tncy8f6xFCilyx/Cev8rhzsU6N9zSZVESfGvIoVl4/OlFWHTn9q
- U4qK+GRRrtqufNncI4+QTwm4zlZ6flhwWl5dmDbhORWR+f5kzG1i5E8P+WQxPb/NBVbFJ0L
- Jxagj2wQaaRpYYuSfjVbg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:TWqGY6v1L6U=:nqVNbd4aSNZmETS7GLK+PQ
- 7k1/G/9DDtUUUzGfl9LlFVmjOns74Q73uI9Vq2qGSUoZLyXglo9ouKZ6To1p/kKBfRIes9w1a
- EmZiXwWWXQ3TLv+0eHVrYZ3OsAXj1zrNFfHAC8l43YCBMx/rKvf2mdtSSwZIehHypKMcsbR7m
- JgtjBZUfadarLgav1eIApiMmpstwWiiihEGee7X2m4pTElP8cFqY74oWW2PbckkpnUvwpLNp+
- fygeeXNeod/vi9WMFwM/T2Wuy26BaM/o3fs4qIUw70jwX76kcy3impaugGYlLkbj0XnW33Fcj
- v2XtT58eJPMemO1D2Sf450nWd1E16nJ7eOXluoEuQ1ekd+x4aiXJ45iIGw4XfVZhv+jRfustz
- yph3q57M4x4Z4CpGzeWJhcxpjVESaS+Asl3HhE2XTWjTl0ml+ncr/FdhhhVGA9H9TJGsc5yNb
- M7Pq75yGqRytzxaBgDNeiuVE91oep33jWX4t2EFpVveIWzpE96kQGjV1uwkbU88QTbDTBTeSM
- nhb4b1F6NILsJ3iN3FGxbVp5o0Ju3fBHbXigaZ6Lj4lrAc5R1ae4SleO9tQVdcjtNr8oZ+JNJ
- DHvt7pi/RGk5g7cPdInXJnK3tmuJZjQJSlGrYQGQl6AaZDzCWbU9L1nSjasv/PmaQMyzG//rH
- csxYTE/MAr+issSR2XxX/KYtzFnw95dEpyj7gOPZGFwpdr2aarsmr/L6W/EAUUtcuw1p8fM2i
- eQG3Cw4DWYgvi32b111RZDpL3sluBQePQg10so7SQNXCP/RSysG2oiRkPZoZmrl+jM10IS7qF
- qEUf/7Chh3R/tUqAF6J4RecU/D/ZwJem/QfUECg7fg8x9BT+xk=
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 10:57 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Wed, May 27, 2020 at 09:34:13PM +0200, Arnd Bergmann wrote:
->
-> > index 000000000000..c891aa80757f
-> > --- /dev/null
-> > +++ b/sound/soc/codecs/rt5682-i2c.c
-> > @@ -0,0 +1,341 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * rt5682.c  --  RT5682 ALSA SoC audio component driver
-> > + *
->
-> Please keep the entire comment C++ so things look more intentional.
+Hi soc maintainers,
 
-That's the kind of change I was trying to avoid by just moving
-things around, but I've done that now in both files.
+Please merge the following new changes for soc/fsl drivers.
 
-> > +static const char *rt5682_supply_names[RT5682_NUM_SUPPLIES] = {
-> > +     "AVDD",
-> > +     "MICVDD",
-> > +     "VBAT",
-> > +};
->
-> I'm *fairly* sure the device needs power even with Soundwire?
+Regards,
+Leo
 
-I have no idea how this is done with ACPI. I'm moving it
-back as an exported symbol. There should probably be
-some abstraction that handles this in the common part of
-the driver along with some of the other bits of
-rt5682_i2c_probe, but really don't want to shake things up
-too much and would let this be done by whoever needs to add
-DT support to the soundwire driver in the future and is able
-to test the changes.
+The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
 
-> > +static void rt5682_jd_check_handler(struct work_struct *work)
-> > +{
-> > +     struct rt5682_priv *rt5682 = container_of(work, struct rt5682_priv,
-> > +             jd_check_work.work);
->
-> > +static int rt5682_parse_dt(struct rt5682_priv *rt5682, struct device *dev)
-> > +{
-> > +
-> > +     device_property_read_u32(dev, "realtek,dmic1-data-pin",
-> > +             &rt5682->pdata.dmic1_data_pin);
-> > +     device_property_read_u32(dev, "realtek,dmic1-clk-pin",
-> > +             &rt5682->pdata.dmic1_clk_pin);
->
-> This doesn't look very I2C specific either, nor do chunks of the rest of
-> the code.  The usual pattern with this stuff is to have the bus specific
-> code do bus specific stuff like setting up the regmap and then call into
-> a common init function for the shared parts of the chip.  I'd expect a
-> bit more unshared code here but not this much.
+  Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
 
-Right, I was surprised the soundwire portion does not tie into
-device tree at all, and none of the other soundwire codecs seem
-to either and no dts files reference it, though there is some code
-for the subsystem and a binding.
+are available in the Git repository at:
 
-     Arnd
+  git://git.kernel.org/pub/scm/linux/kernel/git/leo/linux.git tags/soc-fsl-next-v5.8
+
+for you to fetch changes up to e9e4ef9116b12951eaee3f8447ba9bbb40ab3620:
+
+  soc: fsl: dpio: Remove unused inline function qbman_write_eqcr_am_rt_register (2020-05-22 18:11:03 -0500)
+
+----------------------------------------------------------------
+NXP/FSL SoC driver updates for v5.8
+
+DPAA2 DPIO driver
+- Prefer the CPU affined DPIO
+
+QUICC Engine drivers
+- Replace one-element array and use struct_size() helper
+
+Cleanups in various drivers
+
+----------------------------------------------------------------
+Colin Ian King (1):
+      soc: fsl: qe: clean up an indentation issue
+
+Gustavo A. R. Silva (2):
+      treewide: Replace zero-length array with flexible-array
+      soc: fsl: qe: Replace one-element array and use struct_size() helper
+
+Roy Pledge (1):
+      soc: fsl: dpio: Prefer the CPU affine DPIO
+
+YueHaibing (2):
+      soc: fsl: qbman: Remove unused inline function qm_eqcr_get_ci_stashing
+      soc: fsl: dpio: Remove unused inline function qbman_write_eqcr_am_rt_register
+
+ drivers/soc/fsl/dpio/dpio-service.c   |  6 +++++-
+ drivers/soc/fsl/dpio/qbman-portal.c   | 12 ------------
+ drivers/soc/fsl/qbman/qman.c          |  5 -----
+ drivers/soc/fsl/qe/qe.c               |  4 ++--
+ drivers/soc/fsl/qe/ucc.c              |  2 +-
+ include/linux/fsl/bestcomm/bestcomm.h |  2 +-
+ include/soc/fsl/qe/qe.h               |  2 +-
+ 7 files changed, 10 insertions(+), 23 deletions(-)
