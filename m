@@ -2,88 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F701E456A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1FA1E4571
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729924AbgE0OOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 10:14:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729302AbgE0OOB (ORCPT
+        id S2388521AbgE0OOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 10:14:23 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:42147 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2388141AbgE0OOW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 10:14:01 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5422C08C5C2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 07:14:00 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id bs4so20367289edb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 07:14:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Z7qZkCC78niGrQpOK/h//rZ5fVXVPMkzzzEIQT+ASg4=;
-        b=E9a/2r2LugVZ2pVpjEfw72sCimpeQVVL5F01md2mkXq5kIwfx+ANjZTMxJhhGmNMcb
-         uvpUEBFiAcT7WWt1NJ3/xo+pNhmHfefhQgOJgn75pcG7L2bYxZ0WzqjPwFvJWntc0u7V
-         cIua37DqSvi5ssiggshMyNnicNHxevhBLVv4X86na+C7yN7kLUNvDBN1DGCuUOQTx6V/
-         w34pBviMlcsZz2gP1LwrG3I3i7DTNjzCwO2FGYlr8TVGPihuD3zkRBr0klTJLtFSC64C
-         hseAe6ym8CMhq2DLqvzSj+qvS93Cm2QefF8ecIzKj4TMYJIlqxHdkEhoKdpklwNHRweN
-         HrLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Z7qZkCC78niGrQpOK/h//rZ5fVXVPMkzzzEIQT+ASg4=;
-        b=QLr+jXabzmRFhA8r5nzGW2fl5iHwqDvfLiCSOt1aHA0VwblLb4QfP5RwXEJQzTIz9u
-         PTWMrVJNDgtzTH1FQf9qJ3TN/jjy2QCTHqqwkaqe5cKfmV5cICzMFb0HCXQJA38ISG5+
-         NJeYxaou/qgqDowa8f049AqTvhEiiLXaDyGImFrkHP7dT6sc/vmWzLzgli1fybDDedGQ
-         qBMPsTRQbbWlM1ZmlIYyln+wRmRnO6zrnEYPcBQ7+/Uz5tUBpR7NLhDYdg08yqYohtPw
-         3NHh9gVSr71xl3fhCT5pWwyuKHTNUyKn0lSsD6+KCie9BmLL+9mJu2x7oXv+5nt5XxnB
-         GtgQ==
-X-Gm-Message-State: AOAM532WkaMFR/vha9sFec+x5/+JZUqzlNLgtYqPOa8Z3a4co4VjOMQI
-        eEHRRE0eC+iUxNgCU1OqEWt8tkiLb6gfsz2h+Og=
-X-Google-Smtp-Source: ABdhPJz1k+u7Yq2xmwJp+GMo+/XvqPt2fCQywa+3CVoyngl6LmCenKKWVIRK5925vrB4QehKvPNpTv89BiXnr3mMpvQ=
-X-Received: by 2002:a05:6402:14d5:: with SMTP id f21mr24344920edx.327.1590588839521;
- Wed, 27 May 2020 07:13:59 -0700 (PDT)
+        Wed, 27 May 2020 10:14:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590588860;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dctxeA759qsefX6QIwxwGGafAWwHT3wkT86+72lNh4I=;
+        b=DiVj9PJz2FrhdZEB6DU9okHJSJgk8y31Tf10aqYNEZKjkxSWCG4uxgD5JcNLJFfr/IOXpa
+        Cw5DO96jjgDbzCTUp+63JXNxFsuqUCCHeWoKD12WfL5cLTDDclSJZNM+gKHm0vPfAkt77y
+        HJcg58R76qIJ3xbRmKi/4oLpN55QcUw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-494-cCwpMpz8MJGNDHIv5dmS8w-1; Wed, 27 May 2020 10:14:19 -0400
+X-MC-Unique: cCwpMpz8MJGNDHIv5dmS8w-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7862C8018A7;
+        Wed, 27 May 2020 14:14:16 +0000 (UTC)
+Received: from dcbz.redhat.com (ovpn-113-73.ams2.redhat.com [10.36.113.73])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A4C705C1B0;
+        Wed, 27 May 2020 14:14:05 +0000 (UTC)
+Date:   Wed, 27 May 2020 16:14:03 +0200
+From:   Adrian Reber <areber@redhat.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Pavel Emelyanov <ovzxemul@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        =?utf-8?B?TWljaGHFgiBDxYJhcGnFhHNraQ==?= <mclapinski@google.com>,
+        Kamil Yurtsever <kyurtsever@google.com>,
+        Dirk Petersen <dipeit@gmail.com>,
+        Christine Flood <chf@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Radostin Stoyanov <rstoyanov1@gmail.com>,
+        Cyrill Gorcunov <gorcunov@openvz.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
+        Eric Paris <eparis@parisplace.org>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [PATCH] capabilities: Introduce CAP_RESTORE
+Message-ID: <20200527141403.GC250149@dcbz.redhat.com>
+References: <20200522055350.806609-1-areber@redhat.com>
+ <dc86dffb-c7f8-15bb-db4e-be135da650cc@schaufler-ca.com>
+ <20200525080541.GF104922@dcbz.redhat.com>
+ <877dwybxvi.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Received: by 2002:a17:906:c449:0:0:0:0 with HTTP; Wed, 27 May 2020 07:13:59
- -0700 (PDT)
-Reply-To: tofilbaman@gmail.com
-From:   Tofil Bama <aliftomarn5@gmail.com>
-Date:   Wed, 27 May 2020 07:13:59 -0700
-Message-ID: <CABvER2TifbifeNF+pidwz3aZStJ8mWsKUQ5wKWaHseDKLn+DMw@mail.gmail.com>
-Subject: REPLY IMMEDIATELY.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877dwybxvi.fsf@x220.int.ebiederm.org>
+X-Operating-System: Linux (5.6.11-300.fc32.x86_64)
+X-Load-Average: 0.82 0.68 0.60
+X-Unexpected: The Spanish Inquisition
+X-GnuPG-Key: gpg --recv-keys D3C4906A
+Organization: Red Hat
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear,
+On Tue, May 26, 2020 at 08:59:29AM -0500, Eric W. Biederman wrote:
+> Adrian Reber <areber@redhat.com> writes:
+> 
+> > On Fri, May 22, 2020 at 09:40:37AM -0700, Casey Schaufler wrote:
+> 
+> >> What are the other blockers? Are you going to suggest additional new
+> >> capabilities to clear them?
+> >
+> > As mentioned somewhere else access to /proc/<pid>/map_files/ would be
+> > helpful. Right now I am testing with a JVM and it works without root
+> > just with the attached patch. Without access to /proc/<pid>/map_files/
+> > not everything CRIU can do will actually work, but we are a lot closer
+> > to what our users have been asking for.
+> 
+> The current permission checks on /proc/<pid>/map_files/ are simply
+> someone being over-cautious.
+> 
+> Someone needs to think through the threat landscape and figure out what
+> permission checks are actually needed.
+> 
+> Making the permission check ns_capable instead of capable is a
+> no-brainer.  Figuring out which user_ns to test against might be a
+> we bit harder.
+> 
+> We could probably even allow the owner of the process to open the files
+> but that requires someone doing the work of thinking through how
+> being able to opening files that you have mmaped might be a problem.
 
-My name is Mr Alif Tomar, I am the Bill and Exchange (assistant)
-Manager of Bank of Africa Ouagadougou, Burkina Faso. In my department
-I discovered an abandoned sum of eighteen million three hundred
-thousand United State of American dollars (18.3MILLION USA DOLLARS) in
-an account that belongs to one of our foreign customer who died in
-airline that crashed on 4th October 2001.
+As mentioned in the other thread, CRIU can work with read access to
+map_files.
 
-Since I got information about his death I have been expecting his next
-of kin to come over and claim his money because we can not release it
-unless somebody applies for it as the next of kin or relation to the
-deceased as indicated in our banking guidelines, but unfortunately we
-learnt that all his supposed next of kin or relation died alongside
-with him in the plane crash leaving nobody behind for the claim. It is
-therefore upon this discovery that I decided to make this business
-proposal to you and release the money to you as next of kin or
-relation to the deceased for safety and subsequent disbursement since
-nobody is coming for it and I don't want the money to go into the bank
-treasury as unclaimed bill.
+> >> > There are probably a few more things guarded by CAP_SYS_ADMIN required
+> >> > to run checkpoint/restore as non-root,
+> >> 
+> >> If you need CAP_SYS_ADMIN anyway you're not gaining anything by
+> >> separating out CAP_RESTORE.
+> >
+> > No, as described we can checkpoint and restore a JVM with this patch and
+> > it also solves the problem the set_ns_last_pid fork() loop daemon tries
+> > to solve. It is not enough to support the full functionality of CRIU as
+> > map_files is also important, but we do not need CAP_SYS_ADMIN and
+> > CAP_RESTORE. Only CAP_RESTORE would be necessary.
+> >
+> > With a new capability users can enable checkpoint/restore as non-root
+> > without giving CRIU access to any of the other possibilities offered by
+> > CAP_SYS_ADMIN. Setting a PID and map_files have been introduced for CRIU
+> > and used to live behind CONFIG_CHECKPOINT_RESTORE. Having a capability
+> > for checkpoint/restore would make it easier for CRIU users to run it as
+> > non-root and make it very clear what is possible when giving CRIU the
+> > new capability. No other things would be allowed than necessary for
+> > checkpoint/restore. Setting a PID is most important for the restore part
+> > and reading map_files would be helpful during checkpoint. So it actually
+> > should be called CAP_CHECKPOINT_RESTORE as Christian mentioned in
+> > another email.
+> 
+> Please if one is for checkpoint and one is for restore asking for a pair
+> of capabilities is probably more appropriate.
 
-You will be entitled with 40% of the total sum while 60% will be for
-me after which I will visit your Country to invest my own share when
-the fund is successfully transferred into your account, Please I would
-like you to keep this transaction confidential and as a top secret as
-you may wish to know that I am a bank official.
+I will send out a v2 with a renamed capability soon and also include
+map_files to be readable with that capability.
 
-Yours sincerely,
-Mr Alif Tomar.
+> >> >  but by applying this patch I can
+> >> > already checkpoint and restore processes as non-root. As there are
+> >> > already multiple workarounds I would prefer to do it correctly in the
+> >> > kernel to avoid that CRIU users are starting to invent more workarounds.
+> >> 
+> >> You've presented a couple of really inappropriate implementations
+> >> that would qualify as workarounds. But the other two are completely
+> >> appropriate within the system security policy. They don't "get around"
+> >> the problem, they use existing mechanisms as they are intended.
+> >
+> > I agree with the user namespace approach to be appropriate, but not the
+> > CAP_SYS_ADMIN approach as CRIU only needs a tiny subset (2 things) of
+> > what CAP_SYS_ADMIN allows.
+> 
+> 
+> If we are only talking 2 things can you please include in your patchset
+> a patch enabling those 2 things?
+
+The two things are setting a PID via ns_last_pid/clone3() and reading
+map_files.
+
+> But even more than this we need a request that asks not for the least
+> you can possibly ask for but asks for what you need to do a good job.
+
+Also in this thread Kamil mentioned that they also need calling prctl
+with PR_SET_MM during restore in their production setup.
+
+> I am having visions of a recurring discussion that says can we add one
+> more permission check to CAP_RESTORE or CAP_CHECKPOINT when they are
+> things we could know today.
+
+I will prepare a new version of this patch using CAP_CHECKPOINT_RESTORE
+for ns_last_pid/clone3(), map_files, and prctl with PR_SET_MM.
+
+		Adrian
+
