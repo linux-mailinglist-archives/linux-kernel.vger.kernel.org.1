@@ -2,151 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF81A1E408D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6721E4109
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728821AbgE0Lxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 07:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728714AbgE0Lx0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 07:53:26 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7175BC08C5C2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 04:53:26 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 5564145; Wed, 27 May 2020 13:53:23 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        jroedel@suse.de
-Subject: [PATCH 01/10] iommu/amd: Move AMD IOMMU driver to a subdirectory
-Date:   Wed, 27 May 2020 13:53:04 +0200
-Message-Id: <20200527115313.7426-2-joro@8bytes.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200527115313.7426-1-joro@8bytes.org>
-References: <20200527115313.7426-1-joro@8bytes.org>
+        id S1729309AbgE0L6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 07:58:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40712 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728978AbgE0LyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 07:54:14 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 10013AC5B;
+        Wed, 27 May 2020 11:54:15 +0000 (UTC)
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
+        gregkh@linuxfoundation.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org
+Subject: [RFC 00/50] staging: vchiq: Getting rid of the vchi/vchiq split
+Date:   Wed, 27 May 2020 13:53:05 +0200
+Message-Id: <20200527115400.31391-1-nsaenzjulienne@suse.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+vchi acts as a mid layer between vchiq and its kernel services, while
+arguably providing little to no benefit: half of the functions exposed
+are a 1:1 copy of vchiq's, and the rest provide some functionality which
+can be easly integrated into vchiq without all the churn. Moreover it
+has been found in the past as a blockage to further fixes in vchiq as
+every change needed its vchi counterpart, if even possible.
 
-The driver consists of five C files and three header files by now.
-Move them to their own subdirectory to not clutter to iommu top-level
-directory with them.
+Hence this series, which merges all vchi functionality into vchiq and
+provies a simpler and more concise API to services.
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+I'm aware that kernel's vchi API tries to mimic its userspace
+counterpart (or vice versa). Obviously this breaks the parity, but I
+don't think it's a sane goal to have. There is little sense or gain from
+it, and adds impossible constraints to upstreaming the driver.
+
+Overall the series falls short of removing 1500 lines of code, which is
+pretty neat on itself.
+
+So far it has been tested trough bcm2835-camera, audio and vchiq-test. I
+can't do much about vc-sm-cma for now, but the changes are done in a way
+that shouldn't affect its behaviour.
+
+Note that the series builds up on RPi/Laurent's camera support series[1]
+and can't yet be merged. We'd have to coordinate here. We could either
+wait for the vc_sm_cma rework (if it's not going to take months and
+months to finish), or factor out all the vc-sm-cma stuff, merge that into
+the downstream kernel and take the rest of the series on top of
+Laurent's mmal-vchiq changes.
+
+Regards,
+Nicolas
+
+[1] https://lwn.net/ml/linux-media/20200504092611.9798-1-laurent.pinchart@ideasonboard.com/
+
 ---
- MAINTAINERS                                          | 2 +-
- drivers/iommu/Makefile                               | 6 +++---
- drivers/iommu/{ => amd}/amd_iommu.h                  | 0
- drivers/iommu/{ => amd}/amd_iommu_proto.h            | 0
- drivers/iommu/{ => amd}/amd_iommu_types.h            | 0
- drivers/iommu/{amd_iommu_debugfs.c => amd/debugfs.c} | 0
- drivers/iommu/{amd_iommu_init.c => amd/init.c}       | 2 +-
- drivers/iommu/{amd_iommu.c => amd/iommu.c}           | 2 +-
- drivers/iommu/{amd_iommu_v2.c => amd/iommu_v2.c}     | 0
- drivers/iommu/{amd_iommu_quirks.c => amd/quirks.c}   | 0
- 10 files changed, 6 insertions(+), 6 deletions(-)
- rename drivers/iommu/{ => amd}/amd_iommu.h (100%)
- rename drivers/iommu/{ => amd}/amd_iommu_proto.h (100%)
- rename drivers/iommu/{ => amd}/amd_iommu_types.h (100%)
- rename drivers/iommu/{amd_iommu_debugfs.c => amd/debugfs.c} (100%)
- rename drivers/iommu/{amd_iommu_init.c => amd/init.c} (99%)
- rename drivers/iommu/{amd_iommu.c => amd/iommu.c} (99%)
- rename drivers/iommu/{amd_iommu_v2.c => amd/iommu_v2.c} (100%)
- rename drivers/iommu/{amd_iommu_quirks.c => amd/quirks.c} (100%)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 50659d76976b..dd59ec6676d9 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -876,7 +876,7 @@ M:	Joerg Roedel <joro@8bytes.org>
- L:	iommu@lists.linux-foundation.org
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git
--F:	drivers/iommu/amd_iommu*.[ch]
-+F:	drivers/iommu/amd/
- F:	include/linux/amd-iommu.h
- 
- AMD KFD
-diff --git a/drivers/iommu/Makefile b/drivers/iommu/Makefile
-index 57cf4ba5e27c..3af7e374b0cb 100644
---- a/drivers/iommu/Makefile
-+++ b/drivers/iommu/Makefile
-@@ -11,9 +11,9 @@ obj-$(CONFIG_IOASID) += ioasid.o
- obj-$(CONFIG_IOMMU_IOVA) += iova.o
- obj-$(CONFIG_OF_IOMMU)	+= of_iommu.o
- obj-$(CONFIG_MSM_IOMMU) += msm_iommu.o
--obj-$(CONFIG_AMD_IOMMU) += amd_iommu.o amd_iommu_init.o amd_iommu_quirks.o
--obj-$(CONFIG_AMD_IOMMU_DEBUGFS) += amd_iommu_debugfs.o
--obj-$(CONFIG_AMD_IOMMU_V2) += amd_iommu_v2.o
-+obj-$(CONFIG_AMD_IOMMU) += amd/iommu.o amd/init.o amd/quirks.o
-+obj-$(CONFIG_AMD_IOMMU_DEBUGFS) += amd/debugfs.o
-+obj-$(CONFIG_AMD_IOMMU_V2) += amd/iommu_v2.o
- obj-$(CONFIG_ARM_SMMU) += arm_smmu.o
- arm_smmu-objs += arm-smmu.o arm-smmu-impl.o arm-smmu-qcom.o
- obj-$(CONFIG_ARM_SMMU_V3) += arm-smmu-v3.o
-diff --git a/drivers/iommu/amd_iommu.h b/drivers/iommu/amd/amd_iommu.h
-similarity index 100%
-rename from drivers/iommu/amd_iommu.h
-rename to drivers/iommu/amd/amd_iommu.h
-diff --git a/drivers/iommu/amd_iommu_proto.h b/drivers/iommu/amd/amd_iommu_proto.h
-similarity index 100%
-rename from drivers/iommu/amd_iommu_proto.h
-rename to drivers/iommu/amd/amd_iommu_proto.h
-diff --git a/drivers/iommu/amd_iommu_types.h b/drivers/iommu/amd/amd_iommu_types.h
-similarity index 100%
-rename from drivers/iommu/amd_iommu_types.h
-rename to drivers/iommu/amd/amd_iommu_types.h
-diff --git a/drivers/iommu/amd_iommu_debugfs.c b/drivers/iommu/amd/debugfs.c
-similarity index 100%
-rename from drivers/iommu/amd_iommu_debugfs.c
-rename to drivers/iommu/amd/debugfs.c
-diff --git a/drivers/iommu/amd_iommu_init.c b/drivers/iommu/amd/init.c
-similarity index 99%
-rename from drivers/iommu/amd_iommu_init.c
-rename to drivers/iommu/amd/init.c
-index 5b81fd16f5fa..fda80fd1d9a6 100644
---- a/drivers/iommu/amd_iommu_init.c
-+++ b/drivers/iommu/amd/init.c
-@@ -35,7 +35,7 @@
- #include "amd_iommu.h"
- #include "amd_iommu_proto.h"
- #include "amd_iommu_types.h"
--#include "irq_remapping.h"
-+#include "../irq_remapping.h"
- 
- /*
-  * definitions for the ACPI scanning code
-diff --git a/drivers/iommu/amd_iommu.c b/drivers/iommu/amd/iommu.c
-similarity index 99%
-rename from drivers/iommu/amd_iommu.c
-rename to drivers/iommu/amd/iommu.c
-index 1b36c40d0712..39155f550f18 100644
---- a/drivers/iommu/amd_iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -45,7 +45,7 @@
- 
- #include "amd_iommu_proto.h"
- #include "amd_iommu_types.h"
--#include "irq_remapping.h"
-+#include "../irq_remapping.h"
- 
- #define CMD_SET_TYPE(cmd, t) ((cmd)->data[1] |= ((t) << 28))
- 
-diff --git a/drivers/iommu/amd_iommu_v2.c b/drivers/iommu/amd/iommu_v2.c
-similarity index 100%
-rename from drivers/iommu/amd_iommu_v2.c
-rename to drivers/iommu/amd/iommu_v2.c
-diff --git a/drivers/iommu/amd_iommu_quirks.c b/drivers/iommu/amd/quirks.c
-similarity index 100%
-rename from drivers/iommu/amd_iommu_quirks.c
-rename to drivers/iommu/amd/quirks.c
+Nicolas Saenz Julienne (50):
+  staging: vchi: Get rid of vchi_service_destroy()
+  staging: vchi: Get rid of vchi_queue_user_message()
+  staging: vchiq: Move copy callback handling into vchiq
+  staging: vchi: Merge vchi_msg_queue() into vchi_queue_kernel_message()
+  staging: vchi: Get rid of vchi_service_set_option()
+  staging: vchi: Get rid of vchiq_status_to_vchi()
+  staging: vchi: Get rid of not implemented function declarations
+  staging: vchi: Get rid of C++ guards
+  staging: vchiq: move vchiq_release_message() into vchiq
+  staging: vchiq: Get rid of VCHIQ_SERVICE_OPENEND callback reason
+  staging: vchi: Get rid of all useless callback reasons
+  staging: vchi: Get rid of vchi_msg_peek()
+  staging: vchi: Get rid of struct vchi_instance_handle
+  staging: vchi: Unify struct shim_service and struct
+    vchi_service_handle
+  staging: vc04_services: bcm2835-audio: Use vchi_msg_hold()
+  staging: vchi: Get rid of vchi_msg_dequeue()
+  staging: vchi_common: Get rid of all unused definitions
+  staging: vc04_services: vc-sm-cma: Get rid of the multiple connections
+    option
+  staging: vchi: Get rid of unnecessary defines
+  staging: vc04_services: Get rid of vchi_cfg.h
+  staging: vchi: Get rid of flags argument in vchi_msg_hold()
+  staging: vchi: Use enum vchiq_bulk_mode instead of vchi's transmission
+    flags
+  staging: vchi: Use vchiq's enum vchiq_reason
+  staging: vchi: Get rid of effect less expression
+  staging: vchiq: Introduce vchiq_validate_params()
+  staging: vchiq: Move message queue into struct vchiq_service
+  staging: vchiq: Get rid of vchiq_util.h
+  staging: vchi: Expose struct vchi_service
+  staging: vchiq: Export vchiq_get_service_userdata()
+  staging: vchiq: Export vchiq_msg_queue_push
+  staging: vchi: Get rid of vchiq_shim's message callback
+  staging: vchiq: Don't use a typedef for vchiq_callback
+  staging: vchi: Use struct vchiq_service_params
+  staging: vchi: Get rid of struct vchi_service
+  staging: vchiq: Pass vchiq's message when holding a message
+  staging: vchi: Rework vchi_msg_hold() to match vchiq_msg_hold()
+  staging: vchiq: Unify fourcc definition mechanisms
+  staging: vchi: Get rid of struct vchiq_instance forward declaration
+  staging: vchi: Don't include vchiq_core.h
+  staging: vchiq: Get rid of unnecessary definitions in vchiq_if.h
+  staging: vchiq: Make vchiq_add_service() local
+  staging: vchiq: Move definitions only used by core into core header
+  staging: vchi: Get rid of vchi_bulk_queue_receive()
+  staging: vchi: Get rid of vchi_bulk_queue_transmit()
+  staging: vchi: Move vchi_queue_kernel_message() into vchiq
+  staging: vchiq: Get rid of vchi
+  staging: vchiq: Move conditional barrier definition into vchiq_core.h
+  staging: vchiq: Use vchiq.h as the main header file for services
+  staging: vchiq: Move defines into core header
+  staging: vchiq: Move vchiq.h into include directory
+
+ drivers/staging/vc04_services/Makefile        |   4 +-
+ .../vc04_services/bcm2835-audio/Makefile      |   2 +-
+ .../bcm2835-audio/bcm2835-vchiq.c             | 100 ++-
+ .../vc04_services/bcm2835-audio/bcm2835.h     |   4 +-
+ .../bcm2835-audio/vc_vchi_audioserv_defs.h    |   5 +-
+ .../linux/raspberrypi/vchiq.h}                |  71 +-
+ .../vc04_services/interface/{vchi => }/TODO   |   0
+ .../vc04_services/interface/vchi/vchi.h       | 240 ------
+ .../vc04_services/interface/vchi/vchi_cfg.h   | 238 ------
+ .../interface/vchi/vchi_common.h              | 138 ----
+ .../vc04_services/interface/vchiq_arm/vchiq.h |  21 -
+ .../interface/vchiq_arm/vchiq_2835_arm.c      |   1 +
+ .../interface/vchiq_arm/vchiq_arm.c           |  86 +-
+ .../interface/vchiq_arm/vchiq_core.c          | 110 ++-
+ .../interface/vchiq_arm/vchiq_core.h          |  53 +-
+ .../interface/vchiq_arm/vchiq_ioctl.h         |   2 +-
+ .../interface/vchiq_arm/vchiq_shim.c          | 751 ------------------
+ .../interface/vchiq_arm/vchiq_util.c          |  85 --
+ .../interface/vchiq_arm/vchiq_util.h          |  50 --
+ .../staging/vc04_services/vc-sm-cma/Makefile  |   1 -
+ .../staging/vc04_services/vc-sm-cma/vc_sm.c   |  10 +-
+ .../vc04_services/vc-sm-cma/vc_sm_cma_vchi.c  | 108 ++-
+ .../vc04_services/vc-sm-cma/vc_sm_cma_vchi.h  |   5 +-
+ .../vc04_services/vc-sm-cma/vc_sm_defs.h      |   3 -
+ .../staging/vc04_services/vchiq-mmal/Makefile |   1 +
+ .../vc04_services/vchiq-mmal/mmal-msg.h       |   1 -
+ .../vc04_services/vchiq-mmal/mmal-vchiq.c     | 177 ++---
+ 27 files changed, 419 insertions(+), 1848 deletions(-)
+ rename drivers/staging/vc04_services/{interface/vchiq_arm/vchiq_if.h => include/linux/raspberrypi/vchiq.h} (55%)
+ rename drivers/staging/vc04_services/interface/{vchi => }/TODO (100%)
+ delete mode 100644 drivers/staging/vc04_services/interface/vchi/vchi.h
+ delete mode 100644 drivers/staging/vc04_services/interface/vchi/vchi_cfg.h
+ delete mode 100644 drivers/staging/vc04_services/interface/vchi/vchi_common.h
+ delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq.h
+ delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
+ delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_util.c
+ delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_util.h
+
 -- 
-2.17.1
+2.26.2
 
