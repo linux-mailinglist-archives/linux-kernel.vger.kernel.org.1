@@ -2,81 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 416821E448B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 624ED1E4499
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388943AbgE0Nx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:53:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:38910 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388713AbgE0Nx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:53:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C9B6630E;
-        Wed, 27 May 2020 06:53:26 -0700 (PDT)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 17D9C3F6C4;
-        Wed, 27 May 2020 06:53:24 -0700 (PDT)
-Date:   Wed, 27 May 2020 14:53:22 +0100
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Stephen Boyd <swboyd@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org, Manoj Gupta <manojgupta@google.com>,
-        Luis Lozano <llozano@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64: vdso32: force vdso32 to be compiled as -marm
-Message-ID: <20200527135322.GU5031@arm.com>
-References: <20200526173117.155339-1-ndesaulniers@google.com>
- <159052247565.23781.7800427985507723263.b4-ty@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <159052247565.23781.7800427985507723263.b4-ty@kernel.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        id S2388951AbgE0NyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:54:23 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:24083 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387581AbgE0NyW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 09:54:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590587661;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=iDf5zmc1e1S6JUF2vessjVDEGmlryExcIRrBg0GxbAU=;
+        b=Mnt/Qec+w4Ud09AQNtSocufi2lcCJMF0nodqTrGT5WYSXCj9VjlRUVgYrEKA8xc8Ak+CeY
+        SKdFHNmLc1QYXae7dUFF+MBkrCFtnxYd8rcQQ5jRAxvCzVdPxifShlEFpHZADQTMq4W4lu
+        7iZGAZ2DE7HD9shONNdGx6bPEv6I0fI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-331-ElORiSJoM6m2FkbCrnf4qw-1; Wed, 27 May 2020 09:54:04 -0400
+X-MC-Unique: ElORiSJoM6m2FkbCrnf4qw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A045835B47;
+        Wed, 27 May 2020 13:54:03 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 920CB1001268;
+        Wed, 27 May 2020 13:53:54 +0000 (UTC)
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org
+Cc:     Paul Moore <paul@paul-moore.com>, sgrubb@redhat.com,
+        omosnace@redhat.com, fw@strlen.de, twoerner@redhat.com,
+        eparis@parisplace.org, tgraf@infradead.org,
+        Richard Guy Briggs <rgb@redhat.com>
+Subject: [PATCH ghak124 v1] audit: log nftables configuration change events
+Date:   Wed, 27 May 2020 09:53:31 -0400
+Message-Id: <d92a718b54269f426acc18f28e561031da66d3ca.1590579994.git.rgb@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 09:45:05PM +0100, Will Deacon wrote:
-> On Tue, 26 May 2020 10:31:14 -0700, Nick Desaulniers wrote:
-> > Custom toolchains that modify the default target to -mthumb cannot
+iptables, ip6tables, arptables and ebtables table registration,
+replacement and unregistration configuration events are logged for the
+native (legacy) iptables setsockopt api, but not for the
+nftables netlink api which is used by the nft-variant of iptables in
+addition to nftables itself.
 
-It's probably too late to water this down, but it's unfortunate to have
-this comment in the upstream commit history.
+Add calls to log the configuration actions in the nftables netlink api.
 
-It's not constructive to call the native compiler configuration of
-major distros for many years a "custom" toolchain.  Unmodified GCC has
-had a clean configure option for this for a very long time; it's not
-someone's dirty hack.  (The wisdom of armhf's choice of -mthumb might
-be debated, but it is well established.)
+This uses the same NETFILTER_CFG record format.
 
-Ignoring the triplet and passing random options to a compiler in the
-hopes that it will do the right thing for an irregular usecase has never
-been reliable.  Usecases don't get much more irregular than building
-vdso32.
+For further information please see issue
+https://github.com/linux-audit/audit-kernel/issues/124
 
-arch/arm has the proper options in its Makefiles.
+Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+---
+This is an RFC patch.
+Note: I have questions about the "entries" count.  Is there a more
+appropriate or relevant item to report here?
+Note: It might make sense to differentiate in the op= field that this
+was a legacy call vs an nft call.  At the moment, legacy calls overlap
+with nft table calls, which are similar calls.
 
-This patch is a kernel bugfix, plain and simple.
+ include/linux/audit.h         |  7 +++++++
+ kernel/auditsc.c              | 12 +++++++++---
+ net/netfilter/nf_tables_api.c | 14 ++++++++++++++
+ 3 files changed, 30 insertions(+), 3 deletions(-)
 
-> > compile the arm64 compat vdso32, as
-> > arch/arm64/include/asm/vdso/compat_gettimeofday.h
-> > contains assembly that's invalid in -mthumb.  Force the use of -marm,
-> > always.
-> 
-> Applied to arm64 (for-next/vdso), thanks!
-> 
-> [1/1] arm64: vdso32: force vdso32 to be compiled as -marm
->       https://git.kernel.org/arm64/c/20363b59ad4f
+diff --git a/include/linux/audit.h b/include/linux/audit.h
+index 3fcd9ee49734..b10f54103a82 100644
+--- a/include/linux/audit.h
++++ b/include/linux/audit.h
+@@ -12,6 +12,7 @@
+ #include <linux/sched.h>
+ #include <linux/ptrace.h>
+ #include <uapi/linux/audit.h>
++#include <uapi/linux/netfilter/nf_tables.h>
+ 
+ #define AUDIT_INO_UNSET ((unsigned long)-1)
+ #define AUDIT_DEV_UNSET ((dev_t)-1)
+@@ -98,6 +99,12 @@ enum audit_nfcfgop {
+ 	AUDIT_XT_OP_REGISTER,
+ 	AUDIT_XT_OP_REPLACE,
+ 	AUDIT_XT_OP_UNREGISTER,
++	AUDIT_XT_OP_CHAIN_REGISTER	= NFT_MSG_NEWCHAIN,
++	AUDIT_XT_OP_CHAIN_NOOP		= NFT_MSG_GETCHAIN,
++	AUDIT_XT_OP_CHAIN_UNREGISTER	= NFT_MSG_DELCHAIN,
++	AUDIT_XT_OP_RULE_REGISTER	= NFT_MSG_NEWRULE,
++	AUDIT_XT_OP_RULE_NOOP		= NFT_MSG_GETRULE,
++	AUDIT_XT_OP_RULE_UNREGISTER	= NFT_MSG_DELRULE,
+ };
+ 
+ extern int is_audit_feature_set(int which);
+diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+index 468a23390457..eedce8fa4067 100644
+--- a/kernel/auditsc.c
++++ b/kernel/auditsc.c
+@@ -136,9 +136,15 @@ struct audit_nfcfgop_tab {
+ };
+ 
+ static const struct audit_nfcfgop_tab audit_nfcfgs[] = {
+-	{ AUDIT_XT_OP_REGISTER,		"register"	},
+-	{ AUDIT_XT_OP_REPLACE,		"replace"	},
+-	{ AUDIT_XT_OP_UNREGISTER,	"unregister"	},
++	{ AUDIT_XT_OP_REGISTER,		"register"		},
++	{ AUDIT_XT_OP_REPLACE,		"replace"		},
++	{ AUDIT_XT_OP_UNREGISTER,	"unregister"		},
++	{ AUDIT_XT_OP_CHAIN_REGISTER,	"register_chain"	},
++	{ AUDIT_XT_OP_CHAIN_NOOP,	"noop_chain"		},
++	{ AUDIT_XT_OP_CHAIN_UNREGISTER,	"unregister_chain"	},
++	{ AUDIT_XT_OP_RULE_REGISTER,	"register_rule"		},
++	{ AUDIT_XT_OP_RULE_NOOP,	"noop_rule"		},
++	{ AUDIT_XT_OP_RULE_UNREGISTER,	"unregister_rule"	},
+ };
+ 
+ static int audit_match_perm(struct audit_context *ctx, int mask)
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 4471393da6d8..c8dc954685f2 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -12,6 +12,7 @@
+ #include <linux/netlink.h>
+ #include <linux/vmalloc.h>
+ #include <linux/rhashtable.h>
++#include <linux/audit.h>
+ #include <linux/netfilter.h>
+ #include <linux/netfilter/nfnetlink.h>
+ #include <linux/netfilter/nf_tables.h>
+@@ -7344,6 +7345,19 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ 	list_for_each_entry_safe(trans, next, &net->nft.commit_list, list) {
+ 		switch (trans->msg_type) {
+ 		case NFT_MSG_NEWTABLE:
++		case NFT_MSG_DELTABLE:
++		case NFT_MSG_NEWCHAIN:
++		case NFT_MSG_DELCHAIN:
++		case NFT_MSG_NEWRULE:
++		case NFT_MSG_DELRULE:
++			audit_log_nfcfg(trans->ctx.table->name,
++					trans->ctx.family,
++					atomic_read(&trans->ctx.table->chains_ht.ht.nelems),
++					trans->msg_type);
++			break;
++		}
++		switch (trans->msg_type) {
++		case NFT_MSG_NEWTABLE:
+ 			if (nft_trans_table_update(trans)) {
+ 				if (!nft_trans_table_enable(trans)) {
+ 					nf_tables_table_disable(net,
+-- 
+1.8.3.1
 
-Does this need to go to stable?
-
-Cheers
----Dave
