@@ -2,65 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A191E4D0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B68CD1E4D17
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:26:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391980AbgE0SZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 14:25:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387581AbgE0SZR (ORCPT
+        id S2391989AbgE0S0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 14:26:41 -0400
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:54943 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389214AbgE0S0l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 14:25:17 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD579C08C5C1;
-        Wed, 27 May 2020 11:25:17 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 8DC45128B2F3C;
-        Wed, 27 May 2020 11:25:16 -0700 (PDT)
-Date:   Wed, 27 May 2020 11:25:15 -0700 (PDT)
-Message-Id: <20200527.112515.1714930146142742523.davem@davemloft.net>
-To:     brgl@bgdev.pl
-Cc:     john@phrozen.org, sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com,
-        kuba@kernel.org, matthias.bgg@gmail.com, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        fparent@baylibre.com, stephane.leprovost@mediatek.com,
-        pedro.tsai@mediatek.com, andrew.perepech@mediatek.com,
-        bgolaszewski@baylibre.com, natechancellor@gmail.com
-Subject: Re: [PATCH] net: ethernet: mtk-star-emac: fix error path in RX
- handling
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200527092404.3567-1-brgl@bgdev.pl>
-References: <20200527092404.3567-1-brgl@bgdev.pl>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 27 May 2020 11:25:17 -0700 (PDT)
+        Wed, 27 May 2020 14:26:41 -0400
+Received: from belgarion ([86.210.245.36])
+        by mwinf5d11 with ME
+        id juSb220020nqnCN03uSbp8; Wed, 27 May 2020 20:26:39 +0200
+X-ME-Helo: belgarion
+X-ME-Auth: amFyem1pay5yb2JlcnRAb3JhbmdlLmZy
+X-ME-Date: Wed, 27 May 2020 20:26:39 +0200
+X-ME-IP: 86.210.245.36
+From:   Robert Jarzmik <robert.jarzmik@free.fr>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Ray Jui <rjui@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH 2/3] gpio: pxa: Fix return value of pxa_gpio_probe()
+References: <1590120740-22912-1-git-send-email-yangtiezhu@loongson.cn>
+        <1590120740-22912-2-git-send-email-yangtiezhu@loongson.cn>
+        <874ks7okk4.fsf@belgarion.home>
+        <3382c1df-1429-ecd3-70b6-35bc00343608@loongson.cn>
+X-URL:  http://belgarath.falguerolles.org/
+Date:   Wed, 27 May 2020 20:26:07 +0200
+In-Reply-To: <3382c1df-1429-ecd3-70b6-35bc00343608@loongson.cn> (Tiezhu Yang's
+        message of "Sat, 23 May 2020 11:24:46 +0800")
+Message-ID: <87zh9tmdz4.fsf@belgarion.home>
+User-Agent: Gnus/5.130008 (Ma Gnus v0.8) Emacs/26 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Wed, 27 May 2020 11:24:04 +0200
+Tiezhu Yang <yangtiezhu@loongson.cn> writes:
 
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> 
-> The dma_addr field in desc_data must not be overwritten until after the
-> new skb is mapped. Currently we do replace it with uninitialized value
-> in error path. This change fixes it by moving the assignment before the
-> label to which we jump after mapping or allocation errors.
-> 
-> Fixes: 8c7bd5a454ff ("net: ethernet: mtk-star-emac: new driver")
-> Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> On 05/23/2020 03:07 AM, Robert Jarzmik wrote:
+>> Tiezhu Yang <yangtiezhu@loongson.cn> writes:
+>>
+>>> When call function devm_platform_ioremap_resource(), we should use IS_ERR()
+>>> to check the return value and return PTR_ERR() if failed.
+>>>
+>>> Fixes: 542c25b7a209 ("drivers: gpio: pxa: use devm_platform_ioremap_resource()")
+>>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>>> ---
+>>>   drivers/gpio/gpio-pxa.c | 4 ++--
+>>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/gpio/gpio-pxa.c b/drivers/gpio/gpio-pxa.c
+>>> index 1361270..0cb6600 100644
+>>> --- a/drivers/gpio/gpio-pxa.c
+>>> +++ b/drivers/gpio/gpio-pxa.c
+>>> @@ -660,8 +660,8 @@ static int pxa_gpio_probe(struct platform_device *pdev)
+>>>   	pchip->irq1 = irq1;
+>>>     	gpio_reg_base = devm_platform_ioremap_resource(pdev, 0);
+>>> -	if (!gpio_reg_base)
+>>> -		return -EINVAL;
+>>> +	if (IS_ERR(gpio_reg_base))
+>>> +		return PTR_ERR(gpio_reg_base);
+>> As far as I know, devm_platform_ioremap_resource() could return NULL which is
+>> not handled by this test (unless __devm_ioremap() semantics changed since I had
+>> a look).
+>
+> Hi Robert,
+>
+> In the function __devm_ioremap_resource(), if __devm_ioremap returns NULL,
+> it will return IOMEM_ERR_PTR(-ENOMEM).
+>
+> devm_platform_ioremap_resource()
+>         devm_ioremap_resource()
+>                 __devm_ioremap_resource()
+>                        __devm_ioremap()
+>
+> static void __iomem *
+> __devm_ioremap_resource(struct device *dev, const struct resource *res,
+>             enum devm_ioremap_type type)
+> {
+> ...
+>     dest_ptr = __devm_ioremap(dev, res->start, size, type);
+>     if (!dest_ptr) {
+>         dev_err(dev, "ioremap failed for resource %pR\n", res);
+>         devm_release_mem_region(dev, res->start, size);
+>         dest_ptr = IOMEM_ERR_PTR(-ENOMEM);
+>     }
+>
+>     return dest_ptr;
+> }
+>
+> And also, we can see the comment of devm_ioremap_resource():
+>
+> Usage example:
+>
+>         res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>         base = devm_ioremap_resource(&pdev->dev, res);
+>         if (IS_ERR(base))
+>                 return PTR_ERR(base);
+>
+>>
+>> Therefore, this patch is incorrect, or rather incomplete.
+>
+> So I think this patch is correct, do I miss something?
+You're right, my bad, didn't see the test in __devm_ioremap_resource().
 
-Applied, please use "[PATCH net-next]" to clearly indicate the target
-GIT tree next time.
+Cheers.
 
-Thank you.
+-- 
+Robert
