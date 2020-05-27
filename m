@@ -2,123 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55251E4EF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5A31E4F01
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728648AbgE0ULi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 16:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41444 "EHLO
+        id S1728328AbgE0UPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 16:15:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728587AbgE0ULa (ORCPT
+        with ESMTP id S1726946AbgE0UPA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 16:11:30 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F40C03E96E
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 13:11:29 -0700 (PDT)
-Received: from localhost ([127.0.0.1] helo=flow.W.breakpoint.cc)
-        by Galois.linutronix.de with esmtp (Exim 4.80)
-        (envelope-from <bigeasy@linutronix.de>)
-        id 1je2Od-0005ku-Du; Wed, 27 May 2020 22:11:27 +0200
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Galbraith <umgwanakikbuti@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH v3 7/7] zram: Use local lock to protect per-CPU data
-Date:   Wed, 27 May 2020 22:11:19 +0200
-Message-Id: <20200527201119.1692513-8-bigeasy@linutronix.de>
-X-Mailer: git-send-email 2.27.0.rc0
-In-Reply-To: <20200527201119.1692513-1-bigeasy@linutronix.de>
-References: <20200527201119.1692513-1-bigeasy@linutronix.de>
+        Wed, 27 May 2020 16:15:00 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0FB5C05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 13:15:00 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id y11so2310258plt.12
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 13:15:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FfdtyyVLKdq4NOXXZJIyNw3sD+oufFVMDv2SJ2Qrq/A=;
+        b=iOS01wcS1koYPOrmLcJdGte4hEdREZewrFPmwl/ApUOoPSbaa6h1EGPT+K5AzRcK0q
+         1IwXjAPfTKsALyRr4GzqzFCVp+xdSFzkrIzwgiSbVtTJsCrxvqHPVVzZcM/NAp6PU3Vb
+         dHxxD1ZX+D45FuEy6e3b2MV3QvQEDGYnfyfF0dmosVnDcQn4kqwk6Ea2HjPYVf/2VVnv
+         J1spBnWL7rCAOGDrnPQ+F1Q7dL2kCiEp1hB94bxNcc8WiUysLnCVr8BR9ee++3la2qUl
+         RwqF89loSOdPVzMUkoJZAM2EtcxsvAUn2GssB5F7zLAEsMkiWm6+hQJyqq3MAtMLmYUS
+         K0lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FfdtyyVLKdq4NOXXZJIyNw3sD+oufFVMDv2SJ2Qrq/A=;
+        b=Za+1G/mO7VMeUKWjTJ+ds/sh3ercg/LzuBSKqqN90IU2cqq0uSOM2PaIwjCEe7avW0
+         9IynM7ET8BR015Nu8BVO05AVQujTaZbk34shYPgffRxsrkznkI80+6MqWA2COW0/8Zh0
+         LlvpOLBDikgMl4XsOxe9yHReGu2x4tFKbK4cYjsM5fWjyVPozBWJ3lZu9863odeKzLai
+         9EsDus+5KzCZVH2srYvjnZ8K5oIkL0v1fqXW2Zjw/RYVFKMtpw6xjGC89PZrXasPhebX
+         FdFLtFgfb8yKtFFCU8qmJpEwc41UPfl74yIvu6H9b/ebKA2O2gfKBr0ndu/8kydI1Ifw
+         XCGA==
+X-Gm-Message-State: AOAM533zUM8F5ug3Ou9YKtIXpOhoBvQxpZF+UUpy8TGPhEhC9Y4Tg59+
+        lVR3DHRUnppbl8yJt/PZogGM0hhPXwmpm0f/9WXr3g==
+X-Google-Smtp-Source: ABdhPJxkmmUDLdBND/oo7tPsXbQ7K5srOsr7qRUdoa5Z7H024vJyqnQlLqDUWZ9ULjMDKkGRQvhC0J39xq0J1s/D86s=
+X-Received: by 2002:a17:90a:4e8c:: with SMTP id o12mr89158pjh.25.1590610499964;
+ Wed, 27 May 2020 13:14:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+References: <20200526173117.155339-1-ndesaulniers@google.com>
+ <2f58c2a4-0f37-d507-7767-00161c6b5d98@arm.com> <CAKwvOd=Oy_OfRbL6-q-3CAHxWBNBKE+HkfNfgCiP726u+4dU1Q@mail.gmail.com>
+ <34f261f7-c4b5-a628-9a4c-eb97b75fba52@arm.com>
+In-Reply-To: <34f261f7-c4b5-a628-9a4c-eb97b75fba52@arm.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 27 May 2020 13:14:48 -0700
+Message-ID: <CAKwvOdn1W4C5HRJEch5PS-Atcmysh0UD+VZX_wi8tviGwhmM7Q@mail.gmail.com>
+Subject: Re: [PATCH] arm64: vdso32: force vdso32 to be compiled as -marm
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Stephen Boyd <swboyd@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Manoj Gupta <manojgupta@google.com>,
+        Luis Lozano <llozano@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Kristof Beyls <Kristof.Beyls@arm.com>, victor.campos@arm.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Galbraith <umgwanakikbuti@gmail.com>
+On Wed, May 27, 2020 at 12:28 PM Robin Murphy <robin.murphy@arm.com> wrote:
+>
+> On 2020-05-27 18:55, Nick Desaulniers wrote:
+> > On Wed, May 27, 2020 at 6:45 AM Robin Murphy <robin.murphy@arm.com> wrote:
+> >>
+> >> On 2020-05-26 18:31, Nick Desaulniers wrote:
+> >>> Custom toolchains that modify the default target to -mthumb cannot
+> >>> compile the arm64 compat vdso32, as
+> >>> arch/arm64/include/asm/vdso/compat_gettimeofday.h
+> >>> contains assembly that's invalid in -mthumb.  Force the use of -marm,
+> >>> always.
+> >>
+> >> FWIW, this seems suspicious - the only assembly instructions I see there
+> >> are SWI(SVC), MRRC, and a MOV, all of which exist in Thumb for the
+> >> -march=armv7a baseline that we set.
+> >>
+> >> On a hunch, I've just bodged "VDSO_CFLAGS += -mthumb" into my tree and
+> >> built a Thumb VDSO quite happily with Ubuntu 19.04's
+> >> gcc-arm-linux-gnueabihf. What was the actual failure you saw?
+> >
+> >  From the link in the commit message: `write to reserved register 'R7'`
+> > https://godbolt.org/z/zwr7iZ
+> > IIUC r7 is reserved for the frame pointer in THUMB?
+>
+> It can be, if you choose to build with frame pointers and the common
+> frame pointer ABI for Thumb code that uses r7. However it can also be
+> for other things like the syscall number in the Arm syscall ABI too.
 
-The zcomp driver uses per-CPU compression. The per-CPU data pointer is
-acquired with get_cpu_ptr() which implicitly disables preemption.
-It allocates memory inside the preempt disabled region which conflicts
-with the PREEMPT_RT semantics.
+Ah, right, with -fomit-frame-pointer, this error also goes away.  Not
+sure if we prefer either:
+- build the compat vdso as -marm always or
+- disable frame pointers for the vdso (does this have unwinding implications?)
+- other?
 
-Replace the implicit preemption control with an explicit local lock.
-This allows RT kernels to substitute it with a real per CPU lock, which
-serializes the access but keeps the code section preemptible. On non RT
-kernels this maps to preempt_disable() as before, i.e. no functional
-change.
+> I
+> take it Clang has decided that writing syscall wrappers with minimal
+> inline asm is not a thing people deserve to do without arbitrary other
+> restrictions?
 
-[bigeasy: Use local_lock(), description, drop reordering]
-
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Nitin Gupta <ngupta@vflare.org>
-Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Signed-off-by: Mike Galbraith <umgwanakikbuti@gmail.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- drivers/block/zram/zcomp.c | 7 +++++--
- drivers/block/zram/zcomp.h | 3 +++
- 2 files changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/block/zram/zcomp.c b/drivers/block/zram/zcomp.c
-index 912e3e63d8a09..5ee8e3fae5516 100644
---- a/drivers/block/zram/zcomp.c
-+++ b/drivers/block/zram/zcomp.c
-@@ -110,12 +110,13 @@ ssize_t zcomp_available_show(const char *comp, char *=
-buf)
-=20
- struct zcomp_strm *zcomp_stream_get(struct zcomp *comp)
- {
--	return get_cpu_ptr(comp->stream);
-+	local_lock(&comp->stream->lock);
-+	return this_cpu_ptr(comp->stream);
- }
-=20
- void zcomp_stream_put(struct zcomp *comp)
- {
--	put_cpu_ptr(comp->stream);
-+	local_unlock(&comp->stream->lock);
- }
-=20
- int zcomp_compress(struct zcomp_strm *zstrm,
-@@ -159,6 +160,8 @@ int zcomp_cpu_up_prepare(unsigned int cpu, struct hlist=
-_node *node)
- 	int ret;
-=20
- 	zstrm =3D per_cpu_ptr(comp->stream, cpu);
-+	local_lock_init(&zstrm->lock);
-+
- 	ret =3D zcomp_strm_init(zstrm, comp);
- 	if (ret)
- 		pr_err("Can't allocate a compression stream\n");
-diff --git a/drivers/block/zram/zcomp.h b/drivers/block/zram/zcomp.h
-index 72c2ee4d843ed..40f6420f4b2e9 100644
---- a/drivers/block/zram/zcomp.h
-+++ b/drivers/block/zram/zcomp.h
-@@ -5,8 +5,11 @@
-=20
- #ifndef _ZCOMP_H_
- #define _ZCOMP_H_
-+#include <linux/local_lock.h>
-=20
- struct zcomp_strm {
-+	/* The members ->buffer and ->tfm are protected by ->lock. */
-+	local_lock_t lock;
- 	/* compression/decompression buffer */
- 	void *buffer;
- 	struct crypto_comp *tfm;
---=20
-2.27.0.rc0
-
+Was the intent not obvious? We would have gotten away with it, too, if
+wasn't for you meddling kids and your stupid dog! /s
+https://www.youtube.com/watch?v=hXUqwuzcGeU
+Anyways, this seems to explain more the intentions:
+https://reviews.llvm.org/D76848#1945810
++ Victor, Kristof (ARM)
+-- 
+Thanks,
+~Nick Desaulniers
