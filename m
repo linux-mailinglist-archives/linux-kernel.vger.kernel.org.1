@@ -2,81 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 818511E4895
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D218D1E4898
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390442AbgE0Px0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 11:53:26 -0400
-Received: from mga02.intel.com ([134.134.136.20]:18233 "EHLO mga02.intel.com"
+        id S2390458AbgE0Pxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 11:53:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39548 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730681AbgE0Pwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 11:52:40 -0400
-IronPort-SDR: 2PmsTAisMn82Rly0A7ZkBfdS8Qmx0dzj7UdC7KTSbbRIQeQZvZvmZkAbhh1/XaFK1Cjd4gNrZN
- B1ptQ9kMo98w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 08:52:39 -0700
-IronPort-SDR: 6YhWIySeoBxP4RHsRtDP4kdHvHlwrWX91anzrnOVHK/y5q7DzF2CnJFga66qMCQf60brEM38t5
- 0uDaifa1ajXw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,441,1583222400"; 
-   d="scan'208";a="442571050"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga005.jf.intel.com with ESMTP; 27 May 2020 08:52:36 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jdyMB-009Fql-2r; Wed, 27 May 2020 18:52:39 +0300
-Date:   Wed, 27 May 2020 18:52:39 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 11/11] i2c: designware: Add Baikal-T1 System I2C
- support
-Message-ID: <20200527155239.GI1634618@smile.fi.intel.com>
-References: <20200527120111.5781-1-Sergey.Semin@baikalelectronics.ru>
- <20200527120111.5781-12-Sergey.Semin@baikalelectronics.ru>
- <20200527140303.GC1634618@smile.fi.intel.com>
- <20200527150431.z25aibkn6edplneh@mobilestation>
+        id S2388176AbgE0Pxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 11:53:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 40CE3AEAF;
+        Wed, 27 May 2020 15:53:44 +0000 (UTC)
+From:   Jan Beulich <jbeulich@suse.com>
+Subject: [PATCH] x86/mm: keep __default_kernel_pte_mask in sync with
+ __supported_pte_mask
+To:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Message-ID: <321effdb-06d5-6b63-e94c-64f83f771024@suse.com>
+Date:   Wed, 27 May 2020 17:53:39 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200527150431.z25aibkn6edplneh@mobilestation>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 06:04:31PM +0300, Serge Semin wrote:
-> On Wed, May 27, 2020 at 05:03:03PM +0300, Andy Shevchenko wrote:
-> > On Wed, May 27, 2020 at 03:01:11PM +0300, Serge Semin wrote:
+Both masks get applied in the process of e.g. set_fixmap() - the former
+through use of PAGE_KERNEL, the latter by use of massage_pgprot(). Hence
+forever since the introduction of the former there was a time window
+(between x86_configure_nx() and the syncing of the two in
+probe_page_size_mask(), as called from init_mem_mapping()) where fixmap
+mappings would get established without NX set. For a 32-bit kernel
+running in PV mode under Xen this meant a W+X mapping (and associated
+warning) for its shared info page mapping established in
+xen_pv_init_platform().
 
-...
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
 
-> > > +static struct regmap_config bt1_i2c_cfg = {
-> > > +	.reg_bits = 32,
-> > > +	.val_bits = 32,
-> > > +	.reg_stride = 4,
-> > > +	.fast_io = true,
-> > > +	.reg_read = bt1_i2c_read,
-> > > +	.reg_write = bt1_i2c_write,
-> > > +	.max_register = DW_IC_COMP_TYPE
-
-And perhaps add a comma?
-
-> > > +};
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+--- a/arch/x86/mm/setup_nx.c
++++ b/arch/x86/mm/setup_nx.c
+@@ -33,10 +33,13 @@ early_param("noexec", noexec_setup);
+ 
+ void x86_configure_nx(void)
+ {
+-	if (boot_cpu_has(X86_FEATURE_NX) && !disable_nx)
++	if (boot_cpu_has(X86_FEATURE_NX) && !disable_nx) {
+ 		__supported_pte_mask |= _PAGE_NX;
+-	else
++		__default_kernel_pte_mask |= _PAGE_NX;
++	} else {
+ 		__supported_pte_mask &= ~_PAGE_NX;
++		__default_kernel_pte_mask &= ~_PAGE_NX;
++	}
+ }
+ 
+ void __init x86_report_nx(void)
