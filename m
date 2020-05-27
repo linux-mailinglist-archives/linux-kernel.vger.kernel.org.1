@@ -2,74 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 982AB1E45FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADE671E4609
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389294AbgE0OfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 10:35:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389205AbgE0OfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 10:35:19 -0400
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4497207D8;
-        Wed, 27 May 2020 14:35:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590590118;
-        bh=ZHtlGUdsxIEBDD/xsBrVNKXYYZ2i+BMLqDQbWpUZlVQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Kt7Bifq9PQAYdyS3oLP+3AgwaXJKnTd/D+XY1nMLTXHODDtOt1bkd6DfpX/XIaNKV
-         fiYm/Qr1XeJTcMpgvZRUiNpotgeHbumz8wl33tmu2JUojuQpdudrDlv3dOauHw9X/H
-         6HDd5bFq5NQuqMSJl73ny0fdoFgRbm3IHn22lA5s=
-Received: by mail-ot1-f44.google.com with SMTP id 63so19312581oto.8;
-        Wed, 27 May 2020 07:35:18 -0700 (PDT)
-X-Gm-Message-State: AOAM531C4wCKDOmD+m0HkDpi5DEaJGprO3YWd165t7zBOmvs0XCt7dyV
-        /BdrSPLXZWjWK2Fe7QwpwjIRqneoXqETUNnoWQ==
-X-Google-Smtp-Source: ABdhPJzgO0PBm+/AfLe7jnde5ihC21UEs5rp32++DKs0id2GuWNq7IxMhIZjtQ7ntkOjM6vINFi6FRy20LlfhlOWQyM=
-X-Received: by 2002:a05:6830:18d9:: with SMTP id v25mr4556571ote.107.1590590118113;
- Wed, 27 May 2020 07:35:18 -0700 (PDT)
+        id S2389311AbgE0Ogr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 10:36:47 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:46809 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389152AbgE0Ogr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 10:36:47 -0400
+Received: from mail-qt1-f175.google.com ([209.85.160.175]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MwxNF-1ip7fK26qx-00ySSH for <linux-kernel@vger.kernel.org>; Wed, 27 May
+ 2020 16:36:45 +0200
+Received: by mail-qt1-f175.google.com with SMTP id j32so4369995qte.10
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 07:36:45 -0700 (PDT)
+X-Gm-Message-State: AOAM532zAwiZbeCqmBTkRbMEC0HFf8QFQmLNJGUJN6cCdL8npzv4AGec
+        Ftqlj04Bh2YscXQH5h/NMkrGcO0SHQ6UGQ4XfIs=
+X-Google-Smtp-Source: ABdhPJz5OgKXuoYgmUdLE+csUDsEEOEF0XSfC8Ij+VwLLkemZAcY7xiTkXrFOUDNARvgard005IXgUtkM4rz7IvR6EA=
+X-Received: by 2002:ac8:691:: with SMTP id f17mr4501313qth.204.1590590204402;
+ Wed, 27 May 2020 07:36:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200526164652.2331-1-dmurphy@ti.com> <20200526164652.2331-2-dmurphy@ti.com>
- <20200527014902.GA859634@bogus> <20200527133948.GA5011@amd>
-In-Reply-To: <20200527133948.GA5011@amd>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 27 May 2020 08:35:06 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+rS=awLC_maPGjeWhh1Sb9U31xfvLecVe9sPTh83eDBw@mail.gmail.com>
-Message-ID: <CAL_Jsq+rS=awLC_maPGjeWhh1Sb9U31xfvLecVe9sPTh83eDBw@mail.gmail.com>
-Subject: Re: [PATCH v25 01/16] dt: bindings: Add multicolor class dt bindings documention
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Dan Murphy <dmurphy@ti.com>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        devicetree@vger.kernel.org,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200527134254.854672-1-arnd@arndb.de> <CAKb7Uvhh2JKck524D9S14uNSLykFj+U48AgR+sd2uwchsH_wEQ@mail.gmail.com>
+In-Reply-To: <CAKb7Uvhh2JKck524D9S14uNSLykFj+U48AgR+sd2uwchsH_wEQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 27 May 2020 16:36:28 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3kRP6Sg-An5szsN=4Pv1OsG+-YQYa1wgxJCi1c+uedPw@mail.gmail.com>
+Message-ID: <CAK8P3a3kRP6Sg-An5szsN=4Pv1OsG+-YQYa1wgxJCi1c+uedPw@mail.gmail.com>
+Subject: Re: [Nouveau] [PATCH] nouveau: add fbdev dependency
+To:     Ilia Mirkin <imirkin@alum.mit.edu>
+Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        nouveau <nouveau@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:IkTtRky3C2ijnqvAwwC/+tGbWXDIHPSww6i892k0Lnz51LcdXbh
+ ZQdI0iNm4vgqvQ0o4RCc0LyWxF0ZuFHdEYmJn9aGPbOtfeNmgae2FIw6Q0IydcLcdjzPDc6
+ Hm7LJt3ZT51zWo8Pu9BdpX3x6TgpASDhfAV7D+565LhFBx67r67kID0Is36fpWCOvuFiAtC
+ t7FMGTDs3exdOLIxoNWAA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ZnalMiJdDrQ=:hqm6wrxMUmBXjlwTImbTVr
+ R5eK6oRgBs7YRGHA21AWdAJ5ackmba4Ept/xwNYpoUZ8iRS9BA4MpPNZyFTBDRBq7aVFs6XwA
+ mrcNosr3bOS7MwAcslCV2Uh37jhfyoBAI1AdtskxJsT+LzqnV5OBB+uOXGc9tKDHI795NSERa
+ m6/xYdnyXmio8ZODvgxO0W9XD0r2yIrNHb5cnEdnqOzpyvvd9hLYKNmoHgiwLnibbAKDXlHxw
+ LvfPqUFN3UfWOAcRDRYOkmBWepHgJycAG5iia6k5/DLkc5cIR32vCqVRXbdveLfaJNZ6v/UGs
+ IJta6SQugFHzJcpY9BEFVoYhswzvn7E5msVXpIbnal2VHxq39KaCMvQTviihout8TLgfoch3U
+ SD+uql5ymVGPGC7cWb3VYCS9FKeQGVY9Y2QonwoOL+e6xxkdNIKcyWg/dSSejS8Tt1FpMffr+
+ gD6SWORbztUC+7ynurE6QtRFnr7fGr8JpsG5hCtW+1wcPBxlJVZ63fhPebWSOZufVk2991Fgx
+ MdFPPDvpzgKf2pTVWKj/K52HBtXtNYM+ZxYIRX22u2Bjv9G+9odKOSPuwKnbQNBglKWV/ye13
+ SrniUFa9tX1p9ImRzlVb4UsgLrKR0R/sEPqFPZAwXbDpY8Rolki96JzIhiP8SBDEzI+CqvRac
+ r7HNFawN2ilA9GJ6hVzc2AwcLTX8VuMKtTAdVCP9gXrpYOKW4fnqBFDU6NnY0gbjs/zi3i8+G
+ X/Vh36zKqcpPZh2/zWMhgkoGSIPO61ikeLmEDJe5tTUxnVvlhWTsc0UpzhjWC1a2qoznWpQvv
+ fqwTUjZkk5gj0cMyEsNu1P5pcZn+/0VzKb9Mm5FuBNtmDfSMVo=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 7:39 AM Pavel Machek <pavel@ucw.cz> wrote:
+On Wed, May 27, 2020 at 4:05 PM Ilia Mirkin <imirkin@alum.mit.edu> wrote:
 >
-> Hi!
+> Isn't this already fixed by
 >
-> Thanks for reviews!
->
-> > > +additionalProperties: false
-> > > +...
-> > > diff --git a/drivers/leds/led-core.c b/drivers/leds/led-core.c
-> >
-> > This isn't a binding file. Belongs in another patch.
->
-> These constants are directly related to the binding. It makes sense to
-> go in one patch...
+> https://cgit.freedesktop.org/drm/drm/commit/?id=7dbbdd37f2ae7dd4175ba3f86f4335c463b18403
 
-Yes, the header does go in this patch, but kernel subsystem files do not.
+Ok, I see that fixes the link error, but I when I created my fix, that did
+not seem like the correct solution because it reverts part of the original
+patch without reverting the rest of it. Unfortunately there was no
+changelog text in the first patch to explain why this is safe.
 
-Part of the reason for separating is we generate a DT only repository
-which filters out all the kernel code. Ideally this is just filtering
-out commits and the commit messages still make sense.
+Could you double-check if the behavior is still correct after the two patches?
 
-Rob
+      Arnd
