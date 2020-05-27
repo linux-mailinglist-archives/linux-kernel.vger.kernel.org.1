@@ -2,131 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C63721E4B96
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 19:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A727B1E4B5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 19:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731241AbgE0RMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 13:12:34 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:55191 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729894AbgE0RMd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 13:12:33 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 022B8A97;
-        Wed, 27 May 2020 13:12:31 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 27 May 2020 13:12:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        content-transfer-encoding:content-type:in-reply-to:date:cc
-        :subject:from:to:message-id; s=fm3; bh=6pxEigjWfelMjOWs/Jq1DeSXe
-        YEVsneKZclbXHsrvFQ=; b=Dx1/DmhtipYpfHdvAyM/R5S0l0Urw1kxEabTy7ndJ
-        KTekDH5RnTfTmgtWbw1GPf0w0zy//8W2XsYDGENYLAJYsG0M8MFKQSDtejpoMNaj
-        hAnXIlNbMdyUmtqWBcPkLMwrLpd0M7Nc9TADOGV8r3gsiI1QSzzcbcOKvskxWyKF
-        nWVGqyFKvv8np6XOsHfTuSvEfCcTazr4q8NN3JRTDddw3g5bkUEkEjt7XqafB7mF
-        s6kv6nZ29QgL09L95cmnqmIRb0l/H+XOyd3tVem/EXMHCkWlMabbx17u+lEyIi6K
-        3pthk+jGFVzijmv9tcwao0yLwP9yMl0ot6BCt4x7h51LQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=6pxEig
-        jWfelMjOWs/Jq1DeSXeYEVsneKZclbXHsrvFQ=; b=0IfLJJFz1oyDNl66pJNJfD
-        fK4c+ZqgBV1JRd7wxvWo0TU2bYMX+yWOONUwtiB+FAnfw5CoMWYA3HuOJmeEcBPU
-        q/R1AyizBPiuyjRbbfpR4f7oAz/w44K8x1bfsWuD6eRh21k1csZ/bGwbNjAylRqG
-        S+zKp5kTf584fTAjy65FIqG4zQT2eZj8e1EzY0n//TpCX4X5shiCofJRsWRjhz+v
-        d8/6CyoSQmHjzKPaqDddMQGkUE8+Pfxftj15FQ6LpZOcIGiJYWbn/7iaf/xmQiV7
-        cU4CzpS/asntOs7f7QqfBxMPHb3C9yAf8NwoTMtLn7S9qV5cTx0tWsr3I2WKHtPw
-        ==
-X-ME-Sender: <xms:fp_OXnzMMddzuGs3DxMkcMGcAaZYDGTqZrX0dF1dx5rYHJOk_uyfcw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddvgedgleelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdljedtmdenucfjughrpefgtggjfffuhffvkfesthhqredttddtjeen
-    ucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugihusegugihuuhhurdighiiiqeenuc
-    ggtffrrghtthgvrhhnpeelleelfeekudehudeitdefkeeutdfhieeiudeggfdutdetleek
-    vedtteevieffteenucfkphepjeefrdelfedrvdegjedrudefgeenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:fp_OXvSUMbDbI3ZC12QTnicdy3P20kMOKD3dc3jOfmeB3oesg5oXDA>
-    <xmx:fp_OXhX8P3FO9-Nt1LGVYuVV2rj-Slpt8I8KW0srICQtB7EPwbtJUQ>
-    <xmx:fp_OXhif-JI4R5yF4LAsFNrABBnXAQv97F_q5pBCEdII_QRGP4NGBg>
-    <xmx:f5_OXt7AKk-ovSiZzUxVTphnwaOqRn5Id8NRDUl4Od2wBnp27IJaxlzjc_g>
-Received: from localhost (c-73-93-247-134.hsd1.ca.comcast.net [73.93.247.134])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7C89A3280063;
-        Wed, 27 May 2020 13:12:29 -0400 (EDT)
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-In-Reply-To: <CAEf4BzbR+7X-boCBC-f60jugp8xWKVTeFTyUmrcv8Qy4iKsvjg@mail.gmail.com>
-Date:   Wed, 27 May 2020 10:03:56 -0700
-Cc:     "Alexei Starovoitov" <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        "Martin Lau" <kafai@fb.com>, "Song Liu" <songliubraving@fb.com>,
-        "Yonghong Song" <yhs@fb.com>, "Andrii Nakryiko" <andriin@fb.com>,
-        "john fastabend" <john.fastabend@gmail.com>,
-        "KP Singh" <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "Jesper Dangaard Brouer" <hawk@kernel.org>,
-        "bpf" <bpf@vger.kernel.org>, "Networking" <netdev@vger.kernel.org>,
-        "open list" <linux-kernel@vger.kernel.org>,
-        "clang-built-linux" <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH bpf-next] libbpf: Export bpf_object__load_vmlinux_btf
-From:   "Daniel Xu" <dxu@dxuuu.xyz>
-To:     "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
-Message-Id: <C31OATROKNZK.27CUNDSXX9I4K@maharaja>
+        id S1731108AbgE0RFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 13:05:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53140 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726978AbgE0RE7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 13:04:59 -0400
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64C4220890;
+        Wed, 27 May 2020 17:04:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590599099;
+        bh=QrRQgXxxJ63vZq31dxWJOpXXtjXrN47jMut59lAdhhE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZELDOLFfWjUSMiPpsOIL+bfRkPqpUhd1RzHpynSc+IqAYV3B4TQzhBDh/hjNHlaER
+         zSCxTfrx+M48Wvhl+b1XI7Jog4/rPMJsw/8sd/+murItayBJzaSvAhIBcoezdlHEZV
+         bVZInSDO/RWrUu6s2ZDx2C3LmOn4xuoLQftDGM4s=
+Received: by mail-ot1-f42.google.com with SMTP id u23so100715otq.10;
+        Wed, 27 May 2020 10:04:59 -0700 (PDT)
+X-Gm-Message-State: AOAM531c5WLvn9nied//CGS5+x5A38pcl61X+eOrRkSrHgYQ6LjfZ09u
+        UxEf2MoJvUlLehWC/nVDQD702AqZhl+9gcAZIg==
+X-Google-Smtp-Source: ABdhPJxhrJavKUHM5x9pqsCda+ALmNJDjhk8EtNPXvR0b64+JsptO0YtuOMTTuRXh5oLXhzzBNvT36fiDwmer89Ghu0=
+X-Received: by 2002:a05:6830:3104:: with SMTP id b4mr5433914ots.192.1590599098693;
+ Wed, 27 May 2020 10:04:58 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200511111128.16210-1-nikitos.tr@gmail.com> <20200518221435.GA6734@bogus>
+ <20200525105236.GB27989@amd>
+In-Reply-To: <20200525105236.GB27989@amd>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 27 May 2020 11:04:47 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJOMzjO_caip6-eXGWoPOWhPcyqfEpBXd2PLyH2OO7RAw@mail.gmail.com>
+Message-ID: <CAL_JsqJOMzjO_caip6-eXGWoPOWhPcyqfEpBXd2PLyH2OO7RAw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: vendor-prefixes: Add Shanghai Awinic
+ Technology Co., Ltd.
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     nikitos.tr@gmail.com, Dan Murphy <dmurphy@ti.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrii,
-
-On Tue May 26, 2020 at 3:09 PM PST, Andrii Nakryiko wrote:
-> On Tue, May 26, 2020 at 7:09 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> >
-> > Right now the libbpf model encourages loading the entire object at once=
-.
-> > In this model, libbpf handles loading BTF from vmlinux for us. However,
-> > it can be useful to selectively load certain maps and programs inside a=
-n
-> > object without loading everything else.
+On Mon, May 25, 2020 at 4:52 AM Pavel Machek <pavel@ucw.cz> wrote:
 >
-> There is no way to selectively load or not load a map. All maps are
-> created, unless they are reusing map FD or pinned instances. See
-> below, I'd like to understand the use case better.
->
+> On Mon 2020-05-18 16:14:35, Rob Herring wrote:
+> > On Mon, 11 May 2020 16:11:26 +0500,  wrote:
+> > > From: Nikita Travkin <nikitos.tr@gmail.com>
+> > >
+> > > Add the "awinic" vendor prefix for Shanghai Awinic Technology Co., Ltd.
+> > > Website: https://www.awinic.com/
+> > >
+> > > Signed-off-by: Nikita Travkin <nikitos.tr@gmail.com>
+> > > ---
+> > >  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
 > >
-> > In the latter model, there was perviously no way to load BTF on-demand.
-> > This commit exports the bpf_object__load_vmlinux_btf such that we are
-> > able to load BTF on demand.
-> >
+> > Reviewed-by: Rob Herring <robh@kernel.org>
 >
-> Let's start with the real problem, not a solution. Do you have
-> specific use case where you need bpf_object__load_vmlinux_btf()? It
-> might not do anything if none of BPF programs in the object requires
-> BTF, because it's very much tightly coupled with loading bpf_object as
-> a whole model. I'd like to understand what you are after with this,
-> before exposing internal implementation details as an API.
+> I can take 2/ and 3/ of the series, but I believe we'll get conflicts
+> if I change vendor-prefixes.yaml in the LED tree. Can you take this
+> one?
 
-If I try loading a program through the following sequence:
+Okay, applied.
 
-    bpf_object__open_file()
-    bpf_object__find_program_by_name()
-    bpf_program__load()
-
-And the program require BTF (tp_btf), I get an unavoidable (to the best
-of my knowledge) segfault in the following code path:
-
-    bpf_program__load()
-      libbpf_find_attach_btf_id()    <-- [0]
-        __find_vmlinx_btf_id()
-          find_btf_by_prefix_kind()
-            btf__find_by_name_kind() <-- boom (btf->nr_types)
-
-because [0] passes prog->obj->btf_vmlinux which is still null. So the
-solution I'm proposing is exporting bpf_object__load_vmlinux_btf() and
-calling that on struct bpf_object before performing prog loads.
-
-[...]
-
-Thanks,
-Daniel
+Rob
