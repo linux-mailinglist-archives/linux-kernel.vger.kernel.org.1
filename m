@@ -2,134 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883491E3C5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF1A1E3C60
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388165AbgE0IoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 04:44:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45112 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387811AbgE0IoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 04:44:02 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8EF3620723;
-        Wed, 27 May 2020 08:44:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590569041;
-        bh=+/NGB2sSlT/fbXh2DrGQlclwzqoCcKODEoqXcgZ+w/I=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=PBDJ/cQ710tqqqopy/zdRKfSSpzslqeR99wc57R/ID4DryWQmX7cxpspThsdX4XZK
-         hmoouoE/6tUeVhGUfUfw/uSJiAWN7Oev/I1Uc4o3DG9nQ1JWwh52KdTqbOai547N8y
-         PrHOEfwmsenKZ4XMgP5kh0cZoOi5E5TCsUZsf1bw=
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200524210615.17035-8-jonathan@marek.ca>
-References: <20200524210615.17035-1-jonathan@marek.ca> <20200524210615.17035-8-jonathan@marek.ca>
-Subject: Re: [PATCH 07/10] clk: qcom: Add graphics clock controller driver for SM8150
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
-Date:   Wed, 27 May 2020 01:44:00 -0700
-Message-ID: <159056904079.88029.16161248455546031414@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+        id S2388195AbgE0Ioa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 04:44:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388113AbgE0Ioa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 04:44:30 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1ACBC03E97C
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 01:44:29 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id k5so27866244lji.11
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 01:44:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=unikie-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=MFoYK1tdyEHkeM2PPovQEs5479N+lz7pmFiM6Ih3uJk=;
+        b=olBkgcZifHmXXUqZg49Yy3KTfO3eNt/7yfrgYYlMTI1MOwKCCjQJcTtGjEoziZYMWQ
+         GQ8uG3CZ/H+3ToPlIJ1xPnu+pSE5SoVzE/IC4gm9MwOgvpY0f2/nQ7nAiujvzA7D3dIi
+         tON6zrDAE5nOO/NeSYpTx37GptVxr0vR8IsjIwcHBUjU7SQ/Yh3OLku8OeVJph2thdJB
+         qB/aE58oM0/96x1QT2+JYAYG8wZy4XWA9nHmQHr8/jTZMD9KgIrYJecQS7j9/DN4Om5O
+         +oY4upzrNgn7N3UBB3f98pydImVaxOylsOcasGl4Q3Y3jueTb5CzjR9dFKEFnaNPbzKv
+         xpaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=MFoYK1tdyEHkeM2PPovQEs5479N+lz7pmFiM6Ih3uJk=;
+        b=jjhovzkPtsjvlOp/HkaXGqkol3bqYlVoKBi2qTT+/zavxc+lnFa3EUJ2EjAV0MPR53
+         oIdtFDVDy7x9juMA/SNa3/Kl/jO+8LKc2Z2QMzNzX7QxyyJ1H7YoXMzYnnfG8hkUilws
+         KN3pa7rxM2dnuGDVlXeSKT2DkgN3t7esbCqbbsiE0S4MKwdvnUVhfuiuoQ/rVfLFCN1B
+         rI/o0XzmirbTZeXeg1pme/M0QhJPUwSbHaN5IVpVz2h7+KuMfs6BWjye6CEHoBjgRyF4
+         hgaYV95HSr/FxNPeUsNKgwF8q9Djo81x7tS9/KYWGI8mEBSf6MpyYoeFi6uJHS/z6z7C
+         3DfQ==
+X-Gm-Message-State: AOAM5317PrCvcS9knqx00FnAyW0RxFTPZFvazsAYD+OnFC/IZyp9Gxu8
+        A2dd+7+MqsLWAv0sxqs3mG6JZg==
+X-Google-Smtp-Source: ABdhPJzDaH1iDFR+BxrddOsLDTpZzTIIxQ+A9Fc7OrKYAHgar8y5fyveSzDjW9XTJleFpiWHgJHSOw==
+X-Received: by 2002:a05:651c:2dc:: with SMTP id f28mr2450294ljo.36.1590569068041;
+        Wed, 27 May 2020 01:44:28 -0700 (PDT)
+Received: from localhost.localdomain ([109.204.235.119])
+        by smtp.googlemail.com with ESMTPSA id o4sm654925lff.78.2020.05.27.01.44.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 01:44:27 -0700 (PDT)
+From:   john mathew <john.mathew@unikie.com>
+X-Google-Original-From: john mathew <John.Mathew@unikie.com>
+To:     linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, corbet@lwn.net, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, tsbogend@alpha.franken.de,
+        lukas.bulwahn@gmail.com, x86@kernel.org,
+        linux-mips@vger.kernel.org, tglx@linutronix.de,
+        mostafa.chamanara@gmail.com, willy@infradead.org,
+        valentin.schneider@arm.com, srikar@linux.vnet.ibm.com,
+        john mathew <John.Mathew@unikie.com>
+Subject: [RFC PATCH v6 0/3] Add scheduler overview documentation
+Date:   Wed, 27 May 2020 11:44:18 +0300
+Message-Id: <20200527084421.4673-1-John.Mathew@unikie.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jonathan Marek (2020-05-24 14:06:08)
-> diff --git a/drivers/clk/qcom/gpucc-sm8150.c b/drivers/clk/qcom/gpucc-sm8=
-150.c
-> new file mode 100644
-> index 000000000000..6e1fff0cde75
-> --- /dev/null
-> +++ b/drivers/clk/qcom/gpucc-sm8150.c
-> @@ -0,0 +1,429 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2017-2020, The Linux Foundation. All rights reserved.
-> + */
-> +
-> +#include <linux/clk-provider.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +
-> +#include <dt-bindings/clock/qcom,gpucc-sm8150.h>
-[..]
-> +
-> +static struct clk_rcg2 gpu_cc_gmu_clk_src =3D {
-> +       .cmd_rcgr =3D 0x1120,
-> +       .mnd_width =3D 0,
-> +       .hid_width =3D 5,
-> +       .parent_map =3D gpu_cc_parent_map_0,
-> +       .freq_tbl =3D ftbl_gpu_cc_gmu_clk_src,
-> +       .clkr.hw.init =3D &(struct clk_init_data){
-> +               .name =3D "gpu_cc_gmu_clk_src",
-> +               .parent_names =3D gpu_cc_parent_names_0,
-> +               .num_parents =3D 6,
-> +               .flags =3D CLK_SET_RATE_PARENT,
-> +               .ops =3D &clk_rcg2_ops,
-> +       },
-> +};
-> +
-> +static struct clk_branch gpu_cc_ahb_clk =3D {
-> +       .halt_reg =3D 0x1078,
-> +       .halt_check =3D BRANCH_HALT_DELAY,
-> +       .clkr =3D {
-> +               .enable_reg =3D 0x1078,
-> +               .enable_mask =3D BIT(0),
-> +               .hw.init =3D &(struct clk_init_data){
-> +                       .name =3D "gpu_cc_ahb_clk",
-> +                       .flags =3D CLK_IS_CRITICAL,
+This patch series updates the scheduler documentation to add more topics
+wrt to scheduler overview. New sections are added to provide a brief
+overview of the kernel structs used by the scheduler, scheduler invocation,
+context switch and Capacity Aware Scheduling. Previous version of
+the patch was reviewed at:
+https://lore.kernel.org/lkml/20200514092637.15684-1-John.Mathew@unikie.com/
 
-Why is this CLK_IS_CRITICAL? Why not just enable the clk manually with
-a register write in probe and then remove this clk from the system? We
-can save some memory that way.
+version 6:
+ -Fix typos.
 
-> +                       .ops =3D &clk_branch2_ops,
-> +               },
-> +       },
-> +};
-> +
-[...]
-> +
-> +static struct gdsc gpu_cx_gdsc =3D {
-> +       .gdscr =3D 0x106c,
-> +       .gds_hw_ctrl =3D 0x1540,
-> +       .pd =3D {
-> +               .name =3D "gpu_cx_gdsc",
-> +       },
-> +       .pwrsts =3D PWRSTS_OFF_ON,
-> +       .flags =3D VOTABLE,
-> +};
-> +
-> +/* see comment in gpucc-sdm845 about this */
-> +static int gx_gdsc_enable(struct generic_pm_domain *domain)
-> +{
-> +       /* Do nothing but give genpd the impression that we were successf=
-ul */
-> +       return 0;
-> +}
+version 5:
+ -Fix description error on CAS
 
-Maybe we should export a helper from gdsc.c for this with the comment
-and it named something obvious? gx_gdsc_do_nothing_enable()?
+version 4:
+ -Added section on Capacity-Aware Scheduling
+ -Reworded CFS recently added features.
+ -Removed vruntime description from scheduler structs
+ -Added description of idle and stopper sched classses
 
-> +
-> +static struct gdsc gpu_gx_gdsc =3D {
-> +       .gdscr =3D 0x100c,
-> +       .clamp_io_ctrl =3D 0x1508,
-> +       .pd =3D {
-> +               .name =3D "gpu_gx_gdsc",
-> +               .power_on =3D gx_gdsc_enable,
-> +       },
-> +       .pwrsts =3D PWRSTS_OFF_ON,
-> +       .flags =3D CLAMP_IO | AON_RESET | POLL_CFG_GDSCR,
-> +};
-> +
+version 3:
+ -Fix spelling, spacing and typo errors.
+
+version 2:
+- Remove :c:func: directive as it was redundant
+- Limit document width (line symbol count) to 75
+- Replace dot file with ASCII art
+- Describe prepare_task_switch(), ASID use, 
+  kernel/user transtion, MIPS FPU affinity correctly
+- Add missing references to files
+- Removed internal APIs from scheduler API reference
+- Described rq struct member as kernel-doc comments
+- Replaced CFS history with CFS current status
+- Added documentation for sched_class fields
+- Refined explanation of context swtich functionality
+- Replace CFS history with recent changes
+- Added kernel-doc comments for struct rq
+
+
+John Mathew (3):
+  docs: scheduler: Restructure scheduler documentation.
+  docs: scheduler: Add scheduler overview documentation
+  docs: scheduler: Add introduction to scheduler context-switch
+
+ Documentation/scheduler/arch-specific.rst     |  14 +
+ Documentation/scheduler/cfs-overview.rst      | 102 ++++++
+ Documentation/scheduler/context-switching.rst | 125 ++++++++
+ Documentation/scheduler/index.rst             |  33 +-
+ .../scheduler/mips-context-switch.rst         |  89 ++++++
+ Documentation/scheduler/overview.rst          | 293 ++++++++++++++++++
+ Documentation/scheduler/sched-cas.rst         |  92 ++++++
+ .../scheduler/sched-data-structs.rst          | 182 +++++++++++
+ Documentation/scheduler/sched-debugging.rst   |  14 +
+ Documentation/scheduler/sched-features.rst    |  21 ++
+ Documentation/scheduler/scheduler-api.rst     |  31 ++
+ .../scheduler/x86-context-switch.rst          |  65 ++++
+ kernel/sched/core.c                           |  28 +-
+ kernel/sched/sched.h                          | 169 +++++++++-
+ 14 files changed, 1238 insertions(+), 20 deletions(-)
+ create mode 100644 Documentation/scheduler/arch-specific.rst
+ create mode 100644 Documentation/scheduler/cfs-overview.rst
+ create mode 100644 Documentation/scheduler/context-switching.rst
+ create mode 100644 Documentation/scheduler/mips-context-switch.rst
+ create mode 100644 Documentation/scheduler/overview.rst
+ create mode 100644 Documentation/scheduler/sched-cas.rst
+ create mode 100644 Documentation/scheduler/sched-data-structs.rst
+ create mode 100644 Documentation/scheduler/sched-debugging.rst
+ create mode 100644 Documentation/scheduler/sched-features.rst
+ create mode 100644 Documentation/scheduler/scheduler-api.rst
+ create mode 100644 Documentation/scheduler/x86-context-switch.rst
+
+-- 
+2.17.1
+
