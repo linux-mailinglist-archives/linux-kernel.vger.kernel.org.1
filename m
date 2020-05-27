@@ -2,212 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B041E50AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 23:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C2A1E509D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 23:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727047AbgE0Vqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 17:46:48 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:48525 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726787AbgE0Vqr (ORCPT
+        id S1727090AbgE0Vny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 17:43:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726114AbgE0Vny (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 17:46:47 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id E0700AAA;
-        Wed, 27 May 2020 17:46:45 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 27 May 2020 17:46:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
-        :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=1uMfllCwGVRSV
-        eD897uL9SAlLt6bpaVgLEM5vf/6PXU=; b=n5jA1URN2O3JQQOPok0OlsSawfeLb
-        qbcVZyXyIOqc6v3EddUBeX2546X93UB6qLgI/tUrxtS7V7joMKVJch25KM6pi07J
-        2G4QRoB5Z5Gp6iLFfjIzZQgmBePIV+CiRnSljB8JMlMF8VryCaYpgdqvHH18HC2p
-        N9SfcT/g5sMGoAoJTlompcbWSatAW3SmDwAlwEqGhrZ2rb4h+ucztpJ7m+R/Y217
-        vD2l6OBFvxs3ylviaMh9x339IDg5qNBMRvKL0vW0qy8Kq/u6+YpzRcysjUnb6c23
-        oLZK0HZ1VskQV+FoPvUuwi6qoH4eYr22Dmn8DKgrQtCqsGkbBit2Y0Cdw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=1uMfllCwGVRSVeD897uL9SAlLt6bpaVgLEM5vf/6PXU=; b=vhoXYIJy
-        /3lxQnWiTue+356RJ4otCRAQYzaNChiU+HSGfGb3JVGdhIs6J6jBuZ3DPWPe444H
-        OpqQccWga+AETOEIZwyUEWEiH6sJrqkOsSvpY2DlSnbsm+RFqzvTjBgVfKKewHwV
-        1XMl++ndMIQr5BGrEeBBG8qZ2zPnhgH1MbJBQ3kqtQBUpVn4cVfvahqL0wBR2zcV
-        PwLWrqQ5tCe1cA5UHpI/EIfMfgxeKKg2k7P4wauR3jXRa2qdDApY0sjFusDBgn+7
-        Zzk0eMXCjxFgWcVTecs325j0DHqERu/P8Qzc5J3B/igvzH9jRXjt3dIi8pmioNyu
-        ZTa2649CKs8xlA==
-X-ME-Sender: <xms:w9_OXihbCd_T2cI525J_EuxTj3CfThoBndGDvD07xykf1PKJ31HMCA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddvhedgtdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepie
-    euffeuvdeiueejhfehiefgkeevudejjeejffevvdehtddufeeihfekgeeuheelnecukfhp
-    peduieefrdduudegrddufedvrdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:w9_OXjDct1_DPzWmPDM8nOmLIsZk_q8ZQDxHzUBoVlvzM8ZmPvw7WQ>
-    <xmx:w9_OXqE4vIQU7lIpdphkuEZiXCEwRsUp-ya6HK3lEyxII_lhXUc7CQ>
-    <xmx:w9_OXrQuVLYJb0xRS0DX18E9ve8yUVTS-Fvixgrs81FBU0Z6Q5G3Mw>
-    <xmx:xd_OXmzSkHVYyo8lVCKGqV_RQ9cG495BkLBY6v8z7cupzCq6mlTciwx-djiOrpZYFkibbQ>
-Received: from localhost (unknown [163.114.132.3])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 111E23280060;
-        Wed, 27 May 2020 17:46:43 -0400 (EDT)
-From:   Boris Burkov <boris@bur.io>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, Boris Burkov <boris@bur.io>
-Subject: [PATCH v2 cgroup/for-5.8] cgroup: add cpu.stat file to root cgroup
-Date:   Wed, 27 May 2020 14:43:19 -0700
-Message-Id: <20200527214316.524124-1-boris@bur.io>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200527160821.GC42293@cmpxchg.org>
-References: <20200527160821.GC42293@cmpxchg.org>
+        Wed, 27 May 2020 17:43:54 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F1B7C05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 14:43:53 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id 5so2140893pjd.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 14:43:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8xrSbOhXNcO53Jugnfn3DM3MYFsd0aIhSW+Q702590o=;
+        b=NvbMBgkOqpmFrJjInrBVR2+iybHAphGK16x1eGVEHUUQhd41vCIA0JVrQudLGWiTJ1
+         UuGF2Iz1G0cReJeK7jJ7X/2ei83C4MIdO8KSDIqXbHLoV9orVRnxbvHAl6yY9awoa98s
+         yYRTBTC2h2EK1VtE7Pu/f99uxmuB1JQ1914r0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8xrSbOhXNcO53Jugnfn3DM3MYFsd0aIhSW+Q702590o=;
+        b=WHct9V/exI1BJWIsvdOK7vCU5PM7BcJ1h7hf3DTX092WutGemcEeLFkLp+LRPVEl03
+         KMxjy7udhKIwnBk2Ufh8jcm6zU7X5MYza24+9YnLy55kyZHprMZou8CYIv2TKBfYcuA2
+         8VGktD2LW7HPlgiKFSkSZ8qdEtrWOcs6u20eDwT16zyb0cjqqRWD88W+ULoeqOlkZz+t
+         73NQOvCQ4dY9RhjJyxwBOEaBXaRX35I71tuJg8xuv1Q7aCOExMABD3ugFBCt3jNAbekW
+         dBo4gTWCZ3nHcdpkZVplFWn2syvwm3GJuAZiCd1Mnty7eLQYK7FLgIXSr0Rqfh3a5z1L
+         hhsA==
+X-Gm-Message-State: AOAM532wPNvDMDw8uxZB8QMXaOIO7mzkkbQK6GInogUbS8q+L+ndLHsJ
+        oZRG30rn3VNzt0xGFccQjr2FoA==
+X-Google-Smtp-Source: ABdhPJxRUr0b3j6IjHfDpsbCKKpWAeNbp6kND1YduC9VB6pPkSW3FIGlBSz1/vgFhjY79NIkltnvdQ==
+X-Received: by 2002:a17:902:9d94:: with SMTP id c20mr402368plq.224.1590615831883;
+        Wed, 27 May 2020 14:43:51 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u4sm4643626pjf.3.2020.05.27.14.43.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 14:43:50 -0700 (PDT)
+Date:   Wed, 27 May 2020 14:43:49 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Tycho Andersen <tycho@tycho.ws>,
+        Matt Denton <mpdenton@google.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Robert Sesek <rsesek@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Linux Containers <containers@lists.linux-foundation.org>
+Subject: Re: [PATCH 1/2] seccomp: notify user trap about unused filter
+Message-ID: <202005271408.58F806514@keescook>
+References: <20200527111902.163213-1-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200527111902.163213-1-christian.brauner@ubuntu.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the root cgroup does not have a cpu.stat file. Add one which
-is consistent with /proc/stat to capture global cpu statistics that
-might not fall under cgroup accounting.
+On Wed, May 27, 2020 at 01:19:01PM +0200, Christian Brauner wrote:
+> loop. But this is problematic since we don't get a notification when the
+> seccomp filter has become unused and so we currently never remove the
+> seccomp notifier fd from the event loop and just keep accumulating fds
+> in the event loop. We've had this issue for a while but it has recently
+> become more pressing as more and larger users make use of this.
 
-We haven't done this in the past because the data are already presented
-in /proc/stat and we didn't want to add overhead from collecting root
-cgroup stats when cgroups are configured, but no cgroups have been
-created.
+I had been under the (seemingly very wrong) understanding that when
+all the tasks associated with a filter cease to exist, the notif fd is
+effectively closed. But I see now where I got confused: this is only
+half implemented: if the userspace end of the fd is closed, it'll get
+cleaned up in the kernel, but we have nothing going the other direction
+except the general object lifetime management on the filter itself.
 
-By keeping the data consistent with /proc/stat, I think we avoid the
-first problem, while improving the usability of cgroups stats.
-We avoid the second problem by computing the contents of cpu.stat from
-existing data collected for /proc/stat anyway.
+So, yes, I accept the basic problem statement, "we have fds hanging
+around that will never be used again, we need to notice that". :)
 
-Signed-off-by: Boris Burkov <boris@bur.io>
-Suggested-by: Tejun Heo <tj@kernel.org>
----
- Documentation/admin-guide/cgroup-v2.rst |  6 +--
- kernel/cgroup/cgroup.c                  |  1 -
- kernel/cgroup/rstat.c                   | 60 +++++++++++++++++++++----
- 3 files changed, 54 insertions(+), 13 deletions(-)
+Why is EPOLLHUP needed? Can't the fd just get closed on the kernel end?
+I would expect that to be visible as EPOLLHUP internally (though I
+haven't looked through the VFS yet). And I haven't found how to
+close/detach a anon file from the listener task. It strikes me that this
+would actually be much cleaner: then we actually don't need the
+additional __get_seccomp_filter() in init_listener() -- we simply
+invalidate the file during __put_seccomp_filter().
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index fed4e1d2a343..fec2f13fe065 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -714,9 +714,7 @@ Conventions
- - Settings for a single feature should be contained in a single file.
- 
- - The root cgroup should be exempt from resource control and thus
--  shouldn't have resource control interface files.  Also,
--  informational files on the root cgroup which end up showing global
--  information available elsewhere shouldn't exist.
-+  shouldn't have resource control interface files.
- 
- - The default time unit is microseconds.  If a different unit is ever
-   used, an explicit unit suffix must be present.
-@@ -985,7 +983,7 @@ CPU Interface Files
- All time durations are in microseconds.
- 
-   cpu.stat
--	A read-only flat-keyed file which exists on non-root cgroups.
-+	A read-only flat-keyed file.
- 	This file exists whether the controller is enabled or not.
- 
- 	It always reports the following three stats:
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 557a9b9d2244..b8a75169c3e4 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -4881,7 +4881,6 @@ static struct cftype cgroup_base_files[] = {
- 	},
- 	{
- 		.name = "cpu.stat",
--		.flags = CFTYPE_NOT_ON_ROOT,
- 		.seq_show = cpu_stat_show,
- 	},
- #ifdef CONFIG_PSI
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index 41ca996568df..b6397a186ce9 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -389,18 +389,62 @@ void __cgroup_account_cputime_field(struct cgroup *cgrp,
- 	cgroup_base_stat_cputime_account_end(cgrp, rstatc);
- }
- 
-+/*
-+ * compute the cputime for the root cgroup by getting the per cpu data
-+ * at a global level, then categorizing the fields in a manner consistent
-+ * with how it is done by __cgroup_account_cputime_field for each bit of
-+ * cpu time attributed to a cgroup.
-+ */
-+static void root_cgroup_cputime(struct task_cputime *cputime)
-+{
-+	int i;
-+
-+	cputime->stime = 0;
-+	cputime->utime = 0;
-+	cputime->sum_exec_runtime = 0;
-+	for_each_possible_cpu(i) {
-+		struct kernel_cpustat kcpustat;
-+		u64 *cpustat = kcpustat.cpustat;
-+		u64 user = 0;
-+		u64 sys = 0;
-+
-+		kcpustat_cpu_fetch(&kcpustat, i);
-+
-+		user += cpustat[CPUTIME_USER];
-+		user += cpustat[CPUTIME_NICE];
-+		cputime->utime += user;
-+
-+		sys += cpustat[CPUTIME_SYSTEM];
-+		sys += cpustat[CPUTIME_IRQ];
-+		sys += cpustat[CPUTIME_SOFTIRQ];
-+		cputime->stime += sys;
-+
-+		cputime->sum_exec_runtime += user;
-+		cputime->sum_exec_runtime += sys;
-+		cputime->sum_exec_runtime += cpustat[CPUTIME_STEAL];
-+		cputime->sum_exec_runtime += cpustat[CPUTIME_GUEST];
-+		cputime->sum_exec_runtime += cpustat[CPUTIME_GUEST_NICE];
-+	}
-+}
-+
- void cgroup_base_stat_cputime_show(struct seq_file *seq)
- {
- 	struct cgroup *cgrp = seq_css(seq)->cgroup;
- 	u64 usage, utime, stime;
--
--	if (!cgroup_parent(cgrp))
--		return;
--
--	cgroup_rstat_flush_hold(cgrp);
--	usage = cgrp->bstat.cputime.sum_exec_runtime;
--	cputime_adjust(&cgrp->bstat.cputime, &cgrp->prev_cputime, &utime, &stime);
--	cgroup_rstat_flush_release();
-+	struct task_cputime cputime;
-+
-+	if (cgroup_parent(cgrp)) {
-+		cgroup_rstat_flush_hold(cgrp);
-+		usage = cgrp->bstat.cputime.sum_exec_runtime;
-+		cputime_adjust(&cgrp->bstat.cputime, &cgrp->prev_cputime,
-+			       &utime, &stime);
-+		cgroup_rstat_flush_release();
-+	} else {
-+		root_cgroup_cputime(&cputime);
-+		usage = cputime.sum_exec_runtime;
-+		utime = cputime.utime;
-+		stime = cputime.stime;
-+	}
- 
- 	do_div(usage, NSEC_PER_USEC);
- 	do_div(utime, NSEC_PER_USEC);
+(While I'm here -- why can there be only one listener per task? The
+notifications are filter-specific, not task-specific?)
+
+> To fix this, we introduce a new "live" reference counter that tracks the
+> live tasks making use of a given filter and when a notifier is
+> registered waiting tasks will be notified that the filter is now empty
+> by receiving a (E)POLLHUP event.
+> The concept in this patch introduces is the same as for signal_struct,
+> i.e. reference counting for life-cycle management is decoupled from
+> reference counting live taks using the object.
+
+I will need convincing that life-cycle ref-counting needs to be decoupled
+from usage ref-counting. I see what you're saying here and in the other
+reply about where the notification is coming from (release vs put, etc),
+but I think it'd be better if the EPOLLHUP was handled internally to the
+VFS due to the kernel end of the file being closed.
+
+> There's probably some trickery possible but the second counter is just
+> the correct way of doing this imho and has precedence. The patch also
+> lifts the waitqeue from struct notification into into sruct
+> seccomp_filter. This is cleaner overall and let's us avoid having to
+> take the notifier mutex since we neither need to read nor modify the
+> notifier specific aspects of the seccomp filter. In the exit path I'd
+> very much like to avoid having to take the notifier mutex for each
+> filter in the task's filter hierarchy.
+
+I guess this is a minor size/speed trade-off (every seccomp_filter
+struct grows by 1 pointer regardless of the presence of USER_NOTIF
+rules attached...). But I think this is an optimization detail, and I
+need to understand why we can't just close the file on filter free.
+
 -- 
-2.24.1
-
+Kees Cook
