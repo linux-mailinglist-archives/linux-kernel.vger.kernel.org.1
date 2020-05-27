@@ -2,155 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50AB51E47E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A701E489B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389854AbgE0Ppo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 11:45:44 -0400
-Received: from mga04.intel.com ([192.55.52.120]:59766 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389806AbgE0Pph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 11:45:37 -0400
-IronPort-SDR: N+WFs0KDtzd6nrRn3WBke/RtF6JURan4BKh2QWhTql7YtYZwSpO1INBsXFpq2AasYR8rjNayOk
- bDXJEEzrTHDw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 08:45:36 -0700
-IronPort-SDR: zmHZPLC8m5TJui268g7R5G/T2UKsiscQpp29dofilMhxSAvfDvLuFGWb1QSVipiyujWzgii1KM
- 0+7pfDko02Bw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,441,1583222400"; 
-   d="scan'208";a="270503686"
-Received: from unknown (HELO [10.255.6.91]) ([10.255.6.91])
-  by orsmga006.jf.intel.com with ESMTP; 27 May 2020 08:45:33 -0700
-Subject: Re: [RFC 00/16] KVM protected memory extension
-To:     Mike Rapoport <rppt@kernel.org>, Liran Alon <liran.alon@oracle.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20200522125214.31348-1-kirill.shutemov@linux.intel.com>
- <42685c32-a7a9-b971-0cf4-e8af8d9a40c6@oracle.com>
- <20200526061721.GB48741@kernel.org>
- <8866ff79-e8fd-685d-9a1d-72acff5bf6bb@oracle.com>
- <20200526113844.GC48741@kernel.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <b616bed6-9be2-0e79-86cc-0d571417bc71@intel.com>
-Date:   Wed, 27 May 2020 08:45:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2390489AbgE0Px4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 11:53:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390393AbgE0PwG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 11:52:06 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F48C05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 08:52:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
+        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To;
+        bh=UOj/pEVWrVPLn+XP9VNIoLrTqQL4onfm76HyQA1XrC4=; b=ZnDpCFqKhu0+zQ4ikUVEBeV51j
+        9EvRPZIjWBxTm2HZ3Y/O+GwmgjQtrgzi2ho9G3eWx7y4hCO0A1BLQyvbwVYdkDlUo4+Ul9MDpGgca
+        gcPNRY0CAuJwvUHVAVfPCGhvMI0h/2R6i+BCkTs/tFoTK0KkPTYnPzlA5ihUPN26hmdze/+OEWpkY
+        nDKFiB1yAKszCoYwzQSTTBhZMLj2kw+k/seaKPYd8XEz435nr3pi3QwlMuGGfJdFKb/B3ejKKTmUg
+        Ytac34gGMfIbzdV4OmzHpHs9D/38RW5DFDgsDxLF2Ifm8JkjnpXteKs+FQkH1pHS+Xkhq/vVOP+/1
+        PYdTijpA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jdyLS-0001wG-Pq; Wed, 27 May 2020 15:51:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 112073079B9;
+        Wed, 27 May 2020 17:51:50 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id C2C722015DDF9; Wed, 27 May 2020 17:51:49 +0200 (CEST)
+Message-ID: <20200527155003.485332738@infradead.org>
+User-Agent: quilt/0.66
+Date:   Wed, 27 May 2020 17:45:33 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     mingo@kernel.org, will@kernel.org, tglx@linutronix.de
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        a.darwish@linutronix.de, rostedt@goodmis.org,
+        bigeasy@linutronix.de, peterz@infradead.org
+Subject: [PATCH 6/6] x86/entry: Fix NMI vs IRQ state tracking
+References: <20200527154527.233385756@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20200526113844.GC48741@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/20 4:38 AM, Mike Rapoport wrote:
-> On Tue, May 26, 2020 at 01:16:14PM +0300, Liran Alon wrote:
->> On 26/05/2020 9:17, Mike Rapoport wrote:
->>> On Mon, May 25, 2020 at 04:47:18PM +0300, Liran Alon wrote:
->>>> On 22/05/2020 15:51, Kirill A. Shutemov wrote:
->>>>
->>> Out of curiosity, do we actually have some numbers for the "non-trivial
->>> performance cost"? For instance for KVM usecase?
->>>
->> Dig into XPFO mailing-list discussions to find out...
->> I just remember that this was one of the main concerns regarding XPFO.
-> The XPFO benchmarks measure total XPFO cost, and huge share of it comes
-> from TLB shootdowns.
+While the nmi_enter() users did
+trace_hardirqs_{off_prepare,on_finish}() there was no matching
+lockdep_hardirqs_*() calls to complete the picture.
 
-Yes, TLB shootdown when pages transition between owners is huge.  The
-XPFO folks did a lot of work to try to optimize some of this overhead
-away.  But, it's still a concern.
+Introduce idtentry_{enter,exit}_nmi() to enable proper IRQ state
+tracking across the NMIs.
 
-The concern with XPFO was that it could affect *all* application page
-allocation.  This approach cheats a bit and only goes after guest VM
-pages.  It's significantly more work to allocate a page and map it into
-a guest than it is to, for instance, allocate an anonymous user page.
-That means that the *additional* overhead of things like this for guest
-memory matter a lot less.
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ arch/x86/entry/common.c         |   32 ++++++++++++++++++++++++++++----
+ arch/x86/include/asm/idtentry.h |    3 +++
+ arch/x86/kernel/nmi.c           |    7 ++-----
+ arch/x86/kernel/traps.c         |   21 ++++++---------------
+ include/linux/hardirq.h         |   22 ++++++++++++++++------
+ 5 files changed, 55 insertions(+), 30 deletions(-)
 
-> It's not exactly measurement of the imapct of the direct map
-> fragmentation to workload running inside a vitrual machine.
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -550,7 +550,7 @@ SYSCALL_DEFINE0(ni_syscall)
+  * The return value must be fed into the rcu_exit argument of
+  * idtentry_exit_cond_rcu().
+  */
+-bool noinstr idtentry_enter_cond_rcu(struct pt_regs *regs)
++noinstr bool idtentry_enter_cond_rcu(struct pt_regs *regs)
+ {
+ 	if (user_mode(regs)) {
+ 		enter_from_user_mode();
+@@ -619,7 +619,7 @@ static void idtentry_exit_cond_resched(s
+  * Counterpart to idtentry_enter_cond_rcu(). The return value of the entry
+  * function must be fed into the @rcu_exit argument.
+  */
+-void noinstr idtentry_exit_cond_rcu(struct pt_regs *regs, bool rcu_exit)
++noinstr void idtentry_exit_cond_rcu(struct pt_regs *regs, bool rcu_exit)
+ {
+ 	lockdep_assert_irqs_disabled();
+ 
+@@ -663,7 +663,7 @@ void noinstr idtentry_exit_cond_rcu(stru
+  * Invokes enter_from_user_mode() to establish the proper context for
+  * NOHZ_FULL. Otherwise scheduling on exit would not be possible.
+  */
+-void noinstr idtentry_enter_user(struct pt_regs *regs)
++noinstr void idtentry_enter_user(struct pt_regs *regs)
+ {
+ 	enter_from_user_mode();
+ }
+@@ -680,13 +680,37 @@ void noinstr idtentry_enter_user(struct
+  *
+  * Counterpart to idtentry_enter_user().
+  */
+-void noinstr idtentry_exit_user(struct pt_regs *regs)
++noinstr void idtentry_exit_user(struct pt_regs *regs)
+ {
+ 	lockdep_assert_irqs_disabled();
+ 
+ 	prepare_exit_to_usermode(regs);
+ }
+ 
++noinstr void idtentry_enter_nmi(struct pt_regs *regs)
++{
++	lockdep_hardirqs_off(CALLER_ADDR0);
++	__nmi_enter();
++	instrumentation_begin();
++	trace_hardirqs_off_finish();
++	instrumentation_end();
++	lockdep_hardirq_enter();
++}
++
++noinstr void idtentry_exit_nmi(struct pt_regs *regs)
++{
++	lockdep_hardirq_exit();
++	if (regs->flags & X86_EFLAGS_IF) {
++		instrumentation_begin();
++		trace_hardirqs_on_prepare();
++		lockdep_hardirqs_on_prepare(CALLER_ADDR0);
++		instrumentation_end();
++	}
++	__nmi_exit();
++	if (regs->flags & X86_EFLAGS_IF)
++		lockdep_hardirqs_on(CALLER_ADDR0);
++}
++
+ #ifdef CONFIG_XEN_PV
+ #ifndef CONFIG_PREEMPTION
+ /*
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -16,6 +16,9 @@ void idtentry_exit_user(struct pt_regs *
+ bool idtentry_enter_cond_rcu(struct pt_regs *regs);
+ void idtentry_exit_cond_rcu(struct pt_regs *regs, bool rcu_exit);
+ 
++void idtentry_enter_nmi(struct pt_regs *regs);
++void idtentry_exit_nmi(struct pt_regs *regs);
++
+ /**
+  * DECLARE_IDTENTRY - Declare functions for simple IDT entry points
+  *		      No error code pushed by hardware
+--- a/arch/x86/kernel/nmi.c
++++ b/arch/x86/kernel/nmi.c
+@@ -330,7 +330,6 @@ static noinstr void default_do_nmi(struc
+ 	__this_cpu_write(last_nmi_rip, regs->ip);
+ 
+ 	instrumentation_begin();
+-	trace_hardirqs_off_finish();
+ 
+ 	handled = nmi_handle(NMI_LOCAL, regs);
+ 	__this_cpu_add(nmi_stats.normal, handled);
+@@ -417,8 +416,6 @@ static noinstr void default_do_nmi(struc
+ 		unknown_nmi_error(reason, regs);
+ 
+ out:
+-	if (regs->flags & X86_EFLAGS_IF)
+-		trace_hardirqs_on_prepare();
+ 	instrumentation_end();
+ }
+ 
+@@ -535,14 +532,14 @@ DEFINE_IDTENTRY_NMI(exc_nmi)
+ 	}
+ #endif
+ 
+-	nmi_enter();
++	idtentry_enter_nmi(regs);
+ 
+ 	inc_irq_stat(__nmi_count);
+ 
+ 	if (!ignore_nmis)
+ 		default_do_nmi(regs);
+ 
+-	nmi_exit();
++	idtentry_exit_nmi(regs);
+ 
+ #ifdef CONFIG_X86_64
+ 	if (unlikely(this_cpu_read(update_debug_stack))) {
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -387,7 +387,8 @@ DEFINE_IDTENTRY_DF(exc_double_fault)
+ 	}
+ #endif
+ 
+-	nmi_enter();
++
++	idtentry_enter_nmi(regs);
+ 	instrumentation_begin();
+ 	notify_die(DIE_TRAP, str, regs, error_code, X86_TRAP_DF, SIGSEGV);
+ 
+@@ -632,15 +633,12 @@ DEFINE_IDTENTRY_RAW(exc_int3)
+ 		instrumentation_end();
+ 		idtentry_exit_user(regs);
+ 	} else {
+-		nmi_enter();
++		idtentry_enter_nmi(regs);
+ 		instrumentation_begin();
+-		trace_hardirqs_off_finish();
+ 		if (!do_int3(regs))
+ 			die("int3", regs, 0);
+-		if (regs->flags & X86_EFLAGS_IF)
+-			trace_hardirqs_on_prepare();
+ 		instrumentation_end();
+-		nmi_exit();
++		idtentry_exit_nmi(regs);
+ 	}
+ }
+ 
+@@ -852,10 +850,7 @@ static void noinstr handle_debug(struct
+ static __always_inline void exc_debug_kernel(struct pt_regs *regs,
+ 					     unsigned long dr6)
+ {
+-	nmi_enter();
+-	instrumentation_begin();
+-	trace_hardirqs_off_finish();
+-	instrumentation_end();
++	idtentry_enter_nmi(regs);
+ 
+ 	/*
+ 	 * The SDM says "The processor clears the BTF flag when it
+@@ -878,11 +873,7 @@ static __always_inline void exc_debug_ke
+ 	if (dr6)
+ 		handle_debug(regs, dr6, false);
+ 
+-	instrumentation_begin();
+-	if (regs->flags & X86_EFLAGS_IF)
+-		trace_hardirqs_on_prepare();
+-	instrumentation_end();
+-	nmi_exit();
++	idtentry_exit_nmi(regs);
+ }
+ 
+ static __always_inline void exc_debug_user(struct pt_regs *regs,
+--- a/include/linux/hardirq.h
++++ b/include/linux/hardirq.h
+@@ -111,32 +111,42 @@ extern void rcu_nmi_exit(void);
+ /*
+  * nmi_enter() can nest up to 15 times; see NMI_BITS.
+  */
+-#define nmi_enter()						\
++#define __nmi_enter()						\
+ 	do {							\
++		lockdep_off();					\
+ 		arch_nmi_enter();				\
+ 		printk_nmi_enter();				\
+-		lockdep_off();					\
+ 		BUG_ON(in_nmi() == NMI_MASK);			\
+ 		__preempt_count_add(NMI_OFFSET + HARDIRQ_OFFSET);	\
+ 		rcu_nmi_enter();				\
+-		lockdep_hardirq_enter();			\
+ 		instrumentation_begin();			\
+ 		ftrace_nmi_enter();				\
+ 		instrumentation_end();				\
+ 	} while (0)
+ 
+-#define nmi_exit()						\
++#define nmi_enter()						\
++	do {							\
++		lockdep_hardirq_enter();			\
++		__nmi_enter();					\
++	} while (0)
++
++#define __nmi_exit()						\
+ 	do {							\
+ 		instrumentation_begin();			\
+ 		ftrace_nmi_exit();				\
+ 		instrumentation_end();				\
+-		lockdep_hardirq_exit();				\
+ 		rcu_nmi_exit();					\
+ 		BUG_ON(!in_nmi());				\
+ 		__preempt_count_sub(NMI_OFFSET + HARDIRQ_OFFSET);	\
+-		lockdep_on();					\
+ 		printk_nmi_exit();				\
+ 		arch_nmi_exit();				\
++		lockdep_on();					\
++	} while (0)
++
++#define nmi_exit()						\
++	do {							\
++		__nmi_exit();					\
++		lockdep_hardirq_exit();				\
+ 	} while (0)
+ 
+ #endif /* LINUX_HARDIRQ_H */
 
-While the VM *itself* is running, there is zero overhead.  The host
-direct map is not used at *all*.  The guest and host TLB entries share
-the same space in the TLB so there could be some increased pressure on
-the TLB, but that's a really secondary effect.  It would also only occur
-if the guest exits and the host runs and starts evicting TLB entries.
 
-The other effects I could think of would be when the guest exits and the
-host is doing some work for the guest, like emulation or something.  The
-host would see worse TLB behavior because the host is using the
-(fragmented) direct map.
-
-But, both of those things require VMEXITs.  The more exits, the more
-overhead you _might_ observe.  What I've been hearing from KVM folks is
-that exits are getting more and more rare and the hardware designers are
-working hard to minimize them.
-
-That's especially good news because it means that even if the situation
-isn't perfect, it's only bound to get *better* over time, not worse.
