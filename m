@@ -2,73 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B60391E4368
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 939DF1E437D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730259AbgE0NUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33616 "EHLO
+        id S2387617AbgE0NXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:23:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725267AbgE0NUW (ORCPT
+        with ESMTP id S1730212AbgE0NXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:20:22 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C50C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 06:20:22 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id h21so28076485ejq.5
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 06:20:22 -0700 (PDT)
+        Wed, 27 May 2020 09:23:02 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E99C08C5C1;
+        Wed, 27 May 2020 06:23:01 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id y11so1839858plt.12;
+        Wed, 27 May 2020 06:23:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=vqFiBOeL29zCvVHr60bFoTtjn/3swasirJGUWjyvqms=;
-        b=iSBOOJFaTXIcuaop9W4oX2oFht6bVK+icOxVe6Y+sVbLm12TWu0U7G+9WDhNmn8YPQ
-         9WPoTUiVp9i7hAz3F2xA8NQmhtrVV6/LoXi5nSak4ZkFaIZ/o6lSgcVFwXbuiyIAfj1s
-         NCexrElQ4CDyhZPIdVn5iXM3xnC9D0YhSMHAaNUY5y2tdCSk6XOb4xSEHX/sSi4jOJHo
-         ssS03D9yMMC+VyVDw3YHEdQVpVhjsH+Gma3oH1q0Shd2Hpjb46k2EnX0HSS+L+tAj4YO
-         67/4p6XO8wqmsOVvPvBGZHK6eT7mL9sCoQXxVe4fFg0Xfz/6m0VfHqXLOl3AC8Ruw+OY
-         zk6A==
+        bh=WMCAGgctWQCI4EOH1o7VYJ6D7UfFFBGz8Ga+d8PohkQ=;
+        b=K56l5RKgeNZ4eDsd1Kt3Osm1mrwCSi5hQWk/fmWaC9bVi9wN8SP34jato8aOnPrAFv
+         HYRh1X2i9I1a/pxLHv/g230yf9Pkd4h2sNxfWVH7wcDEcI+DSkdOX3SmoQ9ZcnjMyn4A
+         fP0IdneURtjwmjpicPR8LwaRrOecY9sn6R+RP4q58zJHOY5b6eydLFEzI+cwePgKIH0G
+         E3AMCy2QrnMt59AuPheZQhzwKoxPX9VPCgwV8QPb63D0jw/mantJtrGp8dfAaByxqLSQ
+         B/shyDbp7EDtskpxrG8Lz0HNGeGhG9jgAJdLQTj1JQD7QQjQRDcy6WOK/wT14IEsMKJ6
+         NUug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=vqFiBOeL29zCvVHr60bFoTtjn/3swasirJGUWjyvqms=;
-        b=ZqUGkzMFpcGrw4QFXofqUaMvnlMwKe8hjnxaJ6xgH1E8YZEHk9FBHslSqx4TGSmwDA
-         RgGV/yHhQ5aJK7BYDdRtunJjcJ0/KPEk1+K8U4b5LSVNMj35P2RQo4cdHPPY2QWXPvs7
-         KXx2PK0erNaRFaUFgedR828iGjOz8z23FyMY86RTkqaKgurReDpksRgXq0edDFl3z1dg
-         W3EywRiReb4S/b3aPgdkAW3Qf7jHcISmRwhJrPqkOnVrUy8oWhf8gsE1apQx2HGvm9ea
-         z0Bvu77xBnDW1K97rjV7Ot96RinBxe90XIIqNl0PjgcNQMgz7bQX+En7xZK7NI2RsJhD
-         lP7Q==
-X-Gm-Message-State: AOAM530a7kDrgF5469ZwdfJDREITh94mh6MpwZV3nV7Vpo9wcYGCaTUQ
-        OFp0Nxo+mk+1sy72m+8LnXhHqmV8A64heE+dpvE=
-X-Google-Smtp-Source: ABdhPJyaOGG2D/RHbZ1yt/exPnksFGBDc2tL4EJrStFzp9RfhPKyqgiytRmDvkZWkF1YAJPuvzxyNBb/jkDeZstG2Ik=
-X-Received: by 2002:a17:906:6bc5:: with SMTP id t5mr5927199ejs.459.1590585621013;
- Wed, 27 May 2020 06:20:21 -0700 (PDT)
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=WMCAGgctWQCI4EOH1o7VYJ6D7UfFFBGz8Ga+d8PohkQ=;
+        b=RGocqUK41wb0AuhqYMqYhG/yGu+uysm/3WhaC927nnrk2wxfbIFA6O2TGqtgOCYkqO
+         cFBJ4R4DxDVAcZ15O5+j9QAGE8RwU4RlNZ8TZ4GPN6ZNcpriUtX1gYHA9dHzLwZCSLeH
+         jAbbzH6QOn1YW0Gp3igqY5wF0e1HHQQ4Kb42IBEOpQdKZ8xS8CiM0g521G8dDqaphR0M
+         Zz79n4qVkVoQe5XVu9ajMib7Bf42W04O9y0e8g9ZUhb5USf3zdCyUwv3JqhGv+m8osNQ
+         hDHu/RhVdqVzsrzTrA4Sv6d5dJH57f1uC4pKvVElAVyAmaUM1Jr7dmkKV5WF/rYmhzzv
+         PdgQ==
+X-Gm-Message-State: AOAM532w42OqxxZQYIGV/eO+kxtDlzZCE5x5Yz6tkVYmaeoqHhTP6sBq
+        UzI+jtgVDqd+rv/aM8uFcjtaQQr8
+X-Google-Smtp-Source: ABdhPJy1YQFXp2/h3iVVskQ03PN/RmwLpTuks7RWeVmcCu95CWIOO1Z5NGQeqY8fAfJYyrXXkqWAmA==
+X-Received: by 2002:a17:90b:ed2:: with SMTP id gz18mr5123782pjb.22.1590585780415;
+        Wed, 27 May 2020 06:23:00 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j18sm694072pfd.91.2020.05.27.06.22.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 May 2020 06:22:59 -0700 (PDT)
+Subject: Re: [PATCH -next] hwmon: (amd_energy) Fix build error
+To:     YueHaibing <yuehaibing@huawei.com>, nchatrad@amd.com,
+        jdelvare@suse.com
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200527130241.58468-1-yuehaibing@huawei.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <bfcd6504-c717-8e60-a1ad-d173f3bea02f@roeck-us.net>
+Date:   Wed, 27 May 2020 06:22:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Received: by 2002:a50:2d06:0:0:0:0:0 with HTTP; Wed, 27 May 2020 06:20:20
- -0700 (PDT)
-Reply-To: kristiandaniels59@yahoo.com
-From:   Kristian Daniels <crenetogo2@gmail.com>
-Date:   Wed, 27 May 2020 06:20:20 -0700
-Message-ID: <CAG+0+mTdsYpQvHui+n_hBK4EEYszCoUaOj3fUFv=MdQ2p_gmJg@mail.gmail.com>
-Subject: =?UTF-8?B?0JfQtNGA0LDQstC10LnRgtC1?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200527130241.58468-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-0JfQtNGA0LDQstC10LnRgtC1DQoNCtCQ0Lcg0YHRitC8INCzLdC9INCa0YDQuNGB0YLQuNCw0L0g
-0JTQsNC90LjQtdC70YEg0L7RgiDQo9C10LvRgSwg0YDQsNCx0L7RgtGPINGC0YPQuiDQsiDQm9C+
-0LzQtSwg0YEgQS5ELkItVE9HTy4NCtCY0LzQsNC80LUg0L/QvtGH0LjQvdCw0Lsg0LfQsNC60YrR
-gdC90Y/QuyDQutC70LjQtdC90YIsINC60L7QudGC0L4g0YHQu9GD0YfQsNC50L3QviDRgdC/0L7Q
-tNC10LvRjyDQtdC00L3QviDQuCDRgdGK0YnQvg0K0YTQsNC80LjQu9C90L4g0LjQvNC1INGBINCy
-0LDRgSDQuCDQstGB0LjRh9C60Lgg0L3QtdCz0L7QstC4INC00L7QutGD0LzQtdC90YLQuCDQvdCw
-INGF0LDRgNGC0LjRjyDQutCw0YLQvg0K0L7RgtC90L7RgdC40YLQtdC70L3QuCwg0KLQvtC5INC+
-0YHRgtCw0LLQuCDQsiDQsdCw0L3QutCw0YLQsCDQvtCz0YDQvtC80L3QsCDRgdGD0LzQsCDQvdCw
-INGB0YLQvtC50L3QvtGB0YIgMiw5INC80LjQu9C40L7QvdCwDQrQtNC+0LvQsNGA0LAsINC60L7R
-j9GC0L4g0L7RgdGC0LDQstCwINC90LXQv9C+0LjRgdC60LDQvdCwLg0KDQrQntGC0LPQvtCy0L7R
-gCDQt9CwINC/0YDQvtC40LfQstC+0LTRgdGC0LLQvi4NCg0K0JMt0L0g0JrRgNC40YHRgtC40LDQ
-vSDQlNCw0L3QuNC10LvRgQ0K
+On 5/27/20 6:02 AM, YueHaibing wrote:
+> If CONFIG_NEED_MULTIPLE_NODES is n, building fails:
+> 
+> drivers/hwmon/amd_energy.c: In function ‘amd_energy_read’:
+> ./include/asm-generic/topology.h:51:36: error: void value not ignored as it ought to be
+>      #define cpumask_of_node(node) ((void)node, cpu_online_mask)
+> ./include/linux/cpumask.h:618:72: note: in definition of macro ‘cpumask_first_and’
+>  #define cpumask_first_and(src1p, src2p) cpumask_next_and(-1, (src1p), (src2p))
+>                                                                         ^~~~~
+> drivers/hwmon/amd_energy.c:194:6: note: in expansion of macro ‘cpumask_of_node’
+>       cpumask_of_node
+>       ^~~~~~~~~~~~~~~
+> ./include/asm-generic/topology.h:51:46: warning: left-hand operand of comma expression has no effect [-Wunused-value]
+>      #define cpumask_of_node(node) ((void)node, cpu_online_mask)
+>                                               ^
+> ./include/linux/cpumask.h:618:72: note: in definition of macro ‘cpumask_first_and’
+>  #define cpumask_first_and(src1p, src2p) cpumask_next_and(-1, (src1p), (src2p))
+>                                                                         ^~~~~
+> drivers/hwmon/amd_energy.c:194:6: note: in expansion of macro ‘cpumask_of_node’
+>       cpumask_of_node
+>       ^~~~~~~~~~~~~~~
+> 
+> Fixes: 8abee9566b7e ("hwmon: Add amd_energy driver to report energy counters")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>  drivers/hwmon/amd_energy.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwmon/amd_energy.c b/drivers/hwmon/amd_energy.c
+> index bc8b643a37d5..9d5cd3057866 100644
+> --- a/drivers/hwmon/amd_energy.c
+> +++ b/drivers/hwmon/amd_energy.c
+> @@ -192,7 +192,7 @@ static int amd_energy_read(struct device *dev,
+>  	if (channel >= data->nr_cpus) {
+>  		cpu = cpumask_first_and(cpu_online_mask,
+>  					cpumask_of_node
+> -					(channel - data->nr_cpus));
+> +					((channel - data->nr_cpus)));
+
+Wrong fix. The correct fix is to fix the macro, not its caller.
+A patch to fix the macro has been submitted.
+
+Guenter
+
+
+>  		amd_add_delta(data, channel, cpu, val, false);
+>  	} else {
+>  		cpu = channel;
+> 
+
