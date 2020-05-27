@@ -2,160 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD961E4C38
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 19:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82FC41E4C49
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 19:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403876AbgE0Rnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 13:43:52 -0400
-Received: from mga05.intel.com ([192.55.52.43]:55236 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391453AbgE0Rnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 13:43:50 -0400
-IronPort-SDR: fIIk39CfVew+EtQ4MMiIUrL4J5TzT31e7/Flafig/FBzfdkMY04pLtsOS/9zhPBDGvTwYyjgDh
- Juwk2WtQxuIQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 10:43:49 -0700
-IronPort-SDR: erCG3ZktNKXYIFXv/NSmpD059H/RNZTYzSIAgOSgKlAvKp9gpKWE1C52DzlE0zrVNloApSqvco
- /MQ8H14Jnkcg==
-X-IronPort-AV: E=Sophos;i="5.73,442,1583222400"; 
-   d="scan'208";a="442612545"
-Received: from igherghx-mobl.ger.corp.intel.com ([10.252.8.19])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 10:43:47 -0700
-Message-ID: <561ea2aabf919ef332ec0165351791f6148e8597.camel@linux.intel.com>
-Subject: Re: [PATCH 1/1] soc: keembay: Add Keem Bay IMR driver
-From:   Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     "pavel@ucw.cz" <pavel@ucw.cz>, "robh@kernel.org" <robh@kernel.org>,
-        "Murphy, Paul J" <paul.j.murphy@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Wed, 27 May 2020 18:43:43 +0100
-In-Reply-To: <CAK8P3a2MzqF3P8nY3hAUaAXhTV8ZGQd187UDbNV1GBdu+_z5-g@mail.gmail.com>
-References: <cover.1587485099.git.daniele.alessandrelli@intel.com>
-         <13ca92165fab2827b6d439661e75f5b91ef083c2.1587485099.git.daniele.alessandrelli@intel.com>
-         <20200501081002.GA1055721@kroah.com>
-         <f60aece195cd0700728fc38b0398949a82b72fc3.camel@linux.intel.com>
-         <20200524212851.GG1192@bug>
-         <CAK8P3a225pqBfzQ19e6Gt0s_tYBp29xLb8EG==hhz=1wc7aVCA@mail.gmail.com>
-         <ac0534138facc25c4cbcbbff68fc0ba3c2de87b6.camel@linux.intel.com>
-         <CAK8P3a2MzqF3P8nY3hAUaAXhTV8ZGQd187UDbNV1GBdu+_z5-g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
+        id S2403926AbgE0RqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 13:46:11 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:36320 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403914AbgE0RqL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 13:46:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/Kwhca5f0j/+vobW3PAuos+qjYBVCOWNbbK1BTow0MY=; b=qkqM0MXuiQS0ZY7SeOiMolGP+o
+        0mw5qXW9ubf1qN0WJA/ywlIhihp+/Cdv0wgSvKRCUiD9eDpJm6Zd905fEkj0CMpP8LrABKU4o7Ase
+        t00C9TrZpwe9G9Uh7A/jQ0pC/tVWShYhwvAJSWe/NqgkZGdiu/7j0DujwPr2H+m6yziNg1oxRH+fS
+        3x0GFeguB7hjI77HroTzDiUuPkctQos9Pg+0VtUvMwT8F7gSU2XMHYupwqcgR7Tq1b0lj6UsWcYzT
+        uobco3917ZInMTwwTTAQQY6a3jany1B9soFuPdQ7VpYDjV/W0rOTg7osRnBsRnh49wPTQHsgH8Poy
+        Np8C6lEw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1je05k-0004bh-EE; Wed, 27 May 2020 17:43:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6716D3060FC;
+        Wed, 27 May 2020 19:43:45 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5506D2023E7C7; Wed, 27 May 2020 19:43:45 +0200 (CEST)
+Date:   Wed, 27 May 2020 19:43:45 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>, Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V7 03/15] kprobes: Add symbols for kprobe insn pages
+Message-ID: <20200527174345.GB706478@hirez.programming.kicks-ass.net>
+References: <20200512121922.8997-1-adrian.hunter@intel.com>
+ <20200512121922.8997-4-adrian.hunter@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200512121922.8997-4-adrian.hunter@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-05-27 at 16:33 +0200, Arnd Bergmann wrote:
-> On Wed, May 27, 2020 at 3:31 PM Alessandrelli, Daniele
-> <daniele.alessandrelli@intel.com> wrote:
-> > > > Alternatively, take that memory off the "memory available"
-> > > > maps,
-> > > > and only re-add it once
-> > > > it is usable.
-> > > > 
-> > > > Anything else is dangerous.
-> > 
-> > That sounds like an interesting solution, thanks!
-> > 
-> > Do you know any code that I can use as a reference?
-> > 
-> > Since, the protected memory is just a few megabytes large, I guess
-> > that
-> > in theory we could just have U-Boot mark it as reserved memory and
-> > forget about it; but if there's a way to re-add it back once in
-> > Linux
-> > that would be great.
-> 
-> Adding it back later on with a loadable device driver should
-> not be a problem, as this is not a violation of the boot protocol.
+On Tue, May 12, 2020 at 03:19:10PM +0300, Adrian Hunter wrote:
+> @@ -2179,6 +2181,49 @@ int kprobe_add_area_blacklist(unsigned long start, unsigned long end)
+>  	return 0;
+>  }
+>  
+> +int kprobe_cache_get_kallsym(struct kprobe_insn_cache *c, unsigned int *symnum,
+> +			     unsigned long *value, char *type, char *sym)
+> +{
+> +	struct kprobe_insn_page *kip;
+> +	int ret = -ERANGE;
+> +
+> +	rcu_read_lock();
+> +	list_for_each_entry_rcu(kip, &c->pages, list) {
+> +		if ((*symnum)--)
+> +			continue;
+> +		strlcpy(sym, c->sym, KSYM_NAME_LEN);
+> +		*type = 't';
+> +		*value = (unsigned long)kip->insns;
+> +		ret = 0;
+> +		break;
+> +	}
+> +	rcu_read_unlock();
+> +
+> +	return ret;
+> +}
 
-Cool, I'll try to do that then, thanks!
+This fails on sparc64-defconfig.
 
-I see two ways to do that though:
+In file included from ../include/linux/kprobes.h:19:0,
+                 from ../kernel/kprobes.c:21:
+../kernel/kprobes.c: In function 'kprobe_cache_get_kallsym':
+../include/linux/rculist.h:382:49: error: dereferencing pointer to incomplete type 'struct kprobe_insn_page'
 
-1. Create a device driver that gets a reference to the memory region
-from its DT node and then re-adds the memory to the pool of available
-memory.
-
-2. Use a special "compatible" string for my memory region and create a
-driver to handle it.
-
-However, I think that in the second case the driver must be builtin.
-Would that be okay?
-
-Also, from a quick look, it seems that I can re-add that memory back by
-calling memblock_free() (or a similar memblock_* function). Am I on the
-right track?
-
-> 
-> > > Agreed, this sounds like an incompatible extension of the boot
-> > > protocol that we should otherwise not merge.
-> > > 
-> > > However, there is also a lot of missing information here, and it
-> > > is
-> > > always possible they are trying to something for a good reason.
-> > > As long as the problem that the bootloader is trying to solve is
-> > > explained well enough in the changelog, we can discuss it to see
-> > > how it should be done properly.
-> > 
-> > Apologies, I should have provided more information. Here it is :)
-> > 
-> > Basically, at boot time U-Boot code and core memory (.text, .data,
-> > .bss, etc.) is protected by this Isolated Memory Region (IMR) which
-> > prevents any device or processing units other than the ARM CPU to
-> > access/modify the memory.
-> > 
-> > This is done for security reasons, to reduce the risks that a
-> > potential
-> > attacker can use "hijacked" HW devices to interfere with the boot
-> > process (and break the secure boot flow in place).
-> > 
-> > Before booting the Kernel, U-Boot sets up a new IMR to protect the
-> > Kernel image (so that the kernel can benefit of a similar
-> > protection)
-> > and then starts the kernel, delegating to the kernel the task of
-> > switching off the U-Boot IMR.
-> > 
-> > U-Boot doesn't turn off its own IMR because doing so would leave a
-> > (tiny) window in which the boot execution flow is not protected.
-> > 
-> > If you have any additional questions or feedback, just let me know.
-> 
-> Thank you for the detailed explanation. I've never seen this done
-> in the Linux boot flow, but I can see how it helps prevent certain
-> kinds of attacks.
-> 
-> It seems that just reserving the u-boot area and optionally
-> freeing it later from a driver solves most of your problem.
-> I have one related question though: if the kernel itself is
-> protected, does that mean that any driver that does a DMA
-> to statically allocated memory inside of the kernel is broken
-> as well? I think this is something that a couple of USB drivers
-> do, though it is fairly rare. Does u-boot protect both only
-> the executable sections of the kernel or also data, and does
-> the hardware block both read and write on the IMR, or just
-> writes?
-
-Yes, you're very right. Drivers that do DMA transfers to statically
-allocated memory inside the kernel will be broken.
-
-We are currently seeing this with our eMMC driver.
-
-Current solution is to add the eMMC controller to the list of allowed
-"agents" for the IMR. This will reduce the level of protection, but
-since we expect to have only a few of these exceptions (since, as you
-pointed out, drivers that do DMA to static kernel memory seem to be
-quite rare), we think that there is still value in having the Kernel
-IMR.
-
-Do you see any issue with this?
-
-Regards,
-Daniele
-
+Please provide a new patch.
