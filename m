@@ -2,93 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6F21E35AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 04:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E89CA1E35BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 04:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728048AbgE0CcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 22:32:10 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:44830 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725267AbgE0CcK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 22:32:10 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id C8BF9F07DF5CA9384084;
-        Wed, 27 May 2020 10:32:06 +0800 (CST)
-Received: from [127.0.0.1] (10.74.149.191) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Wed, 27 May 2020
- 10:31:58 +0800
-Subject: Re: [PATCH V2 net-next 0/2] net: hns3: adds two VLAN feature
-From:   tanhuazhong <tanhuazhong@huawei.com>
-To:     David Miller <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
-        <linuxarm@huawei.com>
-References: <1590061105-36478-1-git-send-email-tanhuazhong@huawei.com>
- <20200521121707.6499ca6b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20200521.143726.481524442371246082.davem@davemloft.net>
- <cb427604-05ee-504c-03d0-fcce16b3cfcc@huawei.com>
-Message-ID: <356be994-7cf9-e7b2-8992-46a70bc6a54b@huawei.com>
-Date:   Wed, 27 May 2020 10:31:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.5.2
-MIME-Version: 1.0
-In-Reply-To: <cb427604-05ee-504c-03d0-fcce16b3cfcc@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.149.191]
-X-CFilter-Loop: Reflected
+        id S1728172AbgE0CdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 22:33:07 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:58093 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727895AbgE0CdF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 22:33:05 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590546784; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=8BrMrQ0WHpE6sJzBsEoUZuHRlDMDeWrAghmgXNEp9HY=; b=oySMiN/ghoexCk8A2AIlXmGkira+Lt8FhAjDn6tSS2kumyW18tgygFZJ1RzdyMelc0eDdgsl
+ p+iVab3z1ON+RI1Nt+80k6n8piZ/n9/nVanXts85yrTvYW5TnB4pbxOVZ8bs3W3E8USA1wHv
+ 573JWlX5OgJk7NwxbvP5+lCM8/U=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5ecdd14fc28b2cdd986e96a7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 May 2020 02:32:47
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7E13DC433C9; Wed, 27 May 2020 02:32:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: zijuhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7C1F4C433C6;
+        Wed, 27 May 2020 02:32:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7C1F4C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=zijuhu@codeaurora.org
+From:   Zijun Hu <zijuhu@codeaurora.org>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org
+Subject: [PATCH v3] bluetooth: hci_qca: Fix qca6390 enable failure after warm reboot
+Date:   Wed, 27 May 2020 10:32:39 +0800
+Message-Id: <1590546759-27387-1-git-send-email-zijuhu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Warm reboot can not restore qca6390 controller baudrate
+to default due to lack of controllable BT_EN pin or power
+supply, so fails to download firmware after warm reboot.
 
+Fixed by sending EDL_SOC_RESET VSC to reset controller
+within added device shutdown implementation.
 
-On 2020/5/22 17:35, tanhuazhong wrote:
-> 
-> 
-> On 2020/5/22 5:37, David Miller wrote:
->> From: Jakub Kicinski <kuba@kernel.org>
->> Date: Thu, 21 May 2020 12:17:07 -0700
->>
->>> On Thu, 21 May 2020 19:38:23 +0800 Huazhong Tan wrote:
->>>> This patchset adds two new VLAN feature.
->>>>
->>>> [patch 1] adds a new dynamic VLAN mode.
->>>> [patch 2] adds support for 'QoS' field to PVID.
->>>>
->>>> Change log:
->>>> V1->V2: modifies [patch 1]'s commit log, suggested by Jakub Kicinski.
->>>
->>> I don't like the idea that FW is choosing the driver behavior in a way
->>> that's not observable via standard Linux APIs. This is the second time
->>> a feature like that posted for a driver this week, and we should
->>> discourage it.
->>
->> Agreed, this is an unacceptable approach to driver features.
->>
-> 
-> Hi, Jakub & David.
-> 
-> As decribed in patch #1, there is a scenario which needs the dynamic
-> mode(port VLAN filter is always disabled, andVF VLAN filter is keep
-> disable until a non-zero VLAN ID being used for the function).
-> 
-> Is this mode selection provided through "ethtool --set-priv-flags"
-> more acceptable? Or is there any other better suggestion for this?
-> 
-> Thanks.
-> 
+Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
+---
+ drivers/bluetooth/hci_qca.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-Hi, Jakub & David.
-
-For patch#1, is it acceptable adding "ethtool --get-priv-flags"
-to query the VLAN. If yes, I will send a RFC for it.
-
-Best Regards.
-Thanks.
-
->> .
->>
+diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+index e4a6823..4b6f8b6 100644
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -1975,6 +1975,34 @@ static void qca_serdev_remove(struct serdev_device *serdev)
+ 	hci_uart_unregister_device(&qcadev->serdev_hu);
+ }
+ 
++static void qca_serdev_shutdown(struct device *dev)
++{
++	int ret;
++	int timeout = msecs_to_jiffies(CMD_TRANS_TIMEOUT_MS);
++	struct serdev_device *serdev = to_serdev_device(dev);
++	struct qca_serdev *qcadev = serdev_device_get_drvdata(serdev);
++	const u8 ibs_wake_cmd[] = { 0xFD };
++	const u8 edl_reset_soc_cmd[] = { 0x01, 0x00, 0xFC, 0x01, 0x05 };
++
++	if (qcadev->btsoc_type == QCA_QCA6390) {
++		serdev_device_write_flush(serdev);
++		serdev_device_write_buf(serdev,
++				ibs_wake_cmd, sizeof(ibs_wake_cmd));
++		serdev_device_wait_until_sent(serdev, timeout);
++		usleep_range(8000, 10000);
++
++		serdev_device_write_flush(serdev);
++		ret = serdev_device_write_buf(serdev,
++				edl_reset_soc_cmd, sizeof(edl_reset_soc_cmd));
++		if (ret < 0) {
++			BT_ERR("QCA send EDL_RESET_REQ error: %d", ret);
++			return;
++		}
++		serdev_device_wait_until_sent(serdev, timeout);
++		usleep_range(8000, 10000);
++	}
++}
++
+ static int __maybe_unused qca_suspend(struct device *dev)
+ {
+ 	struct hci_dev *hdev = container_of(dev, struct hci_dev, dev);
+@@ -2100,6 +2128,7 @@ static struct serdev_device_driver qca_serdev_driver = {
+ 		.name = "hci_uart_qca",
+ 		.of_match_table = of_match_ptr(qca_bluetooth_of_match),
+ 		.acpi_match_table = ACPI_PTR(qca_bluetooth_acpi_match),
++		.shutdown = qca_serdev_shutdown,
+ 		.pm = &qca_pm_ops,
+ 	},
+ };
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
 
