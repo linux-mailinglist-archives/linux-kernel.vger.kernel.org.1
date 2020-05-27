@@ -2,77 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 264F51E3E5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 12:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5DA1E3E7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 12:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729751AbgE0KBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 06:01:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725848AbgE0KBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 06:01:22 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 993F92084C;
-        Wed, 27 May 2020 10:01:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590573682;
-        bh=9wa7osKVq8G8KRV4UBClAM7K0DIQxJQ1DAeZp+MGtP0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AzPzZQw0Lu6ffUH+LzQ8WlnVeUShSkRaMiu1fnr9uTH86FvrFNodRcI3Dhr3+ciO2
-         DENjVdi1xDG9fYfKb/kQT/m0GCr+lhy0HwjpIAnnDXb2R3xMUmW2kMklAOWesQVi/m
-         NGBFEYsV/dHVLTD5gK0Lo5tzzpoLZtacGCllZE90=
-Date:   Wed, 27 May 2020 12:01:19 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 5.6 000/126] 5.6.15-rc1 review
-Message-ID: <20200527100119.GC277684@kroah.com>
-References: <20200526183937.471379031@linuxfoundation.org>
- <CA+G9fYtbi+qgdu9ZeHPxKZyqON18WUdK1i=f9YpFQ2t58JCO-g@mail.gmail.com>
+        id S1728015AbgE0KDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 06:03:21 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:48860 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725775AbgE0KDV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 06:03:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590573799;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=K5aoZD94Bdt8IQkQiaPPsorrKIIJCA0ECfpK+RBmwjU=;
+        b=MhmIJE6ngQ9AZ6JE3zXQ1WEE5vEVC0oOVTCTcv82xvMs7U3vsywld1t8R6gQ4E6VfXay0y
+        qg+Tf+/snjA1drgkd/pkhiC24XfcV0hflCutWeWG/dUoUb1H4No7S8AUimSuezh1R9RcQU
+        WVdvj1ZiWPSa/MYbTJfUQHYRHgQUp20=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-274-S0UZJbIWOs2ORrLQzaxBug-1; Wed, 27 May 2020 06:03:18 -0400
+X-MC-Unique: S0UZJbIWOs2ORrLQzaxBug-1
+Received: by mail-ej1-f69.google.com with SMTP id ng1so8622710ejb.22
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 03:03:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=K5aoZD94Bdt8IQkQiaPPsorrKIIJCA0ECfpK+RBmwjU=;
+        b=dsDzTjM7kzLB7fp+0JsgxLINeC9tnx3du5IkLveYqkohxeYb382vcWd/f0DjvQ8jHv
+         h4XDqRrsenATaL9EgScS+gE4kkzvgiLiK4VaDmzhPb8m5gHQlDXvyQPoXr21KYUQAg5P
+         XyVNjeY0Yq6ba51hk3Os/J2rFUNHNwU8R79Cm4wzFt96bTyumRDPCYUbiDwmtwlKAJAQ
+         HGg64KmUNZXPXyMs7NbjfLg8fPL90tB+s00JUzIHAbM+fuuISpxIB5kQ7pm+C/T0n+6k
+         UnD5FviF1rXflXZy93UY+UERqXGKaZ+4KUvHYBwehzSRE8pZTOSFEeOfSBX1vGviGcsi
+         7Sww==
+X-Gm-Message-State: AOAM531Z5Cy0Sd7ZtcB4fc7Ld1wN+9qyHYQcaeW0f3CgF5BuUFzauVYY
+        LaA0e4F0qSWXFskoSvI8J20GOdPZ8hA+MnGOZWvGdGmOrjoI6PRiecNS6M7Zv9C7GkPkO2qduIP
+        liRRYZRdU1FlkAUspaAizcxvd
+X-Received: by 2002:a17:907:1189:: with SMTP id uz9mr5081182ejb.53.1590573796345;
+        Wed, 27 May 2020 03:03:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwtGDTVME1kTme3ysc0tvVt/aSxxpA7Dx0TxZxwIBs/4vrOxvgxcS0wsLTR19Vf7/VXoKMP5A==
+X-Received: by 2002:a17:907:1189:: with SMTP id uz9mr5081127ejb.53.1590573795772;
+        Wed, 27 May 2020 03:03:15 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id m11sm2268523ejq.49.2020.05.27.03.03.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 03:03:14 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+904752567107eefb728c@syzkaller.appspotmail.com,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH] KVM: x86: Initialize tdp_level during vCPU creation
+In-Reply-To: <20200527085400.23759-1-sean.j.christopherson@intel.com>
+References: <20200527085400.23759-1-sean.j.christopherson@intel.com>
+Date:   Wed, 27 May 2020 12:03:13 +0200
+Message-ID: <875zch66fy.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYtbi+qgdu9ZeHPxKZyqON18WUdK1i=f9YpFQ2t58JCO-g@mail.gmail.com>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 01:47:41PM +0530, Naresh Kamboju wrote:
-> On Wed, 27 May 2020 at 00:46, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.6.15 release.
-> > There are 126 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Thu, 28 May 2020 18:36:22 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.6.15-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.6.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> Results from Linaro’s test farm.
-> No regressions on arm64, arm, x86_64, and i386.
+Sean Christopherson <sean.j.christopherson@intel.com> writes:
 
-Great!  That was fast, thanks for testing them all and letting me know.
+> Initialize vcpu->arch.tdp_level during vCPU creation to avoid consuming
+> garbage if userspace calls KVM_RUN without first calling KVM_SET_CPUID.
+>
+> Fixes: e93fd3b3e89e9 ("KVM: x86/mmu: Capture TDP level when updating CPUID")
+> Reported-by: syzbot+904752567107eefb728c@syzkaller.appspotmail.com
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>  arch/x86/kvm/x86.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index b226fb8abe41b..01a6304056197 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -9414,6 +9414,7 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
+>  	fx_init(vcpu);
+>  
+>  	vcpu->arch.maxphyaddr = cpuid_query_maxphyaddr(vcpu);
+> +	vcpu->arch.tdp_level = kvm_x86_ops.get_tdp_level(vcpu);
+>  
+>  	vcpu->arch.pat = MSR_IA32_CR_PAT_DEFAULT;
 
-greg k-h
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+
+Looking at kvm_update_cpuid() I was thinking if it would make sense to
+duplicate the "/* Note, maxphyaddr must be updated before tdp_level. */"
+comment here (it seems to be a vmx-only thing btw), drop it from
+kvm_update_cpuid() or move cpuid_query_maxphyaddr() to get_tdp_level()
+but didn't come to a conclusive answer. 
+
+-- 
+Vitaly
+
