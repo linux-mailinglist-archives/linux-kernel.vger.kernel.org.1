@@ -2,395 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF211E36F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 06:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB1B1E36E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 06:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728693AbgE0EOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 00:14:14 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:6220 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728577AbgE0EON (ORCPT
+        id S1728636AbgE0ENd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 00:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728626AbgE0ENd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 00:14:13 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04R420Yq052250;
-        Wed, 27 May 2020 00:13:39 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3170c6m3g5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 May 2020 00:13:39 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04R424SY052774;
-        Wed, 27 May 2020 00:13:39 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3170c6m3et-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 May 2020 00:13:38 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 04R4AE75013840;
-        Wed, 27 May 2020 04:13:36 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma05fra.de.ibm.com with ESMTP id 316uf8jvab-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 May 2020 04:13:36 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04R4CJvL459322
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 May 2020 04:12:19 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2CED6AE045;
-        Wed, 27 May 2020 04:13:33 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1B7DEAE051;
-        Wed, 27 May 2020 04:13:28 +0000 (GMT)
-Received: from vajain21-in-ibm-com (unknown [9.85.121.50])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Wed, 27 May 2020 04:13:27 +0000 (GMT)
-Received: by vajain21-in-ibm-com (sSMTP sendmail emulation); Wed, 27 May 2020 09:43:26 +0530
-From:   Vaibhav Jain <vaibhav@linux.ibm.com>
-To:     linuxppc-dev@lists.ozlabs.org, linux-nvdimm@lists.01.org,
+        Wed, 27 May 2020 00:13:33 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC66CC03E97B
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 21:13:32 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id 124so4984713pgi.9
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 21:13:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=AfGrQhANyY91hXOGSpuo1mwaEcVmt3M+OaE9Tl+XS5Y=;
+        b=yc9MHRKHZBNnZOmxUrGmqU+Z+7ZywJkjcbhb96l70OeshyTattGt2KB+DO5GOfMS9q
+         0dUP/f4JiyU+qJq1zXgDQWJkJcqE0HCu3Rme/QapoxmAQf/6iJMbZgQ7Fxzwr6G1+Rft
+         MW4+9dTfS6xhmJk349y9xRFKkfD2Q61CnFLkZAaeI2d02s5EqwSwylsetVlMhNhmbCz3
+         V1iD+MrvsmQxsCmhHwSAZwUiIa7HrMzVYaO0nJZvrxHlHhrISjTqSlguqfVgD18MEHnw
+         jKkUJNkUs/UMWRCiR4dGUdK68aw6sQKfKeTZY1Bqs/LetHNcrlZIqLAXI1+Gsci6sh/N
+         k5GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=AfGrQhANyY91hXOGSpuo1mwaEcVmt3M+OaE9Tl+XS5Y=;
+        b=O9NSP+cv7u1m/ned1TrvF5LCOUZlomwN6NPjNAtXuO6ND2Q9JExqBJLI5qoy+Q1Eqj
+         oh5gJ9RQbzlDMlVmKeQImGqSNhFm/i5K1Kvv4xP31RFa0HIanX+j2nQcjafzR499uKR2
+         NQlpDBjHCtSOWe5PxL0PJQJz0JIxXMNvODY5kLYbjp4OT+F6LHaa1WS5YgBmpC5mE1ym
+         enqnnbURTVTE4EymYPa4n7ifg9JPmWbtgBlL4ThiM8Cofr+UEmVYuO7hSe2adN3tvl/z
+         4BwM3zvISsGMTTS0hv04+uuXE5l0AEA5/noNynRf+xMbtG4lOmW3mzbOpZUp6NoooxYE
+         qrCA==
+X-Gm-Message-State: AOAM53164+9AieXAlueJ7SBWZE8sw2jbvREZTf7OFFjcAcu2eyzbqysB
+        AldLQYFRPYS1RpPfajSOLI+qsg==
+X-Google-Smtp-Source: ABdhPJzmmNzofmSQKXXkiLwVh283U0hXbNZue0aNKNZCZ8WLJSKaHQuIFhwfg9UwS2ZESJKgLXFaPw==
+X-Received: by 2002:a63:f502:: with SMTP id w2mr2061317pgh.321.1590552812239;
+        Tue, 26 May 2020 21:13:32 -0700 (PDT)
+Received: from localhost ([122.172.60.59])
+        by smtp.gmail.com with ESMTPSA id 192sm823471pfu.202.2020.05.26.21.13.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 26 May 2020 21:13:31 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>, georgi.djakov@linaro.org,
+        Sibi Sankar <sibis@codeaurora.org>,
         linux-kernel@vger.kernel.org
-Cc:     Vaibhav Jain <vaibhav@linux.ibm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Santosh Sivaraj <santosh@fossix.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ira Weiny <ira.weiny@intel.com>
-Subject: [PATCH v8 5/5] powerpc/papr_scm: Implement support for PAPR_SCM_PDSM_HEALTH
-Date:   Wed, 27 May 2020 09:42:44 +0530
-Message-Id: <20200527041244.37821-6-vaibhav@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200527041244.37821-1-vaibhav@linux.ibm.com>
-References: <20200527041244.37821-1-vaibhav@linux.ibm.com>
+Subject: [PATCH V2] opp: Remove bandwidth votes when target_freq is zero
+Date:   Wed, 27 May 2020 09:43:26 +0530
+Message-Id: <3aa3870d71b536127bb6af88c1dbfb4672ba4173.1590552778.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+In-Reply-To: <20200512125327.1868-1-georgi.djakov@linaro.org>
+References: <20200512125327.1868-1-georgi.djakov@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-05-26_04:2020-05-26,2020-05-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- cotscore=-2147483648 priorityscore=1501 impostorscore=0 clxscore=1015
- suspectscore=0 spamscore=0 mlxlogscore=999 adultscore=0 mlxscore=0
- phishscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005270024
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch implements support for PDSM request 'PAPR_SCM_PDSM_HEALTH'
-that returns a newly introduced 'struct nd_papr_pdsm_health' instance
-containing dimm health information back to user space in response to
-ND_CMD_CALL. This functionality is implemented in newly introduced
-papr_scm_get_health() that queries the scm-dimm health information and
-then copies this information to the package payload whose layout is
-defined by 'struct nd_papr_pdsm_health'.
+We already drop several votes when target_freq is set to zero, drop
+bandwidth votes as well.
 
-The patch also introduces a new member 'struct papr_scm_priv.health'
-thats an instance of 'struct nd_papr_pdsm_health' to cache the health
-information of a nvdimm. As a result functions drc_pmem_query_health()
-and flags_show() are updated to populate and use this new struct
-instead of a u64 integer that was earlier used.
-
-Cc: "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
+Reported-by: Sibi Sankar <sibis@codeaurora.org>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
-Changelog:
+V2: Some changes left uncommited in my tree by mistake.
 
-v7..v8:
-* None
+ drivers/opp/core.c | 49 ++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 37 insertions(+), 12 deletions(-)
 
-Resend:
-* None
-
-v6..v7:
-* Updated flags_show() to use seq_buf_printf(). [Mpe]
-* Updated papr_scm_get_health() to use newly introduced
-  __drc_pmem_query_health() bypassing the cache [Mpe].
-
-v5..v6:
-* Added attribute '__packed' to 'struct nd_papr_pdsm_health_v1' to
-  gaurd against possibility of different compilers adding different
-  paddings to the struct [ Dan Williams ]
-
-* Updated 'struct nd_papr_pdsm_health_v1' to use __u8 instead of
-  'bool' and also updated drc_pmem_query_health() to take this into
-  account. [ Dan Williams ]
-
-v4..v5:
-* None
-
-v3..v4:
-* Call the DSM_PAPR_SCM_HEALTH service function from
-  papr_scm_service_dsm() instead of papr_scm_ndctl(). [Aneesh]
-
-v2..v3:
-* Updated struct nd_papr_scm_dimm_health_stat_v1 to use '__xx' types
-  as its exported to the userspace [Aneesh]
-* Changed the constants DSM_PAPR_SCM_DIMM_XX indicating dimm health
-  from enum to #defines [Aneesh]
-
-v1..v2:
-* New patch in the series
----
- arch/powerpc/include/uapi/asm/papr_scm_pdsm.h |  39 ++++++
- arch/powerpc/platforms/pseries/papr_scm.c     | 125 +++++++++++++++---
- 2 files changed, 147 insertions(+), 17 deletions(-)
-
-diff --git a/arch/powerpc/include/uapi/asm/papr_scm_pdsm.h b/arch/powerpc/include/uapi/asm/papr_scm_pdsm.h
-index c4bae3208e73..f81d714279f0 100644
---- a/arch/powerpc/include/uapi/asm/papr_scm_pdsm.h
-+++ b/arch/powerpc/include/uapi/asm/papr_scm_pdsm.h
-@@ -115,6 +115,7 @@ struct nd_pdsm_cmd_pkg {
-  */
- enum papr_scm_pdsm {
- 	PAPR_SCM_PDSM_MIN = 0x0,
-+	PAPR_SCM_PDSM_HEALTH,
- 	PAPR_SCM_PDSM_MAX,
- };
- 
-@@ -133,4 +134,42 @@ static inline void *pdsm_cmd_to_payload(struct nd_pdsm_cmd_pkg *pcmd)
- 		return (void *)(pcmd->payload);
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index 56d3022c1ca2..df12c3804533 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -725,6 +725,34 @@ static int _generic_set_opp_regulator(struct opp_table *opp_table,
+ 	return ret;
  }
  
-+/* Various scm-dimm health indicators */
-+#define PAPR_PDSM_DIMM_HEALTHY       0
-+#define PAPR_PDSM_DIMM_UNHEALTHY     1
-+#define PAPR_PDSM_DIMM_CRITICAL      2
-+#define PAPR_PDSM_DIMM_FATAL         3
-+
-+/*
-+ * Struct exchanged between kernel & ndctl in for PAPR_SCM_PDSM_HEALTH
-+ * Various flags indicate the health status of the dimm.
-+ *
-+ * dimm_unarmed		: Dimm not armed. So contents wont persist.
-+ * dimm_bad_shutdown	: Previous shutdown did not persist contents.
-+ * dimm_bad_restore	: Contents from previous shutdown werent restored.
-+ * dimm_scrubbed	: Contents of the dimm have been scrubbed.
-+ * dimm_locked		: Contents of the dimm cant be modified until CEC reboot
-+ * dimm_encrypted	: Contents of dimm are encrypted.
-+ * dimm_health		: Dimm health indicator. One of PAPR_PDSM_DIMM_XXXX
-+ */
-+struct nd_papr_pdsm_health_v1 {
-+	__u8 dimm_unarmed;
-+	__u8 dimm_bad_shutdown;
-+	__u8 dimm_bad_restore;
-+	__u8 dimm_scrubbed;
-+	__u8 dimm_locked;
-+	__u8 dimm_encrypted;
-+	__u16 dimm_health;
-+} __packed;
-+
-+/*
-+ * Typedef the current struct for dimm_health so that any application
-+ * or kernel recompiled after introducing a new version automatically
-+ * supports the new version.
-+ */
-+#define nd_papr_pdsm_health nd_papr_pdsm_health_v1
-+
-+/* Current version number for the dimm health struct */
-+#define ND_PAPR_PDSM_HEALTH_VERSION 1
-+
- #endif /* _UAPI_ASM_POWERPC_PAPR_SCM_PDSM_H_ */
-diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
-index fcb8afee97dc..adf1fb819c56 100644
---- a/arch/powerpc/platforms/pseries/papr_scm.c
-+++ b/arch/powerpc/platforms/pseries/papr_scm.c
-@@ -88,7 +88,7 @@ struct papr_scm_priv {
- 	unsigned long lasthealth_jiffies;
- 
- 	/* Health information for the dimm */
--	u64 health_bitmap;
-+	struct nd_papr_pdsm_health health;
- };
- 
- static int drc_pmem_bind(struct papr_scm_priv *p)
-@@ -201,6 +201,7 @@ static int drc_pmem_query_n_bind(struct papr_scm_priv *p)
- static int __drc_pmem_query_health(struct papr_scm_priv *p)
- {
- 	unsigned long ret[PLPAR_HCALL_BUFSIZE];
-+	u64 health;
- 	long rc;
- 
- 	/* issue the hcall */
-@@ -208,18 +209,46 @@ static int __drc_pmem_query_health(struct papr_scm_priv *p)
- 	if (rc != H_SUCCESS) {
- 		dev_err(&p->pdev->dev,
- 			 "Failed to query health information, Err:%ld\n", rc);
--		rc = -ENXIO;
--		goto out;
-+		return -ENXIO;
- 	}
- 
- 	p->lasthealth_jiffies = jiffies;
--	p->health_bitmap = ret[0] & ret[1];
-+	health = ret[0] & ret[1];
- 
- 	dev_dbg(&p->pdev->dev,
- 		"Queried dimm health info. Bitmap:0x%016lx Mask:0x%016lx\n",
- 		ret[0], ret[1]);
--out:
--	return rc;
-+
-+	memset(&p->health, 0, sizeof(p->health));
-+
-+	/* Check for various masks in bitmap and set the buffer */
-+	if (health & PAPR_SCM_DIMM_UNARMED_MASK)
-+		p->health.dimm_unarmed = 1;
-+
-+	if (health & PAPR_SCM_DIMM_BAD_SHUTDOWN_MASK)
-+		p->health.dimm_bad_shutdown = 1;
-+
-+	if (health & PAPR_SCM_DIMM_BAD_RESTORE_MASK)
-+		p->health.dimm_bad_restore = 1;
-+
-+	if (health & PAPR_SCM_DIMM_ENCRYPTED)
-+		p->health.dimm_encrypted = 1;
-+
-+	if (health & PAPR_SCM_DIMM_SCRUBBED_AND_LOCKED) {
-+		p->health.dimm_locked = 1;
-+		p->health.dimm_scrubbed = 1;
-+	}
-+
-+	if (health & PAPR_SCM_DIMM_HEALTH_UNHEALTHY)
-+		p->health.dimm_health = PAPR_PDSM_DIMM_UNHEALTHY;
-+
-+	if (health & PAPR_SCM_DIMM_HEALTH_CRITICAL)
-+		p->health.dimm_health = PAPR_PDSM_DIMM_CRITICAL;
-+
-+	if (health & PAPR_SCM_DIMM_HEALTH_FATAL)
-+		p->health.dimm_health = PAPR_PDSM_DIMM_FATAL;
-+
-+	return 0;
- }
- 
- /* Min interval in seconds for assuming stable dimm health */
-@@ -403,6 +432,58 @@ static int is_cmd_valid(struct nvdimm *nvdimm, unsigned int cmd, void *buf,
- 	return 0;
- }
- 
-+/* Fetch the DIMM health info and populate it in provided package. */
-+static int papr_scm_get_health(struct papr_scm_priv *p,
-+			       struct nd_pdsm_cmd_pkg *pkg)
++static int _set_opp_bw(const struct opp_table *opp_table,
++		       struct dev_pm_opp *opp, struct device *dev, bool remove)
 +{
-+	int rc;
-+	size_t copysize = sizeof(p->health);
++	u32 avg, peak;
++	int i, ret;
 +
-+	/* Ensure dimm health mutex is taken preventing concurrent access */
-+	rc = mutex_lock_interruptible(&p->health_mutex);
-+	if (rc)
-+		goto out;
++	if (!opp_table->paths)
++		return 0;
 +
-+	/* Always fetch upto date dimm health data ignoring cached values */
-+	rc = __drc_pmem_query_health(p);
-+	if (rc)
-+		goto out_unlock;
-+	/*
-+	 * If the requested payload version is greater than one we know
-+	 * about, return the payload version we know about and let
-+	 * caller/userspace handle.
-+	 */
-+	if (pkg->payload_version > ND_PAPR_PDSM_HEALTH_VERSION)
-+		pkg->payload_version = ND_PAPR_PDSM_HEALTH_VERSION;
-+
-+	if (pkg->hdr.nd_size_out < copysize) {
-+		dev_dbg(&p->pdev->dev, "Truncated payload (%u). Expected (%lu)",
-+			pkg->hdr.nd_size_out, copysize);
-+		rc = -ENOSPC;
-+		goto out_unlock;
++	for (i = 0; i < opp_table->path_count; i++) {
++		if (remove) {
++			avg = 0;
++			peak = 0;
++		} else {
++			avg = opp->bandwidth[i].avg;
++			peak = opp->bandwidth[i].peak;
++		}
++		ret = icc_set_bw(opp_table->paths[i], avg, peak);
++		if (ret) {
++			dev_err(dev, "Failed to %s bandwidth[%d]: %d\n",
++				remove ? "remove" : "set", i, ret);
++			return ret;
++		}
 +	}
-+
-+	dev_dbg(&p->pdev->dev, "Copying payload size=%lu version=0x%x\n",
-+		copysize, pkg->payload_version);
-+
-+	/* Copy the health struct to the payload */
-+	memcpy(pdsm_cmd_to_payload(pkg), &p->health, copysize);
-+	pkg->hdr.nd_fw_size = copysize;
-+
-+out_unlock:
-+	mutex_unlock(&p->health_mutex);
-+
-+out:
-+	/*
-+	 * Put the error in out package and return success from function
-+	 * so that errors if any are propogated back to userspace.
-+	 */
-+	pkg->cmd_status = rc;
-+	dev_dbg(&p->pdev->dev, "completion code = %d\n", rc);
 +
 +	return 0;
 +}
 +
- static int papr_scm_service_pdsm(struct papr_scm_priv *p,
- 				struct nd_pdsm_cmd_pkg *call_pkg)
- {
-@@ -417,6 +498,9 @@ static int papr_scm_service_pdsm(struct papr_scm_priv *p,
+ static int _set_opp_custom(const struct opp_table *opp_table,
+ 			   struct device *dev, unsigned long old_freq,
+ 			   unsigned long freq,
+@@ -820,7 +848,7 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
+ 	unsigned long freq, old_freq, temp_freq;
+ 	struct dev_pm_opp *old_opp, *opp;
+ 	struct clk *clk;
+-	int ret, i;
++	int ret;
  
- 	/* Depending on the DSM command call appropriate service routine */
- 	switch (call_pkg->hdr.nd_command) {
-+	case PAPR_SCM_PDSM_HEALTH:
-+		return papr_scm_get_health(p, call_pkg);
+ 	opp_table = _find_opp_table(dev);
+ 	if (IS_ERR(opp_table)) {
+@@ -837,12 +865,17 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
+ 		if (!_get_opp_count(opp_table))
+ 			return 0;
+ 
+-		if (!opp_table->required_opp_tables && !opp_table->regulators) {
++		if (!opp_table->required_opp_tables && !opp_table->regulators &&
++		    !opp_table->paths) {
+ 			dev_err(dev, "target frequency can't be 0\n");
+ 			ret = -EINVAL;
+ 			goto put_opp_table;
+ 		}
+ 
++		ret = _set_opp_bw(opp_table, opp, dev, true);
++		if (ret)
++			return ret;
 +
- 	default:
- 		dev_dbg(&p->pdev->dev, "Unsupported PDSM request 0x%llx\n",
- 			call_pkg->hdr.nd_command);
-@@ -485,34 +569,41 @@ static ssize_t flags_show(struct device *dev,
- 	struct nvdimm *dimm = to_nvdimm(dev);
- 	struct papr_scm_priv *p = nvdimm_provider_data(dimm);
- 	struct seq_buf s;
--	u64 health;
- 	int rc;
+ 		if (opp_table->regulator_enabled) {
+ 			regulator_disable(opp_table->regulators[0]);
+ 			opp_table->regulator_enabled = false;
+@@ -932,16 +965,8 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
+ 			dev_err(dev, "Failed to set required opps: %d\n", ret);
+ 	}
  
- 	rc = drc_pmem_query_health(p);
- 	if (rc)
- 		return rc;
+-	if (!ret && opp_table->paths) {
+-		for (i = 0; i < opp_table->path_count; i++) {
+-			ret = icc_set_bw(opp_table->paths[i],
+-					 opp->bandwidth[i].avg,
+-					 opp->bandwidth[i].peak);
+-			if (ret)
+-				dev_err(dev, "Failed to set bandwidth[%d]: %d\n",
+-					i, ret);
+-		}
+-	}
++	if (!ret)
++		ret = _set_opp_bw(opp_table, opp, dev, false);
  
--	/* Copy health_bitmap locally, check masks & update out buffer */
--	health = READ_ONCE(p->health_bitmap);
--
- 	seq_buf_init(&s, buf, PAGE_SIZE);
--	if (health & PAPR_SCM_DIMM_UNARMED_MASK)
-+
-+	/* Protect concurrent modifications to papr_scm_priv */
-+	rc = mutex_lock_interruptible(&p->health_mutex);
-+	if (rc)
-+		return rc;
-+
-+	if (p->health.dimm_unarmed)
- 		seq_buf_printf(&s, "not_armed ");
- 
--	if (health & PAPR_SCM_DIMM_BAD_SHUTDOWN_MASK)
-+	if (p->health.dimm_bad_shutdown)
- 		seq_buf_printf(&s, "flush_fail ");
- 
--	if (health & PAPR_SCM_DIMM_BAD_RESTORE_MASK)
-+	if (p->health.dimm_bad_restore)
- 		seq_buf_printf(&s, "restore_fail ");
- 
--	if (health & PAPR_SCM_DIMM_ENCRYPTED)
-+	if (p->health.dimm_encrypted)
- 		seq_buf_printf(&s, "encrypted ");
- 
--	if (health & PAPR_SCM_DIMM_SMART_EVENT_MASK)
-+	if (p->health.dimm_health)
- 		seq_buf_printf(&s, "smart_notify ");
- 
--	if (health & PAPR_SCM_DIMM_SCRUBBED_AND_LOCKED)
--		seq_buf_printf(&s, "scrubbed locked ");
-+	if (p->health.dimm_scrubbed)
-+		seq_buf_printf(&s, "scrubbed ");
-+
-+	if (p->health.dimm_locked)
-+		seq_buf_printf(&s, "locked ");
-+
-+	mutex_unlock(&p->health_mutex);
- 
- 	if (seq_buf_used(&s))
- 		seq_buf_printf(&s, "\n");
+ put_opp:
+ 	dev_pm_opp_put(opp);
 -- 
-2.26.2
+2.25.0.rc1.19.g042ed3e048af
 
