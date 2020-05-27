@@ -2,106 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 198FE1E40FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1951E408A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726516AbgE0L5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 07:57:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40832 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726835AbgE0LyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 07:54:17 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A26A8ACF2;
-        Wed, 27 May 2020 11:54:18 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
-        gregkh@linuxfoundation.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        devel@driverdev.osuosl.org
-Subject: [RFC 05/50] staging: vchi: Get rid of vchi_service_set_option()
+        id S1729156AbgE0Lxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 07:53:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728746AbgE0Lx2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 07:53:28 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF52C08C5C4
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 04:53:28 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 5449F485; Wed, 27 May 2020 13:53:24 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        jroedel@suse.de
+Subject: [PATCH 07/10] iommu/amd: Remove PD_DMA_OPS_MASK
 Date:   Wed, 27 May 2020 13:53:10 +0200
-Message-Id: <20200527115400.31391-6-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200527115400.31391-1-nsaenzjulienne@suse.de>
-References: <20200527115400.31391-1-nsaenzjulienne@suse.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <20200527115313.7426-8-joro@8bytes.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200527115313.7426-1-joro@8bytes.org>
+References: <20200527115313.7426-1-joro@8bytes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are no users for that function.
+From: Joerg Roedel <jroedel@suse.de>
 
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+This is covered by IOMMU_DOMAIN_DMA from the IOMMU core code already,
+so remove it.
+
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 ---
- .../vc04_services/interface/vchi/vchi.h       |  5 ---
- .../interface/vchiq_arm/vchiq_shim.c          | 31 -------------------
- 2 files changed, 36 deletions(-)
+ drivers/iommu/amd/iommu.c | 24 +++++++-----------------
+ 1 file changed, 7 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/staging/vc04_services/interface/vchi/vchi.h b/drivers/staging/vc04_services/interface/vchi/vchi.h
-index 62d9d3efa755..1e8d17531e9d 100644
---- a/drivers/staging/vc04_services/interface/vchi/vchi.h
-+++ b/drivers/staging/vc04_services/interface/vchi/vchi.h
-@@ -100,11 +100,6 @@ extern int32_t vchi_service_use(const struct vchi_service_handle *handle);
- // Routine to decrement ref count on a named service
- extern int32_t vchi_service_release(const struct vchi_service_handle *handle);
- 
--// Routine to set a control option for a named service
--extern int32_t vchi_service_set_option(const struct vchi_service_handle *handle,
--				       enum vchi_service_option option,
--				       int value);
--
- /* Routine to send a message from kernel memory across a service */
- extern int
- vchi_queue_kernel_message(struct vchi_service_handle *handle,
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
-index 081ab67ad6fd..429b0c71e455 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
-@@ -567,37 +567,6 @@ int32_t vchi_service_close(const struct vchi_service_handle *handle)
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index 9e0737932e0c..7c87ef78f26a 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -1817,15 +1817,6 @@ static void free_gcr3_table(struct protection_domain *domain)
+ 	free_page((unsigned long)domain->gcr3_tbl);
  }
- EXPORT_SYMBOL(vchi_service_close);
  
--int32_t vchi_service_set_option(const struct vchi_service_handle *handle,
--				enum vchi_service_option option,
--				int value)
+-/*
+- * little helper function to check whether a given protection domain is a
+- * dma_ops domain
+- */
+-static bool dma_ops_domain(struct protection_domain *domain)
 -{
--	int32_t ret = -1;
--	struct shim_service *service = (struct shim_service *)handle;
--	enum vchiq_service_option vchiq_option;
--
--	switch (option) {
--	case VCHI_SERVICE_OPTION_TRACE:
--		vchiq_option = VCHIQ_SERVICE_OPTION_TRACE;
--		break;
--	case VCHI_SERVICE_OPTION_SYNCHRONOUS:
--		vchiq_option = VCHIQ_SERVICE_OPTION_SYNCHRONOUS;
--		break;
--	default:
--		service = NULL;
--		break;
--	}
--	if (service) {
--		enum vchiq_status status =
--			vchiq_set_service_option(service->handle,
--						vchiq_option,
--						value);
--
--		ret = vchiq_status_to_vchi(status);
--	}
--	return ret;
+-	return domain->flags & PD_DMA_OPS_MASK;
 -}
--EXPORT_SYMBOL(vchi_service_set_option);
 -
- int32_t vchi_get_peer_version(const struct vchi_service_handle *handle, short *peer_version)
- {
- 	int32_t ret = -1;
+ static void set_dte_entry(u16 devid, struct protection_domain *domain,
+ 			  struct domain_pgtable *pgtable,
+ 			  bool ats, bool ppr)
+@@ -2408,11 +2399,9 @@ static struct iommu_domain *amd_iommu_domain_alloc(unsigned type)
+ 	domain->domain.geometry.aperture_end   = ~0ULL;
+ 	domain->domain.geometry.force_aperture = true;
+ 
+-	if (type == IOMMU_DOMAIN_DMA) {
+-		if (iommu_get_dma_cookie(&domain->domain) == -ENOMEM)
+-			goto free_domain;
+-		domain->flags = PD_DMA_OPS_MASK;
+-	}
++	if (type == IOMMU_DOMAIN_DMA &&
++	    iommu_get_dma_cookie(&domain->domain) == -ENOMEM)
++		goto free_domain;
+ 
+ 	return &domain->domain;
+ 
+@@ -3024,17 +3013,18 @@ struct iommu_domain *amd_iommu_get_v2_domain(struct pci_dev *pdev)
+ 	if (!check_device(dev))
+ 		return NULL;
+ 
+-	pdomain = get_dev_data(dev)->domain;
++	pdomain   = get_dev_data(dev)->domain;
++	io_domain = iommu_get_domain_for_dev(dev);
+ 	if (pdomain == NULL && get_dev_data(dev)->defer_attach) {
+ 		get_dev_data(dev)->defer_attach = false;
+-		io_domain = iommu_get_domain_for_dev(dev);
+ 		pdomain = to_pdomain(io_domain);
+ 		attach_device(dev, pdomain);
+ 	}
++
+ 	if (pdomain == NULL)
+ 		return NULL;
+ 
+-	if (!dma_ops_domain(pdomain))
++	if (io_domain->type != IOMMU_DOMAIN_DMA)
+ 		return NULL;
+ 
+ 	/* Only return IOMMUv2 domains */
 -- 
-2.26.2
+2.17.1
 
