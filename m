@@ -2,83 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C621E4439
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B731E4448
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388695AbgE0NqY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 May 2020 09:46:24 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:34445 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388082AbgE0NqY (ORCPT
+        id S2388721AbgE0Nrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:47:37 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:36665 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388082AbgE0Nrf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:46:24 -0400
-Received: by mail-wr1-f67.google.com with SMTP id r7so7377184wro.1;
-        Wed, 27 May 2020 06:46:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=qON6LSJtVCq7nI+6x1yYZ2+6ycr/GduPskOQfhEOUPE=;
-        b=kKuOyHxksmpn2viYDm6uBBYiVdhn1GauaVhRQ+yX5DeZnOEhWdoEme0j9Xby4PhXks
-         mg7qKwWiv7MFQUHzqZZ/FtiHttTg+213ZYNzix2twb4MW53K5L+G7rG+838qst8umNrU
-         JG+w8w8Ts6HYugA05UH0RnbRJeYXS7gdOGfDse6n9goRq2FVBy5wx7aK3jfjj3wKqd0P
-         lOVxKx03CbbZtRHLtrUb1NyMPOIPSI57GHsEG+PAnbJrN9VSrinUdrwxU1KbNQeTGbWT
-         OuU78RJspm8VZ4Q9nlzJuWLtl+hXmR6giwG4qestZt51Pi80nhngFNphnheRZCCpiAij
-         ngrA==
-X-Gm-Message-State: AOAM530vmzqydJgQbXcPPfQO42QMYjMYatyj/YItGiZ4bL2FwqQvT2DW
-        +R+4sXx+SrJwvcruSNZPiJ52Kxzv
-X-Google-Smtp-Source: ABdhPJz/NrNXnuz9gbxIl7rNWK4SnmfMhnN0Rx90dURWqV1qjuX/JkBxGOaGNKZ0A4lQiWmWSWSHFA==
-X-Received: by 2002:adf:f389:: with SMTP id m9mr4002908wro.195.1590587181794;
-        Wed, 27 May 2020 06:46:21 -0700 (PDT)
-Received: from pi3 ([194.230.155.118])
-        by smtp.googlemail.com with ESMTPSA id p1sm2989229wrx.44.2020.05.27.06.46.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2020 06:46:20 -0700 (PDT)
-Date:   Wed, 27 May 2020 15:46:18 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc:     georgi.djakov@linaro.org, a.swigon@samsung.com,
-        cw00.choi@samsung.com, b.zolnierkie@samsung.com,
-        m.szyprowski@samsung.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH v5 3/3] interconnect: Allow inter-provider pairs to be
- configured
-Message-ID: <20200527134618.GA4857@pi3>
-References: <20200521122841.8867-1-s.nawrocki@samsung.com>
- <CGME20200521122857eucas1p1db29d5dd09e801ca22214e94022a951b@eucas1p1.samsung.com>
- <20200521122841.8867-4-s.nawrocki@samsung.com>
+        Wed, 27 May 2020 09:47:35 -0400
+Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1N0nzR-1iqnfB1yGD-00wljD; Wed, 27 May 2020 15:47:20 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vitaly Lifshits <vitaly.lifshits@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Sasha Neftin <sasha.neftin@intel.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Detlev Casanova <detlev.casanova@gmail.com>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] [net-next] e1000e: fix unused-function warning
+Date:   Wed, 27 May 2020 15:47:00 +0200
+Message-Id: <20200527134716.948148-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200521122841.8867-4-s.nawrocki@samsung.com>
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:U0mKtKTjWJcCkHiwKPi9Mh65377Hpmc77oEjPdqAFTu1tfJI3j5
+ tQ6qhoFQt3VrltJF1OQAZvSCEi5jiXDLXneeEtt2tYoGulYW/CDGQtb89g2bHJUJ/w1LAik
+ vIs2GxtV6aTDuWMBLBgIGK5xEW1J7i/jAm9wYXcKSEyCbp7nrbd8Rty5jSQY+5hArziNzw3
+ jy7nL7AY5luwKFm7YGBUA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fVIXS7/sr1M=:7+CEaDh/RQcJZ9+oHHDRCA
+ jGgnId2Eh18Nx4Vc2d9p2ntA3gVJoJC13L9xRw+3ALBvTKDImWYcrAvVM2skxYOUcmBIsk/15
+ ykarw3foUHHsbo5uxQhoF2/FDKLf04cgrW7yVLTuKX6a1F7Qy6xEH9GL9W7wu3MPCxjo7wfqu
+ 4i+RxGc+in1TayP2yisk1FswPj83O49YHoWV/XjbaqaxI76R47bKs6RYUQC0spixKJV3eDRkF
+ UjKJRlHKhjY48Z6xvWggE2ckNMeE33kQBjsX/DbCW0tvFzeKfq6DrwxhEQzdLFdOnxry8MFlk
+ D3hmE5yukdvkligEfgciGCgyYHINbBIL1WkAjok7DZFj5SiQFRcPIkJFKDeL0tsihQxvNiHJ8
+ s1hEhMHSdhA5MQanrvjhcKGL5fb5nyqCUs6HICiQtlDTLBUImIApNtoPl7Ai6uP7ESBkoFvHb
+ YScFHKzepRUhzSa7E7wIijOk2OCqFHKEQBWchcP5tpdsAaLb0X/Jx4bwglGBRKsi2jYHGDd00
+ 0ypJAuKP+cjgSdbVBa78G7FFgYgj68X2GQojBh5yZZVjtA5d8dR6Ko8g0wbeSa7IWKT109FJ1
+ mhG9xQsenBnIVzqqVV8MQutz50mCLvuH4HLCKQppguZg7un/uMCSdZB/m9gCUEwOXjqxxsPwa
+ 9CiQAzzIZ/397cEH5q4bNOg+KIQ1ZR+kQACyN/ggykcUqN0bnGuIHxki8G6g15FAWLOlGRPbb
+ j31v+NBus5GeRoBJ39ulocxn9VMzJBqaJND9StWQVB1fRSje3AcQ/+IejDuvREnOVJBbZAwEm
+ ZUJIw+8x5FMAZQV+3MLJqTbcK0D1h04UY+JPHp3K4ZP9p0htwU=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 02:28:41PM +0200, Sylwester Nawrocki wrote:
-> From: Artur Świgoń <a.swigon@samsung.com>
-> 
-> This patch adds support for a new boolean 'inter_set' field in struct
-> icc_provider. Setting it to 'true' enables calling '->set' for
-> inter-provider node pairs. All existing users of the interconnect
-> framework allocate this structure with kzalloc, and are therefore
-> unaffected by this change.
-> 
-> This makes it easier for hierarchies like exynos-bus, where every bus
-> is probed separately and registers a separate interconnect provider, to
-> model constraints between buses.
-> 
-> Signed-off-by: Artur Świgoń <a.swigon@samsung.com>
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
->  drivers/interconnect/core.c           | 11 +++++------
->  include/linux/interconnect-provider.h |  2 ++
->  2 files changed, 7 insertions(+), 6 deletions(-)
+The CONFIG_PM_SLEEP #ifdef checks in this file are inconsistent,
+leading to a warning about sometimes unused function:
 
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+drivers/net/ethernet/intel/e1000e/netdev.c:137:13: error: unused function 'e1000e_check_me' [-Werror,-Wunused-function]
 
-Best regards,
-Krzysztof
+Rather than adding more #ifdefs, just remove them completely
+and mark the PM functions as __maybe_unused to let the compiler
+work it out on it own.
+
+Fixes: e086ba2fccda ("e1000e: disable s0ix entry and exit flows for ME systems")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/ethernet/intel/e1000e/netdev.c | 16 +++++-----------
+ 1 file changed, 5 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+index 9cc8ec5421d5..66ca083b95f9 100644
+--- a/drivers/net/ethernet/intel/e1000e/netdev.c
++++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+@@ -6351,7 +6351,6 @@ static void e1000e_flush_lpic(struct pci_dev *pdev)
+ 	pm_runtime_put_sync(netdev->dev.parent);
+ }
+ 
+-#ifdef CONFIG_PM_SLEEP
+ /* S0ix implementation */
+ static void e1000e_s0ix_entry_flow(struct e1000_adapter *adapter)
+ {
+@@ -6573,7 +6572,6 @@ static void e1000e_s0ix_exit_flow(struct e1000_adapter *adapter)
+ 	mac_data &= ~E1000_CTRL_EXT_FORCE_SMBUS;
+ 	ew32(CTRL_EXT, mac_data);
+ }
+-#endif /* CONFIG_PM_SLEEP */
+ 
+ static int e1000e_pm_freeze(struct device *dev)
+ {
+@@ -6871,7 +6869,6 @@ static int e1000e_pm_thaw(struct device *dev)
+ 	return rc;
+ }
+ 
+-#ifdef CONFIG_PM
+ static int __e1000_resume(struct pci_dev *pdev)
+ {
+ 	struct net_device *netdev = pci_get_drvdata(pdev);
+@@ -6937,8 +6934,7 @@ static int __e1000_resume(struct pci_dev *pdev)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_PM_SLEEP
+-static int e1000e_pm_suspend(struct device *dev)
++static __maybe_unused int e1000e_pm_suspend(struct device *dev)
+ {
+ 	struct net_device *netdev = pci_get_drvdata(to_pci_dev(dev));
+ 	struct e1000_adapter *adapter = netdev_priv(netdev);
+@@ -6962,7 +6958,7 @@ static int e1000e_pm_suspend(struct device *dev)
+ 	return rc;
+ }
+ 
+-static int e1000e_pm_resume(struct device *dev)
++static __maybe_unused int e1000e_pm_resume(struct device *dev)
+ {
+ 	struct net_device *netdev = pci_get_drvdata(to_pci_dev(dev));
+ 	struct e1000_adapter *adapter = netdev_priv(netdev);
+@@ -6981,9 +6977,8 @@ static int e1000e_pm_resume(struct device *dev)
+ 
+ 	return e1000e_pm_thaw(dev);
+ }
+-#endif /* CONFIG_PM_SLEEP */
+ 
+-static int e1000e_pm_runtime_idle(struct device *dev)
++static __maybe_unused int e1000e_pm_runtime_idle(struct device *dev)
+ {
+ 	struct net_device *netdev = dev_get_drvdata(dev);
+ 	struct e1000_adapter *adapter = netdev_priv(netdev);
+@@ -6999,7 +6994,7 @@ static int e1000e_pm_runtime_idle(struct device *dev)
+ 	return -EBUSY;
+ }
+ 
+-static int e1000e_pm_runtime_resume(struct device *dev)
++static __maybe_unused int e1000e_pm_runtime_resume(struct device *dev)
+ {
+ 	struct pci_dev *pdev = to_pci_dev(dev);
+ 	struct net_device *netdev = pci_get_drvdata(pdev);
+@@ -7016,7 +7011,7 @@ static int e1000e_pm_runtime_resume(struct device *dev)
+ 	return rc;
+ }
+ 
+-static int e1000e_pm_runtime_suspend(struct device *dev)
++static __maybe_unused int e1000e_pm_runtime_suspend(struct device *dev)
+ {
+ 	struct pci_dev *pdev = to_pci_dev(dev);
+ 	struct net_device *netdev = pci_get_drvdata(pdev);
+@@ -7041,7 +7036,6 @@ static int e1000e_pm_runtime_suspend(struct device *dev)
+ 
+ 	return 0;
+ }
+-#endif /* CONFIG_PM */
+ 
+ static void e1000_shutdown(struct pci_dev *pdev)
+ {
+-- 
+2.26.2
+
