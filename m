@@ -2,81 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B823A1E4891
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDDB41E4896
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390349AbgE0PxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 11:53:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:40528 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390286AbgE0PwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 11:52:06 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4A35830E;
-        Wed, 27 May 2020 08:52:05 -0700 (PDT)
-Received: from [192.168.1.84] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E5533F52E;
-        Wed, 27 May 2020 08:52:03 -0700 (PDT)
-Subject: Re: [PATCH] [v2] drm/panfrost: Fix runtime PM imbalance on error
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
-Cc:     Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20200522134109.27204-1-dinghao.liu@zju.edu.cn>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <48348af2-649c-7305-6255-6ae6a80e9b7a@arm.com>
-Date:   Wed, 27 May 2020 16:52:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2390450AbgE0Pxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 11:53:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730737AbgE0Pwa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 11:52:30 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9648C05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 08:52:29 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id w15so14711208lfe.11
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 08:52:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EWGiPDc5EJAFSwyh6mf4UfMOzoMXHwdkrtIM/R13868=;
+        b=gDXpeDLoPstoCJiUV4fa4zp7o5+6F4nL2AYKI3EllVnQukro51FkKHy0duOrha7M8B
+         cSgK5nh7B+In1ge/TpCu10+BQpIV7a8WKMyvDnDfqw3lM33QHAwflVBuOXAiDu9IkuDX
+         VRjKHBFQlIUYMX+raBl6c68XIc8p3esCh8jZ4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EWGiPDc5EJAFSwyh6mf4UfMOzoMXHwdkrtIM/R13868=;
+        b=Hlg46KipLvAuwKe1fFedhvYzC9oNiF3zi4NeNnLNBcFRv8RfIyY5DDY9GOeZvjTrQV
+         DgHCLSw2O4Eek1FTw7CnNGq6q1bLB5IDBPPfY7jiRZOFUdkFshD5MbnQxm9GuBVJqjZa
+         ray9dh3EJb8wEeHPt3S7BLm9kYyxEtZKyR7Xk26BILENKoUogsibaciKbaVOgK+Jw7er
+         qN2b93Vb7F2jN6/DlwDL95/asBO8/va6TGTC91Xq9wAxsgQzRfHdg/FjxBhwUEaD/dz+
+         jNQYThs4rRDfDt/35eir3sJ7NT815p9ZYQbmYIl6X16GpbcflZ7GdUXMdBG58tF7JZI9
+         w8DQ==
+X-Gm-Message-State: AOAM532TllbjIT8FDQurDsorn5c1E+tTCiVDnsB4oM/Ca44xfz2xBLlB
+        tS/itEGxFF00CCXtEU6tdipetbFPObI=
+X-Google-Smtp-Source: ABdhPJy6jDrnGS516ajw9tx0/GMJFd3VhOg2oOQIR18RhB7JcTu5yNZs4Qvw3HRU92Knzl3lJQ0YhA==
+X-Received: by 2002:a05:6512:488:: with SMTP id v8mr2682259lfq.205.1590594747348;
+        Wed, 27 May 2020 08:52:27 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id c78sm999870lfd.63.2020.05.27.08.52.26
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 May 2020 08:52:26 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id q2so29499211ljm.10
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 08:52:26 -0700 (PDT)
+X-Received: by 2002:a2e:8090:: with SMTP id i16mr2943836ljg.421.1590594745691;
+ Wed, 27 May 2020 08:52:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200522134109.27204-1-dinghao.liu@zju.edu.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20200513162732.977489-1-bigeasy@linutronix.de>
+ <20200526194641.GF83516@mtj.thefacebook.com> <CAHk-=wjHgkama3SYOcYCYt_F-sxV8h4+kQ5aQSMgK7PtiQ=Nkw@mail.gmail.com>
+ <CAHk-=wgrG--AdCUBF9jR=zMm=cUn+6VaeOmmbbRFxx1YOx3RiA@mail.gmail.com> <20200527152004.z3n5ccajp6stdcno@linutronix.de>
+In-Reply-To: <20200527152004.z3n5ccajp6stdcno@linutronix.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 27 May 2020 08:52:09 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whp9hADY4f+9hB+-xd_bEF1Nbgt_TdbzuO=mCXFejTJuA@mail.gmail.com>
+Message-ID: <CAHk-=whp9hADY4f+9hB+-xd_bEF1Nbgt_TdbzuO=mCXFejTJuA@mail.gmail.com>
+Subject: Re: [PATCH 0/3] workqueue: Make the workqueue code PREEMPT_RT safe
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Tejun Heo <tj@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/05/2020 14:41, Dinghao Liu wrote:
-> The caller expects panfrost_job_hw_submit() to increase
-> runtime PM usage counter. The refcount decrement on the
-> error branch of WARN_ON() will break the counter balance
-> and needs to be removed.
-> 
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+On Wed, May 27, 2020 at 8:20 AM Sebastian Andrzej Siewior
+<bigeasy@linutronix.de> wrote:
+>
+> On 2020-05-26 14:46:59 [-0700], Linus Torvalds wrote:
+> >
+> > We have better models. We have "rcuwait", and we have
+> > "wake_up_process()". Either of which is simpler and more efficient
+> > than swait, and are actually useful. rcuwait isn't exactly widely
+> > used, but it has very nice semantics for when that is what you want.
+> > And wake_up_process() is both simple and straightforward, particularly
+> > when you already have a spinlock for protecting whatever state it is
+> > you're waking up on or waiting for.
+>
+> rcuwait would be this:
 
-Reviewed-by: Steven Price <steven.price@arm.com>
+Hmm. That patch certainly looks fairly simple and straightforward to me.
 
-Thanks,
+That said, I think you're missing a rcuwait_init() to initialize the
+thing (or probably better - a __RCUWAIT_INITIALIZER(name)
+initializer).
 
-Steve
+Not that it's actually needed in the current implementation (a NULL
+initializer is fine, and you get it from the variable being static),
+but it would be a good thing for future-proofing in case people add
+debugging or whatever to it.
 
-> ---
-> 
-> Changelog:
-> 
-> v2: - Remove refcount decrement on the error path of
->        WARN_ON() rather than add refcount decrement
->        on the error path of pm_runtime_get_sync().
-> ---
->   drivers/gpu/drm/panfrost/panfrost_job.c | 1 -
->   1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
-> index 7914b1570841..1092d9754f0f 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
-> @@ -150,7 +150,6 @@ static void panfrost_job_hw_submit(struct panfrost_job *job, int js)
->   		return;
->   
->   	if (WARN_ON(job_read(pfdev, JS_COMMAND_NEXT(js)))) {
-> -		pm_runtime_put_sync_autosuspend(pfdev->dev);
->   		return;
->   	}
->   
-> 
+> +static bool wq_manager_inactive(struct worker_pool *pool)
+> +{
+> +       spin_lock_irq(&pool->lock);
+> +
+> +       if (pool->flags & POOL_MANAGER_ACTIVE) {
+> +               spin_unlock_irq(&pool->lock);
+> +               return false;
+> +       }
+> +       return true;
+> +}
 
+Heh. Ok, I see what and why you're doing it this way, and it's even clever.
+
+But it's clever enough to want a comment both here and in the
+rcuwait_wait_event() use. Just something simple like "this returns
+with the lock held on success" here, and then at the wait-event
+something like "because of how wq_manager_inactive() works, we will
+hold the spinlock after a successful wait".
+
+But yes, it looks quite simple and straightforward other than this.
+
+Famous last words. Maybe I'm missing something, but I like this a lot
+more than the swait thing.
+
+                 Linus
