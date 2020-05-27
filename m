@@ -2,125 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73B61E499F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A521E49BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730607AbgE0QRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 12:17:19 -0400
-Received: from smtp1.de.adit-jv.com ([93.241.18.167]:45215 "EHLO
-        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727801AbgE0QRR (ORCPT
+        id S2390894AbgE0QVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 12:21:15 -0400
+Received: from smtp11-ia5-sp1.mta.salesforce.com ([13.110.78.234]:33314 "EHLO
+        smtp11-ia5-sp1.mta.salesforce.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725848AbgE0QVO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 12:17:17 -0400
-Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
-        by smtp1.de.adit-jv.com (Postfix) with ESMTP id 42EEA3C057F;
-        Wed, 27 May 2020 18:17:14 +0200 (CEST)
-Received: from smtp1.de.adit-jv.com ([127.0.0.1])
-        by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id HflFoytKzyDw; Wed, 27 May 2020 18:17:08 +0200 (CEST)
-Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id B95253C0579;
-        Wed, 27 May 2020 18:17:08 +0200 (CEST)
-Received: from vmlxhi-121.localdomain (10.72.94.22) by HI2EXCH01.adit-jv.com
- (10.72.92.24) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 27 May
- 2020 18:17:08 +0200
-From:   Michael Rodin <mrodin@de.adit-jv.com>
-To:     =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Michael Rodin <mrodin@de.adit-jv.com>, <michael@rodin.online>,
-        <efriedrich@de.adit-jv.com>, <erosca@de.adit-jv.com>,
-        Suresh Udipi <sudipi@jp.adit-jv.com>
-Subject: [PATCH] rcar-vin: rcar-csi2: Correct the selection of hsfreqrange
-Date:   Wed, 27 May 2020 18:16:07 +0200
-Message-ID: <1590596167-17403-1-git-send-email-mrodin@de.adit-jv.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <20200512213045.GC2542285@oden.dyn.berto.se>
-References: <20200512213045.GC2542285@oden.dyn.berto.se>
+        Wed, 27 May 2020 12:21:14 -0400
+X-Greylist: delayed 301 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 May 2020 12:21:14 EDT
+Authentication-Results:  mx1-ia5-sp1.mta.salesforce.com x-tls.subject="/C=US/ST=California/L=San Francisco/O=salesforce.com, inc./OU=0:app;1:ia5;2:ia5-sp1;3:na174;4:prod/CN=na174-app1-14-ia5.ops.sfdc.net"; auth=pass (cipher=ECDHE-RSA-AES256-GCM-SHA384)
+Received: from [10.182.146.20] ([10.182.146.20:51095] helo=na174-app1-14-ia5.ops.sfdc.net)
+        by mx1-ia5-sp1.mta.salesforce.com (envelope-from <lilia=technologydatahub.com__0-1w00rdb3z7s25p@nb3ytj1h4cx93pyq.zzemthfa8ojr37ff.68g4syd.6g-6pypjeac.na174.bnc.salesforce.com>)
+        (ecelerity 4.2.38.62368 r(Core:release/4.2.38.0)) with ESMTPS (cipher=ECDHE-RSA-AES256-GCM-SHA384
+        subject="/C=US/ST=California/L=San Francisco/O=salesforce.com, inc./OU=0:app;1:ia5;2:ia5-sp1;3:na174;4:prod/CN=na174-app1-14-ia5.ops.sfdc.net") 
+        id 47/BF-21535-B429ECE5; Wed, 27 May 2020 16:16:11 +0000
+Date:   Wed, 27 May 2020 16:16:11 +0000 (GMT)
+From:   Lilia Perez <lilia@technologydatahub.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <Is9Fi000000000000000000000000000000000000000000000QAZZUV00TI610V3DROOK-whrcuaiVA@sfdc.net>
+Subject: SGI Software User List
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.72.94.22]
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-SFDC-LK: 00D6g000006Pypj
+X-SFDC-User: 0056g000003b6wA
+X-Sender: postmaster@salesforce.com
+X-mail_abuse_inquiries: http://www.salesforce.com/company/abuse.jsp
+X-SFDC-TLS-NoRelay: 1
+X-SFDC-Binding: iCBT705cy8bBFz3B
+X-SFDC-EmailCategory: apiMassMail
+X-SFDC-EntityId: 0036g00000PeRrF
+X-SFDC-Interface: internal
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suresh Udipi <sudipi@jp.adit-jv.com>
+Hi,
 
-hsfreqrange should be chosen based on the calculated mbps which
-is closer to the default bit rate  and within the range as per
-table[1]. But current calculation always selects first value which
-is greater than or equal to the calculated mbps which may lead
-to chosing a wrong range in some cases.
+I would like to know if you are interested in acquiring contacts of SGI Software User List? 
 
-For example for 360 mbps for H3/M3N
-Existing logic selects
-Calculated value 360Mbps : Default 400Mbps Range [368.125 -433.125 mbps]
+Data Fields Includes: - Contact Name, Organization Name, Job Title, Website, Email Address, LinkedIn Profile, Telephone Number, Fax Number, Mailing Address, Technology Type, SIC Code, Employee Size, Revenue Size, etc.
 
-This hsfreqrange is out of range.
+Kindly let me know your target criteria, so that I can get back to you with the counts, pricing and samples for your review.
 
-The logic is changed to get the default value which is closest to the
-calculated value [1]
+We also have other Software contact list.
 
-Calculated value 360Mbps : Default 350Mbps  Range [320.625 -380.625 mpbs]
+Note: - May I send across 5-10 sample for your review? 
 
-[1] specs r19uh0105ej0200-r-car-3rd-generation.pdf [Table 25.9]
-
-There is one exectpion value 227Mbps, which may cause out of
-range. This needs to be further handled if required.
-
-Fixes: ADIT v4.14 commit 9e568b895ee0 ("media: rcar-csi2: add Renesas R-Car MIPI CSI-2 receiver driver")
-
-Signed-off-by: Suresh Udipi <sudipi@jp.adit-jv.com>
-Signed-off-by: Michael Rodin <mrodin@de.adit-jv.com>
----
- drivers/media/platform/rcar-vin/rcar-csi2.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
-index c473a56..73d9830 100644
---- a/drivers/media/platform/rcar-vin/rcar-csi2.c
-+++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
-@@ -199,6 +199,7 @@ static const struct rcsi2_mbps_reg phtw_mbps_v3m_e3[] = {
- /* PHY Frequency Control */
- #define PHYPLL_REG			0x68
- #define PHYPLL_HSFREQRANGE(n)		((n) << 16)
-+#define PHYPLL_HSFREQRANGE_MAX		1500
- 
- static const struct rcsi2_mbps_reg hsfreqrange_h3_v3h_m3n[] = {
- 	{ .mbps =   80, .reg = 0x00 },
-@@ -446,16 +447,23 @@ static int rcsi2_wait_phy_start(struct rcar_csi2 *priv)
- static int rcsi2_set_phypll(struct rcar_csi2 *priv, unsigned int mbps)
- {
- 	const struct rcsi2_mbps_reg *hsfreq;
-+	const struct rcsi2_mbps_reg *hsfreq_prev = NULL;
- 
--	for (hsfreq = priv->info->hsfreqrange; hsfreq->mbps != 0; hsfreq++)
--		if (hsfreq->mbps >= mbps)
--			break;
--
--	if (!hsfreq->mbps) {
-+	if (mbps > PHYPLL_HSFREQRANGE_MAX) {
- 		dev_err(priv->dev, "Unsupported PHY speed (%u Mbps)", mbps);
- 		return -ERANGE;
- 	}
- 
-+	for (hsfreq = priv->info->hsfreqrange; hsfreq->mbps != 0; hsfreq++) {
-+		if (hsfreq->mbps >= mbps)
-+			break;
-+		hsfreq_prev = hsfreq;
-+	}
-+
-+	if (hsfreq_prev &&
-+	    ((mbps - hsfreq_prev->mbps) <= (hsfreq->mbps - mbps)))
-+		hsfreq = hsfreq_prev;
-+
- 	rcsi2_write(priv, PHYPLL_REG, PHYPLL_HSFREQRANGE(hsfreq->reg));
- 
- 	return 0;
--- 
-2.7.4
-
+Regards,
+Lilia Perez
+Marketing Manager
