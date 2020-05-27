@@ -2,72 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF7271E49A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524F71E49AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730933AbgE0QSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 12:18:07 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:55891 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728807AbgE0QSG (ORCPT
+        id S1730947AbgE0QSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 12:18:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725848AbgE0QSs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 12:18:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590596284;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CRm5cPL6z15Mnl2YBaAR83qOl+cyrSmYGHPD6J5WtrA=;
-        b=WoW9vTNAtgJy2dk8XQ8N/IAnhas7wNzW1NzmHh1a4cE6T86FKdRSQycqSHgMJhFJeF8O/u
-        J7HFMt2yFbpZDQYrTs9bJ6e2dCYChvJz5MlsaIWKLCIZsroGoxFFh96aqXkYcAT9IJg8Aq
-        NM79cfTErKh4IRgnBg+VbSTojj+K5Es=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-207-e1mS3h_TPeCCJ3GFpiJJoQ-1; Wed, 27 May 2020 12:18:03 -0400
-X-MC-Unique: e1mS3h_TPeCCJ3GFpiJJoQ-1
-Received: by mail-wm1-f71.google.com with SMTP id z5so1296120wml.6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 09:18:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CRm5cPL6z15Mnl2YBaAR83qOl+cyrSmYGHPD6J5WtrA=;
-        b=Uma2r5kR2Ms+UADQyLnVKrbHM756DQ4kEw8s+eRmk8MyRICMyUXmg+j45MuTvjNXRX
-         AC+OGsIbwAQR9R7xZt40xUvNSXHaie2LEw3rh+lWFwyRgYyKTUE/zAQEJIYnyQxTgy8u
-         gZ0dp1/0JlTBP7VAd8J4T6ooFyz+kIMI95FadtiWhmNnZcvddh7wMCHNtbBUtgxxltd3
-         dpyDGkaw+qmvw1ebMjQDb6qPK5YoIDa3/KUDtlqfGmV0YjN16FshhDoE3xq6aG/F7j7d
-         pXpC31TMNWM1tb9oMADmoAYrAJxp5VNm3yass1addaCebDBZDuKNvQ95VOeRE0wHEyFo
-         feHA==
-X-Gm-Message-State: AOAM531YTNc3Jakx+WIZDEfYKeD5lUyAU5YS5vY8q7nMsZeKIjquR/h4
-        HEoPReNa4zk0n8cas9Jd41xOk0WB3ZLZ1lt/aRTtwtBDFkgffsSBcmb1LDBfg678CpIJwjQTy87
-        ZDXndVrstcoFjFDVK97KfGcR4
-X-Received: by 2002:a5d:5605:: with SMTP id l5mr14379295wrv.318.1590596281370;
-        Wed, 27 May 2020 09:18:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzum5m0L/JLhaElxEyyZzYisH72lxYN4r2OudO4NQkaHD5ru8XuM+8rkO6kq1TRyEptOKI8gA==
-X-Received: by 2002:a5d:5605:: with SMTP id l5mr14379279wrv.318.1590596281110;
-        Wed, 27 May 2020 09:18:01 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:3c1c:ffba:c624:29b8? ([2001:b07:6468:f312:3c1c:ffba:c624:29b8])
-        by smtp.gmail.com with ESMTPSA id n1sm3216999wrp.10.2020.05.27.09.18.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 May 2020 09:18:00 -0700 (PDT)
-Subject: Re: [PATCH] KVM: x86: Initialize tdp_level during vCPU creation
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+904752567107eefb728c@syzkaller.appspotmail.com
-References: <20200527085400.23759-1-sean.j.christopherson@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <40800163-2b28-9879-f21b-687f89070c91@redhat.com>
-Date:   Wed, 27 May 2020 18:17:57 +0200
+        Wed, 27 May 2020 12:18:48 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED34C05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 09:18:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=RHgzXdboAvRH0Qxpb6780yAGJZR7CslW148oBOys/44=; b=eKX0lpjYtTpsYBwWEVSFQwb7Hk
+        qDLr6pSgvf6PDdSUfNPyaAVk1gEuQkHfSAwhZ/aC8TONTyXLb8cfpQDaVRetTXaGC8aL4qekEFdiI
+        YMVpgNVf+nOSXmLqzPtn91abUUuBGmKO4oZzHMuTRimazoFCmOAf2AQq4zYj7aVLbU34AdRpL/lwX
+        AksRiCH12Y/Zm4mZxoSWfs2RhoxL8n3sdHSS7v5eMaaa6SxFZx+7GSLa12RX2qZDSD6jaRSqnX4aG
+        epccXnoTShDXynRgebbPbJ1uB8TC2CSOwCIYN1doftGg6FkzD86LJtELWcqcWllyoXwqT1a8jFQ3/
+        C/ElAMjQ==;
+Received: from c-73-157-219-8.hsd1.or.comcast.net ([73.157.219.8] helo=[10.0.0.252])
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jdylR-0008PW-JP; Wed, 27 May 2020 16:18:45 +0000
+Subject: Re: [PATCH v2 1/1] phy: intel: Fix compilation error on FIELD_PREP
+ usage
+To:     Dilip Kota <eswara.kota@linux.intel.com>,
+        linux-kernel@vger.kernel.org, kishon@ti.com, vkoul@kernel.org
+Cc:     andriy.shevchenko@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com
+References: <8a309dd3c238efbaa59d1649704255d6f8b6c9c5.1590575358.git.eswara.kota@linux.intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <7ad3253d-b581-4833-7e78-2b565b88a75c@infradead.org>
+Date:   Wed, 27 May 2020 09:18:41 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200527085400.23759-1-sean.j.christopherson@intel.com>
+In-Reply-To: <8a309dd3c238efbaa59d1649704255d6f8b6c9c5.1590575358.git.eswara.kota@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -76,32 +50,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/05/20 10:54, Sean Christopherson wrote:
-> Initialize vcpu->arch.tdp_level during vCPU creation to avoid consuming
-> garbage if userspace calls KVM_RUN without first calling KVM_SET_CPUID.
+On 5/27/20 3:56 AM, Dilip Kota wrote:
+> FIELD_PREP expects constant arguments. Istead of doing FIELD_PREP
+> operation on the arguments of combo_phy_w32_off_mask(), pass the
+> final FIELD_PREP value as an argument.
 > 
-> Fixes: e93fd3b3e89e9 ("KVM: x86/mmu: Capture TDP level when updating CPUID")
-> Reported-by: syzbot+904752567107eefb728c@syzkaller.appspotmail.com
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Error reported as:
+> In file included from include/linux/build_bug.h:5,
+> from include/linux/bitfield.h:10,
+> from drivers/phy/intel/phy-intel-combo.c:8:
+> drivers/phy/intel/phy-intel-combo.c: In function 'combo_phy_w32_off_mask':
+> include/linux/bitfield.h:52:28: warning: comparison is always false due to limited range of data type [-Wtype-limits]
+> 
+> include/linux/compiler.h:350:38: error: call to '__compiletime_assert_37' declared with attribute error: FIELD_PREP: mask is not constant
+> 94 |   __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");          |   ^~~~~~~~~~~~~~~~
+> drivers/phy/intel/phy-intel-combo.c:137:13: note: in expansion of macro 'FIELD_PREP'
+> 137 |  reg_val |= FIELD_PREP(mask, val);
+> |             ^~~~~~~~~~
+> 
+> ../include/linux/compiler.h:392:38: error: call to__compiletime_assert_137
+>  declared with attribute error:
+> BUILD_BUG_ON failed: (((mask) + (1ULL << (__builtin_ffsll(mask) - 1))) & (((mask) + (1ULL << (__builtin_ffsll(mask) - 1))) - 1)) != 0
+>   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+> 
+> ../include/linux/bitfield.h:94:3: note: in expansion of macro __BF_FIELD_CHECK
+>    __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: "); \
+>    ^~~~~~~~~~~~~~~~
+> ../drivers/phy/intel/phy-intel-combo.c:137:13: note: in expansion of macro FIELD_PREP
+>   reg_val |= FIELD_PREP(mask, val);
+>              ^~~~~~~~~~
+> 
+> Fixes: ac0a95a3ea78 ("phy: intel: Add driver support for ComboPhy")
+> Signed-off-by: Dilip Kota <eswara.kota@linux.intel.com>
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+Thanks.
+
 > ---
->  arch/x86/kvm/x86.c | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/phy/intel/phy-intel-combo.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 > 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index b226fb8abe41b..01a6304056197 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -9414,6 +9414,7 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
->  	fx_init(vcpu);
+> diff --git a/drivers/phy/intel/phy-intel-combo.c b/drivers/phy/intel/phy-intel-combo.c
+> index c2a35be4cdfb..254ea7cba7ca 100644
+> --- a/drivers/phy/intel/phy-intel-combo.c
+> +++ b/drivers/phy/intel/phy-intel-combo.c
+> @@ -134,7 +134,7 @@ static inline void combo_phy_w32_off_mask(void __iomem *base, unsigned int reg,
 >  
->  	vcpu->arch.maxphyaddr = cpuid_query_maxphyaddr(vcpu);
-> +	vcpu->arch.tdp_level = kvm_x86_ops.get_tdp_level(vcpu);
+>  	reg_val = readl(base + reg);
+>  	reg_val &= ~mask;
+> -	reg_val |= FIELD_PREP(mask, val);
+> +	reg_val |= val;
+>  	writel(reg_val, base + reg);
+>  }
 >  
->  	vcpu->arch.pat = MSR_IA32_CR_PAT_DEFAULT;
+> @@ -169,7 +169,7 @@ static int intel_cbphy_pcie_en_pad_refclk(struct intel_cbphy_iphy *iphy)
+>  		return 0;
+>  
+>  	combo_phy_w32_off_mask(cbphy->app_base, PCIE_PHY_GEN_CTRL,
+> -			       PCIE_PHY_CLK_PAD, 0);
+> +			       PCIE_PHY_CLK_PAD, FIELD_PREP(PCIE_PHY_CLK_PAD, 0));
+>  
+>  	/* Delay for stable clock PLL */
+>  	usleep_range(50, 100);
+> @@ -192,7 +192,7 @@ static int intel_cbphy_pcie_dis_pad_refclk(struct intel_cbphy_iphy *iphy)
+>  		return 0;
+>  
+>  	combo_phy_w32_off_mask(cbphy->app_base, PCIE_PHY_GEN_CTRL,
+> -			       PCIE_PHY_CLK_PAD, 1);
+> +			       PCIE_PHY_CLK_PAD, FIELD_PREP(PCIE_PHY_CLK_PAD, 1));
+>  
+>  	return 0;
+>  }
+> @@ -385,7 +385,7 @@ static int intel_cbphy_calibrate(struct phy *phy)
+>  
+>  	/* trigger auto RX adaptation */
+>  	combo_phy_w32_off_mask(cr_base, CR_ADDR(PCS_XF_ATE_OVRD_IN_2, id),
+> -			       ADAPT_REQ_MSK, 3);
+> +			       ADAPT_REQ_MSK, FIELD_PREP(ADAPT_REQ_MSK, 3));
+>  	/* Wait RX adaptation to finish */
+>  	ret = readl_poll_timeout(cr_base + CR_ADDR(PCS_XF_RX_ADAPT_ACK, id),
+>  				 val, val & RX_ADAPT_ACK_BIT, 10, 5000);
+> @@ -396,7 +396,7 @@ static int intel_cbphy_calibrate(struct phy *phy)
+>  
+>  	/* Stop RX adaptation */
+>  	combo_phy_w32_off_mask(cr_base, CR_ADDR(PCS_XF_ATE_OVRD_IN_2, id),
+> -			       ADAPT_REQ_MSK, 0);
+> +			       ADAPT_REQ_MSK, FIELD_PREP(ADAPT_REQ_MSK, 0));
+>  
+>  	return ret;
+>  }
+> 
 
-Queued, it is probably a good idea to add a selftests testcase for this
-(it's even okay if it doesn't use the whole selftests infrastructure and
-invokes KVM_CREATE_VM/KVM_CREATE_VCPU/KVM_RUN manually).
 
-Paolo
-
+-- 
+~Randy
