@@ -2,96 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806011E4B02
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15DB1E4B0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731015AbgE0QwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 12:52:11 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:37340 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726420AbgE0QwK (ORCPT
+        id S1731044AbgE0Qwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 12:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731030AbgE0Qwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 12:52:10 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 5D5ED8030835;
-        Wed, 27 May 2020 16:52:07 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Iz9RLPWxLmJJ; Wed, 27 May 2020 19:52:06 +0300 (MSK)
-Date:   Wed, 27 May 2020 19:52:05 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Guenter Roeck <linux@roeck-us.net>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Maxim Kaurkin <maxim.kaurkin@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-hwmon@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 3/3] hwmon: Add Baikal-T1 PVT sensor driver
-Message-ID: <20200527165205.5krrdahiup3i2oq3@mobilestation>
-References: <20200526133823.20466-1-Sergey.Semin@baikalelectronics.ru>
- <20200526133823.20466-4-Sergey.Semin@baikalelectronics.ru>
- <20200527162549.GA225240@roeck-us.net>
+        Wed, 27 May 2020 12:52:47 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D1AC05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 09:52:47 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id q2so29749389ljm.10
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 09:52:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anholt-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3s8Z6TqgZ6rWtKMmi0vz86r9c3ZptE+7p8K+InML9XA=;
+        b=hheOM/T3hgh3E9Yc0l9MkrAt26GKtRqNh6+lDuuRkJ/Z+uJHoSZl2dSFjgqp7BBq2L
+         /SLxlWegH7b1a2tMbGhTqU9tk1RRu8RG6IgFKbDUfWCaHOMYtga8OzWAy6QPqhf6afE4
+         BPHSLALrgxXbCKxk2lUBsDW7mQzcA5W1z6ovU9gQF7mTlBL1LR3YrrkKMxwQdgJtC1Ut
+         U7d3H4vDH+D55QCG6JckSgD+23dcS96mwHuITUzmtasl8ytZgd9iNVVwwbWAHw1fvaPE
+         kCJTA2dYBT45FIiwBmfqzZzr0+fDKMIxtpDKto1RUd6bnbcf/FYbBHHIeQMNoFLcbZ4N
+         gfIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3s8Z6TqgZ6rWtKMmi0vz86r9c3ZptE+7p8K+InML9XA=;
+        b=qGyUUafAVLzG1lhiSDDsAnyTNS+bYu5PC9q5D3WNVoSTu5lweoB6SlP15iufdfQOu6
+         0NcjWyGuXBJShNJVUygDEtkipaaVgQbMKkfoxlaIS714/JwpnCqTrS00xx86ekgnrV/o
+         pn3cTV9bYb2kgZOczNZ1cchEOKBfh5wXBLzANEDXWhdi/9SHCsuH0oKpGLVAfn0vReBw
+         D0JaoGtLVAplndJYJ5lXrpvBBBjoBV8vC6hasHZXTCeCXGjML7qfnOXNtAfTe1X1IPzx
+         kHaHoqi6Zequyya2rHzMwo/Y74kF6Os5sSxXUeVJQjO2R+l2HX2vHyoUceG3PWAN0ueB
+         y0Ew==
+X-Gm-Message-State: AOAM531bRItdJWS0pFr/EVZBXg7989gq4wV6m0WX2oPBKLzkEQA0sl2H
+        o+rq4cbNa0d8zEnvpu5VOAQbfsYi0YQeSVg18U9nCg==
+X-Google-Smtp-Source: ABdhPJykPtRUbq3wuH3bc4nCEgiCAkTCt706TKmwFiZu59fzrGES6YLoGp3T1oNdU87IWiuXxpt7gGN7IYPEMgs6uZM=
+X-Received: by 2002:a2e:b0ec:: with SMTP id h12mr3253838ljl.269.1590598365768;
+ Wed, 27 May 2020 09:52:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200527162549.GA225240@roeck-us.net>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+References: <cover.aaf2100bd7da4609f8bcb8216247d4b4e4379639.1590594512.git-series.maxime@cerno.tech>
+ <74d84c75511974bc1ff4bc044413894a43a907a6.1590594512.git-series.maxime@cerno.tech>
+In-Reply-To: <74d84c75511974bc1ff4bc044413894a43a907a6.1590594512.git-series.maxime@cerno.tech>
+From:   Eric Anholt <eric@anholt.net>
+Date:   Wed, 27 May 2020 09:52:34 -0700
+Message-ID: <CADaigPWzgP=C86D6zWN-z_tajFP8-F8GrQ-TcSzUt2cHcM8=8A@mail.gmail.com>
+Subject: Re: [PATCH v3 020/105] drm/vc4: plane: Create overlays for any CRTC
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 09:25:49AM -0700, Guenter Roeck wrote:
-> On Tue, May 26, 2020 at 04:38:23PM +0300, Serge Semin wrote:
+On Wed, May 27, 2020 at 8:49 AM Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> Now that we have everything in place, we can now register all the overlay
+> planes that can be assigned to all the CRTCs.
+>
+> This has two side effects:
+>
+>   - The number of overlay planes is reduced from 24 to 8. This is temporary
+>     and will be increased again in the next patch.
+>
+>   - The ID of the various planes is changed again, and we will now have all
+>     the primary planes, then all the overlay planes and finally the cursor
+>     planes. This shouldn't cause any issue since the ordering between
+>     primary, overlay and cursor planes is preserved.
+>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-[nip]
+Honestly, I'd squash this with the previous two patches, the
+individual refactors don't make much sense on their own or simplify
+this patch I think.  Either way, patch 17-29 r-b.
 
-> > +
-> > +=============================== ======= =======================================
-> > +Name				Perm	Description
-> > +=============================== ======= =======================================
-> > +update_interval			RW	Measurements update interval per
-> > +					sensor.
-> > +temp1_type			RO	Sensor type (always 1 as CPU embedded
-> > +					diode).
-> > +temp1_label			RO	CPU Core Temperature sensor.
-> > +temp1_input			RO	Measured temperature in millidegree
-> > +					Celsius.
-> > +temp1_min			RW	Low limit for temp input.
-> > +temp1_max			RW	High limit for temp input.
-> > +temp1_min_alarm			RO	Temperature input alarm. Returns 1 if
-> > +					temperature input went below min limit,
-> > +					0 otherwise.
-> > +temp1_max_alarm			RO	Temperature input alarm. Returns 1 if
-> > +					temperature input went above max limit,
-> > +					0 otherwise.
-> > +temp1_trim			RW	Temperature sensor trimming factor in
-> > +					millidegree Celsius. It can be used to
-> > +					manually adjust the temperature
-> > +					measurements within 7.130 degrees
-> > +					Celsius.
-> 
-> vs. standard ABI:
-> 
-> temp[1-*]_offset`
->                 Temperature offset which is added to the temperature reading
->                 by the chip.
-> 
->                 Unit: millidegree Celsius
-> 
-> If you really think this is necessary, why not use the standard ABI ?
 
-That would have made much more sense.) I'll replace the handwritten temp1_trim
-with the standard temp1_offset attribute in v4 shortly today. Thanks for pointing
-this out.
 
--Sergey
 
-> 
-> Guenter
+> ---
+>  drivers/gpu/drm/vc4/vc4_plane.c | 35 +++++++++++++++++-----------------
+>  1 file changed, 18 insertions(+), 17 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_plane.c b/drivers/gpu/drm/vc4/vc4_plane.c
+> index 824c188980b0..5335123ae2a0 100644
+> --- a/drivers/gpu/drm/vc4/vc4_plane.c
+> +++ b/drivers/gpu/drm/vc4/vc4_plane.c
+> @@ -1378,26 +1378,27 @@ int vc4_plane_create_additional_planes(struct drm_device *drm)
+>         struct drm_crtc *crtc;
+>         unsigned int i;
+>
+> -       drm_for_each_crtc(crtc, drm) {
+> -               /* Set up some arbitrary number of planes.  We're not limited
+> -                * by a set number of physical registers, just the space in
+> -                * the HVS (16k) and how small an plane can be (28 bytes).
+> -                * However, each plane we set up takes up some memory, and
+> -                * increases the cost of looping over planes, which atomic
+> -                * modesetting does quite a bit.  As a result, we pick a
+> -                * modest number of planes to expose, that should hopefully
+> -                * still cover any sane usecase.
+> -                */
+> -               for (i = 0; i < 8; i++) {
+> -                       struct drm_plane *plane =
+> -                               vc4_plane_init(drm, DRM_PLANE_TYPE_OVERLAY);
+> +       /* Set up some arbitrary number of planes.  We're not limited
+> +        * by a set number of physical registers, just the space in
+> +        * the HVS (16k) and how small an plane can be (28 bytes).
+> +        * However, each plane we set up takes up some memory, and
+> +        * increases the cost of looping over planes, which atomic
+> +        * modesetting does quite a bit.  As a result, we pick a
+> +        * modest number of planes to expose, that should hopefully
+> +        * still cover any sane usecase.
+> +        */
+> +       for (i = 0; i < 8; i++) {
+> +               struct drm_plane *plane =
+> +                       vc4_plane_init(drm, DRM_PLANE_TYPE_OVERLAY);
+>
+> -                       if (IS_ERR(plane))
+> -                               continue;
+> +               if (IS_ERR(plane))
+> +                       continue;
+>
+> -                       plane->possible_crtcs = drm_crtc_mask(crtc);
+> -               }
+> +               plane->possible_crtcs =
+> +                       GENMASK(drm->mode_config.num_crtc - 1, 0);
+> +       }
+>
+> +       drm_for_each_crtc(crtc, drm) {
+>                 /* Set up the legacy cursor after overlay initialization,
+>                  * since we overlay planes on the CRTC in the order they were
+>                  * initialized.
+> --
+> git-series 0.9.1
