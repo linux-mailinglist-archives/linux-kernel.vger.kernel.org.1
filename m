@@ -2,86 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B821E464F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C8B1E4657
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389121AbgE0Opn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 10:45:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387942AbgE0Opm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 10:45:42 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4D0C05BD1E;
-        Wed, 27 May 2020 07:45:42 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id 5so1602606pjd.0;
-        Wed, 27 May 2020 07:45:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=L0mZZla+RguYf6l2WisG00wd84OrSxW1Va9Lo1ppJw4=;
-        b=QASTJzCEOTtsNwR28ZurVRt9NscCH6Z4iZxynX5gVo6MS5DaepEu2RWmPTEOdEM71y
-         YDpIG8HDrD/la7Pcjaju8Gv+H8PDNy98YitB6IUVY6Sbu5Ze2h+eRH/+HdqQJWqx3UQm
-         GRExhsaTXGwFHo6mYcMg+a/6FFjt3+IY8WfeDq4WctqNnEDblHgOTRD5wdF9cv4yilP4
-         8KQOvmcZcdNFoQPZhd1ON6tOfZymhs3TG0A9J6W1NINpa2uMR22N5NfIkU4bSSDbbpsL
-         OPjVQ6JKcsx03cqJ4QeLcfhNd0NsBjQ8BriPYMbtnLcZlKcFiE2n0RX1LddyeNXL7rbJ
-         fHXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=L0mZZla+RguYf6l2WisG00wd84OrSxW1Va9Lo1ppJw4=;
-        b=coZSfaCNPIv/O3lmtsvxWEUcDe1CmYh3TWiaitM1f6sq9wiMS6/VJgdP9fooH4SEad
-         rPO+BjoqJBlk4dJsYDISjD9KbHspmL8IxaZzw94g5Z7uoCW5A1urCyGlC7N+Zqf3GmWT
-         lihEVproP2RQrBuTgB0fPlaG1uu0j/+Po08wnj2mh/yCIy+Gd0UwLIlMWLrrioubTl75
-         bm/SOqSOSgdpVX6JvD3HHz9g5JUscjPsnMAsC1EnR2DFOlaEM9pCf34xROGU58hGIrRk
-         qE8B9K4K4DviFN+LcsRPp59AtjyN6nKc25YYrNa4AwxobtlK5jNydX9k4cWpuTi1aTJW
-         e8NA==
-X-Gm-Message-State: AOAM533bkp+MtP/EmsP3Gwv55tY/JNW4QTOgp7KwSCsmyLzid2rUOU6C
-        hvmTJ0IJeQ7XSMi3iogYA6E=
-X-Google-Smtp-Source: ABdhPJwmQ+KbHNTB/Th5LBAsiSh8HrgfWlnBc4peNHPKT4jkUPURVxUkEd2i5gmGVVQjD4Vho0p+6Q==
-X-Received: by 2002:a17:90b:515:: with SMTP id r21mr5508107pjz.217.1590590741984;
-        Wed, 27 May 2020 07:45:41 -0700 (PDT)
-Received: from localhost ([144.34.194.82])
-        by smtp.gmail.com with ESMTPSA id i98sm2944735pje.37.2020.05.27.07.45.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 27 May 2020 07:45:41 -0700 (PDT)
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     corbet@lwn.net, linux-doc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>
-Subject: [PATCH v1] Documentation: devres: add missing entry for devm_platform_get_and_ioremap_resource()
-Date:   Wed, 27 May 2020 22:45:31 +0800
-Message-Id: <20200527144531.9376-1-zhengdejin5@gmail.com>
-X-Mailer: git-send-email 2.25.0
+        id S2389241AbgE0Oqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 10:46:42 -0400
+Received: from mga11.intel.com ([192.55.52.93]:55605 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388680AbgE0Oql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 10:46:41 -0400
+IronPort-SDR: 5JuA2gagmIckusVrjs2kRWPOMzaw+v0oBzdFvf593jUM2LW80LB4aLz1JR3RkVPJum0LLAuPv4
+ 2a+FfyIGCg6Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 07:46:41 -0700
+IronPort-SDR: UHRysOgJLUfbGaG/jv+qNoX5gdQI/PMPa7q/aQJP53gyQ2JVDwj58UzdTplKjM3N785n67w0x8
+ gyQMA/+GEdUw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,441,1583222400"; 
+   d="scan'208";a="291617786"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga004.fm.intel.com with ESMTP; 27 May 2020 07:46:41 -0700
+Received: from [10.251.8.26] (kliang2-mobl.ccr.corp.intel.com [10.251.8.26])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 819575805EF;
+        Wed, 27 May 2020 07:46:40 -0700 (PDT)
+Subject: Re: [PATCH] perf/x86/intel/uncore: Fix oops when counting IMC uncore
+ events on some TGL
+To:     David Laight <David.Laight@ACULAB.COM>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "ak@linux.intel.com" <ak@linux.intel.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+References: <1590582647-90675-1-git-send-email-kan.liang@linux.intel.com>
+ <869fafc80da84d188678c1cbb0267a0b@AcuMS.aculab.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <ed3d86b7-2f75-cfe9-bc74-5f2c29ef2540@linux.intel.com>
+Date:   Wed, 27 May 2020 10:46:38 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <869fafc80da84d188678c1cbb0267a0b@AcuMS.aculab.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The devm_platform_get_and_ioremap_resource() should be documented in
-devres.rst. Add the missing entry.
 
-Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
----
- Documentation/driver-api/driver-model/devres.rst | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/driver-api/driver-model/devres.rst b/Documentation/driver-api/driver-model/devres.rst
-index 89681264ee2c..713b44deb0bf 100644
---- a/Documentation/driver-api/driver-model/devres.rst
-+++ b/Documentation/driver-api/driver-model/devres.rst
-@@ -314,6 +314,7 @@ IOMAP
-   devm_platform_ioremap_resource() : calls devm_ioremap_resource() for platform device
-   devm_platform_ioremap_resource_wc()
-   devm_platform_ioremap_resource_byname()
-+  devm_platform_get_and_ioremap_resource()
-   devm_iounmap()
-   pcim_iomap()
-   pcim_iomap_regions()	: do request_region() and iomap() on multiple BARs
--- 
-2.25.0
+On 5/27/2020 8:59 AM, David Laight wrote:
+> From: kan.liang@linux.intel.com
+>> Sent: 27 May 2020 13:31
+>>
+>> From: Kan Liang <kan.liang@linux.intel.com>
+>>
+>> When counting IMC uncore events on some TGL machines, an oops will be
+>> triggered.
+>>    [ 393.101262] BUG: unable to handle page fault for address:
+>>    ffffb45200e15858
+>>    [ 393.101269] #PF: supervisor read access in kernel mode
+>>    [ 393.101271] #PF: error_code(0x0000) - not-present page
+>>
+>> Current perf uncore driver still use the IMC MAP SIZE inherited from
+>> SNB, which is 0x6000.
+>> However, the offset of IMC uncore counters for some TGL machines is
+>> larger than 0x6000, e.g. 0xd8a0.
+>>
+>> Enlarge the IMC MAP SIZE for TGL to 0xe000.
+> 
+> Replacing one 'random' constant with a different one
+> doesn't seem like a proper fix.
+> 
+> Surely the actual bounds of the 'memory' area are properly
+> defined somewhere.
+> Or at least should come from a table.
+> 
+> You also need to verify that the offsets are within the mapped area.
+> An unexpected offset shouldn't try to access an invalid address.
 
+Thanks for the review.
+
+I agree that we should add a check before mapping the area to prevent 
+the issue happens again.
+
+I think the check should be a generic check for all platforms which try 
+to map an area, not just for TGL. I will submit a separate patch for the 
+check.
+
+Thanks,
+Kan
+
+> 
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+> 
