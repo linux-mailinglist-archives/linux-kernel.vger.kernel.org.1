@@ -2,75 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E44B1E3BA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F741E3BAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387778AbgE0IOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 04:14:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33624 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387552AbgE0IOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 04:14:51 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 591AC21531;
-        Wed, 27 May 2020 08:14:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590567290;
-        bh=IZTSfgXKAp7khJeVaJeeGoeqOh2uLETlRAh3tUunzl0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gxchxf+ou0aFzf7A6ZG7nrSKxgQEQMjbd0GqgggAAS/uwPdZ0L4zI8zi0WEf1O6KG
-         1FN69AU8a7q7clS0UE5pm/ifmld7+2cM9mnbRttH9tN5ia71y0PGmF9GLkqy15bjju
-         g3F1etKwBRKna3EsiqZECEM95wMU/8ky0iumDwQ8=
-Date:   Wed, 27 May 2020 10:14:48 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pascal Terjan <pterjan@google.com>
-Cc:     "Taihsiang Ho (tai271828)" <tai271828@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8712: Fix IEEE80211_ADDBA_PARAM_BUF_SIZE_MASK
-Message-ID: <20200527081448.GA122537@kroah.com>
-References: <20200523211247.23262-1-pterjan@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200523211247.23262-1-pterjan@google.com>
+        id S2388066AbgE0IPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 04:15:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387796AbgE0IPQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 04:15:16 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC38C03E97C
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 01:15:16 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id c12so13930642lfc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 01:15:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=unikie-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=IMgjWilr9oZ9iDIRuPwSPN6NiHr6WddYNQXqrrKqO5E=;
+        b=VdrkliPQ9A8myqx8xMTEpUvvGryh9+5hiiCdvddlHerpe0rwKujSebDZMTmzFCuHPn
+         /Dbx0YSB9v1s3F6uKNrg2CB2kKK5DcZlsoM3Dk5LRCPkg1Ujqe0jl7W4UMwIIHYJvu5e
+         O7ZBXIR+YquL7keHElSgFWD9iyWe/IhCJCtGIjKW4gpUU6bwiUGgzqUObno1dnxetDoB
+         neiLXwEA1M8wK8rEcOo3CACbKozNa2rGxSmgutAn5r7BqaPeqxSPs+aqWsLsVn8sUmRb
+         5JCOOrIJ7+/zgfSukvEq4j238kjro6gSqFeN/W+arT2HKkwRY0hSdERrTLEt3sANUksU
+         OJnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=IMgjWilr9oZ9iDIRuPwSPN6NiHr6WddYNQXqrrKqO5E=;
+        b=c2qqDDIIVdIAk5SFZSwuvPFdRZv5d3uf5e/XWJHFVo5JfXl97ZOZ/KZt/Z1j0Rb4Fx
+         G6yl30ikexmqHerWwIjclWfJJAT6iReya7ITdVPeHJkCuKKtaCMxe2xhzxZOmqYdgjSB
+         u+l/Ch+EqEPJq+971V+rq/nJZZiDFZ8YT2aHhEVEaDR02kZhBNmGLKZJLMdmfBQU9F/X
+         jGAEodJ0KyyFwJ0oXpDNjOyE7OTZSUZB/kgTE4Uokh9Jay7zj9CFdns7b0ntCMs/vSO8
+         encPZJfEug8mi35Ui1L/A1QKDXcQLg9ucZYyLwk8kEv8idDppkbg/Rq2IPQ1HSR0Z+kd
+         wsgQ==
+X-Gm-Message-State: AOAM5306d4ArOZ+f3a+HD4gsup7Gw9SpRCTjdet31l+NJgVzU8R1i2e2
+        PSrybES8q6DAaJfYNo5InftMdg==
+X-Google-Smtp-Source: ABdhPJz8IMKoC6RWx7FjoLpP0lCd1gN1p6czuZcswHsxWLkZVvftbtqCPywjBYDAfHXpsCT6z1dzZQ==
+X-Received: by 2002:a19:987:: with SMTP id 129mr2541695lfj.8.1590567313739;
+        Wed, 27 May 2020 01:15:13 -0700 (PDT)
+Received: from localhost.localdomain ([109.204.235.119])
+        by smtp.googlemail.com with ESMTPSA id n26sm533761ljc.42.2020.05.27.01.15.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 01:15:12 -0700 (PDT)
+From:   john mathew <john.mathew@unikie.com>
+X-Google-Original-From: john mathew <John.Mathew@unikie.com>
+To:     linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, corbet@lwn.net, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, tsbogend@alpha.franken.de,
+        lukas.bulwahn@gmail.com, x86@kernel.org,
+        linux-mips@vger.kernel.org, tglx@linutronix.de,
+        mostafa.chamanara@gmail.com, willy@infradead.org,
+        valentin.schneider@arm.com, srikar@linux.vnet.ibm.com,
+        john mathew <John.Mathew@unikie.com>
+Subject: [RFC PATCH v6 0/3] Add scheduler overview documentation
+Date:   Wed, 27 May 2020 11:15:02 +0300
+Message-Id: <20200527081505.1783-1-John.Mathew@unikie.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 23, 2020 at 10:12:47PM +0100, Pascal Terjan wrote:
-> The value in shared headers was fixed 9 years ago in commit 8d661f1e462d
-> ("ieee80211: correct IEEE80211_ADDBA_PARAM_BUF_SIZE_MASK macro") and
-> while looking at using shared headers for other duplicated constants
-> I noticed this driver uses the old value.
-> 
-> The macros are also defined twice in this file so I am deleting the
-> second definition.
-> 
-> Signed-off-by: Pascal Terjan <pterjan@google.com>
-> Cc: stable <stable@vger.kernel.org>
-> ---
->  drivers/staging/rtl8712/wifi.h | 9 +--------
->  1 file changed, 1 insertion(+), 8 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8712/wifi.h b/drivers/staging/rtl8712/wifi.h
-> index be731f1a2209..91b65731fcaa 100644
-> --- a/drivers/staging/rtl8712/wifi.h
-> +++ b/drivers/staging/rtl8712/wifi.h
-> @@ -440,7 +440,7 @@ static inline unsigned char *get_hdr_bssid(unsigned char *pframe)
->  /* block-ack parameters */
->  #define IEEE80211_ADDBA_PARAM_POLICY_MASK 0x0002
->  #define IEEE80211_ADDBA_PARAM_TID_MASK 0x003C
-> -#define IEEE80211_ADDBA_PARAM_BUF_SIZE_MASK 0xFFA0
-> +#define IEEE80211_ADDBA_PARAM_BUF_SIZE_MASK 0xFFC0
->  #define IEEE80211_DELBA_PARAM_TID_MASK 0xF000
->  #define IEEE80211_DELBA_PARAM_INITIATOR_MASK 0x0800
+This patch series updates the scheduler documentation to add more topics
+wrt to scheduler overview. New sections are added to provide a brief
+overview of the kernel structs used by the scheduler, scheduler invocation,
+context switch and Capacity Aware Scheduling. Previous version of
+the patch was reviewed at:
+https://lore.kernel.org/lkml/20200514092637.15684-1-John.Mathew@unikie.com/
 
-I'll take this patch, but why can't this code be all deleted such that
-the real in-kernel defines are used instead of these duplicated ones?
+version 6:
+ -Fix typos.
 
-thanks,
+version 5:
+ -Fix description error on CAS
 
-greg k-h
+version 4:
+ -Added section on Capacity-Aware Scheduling
+ -Reworded CFS recently added features.
+ -Removed vruntime description from scheduler structs
+ -Added description of idle and stopper sched classses
+
+version 3:
+ -Fix spelling, spacing and typo errors.
+
+version 2:
+- Remove :c:func: directive as it was redundant
+- Limit document width (line symbol count) to 75
+- Replace dot file with ASCII art
+- Describe prepare_task_switch(), ASID use, 
+  kernel/user transtion, MIPS FPU affinity correctly
+- Add missing references to files
+- Removed internal APIs from scheduler API reference
+- Described rq struct member as kernel-doc comments
+- Replaced CFS history with CFS current status
+- Added documentation for sched_class fields
+- Refined explanation of context swtich functionality
+- Replace CFS history with recent changes
+- Added kernel-doc comments for struct rq
+
+John Mathew (3):
+  docs: scheduler: Restructure scheduler documentation.
+  docs: scheduler: Add scheduler overview documentation
+  docs: scheduler: Add introduction to scheduler context-switch
+
+ Documentation/scheduler/arch-specific.rst     |  14 +
+ Documentation/scheduler/cfs-overview.rst      | 102 ++++++
+ Documentation/scheduler/context-switching.rst | 125 ++++++++
+ Documentation/scheduler/index.rst             |  33 +-
+ .../scheduler/mips-context-switch.rst         |  89 ++++++
+ Documentation/scheduler/overview.rst          | 293 ++++++++++++++++++
+ Documentation/scheduler/sched-cas.rst         |  92 ++++++
+ .../scheduler/sched-data-structs.rst          | 182 +++++++++++
+ Documentation/scheduler/sched-debugging.rst   |  14 +
+ Documentation/scheduler/sched-features.rst    |  21 ++
+ Documentation/scheduler/scheduler-api.rst     |  31 ++
+ .../scheduler/x86-context-switch.rst          |  65 ++++
+ kernel/sched/core.c                           |  28 +-
+ kernel/sched/sched.h                          | 169 +++++++++-
+ 14 files changed, 1238 insertions(+), 20 deletions(-)
+ create mode 100644 Documentation/scheduler/arch-specific.rst
+ create mode 100644 Documentation/scheduler/cfs-overview.rst
+ create mode 100644 Documentation/scheduler/context-switching.rst
+ create mode 100644 Documentation/scheduler/mips-context-switch.rst
+ create mode 100644 Documentation/scheduler/overview.rst
+ create mode 100644 Documentation/scheduler/sched-cas.rst
+ create mode 100644 Documentation/scheduler/sched-data-structs.rst
+ create mode 100644 Documentation/scheduler/sched-debugging.rst
+ create mode 100644 Documentation/scheduler/sched-features.rst
+ create mode 100644 Documentation/scheduler/scheduler-api.rst
+ create mode 100644 Documentation/scheduler/x86-context-switch.rst
+
+-- 
+2.17.1
+
