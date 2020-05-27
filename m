@@ -2,90 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 886AB1E50AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 23:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 387901E50B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 23:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727843AbgE0Vr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 17:47:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56432 "EHLO
+        id S1728082AbgE0VwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 17:52:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726393AbgE0Vrz (ORCPT
+        with ESMTP id S1725940AbgE0VwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 17:47:55 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E84AC05BD1E;
-        Wed, 27 May 2020 14:47:55 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49XPZb4z9Rz9sRK;
-        Thu, 28 May 2020 07:47:51 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1590616071;
-        bh=mXu9qxrrYhcMrslxtNTfDTi99hlgGhfPw1uSLhfYR00=;
-        h=Date:From:To:Cc:Subject:From;
-        b=K0O5AJ6mpaA0/hNQp3MM5lNC8locegVJUd0sBCWNx/eYI9gH1FkQncofC8loe8lbk
-         +xOy3F1UHC9HPmKcgvhV+HRwWPUPQ5xt4AsKZU8OFl5HSzgidg4fAfmDk3sjQJ1sXb
-         vAGkABj1iLPvUIgJEVUkHHTvkhTAFvFXtkbXqS8sNRCBMhGz8NMfAblZPwLOy9bufC
-         b15irLTRtrUSl7EFf5DaPokyu1dNWH2bmBE/CroMrueBnL7pzjZd6cA6kG81imsFZw
-         SHA+p8Sp4qGp1X9qJNeGHoEsCbP/tEnhE3Qd6gMEXmCwrnvsuMEO5XXejxIOJbnM2a
-         Z6qf9idIlGe3A==
-Date:   Thu, 28 May 2020 07:47:50 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: linux-next: Fixes tag needs some work in the kvm-fixes tree
-Message-ID: <20200528074750.550f761b@canb.auug.org.au>
+        Wed, 27 May 2020 17:52:06 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260CFC05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 14:52:05 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id x11so9691096plv.9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 14:52:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tycho-ws.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=r/RSzQ5rbuoGCqd6AePSlV83s7nSTMTetKOIncJuF98=;
+        b=mB7loTYUL7FqAXh3WPyISGZxDyB4FKGdZ0+r4jLg12K0hku5ijijuCcuYp8zKO0NXz
+         KMCiPpjtcABYCjKDhHWCdMW+xrHi/t8uRZCdTP5+HraXPmP1BE7o6oMQ5HGVH+NkpDyG
+         dzMuUQq7RriAdXjtKnrxrt00iITTkqWScmjloXqCeuqcOc3lLqj0FwqngrNRsiwkH3vp
+         /lZJmt4XoapQCgKpWaWd4hTizLbAV4Zs2w41q+7Czyc2d7iJfuRrsbTXb2mdp0Wg/6Dz
+         oAkoBItNbIP8YkJK4/6tDw/DL0mVZV8Rpqqyx4BbFv/LxTv7p1MNG0BUuSnOz63QO4UB
+         YngQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=r/RSzQ5rbuoGCqd6AePSlV83s7nSTMTetKOIncJuF98=;
+        b=GE+dWKCVLvUX6wzKB1mzYDh5XT35dcWAesSo3x9ouFu36foAX8zKZBYqdeEvETZMNd
+         W/mwi13gW45GSHLS3M7vKX05duqVzAqLAIjfP0q8uRGIcmciBzwcj+XmmuAQgLCgOfU6
+         JU6jd4LHkkBhmz5Tsv8KOCUcL0sQhKzvHgm5rFwyy+KJVtTJArIINuPz49g8u7d/aCoy
+         J8so7FcO9ziftBPSWh9EqL4QlHiNytomDn2bq9NzuLo8JhoPaXa4oWbUB2h8Zsc3cQ48
+         G20xqz3JjU36rbKVlj/LA3I2bDpqyO6Y8/jo10CEBURTM7lXUNs89tjFtAKsMv65DG4H
+         fQVQ==
+X-Gm-Message-State: AOAM530r0DDmTJE7TD+qkqnJb/DGbiYJvqD0jfLGWLf99IcKSLyB/0Mt
+        bPpUbw8QY9zlnz/dT5qf6dH60Q==
+X-Google-Smtp-Source: ABdhPJzqWZ7W+lfjT82rqnY1rDsuai1IzdTE6rHRQVh0x83kcJ1NUWBlCmhmvTpx8qIfbHxr3R0jKQ==
+X-Received: by 2002:a17:90a:fd17:: with SMTP id cv23mr459083pjb.38.1590616324318;
+        Wed, 27 May 2020 14:52:04 -0700 (PDT)
+Received: from cisco ([2001:420:c0c8:1003::948])
+        by smtp.gmail.com with ESMTPSA id w14sm2799084pgi.12.2020.05.27.14.52.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 14:52:03 -0700 (PDT)
+Date:   Wed, 27 May 2020 15:52:03 -0600
+From:   Tycho Andersen <tycho@tycho.ws>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Matt Denton <mpdenton@google.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Robert Sesek <rsesek@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Linux Containers <containers@lists.linux-foundation.org>
+Subject: Re: [PATCH 1/2] seccomp: notify user trap about unused filter
+Message-ID: <20200527215203.GE4153131@cisco>
+References: <20200527111902.163213-1-christian.brauner@ubuntu.com>
+ <202005271408.58F806514@keescook>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/LyStz_oR44yVl+tok4Z2UQd";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202005271408.58F806514@keescook>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/LyStz_oR44yVl+tok4Z2UQd
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, May 27, 2020 at 02:43:49PM -0700, Kees Cook wrote:
+> (While I'm here -- why can there be only one listener per task? The
+> notifications are filter-specific, not task-specific?)
 
-Hi all,
+Not sure what you mean here?
 
-In commit
+> > To fix this, we introduce a new "live" reference counter that tracks the
+> > live tasks making use of a given filter and when a notifier is
+> > registered waiting tasks will be notified that the filter is now empty
+> > by receiving a (E)POLLHUP event.
+> > The concept in this patch introduces is the same as for signal_struct,
+> > i.e. reference counting for life-cycle management is decoupled from
+> > reference counting live taks using the object.
+> 
+> I will need convincing that life-cycle ref-counting needs to be decoupled
+> from usage ref-counting.
 
-  f4cfcd2d5aea ("KVM: x86: don't expose MSR_IA32_UMWAIT_CONTROL uncondition=
-ally")
+I think it does, since the refcount is no longer 1:1 with the number
+of tasks that have it (a notification fd's struct file has a reference
+too).
 
-Fixes tag
+We could also do it the reverse way, and keep track of how many
+notification fds point to a particular file. But somehow we need two
+counts.
 
-  Fixes: 6e3ba4abce ("KVM: vmx: Emulate MSR IA32_UMWAIT_CONTROL")
+Maybe it's best to decouple them entirely, and have usage go back to
+just being the number of tasks, and introduce a new counter for
+notification fds.
 
-has these problem(s):
+> I see what you're saying here and in the other
+> reply about where the notification is coming from (release vs put, etc),
+> but I think it'd be better if the EPOLLHUP was handled internally to the
+> VFS due to the kernel end of the file being closed.
+> 
+> > There's probably some trickery possible but the second counter is just
+> > the correct way of doing this imho and has precedence. The patch also
+> > lifts the waitqeue from struct notification into into sruct
+> > seccomp_filter. This is cleaner overall and let's us avoid having to
+> > take the notifier mutex since we neither need to read nor modify the
+> > notifier specific aspects of the seccomp filter. In the exit path I'd
+> > very much like to avoid having to take the notifier mutex for each
+> > filter in the task's filter hierarchy.
+> 
+> I guess this is a minor size/speed trade-off (every seccomp_filter
+> struct grows by 1 pointer regardless of the presence of USER_NOTIF
+> rules attached...). But I think this is an optimization detail, and I
+> need to understand why we can't just close the file on filter free.
 
-  - SHA1 should be at least 12 digits long
-    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
-    or later) just making sure it is not set (or set to "auto").
+That seems nicest, agreed.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/LyStz_oR44yVl+tok4Z2UQd
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7O4AYACgkQAVBC80lX
-0GwUfAf/T8bYGS2CZ+9VIOkE6z9xJC/K1D3t7G1kCaYHfHgaSkul3vExAeJDghwn
-WVN+mOVwu2QFyEZ6PUqX/hjJHmMiQs1Lvv4vULMVi3QI7xK/KKuXnqfuOfjQLJhI
-UyZKaa5jxhO484FylcmkGk9QtC0HWxmAXluxWSlBAaoFZHsbDSHP0vHdQVA6WPBx
-Opwd0JA5U6drlQ8cZ6EhJvXfk+eW5QaIK5SPYl/fhH/F0SRCA4EtTCEIpaNVC59g
-2Jr4vLnCAeBu7a9qG1FsdzgJG/Cj8s7m+AfsLCPjnTlZpRUMJAJS5jo8vwU4NukN
-sWQuAKaYyfXycc2Zf0UX4RF8V2y+Eg==
-=idU4
------END PGP SIGNATURE-----
-
---Sig_/LyStz_oR44yVl+tok4Z2UQd--
+Tycho
