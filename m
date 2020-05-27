@@ -2,72 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CA31E4EC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 743021E4EC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728066AbgE0UFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 16:05:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40482 "EHLO
+        id S1728346AbgE0UFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 16:05:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726114AbgE0UFT (ORCPT
+        with ESMTP id S1726114AbgE0UFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 16:05:19 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B46C03E96E
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 13:05:19 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id 18so25411290iln.9
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 13:05:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=28DOTFnmVcxs9783b/UiTjU6P5aEM1DfImgfim1Ikxs=;
-        b=mPIMqNO6my8HC6zKwYIcwxuRXCSHu3acpcgEJI0m9edftdQ3B0ys2XSJnlY/s4SmcH
-         w7DAlmSuD6eUkCcY+8z4ft/4AB1WPOErgJzrIFICpA94n7Czc+k80ER1ul7I/JTtTCJs
-         IzqRQQQjwmay64dXshS/eAL21vNp1Iar9YpN9h4ExfV5dZ2TevqA8B3AiLyf3wuGPAZd
-         5eyLPucsJDCnpXMyGb9DukDMob09Hbr7iuqcZt3Jrfm6+mlHI96JKa4vovw8k2d8qjfK
-         Gxu1X4KaB97AFGB+z9OjroJYY67N7OZ5jO7/9DwNvuRY4cla+QdlVpiP5snPGnKYjwyw
-         mHsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=28DOTFnmVcxs9783b/UiTjU6P5aEM1DfImgfim1Ikxs=;
-        b=bOB6gX5hlxFLsMGfkLJIR5JAV6DSxTYg6pbATE2p0jacjs/qXVqcNY+ZazN6vuesf/
-         AwwnrVDCQ5e7r6l6DfHS7jTqK5PMrRV+K9opqmzSFWCAXKatZwPccYmZiOaYE+GH1McC
-         8FAHsNgqdBTpUVq46BRW2Iy/NrUUtnqAlFG98R9anEY+5CLz4spZBRJ+0indgJCX9Hhu
-         NzYvH3RMN+SSKRBbvtygDjtuIR0AHoS4RIbytyunci+y6QgNwUHRxo+ZJfD5s/PsQZd0
-         6shkz8jGuawWlDI8RoE/bWQTH9N09RSlx6eWvWC/TDLDL1Vall6yD03m+gI1hX5sUnxf
-         TpNw==
-X-Gm-Message-State: AOAM532wiVdbofDZWNfw6IEL/ain/O3TRb6YUkhIdMS9nLQTvUmIUyMd
-        AExZ1jmpaEzpxWQ3T8ZbUtrFmwiz7babcN9P8kc=
-X-Google-Smtp-Source: ABdhPJwKF+mtIdyoG7TgmIWB3LepaywN5w6W+Fphe7DR2G3f+FflasEuMpBBWva07g/Jic+hS5jE54T5qGXsODP9+rc=
-X-Received: by 2002:a92:9154:: with SMTP id t81mr7411509ild.235.1590609918817;
- Wed, 27 May 2020 13:05:18 -0700 (PDT)
+        Wed, 27 May 2020 16:05:30 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209A6C05BD1E;
+        Wed, 27 May 2020 13:05:30 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
+        id 1je2Im-00GTzv-F9; Wed, 27 May 2020 20:05:24 +0000
+Date:   Wed, 27 May 2020 21:05:24 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH] fs: Add an explicit might_sleep() to iput
+Message-ID: <20200527200524.GG23230@ZenIV.linux.org.uk>
+References: <20200527141753.101163-1-kpsingh@chromium.org>
+ <20200527190948.GE23230@ZenIV.linux.org.uk>
+ <CACYkzJ5MkWjVPo1JK68+fVyX7p=8bsi9P-C6nR=LYGJw04f9sw@mail.gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a6b:ce0b:0:0:0:0:0 with HTTP; Wed, 27 May 2020 13:05:16
- -0700 (PDT)
-Reply-To: umarbelloumar92@gmail.com
-From:   Umar Bello <muradzongo@gmail.com>
-Date:   Wed, 27 May 2020 13:05:16 -0700
-Message-ID: <CAE57ThvidBWvfqamhYQTV06+aV20T5q_bcgtmJg1U6pt1aztZg@mail.gmail.com>
-Subject: Dear friend
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACYkzJ5MkWjVPo1JK68+fVyX7p=8bsi9P-C6nR=LYGJw04f9sw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
+On Wed, May 27, 2020 at 09:50:46PM +0200, KP Singh wrote:
+> On Wed, May 27, 2020 at 9:09 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> >
+> > On Wed, May 27, 2020 at 04:17:53PM +0200, KP Singh wrote:
+> > > From: KP Singh <kpsingh@google.com>
+> > >
+> > > It is currently mentioned in the comments to the function that iput
+> > > might sleep when the inode is destroyed. Have it call might_sleep, as
+> > > dput already does.
+> > >
+> > > Adding an explicity might_sleep() would help in quickly realizing that
+> > > iput is called from a place where sleeping is not allowed when
+> > > CONFIG_DEBUG_ATOMIC_SLEEP is enabled as noticed in the dicussion:
+> >
+> > You do realize that there are some cases where iput() *is* guaranteed
+> > to be non-blocking, right?
+> 
+> Yes, but the same could be said about dput too right?
 
+Theoretically, but note that even there dput(NULL) won't trigger that.
 
-Dear friend
-I am contacting you on a business of $17.5 Million US Dollars
-ready for transfer into your account
-if we make this claim, we will share it 60%/40%.
-100% risk free and it will be legally backed up with government
-approved If you are interested reply for more details.
+> Are there any callers that rely on these cases? (e.g. when the caller is
+> sure that it's not dropping the last reference to the inode).
 
-Best regards,
-Prince Umar Bello
- +226 68874958
+Not sure - there might be.  Try and see if it gives false positives,
+but I would rather have it done in -next circa -rc1, so we could see
+what falls out and withdraw that if there turn out to be some.
+
+One thing I definitely want to avoid is a flow of BS patches of
+"warning is given, therefore we must do something, this is something,
+let's do it" variety.  Right now we have just under 700 callers in
+the tree, most of them in individual filesystems; I'm not up to
+auditing that pile on the moments notice...
