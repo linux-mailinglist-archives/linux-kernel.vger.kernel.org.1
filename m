@@ -2,117 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B781E43E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEBF01E43F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388433AbgE0Nhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387682AbgE0Nhx (ORCPT
+        id S2388474AbgE0Njm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:39:42 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:54817 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387682AbgE0Njl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:37:53 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A86BC08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 06:37:52 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id z1so7020607qtn.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 06:37:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=K5fHO02+PN/2Q6ZCPK4dYN19pxbY+Th3EZc6EUW67vk=;
-        b=D9iYOTuJuftIfysOzhwmQ0vn4d/vsEei6RY106AsYqM+lY2JkboSBXkTeZABIrmuxA
-         767ViAm38EWF6tO26zBKiyf6W+hmOrYxdHQBw4nEUtjSeqYWHHXf/kXKzamdnyqE+B0/
-         NcN6NfN9X+hx601WT5qZpx844inwztmEtCS5m3mE2eThHgNWjuM7Cjlr61cosLwzjU84
-         bfVc91qe0YOmWi/Oeb+6nLrWWrGErBHH26EzrhxqM7p0pCb8MaMuVOxX7aEgBjhO4l/p
-         rQrt4YogqHaPQJSlS86Uiw3CtXzfIQnRG8unL3g8T/mG4LMJUi/6R7d2NEiR8Kn45trT
-         YiJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=K5fHO02+PN/2Q6ZCPK4dYN19pxbY+Th3EZc6EUW67vk=;
-        b=uYOvz6lCZ9R/dxpmZvQZCddVKtgCvhEp6+Cy/ztHGkPdDbA0kY/1pj7N1cKLQDOr7s
-         3YoGFJNAQeeziyWSnnhd+By8SyhJpnrKKcY1UjtBqJnp64mNgyJXGzmQES3Qi2hhAFMZ
-         lUp0AXmHnBv4MFbo24qsbrdTj1AfqP2heukb9Mhsip7ur7RlcYTvvFCr6O2f8ufl0AFV
-         +PUYxs+ZBmAXqWrWc1Vv8n5CdtHcfZnPlDmfjsAhYIGqCuFstvIciNWnc2H0oMEegIJh
-         Vtit/ZtdN4/cbDmSzBQUA/6NMjp+YlpzBOQMxlcsml5o3pBgsft+2J9nLO0oHOzShHMd
-         Frsg==
-X-Gm-Message-State: AOAM5306mKVbRHEF8seYRZajBQCRffqwTbdfHXP4h40azVH31yyeYO+L
-        RoIp1t2OA+3slgtG2qFw0tJB1fwu5uAolfBJ3SL/C+Z5
-X-Google-Smtp-Source: ABdhPJyF4EYb3EdIRy+uh7qF8OG1s7b7hlCQ5K73FZQQ2Hmzwq6yKclZidEBmqETHn2raBDlYd3qdYAOxeSVU4PKrjE=
-X-Received: by 2002:ac8:2242:: with SMTP id p2mr4052242qtp.27.1590586671749;
- Wed, 27 May 2020 06:37:51 -0700 (PDT)
+        Wed, 27 May 2020 09:39:41 -0400
+Received: from localhost.localdomain ([149.172.98.151]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MlsWZ-1jDMy53Blj-00j3fQ; Wed, 27 May 2020 15:39:26 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     soc@kernel.org, Jens Wiklander <jens.wiklander@linaro.org>,
+        =?UTF-8?q?Vesa=20J=C3=A4=C3=A4skel=C3=A4inen?= 
+        <vesa.jaaskelainen@vaisala.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>,
+        Rijo Thomas <Rijo-john.Thomas@amd.com>,
+        Gary R Hook <gary.hook@amd.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        tee-dev@lists.linaro.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] tee: fix crypto select
+Date:   Wed, 27 May 2020 15:39:16 +0200
+Message-Id: <20200527133924.724819-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200527133513.579367-1-arnd@arndb.de>
-In-Reply-To: <20200527133513.579367-1-arnd@arndb.de>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 27 May 2020 15:37:41 +0200
-Message-ID: <CAMpxmJU63A2O_JE6G42FwVBN8hj6YQjKuQDFhmJLOMkDqtX=tA@mail.gmail.com>
-Subject: Re: [PATCH] [net-next] mtk-star-emac: mark PM functions as __maybe_unused
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Felix Fietkau <nbd@openwrt.org>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        linux-mediatek@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:P+KwTzBlyszTVG0EQVcxHYoNDDlR4ilvVgGJ8/tHgSBjq+KUIxk
+ umhaGxlmmS5bsKk00Kwz/9SJNvdEN8zRjSDUwZ2aajPKqGo8xAkOLEAEyUvZwZuEOCJDMKB
+ eoFmq2tbkVdKswWZ8yuSbeMxVfcg1ShQNhK7s54QUd8cQU7wlKJ3t/W8e+I2DJ5t8uex9/g
+ AI7jafPdOimry8cHrF0Rw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:h0wYUygjUYk=:cYmYE7qDUtHD/uUeKqsj0V
+ Dj9POsWkIWO1+pp7LH9oYcwyuei3rfrUjpaj8Z6DW0aycdDXKsimy76ZJ2C+vsmbPKD3rNajJ
+ EQlszaBxxVlHupu1tSiWWkeS8E5tkfEeLrZLt+N9/fe1VP3ewEocRdv7ocRFVC7DPb8HqDqri
+ 8BtKReRmxyoy4miQlxlb4RYRCgUspm9zLzHMDVzQeVZ/jvrw4ZPpnx5K6mVHlVl8CNHQNDgnf
+ 2+KyrtwOBKqG9ebiEDYV6k5xjjSJyocy0PpbACKsUBlKzozG/pgsx1U2dnOAqoKXO2f4Vkh3Q
+ z7UFRhVLHQqegaVdG+B/6PG4xI9PjnkM87DHwgLJDloF9ICJEZwDE/+DE6kOwGlvhSuKf/oLP
+ tCgAsMQKRj9f6VrrUqMacXG0E26y3loAqKj9j4TR5tnzvdbEOPLOZj4kcNm50eaCAjp5xFLAJ
+ CWgqlYawYeZpF+8jdtYFs7rwo94Dgs9Ucub35oR1Y7yxkrIPNDDUgnQbeG0y5orLlrAKxJ+Uc
+ izWxMKT+fpfN1zing8AjDoDkoHRENbhFziv4lqF0Dv9lOovg8bMEcHqfuRRjhBlNZwdzydX5S
+ 3jHDd9Qnya42xvLRGW93OqI5K3YoAYyBnLfV+sfDY8i79FsTLf6X4Lt75iaRlWoEHAFv/LIRx
+ TggBXjlQuirAoRAc7pJ8mCg9djHtLw0TKvAnIdOGr1TbWTdpdphJG6I724clM4/BchHj1H+/P
+ /Bt5u9x4xBQLR4VeoNl5vrZYdAqK8gv3zQNnnXulJtdk7j8zXRFgfdgHaMTwQ8yRJaOyOdBNf
+ XufKNzcGopHz8Xp2g9CZt9+7tJGdG2repskAIpM//NyOqJwGF4=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=C5=9Br., 27 maj 2020 o 15:35 Arnd Bergmann <arnd@arndb.de> napisa=C5=82(a)=
-:
->
-> Without CONFIG_PM, the compiler warns about two unused functions:
->
-> drivers/net/ethernet/mediatek/mtk_star_emac.c:1472:12: error: unused func=
-tion 'mtk_star_suspend' [-Werror,-Wunused-function]
-> drivers/net/ethernet/mediatek/mtk_star_emac.c:1488:12: error: unused func=
-tion 'mtk_star_resume' [-Werror,-Wunused-function]
->
-> Mark these as __maybe_unused.
->
-> Fixes: 8c7bd5a454ff ("net: ethernet: mtk-star-emac: new driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/net/ethernet/mediatek/mtk_star_emac.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/net/ethernet/mediatek/mtk_star_emac.c b/drivers/net/=
-ethernet/mediatek/mtk_star_emac.c
-> index b18ce47c4f2e..3223567fe1cb 100644
-> --- a/drivers/net/ethernet/mediatek/mtk_star_emac.c
-> +++ b/drivers/net/ethernet/mediatek/mtk_star_emac.c
-> @@ -1469,7 +1469,7 @@ static int mtk_star_mdio_init(struct net_device *nd=
-ev)
->         return ret;
->  }
->
-> -static int mtk_star_suspend(struct device *dev)
-> +static __maybe_unused int mtk_star_suspend(struct device *dev)
->  {
->         struct mtk_star_priv *priv;
->         struct net_device *ndev;
-> @@ -1485,7 +1485,7 @@ static int mtk_star_suspend(struct device *dev)
->         return 0;
->  }
->
-> -static int mtk_star_resume(struct device *dev)
-> +static __maybe_unused int mtk_star_resume(struct device *dev)
->  {
->         struct mtk_star_priv *priv;
->         struct net_device *ndev;
-> --
-> 2.26.2
->
+When selecting a crypto cipher, we also need to select the
+subsystem itself:
 
-Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+WARNING: unmet direct dependencies detected for CRYPTO_SHA1
+  Depends on [m]: CRYPTO [=m]
+  Selected by [y]:
+  - TEE [=y] && (HAVE_ARM_SMCCC [=n] || COMPILE_TEST [=y] || CPU_SUP_AMD [=y])
+  Selected by [m]:
+  - CRYPTO_DEV_QAT [=m] && CRYPTO [=m] && CRYPTO_HW [=y]
+  - CRYPTO_DEV_MEDIATEK [=m] && CRYPTO [=m] && CRYPTO_HW [=y] && (ARM && ARCH_MEDIATEK || COMPILE_TEST [=y])
+  - CRYPTO_DEV_SAFEXCEL [=m] && CRYPTO [=m] && CRYPTO_HW [=y] && (OF [=y] || PCI [=y] || COMPILE_TEST [=y]) && HAS_IOMEM [=y]
+  - CRYPTO_DEV_CCREE [=m] && CRYPTO [=m] && CRYPTO_HW [=y] && OF [=y] && HAS_DMA [=y]
+  - CRYPTO_DEV_SP_CCP [=y] && CRYPTO [=m] && CRYPTO_HW [=y] && CRYPTO_DEV_CCP [=y] && CRYPTO_DEV_CCP_DD [=m] && DMADEVICES [=y]
+
+Fixes: e33bcbab16d1 ("tee: add support for session's client UUID generation")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+The regression was introduced in the soc tree, I'd pick this patch
+up directly into that unless someone sees a problem
+---
+ drivers/tee/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/tee/Kconfig b/drivers/tee/Kconfig
+index 806eb87d4da0..e99d840c2511 100644
+--- a/drivers/tee/Kconfig
++++ b/drivers/tee/Kconfig
+@@ -3,6 +3,7 @@
+ config TEE
+ 	tristate "Trusted Execution Environment support"
+ 	depends on HAVE_ARM_SMCCC || COMPILE_TEST || CPU_SUP_AMD
++	select CRYPTO
+ 	select CRYPTO_SHA1
+ 	select DMA_SHARED_BUFFER
+ 	select GENERIC_ALLOCATOR
+-- 
+2.26.2
+
