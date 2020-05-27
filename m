@@ -2,134 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF53E1E3A07
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 09:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF1D1E3A1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 09:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729214AbgE0HMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 03:12:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729144AbgE0HMY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 03:12:24 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD6FC061A0F;
-        Wed, 27 May 2020 00:12:24 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id p30so11348056pgl.11;
-        Wed, 27 May 2020 00:12:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BtFr88iS5dYVk9M5situj/cALZfUmfJBkWJmVOPGwiA=;
-        b=QpCpctZfSnLodygNVJlSPBKkfII/mNnwqTkUPiqiLyWUfdkWaLBSnzHx/wkWxck/sr
-         Ea4ImcUsTN9O73vlU31Py0Lno77YlTqpgiQUGnGQoypdkLvlLAEAazyPBrVhqz1zK0YS
-         a/GdQnliziiDEZ23uu0dvDu2R8CwnWG91rb0ADbH83+3FeAFOYzRU7t46KYUswvh3g1V
-         bsqbHBrOJ/mb9LRdgiYOHrVETupl8qryK3Ayvh8rNES9NZooxr/ysSji89BodjEzPU5J
-         bNzyPtN36GPUjguXy8xoGGru+rhEGfIryQPVI2bHohuYltYUmSsDIyeB8pKud8TlKGxI
-         vgnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BtFr88iS5dYVk9M5situj/cALZfUmfJBkWJmVOPGwiA=;
-        b=gKW2SfVVPWqNbHNnCdYVrsBSTwvylBZncnoITXGzR0/6IOJ5/BfmM8WSUv7LmFQ0tQ
-         LTBd1pRBdmLPXoN8DDwep2s5o1DK1xQvCuGP4HYV3RnhrzUA5MqqGhXTBhiFAD6GDjFt
-         fIud1EofTQZuff6IctCqGnGkPs2IMCFKbAmH7zhG7QnTumSlmi9DWcE1qHfmey4BSBk4
-         JG4OQchfIGhsuA8s7wPUQjZ5bJSAyKNYCg5E4W+7wAkwe6LpUln+1cfuBpvmk2hRMy1Q
-         WNnLtPI3xXJzWQTFd2g2Ik1qkOvpAoKTdOiN2rdYKosOfI6AQO6nsJHy/tgJZ0hsdufD
-         Crbg==
-X-Gm-Message-State: AOAM531E0dX3NlXvYnNf9SlSECIozAQxt35GJDlR6t63ZPNOWtxg2EzF
-        KDcC/T8updYiQeNhqWwUL5A=
-X-Google-Smtp-Source: ABdhPJwrauMbNSEdWNH+N5a3rZnBfOIKgD1AmNbuhOdA/dbXFJh9XOpUE81ASBgklIFa4/rbx/Uoxg==
-X-Received: by 2002:a63:ad0b:: with SMTP id g11mr2665934pgf.275.1590563544076;
-        Wed, 27 May 2020 00:12:24 -0700 (PDT)
-Received: from localhost.localdomain ([2604:1380:4111:8b00::1])
-        by smtp.gmail.com with ESMTPSA id 10sm1306431pfx.138.2020.05.27.00.12.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2020 00:12:23 -0700 (PDT)
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: [PATCH 7/7] media: atomisp: Remove binary_supports_input_format
-Date:   Wed, 27 May 2020 00:11:50 -0700
-Message-Id: <20200527071150.3381228-8-natechancellor@gmail.com>
-X-Mailer: git-send-email 2.27.0.rc0
-In-Reply-To: <20200527071150.3381228-1-natechancellor@gmail.com>
-References: <20200527071150.3381228-1-natechancellor@gmail.com>
-MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+        id S1729178AbgE0HP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 03:15:58 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:60396 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728821AbgE0HP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 03:15:57 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxr2ugE85eDIs5AA--.467S2;
+        Wed, 27 May 2020 15:15:44 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: [PATCH v2 1/2] clk: hisilicon: Use correct return value about hisi_reset_init()
+Date:   Wed, 27 May 2020 15:15:42 +0800
+Message-Id: <1590563743-30707-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxr2ugE85eDIs5AA--.467S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZr1kZF4kKF13Ar18Xw4fKrg_yoW5WF1rpF
+        48JFW2ya4Yga17XFnrXrZ0yFy5Za42gayUGFW8Z3sxZwn8JrWUZr1fury8Xayqqrs3KFWa
+        9r40kr48uayjyFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4x
+        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
+        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
+        W8JwCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUfpnQUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang warns:
+The return value about hisi_reset_init() is not correct, fix it.
 
-drivers/staging/media/atomisp/pci/runtime/binary/src/binary.c:1707:64:
-warning: implicit conversion from enumeration type 'const enum
-ia_css_frame_format' to different enumeration type 'enum
-atomisp_input_format' [-Wenum-conversion]
-        binary_supports_input_format(xcandidate, req_in_info->format));
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~             ~~~~~~~~~~~~~^~~~~~
-
-As it turns out, binary_supports_input_format only asserts that
-xcandidate is not NULL and just returns true so this call is never
-actually made.
-
-There are other functions that are called that assert info is not NULL
-so this function actually serves no purpose. Remove it. It can be
-brought back if needed later.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/1036
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Fixes: e9a2310fb689 ("reset: hisilicon: fix potential NULL pointer dereference")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- .../atomisp/pci/runtime/binary/src/binary.c   | 21 -------------------
- 1 file changed, 21 deletions(-)
 
-diff --git a/drivers/staging/media/atomisp/pci/runtime/binary/src/binary.c b/drivers/staging/media/atomisp/pci/runtime/binary/src/binary.c
-index 2a23b7c6aeeb..0be2331c66cd 100644
---- a/drivers/staging/media/atomisp/pci/runtime/binary/src/binary.c
-+++ b/drivers/staging/media/atomisp/pci/runtime/binary/src/binary.c
-@@ -857,18 +857,6 @@ binary_supports_output_format(const struct ia_css_binary_xinfo *info,
- 	return false;
- }
+v2:
+  - No changes, just add "Fixes:" tag
+
+ drivers/clk/hisilicon/clk-hi3519.c      | 4 ++--
+ drivers/clk/hisilicon/crg-hi3516cv300.c | 4 ++--
+ drivers/clk/hisilicon/crg-hi3798cv200.c | 4 ++--
+ drivers/clk/hisilicon/reset.c           | 4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/clk/hisilicon/clk-hi3519.c b/drivers/clk/hisilicon/clk-hi3519.c
+index ad0c7f3..803fa66 100644
+--- a/drivers/clk/hisilicon/clk-hi3519.c
++++ b/drivers/clk/hisilicon/clk-hi3519.c
+@@ -149,8 +149,8 @@ static int hi3519_clk_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
  
--#ifdef ISP2401
--static bool
--binary_supports_input_format(const struct ia_css_binary_xinfo *info,
--			     enum atomisp_input_format format)
--{
--	assert(info);
--	(void)format;
--
--	return true;
--}
--#endif
--
- static bool
- binary_supports_vf_format(const struct ia_css_binary_xinfo *info,
- 			  enum ia_css_frame_format format)
-@@ -1699,15 +1687,6 @@ ia_css_binary_find(struct ia_css_binary_descr *descr,
- 					    binary_supports_output_format(xcandidate, req_bin_out_info->format));
- 			continue;
- 		}
--#ifdef ISP2401
--		if (!binary_supports_input_format(xcandidate, descr->stream_format)) {
--			ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE,
--					    "ia_css_binary_find() [%d] continue: !%d\n",
--					    __LINE__,
--					    binary_supports_input_format(xcandidate, req_in_info->format));
--			continue;
--		}
--#endif
- 		if (xcandidate->num_output_pins > 1 &&
- 		    /* in case we have a second output pin, */
- 		    req_vf_info                   && /* and we need vf output. */
+ 	crg->rstc = hisi_reset_init(pdev);
+-	if (!crg->rstc)
+-		return -ENOMEM;
++	if (IS_ERR(crg->rstc))
++		return PTR_ERR(crg->rstc);
+ 
+ 	crg->clk_data = hi3519_clk_register(pdev);
+ 	if (IS_ERR(crg->clk_data)) {
+diff --git a/drivers/clk/hisilicon/crg-hi3516cv300.c b/drivers/clk/hisilicon/crg-hi3516cv300.c
+index 5d4e61c..c2af03d 100644
+--- a/drivers/clk/hisilicon/crg-hi3516cv300.c
++++ b/drivers/clk/hisilicon/crg-hi3516cv300.c
+@@ -271,8 +271,8 @@ static int hi3516cv300_crg_probe(struct platform_device *pdev)
+ 		return -ENOENT;
+ 
+ 	crg->rstc = hisi_reset_init(pdev);
+-	if (!crg->rstc)
+-		return -ENOMEM;
++	if (IS_ERR(crg->rstc))
++		return PTR_ERR(crg->rstc);
+ 
+ 	crg->clk_data = crg->funcs->register_clks(pdev);
+ 	if (IS_ERR(crg->clk_data)) {
+diff --git a/drivers/clk/hisilicon/crg-hi3798cv200.c b/drivers/clk/hisilicon/crg-hi3798cv200.c
+index 08a19ba..66fd6a9 100644
+--- a/drivers/clk/hisilicon/crg-hi3798cv200.c
++++ b/drivers/clk/hisilicon/crg-hi3798cv200.c
+@@ -354,8 +354,8 @@ static int hi3798cv200_crg_probe(struct platform_device *pdev)
+ 		return -ENOENT;
+ 
+ 	crg->rstc = hisi_reset_init(pdev);
+-	if (!crg->rstc)
+-		return -ENOMEM;
++	if (IS_ERR(crg->rstc))
++		return PTR_ERR(crg->rstc);
+ 
+ 	crg->clk_data = crg->funcs->register_clks(pdev);
+ 	if (IS_ERR(crg->clk_data)) {
+diff --git a/drivers/clk/hisilicon/reset.c b/drivers/clk/hisilicon/reset.c
+index 93cee17..f17d15f 100644
+--- a/drivers/clk/hisilicon/reset.c
++++ b/drivers/clk/hisilicon/reset.c
+@@ -93,11 +93,11 @@ struct hisi_reset_controller *hisi_reset_init(struct platform_device *pdev)
+ 
+ 	rstc = devm_kmalloc(&pdev->dev, sizeof(*rstc), GFP_KERNEL);
+ 	if (!rstc)
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	rstc->membase = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(rstc->membase))
+-		return NULL;
++		return rstc->membase;
+ 
+ 	spin_lock_init(&rstc->lock);
+ 	rstc->rcdev.owner = THIS_MODULE;
 -- 
-2.27.0.rc0
+2.1.0
 
