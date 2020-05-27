@@ -2,135 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091D91E4628
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0691E4631
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:40:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389359AbgE0Ojb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 10:39:31 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:42626 "EHLO loongson.cn"
+        id S2389387AbgE0Okj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 10:40:39 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:42650 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389179AbgE0Oja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 10:39:30 -0400
+        id S2389198AbgE0Oki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 10:40:38 -0400
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Ax9umae85e9bA5AA--.593S2;
-        Wed, 27 May 2020 22:39:22 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Ax9umae85e9bA5AA--.593S3;
+        Wed, 27 May 2020 22:39:23 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>
 Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
         Xuefeng Li <lixuefeng@loongson.cn>,
         Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: [PATCH v4 1/2] clk: hisilicon: Use correct return value about hisi_reset_init()
-Date:   Wed, 27 May 2020 22:39:21 +0800
-Message-Id: <1590590362-11570-1-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH v4 2/2] clk: Allow COMPILE_TEST for subdir hisilicon in Makefile
+Date:   Wed, 27 May 2020 22:39:22 +0800
+Message-Id: <1590590362-11570-2-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Ax9umae85e9bA5AA--.593S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAFW3WFWfGrW8uw1rJryfXrb_yoW5Ar4fpF
-        48JFW2ya4Yga17X3ZrX390yFy5Za42gayUGFW8Z3sxZwn8JrWDZr1fury8Zayqqrs3KFWa
-        9r40kr48ua1jyFUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9S14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE
-        5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeV
-        CFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l
-        c7CjxVAaw2AFwI0_JF0_Jw1lc2xSY4AK67AK6ry5MxAIw28IcxkI7VAKI48JMxC20s026x
-        CaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_
-        JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r
-        1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_
-        Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr
-        1UYxBIdaVFxhVjvjDU0xZFpf9x0JU21v-UUUUU=
+In-Reply-To: <1590590362-11570-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1590590362-11570-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf9Ax9umae85e9bA5AA--.593S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw45JFWxJw45Ww48Xr47Jwb_yoW8uF17pa
+        n5JrW7trykXF47KFZ7ArW29FyYqanaqFWqkFy8Z3WYvr98JFWFvr4Ig348tF4UWr18Gay3
+        Xa97u343CF1Yk37anT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUmI14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+        x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84
+        ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2kK
+        e7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I
+        80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCj
+        c4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262
+        kKe7AKxVWUAVWUtwCY02Avz4vE14v_Xryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Y
+        z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
+        AF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4l
+        IxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCw
+        CI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnI
+        WIevJa73UjIFyTuYvjfU8TmhDUUUU
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The return value about hisi_reset_init() is not correct, fix it.
+If CONFIG_ARCH_HISI is not set but COMPILE_TEST is set, some files
+in the subdir hisilicon can not be built due to CONFIG_ARCH_HISI
+check in drivers/clk/Makefile.
 
-Fixes: e9a2310fb689 ("reset: hisilicon: fix potential NULL pointer dereference")
+Since the related configs in drivers/clk/hisilicon/Kconfig depend
+on ARCH_HISI, so remove CONFIG_ARCH_HISI check for subdir hisilicon
+in drivers/clk/Makefile.
+
+At the same time, we should add CONFIG_ARCH_HISI and COMPILE_TEST
+(for better compile testing coverage) check for the common files
+in drivers/clk/hisilicon/Makefile, otherwise there exists build
+failure about undefined reference.
+
+Reported-by: kbuild test robot <lkp@intel.com>
 Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
 
 v2:
-  - No changes, just add "Fixes:" tag
+  - Add CONFIG_ARCH_HISI check for the common files
+    to fix the build failure
 
 v3:
-  - Use ERR_CAST(rstc->membase) to fix the sparse warning
+  - Add CONFIG_COMPILE_TEST check for the common files
+    for better compile testing coverage
 
 v4:
-  - No changes
+  - Modify the patch subject to reflect the reality
 
- drivers/clk/hisilicon/clk-hi3519.c      | 4 ++--
- drivers/clk/hisilicon/crg-hi3516cv300.c | 4 ++--
- drivers/clk/hisilicon/crg-hi3798cv200.c | 4 ++--
- drivers/clk/hisilicon/reset.c           | 4 ++--
- 4 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/clk/Makefile           | 2 +-
+ drivers/clk/hisilicon/Makefile | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/hisilicon/clk-hi3519.c b/drivers/clk/hisilicon/clk-hi3519.c
-index ad0c7f3..803fa66 100644
---- a/drivers/clk/hisilicon/clk-hi3519.c
-+++ b/drivers/clk/hisilicon/clk-hi3519.c
-@@ -149,8 +149,8 @@ static int hi3519_clk_probe(struct platform_device *pdev)
- 		return -ENOMEM;
+diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
+index f4169cc..81045ec 100644
+--- a/drivers/clk/Makefile
++++ b/drivers/clk/Makefile
+@@ -79,7 +79,7 @@ obj-y					+= bcm/
+ obj-$(CONFIG_ARCH_BERLIN)		+= berlin/
+ obj-$(CONFIG_ARCH_DAVINCI)		+= davinci/
+ obj-$(CONFIG_H8300)			+= h8300/
+-obj-$(CONFIG_ARCH_HISI)			+= hisilicon/
++obj-y					+= hisilicon/
+ obj-y					+= imgtec/
+ obj-y					+= imx/
+ obj-y					+= ingenic/
+diff --git a/drivers/clk/hisilicon/Makefile b/drivers/clk/hisilicon/Makefile
+index b2441b9..e58104d 100644
+--- a/drivers/clk/hisilicon/Makefile
++++ b/drivers/clk/hisilicon/Makefile
+@@ -3,7 +3,8 @@
+ # Hisilicon Clock specific Makefile
+ #
  
- 	crg->rstc = hisi_reset_init(pdev);
--	if (!crg->rstc)
--		return -ENOMEM;
-+	if (IS_ERR(crg->rstc))
-+		return PTR_ERR(crg->rstc);
+-obj-y	+= clk.o clkgate-separated.o clkdivider-hi6220.o clk-hisi-phase.o
++obj-$(CONFIG_ARCH_HISI)		+= clk.o clkgate-separated.o clkdivider-hi6220.o clk-hisi-phase.o
++obj-$(CONFIG_COMPILE_TEST)	+= clk.o clkgate-separated.o clkdivider-hi6220.o clk-hisi-phase.o
  
- 	crg->clk_data = hi3519_clk_register(pdev);
- 	if (IS_ERR(crg->clk_data)) {
-diff --git a/drivers/clk/hisilicon/crg-hi3516cv300.c b/drivers/clk/hisilicon/crg-hi3516cv300.c
-index 5d4e61c..c2af03d 100644
---- a/drivers/clk/hisilicon/crg-hi3516cv300.c
-+++ b/drivers/clk/hisilicon/crg-hi3516cv300.c
-@@ -271,8 +271,8 @@ static int hi3516cv300_crg_probe(struct platform_device *pdev)
- 		return -ENOENT;
- 
- 	crg->rstc = hisi_reset_init(pdev);
--	if (!crg->rstc)
--		return -ENOMEM;
-+	if (IS_ERR(crg->rstc))
-+		return PTR_ERR(crg->rstc);
- 
- 	crg->clk_data = crg->funcs->register_clks(pdev);
- 	if (IS_ERR(crg->clk_data)) {
-diff --git a/drivers/clk/hisilicon/crg-hi3798cv200.c b/drivers/clk/hisilicon/crg-hi3798cv200.c
-index 08a19ba..66fd6a9 100644
---- a/drivers/clk/hisilicon/crg-hi3798cv200.c
-+++ b/drivers/clk/hisilicon/crg-hi3798cv200.c
-@@ -354,8 +354,8 @@ static int hi3798cv200_crg_probe(struct platform_device *pdev)
- 		return -ENOENT;
- 
- 	crg->rstc = hisi_reset_init(pdev);
--	if (!crg->rstc)
--		return -ENOMEM;
-+	if (IS_ERR(crg->rstc))
-+		return PTR_ERR(crg->rstc);
- 
- 	crg->clk_data = crg->funcs->register_clks(pdev);
- 	if (IS_ERR(crg->clk_data)) {
-diff --git a/drivers/clk/hisilicon/reset.c b/drivers/clk/hisilicon/reset.c
-index 93cee17..c733e2e 100644
---- a/drivers/clk/hisilicon/reset.c
-+++ b/drivers/clk/hisilicon/reset.c
-@@ -93,11 +93,11 @@ struct hisi_reset_controller *hisi_reset_init(struct platform_device *pdev)
- 
- 	rstc = devm_kmalloc(&pdev->dev, sizeof(*rstc), GFP_KERNEL);
- 	if (!rstc)
--		return NULL;
-+		return ERR_PTR(-ENOMEM);
- 
- 	rstc->membase = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(rstc->membase))
--		return NULL;
-+		return ERR_CAST(rstc->membase);
- 
- 	spin_lock_init(&rstc->lock);
- 	rstc->rcdev.owner = THIS_MODULE;
+ obj-$(CONFIG_ARCH_HI3xxx)	+= clk-hi3620.o
+ obj-$(CONFIG_ARCH_HIP04)	+= clk-hip04.o
 -- 
 2.1.0
 
