@@ -2,66 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 323BA1E43CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0483E1E43D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388320AbgE0Ndo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:33:44 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:52000 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387730AbgE0Ndk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:33:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=opjoqZxCQdaB3EzLhcpxSqBTfSFuC3UOtI1l3JqnwoU=; b=Kgft5gaHZhY6Kt4LopUAPR1ibt
-        iemlkwvFnSOxJ271VosIgscoX/KwtN7xZ/kuhmVq/CrBp6KE281qC0tv5OMou0Hw+rqgRrij29HCQ
-        DV/oOV3I+Uk2wVTQGSfJ4hCiCskj0zzroOumECHC2x/r/e0C7rvWilX+xSTk/WUs3nc8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jdwBB-003PI5-M7; Wed, 27 May 2020 15:33:09 +0200
-Date:   Wed, 27 May 2020 15:33:09 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Emanuele Giuseppe Esposito <e.emanuelegiuseppe@gmail.com>,
-        David Rientjes <rientjes@google.com>,
-        Jonathan Adams <jwadams@google.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v3 0/7] Statsfs: a new ram-based file system for Linux
- kernel statistics
-Message-ID: <20200527133309.GC793752@lunn.ch>
-References: <20200526110318.69006-1-eesposit@redhat.com>
- <20200526153128.448bfb43@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <6a754b40-b148-867d-071d-8f31c5c0d172@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6a754b40-b148-867d-071d-8f31c5c0d172@redhat.com>
+        id S2388358AbgE0Nf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:35:28 -0400
+Received: from mail-m964.mail.126.com ([123.126.96.4]:58900 "EHLO
+        mail-m964.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387664AbgE0Nf1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 09:35:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=3DyG6h3I4Y9QuJnn1o
+        Dt9FDzi0q1kTIE4vr9uP1Hf8Y=; b=KYcnLUNVxO6wHCp0XK4d5TSzi445ljV8J4
+        ruv/SA+S5CdLgJYZNQVEwilx0YJa3dsYuTbgXcZVhb076F1/aHDYVaYqqNqhvdJt
+        jyzuQWKakGfEdlkt7oeyoBr7oV5rud+vKiJhG0pwBPwk6Efh2QR1ZbPA7X89FT3X
+        PtnXPZPKM=
+Received: from localhost.localdomain (unknown [122.194.9.250])
+        by smtp9 (Coremail) with SMTP id NeRpCgBHa2sqbM5eBKQPPw--.188S3;
+        Wed, 27 May 2020 21:33:32 +0800 (CST)
+From:   chenxb_99091@126.com
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Xuebing Chen <chenxb_99091@126.com>
+Subject: Re:Re:[PATCH] drm: fix setting of plane_mask in pan_display_atomic()  function for linux-4.4
+Date:   Wed, 27 May 2020 21:33:27 +0800
+Message-Id: <1590586407-4109-1-git-send-email-chenxb_99091@126.com>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: NeRpCgBHa2sqbM5eBKQPPw--.188S3
+X-Coremail-Antispam: 1Uf129KBjvJXoW7uFyDAw1ftrWDJw48Zw43ZFb_yoW8Cr1fpF
+        4xAF95KF18ta1UCasFgan7Zr13ua1xWr1xWr1Ygr1Y9ryUtFy7tFsrZ3y3Wa4jqry3Gw13
+        twn8CasF9F15ArJanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07b8Oz3UUUUU=
+X-Originating-IP: [122.194.9.250]
+X-CM-SenderInfo: hfkh05lebzmiizr6ij2wof0z/1tbiJQ0xxV3WD2bedwABsW
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I don't really know a lot about the networking subsystem, and as it was
-> pointed out in another email on patch 7 by Andrew, networking needs to
-> atomically gather and display statistics in order to make them consistent,
-> and currently this is not supported by stats_fs but could be added in
-> future.
+From: Xuebing Chen <chenxb_99091@126.com>
 
-Hi Emanuele
+On Mon, May 25, 2020 at 04:34:28PM +0200, Daniel Vetter wrote:
+> On Sat, May 23, 2020 at 11:49:07AM +0800, chenxb_99091@126.com wrote:
+> > From: Xuebing Chen <chenxb_99091@126.com>
+> > 
+> > The <include/drm/drm_crtc.h> provides drm_for_each_plane_mask macro and
+> > plane_mask is defined as bitmask of plane indices, such as
+> > 1<<drm_plane_index(plane). This patch fixes error setting of plane_mask
+> > in pan_display_atomic() function.
+> > 
+> > Signed-off-by: Xuebing Chen <chenxb_99091@126.com>
+> 
+> What kernel is this patch against? Latest upstream doesn't have any such
+> code anymore ... I'm assuming that Ville fixed this in one of his patches,
+> but I can't find the right one just now.
 
-Do you have any idea how you will support atomic access? It does not
-seem easy to implement in a filesystem based model.
+This bug is still present in the longterm-supported versions of kernel 4.4.y, 
+including the latest kernel v4.4.224,
+See https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/?h=v4.4.224
 
-     Andrew
+
+
+> -Daniel
+> 
+> > ---
+> >  drivers/gpu/drm/drm_fb_helper.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_helper.c
+> > index e449f22..6a9f7ee 100644
+> > --- a/drivers/gpu/drm/drm_fb_helper.c
+> > +++ b/drivers/gpu/drm/drm_fb_helper.c
+> > @@ -1256,7 +1256,7 @@ retry:
+> >  			goto fail;
+> >  
+> >  		plane = mode_set->crtc->primary;
+> > -		plane_mask |= drm_plane_index(plane);
+> > +		plane_mask |= 1 << drm_plane_index(plane);
+> >  		plane->old_fb = plane->fb;
+> >  	}
+> >  
+> > -- 
+> > 2.7.4
+> > 
+> > _______________________________________________
+> > dri-devel mailing list
+> > dri-devel@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
+> -- 
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
+
+
+
