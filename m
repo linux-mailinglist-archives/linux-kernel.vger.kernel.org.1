@@ -2,116 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D30351E4EE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C81F1E4EDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387666AbgE0UKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 16:10:16 -0400
-Received: from mta-p6.oit.umn.edu ([134.84.196.206]:38360 "EHLO
-        mta-p6.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387629AbgE0UKN (ORCPT
+        id S2387523AbgE0UJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 16:09:52 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:46008 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387432AbgE0UJw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 16:10:13 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-p6.oit.umn.edu (Postfix) with ESMTP id 49XMPw2mpyz9vZ2R
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 20:10:12 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at umn.edu
-Received: from mta-p6.oit.umn.edu ([127.0.0.1])
-        by localhost (mta-p6.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id S72-_PqyCzUr for <linux-kernel@vger.kernel.org>;
-        Wed, 27 May 2020 15:10:12 -0500 (CDT)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mta-p6.oit.umn.edu (Postfix) with ESMTPS id 49XMPw138jz9vK0r
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 15:10:12 -0500 (CDT)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p6.oit.umn.edu 49XMPw138jz9vK0r
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p6.oit.umn.edu 49XMPw138jz9vK0r
-Received: by mail-io1-f71.google.com with SMTP id t23so17771753iog.21
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 13:10:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umn.edu; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=hPSY+Zh0t1rGNkSqJtjBbGWhpyEB+X/pF0E6TThgwhg=;
-        b=cO0BH8ko43bkOPatdOWMTW1FAm4WGWEPap0aloF2Ov8I0nG59A/3qh6AZfb6yAbZZO
-         WAhNKKNK7gSl5i+QdplLfll1L86UVGr2JjcN3cCuvjtM4R1WxDbhalnYCwNgAdRyz5pR
-         gYgtyRBZD+g5y6bZ/jB0XJ+eePjHUzxTXtJ8zt8lnJwfL9WqejH+dysiC2m3vWxz0qIU
-         5nQrWV7T5cxzaojhGzAJaNCP3VPFY8xJInVRdfzCR+MaWpnpTT3X+w0EwAsjWp/q6kjl
-         XGbnFX8oRUWA22jCtYpUo772KJpqFPyEjNrgn1OTYXUggTnMtWI0arlJAKaeejZwEVHO
-         OJ/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=hPSY+Zh0t1rGNkSqJtjBbGWhpyEB+X/pF0E6TThgwhg=;
-        b=NmOFRPJ+l1W6Xf9oEJcZhhhKv8FBb3Vk/40y5Wi2mm6TTLVd0ePNV4cZmRvwvzFYO6
-         l4X6/tyz9SzzDLNXWCPJVyYmSE6wPWsZaPalH1/HBGaBLyUZAe5+z7BTv4Gm+XTUbQ02
-         F//MGINyT9GUXeBwNLuMv2g2Gm+gl/wgIGnNvdS8VZx92OTdhi+112ZwUctErmTjc7Bp
-         XJwXL7pbQHncJkdTqlPoGzFxT93Y3+ccWEj7Uc4+MydDzJD8xIiZ63wYqwckRcl7tpey
-         7vFWTk2nHbudOgB+1jBwxHvlXrjPN817uY7TLYOH3/hvGpETaJ7921EFG9zUZs+26por
-         yGkQ==
-X-Gm-Message-State: AOAM531Dxe31Z0OKwcTYS5MrWdUpVrAVwERNMjKSp+0kirC1VdOuQQyf
-        9Jut7/bLRquugImHMKoSPAX2qx0191yDGXCh21MkujDGVu1jipLusiP0XrM9+5R8gw2i3maXhu5
-        izqWw8qAo2U7O+PWpw9L4cLDnBQyC
-X-Received: by 2002:a6b:7b4a:: with SMTP id m10mr8477805iop.55.1590610211694;
-        Wed, 27 May 2020 13:10:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxuhrc7NDsfRK/mm7gpFg9DSuH5ZtlqPdBbXWHpT2UnfIHxGwqhPUuTPCAJzX65HWUIdG9W/A==
-X-Received: by 2002:a6b:7b4a:: with SMTP id m10mr8477782iop.55.1590610211353;
-        Wed, 27 May 2020 13:10:11 -0700 (PDT)
-Received: from qiushi.dtc.umn.edu (cs-kh5248-02-umh.cs.umn.edu. [128.101.106.4])
-        by smtp.gmail.com with ESMTPSA id y11sm2020565ily.22.2020.05.27.13.10.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2020 13:10:10 -0700 (PDT)
-From:   wu000273@umn.edu
-To:     kjlu@umn.edu
-Cc:     wu000273@umn.edu, Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Vyacheslav Dubeyko <Vyacheslav.Dubeyko@hgst.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-nilfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] nilfs2: Fix reference count leak in nilfs_sysfs_create_device_group
-Date:   Wed, 27 May 2020 15:09:33 -0500
-Message-Id: <20200527200933.31135-1-wu000273@umn.edu>
-X-Mailer: git-send-email 2.17.1
+        Wed, 27 May 2020 16:09:52 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id 5345E2A0494
+From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+To:     axboe@kernel.dk, corbet@lwn.net, linux-block@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel@collabora.com,
+        krisman@collabora.com,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+Subject: [PATCH] docs: block: Create blk-mq documentation
+Date:   Wed, 27 May 2020 17:09:39 -0300
+Message-Id: <20200527200939.77452-1-andrealmeid@collabora.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+Create a documentation providing a background and explanation around the
+operation of the Multi-Queue Block IO Queueing Mechanism (blk-mq).
 
-kobject_init_and_add() takes reference even when it fails.
-In nilfs_sysfs_create_device_group(), the memory allocated by
-kobject_init_and_add() is not freed when kobject_init_and_add()
-fails. Thus replace the jump target "free_dev_subgroups" by
-"cleanup_dev_kobject".
+The reference for writing this documentation was the source code and
+"Linux Block IO: Introducing Multi-queue SSD Access on Multi-core
+Systems", by Axboe et al.
 
-Fixes: da7141fb78db ("nilfs2: add /sys/fs/nilfs2/<device> group")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Signed-off-by: André Almeida <andrealmeid@collabora.com>
 ---
- fs/nilfs2/sysfs.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Hello,
 
-diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
-index e60be7bb55b0..4a74756d52fe 100644
---- a/fs/nilfs2/sysfs.c
-+++ b/fs/nilfs2/sysfs.c
-@@ -1000,7 +1000,7 @@ int nilfs_sysfs_create_device_group(struct super_block *sb)
- 	err = kobject_init_and_add(&nilfs->ns_dev_kobj, &nilfs_dev_ktype, NULL,
- 				    "%s", sb->s_id);
- 	if (err)
--		goto free_dev_subgroups;
-+		goto cleanup_dev_kobject;
- 
- 	err = nilfs_sysfs_create_mounted_snapshots_group(nilfs);
- 	if (err)
-@@ -1038,8 +1038,6 @@ int nilfs_sysfs_create_device_group(struct super_block *sb)
- 
- cleanup_dev_kobject:
- 	kobject_del(&nilfs->ns_dev_kobj);
--
--free_dev_subgroups:
- 	kfree(nilfs->ns_dev_subgroups);
- 
- failed_create_device_group:
+This commit was tested using "make htmldocs" and the HTML output has
+been verified.
+
+Thanks,
+	André
+---
+ Documentation/block/blk-mq.rst | 154 +++++++++++++++++++++++++++++++++
+ Documentation/block/index.rst  |   1 +
+ 2 files changed, 155 insertions(+)
+ create mode 100644 Documentation/block/blk-mq.rst
+
+diff --git a/Documentation/block/blk-mq.rst b/Documentation/block/blk-mq.rst
+new file mode 100644
+index 000000000000..4c37b37df50e
+--- /dev/null
++++ b/Documentation/block/blk-mq.rst
+@@ -0,0 +1,154 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++================================================
++Multi-Queue Block IO Queueing Mechanism (blk-mq)
++================================================
++
++The Multi-Queue Block IO Queueing Mechanism is an API to enable fast storage
++devices to achieve a huge number of input/output operations per second (IOPS)
++through queueing and submitting IO requests to block devices simultaneously,
++benefiting from the parallelism offered by modern storage devices.
++
++Introduction
++============
++
++Background
++----------
++
++Magnetic hard disks have been the de facto standard from the beginning of the
++development of the kernel. The Block IO subsystem aimed to achieve the best
++performance possible for those devices with a high penalty when doing random
++access, and the bottleneck was the mechanical moving parts, a lot more slower
++than any layer on the storage stack. One example of such optimization technique
++involves ordering read/write requests accordingly to the current position of
++the hard disk head.
++
++However, with the development of Solid State Drivers and Non-Volatile Memories
++without mechanical parts nor random access penalty and capable of performing
++high parallel access, the bottleneck of the stack had moved from the storage
++device to the operating system. In order to  take advantage of the parallelism
++in those devices design, the multi-queue mechanism was introduced.
++
++The former design had a single queue to store block IO requests with a single
++lock, that did not scale well in SMP systems due to dirty data in cache and the
++bottleneck of having a single lock for multiple processors. This setup also
++suffered with congestion when different processes (or the same process, moving
++to different CPUs) wanted to perform block IO. Instead of this, this API spawns
++multiple queues with individual entry points local to the CPU, removing the
++need for a lock. A deeper explanation on how this works is covered in the
++following section (`Operation`_).
++
++Operation
++---------
++
++When the userspace performs IO to a block device (reading or writing a file,
++for instance), the blk-mq takes action: it will store and manage IO requests to
++the block device, acting as a middleware between the userspace (and a file
++system, if present) and the block device driver.
++
++The blk-mq has two group of queues: software staging queues and hardware
++dispatch queues. When the request arrives the block layer, it will try the
++shortest path possible: send it directly to the hardware queue. However, there
++are two cases that it might not to do that: if there's an IO scheduler attached
++at the layer or if we want to try to merge requests. In both cases, requests
++will be sent to the software queue.
++
++Then, after the requests being processed at software queues, they will be
++placed at the hardware queue, a second stage queue were the hardware has direct
++access to process those requests. However, if the hardware has not enough
++resources to accept more requests, it will place requests at temporary queue,
++to be sent in the future, when the hardware is able.
++
++Software staging queues
++~~~~~~~~~~~~~~~~~~~~~~~
++
++The block IO subsystem adds requests (represented by struct
++:c:type:`blk_mq_ctx`) in the software staging queues in case that they weren't
++sent directly to the driver. A request is a collection of BIOs. They arrived at
++the block layer through the data structures struct :c:type:`bio`. The block
++layer will then build a new structure from it, the struct :c:type:`request`
++that will be used to communicate with the device driver. Each queue has its
++owns lock and the number of queues is defined by a per-CPU or per-node basis.
++
++The staging queue can be used to merge requests for adjacent sectors. For
++instance, requests for sector 3-6, 6-7, 7-9 can become one request for 3-9.
++Even if random access to SSDs and NVMs have the same time of response compared
++to sequential access, grouped requests for sequential access decreases the
++number of individual requests. This technique of merging requests is called
++plugging.
++
++Along with that, the requests can be reordered to ensure fairness of system
++resources (e.g. to ensure that no application suffer from starvation) and/or to
++improve IO performance, by an IO scheduler.
++
++IO Schedulers
++^^^^^^^^^^^^^
++
++There are several schedulers implemented by the block layer, each one following
++a heuristics to improve the IO performance. They are "pluggable" (as in plug
++and play), in the sense of they can be selected at run time using sysfs. You
++can read more about Linux's IO schedulers `here
++<https://www.kernel.org/doc/html/latest/block/index.html>`_. The scheduling
++happens only between requests in the same queue, so it is not possible to merge
++requests from different queues, otherwise there would be cache trashing and a
++need to have a lock for each queue. After the scheduling, the requests are
++eligible to be sent to the hardware. One of the possibles schedulers to be
++selected is the NOOP scheduler, the most straightforward one, that implements a
++simple FIFO, without performing any reordering. This is useful in the following
++scenarios: when scheduling will be performed in a next step somewhere in the
++stack, like block devices controllers; the actual sector position of blocks are
++transparent for the host, meaning it hasn't enough information to take a proper
++decision; or the overhead of reordering is higher than the handicap of
++non-sequential accesses.
++
++Hardware dispatch queues
++~~~~~~~~~~~~~~~~~~~~~~~~
++
++The hardware queue is a memory space shared with the block device (e.g. DMA)
++where the hardware can access and dispatch requests (represented by struct
++:c:type:`blk_mq_hw_ctx`). To run this queue, the block layer removes
++requests from the associated software queues and tries to dispatch to the
++hardware.
++
++If it's not possible to send the requests directly to hardware, they will be
++added to a linked list (:c:type:`hctx->dispatched`) of requests. Then,
++next time the block layer runs a queue, it will send the requests laying at the
++:c:type:`dispatched` list first, to ensure a fairness dispatch with those
++requests that were ready to be sent first. The number of hardware queues
++depends on the number of hardware context supported by the hardware and its
++device driver, but it will not be more than the number of cores of the system.
++There is no reordering at this stage, and each software queues has a set of
++hardware queues to send requests for.
++
++.. note::
++
++        Neither the block layer nor the device protocols guarantee
++        the order of completion of requests. This must be handled by
++        higher layers, like the filesystem.
++
++Tag-based completion
++~~~~~~~~~~~~~~~~~~~~
++
++In order to indicate which request has been completed, every request is
++identified by an integer, ranging from 0 to the dispatch queue size. This tag
++is generated by the block layer and later reused by the device driver, removing
++the need to create a redundant identifier. When a request is completed in the
++drive, the tag is sent back to the block layer to notify it of the finalization.
++This removes the need to do a linear search to find out which IO has been
++completed.
++
++Further reading
++---------------
++
++- `Linux Block IO: Introducing Multi-queue SSD Access on Multi-core Systems <http://kernel.dk/blk-mq.pdf>`_
++
++- `NOOP scheduler <https://en.wikipedia.org/wiki/Noop_scheduler>`_
++
++- `Null block device driver <https://www.kernel.org/doc/html/latest/block/null_blk.html>`_
++
++Source code documentation
++=========================
++
++.. kernel-doc:: include/linux/blk-mq.h
++
++.. kernel-doc:: block/blk-mq.c
+diff --git a/Documentation/block/index.rst b/Documentation/block/index.rst
+index 3fa7a52fafa4..3a3f38322185 100644
+--- a/Documentation/block/index.rst
++++ b/Documentation/block/index.rst
+@@ -10,6 +10,7 @@ Block
+    bfq-iosched
+    biodoc
+    biovecs
++   blk-mq
+    capability
+    cmdline-partition
+    data-integrity
 -- 
-2.17.1
+2.26.2
 
