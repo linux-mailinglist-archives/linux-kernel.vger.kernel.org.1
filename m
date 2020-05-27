@@ -2,57 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0874E1E3922
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 08:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3341E392E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 08:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728415AbgE0G0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 02:26:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54192 "EHLO
+        id S1728577AbgE0G1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 02:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728003AbgE0G0X (ORCPT
+        with ESMTP id S1728003AbgE0G1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 02:26:23 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD24C061A0F;
-        Tue, 26 May 2020 23:26:23 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 2DE99127F8DB0;
-        Tue, 26 May 2020 23:26:22 -0700 (PDT)
-Date:   Tue, 26 May 2020 23:26:21 -0700 (PDT)
-Message-Id: <20200526.232621.1824602150267081837.davem@davemloft.net>
-To:     o.rempel@pengutronix.de
-Cc:     andrew@lunn.ch, f.fainelli@gmail.com, hkallweit1@gmail.com,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux@armlinux.org.uk
-Subject: Re: [PATCH v2] net: phy: at803x: add cable diagnostics support for
- ATH9331 and ATH8032
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200527050843.843-1-o.rempel@pengutronix.de>
-References: <20200527050843.843-1-o.rempel@pengutronix.de>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 26 May 2020 23:26:22 -0700 (PDT)
+        Wed, 27 May 2020 02:27:01 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B00C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 23:27:00 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id k18so24787696ion.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 23:27:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=UaQWC80bUQjBJzc1DayNRE/WdGTjwPnpDlHQt30J1Qg=;
+        b=DimA/hyoueYC7BmZmiD49l88h+/5JhgPL+ls7+Qbz2z5d9zHwxY7L/AhmGvhNErWy/
+         mz4ljIz+OjbnadbD/IG72IyWf8ldryGcGBKmTcv0ZF55xB5j/XhuB9f57/ga51ak8mov
+         XGazcvH07XbpMvH6Sc4AGfKXMcTBzuaDAgDpZg9f1xRQSOb8uhGuEJpXE5yFCdi2KhwL
+         OgqJ3+md7zGSvezgWg8/74vqprrbduoOp8xetvV3MVc3yZyWDILxFEuAIXJKLX0FK9+g
+         98gIcev75v2M9Gf7Vsoyer0HnNb8sWT15mDT3pKth0lodLofzHeZhYliVoNhvuRSTatN
+         gLAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=UaQWC80bUQjBJzc1DayNRE/WdGTjwPnpDlHQt30J1Qg=;
+        b=d60C/tITHGBJ81SV3NE5U86JW8zmvymIuHIpnjrGnCeBUhqohRHoJks+ohXSXo9tkt
+         XaETYJd7SrHveMA6M1kY7ydMM9t7SwQE4NmQu5r62ieQV6XdYg0MHCAg40JcUkizDWYu
+         g7IemyTsa9siDgmQN4frxFxb6EdmOSVELJqILI0c7GuwREJGDk1KcFu6N95a+uvXfikP
+         z0ieA9obGtvnHj1nrt/O8LddAuNdLkQFnCgymgcm3UpR3YdqKyEalQuU2vX1QjtvATo8
+         MnXQaWrHP5ayoXoU7meWrjRI6I4KAOjdweOAz/Ue+A0OWqZvtKYoM9U9mQH5MLZZSj2I
+         0j8g==
+X-Gm-Message-State: AOAM533Vqvdy0t8XnPrias/Kl0/Jq3ItjFrdXGV1oTggag8lFzmmBZgc
+        gupfc0lVP+oL/K2YOXn0xPD2J86FixZnLrGUmUU=
+X-Google-Smtp-Source: ABdhPJzMFmPUQ83CprWqGnFetJUvDyvcgHHxQ9QWsxQBAnbG1NAFex3RdKAi7jGYMDQuuUkgByjKd2jVxu9OqO9Gsbc=
+X-Received: by 2002:a6b:750c:: with SMTP id l12mr20476776ioh.66.1590560819743;
+ Tue, 26 May 2020 23:26:59 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200524212816.243139-1-nivedita@alum.mit.edu>
+ <20200525225918.1624470-1-nivedita@alum.mit.edu> <CA+icZUVa8FhhwHgXn1o_hFmgqFG6-KE1F+qvkdCzQjmSSSDWDw@mail.gmail.com>
+ <CAMj1kXHVFgRsbssJQD2C0GZnOgG=rMYbPGJQtiKhSw6sZj5PaA@mail.gmail.com>
+ <CA+icZUWyFDgieQswvfhWemzymDh_UiVqH2uH52a+0otcr2Pd4w@mail.gmail.com>
+ <CA+icZUVKRZPFX_Q8RRJnFsHrkM5VbiWUEam+6O5XSzgNaqAzPg@mail.gmail.com>
+ <20200526144748.GA2190602@rani.riverdale.lan> <CA+icZUUY7a5XGwcQQ511OeoTjOzWbrgF8BZdTrLDK09QWG4hwQ@mail.gmail.com>
+ <20200526153636.GD2190602@rani.riverdale.lan>
+In-Reply-To: <20200526153636.GD2190602@rani.riverdale.lan>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Wed, 27 May 2020 08:26:50 +0200
+Message-ID: <CA+icZUVTW=KTRko9Ks5LBx4mcdHhtLsXgyk1_CK2aLt0V4PhPg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] x86/boot: Remove runtime relocations from
+ compressed kernel
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-Date: Wed, 27 May 2020 07:08:43 +0200
+On Tue, May 26, 2020 at 5:36 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> On Tue, May 26, 2020 at 04:50:38PM +0200, Sedat Dilek wrote:
+> > On Tue, May 26, 2020 at 4:47 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> > >
+> > > On Tue, May 26, 2020 at 02:44:29PM +0200, Sedat Dilek wrote:
+> > > >
+> > > > Are those diffs correct when using "x86/boot: Correct relocation
+> > > > destination on old linkers"?
+> > > >
+> > >
+> > > It looks ok, but that patch (and even marking the other symbols .hidden)
+> > > should be unnecessary after this series.
+> >
+> > You mean _bss, _ebss and _end?
+> >
+> > - Sedat -
+>
+> Yes. Those .hidden markings are there to ensure that when relocations
+> are generated (as they are currently), they're generated as
+> R_386_RELATIVE (which uses B+A calculation, with A being the link-time
+> virtual address of the symbol, and stored in the relocation field)
+> rather than R_386_32 (which uses S+A calculation, and so doesn't work
+> without runtime processing). After this patchset there aren't any
+> relocations, so while the .hidden markings won't hurt, they won't be
+> necessary either.
+>
 
-> Add support for Atheros 100Base-T PHYs. The only difference seems to be
-> the ability to test 2 pairs instead of 4 and the lack of 1000Base-T
-> specific register.
-> 
-> Only the ATH9331 was tested with this patch.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Do you plan a change on this?
 
-Applied to net-next, thank you.
+- Sedat -
