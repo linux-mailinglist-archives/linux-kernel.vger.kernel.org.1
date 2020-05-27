@@ -2,148 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 524F71E49AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72CC01E49C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:22:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730947AbgE0QSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 12:18:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725848AbgE0QSs (ORCPT
+        id S1730773AbgE0QWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 12:22:07 -0400
+Received: from smtp1.de.adit-jv.com ([93.241.18.167]:45287 "EHLO
+        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725848AbgE0QWF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 12:18:48 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED34C05BD1E
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 09:18:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=RHgzXdboAvRH0Qxpb6780yAGJZR7CslW148oBOys/44=; b=eKX0lpjYtTpsYBwWEVSFQwb7Hk
-        qDLr6pSgvf6PDdSUfNPyaAVk1gEuQkHfSAwhZ/aC8TONTyXLb8cfpQDaVRetTXaGC8aL4qekEFdiI
-        YMVpgNVf+nOSXmLqzPtn91abUUuBGmKO4oZzHMuTRimazoFCmOAf2AQq4zYj7aVLbU34AdRpL/lwX
-        AksRiCH12Y/Zm4mZxoSWfs2RhoxL8n3sdHSS7v5eMaaa6SxFZx+7GSLa12RX2qZDSD6jaRSqnX4aG
-        epccXnoTShDXynRgebbPbJ1uB8TC2CSOwCIYN1doftGg6FkzD86LJtELWcqcWllyoXwqT1a8jFQ3/
-        C/ElAMjQ==;
-Received: from c-73-157-219-8.hsd1.or.comcast.net ([73.157.219.8] helo=[10.0.0.252])
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jdylR-0008PW-JP; Wed, 27 May 2020 16:18:45 +0000
-Subject: Re: [PATCH v2 1/1] phy: intel: Fix compilation error on FIELD_PREP
- usage
-To:     Dilip Kota <eswara.kota@linux.intel.com>,
-        linux-kernel@vger.kernel.org, kishon@ti.com, vkoul@kernel.org
-Cc:     andriy.shevchenko@intel.com, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com
-References: <8a309dd3c238efbaa59d1649704255d6f8b6c9c5.1590575358.git.eswara.kota@linux.intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <7ad3253d-b581-4833-7e78-2b565b88a75c@infradead.org>
-Date:   Wed, 27 May 2020 09:18:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Wed, 27 May 2020 12:22:05 -0400
+Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
+        by smtp1.de.adit-jv.com (Postfix) with ESMTP id 24D1A3C057C;
+        Wed, 27 May 2020 18:22:04 +0200 (CEST)
+Received: from smtp1.de.adit-jv.com ([127.0.0.1])
+        by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id vs0wsIMLj1_6; Wed, 27 May 2020 18:21:59 +0200 (CEST)
+Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id 29AA33C0579;
+        Wed, 27 May 2020 18:21:59 +0200 (CEST)
+Received: from vmlxhi-121.localdomain (10.72.94.22) by HI2EXCH01.adit-jv.com
+ (10.72.92.24) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 27 May
+ 2020 18:21:58 +0200
+From:   Michael Rodin <mrodin@de.adit-jv.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Michael Rodin <mrodin@de.adit-jv.com>, <michael@rodin.online>,
+        <efriedrich@de.adit-jv.com>, <erosca@de.adit-jv.com>
+Subject: [PATCH] [media] v4l2-subdev.rst: correct information about v4l2 events
+Date:   Wed, 27 May 2020 18:21:32 +0200
+Message-ID: <1590596493-17682-1-git-send-email-mrodin@de.adit-jv.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <8a309dd3c238efbaa59d1649704255d6f8b6c9c5.1590575358.git.eswara.kota@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.72.94.22]
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/27/20 3:56 AM, Dilip Kota wrote:
-> FIELD_PREP expects constant arguments. Istead of doing FIELD_PREP
-> operation on the arguments of combo_phy_w32_off_mask(), pass the
-> final FIELD_PREP value as an argument.
-> 
-> Error reported as:
-> In file included from include/linux/build_bug.h:5,
-> from include/linux/bitfield.h:10,
-> from drivers/phy/intel/phy-intel-combo.c:8:
-> drivers/phy/intel/phy-intel-combo.c: In function 'combo_phy_w32_off_mask':
-> include/linux/bitfield.h:52:28: warning: comparison is always false due to limited range of data type [-Wtype-limits]
-> 
-> include/linux/compiler.h:350:38: error: call to '__compiletime_assert_37' declared with attribute error: FIELD_PREP: mask is not constant
-> 94 |   __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");          |   ^~~~~~~~~~~~~~~~
-> drivers/phy/intel/phy-intel-combo.c:137:13: note: in expansion of macro 'FIELD_PREP'
-> 137 |  reg_val |= FIELD_PREP(mask, val);
-> |             ^~~~~~~~~~
-> 
-> ../include/linux/compiler.h:392:38: error: call to__compiletime_assert_137
->  declared with attribute error:
-> BUILD_BUG_ON failed: (((mask) + (1ULL << (__builtin_ffsll(mask) - 1))) & (((mask) + (1ULL << (__builtin_ffsll(mask) - 1))) - 1)) != 0
->   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-> 
-> ../include/linux/bitfield.h:94:3: note: in expansion of macro __BF_FIELD_CHECK
->    __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: "); \
->    ^~~~~~~~~~~~~~~~
-> ../drivers/phy/intel/phy-intel-combo.c:137:13: note: in expansion of macro FIELD_PREP
->   reg_val |= FIELD_PREP(mask, val);
->              ^~~~~~~~~~
-> 
-> Fixes: ac0a95a3ea78 ("phy: intel: Add driver support for ComboPhy")
-> Signed-off-by: Dilip Kota <eswara.kota@linux.intel.com>
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Remove description of non-existing v4l2_subdev.nevents and replace the
+undefined flag V4L2_SUBDEV_USES_EVENTS by the correct flag
+V4L2_SUBDEV_FL_HAS_EVENTS, which is already documented in v4l2_subdev.flags
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+Fixes: commit 02adb1cc765b ("[media] v4l: subdev: Events support")
+Signed-off-by: Michael Rodin <mrodin@de.adit-jv.com>
+---
+ Documentation/media/kapi/v4l2-subdev.rst | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Thanks.
-
-> ---
->  drivers/phy/intel/phy-intel-combo.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/phy/intel/phy-intel-combo.c b/drivers/phy/intel/phy-intel-combo.c
-> index c2a35be4cdfb..254ea7cba7ca 100644
-> --- a/drivers/phy/intel/phy-intel-combo.c
-> +++ b/drivers/phy/intel/phy-intel-combo.c
-> @@ -134,7 +134,7 @@ static inline void combo_phy_w32_off_mask(void __iomem *base, unsigned int reg,
->  
->  	reg_val = readl(base + reg);
->  	reg_val &= ~mask;
-> -	reg_val |= FIELD_PREP(mask, val);
-> +	reg_val |= val;
->  	writel(reg_val, base + reg);
->  }
->  
-> @@ -169,7 +169,7 @@ static int intel_cbphy_pcie_en_pad_refclk(struct intel_cbphy_iphy *iphy)
->  		return 0;
->  
->  	combo_phy_w32_off_mask(cbphy->app_base, PCIE_PHY_GEN_CTRL,
-> -			       PCIE_PHY_CLK_PAD, 0);
-> +			       PCIE_PHY_CLK_PAD, FIELD_PREP(PCIE_PHY_CLK_PAD, 0));
->  
->  	/* Delay for stable clock PLL */
->  	usleep_range(50, 100);
-> @@ -192,7 +192,7 @@ static int intel_cbphy_pcie_dis_pad_refclk(struct intel_cbphy_iphy *iphy)
->  		return 0;
->  
->  	combo_phy_w32_off_mask(cbphy->app_base, PCIE_PHY_GEN_CTRL,
-> -			       PCIE_PHY_CLK_PAD, 1);
-> +			       PCIE_PHY_CLK_PAD, FIELD_PREP(PCIE_PHY_CLK_PAD, 1));
->  
->  	return 0;
->  }
-> @@ -385,7 +385,7 @@ static int intel_cbphy_calibrate(struct phy *phy)
->  
->  	/* trigger auto RX adaptation */
->  	combo_phy_w32_off_mask(cr_base, CR_ADDR(PCS_XF_ATE_OVRD_IN_2, id),
-> -			       ADAPT_REQ_MSK, 3);
-> +			       ADAPT_REQ_MSK, FIELD_PREP(ADAPT_REQ_MSK, 3));
->  	/* Wait RX adaptation to finish */
->  	ret = readl_poll_timeout(cr_base + CR_ADDR(PCS_XF_RX_ADAPT_ACK, id),
->  				 val, val & RX_ADAPT_ACK_BIT, 10, 5000);
-> @@ -396,7 +396,7 @@ static int intel_cbphy_calibrate(struct phy *phy)
->  
->  	/* Stop RX adaptation */
->  	combo_phy_w32_off_mask(cr_base, CR_ADDR(PCS_XF_ATE_OVRD_IN_2, id),
-> -			       ADAPT_REQ_MSK, 0);
-> +			       ADAPT_REQ_MSK, FIELD_PREP(ADAPT_REQ_MSK, 0));
->  
->  	return ret;
->  }
-> 
-
-
+diff --git a/Documentation/media/kapi/v4l2-subdev.rst b/Documentation/media/kapi/v4l2-subdev.rst
+index e1f0b72..a4e9769 100644
+--- a/Documentation/media/kapi/v4l2-subdev.rst
++++ b/Documentation/media/kapi/v4l2-subdev.rst
+@@ -304,8 +304,7 @@ The device node handles a subset of the V4L2 API.
+ 	events can also be reported by one (or several) V4L2 device nodes.
+ 
+ 	Sub-device drivers that want to use events need to set the
+-	``V4L2_SUBDEV_USES_EVENTS`` :c:type:`v4l2_subdev`.flags and initialize
+-	:c:type:`v4l2_subdev`.nevents to events queue depth before registering
++	``V4L2_SUBDEV_FL_HAS_EVENTS`` :c:type:`v4l2_subdev`.flags before registering
+ 	the sub-device. After registration events can be queued as usual on the
+ 	:c:type:`v4l2_subdev`.devnode device node.
+ 
 -- 
-~Randy
+2.7.4
+
