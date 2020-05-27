@@ -2,78 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3251E4FA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2FE1E4FAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728395AbgE0Uxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 16:53:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726482AbgE0Uxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 16:53:50 -0400
-Received: from localhost.localdomain (unknown [194.230.155.118])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A95620899;
-        Wed, 27 May 2020 20:53:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590612830;
-        bh=hLSGZEQWdxHnGb3NCznVMrshFsU5QAvYHIqnrYcr84c=;
-        h=From:To:Cc:Subject:Date:From;
-        b=2p+OzkZ7KrA7OzseKO3cDoyHNMEgzbhNWnZwV+vC/BGjhqCAnnTDUcsWjtYb8Siyu
-         1hAW7RIIhMcyNgj11SaLZRG5Zwe8PNBgKeeTFEYsQMOsH2SoNDjjzgwq2RctW+oCuF
-         Wzc3i6lBAOMM2d2Z0G/tIlY7Qny+hRFkaT4A53Q0=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Simon Horman <horms+renesas@verge.net.au>,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [RESEND PATCH v2] sh: sh4a: Bring back tmu3_device early device
-Date:   Wed, 27 May 2020 22:53:41 +0200
-Message-Id: <20200527205341.26232-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S1728644AbgE0Uzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 16:55:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726718AbgE0Uzj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 16:55:39 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A92C05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 13:55:38 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id x22so722910otq.4
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 13:55:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=CR9dwsvfsyVy6G6eufz7hLC4jiMaO3cWV54dCy7eHCU=;
+        b=tnKZJrMIcf0/z4kaB+rJl3FXPTJHht//RCQa4J59uzyChfalXhlpPFz5E0fYsdyFFE
+         ZJvl5QVLp1xf7s4kzKZpAW5feSDjc2nAFIp4uAutc73kgMQqJ7Qf4gVH0kuM6JXaf4rr
+         Cc5K/SBc3R3k210aYcI++2fWr6jGHExFKnZYm/oJqnBwanurHfAFGaTRti3RuuUw2v1a
+         KjoFcUj5mweabEKNICEPUCPMZzsVLMma4k1+nxXVAD/X/3p/r9fScN26LuA3aBf30jkv
+         WRC8LDsOwmZKb7/sIxW3Qk/N0n3lIJT5LPbRwMNKnRAl8DuZN85iuQMQXMRdU6NhSJ2A
+         ONMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=CR9dwsvfsyVy6G6eufz7hLC4jiMaO3cWV54dCy7eHCU=;
+        b=EJy2oufIOBhmnkrI8+Mt/HyQQ9xttxhQ8En2JQhcgILJl4+t5JM8Ts6ZBlF0mhDj47
+         0Ss+yshdxrAxX1nbAo5DphTEbkkHofERzqscVeKxn9GJSA5VMlWjz0blG8PpzIMlf88z
+         dW4Oi1ywaPYJ/NOpd452+Zb4vrmmWD9aCM20BoB6LlnF/emAHLG0zDrJFWwR5K5JcMzI
+         rqvbB+xecyHUGrSofmPRmg0bXNM3DWTddVCvFIDidFBtjBr7GgQuHTZ3Zx9xRoQD/inR
+         VX3mSsywKjohz4gmBOPkCH4sX1CVu+Q7j0gZ/DAwBifArUxbTJdmZ1jv+5QgEeXByJVM
+         dGJA==
+X-Gm-Message-State: AOAM532xNzjdigICQryw4mf/WfLnZrP8FLi4QVm1ZseAeGoVTWKtt3tz
+        EGHq1EBJHEY4A2cTbnaG75XEqg==
+X-Google-Smtp-Source: ABdhPJxe3WPDsF/Ss6eKC+aL78ToDj1r+IEd2rMAwohSMI+2b4yzHLOnjhl8EBq8paJZUxhB9cJ54g==
+X-Received: by 2002:a05:6830:18a:: with SMTP id q10mr6226851ota.25.1590612937438;
+        Wed, 27 May 2020 13:55:37 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id g22sm1150339ooh.36.2020.05.27.13.55.34
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Wed, 27 May 2020 13:55:36 -0700 (PDT)
+Date:   Wed, 27 May 2020 13:55:18 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     maobibo <maobibo@loongson.cn>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Dmitry Korotin <dkorotin@wavecomp.com>,
+        =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+        "Maciej W. Rozycki" <macro@wdc.com>, linux-mm@kvack.org,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v3 3/3] mm/memory.c: Add memory read privilege before
+ filling PTE entry
+In-Reply-To: <d1646320-51ec-4b5f-bcad-41eba85b78cf@loongson.cn>
+Message-ID: <alpine.LSU.2.11.2005271329050.6217@eggly.anvils>
+References: <1589778529-25627-1-git-send-email-maobibo@loongson.cn> <1589778529-25627-3-git-send-email-maobibo@loongson.cn> <20200518135747.d8837ba6742b2d193e14fbb0@linux-foundation.org> <d1646320-51ec-4b5f-bcad-41eba85b78cf@loongson.cn>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 1399c195ef50 ("sh: Switch to new style TMU device") converted
-tmu3_device platform device to new style of platform data but removed it
-from sh7786_early_devices array effectively removing last three timers
-and causing a warning:
+On Tue, 19 May 2020, maobibo wrote:
+> On 05/19/2020 04:57 AM, Andrew Morton wrote:
+> > On Mon, 18 May 2020 13:08:49 +0800 Bibo Mao <maobibo@loongson.cn> wrote:
+> > 
+> >> On mips platform, hw PTE entry valid bit is set in pte_mkyoung
+> >> function, it is used to set physical page with readable privilege.
+> > 
+> > pte_mkyoung() seems to be a strange place to set the pte's valid bit. 
+> > Why is it done there?  Can it be done within mips's mk_pte()?
+> On MIPS system hardware cannot set PAGE_ACCESS bit when accessing the page,
+> software sets PAGE_ACCESS software bit and PAGE_VALID hw bit together during page
+> fault stage.
+> 
+> If mk_pte is called in page fault flow, it is ok to set both bits. If it is not 
+> called in page fault, PAGE_ACCESS is set however there is no actual memory accessing.
 
-    arch/sh/kernel/cpu/sh4a/setup-sh7786.c:243:31:
-        warning: ‘tmu3_device’ defined but not used [-Wunused-variable]
+Sorry for joining in so late, but would you please explain that some more:
+preferably in the final commit message, if not here.
 
-Fixes: 1399c195ef50 ("sh: Switch to new style TMU device")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+I still don't understand why this is not done in the same way as on other
+architectures - those that care (I just checked x86, powerpc, arm, arm64,
+but not all of them) make sure that all the bits they want are there in
+mm/mmap.c's protection_map[16], which then feeds into vma->vm_page_prot,
+and so into mk_pte() as Andrew indicated.
 
----
+And I can see that arch/mips/mm/cache.c has a setup_protection_map()
+to do that: why does it not set the additional bits that you want?
+including the valid bit and the accessed (young) bit, as others do.
+Are you saying that there are circumstances in which it is wrong
+for mk_pte() to set the additional bits?
 
-Changes since v1:
-1. Add tmu3_device to early device list, as suggested by Geert.
-2. Add Fixes tag.
----
- arch/sh/kernel/cpu/sh4a/setup-sh7786.c | 1 +
- 1 file changed, 1 insertion(+)
+I'm afraid that generic mm developers will have no clue as to whether
+or not to add a pte_sw_mkyoung() after a mk_pte(); and generic source
+will be the cleaner if it turns out not to be needed (but thank you
+for making sure that it does nothing on the other architectures).
 
-diff --git a/arch/sh/kernel/cpu/sh4a/setup-sh7786.c b/arch/sh/kernel/cpu/sh4a/setup-sh7786.c
-index 4b0db8259e3d..74620f30b19b 100644
---- a/arch/sh/kernel/cpu/sh4a/setup-sh7786.c
-+++ b/arch/sh/kernel/cpu/sh4a/setup-sh7786.c
-@@ -391,6 +391,7 @@ static struct platform_device *sh7786_early_devices[] __initdata = {
- 	&tmu0_device,
- 	&tmu1_device,
- 	&tmu2_device,
-+	&tmu3_device,
- };
- 
- static struct platform_device *sh7786_devices[] __initdata = {
--- 
-2.17.1
-
+Hugh
