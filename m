@@ -2,108 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6E41E490B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 563CC1E490C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388921AbgE0QBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 12:01:02 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:36992 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388395AbgE0QBB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 12:01:01 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 661C88030809;
-        Wed, 27 May 2020 16:00:58 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id z4Dur32t_e9w; Wed, 27 May 2020 19:00:57 +0300 (MSK)
-Date:   Wed, 27 May 2020 19:00:56 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 06/11] i2c: designware: Add Baytrail sem config DW I2C
- platform dependency
-Message-ID: <20200527160056.rg66gsubwhrwtnwf@mobilestation>
-References: <20200527120111.5781-1-Sergey.Semin@baikalelectronics.ru>
- <20200527120111.5781-7-Sergey.Semin@baikalelectronics.ru>
- <20200527134220.GX1634618@smile.fi.intel.com>
- <20200527142406.jzdtkbdb2q6st7e6@mobilestation>
- <20200527154632.GG1634618@smile.fi.intel.com>
+        id S2389093AbgE0QBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 12:01:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44646 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388982AbgE0QBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 12:01:23 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 3FD0DAFD1;
+        Wed, 27 May 2020 16:01:24 +0000 (UTC)
+Subject: Re: [PATCH v4 12/19] mm: memcg/slab: use a single set of kmem_caches
+ for all accounted allocations
+To:     Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org
+References: <20200526214227.989341-1-guro@fb.com>
+ <20200526214227.989341-13-guro@fb.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <9a7726c8-ac3c-df5c-7409-16e6be22a923@suse.cz>
+Date:   Wed, 27 May 2020 18:01:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200527154632.GG1634618@smile.fi.intel.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <20200526214227.989341-13-guro@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 06:46:32PM +0300, Andy Shevchenko wrote:
-> On Wed, May 27, 2020 at 05:24:06PM +0300, Serge Semin wrote:
-> > On Wed, May 27, 2020 at 04:42:20PM +0300, Andy Shevchenko wrote:
-> > > On Wed, May 27, 2020 at 03:01:06PM +0300, Serge Semin wrote:
-> > > > Currently Intel Baytrail I2C semaphore is a feature of the DW APB I2C
-> > > > platform driver. It's a bit confusing to see it's config in the menu at
-> > > > some separated place with no reference to the platform code. Let's move the
-> > > > config definition to be below the I2C_DESIGNWARE_PLATFORM config and mark
-> > > > it with "depends on I2C_DESIGNWARE_PLATFORM" statement. By doing so the
-> > > > config menu will display the feature right below the DW I2C platform
-> > > > driver item and will indent it to the right so signifying its belonging.
-> 
-> ...
-> 
-> > > >  config I2C_DESIGNWARE_BAYTRAIL
-> > > >  	bool "Intel Baytrail I2C semaphore support"
-> > > >  	depends on ACPI
-> > > > +	depends on I2C_DESIGNWARE_PLATFORM
-> > > >  	depends on (I2C_DESIGNWARE_PLATFORM=m && IOSF_MBI) || \
-> > > >  		   (I2C_DESIGNWARE_PLATFORM=y && IOSF_MBI=y)
-> > > 
-> > > I didn't get this. What is broken now with existing dependencies?
-> > 
-> > With no explicit "depends on I2C_DESIGNWARE_PLATFORM" the entry isn't right
-> > shifted with respect to the I2C_DESIGNWARE_PLATFORM config entry in the kernel
-> > menuconfig. So it looks like a normal no-yes driver without it. 
-> 
-> I didn't get. Is there problems with current case? (I don't see it).
-> If there is a problem, it should have a separate patch and commit message.
-> 
-> As for now above excerpt seems redundant and unneeded churn.
+On 5/26/20 11:42 PM, Roman Gushchin wrote:
 
-Please read the commit log more carefully.
+> @@ -549,17 +503,14 @@ static __always_inline int charge_slab_page(struct page *page,
+>  					    gfp_t gfp, int order,
+>  					    struct kmem_cache *s)
+>  {
+> -#ifdef CONFIG_MEMCG_KMEM
+>  	if (memcg_kmem_enabled() && !is_root_cache(s)) {
+>  		int ret;
+>  
+>  		ret = memcg_alloc_page_obj_cgroups(page, s, gfp);
+>  		if (ret)
+>  			return ret;
+> -
+> -		percpu_ref_get_many(&s->memcg_params.refcnt, 1 << order);
+>  	}
+> -#endif
+> +
+>  	mod_node_page_state(page_pgdat(page), cache_vmstat_idx(s),
+>  			    PAGE_SIZE << order);
+>  	return 0;
+> @@ -568,12 +519,9 @@ static __always_inline int charge_slab_page(struct page *page,
+>  static __always_inline void uncharge_slab_page(struct page *page, int order,
+>  					       struct kmem_cache *s)
+>  {
+> -#ifdef CONFIG_MEMCG_KMEM
+>  	if (memcg_kmem_enabled() && !is_root_cache(s)) {
+>  		memcg_free_page_obj_cgroups(page);
+> -		percpu_ref_put_many(&s->memcg_params.refcnt, 1 << order);
+> -	}
 
-Without explicit "depends on I2C_DESIGNWARE_PLATFORM" you'd see the DW
-I2C-related menuconfig as:
-[*] Synopsys DesignWare Platform
-[ ] Intel Baytrail I2C semaphore support
-with that "depends on I2C_DESIGNWARE_PLATFORM" added:
-[*] Synopsys DesignWare Platform
-[ ]     Intel Baytrail I2C semaphore support
-The second case presents the Baytrail semaphore as the DW I2C platform
-feature. Otherwise it's just a simple menuentry. As I see it without adding
-the explicit "depends on I2C_DESIGNWARE_PLATFORM" there is no need in moving
-the config at all. So if you think it's a churn. Well, I'll wait for
-Jarkko' comment in this regard.
-
-BTW Jarkko asked in v3 whether it would work with just explicit "depends on"
-without if-endif enclosing the config.
-
--Sergey
-
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+This now leaves the { bracket unterminated, breaking compilation.
