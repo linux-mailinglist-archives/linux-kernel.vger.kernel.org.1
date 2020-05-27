@@ -2,128 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5C71E3514
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 03:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBBC71E3520
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 03:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728030AbgE0B5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 21:57:23 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:36855 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726222AbgE0B5W (ORCPT
+        id S1728137AbgE0B7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 21:59:08 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:39280 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725267AbgE0B7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 21:57:22 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id F0D13580130;
-        Tue, 26 May 2020 21:57:20 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Tue, 26 May 2020 21:57:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm3; bh=SR919SUjGUEOgu6aawZxJ9MFHn
-        ifhK/bHfB0G/3X0fI=; b=cq4cSNvpUw5lOvBat5Giz2d/mr1nInrFIantibAv0K
-        hJokOcclOiA06jjYNSb/wn1Eq99VWz7t87UWoWweDteZTadzoS0BMOPSFqjdBnXR
-        baXzdq18JfaMZUuI++PwPsvSytyM6i4sPIMU6l6pozWlIT+xBvoQKhfiO/VMDePQ
-        s2QRrK9WMyrNj696s0KB5yej99lkL4NLPw2Hpe+RmQkrpEF/t6+h9uYok6XezVl4
-        epRQ4hbNre15zLlTqdi7xngcag2LKieQTlJNZ2p2Zq1beYoNlqUsRKiujgKV+JBu
-        UthzjWkEE4WzE3nHU/bp9G/oVWoUPQXiQsFFhhT9CKyg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=SR919SUjGUEOgu6aa
-        wZxJ9MFHnifhK/bHfB0G/3X0fI=; b=k7o/aCqWbLvj/TYg2w/MHA6UebWGpIuHz
-        fMLSc4EZ+B5wiVvpSjYr1azP5krszIp5mx9fEvgd/ogZKxR7BvDPfyLvWKs7uzlO
-        LDt3s+G4qY+eePW9wDrt0HCas//JVU+38ylAXF0N7UyQL9F0ynvemc+j9pkFtwub
-        Zsw8Ef5Xh3zjylnEdiOxmk0SsMA8YISTGiiRTXqO9G9y/UF5RjHIpdEMo+a8uC/v
-        sHv2bdo7iiCjmysnlVvYegdw0El9fCSYRGA5D2/VP9u4ahLQlAi+iyALe+FZgnNZ
-        fMN6iOQffm46Ut30h9Mptqf+DlhccGuVNDVPYeffEJTKx28NVSAWw==
-X-ME-Sender: <xms:AMnNXhkgQRzrFeZXHml6CVKTpKr1BjPRrTCG9X5wY4FFJqiMEAZzFQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddvfedghedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
-    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
-    segugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeeifffgledvffeitdeljedvte
-    effeeivdefheeiveevjeduieeigfetieevieffffenucfkphepjeefrdelfedrvdegjedr
-    udefgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:AMnNXs08kxfcZlxVTfc6s5Mg2voABwVlKDQCbkm9n-ClABInitVuGA>
-    <xmx:AMnNXnpprRwZEB6eNarDnIcbEN8WqO-OHmH7cc7yFLcLmdkBpoZ5nQ>
-    <xmx:AMnNXhnx9E-k8BokHtE2BFPaQkWVpn3YJwf5r8zLd5wF1-wehTV5Dg>
-    <xmx:AMnNXtOWFFfbbb8vIDMv-joayJ2cUsN9uzADKJb9B1ijBs-RYannvQ>
-Received: from localhost.localdomain (c-73-93-247-134.hsd1.ca.comcast.net [73.93.247.134])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7A02E3060F09;
-        Tue, 26 May 2020 21:57:18 -0400 (EDT)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
-        bpf@vger.kernel.org
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH bpf-next] libbpf: Export bpf_object__load_vmlinux_btf
-Date:   Tue, 26 May 2020 18:57:04 -0700
-Message-Id: <20200527015704.2294223-1-dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.26.2
+        Tue, 26 May 2020 21:59:08 -0400
+Received: by mail-io1-f65.google.com with SMTP id c8so3895779iob.6;
+        Tue, 26 May 2020 18:59:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=R+jzqtNB5xm+Ue2rdM+xkw/J/Y2layqw+i3JC1m8y3A=;
+        b=JM5pUwohrVsgvBRteM1yVcPdjxaoVnsJsSnPIWEpePqCknaANwhi818own9fYEomM/
+         jWGL83b3eX30wg/NT0F7mUE37RvPPnJcVyLBQTr2xs0pT2AoFzLsP4ARplrox4cFqR0o
+         eQDzCFPRxCSMNw4dSLirubNSOwfRaknkTFpjSpGf5F1jgeFdznBrpFVgkADo6Y02Tc/g
+         pmUDoLNWZXErcEA6yMcNfXkWy+8oBNXPKsB1/ZQKT5gNGX8WkmMu1cqP8sQ1TiLOclK9
+         EQNM/X2XGt3baJpipkdGJb6PFXRaZ2e35SY4NZeMBdyrxNnZ67TDE4BHEPZ3QeewEsoe
+         Hm/w==
+X-Gm-Message-State: AOAM533zIGpc6qnC4E39qdyaFfL30wwr1vmJyQXvhvVOsxHnMkKZYixg
+        HHHQGaIXM5krl88fTgd/cOxJ6Hw=
+X-Google-Smtp-Source: ABdhPJxt6tM3SKfxvvzsNk2fSThE+onTc7lraTfA1vFnx7JR9NSjWgV4NajWOz9SI46gdlbrZPzwhg==
+X-Received: by 2002:a02:8309:: with SMTP id v9mr1462161jag.71.1590544746878;
+        Tue, 26 May 2020 18:59:06 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id u2sm606192ion.50.2020.05.26.18.59.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2020 18:59:06 -0700 (PDT)
+Received: (nullmailer pid 889963 invoked by uid 1000);
+        Wed, 27 May 2020 01:59:05 -0000
+Date:   Tue, 26 May 2020 19:59:05 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     jacek.anaszewski@gmail.com, pavel@ucw.cz,
+        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v25 03/16] dt: bindings: lp50xx: Introduce the lp50xx
+ family of RGB drivers
+Message-ID: <20200527015905.GA874676@bogus>
+References: <20200526164652.2331-1-dmurphy@ti.com>
+ <20200526164652.2331-4-dmurphy@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200526164652.2331-4-dmurphy@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now the libbpf model encourages loading the entire object at once.
-In this model, libbpf handles loading BTF from vmlinux for us. However,
-it can be useful to selectively load certain maps and programs inside an
-object without loading everything else.
+On Tue, May 26, 2020 at 11:46:39AM -0500, Dan Murphy wrote:
+> Introduce the bindings for the Texas Instruments LP5036, LP5030, LP5024,
+> LP5018, LP5012 and LP5009 RGB LED device driver.  The LP5036/30/24/18/12/9
+> can control RGB LEDs individually or as part of a control bank group.
+> These devices have the ability to adjust the mixing control for the RGB
+> LEDs to obtain different colors independent of the overall brightness of
+> the LED grouping.
+> 
+> Datasheet:
+> http://www.ti.com/lit/ds/symlink/lp5012.pdf
+> http://www.ti.com/lit/ds/symlink/lp5024.pdf
+> http://www.ti.com/lit/ds/symlink/lp5036.pdf
+> 
+> Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
+>  .../devicetree/bindings/leds/leds-lp50xx.yaml | 180 ++++++++++++++++++
+>  1 file changed, 180 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml b/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
+> new file mode 100644
+> index 000000000000..a2ea03e07f6d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
+> @@ -0,0 +1,180 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/leds-lp50xx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: LED driver for LP50XX RGB LED from Texas Instruments.
+> +
+> +maintainers:
+> +  - Dan Murphy <dmurphy@ti.com>
+> +
+> +description: |
+> +  The LP50XX is multi-channel, I2C RGB LED Drivers that can group RGB LEDs into
+> +  a LED group or control them individually.
+> +
+> +  The difference in these RGB LED drivers is the number of supported RGB
+> +  modules.
+> +
+> +  For more product information please see the link below:
+> +  http://www.ti.com/lit/ds/symlink/lp5012.pdf
+> +  http://www.ti.com/lit/ds/symlink/lp5024.pdf
+> +  http://www.ti.com/lit/ds/symlink/lp5036.pdf
+> +
+> +properties:
+> +  compatible:
+> +     oneOf:
+> +      - const: ti,lp5009
+> +      - const: ti,lp5012
+> +      - const: ti,lp5018
+> +      - const: ti,lp5024
+> +      - const: ti,lp5030
+> +      - const: ti,lp5036
 
-In the latter model, there was perviously no way to load BTF on-demand.
-This commit exports the bpf_object__load_vmlinux_btf such that we are
-able to load BTF on demand.
+Use enum rather than oneOf+const.
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- tools/lib/bpf/libbpf.c   | 2 +-
- tools/lib/bpf/libbpf.h   | 1 +
- tools/lib/bpf/libbpf.map | 1 +
- 3 files changed, 3 insertions(+), 1 deletion(-)
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description:
+> +      I2C slave address
+> +      lp5009/12 - 0x14, 0x15, 0x16, 0x17
+> +      lp5018/24 - 0x28, 0x29, 0x2a, 0x2b
+> +      lp5030/36 - 0x30, 0x31, 0x32, 0x33
+> +
+> +  enable-gpios:
+> +    description: GPIO pin to enable/disable the device.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 5d60de6fd818..399094b1f580 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -2477,7 +2477,7 @@ static inline bool libbpf_prog_needs_vmlinux_btf(struct bpf_program *prog)
- 	return false;
- }
- 
--static int bpf_object__load_vmlinux_btf(struct bpf_object *obj)
-+int bpf_object__load_vmlinux_btf(struct bpf_object *obj)
- {
- 	struct bpf_program *prog;
- 	int err;
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 1e2e399a5f2c..6cbd678eb124 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -147,6 +147,7 @@ LIBBPF_API unsigned int bpf_object__kversion(const struct bpf_object *obj);
- struct btf;
- LIBBPF_API struct btf *bpf_object__btf(const struct bpf_object *obj);
- LIBBPF_API int bpf_object__btf_fd(const struct bpf_object *obj);
-+LIBBPF_API int bpf_object__load_vmlinux_btf(struct bpf_object *obj);
- 
- LIBBPF_API struct bpf_program *
- bpf_object__find_program_by_title(const struct bpf_object *obj,
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 381a7342ecfc..56415e671c70 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -261,6 +261,7 @@ LIBBPF_0.0.9 {
- 		bpf_iter_create;
- 		bpf_link_get_fd_by_id;
- 		bpf_link_get_next_id;
-+		bpf_object__load_vmlinux_btf;
- 		bpf_program__attach_iter;
- 		perf_buffer__consume;
- } LIBBPF_0.0.8;
--- 
-2.26.2
+How many? (maxItems: 1)
 
+> +
+> +  vled-supply:
+> +    description: LED supply.
+> +
+> +  child-node:
+
+This literally requires a node called 'child-node'. Not what you want.
+
+You need a $ref to the multi-color schema in here and then only define 
+what's specific to this chip.
+
+> +    type: object
+> +    properties:
+> +      reg:
+> +        description: This is the LED module number.
+
+Constraints?
+
+> +
+> +      color:
+> +        description: Must be LED_COLOR_ID_MULTI
+> +
+> +      function:
+> +        description: see Documentation/devicetree/bindings/leds/common.txt
+> +
+> +      ti,led-bank:
+> +        description:
+> +          This property denotes the LED module numbers that will be controlled as
+> +          a single RGB cluster.  Each LED module number will be controlled by a
+> +          single LED class instance.
+> +          There can only be one instance of the ti,led-bank
+> +          property for each device node.  This is a required node is the LED
+> +          modules are to be backed.
+> +        $ref: /schemas/types.yaml#definitions/uint32-array
+
+What is reg then? Some made up index? Can't you do:
+
+reg = <1 2 3>;
+led@1 {};
+led@2 {};
+led@2 {};
+
+> +
+> +    required:
+> +      - reg
+> +      - color
+> +      - function
+> +
+> +  grandchild-node:
+
+Again, no.
+
+> +    type: object
+> +    properties:
+> +      reg:
+> +        description:
+> +          A single entry denoting the LED output that controls the monochrome LED.
+
+Constraints?
+
+> +
+> +      color:
+> +        description:
+> +          see Documentation/devicetree/bindings/leds/common.txt
+
+Have you read this file recently? Don't add new references to it. (And 
+generally freeform references to other files are wrong with schemas).
+
+> +
+> +      led-sources:
+> +        description:
+> +          see Documentation/devicetree/bindings/leds/common.txt
+> +          The LED outputs associated with the LED modules are defined in Table 1
+> +          of the corresponding data sheets.
+> +          LP5009 - 3 Total RGB cluster LED outputs 0-2
+> +          LP5012 - 4 Total RGB cluster LED outputs 0-3
+> +          LP5018 - 6 Total RGB cluster LED outputs 0-5
+> +          LP5024 - 8 Total RGB cluster LED outputs 0-7
+> +          LP5030 - 10 Total RGB cluster LED outputs 0-9
+> +          LP5036 - 12 Total RGB cluster LED outputs 0-11
+> +
+> +      label:
+> +        description: |
+> +          Optional node - see Documentation/devicetree/bindings/leds/common.txt
+> +
+> +      linux,default-trigger:
+> +        description: |
+> +          Optional node - see Documentation/devicetree/bindings/leds/common.txt
+> +
+> +    required:
+> +      - reg
+> +      - color
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/leds/common.h>
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        led-controller@14 {
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
+> +          compatible = "ti,lp5009";
+> +          reg = <0x14>;
+> +          enable-gpios = <&gpio1 16>;
+> +          multi-led@1 {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +            reg = <1>;
+> +            color = <LED_COLOR_ID_MULTI>;
+> +            function = LED_FUNCTION_CHARGING;
+> +
+> +            led@0 {
+> +              reg = <0>;
+> +              color = <LED_COLOR_ID_RED>;
+> +            };
+> +
+> +            led@1 {
+> +              reg = <1>;
+> +              color = <LED_COLOR_ID_GREEN>;
+> +            };
+> +
+> +            led@2 {
+> +              reg = <2>;
+> +              color = <LED_COLOR_ID_BLUE>;
+> +            };
+> +          };
+> +
+> +          multi-led@2 {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +            reg = <2>;
+> +            color = <LED_COLOR_ID_MULTI>;
+> +            function = LED_FUNCTION_STANDBY;
+> +            ti,led-bank = <2 3 5>;
+> +
+> +            led@6 {
+> +              reg = <0x6>;
+> +              color = <LED_COLOR_ID_RED>;
+> +              led-sources = <6 9 15>;
+> +            };
+> +
+> +            led@7 {
+> +              reg = <0x7>;
+> +              color = <LED_COLOR_ID_GREEN>;
+> +              led-sources = <7 10 16>;
+> +            };
+> +
+> +            led@8 {
+> +              reg = <0x8>;
+> +              color = <LED_COLOR_ID_BLUE>;
+> +              led-sources = <8 11 17>;
+> +            };
+> +         };
+> +       };
+> +    };
+> +
+> +...
+> -- 
+> 2.25.1
+> 
