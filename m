@@ -2,88 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 105AF1E43D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E042C1E43E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388396AbgE0Nfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:35:50 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:44793 "EHLO
+        id S2388384AbgE0Nhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:37:33 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:60557 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387664AbgE0Nft (ORCPT
+        with ESMTP id S2387682AbgE0Nhb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:35:49 -0400
+        Wed, 27 May 2020 09:37:31 -0400
 Received: from localhost.localdomain ([149.172.98.151]) by
  mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MTfgb-1jS00D30If-00TzYS; Wed, 27 May 2020 15:35:44 +0200
+ 1MelWf-1j437k3y2n-00aqFI; Wed, 27 May 2020 15:36:58 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
-To:     Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Evan Green <evgreen@chromium.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm/dpu: avoid open-coded 64-bit division
-Date:   Wed, 27 May 2020 15:35:38 +0200
-Message-Id: <20200527133543.599948-1-arnd@arndb.de>
+To:     Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Chih-Min Chen <chih-min.chen@mediatek.com>,
+        Shihwei Lin <shihwei.lin@mediatek.com>,
+        Yiwei Chung <yiwei.chung@mediatek.com>,
+        YF Luo <yf.luo@mediatek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [wireless-next] mt75: fix enum type mismatch
+Date:   Wed, 27 May 2020 15:36:30 +0200
+Message-Id: <20200527133655.617357-1-arnd@arndb.de>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:mqnHLGtnwdSmTna9APPKP+9uliCpSII5zeeZjnDuho4W4vNK7nQ
- oLmnxdtfBfNu4AvFeP/z8xXgGIwR6KGBpoxrfH9m8s/WCmY4n5tTouYLWl4LDTXe3AeRR1F
- FSxKUCF69JY5QCbpT9sSuS2KFD5xH3HBR7kU2GuMW2Zmq9zzBgjaAa8nDJyFiCr9vzI2uhm
- hkld/BVyqXvcafGjQ9Uyw==
+X-Provags-ID: V03:K1:2xsdauHeCgoTJqtAjoy1w439KhbI5AyVOuAxW1IHW47YA4Gorsi
+ Uh4YCVjbYsbddzHdqSL/9Nyka228g3hOyRaepN6TWoIe5HUzp67ihrRMluLbPYi2hFTnxyw
+ 1JRB8qLO9BliOGYOZdkWVaHW2CucwMbhaxuLQUo9QhEp3DP9AIG3a/U+jSsmX/6lg/tAn8j
+ 7jHNArva+RLoRfuAuh3Cw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:owMpeyhSvWY=:MMGYpVppPn0/vP5ID8hWFH
- yNjdAo4s0kI2qvRUluIAhC2kUJ6/LjFJ1AJRQrTevVbHs+c9REC7oo9kxbztUSKj3vK4XsPz0
- 5m6hhDzJjqHLdUjTPYVejmItjNaIjkrmNV+Kj5vlt9kifmV4/NmommriN/hPfbBHaOE++BWXF
- +I/ItYudsPEolW4zG7u6+fXIHmP0+c2T3AUwoxL47qk/g4fxCa3Z8LX4jDFUM1JTGfcXXSnWs
- ExasdGqWewPUPlI7eRl/epf9bjxt3j8sm+86lmSPQPFWsgJdNOa/CfkGyX2zXRMFOfSxBO0OQ
- JhLXoEwleGQM+bM18eu5XCws7DZ1AsFeOQd1Ipcsj1vWJG88NJmZTMV7q7IoDqg9oIuonT8nz
- dlQbZhxJxvai5Lnq74oxNGxvUQxLFn4O3TG1rFQU/3hE12FqQAbL49/6RNRENRlIHL2nJ96Nj
- a/5wi+bFf8qyAMOQa4/mmIv51egtF6sQQ9MGtLLKgusUiiwbZRh0lCe9pI0I5S/ZlkfjPzqU2
- J/lpqAzeF79pCNI/RkctvcUjj5blYw16xl1FEEy7fP3WF86nKCCiMGonbfCq4597tzz2jXLQR
- AYlevKQvHYiEnl3JJ1ttHoGw6zRqvwAWrNZz22Yi8+9izNnprjB9uNKIjE/cHSyjgGnKG98fx
- WzLdR+WIfQbaJ5121FC2Hst+8vkhfhv8j/92BPvhNBk4zODWIy8DPgoEUYGJABCS1n+/PcaD6
- WTAnhQKnprg1P2zAspok7PLv6T2OeLIwn41kGTAUmYV4+WTVrg5Yw/5yp3dI4gigMsR5vpztP
- Olr/1Sq+iqBX57qtbUOyfuD8SwG6bd2oRTKUGV3MNzlSqkXXJU=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:FtVcgZauz7o=:scUFGVl1oIETlCqq2XG30+
+ BY+OSB/p/C2PHbQV8moxHzruH1uP9Hs2Cmkfuzt1pzAyXtW82VPL+i6XhfkL4Kzn7fV4xIawJ
+ A2HAq5Il64nn45Q6XqxowsRnC3JKSDVcU6+/hxjOI0t5GljWTrL92TJl527WU8NnDHJS4Tsmr
+ KsgZU4nD98sSiKPVkTHHG6nMcDBR3BIOtqB5sWIH6/bz3j+ogz/P1rSXjrKE0QGmIvpjlYWua
+ 3SS7ZaIIfPGwxYYgrFIJ+K+IdIdOXXvEY8bX+OteZNxdWkg2RjR6bBm/P/yo4S8qC8nEl6Bow
+ YJpUhM/w7lN9lF3hGTidifdzL9moxS+mjIcV6NaE77kl9pTr1m1pdb19VurLWicwiNgTE2fgG
+ 6wGAv4DAXmgkb6c6AwimTkBPyjXRsaK2gl5t/gWIv5dz++WZzoYVa+r+a2J4ZpwrK6K6pH5EU
+ Z5Dy7USzvBQWE/JgGDaFqcG+Zk8lbixikSTtHW+LPnfyiDbiKHjlimzlMGpd4+NVXmrgc8uJd
+ YgMB9mM3nsWcahk0NbkhXZsVMe14iaKWstbUlaF/zFJ1TnQC3bPfKIooWLd7eSJkNYMY6dJ41
+ zAneqRyKhsqVGB16LHOiS9GXVxbBwaemmq2+f9F08NizeJDLOrW4MAY0hLNAQ5WzoMC9RUliB
+ vSvJiyC5p01107GyNrmS7vC+Nfi31gg21wIlE8ej7ZltRD0sM09YzWVBnr5fkky8ZBGd4pQfE
+ YxO/L8TcnJlj9bmltBSZuOTgEL8rM/nVk034s2QC/YfSrq20qSaPTCrGtTgxQncP9Ds0LSwdn
+ lOjGQJNACJeHLPwBGXaDbUg2u7n3XaDiXVfLbhmQB6Wp7qadf4=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-64-bit integer division is normally not allowed in the kernel
-because of the large overhead on 32-bit machines:
+The __mt7915_mcu_msg_send() calls a generic function that expects a mt76_txq_id
+rather than mt7915_txq_id, and it also uses the values according to that
+type, which are different from the similarly named MT7915_TXQ_ constants:
 
-drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.o: in function `_dpu_core_perf_crtc_update_bus':
-dpu_core_perf.c:(.text+0x810): undefined reference to `__aeabi_uldivmod'
+drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:232:9: error: implicit conversion from enumeration type 'enum mt76_txq_id' to different enumeration type 'enum mt7915_txq_id' [-Werror,-Wenum-conversion]
+                txq = MT_TXQ_FWDL;
+                    ~ ^~~~~~~~~~~
+drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:287:36: error: implicit conversion from enumeration type 'enum mt7915_txq_id' to different enumeration type 'enum mt76_txq_id' [-Werror,-Wenum-conversion]
+        return mt76_tx_queue_skb_raw(dev, txq, skb, 0);
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+drivers/net/wireless/mediatek/mt76/mt7915/../mt76.h:668:97: note: expanded from macro 'mt76_tx_queue_skb_raw'
 
-The function already contains a call to do_div(), so I assume this
-is never called in a performance critical context, and we can
-use div_u64 for the second one as well.
+Use the mt76 types consistently.
 
-Fixes: 04d9044f6c57 ("drm/msm/dpu: add support for clk and bw scaling for display")
+Fixes: e57b7901469f ("mt76: add mac80211 driver for MT7915 PCIe-based chipsets")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- include/linux/interconnect.h | 2 +-
+ drivers/net/wireless/mediatek/mt76/mt7915/mcu.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/interconnect.h b/include/linux/interconnect.h
-index 3a63d98613fc..8279fe9b2082 100644
---- a/include/linux/interconnect.h
-+++ b/include/linux/interconnect.h
-@@ -11,7 +11,7 @@
- #include <linux/types.h>
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
+index 99eeea42478f..001b3078c48e 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
+@@ -220,7 +220,7 @@ static int __mt7915_mcu_msg_send(struct mt7915_dev *dev, struct sk_buff *skb,
+ {
+ 	struct mt7915_mcu_txd *mcu_txd;
+ 	u8 seq, pkt_fmt, qidx;
+-	enum mt7915_txq_id txq;
++	enum mt76_txq_id txq;
+ 	__le32 *txd;
+ 	u32 val;
  
- /* macros for converting to icc units */
--#define Bps_to_icc(x)	((x) / 1000)
-+#define Bps_to_icc(x)	div_u64((x), 1000)
- #define kBps_to_icc(x)	(x)
- #define MBps_to_icc(x)	((x) * 1000)
- #define GBps_to_icc(x)	((x) * 1000 * 1000)
 -- 
 2.26.2
 
