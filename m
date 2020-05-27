@@ -2,73 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2138A1E49DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5D081E49E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390993AbgE0QXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 12:23:24 -0400
-Received: from mga06.intel.com ([134.134.136.31]:48576 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389927AbgE0QXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 12:23:20 -0400
-IronPort-SDR: ePlEA2ZG9ulCsXpPHLn+zVKtohLzVjPnR9d28gT4fhCDOijoN3m/hqsEwTxWDdtGK7EUuHcjgV
- Md3M4qYQCR9Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 09:23:19 -0700
-IronPort-SDR: kAwgXQUKDoO2amv9DlNMtYdinxSP/3MS/jtF8lV7tGc6W0BBq67huu/HbpuIWizlGwj6F160kE
- cfa1RVzsrwRg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,442,1583222400"; 
-   d="scan'208";a="291651774"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by fmsmga004.fm.intel.com with ESMTP; 27 May 2020 09:23:19 -0700
-Date:   Wed, 27 May 2020 09:23:18 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+904752567107eefb728c@syzkaller.appspotmail.com
-Subject: Re: [PATCH] KVM: x86: Initialize tdp_level during vCPU creation
-Message-ID: <20200527162318.GD24461@linux.intel.com>
-References: <20200527085400.23759-1-sean.j.christopherson@intel.com>
- <875zch66fy.fsf@vitty.brq.redhat.com>
- <c444fbcc-8ac3-2431-4cdb-2a37b93b1fa2@redhat.com>
+        id S2391024AbgE0QX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 12:23:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390490AbgE0QX4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 12:23:56 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C69C03E97D
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 09:23:56 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id x11so9312044plv.9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 09:23:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XZ5uOqXyVXycGXVAAgCgn38z+gYbg3o20gbO6GOtv1M=;
+        b=F0ZS/3paUKZ2S+N/oD7CL1NsyxysZEsjL/PolDB300xaGPVujsGLK0IMW9DueeYS6T
+         jbmflghQBj/BbaTKCvB9hR2gBDeHhjGYS0coxyovWAHu9bjXYVih5Xwfe+ag96Xsm87o
+         ArKg5clL8GUpl1+lTibxjUMgikyciqFi2xXRo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XZ5uOqXyVXycGXVAAgCgn38z+gYbg3o20gbO6GOtv1M=;
+        b=V+ZNQmFfNScD5wLA5Fb0ort/h1NIwrFK9l3MguR8q1ODtxBB0tY0HnxwGpCF4naLsj
+         bb+ctgJePbEHQq7bIMl7e0HUx2RJZJxY19NTFl+kscUGeLI64JV0m750WEGmslzOjfjR
+         klWGBr4y1qAnDCchUyF/oHiNlQuntwGZnm/FQ9YskBKpMDQOFH7XT+sEYHSTD1e31NH8
+         fkPnS7uKv636GfeeGmaC5dT/qtjUKFxsAiAGgxVQIJ3ZsiAy+ZSuoEpn45VtcoXFPpvW
+         Oz02EH3yehlUGUN1iJbNAgYDrUEiaZJSYfx4LtIVBLfXsNfeJwfPaKn/MLhdEUeflN9m
+         Akcw==
+X-Gm-Message-State: AOAM530AnN7t4qCaIGV27oTo00+F1tlcgOJUNJ2/qf/iVuo8iPEcAsha
+        9R2gLVkIEzJIe9+dDD5x9zn2Ww==
+X-Google-Smtp-Source: ABdhPJynzniNYj9eCfx/pxIRIBDyJ1ubE3Hoi6fUeIRvXUQGBcqJ5Fhsb9/gwkzxC+/t+WEUu62JKA==
+X-Received: by 2002:a17:90a:d506:: with SMTP id t6mr5426147pju.134.1590596636292;
+        Wed, 27 May 2020 09:23:56 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
+        by smtp.gmail.com with ESMTPSA id x22sm2363680pfn.26.2020.05.27.09.23.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 May 2020 09:23:55 -0700 (PDT)
+Date:   Wed, 27 May 2020 09:23:53 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Zijun Hu <zijuhu@codeaurora.org>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
+        rjliao@codeaurora.org
+Subject: Re: [PATCH v2] Bluetooth: hci_qca: Improve controller ID info log
+ level
+Message-ID: <20200527162353.GG4525@google.com>
+References: <1590548229-17812-1-git-send-email-zijuhu@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <c444fbcc-8ac3-2431-4cdb-2a37b93b1fa2@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <1590548229-17812-1-git-send-email-zijuhu@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 06:15:27PM +0200, Paolo Bonzini wrote:
-> On 27/05/20 12:03, Vitaly Kuznetsov wrote:
-> >>  
-> >>  	vcpu->arch.maxphyaddr = cpuid_query_maxphyaddr(vcpu);
-> >> +	vcpu->arch.tdp_level = kvm_x86_ops.get_tdp_level(vcpu);
-> >>  
-> >>  	vcpu->arch.pat = MSR_IA32_CR_PAT_DEFAULT;
-> > Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> > 
-> > Looking at kvm_update_cpuid() I was thinking if it would make sense to
-> > duplicate the "/* Note, maxphyaddr must be updated before tdp_level. */"
-> > comment here (it seems to be a vmx-only thing btw), drop it from
-> > kvm_update_cpuid() or move cpuid_query_maxphyaddr() to get_tdp_level()
-> > but didn't come to a conclusive answer. 
+On Wed, May 27, 2020 at 10:57:09AM +0800, Zijun Hu wrote:
+> Controller ID info got by VSC EDL_PATCH_GETVER is very
+> important, so improve its log level from DEBUG to INFO.
 > 
-> Yeah, it makes sense to at least add the comment here too.
+> Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
+> ---
+>  drivers/bluetooth/btqca.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
+> index 3ea866d..94d8e15 100644
+> --- a/drivers/bluetooth/btqca.c
+> +++ b/drivers/bluetooth/btqca.c
+> @@ -74,10 +74,14 @@ int qca_read_soc_version(struct hci_dev *hdev, u32 *soc_version,
+>  
+>  	ver = (struct qca_btsoc_version *)(edl->data);
+>  
+> -	BT_DBG("%s: Product:0x%08x", hdev->name, le32_to_cpu(ver->product_id));
+> -	BT_DBG("%s: Patch  :0x%08x", hdev->name, le16_to_cpu(ver->patch_ver));
+> -	BT_DBG("%s: ROM    :0x%08x", hdev->name, le16_to_cpu(ver->rom_ver));
+> -	BT_DBG("%s: SOC    :0x%08x", hdev->name, le32_to_cpu(ver->soc_id));
+> +	bt_dev_info(hdev, "QCA Product ID   :0x%08x",
+> +			le32_to_cpu(ver->product_id));
+> +	bt_dev_info(hdev, "QCA SOC Version  :0x%08x",
+> +			le32_to_cpu(ver->soc_id));
+> +	bt_dev_info(hdev, "QCA ROM Version  :0x%08x",
+> +			le16_to_cpu(ver->rom_ver));
+> +	bt_dev_info(hdev, "QCA Patch Version:0x%08x",
+> +			le16_to_cpu(ver->patch_ver));
+>  
+>  	/* QCA chipset version can be decided by patch and SoC
+>  	 * version, combination with upper 2 bytes from SoC
 
-Hmm, one option would be to make .get_tdp_level() pure function by passing
-in vcpu->arch.maxphyaddr.  That should make the comment redundant.  I don't
-love bleeding VMX's implementation into the prototype, but that ship has
-kinda already sailed.
-
-Side topic, cpuid_query_maxphyaddr() should be unexported, the RTIT usage can
-and should use vcpu->arch.maxphyaddr.  I'll send a patch for that.
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
