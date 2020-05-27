@@ -2,78 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C364F1E4449
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C49FA1E4451
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388730AbgE0Nrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:47:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47450 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388082AbgE0Nrq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:47:46 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 92C882078C;
-        Wed, 27 May 2020 13:47:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590587266;
-        bh=qYSYXseydU1Jl/FMCMZsu00a3c88OPa9IaYxEBjkW44=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eyo9QQOpWhRfR0asYM+i5Txt1or/d7KRnBjpggOx5OgZH0GO2KTu0oxSC6GNNHFp/
-         qrKuUj/lWKiq7FUDDHXBkQydTuSyv0FC+3lN5K+UDDtG7V+hR/uu5gMjRVUXOUSfnE
-         0aR0jbD0hH0UVzXytvukYJs/6JRmGJZHb+N4Y4x4=
-Date:   Wed, 27 May 2020 14:47:43 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Akshu Agrawal <akshu.agrawal@amd.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: amd: rt5682: fix soundwire dependencies
-Message-ID: <20200527134743.GH5308@sirena.org.uk>
-References: <20200527134151.834555-1-arnd@arndb.de>
+        id S2388756AbgE0Ns0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:48:26 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:55735 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388082AbgE0NsZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 09:48:25 -0400
+Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MkpOZ-1jA3RJ26yV-00mKQD; Wed, 27 May 2020 15:48:22 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] io_uring: include linux/pagemap.h
+Date:   Wed, 27 May 2020 15:48:08 +0200
+Message-Id: <20200527134821.1001856-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="nFBW6CQlri5Qm8JQ"
-Content-Disposition: inline
-In-Reply-To: <20200527134151.834555-1-arnd@arndb.de>
-X-Cookie: Drop in any mailbox.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:AnkI1/UfaEFGuuR8lsmWfA+cClYJaFovoQxZjwHBUBeNDV1ahjf
+ qLXvGr/UxePgpPoq/+t2mGbqkfaheo9uVoLBmzedRhUYWCUK1zt2kE/lg/3YJ0tpIsd23QW
+ IngVAeSYbhPn8DNs+ychvJ0KMGIhJQZ7p6aTYnjMTJ1fN49PDw+Y9l+P7dfXkDfM6PNtnWi
+ oqyW4MPRJAhQKAng6kIUQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:gK33T4nZbcg=:4i9fO+/F8DhO4VXyAzWfXw
+ whkM41Bswq1rWhra27aXsOYJKq/S2fL7K5f4KgkEuKFvZ4oOeXKl3Z6Sw3P3U8b0pXOjp1pOK
+ sKrTRndtpb9r+za1DsbTjwxcpkJwcTo758EZ8n0FRpKH5EnnQEjhw7kbRjOj+Iz60P66TtLZf
+ aEDd74dNLeWQcoQTx+h0EJCNjXZrR06p38eexslvi2kTQ++dJ5atQRw3RF6r1iHFouVELw2mU
+ OLsVeabPzX1hGsgMTGsVorENIA2qrSv8EpFzeKgcqSYL9taF92vr4Gf3t7IhAblvklQmD/Pax
+ ShxnxopSUhtjhRBrPcDBoFeC4ROak+kXgbcfxkRq6CmdkKJG9qUTKw/+D2wtSRA4IcYReDkci
+ tH9OAkC9OAgasXz3oFo0v+w3x/ltOAe9NQc2aWQz2UPWMqmxp3sWSresDYO6muIvnrdUhZhdT
+ +6v10eE/YjGgZrbx9CY5X/SJRl/N7iifxdi3SE34Q0YrUed6cBGNxf2HFFWqWQRkacqDfGcP7
+ 39BliEHewgrmaaqf2eIp/8+JmPjaaDWR/OA1KhMY+hKfAxKgdXa6Z/jUW7i0ZplM4MC9nX1bq
+ gxSa3ieQrGaapKVXlKQe7mDZsnGSV8rplzS+2tTtaMxfincOZMiEoDBSihmStkhy/+B71ewjp
+ 8/n2nmZUgWQSqZ7sNbSRjsfFZ0ifcqXZBybM6QnAQ5OvUUcb53ASfEn4ZEEvVNq+B4LzpB4QI
+ J6AfS/k6dEvP8vHdRKeXE7r0JNdSWe/gKz84e659q9nr/GcA41OupnDTtUClHjSpAoZLuNcbt
+ 4lB5fjDlnOhEhillDubQa8+pfhkdduq9HiHKUuDenHuIwjTiY4=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I observed a build regression in ARM randconfig builds:
 
---nFBW6CQlri5Qm8JQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+fs/io_uring.c:500:26: error: field has incomplete type 'struct wait_page_queue'
+        struct wait_page_queue          wpq;
 
-On Wed, May 27, 2020 at 03:41:26PM +0200, Arnd Bergmann wrote:
+Include the missing header file that defines the structure
+to make it build again.
 
-> Maybe the SND_SOC_RT5682 driver itself can be reworked so that
-> the common part depends on neither soundwire nor i2c and the two
-> bus specific options can be loadable modules when the common part
-> is built-in.
+Fixes: ad9e8c18aaa2 ("io_uring: support true async buffered reads, if file provides it")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ fs/io_uring.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Yes, please do that.
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index d292b992f945..5e2a0a8809a5 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -55,6 +55,7 @@
+ #include <linux/fdtable.h>
+ #include <linux/mm.h>
+ #include <linux/mman.h>
++#include <linux/pagemap.h>
+ #include <linux/percpu.h>
+ #include <linux/slab.h>
+ #include <linux/kthread.h>
+-- 
+2.26.2
 
---nFBW6CQlri5Qm8JQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7Ob34ACgkQJNaLcl1U
-h9Au/Af/ToAlo8MIFiY0pB1HedOb/UPzvkcA2KB3IzxEpvf6D/CM9anQAjdbDqYv
-RdpDzNNKLxv5msIIMdK2k+T0kRTIaYwCNcqj2n3N3QQrqB2EkneZ8++/J14Sydkc
-cZSRseQFFvGOcXkzQE9IKwTUp9b4pkwZ1DlUS+ZUcHtrQIp7EsqK1ji8mtRCzAM1
-sK+MNyknZ+mnPgHHEYkjWq1v8lJCID+RQ2HqLZmAiaGbtfb+xM4+GRrQuFPfM1Wq
-P6PuCDeIWw0ypRcY702tt2KEoYw7ztu0jER0jpkunDYOybDBStZfOG42+lbsgB94
-IsODB/lf4WgAsdbGTa+RT0EZs9NfaQ==
-=oGtp
------END PGP SIGNATURE-----
-
---nFBW6CQlri5Qm8JQ--
