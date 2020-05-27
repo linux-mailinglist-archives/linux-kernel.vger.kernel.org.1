@@ -2,82 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA921E440A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E08D1E4414
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388562AbgE0NmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:42:21 -0400
-Received: from mga18.intel.com ([134.134.136.126]:11080 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387771AbgE0NmV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:42:21 -0400
-IronPort-SDR: VUoUA6ge9QyNZ8FD+D8CgPPlFR6AeYRY2fzHKkm1HDxaNEEN0jHkVk4mNoilXbTdqCno1r/AFD
- XgU6ONkAtvCg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 06:42:20 -0700
-IronPort-SDR: vW6e7s7Gzf/CPGZx6t4D/RIeBm/4YAK4Hjp3JykGkTjQ4CRqBvxRYnXV0wkC/DVCr2S9XXN+QK
- Mqw3x+haU+5g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,441,1583222400"; 
-   d="scan'208";a="442523669"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga005.jf.intel.com with ESMTP; 27 May 2020 06:42:17 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jdwK4-009EjZ-2S; Wed, 27 May 2020 16:42:20 +0300
-Date:   Wed, 27 May 2020 16:42:20 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 06/11] i2c: designware: Add Baytrail sem config DW I2C
- platform dependency
-Message-ID: <20200527134220.GX1634618@smile.fi.intel.com>
-References: <20200527120111.5781-1-Sergey.Semin@baikalelectronics.ru>
- <20200527120111.5781-7-Sergey.Semin@baikalelectronics.ru>
+        id S2388593AbgE0NnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:43:04 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:53793 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387682AbgE0NnD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 09:43:03 -0400
+Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1N3bjH-1ivhXw2f9X-010grN; Wed, 27 May 2020 15:42:55 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Arnd Bergmann <arnd@arndb.de>, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] nouveau: add fbdev dependency
+Date:   Wed, 27 May 2020 15:42:23 +0200
+Message-Id: <20200527134254.854672-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200527120111.5781-7-Sergey.Semin@baikalelectronics.ru>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:UwRS52SKomS1dGxg/Cr8izduWX8ZD4LmV2z+vHIfJD0wpmnsWtB
+ QsS+qAKdfR75PBtRiCiim1nlfytCKTLhu6JCbh4PrnV+FnERUpJOUQRYyQq4RJp3C9DiNIG
+ 0xVNyeytj45f/FlCXkUhpuZF3JKkcmVsifwuOG52sLtCSYd5ofSlkPSaA8yVL02/yhRHvp5
+ BNBjDEjhB8nkcGG87ChpQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:sZgzWgmPFv0=:z9Y1bGS9xTuXxA3csoNcb1
+ UZYKzg8vEU0M/l7zTe/VPttt95Av/k+Yn3Q41pSeJcoDFb4gSzkWi9fOLhOZjjGHkOngTp2fQ
+ NUt+G+8tVnTxUc7wH5ZxMhEciPR3RYCdNj9JAYH3Lo029bfAxiP5M1XMbPB8hecIiFDE5qh1x
+ qX4A/NCKQ62qjL8GSFCtI4jaeFzxkD4Mt+WgS5TG8RW7qRmdUZq7+apRDedRVIxUr58XA3L0y
+ 8YZEzAR2nRfFGEgEGdVVaYEyjE+mdbPfeVQ0Hdzy/OvS6XXiy/wI9+SVnL6T76Qf6RUmM5wU2
+ Vsycwf9eT9Yud5Qs0UL4MMs0cku4A88vyFFDoh5UG/D7rxBiYRapgml5ng77WQ1QERcmZUx+s
+ KpS7DtQaVaq8ZffeajcOz2xzFgdbiCa2RYEzZs0bKoH6CB1yOjjNWg9DfESeZ8XgsL9razQEx
+ h90Bo5yR/JzCwf4bRtQFKQ1ejV4vw8GMycx1xX9ehMX7W1hqa4HWCSo4P/iLEWMPlGU9EITcD
+ HNIjyH5VHvidwy83N9lxY4PUmvlPYXUXcSy3N1zgzpO/pTZzJ+y6IxMpxCpcwNvjlnF//qEvr
+ 747xwiisizEF+y+hTyBY10KDkxab0p7xor48HZ+5yZHP/sXer85v75hEVgZH3Rom6ykdGDeZ+
+ EdXThkeQRUyiKh2u+IJIIRibInnf1NMjhBuZgTioJXngiNdzomYSmmvaIcXC2PqqO8jKopUfU
+ KZKDByehOUjtvpO6Ev5i0Hg9ZV7G90Au1WN00d+bbW+HZc9Sy9rHhbSlo5hojoyiUe/Rf9N+Q
+ J8N30rKh6plh6ZN/IZ+e+3SdoyfSH1XWuriqB1MdUfNDLSw2VI=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 03:01:06PM +0300, Serge Semin wrote:
-> Currently Intel Baytrail I2C semaphore is a feature of the DW APB I2C
-> platform driver. It's a bit confusing to see it's config in the menu at
-> some separated place with no reference to the platform code. Let's move the
-> config definition to be below the I2C_DESIGNWARE_PLATFORM config and mark
-> it with "depends on I2C_DESIGNWARE_PLATFORM" statement. By doing so the
-> config menu will display the feature right below the DW I2C platform
-> driver item and will indent it to the right so signifying its belonging.
+Calling directly into the fbdev stack only works when the
+fbdev layer is built into the kernel as well, or both are
+loadable modules:
 
-...
+drivers/gpu/drm/nouveau/nouveau_drm.o: in function `nouveau_drm_probe':
+nouveau_drm.c:(.text+0x1f90): undefined reference to `remove_conflicting_pci_framebuffers'
 
->  config I2C_DESIGNWARE_BAYTRAIL
->  	bool "Intel Baytrail I2C semaphore support"
->  	depends on ACPI
-> +	depends on I2C_DESIGNWARE_PLATFORM
->  	depends on (I2C_DESIGNWARE_PLATFORM=m && IOSF_MBI) || \
->  		   (I2C_DESIGNWARE_PLATFORM=y && IOSF_MBI=y)
+The change seems to have been intentional, so add an explicit
+dependency here but allow it to still be compiled if FBDEV
+is completely disabled.
 
-I didn't get this. What is broken now with existing dependencies?
+Fixes: 2dd4d163cd9c ("drm/nouveau: remove open-coded version of remove_conflicting_pci_framebuffers()")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/gpu/drm/nouveau/Kconfig       | 1 +
+ drivers/gpu/drm/nouveau/nouveau_drm.c | 3 ++-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-(The move of the PCI part is fine)
-
+diff --git a/drivers/gpu/drm/nouveau/Kconfig b/drivers/gpu/drm/nouveau/Kconfig
+index 980ed09bd7f6..8c640f003358 100644
+--- a/drivers/gpu/drm/nouveau/Kconfig
++++ b/drivers/gpu/drm/nouveau/Kconfig
+@@ -18,6 +18,7 @@ config DRM_NOUVEAU
+ 	select THERMAL if ACPI && X86
+ 	select ACPI_VIDEO if ACPI && X86
+ 	select SND_HDA_COMPONENT if SND_HDA_CORE
++	depends on FBDEV || !FBDEV
+ 	help
+ 	  Choose this option for open-source NVIDIA support.
+ 
+diff --git a/drivers/gpu/drm/nouveau/nouveau_drm.c b/drivers/gpu/drm/nouveau/nouveau_drm.c
+index eb10c80ed853..e8560444ab57 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_drm.c
++++ b/drivers/gpu/drm/nouveau/nouveau_drm.c
+@@ -697,7 +697,8 @@ static int nouveau_drm_probe(struct pci_dev *pdev,
+ 	nvkm_device_del(&device);
+ 
+ 	/* Remove conflicting drivers (vesafb, efifb etc). */
+-	ret = remove_conflicting_pci_framebuffers(pdev, "nouveaufb");
++	if (IS_ENABLED(CONFIG_FBDEV))
++		ret = remove_conflicting_pci_framebuffers(pdev, "nouveaufb");
+ 	if (ret)
+ 		return ret;
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.26.2
 
