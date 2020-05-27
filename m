@@ -2,78 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B96C1E4788
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 992DF1E4795
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726842AbgE0Pbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 11:31:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728829AbgE0Pbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 11:31:33 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3CA63208E4;
-        Wed, 27 May 2020 15:31:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590593492;
-        bh=FYlTjZDDWzv75K1cm++7jCZ9U5TmYAzARky7QAXahI0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jXXSlSss9GQcJwOVQ18QpEkpPQ0UHggQ0gnw7GFrNNzCuPWE5+rTO8d+c6uVeB6Cs
-         78bnb0WIkRzmYIS3AQo7EY1dOw9IStfAv5KBXtOZEmWdm4DU6tsewCwDtPxhwIJtUo
-         seapiYMExTH/ZC9Us+4q6KTSv6ZC6Zm+15xcQP3E=
-Date:   Wed, 27 May 2020 17:31:30 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ashwin H <ashwinh@vmware.com>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@kernel.org" <stable@kernel.org>,
-        Srivatsa Bhat <srivatsab@vmware.com>,
-        "srivatsa@csail.mit.edu" <srivatsa@csail.mit.edu>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        Steven Rostedt <srostedt@vmware.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v4.19.x] make 'user_access_begin()' do 'access_ok()'
-Message-ID: <20200527153130.GA525531@kroah.com>
-References: <d29f87f3f3abb4e496866253bd170faad976f687.1589305630.git.ashwinh@vmware.com>
- <20200513055548.GA743118@kroah.com>
- <89DE19F6-4CB0-4324-A630-C8574C8D591C@vmware.com>
- <20200513063455.GA752913@kroah.com>
- <MN2PR05MB63814CDAAF6828285929736ACDBF0@MN2PR05MB6381.namprd05.prod.outlook.com>
+        id S1727995AbgE0Pd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 11:33:56 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:36842 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725848AbgE0Pdz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 11:33:55 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id D4B698030809;
+        Wed, 27 May 2020 15:33:52 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id gT1-Zau-FHP8; Wed, 27 May 2020 18:33:52 +0300 (MSK)
+Date:   Wed, 27 May 2020 18:33:51 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Rob Herring <robh+dt@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        <linux-mips@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 02/11] dt-bindings: i2c: Discard i2c-slave flag from
+ the DW I2C example
+Message-ID: <20200527153351.rmzguymz7lm6gvsx@mobilestation>
+References: <20200527153046.6172-1-Sergey.Semin@baikalelectronics.ru>
+ <20200527153046.6172-3-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <MN2PR05MB63814CDAAF6828285929736ACDBF0@MN2PR05MB6381.namprd05.prod.outlook.com>
+In-Reply-To: <20200527153046.6172-3-Sergey.Semin@baikalelectronics.ru>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 05:08:19PM +0000, Ashwin H wrote:
-> > Ok, but what does that mean for us?
-> > 
-> > You need to say why you are sending a patch, otherwise we will guess wrong.
+Rob,
+Could you pay attention to this patch? The patchset review procedure is
+nearly over, while the DT part is only partly reviewed by you.
+
+Thanks
+-Sergey
+
+On Wed, May 27, 2020 at 06:30:37PM +0300, Serge Semin wrote:
+> dtc currently doesn't support I2C_OWN_SLAVE_ADDRESS flag set in the
+> i2c "reg" property. If it is the compiler will print a warning:
 > 
-> In drivers/gpu/drm/i915/i915_gem_execbuffer.c, ioctl functions does user_access_begin() without doing access_ok(Checks if a user space pointer is valid)  first.
-> A local attacker can craft a malicious ioctl function call to overwrite arbitrary kernel memory, resulting in a Denial of Service or privilege escalation (CVE-2018-20669)
+> Warning (i2c_bus_reg): /example-2/i2c@1120000/eeprom@64: I2C bus unit address format error, expected "40000064"
+> Warning (i2c_bus_reg): /example-2/i2c@1120000/eeprom@64:reg: I2C address must be less than 10-bits, got "0x40000064"
 > 
-> This patch makes sure that user_access_begin always does access_ok. 
-> user_access_begin has been modified to do access_ok internally.
-
-I had this in the tree, but it broke the build on alpha, sh, and maybe a
-few others :(
-
-See:
-	https://lore.kernel.org/r/20200527140225.GA214763@roeck-us.net
-for the details.
-
-Can you dig out all of the needed follow-on patches as well, and send
-them all as a patch series for 4.19.y so that I can queue them all up at
-once?
-
-thanks,
-
-greg k-h
+> In order to silence dtc up let's discard the flag from the DW I2C DT
+> binding example for now. Just revert this commit when dtc is fixed.
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Cc: linux-mips@vger.kernel.org
+> 
+> ---
+> 
+> Changelog v3:
+> - This is a new patch created as a result of the Rob request to remove
+>   the EEPROM-slave bit setting in the DT binndings example until the dtc
+>   is fixed.
+> ---
+>  Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml b/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml
+> index 4bd430b2b41d..101d78e8f19d 100644
+> --- a/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml
+> +++ b/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml
+> @@ -137,7 +137,7 @@ examples:
+>  
+>        eeprom@64 {
+>          compatible = "linux,slave-24c02";
+> -        reg = <0x40000064>;
+> +        reg = <0x64>;
+>        };
+>      };
+>    - |
+> -- 
+> 2.26.2
+> 
