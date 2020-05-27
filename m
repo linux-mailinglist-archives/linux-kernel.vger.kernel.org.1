@@ -2,110 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44D241E4107
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 473861E408E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727998AbgE0L6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 07:58:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40758 "EHLO mx2.suse.de"
+        id S1728957AbgE0Lxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 07:53:31 -0400
+Received: from 8bytes.org ([81.169.241.247]:44866 "EHLO theia.8bytes.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729309AbgE0LyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 07:54:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 413C8ADE3;
-        Wed, 27 May 2020 11:54:16 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
-        gregkh@linuxfoundation.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        devel@driverdev.osuosl.org
-Subject: [RFC 02/50] staging: vchi: Get rid of vchi_queue_user_message()
+        id S1728686AbgE0Lx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 07:53:27 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id D18B53E2; Wed, 27 May 2020 13:53:23 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        jroedel@suse.de
+Subject: [PATCH 04/10] iommu/amd: Allocate page-table in protection_domain_init()
 Date:   Wed, 27 May 2020 13:53:07 +0200
-Message-Id: <20200527115400.31391-3-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200527115400.31391-1-nsaenzjulienne@suse.de>
-References: <20200527115400.31391-1-nsaenzjulienne@suse.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <20200527115313.7426-5-joro@8bytes.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200527115313.7426-1-joro@8bytes.org>
+References: <20200527115313.7426-1-joro@8bytes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function has no users.
+From: Joerg Roedel <jroedel@suse.de>
 
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Consolidate the allocation of the domain page-table in one place.
+
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 ---
- .../vc04_services/interface/vchi/vchi.h       |  6 ----
- .../interface/vchiq_arm/vchiq_shim.c          | 34 -------------------
- 2 files changed, 40 deletions(-)
+ drivers/iommu/amd/iommu.c | 48 ++++++++++++++++++---------------------
+ 1 file changed, 22 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/staging/vc04_services/interface/vchi/vchi.h b/drivers/staging/vc04_services/interface/vchi/vchi.h
-index 686cfc536012..62d9d3efa755 100644
---- a/drivers/staging/vc04_services/interface/vchi/vchi.h
-+++ b/drivers/staging/vc04_services/interface/vchi/vchi.h
-@@ -111,12 +111,6 @@ vchi_queue_kernel_message(struct vchi_service_handle *handle,
- 			  void *data,
- 			  unsigned int size);
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index c7e47a7f0d45..0d5a5dbee9f3 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -71,6 +71,8 @@
+  */
+ #define AMD_IOMMU_PGSIZES	((~0xFFFUL) & ~(2ULL << 38))
  
--/* Routine to send a message from user memory across a service */
--extern int
--vchi_queue_user_message(struct vchi_service_handle *handle,
--			void __user *data,
--			unsigned int size);
++#define DEFAULT_PGTABLE_LEVEL	PAGE_MODE_3_LEVEL
++
+ static DEFINE_SPINLOCK(pd_bitmap_lock);
+ 
+ /* List of all available dev_data structures */
+@@ -99,7 +101,7 @@ struct iommu_cmd {
+ struct kmem_cache *amd_iommu_irq_cache;
+ 
+ static void update_domain(struct protection_domain *domain);
+-static int protection_domain_init(struct protection_domain *domain);
++static int protection_domain_init(struct protection_domain *domain, int mode);
+ static void detach_device(struct device *dev);
+ static void update_and_flush_device_table(struct protection_domain *domain,
+ 					  struct domain_pgtable *pgtable);
+@@ -1847,21 +1849,14 @@ static void dma_ops_domain_free(struct protection_domain *domain)
+ static struct protection_domain *dma_ops_domain_alloc(void)
+ {
+ 	struct protection_domain *domain;
+-	u64 *pt_root, root;
+ 
+ 	domain = kzalloc(sizeof(struct protection_domain), GFP_KERNEL);
+ 	if (!domain)
+ 		return NULL;
+ 
+-	if (protection_domain_init(domain))
+-		goto free_domain;
 -
- // Routine to receive a msg from a service
- // Dequeue is equivalent to hold, copy into client buffer, release
- extern int32_t vchi_msg_dequeue(struct vchi_service_handle *handle,
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
-index 9a040651bb9b..2c2bd7a9dc27 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
-@@ -150,40 +150,6 @@ vchi_queue_kernel_message(struct vchi_service_handle *handle,
+-	pt_root = (void *)get_zeroed_page(GFP_KERNEL);
+-	if (!pt_root)
++	if (protection_domain_init(domain, DEFAULT_PGTABLE_LEVEL))
+ 		goto free_domain;
+ 
+-	root = amd_iommu_domain_encode_pgtable(pt_root, PAGE_MODE_3_LEVEL);
+-	atomic64_set(&domain->pt_root, root);
+ 	domain->flags = PD_DMA_OPS_MASK;
+ 
+ 	if (iommu_get_dma_cookie(&domain->domain) == -ENOMEM)
+@@ -2401,18 +2396,31 @@ static void protection_domain_free(struct protection_domain *domain)
+ 	kfree(domain);
  }
- EXPORT_SYMBOL(vchi_queue_kernel_message);
  
--struct vchi_queue_user_message_context {
--	void __user *data;
--};
+-static int protection_domain_init(struct protection_domain *domain)
++static int protection_domain_init(struct protection_domain *domain, int mode)
+ {
++	u64 *pt_root = NULL, root;
++
++	BUG_ON(mode < PAGE_MODE_NONE || mode > PAGE_MODE_6_LEVEL);
++
+ 	spin_lock_init(&domain->lock);
+ 	domain->id = domain_id_alloc();
+ 	if (!domain->id)
+ 		return -ENOMEM;
+ 	INIT_LIST_HEAD(&domain->dev_list);
+ 
++	if (mode != PAGE_MODE_NONE) {
++		pt_root = (void *)get_zeroed_page(GFP_KERNEL);
++		if (!pt_root)
++			return -ENOMEM;
++	}
++
++	root = amd_iommu_domain_encode_pgtable(pt_root, mode);
++	atomic64_set(&domain->pt_root, root);
++
+ 	return 0;
+ }
+ 
+-static struct protection_domain *protection_domain_alloc(void)
++static struct protection_domain *protection_domain_alloc(int mode)
+ {
+ 	struct protection_domain *domain;
+ 
+@@ -2420,7 +2428,7 @@ static struct protection_domain *protection_domain_alloc(void)
+ 	if (!domain)
+ 		return NULL;
+ 
+-	if (protection_domain_init(domain))
++	if (protection_domain_init(domain, mode))
+ 		goto out_err;
+ 
+ 	return domain;
+@@ -2434,23 +2442,13 @@ static struct protection_domain *protection_domain_alloc(void)
+ static struct iommu_domain *amd_iommu_domain_alloc(unsigned type)
+ {
+ 	struct protection_domain *pdomain;
+-	u64 *pt_root, root;
+ 
+ 	switch (type) {
+ 	case IOMMU_DOMAIN_UNMANAGED:
+-		pdomain = protection_domain_alloc();
++		pdomain = protection_domain_alloc(DEFAULT_PGTABLE_LEVEL);
+ 		if (!pdomain)
+ 			return NULL;
+ 
+-		pt_root = (void *)get_zeroed_page(GFP_KERNEL);
+-		if (!pt_root) {
+-			protection_domain_free(pdomain);
+-			return NULL;
+-		}
 -
--static ssize_t
--vchi_queue_user_message_callback(void *context,
--				 void *dest,
--				 size_t offset,
--				 size_t maxsize)
--{
--	struct vchi_queue_user_message_context *copycontext = context;
+-		root = amd_iommu_domain_encode_pgtable(pt_root, PAGE_MODE_3_LEVEL);
+-		atomic64_set(&pdomain->pt_root, root);
 -
--	if (copy_from_user(dest, copycontext->data + offset, maxsize))
--		return -EFAULT;
+ 		pdomain->domain.geometry.aperture_start = 0;
+ 		pdomain->domain.geometry.aperture_end   = ~0ULL;
+ 		pdomain->domain.geometry.force_aperture = true;
+@@ -2464,11 +2462,9 @@ static struct iommu_domain *amd_iommu_domain_alloc(unsigned type)
+ 		}
+ 		break;
+ 	case IOMMU_DOMAIN_IDENTITY:
+-		pdomain = protection_domain_alloc();
++		pdomain = protection_domain_alloc(PAGE_MODE_NONE);
+ 		if (!pdomain)
+ 			return NULL;
 -
--	return maxsize;
--}
--
--int
--vchi_queue_user_message(struct vchi_service_handle *handle,
--			void __user *data,
--			unsigned int size)
--{
--	struct vchi_queue_user_message_context copycontext = {
--		.data = data
--	};
--
--	return vchi_msg_queue(handle,
--			      vchi_queue_user_message_callback,
--			      &copycontext,
--			      size);
--}
--EXPORT_SYMBOL(vchi_queue_user_message);
--
- /***********************************************************
-  * Name: vchi_bulk_queue_receive
-  *
+-		atomic64_set(&pdomain->pt_root, PAGE_MODE_NONE);
+ 		break;
+ 	default:
+ 		return NULL;
 -- 
-2.26.2
+2.17.1
 
