@@ -2,62 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D961F1E4424
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B00C61E442A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388629AbgE0Np3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:45:29 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33650 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387581AbgE0Np2 (ORCPT
+        id S2388659AbgE0Npn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:45:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388651AbgE0Npk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:45:28 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jdwN3-0004d9-Ml; Wed, 27 May 2020 13:45:26 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] statx: remove redundant assignment to variable error
-Date:   Wed, 27 May 2020 14:45:25 +0100
-Message-Id: <20200527134525.175992-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 27 May 2020 09:45:40 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E22C08C5C2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 06:45:39 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id x22so14495078lfd.4
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 06:45:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pqMjF481/emegOTyAnp90i2QSPi+4HPq/HRpDph3sd4=;
+        b=cEtxG1QBb6k0/9pivnXsIM4fxxgTmO6eKy3cb4jjp5+kQNfHVlksx1KW++A7tdPXNv
+         oY2Ob0P9vNNprE6p4NGP04bu/InKQ/EF4F2+wJwW+oY9E8YyJqJNZGtPMuzc5qLL0HWI
+         fbhtYM7PcCz7DfVylsOzqby5Qs3IHhHLLbl9blKfUGBSf4zaaAgjnl5o0dbVSJ4DvPoW
+         Lx+VZEycnhRAGhdVQAj29L9RY0uZ6YY2m8X2b2LqnnTUPWNtVuoZ+MHCVqwRrOEjYOq/
+         EKnUL6kl2azL30dBaSZuMa/KxZcpN6UCJO8YV+KqgmxgC4f8GArCvy88KgPw8b2F4xLC
+         ixNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pqMjF481/emegOTyAnp90i2QSPi+4HPq/HRpDph3sd4=;
+        b=Xb9ngJ7tDiSOpsccAacB+5kXe4GVVWNaF+DmEZi5sQ1ws03J0vT2sS/EucH+04KIRz
+         W573pBbKjr76INzbCk49NfxQQobyI8oE2w1fzLjMorKraqxX8pBSm88m82KAuDYfRF8b
+         xQGhbTQSj0DA/JG0NNJR5pyght8QZ36bIGmKbDxRg90Y+96+i+E/lkJZq2kcIp6lxfGZ
+         20XPUXA/T+fjf7VNokgeA8LhyOeYI+IIB18lrtM7gUZfOwD1ike5cG4gUcS07QRq0bBo
+         sPpESaU7EXp1TGjrClRLN480fCxaj2YBQLVdQagi0Ku6TyI8OFzARz5OZkTC3UD16Eke
+         WnNQ==
+X-Gm-Message-State: AOAM5337CnrIWW9gkaqU+Sv/WoMe/vXzIq56AMMbMhRx4TOrwWUWQJ1R
+        kRc/JqdoX5sAisawoYwWvprlAtWcqSHwuxCVShkRvQ==
+X-Google-Smtp-Source: ABdhPJywnRjyy63BmYPCVd6xtABhxO8rvnbtGtftY9/L9Axjxr/II+eDgYpm5vNmJPSCVWS3wWgZuzCOQirdIHM52xc=
+X-Received: by 2002:ac2:5473:: with SMTP id e19mr3147605lfn.21.1590587138395;
+ Wed, 27 May 2020 06:45:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20200513141134.25819-1-lars.povlsen@microchip.com>
+ <20200513141134.25819-2-lars.povlsen@microchip.com> <CACRpkdZa7OM3bqB+zRprEQ3M4m9hG3uPCoYxrdH_O=oxD8zi8Q@mail.gmail.com>
+ <87pnb1nf2j.fsf@soft-dev15.microsemi.net> <CACRpkdYesD9sRQZXQNEaBY2Ouu3bjKKGWpRtU-Lpa4AcjyPwXw@mail.gmail.com>
+ <87r1v8oz9f.fsf@soft-dev15.microsemi.net> <CACRpkdaJvaqPptPD-A1DriVgBOZGZ4Qf0UsbsjG39ptx6bSJKg@mail.gmail.com>
+ <87pnappzun.fsf@soft-dev15.microsemi.net>
+In-Reply-To: <87pnappzun.fsf@soft-dev15.microsemi.net>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 27 May 2020 15:45:27 +0200
+Message-ID: <CACRpkdbfNPWKDU5zDaKT0kvJhCpL3X=jvTpLpicm1yMD5brA8Q@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: pinctrl: Add bindings for mscc,ocelot-sgpio
+To:     Lars Povlsen <lars.povlsen@microchip.com>
+Cc:     SoC Team <soc@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, May 27, 2020 at 10:05 AM Lars Povlsen
+<lars.povlsen@microchip.com> wrote:
 
-The variable error is being initialized with a value that is never read
-and it is being updated later with a new value.  The initialization is
-redundant and can be removed.
+> The only issue is that the gpios on the same "port" have restrictions on
+> their status - they can only be enabled "all" or "none" for gpios that
+> map to the same port. F.ex. gpio0, gpio32, gpio64 and gpio96 must all be
+> enabled or disabled because at the hardware level you control the
+> _port_.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- fs/stat.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This is fairly common. For example that an entire port/block share
+a clock.
 
-diff --git a/fs/stat.c b/fs/stat.c
-index 3213d1b2750e..d0d5b8cbe4b2 100644
---- a/fs/stat.c
-+++ b/fs/stat.c
-@@ -192,7 +192,7 @@ int vfs_statx(int dfd, const char __user *filename, int flags,
- 	      struct kstat *stat, u32 request_mask)
- {
- 	struct path path;
--	int error = -EINVAL;
-+	int error;
- 	unsigned lookup_flags;
- 
- 	if (vfs_stat_set_lookup_flags(&lookup_flags, flags))
--- 
-2.25.1
+> But as I noted earlier, that could just be the driver enforcing
+> this.
 
+Yeps.
+
+Yours,
+Linus Walleij
