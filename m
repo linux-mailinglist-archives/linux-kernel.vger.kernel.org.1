@@ -2,72 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1984D1E4D7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F0E1E4D47
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728428AbgE0SzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 14:55:15 -0400
-Received: from mga17.intel.com ([192.55.52.151]:2321 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725836AbgE0SzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 14:55:15 -0400
-IronPort-SDR: Qs8/aBLzN6JTGMJXJ264P70K96skj7TptC1aJI3jRdePyYk8t+skRZVKXp3yYfpYQk4x+XdpR7
- lCVRC+TpXoKA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 11:28:08 -0700
-IronPort-SDR: tKsjVEh3ZU7P2XLmx+VAu0BhXojIKhFHGwG0/drSmLISM9x6iAPrzIiBUgty6CCbj/6kUZ9t/8
- oR2fMULD04uQ==
-X-IronPort-AV: E=Sophos;i="5.73,442,1583222400"; 
-   d="scan'208";a="468840528"
-Received: from agluck-desk2.sc.intel.com ([10.3.52.68])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 11:28:08 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Tony Luck <tony.luck@intel.com>, kbuild test robot <lkp@intel.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/mce/dev-mcelog: Fix "make W=1" warning about strncpy
-Date:   Wed, 27 May 2020 11:28:08 -0700
-Message-Id: <20200527182808.27737-1-tony.luck@intel.com>
-X-Mailer: git-send-email 2.21.1
+        id S1726933AbgE0Srn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 14:47:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726482AbgE0Srg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 14:47:36 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5EABC08C5C2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 11:28:49 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id f21so9186454pgg.12
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 11:28:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iA+KkSp+x1pCOvFG2laI62cGHgeFrOqb4fOzsNTxNXU=;
+        b=s5sgK5hVj6s8lKi3Rri8hD77o4Tgsh/f//XKeSLPPL6IoaX/9mCJYEHRJ32vVuTTGB
+         dFOJ6DX54r/GDHqGsERVaSkKn7VZP6w7vmoq01S+s7Vgp4NCjhtVzBjBz/ibFnvGcWta
+         mSfHvumiHewYuXpM4XZwLfp01LJYUKENxLfVUkXnOtA0BezWqdmG+dG9FruFxrFvx+z0
+         OLSDlugaSodJcE0avHyTiDxelPvs1YxJU3Ddg4TK5lzP7IpA32ZcQqmyQOKAlpQDiDDP
+         fF30dP0+KbJyDOf08di6glcZut8WphRJqfLPENPijbkDbzZ6pcV6gQGYyCj6OH9Rd9v6
+         fRqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iA+KkSp+x1pCOvFG2laI62cGHgeFrOqb4fOzsNTxNXU=;
+        b=ubItvF1VL3SvZkCUPigJTxfVRdXh7PPsFLIa9NdYyAbZunQoVJBKEDbNzUvYUNGzTJ
+         8APFqK1OhPCDD1If/apibZNQP2kEEdJeO1qnVzTyqN5g8QLtwhjpGrCrdgzitz5hrZlv
+         uNU2n6covs+ELypQpMaaooYUPC/v3fQFgpDd+LsZkC5qw7Pm+455HepDKFnOgAlmJIAx
+         f0U3mE1j15XxsUF/DpgGFsksK2plimw8B8J6HgPQgjwbHFKxlBDEPPNKYYaNNbdGjuek
+         87yOmVN0r3MfGJX/3ArZEAToNJukcZpiDAlfUzOM+ZwKQzyoi0PCjK+F+eCwIgtqt7dV
+         IUAw==
+X-Gm-Message-State: AOAM5308tG4QbaOyk/juvh07TM7vWy75C8pcMpyZbcXH6clGxPwh1IBc
+        DERxyMi+eAJ8qsXeQPBRV5WXlf4YtN6ntg==
+X-Google-Smtp-Source: ABdhPJy79EBrfQSWmv0ROoxKkjCOvcXwdJtlDQLwN27cdTeaTy6nksFR7zHfbpPjZAN2LXNgjfyAZw==
+X-Received: by 2002:a63:e008:: with SMTP id e8mr5139090pgh.451.1590604128900;
+        Wed, 27 May 2020 11:28:48 -0700 (PDT)
+Received: from google.com ([2620:15c:2ce:0:9efe:9f1:9267:2b27])
+        by smtp.gmail.com with ESMTPSA id z8sm2517225pgc.80.2020.05.27.11.28.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 11:28:48 -0700 (PDT)
+Date:   Wed, 27 May 2020 11:28:43 -0700
+From:   Fangrui Song <maskray@google.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Enrico Weigelt <info@metux.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Bill Wendling <morbo@google.com>, Jian Cai <jiancai@google.com>
+Subject: Re: [PATCH] arm64: fix clang integrated assembler build
+Message-ID: <20200527182843.g6tbow4lqsvwl2ah@google.com>
+References: <20200527141435.1716510-1-arnd@arndb.de>
+ <CAKwvOdnNxj-MdKj3aWoefF2W9PPG-TSeNU4Ym-N8NODJB5Yw_w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdnNxj-MdKj3aWoefF2W9PPG-TSeNU4Ym-N8NODJB5Yw_w@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kbuild test robot reported this warning:
 
-arch/x86/kernel/cpu/mce/dev-mcelog.c: In function 'dev_mcelog_init_device':
-arch/x86/kernel/cpu/mce/dev-mcelog.c:346:2: warning: 'strncpy' output truncated before terminating nul copying 12 bytes from a string of the same length [-Wstringop-truncation]
+On 2020-05-27, 'Nick Desaulniers' via Clang Built Linux wrote:
+>On Wed, May 27, 2020 at 7:14 AM Arnd Bergmann <arnd@arndb.de> wrote:
+>>
+>> clang and gas seem to interpret the symbols in memmove.S and
+>> memset.S differently, such that clang does not make them
+>> 'weak' as expected, which leads to a linker error, with both
+>> ld.bfd and ld.lld:
+>>
+>> ld.lld: error: duplicate symbol: memmove
+>> >>> defined at common.c
+>> >>>            kasan/common.o:(memmove) in archive mm/built-in.a
+>> >>> defined at memmove.o:(__memmove) in archive arch/arm64/lib/lib.a
+>>
+>> ld.lld: error: duplicate symbol: memset
+>> >>> defined at common.c
+>> >>>            kasan/common.o:(memset) in archive mm/built-in.a
+>> >>> defined at memset.o:(__memset) in archive arch/arm64/lib/lib.a
+>>
+>> Copy the exact way these are written in memcpy_64.S, which does
+>> not have the same problem.
+>>
+>> I don't know why this makes a difference, and it would be good
+>> to have someone with a better understanding of assembler internals
+>> review it.
+>>
+>> It might be either a bug in the kernel or a bug in the assembler,
+>> no idea which one. My patch makes it work with all versions of
+>> clang and gcc, which is probably helpful even if it's a workaround
+>> for a clang bug.
+>
+>+ Bill, Fangrui, Jian
+>I think we saw this bug or a very similar bug internally around the
+>ordering of .weak to .global.
 
-This is accurate, but I don't care that the trailing NUL character isn't copied.
-The string being copied is just a magic number signature so that crash dump
-tools can be sure they are decoding the right blob of memory.
+This may be another instance of
+https://sourceware.org/pipermail/binutils/2020-March/000299.html
+https://lore.kernel.org/linuxppc-dev/20200325164257.170229-1-maskray@google.com/
 
-Change to use memcpy() instead of strncpy()
+I haven't checked but there may be both a .globl directive and a .weak
+directive
 
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- arch/x86/kernel/cpu/mce/dev-mcelog.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/cpu/mce/dev-mcelog.c b/arch/x86/kernel/cpu/mce/dev-mcelog.c
-index d089567a9ce8..bcb379b2fd42 100644
---- a/arch/x86/kernel/cpu/mce/dev-mcelog.c
-+++ b/arch/x86/kernel/cpu/mce/dev-mcelog.c
-@@ -343,7 +343,7 @@ static __init int dev_mcelog_init_device(void)
- 	if (!mcelog)
- 		return -ENOMEM;
- 
--	strncpy(mcelog->signature, MCE_LOG_SIGNATURE, sizeof(mcelog->signature));
-+	memcpy(mcelog->signature, MCE_LOG_SIGNATURE, sizeof(mcelog->signature));
- 	mcelog->len = mce_log_len;
- 	mcelog->recordlen = sizeof(struct mce);
- 
--- 
-2.21.1
-
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> ---
+>> ---
+>>  arch/arm64/lib/memcpy.S  | 3 +--
+>>  arch/arm64/lib/memmove.S | 3 +--
+>>  arch/arm64/lib/memset.S  | 3 +--
+>>  3 files changed, 3 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/arch/arm64/lib/memcpy.S b/arch/arm64/lib/memcpy.S
+>> index e0bf83d556f2..dc8d2a216a6e 100644
+>> --- a/arch/arm64/lib/memcpy.S
+>> +++ b/arch/arm64/lib/memcpy.S
+>> @@ -56,9 +56,8 @@
+>>         stp \reg1, \reg2, [\ptr], \val
+>>         .endm
+>>
+>> -       .weak memcpy
+>>  SYM_FUNC_START_ALIAS(__memcpy)
+>> -SYM_FUNC_START_PI(memcpy)
+>> +SYM_FUNC_START_WEAK_PI(memcpy)
+>>  #include "copy_template.S"
+>>         ret
+>>  SYM_FUNC_END_PI(memcpy)
+>> diff --git a/arch/arm64/lib/memmove.S b/arch/arm64/lib/memmove.S
+>> index 02cda2e33bde..1035dce4bdaf 100644
+>> --- a/arch/arm64/lib/memmove.S
+>> +++ b/arch/arm64/lib/memmove.S
+>> @@ -45,9 +45,8 @@ C_h   .req    x12
+>>  D_l    .req    x13
+>>  D_h    .req    x14
+>>
+>> -       .weak memmove
+>>  SYM_FUNC_START_ALIAS(__memmove)
+>> -SYM_FUNC_START_PI(memmove)
+>> +SYM_FUNC_START_WEAK_PI(memmove)
+>>         cmp     dstin, src
+>>         b.lo    __memcpy
+>>         add     tmp1, src, count
+>> diff --git a/arch/arm64/lib/memset.S b/arch/arm64/lib/memset.S
+>> index 77c3c7ba0084..a9c1c9a01ea9 100644
+>> --- a/arch/arm64/lib/memset.S
+>> +++ b/arch/arm64/lib/memset.S
+>> @@ -42,9 +42,8 @@ dst           .req    x8
+>>  tmp3w          .req    w9
+>>  tmp3           .req    x9
+>>
+>> -       .weak memset
+>>  SYM_FUNC_START_ALIAS(__memset)
+>> -SYM_FUNC_START_PI(memset)
+>> +SYM_FUNC_START_WEAK_PI(memset)
+>>         mov     dst, dstin      /* Preserve return value.  */
+>>         and     A_lw, val, #255
+>>         orr     A_lw, A_lw, A_lw, lsl #8
+>> --
+>> 2.26.2
+>
+>-- 
+>Thanks,
+>~Nick Desaulniers
+>
+>-- 
+>You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+>To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+>To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAKwvOdnNxj-MdKj3aWoefF2W9PPG-TSeNU4Ym-N8NODJB5Yw_w%40mail.gmail.com.
