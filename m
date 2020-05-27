@@ -2,143 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1791E4A5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7381E4A7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391264AbgE0QgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 12:36:09 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:58444 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388698AbgE0QgH (ORCPT
+        id S1729469AbgE0Qkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 12:40:43 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:43368 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725613AbgE0Qkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 12:36:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3SwWv1b1ZZ0d4qKk4MUGy+soL9XW1X7q0hmvw8xul90=; b=mOMM9cG2XuJFDBG+fyrTTt8Gd/
-        9/AQlxNVJTeLpT1Aqthkwtrr7sxOOarLnF0AmOHigdFz7jenleaQS/Iqv8ykne0lZjoVXaM7w8f/6
-        Bp2Uzf06E/YkIhWdLz0SZq0K3IJG3oyombnNucT8PKzTIMYVcHRhymEyJvOY5yTtr8s1p2xS5OCOn
-        9Oc14s9FeGx2IhU6V0r86h1We/4XTeoJ1fdJeWuhG90/hSRmKQszcoGsgsnLyWyZwqygzApAWXkil
-        QFj8gUle2Sr6ecnxSycKwKWm38PNyNKMBNhF017oQMYd6vCW/QFCN2fJqQ2CzLk/AJyRfc3SnsXvB
-        OtWjTnOw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jdz1u-0002oU-0o; Wed, 27 May 2020 16:35:46 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B6C30300478;
-        Wed, 27 May 2020 18:35:43 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9033A2B9C7024; Wed, 27 May 2020 18:35:43 +0200 (CEST)
-Date:   Wed, 27 May 2020 18:35:43 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     tglx@linutronix.de, frederic@kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org, cai@lca.pw,
-        mgorman@techsingularity.net, joel@joelfernandes.org
-Subject: Re: [RFC][PATCH 4/7] smp: Optimize send_call_function_single_ipi()
-Message-ID: <20200527163543.GA706478@hirez.programming.kicks-ass.net>
-References: <20200526161057.531933155@infradead.org>
- <20200526161907.953304789@infradead.org>
- <20200527095645.GH325280@hirez.programming.kicks-ass.net>
- <20200527101513.GJ325303@hirez.programming.kicks-ass.net>
- <20200527155656.GU2869@paulmck-ThinkPad-P72>
+        Wed, 27 May 2020 12:40:42 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jdz6d-0006w9-OG; Wed, 27 May 2020 10:40:39 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jdz6c-0003Ki-Lj; Wed, 27 May 2020 10:40:39 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Kaitao Cheng <pilgrimtao@gmail.com>, christian@brauner.io,
+        akpm@linux-foundation.org, gladkov.alexey@gmail.com, guro@fb.com,
+        walken@google.com, avagin@gmail.com, khlebnikov@yandex-team.ru,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20200527141155.47554-1-pilgrimtao@gmail.com>
+        <87k10x5tji.fsf@x220.int.ebiederm.org>
+        <20200527152340.GA19985@localhost.localdomain>
+Date:   Wed, 27 May 2020 11:36:48 -0500
+In-Reply-To: <20200527152340.GA19985@localhost.localdomain> (Alexey Dobriyan's
+        message of "Wed, 27 May 2020 18:23:40 +0300")
+Message-ID: <87k10x49nj.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200527155656.GU2869@paulmck-ThinkPad-P72>
+Content-Type: text/plain
+X-XM-SPF: eid=1jdz6c-0003Ki-Lj;;;mid=<87k10x49nj.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18BJ/5vPS/5ztRlPMmB8rb39/YlelSsKas=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.3 required=8.0 tests=ALL_TRUSTED,BAYES_20,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 BAYES_20 BODY: Bayes spam probability is 5 to 20%
+        *      [score: 0.1826]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Alexey Dobriyan <adobriyan@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 648 ms - load_scoreonly_sql: 0.11 (0.0%),
+        signal_user_changed: 210 (32.4%), b_tie_ro: 208 (32.2%), parse: 0.96
+        (0.1%), extract_message_metadata: 3.6 (0.6%), get_uri_detail_list:
+        1.27 (0.2%), tests_pri_-1000: 3.8 (0.6%), tests_pri_-950: 1.32 (0.2%),
+        tests_pri_-900: 1.08 (0.2%), tests_pri_-90: 173 (26.7%), check_bayes:
+        171 (26.5%), b_tokenize: 7 (1.1%), b_tok_get_all: 7 (1.1%),
+        b_comp_prob: 2.7 (0.4%), b_tok_touch_all: 150 (23.2%), b_finish: 1.09
+        (0.2%), tests_pri_0: 236 (36.4%), check_dkim_signature: 0.57 (0.1%),
+        check_dkim_adsp: 2.8 (0.4%), poll_dns_idle: 0.69 (0.1%), tests_pri_10:
+        2.3 (0.4%), tests_pri_500: 7 (1.2%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] proc/base: Skip assignment to len when there is no error on d_path in do_proc_readlink.
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 08:56:56AM -0700, Paul E. McKenney wrote:
-> On Wed, May 27, 2020 at 12:15:13PM +0200, Peter Zijlstra wrote:
+Alexey Dobriyan <adobriyan@gmail.com> writes:
 
-> > At first glance, something like the below could work. But obviously I
-> > might have overlooked something more subtle than a brick :-)
-> 
-> This can work, but only if the call from the idle loop is a place where
-> either RCU isn't watching on the one hand or that cannot be in an RCU
-> read-side critical section on the other. 
+> On Wed, May 27, 2020 at 09:41:53AM -0500, Eric W. Biederman wrote:
+>> Kaitao Cheng <pilgrimtao@gmail.com> writes:
+>> 
+>> > we don't need {len = PTR_ERR(pathname)} when IS_ERR(pathname) is false,
+>> > it's better to move it into if(IS_ERR(pathname)){}.
+>> 
+>> Please look at the generated code.
+>> 
+>> I believe you will find that your change will generate worse assembly.
+>
+> I think patch is good.
+>
+> Super duper CPUs which speculate thousands instructions forward won't
+> care but more embedded ones do. Or in other words 1 unnecessary instruction
+> on common path is more important for slow CPUs than for fast CPUs.
 
-Guaranteed no RCU read side, although the call is in a place where RCU
-is active again, is that a problem? I think with a bit of work I can
-move it to where RCU is still idle.
+No.  This adds an entire extra basic block, with an extra jump.
 
-> Because rcu_exp_handler() assumes that if this function returns true,
-> we are not in an RCU read-side critical section.  (I would expect this
-> to be the case, but I figured that I should make it explicit.)
+A good compiler should not even generate an extra instruction for this
+case.  A good compiler will just let len and pathname share the same
+register.
 
-Indeed, I shall put a comment in the idle look to make sure it stays that way.
+So I think this will hurt your slow cpu case two as it winds up just
+plain being more assembly code, which stress the size of the slow cpus
+caches.
 
-> > ---
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 90c8be22d57a..0792c032a972 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -426,8 +426,11 @@ EXPORT_SYMBOL_GPL(rcu_momentary_dyntick_idle);
-> >   */
-> 
-> Could we please have a comment noting the change in semantics and
-> the reason?
 
-A Changelog you mean? Sure, I can do, but I wasn't nowhere confident
-enough in the change to even bother trying to write one.
 
-> >  static int rcu_is_cpu_rrupt_from_idle(void)
-> >  {
-> > -	/* Called only from within the scheduling-clock interrupt */
-> > -	lockdep_assert_in_irq();
-> > +	/*
-> > +	 * Usually called from the tick; but also used from smp_call_function()
-> > +	 * for expedited grace periods.
-> > +	 */
-> > +	lockdep_assert_irqs_disabled();
-> >  
-> >  	/* Check for counter underflows */
-> >  	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nesting) < 0,
-> > @@ -435,8 +438,11 @@ static int rcu_is_cpu_rrupt_from_idle(void)
-> >  	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0,
-> >  			 "RCU dynticks_nmi_nesting counter underflow/zero!");
-> >  
-> > -	/* Are we at first interrupt nesting level? */
-> > -	if (__this_cpu_read(rcu_data.dynticks_nmi_nesting) != 1)
-> > +	/*
-> > +	 * Are we at first interrupt nesting level? -- or below, when running
-> > +	 * directly from the idle loop itself.
-> > +	 */
-> > +	if (__this_cpu_read(rcu_data.dynticks_nmi_nesting) > 1)
-> 
-> Wouldn't it also be a good idea to check that we are in the context of
-> an idle thread?  Just in case some idiot like me drops a call to this
-> function in the wrong place, for example, if I were to mistakenly remember
-> the old semantics where it would return false from process context?
-> 
-> Maybe something like this?
-> 
-> 	nesting = __this_cpu_read(rcu_data.dynticks_nmi_nesting;
-> 	if (nesting > 1)
-> 		return false;
-> 	WARN_ON_ONCE(!nesting && !is_idle_task(current));
+I do admit a good compiler should be able to hoist the assignment above
+the branch (as we have today) it gets tricky to tell if hoisting the
+assignment is safe.
 
-Yep, that should do.
+> This style separates common path from error path more cleanly.
 
-> >  		return false;
-> >  
-> >  	/* Does CPU appear to be idle from an RCU standpoint? */
-> 
-> And let's check the other callers:
-> 
-> rcu_sched_clock_irq():  This will always be called from IRQ (right?), so
-> 	no problem.
-> 
-> rcu_pending():  Only called from rcu_sched_clock_irq(), so still no problem.
-> 
-> rcu_flavor_sched_clock_irq(): Ditto for both definitions.
+Very arguable.
 
-Right, I went though them, didn't find anything obvious amiss. OK, let
-me do a nicer patch.
+[snip a completely different case]
+
+Yes larger cases can have different solutions.
+
+Eric
