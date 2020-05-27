@@ -2,82 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5371E3B14
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 09:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A171E3AEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 09:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387726AbgE0H5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 03:57:07 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:27912 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387663AbgE0H5G (ORCPT
+        id S1729296AbgE0Hs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 03:48:56 -0400
+Received: from mail.windriver.com ([147.11.1.11]:49728 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729052AbgE0Hs4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 03:57:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590566225;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=5F/o7OGwvhTxyKAdmFEBVbFxDhCXeuX/gkHyEAGjn5o=;
-        b=LO0TTwOZ7bWT0+OFOoxit6+JNlkis6nkpZPRV6SCycq4P9p1IPWIsDGx6ESu9ZWEpq1uBc
-        HTdCmOf6OkgpDat5PesmKvGtJQkKPEO8yme3yipPgTPmnbkKNFx6scjR/CRMRxwvV3vIpe
-        SdkcJWeVoN6D+sQAJT1KepSX5LGKcm4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-105-JqPXZLUmPgCJ4ZQEMQYfdw-1; Wed, 27 May 2020 03:57:03 -0400
-X-MC-Unique: JqPXZLUmPgCJ4ZQEMQYfdw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B72B4107ACF2;
-        Wed, 27 May 2020 07:57:01 +0000 (UTC)
-Received: from steredhat.redhat.com (ovpn-113-178.ams2.redhat.com [10.36.113.178])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CE4E81A7DB;
-        Wed, 27 May 2020 07:56:56 +0000 (UTC)
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     davem@davemloft.net
-Cc:     George Zhang <georgezhang@vmware.com>,
-        Andy King <acking@vmware.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Dmitry Torokhov <dtor@vmware.com>, netdev@vger.kernel.org,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH net] vsock: fix timeout in vsock_accept()
-Date:   Wed, 27 May 2020 09:56:55 +0200
-Message-Id: <20200527075655.69889-1-sgarzare@redhat.com>
+        Wed, 27 May 2020 03:48:56 -0400
+Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
+        by mail.windriver.com (8.15.2/8.15.2) with ESMTPS id 04R7mlxj002206
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Wed, 27 May 2020 00:48:48 -0700 (PDT)
+Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
+ ALA-HCB.corp.ad.wrs.com (147.11.189.41) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 27 May 2020 00:48:29 -0700
+From:   <qiang.zhang@windriver.com>
+To:     <tj@kernel.org>
+CC:     <jiangshanlai@gmail.com>, <markus.elfring@web.de>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v5] workqueue: Remove unnecessary kfree() call in rcu_free_wq()
+Date:   Wed, 27 May 2020 15:57:15 +0800
+Message-ID: <20200527075715.36849-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The accept(2) is an "input" socket interface, so we should use
-SO_RCVTIMEO instead of SO_SNDTIMEO to set the timeout.
+From: Zhang Qiang <qiang.zhang@windriver.com>
 
-So this patch replace sock_sndtimeo() with sock_rcvtimeo() to
-use the right timeout in the vsock_accept().
+The data structure member "wq->rescuer" was reset to a null pointer
+in one if branch. It was passed to a call of the function "kfree"
+in the callback function "rcu_free_wq" (which was eventually executed).
+The function "kfree" does not perform more meaningful data processing
+for a passed null pointer (besides immediately returning from such a call).
+Thus delete this function call which became unnecessary with the referenced
+software update.
 
-Fixes: d021c344051a ("VSOCK: Introduce VM Sockets")
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+Fixes: def98c84b6cd ("workqueue: Fix spurious sanity check failures in destroy_workqueue()")
+
+Suggested-by: Markus Elfring <Markus.Elfring@web.de> 
+Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
 ---
- net/vmw_vsock/af_vsock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ v1->v2->v3->v4->v5:
+ Modify weakly submitted information.
 
-diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-index a5f28708e0e7..626bf9044418 100644
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -1408,7 +1408,7 @@ static int vsock_accept(struct socket *sock, struct socket *newsock, int flags,
- 	/* Wait for children sockets to appear; these are the new sockets
- 	 * created upon connection establishment.
- 	 */
--	timeout = sock_sndtimeo(listener, flags & O_NONBLOCK);
-+	timeout = sock_rcvtimeo(listener, flags & O_NONBLOCK);
- 	prepare_to_wait(sk_sleep(listener), &wait, TASK_INTERRUPTIBLE);
+ kernel/workqueue.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 891ccad5f271..a2451cdcd503 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -3491,7 +3491,6 @@ static void rcu_free_wq(struct rcu_head *rcu)
+ 	else
+ 		free_workqueue_attrs(wq->unbound_attrs);
  
- 	while ((connected = vsock_dequeue_accept(listener)) == NULL &&
+-	kfree(wq->rescuer);
+ 	kfree(wq);
+ }
+ 
 -- 
-2.25.4
+2.24.1
 
