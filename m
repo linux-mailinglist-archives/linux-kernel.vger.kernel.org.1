@@ -2,110 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97AD1E445B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66A331E4461
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388082AbgE0Ntv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:49:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38186 "EHLO
+        id S2388821AbgE0NuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:50:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388800AbgE0Ntu (ORCPT
+        with ESMTP id S2388603AbgE0NuL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:49:50 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4323C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 06:49:49 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id l21so28209530eji.4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 06:49:49 -0700 (PDT)
+        Wed, 27 May 2020 09:50:11 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB67C08C5C1;
+        Wed, 27 May 2020 06:50:11 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id 23so20540274oiq.8;
+        Wed, 27 May 2020 06:50:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:openpgp:autocrypt:message-id:date
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=++foOLm8XCp/vzZg1vNHQX18MozqLm2xHnvVgSzZ15k=;
-        b=ZQ039xQ6Ytn70l5fJFrT9eGp4ft8CCo2lngDIHXIc1pvVceMXDKpE8p7RkRDFWzjlq
-         xEdHqHqScBluUCFxRuBw/LIscKvogY4mPssJ4CdzX7ABdVu+iRxDKGPujNbPilVdbfjy
-         9BSBIyFrLVZ3kNfrXTRdpTqph2pqBUPfEX1suptbNWbHNZDvkgAGiw9y5YBNuyulO70H
-         yQokCKUt/gam3wK7H2Cr3RZ6m9jKgj8BKvHzmeBgLOm0Jz1godHXh2xq6sdyH7ELqHsn
-         m7OQlmRM3k5lQvh/fnk2fwYCFs1jZ/uYVOpWTHP8BblXR3v1Ht2n2Sy535b3mX0eMKVY
-         S4FQ==
+        bh=a1TUEw5/JsL8gsEryhTxvgCweegsIr/EsyDfyV7zWRU=;
+        b=E4KWr1Kau5Hs04onkGjtjlT4R9Jjt7r1vDz7F0LoI6WqRXl6lu4jovEXkZucrcd+jh
+         5zbo9UbDZWxm3LFBVtxlUUpHdjpYSttORWN07WVTZ1RaVDDx651Eqfh9jXXrOz2l2AG5
+         fo5aIn7gF1Hhig7C1AzXQLfuK6BzoD1QlifSNtI8aUVw5jzG/4wSrmYMc181bG/bq+QN
+         mO6h00F6dZXNWCS2C5k6MBLL0JLy1Hflz0lm/eSFTJXFGC4XTBHF305y8hyimyul0UEo
+         FH8Xe2MBSogrEhjjUoj9C+4xyxrrkfNPz9SPUR4a4CDqWU+3sRebKP0bkjDb2FntZSuA
+         gQeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
-         :message-id:date:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=++foOLm8XCp/vzZg1vNHQX18MozqLm2xHnvVgSzZ15k=;
-        b=P0f70/hih6c9KaXLKBYSyZvPmFYiC2en1+gvbOTx5SNGC5xnjbITOkOiJdhjznAspu
-         IQT0NYTzkZ63Q4eO6ALr5BD2y2KradrRBwkojVC33HurAlSWccbPeB1UnF96fiyva6Uv
-         VNwWRnryWbImdAGSAMlEAUpBvXw6KYJ7UWIGGM+nw/DxeMabgOtr8sCXtLaMQQjSnPpd
-         yqSgCKLbNTv4vEZ8wpxA4X/lHD7ezvxfsVQ0JmQW5FLU2sHOU3h16/FKUpIS759mymFD
-         5u8sLldxddy/zhf7HFRI3IoXQrhK2ZRY02QshOZa8A7IeSsNXuULf0sPD8A9s8xwGHK+
-         FDXg==
-X-Gm-Message-State: AOAM530IZLkqZkNkwwPoflu9E+0p0qXu1lcU9/UtUJYWzEYV+kHab6Ct
-        7c5HR5vVamLlAxwgYxsYZfYwmg==
-X-Google-Smtp-Source: ABdhPJwbNxhh5un0+914l8MgigNqf2Xve3x7buMO4RSJFwdLmnL1CjIbVHZfCJQ1D0Z8lULmY+x1hg==
-X-Received: by 2002:a17:906:2b14:: with SMTP id a20mr6598593ejg.387.1590587388384;
-        Wed, 27 May 2020 06:49:48 -0700 (PDT)
-Received: from [10.44.66.8] ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id nj6sm2889467ejb.99.2020.05.27.06.49.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 May 2020 06:49:47 -0700 (PDT)
-Subject: Re: [PATCH v5 0/3] interconnect: Support Samsung Exynos use-case
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc:     a.swigon@samsung.com, cw00.choi@samsung.com,
-        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
-        krzk@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
-References: <CGME20200521122848eucas1p27ce74486ea2044cb0b942b2619426e21@eucas1p2.samsung.com>
- <20200521122841.8867-1-s.nawrocki@samsung.com>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Openpgp: preference=signencrypt
-Autocrypt: addr=georgi.djakov@linaro.org; prefer-encrypt=mutual; keydata=
- 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
- KEmKjLDvB0pePJkdTw==
-Message-ID: <edf16797-4c1d-5b92-fbe2-28557c2fcdf0@linaro.org>
-Date:   Wed, 27 May 2020 16:49:44 +0300
+        bh=a1TUEw5/JsL8gsEryhTxvgCweegsIr/EsyDfyV7zWRU=;
+        b=JpxvcbQMUGzgnfnhbe0t5JU2YGSn5JQhGPfE0dlP+4pLBUgnnBhcOAjNaibybpTgKM
+         6af8+ESfj5Pp8QfyXyYEWcP/Y2lRFMRCz9OGSjFf9I7or3ocRwEEP0q+KXtg7X94pXQL
+         lBcr3qhK4y5ZPtqMP3DDuYQroA/pIUXBzaejiH6tfOFMGJGrDBUl9bvSY778cOceyVJx
+         pGVkG+5/KSRv2H2AlWxzHREvGZqbLXowHf/Cs+F/Z89e1W2h7r4cPr2yNjuB6XwsJ54U
+         ZLjd5bwghZ6k6/+xWDcx5bQuPH/pb85QJe+L9R2JhDYAvtNTW3UQhQqqJNuvBMCQBGLC
+         z87Q==
+X-Gm-Message-State: AOAM533D2/7ey8WGyrB6LcAY0Wi5zwNNS3UrjsZsh61ZFl6AOQpdacDp
+        05dM/AMpLRVlUozeWVmvP4o=
+X-Google-Smtp-Source: ABdhPJz65Q2NTQJ4atIhwWi87TRdmRTdbuEf2CHdPJZDlL4vao7TDLPuo0VowaBDj4b05oR35IMqmg==
+X-Received: by 2002:aca:ba86:: with SMTP id k128mr2884972oif.60.1590587411208;
+        Wed, 27 May 2020 06:50:11 -0700 (PDT)
+Received: from ?IPv6:2601:282:803:7700:85b5:c99:767e:c12? ([2601:282:803:7700:85b5:c99:767e:c12])
+        by smtp.googlemail.com with ESMTPSA id w8sm828792oie.12.2020.05.27.06.50.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 May 2020 06:50:10 -0700 (PDT)
+Subject: Re: [PATCH] [net-next] nexthop: fix enum type confusion
+To:     Arnd Bergmann <arnd@arndb.de>, David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>
+Cc:     Colin Ian King <colin.king@canonical.com>,
+        Stephen Worley <sworley@cumulusnetworks.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+References: <20200527134755.978758-1-arnd@arndb.de>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <3722aa2b-667d-eef2-b901-ef0ae943f8f2@gmail.com>
+Date:   Wed, 27 May 2020 07:50:09 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200521122841.8867-1-s.nawrocki@samsung.com>
+In-Reply-To: <20200527134755.978758-1-arnd@arndb.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -114,29 +76,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sylwester,
-
-Thank you for re-sending these!
-
-On 5/21/20 15:28, Sylwester Nawrocki wrote:
-> Hi All,
+On 5/27/20 7:47 AM, Arnd Bergmann wrote:
+> Clang points out a mismatch between function arguments
+> using a different enum type:
 > 
-> This is a continuation of Artur's efforts to add interconnect and PM QoS
-> support for Exynos SoCs. Previous version of the patch set can be found 
-> at [1]. The only change comparing to v4 is an addition of missing 'static
-> inline' qualifier to the of_icc_get_from_provider() function stub, i.e.
-> addresing Georgi's review comments.
+> net/ipv4/nexthop.c:841:30: error: implicit conversion from enumeration type 'enum nexthop_event_type' to different enumeration type 'enum fib_event_type' [-Werror,-Wenum-conversion]
+>         call_nexthop_notifiers(net, NEXTHOP_EVENT_DEL, nh);
+>         ~~~~~~~~~~~~~~~~~~~~~~      ^~~~~~~~~~~~~~~~~
 > 
-> The patches have been tested on Odroid U3 (Exynos4412 SoC). 
+> This looks like a copy-paste error, so just use the intended
+> type instead.
 > 
-> Below is detailed description of the patch set as in v3.
+> Fixes: 8590ceedb701 ("nexthop: add support for notifiers")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  net/ipv4/nexthop.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
->                               ---------
-> Previously posted as a part of a larger RFC [2].
 
-The patches look good to me and i am planning to apply them for v5.9,
-but what happened to the devfreq patches, which will make use of this?
-Are they posted separately?
+Nate sent a fix a few hours ago:
+https://lore.kernel.org/netdev/20200527080019.3489332-1-natechancellor@gmail.com/T/#u
 
-Thanks,
-Georgi
