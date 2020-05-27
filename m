@@ -2,182 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03CD81E4B4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 19:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C63721E4B96
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 19:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731089AbgE0RBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 13:01:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55708 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728883AbgE0RBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 13:01:49 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6A074AC61;
-        Wed, 27 May 2020 17:01:49 +0000 (UTC)
-Message-ID: <c48ede24790b2e402ca47640ae9f1ea2a5b27530.camel@suse.de>
-Subject: Re: [PATCH v2 09/14] device core: Add ability to handle multiple
- dma offsets
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
-        <linux-pci@vger.kernel.org>, Christoph Hellwig <hch@lst.de>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Oliver Neukum <oneukum@suse.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>, Corey Minyard <minyard@acm.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
-        "open list:DMA MAPPING HELPERS" <iommu@lists.linux-foundation.org>
-Date:   Wed, 27 May 2020 19:01:43 +0200
-In-Reply-To: <CA+-6iNyOKvY-xNfXqDRa5_nJVJuqGKA-oe-ejNuJHUBt6ORu0A@mail.gmail.com>
-References: <20200526191303.1492-1-james.quinlan@broadcom.com>
-         <20200526191303.1492-10-james.quinlan@broadcom.com>
-         <59a0b4e1454a8ef4d3e4ebaf55dcbf3dcd2d73a2.camel@suse.de>
-         <CA+-6iNyOKvY-xNfXqDRa5_nJVJuqGKA-oe-ejNuJHUBt6ORu0A@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-zRgqKyYp8CMyrh28/srG"
-User-Agent: Evolution 3.36.2 
-MIME-Version: 1.0
+        id S1731241AbgE0RMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 13:12:34 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:55191 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729894AbgE0RMd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 13:12:33 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 022B8A97;
+        Wed, 27 May 2020 13:12:31 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 27 May 2020 13:12:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        content-transfer-encoding:content-type:in-reply-to:date:cc
+        :subject:from:to:message-id; s=fm3; bh=6pxEigjWfelMjOWs/Jq1DeSXe
+        YEVsneKZclbXHsrvFQ=; b=Dx1/DmhtipYpfHdvAyM/R5S0l0Urw1kxEabTy7ndJ
+        KTekDH5RnTfTmgtWbw1GPf0w0zy//8W2XsYDGENYLAJYsG0M8MFKQSDtejpoMNaj
+        hAnXIlNbMdyUmtqWBcPkLMwrLpd0M7Nc9TADOGV8r3gsiI1QSzzcbcOKvskxWyKF
+        nWVGqyFKvv8np6XOsHfTuSvEfCcTazr4q8NN3JRTDddw3g5bkUEkEjt7XqafB7mF
+        s6kv6nZ29QgL09L95cmnqmIRb0l/H+XOyd3tVem/EXMHCkWlMabbx17u+lEyIi6K
+        3pthk+jGFVzijmv9tcwao0yLwP9yMl0ot6BCt4x7h51LQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=6pxEig
+        jWfelMjOWs/Jq1DeSXeYEVsneKZclbXHsrvFQ=; b=0IfLJJFz1oyDNl66pJNJfD
+        fK4c+ZqgBV1JRd7wxvWo0TU2bYMX+yWOONUwtiB+FAnfw5CoMWYA3HuOJmeEcBPU
+        q/R1AyizBPiuyjRbbfpR4f7oAz/w44K8x1bfsWuD6eRh21k1csZ/bGwbNjAylRqG
+        S+zKp5kTf584fTAjy65FIqG4zQT2eZj8e1EzY0n//TpCX4X5shiCofJRsWRjhz+v
+        d8/6CyoSQmHjzKPaqDddMQGkUE8+Pfxftj15FQ6LpZOcIGiJYWbn/7iaf/xmQiV7
+        cU4CzpS/asntOs7f7QqfBxMPHb3C9yAf8NwoTMtLn7S9qV5cTx0tWsr3I2WKHtPw
+        ==
+X-ME-Sender: <xms:fp_OXnzMMddzuGs3DxMkcMGcAaZYDGTqZrX0dF1dx5rYHJOk_uyfcw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddvgedgleelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdljedtmdenucfjughrpefgtggjfffuhffvkfesthhqredttddtjeen
+    ucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugihusegugihuuhhurdighiiiqeenuc
+    ggtffrrghtthgvrhhnpeelleelfeekudehudeitdefkeeutdfhieeiudeggfdutdetleek
+    vedtteevieffteenucfkphepjeefrdelfedrvdegjedrudefgeenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:fp_OXvSUMbDbI3ZC12QTnicdy3P20kMOKD3dc3jOfmeB3oesg5oXDA>
+    <xmx:fp_OXhX8P3FO9-Nt1LGVYuVV2rj-Slpt8I8KW0srICQtB7EPwbtJUQ>
+    <xmx:fp_OXhif-JI4R5yF4LAsFNrABBnXAQv97F_q5pBCEdII_QRGP4NGBg>
+    <xmx:f5_OXt7AKk-ovSiZzUxVTphnwaOqRn5Id8NRDUl4Od2wBnp27IJaxlzjc_g>
+Received: from localhost (c-73-93-247-134.hsd1.ca.comcast.net [73.93.247.134])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7C89A3280063;
+        Wed, 27 May 2020 13:12:29 -0400 (EDT)
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <CAEf4BzbR+7X-boCBC-f60jugp8xWKVTeFTyUmrcv8Qy4iKsvjg@mail.gmail.com>
+Date:   Wed, 27 May 2020 10:03:56 -0700
+Cc:     "Alexei Starovoitov" <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        "Martin Lau" <kafai@fb.com>, "Song Liu" <songliubraving@fb.com>,
+        "Yonghong Song" <yhs@fb.com>, "Andrii Nakryiko" <andriin@fb.com>,
+        "john fastabend" <john.fastabend@gmail.com>,
+        "KP Singh" <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        "Jesper Dangaard Brouer" <hawk@kernel.org>,
+        "bpf" <bpf@vger.kernel.org>, "Networking" <netdev@vger.kernel.org>,
+        "open list" <linux-kernel@vger.kernel.org>,
+        "clang-built-linux" <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH bpf-next] libbpf: Export bpf_object__load_vmlinux_btf
+From:   "Daniel Xu" <dxu@dxuuu.xyz>
+To:     "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
+Message-Id: <C31OATROKNZK.27CUNDSXX9I4K@maharaja>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Andrii,
 
---=-zRgqKyYp8CMyrh28/srG
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Tue May 26, 2020 at 3:09 PM PST, Andrii Nakryiko wrote:
+> On Tue, May 26, 2020 at 7:09 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> >
+> > Right now the libbpf model encourages loading the entire object at once=
+.
+> > In this model, libbpf handles loading BTF from vmlinux for us. However,
+> > it can be useful to selectively load certain maps and programs inside a=
+n
+> > object without loading everything else.
+>
+> There is no way to selectively load or not load a map. All maps are
+> created, unless they are reusing map FD or pinned instances. See
+> below, I'd like to understand the use case better.
+>
+> >
+> > In the latter model, there was perviously no way to load BTF on-demand.
+> > This commit exports the bpf_object__load_vmlinux_btf such that we are
+> > able to load BTF on demand.
+> >
+>
+> Let's start with the real problem, not a solution. Do you have
+> specific use case where you need bpf_object__load_vmlinux_btf()? It
+> might not do anything if none of BPF programs in the object requires
+> BTF, because it's very much tightly coupled with loading bpf_object as
+> a whole model. I'd like to understand what you are after with this,
+> before exposing internal implementation details as an API.
 
-Hi Jim,
+If I try loading a program through the following sequence:
 
-On Wed, 2020-05-27 at 11:43 -0400, Jim Quinlan wrote:
-> Hi Nicolas,
->=20
-> On Wed, May 27, 2020 at 11:00 AM Nicolas Saenz Julienne
-> <nsaenzjulienne@suse.de> wrote:
-> > Hi Jim,
-> > one thing comes to mind, there is a small test suite in
-> > drivers/of/unittest.c
-> > (specifically of_unittest_pci_dma_ranges()) you could extend it to incl=
-ude
-> > your
-> > use cases.
-> Sure, will check out.
-> > On Tue, 2020-05-26 at 15:12 -0400, Jim Quinlan wrote:
-> > > The new field in struct device 'dma_pfn_offset_map' is used to facili=
-tate
-> > > the use of multiple pfn offsets between cpu addrs and dma addrs.  It =
-is
-> > > similar to 'dma_pfn_offset' except that the offset chosen depends on =
-the
-> > > cpu or dma address involved.
-> > >=20
-> > > Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
-> > > ---
-> > >  drivers/of/address.c        | 65 +++++++++++++++++++++++++++++++++++=
---
-> > >  drivers/usb/core/message.c  |  3 ++
-> > >  drivers/usb/core/usb.c      |  3 ++
-> > >  include/linux/device.h      | 10 +++++-
-> > >  include/linux/dma-direct.h  | 10 ++++--
-> > >  include/linux/dma-mapping.h | 46 ++++++++++++++++++++++++++
-> > >  kernel/dma/Kconfig          | 13 ++++++++
-> > >  7 files changed, 144 insertions(+), 6 deletions(-)
-> > >=20
-> >=20
-> > [...]
-> >=20
-> > > @@ -977,10 +1020,19 @@ int of_dma_get_range(struct device *dev, struc=
-t
-> > > device_node *np, u64 *dma_addr,
-> > >               pr_debug("dma_addr(%llx) cpu_addr(%llx) size(%llx)\n",
-> > >                        range.bus_addr, range.cpu_addr, range.size);
-> > >=20
-> > > +             num_ranges++;
-> > >               if (dma_offset && range.cpu_addr - range.bus_addr !=3D
-> > > dma_offset)
-> > > {
-> > > -                     pr_warn("Can't handle multiple dma-ranges with
-> > > different
-> > > offsets on node(%pOF)\n", node);
-> > > -                     /* Don't error out as we'd break some existing =
-DTs
-> > > */
-> > > -                     continue;
-> > > +                     if (!IS_ENABLED(CONFIG_DMA_PFN_OFFSET_MAP)) {
-> > > +                             pr_warn("Can't handle multiple dma-rang=
-es
-> > > with
-> > > different offsets on node(%pOF)\n", node);
-> > > +                             pr_warn("Perhaps set
-> > > DMA_PFN_OFFSET_MAP=3Dy?\n");
-> > > +                             /*
-> > > +                              * Don't error out as we'd break some
-> > > existing
-> > > +                              * DTs that are using configs w/o
-> > > +                              * CONFIG_DMA_PFN_OFFSET_MAP set.
-> > > +                              */
-> > > +                             continue;
-> >=20
-> > dev->bus_dma_limit is set in of_dma_configure(), this function's caller=
-,
-> > based
-> > on dma_start's value (set after this continue). So you'd be effectively
-> > setting
-> > the dev->bus_dma_limit to whatever we get from the first dma-range.
-> I'm not seeing that at all.  On the  evaluation of each dma-range,
-> dma_start and dma_end are re-evaluated to be the lowest and highest
-> bus values of the  dma-ranges seen so far.  After all dma-ranges are
-> examined,  dev->bus_dma_limit being set to the highest.  In fact, the
-> current code -- ie before my commits -- already does this for multiple
-> dma-ranges as long as the cpu-bus offset is the same in the
-> dma-ranges.
+    bpf_object__open_file()
+    bpf_object__find_program_by_name()
+    bpf_program__load()
 
-Sorry I got carried away, you're right.
+And the program require BTF (tp_btf), I get an unavoidable (to the best
+of my knowledge) segfault in the following code path:
 
-So I understand there is an underlaying assumption that the non DMAble memo=
-ry
-space will always sit on top of the bus memory space, as intertwined as it
-might be, so as to every phys_to_dma() call on non DMAble memory to fall ab=
-ove
-bus_dma_limit.
+    bpf_program__load()
+      libbpf_find_attach_btf_id()    <-- [0]
+        __find_vmlinx_btf_id()
+          find_btf_by_prefix_kind()
+            btf__find_by_name_kind() <-- boom (btf->nr_types)
 
-Regards,
-Nicolas
+because [0] passes prog->obj->btf_vmlinux which is still null. So the
+solution I'm proposing is exporting bpf_object__load_vmlinux_btf() and
+calling that on struct bpf_object before performing prog loads.
 
+[...]
 
---=-zRgqKyYp8CMyrh28/srG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl7OnPcACgkQlfZmHno8
-x/5FYQf9Hyg6r4xe2AQsd6Jy/LEHz47hHSEfbk6Zmqu1XLp6EQsPOCHEFLoCjExf
-aDe7lcONaDgfY45AEZOwP+W3gdL76lKuD+PIv1UP2M61toc9CkJ2MdOyzpcx+081
-g9rs8iR4JyZuGdPrIoF7gmRFQFuV54dNROs0cKTRe1BmErORF5We0IEaqhhOJ4iF
-DNKjYglQ/w2zskqEMsiN89kDjUpmWWvolH9SDIzoBYmfIfBQzQbsyiNpA0Chq9ul
-hWJwJq6uwXczXpwqWSDIoZX/DruOl5fAVLU/GZxdw7Yn3MJ5dtkDza3yRdg303JZ
-ejwGur84LCjY8lJnXEIz+VfX0wboSA==
-=CgTI
------END PGP SIGNATURE-----
-
---=-zRgqKyYp8CMyrh28/srG--
-
+Thanks,
+Daniel
