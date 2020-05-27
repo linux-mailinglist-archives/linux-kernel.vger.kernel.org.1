@@ -2,87 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10B61E35A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 04:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0936E1E357C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 04:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728170AbgE0C0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 22:26:31 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:49233 "EHLO m43-7.mailgun.net"
+        id S1726757AbgE0CWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 22:22:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727867AbgE0C0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 22:26:30 -0400
-X-Greylist: delayed 313 seconds by postgrey-1.27 at vger.kernel.org; Tue, 26 May 2020 22:26:28 EDT
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1590546389; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=hiWqnMh4e/b60m6l+Rli4gyEkCZHAr24/SZOnCCR4Z4=; b=oBMhXsi9uChiN2g0y8mK69OZGR1MbDX4I4Wh+bBy26luFwj0A5wdjiKXe3rc5qnTA+oSRRqL
- ESUTEUX0ogLwRYuy4EBNYCy+8PjxLWSx3Wk7hu3fjpoU+wayo5SmrjlcFbXkKdthOxEamDWe
- VxyMHM98dZgjFHbni7oz6ebbR2g=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5ecdce992c549984751cb2a2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 May 2020 02:21:13
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 91823C433C9; Wed, 27 May 2020 02:21:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from codeaurora.org (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1725826AbgE0CWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 22:22:21 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: stummala)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 36215C433C9;
-        Wed, 27 May 2020 02:21:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 36215C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=stummala@codeaurora.org
-From:   Sahitya Tummala <stummala@codeaurora.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
-        linux-f2fs-devel@lists.sourceforge.net
-Cc:     Sahitya Tummala <stummala@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] f2fs: fix retry logic in f2fs_write_cache_pages()
-Date:   Wed, 27 May 2020 07:50:56 +0530
-Message-Id: <1590546056-17871-1-git-send-email-stummala@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A286207CB;
+        Wed, 27 May 2020 02:22:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590546141;
+        bh=pLOLjdatirb33TNQ/xSfkJSHnzqTKSS4J4mW9ArbwO8=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=ePYPAd8WKPEzFoF8AWDgLL33HVvfsRaC2yqJ+LROpw0Jx8XLeDGWEjwNHOohuvCxf
+         845BL1ljCiYHWkrLagGgujvxgICdkhC+lwyQazhBrjOzCOY7GQbAgrGwRi8qoDNF8t
+         Pa4vJYReHEiXlbNOhLnoxIH7eJp2FBDuCzKXuTs4=
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1589709861-27580-2-git-send-email-tdas@codeaurora.org>
+References: <1589709861-27580-1-git-send-email-tdas@codeaurora.org> <1589709861-27580-2-git-send-email-tdas@codeaurora.org>
+Subject: Re: [PATCH v2 1/3] clk: qcom: gcc: Add support for a new frequency for SC7180
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     David Brown <david.brown@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Taniya Das <tdas@codeaurora.org>
+Date:   Tue, 26 May 2020 19:22:20 -0700
+Message-ID: <159054614033.88029.7512708640140771352@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case a compressed file is getting overwritten, the current retry
-logic doesn't include the current page to be retried now as it sets
-the new start index as 0 and new end index as writeback_index - 1.
-This causes the corresponding cluster to be uncompressed and written
-as normal pages without compression. Fix this by allowing writeback to
-be retried for the current page as well (in case of compressed page
-getting retried due to index mismatch with cluster index). So that
-this cluster can be written compressed in case of overwrite.
+Quoting Taniya Das (2020-05-17 03:04:19)
+> There is a requirement to support 51.2MHz from GPLL6 for qup clocks,
+> thus update the frequency table and parent data/map to use the GPLL6
+> source PLL.
+>=20
+> Fixes: 17269568f7267 ("clk: qcom: Add Global Clock controller (GCC) drive=
+r for SC7180")
+> Signed-off-by: Taniya Das <tdas@codeaurora.org>
+> ---
 
-Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
----
- fs/f2fs/data.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 4af5fcd..bfd1df4 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -3024,7 +3024,7 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
- 	if ((!cycled && !done) || retry) {
- 		cycled = 1;
- 		index = 0;
--		end = writeback_index - 1;
-+		end = retry ? -1 : writeback_index - 1;
- 		goto retry;
- 	}
- 	if (wbc->range_cyclic || (range_whole && wbc->nr_to_write > 0))
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Applied to clk-next
