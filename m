@@ -2,120 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 006241E3D2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 11:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68CEF1E3D5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 11:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388498AbgE0JGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 05:06:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37790 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388268AbgE0JGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 05:06:22 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EEB5620787;
-        Wed, 27 May 2020 09:06:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590570381;
-        bh=FAvCknzoTGPImAY3eT0P2nnO/0J1mHHX86dLH7iV/1s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QDm8HrrC/9YB0B/oFjVIItGTyqhBTZraHt2UEFTqoRDF2OXZlnYtuMQ2/4Lj4PIVa
-         Drio0vQjl5sCV6qqPHsS8jdpUkMXkg51jL1Wzof8P5xUu6EDWLCuLDdR11NI5u0kNI
-         N4TmitUblhzBxyKwFqfpmdcTDDO0iyAPupBpvmS4=
-Date:   Wed, 27 May 2020 11:06:18 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Alexander Dahl <post@lespocky.de>
-Cc:     x86@kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Alan Jenkins <alan.christopher.jenkins@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Florian Wolters <florian@florian-wolters.de>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v3] dma: Fix max PFN arithmetic overflow on 32 bit systems
-Message-ID: <20200527090618.GF179718@kroah.com>
-References: <20200526175749.20742-1-post@lespocky.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200526175749.20742-1-post@lespocky.de>
+        id S1727083AbgE0JPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 05:15:05 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:40139 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726887AbgE0JPF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 05:15:05 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200527091503epoutp037b203c8e27f2ebc48f242027679d6562~S188gENK80411304113epoutp03d
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 09:15:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200527091503epoutp037b203c8e27f2ebc48f242027679d6562~S188gENK80411304113epoutp03d
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1590570903;
+        bh=Dm3JG1JFIBm92Ne8ZPoNhZSsC2dbIoAQEZ/k9FavCTg=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=uVCPv3Iv1/QfhOj13XaqxIv1jaxjgNCc3r0bNtz54cHXd/QLUN4xchO64XOZ2n/aI
+         ByTiD67uOzPy9y+Dx4SrxLZI8NnYi3dTAd/QNJQYa8qLBirCBI0jVUKZ7uz083YBBI
+         IX3PxzvvsPRBGLzhLi7yHCC1fPFmwA/0QxnInLk4=
+Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p1.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200527091502epcas1p192c155d38ef4f98613a989b482a1aad4~S188EUuYj2923029230epcas1p1c;
+        Wed, 27 May 2020 09:15:02 +0000 (GMT)
+Mime-Version: 1.0
+Subject: Re: Another approach of UFSHPB
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Avri Altman <Avri.Altman@wdc.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        MOHAMMED RAFIQ KAMAL BASHA <md.rafiq@samsung.com>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <fd8c4336-8528-19d9-b1fe-1f74baf6b483@acm.org>
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <231786897.01590570902533.JavaMail.epsvc@epcpadp1>
+Date:   Wed, 27 May 2020 18:11:06 +0900
+X-CMS-MailID: 20200527091106epcms2p34428c8cbcda670e0a77cf6eab36ffcb4
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200516171420epcas2p108c570904c5117c3654d71e0a2842faa
+References: <fd8c4336-8528-19d9-b1fe-1f74baf6b483@acm.org>
+        <aaf130c2-27bd-977b-55df-e97859f4c097@acm.org>
+        <835c57b9-f792-2460-c3cc-667031969d63@acm.org>
+        <1589538614-24048-1-git-send-email-avri.altman@wdc.com>
+        <d10b27f1-49ec-d092-b252-2bb8cdc4c66e@acm.org>
+        <SN6PR04MB46408050B71E3A6225D6C495FCBA0@SN6PR04MB4640.namprd04.prod.outlook.com>
+        <231786897.01589928601376.JavaMail.epsvc@epcpadp1>
+        <231786897.01590385382061.JavaMail.epsvc@epcpadp2>
+        <6eec7c64-d4c1-c76e-5c14-7904a8792275@acm.org>
+        <SN6PR04MB46400AED930A3DC5B94AED25FCB00@SN6PR04MB4640.namprd04.prod.outlook.com>
+        <CGME20200516171420epcas2p108c570904c5117c3654d71e0a2842faa@epcms2p3>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 07:57:49PM +0200, Alexander Dahl wrote:
-> The intermediate result of the old term (4UL * 1024 * 1024 * 1024) is
-> 4 294 967 296 or 0x100000000 which is no problem on 64 bit systems.  The
-> patch does not change the later overall result of 0x100000 for
-> MAX_DMA32_PFN.  The new calculation yields the same result, but does not
-> require 64 bit arithmetic.
-> 
-> On 32 bit systems the old calculation suffers from an arithmetic
-> overflow in that intermediate term in braces: 4UL aka unsigned long int
-> is 4 byte wide and an arithmetic overflow happens (the 0x100000000 does
-> not fit in 4 bytes), the in braces result is truncated to zero, the
-> following right shift does not alter that, so MAX_DMA32_PFN evaluates to
-> 0 on 32 bit systems.
-> 
-> That wrong value is a problem in a comparision against MAX_DMA32_PFN in
-> the init code for swiotlb in 'pci_swiotlb_detect_4gb()' to decide if
-> swiotlb should be active.  That comparison yields the opposite result,
-> when compiling on 32 bit systems.
-> 
-> This was not possible before 1b7e03ef7570 ("x86, NUMA: Enable emulation
-> on 32bit too") when that MAX_DMA32_PFN was first made visible to x86_32
-> (and which landed in v3.0).
-> 
-> In practice this wasn't a problem, unless you activated CONFIG_SWIOTLB
-> on x86 (32 bit).
-> 
-> However for ARCH=x86 (32 bit) and if you have set CONFIG_IOMMU_INTEL,
-> since c5a5dc4cbbf4 ("iommu/vt-d: Don't switch off swiotlb if bounce page
-> is used") there's a dependency on CONFIG_SWIOTLB, which was not
-> necessarily active before.  That landed in v5.4, where we noticed it in
-> the fli4l Linux distribution.  We have CONFIG_IOMMU_INTEL active on both
-> 32 and 64 bit kernel configs there (I could not find out why, so let's
-> just say historical reasons).
-> 
-> The effect is at boot time 64 MiB (default size) were allocated for
-> bounce buffers now, which is a noticeable amount of memory on small
-> systems like pcengines ALIX 2D3 with 256 MiB memory, which are still
-> frequently used as home routers.
-> 
-> We noticed this effect when migrating from kernel v4.19 (LTS) to v5.4
-> (LTS) in fli4l and got that kernel messages for example:
-> 
->   Linux version 5.4.22 (buildroot@buildroot) (gcc version 7.3.0 (Buildroot 2018.02.8)) #1 SMP Mon Nov 26 23:40:00 CET 2018
->   …
->   Memory: 183484K/261756K available (4594K kernel code, 393K rwdata, 1660K rodata, 536K init, 456K bss , 78272K reserved, 0K cma-reserved, 0K highmem)
->   …
->   PCI-DMA: Using software bounce buffering for IO (SWIOTLB)
->   software IO TLB: mapped [mem 0x0bb78000-0x0fb78000] (64MB)
-> 
-> The initial analysis and the suggested fix was done by user 'sourcejedi'
-> at stackoverflow and explicitly marked as GPLv2 for inclusion in the
-> Linux kernel:
-> 
->   https://unix.stackexchange.com/a/520525/50007
-> 
-> The new calculation, which does not suffer from that overflow, is the
-> same as for arch/mips now as suggested by Robin Murphy.
-> 
-> The fix was tested by fli4l users on round about two dozen different
-> systems, including both 32 and 64 bit archs, bare metal and virtualized
-> machines.
-> 
-> Fixes: 1b7e03ef7570 ("x86, NUMA: Enable emulation on 32bit too")
-> Fixes: https://web.nettworks.org/bugs/browse/FFL-2560
-> Fixes: https://unix.stackexchange.com/q/520065/50007
-> Reported-by: Alan Jenkins <alan.christopher.jenkins@gmail.com>
-> Suggested-by: Robin Murphy <robin.murphy@arm.com>
-> Signed-off-by: Alexander Dahl <post@lespocky.de>
-> Cc: stable@vger.kernel.org
+On 2020-05-26 Bart Van Assche wrote:
+>On 2020-05-25 23:15, Avri Altman wrote:
+>>> On 2020-05-24 22:40, Daejun Park wrote:
+>>>> The HPB driver is close to the UFS core function, but it is not essential
+>>>> for operating UFS device. With reference to this article
+>>>> (https://lwn.net/Articles/645810/), we implemented extended UFS-feature
+>>>> as bus model. Because the HPB driver consumes the user's main memory, it
+>>> should
+>>>> support bind / unbind functionality as needed. We implemented the HPB
+>>> driver
+>>>> can be unbind / unload on runtime.
+>>>
+>>> I do not agree that the bus model is the best choice for freeing cache
+>>> memory if it is no longer needed. A shrinker is probably a much better
+>>> choice because the callback functions in a shrinker get invoked when a
+>>> system is under memory pressure. See also register_shrinker(),
+>>> unregister_shrinker() and struct shrinker in include/linux/shrinker.h.
+>>
+>> Since this discussion is closely related to cache allocation,
+>> What is your opinion about allocating the pages dynamically as the regions
+>> Are being activated/deactivated, in oppose of how it is done today - 
+>> Statically on init for the entire max-active-subregions?
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Memory that is statically allocated cannot be used for any other purpose
+> (e.g. page cache) without triggering the associated shrinker. As far as
+> I know shrinkers are only triggered when (close to) out of memory. So
+> dynamically allocating memory as needed is probably a better strategy
+> than statically allocating the entire region at initialization time.
+
+To improve UFS device performance using the HPB driver, 
+the number of active-subregions above a certain threshold is essential.
+If the number of active-subregions is lower than the threshold, 
+the performance improvement by using HPB will be reduced. 
+Also, due to frequent and active/inactive protocol overhead, 
+performance may be worse than when the HPB feature is not used.
+
+Therefore, it is better to unbind/unload HPB driver than 
+to reduce the number of active subregions below the threshold. 
+We designed the HPB driver to make the UFS device work 
+even when the module is unloaded.
+
+Thanks,
+
+Daejun
