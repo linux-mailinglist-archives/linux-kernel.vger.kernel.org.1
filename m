@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEBF01E43F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ABA21E43CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388474AbgE0Njm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:39:42 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:54817 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387682AbgE0Njl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:39:41 -0400
-Received: from localhost.localdomain ([149.172.98.151]) by
- mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MlsWZ-1jDMy53Blj-00j3fQ; Wed, 27 May 2020 15:39:26 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     soc@kernel.org, Jens Wiklander <jens.wiklander@linaro.org>,
-        =?UTF-8?q?Vesa=20J=C3=A4=C3=A4skel=C3=A4inen?= 
-        <vesa.jaaskelainen@vaisala.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>,
-        Rijo Thomas <Rijo-john.Thomas@amd.com>,
-        Gary R Hook <gary.hook@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        tee-dev@lists.linaro.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] tee: fix crypto select
-Date:   Wed, 27 May 2020 15:39:16 +0200
-Message-Id: <20200527133924.724819-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.2
+        id S2388353AbgE0Net (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:34:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387664AbgE0Ner (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 09:34:47 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D3302207CB;
+        Wed, 27 May 2020 13:34:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590586487;
+        bh=qX8tDKwCNrMJuCf2/sY1GfVbI6T8Hbojb6verUXTvAc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=VlzVQ31KmSEOR/Q+pON6KQeS6zoc1wFbJtntY2RH/c7Hb8rPbOBdV4po/w42ydsYN
+         TJp0hisRfSX+dGgL6TP6DYs+/nK0FJtmvAonHuXVi7qcV8g9zfRGTKbed5/JRiNbdi
+         CytsjKlaI+JYiLl4nmibkmHn/OSs/MjCU/nfLvGs=
+Date:   Wed, 27 May 2020 08:39:42 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] m68k: Use sizeof_field() helper
+Message-ID: <20200527133942.GA10408@embeddedor>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:P+KwTzBlyszTVG0EQVcxHYoNDDlR4ilvVgGJ8/tHgSBjq+KUIxk
- umhaGxlmmS5bsKk00Kwz/9SJNvdEN8zRjSDUwZ2aajPKqGo8xAkOLEAEyUvZwZuEOCJDMKB
- eoFmq2tbkVdKswWZ8yuSbeMxVfcg1ShQNhK7s54QUd8cQU7wlKJ3t/W8e+I2DJ5t8uex9/g
- AI7jafPdOimry8cHrF0Rw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:h0wYUygjUYk=:cYmYE7qDUtHD/uUeKqsj0V
- Dj9POsWkIWO1+pp7LH9oYcwyuei3rfrUjpaj8Z6DW0aycdDXKsimy76ZJ2C+vsmbPKD3rNajJ
- EQlszaBxxVlHupu1tSiWWkeS8E5tkfEeLrZLt+N9/fe1VP3ewEocRdv7ocRFVC7DPb8HqDqri
- 8BtKReRmxyoy4miQlxlb4RYRCgUspm9zLzHMDVzQeVZ/jvrw4ZPpnx5K6mVHlVl8CNHQNDgnf
- 2+KyrtwOBKqG9ebiEDYV6k5xjjSJyocy0PpbACKsUBlKzozG/pgsx1U2dnOAqoKXO2f4Vkh3Q
- z7UFRhVLHQqegaVdG+B/6PG4xI9PjnkM87DHwgLJDloF9ICJEZwDE/+DE6kOwGlvhSuKf/oLP
- tCgAsMQKRj9f6VrrUqMacXG0E26y3loAqKj9j4TR5tnzvdbEOPLOZj4kcNm50eaCAjp5xFLAJ
- CWgqlYawYeZpF+8jdtYFs7rwo94Dgs9Ucub35oR1Y7yxkrIPNDDUgnQbeG0y5orLlrAKxJ+Uc
- izWxMKT+fpfN1zing8AjDoDkoHRENbhFziv4lqF0Dv9lOovg8bMEcHqfuRRjhBlNZwdzydX5S
- 3jHDd9Qnya42xvLRGW93OqI5K3YoAYyBnLfV+sfDY8i79FsTLf6X4Lt75iaRlWoEHAFv/LIRx
- TggBXjlQuirAoRAc7pJ8mCg9djHtLw0TKvAnIdOGr1TbWTdpdphJG6I724clM4/BchHj1H+/P
- /Bt5u9x4xBQLR4VeoNl5vrZYdAqK8gv3zQNnnXulJtdk7j8zXRFgfdgHaMTwQ8yRJaOyOdBNf
- XufKNzcGopHz8Xp2g9CZt9+7tJGdG2repskAIpM//NyOqJwGF4=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When selecting a crypto cipher, we also need to select the
-subsystem itself:
+Make use of the sizeof_field() helper instead of an open-coded version.
 
-WARNING: unmet direct dependencies detected for CRYPTO_SHA1
-  Depends on [m]: CRYPTO [=m]
-  Selected by [y]:
-  - TEE [=y] && (HAVE_ARM_SMCCC [=n] || COMPILE_TEST [=y] || CPU_SUP_AMD [=y])
-  Selected by [m]:
-  - CRYPTO_DEV_QAT [=m] && CRYPTO [=m] && CRYPTO_HW [=y]
-  - CRYPTO_DEV_MEDIATEK [=m] && CRYPTO [=m] && CRYPTO_HW [=y] && (ARM && ARCH_MEDIATEK || COMPILE_TEST [=y])
-  - CRYPTO_DEV_SAFEXCEL [=m] && CRYPTO [=m] && CRYPTO_HW [=y] && (OF [=y] || PCI [=y] || COMPILE_TEST [=y]) && HAS_IOMEM [=y]
-  - CRYPTO_DEV_CCREE [=m] && CRYPTO [=m] && CRYPTO_HW [=y] && OF [=y] && HAS_DMA [=y]
-  - CRYPTO_DEV_SP_CCP [=y] && CRYPTO [=m] && CRYPTO_HW [=y] && CRYPTO_DEV_CCP [=y] && CRYPTO_DEV_CCP_DD [=m] && DMADEVICES [=y]
-
-Fixes: e33bcbab16d1 ("tee: add support for session's client UUID generation")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
-The regression was introduced in the soc tree, I'd pick this patch
-up directly into that unless someone sees a problem
----
- drivers/tee/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/m68k/kernel/signal.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/tee/Kconfig b/drivers/tee/Kconfig
-index 806eb87d4da0..e99d840c2511 100644
---- a/drivers/tee/Kconfig
-+++ b/drivers/tee/Kconfig
-@@ -3,6 +3,7 @@
- config TEE
- 	tristate "Trusted Execution Environment support"
- 	depends on HAVE_ARM_SMCCC || COMPILE_TEST || CPU_SUP_AMD
-+	select CRYPTO
- 	select CRYPTO_SHA1
- 	select DMA_SHARED_BUFFER
- 	select GENERIC_ALLOCATOR
+diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
+index b3ff39588f36b..fc034fd19798e 100644
+--- a/arch/m68k/kernel/signal.c
++++ b/arch/m68k/kernel/signal.c
+@@ -61,25 +61,25 @@
+ #define	FMT4SIZE	0
+ #else
+ #define	FORMAT		0
+-#define	FMT4SIZE	sizeof(((struct frame *)0)->un.fmt4)
++#define	FMT4SIZE	sizeof_field(struct frame, un.fmt4)
+ #endif
+ 
+ static const int frame_size_change[16] = {
+-  [1]	= -1, /* sizeof(((struct frame *)0)->un.fmt1), */
+-  [2]	= sizeof(((struct frame *)0)->un.fmt2),
+-  [3]	= sizeof(((struct frame *)0)->un.fmt3),
++  [1]	= -1, /* sizeof_field(struct frame, un.fmt1), */
++  [2]	= sizeof_field(struct frame, un.fmt2),
++  [3]	= sizeof_field(struct frame, un.fmt3),
+   [4]	= FMT4SIZE,
+-  [5]	= -1, /* sizeof(((struct frame *)0)->un.fmt5), */
+-  [6]	= -1, /* sizeof(((struct frame *)0)->un.fmt6), */
+-  [7]	= sizeof(((struct frame *)0)->un.fmt7),
+-  [8]	= -1, /* sizeof(((struct frame *)0)->un.fmt8), */
+-  [9]	= sizeof(((struct frame *)0)->un.fmt9),
+-  [10]	= sizeof(((struct frame *)0)->un.fmta),
+-  [11]	= sizeof(((struct frame *)0)->un.fmtb),
+-  [12]	= -1, /* sizeof(((struct frame *)0)->un.fmtc), */
+-  [13]	= -1, /* sizeof(((struct frame *)0)->un.fmtd), */
+-  [14]	= -1, /* sizeof(((struct frame *)0)->un.fmte), */
+-  [15]	= -1, /* sizeof(((struct frame *)0)->un.fmtf), */
++  [5]	= -1, /* sizeof_field(struct frame, un.fmt5), */
++  [6]	= -1, /* sizeof_field(struct frame, un.fmt6), */
++  [7]	= sizeof_field(struct frame, un.fmt7),
++  [8]	= -1, /* sizeof_field(struct frame, un.fmt8), */
++  [9]	= sizeof_field(struct frame, un.fmt9),
++  [10]	= sizeof_field(struct frame, un.fmta),
++  [11]	= sizeof_field(struct frame, un.fmtb),
++  [12]	= -1, /* sizeof_field(struct frame, un.fmtc), */
++  [13]	= -1, /* sizeof_field(struct frame, un.fmtd), */
++  [14]	= -1, /* sizeof_field(struct frame, un.fmte), */
++  [15]	= -1, /* sizeof_field(struct frame, un.fmtf), */
+ };
+ 
+ static inline int frame_extra_sizes(int f)
+@@ -651,7 +651,7 @@ static int mangle_kernel_stack(struct pt_regs *regs, int formatvec,
+ 	} else {
+ 		struct switch_stack *sw = (struct switch_stack *)regs - 1;
+ 		/* yes, twice as much as max(sizeof(frame.un.fmt<x>)) */
+-		unsigned long buf[sizeof(((struct frame *)0)->un) / 2];
++		unsigned long buf[sizeof_field(struct frame, un) / 2];
+ 
+ 		/* that'll make sure that expansion won't crap over data */
+ 		if (copy_from_user(buf + fsize / 4, fp, fsize))
 -- 
 2.26.2
 
