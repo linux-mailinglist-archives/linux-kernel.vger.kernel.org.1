@@ -2,164 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AFBA1E4B89
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 19:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20CB1E4B8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 19:12:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731196AbgE0RLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 13:11:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728536AbgE0RLd (ORCPT
+        id S1731210AbgE0RMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 13:12:08 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:46449 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731164AbgE0RMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 13:11:33 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 297F6C03E97D
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 10:11:33 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id q8so25450775iow.7
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 10:11:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=6wind.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ahHryfq5nLP7OxK7AYhV0J7hu5fGF/+Tti5VS7s9PGY=;
-        b=LElVz68MiE/YQDaQQkjnIce2x8Dp72FAmdzi9u6cMlW5QOxCfMAHEVZGRsqVX5mpXC
-         XFl0fP6CtVCeyb6KGocVAlBzo4eJh1t3LZ9leAqqCcOCP+D4KfHUerX23DpoV5FPP2dp
-         rwgefUVg9DscpsWiswBskJBCWxWPQnUB8pbaeeRukkyBb3tddMZAHl74S/fCexuRZrpf
-         MV4BYsWxXwxhQRhTEEH4BEI80Gq1fduPhL+urfsUed94PDAOB5hVrHulP9XWSx9jtrHD
-         ELrUxbe2N8532doDagOConj6vAYlqv2PkbeRMAFebDIRKToIWc11KXSI5HyZiggVdBHu
-         02TQ==
+        Wed, 27 May 2020 13:12:07 -0400
+Received: by mail-io1-f68.google.com with SMTP id j8so26805282iog.13;
+        Wed, 27 May 2020 10:12:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ahHryfq5nLP7OxK7AYhV0J7hu5fGF/+Tti5VS7s9PGY=;
-        b=EVtqsJaD35rmFLgDyfd7GX/GHYnYBk6eLccI0S4v+UPDbdU9R+YmpvGoipg/L44i83
-         5EAyL9aK1gLSOE0Kn9jajgpM6qgjaB5b9GktNiaIwFzI8k0fnh3BqIvDz7jsrzsaWXY5
-         LOh115gOdMGXfK6tPTJeCCZ9GnyIWFEWYux0LZEht5Am6SxHZT9m0BirWB+/gf6qoz9e
-         k3jpWBR4cM7cuIMHW2g0L5CGd/YPbjIRyr0Rq3NkcGW2ntOb+cGQZLRPd/pyfVDIoUQ6
-         yhr+6v+CFrqBqdHDp1or50OLSiOYOZ4VriwnmAhrQ6T7qjWQMi+eE7Exka8HVfA5Pfr4
-         /4oQ==
-X-Gm-Message-State: AOAM532c6c/kmlYkJlMTk1fznPm4ApfBxM+1wdMgYUnyyfZh0ljYQCPc
-        LCxD/MRgFrw5gEZ9ZHqCaaeGV8+NvskRx3pii3nTBA==
-X-Google-Smtp-Source: ABdhPJzRJWD2xome9tmo6qlIlwT/4yiFIyh+d5ScsqUx9bHKbFX0P+hIQwjCVykxFquNovp8ybfZbwyVzATHrIEOpfg=
-X-Received: by 2002:a05:6602:2c88:: with SMTP id i8mr22263788iow.74.1590599492383;
- Wed, 27 May 2020 10:11:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lH1rJnnAmu6mmVD9f+LiVA8Cp9GhZ/wNWYkFw3lVpLM=;
+        b=tWQZpIrBlsFv9F0gdZR8caqSGN4QrY4bxPuwr8m3TRTuWL+FxxaAmE7N0mBZtuwelX
+         raUSsu9Brnqsww1NiDzsMoiFR9pLhaGtY+vpWaHCpJq0xmM2qiCEI+0u1uD0qDF2Qyj/
+         8kTQB3Kj9vkiK3uwjJWVnbDxKV0VkVdxcnVb6OXmhDdM/rXGMh39diKA6rviRQK41Dbh
+         SRp4g3Mx4yGJBy4kU5FSQDyboq7B1+IkGv1XzUUuUoLM+kesLTjL8AWYKuQo2Prhxx/1
+         FmFUQYThX2RI2x7DAawNmKXcwYrH88GnE+QqwjfH5meSRudTa+8KCHhy85sU/jzg64Zj
+         nYWg==
+X-Gm-Message-State: AOAM530FxKDSE1z7or7uXHfp7OKsukcBR4cSEkU8JXq6QT5qgQ1aIiO1
+        twdePx5pAmpSMk1RIKXT0Q==
+X-Google-Smtp-Source: ABdhPJy6mZmSjT4GnETlDIhT4c/i6cpi2dbaYN20yoQHKee1l9OtKky3c0rbR9VKGY7uzGPRH/rQMg==
+X-Received: by 2002:a5e:970a:: with SMTP id w10mr11183277ioj.114.1590599526064;
+        Wed, 27 May 2020 10:12:06 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id j15sm1832662ilk.0.2020.05.27.10.12.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 10:12:05 -0700 (PDT)
+Received: (nullmailer pid 2353199 invoked by uid 1000);
+        Wed, 27 May 2020 17:12:04 -0000
+Date:   Wed, 27 May 2020 11:12:04 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-mips@vger.kernel.org, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 02/11] dt-bindings: i2c: Discard i2c-slave flag from
+ the DW I2C example
+Message-ID: <20200527171204.GA2348490@bogus>
+References: <20200527120111.5781-1-Sergey.Semin@baikalelectronics.ru>
+ <20200527120111.5781-3-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-References: <20200525154633.GB22403@atlantis>
-In-Reply-To: <20200525154633.GB22403@atlantis>
-From:   Christophe Gouault <christophe.gouault@6wind.com>
-Date:   Wed, 27 May 2020 19:11:21 +0200
-Message-ID: <CADdy8Ho0v7SV_dNR+syBFX79U+iE62sumLjDQypgkxs536fCbQ@mail.gmail.com>
-Subject: Re: [PATCH net-next] xfrm: no-anti-replay protection flag
-To:     =?UTF-8?Q?Petr_Van=C4=9Bk?= <pv@excello.cz>
-Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200527120111.5781-3-Sergey.Semin@baikalelectronics.ru>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Petr,
-
-This patch is useful, however I think you should change the name of
-the option and amend its description:
-the option does not disable anti-replay in output (it can only be
-disabled in input), it allows the output sequence number to wrap, and
-it assumes that the remote peer disabled anti-replay in input.
-
-So you I suggest you change the name of the option to something like
-XFRM_SA_XFLAG_OSEQ_MAY_WRAP or XFRM_SA_XFLAG_ALLOW_OSEQ_WRAP.
-
-Best regards,
-Christophe
-
-
-Le lun. 25 mai 2020 =C3=A0 17:53, Petr Van=C4=9Bk <pv@excello.cz> a =C3=A9c=
-rit :
->
-> RFC 4303 in section 3.3.3 suggests to disable anti-replay for manually
-> distributed ICVs.
->
-> This patch introduces new extra_flag XFRM_SA_XFLAG_NO_ANTI_REPLAY which
-> disables anti-replay for outbound packets if set. The flag is used only
-> in legacy and bmp code, because esn should not be negotiated if
-> anti-replay is disabled (see note in 3.3.3 section).
->
-> Signed-off-by: Petr Van=C4=9Bk <pv@excello.cz>
+On Wed, May 27, 2020 at 03:01:02PM +0300, Serge Semin wrote:
+> dtc currently doesn't support I2C_OWN_SLAVE_ADDRESS flag set in the
+> i2c "reg" property. If it is the compiler will print a warning:
+> 
+> Warning (i2c_bus_reg): /example-2/i2c@1120000/eeprom@64: I2C bus unit address format error, expected "40000064"
+> Warning (i2c_bus_reg): /example-2/i2c@1120000/eeprom@64:reg: I2C address must be less than 10-bits, got "0x40000064"
+> 
+> In order to silence dtc up let's discard the flag from the DW I2C DT
+> binding example for now. Just revert this commit when dtc is fixed.
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Cc: linux-mips@vger.kernel.org
+> 
 > ---
->  include/uapi/linux/xfrm.h |  1 +
->  net/xfrm/xfrm_replay.c    | 12 ++++++++----
->  2 files changed, 9 insertions(+), 4 deletions(-)
->
-> diff --git a/include/uapi/linux/xfrm.h b/include/uapi/linux/xfrm.h
-> index 5f3b9fec7b5f..4842b1ed49e9 100644
-> --- a/include/uapi/linux/xfrm.h
-> +++ b/include/uapi/linux/xfrm.h
-> @@ -387,6 +387,7 @@ struct xfrm_usersa_info {
->  };
->
->  #define XFRM_SA_XFLAG_DONT_ENCAP_DSCP  1
-> +#define XFRM_SA_XFLAG_NO_ANTI_REPLAY   2
->
->  struct xfrm_usersa_id {
->         xfrm_address_t                  daddr;
-> diff --git a/net/xfrm/xfrm_replay.c b/net/xfrm/xfrm_replay.c
-> index 98943f8d01aa..1602843aa2ec 100644
-> --- a/net/xfrm/xfrm_replay.c
-> +++ b/net/xfrm/xfrm_replay.c
-> @@ -89,7 +89,8 @@ static int xfrm_replay_overflow(struct xfrm_state *x, s=
-truct sk_buff *skb)
->         if (x->type->flags & XFRM_TYPE_REPLAY_PROT) {
->                 XFRM_SKB_CB(skb)->seq.output.low =3D ++x->replay.oseq;
->                 XFRM_SKB_CB(skb)->seq.output.hi =3D 0;
-> -               if (unlikely(x->replay.oseq =3D=3D 0)) {
-> +               if (unlikely(x->replay.oseq =3D=3D 0) &&
-> +                   !(x->props.extra_flags & XFRM_SA_XFLAG_NO_ANTI_REPLAY=
-)) {
->                         x->replay.oseq--;
->                         xfrm_audit_state_replay_overflow(x, skb);
->                         err =3D -EOVERFLOW;
-> @@ -168,7 +169,8 @@ static int xfrm_replay_overflow_bmp(struct xfrm_state=
- *x, struct sk_buff *skb)
->         if (x->type->flags & XFRM_TYPE_REPLAY_PROT) {
->                 XFRM_SKB_CB(skb)->seq.output.low =3D ++replay_esn->oseq;
->                 XFRM_SKB_CB(skb)->seq.output.hi =3D 0;
-> -               if (unlikely(replay_esn->oseq =3D=3D 0)) {
-> +               if (unlikely(replay_esn->oseq =3D=3D 0) &&
-> +                   !(x->props.extra_flags & XFRM_SA_XFLAG_NO_ANTI_REPLAY=
-)) {
->                         replay_esn->oseq--;
->                         xfrm_audit_state_replay_overflow(x, skb);
->                         err =3D -EOVERFLOW;
-> @@ -572,7 +574,8 @@ static int xfrm_replay_overflow_offload(struct xfrm_s=
-tate *x, struct sk_buff *sk
->
->                 XFRM_SKB_CB(skb)->seq.output.hi =3D 0;
->                 xo->seq.hi =3D 0;
-> -               if (unlikely(oseq < x->replay.oseq)) {
-> +               if (unlikely(oseq < x->replay.oseq) &&
-> +                   !(x->props.extra_flags & XFRM_SA_XFLAG_NO_ANTI_REPLAY=
-)) {
->                         xfrm_audit_state_replay_overflow(x, skb);
->                         err =3D -EOVERFLOW;
->
-> @@ -611,7 +614,8 @@ static int xfrm_replay_overflow_offload_bmp(struct xf=
-rm_state *x, struct sk_buff
->
->                 XFRM_SKB_CB(skb)->seq.output.hi =3D 0;
->                 xo->seq.hi =3D 0;
-> -               if (unlikely(oseq < replay_esn->oseq)) {
-> +               if (unlikely(oseq < replay_esn->oseq) &&
-> +                   !(x->props.extra_flags & XFRM_SA_XFLAG_NO_ANTI_REPLAY=
-)) {
->                         xfrm_audit_state_replay_overflow(x, skb);
->                         err =3D -EOVERFLOW;
->
-> --
+> 
+> Changelog v3:
+> - This is a new patch created as a result of the Rob request to remove
+>   the EEPROM-slave bit setting in the DT binndings example until the dtc
+>   is fixed.
+> ---
+>  Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml b/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml
+> index 4bd430b2b41d..101d78e8f19d 100644
+> --- a/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml
+> +++ b/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml
+> @@ -137,7 +137,7 @@ examples:
+>  
+>        eeprom@64 {
+>          compatible = "linux,slave-24c02";
+> -        reg = <0x40000064>;
+> +        reg = <0x64>;
+
+But the compatible is a slave, so you need an example with a different 
+device.
+
+>        };
+>      };
+>    - |
+> -- 
 > 2.26.2
->
+> 
