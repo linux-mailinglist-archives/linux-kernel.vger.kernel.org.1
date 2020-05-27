@@ -2,107 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5213F1E3AD7
+	by mail.lfdr.de (Postfix) with ESMTP id BFEC01E3AD8
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 09:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387655AbgE0HoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 03:44:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37908 "EHLO
+        id S2387660AbgE0HoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 03:44:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387505AbgE0HoC (ORCPT
+        with ESMTP id S2387505AbgE0HoW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 03:44:02 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F4F1C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 00:44:01 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id c20so23094384ilk.6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 00:44:01 -0700 (PDT)
+        Wed, 27 May 2020 03:44:22 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222C6C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 00:44:22 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id b18so18514627oti.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 00:44:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=8P15B7yVg5zuP9hnNQBrVV9U1ImrShnajp0OKHJjOZY=;
-        b=IVbrvFviCAI5+9pZnoS/+seeej0YDlJYfH6vTILFgVmfqLmujiOmju+woGcEwgGi7d
-         0QFaF+5Z2KdC+wf4tX68748WJsOSXGuHPvoRtA8fQgxuCDJHmX6epHo/dtCzIBrYz3EJ
-         FVPPMWkpA7+tQyWB1tJV1IiApXKc/a5V2J/DCi+0Tcv+eQDjYJ10tM31pleZTyD4nPW1
-         1gY9FonAhzJ/DxjIHharHMDSa3mTVM7Bji/qDJXQsxWOYqPX+RtMimCj41iag+DtQqBJ
-         0T34uaM3arwxmBQSoRjWKGR7obslqHnmeekt7argit2rHfp10qUqi1IsCmnQUnD+O9uR
-         VOCg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zbcumbiOybyvrNPq+S8EAFFWXxgWspgqCp4xRwbHRuI=;
+        b=Bea7jtiqrCIc0QUDHNMwR2/RmhcvDSbjKzogX9URL8jhuKlzI1tMUuDG4lu1nwXb9U
+         OBiy3Z8laAuU6iAzRHvTeAg8Qjj+V3GmrSyMCnW3huFjdKOVuQrHeBBOpCynX7XI2HFt
+         F6glhFUfgn82+sxtWgiKD8V4N25tskGzEMWsK6V7+GoiLCh6NP/gS2T5rMrrchyG1AXB
+         wHZTSxk4YieAizKmF+tWvWm3z5uYX7UYwt/cauqCI9j1JATKMHwuM6Un8Xsh8N5M3Tr9
+         BjMxiOEo6JJ7snQK3FtICT63NbA0Qlm4wddox+tShoGqA786uW1HE1Tf9klGWKQRhhjv
+         tVvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=8P15B7yVg5zuP9hnNQBrVV9U1ImrShnajp0OKHJjOZY=;
-        b=HcHvrQmNLkcyir1GFcZg9DoEhA4ntbSWuBzekbYrvIGlJspiYyh1Ej+C3FkAods52j
-         HIU+tqU3/q/1CF7ALH0hNTsjpTfh94wUZsR+LMTG8sr7VQHC0oWlT7StKV8bwgMgkYNs
-         GqyHRpjOdoNq38uwdXWSXiiUMGiE/NXeGeO1ZNdKm4wlRFYotZ2+uVdg64F/LlpYfdTW
-         bwtF4/FZqtdsLnZcIMK77kXKifMYrUc64c6/KeWnWaup4AkeD/S5ExaK57nXwQzGRdCP
-         r9I1QVhUv/tIJxMJ4CZYeDcLkbgck9gDQzVzuhjyVKPbKJXHfMgCh0xOBHpWBK1hJAli
-         CUIA==
-X-Gm-Message-State: AOAM532gba83mPUQdzzBzOWPaNZpf+coIAGyv5qO/5VNJd3Z9LHlz9Nw
-        KipY5xP0vDiJUVbnmEgTAFHp5YHAJPviQLvmmpI=
-X-Google-Smtp-Source: ABdhPJxKzWnLPRd9XKAKUiTFXRj+5GvwXTPVoDF4Pnq28da3qC6DK9q3XrvbVd/nF+5tfnmVya2WtEA6Bunj8TRbnXg=
-X-Received: by 2002:a92:5dd2:: with SMTP id e79mr4246271ilg.94.1590565441008;
- Wed, 27 May 2020 00:44:01 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zbcumbiOybyvrNPq+S8EAFFWXxgWspgqCp4xRwbHRuI=;
+        b=lq3am0oamjvLiL5/rBjqwKvOLYy+pEJtYD+42Ops139wzDt+m05rKTumMEglJzya8E
+         gy3mxAlEviOjtBA/cm5TtIuRQHBD46JHHena6Z5TMftqchCSA0RyzKRuwqbpF2VnIkRU
+         KVd620M26fCOVkEYFXxL54p+pw5YiEeMgZ7XTD1M/jvji31tvCLrT0sTf0EcPrQiC6xW
+         UmYyQq1aGxZUAUzDcEkUTsvD7M4LBTvfY1ifMuyH69o4PCwlrEX+S8v0POrd8G3z4/dR
+         6FXoXVsi5KhWPpx6EI8ghBis//fjSTyg21B6afu2S5H2WXRDGBTAxP9nJIb51WHiBUwf
+         y8vA==
+X-Gm-Message-State: AOAM531pkGEAy10vFqJ55wOUE8wUrLxPnXr+a1lDeKOnFt7yKbbWpeZD
+        HehiyN9tlw4KoQ1evOCzCQkne1uBGw+kIbH38gA5JHe0+VI=
+X-Google-Smtp-Source: ABdhPJxly1n7ae+toEEnchvPRFaQZLHYyFrCcYCS0l/Xg7lhRD3pHthm0aDMtB0QqDvmQ4FqpeTNqWOyWOHnunK6dm4=
+X-Received: by 2002:a9d:27a3:: with SMTP id c32mr3972097otb.233.1590565461246;
+ Wed, 27 May 2020 00:44:21 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a5d:9c57:0:0:0:0:0 with HTTP; Wed, 27 May 2020 00:44:00
- -0700 (PDT)
-Reply-To: mstheresaheidi@yahoo.com
-From:   Mrs Theresa Heidi <jobestauto1@gmail.com>
-Date:   Wed, 27 May 2020 02:44:00 -0500
-Message-ID: <CACJbDo-dH1xQ_Fo2swx-So0OJLgn5O9niE0Bvj5Npp9j8dZxgw@mail.gmail.com>
-Subject: HELP URGENT MATTER
-To:     undisclosed-recipients:;
+References: <20200521142047.169334-1-elver@google.com> <20200521142047.169334-10-elver@google.com>
+ <CAKwvOdnR7BXw_jYS5PFTuUamcwprEnZ358qhOxSu6wSSSJhxOA@mail.gmail.com>
+ <CAK8P3a0RJtbVi1JMsfik=jkHCNFv+DJn_FeDg-YLW+ueQW3tNg@mail.gmail.com>
+ <20200526120245.GB27166@willie-the-truck> <CAK8P3a29BNwvdN1YNzoN966BF4z1QiSxdRXTP+BzhM9H07LoYQ@mail.gmail.com>
+ <CANpmjNOUdr2UG3F45=JaDa0zLwJ5ukPc1MMKujQtmYSmQnjcXg@mail.gmail.com>
+ <20200526173312.GA30240@google.com> <CAK8P3a3ZawPnzmzx4q58--M1h=v4X-1GtQLiwL1=G6rDK8=Wpg@mail.gmail.com>
+ <CAK8P3a3UYQeXhiufUevz=rwe09WM_vSTCd9W+KvJHJcOeQyWVA@mail.gmail.com> <20200527072248.GA9887@willie-the-truck>
+In-Reply-To: <20200527072248.GA9887@willie-the-truck>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 27 May 2020 09:44:09 +0200
+Message-ID: <CANpmjNO2A39XRQ9OstwKGKpZ6wQ4ebVcBNfH_ZhCTi8RG6WqYw@mail.gmail.com>
+Subject: Re: [PATCH -tip v3 09/11] data_race: Avoid nested statement expression
+To:     Will Deacon <will@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Borislav Petkov <bp@alien8.de>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Beloved One,
+On Wed, 27 May 2020 at 09:22, Will Deacon <will@kernel.org> wrote:
+>
+> On Wed, May 27, 2020 at 01:10:00AM +0200, Arnd Bergmann wrote:
+> > On Tue, May 26, 2020 at 9:00 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > >
+> > > On Tue, May 26, 2020 at 7:33 PM 'Marco Elver' via Clang Built Linux
+> > > <clang-built-linux@googlegroups.com> wrote:
+> > > > On Tue, 26 May 2020, Marco Elver wrote:
+> > > > > On Tue, 26 May 2020 at 14:19, Arnd Bergmann <arnd@arndb.de> wrote:
+> > > > > Note that an 'allyesconfig' selects KASAN and not KCSAN by default.
+> > > > > But I think that's not relevant, since KCSAN-specific code was removed
+> > > > > from ONCEs. In general though, it is entirely expected that we have a
+> > > > > bit longer compile times when we have the instrumentation passes
+> > > > > enabled.
+> > > > >
+> > > > > But as you pointed out, that's irrelevant, and the significant
+> > > > > overhead is from parsing and pre-processing. FWIW, we can probably
+> > > > > optimize Clang itself a bit:
+> > > > > https://github.com/ClangBuiltLinux/linux/issues/1032#issuecomment-633712667
+> > > >
+> > > > Found that optimizing __unqual_scalar_typeof makes a noticeable
+> > > > difference. We could use C11's _Generic if the compiler supports it (and
+> > > > all supported versions of Clang certainly do).
+> > > >
+> > > > Could you verify if the below patch improves compile-times for you? E.g.
+> > > > on fs/ocfs2/journal.c I was able to get ~40% compile-time speedup.
+> > >
+> > > Yes, that brings both the preprocessed size and the time to preprocess it
+> > > with clang-11 back to where it is in mainline, and close to the speed with
+> > > gcc-10 for this particular file.
+> > >
+> > > I also cross-checked with gcc-4.9 and gcc-10 and found that they do see
+> > > the same increase in the preprocessor output, but it makes little difference
+> > > for preprocessing performance on gcc.
+> >
+> > Just for reference, I've tested this against a patch I made that completely
+> > shortcuts READ_ONCE() on anything but alpha (which needs the
+> > read_barrier_depends()):
+> >
+> > --- a/include/linux/compiler.h
+> > +++ b/include/linux/compiler.h
+> > @@ -224,18 +224,21 @@ void ftrace_likely_update(struct
+> > ftrace_likely_data *f, int val,
+> >   * atomicity or dependency ordering guarantees. Note that this may result
+> >   * in tears!
+> >   */
+> > -#define __READ_ONCE(x) (*(const volatile __unqual_scalar_typeof(x) *)&(x))
+> > +#define __READ_ONCE(x) (*(const volatile typeof(x) *)&(x))
+> >
+> > +#ifdef CONFIG_ALPHA /* smp_read_barrier_depends is a NOP otherwise */
+> >  #define __READ_ONCE_SCALAR(x)                                          \
+> >  ({                                                                     \
+> >         __unqual_scalar_typeof(x) __x = __READ_ONCE(x);                 \
+> >         smp_read_barrier_depends();                                     \
+> > -       (typeof(x))__x;                                                 \
+> > +       __x;                                                            \
+> >  })
+> > +#else
+> > +#define __READ_ONCE_SCALAR(x) __READ_ONCE(x)
+> > +#endif
+>
+> Nice! FWIW, I'm planning to have Alpha override __READ_ONCE_SCALAR()
+> eventually, so that smp_read_barrier_depends() can disappear forever. I
+> just bit off more than I can chew for 5.8 :(
+>
+> However, '__unqual_scalar_typeof()' is still useful for
+> load-acquire/store-release on arm64, so we still need a better solution to
+> the build-time regression imo. I'm not fond of picking random C11 features
+> to accomplish that, but I also don't have any better ideas...
 
-CHARITY DONATION Please read carefully, I know it is true that this
-letter may come to you as a surprise. nevertheless,i humbly ask you to
-give me your attention and hear me, i am writing this mail to you with
-heavy sorrow in my heart,i have chose to reach you through Internet
-because it still remains the fastest medium of communication, after
-going through your profile in search of an honest person.
+We already use _Static_assert in the kernel, so it's not the first use
+of a C11 feature.
 
-My name is Mrs Theresa Heidi i am native France currently hospitalized
-in a private hospital here in Israel as a result of lungs cancer I am
-62 years old and I was diagnosed of lungs cancer for about 4 years
-ago, immediately after the death of my husband, who has left me
-everything he worked for. I'm with my laptop in a hospital here in
-where I have been undergoing treatment for cancer of the lungs
+> Is there any mileage in the clever trick from Rasmus?
+>
+> https://lore.kernel.org/r/6cbc8ae1-8eb1-a5a0-a584-2081fca1c4aa@rasmusvillemoes.dk
 
-Now that is clear that I=E2=80=99m approaching the last-days of my life and=
- i
-don't even need the money again for any thing and because my doctor
-told me that i would not last for the period of one year due to Lungs
-cancer problem.I have some funds inherited from my late husband, the
-sum of $15 Million United State Dollars ( US$15,000,000,00 ),
+Apparently that one only works with GCC 7 or newer, and is only
+properly defined behaviour since C11. It also relies on multiple
+_Pragma. I'd probably take the arguably much cleaner _Generic solution
+over that. ;-)
 
-This money is still with the foreign bank and the management just
-wrote me as the true owner to come forward to receive the money for
-keeping it so long or rather issue a letter of authorization to
-somebody to receive it on my behalf since I can't come over because of
-my illness or they may get it confiscated.
+I think given that Peter and Arnd already did some testing, and it
+works as intended, if you don't mind, I'll send a patch for the
+_Generic version. At least that'll give us a more optimized
+__unqual_scalar_typeof(). Any further optimizations to READ_ONCE()
+like you mentioned then become a little less urgent.
 
-I decided to contact you if you may be willing and interested to
-handle these trust funds in good faith before anything happens to
-me.This is not a stolen money and there are no dangers involved,is
-100% risk free with full legal proof.
-
-I want you to help me withdraw this money from the foreign bank then
-use the funds for Charity works/assistance to less privileged people
-in the society.It is my last wish to see that this money is invested
-to any organization of your choice.
-
-I want you to take 45% of the total money for your personal use while
-55% of the money will go to charity. I will appreciate your utmost
-confidentiality and trust in this matter to accomplish my heart
-desire, as I don't want anything that will jeopardize my last wish.
-
-Yours Beloved Sister.
-Mrs Theresa Heidi
+Thanks,
+-- Marco
