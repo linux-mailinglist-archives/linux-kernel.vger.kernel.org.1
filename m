@@ -2,99 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F551E379B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 07:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A40571E37A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 07:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727981AbgE0FDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 01:03:52 -0400
-Received: from mga02.intel.com ([134.134.136.20]:12110 "EHLO mga02.intel.com"
+        id S1726404AbgE0FGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 01:06:04 -0400
+Received: from verein.lst.de ([213.95.11.211]:48189 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725294AbgE0FDw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 01:03:52 -0400
-IronPort-SDR: idtH4SsVZEYvZMTG8zEKs2DTHDAkXQyLLSS2iypxRZkF7vc7JRH0Zz5lwM6S/7PdiNvNqybexQ
- QEll9H43bRXg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 22:03:51 -0700
-IronPort-SDR: IDjJYMB2xhItrESlJ3Zifboi+czkTD8eZyWtdEyEMjzj7RutpCtZfFIP0/59NUCUakiJ6uxEAm
- YB5Mp0JYfFrQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,440,1583222400"; 
-   d="scan'208";a="310471960"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by FMSMGA003.fm.intel.com with ESMTP; 26 May 2020 22:03:50 -0700
-Date:   Tue, 26 May 2020 22:03:50 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [RFC 02/16] x86/kvm: Introduce KVM memory protection feature
-Message-ID: <20200527050350.GK31696@linux.intel.com>
-References: <20200522125214.31348-1-kirill.shutemov@linux.intel.com>
- <20200522125214.31348-3-kirill.shutemov@linux.intel.com>
- <87d06s83is.fsf@vitty.brq.redhat.com>
- <20200525151525.qmfvzxbl7sq46cdq@box>
+        id S1725784AbgE0FGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 01:06:04 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id B1A4368B02; Wed, 27 May 2020 07:06:00 +0200 (CEST)
+Date:   Wed, 27 May 2020 07:05:59 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Dongli Zhang <dongli.zhang@oracle.com>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kbusch@kernel.org, axboe@fb.com, hch@lst.de, sagi@grimberg.me
+Subject: Re: [PATCH 1/1] nvme-pci: avoid race between
+ nvme_reap_pending_cqes() and nvme_poll()
+Message-ID: <20200527050559.GA16317@lst.de>
+References: <20200527004955.19463-1-dongli.zhang@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200525151525.qmfvzxbl7sq46cdq@box>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200527004955.19463-1-dongli.zhang@oracle.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 25, 2020 at 06:15:25PM +0300, Kirill A. Shutemov wrote:
-> On Mon, May 25, 2020 at 04:58:51PM +0200, Vitaly Kuznetsov wrote:
-> > > @@ -727,6 +734,15 @@ static void __init kvm_init_platform(void)
-> > >  {
-> > >  	kvmclock_init();
-> > >  	x86_platform.apic_post_init = kvm_apic_init;
-> > > +
-> > > +	if (kvm_para_has_feature(KVM_FEATURE_MEM_PROTECTED)) {
-> > > +		if (kvm_hypercall0(KVM_HC_ENABLE_MEM_PROTECTED)) {
-> > > +			pr_err("Failed to enable KVM memory protection\n");
-> > > +			return;
-> > > +		}
-> > > +
-> > > +		mem_protected = true;
-> > > +	}
-> > >  }
-> > 
-> > Personally, I'd prefer to do this via setting a bit in a KVM-specific
-> > MSR instead. The benefit is that the guest doesn't need to remember if
-> > it enabled the feature or not, it can always read the config msr. May
-> > come handy for e.g. kexec/kdump.
-> 
-> I think we would need to remember it anyway. Accessing MSR is somewhat
-> expensive. But, okay, I can rework it MSR if needed.
+Can you add a Fixes tag so that this gets queued up for -stable properly?
 
-I think Vitaly is talking about the case where the kernel can't easily get
-at its cached state, e.g. after booting into a new kernel.  The kernel would
-still have an X86_FEATURE bit or whatever, providing a virtual MSR would be
-purely for rare slow paths.
-
-That being said, a hypercall plus CPUID bit might be better, e.g. that'd
-allow the guest to query the state without risking a #GP.
-
-> Note, that we can avoid the enabling algother, if we modify BIOS to deal
-> with private/shared memory. Currently BIOS get system crash if we enable
-> the feature from time zero.
-
-Which would mesh better with a CPUID feature bit.
