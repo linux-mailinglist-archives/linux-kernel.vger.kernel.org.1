@@ -2,90 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 503961E4427
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2501E4442
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388649AbgE0Npi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:45:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:38740 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387581AbgE0Nph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:45:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CBFFB55D;
-        Wed, 27 May 2020 06:45:36 -0700 (PDT)
-Received: from [10.57.2.168] (unknown [10.57.2.168])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C0FB23F6C4;
-        Wed, 27 May 2020 06:45:34 -0700 (PDT)
-Subject: Re: [PATCH] arm64: vdso32: force vdso32 to be compiled as -marm
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Naohiro Aota <naohiro.aota@wdc.com>,
-        Stephen Boyd <swboyd@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org, Manoj Gupta <manojgupta@google.com>,
-        Luis Lozano <llozano@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-References: <20200526173117.155339-1-ndesaulniers@google.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <2f58c2a4-0f37-d507-7767-00161c6b5d98@arm.com>
-Date:   Wed, 27 May 2020 14:45:32 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2388688AbgE0NrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:47:24 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:38093 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388082AbgE0NrX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 09:47:23 -0400
+Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
+ (mreue009 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MlfCk-1jD5sb39N4-00ili0; Wed, 27 May 2020 15:46:31 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rusty Russell <rusty@rustcorp.com.au>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Naveen Krishna Chatradhi <nchatrad@amd.com>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Richard Henderson <rth@twiddle.net>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] cpumask: guard cpumask_of_node() macro argument
+Date:   Wed, 27 May 2020 15:46:08 +0200
+Message-Id: <20200527134623.930247-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200526173117.155339-1-ndesaulniers@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:IPQ9B4qOEDeVAT6zCkUFk/+6gE2JJSw998N7HuX7io/aAOYDheD
+ X7YwErGg89se16bhTbTpYxiVy/sw26V0IO/Cfn4vsmDbUr0Mb24lIdcaqoqoY7c4003P+DK
+ YHN04TmVug/66eTQdd3ev9jx1nEETULaY0f+ly7FgTxV1G9cqhn9D0+bToxd4kFFn/L3GaI
+ +UIcf3wttnFElnuPeAO/Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:K+yJ/bPAuoE=:EInc6+3xGy+xs6R42Qb+42
+ YeCHSr7b/3wnG5P+D8owS3CVbIA16q8f/9rY3+UtseNBx4ByBki8PhZRrxXJoFNxe/QxQYEXP
+ JjZbBuCPkTbiGH3Fx1rKtd3sUv8INsHrO1G4diNJqPGQIrFeAPXcljY4WlqZYugGM/m7p4p+h
+ 6xVSRMRJ7MI8szHGihSUT8KybBiDftBRbeLfdWX4c2XArLyH0j0r+XGkhor/Zztm4uJqJKWEI
+ QZjlQ1nDYkmDAc0W4qiqtt7MlrBxmEGscfev2FnmXA0jRY78aRKbbWPJ8FvOx78vNlZyhJ/1h
+ 2d3sj7z52hGAquNP3Yafpz8oyUgcVpFK0p63kCnv3Izzfp8F+DBeRVX+mJi7jt2NAa8CvtCb+
+ yQhp8XUFFjEnTpIr1HtDH9e3VNpyl8gmi1dTwaibVMRcsnqRgYHewjpZi90hWh7BH5AvhJ7vn
+ fgD6WTVKRtH9dDNQQLhWag05DDop4Awos1EpLIfqcvMJFk0xGNAn+yy192lRk2LRIqz8sUENc
+ mO+7Gs6PcSqTYr20bRM+HqazeUSi+zZTCzMZ4oUKsO1MoOLtiOyWLVVRzVqpr/GLm6G2psafE
+ H8bo9D0rQMvkpLc9COWHKcCYSQAunKF6gygRO0tdW3Z8HqitPCEPq+YAiWNSnpLsb1BE6rq4N
+ NizITXqEZsm818NveA0i9kdB8vCDAU41M92Pxz4Z1+OX295FjCqN2V8O8nnSNFItNuDhfuKCU
+ 6uRnOn/hTQIeVl6nj38ZppcZguMuccYIdsuAcyJe0ivCdnRR86m4lCos/KctzdahU+l3rFF9c
+ w3r7W1yOkLLU2BdN8fExQuGlAlyXRKhDwA4TOZqHDFfhX/KktU=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-26 18:31, Nick Desaulniers wrote:
-> Custom toolchains that modify the default target to -mthumb cannot
-> compile the arm64 compat vdso32, as
-> arch/arm64/include/asm/vdso/compat_gettimeofday.h
-> contains assembly that's invalid in -mthumb.  Force the use of -marm,
-> always.
+drivers/hwmon/amd_energy.c:195:15: error: invalid operands to binary expression ('void' and 'int')
+                                        (channel - data->nr_cpus));
+                                        ~~~~~~~~~^~~~~~~~~~~~~~~~~
+include/asm-generic/topology.h:51:42: note: expanded from macro 'cpumask_of_node'
+    #define cpumask_of_node(node)       ((void)node, cpu_online_mask)
+                                               ^~~~
+include/linux/cpumask.h:618:72: note: expanded from macro 'cpumask_first_and'
+ #define cpumask_first_and(src1p, src2p) cpumask_next_and(-1, (src1p), (src2p))
+                                                                       ^~~~~
 
-FWIW, this seems suspicious - the only assembly instructions I see there 
-are SWI(SVC), MRRC, and a MOV, all of which exist in Thumb for the 
--march=armv7a baseline that we set.
+Fixes: f0b848ce6fe9 ("cpumask: Introduce cpumask_of_{node,pcibus} to replace {node,pcibus}_to_cpumask")
+Fixes: 8abee9566b7e ("hwmon: Add amd_energy driver to report energy counters")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ include/asm-generic/topology.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On a hunch, I've just bodged "VDSO_CFLAGS += -mthumb" into my tree and 
-built a Thumb VDSO quite happily with Ubuntu 19.04's 
-gcc-arm-linux-gnueabihf. What was the actual failure you saw?
+diff --git a/include/asm-generic/topology.h b/include/asm-generic/topology.h
+index 238873739550..5aa8705df87e 100644
+--- a/include/asm-generic/topology.h
++++ b/include/asm-generic/topology.h
+@@ -48,7 +48,7 @@
+   #ifdef CONFIG_NEED_MULTIPLE_NODES
+     #define cpumask_of_node(node)	((node) == 0 ? cpu_online_mask : cpu_none_mask)
+   #else
+-    #define cpumask_of_node(node)	((void)node, cpu_online_mask)
++    #define cpumask_of_node(node)	((void)(node), cpu_online_mask)
+   #endif
+ #endif
+ #ifndef pcibus_to_node
+-- 
+2.26.2
 
-Robin.
-
-> Link: https://bugs.chromium.org/p/chromium/issues/detail?id=1084372
-> Cc: Stephen Boyd <swboyd@google.com>
-> Reported-by: Luis Lozano <llozano@google.com>
-> Tested-by: Manoj Gupta <manojgupta@google.com>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
-> Surgeon General's Warning: changing the compiler defaults is not
-> recommended and can lead to spooky bugs that are hard to reproduce
-> upstream.
-> 
->   arch/arm64/kernel/vdso32/Makefile | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
-> index 3964738ebbde..c449a293d81e 100644
-> --- a/arch/arm64/kernel/vdso32/Makefile
-> +++ b/arch/arm64/kernel/vdso32/Makefile
-> @@ -104,6 +104,8 @@ VDSO_CFLAGS += -D__uint128_t='void*'
->   # (on GCC 4.8 or older, there is unfortunately no way to silence this warning)
->   VDSO_CFLAGS += $(call cc32-disable-warning,shift-count-overflow)
->   VDSO_CFLAGS += -Wno-int-to-pointer-cast
-> +# Force vdso to be compiled in ARM mode, not THUMB.
-> +VDSO_CFLAGS += -marm
->   
->   VDSO_AFLAGS := $(VDSO_CAFLAGS)
->   VDSO_AFLAGS += -D__ASSEMBLY__
-> 
