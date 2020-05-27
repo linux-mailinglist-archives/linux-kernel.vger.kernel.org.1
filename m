@@ -2,135 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318451E3639
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 05:07:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32DDD1E3668
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 05:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387472AbgE0DHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 23:07:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51876 "EHLO
+        id S1728512AbgE0DUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 23:20:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbgE0DHm (ORCPT
+        with ESMTP id S1728337AbgE0DUN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 23:07:42 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A995CC061A0F;
-        Tue, 26 May 2020 20:07:41 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id c20so22643120ilk.6;
-        Tue, 26 May 2020 20:07:41 -0700 (PDT)
+        Tue, 26 May 2020 23:20:13 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E327C061A0F;
+        Tue, 26 May 2020 20:20:13 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id m12so24699218ljc.6;
+        Tue, 26 May 2020 20:20:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NoLQZ4xLsmiigYDKwkyKj0BqR8pGmA2XjKXfyOFiOGQ=;
-        b=ecfBllBPvCa8XsDJLnfADTkGN6+8/grXE/wm7/P7v6KQSOnpvILfr+A6G3RD8gSt1V
-         bcG0w7NqoMDFPFyROpM8wFf1TYhiaV8A/yQdMf9lkSv2kwCGRV5h7KxRLIdClrUbpvPy
-         Z6M31H9tEWows4qRtj1lW1QCP3kCmsDMg3qLw7KmFS9Pc78lBjjoNaVC2JVWePQNm4ly
-         Tidg8o08isU+NfUD2ZB/3QCYh3eoTB5tJsct5E8/E1FGNgWlwWvgNzZltULIrNilc3rv
-         IGxIk+BMAQxjIZ0ACpSWUyfugyumeGFBCfSjXGxQ2ryIa+/Q00dCx2AwZR+HOHTOxdHK
-         8Teg==
+        h=from:to:cc:subject:date:message-id:mime-version;
+        bh=M4ivFc6kSqZpz+3LE91PokU5ZJbEXVZ2EsPOUaC4dhY=;
+        b=qVX+9QgTA1TTshe+kZIDXoWDs317hKbvdqNnCQWtb7x6JtJWq6rjAwDCRLyxSUq+fo
+         nzSz7o+nvcfekosvxrksB3D+jy2iK4mRFm9amTSWQ9D2BSNmaG0smLDaYf9X86WNv4wE
+         Di4PKGQ0aqoM44qCpcDAZvXQdc1L9dRAf1NLrm3CQTBG780xCk4u3s7VmFs0f3Y1XUUQ
+         T5Lglnym8hk396hGCpoLSbWgoS6gWvqkSYL83GbdTdX9EMjWZhh+/jjBM4y2waEl1lb2
+         mrO9aDFdsAauUxSznpm+pdO4r0JCSGRlMOVOMC4dn6VND8tD9fiOC0w0hjCo/6QkztaF
+         foiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NoLQZ4xLsmiigYDKwkyKj0BqR8pGmA2XjKXfyOFiOGQ=;
-        b=IlVUS3JGcm6yv//f30wWqtRqgLJqg0oM/QYlqDL8UQNBnd7paJR8IKrAgTtcgjnzbY
-         a1n+L1jHDRitLBT3YhNbSE6psnlfPgIWDI7d1yqYmVpMARtlDLFtLPtm3UeJJrMpz9dZ
-         h3B3FsbBGu9HfxWCMr/DD1RuQK2d3PWj3zVwz2r83MUpVhKagl7iMCg1GMi/oQkjCneR
-         oTItvoAGeDGximB7EBK3sPR+N68/J8fHaEO/bNaz4rh2E6CkL6cYTBqdSCF57M8sDLU5
-         /t/lVRi3bw96BRABNTbwpFMqDsJ6c3xXi3VV532oYHdVqO75XYW3Z08Gz8aiQesLc4qx
-         wMew==
-X-Gm-Message-State: AOAM530DV6W6SLZlEunsNyi2wiqnupHOfVtXmI6CQHgBUrPmO06n8Rc6
-        ZA4xGqjRAJn9ZoS9B6l2pFzr3kd1RbEjBr1b2yc=
-X-Google-Smtp-Source: ABdhPJxoQlLUksMMTrEeJnBpX7aUmXahzXq+87mU2xG6zjv9GcII3cRppMGcRbjSLU7EEh3E31xctx4o5xAsG0rwNZg=
-X-Received: by 2002:a92:1b86:: with SMTP id f6mr2004630ill.9.1590548860893;
- Tue, 26 May 2020 20:07:40 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
+        bh=M4ivFc6kSqZpz+3LE91PokU5ZJbEXVZ2EsPOUaC4dhY=;
+        b=Z7mWq7K9m2WGNiq6bMCpb467kxUcUIdCQrjHAGgK+JTFrOHJpwPeKecZb5QCCJkryI
+         /P51E1uXXFpWnvT6kO99PZdp9KwA+nW34Kvh2MWVATRIXJk/GV+Ce7+T7OJuy+dD17en
+         ANUze76ZEwrOfxPQFyNTqMO4SiPrMETvMCAJwUwkgIBuX9/0B1LJ+x4QRjVFLr7K4gXl
+         h6z9h3M1uBLjHM46JVP/1ITfQcgb6OzggKD9itUjRTcKKW/pBeyg03zSGfsX4+mVtQ3d
+         hcoP4Mvti64NbW9K2Sd6queAL6137oLqeHHAgyA4OKzVyNYWl6rvYjymOSalgpMBeAvN
+         CaPg==
+X-Gm-Message-State: AOAM5322fLVAzkSAkfaAE7/4IkrpMGciaHfk/KBA6LvTq7gV0bqENI5Z
+        QNU2xjWovXuOa9J7b0+Pa7u51OBf
+X-Google-Smtp-Source: ABdhPJxlKJksh42ODi3NAFjb33hSrwKE6d28v3+/8EzCeJhy/9Uy3cnkpWbOcC4GAsuXaQoa+N8Fvg==
+X-Received: by 2002:a2e:160e:: with SMTP id w14mr1903821ljd.66.1590549611902;
+        Tue, 26 May 2020 20:20:11 -0700 (PDT)
+Received: from localhost (cpc158779-hari22-2-0-cust230.20-2.cable.virginm.net. [86.22.86.231])
+        by smtp.gmail.com with ESMTPSA id x8sm373160ljh.97.2020.05.26.20.20.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2020 20:20:11 -0700 (PDT)
+From:   Yuxuan Shui <yshuiv7@gmail.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] overlayfs: initialize error in ovl_copy_xattr
+Date:   Wed, 27 May 2020 04:08:02 +0100
+Message-ID: <874ks212uj.fsf@m5Zedd9JOGzJrf0>
 MIME-Version: 1.0
-References: <20200526205322.23465-1-mic@digikod.net> <20200526205322.23465-8-mic@digikod.net>
-In-Reply-To: <20200526205322.23465-8-mic@digikod.net>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 27 May 2020 06:07:29 +0300
-Message-ID: <CAOQ4uxibpDTyjCJWLGG9jr-Gv9PwO==o50b9O8HGQeUfVMDFag@mail.gmail.com>
-Subject: Re: [PATCH v18 07/12] landlock: Support filesystem access-control
-To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mickael.salaun@ssi.gouv.fr>,
-        Richard Weinberger <richard@nod.at>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 3:36 AM Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> =
-wrote:
->
-> Thanks to the Landlock objects and ruleset, it is possible to identify
-> inodes according to a process's domain.  To enable an unprivileged
-> process to express a file hierarchy, it first needs to open a directory
-> (or a file) and pass this file descriptor to the kernel through
-> landlock(2).  When checking if a file access request is allowed, we walk
-> from the requested dentry to the real root, following the different
-> mount layers.  The access to each "tagged" inodes are collected
-> according to their rule layer level, and ANDed to create access to the
-> requested file hierarchy.  This makes possible to identify a lot of
-> files without tagging every inodes nor modifying the filesystem, while
-> still following the view and understanding the user has from the
-> filesystem.
->
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Hi Mickael,
 
-Nice work! I am interested in the problem of system wide file access
-rules based on directory hierarchy [1][2]. Not the same problem, but
-with obvious overlaps.
+In ovl_copy_xattr, if all the xattrs to be copied are overlayfs private
+xattrs, the copy loop will terminate without assigning anything to the
+error variable, thus returning an uninitialized value.
 
-I sketched this untested POC [2] a while ago -
-It introduces the concept of "border control" LSM hooks to avoid the
-need to check which sections in the hierarchy an inode belongs to
-on every syscall.
+If ovl_copy_xattr is called from ovl_clear_empty, this uninitialized
+error value is put into a pointer by ERR_PTR(), causing potential
+invalid memory accesses down the line.
 
-With this, you could cache a topology with id's per section and
-cache the section id + topology generation in the inode's security state.
-When inode crosses border control hooks, it's section id is updated.
-When directory hierarchy topology changes, some or all of the cached
-section id's are invalidated and rules <-> sections relations may need
-to be changed.
+This commit initialize error with 0. This is the correct value because
+when there's no xattr to copy, because all xattrs are private,
+ovl_copy_xattr should succeed.
 
-Do you think something like that could be useful for landlock?
+This bug is discovered with the help of INIT_STACK_ALL and clang.
 
-Note that the POC is using d_mountpoint() as the only type of "fence"
-mark. It is sufficient for controlling rename in and out of containers, so
-I just used an already available dentry flag for "fence".
-If the border control hook concept is useful, this could be extended to
-a more generic d_border_passing(), with some internal kernel API
-to manage it and with all the bike shedding that comes with it...
+Signed-off-by: Yuxuan Shui <yshuiv7@gmail.com>
+=2D--
+ fs/overlayfs/copy_up.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Amir.
+diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
+index 9709cf22cab3..07e0d1961e96 100644
+=2D-- a/fs/overlayfs/copy_up.c
++++ b/fs/overlayfs/copy_up.c
+@@ -47,7 +47,7 @@ int ovl_copy_xattr(struct dentry *old, struct dentry *new)
+ {
+ 	ssize_t list_size, size, value_size =3D 0;
+ 	char *buf, *name, *value =3D NULL;
+=2D	int uninitialized_var(error);
++	int error =3D 0;
+ 	size_t slen;
+=20
+ 	if (!(old->d_inode->i_opflags & IOP_XATTR) ||
+=2D-=20
+2.26.2
 
-[1] https://lore.kernel.org/linux-fsdevel/CAOQ4uxhBVhyyJv0+xSFQiGQEj60AbD3S=
-ADfKK40uAiC4GF2p9Q@mail.gmail.com/
-[2] https://lore.kernel.org/linux-fsdevel/CAOQ4uxgn=3DYNj8cJuccx2KqxEVGZy1z=
-3DBVYXrD=3DMc7Dc=3DJe+-w@mail.gmail.com/
-[3] https://github.com/amir73il/linux/commits/rename_xmnt
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEL6EJkr0WlitWahBy06RAW+bMF/QFAl7N3FkACgkQ06RAW+bM
+F/RKGg/+Mal8/fZGFJmB4SjmletMefSDfnlLnsTfMQC75ZepOCCixJQG+7+DGH1b
+T3QsqDVBpl8W73SGGqo/45FewG7zD2Yedmg9SdFUwQsLVfXA+QhH0umAehO1MAG7
+3jhn4jEC7YL5RRhc0BwSbrQA+1N9Mq4UBn0aai1W+dhbsibY86EIvpaJzZzT/Btc
+BrxOtM522VtL6ZGxuz5tfSn1yQxNMBGB754q0wP7b9xo79ImNHcNnOUaqFCWVcOc
+W/B0ThhhJALiP/GEa+cuRzdRYfR6JmASW/EoCHzHkZ6YWgf4inRD/hF/4Ml/p++W
+aQAxyiRsiUUmEQUD4vGcYQa4ssBsiengGM++c7VoqKX+TGtxKCOGfed8/W6A2CLV
+62yMEA477fKvpU2mLa3XuJptyoqr3hNb00JNKBj/Z9cuDOn9mxjYbdYyQlSlH3XI
+2kj5cW1hfhdvvoDIWrE1lUzhGsXac6KS5MPh2vJL6DobJDOEoNI2o8hWN9fplPpr
+TjtszOyFuFuwRDURfhl/4/80i/T7jcbGR0SLkNkB5s2Ic7u8lLJRrqyb9JLeGJI2
+ExJ650h9rsg5QWvx2LEpI21TX8XbCorwc1zCHpghCijO3qUg0eTXmYHevmZXK7DH
+GYQJVI35TFHxIBvFM+Wo/Nl+OB0iaeFePOe3G0j6oVPHOsW7oIk=
+=nXDi
+-----END PGP SIGNATURE-----
+--=-=-=--
