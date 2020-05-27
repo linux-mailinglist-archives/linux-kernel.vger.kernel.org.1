@@ -2,123 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D1B1E39DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 09:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C5F1E39E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 09:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728959AbgE0HH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 03:07:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36584 "EHLO mail.kernel.org"
+        id S1729014AbgE0HKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 03:10:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726025AbgE0HH6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 03:07:58 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1726025AbgE0HKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 03:10:15 -0400
+Received: from kernel.org (unknown [104.132.0.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E663A2078C;
-        Wed, 27 May 2020 07:07:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 879B22078C;
+        Wed, 27 May 2020 07:10:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590563277;
-        bh=KBsrsoQqY1mI119oVrtYJKQOJoFFOjrZYR+mbY5YiF8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IBKlwNNyb1qbUyCkXClSPffijI+PIWS6bf/lsfYJU/ZmdgDoNZR7mMR+VbsbcCNpH
-         kRkOr0bplJAad2U6nPkAmsuWnarKgoAdfYIIzRYApKHeNrM3QlASFNvsgZE5nTZ79t
-         +7BOMAvQJh6kSvrLNd/6dPd3fxKBAP0vrpvyYwYM=
-Date:   Wed, 27 May 2020 09:07:55 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Wojtek Porczyk <woju@invisiblethingslab.com>
-Cc:     Andi Kleen <ak@linux.intel.com>, Andi Kleen <andi@firstfloor.org>,
-        x86@kernel.org, keescook@chromium.org,
-        linux-kernel@vger.kernel.org, sashal@kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v1] x86: Pin cr4 FSGSBASE
-Message-ID: <20200527070755.GB39696@kroah.com>
-References: <20200526052848.605423-1-andi@firstfloor.org>
- <20200526065618.GC2580410@kroah.com>
- <20200526154835.GW499505@tassilo.jf.intel.com>
- <20200526163235.GA42137@kroah.com>
- <20200526172403.GA14256@invisiblethingslab.com>
+        s=default; t=1590563414;
+        bh=5f88nzMEqPegezJKOkJqZXoqontH74AXnh+2bhAJsmo=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=t5cNX77+4RbiAEdrszt2vjDDTNux0be5OEVSAxqKUyMPYEKG6r+VUtx/2z9tO08B6
+         otpHXxk42k57ptJbk56rY8zXBpE+fImfz6Lz0Ir3aSShqx6hTwaG6hfuGw/GEhj5uI
+         F0Mpf+dwsLgmBUY6Q5bL2XeUP1Q3zkVIZZzLUtzg=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200526172403.GA14256@invisiblethingslab.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200508220238.4883-1-rikard.falkeborn@gmail.com>
+References: <20200508220238.4883-1-rikard.falkeborn@gmail.com>
+Subject: Re: [PATCH] clk: bcm2835: Constify struct debugfs_reg32
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     bcm-kernel-feedback-list@broadcom.com, linux-clk@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>, eric@anholt.net,
+        f.fainelli@gmail.com, mturquette@baylibre.com,
+        nsaenzjulienne@suse.de, rjui@broadcom.com, sbranden@broadcom.com,
+        wahrenst@gmx.net
+Date:   Wed, 27 May 2020 00:10:13 -0700
+Message-ID: <159056341376.88029.8430380128281240784@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 07:24:03PM +0200, Wojtek Porczyk wrote:
-> On Tue, May 26, 2020 at 06:32:35PM +0200, Greg KH wrote:
-> > On Tue, May 26, 2020 at 08:48:35AM -0700, Andi Kleen wrote:
-> > > On Tue, May 26, 2020 at 08:56:18AM +0200, Greg KH wrote:
-> > > > On Mon, May 25, 2020 at 10:28:48PM -0700, Andi Kleen wrote:
-> > > > > From: Andi Kleen <ak@linux.intel.com>
-> > > > > 
-> > > > > Since there seem to be kernel modules floating around that set
-> > > > > FSGSBASE incorrectly, prevent this in the CR4 pinning. Currently
-> > > > > CR4 pinning just checks that bits are set, this also checks
-> > > > > that the FSGSBASE bit is not set, and if it is clears it again.
-> > > > 
-> > > > So we are trying to "protect" ourselves from broken out-of-tree kernel
-> > > > modules now?  
-> > > 
-> > > Well it's a specific case where we know they're opening a root hole
-> > > unintentionally. This is just an pragmatic attempt to protect the users in the 
-> > > short term.
-> > 
-> > Can't you just go and fix those out-of-tree kernel modules instead?
-> > What's keeping you all from just doing that instead of trying to force
-> > the kernel to play traffic cop?
-> 
-> We'd very much welcome any help really, but we're under impression that this
-> couldn't be done correctly in a module, so this hack occured.
+Quoting Rikard Falkeborn (2020-05-08 15:02:38)
+> bcm2835_debugfs_clock_reg32 is never changed and can therefore be made
+> const.
+>=20
+> This allows the compiler to put it in the text section instead of the
+> data section.
+>=20
+> Before:
+>    text    data     bss     dec     hex filename
+>   26598   16088      64   42750    a6fe drivers/clk/bcm/clk-bcm2835.o
+>=20
+> After:
+>    text    data     bss     dec     hex filename
+>   26662   16024      64   42750    a6fe drivers/clk/bcm/clk-bcm2835.o
+>=20
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+> ---
 
-Really?  How is this hack anything other than a "prevent a kernel module
-from doing something foolish" change?
-
-Why can't you just change the kernel module's code to not do this?  What
-prevents that from happening right now which would prevent the need to
-change a core api from being abused in such a way?
-
-> This was written in 2015 as part of original (research) codebase for those
-> reasons:
-> - A module is easier to deploy by scientists, who are no kernel developers and
->   no sysadmins either, so applying patchset and recompiling kernel is a big
->   ask.
-> - It has no implications on security in SGX/Graphene threat model and in
->   expected deployment scenario.
-> - This had no meaning to the actual research being done, so it wasn't cared
->   about.
-> 
-> Let me expand the second point, because I understand both the module and the
-> explanation looks wrong.
-> 
-> Graphene is intended to be run in a cloud, where the CPU time is sold in
-> a form of virtual machine, so the VM kernel, which would load this module, is
-> not trusted by hardware owner, so s/he don't care. But the owner of the
-> enclave also doesn't care, because SGX' threat model assumes adversary who is
-> capable of arbitrary code execution in both kernel and userspace outside
-> enclave. So the kernel immediately outside the enclave is a no-man's land,
-> untrusted by both sides and forsaken, reduced to a compatibility layer
-> between x86 and ELF.
-> 
-> I acknowledge this is unusual threat model and certainly to mainline
-> developers, who rarely encounter userspace that is more trusted than kernel.
-> 
-> What we've failed at is to properly explain this, because if someone loads
-> this module outside of this expected scenario, will certainly be exposed to
-> a gaping root hole. Therefore we acknowledge this patch and as part of
-> Graphene we'll probably maintain a patchset, until the support is upstream.
-> Right now this will take us some time to change from our current kernel
-> interfaces.
-
-I'm sorry, but I still do not understand.  Your kernel module calls the
-core with this bit being set, and this new kernel patch is there to
-prevent the bit from being set and will WARN_ON() if it happens.  Why
-can't you just change your module code to not set the bit?
-
-Do you have a pointer to the kernel module code that does this operation
-which this core kernel change will try to prevent from happening?
-
-thanks,
-
-greg k-h
+Applied to clk-next
