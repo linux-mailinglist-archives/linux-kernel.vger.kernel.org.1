@@ -2,58 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3E71E489D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:54:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF6691E488F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390507AbgE0PyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 11:54:03 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:53448 "EHLO
+        id S1730831AbgE0PxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 11:53:13 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:53452 "EHLO
         merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390381AbgE0PwF (ORCPT
+        with ESMTP id S2390385AbgE0PwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 May 2020 11:52:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Subject:Cc:To:From:Date:Message-ID:
-        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=gWuxMg7NlTEFrNlbUropzj9kFD0wZ/EZEXmaMx5s6w4=; b=fJtbwXZAChpjnqipnsX2w6QcoF
-        xSeVz1feK9mkhUsKOCmyoWn+/N4p3p5PDny4N4E4UfphD/UkDTfIxT2CCV6xeY6MCQGz70wBALLNC
-        TW5XStR9a9eO9jp18Dp9U1BdhcJq91W5BC2lSn2U6GtUB591V2kNUypzl1g6FTQShsldxrKfZEe+C
-        CpcID7mhm+HXglFaLviR+ttQYTvmfXqSkcPnKimd5ftDk/Txpa7uiP3kR0Rq0j+lufrsIpHIb3fk+
-        XSAY5X9i/Oa66MHyWqAhs6wZGBzj9fdZsd/Bo/7Cx2w/DHHJD3PYNRcavLl8jbFDIF0/e7T+obHok
-        lfu8qbyA==;
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To;
+        bh=fNOMcgUUspDdovfT2z3xeDIX+4rh6AghoI7sB6jwIQI=; b=XaTRBoC5nvMVNo7ZpCnYLjGfG2
+        TfBonXR0de6CjMYTkK7GRA8HLhT/Blaek5BU6lLC3UGS7JEv2HGYwBncTY4cca4zI1VQibLdFXU08
+        YPf6UUsyO8+UDFypZNRY0LCeTcz5JjCWxkCi1swZahgBi1agDxuuWvbEQl7viQR1wowJVvULZcWD7
+        OmJrqSLaJBX31FIDrMb3HAmo2y7n9z6q/y1W4V1P8sEQD017X1rtDt8mAa2jJRxuTtr6lyyoo6wl/
+        VBhPO8o1WiiM7KdESgyzl17mnfD2nFVnfZUVcL/mTVh06HjVgksZ1FSnmk21HFlr3SpIyXN1va37E
+        5/7zjhKw==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jdyLX-00012v-3s; Wed, 27 May 2020 15:51:59 +0000
+        id 1jdyLX-00012x-42; Wed, 27 May 2020 15:51:59 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F21EF30793C;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 081CF3079B4;
         Wed, 27 May 2020 17:51:49 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id ACFA52023E7C6; Wed, 27 May 2020 17:51:49 +0200 (CEST)
-Message-ID: <20200527154527.233385756@infradead.org>
+        id B0E0F20249680; Wed, 27 May 2020 17:51:49 +0200 (CEST)
+Message-ID: <20200527155003.131379869@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 27 May 2020 17:45:27 +0200
+Date:   Wed, 27 May 2020 17:45:28 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     mingo@kernel.org, will@kernel.org, tglx@linutronix.de
 Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
         a.darwish@linutronix.de, rostedt@goodmis.org,
         bigeasy@linutronix.de, peterz@infradead.org
-Subject: [PATCH 0/6] x86/entry,lockdep: Improve IRQ state tracking
+Subject: [PATCH 1/6] x86/entry: Clarify irq_{enter,exit}_rcu()
+References: <20200527154527.233385756@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ahmed and Sebastian wanted additional lockdep_assert*() macros and ran
-into header hell.
+Because:
 
-Move the IRQ state into per-cpu variables, which removes the dependency on
-task_struct, which is what generated the header-hell.
+  irq_enter_rcu() includes lockdep_hardirq_enter()
+  irq_exit_rcu() does *NOT* include lockdep_hardirq_exit()
 
-And fix IRQ state tracking to not be affected by lockdep_off() (it really
-should not have been anyway) and extends IRQ state tracking across (x86)
-NMIs.
+Which resulted two 'stray' lockdep_hardirq_exit() calls in idtentry.h,
+and me spending a long time trying to find the matching enters.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ arch/x86/include/asm/idtentry.h |    2 --
+ kernel/softirq.c                |   19 +++++++++++++------
+ 2 files changed, 13 insertions(+), 8 deletions(-)
+
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -206,7 +206,6 @@ __visible noinstr void func(struct pt_re
+ 	kvm_set_cpu_l1tf_flush_l1d();					\
+ 	__##func (regs, (u8)error_code);				\
+ 	irq_exit_rcu();							\
+-	lockdep_hardirq_exit();						\
+ 	instrumentation_end();						\
+ 	idtentry_exit_cond_rcu(regs, rcu_exit);				\
+ }									\
+@@ -249,7 +248,6 @@ __visible noinstr void func(struct pt_re
+ 	kvm_set_cpu_l1tf_flush_l1d();					\
+ 	run_on_irqstack_cond(__##func, regs, regs);			\
+ 	irq_exit_rcu();							\
+-	lockdep_hardirq_exit();						\
+ 	instrumentation_end();						\
+ 	idtentry_exit_cond_rcu(regs, rcu_exit);				\
+ }									\
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -404,12 +404,7 @@ static inline void tick_irq_exit(void)
+ #endif
+ }
+ 
+-/**
+- * irq_exit_rcu() - Exit an interrupt context without updating RCU
+- *
+- * Also processes softirqs if needed and possible.
+- */
+-void irq_exit_rcu(void)
++static inline void __irq_exit_rcu(void)
+ {
+ #ifndef __ARCH_IRQ_EXIT_IRQS_DISABLED
+ 	local_irq_disable();
+@@ -425,6 +420,18 @@ void irq_exit_rcu(void)
+ }
+ 
+ /**
++ * irq_exit_rcu() - Exit an interrupt context without updating RCU
++ *
++ * Also processes softirqs if needed and possible.
++ */
++void irq_exit_rcu(void)
++{
++	__irq_exit_rcu();
++	 /* must be last! */
++	lockdep_hardirq_exit();
++}
++
++/**
+  * irq_exit - Exit an interrupt context, update RCU and lockdep
+  *
+  * Also processes softirqs if needed and possible.
 
 
