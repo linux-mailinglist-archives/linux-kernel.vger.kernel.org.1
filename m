@@ -2,86 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E721E4489
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D1F1E4493
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388932AbgE0NxM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 May 2020 09:53:12 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:33555 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388713AbgE0NxM (ORCPT
+        id S2388612AbgE0NyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:54:12 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:50787 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387581AbgE0NyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:53:12 -0400
-X-Originating-IP: 93.23.196.54
-Received: from xps13 (54.196.23.93.rev.sfr.net [93.23.196.54])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id AE2641BF213;
-        Wed, 27 May 2020 13:53:05 +0000 (UTC)
-Date:   Wed, 27 May 2020 15:53:04 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Piotr Sroka <piotrs@cadence.com>,
-        Mason Yang <masonccyang@mxic.com.tw>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: arasan: select CONFIG_BCH
-Message-ID: <20200527155304.0cf42848@xps13>
-In-Reply-To: <20200527134210.847411-1-arnd@arndb.de>
-References: <20200527134210.847411-1-arnd@arndb.de>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 27 May 2020 09:54:12 -0400
+Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
+ (mreue009 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MJm8H-1jKMLM2LCT-00K8Nw; Wed, 27 May 2020 15:53:33 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Zhenzhong Duan <zhenzhong.duan@oracle.com>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juergen Gross <jgross@suse.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH] x86: work around clang IAS bug referencing __force_order
+Date:   Wed, 27 May 2020 15:53:19 +0200
+Message-Id: <20200527135329.1172644-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:lPqKd3ceKcOiWSf6k7n0RT4DN5BdzpvV9e/sXSasbhanLS+Oa8b
+ zCfaDCYQCGPRsqQGnAq8IlMVatLfXkTtRhm+oZ9caPDHrTJjA28xSHP6uw7B7cbHoP+DUp2
+ OtVtwLD2cSC0Lh2zT2hmfjFQZ7KcflKRXk++pbClkDFjbyAGo09nwQMeJLEUflpWaeQhwzs
+ kFb0rHfkf/bj8PjONn4ZQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fwuCPC7PnkQ=:DL0TsWJH75aNmoZSVF1D5Q
+ dq+b71QtO2Ax/M1aqBhd8xXm/oHYJdSt+YMBPcX83mfCr3VKdX5B7t9SdQzzpVF6bzcFm1vvv
+ qUmO1MTs/90Szakgatu6YNZi8D6fOeo8QrbRNeVLjT2GJwa+rR7wi/8bkJaV7lF/uZ604GfIt
+ o43mOSlA2z4VHItLnYb4nvlIAPc6DiwgMM91rue4RK6IUpnGDY7PToLoIF+X+Zc5eCxI0NT2I
+ cmzeKREiMZEVWhXvxP5XamgDv6/3EaMiUBrEiy+hq+Q2a0PwTAeTq4KE+ld/181RunLOj8j4R
+ /aOFL8r8p5TCEA6TwIaye45ypXXoEdR+YKXWTnj1D6c4+yW0zSbxbQiFfBoKtXeBm6Z8FTJEc
+ d2lrSiJGzLuaD2rF/IZkkxj6bcsDTNz0IsAo3JctqfHRE/xhd+x6cCMAd+RxVBI2p+WdkDSSI
+ A45dSQJ+inGZEZR++eOdnQyfAR1FRJQh1ex89aTswZXLnO21jOCrTncn9fRMRMewwGXsBU1Nv
+ 9urovaD3b5NuSMJ0jUBkmRF7oXzkdPDYjKdexKMFgaxVecf4HEg0jvbnZhF/3atzYv5XI+2jo
+ OcLGlSReK1DTRpoVYn1X2kLCBptbJpXqZ4UMoTjw5y5rkZXaGo+qZCEHnUMouIXvjPReWtY/W
+ oLNFN1ic2RsCD4tTxmlbG0e2z6Nv8bvtWlvJ5PEwxLHzmQr6cjNyxHx7eMZvAvBPHq/88y5eU
+ pu/PPoXunnSctZWlfOvL6pDkVcJUPl6lTK24QuvoItc1tYZ9HOO92obr2kVBIIHTfefxQWp0M
+ ri9ItI+AQjsep3e55X17LZfWUAp0pDioitA40fBjN3LHpZo0Uw=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+When using the clang integrated assembler, we get a reference
+to __force_order that should normally get ignored in a few
+rare cases:
 
-Arnd Bergmann <arnd@arndb.de> wrote on Wed, 27 May 2020 15:42:03 +0200:
+ERROR: modpost: "__force_order" [drivers/cpufreq/powernow-k6.ko] undefined!
 
-> Like several other nand flash drivers, this one requires the BCH
-> library to be selected from Kconfig.
+Add a 'static' definition so any file in which this happens can
+have a local copy.
 
-Actually most of the time these drivers do not depend on BCH directly.
-Here it is a bit particular: the hardware ECC engine logic being
-broken, I found a workaround by using BCH's library functions directly
-to verify the hardware correctness.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/x86/boot/compressed/pgtable_64.c | 2 ++
+ arch/x86/include/asm/special_insns.h  | 7 +++++++
+ 2 files changed, 9 insertions(+)
 
-Anyway, thank you very much for the fix but if I didn't make a mistake
-it should have been fixed yesterday night already, so it's probably not
-in linux-next yet.
+diff --git a/arch/x86/boot/compressed/pgtable_64.c b/arch/x86/boot/compressed/pgtable_64.c
+index c8862696a47b..8595194cea41 100644
+--- a/arch/x86/boot/compressed/pgtable_64.c
++++ b/arch/x86/boot/compressed/pgtable_64.c
+@@ -12,7 +12,9 @@
+  * It is not referenced from the code, but GCC < 5 with -fPIE would fail
+  * due to an undefined symbol. Define it to make these ancient GCCs work.
+  */
++#ifndef CONFIG_CC_IS_CLANG
+ unsigned long __force_order;
++#endif
+ 
+ #define BIOS_START_MIN		0x20000U	/* 128K, less than this is insane */
+ #define BIOS_START_MAX		0x9f000U	/* 640K, absolute maximum */
+diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
+index 82436cb04ccf..7081e587c1ea 100644
+--- a/arch/x86/include/asm/special_insns.h
++++ b/arch/x86/include/asm/special_insns.h
+@@ -16,8 +16,15 @@
+  * A memory clobber would solve the problem, but would prevent reordering of
+  * all loads stores around it, which can hurt performance. Solution is to
+  * use a variable and mimic reads and writes to it to enforce serialization
++ *
++ * Clang sometimes fails to kill the reference to the dummy variable, so
++ * provide an actual copy.
+  */
++#ifdef CONFIG_CC_IS_CLANG
++static unsigned long __force_order;
++#else
+ extern unsigned long __force_order;
++#endif
+ 
+ void native_write_cr0(unsigned long val);
+ 
+-- 
+2.26.2
 
-> arm-linux-gnueabi-ld: drivers/mtd/nand/raw/arasan-nand-controller.o: in function `anfc_attach_chip':
-> arasan-nand-controller.c:(.text+0x894): undefined reference to `bch_init'
-> arm-linux-gnueabi-ld: drivers/mtd/nand/raw/arasan-nand-controller.o: in function `anfc_detach_chip':
-> arasan-nand-controller.c:(.text+0x98c): undefined reference to `bch_free'
-> arm-linux-gnueabi-ld: drivers/mtd/nand/raw/arasan-nand-controller.o: in function `anfc_read_page_hw_ecc':
-> arasan-nand-controller.c:(.text+0x1080): undefined reference to `bch_decode'
-> 
-> Fixes: 197b88fecc50 ("mtd: rawnand: arasan: Add new Arasan NAND controller")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/mtd/nand/raw/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-> index e2bc87779bf9..113f61052269 100644
-> --- a/drivers/mtd/nand/raw/Kconfig
-> +++ b/drivers/mtd/nand/raw/Kconfig
-> @@ -456,6 +456,7 @@ config MTD_NAND_CADENCE
->  config MTD_NAND_ARASAN
->  	tristate "Support for Arasan NAND flash controller"
->  	depends on HAS_IOMEM && HAS_DMA
-> +	select BCH
->  	help
->  	  Enables the driver for the Arasan NAND flash controller on
->  	  Zynq Ultrascale+ MPSoC.
-
-Thanks,
-Miquèl
