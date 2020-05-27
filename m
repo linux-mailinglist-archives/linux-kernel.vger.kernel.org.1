@@ -2,124 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5071E47DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D29831E47DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389581AbgE0Poz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 11:44:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53266 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726860AbgE0Poy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 11:44:54 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED94320873;
-        Wed, 27 May 2020 15:44:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590594294;
-        bh=9erfBo44Rs37pnCB4m7wPx90ygvL+5L/Nv3v6kJfPxs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HOWOZrFzPI11wHWkq8BgulOudUSZ5hKwcSGTKjX6exyGtQ55xFPey9ZsG8pYXvOTe
-         ubzfeMWfbVgiNKaqeyXheXgE21TUT3xKmYTN29ptTWIWH59cy7Ho4gnF+F2W2N7oMw
-         p4+viB5t5you4E/+U3xmfE6B9YKmg7VQd2BBixYI=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 2A94240AFD; Wed, 27 May 2020 12:44:44 -0300 (-03)
-Date:   Wed, 27 May 2020 12:44:44 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>, Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V7 10/15] perf evlist: Disable 'immediate' events last
-Message-ID: <20200527154444.GB16490@kernel.org>
-References: <20200512121922.8997-1-adrian.hunter@intel.com>
- <20200512121922.8997-11-adrian.hunter@intel.com>
+        id S2389794AbgE0Ppf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 11:45:35 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:59581 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726860AbgE0Ppa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 11:45:30 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 6717C581DB3;
+        Wed, 27 May 2020 11:45:29 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 27 May 2020 11:45:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=nXEtTH5SN5wx/wDh0BQNd6ms4U
+        oDlGel5I6M1n2fXwI=; b=PxbclBKz8Er5HtpgsLeicOCTtceqszSqGWtRP6cApw
+        nNZKMMzZbOXxdkiv6zDKdb4DGPvU425JMeMI6xC3Ecz/08aS4VDy3iifb5nVTWqu
+        5fAYPJt9Rj9iHOUKabLnNvQXoom2VNoKnY8iepfAescYXVI8juJUZH8fBQxciWFL
+        uNRDaY5MOLv50LRiVpRE17Uf2nDRoBkSfYtCLXJMFfvxGjdRTY5pSAJaZC4KDkGR
+        pgPZhh7mSksn+8Z1gleGZ5o5RoKlx+r0TDE5SrF+90eWIeFVYW/RLxn0gXBQFJRm
+        oyMAFqcfckc3EPKcknF7Oe65GZQ19eFGL43N+JIeiu2g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=nXEtTH5SN5wx/wDh0
+        BQNd6ms4UoDlGel5I6M1n2fXwI=; b=W9XVPXnUmB1MYQqrHRHK2CkyPEtGupI8W
+        9usMfEOWnFkz9eq0MpsZ39U7etnBdQO4jDmz0eekqTL+pqmdwz/5db+OWu7/GpNC
+        U9VFRVTYXp7s+WMgK62fdA58Ei1XxcdTPEDYabpxEDvgVee/ukui4fF/dcGuvZSr
+        GuGtDooZQoquPEKsPqflr0Rf6gY4x5Dq4vSY8NmJF4oSu+hygHryxnFxgmA1C7Nv
+        DxmIrIxVCzhEWNQtHql83EsjuEZygOA9JIoUIy5q7pIFaHc+HM2GBL9+5M4BDcjr
+        ws5pfybztPyTCyEQUlUR4/vnkI13AKNQrFsETFbQNP4w0DGWidz6A==
+X-ME-Sender: <xms:FovOXpUS4_LPJ4_XrtTtVtynt6kIauUKIB5xPc8LHTQlhXluCN8llA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddvgedgkeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhmvgcu
+    tfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrthhtvg
+    hrnhepjeffheduvddvvdelhfegleelfffgieejvdehgfeijedtieeuteejteefueekjeeg
+    necukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:FovOXpnjsgwi0RuRDvlaMtNWUuS23P5zgkBksRtzP5_Rq3DKNJA7BQ>
+    <xmx:FovOXla2EpcVKZW02NOe8-YWL01yVaqZfn0HaQi9wqMLGvKIMj9vpg>
+    <xmx:FovOXsVS9BJs93bc3Ajo7ZXY7_Tsrj2BswUZ09hCd5tTa1TysRpshA>
+    <xmx:GYvOXhfR68HQ3W7Tx8Ivy0GfmxXYtF6F6LOjvFKcOm8Sjis9q95fEQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 5D129328005E;
+        Wed, 27 May 2020 11:45:26 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Maxime Ripard <maxime@cerno.tech>, devicetree@vger.kernel.org,
+        Kamal Dasu <kdasu.kdev@gmail.com>, linux-clk@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: [PATCH v3 00/25] clk: bcm: rpi: Add support for BCM2711 firmware clocks
+Date:   Wed, 27 May 2020 17:44:56 +0200
+Message-Id: <cover.662a8d401787ef33780d91252a352de91dc4be10.1590594293.git-series.maxime@cerno.tech>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200512121922.8997-11-adrian.hunter@intel.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, May 12, 2020 at 03:19:17PM +0300, Adrian Hunter escreveu:
-> Events marked as 'immediate' are started before other events to ensure
-> that there is context at the start of the main tracing events. The same
-> is true at the end of tracing, so disable 'immediate' events after other
-> events.
+Hi,
 
-Applied, thanks,
+Since the whole DRM/HDMI support began to grow fairly big, I've chosen
+to split away the two discussions between the firmware clocks and the
+HDMI support.
 
-- Arnaldo
- 
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->  tools/perf/util/evlist.c | 31 +++++++++++++++++++++----------
->  1 file changed, 21 insertions(+), 10 deletions(-)
-> 
-> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-> index 2a9de6491700..173b4f0e0e6e 100644
-> --- a/tools/perf/util/evlist.c
-> +++ b/tools/perf/util/evlist.c
-> @@ -380,22 +380,33 @@ void evlist__disable(struct evlist *evlist)
->  {
->  	struct evsel *pos;
->  	struct affinity affinity;
-> -	int cpu, i;
-> +	int cpu, i, imm = 0;
-> +	bool has_imm = false;
->  
->  	if (affinity__setup(&affinity) < 0)
->  		return;
->  
-> -	evlist__for_each_cpu(evlist, i, cpu) {
-> -		affinity__set(&affinity, cpu);
-> -
-> -		evlist__for_each_entry(evlist, pos) {
-> -			if (evsel__cpu_iter_skip(pos, cpu))
-> -				continue;
-> -			if (pos->disabled || !evsel__is_group_leader(pos) || !pos->core.fd)
-> -				continue;
-> -			evsel__disable_cpu(pos, pos->cpu_iter - 1);
-> +	/* Disable 'immediate' events last */
-> +	for (imm = 0; imm <= 1; imm++) {
-> +		evlist__for_each_cpu(evlist, i, cpu) {
-> +			affinity__set(&affinity, cpu);
-> +
-> +			evlist__for_each_entry(evlist, pos) {
-> +				if (evsel__cpu_iter_skip(pos, cpu))
-> +					continue;
-> +				if (pos->disabled || !evsel__is_group_leader(pos) || !pos->core.fd)
-> +					continue;
-> +				if (pos->immediate)
-> +					has_imm = true;
-> +				if (pos->immediate != imm)
-> +					continue;
-> +				evsel__disable_cpu(pos, pos->cpu_iter - 1);
-> +			}
->  		}
-> +		if (!has_imm)
-> +			break;
->  	}
-> +
->  	affinity__cleanup(&affinity);
->  	evlist__for_each_entry(evlist, pos) {
->  		if (!evsel__is_group_leader(pos) || !pos->core.fd)
-> -- 
-> 2.17.1
-> 
+Let me know what you think,
+Maxime
 
+Cc: bcm-kernel-feedback-list@broadcom.com
+Cc: devicetree@vger.kernel.org
+Cc: Kamal Dasu <kdasu.kdev@gmail.com>
+Cc: linux-clk@vger.kernel.org
+Cc: Michael Turquette <mturquette@baylibre.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Stephen Boyd <sboyd@kernel.org>
+
+Changes from v2:
+  - Rebased on top of next-20200526
+  - Split away from the HDMI series
+  - Fixed an of_node leakage in the firmware driver
+  - Fixed an of_node leakage in the firmware clocks driver
+  - Added the min/max rate retrieval to all the firmware clocks
+  - Added proper name for the firmware clocks
+  - Removed the PLLB setup from the firmware clocks and moved it back to
+    the MMIO driver
+
+Florian Fainelli (1):
+  dt-bindings: arm: bcm: Convert BCM2835 firmware binding to YAML
+
+Maxime Ripard (24):
+  dt-bindings: clock: Add a binding for the RPi Firmware clocks
+  firmware: rpi: Only create clocks device if we don't have a node for it
+  clk: bcm: rpi: Allow the driver to be probed by DT
+  clk: bcm: rpi: Statically init clk_init_data
+  clk: bcm: rpi: Use clk_hw_register for pllb_arm
+  clk: bcm: rpi: Remove global pllb_arm clock pointer
+  clk: bcm: rpi: Make sure pllb_arm is removed
+  clk: bcm: rpi: Remove pllb_arm_lookup global pointer
+  clk: bcm: rpi: Switch to clk_hw_register_clkdev
+  clk: bcm: rpi: Make sure the clkdev lookup is removed
+  clk: bcm: rpi: Use CCF boundaries instead of rolling our own
+  clk: bcm: rpi: Create a data structure for the clocks
+  clk: bcm: rpi: Add clock id to data
+  clk: bcm: rpi: Pass the clocks data to the firmware function
+  clk: bcm: rpi: Rename is_prepared function
+  clk: bcm: rpi: Split pllb clock hooks
+  clk: bcm: rpi: Make the PLLB registration function return a clk_hw
+  clk: bcm: rpi: Add DT provider for the clocks
+  clk: bcm: rpi: Add an enum for the firmware clocks
+  clk: bcm: rpi: Discover the firmware clocks
+  clk: bcm: rpi: Give firmware clocks a name
+  Revert "clk: bcm2835: remove pllb"
+  clk: bcm: rpi: Remove the quirks for the CPU clock
+  ARM: dts: bcm2711: Add firmware clocks node
+
+ Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.txt  |  14 +---
+ Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml |  59 ++++++++++++++-
+ arch/arm/boot/dts/bcm2711-rpi-4-b.dts                                       |   5 +-
+ drivers/clk/bcm/clk-bcm2835.c                                               |  30 ++++++-
+ drivers/clk/bcm/clk-raspberrypi.c                                           | 299 ++++++++++++++++++++++++++++++++++++++++++++----------------------------
+ drivers/firmware/raspberrypi.c                                              |  14 +++-
+ include/soc/bcm2835/raspberrypi-firmware.h                                  |   5 +-
+ 7 files changed, 293 insertions(+), 133 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml
+
+base-commit: b0523c7b1c9d0edcd6c0fe6d2cb558a9ad5c60a8
 -- 
-
-- Arnaldo
+git-series 0.9.1
