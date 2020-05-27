@@ -2,145 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA061E34D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 03:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF531E34D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 03:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgE0BjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 21:39:17 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:53386 "EHLO zju.edu.cn"
+        id S1726683AbgE0BlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 21:41:04 -0400
+Received: from mail-bn8nam11on2051.outbound.protection.outlook.com ([40.107.236.51]:44353
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725801AbgE0BjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 21:39:16 -0400
-Received: from localhost.localdomain (unknown [222.205.60.151])
-        by mail-app3 (Coremail) with SMTP id cC_KCgCXSECuxM1ejBQOAA--.22651S4;
-        Wed, 27 May 2020 09:38:57 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        linux-i2c@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] i2c: stm32f7: Fix runtime PM imbalance on error
-Date:   Wed, 27 May 2020 09:38:53 +0800
-Message-Id: <20200527013853.30252-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgCXSECuxM1ejBQOAA--.22651S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxGFW8AFyxJF4UWw15Ar4xWFg_yoW5Wr4xpr
-        W5KayakFWUt3yvqFn3ArnIqF98W3yft34DZFyF93WS9Fs5X3WDtFy8JFyYvF48XrZ5A3WU
-        A39FywsrC3Wrt3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvF1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
-        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_KwCF04k20xvY0x0EwIxGrwCF
-        04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-        0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AK
-        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
-        fUOMKZDUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0MBlZdtOUT6wAHsg
+        id S1725801AbgE0BlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 21:41:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=A/XRNPGakuZvAFtDMLQAtP989RB8RljHUs5Cy3w+fQi835Y1yFfDY3CgBwPwRNbe7iMrIfHdUmaAoPqGZ4kfOM6vIVQ5WFzes+oF1j5H2IuJ8Rw4qL0YeXhoD0wqPT4WcUKQx3BkO4vTsmitJw6TNhBOsgdxt7WQBRKZSwKr2067bSG4PUQ8Ear/MjxZ8w9A4jP1ARbV+OgvytqWlpYdC+B95d5ZAj8aUTorcmAh9+KnbzEGX7Ao4MFm3yErcVpDDXCTPDOlhCbRxKuVr9xFAEc4Wh49QIHhL/9k90wgybZNxBJAjlnD9cYgJ9eotfHHCzvUHL+rWImB5hXwiAMu8Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AnKRLyg1xhUuoBvUr7eu4tr4+uX0uKFemvAM9oMeQ4M=;
+ b=gomUReAuhc9f1TpYzvzV9U1gRO+2sZy3u78z38EZvP4aQnYjFNlR6R9y0bepvX9/gfDGCqeov0iEGdYd+HgX7mKyR4UnnzAq0ycbMdIuAXw0RS4KaHDwJHNQXTIFzNyjVQ1rWI60bqWi2YYwYzbLlxi3gvpYryZyZNBXkzh+5FfTCfkSuRq5k09GFAxSAOgdvuCxKmIhoSZQttNFxWtvRywcmif3CynlQAwSh5f+FEZykJ/8IzhxzBc6IQ+H0NQQ38Ifjr4D101F1BAsby2rJV2OToC5LgaMwEDMSk/NdhAJmf6RcSm22VVe3NCcVWqIrSs/SxLSU9OZrR8CFGsnNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AnKRLyg1xhUuoBvUr7eu4tr4+uX0uKFemvAM9oMeQ4M=;
+ b=FTX6IFuXdsZNazyP6QVb+uBfIT8Kq7zAXUn72VQk0ItJqjMSsPpDCOAfXpnIZZThchjo4iwqLdj6GYvw26iXYYqGez/crQ38OG1N6MQLi5DkD01VL1ZsaPe64TFiCAG8nrS+G4eSS5ORnfrKm6tan1C0FyX5sxQX3QV16HjWVYk=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1849.namprd12.prod.outlook.com (2603:10b6:3:107::23)
+ by DM5PR12MB2487.namprd12.prod.outlook.com (2603:10b6:4:af::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17; Wed, 27 May
+ 2020 01:41:00 +0000
+Received: from DM5PR12MB1849.namprd12.prod.outlook.com
+ ([fe80::7d3e:85b9:e3cb:40a7]) by DM5PR12MB1849.namprd12.prod.outlook.com
+ ([fe80::7d3e:85b9:e3cb:40a7%9]) with mapi id 15.20.3021.029; Wed, 27 May 2020
+ 01:41:00 +0000
+From:   Akshu Agrawal <akshu.agrawal@amd.com>
+Cc:     akshu.agrawal@amd.com, yuhsuan@chromium.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        alsa-devel@alsa-project.org (moderated list:SOUND - SOC LAYER / DYNAMIC
+        AUDIO POWER MANAGEM...), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] ASoC: AMD: Use mixer control to switch between DMICs
+Date:   Wed, 27 May 2020 07:10:16 +0530
+Message-Id: <20200527014023.2781-1-akshu.agrawal@amd.com>
+X-Mailer: git-send-email 2.20.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MA1PR01CA0122.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:35::16) To DM5PR12MB1849.namprd12.prod.outlook.com
+ (2603:10b6:3:107::23)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from akshu-HP-EliteBook-745-G4.dlink.router (122.171.58.15) by MA1PR01CA0122.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:35::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17 via Frontend Transport; Wed, 27 May 2020 01:40:51 +0000
+X-Mailer: git-send-email 2.20.1
+X-Originating-IP: [122.171.58.15]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: a1ce28d9-d455-4c33-dff9-08d801df01f1
+X-MS-TrafficTypeDiagnostic: DM5PR12MB2487:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR12MB2487E4722DFD45F888AAEF69F8B10@DM5PR12MB2487.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-Forefront-PRVS: 04163EF38A
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Hj/5Ig80nmprOpqa9PRyR8C1ZxA7PWvGiUIRKe9VBQL3AniuAhz4LZpSK2WMEdBHVB73ZO/+CmiCeudMwEVDEdtlkI7fwgwu1oLF6dqjG3sEcDUMhTjbbk1lQCyIrWKxl3rE0aLOqkaHPSOq6goCEJQH9TXLT2yUvNaOFHyPbm0QARvjeZw4/a43pddS7g6L8jO41mt20NSjgllfLmqRo+KXsh8CmhpzRgn3hBoXLzNQnM5pbh8WsT4HNPKgQ/xPiTqzA9WIwYGf6MfxGcTJfKKdXYd1X5wAzq1joUKK2cMMlc2PF2wfK4ZJD17XDPc9cmvNYs4IzHTMXGnyAzU12s0j3cf4zdHZzoIjafoW4vH9Ju5hj3Lw2o1eRlpamldO
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(346002)(39850400004)(376002)(366004)(396003)(8676002)(186003)(6512007)(4326008)(1076003)(8936002)(83380400001)(316002)(6666004)(36756003)(54906003)(6486002)(2906002)(478600001)(956004)(66556008)(26005)(5660300002)(44832011)(16526019)(2616005)(66476007)(66946007)(52116002)(109986005)(86362001)(6506007)(266003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: RyZOqEZIRBIkI8nAQut5NaXGaxc+vIzZoyF5YHYoEeYdKMjJEldl+sAtCbyfrTVgjyz1/ikK6JgommKyiWWPMcRzpkKpPX2qu12dWzzVP6c2zMJb2xgYSOk2a9Ag6Oq++rQ9LPEbHUQE2aC3Ldk6hkph+Hr6YSmSkOskD3XcAvJK4y3gC+KggfNLP80TIqlmE+gYPgnCn7KO96I3m1dXZKfPKVDmO/Y/FvGlmhWkT5Hwg/6iDCa358uDQRDmabE1lS0ZvLl8bgyjOVUUaYLn5Zg59OzbpDbWMQehO6katflHVY9MWoOTadx664qGJ3i10jg1WzEq0bBHugmtdQ5yqZcIV5Gu4vE3udB5BNl0G5uF6JEc1bIkyoXjvVJQ4kH/Q07QA/+AJj//RFHq4GrIOce9QZU/GE/Up+wD5nvZEFjcD/hm+zy1Z3mUy51DQqBcF/Z8Quj253T7v5T9cKRkz0CmHV5F4oUhEtXojUcAaj8=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a1ce28d9-d455-4c33-dff9-08d801df01f1
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2020 01:40:59.9056
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tMjDibMwlwAUA+4f99gy3r8wTSQEhbVk0PpjufyEXKCvGV80kEPqoDqkyUlO0klCPm7vHVFGEGHrRILU2cnfog==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2487
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-the call returns an error code. Thus a pairing decrement is needed
-on the error handling path to keep the counter balanced.
+Having mixer control to switch between DMICs prevents user to
+initiate capture simultaneously on both the DMIcs.
+Earlier 2 separate devices, one for each DMIC, gave an option of
+using them simultaneously, which is not supported.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
 ---
+ sound/soc/amd/acp3x-rt5682-max9836.c | 43 +++++++++++-----------------
+ 1 file changed, 16 insertions(+), 27 deletions(-)
 
-Changelog:
-
-v2: - Use pm_runtime_put_noidle() instead of
-      pm_runtime_put_autosuspend(). Fix 5 more
-      similar cases within this dirver.
----
- drivers/i2c/busses/i2c-stm32f7.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-index 330ffed011e0..822fd1f5b5ae 100644
---- a/drivers/i2c/busses/i2c-stm32f7.c
-+++ b/drivers/i2c/busses/i2c-stm32f7.c
-@@ -1620,8 +1620,10 @@ static int stm32f7_i2c_xfer(struct i2c_adapter *i2c_adap,
- 	f7_msg->smbus = false;
+diff --git a/sound/soc/amd/acp3x-rt5682-max9836.c b/sound/soc/amd/acp3x-rt5682-max9836.c
+index e499c00e0c66..19f55a814547 100644
+--- a/sound/soc/amd/acp3x-rt5682-max9836.c
++++ b/sound/soc/amd/acp3x-rt5682-max9836.c
+@@ -188,25 +188,27 @@ static int acp3x_ec_dmic0_startup(struct snd_pcm_substream *substream)
  
- 	ret = pm_runtime_get_sync(i2c_dev->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(i2c_dev->dev);
- 		return ret;
+ 	machine->cap_i2s_instance = I2S_BT_INSTANCE;
+ 	snd_soc_dai_set_bclk_ratio(codec_dai, 64);
+-	if (dmic_sel)
+-		gpiod_set_value(dmic_sel, 0);
+ 
+ 	return rt5682_clk_enable(substream);
+ }
+ 
+-static int acp3x_ec_dmic1_startup(struct snd_pcm_substream *substream)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_card *card = rtd->card;
+-	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+-	struct acp3x_platform_info *machine = snd_soc_card_get_drvdata(card);
++static int front_mic_enabled;
+ 
+-	machine->cap_i2s_instance = I2S_BT_INSTANCE;
+-	snd_soc_dai_set_bclk_ratio(codec_dai, 64);
+-	if (dmic_sel)
+-		gpiod_set_value(dmic_sel, 1);
++static int front_mic_get(struct snd_kcontrol *kcontrol,
++			 struct snd_ctl_elem_value *ucontrol)
++{
++	ucontrol->value.integer.value[0] = front_mic_enabled;
++	return 0;
++}
+ 
+-	return rt5682_clk_enable(substream);
++static int front_mic_set(struct snd_kcontrol *kcontrol,
++			 struct snd_ctl_elem_value *ucontrol)
++{
++	if (dmic_sel) {
++		front_mic_enabled = ucontrol->value.integer.value[0];
++		gpiod_set_value(dmic_sel, !front_mic_enabled);
 +	}
++	return 0;
+ }
  
- 	ret = stm32f7_i2c_wait_free_bus(i2c_dev);
- 	if (ret)
-@@ -1666,8 +1668,10 @@ static int stm32f7_i2c_smbus_xfer(struct i2c_adapter *adapter, u16 addr,
- 	f7_msg->smbus = true;
+ static void rt5682_shutdown(struct snd_pcm_substream *substream)
+@@ -229,11 +231,6 @@ static const struct snd_soc_ops acp3x_ec_cap0_ops = {
+ 	.shutdown = rt5682_shutdown,
+ };
  
- 	ret = pm_runtime_get_sync(dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(dev);
- 		return ret;
-+	}
+-static const struct snd_soc_ops acp3x_ec_cap1_ops = {
+-	.startup = acp3x_ec_dmic1_startup,
+-	.shutdown = rt5682_shutdown,
+-};
+-
+ SND_SOC_DAILINK_DEF(acp3x_i2s,
+ 	DAILINK_COMP_ARRAY(COMP_CPU("acp3x_i2s_playcap.0")));
+ SND_SOC_DAILINK_DEF(acp3x_bt,
+@@ -279,15 +276,6 @@ static struct snd_soc_dai_link acp3x_dai_5682_98357[] = {
+ 		.ops = &acp3x_ec_cap0_ops,
+ 		SND_SOC_DAILINK_REG(acp3x_bt, cros_ec, platform),
+ 	},
+-	{
+-		.name = "acp3x-ec-dmic1-capture",
+-		.stream_name = "Capture DMIC1",
+-		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+-				| SND_SOC_DAIFMT_CBS_CFS,
+-		.dpcm_capture = 1,
+-		.ops = &acp3x_ec_cap1_ops,
+-		SND_SOC_DAILINK_REG(acp3x_bt, cros_ec, platform),
+-	},
+ };
  
- 	ret = stm32f7_i2c_wait_free_bus(i2c_dev);
- 	if (ret)
-@@ -1767,8 +1771,10 @@ static int stm32f7_i2c_reg_slave(struct i2c_client *slave)
- 		return ret;
+ static const struct snd_soc_dapm_widget acp3x_widgets[] = {
+@@ -307,6 +295,7 @@ static const struct snd_kcontrol_new acp3x_mc_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
+ 	SOC_DAPM_PIN_SWITCH("Spk"),
+ 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++	SOC_SINGLE_BOOL_EXT("Front Mic", 0, front_mic_get, front_mic_set),
+ };
  
- 	ret = pm_runtime_get_sync(dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(dev);
- 		return ret;
-+	}
- 
- 	if (!stm32f7_i2c_is_slave_registered(i2c_dev))
- 		stm32f7_i2c_enable_wakeup(i2c_dev, true);
-@@ -1837,8 +1843,10 @@ static int stm32f7_i2c_unreg_slave(struct i2c_client *slave)
- 	WARN_ON(!i2c_dev->slave[id]);
- 
- 	ret = pm_runtime_get_sync(i2c_dev->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(i2c_dev->dev);
- 		return ret;
-+	}
- 
- 	if (id == 0) {
- 		mask = STM32F7_I2C_OAR1_OA1EN;
-@@ -2182,8 +2190,10 @@ static int stm32f7_i2c_regs_backup(struct stm32f7_i2c_dev *i2c_dev)
- 	struct stm32f7_i2c_regs *backup_regs = &i2c_dev->backup_regs;
- 
- 	ret = pm_runtime_get_sync(i2c_dev->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(i2c_dev->dev);
- 		return ret;
-+	}
- 
- 	backup_regs->cr1 = readl_relaxed(i2c_dev->base + STM32F7_I2C_CR1);
- 	backup_regs->cr2 = readl_relaxed(i2c_dev->base + STM32F7_I2C_CR2);
-@@ -2204,8 +2214,10 @@ static int stm32f7_i2c_regs_restore(struct stm32f7_i2c_dev *i2c_dev)
- 	struct stm32f7_i2c_regs *backup_regs = &i2c_dev->backup_regs;
- 
- 	ret = pm_runtime_get_sync(i2c_dev->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(i2c_dev->dev);
- 		return ret;
-+	}
- 
- 	cr1 = readl_relaxed(i2c_dev->base + STM32F7_I2C_CR1);
- 	if (cr1 & STM32F7_I2C_CR1_PE)
+ static struct snd_soc_card acp3x_card = {
 -- 
-2.17.1
+2.20.1
 
