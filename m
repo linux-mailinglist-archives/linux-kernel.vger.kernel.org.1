@@ -2,77 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5481E3D5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 11:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6541E3D6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 11:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727996AbgE0JPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 05:15:24 -0400
-Received: from mga14.intel.com ([192.55.52.115]:2801 "EHLO mga14.intel.com"
+        id S1728503AbgE0JRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 05:17:48 -0400
+Received: from mga12.intel.com ([192.55.52.136]:52630 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726600AbgE0JPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 05:15:23 -0400
-IronPort-SDR: cnGDxl3jRMnYfdI4wlawiljsnVz3dHyTTFSnu/srEniJteMbPZfeLdEQpBBE45Hod0Uxx/oz8R
- 6utRS9l7QH1Q==
+        id S1725820AbgE0JRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 05:17:47 -0400
+IronPort-SDR: EPJim9tSr0LXmvlOxmZmWr+63LG0lBTy6x26zTWWoUioO5ZC7r6+uVzh1rAOnj047fct0ylO8Q
+ NPZeVYCquLMg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 02:15:23 -0700
-IronPort-SDR: SF4e9Ud+NzqoSgOtLCWW0thQSwuv/BECHfAnvtDAcpsDAhHpFny/uY/6luXlxGJNppq1NgL8h+
- UvXH7gzK4b+Q==
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 02:17:46 -0700
+IronPort-SDR: 40oXLoq2PILk5e50dpXaB6hUneU0F+HlXUvD3DxEWqiiKhfzcf7eE1X1PvDXbUadDuvii9iRTR
+ PYV49oHaa5nA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,440,1583222400"; 
-   d="scan'208";a="284741187"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002.jf.intel.com with ESMTP; 27 May 2020 02:15:18 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1jds9h-009BXB-AC; Wed, 27 May 2020 12:15:21 +0300
-Date:   Wed, 27 May 2020 12:15:21 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     "Tanwar, Rahul" <rahul.tanwar@linux.intel.com>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, thierry.reding@gmail.com,
-        p.zabel@pengutronix.de, linux-pwm@vger.kernel.org,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, songjun.Wu@intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com
-Subject: Re: [PATCH v1 2/2] Add PWM driver for LGM
-Message-ID: <20200527091521.GH1634618@smile.fi.intel.com>
-References: <cover.1590132733.git.rahul.tanwar@linux.intel.com>
- <3c1d2343b034325dbc185ccd23a35b40a62a4e7b.1590132733.git.rahul.tanwar@linux.intel.com>
- <20200522085613.ktb2ruw2virj337v@pengutronix.de>
- <3a1f1e83-2d9d-ddbf-e2e6-9c8bab87372b@linux.intel.com>
+   d="scan'208";a="414138598"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 27 May 2020 02:17:44 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jdsBz-000Bjv-75; Wed, 27 May 2020 17:17:43 +0800
+Date:   Wed, 27 May 2020 17:16:46 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Zhu Lingshan <lingshan.zhu@intel.com>, mst@redhat.com,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        jasowang@redhat.com
+Cc:     kbuild-all@lists.01.org, lulu@redhat.com, dan.daly@intel.com,
+        cunming.liang@intel.com, Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: [RFC PATCH] vdpa: vhost_vdpa_poll_stop() can be static
+Message-ID: <20200527091646.GA80910@369e1fe990b8>
+References: <1590471145-4436-1-git-send-email-lingshan.zhu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3a1f1e83-2d9d-ddbf-e2e6-9c8bab87372b@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <1590471145-4436-1-git-send-email-lingshan.zhu@intel.com>
+X-Patchwork-Hint: ignore
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 02:28:53PM +0800, Tanwar, Rahul wrote:
-> On 22/5/2020 4:56 pm, Uwe Kleine-König wrote:
-> > On Fri, May 22, 2020 at 03:41:59PM +0800, Rahul Tanwar wrote:
 
-...
+Signed-off-by: kbuild test robot <lkp@intel.com>
+---
+ vdpa.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> > I'm a unhappy to have this in the PWM driver. The PWM driver is supposed
-> > to be generic and I think this belongs into a dedicated driver.
-> 
-> Well noted about all other review concerns. I will rework the driver in v2.
-> However, i am not very sure about the above point - of having a separate
-> dedicated driver for tach_work because its logic is tightly coupled with
-> this driver.
-
-Actually I agree with Uwe.
-Here is layering violation, i.e. provider and consumer in the same pot. It's
-not good from design perspective.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+index d3a2acafedecd4..5037ce7f48cd42 100644
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -287,12 +287,12 @@ static long vhost_vdpa_get_vring_num(struct vhost_vdpa *v, u16 __user *argp)
+ 
+ 	return 0;
+ }
+-void vhost_vdpa_poll_stop(struct vhost_virtqueue *vq)
++static void vhost_vdpa_poll_stop(struct vhost_virtqueue *vq)
+ {
+ 	vhost_poll_stop(&vq->poll);
+ }
+ 
+-int vhost_vdpa_poll_start(struct vhost_virtqueue *vq)
++static int vhost_vdpa_poll_start(struct vhost_virtqueue *vq)
+ {
+ 	struct vhost_poll *poll = &vq->poll;
+ 	struct file *file = vq->kick;
+@@ -747,7 +747,7 @@ static int vhost_vdpa_poll_worker(wait_queue_entry_t *wait, unsigned int mode,
+ 	return 0;
+ }
+ 
+-void vhost_vdpa_poll_init(struct vhost_dev *dev)
++static void vhost_vdpa_poll_init(struct vhost_dev *dev)
+ {
+ 	struct vhost_virtqueue *vq;
+ 	struct vhost_poll *poll;
