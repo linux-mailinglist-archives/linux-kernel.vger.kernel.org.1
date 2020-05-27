@@ -2,113 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2F51E4564
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F701E456A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729867AbgE0ON0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 10:13:26 -0400
-Received: from out29-195.mail.aliyun.com ([115.124.29.195]:51036 "EHLO
-        out29-195.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726069AbgE0ONZ (ORCPT
+        id S1729924AbgE0OOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 10:14:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729302AbgE0OOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 10:13:25 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07963113|-1;CH=blue;DM=|OVERLOAD|false|;DS=CONTINUE|ham_regular_dialog|0.0599157-0.000270983-0.939813;FP=0|0|0|0|0|-1|-1|-1;HT=e01a16367;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.HePcScp_1590588801;
-Received: from 192.168.10.205(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.HePcScp_1590588801)
-          by smtp.aliyun-inc.com(10.147.42.241);
-          Wed, 27 May 2020 22:13:22 +0800
-Subject: Re: [PATCH v10 3/6] dt-bindings: clock: Add X1830 bindings.
-To:     Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        mturquette@baylibre.com, robh+dt@kernel.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com, paul@crapouillou.net
-References: <20200526144044.71413-1-zhouyanjie@wanyeetech.com>
- <20200526144044.71413-5-zhouyanjie@wanyeetech.com>
- <159056716225.88029.7227987261941853085@swboyd.mtv.corp.google.com>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <0b9b0be5-ed49-d113-6296-787f496f241a@wanyeetech.com>
-Date:   Wed, 27 May 2020 22:13:21 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.3.0
+        Wed, 27 May 2020 10:14:01 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5422C08C5C2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 07:14:00 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id bs4so20367289edb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 07:14:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Z7qZkCC78niGrQpOK/h//rZ5fVXVPMkzzzEIQT+ASg4=;
+        b=E9a/2r2LugVZ2pVpjEfw72sCimpeQVVL5F01md2mkXq5kIwfx+ANjZTMxJhhGmNMcb
+         uvpUEBFiAcT7WWt1NJ3/xo+pNhmHfefhQgOJgn75pcG7L2bYxZ0WzqjPwFvJWntc0u7V
+         cIua37DqSvi5ssiggshMyNnicNHxevhBLVv4X86na+C7yN7kLUNvDBN1DGCuUOQTx6V/
+         w34pBviMlcsZz2gP1LwrG3I3i7DTNjzCwO2FGYlr8TVGPihuD3zkRBr0klTJLtFSC64C
+         hseAe6ym8CMhq2DLqvzSj+qvS93Cm2QefF8ecIzKj4TMYJIlqxHdkEhoKdpklwNHRweN
+         HrLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Z7qZkCC78niGrQpOK/h//rZ5fVXVPMkzzzEIQT+ASg4=;
+        b=QLr+jXabzmRFhA8r5nzGW2fl5iHwqDvfLiCSOt1aHA0VwblLb4QfP5RwXEJQzTIz9u
+         PTWMrVJNDgtzTH1FQf9qJ3TN/jjy2QCTHqqwkaqe5cKfmV5cICzMFb0HCXQJA38ISG5+
+         NJeYxaou/qgqDowa8f049AqTvhEiiLXaDyGImFrkHP7dT6sc/vmWzLzgli1fybDDedGQ
+         qBMPsTRQbbWlM1ZmlIYyln+wRmRnO6zrnEYPcBQ7+/Uz5tUBpR7NLhDYdg08yqYohtPw
+         3NHh9gVSr71xl3fhCT5pWwyuKHTNUyKn0lSsD6+KCie9BmLL+9mJu2x7oXv+5nt5XxnB
+         GtgQ==
+X-Gm-Message-State: AOAM532WkaMFR/vha9sFec+x5/+JZUqzlNLgtYqPOa8Z3a4co4VjOMQI
+        eEHRRE0eC+iUxNgCU1OqEWt8tkiLb6gfsz2h+Og=
+X-Google-Smtp-Source: ABdhPJz1k+u7Yq2xmwJp+GMo+/XvqPt2fCQywa+3CVoyngl6LmCenKKWVIRK5925vrB4QehKvPNpTv89BiXnr3mMpvQ=
+X-Received: by 2002:a05:6402:14d5:: with SMTP id f21mr24344920edx.327.1590588839521;
+ Wed, 27 May 2020 07:13:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <159056716225.88029.7227987261941853085@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Received: by 2002:a17:906:c449:0:0:0:0 with HTTP; Wed, 27 May 2020 07:13:59
+ -0700 (PDT)
+Reply-To: tofilbaman@gmail.com
+From:   Tofil Bama <aliftomarn5@gmail.com>
+Date:   Wed, 27 May 2020 07:13:59 -0700
+Message-ID: <CABvER2TifbifeNF+pidwz3aZStJ8mWsKUQ5wKWaHseDKLn+DMw@mail.gmail.com>
+Subject: REPLY IMMEDIATELY.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+Dear,
 
-I may have misunderstood what you meant (I did not notice that you have 
-taken other v10 patches, so I sent the entire v11 series by mistake), do 
-I need to resend the split bindings patches separately again?
+My name is Mr Alif Tomar, I am the Bill and Exchange (assistant)
+Manager of Bank of Africa Ouagadougou, Burkina Faso. In my department
+I discovered an abandoned sum of eighteen million three hundred
+thousand United State of American dollars (18.3MILLION USA DOLLARS) in
+an account that belongs to one of our foreign customer who died in
+airline that crashed on 4th October 2001.
 
-Thanks and best regards!
+Since I got information about his death I have been expecting his next
+of kin to come over and claim his money because we can not release it
+unless somebody applies for it as the next of kin or relation to the
+deceased as indicated in our banking guidelines, but unfortunately we
+learnt that all his supposed next of kin or relation died alongside
+with him in the plane crash leaving nobody behind for the claim. It is
+therefore upon this discovery that I decided to make this business
+proposal to you and release the money to you as next of kin or
+relation to the deceased for safety and subsequent disbursement since
+nobody is coming for it and I don't want the money to go into the bank
+treasury as unclaimed bill.
 
-在 2020/5/27 下午4:12, Stephen Boyd 写道:
-> Quoting 周琰杰 (Zhou Yanjie) (2020-05-26 07:40:41)
->> Add the clock bindings for the X1830 Soc from Ingenic.
->>
->> Signed-off-by: \u5468\u7430\u6770 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->> Reviewed-by: Rob Herring <robh@kernel.org>
->> ---
->>
->> Notes:
->>      v2->v3:
->>      Adjust order from [3/5] in v2 to [4/5] in v3.
->>      
->>      v3->v4:
->>      Adjust order from [4/5] in v3 to [3/4] in v4.
->>      
->>      v4->v5:
->>      Rebase on top of kernel 5.6-rc1.
->>      
->>      v5->v6:
->>      Add missing part of X1830's CGU.
->>      
->>      v6->v7:
->>      No change.
->>      
->>      v7->v8:
->>      Rebase on top of linux-next.
->>      
->>      v8->v9:
->>      No change.
->>      
->>      v9->v10:
->>      Add missing "X1830_CLK_TCU".
->>
->>   .../devicetree/bindings/clock/ingenic,cgu.yaml     |  2 +
->>   include/dt-bindings/clock/x1830-cgu.h              | 55 ++++++++++++++++++++++
->>   2 files changed, 57 insertions(+)
->>   create mode 100644 include/dt-bindings/clock/x1830-cgu.h
->>
->> diff --git a/Documentation/devicetree/bindings/clock/ingenic,cgu.yaml b/Documentation/devicetree/bindings/clock/ingenic,cgu.yaml
-> This file is in Rob's DT tree staged for the next release, not in the
-> clk tree. Can you split this patch into two, one for the compatible
-> update and another for the header file update and send again? Then Rob
-> can pick up the yaml file change and I can pick up the header file
-> change.
->
->> index 0281cd1d7e1b..a952d5811823 100644
->> --- a/Documentation/devicetree/bindings/clock/ingenic,cgu.yaml
->> +++ b/Documentation/devicetree/bindings/clock/ingenic,cgu.yaml
->> @@ -25,6 +25,7 @@ select:
->>             - ingenic,jz4770-cgu
->>             - ingenic,jz4780-cgu
->>             - ingenic,x1000-cgu
->> +          - ingenic,x1830-cgu
->>     required:
->>       - compatible
->>   
->> @@ -51,6 +52,7 @@ properties:
->>           - ingenic,jz4770-cgu
->>           - ingenic,jz4780-cgu
->>           - ingenic,x1000-cgu
->> +        - ingenic,x1830-cgu
->>         - const: simple-mfd
->>       minItems: 1
->>
+You will be entitled with 40% of the total sum while 60% will be for
+me after which I will visit your Country to invest my own share when
+the fund is successfully transferred into your account, Please I would
+like you to keep this transaction confidential and as a top secret as
+you may wish to know that I am a bank official.
+
+Yours sincerely,
+Mr Alif Tomar.
