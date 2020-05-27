@@ -2,115 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 057C91E45C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 137A41E45C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389174AbgE0OZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 10:25:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43884 "EHLO
+        id S2389193AbgE0O0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 10:26:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389166AbgE0OZv (ORCPT
+        with ESMTP id S2389036AbgE0O0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 10:25:51 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C377C08C5C2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 07:25:51 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id x13so9541589wrv.4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 07:25:50 -0700 (PDT)
+        Wed, 27 May 2020 10:26:21 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B33DC08C5C1;
+        Wed, 27 May 2020 07:26:21 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id 131so3509481pfv.13;
+        Wed, 27 May 2020 07:26:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=fDQQL5F7NUmi63rPrswmsLUk/cVgqyfGJGxuaKIuerc=;
-        b=ZCfDeGHgkwr9TFZB7Uml9rT03xtCxGugZtuvCoEluYZeBMY+Zqnsl0kcvlkhXRNGqz
-         X/wqEce2QJwMvlOEWvyZCRr5ThtZLuPdaeJpQ4tRravGdAhTpNCG3RidS6TR6FEK7jQe
-         xgbabj5Rbgy+aHWCIAeoT1EIhIud36GwUbMiLV8IenWT3D+J6P+7Nbh58l4sHwX8yxGm
-         V5B4IbAZe2+mr28zJCRks0RPTruIX6rnWi8Hja7ozZyFnX1h37SiL5JvkzLoK0JQqoJA
-         bfw8rb95Fk+XKZAV2iKSSfW5p/3nGTKi51epUNCGCmJHz4vMFfXRpzm8OUlTvTnI1CnB
-         uClg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zxT1CUhQy7++N7J2uEuPxuFfU6PCHQ/tHRlkWb3usUM=;
+        b=q8dfz6chvwikpsccikn81Com/PJ9/ujiLNqcTif2E/2FoveZ5+q1k908+cV5Ol4u5N
+         pzIIuASzoed2qsWojrwt4YGsWQlgnD9K46B/VExD/nJ4ABpOBmS0s6dXILeWoFa8Hanh
+         o4V1w4L5FoxbSAPAtQz8K2e4zP42/zQhRQ5fZ1U1QCpeGWMxhlyvpa5mkhrTEQNiFcWq
+         X6kf0H0WaYAJD+OEv1vM33n946Q+I8u0frhaREc809ycZ4JMYjPy54KHNAFX9q9XIDxz
+         kk2K5VYoaQsGSH5GN6D2DDEfEP2FJlDvFurdFkZGfFsS3LSFcFR1TogbEsjuPDrhNBdt
+         s5GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fDQQL5F7NUmi63rPrswmsLUk/cVgqyfGJGxuaKIuerc=;
-        b=GTCpzYsNk4oIX2R6sco1rcvgZ3m9TU//ukek/4IkQUVKbQh0siQ8MH0cqtDuE6dSjV
-         clQzepnOPLvoUbsaxxH5w42Y8WRG2E9ieWdOtS1BO6FleQpldYl1igQ567cagjBin+Qj
-         nQU6sslPfen2QD5V8J8Ma4oYSlxmnoEI+/CvvUSzlVem7U2BxBu93CgUmhix5CgXh6P4
-         i0qzOo452QyofpjyPa5gtDboQyUd3bOr+lHy5QwpFYo4I40xJOb12xofV7NqBzmIB/pU
-         dZTkZnEBaW3BCArmDmC7nJHXGWGDNS7CGMp6xN+Mz4KEx3MXr3s6HME9P6d/Xv2cPN0A
-         0+aA==
-X-Gm-Message-State: AOAM531cwlSZKO/WvvjN+8Jmsh+sIZ5ktdA6CQb1LiOGdnXLPz2EroSw
-        9pp5ORhdL1mg/M2b/+oZMIYeLL47Ax8x5w==
-X-Google-Smtp-Source: ABdhPJxI0zSWLwdelkSKlMdMpkW7YNtk+9tKet+U4aBt7UDbNi/61LMkcogDnArtro33FkI4TMvLIw==
-X-Received: by 2002:a5d:4488:: with SMTP id j8mr17764483wrq.242.1590589549429;
-        Wed, 27 May 2020 07:25:49 -0700 (PDT)
-Received: from macbook.local ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id i21sm3110144wml.5.2020.05.27.07.25.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 May 2020 07:25:48 -0700 (PDT)
-Subject: Re: [PATCH] drm/msm/dpu: avoid open-coded 64-bit division
-To:     Arnd Bergmann <arnd@arndb.de>, Rob Clark <robdclark@chromium.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>
-Cc:     Matthias Kaehlcke <mka@chromium.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Evan Green <evgreen@chromium.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200527133543.599948-1-arnd@arndb.de>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Message-ID: <9f910f55-1057-8c44-ceda-e0593fb13ffe@linaro.org>
-Date:   Wed, 27 May 2020 17:25:46 +0300
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zxT1CUhQy7++N7J2uEuPxuFfU6PCHQ/tHRlkWb3usUM=;
+        b=owZ8H9r/J4H+KgnX3l0uX2WnZD9VgAdJpw4Dp59/Z/GSLIo56/vj4tK6f4IlhY22MN
+         dGbYZYn6378yjrbU4jVEtKqNwsmLM6YbMrcpbgNV2CKepMCp9FYRlaEo1T26cyzAO9OH
+         nkHE+YdKcp9CacBeGX22/yQeB5c4Ky8HCxOYVe1AI6r4SYtXk2GBYSsFYkMvIMCkaD9b
+         pK7idBF4sfy9qEmEDWMei67TPyGtAgbqWf1geHLpK+WjYAkf2JHjmjP2rn6JarkOlNSv
+         13uX+AunazH/OpWfvbGWq/+5at8+RyUzLYLswBXe3nL3BuEnJtTVBitSX+DbwsAlzqKS
+         annw==
+X-Gm-Message-State: AOAM5335n4qLCDxYDzEo8LsCfeHVTgJRzl3QrX07FHDVm2Dd6NEUIESH
+        CT8HFfrQHluJYCNaQasZKD4=
+X-Google-Smtp-Source: ABdhPJzd+fsPgc2gE8SP4AB5eBntBpGk3JVixRSvF/psLPMiB4b6157LuZisq5B/zGRGa3gqZag6hw==
+X-Received: by 2002:a63:9255:: with SMTP id s21mr4197708pgn.363.1590589580622;
+        Wed, 27 May 2020 07:26:20 -0700 (PDT)
+Received: from localhost ([144.34.194.82])
+        by smtp.gmail.com with ESMTPSA id 5sm2251982pfp.182.2020.05.27.07.26.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 27 May 2020 07:26:20 -0700 (PDT)
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     corbet@lwn.net, gregkh@linuxfoundation.org,
+        michal.simek@xilinx.com, wsa+renesas@sang-engineering.com,
+        linus.walleij@linaro.org, linux-doc@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Dejin Zheng <zhengdejin5@gmail.com>,
+        Wolfram Sang <wsa@the-dreams.de>
+Subject: [PATCH v3 1/2] drivers: provide devm_platform_request_irq()
+Date:   Wed, 27 May 2020 22:26:10 +0800
+Message-Id: <20200527142611.9006-1-zhengdejin5@gmail.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-In-Reply-To: <20200527133543.599948-1-arnd@arndb.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.05.20 16:35, Arnd Bergmann wrote:
-> 64-bit integer division is normally not allowed in the kernel
-> because of the large overhead on 32-bit machines:
-> 
-> drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.o: in function `_dpu_core_perf_crtc_update_bus':
-> dpu_core_perf.c:(.text+0x810): undefined reference to `__aeabi_uldivmod'
-> 
-> The function already contains a call to do_div(), so I assume this
-> is never called in a performance critical context, and we can
-> use div_u64 for the second one as well.
-> 
-> Fixes: 04d9044f6c57 ("drm/msm/dpu: add support for clk and bw scaling for display")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+It will call devm_request_irq() after platform_get_irq() function
+in many drivers, sometimes, it is not right for the error handling
+of these two functions in some drivers. so provide this function
+to simplify the driver.
 
-Reviewed-by: Georgi Djakov <georgi.djakov@linaro.org>
+Cc: Michal Simek <michal.simek@xilinx.com>
+Cc: Wolfram Sang <wsa@the-dreams.de>
+Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+---
+v2 -> v3:
+	- add devm_platform_request_irq() to devres.rst by Grygorii's
+	  suggestion.
+v1 -> v2:
+	- The patch content has not changed. just resend it by this discussion:
+	  https://patchwork.ozlabs.org/project/linux-i2c/patch/20200520144821.8069-1-zhengdejin5@gmail.com/
 
-Thanks for the patch Arnd. I just noticed this in linux-next.
+ .../driver-api/driver-model/devres.rst        |  1 +
+ drivers/base/platform.c                       | 33 +++++++++++++++++++
+ include/linux/platform_device.h               |  4 +++
+ 3 files changed, 38 insertions(+)
 
-Rob, could you please take it into msm-next, as the patch which
-triggers the issue is also there?
-
-Thanks,
-Georgi
-
-> ---
->  include/linux/interconnect.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/interconnect.h b/include/linux/interconnect.h
-> index 3a63d98613fc..8279fe9b2082 100644
-> --- a/include/linux/interconnect.h
-> +++ b/include/linux/interconnect.h
-> @@ -11,7 +11,7 @@
->  #include <linux/types.h>
->  
->  /* macros for converting to icc units */
-> -#define Bps_to_icc(x)	((x) / 1000)
-> +#define Bps_to_icc(x)	div_u64((x), 1000)
->  #define kBps_to_icc(x)	(x)
->  #define MBps_to_icc(x)	((x) * 1000)
->  #define GBps_to_icc(x)	((x) * 1000 * 1000)
-> 
+diff --git a/Documentation/driver-api/driver-model/devres.rst b/Documentation/driver-api/driver-model/devres.rst
+index 644078332354..89681264ee2c 100644
+--- a/Documentation/driver-api/driver-model/devres.rst
++++ b/Documentation/driver-api/driver-model/devres.rst
+@@ -325,6 +325,7 @@ IRQ
+   devm_request_any_context_irq()
+   devm_request_irq()
+   devm_request_threaded_irq()
++  devm_platform_request_irq()
+   devm_irq_alloc_descs()
+   devm_irq_alloc_desc()
+   devm_irq_alloc_desc_at()
+diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+index c0d0a5490ac6..1d2fd1ea3bc5 100644
+--- a/drivers/base/platform.c
++++ b/drivers/base/platform.c
+@@ -275,6 +275,39 @@ int platform_irq_count(struct platform_device *dev)
+ }
+ EXPORT_SYMBOL_GPL(platform_irq_count);
+ 
++/**
++ * devm_platform_request_irq - get an irq and allocate an interrupt
++ *				line for a managed device
++ * @pdev: platform device
++ * @num: IRQ number index
++ * @irq: get an IRQ for a device if irq != NULL
++ * @handler: function to be called when the IRQ occurs
++ * @irqflags: interrupt type flags
++ * @devname: an ascii name for the claiming device, dev_name(dev) if NULL
++ * @dev_id: a cookie passed back to the handler function
++ *
++ * Return: zero on success, negative error number on failure.
++ */
++int devm_platform_request_irq(struct platform_device *pdev, unsigned int num,
++		unsigned int *irq, irq_handler_t handler,
++		unsigned long irqflags, const char *devname, void *dev_id)
++{
++	int tmp_irq, ret;
++
++	tmp_irq = platform_get_irq(pdev, num);
++	if (tmp_irq < 0)
++		return tmp_irq;
++
++	ret = devm_request_irq(&pdev->dev, tmp_irq, handler, irqflags,
++				devname, dev_id);
++	if (ret < 0)
++		dev_err(&pdev->dev, "can't request IRQ\n");
++	else if (irq != NULL)
++		*irq = tmp_irq;
++	return ret;
++}
++EXPORT_SYMBOL_GPL(devm_platform_request_irq);
++
+ /**
+  * platform_get_resource_byname - get a resource for a device by name
+  * @dev: platform device
+diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
+index 77a2aada106d..d94652deea5c 100644
+--- a/include/linux/platform_device.h
++++ b/include/linux/platform_device.h
+@@ -11,6 +11,7 @@
+ #define _PLATFORM_DEVICE_H_
+ 
+ #include <linux/device.h>
++#include <linux/interrupt.h>
+ 
+ #define PLATFORM_DEVID_NONE	(-1)
+ #define PLATFORM_DEVID_AUTO	(-2)
+@@ -70,6 +71,9 @@ devm_platform_ioremap_resource_byname(struct platform_device *pdev,
+ extern int platform_get_irq(struct platform_device *, unsigned int);
+ extern int platform_get_irq_optional(struct platform_device *, unsigned int);
+ extern int platform_irq_count(struct platform_device *);
++extern int devm_platform_request_irq(struct platform_device *pdev,
++		unsigned int num, unsigned int *irq, irq_handler_t handler,
++		unsigned long irqflags, const char *devname, void *dev_id);
+ extern struct resource *platform_get_resource_byname(struct platform_device *,
+ 						     unsigned int,
+ 						     const char *);
+-- 
+2.25.0
 
