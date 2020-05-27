@@ -2,111 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FECB1E4C7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 19:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95F91E4CA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391768AbgE0R6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 13:58:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388544AbgE0R6x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 13:58:53 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE87C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 10:58:52 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id nu7so1866114pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 10:58:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j2dXb/W+FFUUQdJGDBXGOrcBx0qp8UzbDlrm8pA5EtY=;
-        b=ICaX7NlLLWUb8V6MIhHgmU+GSEus1nQ+B+yewGf+yzKsawUFBmphgWTlaoQOLpQR9q
-         /jpDP6KtiNX4NO/6KA9kMKBev6liRbJ1BGVRzSnCHdMX2rfu7/i55zNOtMzAn8bxArUX
-         jViDgG2CxALY1Fk7jf/Ink91WecuSjAZTOCDq/zuNS/Ajq/hHLCW/OPFw37M5dCymmLt
-         1uIIEeqmBpTDpYS0G9Mu1eu6NzrDAAFQYC3gG97e07ChVOaHb6vqNL5spkY7biIj3Wn9
-         3lTgVfuyc0YNgMlqs8LVPxcWo9Py6mLoZk495QfZBqI8oA5pJKVoK2SD5/WJJcdl+63p
-         /aNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j2dXb/W+FFUUQdJGDBXGOrcBx0qp8UzbDlrm8pA5EtY=;
-        b=l5KiKl3gWp4ndw3Xh7WObJddcBqRHobeadMPLbpT7HvNPqtbrR0939UTRJtaUzpj2z
-         DovVv9gVbLjO3mv06VRT2xt3b78DJ/VPAc7CGYs2pn34PQ4qly6YYQIZe3ZDJrU6BI/o
-         3yBAF+I2/6h+R++k/InBV1A4fA50vtF4HroZf2lNNDrYjFKVTYUcsyunp/ckqkBuU5At
-         hRfEuD1dPRtN8wfW+xjmLujSTfiUX/7DuxGxHJQeZFU02VZMz/T6WzsrRRMSIdK7p3mg
-         v7CK4ySMqiuRQDeNkp8eNbYpDhu4445fgMNsqW9uzFDDKBjhDjm5tmVQDuUfzs3lyUxK
-         4OHg==
-X-Gm-Message-State: AOAM531G6U/kShxlsE13JNYTW2X76M34NXuDYrBPWY2u9Z4rYRneTPxj
-        +eHV4MNZxeUWQJG7JBNB+mtvENmZZ1yaoHVmseuAOg==
-X-Google-Smtp-Source: ABdhPJylF3XJCAEDnd35ICRnynXaDjY473+4M+Syt0LKUEBzmZslJCsycy4dHuwtLGEcgLfbNNR3IHlLI1zsLnhDg4I=
-X-Received: by 2002:a17:90b:4c47:: with SMTP id np7mr6511155pjb.101.1590602332138;
- Wed, 27 May 2020 10:58:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200526173117.155339-1-ndesaulniers@google.com>
- <159052247565.23781.7800427985507723263.b4-ty@kernel.org> <20200527135322.GU5031@arm.com>
-In-Reply-To: <20200527135322.GU5031@arm.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 27 May 2020 10:58:41 -0700
-Message-ID: <CAKwvOdnSby=NaRG_xazeOOMXjzPu9FAuAPZW85FU0M8-+pA53Q@mail.gmail.com>
-Subject: Re: [PATCH] arm64: vdso32: force vdso32 to be compiled as -marm
-To:     Dave Martin <Dave.Martin@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Stephen Boyd <swboyd@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Manoj Gupta <manojgupta@google.com>,
-        Luis Lozano <llozano@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729008AbgE0SDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 14:03:23 -0400
+Received: from mga18.intel.com ([134.134.136.126]:31564 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726069AbgE0SDX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 14:03:23 -0400
+IronPort-SDR: NAzBuRSK0b3F13gBb5LWlFsHWKqjqFP5Rhnp6MArYJ9fOXr4cjbjZlvhhNu79jjrn5q1jET5Bw
+ OSfKMcq8HWBw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 11:03:22 -0700
+IronPort-SDR: zOzprujK1m7EQvx35bqerN8Q1Xorg5edMghLJEuR85os/fmxxky0tlOX5J6o/5v2dNNbDj0jaI
+ Ir492gQENQrQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,442,1583222400"; 
+   d="scan'208";a="266925675"
+Received: from ahunter-desktop.fi.intel.com ([10.237.72.157])
+  by orsmga003.jf.intel.com with ESMTP; 27 May 2020 11:03:20 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] perf script: Fix --call-trace for Intel PT
+Date:   Wed, 27 May 2020 21:02:50 +0300
+Message-Id: <20200527180250.16723-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.17.1
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 6:53 AM Dave Martin <Dave.Martin@arm.com> wrote:
->
-> On Tue, May 26, 2020 at 09:45:05PM +0100, Will Deacon wrote:
-> > On Tue, 26 May 2020 10:31:14 -0700, Nick Desaulniers wrote:
-> > > Custom toolchains that modify the default target to -mthumb cannot
->
-> It's probably too late to water this down, but it's unfortunate to have
-> this comment in the upstream commit history.
->
-> It's not constructive to call the native compiler configuration of
-> major distros for many years a "custom" toolchain.  Unmodified GCC has
+Make process_attr() respect -F-ip, noting also that the condition in
+process_attr() (callchain_param.record_mode != CALLCHAIN_NONE) is always
+true so test the sample type directly.
 
-I don't think you know which toolchain or distro I'm referring to. ;)
+Example:
 
-> had a clean configure option for this for a very long time; it's not
-> someone's dirty hack.  (The wisdom of armhf's choice of -mthumb might
-> be debated, but it is well established.)
->
-> Ignoring the triplet and passing random options to a compiler in the
-> hopes that it will do the right thing for an irregular usecase has never
-> been reliable.  Usecases don't get much more irregular than building
-> vdso32.
->
-> arch/arm has the proper options in its Makefiles.
->
-> This patch is a kernel bugfix, plain and simple.
+  Before:
 
-Borrowing from the Zen of Python: Explicit is better than Implicit.
-Better not to rely on implicit defaults that may be changed at configure time.
+    $ perf record -e intel_pt//u uname
+    Linux
+    [ perf record: Woken up 1 times to write data ]
+    [ perf record: Captured and wrote 0.033 MB perf.data ]
+    $ perf script --call-trace | head -5
+           uname 30992 [006] 41758.313696574:  cbr: 42 freq: 4219 MHz (156%)                    0 [unknown] ([unknown]                                         )
+           uname 30992 [006] 41758.313696907: _start                               7f71792c4100 _start+0x0 (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )
+           uname 30992 [006] 41758.313699574:     _dl_start                        7f71792c4103 _start+0x3 (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )
+           uname 30992 [006] 41758.313699907:     _dl_start                        7f71792c4e18 _dl_start+0x28 (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )
+           uname 30992 [006] 41758.313701574:     _dl_start                        7f71792c5128 _dl_start+0x338 (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )
 
-> Does this need to go to stable?
+  After:
 
-Oh, probably.  Need to wait until it hits mainline now.  I don't think
-the compat vdso series was backported to 5.4, but IIUC stable
-maintains a branch for the latest release, which would have that
-series.
+    $ perf script --call-trace | head -5
+           uname 30992 [006] 41758.313696574:  cbr: 42 freq: 4219 MHz (156%)
+           uname 30992 [006] 41758.313696907: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )      _start
+           uname 30992 [006] 41758.313699574: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )          _dl_start
+           uname 30992 [006] 41758.313699907: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )          _dl_start
+           uname 30992 [006] 41758.313701574: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )          _dl_start
 
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Fixes: f288e8e1aa4f ("perf script: Enable IP fields for callchains")
+---
+ tools/perf/builtin-script.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+index 5bdd1a393399..3249ead2deef 100644
+--- a/tools/perf/builtin-script.c
++++ b/tools/perf/builtin-script.c
+@@ -167,6 +167,7 @@ static struct {
+ 	u64 fields;
+ 	u64 invalid_fields;
+ 	u64 user_set_fields;
++	u64 user_unset_fields;
+ } output[OUTPUT_TYPE_MAX] = {
+ 
+ 	[PERF_TYPE_HARDWARE] = {
+@@ -2132,10 +2133,18 @@ static int process_attr(struct perf_tool *tool, union perf_event *event,
+ 	sample_type = perf_evlist__combined_sample_type(evlist);
+ 	callchain_param_setup(sample_type);
+ 
+-	/* Enable fields for callchain entries, if it got enabled. */
+-	if (callchain_param.record_mode != CALLCHAIN_NONE) {
+-		output[output_type(evsel->core.attr.type)].fields |= PERF_OUTPUT_IP |
+-								     PERF_OUTPUT_SYM;
++	/* Enable fields for callchain entries */
++	if (symbol_conf.use_callchain &&
++	    (sample_type & PERF_SAMPLE_CALLCHAIN ||
++	     sample_type & PERF_SAMPLE_BRANCH_STACK ||
++	     (sample_type & PERF_SAMPLE_REGS_USER &&
++	      sample_type & PERF_SAMPLE_STACK_USER))) {
++		int type = output_type(evsel->core.attr.type);
++
++		if (!(output[type].user_unset_fields & PERF_OUTPUT_IP))
++			output[type].fields |= PERF_OUTPUT_IP;
++		if (!(output[type].user_unset_fields & PERF_OUTPUT_SYM))
++			output[type].fields |= PERF_OUTPUT_SYM;
+ 	}
+ 	set_print_ip_opts(&evsel->core.attr);
+ 	return 0;
+@@ -2704,9 +2713,11 @@ static int parse_output_fields(const struct option *opt __maybe_unused,
+ 					if (change == REMOVE) {
+ 						output[j].fields &= ~all_output_options[i].field;
+ 						output[j].user_set_fields &= ~all_output_options[i].field;
++						output[j].user_unset_fields |= all_output_options[i].field;
+ 					} else {
+ 						output[j].fields |= all_output_options[i].field;
+ 						output[j].user_set_fields |= all_output_options[i].field;
++						output[j].user_unset_fields &= ~all_output_options[i].field;
+ 					}
+ 					output[j].user_set = true;
+ 					output[j].wildcard_set = true;
 -- 
-Thanks,
-~Nick Desaulniers
+2.17.1
+
