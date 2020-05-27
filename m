@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254EE1E39B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 08:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF2F1E39BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 09:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728945AbgE0GyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 02:54:21 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:45820 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728111AbgE0GyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 02:54:21 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 2983E3FD399042156E76;
-        Wed, 27 May 2020 14:54:19 +0800 (CST)
-Received: from [127.0.0.1] (10.67.102.197) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Wed, 27 May 2020
- 14:54:14 +0800
-To:     <aarcange@redhat.com>, <akpm@linux-foundation.org>,
-        <cracauer@cons.org>, <dplotnikov@virtuozzo.com>,
-        <gokhale2@llnl.gov>, <hannes@cmpxchg.org>, <hughd@google.com>,
-        <jglisse@redhat.com>, <kirill@shutemov.name>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <maxime.coquelin@redhat.com>, <mcfadden8@llnl.gov>,
-        <mcgrof@kernel.org>, <mgorman@suse.de>, <mike.kravetz@oracle.com>,
-        <pbonzini@redhat.com>, <peterx@redhat.com>,
-        <rppt@linux.vnet.ibm.com>, <xemul@virtuozzo.com>,
-        <keescook@chromium.org>
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-Subject: Re: [PATCH v2 1/1] userfaultfd/sysctl: add
- vm.unprivileged_userfaultfd
-Message-ID: <3b64de85-beb4-5a07-0093-cad6e8f2a8d8@huawei.com>
-Date:   Wed, 27 May 2020 14:54:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1728848AbgE0HBD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 May 2020 03:01:03 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:62379 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726025AbgE0HBC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 03:01:02 -0400
+X-Originating-IP: 90.76.143.236
+Received: from localhost (lfbn-tou-1-1075-236.w90-76.abo.wanadoo.fr [90.76.143.236])
+        (Authenticated sender: antoine.tenart@bootlin.com)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id F1F1940009;
+        Wed, 27 May 2020 07:00:59 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.197]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200526170100.GM768009@lunn.ch>
+References: <20200526162256.466885-1-antoine.tenart@bootlin.com> <20200526170100.GM768009@lunn.ch>
+To:     Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCH net-next 0/4] net: phy: mscc-miim: reduce waiting time between MDIO transactions
+From:   Antoine Tenart <antoine.tenart@bootlin.com>
+Cc:     davem@davemloft.net, f.fainelli@gmail.com, hkallweit1@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alexandre.belloni@bootlin.com, thomas.petazzoni@bootlin.com,
+        allan.nielsen@microchip.com
+Message-ID: <159056285904.265465.1821646548974311512@kwain>
+Date:   Wed, 27 May 2020 09:00:59 +0200
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Andrew,
 
-On Tue, Mar 19, 2019 at 11:07:22AM +0800, Peter Xu wrote:
- > Add a global sysctl knob "vm.unprivileged_userfaultfd" to control
- > whether userfaultfd is allowed by unprivileged users.  When this is
- > set to zero, only privileged users (root user, or users with the
- > CAP_SYS_PTRACE capability) will be able to use the userfaultfd
- > syscalls.
+Quoting Andrew Lunn (2020-05-26 19:01:00)
+> On Tue, May 26, 2020 at 06:22:52PM +0200, Antoine Tenart wrote:
+> > 
+> > This series aims at reducing the waiting time between MDIO transactions
+> > when using the MSCC MIIM MDIO controller.
+> 
+> There are a couple of other things you can look at:
+> 
+> Can you disable the pre-amble on the MDIO transaction. It requires
+> that both the bus master and all devices on the bus support it, but
+> when it is usable, you half the number of bits sent over the wire.
+> 
+> Can you control the frequency of MDC? 802.3 says 2.5MHz, but many
+> devices support higher speeds. Again, you need all devices on the bus
+> to support the speed.
+> 
+> When accessing raw TDR data for cable tests i also have a lot of PHY
+> accesses. I implemented both of these for the FEC MDIO bus, and made
+> it a lot faster.
 
-Hello
-I am a bit confused about this patch, can you help to answer it.
+Thanks for the tips!
 
-Why the sysctl interface of fs/userfaultfd.c belongs to vm_table instead 
-of fs_table ?
+Antoine
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cefdca0a86be517bc390fc4541e3674b8e7803b0
-
-Thanks
-Xiaoming Ni
-
-
-
+-- 
+Antoine Ténart, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
