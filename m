@@ -2,61 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D571E4B09
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CEA1E4B0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731037AbgE0Qws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 12:52:48 -0400
-Received: from foss.arm.com ([217.140.110.172]:42580 "EHLO foss.arm.com"
+        id S1731030AbgE0Qxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 12:53:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726785AbgE0Qwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 12:52:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1C3755D;
-        Wed, 27 May 2020 09:52:46 -0700 (PDT)
-Received: from bogus (unknown [10.37.8.209])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B14EC3F305;
-        Wed, 27 May 2020 09:52:45 -0700 (PDT)
-Date:   Wed, 27 May 2020 17:52:38 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/8] soc: Use custom soc attribute group and
- DEVICE_ATTR_RO
-Message-ID: <20200527165238.GA21440@bogus>
-References: <20200523170859.50003-1-sudeep.holla@arm.com>
- <20200527090305.GD179718@kroah.com>
+        id S1726644AbgE0Qxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 12:53:33 -0400
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 959E620787;
+        Wed, 27 May 2020 16:53:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590598413;
+        bh=cIwFA8tqxbQ9Ka3dv1HOl3Ql2ut/illfq2QRt+rUkaM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=YtCruurnq4E1iPyZRZxuUfO9ZOU7AXWYFIEwNE4bi7G5DlK/njr8j0+DX1hE0JmVS
+         uGT4M5zxVsCfJ3coOALSpZWWM9xnHwbNsnCJhlrVCHbHCaIzDXtj+G1GC2UmkMoBPV
+         bpS2sPus0FSluD4P40nz2sN5p43+kBt4Sbi4DFok=
+Subject: Re: [PATCH 4.9 00/64] 4.9.225-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org, shuah <shuah@kernel.org>
+References: <20200526183913.064413230@linuxfoundation.org>
+From:   shuah <shuah@kernel.org>
+Message-ID: <854fcba7-4dcf-9904-95af-69544745c172@kernel.org>
+Date:   Wed, 27 May 2020 10:53:32 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200527090305.GD179718@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200526183913.064413230@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
-
-On Wed, May 27, 2020 at 11:03:05AM +0200, Greg Kroah-Hartman wrote:
-> On Sat, May 23, 2020 at 06:08:51PM +0100, Sudeep Holla wrote:
-> > Hi,
-> > 
-> > While trying to add SMCCC based SOC_ID support, I found the custom soc
-> > attribute group which had no users in the tree and check if it can be
-> > used or can be removed. I realised that it could clean up the custom
-> > attributes that are added using device_create_file today.
+On 5/26/20 12:52 PM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.225 release.
+> There are 64 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Whole series looks good, nice job.
+> Responses should be made by Thu, 28 May 2020 18:36:22 +0000.
+> Anything received after that time might be too late.
 > 
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.225-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Both Linus Walleij and Greg have provided Reviewed-by meaning I need to
-take this via ARM SoC. I assume it is late for v5.8 now, do you want me
-to resend later for you to pick this directly or need pull request ?
+Compiled and booted on my test system. No dmesg regressions.
 
---
-Regards,
-Sudeep
+thanks,
+-- Shuah
+
