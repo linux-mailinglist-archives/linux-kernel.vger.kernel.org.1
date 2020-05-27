@@ -2,104 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 066621E3A19
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 09:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7921E3A26
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 09:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729126AbgE0HP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 03:15:57 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:60390 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728611AbgE0HP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 03:15:56 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxr2ugE85eDIs5AA--.467S3;
-        Wed, 27 May 2020 15:15:45 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: [PATCH v2 2/2] clk: Remove CONFIG_ARCH_HISI check for subdir hisilicon in Makefile
-Date:   Wed, 27 May 2020 15:15:43 +0800
-Message-Id: <1590563743-30707-2-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1590563743-30707-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1590563743-30707-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dxr2ugE85eDIs5AA--.467S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zw45JFWxJw45Ww4fWF45KFg_yoW8ZryDpa
-        n5tr47JryqqF47KFZ7ArW2kFyYqan2qFWDKFyUZ345Zrn8JFWYvw4IgryxtF4xWr48GFW3
-        W393u3yfCF1jk37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBq14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
-        x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
-        8EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1l
-        e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
-        8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
-        jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4xMxAIw2
-        8IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4l
-        x2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrw
-        CI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI
-        42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z2
-        80aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjCPfJUUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1729213AbgE0HQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 03:16:10 -0400
+Received: from smtp1.de.adit-jv.com ([93.241.18.167]:39294 "EHLO
+        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728611AbgE0HQJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 03:16:09 -0400
+Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
+        by smtp1.de.adit-jv.com (Postfix) with ESMTP id E73953C0579;
+        Wed, 27 May 2020 09:16:05 +0200 (CEST)
+Received: from smtp1.de.adit-jv.com ([127.0.0.1])
+        by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id aUYj8-iqg8eh; Wed, 27 May 2020 09:16:00 +0200 (CEST)
+Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id B81673C0022;
+        Wed, 27 May 2020 09:16:00 +0200 (CEST)
+Received: from lxhi-065.adit-jv.com (10.72.94.38) by HI2EXCH01.adit-jv.com
+ (10.72.92.24) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 27 May
+ 2020 09:16:00 +0200
+Date:   Wed, 27 May 2020 09:15:55 +0200
+From:   Eugeniu Rosca <erosca@de.adit-jv.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+CC:     <laurent.pinchart@ideasonboard.com>,
+        <kieran.bingham+renesas@ideasonboard.com>, <geert@linux-m68k.org>,
+        <horms@verge.net.au>, <uli+renesas@fpond.eu>,
+        <VenkataRajesh.Kalakodima@in.bosch.com>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>, <koji.matsuoka.xm@renesas.com>,
+        <muroya@ksk.co.jp>, <Harsha.ManjulaMallikarjun@in.bosch.com>,
+        <ezequiel@collabora.com>, <seanpaul@chromium.org>,
+        <linux-renesas-soc@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <michael.dege@renesas.com>, <gotthard.voellmeke@renesas.com>,
+        <efriedrich@de.adit-jv.com>, <mrodin@de.adit-jv.com>,
+        <ChaitanyaKumar.Borah@in.bosch.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Eugeniu Rosca <roscaeugeniu@gmail.com>
+Subject: Re: [PATCH v5 0/8] drm: rcar-du: Add Color Management Module (CMM)
+Message-ID: <20200527071555.GA23912@lxhi-065.adit-jv.com>
+References: <20191015104621.62514-1-jacopo+renesas@jmondi.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20191015104621.62514-1-jacopo+renesas@jmondi.org>
+X-Originating-IP: [10.72.94.38]
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CONFIG_ARCH_HISI is not set but COMPILE_TEST is set, some files
-in the subdir hisilicon can not be built due to CONFIG_ARCH_HISI
-check in drivers/clk/Makefile.
+Hi Jacopo,
 
-Since the related configs in drivers/clk/hisilicon/Kconfig depend
-on ARCH_HISI, so remove CONFIG_ARCH_HISI check for subdir hisilicon
-in drivers/clk/Makefile.
+On Tue, Oct 15, 2019 at 12:46:13PM +0200, Jacopo Mondi wrote:
+ ----8<---
 
-At the same time, we should add CONFIG_ARCH_HISI check for the
-common files in drivers/clk/hisilicon/Makefile, otherwise there
-exists build failure about undefined reference function when both
-CONFIG_ARCH_HISI and COMPILE_TEST are not set.
+> * Testing
+> I have tested by injecting a color inversion LUT table and enabling/disabling it
+> every 50 displayed frames:
+> https://jmondi.org/cgit/kmsxx/log/?h=gamma_lut
 
-Link: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/AVXZQX33S7ZVVK7D5VKLTTH7MOBEEBNB/
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
+Could you kindly share the cross compilation steps for your kmsxx fork?
 
-v2:
-  - Fix the build failure reported by kbuild test robot
+Just out of curiosity, have you ever tried to pull the display's HDMI
+cable while reading from CM2_LUT_TBL?
 
- drivers/clk/Makefile           | 2 +-
- drivers/clk/hisilicon/Makefile | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+At least with the out-of-tree CMM implementation [*], this sends the
+R-Car3 reference targets into an unrecoverable freeze, with no lockup
+reported by the kernel (i.e. looks like an serious HW issue).
 
-diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
-index f4169cc..81045ec 100644
---- a/drivers/clk/Makefile
-+++ b/drivers/clk/Makefile
-@@ -79,7 +79,7 @@ obj-y					+= bcm/
- obj-$(CONFIG_ARCH_BERLIN)		+= berlin/
- obj-$(CONFIG_ARCH_DAVINCI)		+= davinci/
- obj-$(CONFIG_H8300)			+= h8300/
--obj-$(CONFIG_ARCH_HISI)			+= hisilicon/
-+obj-y					+= hisilicon/
- obj-y					+= imgtec/
- obj-y					+= imx/
- obj-y					+= ingenic/
-diff --git a/drivers/clk/hisilicon/Makefile b/drivers/clk/hisilicon/Makefile
-index b2441b9..4695d6c 100644
---- a/drivers/clk/hisilicon/Makefile
-+++ b/drivers/clk/hisilicon/Makefile
-@@ -3,7 +3,7 @@
- # Hisilicon Clock specific Makefile
- #
- 
--obj-y	+= clk.o clkgate-separated.o clkdivider-hi6220.o clk-hisi-phase.o
-+obj-$(CONFIG_ARCH_HISI)	+= clk.o clkgate-separated.o clkdivider-hi6220.o clk-hisi-phase.o
- 
- obj-$(CONFIG_ARCH_HI3xxx)	+= clk-hi3620.o
- obj-$(CONFIG_ARCH_HIP04)	+= clk-hip04.o
+> 
+> CMM functionalities are retained between suspend/resume cycles (tested with
+> suspend-to-idle) without requiring a re-programming of the LUT tables.
+
+Hmm. Is this backed up by any statement in the HW User's manual?
+This comes in contrast with the original Renesas CMM implementation [**]
+which does make use of suspend (where the freeze actually happens).
+
+Can we infer, based on your statement, that we could also get rid of
+the suspend callback in [**]?
+
+[*] https://github.com/renesas-rcar/du_cmm
+[**] https://github.com/renesas-rcar/du_cmm/blob/c393ed49834bdbc/meta-rcar-gen3/recipes-kernel/linux/linux-renesas/0001-drm-rcar-du-Add-DU-CMM-support.patch#L1912
+
 -- 
-2.1.0
-
+Best regards,
+Eugeniu Rosca
