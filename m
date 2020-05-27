@@ -2,95 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 638C11E4C74
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 19:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EAE81E4C83
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 19:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388689AbgE0R4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 13:56:25 -0400
-Received: from mga05.intel.com ([192.55.52.43]:56350 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387653AbgE0R4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 13:56:24 -0400
-IronPort-SDR: yy5htggTAGCEhGJELTFS7dIFq8V4VKvkHmfwz8su24INBMqkFXT+AGlHty+XZcjeEVNYgDGwmV
- emtC9qeIM3ZQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 10:56:24 -0700
-IronPort-SDR: BUCmUzmT5hqdJlG/DUNApFH70adMolehOUn/c+8TgUocuItasvW4AvY+/8Pri0JuJK2agIQ2qK
- 424U6mDOdreQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,442,1583222400"; 
-   d="scan'208";a="255540259"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga007.fm.intel.com with ESMTP; 27 May 2020 10:56:21 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1je0Hw-009GwD-0t; Wed, 27 May 2020 20:56:24 +0300
-Date:   Wed, 27 May 2020 20:56:24 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Rob Herring <robh@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-mips@vger.kernel.org, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/11] dt-bindings: i2c: Discard i2c-slave flag from
- the DW I2C example
-Message-ID: <20200527175624.GT1634618@smile.fi.intel.com>
-References: <20200527120111.5781-1-Sergey.Semin@baikalelectronics.ru>
- <20200527120111.5781-3-Sergey.Semin@baikalelectronics.ru>
- <20200527171204.GA2348490@bogus>
- <20200527171841.am2iaynff243xoep@mobilestation>
+        id S2391779AbgE0R7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 13:59:21 -0400
+Received: from out28-123.mail.aliyun.com ([115.124.28.123]:48214 "EHLO
+        out28-123.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388544AbgE0R7V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 13:59:21 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.2468916|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0315748-0.000160287-0.968265;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03303;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.HeTcPrZ_1590602337;
+Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.HeTcPrZ_1590602337)
+          by smtp.aliyun-inc.com(10.147.43.95);
+          Thu, 28 May 2020 01:59:16 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     linux-clk@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        sboyd@kernel.org, mturquette@baylibre.com, robh+dt@kernel.org,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com, paul@crapouillou.net
+Subject: [PATCH v12 0/7] Add support for the X1830 and fix bugs for X1000.
+Date:   Thu, 28 May 2020 01:56:28 +0800
+Message-Id: <20200527175635.5558-1-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200527171841.am2iaynff243xoep@mobilestation>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 08:18:41PM +0300, Serge Semin wrote:
-> On Wed, May 27, 2020 at 11:12:04AM -0600, Rob Herring wrote:
-> > On Wed, May 27, 2020 at 03:01:02PM +0300, Serge Semin wrote:
-> > > dtc currently doesn't support I2C_OWN_SLAVE_ADDRESS flag set in the
-> > > i2c "reg" property. If it is the compiler will print a warning:
-> > > 
-> > > Warning (i2c_bus_reg): /example-2/i2c@1120000/eeprom@64: I2C bus unit address format error, expected "40000064"
-> > > Warning (i2c_bus_reg): /example-2/i2c@1120000/eeprom@64:reg: I2C address must be less than 10-bits, got "0x40000064"
-> > > 
-> > > In order to silence dtc up let's discard the flag from the DW I2C DT
-> > > binding example for now. Just revert this commit when dtc is fixed.
+v10->v11:
+Split [3/6] in v10 to [3/7] in v11 and [4/7] in v11.
 
-> > >        eeprom@64 {
-> > >          compatible = "linux,slave-24c02";
-> > > -        reg = <0x40000064>;
-> > > +        reg = <0x64>;
-> > 
-> > But the compatible is a slave, so you need an example with a different 
-> > device.
-> 
+v11->v12:
+Use "CLK_OF_DECLARE_DRIVER" instead "CLK_OF_DECLARE",
+this modification was mentioned in the comments, but
+did not really exist in the patch.
+Reported-by: Paul Cercueil <paul@crapouillou.net>
 
-> Ok. I'll replace the sub-node with just "atmel,24c02" compatible string then.
+周琰杰 (Zhou Yanjie) (7):
+  clk: Ingenic: Remove unnecessary spinlock when reading registers.
+  clk: Ingenic: Adjust cgu code to make it compatible with X1830.
+  dt-bindings: clock: Add documentation for X1830 bindings.
+  dt-bindings: clock: Add X1830 clock bindings.
+  clk: Ingenic: Add CGU driver for X1830.
+  dt-bindings: clock: Add and reorder ABI for X1000.
+  clk: X1000: Add FIXDIV for SSI clock of X1000.
 
-But how it will be different to the another slave connected to the master?
-
-This example is specifically to show that DesingWare I�C controller may be
-switched to slave mode.
-
-> > >        };
-> > >      };
-> > >    - |
+ .../devicetree/bindings/clock/ingenic,cgu.yaml     |   2 +
+ drivers/clk/ingenic/Kconfig                        |  10 +
+ drivers/clk/ingenic/Makefile                       |   1 +
+ drivers/clk/ingenic/cgu.c                          |  28 +-
+ drivers/clk/ingenic/cgu.h                          |   4 +
+ drivers/clk/ingenic/jz4725b-cgu.c                  |   4 +
+ drivers/clk/ingenic/jz4740-cgu.c                   |   4 +
+ drivers/clk/ingenic/jz4770-cgu.c                   |   8 +-
+ drivers/clk/ingenic/jz4780-cgu.c                   |   3 +
+ drivers/clk/ingenic/x1000-cgu.c                    | 118 +++++-
+ drivers/clk/ingenic/x1830-cgu.c                    | 443 +++++++++++++++++++++
+ include/dt-bindings/clock/x1000-cgu.h              |  64 +--
+ include/dt-bindings/clock/x1830-cgu.h              |  55 +++
+ 13 files changed, 695 insertions(+), 49 deletions(-)
+ create mode 100644 drivers/clk/ingenic/x1830-cgu.c
+ create mode 100644 include/dt-bindings/clock/x1830-cgu.h
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.11.0
 
