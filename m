@@ -2,84 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2B01E4FA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3251E4FA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728735AbgE0Uwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 16:52:42 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:53104 "EHLO vps0.lunn.ch"
+        id S1728395AbgE0Uxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 16:53:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726129AbgE0Uwm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 16:52:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=gKAXQgUdWQP/zL1P3eNew3G65B4gJ6Xt1zF4bmT1hDg=; b=WyvaIFrAsWiNdYbeeSXajmyKD6
-        6I8uuI6yBuqgB3E3YJb/fM/ogGpVN6EhTp9s1KROW2q6RwLo9hFHGFaGz8E86tphPbfvG8p5+xnMf
-        sGW6H/UMHw8y6QxnMjTQRLU/Qwgf3L6OJ4PFdtaTMogDnXyqRrvzHFcIlrmKLtm3N/6c=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1je32D-003S61-VH; Wed, 27 May 2020 22:52:21 +0200
-Date:   Wed, 27 May 2020 22:52:21 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        "sergei.shtylyov@cogentembedded.com" 
-        <sergei.shtylyov@cogentembedded.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "david@protonic.nl" <david@protonic.nl>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        Kazuya Mizuguchi <kazuya.mizuguchi.ks@renesas.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: Re: [PATCH net-next v3] net: phy: micrel: add phy-mode support for
- the KSZ9031 PHY
-Message-ID: <20200527205221.GA818296@lunn.ch>
-References: <20200422072137.8517-1-o.rempel@pengutronix.de>
- <CAMuHMdU1ZmSm_tjtWxoFNako2fzmranGVz5qqD2YRNEFRjX0Sw@mail.gmail.com>
- <20200428154718.GA24923@lunn.ch>
- <6791722391359fce92b39e3a21eef89495ccf156.camel@toradex.com>
- <CAMuHMdXm7n6cE5-ZjwxU_yKSrCaZCwqc_tBA+M_Lq53hbH2-jg@mail.gmail.com>
- <20200429092616.7ug4kdgdltxowkcs@pengutronix.de>
- <CAMuHMdWf1f95ZcOLd=k1rd4WE98T1qh_3YsJteyDGtYm1m_Nfg@mail.gmail.com>
+        id S1726482AbgE0Uxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 16:53:50 -0400
+Received: from localhost.localdomain (unknown [194.230.155.118])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A95620899;
+        Wed, 27 May 2020 20:53:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590612830;
+        bh=hLSGZEQWdxHnGb3NCznVMrshFsU5QAvYHIqnrYcr84c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=2p+OzkZ7KrA7OzseKO3cDoyHNMEgzbhNWnZwV+vC/BGjhqCAnnTDUcsWjtYb8Siyu
+         1hAW7RIIhMcyNgj11SaLZRG5Zwe8PNBgKeeTFEYsQMOsH2SoNDjjzgwq2RctW+oCuF
+         Wzc3i6lBAOMM2d2Z0G/tIlY7Qny+hRFkaT4A53Q0=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Simon Horman <horms+renesas@verge.net.au>,
+        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [RESEND PATCH v2] sh: sh4a: Bring back tmu3_device early device
+Date:   Wed, 27 May 2020 22:53:41 +0200
+Message-Id: <20200527205341.26232-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWf1f95ZcOLd=k1rd4WE98T1qh_3YsJteyDGtYm1m_Nfg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> You may wonder what's the difference between 3 and 4? It's not just the
-> PHY driver that looks at phy-mode!
-> drivers/net/ethernet/renesas/ravb_main.c:ravb_set_delay_mode() also
-> does, and configures an additional TX clock delay of 1.8 ns if TXID is
-> enabled.
+Commit 1399c195ef50 ("sh: Switch to new style TMU device") converted
+tmu3_device platform device to new style of platform data but removed it
+from sh7786_early_devices array effectively removing last three timers
+and causing a warning:
 
-Hi Geert
+    arch/sh/kernel/cpu/sh4a/setup-sh7786.c:243:31:
+        warning: ‘tmu3_device’ defined but not used [-Wunused-variable]
 
-That sounds like a MAC bug. Either the MAC insert the delay, or the
-PHY does. If the MAC decides it is going to insert the delay, it
-should be masking what it passes to phylib so that the PHY does not
-add a second delay.
+Fixes: 1399c195ef50 ("sh: Switch to new style TMU device")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-This whole area of RGMII delays has a number of historical bugs, which
-often counter act each other. So you fix one, and it break somewhere
-else.
+---
 
-In this case, not allowing skews for plain RGMII is probably being too
-strict. We probably should relax that constrain in this case, for this
-PHY driver.
+Changes since v1:
+1. Add tmu3_device to early device list, as suggested by Geert.
+2. Add Fixes tag.
+---
+ arch/sh/kernel/cpu/sh4a/setup-sh7786.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-    Andrew
+diff --git a/arch/sh/kernel/cpu/sh4a/setup-sh7786.c b/arch/sh/kernel/cpu/sh4a/setup-sh7786.c
+index 4b0db8259e3d..74620f30b19b 100644
+--- a/arch/sh/kernel/cpu/sh4a/setup-sh7786.c
++++ b/arch/sh/kernel/cpu/sh4a/setup-sh7786.c
+@@ -391,6 +391,7 @@ static struct platform_device *sh7786_early_devices[] __initdata = {
+ 	&tmu0_device,
+ 	&tmu1_device,
+ 	&tmu2_device,
++	&tmu3_device,
+ };
+ 
+ static struct platform_device *sh7786_devices[] __initdata = {
+-- 
+2.17.1
+
