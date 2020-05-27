@@ -2,66 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B831E346E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 03:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53DAA1E3473
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 03:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728118AbgE0BIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 21:08:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34976 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728092AbgE0BIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 21:08:17 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 77F922088E;
-        Wed, 27 May 2020 01:08:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590541697;
-        bh=gEQCahnR2XMMiWuyGv9OLa98c7dUNuD50Z8vXWxnv1s=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=Pr3AovO/66JVsQ6pMOFxy3X3OQ2+GE39lheSQKMxSP/jIN6snMAwzNKg1bDAhZUJp
-         tLPe/YEGL7n54na79S06oG9hjY3SBm7bQ3zYo7eV1aIu0A6W1ukXZIFA5x9vAH+Vol
-         5CCJvEAtXiKHfrON8DlLGdYlwrplmm/iuOeptsNE=
-Content-Type: text/plain; charset="utf-8"
+        id S1728158AbgE0BJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 21:09:12 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:44396 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728137AbgE0BJK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 21:09:10 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04R18I8q001652;
+        Wed, 27 May 2020 01:08:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=TE1U6kmBDIx0P+TEG5r2eqfZg1hODVX9MWfuH0SoAVw=;
+ b=NmN5S/crAypezw7f1yeWTBv8ioDprtOvDR02eBk+n5Bospz3rW9iZBv4P7PMlnpGM/pU
+ ShNFcFX08pL0XUEvB912BSq3+OwCZQ/VV3BLsDT1Oin1+yjKzlAHryvgE7EXOX1cj76q
+ r2taUlpCoeFjn2cYGkGOjlxd3fzfxYjhN/vytbpGPdRm5pptMSpJNGRrnYuHzl6brqWo
+ sLTp4fHVKmmQSe3TMg7ea59XcmXByJha7Ez4EyyJyp1mku+Eiy+Cgt14o4qrrD5hs1iH
+ v37oMnVkvbeVBXJNrn1mnRRo8luzlXUylVvl/+taVy+RB3WC27O7XgwcR9s1YRmEwpZ6 GQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 316u8qvsmg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 27 May 2020 01:08:53 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04R17XAf102198;
+        Wed, 27 May 2020 01:08:52 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 317j5q510t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 May 2020 01:08:52 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04R18oNx023797;
+        Wed, 27 May 2020 01:08:50 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 26 May 2020 18:08:50 -0700
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        =?utf-8?Q?Kai_M=C3=A4kisara_=28Kolumbus=29?= 
+        <kai.makisara@kolumbus.fi>, Bart Van Assche <bvanassche@acm.org>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>
+Subject: Re: [PATCH v2] scsi: st: convert convert get_user_pages() -->
+ pin_user_pages()
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1mu5ukwx4.fsf@ca-mkp.ca.oracle.com>
+References: <20200526182709.99599-1-jhubbard@nvidia.com>
+        <98b7f283-b208-d222-1d65-8a2e34d0a1af@nvidia.com>
+Date:   Tue, 26 May 2020 21:08:47 -0400
+In-Reply-To: <98b7f283-b208-d222-1d65-8a2e34d0a1af@nvidia.com> (John Hubbard's
+        message of "Tue, 26 May 2020 18:05:01 -0700")
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1584048699-24186-3-git-send-email-jolly.shah@xilinx.com>
-References: <1584048699-24186-1-git-send-email-jolly.shah@xilinx.com> <1584048699-24186-3-git-send-email-jolly.shah@xilinx.com>
-Subject: Re: [PATCH v2 2/2] drivers: clk: zynqmp: Update fraction clock check from custom type flags
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     rajanv@xilinx.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Tejas Patel <tejas.patel@xilinx.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Jolly Shah <jolly.shah@xilinx.com>
-To:     Jolly Shah <jolly.shah@xilinx.com>, arm@kernel.org,
-        linux-clk@vger.kernel.org, michal.simek@xilinx.com,
-        mturquette@baylibre.com, olof@lixom.net
-Date:   Tue, 26 May 2020 18:08:16 -0700
-Message-ID: <159054169658.88029.371843532116000844@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9633 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 suspectscore=1
+ mlxlogscore=999 mlxscore=0 adultscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005270003
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9633 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 spamscore=0 cotscore=-2147483648 suspectscore=1
+ phishscore=0 clxscore=1011 mlxlogscore=999 bulkscore=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005270003
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jolly Shah (2020-03-12 14:31:39)
-> From: Tejas Patel <tejas.patel@xilinx.com>
->=20
-> Older firmware version sets BIT(13) in clkflag to mark a
-> divider as fractional divider. Updated firmware version sets BIT(4)
-> in type flags to mark a divider as fractional divider since
-> BIT(13) is defined as CLK_DUTY_CYCLE_PARENT in the common clk
-> framework flags.
->=20
-> To support both old and new firmware version, consider BIT(13) from
-> clkflag and BIT(4) from type_flag to check if divider is fractional
-> or not.
->=20
-> To maintain compatibility BIT(13) of clkflag in firmware will not be
-> used in future for any purpose and will be marked as unused.
 
-Why are we mixing the firmware flags with the ccf flags? They shouldn't
-be the same. The firmware should have its own 'flag numberspace' that is
-distinct from the common clk framework's 'flag numberspace'. Please fix
-the code.
+John,
+
+> For some reason, the "convert convert" subject line is really hard to
+> get rid of from my scsi st patch. In this case, I'd dropped the patch
+> entirely, and recreated it with the old subject line somehow. Sorry
+> about that persistent typo!
+>
+> I'll send a v3 if necessary, to correct that.
+
+I'll fix it up when I apply.
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
