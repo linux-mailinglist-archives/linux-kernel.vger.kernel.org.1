@@ -2,175 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F066B1E43E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D102B1E43EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388234AbgE0Nh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:37:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387682AbgE0Nh2 (ORCPT
+        id S2388460AbgE0NiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:38:03 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:58549 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387682AbgE0NiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:37:28 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C7F0C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 06:37:28 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id y5so3102947iob.12
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 06:37:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=98asfAGM0k82DbjTjDjy1krArq/Ou3skB4zttUQk7aU=;
-        b=C6l+HeyBVKE+Cn6DaIhJIKh/dNr5LdcYYhXoLT9WlQDSymZTQI/b7tuo14PCxMri/k
-         87baw8GERGb+NhjRzujAHlogK5w2frPh8/BHj4a7ZKwZR2W0r69jAYT1YpVmOilxzG/c
-         BtLQGTURRpnGOtKzFpjP0NsWfCp+E1cSKcsOLhjKArAVCV/sjCpgO4hHUjVtkLp/wwL8
-         g74v/SIJAj9/qbZ0xjW69FubPUlOWBhc70jlyqyU2ImlR3IMNLRiicSsijyXgzUGMP83
-         OMD0/wTscBeC1ISxbSwnFi3y1CkzPNiaaUo3xqHOr7KKdpdurNfap9ZMKCrg+0Dczkbm
-         bH/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=98asfAGM0k82DbjTjDjy1krArq/Ou3skB4zttUQk7aU=;
-        b=exhK4+iSQvIqDO9Tz8KI0pJuxAP4dG6SCr6kDNueyGo7i4EnqmT+7C8qUUxywz5g1F
-         Z5o1y5sYE2gIYyNBjv8NTt9Mt6lXbgl/YnKO+zN0vLHjmj+jPaH9r+sPylee0s/OAhg5
-         7qmmWhDikADfo29FniTo5rJa8kYHTbAyOBKuaA4gppsbslQPvQwZXm+TWiS4ui3WL1WB
-         269RSu80G2MUvhSqZ4hAyZ6YD6qos4uC6UmTDFN818poLbC3KjlDnqQAubRw20p6wJS9
-         SB7ESrYiPRKTwikZo4yxITX4YcrJnN03MUd6wkE/bh0V6IrfZxOPPB+zkJRu6LHGN25U
-         idhA==
-X-Gm-Message-State: AOAM533yN1pS26GhoyX0VX+aag8K0wO82v6pTa0tXbEtqFsemqAnSkXU
-        vQDKeFCAn9u2Fk1Br3jFs1ZTFPx2JyCiG9uV6wM=
-X-Google-Smtp-Source: ABdhPJxW2UoMqnjfsrGgDV/9gBRaEZjtzrzmKnNlVoqkqbyWqngry2xkVOOf1yMNukt51VjsORYCBpDsn78sjWN8kpI=
-X-Received: by 2002:a02:b0d1:: with SMTP id w17mr5599803jah.75.1590586647220;
- Wed, 27 May 2020 06:37:27 -0700 (PDT)
+        Wed, 27 May 2020 09:38:02 -0400
+Received: from localhost.localdomain ([149.172.98.151]) by
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MA7b8-1jjwmq2jEY-00BbQ7; Wed, 27 May 2020 15:37:50 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Sekhar Nori <nsekhar@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     soc@kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Russell King <linux@armlinux.org.uk>, Bin Liu <b-liu@ti.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: davinci: fix build failure without I2C
+Date:   Wed, 27 May 2020 15:37:34 +0200
+Message-Id: <20200527133746.643895-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200527103236.148700-1-elver@google.com> <CAK8P3a1MFgRxm6=+9WZKNzN+Nc5fhrDso6orSNQaaa-0yqygYA@mail.gmail.com>
- <CA+icZUWtzu0ONUSy0E27Mq1BrdO79qNaY3Si-PDhHZyF8M4S5g@mail.gmail.com>
- <CAK8P3a04=mVQgSrvDhpVxQj50JEFDn_xMhYrvjmUnLYTWH3QXQ@mail.gmail.com>
- <CA+icZUXVSTxDYJwXLyAwZd91cjMPcPRpeAR72JKqkqa-wRNnWg@mail.gmail.com>
- <CAK8P3a3i0kPf8dRg7Ko-33hsb+LkP=P05uz2tGvg5B43O-hFvg@mail.gmail.com>
- <CA+icZUWr5xDz5ujBfsXjnDdiBuopaGE6xO5LJQP9_y=YoROb+Q@mail.gmail.com> <CANpmjNOtKQAB_3t1G5Da-J1k-9Dk6eQKP+xNozRbmHJXZqXGFw@mail.gmail.com>
-In-Reply-To: <CANpmjNOtKQAB_3t1G5Da-J1k-9Dk6eQKP+xNozRbmHJXZqXGFw@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Wed, 27 May 2020 15:37:19 +0200
-Message-ID: <CA+icZUWzPMOj+qsDz-5Z3tD-hX5gcowjBkwYyiy8SL36Jg+2Nw@mail.gmail.com>
-Subject: Re: [PATCH -tip] compiler_types.h: Optimize __unqual_scalar_typeof
- compilation time
-To:     Marco Elver <elver@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:SLs7EPo0CHZ35dzILzlg3ynC9V36VweHDMcvML7eK6dlMa+8x+D
+ 78lfpGqShx4bwcPgQzRY4BRaUxMgsnkzdIhbmn/fDMo1RTidXOUkCG14pmNmDaEe4fIBpGJ
+ 0GJ8YUM4ZQRm2syGd9w5JZ1pq5HZvYj90TMEZZ7NMvp7up0nALLBO8aEaW373HbK2adJgaD
+ VwY7gw3Ujyn51ZWneRDLw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LSqZnahNGa0=:dOXn6UfLrNQ1/OX9KcCM6R
+ mLYgB6k3/DBOAoJ3/kb8sNeadHjCWkSphjfPEc/gYpNVF+ynX6vlQnettRFJURxSAbUfr2XKB
+ 42PyLO8PKojzEJdopGAq0Yk7v2kvjgX8FkOrBaWqQVkmiU4/GWh83b4G7vzjK/EG5anKT9Fu6
+ O0CxiOEDnlkVDkvzS15SyEiVFO72qL8AtcmWT6m9vX6mn4Rms2DQQPGGgDU7GWQLDktr5CpM3
+ gyNqLA/a0dJSxDMAk0NVEnudS+4CFof4WpvYl9Ld2zRnvWXLON9hkuqbaBpj8C8lBijtdzmgx
+ Q10B94mHS2p3lvFNOWDMU65j+HQGo1uaXjAH3szxrRjMao/doegjLsrlFT7KnZdYRFmK86FZr
+ yrt+Ljo2q1fO6spmd3yfN29wUz/IFQSY80oRRay6dv6KUyrgqrpvIyID39Tn47Gr9A1a+NpQw
+ wDuNAN2muxnSRNp3xHEW0UHCHuGzXMwZqV2o9EUEpL2HflLwo1M8P2klrFEVpm5ff8fFJvl7l
+ OKUh174Hcw7ldzB05LsYouOvCBwKQlJk+IqDUh1xQEiahBXboMJTmXo87F8VgHPp+Yv/rJx2n
+ 4AWvG79F9iPUFFcSVToqMOxlXoW/dtapa7H0c7Q6VLQUZtnSNvoRixzJ8VxeOelQ++IsO1lgl
+ Sf14Ruj8XNvKlnNkoE+KJYzDl/UnidsG0EzLLIdABfWYin7dSfNvySogAB+w/ax1ay9x0GDBm
+ Tax/9VwUkzdRfdN7R9rIvaPiiQFRFGom/u5coB65uGc8F9aPRqJ8TrN+EAvewk9nFubSfq/xf
+ vwI/VuvgdkFB8GMSigXXOE0D3DDD5yVd+1YtEpsDrFsiY5lbeY=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 3:30 PM Marco Elver <elver@google.com> wrote:
->
-> On Wed, 27 May 2020 at 15:11, Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >
-> > On Wed, May 27, 2020 at 2:50 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > >
-> > > On Wed, May 27, 2020 at 2:35 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > > On Wed, May 27, 2020 at 2:31 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > > > On Wed, May 27, 2020 at 1:36 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > > > > On Wed, May 27, 2020 at 1:27 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > > > > > On Wed, May 27, 2020 at 12:33 PM Marco Elver <elver@google.com> wrote:
-> > > > > > >
-> > > > > > > This gives us back 80% of the performance drop on clang, and 50%
-> > > > > > > of the drop I saw with gcc, compared to current mainline.
-> > > > > > >
-> > > > > > > Tested-by: Arnd Bergmann <arnd@arndb.de>
-> > > > > > >
-> > > > > >
-> > > > > > Hi Arnd,
-> > > > > >
-> > > > > > with "mainline" you mean Linux-next aka Linux v5.8 - not v5.7?
-> > > > >
-> > > > > I meant v5.7.
-> > > > >
-> > > > > > I have not seen __unqual_scalar_typeof(x) in compiler_types.h in Linux v5.7.
-> > > > > >
-> > > > > > Is there a speedup benefit also for Linux v5.7?
-> > > > > > Which patches do I need?
-> > > > >
-> > > > > v5.7-rc is the baseline and is the fastest I currently see. On certain files,
-> > > > > I saw an intermittent 10x slowdown that was already fixed earlier, now
-> > > > > linux-next
-> > > > > is more like 2x slowdown for me and 1.2x with this patch on top, so we're
-> > > > > almost back to the speed of linux-5.7.
-> > > > >
-> > > >
-> > > > Which clang version did you use - and have you set KCSAN kconfigs -
-> > > > AFAICS this needs clang-11?
-> > >
-> > > I'm currently using clang-11, but I see the same problem with older
-> > > versions, and both with and without KCSAN enabled. I think the issue
-> > > is mostly the deep nesting of macros that leads to code bloat.
-> > >
-> >
-> > Thanks.
-> >
-> > With clang-10:
-> >
-> > $ scripts/diffconfig /boot/config-5.7.0-rc7-2-amd64-clang .config
-> >  BUILD_SALT "5.7.0-rc7-2-amd64-clang" -> "5.7.0-rc7-3-amd64-clang"
-> > +HAVE_ARCH_KCSAN y
->
-> Clang 10 doesn't support KCSAN (HAVE_KCSAN_COMPILER unset).
->
-> > With clang-11:
-> >
-> > $ scripts/diffconfig /boot/config-5.7.0-rc7-2-amd64-clang .config
-> >  BUILD_SALT "5.7.0-rc7-2-amd64-clang" -> "5.7.0-rc7-3-amd64-clang"
-> >  CLANG_VERSION 100001 -> 110000
-> > +CC_HAS_ASM_INLINE y
-> > +HAVE_ARCH_KCSAN y
-> > +HAVE_KCSAN_COMPILER y
-> > +KCSAN n
-> >
-> > Which KCSAN kconfigs did you enable?
->
-> To clarify: as said in [1], KCSAN (or any other instrumentation) is no
-> longer relevant to the issue here, and the compile-time regression is
-> observable with most configs. The problem is due to pre-processing and
-> parsing, which came about due to new READ_ONCE() and the
-> __unqual_scalar_typeof() macro (which this patch optimizes).
->
-> KCSAN and new ONCEs got tangled up because we first attempted to
-> annotate {READ,WRITE}_ONCE() with data_race(), but that turned out to
-> have all kinds of other issues (explanation in [2]). So we decided to
-> drop all the KCSAN-specific bits from ONCE, and require KCSAN to be
-> Clang 11. Those fixes were applied to the first version of new
-> {READ,WRITE}_ONCE() in -tip, which actually restored the new ONCEs to
-> the pre-KCSAN version (now that KCSAN can deal with them without
-> annotations).
->
-> Hope this makes more sense now.
->
-> [1] https://lore.kernel.org/lkml/CANpmjNOUdr2UG3F45=JaDa0zLwJ5ukPc1MMKujQtmYSmQnjcXg@mail.gmail.com/
-> [2] https://lore.kernel.org/lkml/20200521142047.169334-1-elver@google.com/
->
+The two supplies are referenced outside of #ifdef CONFIG_I2C but
+defined inside, which breaks the build if that is not built-in:
 
-Thanks, Marco.
+mach-davinci/board-dm644x-evm.c:861:21: error: use of undeclared identifier 'fixed_supplies_1_8v'
+                                     ARRAY_SIZE(fixed_supplies_1_8v), 1800000);
+                                                ^
+mach-davinci/board-dm644x-evm.c:861:21: error: use of undeclared identifier 'fixed_supplies_1_8v'
+mach-davinci/board-dm644x-evm.c:861:21: error: use of undeclared identifier 'fixed_supplies_1_8v'
+mach-davinci/board-dm644x-evm.c:860:49: error: use of undeclared identifier 'fixed_supplies_1_8v'
+        regulator_register_always_on(0, "fixed-dummy", fixed_supplies_1_8v,
 
-I pulled tip.git#locking/kcsan on top of Linux v5.7-rc7 and applied this patch.
-Just wanted to try KCSAN for the first time and it will also be my
-first building with clang-11.
-That's why I asked.
+I don't know if the regulators are used anywhere without I2C, but
+always registering them seems to be the safe choice here.
 
-- Sedat -
+On a related note, it might be best to also deal with CONFIG_I2C=m
+across the file, unless this is going to be moved to DT and removed
+really soon anyway.
+
+Fixes: 5e06d19694a4 ("ARM: davinci: dm644x-evm: Add Fixed regulators needed for tlv320aic33")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/arm/mach-davinci/board-dm644x-evm.c | 26 ++++++++++++------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/arch/arm/mach-davinci/board-dm644x-evm.c b/arch/arm/mach-davinci/board-dm644x-evm.c
+index 3461d12bbfc0..a5d3708fedf6 100644
+--- a/arch/arm/mach-davinci/board-dm644x-evm.c
++++ b/arch/arm/mach-davinci/board-dm644x-evm.c
+@@ -655,19 +655,6 @@ static struct i2c_board_info __initdata i2c_info[] =  {
+ 	},
+ };
+ 
+-/* Fixed regulator support */
+-static struct regulator_consumer_supply fixed_supplies_3_3v[] = {
+-	/* Baseboard 3.3V: 5V -> TPS54310PWP -> 3.3V */
+-	REGULATOR_SUPPLY("AVDD", "1-001b"),
+-	REGULATOR_SUPPLY("DRVDD", "1-001b"),
+-};
+-
+-static struct regulator_consumer_supply fixed_supplies_1_8v[] = {
+-	/* Baseboard 1.8V: 5V -> TPS54310PWP -> 1.8V */
+-	REGULATOR_SUPPLY("IOVDD", "1-001b"),
+-	REGULATOR_SUPPLY("DVDD", "1-001b"),
+-};
+-
+ #define DM644X_I2C_SDA_PIN	GPIO_TO_PIN(2, 12)
+ #define DM644X_I2C_SCL_PIN	GPIO_TO_PIN(2, 11)
+ 
+@@ -700,6 +687,19 @@ static void __init evm_init_i2c(void)
+ }
+ #endif
+ 
++/* Fixed regulator support */
++static struct regulator_consumer_supply fixed_supplies_3_3v[] = {
++	/* Baseboard 3.3V: 5V -> TPS54310PWP -> 3.3V */
++	REGULATOR_SUPPLY("AVDD", "1-001b"),
++	REGULATOR_SUPPLY("DRVDD", "1-001b"),
++};
++
++static struct regulator_consumer_supply fixed_supplies_1_8v[] = {
++	/* Baseboard 1.8V: 5V -> TPS54310PWP -> 1.8V */
++	REGULATOR_SUPPLY("IOVDD", "1-001b"),
++	REGULATOR_SUPPLY("DVDD", "1-001b"),
++};
++
+ #define VENC_STD_ALL	(V4L2_STD_NTSC | V4L2_STD_PAL)
+ 
+ /* venc standard timings */
+-- 
+2.26.2
+
