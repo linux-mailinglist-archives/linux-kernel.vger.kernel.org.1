@@ -2,84 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC9F1E48BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C3DB1E48BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390678AbgE0PzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 11:55:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57832 "EHLO
+        id S2390654AbgE0PzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 11:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390663AbgE0PzR (ORCPT
+        with ESMTP id S2390626AbgE0Pyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 11:55:17 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA7BC05BD1E
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 08:55:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8xrIhDlIclhuFcqK5PRfwDksN1V3DbW5RDvwy1wQ9Ew=; b=jK+3u8gz/vaf9KvIxc6RpzgF2X
-        hrcfW+klGLluvqpKhL4qEC3V/HU7rUTDUsu0JhmM0nd1/zDrXL+KytM6+OXKDkPDXfk7mIR/aFHVW
-        GRd5prqBgteWLGiwfjZecLusE3teAjo+VeJec5JYbGMtb/BIIWjepsH1K6fPVebpsXzinBRxuf/fG
-        7wh3SeH6mUCpI/ZBVakDM8wd80LgJ5z7vSxdbi8gBvgHBxkXKNy9HM4WXiI1ffWCEmGTOOoYyp1ty
-        5ME5sHg+ENhLsCx+TZ8dbmS9el1TDAhFektU5QKsSZh5GpHSJfQ5xOJKeI3mgMoWnwC1/fSQ4/kKe
-        /eZJcgcg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jdyO6-00040I-Ry; Wed, 27 May 2020 15:54:39 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5B80A307994;
-        Wed, 27 May 2020 17:54:36 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 444522024369D; Wed, 27 May 2020 17:54:36 +0200 (CEST)
-Date:   Wed, 27 May 2020 17:54:36 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>, Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V7 00/15] perf/x86: Add perf text poke events
-Message-ID: <20200527155436.GA706460@hirez.programming.kicks-ass.net>
-References: <20200512121922.8997-1-adrian.hunter@intel.com>
- <bee04840-143c-18bb-df82-5aa58d70730e@intel.com>
- <20200520014001.GF28228@kernel.org>
- <20200520155634.GQ317569@hirez.programming.kicks-ass.net>
- <20200527154716.GC16490@kernel.org>
+        Wed, 27 May 2020 11:54:52 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29AC7C05BD1E;
+        Wed, 27 May 2020 08:54:52 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id x10so10268752plr.4;
+        Wed, 27 May 2020 08:54:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nkIhbxtFT/sWyLG+CNPMvzFZfh5YwCelX3IPeKtDVng=;
+        b=PAMb3Gighhz0cCKhjZLQ89rDfM+umkVZTkpYgFwBdzZ9PIGR1KNuJfANRSBsICHGU1
+         9GFY4+NhktZozymnBZgQaGPkn8QdPxDOXGhFk13RvLQfW7JVN2KYbsdVXfBT1OinJLIp
+         zrRy0l+YVDGcMRQy8Ldm4ZecscejFQHzikG3HLWm++8UC3ai8KnWZCyKH6z7T/HA1xRI
+         Wp+WUBUbWpR2kBaZ0JpFXShORG+eXejQ1vCRS83kPuIkPDQqhhjsTVcFK0GFU7CbfTMs
+         dACufN3iOpLHsbWp1FGFQTUumq0BZHbJAIhG4FZ5GeQo+es6H96EK3UqJhZ/+Te+5OLe
+         Y23A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nkIhbxtFT/sWyLG+CNPMvzFZfh5YwCelX3IPeKtDVng=;
+        b=VTFzvqV8dkwr6K3401itxGBMTwC/kf60dgg1UExx0SDsciPoRL8jZsRcDUNi2ZPYqL
+         g4eNnaOBZwpzdA3A6AH42DXVzZ2pSuJR6+p8E4mVdL8h20Gea/3oY74RMAzOLSBVo6Np
+         e0MHf6VW07iMxisYI/HfLkuJfGWmqywdTKPF5eV6xD75APqL8IbmWkmOhHCkP/K0zaL3
+         JtZi8G2v1UTZfy4XIOKsijtNfO3BG+oEewqSikwPkM9MfhhfSuRwZAX6pH9Z6piKX7FX
+         6sYtrXbmEz1Udm6quaUCKI13Rm/wZsaCueVC4q5vKOlDx8Doq/K63eC5ftyILemkbFx3
+         jVQQ==
+X-Gm-Message-State: AOAM533JrVD2xKcTbGKafB6hE5xCQ+9xrvi2rGh4y2PSaCPzePXbXsTJ
+        yXCMvyvkhF67Y5+AKoRhet8=
+X-Google-Smtp-Source: ABdhPJxjWquEPV+JeRdzbhyTylh3GgQILPCaziRrufi5RFxgpIErfBy/fC56S/kQiDi7y42BfuoXZQ==
+X-Received: by 2002:a17:902:9882:: with SMTP id s2mr6368400plp.184.1590594891507;
+        Wed, 27 May 2020 08:54:51 -0700 (PDT)
+Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::1])
+        by smtp.gmail.com with ESMTPSA id q44sm3286859pja.2.2020.05.27.08.54.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 08:54:50 -0700 (PDT)
+Date:   Wed, 27 May 2020 08:54:47 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Fabien Parent <fparent@baylibre.com>,
+        Stephane Le Provost <stephane.leprovost@mediatek.com>,
+        Pedro Tsai <pedro.tsai@mediatek.com>,
+        Andrew Perepech <andrew.perepech@mediatek.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH] net: ethernet: mtk-star-emac: fix error path in RX
+ handling
+Message-ID: <20200527155447.GA568403@ubuntu-s3-xlarge-x86>
+References: <20200527092404.3567-1-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200527154716.GC16490@kernel.org>
+In-Reply-To: <20200527092404.3567-1-brgl@bgdev.pl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 12:47:16PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Wed, May 20, 2020 at 05:56:34PM +0200, Peter Zijlstra escreveu:
-> > On Tue, May 19, 2020 at 10:40:01PM -0300, Arnaldo Carvalho de Melo wrote:
-> > > PeterZ, from what we discussed for the next merge Window, perhaps we
-> > > should route the kernel bits via the tip tree while I will push the
-> > > tooling bits on my 5.8 merge request to Linus, Ok?
-> > 
-> > Sure, I can take the kernel bits. Thanks!
+On Wed, May 27, 2020 at 11:24:04AM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
-> So, I'm going thru the userpace bits and stopped at the patch copying
-> include/uapi/linux/perf_events.h to
-> tools/include/uapi/linux/perf_events.h to get the text_poke
-> perf_event_attr bit, looked at tip/ and this hasn't landed there yet,
-> any issues with the kernel bits?
+> The dma_addr field in desc_data must not be overwritten until after the
+> new skb is mapped. Currently we do replace it with uninitialized value
+> in error path. This change fixes it by moving the assignment before the
+> label to which we jump after mapping or allocation errors.
+> 
+> Fixes: 8c7bd5a454ff ("net: ethernet: mtk-star-emac: new driver")
+> Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Nah, I was waiting on the 0day robot, but its broken *again* :-(
+Tested-by: Nathan Chancellor <natechancellor@gmail.com> # build
 
-Let me go move things along manually.
+> ---
+>  drivers/net/ethernet/mediatek/mtk_star_emac.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/mediatek/mtk_star_emac.c b/drivers/net/ethernet/mediatek/mtk_star_emac.c
+> index b74349cede28..72bb624a6a68 100644
+> --- a/drivers/net/ethernet/mediatek/mtk_star_emac.c
+> +++ b/drivers/net/ethernet/mediatek/mtk_star_emac.c
+> @@ -1308,6 +1308,8 @@ static int mtk_star_receive_packet(struct mtk_star_priv *priv)
+>  		goto push_new_skb;
+>  	}
+>  
+> +	desc_data.dma_addr = new_dma_addr;
+> +
+>  	/* We can't fail anymore at this point: it's safe to unmap the skb. */
+>  	mtk_star_dma_unmap_rx(priv, &desc_data);
+>  
+> @@ -1318,7 +1320,6 @@ static int mtk_star_receive_packet(struct mtk_star_priv *priv)
+>  	netif_receive_skb(desc_data.skb);
+>  
+>  push_new_skb:
+> -	desc_data.dma_addr = new_dma_addr;
+>  	desc_data.len = skb_tailroom(new_skb);
+>  	desc_data.skb = new_skb;
+>  
+> -- 
+> 2.25.0
+> 
