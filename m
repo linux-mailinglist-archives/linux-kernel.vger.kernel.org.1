@@ -2,112 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AEA11E4EDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D30351E4EE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387416AbgE0UJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 16:09:37 -0400
-Received: from mga07.intel.com ([134.134.136.100]:52878 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726798AbgE0UJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 16:09:36 -0400
-IronPort-SDR: TaMRkLinzWzGr3EtcyDBzxPV47kU3Rcsrf2v6gVDD7H/mDbf4OyHMauQe+Z1VyYQFAaZfqQ8KA
- W6DEFsFpsk+Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 13:09:35 -0700
-IronPort-SDR: Uae7lhmeinT5YiWWmiUkt6Tj7A1nsDizky35Cl75Rv3tTZYtdmqBDkYOzeLGMAeuc2tnKOfKQF
- EofL5u+UPwLQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,442,1583222400"; 
-   d="scan'208";a="376137006"
-Received: from lkakolx-mobl.ger.corp.intel.com ([10.249.43.73])
-  by fmsmga001.fm.intel.com with ESMTP; 27 May 2020 13:09:30 -0700
-Message-ID: <37da2695fe6de09d69e27b77f3e29e068596205f.camel@linux.intel.com>
-Subject: Re: [PATCH] tpm: Revert "tpm: fix invalid locking in NONBLOCKING
- mode"
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Mario.Limonciello@dell.com, peterhuewe@gmx.de, jgg@ziepe.ca
-Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jeffrin@rajagiritech.edu.in, alex@guzman.io
-Date:   Wed, 27 May 2020 23:09:28 +0300
-In-Reply-To: <1590521924.15108.1.camel@HansenPartnership.com>
-References: <20200526183213.20720-1-mario.limonciello@dell.com>
-         <1590520454.11810.40.camel@HansenPartnership.com>
-         <ccf055cbf1a14f28bc95a6b02e29a2f6@AUSX13MPC105.AMER.DELL.COM>
-         <1590521924.15108.1.camel@HansenPartnership.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.2-0ubuntu1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S2387666AbgE0UKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 16:10:16 -0400
+Received: from mta-p6.oit.umn.edu ([134.84.196.206]:38360 "EHLO
+        mta-p6.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387629AbgE0UKN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 16:10:13 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-p6.oit.umn.edu (Postfix) with ESMTP id 49XMPw2mpyz9vZ2R
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 20:10:12 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at umn.edu
+Received: from mta-p6.oit.umn.edu ([127.0.0.1])
+        by localhost (mta-p6.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id S72-_PqyCzUr for <linux-kernel@vger.kernel.org>;
+        Wed, 27 May 2020 15:10:12 -0500 (CDT)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mta-p6.oit.umn.edu (Postfix) with ESMTPS id 49XMPw138jz9vK0r
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 15:10:12 -0500 (CDT)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p6.oit.umn.edu 49XMPw138jz9vK0r
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p6.oit.umn.edu 49XMPw138jz9vK0r
+Received: by mail-io1-f71.google.com with SMTP id t23so17771753iog.21
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 13:10:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umn.edu; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=hPSY+Zh0t1rGNkSqJtjBbGWhpyEB+X/pF0E6TThgwhg=;
+        b=cO0BH8ko43bkOPatdOWMTW1FAm4WGWEPap0aloF2Ov8I0nG59A/3qh6AZfb6yAbZZO
+         WAhNKKNK7gSl5i+QdplLfll1L86UVGr2JjcN3cCuvjtM4R1WxDbhalnYCwNgAdRyz5pR
+         gYgtyRBZD+g5y6bZ/jB0XJ+eePjHUzxTXtJ8zt8lnJwfL9WqejH+dysiC2m3vWxz0qIU
+         5nQrWV7T5cxzaojhGzAJaNCP3VPFY8xJInVRdfzCR+MaWpnpTT3X+w0EwAsjWp/q6kjl
+         XGbnFX8oRUWA22jCtYpUo772KJpqFPyEjNrgn1OTYXUggTnMtWI0arlJAKaeejZwEVHO
+         OJ/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=hPSY+Zh0t1rGNkSqJtjBbGWhpyEB+X/pF0E6TThgwhg=;
+        b=NmOFRPJ+l1W6Xf9oEJcZhhhKv8FBb3Vk/40y5Wi2mm6TTLVd0ePNV4cZmRvwvzFYO6
+         l4X6/tyz9SzzDLNXWCPJVyYmSE6wPWsZaPalH1/HBGaBLyUZAe5+z7BTv4Gm+XTUbQ02
+         F//MGINyT9GUXeBwNLuMv2g2Gm+gl/wgIGnNvdS8VZx92OTdhi+112ZwUctErmTjc7Bp
+         XJwXL7pbQHncJkdTqlPoGzFxT93Y3+ccWEj7Uc4+MydDzJD8xIiZ63wYqwckRcl7tpey
+         7vFWTk2nHbudOgB+1jBwxHvlXrjPN817uY7TLYOH3/hvGpETaJ7921EFG9zUZs+26por
+         yGkQ==
+X-Gm-Message-State: AOAM531Dxe31Z0OKwcTYS5MrWdUpVrAVwERNMjKSp+0kirC1VdOuQQyf
+        9Jut7/bLRquugImHMKoSPAX2qx0191yDGXCh21MkujDGVu1jipLusiP0XrM9+5R8gw2i3maXhu5
+        izqWw8qAo2U7O+PWpw9L4cLDnBQyC
+X-Received: by 2002:a6b:7b4a:: with SMTP id m10mr8477805iop.55.1590610211694;
+        Wed, 27 May 2020 13:10:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxuhrc7NDsfRK/mm7gpFg9DSuH5ZtlqPdBbXWHpT2UnfIHxGwqhPUuTPCAJzX65HWUIdG9W/A==
+X-Received: by 2002:a6b:7b4a:: with SMTP id m10mr8477782iop.55.1590610211353;
+        Wed, 27 May 2020 13:10:11 -0700 (PDT)
+Received: from qiushi.dtc.umn.edu (cs-kh5248-02-umh.cs.umn.edu. [128.101.106.4])
+        by smtp.gmail.com with ESMTPSA id y11sm2020565ily.22.2020.05.27.13.10.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 13:10:10 -0700 (PDT)
+From:   wu000273@umn.edu
+To:     kjlu@umn.edu
+Cc:     wu000273@umn.edu, Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Vyacheslav Dubeyko <Vyacheslav.Dubeyko@hgst.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-nilfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] nilfs2: Fix reference count leak in nilfs_sysfs_create_device_group
+Date:   Wed, 27 May 2020 15:09:33 -0500
+Message-Id: <20200527200933.31135-1-wu000273@umn.edu>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-05-26 at 12:38 -0700, James Bottomley wrote:
-> On Tue, 2020-05-26 at 19:23 +0000, Mario.Limonciello@dell.com wrote:
-> > > On Tue, 2020-05-26 at 13:32 -0500, Mario Limonciello wrote:
-> > > > This reverts commit d23d12484307b40eea549b8a858f5fffad913897.
-> > > > 
-> > > > This commit has caused regressions for the XPS 9560 containing
-> > > > a Nuvoton TPM.
-> > > 
-> > > Presumably this is using the tis driver?
-> > 
-> > Correct.
-> > 
-> > > > As mentioned by the reporter all TPM2 commands are failing with:
-> > > >   ERROR:tcti:src/tss2-tcti/tcti-
-> > > > device.c:290:tcti_device_receive()
-> > > >   Failed to read response from fd 3, got errno 1: Operation not
-> > > > permitted
-> > > > 
-> > > > The reporter bisected this issue back to this commit which was
-> > > > backported to stable as commit 4d6ebc4.
-> > > 
-> > > I think the problem is request_locality ... for some inexplicable
-> > > reason a failure there returns -1, which is EPERM to user space.
-> > > 
-> > > That seems to be a bug in the async code since everything else
-> > > gives a ESPIPE error if tpm_try_get_ops fails ... at least no-one
-> > > assumes it gives back a sensible return code.
-> > > 
-> > > What I think is happening is that with the patch the TPM goes
-> > > through a quick sequence of request, relinquish, request,
-> > > relinquish and it's the third request which is failing (likely
-> > > timing out).  Without the patch, the patch there's only one
-> > > request,relinquish cycle because the ops are held while the async
-> > > work is executed.  I have a vague recollection that there is a
-> > > problem with too many locality request in quick succession, but
-> > > I'll defer to Jason, who I think understands the intricacies of
-> > > localities better than I do.
-> > 
-> > Thanks, I don't pretend to understand the nuances of this particular
-> > code, but I was hoping that the request to revert got some attention
-> > since Alex's kernel Bugzilla and message a few months ago to linux
-> > integrity weren't.
-> > 
-> > > If that's the problem, the solution looks simple enough: just move
-> > > the ops get down because the priv state is already protected by the
-> > > buffer mutex
-> > 
-> > Yeah, if that works for Alex's situation it certainly sounds like a
-> > better solution than reverting this patch as this patch actually does
-> > fix a problem reported by Jeffrin originally.
-> > 
-> > Could you propose a specific patch that Alex and Jeffrin can perhaps
-> > both try?
-> 
-> Um, what's wrong with the one I originally attached and which you quote
-> below?  It's only compile tested, but I think it will work, if the
-> theory is correct.
+From: Qiushi Wu <wu000273@umn.edu>
 
-Please send a legit patch, thanks.
+kobject_init_and_add() takes reference even when it fails.
+In nilfs_sysfs_create_device_group(), the memory allocated by
+kobject_init_and_add() is not freed when kobject_init_and_add()
+fails. Thus replace the jump target "free_dev_subgroups" by
+"cleanup_dev_kobject".
 
-/Jarkko
+Fixes: da7141fb78db ("nilfs2: add /sys/fs/nilfs2/<device> group")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+---
+ fs/nilfs2/sysfs.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
+index e60be7bb55b0..4a74756d52fe 100644
+--- a/fs/nilfs2/sysfs.c
++++ b/fs/nilfs2/sysfs.c
+@@ -1000,7 +1000,7 @@ int nilfs_sysfs_create_device_group(struct super_block *sb)
+ 	err = kobject_init_and_add(&nilfs->ns_dev_kobj, &nilfs_dev_ktype, NULL,
+ 				    "%s", sb->s_id);
+ 	if (err)
+-		goto free_dev_subgroups;
++		goto cleanup_dev_kobject;
+ 
+ 	err = nilfs_sysfs_create_mounted_snapshots_group(nilfs);
+ 	if (err)
+@@ -1038,8 +1038,6 @@ int nilfs_sysfs_create_device_group(struct super_block *sb)
+ 
+ cleanup_dev_kobject:
+ 	kobject_del(&nilfs->ns_dev_kobj);
+-
+-free_dev_subgroups:
+ 	kfree(nilfs->ns_dev_subgroups);
+ 
+ failed_create_device_group:
+-- 
+2.17.1
 
