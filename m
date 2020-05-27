@@ -2,106 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BA11E4D6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1984D1E4D7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728222AbgE0SwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 14:52:16 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:44705 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727950AbgE0SwO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 14:52:14 -0400
-Received: from mail-qt1-f172.google.com ([209.85.160.172]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MybX9-1ioW4D3EiL-00z0ao for <linux-kernel@vger.kernel.org>; Wed, 27 May
- 2020 20:28:24 +0200
-Received: by mail-qt1-f172.google.com with SMTP id a23so20059216qto.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 11:28:24 -0700 (PDT)
-X-Gm-Message-State: AOAM532ElrXGMnOvToqFtg9QDFRhp2IH/Aw90UwD4neOfiZUnVOUunr/
-        kqKPP4ucMvjN+dP/ZcvUxfcw5WS8c1Zj2PPw5yY=
-X-Google-Smtp-Source: ABdhPJzQFIUHW/JF3c0VCZnhiM4CA4LQ8k4vA7NOeogILSh6rHeZtA5TuSpUsKWWob7tJdlDv6coQztfVWvYPA3oB/s=
-X-Received: by 2002:ac8:1844:: with SMTP id n4mr5557996qtk.142.1590604103622;
- Wed, 27 May 2020 11:28:23 -0700 (PDT)
+        id S1728428AbgE0SzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 14:55:15 -0400
+Received: from mga17.intel.com ([192.55.52.151]:2321 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725836AbgE0SzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 14:55:15 -0400
+IronPort-SDR: Qs8/aBLzN6JTGMJXJ264P70K96skj7TptC1aJI3jRdePyYk8t+skRZVKXp3yYfpYQk4x+XdpR7
+ lCVRC+TpXoKA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 11:28:08 -0700
+IronPort-SDR: tKsjVEh3ZU7P2XLmx+VAu0BhXojIKhFHGwG0/drSmLISM9x6iAPrzIiBUgty6CCbj/6kUZ9t/8
+ oR2fMULD04uQ==
+X-IronPort-AV: E=Sophos;i="5.73,442,1583222400"; 
+   d="scan'208";a="468840528"
+Received: from agluck-desk2.sc.intel.com ([10.3.52.68])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 11:28:08 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Tony Luck <tony.luck@intel.com>, kbuild test robot <lkp@intel.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/mce/dev-mcelog: Fix "make W=1" warning about strncpy
+Date:   Wed, 27 May 2020 11:28:08 -0700
+Message-Id: <20200527182808.27737-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-References: <20200527134016.753354-1-arnd@arndb.de> <20200527152406.GD59947@C02TD0UTHF1T.local>
- <CAKwvOdn637hSboMnMV=S5f1wbiEnc6qtnrn=fpeCGtvr2W_Daw@mail.gmail.com>
-In-Reply-To: <CAKwvOdn637hSboMnMV=S5f1wbiEnc6qtnrn=fpeCGtvr2W_Daw@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 27 May 2020 20:28:07 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3-L-AQomvTcBv-KH1cVVu6uYNT_-2Ofir3UgwzGjcSug@mail.gmail.com>
-Message-ID: <CAK8P3a3-L-AQomvTcBv-KH1cVVu6uYNT_-2Ofir3UgwzGjcSug@mail.gmail.com>
-Subject: Re: [PATCH] arm64: disable -fsanitize=shadow-call-stack for big-endian
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Fangrui Song <maskray@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:AAs3BLls+YSdR1xFKiw97CMcig+gAVZJsoMLAefqQ52Ob22UL43
- eaCJPpfSOF5SgItYD9FnjFxFAFSl1z8E9cd1dEycQpOp9sg3q5RzJkkAxc4Ba+OqM35074d
- ri6aRCYL6QuOAn/k/OiD+oiXYiKX/X2rblFDd3kVLokcoT+OKb8B7nw7fpCo4gGHYHI5pB4
- 1mDlOW9JpWe2RhY6mrDPQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:UIrWExRtcrs=:YjImiCCLj5aKp9nTRIA67t
- gHFr2K0bfKkUKvieZpHMM55dGkl4spbMf4FqzIgp5kyh/CPwbUUXla0ppGBPoPZ0VUiQsZrOG
- /FDM4fHS81ySOsMXDZYo8UEdHKMKAcrR0yQFOizCf59ycplXnCbcp5xgV7xUMjMm0hsPhRlLI
- B7ReEn30Q7+1J13bKCHXikqZFUPUyvBODVecRBl3bmSwAZMz7BewjuORC8/jQcN4BaqAQLi7U
- xVMlHDVzG2hIFVGoi1/VgBUhU7lpIKFv23RerAakJUYFVUbvlCYzquSdnJt1+l900gwgRqg/E
- 4YxbvBxwacEMODIvMc94fl9KsoBo9Aiw93wuPotIckaTVPX1XeTgrQXh7QGqzlNLMMvveBLBi
- Dew3JJsYKPjt9cQ1tr/2L7evFCcpuJvZPjuP6zNaGwt+qSuguDqIoBPifG4XIk/Uv29fDbHYj
- 4I1Q1ZyZqa+q1o1HiupJSjmIKy+3SQ2etd9zSsQU9BZaO+0NMZx+MiKNxtkPumObRapeg2yKL
- XS1u30n6kLgizzCdE5bCCNNiHa0bErKYcvLW7OiqL9dshw/AmpmLjsUKnIv8OJuO3Y9wP44bp
- kAhKp0aK2VdJRKWTsqQe94gfnaFes6mxgj/0UE6MeU2NVUop/O0M5dG3aAYKX0GWClN16MwVn
- beSKfj35pYqI8UQW6XCujhJ/yAaAIdAzaDn1VD6w5PLxZ6+cqX0I1POf20wDaNbWpRPeyy0Om
- RfbbXFE27cUxoL3s/1YDR30PgoJrAAxXYtx/Ua/0VKjI1WqZLgC6Yu6zIkNEwHVHayMHcFzkn
- wU8q1hMvMtjZNsEOkNpzar+uYLsLirexG2MQtV4W9bKbRSLuYM=
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 7:28 PM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
->
-> On Wed, May 27, 2020 at 8:24 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> >
-> > On Wed, May 27, 2020 at 03:39:46PM +0200, Arnd Bergmann wrote:
-> > > clang-11 and earlier do not support -fsanitize=shadow-call-stack
-> > > in combination with -mbig-endian, but the Kconfig check does not
-> > > pass the endianess flag, so building a big-endian kernel with
-> > > this fails at build time:
-> > >
-> > > clang: error: unsupported option '-fsanitize=shadow-call-stack' for target 'aarch64_be-unknown-linux'
-> > >
-> > > Change the Kconfig check to let Kconfig figure this out earlier
-> > > and prevent the broken configuration. I assume this is a bug
-> > > in clang that needs to be fixed, but we also have to work
-> > > around existing releases.
-> > >
-> > > Fixes: 5287569a790d ("arm64: Implement Shadow Call Stack")
-> > > Link: https://bugs.llvm.org/show_bug.cgi?id=46076
-> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> >
-> > I suspect this is similar to the patchable-function-entry issue, and
-> > this is an oversight that we'd rather fix toolchain side.
-> >
-> > Nick, Fangrui, thoughts?
->
-> Exactly, Fangrui already has a fix: https://reviews.llvm.org/D80647.
-> Thanks Fangrui!
+The kbuild test robot reported this warning:
 
-Ok, great! I had opened the bug first so I could reference it in the
-commit changelog, it seems the fix came fast than I managed to
-send out the kernel workaround.
+arch/x86/kernel/cpu/mce/dev-mcelog.c: In function 'dev_mcelog_init_device':
+arch/x86/kernel/cpu/mce/dev-mcelog.c:346:2: warning: 'strncpy' output truncated before terminating nul copying 12 bytes from a string of the same length [-Wstringop-truncation]
 
-Do we still want the kernel workaround anyway to make it work
-with older clang versions, or do we expect to fall back to not
-use the integrated assembler for the moment?
+This is accurate, but I don't care that the trailing NUL character isn't copied.
+The string being copied is just a magic number signature so that crash dump
+tools can be sure they are decoding the right blob of memory.
 
-      Arnd
+Change to use memcpy() instead of strncpy()
+
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+---
+ arch/x86/kernel/cpu/mce/dev-mcelog.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/cpu/mce/dev-mcelog.c b/arch/x86/kernel/cpu/mce/dev-mcelog.c
+index d089567a9ce8..bcb379b2fd42 100644
+--- a/arch/x86/kernel/cpu/mce/dev-mcelog.c
++++ b/arch/x86/kernel/cpu/mce/dev-mcelog.c
+@@ -343,7 +343,7 @@ static __init int dev_mcelog_init_device(void)
+ 	if (!mcelog)
+ 		return -ENOMEM;
+ 
+-	strncpy(mcelog->signature, MCE_LOG_SIGNATURE, sizeof(mcelog->signature));
++	memcpy(mcelog->signature, MCE_LOG_SIGNATURE, sizeof(mcelog->signature));
+ 	mcelog->len = mce_log_len;
+ 	mcelog->recordlen = sizeof(struct mce);
+ 
+-- 
+2.21.1
+
