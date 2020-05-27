@@ -2,182 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F0E1E4D47
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1B71E4D5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726933AbgE0Srn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 14:47:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
+        id S1728075AbgE0Ssv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 14:48:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726482AbgE0Srg (ORCPT
+        with ESMTP id S1726467AbgE0Srg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 May 2020 14:47:36 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5EABC08C5C2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 11:28:49 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id f21so9186454pgg.12
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 11:28:49 -0700 (PDT)
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF79C08C5C3;
+        Wed, 27 May 2020 11:29:13 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id h10so27159609iob.10;
+        Wed, 27 May 2020 11:29:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iA+KkSp+x1pCOvFG2laI62cGHgeFrOqb4fOzsNTxNXU=;
-        b=s5sgK5hVj6s8lKi3Rri8hD77o4Tgsh/f//XKeSLPPL6IoaX/9mCJYEHRJ32vVuTTGB
-         dFOJ6DX54r/GDHqGsERVaSkKn7VZP6w7vmoq01S+s7Vgp4NCjhtVzBjBz/ibFnvGcWta
-         mSfHvumiHewYuXpM4XZwLfp01LJYUKENxLfVUkXnOtA0BezWqdmG+dG9FruFxrFvx+z0
-         OLSDlugaSodJcE0avHyTiDxelPvs1YxJU3Ddg4TK5lzP7IpA32ZcQqmyQOKAlpQDiDDP
-         fF30dP0+KbJyDOf08di6glcZut8WphRJqfLPENPijbkDbzZ6pcV6gQGYyCj6OH9Rd9v6
-         fRqg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FW8Q9Rorz9pPYc/xr3AkQmCBY01IskGBSmgwhtvJ9ZU=;
+        b=sZtyFQORrPLQ4OmmN95ukhbr9eaO4A0bRAoSlF5lwld76UrlDxnqypcamYyZpQ0AKV
+         zLq/+vZ7EKnSzTICk4F5MqdhPiIliA6GZHvGRUyHrAdiE4Y9Bl1oMG6fzDbyDcjb+2Ng
+         TPq4XyNGzDlZV03yi9zrIlFCURC3zvRe0M36EhkoPKGiMxmfrWuYVz9zCniCv/epCuLw
+         3WMd2NUY/g7cAvZtI+Kkuu5LLfQ5GLAcw9keDaFUOGQlgbYRgEp5woAZvDmgna+TyQHX
+         sEmUL/oBKUXwoxEBd0udHuvYcwFHsiDwJ85qcIqhsXrUap6I7Jhi+/kOV6fcFRHvrylS
+         iz5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iA+KkSp+x1pCOvFG2laI62cGHgeFrOqb4fOzsNTxNXU=;
-        b=ubItvF1VL3SvZkCUPigJTxfVRdXh7PPsFLIa9NdYyAbZunQoVJBKEDbNzUvYUNGzTJ
-         8APFqK1OhPCDD1If/apibZNQP2kEEdJeO1qnVzTyqN5g8QLtwhjpGrCrdgzitz5hrZlv
-         uNU2n6covs+ELypQpMaaooYUPC/v3fQFgpDd+LsZkC5qw7Pm+455HepDKFnOgAlmJIAx
-         f0U3mE1j15XxsUF/DpgGFsksK2plimw8B8J6HgPQgjwbHFKxlBDEPPNKYYaNNbdGjuek
-         87yOmVN0r3MfGJX/3ArZEAToNJukcZpiDAlfUzOM+ZwKQzyoi0PCjK+F+eCwIgtqt7dV
-         IUAw==
-X-Gm-Message-State: AOAM5308tG4QbaOyk/juvh07TM7vWy75C8pcMpyZbcXH6clGxPwh1IBc
-        DERxyMi+eAJ8qsXeQPBRV5WXlf4YtN6ntg==
-X-Google-Smtp-Source: ABdhPJy79EBrfQSWmv0ROoxKkjCOvcXwdJtlDQLwN27cdTeaTy6nksFR7zHfbpPjZAN2LXNgjfyAZw==
-X-Received: by 2002:a63:e008:: with SMTP id e8mr5139090pgh.451.1590604128900;
-        Wed, 27 May 2020 11:28:48 -0700 (PDT)
-Received: from google.com ([2620:15c:2ce:0:9efe:9f1:9267:2b27])
-        by smtp.gmail.com with ESMTPSA id z8sm2517225pgc.80.2020.05.27.11.28.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2020 11:28:48 -0700 (PDT)
-Date:   Wed, 27 May 2020 11:28:43 -0700
-From:   Fangrui Song <maskray@google.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Enrico Weigelt <info@metux.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Bill Wendling <morbo@google.com>, Jian Cai <jiancai@google.com>
-Subject: Re: [PATCH] arm64: fix clang integrated assembler build
-Message-ID: <20200527182843.g6tbow4lqsvwl2ah@google.com>
-References: <20200527141435.1716510-1-arnd@arndb.de>
- <CAKwvOdnNxj-MdKj3aWoefF2W9PPG-TSeNU4Ym-N8NODJB5Yw_w@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FW8Q9Rorz9pPYc/xr3AkQmCBY01IskGBSmgwhtvJ9ZU=;
+        b=nQ5wCdAK6vlvjz9P0gHrFWqyYFAOsmz6oZDjU6Rv64iFAlMINxi2sFPQHBt92Dl1pa
+         4Kko3axL1GHpo7nkQb0j91D/5HbZP860xcR06ZbqYBeZIs9xKmqdiDMeufaJSRVhxKMi
+         NSvmmhogP6wnuptL/apuGfFSLEJvJX/PKEg1ZuhDy8CT+JHFGJ+6GPpfkTBdA+0cO/24
+         PhXNugVYhW0qCwNIO7GFAZub8ezWpbWs0L32GoV31hF2brfJJAQBdLIDM/daCPdISRx7
+         W4iPoYEV1cjKgx5rKe42e9uotmx6I/5SK3DnZQub0gPmZSb6BjLI7ZC304s/FgKbBID7
+         op2Q==
+X-Gm-Message-State: AOAM532Jb/Vnh/qzXOUqJNJlXtHZaKkXnjkSqH7J1O/V8NQuufSLs6Uz
+        8RvOhfQIPnV3AA6QpdP2TZkcEhBU8e+fw/7Idw==
+X-Google-Smtp-Source: ABdhPJwMhonBm2LfUtNamMbLFx30kjbOuifum2IycgYlpJGgwHftdyG08kcAUDL/v2FAUAHwx2hTCUduOaeaf68PHwY=
+X-Received: by 2002:a5d:9758:: with SMTP id c24mr21786555ioo.144.1590604152179;
+ Wed, 27 May 2020 11:29:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdnNxj-MdKj3aWoefF2W9PPG-TSeNU4Ym-N8NODJB5Yw_w@mail.gmail.com>
+References: <20200523120021.34996-1-ardb@kernel.org> <20200523120021.34996-3-ardb@kernel.org>
+ <20200527143650.GA3103408@rani.riverdale.lan>
+In-Reply-To: <20200527143650.GA3103408@rani.riverdale.lan>
+From:   Brian Gerst <brgerst@gmail.com>
+Date:   Wed, 27 May 2020 14:29:01 -0400
+Message-ID: <CAMzpN2ikgiXdaJ8t2ivB90JhOQsa=ziV738wVsXo3JU4HjAbOw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] x86/boot/compressed: force hidden visibility for
+ all symbol references
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2020-05-27, 'Nick Desaulniers' via Clang Built Linux wrote:
->On Wed, May 27, 2020 at 7:14 AM Arnd Bergmann <arnd@arndb.de> wrote:
->>
->> clang and gas seem to interpret the symbols in memmove.S and
->> memset.S differently, such that clang does not make them
->> 'weak' as expected, which leads to a linker error, with both
->> ld.bfd and ld.lld:
->>
->> ld.lld: error: duplicate symbol: memmove
->> >>> defined at common.c
->> >>>            kasan/common.o:(memmove) in archive mm/built-in.a
->> >>> defined at memmove.o:(__memmove) in archive arch/arm64/lib/lib.a
->>
->> ld.lld: error: duplicate symbol: memset
->> >>> defined at common.c
->> >>>            kasan/common.o:(memset) in archive mm/built-in.a
->> >>> defined at memset.o:(__memset) in archive arch/arm64/lib/lib.a
->>
->> Copy the exact way these are written in memcpy_64.S, which does
->> not have the same problem.
->>
->> I don't know why this makes a difference, and it would be good
->> to have someone with a better understanding of assembler internals
->> review it.
->>
->> It might be either a bug in the kernel or a bug in the assembler,
->> no idea which one. My patch makes it work with all versions of
->> clang and gcc, which is probably helpful even if it's a workaround
->> for a clang bug.
+On Wed, May 27, 2020 at 2:08 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
 >
->+ Bill, Fangrui, Jian
->I think we saw this bug or a very similar bug internally around the
->ordering of .weak to .global.
-
-This may be another instance of
-https://sourceware.org/pipermail/binutils/2020-March/000299.html
-https://lore.kernel.org/linuxppc-dev/20200325164257.170229-1-maskray@google.com/
-
-I haven't checked but there may be both a .globl directive and a .weak
-directive
-
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->> ---
->> ---
->>  arch/arm64/lib/memcpy.S  | 3 +--
->>  arch/arm64/lib/memmove.S | 3 +--
->>  arch/arm64/lib/memset.S  | 3 +--
->>  3 files changed, 3 insertions(+), 6 deletions(-)
->>
->> diff --git a/arch/arm64/lib/memcpy.S b/arch/arm64/lib/memcpy.S
->> index e0bf83d556f2..dc8d2a216a6e 100644
->> --- a/arch/arm64/lib/memcpy.S
->> +++ b/arch/arm64/lib/memcpy.S
->> @@ -56,9 +56,8 @@
->>         stp \reg1, \reg2, [\ptr], \val
->>         .endm
->>
->> -       .weak memcpy
->>  SYM_FUNC_START_ALIAS(__memcpy)
->> -SYM_FUNC_START_PI(memcpy)
->> +SYM_FUNC_START_WEAK_PI(memcpy)
->>  #include "copy_template.S"
->>         ret
->>  SYM_FUNC_END_PI(memcpy)
->> diff --git a/arch/arm64/lib/memmove.S b/arch/arm64/lib/memmove.S
->> index 02cda2e33bde..1035dce4bdaf 100644
->> --- a/arch/arm64/lib/memmove.S
->> +++ b/arch/arm64/lib/memmove.S
->> @@ -45,9 +45,8 @@ C_h   .req    x12
->>  D_l    .req    x13
->>  D_h    .req    x14
->>
->> -       .weak memmove
->>  SYM_FUNC_START_ALIAS(__memmove)
->> -SYM_FUNC_START_PI(memmove)
->> +SYM_FUNC_START_WEAK_PI(memmove)
->>         cmp     dstin, src
->>         b.lo    __memcpy
->>         add     tmp1, src, count
->> diff --git a/arch/arm64/lib/memset.S b/arch/arm64/lib/memset.S
->> index 77c3c7ba0084..a9c1c9a01ea9 100644
->> --- a/arch/arm64/lib/memset.S
->> +++ b/arch/arm64/lib/memset.S
->> @@ -42,9 +42,8 @@ dst           .req    x8
->>  tmp3w          .req    w9
->>  tmp3           .req    x9
->>
->> -       .weak memset
->>  SYM_FUNC_START_ALIAS(__memset)
->> -SYM_FUNC_START_PI(memset)
->> +SYM_FUNC_START_WEAK_PI(memset)
->>         mov     dst, dstin      /* Preserve return value.  */
->>         and     A_lw, val, #255
->>         orr     A_lw, A_lw, A_lw, lsl #8
->> --
->> 2.26.2
+> On Sat, May 23, 2020 at 02:00:20PM +0200, Ard Biesheuvel wrote:
+> > Eliminate all GOT entries in the decompressor binary, by forcing hidden
+> > visibility for all symbol references, which informs the compiler that
+> > such references will be resolved at link time without the need for
+> > allocating GOT entries.
+> >
+> > To ensure that no GOT entries will creep back in, add an assertion to
+> > the decompressor linker script that will fire if the .got section has
+> > a non-zero size.
+> >
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > ---
+> >  arch/x86/boot/compressed/Makefile      |  1 +
+> >  arch/x86/boot/compressed/hidden.h      | 19 +++++++++++++++++++
+> >  arch/x86/boot/compressed/vmlinux.lds.S |  1 +
+> >  3 files changed, 21 insertions(+)
+> >
+> > diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
+> > index 5f7c262bcc99..aa9ed814e5fa 100644
+> > --- a/arch/x86/boot/compressed/Makefile
+> > +++ b/arch/x86/boot/compressed/Makefile
+> > @@ -40,6 +40,7 @@ KBUILD_CFLAGS += $(call cc-disable-warning, gnu)
+> >  KBUILD_CFLAGS += -Wno-pointer-sign
+> >  KBUILD_CFLAGS += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
+> >  KBUILD_CFLAGS += -fno-asynchronous-unwind-tables
+> > +KBUILD_CFLAGS += -include hidden.h
+> >
 >
->-- 
->Thanks,
->~Nick Desaulniers
+> Ard, from the other thread [1] in case you missed it -- the plain
+> hidden.h fails to build in-tree. We need something like
+>         KBUILD_CFLAGS += -include $(srctree)/$(src)/hidden.h
+> instead.
 >
->-- 
->You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
->To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
->To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAKwvOdnNxj-MdKj3aWoefF2W9PPG-TSeNU4Ym-N8NODJB5Yw_w%40mail.gmail.com.
+> [1] https://lore.kernel.org/lkml/20200526153104.GC2190602@rani.riverdale.lan/
+
+How about using -fvisibility=hidden instead of including this header?
+
+--
+Brian Gerst
