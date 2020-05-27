@@ -2,109 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A295A1E4B61
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 19:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5750B1E4B6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 19:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731126AbgE0RFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 13:05:31 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:37414 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726978AbgE0RFa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 13:05:30 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 2A6F58030809;
-        Wed, 27 May 2020 17:05:27 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id QBkDe7aTVI8O; Wed, 27 May 2020 20:05:25 +0300 (MSK)
-Date:   Wed, 27 May 2020 20:05:24 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Guenter Roeck <linux@roeck-us.net>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Maxim Kaurkin <maxim.kaurkin@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-hwmon@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 3/3] hwmon: Add Baikal-T1 PVT sensor driver
-Message-ID: <20200527170524.hbjbikp5b6e5nw5l@mobilestation>
-References: <20200526133823.20466-1-Sergey.Semin@baikalelectronics.ru>
- <20200526133823.20466-4-Sergey.Semin@baikalelectronics.ru>
- <20200527162549.GA225240@roeck-us.net>
- <20200527165205.5krrdahiup3i2oq3@mobilestation>
- <14256f0f-2977-4a54-cf01-ae7e684d10c2@roeck-us.net>
+        id S1729770AbgE0RIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 13:08:18 -0400
+Received: from mga02.intel.com ([134.134.136.20]:24714 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726767AbgE0RIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 13:08:17 -0400
+IronPort-SDR: 4RypG239s4ykV/TPrMOD2E6bLZM6tKwPHizrqAshjKC+lYZgA/WixNZ5NaUFs9eJMK9ypgsLH8
+ lkFBG0G5BNxA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 10:06:13 -0700
+IronPort-SDR: eXcf5DjvIgIvmCd3FZhCi3GvS7LhmuToG8rM/iNhyd+XIRI5fZy2Bhusu9VMUX8I4fZ1d0zwiF
+ tqdj7avK+8DQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,442,1583222400"; 
+   d="scan'208";a="414277949"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by orsmga004.jf.intel.com with ESMTP; 27 May 2020 10:06:13 -0700
+Date:   Wed, 27 May 2020 10:06:13 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+904752567107eefb728c@syzkaller.appspotmail.com
+Subject: Re: [PATCH] KVM: x86: Initialize tdp_level during vCPU creation
+Message-ID: <20200527170612.GA24930@linux.intel.com>
+References: <20200527085400.23759-1-sean.j.christopherson@intel.com>
+ <40800163-2b28-9879-f21b-687f89070c91@redhat.com>
+ <20200527162933.GE24461@linux.intel.com>
+ <078365dd-64ff-4f3c-813c-3d9fc955ed1a@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <14256f0f-2977-4a54-cf01-ae7e684d10c2@roeck-us.net>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <078365dd-64ff-4f3c-813c-3d9fc955ed1a@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 09:58:00AM -0700, Guenter Roeck wrote:
-> On 5/27/20 9:52 AM, Serge Semin wrote:
-> > On Wed, May 27, 2020 at 09:25:49AM -0700, Guenter Roeck wrote:
-> >> On Tue, May 26, 2020 at 04:38:23PM +0300, Serge Semin wrote:
-> > 
-> > [nip]
-> > 
-> >>> +
-> >>> +=============================== ======= =======================================
-> >>> +Name				Perm	Description
-> >>> +=============================== ======= =======================================
-> >>> +update_interval			RW	Measurements update interval per
-> >>> +					sensor.
-> >>> +temp1_type			RO	Sensor type (always 1 as CPU embedded
-> >>> +					diode).
-> >>> +temp1_label			RO	CPU Core Temperature sensor.
-> >>> +temp1_input			RO	Measured temperature in millidegree
-> >>> +					Celsius.
-> >>> +temp1_min			RW	Low limit for temp input.
-> >>> +temp1_max			RW	High limit for temp input.
-> >>> +temp1_min_alarm			RO	Temperature input alarm. Returns 1 if
-> >>> +					temperature input went below min limit,
-> >>> +					0 otherwise.
-> >>> +temp1_max_alarm			RO	Temperature input alarm. Returns 1 if
-> >>> +					temperature input went above max limit,
-> >>> +					0 otherwise.
-> >>> +temp1_trim			RW	Temperature sensor trimming factor in
-> >>> +					millidegree Celsius. It can be used to
-> >>> +					manually adjust the temperature
-> >>> +					measurements within 7.130 degrees
-> >>> +					Celsius.
-> >>
-> >> vs. standard ABI:
-> >>
-> >> temp[1-*]_offset`
-> >>                 Temperature offset which is added to the temperature reading
-> >>                 by the chip.
-> >>
-> >>                 Unit: millidegree Celsius
-> >>
-> >> If you really think this is necessary, why not use the standard ABI ?
-> > 
-> > That would have made much more sense.) I'll replace the handwritten temp1_trim
-> > with the standard temp1_offset attribute in v4 shortly today. Thanks for pointing
-> > this out.
-> > 
+On Wed, May 27, 2020 at 06:56:19PM +0200, Paolo Bonzini wrote:
+> On 27/05/20 18:29, Sean Christopherson wrote:
+> > Ya.  syzbot is hitting a #GP due to NULL pointer during debugfs on the exact
+> > same sequence.  I haven't been able to reproduce that one (have yet to try
+> > syzbot's exact config), but it's another example of a "dumb" test hitting
+> > meaningful bugs.
 > 
-> Sorry for not realizing this earlier. The added explanation
-> made all the difference.
+> Saw that, it's mine. :)
 
-No worries. I'll fix it in v4. What about the clk_get_rate() part of the code?
-You had a comment regarding it in v2. I responded with justification that we can
-leave it as is. If you still disagree, then I create the clock rate caching in the
-private data at the probe() stage.
-
--Sergey
-
-> 
-> Guenter
+All yours.  I as hoping it would be easily reproducible and fixable while I
+was looking at the MMU BUG(), but that didn't happen.
