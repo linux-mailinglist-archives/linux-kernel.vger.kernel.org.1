@@ -2,75 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D631E3C74
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB141E3C7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388264AbgE0Ipb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 04:45:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388173AbgE0Ipb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 04:45:31 -0400
-Received: from coco.lan (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7BE9B206F1;
-        Wed, 27 May 2020 08:45:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590569131;
-        bh=PrG/wfJu4GEzoVBNL3trG0nXymQ/KbtrGBqZcfWWGJM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BvL3nr0Ex/WOcfNQO+m9Hf/cDDlHB6UM5pSo9kdsQQ/tfXKsxQD5kzMpuLULjIggT
-         UL70kpSxHZgA5Ql5+svLuJJTBouUiGKTB1hZI67qgzqBdjb5XxJYjifNBRd/fZpfxT
-         AhSj2kgf6cum4OsW63T6q7scRbNv8XGLZA+GsDdI=
-Date:   Wed, 27 May 2020 10:45:25 +0200
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 0/7] media: atomisp: Address several clang warnings
-Message-ID: <20200527104525.5e6cd93b@coco.lan>
-In-Reply-To: <20200527071150.3381228-1-natechancellor@gmail.com>
-References: <20200527071150.3381228-1-natechancellor@gmail.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S2388273AbgE0Iqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 04:46:49 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:42250 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388107AbgE0Iqs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 04:46:48 -0400
+Received: from localhost.localdomain (unknown [222.205.60.151])
+        by mail-app2 (Coremail) with SMTP id by_KCgCH_5bSKM5eQWchAA--.7710S4;
+        Wed, 27 May 2020 16:46:13 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Allison Randal <allison@lohutok.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: img-spdif-out: Fix runtime PM imbalance on error
+Date:   Wed, 27 May 2020 16:46:08 +0800
+Message-Id: <20200527084610.4790-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgCH_5bSKM5eQWchAA--.7710S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrKrWrZF15CFyUGr4xXF1UKFg_yoWfAFg_uw
+        4kGws3W3yfGws2qrW7Ja1Yv397Wrn7K3WUGr10vr15K34YyFZ8W3y8Xr98Cr18Xa1kZry0
+        q3yDuryxAryqvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb-8Fc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWU
+        XwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCY02Avz4vE
+        14v_GFyl42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026x
+        CaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_
+        JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r
+        1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_
+        Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr
+        1UYxBIdaVFxhVjvjDU0xZFpf9x0JUP-B_UUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0MBlZdtOUT6wAPso
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 27 May 2020 00:11:43 -0700
-Nathan Chancellor <natechancellor@gmail.com> escreveu:
+pm_runtime_get_sync() increments the runtime PM usage counter even
+the call returns an error code. Thus a pairing decrement is needed
+on the error handling path to keep the counter balanced.
 
-> Hi all,
-> 
-> This series aims to clean up the code while addressing the majority of
-> clang warnings in this driver, some found by the 0day bot and others
-> found by me.
-> 
-> There are several enum conversion warnings that happen, which I do not
-> really know how to solve without understanding how exactly this driver
-> works. I would appreciate some guidance or a solution. Below are the
-> warnings, sorry for not wrapping them but they would be hard to read
-> otherwise.
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ sound/soc/img/img-spdif-out.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-... 
-> ../drivers/staging/media/atomisp//pci/atomisp_compat_css20.h:117:22: note: expanded from macro 'CSS_ID'
-> #define CSS_ID(val)     (IA_ ## val)
-...
+diff --git a/sound/soc/img/img-spdif-out.c b/sound/soc/img/img-spdif-out.c
+index 456c462d52fb..b1d8e4535726 100644
+--- a/sound/soc/img/img-spdif-out.c
++++ b/sound/soc/img/img-spdif-out.c
+@@ -370,8 +370,10 @@ static int img_spdif_out_probe(struct platform_device *pdev)
+ 			goto err_pm_disable;
+ 	}
+ 	ret = pm_runtime_get_sync(&pdev->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_noidle(&pdev->dev);
+ 		goto err_suspend;
++	}
+ 
+ 	img_spdif_out_writel(spdif, IMG_SPDIF_OUT_CTL_FS_MASK,
+ 			     IMG_SPDIF_OUT_CTL);
+-- 
+2.17.1
 
-I actually wrote a patch getting rid of this ugly thing:
-
-	https://git.linuxtv.org/mchehab/experimental.git/commit/?h=atomisp_v3&id=cf6a15543ace1e99364911c0b7a2f6b8f2f43021
-
-This one was already submitted upstream (not merged yet), but there
-are also lots of other patches on my working tree.
-
-I'll try to apply your patch series on it, once I'll be able to
-fix a bug with mmap support.
-
-Thanks,
-Mauro
