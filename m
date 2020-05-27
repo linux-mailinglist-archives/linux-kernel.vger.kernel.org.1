@@ -2,125 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6FDE1E5106
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 00:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5DE1E50F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 00:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725891AbgE0WMv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 May 2020 18:12:51 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:57768 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgE0WMv (ORCPT
+        id S1726114AbgE0WKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 18:10:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725267AbgE0WKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 18:12:51 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1je4I4-0007b5-Ch; Wed, 27 May 2020 16:12:48 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1je4I3-0001jf-FJ; Wed, 27 May 2020 16:12:48 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200527134911.1024114-1-arnd@arndb.de>
-Date:   Wed, 27 May 2020 17:08:57 -0500
-In-Reply-To: <20200527134911.1024114-1-arnd@arndb.de> (Arnd Bergmann's message
-        of "Wed, 27 May 2020 15:49:01 +0200")
-Message-ID: <877dwx3u9y.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 27 May 2020 18:10:39 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DA5C05BD1E;
+        Wed, 27 May 2020 15:10:39 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id h9so10434146qtj.7;
+        Wed, 27 May 2020 15:10:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=G1XVpETlJJP2/jiBYqi8DO5iH3KbcawIwgPnsLm6SC8=;
+        b=Tp59n4X8czCiReNvvETssPFFJvGvIGmo5rc4qluvNzypT/Tkr2LkJFYlrlbkYvGBSz
+         SMKmCostg8pAueCS5/Bey4mSxgdfZcVcg37ZcuvQ+F/yvaQ1Yk7qsRNQpz2c9RHn85bx
+         0MygTRpTy6xgU4z7fifDIit8ixqEiYh1bUfDfIZTPp4/MOZ7Lmkm4NMbh5Np6AeZlOk2
+         ftXWKIFgDL4ibrSK28kKyruj+2F6hBBpntD6FMbx1JwEb6fdA2r5x/HhpD2sQBVTcGUm
+         urc73dd/+t0N6gBrMvWpf5fjRaJhgHlda4Q5OX1WqJN9cHDvznyuTUL47hrgNkCgG1us
+         IBsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=G1XVpETlJJP2/jiBYqi8DO5iH3KbcawIwgPnsLm6SC8=;
+        b=VqiaLePLy+N1sXi7As+9KK9gWg7CXXmtl9WQK7oOclUjdP7km527vCpw2/44dSQyDU
+         J7WhVMBi81jAmzYyTxKGFhe4iX6cYE6O5DqI0XxfZ2NHjK0WdIw51EYLczKxdBiJgkoL
+         B25GDv4n8oOdzRa2E96pFAqNOWuq/TVUTWQ9ePlZ/VnUV8Wsr4J+QnzwXsJcvfrS8I7L
+         quS2XtZS3s/vDTBpR5DuMUZWVv5qbvYnF5mhxaU/f+L8w0n/TjWX1FTl2iXHh514eQ50
+         rCmjm1KMcy2RZGGjKyUWMRAKrNml2pH3+PbZ2QMHew6Prb939MCTYOk64g1D24SMOoAh
+         zCTg==
+X-Gm-Message-State: AOAM532Yfu21Ke9u3LK7vMVwHYaGDlahTi0k3M2BZ6v2IWcsbdtp1MLy
+        RYSFsgNMB/uBU90TKMgz7d4=
+X-Google-Smtp-Source: ABdhPJyvPQqfUeH5p1gAxZJINHZv485sQezDQXZjkMcuPkV3lWTZYCE9XvqscSdhtwB0fetxjN3oBA==
+X-Received: by 2002:ac8:226d:: with SMTP id p42mr73463qtp.1.1590617438572;
+        Wed, 27 May 2020 15:10:38 -0700 (PDT)
+Received: from localhost.localdomain ([2001:1284:f013:8992:a39b:b6ab:3df8:5b60])
+        by smtp.gmail.com with ESMTPSA id i3sm3530811qkf.39.2020.05.27.15.10.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 15:10:37 -0700 (PDT)
+Received: by localhost.localdomain (Postfix, from userid 1000)
+        id 6A1E0C1B84; Wed, 27 May 2020 19:10:35 -0300 (-03)
+Date:   Wed, 27 May 2020 19:10:35 -0300
+From:   Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+To:     Jonas Falkevik <jonas.falkevik@gmail.com>
+Cc:     lucien.xin@gmail.com, nhorman@tuxdriver.com, vyasevich@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, linux-sctp@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] sctp: check assoc before SCTP_ADDR_{MADE_PRIM,ADDED}
+ event
+Message-ID: <20200527221035.GB47547@localhost.localdomain>
+References: <20200527095640.270986-1-jonas.falkevik@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-XM-SPF: eid=1je4I3-0001jf-FJ;;;mid=<877dwx3u9y.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18PilCsXe1U+52ZzNR11cP33Nif/W5bnxU=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XM_B_Unicode
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4617]
-        *  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Arnd Bergmann <arnd@arndb.de>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 472 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 11 (2.4%), b_tie_ro: 10 (2.1%), parse: 1.20
-        (0.3%), extract_message_metadata: 16 (3.3%), get_uri_detail_list: 1.25
-        (0.3%), tests_pri_-1000: 6 (1.3%), tests_pri_-950: 1.34 (0.3%),
-        tests_pri_-900: 1.16 (0.2%), tests_pri_-90: 180 (38.1%), check_bayes:
-        168 (35.5%), b_tokenize: 6 (1.4%), b_tok_get_all: 42 (8.9%),
-        b_comp_prob: 2.5 (0.5%), b_tok_touch_all: 113 (23.9%), b_finish: 1.02
-        (0.2%), tests_pri_0: 242 (51.4%), check_dkim_signature: 0.63 (0.1%),
-        check_dkim_adsp: 2.9 (0.6%), poll_dns_idle: 0.87 (0.2%), tests_pri_10:
-        2.1 (0.4%), tests_pri_500: 7 (1.5%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] binfmt_elf_fdpic: fix execfd build regression
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200527095640.270986-1-jonas.falkevik@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@arndb.de> writes:
+On Wed, May 27, 2020 at 11:56:40AM +0200, Jonas Falkevik wrote:
+> Make sure SCTP_ADDR_{MADE_PRIM,ADDED} are sent only for associations
+> that have been established.
+> 
+> These events are described in rfc6458#section-6.1
+> SCTP_PEER_ADDR_CHANGE:
+> This tag indicates that an address that is
+> part of an existing association has experienced a change of
+> state (e.g., a failure or return to service of the reachability
+> of an endpoint via a specific transport address).
+> 
+> Signed-off-by: Jonas Falkevik <jonas.falkevik@gmail.com>
 
-> The change to bprm->have_execfd was incomplete, leading
-> to a build failure:
->
-> fs/binfmt_elf_fdpic.c: In function 'create_elf_fdpic_tables':
-> fs/binfmt_elf_fdpic.c:591:27: error: 'BINPRM_FLAGS_EXECFD' undeclared
->
-> Change the last user of BINPRM_FLAGS_EXECFD in a corresponding
-> way.
->
-> Reported-by: Valdis Klētnieks <valdis.kletnieks@vt.edu>
-> Fixes: b8a61c9e7b4a ("exec: Generic execfd support")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> I have no idea whether this is right, I only looked briefly at
-> the commit that introduced the problem.
-
-It is correct and my fault.
-
-Is there an easy to build-test configuration that includes
-binfmt_elf_fdpic?
-
-I have this sense that it might be smart to unify binfmt_elf
-and binftm_elf_fdpic to the extent possible, and that will take build
-tests.
-
-Eric
-
-
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Thanks!
 
 > ---
->  fs/binfmt_elf_fdpic.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/binfmt_elf_fdpic.c b/fs/binfmt_elf_fdpic.c
-> index bba3ad555b94..aaf332d32326 100644
-> --- a/fs/binfmt_elf_fdpic.c
-> +++ b/fs/binfmt_elf_fdpic.c
-> @@ -588,7 +588,7 @@ static int create_elf_fdpic_tables(struct linux_binprm *bprm,
->  	nitems = 1 + DLINFO_ITEMS + (k_platform ? 1 : 0) +
->  		(k_base_platform ? 1 : 0) + AT_VECTOR_SIZE_ARCH;
+> Changes in v2:
+>  - Check asoc state to be at least established.
+>    Instead of associd being SCTP_FUTURE_ASSOC.
+>  - Common check for all peer addr change event
+> 
+>  net/sctp/ulpevent.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/net/sctp/ulpevent.c b/net/sctp/ulpevent.c
+> index c82dbdcf13f2..77d5c36a8991 100644
+> --- a/net/sctp/ulpevent.c
+> +++ b/net/sctp/ulpevent.c
+> @@ -343,6 +343,9 @@ void sctp_ulpevent_nofity_peer_addr_change(struct sctp_transport *transport,
+>  	struct sockaddr_storage addr;
+>  	struct sctp_ulpevent *event;
 >  
-> -	if (bprm->interp_flags & BINPRM_FLAGS_EXECFD)
-> +	if (bprm->have_execfd)
->  		nitems++;
+> +	if (asoc->state < SCTP_STATE_ESTABLISHED)
+> +		return;
+> +
+>  	memset(&addr, 0, sizeof(struct sockaddr_storage));
+>  	memcpy(&addr, &transport->ipaddr, transport->af_specific->sockaddr_len);
 >  
->  	csp = sp;
+> -- 
+> 2.25.4
+> 
