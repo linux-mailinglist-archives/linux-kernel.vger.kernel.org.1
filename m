@@ -2,99 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 847791E51C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 01:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DE81E51C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 01:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726129AbgE0X0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 19:26:05 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:39422 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725267AbgE0X0E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 19:26:04 -0400
-Received: by mail-qt1-f196.google.com with SMTP id k22so6029925qtm.6;
-        Wed, 27 May 2020 16:26:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pHGDLlJ9WIIzUBMSyQD34/Snx/SdTvbpspVS+Y0RZqY=;
-        b=VvV5PZ12eNzIgDTcuoEan4zVx8CA7LaheTeBAC9EA7h2vPmcdFF1bjDEDXnR84uuOI
-         VVdvcWAI8UDb/FeB67eMomsdYU9mczaHaSKyyO21l+tiDfLgaFBCQCnwM0D5QfgY2WMr
-         JthuCIp/mfHtJF94c8iHV/u/h3QulLr6cXVdZngi5vHG6mk7yJreO5qBg2vkH0fiLJJM
-         1q/Vweasrr6/hRWSAQwvZD/jabtxGmN9Q8Li/P3Kxllcpwmtlj8ZEf9MdkwCf5MgHdNm
-         4/e1oVekOVsB7NAF8/Bjg1uVYn4ywUQbpJH2fsa7wvoGL0Mv4SV8HHyv39KEsqQEJ4wC
-         yOtA==
-X-Gm-Message-State: AOAM5330LUsV2LUc60W2vngp9QCMBWyGWh2lGS58EECdtC1/azc9LhVW
-        08tJFiSZob74ku3kCjZZ+JaspSwH
-X-Google-Smtp-Source: ABdhPJyDu8rY7TSjnZYSXdD4Mv45PCk+AV/KskfzGF1jAZUPjgxn2p7EURuZxdnKpqn4b3ui07g30A==
-X-Received: by 2002:ac8:4c8b:: with SMTP id j11mr375549qtv.58.1590621963529;
-        Wed, 27 May 2020 16:26:03 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id y66sm3774883qka.24.2020.05.27.16.26.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2020 16:26:03 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-To:     Ard Biesheuvel <ardb@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] efi/x86: Don't blow away existing initrd
-Date:   Wed, 27 May 2020 19:26:02 -0400
-Message-Id: <20200527232602.21596-1-nivedita@alum.mit.edu>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <CAPcyv4hO1XEMHPLY-W6g_=TK2Dv=rLgJoVeKrBEHP63zTeq-sA@mail.gmail.com>
-References: <CAPcyv4hO1XEMHPLY-W6g_=TK2Dv=rLgJoVeKrBEHP63zTeq-sA@mail.gmail.com>
+        id S1725880AbgE0X2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 19:28:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725267AbgE0X2H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 19:28:07 -0400
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BCBB2078C;
+        Wed, 27 May 2020 23:28:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590622086;
+        bh=ON8PGesyAn+4FmexUP19mmvqNBZwY/TUXpZfPPF4QJ0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kwd/vg40MGTNgBlsGgZ1Ns4+sylbYRSUWSNWkKyvF2LP9p7PPuTN74buHh4ysAfUP
+         kx3KaoRMpZhdY7tjVPWt3N1iEkG2St95fPYcLkiFUc6rRYsmwUdfCmOhbSkxxLlh5i
+         poNDOBeCPqZrqDXH78oVECSagX75utQkwG/6d91Q=
+Received: by mail-ej1-f53.google.com with SMTP id o15so8684365ejm.12;
+        Wed, 27 May 2020 16:28:06 -0700 (PDT)
+X-Gm-Message-State: AOAM531FqwZp7VqhUwZ2UEsAaPmwxsqPppWEUfrglQDOJz3mmcMBa5Ss
+        PN+bGrwQL7Puuja/J3mvvm1RggX4qkqXP4MH1Q==
+X-Google-Smtp-Source: ABdhPJzcHSIbC4Mtrhld0K/22ZiApP3zop/6GIPFmfLxlHDVkueEoHAc4k/CHn67ZoeNeAdbwomWMXLXwYcLw84+BHU=
+X-Received: by 2002:a17:906:bcf8:: with SMTP id op24mr635286ejb.260.1590622084979;
+ Wed, 27 May 2020 16:28:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200522101225.62571-1-jitao.shi@mediatek.com>
+In-Reply-To: <20200522101225.62571-1-jitao.shi@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 28 May 2020 07:27:51 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_8=HvU8p=6xG5_bNHtjXOsQwNAn1zqHF6AmwtOReZ_Xzw@mail.gmail.com>
+Message-ID: <CAAOTY_8=HvU8p=6xG5_bNHtjXOsQwNAn1zqHF6AmwtOReZ_Xzw@mail.gmail.com>
+Subject: Re: [PATCH] drm/mediatek: dsi: fix scrolling of panel with small hfp
+ or hbp
+To:     Jitao Shi <jitao.shi@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        huijuan.xie@mediatek.com, stonea168@163.com,
+        cawa.cheng@mediatek.com,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        CK Hu <ck.hu@mediatek.com>, yingjoe.chen@mediatek.com,
+        eddie.huang@mediatek.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit
-  987053a30016 ("efi/x86: Move command-line initrd loading to efi_main")
-moved the command-line initrd loading into efi_main, with a check to
-ensure that it was attempted only if the EFI stub was booted via
-efi_pe_entry rather than the EFI handover entry.
+Hi, Jitao:
 
-However, in the case where it was booted via handover entry, and thus an
-initrd may have already been loaded by the bootloader, it then wrote 0
-for the initrd address and size, removing any existing initrd.
+Jitao Shi <jitao.shi@mediatek.com> =E6=96=BC 2020=E5=B9=B45=E6=9C=8822=E6=
+=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=886:12=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> If panel has too small hfp or hbp, horizontal_frontporch_byte or
+> horizontal_backporch_byte may become very small value or negative
+> value. This patch adjusts their values so that they are greater
+> than minimum value and keep total of them unchanged.
+>
+> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_dsi.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediate=
+k/mtk_dsi.c
+> index 0ede69830a9d..aebaafd90ceb 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> @@ -148,6 +148,9 @@
+>         (type =3D=3D MIPI_DSI_GENERIC_READ_REQUEST_2_PARAM) || \
+>         (type =3D=3D MIPI_DSI_DCS_READ))
+>
+> +#define MIN_HFP_BYTE           0x02
+> +#define MIN_HBP_BYTE           0x02
+> +
+>  struct mtk_phy_timing {
+>         u32 lpx;
+>         u32 da_hs_prepare;
+> @@ -450,6 +453,7 @@ static void mtk_dsi_config_vdo_timing(struct mtk_dsi =
+*dsi)
+>         u32 horizontal_sync_active_byte;
+>         u32 horizontal_backporch_byte;
+>         u32 horizontal_frontporch_byte;
+> +       s32 signed_hfp_byte, signed_hbp_byte;
+>         u32 dsi_tmp_buf_bpp, data_phy_cycles;
+>         struct mtk_phy_timing *timing =3D &dsi->phy_timing;
+>
+> @@ -519,6 +523,20 @@ static void mtk_dsi_config_vdo_timing(struct mtk_dsi=
+ *dsi)
+>                 }
+>         }
+>
+> +       signed_hfp_byte =3D (s32)horizontal_frontporch_byte;
+> +       signed_hbp_byte =3D (s32)horizontal_backporch_byte;
+> +
+> +       if (signed_hfp_byte + signed_hbp_byte < MIN_HFP_BYTE + MIN_HBP_BY=
+TE) {
+> +               DRM_WARN("Calculated hfp_byte and hbp_byte are too small,=
+ "
+> +                        "panel may not work properly.\n");
+> +       } else if (signed_hfp_byte < MIN_HFP_BYTE) {
+> +               horizontal_frontporch_byte =3D MIN_HFP_BYTE;
+> +               horizontal_backporch_byte -=3D MIN_HFP_BYTE - signed_hfp_=
+byte;
+> +       } else if (signed_hbp_byte < MIN_HBP_BYTE) {
+> +               horizontal_frontporch_byte -=3D MIN_HBP_BYTE - signed_hbp=
+_byte;
+> +               horizontal_backporch_byte =3D MIN_HBP_BYTE;
+> +       }
+> +
 
-Fix this by checking if size is positive before setting the fields in
-the bootparams structure.
+I think horizontal_frontporch_byte would never be negtive, and
+horizontal_backporch_byte would be negtive when
 
-Fixes: 987053a30016 ("efi/x86: Move command-line initrd loading to efi_main")
-Reported-by: Dan Williams <dan.j.williams@intel.com>
-Tested-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
----
- drivers/firmware/efi/libstub/x86-stub.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO_SYNC_PULSE)
+horizontal_backporch_byte =3D
+(vm->hback_porch * dsi_tmp_buf_bpp - 10);
+else
+horizontal_backporch_byte =3D ((vm->hback_porch + vm->hsync_len) *
+dsi_tmp_buf_bpp - 10);
 
-diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-index 072b7cf40475..ceb8e16c8b75 100644
---- a/drivers/firmware/efi/libstub/x86-stub.c
-+++ b/drivers/firmware/efi/libstub/x86-stub.c
-@@ -774,10 +774,12 @@ unsigned long efi_main(efi_handle_t handle,
- 			efi_err("Failed to load initrd!\n");
- 			goto fail;
- 		}
--		efi_set_u64_split(addr, &hdr->ramdisk_image,
--				  &boot_params->ext_ramdisk_image);
--		efi_set_u64_split(size, &hdr->ramdisk_size,
--				  &boot_params->ext_ramdisk_size);
-+		if (size > 0) {
-+			efi_set_u64_split(addr, &hdr->ramdisk_image,
-+					  &boot_params->ext_ramdisk_image);
-+			efi_set_u64_split(size, &hdr->ramdisk_size,
-+					  &boot_params->ext_ramdisk_size);
-+		}
- 	}
- 
- 	/*
--- 
-2.26.2
+If this time it's negtive, the calculation of
+horizontal_frontporch_byte is so strange.
+I think processing negtive value should before here.
 
+Regards,
+Chun-Kuang.
+
+>         writel(horizontal_sync_active_byte, dsi->regs + DSI_HSA_WC);
+>         writel(horizontal_backporch_byte, dsi->regs + DSI_HBP_WC);
+>         writel(horizontal_frontporch_byte, dsi->regs + DSI_HFP_WC);
+> --
+> 2.25.1
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
