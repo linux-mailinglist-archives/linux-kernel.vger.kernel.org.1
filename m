@@ -2,122 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7381E4A7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 184B51E4AAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729469AbgE0Qkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 12:40:43 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:43368 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725613AbgE0Qkm (ORCPT
+        id S2391438AbgE0QpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 12:45:03 -0400
+Received: from mxo1.dft.dmz.twosigma.com ([208.77.212.183]:39683 "EHLO
+        mxo1.dft.dmz.twosigma.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387952AbgE0QpD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 12:40:42 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jdz6d-0006w9-OG; Wed, 27 May 2020 10:40:39 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jdz6c-0003Ki-Lj; Wed, 27 May 2020 10:40:39 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     Kaitao Cheng <pilgrimtao@gmail.com>, christian@brauner.io,
-        akpm@linux-foundation.org, gladkov.alexey@gmail.com, guro@fb.com,
-        walken@google.com, avagin@gmail.com, khlebnikov@yandex-team.ru,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <20200527141155.47554-1-pilgrimtao@gmail.com>
-        <87k10x5tji.fsf@x220.int.ebiederm.org>
-        <20200527152340.GA19985@localhost.localdomain>
-Date:   Wed, 27 May 2020 11:36:48 -0500
-In-Reply-To: <20200527152340.GA19985@localhost.localdomain> (Alexey Dobriyan's
-        message of "Wed, 27 May 2020 18:23:40 +0300")
-Message-ID: <87k10x49nj.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 27 May 2020 12:45:03 -0400
+X-Greylist: delayed 450 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 May 2020 12:45:02 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mxo1.dft.dmz.twosigma.com (Postfix) with ESMTP id 49XGhW4ZTxz7t8v;
+        Wed, 27 May 2020 16:37:31 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at twosigma.com
+Received: from mxo1.dft.dmz.twosigma.com ([127.0.0.1])
+        by localhost (mxo1.dft.dmz.twosigma.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id HfevtT7Awm11; Wed, 27 May 2020 16:37:31 +0000 (UTC)
+Received: from exmbdft5.ad.twosigma.com (exmbdft5.ad.twosigma.com [172.22.1.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mxo1.dft.dmz.twosigma.com (Postfix) with ESMTPS id 49XGhW3mXNz3wZB;
+        Wed, 27 May 2020 16:37:31 +0000 (UTC)
+Received: from EXMBDFT11.ad.twosigma.com (172.23.162.14) by
+ exmbdft5.ad.twosigma.com (172.22.1.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 27 May 2020 16:37:31 +0000
+Received: from EXMBDFT11.ad.twosigma.com ([fe80::8d66:2326:5416:86a9]) by
+ EXMBDFT11.ad.twosigma.com ([fe80::8d66:2326:5416:86a9%19]) with mapi id
+ 15.00.1497.000; Wed, 27 May 2020 16:37:31 +0000
+From:   Nicolas Viennot <Nicolas.Viennot@twosigma.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>,
+        Adrian Reber <areber@redhat.com>
+CC:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Pavel Emelyanov <ovzxemul@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        =?utf-8?B?TWljaGHFgiBDxYJhcGnFhHNraQ==?= <mclapinski@google.com>,
+        Kamil Yurtsever <kyurtsever@google.com>,
+        "Dirk Petersen" <dipeit@gmail.com>,
+        Christine Flood <chf@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Radostin Stoyanov <rstoyanov1@gmail.com>,
+        "Cyrill Gorcunov" <gorcunov@openvz.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        "Stephen Smalley" <stephen.smalley.work@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Aaron Goidel <acgoide@tycho.nsa.gov>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
+        Eric Paris <eparis@parisplace.org>,
+        Jann Horn <jannh@google.com>
+Subject: RE: [PATCH] capabilities: Introduce CAP_RESTORE
+Thread-Topic: [PATCH] capabilities: Introduce CAP_RESTORE
+Thread-Index: AQHWL/2VaDM8D7CUOUK8NWcR6t6ZmKi0T3WAgAQnIICAALWDAIACzv0AgAAj3gCAAAp/wA==
+Date:   Wed, 27 May 2020 16:37:31 +0000
+Message-ID: <ac167440b8b64f02a034dd94687b8aee@EXMBDFT11.ad.twosigma.com>
+References: <20200522055350.806609-1-areber@redhat.com>
+ <dc86dffb-c7f8-15bb-db4e-be135da650cc@schaufler-ca.com>
+ <20200525080541.GF104922@dcbz.redhat.com>
+ <a75f3f71-66cf-e615-2cd5-86ac65a3bbdc@schaufler-ca.com>
+ <20200527134842.GA250149@dcbz.redhat.com>
+ <f43921ac-2e55-7d9d-406a-d0f4cfd8ff93@schaufler-ca.com>
+In-Reply-To: <f43921ac-2e55-7d9d-406a-d0f4cfd8ff93@schaufler-ca.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [192.168.118.183]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jdz6c-0003Ki-Lj;;;mid=<87k10x49nj.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18BJ/5vPS/5ztRlPMmB8rb39/YlelSsKas=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.3 required=8.0 tests=ALL_TRUSTED,BAYES_20,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_20 BODY: Bayes spam probability is 5 to 20%
-        *      [score: 0.1826]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Alexey Dobriyan <adobriyan@gmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 648 ms - load_scoreonly_sql: 0.11 (0.0%),
-        signal_user_changed: 210 (32.4%), b_tie_ro: 208 (32.2%), parse: 0.96
-        (0.1%), extract_message_metadata: 3.6 (0.6%), get_uri_detail_list:
-        1.27 (0.2%), tests_pri_-1000: 3.8 (0.6%), tests_pri_-950: 1.32 (0.2%),
-        tests_pri_-900: 1.08 (0.2%), tests_pri_-90: 173 (26.7%), check_bayes:
-        171 (26.5%), b_tokenize: 7 (1.1%), b_tok_get_all: 7 (1.1%),
-        b_comp_prob: 2.7 (0.4%), b_tok_touch_all: 150 (23.2%), b_finish: 1.09
-        (0.2%), tests_pri_0: 236 (36.4%), check_dkim_signature: 0.57 (0.1%),
-        check_dkim_adsp: 2.8 (0.4%), poll_dns_idle: 0.69 (0.1%), tests_pri_10:
-        2.3 (0.4%), tests_pri_500: 7 (1.2%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] proc/base: Skip assignment to len when there is no error on d_path in do_proc_readlink.
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexey Dobriyan <adobriyan@gmail.com> writes:
-
-> On Wed, May 27, 2020 at 09:41:53AM -0500, Eric W. Biederman wrote:
->> Kaitao Cheng <pilgrimtao@gmail.com> writes:
->> 
->> > we don't need {len = PTR_ERR(pathname)} when IS_ERR(pathname) is false,
->> > it's better to move it into if(IS_ERR(pathname)){}.
->> 
->> Please look at the generated code.
->> 
->> I believe you will find that your change will generate worse assembly.
->
-> I think patch is good.
->
-> Super duper CPUs which speculate thousands instructions forward won't
-> care but more embedded ones do. Or in other words 1 unnecessary instruction
-> on common path is more important for slow CPUs than for fast CPUs.
-
-No.  This adds an entire extra basic block, with an extra jump.
-
-A good compiler should not even generate an extra instruction for this
-case.  A good compiler will just let len and pathname share the same
-register.
-
-So I think this will hurt your slow cpu case two as it winds up just
-plain being more assembly code, which stress the size of the slow cpus
-caches.
-
-
-
-I do admit a good compiler should be able to hoist the assignment above
-the branch (as we have today) it gets tricky to tell if hoisting the
-assignment is safe.
-
-> This style separates common path from error path more cleanly.
-
-Very arguable.
-
-[snip a completely different case]
-
-Yes larger cases can have different solutions.
-
-Eric
+PiA+IElmIEkgdW5kZXJzdGFuZCBwYXJ0IG9mIENSSVUgY29ycmVjdGx5LCB0aGVuIHdlIG9ubHkg
+bmVlZCByZWFkLWFjY2VzcyANCj4gPiBmb3IgdGhlIGN1cnJlbnQgdXNlci4gSSBhbSBzdXJlIEFu
+ZHJlaSwgUGF2ZWwgb3IgQ3lyaWxsIHdpbGwgY29ycmVjdCANCj4gPiBtZSBpZiBJIGFtIHdyb25n
+IGNvbmNlcm5pbmcgbWFwX2ZpbGVzLg0KPiBJZiBJIGRvICJscyAtbCAvcHJvYy9zZWxmL21hcF9m
+aWxlcyIgSSBnZXQgdGhlIGxpbmsgbmFtZSBhbmQgbGluayBjb250ZW50Lg0KPiBXaGlsZSBJIGNh
+bid0IG9wZW4gL3Byb2Mvc2VsZi9tYXBfZmlsZXMvN2ZiZGUwYzMyMDAtN2ZiZGUwYzMzMDAgSSBj
+YW4gcmVhZCB0aGF0IGl0IHBvaW50cyB0byAvdXNyL2xpYjY0L2xkLTIuMzAuc28sIHdoaWNoIGlz
+IHNvbWV0aGluZyBJIGNhbiBvcGVuIGFuZCByZWFkLiBTdXJlLCBpdCdzIGFuIGV4dHJhIHN0ZXAs
+IGJ1dCBpdCdzIG5vIGJpZyBkZWFsLiBJdCBkb2VzIHJhaXNlIHRoZSBxdWVzdGlvbiBvZiB3aGF0
+IHZhbHVlIGNvbWVzIGZyb20gZGlzYWxsb3dpbmcgb3BlbiB2aWEgdGhlIHN5bWxpbmsuDQoNClJl
+YWRpbmcgdGhlIHN5bWxpbmsgZG9lc24ndCB3b3JrIGluIHR3byBjYXNlczoNCjEpIFRoZSBmaWxl
+IGhhcyBiZWVuIGRlbGV0ZWQNCjIpIFRoZSBmaWxlIGlzIGEgbWVtZmQgZmlsZQ0K
