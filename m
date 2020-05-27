@@ -2,105 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CD7B1E4FBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 23:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAF7B1E4FAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728472AbgE0VAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 17:00:30 -0400
-Received: from mta-p8.oit.umn.edu ([134.84.196.208]:38366 "EHLO
-        mta-p8.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728149AbgE0VAa (ORCPT
+        id S1728604AbgE0Uyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 16:54:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726718AbgE0Uyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 17:00:30 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-p8.oit.umn.edu (Postfix) with ESMTP id 49XNWw63vMz9vY6C
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 21:00:28 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at umn.edu
-Received: from mta-p8.oit.umn.edu ([127.0.0.1])
-        by localhost (mta-p8.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id OfCF3PQ-F0w1 for <linux-kernel@vger.kernel.org>;
-        Wed, 27 May 2020 16:00:28 -0500 (CDT)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mta-p8.oit.umn.edu (Postfix) with ESMTPS id 49XNWw4Wd7z9vY6f
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 16:00:28 -0500 (CDT)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p8.oit.umn.edu 49XNWw4Wd7z9vY6f
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p8.oit.umn.edu 49XNWw4Wd7z9vY6f
-Received: by mail-io1-f70.google.com with SMTP id j23so10044021iok.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 14:00:28 -0700 (PDT)
+        Wed, 27 May 2020 16:54:40 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA46C05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 13:54:40 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id x18so9515497pll.6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 13:54:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umn.edu; s=google;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id;
-        bh=HUfddYaBDcQ1QFr6cz0pOekNbdRK7nMNiK7RoAnFctQ=;
-        b=OVZd9pGw7a7FtLUoDlyqoKQRPkb4QEIFCuj9r1b3w32QVRGgZFh5etltRHQZ9pckuj
-         bQ8XwVKasUGKFmtLOa0tmIFQj/vQ6EztlbZr5XDxCAxp74DMxkZN9zeoRRzxdPQayYTz
-         fHHoVYAyb9ontJDCSfHtt0JmjCGSPQdphgwSBghRZUuFVPlyisvqdtRz+zLI+63AqeMw
-         Sc35eiWj2Je/MM75T6xXotPeaOXTATxORSfeZhWbjJeucB/KEmNXe5KFMwQJbRLpNsJq
-         h/w5K2WBpVsGz1RprHf5gfMDOL/gxJWuBV/1U+tFQ0lUslgGWYBe88rajbMw6IDu4vrp
-         DWXg==
+        bh=0PiLFUHjJ3TV2xcfUTcBbUSBMI/CnZK15s/joy4TG+Y=;
+        b=gY23dNqiZtCL+lz80go6c7oVIXjBIhyhcV2JSOZV4pqRf79boVoadZBc4SIKj2+Xu1
+         k1Ns6Qh3ueAFxQuC4HWqhwfJ57/Qnx78BDrFrwFdXQZg/uC14VrdMJ5bfoLlXq4lc4BV
+         CjAvdb2YYuf9B7aArvsqJE2RQBEQTwx2WMbWx2Gc64mnUFfirkcnl6sR8T/Udl08Xpo7
+         yz03yC4GNLHTD1/+l4dcQNRXyGHw79LAHLoLCMxtFjDfq/kJD16FL3skM2ujZtZLKMOT
+         GV0DKUO6KtSTxzNts1+hVNYkeijJDhV9/a0t+v1iL3rFILT4FiEdxTkpfezgnJNO5ANv
+         wn9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=HUfddYaBDcQ1QFr6cz0pOekNbdRK7nMNiK7RoAnFctQ=;
-        b=R5LuKB8vfD8QW+6kgUXTcgdnyzMehOwhGhJZz3QF35XYzHe2muwJQf7vEiib2d8466
-         VRGMZC9RdWswjfkRoam1j1jwnfIHsRw8PQBzOu49GINhF9WGy6XZ2xHOo1EIo9pv/eaH
-         IsE70FFpNo3osN2Ok7Uqy6J4Hf8WKVfnqHu3fQciJ/zJP5tik1H4nhNl4xNWpH5IjtaM
-         yo4vT16oehdx0rmLmuvjaiO7fmGOh5uvIYX88XXHUZMd4bZkxT3wir1iLWLC1H4q6rS5
-         3RndfpqYKRgcxDwaWuqREIiD4oMNtEjgCH1Lq4g3nrnJSK9p19IcOCdALJfZIiV9AQGg
-         NZZQ==
-X-Gm-Message-State: AOAM5311OBmJbo0Hj2wKW9rg4U8Y56EdtZ4ewqvmhfx6YCyI8mbqED2v
-        NlqSFUEAv5QuBWq2MdcylQ2aMA0+L6gC/eGkDwkL9STz6uNjBIVpHBdC8OACdAjAIsOWc7MwKvf
-        75II7jwTtKpg9ABcwjtMnjrJrUD40
-X-Received: by 2002:a5d:9a87:: with SMTP id c7mr10986364iom.152.1590613227947;
-        Wed, 27 May 2020 14:00:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxYzzsZr67+NLlaukFPS7WCxvFJ71Vx5yVwL4woKj59hxFx7OukcGbcZtO43XVWAP+Pn1Z8wQ==
-X-Received: by 2002:a5d:9a87:: with SMTP id c7mr10986340iom.152.1590613227572;
-        Wed, 27 May 2020 14:00:27 -0700 (PDT)
-Received: from qiushi.dtc.umn.edu (cs-kh5248-02-umh.cs.umn.edu. [128.101.106.4])
-        by smtp.gmail.com with ESMTPSA id o18sm2078369ils.30.2020.05.27.14.00.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2020 14:00:26 -0700 (PDT)
-From:   wu000273@umn.edu
-To:     kjlu@umn.edu
-Cc:     wu000273@umn.edu, Joerg Roedel <joro@8bytes.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] iommu: Fix reference count leak in iommu_group_alloc.
-Date:   Wed, 27 May 2020 16:00:19 -0500
-Message-Id: <20200527210020.6522-1-wu000273@umn.edu>
-X-Mailer: git-send-email 2.17.1
+        bh=0PiLFUHjJ3TV2xcfUTcBbUSBMI/CnZK15s/joy4TG+Y=;
+        b=R65usBxuJKiHCwEy5y2npK3bD/hGaH+B+DYKa2etPdVAK2LPK4mV3S9EocnRRWYvF9
+         r1vbawiSQ1HYr4R9ZMS3G9xy0R7G0hbryCcPyMj/I6DqJ1VdUE/9XYTJm09+pfqqSr0x
+         Af7iVrrhUdckLuFzasDNDs8/VVEpL2Nky3LmIe2TgyyjQtv4EpHXAp69gE9Zvb7ASz0W
+         PLpPbgtlOi8vMLtZJSF8zWBHY31hA6kPzfOYkwVhyo1DDKjYmd+SS6P+2SyW2SM51tzW
+         V/gqv0ls2bMHuZWz8Sw4AqbkyRMOzwXSafq8JWqDWlralB+NvVzQNZLdRuZxpgZnhtwy
+         BdBg==
+X-Gm-Message-State: AOAM530buuGoP1Iyuj4C08vSJ7UCzs+6w7g+wAEiBKcN6YFEuhKlbkYL
+        asU5vucngZ9SSz/HedokA3g=
+X-Google-Smtp-Source: ABdhPJwV8OJTbrEJlcXxHa5WpihgHyU1h/uvcIml2IOtVxTmnKMbONosMFdkhG4t36EX7+JYvOXFWA==
+X-Received: by 2002:a17:902:b203:: with SMTP id t3mr213803plr.129.1590612879611;
+        Wed, 27 May 2020 13:54:39 -0700 (PDT)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([122.171.201.5])
+        by smtp.gmail.com with ESMTPSA id x12sm2895477pfo.72.2020.05.27.13.54.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 May 2020 13:54:38 -0700 (PDT)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     rspringer@google.com, toddpoynor@google.com, benchan@chromium.org,
+        gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH] staging: gasket: Convert get_user_pages*() --> pin_user_pages*()
+Date:   Thu, 28 May 2020 02:32:42 +0530
+Message-Id: <1590613362-27495-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+This code was using get_user_pages_fast(), in a "Case 2" scenario
+(DMA/RDMA), using the categorization from [1]. That means that it's
+time to convert the get_user_pages_fast() + put_page() calls to
+pin_user_pages_fast() + unpin_user_page() calls.
 
-kobject_init_and_add() takes reference even when it fails.
-Thus, when kobject_init_and_add() returns an error,
-kobject_put() must be called to properly clean up the kobject.
+There is some helpful background in [2]: basically, this is a small
+part of fixing a long-standing disconnect between pinning pages, and
+file systems' use of those pages.
 
-Fixes: d72e31c93746 ("iommu: IOMMU Groups")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+[1] Documentation/core-api/pin_user_pages.rst
+
+[2] "Explicit pinning of user-space pages":
+	https://lwn.net/Articles/807108/
+
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+
+Hi,
+
+I'm compile tested this, but unable to run-time test, so any testing
+help is much appriciated.
 ---
- drivers/iommu/iommu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/gasket/gasket_page_table.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 1faa08c8bbb4..03d6a26687bc 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -510,7 +510,7 @@ struct iommu_group *iommu_group_alloc(void)
- 				   NULL, "%d", group->id);
- 	if (ret) {
- 		ida_simple_remove(&iommu_group_ida, group->id);
--		kfree(group);
-+		kobject_put(&group->kobj);
- 		return ERR_PTR(ret);
- 	}
+diff --git a/drivers/staging/gasket/gasket_page_table.c b/drivers/staging/gasket/gasket_page_table.c
+index f6d7157..d712ad4 100644
+--- a/drivers/staging/gasket/gasket_page_table.c
++++ b/drivers/staging/gasket/gasket_page_table.c
+@@ -449,7 +449,7 @@ static bool gasket_release_page(struct page *page)
  
+ 	if (!PageReserved(page))
+ 		SetPageDirty(page);
+-	put_page(page);
++	unpin_user_page(page);
+ 
+ 	return true;
+ }
+@@ -486,12 +486,12 @@ static int gasket_perform_mapping(struct gasket_page_table *pg_tbl,
+ 			ptes[i].dma_addr = pg_tbl->coherent_pages[0].paddr +
+ 					   off + i * PAGE_SIZE;
+ 		} else {
+-			ret = get_user_pages_fast(page_addr - offset, 1,
++			ret = pin_user_pages_fast(page_addr - offset, 1,
+ 						  FOLL_WRITE, &page);
+ 
+ 			if (ret <= 0) {
+ 				dev_err(pg_tbl->device,
+-					"get user pages failed for addr=0x%lx, offset=0x%lx [ret=%d]\n",
++					"pin user pages failed for addr=0x%lx, offset=0x%lx [ret=%d]\n",
+ 					page_addr, offset, ret);
+ 				return ret ? ret : -ENOMEM;
+ 			}
 -- 
-2.17.1
+1.9.1
 
