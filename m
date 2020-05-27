@@ -2,99 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609071E3C11
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 040B91E3C1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388068AbgE0Iea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 04:34:30 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18593 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388037AbgE0Ie3 (ORCPT
+        id S2388100AbgE0IfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 04:35:05 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:44702 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388076AbgE0IfE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 04:34:29 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ece25bc0000>; Wed, 27 May 2020 01:33:00 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 27 May 2020 01:34:29 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 27 May 2020 01:34:29 -0700
-Received: from [10.26.74.131] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 27 May
- 2020 08:34:26 +0000
-Subject: Re: [PATCH 5.6 000/126] 5.6.15-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <ben.hutchings@codethink.co.uk>, <lkft-triage@lists.linaro.org>,
-        <stable@vger.kernel.org>, linux-tegra <linux-tegra@vger.kernel.org>
-References: <20200526183937.471379031@linuxfoundation.org>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <d5c1dffe-98d3-d60e-669b-90277bbb0a03@nvidia.com>
-Date:   Wed, 27 May 2020 09:34:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 27 May 2020 04:35:04 -0400
+Received: by mail-oi1-f196.google.com with SMTP id y85so20988454oie.11
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 01:35:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Tk1lu4BEgdRUvPTWYBSmmuJf3yyP6DSf1FkLtUc/jDQ=;
+        b=LeYwXKPybS11trYxTxdwm6fhW2tRHf8VW8sbPqbjeYfovN4KVQQhpm0fyRfwn2S8TF
+         nN2ZmWA8E0eO8fb3YanT2u2hBzDGPyriHZaxtkSlAPzHCyX5x8mp9X+pCyD7SezcTv8h
+         7bQHM7uiw9EWv7zi23r2sgNAX8wUIwbL7q9/VCxh+3KU2JsvpCr6gE0RIMr0QYh6Jjy2
+         /PwjGQHl82eJYDQWfWckmtH1XE4U/PjTHOGdjIlfVqXbC1i2nWqOIqd2Ly3BUXKR6Ygm
+         IpPRTN6qNAfOtxm02l/FdvIdas9cRD+8lmy3H6kj9c31dNH7FNi/qymm/kwLQhgzG3mv
+         CZHg==
+X-Gm-Message-State: AOAM532D/0TAvAGPh1hAM0eeqMmhWb0rwBkxJxJLBGXpNQUo5I81cKZs
+        7BFsrzfXiZaZAk6mz3OGSJFqZK3TvYvL54sJ8EaeXg==
+X-Google-Smtp-Source: ABdhPJwpYbXsDA5sT9SEk9mfIZe3oDQAm3pTRUUw1YVBbPqFkQp8KMGumNGBfkLNn/tmuYQFj5LgoEAETcUg1KXndpk=
+X-Received: by 2002:a05:6808:486:: with SMTP id z6mr2032157oid.103.1590568503342;
+ Wed, 27 May 2020 01:35:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1590568380; bh=eCJczOzJXw50OnVXon9Pjid3fsAlyDrm8Ygj/fkaOrM=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=h1KNMu/XVnIl1vo5WTH7xZEo9V2aT1R4mKchd/aVj2v+oSBvTDza3eX0sWWvIeY52
-         KzRhUsZBQL/FdLW6yZ8SUF6OqcU5jkQhlO7rxkABVKwjYsSaK8xkwieq4czbkXoLbU
-         6A65JuIU3X5Eh+3Fw2OVkHD174Rka3EhStIZISFgNhBAfFrFadiWDDUMLLxlSpd5tC
-         k7iueYaULTIuDXBhJHA25239LRo06msrWouX7HXHMaaIwvjbQoKVmDHApcvmklIwX2
-         VVvuOKzwm8befNRLP4dHSRpFwWYjDlwXgQ/jeTSZN1guTvBXpI7v7I9jXb3uEXWK5O
-         DYhIcfgs5Ge2g==
+References: <20200524153041.2361-1-gregkh@linuxfoundation.org>
+ <20200524153041.2361-2-gregkh@linuxfoundation.org> <CAKdAkRShA2sAMH12H_zpCm=9XJn_yEcnAaaZhLgvhaUMxC-EMw@mail.gmail.com>
+ <20200526055806.GA2576013@kroah.com> <CAJZ5v0ii+hMh5DCuYuuO9auFHD0GLxmOVR1FoDmCwrNEnh9gMw@mail.gmail.com>
+ <20200527075048.GD3284396@kuha.fi.intel.com>
+In-Reply-To: <20200527075048.GD3284396@kuha.fi.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 27 May 2020 10:34:51 +0200
+Message-ID: <CAJZ5v0h0Xjovm-eVyiOG+j7kNEPxB=PZF4rLVEgwUW+H+61DFg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kobject: send KOBJ_REMOVE uevent when the object is
+ removed from sysfs
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, May 27, 2020 at 9:50 AM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
+>
+> On Tue, May 26, 2020 at 10:26:23AM +0200, Rafael J. Wysocki wrote:
+> > On Tue, May 26, 2020 at 7:58 AM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Mon, May 25, 2020 at 03:49:01PM -0700, Dmitry Torokhov wrote:
+> > > > On Sun, May 24, 2020 at 8:34 AM Greg Kroah-Hartman
+> > > > <gregkh@linuxfoundation.org> wrote:
+> > > > >
+> > > > > It is possible for a KOBJ_REMOVE uevent to be sent to userspace way
+> > > > > after the files are actually gone from sysfs, due to how reference
+> > > > > counting for kobjects work.  This should not be a problem, but it would
+> > > > > be good to properly send the information when things are going away, not
+> > > > > at some later point in time in the future.
+> > > > >
+> > > > > Before this move, if a kobject's parent was torn down before the child,
+> > > >
+> > > > ^^^^ And this is the root of the problem and what has to be fixed.
+> > >
+> > > I fixed that in patch one of this series.  Turns out the user of the
+> > > kobject was not even expecting that to happen.
+> > >
+> > > > > when the call to kobject_uevent() happened, the parent walk to try to
+> > > > > reconstruct the full path of the kobject could be a total mess and cause
+> > > > > crashes.  It's not good to try to tear down a kobject tree from top
+> > > > > down, but let's at least try to not to crash if a user does so.
+> > > >
+> > > > One can try, but if we keep proper reference counting then kobject
+> > > > core should take care of actually releasing objects in the right
+> > > > order. I do not think you should keep this patch, and instead see if
+> > > > we can push call to kobject_put(kobj->parent) into kobject_cleanup().
+> > >
+> > > I tried that, but there was a _lot_ of underflow errors reported, so
+> > > there's something else happening.  Or my attempt was incorrect :)
+> >
+> > So it looks like there is something in there that's been overlooked so far.
+> >
+> > I'll try to look at the Guenter's traces and figure out what went
+> > wrong after the Heikki's patch.
+>
+> At least one problem with that patch was that I was releasing the
+> parent reference unconditionally.
 
-On 26/05/2020 19:52, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.6.15 release.
-> There are 126 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 28 May 2020 18:36:22 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.6.15-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.6.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-
-All tests are passing for Tegra ...
-
-Test results for stable-v5.6:
-    11 builds:	11 pass, 0 fail
-    26 boots:	26 pass, 0 fail
-    42 tests:	42 pass, 0 fail
-
-Linux version:	5.6.15-rc1-g8f40203f4915
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra20-ventana,
-                tegra210-p2371-2180, tegra210-p3450-0000,
-                tegra30-cardhu-a04
-
-Cheers
-Jon
-
--- 
-nvpublic
+That actually may be sufficient to explain all of the problems introduced by it.
