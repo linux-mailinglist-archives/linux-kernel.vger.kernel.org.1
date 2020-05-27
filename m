@@ -2,98 +2,350 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 201581E46D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1651E46DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389522AbgE0PEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 11:04:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:39754 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388922AbgE0PED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 11:04:03 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5650D30E;
-        Wed, 27 May 2020 08:04:02 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.7.129])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F37C13F52E;
-        Wed, 27 May 2020 08:03:59 -0700 (PDT)
-Date:   Wed, 27 May 2020 16:03:57 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Jiping Ma <jiping.ma2@windriver.com>, zhe.he@windriver.com,
-        bruce.ashfield@gmail.com, yue.tao@windriver.com,
-        will.deacon@arm.com, linux-kernel@vger.kernel.org,
-        paul.gortmaker@windriver.com, catalin.marinas@arm.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH][V3] arm64: perf: Get the wrong PC value in REGS_ABI_32
- mode
-Message-ID: <20200527150357.GB59947@C02TD0UTHF1T.local>
-References: <1589165527-188401-1-git-send-email-jiping.ma2@windriver.com>
- <20200526102611.GA1363@C02TD0UTHF1T.local>
- <20200526195419.GB2206@willie-the-truck>
+        id S2389569AbgE0PEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 11:04:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389378AbgE0PEc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 11:04:32 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 623A8C05BD1E;
+        Wed, 27 May 2020 08:04:32 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jdxbV-0006L0-T1; Wed, 27 May 2020 17:04:26 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 605D71C00ED;
+        Wed, 27 May 2020 17:04:25 +0200 (CEST)
+Date:   Wed, 27 May 2020 15:04:25 -0000
+From:   "tip-bot2 for Matt Helsley" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: objtool/core] objtool: Enable compilation of objtool for all
+ architectures
+Cc:     Julien Thierry <jthierry@redhat.com>,
+        Matt Helsley <mhelsley@vmware.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200526195419.GB2206@willie-the-truck>
+Message-ID: <159059186521.17951.16748738134055814508.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 08:54:19PM +0100, Will Deacon wrote:
-> On Tue, May 26, 2020 at 11:26:11AM +0100, Mark Rutland wrote:
-> > On Mon, May 11, 2020 at 10:52:07AM +0800, Jiping Ma wrote:
-> > > Modified the patch subject and the change description.
-> > > 
-> > > PC value is get from regs[15] in REGS_ABI_32 mode, but correct PC
-> > > is regs->pc(regs[PERF_REG_ARM64_PC]) in arm64 kernel, which caused
-> > > that perf can not parser the backtrace of app with dwarf mode in the 
-> > > 32bit system and 64bit kernel.
-> > > 
-> > > Signed-off-by: Jiping Ma <jiping.ma2@windriver.com>
-> > 
-> > Thanks for this.
-> > 
-> > 
-> > > ---
-> > >  arch/arm64/kernel/perf_regs.c | 4 ++++
-> > >  1 file changed, 4 insertions(+)
-> > > 
-> > > diff --git a/arch/arm64/kernel/perf_regs.c b/arch/arm64/kernel/perf_regs.c
-> > > index 0bbac61..0ef2880 100644
-> > > --- a/arch/arm64/kernel/perf_regs.c
-> > > +++ b/arch/arm64/kernel/perf_regs.c
-> > > @@ -32,6 +32,10 @@ u64 perf_reg_value(struct pt_regs *regs, int idx)
-> > >  	if ((u32)idx == PERF_REG_ARM64_PC)
-> > >  		return regs->pc;
-> > >  
-> > > +	if (perf_reg_abi(current) == PERF_SAMPLE_REGS_ABI_32
-> > > +		&& idx == 15)
-> > > +		return regs->pc;
-> > 
-> > I think there are some more issues here, and we may need a more
-> > substantial rework. For a compat thread, we always expose
-> > PERF_SAMPLE_REGS_ABI_32 via per_reg_abi(), but for some reason
-> > perf_reg_value() also munges the compat SP/LR into their ARM64
-> > equivalents, which don't exist in the 32-bit sample ABI. We also don't
-> > zero the regs that don't exist in 32-bit (including the aliasing PC).
-> 
-> I think this was for the case where you have a 64-bit perf profiling a
-> 32-bit task, and it was passing the registers off to libunwind. Won't that
-> break if we follow your suggestion?
+The following commit has been merged into the objtool/core branch of tip:
 
-Oh yuck; have we messed up the ABI here, or have I misunderstood?
+Commit-ID:     0decf1f8de919782b152daf9c991967a2bac54f0
+Gitweb:        https://git.kernel.org/tip/0decf1f8de919782b152daf9c991967a2bac54f0
+Author:        Matt Helsley <mhelsley@vmware.com>
+AuthorDate:    Tue, 19 May 2020 13:55:33 -07:00
+Committer:     Josh Poimboeuf <jpoimboe@redhat.com>
+CommitterDate: Wed, 20 May 2020 09:17:28 -05:00
 
-Is arm64's PERF_SAMPLE_REGS_ABI_32 supposed to be the same as the 32-bit
-arm's PERF_SAMPLE_REGS_ABI_32?
+objtool: Enable compilation of objtool for all architectures
 
-If yes, and the differences are being relied upon by 64-bit consumers,
-that's a nasty ABI issue we've introduced for compat tasks, and I don't
-think this patch alone is quite right.
+Objtool currently only compiles for x86 architectures. This is
+fine as it presently does not support tooling for other
+architectures. However, we would like to be able to convert other
+kernel tools to run as objtool sub commands because they too
+process ELF object files. This will allow us to convert tools
+such as recordmcount to use objtool's ELF code.
 
-If no, then I don't see that any change is necessary, as we already
-expose the information, and it's a userspace bug to expect the PC in a
-place where the kernel has never exposed it.
+Since much of recordmcount's ELF code is copy-paste code to/from
+a variety of other kernel tools (look at modpost for example) this
+means that if we can convert recordmcount we can convert more.
 
-Thanks,
-Mark.
+We define weak definitions for subcommand entry functions and other weak
+definitions for shared functions critical to building existing
+subcommands. These return 127 when the command is missing which signify
+tools that do not exist on all architectures.  In this case the "check"
+and "orc" tools do not exist on all architectures so we only add them
+for x86. Future changes adding support for "check", to arm64 for
+example, can then modify the SUBCMD_CHECK variable when building for
+arm64.
+
+Objtool is not currently wired in to KConfig to be built for other
+architectures because it's not needed for those architectures and
+there are no commands it supports other than those for x86. As more
+command support is enabled on various architectures the necessary
+KConfig changes can be made (e.g. adding "STACK_VALIDATION") to
+trigger building objtool.
+
+[ jpoimboe: remove aliases, add __weak macro, add error messages ]
+
+Cc: Julien Thierry <jthierry@redhat.com>
+Signed-off-by: Matt Helsley <mhelsley@vmware.com>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ tools/objtool/Build           | 13 +++++++----
+ tools/objtool/Makefile        | 10 +++++++++-
+ tools/objtool/arch.h          |  4 ++-
+ tools/objtool/builtin-check.c |  2 +-
+ tools/objtool/builtin-orc.c   |  3 +--
+ tools/objtool/check.c         |  4 +--
+ tools/objtool/check.h         |  4 +---
+ tools/objtool/objtool.h       |  5 ++++-
+ tools/objtool/orc.h           | 18 +---------------
+ tools/objtool/orc_dump.c      |  3 ++-
+ tools/objtool/orc_gen.c       |  1 +-
+ tools/objtool/weak.c          | 40 ++++++++++++++++++++++++++++++++++-
+ 12 files changed, 73 insertions(+), 34 deletions(-)
+ delete mode 100644 tools/objtool/orc.h
+ create mode 100644 tools/objtool/weak.c
+
+diff --git a/tools/objtool/Build b/tools/objtool/Build
+index 66f44f5..b7222d5 100644
+--- a/tools/objtool/Build
++++ b/tools/objtool/Build
+@@ -1,11 +1,16 @@
+ objtool-y += arch/$(SRCARCH)/
++
++objtool-y += weak.o
++
++objtool-$(SUBCMD_CHECK) += check.o
++objtool-$(SUBCMD_CHECK) += special.o
++objtool-$(SUBCMD_ORC) += check.o
++objtool-$(SUBCMD_ORC) += orc_gen.o
++objtool-$(SUBCMD_ORC) += orc_dump.o
++
+ objtool-y += builtin-check.o
+ objtool-y += builtin-orc.o
+-objtool-y += check.o
+-objtool-y += orc_gen.o
+-objtool-y += orc_dump.o
+ objtool-y += elf.o
+-objtool-y += special.o
+ objtool-y += objtool.o
+ 
+ objtool-y += libstring.o
+diff --git a/tools/objtool/Makefile b/tools/objtool/Makefile
+index 6b91388..7770edc 100644
+--- a/tools/objtool/Makefile
++++ b/tools/objtool/Makefile
+@@ -46,6 +46,16 @@ elfshdr := $(shell echo '$(pound)include <libelf.h>' | $(CC) $(CFLAGS) -x c -E -
+ CFLAGS += $(if $(elfshdr),,-DLIBELF_USE_DEPRECATED)
+ 
+ AWK = awk
++
++SUBCMD_CHECK := n
++SUBCMD_ORC := n
++
++ifeq ($(SRCARCH),x86)
++	SUBCMD_CHECK := y
++	SUBCMD_ORC := y
++endif
++
++export SUBCMD_CHECK SUBCMD_ORC
+ export srctree OUTPUT CFLAGS SRCARCH AWK
+ include $(srctree)/tools/build/Makefile.include
+ 
+diff --git a/tools/objtool/arch.h b/tools/objtool/arch.h
+index cd118eb..eda15a5 100644
+--- a/tools/objtool/arch.h
++++ b/tools/objtool/arch.h
+@@ -8,9 +8,11 @@
+ 
+ #include <stdbool.h>
+ #include <linux/list.h>
+-#include "elf.h"
++#include "objtool.h"
+ #include "cfi.h"
+ 
++#include <asm/orc_types.h>
++
+ enum insn_type {
+ 	INSN_JUMP_CONDITIONAL,
+ 	INSN_JUMP_UNCONDITIONAL,
+diff --git a/tools/objtool/builtin-check.c b/tools/objtool/builtin-check.c
+index be42b71..7a44174 100644
+--- a/tools/objtool/builtin-check.c
++++ b/tools/objtool/builtin-check.c
+@@ -16,7 +16,7 @@
+ #include <subcmd/parse-options.h>
+ #include <string.h>
+ #include "builtin.h"
+-#include "check.h"
++#include "objtool.h"
+ 
+ bool no_fp, no_unreachable, retpoline, module, backtrace, uaccess, stats, validate_dup, vmlinux;
+ 
+diff --git a/tools/objtool/builtin-orc.c b/tools/objtool/builtin-orc.c
+index 5f7cc61..b1dfe20 100644
+--- a/tools/objtool/builtin-orc.c
++++ b/tools/objtool/builtin-orc.c
+@@ -14,8 +14,7 @@
+ 
+ #include <string.h>
+ #include "builtin.h"
+-#include "check.h"
+-
++#include "objtool.h"
+ 
+ static const char *orc_usage[] = {
+ 	"objtool orc generate [<options>] file.o",
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 7a47ff9..63d65a7 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -7,10 +7,10 @@
+ #include <stdlib.h>
+ 
+ #include "builtin.h"
++#include "cfi.h"
++#include "arch.h"
+ #include "check.h"
+-#include "elf.h"
+ #include "special.h"
+-#include "arch.h"
+ #include "warn.h"
+ 
+ #include <linux/hashtable.h>
+diff --git a/tools/objtool/check.h b/tools/objtool/check.h
+index 3b59a1c..906b521 100644
+--- a/tools/objtool/check.h
++++ b/tools/objtool/check.h
+@@ -7,10 +7,8 @@
+ #define _CHECK_H
+ 
+ #include <stdbool.h>
+-#include "objtool.h"
+ #include "cfi.h"
+ #include "arch.h"
+-#include "orc.h"
+ 
+ struct insn_state {
+ 	struct cfi_state cfi;
+@@ -47,8 +45,6 @@ struct instruction {
+ 	struct orc_entry orc;
+ };
+ 
+-int check(const char *objname, bool orc);
+-
+ struct instruction *find_insn(struct objtool_file *file,
+ 			      struct section *sec, unsigned long offset);
+ 
+diff --git a/tools/objtool/objtool.h b/tools/objtool/objtool.h
+index d89616b..528028a 100644
+--- a/tools/objtool/objtool.h
++++ b/tools/objtool/objtool.h
+@@ -19,4 +19,9 @@ struct objtool_file {
+ 	bool ignore_unreachables, c_file, hints, rodata;
+ };
+ 
++int check(const char *objname, bool orc);
++int orc_dump(const char *objname);
++int create_orc(struct objtool_file *file);
++int create_orc_sections(struct objtool_file *file);
++
+ #endif /* _OBJTOOL_H */
+diff --git a/tools/objtool/orc.h b/tools/objtool/orc.h
+deleted file mode 100644
+index ee28322..0000000
+--- a/tools/objtool/orc.h
++++ /dev/null
+@@ -1,18 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-or-later */
+-/*
+- * Copyright (C) 2017 Josh Poimboeuf <jpoimboe@redhat.com>
+- */
+-
+-#ifndef _ORC_H
+-#define _ORC_H
+-
+-#include <asm/orc_types.h>
+-
+-struct objtool_file;
+-
+-int create_orc(struct objtool_file *file);
+-int create_orc_sections(struct objtool_file *file);
+-
+-int orc_dump(const char *objname);
+-
+-#endif /* _ORC_H */
+diff --git a/tools/objtool/orc_dump.c b/tools/objtool/orc_dump.c
+index ba4cbb1..fca46e0 100644
+--- a/tools/objtool/orc_dump.c
++++ b/tools/objtool/orc_dump.c
+@@ -4,7 +4,8 @@
+  */
+ 
+ #include <unistd.h>
+-#include "orc.h"
++#include <asm/orc_types.h>
++#include "objtool.h"
+ #include "warn.h"
+ 
+ static const char *reg_name(unsigned int reg)
+diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
+index 9d2bf2d..c954998 100644
+--- a/tools/objtool/orc_gen.c
++++ b/tools/objtool/orc_gen.c
+@@ -6,7 +6,6 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
+-#include "orc.h"
+ #include "check.h"
+ #include "warn.h"
+ 
+diff --git a/tools/objtool/weak.c b/tools/objtool/weak.c
+new file mode 100644
+index 0000000..942ea5e
+--- /dev/null
++++ b/tools/objtool/weak.c
+@@ -0,0 +1,40 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2020 Matt Helsley <mhelsley@vmware.com>
++ * Weak definitions necessary to compile objtool without
++ * some subcommands (e.g. check, orc).
++ */
++
++#include <stdbool.h>
++#include <errno.h>
++#include "objtool.h"
++
++#define __weak __attribute__((weak))
++
++#define UNSUPPORTED(name)						\
++({									\
++	fprintf(stderr, "error: objtool: " name " not implemented\n");	\
++	return ENOSYS;							\
++})
++
++const char __weak *objname;
++
++int __weak check(const char *_objname, bool orc)
++{
++	UNSUPPORTED("check subcommand");
++}
++
++int __weak orc_dump(const char *_objname)
++{
++	UNSUPPORTED("orc");
++}
++
++int __weak create_orc(struct objtool_file *file)
++{
++	UNSUPPORTED("orc");
++}
++
++int __weak create_orc_sections(struct objtool_file *file)
++{
++	UNSUPPORTED("orc");
++}
