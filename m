@@ -2,52 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0DFF1E4E81
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 21:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 939951E4E7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 21:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387405AbgE0TrI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 May 2020 15:47:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37658 "EHLO
+        id S1728391AbgE0TrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 15:47:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728390AbgE0TrC (ORCPT
+        with ESMTP id S1725872AbgE0TrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 May 2020 15:47:02 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4018C03E96E
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F66C05BD1E
         for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 12:47:02 -0700 (PDT)
 Received: from localhost ([127.0.0.1] helo=flow.W.breakpoint.cc)
         by Galois.linutronix.de with esmtp (Exim 4.80)
         (envelope-from <bigeasy@linutronix.de>)
-        id 1je20x-0005H4-Ul; Wed, 27 May 2020 21:47:00 +0200
+        id 1je20y-0005H4-8n; Wed, 27 May 2020 21:47:00 +0200
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 To:     linux-kernel@vger.kernel.org
 Cc:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH v2 0/2] workqueue: Make the workqueue code PREEMPT_RT safe
-Date:   Wed, 27 May 2020 21:46:31 +0200
-Message-Id: <20200527194633.1660952-1-bigeasy@linutronix.de>
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH v2 1/2] workqueue: Use rcuwait for wq_manager_wait
+Date:   Wed, 27 May 2020 21:46:32 +0200
+Message-Id: <20200527194633.1660952-2-bigeasy@linutronix.de>
 X-Mailer: git-send-email 2.27.0.rc0
+In-Reply-To: <20200527194633.1660952-1-bigeasy@linutronix.de>
+References: <20200527194633.1660952-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The series changes `wq_manager_wait' from waitqueues to simple
-waitqueues and its internal locking (pool::lock and wq_mayday_lock) to
-raw spinlocks so that workqueues can be used on PREEMPT_RT from truly
-atomic context.
+The workqueue code has it's internal spinlock (pool::lock) and also
+implicit spinlock usage in the wq_manager waitqueue. These spinlocks
+are converted to 'sleeping' spinlocks on a RT-kernel.
 
-v1…v2: Use rcuwait instead of swait.
+Workqueue functions can be invoked from contexts which are truly atomic
+even on a PREEMPT_RT enabled kernel. Taking sleeping locks from such
+contexts is forbidden.
 
-v1 can be found at
-   https://lore.kernel.org/lkml/20200513162732.977489-1-bigeasy@linutronix.de/
+pool::lock can be converted to a raw spinlock as the lock held times
+are short. But the workqueue manager waitqueue is handled inside of
+pool::lock held regions which again violates the lock nesting rules
+of raw and regular spinlocks.
 
-Sebastian
+The manager waitqueue has no special requirements like custom wakeup
+callbacks or mass wakeups. While it does not use exclusive wait mode
+explicitly there is no strict requirement to queue the waiters in a
+particular order as there is only one waiter at a time.
 
+This allows to replace the waitqueue with rcuwait which solves the
+locking problem because rcuwait relies on existing locking.
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ kernel/workqueue.c | 24 +++++++++++++++++++-----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 891ccad5f2716..e1d9af713df4a 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -301,7 +301,8 @@ static struct workqueue_attrs *wq_update_unbound_numa_a=
+ttrs_buf;
+ static DEFINE_MUTEX(wq_pool_mutex);	/* protects pools and workqueues list =
+*/
+ static DEFINE_MUTEX(wq_pool_attach_mutex); /* protects worker attach/detac=
+h */
+ static DEFINE_SPINLOCK(wq_mayday_lock);	/* protects wq->maydays list */
+-static DECLARE_WAIT_QUEUE_HEAD(wq_manager_wait); /* wait for manager to go=
+ away */
++/* wait for manager to go away */
++static struct rcuwait manager_wait =3D __RCUWAIT_INITIALIZER(manager_wait);
+=20
+ static LIST_HEAD(workqueues);		/* PR: list of all workqueues */
+ static bool workqueue_freezing;		/* PL: have wqs started freezing? */
+@@ -2140,7 +2141,7 @@ static bool manage_workers(struct worker *worker)
+=20
+ 	pool->manager =3D NULL;
+ 	pool->flags &=3D ~POOL_MANAGER_ACTIVE;
+-	wake_up(&wq_manager_wait);
++	rcuwait_wake_up(&manager_wait);
+ 	return true;
+ }
+=20
+@@ -3504,6 +3505,18 @@ static void rcu_free_pool(struct rcu_head *rcu)
+ 	kfree(pool);
+ }
+=20
++/* This returns with the lock held on success (pool manager is inactive). =
+*/
++static bool wq_manager_inactive(struct worker_pool *pool)
++{
++	spin_lock_irq(&pool->lock);
++
++	if (pool->flags & POOL_MANAGER_ACTIVE) {
++		spin_unlock_irq(&pool->lock);
++		return false;
++	}
++	return true;
++}
++
+ /**
+  * put_unbound_pool - put a worker_pool
+  * @pool: worker_pool to put
+@@ -3539,10 +3552,11 @@ static void put_unbound_pool(struct worker_pool *po=
+ol)
+ 	 * Become the manager and destroy all workers.  This prevents
+ 	 * @pool's workers from blocking on attach_mutex.  We're the last
+ 	 * manager and @pool gets freed with the flag set.
++	 * Because of how wq_manager_inactive() works, we will hold the
++	 * spinlock after a successful wait.
+ 	 */
+-	spin_lock_irq(&pool->lock);
+-	wait_event_lock_irq(wq_manager_wait,
+-			    !(pool->flags & POOL_MANAGER_ACTIVE), pool->lock);
++	rcuwait_wait_event(&manager_wait, wq_manager_inactive(pool),
++			   TASK_UNINTERRUPTIBLE);
+ 	pool->flags |=3D POOL_MANAGER_ACTIVE;
+=20
+ 	while ((worker =3D first_idle_worker(pool)))
+--=20
+2.27.0.rc0
 
