@@ -2,54 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8481E38AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 07:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 293D91E38B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 07:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbgE0F63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 01:58:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49882 "EHLO
+        id S1727078AbgE0F66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 01:58:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725267AbgE0F62 (ORCPT
+        with ESMTP id S1727047AbgE0F65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 01:58:28 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 997A7C061A0F;
-        Tue, 26 May 2020 22:58:28 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 55CF8127E900C;
-        Tue, 26 May 2020 22:58:27 -0700 (PDT)
-Date:   Tue, 26 May 2020 22:58:24 -0700 (PDT)
-Message-Id: <20200526.225824.2202331208378344398.davem@davemloft.net>
-To:     rppt@kernel.org
-Cc:     akpm@linux-foundation.org, linux@roeck-us.net,
-        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, rppt@linux.ibm.com
-Subject: Re: [PATCH] sparc32: register memory occupied by kernel as
- memblock.memory
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200527045219.GG48741@kernel.org>
-References: <20200524165358.27188-1-rppt@kernel.org>
-        <20200527045219.GG48741@kernel.org>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 26 May 2020 22:58:27 -0700 (PDT)
+        Wed, 27 May 2020 01:58:57 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD157C03E96E
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 22:58:56 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id v16so27440092ljc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 22:58:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GZrxLWEv2RQwIV4nFIWedkkizU0DIsRXfRmjD6gFnTY=;
+        b=dJUTgpiMkJ1s0zS0iy9nBJ3IHP5NHvdqW4eA3+0tV/Yadk+ve6GdDgBLTP79aXub38
+         ekh0+PedTpGyJNu7HvTuXYznrJlYsAAK1Q4YyDCvkE7JuopBTUyqyQKc3+J9gv5YQKaE
+         mPckQgv/SXPxD60SABLLSqZPksIKZy1wYsmvDFgvaor9LdiCR2ferynQ5R9rQF6XOVC9
+         cQGBG4Sr9NotnvZY5brGYP4Cg+Yx+/Va9OYrRzmsmNtdWBRSP9UusWScDhgE/pEUJ8VF
+         8LK8Kh87YrgFCh1yp7n1iEyOBHg2Uaj/zqt0vUJ3eJecVUPOPauj17f/Zdopj8qfG9oV
+         iqJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GZrxLWEv2RQwIV4nFIWedkkizU0DIsRXfRmjD6gFnTY=;
+        b=PoJ6U8IAPGq+w/cZznwcWEtiYVzEbKczTZVdAC+I5tqbTrJkPHRvYobnLGb7OgBOSd
+         /gt0MLi3PTu29+67YaKIjSFrj+nriVgv5TEUF+lVpV7RLuTvzTAMj02gcydEfW7EJ1eh
+         NGo8mA03QSFeQYGL4Z35lBuEqXJVEV/WXiiMM/CxNtl8cSQmm12fW7rgAMp/QbXuyXOo
+         DFSVfxSTUoNccHsUfZu7VVB4mmjBrWXcjYODtrxpQmzAhwbZiA7rbAP+ByYOgEA0Uusf
+         DT0md0nUUFRCneJUsWT85/lHgh2H27HiCkZ6oDnY+aUu0TutCyidWLwcxtNlM2Fjk0T1
+         kQSQ==
+X-Gm-Message-State: AOAM53096Hw8w54CNhttd8VAZ/yRMljJoGRGddXfCDDW22cHaR9YHkBg
+        BkkhIMwSylhbp96ZE89AY2ULMA1qsIYOve8J9ExDIw==
+X-Google-Smtp-Source: ABdhPJyGcOO7k15GXBI4U9yp14BYnpfxbNWQD5wYC44Hid+bFIymEYNGNVKU6kUy+bEnmzAzciNLCRQ3ybuZ8NtGOMo=
+X-Received: by 2002:a2e:b5b0:: with SMTP id f16mr2362794ljn.100.1590559134977;
+ Tue, 26 May 2020 22:58:54 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200516064507.19058-1-warthog618@gmail.com> <CACRpkdbputuoHFWL_FhUNR-ZywvJt=qYdaa+i2cLt-Odmgxe2w@mail.gmail.com>
+ <20200525141902.GA27938@sol>
+In-Reply-To: <20200525141902.GA27938@sol>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 27 May 2020 07:58:43 +0200
+Message-ID: <CACRpkda4PEYd5UGbLkq9w1RBbtOdZxuMQ75k-nu5YfoKTZ_azA@mail.gmail.com>
+Subject: Re: [RFC PATCH] gpio: uapi: v2 proposal
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@kernel.org>
-Date: Wed, 27 May 2020 07:52:19 +0300
+On Mon, May 25, 2020 at 4:19 PM Kent Gibson <warthog618@gmail.com> wrote:
 
-> Andrew, David,
-> 
-> Any comments on this?
+> > > +struct gpioline_config {
+> > > +       __u8 default_values[GPIOLINES_MAX];
+> >
+> > So 32 bytes
+> >
+>
+> Actually that one is 64 bytes, which is the same as v1, i.e. GPIOLINES_MAX
+> is the same as GPIOHANDLES_MAX - just renamed.
+>
+> On the subject of values, is there any reason to use a byte for each line
+> rather value than a bit?
 
-No objections from me:
+Not really, other than making things simple for userspace.
 
-Acked-by: David S. Miller <davem@davemloft.net>
+> when adding future fields, the idea was to have a bit
+> in the flags that indicates that the corresponding field is now valid.
+> If the flag is not set then whatever value is there is irrelevant.
+
+You would need to document that idea, say in the kerneldoc,
+else when someone else comes along to do this they will
+get it wrong.
+
+> But definitely better to play it safe - will check the padding is
+> zeroed as well, as well as any field for which the flag bit is clear.
+
+Yeah better like that. You can write a comment in the code too,
+such like "when adding new parameters, update this validation code
+to accept it".
+
+> Back on retired ioctls, I notice that 5, 6, and 7 are missing from gpio.
+> Have those been retired, or just skipped over by accident?
+
+Just thought it was nice to use jump to 8 for line info.
+They should be used when adding generic chip information ioctls().
+
+Yours,
+Linus Walleij
