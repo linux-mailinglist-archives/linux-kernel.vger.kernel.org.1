@@ -2,91 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75DE01E401B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE9F1E4044
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729235AbgE0Lc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 07:32:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725964AbgE0Lcz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 07:32:55 -0400
-Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D425C061A0F;
-        Wed, 27 May 2020 04:32:55 -0700 (PDT)
-Received: by mail-oo1-xc44.google.com with SMTP id c187so4922858ooc.2;
-        Wed, 27 May 2020 04:32:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LCm08sq66Q3U++l+V74WsB7Hkmk+EFqTJfvHJknMZU4=;
-        b=AN2mzep8xZkr/JRqPxTyR34FkdcROkPVXOMdrWjGCDE5MdlvyeFy/89eNu+FFYgNaJ
-         0O3zZCpub0fl1Qd+fkpWx+OYeAzC4QB5c5bMJgO1L9DjxiuPVNNQW62XYsimpE6xTHxF
-         XZEXc6/6+Ln/57fWjJzSyyzCWTCnZUtWCzefe6KL2fHnrp3vW8ZSJjPf7dWsUtcrA7fh
-         twyibzWV/U3IcEUCkjCvINUksHSqIyZnuRLPIoiNkSouJj4DwlSDNmmbMf2G4eoOtNHs
-         wRRkQZ50jLzVaxqeAL5LZC621iLjbukVTj3nSjySbtq7dLoaQ5gGIL26SU0ysfMsY3Pj
-         MxOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LCm08sq66Q3U++l+V74WsB7Hkmk+EFqTJfvHJknMZU4=;
-        b=rHHDnpnNr9P0dcKAvfqtnMQwS92i+Qd1hDoDXL5dhzOv+yIxIuimWXVRo50jksvceF
-         GaN+JD735/5c6Uim/eNz4wmuDCvTCO5OWWMguCq6mN8W96gywqnO0718J5kbMY+kwkm4
-         NPenya+7jG8sR6JTt3m7H3WXm5STDVmnNRFpxqMJXtyOaMoPXAUI0Q/ALNLpwSDCpMKr
-         nlZINHFvtyoXhpFi2wkQ7f0jNW1+vewBXfmIvfIKMFDFLRHosuJJi1Bf0tueB9dCrU9J
-         S7aBUOxO0tDiQpzB4QbNZzXMebX0pQraXcnd34sor9Ui9O762RJm11K2LSCW6m7xjIPK
-         fohg==
-X-Gm-Message-State: AOAM532Q0Dw99xDaR3KCrDkJFuKkJpHYzgypW+b4DUTTt070Y/fabhkk
-        m9zgZRoGPoh3r9R2MfdkpN86d++uN2Z4J+6Gzhk=
-X-Google-Smtp-Source: ABdhPJzjplcHCSKcgSqbLouxesEL59Ah0jAiA+aLZBUPeJrNy6hJ0Vv/xmju6otXj6ZALV+lhsBCAWTs4T/C+2XR4rU=
-X-Received: by 2002:a4a:bf14:: with SMTP id r20mr2745052oop.18.1590579174656;
- Wed, 27 May 2020 04:32:54 -0700 (PDT)
+        id S1728175AbgE0Li6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 07:38:58 -0400
+Received: from elvis.franken.de ([193.175.24.41]:41068 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730063AbgE0Lia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 07:38:30 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jduO3-00011U-00; Wed, 27 May 2020 13:38:19 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 3E183C04CD; Wed, 27 May 2020 13:32:56 +0200 (CEST)
+Date:   Wed, 27 May 2020 13:32:56 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Bibo Mao <maobibo@loongson.cn>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Dmitry Korotin <dkorotin@wavecomp.com>,
+        Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <f4bug@amsat.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+        "Maciej W. Rozycki" <macro@wdc.com>, linux-mm@kvack.org,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v7 0/4] MIPS: page fault handling optimization
+Message-ID: <20200527113256.GA13537@alpha.franken.de>
+References: <1590546320-21814-1-git-send-email-maobibo@loongson.cn>
 MIME-Version: 1.0
-References: <1590526904-13855-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1590526904-13855-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200527112548.GD5308@sirena.org.uk>
-In-Reply-To: <20200527112548.GD5308@sirena.org.uk>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Wed, 27 May 2020 12:32:28 +0100
-Message-ID: <CA+V-a8v0i71MCTNTPVD3XHuyGZiVjzuCkCUnvoUczeMr416ouQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: ASoC: renesas,rsnd: Add r8a7742 support
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel <alsa-devel@alsa-project.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1590546320-21814-1-git-send-email-maobibo@loongson.cn>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+On Wed, May 27, 2020 at 10:25:16AM +0800, Bibo Mao wrote:
+> V7:
+> - define function flush_tlb_fix_spurious_fault as inline rather
+>   than macro
+> V6:
+> - Add update_mmu_tlb function as empty on all platform except mips
+>   system, we use this function to update local tlb for page fault
+>   smp-race handling
+> V5:
+> - define update_mmu_cache function specified on MIPS platform, and
+>   add page fault smp-race stats info
+> V4:
+> - add pte_sw_mkyoung function to implement readable privilege, and
+>   this function is  only in effect on MIPS system.
+> - add page valid bit judgement in function pte_modify
+> V3:
+> - add detailed changelog, modify typo issue in patch V2
+> v2:
+> - split flush_tlb_fix_spurious_fault and tlb update into two patches
+> - comments typo modification
+> - separate tlb update and add pte readable privilege into two patches
+> 
+> Bibo Mao (4):
+>   MIPS: Do not flush tlb page when updating PTE entry
+>   mm/memory.c: Update local TLB if PTE entry exists
+>   mm/memory.c: Add memory read privilege on page fault handling
+>   MIPS: mm: add page valid judgement in function pte_modify
+> 
+>  arch/mips/include/asm/pgtable.h | 37 +++++++++++++++++++++++++++++++++++--
+>  include/asm-generic/pgtable.h   | 33 +++++++++++++++++++++++++++++++++
+>  mm/memory.c                     | 30 ++++++++++++++++++++++--------
+>  3 files changed, 90 insertions(+), 10 deletions(-)
 
-Thank you for the review.
+series applied to mips-next.
 
-On Wed, May 27, 2020 at 12:25 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Tue, May 26, 2020 at 10:01:43PM +0100, Lad Prabhakar wrote:
->
-> >                                 Examples with soctypes are:
-> > +                                 - "renesas,rcar_sound-r8a7742" (RZ/G1H)
-> >                                   - "renesas,rcar_sound-r8a7743" (RZ/G1M)
-> >                                   - "renesas,rcar_sound-r8a7744" (RZ/G1N)
-> >                                   - "renesas,rcar_sound-r8a7745" (RZ/G1E)
->
-> I'd expect a matching patch adding this compatible to the driver.
+Thomas.
 
-The Renesas R-Car sound for RZ/G1H is identical to the R-Car Gen2
-family. So no driver change is needed and  the fallback compatible
-value "renesas,rcar_sound-gen2" will be used in the SOC DT.
-
-Cheers,
---Prabhakar Lad
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
