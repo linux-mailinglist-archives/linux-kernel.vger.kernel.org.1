@@ -2,67 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E474D1E3443
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 03:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7F81E3449
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 03:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727921AbgE0BBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 21:01:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60916 "EHLO mail.kernel.org"
+        id S1727951AbgE0BBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 21:01:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727906AbgE0BA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 21:00:58 -0400
-Received: from mail.kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727938AbgE0BBV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 21:01:21 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97D9D20888;
-        Wed, 27 May 2020 01:00:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C7E9B2089D;
+        Wed, 27 May 2020 01:01:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590541257;
-        bh=wGQJIPZAKWK2xPvtTcKd1UuwUntCA2nsRt2k35SxbjI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qy/fdoBlUxMwAIlmlNWCFWc5HxjEjJaLY4Qfify10DipEjc11cuWqrlTLJ+z+2wcw
-         UlEvw5UXS1rPPQVPcipGR+v3Ha7OWvgyGjDDk2osc2QpTMNaBPWWvcKcYbPQy2GQJZ
-         qSr/NSQ6Ka18VqtPAXQm23xcZq9s3D8MDPlfGWBw=
-From:   Stephen Boyd <sboyd@kernel.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Jolly Shah <jolly.shah@xilinx.com>
-Subject: [PATCH] clk: zynqmp: Mark zynqmp_clk_get_max_divisor() static
-Date:   Tue, 26 May 2020 18:00:57 -0700
-Message-Id: <20200527010057.57877-1-sboyd@kernel.org>
-X-Mailer: git-send-email 2.27.0.rc0.183.gde8f92d652-goog
+        s=default; t=1590541280;
+        bh=NtZy5/K3/zCTcG/yP4zAKmzCDT70slJ8ic2T/Pp+kCg=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=F/+TmWTl8teuTFMAfcjl519GMYb1JpQU7IFk0YGOjpJzSWNT9tSOh/sqLuXF9qwNZ
+         uRXemv0/3ahLWAbpwAjrX98j8AAMFhSPx9ZmBRWCUVuBzuSa5yQITiCfx3lUpkEqTa
+         pB5Ig7CDi1s2TVLG0PdGmP4eO2PqgUkABQPIza/E=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1583185843-20707-2-git-send-email-jolly.shah@xilinx.com>
+References: <1583185843-20707-1-git-send-email-jolly.shah@xilinx.com> <1583185843-20707-2-git-send-email-jolly.shah@xilinx.com>
+Subject: Re: [PATCH v2 1/4] drivers: clk: zynqmp: Limit bestdiv with maxdiv
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     rajanv@xilinx.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Rajan Vaja <rajan.vaja@xilinx.com>,
+        Jolly Shah <jolly.shah@xilinx.com>
+To:     Jolly Shah <jolly.shah@xilinx.com>, arm@kernel.org,
+        linux-clk@vger.kernel.org, michal.simek@xilinx.com,
+        mturquette@baylibre.com, olof@lixom.net
+Date:   Tue, 26 May 2020 18:01:20 -0700
+Message-ID: <159054128018.88029.11167718877921501862@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function isn't used outside this file. Mark it static to silence
-sparse.
+Quoting Jolly Shah (2020-03-02 13:50:40)
+> From: Rajan Vaja <rajan.vaja@xilinx.com>
+>=20
+> Clock divider value should not be greater than maximum divider value.
+> So use minimum of best divider or maximum divider value.
+>=20
+> Signed-off-by: Rajan Vaja <rajan.vaja@xilinx.com>
+> Signed-off-by: Jolly Shah <jolly.shah@xilinx.com>
+> ---
 
-Cc: Jolly Shah <jolly.shah@xilinx.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
----
- drivers/clk/zynqmp/divider.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/clk/zynqmp/divider.c b/drivers/clk/zynqmp/divider.c
-index 79a294488e84..b22ca33e40c0 100644
---- a/drivers/clk/zynqmp/divider.c
-+++ b/drivers/clk/zynqmp/divider.c
-@@ -266,7 +266,7 @@ static const struct clk_ops zynqmp_clk_divider_ops = {
-  * Return: Maximum divisor of a clock if query data is successful
-  *	   U16_MAX in case of query data is not success
-  */
--u32 zynqmp_clk_get_max_divisor(u32 clk_id, u32 type)
-+static u32 zynqmp_clk_get_max_divisor(u32 clk_id, u32 type)
- {
- 	const struct zynqmp_eemi_ops *eemi_ops = zynqmp_pm_get_eemi_ops();
- 	struct zynqmp_pm_query_data qdata = {0};
-
-base-commit: 2ce7e495dab4647055f6cf300bc66870dc8a7cab
--- 
-Sent by a computer, using git, on the internet
-
+Applied to clk-next
