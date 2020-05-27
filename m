@@ -2,109 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A02231E3C33
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 026BA1E3BFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388156AbgE0Igo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 04:36:44 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:34356 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388025AbgE0Igo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 04:36:44 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 018C61A06E9;
-        Wed, 27 May 2020 10:36:42 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 86C5A1A06FB;
-        Wed, 27 May 2020 10:36:38 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 947364024F;
-        Wed, 27 May 2020 16:36:33 +0800 (SGT)
-From:   Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
-To:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ruscur@russell.cc, sbobroff@linux.ibm.com, oohall@gmail.com,
-        bhelgaas@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Cc:     Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-Subject: [PATCH] PCI: ERR: Don't override the status returned by error_detect()
-Date:   Wed, 27 May 2020 16:31:30 +0800
-Message-Id: <20200527083130.4137-1-Zhiqiang.Hou@nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S2387879AbgE0IcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 04:32:07 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:15514 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729550AbgE0IcG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 04:32:06 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ece257a0000>; Wed, 27 May 2020 01:31:54 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 27 May 2020 01:32:06 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 27 May 2020 01:32:06 -0700
+Received: from [10.26.74.131] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 27 May
+ 2020 08:32:03 +0000
+Subject: Re: [PATCH 4.4 00/65] 4.4.225-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <ben.hutchings@codethink.co.uk>, <lkft-triage@lists.linaro.org>,
+        <stable@vger.kernel.org>, linux-tegra <linux-tegra@vger.kernel.org>
+References: <20200526183905.988782958@linuxfoundation.org>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <ccc743ba-8793-d7bb-c7cf-6d60da80b35e@nvidia.com>
+Date:   Wed, 27 May 2020 09:32:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200526183905.988782958@linuxfoundation.org>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1590568314; bh=3tt2dF2V7/kCgzeSVLYjR3TOjAsuScqeV8pK46xs0cM=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=M32ykJnznA6rctrHnjUQQwrBn/gr9KfLbpjLksT8+CoAjVwMF4i98ITjBvrnMOzNT
+         gF5BWyTuWNpBagaTIzk2HvxywgxDDZ3As/zbkeUjVMiOFqrmV4UYOOFQI5fwT1jv8c
+         TghthlBnE7xgK37DcYipTtWv15H4yZa3ZKmU7AgWWKe6gu9zwgp2idd0sc7+sHBXO/
+         t4e6QQ4Qbjv4QKtzlkKMQJz54jOBkr9I/ihKmxv8FMaAvq9wLMXxDZFHKv7I/IF8rA
+         pmsFaeKj5vhWaquDpth5IB2d/nW1Cl3aKoknbedKp8P3qGg2UluJ2EKvzchTxIil1n
+         LMrxuJrOam7ew==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
 
-The commit 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
-overrode the 'status' returned by the error_detect() call back function,
-which is depended on by the next step. This overriding makes the Endpoint
-driver's required info (kept in the var status) lost, so it results in the
-fatal errors' recovery failed and then kernel panic.
+On 26/05/2020 19:52, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.225 release.
+> There are 65 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 28 May 2020 18:36:22 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.225-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-In the e1000e case, the error logs:
-pcieport 0002:00:00.0: AER: Uncorrected (Fatal) error received: 0002:01:00.0
-e1000e 0002:01:00.0: AER: PCIe Bus Error: severity=Uncorrected (Fatal), type=Inaccessible, (Unregistered Agent ID)
-pcieport 0002:00:00.0: AER: Root Port link has been reset
-SError Interrupt on CPU0, code 0xbf000002 -- SError
-CPU: 0 PID: 111 Comm: irq/76-aerdrv Not tainted 5.7.0-rc7-next-20200526 #8
-Hardware name: LS1046A RDB Board (DT)
-pstate: 80000005 (Nzcv daif -PAN -UAO BTYPE=--)
-pc : __pci_enable_msix_range+0x4c8/0x5b8
-lr : __pci_enable_msix_range+0x480/0x5b8
-sp : ffff80001116bb30
-x29: ffff80001116bb30 x28: 0000000000000003
-x27: 0000000000000003 x26: 0000000000000000
-x25: ffff00097243e0a8 x24: 0000000000000001
-x23: ffff00097243e2d8 x22: 0000000000000000
-x21: 0000000000000003 x20: ffff00095bd46080
-x19: ffff00097243e000 x18: ffffffffffffffff
-x17: 0000000000000000 x16: 0000000000000000
-x15: ffffb958fa0e9948 x14: ffff00095bd46303
-x13: ffff00095bd46302 x12: 0000000000000038
-x11: 0000000000000040 x10: ffffb958fa101e68
-x9 : ffffb958fa101e60 x8 : 0000000000000908
-x7 : 0000000000000908 x6 : ffff800011600000
-x5 : ffff00095bd46800 x4 : ffff00096e7f6080
-x3 : 0000000000000000 x2 : 0000000000000000
-x1 : 0000000000000000 x0 : 0000000000000000
-Kernel panic - not syncing: Asynchronous SError Interrupt
-CPU: 0 PID: 111 Comm: irq/76-aerdrv Not tainted 5.7.0-rc7-next-20200526 #8
 
-I think it's the expected result that "if the initial value of error
-status is PCI_ERS_RESULT_DISCONNECT or PCI_ERS_RESULT_NO_AER_DRIVER
-then even after successful recovery (using reset_link()) pcie_do_recovery()
-will report the recovery result as failure" which is described in
-commit 6d2c89441571 ("PCI/ERR: Update error status after reset_link()").
+All tests are passing for Tegra ...
 
-Refer to the Documentation/PCI/pci-error-recovery.rst.
-As the error_detect() is mandatory callback if the pci_err_handlers is
-implemented, if it return the PCI_ERS_RESULT_DISCONNECT, it means the
-driver doesn't want to recover at all;
-For the case PCI_ERS_RESULT_NO_AER_DRIVER, if the pci_err_handlers is not
-implemented, the failure is more expected.
+Test results for stable-v4.4:
+    6 builds:	6 pass, 0 fail
+    12 boots:	12 pass, 0 fail
+    19 tests:	19 pass, 0 fail
 
-Fixes: commit 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
-Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
----
- drivers/pci/pcie/err.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Linux version:	4.4.225-rc1-g1f47601a4296
+Boards tested:	tegra124-jetson-tk1, tegra20-ventana,
+                tegra30-cardhu-a04
 
-diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-index 14bb8f54723e..84f72342259c 100644
---- a/drivers/pci/pcie/err.c
-+++ b/drivers/pci/pcie/err.c
-@@ -165,8 +165,7 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
- 	pci_dbg(dev, "broadcast error_detected message\n");
- 	if (state == pci_channel_io_frozen) {
- 		pci_walk_bus(bus, report_frozen_detected, &status);
--		status = reset_link(dev);
--		if (status != PCI_ERS_RESULT_RECOVERED) {
-+		if (reset_link(dev) != PCI_ERS_RESULT_RECOVERED) {
- 			pci_warn(dev, "link reset failed\n");
- 			goto failed;
- 		}
+Cheers
+Jon
+
 -- 
-2.17.1
-
+nvpublic
