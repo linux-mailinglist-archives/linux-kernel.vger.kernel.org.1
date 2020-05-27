@@ -2,160 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F941E4F3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 708831E4F49
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728938AbgE0UY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 16:24:59 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:49681 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727004AbgE0UY6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 16:24:58 -0400
-X-IronPort-AV: E=Sophos;i="5.73,442,1583161200"; 
-   d="scan'208";a="47962815"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 28 May 2020 05:24:57 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 21B6640E2567;
-        Thu, 28 May 2020 05:24:54 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH 3/3] ARM: dts: r8a7742-iwg21d-q7: Sound DMA support via DVC on DTS
-Date:   Wed, 27 May 2020 21:23:33 +0100
-Message-Id: <1590611013-26029-4-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1590611013-26029-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <1590611013-26029-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1728754AbgE0U1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 16:27:00 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:33575 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728149AbgE0U07 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 16:26:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590611219; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=lDvp9mtb1BNZtF00ZqLwVSC6bknYfvTg0uIyQBTnJ20=; b=lUlbEb48AxefuplFpEa9FHFztmgFY8aYwOPRPrZxTCGdWZGKqB9GNQb3IGLwiDJD1DSZO14v
+ /oKNSrT1oSE9WZyxCM2JfFFIZiRr1p+827Nlvp363doiE8aZs/AlTygqugLskkFNhALaweME
+ UP0HQEvQeBkvJSnr4sigdZV3At0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5ececd00ea0dfa490e06c968 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 May 2020 20:26:40
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A5940C433CB; Wed, 27 May 2020 20:26:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rishabhb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 85C51C433C6;
+        Wed, 27 May 2020 20:26:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 85C51C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rishabhb@codeaurora.org
+From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
+To:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     bjorn.andersson@linaro.org, tsoni@codeaurora.org,
+        psodagud@codeaurora.org, sidgup@codeaurora.org,
+        mathieu.poirier@linaro.org,
+        Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Subject: [v4 PATCH 0/3] Extend coredump functionality
+Date:   Wed, 27 May 2020 13:26:14 -0700
+Message-Id: <1590611177-15826-1-git-send-email-rishabhb@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable sound with DMA support on carrier board.
+This patch series moves the coredump functionality to a separate
+file and adds "inline" coredump feature. Inline coredump directly
+copies segments from device memory during coredump to userspace.
+This avoids extra memory usage at the cost of speed. Recovery is
+stalled until all data is read by userspace.
 
-DMA transfer uses DVC
+Changelog:
 
-     DMA               DMApp
-[MEM] -> [SRC] -> [DVC] -> [SSIU] -> [SSI]
+v4 -> v3:
+- Write a helper function to copy segment memory for every dump format
+- Change segment dump fn to add offset and size adn covert mss driver
 
-     DMA               DMApp
-[MEM] <- [DVC] <- [SRC] <- [SSIU] <- [SSI]
+v3 -> v2:
+- Move entire coredump functionality to remoteproc_coredump.c
+- Modify rproc_coredump to perform dump according to conf. set by userspace
+- Move the userspace configuration to debugfs from sysfs.
+- Keep the default coredump implementation as is
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
----
- arch/arm/boot/dts/r8a7742-iwg21d-q7.dts | 63 +++++++++++++++++++++++++++++++++
- 1 file changed, 63 insertions(+)
+v2 -> v1:
+- Introduce new file for coredump.
+- Add userspace sysfs configuration for dump type.
 
-diff --git a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
-index d6154fd..704fe22 100644
---- a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
-+++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
-@@ -5,6 +5,29 @@
-  * Copyright (C) 2020 Renesas Electronics Corp.
-  */
- 
-+/*
-+ * SSI-SGTL5000
-+ *
-+ * This command is required when Playback/Capture
-+ *
-+ *      amixer set "DVC Out" 100%
-+ *      amixer set "DVC In" 100%
-+ *
-+ * You can use Mute
-+ *
-+ *      amixer set "DVC Out Mute" on
-+ *      amixer set "DVC In Mute" on
-+ *
-+ * You can use Volume Ramp
-+ *
-+ *      amixer set "DVC Out Ramp Up Rate"   "0.125 dB/64 steps"
-+ *      amixer set "DVC Out Ramp Down Rate" "0.125 dB/512 steps"
-+ *      amixer set "DVC Out Ramp" on
-+ *      aplay xxx.wav &
-+ *      amixer set "DVC Out"  80%  // Volume Down
-+ *      amixer set "DVC Out" 100%  // Volume Up
-+ */
-+
- /dts-v1/;
- #include "r8a7742-iwg21m.dtsi"
- 
-@@ -37,6 +60,21 @@
- 		regulator-always-on;
- 	};
- 
-+	rsnd_sgtl5000: sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,bitclock-master = <&sndcodec>;
-+		simple-audio-card,frame-master = <&sndcodec>;
-+
-+		sndcpu: simple-audio-card,cpu {
-+			sound-dai = <&rcar_sound>;
-+		};
-+
-+		sndcodec: simple-audio-card,codec {
-+			sound-dai = <&sgtl5000>;
-+		};
-+	};
-+
- 	vcc_sdhi2: regulator-vcc-sdhi2 {
- 		compatible = "regulator-fixed";
- 
-@@ -152,6 +190,11 @@
- 		power-source = <1800>;
- 	};
- 
-+	sound_pins: sound {
-+		groups = "ssi34_ctrl", "ssi3_data", "ssi4_data";
-+		function = "ssi";
-+	};
-+
- 	usb0_pins: usb0 {
- 		groups = "usb0";
- 		function = "usb0";
-@@ -168,6 +211,22 @@
- 	};
- };
- 
-+&rcar_sound {
-+	pinctrl-0 = <&sound_pins>;
-+	pinctrl-names = "default";
-+	status = "okay";
-+
-+	/* Single DAI */
-+	#sound-dai-cells = <0>;
-+
-+	rcar_sound,dai {
-+		dai0 {
-+			playback = <&ssi4 &src4 &dvc1>;
-+			capture = <&ssi3 &src3 &dvc0>;
-+		};
-+	};
-+};
-+
- &rwdt {
- 	timeout-sec = <60>;
- 	status = "okay";
-@@ -201,6 +260,10 @@
- 	status = "okay";
- };
- 
-+&ssi4 {
-+	shared-pin;
-+};
-+
- &usbphy {
- 	status = "okay";
- };
+Rishabh Bhatnagar (3):
+  remoteproc: Move coredump functionality to a new file
+  remoteproc: Add inline coredump functionality
+  remoteproc: Add coredump debugfs entry
+
+ drivers/remoteproc/Makefile              |   1 +
+ drivers/remoteproc/qcom_q6v5_mss.c       |   9 +-
+ drivers/remoteproc/remoteproc_core.c     | 191 ------------------
+ drivers/remoteproc/remoteproc_coredump.c | 328 +++++++++++++++++++++++++++++++
+ drivers/remoteproc/remoteproc_debugfs.c  |  86 ++++++++
+ drivers/remoteproc/remoteproc_internal.h |   4 +
+ include/linux/remoteproc.h               |  21 +-
+ 7 files changed, 443 insertions(+), 197 deletions(-)
+ create mode 100644 drivers/remoteproc/remoteproc_coredump.c
+
 -- 
-2.7.4
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
