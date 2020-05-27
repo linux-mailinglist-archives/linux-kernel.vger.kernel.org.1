@@ -2,241 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 168571E3C79
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E99D81E3C8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388270AbgE0Iq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 04:46:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388107AbgE0IqV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 04:46:21 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05859C03E97C
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 01:46:20 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id h10so25041793iob.10
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 01:46:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=cpwITzrftWrJAY0LVaSeu6jYTmkJe1PVewzQjLawjdA=;
-        b=GxKyCH668dBc5VipkdT8YFjPTCx5H6Ette6THzOjjs/DRDGNcXIMDQi5ZP5v3Sf9Oa
-         mwVrP6RSqnYeL10DiHJM1SOkKIcn6brwgQRHX0b0oKqUeDUGj/rjNQW55Xq53NQfseRD
-         vXhZTU3mB8ZA8VEHKczO26DPAktbj8hdettUmRE8i6vyRvcYoYFGvApZ8ukhZ5+bQK7D
-         9L8+5xCW38IQadhYPoyI/PQs166Rw+w8+8SWRYvSIyYFnkV+77MOB9qUtGq2ER6cdPV/
-         +/sr0UAOp1UfaGH7K0FiwaDoGqoJN+EI3wjFXv9n4Zv/oSigkjbvRq3z7WEgWAq+aZOX
-         0EsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cpwITzrftWrJAY0LVaSeu6jYTmkJe1PVewzQjLawjdA=;
-        b=GSKmSucjaMb+i2Hs1rA6UouLNgKVoM768bk3lEww/MRotDPQvIrUnjm3Gmc2BOPFDS
-         /9TOPC/JybIMnaenvVLVJbfD+n5MCso1exwEfpgrSQn32KzsyKMLk95mxjeTDq2L0dRH
-         KSL2QCcXCMbSzk3go69DRFLl6zRyxF8F7Ekn0TaIKSbtkfb73QgQSInPqDHrXtBLfc8b
-         HCe2/EodiYwTAod6q7wfsvwxMyfZjuNxRWjKm6YqPVOQ7RrIFnYmFyatwV8u8725xD6V
-         BHLki8PLXZnlvbxlDzrA6zK4bRybTM4v30S5Oohzs8hzQynbjwk4s/w1LIeRSJYX6Xy+
-         Mpqg==
-X-Gm-Message-State: AOAM532SG9JcbBk8QFqD3GWt/ORBxQFnh5DyQiRGDW/Z7J3eD7YL9bnO
-        8WzMGYbCn6qp0JYQyn6g+Wp7QETLBrCGK8Uo6cdamA==
-X-Google-Smtp-Source: ABdhPJwMXQdy6+RxEU74Dd9WQ5Tly2o2sH55kV9ZSrhh4NH0gl/D2WFHak2VKletNu2Ql3a2wNrDFJNkEIRMls/7rZo=
-X-Received: by 2002:a02:3e06:: with SMTP id s6mr4481666jas.57.1590569179357;
- Wed, 27 May 2020 01:46:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200522120700.838-1-brgl@bgdev.pl> <20200522120700.838-7-brgl@bgdev.pl>
- <20200527073150.GA3384158@ubuntu-s3-xlarge-x86>
-In-Reply-To: <20200527073150.GA3384158@ubuntu-s3-xlarge-x86>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 27 May 2020 10:46:08 +0200
-Message-ID: <CAMRc=MevVsYZFDQif+8Zyv41sSkbS8XqWbKGdCvHooneXz88hg@mail.gmail.com>
-Subject: Re: [PATCH v5 06/11] net: ethernet: mtk-star-emac: new driver
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Fabien Parent <fparent@baylibre.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Edwin Peer <edwin.peer@broadcom.com>,
-        devicetree <devicetree@vger.kernel.org>,
+        id S2388211AbgE0Ir5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 04:47:57 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:53803 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388169AbgE0Ir5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 04:47:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590569276; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: Cc: References: To:
+ Subject: Sender; bh=uae7yIbf7LkvKzwAx7OZgJqnIs4z8A3JvYEC3/kjvas=; b=Gi0/PIZaQh8MPUmZEhBBVda8zuNvIavnGHtA/ydJcNEyX2up7dxvbcGe/HL0mAgjyUguEVZa
+ QaH5rysuByJ3Db/zv9a3/SwQKaw43QxYKh+oCHUjzrhs1k7x0cnnK7c5SAiAVlvM9YbokV3t
+ labQGGIHYGBL2NAhUQQ/+3shTlU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5ece292d44a25e0052c0c369 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 May 2020 08:47:41
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 79D87C433C9; Wed, 27 May 2020 08:47:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+Received: from [192.168.1.227] (unknown [49.204.179.34])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: smasetty)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D6D3AC433C6;
+        Wed, 27 May 2020 08:47:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D6D3AC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=smasetty@codeaurora.org
+Subject: Re: [Freedreno] [PATCH 5/6] drm: msm: a6xx: use dev_pm_opp_set_bw to
+ set DDR bandwidth
+To:     Rob Clark <robdclark@gmail.com>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, dri-devel@freedesktop.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>,
-        Stephane Le Provost <stephane.leprovost@mediatek.com>,
-        Pedro Tsai <pedro.tsai@mediatek.com>,
-        Andrew Perepech <andrew.perepech@mediatek.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+References: <1589453659-27581-1-git-send-email-smasetty@codeaurora.org>
+ <1589453659-27581-6-git-send-email-smasetty@codeaurora.org>
+ <20200518142333.GA10796@jcrouse1-lnx.qualcomm.com>
+ <CAF6AEGtoNwUGX-r7QytGn5hSU-VD4RJZyhcb3WdgAgAFR5BK4A@mail.gmail.com>
+Cc:     viresh.kumar@linaro.org, saravanak@google.com,
+        sibis@codeaurora.org, rnayak@codeaurora.org
+From:   Sharat Masetty <smasetty@codeaurora.org>
+Message-ID: <c8a514c9-5e48-b561-4b45-47cde3bdfb34@codeaurora.org>
+Date:   Wed, 27 May 2020 14:17:32 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <CAF6AEGtoNwUGX-r7QytGn5hSU-VD4RJZyhcb3WdgAgAFR5BK4A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=C5=9Br., 27 maj 2020 o 09:31 Nathan Chancellor <natechancellor@gmail.com>
-napisa=C5=82(a):
->
-> On Fri, May 22, 2020 at 02:06:55PM +0200, Bartosz Golaszewski wrote:
->
-> <snip>
->
-> > diff --git a/drivers/net/ethernet/mediatek/mtk_star_emac.c b/drivers/ne=
-t/ethernet/mediatek/mtk_star_emac.c
-> > new file mode 100644
-> > index 000000000000..789c77af501f
-> > --- /dev/null
-> > +++ b/drivers/net/ethernet/mediatek/mtk_star_emac.c
-> > @@ -0,0 +1,1678 @@
->
-> <snip>
->
-> I've searched netdev and I cannot find any reports from others but this
-> function introduces a clang warning:
->
-> drivers/net/ethernet/mediatek/mtk_star_emac.c:1296:6: warning: variable '=
-new_dma_addr' is used uninitialized whenever 'if' condition is true [-Wsome=
-times-uninitialized]
->         if (!new_skb) {
->             ^~~~~~~~
-> drivers/net/ethernet/mediatek/mtk_star_emac.c:1321:23: note: uninitialize=
-d use occurs here
->         desc_data.dma_addr =3D new_dma_addr;
->                              ^~~~~~~~~~~~
-> drivers/net/ethernet/mediatek/mtk_star_emac.c:1296:2: note: remove the 'i=
-f' if its condition is always false
->         if (!new_skb) {
->         ^~~~~~~~~~~~~~~
-> drivers/net/ethernet/mediatek/mtk_star_emac.c:1285:6: warning: variable '=
-new_dma_addr' is used uninitialized whenever 'if' condition is true [-Wsome=
-times-uninitialized]
->         if ((desc_data.flags & MTK_STAR_DESC_BIT_RX_CRCE) ||
->             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/ethernet/mediatek/mtk_star_emac.c:1321:23: note: uninitialize=
-d use occurs here
->         desc_data.dma_addr =3D new_dma_addr;
->                              ^~~~~~~~~~~~
-> drivers/net/ethernet/mediatek/mtk_star_emac.c:1285:2: note: remove the 'i=
-f' if its condition is always false
->         if ((desc_data.flags & MTK_STAR_DESC_BIT_RX_CRCE) ||
->         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/ethernet/mediatek/mtk_star_emac.c:1285:6: warning: variable '=
-new_dma_addr' is used uninitialized whenever '||' condition is true [-Wsome=
-times-uninitialized]
->         if ((desc_data.flags & MTK_STAR_DESC_BIT_RX_CRCE) ||
->             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/ethernet/mediatek/mtk_star_emac.c:1321:23: note: uninitialize=
-d use occurs here
->         desc_data.dma_addr =3D new_dma_addr;
->                              ^~~~~~~~~~~~
-> drivers/net/ethernet/mediatek/mtk_star_emac.c:1285:6: note: remove the '|=
-|' if its condition is always false
->         if ((desc_data.flags & MTK_STAR_DESC_BIT_RX_CRCE) ||
->             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/ethernet/mediatek/mtk_star_emac.c:1274:25: note: initialize t=
-he variable 'new_dma_addr' to silence this warning
->         dma_addr_t new_dma_addr;
->                                ^
->                                 =3D 0
-> 3 warnings generated.
->
-> > +static int mtk_star_receive_packet(struct mtk_star_priv *priv)
-> > +{
-> > +     struct mtk_star_ring *ring =3D &priv->rx_ring;
-> > +     struct device *dev =3D mtk_star_get_dev(priv);
-> > +     struct mtk_star_ring_desc_data desc_data;
-> > +     struct net_device *ndev =3D priv->ndev;
-> > +     struct sk_buff *curr_skb, *new_skb;
-> > +     dma_addr_t new_dma_addr;
->
-> Uninitialized here
->
-> > +     int ret;
-> > +
-> > +     spin_lock(&priv->lock);
-> > +     ret =3D mtk_star_ring_pop_tail(ring, &desc_data);
-> > +     spin_unlock(&priv->lock);
-> > +     if (ret)
-> > +             return -1;
-> > +
-> > +     curr_skb =3D desc_data.skb;
-> > +
-> > +     if ((desc_data.flags & MTK_STAR_DESC_BIT_RX_CRCE) ||
-> > +         (desc_data.flags & MTK_STAR_DESC_BIT_RX_OSIZE)) {
-> > +             /* Error packet -> drop and reuse skb. */
-> > +             new_skb =3D curr_skb;
-> > +             goto push_new_skb;
->
-> this goto
->
-> > +     }
-> > +
-> > +     /* Prepare new skb before receiving the current one. Reuse the cu=
-rrent
-> > +      * skb if we fail at any point.
-> > +      */
-> > +     new_skb =3D mtk_star_alloc_skb(ndev);
-> > +     if (!new_skb) {
-> > +             ndev->stats.rx_dropped++;
-> > +             new_skb =3D curr_skb;
-> > +             goto push_new_skb;
->
-> and this goto
->
-> > +     }
-> > +
-> > +     new_dma_addr =3D mtk_star_dma_map_rx(priv, new_skb);
-> > +     if (dma_mapping_error(dev, new_dma_addr)) {
-> > +             ndev->stats.rx_dropped++;
-> > +             dev_kfree_skb(new_skb);
-> > +             new_skb =3D curr_skb;
-> > +             netdev_err(ndev, "DMA mapping error of RX descriptor\n");
-> > +             goto push_new_skb;
-> > +     }
-> > +
-> > +     /* We can't fail anymore at this point: it's safe to unmap the sk=
-b. */
-> > +     mtk_star_dma_unmap_rx(priv, &desc_data);
-> > +
-> > +     skb_put(desc_data.skb, desc_data.len);
-> > +     desc_data.skb->ip_summed =3D CHECKSUM_NONE;
-> > +     desc_data.skb->protocol =3D eth_type_trans(desc_data.skb, ndev);
-> > +     desc_data.skb->dev =3D ndev;
-> > +     netif_receive_skb(desc_data.skb);
-> > +
-> > +push_new_skb:
-> > +     desc_data.dma_addr =3D new_dma_addr;
->
-> assign it uninitialized here.
->
-> > +     desc_data.len =3D skb_tailroom(new_skb);
-> > +     desc_data.skb =3D new_skb;
-> > +
-> > +     spin_lock(&priv->lock);
-> > +     mtk_star_ring_push_head_rx(ring, &desc_data);
-> > +     spin_unlock(&priv->lock);
-> > +
-> > +     return 0;
-> > +}
->
-> I don't know if there should be a new label that excludes that
-> assignment for those particular gotos or if new_dma_addr should
-> be initialized to something at the top. Please take a look at
-> addressing this when you get a chance.
->
-> Cheers,
-> Nathan
++ more folks
 
-Hi Nathan,
+On 5/18/2020 9:55 PM, Rob Clark wrote:
+> On Mon, May 18, 2020 at 7:23 AM Jordan Crouse <jcrouse@codeaurora.org> wrote:
+>> On Thu, May 14, 2020 at 04:24:18PM +0530, Sharat Masetty wrote:
+>>> This patches replaces the previously used static DDR vote and uses
+>>> dev_pm_opp_set_bw() to scale GPU->DDR bandwidth along with scaling
+>>> GPU frequency.
+>>>
+>>> Signed-off-by: Sharat Masetty <smasetty@codeaurora.org>
+>>> ---
+>>>   drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 6 +-----
+>>>   1 file changed, 1 insertion(+), 5 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+>>> index 2d8124b..79433d3 100644
+>>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+>>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+>>> @@ -141,11 +141,7 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
+>>>
+>>>        gmu->freq = gmu->gpu_freqs[perf_index];
+>>>
+>>> -     /*
+>>> -      * Eventually we will want to scale the path vote with the frequency but
+>>> -      * for now leave it at max so that the performance is nominal.
+>>> -      */
+>>> -     icc_set_bw(gpu->icc_path, 0, MBps_to_icc(7216));
+>>> +     dev_pm_opp_set_bw(&gpu->pdev->dev, opp);
+>>>   }
+>> This adds an implicit requirement that all targets need bandwidth settings
+>> defined in the OPP or they won't get a bus vote at all. I would prefer that
+>> there be an default escape valve but if not you'll need to add
+>> bandwidth values for the sdm845 OPP that target doesn't regress.
+>>
+> it looks like we could maybe do something like:
+>
+>    ret = dev_pm_opp_set_bw(...);
+>    if (ret) {
+>        dev_warn_once(dev, "no bandwidth settings");
+>        icc_set_bw(...);
+>    }
+>
+> ?
+>
+> BR,
+> -R
 
-Thanks for reporting this! I have a fix ready and will send it shortly.
+There is a bit of an issue here - Looks like its not possible to two icc 
+handles to the same path.  Its causing double enumeration of the paths 
+in the icc core and messing up path votes. With [1] Since opp/core 
+already gets a handle to the icc path as part of table add,  drm/msm 
+could do either
 
-Bartosz
+a) Conditionally enumerate gpu->icc_path handle only when pm/opp core 
+has not got the icc path handle. I could use something like [2] to 
+determine if should initialize gpu->icc_path*
+
+b) Add peak-opp-configs in 845 dt and mandate all future versions to use 
+this bindings. With this, I can remove gpu->icc_path from msm/drm 
+completely and only rely on opp/core for bw voting.
+
+[1] - https://lore.kernel.org/patchwork/cover/1240687/
+
+[2] - https://patchwork.kernel.org/patch/11527573/
+
+Let me know your thoughts
+
+Sharat
+
+>
+>> Jordan
+>>
+>>>   unsigned long a6xx_gmu_get_freq(struct msm_gpu *gpu)
+>>> --
+>>> 2.7.4
+>>>
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+>> a Linux Foundation Collaborative Project
+>> _______________________________________________
+>> Freedreno mailing list
+>> Freedreno@lists.freedesktop.org
+>> https://lists.freedesktop.org/mailman/listinfo/freedreno
