@@ -2,132 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE4D1E45CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50EBD1E45CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389203AbgE0O0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 10:26:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43964 "EHLO
+        id S2389224AbgE0O0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 10:26:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389036AbgE0O0X (ORCPT
+        with ESMTP id S2389036AbgE0O0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 10:26:23 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AF37C08C5C2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 07:26:21 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id j198so2401803wmj.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 07:26:21 -0700 (PDT)
+        Wed, 27 May 2020 10:26:54 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD95C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 07:26:53 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id j16so11759556wrb.7
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 07:26:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Mly88rOWldb2hn6ZUpBbudlq0QPli1OI+xak074b4r4=;
-        b=lAj3+1b/p3m/ElrnylWgfn/5vAM5qlt1rTY6GYJMqKlpy+5swWInxuNIz8ay89ysVX
-         hc8Pzyf7c0E+jRldyVyLLE8rScc7piJOSxcjE8PLU1GH0bXHL0rfcGhfwDFAVn7FKZ94
-         f3HVHC9HU1SoQHT7yZOoYKcHdZWZL70//b9+xYaGv5rwmkxCyLnRWFHLChSXU3dsBxNV
-         tPNC8prFGFq+u/6YnTni0cBmAkN2MQc5sSCySaBzuOkCenirCZgX4UP9Q0EoxKOd5nzv
-         keB2wPsIVLoFf0Y5FLqgvswggZtbokmEZQP7V5VJJTCJ0soabWSO4axKZgomC8qEW/T1
-         /lMA==
+        bh=34HLjmK1c/0lja18IFDaAvizeeni+8A0+yLrcuOnt6s=;
+        b=SOduy4lkCkwjmI0QeG65K/wrRqpjJZA/vXAizxeSh0GB1X8T15UW2rQCpNPvZgrKfZ
+         O91e+QYG9T2eKn58qnQRjF5eEBbiQfXs2puDFq3m0jTb52GKancfabRHa8DrG2THbNE+
+         Hi2jgORhG/V5iVIuSLPTlRiHz9c4kHi9UT4cbBt+WI7+pyU+NHFUjhQMrSFGo7rtGb8e
+         zeFvPgPAMaqpygmZGccY2Yt/MDKdxOjyDXZKK0tHqj1CcJRf9QXC9jeR/HQZxCZYfroa
+         rOD9nOv2x+sUwCVjog7sroyYWZezkHh0+lMbl5x2HvE9vZLQh7sCI1ENH0K7ed+I0MfN
+         4F/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Mly88rOWldb2hn6ZUpBbudlq0QPli1OI+xak074b4r4=;
-        b=HhAwbPfC9fQp2UXgGD19I7u5VqM1id6H1YwEwvZQ2zAGYiYU9aFDbGU0lLClWPi8AZ
-         sAUbjAh1wy39EGVAPRYBZQYtI2LY2ItrmbTG4tvgCMXcVTB1YCkHwXbgK2yf1RQPg4uR
-         fb00JIKU12Ox1rc8s0SR7a0ThcWEdV1OMpS3DNHZwcCQmDxOR4lSnAoywg6KVriE0DCJ
-         4ECcstW7TJAHZ2Plsm51h2FKrxXp8ssMydwXrkQ1mDPHNtv4tbPvuLt3x8zr0shQGQSF
-         6+7tostZy9yKiW1UnHTQSgDRtspo0G5gxRmcvz7vPHNy4w+54KTh/lzmvvJXAd4nUaHy
-         1PEw==
-X-Gm-Message-State: AOAM533TWdWjo+A9DkO2zpDLpHXBvrR9gE0dUt9yAd7DJDOkpJYyt5ZJ
-        4Pc6zXwyDiRi0J/GjDqB8QdHpQ==
-X-Google-Smtp-Source: ABdhPJwSEI2N+Z0JrEzzTe6BWOigRZOSAIjRwq1zxP+KiTxFgPixzdvK7ac/pvk3MQ7iCOeGdGApOQ==
-X-Received: by 2002:a1c:f315:: with SMTP id q21mr4299691wmq.114.1590589580237;
-        Wed, 27 May 2020 07:26:20 -0700 (PDT)
+        bh=34HLjmK1c/0lja18IFDaAvizeeni+8A0+yLrcuOnt6s=;
+        b=PVLnDabHbvQAuk7oZsHLpIYK+6+0v1dGFmnnPAM+n+e7XwHYqipO54Kqwur7wYA+xJ
+         c3nkA6rbLfyg4uk/FH8aDiumI53411p+AOow7OT9tmifOW0eESFKktwWqTJWUOhe5R1C
+         EaXXUm5cZRPie9Q4TOeIftJZrpAdPhwkclUODnZhj3pWjej7Cucwm5WdBG2wzfGAvrMe
+         5FsYKhaNcjp6+vuRRTdvNKe6Mv0Qc9Cqdl0ZtdRtoseU+fz0CAydy4aH7B9bW9ZhH9RI
+         H3IJC92jJtZTwKvrjT9Ntmhf27hQQdM80AdiYuOYe4QovtycqIjrQX4TP0N/pEvJjRqj
+         A/tg==
+X-Gm-Message-State: AOAM532w/AjlzMGxkaSwfpv8WGrJGCKQX794jaXHJtUAjXf0nCMSkXcN
+        UCqgW5fVzZynre7gnEzKaIDNLBs8LGc=
+X-Google-Smtp-Source: ABdhPJzwIDHcPXyeTxEti9Ruu7DNpDNyxtg30jFdfYqrdsdmnDgGXlaE7BHx5Dtsw5qH3gme0lumxQ==
+X-Received: by 2002:adf:f601:: with SMTP id t1mr15339842wrp.244.1590589612081;
+        Wed, 27 May 2020 07:26:52 -0700 (PDT)
 Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id s2sm2777668wmh.11.2020.05.27.07.26.18
+        by smtp.gmail.com with ESMTPSA id h5sm2998033wrw.85.2020.05.27.07.26.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2020 07:26:19 -0700 (PDT)
-Date:   Wed, 27 May 2020 15:26:17 +0100
+        Wed, 27 May 2020 07:26:51 -0700 (PDT)
+Date:   Wed, 27 May 2020 15:26:49 +0100
 From:   Daniel Thompson <daniel.thompson@linaro.org>
 To:     Sumit Garg <sumit.garg@linaro.org>
 Cc:     kgdb-bugreport@lists.sourceforge.net, jason.wessel@windriver.com,
         dianders@chromium.org, pmladek@suse.com,
         sergey.senozhatsky@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/4] kdb: Make kdb_printf robust to run in NMI context
-Message-ID: <20200527142617.t7dzal7ok5i3exra@holly.lan>
+Subject: Re: [PATCH v3 2/4] kdb: Check status of console prior to invoking
+ handlers
+Message-ID: <20200527142649.aa3kgqvo2n4q4kyx@holly.lan>
 References: <1590560759-21453-1-git-send-email-sumit.garg@linaro.org>
- <1590560759-21453-4-git-send-email-sumit.garg@linaro.org>
+ <1590560759-21453-3-git-send-email-sumit.garg@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1590560759-21453-4-git-send-email-sumit.garg@linaro.org>
+In-Reply-To: <1590560759-21453-3-git-send-email-sumit.garg@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 11:55:58AM +0530, Sumit Garg wrote:
-> While rounding up CPUs via NMIs, its possible that a rounded up CPU
-
-This problem does not just impact NMI roundup (breakpoints, including
-implicit breakpoint-on-oops can have the same effect).
-
-
-> maybe holding a console port lock leading to kgdb master CPU stuck in
-> a deadlock during invocation of console write operations. So in order
-> to avoid such a deadlock, enable oops_in_progress prior to invocation
-> of console handlers.
+On Wed, May 27, 2020 at 11:55:57AM +0530, Sumit Garg wrote:
+> Check if a console is enabled prior to invoking corresponding write
+> handler.
 > 
-> Suggested-by: Petr Mladek <pmladek@suse.com>
+> Suggested-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
 > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+
+
 > ---
->  kernel/debug/kdb/kdb_io.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+>  kernel/debug/kdb/kdb_io.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 > diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
-> index 349dfcc..f848482 100644
+> index f6b4d47..349dfcc 100644
 > --- a/kernel/debug/kdb/kdb_io.c
 > +++ b/kernel/debug/kdb/kdb_io.c
-> @@ -566,7 +566,17 @@ static void kdb_msg_write(char *msg, int msg_len)
+> @@ -564,6 +564,8 @@ static void kdb_msg_write(char *msg, int msg_len)
+>  		kdb_io_write(msg, msg_len, dbg_io_ops->write_char);
+>  
 >  	for_each_console(c) {
->  		if (!(c->flags & CON_ENABLED))
->  			continue;
-> +		/*
-> +		 * While rounding up CPUs via NMIs, its possible that
-
-Ditto.
-
-> +		 * a rounded up CPU maybe holding a console port lock
-> +		 * leading to kgdb master CPU stuck in a deadlock during
-> +		 * invocation of console write operations. So in order
-> +		 * to avoid such a deadlock, enable oops_in_progress
-> +		 * prior to invocation of console handlers.
-
-Actually looking at this comment as a whole I think it spends to many
-words on what and not enough on why (e.g. what the tradeoffs are and
-why we are not using bust_spinlocks() which would be a more obvious
-approach).
-
-  Set oops_in_progress to encourage the console drivers to disregard
-  their internal spin locks: in the current calling context
-  the risk of deadlock is a bigger problem than risks due to
-  re-entering the console driver. We operate directly on
-  oops_in_progress rather than using bust_spinlocks() because
-  the calls bust_spinlocks() makes on exit are not appropriate
-  for this calling context.
-
-
-Daniel.
-
-
-> +		 */
-> +		++oops_in_progress;
+> +		if (!(c->flags & CON_ENABLED))
+> +			continue;
 >  		c->write(c, msg, msg_len);
-> +		--oops_in_progress;
 >  		touch_nmi_watchdog();
 >  	}
->  }
 > -- 
 > 2.7.4
 > 
