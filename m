@@ -2,158 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1266F1E4AA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DDAC1E4AA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391394AbgE0Qo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2391425AbgE0Qo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 27 May 2020 12:44:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387969AbgE0Qo4 (ORCPT
+Received: from sonic305-2.consmr.mail.bf2.yahoo.com ([74.6.133.41]:40961 "EHLO
+        sonic305-2.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387952AbgE0Qo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 May 2020 12:44:56 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08C2C05BD1E
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 09:44:55 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id n15so1718591pjt.4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 09:44:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=X64+ppe+q0UNqqvojub0C2NL80dGaMETVbT2rPY1ums=;
-        b=Im8qkxh1Sn2M/k9QOosiF7M8y+EZGWRBKzEwgickzvAWQsO0qdxKCCYziWnQH2IZDv
-         98cC1QrXHaoXfvzOvquq0qL2AYdROiW9/vjK8+7UwmPWoseg/T0VWfKVI33FGAjmpopz
-         Q/TQbqUeduz4FZBP2tMTrmWgILT7RKPwDL2FfdbYZi/584J48q2EtpJ/6Hh8kAXd9QL/
-         iOb/7BXZzwHUfGNwHZxXDm01V59p0b+zJU7HSDCt553gKcRtzS43vHzi2j27pajsj7ZP
-         4xAW11oOhuYf3a2sfesfwqt0+TNh1+aJQEgtmLtg/5bMiEFji3dAHSEscBTWe7quPnI/
-         L7yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=X64+ppe+q0UNqqvojub0C2NL80dGaMETVbT2rPY1ums=;
-        b=gZW/u6RKNycdIllRXVXz1QGk1kJBOIgTLQa7o8imNww/urWcseTjkk8aOoTbw3UA2l
-         VkWrYXyfbLcqrE/mMtxnADm1KDRAoeD+mhTBQp2wlC0otWWYS69lrUk+5Y9SVi1qG+u9
-         GDZDa32iDsMaDx1uuBzKCuMVTU3+PP1No1LwprFMKvJsyazIC0F2lMczsKR8FlEHFFTb
-         LZEBpDtXin7Rat2f4LTcUY82xBmaNFUVeth7eHNWi2qhmePqvs+UQerJu5SBrKXD992o
-         pCaClvB3T3QyEP9actpYXwyTgj4sH672d6MvUnuZQFLBLUp4cHe3TOiAIfFx3eIX6j/F
-         XYLw==
-X-Gm-Message-State: AOAM531NuYhcLlODz9RV0Y7m1iiJquHrezALwneXVF4NtuFUyY0ydyd0
-        u6FHqxdsSZ725iP4BzNk2eBDuQ==
-X-Google-Smtp-Source: ABdhPJz4Zze5uwlMQlM8QS2P8EVI0og3y/PQcOV3bGNjW8YShHlRWlsPUpoc6xp4xKZcyP0VVjVJtQ==
-X-Received: by 2002:a17:902:c686:: with SMTP id r6mr6969518plx.147.1590597895475;
-        Wed, 27 May 2020 09:44:55 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id d15sm3638917pjc.0.2020.05.27.09.44.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 27 May 2020 09:44:54 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jdzAi-0001rU-T1; Wed, 27 May 2020 13:44:52 -0300
-Date:   Wed, 27 May 2020 13:44:52 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH] IB/core: Use sizeof_field() helper
-Message-ID: <20200527164452.GQ744@ziepe.ca>
-References: <20200527144152.GA22605@embeddedor>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1590597895; bh=TYgdp/zNeW9P5rVjVpFopjba7a+Fm8hxyemx2bQVZd8=; h=Date:From:Reply-To:Subject:References:From:Subject; b=TA1Mwmjlv7IjI4IIv4UhNrxkBHKgTNUOX3R2t9lAde1B7O2HNw4nBFjaX4CtgIEasygWwluuJGItV2SRTW0q6xIox042JxHHBLxFO83uEH+XH9F4E0FatUqVjOPlcHHbGMRPCioypNKs4CLYH+kmZkFvTz6W+cPBYDcJD0YQozVprLnNzvg6ahb5BfTz087vwhR4EytWDlob6YzjcXwUPqYMgBA0WT+exZmSvR+tDyCk6RP08jxCpaMIsuhhRSnqzynUb0Pj0nJNTxhslwFe6hFKDWuHcyHVdfTikHwSRUppLoZmNrWmdqv57YVYztwlULkxXO0l3udm/0P8odaWyA==
+X-YMail-OSG: CKxjK4UVM1n61rbdIsJFUXzV1iZ4cp.uoex28WTRK0w52wCTAIJAuCZF1m2N64B
+ HbEYEUE53LQTcw3ob9kX54FEE8_2WQigmC2tKmOJwJsHJESbxxSX94_K4QeQaX52LnQ_6KrcqSDO
+ G_e9mnV9iMdDH49LfnY5vHewIx0j0pZkAySQtvIsFFPpF1GKJB0mMZIQcbGzO5Kimc8uEF12cONr
+ tsQoI20cdxNa.YvZuJ8W6VMAiy8FzVeE1YYyv.Vk3vv6HDtM1B1rfGDkhl60pWlwLcNnld06VXGz
+ E3gXU29CiOt2zNtovhCdVW_xEVqswVwNfiC6B64pvn3hwVdYhPDvmJxUkWDSykuGj57ywr86zpsS
+ XVNpVgHOeV4TnldIJqz4inFBCgoiJ_WV5SoXJpOAKRvb5yaGMrpR6miqsXpWJIvMM5kBV.sHtCTd
+ 7xEgwstZ4TR7LnM4ITwVasDb1sJsVXkZgcsfM74pzXlYkDljEqwtDprXHPqUG_p9I7PkkqdT9Rio
+ GDuhJC47wK5rQ4ckUd1Xyy4wad5WtZJjb7BWFbqKPqUD.HCyX.hoaFstGpjqW1eLLJW5Sa1Ef8Tw
+ hdiIWqY5_5ppQ8prn2jLhUAxMdO8KTH..cr_M8r.Bu6WH_kIZhrXuCM27ClKfqWonigWuUHHvqlz
+ SzG.QmBS08Q3GSMjMXXz_68k75P0Iq3Zir7vi.IzF2JDbWf09r96PmtfwpR7aBeYl8_NPgVZVwpX
+ e9K0GnpD5VhwldzrwsU8kN.4Dv0Lf30j_BPG1WSb5xW.xtVp_9T9Qq3m40rYFAcyG5KdjUR7pX3A
+ n0ISXi1TL4f5lkAq3Hq7IuagrWyhxg38LdjLF8sZnm_t2u0OmL3jYmGZJp8Abpr8coO1a.LnshAi
+ dbpFuqHwc9xT7nB.IkNc6CxtNJl1XkLHKdPCBhy6O0zvurdiixAJVuZVItNOppnAZP_hzcLMfgvs
+ Aok7FJAgNwCCN.ajESn2.x6BbOrR672P5wUJJl1ZVBWPTE0Ckk5YOxjk6Y3AyHu1sOuxovVR34fQ
+ cjdN88qt9d6ktPBWVuqBEHc06lA2uy2.kGhgQq_aaM3bcd9FgTVT.eQ0zzUuYahJ5UmGoz8RTCE_
+ P5nAKYGMWgRK4VHaI_dWm55Bwn36.gCF28p4jZaEMsQx9FyKfFpGjxZI_JUgPqRxH6abmRu_pGeI
+ ddOojH0ww3X0Y672aSW5jb9Ta9yeU0xZ.hmPykuqKQ9tuWQI6kopTKOtSGVAGPKeAXvAdPyr1sM6
+ cbkCu_r.KA.vTSMs.yqYdmzzP3WAZYQBXVl3vajgvjh72408P5Wm1iQXGWkXKRH0wk0WaidU7xE8
+ axZttGAKL.TJya_QhivBzmNtILxI7Fw--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.bf2.yahoo.com with HTTP; Wed, 27 May 2020 16:44:55 +0000
+Date:   Wed, 27 May 2020 16:44:54 +0000 (UTC)
+From:   "Mrs.mcompola" <mrs.qanbanden999@gmail.com>
+Reply-To: mcompola444@gmail.com
+Message-ID: <918074059.347611.1590597894014@mail.yahoo.com>
+Subject: Dear Friend, My present internet connection is very slow in case
+ you
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200527144152.GA22605@embeddedor>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <918074059.347611.1590597894014.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15959 YMailNodin Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 09:41:52AM -0500, Gustavo A. R. Silva wrote:
-> Make use of the sizeof_field() helper instead of an open-coded version.
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/infiniband/core/sa_query.c     | 8 ++++----
->  drivers/infiniband/core/uverbs_cmd.c   | 2 +-
->  drivers/infiniband/core/uverbs_ioctl.c | 2 +-
->  3 files changed, 6 insertions(+), 6 deletions(-)
 
-What kind of tool are you using for this? It seems to miss a lot, I
-added in a few others to this patch and applied it, thanks:
 
-diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
-index 8f70c5c38ab7c3..a2ed09a3c714a9 100644
---- a/drivers/infiniband/core/sa_query.c
-+++ b/drivers/infiniband/core/sa_query.c
-@@ -420,7 +420,7 @@ static const struct ib_field opa_path_rec_table[] = {
- 
- #define MCMEMBER_REC_FIELD(field) \
- 	.struct_offset_bytes = offsetof(struct ib_sa_mcmember_rec, field),	\
--	.struct_size_bytes   = sizeof ((struct ib_sa_mcmember_rec *) 0)->field,	\
-+	.struct_size_bytes   = sizeof_field(struct ib_sa_mcmember_rec, field),	\
- 	.field_name          = "sa_mcmember_rec:" #field
- 
- static const struct ib_field mcmember_rec_table[] = {
-@@ -504,7 +504,7 @@ static const struct ib_field mcmember_rec_table[] = {
- 
- #define SERVICE_REC_FIELD(field) \
- 	.struct_offset_bytes = offsetof(struct ib_sa_service_rec, field),	\
--	.struct_size_bytes   = sizeof ((struct ib_sa_service_rec *) 0)->field,	\
-+	.struct_size_bytes   = sizeof_field(struct ib_sa_service_rec, field),	\
- 	.field_name          = "sa_service_rec:" #field
- 
- static const struct ib_field service_rec_table[] = {
-@@ -710,7 +710,7 @@ static const struct ib_field opa_classport_info_rec_table[] = {
- 
- #define GUIDINFO_REC_FIELD(field) \
- 	.struct_offset_bytes = offsetof(struct ib_sa_guidinfo_rec, field),	\
--	.struct_size_bytes   = sizeof((struct ib_sa_guidinfo_rec *) 0)->field,	\
-+	.struct_size_bytes   = sizeof_field(struct ib_sa_guidinfo_rec, field),	\
- 	.field_name          = "sa_guidinfo_rec:" #field
- 
- static const struct ib_field guidinfo_rec_table[] = {
-diff --git a/drivers/infiniband/core/ud_header.c b/drivers/infiniband/core/ud_header.c
-index 29a45d2f8898e1..d65d541b9a2587 100644
---- a/drivers/infiniband/core/ud_header.c
-+++ b/drivers/infiniband/core/ud_header.c
-@@ -41,7 +41,7 @@
- 
- #define STRUCT_FIELD(header, field) \
- 	.struct_offset_bytes = offsetof(struct ib_unpacked_ ## header, field),      \
--	.struct_size_bytes   = sizeof ((struct ib_unpacked_ ## header *) 0)->field, \
-+	.struct_size_bytes   = sizeof_field(struct ib_unpacked_ ## header, field), \
- 	.field_name          = #header ":" #field
- 
- static const struct ib_field lrh_table[]  = {
-diff --git a/include/rdma/uverbs_ioctl.h b/include/rdma/uverbs_ioctl.h
-index 5bd2b037e9147c..0418d7bddf3e0c 100644
---- a/include/rdma/uverbs_ioctl.h
-+++ b/include/rdma/uverbs_ioctl.h
-@@ -420,9 +420,9 @@ struct uapi_definition {
- 		.scope = UAPI_SCOPE_OBJECT,                                    \
- 		.needs_fn_offset =                                             \
- 			offsetof(struct ib_device_ops, ibdev_fn) +             \
--			BUILD_BUG_ON_ZERO(                                     \
--			    sizeof(((struct ib_device_ops *)0)->ibdev_fn) !=   \
--			    sizeof(void *)),				       \
-+			BUILD_BUG_ON_ZERO(sizeof_field(struct ib_device_ops,   \
-+						       ibdev_fn) !=            \
-+					  sizeof(void *)),                     \
- 	}
- 
- /*
-@@ -435,9 +435,9 @@ struct uapi_definition {
- 		.scope = UAPI_SCOPE_METHOD,                                    \
- 		.needs_fn_offset =                                             \
- 			offsetof(struct ib_device_ops, ibdev_fn) +             \
--			BUILD_BUG_ON_ZERO(                                     \
--			    sizeof(((struct ib_device_ops *)0)->ibdev_fn) !=   \
--			    sizeof(void *)),                                   \
-+			BUILD_BUG_ON_ZERO(sizeof_field(struct ib_device_ops,   \
-+						       ibdev_fn) !=            \
-+					  sizeof(void *)),                     \
- 	}
- 
- /* Call a function to determine if the entire object is supported or not */
+Dear Friend, My present internet connection is very slow in case you
+received my email in your spam
+
+How are you today?.With due respect to your person and much sincerity
+of purpose,Well it is a pleasure to contact you on this regard and i
+pray that this will turn out to be everlasting relationship for both
+of us. However it's just my urgent need for a Foreign partner that
+made me to contact you for this Transaction,I got your contact from
+internet, while searching for a reliable someone that I can go into
+partnership with. I am Mrs.mcompola, from BURKINA FASO, West
+Africa .Presently i work in the Bank as bill and exchange manager.
+
+I have the opportunity of transferring the left over fund $5.4 Million
+us dollars of one of my Bank clients who died in the collapsing of the
+world trade center on september 11th 2001.I have placed this fund to
+and escrow account without name of beneficiary.i will use my position
+here in the bank to effect a hitch free transfer of the fund to your
+bank account and there will be no trace.
+
+I agree that 40% of this money will be for you as my foriegn
+partner,50% for me while 10% will be for the expenses that will occur
+in this transaction .If you are really interested in my proposal
+further details of the Transfer will be forwarded unto you as soon as
+I receive your willingness mail for successful transfer.
+
+Yours Faithfully,
+Mrs.mcompola444@gmail.com
