@@ -2,239 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B582D1E4A95
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8B31E4A99
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391376AbgE0Qmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 12:42:51 -0400
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:13180 "EHLO
-        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391355AbgE0Qms (ORCPT
+        id S2391404AbgE0QnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 12:43:11 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:59174 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391358AbgE0QnK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 12:42:48 -0400
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Wed, 27 May 2020 09:42:44 -0700
-Received: from sc9-mailhost2.vmware.com (unknown [10.200.192.41])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 40F434046A;
-        Wed, 27 May 2020 09:42:47 -0700 (PDT)
-From:   Matt Helsley <mhelsley@vmware.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Matt Helsley <mhelsley@vmware.com>
-Subject: [RFC][PATCH 3/3] objtool: Add support for relocations without addends
-Date:   Wed, 27 May 2020 09:42:33 -0700
-Message-ID: <933488b79c91ba040e68847fe53531fd97b18e07.1590597288.git.mhelsley@vmware.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1590597288.git.mhelsley@vmware.com>
-References: <cover.1590597288.git.mhelsley@vmware.com>
+        Wed, 27 May 2020 12:43:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/NR+tWQXI7ShSCqCpSQ3tqpGU8MPz+hHbfEP5s550KY=; b=3lHzTLtpG1Xp4RHgxteMHqoueD
+        lvFnMqfitcxUXeZcOIxR59B4LrfStEwFYL7YoutZ8SR45ExlNmR7NT1epzEbwuMiL3qBWS+Xs3hk6
+        2ZejasBqaOa3h11u6jKtRqvbfUnjJ5M/er3EMowEC9VJbFknun4lNuchgTYSrUWDGlTKqOhepIJRE
+        5f4qVLJi3spimqZogWUBaTi9V+j0WeOS2S8o54nqTtWZeRL+EOBIONrak53mbiSVtahW2Ri7ZfTTP
+        9YQlwoj4+2pn6fEQPJA2rlgEC2O/xkhGK5lhqTOmgG2YRskVKmpD3hfpSksedtywOO6qpUg6Um5jE
+        Q8xlSHvg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jdz91-00031O-25; Wed, 27 May 2020 16:43:07 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D24EA307643;
+        Wed, 27 May 2020 18:43:05 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A4EE92023E7C7; Wed, 27 May 2020 18:43:05 +0200 (CEST)
+Date:   Wed, 27 May 2020 18:43:05 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     mingo@kernel.org, will@kernel.org, tglx@linutronix.de
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        a.darwish@linutronix.de, rostedt@goodmis.org, bigeasy@linutronix.de
+Subject: Re: [PATCH 0/6] x86/entry,lockdep: Improve IRQ state tracking
+Message-ID: <20200527164305.GB706495@hirez.programming.kicks-ass.net>
+References: <20200527154527.233385756@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-Received-SPF: None (EX13-EDG-OU-001.vmware.com: mhelsley@vmware.com does not
- designate permitted sender hosts)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200527154527.233385756@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently objtool only collects information about relocations with
-addends. In recordmcount, which we are about to merge into objtool,
-some supported architectures do not use rela relocations. Since
-object files use one or the other the list can be reused.
+On Wed, May 27, 2020 at 05:45:27PM +0200, Peter Zijlstra wrote:
+> Ahmed and Sebastian wanted additional lockdep_assert*() macros and ran
+> into header hell.
+> 
+> Move the IRQ state into per-cpu variables, which removes the dependency on
+> task_struct, which is what generated the header-hell.
+> 
+> And fix IRQ state tracking to not be affected by lockdep_off() (it really
+> should not have been anyway) and extends IRQ state tracking across (x86)
+> NMIs.
 
-Signed-off-by: Matt Helsley <mhelsley@vmware.com>
----
- tools/objtool/elf.c | 109 ++++++++++++++++++++++++++++++++++++--------
- tools/objtool/elf.h |   5 +-
- 2 files changed, 95 insertions(+), 19 deletions(-)
+After having it run kernel builds for a while, I've got a realy weird
+(false-positive) lockdep_assert_irqs_enabled() trigger.
 
-diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-index a162bc383945..cc7b628b1566 100644
---- a/tools/objtool/elf.c
-+++ b/tools/objtool/elf.c
-@@ -7,6 +7,7 @@
-  * Copyright (C) 2014 Seth Jennings <sjenning@redhat.com>
-  */
- 
-+#define _GNU_SOURCE
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <fcntl.h>
-@@ -490,6 +491,32 @@ void elf_add_reloc(struct elf *elf, struct reloc *reloc)
- 	elf_hash_add(elf->reloc_hash, &reloc->hash, reloc_hash(reloc));
- }
- 
-+static int read_rel_reloc(struct section *sec, int i, struct reloc *reloc, unsigned int *symndx)
-+{
-+	if (!gelf_getrel(sec->data, i, &reloc->rel)) {
-+		WARN_ELF("gelf_getrel");
-+		return -1;
-+	}
-+	reloc->type = GELF_R_TYPE(reloc->rel.r_info);
-+	reloc->addend = 0;
-+	reloc->offset = reloc->rel.r_offset;
-+	*symndx = GELF_R_SYM(reloc->rel.r_info);
-+	return 0;
-+}
-+
-+static int read_rela_reloc(struct section *sec, int i, struct reloc *reloc, unsigned int *symndx)
-+{
-+	if (!gelf_getrela(sec->data, i, &reloc->rela)) {
-+		WARN_ELF("gelf_getrela");
-+		return -1;
-+	}
-+	reloc->type = GELF_R_TYPE(reloc->rela.r_info);
-+	reloc->addend = reloc->rela.r_addend;
-+	reloc->offset = reloc->rela.r_offset;
-+	*symndx = GELF_R_SYM(reloc->rela.r_info);
-+	return 0;
-+}
-+
- static int read_relocs(struct elf *elf)
- {
- 	struct section *sec;
-@@ -497,17 +524,21 @@ static int read_relocs(struct elf *elf)
- 	int i;
- 	unsigned int symndx;
- 	unsigned long nr_reloc, max_reloc = 0, tot_reloc = 0;
-+	int (*read_reloc)(struct section *, int, struct reloc *, unsigned int *);
- 
- 	list_for_each_entry(sec, &elf->sections, list) {
--		if (sec->sh.sh_type != SHT_RELA)
--			continue;
-+		switch(sec->sh.sh_type) {
-+		case SHT_REL: read_reloc = read_rel_reloc; break;
-+		case SHT_RELA: read_reloc = read_rela_reloc; break;
-+		default: continue;
-+		}
- 
- 		if (sec->sh.sh_flags & SHF_INFO_LINK) {
- 			sec->base = find_section_by_index(elf, sec->sh.sh_info);
- 		} else if (strncmp(sec->name, ".rel", 4) == 0) {
- 			WARN("Using naming heuristic to find base of reloc section %s",
- 			     sec->name);
--			sec->base = find_section_by_name(elf, sec->name + 5);
-+			sec->base = find_section_by_name(elf, strchrnul(sec->name + 1, '.'));
- 		}
- 		if (!sec->base) {
- 			WARN("can't find base section for reloc section %s",
-@@ -525,16 +556,8 @@ static int read_relocs(struct elf *elf)
- 				return -1;
- 			}
- 			memset(reloc, 0, sizeof(*reloc));
--
--			if (!gelf_getrela(sec->data, i, &reloc->rela)) {
--				WARN_ELF("gelf_getrela");
-+			if (read_reloc(sec, i, reloc, &symndx))
- 				return -1;
--			}
--
--			reloc->type = GELF_R_TYPE(reloc->rela.r_info);
--			reloc->addend = reloc->rela.r_addend;
--			reloc->offset = reloc->rela.r_offset;
--			symndx = GELF_R_SYM(reloc->rela.r_info);
- 			reloc->sym = find_symbol_by_index(elf, symndx);
- 			reloc->sec = sec;
- 			if (!reloc->sym) {
-@@ -752,16 +775,50 @@ struct section *elf_create_reloc_section(struct elf *elf, struct section *base)
- 	return sec;
- }
- 
--int elf_rebuild_reloc_section(struct section *sec)
-+static int elf_rebuild_rel_reloc_section(struct section *sec, int nr)
- {
- 	struct reloc *reloc;
--	int nr, idx = 0, size;
--	GElf_Rela *relocs;
-+	int idx = 0, size;
-+	GElf_Rel *relocs;
-+
-+	/*
-+	 * Allocate a buffer for relocations with addends but also use
-+	 * it for other relocations too. The section type determines
-+	 * the size of the section, the buffer used, and the entries.
-+	 */
-+	size = nr * sizeof(*relocs);
-+	relocs = malloc(size);
-+	if (!relocs) {
-+		perror("malloc");
-+		return -1;
-+	}
- 
--	nr = 0;
--	list_for_each_entry(reloc, &sec->reloc_list, list)
--		nr++;
-+	sec->data->d_buf = relocs;
-+	sec->data->d_size = size;
-+
-+	sec->sh.sh_size = size;
-+
-+	idx = 0;
-+	list_for_each_entry(reloc, &sec->reloc_list, list) {
-+		relocs[idx].r_offset = reloc->offset;
-+		relocs[idx].r_info = GELF_R_INFO(reloc->sym->idx, reloc->type);
-+		idx++;
-+	}
-+
-+	return 0;
-+}
-+
-+static int elf_rebuild_rela_reloc_section(struct section *sec, int nr)
-+{
-+	struct reloc *reloc;
-+	int idx = 0, size;
-+	GElf_Rela *relocs;
- 
-+	/*
-+	 * Allocate a buffer for relocations with addends but also use
-+	 * it for other relocations too. The section type determines
-+	 * the size of the section, the buffer used, and the entries.
-+	 */
- 	size = nr * sizeof(*relocs);
- 	relocs = malloc(size);
- 	if (!relocs) {
-@@ -785,6 +842,22 @@ int elf_rebuild_reloc_section(struct section *sec)
- 	return 0;
- }
- 
-+int elf_rebuild_reloc_section(struct section *sec)
-+{
-+	struct reloc *reloc;
-+	int nr;
-+
-+	nr = 0;
-+	list_for_each_entry(reloc, &sec->reloc_list, list)
-+		nr++;
-+
-+	switch(sec->sh.sh_type) {
-+	case SHT_REL:  return elf_rebuild_rel_reloc_section(sec, nr);
-+	case SHT_RELA: return elf_rebuild_rela_reloc_section(sec, nr);
-+	default:       return -1;
-+	}
-+}
-+
- int elf_write(const struct elf *elf)
- {
- 	struct section *sec;
-diff --git a/tools/objtool/elf.h b/tools/objtool/elf.h
-index 6ad759fd778e..048200af8267 100644
---- a/tools/objtool/elf.h
-+++ b/tools/objtool/elf.h
-@@ -61,7 +61,10 @@ struct symbol {
- struct reloc {
- 	struct list_head list;
- 	struct hlist_node hash;
--	GElf_Rela rela;
-+	union {
-+		GElf_Rela rela;
-+		GElf_Rel  rel;
-+	};
- 	struct section *sec;
- 	struct symbol *sym;
- 	unsigned int type;
--- 
-2.20.1
-
+So something isn't quite right. I'll prod at it some moar.
