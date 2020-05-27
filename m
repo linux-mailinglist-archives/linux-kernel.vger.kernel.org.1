@@ -2,133 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C881E4479
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA80C1E4486
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388896AbgE0NwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388516AbgE0Nv7 (ORCPT
+        id S2388923AbgE0Nwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:52:39 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:46157 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388713AbgE0Nwi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:51:59 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916BCC08C5C1;
-        Wed, 27 May 2020 06:51:59 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id t11so11788946pgg.2;
-        Wed, 27 May 2020 06:51:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lv4cHoTneGJgiZA0MtTEgUwideruioJAKp1Ql+eUt6s=;
-        b=XtLRVgv4hLzqDEBGkXvO+pLgXx7NblrBSp3WOL3J3cxNuR7E2doQ9012SD9yaq2O/L
-         02VToh4PLSV+ZBDnOn3+kC+jcmO8eyH3rYtwjqoSdq2zOf1cpMSHD19gMmFHXTLnEijf
-         e0HysEoDTTkMQoFdjVzr/4CnlJXz0kzOmVG71wYXqB/8tSvsYCMn0wW6FZuRL3VY3Vvw
-         8EADs/KVOsl2VgCdaIkIlucAqphM3kCCKTw2AoaVkSah6XC3JzyQsKdTrArLchAFbi5+
-         rW8cUM+uI2or102pWcRbPN4YqiWa4bOnuWH48UdXuCd9LHuSfd2m0yd4qdgGewDDdcPD
-         kdaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=lv4cHoTneGJgiZA0MtTEgUwideruioJAKp1Ql+eUt6s=;
-        b=IEAiNc6W9TZBc4JSp4sAqwJaXBKjbgmmDr6zah9ohv/8xxM+Ge1DmWLEAsp8yC6gEz
-         x2cn+q38wui3/xLPfAFKnocTcvMMG+e6fY8PKSgrnd5J3o7ZJxnsFPEESDsJI9M9227T
-         QGv6pQ84HGJpc0VSBiLX6XuUKHXedxDmfxnK47Wvp+MO+S/KoNzB07Efgul4Qe7KBQYr
-         W2kVpdDDtade0dIBCWT0ggvYLKTVFZtC0F0S5qTWPKauW6NAZs7fHsODxS/3rRceK5oo
-         rSCBcBXW2wS/ShLIyKSPZnjovOeY9eW/7tsK/mUZQW5FttNfeVIJ0tPzVh+cJiH159d+
-         WBPA==
-X-Gm-Message-State: AOAM5329vcocqLcdT+fPJza6sEDRGGmlcemm9DjXwHyZIbgz4/q958QM
-        8YoIxCfYwhZZYZkDqvlxZ/ayc5/Z
-X-Google-Smtp-Source: ABdhPJy0Ivsu/xOHkvmKsAv3nnIzYQ0Xs4Zn15yl/309J0bZXVY8YaQOFVzCjvCl0k0JuuQeSSS0Sg==
-X-Received: by 2002:a63:40a:: with SMTP id 10mr4174429pge.310.1590587518992;
-        Wed, 27 May 2020 06:51:58 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a14sm2157798pfc.133.2020.05.27.06.51.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 May 2020 06:51:58 -0700 (PDT)
-Subject: Re: [PATCH 4.14 00/59] 4.14.182-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-References: <20200526183907.123822792@linuxfoundation.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <cacbb233-d83a-cc55-6f52-62095471338b@roeck-us.net>
-Date:   Wed, 27 May 2020 06:51:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 27 May 2020 09:52:38 -0400
+Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
+ (mreue009 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MMoXE-1jLBAj349U-00Ik9A; Wed, 27 May 2020 15:52:09 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Henrik Rydberg <rydberg@bitmath.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Richard Fontana <rfontana@redhat.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH] hwmon: applesmc: avoid overlong udelay()
+Date:   Wed, 27 May 2020 15:51:57 +0200
+Message-Id: <20200527135207.1118624-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:2aeiuLmb1dLgi7CFDVrF6BpL6xMbUnnyYn6LzeFFcrLYkjJvi4Q
+ zhD/aywWrEhjJlMHVsHJ9H7RZOXfvz03y1zixMWfLDaXmhdSdKAvA4vYOKPIR62dhsnjkRy
+ PQrRhFB59J5Und0uBufrL1DUUZzgFupAr/+RKvLvmrr1sx8KERP0XOu019Q/Z/YD4ZqDQrj
+ tJDlSk7aHf8ZJFFvcIIqg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:hEZH9Fbdx2c=:+3IXxtfC8iBrYIC5IMAbAL
+ IfcqYO18TfCSdLwMOX5M4EoxfNKL38Q6LZ+VQ53ouFfTaNeoEbPXjj/cn4MnhhiCHJHBiefGD
+ LrXWuSY7swE7VrFupA9C1T1qEwe5+4T9+XZ12s9YlyLdMZd1pq9sv+stsjNfdQIdr2VQgGS0z
+ 11gSNAA6zFDw51Imzg3t0+3O5iyS7sKZ1B/hZYJEmEcj5JL1lRrkQxFPezYLZN4zJwyZm6VAp
+ wxsPeAObWQBmQofDe4yc0NjWlFNMbcPlw2/TLUN1v5XdgYzehEizJvEcIiJdvSwI8vcPt5hGB
+ j3ASbQXrw1tQOopjyEMkZZRYjYubdG4ZUmMKMYlf2Rf59pqiNpnGMU0MaGHk5dgn6RM8+WvoY
+ sl4e61i95h64RUMy9r33AscEvfhujA/w3eiuTSs/NLgkgwapB6Qpwfyjc9fKkDFj3Kuy5adKN
+ /pMQjL9FryH5lPG6WrBPOwPQI/1gXZOmZPDbTIKZOL5eesEI0YqcMjP+PakK1xuwZguobzW+6
+ 7RFxuP/50rrZTRuvmO8BporZEkrXmOxX00UB7uNindyP8QeLer70ZmxsQlGAYDt3GgULswENs
+ DSx6ZdyVZN8jnUeMR/QdkVL1gU8bHXpF2Ayqzeq7GP1+vnkc6EFyR2K8gv6+VBmWkgEJXPYlQ
+ ZpaQKHDjPsO+laLtGlBXUYP6qVE15MozwBFTDFo3IZ8sY9wApFqL4u1F/Gad8Sp0I+lRg/2nS
+ ZOuCBjo0tUFJ5A0mL/1NCUht0H09dxg+KMPuKIwXX0cXMVDbW2MGYupu3+lHMpTbTwTJ79GWZ
+ 4QcDUy7nZTynb+OYFvXnRovk4F0CQk/rH80IU19F7qcd4chv5s=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/20 11:52 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.182 release.
-> There are 59 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 28 May 2020 18:36:22 +0000.
-> Anything received after that time might be too late.
-> 
+Building this driver with "clang -O3" produces a link error
+after the compiler partially unrolls the loop and 256ms
+becomes a compile-time constant that triggers the check
+in udelay():
 
-Build results:
-	total: 171 pass: 171 fail: 0
-Qemu test results:
-	total: 408 pass: 408 fail: 0
+ld.lld: error: undefined symbol: __bad_udelay
+>>> referenced by applesmc.c
+>>>               hwmon/applesmc.o:(read_smc) in archive drivers/built-in.a
 
-Guenter
+I can see no reason against using a sleeping function here,
+as no part of the driver runs in atomic context, so instead use
+usleep_range() with a wide range and use jiffies for the
+end condition.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/hwmon/applesmc.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/hwmon/applesmc.c b/drivers/hwmon/applesmc.c
+index ec93b8d673f5..316618409315 100644
+--- a/drivers/hwmon/applesmc.c
++++ b/drivers/hwmon/applesmc.c
+@@ -156,14 +156,19 @@ static struct workqueue_struct *applesmc_led_wq;
+  */
+ static int wait_read(void)
+ {
++	unsigned long end = jiffies + (APPLESMC_MAX_WAIT * HZ) / USEC_PER_SEC;
+ 	u8 status;
+ 	int us;
++
+ 	for (us = APPLESMC_MIN_WAIT; us < APPLESMC_MAX_WAIT; us <<= 1) {
+-		udelay(us);
++		usleep_range(us, us * 16);
+ 		status = inb(APPLESMC_CMD_PORT);
+ 		/* read: wait for smc to settle */
+ 		if (status & 0x01)
+ 			return 0;
++		/* timeout: give up */
++		if (time_after(jiffies, end))
++			break;
+ 	}
+ 
+ 	pr_warn("wait_read() fail: 0x%02x\n", status);
+@@ -178,10 +183,11 @@ static int send_byte(u8 cmd, u16 port)
+ {
+ 	u8 status;
+ 	int us;
++	unsigned long end = jiffies + (APPLESMC_MAX_WAIT * HZ) / USEC_PER_SEC;
+ 
+ 	outb(cmd, port);
+ 	for (us = APPLESMC_MIN_WAIT; us < APPLESMC_MAX_WAIT; us <<= 1) {
+-		udelay(us);
++		usleep_range(us, us * 16);
+ 		status = inb(APPLESMC_CMD_PORT);
+ 		/* write: wait for smc to settle */
+ 		if (status & 0x02)
+@@ -190,7 +196,7 @@ static int send_byte(u8 cmd, u16 port)
+ 		if (status & 0x04)
+ 			return 0;
+ 		/* timeout: give up */
+-		if (us << 1 == APPLESMC_MAX_WAIT)
++		if (time_after(jiffies, end))
+ 			break;
+ 		/* busy: long wait and resend */
+ 		udelay(APPLESMC_RETRY_WAIT);
+-- 
+2.26.2
+
