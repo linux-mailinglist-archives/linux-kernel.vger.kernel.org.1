@@ -2,94 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6BF1E440E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ABB31E4410
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388569AbgE0NmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:42:25 -0400
-Received: from mout.kundenserver.de ([212.227.126.187]:43737 "EHLO
+        id S2388590AbgE0Nmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:42:32 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:50099 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387682AbgE0NmV (ORCPT
+        with ESMTP id S2387682AbgE0Nma (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:42:21 -0400
+        Wed, 27 May 2020 09:42:30 -0400
 Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
  (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MTR6K-1jRiyz1AU8-00ThIV; Wed, 27 May 2020 15:41:53 +0200
+ 1MaIrN-1jYcro1YGL-00WCjo; Wed, 27 May 2020 15:42:13 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Akshu Agrawal <akshu.agrawal@amd.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: amd: rt5682: fix soundwire dependencies
-Date:   Wed, 27 May 2020 15:41:26 +0200
-Message-Id: <20200527134151.834555-1-arnd@arndb.de>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Piotr Sroka <piotrs@cadence.com>,
+        Mason Yang <masonccyang@mxic.com.tw>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: rawnand: arasan: select CONFIG_BCH
+Date:   Wed, 27 May 2020 15:42:03 +0200
+Message-Id: <20200527134210.847411-1-arnd@arndb.de>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:8w0UY7i3gtk1GlJ6DgwH4652yE7awyeT85Ve0hq9YQBCGEle3h6
- 3vsPoqite4j5z00ZU1QXxNWgj+ddiYeGTfz5J9uAspEkrglL2qtrXKRrUYz4vF/VIY5cWRF
- BUZFe0Y9khfUoSr1iGSlUt6t94FUwl9wp4lMmwlKZr1s2+H7TnyDPYkVoRAr/OFUv5od1M9
- 3FPkdaBiYZYcRah97SMcw==
+X-Provags-ID: V03:K1:0ERleDGDoYzZSO351/qcuQ53P9BOoY8n9kiIrDVxRwankQHZJKf
+ q0LF7oeTmAubbA5uNTQKrD28V3IGepb0X6rPuNYuwHPTlRA4Vcx2h+MxTaSMfUTQRgHdqUE
+ iL7XTOg4B0iJBExr22T1i764EAj9WNVWVts5wJOYYfZlLVF13fcdJ37PH+7lbbWC/YL5Pz4
+ joHLK8o3erWRfgZ6koFrg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:KphJHlOFwj4=:b8BE9AWVjfNstdog+V5iy4
- TJUEkhl0DCNIxSiMx6TOeBmS99Jd/8nYECxADoAD24hPpt238BqFnNsVDm29aSdv8t3wEp82Q
- 6ZbIpNdYrqQoGBotCWMhyfMzsPszxxkM0kk8515CdyIdpibP8ujeQgrWG6XFgLPk+8AsH+A5G
- Ng/pupBLuXVe+eEYUyc9jta7os9kiG7CHpO+Wb6zAWuYXbSPj/Yfx0CVbXtN45XlptzHmx77J
- P817Ov19LVbRk//I09hv2DyMlderupDjtX52oSBMIt1+d9FsEbfUbt0JtCBUay3AG0/W6ZBOG
- C2Qz1vU5qZpDLR2MwZwuPWNDsp1UWumPDAcoC36F8KQ/LDQDS4/n0nzDtbu0/o67cVMrXP0uP
- KJjBGPuyTJ/zkvsFhdPZXR1jD6P4ZKADhSYH54ZqJxCiV3YKmiTgYatTI9yqQCE6g4b/mwBoV
- +fTW/3RD7Zt0zgvH/J/V6UpzyjY5E78/FlX/8WGqLq5dAsxD/zKEz8GE3B9dAJLz4M0buytxR
- 1xXw6rJ/hzJxHFNt6S52QBEJNmz8XBL7xPTfhgUg3zLaj5lP82JJqp65LQEeBtL7bbsuzvJ3I
- qxETWMAyn4ctpk4ZOOGHKopjyMWcYuuMe+q/k4+uT+1FfIqj68OtNJgdrUFXdkcGcBTBKS34V
- uUoKAncMEY+FVFpOVoYmS68V3+tTbY7+JfonHBWz0RFbUaWust0KR+ItTPhdPmGYmFfhuqJNu
- DueDkDAPbLVGBPRtW38LP34huInsMXpysQvggkZZ19hEQPd/v1wdRKend0lcRpvmYTjwUzSaR
- jN5AQpU3sKnJ4v2vW4E65f3xuNQ+U0vfLVLnuhys2eHoCg3who=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:TcWRwqlhomw=:27oxfRCh9GEKpKasOksz0+
+ tqu0k7N/C+sN91belOMslygH/VVIX6C0L8VWWIeL1TCNn535PCE8Bk1xMlakycYSXv5uQIYjo
+ ekmDmeuY4xe3jdt9oq3w1Mk2ybck1vmiUvMviRJ9W6FpvSaIIAeGJFWFlnRp591KUpTczegI2
+ evePeEBRX/sn3AzSFBXFRL6c2fGEskiwkZoFrXjs30tXAEVzdbZGHe1ZsiDxQ8hR7d532jKak
+ 16k2No9kaC/VLMxjnf35RIelieaPnAB4wgoKW9PW+k767RGx72PQjybOYSc39nGYOX/kgtcYs
+ nJiNfg3Qhc5wMDh7R0kxBTZLBVyVAQqoJZshWED7ee/euxetggP/iWKCO5MSBwyeDOu51e5nY
+ 46Ot3QpUXVMDNxpNR711+yLb1d0CLMiU6JpH80QsWSBjm0uiwQ0PYzjijx/DvvWRPEYo0BrUr
+ 6IDkwthIdyTZTJqe1/kJ7zZH1S6TiB189Nmn8BP/EmS9sEzTH4sVuzCRAPDO8xIkfxB7Vua2Y
+ 3K2tAhHaqJ6DPSNgKyOEqVyD2YCL/CefkZ7obf5kwwcsW1Zoz9GxVepDBPKomLUM96VOaXwXK
+ UzwMO8JIUdJZ2sAUmo2BqRM2FHvvZTkeEtdB9F+nIBT2bnW2qUV2T1EP1VEqLBm2L1/2DqIu5
+ VwY+v5rtp5aAlhp1evVZZZerXyxSMVEzS3uDQWMHEiGzC2A9X1t984fI0pixF19MeX5FrML0M
+ JyJdrz3ods9BApsl3DCCO457qikGmcDKC+gCT6FNT5EBJVax4oWo0yh9a/P8h3DN6hMaqQwi8
+ nC38W5X1AxIk4DQcemNb1njF3vlFbs1VLZ8EiUADPLc6mw3PYM=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A built-in SND_SOC_AMD_RV_RT5682_MACH driver can not select
-SND_SOC_RT5682 when that is linking against a modular soundwire
-layer:
+Like several other nand flash drivers, this one requires the BCH
+library to be selected from Kconfig.
 
-WARNING: unmet direct dependencies detected for SND_SOC_RT5682
-  Depends on [m]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && (I2C [=y] || SOUNDWIRE [=m]) && (SOUNDWIRE [=m] || !SOUNDWIRE [=m]) && (I2C [=y] || !I2C [=y])
-  Selected by [y]:
-  - SND_SOC_AMD_RV_RT5682_MACH [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_AMD_ACP3x [=y] && I2C [=y] && CROS_EC [=y]
-  Selected by [m]:
-  - SND_SOC_RT5682_SDW [=m] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SOUNDWIRE [=m] && (I2C [=y] || !I2C [=y])
+arm-linux-gnueabi-ld: drivers/mtd/nand/raw/arasan-nand-controller.o: in function `anfc_attach_chip':
+arasan-nand-controller.c:(.text+0x894): undefined reference to `bch_init'
+arm-linux-gnueabi-ld: drivers/mtd/nand/raw/arasan-nand-controller.o: in function `anfc_detach_chip':
+arasan-nand-controller.c:(.text+0x98c): undefined reference to `bch_free'
+arm-linux-gnueabi-ld: drivers/mtd/nand/raw/arasan-nand-controller.o: in function `anfc_read_page_hw_ecc':
+arasan-nand-controller.c:(.text+0x1080): undefined reference to `bch_decode'
 
-This one is a bit awkward because the AMD driver itself has no interest
-in soundwire, but I could not come up with a cleaner workaround so far.
-
-Maybe the SND_SOC_RT5682 driver itself can be reworked so that
-the common part depends on neither soundwire nor i2c and the two
-bus specific options can be loadable modules when the common part
-is built-in.
-
-Fixes: 6b8e4e7db3cd ("ASoC: amd: Add machine driver for Raven based platform")
-Fixes: fd443a20c2f0 ("ASoC: rt5682: fix I2C/Soundwire dependencies")
+Fixes: 197b88fecc50 ("mtd: rawnand: arasan: Add new Arasan NAND controller")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- sound/soc/amd/Kconfig | 1 +
+ drivers/mtd/nand/raw/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index 77ffdb41bee5..878cf97b050e 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -34,6 +34,7 @@ config SND_SOC_AMD_RV_RT5682_MACH
- 	select SND_SOC_CROS_EC_CODEC
- 	select I2C_CROS_EC_TUNNEL
- 	depends on SND_SOC_AMD_ACP3x && I2C && CROS_EC
-+	depends on SOUNDWIRE || !SOUNDWIRE
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index e2bc87779bf9..113f61052269 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -456,6 +456,7 @@ config MTD_NAND_CADENCE
+ config MTD_NAND_ARASAN
+ 	tristate "Support for Arasan NAND flash controller"
+ 	depends on HAS_IOMEM && HAS_DMA
++	select BCH
  	help
- 	 This option enables machine driver for RT5682 and MAX9835.
- 
+ 	  Enables the driver for the Arasan NAND flash controller on
+ 	  Zynq Ultrascale+ MPSoC.
 -- 
 2.26.2
 
