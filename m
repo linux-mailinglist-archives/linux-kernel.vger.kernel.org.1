@@ -2,75 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189061E391F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 08:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E19771E3924
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 08:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728361AbgE0GZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 02:25:59 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:44740 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728007AbgE0GZ7 (ORCPT
+        id S1728453AbgE0G0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 02:26:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728003AbgE0G0e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 02:25:59 -0400
-X-UUID: cc806eb682f1441e965534c1150cb877-20200527
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=3JgPtKgRdy8ddR7xtaWXijDFOHGnyaGurBt3CDZDbJc=;
-        b=qa3bSPrvl0ZaXE29kjfi/OCbwK/CBns3iU/bn193BTzTIC8m9KXM7e+ODSYjAyw4m/MhHBZ64uESU0j3wJdPRzr2SXv3k15qGdBMpe6favG1RWr12y3QHPawBEzy0oMy/v1gokoVwDoouJLug0hDk5423JdQnefmWRUEb6k0DFA=;
-X-UUID: cc806eb682f1441e965534c1150cb877-20200527
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <weiyi.lu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1443509584; Wed, 27 May 2020 14:25:55 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 27 May 2020 14:25:52 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 27 May 2020 14:25:52 +0800
-From:   Weiyi Lu <weiyi.lu@mediatek.com>
-To:     Nicolas Boichat <drinkcat@chromium.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     James Liao <jamesjj.liao@mediatek.com>,
-        Fan Chen <fan.chen@mediatek.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-        <srv_heupstream@mediatek.com>, <stable@vger.kernel.org>,
-        Weiyi Lu <weiyi.lu@mediatek.com>,
-        Owen Chen <owen.chen@mediatek.com>
-Subject: [PATCH v2] clk: mediatek: assign the initial value to clk_init_data of mtk_mux
-Date:   Wed, 27 May 2020 14:25:49 +0800
-Message-ID: <1590560749-29136-1-git-send-email-weiyi.lu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: BFDC40E46F0324815F4D3721A56AD387881A75494A619CD8E2BD5B4CD48C0DC62000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Wed, 27 May 2020 02:26:34 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B56EDC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 23:26:34 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id z15so812611pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 23:26:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=NFiMTgw0ePYgZ5AyHST8V5BcX0V74DYgO0bygQd/V6E=;
+        b=W1TUEkRQ5Et/Gi/4hnXRc57eLV8qfnmL/DpnDGe/EEnVdgwb2b4l8jZoerXxO+frUA
+         6ElMY5TVa0KQLO045gdJZKmMzZJqqHRNdYMiiPDGkg5A2zwgXl0CrqGAaiMpATKxoLPt
+         aYs4H0zLKP5YRKR9sWl6d2HsiXgOjKkFb/521j0ZHSvDIbK61iHeTFkW85nCaO54N1eX
+         0OMr55J9Y/oSaNG9vTG0ovEjuU/oYbAY0LFFUF7/N7Xw6TKEFxSz/g0vUl+8OZo6xkCT
+         bQ28cMt6uD+F7MqZyTfq2fS3hl5QxXCCuhJWXGjdGyVG6e2Mwa9DNb5w4DpeGE4yRw8V
+         U6uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=NFiMTgw0ePYgZ5AyHST8V5BcX0V74DYgO0bygQd/V6E=;
+        b=lF4g+VIrs/HElaYXZkoDjs/4nIJykjuVOocpjSVaoLXk/vHsTP6Li9OSMHOGwAEUjX
+         4HZmUu6w622eIVgToRYjkd9cBdpV3+u9DPB5XgGBzlm6oo7bhyg13FOZPTXiuPAEYEDR
+         8Fz/QT+vCeiLiyhF5TLsXJr/QFpU/VyX90UYEUv4ylH9ua4EmtNZD7FjUxcsysWg2AXG
+         uNOKoiV/WG91kVLFusstmiJLo+HhcEPYv8vihyJzJyTIIfVbAFxC2qcrIAifb6OzLvmr
+         eQWPMF2U2b7nfm3k+HAkMDoTqAiFH9HqPVLEO8D26D7HfH6lFcVig4XuadHpT6hclz2J
+         s74g==
+X-Gm-Message-State: AOAM5339BABtZ99zz+uzsjX1q6Uxzxbz8xCiNSEeN5kWOU0INv/Vd8zp
+        4yd110ZNP+bk+/WrOWhGd7qE3g==
+X-Google-Smtp-Source: ABdhPJyt10+/ExgeuNOKd96RcWJXrRobqoF7VU0IB/YAfA5mguNqVDiqNUr4L69k6MBw6GL7rqEMsw==
+X-Received: by 2002:a17:902:9a4a:: with SMTP id x10mr4620273plv.343.1590560794197;
+        Tue, 26 May 2020 23:26:34 -0700 (PDT)
+Received: from localhost.localdomain ([117.252.68.136])
+        by smtp.gmail.com with ESMTPSA id m12sm1239121pjs.41.2020.05.26.23.26.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 26 May 2020 23:26:33 -0700 (PDT)
+From:   Sumit Garg <sumit.garg@linaro.org>
+To:     daniel.thompson@linaro.org
+Cc:     kgdb-bugreport@lists.sourceforge.net, jason.wessel@windriver.com,
+        dianders@chromium.org, pmladek@suse.com,
+        sergey.senozhatsky@gmail.com, linux-kernel@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH v3 0/4] kdb: Improve console handling
+Date:   Wed, 27 May 2020 11:55:55 +0530
+Message-Id: <1590560759-21453-1-git-send-email-sumit.garg@linaro.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-V2hlbiBzb21lIG5ldyBjbG9jayBzdXBwb3J0cyBhcmUgaW50cm9kdWNlZCwgZS5nLiBbMV0NCml0
-IG1pZ2h0IGxlYWQgdG8gYW4gZXJyb3IgYWx0aG91Z2ggaXQgc2hvdWxkIGJlIE5VTEwgYmVjYXVz
-ZQ0KY2xrX2luaXRfZGF0YSBpcyBvbiB0aGUgc3RhY2sgYW5kIGl0IG1pZ2h0IGhhdmUgcmFuZG9t
-IHZhbHVlcw0KaWYgdXNpbmcgd2l0aG91dCBpbml0aWFsaXphdGlvbi4NCkFkZCB0aGUgbWlzc2lu
-ZyBpbml0aWFsIHZhbHVlIHRvIGNsa19pbml0X2RhdGEuDQoNClsxXSBodHRwczovL2FuZHJvaWQt
-cmV2aWV3Lmdvb2dsZXNvdXJjZS5jb20vYy9rZXJuZWwvY29tbW9uLysvMTI3ODA0Ng0KDQpGaXhl
-czogYTNhZTU0OTkxN2YxICgiY2xrOiBtZWRpYXRlazogQWRkIG5ldyBjbGttdXggcmVnaXN0ZXIg
-QVBJIikNCkNjOiA8c3RhYmxlQHZnZXIua2VybmVsLm9yZz4NClNpZ25lZC1vZmYtYnk6IFdlaXlp
-IEx1IDx3ZWl5aS5sdUBtZWRpYXRlay5jb20+DQpSZXZpZXdlZC1ieTogTWF0dGhpYXMgQnJ1Z2dl
-ciA8bWF0dGhpYXMuYmdnQGdtYWlsLmNvbT4NCi0tLQ0KIGRyaXZlcnMvY2xrL21lZGlhdGVrL2Ns
-ay1tdXguYyB8IDIgKy0NCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRp
-b24oLSkNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdXguYyBiL2Ry
-aXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdXguYw0KaW5kZXggNzZmOWNkMC4uMTRlMTI3ZSAxMDA2
-NDQNCi0tLSBhL2RyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdXguYw0KKysrIGIvZHJpdmVycy9j
-bGsvbWVkaWF0ZWsvY2xrLW11eC5jDQpAQCAtMTYwLDcgKzE2MCw3IEBAIHN0cnVjdCBjbGsgKm10
-a19jbGtfcmVnaXN0ZXJfbXV4KGNvbnN0IHN0cnVjdCBtdGtfbXV4ICptdXgsDQogCQkJCSBzcGlu
-bG9ja190ICpsb2NrKQ0KIHsNCiAJc3RydWN0IG10a19jbGtfbXV4ICpjbGtfbXV4Ow0KLQlzdHJ1
-Y3QgY2xrX2luaXRfZGF0YSBpbml0Ow0KKwlzdHJ1Y3QgY2xrX2luaXRfZGF0YSBpbml0ID0ge307
-DQogCXN0cnVjdCBjbGsgKmNsazsNCiANCiAJY2xrX211eCA9IGt6YWxsb2Moc2l6ZW9mKCpjbGtf
-bXV4KSwgR0ZQX0tFUk5FTCk7DQotLSANCjEuOC4xLjEuZGlydHkNCg==
+This patch-set is aimed to improve console handling especially when kdb
+operates in NMI context.
+
+Brief description of enhancements:
+- Add status check for console prior to invoking corresponding handler.
+- Fixup to avoid possible deadlock in NMI context due to usage of locks
+  in the console handlers.
+- Prefer usage of polling I/O driver mode (lockless APIs) over invocation
+  of console handlers.
+
+Changes in v3:
+- Split patch to have separate patch for console status check.
+- New patch to re-factor kdb message emit code.
+- New patch to prefer polling I/O over console mode.
+- Add code comments to describe usage of oops_in_progress.
+
+Changes in v2:
+- Use oops_in_progress directly instead of bust_spinlocks().
+
+Sumit Garg (4):
+  kdb: Re-factor kdb_printf() message write code
+  kdb: Check status of console prior to invoking handlers
+  kdb: Make kdb_printf robust to run in NMI context
+  kdb: Switch kdb_msg_write() to use safer polling I/O
+
+ drivers/tty/serial/kgdboc.c | 17 ++++-----
+ include/linux/kgdb.h        |  2 +
+ kernel/debug/kdb/kdb_io.c   | 91 ++++++++++++++++++++++++++++++---------------
+ 3 files changed, 72 insertions(+), 38 deletions(-)
+
+-- 
+2.7.4
 
