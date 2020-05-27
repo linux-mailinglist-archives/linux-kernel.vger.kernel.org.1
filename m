@@ -2,72 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406141E3FC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F011E3FC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388265AbgE0LUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 07:20:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387839AbgE0LUh (ORCPT
+        id S2388308AbgE0LWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 07:22:49 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:55175 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388143AbgE0LWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 07:20:37 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D87C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 04:20:36 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id b6so28451140ljj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 04:20:36 -0700 (PDT)
+        Wed, 27 May 2020 07:22:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=qgCGl4i5KYXHBvhHs2r1weIGYhLtBTtsyUQbZCl+rHo=;
-        b=K2tgfMBXHrZgwofl/ex6u5ZgziYRGBRCGGcRUfqcYex+YEHbT9GKRYSIsNvE/R5B/j
-         YVfbcUv6RVln+3IZImO9xa6To3xxHhH6GdG+7+t8AU8SZOty2qkENQEMWdGpItZD+Xc7
-         aml188awxXDgYRS1xZyP2IeRJwPqOhdRDVZz02HmarZWKyeVpW9hmd40uRUxRhwnyqa9
-         550suo6va/wwMoM6kjUe+W1yqmdh2ZMPerlNaDwaQFrOmXlUZUzwShPIPouYR043tj9z
-         fGTM7FsXHQQxoDc9uxj/lMc1ciPx6eJi3YB6o/cY6a9mzG0oAJo4CWTmuUqYy0ya1LrN
-         hXEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=qgCGl4i5KYXHBvhHs2r1weIGYhLtBTtsyUQbZCl+rHo=;
-        b=ejof74SbycKyd0d4vy4XNWnawTXcmOe9aZnPnicTsNSXhEhZqzhTt/CnUf1ypo2O/n
-         sJ07XyIXshApvLcicEDP9prZcCFwr8QLVfRnp+pMZ8gCJs8IM7hyVAZ8xULDxBHDGg7U
-         wB8JVjX3/OafwG89ha9yCtFl3gqWNSNv2U9YcX0537yGq0pocAfeXWl9mhzJiCG0KJ9t
-         y8aOYd8znIIHwO6SY6bcJjFITDZckett+o7Td9RE8ZUvRRTx9PNnSlKrasA/pEr88r5E
-         5jNzZmSqXMV5Jz0jxnYVQKcx4Clt+xHXiSklWD/8wlerOiccMg64sOUx/kIoZIyDn7zf
-         ELDA==
-X-Gm-Message-State: AOAM531nYN933rmJBBL/wkaX0CPdDaUZj22+JhoiZqjzyvL06f8Z0bWL
-        1HGhad+acZA6OD2mQ3yT5ZOySwRQi/9/Rg==
-X-Google-Smtp-Source: ABdhPJwDYpERhOAMP58LMzjpMRKU7sh59Al2X9/mW5LDEhyFQv4SMVJHf6XRCdHZA3YqpJMJsXWqLQ==
-X-Received: by 2002:a2e:b8cd:: with SMTP id s13mr2889264ljp.83.1590578434840;
-        Wed, 27 May 2020 04:20:34 -0700 (PDT)
-Received: from a-barsegyan ([85.249.97.232])
-        by smtp.gmail.com with ESMTPSA id s13sm833982lfp.81.2020.05.27.04.20.34
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2020 04:20:34 -0700 (PDT)
-Date:   Wed, 27 May 2020 14:20:32 +0300
-From:   Artur Barsegyan <a.barsegyan96@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ipc/msg.c: wake up senders until there is a queue empty
- capacity
-Message-ID: <20200527112032.GB12093@a-barsegyan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1590578567; x=1622114567;
+  h=from:to:cc:subject:date:message-id:in-reply-to;
+  bh=gLRbvNch7Pkdh/6R1tkaKKQAsL56lfBjiFpkFuVFoV4=;
+  b=VILKUTPWvqLPDc6CqyfBDHVsChjmOsGJ2srQDvpaIjnocqg7KhRqPMaL
+   tNMUp5eICM+jdBpdtWsD35ntnZ3qupF5UdvwtsvoD/e+HGgdVffZdMKhg
+   WhTz2+qG/Djb5bzW0bnhYLu/yezWL8qSVI4HS4W3lrG7aJwAXc/jUpPtA
+   U=;
+IronPort-SDR: M/Z1yMMqs9TWIzahAi3JLl5hdQ0sL4ty/WPcyBqSNpiyUeB9RxhyWKqzTyv0qYlkA1ew+f4Zq2
+ MyojMviWdpSQ==
+X-IronPort-AV: E=Sophos;i="5.73,441,1583193600"; 
+   d="scan'208";a="32413319"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 27 May 2020 11:22:31 +0000
+Received: from uc85b765ebdd8595b4b67.ant.amazon.com (iad7-ws-svc-lb50-vlan3.amazon.com [10.0.93.214])
+        by email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com (Postfix) with ESMTPS id 8CBE9A1893;
+        Wed, 27 May 2020 11:22:19 +0000 (UTC)
+Received: from uc85b765ebdd8595b4b67.ant.amazon.com (localhost [127.0.0.1])
+        by uc85b765ebdd8595b4b67.ant.amazon.com (8.15.2/8.15.2/Debian-3) with ESMTP id 04RBMF0a026796;
+        Wed, 27 May 2020 13:22:15 +0200
+Received: (from foersleo@localhost)
+        by uc85b765ebdd8595b4b67.ant.amazon.com (8.15.2/8.15.2/Submit) id 04RBM64j026778;
+        Wed, 27 May 2020 13:22:06 +0200
+From:   Leonard Foerster <foersleo@amazon.com>
+To:     SeongJae Park <sjpark@amazon.com>
+Cc:     akpm@linux-foundation.org, SeongJae Park <sjpark@amazon.de>,
+        Jonathan.Cameron@Huawei.com, aarcange@redhat.com, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, amit@kernel.org,
+        benh@kernel.crashing.org, brendan.d.gregg@gmail.com,
+        brendanhiggins@google.com, cai@lca.pw, colin.king@canonical.com,
+        corbet@lwn.net, dwmw@amazon.com, irogers@google.com,
+        jolsa@redhat.com, kirill@shutemov.name, mark.rutland@arm.com,
+        mgorman@suse.de, minchan@kernel.org, mingo@redhat.com,
+        namhyung@kernel.org, peterz@infradead.org, rdunlap@infradead.org,
+        riel@surriel.com, rientjes@google.com, rostedt@goodmis.org,
+        sblbir@amazon.com, shakeelb@google.com, shuah@kernel.org,
+        sj38.park@gmail.com, snu@amazon.de, vbabka@suse.cz,
+        vdavydov.dev@gmail.com, yang.shi@linux.alibaba.com,
+        ying.huang@intel.com, linux-damon@amazon.com, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v13 02/15] mm/page_ext: Export lookup_page_ext() to GPL modules
+Date:   Wed, 27 May 2020 13:21:57 +0200
+Message-Id: <1590578517-25980-1-git-send-email-foersleo@amazon.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <20200525091512.30391-3-sjpark@amazon.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-About your case:
+On 2020-05-25T11:14:59+02:00 SeongJae Park <sjpark@amazon.com> wrote:
 
-The new receiver puts at the end of the receivers list.
-pipelined_send() starts from the beginning of the list and iterates until the end.
+> From: SeongJae Park <sjpark@amazon.de>
+> 
+> This commit exports 'lookup_page_ext()' to GPL modules.  This will be
+> used by DAMON.
+> 
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
 
-If our queue is always full, each receiver should get a message because new receivers appends at the end.
-In my vision: we waste some time in that loop but in general should increase the throughout. But it should be tested.
+Reviewed-by: Leonard Foerster <foersleo@amazon.de>
 
-Yes, I'm gonna implement it and make a benchmark. But maybe it should be done in another patch thread?
