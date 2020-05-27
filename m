@@ -2,82 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBCE71E34D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 03:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C471E34C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 03:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726555AbgE0BkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 21:40:02 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:29857 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725801AbgE0BkB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 21:40:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590543601;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc; bh=s8b1sFICMI5A7PdJVz4IhbVxMortS5XfFgwiWiuDWQg=;
-        b=GMzjp5jxHhkv2UWtvy1oETbiGrDV+W8hIaZTW+Et2azasGPjwIH7oX5uxj4g5urYp0usHZ
-        Ti6EfGpFDwVS1/xvAfvlxs23yjCyhgvu/7sHwd+0lRC+HjEqyN7Fq3xAYN/xBcNvl4w+zc
-        LrAKHhS8db21lgdxZiF2LAMVy0xmKhU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-26-2G8aw3L8M0qtZ8UEq1XpvA-1; Tue, 26 May 2020 21:39:58 -0400
-X-MC-Unique: 2G8aw3L8M0qtZ8UEq1XpvA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44C1110524FF;
-        Wed, 27 May 2020 01:39:57 +0000 (UTC)
-Received: from localhost (ovpn-113-43.phx2.redhat.com [10.3.113.43])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 81B8C6ED98;
-        Wed, 27 May 2020 01:39:56 +0000 (UTC)
-From:   Clark Williams <williams@redhat.com>
-Subject: [ANNOUNCE] 4.9.224-rt144
-Date:   Sun, 24 May 2020 02:45:05 -0000
-Message-ID: <159028830562.475413.6970946289050349925@theseus.lan>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        id S1725981AbgE0Bb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 21:31:26 -0400
+Received: from mga17.intel.com ([192.55.52.151]:41569 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725287AbgE0BbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 21:31:25 -0400
+IronPort-SDR: 5IffN1pzqW0sLvxqlaf43Ux9xvM6E+sVP0MMj9W0jW5HHnCYDuZvyB6M93wD/PPxaV5feQT3Zy
+ 2v+a+1ZB+Nbw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 18:31:21 -0700
+IronPort-SDR: oWuNtWRlFd0Vj6tKVlEOh7CUkO3QN5UyX9xK8LsWnnRoulkmj92dHw0rFRyfPl5QYfbMYRhxC3
+ jhkjPnpBscPQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,439,1583222400"; 
+   d="scan'208";a="270284626"
+Received: from zalvear-mobl.amr.corp.intel.com (HELO [10.254.67.58]) ([10.254.67.58])
+  by orsmga006.jf.intel.com with ESMTP; 26 May 2020 18:31:20 -0700
+Subject: Re: [PATCH v1 1/1] PCI/ERR: Handle fatal error recovery for
+ non-hotplug capable devices
+To:     Yicong Yang <yangyicong@hisilicon.com>, bhelgaas@google.com
+Cc:     jay.vosburgh@canonical.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ashok.raj@intel.com
+References: <18609.1588812972@famine>
+ <f4bbacd3af453285271c8fc733652969e11b84f8.1588821160.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <dbb211ba-a5f1-0e4f-64c9-6eb28cd1fb7f@hisilicon.com>
+ <2569c75c-41a6-d0f3-ee34-0d288c4e0b61@linux.intel.com>
+ <8dd2233c-a636-59fa-4c6e-5da08556d09e@hisilicon.com>
+ <d59e5312-9f0b-f6b2-042a-363022989b8f@linux.intel.com>
+ <d7a392e0-4be0-1afb-b917-efa03e2ea2fb@hisilicon.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <f9a46300-ef4b-be19-b8cf-bcb876c75d62@linux.intel.com>
+Date:   Tue, 26 May 2020 18:31:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <d7a392e0-4be0-1afb-b917-efa03e2ea2fb@hisilicon.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+Hi,
 
-I'm pleased to announce the 4.9.224-rt144 stable release.
-Note that since 4.9-rt is in maintenance mode, this is just the
-merge/rebase to the latest upstream stable releases with no changes
-to the RT patchset.
+On 5/21/20 7:56 PM, Yicong Yang wrote:
+> 
+> 
+> On 2020/5/22 3:31, Kuppuswamy, Sathyanarayanan wrote:
+>>
+>>
+>> On 5/21/20 3:58 AM, Yicong Yang wrote:
+>>> On 2020/5/21 1:04, Kuppuswamy, Sathyanarayanan wrote:
+>>>>
+>>>>
+>>>> On 5/20/20 1:28 AM, Yicong Yang wrote:
+>>>>> On 2020/5/7 11:32, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
+>>>>>> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>>>>>>
+>>>>>> If there are non-hotplug capable devices connected to a given
+>>>>>> port, then during the fatal error recovery(triggered by DPC or
+>>>>>> AER), after calling reset_link() function, we cannot rely on
+>>>>>> hotplug handler to detach and re-enumerate the device drivers
+>>>>>> in the affected bus. Instead, we will have to let the error
+>>>>>> recovery handler call report_slot_reset() for all devices in
+>>>>>> the bus to notify about the reset operation. Although this is
+>>>>>> only required for non hot-plug capable devices, doing it for
+>>>>>> hotplug capable devices should not affect the functionality.
+>>>>>>
+>>>>>> Along with above issue, this fix also applicable to following
+>>>>>> issue.
+>>>>>>
+>>>>>> Commit 6d2c89441571 ("PCI/ERR: Update error status after
+>>>>>> reset_link()") added support to store status of reset_link()
+>>>>>> call. Although this fixed the error recovery issue observed if
+>>>>>> the initial value of error status is PCI_ERS_RESULT_DISCONNECT
+>>>>>> or PCI_ERS_RESULT_NO_AER_DRIVER, it also discarded the status
+>>>>>> result from report_frozen_detected. This can cause a failure to
+>>>>>> recover if _NEED_RESET is returned by report_frozen_detected and
+>>>>>> report_slot_reset is not invoked.
+>>>>>>
+>>>>>> Such an event can be induced for testing purposes by reducing the
+>>>>>> Max_Payload_Size of a PCIe bridge to less than that of a device
+>>>>>> downstream from the bridge, and then initiating I/O through the
+>>>>>> device, resulting in oversize transactions.  In the presence of DPC,
+>>>>>> this results in a containment event and attempted reset and recovery
+>>>>>> via pcie_do_recovery.  After 6d2c89441571 report_slot_reset is not
+>>>>>> invoked, and the device does not recover.
+>>>>>>
+>>>>>> [original patch is from jay.vosburgh@canonical.com]
+>>>>>> [original patch link https://lore.kernel.org/linux-pci/18609.1588812972@famine/]
+>>>>>> Fixes: 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
+>>>>>> Signed-off-by: Jay Vosburgh <jay.vosburgh@canonical.com>
+>>>>>> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>>>>>> ---
+>>>>>>     drivers/pci/pcie/err.c | 19 +++++++++++++++----
+>>>>>>     1 file changed, 15 insertions(+), 4 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+>>>>>> index 14bb8f54723e..db80e1ecb2dc 100644
+>>>>>> --- a/drivers/pci/pcie/err.c
+>>>>>> +++ b/drivers/pci/pcie/err.c
+>>>>>> @@ -165,13 +165,24 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>>>>>>         pci_dbg(dev, "broadcast error_detected message\n");
+>>>>>>         if (state == pci_channel_io_frozen) {
+>>>>>>             pci_walk_bus(bus, report_frozen_detected, &status);
+>>>>>> -        status = reset_link(dev);
+>>>>>> -        if (status != PCI_ERS_RESULT_RECOVERED) {
+>>>>>> +        status = PCI_ERS_RESULT_NEED_RESET;
+>>>>>> +    } else {
+>>>>>> +        pci_walk_bus(bus, report_normal_detected, &status);
+>>>>>> +    }
+>>>>>> +
+>>>>>> +    if (status == PCI_ERS_RESULT_NEED_RESET) {
+>>>>>> +        if (reset_link) {
+>>>>>> +            if (reset_link(dev) != PCI_ERS_RESULT_RECOVERED)
+>>>>>
+>>>>> we'll call reset_link() only if link is frozen. so it may have problem here.
+>>>> you mean before this change right?
+>>>> After this change, reset_link() will be called as long as status is
+>>>> PCI_ERS_RESULT_NEED_RESET.
+>>>
+>>> Yes. I think we should reset the link only if the io is blocked as before. There's
+>>> no reason to reset a normal link.
+>> Currently, only AER and DPC driver uses pcie_do_recovery() call. So the
+>> possible reset_link options are dpc_reset_link() and aer_root_reset().
+>>
+>> In dpc_reset_link() case, the link is already disabled and hence we
+>> don't need to do another reset. In case of aer_root_reset() it
+>> uses pci_bus_error_reset() to reset the slot.
+> 
+> Not exactly. In pci_bus_error_reset(), we call pci_slot_reset() only if it's
+> hotpluggable. But we always call pci_bus_reset() to perform a secondary bus
+> reset for the bridge. That's what I think is unnecessary for a normal link,
+> and that's what reset link indicates us to do. The slot reset is introduced
+> in the process only to solve side effects. (c4eed62a2143, PCI/ERR: Use slot reset if available)
 
-You can get this release via the git tree at:
+IIUC, pci_bus_reset() will do slot reset if its supported (hot-plug
+capable slots). If its not supported then it will attempt secondary
+bus reset. So secondary bus reset will be attempted only if slot
+reset is not supported.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+Since reported_error_detected() requests us to do reset, we will have
+to attempt some kind of reset before we call ->slot_reset() right?
+What is the side effect in calling secondary bus reset?
 
-  branch: v4.9-rt
-  Head SHA1: e0d43c3f28cd182c191c76fcfe5578784d4566c6
+> 
+> PCI_ERS_RESULT_NEED_RESET indicates that the driver
+> wants a platform-dependent slot reset and its ->slot_reset() method to be called then.
+> I don't think it's same as slot reset mentioned above, which is only for hotpluggable
+> ones.
+What you think is the correct reset implementation ? Is it something
+like this?
 
-Or to build 4.9.224-rt144 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.9.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.9.224.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.9/patch-4.9.224-rt144.patch.xz
-
-
-You can also build from 4.9.220-rt143 by applying the incremental patch:
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.9/incr/patch-4.9.220-rt143-rt144.patch.xz
-
-Enjoy!
-Clark
-
+if (hotplug capable)
+    try_slot_reset()
+else
+    do_nothing()
+> 
+> Previously, if link is normal and the driver reports PCI_ERS_RESULT_NEED_RESET,
+> we'll only call ->slot_reset() without slot reset in reset_link(). Maybe it's better
+> to perform just like before.
+> 
+> Thanks.
+> 
+> 
+>>>
+>>> Furthermore, PCI_ERS_RESULT_NEED_RESET means device driver requires a slot reset rather
+>>> than a link reset, so it maybe improper to use it to judge whether a link reset is needed.
+>>> We decide whether to do a link reset only by the io state.
+>>>
+>>> Thanks,
+>>> Yicong
+>>>
+>>>
+>>>>>
+>>>>> Thanks,
+>>>>> Yicong
+>>>>>
+>>>>>
+>>>>>> +                status = PCI_ERS_RESULT_DISCONNECT;
+>>>>>> +        } else {
+>>>>>> +            if (pci_bus_error_reset(dev))
+>>>>>> +                status = PCI_ERS_RESULT_DISCONNECT;
+>>>>>> +        }
+>>>>>> +
+>>>>>> +        if (status == PCI_ERS_RESULT_DISCONNECT) {
+>>>>>>                 pci_warn(dev, "link reset failed\n");
+>>>>>>                 goto failed;
+>>>>>>             }
+>>>>>> -    } else {
+>>>>>> -        pci_walk_bus(bus, report_normal_detected, &status);
+>>>>>>         }
+>>>>>>           if (status == PCI_ERS_RESULT_CAN_RECOVER) {
+>>>>>
+>>>> .
+>>>>
+>>>
+>> .
+>>
+> 
