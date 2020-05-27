@@ -2,80 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B50991E48C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 323001E48EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390698AbgE0Pzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 11:55:38 -0400
-Received: from mga04.intel.com ([192.55.52.120]:60699 "EHLO mga04.intel.com"
+        id S1730885AbgE0P5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 11:57:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388564AbgE0Pzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 11:55:36 -0400
-IronPort-SDR: 3oQk3ksAi2wLnrl7Fd+1MmFnOS1R8nZLwHJj7umDOdIreWI5J1CktLlpKysRoiLOv549CY2sP1
- uL/UV1jXEYZw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 08:55:34 -0700
-IronPort-SDR: Q0gMvn7Ne9GC7CTT/yoipOujzi2D2qUiMOQJ9kd+XDLpuvZcSgJxG824+hziHxWxk65zuCd8xj
- 472ccBEJEUzw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,441,1583222400"; 
-   d="scan'208";a="284845768"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002.jf.intel.com with ESMTP; 27 May 2020 08:55:30 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jdyOz-009Fsf-Jr; Wed, 27 May 2020 18:55:33 +0300
-Date:   Wed, 27 May 2020 18:55:33 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 06/11] i2c: designware: Add Baytrail sem config DW I2C
- platform dependency
-Message-ID: <20200527155533.GJ1634618@smile.fi.intel.com>
-References: <20200527153046.6172-1-Sergey.Semin@baikalelectronics.ru>
- <20200527153046.6172-7-Sergey.Semin@baikalelectronics.ru>
+        id S1730870AbgE0P45 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 11:56:57 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1682320776;
+        Wed, 27 May 2020 15:56:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590595017;
+        bh=Ik6t3kw79TqNezTHS+OiIuNo2tlFgr4eybIwx61pe/8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ooaILInhRblQrCFPRyWa/J6/8OQCLqzd3B+W0MH4F3bJu7mCY5F7RVJzR++paYS+6
+         mAxqnYdkYb5zDA5FlQYjrOE4JounVdJ88UBifHr/S6Vx9GUKBZRRx3P8fvR0Ae02QS
+         /TR5lXbcf2etddptyx08Pq6Bbad0r8xzRHhD8R40=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id DA74F3522839; Wed, 27 May 2020 08:56:56 -0700 (PDT)
+Date:   Wed, 27 May 2020 08:56:56 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, frederic@kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org, cai@lca.pw,
+        mgorman@techsingularity.net, joel@joelfernandes.org
+Subject: Re: [RFC][PATCH 4/7] smp: Optimize send_call_function_single_ipi()
+Message-ID: <20200527155656.GU2869@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200526161057.531933155@infradead.org>
+ <20200526161907.953304789@infradead.org>
+ <20200527095645.GH325280@hirez.programming.kicks-ass.net>
+ <20200527101513.GJ325303@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200527153046.6172-7-Sergey.Semin@baikalelectronics.ru>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200527101513.GJ325303@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 06:30:41PM +0300, Serge Semin wrote:
-> Currently Intel Baytrail I2C semaphore is a feature of the DW APB I2C
-> platform driver. It's a bit confusing to see it's config in the menu at
-> some separated place with no reference to the platform code. Let's move the
-> config definition to be below the I2C_DESIGNWARE_PLATFORM config and mark
-> it with "depends on I2C_DESIGNWARE_PLATFORM" statement. By doing so the
-> config menu will display the feature right below the DW I2C platform
-> driver item and will indent it to the right so signifying its belonging.
+On Wed, May 27, 2020 at 12:15:13PM +0200, Peter Zijlstra wrote:
+> On Wed, May 27, 2020 at 11:56:45AM +0200, Peter Zijlstra wrote:
+> 
+> > This is rcu_is_cpu_rrupt_from_idle()'s lockdep_assert_in_irq() tripping
+> > up (it's comment is obviously a bit antiquated).
+> > 
+> > Now, if I read that code correctly, it actually relies on
+> > rcu_irq_enter() and thus really wants to be in an interrupt. Is there
+> > any way this code can be made to work from the new context too?
+> > 
+> > After all, all that really is different is not having gone throught he
+> > bother of setting up the IRQ context, nothing else changed -- it just so
+> > happens you actually relied on that ;/
+> 
+> At first glance, something like the below could work. But obviously I
+> might have overlooked something more subtle than a brick :-)
 
-Same comment as per previous version.
+This can work, but only if the call from the idle loop is a place where
+either RCU isn't watching on the one hand or that cannot be in an RCU
+read-side critical section on the other.  Because rcu_exp_handler()
+assumes that if this function returns true, we are not in an RCU read-side
+critical section.  (I would expect this to be the case, but I figured
+that I should make it explicit.)
 
->  config I2C_DESIGNWARE_BAYTRAIL
->  	bool "Intel Baytrail I2C semaphore support"
->  	depends on ACPI
-> +	depends on I2C_DESIGNWARE_PLATFORM
->  	depends on (I2C_DESIGNWARE_PLATFORM=m && IOSF_MBI) || \
->  		   (I2C_DESIGNWARE_PLATFORM=y && IOSF_MBI=y)
+> ---
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 90c8be22d57a..0792c032a972 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -426,8 +426,11 @@ EXPORT_SYMBOL_GPL(rcu_momentary_dyntick_idle);
+>   */
 
-i.e. this change is not needed.
+Could we please have a comment noting the change in semantics and
+the reason?
 
--- 
-With Best Regards,
-Andy Shevchenko
+>  static int rcu_is_cpu_rrupt_from_idle(void)
+>  {
+> -	/* Called only from within the scheduling-clock interrupt */
+> -	lockdep_assert_in_irq();
+> +	/*
+> +	 * Usually called from the tick; but also used from smp_call_function()
+> +	 * for expedited grace periods.
+> +	 */
+> +	lockdep_assert_irqs_disabled();
+>  
+>  	/* Check for counter underflows */
+>  	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nesting) < 0,
+> @@ -435,8 +438,11 @@ static int rcu_is_cpu_rrupt_from_idle(void)
+>  	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0,
+>  			 "RCU dynticks_nmi_nesting counter underflow/zero!");
+>  
+> -	/* Are we at first interrupt nesting level? */
+> -	if (__this_cpu_read(rcu_data.dynticks_nmi_nesting) != 1)
+> +	/*
+> +	 * Are we at first interrupt nesting level? -- or below, when running
+> +	 * directly from the idle loop itself.
+> +	 */
+> +	if (__this_cpu_read(rcu_data.dynticks_nmi_nesting) > 1)
 
+Wouldn't it also be a good idea to check that we are in the context of
+an idle thread?  Just in case some idiot like me drops a call to this
+function in the wrong place, for example, if I were to mistakenly remember
+the old semantics where it would return false from process context?
 
+Maybe something like this?
+
+	nesting = __this_cpu_read(rcu_data.dynticks_nmi_nesting;
+	if (nesting > 1)
+		return false;
+	WARN_ON_ONCE(!nesting && !is_idle_task(current));
+
+>  		return false;
+>  
+>  	/* Does CPU appear to be idle from an RCU standpoint? */
+
+And let's check the other callers:
+
+rcu_sched_clock_irq():  This will always be called from IRQ (right?), so
+	no problem.
+
+rcu_pending():  Only called from rcu_sched_clock_irq(), so still no problem.
+
+rcu_flavor_sched_clock_irq(): Ditto for both definitions.
+
+							Thanx, Paul
