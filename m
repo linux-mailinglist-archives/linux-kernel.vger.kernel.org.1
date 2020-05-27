@@ -2,201 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127D11E4089
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C439C1E4106
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729072AbgE0Lxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 07:53:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728745AbgE0Lx2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 07:53:28 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF88CC05BD1E
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 04:53:27 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 2D471476; Wed, 27 May 2020 13:53:24 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        jroedel@suse.de
-Subject: [PATCH 06/10] iommu/amd: Consolidate domain allocation/freeing
+        id S1728199AbgE0L6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 07:58:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40806 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729318AbgE0LyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 07:54:16 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id D9E3AAD66;
+        Wed, 27 May 2020 11:54:17 +0000 (UTC)
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
+        gregkh@linuxfoundation.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        devel@driverdev.osuosl.org
+Subject: [RFC 04/50] staging: vchi: Merge vchi_msg_queue() into vchi_queue_kernel_message()
 Date:   Wed, 27 May 2020 13:53:09 +0200
-Message-Id: <20200527115313.7426-7-joro@8bytes.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200527115313.7426-1-joro@8bytes.org>
-References: <20200527115313.7426-1-joro@8bytes.org>
+Message-Id: <20200527115400.31391-5-nsaenzjulienne@suse.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200527115400.31391-1-nsaenzjulienne@suse.de>
+References: <20200527115400.31391-1-nsaenzjulienne@suse.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+There are no gains from that extra indirection level. Also, get rid of
+the function description, the whole file will disappear soon.
 
-Merge the allocation code paths of DMA and UNMANAGED domains and
-remove code duplication.
-
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 ---
- drivers/iommu/amd/iommu.c | 116 +++++++++-----------------------------
- 1 file changed, 27 insertions(+), 89 deletions(-)
+ .../interface/vchiq_arm/vchiq_shim.c          | 29 +++----------------
+ 1 file changed, 4 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index 5282ff6b8ea0..9e0737932e0c 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -101,7 +101,6 @@ struct iommu_cmd {
- struct kmem_cache *amd_iommu_irq_cache;
- 
- static void update_domain(struct protection_domain *domain);
--static int protection_domain_init(struct protection_domain *domain, int mode);
- static void detach_device(struct device *dev);
- static void update_and_flush_device_table(struct protection_domain *domain,
- 					  struct domain_pgtable *pgtable);
-@@ -1818,58 +1817,6 @@ static void free_gcr3_table(struct protection_domain *domain)
- 	free_page((unsigned long)domain->gcr3_tbl);
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
+index 1c5ddea8b076..081ab67ad6fd 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
+@@ -84,30 +84,15 @@ int32_t vchi_msg_remove(struct vchi_service_handle *handle)
  }
+ EXPORT_SYMBOL(vchi_msg_remove);
  
--/*
-- * Free a domain, only used if something went wrong in the
-- * allocation path and we need to free an already allocated page table
-- */
--static void dma_ops_domain_free(struct protection_domain *domain)
--{
--	struct domain_pgtable pgtable;
--
--	if (!domain)
--		return;
--
--	iommu_put_dma_cookie(&domain->domain);
--
--	amd_iommu_domain_get_pgtable(domain, &pgtable);
--	atomic64_set(&domain->pt_root, 0);
--	free_pagetable(&pgtable);
--
--	if (domain->id)
--		domain_id_free(domain->id);
--
--	kfree(domain);
--}
--
--/*
-- * Allocates a new protection domain usable for the dma_ops functions.
-- * It also initializes the page table and the address allocator data
-- * structures required for the dma_ops interface
-- */
--static struct protection_domain *dma_ops_domain_alloc(void)
--{
--	struct protection_domain *domain;
--
--	domain = kzalloc(sizeof(struct protection_domain), GFP_KERNEL);
--	if (!domain)
--		return NULL;
--
--	if (protection_domain_init(domain, DEFAULT_PGTABLE_LEVEL))
--		goto free_domain;
--
--	domain->flags = PD_DMA_OPS_MASK;
--
--	if (iommu_get_dma_cookie(&domain->domain) == -ENOMEM)
--		goto free_domain;
--
--	return domain;
--
--free_domain:
--	dma_ops_domain_free(domain);
--
--	return NULL;
--}
--
- /*
-  * little helper function to check whether a given protection domain is a
-  * dma_ops domain
-@@ -2447,36 +2394,32 @@ static struct protection_domain *protection_domain_alloc(int mode)
- 
- static struct iommu_domain *amd_iommu_domain_alloc(unsigned type)
+-/***********************************************************
+- * Name: vchi_msg_queue
+- *
+- * Arguments:  struct vchi_service_handle *handle,
+- *             ssize_t (*copy_callback)(void *context, void *dest,
+- *				        size_t offset, size_t maxsize),
+- *	       void *context,
+- *             uint32_t data_size
+- *
+- * Description: Thin wrapper to queue a message onto a connection
+- *
+- * Returns: int32_t - success == 0
+- *
+- ***********************************************************/
+-static
+-int32_t vchi_msg_queue(struct vchi_service_handle *handle, void *context,
+-		       uint32_t data_size)
++int vchi_queue_kernel_message(struct vchi_service_handle *handle, void *data,
++			       unsigned int size)
  {
--	struct protection_domain *pdomain;
+ 	struct shim_service *service = (struct shim_service *)handle;
+ 	enum vchiq_status status;
+ 
+ 	while (1) {
+-		status = vchiq_queue_kernel_message(service->handle, context,
+-						    data_size);
++		status = vchiq_queue_kernel_message(service->handle, data,
++						    size);
+ 
+ 		/*
+ 		 * vchiq_queue_message() may return VCHIQ_RETRY, so we need to
+@@ -122,12 +107,6 @@ int32_t vchi_msg_queue(struct vchi_service_handle *handle, void *context,
+ 
+ 	return vchiq_status_to_vchi(status);
+ }
 -
--	switch (type) {
--	case IOMMU_DOMAIN_UNMANAGED:
--		pdomain = protection_domain_alloc(DEFAULT_PGTABLE_LEVEL);
--		if (!pdomain)
--			return NULL;
-+	struct protection_domain *domain;
-+	int mode = DEFAULT_PGTABLE_LEVEL;
+-int vchi_queue_kernel_message(struct vchi_service_handle *handle, void *data,
+-			      unsigned int size)
+-{
+-	return vchi_msg_queue(handle, data, size);
+-}
+ EXPORT_SYMBOL(vchi_queue_kernel_message);
  
--		pdomain->domain.geometry.aperture_start = 0;
--		pdomain->domain.geometry.aperture_end   = ~0ULL;
--		pdomain->domain.geometry.force_aperture = true;
-+	if (type == IOMMU_DOMAIN_IDENTITY)
-+		mode = PAGE_MODE_NONE;
- 
--		break;
--	case IOMMU_DOMAIN_DMA:
--		pdomain = dma_ops_domain_alloc();
--		if (!pdomain) {
--			pr_err("Failed to allocate\n");
--			return NULL;
--		}
--		break;
--	case IOMMU_DOMAIN_IDENTITY:
--		pdomain = protection_domain_alloc(PAGE_MODE_NONE);
--		if (!pdomain)
--			return NULL;
--		break;
--	default:
-+	domain = protection_domain_alloc(mode);
-+	if (!domain)
- 		return NULL;
-+
-+	domain->domain.geometry.aperture_start = 0;
-+	domain->domain.geometry.aperture_end   = ~0ULL;
-+	domain->domain.geometry.force_aperture = true;
-+
-+	if (type == IOMMU_DOMAIN_DMA) {
-+		if (iommu_get_dma_cookie(&domain->domain) == -ENOMEM)
-+			goto free_domain;
-+		domain->flags = PD_DMA_OPS_MASK;
- 	}
- 
--	return &pdomain->domain;
-+	return &domain->domain;
-+
-+free_domain:
-+	protection_domain_free(domain);
-+
-+	return NULL;
- }
- 
- static void amd_iommu_domain_free(struct iommu_domain *dom)
-@@ -2493,18 +2436,13 @@ static void amd_iommu_domain_free(struct iommu_domain *dom)
- 	if (!dom)
- 		return;
- 
--	switch (dom->type) {
--	case IOMMU_DOMAIN_DMA:
--		/* Now release the domain */
--		dma_ops_domain_free(domain);
--		break;
--	default:
--		if (domain->flags & PD_IOMMUV2_MASK)
--			free_gcr3_table(domain);
-+	if (dom->type == IOMMU_DOMAIN_DMA)
-+		iommu_put_dma_cookie(&domain->domain);
- 
--		protection_domain_free(domain);
--		break;
--	}
-+	if (domain->flags & PD_IOMMUV2_MASK)
-+		free_gcr3_table(domain);
-+
-+	protection_domain_free(domain);
- }
- 
- static void amd_iommu_detach_device(struct iommu_domain *dom,
+ /***********************************************************
 -- 
-2.17.1
+2.26.2
 
