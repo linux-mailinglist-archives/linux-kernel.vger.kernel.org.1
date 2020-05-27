@@ -2,149 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3C41E5187
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 01:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDDD71E518B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 01:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725819AbgE0XCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 19:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725385AbgE0XCO (ORCPT
+        id S1725959AbgE0XDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 19:03:01 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:38430 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725267AbgE0XDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 19:02:14 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE961C08C5C1;
-        Wed, 27 May 2020 16:02:13 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id q8so1321779qkm.12;
-        Wed, 27 May 2020 16:02:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qYOUMbGRbXoFBwjaad5Ny0vONPBdfJSQTLm2Tk6FIJg=;
-        b=ShneLxh9Xe9PgyCQYJk9ewv0cbYYri4qqOAfyLHE3O8XDTR4LdyEmeOYfQude2nzG/
-         05NAmFVV1NLJ5X86wQ0WGNVV9V1E+1m8syCcrsNPTCKGUH8uvDXF/Myx61TCLP3Y/G81
-         yX9EcTD0Xjw9Dr4Q0F4aFdQeybiAI34Lb/+4KBQYWjajSAwvygB6+PYFZzNIr6e72kFJ
-         CvQ8RTBPWZxRTQcxgVYZaDIsY83wpvwB+8O3XW2ZD5Kp5GVGOYlEBJuhuj5zIHbi8yIb
-         b6Z3eHSIKTL51Twfg+xWed+eNBnQGCRp8Wc1IfwGkB3fgXXk4X6qX01tCFQxVXMt4YqR
-         6gnQ==
+        Wed, 27 May 2020 19:03:01 -0400
+Received: by mail-il1-f196.google.com with SMTP id q18so4673014ilm.5;
+        Wed, 27 May 2020 16:03:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=qYOUMbGRbXoFBwjaad5Ny0vONPBdfJSQTLm2Tk6FIJg=;
-        b=HzR8R53gNteJSjGoL1IuRmTlZrHK91dO0JsAMqduWgIsT/Z9k36DQEh5xAx9fPra5u
-         FybnBMCKgQ3lVo6JIANgCPAc5KFfiylN4APHr10dp5tctkYrdjBsZhAaZrvVUcH7ulv5
-         7jdmQ1iwodFe8vV8s7BwNnjrzoHdDhpom4eFjGslcw4jnGwaxeBpXj7lefIPPj2bubDZ
-         Z0C+r7ZjDpYeVKk5VqQOMkedDCaHLeCyLCMqeco5rEqt/EIJpFN21upf82a8ctDIEQu3
-         u93SrG3gaDeqtzfNP3obLSuLmxqqAAslHI6WuZW3OQf7CzI/MbHtWuJ+YefV7ZJB+A6z
-         5CYQ==
-X-Gm-Message-State: AOAM531RWn7PJPHJ3AMlJ3FoCRuW4bzCu+lHES382hLi/lhOCjCNRR/y
-        THnrciT3mwyb62wxbeSlgFCo1jtP
-X-Google-Smtp-Source: ABdhPJxMk1bgFZVPt3++Ket2S3kFyFHSTmpmLoobwtt2X5j9BweaNuqR0TO7eg1VL7+NltlB63poJw==
-X-Received: by 2002:a37:a74a:: with SMTP id q71mr166810qke.446.1590620532632;
-        Wed, 27 May 2020 16:02:12 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id x14sm3559390qkb.67.2020.05.27.16.02.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2020 16:02:11 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Wed, 27 May 2020 19:02:09 -0400
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "joe@perches.com" <joe@perches.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>
-Subject: Re: [PATCH 08/15] efi/x86: Move command-line initrd loading to
- efi_main
-Message-ID: <20200527230209.GA3575079@rani.riverdale.lan>
-References: <20200508180157.1816-1-ardb@kernel.org>
- <20200508180157.1816-9-ardb@kernel.org>
- <10a1c7fcea861f5d45dff81cba673e970d686bc2.camel@intel.com>
- <20200527224657.GA3568142@rani.riverdale.lan>
- <CAPcyv4jOCY=kxeZVWsS0Xc36jmPr7DSR_sFrsMeoiEs+iEfbEA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IY5UsUVweat3Yf12W30ICZIuRx4S2mbmL7ClK7BMyrw=;
+        b=J7cDrOivt2j0zcmNs+z/bjiLR4Lp86/1w0fclgQTzKBHiNVoYGOVyzeRtcCQBuyga4
+         8YRZrjYMI/IERzkHAeB9ZkySYtj+NIZF7zlK1gBv+8JIKNEMS4FX7caSZ1j5UlcK0Cs4
+         E+HsGvoj7JLIpqtwanwelfDuuNStdPKx2tUiq0398plODLiGv4icoAY5w7CLcA3/wJgv
+         bt0kevJP82Zt6u8WucpkRI4LmvH/0wV3bZgloV3q6jScDiIjG+IWUm9lj8eD9+jNCGnf
+         m75qxHzwRoxEHzYIVEav3L4quMaofliyZO8lynbIBhj7HDdjZBdBRrzZ1y7r493V+Xqd
+         Zs+A==
+X-Gm-Message-State: AOAM530ywgklvxkxl1WAGPSAXlFQVUBr4X9YQ7NCYTJOJ4tk55Bl4hoW
+        d2hFoNWRm9prBFqzJQXuGSVzLVZX
+X-Google-Smtp-Source: ABdhPJxy2S4snQ2BTCS83PVr9ySoTiZECKOCqgYlcTd32Ji0zMNdH2YOj1RGz9aC/BuNYPnKZKzy0A==
+X-Received: by 2002:a05:6e02:6cd:: with SMTP id p13mr526519ils.188.1590620579642;
+        Wed, 27 May 2020 16:02:59 -0700 (PDT)
+Received: from mail-il1-f179.google.com (mail-il1-f179.google.com. [209.85.166.179])
+        by smtp.gmail.com with ESMTPSA id e13sm2215588ils.27.2020.05.27.16.02.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 May 2020 16:02:58 -0700 (PDT)
+Received: by mail-il1-f179.google.com with SMTP id d1so3280302ila.8;
+        Wed, 27 May 2020 16:02:58 -0700 (PDT)
+X-Received: by 2002:a05:6e02:54b:: with SMTP id i11mr596533ils.50.1590620578431;
+ Wed, 27 May 2020 16:02:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4jOCY=kxeZVWsS0Xc36jmPr7DSR_sFrsMeoiEs+iEfbEA@mail.gmail.com>
+References: <20200527034228.23793-1-biwen.li@oss.nxp.com>
+In-Reply-To: <20200527034228.23793-1-biwen.li@oss.nxp.com>
+From:   Li Yang <leoyang.li@nxp.com>
+Date:   Wed, 27 May 2020 18:02:29 -0500
+X-Gmail-Original-Message-ID: <CADRPPNRS59MQ47Be5xuzLCBLJ_77UYMRbMtAUQbXjir6d7jykw@mail.gmail.com>
+Message-ID: <CADRPPNRS59MQ47Be5xuzLCBLJ_77UYMRbMtAUQbXjir6d7jykw@mail.gmail.com>
+Subject: Re: [v3 1/2] dts: ppc: t4240rdb: remove interrupts property
+To:     Biwen Li <biwen.li@oss.nxp.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        a.zummo@towertech.it,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        lkml <linux-kernel@vger.kernel.org>, Biwen Li <biwen.li@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 03:56:45PM -0700, Dan Williams wrote:
-> On Wed, May 27, 2020 at 3:47 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
-> >
-> > On Wed, May 27, 2020 at 10:30:18PM +0000, Williams, Dan J wrote:
-> > > On Fri, 2020-05-08 at 20:01 +0200, Ard Biesheuvel wrote:
-> > > > From: Arvind Sankar <nivedita@alum.mit.edu>
-> > > >
-> > > > Consolidate the initrd loading in efi_main.
-> > > >
-> > > > The command line options now need to be parsed only once.
-> > > >
-> > > > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-> > > > Link:
-> > > > https://lore.kernel.org/r/20200430182843.2510180-9-nivedita@alum.mit.edu
-> > > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > >
-> > > Hi,
-> > >
-> > > This patch patch in tip/master as:
-> > >
-> > > 987053a30016 efi/x86: Move command-line initrd loading to efi_main
-> > >
-> > > ...regresses my nfs root configuration. It hangs trying to mount the
-> > > nfs root filesystem "root=/dev/nfs ip=dhcp".
-> > >
-> > > It does not revert cleanly.
-> > >
-> > >
-> >
-> > Does this fix it?
-> >
-> > diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-> > index defeb6035109..f53362efef84 100644
-> > --- a/drivers/firmware/efi/libstub/x86-stub.c
-> > +++ b/drivers/firmware/efi/libstub/x86-stub.c
-> > @@ -771,10 +771,12 @@ unsigned long efi_main(efi_handle_t handle,
-> >                         efi_err("Failed to load initrd!\n");
-> >                         goto fail;
-> >                 }
-> > -               efi_set_u64_split(addr, &hdr->ramdisk_image,
-> > -                                 &boot_params->ext_ramdisk_image);
-> > -               efi_set_u64_split(size, &hdr->ramdisk_size,
-> > -                                 &boot_params->ext_ramdisk_size);
-> > +               if (size > 0) {
-> > +                       efi_set_u64_split(addr, &hdr->ramdisk_image,
-> > +                                         &boot_params->ext_ramdisk_image);
-> > +                       efi_set_u64_split(size, &hdr->ramdisk_size,
-> > +                                         &boot_params->ext_ramdisk_size);
-> > +               }
-> 
-> I'll give it a shot, but my guess would have been something related to
-> the fact that this patch moves the initrd loading relative to when the
-> command line is being parsed. In this case it's a dracut initrd built
-> by:
-> 
->     dracut -m "nfs network base"
-> 
-> ...with a kernel built with:
-> 
-> CONFIG_IP_PNP_DHCP=y
-> 
-> ...and a built-in network interface. The behavior seems to be that the
-> kernel gets an IP address just fine, but there's no initrd userspace
-> to mount nfs and the kernel eventually gives up looking for root.
+On Tue, May 26, 2020 at 10:49 PM Biwen Li <biwen.li@oss.nxp.com> wrote:
+>
+> From: Biwen Li <biwen.li@nxp.com>
+>
+> Since the interrupt pin for RTC DS1374 is not connected
+> to the CPU on T4240RDB, remove the interrupt property
+> from the device tree.
+>
+> This also fix the following warning for hwclock.util-linux:
+> $ hwclock.util-linux
+> hwclock.util-linux: select() to /dev/rtc0
+> to wait for clock tick timed out
+>
+> Signed-off-by: Biwen Li <biwen.li@nxp.com>
 
-It's an oversight in this patch: I set addr/size to 0 in the case where
-the EFI stub is not supposed to handle the initrd loading (because a
-bootloader ran before it and was responsible for handling the loading),
-but then those 0's get written into the bootparams structure anyway,
-blowing away whatever the bootloader had loaded.
+Acked-by: Li Yang <leoyang.li@nxp.com>
+
+> ---
+>  arch/powerpc/boot/dts/fsl/t4240rdb.dts | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/arch/powerpc/boot/dts/fsl/t4240rdb.dts b/arch/powerpc/boot/dts/fsl/t4240rdb.dts
+> index a56a705d41f7..145896f2eef6 100644
+> --- a/arch/powerpc/boot/dts/fsl/t4240rdb.dts
+> +++ b/arch/powerpc/boot/dts/fsl/t4240rdb.dts
+> @@ -144,7 +144,6 @@
+>                         rtc@68 {
+>                                 compatible = "dallas,ds1374";
+>                                 reg = <0x68>;
+> -                               interrupts = <0x1 0x1 0 0>;
+>                         };
+>                 };
+>
+> --
+> 2.17.1
+>
