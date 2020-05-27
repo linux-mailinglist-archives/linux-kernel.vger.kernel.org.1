@@ -2,120 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A18CC1E4C9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 038061E4CC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388822AbgE0SBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 14:01:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388238AbgE0SBR (ORCPT
+        id S2391867AbgE0SF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 14:05:59 -0400
+Received: from mxo2.dft.dmz.twosigma.com ([208.77.212.182]:56563 "EHLO
+        mxo2.dft.dmz.twosigma.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389069AbgE0SF5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 14:01:17 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDDB8C03E97D;
-        Wed, 27 May 2020 11:01:16 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id v17so293200ote.0;
-        Wed, 27 May 2020 11:01:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=4Psc7I4NV9+VOmLlHtYd2t3590+/OCoI7kXfoHSjkU4=;
-        b=SZuEHdk+tA/xZ6SDGKDuNQQs2KMrOaj7mKQmxEQs8RKhd/6sb+gF5bu9lj3ag/Sy54
-         vnbVVzxVk+7dauWCkFszrOHzVIVWbJj9S3S961UncrKhuZHwPbh5c13DIWaUNwHFYl30
-         Ic4BErXTJs1fOk9CF6Kh3HnMXmfxcOeYjfKX5clbL2WIaxBjuxmP6n8U5zc82wR/m/vE
-         QY3HQ3Lk6Z+8c0eGi7Sca6XadyQpT1oez2uJoxKJ8xC6cxLqtpHNeMldPzUBeWz7Yxa6
-         r+CVemLANbCcHifeDbCnuYG5ktlOAMZgShs4uFPpMVHI+Rvvs89XNs8xFoBzb7n1ZTe0
-         UAvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=4Psc7I4NV9+VOmLlHtYd2t3590+/OCoI7kXfoHSjkU4=;
-        b=XnkIKtrTZI9VIvfCsNsFS5dl4XqSDWI9tONxhCDXJ+DzcG39RB/a0KNxG2Ey7ZMA3D
-         66NEIycQz7YXb//84rVgG4KT5mN4pIePrCoT48ExbYm4/5S/BF+Pijwf40kWxSDNODQO
-         aFdxClFXJQsRMvQgbp6V0BRosvJcj5uPSslwszNgvNYJQQ3asChZsd957fYKkdmjlmMu
-         1I50oVCjI9OoPPFwPO15ekPDIkHfuQCuecFbhHxAIobdtwwqshx+adN47dC2nx6srxw8
-         9FB4vHdex+KeqLaUX3XvAveK5bLAQbdhcCEs4vYInJOHrFnDmysQpe3SxQq6c03Lr9wt
-         sdNg==
-X-Gm-Message-State: AOAM531vMpi3myCkbpMhBLMFlOpfHA1gpLYi/4MyIeouTmU2NGkCZHUq
-        yVhna3vQy6/+3/Rf1G0oCPrAMxQeqY91PuaoqR0=
-X-Google-Smtp-Source: ABdhPJw/XkG5dgiw0MYCcn4EgV3eQ1gWbxyvlrWNskI+It1+vK65tjsIJ15QEEJjm76CHKJgsmrMnLyQrqylzHMChOo=
-X-Received: by 2002:a9d:68d1:: with SMTP id i17mr5791294oto.295.1590602476142;
- Wed, 27 May 2020 11:01:16 -0700 (PDT)
+        Wed, 27 May 2020 14:05:57 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mxo2.dft.dmz.twosigma.com (Postfix) with ESMTP id 49XJfW6xgJz7t8y;
+        Wed, 27 May 2020 18:05:55 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at twosigma.com
+Received: from mxo2.dft.dmz.twosigma.com ([127.0.0.1])
+        by localhost (mxo2.dft.dmz.twosigma.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id qUylFl1ppg4g; Wed, 27 May 2020 18:05:55 +0000 (UTC)
+Received: from exmbdft5.ad.twosigma.com (exmbdft5.ad.twosigma.com [172.22.1.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mxo2.dft.dmz.twosigma.com (Postfix) with ESMTPS id 49XJfW65r7z3wZ5;
+        Wed, 27 May 2020 18:05:55 +0000 (UTC)
+Received: from EXMBDFT11.ad.twosigma.com (172.23.162.14) by
+ exmbdft5.ad.twosigma.com (172.22.1.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 27 May 2020 18:05:55 +0000
+Received: from EXMBDFT11.ad.twosigma.com ([fe80::8d66:2326:5416:86a9]) by
+ EXMBDFT11.ad.twosigma.com ([fe80::8d66:2326:5416:86a9%19]) with mapi id
+ 15.00.1497.000; Wed, 27 May 2020 18:05:55 +0000
+From:   Nicolas Viennot <Nicolas.Viennot@twosigma.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Adrian Reber <areber@redhat.com>
+CC:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Pavel Emelyanov <ovzxemul@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        =?utf-8?B?TWljaGHFgiBDxYJhcGnFhHNraQ==?= <mclapinski@google.com>,
+        Kamil Yurtsever <kyurtsever@google.com>,
+        "Dirk Petersen" <dipeit@gmail.com>,
+        Christine Flood <chf@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Radostin Stoyanov <rstoyanov1@gmail.com>,
+        "Cyrill Gorcunov" <gorcunov@openvz.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        "Stephen Smalley" <stephen.smalley.work@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
+        Eric Paris <eparis@parisplace.org>,
+        Jann Horn <jannh@google.com>
+Subject: RE: [PATCH] capabilities: Introduce CAP_RESTORE
+Thread-Topic: [PATCH] capabilities: Introduce CAP_RESTORE
+Thread-Index: AQHWM2XfaDM8D7CUOUK8NWcR6t6ZmKi7+1qAgAAVMoCAACZxcA==
+Date:   Wed, 27 May 2020 18:05:55 +0000
+Message-ID: <d5ecde0c94014a4fad090e44377e9852@EXMBDFT11.ad.twosigma.com>
+References: <20200522055350.806609-1-areber@redhat.com>
+ <dc86dffb-c7f8-15bb-db4e-be135da650cc@schaufler-ca.com>
+ <20200525080541.GF104922@dcbz.redhat.com>
+ <877dwybxvi.fsf@x220.int.ebiederm.org>
+ <20200527141403.GC250149@dcbz.redhat.com>
+ <20200527152955.jbbipgb6icb4nwgv@wittgenstein>
+In-Reply-To: <20200527152955.jbbipgb6icb4nwgv@wittgenstein>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [192.168.118.183]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-From:   nirinA raseliarison <nirina.raseliarison@gmail.com>
-Date:   Wed, 27 May 2020 21:05:55 +0300
-Message-ID: <CANsGL8PFnEvBcfLV7eKZQCONoork3EQ7x_RdtkFPXuWZQbK=qg@mail.gmail.com>
-Subject: kernel BUG at fs/inode.c:531!
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hello,
-i hit again this bug with:
-
-$ cat /proc/version
-Linux version 5.7.0-rc7.20200525 (nirina@supernova.org) (gcc version
-10.1.0 (GCC), GNU ld version 2.33.1-slack15) #1 SMP Mon May 25
-02:49:28 EAT 2020
-
-
-[99390.044690] ------------[ cut here ]------------
-[99390.044695] kernel BUG at fs/inode.c:531!
-[99390.044702] invalid opcode: 0000 [#1] SMP PTI
-[99390.044705] CPU: 0 PID: 149 Comm: kswapd0 Not tainted 5.7.0-rc7.20200525 #1
-[99390.044706] Hardware name: To be filled by O.E.M. To be filled by
-O.E.M./ONDA H61V Ver:4.01, BIOS 4.6.5 01/07/2013
-[99390.044712] RIP: 0010:clear_inode+0x75/0x80
-[99390.044714] Code: a8 20 74 2a a8 40 75 28 48 8b 83 28 01 00 00 48
-8d 93 28 01 00 00 48 39 c2 75 17 48 c7 83 98 00 00 00 60 00 00 00 5b
-c3 0f 0b <0f> 0b 0f 0b 0f 0b 0f 0b 0f 0b 90 0f 1f 44 00 00 53 ba 48 02
-00 00
-[99390.044716] RSP: 0018:ffffc900004c7b50 EFLAGS: 00010006
-[99390.044717] RAX: 0000000000000000 RBX: ffff88808c5f9e38 RCX: 0000000000000000
-[99390.044718] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff88808c5f9fb8
-[99390.044719] RBP: ffff88808c5f9e38 R08: ffffffffffffffff R09: ffffc900004c7cd8
-[99390.044720] R10: 0000000000000000 R11: 0000000000000001 R12: ffff88808c5f9fb0
-[99390.044721] R13: ffff888215658000 R14: ffff888215658070 R15: 000000000000014c
-[99390.044723] FS:  0000000000000000(0000) GS:ffff888217600000(0000)
-knlGS:0000000000000000
-[99390.044724] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[99390.044725] CR2: 00000006f9004000 CR3: 00000001511da001 CR4: 00000000001606f0
-[99390.044726] Call Trace:
-[99390.044732]  ext4_clear_inode+0x16/0x80
-[99390.044736]  ext4_evict_inode+0x58/0x4c0
-[99390.044738]  evict+0xbf/0x180
-[99390.044740]  prune_icache_sb+0x7e/0xb0
-[99390.044743]  super_cache_scan+0x161/0x1e0
-[99390.044746]  do_shrink_slab+0x146/0x290
-[99390.044749]  shrink_slab+0xac/0x2a0
-[99390.044752]  ? __switch_to_asm+0x40/0x70
-[99390.044754]  shrink_node+0x16f/0x660
-[99390.044757]  balance_pgdat+0x2cf/0x5b0
-[99390.044759]  kswapd+0x1dc/0x3a0
-[99390.044762]  ? __schedule+0x217/0x710
-[99390.044764]  ? wait_woken+0x80/0x80
-[99390.044766]  ? balance_pgdat+0x5b0/0x5b0
-[99390.044768]  kthread+0x118/0x130
-[99390.044770]  ? kthread_create_worker_on_cpu+0x70/0x70
-[99390.044772]  ret_from_fork+0x35/0x40
-[99390.044773] Modules linked in: 8021q garp stp mrp llc rtl8192cu
-rtl_usb rtl8192c_common rtlwifi mac80211 cfg80211 uas usb_storage
-nct6775 hwmon_vid ipv6 rfkill nf_defrag_ipv6 snd_pcm_oss snd_mixer_oss
-fuse hid_generic usbhid hid snd_hda_codec_hdmi snd_hda_codec_realtek
-snd_hda_codec_generic i2c_dev coretemp hwmon i915 x86_pkg_temp_thermal
-intel_powerclamp kvm_intel kvm i2c_algo_bit irqbypass drm_kms_helper
-evdev r8169 snd_hda_intel syscopyarea snd_intel_dspcfg realtek
-snd_hda_codec libphy crc32_pclmul sysfillrect serio_raw sysimgblt
-snd_hwdep fb_sys_fops snd_hda_core drm snd_pcm fan thermal
-drm_panel_orientation_quirks snd_timer intel_gtt 8250 agpgart snd
-8250_base ehci_pci serial_core button ehci_hcd video soundcore
-i2c_i801 lpc_ich mfd_core mei_me mei loop
-[99390.044800] ---[ end trace 2ca57858c52a0ad4 ]---
-
---
-nirinA
+PiA+IEFsc28gaW4gdGhpcyB0aHJlYWQgS2FtaWwgbWVudGlvbmVkIHRoYXQgdGhleSBhbHNvIG5l
+ZWQgY2FsbGluZyBwcmN0bCANCj4gPiB3aXRoIFBSX1NFVF9NTSBkdXJpbmcgcmVzdG9yZSBpbiB0
+aGVpciBwcm9kdWN0aW9uIHNldHVwLg0KPg0KPiBXZSdyZSB1c2luZyB0aGF0IGFzIHdlbGwgYnV0
+IGl0IHJlYWxseSBmZWVscyBsaWtlIHRoaXM6DQo+DQo+CXByY3RsX21hcCA9IChzdHJ1Y3QgcHJj
+dGxfbW1fbWFwKXsNCj4JICAgIC5zdGFydF9jb2RlID0gc3RhcnRfY29kZSwNCj4JICAgIC5lbmRf
+Y29kZSA9IGVuZF9jb2RlLA0KPgkgICAgLnN0YXJ0X3N0YWNrID0gc3RhcnRfc3RhY2ssDQo+CSAg
+ICAuc3RhcnRfZGF0YSA9IHN0YXJ0X2RhdGEsDQo+CSAgICAuZW5kX2RhdGEgPSBlbmRfZGF0YSwN
+Cj4JICAgIC5zdGFydF9icmsgPSBzdGFydF9icmssDQo+CSAgICAuYnJrID0gYnJrX3ZhbCwNCj4J
+ICAgIC5hcmdfc3RhcnQgPSBhcmdfc3RhcnQsDQo+CSAgICAuYXJnX2VuZCA9IGFyZ19lbmQsDQo+
+CSAgICAuZW52X3N0YXJ0ID0gZW52X3N0YXJ0LA0KPgkgICAgLmVudl9lbmQgPSBlbnZfZW5kLA0K
+PgkgICAgLmF1eHYgPSBOVUxMLA0KPgkgICAgLmF1eHZfc2l6ZSA9IDAsDQo+CSAgICAuZXhlX2Zk
+ID0gLTEsDQo+CX07DQo+DQo+IHNob3VsZCBiZWxvbmcgdW5kZXIgbnNfY2FwYWJsZShDQVBfU1lT
+X0FETUlOKS4gV2h5IGlzIHRoYXQgbmVjZXNzYXJ5IHRvIHJlbGF4Pw0KDQpXaGVuIHRoZSBwcmN0
+bChQUl9TRVRfTU1fTUFQLi4uKSwgdGhlIG9ubHkgcHJpdmlsZWdlZCBvcGVyYXRpb24gaXMgdG8g
+Y2hhbmdlIHRoZSBzeW1saW5rIG9mIC9wcm9jL3NlbGYvZXhlIHZpYSBzZXRfbW1fZXhlX2ZpbGUo
+KS4NClNlZSBodHRwczovL2dpdGh1Yi5jb20vdG9ydmFsZHMvbGludXgvYmxvYi80NDRmYzVjZGU2
+NDMzMDY2MWJmNTk5NDRjNDM4NDRlN2Q0YzJjY2Q4L2tlcm5lbC9zeXMuYyNMMjAwMS1MMjAwNA0K
+SXQgbmVlZHMgQ0FQX1NZU19BRE1JTiBvZiB0aGUgY3VycmVudCBuYW1lc3BhY2UuDQoNCkkgd291
+bGQgYXJndWUgdGhhdCBzZXR0aW5nIHRoZSBjdXJyZW50IHByb2Nlc3MgZXhlIGZpbGUgY2hlY2sg
+c2hvdWxkIGp1c3QgYmUgcmVkdWNlZCB0byBhICJjYW4geW91IHB0cmFjZSBhIGNoaWxkcmVuIiBj
+aGVjay4NCkhlcmUncyB3aHk6IGFueSBwcm9jZXNzIGNhbiBtYXNxdWVyYWRlIGludG8gYW5vdGhl
+ciBleGVjdXRhYmxlIHdpdGggcHRyYWNlLg0KT25lIGNhbiBmb3JrIGEgY2hpbGQsIHB0cmFjZSBp
+dCwgaGF2ZSB0aGUgY2hpbGQgZXhlY3ZlKCJ0YXJnZXRfZXhlIiksIHRoZW4gcmVwbGFjZSBpdHMg
+bWVtb3J5IGNvbnRlbnQgd2l0aCBhbiBhcmJpdHJhcnkgcHJvZ3JhbS4NCldpdGggQ1JJVSdzIGxp
+YmNvbXBlbCBwYXJhc2l0ZSBtZWNoYW5pc20gKGh0dHBzOi8vY3JpdS5vcmcvQ29tcGVsKSB0aGlz
+IGlzIGZhaXJseSBlYXN5IHRvIGltcGxlbWVudC4NCkluIGZhY3QsIHdlIGNvdWxkIG1vZGlmeSBD
+UklVIHRvIGRvIGp1c3QgdGhhdCAoYnV0IHdpdGggYSBmYWlyIGFtb3VudCBvZiBlZmZvcnRzIGR1
+ZSB0byB0aGUgd2F5IENSSVUgaXMgd3JpdHRlbiksDQphbmQgbm90IHJlbHkgb24gYmVpbmcgYWJs
+ZSB0byBTRVRfTU1fRVhFX0ZJTEUgdmlhIHByY3RsKCkuIEluIHR1cm4sIHRoYXQgd291bGQgZ2l2
+ZSBhbiBlYXN5IHdheSB0byBtYXNxdWVyYWRlIGFueSBwcm9jZXNzDQppbnRvIGFub3RoZXIgb25l
+LCBwcm92aWRlZCB0aGF0IG9uZSBjYW4gcHRyYWNlIGEgY2hpbGQuDQoNCldoZW4gbm90IHVzaW5n
+IFBSX1NFVF9NTV9NQVAsIGJ1dCB1c2luZyBTRVRfTU1fRVhFX0ZJTEUsIHRoZSBDQVBfUkVTT1VS
+Q0VTIGF0IHRoZSByb290IG5hbWVzcGFjZSBsZXZlbCBpcyByZXF1aXJlZDoNCmh0dHBzOi8vZ2l0
+aHViLmNvbS90b3J2YWxkcy9saW51eC9ibG9iLzQ0NGZjNWNkZTY0MzMwNjYxYmY1OTk0NGM0Mzg0
+NGU3ZDRjMmNjZDgva2VybmVsL3N5cy5jI0wyMTA5DQpUaGlzIHNlZW1zIGluY29uc2lzdGVudC4g
+QWxzbyBmb3Igc29tZSByZWFzb24gY2hhbmdpbmcgYXV4diBpcyBub3QgcHJpdmlsZWdlZCBpZiB1
+c2luZyBwcmN0bCB2aWEgdGhlIE1NX01BUCBtZWNoYW5pc20sIGJ1dCBpcyBwcml2aWxlZ2VkIG90
+aGVyd2lzZS4NCg==
