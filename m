@@ -2,137 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D67A11E4455
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF5A1E445E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388770AbgE0NtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:49:17 -0400
-Received: from mga18.intel.com ([134.134.136.126]:11584 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388082AbgE0NtQ (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:49:16 -0400
-IronPort-SDR: skwNYpY2nv5y9Rb7FpdaO7a/4EJMagyL5aFF3No1K/JPqdCN6bjP2UvdIUPxdkoDQqsd0xbXRZ
- zP1dFb2WgO/w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 06:49:15 -0700
-IronPort-SDR: BxuuS2MK37yuMLoYpwK5GiQeXD2f446GJqObQzqghFwZHQZmX52Hj7YLDLysoE/hGrPqz8cs0E
- XOwQzQB4EQtQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,441,1583222400"; 
-   d="scan'208";a="376032251"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.254.213.129]) ([10.254.213.129])
-  by fmsmga001.fm.intel.com with ESMTP; 27 May 2020 06:49:12 -0700
-Subject: Re: [PATCH v2 1/2] perf evlist: Ensure grouped events with same cpu
- map
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20200525065559.6422-1-yao.jin@linux.intel.com>
- <20200526115155.GE333164@krava>
- <32c4663a-6934-2a2d-79e2-7a335e3629a2@linux.intel.com>
- <d6986a15-1e21-3414-9d68-c265e7db03f4@linux.intel.com>
- <20200527102805.GA420698@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <19b749fa-fa96-85ac-8c7d-10336ff7475a@linux.intel.com>
-Date:   Wed, 27 May 2020 21:49:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S2388817AbgE0Nt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:49:58 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:51029 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388607AbgE0Nt5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 09:49:57 -0400
+Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MeToK-1j3mD13omq-00aStF; Wed, 27 May 2020 15:49:47 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Russell King <linux@armlinux.org.uk>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nathan Huckleberry <nhuck15@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: pass -msoft-float to gcc earlier
+Date:   Wed, 27 May 2020 15:49:34 +0200
+Message-Id: <20200527134946.1034391-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200527102805.GA420698@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:G5fO0GvXqQ7URCOK275565svfOfjD5zjWbghoAyYqsXD61NGPPV
+ K3P+UcFTh2o/d8MI/VsrOcbfFksMEw7u1v2KFJI6nP+xf/v/qOU6RVa+Pu5ZZg2ZtebjVaW
+ tsb2V6RQplKSQTiTvuvi5WkDqZy6qzEGPwloEkwqKHfbICW6mNJObm/mwqBT1AGpuNNM43i
+ vEz1YQwWcfzoziXlzOepQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:F/gBf8yOHW8=:5cuOcmDhdtzCJCm0zoNZgt
+ ZtF8+oGlZwNWTXQJqiHCMjNXmEsfdwmft9cA4rbnXJs9aM7km6WYRsyc6oz9js5S1d3sh/aye
+ xnogOzfSLlw+BYYo/c4AzbyxQgxv4OKSMa+RisnP8LfBCwUO980XTUQV5zRKqWw8IZn+FMPmB
+ WtZhDlM9utEQyHFrPLej3hA/59gBS9ly0J0hXKZJRAvsykz8CzxVdtB639NywEP24FtN7cth6
+ bWHBzJeTfzu/4dB6UWULId8FwI0XShfSfurO6JXs7gLBUJMruxzK9t8Y7WnCWnJY5e6q+GtOv
+ +Mv0p6hs0+HsDU1jJRyQXtAbdAWJ92FMIaBptBuDogpASSMz2MwT2XeL6XXFAwJ+ndY/WBfbz
+ SP3HS5MpUbA06oumhVdpuZR2WY8I3DxrmL5XYz9SXyJrr9PnEvcyrUwVjyK9dYSVvQhiLKfi1
+ szwpcnObSPKcbdjQkxZSQ6WNJ73zQxmBtiqUjSZoy3FAxEvaGu23bH6+gRn2oFkkd0/M5R7UC
+ Gs8rPkNeFdnDTpOeJOUXlD4t/AbqNafO0auZuWwnmvA9dRBiJfVj/Y63/XIkstvjBbTWx9GjG
+ aUoPZpu+wffPiTB/0WCY3K4EQn5S0XwRXYYKHfypFtctx52XbI9G2utzxW4henz2dE4/gvxFa
+ +3ZNgLhUBk1iDMWpzcERcAgRiGTX+Uxwk9yimIb1V6k4SUnoH6rKXG91EPLsNHPr54fMeJvF5
+ 3lu5tOCJzhS33qiU2PAupR2XFh93FPWVYvs55jwY0OiFTlqbH9DoBINICzuivzM3NVBPRryvJ
+ KywP/UlNgPerwZHcHme3CXB1FxX6+wGwHYyoiXy3Lac0wX7lfM=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+Szabolcs Nagy ran into a kernel build failure with a custom gcc
+toochain that sets -mfpu=auto -mfloat-abi-hard:
 
-On 5/27/2020 6:28 PM, Jiri Olsa wrote:
-> On Wed, May 27, 2020 at 02:31:03PM +0800, Jin, Yao wrote:
-> 
-> SNIP
-> 
->>> Thanks
->>> Jin Yao
->>
->> Issue is found!
->>
->> It looks we can't set "pos->leader = pos" in either for_each_group_member()
->> or in for_each_group_evsel() because it may exit the iteration immediately.
->>
->> 	evlist__for_each_entry(evlist, evsel) {
->> 		if (evsel->leader == evsel)
->> 			continue;
->>
->> 		if (cpu_maps_matched(evsel->leader, evsel))
->> 			continue;
->>
->> 		pr_warning("WARNING: event cpu maps are not fully matched, "
->> 			   "disable group\n");
->>
->> 		for_each_group_member(pos, evsel->leader) {
->> 			pos->leader = pos;
->> 			pos->core.nr_members = 0;
->> 		}
->>
->> Let me use the example of '{cycles,unc_cbo_cache_lookup.any_i}' again.
->>
->> In evlist:
->> cycles,
->> unc_cbo_cache_lookup.any_i,
->> unc_cbo_cache_lookup.any_i,
->> unc_cbo_cache_lookup.any_i,
->> unc_cbo_cache_lookup.any_i,
->>
->> When we reach the for_each_group_member at first time, evsel is the first
->> unc_cbo_cache_lookup.any_i and evsel->leader is cycles. pos is same as the
->> evsel (the first unc_cbo_cache_lookup.any_i).
->>
->> Once we execute "pos->leader = pos;", it's actually "evsel->leader = evsel".
->> So now evsel->leader is changed to the first unc_cbo_cache_lookup.any_i.
->>
->> In next iteration, pos is the second unc_cbo_cache_lookup.any_i. pos->leader
->> is cycles but unfortunately evsel->leader has been changed to the first
->> unc_cbo_cache_lookup.any_i. So iteration stops immediately.
-> 
-> hum, AFAICS the iteration will not break but continue to next evsel and
-> pass the 'continue' for another group member.. what do I miss?
-> 
-> jirka
-> 
+ /tmp/ccmNdcdf.s:1898: Error: selected processor does not support `cpsid i' in ARM mode
 
-Let me use this example again.
+The problem is that $(call cc-option, -march=armv7-a) fails before the
+kernel overrides the gcc options to also pass -msoft-float.
 
-cycles,
-unc_cbo_cache_lookup.any_i,
-unc_cbo_cache_lookup.any_i,
-unc_cbo_cache_lookup.any_i,
-unc_cbo_cache_lookup.any_i,
+Move the option to the beginning the Makefile, before we call
+cc-option for the first time.
 
-Yes, once for_each_group_member breaks (due to the issue in 'pos->leader = pos'), 
-evlist__for_each_entry will continue to the second unc_cbo_cache_lookup.any_i. But now evsel->leader 
-!= evsel (evsel->leader is "cycles"), so it will go to cpu_maps_matched.
+Reported-by: Szabolcs Nagy <szabolcs.nagy@arm.com>
+Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=87302
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/arm/Makefile | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-But actually we don't need to go to cpu_maps_matched again.
+diff --git a/arch/arm/Makefile b/arch/arm/Makefile
+index fcd40c5bfd94..9804f8f61e67 100644
+--- a/arch/arm/Makefile
++++ b/arch/arm/Makefile
+@@ -16,6 +16,8 @@ LDFLAGS_vmlinux	+= --be8
+ KBUILD_LDFLAGS_MODULE	+= --be8
+ endif
+ 
++KBUILD_CFLAGS	+= -msoft-float
++
+ ifeq ($(CONFIG_CPU_32v4),y)
+ LDFLAGS_vmlinux	+= $(call ld-option,--fix-v4bx)
+ LDFLAGS_MODULE	+= $(call ld-option,--fix-v4bx)
+@@ -138,7 +140,7 @@ AFLAGS_ISA	:=$(CFLAGS_ISA)
+ endif
+ 
+ # Need -Uarm for gcc < 3.x
+-KBUILD_CFLAGS	+=$(CFLAGS_ABI) $(CFLAGS_ISA) $(arch-y) $(tune-y) $(call cc-option,-mshort-load-bytes,$(call cc-option,-malignment-traps,)) -msoft-float -Uarm
++KBUILD_CFLAGS	+=$(CFLAGS_ABI) $(CFLAGS_ISA) $(arch-y) $(tune-y) $(call cc-option,-mshort-load-bytes,$(call cc-option,-malignment-traps,)) -Uarm
+ KBUILD_AFLAGS	+=$(CFLAGS_ABI) $(AFLAGS_ISA) $(arch-y) $(tune-y) -include asm/unified.h -msoft-float
+ 
+ CHECKFLAGS	+= -D__arm__
+-- 
+2.26.2
 
-for_each_group_member(pos, evsel->leader) {
-	pos->leader = pos;
-	pos->core.nr_members = 0;
-}
-
-If we solve the issue in above code, for_each_group_member doesn't break, the leaders of all members 
-in this group will be set to themselves.
-
-if (evsel->leader == evsel)
-	continue;
-
-So the iteration will continue to the next evsel.
-
-Thanks
-Jin Yao
