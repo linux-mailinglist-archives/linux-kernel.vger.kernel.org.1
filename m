@@ -2,181 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F951E4F77
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C85681E4F82
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727863AbgE0Ul1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 16:41:27 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:42406 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726222AbgE0Ul0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 16:41:26 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1590612085; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=/HltvWpjIckqTeFxShztxsMT0OLJIpZrXlWtw+ib2qc=;
- b=iebINVrtXJoRRzYiuppQEHdw5eDUoMcTvC5p+HIjswSugenSTcl0qzAiMPK3GeOTUcU+HBDC
- +qlGec8Y3vYbxDO0+YajmMjpjqZYU/cW4+NN+oBJp9+Tw87yG/C6aFr+qwQW+STNlKlD6+u1
- Zmndb8bJfXvUpBgchXFtOaZJDYE=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5eced074cb045869339a3a19 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 May 2020 20:41:24
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 44A01C433C9; Wed, 27 May 2020 20:41:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 596FBC433C6;
-        Wed, 27 May 2020 20:41:20 +0000 (UTC)
+        id S1728337AbgE0Unm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 16:43:42 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:46260 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726482AbgE0Unm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 16:43:42 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: alyssa)
+        with ESMTPSA id 299B22A3C1D
+Date:   Wed, 27 May 2020 16:43:34 -0400
+From:   Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Steven Price <steven.price@arm.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] drm/panfrost: Reduce the amount of logs on deferred
+ probe
+Message-ID: <20200527204334.GA15485@kevin>
+References: <20200527200544.7849-1-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 28 May 2020 02:11:20 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, dri-devel@freedesktop.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>
-Subject: Re: [Freedreno] [PATCH 5/6] drm: msm: a6xx: use dev_pm_opp_set_bw to
- set DDR bandwidth
-In-Reply-To: <CAGETcx_fuS8cmTwCbZ024gqWOmeAc_ytZZ2P6yReBi7Y9O+qMQ@mail.gmail.com>
-References: <1589453659-27581-1-git-send-email-smasetty@codeaurora.org>
- <1589453659-27581-6-git-send-email-smasetty@codeaurora.org>
- <20200518142333.GA10796@jcrouse1-lnx.qualcomm.com>
- <CAF6AEGtoNwUGX-r7QytGn5hSU-VD4RJZyhcb3WdgAgAFR5BK4A@mail.gmail.com>
- <c8a514c9-5e48-b561-4b45-47cde3bdfb34@codeaurora.org>
- <CAF6AEGvOtgpHMuiw01QgRYGEBB2rp5QOdVMpkTMsi0c-QSSv1Q@mail.gmail.com>
- <CAGETcx_fuS8cmTwCbZ024gqWOmeAc_ytZZ2P6yReBi7Y9O+qMQ@mail.gmail.com>
-Message-ID: <2463ddcc535279a8076588e14e691ade@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fdj2RfSjLxBAspz7"
+Content-Disposition: inline
+In-Reply-To: <20200527200544.7849-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-27 23:01, Saravana Kannan wrote:
-> On Wed, May 27, 2020 at 8:38 AM Rob Clark <robdclark@gmail.com> wrote:
->> 
->> On Wed, May 27, 2020 at 1:47 AM Sharat Masetty 
->> <smasetty@codeaurora.org> wrote:
->> >
->> > + more folks
->> >
->> > On 5/18/2020 9:55 PM, Rob Clark wrote:
->> > > On Mon, May 18, 2020 at 7:23 AM Jordan Crouse <jcrouse@codeaurora.org> wrote:
->> > >> On Thu, May 14, 2020 at 04:24:18PM +0530, Sharat Masetty wrote:
->> > >>> This patches replaces the previously used static DDR vote and uses
->> > >>> dev_pm_opp_set_bw() to scale GPU->DDR bandwidth along with scaling
->> > >>> GPU frequency.
->> > >>>
->> > >>> Signed-off-by: Sharat Masetty <smasetty@codeaurora.org>
->> > >>> ---
->> > >>>   drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 6 +-----
->> > >>>   1 file changed, 1 insertion(+), 5 deletions(-)
->> > >>>
->> > >>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
->> > >>> index 2d8124b..79433d3 100644
->> > >>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
->> > >>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
->> > >>> @@ -141,11 +141,7 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
->> > >>>
->> > >>>        gmu->freq = gmu->gpu_freqs[perf_index];
->> > >>>
->> > >>> -     /*
->> > >>> -      * Eventually we will want to scale the path vote with the frequency but
->> > >>> -      * for now leave it at max so that the performance is nominal.
->> > >>> -      */
->> > >>> -     icc_set_bw(gpu->icc_path, 0, MBps_to_icc(7216));
->> > >>> +     dev_pm_opp_set_bw(&gpu->pdev->dev, opp);
->> > >>>   }
->> > >> This adds an implicit requirement that all targets need bandwidth settings
->> > >> defined in the OPP or they won't get a bus vote at all. I would prefer that
->> > >> there be an default escape valve but if not you'll need to add
->> > >> bandwidth values for the sdm845 OPP that target doesn't regress.
->> > >>
->> > > it looks like we could maybe do something like:
->> > >
->> > >    ret = dev_pm_opp_set_bw(...);
->> > >    if (ret) {
->> > >        dev_warn_once(dev, "no bandwidth settings");
->> > >        icc_set_bw(...);
->> > >    }
->> > >
->> > > ?
->> > >
->> > > BR,
->> > > -R
->> >
->> > There is a bit of an issue here - Looks like its not possible to two icc
->> > handles to the same path.  Its causing double enumeration of the paths
->> > in the icc core and messing up path votes. With [1] Since opp/core
->> > already gets a handle to the icc path as part of table add,  drm/msm
->> > could do either
-> 
-> Are you sure this is the real issue? I'd be surprised if this is a
-> real limitation. And if it is, it either needs to be fixed in the ICC
-> framework or OPP shouldn't be getting path handles by default (and
 
-not really, this is already handled well
-in the icc framework. In this case
-the max peak vote would be considered
-among the two paths.
+--fdj2RfSjLxBAspz7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> maybe let the driver set the handles before using OPP APIs to change
-> BW). I'd lean towards the former.
+Reviewed-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
 
-https://patchwork.kernel.org/patch/11573827/
-Yes the core shouldn't get paths
-by default unless the bw values
-are specified in the opps.
+On Wed, May 27, 2020 at 10:05:44PM +0200, Krzysztof Kozlowski wrote:
+> There is no point to print deferred probe (and its failures to get
+> resources) as an error.  Also there is no need to print regulator errors
+> twice.
+>=20
+> In case of multiple probe tries this would pollute the dmesg.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Reviewed-by: Steven Price <steven.price@arm.com>
+>=20
+> ---
+>=20
+> Changes since v2:
+> 1. Rebase
+> 2. Add Steven's review
+>=20
+> Changes since v1:
+> 1. Remove second error message from calling panfrost_regulator_init()
+> ---
+>  drivers/gpu/drm/panfrost/panfrost_device.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm=
+/panfrost/panfrost_device.c
+> index 8136babd3ba9..b172087eee6a 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
+> @@ -101,7 +101,9 @@ static int panfrost_regulator_init(struct panfrost_de=
+vice *pfdev)
+>  				      pfdev->comp->num_supplies,
+>  				      pfdev->regulators);
+>  	if (ret < 0) {
+> -		dev_err(pfdev->dev, "failed to get regulators: %d\n", ret);
+> +		if (ret !=3D -EPROBE_DEFER)
+> +			dev_err(pfdev->dev, "failed to get regulators: %d\n",
+> +				ret);
+>  		return ret;
+>  	}
+> =20
+> @@ -213,10 +215,8 @@ int panfrost_device_init(struct panfrost_device *pfd=
+ev)
+>  	}
+> =20
+>  	err =3D panfrost_regulator_init(pfdev);
+> -	if (err) {
+> -		dev_err(pfdev->dev, "regulator init failed %d\n", err);
+> +	if (err)
+>  		goto err_out0;
+> -	}
+> =20
+>  	err =3D panfrost_reset_init(pfdev);
+>  	if (err) {
+> --=20
+> 2.17.1
+>=20
 
-> 
->> > a) Conditionally enumerate gpu->icc_path handle only when pm/opp core
->> > has not got the icc path handle. I could use something like [2] to
->> > determine if should initialize gpu->icc_path*
-> 
-> This seems like a bandaid. Let's fix it correctly in ICC framework or
-> OPP framework.
-> 
->> > b) Add peak-opp-configs in 845 dt and mandate all future versions to use
+--fdj2RfSjLxBAspz7
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I can't understand ^^ proposal as well.
-We would ideally want to add scaling
-support for SDM845 as well while we are
-at it.
+-----BEGIN PGP SIGNATURE-----
 
->> > this bindings. With this, I can remove gpu->icc_path from msm/drm
->> > completely and only rely on opp/core for bw voting.
-> 
-> I don't know what you mean by "peak-opp-configs" but I guess you are
-> referring to some kind of DT flag to say if you should vote for BW
-> directly or use the OPP framework? If so, I'm pretty sure that won't
-> fly. That's an OS implementation specific flag.
-> 
-> -Saravana
+iQIzBAABCgAdFiEEQ17gm7CvANAdqvY4/v5QWgr1WA0FAl7O0O8ACgkQ/v5QWgr1
+WA3p3g/8DCZyn9SS5HpC/u7NXQd7gR9kT/h96A3UERjq1qb+BOg/Cll9aB/GzZ9v
+c6ux7qhSOwGhHXRhrcM3ar/9XPZBasjIgMPdsu0To1G00Yl78LtYoM8csLjIQB7k
+zGa3QHQj/m1G3/jCBNrBqiDLsBPsAI5wQEHrmDTakp6xW2qFsa8yy54+7rgbHmm0
+oBefDrKUqukbBsaoiL/p1R1M3gTeTMinUy1/Ec2MMR7Vn/1ySpzGAQ7tgD04qnB4
+uSgLcWGZHNSMKWiAjclsJLOgL1HpSFwXFzlWCe9bwdzoCroldKHC3vkhazzewpG9
+q3MhbyDE4AhSl4v8sEieJvvAOpCQ9VtMLk/+a9COMDfQ0gYWnvzgFHcOrVJvyS8P
+aQ2URoHkH0KRL6VRBwiSLi9IqUqMmR66GrCIG+69OfR1dMDaFyHCGBhM8yyUWBhh
+AmVNnwUyaFJoUGx24o6HqlCY0M/f1PPeLh8o6wO+zfWWL8N4Sdp2D7XMSkYiNK5U
+ZPWdFBCfY1KUENlco7k/AB6xMy6bpq7YSQkzwpHN5i7dTBmLi2MBGV7E8sm0QUdh
+0UFCt7Qf9qHqP3uhHcZ+PGovkd2/5FA9lNFzVLLd52NYdsRognfHN4MfC/5JESx6
+dv1aaqHmOKVck/eiA03/nW0l1Yjz9ScvVDz1p4x0Z47B6l17HrI=
+=srst
+-----END PGP SIGNATURE-----
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+--fdj2RfSjLxBAspz7--
