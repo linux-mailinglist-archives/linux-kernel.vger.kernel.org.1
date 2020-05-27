@@ -2,180 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA1941E3B8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 719AC1E3BA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387970AbgE0INr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 04:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42532 "EHLO
+        id S2388063AbgE0IOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 04:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387948AbgE0INn (ORCPT
+        with ESMTP id S2388056AbgE0IOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 04:13:43 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5BE0C061A0F;
-        Wed, 27 May 2020 01:13:43 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id u5so11443345pgn.5;
-        Wed, 27 May 2020 01:13:43 -0700 (PDT)
+        Wed, 27 May 2020 04:14:30 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 301F7C03E97A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 01:14:30 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id 1so13294597vsl.9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 01:14:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1Pvjwk/n6XpSKsFU1yL/UyqSsSwArACV6a9IFuCvWoI=;
-        b=g+OBuTNL+ZECp7gRenSfzoC/L0SIFQs2wUNgQ5XneQ49ve7MCXLFqHyaI1J9HP8hFF
-         xZFvHdBiADmGYGqBL80SR5GtgLTUbXo9d3UfqDFFj0SLN/B5WFfGMlNyWLAR+tVbvYCz
-         C4EDVhl4IEpe78El/g9Nz+dJDWkO/ABrWAn818mbecK+TzsU4h/qWOTh9KLV22jXIyGm
-         SrUEFGzeyILWXpcIFBAIOJnIMer+3w8CniZCi5TVTCW1nLLYmDQxBwulWUNK49ca4BOt
-         f5OAT0gMgdznpvyOENVsocczF2HFLHy6Oq37nWMHgKTV2N1Nl/lqod7kwe1GiYzM7JwH
-         lhVQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=fmfoZfmhzabeVMwsdzGnuv3UwDmwdg3Ym71EQQu5TQU=;
+        b=aymzI/kITTngEX0ptV4HPIee8CEDXaqxZ0X7KK99fhKxiif92uxZUjEMciisprTvhB
+         3qXwRWZiEz1wExJkpFhqSBXUuRsd1mctOosGTOCThWfYUVIOLblXbESzuRloR5eofbwB
+         UVFPdWLhHfI6ujettMl2PjsdAk4iDymfWfK4aTyrxcd65byi9HB28z1mIUpCl/QQFb27
+         TmM0TlSVUJXCbN8A++Pqmr6Yqpc3M9kdhBMe4+SVkoZAwaXHenp6FpuoEehhKvuxorw9
+         qRJea/CN5mlljFOjHJHOHxDvGYXr9bzOF+elZzNqx08pKzmWLvG7k6bjurgXG5TMrqlv
+         /iJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1Pvjwk/n6XpSKsFU1yL/UyqSsSwArACV6a9IFuCvWoI=;
-        b=CXUBJSGpWgJeJ6a8EpV59EnrPC/772tdAEk75UNmc1vfxW/0ZK0Qwo4Qfu2k1nngOV
-         +sx6mTU1n79x2TPPEU5EGsHWbMGhZP7kJ/W9fY7jxs5/c/qN6YrDKnaj3a34IEgUItqU
-         LCYVwXIEshq1zvXGjZ6pU7RibTlBpIXjMwag39PNpz8Yk+LlJkLpoSLLCdLIkFepoTzh
-         9JdXdDE3a0sT4DQg+cpOz4B/UOUSQ3/Pc8GIBlC4Uv4YP6nJciK4GdOaxzCsQFRJHJFW
-         05lH80oY2XWTdjuYYyN78+eikHB5Sbo43it7IS1u1t80n9K3mqAKkMovHCyXplhMIWk0
-         hGsg==
-X-Gm-Message-State: AOAM5319miEgfaEWyJ0lROWGS39riThwJl/qp+I5r/jpIQY1DsLqQ3rt
-        +MTtVba3WfQ8GIyjPAiSfa0=
-X-Google-Smtp-Source: ABdhPJzbLRuMmxwJUPY5sv1El/ZdSk39d9IjzJRaDZ9+OJbVht9mTOUgNcWeTP5sLyuANVdm7nAJ8g==
-X-Received: by 2002:a63:554e:: with SMTP id f14mr2850561pgm.191.1590567223153;
-        Wed, 27 May 2020 01:13:43 -0700 (PDT)
-Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::1])
-        by smtp.gmail.com with ESMTPSA id gz19sm1568851pjb.33.2020.05.27.01.13.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2020 01:13:42 -0700 (PDT)
-Date:   Wed, 27 May 2020 01:13:37 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Roman Zippel <zippel@linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-riscv@lists.infradead.org,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-c6x-dev@linux-c6x.org,
-        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>, Arnd Bergmann <arnd@arndb.de>,
-        alpha <linux-alpha@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Openrisc <openrisc@lists.librecores.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH] media: omap3isp: Shuffle cacheflush.h and include mm.h
-Message-ID: <20200527081337.GA3506499@ubuntu-s3-xlarge-x86>
-References: <20200515143646.3857579-7-hch@lst.de>
- <20200527043426.3242439-1-natechancellor@gmail.com>
- <CAMuHMdVSduTOi5bUgF9sLQdGADwyL1+qALWsKgin1TeOLGhAKQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fmfoZfmhzabeVMwsdzGnuv3UwDmwdg3Ym71EQQu5TQU=;
+        b=NTD5AbGzEEn1Gq+MCmzdgwSzwsW5/FgWBOytuWnWMW9B5ncksAUU5ZLwYpMykZpOJZ
+         vKJSbWw4xQImgGFlYo+U8bcpl0MNPmZqmp/gPb09J2hBxXpQ0dPAhQzmPCa1f+4sHFmh
+         7MP54ZjaAkP/xg5zHtwtghPVTWbOBIhadr3zlTbcJfjOce+13znczjRhAT7kwxKXj8p1
+         M/2iMQYQ6u/BR59vWG/mMtPuyDPUm8zqVdFTp6JvzIf25rKAK8Zuh0P8zaoYnkyRLj1U
+         86jHvIQp9/UubW/jA88iWsVb+Jy2tvvZiaxOj7YgsFxt3u2LVItBnUeuSudI5Gm4dH+M
+         I71Q==
+X-Gm-Message-State: AOAM532562HNXEYDHCL9Yf2/2TgH9cfuvlCamv3n9gVjONP7I9E7P+dt
+        rQL/AXLQ0o0H2l5S8Wc7vkB6CzJgCYw6rrOp3csrSA==
+X-Google-Smtp-Source: ABdhPJwEqUEIdC4IfQOMlhlKfn71iTS2HgyzieFq/GTWNQrIba2U/ILr7oM6a1fbT+XffPEJ2ddCMmVVyQPr6gld5h8=
+X-Received: by 2002:a67:be05:: with SMTP id x5mr3580242vsq.35.1590567269334;
+ Wed, 27 May 2020 01:14:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdVSduTOi5bUgF9sLQdGADwyL1+qALWsKgin1TeOLGhAKQ@mail.gmail.com>
+References: <20200526154334.21222-1-pali@kernel.org> <20200526154334.21222-2-pali@kernel.org>
+ <CAPDyKFq4KxT+m6nZbi9fM0Pf=JYkT7TTfERDxtUVX5qAiLAQBQ@mail.gmail.com> <20200527080007.gtd7w7fzwfrk4pef@pali>
+In-Reply-To: <20200527080007.gtd7w7fzwfrk4pef@pali>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 27 May 2020 10:13:53 +0200
+Message-ID: <CAPDyKFodXg3oAs3VfNbTRY=Rd+X+BqxzRAJq=mKT5QLXisPKAA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mmc: core: Export device/vendor ids from Common CIS
+ for SDIO cards
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On Wed, 27 May 2020 at 10:00, Pali Roh=C3=A1r <pali@kernel.org> wrote:
+>
+> On Wednesday 27 May 2020 09:39:50 Ulf Hansson wrote:
+> > On Tue, 26 May 2020 at 17:43, Pali Roh=C3=A1r <pali@kernel.org> wrote:
+> > >
+> > > Device/vendor ids from Common CIS (Card Information Structure) may be
+> > > different as device/vendor ids from CIS on particular SDIO function.
+> > >
+> > > Export these "main" device/vendor ids for SDIO and SD combo cards at =
+top
+> > > level mmc device in sysfs so userspace can do better identification o=
+f
+> > > connected SDIO and SD combo cards.
+> >
+> > What would userspace do with this information, more exactly?
+>
+> Userspace can e.g. write udev rules based on Common CIS vendor/device
+> id. Or can exactly identify SDIO card by CIS vendor/device id. Also it
+> can be suitable for "lssdio" tool to print all information about SDIO
+> card.
+>
+> Currently I do not know any way how userspace can retrieve these ids for
+> particular SDIO card. And correct identification is important.
+>
+> Other important thing is that kernel on some places (e.g. mmc quirks)
+> uses Common CIS vendor/device id and on other places (e.g. binding
+> drivers) it uses SDIO function device/vendor ids.
+>
+> So for debugging and developing kernel drivers it is needed to know
+> correct Common CIS vendor/device id and SDIO functions vendor/device
+> ids.
+>
+> > Isn't it just sufficient to give events per SDIO func, as we already
+> > do in sdio_bus_uevent()?
+>
+> No because some SDIO cards have different Common CIS vendor/device id
+> and different vendor/device ids for particular SDIO functions.
+>
+> Common CIS vendor/device id is the "main" identification of SDIO card,
+> functions vendor/device ids just identify one of those functions.
+>
+> For example look at my patch "mmc: sdio: Fix macro name for Marvell
+> device with ID 0x9134" [1]. Without knowing correct CIS vendor/device id
+> I was not able to fully understand problem and mess with names and ids.
+> Because mmc quirks list uses CIS vendor/device ids (I guess for obvious
+> reason as SDIO functions are not enumerated yet).
 
-On Wed, May 27, 2020 at 09:02:51AM +0200, Geert Uytterhoeven wrote:
-> Hi Nathan,
-> 
-> CC Laurent
-> 
-> On Wed, May 27, 2020 at 6:37 AM Nathan Chancellor
-> <natechancellor@gmail.com> wrote:
-> > After mm.h was removed from the asm-generic version of cacheflush.h,
-> > s390 allyesconfig shows several warnings of the following nature:
-> >
-> > In file included from ./arch/s390/include/generated/asm/cacheflush.h:1,
-> >                  from drivers/media/platform/omap3isp/isp.c:42:
-> > ./include/asm-generic/cacheflush.h:16:42: warning: 'struct mm_struct'
-> > declared inside parameter list will not be visible outside of this
-> > definition or declaration
-> >
-> > cacheflush.h does not include mm.h nor does it include any forward
-> > declaration of these structures hence the warning. To avoid this,
-> > include mm.h explicitly in this file and shuffle cacheflush.h below it.
-> >
-> > Fixes: 19c0054597a0 ("asm-generic: don't include <linux/mm.h> in cacheflush.h")
-> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> 
-> Thanks for your patch!
-> 
-> > I am aware the fixes tag is kind of irrelevant because that SHA will
-> > change in the next linux-next revision and this will probably get folded
-> > into the original patch anyways but still.
-> >
-> > The other solution would be to add forward declarations of these structs
-> > to the top of cacheflush.h, I just chose to do what Christoph did in the
-> > original patch. I am happy to do that instead if you all feel that is
-> > better.
-> 
-> That actually looks like a better solution to me, as it would address the
-> problem for all users.
-> 
-> >  drivers/media/platform/omap3isp/isp.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/media/platform/omap3isp/isp.c b/drivers/media/platform/omap3isp/isp.c
-> > index a4ee6b86663e..54106a768e54 100644
-> > --- a/drivers/media/platform/omap3isp/isp.c
-> > +++ b/drivers/media/platform/omap3isp/isp.c
-> > @@ -39,8 +39,6 @@
-> >   *     Troy Laramy <t-laramy@ti.com>
-> >   */
-> >
-> > -#include <asm/cacheflush.h>
-> > -
-> >  #include <linux/clk.h>
-> >  #include <linux/clkdev.h>
-> >  #include <linux/delay.h>
-> > @@ -49,6 +47,7 @@
-> >  #include <linux/i2c.h>
-> >  #include <linux/interrupt.h>
-> >  #include <linux/mfd/syscon.h>
-> > +#include <linux/mm.h>
-> >  #include <linux/module.h>
-> >  #include <linux/omap-iommu.h>
-> >  #include <linux/platform_device.h>
-> > @@ -58,6 +57,8 @@
-> >  #include <linux/sched.h>
-> >  #include <linux/vmalloc.h>
-> >
-> > +#include <asm/cacheflush.h>
-> > +
-> >  #ifdef CONFIG_ARM_DMA_USE_IOMMU
-> >  #include <asm/dma-iommu.h>
-> >  #endif
-> 
-> Why does this file need <asm/cacheflush.h> at all?
-> It doesn't call any of the flush_*() functions, and seems to compile fine
-> without (on arm32).
-> 
-> Perhaps it was included at the top intentionally, to override the definitions
-> of copy_{to,from}_user_page()? Fortunately that doesn't seem to be the
-> case, from a quick look at the assembler output.
-> 
-> So let's just remove the #include instead?
+Good points, much appreciated to understand the use cases better!
 
-Sounds good to me. I can send a patch if needed or I suppose Andrew can
-just make a small fixup patch for it. Let me know what I should do.
+May I suggest that you put some of this information into the commit message=
+?
 
-Cheers,
-Nathan
+>
+> [1] - https://lore.kernel.org/linux-mmc/20200522144412.19712-2-pali@kerne=
+l.org/
+>
+
+[...]
+
+Kind regards
+Uffe
