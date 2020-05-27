@@ -2,56 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA6E1E35B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 04:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C89E71E35BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 04:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728134AbgE0CdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 22:33:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41566 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728066AbgE0CdC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 22:33:02 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 05A4D20704;
-        Wed, 27 May 2020 02:33:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590546782;
-        bh=gk+v1W3sTYJPEzW3+3ygR/9TYoYK2pJAj1PW78DaVuM=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=2nQt1LVAcYcVnZ9lRugFlh5sQH7zpKj709aMUZzOF3D8WtdIuSCk8otZ9/Dz0AObC
-         JgDxMzmaqcob+gBBhqSqx8DMxMHB0eiBxM+EAo3kegeNBQHK16rh2dK1UU0wBDE5Or
-         0/jxVUJCTjdv/WaxpFvC37MLQnMmvzs1ak4r030g=
-Content-Type: text/plain; charset="utf-8"
+        id S1727878AbgE0Cfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 22:35:38 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5285 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725601AbgE0Cfi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 22:35:38 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 3A84687391F412890586;
+        Wed, 27 May 2020 10:35:36 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 27 May
+ 2020 10:35:35 +0800
+Subject: Re: [f2fs-dev] [PATCH v3] f2fs: avoid inifinite loop to wait for
+ flushing node pages at cp_error
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <kernel-team@android.com>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20200522144752.216197-1-jaegeuk@kernel.org>
+ <20200522233243.GA94020@google.com> <20200525035655.GA135148@google.com>
+ <565af47c-8364-d910-8d1c-93645c12e660@huawei.com>
+ <20200525150608.GA55033@google.com>
+ <92afae8b-2dd3-171a-562c-404a67f9aab2@huawei.com>
+ <a44f9c2e-3859-6c5d-6f06-7c4c6b4c01c5@huawei.com>
+ <20200526015650.GA207949@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <765a1ac5-a318-14d6-666f-eab46f892d01@huawei.com>
+Date:   Wed, 27 May 2020 10:35:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1590314686-11749-6-git-send-email-sivaprak@codeaurora.org>
-References: <1590314686-11749-1-git-send-email-sivaprak@codeaurora.org> <1590314686-11749-6-git-send-email-sivaprak@codeaurora.org>
-Subject: Re: [PATCH V5 5/8] clk: qcom: Add ipq6018 apss clock controller
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Sivaprakash Murugesan <sivaprak@codeaurora.org>
-To:     Sivaprakash Murugesan <sivaprak@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
-        jassisinghbrar@gmail.com, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mturquette@baylibre.com, robh+dt@kernel.org
-Date:   Tue, 26 May 2020 19:33:01 -0700
-Message-ID: <159054678130.88029.13011652297143700687@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+In-Reply-To: <20200526015650.GA207949@google.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.134.22.195]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sivaprakash Murugesan (2020-05-24 03:04:43)
-> The CPU on Qualcomm ipq6018 devices are clocked primarily by a aplha PLL
-> and xo which are connected to a mux and enable block.
->=20
-> Add support for the mux and enable block which feeds the CPU on ipq6018
-> devices.
->=20
-> Signed-off-by: Sivaprakash Murugesan <sivaprak@codeaurora.org>
-> ---
+On 2020/5/26 9:56, Jaegeuk Kim wrote:
+> On 05/26, Chao Yu wrote:
+>> On 2020/5/26 9:11, Chao Yu wrote:
+>>> On 2020/5/25 23:06, Jaegeuk Kim wrote:
+>>>> On 05/25, Chao Yu wrote:
+>>>>> On 2020/5/25 11:56, Jaegeuk Kim wrote:
+>>>>>> Shutdown test is somtimes hung, since it keeps trying to flush dirty node pages
 
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+    71.07%     0.01%  kworker/u256:1+  [kernel.kallsyms]  [k] wb_writeback
+            |
+             --71.06%--wb_writeback
+                       |
+                       |--68.96%--__writeback_inodes_wb
+                       |          |
+                       |           --68.95%--writeback_sb_inodes
+                       |                     |
+                       |                     |--65.08%--__writeback_single_inode
+                       |                     |          |
+                       |                     |           --64.35%--do_writepages
+                       |                     |                     |
+                       |                     |                     |--59.83%--f2fs_write_node_pages
+                       |                     |                     |          |
+                       |                     |                     |           --59.74%--f2fs_sync_node_pages
+                       |                     |                     |                     |
+                       |                     |                     |                     |--27.91%--pagevec_lookup_range_tag
+                       |                     |                     |                     |          |
+                       |                     |                     |                     |           --27.90%--find_get_pages_range_tag
+
+Before umount, kworker will always hold one core, that looks not reasonable,
+to avoid that, could we just allow node write, since it's out-place-update,
+and cp is not allowed, we don't need to worry about its effect on data on
+previous checkpoint, and it can decrease memory footprint cost by node pages.
+
+Thanks,
+
+>>>>>
+>>>>> IMO, for umount case, we should drop dirty reference and dirty pages on meta/data
+>>>>> pages like we change for node pages to avoid potential dead loop...
+>>>>
+>>>> I believe we're doing for them. :P
+>>>
+>>> Actually, I mean do we need to drop dirty meta/data pages explicitly as below:
+>>>
+>>> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+>>> index 3dc3ac6fe143..4c08fd0a680a 100644
+>>> --- a/fs/f2fs/checkpoint.c
+>>> +++ b/fs/f2fs/checkpoint.c
+>>> @@ -299,8 +299,15 @@ static int __f2fs_write_meta_page(struct page *page,
+>>>
+>>>  	trace_f2fs_writepage(page, META);
+>>>
+>>> -	if (unlikely(f2fs_cp_error(sbi)))
+>>> +	if (unlikely(f2fs_cp_error(sbi))) {
+>>> +		if (is_sbi_flag_set(sbi, SBI_IS_CLOSE)) {
+>>> +			ClearPageUptodate(page);
+>>> +			dec_page_count(sbi, F2FS_DIRTY_META);
+>>> +			unlock_page(page);
+>>> +			return 0;
+>>> +		}
+>>>  		goto redirty_out;
+>>> +	}
+>>>  	if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
+>>>  		goto redirty_out;
+>>>  	if (wbc->for_reclaim && page->index < GET_SUM_BLOCK(sbi, 0))
+>>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+>>> index 48a622b95b76..94b342802513 100644
+>>> --- a/fs/f2fs/data.c
+>>> +++ b/fs/f2fs/data.c
+>>> @@ -2682,6 +2682,12 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
+>>>
+>>>  	/* we should bypass data pages to proceed the kworkder jobs */
+>>>  	if (unlikely(f2fs_cp_error(sbi))) {
+>>> +		if (is_sbi_flag_set(sbi, SBI_IS_CLOSE)) {
+>>> +			ClearPageUptodate(page);
+>>> +			inode_dec_dirty_pages(inode);
+>>> +			unlock_page(page);
+>>> +			return 0;
+>>> +		}
+>>
+>> Oh, I notice previously, we will drop non-directory inode's dirty pages directly,
+>> however, during umount, we'd better drop directory inode's dirty pages as well, right?
+> 
+> Hmm, I remember I dropped them before. Need to double check.
+> 
+>>
+>>>  		mapping_set_error(page->mapping, -EIO);
+>>>  		/*
+>>>  		 * don't drop any dirty dentry pages for keeping lastest
+>>>
+>>>>
+>>>>>
+>>>>> Thanks,
+>>>>>
+>>>>>> in an inifinite loop. Let's drop dirty pages at umount in that case.
+>>>>>>
+>>>>>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+>>>>>> ---
+>>>>>> v3:
+>>>>>>  - fix wrong unlock
+>>>>>>
+>>>>>> v2:
+>>>>>>  - fix typos
+>>>>>>
+>>>>>>  fs/f2fs/node.c | 9 ++++++++-
+>>>>>>  1 file changed, 8 insertions(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+>>>>>> index e632de10aedab..e0bb0f7e0506e 100644
+>>>>>> --- a/fs/f2fs/node.c
+>>>>>> +++ b/fs/f2fs/node.c
+>>>>>> @@ -1520,8 +1520,15 @@ static int __write_node_page(struct page *page, bool atomic, bool *submitted,
+>>>>>>  
+>>>>>>  	trace_f2fs_writepage(page, NODE);
+>>>>>>  
+>>>>>> -	if (unlikely(f2fs_cp_error(sbi)))
+>>>>>> +	if (unlikely(f2fs_cp_error(sbi))) {
+>>>>>> +		if (is_sbi_flag_set(sbi, SBI_IS_CLOSE)) {
+>>>>>> +			ClearPageUptodate(page);
+>>>>>> +			dec_page_count(sbi, F2FS_DIRTY_NODES);
+>>>>>> +			unlock_page(page);
+>>>>>> +			return 0;
+>>>>>> +		}
+>>>>>>  		goto redirty_out;
+>>>>>> +	}
+>>>>>>  
+>>>>>>  	if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
+>>>>>>  		goto redirty_out;
+>>>>>>
+>>>> .
+>>>>
+>>>
+>>>
+>>> _______________________________________________
+>>> Linux-f2fs-devel mailing list
+>>> Linux-f2fs-devel@lists.sourceforge.net
+>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+>>> .
+>>>
+> .
+> 
