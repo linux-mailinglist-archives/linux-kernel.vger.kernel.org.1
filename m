@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB621E4481
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E721E4489
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388914AbgE0NwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388899AbgE0NwS (ORCPT
+        id S2388932AbgE0NxM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 May 2020 09:53:12 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:33555 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388713AbgE0NxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:52:18 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44241C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 06:52:18 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id dh1so11123694qvb.13
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 06:52:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yCfXCQLnkmmliUl6o46VN/g4F3+m5D5qyYWprcFsdzw=;
-        b=ILvc1MCIouRXqf4iMkoTsgwlu7e2DkUvMWMjEiGuqm1VIwOM0WBU6DMMVW9Od645rK
-         /pZeylfCuKv6HIpwvfz8wkiIxqofuIV4vkyNmTXa4TuVCj0mUjuytwisQHxAYT9VTyZ2
-         FejPrUZdNHX1fz1DbokFY43xQ358a9FOE6/UFU7QeajQcP5c4NK4S7lfpGBgV+tnvMwI
-         37Bv7D7l1v1XM8RSMRKx4bJUYmrcbS2LsVeQ9wkbeMGQehTPMpG6olFCP6kjJeWUedgg
-         umqBLiHNNsQejZmSjAR96NKgjbDKZSKTkEcbfWpQEogzYiYgG1eCIVa22CY7nyEEeD/l
-         KfCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=yCfXCQLnkmmliUl6o46VN/g4F3+m5D5qyYWprcFsdzw=;
-        b=lNNduU6fGEwqFOj6sYZa/DE0SoWKEnPsrn0zA3fWJL3XEjl2IS5aCJaMo7hRSd5jKs
-         ngefj3uLOhuEJc3zX+/eIZvU2W9AmGVI04I8oaz5WlZYBCNSVjXQpty5MNNLG/dWCsqG
-         0b8rFv1pP3ecTfPn0yMkz7hfPa4IpXuwKIvTJS5dFif/vFE1W7rmifUk9OkXYgy0Mrjf
-         HkvY5+XqZY+GDTOAx3ExXt6j8QeO9HY1pkQ6JmOYvkJsffwLwvdMXxadb91sd+AlpFNJ
-         7PVbSMFfyIPxooaa8FzvCiJbyRLqyJr49OEGOzy2dBSO5Y7Wj2wQsXkBzEaHkBR6Okc/
-         5jSw==
-X-Gm-Message-State: AOAM533iKqU3xknHDM0PE+8AC7RL3IPbEmc1CkYwtCsykXfk2AwnCngU
-        hAJZW1DD12GO1l6r1OhFmCZqKVfO
-X-Google-Smtp-Source: ABdhPJzr/BZ/dF51pigBmbkNJyTIcg4vbPHWZn0hbMeMyd7Ix1aB8FmUHZYfNi6GTwNirRW3pqagGg==
-X-Received: by 2002:a0c:fe03:: with SMTP id x3mr24456859qvr.18.1590587537097;
-        Wed, 27 May 2020 06:52:17 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:74a])
-        by smtp.gmail.com with ESMTPSA id 5sm2337501qko.14.2020.05.27.06.52.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2020 06:52:16 -0700 (PDT)
-Date:   Wed, 27 May 2020 09:52:14 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     qiang.zhang@windriver.com
-Cc:     jiangshanlai@gmail.com, markus.elfring@web.de,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] workqueue: Remove unnecessary kfree() call in
- rcu_free_wq()
-Message-ID: <20200527135214.GI83516@mtj.thefacebook.com>
-References: <20200527075715.36849-1-qiang.zhang@windriver.com>
+        Wed, 27 May 2020 09:53:12 -0400
+X-Originating-IP: 93.23.196.54
+Received: from xps13 (54.196.23.93.rev.sfr.net [93.23.196.54])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id AE2641BF213;
+        Wed, 27 May 2020 13:53:05 +0000 (UTC)
+Date:   Wed, 27 May 2020 15:53:04 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Piotr Sroka <piotrs@cadence.com>,
+        Mason Yang <masonccyang@mxic.com.tw>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: arasan: select CONFIG_BCH
+Message-ID: <20200527155304.0cf42848@xps13>
+In-Reply-To: <20200527134210.847411-1-arnd@arndb.de>
+References: <20200527134210.847411-1-arnd@arndb.de>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200527075715.36849-1-qiang.zhang@windriver.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 03:57:15PM +0800, qiang.zhang@windriver.com wrote:
-> From: Zhang Qiang <qiang.zhang@windriver.com>
-> 
-> The data structure member "wq->rescuer" was reset to a null pointer
-> in one if branch. It was passed to a call of the function "kfree"
-> in the callback function "rcu_free_wq" (which was eventually executed).
-> The function "kfree" does not perform more meaningful data processing
-> for a passed null pointer (besides immediately returning from such a call).
-> Thus delete this function call which became unnecessary with the referenced
-> software update.
-> 
-> Fixes: def98c84b6cd ("workqueue: Fix spurious sanity check failures in destroy_workqueue()")
-> 
-> Suggested-by: Markus Elfring <Markus.Elfring@web.de> 
-> Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
+Hi Arnd,
 
-Applied to wq/for-5.8.
+Arnd Bergmann <arnd@arndb.de> wrote on Wed, 27 May 2020 15:42:03 +0200:
 
-Thanks.
+> Like several other nand flash drivers, this one requires the BCH
+> library to be selected from Kconfig.
 
--- 
-tejun
+Actually most of the time these drivers do not depend on BCH directly.
+Here it is a bit particular: the hardware ECC engine logic being
+broken, I found a workaround by using BCH's library functions directly
+to verify the hardware correctness.
+
+Anyway, thank you very much for the fix but if I didn't make a mistake
+it should have been fixed yesterday night already, so it's probably not
+in linux-next yet.
+
+> arm-linux-gnueabi-ld: drivers/mtd/nand/raw/arasan-nand-controller.o: in function `anfc_attach_chip':
+> arasan-nand-controller.c:(.text+0x894): undefined reference to `bch_init'
+> arm-linux-gnueabi-ld: drivers/mtd/nand/raw/arasan-nand-controller.o: in function `anfc_detach_chip':
+> arasan-nand-controller.c:(.text+0x98c): undefined reference to `bch_free'
+> arm-linux-gnueabi-ld: drivers/mtd/nand/raw/arasan-nand-controller.o: in function `anfc_read_page_hw_ecc':
+> arasan-nand-controller.c:(.text+0x1080): undefined reference to `bch_decode'
+> 
+> Fixes: 197b88fecc50 ("mtd: rawnand: arasan: Add new Arasan NAND controller")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/mtd/nand/raw/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+> index e2bc87779bf9..113f61052269 100644
+> --- a/drivers/mtd/nand/raw/Kconfig
+> +++ b/drivers/mtd/nand/raw/Kconfig
+> @@ -456,6 +456,7 @@ config MTD_NAND_CADENCE
+>  config MTD_NAND_ARASAN
+>  	tristate "Support for Arasan NAND flash controller"
+>  	depends on HAS_IOMEM && HAS_DMA
+> +	select BCH
+>  	help
+>  	  Enables the driver for the Arasan NAND flash controller on
+>  	  Zynq Ultrascale+ MPSoC.
+
+Thanks,
+Miquèl
