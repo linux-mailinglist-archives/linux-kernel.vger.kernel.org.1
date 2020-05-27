@@ -2,82 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE3E1E5091
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 23:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B041E50AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 23:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728650AbgE0Vgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 17:36:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726114AbgE0Vgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 17:36:47 -0400
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D58682075A;
-        Wed, 27 May 2020 21:36:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590615407;
-        bh=C9QEYysDx6SvB7HQ2r/V2aV8FyGMNYUnIYiRPLfFE30=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pEn/j7M3tLS4ZOl7rth/Oooe+DMEkDN3gAtt4X3XMA85BrFencKsNhrsgxjIaV0OJ
-         PeLdwJ4B+qqrg2B2psuZpeq6XlnRQR5EOzYmN1/sjPUhhpE9jY58muoqH2/URMzzT9
-         0tpVflTTmTUl0mtXerelfd+dd1qFkYbAQRV21OXU=
-Date:   Wed, 27 May 2020 14:36:42 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     jeyu@kernel.org, davem@davemloft.net, michael.chan@broadcom.com,
-        dchickles@marvell.com, sburla@marvell.com, fmanlunas@marvell.com,
-        aelior@marvell.com, GR-everest-linux-l2@marvell.com,
-        kvalo@codeaurora.org, johannes@sipsolutions.net,
-        akpm@linux-foundation.org, arnd@arndb.de, rostedt@goodmis.org,
-        mingo@redhat.com, aquini@redhat.com, cai@lca.pw, dyoung@redhat.com,
-        bhe@redhat.com, peterz@infradead.org, tglx@linutronix.de,
-        gpiccoli@canonical.com, pmladek@suse.com, tiwai@suse.de,
-        schlad@suse.de, andriy.shevchenko@linux.intel.com,
-        derosier@gmail.com, keescook@chromium.org, daniel.vetter@ffwll.ch,
-        will@kernel.org, mchehab+samsung@kernel.org, vkoul@kernel.org,
-        mchehab+huawei@kernel.org, robh@kernel.org, mhiramat@kernel.org,
-        sfr@canb.auug.org.au, linux@dominikbrodowski.net,
-        glider@google.com, paulmck@kernel.org, elver@google.com,
-        bauerman@linux.ibm.com, yamada.masahiro@socionext.com,
-        samitolvanen@google.com, yzaikin@google.com, dvyukov@google.com,
-        rdunlap@infradead.org, corbet@lwn.net, dianders@chromium.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v3 0/8] kernel: taint when the driver firmware crashes
-Message-ID: <20200527143642.5e4ffba0@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20200527031918.GU11244@42.do-not-panic.com>
-References: <20200526145815.6415-1-mcgrof@kernel.org>
-        <20200526154606.6a2be01f@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <20200526230748.GS11244@42.do-not-panic.com>
-        <20200526163031.5c43fc1d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <20200527031918.GU11244@42.do-not-panic.com>
+        id S1727047AbgE0Vqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 17:46:48 -0400
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:48525 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726787AbgE0Vqr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 17:46:47 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id E0700AAA;
+        Wed, 27 May 2020 17:46:45 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 27 May 2020 17:46:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
+        :to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm1; bh=1uMfllCwGVRSV
+        eD897uL9SAlLt6bpaVgLEM5vf/6PXU=; b=n5jA1URN2O3JQQOPok0OlsSawfeLb
+        qbcVZyXyIOqc6v3EddUBeX2546X93UB6qLgI/tUrxtS7V7joMKVJch25KM6pi07J
+        2G4QRoB5Z5Gp6iLFfjIzZQgmBePIV+CiRnSljB8JMlMF8VryCaYpgdqvHH18HC2p
+        N9SfcT/g5sMGoAoJTlompcbWSatAW3SmDwAlwEqGhrZ2rb4h+ucztpJ7m+R/Y217
+        vD2l6OBFvxs3ylviaMh9x339IDg5qNBMRvKL0vW0qy8Kq/u6+YpzRcysjUnb6c23
+        oLZK0HZ1VskQV+FoPvUuwi6qoH4eYr22Dmn8DKgrQtCqsGkbBit2Y0Cdw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; bh=1uMfllCwGVRSVeD897uL9SAlLt6bpaVgLEM5vf/6PXU=; b=vhoXYIJy
+        /3lxQnWiTue+356RJ4otCRAQYzaNChiU+HSGfGb3JVGdhIs6J6jBuZ3DPWPe444H
+        OpqQccWga+AETOEIZwyUEWEiH6sJrqkOsSvpY2DlSnbsm+RFqzvTjBgVfKKewHwV
+        1XMl++ndMIQr5BGrEeBBG8qZ2zPnhgH1MbJBQ3kqtQBUpVn4cVfvahqL0wBR2zcV
+        PwLWrqQ5tCe1cA5UHpI/EIfMfgxeKKg2k7P4wauR3jXRa2qdDApY0sjFusDBgn+7
+        Zzk0eMXCjxFgWcVTecs325j0DHqERu/P8Qzc5J3B/igvzH9jRXjt3dIi8pmioNyu
+        ZTa2649CKs8xlA==
+X-ME-Sender: <xms:w9_OXihbCd_T2cI525J_EuxTj3CfThoBndGDvD07xykf1PKJ31HMCA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddvhedgtdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeeuohhrihhs
+    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepie
+    euffeuvdeiueejhfehiefgkeevudejjeejffevvdehtddufeeihfekgeeuheelnecukfhp
+    peduieefrdduudegrddufedvrdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:w9_OXjDct1_DPzWmPDM8nOmLIsZk_q8ZQDxHzUBoVlvzM8ZmPvw7WQ>
+    <xmx:w9_OXqE4vIQU7lIpdphkuEZiXCEwRsUp-ya6HK3lEyxII_lhXUc7CQ>
+    <xmx:w9_OXrQuVLYJb0xRS0DX18E9ve8yUVTS-Fvixgrs81FBU0Z6Q5G3Mw>
+    <xmx:xd_OXmzSkHVYyo8lVCKGqV_RQ9cG495BkLBY6v8z7cupzCq6mlTciwx-djiOrpZYFkibbQ>
+Received: from localhost (unknown [163.114.132.3])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 111E23280060;
+        Wed, 27 May 2020 17:46:43 -0400 (EDT)
+From:   Boris Burkov <boris@bur.io>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, Boris Burkov <boris@bur.io>
+Subject: [PATCH v2 cgroup/for-5.8] cgroup: add cpu.stat file to root cgroup
+Date:   Wed, 27 May 2020 14:43:19 -0700
+Message-Id: <20200527214316.524124-1-boris@bur.io>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200527160821.GC42293@cmpxchg.org>
+References: <20200527160821.GC42293@cmpxchg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 May 2020 03:19:18 +0000 Luis Chamberlain wrote:
-> I read your patch, and granted, I will accept I was under the incorrect
-> assumption that this can only be used by networking devices, however it
-> the devlink approach achieves getting userspace the ability with
-> iproute2 devlink util to query a device health, on to which we can peg
-> firmware health. But *this* patch series is not about health status and
-> letting users query it, its about a *critical* situation which has come up
-> with firmware requiring me to reboot my system, and the lack of *any*
-> infrastructure in the kernel today to inform userspace about it.
-> 
-> So say we use netlink to report a critical health situation, how are we
-> informing userspace with your patch series about requring a reboot?
+Currently, the root cgroup does not have a cpu.stat file. Add one which
+is consistent with /proc/stat to capture global cpu statistics that
+might not fall under cgroup accounting.
 
-One of main features of netlink is pub/sub model of notifications.
+We haven't done this in the past because the data are already presented
+in /proc/stat and we didn't want to add overhead from collecting root
+cgroup stats when cgroups are configured, but no cgroups have been
+created.
 
-Whatever you imagine listening to your uevent can listen to
-devlink-health notifications via devlink. 
+By keeping the data consistent with /proc/stat, I think we avoid the
+first problem, while improving the usability of cgroups stats.
+We avoid the second problem by computing the contents of cpu.stat from
+existing data collected for /proc/stat anyway.
 
-In fact I've shown this off in the RFC patches I sent to you, see 
-the devlink mon health command being used.
+Signed-off-by: Boris Burkov <boris@bur.io>
+Suggested-by: Tejun Heo <tj@kernel.org>
+---
+ Documentation/admin-guide/cgroup-v2.rst |  6 +--
+ kernel/cgroup/cgroup.c                  |  1 -
+ kernel/cgroup/rstat.c                   | 60 +++++++++++++++++++++----
+ 3 files changed, 54 insertions(+), 13 deletions(-)
+
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index fed4e1d2a343..fec2f13fe065 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -714,9 +714,7 @@ Conventions
+ - Settings for a single feature should be contained in a single file.
+ 
+ - The root cgroup should be exempt from resource control and thus
+-  shouldn't have resource control interface files.  Also,
+-  informational files on the root cgroup which end up showing global
+-  information available elsewhere shouldn't exist.
++  shouldn't have resource control interface files.
+ 
+ - The default time unit is microseconds.  If a different unit is ever
+   used, an explicit unit suffix must be present.
+@@ -985,7 +983,7 @@ CPU Interface Files
+ All time durations are in microseconds.
+ 
+   cpu.stat
+-	A read-only flat-keyed file which exists on non-root cgroups.
++	A read-only flat-keyed file.
+ 	This file exists whether the controller is enabled or not.
+ 
+ 	It always reports the following three stats:
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 557a9b9d2244..b8a75169c3e4 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -4881,7 +4881,6 @@ static struct cftype cgroup_base_files[] = {
+ 	},
+ 	{
+ 		.name = "cpu.stat",
+-		.flags = CFTYPE_NOT_ON_ROOT,
+ 		.seq_show = cpu_stat_show,
+ 	},
+ #ifdef CONFIG_PSI
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index 41ca996568df..b6397a186ce9 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -389,18 +389,62 @@ void __cgroup_account_cputime_field(struct cgroup *cgrp,
+ 	cgroup_base_stat_cputime_account_end(cgrp, rstatc);
+ }
+ 
++/*
++ * compute the cputime for the root cgroup by getting the per cpu data
++ * at a global level, then categorizing the fields in a manner consistent
++ * with how it is done by __cgroup_account_cputime_field for each bit of
++ * cpu time attributed to a cgroup.
++ */
++static void root_cgroup_cputime(struct task_cputime *cputime)
++{
++	int i;
++
++	cputime->stime = 0;
++	cputime->utime = 0;
++	cputime->sum_exec_runtime = 0;
++	for_each_possible_cpu(i) {
++		struct kernel_cpustat kcpustat;
++		u64 *cpustat = kcpustat.cpustat;
++		u64 user = 0;
++		u64 sys = 0;
++
++		kcpustat_cpu_fetch(&kcpustat, i);
++
++		user += cpustat[CPUTIME_USER];
++		user += cpustat[CPUTIME_NICE];
++		cputime->utime += user;
++
++		sys += cpustat[CPUTIME_SYSTEM];
++		sys += cpustat[CPUTIME_IRQ];
++		sys += cpustat[CPUTIME_SOFTIRQ];
++		cputime->stime += sys;
++
++		cputime->sum_exec_runtime += user;
++		cputime->sum_exec_runtime += sys;
++		cputime->sum_exec_runtime += cpustat[CPUTIME_STEAL];
++		cputime->sum_exec_runtime += cpustat[CPUTIME_GUEST];
++		cputime->sum_exec_runtime += cpustat[CPUTIME_GUEST_NICE];
++	}
++}
++
+ void cgroup_base_stat_cputime_show(struct seq_file *seq)
+ {
+ 	struct cgroup *cgrp = seq_css(seq)->cgroup;
+ 	u64 usage, utime, stime;
+-
+-	if (!cgroup_parent(cgrp))
+-		return;
+-
+-	cgroup_rstat_flush_hold(cgrp);
+-	usage = cgrp->bstat.cputime.sum_exec_runtime;
+-	cputime_adjust(&cgrp->bstat.cputime, &cgrp->prev_cputime, &utime, &stime);
+-	cgroup_rstat_flush_release();
++	struct task_cputime cputime;
++
++	if (cgroup_parent(cgrp)) {
++		cgroup_rstat_flush_hold(cgrp);
++		usage = cgrp->bstat.cputime.sum_exec_runtime;
++		cputime_adjust(&cgrp->bstat.cputime, &cgrp->prev_cputime,
++			       &utime, &stime);
++		cgroup_rstat_flush_release();
++	} else {
++		root_cgroup_cputime(&cputime);
++		usage = cputime.sum_exec_runtime;
++		utime = cputime.utime;
++		stime = cputime.stime;
++	}
+ 
+ 	do_div(usage, NSEC_PER_USEC);
+ 	do_div(utime, NSEC_PER_USEC);
+-- 
+2.24.1
+
