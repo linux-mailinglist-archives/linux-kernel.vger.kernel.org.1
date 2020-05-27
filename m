@@ -2,105 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A55A91E4FCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 23:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 072721E4FD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 23:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728149AbgE0VGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 17:06:38 -0400
-Received: from mta-p8.oit.umn.edu ([134.84.196.208]:32796 "EHLO
-        mta-p8.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726114AbgE0VGh (ORCPT
+        id S1728646AbgE0VIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 17:08:04 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:30922 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726482AbgE0VIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 17:06:37 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-p8.oit.umn.edu (Postfix) with ESMTP id 49XNg00ccyz9vJcH
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 21:06:36 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at umn.edu
-Received: from mta-p8.oit.umn.edu ([127.0.0.1])
-        by localhost (mta-p8.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Ha-t7_aN0Jy0 for <linux-kernel@vger.kernel.org>;
-        Wed, 27 May 2020 16:06:35 -0500 (CDT)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mta-p8.oit.umn.edu (Postfix) with ESMTPS id 49XNfz622lz9vJbS
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 16:06:35 -0500 (CDT)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p8.oit.umn.edu 49XNfz622lz9vJbS
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p8.oit.umn.edu 49XNfz622lz9vJbS
-Received: by mail-il1-f197.google.com with SMTP id q2so21558686ild.6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 14:06:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umn.edu; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=ZSlV3tEQ6XuheL2Xc2G2BwyWDLdcBMbchtoHVKeo45U=;
-        b=pdobmyvOcgMFfTVziKKFwlbsc4W+5+f2QHsIHMFMtSGeGb971/hub2yEdPrdbZdMNu
-         VZmEh8HK5u4DaJOCS0yFe/gUwxpCXVW/W4tyC6o+l88wEeFuBCX12c0E9OupOiZsVYnS
-         w1ZsxES85zs5hSh8e8r7u2bt7JAmb/WNBJ5IXRxXR3QxKB3/O7r3HpqGomOPLC8i/R+D
-         jJCTq1JObP7L+m6xkagcXbPm3wgW1F2P8OwkmEvq1MPPzy/AiDPrHGt17AmreDUZh2td
-         Y1tb0yfvJvIUHtGh+R+qJgtkUEuRJOly4G2BdjTpZIAq9+hJ5OU4Yb5UdrAF77c6cTCt
-         ugng==
+        Wed, 27 May 2020 17:08:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590613679;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3sSNRFYrb0CdmbwXzPVaN6Wl+qrkOkjvYM/9vtvRcHo=;
+        b=Eu4IoVjsrhT3li/XvMZj7RRjOdwTvNumFAFfw+ppIjxEZIqdDG7vqhTTN1M/yJOf2Lh+8p
+        nOQqFyiu5wz5kIclZaQn6+gWqr/WJPZ+yIeY8fUN3f7BCJhd2AxPfV8pQOBl7q1sUDViHM
+        FtcA7G05xHY0kLkbKUzqYmjD3WYvHjY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-100-vv94lPVvO4SajVxlXQ4dFg-1; Wed, 27 May 2020 17:07:58 -0400
+X-MC-Unique: vv94lPVvO4SajVxlXQ4dFg-1
+Received: by mail-wr1-f72.google.com with SMTP id a4so2508674wrp.5
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 14:07:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ZSlV3tEQ6XuheL2Xc2G2BwyWDLdcBMbchtoHVKeo45U=;
-        b=fbi3z2cp+DQR7KvQtLSrRLFHJ73XDeULa/+vxE7FZqTbkKN9Wikie5jD52H+YeZmX/
-         EVMi7zhdGFdBkFjKr02eMcBhcvV5ZPfvX8jVGyRWUiVzP6hCSjWXtJfW3H4rUTkm+MlR
-         x1vk0+EEn3cKuepGcRShFxKLR2YvdOzGucbomJ1pYtVpxVYddpg4DBdq2U1ZCS+jPHSj
-         5z6DDGBLqkWB8/kj/b2DvfTnTZUKNp6qnEeupJ/34CA4Yi53MkdHkqha0ZliS4oqJrF8
-         6h5h4iqjGpIG+Dus2vk3jsTvg2szpKo0xP44dzqMB5RcG66fA5RLANXI8fscEKWS26sG
-         bQWQ==
-X-Gm-Message-State: AOAM5338OUQqfP1kYnTJF/GVenFdiU/tdaAvVIAuZROF+I5/7EzlMoeq
-        1F/UsQNTUv+8Y4pI7ve1ipjQ+sreWc5Yfg5qXirE8Nz+P8GZEQMTaHzsmsJDD1tqcaCmexJyoec
-        YBOGSwwb/3j93TuZDek92/JaDJ4tt
-X-Received: by 2002:a92:ba46:: with SMTP id o67mr220228ili.66.1590613595354;
-        Wed, 27 May 2020 14:06:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy0pmOT1Qb57G2i2D/b2H4L/d1ug6uNxyKQtfBL8egEssL9tZNr4G4bJNl2U6YgQ/CmMa7j9A==
-X-Received: by 2002:a92:ba46:: with SMTP id o67mr220214ili.66.1590613595091;
-        Wed, 27 May 2020 14:06:35 -0700 (PDT)
-Received: from qiushi.dtc.umn.edu (cs-kh5248-02-umh.cs.umn.edu. [128.101.106.4])
-        by smtp.gmail.com with ESMTPSA id h5sm2063832ile.35.2020.05.27.14.06.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2020 14:06:34 -0700 (PDT)
-From:   wu000273@umn.edu
-To:     kjlu@umn.edu
-Cc:     wu000273@umn.edu, Matias Bjorling <mb@lightnvm.io>,
-        =?UTF-8?q?Matias=20Bj=C3=B8rling?= <matias@cnexlabs.com>,
-        Jens Axboe <axboe@fb.com>,
-        =?UTF-8?q?Javier=20Gonz=C3=A1lez?= <jg@lightnvm.io>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] lightnvm: pblk: Fix reference count leak in pblk_sysfs_init.
-Date:   Wed, 27 May 2020 16:06:28 -0500
-Message-Id: <20200527210628.9477-1-wu000273@umn.edu>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3sSNRFYrb0CdmbwXzPVaN6Wl+qrkOkjvYM/9vtvRcHo=;
+        b=dSJGcQB1yt2qV0S32TSYrBtgcweqEFrzk2ru7JVyUhOQstiXUUKMZ0Ca+FkX0uqTDY
+         qPXPmQ+hqTiTveXq5IcGWv0g0vpAJw5GLF9l04M9EVQg1p/xVhPCRgW1stfXLrOh2vfT
+         oZeXPyDKUvgT/Wq+Mi6fRGR8c9UNK6fllabU/00bDYRhdxdu1EJLIB70G3AvRxXBXK/r
+         brOCYb+IAGsOftK0o9Z/8h8KbnZWV7hXHH4Qgku0ushAh5KKgGNkX0wFDu3z8wxbmRML
+         jzGR/FbU/PKuSFbaUWtv06I+iCLq1X1gZtSzVdM062LGdPl+OqLNSRHDLuxP5GkmfNUe
+         ebTg==
+X-Gm-Message-State: AOAM5324Lcbb6mgOHamNJ3vYNZPsML5QvQpZAYHXNEfAXlup3V5FSyXD
+        W06YloreBYwCksoMDlokh6gb1OLnaXGnGTlyoqqlzscpbTSNtkUT2fN9T0pSxUvuwUiuCsgeKHO
+        CM/DUdAD4mn3aHmRBXieCXccd
+X-Received: by 2002:adf:e908:: with SMTP id f8mr195570wrm.184.1590613676641;
+        Wed, 27 May 2020 14:07:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz/MqK9aixnJqSNydmC9tSwCyqyq7nI9EAoQtkXsEPNQuE8I0JoA6xnM6f4HETfKsks8bq+5g==
+X-Received: by 2002:adf:e908:: with SMTP id f8mr195551wrm.184.1590613676318;
+        Wed, 27 May 2020 14:07:56 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:3c1c:ffba:c624:29b8? ([2001:b07:6468:f312:3c1c:ffba:c624:29b8])
+        by smtp.gmail.com with ESMTPSA id v27sm4074887wrv.81.2020.05.27.14.07.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 May 2020 14:07:55 -0700 (PDT)
+Subject: Re: [PATCH v3 0/7] Statsfs: a new ram-based file system for Linux
+ kernel statistics
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>
+Cc:     kvm@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Jim Mattson <jmattson@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Emanuele Giuseppe Esposito <e.emanuelegiuseppe@gmail.com>,
+        David Rientjes <rientjes@google.com>,
+        Jonathan Adams <jwadams@google.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>
+References: <20200526110318.69006-1-eesposit@redhat.com>
+ <20200526153128.448bfb43@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <6a754b40-b148-867d-071d-8f31c5c0d172@redhat.com>
+ <20200527132321.54bcdf04@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <af2ba926-73bc-26c3-7ce7-bd45f657fd85@redhat.com>
+Date:   Wed, 27 May 2020 23:07:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <20200527132321.54bcdf04@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+On 27/05/20 22:23, Jakub Kicinski wrote:
+> On Wed, 27 May 2020 15:14:41 +0200 Emanuele Giuseppe Esposito wrote:
+>> Regarding the config, as I said the idea is to gather multiple 
+>> subsystems' statistics, therefore there wouldn't be a single 
+>> configuration method like in netlink.
+>> For example in kvm there are file descriptors for configuration, and 
+>> creating them requires no privilege, contrary to the network interfaces.
+>
+> Enumerating networking interfaces, addresses, and almost all of the
+> configuration requires no extra privilege. In fact I'd hope that
+> whatever daemon collects network stats doesn't run as root :)
+> 
+> I think enumerating objects is of primary importance, and statistics 
+> of those objects are subordinate.
 
-kobject_init_and_add() takes reference even when it fails.
-Thus, when kobject_init_and_add() returns an error,
-kobject_put() must be called to properly clean up the kobject.
+I see what you meant now.  statsfs can also be used to enumerate objects
+if one is so inclined (with the prototype in patch 7, for example, each
+network interface becomes a directory).
 
-Fixes: a4bd217b4326 ("lightnvm: physical block device (pblk) target")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
----
- drivers/lightnvm/pblk-sysfs.c | 1 +
- 1 file changed, 1 insertion(+)
+> Again, I have little KVM knowledge, but BPF also uses a fd-based API,
+> and carries stats over the same syscall interface.
 
-diff --git a/drivers/lightnvm/pblk-sysfs.c b/drivers/lightnvm/pblk-sysfs.c
-index 6387302b03f2..90f1433b19a2 100644
---- a/drivers/lightnvm/pblk-sysfs.c
-+++ b/drivers/lightnvm/pblk-sysfs.c
-@@ -711,6 +711,7 @@ int pblk_sysfs_init(struct gendisk *tdisk)
- 					"%s", "pblk");
- 	if (ret) {
- 		pblk_err(pblk, "could not register\n");
-+		kobject_put(&pblk->kobj);
- 		return ret;
- 	}
- 
--- 
-2.17.1
+Can BPF stats (for BPF scripts created by whatever process is running in
+the system) be collected by an external daemon that does not have access
+to the file descriptor?  For KVM it's of secondary importance to gather
+stats in the program; it can be nice to have and we are thinking of a
+way to export the stats over the fd-based API, but it's less useful than
+system-wide monitoring.  Perhaps this is a difference between the two.
+
+Another case where stats and configuration are separate is CPUs, where
+CPU enumeration is done in sysfs but statistics are exposed in various
+procfs files such as /proc/interrupts and /proc/stats.
+
+Thanks,
+
+Paolo
 
