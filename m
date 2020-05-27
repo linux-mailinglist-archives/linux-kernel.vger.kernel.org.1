@@ -2,140 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E961E4189
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 14:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0EE41E4166
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 14:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387842AbgE0MIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 08:08:38 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:57056 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726019AbgE0MH3 (ORCPT
+        id S1729756AbgE0MH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 08:07:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387608AbgE0MHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 08:07:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590581247;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JAOHEe2wXSlGLrnZFjFSmf34no8sDZWkhmsgq7pa2Tg=;
-        b=J4eQtvbB3Xhn7/xzdQaxIOYIgtJxbkcX+I9w9bZ88xz36u2mbPyHYb+hjs1+BqxL1mpynq
-        G6JeYI6JgyF6pNtNSn5tNFakgfl9/i05XvKD1+8K1uUWHjFOZxMO30qu4jTpQK9CssYwpb
-        xQ26bfMy0j4vwJ5/1KYgS94e2sCvtgw=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-314-HFbeU3i8OOODhlReMkqDzA-1; Wed, 27 May 2020 08:07:25 -0400
-X-MC-Unique: HFbeU3i8OOODhlReMkqDzA-1
-Received: by mail-ej1-f69.google.com with SMTP id ng1so8789981ejb.22
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 05:07:25 -0700 (PDT)
+        Wed, 27 May 2020 08:07:43 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4751C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 05:07:42 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id z13so18914858ljn.7
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 05:07:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eIUXbCZBGd6FQiRTZakvB9gdQEN6hpoj1XakMh1KrtU=;
+        b=o3/U9PZBTXf7Ndeovd+y7YJ8bpDhjfqHs+oriS9SzlGXz9mU5FYpSQikl3BqXmfaZC
+         CEAlmT+trRrGlRyxZVy8Jkk1pnh0QbrG3CRsDxUISSmkxFvYvECM65DbvkKZsl6R2k4E
+         0rbyTLLbaRByqwZLb3VKFQNiRqBccYSirfF0+0iZPqdVAo0mLbwY/64BSc9KkcKIWu2M
+         l4fBraDJ0LaNCn9XF+OBro+u2ihZUvkYX79J9Nzzd21cTnWtRNghAmvUKG2pfy5vstAW
+         M1iqKSHrEPtFD8PBsl71PaCqd8TtDvGl4tyXpfzF0QVx3/pw2LUsN5VyzxSzQzxqAh9B
+         W/1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JAOHEe2wXSlGLrnZFjFSmf34no8sDZWkhmsgq7pa2Tg=;
-        b=IOl7oWJDe2gWi6szje3B2O2t3i5NnYGeW+P4k5Wqh+gXhcFfgXKYN4Q0HIbl4/uUIR
-         s+PDwO2WT0gzillqlOxVQLa9OciZqXerlQ07CfH/E/m4hTkB/jun1yngAVNVtcLELJbk
-         RMdnrng9xj87oLbc/v5AiQr8CpBkOtCD+2vaS7EO4dcMA4xh716dmPl4U63lro9PJTbi
-         CBj7s/GLTeAEy+JZwzPSaHTOQoRTltMbIGCNnmny2dED/ZxD7GFLWbXhRmYwyaCsY4mx
-         atDdxP0iSJUdyLEdkgogm6iO2x92BkkT1JdsebQfP4i0YB8s+O4AkBl/FWOLRlsEF0vx
-         LKog==
-X-Gm-Message-State: AOAM531SCgp5WYxPONypqo80onBSDGstlJXNYSy72xLzJLF8+ZAg+t+p
-        o6Y5vrMXj6YDndnc7/hA3i0aLsygfmEvnQ0FqSYfU1EuQByHST/XvTJfydeFEEKsITRnZn/W3Ou
-        qLl8ZtguS/+I+Pv0Xcc99Bcjr
-X-Received: by 2002:aa7:c6d1:: with SMTP id b17mr6119048eds.39.1590581244333;
-        Wed, 27 May 2020 05:07:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzPap1r2d6pve9ph5mq6UFpBkvveZ3/UVhwnGQUVfRWhjg9EfMvArNZv5Ea+DHovL+LUMT1dw==
-X-Received: by 2002:aa7:c6d1:: with SMTP id b17mr6119007eds.39.1590581243987;
-        Wed, 27 May 2020 05:07:23 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:3c1c:ffba:c624:29b8? ([2001:b07:6468:f312:3c1c:ffba:c624:29b8])
-        by smtp.gmail.com with ESMTPSA id gl19sm2526817ejb.34.2020.05.27.05.07.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 May 2020 05:07:23 -0700 (PDT)
-Subject: Re: [PATCH] KVM: x86/mmu: Set mmio_value to '0' if reserved #PF can't
- be generated
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200527084909.23492-1-sean.j.christopherson@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f88b71bb-74aa-9ff1-7aab-918d9f0a4a82@redhat.com>
-Date:   Wed, 27 May 2020 14:07:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eIUXbCZBGd6FQiRTZakvB9gdQEN6hpoj1XakMh1KrtU=;
+        b=MeD7ZkTdIefeZQRDBYfNr1RgJ1YnoWZZ+Qsqx/EERldlH21razczjSy0RH3dEIP8WF
+         +TywKpSUGnFolDS3nkkPef+ob/9T5YTCFzLZcAOX5nenSU51TvQnktat00xi8TBV49D5
+         c3n9HjPxS9C/caTZfJohqK9021xIZaet+vvYdOWDuo+mgqgpgpfvZjKF6P+KFvxGMZkL
+         UnndzsQC08SgFrSoThAsRBEtdH2MH7LyldTmGVhfkWMB6fxYhlE+KUNoEbBNl9N8aQ2k
+         QHjuJaDU+Cpx4o94rgsn5RZJEnB2EwxUe7kXAAfh2rt8NYmF0fz7zFQnjFMLFqBQV7F0
+         iknA==
+X-Gm-Message-State: AOAM5308iRxvZDv9wFpzvFhImN+b9TUBLIpY6SjORDsoADS6l6c4SRXq
+        Bp9YquSENc5ivfG8Yrdww3+P35qq2Cv13BZ1hYuveg==
+X-Google-Smtp-Source: ABdhPJzNzwrVnGNk2QziUrVShAg8LwxDtlUGdC0n+beWmTLFE/5KTWxCVQRO1Yvbll8wnAFqWhOJy2sUhV804ZzRVbE=
+X-Received: by 2002:a2e:9510:: with SMTP id f16mr3147832ljh.111.1590581261349;
+ Wed, 27 May 2020 05:07:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200527084909.23492-1-sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200526161057.531933155@infradead.org> <20200526161907.778543557@infradead.org>
+ <CAKfTPtA6t5=Gc6cWR3iS9QL+Vy=jhUkP345V9q2xqyhHx=rGNQ@mail.gmail.com> <20200527112815.GB8942@lenoir>
+In-Reply-To: <20200527112815.GB8942@lenoir>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 27 May 2020 14:07:28 +0200
+Message-ID: <CAKfTPtDHSLHCHsDRMzxPcKzcc=T1g_HZRxgHyAuPQcPN9QYMfA@mail.gmail.com>
+Subject: Re: [RFC][PATCH 1/7] sched: Fix smp_call_function_single_async()
+ usage for ILB
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, Qian Cai <cai@lca.pw>,
+        Mel Gorman <mgorman@techsingularity.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/05/20 10:49, Sean Christopherson wrote:
-> Set the mmio_value to '0' instead of simply clearing the present bit to
-> squash a benign warning in kvm_mmu_set_mmio_spte_mask() that complains
-> about the mmio_value overlapping the lower GFN mask on systems with 52
-> bits of PA space.
-> 
-> Opportunistically clean up the code and comments.
-> 
-> Fixes: 608831174100 ("KVM: x86: only do L1TF workaround on affected processors")
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+On Wed, 27 May 2020 at 13:28, Frederic Weisbecker <frederic@kernel.org> wrote:
+>
+> On Wed, May 27, 2020 at 12:23:23PM +0200, Vincent Guittot wrote:
+> > > -static void nohz_csd_func(void *info)
+> > > -{
+> > > -       struct rq *rq = info;
+> > > +       flags = atomic_fetch_andnot(NOHZ_KICK_MASK, nohz_flags(cpu));
+> >
+> > Why can't this be done in nohz_idle_balance() instead ?
+> >
+> > you are not using flags in nohz_csd_func() and SCHED_SOFTIRQ which
+> > calls nohz_idle_balance(), happens after nohz_csd_func(), isn't it ?
+> >
+> > In this case, you don't have to use the intermediate variable
+> > this_rq->nohz_idle_balance
+>
+> That's in fact to fix the original issue. The softirq was clearing
+> the nohz_flags but the softirq could be issued from two sources:
+> the tick and the IPI. And the tick source softirq could then clear
+> the flags set from the IPI sender before the IPI itself, resulting
+> in races such as described there: https://lore.kernel.org/lkml/20200521004035.GA15455@lenoir/
 
-Queued, thanks (with Cc: to stable).
+ah yes, even if the cpu is idle, the tick can fire and clear it.
 
-Paolo
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-> Thanks for the excuse to clean up kvm_set_mmio_spte_mask(), been wanting a
-> reason to fix that mess for a few months now :-).
-> 
->  arch/x86/kvm/mmu/mmu.c | 27 +++++++++------------------
->  1 file changed, 9 insertions(+), 18 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 2df0f347655a4..aab90f4079ea9 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -6136,25 +6136,16 @@ static void kvm_set_mmio_spte_mask(void)
->  	u64 mask;
->  
->  	/*
-> -	 * Set the reserved bits and the present bit of an paging-structure
-> -	 * entry to generate page fault with PFER.RSV = 1.
-> +	 * Set a reserved PA bit in MMIO SPTEs to generate page faults with
-> +	 * PFEC.RSVD=1 on MMIO accesses.  64-bit PTEs (PAE, x86-64, and EPT
-> +	 * paging) support a maximum of 52 bits of PA, i.e. if the CPU supports
-> +	 * 52-bit physical addresses then there are no reserved PA bits in the
-> +	 * PTEs and so the reserved PA approach must be disabled.
->  	 */
-> -
-> -	/*
-> -	 * Mask the uppermost physical address bit, which would be reserved as
-> -	 * long as the supported physical address width is less than 52.
-> -	 */
-> -	mask = 1ull << 51;
-> -
-> -	/* Set the present bit. */
-> -	mask |= 1ull;
-> -
-> -	/*
-> -	 * If reserved bit is not supported, clear the present bit to disable
-> -	 * mmio page fault.
-> -	 */
-> -	if (shadow_phys_bits == 52)
-> -		mask &= ~1ull;
-> +	if (shadow_phys_bits < 52)
-> +		mask = BIT_ULL(51) | PT_PRESENT_MASK;
-> +	else
-> +		mask = 0;
->  
->  	kvm_mmu_set_mmio_spte_mask(mask, mask, ACC_WRITE_MASK | ACC_USER_MASK);
->  }
-
-
-
+>
+> Thanks.
