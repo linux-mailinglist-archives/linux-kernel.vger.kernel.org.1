@@ -2,73 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 760761E346B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 03:08:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5185D1E3470
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 03:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728103AbgE0BIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 21:08:12 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:48938 "EHLO zju.edu.cn"
+        id S1728132AbgE0BIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 21:08:31 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:53702 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728092AbgE0BIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 21:08:12 -0400
-Received: by ajax-webmail-mail-app2 (Coremail) ; Wed, 27 May 2020 09:07:40
- +0800 (GMT+08:00)
-X-Originating-IP: [222.205.60.151]
-Date:   Wed, 27 May 2020 09:07:40 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Pierre-Louis Bossart" <pierre-louis.bossart@linux.intel.com>
-Cc:     kjlu@umn.edu, "Cezary Rojewski" <cezary.rojewski@intel.com>,
-        "Liam Girdwood" <liam.r.girdwood@linux.intel.com>,
-        "Jie Yang" <yang.jie@linux.intel.com>,
-        "Mark Brown" <broonie@kernel.org>,
-        "Jaroslav Kysela" <perex@perex.cz>,
-        "Takashi Iwai" <tiwai@suse.com>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Allison Randal" <allison@lohutok.net>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Alexios Zavras" <alexios.zavras@intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] ASoC: Intel: sst: Fix runtime PM imbalance in
- sst_power_control
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190906(84e8bf8f)
- Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
-In-Reply-To: <922ac37c-0a5a-dff7-0cd7-d3487cf9ff00@linux.intel.com>
-References: <20200525070701.3888-1-dinghao.liu@zju.edu.cn>
- <922ac37c-0a5a-dff7-0cd7-d3487cf9ff00@linux.intel.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        id S1728092AbgE0BIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 21:08:31 -0400
+Received: from [10.20.42.25] (unknown [10.20.42.25])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Axpultvc1eVXI5AA--.413S3;
+        Wed, 27 May 2020 09:07:57 +0800 (CST)
+Subject: Re: [PATCH v6 1/4] MIPS: Do not flush tlb page when updating PTE
+ entry
+To:     Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Dmitry Korotin <dkorotin@wavecomp.com>,
+        =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+References: <1590375160-6997-1-git-send-email-maobibo@loongson.cn>
+ <79778fc3-c029-272b-358e-4f8f8e5772d3@cogentembedded.com>
+ <0a38f25d-dba0-688f-4588-345c861325aa@cogentembedded.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        "Maciej W. Rozycki" <macro@wdc.com>, linux-mm@kvack.org,
+        David Hildenbrand <david@redhat.com>
+From:   maobibo <maobibo@loongson.cn>
+Message-ID: <9b71761b-a744-086f-43f5-78dcca18b459@loongson.cn>
+Date:   Wed, 27 May 2020 09:07:57 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Message-ID: <73fef900.d8158.17253abb08c.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: by_KCgCnEbxcvc1eVVkcAA--.3818W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0MBlZdtOUT6wAGsh
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbuCS07vEb7Iv0x
-        C_Xr1lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
-        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
-        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
-        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wCS07vE84ACjcxK6I8E87Iv67AKxVW0oV
-        Cq3wCS07vE84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DMIAIbVAS0I0E0xvYzxvE52x0
-        82IY62kv0487MIAIbVAqx4xG64xvF2IEw4CE5I8CrVC2j2WlV2xY6cIj6xIIjxv20xvE14
-        v26r1j6r18MIAIbVAv7VC2z280aVAFwI0_Jr0_Gr1lV2xY6cvjeVCFs4IE7xkEbVWUJVW8
-        JwCS07vEFIxGxcIEc7CjxVA2Y2ka0xkIwI1lV2xY6x02cVAKzwCS07vEc2xSY4AK67AK6w
-        4lV2xY6xkI7II2jI8vz4vEwIxGrwCS07vE42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMIAI
-        bVCF72vE77IF4wCS07vE4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lV2xY6I8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lV2xY6I8I3I0E7480Y4vE14v26r106r1rMIAIbVC2zVAF1VAY17CE14v26r1q
-        6r43MIAIbVCI42IY6xIIjxv20xvE14v26r1j6r1xMIAIbVCI42IY6xIIjxv20xvEc7CjxV
-        AFwI0_Gr0_Cr1lV2xY6IIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIAIbVCI42IY6I8E
-        87Iv67AKxVWUJVW8JwCS07vEIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
-        nxnUU==
+In-Reply-To: <0a38f25d-dba0-688f-4588-345c861325aa@cogentembedded.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9Axpultvc1eVXI5AA--.413S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr15XF1UZFyfCw4DuFyDZFb_yoW8Xr43pF
+        97CayYganrW34xKF1xXw4kurWfCws5KFWjqry3ArW5ZanrZr1kKr43ta10kr97Wr1fu3WI
+        v3yDt3y8Za45Z3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9qb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7
+        Mxk0xIA0c2IEe2xFo4CEbIxvr21lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxC20s026x
+        CaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_
+        JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r
+        1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG
+        6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r
+        4UJbIYCTnIWIevJa73UjIFyTuYvjxU2znQUUUUU
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAKPiB0aGlzIGNoYW5nZSBkb2Vzbid0IHNlZW0gcXVpdGUgcmlnaHQsIGlmIHlvdSBsb29rIHRo
-ZSBjb2RlIGJlbG93IHRoZXJlIAo+IGlzIG5vIFBNIGltYmFsYW5jZSwgaXMgdGhlcmU/Cj4gCj4g
-aW50IHNzdF9wbV9ydW50aW1lX3B1dChzdHJ1Y3QgaW50ZWxfc3N0X2RydiAqc3N0X2RydikKPiB7
-Cj4gCWludCByZXQ7Cj4gCj4gCXBtX3J1bnRpbWVfbWFya19sYXN0X2J1c3koc3N0X2Rydi0+ZGV2
-KTsKPiAJcmV0ID0gcG1fcnVudGltZV9wdXRfYXV0b3N1c3BlbmQoc3N0X2Rydi0+ZGV2KTsKPiAJ
-aWYgKHJldCA8IDApCj4gCQlyZXR1cm4gcmV0Owo+IAlyZXR1cm4gMDsKPiB9CgpZb3UgYXJlIHJp
-Z2h0LiBUaGFuayB5b3UgZm9yIHlvdXIgY29ycmVjdGlvbiEKClJlZ2FyZHMsCkRpbmdoYW8K
+
+
+On 05/25/2020 04:31 PM, Sergei Shtylyov wrote:
+> On 25.05.2020 11:12, Sergei Shtylyov wrote:
+> 
+>>> It is not necessary to flush tlb page on all CPUs if suitable PTE
+>>> entry exists already during page fault handling, just updating
+>>> TLB is fine.
+>>>
+>>> Here redefine flush_tlb_fix_spurious_fault as empty on MIPS system.
+>>
+>>     Need empty line here.
+>>
+>>> V6:
+>>> - Add update_mmu_tlb function as empty on all platform except mips
+>>>    system, we use this function to update local tlb for page fault
+>>>    smp-race handling
+>>> V5:
+>>> - define update_mmu_cache function specified on MIPS platform, and
+>>>    add page fault smp-race stats info
+>>> V4:
+>>> - add pte_sw_mkyoung function to implement readable privilege, and
+>>>    this function is  only in effect on MIPS system.
+>>> - add page valid bit judgement in function pte_modify
+>>> V3:
+>>> - add detailed changelog, modify typo issue in patch V2
+>>> v2:
+>>> - split flush_tlb_fix_spurious_fault and tlb update into two patches
+>>> - comments typo modification
+>>> - separate tlb update and add pte readable privilege into two patches
+>>
+>>    It was a bad idea to keep the version change log in the 1st patch only,
+>> we have either cover letter for that, or all the individual patches...
+> 
+>    Sorry for noticing this only now. With 4 patches, you should have a cover letter anyway...
+Thanks for reviewing my patch, a cover letter will be added.
+
+> 
+
+>>> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+>> [...]
+> 
+> MBR, Sergei
+
