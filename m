@@ -2,140 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE601E4533
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0BE1E453A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730420AbgE0OF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 10:05:59 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:57349 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730268AbgE0OF7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 10:05:59 -0400
-Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1Mo6WJ-1jFYx33Vox-00pcRT; Wed, 27 May 2020 16:05:42 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mika Kuoppala <mika.kuoppala@linux.intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Andi Shyti <andi.shyti@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        id S2388772AbgE0OIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 10:08:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388623AbgE0OIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 10:08:00 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8FAA207D3;
+        Wed, 27 May 2020 14:07:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590588480;
+        bh=C+fyE5snjSW0wurnYjLepMoojkVqeGo12cjI4Sl3UGY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EfwTqzFJqXFu0FZiDOyRAvOGH8n+GxPdxahnlUxU6Z4tTdsdydEYQ0vaaIqTjF9vA
+         hTisCa8TdDT0aIwZ2nl1FLanYc651GLRGlnl9nd6UgJQMu4drhamKS0TbiXVbnElBR
+         10MfWQoFEAcN3+8Rdp8+bHlCooUpZmkPaeYOLUwI=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id EC13940AFD; Wed, 27 May 2020 11:07:53 -0300 (-03)
+Date:   Wed, 27 May 2020 11:07:53 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Nick Gasson <nick.gasson@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] drm/i915/selftests: avoid bogus maybe-uninitialized warning
-Date:   Wed, 27 May 2020 16:05:10 +0200
-Message-Id: <20200527140526.1458215-3-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200527140526.1458215-1-arnd@arndb.de>
-References: <20200527140526.1458215-1-arnd@arndb.de>
+Subject: Re: [PATCH 2/3] perf jvmti: Do not report error when missing debug
+ information
+Message-ID: <20200527140753.GD14219@kernel.org>
+References: <20200427061520.24905-1-nick.gasson@arm.com>
+ <20200427061520.24905-3-nick.gasson@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:Bs1kH9SiEUr82+i0D5b4IjNzyMWhRc9ReAI4hRbtaSg+wd4Y+kE
- gsHtJL0netn243C7nHQamvh/2VpFFj/mbWQZYBUlmk15Ur8+KyRpRLNWTSOpnSXrG6ACa8Y
- a50vkShJOWxV4ykm7XUMk0pidxZYJm1W5/Zw9bnILBSY8qbgoV8/N+o6gDRiA7eO91pvrsn
- zFA51RKJXl5UhRluoBa/w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+3169tARU2k=:uC5t2mXS/rarwbKpJ4p1IL
- TkcNg5L4b0eQa1dnkKmj9R/sSkzpoRvOHXS4my5yaaC5Ipgn4d1MzqW671izesykz8iby4m+5
- z1IvD+l5KijKgQE7VVqp37PdP1Z8kyBPIudjh8SOJe9IwGRQxJn23IKziQzSrbGAOabL33Rqj
- UC9ZjpLC9GhatIlmPNENyXJDcfdNAmC8jVR75LlmscyCeIQgmKczM8/5DrTdldpueq8wUOTyz
- JV72tDCgqyNcaDaert16Y0sw3l/yCWMETugA/v0l5p8yJzjYFsworrldztzOG9TwwtVECsezT
- Tyx7TQTlKGfirXDvwAFcG5DItmsJw3HVXeTdStNblLhTBLKsOQg9tXZYYJH3LMxOlzLovL0pt
- X4NQgpyhSnJRfCn4ZnC6jt0nte5GJ/7rVDPvPpyNFlqKDZ4tZ7ODiRKv7v2S3TiZ7h/9axGxz
- 9/rAxDSK75RmKxgRZFX/z93DUKLmUODUq+S//87z6aF6npDlxOEM5RmRFnCv6S3uA20KZP1DG
- exucUvsLOIrOHJz/b0WA3dI4HoqagLbzF4yIpfoAwfKFe2zu1nlXPeMEVu8nmUw2wSK+Mfbne
- HKWAq152YlnhozAc2jzA2OqZk28FYLTob4ZEMpqiy2XClWwByz/Wlq/nyHi4i/k8x/3TqZJpQ
- OSkAS/+T+5Vq4WASVKIzNKWyiaw9J5BL5wPMTejvRY1jag3b1jmhTWmVMcEkiMBG6fhbr7ysx
- pzkkkkZx0UDRaWqZpEwWJKveoIG9zxc9XE8ju3hQuslsSe94To3JlK2xF+KNjaL6ne+vqnBSB
- bUYPQNyOqcNk6d8FiJRHXwa+NGAXkcy95rnATkLAbrJtAtHBPE=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200427061520.24905-3-nick.gasson@arm.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-gcc has a problem following values through IS_ERR/PTR_ERR macros,
-leading to a false-positive warning in allmodconfig, with any
-compiler version:
+Em Mon, Apr 27, 2020 at 02:15:15PM +0800, Nick Gasson escreveu:
+> If the Java sources are compiled with -g:none to disable debug
+> information the perf JVMTI plugin reports a lot of errors like:
+> 
+>   java: GetLineNumberTable failed with JVMTI_ERROR_ABSENT_INFORMATION
+>   java: GetLineNumberTable failed with JVMTI_ERROR_ABSENT_INFORMATION
+>   java: GetLineNumberTable failed with JVMTI_ERROR_ABSENT_INFORMATION
+>   java: GetLineNumberTable failed with JVMTI_ERROR_ABSENT_INFORMATION
+>   java: GetLineNumberTable failed with JVMTI_ERROR_ABSENT_INFORMATION
+> 
+> Instead if GetLineNumberTable returns JVMTI_ERROR_ABSENT_INFORMATION
+> simply skip emitting line number information for that method. Unlike the
+> previous patch these errors don't affect the jitdump generation, they
+> just generate a lot of noise.
+> 
+> Similarly for native methods which also don't have line tables.
+> 
+> Signed-off-by: Nick Gasson <nick.gasson@arm.com>
+> ---
+>  tools/perf/jvmti/libjvmti.c | 13 +++++++++++--
+>  1 file changed, 11 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/jvmti/libjvmti.c b/tools/perf/jvmti/libjvmti.c
+> index 50ef524b5cd4..a9a056d68416 100644
+> --- a/tools/perf/jvmti/libjvmti.c
+> +++ b/tools/perf/jvmti/libjvmti.c
+> @@ -41,7 +41,11 @@ do_get_line_numbers(jvmtiEnv *jvmti, void *pc, jmethodID m, jint bci,
+>  	jvmtiError ret;
+>  
+>  	ret = (*jvmti)->GetLineNumberTable(jvmti, m, &nr_lines, &loc_tab);
+> -	if (ret != JVMTI_ERROR_NONE) {
+> +	if (ret == JVMTI_ERROR_ABSENT_INFORMATION || ret == JVMTI_ERROR_NATIVE_METHOD) {
+> +		/* No debug information for this method */
+> +		*nr = 0;
+> +		return JVMTI_ERROR_NONE;
+> +	} else if (ret != JVMTI_ERROR_NONE) {
+>  		print_error(jvmti, "GetLineNumberTable", ret);
+>  		return ret;
+>  	}
+> @@ -93,6 +97,9 @@ get_line_numbers(jvmtiEnv *jvmti, const void *compile_info, jvmti_line_info_t **
+>  					/* free what was allocated for nothing */
+>  					(*jvmti)->Deallocate(jvmti, (unsigned char *)lne);
+>  					nr_total += (int)nr;
+> +				} else if (ret == JVMTI_ERROR_ABSENT_INFORMATION
+> +					   || ret == JVMTI_ERROR_NATIVE_METHOD) {
 
-In file included from drivers/gpu/drm/i915/gt/intel_lrc.c:5892:
-drivers/gpu/drm/i915/gt/selftest_lrc.c: In function 'create_gpr_client.isra.0':
-drivers/gpu/drm/i915/gt/selftest_lrc.c:2902:23: error: 'rq' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+Please add the || operator at the end of the line next time, I'm fixing
+this up this time,
 
-This one is hard to avoid without impairing readability or adding a
-bugus NULL pointer.
+Applied,
 
-Fixes: c92724de6db1 ("drm/i915/selftests: Try to detect rollback during batchbuffer preemption")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/gpu/drm/i915/gt/selftest_lrc.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+- Arnaldo
 
-diff --git a/drivers/gpu/drm/i915/gt/selftest_lrc.c b/drivers/gpu/drm/i915/gt/selftest_lrc.c
-index 824f99c4cc7c..933c3f5adf0a 100644
---- a/drivers/gpu/drm/i915/gt/selftest_lrc.c
-+++ b/drivers/gpu/drm/i915/gt/selftest_lrc.c
-@@ -2908,23 +2908,25 @@ create_gpr_client(struct intel_engine_cs *engine,
- 
- 	vma = i915_vma_instance(global->obj, ce->vm, NULL);
- 	if (IS_ERR(vma)) {
--		err = PTR_ERR(vma);
-+		rq = ERR_CAST(vma);
- 		goto out_ce;
- 	}
- 
- 	err = i915_vma_pin(vma, 0, 0, PIN_USER);
--	if (err)
-+	if (err) {
-+		rq = ERR_PTR(err);
- 		goto out_ce;
-+	}
- 
- 	batch = create_gpr_user(engine, vma, offset);
- 	if (IS_ERR(batch)) {
--		err = PTR_ERR(batch);
-+		rq = ERR_CAST(batch);
- 		goto out_vma;
- 	}
- 
- 	rq = intel_context_create_request(ce);
- 	if (IS_ERR(rq)) {
--		err = PTR_ERR(rq);
-+		rq = ERR_CAST(rq);
- 		goto out_batch;
- 	}
- 
-@@ -2946,17 +2948,20 @@ create_gpr_client(struct intel_engine_cs *engine,
- 	i915_vma_unlock(batch);
- 	i915_vma_unpin(batch);
- 
--	if (!err)
-+	if (!err) {
- 		i915_request_get(rq);
--	i915_request_add(rq);
--
-+		i915_request_add(rq);
-+	} else {
-+		i915_request_add(rq);
-+		rq = ERR_PTR(err);
-+	}
- out_batch:
- 	i915_vma_put(batch);
- out_vma:
- 	i915_vma_unpin(vma);
- out_ce:
- 	intel_context_put(ce);
--	return err ? ERR_PTR(err) : rq;
-+	return rq;
- }
- 
- static int preempt_user(struct intel_engine_cs *engine,
+> +					/* No debug information for this method */
+>  				} else {
+>  					print_error(jvmti, "GetLineNumberTable", ret);
+>  				}
+> @@ -262,7 +269,9 @@ compiled_method_load_cb(jvmtiEnv *jvmti,
+>  	if (has_line_numbers && map && map_length) {
+>  		ret = get_line_numbers(jvmti, compile_info, &line_tab, &nr_lines);
+>  		if (ret != JVMTI_ERROR_NONE) {
+> -			warnx("jvmti: cannot get line table for method");
+> +			if (ret != JVMTI_ERROR_NOT_FOUND) {
+> +				warnx("jvmti: cannot get line table for method");
+> +			}
+>  			nr_lines = 0;
+>  		} else if (nr_lines > 0) {
+>  			line_file_names = malloc(sizeof(char*) * nr_lines);
+> -- 
+> 2.26.1
+> 
+
 -- 
-2.26.2
 
+- Arnaldo
