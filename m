@@ -2,74 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABAB1E4418
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90661E4426
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388611AbgE0Nnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:43:40 -0400
-Received: from mga18.intel.com ([134.134.136.126]:11202 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387581AbgE0Nnk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:43:40 -0400
-IronPort-SDR: b9ZxhJGH4GUhn0jve4kaJr13cJxWbR+w+zBRdmPiuH/lXDtdCao3rSW3ezwMaBy2OTFE4SbIxk
- rPQI0VyczK3w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 06:43:39 -0700
-IronPort-SDR: dY6u9OQowCN3pIUwRqJi5VniyqdUtAkl4F8EPNniYD9miuGF/kA9RMEDzs7GXuacsiL5SBpssc
- rzqqjOL/sWZQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,441,1583222400"; 
-   d="scan'208";a="468745133"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga006.fm.intel.com with ESMTP; 27 May 2020 06:43:36 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jdwLL-009EkK-MI; Wed, 27 May 2020 16:43:39 +0300
-Date:   Wed, 27 May 2020 16:43:39 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 07/11] i2c: designware: Discard Cherry Trail model flag
-Message-ID: <20200527134339.GY1634618@smile.fi.intel.com>
-References: <20200527120111.5781-1-Sergey.Semin@baikalelectronics.ru>
- <20200527120111.5781-8-Sergey.Semin@baikalelectronics.ru>
+        id S2388637AbgE0Npf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:45:35 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:45323 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387581AbgE0Npd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 09:45:33 -0400
+Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
+ (mreue012 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1N5CMP-1iv9Gv0jwb-0118Vd; Wed, 27 May 2020 15:45:20 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Dilip Kota <eswara.kota@linux.intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH] phy: intel: fix enum type mismatch warning
+Date:   Wed, 27 May 2020 15:45:06 +0200
+Message-Id: <20200527134518.908624-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200527120111.5781-8-Sergey.Semin@baikalelectronics.ru>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:nyIOF008cbZxsbmhfvGhCRdrwCcN1q1JDweBfwxy95/py9s3Bz7
+ BFHwcfK/dnZiPczlXT624LDAPtJsDwXBDDVwKsXxmRjYf1EWQfTsfA1lMSe65U0u8rKWGRz
+ 3INsuZt+Gl5Bw9EtoeuItFkPoX0bh/5MKbcJprGU199PLC52YdwdIY6BxhvjcCJSsvqOqAI
+ hm1FdsF24f+/DT3woz7iQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:JauS/qGrgKE=:E8zZXa1xetlRt0BTAijuz5
+ X0mQ+xT50m+/+kDnEKmuArkBTJXF096ns60R0bqWmW9YD9hv5hvPx5q83HjOoWzs+KxKNymy3
+ 8drzDdkH35yPqJK9roborwsd/c8NqvXUZIrT+KrRDdW8N7t1mmHMKsyVQgOnuSZPUa0yu1R8s
+ 5As1TX/0KyWq3G7V6GidUbogztS46M/n5olB7epjstaleNgtSsLFwbLIPNgqSdLeS1QBYupGS
+ pnPiB1WeN4JZoPoC2yMIs2raU+7Yh1b2kVOfV2qUjAxTyRhsc4kZojwdHPkYCg+f+Ip1ClB72
+ DpVLBg7PiD5rCc3McRVwnUUHes9lmnSQkzCptMSPztT/HFD2nkRZgCBJjVekLeYb9jL0nqBBX
+ VnNzrImSCMTinqB62tyeRCwdCoZqkyqUKHJOFpNKY6lA9BVSTrP0y1RkDOdm/tIr3KW63jY86
+ OJ8c+zVEoc6xc2lNBXSqkExO2OkJnDu/1eA8xCwpBSGME24XqDEQX7mkkxAco8KrHqtH54rs7
+ 6H1T295VZ/3UKHhCPxpKrazeX1UACoHFWarFD8rvcWaBudccUk1itslfLRk+ikPp69O4Pk3bx
+ TPJGyeKDLYmKZkmxDLLomdfql/hXGIXDccGOtyQTypxgsskTutUa/a+IeBAtbNlqa3HAtmlXN
+ k+1xtv3VC/6qp3IGjrqVK6YQ4UHw9wHtVeNa2HpRNK/WVnyi+8usIN94R1r8Lk3N5T5IwT9bl
+ +UwwWo98adgXNiY1f81FyiMNQiKDt+gHPASU69bNXDCcfOLxHDx/n+wpPNIC/rn1shIN5v0Ba
+ Jfwr8DWgUGXYWltQ3BUf8x6G8jUdnpE+ywwMU72tPj3VTl+9xM=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 03:01:07PM +0300, Serge Semin wrote:
-> A PM workaround activated by the flag MODEL_CHERRYTRAIL has been removed
-> since commit 9cbeeca05049 ("i2c: designware: Remove Cherry Trail PMIC I2C
-> bus pm_disabled workaround"), but the flag most likely by mistake has been
-> left in the Dw I2C drivers. Let's remove it.
+clang points out that a local variable is initialized with
+an enum value of the wrong type:
 
-...
+drivers/phy/intel/phy-intel-combo.c:202:34: error: implicit conversion from enumeration type 'enum intel_phy_mode' to different enumeration type 'enum intel_combo_mode' [-Werror,-Wenum-conversion]
+        enum intel_combo_mode cb_mode = PHY_PCIE_MODE;
+                              ~~~~~~~   ^~~~~~~~~~~~~
 
-> -#define MODEL_MSCC_OCELOT	0x00000200
-> +#define MODEL_MSCC_OCELOT	0x00000100
+From reading the code, it seems that this was not only the
+wrong type, but not even supposed to be a code path that can
+happen in practice.
 
-But why?
+Change the code to have no default phy mode but instead return an
+error for invalid input.
 
-Does 0x200 work or not? I didn't see this in commit message.
+Fixes: ac0a95a3ea78 ("phy: intel: Add driver support for ComboPhy")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/phy/intel/phy-intel-combo.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/phy/intel/phy-intel-combo.c b/drivers/phy/intel/phy-intel-combo.c
+index c2a35be4cdfb..04f7b0d08742 100644
+--- a/drivers/phy/intel/phy-intel-combo.c
++++ b/drivers/phy/intel/phy-intel-combo.c
+@@ -199,7 +199,7 @@ static int intel_cbphy_pcie_dis_pad_refclk(struct intel_cbphy_iphy *iphy)
+ 
+ static int intel_cbphy_set_mode(struct intel_combo_phy *cbphy)
+ {
+-	enum intel_combo_mode cb_mode = PHY_PCIE_MODE;
++	enum intel_combo_mode cb_mode;
+ 	enum aggregated_mode aggr = cbphy->aggr_mode;
+ 	struct device *dev = cbphy->dev;
+ 	enum intel_phy_mode mode;
+@@ -224,6 +224,8 @@ static int intel_cbphy_set_mode(struct intel_combo_phy *cbphy)
+ 
+ 		cb_mode = SATA0_SATA1_MODE;
+ 		break;
++	default:
++		return -EINVAL;
+ 	}
+ 
+ 	ret = regmap_write(cbphy->hsiocfg, REG_COMBO_MODE(cbphy->bid), cb_mode);
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.26.2
 
