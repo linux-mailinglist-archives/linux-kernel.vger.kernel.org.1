@@ -2,251 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA8A1E3B52
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA1941E3B8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387743AbgE0IMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 04:12:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42284 "EHLO
+        id S2387970AbgE0INr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 04:13:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729585AbgE0IMJ (ORCPT
+        with ESMTP id S2387948AbgE0INn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 04:12:09 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A92DC061A0F;
-        Wed, 27 May 2020 01:12:09 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jdrAV-0002i5-GD; Wed, 27 May 2020 10:12:07 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 618E11C04D6;
-        Wed, 27 May 2020 10:12:02 +0200 (CEST)
-Date:   Wed, 27 May 2020 08:12:02 -0000
-From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] rcu: Abstract out rcu_irq_enter_check_tick() from
- rcu_nmi_enter()
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200521202116.996113173@linutronix.de>
-References: <20200521202116.996113173@linutronix.de>
+        Wed, 27 May 2020 04:13:43 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5BE0C061A0F;
+        Wed, 27 May 2020 01:13:43 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id u5so11443345pgn.5;
+        Wed, 27 May 2020 01:13:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1Pvjwk/n6XpSKsFU1yL/UyqSsSwArACV6a9IFuCvWoI=;
+        b=g+OBuTNL+ZECp7gRenSfzoC/L0SIFQs2wUNgQ5XneQ49ve7MCXLFqHyaI1J9HP8hFF
+         xZFvHdBiADmGYGqBL80SR5GtgLTUbXo9d3UfqDFFj0SLN/B5WFfGMlNyWLAR+tVbvYCz
+         C4EDVhl4IEpe78El/g9Nz+dJDWkO/ABrWAn818mbecK+TzsU4h/qWOTh9KLV22jXIyGm
+         SrUEFGzeyILWXpcIFBAIOJnIMer+3w8CniZCi5TVTCW1nLLYmDQxBwulWUNK49ca4BOt
+         f5OAT0gMgdznpvyOENVsocczF2HFLHy6Oq37nWMHgKTV2N1Nl/lqod7kwe1GiYzM7JwH
+         lhVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1Pvjwk/n6XpSKsFU1yL/UyqSsSwArACV6a9IFuCvWoI=;
+        b=CXUBJSGpWgJeJ6a8EpV59EnrPC/772tdAEk75UNmc1vfxW/0ZK0Qwo4Qfu2k1nngOV
+         +sx6mTU1n79x2TPPEU5EGsHWbMGhZP7kJ/W9fY7jxs5/c/qN6YrDKnaj3a34IEgUItqU
+         LCYVwXIEshq1zvXGjZ6pU7RibTlBpIXjMwag39PNpz8Yk+LlJkLpoSLLCdLIkFepoTzh
+         9JdXdDE3a0sT4DQg+cpOz4B/UOUSQ3/Pc8GIBlC4Uv4YP6nJciK4GdOaxzCsQFRJHJFW
+         05lH80oY2XWTdjuYYyN78+eikHB5Sbo43it7IS1u1t80n9K3mqAKkMovHCyXplhMIWk0
+         hGsg==
+X-Gm-Message-State: AOAM5319miEgfaEWyJ0lROWGS39riThwJl/qp+I5r/jpIQY1DsLqQ3rt
+        +MTtVba3WfQ8GIyjPAiSfa0=
+X-Google-Smtp-Source: ABdhPJzbLRuMmxwJUPY5sv1El/ZdSk39d9IjzJRaDZ9+OJbVht9mTOUgNcWeTP5sLyuANVdm7nAJ8g==
+X-Received: by 2002:a63:554e:: with SMTP id f14mr2850561pgm.191.1590567223153;
+        Wed, 27 May 2020 01:13:43 -0700 (PDT)
+Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::1])
+        by smtp.gmail.com with ESMTPSA id gz19sm1568851pjb.33.2020.05.27.01.13.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 01:13:42 -0700 (PDT)
+Date:   Wed, 27 May 2020 01:13:37 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Roman Zippel <zippel@linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-riscv@lists.infradead.org,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-c6x-dev@linux-c6x.org,
+        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>, Arnd Bergmann <arnd@arndb.de>,
+        alpha <linux-alpha@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Openrisc <openrisc@lists.librecores.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH] media: omap3isp: Shuffle cacheflush.h and include mm.h
+Message-ID: <20200527081337.GA3506499@ubuntu-s3-xlarge-x86>
+References: <20200515143646.3857579-7-hch@lst.de>
+ <20200527043426.3242439-1-natechancellor@gmail.com>
+ <CAMuHMdVSduTOi5bUgF9sLQdGADwyL1+qALWsKgin1TeOLGhAKQ@mail.gmail.com>
 MIME-Version: 1.0
-Message-ID: <159056712225.17951.7903035443251882028.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdVSduTOi5bUgF9sLQdGADwyL1+qALWsKgin1TeOLGhAKQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/entry branch of tip:
+Hi Geert,
 
-Commit-ID:     aaf2bc50df1f4bfc6857fc601fc7b21d5a18c6a1
-Gitweb:        https://git.kernel.org/tip/aaf2bc50df1f4bfc6857fc601fc7b21d5a18c6a1
-Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Thu, 21 May 2020 22:05:15 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 26 May 2020 19:04:18 +02:00
+On Wed, May 27, 2020 at 09:02:51AM +0200, Geert Uytterhoeven wrote:
+> Hi Nathan,
+> 
+> CC Laurent
+> 
+> On Wed, May 27, 2020 at 6:37 AM Nathan Chancellor
+> <natechancellor@gmail.com> wrote:
+> > After mm.h was removed from the asm-generic version of cacheflush.h,
+> > s390 allyesconfig shows several warnings of the following nature:
+> >
+> > In file included from ./arch/s390/include/generated/asm/cacheflush.h:1,
+> >                  from drivers/media/platform/omap3isp/isp.c:42:
+> > ./include/asm-generic/cacheflush.h:16:42: warning: 'struct mm_struct'
+> > declared inside parameter list will not be visible outside of this
+> > definition or declaration
+> >
+> > cacheflush.h does not include mm.h nor does it include any forward
+> > declaration of these structures hence the warning. To avoid this,
+> > include mm.h explicitly in this file and shuffle cacheflush.h below it.
+> >
+> > Fixes: 19c0054597a0 ("asm-generic: don't include <linux/mm.h> in cacheflush.h")
+> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> 
+> Thanks for your patch!
+> 
+> > I am aware the fixes tag is kind of irrelevant because that SHA will
+> > change in the next linux-next revision and this will probably get folded
+> > into the original patch anyways but still.
+> >
+> > The other solution would be to add forward declarations of these structs
+> > to the top of cacheflush.h, I just chose to do what Christoph did in the
+> > original patch. I am happy to do that instead if you all feel that is
+> > better.
+> 
+> That actually looks like a better solution to me, as it would address the
+> problem for all users.
+> 
+> >  drivers/media/platform/omap3isp/isp.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/media/platform/omap3isp/isp.c b/drivers/media/platform/omap3isp/isp.c
+> > index a4ee6b86663e..54106a768e54 100644
+> > --- a/drivers/media/platform/omap3isp/isp.c
+> > +++ b/drivers/media/platform/omap3isp/isp.c
+> > @@ -39,8 +39,6 @@
+> >   *     Troy Laramy <t-laramy@ti.com>
+> >   */
+> >
+> > -#include <asm/cacheflush.h>
+> > -
+> >  #include <linux/clk.h>
+> >  #include <linux/clkdev.h>
+> >  #include <linux/delay.h>
+> > @@ -49,6 +47,7 @@
+> >  #include <linux/i2c.h>
+> >  #include <linux/interrupt.h>
+> >  #include <linux/mfd/syscon.h>
+> > +#include <linux/mm.h>
+> >  #include <linux/module.h>
+> >  #include <linux/omap-iommu.h>
+> >  #include <linux/platform_device.h>
+> > @@ -58,6 +57,8 @@
+> >  #include <linux/sched.h>
+> >  #include <linux/vmalloc.h>
+> >
+> > +#include <asm/cacheflush.h>
+> > +
+> >  #ifdef CONFIG_ARM_DMA_USE_IOMMU
+> >  #include <asm/dma-iommu.h>
+> >  #endif
+> 
+> Why does this file need <asm/cacheflush.h> at all?
+> It doesn't call any of the flush_*() functions, and seems to compile fine
+> without (on arm32).
+> 
+> Perhaps it was included at the top intentionally, to override the definitions
+> of copy_{to,from}_user_page()? Fortunately that doesn't seem to be the
+> case, from a quick look at the assembler output.
+> 
+> So let's just remove the #include instead?
 
-rcu: Abstract out rcu_irq_enter_check_tick() from rcu_nmi_enter()
+Sounds good to me. I can send a patch if needed or I suppose Andrew can
+just make a small fixup patch for it. Let me know what I should do.
 
-There will likely be exception handlers that can sleep, which rules
-out the usual approach of invoking rcu_nmi_enter() on entry and also
-rcu_nmi_exit() on all exit paths.  However, the alternative approach of
-just not calling anything can prevent RCU from coaxing quiescent states
-from nohz_full CPUs that are looping in the kernel:  RCU must instead
-IPI them explicitly.  It would be better to enable the scheduler tick
-on such CPUs to interact with RCU in a lighter-weight manner, and this
-enabling is one of the things that rcu_nmi_enter() currently does.
-
-What is needed is something that helps RCU coax quiescent states while
-not preventing subsequent sleeps.  This commit therefore splits out the
-nohz_full scheduler-tick enabling from the rest of the rcu_nmi_enter()
-logic into a new function named rcu_irq_enter_check_tick().
-
-[ tglx: Renamed the function and made it a nop when context tracking is off ]
-[ mingo: Fixed a CONFIG_NO_HZ_FULL assumption, harmonized and fixed all the
-         comment blocks and cleaned up rcu_nmi_enter()/exit() definitions. ]
-
-Suggested-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20200521202116.996113173@linutronix.de
----
- include/linux/hardirq.h | 29 ++++++++------
- kernel/rcu/tree.c       | 82 ++++++++++++++++++++++++++++++----------
- 2 files changed, 79 insertions(+), 32 deletions(-)
-
-diff --git a/include/linux/hardirq.h b/include/linux/hardirq.h
-index 621556e..e07cf85 100644
---- a/include/linux/hardirq.h
-+++ b/include/linux/hardirq.h
-@@ -2,31 +2,28 @@
- #ifndef LINUX_HARDIRQ_H
- #define LINUX_HARDIRQ_H
- 
-+#include <linux/context_tracking_state.h>
- #include <linux/preempt.h>
- #include <linux/lockdep.h>
- #include <linux/ftrace_irq.h>
- #include <linux/vtime.h>
- #include <asm/hardirq.h>
- 
--
- extern void synchronize_irq(unsigned int irq);
- extern bool synchronize_hardirq(unsigned int irq);
- 
--#if defined(CONFIG_TINY_RCU)
--
--static inline void rcu_nmi_enter(void)
--{
--}
-+#ifdef CONFIG_NO_HZ_FULL
-+void __rcu_irq_enter_check_tick(void);
-+#else
-+static inline void __rcu_irq_enter_check_tick(void) { }
-+#endif
- 
--static inline void rcu_nmi_exit(void)
-+static __always_inline void rcu_irq_enter_check_tick(void)
- {
-+	if (context_tracking_enabled())
-+		__rcu_irq_enter_check_tick();
- }
- 
--#else
--extern void rcu_nmi_enter(void);
--extern void rcu_nmi_exit(void);
--#endif
--
- /*
-  * It is safe to do non-atomic ops on ->hardirq_context,
-  * because NMI handlers may not preempt and the ops are
-@@ -65,6 +62,14 @@ extern void irq_exit(void);
- #define arch_nmi_exit()		do { } while (0)
- #endif
- 
-+#ifdef CONFIG_TINY_RCU
-+static inline void rcu_nmi_enter(void) { }
-+static inline void rcu_nmi_exit(void) { }
-+#else
-+extern void rcu_nmi_enter(void);
-+extern void rcu_nmi_exit(void);
-+#endif
-+
- /*
-  * NMI vs Tracing
-  * --------------
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 90c8be2..b7f8c49 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -848,6 +848,67 @@ void noinstr rcu_user_exit(void)
- {
- 	rcu_eqs_exit(1);
- }
-+
-+/**
-+ * __rcu_irq_enter_check_tick - Enable scheduler tick on CPU if RCU needs it.
-+ *
-+ * The scheduler tick is not normally enabled when CPUs enter the kernel
-+ * from nohz_full userspace execution.  After all, nohz_full userspace
-+ * execution is an RCU quiescent state and the time executing in the kernel
-+ * is quite short.  Except of course when it isn't.  And it is not hard to
-+ * cause a large system to spend tens of seconds or even minutes looping
-+ * in the kernel, which can cause a number of problems, include RCU CPU
-+ * stall warnings.
-+ *
-+ * Therefore, if a nohz_full CPU fails to report a quiescent state
-+ * in a timely manner, the RCU grace-period kthread sets that CPU's
-+ * ->rcu_urgent_qs flag with the expectation that the next interrupt or
-+ * exception will invoke this function, which will turn on the scheduler
-+ * tick, which will enable RCU to detect that CPU's quiescent states,
-+ * for example, due to cond_resched() calls in CONFIG_PREEMPT=n kernels.
-+ * The tick will be disabled once a quiescent state is reported for
-+ * this CPU.
-+ *
-+ * Of course, in carefully tuned systems, there might never be an
-+ * interrupt or exception.  In that case, the RCU grace-period kthread
-+ * will eventually cause one to happen.  However, in less carefully
-+ * controlled environments, this function allows RCU to get what it
-+ * needs without creating otherwise useless interruptions.
-+ */
-+void __rcu_irq_enter_check_tick(void)
-+{
-+	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
-+
-+	 // Enabling the tick is unsafe in NMI handlers.
-+	if (WARN_ON_ONCE(in_nmi()))
-+		return;
-+
-+	RCU_LOCKDEP_WARN(rcu_dynticks_curr_cpu_in_eqs(),
-+			 "Illegal rcu_irq_enter_check_tick() from extended quiescent state");
-+
-+	if (!tick_nohz_full_cpu(rdp->cpu) ||
-+	    !READ_ONCE(rdp->rcu_urgent_qs) ||
-+	    READ_ONCE(rdp->rcu_forced_tick)) {
-+		// RCU doesn't need nohz_full help from this CPU, or it is
-+		// already getting that help.
-+		return;
-+	}
-+
-+	// We get here only when not in an extended quiescent state and
-+	// from interrupts (as opposed to NMIs).  Therefore, (1) RCU is
-+	// already watching and (2) The fact that we are in an interrupt
-+	// handler and that the rcu_node lock is an irq-disabled lock
-+	// prevents self-deadlock.  So we can safely recheck under the lock.
-+	// Note that the nohz_full state currently cannot change.
-+	raw_spin_lock_rcu_node(rdp->mynode);
-+	if (rdp->rcu_urgent_qs && !rdp->rcu_forced_tick) {
-+		// A nohz_full CPU is in the kernel and RCU needs a
-+		// quiescent state.  Turn on the tick!
-+		WRITE_ONCE(rdp->rcu_forced_tick, true);
-+		tick_dep_set_cpu(rdp->cpu, TICK_DEP_BIT_RCU);
-+	}
-+	raw_spin_unlock_rcu_node(rdp->mynode);
-+}
- #endif /* CONFIG_NO_HZ_FULL */
- 
- /**
-@@ -894,26 +955,7 @@ noinstr void rcu_nmi_enter(void)
- 		incby = 1;
- 	} else if (!in_nmi()) {
- 		instrumentation_begin();
--		if (tick_nohz_full_cpu(rdp->cpu) &&
--		    rdp->dynticks_nmi_nesting == DYNTICK_IRQ_NONIDLE &&
--		    READ_ONCE(rdp->rcu_urgent_qs) &&
--		    !READ_ONCE(rdp->rcu_forced_tick)) {
--			// We get here only if we had already exited the
--			// extended quiescent state and this was an
--			// interrupt (not an NMI).  Therefore, (1) RCU is
--			// already watching and (2) The fact that we are in
--			// an interrupt handler and that the rcu_node lock
--			// is an irq-disabled lock prevents self-deadlock.
--			// So we can safely recheck under the lock.
--			raw_spin_lock_rcu_node(rdp->mynode);
--			if (rdp->rcu_urgent_qs && !rdp->rcu_forced_tick) {
--				// A nohz_full CPU is in the kernel and RCU
--				// needs a quiescent state.  Turn on the tick!
--				WRITE_ONCE(rdp->rcu_forced_tick, true);
--				tick_dep_set_cpu(rdp->cpu, TICK_DEP_BIT_RCU);
--			}
--			raw_spin_unlock_rcu_node(rdp->mynode);
--		}
-+		rcu_irq_enter_check_tick();
- 		instrumentation_end();
- 	}
- 	instrumentation_begin();
+Cheers,
+Nathan
