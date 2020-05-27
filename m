@@ -2,218 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC151E481F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917541E4840
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390019AbgE0PsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 11:48:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725294AbgE0PsC (ORCPT
+        id S2390153AbgE0Pto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 11:49:44 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:38611 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390137AbgE0Ptl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 11:48:02 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A718C05BD1E
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 08:48:02 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id D2CBC2A3AB1
-From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-To:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org
-Cc:     mingo@redhat.com, dvhart@infradead.org, kernel@collabora.com,
-        krisman@collabora.com,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-Subject: [PATCH 2/4] futex: Remove needless goto's
-Date:   Wed, 27 May 2020 12:47:45 -0300
-Message-Id: <20200527154747.36931-3-andrealmeid@collabora.com>
+        Wed, 27 May 2020 11:49:41 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 85757582018;
+        Wed, 27 May 2020 11:49:40 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Wed, 27 May 2020 11:49:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm2; bh=XORez4C02a/ZY
+        ymkxmrQKFXwT1S3DwIs6qaJy6E64lg=; b=Hr41QUceBxKy+LkabHwK9nwQ14tW0
+        1kxMoalxGe7+v3rNvpL7EUJAMXv4kS7vyyoDGzocDuWujaZm/oo2pg8BZMCNL+4h
+        sbRvmGjYQH839A95zKGVqox737XJfgfkNuEctyxBEFvuIDw43ieWTAhtpadU0Rnj
+        cyp8+ly41a9xiYaE/Bwsn1uAW1Shh5CuBhXQHLkoigGle83kYZkWETLFsGwKZFcK
+        tQ8Osk9GCl5ZerZQgNaqzsvNtE9yTW+l09ChBE5oo43JU/eeSXYw7vzqho1MDfXK
+        +28ksDHKGhERyjskWh9XtmZQ1K1k6srKIEgA3JyxslIeMYksM+ilW9CoA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; bh=XORez4C02a/ZYymkxmrQKFXwT1S3DwIs6qaJy6E64lg=; b=jyJY+6YG
+        aamvxDXrlfInqYi6RKao9rrASWkZqo8QNaOV0/HJf1GDxmWg9BYDve36PQPaS+Ii
+        kCqauQ6D3jbljbzZPkuCbMAGpl14yQbvzfJM7qH8w5EdDkY/rixIGAfdeZxC0BrS
+        YrsJ8cRQjXL26tWI/5C+z+3UaxSYkEbUN+9LscGFxtaTjJmnWGBYE1vgUO0+ixw8
+        0ADrxp9UI2Wc88k8eYjDHIt4tGFxXb9EB4S9eEGClHxii8vgyjy+TovnySsVU2m3
+        jmZm3E/g+9DmA+B99GwV/2Nm9JZzEsA/6soPRFJvMJZhdpq9hR2GCIrGlVsIhIrV
+        /L34r5NSjkfzUA==
+X-ME-Sender: <xms:FIzOXntBoInmfxySUtOOqvavS9S-IpHe5v_qKncEooJSnGBls3gabA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddvgedgkeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
+    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepfeehne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:FIzOXod_auMYYm27WILMpAWgPASu4us44rnRz8MbMl_DudeyMtgvQA>
+    <xmx:FIzOXqzuvxza-NPQ9YcTsTNqwLL3Q_LvRE-v1dm7M7VjpxbhZINotg>
+    <xmx:FIzOXmOTmiFKbTIoc_Ntn4m-ICDKNXgdLZhiPTRMBgTiDstwQc_xOg>
+    <xmx:FIzOXoP5nu7WPLVDPmQ9kxLHTzgi1NacEueAMSLEA4cxD13LG0hn-A>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 26D213061CB6;
+        Wed, 27 May 2020 11:49:40 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Maxime Ripard <maxime@cerno.tech>
+Subject: [PATCH v3 015/105] drm/vc4: hvs: Boost the core clock during modeset
+Date:   Wed, 27 May 2020 17:47:45 +0200
+Message-Id: <1aaadf9a5176591c891622cb00b0c50f42e569dc.1590594512.git-series.maxime@cerno.tech>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200527154747.36931-1-andrealmeid@collabora.com>
-References: <20200527154747.36931-1-andrealmeid@collabora.com>
+In-Reply-To: <cover.aaf2100bd7da4609f8bcb8216247d4b4e4379639.1590594512.git-series.maxime@cerno.tech>
+References: <cover.aaf2100bd7da4609f8bcb8216247d4b4e4379639.1590594512.git-series.maxime@cerno.tech>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As stated in the coding style documentation[1], "if there is no cleanup
-needed then just return directly", instead of jumping to a label and
-then returning. Remove such goto's and replace with a return statement.
-When there's a ternary operator on the return value, replace with the
-result of the operation when is logically possible to determine it by
-the control flow.
+In order to prevent timeouts and stalls in the pipeline, the core clock
+needs to be maxed at 500MHz during a modeset on the BCM2711.
 
-[1] https://www.kernel.org/doc/html/latest/process/coding-style.html#centralized-exiting-of-functions
-
-Signed-off-by: André Almeida <andrealmeid@collabora.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- kernel/futex.c | 40 ++++++++++++++++------------------------
- 1 file changed, 16 insertions(+), 24 deletions(-)
+ drivers/gpu/drm/vc4/vc4_drv.h |  2 ++
+ drivers/gpu/drm/vc4/vc4_hvs.c |  9 +++++++++
+ drivers/gpu/drm/vc4/vc4_kms.c |  7 +++++++
+ 3 files changed, 18 insertions(+)
 
-diff --git a/kernel/futex.c b/kernel/futex.c
-index 1f0287a51dce..ec07de620d1e 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -1604,13 +1604,13 @@ futex_wake(u32 __user *uaddr, unsigned int flags, int nr_wake, u32 bitset)
+diff --git a/drivers/gpu/drm/vc4/vc4_drv.h b/drivers/gpu/drm/vc4/vc4_drv.h
+index 1e226454c9a6..9b57ea2ba93f 100644
+--- a/drivers/gpu/drm/vc4/vc4_drv.h
++++ b/drivers/gpu/drm/vc4/vc4_drv.h
+@@ -323,6 +323,8 @@ struct vc4_hvs {
+ 	void __iomem *regs;
+ 	u32 __iomem *dlist;
  
- 	ret = get_futex_key(uaddr, flags & FLAGS_SHARED, &key, FUTEX_READ);
- 	if (unlikely(ret != 0))
--		goto out;
-+		return ret;
- 
- 	hb = hash_futex(&key);
- 
- 	/* Make sure we really have tasks to wakeup */
- 	if (!hb_waiters_pending(hb))
--		goto out;
-+		return ret;
- 
- 	spin_lock(&hb->lock);
- 
-@@ -1633,7 +1633,6 @@ futex_wake(u32 __user *uaddr, unsigned int flags, int nr_wake, u32 bitset)
- 
- 	spin_unlock(&hb->lock);
- 	wake_up_q(&wake_q);
--out:
- 	return ret;
- }
- 
-@@ -1700,10 +1699,10 @@ futex_wake_op(u32 __user *uaddr1, unsigned int flags, u32 __user *uaddr2,
- retry:
- 	ret = get_futex_key(uaddr1, flags & FLAGS_SHARED, &key1, FUTEX_READ);
- 	if (unlikely(ret != 0))
--		goto out;
-+		return ret;
- 	ret = get_futex_key(uaddr2, flags & FLAGS_SHARED, &key2, FUTEX_WRITE);
- 	if (unlikely(ret != 0))
--		goto out;
-+		return ret;
- 
- 	hb1 = hash_futex(&key1);
- 	hb2 = hash_futex(&key2);
-@@ -1721,13 +1720,13 @@ futex_wake_op(u32 __user *uaddr1, unsigned int flags, u32 __user *uaddr2,
- 			 * an MMU, but we might get them from range checking
- 			 */
- 			ret = op_ret;
--			goto out;
-+			return ret;
- 		}
- 
- 		if (op_ret == -EFAULT) {
- 			ret = fault_in_user_writeable(uaddr2);
- 			if (ret)
--				goto out;
-+				return ret;
- 		}
- 
- 		if (!(flags & FLAGS_SHARED)) {
-@@ -1770,7 +1769,6 @@ futex_wake_op(u32 __user *uaddr1, unsigned int flags, u32 __user *uaddr2,
- out_unlock:
- 	double_unlock_hb(hb1, hb2);
- 	wake_up_q(&wake_q);
--out:
- 	return ret;
- }
- 
-@@ -1977,20 +1975,18 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
- retry:
- 	ret = get_futex_key(uaddr1, flags & FLAGS_SHARED, &key1, FUTEX_READ);
- 	if (unlikely(ret != 0))
--		goto out;
-+		return ret;
- 	ret = get_futex_key(uaddr2, flags & FLAGS_SHARED, &key2,
- 			    requeue_pi ? FUTEX_WRITE : FUTEX_READ);
- 	if (unlikely(ret != 0))
--		goto out;
-+		return ret;
- 
- 	/*
- 	 * The check above which compares uaddrs is not sufficient for
- 	 * shared futexes. We need to compare the keys:
++	struct clk *core_clk;
++
+ 	/* Memory manager for CRTCs to allocate space in the display
+ 	 * list.  Units are dwords.
  	 */
--	if (requeue_pi && match_futex(&key1, &key2)) {
--		ret = -EINVAL;
--		goto out;
--	}
-+	if (requeue_pi && match_futex(&key1, &key2))
-+		return -EINVAL;
+diff --git a/drivers/gpu/drm/vc4/vc4_hvs.c b/drivers/gpu/drm/vc4/vc4_hvs.c
+index 0fe4758de03a..f4942667355b 100644
+--- a/drivers/gpu/drm/vc4/vc4_hvs.c
++++ b/drivers/gpu/drm/vc4/vc4_hvs.c
+@@ -19,6 +19,7 @@
+  * each CRTC.
+  */
  
- 	hb1 = hash_futex(&key1);
- 	hb2 = hash_futex(&key2);
-@@ -2010,7 +2006,7 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
++#include <linux/clk.h>
+ #include <linux/component.h>
+ #include <linux/platform_device.h>
  
- 			ret = get_user(curval, uaddr1);
- 			if (ret)
--				goto out;
-+				return ret;
+@@ -241,6 +242,14 @@ static int vc4_hvs_bind(struct device *dev, struct device *master, void *data)
+ 	hvs->regset.regs = hvs_regs;
+ 	hvs->regset.nregs = ARRAY_SIZE(hvs_regs);
  
- 			if (!(flags & FLAGS_SHARED))
- 				goto retry_private;
-@@ -2076,7 +2072,7 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
- 			ret = fault_in_user_writeable(uaddr2);
- 			if (!ret)
- 				goto retry;
--			goto out;
-+			return ret;
- 		case -EBUSY:
- 		case -EAGAIN:
- 			/*
-@@ -2195,8 +2191,6 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
- 	double_unlock_hb(hb1, hb2);
- 	wake_up_q(&wake_q);
- 	hb_waiters_dec(hb2);
--
--out:
- 	return ret ? ret : task_count;
- }
++	if (hvs->hvs5) {
++		hvs->core_clk = devm_clk_get(&pdev->dev, NULL);
++		if (IS_ERR(hvs->core_clk)) {
++			dev_err(&pdev->dev, "Couldn't get core clock\n");
++			return PTR_ERR(hvs->core_clk);
++		}
++	}
++
+ 	if (!hvs->hvs5)
+ 		hvs->dlist = hvs->regs + SCALER_DLIST_START;
+ 	else
+diff --git a/drivers/gpu/drm/vc4/vc4_kms.c b/drivers/gpu/drm/vc4/vc4_kms.c
+index 9417e45d981f..29b75b60d858 100644
+--- a/drivers/gpu/drm/vc4/vc4_kms.c
++++ b/drivers/gpu/drm/vc4/vc4_kms.c
+@@ -11,6 +11,8 @@
+  * crtc, HDMI encoder).
+  */
  
-@@ -2542,7 +2536,7 @@ static int fixup_owner(u32 __user *uaddr, struct futex_q *q, int locked)
- 		 */
- 		if (q->pi_state->owner != current)
- 			ret = fixup_pi_state_owner(uaddr, q, current);
--		goto out;
-+		return ret ? ret : locked;
++#include <linux/clk.h>
++
+ #include <drm/drm_atomic.h>
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_crtc.h>
+@@ -149,6 +151,7 @@ vc4_atomic_complete_commit(struct drm_atomic_state *state)
+ {
+ 	struct drm_device *dev = state->dev;
+ 	struct vc4_dev *vc4 = to_vc4_dev(dev);
++	struct vc4_hvs *hvs = vc4->hvs;
+ 	struct vc4_crtc *vc4_crtc;
+ 	int i;
+ 
+@@ -160,6 +163,8 @@ vc4_atomic_complete_commit(struct drm_atomic_state *state)
+ 		vc4_hvs_mask_underrun(dev, vc4_crtc->channel);
  	}
  
- 	/*
-@@ -2555,7 +2549,7 @@ static int fixup_owner(u32 __user *uaddr, struct futex_q *q, int locked)
- 	 */
- 	if (q->pi_state->owner == current) {
- 		ret = fixup_pi_state_owner(uaddr, q, NULL);
--		goto out;
-+		return ret;
- 	}
++	clk_set_rate(hvs->core_clk, 500000000);
++
+ 	drm_atomic_helper_wait_for_fences(dev, state, false);
  
- 	/*
-@@ -2569,8 +2563,7 @@ static int fixup_owner(u32 __user *uaddr, struct futex_q *q, int locked)
- 				q->pi_state->owner);
- 	}
+ 	drm_atomic_helper_wait_for_dependencies(state);
+@@ -182,6 +187,8 @@ vc4_atomic_complete_commit(struct drm_atomic_state *state)
  
--out:
--	return ret ? ret : locked;
-+	return ret;
- }
+ 	drm_atomic_helper_commit_cleanup_done(state);
  
- /**
-@@ -2667,7 +2660,7 @@ static int futex_wait_setup(u32 __user *uaddr, u32 val, unsigned int flags,
++	clk_set_rate(hvs->core_clk, 200000000);
++
+ 	drm_atomic_state_put(state);
  
- 		ret = get_user(uval, uaddr);
- 		if (ret)
--			goto out;
-+			return ret;
- 
- 		if (!(flags & FLAGS_SHARED))
- 			goto retry_private;
-@@ -2680,7 +2673,6 @@ static int futex_wait_setup(u32 __user *uaddr, u32 val, unsigned int flags,
- 		ret = -EWOULDBLOCK;
- 	}
- 
--out:
- 	return ret;
- }
- 
+ 	up(&vc4->async_modeset);
 -- 
-2.26.2
-
+git-series 0.9.1
