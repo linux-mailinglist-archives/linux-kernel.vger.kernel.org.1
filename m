@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C8C1E4F1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F4FF1E4F19
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728544AbgE0UWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 16:22:40 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:38063 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728450AbgE0UWj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 16:22:39 -0400
+        id S1728390AbgE0UWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 16:22:32 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:54632 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727787AbgE0UWc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 16:22:32 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1590610958; h=Content-Transfer-Encoding: MIME-Version:
+ s=smtp; t=1590610951; h=Content-Transfer-Encoding: MIME-Version:
  References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=Y8r0vejj7AAxjfIGnYZNa+fR6ffFzxlWascR8sqXLkM=; b=WP/qEaTWJ6N351AFqDZZkB3rQbiXOT+wNPuLmItfq8x+Rfp5FLEuPzl4HB2X+Uz/WeLv1QcG
- /cZ8j04HdJcwGAJ9e33vbyD/uaGouOKWBmIPVhVHqXAok9KUOyd04VchTgdArZ/0+gaIGt2q
- kkE9DSZhORZ6tpF6Numm5+Q1SJ4=
-X-Mailgun-Sending-Ip: 104.130.122.27
+ Sender; bh=asihdyvMpllnyYwbtDMtg5pmz3DDPo5UV3bMnDNkvAg=; b=i9KRGxBoPz3q0w5hMKXsPXfMMn0JvG45+egvloCtLnN4CCTIntpQc0XhlV37/AHdXLGl8nZ4
+ jVNyq+GWmfiKxGJk90tu18mgJ2cIq/zNdHNx1dMvR7DXys98py/bVwJzv/+M5warrPtFwzRn
+ 73/P/5i/oeSOMLRrjLTvSLF17SI=
+X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5ececc0137a454afcbe3f530 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 May 2020 20:22:25
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5ececc07c28b2cdd98fd3f7e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 May 2020 20:22:31
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6CB29C433AF; Wed, 27 May 2020 20:22:25 +0000 (UTC)
+        id 394A5C43395; Wed, 27 May 2020 20:22:31 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -37,9 +36,9 @@ Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outs
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 52CBEC43395;
-        Wed, 27 May 2020 20:22:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 52CBEC43395
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 43EEFC43391;
+        Wed, 27 May 2020 20:22:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 43EEFC43391
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sibis@codeaurora.org
 From:   Sibi Sankar <sibis@codeaurora.org>
@@ -52,9 +51,9 @@ Cc:     nm@ti.com, bjorn.andersson@linaro.org, agross@kernel.org,
         amit.kucheria@linaro.org, lukasz.luba@arm.com,
         sudeep.holla@arm.com, smasetty@codeaurora.org,
         Sibi Sankar <sibis@codeaurora.org>
-Subject: [PATCH v5 1/5] cpufreq: blacklist SDM845 in cpufreq-dt-platdev
-Date:   Thu, 28 May 2020 01:51:49 +0530
-Message-Id: <20200527202153.11659-2-sibis@codeaurora.org>
+Subject: [PATCH v5 2/5] cpufreq: blacklist SC7180 in cpufreq-dt-platdev
+Date:   Thu, 28 May 2020 01:51:50 +0530
+Message-Id: <20200527202153.11659-3-sibis@codeaurora.org>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200527202153.11659-1-sibis@codeaurora.org>
 References: <20200527202153.11659-1-sibis@codeaurora.org>
@@ -65,7 +64,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SDM845 to cpufreq-dt-platdev blacklist since the actual scaling is
+Add SC7180 to cpufreq-dt-platdev blacklist since the actual scaling is
 handled by the 'qcom-cpufreq-hw' driver.
 
 Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
@@ -84,17 +83,17 @@ v4:
  1 file changed, 1 insertion(+)
 
 diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-index e8e20fef400b0..be85eb494a6b3 100644
+index be85eb494a6b3..7d01df7bfa6cd 100644
 --- a/drivers/cpufreq/cpufreq-dt-platdev.c
 +++ b/drivers/cpufreq/cpufreq-dt-platdev.c
 @@ -132,6 +132,7 @@ static const struct of_device_id blacklist[] __initconst = {
  	{ .compatible = "qcom,apq8096", },
  	{ .compatible = "qcom,msm8996", },
  	{ .compatible = "qcom,qcs404", },
-+	{ .compatible = "qcom,sdm845", },
++	{ .compatible = "qcom,sc7180", },
+ 	{ .compatible = "qcom,sdm845", },
  
  	{ .compatible = "st,stih407", },
- 	{ .compatible = "st,stih410", },
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
