@@ -2,126 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037D51E5170
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 00:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 424581E5176
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 00:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725941AbgE0WrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 18:47:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
+        id S1726575AbgE0WrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 18:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgE0WrB (ORCPT
+        with ESMTP id S1725836AbgE0WrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 18:47:01 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0112AC05BD1E;
-        Wed, 27 May 2020 15:47:00 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id f18so1375363qkh.1;
-        Wed, 27 May 2020 15:47:00 -0700 (PDT)
+        Wed, 27 May 2020 18:47:16 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858DAC05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 15:47:15 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id k35so6114911qva.18
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 15:47:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hdWbjQHS/5LC948mUM96MFEQV/j+JyYYxwWuAAvmOdE=;
-        b=cdUhXoam5HnhNHy1GFB1tDHea0+fM9C0n6OJgl+9wuCWxKRLL2breGo7/8R8LEj778
-         oqP9jhx8v0q8fEpw2+KETcWZB2j8cBm3ThoTTb8s2Nr+oPGJQFv4HdlzOGKaomeSfTU/
-         DUMfb0iX0RnCk28R0/64IZsaEf69+OMAHTGRd26BoRg8JTbJnHN4ra3dMQPJXkkFbDpf
-         8JaNlU2bXBdnYB6OIqscrXItVJyK0pWhDKNaFZhPRbCPazRJ+50pX0gJ1Ee0IgK5PvVK
-         88ewrnarGeQPtOgbV6xkfsSzPuXr6t8IDBxEAtRg505voz5SADloB0h/taSopxAgjbI+
-         w60g==
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=4rgQHj0e4rf2gKwkFZaKemGDRL0W5vamS2+zR9c8gWM=;
+        b=BMTDeSA5xRUXFpTQeoVkWY8C3uEkAEVow71OZ5ZnEDkAQL0nigc+V/hKtAsFLAXavH
+         dgfjcMQBVB/x/01JXMj8XJHgorNibQ7JATwBvagi9tMqGdS9pq3tMRozJarFqj7GXZH+
+         T3uCGY8lCBMevwGjz5QShJ3VHPgx47cOSK3DehkYFY/lt1ByBTGFmxGb8XeRtg7HqvWx
+         WC1i7C3Nm+eAy8XwWhRinsnN00PeHFvPXupmoaHaUvyB4/HMXtH6e3Ib1dvfCtwP7boA
+         FzbqorEa/HdUA/OQ+GMyc0FlHBpVextzJJ70IkQWLpZoAJ3TGoUbGvnrbUP/mkzhSdPJ
+         sD6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=hdWbjQHS/5LC948mUM96MFEQV/j+JyYYxwWuAAvmOdE=;
-        b=iazVMkP4K6qjC1RdHp+V3I5zedO0RT/+RDcAOkB6CXXtaxKY2j+Cr57/WHe7Durc94
-         jxj4SEPf8dPGJkpo81ZHJkLLfFlQnAQhM9Y+k5bSmcW0lmMzet0RQPCpzg1oHj6onnFi
-         l3hb54aVYqrKHOCbM0M7+DJ/mP4UFSt+8uShUTlqDY78PzpHubUjZz3dWYrF06nZwcfw
-         sgzN/0ZH2P4L0I716tI0bQns1je/N7JWRxeooxyTrAEOU6Wk+J3qlLtY+cHtp7Ug2bPN
-         B81w4jyS4s8gm7dWdi/AmVXYtFJj4M3eycvPYGgm6rUoTgpGGH7nIM7LYTg9PIVNejlO
-         KDxA==
-X-Gm-Message-State: AOAM53195KVXyqjvwbVJ6wlaZY8VqlG6uld1lsx8p/OxsTJMNLhD+KhV
-        r5LSi00C34Hytov55CXryOI=
-X-Google-Smtp-Source: ABdhPJyFLWVeaWq2hvIIZQy/y7YZrHPrjOAiZAJCaQJDHjnLxleEPaZCb3y6Xm+spRDkflSJ8Ol4Eg==
-X-Received: by 2002:a37:7603:: with SMTP id r3mr86393qkc.243.1590619620116;
-        Wed, 27 May 2020 15:47:00 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id y185sm2970856qkd.83.2020.05.27.15.46.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2020 15:46:59 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Wed, 27 May 2020 18:46:57 -0400
-To:     "Williams, Dan J" <dan.j.williams@intel.com>
-Cc:     "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "joe@perches.com" <joe@perches.com>,
-        "nivedita@alum.mit.edu" <nivedita@alum.mit.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>
-Subject: Re: [PATCH 08/15] efi/x86: Move command-line initrd loading to
- efi_main
-Message-ID: <20200527224657.GA3568142@rani.riverdale.lan>
-References: <20200508180157.1816-1-ardb@kernel.org>
- <20200508180157.1816-9-ardb@kernel.org>
- <10a1c7fcea861f5d45dff81cba673e970d686bc2.camel@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <10a1c7fcea861f5d45dff81cba673e970d686bc2.camel@intel.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=4rgQHj0e4rf2gKwkFZaKemGDRL0W5vamS2+zR9c8gWM=;
+        b=jj27p11NE3swHpM5KT/VcaZm4SETuN/1JKNlNbNvpKnJwDg7kle6i+nuxmxeiYSlj1
+         ltIOLh1y3fopKnVfhKgL1DhKkzNfveXXcM7DPtw112Q/t5djH1nDM4zHVn5zuOiI74eX
+         1U6+HUJd63pvgTUb80l0omTN8g5dHA1TbdemDlnUAAc3omwQ4wck6KPxGYGEHkPpKaWQ
+         92i5aQdr3onwB92J8vqnoUWDLInOGZqshWvY3GszFNaCkf8k9IQtedEY/CwXrJQ88+B4
+         lKSzs87af2SixIy9PLxcagYmXfz2hIwAdhgH8u3NT615HiGkPBT/KHidSaR13gJXK7g8
+         y6aw==
+X-Gm-Message-State: AOAM532/KKL5BnuxkzbhaRz5OG2+RnmJFQ2Ul01XhhGZlJAG4sPbvkcR
+        PI4h2VGGxXMRVNcO/XF/cPVnNBnrC2Up5/aZ6z0tteLh07dlbcjhX6NiLFKP280Luvp1aHtt/LS
+        CSyYrmUXjxkaWZWgDdUJ0NoMzs48eOOKSesafxM2NGM3G24JQzKy0sz04/BrxmF9xJWbsuL0w
+X-Google-Smtp-Source: ABdhPJzxDLTKMbF6fHEzohkPrNbbv2yrVYQKS7aY6Psdazpz4EufoMGpb5hkzZZNOYvHetCFwMA+RhG7KPzq
+X-Received: by 2002:a0c:b259:: with SMTP id k25mr262137qve.111.1590619634659;
+ Wed, 27 May 2020 15:47:14 -0700 (PDT)
+Date:   Wed, 27 May 2020 15:46:57 -0700
+In-Reply-To: <20200527224659.206129-1-eranian@google.com>
+Message-Id: <20200527224659.206129-4-eranian@google.com>
+Mime-Version: 1.0
+References: <20200527224659.206129-1-eranian@google.com>
+X-Mailer: git-send-email 2.27.0.rc0.183.gde8f92d652-goog
+Subject: [PATCH v2 3/5] perf/x86/rapl: flip logic on default events visibility
+From:   Stephane Eranian <eranian@google.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, mingo@elte.hu, irogers@google.com,
+        kim.phillips@amd.com, jolsa@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 10:30:18PM +0000, Williams, Dan J wrote:
-> On Fri, 2020-05-08 at 20:01 +0200, Ard Biesheuvel wrote:
-> > From: Arvind Sankar <nivedita@alum.mit.edu>
-> > 
-> > Consolidate the initrd loading in efi_main.
-> > 
-> > The command line options now need to be parsed only once.
-> > 
-> > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-> > Link: 
-> > https://lore.kernel.org/r/20200430182843.2510180-9-nivedita@alum.mit.edu
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> 
-> Hi,
-> 
-> This patch patch in tip/master as:
-> 
-> 987053a30016 efi/x86: Move command-line initrd loading to efi_main
-> 
-> ...regresses my nfs root configuration. It hangs trying to mount the
-> nfs root filesystem "root=/dev/nfs ip=dhcp".
-> 
-> It does not revert cleanly.
-> 
-> 
+This patch modifies the default visibility of the attribute_group
+for each RAPL event. By default if the grp.is_visible field is NULL,
+then sysfs considers that it must display the attribute group.
+If the field is not NULL (callback function), then the return value
+of the callback determines the visibility (0 = not visible). The RAPL
+attribute groups had the field set to NULL, meaning that unless they
+failed the probing from perf_msr_probe(), they would be visible. We want
+to avoid having to specify attribute groups that are not supported by hw
+in the rapl_msrs[] array, they don't have MSR address to begin with.
+Therefore, we intialize the visible field of all RAPL attribute groups
+to a callback that returns 0. If the RAPL msr goes through probing
+and succeeds the is_visible field will be set back to NULL (visible).
+If the probing fails the field is set to a callback that return 0 (no visible).
 
-Does this fix it?
+Signed-off-by: Stephane Eranian <eranian@google.com>
 
-diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-index defeb6035109..f53362efef84 100644
---- a/drivers/firmware/efi/libstub/x86-stub.c
-+++ b/drivers/firmware/efi/libstub/x86-stub.c
-@@ -771,10 +771,12 @@ unsigned long efi_main(efi_handle_t handle,
- 			efi_err("Failed to load initrd!\n");
- 			goto fail;
- 		}
--		efi_set_u64_split(addr, &hdr->ramdisk_image,
--				  &boot_params->ext_ramdisk_image);
--		efi_set_u64_split(size, &hdr->ramdisk_size,
--				  &boot_params->ext_ramdisk_size);
-+		if (size > 0) {
-+			efi_set_u64_split(addr, &hdr->ramdisk_image,
-+					  &boot_params->ext_ramdisk_image);
-+			efi_set_u64_split(size, &hdr->ramdisk_size,
-+					  &boot_params->ext_ramdisk_size);
-+		}
- 	}
+---
+ arch/x86/events/rapl.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
+index 72990e9a4e71f..fcb21fbcfe0d0 100644
+--- a/arch/x86/events/rapl.c
++++ b/arch/x86/events/rapl.c
+@@ -460,9 +460,16 @@ static struct attribute *rapl_events_cores[] = {
+ 	NULL,
+ };
  
- 	/*
++static umode_t
++rapl_not_visible(struct kobject *kobj, struct attribute *attr, int i)
++{
++	return 0;
++}
++
+ static struct attribute_group rapl_events_cores_group = {
+ 	.name  = "events",
+ 	.attrs = rapl_events_cores,
++	.is_visible = rapl_not_visible,
+ };
+ 
+ static struct attribute *rapl_events_pkg[] = {
+@@ -475,6 +482,7 @@ static struct attribute *rapl_events_pkg[] = {
+ static struct attribute_group rapl_events_pkg_group = {
+ 	.name  = "events",
+ 	.attrs = rapl_events_pkg,
++	.is_visible = rapl_not_visible,
+ };
+ 
+ static struct attribute *rapl_events_ram[] = {
+@@ -487,6 +495,7 @@ static struct attribute *rapl_events_ram[] = {
+ static struct attribute_group rapl_events_ram_group = {
+ 	.name  = "events",
+ 	.attrs = rapl_events_ram,
++	.is_visible = rapl_not_visible,
+ };
+ 
+ static struct attribute *rapl_events_gpu[] = {
+@@ -499,6 +508,7 @@ static struct attribute *rapl_events_gpu[] = {
+ static struct attribute_group rapl_events_gpu_group = {
+ 	.name  = "events",
+ 	.attrs = rapl_events_gpu,
++	.is_visible = rapl_not_visible,
+ };
+ 
+ static struct attribute *rapl_events_psys[] = {
+@@ -511,6 +521,7 @@ static struct attribute *rapl_events_psys[] = {
+ static struct attribute_group rapl_events_psys_group = {
+ 	.name  = "events",
+ 	.attrs = rapl_events_psys,
++	.is_visible = rapl_not_visible,
+ };
+ 
+ static bool test_msr(int idx, void *data)
+-- 
+2.27.0.rc0.183.gde8f92d652-goog
+
