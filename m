@@ -2,123 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7758C1E4B87
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 19:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C43751E4BA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 19:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731188AbgE0RJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 13:09:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55514 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731179AbgE0RJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 13:09:33 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EEB1020873;
-        Wed, 27 May 2020 17:09:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590599372;
-        bh=wCetC++Us0xX1f6RC7S6xMvFaA6lr71j5qXv/R2GFEE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=zLuucDwT+5SPkCFh4nrEOUYnJtLP3LHGwsXthvT1fHzBKOVyJJWRuUvG7aJeB0gKF
-         bX2nxlkpXARsQkhAuBWVIqNlkHrKpFILGrJvqaovJMiepJYVTIa6rwizDlMby9gXva
-         jrkwIPva6pl9pFMgmeQphrBYMIfD4O8oy8pYdysU=
-Date:   Wed, 27 May 2020 12:14:25 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH] efi: Replace zero-length array and use struct_size() helper
-Message-ID: <20200527171425.GA4053@embeddedor>
+        id S1731281AbgE0RPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 13:15:05 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:35477 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731265AbgE0RPD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 13:15:03 -0400
+Received: by mail-il1-f196.google.com with SMTP id a14so24832550ilk.2;
+        Wed, 27 May 2020 10:15:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cUzyV2ffMQiKR0ssWs7eyow7JR4Jl831ooktar0LQs8=;
+        b=QgHA5BNG/I6hCqDTGqGvKRNS2bLKCnKlr/oDAoDmwrvbgK84LOjPgnMMkBc/nsgydf
+         o4XvDPtiLmywIp7OsSKYkvRSqoFuF3LRBMEFZMpwd7RgXTNMvWGC5gom+UvEuhX/D0K7
+         0DFCsS56fCkdII97OuekQGA4nYP5IE6RWGMNg9qh467w+lz9GzagGC0IdKJOn/XZik8c
+         fJhoQgUv2CSeM20FH+XwNGc+hqpOokoCaa4JnoFXY/I90ahpEsDxJCMOmbfooH7JH22/
+         ax6CfC4utXSr4B7+k+VBYnOTwvEa1G2eKRfIkKCWym2eoxgb1pg+KXwt3CnCcJgTk0rw
+         JzlA==
+X-Gm-Message-State: AOAM530IHlLlugXepexxuNZB1hjxdh5sLp4YFh+xVVQTUviEUi0nnrTa
+        iOBxQ0ECIdI7iuX9uIGRpw==
+X-Google-Smtp-Source: ABdhPJyMbZlW7pnwHQ6C5waz/unexLEaHdTcjFI8Zo6M8xBHeFoOJCORR1G1b9IprQ6sjolb1S7dSA==
+X-Received: by 2002:a92:8c4c:: with SMTP id o73mr6482499ild.172.1590599701983;
+        Wed, 27 May 2020 10:15:01 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id c7sm1419991ioa.38.2020.05.27.10.14.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 10:15:00 -0700 (PDT)
+Received: (nullmailer pid 2363073 invoked by uid 1000);
+        Wed, 27 May 2020 17:14:59 -0000
+Date:   Wed, 27 May 2020 11:14:59 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Vishal Sagar <vishal.sagar@xilinx.com>
+Cc:     laurent.pinchart@ideasonboard.com,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Michal Simek <michals@xilinx.com>,
+        linux-kernel@vger.kernel.org, Dinesh Kumar <dineshk@xilinx.com>,
+        mchehab@kernel.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, mark.rutland@arm.com,
+        devicetree@vger.kernel.org, hans.verkuil@cisco.com,
+        Sandip Kothari <sandipk@xilinx.com>,
+        linux-media@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>
+Subject: Re: [PATCH v14 1/2] media: dt-bindings: media: xilinx: Add Xilinx
+ MIPI CSI-2 Rx Subsystem
+Message-ID: <20200527171459.GA2360474@bogus>
+References: <1590587839-129558-1-git-send-email-vishal.sagar@xilinx.com>
+ <1590587839-129558-2-git-send-email-vishal.sagar@xilinx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1590587839-129558-2-git-send-email-vishal.sagar@xilinx.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+On Wed, 27 May 2020 19:27:18 +0530, Vishal Sagar wrote:
+> Add bindings documentation for Xilinx MIPI CSI-2 Rx Subsystem.
+> 
+> The Xilinx MIPI CSI-2 Rx Subsystem consists of a CSI-2 Rx controller, a
+> D-PHY in Rx mode and a Video Format Bridge.
+> 
+> Signed-off-by: Vishal Sagar <vishal.sagar@xilinx.com>
+> Reviewed-by: Hyun Kwon <hyun.kwon@xilinx.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> ---
+> v14
+> - Removed xlnx,csi-pxl-format from required properties
+> - Added dependency of xlnx,csi-pxl-format on xlnx,vfb
+> - End the yaml file with ...
+> - Added Reviewed by Laurent
+> 
+> v13
+> - Based on Laurent's suggestions
+> - Fixed the datatypes values as minimum and maximum
+> - condition added for en-vcx property
+> 
+> v12
+> - Moved to yaml format
+> - Update CSI-2 and D-PHY
+> - Mention that bindings for D-PHY not here
+> - reset -> video-reset
+> 
+> v11
+> - Modify compatible string from 4.0 to 5.0
+> 
+> v10
+> - No changes
+> 
+> v9
+> - Fix xlnx,vfb description.
+> - s/Optional/Required endpoint property.
+> - Move data-lanes description from Ports to endpoint property section.
+> 
+> v8
+> - Added reset-gpios optional property to assert video_aresetn
+> 
+> v7
+> - Removed the control name from dt bindings
+> - Updated the example dt node name to csi2rx
+> 
+> v6
+> - Added "control" after V4L2_CID_XILINX_MIPICSISS_ACT_LANES as suggested by Luca
+> - Added reviewed by Rob Herring
+> 
+> v5
+> - Incorporated comments by Luca Cersoli
+> - Removed DPHY clock from description and example
+> - Removed bayer pattern from device tree MIPI CSI IP
+>   doesn't deal with bayer pattern.
+> 
+> v4
+> - Added reviewed by Hyun Kwon
+> 
+> v3
+> - removed interrupt parent as suggested by Rob
+> - removed dphy clock
+> - moved vfb to optional properties
+> - Added required and optional port properties section
+> - Added endpoint property section
+> 
+> v2
+> - updated the compatible string to latest version supported
+> - removed DPHY related parameters
+> - added CSI v2.0 related property (including VCX for supporting upto 16
+>   virtual channels).
+> - modified csi-pxl-format from string to unsigned int type where the value
+>   is as per the CSI specification
+> - Defined port 0 and port 1 as sink and source ports.
+> - Removed max-lanes property as suggested by Rob and Sakari
+> 
+>  .../bindings/media/xilinx/xlnx,csi2rxss.yaml       | 237 +++++++++++++++++++++
+>  1 file changed, 237 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/xilinx/xlnx,csi2rxss.yaml
+> 
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
+My bot found errors running 'make dt_binding_check' on your patch:
 
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/xilinx/xlnx,csi2rxss.yaml: allOf:0:if: None is not of type 'object', 'boolean'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/xilinx/xlnx,csi2rxss.yaml: allOf:1:if: None is not of type 'object', 'boolean'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/xilinx/xlnx,csi2rxss.yaml: allOf:0: 'required' is not one of ['$ref', 'if', 'then', 'else']
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/xilinx/xlnx,csi2rxss.yaml: allOf:1: 'not' is not one of ['$ref', 'if', 'then', 'else']
+Documentation/devicetree/bindings/Makefile:12: recipe for target 'Documentation/devicetree/bindings/media/xilinx/xlnx,csi2rxss.example.dts' failed
+make[1]: *** [Documentation/devicetree/bindings/media/xilinx/xlnx,csi2rxss.example.dts] Error 1
+make[1]: *** Waiting for unfinished jobs....
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/xilinx/xlnx,csi2rxss.yaml: ignoring, error in schema: allOf: 0: if
+warning: no schema found in file: ./Documentation/devicetree/bindings/media/xilinx/xlnx,csi2rxss.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/xilinx/xlnx,csi2rxss.yaml: ignoring, error in schema: allOf: 0: if
+warning: no schema found in file: ./Documentation/devicetree/bindings/media/xilinx/xlnx,csi2rxss.yaml
+Makefile:1300: recipe for target 'dt_binding_check' failed
+make: *** [dt_binding_check] Error 2
 
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
+See https://patchwork.ozlabs.org/patch/1298945
 
-sizeof(flexible-array-member) triggers a warning because flexible array
-members have incomplete type[1]. There are some instances of code in
-which the sizeof operator is being incorrectly/erroneously applied to
-zero-length arrays and the result is zero. Such instances may be hiding
-some bugs. So, this work (flexible-array member conversions) will also
-help to get completely rid of those sorts of issues.
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
 
-Lastly, make use of the sizeof_field() helper instead of an open-coded
-version.
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
 
-This issue was found with the help of Coccinelle and audited _manually_.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/firmware/efi/efi.c | 3 ++-
- include/linux/efi.h        | 7 ++-----
- 2 files changed, 4 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index 7f1657b6c30df..edc5d36caf54e 100644
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -622,7 +622,8 @@ int __init efi_config_parse_tables(const efi_config_table_t *config_tables,
- 			rsv = (void *)(p + prsv % PAGE_SIZE);
- 
- 			/* reserve the entry itself */
--			memblock_reserve(prsv, EFI_MEMRESERVE_SIZE(rsv->size));
-+			memblock_reserve(prsv,
-+					 struct_size(rsv, entry, rsv->size));
- 
- 			for (i = 0; i < atomic_read(&rsv->count); i++) {
- 				memblock_reserve(rsv->entry[i].base,
-diff --git a/include/linux/efi.h b/include/linux/efi.h
-index c45ac969ea4eb..328cc52a5fd45 100644
---- a/include/linux/efi.h
-+++ b/include/linux/efi.h
-@@ -1234,14 +1234,11 @@ struct linux_efi_memreserve {
- 	struct {
- 		phys_addr_t	base;
- 		phys_addr_t	size;
--	} entry[0];
-+	} entry[];
- };
- 
--#define EFI_MEMRESERVE_SIZE(count) (sizeof(struct linux_efi_memreserve) + \
--	(count) * sizeof(((struct linux_efi_memreserve *)0)->entry[0]))
--
- #define EFI_MEMRESERVE_COUNT(size) (((size) - sizeof(struct linux_efi_memreserve)) \
--	/ sizeof(((struct linux_efi_memreserve *)0)->entry[0]))
-+	/ sizeof_field(struct linux_efi_memreserve, entry[0]))
- 
- void __init efi_arch_mem_reserve(phys_addr_t addr, u64 size);
- 
--- 
-2.26.2
+Please check and re-submit.
 
