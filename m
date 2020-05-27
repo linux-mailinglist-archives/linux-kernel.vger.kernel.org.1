@@ -2,80 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DDAC1E4AA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0132B1E4AAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391425AbgE0Qo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 12:44:57 -0400
-Received: from sonic305-2.consmr.mail.bf2.yahoo.com ([74.6.133.41]:40961 "EHLO
-        sonic305-2.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387952AbgE0Qo4 (ORCPT
+        id S2391448AbgE0QpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 12:45:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387952AbgE0QpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 12:44:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1590597895; bh=TYgdp/zNeW9P5rVjVpFopjba7a+Fm8hxyemx2bQVZd8=; h=Date:From:Reply-To:Subject:References:From:Subject; b=TA1Mwmjlv7IjI4IIv4UhNrxkBHKgTNUOX3R2t9lAde1B7O2HNw4nBFjaX4CtgIEasygWwluuJGItV2SRTW0q6xIox042JxHHBLxFO83uEH+XH9F4E0FatUqVjOPlcHHbGMRPCioypNKs4CLYH+kmZkFvTz6W+cPBYDcJD0YQozVprLnNzvg6ahb5BfTz087vwhR4EytWDlob6YzjcXwUPqYMgBA0WT+exZmSvR+tDyCk6RP08jxCpaMIsuhhRSnqzynUb0Pj0nJNTxhslwFe6hFKDWuHcyHVdfTikHwSRUppLoZmNrWmdqv57YVYztwlULkxXO0l3udm/0P8odaWyA==
-X-YMail-OSG: CKxjK4UVM1n61rbdIsJFUXzV1iZ4cp.uoex28WTRK0w52wCTAIJAuCZF1m2N64B
- HbEYEUE53LQTcw3ob9kX54FEE8_2WQigmC2tKmOJwJsHJESbxxSX94_K4QeQaX52LnQ_6KrcqSDO
- G_e9mnV9iMdDH49LfnY5vHewIx0j0pZkAySQtvIsFFPpF1GKJB0mMZIQcbGzO5Kimc8uEF12cONr
- tsQoI20cdxNa.YvZuJ8W6VMAiy8FzVeE1YYyv.Vk3vv6HDtM1B1rfGDkhl60pWlwLcNnld06VXGz
- E3gXU29CiOt2zNtovhCdVW_xEVqswVwNfiC6B64pvn3hwVdYhPDvmJxUkWDSykuGj57ywr86zpsS
- XVNpVgHOeV4TnldIJqz4inFBCgoiJ_WV5SoXJpOAKRvb5yaGMrpR6miqsXpWJIvMM5kBV.sHtCTd
- 7xEgwstZ4TR7LnM4ITwVasDb1sJsVXkZgcsfM74pzXlYkDljEqwtDprXHPqUG_p9I7PkkqdT9Rio
- GDuhJC47wK5rQ4ckUd1Xyy4wad5WtZJjb7BWFbqKPqUD.HCyX.hoaFstGpjqW1eLLJW5Sa1Ef8Tw
- hdiIWqY5_5ppQ8prn2jLhUAxMdO8KTH..cr_M8r.Bu6WH_kIZhrXuCM27ClKfqWonigWuUHHvqlz
- SzG.QmBS08Q3GSMjMXXz_68k75P0Iq3Zir7vi.IzF2JDbWf09r96PmtfwpR7aBeYl8_NPgVZVwpX
- e9K0GnpD5VhwldzrwsU8kN.4Dv0Lf30j_BPG1WSb5xW.xtVp_9T9Qq3m40rYFAcyG5KdjUR7pX3A
- n0ISXi1TL4f5lkAq3Hq7IuagrWyhxg38LdjLF8sZnm_t2u0OmL3jYmGZJp8Abpr8coO1a.LnshAi
- dbpFuqHwc9xT7nB.IkNc6CxtNJl1XkLHKdPCBhy6O0zvurdiixAJVuZVItNOppnAZP_hzcLMfgvs
- Aok7FJAgNwCCN.ajESn2.x6BbOrR672P5wUJJl1ZVBWPTE0Ckk5YOxjk6Y3AyHu1sOuxovVR34fQ
- cjdN88qt9d6ktPBWVuqBEHc06lA2uy2.kGhgQq_aaM3bcd9FgTVT.eQ0zzUuYahJ5UmGoz8RTCE_
- P5nAKYGMWgRK4VHaI_dWm55Bwn36.gCF28p4jZaEMsQx9FyKfFpGjxZI_JUgPqRxH6abmRu_pGeI
- ddOojH0ww3X0Y672aSW5jb9Ta9yeU0xZ.hmPykuqKQ9tuWQI6kopTKOtSGVAGPKeAXvAdPyr1sM6
- cbkCu_r.KA.vTSMs.yqYdmzzP3WAZYQBXVl3vajgvjh72408P5Wm1iQXGWkXKRH0wk0WaidU7xE8
- axZttGAKL.TJya_QhivBzmNtILxI7Fw--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.bf2.yahoo.com with HTTP; Wed, 27 May 2020 16:44:55 +0000
-Date:   Wed, 27 May 2020 16:44:54 +0000 (UTC)
-From:   "Mrs.mcompola" <mrs.qanbanden999@gmail.com>
-Reply-To: mcompola444@gmail.com
-Message-ID: <918074059.347611.1590597894014@mail.yahoo.com>
-Subject: Dear Friend, My present internet connection is very slow in case
- you
+        Wed, 27 May 2020 12:45:10 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682A3C05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 09:45:09 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id b6so29785068ljj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 09:45:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anholt-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x5U/zKfkvmSEww+vSURoUmS0s1xUIVHLA1Nb4AtxJis=;
+        b=W1Cxi2bY3PkaST1Z8OpeWGbMyEmo5P8jlNIwCdvVr+EjtPpX+j4R/HBMaMD7y4Dbz2
+         sN2rfypqEM2mZkwCR0i0VC8WXHwpnf1WoXE9veH7nmHE1qcnAYL60rYjN5GtdbL7Er1s
+         WzhIsrXN6NswcPYYrH1wEJ9LKSW6ea64X8zPbj5KzHqu6v6U4SOTWTD1ACj2AgEXeE6n
+         Ow7zyaPtpdsM5IvuEpbGg6vrgBYIUyUwC4ri2NUosucaU5RmpJLrkxfAuYYsbvPM+u9v
+         L7aHcngTSiHdWHOweNSQYkka0AxBsVpDzpNMA5BjYV4Hv/uBtOwPuqzDoOR/heOa38Sr
+         dgyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x5U/zKfkvmSEww+vSURoUmS0s1xUIVHLA1Nb4AtxJis=;
+        b=gBdiaNs/gvrxEBmm5V6rk2y7Y6U9fXo8KkGmsFuEx6smsK5qtVHTuTX97a6uWs5uSu
+         5mvqbHSAVsVDWfX89dIf3Wujw5Dz99MQz9hfJR3qXsFIQuazpvmXZSgvcmzJUGA5fWg/
+         fW0hlYKXAVbcp85yb9rx2NzdPSQElADKDuggUIMzS7v2f7kjakZghUvkJUmc5Lj+TLxV
+         Q2Azj27vQ+lTxYzSCEcrA1hQKCKH0atLtBRCOQdJaZLPiokdOA915gT+JVwSf6dQNeV5
+         OVFogLFxDxmiGPi83JHCPP+qhrLEZWGZnVRaG9shWhv8aT04e2SihnwjA9oy60a3fD90
+         hrfw==
+X-Gm-Message-State: AOAM53389d9gBX1pEglM41NKLManrQKQjTuYSdMJRsJhqGW/WN0m4hc2
+        xIh85Vy/4yPeSZGRD2j2HkGntmnT7BXUl2hM9255lI9d
+X-Google-Smtp-Source: ABdhPJzlE2zCA4ef3RAWHj2biI9Q1eAsYK7BNlo9EXKXBDmBQL0WWpSKBn/3tA9ID11/ogPIYEhxoy1NogcPeGz3zR4=
+X-Received: by 2002:a2e:b0ec:: with SMTP id h12mr3241295ljl.269.1590597907811;
+ Wed, 27 May 2020 09:45:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <918074059.347611.1590597894014.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.15959 YMailNodin Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+References: <cover.aaf2100bd7da4609f8bcb8216247d4b4e4379639.1590594512.git-series.maxime@cerno.tech>
+ <44e3ec27ee6c0d81c440cd2d6cdd1bf93ea102e7.1590594512.git-series.maxime@cerno.tech>
+In-Reply-To: <44e3ec27ee6c0d81c440cd2d6cdd1bf93ea102e7.1590594512.git-series.maxime@cerno.tech>
+From:   Eric Anholt <eric@anholt.net>
+Date:   Wed, 27 May 2020 09:44:56 -0700
+Message-ID: <CADaigPVbUZzo5c8fp9EqZsfrp44-09whu-HPk9c-eNc2KXS4Mg@mail.gmail.com>
+Subject: Re: [PATCH v3 016/105] drm/vc4: plane: Improve LBM usage
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, May 27, 2020 at 8:49 AM Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> From: Dave Stevenson <dave.stevenson@raspberrypi.com>
+>
+> LBM allocations were always taking the worst case sizing of
+> max(src_width, dst_width) * 16. This is significantly over
+> the required sizing, and stops us rendering multiple 4k images
+> to the screen.
+>
+> Add some of the additional constraints to more accurately
+> describe the LBM requirements.
+>
+> Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> ---
+>  drivers/gpu/drm/vc4/vc4_plane.c | 31 ++++++++++++++++++++-----------
+>  1 file changed, 20 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_plane.c b/drivers/gpu/drm/vc4/vc4_plane.c
+> index 1575c05e3106..602927745f84 100644
+> --- a/drivers/gpu/drm/vc4/vc4_plane.c
+> +++ b/drivers/gpu/drm/vc4/vc4_plane.c
+> @@ -142,9 +142,10 @@ static const struct hvs_format *vc4_get_hvs_format(u32 drm_format)
+>         return NULL;
+>  }
+>
+> -static enum vc4_scaling_mode vc4_get_scaling_mode(u32 src, u32 dst)
+> +static enum vc4_scaling_mode vc4_get_scaling_mode(u32 src, u32 dst,
+> +                                                 bool chroma_vrep)
+>  {
+> -       if (dst == src)
+> +       if (dst == src && !chroma_vrep)
+>                 return VC4_SCALING_NONE;
+>         if (3 * dst >= 2 * src)
+>                 return VC4_SCALING_PPF;
+> @@ -369,9 +370,11 @@ static int vc4_plane_setup_clipping_and_scaling(struct drm_plane_state *state)
+>                 return ret;
+>
+>         vc4_state->x_scaling[0] = vc4_get_scaling_mode(vc4_state->src_w[0],
+> -                                                      vc4_state->crtc_w);
+> +                                                      vc4_state->crtc_w,
+> +                                                      false);
+>         vc4_state->y_scaling[0] = vc4_get_scaling_mode(vc4_state->src_h[0],
+> -                                                      vc4_state->crtc_h);
+> +                                                      vc4_state->crtc_h,
+> +                                                      false);
+>
+>         vc4_state->is_unity = (vc4_state->x_scaling[0] == VC4_SCALING_NONE &&
+>                                vc4_state->y_scaling[0] == VC4_SCALING_NONE);
+> @@ -384,10 +387,12 @@ static int vc4_plane_setup_clipping_and_scaling(struct drm_plane_state *state)
+>
+>                 vc4_state->x_scaling[1] =
+>                         vc4_get_scaling_mode(vc4_state->src_w[1],
+> -                                            vc4_state->crtc_w);
+> +                                            vc4_state->crtc_w,
+> +                                            v_subsample == 2);
+>                 vc4_state->y_scaling[1] =
+>                         vc4_get_scaling_mode(vc4_state->src_h[1],
+> -                                            vc4_state->crtc_h);
+> +                                            vc4_state->crtc_h,
+> +                                            v_subsample == 2);
+>
+>                 /* YUV conversion requires that horizontal scaling be enabled
+>                  * on the UV plane even if vc4_get_scaling_mode() returned
 
+The change above isn't mentioned in the commit message and I don't
+understand what's going on.  It should be split out with an
+explanation.
 
-Dear Friend, My present internet connection is very slow in case you
-received my email in your spam
+> @@ -437,10 +442,7 @@ static void vc4_write_ppf(struct vc4_plane_state *vc4_state, u32 src, u32 dst)
+>  static u32 vc4_lbm_size(struct drm_plane_state *state)
+>  {
+>         struct vc4_plane_state *vc4_state = to_vc4_plane_state(state);
+> -       /* This is the worst case number.  One of the two sizes will
+> -        * be used depending on the scaling configuration.
+> -        */
+> -       u32 pix_per_line = max(vc4_state->src_w[0], (u32)vc4_state->crtc_w);
+> +       u32 pix_per_line;
+>         u32 lbm;
+>
+>         /* LBM is not needed when there's no vertical scaling. */
+> @@ -448,6 +450,11 @@ static u32 vc4_lbm_size(struct drm_plane_state *state)
+>             vc4_state->y_scaling[1] == VC4_SCALING_NONE)
+>                 return 0;
+>
+> +       if (vc4_state->x_scaling[0] == VC4_SCALING_TPZ)
+> +               pix_per_line = vc4_state->crtc_w;
+> +       else
+> +               pix_per_line = vc4_state->src_w[0];
 
-How are you today?.With due respect to your person and much sincerity
-of purpose,Well it is a pleasure to contact you on this regard and i
-pray that this will turn out to be everlasting relationship for both
-of us. However it's just my urgent need for a Foreign partner that
-made me to contact you for this Transaction,I got your contact from
-internet, while searching for a reliable someone that I can go into
-partnership with. I am Mrs.mcompola, from BURKINA FASO, West
-Africa .Presently i work in the Bank as bill and exchange manager.
+Looks like it's also crtc_w for RGB or 4:4:4 and HPPF in (0.5,1.0].
+Maybe drop a note in here that we're not covering that case, but src_w
+> crtc_w so it's safe at least.
 
-I have the opportunity of transferring the left over fund $5.4 Million
-us dollars of one of my Bank clients who died in the collapsing of the
-world trade center on september 11th 2001.I have placed this fund to
-and escrow account without name of beneficiary.i will use my position
-here in the bank to effect a hitch free transfer of the fund to your
-bank account and there will be no trace.
-
-I agree that 40% of this money will be for you as my foriegn
-partner,50% for me while 10% will be for the expenses that will occur
-in this transaction .If you are really interested in my proposal
-further details of the Transfer will be forwarded unto you as soon as
-I receive your willingness mail for successful transfer.
-
-Yours Faithfully,
-Mrs.mcompola444@gmail.com
+> +
+>         if (!vc4_state->is_yuv) {
+>                 if (vc4_state->y_scaling[0] == VC4_SCALING_TPZ)
+>                         lbm = pix_per_line * 8;
+> @@ -583,7 +590,9 @@ static int vc4_plane_allocate_lbm(struct drm_plane_state *state)
+>                 spin_lock_irqsave(&vc4->hvs->mm_lock, irqflags);
+>                 ret = drm_mm_insert_node_generic(&vc4->hvs->lbm_mm,
+>                                                  &vc4_state->lbm,
+> -                                                lbm_size, 32, 0, 0);
+> +                                                lbm_size,
+> +                                                vc4->hvs->hvs5 ? 64 : 32,
+> +                                                0, 0);
+>                 spin_unlock_irqrestore(&vc4->hvs->mm_lock, irqflags);
+>
+>                 if (ret)
+> --
+> git-series 0.9.1
