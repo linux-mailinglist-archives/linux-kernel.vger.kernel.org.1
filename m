@@ -2,137 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081401E4D39
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D51B21E4D78
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725958AbgE0Spi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 14:45:38 -0400
-Received: from mout.web.de ([212.227.17.12]:38909 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725306AbgE0SpZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 14:45:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1590605111;
-        bh=Dwiv4seL8ee3C/JloOJp8AqoZ3iVO2A78wPGNVrFh6Q=;
-        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
-        b=MM2fWHAR3Kha899mJdTt3UE4stnKaxhUfxD3+5ECVoj3+QAgfezDTrabzyGcxuho1
-         e7x/+RFeon0lpSG3fs8BUw3ktFfXpoX+B0uV9KMGlxd6fjZId+9Z1BGpvl1AZ3B3AS
-         hhhDPhl3pMQ3mhN2s9L+AhFRaSnRwnqgGh9G3SJI=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.135.185.253]) by smtp.web.de (mrweb101
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0LcxtU-1jDRix2jfE-00i9OS; Wed, 27
- May 2020 20:45:11 +0200
-To:     Dejin Zheng <zhengdejin5@gmail.com>,
-        kernel-janitors@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Coccinelle <cocci@systeme.lip6.fr>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Wolfram Sang <wsa@the-dreams.de>
-Subject: Re: [PATCH v3 1/2] drivers: provide devm_platform_request_irq()
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <5dad9b19-ceb5-1606-9f62-7626e5677971@web.de>
-Date:   Wed, 27 May 2020 20:45:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:2mj89pThrO5GlS0CuVGiU9ZLPcTx8lPGvbGv8BYFG1BSUlD3T48
- 6UxnmAH94iiqCfJgLpFqv9ZXEPz+X7s/E0ry0T/NLYq6TT1hGK4lT3zGnS9ytwUdzTPLan2
- IIokIi748DcsofVx0uoAIxyxQY3y56Ba+N7erEXQ59gbK3Ly60xLL7KMgJmumcDGP2npA4g
- zuiMsEpyVtCeSBKBFr3GA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:43Ak3plJJvE=:qbo1+TuYzsjw3ssPkjMjWE
- G5ri/P32z6g8UxQ0Nn6aBdRlQZEmgfWXykldoUDLCLfck/80fLHgs/ku/++b8JFioV2//zkb6
- fp5YbzJlaSOkJ7igXrGz0GEbClz2wo9j6ai2hCUsKSjegVJPe2+SjqlWOIc/mx30/sec21OSL
- nDoMnsL2TDgwGT1W3hlePv3sRDPzHu6L3mhdERBn2HK8n4y9+OjpqtNPOdknBpG7UrX8sKCSx
- ZmhwNGYnpFOgU3VHR+Bhp71Z8kMMOUmrDvxXqlGukkL1q7C13NPA/j3bwSwd4/avEeV0EWZjh
- S6vHKgFcs0ZQCbY4IXf6xvztCcgsRuHoCa5L9o1tC6Mt3w5CWBxiwJ4FEj/5vAd1F11KHhdT6
- +W5SMdniYdpmnl2etH8WO/a8yXdkfAASBFdKzoE4UqSTpWBNKMq6xLBS88BeRfYM8J81C829T
- +rSCm36sBQtQNkNxVelwHDZSMSa2f+Y2y1zJcf1/bM/rDwMFZu//inkksgTmX4hU8LIDTuR+O
- TqVAaCIb/f6e7kPR01Z2BPMNSCEIP3zYcFWB0AGgdnXSTwsZVbHPPWown6SMHMaHzdx8g9WBR
- aCII5GmjInO946ukSGPW7iK9r1+R52fwC0uHyquJtGbCWnmOfEvtbRvRdi5j5C9gU36088pUO
- llWtTwOVI3aOY2rBnFcLOAE8iFvzv02QQ3TPfwegrJRwZt9kfhPmP+iz18CldzQwtwP+xw+Nm
- dCARGoZ7YRgynJqaMok7UyJIPIkmY1I+sZiojbBqNimLhSi4SB/aR9kMgkvM22zQYBxaZoyKN
- frFgjUiksQ4g9keCpEzot9eMRq5zHXHfk0aZ+4/sR0xgdX04btYcdyLjFQWgB1N5KR8v58fD8
- lPnJZV8UFcUo1giftKQiofnRJ5i78grntwkTk6aGsqFdckR1VHeLBPkN2UvtJDsIbwSz2rEhR
- y5P/e3xLNfBXjRF9Y1tK902Y+DQqVXszxXwOAG3GNPpVJJgkNscJewpFqTBKw4D08PdmAz2dW
- dazxLNUfzwTzsJLbBWk3wOHC0qmwYEmCTRlXXOuh8h74jhgZWPMGMH7rZ/X7fbr5Zxb5I+zuz
- T5EIT9gdZob8bGA3mIPQgXEwWXct31yng+79Eosj98D/obP9MedAweIKdjMCZjnPkhBJX3fkL
- CuDAlioEl72JLhZFT8HZeoMr7ZK/traZPbrTmGXMeB/PBqJKCSMVcGXd8hckY1gdBK3Q8Q7j5
- MW7osp6pF5VfzQH5O
+        id S2387408AbgE0Swx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 14:52:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728231AbgE0Swg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 14:52:36 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA497C008639
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 11:47:10 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id q8so12274897pfu.5
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 11:47:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xlHCAxvXvnuDbx0LkafhQpSZagEzXc+hc5LOPcq5Huw=;
+        b=BD08Vr27SDUI759X2/UqI1hW2/32hH0/i8frIg+EhBZ/AevuWNbGas3DT56FFR6Flz
+         2W0hGsXHAq7NDZWE9C5YDABXpA2HBtcO7W+BEB3fV51ryWTU4J976+wC4/A0iXB6HPo6
+         CKbDaFDF4Nkzc6j1uGIfnj8HNKXwjkl9eBdWnwY87w9w+HKjbu5JiQPEcVIea9xqc2B7
+         as3YqS/wuTL+IiCnoYcoimaAhuckWqh9eOJAHsAZN5c6OeePPU8qvt+wSN8o65JsRada
+         BqeRDUYhOuoODA+IdrzkmfSz3wgzh+vK51WHKs8F8gLWvuNThFdJexkr+mWABOJjhqdI
+         G3jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=xlHCAxvXvnuDbx0LkafhQpSZagEzXc+hc5LOPcq5Huw=;
+        b=bDoqqTGhPVJYHa6jXCdZtwNDZYrtQKSJBR7zqEfLGumhIeUsyXbkgcLCJYeDSOJFG1
+         jEvDCkIhQbhIvrvvXvIgTkZwOjOD14p+RB1TV6VIZZc2floqHXhxZwqi+Hg4mhouM2KM
+         vTG6VyLvF7iF7g+IaKsbo3Bs5X3xLaki7t/fTv5JuR+PdW5fLIsAxVFCL04h0IQFdEph
+         NPBJ0YPCsTgEI7yAsFZsvYZiODFZa64VYOXJyejt5vvF/P5LIAH0YYsOzWEWYlo6p70S
+         tWAfcbaS4XNQ9gnEqArjlA9lWobcwj7otMh5We0dhcEr8QI5PI9Y/jEOH3Y71HLFhVSH
+         ZA2g==
+X-Gm-Message-State: AOAM530O9UaTPTsWZxdQW7Qsgqb2HcOxr/CqNNT3YcrVaNlh1VAMX7V9
+        Rd16zBZrEkzzncoqomoOdnwuiQ==
+X-Google-Smtp-Source: ABdhPJzj7M85gwVANBohrhiJQMHP/qpccC0sSzvYrm6/sSpUBXen3o0geu4j+W4sR1NwhKqWavykzA==
+X-Received: by 2002:a05:6a00:a:: with SMTP id h10mr5467299pfk.310.1590605229930;
+        Wed, 27 May 2020 11:47:09 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id i8sm2578841pgr.82.2020.05.27.11.47.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 11:47:08 -0700 (PDT)
+Date:   Wed, 27 May 2020 11:47:08 -0700 (PDT)
+X-Google-Original-Date: Wed, 27 May 2020 11:47:01 PDT (-0700)
+Subject:     Re: [PATCH v5 0/6] New RISC-V Local Interrupt Controller Driver
+In-Reply-To: <20200521133301.816665-1-anup.patel@wdc.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        daniel.lezcano@linaro.org, tglx@linutronix.de,
+        jason@lakedaemon.net, Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        anup@brainfault.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Anup Patel <Anup.Patel@wdc.com>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Anup Patel <Anup.Patel@wdc.com>, Marc Zyngier <maz@kernel.org>
+Message-ID: <mhng-72b70f0c-28d7-425b-b45a-a132cf27e894@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> It will call devm_request_irq() after platform_get_irq() function
-> in many drivers, sometimes, it is not right for the error handling
-> of these two functions in some drivers. so provide this function
-> to simplify the driver.
+On Thu, 21 May 2020 06:32:55 PDT (-0700), Anup Patel wrote:
+> This patchset provides a new RISC-V Local Interrupt Controller Driver
+> for managing per-CPU local interrupts. The overall approach is inspired
+> from the way per-CPU local interrupts are handled by Linux ARM64 and
+> ARM GICv3 driver.
+>
+> Few advantages of this new driver over previous one are:
+> 1. All local interrupts are registered as per-CPU interrupts
+> 2. The RISC-V timer driver can register timer interrupt handler
+>    using kernel irq subsystem without relying on arch/riscv to
+>    explicitly call it's interrupt handler
+> 3. The KVM RISC-V can use this driver to implement interrupt
+>    handler for per-HART guest external interrupt defined by
+>    the RISC-V H-Extension
+> 4. In future, we can develop drivers for devices with per-HART
+>    interrupts without changing arch code or this driver (example,
+>    CLINT timer driver for RISC-V M-mode kernel)
+>
+> With this patchset, output of "cat /proc/interrupts" looks as follows:
+>            CPU0       CPU1       CPU2       CPU3
+>   2:        379          0          0          0  SiFive PLIC  10  ttyS0
+>   3:        591          0          0          0  SiFive PLIC   8  virtio0
+>   5:       5079      10821       8435      12984  RISC-V INTC   5  riscv-timer
+> IPI0:      2045       2537        891        870  Rescheduling interrupts
+> IPI1:         9        269         91        168  Function call interrupts
+> IPI2:         0          0          0          0  CPU stop interrupts
+>
+> The patchset is based up Linux-5.7-rc6 and can be found at riscv_intc_v5
+> branch of: https://github.com/avpatel/linux.git
+>
+> This series is tested on:
+>  1. QEMU RV64 virt machine using Linux RISC-V S-mode
+>  2. QEMU RV32 virt machine using Linux RISC-V S-mode
+>  3. QEMU RV64 virt machine using Linux RISC-V M-mode (i.e. NoMMU)
+>
+> Changes since v4:
+>  - Rebased to Linux-5.7-rc6 and multi-PLIC improvement patches
+>  - Added separate patch to force select RISCV_INTC for CONFIG_RISCV
+>  - Fixed the driver for Linux RISC-V NoMMU
+>
+> Changes since v3:
+>  - Rebased to Linux-5.6-rc5 and Atish's PLIC patches
+>  - Added separate patch to rename and move plic_find_hart_id()
+>    to arch directory
+>  - Use riscv_of_parent_hartid() in riscv_intc_init() instead of
+>    atomic counter
+>
+> Changes since v2:
+>  - Dropped PATCH2 since it was merged long-time back
+>  - Rebased series from Linux-4.19-rc2 to Linux-5.6-rc2
+>
+> Changes since v1:
+>  - Removed changes related to puggable IPI triggering
+>  - Separate patch for self-contained IPI handling routine
+>  - Removed patch for GENERIC_IRQ kconfig options
+>  - Added patch to remove do_IRQ() function
+>  - Rebased upon Atish's SMP patches
+>
+> Anup Patel (6):
+>   RISC-V: self-contained IPI handling routine
+>   RISC-V: Rename and move plic_find_hart_id() to arch directory
+>   irqchip: RISC-V per-HART local interrupt controller driver
+>   clocksource/drivers/timer-riscv: Use per-CPU timer interrupt
+>   RISC-V: Remove do_IRQ() function
+>   RISC-V: Force select RISCV_INTC for CONFIG_RISCV
+>
+>  arch/riscv/Kconfig                     |   2 +
+>  arch/riscv/include/asm/irq.h           |   5 -
+>  arch/riscv/include/asm/processor.h     |   1 +
+>  arch/riscv/include/asm/smp.h           |   3 +
+>  arch/riscv/kernel/cpu.c                |  16 +++
+>  arch/riscv/kernel/entry.S              |   4 +-
+>  arch/riscv/kernel/irq.c                |  33 +-----
+>  arch/riscv/kernel/smp.c                |  11 +-
+>  arch/riscv/kernel/traps.c              |   2 -
+>  drivers/clocksource/timer-riscv.c      |  30 ++++-
+>  drivers/irqchip/Kconfig                |  13 +++
+>  drivers/irqchip/Makefile               |   1 +
+>  drivers/irqchip/irq-riscv-intc.c       | 150 +++++++++++++++++++++++++
+>  drivers/irqchip/irq-sifive-plic.c      |  52 +++++----
+>  include/linux/cpuhotplug.h             |   1 +
+>  include/linux/irqchip/irq-riscv-intc.h |  20 ++++
+>  16 files changed, 280 insertions(+), 64 deletions(-)
+>  create mode 100644 drivers/irqchip/irq-riscv-intc.c
+>  create mode 100644 include/linux/irqchip/irq-riscv-intc.h
 
-I recommend to improve also this change description.
-How do you think about a wording variant like the following?
+So I read through this a bit, and while I haven't gone through every line of
+code I'm somewhat inclined toward taking it.
 
-   The function =E2=80=9Cdevm_request_irq=E2=80=9D is called after the
-   function =E2=80=9Cplatform_get_irq=E2=80=9D in many drivers.
-   The exception handling is incomplete there sometimes.
-   Thus add a corresponding wrapper function for the simplification
-   of the drivers.
+During the original RISC-V port submission we went back and forth between
+having this first-level interrupt controller in arch/riscv/ vs
+drivers/irqchip/.  The original deciding factor was that the ISA mandated the
+interrupt controller, but as that's proving to be less and less the case every
+day (with the CLIC and M-mode Linux) it certainly seem sane to move all our
+interrupt controller drivers out of arch/riscv/.
 
+This is certainly a step in the right direction, and it handles some of the
+more glaring issues (iscv_timer_interrupt and lacking IRQs for the CLINT).  I
+think we should just go ahead and merge it, even though there might be some
+more refactoring to do when we eventually end up with another interrupt
+controller.
 
-Will a companion script for the semantic patch language (Coccinelle softwa=
-re)
-become helpful for further support of collateral evolution?
-
-Regards,
-Markus
+I think it's best if this all goes in through a single tree, as it seems more
+work than it's worth to split it up.  I'm happy to take it through my tree if
+that's OK with the irqchip folks?
