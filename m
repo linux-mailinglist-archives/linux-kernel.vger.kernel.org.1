@@ -2,131 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A7A1E483F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4EF1E481E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390140AbgE0Ptm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 11:49:42 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:38909 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390126AbgE0Pti (ORCPT
+        id S1726924AbgE0PsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 11:48:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728421AbgE0PsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 11:49:38 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 7626758200F;
-        Wed, 27 May 2020 11:49:37 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 27 May 2020 11:49:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=m33/GpK4Sa24j
-        4S+fnmVvjFqz0KFoPPGqLfZr0rxfJ8=; b=tqdXa1ylBE/UVJtc3ANF+oflooYd+
-        WPobjk+0RvLKxTRQiXTnydTARlNhVdMTdGGGLuPSyKjuQG7ZcSsWAA18NtV2BEoi
-        6Qdsvm3JfFnrDms1YB+h6Q4I45KiES1ihQRNn8GZ27gSNFuZ52f7hWsHiE3rLCOb
-        rSDPZ9t9M8qAv6It+lS6vMFIMxvC6lFr8jj/Y0uTpxh5waB1NL8csQmg1UX8Et6U
-        oCnsUGfFd/wYyZlsik2XtAd2z1obUL95wAniUdqSrKCI9blue/SZaQ6CI2TaJT9q
-        zb2SVpwYo/FkNfCqj8Kb8aOt3AGl9CyTq63hQb4083YXsOME2U+6f6RKA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=m33/GpK4Sa24j4S+fnmVvjFqz0KFoPPGqLfZr0rxfJ8=; b=yHaLYnwB
-        6oTEn7UTcrBMFS06+gc8YQWwsA4NyN0XTHqIUy8pD7u9/y1u/jpsodNzRsqMaFAe
-        UvT+ubemRcNMJ7xv7a9YeN/LaKRb1H4yXWG2+mN8KNKabtOZPEZ/WQtz9eCf0oz+
-        iffPFC8w59ZRid0CWS9QnY/nW9fDz3ybVYuuMWiYEmQzMZU59TXruF70oKAzb6Jt
-        rz/en952aQQqe1opIA+HgASAW3cyI0BerKnybP2yZTS614wIRHt5vPb3FYj7enNx
-        vgrf4Z3fSKwsHtBllXBNUAkRZ6PC8PMCzVvD8oUGatmiVFqQ1HH/m8vx0dB6QscI
-        J0SCeBDSk787GQ==
-X-ME-Sender: <xms:EYzOXhyVUDBRq8q47qeTsTA2hIvsBGF1SY8KHADHd29Xtx7VVodwUg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddvgedgkeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
-    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepfedune
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:EYzOXhTBDP6r4e7x6hMJhPgFcHpfiHPeZn1h-aN8CutDvOffEY4eGg>
-    <xmx:EYzOXrWFtu5cQ3eymv7uJKseFN4rt0R0PwoEMb_Rls77PbCcndfYsQ>
-    <xmx:EYzOXjj4lh1x0JG6UirMcDIgT1ALIZLbtp2Sy8hb9NrWp18s5eFphA>
-    <xmx:EYzOXlC4OIoxHqh8fqcqQsGo_5VIJ477IleCj0O6k3_kemjgtFGuiw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 131B5306215A;
-        Wed, 27 May 2020 11:49:36 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Eric Anholt <eric@anholt.net>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Maxime Ripard <maxime@cerno.tech>
-Subject: [PATCH v3 013/105] dt-bindings: display: Add support for the BCM2711 HVS
-Date:   Wed, 27 May 2020 17:47:43 +0200
-Message-Id: <9d1718b1d3b73da4522861bf16730cc47157bef7.1590594512.git-series.maxime@cerno.tech>
+        Wed, 27 May 2020 11:48:00 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3B1C05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 08:48:00 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id CFE812A3AB2
+From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+To:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org
+Cc:     mingo@redhat.com, dvhart@infradead.org, kernel@collabora.com,
+        krisman@collabora.com,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+Subject: [PATCH 1/4] futex: Remove put_futex_key()
+Date:   Wed, 27 May 2020 12:47:44 -0300
+Message-Id: <20200527154747.36931-2-andrealmeid@collabora.com>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.aaf2100bd7da4609f8bcb8216247d4b4e4379639.1590594512.git-series.maxime@cerno.tech>
-References: <cover.aaf2100bd7da4609f8bcb8216247d4b4e4379639.1590594512.git-series.maxime@cerno.tech>
+In-Reply-To: <20200527154747.36931-1-andrealmeid@collabora.com>
+References: <20200527154747.36931-1-andrealmeid@collabora.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The HVS found in the BCM2711 is slightly different from the previous
-generations, let's add a compatible for it.
+Since 4b39f99c ("futex: Remove {get,drop}_futex_key_refs()"),
+function put_futex_key() is empty. Remove all references for this
+function and redundant labels.
 
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Signed-off-by: André Almeida <andrealmeid@collabora.com>
 ---
- Documentation/devicetree/bindings/display/brcm,bcm2835-hvs.yaml | 18 ++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ kernel/futex.c | 61 ++++++++++----------------------------------------
+ 1 file changed, 12 insertions(+), 49 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/display/brcm,bcm2835-hvs.yaml b/Documentation/devicetree/bindings/display/brcm,bcm2835-hvs.yaml
-index 02410f8d6d49..bb1fa805b14e 100644
---- a/Documentation/devicetree/bindings/display/brcm,bcm2835-hvs.yaml
-+++ b/Documentation/devicetree/bindings/display/brcm,bcm2835-hvs.yaml
-@@ -11,7 +11,9 @@ maintainers:
+diff --git a/kernel/futex.c b/kernel/futex.c
+index b59532862bc0..1f0287a51dce 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -674,10 +674,6 @@ get_futex_key(u32 __user *uaddr, int fshared, union futex_key *key, enum futex_a
+ 	return err;
+ }
  
- properties:
-   compatible:
--    const: brcm,bcm2835-hvs
-+    enum:
-+      - const: brcm,bcm2711-hvs
-+      - const: brcm,bcm2835-hvs
+-static inline void put_futex_key(union futex_key *key)
+-{
+-}
+-
+ /**
+  * fault_in_user_writeable() - Fault in user address and verify RW access
+  * @uaddr:	pointer to faulting user space address
+@@ -1614,7 +1610,7 @@ futex_wake(u32 __user *uaddr, unsigned int flags, int nr_wake, u32 bitset)
  
-   reg:
-     maxItems: 1
-@@ -19,6 +21,10 @@ properties:
-   interrupts:
-     maxItems: 1
+ 	/* Make sure we really have tasks to wakeup */
+ 	if (!hb_waiters_pending(hb))
+-		goto out_put_key;
++		goto out;
  
-+  clocks:
-+    maxItems: 1
-+    description: Core Clock
-+
- required:
-   - compatible
-   - reg
-@@ -26,6 +32,16 @@ required:
+ 	spin_lock(&hb->lock);
  
- additionalProperties: false
+@@ -1637,8 +1633,6 @@ futex_wake(u32 __user *uaddr, unsigned int flags, int nr_wake, u32 bitset)
  
-+if:
-+  properties:
-+    compatible:
-+      contains:
-+        const: brcm,bcm2711-hvs"
-+
-+then:
-+  required:
-+    - clocks
-+
- examples:
-   - |
-     hvs@7e400000 {
+ 	spin_unlock(&hb->lock);
+ 	wake_up_q(&wake_q);
+-out_put_key:
+-	put_futex_key(&key);
+ out:
+ 	return ret;
+ }
+@@ -1709,7 +1703,7 @@ futex_wake_op(u32 __user *uaddr1, unsigned int flags, u32 __user *uaddr2,
+ 		goto out;
+ 	ret = get_futex_key(uaddr2, flags & FLAGS_SHARED, &key2, FUTEX_WRITE);
+ 	if (unlikely(ret != 0))
+-		goto out_put_key1;
++		goto out;
+ 
+ 	hb1 = hash_futex(&key1);
+ 	hb2 = hash_futex(&key2);
+@@ -1727,13 +1721,13 @@ futex_wake_op(u32 __user *uaddr1, unsigned int flags, u32 __user *uaddr2,
+ 			 * an MMU, but we might get them from range checking
+ 			 */
+ 			ret = op_ret;
+-			goto out_put_keys;
++			goto out;
+ 		}
+ 
+ 		if (op_ret == -EFAULT) {
+ 			ret = fault_in_user_writeable(uaddr2);
+ 			if (ret)
+-				goto out_put_keys;
++				goto out;
+ 		}
+ 
+ 		if (!(flags & FLAGS_SHARED)) {
+@@ -1741,8 +1735,6 @@ futex_wake_op(u32 __user *uaddr1, unsigned int flags, u32 __user *uaddr2,
+ 			goto retry_private;
+ 		}
+ 
+-		put_futex_key(&key2);
+-		put_futex_key(&key1);
+ 		cond_resched();
+ 		goto retry;
+ 	}
+@@ -1778,10 +1770,6 @@ futex_wake_op(u32 __user *uaddr1, unsigned int flags, u32 __user *uaddr2,
+ out_unlock:
+ 	double_unlock_hb(hb1, hb2);
+ 	wake_up_q(&wake_q);
+-out_put_keys:
+-	put_futex_key(&key2);
+-out_put_key1:
+-	put_futex_key(&key1);
+ out:
+ 	return ret;
+ }
+@@ -1993,7 +1981,7 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
+ 	ret = get_futex_key(uaddr2, flags & FLAGS_SHARED, &key2,
+ 			    requeue_pi ? FUTEX_WRITE : FUTEX_READ);
+ 	if (unlikely(ret != 0))
+-		goto out_put_key1;
++		goto out;
+ 
+ 	/*
+ 	 * The check above which compares uaddrs is not sufficient for
+@@ -2001,7 +1989,7 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
+ 	 */
+ 	if (requeue_pi && match_futex(&key1, &key2)) {
+ 		ret = -EINVAL;
+-		goto out_put_keys;
++		goto out;
+ 	}
+ 
+ 	hb1 = hash_futex(&key1);
+@@ -2022,13 +2010,11 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
+ 
+ 			ret = get_user(curval, uaddr1);
+ 			if (ret)
+-				goto out_put_keys;
++				goto out;
+ 
+ 			if (!(flags & FLAGS_SHARED))
+ 				goto retry_private;
+ 
+-			put_futex_key(&key2);
+-			put_futex_key(&key1);
+ 			goto retry;
+ 		}
+ 		if (curval != *cmpval) {
+@@ -2087,8 +2073,6 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
+ 		case -EFAULT:
+ 			double_unlock_hb(hb1, hb2);
+ 			hb_waiters_dec(hb2);
+-			put_futex_key(&key2);
+-			put_futex_key(&key1);
+ 			ret = fault_in_user_writeable(uaddr2);
+ 			if (!ret)
+ 				goto retry;
+@@ -2103,8 +2087,6 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
+ 			 */
+ 			double_unlock_hb(hb1, hb2);
+ 			hb_waiters_dec(hb2);
+-			put_futex_key(&key2);
+-			put_futex_key(&key1);
+ 			/*
+ 			 * Handle the case where the owner is in the middle of
+ 			 * exiting. Wait for the exit to complete otherwise
+@@ -2214,10 +2196,6 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
+ 	wake_up_q(&wake_q);
+ 	hb_waiters_dec(hb2);
+ 
+-out_put_keys:
+-	put_futex_key(&key2);
+-out_put_key1:
+-	put_futex_key(&key1);
+ out:
+ 	return ret ? ret : task_count;
+ }
+@@ -2694,7 +2672,6 @@ static int futex_wait_setup(u32 __user *uaddr, u32 val, unsigned int flags,
+ 		if (!(flags & FLAGS_SHARED))
+ 			goto retry_private;
+ 
+-		put_futex_key(&q->key);
+ 		goto retry;
+ 	}
+ 
+@@ -2704,8 +2681,6 @@ static int futex_wait_setup(u32 __user *uaddr, u32 val, unsigned int flags,
+ 	}
+ 
+ out:
+-	if (ret)
+-		put_futex_key(&q->key);
+ 	return ret;
+ }
+ 
+@@ -2850,7 +2825,6 @@ static int futex_lock_pi(u32 __user *uaddr, unsigned int flags,
+ 			 * - EAGAIN: The user space value changed.
+ 			 */
+ 			queue_unlock(hb);
+-			put_futex_key(&q.key);
+ 			/*
+ 			 * Handle the case where the owner is in the middle of
+ 			 * exiting. Wait for the exit to complete otherwise
+@@ -2958,13 +2932,11 @@ static int futex_lock_pi(u32 __user *uaddr, unsigned int flags,
+ 		put_pi_state(pi_state);
+ 	}
+ 
+-	goto out_put_key;
++	goto out;
+ 
+ out_unlock_put_key:
+ 	queue_unlock(hb);
+ 
+-out_put_key:
+-	put_futex_key(&q.key);
+ out:
+ 	if (to) {
+ 		hrtimer_cancel(&to->timer);
+@@ -2977,12 +2949,11 @@ static int futex_lock_pi(u32 __user *uaddr, unsigned int flags,
+ 
+ 	ret = fault_in_user_writeable(uaddr);
+ 	if (ret)
+-		goto out_put_key;
++		goto out;
+ 
+ 	if (!(flags & FLAGS_SHARED))
+ 		goto retry_private;
+ 
+-	put_futex_key(&q.key);
+ 	goto retry;
+ }
+ 
+@@ -3111,16 +3082,13 @@ static int futex_unlock_pi(u32 __user *uaddr, unsigned int flags)
+ out_unlock:
+ 	spin_unlock(&hb->lock);
+ out_putkey:
+-	put_futex_key(&key);
+ 	return ret;
+ 
+ pi_retry:
+-	put_futex_key(&key);
+ 	cond_resched();
+ 	goto retry;
+ 
+ pi_faulted:
+-	put_futex_key(&key);
+ 
+ 	ret = fault_in_user_writeable(uaddr);
+ 	if (!ret)
+@@ -3262,7 +3230,7 @@ static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
+ 	 */
+ 	ret = futex_wait_setup(uaddr, val, flags, &q, &hb);
+ 	if (ret)
+-		goto out_key2;
++		goto out;
+ 
+ 	/*
+ 	 * The check above which compares uaddrs is not sufficient for
+@@ -3271,7 +3239,7 @@ static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
+ 	if (match_futex(&q.key, &key2)) {
+ 		queue_unlock(hb);
+ 		ret = -EINVAL;
+-		goto out_put_keys;
++		goto out;
+ 	}
+ 
+ 	/* Queue the futex_q, drop the hb lock, wait for wakeup. */
+@@ -3281,7 +3249,7 @@ static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
+ 	ret = handle_early_requeue_pi_wakeup(hb, &q, &key2, to);
+ 	spin_unlock(&hb->lock);
+ 	if (ret)
+-		goto out_put_keys;
++		goto out;
+ 
+ 	/*
+ 	 * In order for us to be here, we know our q.key == key2, and since
+@@ -3371,11 +3339,6 @@ static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
+ 		ret = -EWOULDBLOCK;
+ 	}
+ 
+-out_put_keys:
+-	put_futex_key(&q.key);
+-out_key2:
+-	put_futex_key(&key2);
+-
+ out:
+ 	if (to) {
+ 		hrtimer_cancel(&to->timer);
 -- 
-git-series 0.9.1
+2.26.2
+
