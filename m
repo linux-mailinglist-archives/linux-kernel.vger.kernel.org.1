@@ -2,108 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A75EC1E43F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADE0E1E43FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388514AbgE0Njv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:39:51 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:46978 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387682AbgE0Nju (ORCPT
+        id S2388525AbgE0Nk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:40:57 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:54367 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387627AbgE0Nk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:39:50 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 2EB6E1C0300; Wed, 27 May 2020 15:39:49 +0200 (CEST)
-Date:   Wed, 27 May 2020 15:39:48 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Dan Murphy <dmurphy@ti.com>, jacek.anaszewski@gmail.com,
-        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
+        Wed, 27 May 2020 09:40:56 -0400
+Received: from localhost.localdomain ([149.172.98.151]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MxHLs-1ipQ2O23r6-00xZeZ; Wed, 27 May 2020 15:40:44 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v25 01/16] dt: bindings: Add multicolor class dt bindings
- documention
-Message-ID: <20200527133948.GA5011@amd>
-References: <20200526164652.2331-1-dmurphy@ti.com>
- <20200526164652.2331-2-dmurphy@ti.com>
- <20200527014902.GA859634@bogus>
+Subject: [PATCH] clk: versatile: undo some dependency changes
+Date:   Wed, 27 May 2020 15:40:33 +0200
+Message-Id: <20200527134043.807045-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="liOOAslEiF7prFVr"
-Content-Disposition: inline
-In-Reply-To: <20200527014902.GA859634@bogus>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:oX8d96/3agk6HQYMnHtVprdFalOQlNymeCToneAXooVriuWLRR+
+ c/h+AwhIj6fC9vUzuz5Aa2eLCM3DNnwR+1QROcwAEUOdv4Lulkj+kNPH+g7+VS00QAnl+gr
+ c/dD0CTtn4iEhMxVhrytOTGK3BdJav61Y5VWmm06MbbfbRJF+wr0RM02TJCmEuNKu6GocqM
+ fVPA8dCdLvlOl5QyMJoIg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8aMReIkVdqU=:yhFX2lu64OasDPFeHhky3H
+ IC/WFCqnWvNVHYf5ttpwJsFmp8RmKdFCdbWyOd18oY93TMgMHBSi8BG4PNcmAcoOCzQbTAjVe
+ 2n0FO4gp/b8z0cbzciNh1NhDV0DzamUtNPfAS8PAhkfrmKZw8elLwnUZMZOT7mBFEkOgGvNzZ
+ ThhEgJyTv2JKI3sgBiQKIbZb8GRfvZJ3uGyje0aDEnZvabf/qwD8lcTjl9Ke1tA3R3Uli1pIv
+ YoMV4J4lZrUpvBNy8Hszb8VvYzzsmcfUTxRdAdpHfd6a6WiVtbzPYQCTCu0UYPfSgoXCDkm6k
+ Bl9xZ1P2tqJTpSTlI7fKnvmoU/cyRIE/E3ra0bIx1xIbMaptle12QYTc16RCVzmhe62aBMJ7J
+ Ml2ZBk2UrFyq8fbq0BoH6b/xnigNotBVskzXNTlpg+GA5iAgAVBC468xVXlMixGq51OsYx4ur
+ ikKJLzdpwjh+l5Ci1t7KLGorX51y2xm09nP3NGro/PAOMBUOC8JaaVCUxTy5QkjoWIveWwXfv
+ f4Vh12dELsS0OTHvouycvZJ7B8ti+36fqacZ///KhnekwVAtgGhn4/3MJCplRbvNIPV9c8jfG
+ pAmlZjnk/57dsb0vHyc7IO4OW+Lm6F8ZoFYg6K+W66eZNwPy269MjncCjaCFa2B7xl+/Ys+ug
+ +mW0eawTP/R9H0IE7cOoAfPolwNq2bevSAywLpxhuuU/cgovHRbYKgMBRInSn2LkLb7YkIoPU
+ L7z0bsXHv515uZ0R8FsS5miYtqW8nxOfNOvXXjBtw9udx3Qz5UiemItenrFyhRpLkCQzgja/D
+ vToTOthP83fSoshZtvzcCxjjx3RTDLF3cS67SJ6JCc5FYsPm2E=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+SP810 and ICST are selected by a couple of platforms, most but
+not all in the versatile family:
 
---liOOAslEiF7prFVr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+WARNING: unmet direct dependencies detected for CLK_SP810
+  Depends on [n]: COMMON_CLK [=y] && COMMON_CLK_VERSATILE [=n]
+  Selected by [y]:
+  - ARCH_REALVIEW [=y] && (ARCH_MULTI_V5 [=n] || ARCH_MULTI_V6 [=n] ||
+ARCH_MULTI_V7 [=y])
 
-Hi!
+WARNING: unmet direct dependencies detected for ICST
+  Depends on [n]: COMMON_CLK [=y] && COMMON_CLK_VERSATILE [=n]
+  Selected by [y]:
+  - ARCH_REALVIEW [=y] && (ARCH_MULTI_V5 [=n] || ARCH_MULTI_V6 [=n] || ARCH_MULTI_V7 [=y])
+  - ARCH_VEXPRESS [=y] && ARCH_MULTI_V7 [=y]
+  - ARCH_ZYNQ [=y] && ARCH_MULTI_V7 [=y]
 
-Thanks for reviews!
+Change back the Kconfig logic to allow these to be selected
+without the main option.
 
-> > +additionalProperties: false
-> > +...
-> > diff --git a/drivers/leds/led-core.c b/drivers/leds/led-core.c
->=20
-> This isn't a binding file. Belongs in another patch.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/clk/versatile/Kconfig | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-These constants are directly related to the binding. It makes sense to
-go in one patch...
+diff --git a/drivers/clk/versatile/Kconfig b/drivers/clk/versatile/Kconfig
+index a0ed412e8396..a557886d813e 100644
+--- a/drivers/clk/versatile/Kconfig
++++ b/drivers/clk/versatile/Kconfig
+@@ -7,6 +7,18 @@ menuconfig COMMON_CLK_VERSATILE
+ 
+ if COMMON_CLK_VERSATILE
+ 
++config CLK_VEXPRESS_OSC
++	tristate "Clock driver for Versatile Express OSC clock generators"
++	depends on VEXPRESS_CONFIG
++	select REGMAP_MMIO
++	default y if ARCH_VEXPRESS
++	---help---
++	  Simple regmap-based driver driving clock generators on Versatile
++	  Express platforms hidden behind its configuration infrastructure,
++	  commonly known as OSCs.
++
++endif
++
+ config ICST
+ 	bool "Clock driver for ARM Reference designs ICST"
+ 	select REGMAP_MMIO
+@@ -22,14 +34,4 @@ config CLK_SP810
+ 	  Supports clock muxing (REFCLK/TIMCLK to TIMERCLKEN0-3) capabilities
+ 	  of the ARM SP810 System Controller cell.
+ 
+-config CLK_VEXPRESS_OSC
+-	tristate "Clock driver for Versatile Express OSC clock generators"
+-	depends on VEXPRESS_CONFIG
+-	select REGMAP_MMIO
+-	default y if ARCH_VEXPRESS
+-	---help---
+-	  Simple regmap-based driver driving clock generators on Versatile
+-	  Express platforms hidden behind its configuration infrastructure,
+-	  commonly known as OSCs.
+ 
+-endif
+-- 
+2.26.2
 
-Best regards,
-								Pavel
-
-> > index f1f718dbe0f8..846248a0693d 100644
-> > --- a/drivers/leds/led-core.c
-> > +++ b/drivers/leds/led-core.c
-> > @@ -34,6 +34,7 @@ const char * const led_colors[LED_COLOR_ID_MAX] =3D {
-> >  	[LED_COLOR_ID_VIOLET] =3D "violet",
-> >  	[LED_COLOR_ID_YELLOW] =3D "yellow",
-> >  	[LED_COLOR_ID_IR] =3D "ir",
-> > +	[LED_COLOR_ID_MULTI] =3D "multicolor",
-> >  };
-> >  EXPORT_SYMBOL_GPL(led_colors);
-> > =20
-> > diff --git a/include/dt-bindings/leds/common.h b/include/dt-bindings/le=
-ds/common.h
-> > index 0ce7dfc00dcb..a463ce6a8794 100644
-> > --- a/include/dt-bindings/leds/common.h
-> > +++ b/include/dt-bindings/leds/common.h
-> > @@ -30,7 +30,8 @@
-> >  #define LED_COLOR_ID_VIOLET	5
-> >  #define LED_COLOR_ID_YELLOW	6
-> >  #define LED_COLOR_ID_IR		7
-> > -#define LED_COLOR_ID_MAX	8
-> > +#define LED_COLOR_ID_MULTI	8
-> > +#define LED_COLOR_ID_MAX	9
-> > =20
-> >  /* Standard LED functions */
-> >  /* Keyboard LEDs, usually it would be input4::capslock etc. */
-> > --=20
-> > 2.25.1
-> >=20
-
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---liOOAslEiF7prFVr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl7ObaQACgkQMOfwapXb+vKDUQCgvKwSBIpK3Ho7ZIPhCUNgU/kp
-toUAnjGIr5U3J+haA7vXpJm0QHecHNkG
-=Ow+v
------END PGP SIGNATURE-----
-
---liOOAslEiF7prFVr--
