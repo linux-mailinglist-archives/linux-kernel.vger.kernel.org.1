@@ -2,104 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23961E4B33
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A8B1E4B46
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 19:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390743AbgE0Q6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 12:58:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49414 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387913AbgE0Q6D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 12:58:03 -0400
-Received: from localhost (unknown [137.135.114.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACDBF20C09;
-        Wed, 27 May 2020 16:58:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590598682;
-        bh=Zgs3ccEsGbJs7QUjPvZSh9uNEyoqKDTE8+GbiCafCuw=;
-        h=Date:From:To:To:To:Cc:Cc:Cc:Subject:In-Reply-To:References:From;
-        b=BpZGYzEU29cupZ5FK7KTZC2fWtXMgxUf5U2xAX0ntrVIV7RT9cno2tuJt0keiKe+c
-         VwZVwbS1nZweYAO+/GPOuEXb4H2zMckszbWYdMrfyZOnSoUNNQHSlf/PQAC5Hu+l5V
-         sp+d2285PwykdpMP5lQh/M2VUUUkYIXlyYapGMjs=
-Date:   Wed, 27 May 2020 16:58:01 +0000
-From:   Sasha Levin <sashal@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-To:     Jiri Kosina <jikos@kernel.org>, kai.heng.feng@canonical.com
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Subject: Re: [PATCH] HID: multitouch: enable multi-input as a quirk for some devices
-In-Reply-To: <20200526150717.324783-1-benjamin.tissoires@redhat.com>
-References: <20200526150717.324783-1-benjamin.tissoires@redhat.com>
-Message-Id: <20200527165802.ACDBF20C09@mail.kernel.org>
+        id S1730523AbgE0RAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 13:00:20 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:26763 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726978AbgE0RAU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 13:00:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590598818;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=19uN5uVqFPxYVimAYdibOEMC+SZq9IjB04cBBr/Z/FE=;
+        b=cxHPoLdTFMe3NpkJn57fS+25dIDbQyx28cc3oD281IAzxq9+hQ82FuywR9CIJoIYk+awHY
+        IWdhQZr+YmWL0nmjtDYNjxaDBZj0ZSETx8MAcKOpe04tvR+nso+r4QcefEgBGOlABgO5/S
+        6V1uBcb6ToSas1MuEybonPqLXWp2lhk=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-439-mhF3x3onNjStjY1L9b5eXQ-1; Wed, 27 May 2020 13:00:16 -0400
+X-MC-Unique: mhF3x3onNjStjY1L9b5eXQ-1
+Received: by mail-wm1-f69.google.com with SMTP id x11so10679wmc.9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 10:00:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=19uN5uVqFPxYVimAYdibOEMC+SZq9IjB04cBBr/Z/FE=;
+        b=hLpgeEwv4DMPH5AeQxrr/+wpv3bF3I1jy4LzcjRHb4P0mN2bB/KM3o2L2n3hl5PRDf
+         KerkYnBOjhXxI3hPwvBxVyxYP9Os84uTgPFn4jK+aWS14MaLVc/zlLf0cR4PrpvqkwTg
+         mK7aLCypD7pAv2fu4C63rX8dq6iqHGjI5LVWMa9NnBvuTTOw4SVn80Z3U8u9YHVO1kx2
+         WlGwnMvGVSzoT67yMdTWj8xPNa5NneY4PBV3Z8EBtTibfOaXbpk2iaVPHlWg5TUBN+w6
+         oUvEGqdT2PImFx5C5941DVYFwpJP1Qp4Bf93ZFvOA46rdpf6Ztxbr+VMfuHAor7rMFy4
+         JrGA==
+X-Gm-Message-State: AOAM533WUXkJlaJIB+/sK2otIgYW8Yrel8BgU87idFHP8U1bkuQy8J+G
+        FUaBn8JgQ9UKZDfUTfix6uOS4Ij2I9C9nHiET/pNTHeMf014ZGTIIz95BjglyXtloGMLn7P7lPY
+        BHeSmEj0lyvFcPJIXdX1niFjx
+X-Received: by 2002:adf:feca:: with SMTP id q10mr18966774wrs.380.1590598815696;
+        Wed, 27 May 2020 10:00:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxZsMcWkS3QYq92JA1gLacyexyY9OQ9Klpg3SI6agBShM60ySQO59nAhfrwJJyiTsfoOy/rdw==
+X-Received: by 2002:adf:feca:: with SMTP id q10mr18966738wrs.380.1590598815463;
+        Wed, 27 May 2020 10:00:15 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:3c1c:ffba:c624:29b8? ([2001:b07:6468:f312:3c1c:ffba:c624:29b8])
+        by smtp.gmail.com with ESMTPSA id h15sm3219876wrt.73.2020.05.27.10.00.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 May 2020 10:00:14 -0700 (PDT)
+Subject: Re: [PATCH 0/2] Fix issue with not starting nesting guests on my
+ system
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     "H. Peter Anvin" <hpa@zytor.com>, Tao Xu <tao3.xu@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        linux-kernel@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jingqi Liu <jingqi.liu@intel.com>
+References: <20200523161455.3940-1-mlevitsk@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c12376a8-fc98-5785-e4b6-5c682afd3cd6@redhat.com>
+Date:   Wed, 27 May 2020 19:00:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <20200523161455.3940-1-mlevitsk@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On 23/05/20 18:14, Maxim Levitsky wrote:
+> On my AMD machine I noticed that I can't start any nested guests,
+> because nested KVM (everything from master git branches) complains
+> that it can't find msr MSR_IA32_UMWAIT_CONTROL which my system doesn't support
+> at all anyway.
+> 
+> I traced it to the recently added UMWAIT support to qemu and kvm.
+> The kvm portion exposed the new MSR in KVM_GET_MSR_INDEX_LIST without
+> checking that it the underlying feature is supported in CPUID.
+> It happened to work when non nested because as a precation kvm,
+> tries to read each MSR on host before adding it to that list,
+> and when read gets a #GP it ignores it.
+> 
+> When running nested, the L1 hypervisor can be set to ignore unknown
+> msr read/writes (I need this for some other guests), thus this safety
+> check doesn't work anymore.
+> 
+> V2: * added a patch to setup correctly the X86_FEATURE_WAITPKG kvm capability
+>     * dropped the cosmetic fix patch as it is now fixed in kvm/queue
+> 
+> Best regards,
+> 	Maxim Levitsky
+> 
+> Maxim Levitsky (2):
+>   kvm/x86/vmx: enable X86_FEATURE_WAITPKG in KVM capabilities
+>   kvm/x86: don't expose MSR_IA32_UMWAIT_CONTROL unconditionally
+> 
+>  arch/x86/kvm/vmx/vmx.c | 3 +++
+>  arch/x86/kvm/x86.c     | 4 ++++
+>  2 files changed, 7 insertions(+)
+> 
 
-[This is an automated email]
+Queued for 5.7, thanks (with cosmetic touches to the commit message, and
+moving the "case" earlier to avoid conflicts).
 
-This commit has been processed because it contains a -stable tag.
-The stable tag indicates that it's relevant for the following trees: all
+Paolo
 
-The bot has tested the following trees: v5.6.14, v5.4.42, v4.19.124, v4.14.181, v4.9.224, v4.4.224.
-
-v5.6.14: Build OK!
-v5.4.42: Build OK!
-v4.19.124: Failed to apply! Possible dependencies:
-    69ecd44d68a7 ("HID: multitouch: add support for the Smart Tech panel")
-    7ffa13be4945 ("HID: multitouch: simplify the application retrieval")
-
-v4.14.181: Failed to apply! Possible dependencies:
-    127e71bd462b ("HID: multitouch: Combine all left-button events in a frame")
-    29cc309d8bf1 ("HID: hid-multitouch: forward MSC_TIMESTAMP")
-    69ecd44d68a7 ("HID: multitouch: add support for the Smart Tech panel")
-    7f81c8db5489 ("HID: multitouch: simplify the settings of the various features")
-    abb36fe691b2 ("HID: multitouch: fix calculation of last slot field in multi-touch reports")
-    af8dc4d09490 ("HID: multitouch: Properly deal with Win8 PTP reports with 0 touches")
-    d9c57a7090ba ("HID: multitouch: export a quirk for the button handling of touchpads")
-    f146d1c4d7ea ("HID: multitouch: Store per collection multitouch data")
-
-v4.9.224: Failed to apply! Possible dependencies:
-    0485b1ec280c ("HID: asus: ignore declared dummy usages")
-    1caccc2565a8 ("HID: asus: support Republic of Gamers special keys")
-    4f4001bc76fd ("HID: multitouch: fix rare Win 8 cases when the touch up event gets missing")
-    69ecd44d68a7 ("HID: multitouch: add support for the Smart Tech panel")
-    76dd1fbebbae ("HID: asus: Add support for T100 keyboard")
-    957b8dffa4e3 ("HID: multitouch: Support Asus T304UA media keys")
-    9ce12d8be12c ("HID: asus: Add i2c touchpad support")
-    a93913e1496d ("HID: asus: fix and generalize ambiguous preprocessor macros")
-    af22a610bc38 ("HID: asus: support backlight on USB keyboards")
-    c8b1b3dd89ea ("HID: asus: Fix keyboard support")
-    d9c57a7090ba ("HID: multitouch: export a quirk for the button handling of touchpads")
-    e9d0a26d3481 ("HID: multitouch: change for touch height/width")
-    f3287a995ac3 ("HID: multitouch: fix LG Melfas touchscreen")
-    fd91189654a3 ("HID: multitouch: use BIT macro")
-
-v4.4.224: Failed to apply! Possible dependencies:
-    0485b1ec280c ("HID: asus: ignore declared dummy usages")
-    1caccc2565a8 ("HID: asus: support Republic of Gamers special keys")
-    69ecd44d68a7 ("HID: multitouch: add support for the Smart Tech panel")
-    76dd1fbebbae ("HID: asus: Add support for T100 keyboard")
-    957b8dffa4e3 ("HID: multitouch: Support Asus T304UA media keys")
-    9ce12d8be12c ("HID: asus: Add i2c touchpad support")
-    a93913e1496d ("HID: asus: fix and generalize ambiguous preprocessor macros")
-    af22a610bc38 ("HID: asus: support backlight on USB keyboards")
-    b94f7d5ddf1b ("HID: asus: add support for VivoBook E200HA")
-    c8b1b3dd89ea ("HID: asus: Fix keyboard support")
-    d9c57a7090ba ("HID: multitouch: export a quirk for the button handling of touchpads")
-    eeb01a57921a ("HID: Asus X205TA keyboard driver")
-
-
-NOTE: The patch will not be queued to stable trees until it is upstream.
-
-How should we proceed with this patch?
-
--- 
-Thanks
-Sasha
