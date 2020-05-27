@@ -2,165 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83F51E4104
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 796E11E4083
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729965AbgE0L55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 07:57:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40786 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729311AbgE0LyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 07:54:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 30B07AD2B;
-        Wed, 27 May 2020 11:54:17 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
-        gregkh@linuxfoundation.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        devel@driverdev.osuosl.org
-Subject: [RFC 03/50] staging: vchiq: Move copy callback handling into vchiq
+        id S1729021AbgE0Lxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 07:53:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728723AbgE0Lx2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 07:53:28 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A24C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 04:53:27 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 0045E475; Wed, 27 May 2020 13:53:23 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        jroedel@suse.de
+Subject: [PATCH 05/10] iommu/amd: Free page-table in protection_domain_free()
 Date:   Wed, 27 May 2020 13:53:08 +0200
-Message-Id: <20200527115400.31391-4-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200527115400.31391-1-nsaenzjulienne@suse.de>
-References: <20200527115400.31391-1-nsaenzjulienne@suse.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <20200527115313.7426-6-joro@8bytes.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200527115313.7426-1-joro@8bytes.org>
+References: <20200527115313.7426-1-joro@8bytes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All vchi users use the kernel variant of the copy callback. The only
-user for the user space variant of the copy callback is in the ioctl
-implementation. So move all this copying logic into vchiq, and expose a
-new function that explicitly passes kernel messages.
+From: Joerg Roedel <jroedel@suse.de>
 
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Align release of the page-table with the place where it is allocated.
+
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 ---
- .../interface/vchiq_arm/vchiq_core.c          |  6 ++++
- .../interface/vchiq_arm/vchiq_core.h          |  7 ++++
- .../interface/vchiq_arm/vchiq_if.h            |  8 ++---
- .../interface/vchiq_arm/vchiq_shim.c          | 34 ++++---------------
- 4 files changed, 22 insertions(+), 33 deletions(-)
+ drivers/iommu/amd/iommu.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
-index edcd97373809..67b2090c91db 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
-@@ -3147,6 +3147,12 @@ vchiq_queue_message(unsigned int handle,
- 	return status;
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index 0d5a5dbee9f3..5282ff6b8ea0 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -2387,12 +2387,18 @@ static void cleanup_domain(struct protection_domain *domain)
+ 
+ static void protection_domain_free(struct protection_domain *domain)
+ {
++	struct domain_pgtable pgtable;
++
+ 	if (!domain)
+ 		return;
+ 
+ 	if (domain->id)
+ 		domain_id_free(domain->id);
+ 
++	amd_iommu_domain_get_pgtable(domain, &pgtable);
++	atomic64_set(&domain->pt_root, 0);
++	free_pagetable(&pgtable);
++
+ 	kfree(domain);
  }
  
-+enum vchiq_status vchiq_queue_kernel_message(unsigned int handle, void *context,
-+				      size_t size)
-+{
-+	return vchiq_queue_message(handle, memcpy_copy_callback, context, size);
-+}
-+
- void
- vchiq_release_message(unsigned int handle,
- 		      struct vchiq_header *header)
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
-index cedd8e721aae..1fe6cd8b86c0 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
-@@ -587,6 +587,13 @@ lock_service(struct vchiq_service *service);
- extern void
- unlock_service(struct vchiq_service *service);
- 
-+extern enum vchiq_status
-+vchiq_queue_message(unsigned int handle,
-+		    ssize_t (*copy_callback)(void *context, void *dest,
-+					     size_t offset, size_t maxsize),
-+		    void *context,
-+		    size_t size);
-+
- /* The following functions are called from vchiq_core, and external
- ** implementations must be provided. */
- 
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_if.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_if.h
-index 39b77ea19210..b62fd6d6f1ac 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_if.h
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_if.h
-@@ -105,12 +105,8 @@ extern enum vchiq_status vchiq_close_service(unsigned int service);
- extern enum vchiq_status vchiq_remove_service(unsigned int service);
- extern enum vchiq_status vchiq_use_service(unsigned int service);
- extern enum vchiq_status vchiq_release_service(unsigned int service);
--extern enum vchiq_status
--vchiq_queue_message(unsigned int handle,
--		    ssize_t (*copy_callback)(void *context, void *dest,
--					     size_t offset, size_t maxsize),
--		    void *context,
--		    size_t size);
-+extern enum vchiq_status vchiq_queue_kernel_message(unsigned int handle,
-+						    void *context, size_t size);
- extern void           vchiq_release_message(unsigned int service,
- 	struct vchiq_header *header);
- extern enum vchiq_status vchiq_bulk_transmit(unsigned int service,
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
-index 2c2bd7a9dc27..1c5ddea8b076 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
-@@ -99,20 +99,15 @@ EXPORT_SYMBOL(vchi_msg_remove);
-  *
-  ***********************************************************/
- static
--int32_t vchi_msg_queue(struct vchi_service_handle *handle,
--	ssize_t (*copy_callback)(void *context, void *dest,
--				 size_t offset, size_t maxsize),
--	void *context,
--	uint32_t data_size)
-+int32_t vchi_msg_queue(struct vchi_service_handle *handle, void *context,
-+		       uint32_t data_size)
+@@ -2476,7 +2482,6 @@ static struct iommu_domain *amd_iommu_domain_alloc(unsigned type)
+ static void amd_iommu_domain_free(struct iommu_domain *dom)
  {
- 	struct shim_service *service = (struct shim_service *)handle;
- 	enum vchiq_status status;
+ 	struct protection_domain *domain;
+-	struct domain_pgtable pgtable;
  
- 	while (1) {
--		status = vchiq_queue_message(service->handle,
--					     copy_callback,
--					     context,
--					     data_size);
-+		status = vchiq_queue_kernel_message(service->handle, context,
-+						    data_size);
+ 	domain = to_pdomain(dom);
  
- 		/*
- 		 * vchiq_queue_message() may return VCHIQ_RETRY, so we need to
-@@ -128,25 +123,10 @@ int32_t vchi_msg_queue(struct vchi_service_handle *handle,
- 	return vchiq_status_to_vchi(status);
- }
- 
--static ssize_t
--vchi_queue_kernel_message_callback(void *context,
--				   void *dest,
--				   size_t offset,
--				   size_t maxsize)
-+int vchi_queue_kernel_message(struct vchi_service_handle *handle, void *data,
-+			      unsigned int size)
- {
--	memcpy(dest, context + offset, maxsize);
--	return maxsize;
--}
+@@ -2494,10 +2499,6 @@ static void amd_iommu_domain_free(struct iommu_domain *dom)
+ 		dma_ops_domain_free(domain);
+ 		break;
+ 	default:
+-		amd_iommu_domain_get_pgtable(domain, &pgtable);
+-		atomic64_set(&domain->pt_root, 0);
+-		free_pagetable(&pgtable);
 -
--int
--vchi_queue_kernel_message(struct vchi_service_handle *handle,
--			  void *data,
--			  unsigned int size)
--{
--	return vchi_msg_queue(handle,
--			      vchi_queue_kernel_message_callback,
--			      data,
--			      size);
-+	return vchi_msg_queue(handle, data, size);
- }
- EXPORT_SYMBOL(vchi_queue_kernel_message);
+ 		if (domain->flags & PD_IOMMUV2_MASK)
+ 			free_gcr3_table(domain);
  
 -- 
-2.26.2
+2.17.1
 
