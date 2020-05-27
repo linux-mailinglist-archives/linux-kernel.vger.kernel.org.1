@@ -2,233 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A28F1E4546
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E281E4537
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728153AbgE0OKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 10:10:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56814 "EHLO mail.kernel.org"
+        id S2388555AbgE0OGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 10:06:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726330AbgE0OKd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 10:10:33 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        id S1730338AbgE0OGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 10:06:24 -0400
+Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E67422073B;
-        Wed, 27 May 2020 14:10:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 61B2C206F1;
+        Wed, 27 May 2020 14:06:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590588633;
-        bh=5uC2biTYNR2uE+Nj7FTLPnkL6dZDDTmROfZZa1wbM58=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VQ42e/p4xcs/SFuGsAX8nMkNX3kx5/RXPjWZJljby4rlXC+8i0LaWr4jcrQmBEtUP
-         HV+niJBBtUa5cBlg1C+sMZm8od4BpYbn+AJbh+rjA5azlYNWowC0z5L/aXsyw6Y+Dw
-         v1MIJM7AeEvt98AgZysBqln6qtQKjC3G2PFQZ+4g=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C668140AFD; Wed, 27 May 2020 11:10:28 -0300 (-03)
-Date:   Wed, 27 May 2020 11:10:28 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Nick Gasson <nick.gasson@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] perf jvmti: Fix demangling Java symbols
-Message-ID: <20200527141028.GE14219@kernel.org>
-References: <20200427061520.24905-1-nick.gasson@arm.com>
- <20200427061520.24905-4-nick.gasson@arm.com>
+        s=default; t=1590588384;
+        bh=MkIk8HRQfNKTJpeG9uXaBiahdr4DaoqFGscee3N22ss=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Jj4ei4DG1vGZad9fnUD1l/lcyfWl0H2ZfbsskJwT7Sw5d7Zl9oAzFFE8Od1o2BDAy
+         yffwR6kMJB0pTgicdUPZQNZROoS7OPA2VUwLwzn9VrddUAq2xb9AVJntI4eShdIivs
+         q5NauugRjY0F296Oapc14WsW/000CevOcQTi8fUM=
+Date:   Wed, 27 May 2020 09:11:19 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH net-next v3] ice: Replace one-element arrays with
+ flexible-arrays
+Message-ID: <20200527141119.GA30849@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200427061520.24905-4-nick.gasson@arm.com>
-X-Url:  http://acmel.wordpress.com
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Apr 27, 2020 at 02:15:16PM +0800, Nick Gasson escreveu:
-> For a Java method signature like:
-> 
->     Ljava/lang/AbstractStringBuilder;appendChars(Ljava/lang/String;II)V
-> 
-> The demangler produces:
-> 
->     void class java.lang.AbstractStringBuilder.appendChars(class java.lang., shorttring., int, int)
+The current codebase makes use of one-element arrays in the following
+form:
 
-Cool, one more 'perf test' entry, thanks a lot!
+struct something {
+    int length;
+    u8 data[1];
+};
 
-Applied,
+struct something *instance;
 
-- Arnaldo
+instance = kmalloc(sizeof(*instance) + size, GFP_KERNEL);
+instance->length = size;
+memcpy(instance->data, source, size);
+
+but the preferred mechanism to declare variable-length types such as
+these ones is a flexible array member[1][2], introduced in C99:
+
+struct foo {
+        int stuff;
+        struct boo array[];
+};
+
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on. So, replace
+the one-element array with a flexible-array member.
+
+Also, make use of the offsetof() helper in order to simplify some macros
+and properly calculate the size of the structures that contain
+flexible-array members.
+
+This issue was found with the help of Coccinelle and, audited _manually_.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+Changes in v3:
+ - We still can simply the code even more by using offsetof() just once. :)
+
+Changes in v2:
+ - Use offsetof(struct ice_aqc_sw_rules_elem, pdata) instead of
+   sizeof(struct ice_aqc_sw_rules_elem) - sizeof(((struct ice_aqc_sw_rules_elem *)0)->pdata)
+ - Update changelog text.
+
+ .../net/ethernet/intel/ice/ice_adminq_cmd.h   |  6 ++---
+ drivers/net/ethernet/intel/ice/ice_switch.c   | 23 ++++++-------------
+ 2 files changed, 10 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/ice/ice_adminq_cmd.h b/drivers/net/ethernet/intel/ice/ice_adminq_cmd.h
+index 586d69491268a..faa21830e40d8 100644
+--- a/drivers/net/ethernet/intel/ice/ice_adminq_cmd.h
++++ b/drivers/net/ethernet/intel/ice/ice_adminq_cmd.h
+@@ -570,7 +570,7 @@ struct ice_sw_rule_lkup_rx_tx {
+ 	 * lookup-type
+ 	 */
+ 	__le16 hdr_len;
+-	u8 hdr[1];
++	u8 hdr[];
+ } __packed;
  
-> The arguments should be (java.lang.String, int, int) but the demangler
-> interprets the "S" in String as the type code for "short". Correct this
-> and two other minor things:
-> 
-> - There is no "bool" type in Java, should be "boolean".
-> 
-> - The demangler prepends "class" to every Java class name. This is not
->   standard Java syntax and it wastes a lot of horizontal space if the
->   signature is long. Remove this as there isn't any ambiguity between
->   class names and primitives.
-> 
-> Also added a test case.
-> 
-> Signed-off-by: Nick Gasson <nick.gasson@arm.com>
-> ---
->  tools/perf/tests/Build                |  1 +
->  tools/perf/tests/builtin-test.c       |  4 +++
->  tools/perf/tests/demangle-java-test.c | 42 +++++++++++++++++++++++++++
->  tools/perf/tests/tests.h              |  1 +
->  tools/perf/util/demangle-java.c       | 13 +++++----
->  5 files changed, 55 insertions(+), 6 deletions(-)
->  create mode 100644 tools/perf/tests/demangle-java-test.c
-> 
-> diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
-> index 1692529639b0..2c45ac4a9581 100644
-> --- a/tools/perf/tests/Build
-> +++ b/tools/perf/tests/Build
-> @@ -55,6 +55,7 @@ perf-y += mem2node.o
->  perf-y += maps.o
->  perf-y += time-utils-test.o
->  perf-y += genelf.o
-> +perf-y += demangle-java-test.o
->  
->  $(OUTPUT)tests/llvm-src-base.c: tests/bpf-script-example.c tests/Build
->  	$(call rule_mkdir)
-> diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-> index 54d9516c9839..03b362b37f97 100644
-> --- a/tools/perf/tests/builtin-test.c
-> +++ b/tools/perf/tests/builtin-test.c
-> @@ -309,6 +309,10 @@ static struct test generic_tests[] = {
->  		.desc = "maps__merge_in",
->  		.func = test__maps__merge_in,
->  	},
-> +	{
-> +		.desc = "Demangle Java",
-> +		.func = test__demangle_java,
-> +	},
->  	{
->  		.func = NULL,
->  	},
-> diff --git a/tools/perf/tests/demangle-java-test.c b/tools/perf/tests/demangle-java-test.c
-> new file mode 100644
-> index 000000000000..8f3b90832fb0
-> --- /dev/null
-> +++ b/tools/perf/tests/demangle-java-test.c
-> @@ -0,0 +1,42 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <string.h>
-> +#include <stdlib.h>
-> +#include <stdio.h>
-> +#include "tests.h"
-> +#include "session.h"
-> +#include "debug.h"
-> +#include "demangle-java.h"
-> +
-> +int test__demangle_java(struct test *test __maybe_unused, int subtest __maybe_unused)
-> +{
-> +	int ret = TEST_OK;
-> +	char *buf = NULL;
-> +	size_t i;
-> +
-> +	struct {
-> +		const char *mangled, *demangled;
-> +	} test_cases[] = {
-> +		{ "Ljava/lang/StringLatin1;equals([B[B)Z",
-> +		  "boolean java.lang.StringLatin1.equals(byte[], byte[])" },
-> +		{ "Ljava/util/zip/ZipUtils;CENSIZ([BI)J",
-> +		  "long java.util.zip.ZipUtils.CENSIZ(byte[], int)" },
-> +		{ "Ljava/util/regex/Pattern$BmpCharProperty;match(Ljava/util/regex/Matcher;ILjava/lang/CharSequence;)Z",
-> +		  "boolean java.util.regex.Pattern$BmpCharProperty.match(java.util.regex.Matcher, int, java.lang.CharSequence)" },
-> +		{ "Ljava/lang/AbstractStringBuilder;appendChars(Ljava/lang/String;II)V",
-> +		  "void java.lang.AbstractStringBuilder.appendChars(java.lang.String, int, int)" },
-> +		{ "Ljava/lang/Object;<init>()V",
-> +		  "void java.lang.Object<init>()" },
-> +	};
-> +
-> +	for (i = 0; i < sizeof(test_cases) / sizeof(test_cases[0]); i++) {
-> +		buf = java_demangle_sym(test_cases[i].mangled, 0);
-> +		if (strcmp(buf, test_cases[i].demangled)) {
-> +			pr_debug("FAILED: %s: %s != %s\n", test_cases[i].mangled,
-> +				 buf, test_cases[i].demangled);
-> +			ret = TEST_FAIL;
-> +		}
-> +		free(buf);
-> +	}
-> +
-> +	return ret;
-> +}
-> diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-> index 9a160fef47c9..49b791d978f6 100644
-> --- a/tools/perf/tests/tests.h
-> +++ b/tools/perf/tests/tests.h
-> @@ -111,6 +111,7 @@ int test__mem2node(struct test *t, int subtest);
->  int test__maps__merge_in(struct test *t, int subtest);
->  int test__time_utils(struct test *t, int subtest);
->  int test__jit_write_elf(struct test *test, int subtest);
-> +int test__demangle_java(struct test *test, int subtest);
->  
->  bool test__bp_signal_is_supported(void);
->  bool test__bp_account_is_supported(void);
-> diff --git a/tools/perf/util/demangle-java.c b/tools/perf/util/demangle-java.c
-> index 6fb7f34c0814..39c05200ed65 100644
-> --- a/tools/perf/util/demangle-java.c
-> +++ b/tools/perf/util/demangle-java.c
-> @@ -15,7 +15,7 @@ enum {
->  	MODE_CLASS  = 1,
->  	MODE_FUNC   = 2,
->  	MODE_TYPE   = 3,
-> -	MODE_CTYPE  = 3, /* class arg */
-> +	MODE_CTYPE  = 4, /* class arg */
->  };
->  
->  #define BASE_ENT(c, n)	[c - 'A']=n
-> @@ -27,7 +27,7 @@ static const char *base_types['Z' - 'A' + 1] = {
->  	BASE_ENT('I', "int" ),
->  	BASE_ENT('J', "long" ),
->  	BASE_ENT('S', "short" ),
-> -	BASE_ENT('Z', "bool" ),
-> +	BASE_ENT('Z', "boolean" ),
->  };
->  
->  /*
-> @@ -59,15 +59,16 @@ __demangle_java_sym(const char *str, const char *end, char *buf, int maxlen, int
->  
->  		switch (*q) {
->  		case 'L':
-> -			if (mode == MODE_PREFIX || mode == MODE_CTYPE) {
-> -				if (mode == MODE_CTYPE) {
-> +			if (mode == MODE_PREFIX || mode == MODE_TYPE) {
-> +				if (mode == MODE_TYPE) {
->  					if (narg)
->  						rlen += scnprintf(buf + rlen, maxlen - rlen, ", ");
->  					narg++;
->  				}
-> -				rlen += scnprintf(buf + rlen, maxlen - rlen, "class ");
->  				if (mode == MODE_PREFIX)
->  					mode = MODE_CLASS;
-> +				else
-> +					mode = MODE_CTYPE;
->  			} else
->  				buf[rlen++] = *q;
->  			break;
-> @@ -120,7 +121,7 @@ __demangle_java_sym(const char *str, const char *end, char *buf, int maxlen, int
->  			if (mode != MODE_CLASS && mode != MODE_CTYPE)
->  				goto error;
->  			/* safe because at least one other char to process */
-> -			if (isalpha(*(q + 1)))
-> +			if (isalpha(*(q + 1)) && mode == MODE_CLASS)
->  				rlen += scnprintf(buf + rlen, maxlen - rlen, ".");
->  			if (mode == MODE_CLASS)
->  				mode = MODE_FUNC;
-> -- 
-> 2.26.1
-> 
-
+ /* Add/Update/Remove large action command/response entry
+@@ -580,7 +580,7 @@ struct ice_sw_rule_lkup_rx_tx {
+ struct ice_sw_rule_lg_act {
+ 	__le16 index; /* Index in large action table */
+ 	__le16 size;
+-	__le32 act[1]; /* array of size for actions */
++	__le32 act[]; /* array of size for actions */
+ 	/* Max number of large actions */
+ #define ICE_MAX_LG_ACT	4
+ 	/* Bit 0:1 - Action type */
+@@ -640,7 +640,7 @@ struct ice_sw_rule_lg_act {
+ struct ice_sw_rule_vsi_list {
+ 	__le16 index; /* Index of VSI/Prune list */
+ 	__le16 number_vsi;
+-	__le16 vsi[1]; /* Array of number_vsi VSI numbers */
++	__le16 vsi[]; /* Array of number_vsi VSI numbers */
+ };
+ 
+ /* Query VSI list command/response entry */
+diff --git a/drivers/net/ethernet/intel/ice/ice_switch.c b/drivers/net/ethernet/intel/ice/ice_switch.c
+index 0156b73df1b1f..191735ac491c6 100644
+--- a/drivers/net/ethernet/intel/ice/ice_switch.c
++++ b/drivers/net/ethernet/intel/ice/ice_switch.c
+@@ -29,25 +29,16 @@ static const u8 dummy_eth_header[DUMMY_ETH_HDR_LEN] = { 0x2, 0, 0, 0, 0, 0,
+ 							0x81, 0, 0, 0};
+ 
+ #define ICE_SW_RULE_RX_TX_ETH_HDR_SIZE \
+-	(sizeof(struct ice_aqc_sw_rules_elem) - \
+-	 sizeof(((struct ice_aqc_sw_rules_elem *)0)->pdata) + \
+-	 sizeof(struct ice_sw_rule_lkup_rx_tx) + DUMMY_ETH_HDR_LEN - 1)
++	(offsetof(struct ice_aqc_sw_rules_elem, pdata.lkup_tx_rx) + \
++	 DUMMY_ETH_HDR_LEN)
+ #define ICE_SW_RULE_RX_TX_NO_HDR_SIZE \
+-	(sizeof(struct ice_aqc_sw_rules_elem) - \
+-	 sizeof(((struct ice_aqc_sw_rules_elem *)0)->pdata) + \
+-	 sizeof(struct ice_sw_rule_lkup_rx_tx) - 1)
++	(offsetof(struct ice_aqc_sw_rules_elem, pdata.lkup_tx_rx))
+ #define ICE_SW_RULE_LG_ACT_SIZE(n) \
+-	(sizeof(struct ice_aqc_sw_rules_elem) - \
+-	 sizeof(((struct ice_aqc_sw_rules_elem *)0)->pdata) + \
+-	 sizeof(struct ice_sw_rule_lg_act) - \
+-	 sizeof(((struct ice_sw_rule_lg_act *)0)->act) + \
+-	 ((n) * sizeof(((struct ice_sw_rule_lg_act *)0)->act)))
++	(offsetof(struct ice_aqc_sw_rules_elem, pdata.lg_act.act) + \
++	 ((n) * sizeof(__le32)))
+ #define ICE_SW_RULE_VSI_LIST_SIZE(n) \
+-	(sizeof(struct ice_aqc_sw_rules_elem) - \
+-	 sizeof(((struct ice_aqc_sw_rules_elem *)0)->pdata) + \
+-	 sizeof(struct ice_sw_rule_vsi_list) - \
+-	 sizeof(((struct ice_sw_rule_vsi_list *)0)->vsi) + \
+-	 ((n) * sizeof(((struct ice_sw_rule_vsi_list *)0)->vsi)))
++	(offsetof(struct ice_aqc_sw_rules_elem, pdata.vsi_list.vsi) + \
++	 ((n) * sizeof(__le16)))
+ 
+ /**
+  * ice_init_def_sw_recp - initialize the recipe book keeping tables
 -- 
+2.26.2
 
-- Arnaldo
