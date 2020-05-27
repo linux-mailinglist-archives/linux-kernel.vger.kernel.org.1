@@ -2,165 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09751E3427
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 02:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4FCA1E3436
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 02:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727056AbgE0AtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 20:49:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726930AbgE0AtG (ORCPT
+        id S1727797AbgE0A52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 20:57:28 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:38200 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726701AbgE0A52 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 20:49:06 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFF5C061A0F;
-        Tue, 26 May 2020 17:49:06 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id a13so9421456pls.8;
-        Tue, 26 May 2020 17:49:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Q/JlVkIYtOH22Thby0LCK8W0UIVx5wzKW2ljCTmFrvY=;
-        b=OVgewBZMqLqx04vVNrWds7PmRoUIVOv+xHXyvWSIiIbGC+YwfZC7X6NVCuT5K1Asb1
-         HE929zmNDgh0Qkmgz/Jzx2oq0uP6lKIY1yBNTaS0Ztph/StvXi++sToegBHxx+Mh/qfS
-         pUsjuKHdfpOSJn28kuOr+a5ygYhL0xGrAfVLHNz+xw9ZYwfohwpHA2zwmhYdySIdzDDC
-         IrhOi6M3hIeSlY7UOxwTr5gRotCVmgrSyOsSCHMPu2336P6Ylk1Fnts++wQY+vwSVGtc
-         ok+P9eVxw4+6WHW6O0LYdbP40rNyxJyc04FlqaMxKX8ahQiE8yUPxASNRcsiBLUhZQAq
-         xtCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q/JlVkIYtOH22Thby0LCK8W0UIVx5wzKW2ljCTmFrvY=;
-        b=YW3DBPbFy2WzTKNDbHcFgWplFhNp0kdaZWIKk2FFTBarrYZ5a1Az5Iyie4Z/f2lU8O
-         IUy2m6CCIZrO++/g6QaA08YS/9G5lYjgoq3CzVnh4uUoMfk0xWgbyjGXnGlP05EDYRtI
-         /BIN855ZvLw7ugdf9us3FRsjSHN6YKjwiJ554DhB4rgrxeiKZMufrgxlaWTIHuhhNTqJ
-         jRwVrrxmpKBUDD0c8KmZvfWnuG3xc0r4h/dA4YnUOrVbKOymdd2+lswkIuYb02q/lRWq
-         J0qU6lNoGKi2On2ikOSCR37T0JkRkw+LHk+NkJ5rZGLbuhyM79tq5HZ68w1bVcebxn/j
-         pbbg==
-X-Gm-Message-State: AOAM533Ms6gUramo+1advAMI8I+cq8PPfLpq0QB4JXvL66DK9R6q6Xsg
-        Vd9IwPF10D2V7o2t1pPCdbM=
-X-Google-Smtp-Source: ABdhPJzbIAE1tc8zindTkUItJkLL8VLCvoWaN1PuG6Cmc9mLiASRCnu8+8azTqHTQ9J1JgY60oTIUw==
-X-Received: by 2002:a17:90a:c584:: with SMTP id l4mr1939961pjt.195.1590540546018;
-        Tue, 26 May 2020 17:49:06 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:726d])
-        by smtp.gmail.com with ESMTPSA id gt10sm583281pjb.30.2020.05.26.17.49.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 17:49:05 -0700 (PDT)
-Date:   Tue, 26 May 2020 17:49:02 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Florent Revest <revest@chromium.org>
-Subject: Re: [PATCH bpf-next 2/4] bpf: Implement bpf_local_storage for inodes
-Message-ID: <20200527004902.lo6c2efv5vix5nqq@ast-mbp.dhcp.thefacebook.com>
-References: <20200526163336.63653-1-kpsingh@chromium.org>
- <20200526163336.63653-3-kpsingh@chromium.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200526163336.63653-3-kpsingh@chromium.org>
+        Tue, 26 May 2020 20:57:28 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04R0perx174744;
+        Wed, 27 May 2020 00:57:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=1SQ1TOvRAmYsofH3JFqW3Rc6f8U9dMkKKaEe8wf3ncM=;
+ b=KfxK3k9T+tF0DbyAyrZPMsc3tSZ8kQ8UjABz3bnGiYTn7RocXdQTOoSzKjODQ9NA5Uqc
+ l0W10pO8Lqzs7wgbCUx2em/zw+Ls0JVv9U7w14/bvJOFG0NmzA5A87XHtcHL3rb4j551
+ 2cpo1cn4qIa86/9+FqypHRphPJ/qQ+6dFHQvWm7Y3aYLRLDU8k2FqnDKbVcyoE9XCN3G
+ w9uT4GwMBjHoUz/NHhmB9f4gjFcHzTQNQ+wmAGqhlL4RAZGkSmnU/9TJ2wwflfIRPP4X
+ dn0Xc2PgZNj68Sjh4N7PJ6weFZfhT1XSy2M+9r6lEu3VzoIqVhoNiPFpZAKIFp51LIlx VA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 316u8qvrq8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 27 May 2020 00:57:08 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04R0rYnC093329;
+        Wed, 27 May 2020 00:57:08 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 317dktetjr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 May 2020 00:57:08 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04R0v6qU007389;
+        Wed, 27 May 2020 00:57:07 GMT
+Received: from localhost.localdomain (/10.211.9.80)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 26 May 2020 17:57:06 -0700
+From:   Dongli Zhang <dongli.zhang@oracle.com>
+To:     linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, kbusch@kernel.org, axboe@fb.com,
+        hch@lst.de, sagi@grimberg.me
+Subject: [PATCH 1/1] nvme-pci: avoid race between nvme_reap_pending_cqes() and nvme_poll()
+Date:   Tue, 26 May 2020 17:49:55 -0700
+Message-Id: <20200527004955.19463-1-dongli.zhang@oracle.com>
+X-Mailer: git-send-email 2.17.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9633 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0 bulkscore=0
+ spamscore=0 suspectscore=1 mlxscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005270001
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9633 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 spamscore=0 cotscore=-2147483648 suspectscore=1
+ phishscore=0 clxscore=1011 mlxlogscore=999 bulkscore=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005270001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 06:33:34PM +0200, KP Singh wrote:
->  
-> +static struct bpf_local_storage_data *inode_storage_update(
-> +	struct inode *inode, struct bpf_map *map, void *value, u64 map_flags)
-> +{
-> +	struct bpf_local_storage_data *old_sdata = NULL;
-> +	struct bpf_local_storage_elem *selem;
-> +	struct bpf_local_storage *local_storage;
-> +	struct bpf_local_storage_map *smap;
-> +	int err;
-> +
-> +	err = check_update_flags(map, map_flags);
-> +	if (err)
-> +		return ERR_PTR(err);
-> +
-> +	smap = (struct bpf_local_storage_map *)map;
-> +	local_storage = rcu_dereference(inode->inode_bpf_storage);
-> +
-> +	if (!local_storage || hlist_empty(&local_storage->list)) {
-> +		/* Very first elem for this inode */
-> +		err = check_flags(NULL, map_flags);
-> +		if (err)
-> +			return ERR_PTR(err);
-> +
-> +		selem = selem_alloc(smap, value);
-> +		if (!selem)
-> +			return ERR_PTR(-ENOMEM);
-> +
-> +		err = inode_storage_alloc(inode, smap, selem);
+There may be a race between nvme_reap_pending_cqes() and nvme_poll(), e.g.,
+when doing live reset while polling the nvme device.
 
-inode_storage_update looks like big copy-paste except above one line.
-pls consolidate.
+      CPU X                        CPU Y
+                               nvme_poll()
+nvme_dev_disable()
+-> nvme_stop_queues()
+-> nvme_suspend_io_queues()
+-> nvme_suspend_queue()
+                               -> spin_lock(&nvmeq->cq_poll_lock);
+-> nvme_reap_pending_cqes()
+   -> nvme_process_cq()        -> nvme_process_cq()
 
-> +BPF_CALL_4(bpf_inode_storage_get, struct bpf_map *, map, struct inode *, inode,
-> +	   void *, value, u64, flags)
-> +{
-> +	struct bpf_local_storage_data *sdata;
-> +
-> +	if (flags > BPF_LOCAL_STORAGE_GET_F_CREATE)
-> +		return (unsigned long)NULL;
-> +
-> +	sdata = inode_storage_lookup(inode, map, true);
-> +	if (sdata)
-> +		return (unsigned long)sdata->data;
-> +
-> +	if (flags == BPF_LOCAL_STORAGE_GET_F_CREATE &&
-> +	    atomic_inc_not_zero(&inode->i_count)) {
-> +		sdata = inode_storage_update(inode, map, value, BPF_NOEXIST);
-> +		iput(inode);
-> +		return IS_ERR(sdata) ?
-> +			(unsigned long)NULL : (unsigned long)sdata->data;
-> +	}
+In the above scenario, the nvme_process_cq() for the same queue may be
+running on both CPU X and CPU Y concurrently.
 
-This is wrong. You cannot just copy paste the refcounting logic
-from bpf_sk_storage_get(). sk->sk_refcnt is very different from inode->i_count.
-To start, the inode->i_count cannot be incremented without lock.
-If you really need to do it you need igrab().
-Secondly, the iput() is not possible to call from bpf prog yet, since
-progs are not sleepable and iput() may call iput_final() which may sleep.
-But considering that only lsm progs from lsm hooks will call bpf_inode_storage_get()
-the inode is not going to disappear while this function is running.
-So why touch i_count ?
+It is much more easier to reproduce the issue when CONFIG_PREEMPT is
+enabled in kernel. When CONFIG_PREEMPT is disabled, it would take longer
+time for nvme_stop_queues()-->blk_mq_quiesce_queue() to wait for grace
+period.
 
-> +
-> +	return (unsigned long)NULL;
-> +}
-> +
->  BPF_CALL_2(bpf_sk_storage_delete, struct bpf_map *, map, struct sock *, sk)
->  {
->  	if (refcount_inc_not_zero(&sk->sk_refcnt)) {
-> @@ -957,6 +1229,20 @@ BPF_CALL_2(bpf_sk_storage_delete, struct bpf_map *, map, struct sock *, sk)
->  	return -ENOENT;
->  }
->  
-> +BPF_CALL_2(bpf_inode_storage_delete,
-> +	   struct bpf_map *, map, struct inode *, inode)
-> +{
-> +	int err;
-> +
-> +	if (atomic_inc_not_zero(&inode->i_count)) {
-> +		err = inode_storage_delete(inode, map);
-> +		iput(inode);
-> +		return err;
-> +	}
+This patch protects nvme_process_cq() with nvmeq->cq_poll_lock in
+nvme_reap_pending_cqes().
 
-ditto.
+Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
+---
+ drivers/nvme/host/pci.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-> +
-> +	return inode_storage_delete(inode, map);
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 3726dc780d15..cc46e250fcac 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -1382,16 +1382,19 @@ static void nvme_disable_admin_queue(struct nvme_dev *dev, bool shutdown)
+ 
+ /*
+  * Called only on a device that has been disabled and after all other threads
+- * that can check this device's completion queues have synced. This is the
+- * last chance for the driver to see a natural completion before
+- * nvme_cancel_request() terminates all incomplete requests.
++ * that can check this device's completion queues have synced, except
++ * nvme_poll(). This is the last chance for the driver to see a natural
++ * completion before nvme_cancel_request() terminates all incomplete requests.
+  */
+ static void nvme_reap_pending_cqes(struct nvme_dev *dev)
+ {
+ 	int i;
+ 
+-	for (i = dev->ctrl.queue_count - 1; i > 0; i--)
++	for (i = dev->ctrl.queue_count - 1; i > 0; i--) {
++		spin_lock(&dev->queues[i].cq_poll_lock);
+ 		nvme_process_cq(&dev->queues[i]);
++		spin_unlock(&dev->queues[i].cq_poll_lock);
++	}
+ }
+ 
+ static int nvme_cmb_qdepth(struct nvme_dev *dev, int nr_io_queues,
+-- 
+2.17.1
 
-bad copy-paste from bpf_sk_storage_delete?
-or what is this logic suppose to do?
