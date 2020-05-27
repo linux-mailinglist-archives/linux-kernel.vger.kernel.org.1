@@ -2,91 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9965A1E508F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 23:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE3E1E5091
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 23:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728515AbgE0VgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 17:36:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726114AbgE0VgA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 17:36:00 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92492C05BD1E
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 14:36:00 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id x22so15353998lfd.4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 14:36:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=as3BYd5V48LzAfXq5MM61GLeWE7HSlJgIWf5MOeOsaA=;
-        b=NSD+l04JBs90l+P0ssMbRlXN6rfx+6DVrxcpxm685MajuD2Z+Gsuuo9i06CdFnke0Z
-         z0BFVRZyLRGq0DR8XQQd++L5Kkd+pwsrvpxdXsDkmGS6ZBIGyAW9Cz9y/GyzTnIqQ/mC
-         Zik5Wcc/OWD5tKk45qnesqvKSmeSFgEFriSm843WY8EyL2WwbKu6GGMOxetZE2Uiu0hX
-         Bp4UQLxCVuiEPENoAx9RHs4/rU4i07qDimCbhFmvC2KvTko542dum7IZsHoiYN2tdbr/
-         jNKt5y2Gxi7PaNuWa0uxGTE4ewpChgG3uU6kFC5wLc/AMTFkMaWk/AWS7cZsEB8lRWYx
-         CI9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=as3BYd5V48LzAfXq5MM61GLeWE7HSlJgIWf5MOeOsaA=;
-        b=mxJg3TdgfMK4Ob5QI6CIj08HpiL8v9HsOCio6WH8XPmIyZLYDfXue6DW8eLhBWGpib
-         e+mPsRHQ7T6sP1cZ7LSpKAuGh3Es7ko6XrpxdWZTA8pcQNlQC/p04CbEgRe+G3y8gcia
-         /FoCkdpyFQ6Mz0qj6h+UIkmXTIoGb4vN8NgPa38Q21zmF7T295hL/WoQivmDXKy3mg+P
-         WKVyu5azGLVKsBOhIjXmHsVWpyzwyn8aHPaoKkY7M+ajLBwrjkv3Qn+qmrwgTn61uU1/
-         fTaY92iFEH/hwvbg8O/VZZsBs8tbBMhQr9d+GJN1nXHRO+xWd65nK5PLz4uh7wtM2Z6b
-         9VvA==
-X-Gm-Message-State: AOAM532A7zI5HnEUdYSuAnwdJ+i24SX0+S4KzGa0a9TBZLjZ/Z/bW4vv
-        xcfFU3tumVnmyvUhP6wLQDRIiwsT+HyvNxTu03iQ6g==
-X-Google-Smtp-Source: ABdhPJysoKK5Xdn8qL8s61C5Rb9q6OqJQys+vgn0AbALfz2jYuE8WERfuDUMop/1lJ26i6Qub3Awsm6YywCOYSiB0Kk=
-X-Received: by 2002:a19:4854:: with SMTP id v81mr11754lfa.189.1590615358686;
- Wed, 27 May 2020 14:35:58 -0700 (PDT)
+        id S1728650AbgE0Vgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 17:36:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50470 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726114AbgE0Vgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 17:36:47 -0400
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D58682075A;
+        Wed, 27 May 2020 21:36:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590615407;
+        bh=C9QEYysDx6SvB7HQ2r/V2aV8FyGMNYUnIYiRPLfFE30=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pEn/j7M3tLS4ZOl7rth/Oooe+DMEkDN3gAtt4X3XMA85BrFencKsNhrsgxjIaV0OJ
+         PeLdwJ4B+qqrg2B2psuZpeq6XlnRQR5EOzYmN1/sjPUhhpE9jY58muoqH2/URMzzT9
+         0tpVflTTmTUl0mtXerelfd+dd1qFkYbAQRV21OXU=
+Date:   Wed, 27 May 2020 14:36:42 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     jeyu@kernel.org, davem@davemloft.net, michael.chan@broadcom.com,
+        dchickles@marvell.com, sburla@marvell.com, fmanlunas@marvell.com,
+        aelior@marvell.com, GR-everest-linux-l2@marvell.com,
+        kvalo@codeaurora.org, johannes@sipsolutions.net,
+        akpm@linux-foundation.org, arnd@arndb.de, rostedt@goodmis.org,
+        mingo@redhat.com, aquini@redhat.com, cai@lca.pw, dyoung@redhat.com,
+        bhe@redhat.com, peterz@infradead.org, tglx@linutronix.de,
+        gpiccoli@canonical.com, pmladek@suse.com, tiwai@suse.de,
+        schlad@suse.de, andriy.shevchenko@linux.intel.com,
+        derosier@gmail.com, keescook@chromium.org, daniel.vetter@ffwll.ch,
+        will@kernel.org, mchehab+samsung@kernel.org, vkoul@kernel.org,
+        mchehab+huawei@kernel.org, robh@kernel.org, mhiramat@kernel.org,
+        sfr@canb.auug.org.au, linux@dominikbrodowski.net,
+        glider@google.com, paulmck@kernel.org, elver@google.com,
+        bauerman@linux.ibm.com, yamada.masahiro@socionext.com,
+        samitolvanen@google.com, yzaikin@google.com, dvyukov@google.com,
+        rdunlap@infradead.org, corbet@lwn.net, dianders@chromium.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v3 0/8] kernel: taint when the driver firmware crashes
+Message-ID: <20200527143642.5e4ffba0@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20200527031918.GU11244@42.do-not-panic.com>
+References: <20200526145815.6415-1-mcgrof@kernel.org>
+        <20200526154606.6a2be01f@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <20200526230748.GS11244@42.do-not-panic.com>
+        <20200526163031.5c43fc1d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <20200527031918.GU11244@42.do-not-panic.com>
 MIME-Version: 1.0
-References: <20200527182958.252402-1-shakeelb@google.com> <20200527194148.GA47905@cmpxchg.org>
- <20200527134650.18b3fb3f0be85bb73037da20@linux-foundation.org>
-In-Reply-To: <20200527134650.18b3fb3f0be85bb73037da20@linux-foundation.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 27 May 2020 14:35:47 -0700
-Message-ID: <CALvZod7Phd1H4vXXPOD_7u+1EU-52+3P-nV4eG+63_4_FuwYVA@mail.gmail.com>
-Subject: Re: [PATCH resend 3/3] mm: fix LRU balancing effect of new
- transparent huge pages
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Mel Gorman <mgorman@suse.de>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 1:46 PM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Wed, 27 May 2020 15:41:48 -0400 Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> > On Wed, May 27, 2020 at 11:29:58AM -0700, Shakeel Butt wrote:
-> > > From: Johannes Weiner <hannes@cmpxchg.org>
-> > >
-> > > Currently, THP are counted as single pages until they are split right
-> > > before being swapped out. However, at that point the VM is already in
-> > > the middle of reclaim, and adjusting the LRU balance then is useless.
-> > >
-> > > Always account THP by the number of basepages, and remove the fixup
-> > > from the splitting path.
-> > >
-> > > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> > > Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> >
-> > This is now already in mm as part of the "mm: balance LRU lists based
-> > on relative thrashing" series that I sent out last week and where it
-> > was originally from.
->
-> Yup.  I hope [1/3] and [2/3] weren't urgent?
+On Wed, 27 May 2020 03:19:18 +0000 Luis Chamberlain wrote:
+> I read your patch, and granted, I will accept I was under the incorrect
+> assumption that this can only be used by networking devices, however it
+> the devlink approach achieves getting userspace the ability with
+> iproute2 devlink util to query a device health, on to which we can peg
+> firmware health. But *this* patch series is not about health status and
+> letting users query it, its about a *critical* situation which has come up
+> with firmware requiring me to reboot my system, and the lack of *any*
+> infrastructure in the kernel today to inform userspace about it.
+> 
+> So say we use netlink to report a critical health situation, how are we
+> informing userspace with your patch series about requring a reboot?
 
-No urgency.
+One of main features of netlink is pub/sub model of notifications.
+
+Whatever you imagine listening to your uevent can listen to
+devlink-health notifications via devlink. 
+
+In fact I've shown this off in the RFC patches I sent to you, see 
+the devlink mon health command being used.
