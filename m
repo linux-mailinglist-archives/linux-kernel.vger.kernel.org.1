@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2246C1E3B44
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE351E3B45
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729477AbgE0ILy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 04:11:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42176 "EHLO
+        id S1729490AbgE0IL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 04:11:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729412AbgE0ILt (ORCPT
+        with ESMTP id S1729431AbgE0ILt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 May 2020 04:11:49 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 246A1C03E97A;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FCF9C061A0F;
         Wed, 27 May 2020 01:11:49 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jdrAB-0002V2-Fw; Wed, 27 May 2020 10:11:47 +0200
+        id 1jdrAB-0002VQ-Sv; Wed, 27 May 2020 10:11:48 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 1D7EB1C03A9;
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 898601C00ED;
         Wed, 27 May 2020 10:11:47 +0200 (CEST)
 Date:   Wed, 27 May 2020 08:11:47 -0000
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/entry: Convert reschedule interrupt to
- IDTENTRY_SYSVEC_SIMPLE
+Subject: [tip: x86/entry] x86/entry: Convert XEN hypercall vector to IDTENTRY_SYSVEC
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@kernel.org>,
         Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200521202119.835425642@linutronix.de>
-References: <20200521202119.835425642@linutronix.de>
+In-Reply-To: <20200521202119.741950104@linutronix.de>
+References: <20200521202119.741950104@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <159056710700.17951.6743495309914679803.tip-bot2@tip-bot2>
+Message-ID: <159056710744.17951.7035392369829780543.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -52,216 +51,164 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/entry branch of tip:
 
-Commit-ID:     064dc9d647c819f4c3196cdd10c06c0770cabf5f
-Gitweb:        https://git.kernel.org/tip/064dc9d647c819f4c3196cdd10c06c0770cabf5f
+Commit-ID:     eea840b3e3afa140777b31aef52dc8166b05aae2
+Gitweb:        https://git.kernel.org/tip/eea840b3e3afa140777b31aef52dc8166b05aae2
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 21 May 2020 22:05:45 +02:00
+AuthorDate:    Thu, 21 May 2020 22:05:44 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Tue, 26 May 2020 19:06:29 +02:00
 
-x86/entry: Convert reschedule interrupt to IDTENTRY_SYSVEC_SIMPLE
+x86/entry: Convert XEN hypercall vector to IDTENTRY_SYSVEC
 
-The scheduler IPI does not need the full interrupt entry handling logic
-when the entry is from kernel mode. Use IDTENTRY_SYSVEC_SIMPLE and spare
-all the overhead.
+Convert the last oldstyle defined vector to IDTENTRY_SYSVEC:
+
+  - Implement the C entry point with DEFINE_IDTENTRY_SYSVEC
+  - Emit the ASM stub with DECLARE_IDTENTRY_SYSVEC
+  - Remove the ASM idtentries in 64-bit
+  - Remove the BUILD_INTERRUPT entries in 32-bit
+  - Remove the old prototypes
+
+Fixup the related XEN code by providing the primary C entry point in x86 to
+avoid cluttering the generic code with X86'isms.
+
+No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Acked-by: Andy Lutomirski <luto@kernel.org>
-Link: https://lore.kernel.org/r/20200521202119.835425642@linutronix.de
+Link: https://lore.kernel.org/r/20200521202119.741950104@linutronix.de
 ---
- arch/x86/entry/entry_64.S                |  4 ----
- arch/x86/include/asm/entry_arch.h        |  3 ---
- arch/x86/include/asm/hw_irq.h            |  3 ---
- arch/x86/include/asm/idtentry.h          |  1 +
- arch/x86/include/asm/trace/common.h      |  4 ----
- arch/x86/include/asm/trace/irq_vectors.h | 17 +----------------
- arch/x86/kernel/idt.c                    |  2 +-
- arch/x86/kernel/smp.c                    | 19 ++++---------------
- arch/x86/kernel/tracepoint.c             | 17 -----------------
- 9 files changed, 7 insertions(+), 63 deletions(-)
+ arch/x86/entry/entry_32.S        |  5 -----
+ arch/x86/entry/entry_64.S        |  5 -----
+ arch/x86/include/asm/idtentry.h  |  4 ++++
+ arch/x86/xen/enlighten_hvm.c     | 12 ++++++++++++
+ drivers/xen/events/events_base.c |  6 ++----
+ include/xen/events.h             |  7 -------
+ 6 files changed, 18 insertions(+), 21 deletions(-)
 
+diff --git a/arch/x86/entry/entry_32.S b/arch/x86/entry/entry_32.S
+index 212671a..e034b56 100644
+--- a/arch/x86/entry/entry_32.S
++++ b/arch/x86/entry/entry_32.S
+@@ -1337,11 +1337,6 @@ SYM_FUNC_START(xen_failsafe_callback)
+ SYM_FUNC_END(xen_failsafe_callback)
+ #endif /* CONFIG_XEN_PV */
+ 
+-#ifdef CONFIG_XEN_PVHVM
+-BUILD_INTERRUPT3(xen_hvm_callback_vector, HYPERVISOR_CALLBACK_VECTOR,
+-		 xen_evtchn_do_upcall)
+-#endif
+-
+ SYM_CODE_START_LOCAL_NOALIGN(handle_exception)
+ 	/* the function address is in %gs's slot on the stack */
+ 	SAVE_ALL switch_stacks=1 skip_gs=1 unwind_espfix=1
 diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index fd7efb8..9c0722e 100644
+index b97fcda..fd7efb8 100644
 --- a/arch/x86/entry/entry_64.S
 +++ b/arch/x86/entry/entry_64.S
-@@ -956,10 +956,6 @@ apicinterrupt3 \num \sym \do_sym
- POP_SECTION_IRQENTRY
- .endm
+@@ -1111,11 +1111,6 @@ SYM_CODE_START(xen_failsafe_callback)
+ SYM_CODE_END(xen_failsafe_callback)
+ #endif /* CONFIG_XEN_PV */
  
--#ifdef CONFIG_SMP
--apicinterrupt RESCHEDULE_VECTOR			reschedule_interrupt		smp_reschedule_interrupt
+-#ifdef CONFIG_XEN_PVHVM
+-apicinterrupt3 HYPERVISOR_CALLBACK_VECTOR \
+-	xen_hvm_callback_vector xen_evtchn_do_upcall
 -#endif
 -
  /*
-  * Reload gs selector with exception handling
-  * edi:  new selector
-diff --git a/arch/x86/include/asm/entry_arch.h b/arch/x86/include/asm/entry_arch.h
-index a01bb74..3e841ed 100644
---- a/arch/x86/include/asm/entry_arch.h
-+++ b/arch/x86/include/asm/entry_arch.h
-@@ -10,6 +10,3 @@
-  * is no hardware IRQ pin equivalent for them, they are triggered
-  * through the ICC by us (IPIs)
-  */
--#ifdef CONFIG_SMP
--BUILD_INTERRUPT(reschedule_interrupt,RESCHEDULE_VECTOR)
--#endif
-diff --git a/arch/x86/include/asm/hw_irq.h b/arch/x86/include/asm/hw_irq.h
-index fd5e7c8..74c1243 100644
---- a/arch/x86/include/asm/hw_irq.h
-+++ b/arch/x86/include/asm/hw_irq.h
-@@ -28,9 +28,6 @@
- #include <asm/irq.h>
- #include <asm/sections.h>
- 
--/* Interrupt handlers registered during init_IRQ */
--extern asmlinkage void reschedule_interrupt(void);
--
- #ifdef	CONFIG_X86_LOCAL_APIC
- struct irq_data;
- struct pci_dev;
+  * Save all registers in pt_regs, and switch gs if needed.
+  * Use slow, but surefire "are we in kernel?" check.
 diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index f24701f..d214a30 100644
+index 3f84388..f24701f 100644
 --- a/arch/x86/include/asm/idtentry.h
 +++ b/arch/x86/include/asm/idtentry.h
-@@ -578,6 +578,7 @@ DECLARE_IDTENTRY_SYSVEC(X86_PLATFORM_IPI_VECTOR,	sysvec_x86_platform_ipi);
+@@ -622,6 +622,10 @@ DECLARE_IDTENTRY_SYSVEC(HYPERVISOR_STIMER0_VECTOR,	sysvec_hyperv_stimer0);
+ DECLARE_IDTENTRY_SYSVEC(HYPERVISOR_CALLBACK_VECTOR,	sysvec_acrn_hv_callback);
  #endif
  
- #ifdef CONFIG_SMP
-+DECLARE_IDTENTRY(RESCHEDULE_VECTOR,			sysvec_reschedule_ipi);
- DECLARE_IDTENTRY_SYSVEC(IRQ_MOVE_CLEANUP_VECTOR,	sysvec_irq_move_cleanup);
- DECLARE_IDTENTRY_SYSVEC(REBOOT_VECTOR,			sysvec_reboot);
- DECLARE_IDTENTRY_SYSVEC(CALL_FUNCTION_SINGLE_VECTOR,	sysvec_call_function_single);
-diff --git a/arch/x86/include/asm/trace/common.h b/arch/x86/include/asm/trace/common.h
-index 57c8da0..f0f9bcd 100644
---- a/arch/x86/include/asm/trace/common.h
-+++ b/arch/x86/include/asm/trace/common.h
-@@ -5,12 +5,8 @@
- DECLARE_STATIC_KEY_FALSE(trace_pagefault_key);
- #define trace_pagefault_enabled()			\
- 	static_branch_unlikely(&trace_pagefault_key)
--DECLARE_STATIC_KEY_FALSE(trace_resched_ipi_key);
--#define trace_resched_ipi_enabled()			\
--	static_branch_unlikely(&trace_resched_ipi_key)
- #else
- static inline bool trace_pagefault_enabled(void) { return false; }
--static inline bool trace_resched_ipi_enabled(void) { return false; }
- #endif
++#ifdef CONFIG_XEN_PVHVM
++DECLARE_IDTENTRY_SYSVEC(HYPERVISOR_CALLBACK_VECTOR,	sysvec_xen_hvm_callback);
++#endif
++
+ #undef X86_TRAP_OTHER
  
  #endif
-diff --git a/arch/x86/include/asm/trace/irq_vectors.h b/arch/x86/include/asm/trace/irq_vectors.h
-index 33b9d0f..88e7f0f 100644
---- a/arch/x86/include/asm/trace/irq_vectors.h
-+++ b/arch/x86/include/asm/trace/irq_vectors.h
-@@ -10,9 +10,6 @@
- 
- #ifdef CONFIG_X86_LOCAL_APIC
- 
--extern int trace_resched_ipi_reg(void);
--extern void trace_resched_ipi_unreg(void);
--
- DECLARE_EVENT_CLASS(x86_irq_vector,
- 
- 	TP_PROTO(int vector),
-@@ -37,18 +34,6 @@ DEFINE_EVENT_FN(x86_irq_vector, name##_exit,	\
- 	TP_PROTO(int vector),			\
- 	TP_ARGS(vector), NULL, NULL);
- 
--#define DEFINE_RESCHED_IPI_EVENT(name)		\
--DEFINE_EVENT_FN(x86_irq_vector, name##_entry,	\
--	TP_PROTO(int vector),			\
--	TP_ARGS(vector),			\
--	trace_resched_ipi_reg,			\
--	trace_resched_ipi_unreg);		\
--DEFINE_EVENT_FN(x86_irq_vector, name##_exit,	\
--	TP_PROTO(int vector),			\
--	TP_ARGS(vector),			\
--	trace_resched_ipi_reg,			\
--	trace_resched_ipi_unreg);
--
- /*
-  * local_timer - called when entering/exiting a local timer interrupt
-  * vector handler
-@@ -99,7 +84,7 @@ TRACE_EVENT_PERF_PERM(irq_work_exit, is_sampling_event(p_event) ? -EPERM : 0);
- /*
-  * reschedule - called when entering/exiting a reschedule vector handler
-  */
--DEFINE_RESCHED_IPI_EVENT(reschedule);
-+DEFINE_IRQ_VECTOR_EVENT(reschedule);
- 
- /*
-  * call_function - called when entering/exiting a call function interrupt
-diff --git a/arch/x86/kernel/idt.c b/arch/x86/kernel/idt.c
-index faaadd4..bc9b0d1 100644
---- a/arch/x86/kernel/idt.c
-+++ b/arch/x86/kernel/idt.c
-@@ -112,7 +112,7 @@ static const __initconst struct idt_data def_idts[] = {
-  */
- static const __initconst struct idt_data apic_idts[] = {
- #ifdef CONFIG_SMP
--	INTG(RESCHEDULE_VECTOR,			reschedule_interrupt),
-+	INTG(RESCHEDULE_VECTOR,			asm_sysvec_reschedule_ipi),
- 	INTG(CALL_FUNCTION_VECTOR,		asm_sysvec_call_function),
- 	INTG(CALL_FUNCTION_SINGLE_VECTOR,	asm_sysvec_call_function_single),
- 	INTG(IRQ_MOVE_CLEANUP_VECTOR,		asm_sysvec_irq_move_cleanup),
-diff --git a/arch/x86/kernel/smp.c b/arch/x86/kernel/smp.c
-index e5647da..eff4ce3 100644
---- a/arch/x86/kernel/smp.c
-+++ b/arch/x86/kernel/smp.c
-@@ -220,26 +220,15 @@ static void native_stop_other_cpus(int wait)
- 
- /*
-  * Reschedule call back. KVM uses this interrupt to force a cpu out of
-- * guest mode
-+ * guest mode.
-  */
--__visible void __irq_entry smp_reschedule_interrupt(struct pt_regs *regs)
-+DEFINE_IDTENTRY_SYSVEC_SIMPLE(sysvec_reschedule_ipi)
- {
- 	ack_APIC_irq();
-+	trace_reschedule_entry(RESCHEDULE_VECTOR);
- 	inc_irq_stat(irq_resched_count);
--
--	if (trace_resched_ipi_enabled()) {
--		/*
--		 * scheduler_ipi() might call irq_enter() as well, but
--		 * nested calls are fine.
--		 */
--		irq_enter();
--		trace_reschedule_entry(RESCHEDULE_VECTOR);
--		scheduler_ipi();
--		trace_reschedule_exit(RESCHEDULE_VECTOR);
--		irq_exit();
--		return;
--	}
- 	scheduler_ipi();
-+	trace_reschedule_exit(RESCHEDULE_VECTOR);
+diff --git a/arch/x86/xen/enlighten_hvm.c b/arch/x86/xen/enlighten_hvm.c
+index e138f7d..3e89b00 100644
+--- a/arch/x86/xen/enlighten_hvm.c
++++ b/arch/x86/xen/enlighten_hvm.c
+@@ -13,6 +13,7 @@
+ #include <asm/smp.h>
+ #include <asm/reboot.h>
+ #include <asm/setup.h>
++#include <asm/idtentry.h>
+ #include <asm/hypervisor.h>
+ #include <asm/e820/api.h>
+ #include <asm/early_ioremap.h>
+@@ -118,6 +119,17 @@ static void __init init_hvm_pv_info(void)
+ 		this_cpu_write(xen_vcpu_id, smp_processor_id());
  }
  
- DEFINE_IDTENTRY_SYSVEC(sysvec_call_function)
-diff --git a/arch/x86/kernel/tracepoint.c b/arch/x86/kernel/tracepoint.c
-index 496748e..fcfc077 100644
---- a/arch/x86/kernel/tracepoint.c
-+++ b/arch/x86/kernel/tracepoint.c
-@@ -25,20 +25,3 @@ void trace_pagefault_unreg(void)
++DEFINE_IDTENTRY_SYSVEC(sysvec_xen_hvm_callback)
++{
++	struct pt_regs *old_regs = set_irq_regs(regs);
++
++	inc_irq_stat(irq_hv_callback_count);
++
++	xen_hvm_evtchn_do_upcall();
++
++	set_irq_regs(old_regs);
++}
++
+ #ifdef CONFIG_KEXEC_CORE
+ static void xen_hvm_shutdown(void)
  {
- 	static_branch_dec(&trace_pagefault_key);
- }
--
--#ifdef CONFIG_SMP
--
--DEFINE_STATIC_KEY_FALSE(trace_resched_ipi_key);
--
--int trace_resched_ipi_reg(void)
--{
--	static_branch_inc(&trace_resched_ipi_key);
--	return 0;
--}
--
--void trace_resched_ipi_unreg(void)
--{
--	static_branch_dec(&trace_resched_ipi_key);
--}
--
+diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
+index eb35c3c..140c7bf 100644
+--- a/drivers/xen/events/events_base.c
++++ b/drivers/xen/events/events_base.c
+@@ -37,6 +37,7 @@
+ #ifdef CONFIG_X86
+ #include <asm/desc.h>
+ #include <asm/ptrace.h>
++#include <asm/idtentry.h>
+ #include <asm/irq.h>
+ #include <asm/io_apic.h>
+ #include <asm/i8259.h>
+@@ -1236,9 +1237,6 @@ void xen_evtchn_do_upcall(struct pt_regs *regs)
+ 	struct pt_regs *old_regs = set_irq_regs(regs);
+ 
+ 	irq_enter();
+-#ifdef CONFIG_X86
+-	inc_irq_stat(irq_hv_callback_count);
 -#endif
+ 
+ 	__xen_evtchn_do_upcall();
+ 
+@@ -1658,7 +1656,7 @@ static __init void xen_alloc_callback_vector(void)
+ 		return;
+ 
+ 	pr_info("Xen HVM callback vector for event delivery is enabled\n");
+-	alloc_intr_gate(HYPERVISOR_CALLBACK_VECTOR, xen_hvm_callback_vector);
++	alloc_intr_gate(HYPERVISOR_CALLBACK_VECTOR, asm_sysvec_xen_hvm_callback);
+ }
+ #else
+ void xen_setup_callback_vector(void) {}
+diff --git a/include/xen/events.h b/include/xen/events.h
+index 12b0dcb..df1e639 100644
+--- a/include/xen/events.h
++++ b/include/xen/events.h
+@@ -90,13 +90,6 @@ unsigned int irq_from_evtchn(evtchn_port_t evtchn);
+ int irq_from_virq(unsigned int cpu, unsigned int virq);
+ evtchn_port_t evtchn_from_irq(unsigned irq);
+ 
+-#ifdef CONFIG_XEN_PVHVM
+-/* Xen HVM evtchn vector callback */
+-void xen_hvm_callback_vector(void);
+-#ifdef CONFIG_TRACING
+-#define trace_xen_hvm_callback_vector xen_hvm_callback_vector
+-#endif
+-#endif
+ int xen_set_callback_via(uint64_t via);
+ void xen_evtchn_do_upcall(struct pt_regs *regs);
+ void xen_hvm_evtchn_do_upcall(void);
