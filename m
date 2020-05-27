@@ -2,50 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 403D31E40D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B6A1E4052
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727061AbgE0Lzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 07:55:54 -0400
-Received: from elvis.franken.de ([193.175.24.41]:41117 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729451AbgE0LzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 07:55:10 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jdueJ-00019x-00; Wed, 27 May 2020 13:55:07 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 2D3BEC0594; Wed, 27 May 2020 13:41:06 +0200 (CEST)
-Date:   Wed, 27 May 2020 13:41:06 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Borislav Petkov <bp@suse.de>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Fangrui Song <maskray@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] MIPS: head.S: Always jump to kernel_entry at head
- of text
-Message-ID: <20200527114106.GA13965@alpha.franken.de>
-References: <20200527063438.391949-1-jiaxun.yang@flygoat.com>
- <20200527063438.391949-2-jiaxun.yang@flygoat.com>
+        id S1727089AbgE0Lmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 07:42:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726600AbgE0Lmh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 07:42:37 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F5CC03E97A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 04:42:36 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id y11so1757048plt.12
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 04:42:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sZeKxoqsJfHmJKWaGZ+FoPVmzG1uJu0Aa8XuYZUp/Ew=;
+        b=VgXBx/n9QvB+YvDn6NYJLz6oVH59pjcPxJRh65BhLU3L7ZuClmM3L2k6D/626PY954
+         QQyeqbu8PgPXQCenizXc2i0fC76rQLs8Wigkf4p7SMgbycDSZCVefXPmN+8UV1pawScy
+         A2EFa4ZQzatLH1XSkfSK5ym9JQ6jWznNerWZ2LgW+2s1KfuNPJGOAi6T/vXRasdxGG5O
+         KuIlKlb5pj0K1QBhbpZ77dep0qpYB5q901mYzXB6eaxxX+5v0gV/Js8+y+LOrYVQC57G
+         xNoyGX2CFF0yNvJxOJQSSqMfHZ+KtdVhLsAgGn6KSWyP6rnnd7SyNkWQQHHdVyiC4nC7
+         N0gQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sZeKxoqsJfHmJKWaGZ+FoPVmzG1uJu0Aa8XuYZUp/Ew=;
+        b=Ow0XhqKQgAWeDIVnF+KdhuMxVa+ZWiIA+0kACzZeXlGxysV78CGCGL7Hxi9tdqpwXf
+         THFQVrh4NblAkGxgvgM3PDd81mFGqYX35h63JvcRfmoiONn+hgiJuBotxB8YvIh/8xzx
+         XLg2oDUh6cWhVv4wioi/5rXVhE26DH/+uaZR+83WONHf/JmLu7V0bVW79ARFN1RBWhVP
+         naFyFjm4XeYE3UU0NmM9r0Kov4iORDybTc0oAYDW17kEUvFoiFDCgpMR/EEY2e1dF1ER
+         HAiPaQ58Hs/t48uUt13s8aU1NeHNh2tpe6PtQdUf2DYMTF5pJPhbfbSjZ1Yf349Hf4wa
+         fD6A==
+X-Gm-Message-State: AOAM5334m9uyIq8Uz1QlwyZHk1KnzRbYXPwMgx7Jkk5036lMVBtAxw82
+        Ogsu5zsj8sXTVe6paArTik/vN4rE05MpbQ==
+X-Google-Smtp-Source: ABdhPJxEIjzI7FCnmm+8XenXCkMLJM7xic+d04No6urE0jxruzEp+coK6xFyXzPHJohz4u+UUWTTdg==
+X-Received: by 2002:a17:90a:26a7:: with SMTP id m36mr4607945pje.28.1590579756112;
+        Wed, 27 May 2020 04:42:36 -0700 (PDT)
+Received: from ?IPv6:2605:e000:100e:8c61:2cc3:8599:f649:862c? ([2605:e000:100e:8c61:2cc3:8599:f649:862c])
+        by smtp.gmail.com with ESMTPSA id v9sm1981838pgj.54.2020.05.27.04.42.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 May 2020 04:42:35 -0700 (PDT)
+Subject: Re: [PATCH][next] block: blk-crypto-fallback: remove redundant
+ initialization of variable err
+To:     Colin King <colin.king@canonical.com>, linux-block@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200526224902.63975-1-colin.king@canonical.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <feb4f798-ce3b-6a08-e462-ab23bd223b18@kernel.dk>
+Date:   Wed, 27 May 2020 05:42:33 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200527063438.391949-2-jiaxun.yang@flygoat.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20200526224902.63975-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 02:34:32PM +0800, Jiaxun Yang wrote:
-> Buggy loaders like early version of PMON2000 sometimes ignore
-> elf_entry and goto start of text directly.
+On 5/26/20 4:49 PM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The variable err is being initialized with a value that is never read
+> and it is being updated later with a new value.  The initialization is
+> redundant and can be removed.
 
-so select BOOT_RAW on those broken platforms, no need for this change.
-
-Thomas.
+Applied, thanks.
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Jens Axboe
+
