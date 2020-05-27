@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4D11E3FDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EDA41E3FE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388440AbgE0LY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 07:24:26 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:15236 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388019AbgE0LYZ (ORCPT
+        id S2388476AbgE0LYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 07:24:41 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:37353 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388019AbgE0LYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 07:24:25 -0400
+        Wed, 27 May 2020 07:24:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1590578665; x=1622114665;
+  t=1590578680; x=1622114680;
   h=from:to:cc:subject:date:message-id:in-reply-to;
-  bh=iRjowuh3rsT6KaQa5IoA4dyPWOraak/h0is2Gj8OFRE=;
-  b=EDVTjmO0uOAvpsvLalthUw6AtLp90rxaC3btJG/mQj+IN5rbHxgEZpsT
-   Y+KqN92eqcpZj4sNUmi9Frzmj2Q2C8PbSEDK03EJU6KQnoqcJzcMMvBVy
-   R0Dby40jAqAw++3KBhqgPHKml6BN3KD2RDXIcZF2dUAMP/Kcek5mOwmjw
+  bh=QTcZ5qD0FayvieP+n15JSMMJ8RxzSZ9hkKMgdyePYl0=;
+  b=plyM7FI24ylSxSVsctzof4+2tXoQIxcrSgg3tnsCf8rplz1XGYUs1baI
+   qOv9DXnt3ddxFsajmLqkIAEzb5pPlga1GG1VJfeSprhM3OfTtCm5e1GPP
+   MMBciVRrtk80CoUHIKsW1nSTLHFlwr+vprYNJd4Fn8EZoqOxyr1p6XacJ
    k=;
-IronPort-SDR: gzc5vzbcQcGaYviq5tmSnNk32G+8h0J63+22zkVNJ+T1UWGfmr+qKW/YCRNCQybor1A8DI6n0t
- rAch2mHLhG1g==
+IronPort-SDR: UjrcPBbDIDtwAzxUSHYYy2Zs0BF2mpFsA3jrRnlRgUVFLc2w2DleD2rI6O0xnpqgMhyahdzSN/
+ mjivdWn5aq4g==
 X-IronPort-AV: E=Sophos;i="5.73,441,1583193600"; 
-   d="scan'208";a="33842691"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-538b0bfb.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 27 May 2020 11:24:22 +0000
-Received: from uc85b765ebdd8595b4b67.ant.amazon.com (pdx2-ws-svc-lb17-vlan2.amazon.com [10.247.140.66])
-        by email-inbound-relay-2a-538b0bfb.us-west-2.amazon.com (Postfix) with ESMTPS id D1D4CA1EA7;
-        Wed, 27 May 2020 11:24:18 +0000 (UTC)
+   d="scan'208";a="46374300"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-27fb8269.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 27 May 2020 11:24:37 +0000
+Received: from uc85b765ebdd8595b4b67.ant.amazon.com (iad7-ws-svc-lb50-vlan2.amazon.com [10.0.93.210])
+        by email-inbound-relay-1e-27fb8269.us-east-1.amazon.com (Postfix) with ESMTPS id EC12CA1CD4;
+        Wed, 27 May 2020 11:24:25 +0000 (UTC)
 Received: from uc85b765ebdd8595b4b67.ant.amazon.com (localhost [127.0.0.1])
-        by uc85b765ebdd8595b4b67.ant.amazon.com (8.15.2/8.15.2/Debian-3) with ESMTP id 04RBOGT4027335;
-        Wed, 27 May 2020 13:24:16 +0200
+        by uc85b765ebdd8595b4b67.ant.amazon.com (8.15.2/8.15.2/Debian-3) with ESMTP id 04RBONgs027396;
+        Wed, 27 May 2020 13:24:23 +0200
 Received: (from foersleo@localhost)
-        by uc85b765ebdd8595b4b67.ant.amazon.com (8.15.2/8.15.2/Submit) id 04RBOG5A027331;
-        Wed, 27 May 2020 13:24:16 +0200
+        by uc85b765ebdd8595b4b67.ant.amazon.com (8.15.2/8.15.2/Submit) id 04RBONh4027394;
+        Wed, 27 May 2020 13:24:23 +0200
 From:   Leonard Foerster <foersleo@amazon.com>
 To:     SeongJae Park <sjpark@amazon.com>
 Cc:     akpm@linux-foundation.org, SeongJae Park <sjpark@amazon.de>,
@@ -53,27 +53,26 @@ Cc:     akpm@linux-foundation.org, SeongJae Park <sjpark@amazon.de>,
         vdavydov.dev@gmail.com, yang.shi@linux.alibaba.com,
         ying.huang@intel.com, linux-damon@amazon.com, linux-mm@kvack.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v13 07/15] mm/damon: Implement callbacks
-Date:   Wed, 27 May 2020 13:24:15 +0200
-Message-Id: <1590578655-27285-1-git-send-email-foersleo@amazon.com>
+Subject: Re: [PATCH v13 08/15] mm/damon: Implement access pattern recording
+Date:   Wed, 27 May 2020 13:24:21 +0200
+Message-Id: <1590578661-27344-1-git-send-email-foersleo@amazon.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <20200525091512.30391-8-sjpark@amazon.com>
+In-Reply-To: <20200525091512.30391-9-sjpark@amazon.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-25T11:15:04+02:00 SeongJae Park <sjpark@amazon.com> wrote:
+On 2020-05-25T11:15:05+02:00 SeongJae Park <sjpark@amazon.com> wrote:
 
 > From: SeongJae Park <sjpark@amazon.de>
 > 
-> This commit implements callbacks for DAMON.  Using this, DAMON users can
-> install their callbacks for each step of the access monitoring so that
-> they can do something interesting with the monitored access patterns
-> online.  For example, callbacks can report the monitored patterns to
-> users or do some access pattern based memory management such as
-> proactive reclamations or access pattern based THP promotions/demotions
-> decision makings.
+> This commit implements the recording feature of DAMON. If this feature
+> is enabled, DAMON writes the monitored access patterns in its binary
+> format into a file which specified by the user. This is already able to
+> be implemented by each user using the callbacks.  However, as the
+> recording is expected to be used widely, this commit implements the
+> feature in the DAMON, for more convenience and efficiency.
 > 
 > Signed-off-by: SeongJae Park <sjpark@amazon.de>
 
