@@ -2,174 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609C31E3BC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EDF01E3BCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387925AbgE0IRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 04:17:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
+        id S2388014AbgE0IR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 04:17:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387814AbgE0IRf (ORCPT
+        with ESMTP id S2387872AbgE0IRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 04:17:35 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB8BC061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 01:17:35 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id n5so2149554wmd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 01:17:35 -0700 (PDT)
+        Wed, 27 May 2020 04:17:55 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B94DEC061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 01:17:54 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id b6so27842393ljj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 01:17:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zQPsUVCqNfzFIU8v+ZDf1R9blbjp1zF0pTEs4sFWhWU=;
-        b=YgVqEsnHHZp93t+SQ2Ae73TGpl85Q6L1tDROvs8Tobv4eKCAT6IccsQt9lTRvQbuxT
-         O6gRYjdUeWehx0AhZ3hloWHfGclDcE6lRxvAxSjFiM/u5tuFFkqPHi6VvC4idg/peWJJ
-         PXmxtXbc2FPfb2G9YJnwd9blYMCKwXce1c3qDOE8qUunH9ZMXoFKSgzzxJEIWwhdX8HI
-         LJK2hTqGT1GbT0D+R5KLVgVnjZwCzVPGSOToiINSZojZ5Y8yqparHQ4hIa0LpHq4Be5M
-         Htj/D/oSFAmmNjpiQS6cjzqkIgLwn/QLo938SrxL9OxivAv4pqjJF7IbiEVfjtRQE9x+
-         d0aw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ansn8GEOG8puOy4spTYf8Y5HTDgRcZKk82joxsuYhzg=;
+        b=y2F7kCk83loIuR9iQ9jfjKEChgmHWg6wgsSk5zHEQcJL0SXlc6sMmAd5i7Uz4eT8mA
+         7gFMx9H+uNIvQjtkS5iH42LO3JIT6sTa3dRNDQVQ4z4eSz7hICpzLSevJu5Kjf5OYPAx
+         NOOCDjMkWPsl/Gzm6vp0G2vOTs52xu6UTz3XUX8DvqjqPjki7au4DPykUzLH731RgqX0
+         wQO+G+XGcNYVW0JFrPBoWrVmFjCzYv98arne9P8DQZisHP2i8HuLbFxsN36dWxwP+0Nl
+         z0mF7nYoaf9iVfFWfY87rl9G8n2y75bpEbIIVu5X58VRwc8kuG2SVsJm0/eneukKdz8B
+         VbdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=zQPsUVCqNfzFIU8v+ZDf1R9blbjp1zF0pTEs4sFWhWU=;
-        b=mxu08C+B9flQm3TXIpLMalBp+DMRVBsuUwntq1EcWt0yPFuglIsu7+Sb4+9dOYjC+K
-         abG7h0JSI8MyRKhFoWj+uqCqHf8h/08cQQfwwdkx/zsfBG/hBRcL7ifCJItei4jbHdw6
-         bF3VThO8KGaZkQkCHB1yu5qci1qZ3UKvXY3764B9qakZMzGmqXtuawa6+KTsRa4qU+aI
-         qXl8Si75Te9VVvRweCfzHueZ/6H53fkE+GXJ5BrAZhAZ5eaLn7t3qWKDNbQFh3nVpiHL
-         IrVRIyEfu4MUVImfyj/xawWZwpBhjod+kcJDxpm0t8bVicqdpEtlHmtEoq0L4ffN3T4r
-         zBJQ==
-X-Gm-Message-State: AOAM532CiUNR9RnQgd1WTRrjf9cDRH9W1CJSK0KzlIFy0UebUcEr9Pp7
-        BJ3oib38x6MZbGsu9RrE7+nCxQ==
-X-Google-Smtp-Source: ABdhPJx8wptAoFsnZYW04E1TTKd7bYnndpnmEkPYZcaM4kED49FKX+cqXxfItLqmi7vSzsFcR5xCkA==
-X-Received: by 2002:a1c:64c1:: with SMTP id y184mr3055622wmb.175.1590567453814;
-        Wed, 27 May 2020 01:17:33 -0700 (PDT)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:acf8:18a8:b3a5:a17b? ([2a01:e35:2ec0:82b0:acf8:18a8:b3a5:a17b])
-        by smtp.gmail.com with ESMTPSA id t14sm2165032wrb.94.2020.05.27.01.17.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 May 2020 01:17:33 -0700 (PDT)
-Subject: Re: [PATCH for-5.8 2/2] usb: dwc3: meson-g12a: fix USB2 PHY
- initialization on G12A and A1 SoCs
-To:     balbi@kernel.org, gregkh@linuxfoundation.org
-Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-usb@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        hanjie.lin@amlogic.com, yue.wang@amlogic.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        "kernelci.org bot" <bot@kernelci.org>
-References: <20200526202943.715220-1-martin.blumenstingl@googlemail.com>
- <20200526202943.715220-3-martin.blumenstingl@googlemail.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- BSwxi7g3Mu7u5kUByanqHyA=
-Organization: Baylibre
-Message-ID: <40a874eb-1a2b-533e-ee3e-bd90510abaf9@baylibre.com>
-Date:   Wed, 27 May 2020 10:17:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ansn8GEOG8puOy4spTYf8Y5HTDgRcZKk82joxsuYhzg=;
+        b=PYe6NnmDbIslmwAaLd53drw2cztqOYJ4xCA3rAS+JKkvI+dtXXtvymbI6qNvwdGFYO
+         ZNLUmkEvtZc8SFODnWO40/XngE699npOIL5e1pl7abkERUAzhcx1YW5/LMPBy4EM9H5/
+         quWaBrh+EtQz1aYymEs1d8E51qyoYK+VFHkCdpxOFCqVCznRvCM/PE+ZRvyqpKMILnyp
+         pHDFdThfOIRFwCBr1etsXqM2crUj89ijsJT/sJtcWplHxr47YL9PYTA2CXiCoBLud6Bk
+         Slc0b7iibLBnBsm+sdnajfRJthrzkuwrvp3R51IySODM9m1xFCCJRaa7313BwImU4Z0S
+         Iwvw==
+X-Gm-Message-State: AOAM532lch08Tr4SdttrfhqB7fPNyIBp87zrTPKMlcjBezO01u1UMzV4
+        cJ8NhEJSjigSjRlJSXYFopPpYJHovJdSSYLaA+eGw/pTVXVROA==
+X-Google-Smtp-Source: ABdhPJz3cphxLhaIGy7Afp/ix//jxjtXMqBGUNYDN5oAq5zOp+PWKLu6KUhfoHXW2LmOLUes6/vPEuQYMsHK/oP2f+4=
+X-Received: by 2002:a2e:9b4f:: with SMTP id o15mr2325240ljj.358.1590567473032;
+ Wed, 27 May 2020 01:17:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200526202943.715220-3-martin.blumenstingl@googlemail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200526183937.471379031@linuxfoundation.org>
+In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 27 May 2020 13:47:41 +0530
+Message-ID: <CA+G9fYtbi+qgdu9ZeHPxKZyqON18WUdK1i=f9YpFQ2t58JCO-g@mail.gmail.com>
+Subject: Re: [PATCH 5.6 000/126] 5.6.15-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+On Wed, 27 May 2020 at 00:46, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.6.15 release.
+> There are 126 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 28 May 2020 18:36:22 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.6.15-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.6.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On 26/05/2020 22:29, Martin Blumenstingl wrote:
-> dwc3_meson_g12a_usb2_init_phy() crashes with NULL pointer on an SM1
-> board (which uses the same USB setup as G12A) dereference as reported
-> by the Kernel CI bot. This is because of the following call flow:
->   dwc3_meson_g12a_probe
->     priv->drvdata->setup_regmaps
->       dwc3_meson_g12a_setup_regmaps
->         priv->usb2_ports is still 0 so priv->u2p_regmap[i] will be NULL
->     dwc3_meson_g12a_get_phys
->       initializes priv->usb2_ports
->     priv->drvdata->usb_init
->       dwc3_meson_g12a_usb_init
->         dwc3_meson_g12a_usb_init_glue
->           dwc3_meson_g12a_usb2_init
->             priv->drvdata->usb2_init_phy
->               dwc3_meson_g12a_usb2_init_phy
->                 dereferences priv->u2p_regmap[i]
-> 
-> Call priv->drvdata->setup_regmaps only after dwc3_meson_g12a_get_phys so
-> priv->usb2_ports is initialized and the regmaps will be set up
-> correctly. This fixes the NULL dereference later on.
-> 
-> Fixes: 013af227f58a97 ("usb: dwc3: meson-g12a: handle the phy and glue registers separately")
-> Reported-by: "kernelci.org bot" <bot@kernelci.org>
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> ---
->  drivers/usb/dwc3/dwc3-meson-g12a.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/usb/dwc3/dwc3-meson-g12a.c b/drivers/usb/dwc3/dwc3-meson-g12a.c
-> index ce5388338389..1f7f4d88ed9d 100644
-> --- a/drivers/usb/dwc3/dwc3-meson-g12a.c
-> +++ b/drivers/usb/dwc3/dwc3-meson-g12a.c
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-[...]
+Summary
+------------------------------------------------------------------------
 
-Fixes regression reported at [1] on SEI510 board based on Amlogic G12A.
+kernel: 5.6.15-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.6.y
+git commit: f60f4a436b9c3ef788935570112493266ec1f860
+git describe: v5.6.14-127-gf60f4a436b9c
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.6-oe/bui=
+ld/v5.6.14-127-gf60f4a436b9c
 
-Felipe, Greg, can this be queued on uxb-next for 5.8 ?
+No regressions (compared to build v5.6.14)
 
-Acked-by: Neil Armstrong <narmstron@baylibre.com>
+No fixes (compared to build v5.6.14)
 
-Thanks,
-Neil
+Ran 31138 total tests in the following environments and test suites.
 
-[1] http://lore.kernel.org/r/ffe2c64c-62ed-9b59-3754-7ede0f0203be@collabora.com
+Environments
+--------------
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15
+- x86
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* install-android-platform-tools-r2800
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* libgpiod
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-math-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* v4l2-compliance
+* kselftest/net
+* kselftest/networking
+* libhugetlbfs
+* ltp-dio-tests
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-mm-tests
+* ltp-open-posix-tests
+* ltp-syscalls-tests
+* network-basic-tests
+* perf
+* kvm-unit-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-native/drivers
+* kselftest-vsyscall-mode-native/filesystems
+* kselftest-vsyscall-mode-native/net
+* kselftest-vsyscall-mode-native/networking
+* kselftest-vsyscall-mode-none
+* kselftest-vsyscall-mode-none/drivers
+* kselftest-vsyscall-mode-none/filesystems
+* kselftest-vsyscall-mode-none/net
+* kselftest-vsyscall-mode-none/networking
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
