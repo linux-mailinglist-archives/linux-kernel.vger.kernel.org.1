@@ -2,131 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A121E4B83
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 19:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AFBA1E4B89
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 19:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731177AbgE0RJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 13:09:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41242 "EHLO
+        id S1731196AbgE0RLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 13:11:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731167AbgE0RJR (ORCPT
+        with ESMTP id S1728536AbgE0RLd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 13:09:17 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D861C08C5C2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 10:09:17 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id x13so10142403wrv.4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 10:09:17 -0700 (PDT)
+        Wed, 27 May 2020 13:11:33 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 297F6C03E97D
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 10:11:33 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id q8so25450775iow.7
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 10:11:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=6wind.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N7BcF2YbmFlnYsgsgnhG+rP4MiM9BYbCfVaOcHA0CmE=;
-        b=Qtq4RcWnFirDNuZdCyVBt5tPFqmhvzYSUFkVjQjHkQBc6IkA+WeniGp5LmnT8OVVfB
-         UE9q1ImGpjLTJce6qJy6hzRVPiHuV5AmS4EJxRkfHzrKJ9QHTdXlw8wjGUt2+zXOLkZn
-         Se1DyUC2fMvdHcPa6G5vi/3874MVikhkzprOA=
+         :cc:content-transfer-encoding;
+        bh=ahHryfq5nLP7OxK7AYhV0J7hu5fGF/+Tti5VS7s9PGY=;
+        b=LElVz68MiE/YQDaQQkjnIce2x8Dp72FAmdzi9u6cMlW5QOxCfMAHEVZGRsqVX5mpXC
+         XFl0fP6CtVCeyb6KGocVAlBzo4eJh1t3LZ9leAqqCcOCP+D4KfHUerX23DpoV5FPP2dp
+         rwgefUVg9DscpsWiswBskJBCWxWPQnUB8pbaeeRukkyBb3tddMZAHl74S/fCexuRZrpf
+         MV4BYsWxXwxhQRhTEEH4BEI80Gq1fduPhL+urfsUed94PDAOB5hVrHulP9XWSx9jtrHD
+         ELrUxbe2N8532doDagOConj6vAYlqv2PkbeRMAFebDIRKToIWc11KXSI5HyZiggVdBHu
+         02TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N7BcF2YbmFlnYsgsgnhG+rP4MiM9BYbCfVaOcHA0CmE=;
-        b=sRp3mEwEaAkV+HKpQjUuQvsp7BcvN4xpea9eepvvJa1/MO3gSwEz5nQ4FUK1i32c3W
-         uv4umPI7U7l38eJtBl5dOfdiE9FJyCgAXkDsBPts8lkmunlTzf8zAE28bbPLsHckr1Kp
-         j+gwPmuN9BLTJcbZU7YHscRKS5EG1HDh7dUn+cYT7qzTld8TVHrVQoikUodx3HaNaYBT
-         IKssBJwBHG7XY6zm6bwAZlWFCRLnq9uHTknOzLIYUZ0K7k8BcbMJnRP7pnW1vmNfuRef
-         NvP2UncOnBwvyvO8fOOaqyKY3BJ9tzp7qUqkrcmt0+dCVPCq8+X0rxUqxWlDbjeZ2MBp
-         OkoQ==
-X-Gm-Message-State: AOAM531JM+rKGd+W/dqPc6LKrvHrgNJHbnQu3jUf4zJk8feS7urNITsj
-        1Rr1+UlBKpmp/SKxs/okQHw38BnOqyzlyOc28vFRGQ==
-X-Google-Smtp-Source: ABdhPJzb9gs//rirYU8Ktj397bVqkAAUoWJzxzq0eYzi6ZVCA4steGmUtKbIrEXVz5r+7fo8CuNrI6m8cpFs8ONaSh0=
-X-Received: by 2002:a5d:4e88:: with SMTP id e8mr14770779wru.188.1590599356306;
- Wed, 27 May 2020 10:09:16 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ahHryfq5nLP7OxK7AYhV0J7hu5fGF/+Tti5VS7s9PGY=;
+        b=EVtqsJaD35rmFLgDyfd7GX/GHYnYBk6eLccI0S4v+UPDbdU9R+YmpvGoipg/L44i83
+         5EAyL9aK1gLSOE0Kn9jajgpM6qgjaB5b9GktNiaIwFzI8k0fnh3BqIvDz7jsrzsaWXY5
+         LOh115gOdMGXfK6tPTJeCCZ9GnyIWFEWYux0LZEht5Am6SxHZT9m0BirWB+/gf6qoz9e
+         k3jpWBR4cM7cuIMHW2g0L5CGd/YPbjIRyr0Rq3NkcGW2ntOb+cGQZLRPd/pyfVDIoUQ6
+         yhr+6v+CFrqBqdHDp1or50OLSiOYOZ4VriwnmAhrQ6T7qjWQMi+eE7Exka8HVfA5Pfr4
+         /4oQ==
+X-Gm-Message-State: AOAM532c6c/kmlYkJlMTk1fznPm4ApfBxM+1wdMgYUnyyfZh0ljYQCPc
+        LCxD/MRgFrw5gEZ9ZHqCaaeGV8+NvskRx3pii3nTBA==
+X-Google-Smtp-Source: ABdhPJzRJWD2xome9tmo6qlIlwT/4yiFIyh+d5ScsqUx9bHKbFX0P+hIQwjCVykxFquNovp8ybfZbwyVzATHrIEOpfg=
+X-Received: by 2002:a05:6602:2c88:: with SMTP id i8mr22263788iow.74.1590599492383;
+ Wed, 27 May 2020 10:11:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200526163336.63653-1-kpsingh@chromium.org> <20200526163336.63653-3-kpsingh@chromium.org>
- <20200527050823.GA31860@infradead.org> <20200527123840.GA12958@google.com> <f933521f-6370-c9ba-d662-703c1ebc7c03@schaufler-ca.com>
-In-Reply-To: <f933521f-6370-c9ba-d662-703c1ebc7c03@schaufler-ca.com>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Wed, 27 May 2020 19:09:05 +0200
-Message-ID: <CACYkzJ6f0=r4h9sNqnXp_uBnHu=b6oGQFFGOv7H65UMOjtNKaw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/4] bpf: Implement bpf_local_storage for inodes
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Florent Revest <revest@chromium.org>
+References: <20200525154633.GB22403@atlantis>
+In-Reply-To: <20200525154633.GB22403@atlantis>
+From:   Christophe Gouault <christophe.gouault@6wind.com>
+Date:   Wed, 27 May 2020 19:11:21 +0200
+Message-ID: <CADdy8Ho0v7SV_dNR+syBFX79U+iE62sumLjDQypgkxs536fCbQ@mail.gmail.com>
+Subject: Re: [PATCH net-next] xfrm: no-anti-replay protection flag
+To:     =?UTF-8?Q?Petr_Van=C4=9Bk?= <pv@excello.cz>
+Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 6:41 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
->
-> On 5/27/2020 5:38 AM, KP Singh wrote:
-> > On 26-May 22:08, Christoph Hellwig wrote:
-> >> On Tue, May 26, 2020 at 06:33:34PM +0200, KP Singh wrote:
-> >>> From: KP Singh <kpsingh@google.com>
-> >>>
-> >>> Similar to bpf_local_storage for sockets, add local storage for inodes.
-> >>> The life-cycle of storage is managed with the life-cycle of the inode.
-> >>> i.e. the storage is destroyed along with the owning inode.
-> >>>
-> >>> Since, the intention is to use this in LSM programs, the destruction is
-> >>> done after security_inode_free in __destroy_inode.
-> >> NAK onbloating the inode structure.  Please find an out of line way
-> >> to store your information.
-> > The other alternative is to use lbs_inode (security blobs) and we can
-> > do this without adding fields to struct inode.
->
-> This is the correct approach, and always has been. This isn't the
-> first ( or second :( ) case where the correct behavior for an LSM
-> has been pretty darn obvious, but you've taken a different approach
-> for no apparent reason.
->
-> > Here is a rough diff (only illustrative, won't apply cleanly) of the
-> > changes needed to this patch:
-> >
-> >  https://gist.github.com/sinkap/1d213d17fb82a5e8ffdc3f320ec37d79
->
-> To do just a little nit-picking, please use bpf_inode() instead of
-> bpf_inode_storage(). This is in keeping with the convention used by
-> the other security modules. Sticking with the existing convention
-> makes it easier for people (and tools) that work with multiple
-> security modules.
->
-> > Once tracing has gets a whitelist based access to inode storage, I
-> > guess it, too, can use bpf_local_storage for inodes
->
-> Only within the BPF module. Your sentence above is slightly garbled,
-> so I'm not really sure what you're saying, but if you're suggesting
-> that tracing code outside of the BPF security module can use the
-> BPF inode data, the answer is a resounding "no".
+Hi Petr,
 
-This is why I wanted to add a separate pointer in struct inode so that
-we could share the implementation with tracing. bpf_local_storage
-is managed (per-program+per-type of storage) with separate BPF maps.
-So, it can be easily shared between two programs (and
-program types) without them clobbering over each other.
+This patch is useful, however I think you should change the name of
+the option and amend its description:
+the option does not disable anti-replay in output (it can only be
+disabled in input), it allows the output sequence number to wrap, and
+it assumes that the remote peer disabled anti-replay in input.
 
-I guess we can have separate pointers for tracing,
-use the pointer in the security blob for the LSM and discuss this separately
-if and when we use this for tracing and keep this series patches scoped to
-BPF_PROG_TYPE_LSM.
+So you I suggest you change the name of the option to something like
+XFRM_SA_XFLAG_OSEQ_MAY_WRAP or XFRM_SA_XFLAG_ALLOW_OSEQ_WRAP.
 
-- KP
+Best regards,
+Christophe
 
+
+Le lun. 25 mai 2020 =C3=A0 17:53, Petr Van=C4=9Bk <pv@excello.cz> a =C3=A9c=
+rit :
 >
-> >  if CONFIG_BPF_LSM
-> > is enabled. Does this sound reasonable to the BPF folks?
-> >
-> > - KP
-> >
-> >
+> RFC 4303 in section 3.3.3 suggests to disable anti-replay for manually
+> distributed ICVs.
+>
+> This patch introduces new extra_flag XFRM_SA_XFLAG_NO_ANTI_REPLAY which
+> disables anti-replay for outbound packets if set. The flag is used only
+> in legacy and bmp code, because esn should not be negotiated if
+> anti-replay is disabled (see note in 3.3.3 section).
+>
+> Signed-off-by: Petr Van=C4=9Bk <pv@excello.cz>
+> ---
+>  include/uapi/linux/xfrm.h |  1 +
+>  net/xfrm/xfrm_replay.c    | 12 ++++++++----
+>  2 files changed, 9 insertions(+), 4 deletions(-)
+>
+> diff --git a/include/uapi/linux/xfrm.h b/include/uapi/linux/xfrm.h
+> index 5f3b9fec7b5f..4842b1ed49e9 100644
+> --- a/include/uapi/linux/xfrm.h
+> +++ b/include/uapi/linux/xfrm.h
+> @@ -387,6 +387,7 @@ struct xfrm_usersa_info {
+>  };
+>
+>  #define XFRM_SA_XFLAG_DONT_ENCAP_DSCP  1
+> +#define XFRM_SA_XFLAG_NO_ANTI_REPLAY   2
+>
+>  struct xfrm_usersa_id {
+>         xfrm_address_t                  daddr;
+> diff --git a/net/xfrm/xfrm_replay.c b/net/xfrm/xfrm_replay.c
+> index 98943f8d01aa..1602843aa2ec 100644
+> --- a/net/xfrm/xfrm_replay.c
+> +++ b/net/xfrm/xfrm_replay.c
+> @@ -89,7 +89,8 @@ static int xfrm_replay_overflow(struct xfrm_state *x, s=
+truct sk_buff *skb)
+>         if (x->type->flags & XFRM_TYPE_REPLAY_PROT) {
+>                 XFRM_SKB_CB(skb)->seq.output.low =3D ++x->replay.oseq;
+>                 XFRM_SKB_CB(skb)->seq.output.hi =3D 0;
+> -               if (unlikely(x->replay.oseq =3D=3D 0)) {
+> +               if (unlikely(x->replay.oseq =3D=3D 0) &&
+> +                   !(x->props.extra_flags & XFRM_SA_XFLAG_NO_ANTI_REPLAY=
+)) {
+>                         x->replay.oseq--;
+>                         xfrm_audit_state_replay_overflow(x, skb);
+>                         err =3D -EOVERFLOW;
+> @@ -168,7 +169,8 @@ static int xfrm_replay_overflow_bmp(struct xfrm_state=
+ *x, struct sk_buff *skb)
+>         if (x->type->flags & XFRM_TYPE_REPLAY_PROT) {
+>                 XFRM_SKB_CB(skb)->seq.output.low =3D ++replay_esn->oseq;
+>                 XFRM_SKB_CB(skb)->seq.output.hi =3D 0;
+> -               if (unlikely(replay_esn->oseq =3D=3D 0)) {
+> +               if (unlikely(replay_esn->oseq =3D=3D 0) &&
+> +                   !(x->props.extra_flags & XFRM_SA_XFLAG_NO_ANTI_REPLAY=
+)) {
+>                         replay_esn->oseq--;
+>                         xfrm_audit_state_replay_overflow(x, skb);
+>                         err =3D -EOVERFLOW;
+> @@ -572,7 +574,8 @@ static int xfrm_replay_overflow_offload(struct xfrm_s=
+tate *x, struct sk_buff *sk
+>
+>                 XFRM_SKB_CB(skb)->seq.output.hi =3D 0;
+>                 xo->seq.hi =3D 0;
+> -               if (unlikely(oseq < x->replay.oseq)) {
+> +               if (unlikely(oseq < x->replay.oseq) &&
+> +                   !(x->props.extra_flags & XFRM_SA_XFLAG_NO_ANTI_REPLAY=
+)) {
+>                         xfrm_audit_state_replay_overflow(x, skb);
+>                         err =3D -EOVERFLOW;
+>
+> @@ -611,7 +614,8 @@ static int xfrm_replay_overflow_offload_bmp(struct xf=
+rm_state *x, struct sk_buff
+>
+>                 XFRM_SKB_CB(skb)->seq.output.hi =3D 0;
+>                 xo->seq.hi =3D 0;
+> -               if (unlikely(oseq < replay_esn->oseq)) {
+> +               if (unlikely(oseq < replay_esn->oseq) &&
+> +                   !(x->props.extra_flags & XFRM_SA_XFLAG_NO_ANTI_REPLAY=
+)) {
+>                         xfrm_audit_state_replay_overflow(x, skb);
+>                         err =3D -EOVERFLOW;
+>
+> --
+> 2.26.2
 >
