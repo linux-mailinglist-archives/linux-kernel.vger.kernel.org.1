@@ -2,54 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE841E481D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13A7A1E483F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 17:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730067AbgE0Pr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 11:47:56 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:44182 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728421AbgE0Pr4 (ORCPT
+        id S2390140AbgE0Ptm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 11:49:42 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:38909 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390126AbgE0Pti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 11:47:56 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id C55962A3AAF
-From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-To:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org
-Cc:     mingo@redhat.com, dvhart@infradead.org, kernel@collabora.com,
-        krisman@collabora.com,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-Subject: [PATCH 0/4] futex: Minor code improvements
-Date:   Wed, 27 May 2020 12:47:43 -0300
-Message-Id: <20200527154747.36931-1-andrealmeid@collabora.com>
+        Wed, 27 May 2020 11:49:38 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 7626758200F;
+        Wed, 27 May 2020 11:49:37 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Wed, 27 May 2020 11:49:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm2; bh=m33/GpK4Sa24j
+        4S+fnmVvjFqz0KFoPPGqLfZr0rxfJ8=; b=tqdXa1ylBE/UVJtc3ANF+oflooYd+
+        WPobjk+0RvLKxTRQiXTnydTARlNhVdMTdGGGLuPSyKjuQG7ZcSsWAA18NtV2BEoi
+        6Qdsvm3JfFnrDms1YB+h6Q4I45KiES1ihQRNn8GZ27gSNFuZ52f7hWsHiE3rLCOb
+        rSDPZ9t9M8qAv6It+lS6vMFIMxvC6lFr8jj/Y0uTpxh5waB1NL8csQmg1UX8Et6U
+        oCnsUGfFd/wYyZlsik2XtAd2z1obUL95wAniUdqSrKCI9blue/SZaQ6CI2TaJT9q
+        zb2SVpwYo/FkNfCqj8Kb8aOt3AGl9CyTq63hQb4083YXsOME2U+6f6RKA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; bh=m33/GpK4Sa24j4S+fnmVvjFqz0KFoPPGqLfZr0rxfJ8=; b=yHaLYnwB
+        6oTEn7UTcrBMFS06+gc8YQWwsA4NyN0XTHqIUy8pD7u9/y1u/jpsodNzRsqMaFAe
+        UvT+ubemRcNMJ7xv7a9YeN/LaKRb1H4yXWG2+mN8KNKabtOZPEZ/WQtz9eCf0oz+
+        iffPFC8w59ZRid0CWS9QnY/nW9fDz3ybVYuuMWiYEmQzMZU59TXruF70oKAzb6Jt
+        rz/en952aQQqe1opIA+HgASAW3cyI0BerKnybP2yZTS614wIRHt5vPb3FYj7enNx
+        vgrf4Z3fSKwsHtBllXBNUAkRZ6PC8PMCzVvD8oUGatmiVFqQ1HH/m8vx0dB6QscI
+        J0SCeBDSk787GQ==
+X-ME-Sender: <xms:EYzOXhyVUDBRq8q47qeTsTA2hIvsBGF1SY8KHADHd29Xtx7VVodwUg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddvgedgkeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
+    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepfedune
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:EYzOXhTBDP6r4e7x6hMJhPgFcHpfiHPeZn1h-aN8CutDvOffEY4eGg>
+    <xmx:EYzOXrWFtu5cQ3eymv7uJKseFN4rt0R0PwoEMb_Rls77PbCcndfYsQ>
+    <xmx:EYzOXjj4lh1x0JG6UirMcDIgT1ALIZLbtp2Sy8hb9NrWp18s5eFphA>
+    <xmx:EYzOXlC4OIoxHqh8fqcqQsGo_5VIJ477IleCj0O6k3_kemjgtFGuiw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 131B5306215A;
+        Wed, 27 May 2020 11:49:36 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Maxime Ripard <maxime@cerno.tech>
+Subject: [PATCH v3 013/105] dt-bindings: display: Add support for the BCM2711 HVS
+Date:   Wed, 27 May 2020 17:47:43 +0200
+Message-Id: <9d1718b1d3b73da4522861bf16730cc47157bef7.1590594512.git-series.maxime@cerno.tech>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.aaf2100bd7da4609f8bcb8216247d4b4e4379639.1590594512.git-series.maxime@cerno.tech>
+References: <cover.aaf2100bd7da4609f8bcb8216247d4b4e4379639.1590594512.git-series.maxime@cerno.tech>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The HVS found in the BCM2711 is slightly different from the previous
+generations, let's add a compatible for it.
 
-This series aims to make some small code improvements that I found in
-futex.c, removing some lines and trying to make the code easier to read
-and understand.
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+---
+ Documentation/devicetree/bindings/display/brcm,bcm2835-hvs.yaml | 18 ++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-All commits tested with futex tests from kselftest.
-
-André Almeida (4):
-  futex: Remove put_futex_key()
-  futex: Remove needless goto's
-  futex: Remove unused or redundant includes
-  futex: Consistently use fshared as boolean
-
- kernel/futex.c | 115 +++++++++++--------------------------------------
- 1 file changed, 26 insertions(+), 89 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/display/brcm,bcm2835-hvs.yaml b/Documentation/devicetree/bindings/display/brcm,bcm2835-hvs.yaml
+index 02410f8d6d49..bb1fa805b14e 100644
+--- a/Documentation/devicetree/bindings/display/brcm,bcm2835-hvs.yaml
++++ b/Documentation/devicetree/bindings/display/brcm,bcm2835-hvs.yaml
+@@ -11,7 +11,9 @@ maintainers:
+ 
+ properties:
+   compatible:
+-    const: brcm,bcm2835-hvs
++    enum:
++      - const: brcm,bcm2711-hvs
++      - const: brcm,bcm2835-hvs
+ 
+   reg:
+     maxItems: 1
+@@ -19,6 +21,10 @@ properties:
+   interrupts:
+     maxItems: 1
+ 
++  clocks:
++    maxItems: 1
++    description: Core Clock
++
+ required:
+   - compatible
+   - reg
+@@ -26,6 +32,16 @@ required:
+ 
+ additionalProperties: false
+ 
++if:
++  properties:
++    compatible:
++      contains:
++        const: brcm,bcm2711-hvs"
++
++then:
++  required:
++    - clocks
++
+ examples:
+   - |
+     hvs@7e400000 {
 -- 
-2.26.2
-
+git-series 0.9.1
