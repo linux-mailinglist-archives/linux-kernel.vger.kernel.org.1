@@ -2,110 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D1F1E4493
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 416821E448B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388612AbgE0NyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:54:12 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:50787 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387581AbgE0NyM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:54:12 -0400
-Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MJm8H-1jKMLM2LCT-00K8Nw; Wed, 27 May 2020 15:53:33 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, "H. Peter Anvin" <hpa@zytor.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Zhenzhong Duan <zhenzhong.duan@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juergen Gross <jgross@suse.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH] x86: work around clang IAS bug referencing __force_order
-Date:   Wed, 27 May 2020 15:53:19 +0200
-Message-Id: <20200527135329.1172644-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.2
+        id S2388943AbgE0Nx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:53:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:38910 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388713AbgE0Nx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 09:53:27 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C9B6630E;
+        Wed, 27 May 2020 06:53:26 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 17D9C3F6C4;
+        Wed, 27 May 2020 06:53:24 -0700 (PDT)
+Date:   Wed, 27 May 2020 14:53:22 +0100
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Stephen Boyd <swboyd@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org, Manoj Gupta <manojgupta@google.com>,
+        Luis Lozano <llozano@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] arm64: vdso32: force vdso32 to be compiled as -marm
+Message-ID: <20200527135322.GU5031@arm.com>
+References: <20200526173117.155339-1-ndesaulniers@google.com>
+ <159052247565.23781.7800427985507723263.b4-ty@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:lPqKd3ceKcOiWSf6k7n0RT4DN5BdzpvV9e/sXSasbhanLS+Oa8b
- zCfaDCYQCGPRsqQGnAq8IlMVatLfXkTtRhm+oZ9caPDHrTJjA28xSHP6uw7B7cbHoP+DUp2
- OtVtwLD2cSC0Lh2zT2hmfjFQZ7KcflKRXk++pbClkDFjbyAGo09nwQMeJLEUflpWaeQhwzs
- kFb0rHfkf/bj8PjONn4ZQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:fwuCPC7PnkQ=:DL0TsWJH75aNmoZSVF1D5Q
- dq+b71QtO2Ax/M1aqBhd8xXm/oHYJdSt+YMBPcX83mfCr3VKdX5B7t9SdQzzpVF6bzcFm1vvv
- qUmO1MTs/90Szakgatu6YNZi8D6fOeo8QrbRNeVLjT2GJwa+rR7wi/8bkJaV7lF/uZ604GfIt
- o43mOSlA2z4VHItLnYb4nvlIAPc6DiwgMM91rue4RK6IUpnGDY7PToLoIF+X+Zc5eCxI0NT2I
- cmzeKREiMZEVWhXvxP5XamgDv6/3EaMiUBrEiy+hq+Q2a0PwTAeTq4KE+ld/181RunLOj8j4R
- /aOFL8r8p5TCEA6TwIaye45ypXXoEdR+YKXWTnj1D6c4+yW0zSbxbQiFfBoKtXeBm6Z8FTJEc
- d2lrSiJGzLuaD2rF/IZkkxj6bcsDTNz0IsAo3JctqfHRE/xhd+x6cCMAd+RxVBI2p+WdkDSSI
- A45dSQJ+inGZEZR++eOdnQyfAR1FRJQh1ex89aTswZXLnO21jOCrTncn9fRMRMewwGXsBU1Nv
- 9urovaD3b5NuSMJ0jUBkmRF7oXzkdPDYjKdexKMFgaxVecf4HEg0jvbnZhF/3atzYv5XI+2jo
- OcLGlSReK1DTRpoVYn1X2kLCBptbJpXqZ4UMoTjw5y5rkZXaGo+qZCEHnUMouIXvjPReWtY/W
- oLNFN1ic2RsCD4tTxmlbG0e2z6Nv8bvtWlvJ5PEwxLHzmQr6cjNyxHx7eMZvAvBPHq/88y5eU
- pu/PPoXunnSctZWlfOvL6pDkVcJUPl6lTK24QuvoItc1tYZ9HOO92obr2kVBIIHTfefxQWp0M
- ri9ItI+AQjsep3e55X17LZfWUAp0pDioitA40fBjN3LHpZo0Uw=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <159052247565.23781.7800427985507723263.b4-ty@kernel.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using the clang integrated assembler, we get a reference
-to __force_order that should normally get ignored in a few
-rare cases:
+On Tue, May 26, 2020 at 09:45:05PM +0100, Will Deacon wrote:
+> On Tue, 26 May 2020 10:31:14 -0700, Nick Desaulniers wrote:
+> > Custom toolchains that modify the default target to -mthumb cannot
 
-ERROR: modpost: "__force_order" [drivers/cpufreq/powernow-k6.ko] undefined!
+It's probably too late to water this down, but it's unfortunate to have
+this comment in the upstream commit history.
 
-Add a 'static' definition so any file in which this happens can
-have a local copy.
+It's not constructive to call the native compiler configuration of
+major distros for many years a "custom" toolchain.  Unmodified GCC has
+had a clean configure option for this for a very long time; it's not
+someone's dirty hack.  (The wisdom of armhf's choice of -mthumb might
+be debated, but it is well established.)
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/x86/boot/compressed/pgtable_64.c | 2 ++
- arch/x86/include/asm/special_insns.h  | 7 +++++++
- 2 files changed, 9 insertions(+)
+Ignoring the triplet and passing random options to a compiler in the
+hopes that it will do the right thing for an irregular usecase has never
+been reliable.  Usecases don't get much more irregular than building
+vdso32.
 
-diff --git a/arch/x86/boot/compressed/pgtable_64.c b/arch/x86/boot/compressed/pgtable_64.c
-index c8862696a47b..8595194cea41 100644
---- a/arch/x86/boot/compressed/pgtable_64.c
-+++ b/arch/x86/boot/compressed/pgtable_64.c
-@@ -12,7 +12,9 @@
-  * It is not referenced from the code, but GCC < 5 with -fPIE would fail
-  * due to an undefined symbol. Define it to make these ancient GCCs work.
-  */
-+#ifndef CONFIG_CC_IS_CLANG
- unsigned long __force_order;
-+#endif
- 
- #define BIOS_START_MIN		0x20000U	/* 128K, less than this is insane */
- #define BIOS_START_MAX		0x9f000U	/* 640K, absolute maximum */
-diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
-index 82436cb04ccf..7081e587c1ea 100644
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -16,8 +16,15 @@
-  * A memory clobber would solve the problem, but would prevent reordering of
-  * all loads stores around it, which can hurt performance. Solution is to
-  * use a variable and mimic reads and writes to it to enforce serialization
-+ *
-+ * Clang sometimes fails to kill the reference to the dummy variable, so
-+ * provide an actual copy.
-  */
-+#ifdef CONFIG_CC_IS_CLANG
-+static unsigned long __force_order;
-+#else
- extern unsigned long __force_order;
-+#endif
- 
- void native_write_cr0(unsigned long val);
- 
--- 
-2.26.2
+arch/arm has the proper options in its Makefiles.
 
+This patch is a kernel bugfix, plain and simple.
+
+> > compile the arm64 compat vdso32, as
+> > arch/arm64/include/asm/vdso/compat_gettimeofday.h
+> > contains assembly that's invalid in -mthumb.  Force the use of -marm,
+> > always.
+> 
+> Applied to arm64 (for-next/vdso), thanks!
+> 
+> [1/1] arm64: vdso32: force vdso32 to be compiled as -marm
+>       https://git.kernel.org/arm64/c/20363b59ad4f
+
+Does this need to go to stable?
+
+Cheers
+---Dave
