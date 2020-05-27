@@ -2,95 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDCC01E45ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B421E45EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389266AbgE0Oa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 10:30:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44696 "EHLO
+        id S2389270AbgE0Obl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 10:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389033AbgE0Oaz (ORCPT
+        with ESMTP id S2389033AbgE0Obk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 10:30:55 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325EDC05BD1E;
-        Wed, 27 May 2020 07:30:55 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0b870090dfd18f578962de.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:8700:90df:d18f:5789:62de])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 77CFD1EC0318;
-        Wed, 27 May 2020 16:30:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1590589852;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=2LqA16cllcM9c+jwERRurW+RQE4oqz+AcFxnY1Ja6Rs=;
-        b=ALBgDOjCCDNNPxAuvrg15Iz6Xx0Qb1XkjF/HdK4hSLHLhTzg2V9sr4JF2PRPXfpLxANBCJ
-        9AajydRV7HDSivfoFQ9lSu/OKXe+Kth1J+xvSr78tXIBWUlieckIcX8bSkv4RI5V0BZxfv
-        YKcTlsPdylVRZL5SQWVkfPHfRHBn8sk=
-Date:   Wed, 27 May 2020 16:30:46 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org
-Subject: Re: [PATCH 2/2] x86: Hide the archdata.iommu field behind generic
- IOMMU_API
-Message-ID: <20200527143046.GB1721@zn.tnic>
-References: <20200518120855.27822-1-krzk@kernel.org>
- <20200518120855.27822-2-krzk@kernel.org>
+        Wed, 27 May 2020 10:31:40 -0400
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD5BC05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 07:31:40 -0700 (PDT)
+Received: by mail-ua1-x941.google.com with SMTP id r9so3842055ual.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 07:31:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ujiHBwaaGNuMhzojZ2C69RM25MjRj77aVtoAsKFcXTM=;
+        b=e7PvhqBMM1TOWBgi7t/OCi2Keu65Vk40cNg6f2prCIgd7BaE/I6QtkByU4OXvPV6Q6
+         ugtHiE8jzNQc4rnDGXJdEtrNSRBUA4/1ncpxi0vzpIpR0W6unzUl4fkgfmT6XgU9Bzw7
+         vEe5F0PP7frh4u1LeugrRl439ei1fhIjwMENLDE132uDTUyyV7BPtnQ7N2EpR4hV3gmm
+         q3shSXWDLW7gzeplMXyftf+lxAaz/Zo1NY8JUW+vlBP2cthe8RuhEChuLcdw2pR4ONW4
+         DPbgmLACqUxSROYvO+yZ0N1tpMk2VXO1AG6C6oDS80pTdmg9+jNxsaxOFVSx4bYMKm8L
+         ZqFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ujiHBwaaGNuMhzojZ2C69RM25MjRj77aVtoAsKFcXTM=;
+        b=L1BX+TpryrshgsTDXVAh5D71IudPdZ9XM7vmUtzaqBttv5IZsTSlEujYQRj7jlSk50
+         LdXTTW64RmfDxzsE5s9F33MmCCETD7kmBlG8WKurjPNs4y/fCYnhOmT4fZG4w3jyX4A9
+         R8KzKK3CCRTgdknI0mTKHobU4l4OP6k2R7sW+xNDn/FfE3z5RnJ5ygzWWOeuiMqa1V2r
+         GOH/tjUInuKjDP+WbW1fsTBXvhzvxgRLs5CMAUH3H8sYCf2N2j2XoIiRntQJZ/1ybkds
+         L07Au1hUTdzKdipllf46T5UPPgaD+Vo+4tz8cPy7SoEUCXnrD+59EheOn88K9W92AYuF
+         jmhg==
+X-Gm-Message-State: AOAM5323MwkaVbPWSru+62zMKhPEfVbEu+2x+h1n+/2EXgvlCIT+c3px
+        UY3z41rON2ueJAJ3Z+GxUl1OpfurnLvJHN1OEKQ=
+X-Google-Smtp-Source: ABdhPJwX0W3hglctGeMFzgk6+jxadmnjDglGfDc/q6vUArHCca9eF5uv5bU3G+PTwtlodGXC9mUifyqVshHtOvrANJs=
+X-Received: by 2002:a9f:3701:: with SMTP id z1mr5138248uad.100.1590589899806;
+ Wed, 27 May 2020 07:31:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200518120855.27822-2-krzk@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:ab0:645:0:0:0:0:0 with HTTP; Wed, 27 May 2020 07:31:39 -0700 (PDT)
+Reply-To: jessicavail020@gmail.com
+From:   Jessica Vail <lj4621397@gmail.com>
+Date:   Wed, 27 May 2020 14:31:39 +0000
+Message-ID: <CAJUt9ivkk9_X7evm8CLWHjZgDtm7bKD-qDbJrpt-bnqiqGq8MA@mail.gmail.com>
+Subject: Hi
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 02:08:55PM +0200, Krzysztof Kozlowski wrote:
-> There is a generic, kernel wide configuration symbol for enabling the
-> IOMMU specific bits: CONFIG_IOMMU_API.  Implementations (including
-> INTEL_IOMMU and AMD_IOMMU driver) select it so use it here as well.
-> 
-> This makes the conditional archdata.iommu field consistent with other
-> platforms and also fixes any compile test builds of other IOMMU drivers,
-> when INTEL_IOMMU or AMD_IOMMU are not selected).
-> 
-> For the case when INTEL_IOMMU/AMD_IOMMU and COMPILE_TEST are not
-> selected, this should create functionally equivalent code/choice.  With
-> COMPILE_TEST this field could appear if other IOMMU drivers are chosen
-> but neither INTEL_IOMMU nor AMD_IOMMU are not.
-> 
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  arch/x86/include/asm/device.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/include/asm/device.h b/arch/x86/include/asm/device.h
-> index 7e31f7f1bb06..49bd6cf3eec9 100644
-> --- a/arch/x86/include/asm/device.h
-> +++ b/arch/x86/include/asm/device.h
-> @@ -3,7 +3,7 @@
->  #define _ASM_X86_DEVICE_H
->  
->  struct dev_archdata {
-> -#if defined(CONFIG_INTEL_IOMMU) || defined(CONFIG_AMD_IOMMU)
-> +#ifdef CONFIG_IOMMU_API
->  	void *iommu; /* hook for IOMMU specific extension */
->  #endif
->  };
+Hi dear,
 
-Acked-by: Borislav Petkov <bp@suse.de>
+I'm Jessica Vail, from the United States,please i wish to have a
+communication with you.
 
--- 
-Regards/Gruss,
-    Boris.
+I wait for your answer.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Jessica Vail.
