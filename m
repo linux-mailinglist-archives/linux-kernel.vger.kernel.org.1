@@ -2,164 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B8A21E3AC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 09:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76AFC1E3ACA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 09:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387626AbgE0HkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 03:40:21 -0400
-Received: from mail-eopbgr1410098.outbound.protection.outlook.com ([40.107.141.98]:3489
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387444AbgE0HkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 03:40:18 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VGxkBzWVRIGpXu5xg60cZ5ZNxVR85J/pJpuxKrYMGKj+SNFBXCK3pav14N8ikakjN8MeshctnY3xdxZM9mWOoic/4BRqgob5DkyJx3m1wUwU/P1xdExACbh7KwnR539yIMxOFMN9eYRuC66Xb8+vVQtLKTCCebTnjGS5RtUto95QWu2W+Ul+al7cLycmlhG6aNjsPas9E6Akh0bzz4Y3Kl/cmNcvcRYWpiH9uVN425AuBJNa9IC1YHzc84Y48y0/w7ZV8avCmZX2HzOYPC8hBlDa+L7PyHcQe8A9AHj+qfuPr5CMbO3YXUTdB9dBYc0MX6JN0s1oIUVxHTPH7eHcRg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2RlMt1IIV+0Tb9BN+ly15+dljxe6TeB6pfhFK52Nj8Y=;
- b=EjcTQhaG4nBFS6mL3loROMhOvv9QfWEfJ+0B+Hs/8m6mB/KOw4MaEIqJhdCfZ3PCieHqYKhAXAwc9t0ghocSDIjn0Ug97c1zCpEqlSKxPtvR+oBIN2fWUeWvRvIwzMXKRiuzW6K/BtX3FJYCZ0OeK54icAT0GtW6Dl6RH4bPXgV6UeSe8hqD7clrGEYPYv0q6y5I5ggFzUMIrz7e89D4+64oEgrmHNh47H4enzwzKRqyx2YET97dSP1EVV2B/J9br14a8NezAVxymrpg5YNUaDOXEPrIGZmlObAU52ov06/bP+UbQS7ZusKkOjHSoZyO0ancTaN47riIUqlRqCj/Pw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
+        id S2387644AbgE0HlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 03:41:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387487AbgE0HlM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 03:41:12 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A586C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 00:41:12 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id p5so17983790qkg.12
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 00:41:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2RlMt1IIV+0Tb9BN+ly15+dljxe6TeB6pfhFK52Nj8Y=;
- b=pqEbnn3GDLEfguyHo4PrU4E10TTy2fZefOa88iTwBvochodCRljBax2Wj2Q+U/Vy1i/g7syY04yKuGOdi59TbmyfC1RfNxc5bUH9D1JkMg9Vl26fHgS3GSCCsYpXo+soySfz4SXFRPtJBimtEovHBjaGipQdhazMKd2/qPaBkNw=
-Received: from OSAPR01MB2114.jpnprd01.prod.outlook.com (2603:1096:603:1b::19)
- by OSAPR01MB2179.jpnprd01.prod.outlook.com (2603:1096:603:15::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.25; Wed, 27 May
- 2020 07:40:14 +0000
-Received: from OSAPR01MB2114.jpnprd01.prod.outlook.com
- ([fe80::2cc4:72d3:1ade:f467]) by OSAPR01MB2114.jpnprd01.prod.outlook.com
- ([fe80::2cc4:72d3:1ade:f467%3]) with mapi id 15.20.3021.029; Wed, 27 May 2020
- 07:40:14 +0000
-From:   Gotthard Voellmeke <gotthard.voellmeke@renesas.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        "REE erosca@DE.ADIT-JV.COM" <erosca@DE.ADIT-JV.COM>
-CC:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Simon Horman <horms@verge.net.au>,
-        Ulrich Hecht <uli+renesas@fpond.eu>,
-        "VenkataRajesh.Kalakodima@in.bosch.com" 
-        <VenkataRajesh.Kalakodima@in.bosch.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        KOJI MATSUOKA <koji.matsuoka.xm@renesas.com>,
-        "muroya@ksk.co.jp" <muroya@ksk.co.jp>,
-        "Harsha.ManjulaMallikarjun@in.bosch.com" 
-        <Harsha.ManjulaMallikarjun@in.bosch.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michael Dege <michael.dege@renesas.com>,
-        "REE efriedrich@DE.ADIT-JV.COM" <efriedrich@DE.ADIT-JV.COM>,
-        Michael Rodin <mrodin@de.adit-jv.com>,
-        "ChaitanyaKumar.Borah@in.bosch.com" 
-        <ChaitanyaKumar.Borah@in.bosch.com>,
-        Eugeniu Rosca <roscaeugeniu@gmail.com>,
-        Hien Dang <hien.dang.eb@renesas.com>,
-        Michael Klein <michael.klein@renesas.com>
-Subject: RE: [PATCH v5 0/8] drm: rcar-du: Add Color Management Module (CMM)
-Thread-Topic: [PATCH v5 0/8] drm: rcar-du: Add Color Management Module (CMM)
-Thread-Index: AQHWM/az9Wj0IB2es0azt72Olaa0j6i7ipYAgAABNVA=
-Date:   Wed, 27 May 2020 07:40:14 +0000
-Message-ID: <OSAPR01MB2114E435BCF6B1F47F331F298BB10@OSAPR01MB2114.jpnprd01.prod.outlook.com>
-References: <20191015104621.62514-1-jacopo+renesas@jmondi.org>
- <20200527071555.GA23912@lxhi-065.adit-jv.com>
- <CAMuHMdVGcFGL6V6_zDCPQA66VFyqM9bQ6choWs8eYfOieFu1ZQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdVGcFGL6V6_zDCPQA66VFyqM9bQ6choWs8eYfOieFu1ZQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux-m68k.org; dkim=none (message not signed)
- header.d=none;linux-m68k.org; dmarc=none action=none header.from=renesas.com;
-x-originating-ip: [193.141.220.21]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 13638679-aa40-44ac-8ba5-08d8021131dc
-x-ms-traffictypediagnostic: OSAPR01MB2179:
-x-ld-processed: 53d82571-da19-47e4-9cb4-625a166a4a2a,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <OSAPR01MB2179312E6709C83FCF4D01F98BB10@OSAPR01MB2179.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 04163EF38A
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ridWxV1DJh4hWQaJz/QvB2smLZbzqRS+ZEnU2TDRtir07BYalPD7ig7zrfXlXWJYXDCp7RJaqjV10lU3uH71fWyygLNbErsebe6wARuNRrHSQFB9j4jyZS3tYhx6zPluP3MqtTZKm4Sov/7u4SrwewtBoXrqtH0Mh1iz/Vbkoxn46jEC+vJpBRUrk8f1a285COac7zsHWNLRTfyle4WlS8r5/B8ZfbR50A2o+ydjiw5HKPeIZaZRE0VeBLA+MXGtDq1tlxb+Sw0Zs5DhcYdDhGIdOdzdIe9WQXXGvPL5Vajw9/NgEGDuyfZzIuDlXavGnF00VFS+XTPjuiIr8Oplpw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSAPR01MB2114.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(136003)(396003)(346002)(366004)(39860400002)(6506007)(64756008)(44832011)(66946007)(66446008)(66556008)(66476007)(33656002)(76116006)(8936002)(4326008)(54906003)(83380400001)(110136005)(7696005)(107886003)(316002)(52536014)(8676002)(478600001)(186003)(53546011)(7416002)(55016002)(86362001)(2906002)(9686003)(26005)(5660300002)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 41w9GU2X+UqhIdldCAAmROuZHLJbqyD6LiVoE2IJir6/1Mf7SAYawBCmkRjvRTS2yO+CsaGJHpM0luWPAyqytIhf1AR/sJ9JdfSE1P4oaI80syX51067GwzbsAUfsWIj+tOLUGaWdydaDjGqw0vk5TvB9myTM94UmFoE9kAIqtFLR823ce9c24xS7NxZBCVgfVxLmq6UAyEziq42DpM7hmdzghHuaXih6uzTqSyNOuvPZYQEpjzXZuLL9DM9qvA8GiwdV4gI7G3hXoXxgO1C4mncxyb6y6pyY1MlaModBalDtpBYQJBlNaND2f0kHulUpa/QR9WBadRtWNz3lOpAYcGRRTH9j4SCZWVbjxtr8TiCOFGUjPF5TYCkw9OFbWMOTC/aZPCVfQdnKcvTbeZdi/VhnBP1Q6AtA9CxuassXZziSxW/0gsI57ZhQ8DrzFuH3CpBYYVmz47zS7sQ/17S4nNm39AhUexS8mJJiiNZ+IyyiO2PQkqd6Kfcz8DhiF2x
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 13638679-aa40-44ac-8ba5-08d8021131dc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 May 2020 07:40:14.2294
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UVB/JSFfC7rA5UoSbAVYbZKxkw5yB65xe6+bhopZMwkmqwueHlQ7srfs64WrVfGQdOJNEJfUpMQSamGSPlHio4iEJptUMdEkBih1EopLBaM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSAPR01MB2179
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=4ZgeB2AItrP9nS2Fq643R0Cpp2i+TEvZPbSBjX/I4FQ=;
+        b=h5bYfLWCLeXxVWptwcOnDYOOm4U6jo/JL6rx3b7UJpapgzSxe1G/H2zDmA6C2zuwLI
+         g/s3NTI82JvAROQ5OAQKbJrNSOzEPLsLjfSn+KEif+dEZOPRsnUzOst2hx5VTMCBvELQ
+         0kLwFAHpuSZKym0H/GV8f8aSp6+eWE/7rIFxmmMGiAmjlRUpADuqKLdVZnHA27tv32VD
+         aqbWkqUtB/2S20bSPMNV6MnFFbbvW7x1c6tjQndTS3XMIGzh4+C8PomUbEGF2epZgWc6
+         XEyAbjVp3zLUd3aYRH6EFTJ+T9sIvtn8bIAIJrha/1vrlwUVkREqqAXiq2cvGOLF1mev
+         7m7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=4ZgeB2AItrP9nS2Fq643R0Cpp2i+TEvZPbSBjX/I4FQ=;
+        b=ooXnBABknAp/d6k2G9izjtq2XqttxgB+r19y8B1kN5ficfYWWxVuETl+2ppf/M7h5s
+         soAZZEcGejPA4YrIwET2I7XX18mz4wrHjGp4d2RwVa9Nc64lh+L1kfoyeQ8AKBPVaxel
+         JxWwpjhck7+Ip8vESzOnpHyiO9WEwRvr0zLXOJgpmRFRxBMSVjYEULL4roGIY8L0hnsy
+         /1YdLlXbhEQQjGHXRuH48YNcfo3u+ymdaWlbKE4ap8h9jGFviG1Cx6EPyuDYle6Znlhw
+         o8kazZAbL2stHHjb1lMO/RQgwShMjqHnlOeCaXheLncYCRlyS2csbi/mDepmiFT5QXnX
+         p7sQ==
+X-Gm-Message-State: AOAM532/zJPuJ48Oinr2yH3aV52+DfhszX7UWlhWqf0/YDL4akS+fZic
+        DzmMG197aJnyyUNss2HpbGQNadqz7m0aM0Q=
+X-Google-Smtp-Source: ABdhPJx3zH/Wsq+hDNYznjjmEJs1ire+kKNL/Cg4Wj6Dw9OQfXFEGZQgFi+jMYcI2m8XtPWxlCXF/rtEXy4T+xQ=
+X-Received: by 2002:ad4:43e3:: with SMTP id f3mr23491167qvu.115.1590565270119;
+ Wed, 27 May 2020 00:41:10 -0700 (PDT)
+Date:   Wed, 27 May 2020 00:40:56 -0700
+Message-Id: <20200527074057.246606-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.rc0.183.gde8f92d652-goog
+Subject: [PATCH v1] regulator: Add support for sync_state() callbacks
+From:   Saravana Kannan <saravanak@google.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel-team@android.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWRkZWQgSGllbi1zYW4sIE1pY2hhZWwgSy4gZnJvbSBSZW5lc2FzLg0KDQotLS0tLU9yaWdpbmFs
-IE1lc3NhZ2UtLS0tLQ0KRnJvbTogR2VlcnQgVXl0dGVyaG9ldmVuIDxnZWVydEBsaW51eC1tNjhr
-Lm9yZz4NClNlbnQ6IE1pdHR3b2NoLCAyNy4gTWFpIDIwMjAgMDk6MzUNClRvOiBSRUUgZXJvc2Nh
-QERFLkFESVQtSlYuQ09NIDxlcm9zY2FAREUuQURJVC1KVi5DT00+DQpDYzogSmFjb3BvIE1vbmRp
-IDxqYWNvcG8rcmVuZXNhc0BqbW9uZGkub3JnPjsgTGF1cmVudCBQaW5jaGFydCA8bGF1cmVudC5w
-aW5jaGFydEBpZGVhc29uYm9hcmQuY29tPjsgS2llcmFuIEJpbmdoYW0gPGtpZXJhbi5iaW5naGFt
-K3JlbmVzYXNAaWRlYXNvbmJvYXJkLmNvbT47IFNpbW9uIEhvcm1hbiA8aG9ybXNAdmVyZ2UubmV0
-LmF1PjsgVWxyaWNoIEhlY2h0IDx1bGkrcmVuZXNhc0BmcG9uZC5ldT47IFZlbmthdGFSYWplc2gu
-S2FsYWtvZGltYUBpbi5ib3NjaC5jb207IERhdmlkIEFpcmxpZSA8YWlybGllZEBsaW51eC5pZT47
-IERhbmllbCBWZXR0ZXIgPGRhbmllbEBmZndsbC5jaD47IEtPSkkgTUFUU1VPS0EgPGtvamkubWF0
-c3Vva2EueG1AcmVuZXNhcy5jb20+OyBtdXJveWFAa3NrLmNvLmpwOyBIYXJzaGEuTWFuanVsYU1h
-bGxpa2FyanVuQGluLmJvc2NoLmNvbTsgRXplcXVpZWwgR2FyY2lhIDxlemVxdWllbEBjb2xsYWJv
-cmEuY29tPjsgU2VhbiBQYXVsIDxzZWFucGF1bEBjaHJvbWl1bS5vcmc+OyBMaW51eC1SZW5lc2Fz
-IDxsaW51eC1yZW5lc2FzLXNvY0B2Z2VyLmtlcm5lbC5vcmc+OyBEUkkgRGV2ZWxvcG1lbnQgPGRy
-aS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmc+OyBMaW51eCBLZXJuZWwgTWFpbGluZyBMaXN0
-IDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPjsgTWljaGFlbCBEZWdlIDxtaWNoYWVsLmRl
-Z2VAcmVuZXNhcy5jb20+OyBHb3R0aGFyZCBWb2VsbG1la2UgPGdvdHRoYXJkLnZvZWxsbWVrZUBy
-ZW5lc2FzLmNvbT47IFJFRSBlZnJpZWRyaWNoQERFLkFESVQtSlYuQ09NIDxlZnJpZWRyaWNoQERF
-LkFESVQtSlYuQ09NPjsgTWljaGFlbCBSb2RpbiA8bXJvZGluQGRlLmFkaXQtanYuY29tPjsgQ2hh
-aXRhbnlhS3VtYXIuQm9yYWhAaW4uYm9zY2guY29tOyBFdWdlbml1IFJvc2NhIDxyb3NjYWV1Z2Vu
-aXVAZ21haWwuY29tPg0KU3ViamVjdDogUmU6IFtQQVRDSCB2NSAwLzhdIGRybTogcmNhci1kdTog
-QWRkIENvbG9yIE1hbmFnZW1lbnQgTW9kdWxlIChDTU0pDQoNCkhpIEV1Z2VuaXUsDQoNCk9uIFdl
-ZCwgTWF5IDI3LCAyMDIwIGF0IDk6MTYgQU0gRXVnZW5pdSBSb3NjYSA8ZXJvc2NhQGRlLmFkaXQt
-anYuY29tPiB3cm90ZToNCj4gT24gVHVlLCBPY3QgMTUsIDIwMTkgYXQgMTI6NDY6MTNQTSArMDIw
-MCwgSmFjb3BvIE1vbmRpIHdyb3RlOg0KPiA+IENNTSBmdW5jdGlvbmFsaXRpZXMgYXJlIHJldGFp
-bmVkIGJldHdlZW4gc3VzcGVuZC9yZXN1bWUgY3ljbGVzICh0ZXN0ZWQgd2l0aA0KPiA+IHN1c3Bl
-bmQtdG8taWRsZSkgd2l0aG91dCByZXF1aXJpbmcgYSByZS1wcm9ncmFtbWluZyBvZiB0aGUgTFVU
-IHRhYmxlcy4NCj4NCj4gSG1tLiBJcyB0aGlzIGJhY2tlZCB1cCBieSBhbnkgc3RhdGVtZW50IGlu
-IHRoZSBIVyBVc2VyJ3MgbWFudWFsPw0KPiBUaGlzIGNvbWVzIGluIGNvbnRyYXN0IHdpdGggdGhl
-IG9yaWdpbmFsIFJlbmVzYXMgQ01NIGltcGxlbWVudGF0aW9uIFsqKl0NCj4gd2hpY2ggZG9lcyBt
-YWtlIHVzZSBvZiBzdXNwZW5kICh3aGVyZSB0aGUgZnJlZXplIGFjdHVhbGx5IGhhcHBlbnMpLg0K
-Pg0KPiBDYW4gd2UgaW5mZXIsIGJhc2VkIG9uIHlvdXIgc3RhdGVtZW50LCB0aGF0IHdlIGNvdWxk
-IGFsc28gZ2V0IHJpZCBvZg0KPiB0aGUgc3VzcGVuZCBjYWxsYmFjayBpbiBbKipdPw0KDQpXaGls
-ZSB0aGUgQ01NIHN0YXRlIHdpbGwgYmUgcmV0YWluZWQgYWNyb3NzIHN1c3BlbmQtdG8taWRsZSwg
-SSdtIHF1aXRlDQpzdXJlIGl0IHdpbGwgYmUgbG9zdCBieSBzdXNwZW5kLXRvLVJBTSwgYXQgbGVh
-c3Qgb24gdGhlIFNhbHZhdG9yLVgoUyksDQpVTENCLCBhbmQgRWJpc3UgZGV2ZWxvcG1lbnQgYm9h
-cmRzLCBhcyBQU0NJIHdpbGwgYXNrIHRoZSBCRDk1NzFXTVYNCnJlZ3VsYXRvciB0byBwb3dlciBk
-b3duIHRoZSBSLUNhciBTb0MuDQoNClNvIElNSE8gd2UgZG8gbmVlZCBzdXNwZW5kL3Jlc3VtZSBo
-YW5kbGluZy4NCg0KR3J7b2V0amUsZWV0aW5nfXMsDQoNCiAgICAgICAgICAgICAgICAgICAgICAg
-IEdlZXJ0DQoNCi0tDQpHZWVydCBVeXR0ZXJob2V2ZW4gLS0gVGhlcmUncyBsb3RzIG9mIExpbnV4
-IGJleW9uZCBpYTMyIC0tIGdlZXJ0QGxpbnV4LW02OGsub3JnDQoNCkluIHBlcnNvbmFsIGNvbnZl
-cnNhdGlvbnMgd2l0aCB0ZWNobmljYWwgcGVvcGxlLCBJIGNhbGwgbXlzZWxmIGEgaGFja2VyLiBC
-dXQNCndoZW4gSSdtIHRhbGtpbmcgdG8gam91cm5hbGlzdHMgSSBqdXN0IHNheSAicHJvZ3JhbW1l
-ciIgb3Igc29tZXRoaW5nIGxpa2UgdGhhdC4NCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgLS0gTGludXMgVG9ydmFsZHMNCg0KDQpSZW5lc2FzIEVsZWN0cm9uaWNzIEV1cm9wZSBHbWJI
-LCBHZXNjaGFlZnRzZnVlaHJlci9QcmVzaWRlbnQ6IENhcnN0ZW4gSmF1Y2gsIFNpdHogZGVyIEdl
-c2VsbHNjaGFmdC9SZWdpc3RlcmVkIG9mZmljZTogRHVlc3NlbGRvcmYsIEFyY2FkaWFzdHJhc3Nl
-IDEwLCA0MDQ3MiBEdWVzc2VsZG9yZiwgR2VybWFueSwgSGFuZGVsc3JlZ2lzdGVyL0NvbW1lcmNp
-YWwgUmVnaXN0ZXI6IER1ZXNzZWxkb3JmLCBIUkIgMzcwOCBVU3QtSUROci4vVGF4IGlkZW50aWZp
-Y2F0aW9uIG5vLjogREUgMTE5MzUzNDA2IFdFRUUtUmVnLi1Oci4vV0VFRSByZWcuIG5vLjogREUg
-MTQ5Nzg2NDcNCg==
+When a regulator is left on by the bootloader or anything else before
+the kernel starts (let's call this a "boot on" regulator), we need to
+keep it on till all the consumers of the regulator have probed. This is
+especially important for regulators that might be powering more than one
+consumer. Otherwise, when the first consumer probes, enables and then
+disables the "boot on" regulator, it'd turn off the power to rest of the
+consumers of the "boot on" regulator.
+
+Also, if a regulator driver is loaded as a module and the regulator
+device has a few "boot on" regulators, we still want them to be turned
+off after all the consumers have probed (if none of them have requested
+for those regulators to stay on).
+
+The sync_state() callback that's been added to drivers is meant for
+situations like this. It gets called when all the consumers of a device
+have probed successfully. To ease the transition to sync_state()
+callbacks, it is never called before late_initcall_sync().
+
+sync_state() callbacks become even more useful when combined with
+fw_devlink.  If fw_devlink is off, sync_state() is called at
+late_initcall_sync() or the regulator device probing successfully --
+whichever is later. This is because, with fw_devlink off, there would be
+no consumers to the regulator device when it probes.
+
+If fw_devlink is not off (it's permissive by default now), then
+sync_state() is called when all the consumers of the regulator device
+have probed or at late_initcall_sync() -- whichever is later.
+
+This commit adds a regulator_sync_state() helper function that takes
+care of all the "boot on" regulator clean up for any regulator driver.
+All one needs to do is add the following line to the driver struct.
+
+.sync_state = regulator_sync_state,
+
+Once that's done, then for any device that's probed by the driver, all
+the "boot on" regulators supplied by the device will be kept on till all
+the consumers of the device have probed. Once the consumers have probed,
+the "boot on" regulators would be allowed to turn off if they are voted
+on by any of the consumers.
+
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+Mark,
+
+This is just a first cut RFC of how I think this could be handled.  I've
+implemented it based on my limited understanding of the regulator
+framework. So, I wouldn't be surprised if I've missed out on some corner
+(or not so corner) cases. But if you point out the issues, I'd be happy
+to try and address them.
+
+Ideally, we can just do this for all the regulators, but we can start
+with an "opt-in" scheme where the older behavior is still preserved if a
+driver doesn't opt in. I'd also like to remove the arbitrary time out
+that we use today, but that's a super long term goal because I know you
+have some use cases which might have time limits (and maybe, we'll just
+end up with only those drivers opting out of this scheme and sticking
+with timeouts).
+
+Also, with what I understand of the regulator code, I think we might be
+able to replace/drop the "supply enable propagation" code with a few
+tweaks to my patch. But I didn't want to do them in this patch.
+
+I've tested this patch on simple on/off regulators in real hardware with
+their drivers compiled as modules and it seems to work correctly. So it
+at least works on some level.
+
+Let me know what you think.
+
+Thanks,
+Saravana
+
+ drivers/regulator/core.c         | 64 ++++++++++++++++++++++++++++++++
+ include/linux/regulator/driver.h |  2 +
+ 2 files changed, 66 insertions(+)
+
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index 941783a14b45..373704b9014e 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -1768,6 +1768,66 @@ static struct regulator_dev *regulator_dev_lookup(struct device *dev,
+ 	return ERR_PTR(-ENODEV);
+ }
+ 
++static void regulator_hold_state(struct regulator_dev *rdev)
++{
++	struct device *dev = rdev->dev.parent;
++	struct regulation_constraints *c = rdev->constraints;
++
++	if (!dev_has_sync_state(dev) || rdev->sync_supply)
++		return;
++
++	if (rdev->supply_name && !rdev->supply)
++		return;
++
++	if (c && c->always_on)
++		return;
++
++	if (!regulator_ops_is_valid(rdev, REGULATOR_CHANGE_STATUS))
++		return;
++
++	if (_regulator_is_enabled(rdev) <= 0)
++		return;
++
++	rdev->sync_supply = create_regulator(rdev, NULL, "SYNC-SUPPLY");
++	/*
++	 * At this point, we shouldn't have trouble getting a regulator. If we
++	 * do, give up.
++	 */
++	if (rdev->sync_supply == NULL) {
++		rdev->sync_supply = ERR_PTR(-EINVAL);
++		return;
++	}
++	rdev->open_count++;
++
++	if (regulator_enable(rdev->sync_supply)) {
++		regulator_put(rdev->sync_supply);
++		rdev->sync_supply = ERR_PTR(-EINVAL);
++	}
++}
++
++static int regulator_sync_state_release(struct device *dev, void *data)
++{
++	struct regulator_dev *rdev = dev_to_rdev(dev);
++
++	if (dev->parent != data)
++		return 0;
++
++	if (IS_ERR_OR_NULL(rdev->sync_supply))
++		return 0;
++
++	regulator_disable(rdev->sync_supply);
++	regulator_put(rdev->sync_supply);
++	rdev->sync_supply = NULL;
++	return 0;
++}
++
++void regulator_sync_state(struct device *dev)
++{
++	class_for_each_device(&regulator_class, NULL, dev,
++			      regulator_sync_state_release);
++}
++EXPORT_SYMBOL_GPL(regulator_sync_state);
++
+ static int regulator_resolve_supply(struct regulator_dev *rdev)
+ {
+ 	struct regulator_dev *r;
+@@ -1826,6 +1886,8 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
+ 		return ret;
+ 	}
+ 
++	regulator_hold_state(rdev);
++
+ 	/*
+ 	 * In set_machine_constraints() we may have turned this regulator on
+ 	 * but we couldn't propagate to the supply if it hadn't been resolved
+@@ -5188,6 +5250,8 @@ regulator_register(const struct regulator_desc *regulator_desc,
+ 	    !rdev->desc->fixed_uV)
+ 		rdev->is_switch = true;
+ 
++	regulator_hold_state(rdev);
++
+ 	dev_set_drvdata(&rdev->dev, rdev);
+ 	ret = device_register(&rdev->dev);
+ 	if (ret != 0) {
+diff --git a/include/linux/regulator/driver.h b/include/linux/regulator/driver.h
+index 7eb9fea8e482..2e2208e7b771 100644
+--- a/include/linux/regulator/driver.h
++++ b/include/linux/regulator/driver.h
+@@ -451,6 +451,7 @@ struct regulator_dev {
+ 	struct regulator *supply;	/* for tree */
+ 	const char *supply_name;
+ 	struct regmap *regmap;
++	struct regulator *sync_supply;
+ 
+ 	struct delayed_work disable_work;
+ 
+@@ -475,6 +476,7 @@ devm_regulator_register(struct device *dev,
+ 			const struct regulator_desc *regulator_desc,
+ 			const struct regulator_config *config);
+ void regulator_unregister(struct regulator_dev *rdev);
++void regulator_sync_state(struct device *dev);
+ void devm_regulator_unregister(struct device *dev, struct regulator_dev *rdev);
+ 
+ int regulator_notifier_call_chain(struct regulator_dev *rdev,
+-- 
+2.27.0.rc0.183.gde8f92d652-goog
+
