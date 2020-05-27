@@ -2,81 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58F81E3AFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 09:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBF611E3AFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 09:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387683AbgE0Hwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 03:52:44 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:46930 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387650AbgE0Hwn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 03:52:43 -0400
-Received: by mail-ot1-f66.google.com with SMTP id g25so18458909otp.13;
-        Wed, 27 May 2020 00:52:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S/vXGrBoFycwluM2P5rydMxcUoPDQRXCjdLYfWHMt+E=;
-        b=nRaSjJe3qtTsnpuPc36TJBCa8WIfR3RHp8BMv/yh6UlvBWcICMRZHdxbwBqG/bAqUa
-         oybSSVMKskrspoZDTXqHkLjGh/DRmdK9Pfd66iKCpVSSYzrMNoAOmggF5QlJZ5XqXSPu
-         3BPC2BZYdCjuh5NC7jAAgQLXt9Ooz7NnybuVEInI+18BDgHZqpyFnkCfvqDObuV9N131
-         BiitQ2Q8HYfOPrnJSJ8o9GPMDG4NnGZLCChpvkJkSip2OU+234m7U4bTt+0WvdA18c2C
-         ruTIesetsBSwqMVZMV/CMaxFB08i1dwziZO2lsR98ywQd/IzeEhfRGhwnrykEZudoR+8
-         kz+w==
-X-Gm-Message-State: AOAM533tcNNzZ+93RePWbC0mtIKfE2sddhLxntwQCTrUovsKFCTzb2/k
-        1+B89Glug4bDwN6Vo7OGIXyjTE7tvtPfEa0f4ve/nA==
-X-Google-Smtp-Source: ABdhPJyh6XnGunqKyldUQUDAVmqdF5DZz8KnpZzyv3nLlCp4H9hrYSx91YK6xYIWALYMvjLu0Y9UEg6PEXXjbHVOKSI=
-X-Received: by 2002:a05:6830:18d9:: with SMTP id v25mr3526020ote.107.1590565962830;
- Wed, 27 May 2020 00:52:42 -0700 (PDT)
+        id S2387693AbgE0HxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 03:53:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387650AbgE0HxJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 03:53:09 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 894A120FC3;
+        Wed, 27 May 2020 07:53:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590565988;
+        bh=Uz9VQ5ssMAnN5D1Zw8oLy/WNGOVCjJrTYN7Wo34QeXg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UgSznrbPLEsdZgh8jYyrwAoodAz/I/EFVZy0/azyVkV+fdaIHQitlZQ/IxT5L/XQ4
+         XBVOOpb3V2yjhN5922zof+32xjxajhg0/d1vULou0YTHSJe+VWQX214hMELGMqD3fv
+         7k0OjwYs6SIZWzHrd5ORT/MDGT37kqMDP5JQnOJo=
+Date:   Wed, 27 May 2020 08:53:04 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org, mark.rutland@arm.com,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2] arm64/cpufeature: Add get_arm64_ftr_reg_nowarn()
+Message-ID: <20200527075303.GC9887@willie-the-truck>
+References: <1590500353-28082-1-git-send-email-anshuman.khandual@arm.com>
+ <20200526150135.GI17051@gaia>
+ <20200526194648.GA2206@willie-the-truck>
+ <ca38b2c0-533f-9b98-46a2-37ba8bf21d83@arm.com>
 MIME-Version: 1.0
-References: <1590526904-13855-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1590526904-13855-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <1590526904-13855-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 27 May 2020 09:52:31 +0200
-Message-ID: <CAMuHMdWQ5i4QiMuSEPrHC4i6fDGa2aJrKO5gzyrsc=uCCdYAhQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ARM: dts: r8a7742: Add audio support
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ca38b2c0-533f-9b98-46a2-37ba8bf21d83@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CC Morimoto-san
+On Wed, May 27, 2020 at 07:56:30AM +0530, Anshuman Khandual wrote:
+> 
+> 
+> On 05/27/2020 01:16 AM, Will Deacon wrote:
+> > On Tue, May 26, 2020 at 04:01:35PM +0100, Catalin Marinas wrote:
+> >> On Tue, May 26, 2020 at 07:09:13PM +0530, Anshuman Khandual wrote:
+> >>> @@ -632,8 +654,6 @@ static void __init init_cpu_ftr_reg(u32 sys_reg, u64 new)
+> >>>  	const struct arm64_ftr_bits *ftrp;
+> >>>  	struct arm64_ftr_reg *reg = get_arm64_ftr_reg(sys_reg);
+> >>>  
+> >>> -	BUG_ON(!reg);
+> >>> -
+> >>>  	for (ftrp = reg->ftr_bits; ftrp->width; ftrp++) {
+> >>>  		u64 ftr_mask = arm64_ftr_mask(ftrp);
+> >>>  		s64 ftr_new = arm64_ftr_value(ftrp, new);
+> >>> @@ -762,7 +782,6 @@ static int check_update_ftr_reg(u32 sys_id, int cpu, u64 val, u64 boot)
+> >>>  {
+> >>>  	struct arm64_ftr_reg *regp = get_arm64_ftr_reg(sys_id);
+> >>>  
+> >>> -	BUG_ON(!regp);
+> >>>  	update_cpu_ftr_reg(regp, val);
+> >>>  	if ((boot & regp->strict_mask) == (val & regp->strict_mask))
+> >>>  		return 0;
+> >>> @@ -776,9 +795,6 @@ static void relax_cpu_ftr_reg(u32 sys_id, int field)
+> >>>  	const struct arm64_ftr_bits *ftrp;
+> >>>  	struct arm64_ftr_reg *regp = get_arm64_ftr_reg(sys_id);
+> >>>  
+> >>> -	if (WARN_ON(!regp))
+> >>> -		return;
+> >>
+> >> I think Will wanted an early return in all these functions not just
+> >> removing the BUG_ON(). I'll let him clarify.
+> > 
+> > Yes, the callers need to check the pointer and return early.
+> 
+> Sure, will do. But for check_update_ftr_reg(), a feature register search
+> failure should be treated as a success (0) or a failure (1). What should
+> it return ? Seems bit tricky, as there are good reasons to go either way.
 
-On Tue, May 26, 2020 at 11:02 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add sound support for the RZ/G1H SoC (a.k.a. R8A7742).
->
-> This work is based on similar work done on the R8A7744 SoC.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+We're unable to check it so return 0, otherwise we'll randomly taint the
+kernel and print a weird message.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v5.9.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Will
