@@ -2,122 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E652D1E4590
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBFE1E4582
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 16:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388985AbgE0ORC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 10:17:02 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:42241 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388141AbgE0ORC (ORCPT
+        id S2388790AbgE0OP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 10:15:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387800AbgE0OP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 10:17:02 -0400
-Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MPK73-1jNdyb1lNN-00PfUR; Wed, 27 May 2020 16:15:56 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, stable@vger.kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Slaby <jslaby@suse.cz>,
-        Juergen Gross <jgross@suse.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Tony Luck <tony.luck@intel.com>, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH] x86: fix clang integrated assembler build
-Date:   Wed, 27 May 2020 16:15:39 +0200
-Message-Id: <20200527141553.1768675-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.2
+        Wed, 27 May 2020 10:15:58 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15A0BC08C5C1;
+        Wed, 27 May 2020 07:15:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=fUYUrCCcdXTrWp6s+3Qr43SGxV6xtJ+mBKuUSmw/8tU=; b=q+g9yyYAWMSo5KjyCTA+fX2BV
+        VbpeDnNqtwQNuGc+J/edYitpsmOhhrI6ZFJvFC1YTQMEnE6bfwqAj6MRPOy3jQdNoekctvTYTUtxy
+        L7w+3HbfWqNVgMyMz+42psOBq1+/FILaCfv3L+SPBZeSvXqk9kntukva7sRKZ62sjS/8MTEnoIlDC
+        1DumXhlScBDYkYsG5U+lQYaLZK/RTWpz5joDWoTxms/60VXsDsVs7RAxhTWS45D+pG/CJtIBmoqNG
+        Ct8K48x4JJs/KpD3r7DWWgx+nzIAaa8uiGOIv++BaWbZGY9/Z7+hHgvvLDye2OivL5IZjB+5w6jZF
+        +FImMoRnQ==;
+Received: from shell.armlinux.org.uk ([2001:4d48:ad52:3201:5054:ff:fe00:4ec]:45760)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jdwqO-0002gO-AM; Wed, 27 May 2020 15:15:44 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jdwqM-0006V2-BY; Wed, 27 May 2020 15:15:42 +0100
+Date:   Wed, 27 May 2020 15:15:42 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Maulik Shah <mkshah@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Evan Green <evgreen@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Doug Anderson <dianders@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>, lsrao@codeaurora.org
+Subject: Re: [PATCH v2 1/4] gpio: gpiolib: Allow GPIO IRQs to lazy disable
+Message-ID: <20200527141542.GP1551@shell.armlinux.org.uk>
+References: <1590253873-11556-1-git-send-email-mkshah@codeaurora.org>
+ <1590253873-11556-2-git-send-email-mkshah@codeaurora.org>
+ <CACRpkdba9j4EdCkD5OeL=3A4Zeb57vO78FAXA9fo0SOgBE57ag@mail.gmail.com>
+ <3efa1f69-1e1d-f919-d47e-b4c5c73532b7@xs4all.nl>
+ <CACRpkdY3pJVvAi_a=pVVQQbQyA3_b=o2pJqb5W8Wivp-SSy+tA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:Uosxpj6yvjMCuoWo+Rtov8UwzN5IwYem5nwdvTWLIAVID8yaP/W
- x7ewGXWq/QM+I7P3RCxJYWFjpDQalR+YODvDhjI71RN1tJZP8geV47TJs5LVSF7p7vmPoXm
- qImyMgJGjmDeyS2NV4hdWnbJNcpxvHX0/3b8jp2OkQ3phuf5uluN+BUE0FMfsSyprNtQvnL
- fV00HYQaumDJaxj6QfpPg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:GWnMZ0bR6yk=:0Y1nTwmFteYTcoIjQ40K3U
- cSlDlIO2MaEl7ZntvxtB1FiwS6sZj5h2Wg+YeSVHJJWLZhQIXpLujXfFgeCsDJdPdP4zf/tG+
- z3vjludYoIj/dSsu1DCKX7HKRRlmKIYylGoLzlP+MuZ1sPFCoUCafKtwamLGglgNZGGinSGGq
- L1vbbWJd6f1WpNSR9ORdxgFwNQHhK+uo6AllztWK76vGCAc/j8lXxkbtC3qKrPo2P1WpptWk5
- jkygJhIWjdiF2fLcgxOlge0rwyvXcUz5tTe+FrKYGH6yCfJREI3SqSKE3wQEuiTszKc8+xfvv
- MR6S28MzU+i5B7xWNneS8ed+VX4lLIaLNvTivoT5KkFO9oIed/dWF36QK6Mr/B18X0K7mXnCF
- A8C7hWSLo719jVIGoCZ5nmx4JUnICaW0NSFhkF108Ehn5KD31jXfYJ31FYtY2bvjz/GGRA31N
- rttY0nXn/FFJwP0pcT7RuYmHs4+WWv/3BqwURQa7ZNAoTvUtaXq0PcDwtxkLJVj3rnCsJQMAR
- Kuu5E+fWt5jFkCon4fRjZdu3DtMEKsSA23jsUwCLQHMPsNY7/qJ80O05GoPp8Uf69m6BiPVVi
- qggmvA7zKgPx6+pGVf2xZ4C+nsrulbKXXSdaycw9B56m9yssXSeKhVkx+np51y9bMD7jl+DAH
- qMPVpL/RBQBiU8cg20vCC+dyI5xv3jEQbdBbFg6r5fCtjqawk1CF9NgDV1Mo3nzu+bxn9Wicf
- LbA+0fiJ611f2RojqKBaHeqabSDVpZUeKPIF6dANGh7KANO3z2xyKj5HsQgPsLrk2VQi0rbrR
- LNUvfiZ7HNzDzeYD4csCPzFo1Q0czax1TFof2QNccYY3Pxn0+Y=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdY3pJVvAi_a=pVVQQbQyA3_b=o2pJqb5W8Wivp-SSy+tA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-clang and gas seem to interpret the symbols in memmove_64.S and
-memset_64.S differently, such that clang does not make them
-'weak' as expected, which leads to a linker error, with both
-ld.bfd and ld.lld:
+On Wed, May 27, 2020 at 03:56:16PM +0200, Linus Walleij wrote:
+> On Wed, May 27, 2020 at 12:38 PM Hans Verkuil <hverkuil@xs4all.nl> wrote:
+> 
+> > However, I discovered that patch 256efaea1fdc ("gpiolib: fix up emulated
+> > open drain outputs") broke the cec-gpio driver on the Raspberry Pi starting
+> > with kernel v5.5.
+> >
+> > The CEC pin is an open drain pin that is used in both input and output
+> > directions and has an interrupt (which is of course disabled while in
+> > output mode).
+> >
+> > With this patch the interrupt can no longer be requested:
+> >
+> > [    4.157806] gpio gpiochip0: (pinctrl-bcm2835): gpiochip_lock_as_irq: tried to flag a GPIO set as output for IRQ
+> >
+> > [    4.168086] gpio gpiochip0: (pinctrl-bcm2835): unable to lock HW IRQ 7 for IRQ
+> > [    4.175425] genirq: Failed to request resources for cec-gpio@7 (irq 79) on irqchip pinctrl-bcm2835
+> > [    4.184597] cec-gpio: probe of cec-gpio@7 failed with error -5
+> 
+> There is nothing conceptually wrong with that patch so I think we
+> need to have the irqchip code check if it is input *OR* open drain.
 
-ld.lld: error: duplicate symbol: memmove
->>> defined at common.c
->>>            kasan/common.o:(memmove) in archive mm/built-in.a
->>> defined at memmove.o:(__memmove) in archive arch/arm64/lib/lib.a
+Right - because, before this patch:
 
-ld.lld: error: duplicate symbol: memset
->>> defined at common.c
->>>            kasan/common.o:(memset) in archive mm/built-in.a
->>> defined at memset.o:(__memset) in archive arch/arm64/lib/lib.a
+- if you have hardware that is capable of open-drain outputs, gpiolib
+  will report that the GPIO is in *output* mode.
+- if you have hardware that is not capable of open-drain outputs, and
+  gpiolib emulates the open-drain nature by switching the GPIO
+  direction, then gpiolib will report that the GPIO is in input mode.
 
-Copy the exact way these are written in memcpy_64.S, which does
-not have the same problem.
+What my patch does is provide consistent behaviour across all cases
+by making open-drain outputs consistently report output mode
+irrespective of the underlying hardware.
 
-I don't know why this makes a difference, and it would be good
-to have someone with a better understanding of assembler internals
-review it.
+Whether an open-drain GPIO should be viewed as an input or as an output
+is an interesting question, but the important thing as far as this
+subsystem goes is to have consistent behaviour, otherwise having a
+subsystem is utterly pointless.  However, consider whether it is sane
+to request a change of state via gpiod_set_value() of a gpio that
+reports itself as input, and have that request honoured and cause a
+change of state of the "input" - clearly that is not sane.
 
-It might be either a bug in the kernel or a bug in the assembler,
-no idea which one. My patch makes it work with all versions of
-clang and gcc, which is probably helpful even if it's a workaround
-for a clang bug.
+In any case:
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/x86/lib/memmove_64.S | 4 ++--
- arch/x86/lib/memset_64.S  | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+        cec->cec_gpio = devm_gpiod_get(dev, "cec", GPIOD_OUT_HIGH_OPEN_DRAIN);
+        if (IS_ERR(cec->cec_gpio))
+                return PTR_ERR(cec->cec_gpio);
+        cec->cec_irq = gpiod_to_irq(cec->cec_gpio);
+...
+        ret = devm_request_irq(dev, cec->cec_irq, cec_gpio_irq_handler,
+                               IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
+                               cec->adap->name, cec);
 
-diff --git a/arch/x86/lib/memmove_64.S b/arch/x86/lib/memmove_64.S
-index 7ff00ea64e4f..dcca01434be8 100644
---- a/arch/x86/lib/memmove_64.S
-+++ b/arch/x86/lib/memmove_64.S
-@@ -26,8 +26,8 @@
-  */
- .weak memmove
- 
--SYM_FUNC_START_ALIAS(memmove)
--SYM_FUNC_START(__memmove)
-+SYM_FUNC_START_ALIAS(__memmove)
-+SYM_FUNC_START_LOCAL(memmove)
- 
- 	mov %rdi, %rax
- 
-diff --git a/arch/x86/lib/memset_64.S b/arch/x86/lib/memset_64.S
-index 9ff15ee404a4..a97f2ea4e0b2 100644
---- a/arch/x86/lib/memset_64.S
-+++ b/arch/x86/lib/memset_64.S
-@@ -19,8 +19,8 @@
-  *
-  * rax   original destination
-  */
--SYM_FUNC_START_ALIAS(memset)
--SYM_FUNC_START(__memset)
-+SYM_FUNC_START_ALIAS(__memset)
-+SYM_FUNC_START_LOCAL(memset)
- 	/*
- 	 * Some CPUs support enhanced REP MOVSB/STOSB feature. It is recommended
- 	 * to use it when possible. If not available, use fast string instructions.
+So, the GPIO is requested in an _output_ mode, so it would be weird if
+it were subsequently to be reported as an input just because it ended
+up being an emulated open-drain output.
+
+Hence, the above code would have failed if cec-gpio were used with
+hardware that had open-drain semantics without needing the gpiolib
+emulation for the same reason that's now triggering; such hardware
+would report that the pin is in output mode, and the interrupt
+allocation would fail.
+
+While it's regrettable that fixing the inconsistency has caused a
+regression, I think that has found another place where the semantics
+aren't entirely sane, and as Linus says, _that_ needs fixing.
+
 -- 
-2.26.2
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC for 0.8m (est. 1762m) line in suburbia: sync at 13.1Mbps down 424kbps up
