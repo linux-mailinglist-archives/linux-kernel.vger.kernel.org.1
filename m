@@ -2,202 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C751E5175
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 00:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 037D51E5170
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 00:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726533AbgE0WrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 18:47:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37402 "EHLO
+        id S1725941AbgE0WrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 18:47:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726393AbgE0WrO (ORCPT
+        with ESMTP id S1725601AbgE0WrB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 18:47:14 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ECD2C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 15:47:13 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id 19so27404858qtp.8
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 15:47:13 -0700 (PDT)
+        Wed, 27 May 2020 18:47:01 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0112AC05BD1E;
+        Wed, 27 May 2020 15:47:00 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id f18so1375363qkh.1;
+        Wed, 27 May 2020 15:47:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=EPOmpxXNIJ+6In9IN6TBBRdLz/P9JOhwRE1awJTQ7UI=;
-        b=TJfxogc/xDxHr9mQZHN7JkU1Up2TtKdYLsm4R30RDECy3TUXBL+JSdGI70Tnf4ldY7
-         I6P3Nc/b4csbG+TKEInX8M6A6kHdKFJ6Enw4CBjP1DFYTGKgxuS9QNf5kkmqwR7LyYUb
-         dgdRuJVwR9eb+7Am0jKimjii8WIx1CDMTKFsjE/q8gCW8lQZoz7JUbxvfteUvuCSq5pv
-         LGD2bb7wY0U2v6EqJbeCyNedhKsLTPZSzzF3ymQS/vJDK77ygCvNSxCvBU5gCkrGLaR6
-         3PA6GEnMQuvK12duehw64GuRd9xBM9XmRSxP/o6s5Jp94b6+uD3bF0F2jFefUO2UIMom
-         mO2g==
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hdWbjQHS/5LC948mUM96MFEQV/j+JyYYxwWuAAvmOdE=;
+        b=cdUhXoam5HnhNHy1GFB1tDHea0+fM9C0n6OJgl+9wuCWxKRLL2breGo7/8R8LEj778
+         oqP9jhx8v0q8fEpw2+KETcWZB2j8cBm3ThoTTb8s2Nr+oPGJQFv4HdlzOGKaomeSfTU/
+         DUMfb0iX0RnCk28R0/64IZsaEf69+OMAHTGRd26BoRg8JTbJnHN4ra3dMQPJXkkFbDpf
+         8JaNlU2bXBdnYB6OIqscrXItVJyK0pWhDKNaFZhPRbCPazRJ+50pX0gJ1Ee0IgK5PvVK
+         88ewrnarGeQPtOgbV6xkfsSzPuXr6t8IDBxEAtRg505voz5SADloB0h/taSopxAgjbI+
+         w60g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=EPOmpxXNIJ+6In9IN6TBBRdLz/P9JOhwRE1awJTQ7UI=;
-        b=O2JSNesOoPAnMVZAuOz3ETSHCY9T6uGpRdUK5bZB9pl1JhaAkEANvPIicxOxhAbCic
-         KRPL/xD6o8phmWIZcLDoy4jH8+zkXMtH6OLepdu+U/VaCvILpfGmUVpQiTkqAD2AYzmB
-         0kE+2kOgIiDdfqDQV4mJawTp55r/vM2i35OwRBHxV/YJa57qfcCs4OodzsYNmP5JcYn9
-         UPHUIrrkkW0LlXrHW7424O0cMtsZAQhQylCMEfNn16YvtCKYLrLrt12DE5gvd7Afekm2
-         aipunrEMbQPyJHQYpGMbiElIdGMiyZnhUDyb6JBA2nU0URRnPCqlX4/Jq5CPnzxl0lSA
-         f7Cw==
-X-Gm-Message-State: AOAM533XDluFsnFQjMPGsYpRRaDj4Fz+dQpF0ziDsadnpIMw/w/Nol4z
-        XcOMJJf0HedyXPlr2saIew5gYrj85WXtDoVT4a6yocJdpGZ+wUp789pgikrw0epy0oKsJqP9zoz
-        yg7QuS+Z6Bt9zu1qmFy+tBzERC6ipb8iFIzcZwkhk/VAdJvRHtXdBLtO8rJdgCC36T8qY92FO
-X-Google-Smtp-Source: ABdhPJxjxd/6kJpQ9z8kT6kKlT6FKW+xMzusW2OFeQEQ0rKlH4J1wfDQgf0ZaX/krytmcAgJN795UmBexRo/
-X-Received: by 2002:a0c:9aeb:: with SMTP id k43mr278612qvf.101.1590619632442;
- Wed, 27 May 2020 15:47:12 -0700 (PDT)
-Date:   Wed, 27 May 2020 15:46:56 -0700
-In-Reply-To: <20200527224659.206129-1-eranian@google.com>
-Message-Id: <20200527224659.206129-3-eranian@google.com>
-Mime-Version: 1.0
-References: <20200527224659.206129-1-eranian@google.com>
-X-Mailer: git-send-email 2.27.0.rc0.183.gde8f92d652-goog
-Subject: [PATCH v2 2/5] perf/x86/rapl: refactor code for Intel/AMD sharing
-From:   Stephane Eranian <eranian@google.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, mingo@elte.hu, irogers@google.com,
-        kim.phillips@amd.com, jolsa@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=hdWbjQHS/5LC948mUM96MFEQV/j+JyYYxwWuAAvmOdE=;
+        b=iazVMkP4K6qjC1RdHp+V3I5zedO0RT/+RDcAOkB6CXXtaxKY2j+Cr57/WHe7Durc94
+         jxj4SEPf8dPGJkpo81ZHJkLLfFlQnAQhM9Y+k5bSmcW0lmMzet0RQPCpzg1oHj6onnFi
+         l3hb54aVYqrKHOCbM0M7+DJ/mP4UFSt+8uShUTlqDY78PzpHubUjZz3dWYrF06nZwcfw
+         sgzN/0ZH2P4L0I716tI0bQns1je/N7JWRxeooxyTrAEOU6Wk+J3qlLtY+cHtp7Ug2bPN
+         B81w4jyS4s8gm7dWdi/AmVXYtFJj4M3eycvPYGgm6rUoTgpGGH7nIM7LYTg9PIVNejlO
+         KDxA==
+X-Gm-Message-State: AOAM53195KVXyqjvwbVJ6wlaZY8VqlG6uld1lsx8p/OxsTJMNLhD+KhV
+        r5LSi00C34Hytov55CXryOI=
+X-Google-Smtp-Source: ABdhPJyFLWVeaWq2hvIIZQy/y7YZrHPrjOAiZAJCaQJDHjnLxleEPaZCb3y6Xm+spRDkflSJ8Ol4Eg==
+X-Received: by 2002:a37:7603:: with SMTP id r3mr86393qkc.243.1590619620116;
+        Wed, 27 May 2020 15:47:00 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id y185sm2970856qkd.83.2020.05.27.15.46.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 15:46:59 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Wed, 27 May 2020 18:46:57 -0400
+To:     "Williams, Dan J" <dan.j.williams@intel.com>
+Cc:     "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "linux@roeck-us.net" <linux@roeck-us.net>,
+        "joe@perches.com" <joe@perches.com>,
+        "nivedita@alum.mit.edu" <nivedita@alum.mit.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>
+Subject: Re: [PATCH 08/15] efi/x86: Move command-line initrd loading to
+ efi_main
+Message-ID: <20200527224657.GA3568142@rani.riverdale.lan>
+References: <20200508180157.1816-1-ardb@kernel.org>
+ <20200508180157.1816-9-ardb@kernel.org>
+ <10a1c7fcea861f5d45dff81cba673e970d686bc2.camel@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <10a1c7fcea861f5d45dff81cba673e970d686bc2.camel@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch modifies the rapl_model struct to include architecture specific
-knowledge to Intel specific structure, and in particular the MSR for
-POWER_UNIT and the rapl_msrs array.
+On Wed, May 27, 2020 at 10:30:18PM +0000, Williams, Dan J wrote:
+> On Fri, 2020-05-08 at 20:01 +0200, Ard Biesheuvel wrote:
+> > From: Arvind Sankar <nivedita@alum.mit.edu>
+> > 
+> > Consolidate the initrd loading in efi_main.
+> > 
+> > The command line options now need to be parsed only once.
+> > 
+> > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> > Link: 
+> > https://lore.kernel.org/r/20200430182843.2510180-9-nivedita@alum.mit.edu
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> 
+> Hi,
+> 
+> This patch patch in tip/master as:
+> 
+> 987053a30016 efi/x86: Move command-line initrd loading to efi_main
+> 
+> ...regresses my nfs root configuration. It hangs trying to mount the
+> nfs root filesystem "root=/dev/nfs ip=dhcp".
+> 
+> It does not revert cleanly.
+> 
+> 
 
-No functional changes.
+Does this fix it?
 
-Signed-off-by: Stephane Eranian <eranian@google.com>
----
- arch/x86/events/rapl.c | 29 +++++++++++++++++++++++------
- 1 file changed, 23 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
-index ece043fb7b494..72990e9a4e71f 100644
---- a/arch/x86/events/rapl.c
-+++ b/arch/x86/events/rapl.c
-@@ -131,7 +131,9 @@ struct rapl_pmus {
- };
- 
- struct rapl_model {
-+	struct perf_msr *rapl_msrs;
- 	unsigned long	events;
-+	unsigned int	msr_power_unit;
- 	bool		apply_quirk;
- };
- 
-@@ -141,7 +143,7 @@ static struct rapl_pmus *rapl_pmus;
- static cpumask_t rapl_cpu_mask;
- static unsigned int rapl_cntr_mask;
- static u64 rapl_timer_ms;
--static struct perf_msr rapl_msrs[];
-+static struct perf_msr *rapl_msrs;
- 
- static inline struct rapl_pmu *cpu_to_rapl_pmu(unsigned int cpu)
- {
-@@ -516,7 +518,7 @@ static bool test_msr(int idx, void *data)
- 	return test_bit(idx, (unsigned long *) data);
- }
- 
--static struct perf_msr rapl_msrs[] = {
-+static struct perf_msr intel_rapl_msrs[] = {
- 	[PERF_RAPL_PP0]  = { MSR_PP0_ENERGY_STATUS,      &rapl_events_cores_group, test_msr },
- 	[PERF_RAPL_PKG]  = { MSR_PKG_ENERGY_STATUS,      &rapl_events_pkg_group,   test_msr },
- 	[PERF_RAPL_RAM]  = { MSR_DRAM_ENERGY_STATUS,     &rapl_events_ram_group,   test_msr },
-@@ -578,13 +580,13 @@ static int rapl_cpu_online(unsigned int cpu)
- 	return 0;
- }
- 
--static int rapl_check_hw_unit(bool apply_quirk)
-+static int rapl_check_hw_unit(struct rapl_model *rm)
- {
- 	u64 msr_rapl_power_unit_bits;
- 	int i;
- 
- 	/* protect rdmsrl() to handle virtualization */
--	if (rdmsrl_safe(MSR_RAPL_POWER_UNIT, &msr_rapl_power_unit_bits))
-+	if (rdmsrl_safe(rm->msr_power_unit, &msr_rapl_power_unit_bits))
- 		return -1;
- 	for (i = 0; i < NR_RAPL_DOMAINS; i++)
- 		rapl_hw_unit[i] = (msr_rapl_power_unit_bits >> 8) & 0x1FULL;
-@@ -595,7 +597,7 @@ static int rapl_check_hw_unit(bool apply_quirk)
- 	 * "Intel Xeon Processor E5-1600 and E5-2600 v3 Product Families, V2
- 	 * of 2. Datasheet, September 2014, Reference Number: 330784-001 "
- 	 */
--	if (apply_quirk)
-+	if (rm->apply_quirk)
- 		rapl_hw_unit[PERF_RAPL_RAM] = 16;
+diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
+index defeb6035109..f53362efef84 100644
+--- a/drivers/firmware/efi/libstub/x86-stub.c
++++ b/drivers/firmware/efi/libstub/x86-stub.c
+@@ -771,10 +771,12 @@ unsigned long efi_main(efi_handle_t handle,
+ 			efi_err("Failed to load initrd!\n");
+ 			goto fail;
+ 		}
+-		efi_set_u64_split(addr, &hdr->ramdisk_image,
+-				  &boot_params->ext_ramdisk_image);
+-		efi_set_u64_split(size, &hdr->ramdisk_size,
+-				  &boot_params->ext_ramdisk_size);
++		if (size > 0) {
++			efi_set_u64_split(addr, &hdr->ramdisk_image,
++					  &boot_params->ext_ramdisk_image);
++			efi_set_u64_split(size, &hdr->ramdisk_size,
++					  &boot_params->ext_ramdisk_size);
++		}
+ 	}
  
  	/*
-@@ -676,6 +678,8 @@ static struct rapl_model model_snb = {
- 			  BIT(PERF_RAPL_PKG) |
- 			  BIT(PERF_RAPL_PP1),
- 	.apply_quirk	= false,
-+	.msr_power_unit = MSR_RAPL_POWER_UNIT,
-+	.rapl_msrs      = intel_rapl_msrs,
- };
- 
- static struct rapl_model model_snbep = {
-@@ -683,6 +687,8 @@ static struct rapl_model model_snbep = {
- 			  BIT(PERF_RAPL_PKG) |
- 			  BIT(PERF_RAPL_RAM),
- 	.apply_quirk	= false,
-+	.msr_power_unit = MSR_RAPL_POWER_UNIT,
-+	.rapl_msrs      = intel_rapl_msrs,
- };
- 
- static struct rapl_model model_hsw = {
-@@ -691,6 +697,8 @@ static struct rapl_model model_hsw = {
- 			  BIT(PERF_RAPL_RAM) |
- 			  BIT(PERF_RAPL_PP1),
- 	.apply_quirk	= false,
-+	.msr_power_unit = MSR_RAPL_POWER_UNIT,
-+	.rapl_msrs      = intel_rapl_msrs,
- };
- 
- static struct rapl_model model_hsx = {
-@@ -698,12 +706,16 @@ static struct rapl_model model_hsx = {
- 			  BIT(PERF_RAPL_PKG) |
- 			  BIT(PERF_RAPL_RAM),
- 	.apply_quirk	= true,
-+	.msr_power_unit = MSR_RAPL_POWER_UNIT,
-+	.rapl_msrs      = intel_rapl_msrs,
- };
- 
- static struct rapl_model model_knl = {
- 	.events		= BIT(PERF_RAPL_PKG) |
- 			  BIT(PERF_RAPL_RAM),
- 	.apply_quirk	= true,
-+	.msr_power_unit = MSR_RAPL_POWER_UNIT,
-+	.rapl_msrs      = intel_rapl_msrs,
- };
- 
- static struct rapl_model model_skl = {
-@@ -713,6 +725,8 @@ static struct rapl_model model_skl = {
- 			  BIT(PERF_RAPL_PP1) |
- 			  BIT(PERF_RAPL_PSYS),
- 	.apply_quirk	= false,
-+	.msr_power_unit = MSR_RAPL_POWER_UNIT,
-+	.rapl_msrs      = intel_rapl_msrs,
- };
- 
- static const struct x86_cpu_id rapl_model_match[] __initconst = {
-@@ -758,10 +772,13 @@ static int __init rapl_pmu_init(void)
- 		return -ENODEV;
- 
- 	rm = (struct rapl_model *) id->driver_data;
-+
-+	rapl_msrs = rm->rapl_msrs;
-+
- 	rapl_cntr_mask = perf_msr_probe(rapl_msrs, PERF_RAPL_MAX,
- 					false, (void *) &rm->events);
- 
--	ret = rapl_check_hw_unit(rm->apply_quirk);
-+	ret = rapl_check_hw_unit(rm);
- 	if (ret)
- 		return ret;
- 
--- 
-2.27.0.rc0.183.gde8f92d652-goog
-
