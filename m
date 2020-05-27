@@ -2,204 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0121E40D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 706081E4094
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387818AbgE0Lzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 07:55:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41872 "EHLO mx2.suse.de"
+        id S2387559AbgE0LyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 07:54:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728313AbgE0LzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 07:55:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id D415AAE2D;
-        Wed, 27 May 2020 11:55:06 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>
-Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
-        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC 50/50] staging: vchiq: Move vchiq.h into include directory
-Date:   Wed, 27 May 2020 13:53:55 +0200
-Message-Id: <20200527115400.31391-51-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200527115400.31391-1-nsaenzjulienne@suse.de>
-References: <20200527115400.31391-1-nsaenzjulienne@suse.de>
+        id S2387528AbgE0LyE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 07:54:04 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6162D207CB;
+        Wed, 27 May 2020 11:54:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590580443;
+        bh=2FN6V2Bc8sz3AaUvRY4owSeT4u5WXLzsQVmPSMXVha8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qvmKG45Xosnox8Te7B624Cte7KiuLnU5FrbBGqe/V75wDC4vUmilvxjmPDH+K2A6t
+         DQQQSpD+pPrYtqcp0bgyMnRuM4LRojGgmM5l76kr1C7y51VaL9WzXYW7bpAcL0VMGC
+         rc/Zw+pvY2AfiATzLngm4gtvf/z/mBB+rPSOHqE4=
+Date:   Wed, 27 May 2020 12:54:01 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        alsa-devel <alsa-devel@alsa-project.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: ASoC: renesas,rsnd: Add r8a7742 support
+Message-ID: <20200527115401.GF5308@sirena.org.uk>
+References: <1590526904-13855-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1590526904-13855-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200527112548.GD5308@sirena.org.uk>
+ <CA+V-a8v0i71MCTNTPVD3XHuyGZiVjzuCkCUnvoUczeMr416ouQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="l+goss899txtYvYf"
+Content-Disposition: inline
+In-Reply-To: <CA+V-a8v0i71MCTNTPVD3XHuyGZiVjzuCkCUnvoUczeMr416ouQ@mail.gmail.com>
+X-Cookie: Drop in any mailbox.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To make the separation clear between vchiq's header files and vchiq.h,
-which is to be used by services and is the 'public' API, move it into a
-dedicated includes directory.
 
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
----
- drivers/staging/vc04_services/Makefile                         | 2 +-
- drivers/staging/vc04_services/bcm2835-audio/Makefile           | 2 +-
- drivers/staging/vc04_services/bcm2835-audio/bcm2835.h          | 2 +-
- .../{interface/vchiq_arm => include/linux/raspberrypi}/vchiq.h | 0
- drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h | 2 +-
- .../staging/vc04_services/interface/vchiq_arm/vchiq_ioctl.h    | 2 +-
- drivers/staging/vc04_services/vc-sm-cma/Makefile               | 1 -
- drivers/staging/vc04_services/vc-sm-cma/vc_sm.c                | 2 +-
- drivers/staging/vc04_services/vc-sm-cma/vc_sm_cma_vchi.c       | 2 +-
- drivers/staging/vc04_services/vchiq-mmal/Makefile              | 1 +
- drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c          | 3 +--
- 11 files changed, 9 insertions(+), 10 deletions(-)
- rename drivers/staging/vc04_services/{interface/vchiq_arm => include/linux/raspberrypi}/vchiq.h (100%)
+--l+goss899txtYvYf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/staging/vc04_services/Makefile b/drivers/staging/vc04_services/Makefile
-index e32c0744e7fc..e1de39303ffe 100644
---- a/drivers/staging/vc04_services/Makefile
-+++ b/drivers/staging/vc04_services/Makefile
-@@ -14,5 +14,5 @@ obj-$(CONFIG_VIDEO_ISP_BCM2835)		+= bcm2835-isp/
- obj-$(CONFIG_BCM_VC_SM_CMA) 		+= vc-sm-cma/
- obj-$(CONFIG_BCM2835_VCHIQ_MMAL)	+= vchiq-mmal/
- 
--ccflags-y += -D__VCCOREVER__=0x04000000
-+ccflags-y += -I $(srctree)/$(src)/include  -D__VCCOREVER__=0x04000000
- 
-diff --git a/drivers/staging/vc04_services/bcm2835-audio/Makefile b/drivers/staging/vc04_services/bcm2835-audio/Makefile
-index 13fa6d7d9745..d59fe4dde615 100644
---- a/drivers/staging/vc04_services/bcm2835-audio/Makefile
-+++ b/drivers/staging/vc04_services/bcm2835-audio/Makefile
-@@ -2,4 +2,4 @@
- obj-$(CONFIG_SND_BCM2835)	+= snd-bcm2835.o
- snd-bcm2835-objs		:= bcm2835.o bcm2835-ctl.o bcm2835-pcm.o bcm2835-vchiq.o
- 
--ccflags-y += -I $(srctree)/$(src)/.. -D__VCCOREVER__=0x04000000
-+ccflags-y += -I $(srctree)/$(src)/../include -D__VCCOREVER__=0x04000000
-diff --git a/drivers/staging/vc04_services/bcm2835-audio/bcm2835.h b/drivers/staging/vc04_services/bcm2835-audio/bcm2835.h
-index ca220f5230ec..1b36475872d6 100644
---- a/drivers/staging/vc04_services/bcm2835-audio/bcm2835.h
-+++ b/drivers/staging/vc04_services/bcm2835-audio/bcm2835.h
-@@ -6,10 +6,10 @@
- 
- #include <linux/device.h>
- #include <linux/wait.h>
-+#include <linux/raspberrypi/vchiq.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm-indirect.h>
--#include "interface/vchiq_arm/vchiq.h"
- 
- #define MAX_SUBSTREAMS   (8)
- #define AVAIL_SUBSTREAMS_MASK  (0xff)
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq.h b/drivers/staging/vc04_services/include/linux/raspberrypi/vchiq.h
-similarity index 100%
-rename from drivers/staging/vc04_services/interface/vchiq_arm/vchiq.h
-rename to drivers/staging/vc04_services/include/linux/raspberrypi/vchiq.h
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
-index 8a27f3d7217e..e67692879249 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
-@@ -10,10 +10,10 @@
- #include <linux/kref.h>
- #include <linux/rcupdate.h>
- #include <linux/wait.h>
-+#include <linux/raspberrypi/vchiq.h>
- 
- #include "vchiq_cfg.h"
- 
--#include "vchiq.h"
- 
- /* Do this so that we can test-build the code on non-rpi systems */
- #if IS_ENABLED(CONFIG_RASPBERRYPI_FIRMWARE)
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_ioctl.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_ioctl.h
-index f285d754ad28..3653fd99d8a1 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_ioctl.h
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_ioctl.h
-@@ -5,7 +5,7 @@
- #define VCHIQ_IOCTLS_H
- 
- #include <linux/ioctl.h>
--#include "vchiq.h"
-+#include <linux/raspberrypi/vchiq.h>
- 
- #define VCHIQ_IOC_MAGIC 0xc4
- #define VCHIQ_INVALID_HANDLE (~0)
-diff --git a/drivers/staging/vc04_services/vc-sm-cma/Makefile b/drivers/staging/vc04_services/vc-sm-cma/Makefile
-index 77d173694fbf..c92a5775c62e 100644
---- a/drivers/staging/vc04_services/vc-sm-cma/Makefile
-+++ b/drivers/staging/vc04_services/vc-sm-cma/Makefile
-@@ -1,6 +1,5 @@
- ccflags-y += \
- 	-I$(srctree)/$(src)/../ \
--	-I$(srctree)/$(src)/../interface/vchi \
- 	-I$(srctree)/$(src)/../interface/vchiq_arm\
- 	-I$(srctree)/$(src)/../include
- 
-diff --git a/drivers/staging/vc04_services/vc-sm-cma/vc_sm.c b/drivers/staging/vc04_services/vc-sm-cma/vc_sm.c
-index e4f7bdeef66d..cc69ce932317 100644
---- a/drivers/staging/vc04_services/vc-sm-cma/vc_sm.c
-+++ b/drivers/staging/vc04_services/vc-sm-cma/vc_sm.c
-@@ -46,9 +46,9 @@
- #include <linux/seq_file.h>
- #include <linux/syscalls.h>
- #include <linux/types.h>
-+#include <linux/raspberrypi/vchiq.h>
- #include <asm/cacheflush.h>
- 
--#include "vchiq.h"
- #include "vchiq_connected.h"
- #include "vc_sm_cma_vchi.h"
- 
-diff --git a/drivers/staging/vc04_services/vc-sm-cma/vc_sm_cma_vchi.c b/drivers/staging/vc04_services/vc-sm-cma/vc_sm_cma_vchi.c
-index 2c65416cd331..8d8eda1a8142 100644
---- a/drivers/staging/vc04_services/vc-sm-cma/vc_sm_cma_vchi.c
-+++ b/drivers/staging/vc04_services/vc-sm-cma/vc_sm_cma_vchi.c
-@@ -18,8 +18,8 @@
- #include <linux/semaphore.h>
- #include <linux/slab.h>
- #include <linux/types.h>
-+#include <linux/raspberrypi/vchiq.h>
- 
--#include "vchiq.h"
- #include "vc_sm_cma_vchi.h"
- 
- #define VC_SM_VER  1
-diff --git a/drivers/staging/vc04_services/vchiq-mmal/Makefile b/drivers/staging/vc04_services/vchiq-mmal/Makefile
-index f8164c33aec3..b2a830f48acc 100644
---- a/drivers/staging/vc04_services/vchiq-mmal/Makefile
-+++ b/drivers/staging/vc04_services/vchiq-mmal/Makefile
-@@ -5,4 +5,5 @@ obj-$(CONFIG_BCM2835_VCHIQ_MMAL) += bcm2835-mmal-vchiq.o
- 
- ccflags-y += \
- 	-I$(srctree)/$(src)/.. \
-+	-I$(srctree)/$(src)/../include \
- 	-D__VCCOREVER__=0x04000000
-diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-index 2101b79780eb..e057e21961d5 100644
---- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-+++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-@@ -23,6 +23,7 @@
- #include <linux/slab.h>
- #include <linux/completion.h>
- #include <linux/vmalloc.h>
-+#include <linux/raspberrypi/vchiq.h>
- #include <media/videobuf2-vmalloc.h>
- 
- #include "mmal-common.h"
-@@ -32,8 +33,6 @@
- 
- #include "vc-sm-cma/vc_sm_knl.h"
- 
--#include "interface/vchiq_arm/vchiq.h"
--
- /*
-  * maximum number of components supported.
-  * This matches the maximum permitted by default on the VPU
--- 
-2.26.2
+On Wed, May 27, 2020 at 12:32:28PM +0100, Lad, Prabhakar wrote:
+> On Wed, May 27, 2020 at 12:25 PM Mark Brown <broonie@kernel.org> wrote:
 
+> > > +                                 - "renesas,rcar_sound-r8a7742" (RZ/G1H)
+
+> > I'd expect a matching patch adding this compatible to the driver.
+
+> The Renesas R-Car sound for RZ/G1H is identical to the R-Car Gen2
+> family. So no driver change is needed and  the fallback compatible
+> value "renesas,rcar_sound-gen2" will be used in the SOC DT.
+
+Then the patch to add the compatible string will be trivial.
+
+--l+goss899txtYvYf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7OVNgACgkQJNaLcl1U
+h9DQggf8DKvCvZ6r8V/Ss6bD4pHqL2Yyq/wR1ZpZO7bN5fhE1FxwBVjx2RufOMzj
+osUhS28vEnDIrIBvKEvV6qdF5dEVBkh7VrYYCR4BqxINs5ByRsSuNuISAlK4v7pV
+w36TNJlM0wH4uArDhqBNCKyEYB0Vkd49Q2VzPTG/pkgPj76r5vzOQRIvcp26rdQD
+LY9MWMMc+8HYG6oQv53vlrbsdwTkPoG0rCvYJ76hcfBLXZmAYx+LkUHSswv/N2cK
+lFY4ar8/CYY+/b5OowXlkY9w1VxlTY/BGwLeIo5igjjAsohWhacQ4G5deI4h/558
+YKwwAXc16S+O6EIixNq4ljOwNBD5DA==
+=PorF
+-----END PGP SIGNATURE-----
+
+--l+goss899txtYvYf--
