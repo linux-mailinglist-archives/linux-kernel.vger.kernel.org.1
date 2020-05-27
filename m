@@ -2,118 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1E51E516D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 00:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D19771E5171
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 00:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726356AbgE0Wpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 18:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37170 "EHLO
+        id S1726398AbgE0WrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 18:47:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725896AbgE0Wpq (ORCPT
+        with ESMTP id S1725836AbgE0WrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 18:45:46 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381FDC08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 15:45:45 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id y13so8009149eju.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 15:45:45 -0700 (PDT)
+        Wed, 27 May 2020 18:47:09 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B4B4C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 15:47:08 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id m10so858055ybk.7
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 15:47:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3sbcMftoxYa/Xr/vjAkRZEKjD0XqOCCZ3yYeqA4uvYw=;
-        b=OpVmoKmFVDV8dviwNPeIyKVKsVCZXMzBNdAnQQgKzga9biUM2aBnPu3XvSTBnUU75R
-         p0HNCABSwKAzdm0N5w/B2ddu5/pxX7g59yovMgSm3ya+pYQEYNfYAxBGKaqe67pqFRw/
-         TIPJZL0VClnMu6KNJKPDt36kSWwVEYtMPEq1OTA1pjGvoC7Ov9OxtAQb3wEFk/bZOYvJ
-         70Vi+pPjkeTlVeOpu5BUhV4TWzsfGWKMsXcuorJbDc9MMG6evxMUe9JPomltWxu1qzMG
-         Gmd929aUSeksVhLK3syWE9JurToXBwHs8E2eJTwi34XAs88Y0uU4yu+IVPgblwCNi9p2
-         LuCg==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=YQlMleJvTCYdzPc5tUzXYuVHdCb2672LVpK+yCo0EI8=;
+        b=KIt1yYkfDoujQU/q2+6yUL12rwYUtycfMzefXGKvpV1scm516Y2Er7P4WL//vv7Oby
+         MbssnS7TWdNVjjLcJ/iEHXYhCAz5LZ+IqwmoaHNyZ0uIn3y39Ez4ZS6vMeB2jRQAJjYZ
+         tR9WFXGeV/UZsOeQw4TohrdYRu1geha6vHMYsl7qiMRW5IB2v8tDVE01Z5aW8AkihhR1
+         nmw3/VDAXd0cCMpoNbCTMF85apYM1K4Qie1t+B34E3naqC5oGX2vxtPiYIQRrBe8c1V3
+         ttfC6Nxl2eV0EwI8etkQ9Pj4MPsZIDjH2v2111lEw191NGKk1GgiZKs27yrb8M+nfhMW
+         cn9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3sbcMftoxYa/Xr/vjAkRZEKjD0XqOCCZ3yYeqA4uvYw=;
-        b=l+ysgI6E5eXI2EH4fkSHh1n290kKJ04LQTbYIlDUxPzaWllolgWkB+jmThTz3fdsru
-         1bKYMuxT5gNbSGJfD95/62CcjY/BEqJYaK6iQAxscCjLKwvouQr2rOk64djtx9Srx3ZE
-         ep9xwhHu1ovr67dhP1/N5dbTnlD8abzOkICfmU80Eq+mzBIQyxEP4CpgErBEfW0/iyeP
-         zrsBCqv3NLQmXbbGVGgCpPAZZ3XTiaFzprha2JZPPN4zuXrjj4ZrWlRSP4h408K04gBX
-         gbkICDbsUACQGGxUTY0x+C9ScRapB6w0Ew1h5HVm5T1XDe1IO0frKSQk2v2maXVWcIbv
-         aBzg==
-X-Gm-Message-State: AOAM533yMQ+bNec3EjaxQSmuJLNxuZ0LgEApwPbaloESJoKT0J3OX769
-        7rL6uHt+o1BRh8sTy9m4fPE=
-X-Google-Smtp-Source: ABdhPJyCyzIrgD23qyxhNNzPLcD5w2F0kRE2aDnQ7PBSVhMyXOPgFn0jVe86suBBX6L3u6664+7uqw==
-X-Received: by 2002:a17:906:4995:: with SMTP id p21mr500870eju.19.1590619543941;
-        Wed, 27 May 2020 15:45:43 -0700 (PDT)
-Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id l29sm3325727edj.74.2020.05.27.15.45.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 27 May 2020 15:45:42 -0700 (PDT)
-Date:   Wed, 27 May 2020 22:45:42 +0000
-From:   Wei Yang <richard.weiyang@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Wei Yang <richard.weiyang@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        christian.brauner@ubuntu.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bitops: simplify get_count_order_long()
-Message-ID: <20200527224542.yx45druzqtlaxrl7@master>
-Reply-To: Wei Yang <richard.weiyang@gmail.com>
-References: <20200524123551.9469-1-richard.weiyang@gmail.com>
- <20200525091458.GK1634618@smile.fi.intel.com>
- <20200525144312.mbw2z3ydncyasvss@master>
- <20200525153216.GD1634618@smile.fi.intel.com>
- <20200525134110.5737dd603d5fa1230e2f7ece@linux-foundation.org>
- <20200525215741.zd3gry4yyqqplix6@master>
- <20200525153146.c1337b1ca7af386ac30e5702@linux-foundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200525153146.c1337b1ca7af386ac30e5702@linux-foundation.org>
-User-Agent: NeoMutt/20170113 (1.7.2)
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=YQlMleJvTCYdzPc5tUzXYuVHdCb2672LVpK+yCo0EI8=;
+        b=kSpHM/O8F1zt3frmmaSD7cKSi+WxZNiqit6H+vaq8B8cm5cErZd1fEfuHw5X5enZMe
+         OoexlDNwwGbD8yt7g0VDTNAvhskQDR0D4Q6vREL4qrwprHH3BiKZy1ZDo25uTE94gqPg
+         T1TTsgUdxW/L9Fh6TUP8xdMFykV1jfrIB1xUCe5HvHAEVqU9oRg3ahfpbCS0iFpVDfdg
+         PkUu7NgA6jaGV1o95LCE2M7WkHFdwQr6S+LJYqODbUwxt2rgyf1Smnhhjuoh5rAQ6TG9
+         TD5AUsbsATwtf/9gvrctn3KvKrBtQkxGU0uWMxWn5gowe4Gr4wMfot6nbAwJyw1hClOT
+         uX1Q==
+X-Gm-Message-State: AOAM532iyEf1ueqA9fAOfcZA9mZFLsXHPLEFIZg3NkEP3sDoornEhV7v
+        rmFSwN4vLlue95bJz626G9mEZC1AV11UJITul0lkWd7Ww6g7dXyLSgfDAGuilsczsVAaNDX4mh5
+        0aYB1wJTPWHgsqP6zge5s900Oh2rh2HzefJ0Y1LpEl18rGeRNfGV6FYM5bVOp6D76nf1Aqd3O
+X-Google-Smtp-Source: ABdhPJzWXzSf2r84NEA6M6XyuUJyLYlBwo1vnnAd+qGYj4/DCnMLY3htwnyoDRWZ1iE1x8SkFInRaxg8ol4V
+X-Received: by 2002:a25:35d5:: with SMTP id c204mr782416yba.292.1590619627706;
+ Wed, 27 May 2020 15:47:07 -0700 (PDT)
+Date:   Wed, 27 May 2020 15:46:54 -0700
+Message-Id: <20200527224659.206129-1-eranian@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.rc0.183.gde8f92d652-goog
+Subject: [PATCH v2 0/5] perf/x86/rapl: Enable RAPL for AMD Fam17h
+From:   Stephane Eranian <eranian@google.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, mingo@elte.hu, irogers@google.com,
+        kim.phillips@amd.com, jolsa@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 25, 2020 at 03:31:46PM -0700, Andrew Morton wrote:
->On Mon, 25 May 2020 21:57:41 +0000 Wei Yang <richard.weiyang@gmail.com> wrote:
->
->> I see the patch just merged, so I suppose to add the above test code into that
->> one?
->
->Well, that's not really test code.
->
->But yes, something which tests both the 32-bit and 64-bit functions would be
->nice, sometime.
+This patch series adds support for AMD Fam17h RAPL counters. As per
+AMD PPR, Fam17h support Package RAPL counters to monitor power usage.
+The RAPL counter operates as with Intel RAPL. As such, it is beneficial
+to share the code.
 
-Mimic the test_bitops.c, I wrote a test like this:
+The series first moves the rapl.c file to common perf_events x86 and then
+adds the support.
+From the user's point of view, the interface is identical with
+/sys/devices/power. The energy-pkg event is the only one supported.
 
-/* a tiny module only meant to test get_count_order/long */
-unsigned int order_comb[][2] = {
-	{0x00000003,  2},
-	{0x00000004,  2},
-	{0x00001fff, 13},
-	{0x00002000, 13},
-	{0x50000000, 32},
-	{0x80000000, 32},
-};
+$ perf stat -a --per-socket -I 1000 -e power/energy-pkg/
 
-static int __init test_getorder_startup(void)
-{
-	int i;
+In V2, we integrated Peter's comments:
+- keep the same CONFIG_PERF_EVENTS_INTEL_RAPL for both Intel and AMD support
+- msr is unsigned int
+- cleanup initialization of the *_rapl_msrs[] arrays
 
-	for (i = 0; i < ARRAY_SIZE(order_comb); i++) {
-		if (order_comb[i][1] != get_count_order(order_comb[i][0]))
-			pr_warn("get_count_order wrong for %lx\n",
-					order_comb[i][0]);
-	}
+In particular, we split the patch some more to clearly identify the changes.
+We flip the visibility logic to work around the behavior of perf_msr_probe().
+We improve that function to handle msrs[] array with unpopulated entries.
+This help RAPL on AMD, because only one MSR (PKG) is define. That way
+we can initialize the amd_rapl_msrs[] array just with that entry. But because
+we prefer having the same encoding for the same RAPL event between AMD and Intel
+this means, we need to handle unpopulated entries in the array and in perf_msr_probe()
+which is what patch 4 does.
 
-	return 0;
-}
+Signed-off-by: Stephane Eranian <eranian@google.com>
 
-Since I don't get a way to iterate all the possibilities, some random
-combination is chosen. Is this one looks good?
+
+Stephane Eranian (5):
+  perf/x86/rapl: move RAPL support to common x86 code
+  perf/x86/rapl: refactor code for Intel/AMD sharing
+  perf/x86/rapl: flip logic on default events visibility
+  perf/x86: make perf_probe_msr() more robust and flexible
+  perf/x86/rapl: add AMD Fam17h RAPL support
+
+ arch/x86/events/Kconfig            |  6 +--
+ arch/x86/events/Makefile           |  1 +
+ arch/x86/events/intel/Makefile     |  2 -
+ arch/x86/events/probe.c            | 13 ++++++
+ arch/x86/events/{intel => }/rapl.c | 67 ++++++++++++++++++++++++++----
+ arch/x86/include/asm/msr-index.h   |  3 ++
+ 6 files changed, 78 insertions(+), 14 deletions(-)
+ rename arch/x86/events/{intel => }/rapl.c (92%)
 
 -- 
-Wei Yang
-Help you, Help me
+2.27.0.rc0.183.gde8f92d652-goog
+
