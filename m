@@ -2,123 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F150B1E3932
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 08:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 712021E393C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 08:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728634AbgE0G2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 02:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728614AbgE0G2M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 02:28:12 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90E2AC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 23:28:12 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id b6so27499455ljj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 23:28:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=fuGN860/GT6rsIgye6vRLXh5U9Ac6GXjLL4lq5g3Y6Q=;
-        b=eV+QIeREnm8d0KAolwLemA8K7XqJQaOFoLCumF8tLNjpdNQNPKLvXdWY0PDhgIMJES
-         H66/+8LS3/SPi8fhH55gEtnO24d4TVD4NfCkuNbVMaFpEvmfF+8UUX+uftnUk+Zrn4Vy
-         fP7WRjClwXdPrDqC9/nZqqp4S4t2KIZNhIkEvcnerGDpA3/9XEh3ol31TKcxtjsnYL70
-         tJvOt8+ZEl2Mhnwbb3Q8VTIbhVNX5ELRKXsscWo0yPbtPMOqtAp4sFlGSNmWmrKz4hYI
-         4ks3UgIohz0OUzJRUYvla6rLXWuAhv2EkElBCn+wvwNAuvvO8kApecc7lkXr2w1vd/dT
-         bmVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=fuGN860/GT6rsIgye6vRLXh5U9Ac6GXjLL4lq5g3Y6Q=;
-        b=Woxen1qLx4qoVLy/tBbUvkq612xnHmoiwUmsNSLSbnbdh7Cv4ldjWPbKq+2BUJJqE6
-         2aZta0TB1L4dWtLe54l5Hw7PLo2rYrhhPY3zaY7wIoYuHXotpVYVfpYvhkqwQecRSNwJ
-         VDp64SMTNpXnGTmJFlxyI4GSsiXzHHYIJa+R7uqRseRr1Pse9wd7KA345mlWpGn18f5O
-         MfV/pYKaZvwYdIfy5Zvv2Rx1jqpOkFMCcCbND9SJRr2e2i8akWBq3ydgJOJbQx4tSprO
-         wVmalmq2haSX1vyjEqEESJqoofqZPeTBZTAtebosMu4mAFQWYWljrQXZ1eAGddmz5loC
-         tKjg==
-X-Gm-Message-State: AOAM530dzt9krFJyBCVTzdo4zO9Is3xYEKx0MVWAEmIRCxMo4cm6s/+5
-        3yK6PfaYH+qWhzv040MNywXOXAGPkUTttKjJM3fOYJpe
-X-Google-Smtp-Source: ABdhPJxBnQAFFfiCQ7xTDrmAudUz9xD/143iCAMfDqv6XVvlI/S6PhyLlZyY+pB/FYkysU6Stw3Z5BZReurHErMC/9w=
-X-Received: by 2002:a05:651c:20d:: with SMTP id y13mr2362045ljn.29.1590560890952;
- Tue, 26 May 2020 23:28:10 -0700 (PDT)
+        id S1728371AbgE0G26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 02:28:58 -0400
+Received: from mga01.intel.com ([192.55.52.88]:3448 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726487AbgE0G26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 02:28:58 -0400
+IronPort-SDR: WPnP6rejn/oFiZ0aBVouUEBbdfcAvNtRWk7ARNfavpoxqFZ6xXQ88wU95uiObMAsESqNRjJS6D
+ LQL7o7riYZ8g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 23:28:57 -0700
+IronPort-SDR: bkCRZ90oJrkR7iPFP9fBSIOLyx9V59salad5X/SdN71GDSH/5LcbXt5XaArMm10zU8nXqhN0h+
+ rpKrqE4ImG8A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,440,1583222400"; 
+   d="scan'208";a="255386847"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga007.fm.intel.com with ESMTP; 26 May 2020 23:28:57 -0700
+Received: from [10.214.150.18] (rtanwar-mobl.gar.corp.intel.com [10.214.150.18])
+        by linux.intel.com (Postfix) with ESMTP id 72BAC580101;
+        Tue, 26 May 2020 23:28:54 -0700 (PDT)
+Subject: Re: [PATCH v1 2/2] Add PWM driver for LGM
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     thierry.reding@gmail.com, p.zabel@pengutronix.de,
+        linux-pwm@vger.kernel.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        andriy.shevchenko@intel.com, songjun.Wu@intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com
+References: <cover.1590132733.git.rahul.tanwar@linux.intel.com>
+ <3c1d2343b034325dbc185ccd23a35b40a62a4e7b.1590132733.git.rahul.tanwar@linux.intel.com>
+ <20200522085613.ktb2ruw2virj337v@pengutronix.de>
+From:   "Tanwar, Rahul" <rahul.tanwar@linux.intel.com>
+Message-ID: <3a1f1e83-2d9d-ddbf-e2e6-9c8bab87372b@linux.intel.com>
+Date:   Wed, 27 May 2020 14:28:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-References: <20200522220103.908307-1-anders.roxell@linaro.org>
- <20200524222025.GA3116034@ubuntu-s3-xlarge-x86> <292277.1590449865@turing-police>
- <20200526053850.GA2368760@ubuntu-s3-xlarge-x86> <CAL_JsqJ9LnCpH92bXfk4ryXrTgzbPM03=PYLTzQXazuznJM=hg@mail.gmail.com>
-In-Reply-To: <CAL_JsqJ9LnCpH92bXfk4ryXrTgzbPM03=PYLTzQXazuznJM=hg@mail.gmail.com>
-From:   Anders Roxell <anders.roxell@linaro.org>
-Date:   Wed, 27 May 2020 08:28:00 +0200
-Message-ID: <CADYN=9JdZfduPYeM7KV8H18_mbVrKj1aYRSkeWrTprQnffCXNg@mail.gmail.com>
-Subject: Re: [PATCH] power: reset: vexpress: fix build issue
-To:     Rob Herring <robh@kernel.org>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        =?UTF-8?Q?Valdis_Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        "open list:MEDIA DRIVERS FOR RENESAS - FCP" 
-        <linux-renesas-soc@vger.kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200522085613.ktb2ruw2virj337v@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 May 2020 at 17:41, Rob Herring <robh@kernel.org> wrote:
+
+Hi Uwe,
+
+Thanks for review.
+
+On 22/5/2020 4:56 pm, Uwe Kleine-König wrote:
+> Hello,
 >
-> " On Mon, May 25, 2020 at 11:38 PM Nathan Chancellor
-> <natechancellor@gmail.com> wrote:
-> >
-> > On Mon, May 25, 2020 at 07:37:45PM -0400, Valdis Kl=C4=93tnieks wrote:
-> > > On Sun, 24 May 2020 15:20:25 -0700, Nathan Chancellor said:
-> > >
-> > > > arm-linux-gnueabi-ld: drivers/power/reset/vexpress-poweroff.o: in f=
-unction `vexpress_reset_probe':
-> > > > vexpress-poweroff.c:(.text+0x36c): undefined reference to `devm_reg=
-map_init_vexpress_config'
-> > >
-> > > The part I can't figure out is that git blame tells me there's alread=
-y an
-> > > export:
-> > >
-> > > 3b9334ac835bb (Pawel Moll      2014-04-30 16:46:29 +0100 154)   retur=
-n regmap;
-> > > 3b9334ac835bb (Pawel Moll      2014-04-30 16:46:29 +0100 155) }
-> > > b33cdd283bd91 (Arnd Bergmann   2014-05-26 17:25:22 +0200 156) EXPORT_=
-SYMBOL_GPL(devm_regmap_init_vexpress_config);
-> > > 3b9334ac835bb (Pawel Moll      2014-04-30 16:46:29 +0100 157)
-> > >
-> > > but I can't figure out where or if drivers/power/reset/vexpress-power=
-off.c gets
-> > > a MODULE_LICENSE from...
-> >
-> > Correct, it is exported but that file is being built as a module wherea=
-s
-> > the file requiring it is beign builtin. As far as I understand, that
-> > will not work, hence the error.
-> >
-> > The issue with this patch is that ARCH_VEXPRESS still just selects
-> > POWER_RESET_VEXPRESS, which ignores "depends on", hence the Kconfig
-> > warning and not fixing the error.
-> >
-> > I am not that much of a Kconfig guru to come up with a solution. I am
-> > just reporting it because arm allmodconfig is broken on -next due to
-> > this.
->
-> Commit "ARM: vexpress: Don't select VEXPRESS_CONFIG" needs to be
-> reverted. I've asked Arnd to revert it.
+> On Fri, May 22, 2020 at 03:41:59PM +0800, Rahul Tanwar wrote:
+>> Add PWM controller driver for Intel's Lightning Mountain(LGM) SoC.
+>>
+>> Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
+>> ---
+>>  drivers/pwm/Kconfig         |   9 ++
+>>  drivers/pwm/Makefile        |   1 +
+>>  drivers/pwm/pwm-intel-lgm.c | 356 ++++++++++++++++++++++++++++++++++++++++++++
+>>  3 files changed, 366 insertions(+)
+>>  create mode 100644 drivers/pwm/pwm-intel-lgm.c
+>>
+>> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+>> index eebbc917ac97..a582214f50b2 100644
+>> --- a/drivers/pwm/Kconfig
+>> +++ b/drivers/pwm/Kconfig
+>> @@ -232,6 +232,15 @@ config PWM_IMX_TPM
+>>  	  To compile this driver as a module, choose M here: the module
+>>  	  will be called pwm-imx-tpm.
+>>  
+>> +config PWM_INTEL_LGM
+>> +	tristate "Intel LGM PWM support"
+>> +	depends on X86 || COMPILE_TEST
+>> +	help
+>> +	  Generic PWM framework driver for LGM SoC.
+[...]
+>> +};
+>> +
+>> +static void tach_work(struct work_struct *work)
+>> +{
+>> +	struct intel_pwm_chip *pc = container_of(work, struct intel_pwm_chip,
+>> +						 work.work);
+>> +	struct regmap *regmap = pc->regmap;
+>> +	u32 fan_tach, fan_dc, val;
+>> +	s32 diff;
+>> +	static u32 fanspeed_err_cnt, time_window, delta_dc;
+>> +
+>> +	/*
+>> +	 * Fan speed is tracked by reading the active duty cycle of PWM output
+>> +	 * from the active duty cycle register. Some variance in the duty cycle
+>> +	 * register value is expected. So we set a time window of 30 seconds and
+>> +	 * if we detect inaccurate fan speed 6 times within 30 seconds then we
+>> +	 * mark it as fan speed problem and fix it by readjusting the duty cycle.
+>> +	 */
+> I'm a unhappy to have this in the PWM driver. The PWM driver is supposed
+> to be generic and I think this belongs into a dedicated driver.
 
-Reverting that patch with my patch will make allmodconfig work for arm too.
+Well noted about all other review concerns. I will rework the driver in v2.
+However, i am not very sure about the above point - of having a separate
+dedicated driver for tach_work because its logic is tightly coupled with
+this driver.
 
->
-> Anders patch is still needed for arm64.
-
-Yes, it is still needed for arm64.
-
-Cheers,
-Anders
+Regards,
+Rahul
