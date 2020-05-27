@@ -2,70 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A18411E37DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 07:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF631E3825
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 07:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728937AbgE0FYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 01:24:04 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:50813 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725948AbgE0FYE (ORCPT
+        id S1728607AbgE0F0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 01:26:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728269AbgE0FYa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 01:24:04 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01358;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0TzmMcE-_1590557034;
-Received: from 30.27.118.64(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0TzmMcE-_1590557034)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 27 May 2020 13:23:56 +0800
-Subject: Re: [PATCH v4 3/7] KVM: PPC: Remove redundant kvm_run from vcpu_arch
-To:     Paul Mackerras <paulus@ozlabs.org>
-Cc:     pbonzini@redhat.com, tsbogend@alpha.franken.de, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, borntraeger@de.ibm.com,
-        frankja@linux.ibm.com, david@redhat.com, cohuck@redhat.com,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        sean.j.christopherson@intel.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        christoffer.dall@arm.com, peterx@redhat.com, thuth@redhat.com,
-        chenhuacai@gmail.com, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        Wed, 27 May 2020 01:24:30 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E78C061A0F;
+        Tue, 26 May 2020 22:24:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=dJGZntVcW6cIG2lSncQfYFsGYe54mFNTI2kksX7wjkw=; b=Gx+Qc/daipt8RPO+r8id9gztxi
+        Vteb8LMs4zXEDORmD+fyEMjSsBt6uIsIbBcQcQMCHQfx5ZPk130XPqxuL5xoG7ulKVYOEhpHkYHuv
+        5hl1LMsAij9x/e5CnfRgBhxh/kO5GfiHa4AYylNh6rKP/x0SsOQf1sWZn/gOaO6QLBgkTG+JXvCfX
+        8nUyJBg0eUXIjVyli3n2Lq0k1k22bkKOiap1xPNR5nAGhYxfB8RkqLZa43VhL6ewW5QDaIztVrsop
+        rLrrKolV0WGsf2AaRGcZxXm3hNXXjPDL9E+Z8Q4wFj54mCUj31zq4i/8zwKN5vBJiM6dpmRG4CNGA
+        ZYjXVKcQ==;
+Received: from [2001:4bb8:18c:5da7:8164:affc:3c20:853d] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jdoY9-0000me-A3; Wed, 27 May 2020 05:24:21 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, drbd-dev@lists.linbit.com,
+        linux-bcache@vger.kernel.org, linux-nvdimm@lists.01.org,
         linux-kernel@vger.kernel.org
-References: <20200427043514.16144-1-tianjia.zhang@linux.alibaba.com>
- <20200427043514.16144-4-tianjia.zhang@linux.alibaba.com>
- <20200527042055.GG293451@thinks.paulus.ozlabs.org>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <56064e35-583f-0dc8-9156-aabebdb8aff4@linux.alibaba.com>
-Date:   Wed, 27 May 2020 13:23:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+Subject: block I/O accounting improvements v2
+Date:   Wed, 27 May 2020 07:24:03 +0200
+Message-Id: <20200527052419.403583-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200527042055.GG293451@thinks.paulus.ozlabs.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jens,
+
+they series contains various improvement for block I/O accounting.  The
+first bunch of patches switch the bio based drivers to better accounting
+helpers compared to the current mess.  The end contains a fix and various
+performanc improvements.  Most of this comes from a series Konstantin
+sent a few weeks ago, rebased on changes that landed in your tree since
+and my change to always use the percpu version of the disk stats.
 
 
-On 2020/5/27 12:20, Paul Mackerras wrote:
-> On Mon, Apr 27, 2020 at 12:35:10PM +0800, Tianjia Zhang wrote:
->> The 'kvm_run' field already exists in the 'vcpu' structure, which
->> is the same structure as the 'kvm_run' in the 'vcpu_arch' and
->> should be deleted.
->>
->> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> 
-> Thanks, patches 3 and 4 of this series applied to my kvm-ppc-next branch.
-> 
-> Paul.
-> 
-
-Thanks for your suggestion, for 5/7, I will submit a new version patch.
-
-Thanks,
-Tianjia
+Changes since v1:
+ - add an ifdef CONFIG_BLOCK to work around the sad state of our headers
+ - add reviewed-by tags to all patches
