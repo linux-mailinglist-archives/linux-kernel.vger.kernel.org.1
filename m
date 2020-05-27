@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E042C1E43E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 822AF1E43DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388384AbgE0Nhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:37:33 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:60557 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387682AbgE0Nhb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:37:31 -0400
-Received: from localhost.localdomain ([149.172.98.151]) by
- mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MelWf-1j437k3y2n-00aqFI; Wed, 27 May 2020 15:36:58 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Chih-Min Chen <chih-min.chen@mediatek.com>,
-        Shihwei Lin <shihwei.lin@mediatek.com>,
-        Yiwei Chung <yiwei.chung@mediatek.com>,
-        YF Luo <yf.luo@mediatek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [wireless-next] mt75: fix enum type mismatch
-Date:   Wed, 27 May 2020 15:36:30 +0200
-Message-Id: <20200527133655.617357-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.2
+        id S2388118AbgE0Ng5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:36:57 -0400
+Received: from mga05.intel.com ([192.55.52.43]:32006 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387581AbgE0Ng4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 09:36:56 -0400
+IronPort-SDR: KEhTh1JpNi/U/YkWUhqnIblRjtOWypbT9abLQdWEyMKIpaheV+A4jZbJPajTGc/jKEBPrBC7r3
+ Rjl4wu0CN4Yw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 06:36:55 -0700
+IronPort-SDR: znFbgevaueWvVVuU1HEBaUyl6TZuapozyshN0ew9BhJ1e9rR1ruTKeC7m5B6UD4C+CgDk9UK78
+ +O5YpSRlwq/g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,441,1583222400"; 
+   d="scan'208";a="255468688"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga007.fm.intel.com with ESMTP; 27 May 2020 06:36:53 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jdwEq-009Eh5-3x; Wed, 27 May 2020 16:36:56 +0300
+Date:   Wed, 27 May 2020 16:36:56 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     devicetree-compiler@vger.kernel.org,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] check: Add 10bit/slave i2c reg flags support
+Message-ID: <20200527133656.GV1634618@smile.fi.intel.com>
+References: <20200527122525.6929-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:2xsdauHeCgoTJqtAjoy1w439KhbI5AyVOuAxW1IHW47YA4Gorsi
- Uh4YCVjbYsbddzHdqSL/9Nyka228g3hOyRaepN6TWoIe5HUzp67ihrRMluLbPYi2hFTnxyw
- 1JRB8qLO9BliOGYOZdkWVaHW2CucwMbhaxuLQUo9QhEp3DP9AIG3a/U+jSsmX/6lg/tAn8j
- 7jHNArva+RLoRfuAuh3Cw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:FtVcgZauz7o=:scUFGVl1oIETlCqq2XG30+
- BY+OSB/p/C2PHbQV8moxHzruH1uP9Hs2Cmkfuzt1pzAyXtW82VPL+i6XhfkL4Kzn7fV4xIawJ
- A2HAq5Il64nn45Q6XqxowsRnC3JKSDVcU6+/hxjOI0t5GljWTrL92TJl527WU8NnDHJS4Tsmr
- KsgZU4nD98sSiKPVkTHHG6nMcDBR3BIOtqB5sWIH6/bz3j+ogz/P1rSXjrKE0QGmIvpjlYWua
- 3SS7ZaIIfPGwxYYgrFIJ+K+IdIdOXXvEY8bX+OteZNxdWkg2RjR6bBm/P/yo4S8qC8nEl6Bow
- YJpUhM/w7lN9lF3hGTidifdzL9moxS+mjIcV6NaE77kl9pTr1m1pdb19VurLWicwiNgTE2fgG
- 6wGAv4DAXmgkb6c6AwimTkBPyjXRsaK2gl5t/gWIv5dz++WZzoYVa+r+a2J4ZpwrK6K6pH5EU
- Z5Dy7USzvBQWE/JgGDaFqcG+Zk8lbixikSTtHW+LPnfyiDbiKHjlimzlMGpd4+NVXmrgc8uJd
- YgMB9mM3nsWcahk0NbkhXZsVMe14iaKWstbUlaF/zFJ1TnQC3bPfKIooWLd7eSJkNYMY6dJ41
- zAneqRyKhsqVGB16LHOiS9GXVxbBwaemmq2+f9F08NizeJDLOrW4MAY0hLNAQ5WzoMC9RUliB
- vSvJiyC5p01107GyNrmS7vC+Nfi31gg21wIlE8ej7ZltRD0sM09YzWVBnr5fkky8ZBGd4pQfE
- YxO/L8TcnJlj9bmltBSZuOTgEL8rM/nVk034s2QC/YfSrq20qSaPTCrGtTgxQncP9Ds0LSwdn
- lOjGQJNACJeHLPwBGXaDbUg2u7n3XaDiXVfLbhmQB6Wp7qadf4=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200527122525.6929-1-Sergey.Semin@baikalelectronics.ru>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The __mt7915_mcu_msg_send() calls a generic function that expects a mt76_txq_id
-rather than mt7915_txq_id, and it also uses the values according to that
-type, which are different from the similarly named MT7915_TXQ_ constants:
+On Wed, May 27, 2020 at 03:25:25PM +0300, Serge Semin wrote:
+> Recently the I2C-controllers slave interface support was added to the
+> kernel I2C subsystem. In this case Linux can be used as, for example,
+> a I2C EEPROM machine. See [1] for details. Other than instantiating
+> the EEPROM-slave device from user-space there is a way to declare the
+> device in dts. In this case firstly the I2C bus controller must support
+> the slave interface. Secondly I2C-slave sub-node of that controller
+> must have "reg"-property with flag I2C_OWN_SLAVE_ADDRESS set (flag is
+> declared in [2]). That flag is declared as (1 << 30), which when set
+> makes dtc unhappy about too big address set for a I2C-slave:
+> 
+> Warning (i2c_bus_reg): /example-2/i2c@1120000/eeprom@64: I2C bus unit address format error, expected "40000064"
+> Warning (i2c_bus_reg): /example-2/i2c@1120000/eeprom@64:reg: I2C address must be less than 10-bits, got "0x40000064"
+> 
+> Similar problem would have happened if we had set the 10-bit address
+> flag I2C_TEN_BIT_ADDRESS in the "reg"-property.
+> 
+> In order to fix the problem we suggest to alter the I2C-bus reg-check
+> algorithm, so one would be aware of the upper bits set. Normally if no
+> flag specified, the 7-bit address is expected in the "reg"-property.
+> If I2C_TEN_BIT_ADDRESS is set, then the 10-bit address check will be
+> performed. The I2C_OWN_SLAVE_ADDRESS flag will be just ignored.
+> 
+> [1] kernel/Documentation/i2c/slave-interface.rst
+> [2] kernel/include/dt-bindings/i2c/i2c.h
 
-drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:232:9: error: implicit conversion from enumeration type 'enum mt76_txq_id' to different enumeration type 'enum mt7915_txq_id' [-Werror,-Wenum-conversion]
-                txq = MT_TXQ_FWDL;
-                    ~ ^~~~~~~~~~~
-drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:287:36: error: implicit conversion from enumeration type 'enum mt7915_txq_id' to different enumeration type 'enum mt76_txq_id' [-Werror,-Wenum-conversion]
-        return mt76_tx_queue_skb_raw(dev, txq, skb, 0);
-               ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
-drivers/net/wireless/mediatek/mt76/mt7915/../mt76.h:668:97: note: expanded from macro 'mt76_tx_queue_skb_raw'
+...
 
-Use the mt76 types consistently.
+> +		addr = reg & 0x3FFFFFFFU;
+> +		if ((reg & (1 << 31)) && addr > 0x3ff)
+>  			FAIL_PROP(c, dti, node, prop, "I2C address must be less than 10-bits, got \"0x%x\"",
+> -				  reg);
+> -
+> +				  addr);
+> +		else if (!(reg & (1 << 31)) && addr > 0x7f)
+> +			FAIL_PROP(c, dti, node, prop, "I2C address must be less than 7-bits, got \"0x%x\"",
+> +				  addr);
 
-Fixes: e57b7901469f ("mt76: add mac80211 driver for MT7915 PCIe-based chipsets")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/net/wireless/mediatek/mt76/mt7915/mcu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+1 << 31 is UB.
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-index 99eeea42478f..001b3078c48e 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-@@ -220,7 +220,7 @@ static int __mt7915_mcu_msg_send(struct mt7915_dev *dev, struct sk_buff *skb,
- {
- 	struct mt7915_mcu_txd *mcu_txd;
- 	u8 seq, pkt_fmt, qidx;
--	enum mt7915_txq_id txq;
-+	enum mt76_txq_id txq;
- 	__le32 *txd;
- 	u32 val;
- 
 -- 
-2.26.2
+With Best Regards,
+Andy Shevchenko
+
 
