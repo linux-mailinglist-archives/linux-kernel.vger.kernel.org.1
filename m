@@ -2,210 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A16E71E3482
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 03:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6846D1E3486
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 03:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728200AbgE0BOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 21:14:14 -0400
-Received: from mga01.intel.com ([192.55.52.88]:39613 "EHLO mga01.intel.com"
+        id S1728229AbgE0BPM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 May 2020 21:15:12 -0400
+Received: from mga06.intel.com ([134.134.136.31]:46337 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728192AbgE0BOO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 21:14:14 -0400
-IronPort-SDR: lhVOyBQceW3wBkw86YPTxyv2cm7dBxVm9gBanXrUpdElQ24UWZsyKb+3yOZk7Xv8p70q4cIZui
- PwdhrCcL+TNA==
+        id S1727937AbgE0BPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 21:15:11 -0400
+IronPort-SDR: P9xhDPQlgQYzb5gJZK0vq9+pHfFdEWH44IeVL+1JEsNqYAgfrKIA7oPiB4OkQnJA8l7y3gL6bT
+ slX3J96RMurA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 18:14:13 -0700
-IronPort-SDR: o3bZvcDVBDg4OA4aEw7eGTQPwT9QQ1XuhO1s0m7MrCsP/rbBo3mbjIWF2uVLBLjWseQdKsH2Zl
- DynLHB83T9gQ==
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 18:15:10 -0700
+IronPort-SDR: QWinxi8I/J+IBwUFXoHWO/jsOK5g2LG7Aj4mfS7Ne7TOsyY3GMhUornQxX0YupLyrWSwYyEZmj
+ 3tzqqndJO46g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,439,1583222400"; 
-   d="scan'208";a="310424757"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
-  by FMSMGA003.fm.intel.com with ESMTP; 26 May 2020 18:14:13 -0700
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-        id 321BD301C5F; Tue, 26 May 2020 18:14:13 -0700 (PDT)
-Date:   Tue, 26 May 2020 18:14:13 -0700
-From:   Andi Kleen <andi.kleen@intel.com>
-To:     Qian Cai <cai@lca.pw>
-Cc:     Feng Tang <feng.tang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>, tim.c.chen@intel.com,
-        dave.hansen@intel.com, ying.huang@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] make vm_committed_as_batch aware of vm overcommit
- policy
-Message-ID: <20200527011413.GA610738@tassilo.jf.intel.com>
-References: <1588922717-63697-1-git-send-email-feng.tang@intel.com>
- <20200521212726.GC6367@ovpn-112-192.phx2.redhat.com>
- <20200526181459.GD991@lca.pw>
+   d="scan'208";a="414018142"
+Received: from orsmsx102.amr.corp.intel.com ([10.22.225.129])
+  by orsmga004.jf.intel.com with ESMTP; 26 May 2020 18:15:10 -0700
+Received: from orsmsx116.amr.corp.intel.com (10.22.240.14) by
+ ORSMSX102.amr.corp.intel.com (10.22.225.129) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 26 May 2020 18:15:10 -0700
+Received: from orsmsx112.amr.corp.intel.com ([169.254.3.61]) by
+ ORSMSX116.amr.corp.intel.com ([169.254.7.25]) with mapi id 14.03.0439.000;
+ Tue, 26 May 2020 18:15:10 -0700
+From:   "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+CC:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Lifshits, Vitaly" <vitaly.lifshits@intel.com>
+Subject: RE: linux-next: build warning after merge of the net-next tree
+Thread-Topic: linux-next: build warning after merge of the net-next tree
+Thread-Index: AQHWMpGs2FQHjjcR3ke+g8+izxT9Nqi7Is4A
+Date:   Wed, 27 May 2020 01:15:09 +0000
+Message-ID: <61CC2BC414934749BD9F5BF3D5D94044986D9CE3@ORSMSX112.amr.corp.intel.com>
+References: <20200525224004.799f54d4@canb.auug.org.au>
+In-Reply-To: <20200525224004.799f54d4@canb.auug.org.au>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [10.22.254.140]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200526181459.GD991@lca.pw>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 02:14:59PM -0400, Qian Cai wrote:
-> On Thu, May 21, 2020 at 05:27:26PM -0400, Qian Cai wrote:
-> > On Fri, May 08, 2020 at 03:25:14PM +0800, Feng Tang wrote:
-> > > When checking a performance change for will-it-scale scalability
-> > > mmap test [1], we found very high lock contention for spinlock of
-> > > percpu counter 'vm_committed_as':
-> > > 
-> > >     94.14%     0.35%  [kernel.kallsyms]         [k] _raw_spin_lock_irqsave
-> > >     48.21% _raw_spin_lock_irqsave;percpu_counter_add_batch;__vm_enough_memory;mmap_region;do_mmap;
-> > >     45.91% _raw_spin_lock_irqsave;percpu_counter_add_batch;__do_munmap;
-> > > 
-> > > Actually this heavy lock contention is not always necessary. The
-> > > 'vm_committed_as' needs to be very precise when the strict
-> > > OVERCOMMIT_NEVER policy is set, which requires a rather small batch
-> > > number for the percpu counter.
-> > > 
-> > > So lift the batch number to 16X for OVERCOMMIT_ALWAYS and
-> > > OVERCOMMIT_GUESS policies, and add a sysctl handler to adjust it
-> > > when the policy is reconfigured.
-> > > 
-> > > Benchmark with the same testcase in [1] shows 53% improvement on a
-> > > 8C/16T desktop, and 2097%(20X) on a 4S/72C/144T server. And no change
-> > > for some platforms, due to the test mmap size of the case is bigger
-> > > than the batch number computed, though the patch will help mmap/munmap
-> > > generally.
-> > > 
-> > > [1] https://lkml.org/lkml/2020/3/5/57
-> > > 
-> > > There are some style complain from checkpatch for patch 3, as it
-> > > follows the similar format of sibling functions
-> > > 
-> > > patch1: a cleanup for /proc/meminfo
-> > > patch2: a preparation patch which also improve the accuracy of
-> > >         vm_memory_committed
-> > > patch3: the main change
-> > > 
-> > > Please help to review, thanks!
-> > 
-> > Reverted this series fixed a warning under memory pressue.
+> -----Original Message-----
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Sent: Monday, May 25, 2020 05:40
+> To: David Miller <davem@davemloft.net>; Networking
+> <netdev@vger.kernel.org>
+> Cc: Linux Next Mailing List <linux-next@vger.kernel.org>; Linux Kernel Mailing
+> List <linux-kernel@vger.kernel.org>; Lifshits, Vitaly <vitaly.lifshits@intel.com>;
+> Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>
+> Subject: linux-next: build warning after merge of the net-next tree
 > 
-> Andrew, Stephen, can you drop this series?
-
-Hope you're happy now.
-
-The warning is just not needed for the always case. The whole point
-of the patch was to maintain these counters only approximately.
-We could of course use _sum or _sum_positive in the warning, but that would
-just be unnecessary overhead in this moderately hot path.
-
-So this patch should fix it: (untested)
-
-Possibly might need to move it even further down because the patch
-also affected the _GUESS case.
-
-
-diff --git a/mm/util.c b/mm/util.c
-index 988d11e6c17c..fa78f90e29a1 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -798,10 +798,6 @@ int __vm_enough_memory(struct mm_struct *mm, long pages, int cap_sys_admin)
- {
- 	long allowed;
- 
--	VM_WARN_ONCE(percpu_counter_read(&vm_committed_as) <
--			-(s64)vm_committed_as_batch * num_online_cpus(),
--			"memory commitment underflow");
--
- 	vm_acct_memory(pages);
- 
- 	/*
-@@ -810,6 +806,10 @@ int __vm_enough_memory(struct mm_struct *mm, long pages, int cap_sys_admin)
- 	if (sysctl_overcommit_memory == OVERCOMMIT_ALWAYS)
- 		return 0;
- 
-+	VM_WARN_ONCE(percpu_counter_read(&vm_committed_as) <
-+			-(s64)vm_committed_as_batch * num_online_cpus(),
-+			"memory commitment underflow");
-+
- 	if (sysctl_overcommit_memory == OVERCOMMIT_GUESS) {
- 		if (pages > totalram_pages() + total_swap_pages)
- 			goto error;
-
-
-
-
+> Hi all,
 > 
-> > 
-> > [ 3319.257898] LTP: starting oom01
-> > [ 3319.284417] ------------[ cut here ]------------
-> > [ 3319.284439] memory commitment underflow
-> > [ 3319.284456] WARNING: CPU: 13 PID: 130949 at mm/util.c:835 __vm_enough_memory+0x1dc/0x1f0
-> > [ 3319.284485] Modules linked in: brd ext4 crc16 mbcache jbd2 loop kvm_hv kvm ip_tables x_tables xfs sd_mod ahci libahci bnx2x libata mdio tg3 libphy firmware_class dm_mirror dm_region_hash dm_log dm_mod
-> > [ 3319.284538] CPU: 13 PID: 130949 Comm: oom01 Not tainted 5.7.0-rc6-next-20200521+ #115
-> > [ 3319.284551] NIP:  c00000000043027c LR: c000000000430278 CTR: c0000000007bd120
-> > [ 3319.284572] REGS: c00000064a42f710 TRAP: 0700   Not tainted  (5.7.0-rc6-next-20200521+)
-> > [ 3319.284602] MSR:  900000000282b033 <SF,HV,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 28222422  XER: 20040000
-> > [ 3319.284638] CFAR: c000000000119098 IRQMASK: 0 
-> >                GPR00: c000000000430278 c00000064a42f9a0 c000000001765500 000000000000001b 
-> >                GPR04: c00000000179c3b0 000000000000000b 0000000066726564 c00000000429ac28 
-> >                GPR08: 0000000000000001 0000000000000000 0000000000000000 c000001301facc80 
-> >                GPR12: 0000000000002000 c000001fffff3d80 0000000000000000 0000000000000000 
-> >                GPR16: 0000000000000000 0000000000000000 c0000014f358dd60 fffffffffff7dfff 
-> >                GPR20: c0000003725a9128 c0000003725a3928 c000000b0a0c0670 c000000b0a0c0678 
-> >                GPR24: c000000b0a0c0660 c00000064a42fa58 c000000b0a0c0650 c0000003725a9080 
-> >                GPR28: 0000000000000001 0000000000000000 c000000001620178 0000000000000001 
-> > [ 3319.284825] NIP [c00000000043027c] __vm_enough_memory+0x1dc/0x1f0
-> > [ 3319.284853] LR [c000000000430278] __vm_enough_memory+0x1d8/0x1f0
-> > [ 3319.284872] Call Trace:
-> > [ 3319.284889] [c00000064a42f9a0] [c000000000430278] __vm_enough_memory+0x1d8/0x1f0 (unreliable)
-> > [ 3319.284930] [c00000064a42fa30] [c000000000114258] dup_mm+0x2a8/0x700
-> > [ 3319.284960] [c00000064a42fae0] [c000000000115c7c] copy_process+0xeac/0x1a00
-> > [ 3319.284981] [c00000064a42fbf0] [c000000000116b3c] _do_fork+0xac/0xce0
-> > [ 3319.285002] [c00000064a42fd00] [c000000000117928] __do_sys_clone+0x98/0xe0
-> > [ 3319.285032] [c00000064a42fdc0] [c000000000039e78] system_call_exception+0x108/0x1d0
-> > [ 3319.285064] [c00000064a42fe20] [c00000000000c9f0] system_call_common+0xf0/0x278
-> > [ 3319.285093] Instruction dump:
-> > [ 3319.285109] 60000000 73a90001 4182000c e8be0002 4bfffeb8 3c62ff51 39200001 3d42fff9 
-> > [ 3319.285142] 38636690 992a6ad6 4bce8dbd 60000000 <0fe00000> e8be0002 4bfffe90 60000000 
-> > [ 3319.285166] irq event stamp: 0
-> > [ 3319.285183] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-> > [ 3319.285195] hardirqs last disabled at (0): [<c0000000001154c8>] copy_process+0x6f8/0x1a00
-> > [ 3319.285216] softirqs last  enabled at (0): [<c0000000001154c8>] copy_process+0x6f8/0x1a00
-> > [ 3319.285238] softirqs last disabled at (0): [<0000000000000000>] 0x0
-> > [ 3319.285267] ---[ end trace 115e3f7fbb0653c2 ]---
-> > 
-> > > 
-> > > - Feng
-> > > 
-> > > ----------------------------------------------------------------
-> > > Changelog:
-> > >   v2:
-> > >      * add the sysctl handler to cover runtime overcommit policy
-> > >        change, as suggested by Andres Morton 
-> > >      * address the accuracy concern of vm_memory_committed()
-> > >        from Andi Kleen 
-> > > 
-> > > Feng Tang (3):
-> > >   proc/meminfo: avoid open coded reading of vm_committed_as
-> > >   mm/util.c: make vm_memory_committed() more accurate
-> > >   mm: adjust vm_committed_as_batch according to vm overcommit policy
-> > > 
-> > >  fs/proc/meminfo.c    |  2 +-
-> > >  include/linux/mm.h   |  2 ++
-> > >  include/linux/mman.h |  4 ++++
-> > >  kernel/sysctl.c      |  2 +-
-> > >  mm/mm_init.c         | 19 +++++++++++++++----
-> > >  mm/util.c            | 15 ++++++++++++++-
-> > >  6 files changed, 37 insertions(+), 7 deletions(-)
-> > > 
-> > > -- 
-> > > 2.7.4
-> > > 
-> > > 
+> After merging the net-next tree, today's linux-next build (sparc64
+> defconfig) produced this warning:
+> 
+> drivers/net/ethernet/intel/e1000e/netdev.c:137:13: warning: 'e1000e_check_me'
+> defined but not used [-Wunused-function]  static bool e1000e_check_me(u16
+> device_id)
+>              ^~~~~~~~~~~~~~~
+> 
+> Introduced by commit
+> 
+>   e086ba2fccda ("e1000e: disable s0ix entry and exit flows for ME systems")
+> 
+> CONFIG_PM_SLEEP is not set for this build.
+> 
+[Kirsher, Jeffrey T] 
+
+Vitaly informed me that he has a fix that he will be sending me, I will make sure to expedite it.
