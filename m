@@ -2,109 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF061E4ACE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4B61E4A90
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 18:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391625AbgE0Qqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 12:46:51 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:36487 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391570AbgE0Qqq (ORCPT
+        id S2391336AbgE0QmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 12:42:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726793AbgE0QmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 12:46:46 -0400
-Received: from localhost (lfbn-tou-1-1075-236.w90-76.abo.wanadoo.fr [90.76.143.236])
-        (Authenticated sender: antoine.tenart@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id C441110000C;
-        Wed, 27 May 2020 16:46:43 +0000 (UTC)
-From:   Antoine Tenart <antoine.tenart@bootlin.com>
-To:     davem@davemloft.net, andrew@lunn.ch, f.fainelli@gmail.com,
-        hkallweit1@gmail.com, richardcochran@gmail.com,
-        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thomas.petazzoni@bootlin.com, allan.nielsen@microchip.com,
-        foss@0leil.net, antoine.tenart@bootlin.com
-Subject: [PATCH net-next 8/8] MIPS: dts: ocelot: describe the load/save GPIO
-Date:   Wed, 27 May 2020 18:41:58 +0200
-Message-Id: <20200527164158.313025-9-antoine.tenart@bootlin.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200527164158.313025-1-antoine.tenart@bootlin.com>
-References: <20200527164158.313025-1-antoine.tenart@bootlin.com>
+        Wed, 27 May 2020 12:42:24 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2368BC05BD1E;
+        Wed, 27 May 2020 09:42:23 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id 5so1724876pjd.0;
+        Wed, 27 May 2020 09:42:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XocHLjl4KQE4CHPG3EcVffWOwMuyfL2OpIEOiwvn290=;
+        b=KFBFTPaz3pEwrQW6KI9k90I66CBEkxGcMewwzCJKlHCAik1KrihheMJUk1xvDFAKJe
+         guDv45FCm4veZTMOoYge85g5nWsQ1eiR7wt/hg7p7srl06ObTGrarp+/sn49qlZ33PAp
+         XF9NoCJlh6qoTkKY/u9bae9KJ7dGfdV9b0S8VX5slptH93c66jnk/Bde9oGEN1NO1dsS
+         /6VHVRtNo9P/9+XDN5Dj3TzwDf6VONYxfPr95VLQJdz71u2yOFfp3/a26abUKClaPlof
+         PnKQZ9HoSy5GUYFy54gpfmKxc5tpDED88bQgWhEg4IVhZ0VpfzBvSfzESq3tIyGFLti+
+         7BhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XocHLjl4KQE4CHPG3EcVffWOwMuyfL2OpIEOiwvn290=;
+        b=qE8SoDuXvKeaBeltrCG+Sp46sNCJKS4VoYr33Ydm0kqqOFYD4tOOk/TaPQ6k5ed7ju
+         4uu8zgfQWOsddoDRww/dCmObkzrXTVoUDbaLzpplUkqZcj0wMhmfqQDlIMIGP5LiGoIo
+         SrZXR+XFM2G0k5BfecadOGkOCNWsFH4NxbbR0Dh+AnnVyFRbMrbgB35nr6XMxKn4t5XV
+         GXweqttF+yLUAB6Soz/oWt4buqZIVgETUrXrKEknfPwe4Fs5nI7tnQi3AjAZpzK6jKNo
+         xLVb1rr87kl0HbFC55BpzQlRrQ3+ZncxJwTp1ojCG7yyawzbxMa8KOKqUkvhKz6dbpBr
+         R4pg==
+X-Gm-Message-State: AOAM530BD7PhSaroA7V7xGwC5YBzH8CfIlNwojuXQucxE2qoinxvniRN
+        WJPpOl9B3obzcIYNahDerH8=
+X-Google-Smtp-Source: ABdhPJzxbmps8uAE7iJBbTHs0Ipf6Gx3h+MZQmG0wpbg+VJN75Y5wuhCky/NBfrR+RlLzFWjKLGNAw==
+X-Received: by 2002:a17:90a:268f:: with SMTP id m15mr6372558pje.190.1590597742622;
+        Wed, 27 May 2020 09:42:22 -0700 (PDT)
+Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::1])
+        by smtp.gmail.com with ESMTPSA id i21sm2371045pgn.20.2020.05.27.09.42.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 09:42:22 -0700 (PDT)
+Date:   Wed, 27 May 2020 09:42:19 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Tim Chen <tim.c.chen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] x86: crypto: fix building crc32c with clang ias
+Message-ID: <20200527164219.GB1073507@ubuntu-s3-xlarge-x86>
+References: <20200527141754.1850968-1-arnd@arndb.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200527141754.1850968-1-arnd@arndb.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quentin Schulz <quentin.schulz@bootlin.com>
+On Wed, May 27, 2020 at 04:17:40PM +0200, Arnd Bergmann wrote:
+> The clang integrated assembler complains about movzxw:
+> 
+> arch/x86/crypto/crc32c-pcl-intel-asm_64.S:173:2: error: invalid instruction mnemonic 'movzxw'
+> 
+> It seems that movzwq is the mnemonic that it expects instead,
+> and this is what objdump prints when disassembling the file.
+> 
+> Fixes: 6a8ce1ef3940 ("crypto: crc32c - Optimize CRC32C calculation with PCLMULQDQ instruction")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-This patch adds a description of the load/save GPIN pin, used in the
-VSC8584 PHY for timestamping operations. The related pinctrl description
-is also added.
+We had an identical patch pending from another contributor, see the
+discussion and result in the issue below.
 
-Signed-off-by: Quentin Schulz <quentin.schulz@bootlin.com>
-Signed-off-by: Antoine Tenart <antoine.tenart@bootlin.com>
----
- arch/mips/boot/dts/mscc/ocelot_pcb120.dts | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+https://github.com/ClangBuiltLinux/linux/issues/1010
 
-diff --git a/arch/mips/boot/dts/mscc/ocelot_pcb120.dts b/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
-index 33991fd209f5..897de5025d7f 100644
---- a/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
-+++ b/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
-@@ -3,6 +3,7 @@
- 
- /dts-v1/;
- 
-+#include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/phy/phy-ocelot-serdes.h>
- #include "ocelot.dtsi"
-@@ -25,6 +26,11 @@ phy_int_pins: phy_int_pins {
- 		pins = "GPIO_4";
- 		function = "gpio";
- 	};
-+
-+	phy_load_save_pins: phy_load_save_pins {
-+		pins = "GPIO_10";
-+		function = "ptp2";
-+	};
- };
- 
- &mdio0 {
-@@ -34,27 +40,31 @@ &mdio0 {
- &mdio1 {
- 	status = "okay";
- 	pinctrl-names = "default";
--	pinctrl-0 = <&miim1>, <&phy_int_pins>;
-+	pinctrl-0 = <&miim1>, <&phy_int_pins>, <&phy_load_save_pins>;
- 
- 	phy7: ethernet-phy@0 {
- 		reg = <0>;
- 		interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-parent = <&gpio>;
-+		load-save-gpios = <&gpio 10 GPIO_ACTIVE_HIGH>;
- 	};
- 	phy6: ethernet-phy@1 {
- 		reg = <1>;
- 		interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-parent = <&gpio>;
-+		load-save-gpios = <&gpio 10 GPIO_ACTIVE_HIGH>;
- 	};
- 	phy5: ethernet-phy@2 {
- 		reg = <2>;
- 		interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-parent = <&gpio>;
-+		load-save-gpios = <&gpio 10 GPIO_ACTIVE_HIGH>;
- 	};
- 	phy4: ethernet-phy@3 {
- 		reg = <3>;
- 		interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-parent = <&gpio>;
-+		load-save-gpios = <&gpio 10 GPIO_ACTIVE_HIGH>;
- 	};
- };
- 
--- 
-2.26.2
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 
+> ---
+>  arch/x86/crypto/crc32c-pcl-intel-asm_64.S | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/crypto/crc32c-pcl-intel-asm_64.S b/arch/x86/crypto/crc32c-pcl-intel-asm_64.S
+> index 8501ec4532f4..442599cbe796 100644
+> --- a/arch/x86/crypto/crc32c-pcl-intel-asm_64.S
+> +++ b/arch/x86/crypto/crc32c-pcl-intel-asm_64.S
+> @@ -170,7 +170,7 @@ continue_block:
+>  
+>  	## branch into array
+>  	lea	jump_table(%rip), %bufp
+> -	movzxw  (%bufp, %rax, 2), len
+> +	movzwq  (%bufp, %rax, 2), len
+>  	lea	crc_array(%rip), %bufp
+>  	lea     (%bufp, len, 1), %bufp
+>  	JMP_NOSPEC bufp
+> -- 
+> 2.26.2
+> 
