@@ -2,131 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7688D1E4E2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 21:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2D81E4E35
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 21:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbgE0TbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 15:31:13 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:46193 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgE0TbL (ORCPT
+        id S1726838AbgE0Td3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 15:33:29 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:34263 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725294AbgE0Td2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 15:31:11 -0400
-Received: by mail-il1-f193.google.com with SMTP id h3so2750540ilh.13;
-        Wed, 27 May 2020 12:31:10 -0700 (PDT)
+        Wed, 27 May 2020 15:33:28 -0400
+Received: by mail-io1-f67.google.com with SMTP id f3so27442628ioj.1;
+        Wed, 27 May 2020 12:33:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=sAgRZEOkeo465WXLSSAxn5bIub6KkhXGVZu40dWUrNY=;
-        b=YsdwlX1SRlOdBIcTFUinNLMlHsDSxLUyYko+1yxh2jWcnm6Rh5fxesKYY++SBUuXcn
-         LyckZyBgPkdSFOE7IGQ+RXE2AXLj2Er1gWzGmudzdya6TTUXaiZfVBy7tOXCAmNSqn8l
-         SyoF+v3W5/zC7H/PX0ZBgT1IW2VLvlFfoEXL/2p8M0h27zQprINOdjwIekjq0HQbDVJS
-         PNja+8RUZYhP8rrTyRAWbDoOHpOIObuT7ja3ufzPJwoFQfL9Me6NJBgeYZt7OGnj2He/
-         GJ6M4zDdwxn1LkFpgm8nicDhyTXcnDCPe5G/h8v3CbGYABb3vPKFC1wi8jkUAC8cfscr
-         AxnA==
-X-Gm-Message-State: AOAM531ylw7R0tqnr/cEHc9jmeOtmlIMMQiSWj+Rp38pajAd+GSETtTw
-        m3YsgPYl+apy5y7CRFyc+w==
-X-Google-Smtp-Source: ABdhPJx/5Sz7NHPGLgt5sw/lt8hHsq2px9eDP7QopDynfCqhw3zJ0ye1bD3gS7CWWHQCIoXwZYDsKg==
-X-Received: by 2002:a92:8d03:: with SMTP id s3mr7285926ild.256.1590607870279;
-        Wed, 27 May 2020 12:31:10 -0700 (PDT)
+        bh=W3JSjQKNUTVDwq2jZfNyE8OlRvobHjfbDFjoKiJceQk=;
+        b=soe1lxQ6KCUovy/wCCVQfmdS/kkskn7vpqztuoVaxgE1rjOYrEcZGmxquccJPJvKdB
+         NXcOTZZnay7m9WbtzbVmZTk9IflsuIN6oPgCcz0hQn4Pf8WrbF27SZFbBEEN2Li1W2Iw
+         4vstvuRR8v6WlH3zC6P4MHzhO6EvHw0iF/vvbvsko9iqfvPA4zmsDIr5Q0ayy3SFz+O3
+         jFjj5mtHVHp+l0mhfaDaacibfKmlt5OLCvJoDaXZt3gSoQjsX60W0eeE6+bJHWyzwG1K
+         wDYfQVZwSbp7+BllR4/hbz1Nm3E32jwSpBiflwqLQXD7mwjjHuC5hQAdFsJJvNybp0ff
+         7GRw==
+X-Gm-Message-State: AOAM532xkYCF1X3aEQc3aLn7U0HHxSQKdrIhM2knikBK8UrqI+hFXFB7
+        EUqGlQnhAbAUB2f9/fKKzg==
+X-Google-Smtp-Source: ABdhPJxRWfw0O6HofA51rJdaC3d5All8AHRJ9jL/XoXkz1mv9qFlW+eJj6Id/+SWWdbo4NPhKdWj2w==
+X-Received: by 2002:a02:4d:: with SMTP id 74mr7144801jaa.141.1590608007841;
+        Wed, 27 May 2020 12:33:27 -0700 (PDT)
 Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id y11sm1976877ily.22.2020.05.27.12.31.09
+        by smtp.gmail.com with ESMTPSA id t17sm2037371ilm.7.2020.05.27.12.33.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2020 12:31:09 -0700 (PDT)
-Received: (nullmailer pid 2600923 invoked by uid 1000);
-        Wed, 27 May 2020 19:31:08 -0000
-Date:   Wed, 27 May 2020 13:31:08 -0600
+        Wed, 27 May 2020 12:33:27 -0700 (PDT)
+Received: (nullmailer pid 2604073 invoked by uid 1000);
+        Wed, 27 May 2020 19:33:26 -0000
+Date:   Wed, 27 May 2020 13:33:26 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] dt-bindings: hwlock: qcom: Migrate binding to YAML
-Message-ID: <20200527193108.GA2597510@bogus>
-References: <20200513005441.1102586-1-bjorn.andersson@linaro.org>
- <20200513005441.1102586-2-bjorn.andersson@linaro.org>
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Keiji Hayashibara <hayashibara.keiji@socionext.com>
+Subject: Re: [PATCH] dt-bindings: watchdog: Convert UniPhier watchdog timer
+ to json-schema
+Message-ID: <20200527193326.GA2604024@bogus>
+References: <1589348545-22244-1-git-send-email-hayashi.kunihiko@socionext.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200513005441.1102586-2-bjorn.andersson@linaro.org>
+In-Reply-To: <1589348545-22244-1-git-send-email-hayashi.kunihiko@socionext.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 05:54:38PM -0700, Bjorn Andersson wrote:
-> Migrate the Qualcomm TCSR mutex binding to YAML to allow validation.
-
-Where's the deletion of the old text file?
-
-Looks fine if this is existing. Lots of comments if this is a new 
-binding...
-
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+On Wed, 13 May 2020 14:42:25 +0900, Kunihiko Hayashi wrote:
+> Convert UniPhier watchdog timer binding to DT schema format.
+> 
+> Cc: Keiji Hayashibara <hayashibara.keiji@socionext.com>
+> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
 > ---
->  .../bindings/hwlock/qcom-hwspinlock.yaml      | 51 +++++++++++++++++++
->  1 file changed, 51 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml
+>  .../bindings/watchdog/socionext,uniphier-wdt.yaml  | 36 ++++++++++++++++++++++
+>  .../devicetree/bindings/watchdog/uniphier-wdt.txt  | 20 ------------
+>  2 files changed, 36 insertions(+), 20 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/watchdog/socionext,uniphier-wdt.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/watchdog/uniphier-wdt.txt
 > 
-> diff --git a/Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml b/Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml
-> new file mode 100644
-> index 000000000000..71e63b52edd5
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml
-> @@ -0,0 +1,51 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/hwlock/qcom-hwspinlock.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Hardware Mutex Block
-> +
-> +maintainers:
-> +  - Bjorn Andersson <bjorn.andersson@linaro.org>
-> +
-> +description:
-> +  The hardware block provides mutexes utilized between different processors on
-> +  the SoC as part of the communication protocol used by these processors.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - qcom,sfpb-mutex
-> +      - qcom,tcsr-mutex
-> +
-> +  '#hwlock-cells':
-> +    const: 1
-> +
-> +  syscon:
-> +    $ref: "/schemas/types.yaml#/definitions/phandle-array"
-> +    description:
-> +      Should be a triple of phandle referencing the TCSR mutex syscon, offset
-> +      of first mutex within the syscon and stride between each mutex.
-> +
-> +required:
-> +  - compatible
-> +  - '#hwlock-cells'
-> +  - syscon
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +        tcsr_mutex_block: syscon@fd484000 {
-> +                compatible = "syscon";
-> +                reg = <0xfd484000 0x2000>;
-> +        };
-> +
-> +        hwlock {
-> +                compatible = "qcom,tcsr-mutex";
-> +                syscon = <&tcsr_mutex_block 0 0x80>;
-> +
-> +                #hwlock-cells = <1>;
-> +        };
-> +...
-> -- 
-> 2.26.2
-> 
+
+Applied, thanks!
