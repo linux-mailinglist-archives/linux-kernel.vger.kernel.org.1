@@ -2,110 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6391E4D72
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0206C1E4D41
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 20:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728382AbgE0Swm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 14:52:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57440 "EHLO
+        id S1726856AbgE0Sri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 14:47:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728227AbgE0Swg (ORCPT
+        with ESMTP id S1726519AbgE0Srg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 14:52:36 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C7AC0A88B4;
-        Wed, 27 May 2020 11:35:58 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id d1so2592777ila.8;
-        Wed, 27 May 2020 11:35:58 -0700 (PDT)
+        Wed, 27 May 2020 14:47:36 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFBF0C008633;
+        Wed, 27 May 2020 11:40:43 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id p20so13784543iop.11;
+        Wed, 27 May 2020 11:40:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=UU5LbaFcNtN0N363QE54EaHVO/O6G1mshGza7WR6HmU=;
-        b=c7Wg2CSOfRAz4qXeVLkrFlePt9jMinCGdgnwx1qm/OoOuU9E8o7Tq3QlO+f0de4Fk9
-         eq2H9nOeJhEhGDEkkpOTaEk0Acf2jLsRnfZOd4UywJl2rT69f2A6R6rtcdS6fAXyd1P0
-         g3vSFITWmmCtYvbMQUakx+tSWEfhU/f1HiCYCaebXKzgQWjSFzl1QaWVuDvc45Mqygvl
-         l61pV1GUN0jbswLxUDgw3zO+/L6DDifdl2L4VEHgAiEzw1pals2eBwaG1iuoASiH/eFO
-         nSSFYolPPvAOo+oYzt0nMI+CxlyRBmKOPkkx+m/2WSPyvKPIsZLP6rLPnzjrDFrAdZdb
-         /bDw==
-X-Gm-Message-State: AOAM5311AW9+JrXyqINYEmW31WWEdR9O5YXO1J082FlrW8gn5bTywF66
-        oJXaoM/wuIKbHg7v9Ln9h6ugy2k=
-X-Google-Smtp-Source: ABdhPJzflLPaxWVcZUamehQ4E0jqIC9uPA4aK1W8GW/Lo9FnaZVpYnU0V1ap1Avxe8JUo05uiGvJNQ==
-X-Received: by 2002:a92:8648:: with SMTP id g69mr6327935ild.68.1590604557414;
-        Wed, 27 May 2020 11:35:57 -0700 (PDT)
+         :mime-version:content-disposition:in-reply-to;
+        bh=Gmh7khEi867Q1p2K+E8wmj2hjP4yzjtOYXkIcMdbpVQ=;
+        b=I1As+XBMvRg9gijph5P2Lk7peH1/VQ9mvVuSVDYsQmZqW+g/qzOyBKyOuAY2ndgkK2
+         NQVHPFY8PUwD9B9OD/+ZgaSR0dLHqDZgi12+Hxn4OQ7ONBwQ8exV0/aFyFvg+6V7rVFH
+         PI1d94KghP3QGVxPiifi0PCP8QCAS+4NDbcw+dxRIzilsXkJVqXcm8ZWfr6bSrIvhJVO
+         zClTRJNP3dCaTgo25pyo6a6ExwHOgWBBhx/X7XUFr4bJJceDXjLsijyPvbtTd5cc2uSb
+         x8iObz5XCvqV7tDAz6qpH0KIT1eRo2zptXwPXXNs4XgunLFX9Dsz8Jb1Xo9uXaru8Vfp
+         M9jg==
+X-Gm-Message-State: AOAM533ClhfmymtKNPVEzxqf+Hjjm4ZAQE6LVI6a0/vJPeEC6RAmE/yZ
+        dNqDZgb5N3ECkskiUToFbw==
+X-Google-Smtp-Source: ABdhPJym2U/ruXzq2JydPVxf7p+4P3gKGasMHeicBfOWFBEuOBkVOSd/wSxZqTlL5k6KdoxnjRd20g==
+X-Received: by 2002:a02:a19d:: with SMTP id n29mr7072088jah.85.1590604843286;
+        Wed, 27 May 2020 11:40:43 -0700 (PDT)
 Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id j9sm1944243ilr.18.2020.05.27.11.35.55
+        by smtp.gmail.com with ESMTPSA id v15sm2040958ila.57.2020.05.27.11.40.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2020 11:35:56 -0700 (PDT)
-Received: (nullmailer pid 2523356 invoked by uid 1000);
-        Wed, 27 May 2020 18:35:55 -0000
-Date:   Wed, 27 May 2020 12:35:55 -0600
+        Wed, 27 May 2020 11:40:41 -0700 (PDT)
+Received: (nullmailer pid 2529615 invoked by uid 1000);
+        Wed, 27 May 2020 18:40:40 -0000
+Date:   Wed, 27 May 2020 12:40:40 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] of/platform: Avoid compilation warning
-Message-ID: <20200527183555.GA2512243@bogus>
-References: <20200514170707.24466-1-miquel.raynal@bootlin.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Frank Rowand <frowand.list@gmail.com>
+Subject: Re: [PATCH v2] of: Fix a refcounting bug in __of_attach_node_sysfs()
+Message-ID: <20200527184040.GA2529559@bogus>
+References: <20200520120414.GE172354@mwanda>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200514170707.24466-1-miquel.raynal@bootlin.com>
+In-Reply-To: <20200520120414.GE172354@mwanda>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 07:07:07PM +0200, Miquel Raynal wrote:
-> The of_find_device_by_node() helper has its dummy counterpart for when
-> CONFIG_OF is not enabled. However, it is clearly stated in the kernel
-> documentation that it "takes a reference to the embedded struct device
-> which needs to be dropped after use". Which means the of_dev_put()
-> helper might have to be called afterwards. Unfortunately, there is no
-> of_dev_put() dummy function if OF_CONFIG is not enabled which seems
-> odd in this case. The of_dev_put() helper is pretty simple, it just
-> checks the validity of the single argument and calls put_device() on
-> it. One can just call put_device() directly to avoid any build issue
-> but I find much more accurate in this case to create the dummy
-> helper.
+On Wed, 20 May 2020 15:04:14 +0300, Dan Carpenter wrote:
+> The problem in this code is that if kobject_add() fails, then it should
+> call of_node_put(np) to drop the reference count.  I've actually moved
+> the of_node_get(np) later in the function to avoid needing to do clean
+> up.
 > 
-> With this helper, a file using of_find_device_by_node() can also call
-> of_dev_put() without triggering the following:
-
-IMO, you should use platform_device_put() instead. It has the NULL check 
-too.
-
-I imagine of_dev_put() is left over from when OF devices were not 
-platform devices. 
- 
-> error: implicit declaration of function ‘of_dev_put’; did you mean ‘of_node_put’? [-Werror=implicit-function-declaration]
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Fixes: 5b2c2f5a0ea3 ("of: overlay: add missing of_node_get() in __of_attach_node_sysfs")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > ---
->  include/linux/of_platform.h | 2 ++
->  1 file changed, 2 insertions(+)
+> v2: move the of_node_get() instead of doing clean up.  Also the v1 had a
+>     confusing typo in the commit message.
 > 
-> diff --git a/include/linux/of_platform.h b/include/linux/of_platform.h
-> index 84a966623e78..84d9e60e517e 100644
-> --- a/include/linux/of_platform.h
-> +++ b/include/linux/of_platform.h
-> @@ -54,11 +54,13 @@ extern struct platform_device *of_device_alloc(struct device_node *np,
->  					 struct device *parent);
->  #ifdef CONFIG_OF
->  extern struct platform_device *of_find_device_by_node(struct device_node *np);
-> +extern void of_dev_put(struct platform_device *dev);
->  #else
->  static inline struct platform_device *of_find_device_by_node(struct device_node *np)
->  {
->  	return NULL;
->  }
-> +static inline void of_dev_put(struct platform_device *dev) { }
->  #endif
->  
->  /* Platform devices and busses creation */
-> -- 
-> 2.20.1
+>  drivers/of/kobj.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
+
+Applied, thanks!
