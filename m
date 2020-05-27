@@ -2,80 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A690B1E40EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E06AC1E40E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 13:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728757AbgE0L40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 07:56:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41754 "EHLO mx2.suse.de"
+        id S2387950AbgE0Lzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 07:55:52 -0400
+Received: from elvis.franken.de ([193.175.24.41]:41116 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726649AbgE0LzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 07:55:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 43286ADE3;
-        Wed, 27 May 2020 11:55:05 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
-        gregkh@linuxfoundation.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        devel@driverdev.osuosl.org
-Subject: [RFC 49/50] staging: vchiq: Move defines into core header
+        id S1729415AbgE0LzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 07:55:09 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jdueJ-00019x-02; Wed, 27 May 2020 13:55:07 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 646EDC059B; Wed, 27 May 2020 13:53:54 +0200 (CEST)
 Date:   Wed, 27 May 2020 13:53:54 +0200
-Message-Id: <20200527115400.31391-50-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200527115400.31391-1-nsaenzjulienne@suse.de>
-References: <20200527115400.31391-1-nsaenzjulienne@suse.de>
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Borislav Petkov <bp@suse.de>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Fangrui Song <maskray@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] MIPS: Move kernel head into a standalone section
+Message-ID: <20200527115354.GC13965@alpha.franken.de>
+References: <20200527063438.391949-1-jiaxun.yang@flygoat.com>
+ <20200527063438.391949-3-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200527063438.391949-3-jiaxun.yang@flygoat.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Those are only used in the core vchiq code, while present in vchiq's
-'public' API header. Move them into the right place.
+On Wed, May 27, 2020 at 02:34:33PM +0800, Jiaxun Yang wrote:
+> That's what already done by Arm64 and other architectures.
+> That would allow us put more things like PE headers safely into
+> the header.
+> 
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+>  arch/mips/kernel/head.S        | 4 ++--
+>  arch/mips/kernel/vmlinux.lds.S | 8 ++++++--
+>  2 files changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/mips/kernel/head.S b/arch/mips/kernel/head.S
+> index c7c2795837e7..8081a905a71c 100644
+> --- a/arch/mips/kernel/head.S
+> +++ b/arch/mips/kernel/head.S
+> @@ -59,6 +59,8 @@
+>  #endif
+>  	.endm
+>  
+> +	__HEAD
+> +_head:
+>  #ifndef CONFIG_NO_EXCEPT_FILL
+>  	/*
+>  	 * Reserved space for exception handlers.
 
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
----
- drivers/staging/vc04_services/interface/vchiq_arm/vchiq.h    | 5 -----
- .../staging/vc04_services/interface/vchiq_arm/vchiq_core.h   | 4 ++++
- 2 files changed, 4 insertions(+), 5 deletions(-)
+I'm adding the missing piece, why this change ist broken:
 
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq.h
-index 04b7ff41a025..cb9ef9a4150b 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq.h
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq.h
-@@ -4,11 +4,6 @@
- #ifndef VCHIQ_H
- #define VCHIQ_H
- 
--#define VCHIQ_SERVICE_HANDLE_INVALID 0
--
--#define VCHIQ_SLOT_SIZE     4096
--#define VCHIQ_MAX_MSG_SIZE  (VCHIQ_SLOT_SIZE - sizeof(struct vchiq_header))
--
- #define VCHIQ_MAKE_FOURCC(x0, x1, x2, x3) \
- 			(((x0) << 24) | ((x1) << 16) | ((x2) << 8) | (x3))
- 
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
-index 15e9867f78f4..8a27f3d7217e 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
-@@ -26,6 +26,10 @@
- 
- #endif	/* IS_ENABLED(CONFIG_RASPBERRYPI_FIRMWARE) */
- 
-+#define VCHIQ_SERVICE_HANDLE_INVALID 0
-+
-+#define VCHIQ_SLOT_SIZE     4096
-+#define VCHIQ_MAX_MSG_SIZE  (VCHIQ_SLOT_SIZE - sizeof(struct vchiq_header))
- 
- /* Run time control of log level, based on KERN_XXX level. */
- #define VCHIQ_LOG_DEFAULT  4
+         * Necessary for machines which link their kernels at KSEG0.
+
+by putting something in front of that will probably break platforms making
+use of "feature". If we can make sure, we don't need it anymore, we should
+first remove this and then add __HEAD part.
+
+Thomas.
+
 -- 
-2.26.2
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
