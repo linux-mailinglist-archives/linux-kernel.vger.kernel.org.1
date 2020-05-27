@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2481E4EF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FA71E4EF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 22:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728745AbgE0ULx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 16:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41504 "EHLO
+        id S1728632AbgE0ULc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 16:11:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728482AbgE0ULw (ORCPT
+        with ESMTP id S1728588AbgE0ULb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 16:11:52 -0400
+        Wed, 27 May 2020 16:11:31 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54CFEC03E96E;
-        Wed, 27 May 2020 13:11:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC9B2C03E97D
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 13:11:30 -0700 (PDT)
 Received: from localhost ([127.0.0.1] helo=flow.W.breakpoint.cc)
         by Galois.linutronix.de with esmtp (Exim 4.80)
         (envelope-from <bigeasy@linutronix.de>)
-        id 1je2Ob-0005ku-65; Wed, 27 May 2020 22:11:25 +0200
+        id 1je2Ob-0005ku-Hc; Wed, 27 May 2020 22:11:25 +0200
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 To:     linux-kernel@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -29,11 +29,11 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH v3 2/7] radix-tree: Use local_lock for protection
-Date:   Wed, 27 May 2020 22:11:14 +0200
-Message-Id: <20200527201119.1692513-3-bigeasy@linutronix.de>
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH v3 3/7] mm/swap: Use local_lock for protection
+Date:   Wed, 27 May 2020 22:11:15 +0200
+Message-Id: <20200527201119.1692513-4-bigeasy@linutronix.de>
 X-Mailer: git-send-email 2.27.0.rc0
 In-Reply-To: <20200527201119.1692513-1-bigeasy@linutronix.de>
 References: <20200527201119.1692513-1-bigeasy@linutronix.de>
@@ -44,150 +44,367 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The radix-tree and idr preload mechanisms use preempt_disable() to protect
-the complete operation between xxx_preload() and xxx_preload_end().
+From: Ingo Molnar <mingo@kernel.org>
 
-As the code inside the preempt disabled section acquires regular spinlocks,
-which are converted to 'sleeping' spinlocks on a PREEMPT_RT kernel and
-eventually calls into a memory allocator, this conflicts with the RT
-semantics.
+The various struct pagevec per CPU variables are protected by disabling
+either preemption or interrupts across the critical sections. Inside
+these sections spinlocks have to be acquired.
 
-Convert it to a local_lock which allows RT kernels to substitute them with
-a real per CPU lock. On non RT kernels this maps to preempt_disable() as
-before, but provides also lockdep coverage of the critical region.
-No functional change.
+These spinlocks are regular spinlock_t types which are converted to
+"sleeping" spinlocks on PREEMPT_RT enabled kernels. Obviously sleeping
+locks cannot be acquired in preemption or interrupt disabled sections.
 
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: linux-fsdevel@vger.kernel.org
+local locks provide a trivial way to substitute preempt and interrupt
+disable instances. On a non PREEMPT_RT enabled kernel local_lock() maps
+to preempt_disable() and local_lock_irq() to local_irq_disable().
+
+Create lru_rotate_pvecs containing the pagevec and the locallock.
+Create lru_pvecs containing the remaining pagevecs and the locallock.
+Add lru_add_drain_cpu_zone() which is used from compact_zone() to avoid
+exporting the pvec structure.
+
+Change the relevant call sites to acquire these locks instead of using
+preempt_disable() / get_cpu() / get_cpu_var() and local_irq_disable() /
+local_irq_save().
+
+There is neither a functional change nor a change in the generated
+binary code for non PREEMPT_RT enabled non-debug kernels.
+
+When lockdep is enabled local locks have lockdep maps embedded. These
+allow lockdep to validate the protections, i.e. inappropriate usage of a
+preemption only protected sections would result in a lockdep warning
+while the same problem would not be noticed with a plain
+preempt_disable() based protection.
+
+local locks also improve readability as they provide a named scope for
+the protections while preempt/interrupt disable are opaque scopeless.
+
+Finally local locks allow PREEMPT_RT to substitute them with real
+locking primitives to ensure the correctness of operation in a fully
+preemptible kernel.
+
+[ bigeasy: Adopted to use local_lock ]
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- include/linux/idr.h        |  2 +-
- include/linux/radix-tree.h | 11 ++++++++++-
- lib/radix-tree.c           | 20 +++++++++-----------
- 3 files changed, 20 insertions(+), 13 deletions(-)
+ include/linux/swap.h |   1 +
+ mm/compaction.c      |   6 +--
+ mm/swap.c            | 118 +++++++++++++++++++++++++++++--------------
+ 3 files changed, 82 insertions(+), 43 deletions(-)
 
-diff --git a/include/linux/idr.h b/include/linux/idr.h
-index ac6e946b6767b..3ade03e5c7af3 100644
---- a/include/linux/idr.h
-+++ b/include/linux/idr.h
-@@ -171,7 +171,7 @@ static inline bool idr_is_empty(const struct idr *idr)
-  */
- static inline void idr_preload_end(void)
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index e1bbf7a16b276..25181d2dd0b9f 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -337,6 +337,7 @@ extern void activate_page(struct page *);
+ extern void mark_page_accessed(struct page *);
+ extern void lru_add_drain(void);
+ extern void lru_add_drain_cpu(int cpu);
++extern void lru_add_drain_cpu_zone(struct zone *zone);
+ extern void lru_add_drain_all(void);
+ extern void rotate_reclaimable_page(struct page *page);
+ extern void deactivate_file_page(struct page *page);
+diff --git a/mm/compaction.c b/mm/compaction.c
+index 46f0fcc93081e..c9d659e6a02c5 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -2243,15 +2243,11 @@ compact_zone(struct compact_control *cc, struct cap=
+ture_control *capc)
+ 		 * would succeed.
+ 		 */
+ 		if (cc->order > 0 && last_migrated_pfn) {
+-			int cpu;
+ 			unsigned long current_block_start =3D
+ 				block_start_pfn(cc->migrate_pfn, cc->order);
+=20
+ 			if (last_migrated_pfn < current_block_start) {
+-				cpu =3D get_cpu();
+-				lru_add_drain_cpu(cpu);
+-				drain_local_pages(cc->zone);
+-				put_cpu();
++				lru_add_drain_cpu_zone(cc->zone);
+ 				/* No more flushing until we migrate again */
+ 				last_migrated_pfn =3D 0;
+ 			}
+diff --git a/mm/swap.c b/mm/swap.c
+index bf9a79fed62d7..0ac463d44cff4 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -35,6 +35,7 @@
+ #include <linux/uio.h>
+ #include <linux/hugetlb.h>
+ #include <linux/page_idle.h>
++#include <linux/local_lock.h>
+=20
+ #include "internal.h"
+=20
+@@ -44,14 +45,32 @@
+ /* How many pages do we try to swap or page in/out together? */
+ int page_cluster;
+=20
+-static DEFINE_PER_CPU(struct pagevec, lru_add_pvec);
+-static DEFINE_PER_CPU(struct pagevec, lru_rotate_pvecs);
+-static DEFINE_PER_CPU(struct pagevec, lru_deactivate_file_pvecs);
+-static DEFINE_PER_CPU(struct pagevec, lru_deactivate_pvecs);
+-static DEFINE_PER_CPU(struct pagevec, lru_lazyfree_pvecs);
++/* Protecting only lru_rotate.pvec which requires disabling interrupts */
++struct lru_rotate {
++	local_lock_t lock;
++	struct pagevec pvec;
++};
++static DEFINE_PER_CPU(struct lru_rotate, lru_rotate) =3D {
++	.lock =3D INIT_LOCAL_LOCK(lock),
++};
++
++/*
++ * The following struct pagevec are grouped together because they are prot=
+ected
++ * by disabling preemption (and interrupts remain enabled).
++ */
++struct lru_pvecs {
++	local_lock_t lock;
++	struct pagevec lru_add;
++	struct pagevec lru_deactivate_file;
++	struct pagevec lru_deactivate;
++	struct pagevec lru_lazyfree;
+ #ifdef CONFIG_SMP
+-static DEFINE_PER_CPU(struct pagevec, activate_page_pvecs);
++	struct pagevec activate_page;
+ #endif
++};
++static DEFINE_PER_CPU(struct lru_pvecs, lru_pvecs) =3D {
++	.lock =3D INIT_LOCAL_LOCK(lock),
++};
+=20
+ /*
+  * This path almost never happens for VM activity - pages are normally
+@@ -254,11 +273,11 @@ void rotate_reclaimable_page(struct page *page)
+ 		unsigned long flags;
+=20
+ 		get_page(page);
+-		local_irq_save(flags);
+-		pvec =3D this_cpu_ptr(&lru_rotate_pvecs);
++		local_lock_irqsave(&lru_rotate.lock, flags);
++		pvec =3D this_cpu_ptr(&lru_rotate.pvec);
+ 		if (!pagevec_add(pvec, page) || PageCompound(page))
+ 			pagevec_move_tail(pvec);
+-		local_irq_restore(flags);
++		local_unlock_irqrestore(&lru_rotate.lock, flags);
+ 	}
+ }
+=20
+@@ -293,7 +312,7 @@ static void __activate_page(struct page *page, struct l=
+ruvec *lruvec,
+ #ifdef CONFIG_SMP
+ static void activate_page_drain(int cpu)
  {
--	preempt_enable();
-+	local_unlock(&radix_tree_preloads.lock);
+-	struct pagevec *pvec =3D &per_cpu(activate_page_pvecs, cpu);
++	struct pagevec *pvec =3D &per_cpu(lru_pvecs.activate_page, cpu);
+=20
+ 	if (pagevec_count(pvec))
+ 		pagevec_lru_move_fn(pvec, __activate_page, NULL);
+@@ -301,19 +320,21 @@ static void activate_page_drain(int cpu)
+=20
+ static bool need_activate_page_drain(int cpu)
+ {
+-	return pagevec_count(&per_cpu(activate_page_pvecs, cpu)) !=3D 0;
++	return pagevec_count(&per_cpu(lru_pvecs.activate_page, cpu)) !=3D 0;
+ }
+=20
+ void activate_page(struct page *page)
+ {
+ 	page =3D compound_head(page);
+ 	if (PageLRU(page) && !PageActive(page) && !PageUnevictable(page)) {
+-		struct pagevec *pvec =3D &get_cpu_var(activate_page_pvecs);
++		struct pagevec *pvec;
+=20
++		local_lock(&lru_pvecs.lock);
++		pvec =3D this_cpu_ptr(&lru_pvecs.activate_page);
+ 		get_page(page);
+ 		if (!pagevec_add(pvec, page) || PageCompound(page))
+ 			pagevec_lru_move_fn(pvec, __activate_page, NULL);
+-		put_cpu_var(activate_page_pvecs);
++		local_unlock(&lru_pvecs.lock);
+ 	}
+ }
+=20
+@@ -335,9 +356,12 @@ void activate_page(struct page *page)
+=20
+ static void __lru_cache_activate_page(struct page *page)
+ {
+-	struct pagevec *pvec =3D &get_cpu_var(lru_add_pvec);
++	struct pagevec *pvec;
+ 	int i;
+=20
++	local_lock(&lru_pvecs.lock);
++	pvec =3D this_cpu_ptr(&lru_pvecs.lru_add);
++
+ 	/*
+ 	 * Search backwards on the optimistic assumption that the page being
+ 	 * activated has just been added to this pagevec. Note that only
+@@ -357,7 +381,7 @@ static void __lru_cache_activate_page(struct page *page)
+ 		}
+ 	}
+=20
+-	put_cpu_var(lru_add_pvec);
++	local_unlock(&lru_pvecs.lock);
+ }
+=20
+ /*
+@@ -385,7 +409,7 @@ void mark_page_accessed(struct page *page)
+ 	} else if (!PageActive(page)) {
+ 		/*
+ 		 * If the page is on the LRU, queue it for activation via
+-		 * activate_page_pvecs. Otherwise, assume the page is on a
++		 * lru_pvecs.activate_page. Otherwise, assume the page is on a
+ 		 * pagevec, mark it active and it'll be moved to the active
+ 		 * LRU on the next drain.
+ 		 */
+@@ -404,12 +428,14 @@ EXPORT_SYMBOL(mark_page_accessed);
+=20
+ static void __lru_cache_add(struct page *page)
+ {
+-	struct pagevec *pvec =3D &get_cpu_var(lru_add_pvec);
++	struct pagevec *pvec;
+=20
++	local_lock(&lru_pvecs.lock);
++	pvec =3D this_cpu_ptr(&lru_pvecs.lru_add);
+ 	get_page(page);
+ 	if (!pagevec_add(pvec, page) || PageCompound(page))
+ 		__pagevec_lru_add(pvec);
+-	put_cpu_var(lru_add_pvec);
++	local_unlock(&lru_pvecs.lock);
  }
 =20
  /**
-diff --git a/include/linux/radix-tree.h b/include/linux/radix-tree.h
-index 63e62372443a5..c2a9f7c907273 100644
---- a/include/linux/radix-tree.h
-+++ b/include/linux/radix-tree.h
-@@ -16,11 +16,20 @@
- #include <linux/spinlock.h>
- #include <linux/types.h>
- #include <linux/xarray.h>
-+#include <linux/local_lock.h>
+@@ -593,30 +619,30 @@ static void lru_lazyfree_fn(struct page *page, struct=
+ lruvec *lruvec,
+  */
+ void lru_add_drain_cpu(int cpu)
+ {
+-	struct pagevec *pvec =3D &per_cpu(lru_add_pvec, cpu);
++	struct pagevec *pvec =3D &per_cpu(lru_pvecs.lru_add, cpu);
 =20
- /* Keep unconverted code working */
- #define radix_tree_root		xarray
- #define radix_tree_node		xa_node
+ 	if (pagevec_count(pvec))
+ 		__pagevec_lru_add(pvec);
 =20
-+struct radix_tree_preload {
-+	local_lock_t lock;
-+	unsigned nr;
-+	/* nodes->parent points to next preallocated node */
-+	struct radix_tree_node *nodes;
-+};
-+DECLARE_PER_CPU(struct radix_tree_preload, radix_tree_preloads);
+-	pvec =3D &per_cpu(lru_rotate_pvecs, cpu);
++	pvec =3D &per_cpu(lru_rotate.pvec, cpu);
+ 	if (pagevec_count(pvec)) {
+ 		unsigned long flags;
+=20
+ 		/* No harm done if a racing interrupt already did this */
+-		local_irq_save(flags);
++		local_lock_irqsave(&lru_rotate.lock, flags);
+ 		pagevec_move_tail(pvec);
+-		local_irq_restore(flags);
++		local_unlock_irqrestore(&lru_rotate.lock, flags);
+ 	}
+=20
+-	pvec =3D &per_cpu(lru_deactivate_file_pvecs, cpu);
++	pvec =3D &per_cpu(lru_pvecs.lru_deactivate_file, cpu);
+ 	if (pagevec_count(pvec))
+ 		pagevec_lru_move_fn(pvec, lru_deactivate_file_fn, NULL);
+=20
+-	pvec =3D &per_cpu(lru_deactivate_pvecs, cpu);
++	pvec =3D &per_cpu(lru_pvecs.lru_deactivate, cpu);
+ 	if (pagevec_count(pvec))
+ 		pagevec_lru_move_fn(pvec, lru_deactivate_fn, NULL);
+=20
+-	pvec =3D &per_cpu(lru_lazyfree_pvecs, cpu);
++	pvec =3D &per_cpu(lru_pvecs.lru_lazyfree, cpu);
+ 	if (pagevec_count(pvec))
+ 		pagevec_lru_move_fn(pvec, lru_lazyfree_fn, NULL);
+=20
+@@ -641,11 +667,14 @@ void deactivate_file_page(struct page *page)
+ 		return;
+=20
+ 	if (likely(get_page_unless_zero(page))) {
+-		struct pagevec *pvec =3D &get_cpu_var(lru_deactivate_file_pvecs);
++		struct pagevec *pvec;
 +
- /*
-  * The bottom two bits of the slot determine how the remaining bits in the
-  * slot are interpreted:
-@@ -245,7 +254,7 @@ int radix_tree_tagged(const struct radix_tree_root *, u=
-nsigned int tag);
++		local_lock(&lru_pvecs.lock);
++		pvec =3D this_cpu_ptr(&lru_pvecs.lru_deactivate_file);
 =20
- static inline void radix_tree_preload_end(void)
- {
--	preempt_enable();
-+	local_unlock(&radix_tree_preloads.lock);
+ 		if (!pagevec_add(pvec, page) || PageCompound(page))
+ 			pagevec_lru_move_fn(pvec, lru_deactivate_file_fn, NULL);
+-		put_cpu_var(lru_deactivate_file_pvecs);
++		local_unlock(&lru_pvecs.lock);
+ 	}
  }
 =20
- void __rcu **idr_get_free(struct radix_tree_root *root,
-diff --git a/lib/radix-tree.c b/lib/radix-tree.c
-index 2ee6ae3b0ade0..34e406fe561fe 100644
---- a/lib/radix-tree.c
-+++ b/lib/radix-tree.c
-@@ -20,6 +20,7 @@
- #include <linux/kernel.h>
- #include <linux/kmemleak.h>
- #include <linux/percpu.h>
-+#include <linux/local_lock.h>
- #include <linux/preempt.h>		/* in_interrupt() */
- #include <linux/radix-tree.h>
- #include <linux/rcupdate.h>
-@@ -27,7 +28,6 @@
- #include <linux/string.h>
- #include <linux/xarray.h>
-=20
--
- /*
-  * Radix tree node cache.
-  */
-@@ -58,12 +58,10 @@ struct kmem_cache *radix_tree_node_cachep;
- /*
-  * Per-cpu pool of preloaded nodes
-  */
--struct radix_tree_preload {
--	unsigned nr;
--	/* nodes->parent points to next preallocated node */
--	struct radix_tree_node *nodes;
-+DEFINE_PER_CPU(struct radix_tree_preload, radix_tree_preloads) =3D {
-+	.lock =3D INIT_LOCAL_LOCK(lock),
- };
--static DEFINE_PER_CPU(struct radix_tree_preload, radix_tree_preloads) =3D =
-{ 0, };
-+EXPORT_PER_CPU_SYMBOL_GPL(radix_tree_preloads);
-=20
- static inline struct radix_tree_node *entry_to_node(void *ptr)
+@@ -660,12 +689,14 @@ void deactivate_file_page(struct page *page)
+ void deactivate_page(struct page *page)
  {
-@@ -332,14 +330,14 @@ static __must_check int __radix_tree_preload(gfp_t gf=
-p_mask, unsigned nr)
- 	 */
- 	gfp_mask &=3D ~__GFP_ACCOUNT;
+ 	if (PageLRU(page) && PageActive(page) && !PageUnevictable(page)) {
+-		struct pagevec *pvec =3D &get_cpu_var(lru_deactivate_pvecs);
++		struct pagevec *pvec;
 =20
--	preempt_disable();
-+	local_lock(&radix_tree_preloads.lock);
- 	rtp =3D this_cpu_ptr(&radix_tree_preloads);
- 	while (rtp->nr < nr) {
--		preempt_enable();
-+		local_unlock(&radix_tree_preloads.lock);
- 		node =3D kmem_cache_alloc(radix_tree_node_cachep, gfp_mask);
- 		if (node =3D=3D NULL)
- 			goto out;
--		preempt_disable();
-+		local_lock(&radix_tree_preloads.lock);
- 		rtp =3D this_cpu_ptr(&radix_tree_preloads);
- 		if (rtp->nr < nr) {
- 			node->parent =3D rtp->nodes;
-@@ -381,7 +379,7 @@ int radix_tree_maybe_preload(gfp_t gfp_mask)
- 	if (gfpflags_allow_blocking(gfp_mask))
- 		return __radix_tree_preload(gfp_mask, RADIX_TREE_PRELOAD_SIZE);
- 	/* Preloading doesn't help anything with this gfp mask, skip it */
--	preempt_disable();
-+	local_lock(&radix_tree_preloads.lock);
- 	return 0;
++		local_lock(&lru_pvecs.lock);
++		pvec =3D this_cpu_ptr(&lru_pvecs.lru_deactivate);
+ 		get_page(page);
+ 		if (!pagevec_add(pvec, page) || PageCompound(page))
+ 			pagevec_lru_move_fn(pvec, lru_deactivate_fn, NULL);
+-		put_cpu_var(lru_deactivate_pvecs);
++		local_unlock(&lru_pvecs.lock);
+ 	}
  }
- EXPORT_SYMBOL(radix_tree_maybe_preload);
-@@ -1470,7 +1468,7 @@ EXPORT_SYMBOL(radix_tree_tagged);
- void idr_preload(gfp_t gfp_mask)
+=20
+@@ -680,19 +711,30 @@ void mark_page_lazyfree(struct page *page)
  {
- 	if (__radix_tree_preload(gfp_mask, IDR_PRELOAD_SIZE))
--		preempt_disable();
-+		local_lock(&radix_tree_preloads.lock);
- }
- EXPORT_SYMBOL(idr_preload);
+ 	if (PageLRU(page) && PageAnon(page) && PageSwapBacked(page) &&
+ 	    !PageSwapCache(page) && !PageUnevictable(page)) {
+-		struct pagevec *pvec =3D &get_cpu_var(lru_lazyfree_pvecs);
++		struct pagevec *pvec;
 =20
++		local_lock(&lru_pvecs.lock);
++		pvec =3D this_cpu_ptr(&lru_pvecs.lru_lazyfree);
+ 		get_page(page);
+ 		if (!pagevec_add(pvec, page) || PageCompound(page))
+ 			pagevec_lru_move_fn(pvec, lru_lazyfree_fn, NULL);
+-		put_cpu_var(lru_lazyfree_pvecs);
++		local_unlock(&lru_pvecs.lock);
+ 	}
+ }
+=20
+ void lru_add_drain(void)
+ {
+-	lru_add_drain_cpu(get_cpu());
+-	put_cpu();
++	local_lock(&lru_pvecs.lock);
++	lru_add_drain_cpu(smp_processor_id());
++	local_unlock(&lru_pvecs.lock);
++}
++
++void lru_add_drain_cpu_zone(struct zone *zone)
++{
++	local_lock(&lru_pvecs.lock);
++	lru_add_drain_cpu(smp_processor_id());
++	drain_local_pages(zone);
++	local_unlock(&lru_pvecs.lock);
+ }
+=20
+ #ifdef CONFIG_SMP
+@@ -743,11 +785,11 @@ void lru_add_drain_all(void)
+ 	for_each_online_cpu(cpu) {
+ 		struct work_struct *work =3D &per_cpu(lru_add_drain_work, cpu);
+=20
+-		if (pagevec_count(&per_cpu(lru_add_pvec, cpu)) ||
+-		    pagevec_count(&per_cpu(lru_rotate_pvecs, cpu)) ||
+-		    pagevec_count(&per_cpu(lru_deactivate_file_pvecs, cpu)) ||
+-		    pagevec_count(&per_cpu(lru_deactivate_pvecs, cpu)) ||
+-		    pagevec_count(&per_cpu(lru_lazyfree_pvecs, cpu)) ||
++		if (pagevec_count(&per_cpu(lru_pvecs.lru_add, cpu)) ||
++		    pagevec_count(&per_cpu(lru_rotate.pvec, cpu)) ||
++		    pagevec_count(&per_cpu(lru_pvecs.lru_deactivate_file, cpu)) ||
++		    pagevec_count(&per_cpu(lru_pvecs.lru_deactivate, cpu)) ||
++		    pagevec_count(&per_cpu(lru_pvecs.lru_lazyfree, cpu)) ||
+ 		    need_activate_page_drain(cpu)) {
+ 			INIT_WORK(work, lru_add_drain_per_cpu);
+ 			queue_work_on(cpu, mm_percpu_wq, work);
 --=20
 2.27.0.rc0
 
