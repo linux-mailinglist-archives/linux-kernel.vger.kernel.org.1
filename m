@@ -2,292 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 872FC1E350B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 03:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A601E3516
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 03:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728054AbgE0Bv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 21:51:58 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:44048 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727774AbgE0Bv5 (ORCPT
+        id S1728069AbgE0B57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 21:57:59 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:47631 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725271AbgE0B57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 21:51:57 -0400
-Received: by linux.microsoft.com (Postfix, from userid 1040)
-        id 7D19520B717B; Tue, 26 May 2020 18:51:55 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7D19520B717B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1590544315;
-        bh=C9ajJeJOQyL3l974xDokVYQ2Tn8ZMUfjZ4zwNe9QJkM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=V8UDDlMwDyd+30hefwbAUrqx1yhHsCfUBoj/MlbWwlNyAocgxHRZnN9L6/P4Rrvxk
-         IehBXj73lBaX+XReNqzNRM753cTPopdFOz2ibJP89WWvgAx0aNO+JtVzPa7sig0kdz
-         67VCtK8D7dgybLPA95IgHgONHTW/ZXVu99sAC3YQ=
-From:   Steve MacLean <steve.maclean@linux.microsoft.com>
-Cc:     Steve MacLean <Steve.MacLean@Microsoft.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4] perf inject --jit: Remove //anon mmap events
-Date:   Tue, 26 May 2020 18:51:11 -0700
-Message-Id: <1590544271-125795-1-git-send-email-steve.maclean@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-To:     unlisted-recipients:; (no To-header on input)
+        Tue, 26 May 2020 21:57:59 -0400
+X-UUID: 2d4d4ee9b12f44809e2b4bc452fe3a49-20200527
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ZKrqKJ1L5uEpCnzzklpqeT5Qk2zFyQCkc/heYv9ITnM=;
+        b=XUpTR3U9I2ql6YbBD1AN1sf+a1IszagSd55v/wuip50S9/YIF8rA9dVIwyETT7qsAB4UioxxjiJl2jorkFc3bTQscHdkOM5PYG3KJALZhcLw5rs7aCpEHTRlLV/5R55JuwVqICKGca09ozObWc59DmiNt3f5/kisqeSm05yxpfA=;
+X-UUID: 2d4d4ee9b12f44809e2b4bc452fe3a49-20200527
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <xia.jiang@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLS)
+        with ESMTP id 938018215; Wed, 27 May 2020 09:57:51 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31DR.mediatek.inc
+ (172.27.6.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 27 May
+ 2020 09:53:46 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 27 May 2020 09:53:45 +0800
+Message-ID: <1590544320.12671.10.camel@mhfsdcap03>
+Subject: Re: [PATCH v8 06/14] media: platform: Improve the implementation of
+ the system PM ops
+From:   Xia Jiang <xia.jiang@mediatek.com>
+To:     Tomasz Figa <tfiga@chromium.org>
+CC:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        Rick Chang <rick.chang@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        <srv_heupstream@mediatek.com>, <senozhatsky@chromium.org>,
+        <mojahsu@chromium.org>, <drinkcat@chromium.org>,
+        <maoguang.meng@mediatek.com>, <sj.huang@mediatek.com>
+Date:   Wed, 27 May 2020 09:52:00 +0800
+In-Reply-To: <20200521153257.GF209565@chromium.org>
+References: <20200403094033.8288-1-xia.jiang@mediatek.com>
+         <20200403094033.8288-7-xia.jiang@mediatek.com>
+         <20200521153257.GF209565@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: 31B56BA102CB296BF42975F3308432FBE35B5776613BCF49476A31BDC9D305D32000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve MacLean <Steve.MacLean@Microsoft.com>
-
-**perf-<pid>.map and jit-<pid>.dump designs:
-
-When a JIT generates code to be executed, it must allocate memory and
-mark it executable using an mmap call.
-
-*** perf-<pid>.map design
-
-The perf-<pid>.map assumes that any sample recorded in an anonymous
-memory page is JIT code. It then tries to resolve the symbol name by
-looking at the process' perf-<pid>.map.
-
-*** jit-<pid>.dump design
-
-The jit-<pid>.dump mechanism takes a different approach. It requires a JIT
-to write a `<path>/jit-<pid>.dump` file. This file must also be mmapped
-so that perf inject -jit can find the file. The JIT must also add
-JIT_CODE_LOAD records for any functions it generates. The records are
-timestamped using a clock which can be correlated to the perf record
-clock.
-
-After perf record,  the `perf inject -jit` pass parses the recording
-looking for a `<path>/jit-<pid>.dump` file. When it finds the file, it
-parses it and for each JIT_CODE_LOAD record:
-* creates an elf file `<path>/jitted-<pid>-<code_index>.so
-* injects a new mmap record mapping the new elf file into the process.
-
-*** Coexistence design
-
-The kernel and perf support both of these mechanisms. We need to make
-sure perf works on an app supporting either or both of these mechanisms.
-Both designs rely on mmap records to determine how to resolve an ip
-address.
-
-The mmap records of both techniques by definition overlap. When the JIT
-compiles a method, it must:
-* allocate memory (mmap)
-* add execution privilege (mprotect or mmap. either will
-generate an mmap event form the kernel to perf)
-* compile code into memory
-* add a function record to perf-<pid>.map and/or jit-<pid>.dump
-
-Because the jit-<pid>.dump mechanism supports greater capabilities, perf
-prefers the symbols from jit-<pid>.dump. It implements this based on
-timestamp ordering of events. There is an implicit ASSUMPTION that the
-JIT_CODE_LOAD record timestamp will be after the // anon mmap event that
-was generated during memory allocation or adding the execution privilege setting.
-
-*** Problems with the ASSUMPTION
-
-The ASSUMPTION made in the Coexistence design section above is violated
-in the following scenario.
-
-*** Scenario
-
-While a JIT is jitting code it will eventually need to commit more
-pages and change these pages to executable permissions. Typically the
-JIT will want these collocated to minimize branch displacements.
-
-The kernel will coalesce these anonymous mapping with identical
-permissions before sending an MMAP event for the new pages. The address
-range of the new mmap will not be just the most recently mmap pages.
-It will include the entire coalesced mmap region.
-
-See mm/mmap.c
-
-unsigned long mmap_region(struct file *file, unsigned long addr,
-                unsigned long len, vm_flags_t vm_flags, unsigned long pgoff,
-                struct list_head *uf)
-{
-...
-        /*
-         * Can we just expand an old mapping?
-         */
-...
-        perf_event_mmap(vma);
-...
-}
-
-*** Symptoms
-
-The coalesced // anon mmap event will be timestamped after the
-JIT_CODE_LOAD records. This means it will be used as the most recent
-mapping for that entire address range. For remaining events it will look at the
-inferior perf-<pid>.map for symbols.
-
-If both mechanisms are supported, the symbol will appear twice with
-different module names. This causes weird behavior in reporting.
-
-If only jit-<pid>.dump is supported, the symbol will no longer be resolved.
-
-** Implemented solution
-
-This patch solves the issue by removing // anon mmap events for any
-process which has a valid jit-<pid>.dump file.
-
-It tracks on a per process basis to handle the case where some running
-apps support jit-<pid>.dump, but some only support perf-<pid>.map.
-
-It adds new assumptions:
-* // anon mmap events are only required for perf-<pid>.map support.
-* An app that uses jit-<pid>.dump, no longer needs
-perf-<pid>.map support. It assumes that any perf-<pid>.map info is
-inferior.
-
-*** Details
-
-Use thread->priv to store whether a jitdump file has been processed
-
-During "perf inject --jit", discard "//anon*" mmap events for any pid which
-has sucessfully processed a jitdump file.
-
-** Committer testing:
-
-// jitdump case
-perf record <app with jitdump>
-perf inject --jit --input perf.data --output perfjit.data
-// verify mmap "//anon" events present initially
-perf script --input perf.data --show-mmap-events | grep '//anon'
-// verify mmap "//anon" events removed
-perf script --input perfjit.data --show-mmap-events | grep '//anon'
-// no jitdump case
-perf record <app without jitdump>
-perf inject --jit --input perf.data --output perfjit.data
-// verify mmap "//anon" events present initially
-perf script --input perf.data --show-mmap-events | grep '//anon'
-// verify mmap "//anon" events not removed
-perf script --input perfjit.data --show-mmap-events | grep '//anon'
-
-** Repro:
-
-This issue was discovered while testing the initial CoreCLR jitdump
-implementation. https://github.com/dotnet/coreclr/pull/26897.
-
-** Alternate solutions considered
-
-These were also briefly considered
-* Change kernel to not coalesce mmap regions.
-* Change kernel reporting of coalesced mmap regions to perf. Only
-include newly mapped memory.
-* Only strip parts of // anon mmap events overlapping existing
-jitted-<pid>-<code_index>.so mmap events.
-
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Steve MacLean <Steve.MacLean@Microsoft.com>
----
- tools/perf/builtin-inject.c |  4 ++--
- tools/perf/util/jitdump.c   | 31 ++++++++++++++++++++++++++++++-
- 2 files changed, 32 insertions(+), 3 deletions(-)
-
-diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-index 372ecb3..0f38862 100644
---- a/tools/perf/builtin-inject.c
-+++ b/tools/perf/builtin-inject.c
-@@ -263,7 +263,7 @@ static int perf_event__jit_repipe_mmap(struct perf_tool *tool,
- 	 * if jit marker, then inject jit mmaps and generate ELF images
- 	 */
- 	ret = jit_process(inject->session, &inject->output, machine,
--			  event->mmap.filename, sample->pid, &n);
-+			  event->mmap.filename, event->mmap.pid, &n);
- 	if (ret < 0)
- 		return ret;
- 	if (ret) {
-@@ -301,7 +301,7 @@ static int perf_event__jit_repipe_mmap2(struct perf_tool *tool,
- 	 * if jit marker, then inject jit mmaps and generate ELF images
- 	 */
- 	ret = jit_process(inject->session, &inject->output, machine,
--			  event->mmap2.filename, sample->pid, &n);
-+			  event->mmap2.filename, event->mmap2.pid, &n);
- 	if (ret < 0)
- 		return ret;
- 	if (ret) {
-diff --git a/tools/perf/util/jitdump.c b/tools/perf/util/jitdump.c
-index e3ccb0c..d18596e 100644
---- a/tools/perf/util/jitdump.c
-+++ b/tools/perf/util/jitdump.c
-@@ -26,6 +26,7 @@
- #include "jit.h"
- #include "jitdump.h"
- #include "genelf.h"
-+#include "thread.h"
- 
- #include <linux/ctype.h>
- #include <linux/zalloc.h>
-@@ -749,6 +750,28 @@ static int jit_repipe_debug_info(struct jit_buf_desc *jd, union jr_entry *jr)
- 	return 0;
- }
- 
-+static void jit_add_pid(struct machine *machine, pid_t pid)
-+{
-+	struct thread *thread = machine__findnew_thread(machine, pid, pid);
-+
-+	if (!thread) {
-+		pr_err("%s: thread %d not found or created\n", __func__, pid);
-+		return;
-+	}
-+
-+	thread->priv = (void *)1;
-+}
-+
-+static bool jit_has_pid(struct machine *machine, pid_t pid)
-+{
-+	struct thread *thread = machine__find_thread(machine, pid, pid);
-+
-+	if (!thread)
-+		return 0;
-+
-+	return (bool)thread->priv;
-+}
-+
- int
- jit_process(struct perf_session *session,
- 	    struct perf_data *output,
-@@ -764,8 +787,13 @@ static int jit_repipe_debug_info(struct jit_buf_desc *jd, union jr_entry *jr)
- 	/*
- 	 * first, detect marker mmap (i.e., the jitdump mmap)
- 	 */
--	if (jit_detect(filename, pid))
-+	if (jit_detect(filename, pid)) {
-+		// Strip //anon* mmaps if we processed a jitdump for this pid
-+		if (jit_has_pid(machine, pid) && (strncmp(filename, "//anon", 6) == 0))
-+			return 1;
-+
- 		return 0;
-+	}
- 
- 	memset(&jd, 0, sizeof(jd));
- 
-@@ -784,6 +812,7 @@ static int jit_repipe_debug_info(struct jit_buf_desc *jd, union jr_entry *jr)
- 
- 	ret = jit_inject(&jd, filename);
- 	if (!ret) {
-+		jit_add_pid(machine, pid);
- 		*nbytes = jd.bytes_written;
- 		ret = 1;
- 	}
--- 
-1.8.3.1
+T24gVGh1LCAyMDIwLTA1LTIxIGF0IDE1OjMyICswMDAwLCBUb21hc3ogRmlnYSB3cm90ZToNCj4g
+SGkgWGlhLA0KPiANCj4gT24gRnJpLCBBcHIgMDMsIDIwMjAgYXQgMDU6NDA6MjVQTSArMDgwMCwg
+WGlhIEppYW5nIHdyb3RlOg0KPiA+IENhbmNlbCByZXNldCBodyBvcGVyYXRpb24gaW4gc3VzcGVu
+ZCBhbmQgcmVzdW1lIGZ1bmN0aW9uIGJlY2F1c2UgdGhpcw0KPiA+IHdpbGwgYmUgZG9uZSBpbiBk
+ZXZpY2VfcnVuKCkuDQo+IA0KPiBUaGlzIGFuZC4uLg0KPiANCj4gPiBBZGQgc3Bpbl9sb2NrIGFu
+ZCB1bmxvY2sgb3BlcmF0aW9uIGluIGlycSBhbmQgcmVzdW1lIGZ1bmN0aW9uIHRvIG1ha2UNCj4g
+PiBzdXJlIHRoYXQgdGhlIGN1cnJlbnQgZnJhbWUgaXMgcHJvY2Vzc2VkIGNvbXBsZXRlbHkgYmVm
+b3JlIHN1c3BlbmQuDQo+IA0KPiAuLi50aGlzIGFyZSB0d28gc2VwYXJhdGUgY2hhbmdlcy4gUGxl
+YXNlIHNwbGl0Lg0KPiANCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBYaWEgSmlhbmcgPHhpYS5q
+aWFuZ0BtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvbWVkaWEvcGxhdGZvcm0v
+bXRrLWpwZWcvbXRrX2pwZWdfY29yZS5jIHwgMTEgKysrKysrKysrLS0NCj4gPiAgMSBmaWxlIGNo
+YW5nZWQsIDkgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4gPiANCj4gPiBkaWZmIC0t
+Z2l0IGEvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9tdGstanBlZy9tdGtfanBlZ19jb3JlLmMgYi9k
+cml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay1qcGVnL210a19qcGVnX2NvcmUuYw0KPiA+IGluZGV4
+IGRkNWNhZGQxMDFlZi4uMmZhMzcxMWZkYzliIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbWVk
+aWEvcGxhdGZvcm0vbXRrLWpwZWcvbXRrX2pwZWdfY29yZS5jDQo+ID4gKysrIGIvZHJpdmVycy9t
+ZWRpYS9wbGF0Zm9ybS9tdGstanBlZy9tdGtfanBlZ19jb3JlLmMNCj4gPiBAQCAtOTExLDYgKzkx
+MSw4IEBAIHN0YXRpYyBpcnFyZXR1cm5fdCBtdGtfanBlZ19kZWNfaXJxKGludCBpcnEsIHZvaWQg
+KnByaXYpDQo+ID4gIAl1MzIgZGVjX3JldDsNCj4gPiAgCWludCBpOw0KPiA+ICANCj4gPiArCXNw
+aW5fbG9jaygmanBlZy0+aHdfbG9jayk7DQo+ID4gKw0KPiANCj4gbml0OiBGb3IgY29uc2lzdGVu
+Y3ksIGl0IGlzIHJlY29tbWVuZGVkIHRvIGFsd2F5cyB1c2UgdGhlIHNhbWUsIGkuZS4gdGhlDQo+
+IHN0cm9uZ2VzdCwgc3Bpbl8odW4pbG9ja18gcHJpbWl0aXZlcyB3aGVuIG9wZXJhdGluZyBvbiB0
+aGUgc2FtZSBzcGlubG9jay4NCj4gSW4gdGhpcyBjYXNlIGl0IHdvdWxkIGJlIHRoZSBpcnFzYXZl
+KHJlc3RvcmUpIHZhcmlhbnRzLg0KPiANCj4gPiAgCWRlY19yZXQgPSBtdGtfanBlZ19kZWNfZ2V0
+X2ludF9zdGF0dXMoanBlZy0+ZGVjX3JlZ19iYXNlKTsNCj4gPiAgCWRlY19pcnFfcmV0ID0gbXRr
+X2pwZWdfZGVjX2VudW1fcmVzdWx0KGRlY19yZXQpOw0KPiA+ICAJY3R4ID0gdjRsMl9tMm1fZ2V0
+X2N1cnJfcHJpdihqcGVnLT5tMm1fZGV2KTsNCj4gPiBAQCAtOTQxLDYgKzk0Myw3IEBAIHN0YXRp
+YyBpcnFyZXR1cm5fdCBtdGtfanBlZ19kZWNfaXJxKGludCBpcnEsIHZvaWQgKnByaXYpDQo+ID4g
+IAl2NGwyX20ybV9idWZfZG9uZShzcmNfYnVmLCBidWZfc3RhdGUpOw0KPiA+ICAJdjRsMl9tMm1f
+YnVmX2RvbmUoZHN0X2J1ZiwgYnVmX3N0YXRlKTsNCj4gPiAgCXY0bDJfbTJtX2pvYl9maW5pc2go
+anBlZy0+bTJtX2RldiwgY3R4LT5maC5tMm1fY3R4KTsNCj4gPiArCXNwaW5fdW5sb2NrKCZqcGVn
+LT5od19sb2NrKTsNCj4gPiAgCXBtX3J1bnRpbWVfcHV0X3N5bmMoY3R4LT5qcGVnLT5kZXYpOw0K
+PiA+ICAJcmV0dXJuIElSUV9IQU5ETEVEOw0KPiA+ICB9DQo+ID4gQEAgLTExOTEsNyArMTE5NCw2
+IEBAIHN0YXRpYyBfX21heWJlX3VudXNlZCBpbnQgbXRrX2pwZWdfcG1fc3VzcGVuZChzdHJ1Y3Qg
+ZGV2aWNlICpkZXYpDQo+ID4gIHsNCj4gPiAgCXN0cnVjdCBtdGtfanBlZ19kZXYgKmpwZWcgPSBk
+ZXZfZ2V0X2RydmRhdGEoZGV2KTsNCj4gPiAgDQo+ID4gLQltdGtfanBlZ19kZWNfcmVzZXQoanBl
+Zy0+ZGVjX3JlZ19iYXNlKTsNCj4gPiAgCW10a19qcGVnX2Nsa19vZmYoanBlZyk7DQo+ID4gIA0K
+PiA+ICAJcmV0dXJuIDA7DQo+ID4gQEAgLTEyMDIsMTkgKzEyMDQsMjQgQEAgc3RhdGljIF9fbWF5
+YmVfdW51c2VkIGludCBtdGtfanBlZ19wbV9yZXN1bWUoc3RydWN0IGRldmljZSAqZGV2KQ0KPiA+
+ICAJc3RydWN0IG10a19qcGVnX2RldiAqanBlZyA9IGRldl9nZXRfZHJ2ZGF0YShkZXYpOw0KPiA+
+ICANCj4gPiAgCW10a19qcGVnX2Nsa19vbihqcGVnKTsNCj4gPiAtCW10a19qcGVnX2RlY19yZXNl
+dChqcGVnLT5kZWNfcmVnX2Jhc2UpOw0KPiA+ICANCj4gPiAgCXJldHVybiAwOw0KPiA+ICB9DQo+
+ID4gIA0KPiA+ICBzdGF0aWMgX19tYXliZV91bnVzZWQgaW50IG10a19qcGVnX3N1c3BlbmQoc3Ry
+dWN0IGRldmljZSAqZGV2KQ0KPiA+ICB7DQo+ID4gKwlzdHJ1Y3QgbXRrX2pwZWdfZGV2ICpqcGVn
+ID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ID4gKwl1bnNpZ25lZCBsb25nIGZsYWdzOw0KPiA+
+ICAJaW50IHJldDsNCj4gPiAgDQo+ID4gIAlpZiAocG1fcnVudGltZV9zdXNwZW5kZWQoZGV2KSkN
+Cj4gPiAgCQlyZXR1cm4gMDsNCj4gPiAgDQo+ID4gKwlzcGluX2xvY2tfaXJxc2F2ZSgmanBlZy0+
+aHdfbG9jaywgZmxhZ3MpOw0KPiANCj4gV2hhdCBkb2VzIHRoaXMgc3BpbmxvY2sgcHJvdGVjdCB1
+cyBmcm9tPyBJIGNhbiBzZWUgdGhhdCBpdCB3b3VsZCBwcmV2ZW50DQo+IHRoZSBpbnRlcnJ1cHQg
+aGFuZGxlciBmcm9tIGJlaW5nIGNhbGxlZCwgYnV0IGlzIGl0IG9rYXkgdG8gc3VzcGVuZCB0aGUN
+Cj4gc3lzdGVtIHdpdGhvdXQgaGFuZGxpbmcgdGhlIGludGVycnVwdD8NCkRlYXIgVG9tYXN6LA0K
+SSBtZWFuIHRoYXQgaWYgY3VycmVudCBpbWFnZSBpcyBwcm9jZXNzZWQgaW4gaXJxIGhhbmRsZXIs
+c3VzcGVuZA0KZnVuY3Rpb24gY2FuIG5vdCBnZXQgdGhlIGxvY2soaXQgd2FzIGxvY2tlZCBpbiBp
+cnEgaGFuZGxlcikuU2hvdWxkIEkNCm1vdmUgdGhlIHNwaW5fbG9ja19pcnFzYXZlKCZqcGVnLT5o
+d19sb2NrLCBmbGFncykgdG8gdGhlIHN0YXJ0IGxvY2F0aW9uDQpvZiBzdXNwZW5kIGZ1bmN0aW9u
+IG9yIHVzZSB3YWl0X2V2ZW50X3RpbWVvdXQoKSB0byBoYW5kbGUgdGhlIGludGVycnVwdA0KYmVm
+b3JlIHN1c3BlbmQ/DQoNCkJlc3QgUmVnYXJkcywNClhpYSBKaWFuZw0KPiANCj4gPiArDQo+ID4g
+IAlyZXQgPSBtdGtfanBlZ19wbV9zdXNwZW5kKGRldik7DQo+ID4gKw0KPiANCj4gTG9va2luZyBh
+dCB0aGUgaW1wbGVtZW50YXRpb24gb2YgbXRrX2pwZWdfcG1fc3VzcGVuZCgpLCBhbGwgaXQgZG9l
+cyBpcw0KPiBkaXNhYmxpbmcgdGhlIGNsb2NrLiBIb3cgZG8gd2UgbWFrZSBzdXJlIHRoYXQgdGhl
+cmUgaXMgbm8gZnJhbWUgY3VycmVudGx5DQo+IGJlaW5nIHByb2Nlc3NlZCBieSB0aGUgaGFyZHdh
+cmU/DQo+IA0KPiBCZXN0IHJlZ2FyZHMsDQo+IFRvbWFzeg0KDQo=
 
