@@ -2,108 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D24D1E3BC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7F71E3BCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 10:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387884AbgE0IRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 04:17:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387776AbgE0IRV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 04:17:21 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAC64C03E97C
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 01:17:20 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id a2so26912718ejb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 01:17:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=unikie-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zktQjkPIq8F7/eqX0nZqeVIC495NLQMSfws8aVeqIPI=;
-        b=JMBYzYs7GwNK/iQLl5zExv/dNJWSk8eC2CrzKLirhInzMYf5arbF0isOJqOaeueLUd
-         WQjDXa1B8f9+HVHrLVufIHu+dElkGQ6p/ZTQ5a6nnQaiYzLGerknQoq+LMBze2hak29v
-         IC/8KnaI+0R8PCj/M8ZJShEMJ6IMcCDL1LBhPNU4NJUAO7nflaGRb+5cJ6iQaMFHuWHb
-         jvEG3hDzDFaG4RT86/EQVkvpEc+WGGQz7Zhe/vlFVjGQ//0Oh2UtsYkAtNn7tP+cYqtD
-         mki4CXaDVkKqpAXapVMRQdz2D7MIpAehE7a5p/rnQLOdB5vMX4Rfz84w5bCX0LLLw7v6
-         ZEcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zktQjkPIq8F7/eqX0nZqeVIC495NLQMSfws8aVeqIPI=;
-        b=jaBwVj8mW5WDxpfs1CHEl8mpsgsYE6UyI6prUlaRa7hTzR4iH8n3/CWq/Q0WA/V+q4
-         l887VkpXmhpNsteBzjMjGeWKPBIKRH9qACWLifI4OKVyTH/obBpzNHbpAx/A7imb7mgG
-         b0wVzaAmcC1E1AZHOTQvfXpNhbvV+kfyTfwVU1rQZXWVbEbqFqE/RxMbat2+96lWKhBH
-         c6KljSA+42t8/3G934zLJ/Jvn2Dm+k3VjzzvIQZBaEcNx5V7K5uwrb1SqpwWKs7Pg+VY
-         UIAY+krzYaF/q0rurcOg9x/Hpn7jesEyApqkE3R2EIT+P37cfyZkx3H+p4XQEkeI/Jcv
-         We7A==
-X-Gm-Message-State: AOAM532Py0Xrrk1STocombLKA4NDidW1HST4FmxaVsP8yp2/CMKLGZXN
-        8thFYMU8aaKwtjHp7Zq70dpM1kCjUnnRvltA4HfCPQ==
-X-Google-Smtp-Source: ABdhPJyypWT4wmLNImCUYVUo8q4iBua9cgcZASUIqvWuf+52iRtwtH7oA+kdgksGEuWM4FVNwJ240DmuP6FMbjSSJYU=
-X-Received: by 2002:a17:906:34c4:: with SMTP id h4mr5179696ejb.167.1590567439597;
- Wed, 27 May 2020 01:17:19 -0700 (PDT)
+        id S2387974AbgE0IRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 04:17:49 -0400
+Received: from mga11.intel.com ([192.55.52.93]:28919 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387835AbgE0IRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 04:17:47 -0400
+IronPort-SDR: JtV1HuaAcmnSO8Ef7PKxlMn/MoEsZNASG5BAg287BkCL9nLgFLKL77ygd7CorKGi7cz8tBGcmt
+ 0ZK516F8BSeQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 01:17:46 -0700
+IronPort-SDR: rNAW23FmNFw0cWIuOenLCsRYoK3DaExJz+QiHFQ5/tn1anWrD5Ndz1/H4gsjY609MUdPgiuTYx
+ C3nVtGHtZtZA==
+X-IronPort-AV: E=Sophos;i="5.73,440,1583222400"; 
+   d="scan'208";a="414123547"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.141]) ([10.238.4.141])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 01:17:43 -0700
+Subject: Re: [PATCH v11 10/11] KVM: x86/pmu: Check guest LBR availability in
+ case host reclaims them
+To:     like.xu@intel.com, Peter Zijlstra <peterz@infradead.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>, ak@linux.intel.com,
+        wei.w.wang@intel.com
+References: <20200514083054.62538-1-like.xu@linux.intel.com>
+ <20200514083054.62538-11-like.xu@linux.intel.com>
+ <20200519111559.GJ279861@hirez.programming.kicks-ass.net>
+ <3a234754-e103-907f-9b06-44b5e7ae12d3@intel.com>
+ <20200519145756.GC317569@hirez.programming.kicks-ass.net>
+ <9577169d-62f4-0750-7054-5e842d5d2296@intel.com>
+From:   Like Xu <like.xu@linux.intel.com>
+Organization: Intel OTC
+Message-ID: <9f6bef69-08bc-2daa-6f12-764e9de7d418@linux.intel.com>
+Date:   Wed, 27 May 2020 16:17:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200514092637.15684-1-John.Mathew@unikie.com>
- <20200514092637.15684-4-John.Mathew@unikie.com> <20200526102511.GA5681@linux.vnet.ibm.com>
-In-Reply-To: <20200526102511.GA5681@linux.vnet.ibm.com>
-From:   John Mathew <john.mathew@unikie.com>
-Date:   Wed, 27 May 2020 11:17:08 +0300
-Message-ID: <CAJz2qXm4FKoqMMeM7n=dVpXm6Tko9edun49b=VVsN3j=xQCagQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v5 3/3] docs: scheduler: Add introduction to scheduler context-switch
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        corbet@lwn.net, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        rostedt@goodmis.org, Benjamin Segall <bsegall@google.com>,
-        mgorman@suse.de, bristot@redhat.com, tsbogend@alpha.franken.de,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>, x86@kernel.org,
-        linux-mips@vger.kernel.org, tglx@linutronix.de,
-        mostafa.chamanara@gmail.com, willy@infradead.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Mostafa Chamanara <mostafa.chamanara@basemark.com>,
-        Oleg Tsymbal <oleg.tsymbal@unikie.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9577169d-62f4-0750-7054-5e842d5d2296@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 1:26 PM Srikar Dronamraju
-<srikar@linux.vnet.ibm.com> wrote:
->
-> * john mathew <john.mathew@unikie.com> [2020-05-14 12:26:37]:
->
-> > +
-> > +Context Switching
-> > +-----------------
-> > +
-> > +Context switching, the switching from a running task to another,
-> > +is done by the context_switch() function defined in kernel/sched.c.
->
-> context_switch is defined in kernel/sched/core.c
-Fixed in v6.
->
-> > +It is called by __schedule() when a new process has been selected to run.
-> > +The execution flow is as follows:
-> > +
-> > +
-> > +  For a kernel task switching to a user task, switch_mm_irqs_off()
-> > +  replaces the address space of prev kernel task with the next from the user
-> > +  task. Same as for exiting process in this case, the context_switch()
->
-> Did you mean existing instead of exiting?
-I reworded the description in v6.
->
-> > +  function saves the pointer to the memory descriptor used by prev in the
-> > +  runqueue???s prev_mm field and resets prev task active address space.
-Yes, hopefully better described in the v6.
-Please review and ack.
-> > +
-> --
-> Thanks and Regards
-> Srikar Dronamraju
+Hi Peter,
+
+On 2020/5/20 10:01, Xu, Like wrote:
+> On 2020/5/19 22:57, Peter Zijlstra wrote:
+>> On Tue, May 19, 2020 at 09:10:58PM +0800, Xu, Like wrote:
+>>> On 2020/5/19 19:15, Peter Zijlstra wrote:
+>>>> On Thu, May 14, 2020 at 04:30:53PM +0800, Like Xu wrote:
+>>>>
+>>>>> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+>>>>> index ea4faae56473..db185dca903d 100644
+>>>>> --- a/arch/x86/kvm/vmx/pmu_intel.c
+>>>>> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+>>>>> @@ -646,6 +646,43 @@ static void intel_pmu_lbr_cleanup(struct kvm_vcpu 
+>>>>> *vcpu)
+>>>>>            intel_pmu_free_lbr_event(vcpu);
+>>>>>    }
+>>>>> +static bool intel_pmu_lbr_is_availabile(struct kvm_vcpu *vcpu)
+>>>>> +{
+>>>>> +    struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+>>>>> +
+>>>>> +    if (!pmu->lbr_event)
+>>>>> +        return false;
+>>>>> +
+>>>>> +    if (event_is_oncpu(pmu->lbr_event)) {
+>>>>> +        intel_pmu_intercept_lbr_msrs(vcpu, false);
+>>>>> +    } else {
+>>>>> +        intel_pmu_intercept_lbr_msrs(vcpu, true);
+>>>>> +        return false;
+>>>>> +    }
+>>>>> +
+>>>>> +    return true;
+>>>>> +}
+>>>> This is unreadable gunk, what?
+>>> Abstractly, it is saying "KVM would passthrough the LBR satck MSRs if
+>>> event_is_oncpu() is true, otherwise cancel the passthrough state if any."
+>>>
+>>> I'm using 'event->oncpu != -1' to represent the guest LBR event
+>>> is scheduled on rather than 'event->state == PERF_EVENT_STATE_ERROR'.
+>>>
+>>> For intel_pmu_intercept_lbr_msrs(), false means to passthrough the LBR 
+>>> stack
+>>> MSRs to the vCPU, and true means to cancel the passthrough state and make
+>>> LBR MSR accesses trapped by the KVM.
+>> To me it seems very weird to change state in a function that is supposed
+>> to just query state.
+>>
+>> 'is_available' seems to suggest a simple: return 'lbr_event->state ==
+>> PERF_EVENT_STATE_ACTIVE' or something.
+> This clarification led me to reconsider the use of a more readable name here.
+> 
+> Do you accept the check usage of "event->oncpu != -1" instead of
+> 'event->state == PERF_EVENT_STATE_ERROR' before KVM do passthrough ?
+>>
+>>>>> +static void intel_pmu_availability_check(struct kvm_vcpu *vcpu)
+>>>>> +{
+>>>>> +    lockdep_assert_irqs_disabled();
+>>>>> +
+>>>>> +    if (lbr_is_enabled(vcpu) && !intel_pmu_lbr_is_availabile(vcpu) &&
+>>>>> +        (vmcs_read64(GUEST_IA32_DEBUGCTL) & DEBUGCTLMSR_LBR))
+>>>>> +        pr_warn_ratelimited("kvm: vcpu-%d: LBR is temporarily 
+>>>>> unavailable.\n",
+>>>>> +            vcpu->vcpu_id);
+>>>> More unreadable nonsense; when the events go into ERROR state, it's a
+>>>> permanent fail, they'll not come back.
+>>> It's not true.  The guest LBR event with 'ERROR state' or 'oncpu != -1'
+>>> would be
+>>> lazy released and re-created in the next time the
+>>> intel_pmu_create_lbr_event() is
+>>> called and it's supposed to be re-scheduled and re-do availability_check()
+>>> as well.
+>> Where? Also, wth would you need to destroy and re-create an event for
+>> that?
+> If the guest does not set the EN_LBR bit and did not touch any LBR-related 
+> registers
+> in the last time slice, KVM will destroy the guest LBR event in 
+> kvm_pmu_cleanup()
+> which is called once every time the vCPU thread is scheduled in.
+> 
+> The re-creation is not directly called after the destruction
+> but is triggered by the next guest access to the LBR-related registers if any.
+> 
+>  From the time when the guest LBR event enters the "oncpu! = -1" state
+> to the next re-creation, the guest LBR is not available. After the 
+> re-creation,
+> the guest LBR is hopefully available and if it's true, the LBR will be 
+> passthrough
+> and used by the guest normally.
+> 
+> That's the reason for "LBR is temporarily unavailable"
+
+Do you still have any concerns on this issue?
+
+> and please let me know if it doesn't make sense to you.
+> 
+>>>>> @@ -6696,8 +6696,10 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu 
+>>>>> *vcpu)
+>>>>>        pt_guest_enter(vmx);
+>>>>> -    if (vcpu_to_pmu(vcpu)->version)
+>>>>> +    if (vcpu_to_pmu(vcpu)->version) {
+>>>>>            atomic_switch_perf_msrs(vmx);
+>>>>> +        kvm_x86_ops.pmu_ops->availability_check(vcpu);
+>>>>> +    }
+>>>> AFAICT you just did a call out to the kvm_pmu crud in
+>>>> atomic_switch_perf_msrs(), why do another call?
+>>> In fact, availability_check() is only called here for just one time.
+>>>
+>>> The callchain looks like:
+>>> - vmx_vcpu_run()
+>>>      - kvm_x86_ops.pmu_ops->availability_check();
+>>>          - intel_pmu_availability_check()
+>>>              - intel_pmu_lbr_is_availabile()
+>>>                  - event_is_oncpu() ...
+>>>
+>> What I'm saying is that you just did a pmu_ops indirect call in
+>> atomic_switch_perf_msrs(), why add another?
+> Do you mean the indirect call:
+> - atomic_switch_perf_msrs()
+>      - perf_guest_get_msrs()
+>          - x86_pmu.guest_get_msrs()
+> ?
+> 
+> The two pmu_ops are quite different:
+> - the first one in atomic_switch_perf_msrs() is defined in the host side;
+> - the second one for availability_check() is defined in the KVM side;
+> 
+> The availability_check() for guest LBR event and MSRs pass-through
+> operations are definitely KVM context specific.
+
+Do you still have any concerns on this issue?
+
+If you have more comments on the patchset, please let me know.
+
+> 
+> Thanks,
+> Like Xu
+> 
+
