@@ -2,83 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB0D1E449C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBA91E4491
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 15:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388962AbgE0Ny1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 09:54:27 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:44519 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388949AbgE0NyY (ORCPT
+        id S2388542AbgE0Nx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 09:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388238AbgE0Nx4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 09:54:24 -0400
-Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MYLqs-1jYsGf049q-00VMV5; Wed, 27 May 2020 15:53:55 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Bill Metzenthen <billm@melbpc.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, "H. Peter Anvin" <hpa@zytor.com>,
-        Jiri Slaby <jslaby@suse.cz>, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH] x86: math-emu: fix up 'cmp' insn for clang ias
-Date:   Wed, 27 May 2020 15:53:46 +0200
-Message-Id: <20200527135352.1198078-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.2
+        Wed, 27 May 2020 09:53:56 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C1EC08C5C1;
+        Wed, 27 May 2020 06:53:56 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id 185so3562010pgb.10;
+        Wed, 27 May 2020 06:53:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zIJO6E3el37xPFs23r+0BYVuyUYUheKW9O/DDcagkeg=;
+        b=qqH5aS1ur4kdZk4DEmrbqqDI6fBWjJeWUI/D0N8IeRWSSROSkEicn945KIjtr0Ha3b
+         xE8zOlOzgZuzF4CjhsIFbZzGbsof6WThVdWuaGCAAVZQnUJZgB0aYcV+lPVdi9L3k15n
+         M42bQikOK1Hev4eeRIqp5RwgZba/1UR5aaa/T5aNGgfYYeaQ1DjVJiC9INkVzlbC5Qym
+         k1FqXUa2IQntNO9tPpvDnOT+Sn/9ueoTPnqJLqoCHBh4nCbJbPBltw4CuxB/4YMsL+6U
+         WXMGYT/26rH9v4icIGona4UoseJSljgNc2wHNXnMKQlDIvVUMen6Egpg7uWwHoyrUBrV
+         0TyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=zIJO6E3el37xPFs23r+0BYVuyUYUheKW9O/DDcagkeg=;
+        b=HAha+exdWt5TN9ysyEMQMUFSuJvMzvVvz3zxL4XkvIuAVS2ttJyAnGo/bBG94mBB9Q
+         vwL+fclDJGH7amJrqI1R7TYeMrXc2BfAV1MZs7J60v2EixThSuFEE6n1aU+PHzmIR+dU
+         PJtWuwq/zQ0m58fsGu/IvmuIash3jL7cn5foM+E3guFXUOUWYKzNmNNbA4cuUlnuQMU6
+         lRv4jpF+Y3KkAHtMmPZlh5Kgl9MLn1SfaUhfcDQNZthTAhQZclMzxEfq5X1Hsoffisfz
+         73Yp2Y3UQyI58M3E2X/zwYvaGIEu6p+PX+Dh3kBVlUIBMtwglWxpUHe9bRCQ7k9ZBxRr
+         +x5g==
+X-Gm-Message-State: AOAM531G6uVLBvnZ6QfY3Yzl05abXXk2j85WKD+qYHJZA4Cgtj0da/S4
+        NX0IEO/IetQK4NM5ErvTsBplORml
+X-Google-Smtp-Source: ABdhPJz1LuvPOtWgAnYRUrt/W8csO26rqx3l/nODwDT3Hi4duejjV0VRoHXq/kpYkV9M46cCoQv9xw==
+X-Received: by 2002:a65:51c7:: with SMTP id i7mr4112124pgq.382.1590587635699;
+        Wed, 27 May 2020 06:53:55 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e13sm2129861pgh.76.2020.05.27.06.53.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 May 2020 06:53:55 -0700 (PDT)
+Subject: Re: [PATCH 5.4 000/111] 5.4.43-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+References: <20200526183932.245016380@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <e814bee0-3708-1243-2b16-c404cc13c9a5@roeck-us.net>
+Date:   Wed, 27 May 2020 06:53:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:bSrmojBkHTfwlBXgReUiC68L/lv6zZjqVNBUHsNFg+IGhZRhrGV
- GkkV8WpHw22LMwMARAYsoD5KYA3pBnHFcoLH5dp/x2hSAMrGJi8dChPbY792apwXWnZd7qZ
- jIjJEhxCW7TyMCWq6e4TF4u20TGSW1z/lfJGlEqVJu6zfglnwR4k+xll6LtQsZjRrt0AYNY
- lMD3pl0DIQ5Nn1RISeDUg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:lnX7E2HrOZE=:FQJKTfvN7qUyJoPZ/9XhYF
- BHoBketx+AjcNfu8zISxSCiEuFElld5XxsZKyouO4UuxkVJX5UJbUSRBNSS2zPdcx1tqe1eYr
- 5lLfUjgr6K+z1suXLLiiJEWbR6VNaa90S33XThu00XuzJ4ZUfRW7i2A9WwwigAR3oR5jjnl0S
- 8qAzdChCzOarZwq1EmYdcZw5EYnrkNBgHLqnQurRz2wk3+XSDaJyF+AoXW1im396iIrM6XeyZ
- pim7zL+SIdCRqnCynq0Y0gqppBcselctb9eb4GldF8BznfGXzlWrzC0NDHjypcSZ+UF0aJ5SE
- mzqyq8Ut3RKvELOYDAEofKljsX7hcSP1wQWDutZn2pmadfNyg/5+bRwCV9xierE6Hl0KeKvPI
- B+p3ZQrTPf4wTxead11PdWu0QX4gxK6ie1cWxtKYF78QqZUY/RMiHQy8/IvB8BHPDoZez0kQS
- I8VBI3DtBqLDXR8Zr9j81ppkoEE9pNetsYgxp5RaRxxM9klNgnWm0xKKBDh8ea8mvTSH/d+iA
- RSbvbtp0x9Dsc1IJ2SIdSRcrwrsdHfe/cjdMnjoDkbq3FweSgHg/pvnIylD4Q1+kvH4yZ4tqO
- cdzTFxVzNauQka5xtd/67AW4eRtN05mA4mf2R3e+4S9az6jn6bYtdEia6AnMfY0Fa1FLQd9se
- YMi3qZvuywzqlFAuFEDjFs/lWWnyjyNyq9w1moyIlPNdWNE8xLijzCyxxZXJ1qloHg3Pp9kLo
- o35PzC6xAQXDjcxzCx3i7meueFIaU8Woyz3uad7d6wOb74hFhme11d1kd5mAfq2szTKiapUum
- 9s0OMIfFXXp18flKMpOEKpJlSZam6A25qkIIAEuKL8pCC7m/mI=
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The clang integrated assembler requires the 'cmp' instruction to
-have a length prefix here:
+On 5/26/20 11:52 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.43 release.
+> There are 111 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 28 May 2020 18:36:22 +0000.
+> Anything received after that time might be too late.
+> 
 
-arch/x86/math-emu/wm_sqrt.S:212:2: error: ambiguous instructions require an explicit suffix (could be 'cmpb', 'cmpw', or 'cmpl')
- cmp $0xffffffff,-24(%ebp)
- ^
+Build results:
+	total: 157 pass: 157 fail: 0
+Qemu test results:
+	total: 429 pass: 429 fail: 0
 
-Make this a 32-bit comparison, which it was clearly meant to be.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/x86/math-emu/wm_sqrt.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/math-emu/wm_sqrt.S b/arch/x86/math-emu/wm_sqrt.S
-index 3b2b58164ec1..40526dd85137 100644
---- a/arch/x86/math-emu/wm_sqrt.S
-+++ b/arch/x86/math-emu/wm_sqrt.S
-@@ -209,7 +209,7 @@ sqrt_stage_2_finish:
- 
- #ifdef PARANOID
- /* It should be possible to get here only if the arg is ffff....ffff */
--	cmp	$0xffffffff,FPU_fsqrt_arg_1
-+	cmpl	$0xffffffff,FPU_fsqrt_arg_1
- 	jnz	sqrt_stage_2_error
- #endif /* PARANOID */
- 
--- 
-2.26.2
-
+Guenter
