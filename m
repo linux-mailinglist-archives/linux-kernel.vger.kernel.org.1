@@ -2,319 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA491E6F17
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 00:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B50D1E6F20
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 00:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437166AbgE1Wch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 18:32:37 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:46066 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436952AbgE1Wcc (ORCPT
+        id S2437210AbgE1Wd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 18:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436867AbgE1Wd5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 18:32:32 -0400
-Received: by mail-io1-f65.google.com with SMTP id y5so219088iob.12;
-        Thu, 28 May 2020 15:32:30 -0700 (PDT)
+        Thu, 28 May 2020 18:33:57 -0400
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70ACC08C5C6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 15:33:56 -0700 (PDT)
+Received: by mail-ua1-x943.google.com with SMTP id w20so122697uaa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 15:33:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oJwhQE9HCeUTmiQtOiXxx9Sh1XueYzXHCo6Y9/1H83Q=;
+        b=SjlvqeKViVGc7aOIS9eI2nhNipm1JrZGMDy/o1jRikdumEEXnkEqCW6BJ3WM9EtI0G
+         EjdYq017AM9wb/eys7oQOuC/Lwd1gLpHRCxbVFKCCYonJaiV2cEGPC463oXY8ubK7OSm
+         NAkzAC23S5wEIW0UyRbu2fZ5IIsFBfzsyOoDLyedSQJOGehRF2Nd7E6qEehF3W9wzhhT
+         x9j5j7YlkCde71vYDiyPZ1V/OKZHrH+hKDh01IUz7SVtuZCbWfCbGMm/bhJSN6ukP1+v
+         XxNEXigd6eU8E3UhcGAn2715dp/hEKKdseUw3SeXbNp50dW/MA2wnc9ZVPuyOo5uTAH7
+         kQaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2iWkmtIIPdkQ7s2OlH5ICkwWkQE9JDegAoIkBuC4Mh8=;
-        b=Pt5qzLEk8u4Vj0eMPinhlr2fre6hqfndBnnQE8TuN1RhaC7YHBcotVmU59Y7rklB+L
-         wCvILnTlwERbB15GziQMWNsoytZKo9WPmRPjwbjEvAlQgxYEGqhQIeGNbb2MVNs7I4kT
-         iRsEr1udJF202Y9PAWZjPTVdGA3psMScd56PWK4wgZADYVE/TqSig0w3ZhlWLAyYD484
-         NMFj5VHXu3c0Q0oeDXcxsUaKZguww8ehoWaQE0wKiMPmFS6VfedEz5EGK/zkBuFrqJGV
-         TmotOR0WhWTDyURWD/J24tY4VOPyWclPBwBsETRrPCAjlQnUbQ7S1I11yNZPtSHf673T
-         R8lQ==
-X-Gm-Message-State: AOAM531PBuiWcSv4Tv4JIGOlIGIq3nPpCPvr+VsASzp1EYLfi9FMXyPc
-        TQgUWXDiSKBgOWWTm4xnug==
-X-Google-Smtp-Source: ABdhPJwgO1mB4nZ0UFl0QlAt68U8U2JNLntupIY0/f1e3wwkTyNZyAnbKB9gbovv/3kUpAWC6z7GTw==
-X-Received: by 2002:a5e:de03:: with SMTP id e3mr4247972iok.0.1590705150063;
-        Thu, 28 May 2020 15:32:30 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id 4sm3980244ilc.34.2020.05.28.15.32.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 15:32:29 -0700 (PDT)
-Received: (nullmailer pid 801318 invoked by uid 1000);
-        Thu, 28 May 2020 22:32:28 -0000
-Date:   Thu, 28 May 2020 16:32:28 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] dt-bindings: remoteproc: Add bindings for C66x
- DSPs on TI K3 SoCs
-Message-ID: <20200528223228.GA785633@bogus>
-References: <20200521001006.2725-1-s-anna@ti.com>
- <20200521001006.2725-3-s-anna@ti.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oJwhQE9HCeUTmiQtOiXxx9Sh1XueYzXHCo6Y9/1H83Q=;
+        b=a0OZojCNrRsT8/grPIxelVH4WHi2Fm1JPNflyRLktqMkI4uN18ac3zMnglfeIw3OaS
+         R9U4HyiydoXYMzCPUeP1VAEjICCrBajI5VL5dKuQ0kQP023lj3pxQffiecoQENItdrtM
+         KDVis3k8X4IussmbYtqsxKcHvYDR+kLQ9dYQAvKBuStBGK7s6h1CXKXmZbgFXQTRTmAe
+         flpGM4ronWS6B8DLi20oUN36xNzkE6ZSqeiLphNq2+KXHCU3ob+Z+uOEWq2+210zr1so
+         2YCH5M1bFUDTo9eKs+/K1dY6utQJkbU9juZMPRKZ/Gxw3ecMORJpop8XHyfysaWSnDk2
+         9ikw==
+X-Gm-Message-State: AOAM530y8wGmlSvEoHwy8HTO7oH+PS7y2Qooq6Q1hXLjFNhIqMIpupYb
+        u0TPY+Z7FBNmQ2wpfRCu+17KOimEkkpbj/E/V4QsKw==
+X-Google-Smtp-Source: ABdhPJwklG24qC78tLiUv+OAMMw6dDxwznIIbf38X/ZwCsQtI8hzivv650mDJNKc2du4KXbfksdIAeyKB5m3lhC8GwE=
+X-Received: by 2002:ab0:70c9:: with SMTP id r9mr3866432ual.15.1590705235797;
+ Thu, 28 May 2020 15:33:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200521001006.2725-3-s-anna@ti.com>
+References: <2735489.s4WY8YHBoM@kreacher>
+In-Reply-To: <2735489.s4WY8YHBoM@kreacher>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 29 May 2020 00:33:19 +0200
+Message-ID: <CAPDyKFqVfk5aH=NyinUQXywZfQzf3EcGx6BiDp7qutRPcUV7dA@mail.gmail.com>
+Subject: Re: [PATCH] PM: runtime: Replace pm_runtime_callbacks_present()
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 07:10:04PM -0500, Suman Anna wrote:
-> Some Texas Instruments K3 family of SoCs have one of more Digital Signal
-> Processor (DSP) subsystems that are comprised of either a TMS320C66x
-> CorePac and/or a next-generation TMS320C71x CorePac processor subsystem.
-> Add the device tree bindings document for the C66x DSP devices on these
-> SoCs. The added example illustrates the DT nodes for the first C66x DSP
-> device present on the K3 J721E family of SoCs.
-> 
-> Signed-off-by: Suman Anna <s-anna@ti.com>
+On Thu, 28 May 2020 at 16:45, Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+>
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> The name of pm_runtime_callbacks_present() is confusing, because
+> it suggests that the device has PM-runtime callbacks if 'true' is
+> returned by that function, but in fact that may not be the case,
+> so replace it with pm_runtime_has_no_callbacks() which is not
+> ambiguous.
+>
+> No functional impact.
+>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+Makes sense to me, feel free to add:
+
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+
+Kind regards
+Uffe
+
 > ---
-> v2:
->  - Updated the example to include the root-node to fix the bot errors from v1
-
-Pretty sure that was not why you had errors.
-
->  - Added maxItems to resets, mboxes, memory-region, sram properties
->  - Changed the ti,sci-proc-ids $ref to uint-array from uint-matrix
->  - Addressed the minor review comments from Mathieu
-> v1: https://patchwork.kernel.org/patch/11458571/
-> 
->  .../bindings/remoteproc/ti,k3-dsp-rproc.yaml  | 190 ++++++++++++++++++
->  1 file changed, 190 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-> new file mode 100644
-> index 000000000000..cdf649655838
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-> @@ -0,0 +1,190 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/remoteproc/ti,k3-dsp-rproc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: TI K3 DSP devices
-> +
-> +maintainers:
-> +  - Suman Anna <s-anna@ti.com>
-> +
-> +description: |
-> +  The TI K3 family of SoCs usually have one or more TI DSP Core sub-systems
-> +  that are used to offload some of the processor-intensive tasks or algorithms,
-> +  for achieving various system level goals.
-> +
-> +  These processor sub-systems usually contain additional sub-modules like
-> +  L1 and/or L2 caches/SRAMs, an Interrupt Controller, an external memory
-> +  controller, a dedicated local power/sleep controller etc. The DSP processor
-> +  cores in the K3 SoCs are usually either a TMS320C66x CorePac processor or a
-> +  TMS320C71x CorePac processor.
-> +
-> +  Each DSP Core sub-system is represented as a single DT node. Each node has a
-> +  number of required or optional properties that enable the OS running on the
-> +  host processor (Arm CorePac) to perform the device management of the remote
-> +  processor and to communicate with the remote processor.
-> +
-> +properties:
-> +  compatible:
-> +    const: ti,j721e-c66-dsp
-> +    description:
-> +      Use "ti,j721e-c66-dsp" for C66x DSPs on K3 J721E SoCs
-
-What else are you going to use? There's only one compatible string. Drop 
-description.
-
-> +
-> +  reg:
-> +    description: |
-> +      Should contain an entry for each value in 'reg-names'.
-> +      Each entry should have the memory region's start address
-> +      and the size of the region, the representation matching
-> +      the parent node's '#address-cells' and '#size-cells' values.
-
-Don't need generic descriptions. That's every 'reg'.
-
-What you can do is an 'items' list describing what each region is.
-
-> +    minItems: 3
-> +    maxItems: 3
-> +
-> +  reg-names:
-> +    description: |
-> +      Should contain strings with the names of the specific internal
-> +      memory regions, and should be defined in this order
-
-Again, drop.
-
-> +    maxItems: 3
-> +    items:
-> +      - const: l2sram
-> +      - const: l1pram
-> +      - const: l1dram
-> +
-> +  ti,sci:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      Should be a phandle to the TI-SCI System Controller node
-> +
-> +  ti,sci-dev-id:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: |
-> +      Should contain the TI-SCI device id corresponding to the DSP core.
-> +      Please refer to the corresponding System Controller documentation
-> +      for valid values for the DSP cores.
-> +
-> +  ti,sci-proc-ids:
-> +    description: Should contain a single tuple of <proc_id host_id>.
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/uint32-array
-> +      - maxItems: 1
-> +        items:
-> +          items:
-> +            - description: TI-SCI processor id for the DSP core device
-> +            - description: TI-SCI host id to which processor control
-> +                           ownership should be transferred to
-
-I assume these properties appear in multiple TI nodes? We don't need 
-them defined multiple times. Create a schema for them that you can 
-include here.
-
-> +
-> +  resets:
-> +    description: |
-> +      Should contain the phandle to the reset controller node
-> +      managing the local resets for this device, and a reset
-> +      specifier. Please refer to the following reset bindings
-> +      for the reset argument specifier,
-> +      Documentation/devicetree/bindings/reset/ti,sci-reset.txt
-
-Drop.
-
-> +    maxItems: 1
-> +
-> +  firmware-name:
-> +    description: |
-> +      Should contain the name of the default firmware image
-> +      file located on the firmware search path
-> +
-> +  mboxes:
-> +    description: |
-> +      OMAP Mailbox specifier denoting the sub-mailbox, to be used for
-> +      communication with the remote processor. This property should match
-> +      with the sub-mailbox node used in the firmware image. The specifier
-> +      format is as per the bindings,
-> +      Documentation/devicetree/bindings/mailbox/omap-mailbox.txt
-
-Drop. What mailbox provider is used is outside the scope of this 
-binding.
-
-> +    maxItems: 1
-> +
-> +  memory-region:
-> +    minItems: 2
-> +    maxItems: 8
-> +    description: |
-> +      phandle to the reserved memory nodes to be associated with the remoteproc
-> +      device. There should be at least two reserved memory nodes defined - the
-> +      first one would be used for dynamic DMA allocations like vrings and vring
-> +      buffers, and the remaining ones used for the firmware image sections. The
-> +      reserved memory nodes should be carveout nodes, and should be defined as
-> +      per the bindings in
-> +      Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
-
-items:
-  - description: dynamic DMA allocations like vrings and vring buffers
-  - description: firmware image section ???
-  - description: firmware image section ???
-
-> +
-> +# Optional properties:
-> +# --------------------
-> +
-> +  sram:
-> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> +    minItems: 1
-> +    maxItems: 4
-> +    description: |
-> +      phandles to one or more reserved on-chip SRAM regions. The regions
-> +      should be defined as child nodes of the respective SRAM node, and
-> +      should be defined as per the generic bindings in,
-> +      Documentation/devicetree/bindings/sram/sram.yaml
-> +
-> +required:
-> + - compatible
-> + - reg
-> + - reg-names
-> + - ti,sci
-> + - ti,sci-dev-id
-> + - ti,sci-proc-ids
-> + - resets
-> + - firmware-name
-> + - mboxes
-> + - memory-region
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    / {
-> +        model = "Texas Instruments K3 J721E SoC";
-> +        compatible = "ti,j721e";
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        /* DSP Carveout reserved memory nodes */
-> +        reserved-memory {
-> +            #address-cells = <2>;
-> +            #size-cells = <2>;
-> +            ranges;
-> +
-> +            c66_0_dma_memory_region: c66-dma-memory@a6000000 {
-> +                compatible = "shared-dma-pool";
-> +                reg = <0x00 0xa6000000 0x00 0x100000>;
-> +                no-map;
-> +            };
-> +
-> +            c66_0_memory_region: c66-memory@a6100000 {
-> +                compatible = "shared-dma-pool";
-> +                reg = <0x00 0xa6100000 0x00 0xf00000>;
-> +                no-map;
-> +            };
-> +        };
-
-Drop all of this. Outside the scope of this binding. And will likely 
-start failing validation as schemas become more complete.
-
-> +
-> +        cbass_main: bus@100000 {
-
-Drop unused labels.
-
-> +            compatible = "simple-bus";
-> +            #address-cells = <2>;
-> +            #size-cells = <2>;
-> +            ranges = <0x00 0x00100000 0x00 0x00100000 0x00 0x00020000>, /* ctrl mmr */
-> +                     <0x4d 0x80800000 0x4d 0x80800000 0x00 0x00800000>, /* C66_0 */
-> +                     <0x4d 0x81800000 0x4d 0x81800000 0x00 0x00800000>; /* C66_1 */
-> +
-> +            /* J721E C66_0 DSP node */
-> +            c66_0: dsp@4d80800000 {
-> +                compatible = "ti,j721e-c66-dsp";
-> +                reg = <0x4d 0x80800000 0x00 0x00048000>,
-> +                      <0x4d 0x80e00000 0x00 0x00008000>,
-> +                      <0x4d 0x80f00000 0x00 0x00008000>;
-> +                reg-names = "l2sram", "l1pram", "l1dram";
-> +                ti,sci = <&dmsc>;
-> +                ti,sci-dev-id = <142>;
-> +                ti,sci-proc-ids = <0x03 0xFF>;
-> +                resets = <&k3_reset 142 1>;
-> +                firmware-name = "j7-c66_0-fw";
-> +                memory-region = <&c66_0_dma_memory_region>,
-> +                                <&c66_0_memory_region>;
-> +                mboxes = <&mailbox0_cluster3 &mbox_c66_0>;
-> +            };
-> +        };
-> +    };
-> -- 
-> 2.26.0
-> 
+>  drivers/base/power/sysfs.c |    4 ++--
+>  include/linux/pm_runtime.h |    4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+>
+> Index: linux-pm/include/linux/pm_runtime.h
+> ===================================================================
+> --- linux-pm.orig/include/linux/pm_runtime.h
+> +++ linux-pm/include/linux/pm_runtime.h
+> @@ -102,9 +102,9 @@ static inline bool pm_runtime_enabled(st
+>         return !dev->power.disable_depth;
+>  }
+>
+> -static inline bool pm_runtime_callbacks_present(struct device *dev)
+> +static inline bool pm_runtime_has_no_callbacks(struct device *dev)
+>  {
+> -       return !dev->power.no_callbacks;
+> +       return dev->power.no_callbacks;
+>  }
+>
+>  static inline void pm_runtime_mark_last_busy(struct device *dev)
+> Index: linux-pm/drivers/base/power/sysfs.c
+> ===================================================================
+> --- linux-pm.orig/drivers/base/power/sysfs.c
+> +++ linux-pm/drivers/base/power/sysfs.c
+> @@ -666,7 +666,7 @@ int dpm_sysfs_add(struct device *dev)
+>         if (rc)
+>                 return rc;
+>
+> -       if (pm_runtime_callbacks_present(dev)) {
+> +       if (!pm_runtime_has_no_callbacks(dev)) {
+>                 rc = sysfs_merge_group(&dev->kobj, &pm_runtime_attr_group);
+>                 if (rc)
+>                         goto err_out;
+> @@ -709,7 +709,7 @@ int dpm_sysfs_change_owner(struct device
+>         if (rc)
+>                 return rc;
+>
+> -       if (pm_runtime_callbacks_present(dev)) {
+> +       if (!pm_runtime_has_no_callbacks(dev)) {
+>                 rc = sysfs_group_change_owner(
+>                         &dev->kobj, &pm_runtime_attr_group, kuid, kgid);
+>                 if (rc)
+>
+>
+>
