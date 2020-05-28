@@ -2,64 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5AF1E62E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 15:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2CD51E62BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 15:49:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390770AbgE1Nwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 09:52:45 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5379 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390612AbgE1NvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 09:51:05 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 4D979DEE3C8A0E03DD1D;
-        Thu, 28 May 2020 21:50:59 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 28 May 2020 21:50:52 +0800
-From:   Huazhong Tan <tanhuazhong@huawei.com>
-To:     <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
-        <linuxarm@huawei.com>, <kuba@kernel.org>,
-        Huazhong Tan <tanhuazhong@huawei.com>
-Subject: [PATCH net-next 12/12] net: hns3: print out speed info when parsing speed fails
-Date:   Thu, 28 May 2020 21:48:19 +0800
-Message-ID: <1590673699-63819-13-git-send-email-tanhuazhong@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1590673699-63819-1-git-send-email-tanhuazhong@huawei.com>
-References: <1590673699-63819-1-git-send-email-tanhuazhong@huawei.com>
+        id S2390490AbgE1Nt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 09:49:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390538AbgE1NtX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 09:49:23 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECFBC05BD1E
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 06:49:22 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id b6so3041085qkh.11
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 06:49:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=miWLmImDnuJKbH2UD6fJ0qtMBZgQrphKm0mtgZhQM7U=;
+        b=iyjGew0l2tYfqon7DI+M0hBZTp8v0jwNf9xjgvAAzM6rc7AdrYSecs5Q5cg9z1mPid
+         evevW76ufZFzXACoLF/An8MyRGZLqdO2qUmgPR5eNmOdTXVj+J77F1T5xW6bnAEbdc+z
+         ROvgmMwU5HkY1Wg5WPg2rq/z4Fig+a1d6EnLxUq/Dod+4hDGjUWDQkD5KQwd3gFuQyrw
+         E2LMB//NavOOquFaNBAS+YqmBgD/oXa7qPXhKig3c2j7bSSErEGlgTQBrbj478iRuTgz
+         HRWZmaKBkEsVz3+OEGa7EDZJI2WbRU+Mb6s6TbHZBwLrYZK2WW4tF7Uyg+S9Vkq54mV/
+         eMYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=miWLmImDnuJKbH2UD6fJ0qtMBZgQrphKm0mtgZhQM7U=;
+        b=RC9lxXYtoEWFBTlx4AUY7hsnTAbV6LuIfAW6E8NmS1yc9oVqRduSjrtCMbADx0n0bv
+         gKt+F3ynKYSVnsrFEHRwrv96VFEA/u2rcnuzqNXDrEK5yZ3CRRFf4XHetTkW9jtvNbDv
+         E5r2knNAEdFx79zMR37Ah1M+UArgp2R7vT8NAOlERavbRP3B05dncEfIkNZwVxcCltl+
+         uLVgBVJ5IpQAr4qUeJRrxem1zRuyphJDNrhPOQsSV4BvYOtBAPbe/XpauA7OgjHbPUKK
+         vMlcJ+Zz5fBhmk6Ng2C0l/wPpq96ej+WQmos7V8v518kziX6EKGztHpNVR4qtsYsdTZC
+         nVQQ==
+X-Gm-Message-State: AOAM530eloXt8heFtCnv2UXeckPm7jCul/vh6v4OI7uRqPKVkYdtlI0q
+        eIpQsnVq1eOhKvTrMHNvyTT6Yw==
+X-Google-Smtp-Source: ABdhPJxV6hsMUOeuYKlJIRSfScFpf5CTKmx7dgyP3rPQwIREMnctPCB+tRbhMrTjYZv38/DCNzQ98g==
+X-Received: by 2002:a37:e205:: with SMTP id g5mr2875689qki.451.1590673761660;
+        Thu, 28 May 2020 06:49:21 -0700 (PDT)
+Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id v53sm4006742qtv.10.2020.05.28.06.49.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 06:49:21 -0700 (PDT)
+Date:   Thu, 28 May 2020 09:49:13 -0400
+From:   Qian Cai <cai@lca.pw>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH 2/3] kasan: move kasan_report() into report.c
+Message-ID: <20200528134913.GA1810@lca.pw>
+References: <29bd753d5ff5596425905b0b07f51153e2345cc1.1589297433.git.andreyknvl@google.com>
+ <78a81fde6eeda9db72a7fd55fbc33173a515e4b1.1589297433.git.andreyknvl@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <78a81fde6eeda9db72a7fd55fbc33173a515e4b1.1589297433.git.andreyknvl@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When calling hclge_parse_speed() fails, printing out the speed is
-helpful for debugging.
+On Tue, May 12, 2020 at 05:33:20PM +0200, 'Andrey Konovalov' via kasan-dev wrote:
+> The kasan_report() functions belongs to report.c, as it's a common
+> functions that does error reporting.
+> 
+> Reported-by: Leon Romanovsky <leon@kernel.org>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Today's linux-next produced this with Clang 11.
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index 1e4f285..96bfad5 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -1387,7 +1387,8 @@ static int hclge_configure(struct hclge_dev *hdev)
- 
- 	ret = hclge_parse_speed(cfg.default_speed, &hdev->hw.mac.speed);
- 	if (ret) {
--		dev_err(&hdev->pdev->dev, "Get wrong speed ret=%d.\n", ret);
-+		dev_err(&hdev->pdev->dev, "failed to parse speed %u, ret = %d\n",
-+			cfg.default_speed, ret);
- 		return ret;
- 	}
- 
--- 
-2.7.4
+mm/kasan/report.o: warning: objtool: kasan_report()+0x8a: call to __stack_chk_fail() with UACCESS enabled
 
+kasan_report at mm/kasan/report.c:536
+
+> ---
+>  mm/kasan/common.c | 19 -------------------
+>  mm/kasan/report.c | 22 ++++++++++++++++++++--
+>  2 files changed, 20 insertions(+), 21 deletions(-)
+> 
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 2906358e42f0..757d4074fe28 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -33,7 +33,6 @@
+>  #include <linux/types.h>
+>  #include <linux/vmalloc.h>
+>  #include <linux/bug.h>
+> -#include <linux/uaccess.h>
+>  
+>  #include <asm/cacheflush.h>
+>  #include <asm/tlbflush.h>
+> @@ -613,24 +612,6 @@ void kasan_free_shadow(const struct vm_struct *vm)
+>  }
+>  #endif
+>  
+> -extern void __kasan_report(unsigned long addr, size_t size, bool is_write, unsigned long ip);
+> -extern bool report_enabled(void);
+> -
+> -bool kasan_report(unsigned long addr, size_t size, bool is_write, unsigned long ip)
+> -{
+> -	unsigned long flags = user_access_save();
+> -	bool ret = false;
+> -
+> -	if (likely(report_enabled())) {
+> -		__kasan_report(addr, size, is_write, ip);
+> -		ret = true;
+> -	}
+> -
+> -	user_access_restore(flags);
+> -
+> -	return ret;
+> -}
+> -
+>  #ifdef CONFIG_MEMORY_HOTPLUG
+>  static bool shadow_mapped(unsigned long addr)
+>  {
+> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+> index 80f23c9da6b0..51ec45407a0b 100644
+> --- a/mm/kasan/report.c
+> +++ b/mm/kasan/report.c
+> @@ -29,6 +29,7 @@
+>  #include <linux/kasan.h>
+>  #include <linux/module.h>
+>  #include <linux/sched/task_stack.h>
+> +#include <linux/uaccess.h>
+>  
+>  #include <asm/sections.h>
+>  
+> @@ -454,7 +455,7 @@ static void print_shadow_for_address(const void *addr)
+>  	}
+>  }
+>  
+> -bool report_enabled(void)
+> +static bool report_enabled(void)
+>  {
+>  	if (current->kasan_depth)
+>  		return false;
+> @@ -479,7 +480,8 @@ void kasan_report_invalid_free(void *object, unsigned long ip)
+>  	end_report(&flags);
+>  }
+>  
+> -void __kasan_report(unsigned long addr, size_t size, bool is_write, unsigned long ip)
+> +static void __kasan_report(unsigned long addr, size_t size, bool is_write,
+> +				unsigned long ip)
+>  {
+>  	struct kasan_access_info info;
+>  	void *tagged_addr;
+> @@ -518,6 +520,22 @@ void __kasan_report(unsigned long addr, size_t size, bool is_write, unsigned lon
+>  	end_report(&flags);
+>  }
+>  
+> +bool kasan_report(unsigned long addr, size_t size, bool is_write,
+> +			unsigned long ip)
+> +{
+> +	unsigned long flags = user_access_save();
+> +	bool ret = false;
+> +
+> +	if (likely(report_enabled())) {
+> +		__kasan_report(addr, size, is_write, ip);
+> +		ret = true;
+> +	}
+> +
+> +	user_access_restore(flags);
+> +
+> +	return ret;
+> +}
+> +
+>  #ifdef CONFIG_KASAN_INLINE
+>  /*
+>   * With CONFIG_KASAN_INLINE, accesses to bogus pointers (outside the high
+> -- 
+> 2.26.2.645.ge9eca65c58-goog
+> 
+> -- 
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/78a81fde6eeda9db72a7fd55fbc33173a515e4b1.1589297433.git.andreyknvl%40google.com.
