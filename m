@@ -2,63 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B051E62C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 15:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C1E1E62D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 15:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390595AbgE1NvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 09:51:01 -0400
-Received: from muru.com ([72.249.23.125]:56018 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390530AbgE1NvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 09:51:00 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 6F64D80BF;
-        Thu, 28 May 2020 13:51:50 +0000 (UTC)
-Date:   Thu, 28 May 2020 06:50:57 -0700
-From:   Tony Lindgren <tony@atomide.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     arm@kernel.org, Rob Herring <robh@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Lokesh Vutla <lokeshvutla@ti.com>, Keerthy <j-keerthy@ti.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        linux-kernel@vger.kernel.org, Tero Kristo <t-kristo@ti.com>,
-        Olof Johansson <olof@lixom.net>, linux-omap@vger.kernel.org,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] ARM: omap2: drop broken broadcast timer hack
-Message-ID: <20200528135057.GO37466@atomide.com>
-References: <20200528091923.2951100-1-arnd@arndb.de>
- <20200528134621.GN37466@atomide.com>
+        id S2390742AbgE1NwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 09:52:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390637AbgE1NvM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 09:51:12 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA240C05BD1E
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 06:51:10 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id g7so2391119qvx.11
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 06:51:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=3Rh8K4+22O+QrskrmwrNTFBFh5vNosv/sr65KhuOYxw=;
+        b=DPWNkC3TUmnqZbbYEmi599uf3WJwosa8MGshm0VnwLkNfwtiOfu63b+H7co25zOIei
+         /PFLTBpk9KSDfT2KHg43sSZUGFDhM/Eusszyg8Vv+bhw1u5EKr819Kz0DbE+CegMJh0f
+         w0L4heEofgU4koOwKyena9NVSqmdhHsetq1AiOAnOY4to4U+fFQcSsuyKItYt7e0hGpZ
+         ZjPkjDF1i1tqA5bjWD20luWin4AwmRIreRgFjGZ7FrbOg5gXHP3PyTklpEiLRLiW4HTN
+         qilde4CsbWe+FEVPmCjq+Ads2DQV8fXNlAMQ3UD9MCF3bBayQ3MRIWh9WXhLv6+LmZk+
+         Wt6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3Rh8K4+22O+QrskrmwrNTFBFh5vNosv/sr65KhuOYxw=;
+        b=VVEXwiJCdFirFBuUIegU2Io283MMUeHxAUc+Xfxkwxs846Ch5YUdOlvg7FQveKDctr
+         N14nnGTDSb1LTluem3XjM5b/Fj/hCDQG/ROtLKToxU6wgG5CnYyCzl1U6UdAeb6cE5SC
+         i1oh1yfbsiCWE0c5F/p/asuDPrikyNb4bPQ4/iMkDKfqGwhftdkRq/DSP2/6JxxqPZNc
+         lAF3fF5b0czVEnbSsr+I/0sgOEPXP6GGqrsYzh0nxUMuEHZ7roxVQg0j6KRvbI1RpCXH
+         MV/9fqwRUU3YoaEkhRTqfQW/nAa6laqrdj/Tk7ECsnpMC9zamlVCOHwJuxWZEmYAjf1C
+         BMcg==
+X-Gm-Message-State: AOAM530pywsylFFSfA9Gok0/wztXFGHKl8qMeDz6ZSPJ+bsQVDzYoWIC
+        VaxuChvB7jyrpu7XIUKZYfquyl7HC5Esgw48mGYYNQ==
+X-Google-Smtp-Source: ABdhPJwwhNNg2jX7o0MVbONScnOgv1IrK2/t9ZTXd2p5X6gY80YlNgs/fudAJIX62UrVDXZuWcm7dMxbLlnnFexePB4=
+X-Received: by 2002:a0c:fb4b:: with SMTP id b11mr3078897qvq.96.1590673869956;
+ Thu, 28 May 2020 06:51:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200528134621.GN37466@atomide.com>
+References: <20200528132743.9221-1-brgl@bgdev.pl>
+In-Reply-To: <20200528132743.9221-1-brgl@bgdev.pl>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 28 May 2020 15:50:58 +0200
+Message-ID: <CAMpxmJU6=UfzMjB-zKV9ULPUdLe_qUr+zSwwrc1VXKv6HN6BEQ@mail.gmail.com>
+Subject: Re: [PATCH net-next] dt-bindings: net: rename the bindings document
+ for MediaTek STAR MAC
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        linux-mediatek@lists.infradead.org,
+        Fabien Parent <fparent@baylibre.com>,
+        Stephane Le Provost <stephane.leprovost@mediatek.com>,
+        Pedro Tsai <pedro.tsai@mediatek.com>,
+        Andrew Perepech <andrew.perepech@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Tony Lindgren <tony@atomide.com> [200528 13:47]:
-> * Arnd Bergmann <arnd@arndb.de> [200528 09:20]:
-> > The OMAP4 timer code had a special hack for using the broadcast timer
-> > without SMP. Since the dmtimer is now gone, this also needs to be dropped
-> > to avoid a link failure for non-SMP AM43xx configurations:
-> > 
-> > kernel/time/tick-broadcast.o: in function `tick_device_uses_broadcast':
-> > tick-broadcast.c:(.text+0x130): undefined reference to `tick_broadcast'
-> 
-> Hmm this sounds like a regression though. Isn't this needed for using
-> the ARM local timers on non-SMP SoC, so a separate timer from dmtimer?
-> 
-> I've probably removed something accidentally to cause this.
+czw., 28 maj 2020 o 15:27 Bartosz Golaszewski <brgl@bgdev.pl> napisa=C5=82(=
+a):
+>
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>
+> The driver itself was renamed before getting merged into mainline, but
+> the binding document kept the old name. This makes both names consistent.
+>
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+>  .../net/{mediatek,eth-mac.yaml =3D> mediatek,star-emac.yaml}        | 0
+>  1 file changed, 0 insertions(+), 0 deletions(-)
+>  rename Documentation/devicetree/bindings/net/{mediatek,eth-mac.yaml =3D>=
+ mediatek,star-emac.yaml} (100%)
+>
+> diff --git a/Documentation/devicetree/bindings/net/mediatek,eth-mac.yaml =
+b/Documentation/devicetree/bindings/net/mediatek,star-emac.yaml
+> similarity index 100%
+> rename from Documentation/devicetree/bindings/net/mediatek,eth-mac.yaml
+> rename to Documentation/devicetree/bindings/net/mediatek,star-emac.yaml
+> --
+> 2.26.1
+>
 
-Sounds like arch/arm/mach-omap2/Makefile change needs to be removed
-to always still build in timer.o. And probably timer.c needs back
-the ifdef for CONFIG_SOC_HAS_REALTIME_COUNTER.
+-ETOOEARLY David please don't apply this - the id field needs to be
+updated too. I'll send a v2.
 
-I'll take a look today.
-
-Regards,
-
-Tony
+Bartosz
