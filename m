@@ -2,101 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C53CE1E5A6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 10:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1271E5A81
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 10:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgE1IJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 04:09:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgE1IJo (ORCPT
+        id S1726742AbgE1IOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 04:14:48 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:49828 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726441AbgE1IOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 04:09:44 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E598C05BD1E
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 01:09:44 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id p18so378435eds.7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 01:09:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=rAYoLqKmbiaK3R2W2sdPMCtSeMR8XcWM0OyJ+Cyvku8=;
-        b=Dz+sYNlX28f+B/oP3iONFsV7PnpiTBUIELeTbACe0YXIiuym8cVjAv3lir32CaHz2x
-         P0HlvVhMPkKNmgU/sibigWdMPzAk4JrcMRTbNwS5dVi8n7RkYr5X5KCUodfCfLmvKbd/
-         WqDA52mPKPeavFQ3PT6IjQL8u4WAkrksLsu7d2QSnRqjCoxCtHzniGEjrPonolGprv5E
-         eVuGv4OsmyCVY05PTrXxIOE4huj6Ej6IV9aERlSrAx7NxtZxBH/v+TIGyARICn6TCI2V
-         doJdnnUtijwETX/YP2Y4Cjd39yxXTKtFLNetoluHAxWbp7DgReE6aLqZ9vlP8pV3gxSr
-         Sdag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=rAYoLqKmbiaK3R2W2sdPMCtSeMR8XcWM0OyJ+Cyvku8=;
-        b=V5NSE/A0i8LvAs7fKU+JoQ8yRAHTxizdoSgmRZBDeRMT3du85spNjB+qaWhpWNeLQH
-         AZT09wQiIPh/YlV3VF5LaHk7UqxPLysbWdq+GRPGsjcEJHmhQbrSgMYTYj/MHoN3qkT2
-         E7omgpVUH9y1EkxF37t1HrCynQC+hrhT8ok4CPLXT9cCBrNlF+4OJrqDceNBoetdLJxj
-         NTni/OGq615avdfrMs65SLny4w8Py2v5oFcU0VYDpvgpstyA1CD3l7uMaVWyM8D7h9WI
-         69AXcZUOQmLKMTOkWDOGMwhNhBAqxp6v4dcjSt6QIvwzgg8naFy5irrBIdPmkACvlS8J
-         2yFg==
-X-Gm-Message-State: AOAM532PvSFc8yfOHQmBKYAtDJ3dkP8WKe6ezcFDNL01Ud+FPVws3zSv
-        WKI07qiWhOkCUVHkeVefll0jdTep6NURDi5Z+Kg=
-X-Google-Smtp-Source: ABdhPJwm5auR1V2vlX2IEpKslZlLWaeuEAgV8uACBgiuA9d4CPTfswTt+EfIIfDuqUbm0IVm7aOE0RQyMfyw4Fceewo=
-X-Received: by 2002:a05:6402:2213:: with SMTP id cq19mr1795578edb.337.1590653383152;
- Thu, 28 May 2020 01:09:43 -0700 (PDT)
+        Thu, 28 May 2020 04:14:48 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0TzscnAD_1590653683;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0TzscnAD_1590653683)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 28 May 2020 16:14:44 +0800
+Subject: Re: [RFC PATCH] samples:bpf: introduce task detector
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>
+References: <6561a67d-6dac-0302-8590-5f46bb0205c2@linux.alibaba.com>
+ <CAEf4BzYwO59x0kJWNk1sfwKz=Lw+Sb_ouyRpx8-v1x8XFoqMOw@mail.gmail.com>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Message-ID: <9a78329c-8bfe-2b83-b418-3de88e972c5a@linux.alibaba.com>
+Date:   Thu, 28 May 2020 16:14:43 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.0
 MIME-Version: 1.0
-Reply-To: mr_mohammadahmed62@yahoo.com
-Received: by 2002:ab4:a883:0:0:0:0:0 with HTTP; Thu, 28 May 2020 01:09:42
- -0700 (PDT)
-From:   Mohammad Ahmed <mohamadahmed0055@gmail.com>
-Date:   Thu, 28 May 2020 01:09:42 -0700
-X-Google-Sender-Auth: s9g41Uw2KQU8thhEEkw9PLqsn6s
-Message-ID: <CAFK+uun7bSdAETkFG2AB1HbqbK2dWN34p905p=1EisfsekMKsQ@mail.gmail.com>
-Subject: GREETINGS FROM MR.MOHAMMAD AHMED / CAN I TRUST YOU?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAEf4BzYwO59x0kJWNk1sfwKz=Lw+Sb_ouyRpx8-v1x8XFoqMOw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My Dear Friend.
+Hi, Andrii
 
-Greetings.
+Thanks for your comments :-)
 
-I know this message will come to you as a surprise, My name is Mr.
-Mohammad Ahmed a banker with Bank of Africa Burkina Faso West Africa,
-Please i want to transfer an abandoned sum of 13.5 Million United
-States Dollars into your account, if you are interested do not
-Hesitate to get back to me with your personal information listed
-bellow for trust and confident to enable me feed you with more details
-on how the fund will be transfer into your account.
+On 2020/5/28 下午2:36, Andrii Nakryiko wrote:
+[snip]
+>> ---
+> 
+> I haven't looked through implementation thoroughly yet. But I have few
+> general remarks.
+> 
+> This looks like a useful and generic tool. I think it will get most
+> attention and be most useful if it will be part of BCC tools. There is
+> already a set of generic tools that use libbpf and CO-RE, see [0]. It
+> feels like this belongs there.
+> 
+> Some of the annoying parts (e.g., syscall name translation) is already
+> generalized as part of syscount tool PR (to be hopefully merged soon),
+> so you'll be able to save quite a lot of code with this. There is also
+> a common build infra that takes care of things like vmlinux.h, which
+> would provide definitions for all those xxx_args structs that you had
+> to manually define.
+> 
+> With CO-RE, it also will allow to compile this tool once and run it on
+> many different kernels without recompilation. Please do take a look
+> and submit a PR there, it will be a good addition to the toolkit (and
+> will force you write a bit of README explaining use of this tool as
+> well ;).
 
-My dear you will provide account for transfer of the fund in your
-favor by our bank management and once the fund transferred into your
-account 50% is for you and 50% for me.
+Aha, I used to think bcc only support python and cpp :-P
 
-The transaction is risk free and there will be no harm, I will like
-you to respond back to me immediately after reading this message to
-enable us proceed ahead for mutual benefit.
+I'll try to rework it and submit PR, I'm glad to know that you think
+this tool as a helpful one, we do solved some tough issue with it
+already.
 
-My  Dear  i know the source of the fund and I assure you of receiving
-it into your account without any problem, Read this message and if we
-have business urgently get back to me with your personal information
-required bellow for more details.
+> 
+> As for the code itself, I haven't gone through it much, but please
+> convert map definition syntax to BTF-defined one. The one you are
+> using is a legacy one. Thanks!
+> 
+>   [0] https://github.com/iovisor/bcc/tree/master/libbpf-tools
 
-I am looking forward to hear back from you urgently.
+Will check the example there :-)
 
-1. Full name:.........
-2. Home Address:.........
-3. Phone.............
-4. Occupation:.............
-5. Age:............
-6. Country:........
-7. Sex........
-8. Your Passport or ID card or Driving License
+Regards,
+Michael Wang
 
-Thanks.
-
-Yours faithfully
-
-Mr. Mohammad Ahmed.
+> 
+>>  samples/bpf/Makefile             |   3 +
+>>  samples/bpf/task_detector.h      | 382 +++++++++++++++++++++++++++++++++++++++
+>>  samples/bpf/task_detector_kern.c | 329 +++++++++++++++++++++++++++++++++
+>>  samples/bpf/task_detector_user.c | 314 ++++++++++++++++++++++++++++++++
+>>  4 files changed, 1028 insertions(+)
+>>  create mode 100644 samples/bpf/task_detector.h
+>>  create mode 100644 samples/bpf/task_detector_kern.c
+>>  create mode 100644 samples/bpf/task_detector_user.c
+>>
+> 
+> [...]
+> 
