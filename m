@@ -2,88 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECCB1E5B08
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 10:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF0AB1E5B0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 10:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727909AbgE1Ijz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 04:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727087AbgE1Ijy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 04:39:54 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9026C05BD1E
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 01:39:54 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id bs4so22529179edb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 01:39:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=XDdmB/aDu7vmw0I5lDV1Q4+gB4BypwighQ3lORBH3wc=;
-        b=CAf+Dz0VmWC9ztDzhIYSQC5YVbiHg299UsxRcMebMK3XVuQcskr9cr//obYizUBr+R
-         SKVtD55+vPtxiw53ri8K5USs5DFmuFlSazeRgHvcrAmaaeDFhJ+uUJtwxZQnq+7B6oyM
-         zWNmnMPBYfdRFb5U/GUekJn3HfUFhIrm4XixJSRFtA4ymOC7zXxK8WJ1BHqFmaae6lXT
-         5Us1elbOj6TDt69XYXExD6KadgdBL4mBFR+6Aa96MYHUMH84S/tkiyI5vphWCawc22pK
-         pe1eEI8Hp4dBVsvnANDTySVLCVBzOApuuVA4YBL8FRi/ElxKqW5yqqKIUBMAI6Szc5cX
-         vk3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=XDdmB/aDu7vmw0I5lDV1Q4+gB4BypwighQ3lORBH3wc=;
-        b=sMb1nLDZbGoBRDgZ6e/FYw9WpIIR+aEU/PmawSnszm8w+tkRa7j7CzcEcG2FlvFAwy
-         dX9Je+gyb3X8gNG5Qfa8zf3N6zEQ2sj1V+ZOHItVaBw36ZVEiJNlIdIkjTIJ86jh2Dtj
-         IYZ4DUonL+1NrOzbpi2QfwlSEjX0m2AGdcka0wm3gVwV4QVhKN0hXLRLMOZvAVFKoY+J
-         EWzsz2h/89lqjMcYeAnev0P/ukCVe8/k+vNBRyFPWt9/78h4MwAI9eYfNYllTcv/T5MJ
-         2SJm5/Y6h2sWNSiBfx/CbxN7+Eq69Z1i9hLIdmUKhLVqsgR23BY5JsSvX47WtNb8Q5gJ
-         TMxw==
-X-Gm-Message-State: AOAM532gQlfIfa9sjU4+WUSqwZNd2EQIO7h8pfg9r1cAMs7BCcwhPXpY
-        z0JENwRyEoPAHnReBfvQUMEX+w==
-X-Google-Smtp-Source: ABdhPJzvS0PuIZ3CoJAyjzLsVMlgK6IFKiAxLwcj9LsbX/47TMdsJOcP881ALFfWIKg9AldDIGqiIA==
-X-Received: by 2002:a50:d715:: with SMTP id t21mr1892086edi.194.1590655191533;
-        Thu, 28 May 2020 01:39:51 -0700 (PDT)
-Received: from ?IPv6:2001:16b8:4811:7000:e80e:f5df:f780:7d57? ([2001:16b8:4811:7000:e80e:f5df:f780:7d57])
-        by smtp.gmail.com with ESMTPSA id r9sm4367835edg.13.2020.05.28.01.39.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 May 2020 01:39:50 -0700 (PDT)
-Subject: Re: [PATCH 08/10] orangefs: use attach/detach_page_private
-To:     Mike Marshall <hubcap@omnibond.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Martin Brandenburg <martin@omnibond.com>,
-        devel@lists.orangefs.org
-References: <20200517214718.468-1-guoqing.jiang@cloud.ionos.com>
- <20200517214718.468-9-guoqing.jiang@cloud.ionos.com>
- <CAOg9mSQ+nGCD-k2OwWWd6Ze_PAh3mhSOwYcLugD-SQHCb0ymWw@mail.gmail.com>
-From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Message-ID: <bd3495e7-1820-6268-1a5a-76f54421fb16@cloud.ionos.com>
-Date:   Thu, 28 May 2020 10:39:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1727922AbgE1IkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 04:40:21 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:44361 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727073AbgE1IkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 04:40:20 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Xh3Q3K6Hz9sSF;
+        Thu, 28 May 2020 18:40:18 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1590655218;
+        bh=wO3NskDLpZeHuNtSC42KFVH0uq3U1oRYDbLRIkMPWRQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=t+d+xHOjVSdLqDDJYSZpk8/2E+5C3on4VKPdbOfJ/MtVhdcdUthImDhrhtSqsGKcf
+         6vkoz3giFoIN8wTO/ACaST8FhuSZVkKWukrwAaAPHUTIIteAWG7c36qjM+ruhP6qmF
+         S5RZpqJP3souYdeXDG5h50iG/RKPUs81kytUWE418M98P5atZptZ3s4rULQ3QZojxW
+         sIxtPhXpQA5UHaSs+V3Hpv1fKhWXHMbpw4QidYSCY75E+AbgyFJXROO9wTFeYYDlB0
+         fjiAj4RDrJ3Fouv3KK52mtoA8dBNhO1S4g1me6OTra2oPuWICDS/VCb7eQ8CHqjvBd
+         dXk3NKikl14qg==
+Date:   Thu, 28 May 2020 18:40:17 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: linux-next: build warnings after merge of the fsinfo tree
+Message-ID: <20200528184017.503eeff1@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <CAOg9mSQ+nGCD-k2OwWWd6Ze_PAh3mhSOwYcLugD-SQHCb0ymWw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: multipart/signed; boundary="Sig_/UTjhKZL0bHIhV5N+5c7j6Xj";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/20 11:54 PM, Mike Marshall wrote:
-> I apologize for not mentioning that I ran this patch set
-> through orangefs xfstests at 5.7 rc5 with no problems
-> or regressions.
+--Sig_/UTjhKZL0bHIhV5N+5c7j6Xj
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Glad to hear that, thanks for your effort.
+Hi all,
 
-Thanks,
-Guoqing
+After merging the fsinfo tree, today's linux-next build (x86_64
+allnoconfig) produced these warnings:
+
+In file included from kernel/sched/sched.h:39,
+                 from kernel/sched/loadavg.c:9:
+include/linux/blkdev.h:1895:41: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1895 | unsigned long disk_start_io_acct(struct gendisk *disk, unsigned int=
+ sectors,
+      |                                         ^~~~~~~
+include/linux/blkdev.h:1897:30: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1897 | void disk_end_io_acct(struct gendisk *disk, unsigned int op,
+      |                              ^~~~~~~
+In file included from fs/super.c:26:
+include/linux/blkdev.h:1895:41: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1895 | unsigned long disk_start_io_acct(struct gendisk *disk, unsigned int=
+ sectors,
+      |                                         ^~~~~~~
+include/linux/blkdev.h:1897:30: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1897 | void disk_end_io_acct(struct gendisk *disk, unsigned int op,
+      |                              ^~~~~~~
+In file included from kernel/sched/sched.h:39,
+                 from kernel/sched/clock.c:56:
+include/linux/blkdev.h:1895:41: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1895 | unsigned long disk_start_io_acct(struct gendisk *disk, unsigned int=
+ sectors,
+      |                                         ^~~~~~~
+include/linux/blkdev.h:1897:30: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1897 | void disk_end_io_acct(struct gendisk *disk, unsigned int op,
+      |                              ^~~~~~~
+In file included from kernel/sched/sched.h:39,
+                 from kernel/sched/idle.c:9:
+include/linux/blkdev.h:1895:41: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1895 | unsigned long disk_start_io_acct(struct gendisk *disk, unsigned int=
+ sectors,
+      |                                         ^~~~~~~
+include/linux/blkdev.h:1897:30: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1897 | void disk_end_io_acct(struct gendisk *disk, unsigned int op,
+      |                              ^~~~~~~
+In file included from kernel/sched/sched.h:39,
+                 from kernel/sched/cputime.c:5:
+include/linux/blkdev.h:1895:41: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1895 | unsigned long disk_start_io_acct(struct gendisk *disk, unsigned int=
+ sectors,
+      |                                         ^~~~~~~
+include/linux/blkdev.h:1897:30: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1897 | void disk_end_io_acct(struct gendisk *disk, unsigned int op,
+      |                              ^~~~~~~
+In file included from kernel/sched/sched.h:39,
+                 from kernel/sched/rt.c:6:
+include/linux/blkdev.h:1895:41: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1895 | unsigned long disk_start_io_acct(struct gendisk *disk, unsigned int=
+ sectors,
+      |                                         ^~~~~~~
+include/linux/blkdev.h:1897:30: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1897 | void disk_end_io_acct(struct gendisk *disk, unsigned int op,
+      |                              ^~~~~~~
+In file included from kernel/sched/sched.h:39,
+                 from kernel/sched/core.c:9:
+include/linux/blkdev.h:1895:41: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1895 | unsigned long disk_start_io_acct(struct gendisk *disk, unsigned int=
+ sectors,
+      |                                         ^~~~~~~
+include/linux/blkdev.h:1897:30: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1897 | void disk_end_io_acct(struct gendisk *disk, unsigned int op,
+      |                              ^~~~~~~
+In file included from kernel/sched/sched.h:39,
+                 from kernel/sched/swait.c:5:
+include/linux/blkdev.h:1895:41: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1895 | unsigned long disk_start_io_acct(struct gendisk *disk, unsigned int=
+ sectors,
+      |                                         ^~~~~~~
+include/linux/blkdev.h:1897:30: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1897 | void disk_end_io_acct(struct gendisk *disk, unsigned int op,
+      |                              ^~~~~~~
+In file included from kernel/sched/sched.h:39,
+                 from kernel/sched/wait_bit.c:5:
+include/linux/blkdev.h:1895:41: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1895 | unsigned long disk_start_io_acct(struct gendisk *disk, unsigned int=
+ sectors,
+      |                                         ^~~~~~~
+include/linux/blkdev.h:1897:30: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1897 | void disk_end_io_acct(struct gendisk *disk, unsigned int op,
+      |                              ^~~~~~~
+In file included from kernel/sched/sched.h:39,
+                 from kernel/sched/fair.c:23:
+include/linux/blkdev.h:1895:41: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1895 | unsigned long disk_start_io_acct(struct gendisk *disk, unsigned int=
+ sectors,
+      |                                         ^~~~~~~
+include/linux/blkdev.h:1897:30: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1897 | void disk_end_io_acct(struct gendisk *disk, unsigned int op,
+      |                              ^~~~~~~
+In file included from kernel/sched/sched.h:39,
+                 from kernel/sched/wait.c:7:
+include/linux/blkdev.h:1895:41: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1895 | unsigned long disk_start_io_acct(struct gendisk *disk, unsigned int=
+ sectors,
+      |                                         ^~~~~~~
+include/linux/blkdev.h:1897:30: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1897 | void disk_end_io_acct(struct gendisk *disk, unsigned int op,
+      |                              ^~~~~~~
+In file included from kernel/sched/sched.h:39,
+                 from kernel/sched/deadline.c:18:
+include/linux/blkdev.h:1895:41: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1895 | unsigned long disk_start_io_acct(struct gendisk *disk, unsigned int=
+ sectors,
+      |                                         ^~~~~~~
+include/linux/blkdev.h:1897:30: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1897 | void disk_end_io_acct(struct gendisk *disk, unsigned int op,
+      |                              ^~~~~~~
+In file included from kernel/sched/sched.h:39,
+                 from kernel/sched/completion.c:14:
+include/linux/blkdev.h:1895:41: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1895 | unsigned long disk_start_io_acct(struct gendisk *disk, unsigned int=
+ sectors,
+      |                                         ^~~~~~~
+include/linux/blkdev.h:1897:30: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1897 | void disk_end_io_acct(struct gendisk *disk, unsigned int op,
+      |                              ^~~~~~~
+In file included from fs/libfs.c:7:
+include/linux/blkdev.h:1895:41: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1895 | unsigned long disk_start_io_acct(struct gendisk *disk, unsigned int=
+ sectors,
+      |                                         ^~~~~~~
+include/linux/blkdev.h:1897:30: warning: 'struct gendisk' declared inside p=
+arameter list will not be visible outside of this definition or declaration
+ 1897 | void disk_end_io_acct(struct gendisk *disk, unsigned int op,
+      |                              ^~~~~~~
+
+Introduced by commit
+
+  956d510ee78c ("block: add disk/bio-based accounting helpers")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/UTjhKZL0bHIhV5N+5c7j6Xj
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7PePEACgkQAVBC80lX
+0GzMrQf/YF1YgzbAkk9eUnY3sy3/Vado4S6G4q7fdbgEbUPvLMMfkJfscjpjuG41
+x3eNNpAHgsIUfsY4PqmN9/uIMW5jO0fBfJkavsHlieTlpKieARRDs7mkctvAuzRH
+hQgZNgMKsD/IQ381u8/6nlT/cGTZnwcz5k33qmRvWR94DMfvimuBRKIAut5nrWY5
+Mmd91WTr40UsxkA+ou/C1A/RWDZ2xEi4FLfgG2HCxfZU/kmKvjlSeWgHV7JHwOnN
+VpjBWwW+tgv6ueHHvzqYejP+3EUw8UGOWTx6zJIz/sVrSuiBisabiuqtPoQOVsNM
+QaVC3UiGdMin9FRD7xl1pClrzssb9g==
+=Dd2x
+-----END PGP SIGNATURE-----
+
+--Sig_/UTjhKZL0bHIhV5N+5c7j6Xj--
