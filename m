@@ -2,125 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE82E1E6AC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 21:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F1D1E6ACF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 21:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406538AbgE1TZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 15:25:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43406 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406316AbgE1TZG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 15:25:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C9353AEE8;
-        Thu, 28 May 2020 19:25:03 +0000 (UTC)
-Subject: Re: [PATCH v2 00/12] clean-up the migration target allocation
- functions
-To:     js1304@gmail.com, Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@lge.com, Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-References: <1590561903-13186-1-git-send-email-iamjoonsoo.kim@lge.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <45a8ee8b-ec3a-df0f-fe23-6f64097cd263@suse.cz>
-Date:   Thu, 28 May 2020 21:25:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2406543AbgE1TZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 15:25:56 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:39292 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406229AbgE1TZs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 15:25:48 -0400
+Received: by mail-il1-f195.google.com with SMTP id c20so36907ilk.6;
+        Thu, 28 May 2020 12:25:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=e4Ebh30dLah5nkQFHP/HqHWiN5d7yYnU+hWm8jxa2y0=;
+        b=gEFxxyql6uKy8ZP5HAr2TDU6yQ8JUc7hKU621zZ1cVGXHYsW53TcYAhwbYigITdKWU
+         sdXCAU8xBEXGKhvKs36lhtvwrBnvPLrE3y7rEZdoOHBmBOXMLLoz2rZXRHv7oJNm9mo5
+         PAmkT7hMNMnjy5G9gmA6USbd4PzB2tpRS4Ll1nMJEwPfYeKErRyvRzvA5gbSKU8H0c8A
+         zWZZtsbdhUrAmEcZSsi9efVV4b9brlEjySttfqcHAeYElNje3zFROaVRttxBZ4UG5kSX
+         nONQUiQ1SodWr9s9JCNzphB1dI/sl58wjX54UD0c34mo5FlJtfUUEQMyTcQlhgaK1bPC
+         EX+g==
+X-Gm-Message-State: AOAM5332p04w3s3hoEoeMmzSsSeDSFGbTJHUrbamS0tDlNhg7aUVgLW1
+        kqBguElxsgwtt1RR/gSQaA==
+X-Google-Smtp-Source: ABdhPJz8bc1NW1uAdeop8kTE6ez5Rat1YgGQghwLnLUp8ofv7myFJ2um0Nw6ppAWwfwc+BvKgELr3Q==
+X-Received: by 2002:a92:3a81:: with SMTP id i1mr4321823ilf.234.1590693948047;
+        Thu, 28 May 2020 12:25:48 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id f1sm3673347ilh.17.2020.05.28.12.25.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 12:25:47 -0700 (PDT)
+Received: (nullmailer pid 538157 invoked by uid 1000);
+        Thu, 28 May 2020 19:25:45 -0000
+Date:   Thu, 28 May 2020 13:25:45 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        devicetree@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        linux-pci@vger.kernel.org, Jingoo Han <jingoohan1@gmail.com>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>
+Subject: Re: [PATCH v2 3/5] dt-bindings: PCI: uniphier: Add iATU register
+ description
+Message-ID: <20200528192545.GA538082@bogus>
+References: <1589536743-6684-1-git-send-email-hayashi.kunihiko@socionext.com>
+ <1589536743-6684-4-git-send-email-hayashi.kunihiko@socionext.com>
 MIME-Version: 1.0
-In-Reply-To: <1590561903-13186-1-git-send-email-iamjoonsoo.kim@lge.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1589536743-6684-4-git-send-email-hayashi.kunihiko@socionext.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/27/20 8:44 AM, js1304@gmail.com wrote:
-> From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+On Fri, 15 May 2020 18:59:01 +0900, Kunihiko Hayashi wrote:
+> In the dt-bindings, "atu" reg-names is required to get the register space
+> for iATU in Synopsis DWC version 4.80 or later.
 > 
-> This patchset clean-up the migration target allocation functions.
-> 
-> * Changes on v2
-> - add acked-by tags
-> - fix missing compound_head() call for the patch #3
-> - remove thisnode field on alloc_control and use __GFP_THISNODE directly
-> - fix missing __gfp_mask setup for the patch
-> "mm/hugetlb: do not modify user provided gfp_mask"
-> 
-> * Cover-letter
-> 
-> Contributions of this patchset are:
-> 1. unify two hugetlb alloc functions. As a result, one is remained.
-> 2. make one external hugetlb alloc function to internal one.
-> 3. unify three functions for migration target allocation.
-> 
-> The patchset is based on next-20200526.
-> The patchset is available on:
-
-I went through the series and I'd like to make some high-level suggestions
-first, that should hopefully simplify the code a bit more and reduce churn:
-
-- in the series, alloc_huge_page_nodemask() becomes the only caller of
-alloc_migrate_huge_page(). So you can inline the code there, and it's one less
-function out of many with similar name :)
-
-- after that, alloc_huge_page_nodemask(ac) uses ac mostly just to extract
-individual fields, and only pass it as a whole to dequeue_huge_page_nodemask().
-The only other caller of dequeue...() is dequeue_huge_page_vma() who has to
-construct ac from scratch. It might be probably simpler not to introduce struct
-alloc_control into hugetlb code at all, and only keep it for
-alloc_migrate_target(), at which point it can have a more specific name as
-discussed and there's less churn
-
-- I'd suggest not change signature of migrate_pages(), free_page_t and
-new_page_t, keeping the opaque private field is fine as not all callbacks use
-struct alloc_context pointer, and then e.g. compaction_alloc has to use the
-private field etc. alloc_migration_target() can simply cast the private to
-struct alloc_control *ac as the first thing
-
-Thanks!
-Vlastimil
-
-> https://github.com/JoonsooKim/linux/tree/cleanup-migration-target-allocation-v2.00-next-20200526
-> 
-> Thanks.
-> 
-> Joonsoo Kim (12):
->   mm/page_isolation: prefer the node of the source page
->   mm/migrate: move migration helper from .h to .c
->   mm/hugetlb: introduce alloc_control structure to simplify migration
->     target allocation APIs
->   mm/hugetlb: use provided ac->gfp_mask for allocation
->   mm/hugetlb: unify hugetlb migration callback function
->   mm/hugetlb: make hugetlb migration target allocation APIs CMA aware
->   mm/hugetlb: do not modify user provided gfp_mask
->   mm/migrate: change the interface of the migration target alloc/free
->     functions
->   mm/migrate: make standard migration target allocation functions
->   mm/gup: use standard migration target allocation function
->   mm/mempolicy: use standard migration target allocation function
->   mm/page_alloc: use standard migration target allocation function
->     directly
-> 
->  include/linux/hugetlb.h        | 33 ++++++---------
->  include/linux/migrate.h        | 44 +++++---------------
->  include/linux/page-isolation.h |  4 +-
->  mm/compaction.c                | 15 ++++---
->  mm/gup.c                       | 60 +++++-----------------------
->  mm/hugetlb.c                   | 91 ++++++++++++++++++++----------------------
->  mm/internal.h                  | 12 +++++-
->  mm/memory-failure.c            | 14 ++++---
->  mm/memory_hotplug.c            | 10 +++--
->  mm/mempolicy.c                 | 38 ++++++------------
->  mm/migrate.c                   | 72 +++++++++++++++++++++++++--------
->  mm/page_alloc.c                |  9 ++++-
->  mm/page_isolation.c            |  5 ---
->  13 files changed, 191 insertions(+), 216 deletions(-)
+> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> ---
+>  Documentation/devicetree/bindings/pci/uniphier-pcie.txt | 1 +
+>  1 file changed, 1 insertion(+)
 > 
 
+Acked-by: Rob Herring <robh@kernel.org>
