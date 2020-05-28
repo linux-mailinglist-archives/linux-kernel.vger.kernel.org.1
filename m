@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0CBD1E58F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 09:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9261E58E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 09:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgE1Hjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 03:39:37 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:1928 "EHLO
+        id S1726974AbgE1Hja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 03:39:30 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:1846 "EHLO
         mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726999AbgE1Hjf (ORCPT
+        by vger.kernel.org with ESMTP id S1725939AbgE1Hj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 03:39:35 -0400
+        Thu, 28 May 2020 03:39:29 -0400
 Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04S7cEfk021437;
-        Thu, 28 May 2020 09:39:22 +0200
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04S7cIbi021615;
+        Thu, 28 May 2020 09:39:15 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-type; s=STMicroelectronics;
- bh=FD9fIXxwV2oHTn6w6OIQVc/O0NAdIHR1RVt7JqzrGl8=;
- b=PIaFp3l+6vcRMk3KVG/OUCMq+hhB3SF+Fy4OXA1IdnCK5tSivVuC5f8lN1SMMcLyjnzF
- VJzCqTemMYPbEN4M0wLcnbnLXdZzE4/+/EggmTbQcXWrvqQpoJLmxr1pugn05WrGt6RP
- 3zT3LoiZ0WCSUGNAApQ49mJC8DDyDQsHjfWEEUxzLsDvqOp0ztc12IVkZGcvm075dhCO
- 9NaiyMcvlRvl+hzT5b1L3NSAwUAfmkXlJ+xKNrEEDd8Lllwe5huiwXreVzq4Oep3NO9e
- Qx3kx7/fBgEYsvVCeqmhpFtxZGrILbAGK7kmGkztQ6Bk16PPrgC7wVGaFsNmxToTehNm Wg== 
+ bh=Czrynlm97B4km/mdwdtE92PGZORQSK+XFneMmyWlY4g=;
+ b=r8qZdN0VivBTcih08Vo4TPKaNpGdQC3h4t8iOUHpvNf94XQUnQOuyvHHvH0Fg9ujv7qv
+ Imngto15NAnypUvKpaIKGz79Jp7PCfWqfhqjD6yXx4nx/IwMTPiywQwoqRujLeXtBVlt
+ QnI6U67+hiKLBfQTCdl9fe9IeN0PeKLLT96smAhhTINBBAbHNXkpHGgvrp0z/NgFH6ja
+ Uvk9332a8ukgqpE85aedpk5fepZqRik6l18cGzsNgdOSh6lDCH2QntEC97qVtyq2fMbC
+ vTIUOF6XKo+pTl9m53LRL7m8xoI0xgw6FKvOkFsONeY0WAScswdg6GYrG9hcl+PmNqvn Gg== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 319mfanmas-1
+        by mx07-00178001.pphosted.com with ESMTP id 319mfanmaw-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 May 2020 09:39:22 +0200
+        Thu, 28 May 2020 09:39:09 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7C10610002A;
-        Thu, 28 May 2020 09:38:59 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 41287100034;
+        Thu, 28 May 2020 09:39:00 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6FA982B187F;
-        Thu, 28 May 2020 09:38:59 +0200 (CEST)
-Received: from localhost (10.75.127.45) by SFHDAG3NODE1.st.com (10.75.127.7)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 28 May 2020 09:38:58
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3431E2B187F;
+        Thu, 28 May 2020 09:39:00 +0200 (CEST)
+Received: from localhost (10.75.127.44) by SFHDAG3NODE1.st.com (10.75.127.7)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 28 May 2020 09:38:59
  +0200
 From:   Erwan Le Ray <erwan.leray@st.com>
 To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
@@ -47,16 +47,16 @@ CC:     <linux-stm32@st-md-mailman.stormreply.com>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Erwan Le Ray <erwan.leray@st.com>,
         Fabrice Gasnier <fabrice.gasnier@st.com>
-Subject: [PATCH 2/3] ARM: dts: stm32: Update pin states for uart4 on stm32mp157c-ed1
-Date:   Thu, 28 May 2020 09:38:52 +0200
-Message-ID: <20200528073853.24759-3-erwan.leray@st.com>
+Subject: [PATCH 3/3] ARM: dts: stm32: Update UART4 pin states on stm32mp15xx-dkx
+Date:   Thu, 28 May 2020 09:38:53 +0200
+Message-ID: <20200528073853.24759-4-erwan.leray@st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200528073853.24759-1-erwan.leray@st.com>
 References: <20200528073853.24759-1-erwan.leray@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG3NODE1.st.com
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG7NODE3.st.com (10.75.127.21) To SFHDAG3NODE1.st.com
  (10.75.127.7)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
  definitions=2020-05-28_02:2020-05-28,2020-05-27 signatures=0
@@ -69,11 +69,11 @@ Add sleep and idle states to uart4 pin configuration.
 
 Signed-off-by: Erwan Le Ray <erwan.leray@st.com>
 
-diff --git a/arch/arm/boot/dts/stm32mp157c-ed1.dts b/arch/arm/boot/dts/stm32mp157c-ed1.dts
-index 32ccd50b4144..ca109dc18238 100644
---- a/arch/arm/boot/dts/stm32mp157c-ed1.dts
-+++ b/arch/arm/boot/dts/stm32mp157c-ed1.dts
-@@ -353,8 +353,10 @@
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
+index 70db923a45f7..e5fdbc149bf4 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
+@@ -584,8 +584,10 @@
  };
  
  &uart4 {
