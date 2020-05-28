@@ -2,131 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A63D1E6162
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 386FE1E6166
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389851AbgE1Mud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:50:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389941AbgE1Mu2 (ORCPT
+        id S2389977AbgE1MvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 08:51:15 -0400
+Received: from mail-oo1-f66.google.com ([209.85.161.66]:36172 "EHLO
+        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389871AbgE1MvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 08:50:28 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C319C05BD1E
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 05:50:28 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
-        id 1jeHzK-00Gqq8-P8; Thu, 28 May 2020 12:50:22 +0000
-Date:   Thu, 28 May 2020 13:50:22 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [git pull] coredump infoleak fix
-Message-ID: <20200528125022.GK23230@ZenIV.linux.org.uk>
-References: <20200527213447.GH23230@ZenIV.linux.org.uk>
- <20200528070255.GA790247@gmail.com>
- <20200528070552.GJ23230@ZenIV.linux.org.uk>
- <20200528074442.GB790247@gmail.com>
+        Thu, 28 May 2020 08:51:13 -0400
+Received: by mail-oo1-f66.google.com with SMTP id 18so955162ooy.3;
+        Thu, 28 May 2020 05:51:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8pYGFtFyatP+IpEQk4dFYcmOyF7X2b0QYiv1bngggIM=;
+        b=ZbSgCd7ks7qWCHLDzzdEFMZ1bFQeQTyqAaHbhfqwByWY/43nn5dCz0v/y9JDSePgWZ
+         Mj3rvxAIXb7r1F3Ar6dtPbCBElBmvkQGRwmjOyYq7/JUtUL9Ng9ApUTCkFpXTrpkxqQW
+         k9Mov4jwAud8+S7dCodt/mSvNr6Ll1d+SjT3iavRTwdlIfQTBIASxeTj4vZaQN1T58uj
+         BLoKK8IVz94wDYR21re9o7sohwCEcuOUVfHTmS+AvdTT9xhAWnZfjP1b1y3ONQtnNWaR
+         1Kz8Epu6+8J5VhE5LbvtzfiK33do2g7HqZcX0DocD/oklrcm9/mZ9o3A87In7AQf0Vhg
+         ToXQ==
+X-Gm-Message-State: AOAM530+mO7e28MyTvGGOdyS2IQpbgc1OWdlnCLxd6Ew9BM23aA6qaNh
+        NcfMh+fvlZdG4z/2Db2uWdc9z+VkXCK+ug3DQNQ=
+X-Google-Smtp-Source: ABdhPJwEUCALhLYjNIRgWe3b4phiryyKuwHSM/2W0YurC8R6JrROmO0iWcdAiHjfnVjJnC6PIDA8gr0bzjxR8A79E6U=
+X-Received: by 2002:a4a:e0d1:: with SMTP id e17mr2328258oot.1.1590670271933;
+ Thu, 28 May 2020 05:51:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200528074442.GB790247@gmail.com>
+References: <20200422072137.8517-1-o.rempel@pengutronix.de>
+ <CAMuHMdU1ZmSm_tjtWxoFNako2fzmranGVz5qqD2YRNEFRjX0Sw@mail.gmail.com>
+ <20200428154718.GA24923@lunn.ch> <6791722391359fce92b39e3a21eef89495ccf156.camel@toradex.com>
+ <CAMuHMdXm7n6cE5-ZjwxU_yKSrCaZCwqc_tBA+M_Lq53hbH2-jg@mail.gmail.com>
+ <20200429092616.7ug4kdgdltxowkcs@pengutronix.de> <CAMuHMdWf1f95ZcOLd=k1rd4WE98T1qh_3YsJteyDGtYm1m_Nfg@mail.gmail.com>
+ <3a6f6ecc5ea4de7600716a23739c13dc5b02771e.camel@toradex.com>
+In-Reply-To: <3a6f6ecc5ea4de7600716a23739c13dc5b02771e.camel@toradex.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 28 May 2020 14:51:00 +0200
+Message-ID: <CAMuHMdWnSPrAX1=Q3PQNr3QaE3nrtfr4jbE_r1_BmKke-rC92w@mail.gmail.com>
+Subject: Re: [PATCH net-next v3] net: phy: micrel: add phy-mode support for
+ the KSZ9031 PHY
+To:     Philippe Schenker <philippe.schenker@toradex.com>
+Cc:     "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "grygorii.strashko@ti.com" <grygorii.strashko@ti.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "sergei.shtylyov@cogentembedded.com" 
+        <sergei.shtylyov@cogentembedded.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "david@protonic.nl" <david@protonic.nl>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "kazuya.mizuguchi.ks@renesas.com" <kazuya.mizuguchi.ks@renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 09:44:42AM +0200, Ingo Molnar wrote:
-> 
-> * Al Viro <viro@zeniv.linux.org.uk> wrote:
-> 
-> > On Thu, May 28, 2020 at 09:02:55AM +0200, Ingo Molnar wrote:
-> > 
-> > > Looks good to me.
-> > > 
-> > > I'm wondering, shouldn't we also zero-initialize the dump data to 
-> > > begin with? See the patch below (untested).
-> > 
-> > Note that this hides the bug from KASAN, though ;-)  And the bug
-> > is not just infoleak - not all components are "all zeroes" in the
-> > init state.
-> 
-> Yeah, but is zero-init really a problem though? Wouldn't it be 
-> 'better' to have all zeroes if the dump doesn't fit? But I might be 
-> missing something ...
+Hi Philippe,
 
-"Doesn't fit" case is irrelevant for coredump - it gets a full-sized
-buffer there.  And you do not copy the components in init state into
-it.  Note that the set actually written will be different for different
-threads; it's _not_ "everything in xcr0".
+On Thu, May 28, 2020 at 10:20 AM Philippe Schenker
+<philippe.schenker@toradex.com> wrote:
+> On Wed, 2020-05-27 at 21:11 +0200, Geert Uytterhoeven wrote:
+> > On Wed, Apr 29, 2020 at 11:26 AM Oleksij Rempel <
+> > o.rempel@pengutronix.de> wrote:
+> > > On Wed, Apr 29, 2020 at 10:45:35AM +0200, Geert Uytterhoeven wrote:
+> > > > On Tue, Apr 28, 2020 at 6:16 PM Philippe Schenker
+> > > > <philippe.schenker@toradex.com> wrote:
+> > > > > On Tue, 2020-04-28 at 17:47 +0200, Andrew Lunn wrote:
+> > > > > > On Tue, Apr 28, 2020 at 05:28:30PM +0200, Geert Uytterhoeven
+> > > > > > wrote:
+> > > > > > > This triggers on Renesas Salvator-X(S):
+> > > > > > >
+> > > > > > >     Micrel KSZ9031 Gigabit PHY e6800000.ethernet-
+> > > > > > > ffffffff:00:
+> > > > > > > *-skew-ps values should be used only with phy-mode = "rgmii"
+> > > > > > >
+> > > > > > > which uses:
+> > > > > > >
+> > > > > > >         phy-mode = "rgmii-txid";
+> > > > > > >
+> > > > > > > and:
+> > > > > > >
+> > > > > > >         rxc-skew-ps = <1500>;
+> > > > > > >
+> > > > > > > If I understand
+> > > > > > > Documentation/devicetree/bindings/net/ethernet-
+> > > > > > > controller.yaml
+> > > > > > > correctly:
+> > > > > >
+> > > > > > Checking for skews which might contradict the PHY-mode is new.
+> > > > > > I think
+> > > > > > this is the first PHY driver to do it. So i'm not too
+> > > > > > surprised it has
+> > > > > > triggered a warning, or there is contradictory documentation.
+> > > > > >
+> > > > > > Your use cases is reasonable. Have the normal transmit delay,
+> > > > > > and a
+> > > > > > bit shorted receive delay. So we should allow it. It just
+> > > > > > makes the
+> > > > > > validation code more complex :-(
+> > > > >
+> > > > > I reviewed Oleksij's patch that introduced this warning. I just
+> > > > > want to
+> > > > > explain our thinking why this is a good thing, but yes maybe we
+> > > > > change
+> > > > > that warning a little bit until it lands in mainline.
+> > > > >
+> > > > > The KSZ9031 driver didn't support for proper phy-modes until now
+> > > > > as it
+> > > > > don't have dedicated registers to control tx and rx delays. With
+> > > > > Oleksij's patch this delay is now done accordingly in skew
+> > > > > registers as
+> > > > > best as possible. If you now also set the rxc-skew-ps registers
+> > > > > those
+> > > > > values you previously set with rgmii-txid or rxid get
+> > > > > overwritten.
+> >
+> > While I don't claim that the new implementation is incorrect, my
+> > biggest
+> > gripe is that this change breaks existing setups (cfr. Grygorii's
+> > report,
+> > plus see below).  People fine-tuned the parameters in their DTS files
+> > according to the old driver behavior, and now have to update their
+> > DTBs,
+> > which violates DTB backwards-compatibility rules.
+> > I know it's ugly, but I'm afraid the only backwards-compatible
+> > solution
+> > is to add a new DT property to indicate if the new rules apply.
+> >
+> > > > > We chose the warning to occur on phy-modes 'rgmii-id', 'rgmii-
+> > > > > rxid' and
+> > > > > 'rgmii-txid' as on those, with the 'rxc-skew-ps' value present,
+> > > > > overwriting skew values could occur and you end up with values
+> > > > > you do
+> > > > > not wanted. We thought, that most of the boards have just
+> > > > > 'rgmii' set in
+> > > > > phy-mode with specific skew-values present.
+> > > > >
+> > > > > @Geert if you actually want the PHY to apply RXC and TXC delays
+> > > > > just
+> > > > > insert 'rgmii-id' in your DT and remove those *-skew-ps values.
+> > > > > If you
+> > > >
+> > > > That seems to work for me, but of course doesn't take into account
+> > > > PCB
+> > > > routing.
+> >
+> > Of course I talked too soon.  Both with the existing DTS that triggers
+> > the warning, and after changing the mode to "rgmii-id", and dropping
+> > the
+> > *-skew-ps values, Ethernet became flaky on R-Car M3-W ES1.0.  While
+> > the
+> > system still boots, it boots very slow.
+> > Using nuttcp, I discovered TX performance dropped from ca. 400 Mbps to
+> > 0.1-0.3 Mbps, while RX performance looks unaffected.
+> >
+> > So I did some more testing:
+> >   1. Plain "rgmii-txid" and "rgmii" break the network completely, on
+> > all
+> >      R-Car Gen3 platforms,
+> >   2. "rgmii-id" and "rgmii-rxid" work, but cause slowness on R-Car M3-
+> > W,
+> >   3. "rgmii" with *-skew-ps values that match the old values (default
+> >      420 for everything, but default 900 for txc-skew-ps, and the 1500
+> >      override for rxc-skew-ps), behaves exactly the same as "rgmii-
+> > id",
+> >   4. "rgmii-txid" with *-skew-ps values that match the old values does
+> > work, i.e.
+> >      adding to arch/arm64/boot/dts/renesas/salvator-common.dtsi:
+> >      +               rxd0-skew-ps = <420>;
+> >      +               rxd1-skew-ps = <420>;
+> >      +               rxd2-skew-ps = <420>;
+> >      +               rxd3-skew-ps = <420>;
+> >      +               rxdv-skew-ps = <420>;
+> >      +               txc-skew-ps = <900>;
+> >      +               txd0-skew-ps = <420>;
+> >      +               txd1-skew-ps = <420>;
+> >      +               txd2-skew-ps = <420>;
+> >      +               txd3-skew-ps = <420>;
+> >      +               txen-skew-ps = <420>;
+> >
+> > You may wonder what's the difference between 3 and 4? It's not just
+> > the
+> > PHY driver that looks at phy-mode!
+> > drivers/net/ethernet/renesas/ravb_main.c:ravb_set_delay_mode() also
+> > does, and configures an additional TX clock delay of 1.8 ns if TXID is
+> > enabled.  Doing so fixes R-Car M3-W, but doesn't seem to be needed,
+> > or harm, on R-Car H3 ES2.0 and R-Car M3-N.
+>
+> Sorry for chiming in on this topic but I also did make my thoughts about
+> this implementation.
+>
+> The documentation in Documentation/devicetree/bindings/net/ethernet-
+> controller.yaml clearly states, that rgmii-id is meaning the delay is
+> provided by the PHY and MAC should not add anything in this case.
 
-See the comments in front of fpstate_sanitize_xstate():
+Thank you for your very valuable comment!
+That means the semantics are clear, and is the reason behind the existence
+of properties like "amlogic,tx-delay-ns", which do apply to the MAC.
 
- * When executing XSAVEOPT (or other optimized XSAVE instructions), if
- * a processor implementation detects that an FPU state component is still
- * (or is again) in its initialized state, it may clear the corresponding
- * bit in the header.xfeatures field, and can skip the writeout of registers
- * to the corresponding memory layout.
+Gr{oetje,eeting}s,
 
-The part about cleared bits in header.xfeatures, that is.  That, BTW,
-is why you need xfeatures_mxcsr_quirk() thing - XFEATURES_FP in xcr0 is
-always set (xsetbv would throw a GPF if you tried to clear it there),
-but the same bit in the header might very well be clear.  For the
-threads that have FPU registers in init state, which is _not_ all-zeroes.
-If not for that, xfeatures_mxcsr_quirk() would always return true.
+                        Geert
 
-============================================
-13.11         OPERATION OF XSAVES
-The operation of XSAVES is similar to that of XSAVEC. The main differences
-are (1) XSAVES can be executed only if CPL = 0; (2) XSAVES can operate on
-the state components whose bits are set in XCR0 | IA32_XSS and can thus
-operate on supervisor state components; and (3) XSAVES uses the modified
-optimization (see Section 13.6). See Section 13.2 for details of how to
-determine whether XSAVES is supported.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-The XSAVES instruction takes a single memory operand, which is an XSAVE
-area. In addition, the register pair EDX:EAX is an implicit operand used
-as a state-component bitmap (see Section 13.1) called the instruction mask.
-EDX:EAX & (XCR0 | IA32_XSS) (the logical AND the instruction mask with the
-logical OR of XCR0 and IA32_XSS) is the requested-feature bitmap (RFBM)
-of the state components to be saved.
-
-The following conditions cause execution of the XSAVES instruction to
-generate a fault:
-
-*   If the XSAVE feature set is not enabled (CR4.OSXSAVE = 0), an
-    invalid-opcode exception (#UD) occurs.
-*   If CR0.TS[bit 3] is 1, a device-not-available exception (#NM) occurs.
-*   If CPL > 0 or if the address of the XSAVE area is not 64-byte aligned,
-    a general-protection exception (#GP) occurs.
-
-If none of these conditions cause a fault, execution of XSAVES writes the
-XSTATE_BV field of the XSAVE header (see Section 13.4.2), setting
-XSTATE_BV[i] (0 <= i <= 63) as follows:
-*   If RFBM[i] = 0, XSTATE_BV[i] is written as 0.
-*   If RFBM[i] = 1, XSTATE_BV[i] is set to the value of XINUSE[i] (see below
-    for an exception made for XSTATE_BV[1]). Section 13.6 defines XINUSE to
-    describe the processor init optimization and specifies the initial
-    configuration of each state component. The nature of that optimization
-    implies the following:
-    -- If state component i is in its initial configuration, XSTATE_BV[i]
-       may be written with either 0 or 1.
-    -- If state component i is not in its initial configuration, XSTATE_BV[i]
-       is written with 1.
-    XINUSE[1] pertains only to the state of the XMM registers and not to MXCSR.
-    However, if RFBM[1] = 1 and MXCSR does not have the value 1F80H, XSAVES
-    writes XSTATE_BV[1] as 1 even if XINUSE[1] = 0.
-    (As explained in Section 13.6, the initial configurations of some state
-    components may depend on whether the processor is in 64-bit mode.)
-============================================
-
-IOW, copy_xstate_to_kernel()/copy_xstate_to_user() needs not only to map
-from compacted format to standard one; it also needs to compensate for
-that "we might skip saving the components that are in init state; we'll
-report which ones got skipped by way of ->header.xfeatures" thing.
-
-Again, those leaked uninit chunks are *not* in the same places for all
-threads.  Without any overflows, etc. involved.  And at least for
-the set 0 (x87 registers) the init state is not all-zeroes, so blanket
-memset() done first is not going to give the right results.
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
