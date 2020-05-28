@@ -2,89 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 371FA1E67FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 19:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C0F31E680A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 19:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405273AbgE1RAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 13:00:19 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:60733 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2405254AbgE1RAS (ORCPT
+        id S2405346AbgE1REJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 13:04:09 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:48912 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405249AbgE1REG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 13:00:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590685216;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=k0AbgdM89I1fch23T6oXHrlkE5eBQV/JX1tB7m1TZRI=;
-        b=d2TuXafHBgTRGeBpvmUyU/pI9KJSX7ejwOSWDQm/7TRVU81kEGnK5yFtDz28IAKr+5HQlE
-        DdxaHiD59VaOsPBb8S7+O+tXYadNbNZgUodTeqY19CUAKeS0w0figjVeNwv5lsEgVD9S1g
-        hl2PihAU0ClbEIKPqbIsnW4kg3aKMA4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-371-ey1vtCkwMGKYtdV7WbWLtA-1; Thu, 28 May 2020 13:00:14 -0400
-X-MC-Unique: ey1vtCkwMGKYtdV7WbWLtA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6A55B835B40;
-        Thu, 28 May 2020 17:00:13 +0000 (UTC)
-Received: from treble (ovpn-117-65.rdu2.redhat.com [10.10.117.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B689610013DB;
-        Thu, 28 May 2020 17:00:12 +0000 (UTC)
-Date:   Thu, 28 May 2020 12:00:10 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Matt Helsley <mhelsley@vmware.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RFC][PATCH 2/3] objtool: Find relocation base section using
- sh_info
-Message-ID: <20200528170010.xe46x3tvz4npvovj@treble>
-References: <cover.1590597288.git.mhelsley@vmware.com>
- <d848189dac6c41193a6c55c3588b78114bbcb0f8.1590597288.git.mhelsley@vmware.com>
- <20200528140916.6crguzfpehf6lext@treble>
- <20200528160247.GW9040@rlwimi.vmware.com>
+        Thu, 28 May 2020 13:04:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sPK2AUkVbYrlBIuEiT/LezDNFauHztnHTLMpmUaLaBQ=; b=VDbKzp31VwCdMbkSQ//1HtPXzL
+        FOrZOd4XaGbi+3rVJzohXjInNfJEH9pLvG8MplMMPD0ZBy7cCVzwG5rdyA8mcZAHXwPmjrXRFQbj1
+        +wO5lranokB6cgL+Z+OkN/WLfs14z0VoRKZJOlJ4MKHWO9ElQXAGCVWQ6XmrH+mQZhL41cgumt/cc
+        lAkQ4hlF5wt61fH8+WwVXShA060OwlfcZQesZVJU8Uvw8BAJVV8t7TalZqKpb+gbM9yDJnmYeYsts
+        6ckUUh0W7TD7D57ka0+kuBoDuARPGfuVn3iwr5Hf9SgIPFPo05ZJreTE7qYXMa6RsbbC9izz7X2dL
+        SY9n9xzg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jeLuM-0006fT-Po; Thu, 28 May 2020 17:01:30 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4057E9836F8; Thu, 28 May 2020 19:01:28 +0200 (CEST)
+Date:   Thu, 28 May 2020 19:01:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Phil Auld <pauld@redhat.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>, mingo@kernel.org,
+        tglx@linutronix.de, pjt@google.com, torvalds@linux-foundation.org,
+        vpillai <vpillai@digitalocean.com>, linux-kernel@vger.kernel.org,
+        fweisbec@gmail.com, keescook@chromium.org,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, aubrey.li@linux.intel.com,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH RFC] sched: Add a per-thread core scheduling interface
+Message-ID: <20200528170128.GN2483@worktop.programming.kicks-ass.net>
+References: <cover.1583332764.git.vpillai@digitalocean.com>
+ <20200520222642.70679-1-joel@joelfernandes.org>
+ <20200521085122.GF325280@hirez.programming.kicks-ass.net>
+ <20200521134705.GA140701@google.com>
+ <20200522125905.GM325280@hirez.programming.kicks-ass.net>
+ <20200522213524.GD213825@google.com>
+ <20200524140046.GA5598@lorien.usersys.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200528160247.GW9040@rlwimi.vmware.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20200524140046.GA5598@lorien.usersys.redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 09:02:47AM -0700, Matt Helsley wrote:
-> On Thu, May 28, 2020 at 09:09:16AM -0500, Josh Poimboeuf wrote:
-> > On Wed, May 27, 2020 at 09:42:32AM -0700, Matt Helsley wrote:
-> > > Currently objtool uses a naming heuristic to find the "base"
-> > > section to apply the relocation(s) to. The standard defines
-> > > the SHF_INFO_LINK flag (SHF => in the section header flags)
-> > > which indicates when the section header's sh_info field can
-> > > be used to find the necessary section.
+On Sun, May 24, 2020 at 10:00:46AM -0400, Phil Auld wrote:
+> On Fri, May 22, 2020 at 05:35:24PM -0400 Joel Fernandes wrote:
+> > On Fri, May 22, 2020 at 02:59:05PM +0200, Peter Zijlstra wrote:
+> > [..]
+> > > > > It doens't allow tasks for form their own groups (by for example setting
+> > > > > the key to that of another task).
+> > > > 
+> > > > So for this, I was thinking of making the prctl pass in an integer. And 0
+> > > > would mean untagged. Does that sound good to you?
 > > > 
-> > > Warns when the heuristic is used as a fallback and changes
-> > > the name heuristic calculation to handle rela (explicit
-> > > addend) and now rel (implicit addend) relocations.
+> > > A TID, I think. If you pass your own TID, you tag yourself as
+> > > not-sharing. If you tag yourself with another tasks's TID, you can do
+> > > ptrace tests to see if you're allowed to observe their junk.
 > > 
-> > Does this fallback case actually happen?
+> > But that would require a bunch of tasks agreeing on which TID to tag with.
+> > For example, if 2 tasks tag with each other's TID, then they would have
+> > different tags and not share.
+
+Well, don't do that then ;-)
+
+> > What's wrong with passing in an integer instead? In any case, we would do the
+> > CAP_SYS_ADMIN check to limit who can do it.
+
+So the actual permission model can be different depending on how broken
+the hardware is.
+
+> > Also, one thing CGroup interface allows is an external process to set the
+> > cookie, so I am wondering if we should use sched_setattr(2) instead of, or in
+> > addition to, the prctl(2). That way, we can drop the CGroup interface
+> > completely. How do you feel about that?
+> >
 > 
-> Not that I could see. I was thinking about taking it out but
-> I haven't tried this set with clang or other toolchains. So
-> I was wondering if you think holding off before removing it
-> would be wise or if you'd rather just remove it.
+> I think it should be an arbitrary 64bit value, in both interfaces to avoid
+> any potential reuse security issues.
+> 
+> I think the cgroup interface could be extended not to be a boolean but take
+> the value. With 0 being untagged as now.
 
-I just realized somebody already submitted an almost identical patch:
+How do you avoid reuse in such a huge space? That just creates yet
+another problem for the kernel to keep track of who is who.
 
-  https://lkml.kernel.org/r/20200421182501.149101-1-samitolvanen@google.com
+With random u64 numbers, it even becomes hard to determine if you're
+sharing at all or not.
 
-Which I'll be merging soon... so you can just drop this one.
+Now, with the current SMT+MDS trainwreck, any sharing is bad because it
+allows leaking kernel privates. But under a less severe thread scenario,
+say where only user data would be at risk, the ptrace() tests make
+sense, but those become really hard with random u64 numbers too.
 
-Then you can base your next version of this set on top of that patch, if
-it hasn't been merged yet.
+What would the purpose of random u64 values be for cgroups? That only
+replicates the problem of determining uniqueness there. Then you can get
+two cgroups unintentionally sharing because you got lucky.
 
--- 
-Josh
-
+Also, fundamentally, we cannot have more threads than TID space, it's a
+natural identifier.
