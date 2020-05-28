@@ -2,145 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 319161E5D14
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 12:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCBC21E5D17
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 12:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387876AbgE1KYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 06:24:15 -0400
-Received: from mail-am6eur05on2054.outbound.protection.outlook.com ([40.107.22.54]:6069
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387872AbgE1KYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 06:24:03 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QviM4m5HSXZ4odqs7ftu2sD+dPsI4kdoV51svBJhgDR6gKU4EkKMrxaReRvsyXe3gENaToqMqzrV53Efk7OIWT3AzNMR+KWm57dRG7mdYBkUPBzYciT7qJCyMGku8wOtGl9hEuoCR+mlWJIoCuAZX30rmz3SzjOF29H7Py/kcwdP55uWuw4+X0+ELjZLpBJ2y+9pUhj8nJ2HHyIwKeBRBOOFnzUpN1gaM4ZUGOV094VsEWvpZDVl+F3wivFo+Jlx2DNh45dOTv2zSWG37ZJF/eW72TtvzrCd0kOo7uHu734Y8pF0v6QSZv0mQCu70+Xizxx4IlYfr4UDrAb6t/sIrg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GFi/wOtHX56MMEoarjJxi2VPm9qDyNr9C75tR6Jkkdw=;
- b=EBMewNZdQy/OEDc/5CBEED1VLYL498NcVu2/QrdbUcwvKGpn2xSgWL91fozwrVc42gQ5FOfX/hEs/5k1PXpyuscYLB92cKUaoTEBOh8r+W0gjHBesxCBcX1w5Siwea9Blef1seEcEGlaV/XzIMRE/rFu1TqFVu0bwztbs8tHSAyEeOvhc9nd97Spuzu1EZv/2k5XyBKiwyTfRgqRaq4QU52oDpWZIJvEGMA4gmk5ICJmJA/wQ2tYoIUpJbt85U/ohmw215/fU0jeALoxR6DzJpIx2JZTdHdTplRDGJ7TPHtlutBv0nIQrZwwla410+o+MWZju5D7v9Z9PRZovaOpVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GFi/wOtHX56MMEoarjJxi2VPm9qDyNr9C75tR6Jkkdw=;
- b=MLmno7ivpsxJtKt/dzDT8ikN0Arjf46pIO1YO7Dg8gUHoUQRwi6FRHiGgwnNz2eI7EnXIIIZtzJrPP9SIGgUDvco6JCuFeAkzozp6+SJXJj7lQYUmqM3gCYEa4M1BubgYgTSfDW1p9vyE9mTJWdOU2saAeeZEat2SYxlDG12a1c=
-Received: from AM6PR0402MB3607.eurprd04.prod.outlook.com
- (2603:10a6:209:12::18) by AM6PR0402MB3591.eurprd04.prod.outlook.com
- (2603:10a6:209:8::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.27; Thu, 28 May
- 2020 10:23:59 +0000
-Received: from AM6PR0402MB3607.eurprd04.prod.outlook.com
- ([fe80::35f8:f020:9b47:9aa1]) by AM6PR0402MB3607.eurprd04.prod.outlook.com
- ([fe80::35f8:f020:9b47:9aa1%7]) with mapi id 15.20.3045.018; Thu, 28 May 2020
- 10:23:59 +0000
-From:   Andy Duan <fugang.duan@nxp.com>
-To:     Anson Huang <anson.huang@nxp.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        Peng Fan <peng.fan@nxp.com>,
-        "aford173@gmail.com" <aford173@gmail.com>, Jun Li <jun.li@nxp.com>,
-        "S.j. Wang" <shengjiu.wang@nxp.com>,
-        Horia Geanta <horia.geanta@nxp.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        "agx@sigxcpu.org" <agx@sigxcpu.org>,
-        "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
-        "andrew.smirnov@gmail.com" <andrew.smirnov@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH 0/4] Change i.MX/MXS SoCs ocotp/iim node name to efuse
-Thread-Topic: [PATCH 0/4] Change i.MX/MXS SoCs ocotp/iim node name to efuse
-Thread-Index: AQHWNJ9Qc3eKhmeCkkefYIr7+smDLqi9Sr6A
-Date:   Thu, 28 May 2020 10:23:59 +0000
-Message-ID: <AM6PR0402MB36074774F61793C6D460C7E7FF8E0@AM6PR0402MB3607.eurprd04.prod.outlook.com>
-References: <1590635570-8541-1-git-send-email-Anson.Huang@nxp.com>
-In-Reply-To: <1590635570-8541-1-git-send-email-Anson.Huang@nxp.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.66]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: ff032d7c-bd3d-4ae7-f36e-08d802f13c8f
-x-ms-traffictypediagnostic: AM6PR0402MB3591:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR0402MB359109CC71DAFF57ACB39A4AFF8E0@AM6PR0402MB3591.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2089;
-x-forefront-prvs: 0417A3FFD2
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: D8bh+btM5ktNbmQCvBm3TyA7bnOJZVgfAUe2RtqeJphqmAjwGuXwSF4np6c4sRQVpYa2QkEeEms0TEqmULdsL5Y3o80x755EtChIGbLizYFEbBmavE52sj4iALRn22j93K5I1dTY5CQ+qSOUxK9CoJWwH6mq7iOOTvpBE86up0bbCEkCRHR+/qrf9Upe0umy/29pA2CdVfFTWEr926iNr9X8OqWkBsxRf2oH7z9o7zwPr1rlGoc18O4f5yZiSgdZ5snjCYXxCnhqNGN+mkeyFUaNCCmFoAHSon8e2oBdat18061lG0YeA94BclPCLyw5x/CHh2l/uPp12UC5ByRQ3lRyxSBM8MvkkLbFJZsoXgjjYdEhgvEiciwN7MjwSp/N
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR0402MB3607.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(6029001)(4636009)(39860400002)(376002)(396003)(346002)(366004)(136003)(8936002)(64756008)(316002)(26005)(66476007)(8676002)(66446008)(186003)(478600001)(9686003)(55016002)(66946007)(7696005)(2906002)(71200400001)(4326008)(5660300002)(83380400001)(6506007)(76116006)(52536014)(7416002)(66556008)(86362001)(33656002)(110136005)(921003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: ltM0D42e6hEWzx2xif6RTQmgvNDXyRhqytDFjrGSsJy5GFS5cmjLHlGtfLovs/cuNWtpJvRD3rvTUmYdQzDRxxdm6754zC9p3PdCnFVjKuYEvtfRkik2jgOu0LzPEsJoRD8nWxR0105LFNsKihZAH8LbP/oxA+76+gKINzqvqkMoBBnyCe6loLvvIEbewDB47VQ0+AdNl5yIc/RA0NSz0/bQrtcwi53yc/TJg2r0JJipnY5h/tIsQOGNtt0XMMFzZbNvHdGaay1PmsdV+BxQM8JcB1HrmwKsLOaRV/fTlB0Fxp8Bk8stW4BJVMAf65v12izGRrdF4jBjNyGK85n5uD52fdGDnAPz9js7rMYMiayJ4t9nCHo5qrT1hlyoqVFO2VsgzB3dQ55cDGKBSKn3GAruFX9kYNWHsGgGdnQdsB8k4LI+YYolyQji+ljATuMY8Uqmes/RFAfar0ZaE2BZZ0rVHzOrHc5rhkvED0avUYZGPm9jSRo/+rivuq/oYg6O
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S2387881AbgE1KYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 06:24:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387752AbgE1KYj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 06:24:39 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDFCFC05BD1E
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 03:24:38 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id d128so1446224wmc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 03:24:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=mrjbcYIstFUYdIKT7W4vXIKRiqhKmb5C1fAHjTQNfVo=;
+        b=jCkJCcELA+tYzpsvg8gOCXBxN3kOS2ON5pK37PJQHV6LCJ7INR6TVjAZtiiTHDrxnO
+         zEKP2wdAP8fgBqtIX0bkTDjnGje7BbiO7TEr8u5j2eCJfe88HU6PVdhvP/kB+wn0md3f
+         ZhuhesJqoq3ZhtZMWanefUrIuogC/MQQdEZBg1/3BB1hc9nIZK0wyBQgZa//iPo4Tjuu
+         aZEegVpXn3UkbtX/ZpqznI41XqbwdS7Iy+U3EYUiCxqf+0VCbayTYs+E0+SHrTRGqgjE
+         x5Y/ixhSHTBDkkCS3vceYTs0YBCt3pIwfio50rGRvYGTWmHCyHcSu9FEPbZEg8f80242
+         I9xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=mrjbcYIstFUYdIKT7W4vXIKRiqhKmb5C1fAHjTQNfVo=;
+        b=Gg9BbzkqvUc1a4Djjdiv6B5COf/HlFmOiPToCWhj3uKalYuf9r5llgtBCcudBoctcE
+         fCLA4AlazRsCiYjNqRp+yQTgRCOZSXdNVGmq1NFWNKR7Qc6fbBFqSSrB2anMOspraxBJ
+         sjlNiWZ6r5LqObqPYR/fHBKaY8b9HFP7sKbOuOcXZpD/F0flvbdbKcwJtIzVQVKWLWS9
+         X1kn3rco5nO9Bwmz0FIXBDZE0vDybtSGh3rUpkmx9X7EpVsFpwf0098ZNBpl+QnQ3Dry
+         HHD2/sc1ma7X8YS41J3T6cdQOD6/Pgx9NLvFinVji8LHp0LJuqLbAeAX/pMWuKvvlS2r
+         QdZw==
+X-Gm-Message-State: AOAM531OEsyv4k3cvK+BJKumC9bIQLeWeBdvYA/N2TFeyAeJYhnNOtxh
+        2dqqgnQz6iCMKiUSNYDJc3XrwKJfbM8A8yAdGcc=
+X-Google-Smtp-Source: ABdhPJzrMCJA5K3rUFKG+wC1sYzIK2zW8B3VezZbap1CRbn6aTwnotdiAAN848+JP53ky2T3ExSmbdWVqVSM0K2F5A0=
+X-Received: by 2002:a1c:7e52:: with SMTP id z79mr2871784wmc.104.1590661477410;
+ Thu, 28 May 2020 03:24:37 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ff032d7c-bd3d-4ae7-f36e-08d802f13c8f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 May 2020 10:23:59.8023
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: gxErtIuS/UW46mjpxAKHGN8UoO/lpc8qD4HHFWHyd2LtbTj0+PJ1ooljPlcU0caE6XuGCkHo/ktbyA+BaUTD0A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR0402MB3591
+Received: by 2002:a1c:7418:0:0:0:0:0 with HTTP; Thu, 28 May 2020 03:24:36
+ -0700 (PDT)
+Reply-To: msjilmike101@gmail.com
+From:   Jillrita Mike <spa.rosa.mrs@gmail.com>
+Date:   Thu, 28 May 2020 12:24:36 +0200
+Message-ID: <CAPFFY3fZ06350JagCGTVapAviwptzj44YL3iL7XGjX2PndUM5Q@mail.gmail.com>
+Subject: Dear Friend.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anson Huang <Anson.Huang@nxp.com> Sent: Thursday, May 28, 2020 11:13 =
-AM
-> In the nvmem yaml schema, it requires the nodename to be one of
-> "eeprom|efuse|nvram", so need to change all i.MX/MXS SoCs ocotp/iim node
-> name to efuse:
->=20
-> MXS platforms: i.MX23/28;
-> i.MX platforms with IIM: i.MX25/27/31/35/51/53.
-> i.MX ARMv7 platforms with OCOTP: i.MX6QDL/6SL/6SX/6SLL/6UL/7S/7ULP.
-> i.MX ARMv8 platforms with OCOTP: i.MX8MQ/8MM/8MN/8MP.
+Dear Friend.
 
-Reviewed-by: Fugang Duan <fugang.duan@nxp.com>
->=20
-> Anson Huang (4):
->   ARM: dts: imx: change ocotp node name on i.MX6/7 SoCs
->   arm64: dts: imx8m: change ocotp node name on i.MX8M SoCs
->   ARM: dts: imx: change ocotp node name on MXS SoCs
->   ARM: dts: imx: change iim node name on i.MX SoCs
->=20
->  arch/arm/boot/dts/imx23.dtsi              | 2 +-
->  arch/arm/boot/dts/imx25.dtsi              | 2 +-
->  arch/arm/boot/dts/imx27.dtsi              | 2 +-
->  arch/arm/boot/dts/imx28.dtsi              | 2 +-
->  arch/arm/boot/dts/imx31.dtsi              | 2 +-
->  arch/arm/boot/dts/imx35.dtsi              | 2 +-
->  arch/arm/boot/dts/imx51.dtsi              | 2 +-
->  arch/arm/boot/dts/imx53.dtsi              | 2 +-
->  arch/arm/boot/dts/imx6qdl.dtsi            | 2 +-
->  arch/arm/boot/dts/imx6sl.dtsi             | 2 +-
->  arch/arm/boot/dts/imx6sll.dtsi            | 2 +-
->  arch/arm/boot/dts/imx6sx.dtsi             | 2 +-
->  arch/arm/boot/dts/imx6ul.dtsi             | 2 +-
->  arch/arm/boot/dts/imx7s.dtsi              | 2 +-
->  arch/arm/boot/dts/imx7ulp.dtsi            | 2 +-
->  arch/arm64/boot/dts/freescale/imx8mm.dtsi | 2 +-
-> arch/arm64/boot/dts/freescale/imx8mn.dtsi | 2 +-
-> arch/arm64/boot/dts/freescale/imx8mp.dtsi | 2 +-
-> arch/arm64/boot/dts/freescale/imx8mq.dtsi | 2 +-
->  19 files changed, 19 insertions(+), 19 deletions(-)
->=20
-> --
-> 2.7.4
+ My  name is Jillrita Mike Riddering,  I am sending this brief letter
+to solicit your support and partnership to transfer $5.5 million US
+Dollars. This money belongs to my late father Mike Riddering,my father
+and my mother were among those that were killed on 2016 terrorist
+attack at Splendid Hotel Ouagadougou Burkina Faso, my mother did not
+die instantly but she later gave up at the hospital. we are from USA
+but
+reside in Burkina Faso, my father is An American missionary,
+before my father died with my mother at Splendid hotel,
 
+Check out the web; (https://www.bbc.com/news/world-africa-35332792)
+for more understanding, I shall send you more information and
+the bank details  when I receive positive response from you to follow up.
+contact my E-mail;
+msjilmike101@gmail.com
+Thanks
+Jillrita Mike
