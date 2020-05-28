@@ -2,86 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC681E5F47
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134971E5F95
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389381AbgE1MAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:00:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51010 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389181AbgE1L6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 07:58:09 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B8CD21741;
-        Thu, 28 May 2020 11:58:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590667089;
-        bh=k001eEf5CLExcWv0jpkcsGYlWKNLQH8dqQpCxSJ/W54=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KHS9k62J9MLBY1MxLWUuXjS0HAHcTznAZLGfwYtX7icq+xFB09Y2jUm6BwvKcQV+D
-         bSfbdS7rBvP8jRYQ6dhY6IQBPDdAOmEoRRb7LxcE0WH7j/dSeelRoMkltqz63N0rHv
-         iPIKApE3CgyUpM/32JZXGH1S4+7fc7rFbyWXCXSI=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qiushi Wu <wu000273@umn.edu>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 7/9] net: sun: fix missing release regions in cas_init_one().
-Date:   Thu, 28 May 2020 07:57:58 -0400
-Message-Id: <20200528115800.1406703-7-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200528115800.1406703-1-sashal@kernel.org>
-References: <20200528115800.1406703-1-sashal@kernel.org>
+        id S2389324AbgE1MCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 08:02:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389044AbgE1MCr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 08:02:47 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52E7C05BD1E;
+        Thu, 28 May 2020 05:02:46 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id c11so30885044ljn.2;
+        Thu, 28 May 2020 05:02:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tZAAtlUG9AhJ/Atr4cE+FEtEOyGU5vjMq1zxXLMbm/M=;
+        b=ZorZ4K4yDcy4gsjhpUw7Oun7inOYaU2WCjP9bqsic1m6WYUd5QevLW3/AXbdkm9PSu
+         AtB17UQLllBYLMI2by7yQ/c81HwSUzqR3UaR4eLOGejdMjdkEGu2DOZqq/PjvMNhV/WO
+         IgLAw0dNHgMGV1Gl1G2XsYG/ZqXTLaNLsalsaENaqueEf5htqY3JpIvAvzu21614JVsG
+         nxQ1j1MNmF3fl4n/1s5aXXsUOXwwfoq44wwDJMHhTqc6NlDEE3cY6dsyisuxJIpAWFp3
+         51r6WCC3chucPPhGUpM1BKRABx4bbGSCVPdYfplXOSQul4vdHxTnFqChe0DT59uJiTC7
+         8HVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tZAAtlUG9AhJ/Atr4cE+FEtEOyGU5vjMq1zxXLMbm/M=;
+        b=DfTLA3K1ote8Qt0/DEiiCGHmnhDUqdc7waqJsN4q1lZDs7UJYl0H71nxEgSSouohv9
+         fgROrl596WMRH7+YD2f072HSs+GRhJVeEC9iZZf4SEKK9n6TFsuBqk9HjqE7v8rTw6nc
+         4Uc3jM8N0gOYxuFQks2RtO5wxJPpF9wILFra+NdX/T1hC54YD38JJnF0kgzm8hzcqz5y
+         fZImjkvFniuPs2sBuhzpSKzHD7YzbPxhVlJGiKoi5yxbX9s1nO2o5RwWQGMRtpotiHVk
+         BUu4pDqVpYOCJJ4jNWIDZltQd2rgv02zWeBDnU5jgHL4xPVne3CbJyZ9OHBZO4nOWM/Y
+         OryA==
+X-Gm-Message-State: AOAM530LP4kbJ+cIE5te5hwKyRGi1RPnZKceoiaA4Vf5v/S1jZhpKHb/
+        bwKgYpAnf6FLyHi24Avfg13uwggbCnw4DCNNnX63LA==
+X-Google-Smtp-Source: ABdhPJwmCZRWpoHjgLbsA2QTPKomwsN+ITixXa7o67e3iIg1zmy/OAFe7ddh+2EQj5ThIgflVLMLH3fIhHSR6K+mtUg=
+X-Received: by 2002:a2e:9891:: with SMTP id b17mr1395244ljj.319.1590667363018;
+ Thu, 28 May 2020 05:02:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20200527165718.129307-1-briannorris@chromium.org>
+In-Reply-To: <20200527165718.129307-1-briannorris@chromium.org>
+From:   Julian Calaby <julian.calaby@gmail.com>
+Date:   Thu, 28 May 2020 22:02:31 +1000
+Message-ID: <CAGRGNgX5n=0OEi7hMrmgVZGD=orGpgvkyLrhmXVKSFYdBJ+eUw@mail.gmail.com>
+Subject: Re: [PATCH] Revert "ath: add support for special 0x0 regulatory domain"
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
+        Wen Gong <wgong@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+Hi Brian,
 
-[ Upstream commit 5a730153984dd13f82ffae93d7170d76eba204e9 ]
+On Thu, May 28, 2020 at 5:18 AM Brian Norris <briannorris@chromium.org> wrote:
+>
+> This reverts commit 2dc016599cfa9672a147528ca26d70c3654a5423.
+>
+> Users are reporting regressions in regulatory domain detection and
+> channel availability.
+>
+> The problem this was trying to resolve was fixed in firmware anyway:
 
-In cas_init_one(), "pdev" is requested by "pci_request_regions", but it
-was not released after a call of the function “pci_write_config_byte”
-failed. Thus replace the jump target “err_write_cacheline” by
-"err_out_free_res".
+Should we tell the user their firmware needs to be upgraded if it
+reports this regulatory domain instead of completely dropping support
+for it?
 
-Fixes: 1f26dac32057 ("[NET]: Add Sun Cassini driver.")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/ethernet/sun/cassini.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Thanks,
 
-diff --git a/drivers/net/ethernet/sun/cassini.c b/drivers/net/ethernet/sun/cassini.c
-index 062bce9acde6..bfe7b55f9714 100644
---- a/drivers/net/ethernet/sun/cassini.c
-+++ b/drivers/net/ethernet/sun/cassini.c
-@@ -4980,7 +4980,7 @@ static int cas_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 					  cas_cacheline_size)) {
- 			dev_err(&pdev->dev, "Could not set PCI cache "
- 			       "line size\n");
--			goto err_write_cacheline;
-+			goto err_out_free_res;
- 		}
- 	}
- #endif
-@@ -5151,7 +5151,6 @@ err_out_iounmap:
- err_out_free_res:
- 	pci_release_regions(pdev);
- 
--err_write_cacheline:
- 	/* Try to restore it in case the error occurred after we
- 	 * set it.
- 	 */
 -- 
-2.25.1
+Julian Calaby
 
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
