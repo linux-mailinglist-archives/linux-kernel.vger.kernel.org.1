@@ -2,132 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A841E6284
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 15:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B19DA1E6290
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 15:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390509AbgE1NnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 09:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390468AbgE1NnP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 09:43:15 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E83C05BD1E;
-        Thu, 28 May 2020 06:43:15 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id m7so11583788plt.5;
-        Thu, 28 May 2020 06:43:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=azWiRUhHjCo2o19V2ZlFG7W2kgi9DZuQbiyov+RmyJQ=;
-        b=fu44bgllL7AZZXPGj53xfJU/X4VwelM5xRXvj95LeFILkWue6PCVnMXr2GhDrn9qRm
-         XeKjMW8J7y/NP+tbAsHgYJZLzCk52iZm7hSxdv0SBqQ0/TKmoIh3FzbxtRthPCC1CanV
-         cLZQWRZOrw8zZJ0z3tolbLROCIh7FrN+0zEA5abMACwkxnFttA1uLht5a81YYLQNaYeO
-         274H2gCF8eOpO4Eio2PWUGSbNLaAobuakh2T7F8z7C0oksJhr0FN1TACNlQs345pooEX
-         g0p+DMad0TLw4nzbGSaOt/d0LyGuW4aS6Cgti31qbm0Wphkt6Ao8aYPTDfmEg3gk35wP
-         pmmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=azWiRUhHjCo2o19V2ZlFG7W2kgi9DZuQbiyov+RmyJQ=;
-        b=Z1Ij/0LTgBjdy50WnQ8jdLTpm4mSl/be28dQ8U41kfbQtDAgt9WUrx9D6/1kfAQZv1
-         3hLkMJMD/Pv2o6uWOCkIzKY9jO40Nz5eBAVLFNWBZehQ7HIvkd49IwCt4xuWaekkbUnI
-         atAI0egc4Ts9yL68LqRfDm3cJS25hHBRdCrYaj/MwXZRwWq7/i4fK5i3NZb5rVmahoIy
-         49PcaGozO10l9jGOUXAyP9jcbe97oBexbIKWWMG/E3S/twOrznaJZvr4xdfb6SMV9oz8
-         AFCK1546aJ739AZXf+/sbwpiDMRSpL5e7RAFh+9q72WXbHlcj59AG594Dm+vsPqEOEWD
-         bbYQ==
-X-Gm-Message-State: AOAM5301RpD3e2iCtWz06VkUbvFrDuZ68dSplwqkNtEwyewh/nxkfyjM
-        lpn+law6E0D5ShPjSkniNGpaemk7V2Tk6aW1VIE=
-X-Google-Smtp-Source: ABdhPJzN52Ft8oXOZKiVCu8qos5NLsdiNjdUFwARDB1LrsLGeVdHj6yzu20k/+pMnYuOIah+jVpsjcl8y6ouPKo6Lu8=
-X-Received: by 2002:a17:90b:113:: with SMTP id p19mr4005458pjz.129.1590673393623;
- Thu, 28 May 2020 06:43:13 -0700 (PDT)
+        id S2390484AbgE1Nnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 09:43:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45276 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390468AbgE1Nnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 09:43:43 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D30820814;
+        Thu, 28 May 2020 13:43:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590673422;
+        bh=Wp2FVjSuQdQM5nY27/MBV/jRvPYPLJEl3U9GGXuCNz8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KL6i5+zxr7qdEUS+an9gMNhOV6YmeiVg9QCnDHeRvlTgyPT3L9oUh/ULiwgUwqC2H
+         CtIr9Q4vsabzxAkCFhJ6G+dhN7TeXGNpUbQvjENrCL8VsEA7cIJ8DjkATdZcByN1S5
+         FVm4wRNC/0Gsl38YMGjH65aDyWyjEgVQXd7AzKGM=
+Date:   Thu, 28 May 2020 14:43:38 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>, peron.clem@gmail.com,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        linux-samsung-soc@vger.kernel.org,
+        Chanwoo Choi <cw00.choi@samsung.com>
+Subject: Re: [PATCH] regulator: do not balance regulators without constraints
+Message-ID: <20200528134338.GD3606@sirena.org.uk>
+References: <CGME20200528131144eucas1p121b9151996fa3f780a5028f68c69d5ba@eucas1p1.samsung.com>
+ <20200528131130.17984-1-m.szyprowski@samsung.com>
 MIME-Version: 1.0
-References: <20200528035841.16800-1-michael@walle.cc> <20200528035841.16800-3-michael@walle.cc>
- <CAHp75VfQ64iz3qVPsZ+8z4fMQWphruB0FzzCTQPqZ9LkuhV6Ww@mail.gmail.com> <fe83fd615eaae323dcc3d578b0e7d75a@walle.cc>
-In-Reply-To: <fe83fd615eaae323dcc3d578b0e7d75a@walle.cc>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 28 May 2020 16:43:01 +0300
-Message-ID: <CAHp75Vdh6ngva4CgWY8bfQXJMjoFYDHOx0Q7c+9wOD1eebb8qA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] gpio: add a reusable generic gpio_chip using regmap
-To:     Michael Walle <michael@walle.cc>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="+B+y8wtTXqdUj1xM"
+Content-Disposition: inline
+In-Reply-To: <20200528131130.17984-1-m.szyprowski@samsung.com>
+X-Cookie: Small is beautiful.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 4:00 PM Michael Walle <michael@walle.cc> wrote:
-> Am 2020-05-28 13:45, schrieb Andy Shevchenko:
-> > On Thu, May 28, 2020 at 7:04 AM Michael Walle <michael@walle.cc> wrote:
 
-> > More comments from me below.
->
-> Thanks for the review.
+--+B+y8wtTXqdUj1xM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-You are welcome! Thanks for doing this actually.
+On Thu, May 28, 2020 at 03:11:30PM +0200, Marek Szyprowski wrote:
 
-(So, the not commented points I think you agreed with)
+> Balancing coupled regulators must wait until the clients for all of the
+> coupled regualtors set their constraints, otherwise the balancing code
+> might change the voltage of the not-yet-constrained regulator to the
+> value below the bootloader-configured operation point, what might cause a
+> system crash.
 
-...
+This forces every supply to have something which explicitly manages
+voltages which means that if one of the coupled supplies doesn't really
+care about the voltage (perhaps doesn't even have any explicit
+consumers) and just needs to be within a certain range of another supply
+then it'll end up restricting things needlessly.
 
-> >>  # Device drivers. Generally keep list sorted alphabetically
-> >
-> > Hmm...
-> >
-> >> +obj-$(CONFIG_GPIO_REGMAP)      += gpio-regmap.o
-> >>  obj-$(CONFIG_GPIO_GENERIC)     += gpio-generic.o
-> >
-> > ...is it?
->
-> That's because gpio-regmap.o seems not be a driver and more of a generic
-> thing (like gpio-generic.o) and gpio-generic.o has another rule two
-> lines
-> below and I don't want to put gpio-regmap.o in between.
+Saravana was trying to do some stuff with sync_state() which might be
+interesting here although I have concerns with that approach too:
 
-OK!
+   https://lore.kernel.org/lkml/20200527074057.246606-1-saravanak@google.com/
 
-...
+--+B+y8wtTXqdUj1xM
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> >> +       if (gpio->reg_dir_out_base) {
-> >> +               base = gpio_regmap_addr(gpio->reg_dir_out_base);
-> >> +               invert = 0;
-> >> +       } else if (gpio->reg_dir_in_base) {
-> >> +               base = gpio_regmap_addr(gpio->reg_dir_in_base);
-> >> +               invert = 1;
-> >> +       } else {
-> >
-> >> +               return GPIO_LINE_DIRECTION_IN;
-> >
-> > Hmm... Doesn't it an erroneous case and we basically shouldn't be here?
->
-> yeah, I'll return -EOPNOTSUPP. Better than just ignoring, right?
+-----BEGIN PGP SIGNATURE-----
 
-Yes, that's what I meant.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7PwAkACgkQJNaLcl1U
+h9Cwxwf+OSNkA77PUJZjj12IQJX7dCNdc8t8C/rK9BDvMjxY2PfFPsPlffbc0g5B
+pvA8cYyRD61MXZHFMQMcTz/padm+6CkIqNqdx3KYzBqjCe0fLhHPEzvmS0ha5rIJ
+QWjf6ItLBSBriLcqZxGaAfFa5wljpxsChd4rr2qO8+ye4BiAkfBP25XP2b33JFYI
+tJarx/8e2nvdZcQWao8WTzVcfEXoQZjYuD6OeZGME34cY+9F6MgGaPHqQbnhggC1
+0HB0AWoOb/NeGCNCB8qa5k3qClZY2UzTXSz7/qr+cprSrakjdKyBlW7PBOkOAYYc
+fJiKt3aeBIihleWiAyfBXrRfHlg89A==
+=rsUY
+-----END PGP SIGNATURE-----
 
-...
-
-> >> +       if (!!(val & mask) ^ invert)
-> >> +               return GPIO_LINE_DIRECTION_OUT;
-> >
-> >> +       else
-> >
-> > Redundant 'else'.
->
-> IMHO, That looks really strange. like it has nothing to do with the
-> if statement. I'd like to keep that one.
-
-We have many drivers done like that, but it's minor, so, up to you and
-maintainers.
-
--- 
-With Best Regards,
-Andy Shevchenko
+--+B+y8wtTXqdUj1xM--
