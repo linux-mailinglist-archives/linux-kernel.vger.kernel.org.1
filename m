@@ -2,90 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84FF31E6C39
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E511E6C47
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407156AbgE1UPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 16:15:47 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:55302 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407128AbgE1UPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 16:15:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=4POkvhyfkxI3mPZrBGf3TYBBAq2iHcysRl6pHV06SV0=; b=FPT4dGlyYustf3rSfQl+csHt7S
-        pozgcKxl0/C57osavR4tKyWA+BCd1vYeg8e5CA7t1UnAQSaYlewmqUFJrWqLyxfQi6uiQnFmm59Jg
-        mNdjIpMy/AaKIGDL4Jv22pYFvUH5nl4xiUzRyihV5uQRKAdsP2cLWKlv+UAshy2eiCY0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jeOvy-003ZfX-1n; Thu, 28 May 2020 22:15:22 +0200
-Date:   Thu, 28 May 2020 22:15:22 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Thomas Bogendoerfer <tbogendoerfer@suse.de>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: mvpp2: Enable autoneg bypass for
- 1000BaseX/2500BaseX ports
-Message-ID: <20200528201522.GD849697@lunn.ch>
-References: <20200528121121.125189-1-tbogendoerfer@suse.de>
- <20200528130738.GT1551@shell.armlinux.org.uk>
- <20200528151733.f1bc2fcdcb312b19b2919be9@suse.de>
- <20200528135608.GU1551@shell.armlinux.org.uk>
- <20200528163335.8f730b5a3ddc8cd9beab367f@suse.de>
- <20200528144805.GW1551@shell.armlinux.org.uk>
- <20200528204312.df9089425162a22e89669cf1@suse.de>
+        id S2406923AbgE1UQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 16:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407182AbgE1UQH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 16:16:07 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B35C08C5C6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:16:07 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id a137so383424oii.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:16:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=G9v5weXtyKc3IseC+Bgo2LPHDLXxu13c4mrDGZBtUCE=;
+        b=eBP0mtNvcqAXHNF0oqezhSLg2+R9bsxXj2wGfcc+ZrrnECjL5kT+NTlWHIiaphnLEs
+         5ZW+iIPq+L4cKRFphq4YPLqDAYjSMYFJxjGY7/EK7LlPGvTAvLZQ8e3PsScFeRSuqBni
+         85hZxAyNviK+7hpeZ0/4JOV8MJHcGYCYrkYDc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=G9v5weXtyKc3IseC+Bgo2LPHDLXxu13c4mrDGZBtUCE=;
+        b=Y94Vlz9jPcE3dedfm3VZ4knrR+W2f2qxtRmHY+cTbOyWZXHCmIzAdXDyGmab4gvBd+
+         V9w0kJ0wh8x3fTxK83FsYt31QvmZoL5qQ9XqDvNsw9ogb11ZrakmwPtYhoRNupUzmT/4
+         XwoRLUlMZszPRkgJ6aauK9ifykTw6HnAmsG1RDOHLhFZm3F3/q+OPp5tRjVJvQo0+Y7F
+         COasknouAfosoILyUilfFmCq3GRO8WVbGBBO8rNuSuFX4ZQ86o1FeBhzrW8AYCdxBiiR
+         RkeqQKT56PH4NmN7oj7cbVssLXBvkIasP/g/eIJbqCKSQ9R1oNdnffRyoTpRP64A5HOY
+         WcKA==
+X-Gm-Message-State: AOAM530br39i6YRbYQiOUBmL7POlryfUJtSXteEh6NLgBsQqkhpojuRZ
+        zfFCC/LC4hhAtrAoajFh4BQRKQ==
+X-Google-Smtp-Source: ABdhPJyar0ROKJIh65Mms+BI2c6G8U9WoJVjmRuNtKFOtHoLQ/lggDpLkCc+D6/P+K4DF/1+c3KJGQ==
+X-Received: by 2002:a54:460a:: with SMTP id p10mr3528564oip.136.1590696966382;
+        Thu, 28 May 2020 13:16:06 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id k69sm2109002oib.26.2020.05.28.13.16.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 May 2020 13:16:05 -0700 (PDT)
+Subject: Re: [PATCH v7 0/5] KUnit-KASAN Integration
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>
+Cc:     shuah <shuah@kernel.org>, Alan Maguire <alan.maguire@oracle.com>,
+        Patricia Alfonso <trishalfonso@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20200424061342.212535-1-davidgow@google.com>
+ <alpine.LRH.2.21.2005031101130.20090@localhost>
+ <26d96fb9-392b-3b20-b689-7bc2c6819e7b@kernel.org>
+ <CABVgOS=MueiJ6AHH6QUSWjipSezi1AvggxBCrh0Q9P_wa55XZQ@mail.gmail.com>
+ <CAFd5g46Y-9vSSSke05hNyOoj3=OXcJh8bHGFciDVnwkSrpcjZw@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <cadaba3e-f679-e275-4196-4e497eb27624@linuxfoundation.org>
+Date:   Thu, 28 May 2020 14:16:04 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200528204312.df9089425162a22e89669cf1@suse.de>
+In-Reply-To: <CAFd5g46Y-9vSSSke05hNyOoj3=OXcJh8bHGFciDVnwkSrpcjZw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 08:43:12PM +0200, Thomas Bogendoerfer wrote:
-> On Thu, 28 May 2020 15:48:05 +0100
-> Russell King - ARM Linux admin <linux@armlinux.org.uk> wrote:
+On 5/28/20 1:52 PM, Brendan Higgins wrote:
+> On Tue, May 26, 2020 at 7:51 PM David Gow <davidgow@google.com> wrote:
+>>
+>> On Sat, May 23, 2020 at 6:30 AM shuah <shuah@kernel.org> wrote:
+>>>
+>>> On 5/3/20 4:09 AM, Alan Maguire wrote:
+>>>> On Thu, 23 Apr 2020, David Gow wrote:
+>>>>
+>>>>> This patchset contains everything needed to integrate KASAN and KUnit.
+>>>>>
+>>>>> KUnit will be able to:
+>>>>> (1) Fail tests when an unexpected KASAN error occurs
+>>>>> (2) Pass tests when an expected KASAN error occurs
+>>>>>
+>>>>> Convert KASAN tests to KUnit with the exception of copy_user_test
+>>>>> because KUnit is unable to test those.
+>>>>>
+>>>>> Add documentation on how to run the KASAN tests with KUnit and what to
+>>>>> expect when running these tests.
+>>>>>
+>>>>> This patchset depends on:
+>>>>> - "[PATCH v3 kunit-next 0/2] kunit: extend kunit resources API" [1]
+>>>>> - "[PATCH v3 0/3] Fix some incompatibilites between KASAN and
+>>>>>     FORTIFY_SOURCE" [2]
+>>>>>
+>>>>> Changes from v6:
+>>>>>    - Rebased on top of kselftest/kunit
+>>>>>    - Rebased on top of Daniel Axtens' fix for FORTIFY_SOURCE
+>>>>>      incompatibilites [2]
+>>>>>    - Removed a redundant report_enabled() check.
+>>>>>    - Fixed some places with out of date Kconfig names in the
+>>>>>      documentation.
+>>>>>
+>>>>
+>>>> Sorry for the delay in getting to this; I retested the
+>>>> series with the above patchsets pre-applied; all looks
+>>>> good now, thanks!  Looks like Daniel's patchset has a v4
+>>>> so I'm not sure if that will have implications for applying
+>>>> your changes on top of it (haven't tested it yet myself).
+>>>>
+>>>> For the series feel free to add
+>>>>
+>>>> Tested-by: Alan Maguire <alan.maguire@oracle.com>
+>>>>
+>>>> I'll try and take some time to review v7 shortly, but I wanted
+>>>> to confirm the issues I saw went away first in case you're
+>>>> blocked.  The only remaining issue I see is that we'd need the
+>>>> named resource patchset to land first; it would be good
+>>>> to ensure the API it provides is solid so you won't need to
+>>>> respin.
+>>>>
+>>>> Thanks!
+>>>>
+>>>> Alan
+>>>>
+>>>>> Changes from v5:
+>>>>>    - Split out the panic_on_warn changes to a separate patch.
+>>>>>    - Fix documentation to fewer to the new Kconfig names.
+>>>>>    - Fix some changes which were in the wrong patch.
+>>>>>    - Rebase on top of kselftest/kunit (currently identical to 5.7-rc1)
+>>>>>
+>>>>
+>>>
+>>> Hi Brendan,
+>>>
+>>> Is this series ready to go inot Linux 5.8-rc1? Let me know.
+>>> Probably needs rebase on top of kselftest/kunit. I applied
+>>> patches from David and Vitor
+>>>
+>>> thanks,
+>>> -- Shuah
+>>>
+>>
+>> Hi Shuah,
+>>
+>> I think the only things holding this up are the missing dependencies:
+>> the "extend kunit resources API" patches[1] for KUnit (which look
+>> ready to me), and the "Fix some incompatibilities between KASAN and
+>> FORTIFY_SOURCE" changes[2] on the KASAN side (which also seem ready).
+>>
+>> This patchset may need a (likely rather trivial) rebase on top of
+>> whatever versions of those end up merged: I'm happy to do that if
+>> necessary.
+>>
+>> Cheers,
+>> -- David
+>>
+>> [1]: https://lore.kernel.org/linux-kselftest/1585313122-26441-1-git-send-email-alan.maguire@oracle.com/T/#t
+>> [2]: http://lkml.iu.edu/hypermail/linux/kernel/2004.3/00735.html
 > 
-> > On Thu, May 28, 2020 at 04:33:35PM +0200, Thomas Bogendoerfer wrote:
-> > > below is the dts part for the two network interfaces. The switch to
-> > > the outside has two ports, which correlate to the two internal ports.
-> > > And the switch propagates the link state of the external ports to
-> > > the internal ports.
-> > 
-> > Okay, so this DTS hasn't been reviewed...
+> As David pointed out, this series is waiting on its dependencies.
+> Sorry, I thought the "extend KUnit resources API" patchset was ready
+> to go, but I realized I only gave a reviewed-by to one of the patches.
+> Both have been reviewed now, but one patch needs a minor fix.
 > 
-> that's from our partner, I'm just using it. Stripping it down isn't
-> the point for my now.
-> 
-> > This isn't correct - you are requesting that in-band status is used
-> > (i.o.w. the in-band control word, see commit 4cba5c210365), but your
-> > bug report wants to enable AN bypass because there is no in-band
-> > control word.  This seems to be rather contradictory.
-> > 
-> > May I suggest you use a fixed-link here, which will not have any
-> 
-> afaik fixed-link will always be up, and we want to have the link state
-> from the switch external ports.
-> 
-> > inband status, as there is no in-band control word being sent by
-> > the switch?  That is also the conventional way of handling switch
-> > links.
-> 
-> again, we want to propagte the external link state inside to all
-> the internal nodes. So this will not work anymore with fixed-link.
 
-Just for my understanding...
+Yes. Thanks David.
 
-https://www.ambedded.com/ARM_Server_platform.html
+> As for other patches, the patches from David, Vitor, and Anders should
+> cover everything. Thanks!
+>
+I pulled David's and Vitor's patches. I am waiting for patch from
+Vitor to fix a problem that was introduced when I was resolving merge
+conflicts between Vitor's and David's patches.
 
-seems to suggest there are 4 external ports. You want to pass the link
-status of these four external ports to the CPU module?
+I will pull Anders patches.
 
-	Andrew
+thanks,
+-- Shuah
+
+
