@@ -2,166 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A40F1E6E19
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 23:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB5B1E6E27
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 23:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436709AbgE1Vs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 17:48:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436611AbgE1Vs0 (ORCPT
+        id S2436746AbgE1Vx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 17:53:27 -0400
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:58496 "EHLO
+        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2436690AbgE1VxY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 17:48:26 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736ABC08C5C7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 14:48:25 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id z80so470215qka.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 14:48:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ObSt1n+sON0AnimchOO9CMzGTDqwAegnfy7EUyM2WHk=;
-        b=OqS/QpZ3lCGXJg0nDVCz+2iqN/kApfGrVdZCjy/U055rqKuVpm9gAQ6GjPkvqQ+zrH
-         SAflj/Lptc3O4XWr2Hz51tNwohI1BaLQulX8MYynNbfQsI5vYcjiLUtJVj5C4d5noKQ+
-         7DUoh4xfssrHaUKI64+pS2ieabDxVGlrwSsGk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ObSt1n+sON0AnimchOO9CMzGTDqwAegnfy7EUyM2WHk=;
-        b=jTFHGsN1R5lSmZ5trzjVTmcqM1BJ1Pedvztg0DU8Oh5BQLJzPzhHkiPWN/IIObDbrJ
-         9H55st/0t83woSe0IDblJFIdsc6a/5YROVxcr6fkbUsfXCBHsOzAeTZZtwluP0/1d198
-         RefKctRZ2WZSpZ1rRpbZFb6JekB2ypHh3Zc/1duyAdyGNLPYwy5MTFhX9MJ7sMwKd9SZ
-         ujWj93UbIkkX5lcrp2+CRpk4h7iq4lHR9dGQ8wW1ICTO4OejTlfAibc8wYyzRtahd4g4
-         oSmBtINW1Eazsb2N37nNeO9MePfLPJ8zmTAwbycKYC+JAFW0Q4UboVxbz2s8D12fgJoW
-         s85A==
-X-Gm-Message-State: AOAM533mp+bggDUyeJ4TvB4MIc+5mZPUVFjnCLmJoKJ/0mjxxFrRIiwo
-        GlJzMne1xn8wWblNh2ot8GBqYA==
-X-Google-Smtp-Source: ABdhPJwjnvloshNe5HEBiCg7pAnSK5h4W+nwUCYvm4X+s1L/d2OCLwncq8HyIDIEUetxgblfvG5cKw==
-X-Received: by 2002:a37:6845:: with SMTP id d66mr5096984qkc.229.1590702504369;
-        Thu, 28 May 2020 14:48:24 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id j22sm5763247qke.117.2020.05.28.14.48.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 14:48:23 -0700 (PDT)
-Date:   Thu, 28 May 2020 17:48:23 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Peter Zijlstra <peterz@infradead.org>, parri.andrea@gmail.com,
-        will@kernel.org, npiggin@gmail.com, dhowells@redhat.com,
-        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
-        dlustig@nvidia.com, open list <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org
-Subject: Re: Some -serious- BPF-related litmus tests
-Message-ID: <20200528214823.GA211369@google.com>
-References: <20200522003850.GA32698@paulmck-ThinkPad-P72>
- <20200522094407.GK325280@hirez.programming.kicks-ass.net>
- <20200522143201.GB32434@rowland.harvard.edu>
- <20200522174352.GJ2869@paulmck-ThinkPad-P72>
- <006e2bc6-7516-1584-3d8c-e253211c157e@fb.com>
- <20200525145325.GB2066@tardis>
- <CAEf4BzYCjbnU=cNyLnYRoZdMPKnBP4w8t+VRkXrC1GW-aFVkEA@mail.gmail.com>
+        Thu, 28 May 2020 17:53:24 -0400
+Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
+ EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
+ 15.0.1156.6; Thu, 28 May 2020 14:53:20 -0700
+Received: from ubuntu.eng.vmware.com (unknown [10.20.113.240])
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 1321AB26B0;
+        Thu, 28 May 2020 17:53:24 -0400 (EDT)
+From:   Ronak Doshi <doshir@vmware.com>
+To:     <netdev@vger.kernel.org>
+CC:     Ronak Doshi <doshir@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 net-next 0/4] vmxnet3: upgrade to version 4
+Date:   Thu, 28 May 2020 14:53:18 -0700
+Message-ID: <20200528215322.31682-1-doshir@vmware.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYCjbnU=cNyLnYRoZdMPKnBP4w8t+VRkXrC1GW-aFVkEA@mail.gmail.com>
+Content-Type: text/plain
+Received-SPF: None (EX13-EDG-OU-001.vmware.com: doshir@vmware.com does not
+ designate permitted sender hosts)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 25, 2020 at 11:38:23AM -0700, Andrii Nakryiko wrote:
-> On Mon, May 25, 2020 at 7:53 AM Boqun Feng <boqun.feng@gmail.com> wrote:
-> >
-> > Hi Andrii,
-> >
-> > On Fri, May 22, 2020 at 12:38:21PM -0700, Andrii Nakryiko wrote:
-> > > On 5/22/20 10:43 AM, Paul E. McKenney wrote:
-> > > > On Fri, May 22, 2020 at 10:32:01AM -0400, Alan Stern wrote:
-> > > > > On Fri, May 22, 2020 at 11:44:07AM +0200, Peter Zijlstra wrote:
-> > > > > > On Thu, May 21, 2020 at 05:38:50PM -0700, Paul E. McKenney wrote:
-> > > > > > > Hello!
-> > > > > > >
-> > > > > > > Just wanted to call your attention to some pretty cool and pretty serious
-> > > > > > > litmus tests that Andrii did as part of his BPF ring-buffer work:
-> > > > > > >
-> > > > > > > https://lore.kernel.org/bpf/20200517195727.279322-3-andriin@fb.com/
-> > > > > > >
-> > > > > > > Thoughts?
-> > > > > >
-> > > > > > I find:
-> > > > > >
-> > > > > >         smp_wmb()
-> > > > > >         smp_store_release()
-> > > > > >
-> > > > > > a _very_ weird construct. What is that supposed to even do?
-> > > > >
-> > > > > Indeed, it looks like one or the other of those is redundant (depending
-> > > > > on the context).
-> > > >
-> > > > Probably.  Peter instead asked what it was supposed to even do.  ;-)
-> > >
-> > > I agree, I think smp_wmb() is redundant here. Can't remember why I thought
-> > > that it's necessary, this algorithm went through a bunch of iterations,
-> > > starting as completely lockless, also using READ_ONCE/WRITE_ONCE at some
-> > > point, and settling on smp_read_acquire/smp_store_release, eventually. Maybe
-> > > there was some reason, but might be that I was just over-cautious. See reply
-> > > on patch thread as well ([0]).
-> > >
-> > >   [0] https://lore.kernel.org/bpf/CAEf4Bza26AbRMtWcoD5+TFhnmnU6p5YJ8zO+SoAJCDtp1jVhcQ@mail.gmail.com/
-> > >
-> >
-> > While we are at it, could you explain a bit on why you use
-> > smp_store_release() on consumer_pos? I ask because IIUC, consumer_pos is
-> > only updated at consumer side, and there is no other write at consumer
-> > side that we want to order with the write to consumer_pos. So I fail
-> > to find why smp_store_release() is necessary.
-> >
-> > I did the following modification on litmus tests, and I didn't see
-> > different results (on States) between two versions of litmus tests.
-> >
-> 
-> This is needed to ensure that producer can reliably detect whether it
-> needs to trigger poll notification.
+vmxnet3 emulation has recently added several new features which includes
+offload support for tunnel packets, support for new commands the driver
+can issue to emulation, change in descriptor fields, etc. This patch
+series extends the vmxnet3 driver to leverage these new features.
 
-Boqun's question is on the consumer side though. Are you saying that on the
-consumer side, the loads prior to the smp_store_release() on the consumer
-side should have been seen by the consumer?  You are already using
-smp_load_acquire() so that should be satisified already because the
-smp_load_acquire() makes sure that the smp_load_acquire()'s happens before
-any future loads and stores.
+Compatibility is maintained using existing vmxnet3 versioning mechanism as
+follows:
+ - new features added to vmxnet3 emulation are associated with new vmxnet3
+   version viz. vmxnet3 version 4.
+ - emulation advertises all the versions it supports to the driver.
+ - during initialization, vmxnet3 driver picks the highest version number
+ supported by both the emulation and the driver and configures emulation
+ to run at that version.
 
-> Basically, consumer caught up at
-> about same time as producer commits new record, we need to make sure
-> that:
->   - either consumer sees updated producer_pos > consumer_pos, and thus
-> knows that there is more data to consumer (but producer might not send
-> notification of new data in this case);
->   - or producer sees that consumer already caught up (i.e.,
-> consumer_pos == producer_pos before currently committed record), and
-> in such case will definitely send notifications.
+In particular, following changes are introduced:
 
-Could you set a variable on the producer side to emulate a notification, and
-check that in the conditions at the end?
+Patch 1:
+  This patch introduces utility macros for vmxnet3 version 4 comparison
+  and updates Copyright information.
 
-thanks,
+Patch 2:
+  This patch implements get_rss_hash_opts and set_rss_hash_opts methods
+  to allow querying and configuring different Rx flow hash configurations
+  which can be used to support UDP/ESP RSS.
 
- - Joel
+Patch 3:
+  This patch introduces segmentation and checksum offload support for
+  encapsulated packets. This avoids segmenting and calculating checksum
+  for each segment and hence gives performance boost.
 
-> 
-> This is critical for correctness of epoll notifications.
-> Unfortunately, litmus tests don't test this notification aspect, as I
-> haven't originally figured out the invariant that can be defined to
-> validate this. I'll give it another thought, though, maybe this time
-> I'll come up with something.
-> 
-> > Regards,
-> > Boqun
-> >
-> 
-> [...]
+Patch 4:
+  With all vmxnet3 version 4 changes incorporated in the vmxnet3 driver,
+  with this patch, the driver can configure emulation to run at vmxnet3
+  version 4.
+
+Changes in v3 -> v4:
+   - Replaced BUG_ON() with WARN_ON_ONCE()
+
+Changes in v2 -> v3:
+   - fixed get_rss_hash_opts to return correct values for udp rss
+
+Changes in v2:
+   - Fixed compilation issue due to missing closed brace
+   - added fallthrough comment
+
+Ronak Doshi (4):
+  vmxnet3: prepare for version 4 changes
+  vmxnet3: add support to get/set rx flow hash
+  vmxnet3: add geneve and vxlan tunnel offload support
+  vmxnet3: update to version 4
+
+ drivers/net/vmxnet3/Makefile          |   2 +-
+ drivers/net/vmxnet3/upt1_defs.h       |   5 +-
+ drivers/net/vmxnet3/vmxnet3_defs.h    |  31 ++--
+ drivers/net/vmxnet3/vmxnet3_drv.c     | 164 ++++++++++++++++++---
+ drivers/net/vmxnet3/vmxnet3_ethtool.c | 263 +++++++++++++++++++++++++++++++++-
+ drivers/net/vmxnet3/vmxnet3_int.h     |  25 +++-
+ 6 files changed, 448 insertions(+), 42 deletions(-)
+
+-- 
+2.11.0
+
