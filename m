@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0AF21E60F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 810821E60FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389687AbgE1MfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52446 "EHLO
+        id S2389808AbgE1Mfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 08:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389747AbgE1MfN (ORCPT
+        with ESMTP id S2389770AbgE1MfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 08:35:13 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A178C08C5C6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 05:35:13 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id r9so2961537wmh.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 05:35:13 -0700 (PDT)
+        Thu, 28 May 2020 08:35:15 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49280C05BD1E
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 05:35:15 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id n5so3007827wmd.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 05:35:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=yDSm1rPPo/8bMFb7LxsC5JFRiypy8MuySa2sX9QoT6k=;
-        b=zodKNRyGTNg5KwqVWbLILj8EVpRQ43j6yVRyfaj1XFuodos5q4ztpHt6BwxCRnMjNj
-         NTTiJhdaDCdWk/EFdPe+sPBf9p1nqeIsAHR6SYtD5sJnrOQ5/yrGkHqB7VoLrSNNMZvB
-         BbOHzyM3Ob8NxF9JrEtovxhOh7kEAlYHpw3RshZ9G6iUfgBIaftV5iVMnumDsl2MHC45
-         /xZ5h0k3mu9osvUv7kq6Q2uoEeTjI5Xf0Bf8HUgmq8jzuRVtjMo3iqhZgPHgUx8Kunc9
-         EHswAWcH0gwFiqxp3J/8+la0Oz33xbUZOHwzQ27wt3sN0qBvXvUMVv0uR6pCNEpzYQ+q
-         4cNQ==
+        bh=+G7RdtEM9Tjyup1qpXdvSxuTiPiV2T/6Xv3zi3kgdqw=;
+        b=agYjZQeOyZ2AKf60nZ90apYgp7Yv0o1BklkIQFUjoNOenWr/OvSkdORC94vYkhfcDg
+         DOgAqd08KF2s8QEItyJuayobS5m2gdfgojHTRwjSc76k3rYZRkYNCq0Nx3J3GJaWT4bK
+         kdogL5Yhno/HKBQkDHpHts1NCAqaAAA4jKFfAvVRsCiNRWwlvHPJfCqZhA2Z7FKnjNuR
+         0mvQ3Io3RUeLuTVB8Xr8qE0+xDqRa9fM/iBCjtm7/UZmGsaliTfUEM2/gjVayPouAnzc
+         7j8kyvWhtcMo4s0q+rMEKcpzWijxVxRGraJHOVVEqcSU7eJy/B4sXAn7rzn/HPHrF/a3
+         5w2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=yDSm1rPPo/8bMFb7LxsC5JFRiypy8MuySa2sX9QoT6k=;
-        b=nTXZiie55BEaadGjzLyazrdyjD4Nm97oFd2eFTHOSjz0+C0/MQauAeHlUrGGYBIN0i
-         n1kN7kE1yqtK1qvlMNwdZtXd/45zUCS7CoSJ+eYIcDxrUaoctBhJ62ruuwV2wphwor0X
-         4jkLZaWzgthPDQ18aZ/ooltyT3i2MK6sO/6SE9GTJ+F6xA1rg74I99Q+Cx+jgQ0Eljq2
-         82Qu8frdfpOhrsw3gWjFMnUQ78boRbDctVdPVse98X5XiPz9w6eU5UobucbHrwETBvxD
-         8W2DzOYHEE3aDROaJ2mT9zc5dQ5xlr6PGMaduaE33nBAZRAg2KjkLgs7YbDBISSpk5gS
-         UOeA==
-X-Gm-Message-State: AOAM533py8iiacohVaDhpBKhSxyR3+3bIUhEeMqto3DQk1Ag2ly2W0N5
-        E6omTTsVvAWELhbcd6wEEVEexA==
-X-Google-Smtp-Source: ABdhPJzo7HKPky+eiHqC/4RzI4UkiT25uBdmy1Qy7IDl9itDPpLuRbDcwrzxzj4u0gG1VZdg4XRYgA==
-X-Received: by 2002:a1c:dfd7:: with SMTP id w206mr3156200wmg.130.1590669312286;
-        Thu, 28 May 2020 05:35:12 -0700 (PDT)
+        bh=+G7RdtEM9Tjyup1qpXdvSxuTiPiV2T/6Xv3zi3kgdqw=;
+        b=TxtyteAppStOytXJ/Mes4SEA56VO8FjdXWBPnnaG7z/mDlSXyOoIJsxpAIfudjFBZk
+         Va1NxDgDcA1dTZ+TxRaQKkx7vvbDVNyF7FZKYOn+oqsxTgCCS9ryVWgcjRjEWTjhMXBE
+         /n/NI5fZhRVZo+Fl1dOW4O3lWqWXen+xNZcHstGjg+MwYLj/WdbJ4cBluGr56t0lq8T1
+         xjvYOqeJ52FDUVbHRgn58tNg6bnEnhiJ5ZEUsphjJt2UvDIiqUkQOBHmDpdwBwiBjOnX
+         VmFMBoSQNzeXRzS4QdPzsNvYNH0PmJTl2QSUAHRagY5sCvZ+B0wuiLitS+p2B8YCMMfu
+         8x1Q==
+X-Gm-Message-State: AOAM532Gw1HRVSJvKfBU3EguqasbNcD8Sos+THe/iMqAWFCihpVsHekd
+        erAK4zyqQKVv6a/igrSAIiDUEA==
+X-Google-Smtp-Source: ABdhPJx9Jl9dNfglp38Fbyofob3ykhPOc3lBvfMMdzC7r7DXwkN65ZMkM1MkCvyFFas/ZyzprY7Siw==
+X-Received: by 2002:a1c:2d14:: with SMTP id t20mr3308643wmt.28.1590669314028;
+        Thu, 28 May 2020 05:35:14 -0700 (PDT)
 Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id c140sm6027306wmd.18.2020.05.28.05.35.11
+        by smtp.gmail.com with ESMTPSA id c140sm6027306wmd.18.2020.05.28.05.35.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 05:35:11 -0700 (PDT)
+        Thu, 28 May 2020 05:35:13 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     John Crispin <john@phrozen.org>,
         Sean Wang <sean.wang@mediatek.com>,
@@ -63,9 +63,9 @@ Cc:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Pedro Tsai <pedro.tsai@mediatek.com>,
         Andrew Perepech <andrew.perepech@mediatek.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 1/2] regmap: provide helpers for simple bit operations
-Date:   Thu, 28 May 2020 14:34:58 +0200
-Message-Id: <20200528123459.21168-2-brgl@bgdev.pl>
+Subject: [PATCH 2/2] net: ethernet: mtk-star-emac: use regmap bitops
+Date:   Thu, 28 May 2020 14:34:59 +0200
+Message-Id: <20200528123459.21168-3-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200528123459.21168-1-brgl@bgdev.pl>
 References: <20200528123459.21168-1-brgl@bgdev.pl>
@@ -78,47 +78,180 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-In many instances regmap_update_bits() is used for simple bit setting
-and clearing. In these cases the last argument is redundant and we can
-hide it with a macro.
-
-This adds three new macros for simple bit operations: set_bits,
-clear_bits and test_bits.
+Shrink the code visually by replacing regmap_update_bits() with
+appropriate regmap bit operations where applicable.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- include/linux/regmap.h | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/net/ethernet/mediatek/mtk_star_emac.c | 80 ++++++++-----------
+ 1 file changed, 35 insertions(+), 45 deletions(-)
 
-diff --git a/include/linux/regmap.h b/include/linux/regmap.h
-index 40b07168fd8e..6ef829169f36 100644
---- a/include/linux/regmap.h
-+++ b/include/linux/regmap.h
-@@ -71,6 +71,24 @@ struct reg_sequence {
- 	unsigned int delay_us;
- };
+diff --git a/drivers/net/ethernet/mediatek/mtk_star_emac.c b/drivers/net/ethernet/mediatek/mtk_star_emac.c
+index 8596ca0e60eb..326ac792a4a0 100644
+--- a/drivers/net/ethernet/mediatek/mtk_star_emac.c
++++ b/drivers/net/ethernet/mediatek/mtk_star_emac.c
+@@ -413,8 +413,8 @@ static void mtk_star_dma_unmap_tx(struct mtk_star_priv *priv,
  
-+#define regmap_set_bits(map, reg, bits) \
-+	regmap_update_bits_base(map, reg, bits, bits, NULL, false, false)
-+#define regmap_clear_bits(map, reg, bits) \
-+	regmap_update_bits_base(map, reg, bits, 0, NULL, false, false)
-+/*
-+ * Returns -1 if the underlying regmap_read() fails, 0 if at least one of the
-+ * tested bits is not set and 1 if all tested bits are set.
-+ */
-+#define regmap_test_bits(map, reg, bits) \
-+({ \
-+	unsigned int __val, __ret, __bits; \
-+	__bits = (bits); \
-+	__ret = regmap_read(map, reg, &__val); \
-+	if (__ret == 0) \
-+		__ret = (__val & __bits) == __bits ? 1 : 0; \
-+	__ret; \
-+})
-+
- #define	regmap_update_bits(map, reg, mask, val) \
- 	regmap_update_bits_base(map, reg, mask, val, NULL, false, false)
- #define	regmap_update_bits_async(map, reg, mask, val)\
+ static void mtk_star_nic_disable_pd(struct mtk_star_priv *priv)
+ {
+-	regmap_update_bits(priv->regs, MTK_STAR_REG_MAC_CFG,
+-			   MTK_STAR_BIT_MAC_CFG_NIC_PD, 0);
++	regmap_clear_bits(priv->regs, MTK_STAR_REG_MAC_CFG,
++			  MTK_STAR_BIT_MAC_CFG_NIC_PD);
+ }
+ 
+ /* Unmask the three interrupts we care about, mask all others. */
+@@ -434,41 +434,38 @@ static void mtk_star_intr_disable(struct mtk_star_priv *priv)
+ 
+ static void mtk_star_intr_enable_tx(struct mtk_star_priv *priv)
+ {
+-	regmap_update_bits(priv->regs, MTK_STAR_REG_INT_MASK,
+-			   MTK_STAR_BIT_INT_STS_TNTC, 0);
++	regmap_clear_bits(priv->regs, MTK_STAR_REG_INT_MASK,
++			  MTK_STAR_BIT_INT_STS_TNTC);
+ }
+ 
+ static void mtk_star_intr_enable_rx(struct mtk_star_priv *priv)
+ {
+-	regmap_update_bits(priv->regs, MTK_STAR_REG_INT_MASK,
+-			   MTK_STAR_BIT_INT_STS_FNRC, 0);
++	regmap_clear_bits(priv->regs, MTK_STAR_REG_INT_MASK,
++			  MTK_STAR_BIT_INT_STS_FNRC);
+ }
+ 
+ static void mtk_star_intr_enable_stats(struct mtk_star_priv *priv)
+ {
+-	regmap_update_bits(priv->regs, MTK_STAR_REG_INT_MASK,
+-			   MTK_STAR_REG_INT_STS_MIB_CNT_TH, 0);
++	regmap_clear_bits(priv->regs, MTK_STAR_REG_INT_MASK,
++			  MTK_STAR_REG_INT_STS_MIB_CNT_TH);
+ }
+ 
+ static void mtk_star_intr_disable_tx(struct mtk_star_priv *priv)
+ {
+-	regmap_update_bits(priv->regs, MTK_STAR_REG_INT_MASK,
+-			   MTK_STAR_BIT_INT_STS_TNTC,
+-			   MTK_STAR_BIT_INT_STS_TNTC);
++	regmap_set_bits(priv->regs, MTK_STAR_REG_INT_MASK,
++			MTK_STAR_BIT_INT_STS_TNTC);
+ }
+ 
+ static void mtk_star_intr_disable_rx(struct mtk_star_priv *priv)
+ {
+-	regmap_update_bits(priv->regs, MTK_STAR_REG_INT_MASK,
+-			   MTK_STAR_BIT_INT_STS_FNRC,
+-			   MTK_STAR_BIT_INT_STS_FNRC);
++	regmap_set_bits(priv->regs, MTK_STAR_REG_INT_MASK,
++			MTK_STAR_BIT_INT_STS_FNRC);
+ }
+ 
+ static void mtk_star_intr_disable_stats(struct mtk_star_priv *priv)
+ {
+-	regmap_update_bits(priv->regs, MTK_STAR_REG_INT_MASK,
+-			   MTK_STAR_REG_INT_STS_MIB_CNT_TH,
+-			   MTK_STAR_REG_INT_STS_MIB_CNT_TH);
++	regmap_set_bits(priv->regs, MTK_STAR_REG_INT_MASK,
++			MTK_STAR_REG_INT_STS_MIB_CNT_TH);
+ }
+ 
+ static unsigned int mtk_star_intr_read(struct mtk_star_priv *priv)
+@@ -524,12 +521,10 @@ static void mtk_star_dma_init(struct mtk_star_priv *priv)
+ 
+ static void mtk_star_dma_start(struct mtk_star_priv *priv)
+ {
+-	regmap_update_bits(priv->regs, MTK_STAR_REG_TX_DMA_CTRL,
+-			   MTK_STAR_BIT_TX_DMA_CTRL_START,
+-			   MTK_STAR_BIT_TX_DMA_CTRL_START);
+-	regmap_update_bits(priv->regs, MTK_STAR_REG_RX_DMA_CTRL,
+-			   MTK_STAR_BIT_RX_DMA_CTRL_START,
+-			   MTK_STAR_BIT_RX_DMA_CTRL_START);
++	regmap_set_bits(priv->regs, MTK_STAR_REG_TX_DMA_CTRL,
++			MTK_STAR_BIT_TX_DMA_CTRL_START);
++	regmap_set_bits(priv->regs, MTK_STAR_REG_RX_DMA_CTRL,
++			MTK_STAR_BIT_RX_DMA_CTRL_START);
+ }
+ 
+ static void mtk_star_dma_stop(struct mtk_star_priv *priv)
+@@ -553,16 +548,14 @@ static void mtk_star_dma_disable(struct mtk_star_priv *priv)
+ 
+ static void mtk_star_dma_resume_rx(struct mtk_star_priv *priv)
+ {
+-	regmap_update_bits(priv->regs, MTK_STAR_REG_RX_DMA_CTRL,
+-			   MTK_STAR_BIT_RX_DMA_CTRL_RESUME,
+-			   MTK_STAR_BIT_RX_DMA_CTRL_RESUME);
++	regmap_set_bits(priv->regs, MTK_STAR_REG_RX_DMA_CTRL,
++			MTK_STAR_BIT_RX_DMA_CTRL_RESUME);
+ }
+ 
+ static void mtk_star_dma_resume_tx(struct mtk_star_priv *priv)
+ {
+-	regmap_update_bits(priv->regs, MTK_STAR_REG_TX_DMA_CTRL,
+-			   MTK_STAR_BIT_TX_DMA_CTRL_RESUME,
+-			   MTK_STAR_BIT_TX_DMA_CTRL_RESUME);
++	regmap_set_bits(priv->regs, MTK_STAR_REG_TX_DMA_CTRL,
++			MTK_STAR_BIT_TX_DMA_CTRL_RESUME);
+ }
+ 
+ static void mtk_star_set_mac_addr(struct net_device *ndev)
+@@ -845,8 +838,8 @@ static int mtk_star_hash_wait_ok(struct mtk_star_priv *priv)
+ 		return ret;
+ 
+ 	/* Check the BIST_OK bit. */
+-	regmap_read(priv->regs, MTK_STAR_REG_HASH_CTRL, &val);
+-	if (!(val & MTK_STAR_BIT_HASH_CTRL_BIST_OK))
++	if (!regmap_test_bits(priv->regs, MTK_STAR_REG_HASH_CTRL,
++			      MTK_STAR_BIT_HASH_CTRL_BIST_OK))
+ 		return -EIO;
+ 
+ 	return 0;
+@@ -880,12 +873,10 @@ static int mtk_star_reset_hash_table(struct mtk_star_priv *priv)
+ 	if (ret)
+ 		return ret;
+ 
+-	regmap_update_bits(priv->regs, MTK_STAR_REG_HASH_CTRL,
+-			   MTK_STAR_BIT_HASH_CTRL_BIST_EN,
+-			   MTK_STAR_BIT_HASH_CTRL_BIST_EN);
+-	regmap_update_bits(priv->regs, MTK_STAR_REG_TEST1,
+-			   MTK_STAR_BIT_TEST1_RST_HASH_MBIST,
+-			   MTK_STAR_BIT_TEST1_RST_HASH_MBIST);
++	regmap_set_bits(priv->regs, MTK_STAR_REG_HASH_CTRL,
++			MTK_STAR_BIT_HASH_CTRL_BIST_EN);
++	regmap_set_bits(priv->regs, MTK_STAR_REG_TEST1,
++			MTK_STAR_BIT_TEST1_RST_HASH_MBIST);
+ 
+ 	return mtk_star_hash_wait_ok(priv);
+ }
+@@ -1016,13 +1007,13 @@ static int mtk_star_enable(struct net_device *ndev)
+ 		return ret;
+ 
+ 	/* Setup the hashing algorithm */
+-	regmap_update_bits(priv->regs, MTK_STAR_REG_ARL_CFG,
+-			   MTK_STAR_BIT_ARL_CFG_HASH_ALG |
+-			   MTK_STAR_BIT_ARL_CFG_MISC_MODE, 0);
++	regmap_clear_bits(priv->regs, MTK_STAR_REG_ARL_CFG,
++			  MTK_STAR_BIT_ARL_CFG_HASH_ALG |
++			  MTK_STAR_BIT_ARL_CFG_MISC_MODE);
+ 
+ 	/* Don't strip VLAN tags */
+-	regmap_update_bits(priv->regs, MTK_STAR_REG_MAC_CFG,
+-			   MTK_STAR_BIT_MAC_CFG_VLAN_STRIP, 0);
++	regmap_clear_bits(priv->regs, MTK_STAR_REG_MAC_CFG,
++			  MTK_STAR_BIT_MAC_CFG_VLAN_STRIP);
+ 
+ 	/* Setup DMA */
+ 	mtk_star_dma_init(priv);
+@@ -1204,9 +1195,8 @@ static void mtk_star_set_rx_mode(struct net_device *ndev)
+ 	int ret;
+ 
+ 	if (ndev->flags & IFF_PROMISC) {
+-		regmap_update_bits(priv->regs, MTK_STAR_REG_ARL_CFG,
+-				   MTK_STAR_BIT_ARL_CFG_MISC_MODE,
+-				   MTK_STAR_BIT_ARL_CFG_MISC_MODE);
++		regmap_set_bits(priv->regs, MTK_STAR_REG_ARL_CFG,
++				MTK_STAR_BIT_ARL_CFG_MISC_MODE);
+ 	} else if (netdev_mc_count(ndev) > MTK_STAR_HASHTABLE_MC_LIMIT ||
+ 		   ndev->flags & IFF_ALLMULTI) {
+ 		for (i = 0; i < MTK_STAR_HASHTABLE_SIZE_MAX; i++) {
 -- 
 2.25.0
 
