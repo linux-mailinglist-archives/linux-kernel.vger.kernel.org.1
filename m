@@ -2,71 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A53DE1E6C60
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8BA81E6C6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407122AbgE1UTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 16:19:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40296 "EHLO
+        id S2407081AbgE1UYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 16:24:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406991AbgE1UTK (ORCPT
+        with ESMTP id S2406986AbgE1UYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 16:19:10 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2138C08C5C7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:19:09 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jeOzY-0008GM-KY; Thu, 28 May 2020 22:19:04 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id A2E86100D01; Thu, 28 May 2020 22:19:02 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     paulmck@kernel.org
-Cc:     syzbot <syzbot+3ae5eaae0809ee311e75@syzkaller.appspotmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, bp@alien8.de,
-        hpa@zytor.com, linux-kernel@vger.kernel.org, luto@kernel.org,
-        mingo@kernel.org, syzkaller-bugs@googlegroups.com, x86@kernel.org
-Subject: Re: WARNING: suspicious RCU usage in idtentry_exit
-In-Reply-To: <20200528161143.GF2869@paulmck-ThinkPad-P72>
-References: <000000000000840d4d05a6850c73@google.com> <87wo4wnpzb.fsf@nanos.tec.linutronix.de> <20200528161143.GF2869@paulmck-ThinkPad-P72>
-Date:   Thu, 28 May 2020 22:19:02 +0200
-Message-ID: <878shbols9.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+        Thu, 28 May 2020 16:24:32 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451ECC08C5C6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:24:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=ZlitLrg58PjBubp1jZcu8kKsgkfU14EybJiixuLj3Ro=; b=MhXBQfags+orS9/WAp5Xvw/ePk
+        OQ4klb6NH0QGlt5FJXhVfYtqdSoLIBNrTL+HxO5pKmYJICdp2esm+TPpyx2ZhPmkUqDZoYF68LAuR
+        ueENZp8g3aa6gjzLMfLlL+cx7YwFQLBiMmJBL4tIQ++5JeM7kv4rv9w2eSRkI0MqUIPwsmzyWiDQU
+        3QDszMg9naP7XRXVHABBJTjHLT/mK5bFxcQLl+HTFwUT8ZL4vukb4YKGw84BLczi8pw6H2vrSSege
+        GSsIbNIqQIsjI/IGdTD5naI81QvfwIUDTKCaC1O4UcSQNsRYC4JiDEBsLU0ZlSgcsI9O1/qNrqt9A
+        pozzj2mA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jeP4j-0005Zn-72; Thu, 28 May 2020 20:24:25 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D6868301205;
+        Thu, 28 May 2020 22:24:22 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id CABFA203C05AF; Thu, 28 May 2020 22:24:22 +0200 (CEST)
+Message-ID: <20200528201937.038455891@infradead.org>
+User-Agent: quilt/0.66
+Date:   Thu, 28 May 2020 22:19:37 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     tglx@linutronix.de, luto@amacapital.net, peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        sean.j.christopherson@intel.com, andrew.cooper3@citrix.com,
+        daniel.thompson@linaro.org
+Subject: [PATCH 0/6] x86/entry: disallow #DB more
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paul,
+These patches disallow #DB during NMI/#MC and allow removing a lot of fugly code.
 
-"Paul E. McKenney" <paulmck@kernel.org> writes:
-> On Thu, May 28, 2020 at 03:33:44PM +0200, Thomas Gleixner wrote:
->> syzbot <syzbot+3ae5eaae0809ee311e75@syzkaller.appspotmail.com> writes:
->> Weird. I have no idea how that thing is an EQS here.
->
-> No argument on the "Weird" part!  ;-)
->
-> Is this a NO_HZ_FULL=y kernel?
+Patch #6 should probably wait until we've got the KGDB situation sorted
+because applying that makes a bad situation worse.
 
-No, it has only NO_HZ_IDLE.
 
-  https://syzkaller.appspot.com/x/.config?x=47b0740d89299c10
-
-> If so, one possibility is that the call
-> to rcu_user_exit() went missing somehow.  If not, then RCU should have
-> been watching userspace execution.
->
-> Again, the only thing I can think of (should this prove to be
-> reproducible) is the rcu_dyntick trace event.
-
-:)
-
-Thanks,
-
-        tglx
