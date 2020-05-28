@@ -2,124 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99A0E1E6386
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E457F1E6392
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391004AbgE1ORF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 10:17:05 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:55944 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390866AbgE1ORC (ORCPT
+        id S2391073AbgE1ORz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 10:17:55 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:43014 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390953AbgE1ORw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 10:17:02 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jeJL9-0001pt-SB; Thu, 28 May 2020 14:17:00 +0000
-Date:   Thu, 28 May 2020 16:16:58 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Matt Denton <mpdenton@google.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Robert Sesek <rsesek@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Linux Containers <containers@lists.linux-foundation.org>
-Subject: Re: [PATCH 1/2] seccomp: notify user trap about unused filter
-Message-ID: <20200528141658.dfjple4zddzkc3bj@wittgenstein>
-References: <20200527111902.163213-1-christian.brauner@ubuntu.com>
- <202005271408.58F806514@keescook>
- <20200527220532.jplypougn3qzwrms@wittgenstein>
- <202005271537.75548B6@keescook>
- <20200527224501.jddwcmvtvjtjsmsx@wittgenstein>
- <20200527231646.4v743erjpzh6qe5f@wittgenstein>
- <202005271851.B7FBA02F@keescook>
+        Thu, 28 May 2020 10:17:52 -0400
+Received: by mail-io1-f67.google.com with SMTP id h10so30110855iob.10;
+        Thu, 28 May 2020 07:17:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BQyivfejSNXbCqlTdGdrhX0zYMkRgbdRvewpKbUjPCY=;
+        b=Dv1T5prLKuzwbUBcUepbVsAyZlBdUeMeG9WYo2EeWgvHycfJBrRs770zkO3Iijsg8l
+         jUZl3VEb64xbCNURpo/DOfYh2+vNQzF0+LI4aNKdUfKKTiM26CJvBBCu8HGmh3uZiPZ+
+         6rLmeUCYxveYV8T/GVqNakXqFe0H8a9T2Kx0lgieRvrCsO3DmaP6K8aVealyHgiMBqr5
+         bgEDCEOhjWf5IIBXRfMGvJqvspPiLasXDS95AX4DSSo70H3xLXzCjh/ILnMq67YKu2vZ
+         dP9H3qLONiq2Hap7PcImJrvENINkDIQFDg8//f6MRdBtdvpBgHN1+GUiJrF+vZqQtJ1E
+         y4vg==
+X-Gm-Message-State: AOAM531JzXRHLNo55YlE9JfaF3VnGcphW0RO7adt2dP45VMUjPg5+viv
+        xYxquSwwFuC9/UW0KzIw6g==
+X-Google-Smtp-Source: ABdhPJz80onPAITqqpwaWbabl4SgfiYAPqN/MWHUc1QI9/knq0XMJmKYbmvkCambm8IbFEAYxixOHg==
+X-Received: by 2002:a05:6602:2e05:: with SMTP id o5mr2566148iow.28.1590675470945;
+        Thu, 28 May 2020 07:17:50 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id z3sm2623657ior.45.2020.05.28.07.17.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 07:17:50 -0700 (PDT)
+Received: (nullmailer pid 4189639 invoked by uid 1000);
+        Thu, 28 May 2020 14:17:49 -0000
+Date:   Thu, 28 May 2020 08:17:49 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Steve Lee <steves.lee@maximintegrated.com>
+Cc:     lgirdwood@gmail.com, broonie@kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ryan.lee.maxim@gmail.com,
+        ryans.lee@maximintegrated.com, steves.lee.maxim@gmail.com
+Subject: Re: [V6 PATCH 1/2] dt-bindings: Added device tree binding for
+ max98390
+Message-ID: <20200528141749.GB4186430@bogus>
+References: <20200528103755.17381-1-steves.lee@maximintegrated.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202005271851.B7FBA02F@keescook>
+In-Reply-To: <20200528103755.17381-1-steves.lee@maximintegrated.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 06:59:54PM -0700, Kees Cook wrote:
-> On Thu, May 28, 2020 at 01:16:46AM +0200, Christian Brauner wrote:
-> > I'm also starting to think this isn't even possible or currently doable
-> > safely.
-> > The fdtable in the kernel would end up with a dangling pointer, I would
-> > think. Unless you backtrack all fds that still have a reference into the
-> > fdtable and refer to that file and close them all in the kernel which I
-> > don't think is possible and also sounds very dodgy. This also really
-> > seems like we would be breaking a major contract, namely that fds stay
-> > valid until userspace calls close, execve(), or exits.
+On Thu, May 28, 2020 at 07:37:55PM +0900, Steve Lee wrote:
+> Add DT binding of max98390 amplifier driver.
 > 
-> Right, I think I was just using the wrong words? I was looking at it
-> like a pipe, or a socket, where you still have an fd, but reads return
-> 0, you might get SIGPIPE, etc. The VFS clearly knows what a
-> "disconnected" fd is, and I had assumed there was general logic for it
-> to indicate "I'm not here any more".
+> Signed-off-by: Steve Lee <steves.lee@maximintegrated.com>
+> ---
+> Changed since V5:
+> 	* Change txt to yaml and fix up the examples.
+> Changed since V4:
+> 	* No changes.
+> Changed since V3:
+> 	* No changes.
+> Changed since V2:
+> 	* No changes.
+> Changed since V1:
+> 	* Modified sample text in example
 > 
-> I recently did something very similar to the pstore filesystem, but I got
-> to cheat with some massive subsystem locks. In that case I needed to clear
-> all the inodes out of the tmpfs, so I unlink them all and manage the data
-> lifetimes pointing back into the (waiting to be unloaded) backend module
-> by NULLing the pointer back, which is safe because of the how the locking
-> there happens to work. Any open readers, when they close, will have the
-> last ref count dropped, at which point the record itself is released too.
+>  .../bindings/sound/maxim,max98390.yaml        | 39 +++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/maxim,max98390.yaml
 > 
-> Back to the seccomp subject: should "all tasks died" be distinguishable
-> from "I can't find that notification" in the ioctl()? (i.e. is ENOENT
-> sufficient, or does there need to be an EIO or ESRCH there?)
+> diff --git a/Documentation/devicetree/bindings/sound/maxim,max98390.yaml b/Documentation/devicetree/bindings/sound/maxim,max98390.yaml
+> new file mode 100644
+> index 000000000000..1ed4ab9e1c37
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/maxim,max98390.yaml
+> @@ -0,0 +1,39 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/maxim,max98390.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Maxim Integrated MAX98390 Speaker Amplifier with Integrated Dynamic Speaker Management
+> +
+> +maintainers:
+> +  - Steve Lee <steves.lee@maximintegrated.com>
+> +
+> +properties:
+> +  compatible:
+> +      const: maxim,max98390
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description: I2C address of the device.
+> +
+> +  temperature_calib:
 
-I personally think it's fine as it is but as it might help users if we
-reported ESRCH something like the patch below might do.
-Actual cleanup of the notifier should still happen in
-seccomp_notify_release() imho, and not in __poll_t both conceptually and
-also because f_op->release() happens on finaly fput() which punts it to
-task_work() which finishes when the task returns from kernel mode (or
-exits) - or - if the task is not alive anymore just puts it on the
-kernel global workqueue which is perfect for non-high-priority cleanup
-stuff. It's better than making __poll_t heavier than it needs to be.
-Unless there's an obvious reason not to.
+s/_/-/
 
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 9fa642d6d549..e6fa03cc4840 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -1221,6 +1221,9 @@ static __poll_t seccomp_notify_poll(struct file *file,
+And missing 'maxim' prefix.
 
-        poll_wait(file, &filter->wqh, poll_tab);
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: The calculated temperature data was measured while doing the calibration. Data : Temp / 100 * 2^12
 
-+       if (refcount_read(&filter->live) == 0)
-+               ret |= EPOLLHUP;
-+
-        if (mutex_lock_interruptible(&filter->notify_lock) < 0)
-                return EPOLLERR;
+Any constraints? 0-2^32 are valid values?
 
-@@ -1231,13 +1234,17 @@ static __poll_t seccomp_notify_poll(struct file *file,
-                        ret |= EPOLLOUT | EPOLLWRNORM;
-                if ((ret & EPOLLIN) && (ret & EPOLLOUT))
-                        break;
-+
-+               if ((ret & EPOLLHUP) && cur->state != SECCOMP_NOTIFY_REPLIED) {
-+                       knotif->state = SECCOMP_NOTIFY_REPLIED;
-+                       knotif->error = -ESRCH;
-+                       knotif->val = 0;
-+                       complete(&knotif->ready);
-+               }
-        }
+> +
+> +  r0_calib:
 
-        mutex_unlock(&filter->notify_lock);
+Same here.
 
--       if (refcount_read(&filter->live) == 0)
--               ret |= EPOLLHUP;
--
-        return ret;
- }
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: This is r0 calibration data which was measured in factory mode.
+> +
+> +required:
+> +  - compatible
+> +  - reg
 
-Christian
+Add:
+
+additionalProperties: false
+
+> +
+> +examples:
+> +  - |
+> +    max98390: amplifier@38 {
+> +            compatible = "maxim,max98390";
+> +            reg = <0x38>;
+> +            maxim,temperature_calib = <1024>;
+> +            maxim,r0_calib = <100232>;
+> +    };
+> -- 
+> 2.17.1
+> 
