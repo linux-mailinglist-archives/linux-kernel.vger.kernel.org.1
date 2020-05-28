@@ -2,59 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937321E5BCF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 11:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D5F1E5BAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 11:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728373AbgE1JZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 05:25:11 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:51218 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728198AbgE1JZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 05:25:10 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 236CE8628A9E2B396CDF;
-        Thu, 28 May 2020 17:25:09 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.207) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 28 May
- 2020 17:25:06 +0800
-Subject: Re: [PATCH] erofs: suppress false positive last_block warning
-To:     Gao Xiang <hsiangkao@redhat.com>, <linux-erofs@lists.ozlabs.org>,
-        Chao Yu <chao@kernel.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
+        id S1728302AbgE1JSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 05:18:08 -0400
+Received: from mail5.windriver.com ([192.103.53.11]:45938 "EHLO mail5.wrs.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728189AbgE1JSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 05:18:07 -0400
+Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
+        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 04S9GnEi027229
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Thu, 28 May 2020 02:17:01 -0700
+Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
+ ALA-HCB.corp.ad.wrs.com (147.11.189.41) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 28 May 2020 02:16:31 -0700
+From:   <qiang.zhang@windriver.com>
+To:     <tj@kernel.org>
+CC:     <jiangshanlai@gmail.com>, <markus.elfring@web.de>,
         <linux-kernel@vger.kernel.org>
-References: <20200528084844.23359-1-hsiangkao@redhat.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <4bc811ed-f406-1f77-94f7-5e61c4657001@huawei.com>
-Date:   Thu, 28 May 2020 17:25:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+Subject: [PATCH v7] workqueue: Remove unnecessary kfree() call in rcu_free_wq()
+Date:   Thu, 28 May 2020 17:25:18 +0800
+Message-ID: <20200528092518.29046-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <20200528084844.23359-1-hsiangkao@redhat.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/5/28 16:48, Gao Xiang wrote:
-> As Andrew mentioned, some rare specific gcc versions could report
-> last_block uninitialized warning. Actually last_block doesn't need
-> to be uninitialized first from its implementation due to bio == NULL
-> condition. After a bio is allocated, last_block will be assigned
-> then.
-> 
-> The detailed analysis is in this thread [1]. So let's silence those
-> confusing gccs simply.
-> 
-> [1] https://lore.kernel.org/r/20200421072839.GA13867@hsiangkao-HP-ZHAN-66-Pro-G1
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
+From: Zhang Qiang <qiang.zhang@windriver.com>
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
+The data structure member "wq->rescuer" was reset to a null pointer
+in one if branch. It was passed to a call of the function "kfree"
+in the callback function "rcu_free_wq" (which was eventually executed).
+The function "kfree" does not perform more meaningful data processing
+for a passed null pointer (besides immediately returning from such a call).
+Thus delete this function call which became unnecessary with the referenced
+software update.
 
-Thanks,
+Fixes: def98c84b6cd ("workqueue: Fix spurious sanity check failures in destroy_workqueue()")
+
+Co-developed-by: Markus Elfring <Markus.Elfring@web.de>
+Signed-off-by: Markus Elfring <Markus.Elfring@web.de>
+Co-developed-by: Lai Jiangshan <jiangshanlai@gmail.com>
+Signed-off-by: Lai Jiangshan <jiangshanlai@gmail.com>
+Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
+---
+ v1->v2->v3->v4->v5->v6->v7:
+ Modify weakly submitted information and tag.
+
+ kernel/workqueue.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 891ccad5f271..a2451cdcd503 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -3491,7 +3491,6 @@ static void rcu_free_wq(struct rcu_head *rcu)
+ 	else
+ 		free_workqueue_attrs(wq->unbound_attrs);
+ 
+-	kfree(wq->rescuer);
+ 	kfree(wq);
+ }
+ 
+-- 
+2.24.1
+
