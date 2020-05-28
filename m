@@ -2,70 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B8C61E707C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 01:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43EC01E70B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 01:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437636AbgE1XkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 19:40:10 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:36977 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437625AbgE1XkH (ORCPT
+        id S2437759AbgE1Xrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 19:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437727AbgE1Xrj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 19:40:07 -0400
-Received: by mail-io1-f68.google.com with SMTP id r2so435027ioo.4;
-        Thu, 28 May 2020 16:40:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i4Y4lPDTpEphgjWEfCEtO/CC6ipcnlKyUlBGCBDZA24=;
-        b=gK8/mUHHs40035WQYUzZXo5yeGAcTL3n8Z5dD3rRZGTA2jtW+zaAtrwnKCx+YgYJcf
-         G5EuTdvkrrXUoymBZR0Z+lrOPjRn5zpWm1G7zRlNM7fh/trptOyhQzONzkhbCpfNje1I
-         jhnU7Nan9DiUYD8zdQR3c/RgV9IWyn4aQ8PNAzVimZ26hvTXqCtcibyEzOy+ajArpTc3
-         1gqJZpZH0pSJr5x22rvR1eTQwQADIW1DJddHUtBhXPbMbSIVpmtRi/wZfWrjw5Ke9SYT
-         /+tne6VEpLmpJvOwXNV6Er4EG0TBsidmYuDo9Fj3jPHhRbLIaV9XuAhYZeYTVpnOV/gK
-         GWtw==
-X-Gm-Message-State: AOAM530ZOPoDTKb6bwp0zH2nDmsfmB8kB/Dp3HEU5ceTylrG9r+hO5hs
-        iz2hNQUy3/SeS6oGQ9IskR6voWKDsw==
-X-Google-Smtp-Source: ABdhPJy8BW9eTIOl/ecKA/VdytHdPNFmsc9AalD1NorbWXq7ZqfpCfTOjU89LHuDt9aD//1FAEZypQ==
-X-Received: by 2002:a6b:d311:: with SMTP id s17mr4429829iob.18.1590709206102;
-        Thu, 28 May 2020 16:40:06 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id i2sm3111578ion.35.2020.05.28.16.40.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 16:40:05 -0700 (PDT)
-Received: (nullmailer pid 891407 invoked by uid 1000);
-        Thu, 28 May 2020 23:40:04 -0000
-Date:   Thu, 28 May 2020 17:40:04 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     matthias.bgg@kernel.org
-Cc:     matthias.bgg@gmail.com, Matthias Brugger <mbrugger@suse.com>,
-        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        sean.wang@mediatek.com, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, vkoul@kernel.org
-Subject: Re: [PATCH] dt-bindings: dma: uart: mtk: fix example
-Message-ID: <20200528234004.GA891377@bogus>
-References: <20200523201530.18225-1-matthias.bgg@kernel.org>
+        Thu, 28 May 2020 19:47:39 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 776E6C008632;
+        Thu, 28 May 2020 16:40:27 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
+        id 1jeS8P-00HDQd-Q4; Thu, 28 May 2020 23:40:25 +0000
+Date:   Fri, 29 May 2020 00:40:25 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCHES] uaccess base
+Message-ID: <20200528234025.GT23230@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200523201530.18225-1-matthias.bgg@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 23 May 2020 22:15:30 +0200, matthias.bgg@kernel.org wrote:
-> From: Matthias Brugger <mbrugger@suse.com>
-> 
-> The binding example is missing the fallback compatible.
-> This is needed as the driver only matches against mt6577.
-> 
-> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
-> ---
->  Documentation/devicetree/bindings/dma/mtk-uart-apdma.txt | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
+	Base of uaccess pile - series from Christophe Leroy adding
+user_{read,write}_access_begin().  Sat in ppc tree all along,
+in vfs.git it's #uaccess.base.  No changes since the last time
+it got posted, repeated for reference, based at v5.7-rc1
 
-Applied, thanks!
+Christophe Leroy (3):
+      uaccess: Add user_read_access_begin/end and user_write_access_begin/end
+      uaccess: Selectively open read or write user access
+      drm/i915/gem: Replace user_access_begin by user_write_access_begin
+
+ drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c |  5 +++--
+ fs/readdir.c                                   | 12 ++++++------
+ include/linux/uaccess.h                        |  8 ++++++++
+ kernel/compat.c                                | 12 ++++++------
+ kernel/exit.c                                  | 12 ++++++------
+ lib/strncpy_from_user.c                        |  4 ++--
+ lib/strnlen_user.c                             |  4 ++--
+ lib/usercopy.c                                 |  6 +++---
+ 8 files changed, 36 insertions(+), 27 deletions(-)
+
