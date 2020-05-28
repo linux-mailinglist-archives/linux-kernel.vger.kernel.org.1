@@ -2,15 +2,15 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE531E6550
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 724D41E6553
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403990AbgE1PCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 11:02:51 -0400
-Received: from mout.web.de ([212.227.17.12]:41941 "EHLO mout.web.de"
+        id S2404145AbgE1PCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 11:02:55 -0400
+Received: from mout.web.de ([217.72.192.78]:51121 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403912AbgE1PCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 11:02:48 -0400
+        id S2403800AbgE1PCt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 11:02:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
         s=dbaedf251592; t=1590678139;
         bh=XAlZ9NlFpmpE4T1vzDKjCyi79kivASTGD6nypBrWwyU=;
@@ -19,8 +19,8 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
          sL7leqDtKPS1Dw0903JlCHlN/q2wBJIwhqYkKgDsRXR2S8UlSAC4wXh9slhFU8bmlO
          MDaaZlHsujpTds+Q/0rdY5LfAy7YAvf/qjrv0iik=
 X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.3] ([2.244.30.242]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MG9DC-1joFex1Uia-00Germ; Thu, 28
+Received: from [192.168.1.3] ([2.244.30.242]) by smtp.web.de (mrweb102
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0LtWsC-1iv3eB29Js-010qQl; Thu, 28
  May 2020 17:02:19 +0200
 Subject: Re: [v5] workqueue: Remove unnecessary kfree() call in rcu_free_wq()
 To:     Lai Jiangshan <jiangshanlai@gmail.com>,
@@ -78,7 +78,7 @@ Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
  Z/wsLiWTgKlih2QYULvW61XU+mWsK8+ZlYUrRMpkauN4CJ5yTpvp+Orcz5KixHQmc5tbkLWf
  x0n1QFc1xxJhbzN+r9djSGGN/5IBDfUqSANC8cWzHpWaHmSuU3JSAMB/N+yQjIad2ztTckZY
  pwT6oxng29LzZspTYUEzMz3wK2jQHw+U66qBFk8whA7B2uAU1QdGyPgahLYSOa4XAEGb6wbI FEE=
-Message-ID: <75afce2b-cdf0-b917-cab5-f36d105abcfc@web.de>
+Message-ID: <68ee7d01-fcec-a0f8-4717-bc940efdbf38@web.de>
 Date:   Thu, 28 May 2020 17:02:18 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
@@ -87,30 +87,30 @@ In-Reply-To: <CAJhGHyD1nV=M=ccycqCMt86GMuZGkO9trbJ=4ti4EzP9kta6iA@mail.gmail.com
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:SyQea2mcR7kZajl+TazE9ttwxonaCGfXKQ2UnI3DIy2jOqVknLK
- NSVku7ElU39PDHnalEfvGxWNU6tAlz1UdBstByK+owtpPhevM2ebWZT42GToGdUSLefjgEk
- qAobBy4LQUAzBOfiDdTbhgPFWcyk659vL/mLrG157mff1nZUu3QvN3fFskluVpM/5J8hjvl
- eV1f3zHQCUWn5cxQH/yuA==
+X-Provags-ID: V03:K1:m8Nb+gm7ddRTAwolHNsbKh/GSmMHQ6cirgzVxUHbZ7RxucNLHJF
+ AlLRX4B39QB3xTGy59+x9SWxRFs9BOaiEGYP90drtRO2P/6nBnjvFGIcHyqdLNcpertRZ+P
+ Il5ZnoAxVzfpGB/MSphAz9LNOjPwRlRRzPb17KZXqUqmpS5q3+0m3hUDtxUzN6vaTj7lpmM
+ K/KGUCGNEShsOT6FDa0HQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:AczgUwj0+1g=:fqQvrpBy7yOvwjP+2RzH4P
- GXMkj5L+E3sKg/4fyrvsjXFe5zyhN83XHf/jXbe+JTakbzzOX//AFUtZSatUF9ajfu/8F+DwW
- b7p48G1ZSEkqPqAkoGmbJFeorz0cghvcUwTMeTIZREexTQo6lEpBIm/76os4dbwdqCEh60Oqg
- uw3Bp/GH7JnwkTVNeBFV1V85Q1VIq1n3XvS+vuVJGnRkO+TlY72XvniyH7md++5Z9gOwlR85p
- LdLRektbUJwmAYsRVtC5MqgICkHH56lNVTWMhbt3NziHv8L8ZliMposRyi15FWxAruEq7O7kQ
- nsiH24y+a80+ZzfEeqchBqGaSY+vFOnT0YYtHKkfC9USCMpZduEtPRlIjDbBcjcKdzpsZsoyI
- RYRyie42/X98bz8xfjhM478JDes7Tbpuu0Ik9zA8JymjN2IUhKWllODqojK6Q5ClvMNgEzaK3
- HX8o9UdGst60qGVgXEfCC3qKsmnDJmWN1iWx5SCJ0w18F1ClyNSHVdCDv1ej6SLJ30wniLmS2
- zs73ttW7Wm1hZoJOE9D0K3bfEAOuZOUkBlM7qhRoHMbbV+wK6/xeEw1Xw3wpgaMqC4AzTiCFo
- mcXaECKEaqqXCni37sJ/Wi/Lxo+LZvmxv35OW0rB1bfoW9sDii/71oG5O/aEnuufGpp3O1lCV
- b+B9397ZLcm5u3DzvwEVOvLG2LIaeR3jeJ6x11iRTpVEYZuHmG2o7D5dPUO8Is+I5+m/SGp9G
- tPmU70gHqrPssc8xcwlU+HZqEn4mP9VySol03OUvLl7pS5Apbo7gB8u7CzXC2pntNOrBFVcy4
- gDostiZUrRpPsnX7XNFn7ISZGlVERHPCVppGi4cSw3Dwi0MhEFxffSep4XR6nfJMG8PWzcxIB
- FgRztVuevYe0164+mlwfMz9V94AX0bAwzAI3PkN7LYiA758lZJUyeLgu7s2zxsWmEOlRlg5N7
- ffpNziy+0IKYw1tf6Q42sF3zDqnjvH35YAMa4GlLa+j+EaFkxhIWFlBpcB0d+EETffEyfDhs/
- SCzbZYZMv6aUs+u/gqE2H1ea+EetoS/etoyK6HTejr9VAvMUd17KdU53DAVt4GCR75kwaRkbE
- ofjxia0hff2wqvWEmVAqxZg0wHaEvyADgR/x4j+Jj2GHXYwhN639AJ0UoTaLsU2QL9caDXL6q
- Ki4pqpD1oFeBiTIi2B8yK8O9CY9jR19Tle9Ra0/qG7PIf+dlb2bHiWiQ4niTMb05sxrZTO9tJ
- 8S5EKNmYYE+r9Zv1w
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3smnmiaUYgQ=:/59f5bLFWdNcGEWBMo7Qy8
+ AWRhn+SbzJtGbWsM0wB3Wso73w/tJB5ltEkSxXTPYdQ2XHsUGccU06CQKTxcpf734gzZz8fDY
+ 23P0Jj1zrbfln3x7vVF1mvB8AgJYTvBrNrLXqJr5LyUnZeu4/9y7PpufBHtaXWe/AutqVlfHv
+ yaMX2YKUqlDbZb4/jmSiYIkyV97PEleVBdcz40zSvGxWJXj+Vg5VwxOLAHm9d9E9E9YleeLth
+ bUA5f+I7QCiq7ZxhlFwnIPenONYCyngpOT6ykbYN93B0PbEIF2hBkVZNDoTsEUmINaqTE5tEj
+ WoQneVncOpLUbnsAHP4BtIcKKE6hTn4ir7cwJdCZgmXlPJoGIT6rWgMxOHwm2Cg9PUm5Nw1o/
+ smuqy4Xat/kzeXTN0HPqy1663ibeHUpb8eLxHTOPy82nu4uHfBfXs+pGfcz3LSI9FS3ktT65s
+ H4WZ9ieBHLGniv6CcxALYsQwh8XAHk055lZ/uFmqLqUo5zHSqcoSXdlTwy9eYn6htTsOGrW3/
+ yd0pG/7kke2Q4WMUG0UYFRRpZy8+dg7mkRkVt1sXtZLk/rT3/uytsunNZlV2hPelQJMv9Zt5M
+ 8WinppMPg4/O4H5+qcVItctA+z08j60yBWBD2H+5R66e99LTg8mIDNwOVIlqv7n4jA9efFhaj
+ jEkj417ZYFmx8RHupWlRebg2ebvPmbexJPmF2oVfwy9CCOQMveGS//tHn3FKFJ3QCwILL+VWi
+ I49HRfvvxucUJKcB//tbaDm3LET0VT98f7Nabcb1oEHSU6obc7SE42EYtVFiRvovO8yZTgJdk
+ qt3EwhDLygb2XXwL8tic9Cv0nNvE8rgn2oAXeOMgDCKwRWG5sWQ3OlmkcI4n5Hg8wHWDOsdy3
+ nz4hqBH98GyglTaQqXHVgp+LPO1ZaQ20wDTplK4ugQ2KUiGKoBgM97tDiFofxGQLitFSgs3TF
+ +1Z2atwj1rQ6B9UWujZd1IsUYxR7hyo363e6PPreql5DHVK+0eepUb0JBahEHQOkar1JNVzwQ
+ QruWo0szL6+dGo7pKF4lTUBVmGk4SwAs0ZP2IHMSy4FxLcAQ7nRInQl2RdwvGLUuio2FxUaDC
+ gFfq6mQw7UrkydvM/rwu+2E5sbKUL97QkhAUrVy4d9nqhSCyVME3bwkvfRKU0yiF1IHK+KWf2
+ OtdJ9Buw1lSy46E3C/gX86c+fS/s19AgPN/bhnPgxn5TzmyIum5bpK4zCu5lbi64wYPYtb/Dn
+ QZaDLViBE70As7bjY
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
