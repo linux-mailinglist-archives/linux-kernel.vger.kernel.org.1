@@ -2,55 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 707E21E70DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 01:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F46B1E70DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 01:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437754AbgE1XyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 19:54:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437677AbgE1XyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 19:54:02 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE043206E2;
-        Thu, 28 May 2020 23:54:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590710041;
-        bh=gXZYavOYVxcImwq5BLCVSLLMCyz5KZa/MjCXgWwsFOg=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=HhmXX5C1cr60i/bHtezec2SbWBEAMbgIl0+g1A/6CxNW1brrD/Qn83sKWrbJkIy1j
-         IHx3KVvhiNtqev7GHE6EsK9J8siUq8b7mM84GO485huQNfYLWK/dnysYCLVdgD8C3D
-         4Nh5WOdEZ0vyAuzT+bTSJC0eRPRdE91jEnjz7cIY=
-Content-Type: text/plain; charset="utf-8"
+        id S2437864AbgE1XzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 19:55:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437692AbgE1XzI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 19:55:08 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AFBFC08C5C8
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 16:55:07 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id p30so385368pgl.11
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 16:55:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e7SGnHQEJZH8F0krQCl34Ydvm5S42dlpxkmjv3VJYu0=;
+        b=eZumT5u8Wa2rtx0tfJi7hNCNpvi5FowWlYQPg0HGhtWAz2exsdLuiOm9vm80khaBOZ
+         sEerEOEVmI0X1JZBo5ez4n+g2U3SHxddLQSXjkFGGWId8po8DcqSbdABFlsPp2KqMeTt
+         fy7p33+jZTYUOaIG0lXROVj5SfR/tCZnOlUGQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e7SGnHQEJZH8F0krQCl34Ydvm5S42dlpxkmjv3VJYu0=;
+        b=jx5NbYvGcGnNut602H8Zty76REdYuvOQdMe3cJkr4KjFVUddkgzaQovHeFb9A3kjMg
+         nXL1T6Tkdrh4RW/VfiXqMS9/v65O7xzyeW1Mwh6i/Li2txaBAuRKIeA/liS25iRaiTNy
+         M/+/psDukpcuypDpc02EqvcskqmRVLKYLNd/chaM/Qw0uXduhT3YRZK6XcZGGCIDMPwF
+         cUq+Y4lc8AMibS25Zz4xx1WkrqAlr54Na/JoWCiw/7NxFoZr1WQZrqtThBEtWxC/fhWd
+         MddQhsQGL9HLRCG0KXyhlkpLCtTbX/M5VWjjf/OkfKCoE7WYMTb9ayxqTYGK/nofSgIs
+         2JaQ==
+X-Gm-Message-State: AOAM531j31cue/kk/pYKb57hZEXaColZ6PPbozyGDfgm24uVa3TZMpke
+        qucl5F+O2TYoUY6OvxpRISYMIQ==
+X-Google-Smtp-Source: ABdhPJwwodXakmojQKptX1+Fol9ux6f2AaOWGzBj7pIY7pNb4HrA3CwJVMigps57BlYgCLq/Gmt2LA==
+X-Received: by 2002:a62:7dcb:: with SMTP id y194mr5544651pfc.65.1590710106747;
+        Thu, 28 May 2020 16:55:06 -0700 (PDT)
+Received: from mcchou0.mtv.corp.google.com ([2620:15c:202:201:b46:ac84:1014:9555])
+        by smtp.gmail.com with ESMTPSA id f18sm5022591pga.75.2020.05.28.16.55.04
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 28 May 2020 16:55:05 -0700 (PDT)
+From:   Miao-chen Chou <mcchou@chromium.org>
+To:     Bluetooth Kernel Mailing List <linux-bluetooth@vger.kernel.org>
+Cc:     Alain Michaud <alainm@chromium.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Manish Mandlik <mmandlik@chromium.org>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Yoni Shavit <yshavit@chromium.org>,
+        Michael Sun <michaelfsun@google.com>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH v1 1/7] Bluetooth: Add definitions for advertisement monitor features
+Date:   Thu, 28 May 2020 16:54:49 -0700
+Message-Id: <20200528165324.v1.1.I636f906bf8122855dfd2ba636352bbdcb50c35ed@changeid>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200528142205.44003-1-jeffrey.l.hugo@gmail.com>
-References: <20200528142205.44003-1-jeffrey.l.hugo@gmail.com>
-Subject: Re: [PATCH] clk: qcom: Add missing msm8998 ufs_unipro_core_clk_src
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-To:     Jeffrey Hugo <jeffrey.l.hugo@gmail.com>, mturquette@baylibre.com,
-        robh+dt@kernel.org
-Date:   Thu, 28 May 2020 16:54:01 -0700
-Message-ID: <159071004112.69627.18281821446546395989@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jeffrey Hugo (2020-05-28 07:22:05)
-> ufs_unipro_core_clk_src is required to allow UFS to clock scale for power
-> savings.
->=20
-> Fixes: b5f5f525c547 ("clk: qcom: Add MSM8998 Global Clock Control (GCC) d=
-river")
-> Signed-off-by: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-> ---
+This adds support for Advertisement Monitor API. Here are the commands
+and events added.
+- Read Advertisement Monitor Feature command
+- Add Advertisement Pattern Monitor command
+- Remove Advertisement Monitor command
+- Advertisement Monitor Added event
+- Advertisement Monitor Removed event
 
-Applied to clk-next
+Signed-off-by: Miao-chen Chou <mcchou@chromium.org>
+---
+
+ include/net/bluetooth/mgmt.h | 49 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
+
+diff --git a/include/net/bluetooth/mgmt.h b/include/net/bluetooth/mgmt.h
+index 16e0d87bd8fae..df36c50d15f53 100644
+--- a/include/net/bluetooth/mgmt.h
++++ b/include/net/bluetooth/mgmt.h
+@@ -702,6 +702,45 @@ struct mgmt_rp_set_exp_feature {
+ 	__le32 flags;
+ } __packed;
+ 
++#define MGMT_ADV_MONITOR_FEATURE_MASK_OR_PATTERNS    BIT(0)
++
++#define MGMT_OP_READ_ADV_MONITOR_FEATURES	0x004B
++#define MGMT_READ_ADV_MONITOR_FEATURES_SIZE	0
++struct mgmt_rp_read_adv_monitor_features {
++	__u32 supported_features;
++	__u32 enabled_features;
++	__u16 max_num_handles;
++	__u8 max_num_patterns;
++	__u16 num_handles;
++	__u16 handles[];
++}  __packed;
++
++struct mgmt_adv_pattern {
++	__u8 ad_type;
++	__u8 offset;
++	__u8 length;
++	__u8 value[31];
++} __packed;
++
++#define MGMT_OP_ADD_ADV_PATTERNS_MONITOR	0x004C
++struct mgmt_cp_add_adv_patterns_monitor {
++	__u8 pattern_count;
++	struct mgmt_adv_pattern patterns[];
++} __packed;
++#define MGMT_ADD_ADV_PATTERNS_MONITOR_SIZE	1
++struct mgmt_rp_add_adv_patterns_monitor {
++	__u16 monitor_handle;
++} __packed;
++
++#define MGMT_OP_REMOVE_ADV_MONITOR		0x004D
++struct mgmt_cp_remove_adv_monitor {
++	__u16 monitor_handle;
++} __packed;
++#define MGMT_REMOVE_ADV_MONITOR_SIZE		2
++struct mgmt_rp_remove_adv_monitor {
++	__u16 monitor_handle;
++} __packed;
++
+ #define MGMT_EV_CMD_COMPLETE		0x0001
+ struct mgmt_ev_cmd_complete {
+ 	__le16	opcode;
+@@ -933,3 +972,13 @@ struct mgmt_ev_exp_feature_changed {
+ 	__u8	uuid[16];
+ 	__le32	flags;
+ } __packed;
++
++#define MGMT_EV_ADV_MONITOR_ADDED	0x0028
++struct mgmt_ev_adv_monitor_added {
++	__u16 monitor_handle;
++}  __packed;
++
++#define MGMT_EV_ADV_MONITOR_REMOVED	0x0029
++struct mgmt_ev_adv_monitor_removed {
++	__u16 monitor_handle;
++}  __packed;
+-- 
+2.26.2
+
