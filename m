@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0FA1E5ECF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 558271E5ED4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388692AbgE1L4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 07:56:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48118 "EHLO mail.kernel.org"
+        id S2388736AbgE1L41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 07:56:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388630AbgE1L4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 07:56:07 -0400
+        id S2388650AbgE1L4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 07:56:14 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 72119212CC;
-        Thu, 28 May 2020 11:56:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D918208E4;
+        Thu, 28 May 2020 11:56:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590666967;
-        bh=iEDnrsz6xY98L2zR/1m+vsa68l86wv7afRh44H+XURc=;
+        s=default; t=1590666973;
+        bh=fCZJ/XHdKHiSHStzGsvusFWRTMUu6YnQ/9xTD63G/qo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vHRvASaAjuR+Nb7gSwldh4/ZxkYxODyQJHUxlHOqY4f0sNRSfZS5LbLSzQDu3CHYk
-         ZJz43yfocmveZ+hU9fkbmmvMkZ2FCjKwE95Qcq2KHW//0hOi1gaWNBWooTcvlCLnGb
-         mvHdR6Yx/hE4Kb33UTbG6N55DLcDHYABPl10G8F0=
+        b=z6qcsaHyVVLK2DCo+kBmk+9LiJ8aIiY85Bst15qpwORw+ztftRZW+XW9yzPtKM01J
+         jGH6dVdmfqfdQUvYBZd91geTzNos/FnOaQnxWYkMg1b8IHdmlf3BmacAjWmMvrqfDo
+         RC2Z3e8XtcayEOtm1AfVWVDFyaqdAQK9GqYNdcf4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Can Guo <cang@codeaurora.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 05/47] scsi: pm: Balance pm_only counter of request queue during system resume
-Date:   Thu, 28 May 2020 07:55:18 -0400
-Message-Id: <20200528115600.1405808-5-sashal@kernel.org>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 11/47] io_uring: don't prepare DRAIN reqs twice
+Date:   Thu, 28 May 2020 07:55:24 -0400
+Message-Id: <20200528115600.1405808-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200528115600.1405808-1-sashal@kernel.org>
 References: <20200528115600.1405808-1-sashal@kernel.org>
@@ -44,80 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Can Guo <cang@codeaurora.org>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-[ Upstream commit 05d18ae1cc8a0308b12f37b4ab94afce3535fac9 ]
+[ Upstream commit 650b548129b60b0d23508351800108196f4aa89f ]
 
-During system resume, scsi_resume_device() decreases a request queue's
-pm_only counter if the scsi device was quiesced before. But after that, if
-the scsi device's RPM status is RPM_SUSPENDED, the pm_only counter is still
-held (non-zero). Current SCSI resume hook only sets the RPM status of the
-scsi_device and its request queue to RPM_ACTIVE, but leaves the pm_only
-counter unchanged. This may make the request queue's pm_only counter remain
-non-zero after resume hook returns, hence those who are waiting on the
-mq_freeze_wq would never be woken up. Fix this by calling
-blk_post_runtime_resume() if a sdev's RPM status was RPM_SUSPENDED.
+If req->io is not NULL, it's already prepared. Don't do it again,
+it's dangerous.
 
-(struct request_queue)0xFFFFFF815B69E938
-	pm_only = (counter = 2),
-	rpm_status = 0,
-	dev = 0xFFFFFF815B0511A0,
-
-((struct device)0xFFFFFF815B0511A0)).power
-	is_suspended = FALSE,
-	runtime_status = RPM_ACTIVE,
-
-(struct scsi_device)0xffffff815b051000
-	request_queue = 0xFFFFFF815B69E938,
-	sdev_state = SDEV_RUNNING,
-	quiesced_by = 0x0,
-
-B::v.f_/task_0xFFFFFF810C246940
--000|__switch_to(prev = 0xFFFFFF810C246940, next = 0xFFFFFF80A49357C0)
--001|context_switch(inline)
--001|__schedule(?)
--002|schedule()
--003|blk_queue_enter(q = 0xFFFFFF815B69E938, flags = 0)
--004|generic_make_request(?)
--005|submit_bio(bio = 0xFFFFFF80A8195B80)
-
-Link: https://lore.kernel.org/r/1588740936-28846-1-git-send-email-cang@codeaurora.org
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Can Guo <cang@codeaurora.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_pm.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ fs/io_uring.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/scsi/scsi_pm.c b/drivers/scsi/scsi_pm.c
-index 3717eea37ecb..5f0ad8b32e3a 100644
---- a/drivers/scsi/scsi_pm.c
-+++ b/drivers/scsi/scsi_pm.c
-@@ -80,6 +80,10 @@ static int scsi_dev_type_resume(struct device *dev,
- 	dev_dbg(dev, "scsi resume: %d\n", err);
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 8bdf2629f7fd..aa800f70c55e 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -4262,12 +4262,13 @@ static int io_req_defer(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+ 	if (!req_need_defer(req) && list_empty_careful(&ctx->defer_list))
+ 		return 0;
  
- 	if (err == 0) {
-+		bool was_runtime_suspended;
-+
-+		was_runtime_suspended = pm_runtime_suspended(dev);
-+
- 		pm_runtime_disable(dev);
- 		err = pm_runtime_set_active(dev);
- 		pm_runtime_enable(dev);
-@@ -93,8 +97,10 @@ static int scsi_dev_type_resume(struct device *dev,
- 		 */
- 		if (!err && scsi_is_sdev_device(dev)) {
- 			struct scsi_device *sdev = to_scsi_device(dev);
+-	if (!req->io && io_alloc_async_ctx(req))
+-		return -EAGAIN;
 -
--			blk_set_runtime_active(sdev->request_queue);
-+			if (was_runtime_suspended)
-+				blk_post_runtime_resume(sdev->request_queue, 0);
-+			else
-+				blk_set_runtime_active(sdev->request_queue);
- 		}
- 	}
+-	ret = io_req_defer_prep(req, sqe);
+-	if (ret < 0)
+-		return ret;
++	if (!req->io) {
++		if (io_alloc_async_ctx(req))
++			return -EAGAIN;
++		ret = io_req_defer_prep(req, sqe);
++		if (ret < 0)
++			return ret;
++	}
  
+ 	spin_lock_irq(&ctx->completion_lock);
+ 	if (!req_need_defer(req) && list_empty(&ctx->defer_list)) {
 -- 
 2.25.1
 
