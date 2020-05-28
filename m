@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB441E5D1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 12:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A051E5D2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 12:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387778AbgE1K0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 06:26:15 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:41739 "EHLO
+        id S2387897AbgE1K33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 06:29:29 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:54951 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387758AbgE1K0K (ORCPT
+        with ESMTP id S2387842AbgE1K3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 06:26:10 -0400
-Received: from mail-qt1-f181.google.com ([209.85.160.181]) by
+        Thu, 28 May 2020 06:29:06 -0400
+Received: from mail-qt1-f172.google.com ([209.85.160.172]) by
  mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MpDRp-1jE1Rp3PpP-00qnDC for <linux-kernel@vger.kernel.org>; Thu, 28 May
- 2020 12:26:07 +0200
-Received: by mail-qt1-f181.google.com with SMTP id j32so6809790qte.10
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 03:26:06 -0700 (PDT)
-X-Gm-Message-State: AOAM532hXxlaVmdkWdMRmG+6TNUk/HiP+d2I1ZrKDFk+nKA67Sl0oxhM
-        dl+DdCUnULdTAPGpW7wf7zTqtq7E87pTj/fXpZo=
-X-Google-Smtp-Source: ABdhPJzZDzCqFPei9gCeAOoruNGiztHbqxTx7mAfeb8dqjxHRA7W1V875BfSq9ThfnHKfXdXDTVICVEKmIsGV5hdYf4=
-X-Received: by 2002:ac8:691:: with SMTP id f17mr2257635qth.204.1590661565700;
- Thu, 28 May 2020 03:26:05 -0700 (PDT)
+ id 1MQ5nK-1jR6cR3J4a-00M11t for <linux-kernel@vger.kernel.org>; Thu, 28 May
+ 2020 12:29:03 +0200
+Received: by mail-qt1-f172.google.com with SMTP id a23so21775044qto.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 03:29:03 -0700 (PDT)
+X-Gm-Message-State: AOAM532jmwbvJQ280XM1MnmAvw2LOR6EVzwdb7C5kmmAHojYLRj3cC/L
+        LMqcNVoy0tF4t8Bu8OhdFOyrvHDuyIEI416SQhM=
+X-Google-Smtp-Source: ABdhPJz2a2WytWmIneIq2G9OpjaO/RzuEzD9ej4GIQPy/ppJNSDQ6lV/bFBZfFaxAIKkS/hUB94Bg+Cs4mG8X8OBWbA=
+X-Received: by 2002:ac8:1844:: with SMTP id n4mr2210189qtk.142.1590661742672;
+ Thu, 28 May 2020 03:29:02 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200527112608.3886105-1-anders.roxell@linaro.org>
- <20200527112608.3886105-2-anders.roxell@linaro.org> <CAL_Jsq+vrEE2DBY+c3iVyMLf9oOaGVHVvdiMgdYEGCjJwX7Hcw@mail.gmail.com>
-In-Reply-To: <CAL_Jsq+vrEE2DBY+c3iVyMLf9oOaGVHVvdiMgdYEGCjJwX7Hcw@mail.gmail.com>
+ <20200527112608.3886105-6-anders.roxell@linaro.org> <CAL_Jsq+bwnwQBpxf_Q5GNhCz8+-psH-ovpW80LMk=MK=zcbYcA@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+bwnwQBpxf_Q5GNhCz8+-psH-ovpW80LMk=MK=zcbYcA@mail.gmail.com>
 From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 28 May 2020 12:25:49 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1P3bFC=cneCR9CURgYis6Ue7oPXKAEAQ8TpxQQYUPwgA@mail.gmail.com>
-Message-ID: <CAK8P3a1P3bFC=cneCR9CURgYis6Ue7oPXKAEAQ8TpxQQYUPwgA@mail.gmail.com>
-Subject: Re: [PATCH 1/5] power: vexpress: add suppress_bind_attrs to true
+Date:   Thu, 28 May 2020 12:28:46 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3_5pHCc0WqDNt1Aim2M67cicyq27f0ggqPbJuu97i=Nw@mail.gmail.com>
+Message-ID: <CAK8P3a3_5pHCc0WqDNt1Aim2M67cicyq27f0ggqPbJuu97i=Nw@mail.gmail.com>
+Subject: Re: [PATCH 5/5] power: vexpress: make the reset driver a module
 To:     Rob Herring <robh@kernel.org>
 Cc:     Anders Roxell <anders.roxell@linaro.org>,
         SoC Team <soc@kernel.org>,
@@ -40,47 +40,50 @@ Cc:     Anders Roxell <anders.roxell@linaro.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Linus Walleij <linus.walleij@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:s89PGBfFbpivKvIclG9aePUmjQFOUcAHrSdHPfLJ4svnNplAO6M
- 3FPS/RtYwqByhuVefiN4eF19nwPC4fJEC/txMpewFQHBOp+kufQnJCaLMCLMbe+GGqcwRcM
- CS7cQn6jAyrL6KlhDA8bqF3K2KAGrM77dfTGq9wpdS6erhezQ9HDrD7OHz3iWk5728aCJF5
- O8YJy5NcnD+B2jl9+5nig==
+X-Provags-ID: V03:K1:RQzF1yQzx+K2cLpqpCusoYSQA4uv03CisgmvX1deqeHfNiEWKfS
+ JQbQ9CCCZcSJVbmrDB3ve8hjR5GFztB1bHHBjxOC+KdsUpOj2Xa0MPZDK1aiSazBEsNdbAW
+ TvAsqim+ALTcJohHUgHTefHr6obVaB9JQf8kAREwuPcshzxcblfVfg9PgyE+RUxyKH9Bwdy
+ pfFTlLakx3l6VVhhk93Ug==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+fQvlHe5zmI=:vJeEuznbvEshnp5WJK5Qti
- TG7VncQOje12ZUFtiN2LWiVsiG9yhDjSEbroA5k9b6GPW5zh2cOMemcRjvwTuBHhclFfDPI6x
- p6BPPIpb81rmfaGywBExln/WQ7rWySEBU/7RMTyJ7yq2cFs/kPweawo1a4tD2LqDjuaThk8wC
- eNVltnQhdAyjju8PCZQLEk+RmXa8tqVg3qXZU98GTv9TykjhZ1Y0QF1RCQkmAkOETY4ATKnHi
- bK2KPKXotaJUf0DxlPInkV3TECSi9/G6Q39aRgKJQH8xFuVIoECLBX115YYvgNOKDc2AxeAi9
- VdN2DJtnl3HlA7v9OVhDcdUEGB3d3lRYCr5YtHjiy6mlUaaqMoFzSj5bVlB1MZzeqxcajd0jr
- xhNY66+sg6uEFHEAgctUqNuKggvBAOZfsxez0hkRm7jTbzN9UKwQMZ7kkRZuql+tem3rTlGk1
- qtOUs/4Rb7+FfYjTJmRpBxKOnK3Zs5rRlPuKHEJAqeUGIBIh3UQ3BBkyKTbhZwpDdpU4m7K1o
- xBOaZEMCgtuSK+Y28M1DvYYWGqtHkdKU0xuKJjahBA6ldQSIuR4qhIbVwYo+pvhC5RH6JWkBK
- MFog9kvdXeT2w/ug6g9saQZt8f/moFatkEkATCB8qMYeLg1wlKzB4gDeVKfUcyuwlAqGwk1Kc
- EpEOno5ppPLkZjN8iWYrfQEHBNYnjtKytCGcsYd2PmE/HgzKlDKxbOZn6BP8xrD2kR/qkPUVu
- 2z7Yk3FVbmab+mT2EQqo6J6sHpwESn3TLWSCtDEFdWSGBi/ewae0SrKtDceOk6VMe7c+R3t/H
- SX5dbG6Pfg1jU+VmC3iwH+Q1PKr1nGXPwXA6WQwHfE0bfOWGgI=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:EvMnaEqN+Kk=:I0dZKNV77g33RHmZ+9q2gz
+ e+zHIq0pHHDBBFivIlZHrkmo58NTGYg/H63E66BS96NYxmFFxM+HJDsOQFZz4hlbAykLJFXWg
+ rXdSMrnmZWk/5kWfcjBusVXtsGsLfpeV/GBiJ84rTxiA8DaswtNWyr83G3uTadZAQ4SCh+58Y
+ wNpWrZ4AfLq2WyfygF9v7zLiqdQsekoYYaIVoi5ea96SD1fhE11Zwlo2L+8kllye9HQsXd3oi
+ zwoWHRHdZHd/FNTG4P9Kq3T3TMZvowxWQO3p7VxatGkAJpiX7fYpn7k0IH5zZc+GMw/5phTbM
+ RHpV1NXV9Rc7kUqEzdU7EkI0AcFLyOVVCIpqHUFmMo28a56FKoCtXa34mG2KpjpRVNJZQTpc6
+ nzi41QsWmikRT7bAxLGw44QZU5f31MaMFxFytD5zCPTXl33rLvPiWWsXZdM5A3+wggsWha3oj
+ joZaQPBo+7dcbY+pZ1+YHhYd6Tcwmaqid8XMZRZQ+pCVvUiyhd0pLgrXjot56V93H07TULXMj
+ 3eu1Ng+k0vwLNQW79Pwfs8+0hONmSI+AiL61EaT3060xgVFOe9Rv6AtQ6Awx6XlJiGrb8/C2c
+ pfRVO91TE+L6eBIpWSy7DGlhOJbiTzol+G0Eqd5+ou5WHbgZ6O/+cz7izdLbiKqyVrlMuLk95
+ uTyCtOR8Lre4ym3Vg4ucPWNSItD9FLdytmvoHMyo5+ALpxuHukb1Hf1dHNm0raCZSGwABTXWv
+ guDfhwXn5XV9xljTf/B4YLrickiYg02TkJgbBFfbQ5kP65YihSmm5ip9suohgm5vP86j6QF8n
+ CCmpD95qnXEg2TGGaOKAtEUI09+a//ZpyRYdhn2Q+3JnrI4wQ8=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 3:27 PM Rob Herring <robh@kernel.org> wrote:
+On Wed, May 27, 2020 at 3:32 PM Rob Herring <robh@kernel.org> wrote:
 >
 > On Wed, May 27, 2020 at 5:26 AM Anders Roxell <anders.roxell@linaro.org> wrote:
 > >
-> > Make sure that the POWER_RESET_VEXPRESS driver won't have bind/unbind
-> > attributes available via the sysfs, so lets be explicit here and use
-> > ".suppress_bind_attrs = true" to prevent userspace from doing something
-> > silly.
+> > Today the vexpress power driver can only be builtin.  Rework so it's
+> > possible for the vexpress power driver to be a module.
 >
-> This doesn't really make sense if we're going to make this a module.
-> Module unloading and unbind introduce the same requirements of
-> cleaning up (undoing whatever probe did).
+> This is the same incomplete patch I did[1]. As a module, it needs to
+> clean-up everything probe did like overwriting global variables.
+>
+> Rob
+>
+> [1] https://lore.kernel.org/linux-arm-kernel/20200419170810.5738-5-robh@kernel.org/
 
-I still want this change as a separate patch so we can backport it to stable
-kernels for correctness.
+Your version was actually broken because it allowed unloading the
+driver again. The version that Anders sent is a bit better because it
+explicitly forbids unloading by having a module_init but not module_exit
+function, so as long as the .suppress_bind_attrs flag is set, this will
+not crash the kernel.
 
-Also, as long as we don't have a working (and tested) .remove callback,
-we can only allow making the driver a loadable module but not also
-allowing the module to be removed.
+It would be nice to have a .remove callback, but for the merge window
+I'm happy with a patch that fixes the build regression.
 
-      Arnd
+        Arnd
