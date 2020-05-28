@@ -2,76 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89721E635D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9CF1E635F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390971AbgE1OId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 10:08:33 -0400
-Received: from mga06.intel.com ([134.134.136.31]:47664 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390658AbgE1OId (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 10:08:33 -0400
-IronPort-SDR: WwPl4F/y7v25SPZV3vvsdqAplTiEVNWz7Xot+hzxPm6Sn4C9LTRlv09/hrTMnuX43BtcAFgoBF
- u6vuWyERX+qA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 07:08:32 -0700
-IronPort-SDR: jhvXYTMRxGyLYTjqyMgsmUO8xYLqrhvph+wpWlnok9jeP2btu47K5r2fmEWuX9EBbJTGGxCYwf
- IRAeqivDnweA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,444,1583222400"; 
-   d="scan'208";a="345913556"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga001.jf.intel.com with ESMTP; 28 May 2020 07:08:32 -0700
-Received: from [10.251.9.11] (kliang2-mobl.ccr.corp.intel.com [10.251.9.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2390890AbgE1OJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 10:09:25 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:57495 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2390727AbgE1OJX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 10:09:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590674962;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=490niSUEjnok3sQJrwjS9wHcDf3r9lU64VwDtM9/LEk=;
+        b=iQOLKMmgqf0EZjKhzNO/LYEnOnBfLVRiVbZG7P210eH5Ge/g9FNIotWV2hyNeaQ2UC2ZUA
+        JFvlhDitswAO5I+QSWF0bEDVF49gzCELKBSDyQSR9C7cKqehpf5mlx98xaiY2LdseICrLn
+        CMihawqIpoQM+wpVeA+3GxQPh4Gssus=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-451-8a54KkNtNLe4i6WPLICf7w-1; Thu, 28 May 2020 10:09:20 -0400
+X-MC-Unique: 8a54KkNtNLe4i6WPLICf7w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 9E9B75803E3;
-        Thu, 28 May 2020 07:08:31 -0700 (PDT)
-Subject: Re: [PATCH V2 3/3] perf/x86/intel/uncore: Validate MMIO address
- before accessing
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <1590671727-99311-1-git-send-email-kan.liang@linux.intel.com>
- <1590671727-99311-3-git-send-email-kan.liang@linux.intel.com>
- <de3b847eddd143998997d70a1ba161b8@AcuMS.aculab.com>
- <79403443-e893-da26-ee6d-1fd7f252bbfe@linux.intel.com>
- <20200528140226.GI611145@tassilo.jf.intel.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <6746309b-c761-e338-c7d6-85ab6edb9052@linux.intel.com>
-Date:   Thu, 28 May 2020 10:08:29 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1D02181CBEF;
+        Thu, 28 May 2020 14:09:19 +0000 (UTC)
+Received: from treble (ovpn-117-65.rdu2.redhat.com [10.10.117.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7D1315EE0E;
+        Thu, 28 May 2020 14:09:18 +0000 (UTC)
+Date:   Thu, 28 May 2020 09:09:16 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Matt Helsley <mhelsley@vmware.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [RFC][PATCH 2/3] objtool: Find relocation base section using
+ sh_info
+Message-ID: <20200528140916.6crguzfpehf6lext@treble>
+References: <cover.1590597288.git.mhelsley@vmware.com>
+ <d848189dac6c41193a6c55c3588b78114bbcb0f8.1590597288.git.mhelsley@vmware.com>
 MIME-Version: 1.0
-In-Reply-To: <20200528140226.GI611145@tassilo.jf.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <d848189dac6c41193a6c55c3588b78114bbcb0f8.1590597288.git.mhelsley@vmware.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/28/2020 10:02 AM, Andi Kleen wrote:
->>>> +
->>>> +	pr_warn_once("perf uncore: Access invalid address of %s.\n",
->>>> +		     box->pmu->type->name);
->>>
->>> Pretty hard to debug without the invalid offset.
->>>
->>
->> I will dump the box->io_addr and offset for debugging.
+On Wed, May 27, 2020 at 09:42:32AM -0700, Matt Helsley wrote:
+> Currently objtool uses a naming heuristic to find the "base"
+> section to apply the relocation(s) to. The standard defines
+> the SHF_INFO_LINK flag (SHF => in the section header flags)
+> which indicates when the section header's sh_info field can
+> be used to find the necessary section.
 > 
-> Please don't overengineer.
-> 
+> Warns when the heuristic is used as a fallback and changes
+> the name heuristic calculation to handle rela (explicit
+> addend) and now rel (implicit addend) relocations.
 
-OK. Will only dump the invalid offset.
+Does this fallback case actually happen?
 
-Thanks,
-Kan
+-- 
+Josh
+
