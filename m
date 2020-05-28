@@ -2,136 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9F21E6119
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4F941E610C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389837AbgE1Mje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:39:34 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:51020 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389746AbgE1Mj3 (ORCPT
+        id S2389820AbgE1Mh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 08:37:27 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:41708 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389734AbgE1MhY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 08:39:29 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SCbnF5188151;
-        Thu, 28 May 2020 12:39:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=IIP/iRFuFJXn63SSiQWJJZ5VnKvJC0mGleXmKDbIZIo=;
- b=SztyNKVZhx7riaDGqRWBbBcLIrwKlv4g8RVPs9g4b7YC8d0L48Tp00q1hizFUuGHRc89
- jzZt+/9dTODJ3p5UIoUofTS4Ct6/IIy99OYSQP0IRzOsnDtnqsjtXTmiaFT58C3ePtf5
- Eh1XdZI2phQRxIBeHvJYlJTxyRgMGc1DDACFGrRtzmt1tukhPKTLcqleS8j4FPiI4KPy
- W5uFws+h1g8bkinIyf9PznGBTkWMZ9FM2OW4XFkR5m62csyMSvk5bR1rUe1UNY+NgfA5
- 1VWxO96iG+p+oKcPowVW89IePaMEOm3VD6Q/jOETdBEU6b5vQeGLqRv3kwZHH0g9cKwS Og== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 318xbk4rwp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 28 May 2020 12:39:12 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SCHdZ7115474;
-        Thu, 28 May 2020 12:37:11 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 317j5v696y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 May 2020 12:37:11 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04SCb9Iw014640;
-        Thu, 28 May 2020 12:37:09 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 28 May 2020 05:37:08 -0700
-Date:   Thu, 28 May 2020 15:37:03 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Zhou Wang <wangzhou1@hisilicon.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] crypto: hisilicon/qm - allow smaller reads in debugfs
-Message-ID: <20200528123703.GA1219412@mwanda>
+        Thu, 28 May 2020 08:37:24 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id A320280307C1;
+        Thu, 28 May 2020 12:37:21 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id U2DxeE0TpbnE; Thu, 28 May 2020 15:37:21 +0300 (MSK)
+Date:   Thu, 28 May 2020 15:37:20 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Arnd Bergmann <arnd@arndb.de>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "soc@kernel.org" <soc@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 4/6] bus: Add Baikal-T1 AXI-bus driver
+Message-ID: <20200528123720.4wv2cmbownc4ejb7@mobilestation>
+References: <20200526125928.17096-1-Sergey.Semin@baikalelectronics.ru>
+ <20200526125928.17096-5-Sergey.Semin@baikalelectronics.ru>
+ <CAHp75VcfkPPy5YjNrcv8c6doyQz5C47QyREE0v6tfQjXYrBijQ@mail.gmail.com>
+ <CAK8P3a2WMqTRitUU86hSV3HSK12-hF_RDoFg51PRGTLmXwznvA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9634 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 suspectscore=0
- mlxlogscore=999 mlxscore=0 adultscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005280086
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9634 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0 mlxscore=0
- lowpriorityscore=0 priorityscore=1501 phishscore=0 cotscore=-2147483648
- suspectscore=0 bulkscore=0 clxscore=1011 impostorscore=0 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2005280087
+In-Reply-To: <CAK8P3a2WMqTRitUU86hSV3HSK12-hF_RDoFg51PRGTLmXwznvA@mail.gmail.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Originally this code rejected any read less than 256 bytes.  There
-is no need for this artificial limit.
+On Thu, May 28, 2020 at 02:14:58PM +0200, Arnd Bergmann wrote:
+> On Thu, May 28, 2020 at 12:01 AM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Tuesday, May 26, 2020, Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote:
+> >>
+> >> AXI3-bus is the main communication bus connecting all high-speed
+> >> peripheral IP-cores with RAM controller and MIPS P5600 cores on Baikal-T1
+> >> SoC. Bus traffic arbitration is done by means of DW AMBA 3 AXI
+> >> Interconnect (so called AXI Main Interconnect) routing IO requests from
+> >> one SoC block to another. This driver provides a way to detect any bus
+> >> protocol errors and device not responding situations by means of an
+> >> embedded on top of the interconnect errors handler block (EHB). AXI
+> >> Interconnect QoS arbitration tuning is currently unsupported.
+> >> The bus doesn't provide a way to detect the interconnected devices,
+> >> so they are supposed to be statically defined like by means of the
+> >> simple-bus sub-nodes.
+> >
+> >
+> >
+> > Few comments in case if you need a new version. Main point is about sysfs_streq().
+> 
+> I've applied the patch now and folded in fixes for the build warnings and
+> errors pointed out by the test robot, but I did not include the changes you
+> suggested.
 
-Also I have changed the snprintf() functions to scnprintf().  The
-difference is that snprintf() returns the number of bytes which would
-have been copied if there were enough space and scnprintf() returns the
-number of bytes which were actually copied.  It doesn't matter here
-because the strings are very short so they can't go over 256 bytes.
+On the other hand if you haven't pushed the patches to the public repo yet,
+I could just resend the series. So have you?
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/crypto/hisilicon/qm.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+-Sergey
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index a781c02251980..9c0c9f500d91d 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -1076,16 +1076,15 @@ static ssize_t qm_cmd_read(struct file *filp, char __user *buffer,
- 	if (*pos)
- 		return 0;
- 
--	if (count < QM_DBG_READ_LEN)
--		return -ENOSPC;
--
--	len = snprintf(buf, QM_DBG_READ_LEN, "%s\n",
-+	len = scnprintf(buf, QM_DBG_READ_LEN, "%s\n",
- 		       "Please echo help to cmd to get help information");
- 
-+	len = min_t(size_t, len, count);
- 	if (copy_to_user(buffer, buf, len))
- 		return -EFAULT;
- 
--	return (*pos = len);
-+	*pos = len;
-+	return len;
- }
- 
- static void *qm_ctx_alloc(struct hisi_qm *qm, size_t ctx_size,
-@@ -2710,19 +2709,18 @@ static ssize_t qm_status_read(struct file *filp, char __user *buffer,
- 	if (*pos)
- 		return 0;
- 
--	if (count < QM_DBG_READ_LEN)
--		return -ENOSPC;
--
- 	val = atomic_read(&qm->status.flags);
--	len = snprintf(buf, QM_DBG_READ_LEN, "%s\n", qm_s[val]);
-+	len = scnprintf(buf, QM_DBG_READ_LEN, "%s\n", qm_s[val]);
- 	if (!len)
- 		return -EFAULT;
- 
-+	len = min_t(size_t, len, count);
- 	cp_len = copy_to_user(buffer, buf, len);
- 	if (cp_len)
- 		return -EFAULT;
- 
--	return (*pos = len);
-+	*pos = len;
-+	return len;
- }
- 
- static const struct file_operations qm_status_fops = {
--- 
-2.26.2
+> 
+> Serge, could you send a follow-up patch to address those?
 
+
+> 
+>      Arnd
