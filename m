@@ -2,112 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8CF1E6CAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA8F1E6CAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391493AbgE1UfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 16:35:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388955AbgE1UfI (ORCPT
+        id S2407326AbgE1Ufm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 16:35:42 -0400
+Received: from mta-p7.oit.umn.edu ([134.84.196.207]:53726 "EHLO
+        mta-p7.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407308AbgE1Ufe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 16:35:08 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C583EC08C5C6;
-        Thu, 28 May 2020 13:35:08 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id t8so93627pju.3;
-        Thu, 28 May 2020 13:35:08 -0700 (PDT)
+        Thu, 28 May 2020 16:35:34 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-p7.oit.umn.edu (Postfix) with ESMTP id 49Xzwj6wHTz9vYf4
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 20:35:33 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at umn.edu
+Received: from mta-p7.oit.umn.edu ([127.0.0.1])
+        by localhost (mta-p7.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ZElmSatlFNVn for <linux-kernel@vger.kernel.org>;
+        Thu, 28 May 2020 15:35:33 -0500 (CDT)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mta-p7.oit.umn.edu (Postfix) with ESMTPS id 49Xzwj5KpQz9vYdZ
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 15:35:33 -0500 (CDT)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p7.oit.umn.edu 49Xzwj5KpQz9vYdZ
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p7.oit.umn.edu 49Xzwj5KpQz9vYdZ
+Received: by mail-il1-f198.google.com with SMTP id b8so325647ilr.11
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:35:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aVkhfDZvk3ofHA+hc3cdGBgGSC3cOVs1givhIYHdY58=;
-        b=GPahTx1vQaoKj92+KlPzRf45xBabahpJ31smgBmXf/iPzD1MfkyFHZHqsWOuzHCVCK
-         dwKI4XD1YVxYlChv08O93FlHCaPMERp8lzwz4686CK+AaGRGfsWyntgmbyadMpZCNmS3
-         WfarWY5PcOKN40z2CYrHKN5B2RuhlcNyg0jJ0cUNF1OifJx3WubpeM36vnECk2tKTWqR
-         xTTAHAhjPA8Q0DEVKaj9rBiu4wDPXBuq1rMXtdPsTiWWntaJHFkamnK3b9FxQJdkHtBS
-         KpCj86njgAtzt4yxo5COnolRUCgloi+qo7JgKUUA7MAatSI9aWTtnNPPS/pOILmTaFeZ
-         Up8g==
+        d=umn.edu; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=mqu7gI4QVys8rtXwsMUtQ4ipaqsDcZVMy4ODpZfEEB4=;
+        b=Qar0iZGnZTOmqVYbtvV6Bqi3LAkl3rpcSO2bfkQuHgwL1hZF0//9lMQMlMJTwceFvL
+         XSq/fO0OV0Wfc/J7UGGZDZgR9ltgK2yz81m68ZYAxqQJSGhEXFR4ATTa4mHldJ2dhBry
+         nXiC0IrJzyijGnzaiLgjXlp9aDcEzZCEeuha3bsIpBoLeLWPeayFqFvUryomq9DHPIoR
+         EEG2hkh1oTANinUNsd9A8P5MBvJS5svc2vt/zx6hEqC3Nt4hpEHvuSzdIhYGCvk/V/yA
+         ElDHwhpT7MLOi6EZ8s/v2P2wfK49Tmk4a+t4Q+iafHlY1rcVa6C1oNrWWUfuQW9dVO7l
+         nCJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aVkhfDZvk3ofHA+hc3cdGBgGSC3cOVs1givhIYHdY58=;
-        b=FCknJbQKG/ZSY5cuJDuUyyEGkFctTCjGVY3CFGRiuS39rOzIpuv+GbzSd9ntivIbKA
-         KPUfkwQkY1Ej6MRA1Z4672XxANsWv86BSormPydsLzcbiAAOM9q1G0+vkXjxyLaL2BCN
-         3noenk3JepSurWOGEF3J5qlpJeMhtMMdI3bhKPLwR3NZzk5oTYiuMhVKor/04ab+Jvd5
-         X0vtUtI5TfBtF/+RNkOYN7SMsAGLpesMnTLB7ckY/3N3W7ZNFE1U54QjVGZ70+dAaGlU
-         Zt8u6dWk6pyQIwuqLYcLh9Ev/igYADzH1eTUCmRitsghr71IdJb4lDH7OOTF5C95SrX0
-         AUjg==
-X-Gm-Message-State: AOAM531GdvesKgriM3eyP+msMR2oheJHIxD61dDMSWxNtvC9P4FCua+c
-        ukKvsZ+xqPtRNjYvj/BRzdT5vIgb7FGzde96cF0=
-X-Google-Smtp-Source: ABdhPJxiq65ETqEjbkblg6sCIOUSCsFRbS3IqDB/IUANc6WuNjXrm7f3lj3wkHzRpe+cdob7YAStIUo18VJKaou1qBA=
-X-Received: by 2002:a17:90b:3651:: with SMTP id nh17mr5881332pjb.228.1590698108362;
- Thu, 28 May 2020 13:35:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200526225022.20405-1-Sergey.Semin@baikalelectronics.ru>
- <20200526225022.20405-6-Sergey.Semin@baikalelectronics.ru>
- <20200528144257.GS1634618@smile.fi.intel.com> <20200528151902.vemr7aolvtean2f3@mobilestation>
-In-Reply-To: <20200528151902.vemr7aolvtean2f3@mobilestation>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 28 May 2020 23:34:52 +0300
-Message-ID: <CAHp75Ve5Rf6ioYFULLGLWTaGdWNQikaPAFOoWjwXxmCbJ7tsyQ@mail.gmail.com>
-Subject: Re: [PATCH v3 05/10] dmaengine: Introduce DMA-device device_caps callback
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        dmaengine <dmaengine@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=mqu7gI4QVys8rtXwsMUtQ4ipaqsDcZVMy4ODpZfEEB4=;
+        b=ZyLKykSDe2nqLck2oJFELhf2L3huFMwUquWr8LDu4w+ccpzlLfQKrvY9Z+J3kc1mFb
+         CIq2FoMcTmcW9+Y8ss85hk5N3HgZzCqcyihKQ3k1IHK7RnnAKzTX3EK0vYpU/OJwgVfK
+         7y2YZwKOTByqB3uB0VYA4s8uziabSm1O6mxC+On3JhEA0yLibE3nUVl9Ubv3Lwg2Sdza
+         rSKPXibNWa3p7ESj2Eno27Cx0QExUJ0fvTE4ZEtnF15sqDIr0bDTb9y4khVdwr22QahM
+         QTjhD6huU0LoYFWhbOrOio59Lxw3GDPg6FEMmC1CyfVX5GEIhkyzBFnz4ojAraMvB4bt
+         l5xg==
+X-Gm-Message-State: AOAM530Usv1FGu90o6ZPSUMu8Ox6wU+ujOcRJSwmGV84NjIKCJSEvCT1
+        6mNzmBIyTnvMapAEAuP0zDKb6r8QAEtKzo7oo7hopwrWqfv4kNMmgttPYSqMv9DjMyQcrsr4JuD
+        quTgI9XeiYwhJIs+nuRUIWn811JnO
+X-Received: by 2002:a92:b0d:: with SMTP id b13mr4533078ilf.225.1590698132456;
+        Thu, 28 May 2020 13:35:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxVTzTdO4UtcoTiTguZKte9c73KtyMrLZemXQsrQkcm5GCYIsZ7eSH3Lp2M+AWyg8VqZX3J0g==
+X-Received: by 2002:a92:b0d:: with SMTP id b13mr4533057ilf.225.1590698132154;
+        Thu, 28 May 2020 13:35:32 -0700 (PDT)
+Received: from qiushi.dtc.umn.edu (cs-kh5248-02-umh.cs.umn.edu. [128.101.106.4])
+        by smtp.gmail.com with ESMTPSA id 17sm3671353ill.14.2020.05.28.13.35.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 13:35:31 -0700 (PDT)
+From:   wu000273@umn.edu
+To:     kjlu@umn.edu
+Cc:     wu000273@umn.edu, Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rrichter@marvell.com>,
+        Doug Thompson <dougthompson@xmission.com>,
+        Greg Kroah-Hartman <gregkh@suse.de>,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] edac: Fix reference count leak in edac_device_register_sysfs_main_kobj.
+Date:   Thu, 28 May 2020 15:35:26 -0500
+Message-Id: <20200528203526.20908-1-wu000273@umn.edu>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 6:23 PM Serge Semin
-<Sergey.Semin@baikalelectronics.ru> wrote:
-> On Thu, May 28, 2020 at 05:42:57PM +0300, Andy Shevchenko wrote:
-> > On Wed, May 27, 2020 at 01:50:16AM +0300, Serge Semin wrote:
+From: Qiushi Wu <wu000273@umn.edu>
 
-...
+kobject_init_and_add() should be handled when it return an error,
+because kobject_init_and_add() takes reference even when it fails.
+If this function returns an error, kobject_put() must be called to
+properly clean up the memory associated with the object. Previous
+commit "b8eb718348b8" fixed a similar problem.
 
-> > > +   if (device->device_caps)
-> > > +           device->device_caps(chan, caps);
-> > > +
-> > >     return 0;
-> >
-> > I dunno why this returns int, but either we get rid of this returned value
-> > (perhaps in the future, b/c it's not directly related to this series), or
-> > something like
-> >
-> >       if (device->device_caps)
-> >               return device->device_caps(chan, caps);
->
-> It returns int because dma_get_slave_caps() check parameters and some other
-> stuff.
->
-> Regarding device_caps() callback having a return value. IMO it's redundant.
-> The only thing what the callback should do is to update the caps and device
-> is supposed to know it' capabilities, otherwise who else should know? So I
-> don't see why device_caps would be needed.
+Fixes: b2ed215a3338 ("Kobject: change drivers/edac to use kobject_init_and_add")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+---
+ drivers/edac/edac_device_sysfs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-It might be useful in some (weird?) cases, when you would like to
-override a parameter which device provides to relax it (my common
-sense tells me that device on global level should not be restrictive,
-rather permissive), which might be considered as an error (we would
-like to set return capability out of the boundaries of global ones
-which provided on device level).
-
-But okay, up to you and Vinod.
-
+diff --git a/drivers/edac/edac_device_sysfs.c b/drivers/edac/edac_device_sysfs.c
+index 0e7ea3591b78..5e7593753799 100644
+--- a/drivers/edac/edac_device_sysfs.c
++++ b/drivers/edac/edac_device_sysfs.c
+@@ -275,6 +275,7 @@ int edac_device_register_sysfs_main_kobj(struct edac_device_ctl_info *edac_dev)
+ 
+ 	/* Error exit stack */
+ err_kobj_reg:
++	kobject_put(&edac_dev->kobj);
+ 	module_put(edac_dev->owner);
+ 
+ err_out:
 -- 
-With Best Regards,
-Andy Shevchenko
+2.17.1
+
