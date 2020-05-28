@@ -2,80 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E83F1E6B9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 21:49:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE761E6BA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 21:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406764AbgE1TsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 15:48:23 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:55694 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728525AbgE1TsC (ORCPT
+        id S2406791AbgE1Tso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 15:48:44 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:45776 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406780AbgE1Tsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 15:48:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590695280;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ukUKsMQtJQ/POklgv6hxv6yQhdAjZ+dAaodZMEeHyDI=;
-        b=eVSemKwO6kCTNHyF+POjTM7ZDuWYK7xdfwJFzW1kFGRUnZ/ztHDlUHvafuYxmIvrTVJ7TK
-        KO9dyGnLvvy4NgmxqfRAnTfKpisRB5ieQbm2ZLV7LMqp1NQ2Cl7gPxF35F2NbQ+Vlrr2pp
-        YduXOhIhiJKOpLs5rlgJLD/GTgk/ncU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-257-FB6j3GvTObqL524yhdStPg-1; Thu, 28 May 2020 15:47:58 -0400
-X-MC-Unique: FB6j3GvTObqL524yhdStPg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D0759EC1A0;
-        Thu, 28 May 2020 19:47:55 +0000 (UTC)
-Received: from localhost (unknown [10.10.110.53])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 664A19F9BA;
-        Thu, 28 May 2020 19:47:52 +0000 (UTC)
-Date:   Thu, 28 May 2020 12:47:51 -0700 (PDT)
-Message-Id: <20200528.124751.1622700747294014742.davem@redhat.com>
-To:     jonas.falkevik@gmail.com
-Cc:     marcelo.leitner@gmail.com, lucien.xin@gmail.com,
-        nhorman@tuxdriver.com, vyasevich@gmail.com, kuba@kernel.org,
-        linux-sctp@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] sctp: check assoc before
- SCTP_ADDR_{MADE_PRIM,ADDED} event
-From:   David Miller <davem@redhat.com>
-In-Reply-To: <20200527095640.270986-1-jonas.falkevik@gmail.com>
-References: <20200527095640.270986-1-jonas.falkevik@gmail.com>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Thu, 28 May 2020 15:48:38 -0400
+Received: by mail-il1-f195.google.com with SMTP id 9so68670ilg.12;
+        Thu, 28 May 2020 12:48:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Go6xO5WoC3zEQRJwVmH9bUe++RxJSEnlCwIRvUl4+dQ=;
+        b=fLOPCfN3UPdZMn+WVDutvbQQORGLazd0mnxnXTvMwrVZAV4TnOpaNt5l77yLUiV9RN
+         JhECmQLNPRjPNFYkeEk9q0G13S50XFZX1diPrsbMiY3/1FfciCbw3rk6LGKTNTzpPSki
+         awsZuuUE/uEC8BcgIYKS8wR7tawrzvqUy0oyRUdypEQZ9jL/hhVcw3l0jVSD1n/QBgmd
+         rtPwOURwim2kSv9UiEj64EUbLMBW5UVbgA8XoHowAqgN7DTtaxz+9wfj5AfTIFrqHYHq
+         qG/RefjXpH/u+LlaJ4wtodIU/wVFCEtYYCq/SbuAoI/cJeuL2MG6n4NNu3Q98Nl7NL1o
+         RahA==
+X-Gm-Message-State: AOAM533O3x9SFUZGHx8D78aR0maXmHx7frBx0kI7AxQzTICZCQdnnAV3
+        fdvdx6N35jwIizqG2h3X/Q==
+X-Google-Smtp-Source: ABdhPJxdVc8I3c5Wd+1g7euGl5ed0EkKErorxTkquQmiCvhOLVCyVbgdKy+eSwMN7mVRv2h0Ec4qUQ==
+X-Received: by 2002:a92:c809:: with SMTP id v9mr4288575iln.209.1590695318014;
+        Thu, 28 May 2020 12:48:38 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id y13sm2960819iob.51.2020.05.28.12.48.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 12:48:16 -0700 (PDT)
+Received: (nullmailer pid 568649 invoked by uid 1000);
+        Thu, 28 May 2020 19:48:04 -0000
+Date:   Thu, 28 May 2020 13:48:04 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+Cc:     Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Peng Fan <peng.fan@nxp.com>,
+        Robert Chiras <robert.chiras@nxp.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC PATCH 1/6] dt-bindings: display/bridge: Add binding for
+ input mux bridge
+Message-ID: <20200528194804.GA541078@bogus>
+References: <cover.1589548223.git.agx@sigxcpu.org>
+ <14a44a664f40584ffa25c1764aab5ebf97809c71.1589548223.git.agx@sigxcpu.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <14a44a664f40584ffa25c1764aab5ebf97809c71.1589548223.git.agx@sigxcpu.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonas Falkevik <jonas.falkevik@gmail.com>
-Date: Wed, 27 May 2020 11:56:40 +0200
-
-> Make sure SCTP_ADDR_{MADE_PRIM,ADDED} are sent only for associations
-> that have been established.
+On Fri, May 15, 2020 at 03:12:10PM +0200, Guido Günther wrote:
+> The bridge allows to select the input source via a mux controller.
 > 
-> These events are described in rfc6458#section-6.1
-> SCTP_PEER_ADDR_CHANGE:
-> This tag indicates that an address that is
-> part of an existing association has experienced a change of
-> state (e.g., a failure or return to service of the reachability
-> of an endpoint via a specific transport address).
-> 
-> Signed-off-by: Jonas Falkevik <jonas.falkevik@gmail.com>
+> Signed-off-by: Guido Günther <agx@sigxcpu.org>
 > ---
-> Changes in v2:
->  - Check asoc state to be at least established.
->    Instead of associd being SCTP_FUTURE_ASSOC.
->  - Common check for all peer addr change event
+>  .../display/bridge/mux-input-bridge.yaml      | 123 ++++++++++++++++++
+>  1 file changed, 123 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/bridge/mux-input-bridge.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/display/bridge/mux-input-bridge.yaml b/Documentation/devicetree/bindings/display/bridge/mux-input-bridge.yaml
+> new file mode 100644
+> index 000000000000..4029cf63ee5c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/bridge/mux-input-bridge.yaml
+> @@ -0,0 +1,123 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/bridge/mux-input-bridge.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: DRM input source selection via multiplexer
 
-Applied and queued up for -stable, thanks.
+DRM is not a hardware thing.
 
- 
+The graph binding is already designed to support muxing. Generally, 
+multiple endpoints on an input node is a mux. So either the device with 
+the input ports knows how to select the input, or you just need a 
+mux-control property for the port to have some other device implement 
+the control.
 
+You could do it like you have below. That would be appropriate if 
+there's a separate h/w device controlling the muxing. Say for example 
+some board level device controlled by i2c.
+
+Rob
