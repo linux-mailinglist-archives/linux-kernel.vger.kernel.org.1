@@ -2,134 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D381E66B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBC11E668E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404758AbgE1Psg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 11:48:36 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:47924 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404544AbgE1Ps3 (ORCPT
+        id S2404640AbgE1Pp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 11:45:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404511AbgE1PpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 11:48:29 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jeKlg-0003vA-65; Thu, 28 May 2020 09:48:28 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jeKlf-0007Eb-7U; Thu, 28 May 2020 09:48:28 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     <linux-kernel@vger.kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Rob Landley <rob@landley.net>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        <linux-fsdevel@vger.kernel.org>, Al Viro <viro@ZenIV.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andy Lutomirski <luto@amacapital.net>
-References: <87h7wujhmz.fsf@x220.int.ebiederm.org>
-        <87sgga6ze4.fsf@x220.int.ebiederm.org>
-        <87v9l4zyla.fsf_-_@x220.int.ebiederm.org>
-        <877dx822er.fsf_-_@x220.int.ebiederm.org>
-        <87k10wysqz.fsf_-_@x220.int.ebiederm.org>
-Date:   Thu, 28 May 2020 10:44:35 -0500
-In-Reply-To: <87k10wysqz.fsf_-_@x220.int.ebiederm.org> (Eric W. Biederman's
-        message of "Thu, 28 May 2020 10:38:28 -0500")
-Message-ID: <87lflcxdwc.fsf_-_@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 28 May 2020 11:45:10 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CCCFC08C5C6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 08:45:08 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id r15so3697475wmh.5
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 08:45:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RRcpe0H3lCAzNpSzTtIGdoPxExC1gnrWV04XMN1Ki5Y=;
+        b=g0HFkoJKIY9iSEkgGQr+z2ngQ5RvAXjSLWxFjTtoZKt7hmDAuvtCGVOiKVewJ4rQqt
+         T2/8s2EPboAsw2RPb5z3xfaPEiobgw2PMqFJ1KOvmAxxWtVsHP9U0UvlOUIuZFjX4prO
+         EROm0xvcPNCKxVAQ4MY81faMt0ml8cV0vQj1lO/w0BPMLaIBrby2hr1ncD0+i5Oordpy
+         EMCYu6kRDEgoyGD2TDNNS7Uc4me45W8sJuzMWwUmnF6BmQH2E+ng5a6R0eqKr6M8kiXi
+         zeJapxgvsGZrHT30JbNBOTMLluxih3uG2BT13+Qk13hcumfHzLaDzvuwG3Q7yAmDOOAc
+         +mLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RRcpe0H3lCAzNpSzTtIGdoPxExC1gnrWV04XMN1Ki5Y=;
+        b=fu/7+f++LZLkFqPI4xU9GHp0HJmb8PmrBn1xUpZDH5Zd6sVelXJgMTO9wWrRQsIVm4
+         +JVgPuFYea2r6oz+YuaYxGWjRVqfsUfFT/1K8ZWmJOSBz5OEwnURqCzJ26IVN8BcheJJ
+         bDtKcbdGKWUcJMl5qcZe+IpWHiCXEGz/zDmvGpNwMBhMRfSumDPaYhoruF0l0TJL8370
+         rRSjaKX1C8CH8yiKfHR6owwEe+/0Fr+z77yoEnh1gizbNOmmGQVPb8/gJwJUEe/J6WbV
+         HUSCvBSwRBJ0siiJUScXz1L+fIfcmeBgcI9N4u7q8CHG0ZI8naz6xUhBlQW3E4GMdMkw
+         2aIQ==
+X-Gm-Message-State: AOAM5308z9TlwhlxZNWKO5bScNqfqDsQuph0D/AKEUrCr8fIXuINVxy+
+        Zu578jh5hwRe8j9VEMOZWp70PQ==
+X-Google-Smtp-Source: ABdhPJxsoz5O8Wu+pBo3JregNWfan6WrHopy2c2n+D7n8gRcdVSFiDJEqbgTrXNos0B2dRpaa0ksxg==
+X-Received: by 2002:a05:600c:2201:: with SMTP id z1mr3945929wml.70.1590680707286;
+        Thu, 28 May 2020 08:45:07 -0700 (PDT)
+Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
+        by smtp.gmail.com with ESMTPSA id n1sm6285650wrp.10.2020.05.28.08.45.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 08:45:06 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Fabien Parent <fparent@baylibre.com>,
+        Stephane Le Provost <stephane.leprovost@mediatek.com>,
+        Pedro Tsai <pedro.tsai@mediatek.com>,
+        Andrew Perepech <andrew.perepech@mediatek.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH v3 0/2] regmap: provide simple bitops and use them in a driver
+Date:   Thu, 28 May 2020 17:45:01 +0200
+Message-Id: <20200528154503.26304-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jeKlf-0007Eb-7U;;;mid=<87lflcxdwc.fsf_-_@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/QbUmGNs6WJY8er87D7LRHfXhQCTcWzGM=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
-X-Spam-Level: ****
-X-Spam-Status: No, score=4.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
-        XMSubLong,XMSubMetaSxObfu_03,XMSubMetaSx_00 autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa05 0; Body=1 Fuz1=1 Fuz2=1]
-        *  1.0 XMSubMetaSx_00 1+ Sexy Words
-        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: ; sa05 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ****;<linux-kernel@vger.kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 506 ms - load_scoreonly_sql: 0.10 (0.0%),
-        signal_user_changed: 12 (2.4%), b_tie_ro: 10 (1.9%), parse: 1.84
-        (0.4%), extract_message_metadata: 24 (4.6%), get_uri_detail_list: 2.0
-        (0.4%), tests_pri_-1000: 36 (7.1%), tests_pri_-950: 2.4 (0.5%),
-        tests_pri_-900: 1.68 (0.3%), tests_pri_-90: 129 (25.6%), check_bayes:
-        126 (24.9%), b_tokenize: 25 (4.9%), b_tok_get_all: 12 (2.4%),
-        b_comp_prob: 5 (1.0%), b_tok_touch_all: 77 (15.1%), b_finish: 2.6
-        (0.5%), tests_pri_0: 278 (55.0%), check_dkim_signature: 1.08 (0.2%),
-        check_dkim_adsp: 4.3 (0.9%), poll_dns_idle: 0.56 (0.1%), tests_pri_10:
-        2.1 (0.4%), tests_pri_500: 12 (2.4%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH 05/11] exec: In bprm_fill_uid use CAP_SETGID to see if a gid change is safe
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-If the task has CAP_SETGID and a shared fs struct or is being ptraced
-than it is clear that nothing new is being introduced when the gid
-changes, and so it is safe to honor a setgid executable.
+I noticed that oftentimes I use regmap_update_bits() for simple bit
+setting or clearing. In this case the fourth argument is superfluous as
+it's always 0 or equal to the mask argument.
 
-However if all we know is that the task has CAP_SETUID things are less
-clear.
+This series proposes to add simple bit operations for setting, clearing
+and testing specific bits with regmap.
 
-This bug looks like it was introduced in v2.1.100 when !suser was
-replaced by !capable(CAP_SETUID).  It appears to have been an oversight
-at that time.
+The second patch uses all three in a driver that got recently picked into
+the net-next tree.
 
-Fixing this 22 years later seems weird but even now it still looks
-worth fixing.  As conceptually what is happening is testing to see if
-the process already had the potential to make a gid change or if the
-trancer needs permissions in addition to the permissions needed to
-trace the process to trace the process through a gid change.
+The patches obviously target different trees so - if you're ok with
+the change itself - I propose you pick the first one into your regmap
+tree for v5.8 and then I'll resend the second patch to add the first
+user for these macros for v5.9.
 
-Fixes: v2.1.100
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- fs/exec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v1 -> v2:
+- convert the new macros to static inline functions
 
-diff --git a/fs/exec.c b/fs/exec.c
-index 956ee3a0d824..bac8db14f30d 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1654,7 +1654,7 @@ static void bprm_fill_uid(struct linux_binprm *bprm)
- 			new->euid = new->uid;
- 		}
- 		if (need_cap && !gid_eq(new->egid, new->gid) &&
--		    (!ns_capable(new->user_ns, CAP_SETUID) ||
-+		    (!ns_capable(new->user_ns, CAP_SETGID) ||
- 		     (bprm->unsafe & LSM_UNSAFE_NO_NEW_PRIVS))) {
- 			new->egid = new->gid;
- 		}
+v2 -> v3:
+- drop unneeded ternary operator
+
+Bartosz Golaszewski (2):
+  regmap: provide helpers for simple bit operations
+  net: ethernet: mtk-star-emac: use regmap bitops
+
+ drivers/base/regmap/regmap.c                  | 22 +++++
+ drivers/net/ethernet/mediatek/mtk_star_emac.c | 80 ++++++++-----------
+ include/linux/regmap.h                        | 36 +++++++++
+ 3 files changed, 93 insertions(+), 45 deletions(-)
+
 -- 
-2.25.0
+2.26.1
 
