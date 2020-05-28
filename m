@@ -2,61 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D43D1E6C76
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:26:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E51131E6C75
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407232AbgE1UZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 16:25:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
+        id S2407193AbgE1UZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 16:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407150AbgE1UZT (ORCPT
+        with ESMTP id S2407160AbgE1UZV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 16:25:19 -0400
+        Thu, 28 May 2020 16:25:21 -0400
 Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C125C08C5C6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:25:19 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id mb16so1372710ejb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:25:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03AF0C08C5C9
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:25:21 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id k11so1339510ejr.9
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:25:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GsDx1+HqzeOLmU2cGJB/R9l75f9GFU3ZdsBq6QSLDGI=;
-        b=OFizhpQoKTj+VMjm+xtOr8jLrdQcPeeFyLc5xmp5dfG8OID3H/OqffYeARfWnkuG5O
-         HA4PPwrUxFlvtay6z3ROI+GeI+6hTfY+YA+bzCn9qP86G9Mb7pI7ixgQtrheS4f5hlKV
-         o1C6bk5UVhaug3SZIz+ny19Q/Gklhs9Cpy6ez18yVRJUhthvX9uikrs2hblQddb0suCl
-         QK3eH7Mi1Iu3OcJjJyaYCG3WaZMgtVQgY1kAyq96dCjunRNRmyfsDlnxLd/Y10re4Sm5
-         zj8thhrJ7w3fAgtTj9HODOJSgCbggOHA4JJ2hEnuRZnQgMXC9MaSKPPSFIvZrTJ/YZK8
-         aF8w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=vj9D4U4So1ra9Zm9hnNGo7stdHYSpNs6NtruFkUFgeo=;
+        b=E3zmZYdtbercmnJfSvrDDI6ridE33NN+uQsWunqhChJovqMwGKSriLbHoxawbHzEXQ
+         +eDlGG+fA9ztHIbiCOTi3LABNqpyYNnj5rQty16iE4a56ajqyvhqfYLOj73qFYuddNGW
+         8ZUzrG8teLBMmFdmjnI8S8UdfPO2LPFaoRyNjOSF8zfAHQeiD1/rDFMVdLRsVWy6K7F7
+         j/NSYicLtyRZtsA/mERSN/gsKyfqtgPXQylLMsUhDY9q33RNyK8q61PiKFjHDNf1ZTUQ
+         P3uozBML58h+Y9jQU1DBJKpBWW9RTYvR1Z89sgeAb/Ejr442gFu1mrco3Y/N0EimtxUp
+         /avg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GsDx1+HqzeOLmU2cGJB/R9l75f9GFU3ZdsBq6QSLDGI=;
-        b=eGI14BRmYkzzum4/4leXg9xJ7frh4yNPLPD8ku5RNgmS+QS3Gnb0Xn8w3yCCJgG5J5
-         dhwiBN7HbJu/3hX3nWcY9Rr+l0ioFCoTDKgaDVgyMe8YSuBvHmmn+PR+6pUrTSvBcBuK
-         HUeMxcic0iV2+jS+DMALI7+q5IfiV0Pg6HomaJIqOYYeKg7LSxmlmkQ9o1UnsoWmYhze
-         ffhRjhvChqwN54FWR2KnrdoLT4E58uWp4v7ytMzTcepvN1uEDZolCisoGaUr93wLOFxs
-         kiToYaTgEFzpy8926InLwD0NXTrV+AhMskRSIetb+pWlac8kO9RLGdjtpfsu4q+XRREm
-         g23g==
-X-Gm-Message-State: AOAM531lNuzDayV1ZHzNmNBWlH/DphPMeKh2yMvWBufg5zyFeTJpXU9x
-        c7yUfbLwMobbKbFQagZUsHmEbGJQ
-X-Google-Smtp-Source: ABdhPJwv8scYyg/T6ia9eYVXtnoO3bR+WYJHSHo6we7TJtceAx1CigwkOPlXTHvhMvnFawEQESRXxA==
-X-Received: by 2002:a17:906:bc4c:: with SMTP id s12mr4537442ejv.285.1590697518344;
-        Thu, 28 May 2020 13:25:18 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=vj9D4U4So1ra9Zm9hnNGo7stdHYSpNs6NtruFkUFgeo=;
+        b=GjLibAiOAvcwu5ubT/gWEN04EUwT6t4eonPx4IVxE1Mfzsmg9S0CKv6kI7dK+8BgNM
+         ShSmtcPwR+ajbYcXfW+Ed1IN1QC7jNvYorWKenuImKNjy9yeQvPrY2JfARSWyS9SufYh
+         Z+gJonuU+SxHB2r+utN9TMQLN/3IPaj94tVypLArEOdDTpQry6VxDaXVd0D0f0+Mye6g
+         /lqHetfhG68XyT98KPZJAVZJcqeI6IYYd4PxAN2ZOOXwjkd0MbC+hoGnuNFWh6IcAMI1
+         +qZr4bLR5fsqkaYxHinBAiZcT4tkMSrIwhiUwCFQZs7HBuRsU1STenWSO+ChniBhlBhi
+         JbIw==
+X-Gm-Message-State: AOAM532mCtvVXIz2I4T33q/36ONhpXmDK7icPjfGCeqbWfIZAo5pTyBf
+        MPlApl8GKc1NrQySCWKGT0SYwAuc
+X-Google-Smtp-Source: ABdhPJyxygYwCMDCDbCkaTPKRLJt/wgk+OPQ2ueKeQAPPaMxlFmzzsViJTXrlmODFu+/OBCcqlMD8w==
+X-Received: by 2002:a17:906:1513:: with SMTP id b19mr3523381ejd.1.1590697519720;
+        Thu, 28 May 2020 13:25:19 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:a03f:b7f9:7600:d98f:8461:8d2c:e59b])
-        by smtp.gmail.com with ESMTPSA id y13sm5692736ejm.107.2020.05.28.13.25.16
+        by smtp.gmail.com with ESMTPSA id y13sm5692736ejm.107.2020.05.28.13.25.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 13:25:17 -0700 (PDT)
+        Thu, 28 May 2020 13:25:19 -0700 (PDT)
 From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>,
         Greg Ungerer <gerg@linux-m68k.org>
 Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: [PATCH 0/2] fix missing handling of __user in nommu's uaccess()
-Date:   Thu, 28 May 2020 22:25:12 +0200
-Message-Id: <20200528202514.27175-1-luc.vanoostenryck@gmail.com>
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        kbuild test robot <lkp@intel.com>
+Subject: [PATCH 1/2] m68k,nommu: add missing __user in uaccess' __ptr() macro
+Date:   Thu, 28 May 2020 22:25:13 +0200
+Message-Id: <20200528202514.27175-2-luc.vanoostenryck@gmail.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200528202514.27175-1-luc.vanoostenryck@gmail.com>
+References: <20200528202514.27175-1-luc.vanoostenryck@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -64,17 +67,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I received a bug report for an unrelated patch when used with m68k-nommu.
-It appears that the origin of the problem is that __get_user() and
-__put_user() doesn't handle correctly __user. These 2 patches fix this.
+The assembly for __get_user() & __put_user() uses a macro, __ptr(),
+to cast the pointer to 'unsigned long *' but the pointer is always
+a __user one and so this cast creates a lot of warnings when using
+Sparse.
 
-Note: this is only minimaly tested but is quite straightforward and
-      since this only change __user annotation it will not change the
-      generated code.
+So, change to the cast to 'unsigned long __user *'.
 
-Luc Van Oostenryck (2):
-  m68k,nommu: add missing __user in uaccess' __ptr() macro
-  m68k,nommu: fix implicit cast from __user in __{get,put}_user_asm()
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+---
+ arch/m68k/include/asm/uaccess_no.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- arch/m68k/include/asm/uaccess_no.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+diff --git a/arch/m68k/include/asm/uaccess_no.h b/arch/m68k/include/asm/uaccess_no.h
+index a24cfe4a0d32..9651766a62af 100644
+--- a/arch/m68k/include/asm/uaccess_no.h
++++ b/arch/m68k/include/asm/uaccess_no.h
+@@ -60,7 +60,7 @@ extern int __put_user_bad(void);
+  * aliasing issues.
+  */
+ 
+-#define __ptr(x) ((unsigned long *)(x))
++#define __ptr(x) ((unsigned long __user *)(x))
+ 
+ #define __put_user_asm(err,x,ptr,bwl)				\
+ 	__asm__ ("move" #bwl " %0,%1"				\
+-- 
+2.26.2
+
