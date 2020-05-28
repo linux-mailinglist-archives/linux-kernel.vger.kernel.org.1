@@ -2,108 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB12B1E56BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 07:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D3F1E56A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 07:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728149AbgE1Fld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 01:41:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727105AbgE1Fl1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 01:41:27 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17EFC05BD1E;
-        Wed, 27 May 2020 22:41:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=5X3G8p2gpeq1mWhpOrbRnLoYssjgaGtuSsqN+ape3Fw=; b=taesqRkSyAIu/2pRL+KOySjFhB
-        TtDF0spTbSsTcQcYEPzf2Xmk+u9SrWaeiUz7FKdnwI3eDaBkdhFATqSDy0i/tUSaWJbuVXaA81uFB
-        L5LMUM5VHRtiu+OmIVREgnc/f9BqnApHYE8W/M6wh296l/FsUV3pq5V7nkguM+uzMBgkvJ4+SDK4e
-        FX/KWuchAoMHUAePKpzWoNFOkusxGaycL3QI4w3QBVf4nAk5u7qZ4C58iQzb0UfuU4I5/aMKJ4TTu
-        qVqApMY1QvyibhhK6mE2aApD4C36fsXbEQbqFryR7NghXc/f2aowUTV0GCuZjZtOAWYlW02c+hGSK
-        q7BiKACg==;
-Received: from p4fdb1ad2.dip0.t-ipconnect.de ([79.219.26.210] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jeBIB-0002St-VR; Thu, 28 May 2020 05:41:24 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ian Kent <raven@themaw.net>,
-        David Howells <dhowells@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: [PATCH 14/14] fs: don't change the address limit for ->read_iter in __kernel_read
-Date:   Thu, 28 May 2020 07:40:43 +0200
-Message-Id: <20200528054043.621510-15-hch@lst.de>
+        id S1727996AbgE1FlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 01:41:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:47330 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727948AbgE1FlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 01:41:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 42FF930E;
+        Wed, 27 May 2020 22:41:02 -0700 (PDT)
+Received: from nicgas01-03-arm-vm.shanghai.arm.com (nicgas01-03-arm-vm.shanghai.arm.com [10.169.138.73])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E5BF63F52E;
+        Wed, 27 May 2020 22:40:59 -0700 (PDT)
+From:   Nick Gasson <nick.gasson@arm.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>
+Cc:     Nick Gasson <nick.gasson@arm.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] perf jvmti: Remove redundant jitdump line table entries
+Date:   Thu, 28 May 2020 13:40:49 +0800
+Message-Id: <20200528054049.13662-1-nick.gasson@arm.com>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200528054043.621510-1-hch@lst.de>
-References: <20200528054043.621510-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we read to a file that implements ->read_iter there is no need
-to change the address limit if we send a kvec down.  Implement that
-case, and prefer it over using plain ->read with a changed address
-limit if available.
+For each PC/BCI pair in the JVMTI compiler inlining record table, the
+jitdump plugin emits debug line table entries for every source line in
+the method preceding that BCI. Instead only emit one source line per
+PC/BCI pair. Reported by Ian Rogers. This reduces the .dump size for
+SPECjbb from ~230MB to ~40MB.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Nick Gasson <nick.gasson@arm.com>
 ---
- fs/read_write.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
+Changes in v2:
+- Split the unrelated DWARF debug fix into a separate patch
+- Added a comment about the use of c->methods
 
-diff --git a/fs/read_write.c b/fs/read_write.c
-index 46ddfce17e839..c93acbd8bf5a3 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -421,7 +421,6 @@ static ssize_t new_sync_read(struct file *filp, char __user *buf, size_t len, lo
+ tools/perf/jvmti/libjvmti.c | 78 ++++++++++++++++---------------------
+ 1 file changed, 33 insertions(+), 45 deletions(-)
+
+diff --git a/tools/perf/jvmti/libjvmti.c b/tools/perf/jvmti/libjvmti.c
+index c5d30834a64c..fcca275e5bf9 100644
+--- a/tools/perf/jvmti/libjvmti.c
++++ b/tools/perf/jvmti/libjvmti.c
+@@ -32,38 +32,41 @@ static void print_error(jvmtiEnv *jvmti, const char *msg, jvmtiError ret)
  
- ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
+ #ifdef HAVE_JVMTI_CMLR
+ static jvmtiError
+-do_get_line_numbers(jvmtiEnv *jvmti, void *pc, jmethodID m, jint bci,
+-		    jvmti_line_info_t *tab, jint *nr)
++do_get_line_number(jvmtiEnv *jvmti, void *pc, jmethodID m, jint bci,
++		   jvmti_line_info_t *tab)
  {
--	mm_segment_t old_fs = get_fs();
- 	ssize_t ret;
+-	jint i, lines = 0;
+-	jint nr_lines = 0;
++	jint i, nr_lines = 0;
+ 	jvmtiLineNumberEntry *loc_tab = NULL;
+ 	jvmtiError ret;
++	jint src_line = -1;
  
- 	if (!(file->f_mode & FMODE_CAN_READ))
-@@ -429,14 +428,25 @@ ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
+ 	ret = (*jvmti)->GetLineNumberTable(jvmti, m, &nr_lines, &loc_tab);
+ 	if (ret == JVMTI_ERROR_ABSENT_INFORMATION || ret == JVMTI_ERROR_NATIVE_METHOD) {
+ 		/* No debug information for this method */
+-		*nr = 0;
+-		return JVMTI_ERROR_NONE;
++		return ret;
+ 	} else if (ret != JVMTI_ERROR_NONE) {
+ 		print_error(jvmti, "GetLineNumberTable", ret);
+ 		return ret;
+ 	}
  
- 	if (count > MAX_RW_COUNT)
- 		count =  MAX_RW_COUNT;
--	set_fs(KERNEL_DS);
--	if (file->f_op->read)
-+	if (file->f_op->read_iter) {
-+		struct kvec iov = { .iov_base = buf, .iov_len = count };
-+		struct kiocb kiocb;
-+		struct iov_iter iter;
-+
-+		init_sync_kiocb(&kiocb, file);
-+		kiocb.ki_pos = *pos;
-+		iov_iter_kvec(&iter, READ, &iov, 1, count);
-+		ret = file->f_op->read_iter(&kiocb, &iter);
-+		*pos = kiocb.ki_pos;
-+	} else if (file->f_op->read) {
-+		mm_segment_t old_fs = get_fs();
-+
-+		set_fs(KERNEL_DS);
- 		ret = file->f_op->read(file, (void __user *)buf, count, pos);
--	else if (file->f_op->read_iter)
--		ret = new_sync_read(file, (void __user *)buf, count, pos);
--	else
-+		set_fs(old_fs);
-+	} else {
- 		ret = -EINVAL;
--	set_fs(old_fs);
+-	for (i = 0; i < nr_lines; i++) {
+-		if (loc_tab[i].start_location < bci) {
+-			tab[lines].pc = (unsigned long)pc;
+-			tab[lines].line_number = loc_tab[i].line_number;
+-			tab[lines].discrim = 0; /* not yet used */
+-			tab[lines].methodID = m;
+-			lines++;
+-		} else {
+-			break;
+-		}
++	for (i = 0; i < nr_lines && loc_tab[i].start_location <= bci; i++) {
++		src_line = i;
 +	}
- 	if (ret > 0) {
- 		fsnotify_access(file);
- 		add_rchar(current, ret);
++
++	if (src_line != -1) {
++		tab->pc = (unsigned long)pc;
++		tab->line_number = loc_tab[src_line].line_number;
++		tab->discrim = 0; /* not yet used */
++		tab->methodID = m;
++
++		ret = JVMTI_ERROR_NONE;
++	} else {
++		ret = JVMTI_ERROR_ABSENT_INFORMATION;
+ 	}
++
+ 	(*jvmti)->Deallocate(jvmti, (unsigned char *)loc_tab);
+-	*nr = lines;
+-	return JVMTI_ERROR_NONE;
++
++	return ret;
+ }
+ 
+ static jvmtiError
+@@ -71,9 +74,8 @@ get_line_numbers(jvmtiEnv *jvmti, const void *compile_info, jvmti_line_info_t **
+ {
+ 	const jvmtiCompiledMethodLoadRecordHeader *hdr;
+ 	jvmtiCompiledMethodLoadInlineRecord *rec;
+-	jvmtiLineNumberEntry *lne = NULL;
+ 	PCStackInfo *c;
+-	jint nr, ret;
++	jint ret;
+ 	int nr_total = 0;
+ 	int i, lines_total = 0;
+ 
+@@ -86,24 +88,7 @@ get_line_numbers(jvmtiEnv *jvmti, const void *compile_info, jvmti_line_info_t **
+ 	for (hdr = compile_info; hdr != NULL; hdr = hdr->next) {
+ 		if (hdr->kind == JVMTI_CMLR_INLINE_INFO) {
+ 			rec = (jvmtiCompiledMethodLoadInlineRecord *)hdr;
+-			for (i = 0; i < rec->numpcs; i++) {
+-				c = rec->pcinfo + i;
+-				nr = 0;
+-				/*
+-				 * unfortunately, need a tab to get the number of lines!
+-				 */
+-				ret = (*jvmti)->GetLineNumberTable(jvmti, c->methods[0], &nr, &lne);
+-				if (ret == JVMTI_ERROR_NONE) {
+-					/* free what was allocated for nothing */
+-					(*jvmti)->Deallocate(jvmti, (unsigned char *)lne);
+-					nr_total += (int)nr;
+-				} else if (ret == JVMTI_ERROR_ABSENT_INFORMATION ||
+-					   ret == JVMTI_ERROR_NATIVE_METHOD) {
+-					/* No debug information for this method */
+-				} else {
+-					print_error(jvmti, "GetLineNumberTable", ret);
+-				}
+-			}
++			nr_total += rec->numpcs;
+ 		}
+ 	}
+ 
+@@ -122,14 +107,17 @@ get_line_numbers(jvmtiEnv *jvmti, const void *compile_info, jvmti_line_info_t **
+ 			rec = (jvmtiCompiledMethodLoadInlineRecord *)hdr;
+ 			for (i = 0; i < rec->numpcs; i++) {
+ 				c = rec->pcinfo + i;
+-				nr = 0;
+-				ret = do_get_line_numbers(jvmti, c->pc,
+-							  c->methods[0],
+-							  c->bcis[0],
+-							  *tab + lines_total,
+-							  &nr);
++                                /*
++                                 * c->methods is the stack of inlined method calls
++                                 * at c->pc. [0] is the leaf method. Caller frames
++                                 * are ignored at the moment.
++                                 */
++				ret = do_get_line_number(jvmti, c->pc,
++							 c->methods[0],
++							 c->bcis[0],
++							 *tab + lines_total);
+ 				if (ret == JVMTI_ERROR_NONE)
+-					lines_total += nr;
++					lines_total++;
+ 			}
+ 		}
+ 	}
 -- 
 2.26.2
 
