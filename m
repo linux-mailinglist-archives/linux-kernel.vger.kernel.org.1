@@ -2,96 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA171E6565
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E99771E656D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404168AbgE1PEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 11:04:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404087AbgE1PEb (ORCPT
+        id S2404187AbgE1PEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 11:04:50 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:58364 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403876AbgE1PEo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 11:04:31 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9524AC08C5C6;
-        Thu, 28 May 2020 08:04:30 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id f5so3549740wmh.2;
-        Thu, 28 May 2020 08:04:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pbNGWADWmH1o8ITeUzV43LxllSVUiopM5tVSH/bNMRg=;
-        b=SJNdWEvaGf6UTpJrouuPKlz9AH0H1iZIiMfvjxZpnPCMWSJlNcDSULrTvaUSkQNXwy
-         Oju3hYuWRZv61ZCE/vLBEamB1sdZcYIA9QjrFlz3rqt0gLeh34cGUAaeqRAJlljO6HGk
-         IId3QflGNPUsDMit8cAd3mB+Eas2ol893rFTuDI3ubFA6HCu5UsrW1IO1AyUgfAoD7bl
-         YqLEpaYq5G5XcKoAIqAPVp92Ssd4OU7lMnQYkydXhhZuT1G+qqq02K5p2jWUa2ADj0+h
-         LmdnkgTeCUgSDMTp93mG661A0/GrrL4cs1RT7IfXdBKzY/hDLbQdPCsB9jzTEAr7wZQ8
-         vwiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pbNGWADWmH1o8ITeUzV43LxllSVUiopM5tVSH/bNMRg=;
-        b=Qr7Kiuk6wmOvYjBf27a3up5VP+jdjPOFZUFvj3wZKFy0lXQFT77e2ioHiCXhzqTRbA
-         E/jVF14TqQtg7Ko3gL608vkMfBQouDgEstDvDeJudZSnXcmNgE/Ld05Sq1hM5zBDVPzy
-         kWoqIghNPG/4fC/6Azqq5afESjp2Rgeh3BL3/Ny4crw6sDSTwY4sYIPWE9UtxmPbtpWQ
-         2JaDezDxNnDj9zXGj6xsdD3rqVJ10urq27rHMF1F7KKC34kUhjQbkFgHR4XtCqLBZV5L
-         qYXyURYky9V78mL3hTmxSHC5HUTSq1WufnI4t00gAJG340PcPzA4jOYLmRbrLf0oOKG4
-         qcUQ==
-X-Gm-Message-State: AOAM532f7BfD9xXx0nYX8KI00A2l1QCHoP564QwAdBE2wYHhHUZAM8uE
-        O5tu4Op465GyAl88Mou/gzU=
-X-Google-Smtp-Source: ABdhPJydVOUwJbECYU0CBurknPofc9eHfqgEwvqe4vovuv5arUlN3AJO7U3Wa4IqNkrH5e+hb7b65Q==
-X-Received: by 2002:a1c:dc02:: with SMTP id t2mr3794313wmg.8.1590678269375;
-        Thu, 28 May 2020 08:04:29 -0700 (PDT)
-Received: from ubuntu-laptop.micron.com ([165.225.203.62])
-        by smtp.googlemail.com with ESMTPSA id v2sm6291880wrn.21.2020.05.28.08.04.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 28 May 2020 08:04:28 -0700 (PDT)
-Message-ID: <82e8faa7d6a0c5f04832519740230f9f520347cb.camel@gmail.com>
-Subject: Re: [PATCH v2 1/3] scsi: ufs: remove max_t in ufs_get_device_desc
-From:   Bean Huo <huobean@gmail.com>
-To:     Bart Van Assche <bvanassche@acm.org>, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, tomas.winkler@intel.com, cang@codeaurora.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 28 May 2020 17:04:17 +0200
-In-Reply-To: <85bbc91f-7b91-46fc-acff-3bcc2288c4ae@acm.org>
-References: <20200528115616.9949-1-huobean@gmail.com>
-         <20200528115616.9949-2-huobean@gmail.com>
-         <85bbc91f-7b91-46fc-acff-3bcc2288c4ae@acm.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Thu, 28 May 2020 11:04:44 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jeK55-0007mV-Ry; Thu, 28 May 2020 15:04:27 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Lijun Ou <oulijun@huawei.com>, Wei Hu <huwei87@hisilicon.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] RDMA/hns: remove duplicate assignment to pointer raq
+Date:   Thu, 28 May 2020 16:04:27 +0100
+Message-Id: <20200528150427.420624-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-05-28 at 07:56 -0700, Bart Van Assche wrote:
-> > -     buff_len = max_t(size_t, hba->desc_size.dev_desc,
-> > -                      QUERY_DESC_MAX_SIZE + 1);
-> > +     buff_len = QUERY_DESC_MAX_SIZE + 1;
-> >        desc_buf = kmalloc(buff_len, GFP_KERNEL);
-> >        if (!desc_buf) {
-> >                err = -ENOMEM;
-> 
-> Since the buff_len variable is not changed after its initial
-> assignment,
-> please remove it entirely.
-> 
-> Thanks,
-> 
-> Bart.
+From: Colin Ian King <colin.king@canonical.com>
 
-hi, Bart
+The pointer raq is being assigned twice. Fix this by removing
+one of the redundant assignments.
 
-Thanks.
+Fixes: 14ba87304bf9 ("RDMA/hns: Remove redundant type cast for general pointers")
+Addressses-Coverity: ("Evaluation order violation")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-do you mean  like this: buff_len = hba->desc_size[id]?
-
-Bean
-
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+index 8ff6b922b4d7..d02207cd30df 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+@@ -1146,7 +1146,7 @@ static void hns_roce_db_free(struct hns_roce_dev *hr_dev)
+ static int hns_roce_raq_init(struct hns_roce_dev *hr_dev)
+ {
+ 	struct hns_roce_v1_priv *priv = hr_dev->priv;
+-	struct hns_roce_raq_table *raq = raq = &priv->raq_table;
++	struct hns_roce_raq_table *raq = &priv->raq_table;
+ 	struct device *dev = &hr_dev->pdev->dev;
+ 	int raq_shift = 0;
+ 	dma_addr_t addr;
+-- 
+2.25.1
 
