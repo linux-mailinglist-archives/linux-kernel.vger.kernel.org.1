@@ -2,129 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21CE01E5DA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E88A71E5DAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388134AbgE1LBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 07:01:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388096AbgE1LBe (ORCPT
+        id S2388216AbgE1LCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 07:02:18 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:39228 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388198AbgE1LCJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 07:01:34 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71181C05BD1E
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 04:01:31 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id x14so22028526wrp.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 04:01:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8YQeuOJDn06o9Kk2yXAQ8S1S/zWUs7/D7wgGQiHSlDo=;
-        b=bYqfqbrkFj1FZHFAzXsoQSlTYLWgrpcMnTB2pBoapXhOlKoLypnBJzKuAQnQ3D8KQ7
-         4FlIVcc2ATGO0OVErlukatffDWx/NrW9BSpb5EMCPEyJtiZSDAg9Pyig20jMp/BeBURX
-         dFK7oluyit4qnyVmN74vPkDhKJivnHxhcoQiIb5AW4h1v4OrsfbOlse9z/B4JDhXBjHp
-         98fSCMNYP2RXclElfro2gyR4I9gan/O/UeGKDfRJgtFGtYZNFouaV1u0Go9zvUPZURln
-         /Dsg1bd+sz52nA/2Y0mu+01QgNy2LVh6YAxZFYrYR+2zkxZc2vBwG2a3yWlrzuCz8vG7
-         UwNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8YQeuOJDn06o9Kk2yXAQ8S1S/zWUs7/D7wgGQiHSlDo=;
-        b=KPBK/uAB/uBDoocOrxh/xsH4U8GXgJ5Ucr5cpQzCArk0Mk2Xzg+2/n2i6GwrMmJW/C
-         iND1OrCKkdTIqUX0mpAmS48i0ycJY8obo7SQpr1FoyGnbx9Huwgnc5mvmHrpsN45ls4J
-         bU/3nfmKPgREOSTDAibKBTQrM2mXBEkyHbLjlPk58MKmqCHubBan/rY5PPBABPUB/F2R
-         SvGv5/1IARzOZdlpQjqVeNdCCglxipi1UF9deQ+4zqY2SXPSkfOaSRVvuARcp6fDlcm+
-         5i5nYkzx+5N9SHW8ROZOSNPN5ZXjUN+PFyPoKroWs8L6FsdVMLC4I5HnpWOUm2ByOIeX
-         MwFw==
-X-Gm-Message-State: AOAM5322hhmxRuU1Z8QD0mBfzF/4DGd3VAQj7QLjjLckE4TDvgTw3EHt
-        lp00HP3jBIqWSjNuQig/M+lCZA==
-X-Google-Smtp-Source: ABdhPJyRVaunzq/Sm8tZxu1hhg2+vZn1ONdzXQY6iv2kXmcjShIgl9xgdzaFGyxwuiaTc8v3Xcl8wA==
-X-Received: by 2002:a05:6000:120b:: with SMTP id e11mr3008597wrx.107.1590663677449;
-        Thu, 28 May 2020 04:01:17 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id 190sm6423473wmb.23.2020.05.28.04.01.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 04:01:16 -0700 (PDT)
-Date:   Thu, 28 May 2020 12:01:14 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Wei Li <liwei391@huawei.com>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: Re: [Kgdb-bugreport] [PATCH v3] kdb: Remove the misfeature 'KDBFLAGS'
-Message-ID: <20200528110114.54qbkclk5demvsmc@holly.lan>
-References: <20200521072125.21103-1-liwei391@huawei.com>
+        Thu, 28 May 2020 07:02:09 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04SB1nP5047624;
+        Thu, 28 May 2020 06:01:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1590663709;
+        bh=eZ+LzRXdAqLDmjIFFtSVLARH/fNt7cotb+N9npkFJXg=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=P5oBbOUi9kZWxa4qDviJIucWymckrM9WRiUANyvqvQ96VbY5vwhyLc3JrjPfz15+X
+         vXWdk2shZRg+9PT8xWSAXqbEvHnTwbT6EP9jIb5/De3u/GvHGHdlESZhBJksu1I1zO
+         iaDCNNaQH5kB3sSxlNQnaYbGt0cgOciq9fsND6yY=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04SB1nCp079663
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 28 May 2020 06:01:49 -0500
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 28
+ May 2020 06:01:49 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 28 May 2020 06:01:49 -0500
+Received: from [10.250.234.195] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04SB1j9F106456;
+        Thu, 28 May 2020 06:01:46 -0500
+Subject: Re: [PATCH 2/2] mtd: spi-nor: intel-spi: fix forced writable option
+To:     Daniel Walker <danielwa@cisco.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     Jinhua Wu <jinhwu@cisco.com>, <xe-linux-external@cisco.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+References: <20200518175930.10948-2-danielwa@cisco.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <73a475fa-3c26-89ab-aac6-54f9b5b15936@ti.com>
+Date:   Thu, 28 May 2020 16:31:44 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200521072125.21103-1-liwei391@huawei.com>
+In-Reply-To: <20200518175930.10948-2-danielwa@cisco.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 03:21:25PM +0800, Wei Li wrote:
-> Currently, 'KDBFLAGS' is an internal variable of kdb, it is combined
-> by 'KDBDEBUG' and state flags. It will be shown only when 'KDBDEBUG'
-> is set, and the user can define an environment variable named 'KDBFLAGS'
-> too. These are puzzling indeed.
+
+
+On 18/05/20 11:29 pm, Daniel Walker wrote:
+> This option currently doesn't work as expected. If the BIOS has this
+> flash as read-only there is no way to change this thru the driver.
+> There is a parameter which allows the flash to become writable with the
+> "writable" option to the module, but it does nothing if the BIOS has it
+> set to read-only.
 > 
-> After communication with Daniel, it seems that 'KDBFLAGS' is a misfeature.
-> So let's replace 'KDBFLAGS' with 'KDBDEBUG' to just show the value we
-> wrote into. After this modification, we can use `md4c1 kdb_flags` instead,
-> to observe the state flags.
+> I would expect this option would make the flash writable regardless of
+> the BIOS settings. This patch changes this option so the BIOS setting
+> doesn't stop the writable option from enabling read write on the flash.
 > 
-> Suggested-by: Daniel Thompson <daniel.thompson@linaro.org>
-> Signed-off-by: Wei Li <liwei391@huawei.com>
 
-Applied. Thanks.
+I am confused you say "If the BIOS has this flash as read-only there is
+no way to change this thru the driver", so is it possible to override
+BIOS setting? If yes, where is the code in the driver?
 
+What happens if BIOS is set to allow writes but writeable is set to 0?
 
-Daniel.
+Also please send patch series as thread (2/2 in reply to 1/2). You can
+use tool like git send-email
 
+> Original patch by Jinhua Wu <jinhwu@cisco.com>
+> 
+> Cc: Jinhua Wu <jinhwu@cisco.com>
+> Cc: xe-linux-external@cisco.com
+> Signed-off-by: Daniel Walker <danielwa@cisco.com>
 > ---
-> v2 -> v3:
->  - Change to replace the internal env 'KDBFLAGS' with 'KDBDEBUG'.
-> v1 -> v2:
->  - Fix lack of braces.
+>  drivers/mtd/spi-nor/controllers/intel-spi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
->  kernel/debug/kdb/kdb_main.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
-> index 4fc43fb17127..392029287083 100644
-> --- a/kernel/debug/kdb/kdb_main.c
-> +++ b/kernel/debug/kdb/kdb_main.c
-> @@ -418,8 +418,7 @@ int kdb_set(int argc, const char **argv)
->  				    argv[2]);
->  			return 0;
->  		}
-> -		kdb_flags = (kdb_flags &
-> -			     ~(KDB_DEBUG_FLAG_MASK << KDB_DEBUG_FLAG_SHIFT))
-> +		kdb_flags = (kdb_flags & ~KDB_DEBUG(MASK))
->  			| (debugflags << KDB_DEBUG_FLAG_SHIFT);
+> diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
+> index e5a3d51a2e4d..68a5877bfc0b 100644
+> --- a/drivers/mtd/spi-nor/controllers/intel-spi.c
+> +++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
+> @@ -954,7 +954,7 @@ struct intel_spi *intel_spi_probe(struct device *dev,
+>  	intel_spi_fill_partition(ispi, &part);
 >  
->  		return 0;
-> @@ -2081,7 +2080,8 @@ static int kdb_env(int argc, const char **argv)
->  	}
+>  	/* Prevent writes if not explicitly enabled */
+> -	if (!ispi->writeable || !writeable)
+> +	if (!ispi->writeable && !writeable)
+>  		ispi->nor.mtd.flags &= ~MTD_WRITEABLE;
 >  
->  	if (KDB_DEBUG(MASK))
-> -		kdb_printf("KDBFLAGS=0x%x\n", kdb_flags);
-> +		kdb_printf("KDBDEBUG=0x%x\n",
-> +			(kdb_flags & KDB_DEBUG(MASK)) >> KDB_DEBUG_FLAG_SHIFT);
->  
->  	return 0;
->  }
-> -- 
-> 2.17.1
+>  	ret = mtd_device_register(&ispi->nor.mtd, &part, 1);
 > 
-> 
-> 
-> _______________________________________________
-> Kgdb-bugreport mailing list
-> Kgdb-bugreport@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/kgdb-bugreport
