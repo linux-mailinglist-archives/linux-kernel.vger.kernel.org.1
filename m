@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E62B71E52DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 03:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7203A1E52E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 03:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726742AbgE1BVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 21:21:18 -0400
-Received: from mail1.windriver.com ([147.11.146.13]:61547 "EHLO
-        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725294AbgE1BVS (ORCPT
+        id S1726209AbgE1B27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 21:28:59 -0400
+Received: from mail.windriver.com ([147.11.1.11]:60236 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725768AbgE1B26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 21:21:18 -0400
-Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
-        by mail1.windriver.com (8.15.2/8.15.2) with ESMTPS id 04S1LAuu028077
+        Wed, 27 May 2020 21:28:58 -0400
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
+        by mail.windriver.com (8.15.2/8.15.2) with ESMTPS id 04S1Spg2015775
         (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Wed, 27 May 2020 18:21:11 -0700 (PDT)
+        Wed, 27 May 2020 18:28:52 -0700 (PDT)
 Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
- ALA-HCB.corp.ad.wrs.com (147.11.189.41) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 27 May 2020 18:20:55 -0700
+ ALA-HCA.corp.ad.wrs.com (147.11.189.40) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 27 May 2020 18:28:50 -0700
 From:   <qiang.zhang@windriver.com>
 To:     <tj@kernel.org>
 CC:     <jiangshanlai@gmail.com>, <markus.elfring@web.de>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5] workqueue: Remove unnecessary kfree() call in rcu_free_wq()
-Date:   Thu, 28 May 2020 09:29:41 +0800
-Message-ID: <20200528012941.39263-1-qiang.zhang@windriver.com>
+Subject: [PATCH v6] workqueue: Remove unnecessary kfree() call in rcu_free_wq()
+Date:   Thu, 28 May 2020 09:37:36 +0800
+Message-ID: <20200528013736.39356-1-qiang.zhang@windriver.com>
 X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -50,8 +50,8 @@ Fixes: def98c84b6cd ("workqueue: Fix spurious sanity check failures in destroy_w
 Co-developed-by: Markus Elfring <Markus.Elfring@web.de> 
 Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
 ---
- v1->v2->v3->v4->v5:
- Modify weakly submitted information.
+ v1->v2->v3->v4->v5->v6:
+ Modify weakly submitted information and tag.
 
  kernel/workqueue.c | 1 -
  1 file changed, 1 deletion(-)
