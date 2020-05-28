@@ -2,660 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA3E1E664B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC60B1E6675
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404397AbgE1Pg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 11:36:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404424AbgE1Pgz (ORCPT
+        id S2404584AbgE1Pm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 11:42:29 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:56374 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404436AbgE1Pm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 11:36:55 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4182C08C5C6;
-        Thu, 28 May 2020 08:36:55 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 185so5405058pgb.10;
-        Thu, 28 May 2020 08:36:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=iUcJohyaN09S3OSOlzUXknVRLMZFzPBBl2ghSn2VPQY=;
-        b=nXjBld8OH5AgCTWvC3auvtGbx2a7IIxy7YGcRyYN3poAtm/iMbqAvzOxQvq/SANbvf
-         PejCw6y8kh0Og2EDQPqvIzyY3vXeWd3Ia6YYlwKIT2Rhi8eN2t+CCZvONNVBW6fJe7eo
-         l706cIiG8w+WTzrC5RcPO8XJoBS2itIKSJpe6CFj5FTX5V+cVlll5rD+TaZhnjzlIm4L
-         2Dn3uMBQG2GLkXK+nn4ZYeYzpKJW1UVkPeoQygIi6YUYwdi+/Dy/rrCEnqRe4I5l+Lyy
-         tJyXGgiDQcqzGeEjK0r0L01DH4IQeJ16jEMYCeHrCCFBudlUX7VOUeDNYmS15zDTDFGk
-         48qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=iUcJohyaN09S3OSOlzUXknVRLMZFzPBBl2ghSn2VPQY=;
-        b=JeUQO4ghKaKEwgFa/oq3MfGbI1NKsd5LAa1skxPK0sb4J9ACtxDUgD3f9JJ4h7hXTR
-         UIGmsyKKF5hfVvYEsrCduQvAIluEhxnpx5u9WZT07js1B+83M30tclZHOI0oVXoOSJ/k
-         X7MdQUpDblKMMcrak0jFsi7DaaQ8Mtpm8nWYK+P7acGN0kbd3O+SnWq6awImkndLEbdI
-         U/o7/AO620o3Whx/kT4mXcenbusRp/kL0SjiUveJOOmII5i13gLDzkDDivEPgwU8KpUA
-         qe/YiB7O/rMsTi+63usTYAwTOcU2xqUDV/hoT6Kl6jNcAtygsz+A5UAOBrwzOw8IQVW/
-         CW4g==
-X-Gm-Message-State: AOAM5302oaqnBocXNOeyWEPvYMfpacnnamZAIvAIU63NQfeHy+ehIHYd
-        E731jbAskub3um+Av1+7V0c=
-X-Google-Smtp-Source: ABdhPJysI9YG620MytGVBr4Hg7VTzDBtyJrWZ0H47U/pfuEM0bxKS8Ae4MJ2t3h2TOoD9Ya3Vu9ViA==
-X-Received: by 2002:a63:f854:: with SMTP id v20mr3638569pgj.0.1590680215006;
-        Thu, 28 May 2020 08:36:55 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k18sm4916052pfg.217.2020.05.28.08.36.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 28 May 2020 08:36:54 -0700 (PDT)
-Date:   Thu, 28 May 2020 08:36:52 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Ugur Usug <Ugur.Usug@maximintegrated.com>
-Cc:     "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] hwmon (pmbus/max20730): add max20710 and debugfs access
- support
-Message-ID: <20200528153652.GA7755@roeck-us.net>
-References: <MWHPR11MB1661A23F609D54EAAC93FDE7FDB00@MWHPR11MB1661.namprd11.prod.outlook.com>
+        Thu, 28 May 2020 11:42:26 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jeKfl-0008Ja-PN; Thu, 28 May 2020 09:42:21 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jeKfk-00062n-79; Thu, 28 May 2020 09:42:21 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     <linux-kernel@vger.kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Rob Landley <rob@landley.net>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        <linux-fsdevel@vger.kernel.org>, Al Viro <viro@ZenIV.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        linux-security-module@vger.kernel.org,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andy Lutomirski <luto@amacapital.net>
+References: <87h7wujhmz.fsf@x220.int.ebiederm.org>
+        <87sgga6ze4.fsf@x220.int.ebiederm.org>
+        <87v9l4zyla.fsf_-_@x220.int.ebiederm.org>
+        <877dx822er.fsf_-_@x220.int.ebiederm.org>
+Date:   Thu, 28 May 2020 10:38:28 -0500
+In-Reply-To: <877dx822er.fsf_-_@x220.int.ebiederm.org> (Eric W. Biederman's
+        message of "Mon, 18 May 2020 19:29:00 -0500")
+Message-ID: <87k10wysqz.fsf_-_@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR11MB1661A23F609D54EAAC93FDE7FDB00@MWHPR11MB1661.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-XM-SPF: eid=1jeKfk-00062n-79;;;mid=<87k10wysqz.fsf_-_@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19hjQ7mkEqSTblmWNbJmpDHrq/w9JRB1jw=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,XMNoVowels autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa07 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;<linux-kernel@vger.kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 643 ms - load_scoreonly_sql: 0.07 (0.0%),
+        signal_user_changed: 11 (1.8%), b_tie_ro: 10 (1.5%), parse: 1.00
+        (0.2%), extract_message_metadata: 4.7 (0.7%), get_uri_detail_list:
+        1.90 (0.3%), tests_pri_-1000: 4.7 (0.7%), tests_pri_-950: 1.30 (0.2%),
+        tests_pri_-900: 1.12 (0.2%), tests_pri_-90: 127 (19.7%), check_bayes:
+        125 (19.5%), b_tokenize: 9 (1.4%), b_tok_get_all: 10 (1.6%),
+        b_comp_prob: 3.0 (0.5%), b_tok_touch_all: 98 (15.3%), b_finish: 0.98
+        (0.2%), tests_pri_0: 475 (73.8%), check_dkim_signature: 0.63 (0.1%),
+        check_dkim_adsp: 2.2 (0.3%), poll_dns_idle: 0.38 (0.1%), tests_pri_10:
+        2.1 (0.3%), tests_pri_500: 6 (1.0%), rewrite_mail: 0.00 (0.0%)
+Subject: [PATCH  0/11] exec: cred calculation simplifications
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 09:42:19AM +0000, Ugur Usug wrote:
-> This change has 2 parts:
-> 1. Add support for max20710 into the existing max20730 driver.
-> 
-> 2. Add debugfs interface support for accessing device specific registers 
-> (MFR_VOUT_MIN, MFR_DEVSET1 and MFR_DEVSET2) and others 
-> including OPERATION, ON_OFF_CONFIG, SMB_ALERT_MASK, 
-> VOUT_MODE, VOUT_COMMAND and VOUT_MAX.
 
-This should be two separate patches. Please split and resubmit.
+Recomputing the uids, gids, capabilities, and related flags each time a
+new bprm->file is set is error prone, and as it turns out unnecessary.
 
-Thanks,
-Guenter
+Further our decisions on when to clear personality bits and when to tell
+userspace privileges have been gained so please be extra careful, is
+imperfect and our current code overshoots in inconsistent ways making
+it hard to understand what is happening, and why.
 
-> 
-> Signed-off-by: Ugur Usug <ugur.usug@maximintegrated.com>
-> ---
->  Documentation/hwmon/max20730.rst |  10 +-
->  drivers/hwmon/pmbus/Kconfig      |   4 +-
->  drivers/hwmon/pmbus/max20730.c   | 412 ++++++++++++++++++++++++++++++++++++++-
->  3 files changed, 414 insertions(+), 12 deletions(-)
->  mode change 100644 => 100755 drivers/hwmon/pmbus/max20730.c
-> 
-> diff --git a/Documentation/hwmon/max20730.rst b/Documentation/hwmon/max20730.rst
-> index cea7ae5..cb0c95b 100644
-> --- a/Documentation/hwmon/max20730.rst
-> +++ b/Documentation/hwmon/max20730.rst
-> @@ -5,6 +5,14 @@ Kernel driver max20730
->  
->  Supported chips:
->  
-> +  * Maxim MAX20710
-> +
-> +    Prefix: 'max20710'
-> +
-> +    Addresses scanned: -
-> +
-> +    Datasheet: https://datasheets.maximintegrated.com/en/ds/MAX20710.pdf
-> +
->    * Maxim MAX20730
->  
->      Prefix: 'max20730'
-> @@ -35,7 +43,7 @@ Author: Guenter Roeck <linux@roeck-us.net>
->  Description
->  -----------
->  
-> -This driver implements support for Maxim MAX20730, MAX20734, and MAX20743
-> +This driver implements support for Maxim MAX20710, MAX20730, MAX20734, and MAX20743
->  Integrated, Step-Down Switching Regulators with PMBus support.
->  
->  The driver is a client driver to the core PMBus driver.
-> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-> index de12a56..cac96e0 100644
-> --- a/drivers/hwmon/pmbus/Kconfig
-> +++ b/drivers/hwmon/pmbus/Kconfig
-> @@ -147,10 +147,10 @@ config SENSORS_MAX16064
->  	  be called max16064.
->  
->  config SENSORS_MAX20730
-> -	tristate "Maxim MAX20730, MAX20734, MAX20743"
-> +	tristate "Maxim MAX20710, MAX20730, MAX20734, MAX20743"
->  	help
->  	  If you say yes here you get hardware monitoring support for Maxim
-> -	  MAX20730, MAX20734, and MAX20743.
-> +	  MAX20710, MAX20730, MAX20734, and MAX20743.
->  
->  	  This driver can also be built as a module. If so, the module will
->  	  be called max20730.
-> diff --git a/drivers/hwmon/pmbus/max20730.c b/drivers/hwmon/pmbus/max20730.c
-> old mode 100644
-> new mode 100755
-> index c0bb054..fc38be0
-> --- a/drivers/hwmon/pmbus/max20730.c
-> +++ b/drivers/hwmon/pmbus/max20730.c
-> @@ -1,12 +1,14 @@
->  // SPDX-License-Identifier: GPL-2.0-or-later
->  /*
-> - * Driver for MAX20730, MAX20734, and MAX20743 Integrated, Step-Down
-> - * Switching Regulators
-> + * Driver for MAX20710, MAX20730, MAX20734, and MAX20743 Integrated, 
-> + * Step-Down Switching Regulators
->   *
->   * Copyright 2019 Google LLC.
-> + * Copyright 2020 Maxim Integrated
->   */
->  
->  #include <linux/bits.h>
-> +#include <linux/debugfs.h>
->  #include <linux/err.h>
->  #include <linux/i2c.h>
->  #include <linux/init.h>
-> @@ -19,21 +21,283 @@
->  #include "pmbus.h"
->  
->  enum chips {
-> +	max20710,
->  	max20730,
->  	max20734,
->  	max20743
->  };
->  
-> +enum {
-> +	MAX20730_DEBUGFS_VOUT_MIN = 0,
-> +	MAX20730_DEBUGFS_FREQUENCY,
-> +	MAX20730_DEBUGFS_PG_DELAY,
-> +	MAX20730_DEBUGFS_INTERNAL_GAIN,
-> +	MAX20730_DEBUGFS_BOOT_VOLTAGE,
-> +	MAX20730_DEBUGFS_OUT_V_RAMP_RATE,
-> +	MAX20730_DEBUGFS_OC_PROTECT_MODE,
-> +	MAX20730_DEBUGFS_SS_TIMING,
-> +	MAX20730_DEBUGFS_IMAX,
-> +	MAX20730_DEBUGFS_OPERATION,
-> +	MAX20730_DEBUGFS_ON_OFF_CONFIG,
-> +	MAX20730_DEBUGFS_SMBALERT_MASK,
-> +	MAX20730_DEBUGFS_VOUT_MODE,
-> +	MAX20730_DEBUGFS_VOUT_COMMAND,
-> +	MAX20730_DEBUGFS_VOUT_MAX,
-> +	MAX20730_DEBUGFS_NUM_ENTRIES
-> +};
-> +
->  struct max20730_data {
->  	enum chips id;
->  	struct pmbus_driver_info info;
->  	struct mutex lock;	/* Used to protect against parallel writes */
->  	u16 mfr_devset1;
-> +	u16 mfr_devset2;
-> +	u16 mfr_voutmin;
->  };
->  
->  #define to_max20730_data(x)  container_of(x, struct max20730_data, info)
->  
-> +#define PMBUS_SMB_ALERT_MASK	0x1B
-> +
-> +#define MAX20730_MFR_VOUT_MIN	0xd1
->  #define MAX20730_MFR_DEVSET1	0xd2
-> +#define MAX20730_MFR_DEVSET2	0xd3
-> +
-> +#define MAX20730_MFR_VOUT_MIN_MASK			GENMASK(9, 0)
-> +#define MAX20730_MFR_VOUT_MIN_BIT_POS		0
-> +
-> +#define MAX20730_MFR_DEVSET1_RGAIN_MASK		(BIT(13) | BIT(14))
-> +#define MAX20730_MFR_DEVSET1_OTP_MASK		(BIT(11) | BIT(12))
-> +#define MAX20730_MFR_DEVSET1_VBOOT_MASK		(BIT(8) | BIT(9))
-> +#define MAX20730_MFR_DEVSET1_OCP_MASK		(BIT(5) | BIT(6))
-> +#define MAX20730_MFR_DEVSET1_FSW_MASK		GENMASK(4, 2)
-> +#define MAX20730_MFR_DEVSET1_TSTAT_MASK		(BIT(0) | BIT(1))
-> +
-> +#define MAX20730_MFR_DEVSET1_RGAIN_BIT_POS	13
-> +#define MAX20730_MFR_DEVSET1_OTP_BIT_POS	11
-> +#define MAX20730_MFR_DEVSET1_VBOOT_BIT_POS	8
-> +#define MAX20730_MFR_DEVSET1_OCP_BIT_POS	5
-> +#define MAX20730_MFR_DEVSET1_FSW_BIT_POS	2
-> +#define MAX20730_MFR_DEVSET1_TSTAT_BIT_POS	0
-> +
-> +#define MAX20730_MFR_DEVSET2_IMAX_MASK		GENMASK(10, 8)
-> +#define MAX20730_MFR_DEVSET2_VRATE			(BIT(6) | BIT(7))
-> +#define MAX20730_MFR_DEVSET2_OCPM_MASK		BIT(5)
-> +#define MAX20730_MFR_DEVSET2_SS_MASK		(BIT(0) | BIT(1))
-> +
-> +#define MAX20730_MFR_DEVSET2_IMAX_BIT_POS	8
-> +#define MAX20730_MFR_DEVSET2_VRATE_BIT_POS	6
-> +#define MAX20730_MFR_DEVSET2_OCPM_BIT_POS	5
-> +#define MAX20730_MFR_DEVSET2_SS_BIT_POS		0
-> +
-> +#define DEBUG_FS_DATA_MAX					8
-> +
-> +struct max20730_debugfs_data {
-> +	struct i2c_client *client;
-> +	int debugfs_entries[MAX20730_DEBUGFS_NUM_ENTRIES];
-> +};
-> +
-> +#define to_psu(x, y) container_of((x), \
-> +			struct max20730_debugfs_data, debugfs_entries[(y)])
-> +
-> +static ssize_t max20730_debugfs_read(struct file *file, char __user *buf,
-> +				      size_t count, loff_t *ppos)
-> +{
-> +	int ret, len;
-> +	int *idxp = file->private_data;
-> +	int idx = *idxp;
-> +	struct max20730_debugfs_data *psu = to_psu(idxp, idx);
-> +	const struct pmbus_driver_info *info;
-> +	const struct max20730_data *data;
-> +	char tbuf[DEBUG_FS_DATA_MAX + 2] = { 0 };
-> +	u16 val;
-> +
-> +	info = pmbus_get_driver_info(psu->client);
-> +	data = to_max20730_data(info);
-> +
-> +	switch (idx) {
-> +	case MAX20730_DEBUGFS_VOUT_MIN:
-> +		len = snprintf(tbuf, 5, "%d", data->mfr_voutmin);
-> +		break;
-> +	case MAX20730_DEBUGFS_FREQUENCY:
-> +		val = (data->mfr_devset1 & MAX20730_MFR_DEVSET1_FSW_MASK)
-> +			>> MAX20730_MFR_DEVSET1_FSW_BIT_POS;
-> +		if (val == 0)
-> +			ret = 400;
-> +		else if (val == 1)
-> +			ret = 500;
-> +		else if (val == 2 || val == 3)
-> +			ret = 600;
-> +		else if (val == 4)
-> +			ret = 700;
-> +		else if (val == 5)
-> +			ret = 800;
-> +		else
-> +			ret = 900;
-> +		len = snprintf(tbuf, 4, "%d", ret);
-> +		break;
-> +	case MAX20730_DEBUGFS_PG_DELAY:
-> +		val = (data->mfr_devset1 & MAX20730_MFR_DEVSET1_TSTAT_MASK)
-> +			>> MAX20730_MFR_DEVSET1_TSTAT_BIT_POS;
-> +
-> +		if (val == 0)
-> +			strcpy(tbuf, "2000");
-> +		else if (val == 1)
-> +			strcpy(tbuf, "125");
-> +		else if (val == 2)
-> +			strcpy(tbuf, "62.5");
-> +		else
-> +			strcpy(tbuf, "32");
-> +		len = strnlen(tbuf, DEBUG_FS_DATA_MAX);
-> +		break;
-> +
-> +	case MAX20730_DEBUGFS_INTERNAL_GAIN:
-> +		val = (data->mfr_devset1 & MAX20730_MFR_DEVSET1_RGAIN_MASK)
-> +			>> MAX20730_MFR_DEVSET1_RGAIN_BIT_POS;
-> +
-> +		if (data->id == max20734) {
-> +			/* AN6209 */
-> +			if (val == 0)
-> +				strcpy(tbuf, "0.8");
-> +			else if (val == 1)
-> +				strcpy(tbuf, "3.2");
-> +			else if (val == 2)
-> +				strcpy(tbuf, "1.6");
-> +			else
-> +				strcpy(tbuf, "6.4");
-> +		} else if (data->id == max20730 || data->id == max20710) {
-> +			/* AN6042 or AN6140 */
-> +			if (val == 0)
-> +				strcpy(tbuf, "0.9");
-> +			else if (val == 1)
-> +				strcpy(tbuf, "3.6");
-> +			else if (val == 2)
-> +				strcpy(tbuf, "1.8");
-> +			else
-> +				strcpy(tbuf, "7.2");
-> +		} else if (data->id == max20743) {
-> +			/* AN6042 */
-> +			if (val == 0)
-> +				strcpy(tbuf, "0.45");
-> +			else if (val == 1)
-> +				strcpy(tbuf, "1.8");
-> +			else if (val == 2)
-> +				strcpy(tbuf, "0.9");
-> +			else
-> +				strcpy(tbuf, "3.6");
-> +		} else
-> +			return -EINVAL;
-> +
-> +		len = strnlen(tbuf, DEBUG_FS_DATA_MAX);
-> +		break;
-> +	case MAX20730_DEBUGFS_BOOT_VOLTAGE:
-> +		val = (data->mfr_devset1 & MAX20730_MFR_DEVSET1_VBOOT_MASK)
-> +			>> MAX20730_MFR_DEVSET1_VBOOT_BIT_POS;
-> +
-> +		if (val == 0)
-> +			strcpy(tbuf, "0.6484");
-> +		else if (val == 1)
-> +			strcpy(tbuf, "0.8984");
-> +		else if (val == 2)
-> +			strcpy(tbuf, "1.0");
-> +		else
-> +			return -EINVAL;
-> +
-> +		len = strnlen(tbuf, DEBUG_FS_DATA_MAX);
-> +		break;
-> +	case MAX20730_DEBUGFS_OUT_V_RAMP_RATE:
-> +		val = (data->mfr_devset2 & MAX20730_MFR_DEVSET2_VRATE)
-> +			>> MAX20730_MFR_DEVSET2_VRATE_BIT_POS;
-> +
-> +		if (val == 0)
-> +			ret = 4;
-> +		else if (val == 1)
-> +			ret = 2;
-> +		else if (val == 2)
-> +			ret = 1;
-> +		else
-> +			return -EINVAL;
-> +
-> +		len = snprintf(tbuf, 2, "%d", ret);
-> +		break;
-> +	case MAX20730_DEBUGFS_OC_PROTECT_MODE:
-> +		ret = (data->mfr_devset2 & MAX20730_MFR_DEVSET2_OCPM_MASK)
-> +			>> MAX20730_MFR_DEVSET2_OCPM_BIT_POS;
-> +		len = snprintf(tbuf, 2, "%d", ret);
-> +		break;
-> +	case MAX20730_DEBUGFS_SS_TIMING:
-> +		val = (data->mfr_devset2 & MAX20730_MFR_DEVSET2_SS_MASK)
-> +			>> MAX20730_MFR_DEVSET2_SS_BIT_POS;
-> +
-> +		if (val == 0)
-> +			strcpy(tbuf, "0.75");
-> +		else if (val == 1)
-> +			strcpy(tbuf, "1.5");
-> +		else if (val == 2)
-> +			strcpy(tbuf, "3");
-> +		else
-> +			strcpy(tbuf, "6");
-> +
-> +		len = strnlen(tbuf, DEBUG_FS_DATA_MAX);
-> +		break;
-> +	case MAX20730_DEBUGFS_IMAX:
-> +		ret = (data->mfr_devset2 & MAX20730_MFR_DEVSET2_IMAX_MASK)
-> +			>> MAX20730_MFR_DEVSET2_IMAX_BIT_POS;
-> +		len = snprintf(tbuf, 2, "%d", ret);
-> +		break;
-> +	case MAX20730_DEBUGFS_OPERATION:
-> +		ret = i2c_smbus_read_byte_data(psu->client, PMBUS_OPERATION);
-> +		if(ret < 0)
-> +			return ret;
-> +		len = snprintf(tbuf, 2, "%d", ret);
-> +		break;
-> +	case MAX20730_DEBUGFS_ON_OFF_CONFIG:
-> +		ret = i2c_smbus_read_byte_data(psu->client, PMBUS_ON_OFF_CONFIG);
-> +		if(ret < 0)
-> +			return ret;
-> +		len = snprintf(tbuf, 2, "%d", ret);
-> +		break;
-> +	case MAX20730_DEBUGFS_SMBALERT_MASK:
-> +		ret = i2c_smbus_read_word_data(psu->client, 
-> +							PMBUS_SMB_ALERT_MASK);
-> +		if(ret < 0)
-> +			return ret;
-> +		len = snprintf(tbuf, 3, "%d", ret);
-> +		break;
-> +	case MAX20730_DEBUGFS_VOUT_MODE:
-> +		ret = i2c_smbus_read_byte_data(psu->client, PMBUS_VOUT_MODE);
-> +		if(ret < 0)
-> +			return ret;
-> +		len = snprintf(tbuf, 2, "%d", ret);
-> +		break;
-> +	case MAX20730_DEBUGFS_VOUT_COMMAND:
-> +		ret = i2c_smbus_read_word_data(psu->client, PMBUS_VOUT_COMMAND);
-> +		if(ret < 0)
-> +			return ret;
-> +		len = snprintf(tbuf, 3, "%d", ret);
-> +		break;
-> +	case MAX20730_DEBUGFS_VOUT_MAX:
-> +		ret = i2c_smbus_read_word_data(psu->client, PMBUS_VOUT_MAX);
-> +		if(ret < 0)
-> +			return ret;
-> +		len = snprintf(tbuf, 3, "%d", ret);
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	tbuf[len] = '\n';
-> +	len += 2;
-> +
-> +	return simple_read_from_buffer(buf, count, ppos, tbuf, len);
-> +}
-> +
-> +static const struct file_operations max20730_fops = {
-> +	.llseek = noop_llseek,
-> +	.read = max20730_debugfs_read,
-> +	.write = NULL,
-> +	.open = simple_open,
-> +};
->  
->  /*
->   * Convert discreet value to direct data format. Strictly speaking, all passed
-> @@ -80,6 +344,7 @@ static long direct_to_val(u16 w, enum pmbus_sensor_classes class,
->  }
->  
->  static u32 max_current[][5] = {
-> +	[max20710] = { 6200, 8000, 9700, 11600 },
->  	[max20730] = { 13000, 16600, 20100, 23600 },
->  	[max20734] = { 21000, 27000, 32000, 38000 },
->  	[max20743] = { 18900, 24100, 29200, 34100 },
-> @@ -164,6 +429,45 @@ static int max20730_write_word_data(struct i2c_client *client, int page,
->  }
->  
->  static const struct pmbus_driver_info max20730_info[] = {
-> +	[max20710] = {
-> +		.pages = 1,
-> +		.read_word_data = max20730_read_word_data,
-> +		.write_word_data = max20730_write_word_data,
-> +
-> +		/* Source : Maxim AN6140 and AN6042 */
-> +		.format[PSC_TEMPERATURE] = direct,
-> +		.m[PSC_TEMPERATURE] = 21,
-> +		.b[PSC_TEMPERATURE] = 5887,
-> +		.R[PSC_TEMPERATURE] = -1,
-> +
-> +		.format[PSC_VOLTAGE_IN] = direct,
-> +		.m[PSC_VOLTAGE_IN] = 3609,
-> +		.b[PSC_VOLTAGE_IN] = 0,
-> +		.R[PSC_VOLTAGE_IN] = -2,
-> +
-> +		/*
-> +		 * Values in the datasheet are adjusted for temperature and
-> +		 * for the relationship between Vin and Vout.
-> +		 * Unfortunately, the data sheet suggests that Vout measurement
-> +		 * may be scaled with a resistor array. This is indeed the case
-> +		 * at least on the evaulation boards. As a result, any in-driver
-> +		 * adjustments would either be wrong or require elaborate means
-> +		 * to configure the scaling. Instead of doing that, just report
-> +		 * raw values and let userspace handle adjustments.
-> +		 */
-> +		.format[PSC_CURRENT_OUT] = direct,
-> +		.m[PSC_CURRENT_OUT] = 153,
-> +		.b[PSC_CURRENT_OUT] = 4976,
-> +		.R[PSC_CURRENT_OUT] = -1,
-> +
-> +		.format[PSC_VOLTAGE_OUT] = linear,
-> +
-> +		.func[0] = PMBUS_HAVE_VIN |
-> +			PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT |
-> +			PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT |
-> +			PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP |
-> +			PMBUS_HAVE_STATUS_INPUT,
-> +	},
->  	[max20730] = {
->  		.pages = 1,
->  		.read_word_data = max20730_read_word_data,
-> @@ -200,7 +504,8 @@ static const struct pmbus_driver_info max20730_info[] = {
->  		.func[0] = PMBUS_HAVE_VIN |
->  			PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT |
->  			PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT |
-> -			PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
-> +			PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP |
-> +			PMBUS_HAVE_STATUS_INPUT,
->  	},
->  	[max20734] = {
->  		.pages = 1,
-> @@ -228,7 +533,8 @@ static const struct pmbus_driver_info max20730_info[] = {
->  		.func[0] = PMBUS_HAVE_VIN |
->  			PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT |
->  			PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT |
-> -			PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
-> +			PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP |
-> +			PMBUS_HAVE_STATUS_INPUT,
->  	},
->  	[max20743] = {
->  		.pages = 1,
-> @@ -256,7 +562,8 @@ static const struct pmbus_driver_info max20730_info[] = {
->  		.func[0] = PMBUS_HAVE_VIN |
->  			PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT |
->  			PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT |
-> -			PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
-> +			PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP |
-> +			PMBUS_HAVE_STATUS_INPUT,
->  	},
->  };
->  
-> @@ -267,14 +574,17 @@ static int max20730_probe(struct i2c_client *client,
->  	u8 buf[I2C_SMBUS_BLOCK_MAX + 1];
->  	struct max20730_data *data;
->  	enum chips chip_id;
-> -	int ret;
-> +	int i, ret;
-> +	struct dentry *debugfs;
-> +	struct dentry *max20730_dir;
-> +	struct max20730_debugfs_data *psu;
->  
->  	if (!i2c_check_functionality(client->adapter,
->  				     I2C_FUNC_SMBUS_READ_BYTE_DATA |
->  				     I2C_FUNC_SMBUS_READ_WORD_DATA |
->  				     I2C_FUNC_SMBUS_BLOCK_DATA))
->  		return -ENODEV;
-> -
-> +	
->  	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_ID, buf);
->  	if (ret < 0) {
->  		dev_err(&client->dev, "Failed to read Manufacturer ID\n");
-> @@ -335,10 +645,93 @@ static int max20730_probe(struct i2c_client *client,
->  		return ret;
->  	data->mfr_devset1 = ret;
->  
-> -	return pmbus_do_probe(client, id, &data->info);
-> +	ret = pmbus_do_probe(client, id, &data->info);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +#if IS_ENABLED(CONFIG_DEBUG_FS)
-> +	ret = i2c_smbus_read_word_data(client, MAX20730_MFR_DEVSET2);
-> +	if (ret < 0)
-> +		return ret;
-> +	data->mfr_devset2 = ret;
-> +
-> +	ret = i2c_smbus_read_word_data(client, MAX20730_MFR_VOUT_MIN);
-> +	if (ret < 0)
-> +		return ret;
-> +	data->mfr_voutmin = ret;
-> +
-> +	/*
-> +	 * Don't fail the probe if there isn't enough memory for debugfs.
-> +	 */
-> +	psu = devm_kzalloc(&client->dev, sizeof(*psu), GFP_KERNEL);
-> +	if (!psu)
-> +		return 0;
-> +	psu->client = client;
-> +
-> +	/* Don't fail the probe if we can't create debugfs */
-> +	debugfs = pmbus_get_debugfs_dir(client);
-> +	if (!debugfs)
-> +		return 0;
-> +
-> +	max20730_dir = debugfs_create_dir(client->name, debugfs);
-> +	if (!max20730_dir)
-> +		return 0;
-> +
-> +	for (i = 0; i < MAX20730_DEBUGFS_NUM_ENTRIES; ++i)
-> +		psu->debugfs_entries[i] = i;
-> +
-> +	debugfs_create_file("vout_min", 0444, max20730_dir,
-> +			    &psu->debugfs_entries[MAX20730_DEBUGFS_VOUT_MIN],
-> +			    &max20730_fops);
-> +	debugfs_create_file("frequency", 0444, max20730_dir,
-> +			    &psu->debugfs_entries[MAX20730_DEBUGFS_FREQUENCY],
-> +			    &max20730_fops);
-> +	debugfs_create_file("power_good_delay", 0444, max20730_dir,
-> +			    &psu->debugfs_entries[MAX20730_DEBUGFS_PG_DELAY],
-> +			    &max20730_fops);
-> +	debugfs_create_file("internal_gain", 0444, max20730_dir,
-> +			    &psu->debugfs_entries[MAX20730_DEBUGFS_INTERNAL_GAIN],
-> +			    &max20730_fops);
-> +	debugfs_create_file("boot_voltage", 0444, max20730_dir,
-> +			    &psu->debugfs_entries[MAX20730_DEBUGFS_BOOT_VOLTAGE],
-> +			    &max20730_fops);
-> +	debugfs_create_file("out_voltage_ramp_rate", 0444, max20730_dir,
-> +			    &psu->debugfs_entries[MAX20730_DEBUGFS_OUT_V_RAMP_RATE],
-> +			    &max20730_fops);
-> +	debugfs_create_file("oc_protection_mode", 0444, max20730_dir,
-> +			    &psu->debugfs_entries[MAX20730_DEBUGFS_OC_PROTECT_MODE],
-> +			    &max20730_fops);
-> +	debugfs_create_file("soft_start_timing", 0444, max20730_dir,
-> +			    &psu->debugfs_entries[MAX20730_DEBUGFS_SS_TIMING],
-> +			    &max20730_fops);
-> +	debugfs_create_file("imax", 0444, max20730_dir,
-> +			    &psu->debugfs_entries[MAX20730_DEBUGFS_IMAX],
-> +			    &max20730_fops);	    
-> +	debugfs_create_file("operation", 0444, max20730_dir,
-> +			    &psu->debugfs_entries[MAX20730_DEBUGFS_OPERATION],
-> +			    &max20730_fops);
-> +	debugfs_create_file("on_off_config", 0444, max20730_dir,
-> +			    &psu->debugfs_entries[MAX20730_DEBUGFS_ON_OFF_CONFIG],
-> +			    &max20730_fops);
-> +	debugfs_create_file("smbalert_mask", 0444, max20730_dir,
-> +			    &psu->debugfs_entries[MAX20730_DEBUGFS_SMBALERT_MASK],
-> +			    &max20730_fops);
-> +	debugfs_create_file("vout_mode", 0444, max20730_dir,
-> +			    &psu->debugfs_entries[MAX20730_DEBUGFS_VOUT_MODE],
-> +			    &max20730_fops);
-> +	debugfs_create_file("vout_command", 0444, max20730_dir,
-> +			    &psu->debugfs_entries[MAX20730_DEBUGFS_VOUT_COMMAND],
-> +			    &max20730_fops);
-> +	debugfs_create_file("vout_max", 0444, max20730_dir,
-> +			    &psu->debugfs_entries[MAX20730_DEBUGFS_VOUT_MAX],
-> +			    &max20730_fops);
-> +#endif
-> +	
-> +	return 0;
->  }
->  
->  static const struct i2c_device_id max20730_id[] = {
-> +	{ "max20710", max20710 },
->  	{ "max20730", max20730 },
->  	{ "max20734", max20734 },
->  	{ "max20743", max20743 },
-> @@ -348,6 +741,7 @@ static const struct i2c_device_id max20730_id[] = {
->  MODULE_DEVICE_TABLE(i2c, max20730_id);
->  
->  static const struct of_device_id max20730_of_match[] = {
-> +	{ .compatible = "maxim,max20710", .data = (void *)max20710 },
->  	{ .compatible = "maxim,max20730", .data = (void *)max20730 },
->  	{ .compatible = "maxim,max20734", .data = (void *)max20734 },
->  	{ .compatible = "maxim,max20743", .data = (void *)max20743 },
-> @@ -369,5 +763,5 @@ static struct i2c_driver max20730_driver = {
->  module_i2c_driver(max20730_driver);
->  
->  MODULE_AUTHOR("Guenter Roeck <linux@roeck-us.net>");
-> -MODULE_DESCRIPTION("PMBus driver for Maxim MAX20730 / MAX20734 / MAX20743");
-> +MODULE_DESCRIPTION("PMBus driver for Maxim MAX20710 / MAX20730 / MAX20734 / MAX20743");
->  MODULE_LICENSE("GPL");
-> -- 
-> 2.7.4
-> 
+Building upon my previous exec clean up work this set of changes moves
+the bprm->cred calculations a little later so they only need to be done
+once, moves all of the uid and gid handling into bprm_fill_uid, and
+then cleans up setting secureexec and per_clear so they happen when they
+make sense from a semantic perspective.
+
+One of the largest challenges is dealing with how we revert the
+credential change if it is discovered the process calling exec is
+ptraced and the tracer does not have enough credentials.  It looks
+like that code was tacked on as an after thought to a bug fix that
+went into 2.4.0-prerelease.
+
+I don't know if we have ever gotten all of the details just right when
+the credentials are rolled back.  So this set of changes causes the
+credentials not to be changed when ptraced, instead of attempting to
+rollback the credential change.
+
+Folks please give this code a review and let me know if you see
+anything.
+
+Eric W. Biederman (11):
+      exec: Reduce bprm->per_clear to a single bit
+      exec: Introduce active_per_clear the per file version of per_clear
+      exec: Compute file based creds only once
+      exec: Move uid/gid handling from creds_from_file into bprm_fill_uid
+      exec: In bprm_fill_uid use CAP_SETGID to see if a gid change is safe
+      exec: Don't set secureexec when the uid or gid changes are abandoned
+      exec: Set saved, fs, and effective ids together in bprm_fill_uid
+      exec: In bprm_fill_uid remove unnecessary no new privs check
+      exec: In bprm_fill_uid only set per_clear when honoring suid or sgid
+      exec: In bprm_fill_uid set secureexec at same time as per_clear
+      exec: Remove the label after_setid from bprm_fill_uid
+
+ fs/binfmt_misc.c              |  2 +-
+ fs/exec.c                     | 95 +++++++++++++++++++++++++------------------
+ include/linux/binfmts.h       | 13 +++---
+ include/linux/lsm_hook_defs.h |  2 +-
+ include/linux/lsm_hooks.h     | 21 ++++++----
+ include/linux/security.h      |  8 ++--
+ security/apparmor/domain.c    |  2 +-
+ security/commoncap.c          | 37 ++++++-----------
+ security/security.c           |  4 +-
+ security/selinux/hooks.c      |  2 +-
+ security/smack/smack_lsm.c    |  2 +-
+ 11 files changed, 98 insertions(+), 90 deletions(-)
+
+---
+
+This builds upon my previous exec cleanup work at:
+git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git exec-next
+
+Thank you,
+Eric
