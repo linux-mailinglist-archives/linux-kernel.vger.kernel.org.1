@@ -2,91 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92EC01E6340
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E797D1E635A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390909AbgE1OGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 10:06:15 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:35129 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390656AbgE1OGK (ORCPT
+        id S2390968AbgE1OIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 10:08:09 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:35186 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390658AbgE1OIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 10:06:10 -0400
-Received: by mail-il1-f194.google.com with SMTP id a14so244167ilk.2;
-        Thu, 28 May 2020 07:06:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1jidT3xKZRKULWJIwqa2tys07NIrxI3mybLQC/9d/ko=;
-        b=DWsO/F1eL9DjP82NBsLsNPxie0SlEjScD8II2Cq1DIL2kaGCxCaT4PgBl5Ww8CONba
-         3xepZq1DflZNleeydwg501TlttgPCp9bq2FQkw4TIWbHuzx21fgApSgNE218racIV0ek
-         gtVDO72sc0Wtz+soNCEEWh+8Xm2iVCvVryTP8H9FkSpnde/I7IRXh2dr1IusZyK1nX4/
-         DflFeoJ5bqSR8nFPNkC8PKTyqWaWcC9M6HlS5gdwLUBUQNVph7jEaD4Y2fbbEp+nqIrj
-         3+emczmaZD4HFc8B0ukE4wk1yi/JPUnRBr82oif9g/oZrIGs2zdkhEzIudA24C5NQncN
-         Ss7A==
-X-Gm-Message-State: AOAM532cSysK1aLb8yvlk2lsV8G4K58IQUR+VzyjoGMTYhF3wsX/22VC
-        AkOCxjc+gvGHpndH6GtVOQ==
-X-Google-Smtp-Source: ABdhPJwgyTHzsDhxjiIb8r+RbEwXO/nh2hiq7xZNTxCVYzX32CAooeVLqphtOftt4LjRzbfcNOdExw==
-X-Received: by 2002:a92:d40a:: with SMTP id q10mr3051355ilm.87.1590674768954;
-        Thu, 28 May 2020 07:06:08 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id n25sm2574334ioa.29.2020.05.28.07.06.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 07:06:08 -0700 (PDT)
-Received: (nullmailer pid 4174426 invoked by uid 1000);
-        Thu, 28 May 2020 14:06:06 -0000
-Date:   Thu, 28 May 2020 08:06:06 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Cc:     vigneshr@ti.com, linux-kernel@vger.kernel.org, arnd@arndb.de,
-        hauke.mehrtens@intel.com, linux-mips@vger.kernel.org,
-        richard@nod.at, qi-ming.wu@intel.com, tglx@linutronix.de,
-        brendanhiggins@google.com, linux-mtd@lists.infradead.org,
-        boris.brezillon@collabora.com, anders.roxell@linaro.org,
-        cheol.yong.kim@intel.com, devicetree@vger.kernel.org,
-        miquel.raynal@bootlin.com, andriy.shevchenko@intel.com,
-        robh+dt@kernel.org, masonccyang@mxic.com.tw
-Subject: Re: [PATCH v9 1/2] dt-bindings: mtd: Add Nand Flash Controller
- support for Intel LGM SoC
-Message-ID: <20200528140606.GA4173978@bogus>
-References: <20200528051211.3063-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200528051211.3063-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+        Thu, 28 May 2020 10:08:05 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SE7nD5146260;
+        Thu, 28 May 2020 14:08:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=ZpO6geCXEfKtvVwoUpLjfojIWR34s984zqeSiyiYS48=;
+ b=h5z6gv2KVvsDaOPttrHkFk2r058+LiTdnzBMPdpxqnfYVHG7q3T+S36fH0ORBUpqinHC
+ T+tM5ZqpJqf+unhhEiboocr4GyB8RcfXQE97+85u8z1EuMk2LWyHIFrhVtg+gIe3hpQ7
+ QYFIfxiJJ9w37EHssl/vz0k85M/F2jAvZDRnSSi5u1007PoC9/PppOo8jYZ3K9bDFatW
+ +UhXGDjaJUuX3bJScptDxT0+AG+yuK6XWk0wcrjETxBksdnDO+Uj1jldF4P+SjQk1Twa
+ gkjvXe2Gbk1bXm1ybXip4fiRkgS3trZXs3aMpe07daXexjg+ZFEO8I3YgY2Ml1B0x+hp QA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 318xbk58ch-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 28 May 2020 14:08:00 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SE7d3c150848;
+        Thu, 28 May 2020 14:07:59 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 31a9ksjjga-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 May 2020 14:07:59 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04SE7w0i007174;
+        Thu, 28 May 2020 14:07:58 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 28 May 2020 07:06:20 -0700
+Date:   Thu, 28 May 2020 17:06:13 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
+        Markus Elfring <markus.elfring@web.de>,
+        Tejun Heo <tj@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: Re: =?utf-8?B?5Zue5aSNOiBbUEFUQ0ggdjU=?= =?utf-8?Q?=5D?= workqueue:
+ Remove unnecessary kfree() call in rcu_free_wq()
+Message-ID: <20200528140613.GK30374@kadam>
+References: <20200527075715.36849-1-qiang.zhang@windriver.com>
+ <284c7851-4e89-a00f-a2e6-aa8e2e1f3fce@web.de>
+ <DM6PR11MB32573F3884A864ECD586235EFF8E0@DM6PR11MB3257.namprd11.prod.outlook.com>
+ <DM6PR11MB3257D6E7E93A518392502809FF8E0@DM6PR11MB3257.namprd11.prod.outlook.com>
+ <20200528095703.GH30374@kadam>
+ <CAJhGHyD1nV=M=ccycqCMt86GMuZGkO9trbJ=4ti4EzP9kta6iA@mail.gmail.com>
+ <20200528122545.GP22511@kadam>
+ <CAJhGHyBUkMZ=cV+Qf-5+PMAFqgebbRLc46OZSSUSgoRROpUk2A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200528051211.3063-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+In-Reply-To: <CAJhGHyBUkMZ=cV+Qf-5+PMAFqgebbRLc46OZSSUSgoRROpUk2A@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9634 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 mlxscore=0 adultscore=0
+ mlxlogscore=999 malwarescore=0 spamscore=0 bulkscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005280097
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9634 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0 mlxscore=0
+ lowpriorityscore=0 priorityscore=1501 phishscore=0 cotscore=-2147483648
+ suspectscore=2 bulkscore=0 clxscore=1015 impostorscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005280097
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 May 2020 13:12:10 +0800, Ramuthevar,Vadivel MuruganX wrote:
-> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+On Thu, May 28, 2020 at 09:27:03PM +0800, Lai Jiangshan wrote:
+> On Thu, May 28, 2020 at 8:27 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> >
+> > On Thu, May 28, 2020 at 08:08:06PM +0800, Lai Jiangshan wrote:
+> > > On Thu, May 28, 2020 at 5:57 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> > > >
+> > > > Guys, the patch is wrong.  The kfree is harmless when this is called
+> > > > from destroy_workqueue() and required when it's called from
+> > > > pwq_unbound_release_workfn().  Lai Jiangshan already explained this
+> > > > already.  Why are we still discussing this?
+> > > >
+> > >
+> > > I'm also confused why they have been debating about the changelog
+> > > after the patch was queued. My statement was about "the patch is
+> > > a correct cleanup, but the changelog is totally misleading".
+> > >
+> > > destroy_workqueue(percpu_wq) -> rcu_free_wq()
+> > > or
+> > > destroy_workqueue(unbound_wq) -> put_pwq() ->
+> > > pwq_unbound_release_workfn() -> rcu_free_wq()
+> > >
+> > > So the patch is correct to me. Only can destroy_workqueue()
+> > > lead to rcu_free_wq().
+> >
+> > It looks like there are lots of paths which call put_pwq() and
+> > put_pwq_unlocked().
+> >
+> >   1168  static void pwq_dec_nr_in_flight(struct pool_workqueue *pwq, int color)
+> >   1169  {
+> >   1170          /* uncolored work items don't participate in flushing or nr_active */
+> >   1171          if (color == WORK_NO_COLOR)
+> >   1172                  goto out_put;
+> >   1173
+> >
+> > We don't take an extra reference in this function.
+> >
+> >   1200  out_put:
+> >   1201          put_pwq(pwq);
+> >   1202  }
+> >
+> > I don't know this code well, so I will defer to your expertise if you
+> > say it is correct.
 > 
-> Add YAML file for dt-bindings to support NAND Flash Controller
-> on Intel's Lightning Mountain SoC.
+> wq owns the ultimate or permanent references to itself by
+> owning references to wq->numa_pwq_tbl[node], wq->dfl_pwq.
+> The pwq's references keep the pwq in wq->pwqs.
 > 
-> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> ---
->  .../devicetree/bindings/mtd/intel,lgm-nand.yaml    | 93 ++++++++++++++++++++++
->  1 file changed, 93 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+> Only destroy_workqueue() can release these ultimate references
+> and then (after maybe a period of time) deplete the wq->pwqs
+> finally and then free itself in rcu callback.
+> 
+> Actually, in short, we don't need the care about the above
+> detail. The responsibility to free rescuer is on
+> destroy_workqueue(), and since it does the free early,
+> it doesn't need to do it again later.
+> 
+> e2dca7adff8f moved the free of rescuer into rcu callback,
+> and I didn't check all the changes between then and now.
+> But at least now, the rescuer is not accessed in rcu mananer,
+> so we don't need to free it in rcu mananer.
 > 
 
+Ah...  Thanks for the explanation!
 
-My bot found errors running 'make dt_binding_check' on your patch:
-
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/intel,lgm-nand.example.dt.yaml: nand-controller@e0f00000: '#address-cells', '#size-cells' do not match any of the regexes: '^nand@[a-f0-9]+$', 'pinctrl-[0-9]+'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/intel,lgm-nand.example.dt.yaml: nand-controller@e0f00000: nand@0: '#address-cells', '#size-cells', 'nand-on-flash-bbt' do not match any of the regexes: 'pinctrl-[0-9]+'
-
-See https://patchwork.ozlabs.org/patch/1299399
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
+regards,
+dan carpenter
 
