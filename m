@@ -2,92 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F651E6032
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A33751E603B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389562AbgE1MI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:08:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389674AbgE1MIT (ORCPT
+        id S2388829AbgE1MI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 08:08:59 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:33690 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388769AbgE1MIx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 08:08:19 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1DBC05BD1E;
-        Thu, 28 May 2020 05:08:18 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id q8so28261885iow.7;
-        Thu, 28 May 2020 05:08:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0xg0QPxu1ZcXwi3FZlEd1nHSUYYcxk/H+be8VUas4WI=;
-        b=DUTCSEp+0VouInoDHWVK37LO0AztXs67n/B34PE+3fFo0TvjRancJtR1Dmlw3Gj5/F
-         Xm/xLkvkrtguVpxCr1h9I47Xagl+y0ZDzQWz6cd6EIimVdapLCyUBhHkYo9pOhZrJHK3
-         gvckwiYbcKKqSQDiz+Et7z3mkEn4thxs7K1yiIppDEB7sODKNdfVxOwLilCjah2ecbxr
-         9hmm4jFbeGAmonlPZT0dLYOtK2UC4G6k96cIRQgzTFPbBXxikI6ZgRqfzeqlEc/80rkZ
-         X881udcPebn7/dOptUnbCMHEdpZiHmIwM0t0MmehFjfIzH7tdmZIAdXtuZiCndV6WLye
-         d36Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0xg0QPxu1ZcXwi3FZlEd1nHSUYYcxk/H+be8VUas4WI=;
-        b=ahhp18AQrYNveGhwDgPjNtrIrOhSfc3pOLsIAaq5naXpaICYdjR2e9Oc7iV9j92zte
-         it3gNdBiCCUmpHxjD4dCrKqGqhYba1CW8984gT4rH2XHspHkSEBC6JcEta6LTppgMc1h
-         Oiit4pkB9lSBywKCcGwEKOoS2mcafAaiy9rW/VRi8sb7B9EkyN6gR4EFfdzeuoRE+56o
-         smdz6Kgi5U0Y8o5VrJ6s1NRynWxDZlA/FGMcZi2wf75jOg60q9mKVA1onAkLb4mzUV5R
-         f0U0DN0TMduhuKlIp317SQkJKcWkDdcgzUYlNA8Xogh5FbslGtCDu+q0UGBuA1b0RxkF
-         m19A==
-X-Gm-Message-State: AOAM5316yDZgLqsu1XXAG8xKR23pgc6EChnl7AgZS8JnSp0YKIOJNSZu
-        e/GdqPNK+Ke7c7i6YZDK/AZ6ofrS/WLfcvtqsw3utt4A
-X-Google-Smtp-Source: ABdhPJzkKearcqBhw4Pr966FRVJJxc8ygvEkNMHoQhFIKcaLjSP3PyULF5sgdY1/EXULPKhc23v/kMvP/Xui/2T4ing=
-X-Received: by 2002:a5d:8146:: with SMTP id f6mr2001054ioo.154.1590667697930;
- Thu, 28 May 2020 05:08:17 -0700 (PDT)
+        Thu, 28 May 2020 08:08:53 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SC7eHU096738;
+        Thu, 28 May 2020 12:08:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=qcIsNVi0wvZGA81ns5t/6g7btQGknY8Bh4yUt78pyTY=;
+ b=nUj6qZ87t7W5q+Ao5Jo7TVPU46xmgqP6A3Ok65J42ozQFt6pjh9M4ga4GcvvdWU/b1s9
+ aSnmlyOLDlYkALrr6oR5HbtiPheeCXP+XSwpBjZ8VfsV5e84MYQ7ne83NWcz3yLYpa3U
+ YTIgdHYuF+fz00IC1FLnucuY+zvixh/xJRjWGcbpYEPa9MogmECfL598HG2NfbIwzvXH
+ MpW8q1abR/2TSDQ5zwmavuUXgJMm4IfJRwIg+bcpUST4xYAwmjvFJPt48gP4xaFYze/n
+ Bju3SPGT01K5bNGr059rgkFoKQkSMfUzOQ7FK3/SHa752kCBjxTnkk9J0/Cy9N4GV5uR IA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 316u8r4kjk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 28 May 2020 12:08:39 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SC38KS124411;
+        Thu, 28 May 2020 12:08:38 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 317ddsnvd6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 May 2020 12:08:38 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04SC8TXf014768;
+        Thu, 28 May 2020 12:08:29 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 28 May 2020 05:08:28 -0700
+Date:   Thu, 28 May 2020 15:08:18 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     devel@driverdev.osuosl.org, Len Brown <len.brown@intel.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        dinghao.liu@zju.edu.cn, Kangjie Lu <kjlu@umn.edu>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+Subject: Re: Re: [PATCH] media: staging: tegra-vde: fix runtime pm imbalance
+ on error
+Message-ID: <20200528120818.GO22511@kadam>
+References: <20200520095148.10995-1-dinghao.liu@zju.edu.cn>
+ <2b5d64f5-825f-c081-5d03-02655c2d9491@gmail.com>
+ <20200520150230.GC30374@kadam>
+ <2a46539d.b977f.1723553aa81.Coremail.dinghao.liu@zju.edu.cn>
+ <20200521091505.GF30374@kadam>
+ <CAJZ5v0irLayBUPRWNT1tcZivz9inS1YbUgGj5WXvucLKKwRQAw@mail.gmail.com>
+ <20200521173901.GA22310@kadam>
+ <20200522131031.GL2163848@ulmo>
+ <20200522132318.GM30374@kadam>
+ <20200522144312.GA2374603@ulmo>
 MIME-Version: 1.0
-References: <20200527075715.36849-1-qiang.zhang@windriver.com>
- <284c7851-4e89-a00f-a2e6-aa8e2e1f3fce@web.de> <DM6PR11MB32573F3884A864ECD586235EFF8E0@DM6PR11MB3257.namprd11.prod.outlook.com>
- <DM6PR11MB3257D6E7E93A518392502809FF8E0@DM6PR11MB3257.namprd11.prod.outlook.com>
- <20200528095703.GH30374@kadam>
-In-Reply-To: <20200528095703.GH30374@kadam>
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-Date:   Thu, 28 May 2020 20:08:06 +0800
-Message-ID: <CAJhGHyD1nV=M=ccycqCMt86GMuZGkO9trbJ=4ti4EzP9kta6iA@mail.gmail.com>
-Subject: =?UTF-8?B?UmU6IOWbnuWkjTogW1BBVENIIHY1XSB3b3JrcXVldWU6IFJlbW92ZSB1bm5lY2Vzc2FyeQ==?=
-        =?UTF-8?B?IGtmcmVlKCkgY2FsbCBpbiByY3VfZnJlZV93cSgp?=
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
-        Markus Elfring <markus.elfring@web.de>,
-        Tejun Heo <tj@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200522144312.GA2374603@ulmo>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9634 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 mlxscore=0
+ phishscore=0 adultscore=0 suspectscore=21 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005280084
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9634 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 spamscore=0 cotscore=-2147483648 suspectscore=21
+ phishscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005280084
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 5:57 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> Guys, the patch is wrong.  The kfree is harmless when this is called
-> from destroy_workqueue() and required when it's called from
-> pwq_unbound_release_workfn().  Lai Jiangshan already explained this
-> already.  Why are we still discussing this?
->
+On Fri, May 22, 2020 at 04:43:12PM +0200, Thierry Reding wrote:
+> On Fri, May 22, 2020 at 04:23:18PM +0300, Dan Carpenter wrote:
+> > On Fri, May 22, 2020 at 03:10:31PM +0200, Thierry Reding wrote:
+> > > On Thu, May 21, 2020 at 08:39:02PM +0300, Dan Carpenter wrote:
+> > > > On Thu, May 21, 2020 at 05:22:05PM +0200, Rafael J. Wysocki wrote:
+> > > > > On Thu, May 21, 2020 at 11:15 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> > > > > >
+> > > > > > On Thu, May 21, 2020 at 11:42:55AM +0800, dinghao.liu@zju.edu.cn wrote:
+> > > > > > > Hi, Dan,
+> > > > > > >
+> > > > > > > I agree the best solution is to fix __pm_runtime_resume(). But there are also
+> > > > > > > many cases that assume pm_runtime_get_sync() will change PM usage
+> > > > > > > counter on error. According to my static analysis results, the number of these
+> > > > > > > "right" cases are larger. Adjusting __pm_runtime_resume() directly will introduce
+> > > > > > > more new bugs. Therefore I think we should resolve the "bug" cases individually.
+> > > > > > >
+> > > > > >
+> > > > > > That's why I was saying that we may need to introduce a new replacement
+> > > > > > function for pm_runtime_get_sync() that works as expected.
+> > > > > >
+> > > > > > There is no reason why we have to live with the old behavior.
+> > > > > 
+> > > > > What exactly do you mean by "the old behavior"?
+> > > > 
+> > > > I'm suggesting we leave pm_runtime_get_sync() alone but we add a new
+> > > > function which called pm_runtime_get_sync_resume() which does something
+> > > > like this:
+> > > > 
+> > > > static inline int pm_runtime_get_sync_resume(struct device *dev)
+> > > > {
+> > > > 	int ret;
+> > > > 
+> > > > 	ret = __pm_runtime_resume(dev, RPM_GET_PUT);
+> > > > 	if (ret < 0) {
+> > > > 		pm_runtime_put(dev);
+> > > > 		return ret;
+> > > > 	}
+> > > > 	return 0;
+> > > > }
+> > > > 
+> > > > I'm not sure if pm_runtime_put() is the correct thing to do?  The other
+> > > > thing is that this always returns zero on success.  I don't know that
+> > > > drivers ever care to differentiate between one and zero returns.
+> > > > 
+> > > > Then if any of the caller expect that behavior we update them to use the
+> > > > new function.
+> > > 
+> > > Does that really have many benefits, though? I understand that this
+> > > would perhaps be easier to use because it is more in line with how other
+> > > functions operate. On the other hand, in some cases you may want to call
+> > > a different version of pm_runtime_put() on failure, as discussed in
+> > > other threads.
+> > 
+> > I wasn't CC'd on the other threads so I don't know.  :/
+> 
+> It was actually earlier in this thread, see here for example:
+> 
+> 	http://patchwork.ozlabs.org/project/linux-tegra/patch/20200520095148.10995-1-dinghao.liu@zju.edu.cn/#2438776
 
-I'm also confused why they have been debating about the changelog
-after the patch was queued. My statement was about "the patch is
-a correct cleanup, but the changelog is totally misleading".
+I'm not seeing what you're talking about.
 
-destroy_workqueue(percpu_wq) -> rcu_free_wq()
-or
-destroy_workqueue(unbound_wq) -> put_pwq() ->
-pwq_unbound_release_workfn() -> rcu_free_wq()
+The only thing I see in this thread is that we don't want to call
+pm_runtime_mark_last_busy(dev) which updates the last_busy time that is
+used for autosuspend.
 
-So the patch is correct to me. Only can destroy_workqueue()
-lead to rcu_free_wq().
+The other thing that was discussed was pm_runtime_put_noidle() vs
+pm_runtime_put_autosuspend().  "The pm_runtime_put_noidle() should have
+the same effect as yours variant".  So apparently they are equivalent
+in this situation.  How should we choose one vs the other?
 
-Still, the kfree(NULL) is harmless. But it is cleaner
-to have the patch. But the changelog is wrong, even after
-the lengthened debating, and English is not my mother tongue,
-so I just looked on.
+I'm not trying to be obtuse.  I understand that probably if I worked in
+PM then I wouldn't need documentation...  :/
+
+regards,
+dan carpenter
