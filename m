@@ -2,72 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0011E7075
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 01:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304001E70B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 01:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437611AbgE1Xik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 19:38:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54790 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436651AbgE1Xii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 19:38:38 -0400
-Received: from mail.kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94B702074B;
-        Thu, 28 May 2020 23:38:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590709117;
-        bh=xOc6jIfIBzDUCIiwBriGiB/QH5iSqrRwXB9T1VRVhtw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=JqYc/Mlkf2A1a5eOkXm2xA3qIK7+4L/10mENqkpOIQ8ZwlbkjlyvBATghs4tzH+/e
-         46+QB/uqIOftw4pLNgXiv3i9MJCT8dJgGnfa8KDoVP5AHTDtZw/rouyV2eI9Wzcodt
-         IbLiTuRDuNMl8lLGMnXn13QMXWXDZyy2+MEvxrNw=
-From:   Stephen Boyd <sboyd@kernel.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        kbuild test robot <lkp@intel.com>
-Subject: [PATCH] clk: ingenic: Mark ingenic_tcu_of_match as __maybe_unused
-Date:   Thu, 28 May 2020 16:38:37 -0700
-Message-Id: <20200528233837.70269-1-sboyd@kernel.org>
-X-Mailer: git-send-email 2.27.0.rc0.183.gde8f92d652-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S2437743AbgE1Xrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 19:47:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437651AbgE1Xrj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 19:47:39 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE37FC014D07;
+        Thu, 28 May 2020 16:39:20 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 09A3C1296DF83;
+        Thu, 28 May 2020 16:39:19 -0700 (PDT)
+Date:   Thu, 28 May 2020 16:39:19 -0700 (PDT)
+Message-Id: <20200528.163919.1875829376638675209.davem@davemloft.net>
+To:     tanhuazhong@huawei.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        salil.mehta@huawei.com, yisen.zhuang@huawei.com,
+        linuxarm@huawei.com, kuba@kernel.org
+Subject: Re: [PATCH net-next 00/12] net: hns3: misc updates for -next
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <1590673699-63819-1-git-send-email-tanhuazhong@huawei.com>
+References: <1590673699-63819-1-git-send-email-tanhuazhong@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 28 May 2020 16:39:20 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This device id table is passed to of_match_node() later on in probe, but
-on CONFIG_OF=n builds of_match_node() doesn't do anything with the
-arguments. Lets just mark the table unused so that the compiler doesn't
-complain about this.
+From: Huazhong Tan <tanhuazhong@huawei.com>
+Date: Thu, 28 May 2020 21:48:07 +0800
 
-drivers/clk/ingenic/tcu.c:326:34: warning: unused variable 'ingenic_tcu_of_match' [-Wunused-const-variable]
-static const struct of_device_id ingenic_tcu_of_match[] __initconst = {
-^
-1 warning generated.
+> This patchset includes some updates for the HNS3 ethernet driver.
+> 
+> #1 removes an unnecessary 'goto'.
+> #2 adds a missing mutex destroy.
+> #3&4 refactor two function, make them more readable and maintainable.
+> #5&6 fix unsuitable type of gro enable field both for PF & VF.
+> #7-#11 removes some unused fields, macro and redundant definitions.
+> #12 adds more debug info for parsing speed fails.
 
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
----
- drivers/clk/ingenic/tcu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/clk/ingenic/tcu.c b/drivers/clk/ingenic/tcu.c
-index 153a954b0d2f..9382dc3aa27e 100644
---- a/drivers/clk/ingenic/tcu.c
-+++ b/drivers/clk/ingenic/tcu.c
-@@ -323,7 +323,7 @@ static const struct ingenic_soc_info x1000_soc_info = {
- 	.has_tcu_clk = false,
- };
- 
--static const struct of_device_id ingenic_tcu_of_match[] __initconst = {
-+static const struct of_device_id __maybe_unused ingenic_tcu_of_match[] __initconst = {
- 	{ .compatible = "ingenic,jz4740-tcu", .data = &jz4740_soc_info, },
- 	{ .compatible = "ingenic,jz4725b-tcu", .data = &jz4725b_soc_info, },
- 	{ .compatible = "ingenic,jz4770-tcu", .data = &jz4770_soc_info, },
--- 
-Sent by a computer, using git, on the internet
-
+Series applied, thanks.
