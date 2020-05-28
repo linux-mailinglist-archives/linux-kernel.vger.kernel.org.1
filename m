@@ -2,139 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 419D41E63B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A25581E63CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391102AbgE1OWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 10:22:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391035AbgE1OWL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 10:22:11 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100D2C05BD1E;
-        Thu, 28 May 2020 07:22:11 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id n15so3166621pjt.4;
-        Thu, 28 May 2020 07:22:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=wWwF/bnn9ZcbJfYK+03lCeXiM0oqQHMOv1ojVW5AqE4=;
-        b=t8tJG5mvH1xzHtWy9lfolS8Z5SK+IeWq2bqqiIG8Uc9CJCBKzXghkXX8/p4F5WEHDV
-         PlHaJz7KxOcxKPrJvCSdFRqhx9pImpYNt6lYdpOuwTzrF0iOfTDJzDzgITmRwFhFoeOg
-         VtnQLhWm8iPr+UEc64Bdw6tTVfN04K/uAjk3Wdrf79rUiODGo1q+6mIl7xfPEPngc7RP
-         3/WxyUHz7rjkK+v937kOWyYXQzqFPYvddtoc8W577qoE5TEZd5hNSFu+45O3hesI/JUO
-         1I6toFDX3x3RytZqiPQSc9rfPHWKdSFAeMti4faxVlH1LwOLaTUOQ7KlTEaoWSjwF7Ou
-         6Zng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=wWwF/bnn9ZcbJfYK+03lCeXiM0oqQHMOv1ojVW5AqE4=;
-        b=oSZjDTuT19/UNXvHvjzDao7dnNT4tqI5mEbpJnK9qLmwrMgzTjeliqfB9hPb20qPVA
-         nZrtEa7CT62ufkmRGLGCj/nV6x0kaJ1wxQJC+qfiE8Kfu1XWfbtS1mtQ0odSmlkJOa9I
-         EA2PxlKJ3DLw3D7887FxXtpj7q/hlas48nUnIU/x5SPsERtcxfTj2lSJcgsnNlWqCECg
-         tw3Z/VK2kBZmGytg99zQ3IF1XMt9FxRqLRdzzzCAvKdUqx1/2JkDmFVxiuZ/f8SyxB5O
-         wB2PwV6B09jw49U9VpQCzM2hF2+phJxDcgmB+24MWdl5IlLYkx8Otywt1a93qZFhpiA8
-         EDxg==
-X-Gm-Message-State: AOAM532sZAfF9nneqBtZLfZjR3rAoKIk7jgXumPkESvK73tl8cDGWcYg
-        L0ZoTrix+1Ekua+N6/BZr/O36/lJ
-X-Google-Smtp-Source: ABdhPJzdi2KceMqeO7E/63+tTlQhot38qwIjBd3zpxPWOZm2KCHm3nr1Tu8bVrtUl2/OVu534jXuHw==
-X-Received: by 2002:a17:902:b289:: with SMTP id u9mr3803290plr.138.1590675730628;
-        Thu, 28 May 2020 07:22:10 -0700 (PDT)
-Received: from aw-bldr-10.qualcomm.com (i-global254.qualcomm.com. [199.106.103.254])
-        by smtp.gmail.com with ESMTPSA id w4sm2188394pfq.57.2020.05.28.07.22.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 07:22:10 -0700 (PDT)
-From:   Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-To:     sboyd@kernel.org, robh+dt@kernel.org, mturquette@baylibre.com
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Subject: [PATCH] clk: qcom: Add missing msm8998 ufs_unipro_core_clk_src
-Date:   Thu, 28 May 2020 07:22:05 -0700
-Message-Id: <20200528142205.44003-1-jeffrey.l.hugo@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S2391140AbgE1OXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 10:23:33 -0400
+Received: from mga17.intel.com ([192.55.52.151]:16004 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391124AbgE1OXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 10:23:20 -0400
+IronPort-SDR: lxxeuY1xtGBc8ReuYBabQ3YbmTCLgKOBZVaZBGat8znseOXQbEf8t8xzcrkTXY/ihdAGvjqkkk
+ LmyFF2JpMlsA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 07:22:21 -0700
+IronPort-SDR: gNo5fESEi88ICadxnRas20uQR259e56xhdit7Lv5R8UYFfHWazi64BmuzHavftCD2mQZeNAS9d
+ d118Lf7jKUyg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,444,1583222400"; 
+   d="scan'208";a="267231578"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003.jf.intel.com with ESMTP; 28 May 2020 07:22:18 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jeJQL-009RLS-03; Thu, 28 May 2020 17:22:21 +0300
+Date:   Thu, 28 May 2020 17:22:20 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 04/10] dmaengine: Introduce max SG list entries
+ capability
+Message-ID: <20200528142220.GR1634618@smile.fi.intel.com>
+References: <20200526225022.20405-1-Sergey.Semin@baikalelectronics.ru>
+ <20200526225022.20405-5-Sergey.Semin@baikalelectronics.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200526225022.20405-5-Sergey.Semin@baikalelectronics.ru>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ufs_unipro_core_clk_src is required to allow UFS to clock scale for power
-savings.
+On Wed, May 27, 2020 at 01:50:15AM +0300, Serge Semin wrote:
+> Some devices may lack the support of the hardware accelerated SG list
+> entries automatic walking through and execution. In this case a burden of
+> the SG list traversal and DMA engine re-initialization lies on the
+> DMA engine driver (normally implemented by using a DMA transfer completion
+> IRQ to recharge the DMA device with a next SG list entry). But such
+> solution may not be suitable for some DMA consumers. In particular SPI
+> devices need both Tx and Rx DMA channels work synchronously in order
+> to avoid the Rx FIFO overflow. In case if Rx DMA channel is paused for
+> some time while the Tx DMA channel works implicitly pulling data into the
+> Rx FIFO, the later will be eventually overflown, which will cause the data
+> loss. So if SG list entries aren't automatically fetched by the DMA
+> engine, but are one-by-one manually selected for execution in the
+> ISRs/deferred work/etc., such problem will eventually happen due to the
+> non-deterministic latencies of the service execution.
+> 
+> In order to let the DMA consumer know about the DMA device capabilities
+> regarding the hardware accelerated SG list traversal we introduce the
+> max_sg_list capability. It is supposed to be initialized by the DMA engine
+> driver with 0 if there is no limitation for the number of SG entries
+> atomically executed and with non-zero value if there is such constraints,
+> so the upper limit is determined by the number set to the property.
 
-Fixes: b5f5f525c547 ("clk: qcom: Add MSM8998 Global Clock Control (GCC) driver")
-Signed-off-by: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
----
- drivers/clk/qcom/gcc-msm8998.c               | 27 ++++++++++++++++++++
- include/dt-bindings/clock/qcom,gcc-msm8998.h |  1 +
- 2 files changed, 28 insertions(+)
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-diff --git a/drivers/clk/qcom/gcc-msm8998.c b/drivers/clk/qcom/gcc-msm8998.c
-index df1d7056436c..9d7016bcd680 100644
---- a/drivers/clk/qcom/gcc-msm8998.c
-+++ b/drivers/clk/qcom/gcc-msm8998.c
-@@ -1110,6 +1110,27 @@ static struct clk_rcg2 ufs_axi_clk_src = {
- 	},
- };
- 
-+static const struct freq_tbl ftbl_ufs_unipro_core_clk_src[] = {
-+	F(37500000, P_GPLL0_OUT_MAIN, 16, 0, 0),
-+	F(75000000, P_GPLL0_OUT_MAIN, 8, 0, 0),
-+	F(150000000, P_GPLL0_OUT_MAIN, 4, 0, 0),
-+	{ }
-+};
-+
-+static struct clk_rcg2 ufs_unipro_core_clk_src = {
-+	.cmd_rcgr = 0x76028,
-+	.mnd_width = 8,
-+	.hid_width = 5,
-+	.parent_map = gcc_parent_map_0,
-+	.freq_tbl = ftbl_ufs_unipro_core_clk_src,
-+	.clkr.hw.init = &(struct clk_init_data){
-+		.name = "ufs_unipro_core_clk_src",
-+		.parent_names = gcc_parent_names_0,
-+		.num_parents = 4,
-+		.ops = &clk_rcg2_ops,
-+	},
-+};
-+
- static const struct freq_tbl ftbl_usb30_master_clk_src[] = {
- 	F(19200000, P_XO, 1, 0, 0),
- 	F(60000000, P_GPLL0_OUT_MAIN, 10, 0, 0),
-@@ -2549,6 +2570,11 @@ static struct clk_branch gcc_ufs_unipro_core_clk = {
- 		.enable_mask = BIT(0),
- 		.hw.init = &(struct clk_init_data){
- 			.name = "gcc_ufs_unipro_core_clk",
-+			.parent_names = (const char *[]){
-+				"ufs_unipro_core_clk_src",
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
- 			.ops = &clk_branch2_ops,
- 		},
- 	},
-@@ -2904,6 +2930,7 @@ static struct clk_regmap *gcc_msm8998_clocks[] = {
- 	[SDCC4_APPS_CLK_SRC] = &sdcc4_apps_clk_src.clkr,
- 	[TSIF_REF_CLK_SRC] = &tsif_ref_clk_src.clkr,
- 	[UFS_AXI_CLK_SRC] = &ufs_axi_clk_src.clkr,
-+	[UFS_UNIPRO_CORE_CLK_SRC] = &ufs_unipro_core_clk_src.clkr,
- 	[USB30_MASTER_CLK_SRC] = &usb30_master_clk_src.clkr,
- 	[USB30_MOCK_UTMI_CLK_SRC] = &usb30_mock_utmi_clk_src.clkr,
- 	[USB3_PHY_AUX_CLK_SRC] = &usb3_phy_aux_clk_src.clkr,
-diff --git a/include/dt-bindings/clock/qcom,gcc-msm8998.h b/include/dt-bindings/clock/qcom,gcc-msm8998.h
-index 63e02dc32a0b..6a73a174f049 100644
---- a/include/dt-bindings/clock/qcom,gcc-msm8998.h
-+++ b/include/dt-bindings/clock/qcom,gcc-msm8998.h
-@@ -183,6 +183,7 @@
- #define GCC_MSS_SNOC_AXI_CLK					174
- #define GCC_MSS_MNOC_BIMC_AXI_CLK				175
- #define GCC_BIMC_GFX_CLK					176
-+#define UFS_UNIPRO_CORE_CLK_SRC					177
- 
- #define PCIE_0_GDSC						0
- #define UFS_GDSC						1
+But see below.
+
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: linux-mips@vger.kernel.org
+> Cc: devicetree@vger.kernel.org
+> 
+> ---
+> 
+> Changelog v3:
+> - This is a new patch created as a result of the discussion with Vinud and
+>   Andy in the framework of DW DMA burst and LLP capabilities.
+> ---
+>  drivers/dma/dmaengine.c   | 1 +
+>  include/linux/dmaengine.h | 8 ++++++++
+>  2 files changed, 9 insertions(+)
+> 
+> diff --git a/drivers/dma/dmaengine.c b/drivers/dma/dmaengine.c
+> index b332ffe52780..ad56ad58932c 100644
+> --- a/drivers/dma/dmaengine.c
+> +++ b/drivers/dma/dmaengine.c
+> @@ -592,6 +592,7 @@ int dma_get_slave_caps(struct dma_chan *chan, struct dma_slave_caps *caps)
+>  	caps->directions = device->directions;
+>  	caps->min_burst = device->min_burst;
+>  	caps->max_burst = device->max_burst;
+> +	caps->max_sg_nents = device->max_sg_nents;
+>  	caps->residue_granularity = device->residue_granularity;
+>  	caps->descriptor_reuse = device->descriptor_reuse;
+>  	caps->cmd_pause = !!device->device_pause;
+> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+> index 0c7403b27133..6801200c76b6 100644
+> --- a/include/linux/dmaengine.h
+> +++ b/include/linux/dmaengine.h
+> @@ -467,6 +467,9 @@ enum dma_residue_granularity {
+>   *	should be checked by controller as well
+>   * @min_burst: min burst capability per-transfer
+>   * @max_burst: max burst capability per-transfer
+> + * @max_sg_nents: max number of SG list entries executed in a single atomic
+> + *	DMA tansaction with no intermediate IRQ for reinitialization. Zero
+> + *	value means unlimited number if entries.
+
+if -> of ?
+
+>   * @cmd_pause: true, if pause is supported (i.e. for reading residue or
+>   *	       for resume later)
+>   * @cmd_resume: true, if resume is supported
+> @@ -481,6 +484,7 @@ struct dma_slave_caps {
+>  	u32 directions;
+>  	u32 min_burst;
+>  	u32 max_burst;
+> +	u32 max_sg_nents;
+>  	bool cmd_pause;
+>  	bool cmd_resume;
+>  	bool cmd_terminate;
+> @@ -773,6 +777,9 @@ struct dma_filter {
+>   *	should be checked by controller as well
+>   * @min_burst: min burst capability per-transfer
+>   * @max_burst: max burst capability per-transfer
+> + * @max_sg_nents: max number of SG list entries executed in a single atomic
+> + *	DMA tansaction with no intermediate IRQ for reinitialization. Zero
+> + *	value means unlimited number if entries.
+
+Ditto.
+
+>   * @residue_granularity: granularity of the transfer residue reported
+>   *	by tx_status
+>   * @device_alloc_chan_resources: allocate resources and return the
+> @@ -844,6 +851,7 @@ struct dma_device {
+>  	u32 directions;
+>  	u32 min_burst;
+>  	u32 max_burst;
+> +	u32 max_sg_nents;
+>  	bool descriptor_reuse;
+>  	enum dma_residue_granularity residue_granularity;
+>  
+> -- 
+> 2.26.2
+> 
+
 -- 
-2.17.1
+With Best Regards,
+Andy Shevchenko
+
 
