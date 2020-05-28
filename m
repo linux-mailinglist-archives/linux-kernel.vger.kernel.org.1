@@ -2,74 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93EA1E6FE9
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 01:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41BAD1E7003
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 01:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437451AbgE1XD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 19:03:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48026 "EHLO mail.kernel.org"
+        id S2391544AbgE1XGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 19:06:06 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:56113 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437385AbgE1XDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 19:03:15 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2391530AbgE1XGB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 19:06:01 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590707161; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=OFnRFdGdwOdlT6++yGr8Uhb6YcmrXqckJ/J0OHf9bY4=; b=vVcmRy+dBPvLM/EWgflaV0WP6afbEG7XtLA4+kWlkr6T2mLbYe1ZFZJngXK0Sha9kgks4kG7
+ uStevzPn/u+WxqKrz6Cn5R56MKThMWpTySXU/fFNry1Z6gpDLpsbtSfEYBAL5IZ5/OCxlFpT
+ hJMqQGAFIMnCBhs0DPECjrwCnOo=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5ed043d150867324810c4e4c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 May 2020 23:05:53
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 261DEC433C6; Thu, 28 May 2020 23:05:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from clew-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3206B207F9;
-        Thu, 28 May 2020 23:03:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590706995;
-        bh=AwQh/Z5dE3PvNZvMfXgCYlntTVYdDkWce9DobLD86rE=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=KC0TwjgabgvXc4Y7ZE4f+fdTNNSpjXdSnNiU52VALuT/cB4nDEVYdbAS3g6Ae9iQ1
-         FxeIIzDgFsXqBc48e63Rm+XAGmMqhLIHl0F/7oRd2SJ6sfE8RqClhmsB+px2OMajbl
-         wpqzhX6rLTgYGH2lSMPz6Bkz5qeynkjSjUDx5nLM=
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1j8shbkhsq.fsf@starbuckisacylon.baylibre.com>
-References: <20200519170440.294601-1-jbrunet@baylibre.com> <CAFBinCBXTwKz81bQK3U1bv7vGiryhShijqh2hqaypPvLopvwNA@mail.gmail.com> <1j8shbkhsq.fsf@starbuckisacylon.baylibre.com>
-Subject: Re: [PATCH] clk: add api to get clk consummer from clk_hw
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Thu, 28 May 2020 16:03:14 -0700
-Message-ID: <159070699457.69627.14852370592791335742@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+        (Authenticated sender: clew)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4D20DC433C9;
+        Thu, 28 May 2020 23:05:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4D20DC433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=clew@codeaurora.org
+From:   Chris Lew <clew@codeaurora.org>
+To:     davem@davemloft.net, bjorn.andersson@linaro.org
+Cc:     manivannan.sadhasivam@linaro.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        clew@codeaurora.org
+Subject: [PATCH] net: qrtr: Allocate workqueue before kernel_bind
+Date:   Thu, 28 May 2020 16:05:26 -0700
+Message-Id: <1590707126-16957-1-git-send-email-clew@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jerome Brunet (2020-05-28 11:58:45)
->=20
-> On Wed 27 May 2020 at 22:07, Martin Blumenstingl <martin.blumenstingl@goo=
-glemail.com> wrote:
->=20
-> > Hi Jerome,
-> >
-> > On Tue, May 19, 2020 at 7:09 PM Jerome Brunet <jbrunet@baylibre.com> wr=
-ote:
-> > [...]
-> >> + * Calls to this function must be balanced with calls clk_put()
-> >> + */
-> >> +struct clk *clk_hw_get_clk(struct clk_hw *hw)
-> > I haven't looked at it myself yet, but would it be hard to have a
-> > devm_ variant of this function as well?
->=20
-> Seems easy enough.
-> Stephen is this OK with you ?
->=20
-> I'm just wondering if this devm_ function should use the device pointer
-> embedded in the clk_hw structure or have it as an argument ?
->=20
-> The 1st option seems simpler but I'm not sure it is correct.
->=20
-> Thoughts ?
->=20
+A null pointer dereference in qrtr_ns_data_ready() is seen if a client
+opens a qrtr socket before qrtr_ns_init() can bind to the control port.
+When the control port is bound, the ENETRESET error will be broadcasted
+and clients will close their sockets. This results in DEL_CLIENT
+packets being sent to the ns and qrtr_ns_data_ready() being called
+without the workqueue being allocated.
 
-devm API sounds OK to me. For now we can use the one embedded in the
-clk_hw structure and if we have to we can replace it with the one that
-the caller passes in. Hopefully we never need to do that because then it
-means we have drivers passing around clk_hw pointers instead of having
-the caller use proper clk_get() style APIs.
+Allocate the workqueue before setting sk_data_ready and binding to the
+control port. This ensures that the work and workqueue structs are
+allocated and initialized before qrtr_ns_data_ready can be called.
+
+Fixes: 0c2204a4ad71 ("net: qrtr: Migrate nameservice to kernel from userspace")
+Signed-off-by: Chris Lew <clew@codeaurora.org>
+---
+ net/qrtr/ns.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/net/qrtr/ns.c b/net/qrtr/ns.c
+index e7d0fe3f4330..c5b3202a14ca 100644
+--- a/net/qrtr/ns.c
++++ b/net/qrtr/ns.c
+@@ -712,6 +712,10 @@ void qrtr_ns_init(void)
+ 		goto err_sock;
+ 	}
+ 
++	qrtr_ns.workqueue = alloc_workqueue("qrtr_ns_handler", WQ_UNBOUND, 1);
++	if (!qrtr_ns.workqueue)
++		goto err_sock;
++
+ 	qrtr_ns.sock->sk->sk_data_ready = qrtr_ns_data_ready;
+ 
+ 	sq.sq_port = QRTR_PORT_CTRL;
+@@ -720,17 +724,13 @@ void qrtr_ns_init(void)
+ 	ret = kernel_bind(qrtr_ns.sock, (struct sockaddr *)&sq, sizeof(sq));
+ 	if (ret < 0) {
+ 		pr_err("failed to bind to socket\n");
+-		goto err_sock;
++		goto err_wq;
+ 	}
+ 
+ 	qrtr_ns.bcast_sq.sq_family = AF_QIPCRTR;
+ 	qrtr_ns.bcast_sq.sq_node = QRTR_NODE_BCAST;
+ 	qrtr_ns.bcast_sq.sq_port = QRTR_PORT_CTRL;
+ 
+-	qrtr_ns.workqueue = alloc_workqueue("qrtr_ns_handler", WQ_UNBOUND, 1);
+-	if (!qrtr_ns.workqueue)
+-		goto err_sock;
+-
+ 	ret = say_hello(&qrtr_ns.bcast_sq);
+ 	if (ret < 0)
+ 		goto err_wq;
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
