@@ -2,188 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04071E54C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 05:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0941E54C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 05:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726993AbgE1DnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 23:43:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54712 "EHLO
+        id S1727030AbgE1DrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 23:47:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726530AbgE1DnA (ORCPT
+        with ESMTP id S1726907AbgE1DrA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 23:43:00 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2820AC05BD1E
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 20:43:00 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id l15so15009459vsr.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 20:43:00 -0700 (PDT)
+        Wed, 27 May 2020 23:47:00 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779C2C08C5C2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 20:47:00 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id a137so236571oii.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 20:47:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bPaEtIz9pymnQ3zlLT7ky3GdzrpI5LZJGnrujJgXsc0=;
-        b=c9KdapEUJSPKNZeQyNnqiFrr6KubgXJeNvxUNO3s2hHeydiVxTVWyJmV7sGy63xdHL
-         5u8E+yrHjREHQPMLEuL2E3UkkkAQbONyrSQsVq8l/EpwP4xCYD2wzPXrZia+25uAnH0U
-         iBmmbZYYjcBr0vV5SVG54wPyyE8aX9epXx750=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=2qx91aVPuFO0vUiP0/I7F3TMnsxZODsCo0wW/nZA/Ek=;
+        b=PL6zETkbGU9mqzrGsocE1HBzwqKl3IMV7yV8wFZbGm4wHOwRBD8OMMG+y5JKGvCgPi
+         vm5n3+sf1eGzsQmqX4L8++JRmCX3DzLApuWLh2lFuHx1IPNt0zVceXBi8JMZm08yMjJi
+         dgTLtqCBs6olHY2rqJsuK9NL5GyMjlA9kP/Cz6nR6Si2xwGFFoE603kc/Dr53G3rQp6S
+         gFBb+PddTEBGiaWOuBvRGs40Im9zVq8VTNmoIb/MzDf19j1pLiqnHKik2BuMsIkBrRbh
+         TYnm6OVvmQUcyWzw/IOjcAS7zNs0Q98eBrYT94efLyjDduG9AxjlXGJtnrsATHUpOImZ
+         HIag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bPaEtIz9pymnQ3zlLT7ky3GdzrpI5LZJGnrujJgXsc0=;
-        b=A33mPi4/ZfD1AsnbxhYlnRU9uh7EheweNS1l3oF2Z3KajkFkFoscdoz8ZCRGj15fz/
-         IbypxCywpHSOwhjChoBWTHIkQ4EAPcqIJMpNNCRkkA7g8X/gS1QZQN9fsgB5Ntjc8Cb1
-         Um6RBDPEIz3His7ofAFwS2k8LJdGW+b4/oC0w3KiZ1Izd4d59tHCIAuGj7yBiGQFyDEt
-         tkSEHGsPZtyL6ZPzjms5TaPmF72zZ0/sm2Ow72npRlwneJjpkCKtQSE7Do1rln43aTfG
-         nKERKqQhpYPyJFR9lF+kE1GQP9nyAsRbjWfHvDsW/jShFTxzp6hZ7QALEdwIv1w9cRWp
-         gQfg==
-X-Gm-Message-State: AOAM533yfQiJwgX/UXDMXmpG+AV/KuDuRUPHbeWOwd5wkIyZ/dgDSqYB
-        opftoJ1RIiGL25Szf1rTL5Q8cQM8wWJbXFOQZQ4UOA==
-X-Google-Smtp-Source: ABdhPJyeD7CvriJPtSeRzw8WUSVDYFhVUzo6FlAFfBfHtHPhZb+maNEaAfevvGRTkmo+hfxiYZ5Kvr4W1jIDx7B+XcA=
-X-Received: by 2002:a67:8d48:: with SMTP id p69mr617029vsd.86.1590637379005;
- Wed, 27 May 2020 20:42:59 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=2qx91aVPuFO0vUiP0/I7F3TMnsxZODsCo0wW/nZA/Ek=;
+        b=pXDhAE/llim+ESsa+2sIG3PkdQ9Zz9B2lepsZMFI1/GlHkVnFBfNFj+tyPVmfdpJ7s
+         zQw8ueqqV54FyBD5dCWTxSKg2ktK4gV1LoMTH+Q1m+joPpx5kyLmjE2/J/Q3eS0cYb6Q
+         9050qAZssRHN0DgMJquiEeWRWr6mx8Q68LGiA3X95L0s5el4+H+LXeXp/lZZRM8MdGUl
+         zhyzguU7nUFsBzcJQBzqRY+yGF6u9zAw/xpTt0lGc4cIui09WyP53fDp2wAJQ+E/a8Nx
+         wMCfxRPENTNdHF9D+nNr1vRgo6tBFHCtPrgnvNO74m2AS1eQy/RmNPS9bqYTRxOeW7Qw
+         EncQ==
+X-Gm-Message-State: AOAM530VISMGCxLQ27pWfitmiZ+Yb1JQWtmKj9Otd0APbMSIUqLsAV5w
+        V2aIEjpYrijxHF8hUI0+VFDEmQ==
+X-Google-Smtp-Source: ABdhPJyOlEQNd0DWG0KMQ3iclWevL0B8TV/DHISOzSWHCezO7ksCSIPPniMHO6dFdL8N85bmZfl1CA==
+X-Received: by 2002:aca:d856:: with SMTP id p83mr958723oig.38.1590637619384;
+        Wed, 27 May 2020 20:46:59 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id v10sm1036334oov.15.2020.05.27.20.46.55
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Wed, 27 May 2020 20:46:58 -0700 (PDT)
+Date:   Wed, 27 May 2020 20:46:22 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Jerome Glisse <jglisse@redhat.com>
+cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Huang Ying <ying.huang@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Steven Capper <steve.capper@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Rabin Vincent <rabinv@axis.com>,
+        linux-arm-kernel@lists.infradead.org, rmk+kernel@arm.linux.org.uk,
+        Guo Ren <guoren@kernel.org>, linux-mips@vger.kernel.org,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        James Hogan <jhogan@kernel.org>,
+        Ley Foon Tan <lftan@altera.com>,
+        nios2-dev@lists.rocketboards.org, linux-parisc@vger.kernel.org,
+        Helge Deller <deller@gmx.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org, Guan Xuetao <gxt@pku.edu.cn>,
+        linux-xtensa@linux-xtensa.org, Max Filippov <jcmvbkbc@gmail.com>,
+        Chris Zankel <chris@zankel.net>
+Subject: Re: Cache flush issue with page_mapping_file() and swap back shmem
+ page ?
+In-Reply-To: <20200528002033.GB1992500@redhat.com>
+Message-ID: <alpine.LSU.2.11.2005272021220.3857@eggly.anvils>
+References: <20200528002033.GB1992500@redhat.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-References: <1590550627-24618-1-git-send-email-zijuhu@codeaurora.org>
-In-Reply-To: <1590550627-24618-1-git-send-email-zijuhu@codeaurora.org>
-From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Date:   Wed, 27 May 2020 20:42:46 -0700
-Message-ID: <CANFp7mXMiYKY-33xZX2MaHd5RyicbRb2fZHo8mk4-VM_Jf47UQ@mail.gmail.com>
-Subject: Re: [PATCH v2] bluetooth: hci_qca: Fix QCA6390 memdump failure
-To:     Zijun Hu <zijuhu@codeaurora.org>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bluez mailing list <linux-bluetooth@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
-        Matthias Kaehlcke <mka@chromium.org>, rjliao@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zijun,
+Hi Jerome,
 
-On Tue, May 26, 2020 at 8:37 PM Zijun Hu <zijuhu@codeaurora.org> wrote:
->
-> QCA6390 memdump VSE sometimes come to bluetooth driver
-> with wrong sequence number as illustrated as follows:
-> frame # in DEC: frame data in HEX
-> 1396: ff fd 01 08 74 05 00 37 8f 14
-> 1397: ff fd 01 08 75 05 00 ff bf 38
-> 1414: ff fd 01 08 86 05 00 fb 5e 4b
-> 1399: ff fd 01 08 77 05 00 f3 44 0a
-> 1400: ff fd 01 08 78 05 00 ca f7 41
-> it is mistook for controller missing packets, so results
-> in page fault after overwriting memdump buffer allocated.
->
-> it is fixed by ignoring QCA6390 sequence number error
-> and checking buffer space before writing.
->
-> Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
+On Wed, 27 May 2020, Jerome Glisse wrote:
+> So any arch code which uses page_mapping_file() might get the wrong
+> answer, this function will return NULL for a swap backed page which
+> can be a shmem pages. But shmem pages can still be shared among
+> multiple process (and possibly at different virtual addresses if
+> mremap was use).
+> 
+> Attached is a patch that changes page_mapping_file() to return the
+> shmem mapping for swap backed shmem page. I have not tested it (no
+> way for me to test all those architecture) and i spotted this while
+> working on something else. So i hope someone can take a closer look.
+
+I'm certainly no expert on flush_dcache_page() and friends, but I'd
+be very surprised if such a problem exists, yet has gone unnoticed
+for so long.  page_mapping_file() itself is fairly new, added when
+a risk of crashing on a race with swapoff came in: but the previous
+use of page_mapping() would have suffered equally if there were such
+a cache flushinhg problem here.
+
+And I'm afraid your patch won't do anything to help if there is a
+problem: very soon after shmem calls add_to_swap_cache(), it calls
+shmem_delete_from_page_cache(), which sets page->mapping to NULL.
+
+But I can assure you that a shmem page (unlike an anon page) is never
+put into swap cache while it is mapped into userspace, and never
+mapped into userspace while it is still in swap cache: does that help?
+
+Hugh
+
+> This might be a shmem page that is in a sense a file that
+> can be mapped multiple times in different processes at
+> possibly different virtual addresses (fork + mremap). So
+> return the shmem mapping that will allow any arch code to
+> find all mappings of the page.
+> 
+> Note that even if page is not anonymous then the page might
+> have a NULL page->mapping field if it is being truncated,
+> but then it is fine as each pte poiting to the page will be
+> remove and cache flushing should be handled properly by that
+> part of the code.
+> 
+> Signed-off-by: Jerome Glisse <jglisse@redhat.com>
+> Cc: "Huang, Ying" <ying.huang@intel.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Mel Gorman <mgorman@techsingularity.net>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
 > ---
->  drivers/bluetooth/hci_qca.c | 45 ++++++++++++++++++++++++++++++++++++++-------
->  1 file changed, 38 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-> index e4a6823..388fe01b 100644
-> --- a/drivers/bluetooth/hci_qca.c
-> +++ b/drivers/bluetooth/hci_qca.c
-> @@ -114,6 +114,7 @@ struct qca_memdump_data {
->         char *memdump_buf_tail;
->         u32 current_seq_no;
->         u32 received_dump;
-> +       u32 ram_dump_size;
->  };
->
->  struct qca_memdump_event_hdr {
-> @@ -976,6 +977,8 @@ static void qca_controller_memdump(struct work_struct *work)
->         char nullBuff[QCA_DUMP_PACKET_SIZE] = { 0 };
->         u16 seq_no;
->         u32 dump_size;
-> +       u32 rx_size;
-> +       enum qca_btsoc_type soc_type = qca_soc_type(hu);
->
->         while ((skb = skb_dequeue(&qca->rx_memdump_q))) {
->
-> @@ -1029,6 +1032,7 @@ static void qca_controller_memdump(struct work_struct *work)
->
->                         skb_pull(skb, sizeof(dump_size));
->                         memdump_buf = vmalloc(dump_size);
-> +                       qca_memdump->ram_dump_size = dump_size;
->                         qca_memdump->memdump_buf_head = memdump_buf;
->                         qca_memdump->memdump_buf_tail = memdump_buf;
->                 }
-> @@ -1052,25 +1056,52 @@ static void qca_controller_memdump(struct work_struct *work)
->                  * packets in the buffer.
->                  */
->                 while ((seq_no > qca_memdump->current_seq_no + 1) &&
-> +                       (soc_type != QCA_QCA6390) &&
-
-This probably shouldn't be SOC specific.
-
->                         seq_no != QCA_LAST_SEQUENCE_NUM) {
->                         bt_dev_err(hu->hdev, "QCA controller missed packet:%d",
->                                    qca_memdump->current_seq_no);
-> +                       rx_size = qca_memdump->received_dump;
-> +                       rx_size += QCA_DUMP_PACKET_SIZE;
-> +                       if (rx_size > qca_memdump->ram_dump_size) {
-> +                               bt_dev_err(hu->hdev,
-> +                                               "QCA memdump received %d, no space for missed packet",
-> +                                               qca_memdump->received_dump);
-> +                               break;
-> +                       }
->                         memcpy(memdump_buf, nullBuff, QCA_DUMP_PACKET_SIZE);
->                         memdump_buf = memdump_buf + QCA_DUMP_PACKET_SIZE;
->                         qca_memdump->received_dump += QCA_DUMP_PACKET_SIZE;
->                         qca_memdump->current_seq_no++;
->                 }
-
-You can replace this loop with a memset(memdump_buf, 0, (seq_no -
-qca_memdump->current_seq_no) * QCA_DUMP_PACKET_SIZE). This simplifies
-the ram_dump_size check as well because it won't zero fill until the
-end anymore (meaning a single bad seq_no doesn't make the rest of the
-dump incorrect).
-
->
-> -               memcpy(memdump_buf, (unsigned char *) skb->data, skb->len);
-> -               memdump_buf = memdump_buf + skb->len;
-> -               qca_memdump->memdump_buf_tail = memdump_buf;
-> -               qca_memdump->current_seq_no = seq_no + 1;
-> -               qca_memdump->received_dump += skb->len;
-> +               rx_size = qca_memdump->received_dump + skb->len;
-> +               if (rx_size <= qca_memdump->ram_dump_size) {
-> +                       if ((seq_no != QCA_LAST_SEQUENCE_NUM) &&
-> +                                       (seq_no != qca_memdump->current_seq_no))
-> +                               bt_dev_err(hu->hdev,
-> +                                               "QCA memdump unexpected packet %d",
-> +                                               seq_no);
-> +                       bt_dev_dbg(hu->hdev,
-> +                                       "QCA memdump packet %d with length %d",
-> +                                       seq_no, skb->len);
-> +                       memcpy(memdump_buf, (unsigned char *)skb->data,
-> +                                       skb->len);
-> +                       memdump_buf = memdump_buf + skb->len;
-> +                       qca_memdump->memdump_buf_tail = memdump_buf;
-> +                       qca_memdump->current_seq_no = seq_no + 1;
-> +                       qca_memdump->received_dump += skb->len;
-> +               } else {
-> +                       bt_dev_err(hu->hdev,
-> +                                       "QCA memdump received %d, no space for packet %d",
-> +                                       qca_memdump->received_dump, seq_no);
-> +               }
->                 qca->qca_memdump = qca_memdump;
->                 kfree_skb(skb);
->                 if (seq_no == QCA_LAST_SEQUENCE_NUM) {
-> -                       bt_dev_info(hu->hdev, "QCA writing crash dump of size %d bytes",
-> -                                  qca_memdump->received_dump);
-> +                       bt_dev_info(hu->hdev,
-> +                                       "QCA memdump Done, received %d, total %d",
-> +                                       qca_memdump->received_dump,
-> +                                       qca_memdump->ram_dump_size);
->                         memdump_buf = qca_memdump->memdump_buf_head;
->                         dev_coredumpv(&hu->serdev->dev, memdump_buf,
->                                       qca_memdump->received_dump, GFP_KERNEL);
-> --
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
->
+>  mm/util.c | 18 +++++++++++++++++-
+>  1 file changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/util.c b/mm/util.c
+> index 988d11e6c17c..ec8739ab0cc3 100644
+> --- a/mm/util.c
+> +++ b/mm/util.c
+> @@ -685,8 +685,24 @@ EXPORT_SYMBOL(page_mapping);
+>   */
+>  struct address_space *page_mapping_file(struct page *page)
+>  {
+> -	if (unlikely(PageSwapCache(page)))
+> +	if (unlikely(PageSwapCache(page))) {
+> +		/*
+> +		 * This might be a shmem page that is in a sense a file that
+> +		 * can be mapped multiple times in different processes at
+> +		 * possibly different virtual addresses (fork + mremap). So
+> +		 * return the shmem mapping that will allow any arch code to
+> +		 * find all mappings of the page.
+> +		 *
+> +		 * Note that even if page is not anonymous then the page might
+> +		 * have a NULL page->mapping field if it is being truncated,
+> +		 * but then it is fine as each pte poiting to the page will be
+> +		 * remove and cache flushing should be handled properly by that
+> +		 * part of the code.
+> +		 */
+> +		if (!PageAnon(page))
+> +			return page->mapping;
+>  		return NULL;
+> +	}
+>  	return page_mapping(page);
+>  }
+>  
+> -- 
+> 2.26.2
