@@ -2,196 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D0B1E6ABF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 21:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73BE61E6AD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 21:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406516AbgE1TYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 15:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406348AbgE1TV1 (ORCPT
+        id S2406551AbgE1T0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 15:26:00 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:38176 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406352AbgE1TZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 15:21:27 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38773C08C5C7;
-        Thu, 28 May 2020 12:21:27 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id g5so2556877pfm.10;
-        Thu, 28 May 2020 12:21:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=EOwNR1IN+6tSpzRKC8EVCwTKESR+c+/dhEdssUNTwVU=;
-        b=BmhEN8oiwdt7ses/ggCwe2nC5jG+JmsBk1k6wD5mH/LH3tFZHc6yqkaJzKqD39rnOz
-         jdIPfZYQwt0fIhwGZDyr/LOc/nkLneaoI8yDUysKvpH0EK7mqZVQq18VdAoBLQ2etccr
-         /ek9fRbf4Ha51kF1YwCQ5/rvy4cD+N1krCKw2lsaJ5WqhOHBMvfL8Ci7bKpFkdwnrgUl
-         UTZPJc1+VxJmJO69yQG8F/x4IJewMrDNoRvncoHgRCvO/rncibQrMVEY4QhtclXsFftn
-         kPscS8LsRtKSVThXnGoJwZlJOxnIaLi7aveesRYJqpXwavFnJ2CyNCunGiXVHTsaqk0e
-         IPcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=EOwNR1IN+6tSpzRKC8EVCwTKESR+c+/dhEdssUNTwVU=;
-        b=JTPwwyGNsc0dlnCVk8gyLb/8bsHTsOFlSA0LVArYtLLop6vEX9t8bFjlFD4eK5u7Jr
-         r+rOnrsXMRm2d4yX0nxn7dH8venN8ZNjgeNHcFe2KNIze8BBshQBtfCc4mG322Dnbitd
-         sg68D0ac5keIWmg4OtbkgOpVo+xBkT7evvSh9ucmxD5U9tgN3GXNHRPHjSY3v/xM10lk
-         Qe9bBDHOQY51f/GADdhbh1Y6QQ4pHPZT8fxHVhDGDa5zaFHGaTYomIT4JBxqDw1amF31
-         6g/+0CsB8LzYu2GNZmD8Z9LlqBGPgyaI2KP+gxAeOQWCKH2CYBV7ZQM3P9hrBEmmfDlL
-         Bkow==
-X-Gm-Message-State: AOAM532IDBVYjKOtVNHLJrtYfXNHIGHGRAT5LuI99VtphUd094mPvAcH
-        4TcnKdYEEc56og70qE/eKblICSIJ
-X-Google-Smtp-Source: ABdhPJywtcGNOyCPafoSIsx60XaQRccc9364PFMH+dMdMlO1CwvlLtPzu9Qsruop2xhhzdtdsYEc8w==
-X-Received: by 2002:a63:ce0d:: with SMTP id y13mr4465577pgf.90.1590693686278;
-        Thu, 28 May 2020 12:21:26 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id h11sm5460561pjk.20.2020.05.28.12.21.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 12:21:25 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM
-        BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE...),
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        linux-gpio@vger.kernel.org (open list:PIN CONTROL SUBSYSTEM),
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS),
-        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE)
-Subject: [PATCH 4/4] pinctrl: bcm2835: Add support for wake-up interrupts
-Date:   Thu, 28 May 2020 12:21:12 -0700
-Message-Id: <20200528192112.26123-5-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200528192112.26123-1-f.fainelli@gmail.com>
-References: <20200528192112.26123-1-f.fainelli@gmail.com>
+        Thu, 28 May 2020 15:25:52 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jeOA2-0003ht-6V; Thu, 28 May 2020 13:25:50 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jeOA1-0008Pm-5i; Thu, 28 May 2020 13:25:49 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Rob Landley <rob@landley.net>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andy Lutomirski <luto@amacapital.net>
+References: <87h7wujhmz.fsf@x220.int.ebiederm.org>
+        <87sgga6ze4.fsf@x220.int.ebiederm.org>
+        <87v9l4zyla.fsf_-_@x220.int.ebiederm.org>
+        <877dx822er.fsf_-_@x220.int.ebiederm.org>
+        <87k10wysqz.fsf_-_@x220.int.ebiederm.org>
+        <87y2pcvz3b.fsf_-_@x220.int.ebiederm.org>
+        <CAHk-=wiAG4tpPoWsWSqHbyMZDnWR8RHUpbwxB9_tdAqbE59NxA@mail.gmail.com>
+Date:   Thu, 28 May 2020 14:21:57 -0500
+In-Reply-To: <CAHk-=wiAG4tpPoWsWSqHbyMZDnWR8RHUpbwxB9_tdAqbE59NxA@mail.gmail.com>
+        (Linus Torvalds's message of "Thu, 28 May 2020 12:08:02 -0700")
+Message-ID: <875zcfvp9m.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-XM-SPF: eid=1jeOA1-0008Pm-5i;;;mid=<875zcfvp9m.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/beXd4KA5c+7dsn0MqQrGKegUPWaEyJac=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
+X-Spam-Level: ****
+X-Spam-Status: No, score=4.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
+        XMSubLong,XMSubMetaSxObfu_03,XMSubMetaSx_00 autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa04 0; Body=1 Fuz1=1 Fuz2=1]
+        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
+        *  1.0 XMSubMetaSx_00 1+ Sexy Words
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: ; sa04 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ****;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 351 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 9 (2.7%), b_tie_ro: 8 (2.2%), parse: 0.83 (0.2%),
+        extract_message_metadata: 13 (3.8%), get_uri_detail_list: 0.88 (0.3%),
+        tests_pri_-1000: 24 (6.9%), tests_pri_-950: 1.21 (0.3%),
+        tests_pri_-900: 0.98 (0.3%), tests_pri_-90: 107 (30.6%), check_bayes:
+        106 (30.1%), b_tokenize: 6 (1.8%), b_tok_get_all: 6 (1.7%),
+        b_comp_prob: 1.91 (0.5%), b_tok_touch_all: 88 (25.2%), b_finish: 0.86
+        (0.2%), tests_pri_0: 182 (51.8%), check_dkim_signature: 0.53 (0.2%),
+        check_dkim_adsp: 2.4 (0.7%), poll_dns_idle: 0.55 (0.2%), tests_pri_10:
+        1.98 (0.6%), tests_pri_500: 7 (2.1%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 09/11] exec: In bprm_fill_uid only set per_clear when honoring suid or sgid
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Leverage the IRQCHIP_MASK_ON_SUSPEND flag in order to avoid having to
-specifically treat the GPIO interrupts during suspend and resume, and
-simply implement an irq_set_wake() callback that is responsible for
-enabling the parent wake-up interrupt as a wake-up interrupt.
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/pinctrl/bcm/pinctrl-bcm2835.c | 58 ++++++++++++++++++++++++++-
- 1 file changed, 57 insertions(+), 1 deletion(-)
+> On Thu, May 28, 2020 at 8:53 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>
+>> It makes no sense to set active_per_clear when the kernel decides not
+>> to honor the executables setuid or or setgid bits.  Instead set
+>> active_per_clear when the kernel actually decides to honor the suid or
+>> sgid permission bits of an executable.
+>
+> You seem to be confused about the naming yourself.
+>
+> You talk about "active_per_clear", but the code is about "per_clear". WTF?
 
-diff --git a/drivers/pinctrl/bcm/pinctrl-bcm2835.c b/drivers/pinctrl/bcm/pinctrl-bcm2835.c
-index e8ad1824c6b3..367fd8e19f92 100644
---- a/drivers/pinctrl/bcm/pinctrl-bcm2835.c
-+++ b/drivers/pinctrl/bcm/pinctrl-bcm2835.c
-@@ -19,6 +19,7 @@
- #include <linux/irq.h>
- #include <linux/irqdesc.h>
- #include <linux/init.h>
-+#include <linux/interrupt.h>
- #include <linux/of_address.h>
- #include <linux/of.h>
- #include <linux/of_irq.h>
-@@ -76,6 +77,7 @@
- struct bcm2835_pinctrl {
- 	struct device *dev;
- 	void __iomem *base;
-+	int wake_irq[BCM2835_NUM_IRQS];
- 
- 	/* note: locking assumes each bank will have its own unsigned long */
- 	unsigned long enabled_irq_map[BCM2835_NUM_BANKS];
-@@ -435,6 +437,11 @@ static void bcm2835_gpio_irq_handler(struct irq_desc *desc)
- 	chained_irq_exit(host_chip, desc);
- }
- 
-+static irqreturn_t bcm2835_gpio_wake_irq_handler(int irq, void *dev_id)
-+{
-+	return IRQ_HANDLED;
-+}
-+
- static inline void __bcm2835_gpio_irq_config(struct bcm2835_pinctrl *pc,
- 	unsigned reg, unsigned offset, bool enable)
- {
-@@ -634,6 +641,31 @@ static void bcm2835_gpio_irq_ack(struct irq_data *data)
- 	bcm2835_gpio_set_bit(pc, GPEDS0, gpio);
- }
- 
-+static int bcm2835_gpio_irq_set_wake(struct irq_data *data, unsigned int on)
-+{
-+	struct gpio_chip *chip = irq_data_get_irq_chip_data(data);
-+	struct bcm2835_pinctrl *pc = gpiochip_get_data(chip);
-+	unsigned gpio = irqd_to_hwirq(data);
-+	unsigned int irqgroup;
-+	int ret = -EINVAL;
-+
-+	if (gpio <= 27)
-+		irqgroup = 0;
-+	else if (gpio >= 28 && gpio <= 45)
-+		irqgroup = 1;
-+	else if (gpio >= 46 && gpio <= 53)
-+		irqgroup = 2;
-+	else
-+		return ret;
-+
-+	if (on)
-+		ret = enable_irq_wake(pc->wake_irq[irqgroup]);
-+	else
-+		ret = disable_irq_wake(pc->wake_irq[irqgroup]);
-+
-+	return ret;
-+}
-+
- static struct irq_chip bcm2835_gpio_irq_chip = {
- 	.name = MODULE_NAME,
- 	.irq_enable = bcm2835_gpio_irq_enable,
-@@ -642,6 +674,8 @@ static struct irq_chip bcm2835_gpio_irq_chip = {
- 	.irq_ack = bcm2835_gpio_irq_ack,
- 	.irq_mask = bcm2835_gpio_irq_disable,
- 	.irq_unmask = bcm2835_gpio_irq_enable,
-+	.irq_set_wake = bcm2835_gpio_irq_set_wake,
-+	.flags = IRQCHIP_MASK_ON_SUSPEND,
- };
- 
- static int bcm2835_pctl_get_groups_count(struct pinctrl_dev *pctldev)
-@@ -1221,8 +1255,30 @@ static int bcm2835_pinctrl_probe(struct platform_device *pdev)
- 	 * bank that was firing the IRQ and look up the per-group
- 	 * and bank data.
- 	 */
--	for (i = 0; i < BCM2835_NUM_IRQS; i++)
-+	for (i = 0; i < BCM2835_NUM_IRQS; i++) {
-+		int len;
-+		char *name;
-+
- 		girq->parents[i] = irq_of_parse_and_map(np, i);
-+		/* Skip over the all banks interrupts */
-+		pc->wake_irq[i] = irq_of_parse_and_map(np, i +
-+						       BCM2835_NUM_IRQS + 1);
-+
-+		len = strlen(dev_name(pc->dev)) + 16;
-+		name = devm_kzalloc(pc->dev, len, GFP_KERNEL);
-+		if (!name)
-+			return -ENOMEM;
-+
-+		snprintf(name, len, "%s:bank%d", dev_name(pc->dev), i);
-+
-+		/* These are optional interrupts */
-+		err = devm_request_irq(dev, pc->wake_irq[i],
-+				       bcm2835_gpio_wake_irq_handler,
-+				       IRQF_SHARED, name, pc);
-+		if (err)
-+			dev_warn(dev, "unable to request wake IRQ %d\n",
-+				 pc->wake_irq[i]);
-+	}
- 	girq->default_type = IRQ_TYPE_NONE;
- 	girq->handler = handle_level_irq;
- 
--- 
-2.17.1
+I figured out how to kill active_per_clear see (3/11) and I failed to
+update the patch description here.
+
+I think active_ is a louzy suffix but since it all goes away in patch 3
+when I remove the recomputation and the need to have two versions of the
+setting I think it is probably good enough.
+
+Eric
+
+
+
+
+
 
