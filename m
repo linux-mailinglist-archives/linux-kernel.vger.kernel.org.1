@@ -2,84 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C5A1E6467
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8551E646D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728548AbgE1OsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 10:48:05 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:56870 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728456AbgE1OsE (ORCPT
+        id S2391235AbgE1OsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 10:48:16 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40778 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728539AbgE1OsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 10:48:04 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04SElEkQ065813;
-        Thu, 28 May 2020 09:47:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1590677234;
-        bh=CwsQyU0kGD7NKy6DRPmze5/2bojdN83sfQuVVs2kAlw=;
-        h=From:To:CC:Subject:Date;
-        b=fj2mj9If70OikaVh3UgLkqEuc8IfCIg4Q1JfcGqO0Xi5Sp786sjeg7apqi3GZZDD6
-         NQDrViI4Gm2x9gNUpKOvUrtNiFS59qpcQm5G7P2fC/jaf/GgLWMP2RDHX4BVO16qsk
-         u6glrZNzpuKwO+DGg3HMVmCGefjXR3xnKPwHVCBY=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04SElEs3082844;
-        Thu, 28 May 2020 09:47:14 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 28
- May 2020 09:47:13 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 28 May 2020 09:47:13 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04SElCKp108735;
-        Thu, 28 May 2020 09:47:13 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <robh@kernel.org>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH] dt-bindings: sound: tlv320adcx140: Fix dt-binding-check issue
-Date:   Thu, 28 May 2020 09:47:11 -0500
-Message-ID: <20200528144711.18065-1-dmurphy@ti.com>
-X-Mailer: git-send-email 2.26.2
+        Thu, 28 May 2020 10:48:05 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04SEbbVa101207;
+        Thu, 28 May 2020 10:47:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=UkbfAtvEfXUxa95+1LdoiI+mLq8Rx3rpSz0ltaUwu8I=;
+ b=rveLcDkQKVDI8mst8gdty89143smgC7dB/bM4EBmyiicnMgvOG2fCJdEkVp6nZMDT6FT
+ 1WC80pBGqzyfVDCHeMuHh08lAlvYIT5PAiXNRGnkajSuZ43+asrFX3ewsU6ABn2AIrX1
+ 6uVZrwTw+itBQp/F2/JhXiKA4FwGol/Txc5bk4uBADTnPXkK9pi0aEIcwTDghir2juwk
+ kaOveRRPleyER/dZEkzkReWsKTL+x250H4W7a5cpuRFgJQM1ymjKYlhcdUWKv4UdpNhp
+ R+5KCuS9d85JFXILuXgM04MBSr/6Mu22/Mh8Rn3XGNWfVOLuL5TWgDfzf4wtpO1vBmNq hg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31a9nbcbjr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 May 2020 10:47:46 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04SEbgLj101542;
+        Thu, 28 May 2020 10:47:46 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31a9nbcbj2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 May 2020 10:47:46 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 04SEjMIb030278;
+        Thu, 28 May 2020 14:47:44 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 316uf8a43u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 May 2020 14:47:44 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04SElguG40632372
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 May 2020 14:47:42 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 49A9F4203F;
+        Thu, 28 May 2020 14:47:42 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AD6B042042;
+        Thu, 28 May 2020 14:47:39 +0000 (GMT)
+Received: from [9.163.54.87] (unknown [9.163.54.87])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 28 May 2020 14:47:39 +0000 (GMT)
+Subject: Re: [RFC PATCH v4] GCOV: profile by modules
+To:     gengcixi@gmail.com, gregkh@linuxfoundation.org, jslaby@suse.com,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com,
+        Cixi Geng <cixi.geng1@unisoc.com>
+References: <20200525100054.17700-1-gengcixi@gmail.com>
+From:   Peter Oberparleiter <oberpar@linux.ibm.com>
+Message-ID: <917da283-5f1e-3fdb-13bb-4251312dc77a@linux.ibm.com>
+Date:   Thu, 28 May 2020 16:47:38 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20200525100054.17700-1-gengcixi@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-05-28_03:2020-05-28,2020-05-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ mlxlogscore=999 spamscore=0 clxscore=1015 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 bulkscore=0 phishscore=0 priorityscore=1501
+ cotscore=-2147483648 suspectscore=1 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005280097
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix dt-binding-check issue
+On 25.05.2020 12:00, gengcixi@gmail.com wrote:
+> From: Cixi Geng <cixi.geng1@unisoc.com>
+> 
+> The CONFIG_GCOV_PROFILE_ALL will compile kernel by profiling entire
+> kernel which will lead to kernel run slower.Use GCOV_PROFILE_PREREQS
+> to control part of the kernel modules to open gcov.
 
-ti,gpi-config:0:0: 4 is greater than the maximum of 1
-ti,gpi-config:0:1: 5 is greater than the maximum of 1
-ti,gpi-config:0:2: 6 is greater than the maximum of 1
-ti,gpi-config:0:3: 7 is greater than the maximum of 1
+Maybe rephrase the commit message to make the intention more obvious:
 
-Reported-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- Documentation/devicetree/bindings/sound/tlv320adcx140.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Introduce new configuration option GCOV_PROFILE_PREREQS that can be used
+to check whether the prerequisites for enabling gcov profiling for
+specific files and directories are met.
 
-diff --git a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
-index e8a69b1c7ca9..306ac3d006dc 100644
---- a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
-+++ b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
-@@ -109,7 +109,7 @@ properties:
-       - minItems: 1
-         maxItems: 4
-         items:
--          maximum: 1
-+          maximum: 7
-         default: [0, 0, 0, 0]
- 
- required:
+> 
+> Only add SERIAL_GCOV for an example.
+> 
+> Signed-off-by: Cixi Geng <cixi.geng1@unisoc.com>
+> ---
+>  drivers/tty/serial/Kconfig  |  7 +++++++
+>  drivers/tty/serial/Makefile |  1 +
+>  kernel/gcov/Kconfig         | 14 ++++++++++++++
+>  3 files changed, 22 insertions(+)
+> 
+> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+> index adf9e80e7dc9..6df002370f18 100644
+> --- a/drivers/tty/serial/Kconfig
+> +++ b/drivers/tty/serial/Kconfig
+> @@ -1566,3 +1566,10 @@ endmenu
+>  
+>  config SERIAL_MCTRL_GPIO
+>  	tristate
+> +
+> +config SERIAL_GCOV
+> +	bool "Enable profile gcov for serial directory"
+> +	depends on GCOV_PROFILE_PREREQS
+> +	help
+> +	  The SERIAL_GCOV will add Gcov profiling flags when kernel compiles.
+> +	  Say 'Y' here if you want the gcov data for the serial directory,
+> diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
+> index d056ee6cca33..17272733db95 100644
+> --- a/drivers/tty/serial/Makefile
+> +++ b/drivers/tty/serial/Makefile
+> @@ -3,6 +3,7 @@
+>  # Makefile for the kernel serial device drivers.
+>  #
+>  
+> +GCOV_PROFILE := $(CONFIG_SERIAL_GCOV)
+>  obj-$(CONFIG_SERIAL_CORE) += serial_core.o
+>  
+>  obj-$(CONFIG_SERIAL_EARLYCON) += earlycon.o
+> diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
+> index 3941a9c48f83..ea8b514f5676 100644
+> --- a/kernel/gcov/Kconfig
+> +++ b/kernel/gcov/Kconfig
+> @@ -51,6 +51,20 @@ config GCOV_PROFILE_ALL
+>  	larger and run slower. Also be sure to exclude files from profiling
+>  	which are not linked to the kernel image to prevent linker errors.
+>  
+> +config GCOV_PROFILE_PREREQS
+> +	bool "Profile Kernel subsytem"
+> +	depends on !COMPILE_TEST
+> +	depends on GCOV_KERNEL
+> +	depends on !GCOV_PROFILE_ALL
+> +	help
+> +	  This options activates profiling for the specified kernel modules.
+> +
+> +	  When some modules need Gcov data, enable this config, then configure
+> +	  with gcov on the corresponding modules,The directories or files of
+> +	  these modules will be added profiling flags after kernel compile.
+> +
+> +	  If unsure, say N.
+
+This is not quite what I had in mind. A user still needs to manually
+select GCOV_PROFILE, then GCOV_PROFILE_PREREQS, then SERIAL_GCOV.
+
+My though was that you could provide an automatic config option that is
+invisible in the configuration dialog, and that is automatically
+selected when all prereqs for enabling GCOV in a module directory are met.
+
+Something like the following:
+
+config GCOV_PROFILE_PREREQS
+        bool
+        default y if GCOV_KERNEL && !COMPILE_TEST
+        default n
+
+There's no need to add GCOV_KERNEL_ALL here since that is about a user
+choice ("I want all code compiled with profiling") vs. this new symbol
+which is about an ability ("all prereqs for enabling profiling in
+specific directories are met).
+
+
+> +
+>  choice
+>  	prompt "Specify GCOV format"
+>  	depends on GCOV_KERNEL
+> 
+
+
 -- 
-2.26.2
-
+Peter Oberparleiter
+Linux on Z Development - IBM Germany
