@@ -2,69 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77ED71E598E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 09:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A63D61E5953
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 09:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726006AbgE1HqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 03:46:17 -0400
-Received: from elvis.franken.de ([193.175.24.41]:42141 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725779AbgE1HqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 03:46:17 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jeDF0-0000aG-00; Thu, 28 May 2020 09:46:14 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id CE484C059F; Thu, 28 May 2020 09:44:31 +0200 (CEST)
-Date:   Thu, 28 May 2020 09:44:31 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        kbuild test robot <lkp@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] MIPS: DTS: Fix build errors used with various configs
-Message-ID: <20200528074431.GA10708@alpha.franken.de>
-References: <1590631141-23904-1-git-send-email-yangtiezhu@loongson.cn>
+        id S1726712AbgE1Hos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 03:44:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbgE1Hor (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 03:44:47 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50473C05BD1E
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 00:44:46 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id g9so22376698edw.10
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 00:44:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MxtFmPxsx2QLpxqRiRjosE9zDHzIOqgaK1Ln9E8J5Wk=;
+        b=MDZ0Hyla0vij8gZtFndPn/KfM/hS0wvjYUGWft1tfhbG0pU6ZGt7atfIXQ5b7b7z/T
+         3LyJ6Eee6zMOPIvML5uvgrpCou7YURDnmhhkJU8VgAV0SyZjh2YvWhmgalnsoThWuk4a
+         8NaLsKDDHpnLPjySR/rVJsr+hByzyZDhzNFlXdc9Dx16ZTmSj8xYD4fi0NAqlrw56bzF
+         qiVDs1PfMMLBK/RIsndTpg3j71xn+LfGr28zv5+I/VOZCkIC0dyMuhuOjUmr2yLoR81p
+         ZxuQ0UL7gi3vkE3NV8h+Kt565HWKjVarPkxF1dfOtNH4fQcSj0bQCHpqQCnyK8aQ7t2E
+         3MYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=MxtFmPxsx2QLpxqRiRjosE9zDHzIOqgaK1Ln9E8J5Wk=;
+        b=Mmfg02MFrLn6QPcrGXO3VccdbbGFGWTaiiUVDfAhYEDijbRThTBSUa0/nCFA7utVyO
+         ck9ewHraCoKBwcUlMgqE88pE+n8zcxLM7aKJzY913OsC61MgJNJgSAQj/qbN1CEOodWB
+         a7adBi7E29nBVQdo3GoM4IlZ+aFeYt/Zuma1mUIIDHldy4OrYO4IqndE0Jhi+1zH/TZi
+         F9qs+Be4dLlwnmoAhrcjumNnBH94nuiXljdh+K5fRaC1DK+LQExs679Ov6vT86blKxUd
+         JZ8Ncm+L/oQ7ee4wAe2e0GOO9ZjxsI9qA+QUHxgbHNszU4Al6eS5/0RowmQZi8FlcBcw
+         sFeA==
+X-Gm-Message-State: AOAM530SENogZSRhqMBPgrpM0Tcv4AtAByfLjb4NXU+ZiohTaftXPIaw
+        cdTlR3ztEYLR0hjy0KbDQ9s=
+X-Google-Smtp-Source: ABdhPJzrOP9f0vBgk3VCRYh6KvIrcCjAt5BDMpQk8bcsNZIYcbVEjhcirApDUmmi6x3XRvzeU+GjZA==
+X-Received: by 2002:a50:8d42:: with SMTP id t2mr1705746edt.170.1590651885152;
+        Thu, 28 May 2020 00:44:45 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id q22sm4420821edg.97.2020.05.28.00.44.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 00:44:44 -0700 (PDT)
+Date:   Thu, 28 May 2020 09:44:42 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [git pull] coredump infoleak fix
+Message-ID: <20200528074442.GB790247@gmail.com>
+References: <20200527213447.GH23230@ZenIV.linux.org.uk>
+ <20200528070255.GA790247@gmail.com>
+ <20200528070552.GJ23230@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1590631141-23904-1-git-send-email-yangtiezhu@loongson.cn>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20200528070552.GJ23230@ZenIV.linux.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 09:59:01AM +0800, Tiezhu Yang wrote:
-> If CONFIG_MIPS_MALTA is not set but CONFIG_LEGACY_BOARD_SEAD3 is set,
-> the subdir arch/mips/boot/dts/mti will not be built, so the sead3.dts
-> which depends on CONFIG_LEGACY_BOARD_SEAD3 in this subdir is also not
-> built, and then there exists the following build error, fix it.
-> 
->   LD      .tmp_vmlinux.kallsyms1
-> arch/mips/generic/board-sead3.o:(.mips.machines.init+0x4): undefined reference to `__dtb_sead3_begin'
-> Makefile:1106: recipe for target 'vmlinux' failed
-> make: *** [vmlinux] Error 1
-> 
-> Additionally, add CONFIG_FIT_IMAGE_FDT_BOSTON check for subdir img to
-> fix the following build error when CONFIG_MACH_PISTACHIO is not set but
-> CONFIG_FIT_IMAGE_FDT_BOSTON is set.
-> 
-> FATAL ERROR: Couldn't open "boot/dts/img/boston.dtb": No such file or directory
-> 
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Fixes: 41528ba6afe6 ("MIPS: DTS: Only build subdir of current platform")
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  arch/mips/boot/dts/Makefile | 2 ++
->  1 file changed, 2 insertions(+)
 
-applied to mips-next.
+* Al Viro <viro@zeniv.linux.org.uk> wrote:
 
-Thomas.
+> On Thu, May 28, 2020 at 09:02:55AM +0200, Ingo Molnar wrote:
+> 
+> > Looks good to me.
+> > 
+> > I'm wondering, shouldn't we also zero-initialize the dump data to 
+> > begin with? See the patch below (untested).
+> 
+> Note that this hides the bug from KASAN, though ;-)  And the bug
+> is not just infoleak - not all components are "all zeroes" in the
+> init state.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Yeah, but is zero-init really a problem though? Wouldn't it be 
+'better' to have all zeroes if the dump doesn't fit? But I might be 
+missing something ...
+
+Thanks,
+
+	Ingo
