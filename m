@@ -2,145 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E3E1E5C98
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 12:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3D11E5C9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 12:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387636AbgE1KCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 06:02:02 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16022 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387518AbgE1KCB (ORCPT
+        id S2387675AbgE1KCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 06:02:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387643AbgE1KCx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 06:02:01 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04S9XG2g125806;
-        Thu, 28 May 2020 06:01:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=t3jmzpatn37yoENhNGM1lxSbA+A11PiqK0dyWwQyJ3U=;
- b=Psc9f2HjXxKkRjk64MUXwyTCHzPbupCyp89jU+eZ9kZ3ElcZ60u8TKYdnWJWQeLwtolp
- srht3XQZIFnH2IWC0MSGdbaTBtXQ2DWf25A/nzOD6oSMQ/plLZlW/hP5efbpklG4DZNR
- ZvhkvlnM7NCQGYrMyjsQ0isXmJhWbucWo+B3cbztVp3GYwDV0uodA7CwmpOHUwgX15oY
- 09aNcf2Smbtlclrxx1XKPQ3eknzjfvcDVp+bhrVvcF3ARRAsY2GXbaCNUIj4PbK457a4
- VufyOJxEPbMnoRVbr0ix/MXsV+MJKYLkinJ6Dx59Jj9WdvPibnEoTlM0VyCeizwLHhms bQ== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 317hekq7mt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 May 2020 06:01:57 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 04S9jXiE013116;
-        Thu, 28 May 2020 10:01:49 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 316uf91ppx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 May 2020 10:01:48 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04SA1kqV58851562
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 May 2020 10:01:46 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F35EB11C074;
-        Thu, 28 May 2020 10:01:45 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9367B11C050;
-        Thu, 28 May 2020 10:01:45 +0000 (GMT)
-Received: from oc3016276355.ibm.com (unknown [9.145.63.92])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 28 May 2020 10:01:45 +0000 (GMT)
-Subject: Re: [PATCH 1/1] s390/pci: Log new handle in clp_disable_fh()
-To:     Petr Tesarik <ptesarik@suse.com>, linux-s390@vger.kernel.org
-Cc:     Niklas Schnelle <schnelle@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-References: <20200522183922.5253-1-ptesarik@suse.com>
- <20200528110813.7eb1fc1f@ezekiel.suse.cz>
-From:   Pierre Morel <pmorel@linux.ibm.com>
-Message-ID: <595c993e-0be4-3164-2498-b915c3fc9726@linux.ibm.com>
-Date:   Thu, 28 May 2020 12:01:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Thu, 28 May 2020 06:02:53 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7793C08C5C5;
+        Thu, 28 May 2020 03:02:52 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id c11so30481538ljn.2;
+        Thu, 28 May 2020 03:02:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I/h3gNMyb53kQmKAThGHtCMjDN3Ct7BvAp2TJgMXdZA=;
+        b=WJpSZTSoXxOoQNFiNdn06UQLrPFVP7QspnEg1drKRgsC5f8Nx1hiN8zz9Z2vyNHKdn
+         ITNwk3XNuaSbSVUe0EXZEmi7i50HofTw9v+2R5yRgBMmXkDGFGCMvvHubV4yBLyR16GL
+         FP4oUpJVYVMfaKfVW8+s4LSpLZlmjsY8fgCxYYsOVDlHHl9nLEQxbl4830z8gHZMMJv/
+         AWxk6I60V+gGP8EmM9PChMkBxBbWXuPoaOksra8i9XEzslhMxoX0mhOsZ0a/xgKQEGXx
+         P0yYH6cE97WBgGOyrLTF+pXyBYBnlbUWi/+LV910wzbJzzhssmqPUjOrMmj2oIlNc0z9
+         nTpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I/h3gNMyb53kQmKAThGHtCMjDN3Ct7BvAp2TJgMXdZA=;
+        b=j4Ps/OJqUxmG8pzA5WNcmTeeOarQPtRvAUp1RRm65n5zvISJyXhNYlUjRQkiUrTScD
+         rQ8RmhKUoZfXSZU0p1hwpXZbSgu9BmFNgQA39tIcxp+tB6T/6/XJ5PGUqUN60W7oHL68
+         1ffMYEg6QspVhRVN4pmitpWTrV4kwBrnTK5N+kiqXc0JMCiE2wQFPdbFG0FMNCs6sP6m
+         qFm6gcfQbxCCQV3I/ALp6zvaDfMngWIZagS8uXXBbm0q1g7j32wIFw+3kDMiZ85qB4+E
+         fVzc1bEdScCPip9NqaQt2vafmrfJQjzryUydToE/SveKHcGvEzN711MEDyOuvXMjtUlg
+         CeUQ==
+X-Gm-Message-State: AOAM532EaM+zCX9Jk3Ff38vxFx2WfWQT17E6aOL3PHYiITEHdgYd1J2g
+        I4KqUBqaOAmRk7Eb+7fR9Q9UbMMAUASvYOcSYbE=
+X-Google-Smtp-Source: ABdhPJyZid/lyuqY1E3XF3MpNA5pp/s7NOjWjcLahYBAhDGX3VlzICBAygFi9yx1WwgtsGZ7kz96rCT/FdXyTiDgFzo=
+X-Received: by 2002:a2e:711c:: with SMTP id m28mr1088182ljc.104.1590660171385;
+ Thu, 28 May 2020 03:02:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200528110813.7eb1fc1f@ezekiel.suse.cz>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-05-28_02:2020-05-28,2020-05-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- priorityscore=1501 spamscore=0 cotscore=-2147483648 bulkscore=0 mlxscore=0
- suspectscore=0 mlxlogscore=738 malwarescore=0 clxscore=1011 adultscore=0
- phishscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005280064
+References: <20200518004930.20973-1-steves.lee@maximintegrated.com> <20200526223642.GA506893@bogus>
+In-Reply-To: <20200526223642.GA506893@bogus>
+From:   Steve Lee <steves.lee.maxim@gmail.com>
+Date:   Thu, 28 May 2020 19:02:38 +0900
+Message-ID: <CABff4NR7MJM8VmM_gXnspEh2h+MEwv9WDW_Ra6t_Tv2SjrHSFQ@mail.gmail.com>
+Subject: Re: [RESEND][V5 PATCH 1/2] dt-bindings: Added device tree binding for max98390
+To:     Rob Herring <robh@kernel.org>
+Cc:     Steve Lee <steves.lee@maximintegrated.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        ALSA development <alsa-devel@alsa-project.org>,
+        devicetree@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ryan.lee.maxim@gmail.com, ryans.lee@maximintegrated.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, May 27, 2020 at 7:36 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Mon, May 18, 2020 at 09:49:30AM +0900, Steve Lee wrote:
+> > Add documentation for DT binding of max98390 amplifier driver.
+> >
+> > Signed-off-by: Steve Lee <steves.lee@maximintegrated.com>
+> > ---
+> >
+> >
+> > Changed since V4:
+> >       * No changes.
+> > Changed since V3:
+> >       * No changes.
+> > Changed since V2:
+> >       * No changes.
+> > Changed since V1:
+> >       * Modified sample text in example
+>
+> You are obviously sending patches too quickly. Give folks a chance to
+> review.
 
-On 2020-05-28 11:08, Petr Tesarik wrote:
-> Hi all,
-> 
-> just a gentle ping.
-> 
-> If the current behaviour (logging the original handle) was intended,
-> then it was worth mentioning in the commit message for 17cdec960cf77,
-> which made the change, but since that's no longer an option, I'd be
-> happy with an explanation in email.
-> 
-> Petr T
-> 
-> On Fri, 22 May 2020 20:39:22 +0200
-> Petr Tesarik <ptesarik@suse.com> wrote:
-> 
->> After disabling a function, the original handle is logged instead of
->> the disabled handle.
+ Thanks for your feedback !.
 
-Hi Petr,
+>
+> >
+> >  .../devicetree/bindings/sound/max98390.txt    | 26 +++++++++++++++++++
+>
+> Bindings are now in DT schema format. Please convert this. See
+> Documentation/devicetree/writing-schema.rst
 
-Sorry for the delay, no doubt, you are right, the fh in zpci_dbg is the 
-old one and we should use the one in the zdev struct.
+ Thanks for review. I will change txt to yaml version.
 
-Thanks,
-Pierre
+>
+> >  1 file changed, 26 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/sound/max98390.txt
+> >
+> > diff --git a/Documentation/devicetree/bindings/sound/max98390.txt b/Documentation/devicetree/bindings/sound/max98390.txt
+> > new file mode 100644
+> > index 000000000000..0ddd4c6ae55e
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/sound/max98390.txt
+> > @@ -0,0 +1,26 @@
+> > +Maxim Integrated MAX98390 Speaker Amplifier
+> > +
+> > +This device supports I2C.
+> > +
+> > +Required properties:
+> > +
+> > + - compatible : "maxim,max98390"
+> > +
+> > + - reg : the I2C address of the device.
+> > +
+> > +Optional properties:
+> > +
+> > +- maxim,temperature_calib
+> > +  u32. The calculated temperature data was measured while doing the calibration. Data : Temp / 100 * 2^12
+> > +
+> > +- maxim,r0_calib
+> > +  u32. This is r0 calibration data which was measured in factory mode.
+>
+> Unless these are shared already with other Maxim chips, s/_/-/.
+>
+> > +
+> > +Example:
+> > +
+> > +codec: max98390@38 {
+>
+> amplifier@38
 
-Reviewed-by: Pierre Morel <pmorel@linux.ibm.com>
+ I will change example as you advise.
 
-
->>
->> Fixes: 17cdec960cf77 (s390/pci: Recover handle in clp_set_pci_fn())
->> Signed-off-by: Petr Tesarik <ptesarik@suse.com>
->> ---
->>   arch/s390/pci/pci_clp.c | 3 +--
->>   1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/arch/s390/pci/pci_clp.c b/arch/s390/pci/pci_clp.c
->> index ea794ae755ae..179bcecefdee 100644
->> --- a/arch/s390/pci/pci_clp.c
->> +++ b/arch/s390/pci/pci_clp.c
->> @@ -309,14 +309,13 @@ int clp_enable_fh(struct zpci_dev *zdev, u8 nr_dma_as)
->>   
->>   int clp_disable_fh(struct zpci_dev *zdev)
->>   {
->> -	u32 fh = zdev->fh;
->>   	int rc;
->>   
->>   	if (!zdev_enabled(zdev))
->>   		return 0;
->>   
->>   	rc = clp_set_pci_fn(zdev, 0, CLP_SET_DISABLE_PCI_FN);
->> -	zpci_dbg(3, "dis fid:%x, fh:%x, rc:%d\n", zdev->fid, fh, rc);
->> +	zpci_dbg(3, "dis fid:%x, fh:%x, rc:%d\n", zdev->fid, zdev->fh, rc);
->>   	return rc;
->>   }
->>   
-> 
-
--- 
-Pierre Morel
-IBM Lab Boeblingen
+>
+> > +     compatible = "maxim,max98390";
+> > +     reg = <0x38>;
+> > +     maxim,temperature_calib = <1024>;
+> > +     maxim,r0_calib = <100232>;
+> > +};
+> > --
+> > 2.17.1
+> >
