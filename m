@@ -2,256 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810821E60FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F053C1E6164
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389808AbgE1Mfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:35:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389770AbgE1MfP (ORCPT
+        id S2389870AbgE1Mum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 08:50:42 -0400
+Received: from mail-m974.mail.163.com ([123.126.97.4]:42324 "EHLO
+        mail-m974.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389871AbgE1Muk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 08:35:15 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49280C05BD1E
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 05:35:15 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id n5so3007827wmd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 05:35:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+G7RdtEM9Tjyup1qpXdvSxuTiPiV2T/6Xv3zi3kgdqw=;
-        b=agYjZQeOyZ2AKf60nZ90apYgp7Yv0o1BklkIQFUjoNOenWr/OvSkdORC94vYkhfcDg
-         DOgAqd08KF2s8QEItyJuayobS5m2gdfgojHTRwjSc76k3rYZRkYNCq0Nx3J3GJaWT4bK
-         kdogL5Yhno/HKBQkDHpHts1NCAqaAAA4jKFfAvVRsCiNRWwlvHPJfCqZhA2Z7FKnjNuR
-         0mvQ3Io3RUeLuTVB8Xr8qE0+xDqRa9fM/iBCjtm7/UZmGsaliTfUEM2/gjVayPouAnzc
-         7j8kyvWhtcMo4s0q+rMEKcpzWijxVxRGraJHOVVEqcSU7eJy/B4sXAn7rzn/HPHrF/a3
-         5w2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+G7RdtEM9Tjyup1qpXdvSxuTiPiV2T/6Xv3zi3kgdqw=;
-        b=TxtyteAppStOytXJ/Mes4SEA56VO8FjdXWBPnnaG7z/mDlSXyOoIJsxpAIfudjFBZk
-         Va1NxDgDcA1dTZ+TxRaQKkx7vvbDVNyF7FZKYOn+oqsxTgCCS9ryVWgcjRjEWTjhMXBE
-         /n/NI5fZhRVZo+Fl1dOW4O3lWqWXen+xNZcHstGjg+MwYLj/WdbJ4cBluGr56t0lq8T1
-         xjvYOqeJ52FDUVbHRgn58tNg6bnEnhiJ5ZEUsphjJt2UvDIiqUkQOBHmDpdwBwiBjOnX
-         VmFMBoSQNzeXRzS4QdPzsNvYNH0PmJTl2QSUAHRagY5sCvZ+B0wuiLitS+p2B8YCMMfu
-         8x1Q==
-X-Gm-Message-State: AOAM532Gw1HRVSJvKfBU3EguqasbNcD8Sos+THe/iMqAWFCihpVsHekd
-        erAK4zyqQKVv6a/igrSAIiDUEA==
-X-Google-Smtp-Source: ABdhPJx9Jl9dNfglp38Fbyofob3ykhPOc3lBvfMMdzC7r7DXwkN65ZMkM1MkCvyFFas/ZyzprY7Siw==
-X-Received: by 2002:a1c:2d14:: with SMTP id t20mr3308643wmt.28.1590669314028;
-        Thu, 28 May 2020 05:35:14 -0700 (PDT)
-Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id c140sm6027306wmd.18.2020.05.28.05.35.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 05:35:13 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Fabien Parent <fparent@baylibre.com>,
-        Stephane Le Provost <stephane.leprovost@mediatek.com>,
-        Pedro Tsai <pedro.tsai@mediatek.com>,
-        Andrew Perepech <andrew.perepech@mediatek.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 2/2] net: ethernet: mtk-star-emac: use regmap bitops
-Date:   Thu, 28 May 2020 14:34:59 +0200
-Message-Id: <20200528123459.21168-3-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200528123459.21168-1-brgl@bgdev.pl>
-References: <20200528123459.21168-1-brgl@bgdev.pl>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 28 May 2020 08:50:40 -0400
+X-Greylist: delayed 911 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 May 2020 08:50:38 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=tqB8gk4cBM9ljJdG5y
+        YuMl1Lq4aOSsx4vGFhMHDPSCM=; b=N76C7rWqeSGnMroCARmECLiTW8NNwvYqCh
+        Ip1lki2CadzBviG5ECsSPG/mb64rZyn3h3RZoU0LGuW3+dHIak3CWfvXU5FnFSMX
+        MTNQYCuyzrewpedCQkBd9QJ5UCz0jN2JdpN1c0QcEGYT01N9yH9OREpXsvFhSXQQ
+        PT1veE+nQ=
+Received: from localhost.localdomain (unknown [124.64.18.22])
+        by smtp4 (Coremail) with SMTP id HNxpCgC3Qs37r89emFSaBA--.109S4;
+        Thu, 28 May 2020 20:35:13 +0800 (CST)
+From:   YuanJunQing <yuanjunqing66@163.com>
+To:     tsbogend@alpha.franken.de
+Cc:     paulburton@kernel.org, chenhc@lemote.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liulichao@loongson.cn, YuanJunQing <yuanjunqing66@163.com>
+Subject: [PATCH] MIPS: Fix IRQ tracing when call handle_fpe() and handle_msa_fpe()
+Date:   Thu, 28 May 2020 20:35:05 +0800
+Message-Id: <20200528123505.4219-1-yuanjunqing66@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: HNxpCgC3Qs37r89emFSaBA--.109S4
+X-Coremail-Antispam: 1Uf129KBjvdXoW7XrWUurykKF4kZryxur4xXrb_yoWDWrc_Kr
+        42v3yUKr15CwnxWr17tw4rW34Ivw4SgF9IyFyvvw1ayr45Wrs0krWvg3WkXwn3Wr4SkFWI
+        y398G3Z2kF1xtjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUjT5l5UUUUU==
+X-Originating-IP: [124.64.18.22]
+X-CM-SenderInfo: h1xd0ypxqtx0rjwwqiywtou0bp/xtbBUQEyXFaD7QftBgAAsq
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+ Register "a1" is unsaved in this function,
+ when CONFIG_TRACE_IRQFLAGS is enabled,
+ the TRACE_IRQS_OFF macro will call trace_hardirqs_off(),
+ and this may change register "a1".
+ The changed register "a1" as argument will be send
+ to do_fpe() and do_msa_fpe().
 
-Shrink the code visually by replacing regmap_update_bits() with
-appropriate regmap bit operations where applicable.
-
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: YuanJunQing <yuanjunqing66@163.com>
 ---
- drivers/net/ethernet/mediatek/mtk_star_emac.c | 80 ++++++++-----------
- 1 file changed, 35 insertions(+), 45 deletions(-)
+ arch/mips/kernel/genex.S | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_star_emac.c b/drivers/net/ethernet/mediatek/mtk_star_emac.c
-index 8596ca0e60eb..326ac792a4a0 100644
---- a/drivers/net/ethernet/mediatek/mtk_star_emac.c
-+++ b/drivers/net/ethernet/mediatek/mtk_star_emac.c
-@@ -413,8 +413,8 @@ static void mtk_star_dma_unmap_tx(struct mtk_star_priv *priv,
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index 8236fb291e3f..a1b966f3578e 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -476,20 +476,20 @@ NESTED(nmi_handler, PT_SIZE, sp)
+ 	.endm
  
- static void mtk_star_nic_disable_pd(struct mtk_star_priv *priv)
- {
--	regmap_update_bits(priv->regs, MTK_STAR_REG_MAC_CFG,
--			   MTK_STAR_BIT_MAC_CFG_NIC_PD, 0);
-+	regmap_clear_bits(priv->regs, MTK_STAR_REG_MAC_CFG,
-+			  MTK_STAR_BIT_MAC_CFG_NIC_PD);
- }
+ 	.macro	__build_clear_fpe
++	CLI
++	TRACE_IRQS_OFF
+ 	.set	push
+ 	/* gas fails to assemble cfc1 for some archs (octeon).*/ \
+ 	.set	mips1
+ 	SET_HARDFLOAT
+ 	cfc1	a1, fcr31
+ 	.set	pop
+-	CLI
+-	TRACE_IRQS_OFF
+ 	.endm
  
- /* Unmask the three interrupts we care about, mask all others. */
-@@ -434,41 +434,38 @@ static void mtk_star_intr_disable(struct mtk_star_priv *priv)
+ 	.macro	__build_clear_msa_fpe
+-	_cfcmsa	a1, MSA_CSR
+ 	CLI
+ 	TRACE_IRQS_OFF
++	_cfcmsa	a1, MSA_CSR
+ 	.endm
  
- static void mtk_star_intr_enable_tx(struct mtk_star_priv *priv)
- {
--	regmap_update_bits(priv->regs, MTK_STAR_REG_INT_MASK,
--			   MTK_STAR_BIT_INT_STS_TNTC, 0);
-+	regmap_clear_bits(priv->regs, MTK_STAR_REG_INT_MASK,
-+			  MTK_STAR_BIT_INT_STS_TNTC);
- }
- 
- static void mtk_star_intr_enable_rx(struct mtk_star_priv *priv)
- {
--	regmap_update_bits(priv->regs, MTK_STAR_REG_INT_MASK,
--			   MTK_STAR_BIT_INT_STS_FNRC, 0);
-+	regmap_clear_bits(priv->regs, MTK_STAR_REG_INT_MASK,
-+			  MTK_STAR_BIT_INT_STS_FNRC);
- }
- 
- static void mtk_star_intr_enable_stats(struct mtk_star_priv *priv)
- {
--	regmap_update_bits(priv->regs, MTK_STAR_REG_INT_MASK,
--			   MTK_STAR_REG_INT_STS_MIB_CNT_TH, 0);
-+	regmap_clear_bits(priv->regs, MTK_STAR_REG_INT_MASK,
-+			  MTK_STAR_REG_INT_STS_MIB_CNT_TH);
- }
- 
- static void mtk_star_intr_disable_tx(struct mtk_star_priv *priv)
- {
--	regmap_update_bits(priv->regs, MTK_STAR_REG_INT_MASK,
--			   MTK_STAR_BIT_INT_STS_TNTC,
--			   MTK_STAR_BIT_INT_STS_TNTC);
-+	regmap_set_bits(priv->regs, MTK_STAR_REG_INT_MASK,
-+			MTK_STAR_BIT_INT_STS_TNTC);
- }
- 
- static void mtk_star_intr_disable_rx(struct mtk_star_priv *priv)
- {
--	regmap_update_bits(priv->regs, MTK_STAR_REG_INT_MASK,
--			   MTK_STAR_BIT_INT_STS_FNRC,
--			   MTK_STAR_BIT_INT_STS_FNRC);
-+	regmap_set_bits(priv->regs, MTK_STAR_REG_INT_MASK,
-+			MTK_STAR_BIT_INT_STS_FNRC);
- }
- 
- static void mtk_star_intr_disable_stats(struct mtk_star_priv *priv)
- {
--	regmap_update_bits(priv->regs, MTK_STAR_REG_INT_MASK,
--			   MTK_STAR_REG_INT_STS_MIB_CNT_TH,
--			   MTK_STAR_REG_INT_STS_MIB_CNT_TH);
-+	regmap_set_bits(priv->regs, MTK_STAR_REG_INT_MASK,
-+			MTK_STAR_REG_INT_STS_MIB_CNT_TH);
- }
- 
- static unsigned int mtk_star_intr_read(struct mtk_star_priv *priv)
-@@ -524,12 +521,10 @@ static void mtk_star_dma_init(struct mtk_star_priv *priv)
- 
- static void mtk_star_dma_start(struct mtk_star_priv *priv)
- {
--	regmap_update_bits(priv->regs, MTK_STAR_REG_TX_DMA_CTRL,
--			   MTK_STAR_BIT_TX_DMA_CTRL_START,
--			   MTK_STAR_BIT_TX_DMA_CTRL_START);
--	regmap_update_bits(priv->regs, MTK_STAR_REG_RX_DMA_CTRL,
--			   MTK_STAR_BIT_RX_DMA_CTRL_START,
--			   MTK_STAR_BIT_RX_DMA_CTRL_START);
-+	regmap_set_bits(priv->regs, MTK_STAR_REG_TX_DMA_CTRL,
-+			MTK_STAR_BIT_TX_DMA_CTRL_START);
-+	regmap_set_bits(priv->regs, MTK_STAR_REG_RX_DMA_CTRL,
-+			MTK_STAR_BIT_RX_DMA_CTRL_START);
- }
- 
- static void mtk_star_dma_stop(struct mtk_star_priv *priv)
-@@ -553,16 +548,14 @@ static void mtk_star_dma_disable(struct mtk_star_priv *priv)
- 
- static void mtk_star_dma_resume_rx(struct mtk_star_priv *priv)
- {
--	regmap_update_bits(priv->regs, MTK_STAR_REG_RX_DMA_CTRL,
--			   MTK_STAR_BIT_RX_DMA_CTRL_RESUME,
--			   MTK_STAR_BIT_RX_DMA_CTRL_RESUME);
-+	regmap_set_bits(priv->regs, MTK_STAR_REG_RX_DMA_CTRL,
-+			MTK_STAR_BIT_RX_DMA_CTRL_RESUME);
- }
- 
- static void mtk_star_dma_resume_tx(struct mtk_star_priv *priv)
- {
--	regmap_update_bits(priv->regs, MTK_STAR_REG_TX_DMA_CTRL,
--			   MTK_STAR_BIT_TX_DMA_CTRL_RESUME,
--			   MTK_STAR_BIT_TX_DMA_CTRL_RESUME);
-+	regmap_set_bits(priv->regs, MTK_STAR_REG_TX_DMA_CTRL,
-+			MTK_STAR_BIT_TX_DMA_CTRL_RESUME);
- }
- 
- static void mtk_star_set_mac_addr(struct net_device *ndev)
-@@ -845,8 +838,8 @@ static int mtk_star_hash_wait_ok(struct mtk_star_priv *priv)
- 		return ret;
- 
- 	/* Check the BIST_OK bit. */
--	regmap_read(priv->regs, MTK_STAR_REG_HASH_CTRL, &val);
--	if (!(val & MTK_STAR_BIT_HASH_CTRL_BIST_OK))
-+	if (!regmap_test_bits(priv->regs, MTK_STAR_REG_HASH_CTRL,
-+			      MTK_STAR_BIT_HASH_CTRL_BIST_OK))
- 		return -EIO;
- 
- 	return 0;
-@@ -880,12 +873,10 @@ static int mtk_star_reset_hash_table(struct mtk_star_priv *priv)
- 	if (ret)
- 		return ret;
- 
--	regmap_update_bits(priv->regs, MTK_STAR_REG_HASH_CTRL,
--			   MTK_STAR_BIT_HASH_CTRL_BIST_EN,
--			   MTK_STAR_BIT_HASH_CTRL_BIST_EN);
--	regmap_update_bits(priv->regs, MTK_STAR_REG_TEST1,
--			   MTK_STAR_BIT_TEST1_RST_HASH_MBIST,
--			   MTK_STAR_BIT_TEST1_RST_HASH_MBIST);
-+	regmap_set_bits(priv->regs, MTK_STAR_REG_HASH_CTRL,
-+			MTK_STAR_BIT_HASH_CTRL_BIST_EN);
-+	regmap_set_bits(priv->regs, MTK_STAR_REG_TEST1,
-+			MTK_STAR_BIT_TEST1_RST_HASH_MBIST);
- 
- 	return mtk_star_hash_wait_ok(priv);
- }
-@@ -1016,13 +1007,13 @@ static int mtk_star_enable(struct net_device *ndev)
- 		return ret;
- 
- 	/* Setup the hashing algorithm */
--	regmap_update_bits(priv->regs, MTK_STAR_REG_ARL_CFG,
--			   MTK_STAR_BIT_ARL_CFG_HASH_ALG |
--			   MTK_STAR_BIT_ARL_CFG_MISC_MODE, 0);
-+	regmap_clear_bits(priv->regs, MTK_STAR_REG_ARL_CFG,
-+			  MTK_STAR_BIT_ARL_CFG_HASH_ALG |
-+			  MTK_STAR_BIT_ARL_CFG_MISC_MODE);
- 
- 	/* Don't strip VLAN tags */
--	regmap_update_bits(priv->regs, MTK_STAR_REG_MAC_CFG,
--			   MTK_STAR_BIT_MAC_CFG_VLAN_STRIP, 0);
-+	regmap_clear_bits(priv->regs, MTK_STAR_REG_MAC_CFG,
-+			  MTK_STAR_BIT_MAC_CFG_VLAN_STRIP);
- 
- 	/* Setup DMA */
- 	mtk_star_dma_init(priv);
-@@ -1204,9 +1195,8 @@ static void mtk_star_set_rx_mode(struct net_device *ndev)
- 	int ret;
- 
- 	if (ndev->flags & IFF_PROMISC) {
--		regmap_update_bits(priv->regs, MTK_STAR_REG_ARL_CFG,
--				   MTK_STAR_BIT_ARL_CFG_MISC_MODE,
--				   MTK_STAR_BIT_ARL_CFG_MISC_MODE);
-+		regmap_set_bits(priv->regs, MTK_STAR_REG_ARL_CFG,
-+				MTK_STAR_BIT_ARL_CFG_MISC_MODE);
- 	} else if (netdev_mc_count(ndev) > MTK_STAR_HASHTABLE_MC_LIMIT ||
- 		   ndev->flags & IFF_ALLMULTI) {
- 		for (i = 0; i < MTK_STAR_HASHTABLE_SIZE_MAX; i++) {
+ 	.macro	__build_clear_ade
 -- 
-2.25.0
+2.17.1
 
