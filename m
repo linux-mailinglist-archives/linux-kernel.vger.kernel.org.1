@@ -2,254 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC371E5B56
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 11:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82CA21E5B66
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 11:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728101AbgE1I7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 04:59:49 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:51397 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727991AbgE1I7q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 04:59:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590656384;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=BFmr/kjkmqPRc/dMySvD4z/7WbFhVX9Px6pCOUVjat0=;
-        b=gfXwMvR0kE9aUc5hcX1DLhOBnvnqZfylmjIPXfTzTTCnbv324WckJmvJL94eVyDjPTU2Nc
-        UrCBakd8Zkv4fs4jfDvLJsccKMqIGeAUTI1jJZFwUYfHDs/Sn7gRahQSeJla0L+xloCtct
-        sk9SVj6cWd1sNTjZHdVQJoQCbr7/xiQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-296-rj9m7kd1OryB3j99O6zc8w-1; Thu, 28 May 2020 04:59:40 -0400
-X-MC-Unique: rj9m7kd1OryB3j99O6zc8w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1728075AbgE1JFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 05:05:04 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:42961 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728028AbgE1JFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 05:05:03 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A37B218FE86D;
-        Thu, 28 May 2020 08:59:39 +0000 (UTC)
-Received: from localhost (ovpn-12-80.pek2.redhat.com [10.72.12.80])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CF65B768B4;
-        Thu, 28 May 2020 08:59:36 +0000 (UTC)
-Date:   Thu, 28 May 2020 16:59:33 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     David Hildenbrand <david@redhat.com>, rppt@linux.ibm.com
-Cc:     mgorman@suse.de, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] mm/compaction: Fix the incorrect hole in
- fast_isolate_freepages() =?ISO-8859-1?Q?=1B?=
-Message-ID: <20200528085933.GH20045@MiWiFi-R3L-srv>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Xhbx5gPCz9sSF;
+        Thu, 28 May 2020 19:05:01 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1590656701;
+        bh=hFZCXpwyF+voqr0buEwSw32UU9jdGOvmsOlYam8KpIM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=IonMW0yPWVEYu1nwvMMNlAhhFEBeUZ79eHQa7qhUgaZMDOJ0VYDmkSwkq5xaqnO/1
+         dDI/VI3vQ3dXIMF//oEzTHIqShjv3Z8+mXrDGbKtQepYRTR/KNOoZ9MLoTZaXuaiaA
+         usopWvlmbN1xH9TmzKPKwQ9GwiaIjVyDlEdzA6v7s0+HcTWpmArWZ7wOFzElmVbhid
+         2lbySI0se/Db+1bXGGTyaEDheJ1ATTU2TMQUQgTt7C4Bpe9KT/pvyTrkEMoOuHHlFd
+         unWfUpMRUocTarfpHSgsAOcuVpxwH9C2Ak8PaOnFlpY6Hlpj3tIjvyrQNTo9ZATqjv
+         AjIEQ2WB/InjA==
+Date:   Thu, 28 May 2020 19:05:01 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Subject: linux-next: build failure after merge of the rcu tree
+Message-ID: <20200528190501.10135e9f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: multipart/signed; boundary="Sig_/3kczfIxexzGb0HAvK.fAKWI";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-akpm@linux-foundation.org, cai@lca.pw, mhocko@kernel.org, steve.wahl@hpe.com, 
-Bcc: bhe@redhat.com
-Subject: Re: [PATCH] mm/compaction: Fix the incorrect hole in
- fast_isolate_freepages()
-Reply-To: 
-In-Reply-To: <01beec81-565f-d335-5eff-22693fc09c0e@redhat.com>
+--Sig_/3kczfIxexzGb0HAvK.fAKWI
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 05/26/20 at 01:49pm, David Hildenbrand wrote:
-> On 26.05.20 13:32, Mike Rapoport wrote:
-> > Hello Baoquan,
-> > 
-> > On Tue, May 26, 2020 at 04:45:43PM +0800, Baoquan He wrote:
-> >> On 05/22/20 at 05:20pm, Mike Rapoport wrote:
-> >>> Hello Baoquan,
-> >>>
-> >>> On Fri, May 22, 2020 at 03:25:24PM +0800, Baoquan He wrote:
-> >>>> On 05/22/20 at 03:01pm, Baoquan He wrote:
-> >>>>>
-> >>>>> So let's add these unavailable ranges into memblock and reserve them
-> >>>>> in init_unavailable_range() instead. With this change, they will be added
-> >>>>> into appropriate node and zone in memmap_init(), and initialized in
-> >>>>> reserve_bootmem_region() just like any other memblock reserved regions.
-> >>>>
-> >>>> Seems this is not right. They can't get nid in init_unavailable_range().
-> >>>> Adding e820 ranges may let them get nid. But the hole range won't be
-> >>>> added to memblock, and still has the issue.
-> >>>>
-> >>>> Nack this one for now, still considering.
-> >>>
-> >>> Why won't we add  the e820 reserved ranges to memblock.memory during
-> >>> early boot as I suggested?
-> >>>
-> >>> diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
-> >>> index c5399e80c59c..b0940c618ed9 100644
-> >>> --- a/arch/x86/kernel/e820.c
-> >>> +++ b/arch/x86/kernel/e820.c
-> >>> @@ -1301,8 +1301,11 @@ void __init e820__memblock_setup(void)
-> >>>  		if (end != (resource_size_t)end)
-> >>>  			continue;
-> >>>  
-> >>> -		if (entry->type == E820_TYPE_SOFT_RESERVED)
-> >>> +		if (entry->type == E820_TYPE_SOFT_RESERVED ||
-> >>> +		    entry->type == E820_TYPE_RESERVED) {
-> >>> +			memblock_add(entry->addr, entry->size);
-> >>>  			memblock_reserve(entry->addr, entry->size);
-> >>> +		}
-> >>>  
-> >>>  		if (entry->type != E820_TYPE_RAM && entry->type != E820_TYPE_RESERVED_KERN)
-> >>>  			continue;
-> >>>
-> >>> The setting of node later  in numa_init() will assign the proper node
-> >>> for these regions as it does for the usable memory.
-> >>
-> >> Yes, if it's only related to e820 reserved region, this truly works.
-> >>
-> >> However, it also has ACPI table regions. That's why I changed to call
-> >> the problematic area as firmware reserved ranges later.
-> >>
-> >> Bisides, you can see below line, there's another reserved region which only
-> >> occupies one page in one memory seciton. If adding to memblock.memory, we also
-> >> will build struct mem_section and the relevant struct pages for the whole
-> >> section. And then the holes around that page will be added and initialized in
-> >> init_unavailable_mem(). numa_init() will assign proper node for memblock.memory
-> >> and memblock.reserved, but won't assign proper node for the holes.
-> >>
-> >> ~~~
-> >> [    0.000000] BIOS-e820: [mem 0x00000000fed80000-0x00000000fed80fff] reserved
-> >> ~~~
-> >>
-> >> So I still think we should not add firmware reserved range into
-> >> memblock for fixing this issue.
-> >>
-> >> And, the fix in the original patch seems necessary. You can see in
-> >> compaction code, the migration source is chosen from LRU pages or
-> >> movable pages, the migration target has to be got from Buddy. However,
-> >> only the min_pfn in fast_isolate_freepages(), it's calculated by
-> >> distance between cc->free_pfn - cc->migrate_pfn, we can't guarantee it's
-> >> safe, then use it as the target to handle.
-> > 
-> > I do not object to your original fix with careful check for pfn validity.
-> > 
-> > But I still think that the memory reserved by the firmware is still
-> > memory and it should be added to memblock.memory. This way the memory
-> 
-> If it's really memory that could be read/written, I think I agree.
+Hi all,
 
-I would say some of them may not be allowed to be read/written, if I
-understand it correctly. I roughly went through the x86 init code, there
-are some places where mem region is marked as E820_TYPE_RESERVED so that
-they are not touched after initialization. E.g:
+After merging the rcu tree, today's linux-next build (powercp
+allyesconfig) failed like this:
 
-1) pfn 0
-In trim_bios_range(), we set the pfn 0 as E820_TYPE_RESERVED. You can
-see the code comment, this is a BIOS owned area, but not kernel RAM.
+ld: kernel/rcu/refperf.o:(.discard+0x0): multiple definition of `__pcpu_uni=
+que_srcu_ctl_perf_srcu_data'; kernel/rcu/rcuperf.o:(.discard+0x0): first de=
+fined here
 
-2)GART reserved region
-In early_gart_iommu_check(), GART IOMMU firmware will reserve a region
-in an area, firmware designer won't map system RAM into that area.
+Caused by commit
 
-And also intel_graphics_stolen(), arch_rmrr_sanity_check(), these
-regions are not system RAM backed area, reading from or writting into
-these area may cause error. 
+  786a25497743 ("refperf: Add a test to measure performance of read-side sy=
+nchronization")
 
-Futhermore, there's a KASLR bug found by HPE, its triggering and root
-cause are written into below commit log. You can see that accessing to
-firmware reserved region caused BIOS to halt system when cpu doing
-speculative.
+=46rom srcutree.h:
 
-commit 2aa85f246c181b1fa89f27e8e20c5636426be624
-Author: Steve Wahl <steve.wahl@hpe.com>
-Date:   Tue Sep 24 16:03:55 2019 -0500
+ * Note that although DEFINE_STATIC_SRCU() hides the name from other
+ * files, the per-CPU variable rules nevertheless require that the
+ * chosen name be globally unique.
 
-    x86/boot/64: Make level2_kernel_pgt pages invalid outside kernel area
-    
-    Our hardware (UV aka Superdome Flex) has address ranges marked
-    reserved by the BIOS. Access to these ranges is caught as an error,
-    causing the BIOS to halt the system.
+I have applied the following patch for today.
 
-> 
-> > map will be properly initialized from the very beginning and we won't
-> > need init_unavailable_mem() and alike workarounds and. Obviously, the patch
-> 
-> I remember init_unavailable_mem() is necessary for holes within
-> sections, where we actually *don't* have memory, but we still have have
-> a valid memmap (full section) that we have to initialize.
-> 
-> See the example from 4b094b7851bf ("mm/page_alloc.c: initialize memmap
-> of unavailable memory directly"). Our main memory ends within a section,
-> so we have to initialize the remaining parts because the whole section
-> will be marked valid/online.
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Thu, 28 May 2020 18:57:17 +1000
+Subject: [PATCH] refperf: uniqify name
 
-Yes, memory hole need be handled in init_unavailable_mem(). Since we
-have created struct page for them, need initialize them. We can't
-discard init_unavailable_mem() for now.
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ kernel/rcu/refperf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> 
-> Any way to improve this handling is appreciated. In that patch I also
-> spelled out that we might want to mark such holes via a new page type,
-> e.g., PageHole(). Such a page is a memory hole, but has a valid memmap.
-> Any content in the memmap (zone/node) should be ignored.
+diff --git a/kernel/rcu/refperf.c b/kernel/rcu/refperf.c
+index 8c4a63257be9..47df72c492b3 100644
+--- a/kernel/rcu/refperf.c
++++ b/kernel/rcu/refperf.c
+@@ -133,8 +133,8 @@ static struct ref_perf_ops rcu_ops =3D {
+=20
+=20
+ // Definitions for SRCU ref perf testing.
+-DEFINE_STATIC_SRCU(srcu_ctl_perf);
+-static struct srcu_struct *srcu_ctlp =3D &srcu_ctl_perf;
++DEFINE_STATIC_SRCU(ref_srcu_ctl_perf);
++static struct srcu_struct *srcu_ctlp =3D &ref_srcu_ctl_perf;
+=20
+ static void srcu_ref_perf_read_section(int nloops)
+ {
+--=20
+2.26.2
 
-As I said at above, I am a little conservative to add all those regions of
-E820_TYPE_RESERVED into memblock.memory and memblock.reserved, because
-most of them are firmware reserved region, they may be not backed by normal
-RAM.
+--=20
+Cheers,
+Stephen Rothwell
 
-I was thinking to step back to use mm_zero_struct_page() inside
-init_unavailable_range() as below. But it doesn't differ much
-from __init_single_page(), except of the _refcount and mapcount. 
-Zeroing struct page equals to putting them into node 0, zero 0.
+--Sig_/3kczfIxexzGb0HAvK.fAKWI
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 3973b5fdfe3f..4e4b72cf5283 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6901,7 +6901,7 @@ static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn)
- 		 * (in memblock.reserved but not in memblock.memory) will
- 		 * get re-initialized via reserve_bootmem_region() later.
- 		 */
--		__init_single_page(pfn_to_page(pfn), pfn, 0, 0);
-+		mm_zero_struct_page(pfn_to_page(pfn));
- 		__SetPageReserved(pfn_to_page(pfn));
- 		pgcnt++;
- 	}
+-----BEGIN PGP SIGNATURE-----
 
-About adding these unavailable ranges into node/zone, in the old code,
-it just happened to add them into expected node/zone. You can see in
-early_pfn_in_nid(), if no nid found from memblock, the returned '-1'
-will make it true ironically. But that is not saying the bad thing
-always got good result. If the last zone of node 0 is DMA32 zone, the
-deferred init will skip the only chance to add some of unavailable
-rnages into expected node/zone. Means they were not always added into 
-appropriate node/zone before, the change of iterating memblock.memory in
-memmap_init() dones't introduce regression.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7Pfr0ACgkQAVBC80lX
+0GzeoAf9HZs3neZGaTiBsG7YqSByje0kTcGIY4ABqQIzts4GrpSRKAPMJMjcgbhm
+abwLJYbCJDwYBKWEeBRr+QINOvf5wGNseCuzPhQTl+eLcJl9TcRDu8VA3gDH3JKr
+SnGy/S8qydZ0LpbMS912g4c86ruPsg3JB5/Y7HvvoGLxWFfu0EC8tPv460ZV+f6f
+4s1NSOMB5Cz0fUYFwBFkXpMuiNq3XSy//hH/rrTUA4q6ypIFzHzRttSdKqjLMhO2
+2dbohP/uDaFkco+zvnNmmgbvkavbfh2ZFW7QaRYaZ8XhEAEvRXlOB9xBJNrLdwv9
+DSpRwJTwWpm87oivgmybYAjfr3beSg==
+=D0aF
+-----END PGP SIGNATURE-----
 
-static inline bool __meminit early_pfn_in_nid(unsigned long pfn, int node)
-{
-        int nid;
-
-        nid = __early_pfn_to_nid(pfn, &early_pfnnid_cache);
-        if (nid >= 0 && nid != node)
-                return false;
-        return true;
-}
-
-So if no anybody need access them after boot, not adding them into any
-node/zone sounds better. Otherwise, better add them in the appropriate
-node/zone.
-
-> 
-> But it's all quite confusing, especially across architectures and ...
-> 
-> > above is not enough, but it's a small step in this direction.
-> > 
-> > I believe that improving the early memory initialization would make many
-> > things simpler and more robust, but that's a different story :)
-> 
-> ... I second that.
-> 
-> -- 
-> Thanks,
-> 
-> David / dhildenb
-
+--Sig_/3kczfIxexzGb0HAvK.fAKWI--
