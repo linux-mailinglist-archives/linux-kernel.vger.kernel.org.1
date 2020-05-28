@@ -2,68 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7C01E58BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 09:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 856B11E58E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 09:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726441AbgE1Hgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 03:36:40 -0400
-Received: from mga12.intel.com ([192.55.52.136]:21221 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725601AbgE1Hgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 03:36:39 -0400
-IronPort-SDR: en6LipV8WWAPD6lIVlYbRzhStaa8Z40cWR71BCqElICsstWxAP+eV++XO6ZEengT8mq2QjYZD/
- jLQG3E1alQTQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 00:36:39 -0700
-IronPort-SDR: DnLZQn9vlvIMm+BBthxvPIxdmKPkvIONmEgh7zQqOfo6IEVuPKIaXlPC6WLifraxx+rO8EEnY4
- 7dPiBu+KiFCA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,444,1583222400"; 
-   d="scan'208";a="469025063"
-Received: from dmescala-mobl1.amr.corp.intel.com (HELO localhost) ([10.252.59.102])
-  by fmsmga005.fm.intel.com with ESMTP; 28 May 2020 00:36:30 -0700
-Date:   Thu, 28 May 2020 10:36:28 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-sgx@vger.kernel.org, akpm@linux-foundation.org,
-        dave.hansen@intel.com, nhorman@redhat.com, npmccallum@redhat.com,
-        haitao.huang@intel.com, andriy.shevchenko@linux.intel.com,
-        tglx@linutronix.de, kai.svahn@intel.com, josh@joshtriplett.org,
-        luto@kernel.org, kai.huang@intel.com, rientjes@google.com,
-        cedric.xing@intel.com, puiterwijk@redhat.com,
-        Serge Ayoun <serge.ayoun@intel.com>,
-        Jethro Beekman <jethro@fortanix.com>
-Subject: Re: [PATCH v30 07/20] x86/sgx: Enumerate and track EPC sections
-Message-ID: <20200528073628.GA291560@linux.intel.com>
-References: <20200515004410.723949-1-jarkko.sakkinen@linux.intel.com>
- <20200515004410.723949-8-jarkko.sakkinen@linux.intel.com>
- <20200525092304.GD25636@zn.tnic>
- <20200527035613.GH31696@linux.intel.com>
- <20200527203509.GF1721@zn.tnic>
+        id S1726953AbgE1HjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 03:39:14 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:64274 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725839AbgE1HjN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 03:39:13 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04S7cAos017153;
+        Thu, 28 May 2020 09:38:59 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=1lcgbL/rxGsDAqjZW9JrG35AHt9dvjJGVv5G7y5dl7U=;
+ b=Rgn0mOUxRpssrSLPHqhK1vfcK7aNcIion3VK+PPT2GZkS1vbu7RkZkfMO6Ay3tEGf+/D
+ /7/J4SU84mXeTBdyC6eqmGwukNqada7gTEmFlFhoFeS+kjpp6C9cAtLLmw5LMhyxMO6B
+ j617JlYBP9tUPPYQR29Ggpy7sJUqGyqkYnjXkPGb2fflfsKnQsjUBFfyyf59f2V8xoR2
+ Iy5Yt3yqIlmeBQZuvpZNaWxuxyqm058uI3WctRj3K0RZ5O7kLlCYs0p1twTst8c1A46X
+ GKDV/go4p0arIvn1cT+HqqtWCSaviPSpQb57cBmVDewttDrS7TBvS4H79QbzhIDC5yf4 7Q== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 316sa29wn2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 May 2020 09:38:58 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B1A7710002A;
+        Thu, 28 May 2020 09:38:57 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9BEEC2B187F;
+        Thu, 28 May 2020 09:38:57 +0200 (CEST)
+Received: from localhost (10.75.127.44) by SFHDAG3NODE1.st.com (10.75.127.7)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 28 May 2020 09:38:57
+ +0200
+From:   Erwan Le Ray <erwan.leray@st.com>
+To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+CC:     <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Erwan Le Ray <erwan.leray@st.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>
+Subject: [PATCH 0/3] STM32 update uart4 pin configuration for low power
+Date:   Thu, 28 May 2020 09:38:50 +0200
+Message-ID: <20200528073853.24759-1-erwan.leray@st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200527203509.GF1721@zn.tnic>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-05-28_02:2020-05-28,2020-05-27 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 10:35:09PM +0200, Borislav Petkov wrote:
- 
-> > One idea would be to provide a Kconfig a la NR_CPUS or NODES_SHIFT.  I.e.
-> > carve out the bits in sgx_epc_page_desc to allow up to N sections, but let
-> > the user limit the number of sections to recoup the unused memory.
-> 
-> I'd prefer a good estimate of a highest value, say 8 bits, which should
-> suffice for the foreseeable future. That's the simplest thing to do and
-> our Kconfig symbols space is an abomination of gazillion symbols.
+Update uart4 pin configuration for low power in pinctrl, and for ed/ev
+and dkx boards.
 
-OK, will do.
+Erwan Le Ray (3):
+  ARM: dts: stm32: update uart4 pin configuration for low power on
+    stm32mp157
+  ARM: dts: stm32: Update pin states for uart4 on stm32mp157c-ed1
+  ARM: dts: stm32: Update UART4 pin states on stm32mp15xx-dkx
 
-/Jarkko
+ arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 17 +++++++++++++++++
+ arch/arm/boot/dts/stm32mp157c-ed1.dts    |  4 +++-
+ arch/arm/boot/dts/stm32mp15xx-dkx.dtsi   |  4 +++-
+ 3 files changed, 23 insertions(+), 2 deletions(-)
+
+-- 
+2.17.1
+
