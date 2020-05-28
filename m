@@ -2,295 +2,453 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587E31E5AC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 10:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E720B1E5AC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 10:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726968AbgE1I0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 04:26:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726892AbgE1I0r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 04:26:47 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96C3C08C5C3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 01:26:47 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id r23so9165140ybd.10
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 01:26:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3zAvgPbVAOZENK3bTKVkM/u1m/KaGKg/4bxHIhnKAsY=;
-        b=TWIcGqXPlXhiq6Z6twsMO5g8NSDikCxIJ/OcI9v/A1HN4ARmQNA3E8ttXrnNrQ7Ab4
-         BIh0KK+36z4DMhiYcK1EF4rYqVaOAfdUHL79qTxd5mWoRLoH69TqlvTfvUgmms1k3yVF
-         Uvtk5eVlW1CDlJ5B8DBOuerNFfMxWFGJAOYAyuwoTXYkB68iF8AolBK1KNbq66TBLJZF
-         UTuup0QKddB9F7ZUUZDz4qLraH4vP1c3R+1KVX7y3A4qymCDE5+JzLCdWxMnAj/YgaMX
-         uJKXI53/vIiLmSSwudyR03xHIrzfgmZKQnTy9aOXu7fTOaE1XL5Gyj6A0OvB/ZZ5Tern
-         TPzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3zAvgPbVAOZENK3bTKVkM/u1m/KaGKg/4bxHIhnKAsY=;
-        b=mTF443MoQiahipqU2MeJsdB97kdm+idT+GdEzeIZ+PtpQL/1JUxshrulmbafsjzlWj
-         EwoEkT0mLtTOymJ9s4hpc0aKdAyEZm56iGZdZhVvTi9TKe+hYaSz59HI2gAmuQVANLC0
-         7PfSY8nlNtiuFmq4HB+7IFynJXq+Rf19dC55F/DVFCR0PuHPOpcawyguRPlMn8qnyOhE
-         7ZBB3FDbVBbBvKata7U2dpMaNYgNPUf0k0xFAXd2ZOwGdEBAtai3MXg7MM+ecJUe7eys
-         z0+pzOr0xLFQNpjfuiS8a5HfZCjO+Q+U1Z0XwSuw8XT7I29l0hcphCu5aU5gIb1vT15W
-         ED9A==
-X-Gm-Message-State: AOAM532cg34NwIw/Hs1Ao/+wT37KmZE4vs/ktXr/1yW+v12NqYCISiSX
-        ML9MQc/N5IyDrY4bFC+rPWSscJEGFZxo0IH35g2SzA==
-X-Google-Smtp-Source: ABdhPJzZpEKw0Tjlvnu0cZmaA7t2Ujxw9mkfjUTh71SXHKaqv/UQ/ZjjcrKZrUmIGXrTnkXQy/9hmTctL5RYLac2u+o=
-X-Received: by 2002:a25:8202:: with SMTP id q2mr3328791ybk.243.1590654406641;
- Thu, 28 May 2020 01:26:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200525115235.5405-1-maxim.uvarov@linaro.org>
- <20200525115235.5405-2-maxim.uvarov@linaro.org> <096698e5493ffe714357b0d6926b900418f71dd0.camel@linux.intel.com>
-In-Reply-To: <096698e5493ffe714357b0d6926b900418f71dd0.camel@linux.intel.com>
-From:   Maxim Uvarov <maxim.uvarov@linaro.org>
-Date:   Thu, 28 May 2020 11:26:35 +0300
-Message-ID: <CAD8XO3a7fyi70bnNF5P2h-qT7ek_V8myMyiJh0LfVFzEQ4OKmQ@mail.gmail.com>
-Subject: Re: [PATCHv3 1/3] optee: do drivers initialization before and after
- tee-supplicant run
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>,
-        peterhuewe@gmx.de, Jason Gunthorpe <jgg@ziepe.ca>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        linux-integrity@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>,
-        Sumit Garg <sumit.garg@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727009AbgE1I2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 04:28:24 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:39142 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726892AbgE1I2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 04:28:22 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf2r7dc9euh46AA--.1133S2;
+        Thu, 28 May 2020 16:27:39 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH] MIPS: Fix build warning about "PTR_STR" redefined under CONFIG_TEST_PRINTF
+Date:   Thu, 28 May 2020 16:27:39 +0800
+Message-Id: <1590654459-10827-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxf2r7dc9euh46AA--.1133S2
+X-Coremail-Antispam: 1UD129KBjvJXoWfJFyUXr1UXrW3AryfXr1xGrg_yoWkCF43pr
+        Wvkw4SvrW8tFWDAw1Y9w4j9r4kXryFvrn7CF13KFW8Gryagw1vkr9rArn8CF93Jw45u3W7
+        ZF47CFnrZa12vaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkm14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
+        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
+        ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
+        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
+        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
+        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUbKZGDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 May 2020 at 22:56, Jarkko Sakkinen
-<jarkko.sakkinen@linux.intel.com> wrote:
->
-> On Mon, 2020-05-25 at 14:52 +0300, Maxim Uvarov wrote:
-> > Some drivers (like ftpm) can operate only after tee-supplicant
-> > runs becase of tee-supplicant provides things like storage
-> > services.  This patch splits probe of non tee-supplicant dependable
-> > drivers to early stage, and after tee-supplicant run probe other
-> > drivers.
->
-> Fix the typos and remove extra spaces (one space after '.').
->
-> Why "tee-supplicant" and not "TEE-supplicant"?
->
-> >
-> > Signed-off-by: Maxim Uvarov <maxim.uvarov@linaro.org>
-> > Suggested-by: Sumit Garg <sumit.garg@linaro.org>
-> > Suggested-by: Arnd Bergmann <arnd@linaro.org>
-> > ---
-> >  drivers/tee/optee/core.c          | 28 +++++++++++++++++++++++++---
-> >  drivers/tee/optee/device.c        | 17 +++++++++++------
-> >  drivers/tee/optee/optee_private.h | 10 +++++++++-
-> >  3 files changed, 45 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> > index 99698b8a3a74..d059e3ac491c 100644
-> > --- a/drivers/tee/optee/core.c
-> > +++ b/drivers/tee/optee/core.c
-> > @@ -17,6 +17,7 @@
-> >  #include <linux/tee_drv.h>
-> >  #include <linux/types.h>
-> >  #include <linux/uaccess.h>
-> > +#include <linux/workqueue.h>
-> >  #include "optee_private.h"
-> >  #include "optee_smc.h"
-> >  #include "shm_pool.h"
-> > @@ -218,6 +219,15 @@ static void optee_get_version(struct tee_device *teedev,
-> >       *vers = v;
-> >  }
-> >
-> > +static void optee_bus_scan(struct work_struct *work)
-> > +{
-> > +     int rc;
-> > +
-> > +     rc = optee_enumerate_devices(PTA_CMD_GET_DEVICES_SUPP);
-> > +     if (rc)
-> > +             pr_err("optee_enumerate_devices failed %d\n", rc);
-> > +}
->
-> Is pr_err() required really here? Why not just pr_info()?
->
-> Why have it all and not just ftrace when needed? There is series going
-> on to add CONFIG_FTRACE_FUNC_PROTOTYPE to that to get return values and
-> arguments.
->
+Replace PTR_STR with INST_PTR_STR to fix the following build warning when
+CONFIG_TEST_PRINTF is set:
 
-Actually if  optee_enumerate_devices() fail then I would say there is
-something wrong with memory or Secure OS and more likely we should
-stop execution.
-I think something line WARN_ON might be more suitable here. What do you think?
+  CC      lib/test_printf.o
+lib/test_printf.c:214:0: warning: "PTR_STR" redefined
+ #define PTR_STR "ffff0123456789ab"
+ ^
+In file included from ./arch/mips/include/asm/dsemul.h:11:0,
+                 from ./arch/mips/include/asm/processor.h:22,
+                 from ./arch/mips/include/asm/thread_info.h:16,
+                 from ./include/linux/thread_info.h:38,
+                 from ./include/asm-generic/preempt.h:5,
+                 from ./arch/mips/include/generated/asm/preempt.h:1,
+                 from ./include/linux/preempt.h:78,
+                 from ./include/linux/spinlock.h:51,
+                 from ./include/linux/seqlock.h:36,
+                 from ./include/linux/time.h:6,
+                 from ./include/linux/stat.h:19,
+                 from ./include/linux/module.h:13,
+                 from lib/test_printf.c:10:
+./arch/mips/include/asm/inst.h:20:0: note: this is the location of the previous definition
+ #define PTR_STR  ".dword"
+ ^
 
-> > +
-> >  static int optee_open(struct tee_context *ctx)
-> >  {
-> >       struct optee_context_data *ctxdata;
-> > @@ -241,8 +251,18 @@ static int optee_open(struct tee_context *ctx)
-> >                       kfree(ctxdata);
-> >                       return -EBUSY;
-> >               }
-> > -     }
-> >
-> > +             if (!optee->scan_bus_done) {
-> > +                     INIT_WORK(&optee->scan_bus_work, optee_bus_scan);
-> > +                     optee->scan_bus_wq = create_workqueue("optee_bus_scan");
-> > +                     if (!optee->scan_bus_wq) {
-> > +                             pr_err("optee: couldn't create workqueue\n");
->
-> Neither get pr_err() here. Please remove this one completely.
->
+Fixes: e701656ec4db ("MIPS: inst.h: Stop including asm.h to avoid various build failures")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/mips/include/asm/inst.h | 180 +++++++++++++++++++++----------------------
+ 1 file changed, 90 insertions(+), 90 deletions(-)
 
-What is the benefit of removing print here? Kernel binary size?
+diff --git a/arch/mips/include/asm/inst.h b/arch/mips/include/asm/inst.h
+index 6d74ba3..3ab1c6b 100644
+--- a/arch/mips/include/asm/inst.h
++++ b/arch/mips/include/asm/inst.h
+@@ -14,10 +14,10 @@
+ #include <uapi/asm/inst.h>
+ 
+ #if (_MIPS_SZPTR == 32)
+-#define PTR_STR		".word"
++#define INST_PTR_STR		".word"
+ #endif
+ #if (_MIPS_SZPTR == 64)
+-#define PTR_STR		".dword"
++#define INST_PTR_STR		".dword"
+ #endif
+ 
+ /* HACHACHAHCAHC ...  */
+@@ -108,8 +108,8 @@ do {                                                \
+ 		"j\t3b\n\t"                         \
+ 		".previous\n\t"                     \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 4b\n\t"               \
+-		PTR_STR"\t2b, 4b\n\t"               \
++		INST_PTR_STR"\t1b, 4b\n\t"          \
++		INST_PTR_STR"\t2b, 4b\n\t"          \
+ 		".previous"                         \
+ 		: "=&r" (value), "=r" (res)         \
+ 		: "r" (addr), "i" (-EFAULT));       \
+@@ -129,8 +129,8 @@ do {                                                \
+ 		"j\t3b\n\t"                         \
+ 		".previous\n\t"                     \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 4b\n\t"               \
+-		PTR_STR"\t2b, 4b\n\t"               \
++		INST_PTR_STR"\t1b, 4b\n\t"          \
++		INST_PTR_STR"\t2b, 4b\n\t"          \
+ 		".previous"                         \
+ 		: "=&r" (value), "=r" (res)         \
+ 		: "r" (addr), "i" (-EFAULT));       \
+@@ -162,10 +162,10 @@ do {                                                \
+ 		"j\t10b\n\t"			    \
+ 		".previous\n\t"			    \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 11b\n\t"		    \
+-		PTR_STR"\t2b, 11b\n\t"		    \
+-		PTR_STR"\t3b, 11b\n\t"		    \
+-		PTR_STR"\t4b, 11b\n\t"		    \
++		INST_PTR_STR"\t1b, 11b\n\t"         \
++		INST_PTR_STR"\t2b, 11b\n\t"         \
++		INST_PTR_STR"\t3b, 11b\n\t"         \
++		INST_PTR_STR"\t4b, 11b\n\t"         \
+ 		".previous"			    \
+ 		: "=&r" (value), "=r" (res)	    \
+ 		: "r" (addr), "i" (-EFAULT));       \
+@@ -190,8 +190,8 @@ do {                                                \
+ 		"j\t3b\n\t"                         \
+ 		".previous\n\t"                     \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 4b\n\t"               \
+-		PTR_STR"\t2b, 4b\n\t"               \
++		INST_PTR_STR"\t1b, 4b\n\t"          \
++		INST_PTR_STR"\t2b, 4b\n\t"          \
+ 		".previous"                         \
+ 		: "=&r" (value), "=r" (res)         \
+ 		: "r" (addr), "i" (-EFAULT));       \
+@@ -213,8 +213,8 @@ do {                                                \
+ 		"j\t3b\n\t"                         \
+ 		".previous\n\t"                     \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 4b\n\t"               \
+-		PTR_STR"\t2b, 4b\n\t"               \
++		INST_PTR_STR"\t1b, 4b\n\t"          \
++		INST_PTR_STR"\t2b, 4b\n\t"          \
+ 		".previous"                         \
+ 		: "=&r" (value), "=r" (res)         \
+ 		: "r" (addr), "i" (-EFAULT));       \
+@@ -233,8 +233,8 @@ do {                                                \
+ 		"j\t3b\n\t"                         \
+ 		".previous\n\t"                     \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 4b\n\t"               \
+-		PTR_STR"\t2b, 4b\n\t"               \
++		INST_PTR_STR"\t1b, 4b\n\t"          \
++		INST_PTR_STR"\t2b, 4b\n\t"          \
+ 		".previous"                         \
+ 		: "=&r" (value), "=r" (res)         \
+ 		: "r" (addr), "i" (-EFAULT));       \
+@@ -266,10 +266,10 @@ do {                                                \
+ 		"j\t10b\n\t"			    \
+ 		".previous\n\t"			    \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 11b\n\t"		    \
+-		PTR_STR"\t2b, 11b\n\t"		    \
+-		PTR_STR"\t3b, 11b\n\t"		    \
+-		PTR_STR"\t4b, 11b\n\t"		    \
++		INST_PTR_STR"\t1b, 11b\n\t"         \
++		INST_PTR_STR"\t2b, 11b\n\t"         \
++		INST_PTR_STR"\t3b, 11b\n\t"         \
++		INST_PTR_STR"\t4b, 11b\n\t"         \
+ 		".previous"			    \
+ 		: "=&r" (value), "=r" (res)	    \
+ 		: "r" (addr), "i" (-EFAULT));       \
+@@ -311,14 +311,14 @@ do {                                                \
+ 		"j\t10b\n\t"			    \
+ 		".previous\n\t"			    \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 11b\n\t"		    \
+-		PTR_STR"\t2b, 11b\n\t"		    \
+-		PTR_STR"\t3b, 11b\n\t"		    \
+-		PTR_STR"\t4b, 11b\n\t"		    \
+-		PTR_STR"\t5b, 11b\n\t"		    \
+-		PTR_STR"\t6b, 11b\n\t"		    \
+-		PTR_STR"\t7b, 11b\n\t"		    \
+-		PTR_STR"\t8b, 11b\n\t"		    \
++		INST_PTR_STR"\t1b, 11b\n\t"         \
++		INST_PTR_STR"\t2b, 11b\n\t"         \
++		INST_PTR_STR"\t3b, 11b\n\t"         \
++		INST_PTR_STR"\t4b, 11b\n\t"         \
++		INST_PTR_STR"\t5b, 11b\n\t"         \
++		INST_PTR_STR"\t6b, 11b\n\t"         \
++		INST_PTR_STR"\t7b, 11b\n\t"         \
++		INST_PTR_STR"\t8b, 11b\n\t"         \
+ 		".previous"			    \
+ 		: "=&r" (value), "=r" (res)	    \
+ 		: "r" (addr), "i" (-EFAULT));       \
+@@ -343,8 +343,8 @@ do {                                                \
+ 		"j\t3b\n\t"                         \
+ 		".previous\n\t"                     \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 4b\n\t"              \
+-		PTR_STR"\t2b, 4b\n\t"              \
++		INST_PTR_STR"\t1b, 4b\n\t"          \
++		INST_PTR_STR"\t2b, 4b\n\t"          \
+ 		".previous"                         \
+ 		: "=r" (res)                        \
+ 		: "r" (value), "r" (addr), "i" (-EFAULT));\
+@@ -364,8 +364,8 @@ do {                                                \
+ 		"j\t3b\n\t"                         \
+ 		".previous\n\t"                     \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 4b\n\t"               \
+-		PTR_STR"\t2b, 4b\n\t"               \
++		INST_PTR_STR"\t1b, 4b\n\t"          \
++		INST_PTR_STR"\t2b, 4b\n\t"          \
+ 		".previous"                         \
+ 		: "=r" (res)                                \
+ 		: "r" (value), "r" (addr), "i" (-EFAULT));  \
+@@ -384,8 +384,8 @@ do {                                                \
+ 		"j\t3b\n\t"                         \
+ 		".previous\n\t"                     \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 4b\n\t"               \
+-		PTR_STR"\t2b, 4b\n\t"               \
++		INST_PTR_STR"\t1b, 4b\n\t"          \
++		INST_PTR_STR"\t2b, 4b\n\t"          \
+ 		".previous"                         \
+ 		: "=r" (res)                                \
+ 		: "r" (value), "r" (addr), "i" (-EFAULT));  \
+@@ -413,10 +413,10 @@ do {                                                \
+ 		"j\t10b\n\t"			    \
+ 		".previous\n\t"			    \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 11b\n\t"		    \
+-		PTR_STR"\t2b, 11b\n\t"		    \
+-		PTR_STR"\t3b, 11b\n\t"		    \
+-		PTR_STR"\t4b, 11b\n\t"		    \
++		INST_PTR_STR"\t1b, 11b\n\t"         \
++		INST_PTR_STR"\t2b, 11b\n\t"         \
++		INST_PTR_STR"\t3b, 11b\n\t"         \
++		INST_PTR_STR"\t4b, 11b\n\t"         \
+ 		".previous"			    \
+ 		: "=&r" (res)				    \
+ 		: "r" (value), "r" (addr), "i" (-EFAULT)    \
+@@ -453,14 +453,14 @@ do {                                                \
+ 		"j\t10b\n\t"			    \
+ 		".previous\n\t"			    \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 11b\n\t"		    \
+-		PTR_STR"\t2b, 11b\n\t"		    \
+-		PTR_STR"\t3b, 11b\n\t"		    \
+-		PTR_STR"\t4b, 11b\n\t"		    \
+-		PTR_STR"\t5b, 11b\n\t"		    \
+-		PTR_STR"\t6b, 11b\n\t"		    \
+-		PTR_STR"\t7b, 11b\n\t"		    \
+-		PTR_STR"\t8b, 11b\n\t"		    \
++		INST_PTR_STR"\t1b, 11b\n\t"         \
++		INST_PTR_STR"\t2b, 11b\n\t"         \
++		INST_PTR_STR"\t3b, 11b\n\t"         \
++		INST_PTR_STR"\t4b, 11b\n\t"         \
++		INST_PTR_STR"\t5b, 11b\n\t"         \
++		INST_PTR_STR"\t6b, 11b\n\t"         \
++		INST_PTR_STR"\t7b, 11b\n\t"         \
++		INST_PTR_STR"\t8b, 11b\n\t"         \
+ 		".previous"			    \
+ 		: "=&r" (res)				    \
+ 		: "r" (value), "r" (addr), "i" (-EFAULT)    \
+@@ -486,8 +486,8 @@ do {                                                \
+ 		"j\t3b\n\t"                         \
+ 		".previous\n\t"                     \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 4b\n\t"               \
+-		PTR_STR"\t2b, 4b\n\t"               \
++		INST_PTR_STR"\t1b, 4b\n\t"          \
++		INST_PTR_STR"\t2b, 4b\n\t"          \
+ 		".previous"                         \
+ 		: "=&r" (value), "=r" (res)         \
+ 		: "r" (addr), "i" (-EFAULT));       \
+@@ -507,8 +507,8 @@ do {                                                \
+ 		"j\t3b\n\t"                         \
+ 		".previous\n\t"                     \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 4b\n\t"               \
+-		PTR_STR"\t2b, 4b\n\t"               \
++		INST_PTR_STR"\t1b, 4b\n\t"          \
++		INST_PTR_STR"\t2b, 4b\n\t"          \
+ 		".previous"                         \
+ 		: "=&r" (value), "=r" (res)         \
+ 		: "r" (addr), "i" (-EFAULT));       \
+@@ -540,10 +540,10 @@ do {                                                \
+ 		"j\t10b\n\t"			    \
+ 		".previous\n\t"			    \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 11b\n\t"		    \
+-		PTR_STR"\t2b, 11b\n\t"		    \
+-		PTR_STR"\t3b, 11b\n\t"		    \
+-		PTR_STR"\t4b, 11b\n\t"		    \
++		INST_PTR_STR"\t1b, 11b\n\t"         \
++		INST_PTR_STR"\t2b, 11b\n\t"         \
++		INST_PTR_STR"\t3b, 11b\n\t"         \
++		INST_PTR_STR"\t4b, 11b\n\t"         \
+ 		".previous"			    \
+ 		: "=&r" (value), "=r" (res)	    \
+ 		: "r" (addr), "i" (-EFAULT));       \
+@@ -569,8 +569,8 @@ do {                                                \
+ 		"j\t3b\n\t"                         \
+ 		".previous\n\t"                     \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 4b\n\t"               \
+-		PTR_STR"\t2b, 4b\n\t"               \
++		INST_PTR_STR"\t1b, 4b\n\t"          \
++		INST_PTR_STR"\t2b, 4b\n\t"          \
+ 		".previous"                         \
+ 		: "=&r" (value), "=r" (res)         \
+ 		: "r" (addr), "i" (-EFAULT));       \
+@@ -592,8 +592,8 @@ do {                                                \
+ 		"j\t3b\n\t"                         \
+ 		".previous\n\t"                     \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 4b\n\t"               \
+-		PTR_STR"\t2b, 4b\n\t"               \
++		INST_PTR_STR"\t1b, 4b\n\t"          \
++		INST_PTR_STR"\t2b, 4b\n\t"          \
+ 		".previous"                         \
+ 		: "=&r" (value), "=r" (res)         \
+ 		: "r" (addr), "i" (-EFAULT));       \
+@@ -612,8 +612,8 @@ do {                                                \
+ 		"j\t3b\n\t"                         \
+ 		".previous\n\t"                     \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 4b\n\t"               \
+-		PTR_STR"\t2b, 4b\n\t"               \
++		INST_PTR_STR"\t1b, 4b\n\t"          \
++		INST_PTR_STR"\t2b, 4b\n\t"          \
+ 		".previous"                         \
+ 		: "=&r" (value), "=r" (res)         \
+ 		: "r" (addr), "i" (-EFAULT));       \
+@@ -645,10 +645,10 @@ do {                                                \
+ 		"j\t10b\n\t"			    \
+ 		".previous\n\t"			    \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 11b\n\t"		    \
+-		PTR_STR"\t2b, 11b\n\t"		    \
+-		PTR_STR"\t3b, 11b\n\t"		    \
+-		PTR_STR"\t4b, 11b\n\t"		    \
++		INST_PTR_STR"\t1b, 11b\n\t"         \
++		INST_PTR_STR"\t2b, 11b\n\t"         \
++		INST_PTR_STR"\t3b, 11b\n\t"         \
++		INST_PTR_STR"\t4b, 11b\n\t"         \
+ 		".previous"			    \
+ 		: "=&r" (value), "=r" (res)	    \
+ 		: "r" (addr), "i" (-EFAULT));       \
+@@ -690,14 +690,14 @@ do {                                                \
+ 		"j\t10b\n\t"			    \
+ 		".previous\n\t"			    \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 11b\n\t"		    \
+-		PTR_STR"\t2b, 11b\n\t"		    \
+-		PTR_STR"\t3b, 11b\n\t"		    \
+-		PTR_STR"\t4b, 11b\n\t"		    \
+-		PTR_STR"\t5b, 11b\n\t"		    \
+-		PTR_STR"\t6b, 11b\n\t"		    \
+-		PTR_STR"\t7b, 11b\n\t"		    \
+-		PTR_STR"\t8b, 11b\n\t"		    \
++		INST_PTR_STR"\t1b, 11b\n\t"         \
++		INST_PTR_STR"\t2b, 11b\n\t"         \
++		INST_PTR_STR"\t3b, 11b\n\t"         \
++		INST_PTR_STR"\t4b, 11b\n\t"         \
++		INST_PTR_STR"\t5b, 11b\n\t"         \
++		INST_PTR_STR"\t6b, 11b\n\t"         \
++		INST_PTR_STR"\t7b, 11b\n\t"         \
++		INST_PTR_STR"\t8b, 11b\n\t"         \
+ 		".previous"			    \
+ 		: "=&r" (value), "=r" (res)	    \
+ 		: "r" (addr), "i" (-EFAULT));       \
+@@ -720,8 +720,8 @@ do {                                                 \
+ 		"j\t3b\n\t"                         \
+ 		".previous\n\t"                     \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 4b\n\t"               \
+-		PTR_STR"\t2b, 4b\n\t"               \
++		INST_PTR_STR"\t1b, 4b\n\t"          \
++		INST_PTR_STR"\t2b, 4b\n\t"          \
+ 		".previous"                         \
+ 		: "=r" (res)                        \
+ 		: "r" (value), "r" (addr), "i" (-EFAULT));\
+@@ -741,8 +741,8 @@ do {                                                \
+ 		"j\t3b\n\t"                         \
+ 		".previous\n\t"                     \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 4b\n\t"               \
+-		PTR_STR"\t2b, 4b\n\t"               \
++		INST_PTR_STR"\t1b, 4b\n\t"          \
++		INST_PTR_STR"\t2b, 4b\n\t"          \
+ 		".previous"                         \
+ 		: "=r" (res)                                \
+ 		: "r" (value), "r" (addr), "i" (-EFAULT));  \
+@@ -761,8 +761,8 @@ do {                                                \
+ 		"j\t3b\n\t"                         \
+ 		".previous\n\t"                     \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 4b\n\t"               \
+-		PTR_STR"\t2b, 4b\n\t"               \
++		INST_PTR_STR"\t1b, 4b\n\t"          \
++		INST_PTR_STR"\t2b, 4b\n\t"          \
+ 		".previous"                         \
+ 		: "=r" (res)                                \
+ 		: "r" (value), "r" (addr), "i" (-EFAULT));  \
+@@ -791,10 +791,10 @@ do {                                                \
+ 		"j\t10b\n\t"			    \
+ 		".previous\n\t"			    \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 11b\n\t"		    \
+-		PTR_STR"\t2b, 11b\n\t"		    \
+-		PTR_STR"\t3b, 11b\n\t"		    \
+-		PTR_STR"\t4b, 11b\n\t"		    \
++		INST_PTR_STR"\t1b, 11b\n\t"         \
++		INST_PTR_STR"\t2b, 11b\n\t"         \
++		INST_PTR_STR"\t3b, 11b\n\t"         \
++		INST_PTR_STR"\t4b, 11b\n\t"         \
+ 		".previous"			    \
+ 		: "=&r" (res)				    \
+ 		: "r" (value), "r" (addr), "i" (-EFAULT)    \
+@@ -831,14 +831,14 @@ do {                                                \
+ 		"j\t10b\n\t"			    \
+ 		".previous\n\t"			    \
+ 		".section\t__ex_table,\"a\"\n\t"    \
+-		PTR_STR"\t1b, 11b\n\t"		    \
+-		PTR_STR"\t2b, 11b\n\t"		    \
+-		PTR_STR"\t3b, 11b\n\t"		    \
+-		PTR_STR"\t4b, 11b\n\t"		    \
+-		PTR_STR"\t5b, 11b\n\t"		    \
+-		PTR_STR"\t6b, 11b\n\t"		    \
+-		PTR_STR"\t7b, 11b\n\t"		    \
+-		PTR_STR"\t8b, 11b\n\t"		    \
++		INST_PTR_STR"\t1b, 11b\n\t"         \
++		INST_PTR_STR"\t2b, 11b\n\t"         \
++		INST_PTR_STR"\t3b, 11b\n\t"         \
++		INST_PTR_STR"\t4b, 11b\n\t"         \
++		INST_PTR_STR"\t5b, 11b\n\t"         \
++		INST_PTR_STR"\t6b, 11b\n\t"         \
++		INST_PTR_STR"\t7b, 11b\n\t"         \
++		INST_PTR_STR"\t8b, 11b\n\t"         \
+ 		".previous"			    \
+ 		: "=&r" (res)				    \
+ 		: "r" (value), "r" (addr), "i" (-EFAULT)    \
+-- 
+2.1.0
 
-> > +                             return -ECHILD;
-> > +                     }
-> > +                     queue_work(optee->scan_bus_wq, &optee->scan_bus_work);
-> > +                     optee->scan_bus_done = true;
-> > +             }
-> > +     }
-> >       mutex_init(&ctxdata->mutex);
-> >       INIT_LIST_HEAD(&ctxdata->sess_list);
-> >
-> > @@ -296,8 +316,10 @@ static void optee_release(struct tee_context *ctx)
-> >
-> >       ctx->data = NULL;
-> >
-> > -     if (teedev == optee->supp_teedev)
-> > +     if (teedev == optee->supp_teedev) {
-> > +             destroy_workqueue(optee->scan_bus_wq);
-> >               optee_supp_release(&optee->supp);
-> > +     }
-> >  }
-> >
-> >  static const struct tee_driver_ops optee_ops = {
-> > @@ -675,7 +697,7 @@ static int optee_probe(struct platform_device *pdev)
-> >
-> >       platform_set_drvdata(pdev, optee);
-> >
-> > -     rc = optee_enumerate_devices();
-> > +     rc = optee_enumerate_devices(PTA_CMD_GET_DEVICES);
-> >       if (rc) {
-> >               optee_remove(pdev);
-> >               return rc;
-> > diff --git a/drivers/tee/optee/device.c b/drivers/tee/optee/device.c
-> > index e3a148521ec1..d4931dad07aa 100644
-> > --- a/drivers/tee/optee/device.c
-> > +++ b/drivers/tee/optee/device.c
-> > @@ -21,7 +21,6 @@
-> >   * TEE_ERROR_BAD_PARAMETERS - Incorrect input param
-> >   * TEE_ERROR_SHORT_BUFFER - Output buffer size less than required
-> >   */
-> > -#define PTA_CMD_GET_DEVICES          0x0
-> >
-> >  static int optee_ctx_match(struct tee_ioctl_version_data *ver, const void *data)
-> >  {
-> > @@ -32,7 +31,8 @@ static int optee_ctx_match(struct tee_ioctl_version_data *ver, const void *data)
-> >  }
-> >
-> >  static int get_devices(struct tee_context *ctx, u32 session,
-> > -                    struct tee_shm *device_shm, u32 *shm_size)
-> > +                    struct tee_shm *device_shm, u32 *shm_size,
-> > +                    u32 func)
-> >  {
-> >       int ret = 0;
-> >       struct tee_ioctl_invoke_arg inv_arg;
-> > @@ -42,7 +42,7 @@ static int get_devices(struct tee_context *ctx, u32 session,
-> >       memset(&param, 0, sizeof(param));
-> >
-> >       /* Invoke PTA_CMD_GET_DEVICES function */
-> > -     inv_arg.func = PTA_CMD_GET_DEVICES;
-> > +     inv_arg.func = func;
-> >       inv_arg.session = session;
-> >       inv_arg.num_params = 4;
-> >
-> > @@ -87,7 +87,7 @@ static int optee_register_device(const uuid_t *device_uuid, u32 device_id)
-> >       return rc;
-> >  }
-> >
-> > -int optee_enumerate_devices(void)
-> > +static int __optee_enumerate_devices(u32 func)
-> >  {
-> >       const uuid_t pta_uuid =
-> >               UUID_INIT(0x7011a688, 0xddde, 0x4053,
-> > @@ -118,7 +118,7 @@ int optee_enumerate_devices(void)
-> >               goto out_ctx;
-> >       }
-> >
-> > -     rc = get_devices(ctx, sess_arg.session, NULL, &shm_size);
-> > +     rc = get_devices(ctx, sess_arg.session, NULL, &shm_size, func);
-> >       if (rc < 0 || !shm_size)
-> >               goto out_sess;
-> >
-> > @@ -130,7 +130,7 @@ int optee_enumerate_devices(void)
-> >               goto out_sess;
-> >       }
-> >
-> > -     rc = get_devices(ctx, sess_arg.session, device_shm, &shm_size);
-> > +     rc = get_devices(ctx, sess_arg.session, device_shm, &shm_size, func);
-> >       if (rc < 0)
-> >               goto out_shm;
-> >
-> > @@ -158,3 +158,8 @@ int optee_enumerate_devices(void)
-> >
-> >       return rc;
-> >  }
-> > +
-> > +int optee_enumerate_devices(u32 func)
-> > +{
-> > +     return  __optee_enumerate_devices(func);
-> > +}
-> > diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
-> > index d9c5037b4e03..8b71839a357e 100644
-> > --- a/drivers/tee/optee/optee_private.h
-> > +++ b/drivers/tee/optee/optee_private.h
-> > @@ -78,6 +78,9 @@ struct optee_supp {
-> >   * @memremaped_shm   virtual address of memory in shared memory pool
-> >   * @sec_caps:                secure world capabilities defined by
-> >   *                   OPTEE_SMC_SEC_CAP_* in optee_smc.h
-> > + * @scan_bus_done    flag if device registation was already done.
-> > + * @scan_bus_wq              workqueue to scan optee bus and register optee drivers
-> > + * @scan_bus_work    workq to scan optee bus and register optee drivers
-> >   */
-> >  struct optee {
-> >       struct tee_device *supp_teedev;
-> > @@ -89,6 +92,9 @@ struct optee {
-> >       struct tee_shm_pool *pool;
-> >       void *memremaped_shm;
-> >       u32 sec_caps;
-> > +     bool   scan_bus_done;
-> > +     struct workqueue_struct *scan_bus_wq;
-> > +     struct work_struct scan_bus_work;
-> >  };
-> >
-> >  struct optee_session {
-> > @@ -173,7 +179,9 @@ void optee_free_pages_list(void *array, size_t num_entries);
-> >  void optee_fill_pages_list(u64 *dst, struct page **pages, int num_pages,
-> >                          size_t page_offset);
-> >
-> > -int optee_enumerate_devices(void);
-> > +#define PTA_CMD_GET_DEVICES          0x0
-> > +#define PTA_CMD_GET_DEVICES_SUPP     0x1
-> > +int optee_enumerate_devices(u32 func);
-> >
-> >  /*
-> >   * Small helpers
->
-> No exalanation of "scan bus" neither in the comments nor in the code.
->
-
-Idea was when tee-supplicant opens /dev/tee-priv0 then we run
-workqueue (to not hold current open()) and do bus scan for TA
-applications which require tee-supplicant run. There is no "scan bus"
-as API. The is optee_enumerate_devices() is split up on 2 stages.
-
-Maxim.
-
-> /Jarkko
->
