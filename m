@@ -2,74 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D5F1E5BAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 11:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 084FD1E5BD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 11:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728302AbgE1JSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 05:18:08 -0400
-Received: from mail5.windriver.com ([192.103.53.11]:45938 "EHLO mail5.wrs.com"
+        id S1728282AbgE1J1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 05:27:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728189AbgE1JSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 05:18:07 -0400
-Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
-        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 04S9GnEi027229
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Thu, 28 May 2020 02:17:01 -0700
-Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
- ALA-HCB.corp.ad.wrs.com (147.11.189.41) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 28 May 2020 02:16:31 -0700
-From:   <qiang.zhang@windriver.com>
-To:     <tj@kernel.org>
-CC:     <jiangshanlai@gmail.com>, <markus.elfring@web.de>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v7] workqueue: Remove unnecessary kfree() call in rcu_free_wq()
-Date:   Thu, 28 May 2020 17:25:18 +0800
-Message-ID: <20200528092518.29046-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.24.1
+        id S1728199AbgE1J1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 05:27:51 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84A7D2075F;
+        Thu, 28 May 2020 09:27:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590658070;
+        bh=k57ddZ2iG3xeSeJ5Opn/1ZWN3PgWXYsjUWkH9TCCVbQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dHKZuFzE5C9C1v4QFWTmR55+/PKpg1Cseo6a3nFPaVNNUV/tmuflNqp4PHFKgoWRw
+         xl1EOJJCtB+LT7ssh2ufuPzUGc3xf+K0OSNDU6qPhWFVKON8iqfPXYin5aDQC0Zle+
+         molQBuTJNIZ3N5yDCzoaR+dgHoQtzVIYCTrXvIdg=
+Date:   Thu, 28 May 2020 11:27:47 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Enderborg, Peter" <Peter.Enderborg@sony.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] debugfs: Add mount restriction option
+Message-ID: <20200528092747.GA3007208@kroah.com>
+References: <20200528080031.24149-1-peter.enderborg@sony.com>
+ <20200528082753.GA2920930@kroah.com>
+ <3e1be4dc-01d4-7fc5-1c82-1c792d3fbc11@sony.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3e1be4dc-01d4-7fc5-1c82-1c792d3fbc11@sony.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qiang <qiang.zhang@windriver.com>
+On Thu, May 28, 2020 at 08:39:02AM +0000, Enderborg, Peter wrote:
+> On 5/28/20 10:27 AM, Greg Kroah-Hartman wrote:
+> > On Thu, May 28, 2020 at 10:00:31AM +0200, Peter Enderborg wrote:
+> >> Since debugfs include sensitive information it need to be treated
+> >> carefully. But it also has many very useful debug functions for userspace.
+> >> With this option we can have same configuration for system with
+> >> need of debugfs and a way to turn it off. It is needed new
+> >> kernel command line parameter to be activated.
+> > By "configuration" do you mean "kernel configuration"?  What is wrong
+> > with relying on the build option like we do today?
+> >
+> > You might want to reword all of this to make more sense about the
+> > "problem" you are trying to solve here, as I don't really understand it,
+> > sorry.
+> >
+> >
+> >> Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
+> >> ---
+> >>  fs/debugfs/inode.c | 17 ++++++++++++++++-
+> >>  lib/Kconfig.debug  | 10 ++++++++++
+> >>  2 files changed, 26 insertions(+), 1 deletion(-)
+> > No documentation update?  That's not good :(
+> >
+> >
+> >> diff --git a/fs/debugfs/inode.c b/fs/debugfs/inode.c
+> >> index b7f2e971ecbc..bde37dab77e0 100644
+> >> --- a/fs/debugfs/inode.c
+> >> +++ b/fs/debugfs/inode.c
+> >> @@ -786,10 +786,25 @@ bool debugfs_initialized(void)
+> >>  }
+> >>  EXPORT_SYMBOL_GPL(debugfs_initialized);
+> >>  
+> >> +static int allow_debugfs;
+> >> +
+> >> +static int __init debugfs_kernel(char *str)
+> >> +{
+> >> +	if (str && !strcmp(str, "true"))
+> >> +		allow_debugfs = true;
+> >> +
+> >> +	return 0;
+> >> +
+> >> +}
+> >> +early_param("debugfs", debugfs_kernel);
+> >> +
+> >>  static int __init debugfs_init(void)
+> >>  {
+> >>  	int retval;
+> >> -
+> >> +#ifdef CONFIG_DEBUG_FS_MOUNT_RESTRICTED
+> >> +	if (!allow_debugfs)
+> >> +		return -EPERM;
+> >> +#endif
+> > But you are not restricting the ability to mount it here, you are
+> > removing the ability for it to even start up at all.  What does this
+> > break for code that thinks the filesystem is registered (i.e. the call
+> > to simple_pin_fs() in start_creating() in fs/debugfs/inode.c?
+> >
+> If it does, the lines below is also cause the same problem.
 
-The data structure member "wq->rescuer" was reset to a null pointer
-in one if branch. It was passed to a call of the function "kfree"
-in the callback function "rcu_free_wq" (which was eventually executed).
-The function "kfree" does not perform more meaningful data processing
-for a passed null pointer (besides immediately returning from such a call).
-Thus delete this function call which became unnecessary with the referenced
-software update.
+In a working system, errors in the lines below will never happen :)
 
-Fixes: def98c84b6cd ("workqueue: Fix spurious sanity check failures in destroy_workqueue()")
+thanks,
 
-Co-developed-by: Markus Elfring <Markus.Elfring@web.de>
-Signed-off-by: Markus Elfring <Markus.Elfring@web.de>
-Co-developed-by: Lai Jiangshan <jiangshanlai@gmail.com>
-Signed-off-by: Lai Jiangshan <jiangshanlai@gmail.com>
-Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
----
- v1->v2->v3->v4->v5->v6->v7:
- Modify weakly submitted information and tag.
-
- kernel/workqueue.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 891ccad5f271..a2451cdcd503 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -3491,7 +3491,6 @@ static void rcu_free_wq(struct rcu_head *rcu)
- 	else
- 		free_workqueue_attrs(wq->unbound_attrs);
- 
--	kfree(wq->rescuer);
- 	kfree(wq);
- }
- 
--- 
-2.24.1
-
+greg k-h
