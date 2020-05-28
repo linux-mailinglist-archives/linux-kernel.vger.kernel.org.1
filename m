@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B661E599C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 09:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C14C1E59C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 09:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726482AbgE1HqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 03:46:22 -0400
-Received: from elvis.franken.de ([193.175.24.41]:42145 "EHLO elvis.franken.de"
+        id S1726635AbgE1HrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 03:47:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:48838 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725747AbgE1HqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 03:46:22 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jeDF0-0000aG-02; Thu, 28 May 2020 09:46:14 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 173BFC05A4; Thu, 28 May 2020 09:45:39 +0200 (CEST)
-Date:   Thu, 28 May 2020 09:45:39 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Loongson64: Define PCI_IOBASE
-Message-ID: <20200528074539.GC10708@alpha.franken.de>
-References: <20200527131721.646926-1-jiaxun.yang@flygoat.com>
+        id S1725747AbgE1HrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 03:47:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 250E731B;
+        Thu, 28 May 2020 00:47:12 -0700 (PDT)
+Received: from [10.163.78.176] (unknown [10.163.78.176])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A4AC53F52E;
+        Thu, 28 May 2020 00:47:09 -0700 (PDT)
+Subject: Re: [PATCH V3] arm64/cpufeature: Add get_arm64_ftr_reg_nowarn()
+To:     Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>, mark.rutland@arm.com,
+        suzuki.poulose@arm.com
+References: <1590573876-19120-1-git-send-email-anshuman.khandual@arm.com>
+ <159057996975.77588.7036217455816555869.b4-ty@kernel.org>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <398e2d07-3076-9266-ae16-1be64e221fc7@arm.com>
+Date:   Thu, 28 May 2020 13:16:16 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200527131721.646926-1-jiaxun.yang@flygoat.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <159057996975.77588.7036217455816555869.b4-ty@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 09:17:21PM +0800, Jiaxun Yang wrote:
-> PCI_IOBASE is used to create VM maps for PCI I/O ports, it is
-> required by generic PCI drivers to make memory mapped I/O range
-> work.
+
+
+On 05/27/2020 05:55 PM, Will Deacon wrote:
+> On Wed, 27 May 2020 15:34:36 +0530, Anshuman Khandual wrote:
+>> There is no way to proceed when requested register could not be searched in
+>> arm64_ftr_reg[]. Requesting for a non present register would be an error as
+>> well. Hence lets just WARN_ON() when search fails in get_arm64_ftr_reg()
+>> rather than checking for return value and doing a BUG_ON() instead in some
+>> individual callers. But there are also caller instances that dont error out
+>> when register search fails. Add a new helper get_arm64_ftr_reg_nowarn() for
+>> such cases.
 > 
-> To deal with legacy drivers that have fixed I/O ports range we
-> reserved 0x10000 in PCI_IOBASE, should be enough for i8259 i8042
-> stuff.
+> Applied to arm64 (for-next/cpufeature), thanks!
 > 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> ---
->  .../mips/include/asm/mach-loongson64/spaces.h |  8 ++++
->  arch/mips/loongson64/init.c                   | 42 ++++++++++++++++++-
->  2 files changed, 48 insertions(+), 2 deletions(-)
+> [1/1] arm64/cpufeature: Add get_arm64_ftr_reg_nowarn()
+>       https://git.kernel.org/arm64/c/3577dd37c703
 
-that looks so much nicer, thank you for doing this. Applied to mips-next.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Thanks Will, for changing the comment per Catalin.
