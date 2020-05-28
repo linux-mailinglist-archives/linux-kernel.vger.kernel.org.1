@@ -2,112 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D061E5D2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 12:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B171E5D2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 12:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387878AbgE1K3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 06:29:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387740AbgE1K3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 06:29:01 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7AE0A208A7;
-        Thu, 28 May 2020 10:29:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590661740;
-        bh=lJCv+y3Stmi60RqMCVzfyZuka7AvcVB3eQtCkL3vvxg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rm3chmkmSkSOn7CkNK4xlgDwPHp1fdW1d5tTlE/evovRynijUTTr+GDaNr/G+l6Ne
-         OB61g//Nb+NsNrJXlGT8eNzq+Xg3KtykW0fyno/VyOPyeTWaieG/kMiPPey/ajTmue
-         uIj7pqMQhl+oNqq9mxyvEDhapSNq//Z1w9MsuMaI=
-Received: by pali.im (Postfix)
-        id 27B5A7B2; Thu, 28 May 2020 12:28:58 +0200 (CEST)
-Date:   Thu, 28 May 2020 12:28:58 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mwifiex: Parse all API_VER_ID properties
-Message-ID: <20200528102858.riwsja5utqix6wqo@pali>
-References: <20200521123444.28957-1-pali@kernel.org>
+        id S2387900AbgE1K3r convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 May 2020 06:29:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387891AbgE1K3W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 06:29:22 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E022C05BD1E
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 03:29:22 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jeFmk-0004AL-85; Thu, 28 May 2020 12:29:14 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 949F0100D01; Thu, 28 May 2020 12:29:13 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Don Porter <porter@cs.unc.edu>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>, Sasha Levin <sashal@kernel.org>,
+        linux-kernel@vger.kernel.org, bp@alien8.de, luto@kernel.org,
+        hpa@zytor.com, dave.hansen@intel.com, tony.luck@intel.com,
+        ravi.v.shankar@intel.com, chang.seok.bae@intel.com
+Subject: Re: [PATCH v12 00/18] Enable FSGSBASE instructions
+In-Reply-To: <c5fffcd1-c262-7046-a047-67de2bbccd78@cs.unc.edu>
+References: <20200511045311.4785-1-sashal@kernel.org> <0186c22a8a6be1516df0703c421faaa581041774.camel@linux.intel.com> <20200515164013.GF29995@sasha-vm> <c566b89cc3ef6c164160cc56a820abac3fd70839.camel@linux.intel.com> <20200518153407.GA499505@tassilo.jf.intel.com> <371e6a92cad25cbe7a8489785efa7d3457ecef3b.camel@linux.intel.com> <87v9ksvoaq.fsf@nanos.tec.linutronix.de> <20200519164853.GA19706@linux.intel.com> <7eb45e02-03bf-0af0-c915-794bf49d66d7@cs.unc.edu> <87h7w7qy18.fsf@nanos.tec.linutronix.de> <c5fffcd1-c262-7046-a047-67de2bbccd78@cs.unc.edu>
+Date:   Thu, 28 May 2020 12:29:13 +0200
+Message-ID: <87d06opd3a.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200521123444.28957-1-pali@kernel.org>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8BIT
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 21 May 2020 14:34:44 Pali Rohár wrote:
-> During initialization of SD8997 wifi chip kernel prints warnings:
-> 
->   mwifiex_sdio mmc0:0001:1: Unknown api_id: 3
->   mwifiex_sdio mmc0:0001:1: Unknown api_id: 4
-> 
-> This patch adds support for parsing all api ids provided by SD8997
-> firmware.
-> 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> ---
->  drivers/net/wireless/marvell/mwifiex/cmdevt.c | 17 +++++++++++++++--
->  drivers/net/wireless/marvell/mwifiex/fw.h     |  2 ++
->  2 files changed, 17 insertions(+), 2 deletions(-)
-> 
+Don,
 
-Hello! Could you please look at this trivial patch?
+Don Porter <porter@cs.unc.edu> writes:
+> On 5/22/20 8:45 PM, Thomas Gleixner wrote:
+> The threat model for Graphene, and most SGX papers, is quite explicit: 
+> we assume that Intel’s CPU package, the software in the enclave, and 
+> possibly Intel’s Attestation Service (IAS) are the only trusted 
+> components.  Any other software should be assumed compromised, and one 
+> can even assume memory is physically tampered or that one has plugged in 
+> an adversarial device. It is not a question of the limitations of the 
+> kernel, the threat model assumes that the kernel is already rooted.
 
-> diff --git a/drivers/net/wireless/marvell/mwifiex/cmdevt.c b/drivers/net/wireless/marvell/mwifiex/cmdevt.c
-> index 7e4b8cd52..589cc5eb1 100644
-> --- a/drivers/net/wireless/marvell/mwifiex/cmdevt.c
-> +++ b/drivers/net/wireless/marvell/mwifiex/cmdevt.c
-> @@ -1581,8 +1581,21 @@ int mwifiex_ret_get_hw_spec(struct mwifiex_private *priv,
->  					adapter->fw_api_ver =
->  							api_rev->major_ver;
->  					mwifiex_dbg(adapter, INFO,
-> -						    "Firmware api version %d\n",
-> -						    adapter->fw_api_ver);
-> +						    "Firmware api version %d.%d\n",
-> +						    adapter->fw_api_ver,
-> +						    api_rev->minor_ver);
-> +					break;
-> +				case UAP_FW_API_VER_ID:
-> +					mwifiex_dbg(adapter, INFO,
-> +						    "uAP api version %d.%d\n",
-> +						    api_rev->major_ver,
-> +						    api_rev->minor_ver);
-> +					break;
-> +				case CHANRPT_API_VER_ID:
-> +					mwifiex_dbg(adapter, INFO,
-> +						    "channel report api version %d.%d\n",
-> +						    api_rev->major_ver,
-> +						    api_rev->minor_ver);
->  					break;
->  				default:
->  					mwifiex_dbg(adapter, FATAL,
-> diff --git a/drivers/net/wireless/marvell/mwifiex/fw.h b/drivers/net/wireless/marvell/mwifiex/fw.h
-> index a415d73a7..6f86f5b96 100644
-> --- a/drivers/net/wireless/marvell/mwifiex/fw.h
-> +++ b/drivers/net/wireless/marvell/mwifiex/fw.h
-> @@ -1052,6 +1052,8 @@ struct host_cmd_ds_802_11_ps_mode_enh {
->  enum API_VER_ID {
->  	KEY_API_VER_ID = 1,
->  	FW_API_VER_ID = 2,
-> +	UAP_FW_API_VER_ID = 3,
-> +	CHANRPT_API_VER_ID = 4,
->  };
->  
->  struct hw_spec_api_rev {
-> -- 
-> 2.20.1
-> 
+I'm well aware about that model and that the research is focussed on
+this.
+
+> For the community these papers are typically written to, this assumption 
+> would be well understood.  And thus it is common to see code artifacts 
+> that might emulate or even undermine security of untrusted
+> components.
+
+No disagreement here.
+
+> Not appropriate for production use, but for the typical audience, this 
+> risk would be understood.  And, initially, when people started using 
+> Graphene, I checked who they were - almost exclusively SGX researchers 
+> who would have this context.  It has only been recently that the 
+> interest has grown to a level that these sorts of warnings need to be 
+> revised for a more general audience.  But the point that we should 
+> revise our readme and warnings for a more general audience is well
+> taken.
+
+The problem is that this has spread out. And it's not only Graphene.
+
+As at least two different incarnations originate from Intel written by
+two different Intel people, it's really on Intel to get the message out
+that enabling FSGSBASE behind the kernels back is a horrible idea.
+
+>> It's beyond hillarious that the renewed attempt to get FSGSBASE support
+>> merged does not come from the company which has the main interest to get
+>> this solved, i.e Intel.
+>
+> Yes!  I think we are in agreement that we expected Intel to upstream 
+> this support - it is their product. I don’t see why I am personally 
+> responsible to come to the aid of a multi-billion dollar corporation in 
+> my free time, or that it is wrong to at least let them try first and see 
+> how far they get.
+
+You surely are not responsible. It's definitely Intel's fault.
+
+> Until recently, we were doing proof-of-concept research, not product 
+> development, and there are limited hours in the day.  I also hasten to 
+> say that the product of research is an article, the software artifact 
+> serves as documentation of the experiment.  In contrast, the product of 
+> software development is software.  It takes significant time and effort 
+> to convert one to the other.  Upstreaming code is of little scientific 
+> interest.  But things have changed for our project; we had no users in 
+> 2015 and we are now un-cutting corners that are appropriate for research 
+> but inappropriate for production.  For a research artifact with an 
+> audience that knew the risks, we shipped a module because it was easier 
+> to maintain and install than a kernel patch.
+
+I understand that and with a big fat warning and documentation from
+start I wouldn't have complained so vehemently. 
+
+> Also, there is a chicken-and-egg problem here: AFAIU a kernel patch 
+> needs a userspace demonstration to motivate merging.  We can’t do a 
+> userspace demonstration without this feature.  My main interest in 
+> showing up for this discussion was to try to make the case that, 
+> compared to 2015, there is a more convincing userspace demonstration and 
+> larger population of interested users.
+
+As one of the X86 maintainers I have to say that we were perfectly
+willing to merge FSGSBASE even without the SGX background. There are
+perfect other reasons to do so.
+
+> As far as the patch and pull request, I personally think the right thing 
+> to do is add the warnings you suggest, help test this or another kernel 
+> patch, and advise users that patching their kernel is more secure than 
+> this module.  I am not in favor of fully deleting the module, in the 
+> interest of transparency and reproducibility.
+
+Fair enough.
+
+> Finally, I must rebut the claim that my research abuses public funds to 
+> advertise for Intel.  I have been working on this problem since before I 
+> knew SGX existed, and have been completely transparent regarding 
+> subsequent collaborations with Intel.  I believe that understanding the 
+> pros and cons of different techniques to harden an application against a 
+> compromised kernel is in the public interest, and my research projects 
+> have been reviewed and overseen according to standard practices at both 
+> the university and US government funding agencies.  The expectations of 
+> agencies in the US funding research are the paper, the insights, and 
+> proof-of-concept software; converting proof-of-concept software into 
+> production quality is generally considered a “nice to have”.
+
+Sorry for that innuendo. Now that my anger and general frustration about
+this whole disaster have calmed down, I surely would not write that
+again.
+
+Thanks,
+
+        Thomas
