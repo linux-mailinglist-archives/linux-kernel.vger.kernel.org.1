@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 185E81E63BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AE641E63D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391030AbgE1OXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 10:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41024 "EHLO
+        id S2391154AbgE1OXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 10:23:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391109AbgE1OWz (ORCPT
+        with ESMTP id S2391110AbgE1OW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 10:22:55 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C29CC08C5C6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 07:22:54 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id r15so3353094wmh.5
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 07:22:53 -0700 (PDT)
+        Thu, 28 May 2020 10:22:56 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87AA9C08C5C8
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 07:22:55 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id u26so4614255wmn.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 07:22:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fW1nO44AIOkd1DyHEXQPPUYlT6a8b9ESKOQqboJxrOI=;
-        b=Ej4N7uslJSputqEQa2xbVuKyL2M+K03+7SqLgEzI3Rn7DshHJgdM/1XfyTMJGnW2Vr
-         m0kkQeSvrJxgLmRBi4HalZPUSysYWSMvD8eFOAkLxWuFZhQhfy/KFGA/rhCdy4GUO4Pn
-         iKNJxxJUjDqambIIaNJHNZx7GdTpvLc5/YhqkdhU/HunYNdaEEHUWKYEKM/54NCX3mc4
-         7+4XyZJipYLbx5cPjsGshzE8ppHw/6xYyV6Z2MCCG8D1JcIbjXIceyeEUpdWsHqCAuhz
-         oq1OVCuUMCpbxDzIXVKaKNAUP6MtMrYwvPGK3qKZh8Z+oY7R5T9JWGFIadiTQ2msyWgZ
-         0lcA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=bUTqIyJQ96SSMI0A1T4YUDc+Z+dd4WsNKtNtEYEWK4U=;
+        b=upvfkJpE+j2X8Py5StpA9JlDlz2G9d49LnZEOgNJpWo/0I87+o9/l2XXA6HKaXcNac
+         bXBCxrNiF435IihMwKsSZiyIuVjmiev2lr80Ts7YvZxkr2y+Ny3q+KKL2LEWFCP4f2Mn
+         jDCBpYaiitFDb9cI/2Qsa+yvmMxX7nEjTCkgmHspXj8M19pq6FYicVh5ufEf3GsndFsC
+         3sImHWzerLDxh1w42NoP5PX14EUb5k9D/VNKWVIobkFk8O77pL77IyOg7lrb757twjpi
+         QsnvGsOfA4hIJLkF9gCVphVrXvKu4hwwk8x1d2eQE56DXo5ckQKHQI6aiKdnddEUBnxD
+         tqoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fW1nO44AIOkd1DyHEXQPPUYlT6a8b9ESKOQqboJxrOI=;
-        b=nrMEALRKn9wB84ni/vBsrc30qkF70lwhEPnyx/os+OXZaHkLgSwBfmGNc7Jmo+ulhk
-         HAptKFjQ9zP2MzNudpLTd7FOp41grrT9r22uvecBqag4TlLaiMswrq84KMaBnjSv25Q9
-         3MN1Lf07y4KyW8lb12wJ5xoUlaLL920DrcbyuLQyNArCvM2P7bm9MX4DXBBYDRulnaer
-         FGxdVAtJ4kmkHLkwlq2PZgNdmukV5Na6j+FXyfLnb2j75zAeizK802y7sDcj93KMM7ul
-         UUoqraj1veWXle5e/VLSpSjsmDNUtJwz9Rhf76cFyP9WjCeSLnOSCcgYWZrP2FTRQ+zU
-         Uwbg==
-X-Gm-Message-State: AOAM532wQoxc9TsHOe8TWDY5LLKd3EABfa35KMhKKfex/N+7zv7XOYmR
-        +//ktVxDg9eS2Ag74bd2AnjMqg==
-X-Google-Smtp-Source: ABdhPJyjpo8fZxpr55zZ4EY0chHkdotq2Tr2sLbnnUHjIG5v+Aeelk58EK7UzA58W/G6CefodEUQ6A==
-X-Received: by 2002:a1c:4008:: with SMTP id n8mr1516082wma.118.1590675772064;
-        Thu, 28 May 2020 07:22:52 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=bUTqIyJQ96SSMI0A1T4YUDc+Z+dd4WsNKtNtEYEWK4U=;
+        b=g7rovH789w8qunh7D7z81nU5mF2OCOnnVWtw+rXghfeOzdGL1zO7Zfkr79RezMjRyz
+         1IcxSQexNgDko/WITtAD4S7hgmbn1zeY2S5Dvcw7ug99ywDrRueDYBapSKZROCzN2QPX
+         FWHvgMd34bu6JUx/oxFTNH0nOP5Xpk7fjKb1kPZbDgyJ8GTQi2WB46rTsgjw0v6pgSPV
+         vn5VQ8BL7ZQBLqYOZ2Vovg4c5i5EQyEUPyCI3W0lamXzxpKaUvMEg0TbIPHVD52teHr9
+         iG4DRMJKxk205lllZOsao4lig63OACoUJbIRp4dUf/oQfoRPtWWBIg3rU6hDzHzjn/y1
+         ACgw==
+X-Gm-Message-State: AOAM531F46FW4yl6dCPyqPHb4AM7jCXlcgiasG58ZQ7L48Ml8EP1zJwK
+        OyICZdYR4GKGTwShgfDM/scYqg==
+X-Google-Smtp-Source: ABdhPJyl+FBJZedD5liWJOKutUX+saEOEFndp/bsIsFCtM6wE+3IrguyrR+0NAJOMR+t886hi1rjXQ==
+X-Received: by 2002:a7b:c086:: with SMTP id r6mr3540234wmh.29.1590675773653;
+        Thu, 28 May 2020 07:22:53 -0700 (PDT)
 Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id h74sm6258162wrh.76.2020.05.28.07.22.43
+        by smtp.gmail.com with ESMTPSA id h74sm6258162wrh.76.2020.05.28.07.22.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 07:22:51 -0700 (PDT)
+        Thu, 28 May 2020 07:22:53 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     John Crispin <john@phrozen.org>,
         Sean Wang <sean.wang@mediatek.com>,
@@ -63,10 +63,12 @@ Cc:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Pedro Tsai <pedro.tsai@mediatek.com>,
         Andrew Perepech <andrew.perepech@mediatek.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 0/2] regmap: provide simple bitops and use them in a driver
-Date:   Thu, 28 May 2020 16:22:39 +0200
-Message-Id: <20200528142241.20466-1-brgl@bgdev.pl>
+Subject: [PATCH v2 1/2] regmap: provide helpers for simple bit operations
+Date:   Thu, 28 May 2020 16:22:40 +0200
+Message-Id: <20200528142241.20466-2-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20200528142241.20466-1-brgl@bgdev.pl>
+References: <20200528142241.20466-1-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -76,33 +78,106 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-I noticed that oftentimes I use regmap_update_bits() for simple bit
-setting or clearing. In this case the fourth argument is superfluous as
-it's always 0 or equal to the mask argument.
+In many instances regmap_update_bits() is used for simple bit setting
+and clearing. In these cases the last argument is redundant and we can
+hide it with a static inline function.
 
-This series proposes to add simple bit operations for setting, clearing
-and testing specific bits with regmap.
+This adds three new helpers for simple bit operations: set_bits,
+clear_bits and test_bits.
 
-The second patch uses all three in a driver that got recently picked into
-the net-next tree.
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+---
+ drivers/base/regmap/regmap.c | 22 ++++++++++++++++++++++
+ include/linux/regmap.h       | 36 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 58 insertions(+)
 
-The patches obviously target different trees so - if you're ok with
-the change itself - I propose you pick the first one into your regmap
-tree for v5.8 and then I'll resend the second patch to add the first
-user for these macros for v5.9.
-
-v1 -> v2:
-- convert the new macros to static inline functions
-
-Bartosz Golaszewski (2):
-  regmap: provide helpers for simple bit operations
-  net: ethernet: mtk-star-emac: use regmap bitops
-
- drivers/base/regmap/regmap.c                  | 22 +++++
- drivers/net/ethernet/mediatek/mtk_star_emac.c | 80 ++++++++-----------
- include/linux/regmap.h                        | 36 +++++++++
- 3 files changed, 93 insertions(+), 45 deletions(-)
-
+diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
+index 59f911e57719..30f659e0b4e4 100644
+--- a/drivers/base/regmap/regmap.c
++++ b/drivers/base/regmap/regmap.c
+@@ -2936,6 +2936,28 @@ int regmap_update_bits_base(struct regmap *map, unsigned int reg,
+ }
+ EXPORT_SYMBOL_GPL(regmap_update_bits_base);
+ 
++/**
++ * regmap_test_bits() - Check if all specified bits are set in a register.
++ *
++ * @map: Register map to operate on
++ * @reg: Register to read from
++ * @bits: Bits to test
++ *
++ * Returns -1 if the underlying regmap_read() fails, 0 if at least one of the
++ * tested bits is not set and 1 if all tested bits are set.
++ */
++int regmap_test_bits(struct regmap *map, unsigned int reg, unsigned int bits)
++{
++	unsigned int val, ret;
++
++	ret = regmap_read(map, reg, &val);
++	if (ret)
++		return ret;
++
++	return (val & bits) == bits ? 1 : 0;
++}
++EXPORT_SYMBOL_GPL(regmap_test_bits);
++
+ void regmap_async_complete_cb(struct regmap_async *async, int ret)
+ {
+ 	struct regmap *map = async->map;
+diff --git a/include/linux/regmap.h b/include/linux/regmap.h
+index 40b07168fd8e..ddf0baff195d 100644
+--- a/include/linux/regmap.h
++++ b/include/linux/regmap.h
+@@ -1111,6 +1111,21 @@ bool regmap_reg_in_ranges(unsigned int reg,
+ 			  const struct regmap_range *ranges,
+ 			  unsigned int nranges);
+ 
++static inline int regmap_set_bits(struct regmap *map,
++				  unsigned int reg, unsigned int bits)
++{
++	return regmap_update_bits_base(map, reg, bits, bits,
++				       NULL, false, false);
++}
++
++static inline int regmap_clear_bits(struct regmap *map,
++				    unsigned int reg, unsigned int bits)
++{
++	return regmap_update_bits_base(map, reg, bits, 0, NULL, false, false);
++}
++
++int regmap_test_bits(struct regmap *map, unsigned int reg, unsigned int bits);
++
+ /**
+  * struct reg_field - Description of an register field
+  *
+@@ -1410,6 +1425,27 @@ static inline int regmap_update_bits_base(struct regmap *map, unsigned int reg,
+ 	return -EINVAL;
+ }
+ 
++static inline int regmap_set_bits(struct regmap *map,
++				  unsigned int reg, unsigned int bits)
++{
++	WARN_ONCE(1, "regmap API is disabled");
++	return -EINVAL;
++}
++
++static inline int regmap_clear_bits(struct regmap *map,
++				    unsigned int reg, unsigned int bits)
++{
++	WARN_ONCE(1, "regmap API is disabled");
++	return -EINVAL;
++}
++
++static inline int regmap_test_bits(struct regmap *map,
++				   unsigned int reg, unsigned int bits)
++{
++	WARN_ONCE(1, "regmap API is disabled");
++	return -EINVAL;
++}
++
+ static inline int regmap_field_update_bits_base(struct regmap_field *field,
+ 					unsigned int mask, unsigned int val,
+ 					bool *change, bool async, bool force)
 -- 
 2.26.1
 
