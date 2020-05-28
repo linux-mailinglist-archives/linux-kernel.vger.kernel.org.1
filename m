@@ -2,242 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B9E1E5647
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 07:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 655631E5600
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 07:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728444AbgE1FRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 01:17:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbgE1FNM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 01:13:12 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1933AC08C5C2;
-        Wed, 27 May 2020 22:13:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=LnylUFmE6LGjXbTh/304lIDcSEDmTsi7Z0jAT1kL31A=; b=X2eCp1us2QmSWlkDwe1Aef9t6I
-        cqbqpXICGVwaXCNfEQ7feKNRhotaOmNRww0Hyb3gIY8mFFUxtssz4X7NmF+f14zQokP5b5YY7OlCJ
-        zhGFCnHKUtucAlGWjIjJSpdFkH912cvD+9yCmEtwOitnEwwmeoNVylMOwXwnn0zSJSwtKgTMUoJYW
-        jrOKBjTNVGba8CAaAHyggysJz0cl/oQkFQ7BlYzyruOuGaa+qCHM5aZBeIFgdQAGUeWzVa98FLR8c
-        CnnIwObaJ8eEGqdTqBLlvTrxMTEdR9eU+FN9idR3xzSONfyczsyMEdPUKqrisYxClgyWkIbDBF0y+
-        XcFchpuw==;
-Received: from p4fdb1ad2.dip0.t-ipconnect.de ([79.219.26.210] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jeAqT-0001Qc-Mf; Thu, 28 May 2020 05:12:46 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jon Maloy <jmaloy@redhat.com>,
-        Ying Xue <ying.xue@windriver.com>, drbd-dev@lists.linbit.com,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nvme@lists.infradead.org, target-devel@vger.kernel.org,
-        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-        cluster-devel@redhat.com, ocfs2-devel@oss.oracle.com,
-        netdev@vger.kernel.org, ceph-devel@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-nfs@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net,
-        Sagi Grimberg <sagi@grimberg.me>
-Subject: [PATCH 02/28] net: add sock_no_linger
-Date:   Thu, 28 May 2020 07:12:10 +0200
-Message-Id: <20200528051236.620353-3-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200528051236.620353-1-hch@lst.de>
-References: <20200528051236.620353-1-hch@lst.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+        id S1727981AbgE1FNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 01:13:48 -0400
+Received: from mga11.intel.com ([192.55.52.93]:53123 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727944AbgE1FNn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 01:13:43 -0400
+IronPort-SDR: s7kIB4b8lDSpyv78rpZzMeGa2fJiCGnrTwRRoxAfKTfPS2105okArxibjzpFoHer4yWC/iczMQ
+ j33f/4cHTOsA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 22:13:43 -0700
+IronPort-SDR: YhQovfW8BEf126dOmg2zZeRLCSK4ruN2mFnWRs1sKAYa87MlkwAYBnAvUi75c0wQqdsthB+s9N
+ B6Xh8eeWrv+g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,443,1583222400"; 
+   d="scan'208";a="267091920"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by orsmga003.jf.intel.com with ESMTP; 27 May 2020 22:13:38 -0700
+From:   "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, miquel.raynal@bootlin.com
+Cc:     richard@nod.at, vigneshr@ti.com, arnd@arndb.de,
+        brendanhiggins@google.com, tglx@linutronix.de,
+        boris.brezillon@collabora.com, anders.roxell@linaro.org,
+        masonccyang@mxic.com.tw, robh+dt@kernel.org,
+        linux-mips@vger.kernel.org, hauke.mehrtens@intel.com,
+        andriy.shevchenko@intel.com, qi-ming.wu@intel.com,
+        cheol.yong.kim@intel.com,
+        Ramuthevar Vadivel Murugan 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: [PATCH v9 1/2] dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
+Date:   Thu, 28 May 2020 13:12:10 +0800
+Message-Id: <20200528051211.3063-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20200528051211.3063-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+References: <20200528051211.3063-1-vadivel.muruganx.ramuthevar@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a helper to directly set the SO_LINGER sockopt from kernel space
-with onoff set to true and a linger time of 0 without going through a
-fake uaccess.
+From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Sagi Grimberg <sagi@grimberg.me>
+Add YAML file for dt-bindings to support NAND Flash Controller
+on Intel's Lightning Mountain SoC.
+
+Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 ---
- drivers/nvme/host/tcp.c   |  9 +--------
- drivers/nvme/target/tcp.c |  6 +-----
- include/net/sock.h        |  1 +
- net/core/sock.c           |  9 +++++++++
- net/rds/tcp.h             |  1 -
- net/rds/tcp_connect.c     |  2 +-
- net/rds/tcp_listen.c      | 13 +------------
- net/sunrpc/svcsock.c      | 12 ++----------
- 8 files changed, 16 insertions(+), 37 deletions(-)
+ .../devicetree/bindings/mtd/intel,lgm-nand.yaml    | 93 ++++++++++++++++++++++
+ 1 file changed, 93 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
 
-diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
-index c15a92163c1f7..e72d87482eb78 100644
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -1313,7 +1313,6 @@ static int nvme_tcp_alloc_queue(struct nvme_ctrl *nctrl,
- {
- 	struct nvme_tcp_ctrl *ctrl = to_tcp_ctrl(nctrl);
- 	struct nvme_tcp_queue *queue = &ctrl->queues[qid];
--	struct linger sol = { .l_onoff = 1, .l_linger = 0 };
- 	int ret, opt, rcv_pdu_size;
- 
- 	queue->ctrl = ctrl;
-@@ -1361,13 +1360,7 @@ static int nvme_tcp_alloc_queue(struct nvme_ctrl *nctrl,
- 	 * close. This is done to prevent stale data from being sent should
- 	 * the network connection be restored before TCP times out.
- 	 */
--	ret = kernel_setsockopt(queue->sock, SOL_SOCKET, SO_LINGER,
--			(char *)&sol, sizeof(sol));
--	if (ret) {
--		dev_err(nctrl->device,
--			"failed to set SO_LINGER sock opt %d\n", ret);
--		goto err_sock;
--	}
-+	sock_no_linger(queue->sock->sk);
- 
- 	if (so_priority > 0) {
- 		ret = kernel_setsockopt(queue->sock, SOL_SOCKET, SO_PRIORITY,
-diff --git a/drivers/nvme/target/tcp.c b/drivers/nvme/target/tcp.c
-index 40757a63f4553..e0801494b097f 100644
---- a/drivers/nvme/target/tcp.c
-+++ b/drivers/nvme/target/tcp.c
-@@ -1429,7 +1429,6 @@ static int nvmet_tcp_set_queue_sock(struct nvmet_tcp_queue *queue)
- {
- 	struct socket *sock = queue->sock;
- 	struct inet_sock *inet = inet_sk(sock->sk);
--	struct linger sol = { .l_onoff = 1, .l_linger = 0 };
- 	int ret;
- 
- 	ret = kernel_getsockname(sock,
-@@ -1447,10 +1446,7 @@ static int nvmet_tcp_set_queue_sock(struct nvmet_tcp_queue *queue)
- 	 * close. This is done to prevent stale data from being sent should
- 	 * the network connection be restored before TCP times out.
- 	 */
--	ret = kernel_setsockopt(sock, SOL_SOCKET, SO_LINGER,
--			(char *)&sol, sizeof(sol));
--	if (ret)
--		return ret;
-+	sock_no_linger(sock->sk);
- 
- 	if (so_priority > 0) {
- 		ret = kernel_setsockopt(sock, SOL_SOCKET, SO_PRIORITY,
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 2ec085044790c..6ed00bf009bbe 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -2688,6 +2688,7 @@ static inline bool sk_dev_equal_l3scope(struct sock *sk, int dif)
- 
- void sock_def_readable(struct sock *sk);
- 
-+void sock_no_linger(struct sock *sk);
- void sock_set_reuseaddr(struct sock *sk);
- 
- #endif	/* _SOCK_H */
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 18eb84fdf5fbe..f0f09524911c8 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -720,6 +720,15 @@ void sock_set_reuseaddr(struct sock *sk)
- }
- EXPORT_SYMBOL(sock_set_reuseaddr);
- 
-+void sock_no_linger(struct sock *sk)
-+{
-+	lock_sock(sk);
-+	sk->sk_lingertime = 0;
-+	sock_set_flag(sk, SOCK_LINGER);
-+	release_sock(sk);
-+}
-+EXPORT_SYMBOL(sock_no_linger);
+diff --git a/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+new file mode 100644
+index 000000000000..8672d03b4e6a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+@@ -0,0 +1,93 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/intel,lgm-nand.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- /*
-  *	This is meant for all protocols to use and covers goings on
-  *	at the socket level. Everything here is generic.
-diff --git a/net/rds/tcp.h b/net/rds/tcp.h
-index 3c69361d21c73..d640e210b97b6 100644
---- a/net/rds/tcp.h
-+++ b/net/rds/tcp.h
-@@ -73,7 +73,6 @@ void rds_tcp_listen_data_ready(struct sock *sk);
- int rds_tcp_accept_one(struct socket *sock);
- int rds_tcp_keepalive(struct socket *sock);
- void *rds_tcp_listen_sock_def_readable(struct net *net);
--void rds_tcp_set_linger(struct socket *sock);
- 
- /* tcp_recv.c */
- int rds_tcp_recv_init(void);
-diff --git a/net/rds/tcp_connect.c b/net/rds/tcp_connect.c
-index 008f50fb25dd2..4e64598176b05 100644
---- a/net/rds/tcp_connect.c
-+++ b/net/rds/tcp_connect.c
-@@ -207,7 +207,7 @@ void rds_tcp_conn_path_shutdown(struct rds_conn_path *cp)
- 
- 	if (sock) {
- 		if (rds_destroy_pending(cp->cp_conn))
--			rds_tcp_set_linger(sock);
-+			sock_no_linger(sock->sk);
- 		sock->ops->shutdown(sock, RCV_SHUTDOWN | SEND_SHUTDOWN);
- 		lock_sock(sock->sk);
- 		rds_tcp_restore_callbacks(sock, tc); /* tc->tc_sock = NULL */
-diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
-index 810a3a49e9474..bbb31b9c0b391 100644
---- a/net/rds/tcp_listen.c
-+++ b/net/rds/tcp_listen.c
-@@ -111,17 +111,6 @@ struct rds_tcp_connection *rds_tcp_accept_one_path(struct rds_connection *conn)
- 	return NULL;
- }
- 
--void rds_tcp_set_linger(struct socket *sock)
--{
--	struct linger no_linger = {
--		.l_onoff = 1,
--		.l_linger = 0,
--	};
--
--	kernel_setsockopt(sock, SOL_SOCKET, SO_LINGER,
--			  (char *)&no_linger, sizeof(no_linger));
--}
--
- int rds_tcp_accept_one(struct socket *sock)
- {
- 	struct socket *new_sock = NULL;
-@@ -241,7 +230,7 @@ int rds_tcp_accept_one(struct socket *sock)
- 	 * be pending on it. By setting linger, we achieve the side-effect
- 	 * of avoiding TIME_WAIT state on new_sock.
- 	 */
--	rds_tcp_set_linger(new_sock);
-+	sock_no_linger(new_sock->sk);
- 	kernel_sock_shutdown(new_sock, SHUT_RDWR);
- 	ret = 0;
- out:
-diff --git a/net/sunrpc/svcsock.c b/net/sunrpc/svcsock.c
-index 023514e392b31..6773dacc64d8e 100644
---- a/net/sunrpc/svcsock.c
-+++ b/net/sunrpc/svcsock.c
-@@ -323,17 +323,9 @@ static int svc_tcp_has_wspace(struct svc_xprt *xprt)
- 
- static void svc_tcp_kill_temp_xprt(struct svc_xprt *xprt)
- {
--	struct svc_sock *svsk;
--	struct socket *sock;
--	struct linger no_linger = {
--		.l_onoff = 1,
--		.l_linger = 0,
--	};
-+	struct svc_sock *svsk = container_of(xprt, struct svc_sock, sk_xprt);
- 
--	svsk = container_of(xprt, struct svc_sock, sk_xprt);
--	sock = svsk->sk_sock;
--	kernel_setsockopt(sock, SOL_SOCKET, SO_LINGER,
--			  (char *)&no_linger, sizeof(no_linger));
-+	sock_no_linger(svsk->sk_sock->sk);
- }
- 
- /*
++title: Intel LGM SoC NAND Controller Device Tree Bindings
++
++allOf:
++  - $ref: "nand-controller.yaml"
++
++maintainers:
++  - Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
++
++properties:
++  compatible:
++    const: intel,lgm-nand
++
++  reg:
++    maxItems: 6
++
++  reg-names:
++    items:
++       - const: ebunand
++       - const: hsnand
++       - const: nand_cs0
++       - const: nand_cs1
++       - const: addr_sel0
++       - const: addr_sel1
++
++  clocks:
++    maxItems: 1
++
++  dmas:
++    maxItems: 2
++
++  dma-names:
++    items:
++      - const: tx
++      - const: rx
++
++patternProperties:
++  "^nand@[a-f0-9]+$":
++    type: object
++    properties:
++      reg:
++        minimum: 0
++        maximum: 7
++
++      nand-ecc-mode: true
++
++      nand-ecc-algo:
++        const: hw
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - clocks
++  - dmas
++  - dma-names
++
++additionalProperties: false
++
++examples:
++  - |
++    nand-controller@e0f00000 {
++      compatible = "intel,lgm-nand";
++      reg = <0xe0f00000 0x100>,
++            <0xe1000000 0x300>,
++            <0xe1400000 0x8000>,
++            <0xe1c00000 0x1000>,
++            <0x17400000 0x4>,
++            <0x17c00000 0x4>;
++      reg-names = "ebunand", "hsnand", "nand_cs0", "nand_cs1",
++        "addr_sel0", "addr_sel1";
++      clocks = <&cgu0 125>;
++      dmas = <&dma0 8>, <&dma0 9>;
++      dma-names = "tx", "rx";
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      nand@0 {
++        reg = <0>;
++        nand-on-flash-bbt;
++        #address-cells = <1>;
++        #size-cells = <1>;
++      };
++    };
++
++...
 -- 
-2.26.2
+2.11.0
 
