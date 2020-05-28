@@ -2,109 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 830A91E6C18
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65CFC1E6C2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406971AbgE1UOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 16:14:05 -0400
-Received: from mta-p7.oit.umn.edu ([134.84.196.207]:59520 "EHLO
-        mta-p7.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406917AbgE1UOC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 16:14:02 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-p7.oit.umn.edu (Postfix) with ESMTP id 49XzRs0ZS2z9vrWQ
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 20:14:01 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at umn.edu
-Received: from mta-p7.oit.umn.edu ([127.0.0.1])
-        by localhost (mta-p7.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 2ACcC0pG9TAH for <linux-kernel@vger.kernel.org>;
-        Thu, 28 May 2020 15:14:00 -0500 (CDT)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+        id S2407069AbgE1UOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 16:14:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2407019AbgE1UO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 16:14:26 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mta-p7.oit.umn.edu (Postfix) with ESMTPS id 49XzRr62mSz9vrWG
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 15:14:00 -0500 (CDT)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p7.oit.umn.edu 49XzRr62mSz9vrWG
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p7.oit.umn.edu 49XzRr62mSz9vrWG
-Received: by mail-il1-f197.google.com with SMTP id q24so274713ili.12
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:14:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umn.edu; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=U7D66rZ3bV/mdno+N6Y057Ta6Mf7fN3AGEm3ICQ61Jg=;
-        b=EW9a3uYAYxVAoF/74DWigOh60vuyrSoIJXn/zN2njgaJY+rLuRnWb20OuhePu9eGzx
-         x+biPSLnq17WzRzA3wiIIhVLLXsSfoPGbePDH/GgJGkqi3xCqp7mwyApibjbiF8CJOEw
-         gqLZEjO0l9TEF1LPlW8L0GLN+M4RsxBCCRVCeECOz+b6VXA/LhuAex6ca1b5FPEwCo1q
-         FJQ4cIVwIUalpS8dUxzFPJ/dACsFu+3DKkKqPBcbUvLGPkorZTdNo3ItLGTPVnd891n5
-         5zsDqKKeVcm6bZXFH7whDD+b3vAuIq5FU3XQ7lnE6dEl8giPm3tQNFGBw2p/yFLvN11u
-         u33g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=U7D66rZ3bV/mdno+N6Y057Ta6Mf7fN3AGEm3ICQ61Jg=;
-        b=nqqLnvMPA2bIRDdNKFLWQQ8A0XV9hlCulo85T4a0KeTtSVK/jYn6MwZmHeqWlZ1aQm
-         msUuHUj75GhzOdf78/coex1J4dr/d+HIgqNb9SLLVtZudwxLZgu313aECrxsiSb/waQU
-         FrFqv7iYeuTqBzvbE2sL5S4RHysetF2Jjh/VmpuPOL18CtZfrTHrPOjkIxMtNbMF8NQC
-         0oDK0GQbu0zHXMmGZmDi3K64r1YKoHv4Ve+8idqckxSYRxrztUYjVaUn840hV13qg6Uy
-         meddvV5vrceW67orRGXCBpvnU6l2zEesxsTTOyUwFCtcHf1t2drP4li+hoVt+iGg4YWI
-         Fsbg==
-X-Gm-Message-State: AOAM531OLGcMJ/VJ/waER+JTFCHz3DmJo3cQgXQ4Ikkvv1+PQAEcgvWE
-        QiuKaQCcJ7nEHMAw2FPlVI8RG13FK5oonoo3el74ewIwVGA4fqwUxpRI3YDb5u9fgtCfgumykDI
-        YgYwH9eiKr6oTavM5963tCeZOiLha
-X-Received: by 2002:a5e:9b10:: with SMTP id j16mr3809156iok.49.1590696840390;
-        Thu, 28 May 2020 13:14:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzZhwnn75y08LB5aGQ6JOpTV5oB0pOWzycl/FkLU+GqywfvLq+r/t8EuBVFSGqd0pv6K7Re0w==
-X-Received: by 2002:a5e:9b10:: with SMTP id j16mr3809135iok.49.1590696840039;
-        Thu, 28 May 2020 13:14:00 -0700 (PDT)
-Received: from qiushi.dtc.umn.edu (cs-kh5248-02-umh.cs.umn.edu. [128.101.106.4])
-        by smtp.gmail.com with ESMTPSA id h10sm3027690ioe.3.2020.05.28.13.13.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 13:13:59 -0700 (PDT)
-From:   wu000273@umn.edu
-To:     kjlu@umn.edu
-Cc:     wu000273@umn.edu, Lee Duncan <lduncan@suse.com>,
-        Chris Leech <cleech@redhat.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: Fix reference count leak in iscsi_boot_create_kobj.
-Date:   Thu, 28 May 2020 15:13:53 -0500
-Message-Id: <20200528201353.14849-1-wu000273@umn.edu>
-X-Mailer: git-send-email 2.17.1
+        by mail.kernel.org (Postfix) with ESMTPSA id EE06E2088E;
+        Thu, 28 May 2020 20:14:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590696865;
+        bh=Cbug4Zw6pLdPJMyM6ewVPi8za9fxR3JM1cojC9EnM+s=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=k4AEdmZm0JNgL/s0oKV0nM8NQEtvV6FVP+zpgtOHyGsyffMn6AxwzOQXx0Qhl5raN
+         rQdeD3rlf9SHPYNeGSHLlkQLrUSO5SQaJKvouupTtButX4L8jUewo3SCzNZMTMx2eJ
+         a+dSGyhGVU/1cRPAohlORhLGnA1RlgocBEFGsmEs=
+From:   Sasha Levin <sashal@kernel.org>
+To:     tglx@linutronix.de, luto@kernel.org, ak@linux.intel.com
+Cc:     corbet@lwn.net, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        shuah@kernel.org, gregkh@linuxfoundation.org, tony.luck@intel.com,
+        chang.seok.bae@intel.com, dave.hansen@linux.intel.com,
+        peterz@infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko.sakkinen@linux.intel.com,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Ravi Shankar <ravi.v.shankar@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH v13 07/16] x86/process/64: Use FSGSBASE instructions on thread copy and ptrace
+Date:   Thu, 28 May 2020 16:13:53 -0400
+Message-Id: <20200528201402.1708239-8-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200528201402.1708239-1-sashal@kernel.org>
+References: <20200528201402.1708239-1-sashal@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: "Chang S. Bae" <chang.seok.bae@intel.com>
 
-kobject_init_and_add() should be handled when it return an error,
-because kobject_init_and_add() takes reference even when it fails.
-If this function returns an error, kobject_put() must be called to
-properly clean up the memory associated with the object. Previous
-commit "b8eb718348b8" fixed a similar problem. Thus replace calling
-kfree() by calling kobject_put().
+When FSGSBASE is enabled, copying threads and reading fsbase and gsbase
+using ptrace must read the actual values.
 
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+When copying a thread, use save_fsgs() and copy the saved values.  For
+ptrace, the bases must be read from memory regardless of the selector if
+FSGSBASE is enabled.
+
+[ tglx: Invoke __rdgsbase_inactive() with interrupts disabled ]
+[ luto: Massage changelog ]
+
+Suggested-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: "H . Peter Anvin" <hpa@zytor.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Ravi Shankar <ravi.v.shankar@intel.com>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Link: https://lkml.kernel.org/r/1557309753-24073-9-git-send-email-chang.seok.bae@intel.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/iscsi_boot_sysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/process.c    | 10 ++++++----
+ arch/x86/kernel/process_64.c |  6 ++++--
+ 2 files changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/scsi/iscsi_boot_sysfs.c b/drivers/scsi/iscsi_boot_sysfs.c
-index e4857b728033..a64abe38db2d 100644
---- a/drivers/scsi/iscsi_boot_sysfs.c
-+++ b/drivers/scsi/iscsi_boot_sysfs.c
-@@ -352,7 +352,7 @@ iscsi_boot_create_kobj(struct iscsi_boot_kset *boot_kset,
- 	boot_kobj->kobj.kset = boot_kset->kset;
- 	if (kobject_init_and_add(&boot_kobj->kobj, &iscsi_boot_ktype,
- 				 NULL, name, index)) {
--		kfree(boot_kobj);
-+		kobject_put(&boot_kobj->kobj);
- 		return NULL;
- 	}
- 	boot_kobj->data = data;
+diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+index 9da70b279dad..0264d9bb8991 100644
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -140,10 +140,12 @@ int copy_thread_tls(unsigned long clone_flags, unsigned long sp,
+ 	memset(p->thread.ptrace_bps, 0, sizeof(p->thread.ptrace_bps));
+ 
+ #ifdef CONFIG_X86_64
+-	savesegment(gs, p->thread.gsindex);
+-	p->thread.gsbase = p->thread.gsindex ? 0 : current->thread.gsbase;
+-	savesegment(fs, p->thread.fsindex);
+-	p->thread.fsbase = p->thread.fsindex ? 0 : current->thread.fsbase;
++	current_save_fsgs();
++	p->thread.fsindex = current->thread.fsindex;
++	p->thread.fsbase = current->thread.fsbase;
++	p->thread.gsindex = current->thread.gsindex;
++	p->thread.gsbase = current->thread.gsbase;
++
+ 	savesegment(es, p->thread.es);
+ 	savesegment(ds, p->thread.ds);
+ #else
+diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
+index aefb30bc56bc..0bcb48a1264a 100644
+--- a/arch/x86/kernel/process_64.c
++++ b/arch/x86/kernel/process_64.c
+@@ -423,7 +423,8 @@ unsigned long x86_fsbase_read_task(struct task_struct *task)
+ 
+ 	if (task == current)
+ 		fsbase = x86_fsbase_read_cpu();
+-	else if (task->thread.fsindex == 0)
++	else if (static_cpu_has(X86_FEATURE_FSGSBASE) ||
++		 (task->thread.fsindex == 0))
+ 		fsbase = task->thread.fsbase;
+ 	else
+ 		fsbase = x86_fsgsbase_read_task(task, task->thread.fsindex);
+@@ -437,7 +438,8 @@ unsigned long x86_gsbase_read_task(struct task_struct *task)
+ 
+ 	if (task == current)
+ 		gsbase = x86_gsbase_read_cpu_inactive();
+-	else if (task->thread.gsindex == 0)
++	else if (static_cpu_has(X86_FEATURE_FSGSBASE) ||
++		 (task->thread.gsindex == 0))
+ 		gsbase = task->thread.gsbase;
+ 	else
+ 		gsbase = x86_fsgsbase_read_task(task, task->thread.gsindex);
 -- 
-2.17.1
+2.25.1
 
