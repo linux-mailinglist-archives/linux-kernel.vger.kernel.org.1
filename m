@@ -2,96 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF771E6DB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 23:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8101E6DC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 23:36:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436683AbgE1Vdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 17:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436551AbgE1Vdt (ORCPT
+        id S2436635AbgE1Vgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 17:36:39 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:41384 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436617AbgE1Vgf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 17:33:49 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 006CFC08C5C6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 14:33:48 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id d7so11585lfi.12
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 14:33:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ldVlqqZ3FDUO39GbWvCw2m+scSFkVJIhpIYkWdVQ4CU=;
-        b=cVMoA007x0WC8P0Eavx6zVMKjLDuUr4glWhnKahRTky7N7NQY5u4NOXaXnObdxzHuT
-         oVdEJBQaFNTsXW3avIkZOOcA4a7MOEgPpG1FTYTJlr3H/A+5MsdKZuYHLALKA1hTsTsz
-         nmdMr1H6K7UXf6Khy7HIzTdpfXrHaDFe20jiAvk9VqkwIjY/N7IUTipZv3UPs8h6qbch
-         Ur20WUC4/3hoEy/O/EmxRehOJOPOYfjdGCp+svegVCMF+BHbcZgQ2peyPhSc/VLi1njQ
-         DIYeC2j9gPhC5m8ns0cRjv0Sc1WhJ4nQ2GJ1Y5fgGOKFL54iW5TzCvQmUv4nwiYgMgrH
-         OdVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ldVlqqZ3FDUO39GbWvCw2m+scSFkVJIhpIYkWdVQ4CU=;
-        b=FI4v7pvGduF3VEJCnuNs3z3o5QZM4WPO4b96h0PJgdZGdRNzE+vIjy+vo2ickv92o/
-         4yt1056yX6HlxKAg2A9Xau98SZkLKSyfxree9dr//SFGHU5VPfRgQJxouWcX+0lFZXMe
-         anG2yXjm/7JiVjN7TjJyBGwKJbLF6FLbEEc2IZ/hZaBRp9V/dShpWFiXQ4lBzadNXo86
-         6Kh+A7sY7Qfl2twrPEXli3vv6xr/fPDdFbV986B6EE+0pnwHdvmQd9w1IkaIu+VgSVF/
-         4wNiq5sv6IZ9Mi9bIV1Na3PyP80NSmC3/AX6uNWzpPJwkq1yfsGwA4U2+bSBl+NrN6c8
-         6Jzg==
-X-Gm-Message-State: AOAM533gjji+gPnpDbQZnFwlvNFNRAzF+shDiMP9/I/PBfx8vaRvr3iu
-        YD2vYHkUiND5uv83d6/fmYMitP/joRs9J/86CqohfQ==
-X-Google-Smtp-Source: ABdhPJxytp5+z8yLyBf5URWT6WAXg7xT4q74X2N/N/glj43Z+YJ+j8wb6XzV80aoF25inuWQUDvoZnwgps7IqCez6bU=
-X-Received: by 2002:ac2:4823:: with SMTP id 3mr2638792lft.194.1590701627388;
- Thu, 28 May 2020 14:33:47 -0700 (PDT)
+        Thu, 28 May 2020 17:36:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QlshC6gNAQ84Jg7sG8LMSxcNh/c4GplyKF73dIOQFK8=; b=YCi6ijN3pGULzfF+31weHP5c1Y
+        mt+THn+KrHN4bkDtu7YeWBkGeXwGJ/CRcnDzKP+ue7d4zzFo+kAhA9jOt+6GWUG2m2Db0mrExRJvn
+        YxL18deMBr92DIza/L2yx6EtkxEZa0RC/cZ2dwNrKkxOfDK4DxqB1B1yoQTUevnUSY1NlsZcj9cEs
+        wMEYkNlGJj9tJWMapQ+RfDXPk+iKlEO6ydoxs0hbaMLV5K7QpCEySkjhVvJzLEkorpxEzt5atLlUN
+        vg8lBq5McTbKekMA5Z7IaTdjkyhNMbbCjnCOsk3hqce8hVrhADRs93LpygNWIk5X6tcWQafwLoD0W
+        iHn3habg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jeQA2-0005Qg-S1; Thu, 28 May 2020 21:34:10 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2B2449836F8; Thu, 28 May 2020 23:33:52 +0200 (CEST)
+Date:   Thu, 28 May 2020 23:33:52 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     tglx@linutronix.de, luto@amacapital.net,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        sean.j.christopherson@intel.com, daniel.thompson@linaro.org
+Subject: Re: [PATCH 1/6] x86/entry: Introduce local_db_{save,restore}()
+Message-ID: <20200528213352.GC4496@worktop.programming.kicks-ass.net>
+References: <20200528201937.038455891@infradead.org>
+ <20200528202328.418625592@infradead.org>
+ <17e097f5-f92c-bd7e-fb1d-ee08c4169dbe@citrix.com>
+ <20200528211550.GR2483@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <1590253873-11556-1-git-send-email-mkshah@codeaurora.org> <1590253873-11556-2-git-send-email-mkshah@codeaurora.org>
-In-Reply-To: <1590253873-11556-2-git-send-email-mkshah@codeaurora.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 28 May 2020 23:33:36 +0200
-Message-ID: <CACRpkdaMS2G6qLtGp05pZgUCGxdS2xA2a5_ahgrwqgzLmybWcg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] gpio: gpiolib: Allow GPIO IRQs to lazy disable
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Evan Green <evgreen@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Doug Anderson <dianders@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>, lsrao@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200528211550.GR2483@worktop.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 23, 2020 at 7:11 PM Maulik Shah <mkshah@codeaurora.org> wrote:
+On Thu, May 28, 2020 at 11:15:50PM +0200, Peter Zijlstra wrote:
+> On Thu, May 28, 2020 at 09:52:30PM +0100, Andrew Cooper wrote:
+> > On 28/05/2020 21:19, Peter Zijlstra wrote:
+> > > --- a/arch/x86/include/asm/debugreg.h
+> > > +++ b/arch/x86/include/asm/debugreg.h
+> > > @@ -113,6 +113,31 @@ static inline void debug_stack_usage_inc
+> > >  static inline void debug_stack_usage_dec(void) { }
+> > >  #endif /* X86_64 */
+> > >  
+> > > +static __always_inline void local_db_save(unsigned long *dr7)
+> > > +{
+> > > +	get_debugreg(*dr7, 7);
+> > > +	if (*dr7)
+> > > +		set_debugreg(0, 7);
+> > 
+> > %dr7 has an architecturally stuck bit in it.
+> > 
+> > You want *dr7 != 0x400 to avoid writing 0 unconditionally.
+> 
+> Do we have to have that bit set when writing it? Otherwise I might
+> actually prefer masking it out.
 
-> With 'commit 461c1a7d4733 ("gpiolib: override irq_enable/disable")' gpiolib
-> overrides irqchip's irq_enable and irq_disable callbacks. If irq_disable
-> callback is implemented then genirq takes unlazy path to disable irq.
->
-> Underlying irqchip may not want to implement irq_disable callback to lazy
-> disable irq when client drivers invokes disable_irq(). By overriding
-> irq_disable callback, gpiolib ends up always unlazy disabling IRQ.
->
-> Allow gpiolib to lazy disable IRQs by overriding irq_disable callback only
-> if irqchip implemented irq_disable. In cases where irq_disable is not
-> implemented irq_mask is overridden. Similarly override irq_enable callback
-> only if irqchip implemented irq_enable otherwise irq_unmask is overridden.
->
-> Fixes: 461c1a7d47 (gpiolib: override irq_enable/disable)
-> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+I'm an idiot, we write a plain 9..
 
-I applied this patch 1/4 to the GPIO tree since it is nice on its own
-and it is soon merge window.
+> > Also, API wise, wouldn't it be nicer to write "dr7 = local_db_save()"
+> > rather than having a void function returning a single long via pointer?
+> 
+> Probably.. I started with local_irq_save() and .. well, n/m. I'll change
+> it ;-)
 
-Yours,
-Linus Walleij
+How's this?
+
+---
+--- a/arch/x86/include/asm/debugreg.h
++++ b/arch/x86/include/asm/debugreg.h
+@@ -113,6 +113,36 @@ static inline void debug_stack_usage_inc
+ static inline void debug_stack_usage_dec(void) { }
+ #endif /* X86_64 */
+ 
++static __always_inline unsigned long local_db_save(void)
++{
++	unsigned long dr7;
++
++	get_debugreg(&dr7, 7);
++	dr7 ^= 0x400;
++	if (dr7)
++		set_debugreg(0, 7);
++	/*
++	 * Ensure the compiler doesn't lower the above statements into
++	 * the critical section; disabling breakpoints late would not
++	 * be good.
++	 */
++	barrier();
++
++	return dr7;
++}
++
++static __always_inline void local_db_restore(unsigned long dr7)
++{
++	/*
++	 * Ensure the compiler doesn't raise this statement into
++	 * the critical section; enabling breakpoints early would
++	 * not be good.
++	 */
++	barrier();
++	if (dr7)
++		set_debugreg(dr7, 7);
++}
++
+ #ifdef CONFIG_CPU_SUP_AMD
+ extern void set_dr_addr_mask(unsigned long mask, int dr);
+ #else
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -727,15 +727,7 @@ static __always_inline void debug_enter(
+ 	 * Entry text is excluded for HW_BP_X and cpu_entry_area, which
+ 	 * includes the entry stack is excluded for everything.
+ 	 */
+-	get_debugreg(*dr7, 7);
+-	set_debugreg(0, 7);
+-
+-	/*
+-	 * Ensure the compiler doesn't lower the above statements into
+-	 * the critical section; disabling breakpoints late would not
+-	 * be good.
+-	 */
+-	barrier();
++	*dr7 = local_db_save();
+ 
+ 	/*
+ 	 * The Intel SDM says:
+@@ -756,13 +748,7 @@ static __always_inline void debug_enter(
+ 
+ static __always_inline void debug_exit(unsigned long dr7)
+ {
+-	/*
+-	 * Ensure the compiler doesn't raise this statement into
+-	 * the critical section; enabling breakpoints early would
+-	 * not be good.
+-	 */
+-	barrier();
+-	set_debugreg(dr7, 7);
++	local_db_restore(dr7);
+ }
+ 
+ /*
+
