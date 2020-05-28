@@ -2,74 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E91791E5521
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 06:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4031E5527
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 06:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbgE1EkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 00:40:01 -0400
-Received: from verein.lst.de ([213.95.11.211]:54138 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725298AbgE1EkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 00:40:01 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id C991B68B05; Thu, 28 May 2020 06:39:57 +0200 (CEST)
-Date:   Thu, 28 May 2020 06:39:57 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>, x86@kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-parisc@vger.kernel.org, linux-um@lists.infradead.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/23] bpf: handle the compat string in
- bpf_trace_copy_string better
-Message-ID: <20200528043957.GA28494@lst.de>
-References: <20200521152301.2587579-1-hch@lst.de> <20200521152301.2587579-13-hch@lst.de> <20200527190432.e4af1fba00c13cb1421f5a37@linux-foundation.org> <2b64fae6-394c-c1e5-8963-c256f4284065@fb.com>
+        id S1727047AbgE1Ek3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 00:40:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725298AbgE1Ek2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 00:40:28 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59ED5C05BD1E;
+        Wed, 27 May 2020 21:40:27 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id x10so11011973plr.4;
+        Wed, 27 May 2020 21:40:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=SEFEjOeVaCb6nRVJJoHwrwcnuKr7Yd2WmIU8A9Wz24w=;
+        b=gUMu+KpzmcRaYBU3gFRGvFKQqtwZpCg/gRJKUF0aRETBDeFJ7Ei88kCtWIUF1VzI/N
+         DUXzKkdoRhcH1MC3CsrigOaqUpojb/ol9B1tL5RY4VXO6UPyGb6xwamjluCvDtbRzyhp
+         gpHUXBDBZtMYK1qlCvFSDoSEmlTlboRJxvRFN8JmfV8orlCJwGKMeXKZ3s31Mb20qHXH
+         JFIs+4cLo7FXGjYkoM4Nvrj0d7+HVq/PUNdJFLifxie0t7YJlVq3eYbPMffgPS8zcj9P
+         9x+X0ERXkoa87dOfsTKOS1RR4sfGzzgHKxoZbUV/UC4Cu4qBlpgcNX1ehhKVJcol8Rsr
+         B+Tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SEFEjOeVaCb6nRVJJoHwrwcnuKr7Yd2WmIU8A9Wz24w=;
+        b=HRdy11BAVkmmSDhxWgFwbzv/HZj94nedyIFq3nhM+thQxC9g0ChWQRbFM3r5NeTenh
+         WNymQRm13VUg0ENnZ08rQ0wiogTU/hk0Pl6+BOJFx7t+MK7bTc3HZ5X1MTaZKd0k+oxz
+         gaBfZtPxJE9em1fWzIvid0pdXtTJdcgEJ9/DTV/vocp6TYzol+XbbENzj2BDPlEgGH5O
+         bFV3X2R5BrB+9g5x6YLHwiyK9sDyk312cVUhsMYwT0uzdaul0AAoXb3vguUhYZdpCokH
+         DWJ6y0wq02rFAvCS120dPpKLOngCPT2jHhje+pfDGtUFmVLOJj0kedQ3A5x1oClqcGmR
+         2Reg==
+X-Gm-Message-State: AOAM53098QPHuCQ/Dz82hOFRJhqFSlQyjsq6K5jBfDMOdFG2Gpt943JP
+        cQYIbsugFVYjTJszOl74Kqw=
+X-Google-Smtp-Source: ABdhPJyjB8szJpiEjE7QVqILRUwFv3h+Joj2z5+3aAbN8VXbd1T5YQksO13/m9WhGbwQmgW/OChQQg==
+X-Received: by 2002:a17:902:9b88:: with SMTP id y8mr1754669plp.171.1590640826833;
+        Wed, 27 May 2020 21:40:26 -0700 (PDT)
+Received: from [192.168.1.5] ([75.164.7.205])
+        by smtp.gmail.com with ESMTPSA id i29sm3450648pfk.38.2020.05.27.21.40.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 May 2020 21:40:26 -0700 (PDT)
+Subject: Re: [PATCH] tpm: Revert "tpm: fix invalid locking in NONBLOCKING
+ mode"
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Mario Limonciello <mario.limonciello@dell.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jeffrin Jose T <jeffrin@rajagiritech.edu.in>,
+        Alex Guzman <alex@guzman.io>
+References: <20200526183213.20720-1-mario.limonciello@dell.com>
+ <1590520454.11810.40.camel@HansenPartnership.com>
+ <f63afdc1-6c40-dc0d-bb9a-154bc51d3b95@gmail.com>
+ <20200528003040.GA4781@linux.intel.com>
+From:   Tadeusz Struk <tstruk@gmail.com>
+Message-ID: <e939739d-d193-95e8-c142-4efa57be2502@gmail.com>
+Date:   Wed, 27 May 2020 21:40:25 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2b64fae6-394c-c1e5-8963-c256f4284065@fb.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200528003040.GA4781@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 07:26:30PM -0700, Yonghong Song wrote:
->> --- a/kernel/trace/bpf_trace.c~xxx
->> +++ a/kernel/trace/bpf_trace.c
->> @@ -588,15 +588,22 @@ BPF_CALL_5(bpf_seq_printf, struct seq_fi
->>   		}
->>     		if (fmt[i] == 's') {
->> +			void *unsafe_ptr;
->> +
->>   			/* try our best to copy */
->>   			if (memcpy_cnt >= MAX_SEQ_PRINTF_MAX_MEMCPY) {
->>   				err = -E2BIG;
->>   				goto out;
->>   			}
->>   -			err = strncpy_from_unsafe(bufs->buf[memcpy_cnt],
->> -						  (void *) (long) args[fmt_cnt],
->> -						  MAX_SEQ_PRINTF_STR_LEN);
->> +			unsafe_ptr = (void *)(long)args[fmt_cnt];
->> +			if ((unsigned long)unsafe_ptr < TASK_SIZE) {
->> +				err = strncpy_from_user_nofault(
->> +					bufs->buf[memcpy_cnt], unsafe_ptr,
->> +					MAX_SEQ_PRINTF_STR_LEN);
->> +			} else {
->> +				err = -EFAULT;
->> +			}
->
-> This probably not right.
-> The pointer stored at args[fmt_cnt] is a kernel pointer,
-> but it could be an invalid address and we do not want to fault.
-> Not sure whether it exists or not, we should use 
-> strncpy_from_kernel_nofault()?
+On 5/27/20 5:30 PM, Jarkko Sakkinen wrote:
+>> This won't help if the message is read by an async tcti. If the problem lies
+>> in the chip get locality code, perhaps this could help to debug the root-cause
+>> instead of masking it out in the upper layer code:
+> What is TCTI and async TCTI? Not following.
 
-If you know it is a kernel pointer with this series it should be
-strncpy_from_kernel_nofault.  But even before the series it should have
-been strncpy_from_unsafe_strict.
+TPM Command Transmission Interface (TCTI) as defined by TCG in
+https://trustedcomputinggroup.org/resource/tss-tcti-specification/
+
+the reason we added the O_NONBLOCK mode was to satisfy the TCG spec for async TCTI.
+
+Thanks,
+Tadeusz
