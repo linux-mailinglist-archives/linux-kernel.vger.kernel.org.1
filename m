@@ -2,121 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4915C1E68D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 19:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5CE1E68EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 19:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405650AbgE1Rsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 13:48:40 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:43475 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405580AbgE1Rsi (ORCPT
+        id S2405686AbgE1R4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 13:56:04 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:36186 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405666AbgE1R4C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 13:48:38 -0400
-Received: by mail-il1-f193.google.com with SMTP id l20so1045594ilj.10;
-        Thu, 28 May 2020 10:48:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xA+8ZtZwDMfjZ7DO84uhGqtfaAhbDdUqKkUCy7pUj1U=;
-        b=o+w1UfduJs4do4KLMy2/g5AVIuhSXOK4cAOa15yjsKwBZ6gXzX5ymR1x3XRfcKQeDk
-         TAeQuKDdbm3LNzC7YRnSxoXUtaL2heRpuK0bK9U4abmNtX/fo4WSNViENyR9oOVg6r6e
-         C5IeUi2S0+qG0N13H/FWu2SK/HHR1h72uoXaseXvPB+wgvUxdaMgImXKNQ+TNqQLTAH8
-         4MOQtuDXcT2cDshJmIFKllsWvPacndCYGKIpOsjKoSOm2IIe0/uMvFVKcabBcJwYoPoW
-         txx9tgJbLp6/Yl++p+OZcAvUP8rcqewksppxw1cxnB8uaptyKRoshswa3qNXZswflmwv
-         E7xQ==
-X-Gm-Message-State: AOAM532SC8b9xve2eQ31R4wLptZt7Wg8kUBG+eZMAqQnLlI2gUP0f/g+
-        nsZXCfZY7f7guP4gzBXNrImNaYM=
-X-Google-Smtp-Source: ABdhPJwzEtC0+3YsXMxFaCJjXuihCzBokX+wvcFWsqh4QHEzCQNWPg5pzbjV9o2mQN+7xsl1C7j/7w==
-X-Received: by 2002:a92:b111:: with SMTP id t17mr3992506ilh.241.1590688117320;
-        Thu, 28 May 2020 10:48:37 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id r20sm3682147ilk.44.2020.05.28.10.48.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 10:48:36 -0700 (PDT)
-Received: (nullmailer pid 386101 invoked by uid 1000);
-        Thu, 28 May 2020 17:48:35 -0000
-Date:   Thu, 28 May 2020 11:48:35 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     andrew@lunn.ch, f.fainelli@gmail.com, hkallweit1@gmail.com,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next 1/2] dt-bindings: net: dp83822: Add TI dp83822
- phy
-Message-ID: <20200528174835.GA362519@bogus>
-References: <20200514173055.15013-1-dmurphy@ti.com>
- <20200514173055.15013-2-dmurphy@ti.com>
+        Thu, 28 May 2020 13:56:02 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SHWB8p183841;
+        Thu, 28 May 2020 17:55:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=Vtk1hI60ceUqtfvvIssc64/X2M+5Zc6s3CCA7Ch7H/s=;
+ b=t561ZdNZeLWgHo2cppHZZ2OxxnqjM2w7fvoAFV+MC5hwpEERhkGN1RmVOKh6/8aaSmLV
+ qnKQ/myHGb2j4QKdDSn1MPPhFkPCuImNQ/Sk4KtXxdpZ3OX5eka/KOJ90SkXxWzshIbG
+ q+gJHZmlV12SbSDhoDeZsjA3BCJQjTv+s5AhKLhyfsNxcsowVnUZGmfmzTyWUu5Z8xIx
+ 3n4GOKYo7/bu86kDsgB3eGjnOI1h21F0fCtb9TbCJx8XdAvLswCSrJNEo3JJTAi8t88f
+ lvDCuprlYo2sRg92M1LeBj4rEccjwJYJA+4ViKUKjdQElobaLrcg6sHOZkYFr7bo+xtJ Ig== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 318xe1peqq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 28 May 2020 17:55:56 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SHWwPL158636;
+        Thu, 28 May 2020 17:53:56 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 317ds30m4w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 May 2020 17:53:56 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04SHrtAe010100;
+        Thu, 28 May 2020 17:53:55 GMT
+Received: from localhost (/10.159.250.122)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 28 May 2020 10:53:54 -0700
+Date:   Thu, 28 May 2020 10:53:53 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH 09/12] xfs: flag files as supporting buffered async reads
+Message-ID: <20200528175353.GB8204@magnolia>
+References: <20200526195123.29053-1-axboe@kernel.dk>
+ <20200526195123.29053-10-axboe@kernel.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200514173055.15013-2-dmurphy@ti.com>
+In-Reply-To: <20200526195123.29053-10-axboe@kernel.dk>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9635 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
+ mlxlogscore=999 adultscore=0 suspectscore=1 bulkscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005280122
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9635 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ adultscore=0 cotscore=-2147483648 mlxscore=0 bulkscore=0
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 malwarescore=0
+ clxscore=1011 impostorscore=0 suspectscore=1 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005280122
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 12:30:54PM -0500, Dan Murphy wrote:
-> Add a dt binding for the TI dp83822 ethernet phy device.
+On Tue, May 26, 2020 at 01:51:20PM -0600, Jens Axboe wrote:
+> XFS uses generic_file_read_iter(), which already supports this.
 > 
-> CC: Rob Herring <robh+dt@kernel.org>
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+
+Er... I guess that looks ok?  Assuming you've done enough qa on
+io_uring to be able to tell if this breaks anything, since touching the
+mm always feels murky to me:
+
+Acked-by: Darrick J. Wong <darrick.wong@oracle.com>
+
+--D
+
 > ---
->  .../devicetree/bindings/net/ti,dp83822.yaml   | 49 +++++++++++++++++++
->  1 file changed, 49 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/ti,dp83822.yaml
+>  fs/xfs/xfs_file.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/net/ti,dp83822.yaml b/Documentation/devicetree/bindings/net/ti,dp83822.yaml
-> new file mode 100644
-> index 000000000000..60afd43ad3b6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/ti,dp83822.yaml
-> @@ -0,0 +1,49 @@
-> +# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
-> +# Copyright (C) 2020 Texas Instruments Incorporated
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/net/ti,dp83822.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: TI DP83822 ethernet PHY
-> +
-> +allOf:
-> +  - $ref: "ethernet-controller.yaml#"
-
-Not an ethernet controller. Drop. (The ethernet-phy.yaml schema will be 
-applied based on node name).
-
-> +
-> +maintainers:
-> +  - Dan Murphy <dmurphy@ti.com>
-> +
-> +description: |
-> +  The DP83822 is a low-power, single-port, 10/100 Mbps Ethernet PHY. It
-> +  provides all of the physical layer functions needed to transmit and receive
-> +  data over standard, twisted-pair cables or to connect to an external,
-> +  fiber-optic transceiver. Additionally, the DP83822 provides flexibility to
-> +  connect to a MAC through a standard MII, RMII, or RGMII interface
-> +
-> +  Specifications about the charger can be found at:
-> +    http://www.ti.com/lit/ds/symlink/dp83822i.pdf
-> +
-> +properties:
-> +  reg:
-> +    maxItems: 1
-> +
-> +  ti,signal-polarity-low:
-
-What signal? 
-
-> +    type: boolean
-> +    description: |
-> +       DP83822 PHY in Fiber mode only.
-> +       Sets the DP83822 to detect a link drop condition when the signal goes
-> +       high.  If not set then link drop will occur when the signal goes low.
-
-The naming is not clear that low is for link drop. So maybe:
-
-ti,link-loss-low
-
-Rob
+> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+> index 4b8bdecc3863..97f44fbf17f2 100644
+> --- a/fs/xfs/xfs_file.c
+> +++ b/fs/xfs/xfs_file.c
+> @@ -1080,7 +1080,7 @@ xfs_file_open(
+>  		return -EFBIG;
+>  	if (XFS_FORCED_SHUTDOWN(XFS_M(inode->i_sb)))
+>  		return -EIO;
+> -	file->f_mode |= FMODE_NOWAIT;
+> +	file->f_mode |= FMODE_NOWAIT | FMODE_BUF_RASYNC;
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.26.2
+> 
