@@ -2,62 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43DD91E6327
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B90C1E6329
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390704AbgE1OC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 10:02:28 -0400
-Received: from mga11.intel.com ([192.55.52.93]:23319 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390540AbgE1OC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 10:02:26 -0400
-IronPort-SDR: h6bPnYEg5gBrlQDEHGc3TbOt2Tox5kxXA3y7CErvfLI3kTNyuckYwdaKcuPmOMbgKnc41C8ie5
- Zjydsylj0HtQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 07:02:26 -0700
-IronPort-SDR: FecJ5r7Uq94DHHhmghjJ99Hvb8ZmtORb1/VYFUzXzQZYhvqyvxiHHpVDK/trA5Xr61fSY10z0b
- 2Rj89oBj22nA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,444,1583222400"; 
-   d="scan'208";a="292004382"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
-  by fmsmga004.fm.intel.com with ESMTP; 28 May 2020 07:02:26 -0700
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-        id 0B799301C60; Thu, 28 May 2020 07:02:26 -0700 (PDT)
-Date:   Thu, 28 May 2020 07:02:26 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V2 3/3] perf/x86/intel/uncore: Validate MMIO address
- before accessing
-Message-ID: <20200528140226.GI611145@tassilo.jf.intel.com>
-References: <1590671727-99311-1-git-send-email-kan.liang@linux.intel.com>
- <1590671727-99311-3-git-send-email-kan.liang@linux.intel.com>
- <de3b847eddd143998997d70a1ba161b8@AcuMS.aculab.com>
- <79403443-e893-da26-ee6d-1fd7f252bbfe@linux.intel.com>
+        id S2390775AbgE1ODg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 10:03:36 -0400
+Received: from mag112.magazineer.net ([157.7.134.112]:42760 "EHLO
+        157.7.134.112" rhost-flags-OK-OK-FAIL-FAIL) by vger.kernel.org
+        with ESMTP id S2390540AbgE1ODf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 10:03:35 -0400
+X-Greylist: delayed 307 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 May 2020 10:03:35 EDT
+To:     <linux-kernel@vger.kernel.org>
+Subject: =?iso-2022-jp?B?GyRCOWJCNDVhP01JPCROTU08MEpROTkkSyREJCQkRhsoQg==?=
+From:   =?ISO-2022-JP?B?GyRCJTglZyVWJUklaSVVJUglOyVfJUohPDE/MUQ8PBsoQg==?= 
+        <info@hr-saiyo.work>
+Date:   Thu, 28 May 2020 23:03:35 +0900
+Reply-To: info@hr-saiyo.work
+Message-Id: <20200428230335.04283@hr-saiyo.work>
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <79403443-e893-da26-ee6d-1fd7f252bbfe@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > +
-> > > +	pr_warn_once("perf uncore: Access invalid address of %s.\n",
-> > > +		     box->pmu->type->name);
-> > 
-> > Pretty hard to debug without the invalid offset.
-> > 
-> 
-> I will dump the box->io_addr and offset for debugging.
+ジョブドラフトセミナー運営室より
+高校新卒採用の最前線をお伝えするセミナーのご案内です。
+〜オンライン開催のためご自宅や職場で視聴可能です〜
 
-Please don't overengineer.
 
--Andi
+高卒採用において重要な軸となる「求人票」ですが
+2021年卒採用から新しく変更となります。
+
+しかし新型コロナウイルスの影響により、一部地域ではハローワーク主催の
+求人票説明会が中止となり混乱をきたしています。
+
+そこで「高卒採用の情報共有」をすべく、
+求人票作成についてのオンライン無料講座を開催いたします。
+
+これまで2000社を超える企業の求人票を添削してきた経験をもとに、
+基本的な作成方法はもちろん”採用成果に繋がる”ポイントをお伝えいたします。
+
+新しい求人票について知りたい
+毎年同じ求人票を出しているがもっと応募者を増やしたい
+
+という企業様は是非ともご参加ください。
+
+
+　 ▼　詳細・申込　▼
+　 ■　https://hr-saiyo.work/2006/　　 ■
+
+
+オンライン開催
+――――――――――――――――――――――――――――
+
+   “成果が2倍あがる”求人票の作り方
+          21年高卒採用に向けて
+　 日程：6月4日／10日／15日　(全日程 内容は同じです)
+　 時間：各回45分程度
+　 会場：オンライン開催(ご自宅や職場で視聴可能)
+　
+　 ■　https://hr-saiyo.work/2006/　　 ■
+
+――――――――――――――――――――――――――――
+　本メールのご不要な方には大変ご迷惑をおかけいたしました。
+　配信停止ご希望の方は、お手数ですが「配信不要」とご返信いただくか、
+　下記アドレスより、お手続きをお願いいたします。
+　 https://form9dm.site/kaijo/
+――――――――――――――――――――――――――――
+   ジョブドラフトセミナー運営室(株式会社ジンジブ)
+　 住所：東京都港区浜松町2丁目7-19　KDX浜松町ビル5階    
+ 　TEL：03-5777-2679
+　 Mail：info@hr-service.work
+――――――――――――――――――――――――――――
