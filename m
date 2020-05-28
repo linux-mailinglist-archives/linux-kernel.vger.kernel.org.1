@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD651E58DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 09:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CEF91E58DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 09:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726926AbgE1Hip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 03:38:45 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:39352 "EHLO inva021.nxp.com"
+        id S1726909AbgE1Hii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 03:38:38 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:39412 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726853AbgE1Hic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 03:38:32 -0400
+        id S1726860AbgE1Hie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 03:38:34 -0400
 Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4A9C1200A16;
-        Thu, 28 May 2020 09:38:30 +0200 (CEST)
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D4960200A25;
+        Thu, 28 May 2020 09:38:31 +0200 (CEST)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 80AD6200A27;
-        Thu, 28 May 2020 09:38:24 +0200 (CEST)
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4C4DF200A1D;
+        Thu, 28 May 2020 09:38:26 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 621CB402BF;
-        Thu, 28 May 2020 15:38:17 +0800 (SGT)
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id EBB1F402D3;
+        Thu, 28 May 2020 15:38:18 +0800 (SGT)
 From:   Anson Huang <Anson.Huang@nxp.com>
 To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
         shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
@@ -27,9 +27,9 @@ To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
         linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Linux-imx@nxp.com
-Subject: [PATCH 8/9] dt-bindings: clock: Convert i.MX21 clock to json-schema
-Date:   Thu, 28 May 2020 15:27:58 +0800
-Message-Id: <1590650879-18288-9-git-send-email-Anson.Huang@nxp.com>
+Subject: [PATCH 9/9] dt-bindings: clock: Convert i.MX1 clock to json-schema
+Date:   Thu, 28 May 2020 15:27:59 +0800
+Message-Id: <1590650879-18288-10-git-send-email-Anson.Huang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1590650879-18288-1-git-send-email-Anson.Huang@nxp.com>
 References: <1590650879-18288-1-git-send-email-Anson.Huang@nxp.com>
@@ -39,76 +39,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the i.MX21 clock binding to DT schema format using json-schema,
-can NOT find any CCM interrupt info from reference manual and DT file,
-so interrupts property is removed from original binding doc.
+Convert the i.MX1 clock binding to DT schema format using json-schema.
 
 Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 ---
- .../devicetree/bindings/clock/imx21-clock.txt      | 27 ------------
- .../devicetree/bindings/clock/imx21-clock.yaml     | 49 ++++++++++++++++++++++
- 2 files changed, 49 insertions(+), 27 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/clock/imx21-clock.txt
- create mode 100644 Documentation/devicetree/bindings/clock/imx21-clock.yaml
+ .../devicetree/bindings/clock/imx1-clock.txt       | 26 ------------
+ .../devicetree/bindings/clock/imx1-clock.yaml      | 49 ++++++++++++++++++++++
+ 2 files changed, 49 insertions(+), 26 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/clock/imx1-clock.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/imx1-clock.yaml
 
-diff --git a/Documentation/devicetree/bindings/clock/imx21-clock.txt b/Documentation/devicetree/bindings/clock/imx21-clock.txt
+diff --git a/Documentation/devicetree/bindings/clock/imx1-clock.txt b/Documentation/devicetree/bindings/clock/imx1-clock.txt
 deleted file mode 100644
-index 806f63d..0000000
---- a/Documentation/devicetree/bindings/clock/imx21-clock.txt
+index 9823baf..0000000
+--- a/Documentation/devicetree/bindings/clock/imx1-clock.txt
 +++ /dev/null
-@@ -1,27 +0,0 @@
--* Clock bindings for Freescale i.MX21
+@@ -1,26 +0,0 @@
+-* Clock bindings for Freescale i.MX1 CPUs
 -
 -Required properties:
--- compatible  : Should be "fsl,imx21-ccm".
--- reg         : Address and length of the register set.
--- interrupts  : Should contain CCM interrupt.
+-- compatible: Should be "fsl,imx1-ccm".
+-- reg: Address and length of the register set.
 -- #clock-cells: Should be <1>.
 -
 -The clock consumer should specify the desired clock by having the clock
--ID in its "clocks" phandle cell. See include/dt-bindings/clock/imx21-clock.h
--for the full list of i.MX21 clock IDs.
+-ID in its "clocks" phandle cell. See include/dt-bindings/clock/imx1-clock.h
+-for the full list of i.MX1 clock IDs.
 -
 -Examples:
--	clks: ccm@10027000{
--		compatible = "fsl,imx21-ccm";
--		reg = <0x10027000 0x800>;
+-	clks: ccm@21b000 {
 -		#clock-cells = <1>;
+-		compatible = "fsl,imx1-ccm";
+-		reg = <0x0021b000 0x1000>;
 -	};
 -
--	uart1: serial@1000a000 {
--		compatible = "fsl,imx21-uart";
--		reg = <0x1000a000 0x1000>;
--		interrupts = <20>;
--		clocks = <&clks IMX21_CLK_UART1_IPG_GATE>,
--			 <&clks IMX21_CLK_PER1>;
+-	pwm: pwm@208000 {
+-		#pwm-cells = <2>;
+-		compatible = "fsl,imx1-pwm";
+-		reg = <0x00208000 0x1000>;
+-		interrupts = <34>;
+-		clocks = <&clks IMX1_CLK_DUMMY>, <&clks IMX1_CLK_PER1>;
 -		clock-names = "ipg", "per";
 -	};
-diff --git a/Documentation/devicetree/bindings/clock/imx21-clock.yaml b/Documentation/devicetree/bindings/clock/imx21-clock.yaml
+diff --git a/Documentation/devicetree/bindings/clock/imx1-clock.yaml b/Documentation/devicetree/bindings/clock/imx1-clock.yaml
 new file mode 100644
-index 0000000..cee9b00
+index 0000000..06a0ff9
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/imx21-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imx1-clock.yaml
 @@ -0,0 +1,49 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/clock/imx21-clock.yaml#
++$id: http://devicetree.org/schemas/clock/imx1-clock.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Clock bindings for Freescale i.MX21
++title: Clock bindings for Freescale i.MX1 CPUs
 +
 +maintainers:
 +  - Alexander Shiyan <shc_work@mail.ru>
 +
 +description: |
 +  The clock consumer should specify the desired clock by having the clock
-+  ID in its "clocks" phandle cell. See include/dt-bindings/clock/imx21-clock.h
-+  for the full list of i.MX21 clock IDs.
++  ID in its "clocks" phandle cell. See include/dt-bindings/clock/imx1-clock.h
++  for the full list of i.MX1 clock IDs.
 +
 +properties:
 +  compatible:
-+    const: fsl,imx21-ccm
++    const: fsl,imx1-ccm
 +
 +  reg:
 +    maxItems: 1
@@ -123,20 +120,20 @@ index 0000000..cee9b00
 +
 +examples:
 +  - |
-+    #include <dt-bindings/clock/imx21-clock.h>
++    #include <dt-bindings/clock/imx1-clock.h>
 +
-+    clock-controller@10027000 {
-+        compatible = "fsl,imx21-ccm";
-+        reg = <0x10027000 0x800>;
++    clock-controller@21b000 {
 +        #clock-cells = <1>;
++        compatible = "fsl,imx1-ccm";
++        reg = <0x0021b000 0x1000>;
 +    };
 +
-+    serial@1000a000 {
-+        compatible = "fsl,imx21-uart";
-+        reg = <0x1000a000 0x1000>;
-+        interrupts = <20>;
-+        clocks = <&clks IMX21_CLK_UART1_IPG_GATE>,
-+                 <&clks IMX21_CLK_PER1>;
++    pwm@208000 {
++        #pwm-cells = <2>;
++        compatible = "fsl,imx1-pwm";
++        reg = <0x00208000 0x1000>;
++        interrupts = <34>;
++        clocks = <&clks IMX1_CLK_DUMMY>, <&clks IMX1_CLK_PER1>;
 +        clock-names = "ipg", "per";
 +    };
 -- 
