@@ -2,82 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6801E640B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 603ED1E641C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725833AbgE1Od4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 10:33:56 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:26988 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725308AbgE1Odw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 10:33:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590676431;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pBQOiMcyjxJF5KMUzY58hCHngjZNJvMhsoqslwe6gEA=;
-        b=YXv+0Oeh1Q0yutAWk4URrAAvVh6i/aRW9cwk5OME/lf3tc6+SGMRJ49VniXkoTEV0SElvc
-        KeuXycQ/ivnwDx5f0fYkiedLT4MR4NQSqU8I9Il/ux00BsYmjqOBg4VAlPLSXX0QHm1s4R
-        9WxMFE4fwTy2lRXDzeCSLF78ODpXZzM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-144-MJXjkSsVN8mXu_JMQ8LJVQ-1; Thu, 28 May 2020 10:33:46 -0400
-X-MC-Unique: MJXjkSsVN8mXu_JMQ8LJVQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CDE4083DB39;
-        Thu, 28 May 2020 14:33:44 +0000 (UTC)
-Received: from treble (ovpn-117-65.rdu2.redhat.com [10.10.117.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3B5692C24F;
-        Thu, 28 May 2020 14:33:43 +0000 (UTC)
-Date:   Thu, 28 May 2020 09:33:41 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Qian Cai <cai@lca.pw>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 2/3] kasan: move kasan_report() into report.c
-Message-ID: <20200528143341.ntxtnq4rw5ypu3k5@treble>
-References: <29bd753d5ff5596425905b0b07f51153e2345cc1.1589297433.git.andreyknvl@google.com>
- <78a81fde6eeda9db72a7fd55fbc33173a515e4b1.1589297433.git.andreyknvl@google.com>
- <20200528134913.GA1810@lca.pw>
+        id S1728493AbgE1Oiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 10:38:46 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:34590 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725768AbgE1Oim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 10:38:42 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 236C15584F194234AC35;
+        Thu, 28 May 2020 22:38:35 +0800 (CST)
+Received: from localhost (10.166.215.154) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Thu, 28 May 2020
+ 22:38:27 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <jmaloy@redhat.com>, <ying.xue@windriver.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <tuong.t.lien@dektech.com.au>
+CC:     <netdev@vger.kernel.org>, <tipc-discussion@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH net-next] tipc: Fix NULL pointer dereference in __tipc_sendstream()
+Date:   Thu, 28 May 2020 22:34:07 +0800
+Message-ID: <20200528143407.56196-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200528134913.GA1810@lca.pw>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain
+X-Originating-IP: [10.166.215.154]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 09:49:13AM -0400, Qian Cai wrote:
-> On Tue, May 12, 2020 at 05:33:20PM +0200, 'Andrey Konovalov' via kasan-dev wrote:
-> > The kasan_report() functions belongs to report.c, as it's a common
-> > functions that does error reporting.
-> > 
-> > Reported-by: Leon Romanovsky <leon@kernel.org>
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> 
-> Today's linux-next produced this with Clang 11.
-> 
-> mm/kasan/report.o: warning: objtool: kasan_report()+0x8a: call to __stack_chk_fail() with UACCESS enabled
-> 
-> kasan_report at mm/kasan/report.c:536
+tipc_sendstream() may send zero length packet, then tipc_msg_append()
+do not alloc skb, skb_peek_tail() will get NULL, msg_set_ack_required
+will trigger NULL pointer dereference.
 
-Peter, this was also reported with GCC about a month ago.  Should we add
-__stack_chk_fail() to the uaccess safe list?
+Reported-by: syzbot+8eac6d030e7807c21d32@syzkaller.appspotmail.com
+Fixes: 0a3e060f340d ("tipc: add test for Nagle algorithm effectiveness")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ net/tipc/socket.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
+diff --git a/net/tipc/socket.c b/net/tipc/socket.c
+index d6b67d07d22e..2943561399f1 100644
+--- a/net/tipc/socket.c
++++ b/net/tipc/socket.c
+@@ -1588,8 +1588,12 @@ static int __tipc_sendstream(struct socket *sock, struct msghdr *m, size_t dlen)
+ 				tsk->pkt_cnt += skb_queue_len(txq);
+ 			} else {
+ 				skb = skb_peek_tail(txq);
+-				msg_set_ack_required(buf_msg(skb));
+-				tsk->expect_ack = true;
++				if (skb) {
++					msg_set_ack_required(buf_msg(skb));
++					tsk->expect_ack = true;
++				} else {
++					tsk->expect_ack = false;
++				}
+ 				tsk->msg_acc = 0;
+ 				tsk->pkt_cnt = 0;
+ 			}
 -- 
-Josh
+2.17.1
+
 
