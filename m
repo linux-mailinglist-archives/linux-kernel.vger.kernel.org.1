@@ -2,105 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE33E1E5769
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 08:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D36B1E576F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 08:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727881AbgE1GRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 02:17:03 -0400
-Received: from mga11.intel.com ([192.55.52.93]:56969 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725984AbgE1GRC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 02:17:02 -0400
-IronPort-SDR: 5UIoC2uDze2EHA21ah7/mM7rGAWUFqk+tnCpFnQOfP+xa0JgdcTIf08svlW2uhT4gIZB8rUoeP
- Q9S2mQ0tbZIw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 23:17:02 -0700
-IronPort-SDR: +tLF3uRyihbI6HBCrkZKOMKLnCoThQQu7dB46/KLPCMHYAuGRhzGKf6zEJAE5gHAdzsCumAbuR
- WedkJ0i1uLiw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,443,1583222400"; 
-   d="scan'208";a="442833403"
-Received: from dmescala-mobl1.amr.corp.intel.com (HELO localhost) ([10.252.59.102])
-  by orsmga005.jf.intel.com with ESMTP; 27 May 2020 23:16:52 -0700
-Date:   Thu, 28 May 2020 09:16:51 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        akpm@linux-foundation.org, dave.hansen@intel.com,
-        nhorman@redhat.com, npmccallum@redhat.com, haitao.huang@intel.com,
-        andriy.shevchenko@linux.intel.com, tglx@linutronix.de,
-        kai.svahn@intel.com, josh@joshtriplett.org, luto@kernel.org,
-        kai.huang@intel.com, rientjes@google.com, cedric.xing@intel.com,
-        puiterwijk@redhat.com, Serge Ayoun <serge.ayoun@intel.com>,
-        Jethro Beekman <jethro@fortanix.com>
-Subject: Re: [PATCH v30 07/20] x86/sgx: Enumerate and track EPC sections
-Message-ID: <20200528061651.GA103000@linux.intel.com>
-References: <20200515004410.723949-1-jarkko.sakkinen@linux.intel.com>
- <20200515004410.723949-8-jarkko.sakkinen@linux.intel.com>
- <20200525092304.GD25636@zn.tnic>
- <20200527035613.GH31696@linux.intel.com>
- <20200528052532.GA63435@linux.intel.com>
- <20200528053515.GA64796@linux.intel.com>
- <20200528061432.GA102386@linux.intel.com>
+        id S1727908AbgE1GTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 02:19:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727786AbgE1GTC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 02:19:02 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A582FC05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 23:19:01 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id a25so20274572ljp.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 23:19:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D6wzGSWAzO6Y9V94w6NjURnljaOZPM/kHqxn4LN53UU=;
+        b=kDlnELRVL1kkiXCkL9OsgTrT6K7LhmaWGvzinLnJhCOfWjepFEAIZx+YESCtX3YZYi
+         cBRBAQPpx3CbsqRNhZ3WNyOnWzYcjevglEjYJ1qdyWT7xtJ9ffm6majXh9UtFFBVBQlD
+         IAubNEa3IPU9Ha8xzHrb8UX2xWObvVjMWpogKNU+/3aq2Rqvqfn1YRkljwlxvhN1Qbuh
+         Dy/rlWe7w1uphNYGhp/HPmR85P8unuQqLai4N/IMbNlpjsOJ7kavFuKhR3QH1Rz88HrZ
+         xts+STY8/GTa+Xwf9IzW11NsPrTOokH5dTkFv+J/AdoL7RNegZzNEvHzE9YXA+4biAHN
+         3Xkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D6wzGSWAzO6Y9V94w6NjURnljaOZPM/kHqxn4LN53UU=;
+        b=PpiRo+aGwsBevMI6uff7JEb7zZRG0hohvL+NOtZATicSt0dWZIsiAHFB3d4fT6nQ0B
+         sAlvAKJFwRxgSqfFn+dYsGnsPIeQ3ASfMXPqN9MJuY0vgfs7eEl99LRW2wl43s6/xTlF
+         9aOE9omEO/k+rq2wwRuzj19dtOaJEZtpZHL4CvJLuB+/UoFu2BnuBvr2al12ZH6xEj40
+         2E0XQAZwB+x3Ghn14b3IgWF8gehkn9eRfHQ1Z7nZJLlswt1b58XLY6XMvWa6UtgRRWtd
+         CdxCWKxPlUH368iOSaNrgyoAuhXKzSc2Pma9LsIlGA+7U0u77WQAeeKaJ26KClUVAG6/
+         0FBQ==
+X-Gm-Message-State: AOAM532MEuTIeC8wPxwYeIyLo+56nyfB1iBVKHJVn/9jYCXLWB3xRXDt
+        KZtU4aSDGjUjD0GqmU52b96HTW4awad8RbeFpiYZ3Q==
+X-Google-Smtp-Source: ABdhPJylWSoKAJTE57FP7FadAVGNn54Dte/EGhBccUu5jav28TYTjig9BOGV8hdW3KpAPu2aqAm86PxkkikGD7E6MR0=
+X-Received: by 2002:a2e:a16e:: with SMTP id u14mr613038ljl.427.1590646739924;
+ Wed, 27 May 2020 23:18:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200528061432.GA102386@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <1590560759-21453-1-git-send-email-sumit.garg@linaro.org>
+ <1590560759-21453-5-git-send-email-sumit.garg@linaro.org> <20200527133115.x5hqzttsg73saiky@holly.lan>
+In-Reply-To: <20200527133115.x5hqzttsg73saiky@holly.lan>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Thu, 28 May 2020 11:48:48 +0530
+Message-ID: <CAFA6WYNeBDRdRqb8dB5HA923ujD3zq7JEQQnV4WJr_fthCc=GQ@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] kdb: Switch kdb_msg_write() to use safer polling I/O
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     kgdb-bugreport@lists.sourceforge.net,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 09:14:43AM +0300, Jarkko Sakkinen wrote:
-> On Thu, May 28, 2020 at 08:35:15AM +0300, Jarkko Sakkinen wrote:
-> > On Thu, May 28, 2020 at 08:25:43AM +0300, Jarkko Sakkinen wrote:
-> > > On Tue, May 26, 2020 at 08:56:14PM -0700, Sean Christopherson wrote:
-> > > > On Mon, May 25, 2020 at 11:23:04AM +0200, Borislav Petkov wrote:
-> > > > > On Fri, May 15, 2020 at 03:43:57AM +0300, Jarkko Sakkinen wrote:
-> > > > > > +struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
-> > > > > > +int sgx_nr_epc_sections;
-> > > > > 
-> > > > > We have become very averse against global stuff. What is going to use
-> > > > > those, only sgx code I assume...?
-> > > > 
-> > > > Yes, only SGX code.  The reclaim/swap code needs access to the sections,
-> > > > and that code is in a different file, reclaim.c.  I don't have a super
-> > > > strong objection to sucking reclaim.c into main.c, but I'm somewhat
-> > > > indifferent on code organization as a whole.  Jarkko likely has a stronger
-> > > > opinion.
-> > > 
-> > > I'll change it.
-> > > 
-> > > It's not quite as easy as just "sucking the file in". All the commits
-> > > that touch the file need to be reworked:
-> > > 
-> > > $ git --no-pager log --format="%H %s" arch/x86/kernel/cpu/sgx/reclaim.c
-> > > 5aeca6dabf767e9350ee3188ba25ceb21f3162b4 x86/sgx: Add a page reclaimer
-> > > de9b1088959f36ffdaf43a49bfea1c7f9f81cac7 x86/sgx: Linux Enclave Driver
-> > > 08d8fcb74fe268059ee58fcc2a0833b244e1f22a x86/sgx: Enumerate and track EPC sections
-> > 
-> > Not that I haven't done this a lot last few years. A proven approach
-> > is to do it in two "git rebase -i mainline/master" sweeps:
-> > 
-> > 1. For each commit, remove reclaim.c entry from the Makefile and import
-> >    reclaim.c contents to main.c.
-> > 2. For each commit, delete reclaim.c.
-> > 
-> > I've tried quite a few different angles and this what I've converged
-> > into. Very hard to hit messy into messy merge conflicts.
-> 
-> Remembered why the things are the way they are. Also ioctl.c needs these
-> symbols and I'd keep that separate from the contents of main.c and
-> reclaim.c. There the separation obviously makes sense.
-> 
-> I'll anyway merge main.c and reclaim.c as one for v31 because they are
-> strongly connected.
+On Wed, 27 May 2020 at 19:01, Daniel Thompson
+<daniel.thompson@linaro.org> wrote:
+>
+> On Wed, May 27, 2020 at 11:55:59AM +0530, Sumit Garg wrote:
+> > In kgdb NMI context, calling console handlers isn't safe due to locks
+> > used in those handlers which could lead to a deadlock. Although, using
+> > oops_in_progress increases the chance to bypass locks in most console
+> > handlers but it might not be sufficient enough in case a console uses
+> > more locks (VT/TTY is good example).
+> >
+> > Currently when a driver provides both polling I/O and a console then kdb
+> > will output using the console. We can increase robustness by using the
+> > currently active polling I/O driver (which should be lockless) instead
+> > of the corresponding console. For several common cases (e.g. an
+> > embedded system with a single serial port that is used both for console
+> > output and debugger I/O) this will result in no console handler being
+> > used.
+>
+> Not sure I would have predicted all those changes to kgdboc.c based on
+> this patch description. I assume this is to help identify which console
+> matches our dbg_io_ops but it would be good to spell this out.
+>
 
-And more importantly for the reason that it allows to make ksgxswapd_tsk
-making the whole thing way more cleaner.
+Okay, will add the corresponding description.
 
-/Jarkko
+>
+> > Suggested-by: Daniel Thompson <daniel.thompson@linaro.org>
+> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > ---
+> >  drivers/tty/serial/kgdboc.c | 17 ++++++++---------
+> >  include/linux/kgdb.h        |  2 ++
+> >  kernel/debug/kdb/kdb_io.c   | 46 +++++++++++++++++++++++++++++++--------------
+> >  3 files changed, 42 insertions(+), 23 deletions(-)
+> >
+> > diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
+> > index c9f94fa..6199fe1 100644
+> > --- a/drivers/tty/serial/kgdboc.c
+> > +++ b/drivers/tty/serial/kgdboc.c
+> > @@ -35,7 +35,6 @@ static struct kparam_string kps = {
+> >  };
+> >
+> >  static int kgdboc_use_kms;  /* 1 if we use kernel mode switching */
+> > -static struct tty_driver     *kgdb_tty_driver;
+> >  static int                   kgdb_tty_line;
+> >
+> >  #ifdef CONFIG_KDB_KEYBOARD
+> > @@ -154,7 +153,7 @@ static int configure_kgdboc(void)
+> >       }
+> >
+> >       kgdboc_io_ops.is_console = 0;
+> > -     kgdb_tty_driver = NULL;
+> > +     kgdboc_io_ops.tty_drv = NULL;
+> >
+> >       kgdboc_use_kms = 0;
+> >       if (strncmp(cptr, "kms,", 4) == 0) {
+> > @@ -178,7 +177,7 @@ static int configure_kgdboc(void)
+> >               }
+> >       }
+> >
+> > -     kgdb_tty_driver = p;
+> > +     kgdboc_io_ops.tty_drv = p;
+> >       kgdb_tty_line = tty_line;
+> >
+> >  do_register:
+> > @@ -216,18 +215,18 @@ static int __init init_kgdboc(void)
+> >
+> >  static int kgdboc_get_char(void)
+> >  {
+> > -     if (!kgdb_tty_driver)
+> > +     if (!kgdboc_io_ops.tty_drv)
+> >               return -1;
+> > -     return kgdb_tty_driver->ops->poll_get_char(kgdb_tty_driver,
+> > -                                             kgdb_tty_line);
+> > +     return kgdboc_io_ops.tty_drv->ops->poll_get_char(kgdboc_io_ops.tty_drv,
+> > +                                                      kgdb_tty_line);
+> >  }
+> >
+> >  static void kgdboc_put_char(u8 chr)
+> >  {
+> > -     if (!kgdb_tty_driver)
+> > +     if (!kgdboc_io_ops.tty_drv)
+> >               return;
+> > -     kgdb_tty_driver->ops->poll_put_char(kgdb_tty_driver,
+> > -                                     kgdb_tty_line, chr);
+> > +     kgdboc_io_ops.tty_drv->ops->poll_put_char(kgdboc_io_ops.tty_drv,
+> > +                                               kgdb_tty_line, chr);
+> >  }
+> >
+> >  static int param_set_kgdboc_var(const char *kmessage,
+> > diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
+> > index b072aeb..05d165d 100644
+> > --- a/include/linux/kgdb.h
+> > +++ b/include/linux/kgdb.h
+> > @@ -275,6 +275,7 @@ struct kgdb_arch {
+> >   * for the I/O driver.
+> >   * @is_console: 1 if the end device is a console 0 if the I/O device is
+> >   * not a console
+> > + * @tty_drv: Pointer to polling tty driver.
+> >   */
+> >  struct kgdb_io {
+> >       const char              *name;
+> > @@ -285,6 +286,7 @@ struct kgdb_io {
+> >       void                    (*pre_exception) (void);
+> >       void                    (*post_exception) (void);
+> >       int                     is_console;
+> > +     struct tty_driver       *tty_drv;
+>
+> Should this be a struct tty_driver or a struct console?
+>
+> In other words if the lifetime the console structure is the same as the
+> tty_driver then isn't it better to capture the console instead
+> (easier to compare and works with non-tty devices such as the
+> USB debug mode).
+>
+
+IIUC, you mean to say we can easily replace "is_console" with "struct
+console". This sounds feasible and should be a straightforward
+comparison in order to prefer "dbg_io_ops" over console handlers. So I
+will switch to use "struct console" instead.
+
+>
+> >  };
+> >
+> >  extern const struct kgdb_arch                arch_kgdb_ops;
+> > diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
+> > index f848482..c2efa52 100644
+> > --- a/kernel/debug/kdb/kdb_io.c
+> > +++ b/kernel/debug/kdb/kdb_io.c
+> > @@ -24,6 +24,7 @@
+> >  #include <linux/kgdb.h>
+> >  #include <linux/kdb.h>
+> >  #include <linux/kallsyms.h>
+> > +#include <linux/tty_driver.h>
+> >  #include "kdb_private.h"
+> >
+> >  #define CMD_BUFLEN 256
+> > @@ -542,13 +543,18 @@ static int kdb_search_string(char *searched, char *searchfor)
+> >       return 0;
+> >  }
+> >
+> > -static void kdb_io_write(char *cp, int len, void (*io_put_char)(u8 ch))
+> > +static void kdb_io_write(char *cp, int len, void (*io_put_char)(u8),
+> > +                      struct tty_driver *p, int line,
+> > +                      void (*poll_put_char)(struct tty_driver *, int, char))
+>
+> Judging from your reply to comment 1 I guess this is already on the list
+> to eliminate ;-).
+>
+
+Yeah.
+
+-Sumit
+
+>
+> Daniel.
+>
+>
+> >  {
+> >       if (len <= 0)
+> >               return;
+> >
+> >       while (len--) {
+> > -             io_put_char(*cp);
+> > +             if (io_put_char)
+> > +                     io_put_char(*cp);
+> > +             if (poll_put_char)
+> > +                     poll_put_char(p, line, *cp);
+> >               cp++;
+> >       }
+> >  }
+> > @@ -561,22 +567,34 @@ static void kdb_msg_write(char *msg, int msg_len)
+> >               return;
+> >
+> >       if (dbg_io_ops && !dbg_io_ops->is_console)
+> > -             kdb_io_write(msg, msg_len, dbg_io_ops->write_char);
+> > +             kdb_io_write(msg, msg_len, dbg_io_ops->write_char,
+> > +                          NULL, 0, NULL);
+> >
+> >       for_each_console(c) {
+> > +             int line;
+> > +             struct tty_driver *p;
+> > +
+> >               if (!(c->flags & CON_ENABLED))
+> >                       continue;
+> > -             /*
+> > -              * While rounding up CPUs via NMIs, its possible that
+> > -              * a rounded up CPU maybe holding a console port lock
+> > -              * leading to kgdb master CPU stuck in a deadlock during
+> > -              * invocation of console write operations. So in order
+> > -              * to avoid such a deadlock, enable oops_in_progress
+> > -              * prior to invocation of console handlers.
+> > -              */
+> > -             ++oops_in_progress;
+> > -             c->write(c, msg, msg_len);
+> > -             --oops_in_progress;
+> > +
+> > +             p = c->device ? c->device(c, &line) : NULL;
+> > +             if (p && dbg_io_ops && p == dbg_io_ops->tty_drv && p->ops &&
+> > +                 p->ops->poll_put_char) {
+> > +                     kdb_io_write(msg, msg_len, NULL, p, line,
+> > +                                  p->ops->poll_put_char);
+> > +             } else {
+> > +                     /*
+> > +                      * While rounding up CPUs via NMIs, its possible that
+> > +                      * a rounded up CPU maybe holding a console port lock
+> > +                      * leading to kgdb master CPU stuck in a deadlock during
+> > +                      * invocation of console write operations. So in order
+> > +                      * to avoid such a deadlock, enable oops_in_progress
+> > +                      * prior to invocation of console handlers.
+> > +                      */
+> > +                     ++oops_in_progress;
+> > +                     c->write(c, msg, msg_len);
+> > +                     --oops_in_progress;
+> > +             }
+> >               touch_nmi_watchdog();
+> >       }
+> >  }
+> > --
+> > 2.7.4
+> >
