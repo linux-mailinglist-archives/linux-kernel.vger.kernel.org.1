@@ -2,135 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87DFB1E55E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 07:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A25FB1E565F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 07:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728368AbgE1FPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 01:15:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727047AbgE1FP2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 01:15:28 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31FCBC05BD1E
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 22:15:28 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id n5so1848379wmd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 22:15:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9ogbDNvgcnvbjK2u+CfCd7F7vOweOB0DcAaASJSQleM=;
-        b=gK1Wa8QlQn0RzLYnPm0DOAuWIsb3ZgQVejc8of4HcZHM9bTmfb7ku5IuobyHBWLV+A
-         4pfX2QFACm9JWcZbeVXnuhuEeCC7j9gvmyRWHbderhxw2Wo93egg9/eMdIOKPW2vJ+Hi
-         sdBTJqihazq9u6DGx72wef17BzJOJywp3pC7M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9ogbDNvgcnvbjK2u+CfCd7F7vOweOB0DcAaASJSQleM=;
-        b=btBzYYhx8LnebZ1I1Qndye39GRygrhwf1n/58R2HlyI5i9UvaKTD4wYDSTVxqnN52U
-         kkpp3T8AKyska0BfObu4PgVr6TcbgfA+86S61jITjaMw+dqwSRP7Kmt8JMa8ldK8AS6q
-         BZO68uAl6kbdu6peaVm5d/0DbKrDtwTFskNo86yfAT+wqK5EP5mWRXJ/CznW8SNY3ZNW
-         Of0jygnk22OcMXgG7XtrUVNharkrRDzOCvX02GskTICJ6AARdnGHq5wJNLi3TWnVq3l/
-         qaoubP+FiC6bIKGb/ZQpYIWqSbLsy5o3oJsBKVgPtfdEDHElaHsvvZ48A8qkaTrlUH9I
-         LNtA==
-X-Gm-Message-State: AOAM5334K3xu9/SQEQMi0ELIlHy+8DHa6A8X3Z6HnKCIsR2uNc9X+fZ5
-        SpXuvEWpbXmWi999WkUFjhy5vgPJtgSPzkvNTpDsiQ==
-X-Google-Smtp-Source: ABdhPJyMEj45EPh84qpSCpk1vUfDmAAfVx6Q6El+wTjic65DGrkCvumgrm1PCn0JrZdJJegdiRkqrF1LAf1puxUo8xQ=
-X-Received: by 2002:a1c:740e:: with SMTP id p14mr1592366wmc.155.1590642926688;
- Wed, 27 May 2020 22:15:26 -0700 (PDT)
+        id S1727112AbgE1FTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 01:19:31 -0400
+Received: from foss.arm.com ([217.140.110.172]:47192 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726041AbgE1FTa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 01:19:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 66D0C30E;
+        Wed, 27 May 2020 22:19:30 -0700 (PDT)
+Received: from nicgas01-03-arm-vm.shanghai.arm.com (nicgas01-03-arm-vm.shanghai.arm.com [10.169.138.73])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 104E03F52E;
+        Wed, 27 May 2020 22:19:27 -0700 (PDT)
+From:   Nick Gasson <nick.gasson@arm.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>
+Cc:     Nick Gasson <nick.gasson@arm.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] perf jit: Fix inaccurate DWARF line table
+Date:   Thu, 28 May 2020 13:19:16 +0800
+Message-Id: <20200528051916.6722-1-nick.gasson@arm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <1590595398-4217-1-git-send-email-srinath.mannam@broadcom.com> <f9b221cf-1c7f-9f95-133b-dca65197b6c2@arm.com>
-In-Reply-To: <f9b221cf-1c7f-9f95-133b-dca65197b6c2@arm.com>
-From:   Srinath Mannam <srinath.mannam@broadcom.com>
-Date:   Thu, 28 May 2020 10:45:14 +0530
-Message-ID: <CABe79T7WwD2AyWp2e5pAi8TO2r5=-v5gPb2Gjtf8EhHOn3dogQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] iommu/arm-smmu: Add module parameter to set msi iova address
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        iommu@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 11:00 PM Robin Murphy <robin.murphy@arm.com> wrote:
->
-Thanks Robin for your quick response.
-> On 2020-05-27 17:03, Srinath Mannam wrote:
-> > This patch gives the provision to change default value of MSI IOVA base
-> > to platform's suitable IOVA using module parameter. The present
-> > hardcoded MSI IOVA base may not be the accessible IOVA ranges of platform.
->
-> That in itself doesn't seem entirely unreasonable; IIRC the current
-> address is just an arbitrary choice to fit nicely into Qemu's memory
-> map, and there was always the possibility that it wouldn't suit everything.
->
-> > Since commit aadad097cd46 ("iommu/dma: Reserve IOVA for PCIe inaccessible
-> > DMA address"), inaccessible IOVA address ranges parsed from dma-ranges
-> > property are reserved.
->
-> That, however, doesn't seem to fit here; iommu-dma maps MSI doorbells
-> dynamically, so they aren't affected by reserved regions any more than
-> regular DMA pages are. In fact, it explicitly ignores the software MSI
-> region, since as the comment says, it *is* the software that manages those.
-Yes you are right, we don't see any issues with kernel drivers(PCI EP) because
-MSI IOVA allocated dynamically by honouring reserved regions same as DMA pages.
->
-> The MSI_IOVA_BASE region exists for VFIO, precisely because in that case
-> the kernel *doesn't* control the address space, but still needs some way
-> to steal a bit of it for MSIs that the guest doesn't necessarily know
-> about, and give userspace a fighting chance of knowing what it's taken.
-> I think at the time we discussed the idea of adding something to the
-> VFIO uapi such that userspace could move this around if it wanted or
-> needed to, but decided we could live without that initially. Perhaps now
-> the time has come?
-Yes, we see issues only with user-space drivers(DPDK) in which MSI_IOVA_BASE
-region is considered to map MSI registers. This patch helps us to fix the issue.
+Fix an issue where addresses in the DWARF line table are offset by
+-0x40 (GEN_ELF_TEXT_OFFSET). This can be seen with `objdump -S` on the
+ELF files after perf inject.
 
-Thanks,
-Srinath.
->
-> Robin.
->
-> > If any platform has the limitaion to access default MSI IOVA, then it can
-> > be changed using "arm-smmu.msi_iova_base=0xa0000000" command line argument.
-> >
-> > Signed-off-by: Srinath Mannam <srinath.mannam@broadcom.com>
-> > ---
-> >   drivers/iommu/arm-smmu.c | 5 ++++-
-> >   1 file changed, 4 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
-> > index 4f1a350..5e59c9d 100644
-> > --- a/drivers/iommu/arm-smmu.c
-> > +++ b/drivers/iommu/arm-smmu.c
-> > @@ -72,6 +72,9 @@ static bool disable_bypass =
-> >   module_param(disable_bypass, bool, S_IRUGO);
-> >   MODULE_PARM_DESC(disable_bypass,
-> >       "Disable bypass streams such that incoming transactions from devices that are not attached to an iommu domain will report an abort back to the device and will not be allowed to pass through the SMMU.");
-> > +static unsigned long msi_iova_base = MSI_IOVA_BASE;
-> > +module_param(msi_iova_base, ulong, S_IRUGO);
-> > +MODULE_PARM_DESC(msi_iova_base, "msi iova base address.");
-> >
-> >   struct arm_smmu_s2cr {
-> >       struct iommu_group              *group;
-> > @@ -1566,7 +1569,7 @@ static void arm_smmu_get_resv_regions(struct device *dev,
-> >       struct iommu_resv_region *region;
-> >       int prot = IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
-> >
-> > -     region = iommu_alloc_resv_region(MSI_IOVA_BASE, MSI_IOVA_LENGTH,
-> > +     region = iommu_alloc_resv_region(msi_iova_base, MSI_IOVA_LENGTH,
-> >                                        prot, IOMMU_RESV_SW_MSI);
-> >       if (!region)
-> >               return;
-> >
+Signed-off-by: Nick Gasson <nick.gasson@arm.com>
+---
+ tools/perf/util/genelf_debug.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/perf/util/genelf_debug.c b/tools/perf/util/genelf_debug.c
+index 30e9f618f6cd..dd40683bd4c0 100644
+--- a/tools/perf/util/genelf_debug.c
++++ b/tools/perf/util/genelf_debug.c
+@@ -342,7 +342,7 @@ static void emit_lineno_info(struct buffer_ext *be,
+ 	 */
+ 
+ 	/* start state of the state machine we take care of */
+-	unsigned long last_vma = code_addr;
++	unsigned long last_vma = 0;
+ 	char const  *cur_filename = NULL;
+ 	unsigned long cur_file_idx = 0;
+ 	int last_line = 1;
+@@ -473,7 +473,7 @@ jit_process_debug_info(uint64_t code_addr,
+ 		ent = debug_entry_next(ent);
+ 	}
+ 	add_compilation_unit(di, buffer_ext_size(dl));
+-	add_debug_line(dl, debug, nr_debug_entries, 0);
++	add_debug_line(dl, debug, nr_debug_entries, GEN_ELF_TEXT_OFFSET);
+ 	add_debug_abbrev(da);
+ 	if (0) buffer_ext_dump(da, "abbrev");
+ 
+-- 
+2.26.2
+
