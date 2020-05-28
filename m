@@ -2,133 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C1B1E6C8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BADE1E6C95
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407276AbgE1Uad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 16:30:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407246AbgE1UaO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 16:30:14 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B0DC08C5C6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:30:13 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id k22so139716qtm.6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:30:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=L+uuww7KS91z0nXdlfs6K0/JqdQm8qFbzuFZ4bz09+E=;
-        b=T4uR5w6goaSmuZxanF5ibEDLR8DFMtolK8czTkUsdCgVU67PtXlnMbDfpVYllqkPdI
-         ApaK+UVOxphIh9ZQT/kWCm1zbqNmWRM1ksEGDCHEZCcVLh+z30c3RlIIDNlT7dt2nxK7
-         2nkmg9EE4K1ZcS8zZYoUlOYOGI/2pvlmSrk3LIxjTVmqZE27/Fy99p/3ARprz8FNgs2B
-         ZsNM2pMLHy64De2YYBpEgborefHSARHN9BYvXsZthJqYuQHlnmYjq2qWw0+nB2cy0Uy6
-         FyfRDokq88+4H7WW13zWbxn43F+gkRR01F5iYVcLzpEm4XwU9Oqdv0i9njeXjCFft77e
-         Rrug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=L+uuww7KS91z0nXdlfs6K0/JqdQm8qFbzuFZ4bz09+E=;
-        b=tgI/jdzdYYZ5VwIWMEP43O9/vtZN2MyXm0V7QazmLP3LEOFV2NFsRIYTaK4MNIzPYY
-         PO2piwY1tieXej6r0eAqiPUoRh79eM+DfFzvq8mVhdij2wsewRqvs2THeWH2iXre5gg+
-         c2K4D5GS6tbQJcUip7dCbkREpxBcjdrVSH6Vv3Ab5RyFXasUTgoK65AWVQjbozkjqCzz
-         ab6gbO7F+CuERbbIY6IxtebmutpowLDwo/0l5iqRuvQIDCj5w9FEL3uZfsQgpSMg9J4i
-         LVbUgRHpzAQcrBrZBBJHNOVBTTLw7U1PQF7IwMNr16f4dCzUiT6lVTGyxUqlleT/7r00
-         v5og==
-X-Gm-Message-State: AOAM533Q4WXN1wGxUnNN09OPTFZ2bPoA76IiIu6XnrjRBods7xNhxWbG
-        o5ShzreFRNU/eI2WGQbalPKW/w==
-X-Google-Smtp-Source: ABdhPJxu0NvCcg7BPhIDHEyV78qHQ2Lv1ChfGwNkXc/GzQb9QH2RK6tfuAWXO0ql1bNWRQ4DQU5mog==
-X-Received: by 2002:aed:23d2:: with SMTP id k18mr5279451qtc.224.1590697812736;
-        Thu, 28 May 2020 13:30:12 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:2535])
-        by smtp.gmail.com with ESMTPSA id c191sm5965436qke.114.2020.05.28.13.30.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 13:30:12 -0700 (PDT)
-Date:   Thu, 28 May 2020 16:29:44 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH] mm, memcg: reclaim more aggressively before high
- allocator throttling
-Message-ID: <20200528202944.GA76514@cmpxchg.org>
-References: <20200520143712.GA749486@chrisdown.name>
- <CALvZod7rSeAKXKq_V0SggZWn4aL8pYWJiej4NdRd8MmuwUzPEw@mail.gmail.com>
- <20200528194831.GA2017@chrisdown.name>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200528194831.GA2017@chrisdown.name>
+        id S2407288AbgE1Ubk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 16:31:40 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:59966 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2407278AbgE1Ube (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 16:31:34 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590697894; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=UQh3+K1vHOMTfx8eoXl36wopXtjJpVYLPWyxt6j7a1M=; b=iWrRC3y5g89E0BxenH98cdC/LTofKonCI0oKJWD2Ph+mlo+J77L8ILD4TYwgYhCryEeWzzAf
+ PNUQlGekYNs14GHkhDM3y8Lb68QsLEAGbkeG5dA0tzQjeZ87mkU/fSueIhiHqcQycvJNTyEh
+ lr5lhS/yItGhINjJ/tfP1vOvshU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5ed01f96c28b2cdd98298d3e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 May 2020 20:31:18
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8BC3AC43395; Thu, 28 May 2020 20:31:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: zijuhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 26E1AC433C9;
+        Thu, 28 May 2020 20:31:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 26E1AC433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=zijuhu@codeaurora.org
+From:   Zijun Hu <zijuhu@codeaurora.org>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org, stable@kernel.org,
+        tientzu@chromium.org
+Subject: [PATCH v2] bluetooth: hci_qca: Fix suspend/resume functionality failure
+Date:   Fri, 29 May 2020 04:31:07 +0800
+Message-Id: <1590697867-7618-1-git-send-email-zijuhu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 08:48:31PM +0100, Chris Down wrote:
-> Shakeel Butt writes:
-> > What was the initial reason to have different behavior in the first place?
-> 
-> This differing behaviour is simply a mistake, it was never intended to be
-> this deviate from what happens elsewhere. To that extent this patch is as
-> much a bug fix as it is an improvement.
+@dev parameter of qca_suspend()/qca_resume() represents
+serdev_device, but it is mistook for hci_dev and causes
+succedent unexpected memory access.
 
-Yes, it was an oversight.
+Fix by taking @dev as serdev_device.
 
-> > >  static void high_work_func(struct work_struct *work)
-> > > @@ -2378,16 +2384,20 @@ void mem_cgroup_handle_over_high(void)
-> > >  {
-> > >         unsigned long penalty_jiffies;
-> > >         unsigned long pflags;
-> > > +       unsigned long nr_reclaimed;
-> > >         unsigned int nr_pages = current->memcg_nr_pages_over_high;
-> > 
-> > Is there any benefit to keep current->memcg_nr_pages_over_high after
-> > this change? Why not just use SWAP_CLUSTER_MAX?
+Fixes: 41d5b25fed0 ("Bluetooth: hci_qca: add PM support")
+Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
+---
+Changes in v2:
+- remove unused variable @hdev
 
-It's there for the same reason why try_to_free_pages() takes a reclaim
-argument in the first place: we want to make the thread allocating the
-most also do the most reclaim work. Consider a thread allocating THPs
-in a loop with another thread allocating regular pages.
+ drivers/bluetooth/hci_qca.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Remember that all callers loop. They could theoretically all just ask
-for SWAP_CLUSTER_MAX pages over and over again.
+diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+index e4a6823..adcbe00 100644
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -1977,8 +1977,9 @@ static void qca_serdev_remove(struct serdev_device *serdev)
+ 
+ static int __maybe_unused qca_suspend(struct device *dev)
+ {
+-	struct hci_dev *hdev = container_of(dev, struct hci_dev, dev);
+-	struct hci_uart *hu = hci_get_drvdata(hdev);
++	struct serdev_device *serdev = to_serdev_device(dev);
++	struct qca_serdev *qcadev = serdev_device_get_drvdata(serdev);
++	struct hci_uart *hu = &qcadev->serdev_hu;
+ 	struct qca_data *qca = hu->priv;
+ 	unsigned long flags;
+ 	int ret = 0;
+@@ -2057,8 +2058,9 @@ static int __maybe_unused qca_suspend(struct device *dev)
+ 
+ static int __maybe_unused qca_resume(struct device *dev)
+ {
+-	struct hci_dev *hdev = container_of(dev, struct hci_dev, dev);
+-	struct hci_uart *hu = hci_get_drvdata(hdev);
++	struct serdev_device *serdev = to_serdev_device(dev);
++	struct qca_serdev *qcadev = serdev_device_get_drvdata(serdev);
++	struct hci_uart *hu = &qcadev->serdev_hu;
+ 	struct qca_data *qca = hu->priv;
+ 
+ 	clear_bit(QCA_SUSPENDING, &qca->flags);
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
 
-The idea is to have fairness in most cases, and avoid allocation
-failure, premature OOM, and containment failure in the edge cases that
-are caused by the inherent raciness of page reclaim.
-
-> I don't feel strongly either way, but current->memcg_nr_pages_over_high can
-> be very large for large allocations.
-> 
-> That said, maybe we should just reclaim `max(SWAP_CLUSTER_MAX, current -
-> high)` for each loop? I agree that with this design it looks like perhaps we
-> don't need it any more.
-> 
-> Johannes, what do you think?
-
-How about this:
-
-Reclaim memcg_nr_pages_over_high in the first iteration, then switch
-to SWAP_CLUSTER_MAX in the retries.
-
-This acknowledges that while the page allocator and memory.max reclaim
-every time an allocation is made, memory.high is currently batched and
-can have larger targets. We want the allocating thread to reclaim at
-least the batch size, but beyond that only what's necessary to prevent
-premature OOM or failing containment.
-
-Add a comment stating as much.
-
-Once we reclaim memory.high synchronously instead of batched, this
-exceptional handling is no longer needed and can be deleted again.
-
-Does that sound reasonable?
