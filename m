@@ -2,127 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 740501E70D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 01:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C42A1E70CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 01:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437858AbgE1XxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 19:53:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45334 "EHLO
+        id S2437766AbgE1Xwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 19:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437677AbgE1Xwk (ORCPT
+        with ESMTP id S2437545AbgE1Xwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 19:52:40 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 593F9C08C5CB
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 16:32:31 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id e4so315315ljn.4
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 16:32:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S6ocTYqS1ytsKPxtF8vN6tIy7DtKH5+fD7iyXL+yR74=;
-        b=DEN9zSw3qsLo9yvtTr88DSUjceHyQzaJs07kMe/MGRcduQi+u/Yg7XPAKWIWD4Uebi
-         7meJqiqgCQlkf1ksgk686mzidyLcdDCAAmjksI/Ep28pnsFd9hgU25fPsYTMBfOnsaYG
-         jn3z/gSHTVhVQ89C/WSO3cMACa3zGkzAzM2/88ke+APMYUiNWsb7tGn+HVKZ0Z0oJ+0H
-         RYMS6FOUGsPtY2Aan92EjR+6QGMQoNRFq6S+H8U/PM58mv6nzixeodvLrxSltKA8BhQl
-         +A7NMAa5ENtL08Uie4ulExlC72SzpUj0sBibw5laRnFAZ21ZSaVWLjXmBm9aWofYTLS7
-         9p0Q==
+        Thu, 28 May 2020 19:52:39 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C322DC08C5CA;
+        Thu, 28 May 2020 16:32:27 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id q18so719696ilm.5;
+        Thu, 28 May 2020 16:32:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S6ocTYqS1ytsKPxtF8vN6tIy7DtKH5+fD7iyXL+yR74=;
-        b=ZvEUxHYDjUx0cfaPO7gZ7B0zt/poAYVUYVbul0gT0pSyd41l/0udGRib+sVE1C+JLe
-         K4BHs2d68s6tiYtHO0J0AizfjwdWup+uuV3I8NaTCUREVF0siP2PCIC1HIGCi9bMQdA0
-         sUT/aKnQJz/7XBTsD3hF4qD4n1iPr9yT4DrywI1cG1PTscTm97QXEjXYuHTR7knWMhl1
-         +v8dUiODNwzdGS6lA2ekvkRoPNkObelylCEW+8YUPen7qASgWGbyNSbxUA0ax4MoKJkj
-         fr8REVPU4YRTDpORCIROH+Z7aIlsxUs9ftcW9bIQ/IKfOCKNiJQiRZ6H3vxVqxJFgXjw
-         xy5A==
-X-Gm-Message-State: AOAM532xFKkKYLAz88wJsAwMTDjD9rTAs/RYgKAG1mWqVlVRPkUYblc4
-        X01rePVydBJPFOqlo/f9KlFRaB0GpQITKBLOPRys0g==
-X-Google-Smtp-Source: ABdhPJxhCO8yq7MICHiA12O2mds71igoeMtLHDguSzi4McQ2QB0zB2szqTfT+eWc0yEzwKPBmDeBJdZG06IVwOBL0Fg=
-X-Received: by 2002:a2e:9455:: with SMTP id o21mr2672685ljh.415.1590708749570;
- Thu, 28 May 2020 16:32:29 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BZi6tHzaqVOINM6eCQ7Fjz2GRrahqrn6iNrzJqKN3TI=;
+        b=NSdSGab+9wxkHte3KclmnLInDM+Ozgw62lC7+Em79c3hEUajYVbtHBri+d1kAUbpXw
+         IXk4wmAFzkImWksmbU8F3FB00+MHBLE9UEHdwXeo3ObQEX1FRR9FqB8DbIldWI+su7aY
+         MgscDIJp70zugJhBsDeNhtdkrdmwoXsJ6k0SdIFyZBJwUeIAX3CKb8cH0avfQJ88vtoJ
+         /g9CI2OikyQ4VvIrgZ4wOdOYnBuoFRfh9vyh+L8JSoHdXQ+OK4HtZHTAwFeTyjP2snmA
+         eWfmXmhyTYrT9q+/1swwgXZy4lySaLBs92o/JjhcB6NbT1kTNAPFHbrasmvqvxh7NBGJ
+         1GLA==
+X-Gm-Message-State: AOAM531xkmM7k7UdNq+xLuozH2mPr0JyqI75mGykkSuD4WfPew2ONSb7
+        T4mmrmtW7PYScY5htVrUFA==
+X-Google-Smtp-Source: ABdhPJz6C7QcrvueupRQJa7HorI+iAXdaNb7Lq3g5NQJCL3NZrsyI7wQ7jCvvU+e4TRS5EU8jnaesw==
+X-Received: by 2002:a92:8818:: with SMTP id h24mr4741049ild.92.1590708747096;
+        Thu, 28 May 2020 16:32:27 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id z3sm3174482ior.45.2020.05.28.16.32.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 16:32:26 -0700 (PDT)
+Received: (nullmailer pid 881280 invoked by uid 1000);
+        Thu, 28 May 2020 23:32:25 -0000
+Date:   Thu, 28 May 2020 17:32:25 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        linux-kernel@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] dt-bindings: thermal: tsens: Add cold interrupt
+ support in yaml
+Message-ID: <20200528233225.GA881244@bogus>
+References: <20200522114626.28834-1-manafm@codeaurora.org>
+ <20200522114626.28834-3-manafm@codeaurora.org>
 MIME-Version: 1.0
-References: <20200528151412.265444-1-christian.brauner@ubuntu.com> <202005281404.276641223F@keescook>
-In-Reply-To: <202005281404.276641223F@keescook>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 29 May 2020 01:32:03 +0200
-Message-ID: <CAG48ez0k23qM2QEi42VTjCbnoY9_nfTH09B_Qr2zu+m3KWWUiQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] seccomp: notify user trap about unused filter
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Matt Denton <mpdenton@google.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Chris Palmer <palmer@google.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Robert Sesek <rsesek@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Linux Containers <containers@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200522114626.28834-3-manafm@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 1:11 AM Kees Cook <keescook@chromium.org> wrote:
-> On Thu, May 28, 2020 at 05:14:11PM +0200, Christian Brauner wrote:
-> >   * @usage: reference count to manage the object lifetime.
-> >   *         get/put helpers should be used when accessing an instance
-> >   *         outside of a lifetime-guarded section.  In general, this
-> >   *         is only needed for handling filters shared across tasks.
-> > [...]
-> > + * @live: Number of tasks that use this filter directly and number
-> > + *     of dependent filters that have a non-zero @live counter.
-> > + *     Altered during fork(), exit(), and filter installation
-> > [...]
-> >       refcount_set(&sfilter->usage, 1);
-> > +     refcount_set(&sfilter->live, 1);
-[...]
-> After looking at these other lifetime management examples in the kernel,
-> I'm convinced that tracking these states separately is correct, but I
-> remain uncomfortable about task management needing to explicitly make
-> two calls to let go of the filter.
->
-> I wonder if release_task() should also detach the filter from the task
-> and do a put_seccomp_filter() instead of waiting for task_free(). This
-> is supported by the other place where seccomp_filter_release() is
-> called:
->
-> > @@ -396,6 +400,7 @@ static inline void seccomp_sync_threads(unsigned long flags)
-> >                * allows a put before the assignment.)
-> >               */
-> >               put_seccomp_filter(thread);
-> > +             seccomp_filter_release(thread);
->
-> This would also remove the only put_seccomp_filter() call outside of
-> seccomp.c, since the free_task() call will be removed now in favor of
-> the task_release() call.
->
-> So, is it safe to detach the filter in release_task()? Has dethreading
-> happened yet? i.e. can we race TSYNC? -- is there a possible
-> inc-from-zero?
+On Fri, 22 May 2020 17:16:26 +0530, Manaf Meethalavalappu Pallikunhi wrote:
+> Add cold interrupt support for tsens in yaml.
+> 
+> Signed-off-by: Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+> ---
+>  .../bindings/thermal/qcom-tsens.yaml          | 42 +++++++++++++++++++
+>  1 file changed, 42 insertions(+)
+> 
 
-release_task -> __exit_signal -> __unhash_process ->
-list_del_rcu(&p->thread_node) drops us from the thread list under
-siglock, which is the same lock TSYNC uses.
-
-One other interesting thing that can look at seccomp state is
-task_seccomp() in procfs - that can still happen at this point. At the
-moment, procfs only lets you see the numeric filter state, not the
-actual filter contents, so that's not a problem; but if we ever add a
-procfs interface for dumping seccomp filters (in addition to the
-ptrace interface that already exists), that's something to keep in
-mind.
-
-> (Actually, all our refcount_inc()s should be
-> refcount_inc_not_zero() just for robustness.)
-
-Eeeh... wouldn't that just make the code more complicated for no good reason?
-
-> I *think* we can do it
-> before the release_thread() call (instead of after cgroup_release()).
+Reviewed-by: Rob Herring <robh@kernel.org>
