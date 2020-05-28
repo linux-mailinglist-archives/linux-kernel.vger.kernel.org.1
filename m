@@ -2,141 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 315AC1E5553
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 07:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36CAA1E5650
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 07:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbgE1FF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 01:05:57 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:10989 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgE1FF4 (ORCPT
+        id S1725789AbgE1FRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 01:17:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725764AbgE1FNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 01:05:56 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200528050553epoutp016fba7a3c442b8261c4f981071b0588ca~TGMsHayWl0824308243epoutp013
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 05:05:53 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200528050553epoutp016fba7a3c442b8261c4f981071b0588ca~TGMsHayWl0824308243epoutp013
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1590642353;
-        bh=Xpl4KdtQS6IHn7dUVSCu2aSIRKN5N8K0wozlMY6vGBs=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=uANcr4D5qhy6FfjewlbGMD8qSKFAfVua3qPYSPciVCfrQrY17kkwCA+PTc5XynEPE
-         fVQw8IVq4e8QYVPrehAgpGNHJ4wVDKKwzUL5QR1oxuXKkTW8DzBwXmoMi1SycoleAi
-         ZlrAg0mlbfz9Sn2j2KW8Neui7ADu7iADoDLboNas=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20200528050552epcas1p47bb06270afdda6394638aee05f7da3bd~TGMrelyg52563325633epcas1p4T;
-        Thu, 28 May 2020 05:05:52 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.165]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 49XbJ035ZRzMqYkp; Thu, 28 May
-        2020 05:05:52 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        52.EC.04395.0B64FCE5; Thu, 28 May 2020 14:05:52 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200528050551epcas1p434d454bab29e7ff5e4eeb861cc52ad5d~TGMqicsAm1730217302epcas1p48;
-        Thu, 28 May 2020 05:05:51 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200528050551epsmtrp1c14c006826bac76c23935137187058fe~TGMqhud461620716207epsmtrp1O;
-        Thu, 28 May 2020 05:05:51 +0000 (GMT)
-X-AuditID: b6c32a39-f7bff7000000112b-d1-5ecf46b088dc
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D7.87.08303.FA64FCE5; Thu, 28 May 2020 14:05:51 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20200528050551epsmtip1a7f86adf4a45751001185e64ed32b0c7~TGMqWxesV2192621926epsmtip1a;
-        Thu, 28 May 2020 05:05:51 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     "'Tetsuhiro Kohada'" <kohada.t2@gmail.com>
-Cc:     "'Mori.Takahiro@ab.MitsubishiElectric.co.jp'" 
-        <Mori.Takahiro@ab.mitsubishielectric.co.jp>,
-        "'Motai.Hirotaka@aj.MitsubishiElectric.co.jp'" 
-        <Motai.Hirotaka@aj.mitsubishielectric.co.jp>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "'Sungjong Seo'" <sj1557.seo@samsung.com>,
-        "'Namjae Jeon'" <linkinjeon@kernel.org>,
-        "'Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp'" 
-        <Kohada.Tetsuhiro@dc.mitsubishielectric.co.jp>
-In-Reply-To: <22dfcd8a-4416-e2a7-b8a7-0375660ba465@gmail.com>
-Subject: RE: [PATCH] exfat: optimize dir-cache
-Date:   Thu, 28 May 2020 14:05:52 +0900
-Message-ID: <015501d634ad$a8dcd680$fa968380$@samsung.com>
+        Thu, 28 May 2020 01:13:12 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213F7C08C5C3;
+        Wed, 27 May 2020 22:13:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=WsnuuUW/8mNG5XgJndzFDlP4ZHaqtmjvrkyJ/evyN2A=; b=c3NXta7lrMrelp/uYGPfAaa966
+        8FvaQiUf4V98AHB/jCXkfgscBXsFw4O9RoTBbXu69lPUnRpW3L2lwaDhI1JL+c/R+6XC6W1GP/2Wd
+        Cr4aoUNeG+SLIrHNMVjQElvuPUT3WovkTfWaKM44g5p1RhzGtTs19UBh1G8RjOAlg/SRr7CE/PHSp
+        /VVyQt3mSNfWkIGTPN2D+XOMLXnvrbD240ABfnwZp6A9pchmZaJjxwV7O2Div5+NEmg5/VzVz3ZJl
+        MGiO7dqDADVjXVznEmvy0cfLpsTpyGFeUSCFflDRpysUfHCGVw+a/f/NB96VbC/aiG2e20C2e2oeE
+        TiQCXfnQ==;
+Received: from p4fdb1ad2.dip0.t-ipconnect.de ([79.219.26.210] helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jeAqN-0001QR-LQ; Thu, 28 May 2020 05:12:40 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>, drbd-dev@lists.linbit.com,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nvme@lists.infradead.org, target-devel@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+        cluster-devel@redhat.com, ocfs2-devel@oss.oracle.com,
+        netdev@vger.kernel.org, ceph-devel@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-nfs@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net
+Subject: remove most callers of kernel_setsockopt v3
+Date:   Thu, 28 May 2020 07:12:08 +0200
+Message-Id: <20200528051236.620353-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQKbEd8GOCYeHYQBe/Vm0kX/gmqw5wMD/7F2AWi7CpYCLmCEuwJD5ds7AXx55Z4BYsdZNqbVRWFQ
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUhTYRTHebx3d3fS6ja1Tga5bvTBSt1aW9dw0YvUhSzEoMAPWxd92MS9
-        sbtJVpRRmFpUGoXOmRVUNLVimZVUkoq23l/Jij4UFWkZWalFttp2jfz2O+f5n3Oe//McmlBd
-        oJLpIocHux2CjaXiybauVE3a+VX3TZrTQ0ncj4aXJPcpdJjkqo+cJLir10Ik97jdT3GP/3wl
-        uVPfD5Fca7hbtozmv/t75Xz5obCc39VzhuKv+F7J+WCgkuL3twYQ/y04K1eeb8uyYqEQu9XY
-        UeAsLHJYjOya9eaVZr1Bo03TZnKLWbVDsGMjm52Tm7aqyBa5FasuEWzeSCpXEEU2Y2mW2+n1
-        YLXVKXqMLHYV2lxajStdFOyi12FJL3Dal2g1moX6iHKTzXq89gPlOklufhJsRGWohqhCChqY
-        RVBZ1xTheFrFXEZw4cRrUgq+Ihgb3hMXVamYbwjeH8VViI5VjOwUJE07goGRnXFS0B8JggOx
-        thSTBuGxDirKiUw6hELPqKiIYK4TECirR9EDBWOEwepwbEJCRDQ00h9jkpkL1xuOkVFWMpng
-        fzlKSTwVQnVvY3mCSYFLg/5xD2r4+e6UTBqWD/6eFrmkSYT6yvKYN2BaaDh8dy8pFWRDX0WN
-        XOIEGOhtHedk6D9QLpdsboWhjvH+FQg+jBol1sHzc+dlUQnBpMK59gwpPRuu/GpA0tjJ8Hl4
-        n0zqooSKcpUkmQv7H3XFSTwTqvZ8kR9ErG+CMd8EY74JBnz/hx1DZABNwy7RbsGi1qWf+NdB
-        FFvYeZmXUc+9nE7E0IidpNTw90wqmVAilto7EdAEm6hccfe2SaUsFEq3YLfT7PbasNiJ9JF3
-        ryaSkwqckfV3eMxa/UKdTsctMiw26HXsdGXjjzsmFWMRPLgYYxd2/6uLoxXJZSipb3W4flLO
-        uub80QU1bbV9luOK9AdbO/Qla4cfFt/MmmPNzvhVd2P5JYO5cv7Grm3dofg1p5s2DM/YqDjb
-        23zVO/i5GxdN4ZcwbWW+kbzdTw07avcJy7ff8d16kZr3+2lCcelqX7CnCV41Qsr0+W9w3tKx
-        gONi7uACWerz/BTbRxNLilZBO49wi8JfOcT0Q8YDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEIsWRmVeSWpSXmKPExsWy7bCSnO56t/NxBnufWlj8mHubxeLNyaks
-        FhOnLWW22LP3JIvF5V1z2Cwu///EYrHsy2QWiy3/jrA6cHh8mXOc3aNt8j92j+ZjK9k8ds66
-        y+6xaVUnm0ffllWMHp83yQWwR3HZpKTmZJalFunbJXBlLJzxgq1gKUvFlU3zGRsYJzF3MXJw
-        SAiYSHxrTOxi5OIQEtjBKPG85wpjFyMnUFxa4tiJM1A1whKHDxdD1DxnlJh2Zi0LSA2bgK7E
-        vz/72UBsEQE9iZMnr7OBFDEL7GGW2HnhOiNExzFmiQnXfoBVcQrYSryd+I8JxBYG6vj47SWY
-        zSKgKrFv7gKwqbwClhJzbn9ng7AFJU7OfAIWZxbQlnh68ymULS+x/e0cZohLFSR+Pl3GCnFF
-        lMScY2vZIWpEJGZ3tjFPYBSehWTULCSjZiEZNQtJywJGllWMkqkFxbnpucWGBUZ5qeV6xYm5
-        xaV56XrJ+bmbGMHRpqW1g3HPqg96hxiZOBgPMUpwMCuJ8DqdPR0nxJuSWFmVWpQfX1Sak1p8
-        iFGag0VJnPfrrIVxQgLpiSWp2ampBalFMFkmDk6pBqYSsRABe/Hckztm/hGxvXRgXm/ukY3P
-        vr1dfWLHlyu7poloO7Fx5jy/6HS1UTrT/4zBItG02/uVnA+HaWyduD9pl2KWK6PORy59g49c
-        +x3P8y781JHsm2Gz5vr7Q4mu4pa33/55qDHBcfq9fj0Vw48bHvouUf322s3RfUPDwi8vKoVf
-        e29IabJi6tJw/D9HNakwf3bdfbWdPybvahJLMS9Mna676MKML9Kl56QL3ojfEAnoz5hZ3jhJ
-        9XqwzFLmPUUbakp+7DdYabhs8abkGeIly/9HJSyao1bonSRWdzuywPzFgbf91+5NDN3X9vKO
-        8dFrM3q6bh2sZ3LsYpHf6y4+adaLr5v3M0QkreBJ/V6vxFKckWioxVxUnAgAsAmk8yUDAAA=
-X-CMS-MailID: 20200528050551epcas1p434d454bab29e7ff5e4eeb861cc52ad5d
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200520075735epcas1p269372d222e25f3fd51b7979f5b7cdc61
-References: <CGME20200520075735epcas1p269372d222e25f3fd51b7979f5b7cdc61@epcas1p2.samsung.com>
-        <20200520075641.32441-1-kohada.tetsuhiro@dc.mitsubishielectric.co.jp>
-        <055a01d63306$82b13440$88139cc0$@samsung.com>
-        <TY1PR01MB15784E70CEACDA05F688AE6790B10@TY1PR01MB1578.jpnprd01.prod.outlook.com>
-        <CAKYAXd_oG6dc7CNiHszKmhabHd2zrN_VOaNYaWRPES=7hRu+pA@mail.gmail.com>
-        <000701d63432$ace24f10$06a6ed30$@samsung.com>
-        <22dfcd8a-4416-e2a7-b8a7-0375660ba465@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >>>   > In order to prevent illegal accesses to bh and dentries, it
-> >>> would be better to check validation for num and bh.
-> >>>
-> >>>   There is no new error checking for same reason as above.
-> >>>
-> >>>   I'll try to add error checking to this v2 patch.
-> >>>   Or is it better to add error checking in another patch?
-> >> The latter:)
-> >> Thanks!
-> >
-> > Yes, the latter looks better.
-> 
-> I will do so.
-> 
-> I will post additional patches for error checking, after this patch is merged into tree.
-> OK?
-Okay.
-> 
-> 
+Hi Dave,
+
+this series removes most callers of the kernel_setsockopt functions, and
+instead switches their users to small functions that implement setting a
+sockopt directly using a normal kernel function call with type safety and
+all the other benefits of not having a function call.
+
+In some cases these functions seem pretty heavy handed as they do
+a lock_sock even for just setting a single variable, but this mirrors
+the real setsockopt implementation unlike a few drivers that just set
+set the fields directly.
 
 
+Changes since v2:
+ - drop the separately merged kernel_getopt_removal
+ - drop the sctp patches, as there is conflicting cleanup going on
+ - add an additional ACK for the rxrpc changes
+
+Changes since v1:
+ - use ->getname for sctp sockets in dlm
+ - add a new ->bind_add struct proto method for dlm/sctp
+ - switch the ipv6 and remaining sctp helpers to inline function so that
+   the ipv6 and sctp modules are not pulled in by any module that could
+   potentially use ipv6 or sctp connections
+ - remove arguments to various sock_* helpers that are always used with
+   the same constant arguments
