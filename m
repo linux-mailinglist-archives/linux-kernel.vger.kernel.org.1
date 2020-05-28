@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EAB41E6068
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D921E5FEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389655AbgE1MJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:09:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48526 "EHLO mail.kernel.org"
+        id S2388878AbgE1L44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 07:56:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388727AbgE1L40 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 07:56:26 -0400
+        id S2388735AbgE1L41 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 07:56:27 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6F67F212CC;
-        Thu, 28 May 2020 11:56:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E7FD214F1;
+        Thu, 28 May 2020 11:56:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590666986;
-        bh=04t9itlU1J/2xv4vUewI0M8oZPMJaRDzx3JulnAkUFw=;
+        s=default; t=1590666987;
+        bh=93U4NeV0j3o7YcuUCIuCRbRZcRPgqv//uz/oCsfli08=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zJe1VwNfjoR0kqxZhd0hTc6qG1waXXQnkottho9kjB8R4/eDnfuxcHcQolMDJdmye
-         JhOmn7meQBr5OZwOujG6LimGiFNWLzWohLZGvxff45mBx4o320Bnmg4w1xgX6676ex
-         JPnZiCvvXjYuWXAvDZ2wRH4WdwED4cqgYtWpxQ8M=
+        b=GvjpE1QGtl7hKF86Eom+8YwiBPfRdHBvZ+y1xmvYni/pYYtrAwAjZB5e71NlOgQad
+         +/+8nUH63MaNbshiMtji6wAbOL05HpfJf179YyhFC5I9tFOFov5pjeJTFNFMc6BFc7
+         chVAupi5hUzqGgPMtQxFBmA1rtwlyJnQMNjyq5uc=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Hulk Robot <hulkci@huawei.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.6 22/47] riscv: Fix print_vm_layout build error if NOMMU
-Date:   Thu, 28 May 2020 07:55:35 -0400
-Message-Id: <20200528115600.1405808-22-sashal@kernel.org>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, linux-api@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 23/47] wireguard: selftests: use newer iproute2 for gcc-10
+Date:   Thu, 28 May 2020 07:55:36 -0400
+Message-Id: <20200528115600.1405808-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200528115600.1405808-1-sashal@kernel.org>
 References: <20200528115600.1405808-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,39 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
 
-[ Upstream commit 8fa3cdff05f009855a6a99a7d77a41004009bbab ]
+[ Upstream commit ee3c1aa3f34b7842c1557cfe5d8c3f7b8c692de8 ]
 
-arch/riscv/mm/init.c: In function ‘print_vm_layout’:
-arch/riscv/mm/init.c:68:37: error: ‘FIXADDR_START’ undeclared (first use in this function);
-arch/riscv/mm/init.c:69:20: error: ‘FIXADDR_TOP’ undeclared
-arch/riscv/mm/init.c:70:37: error: ‘PCI_IO_START’ undeclared
-arch/riscv/mm/init.c:71:20: error: ‘PCI_IO_END’ undeclared
-arch/riscv/mm/init.c:72:38: error: ‘VMEMMAP_START’ undeclared
-arch/riscv/mm/init.c:73:20: error: ‘VMEMMAP_END’ undeclared (first use in this function);
+gcc-10 switched to defaulting to -fno-common, which broke iproute2-5.4.
+This was fixed in iproute-5.6, so switch to that. Because we're after a
+stable testing surface, we generally don't like to bump these
+unnecessarily, but in this case, being able to actually build is a basic
+necessity.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/mm/init.c | 2 +-
+ tools/testing/selftests/wireguard/qemu/Makefile | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 157924baa191..1dc26384a6c4 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -46,7 +46,7 @@ static void setup_zero_page(void)
- 	memset((void *)empty_zero_page, 0, PAGE_SIZE);
- }
- 
--#ifdef CONFIG_DEBUG_VM
-+#if defined(CONFIG_MMU) && defined(CONFIG_DEBUG_VM)
- static inline void print_mlk(char *name, unsigned long b, unsigned long t)
- {
- 	pr_notice("%12s : 0x%08lx - 0x%08lx   (%4ld kB)\n", name, b, t,
+diff --git a/tools/testing/selftests/wireguard/qemu/Makefile b/tools/testing/selftests/wireguard/qemu/Makefile
+index 90598a425c18..4bdd6c1a19d3 100644
+--- a/tools/testing/selftests/wireguard/qemu/Makefile
++++ b/tools/testing/selftests/wireguard/qemu/Makefile
+@@ -44,7 +44,7 @@ endef
+ $(eval $(call tar_download,MUSL,musl,1.2.0,.tar.gz,https://musl.libc.org/releases/,c6de7b191139142d3f9a7b5b702c9cae1b5ee6e7f57e582da9328629408fd4e8))
+ $(eval $(call tar_download,IPERF,iperf,3.7,.tar.gz,https://downloads.es.net/pub/iperf/,d846040224317caf2f75c843d309a950a7db23f9b44b94688ccbe557d6d1710c))
+ $(eval $(call tar_download,BASH,bash,5.0,.tar.gz,https://ftp.gnu.org/gnu/bash/,b4a80f2ac66170b2913efbfb9f2594f1f76c7b1afd11f799e22035d63077fb4d))
+-$(eval $(call tar_download,IPROUTE2,iproute2,5.4.0,.tar.xz,https://www.kernel.org/pub/linux/utils/net/iproute2/,fe97aa60a0d4c5ac830be18937e18dc3400ca713a33a89ad896ff1e3d46086ae))
++$(eval $(call tar_download,IPROUTE2,iproute2,5.6.0,.tar.xz,https://www.kernel.org/pub/linux/utils/net/iproute2/,1b5b0e25ce6e23da7526ea1da044e814ad85ba761b10dd29c2b027c056b04692))
+ $(eval $(call tar_download,IPTABLES,iptables,1.8.4,.tar.bz2,https://www.netfilter.org/projects/iptables/files/,993a3a5490a544c2cbf2ef15cf7e7ed21af1845baf228318d5c36ef8827e157c))
+ $(eval $(call tar_download,NMAP,nmap,7.80,.tar.bz2,https://nmap.org/dist/,fcfa5a0e42099e12e4bf7a68ebe6fde05553383a682e816a7ec9256ab4773faa))
+ $(eval $(call tar_download,IPUTILS,iputils,s20190709,.tar.gz,https://github.com/iputils/iputils/archive/s20190709.tar.gz/#,a15720dd741d7538dd2645f9f516d193636ae4300ff7dbc8bfca757bf166490a))
 -- 
 2.25.1
 
