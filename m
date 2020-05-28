@@ -2,188 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5C51E609D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 235F71E60A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389510AbgE1MWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:22:04 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:46052 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389100AbgE1MVu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 08:21:50 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04SCLnu4045381;
-        Thu, 28 May 2020 07:21:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1590668509;
-        bh=49UGWuFM+d+p8lxM09m9XKQ5UiNJvIge9DF8193V3Hs=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=MiIy5ICAy+yUokfv8gF7tm6fTe3lG41jNEkKtLb1P2Zms7tnYZvHSgjS++LQTjyJh
-         QwuNDqMwocqNAnoUxVetgFkNvAn8cFE7GzcPlXn1w5KFD4b8DhqoqJYF9+CzE24fja
-         7we2osSfY7Bh3pKp1JJWgYeq59AcrOcYVMCGj1Y8=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04SCLnLr052516
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 28 May 2020 07:21:49 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 28
- May 2020 07:21:48 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 28 May 2020 07:21:48 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04SCLmBU014533;
-        Thu, 28 May 2020 07:21:48 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <sre@kernel.org>, <afd@ti.com>, <pali@kernel.org>
-CC:     <linux-pm@vger.kernel.org>, <robh@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH v2 4/4] power: supply: bq27xxx_battery: Add the BQ28z610 Battery monitor
-Date:   Thu, 28 May 2020 07:21:47 -0500
-Message-ID: <20200528122147.6171-4-dmurphy@ti.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200528122147.6171-1-dmurphy@ti.com>
-References: <20200528122147.6171-1-dmurphy@ti.com>
+        id S2389635AbgE1MXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 08:23:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38232 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388767AbgE1MXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 08:23:38 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A653120888;
+        Thu, 28 May 2020 12:23:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590668618;
+        bh=4mClTr4yGR3QD/eLvxAFix8/xVWpmiwAk2YvlqxCSQ0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L8aIzmaDtcudK5Mi10vTWK8D/qHLHPWLoX2nw+cmh+BE26Vn77d/No8lu+G90Y3ct
+         XrRitgQycv2snkk3CAovpvPz3pRb5lDSjBGrmWGsYgjq1puiSjveln+uYjLXjalagP
+         yIhpjntI49R8VKUN9hRdVQxBeaLdgB4ReeJBPUQg=
+Date:   Thu, 28 May 2020 14:23:35 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Enderborg, Peter" <Peter.Enderborg@sony.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] debugfs: Add mount restriction option
+Message-ID: <20200528122335.GA3258226@kroah.com>
+References: <20200528080031.24149-1-peter.enderborg@sony.com>
+ <20200528082753.GA2920930@kroah.com>
+ <3e1be4dc-01d4-7fc5-1c82-1c792d3fbc11@sony.com>
+ <20200528092747.GA3007208@kroah.com>
+ <1611bed3-8c55-3ba0-af59-c75ad8eeedcc@sony.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1611bed3-8c55-3ba0-af59-c75ad8eeedcc@sony.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the Texas Instruments BQ28z610 battery monitor.
-The register address map is laid out the same as compared to other
-devices within the file.
+On Thu, May 28, 2020 at 12:04:32PM +0000, Enderborg, Peter wrote:
+> On 5/28/20 11:27 AM, Greg Kroah-Hartman wrote:
+> > On Thu, May 28, 2020 at 08:39:02AM +0000, Enderborg, Peter wrote:
+> >> On 5/28/20 10:27 AM, Greg Kroah-Hartman wrote:
+> >>> On Thu, May 28, 2020 at 10:00:31AM +0200, Peter Enderborg wrote:
+> >>>> Since debugfs include sensitive information it need to be treated
+> >>>> carefully. But it also has many very useful debug functions for userspace.
+> >>>> With this option we can have same configuration for system with
+> >>>> need of debugfs and a way to turn it off. It is needed new
+> >>>> kernel command line parameter to be activated.
+> >>> By "configuration" do you mean "kernel configuration"?  What is wrong
+> >>> with relying on the build option like we do today?
+> >>>
+> >>> You might want to reword all of this to make more sense about the
+> >>> "problem" you are trying to solve here, as I don't really understand it,
+> >>> sorry.
+> >>>
+> >>>
+> >>>> Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
+> >>>> ---
+> >>>>  fs/debugfs/inode.c | 17 ++++++++++++++++-
+> >>>>  lib/Kconfig.debug  | 10 ++++++++++
+> >>>>  2 files changed, 26 insertions(+), 1 deletion(-)
+> >>> No documentation update?  That's not good :(
+> >>>
+> >>>
+> >>>> diff --git a/fs/debugfs/inode.c b/fs/debugfs/inode.c
+> >>>> index b7f2e971ecbc..bde37dab77e0 100644
+> >>>> --- a/fs/debugfs/inode.c
+> >>>> +++ b/fs/debugfs/inode.c
+> >>>> @@ -786,10 +786,25 @@ bool debugfs_initialized(void)
+> >>>>  }
+> >>>>  EXPORT_SYMBOL_GPL(debugfs_initialized);
+> >>>>  
+> >>>> +static int allow_debugfs;
+> >>>> +
+> >>>> +static int __init debugfs_kernel(char *str)
+> >>>> +{
+> >>>> +	if (str && !strcmp(str, "true"))
+> >>>> +		allow_debugfs = true;
+> >>>> +
+> >>>> +	return 0;
+> >>>> +
+> >>>> +}
+> >>>> +early_param("debugfs", debugfs_kernel);
+> >>>> +
+> >>>>  static int __init debugfs_init(void)
+> >>>>  {
+> >>>>  	int retval;
+> >>>> -
+> >>>> +#ifdef CONFIG_DEBUG_FS_MOUNT_RESTRICTED
+> >>>> +	if (!allow_debugfs)
+> >>>> +		return -EPERM;
+> >>>> +#endif
+> >>> But you are not restricting the ability to mount it here, you are
+> >>> removing the ability for it to even start up at all.  What does this
+> >>> break for code that thinks the filesystem is registered (i.e. the call
+> >>> to simple_pin_fs() in start_creating() in fs/debugfs/inode.c?
+> >>>
+> >> If it does, the lines below is also cause the same problem.
+> > In a working system, errors in the lines below will never happen :)
+> 
+> I think it is not unreasonable to expect that debug functionality are robust enough to handle
+> system where not everything is working smoothly.
 
-The battery status register bits are similar to the BQ27561 but they
-are different compared to other fuel gauge devices within this file.
+I do not disagree, but have you tested this to ensure that your kernel
+still works when you disable debugfs in this manner?
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- drivers/power/supply/bq27xxx_battery.c     | 42 ++++++++++++++++++++++
- drivers/power/supply/bq27xxx_battery_i2c.c |  2 ++
- include/linux/power/bq27xxx_battery.h      |  1 +
- 3 files changed, 45 insertions(+)
+If so, great!  Just trying to point out a potential problem...
 
-diff --git a/drivers/power/supply/bq27xxx_battery.c b/drivers/power/supply/bq27xxx_battery.c
-index 466bbc549799..07b7d01a720d 100644
---- a/drivers/power/supply/bq27xxx_battery.c
-+++ b/drivers/power/supply/bq27xxx_battery.c
-@@ -44,6 +44,7 @@
-  * http://www.ti.com/product/bq27441-g1
-  * http://www.ti.com/product/bq27621-g1
-  * https://www.ti.com/lit/gpn/bq27z561
-+ * https://www.ti.com/lit/gpn/bq28z610
-  */
- 
- #include <linux/device.h>
-@@ -462,6 +463,26 @@ static u8
- 		[BQ27XXX_REG_DCAP] = 0x3c,
- 		[BQ27XXX_REG_AP] = 0x22,
- 		BQ27XXX_DM_REG_ROWS,
-+	},
-+	bq28z610_regs[BQ27XXX_REG_MAX] = {
-+		[BQ27XXX_REG_CTRL] = 0x00,
-+		[BQ27XXX_REG_TEMP] = 0x06,
-+		[BQ27XXX_REG_INT_TEMP] = INVALID_REG_ADDR,
-+		[BQ27XXX_REG_VOLT] = 0x08,
-+		[BQ27XXX_REG_AI] = 0x14,
-+		[BQ27XXX_REG_FLAGS] = 0x0a,
-+		[BQ27XXX_REG_TTE] = 0x16,
-+		[BQ27XXX_REG_TTF] = 0x18,
-+		[BQ27XXX_REG_TTES] = INVALID_REG_ADDR,
-+		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
-+		[BQ27XXX_REG_NAC] = INVALID_REG_ADDR,
-+		[BQ27XXX_REG_FCC] = 0x12,
-+		[BQ27XXX_REG_CYCT] = 0x2a,
-+		[BQ27XXX_REG_AE] = 0x22,
-+		[BQ27XXX_REG_SOC] = 0x2c,
-+		[BQ27XXX_REG_DCAP] = 0x3c,
-+		[BQ27XXX_REG_AP] = 0x22,
-+		BQ27XXX_DM_REG_ROWS,
- 	};
- 
- static enum power_supply_property bq27000_props[] = {
-@@ -717,6 +738,25 @@ static enum power_supply_property bq27561_props[] = {
- 	POWER_SUPPLY_PROP_MANUFACTURER,
- };
- 
-+static enum power_supply_property bq28z610_props[] = {
-+	POWER_SUPPLY_PROP_STATUS,
-+	POWER_SUPPLY_PROP_PRESENT,
-+	POWER_SUPPLY_PROP_VOLTAGE_NOW,
-+	POWER_SUPPLY_PROP_CURRENT_NOW,
-+	POWER_SUPPLY_PROP_CAPACITY,
-+	POWER_SUPPLY_PROP_CAPACITY_LEVEL,
-+	POWER_SUPPLY_PROP_TEMP,
-+	POWER_SUPPLY_PROP_TIME_TO_EMPTY_NOW,
-+	POWER_SUPPLY_PROP_TIME_TO_FULL_NOW,
-+	POWER_SUPPLY_PROP_TECHNOLOGY,
-+	POWER_SUPPLY_PROP_CHARGE_FULL,
-+	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
-+	POWER_SUPPLY_PROP_CYCLE_COUNT,
-+	POWER_SUPPLY_PROP_POWER_AVG,
-+	POWER_SUPPLY_PROP_HEALTH,
-+	POWER_SUPPLY_PROP_MANUFACTURER,
-+};
-+
- struct bq27xxx_dm_reg {
- 	u8 subclass_id;
- 	u8 offset;
-@@ -813,6 +853,7 @@ static struct bq27xxx_dm_reg bq27621_dm_regs[] = {
- #endif
- 
- #define bq27561_dm_regs 0
-+#define bq28z610_dm_regs 0
- 
- #define BQ27XXX_O_ZERO	0x00000001
- #define BQ27XXX_O_OTDC	0x00000002 /* has OTC/OTD overtemperature flags */
-@@ -865,6 +906,7 @@ static struct {
- 	[BQ27441]   = BQ27XXX_DATA(bq27441,   0x80008000, BQ27XXX_O_UTOT | BQ27XXX_O_CFGUP | BQ27XXX_O_RAM),
- 	[BQ27621]   = BQ27XXX_DATA(bq27621,   0x80008000, BQ27XXX_O_UTOT | BQ27XXX_O_CFGUP | BQ27XXX_O_RAM),
- 	[BQ27561]   = BQ27XXX_DATA(bq27561,   0         , BQ27561_O_BITS),
-+	[BQ28Z610]  = BQ27XXX_DATA(bq28z610,  0         , BQ27561_O_BITS),
- };
- 
- static DEFINE_MUTEX(bq27xxx_list_lock);
-diff --git a/drivers/power/supply/bq27xxx_battery_i2c.c b/drivers/power/supply/bq27xxx_battery_i2c.c
-index d0d55e0959d5..12cf0c619d6d 100644
---- a/drivers/power/supply/bq27xxx_battery_i2c.c
-+++ b/drivers/power/supply/bq27xxx_battery_i2c.c
-@@ -254,6 +254,7 @@ static const struct i2c_device_id bq27xxx_i2c_id_table[] = {
- 	{ "bq27441", BQ27441 },
- 	{ "bq27621", BQ27621 },
- 	{ "bq27561", BQ27561 },
-+	{ "bq28z610", BQ28Z610 },
- 	{},
- };
- MODULE_DEVICE_TABLE(i2c, bq27xxx_i2c_id_table);
-@@ -288,6 +289,7 @@ static const struct of_device_id bq27xxx_battery_i2c_of_match_table[] = {
- 	{ .compatible = "ti,bq27441" },
- 	{ .compatible = "ti,bq27621" },
- 	{ .compatible = "ti,bq27561" },
-+	{ .compatible = "ti,bq28z610" },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, bq27xxx_battery_i2c_of_match_table);
-diff --git a/include/linux/power/bq27xxx_battery.h b/include/linux/power/bq27xxx_battery.h
-index 4a319950ea22..50f6230f42c4 100644
---- a/include/linux/power/bq27xxx_battery.h
-+++ b/include/linux/power/bq27xxx_battery.h
-@@ -31,6 +31,7 @@ enum bq27xxx_chip {
- 	BQ27441,
- 	BQ27621,
- 	BQ27561,
-+	BQ28Z610,
- };
- 
- struct bq27xxx_device_info;
--- 
-2.26.2
+thanks,
 
+greg k-h
