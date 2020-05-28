@@ -2,110 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88A71E5DAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F9411E5DBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388216AbgE1LCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 07:02:18 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:39228 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388198AbgE1LCJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 07:02:09 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04SB1nP5047624;
-        Thu, 28 May 2020 06:01:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1590663709;
-        bh=eZ+LzRXdAqLDmjIFFtSVLARH/fNt7cotb+N9npkFJXg=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=P5oBbOUi9kZWxa4qDviJIucWymckrM9WRiUANyvqvQ96VbY5vwhyLc3JrjPfz15+X
-         vXWdk2shZRg+9PT8xWSAXqbEvHnTwbT6EP9jIb5/De3u/GvHGHdlESZhBJksu1I1zO
-         iaDCNNaQH5kB3sSxlNQnaYbGt0cgOciq9fsND6yY=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04SB1nCp079663
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 28 May 2020 06:01:49 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 28
- May 2020 06:01:49 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 28 May 2020 06:01:49 -0500
-Received: from [10.250.234.195] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04SB1j9F106456;
-        Thu, 28 May 2020 06:01:46 -0500
-Subject: Re: [PATCH 2/2] mtd: spi-nor: intel-spi: fix forced writable option
-To:     Daniel Walker <danielwa@cisco.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     Jinhua Wu <jinhwu@cisco.com>, <xe-linux-external@cisco.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-References: <20200518175930.10948-2-danielwa@cisco.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <73a475fa-3c26-89ab-aac6-54f9b5b15936@ti.com>
-Date:   Thu, 28 May 2020 16:31:44 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2388295AbgE1LDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 07:03:22 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:15603 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387926AbgE1LDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 07:03:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590663796; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=Cun8HK2gcH9EvzGyJWpeBqNsioNPtJ+qdy5W+mMvL8Y=; b=ILi/pHuFwzLnq8hf7cIzzzl8V1LDf+Hh0yiVCyBmVPmx+5OzYFEp7NIks+xJCzlOK0pu6hoK
+ 36eZrrdgODQXaEzoWtaDGB7pIDaoqcPdDoH7iTgiq4bMv6XWXe+Gg0pj+9LQ7M1RwybUOV8s
+ gaDQWcGY7UQLq4ULfbTx0trSFvE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5ecf9a6a2c549984755cceed (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 May 2020 11:03:06
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D85C4C433A1; Thu, 28 May 2020 11:03:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.227] (unknown [49.204.177.40])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: smasetty)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9E396C433C6;
+        Thu, 28 May 2020 11:03:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9E396C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=smasetty@codeaurora.org
+Subject: Re: [Freedreno] [PATCH 5/6] drm: msm: a6xx: use dev_pm_opp_set_bw to
+ set DDR bandwidth
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     freedreno <freedreno@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, dri-devel@freedesktop.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>, saravanak@google.com,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>
+References: <1589453659-27581-1-git-send-email-smasetty@codeaurora.org>
+ <1589453659-27581-6-git-send-email-smasetty@codeaurora.org>
+ <20200518142333.GA10796@jcrouse1-lnx.qualcomm.com>
+ <CAF6AEGtoNwUGX-r7QytGn5hSU-VD4RJZyhcb3WdgAgAFR5BK4A@mail.gmail.com>
+ <c8a514c9-5e48-b561-4b45-47cde3bdfb34@codeaurora.org>
+ <CAF6AEGvOtgpHMuiw01QgRYGEBB2rp5QOdVMpkTMsi0c-QSSv1Q@mail.gmail.com>
+From:   Sharat Masetty <smasetty@codeaurora.org>
+Message-ID: <46976ed1-d732-cb77-bb0c-c2c6a566b95b@codeaurora.org>
+Date:   Thu, 28 May 2020 16:32:57 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200518175930.10948-2-danielwa@cisco.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+In-Reply-To: <CAF6AEGvOtgpHMuiw01QgRYGEBB2rp5QOdVMpkTMsi0c-QSSv1Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 5/27/2020 9:08 PM, Rob Clark wrote:
+> On Wed, May 27, 2020 at 1:47 AM Sharat Masetty <smasetty@codeaurora.org> wrote:
+>> + more folks
+>>
+>> On 5/18/2020 9:55 PM, Rob Clark wrote:
+>>> On Mon, May 18, 2020 at 7:23 AM Jordan Crouse <jcrouse@codeaurora.org> wrote:
+>>>> On Thu, May 14, 2020 at 04:24:18PM +0530, Sharat Masetty wrote:
+>>>>> This patches replaces the previously used static DDR vote and uses
+>>>>> dev_pm_opp_set_bw() to scale GPU->DDR bandwidth along with scaling
+>>>>> GPU frequency.
+>>>>>
+>>>>> Signed-off-by: Sharat Masetty <smasetty@codeaurora.org>
+>>>>> ---
+>>>>>    drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 6 +-----
+>>>>>    1 file changed, 1 insertion(+), 5 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+>>>>> index 2d8124b..79433d3 100644
+>>>>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+>>>>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+>>>>> @@ -141,11 +141,7 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
+>>>>>
+>>>>>         gmu->freq = gmu->gpu_freqs[perf_index];
+>>>>>
+>>>>> -     /*
+>>>>> -      * Eventually we will want to scale the path vote with the frequency but
+>>>>> -      * for now leave it at max so that the performance is nominal.
+>>>>> -      */
+>>>>> -     icc_set_bw(gpu->icc_path, 0, MBps_to_icc(7216));
+>>>>> +     dev_pm_opp_set_bw(&gpu->pdev->dev, opp);
+>>>>>    }
+>>>> This adds an implicit requirement that all targets need bandwidth settings
+>>>> defined in the OPP or they won't get a bus vote at all. I would prefer that
+>>>> there be an default escape valve but if not you'll need to add
+>>>> bandwidth values for the sdm845 OPP that target doesn't regress.
+>>>>
+>>> it looks like we could maybe do something like:
+>>>
+>>>     ret = dev_pm_opp_set_bw(...);
+>>>     if (ret) {
+>>>         dev_warn_once(dev, "no bandwidth settings");
+>>>         icc_set_bw(...);
+>>>     }
+>>>
+>>> ?
+>>>
+>>> BR,
+>>> -R
+>> There is a bit of an issue here - Looks like its not possible to two icc
+>> handles to the same path.  Its causing double enumeration of the paths
+>> in the icc core and messing up path votes. With [1] Since opp/core
+>> already gets a handle to the icc path as part of table add,  drm/msm
+>> could do either
+>>
+>> a) Conditionally enumerate gpu->icc_path handle only when pm/opp core
+>> has not got the icc path handle. I could use something like [2] to
+>> determine if should initialize gpu->icc_path*
+>>
+>> b) Add peak-opp-configs in 845 dt and mandate all future versions to use
+>> this bindings. With this, I can remove gpu->icc_path from msm/drm
+>> completely and only rely on opp/core for bw voting.
+> The main thing is that we want to make sure newer dtb always works on
+> an older kernel without regression.. but, hmm..  I guess the
+> interconnects/interconnects-names properties haven't landed yet in
+> sdm845.dtsi?  Maybe that lets us go with the simpler approach (b).
+> Looks like we haven't wired up interconnect for 8916 or 8996 either,
+> so probably we can just mandate this for all of them?
 
-On 18/05/20 11:29 pm, Daniel Walker wrote:
-> This option currently doesn't work as expected. If the BIOS has this
-> flash as read-only there is no way to change this thru the driver.
-> There is a parameter which allows the flash to become writable with the
-> "writable" option to the module, but it does nothing if the BIOS has it
-> set to read-only.
-> 
-> I would expect this option would make the flash writable regardless of
-> the BIOS settings. This patch changes this option so the BIOS setting
-> doesn't stop the writable option from enabling read write on the flash.
-> 
+I checked all three 845, 820 and 8916 and none of them have the 
+interconnect configs for GPU. So, I think we are good here. I'll go with 
+option (b) and re-spin v3. Adding interconnects and opp-peak-kBps 
+configs for previous chips can be taken up as a separate activity.
 
-I am confused you say "If the BIOS has this flash as read-only there is
-no way to change this thru the driver", so is it possible to override
-BIOS setting? If yes, where is the code in the driver?
+Sharat
 
-What happens if BIOS is set to allow writes but writeable is set to 0?
-
-Also please send patch series as thread (2/2 in reply to 1/2). You can
-use tool like git send-email
-
-> Original patch by Jinhua Wu <jinhwu@cisco.com>
-> 
-> Cc: Jinhua Wu <jinhwu@cisco.com>
-> Cc: xe-linux-external@cisco.com
-> Signed-off-by: Daniel Walker <danielwa@cisco.com>
-> ---
->  drivers/mtd/spi-nor/controllers/intel-spi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
-> index e5a3d51a2e4d..68a5877bfc0b 100644
-> --- a/drivers/mtd/spi-nor/controllers/intel-spi.c
-> +++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
-> @@ -954,7 +954,7 @@ struct intel_spi *intel_spi_probe(struct device *dev,
->  	intel_spi_fill_partition(ispi, &part);
->  
->  	/* Prevent writes if not explicitly enabled */
-> -	if (!ispi->writeable || !writeable)
-> +	if (!ispi->writeable && !writeable)
->  		ispi->nor.mtd.flags &= ~MTD_WRITEABLE;
->  
->  	ret = mtd_device_register(&ispi->nor.mtd, &part, 1);
-> 
+> If we have landed the interconnect dts hookup for gpu somewhere that
+> I'm overlooking, I guess we would have to go with (a) and keep the
+> existing interconnects/interconnects-names properties.
+>
+> BR,
+> -R
+>
+>> [1] - https://lore.kernel.org/patchwork/cover/1240687/
+>>
+>> [2] - https://patchwork.kernel.org/patch/11527573/
+>>
+>> Let me know your thoughts
+>>
+>> Sharat
+>>
+>>>> Jordan
+>>>>
+>>>>>    unsigned long a6xx_gmu_get_freq(struct msm_gpu *gpu)
+>>>>> --
+>>>>> 2.7.4
+>>>>>
+>>>> --
+>>>> The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+>>>> a Linux Foundation Collaborative Project
+>>>> _______________________________________________
+>>>> Freedreno mailing list
+>>>> Freedreno@lists.freedesktop.org
+>>>> https://lists.freedesktop.org/mailman/listinfo/freedreno
