@@ -2,123 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E22B11E59E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 09:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F23AC1E59ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 09:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725905AbgE1HyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 03:54:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43500 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725747AbgE1HyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 03:54:24 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B16F20899;
-        Thu, 28 May 2020 07:54:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590652464;
-        bh=PrWtcly4mSIxq6xvX0BT2n5SIuYjluRSR6BsVqU0pRI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RBTUoTw4WBBjrctA2lgQMN+f9rzpSob4VFN0mXonOjpXqWs3hd1r1Tkq9kxdcjKZ3
-         qNQF95aIn9eBj8IHBcqlBHV3GvXcXsjlVHOLIFyxeCTABQhFaN2dD0IO1gokLxAsRc
-         FHOJ5cY8U+hBGL0n4m+2ePFTBnMiKe5/7D4KXRYk=
-Date:   Thu, 28 May 2020 08:54:19 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Jiping Ma <Jiping.Ma2@windriver.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>, zhe.he@windriver.com,
-        bruce.ashfield@gmail.com, yue.tao@windriver.com,
-        will.deacon@arm.com, linux-kernel@vger.kernel.org,
-        paul.gortmaker@windriver.com, catalin.marinas@arm.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH][V3] arm64: perf: Get the wrong PC value in REGS_ABI_32
- mode
-Message-ID: <20200528075418.GB22156@willie-the-truck>
-References: <1589165527-188401-1-git-send-email-jiping.ma2@windriver.com>
- <20200526102611.GA1363@C02TD0UTHF1T.local>
- <1e57ec27-1d54-c7cd-5e5b-6c0cc47f9891@windriver.com>
- <20200527151928.GC59947@C02TD0UTHF1T.local>
- <cd66a2e4-c953-8b09-b775-d982bb1be47a@windriver.com>
+        id S1726350AbgE1Hza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 03:55:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbgE1Hza (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 03:55:30 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10384C05BD1E
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 00:55:29 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id g18so4603201qtu.13
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 00:55:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=v5UsUhJ0bTobpKZ8F3/LmZTk9aYFGr2oX9z+vAftnoQ=;
+        b=EMYDaxPpjbuG+SDalhzEaEE6SpgkD99qC2lepZha7xPr8cResCIM93Yi2GTs7BnSnu
+         /wiZpTm9USIWyHJEfvwPPLnpIPWKJplP2iEy3TC1T3arfUvSXGV/OghNPPE7PSvkHvrH
+         r+RHU4eFgwJQhPKMzITVaqdJUJ9PFtN+gG5N0WC4XfdJzZqvsrIT2WCqx9B/Ij+GC9nh
+         Kgxie7dI2UAJ3K41uJIqu3UvEiSrXSTefaq/QyyHsHyDew/rFSR8ai1B0CZqGx+rgtXR
+         Z8Ba7PeXN0E3hzosh3M4bXvOysv2R809JRfN+rFwYV9Sn8mQxZMLA6cTha50OlEdmgw6
+         BHxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=v5UsUhJ0bTobpKZ8F3/LmZTk9aYFGr2oX9z+vAftnoQ=;
+        b=o9/Hbe8qV5loZUSQW+wrAR5gbg45+mieUyYTm9mKyld97SVCVfr0I7LsIst+hxz5+7
+         5+IkVX8uK6QAopdgqp26s6ogHGTRkfHKBLzZmCfWHObPP4/i8Dii0bDX1lL0VVz+Kks0
+         mACFM6Rdl0poh1p8V3w/C/fNjgwp3Mq/WrNfdPL37bYLlHREai+rEwfvlD0pCNPzL4gy
+         9a1XazklAOrjNLY1d8T2l9Aa4Vm1iKNbuN+BfEvrcWgnLpzA2VbqVxnKCpii7GzdqDCU
+         n3dYzr6UHhHx43WspAV0QY8vbQeyyAIrpTBPSFQWvmGltSRP21vUjNFU2zW18ElbePB5
+         tRHw==
+X-Gm-Message-State: AOAM533Mi3KBPjIrKWpbQ7mLPEulkc11AaEccT3oQBHV+6SBwMXG9V0Z
+        GJ3RMmNwF+qmFQCat+yfBklqRlyfmlwjdSz6nLA=
+X-Google-Smtp-Source: ABdhPJwmuAUrd3nhNZYdci9JvAj5nosOW0SaiqRHsBXY0GMy27adWTRvD+wA1EEJeq7R0CA8XmZxASnE5n9n1JQ82zM=
+X-Received: by 2002:aed:3ea1:: with SMTP id n30mr1733699qtf.31.1590652527411;
+ Thu, 28 May 2020 00:55:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cd66a2e4-c953-8b09-b775-d982bb1be47a@windriver.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a05:6214:58e:0:0:0:0 with HTTP; Thu, 28 May 2020 00:55:26
+ -0700 (PDT)
+From:   Donna Louise <donnalouisemchince@gmail.com>
+Date:   Wed, 27 May 2020 19:55:26 -1200
+X-Google-Sender-Auth: 1SgBOLH6VzG3tCJ-K0_P82i6IoU
+Message-ID: <CAEwunR80p7vYXHWSLUZ+EO08rZ8-MJ6CB4Oe0AG22AEY8cP=eA@mail.gmail.com>
+Subject: Hello,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 09:06:07AM +0800, Jiping Ma wrote:
-> On 05/27/2020 11:19 PM, Mark Rutland wrote:
-> > On Wed, May 27, 2020 at 09:33:00AM +0800, Jiping Ma wrote:
-> > > On 05/26/2020 06:26 PM, Mark Rutland wrote:
-> > > > On Mon, May 11, 2020 at 10:52:07AM +0800, Jiping Ma wrote:
-> > > This modification can not fix our issue,  we need
-> > > perf_reg_abi(current) == PERF_SAMPLE_REGS_ABI_32 to judge if it is 32-bit
-> > > task or not,
-> > > then return the correct PC value.
-> > I must be missing something here.
-> > 
-> > The core code perf_reg_abi(task) is called with the task being sampled,
-> > and the regs are from the task being sampled. For a userspace sample for
-> > a compat task, compat_user_mode(regs) should be equivalent to the
-> > is_compat_thread(task_thread_info(task)) check.
-> > 
-> > What am I missing?
-> This issue caused by PC value is not correct. regs are sampled in function
-> perf_output_sample_regs, that call perf_reg_value(regs, bit) to get PC
-> value.
-> PC value is regs[15] in perf_reg_value() function. it should be regs[32].
-> 
-> perf_output_sample_regs(struct perf_output_handle *handle,
->                         struct pt_regs *regs, u64 mask)
-> {
->         int bit;
->         DECLARE_BITMAP(_mask, 64);
-> 
->         bitmap_from_u64(_mask, mask);
->         for_each_set_bit(bit, _mask, sizeof(mask) * BITS_PER_BYTE) {
->                 u64 val;
-> 
->                 val = perf_reg_value(regs, bit);
->                 perf_output_put(handle, val);
->         }
-> }
+Dear Friend,
 
-Yes, but Mark's point is that checking 'compat_user_mode(regs)' should be
-exactly the same as checking 'perf_reg_abi(current) == PERF_SAMPLE_REGS_ABI_32'.
-Are you saying that's not the case? If so, please can you provide an example
-of when they are different?
+  I am glad to know you, but God knows you better and he knows why he
+has directed me to you at this point in time so do not be surprise at
+all. My names are Mrs. Donna Louise McInnes a widow, i have been
+suffering from ovarian cancer disease. At this moment i am about to
+end the race like this because the illness has gotten to a very bad
+stage, without any family members and no child. I hoped that you will
+not expose or betray this trust and confident that I am about to
+entrust on you for the mutual benefit of the orphans and the less
+privileges ones. I have some funds I inherited from my late husband,
+the sum of ($11.000.000 Eleven million dollars.) deposited in the
+Bank.  Having known my present health status, I decided to entrust
+this fund to you believing that you will utilize it the way i am going
+to instruct herein.
 
-Leaving that aside for a second, I also think it's reasonable to question
-whether this whole interface is busted or not. I looked at it last night but
-struggled to work out what it's supposed to do. Consider these three
-scenarios, all under an arm64 kernel:
+Therefore I need you to assist me and reclaim this money and use it
+for Charity works, for orphanages and gives justice and help to the
+poor, needy and to promote the words of God and the effort that the
+house of God will be maintained says The Lord." Jeremiah 22:15-16.=E2=80=9C
 
-  1. 64-bit perf + 64-bit application being profiled
-  2. 64-bit perf + 32-bit application being profiled
-  3. 32-bit perf + 32-bit application being profiled
+It will be my great pleasure to compensate you with 35 % percent of
+the total money for your personal use, 5 % percent for any expenses
+that may occur during the international transfer process while 60% of
+the money will go to the charity project.
 
-It looks like the current code is a bodge to try to handle both (2) and
-(3) at the same time:
+All I require from you is sincerity and ability to complete God task
+without any failure. It will be my pleasure to see that the bank has
+finally release and transfer the fund into your bank account therein
+your country even before I die here in the hospital, because of my
+present health status everything need to be process rapidly as soon as
+possible. I am waiting for your immediate reply, if only you are
+interested for further details of the transaction and execution of
+this charitable project.
 
-  - In case (3), userspace only asks about registers 0-15
-  - In case (2), we fudge the higher registers so that 64-bit SP and LR
-    hold the 32-bit values as a bodge to allow a 64-bit dwarf unwinder
-    to unwind the stack
-
-So the idea behind the patch looks fine because case (3) is expecting the PC
-in register 15 and instead gets 0, but the temptation is to clean this up so
-that cases (2) and (3) report the same data to userspace (along the lines of
-Mark's patch), namely only the first 16 registers with the PC moved down. We
-can only do that if the unwinder is happy, which it might be if it only ever
-looks up dwarf register numbers based on the unwind tables in the binary.
-Somebody would need to dig into that. Otherwise, if it generates unconditional
-references to things like register 30 to grab the link register, then we're
-stuck with the bodge and need to special-case the PC.
-
-Thoughts?
-
-Will
+Best Regards your friend Mrs.
+Donna Louise McInnes.
