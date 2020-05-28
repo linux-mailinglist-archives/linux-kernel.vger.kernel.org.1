@@ -2,210 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC54D1E65B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E211E65AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404305AbgE1PQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 11:16:05 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:59154 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404184AbgE1PQA (ORCPT
+        id S2404292AbgE1POz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 11:14:55 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:41155 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404282AbgE1POx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 11:16:00 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein.fritz.box)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jeKGE-000145-CD; Thu, 28 May 2020 15:15:58 +0000
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Cc:     Andy Lutomirski <luto@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
-        Matt Denton <mpdenton@google.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Robert Sesek <rsesek@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH v2 2/2] tests: test seccomp filter notifications
-Date:   Thu, 28 May 2020 17:14:12 +0200
-Message-Id: <20200528151412.265444-2-christian.brauner@ubuntu.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200528151412.265444-1-christian.brauner@ubuntu.com>
-References: <20200528151412.265444-1-christian.brauner@ubuntu.com>
+        Thu, 28 May 2020 11:14:53 -0400
+Received: by mail-il1-f194.google.com with SMTP id d1so461852ila.8;
+        Thu, 28 May 2020 08:14:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yIDw/uV1HgHlRds6XnPkvv3A35C2qOGXIu1RjiUeb9Y=;
+        b=U9+U87MKo8R/lXKKTeFNzcqdA8/irehaAGSR0PJP7+mNjO/m6WTqJ29/iBl4UomE5K
+         1eX5dcLfz4/86tk0IoxrT4JVf3SgGQxiY4g2v1Sn8Z89PrTTRDmr2SrIxr1AkJCN2NG2
+         /Z8EF/iwkVdPxW/5aOr4GAed7tXoOdS+GcbKNukFYRDD6Zvyl457j1b+mkLtj0zszm0G
+         JTZ36WMVb9juCgLvpd/blMCj09aFM6jgDhqd7po6tcCgZUYxJm9XXmGMc3jcDWf8COld
+         vpSV0YKkenoNntdaB7R/rjveGHMrYYpzy5c5ReIoBqga7fK8OP2JGJIGf18Wc9mUY2+H
+         ZMew==
+X-Gm-Message-State: AOAM5300OgFr9OZ9ClxIeuTl9pZzPc02uejd1AWSqip+DbjY6AyTkmFU
+        0t/YyVH775pQwJqWyqZy5w==
+X-Google-Smtp-Source: ABdhPJxAz1lpeRppgpo6BunFloCZvsPY8jFkCiVKE8KLqTvD/f0TRuU3AhQ7Ssf3Kpzq9YR+oZzPRQ==
+X-Received: by 2002:a92:d151:: with SMTP id t17mr3335382ilg.101.1590678892145;
+        Thu, 28 May 2020 08:14:52 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id i13sm3442788ill.65.2020.05.28.08.14.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 08:14:51 -0700 (PDT)
+Received: (nullmailer pid 82662 invoked by uid 1000);
+        Thu, 28 May 2020 15:14:50 -0000
+Date:   Thu, 28 May 2020 09:14:50 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sharat Masetty <smasetty@codeaurora.org>
+Cc:     devicetree@vger.kernel.org, mka@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        georgi.djakov@linaro.org, dri-devel@freedesktop.org,
+        freedreno@lists.freedesktop.org
+Subject: Re: [PATCH 6/6] dt-bindings: drm/msm/gpu: Document gpu opp table
+Message-ID: <20200528151450.GA82632@bogus>
+References: <1589453659-27581-1-git-send-email-smasetty@codeaurora.org>
+ <1589453659-27581-7-git-send-email-smasetty@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1589453659-27581-7-git-send-email-smasetty@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This verifies we're correctly notified when a seccomp filter becomes
-unused when a notifier is in use.
+On Thu, 14 May 2020 16:24:19 +0530, Sharat Masetty wrote:
+> Update documentation to list the gpu opp table bindings including the
+> newly added "opp-peak-kBps" needed for GPU-DDR bandwidth scaling.
+> 
+> Signed-off-by: Sharat Masetty <smasetty@codeaurora.org>
+> ---
+>  .../devicetree/bindings/display/msm/gpu.txt        | 28 ++++++++++++++++++++++
+>  1 file changed, 28 insertions(+)
+> 
 
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
----
-/* v2 */
-unchanged
----
- tools/testing/selftests/seccomp/seccomp_bpf.c | 136 ++++++++++++++++++
- 1 file changed, 136 insertions(+)
-
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index c0aa46ce14f6..4dae278cf77e 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -51,6 +51,7 @@
- #include <poll.h>
- 
- #include "../kselftest_harness.h"
-+#include "../clone3/clone3_selftests.h"
- 
- #ifndef PR_SET_PTRACER
- # define PR_SET_PTRACER 0x59616d61
-@@ -3686,6 +3687,141 @@ TEST(user_notification_continue)
- 	}
- }
- 
-+TEST(user_notification_filter_empty)
-+{
-+	pid_t pid;
-+	long ret;
-+	int status;
-+	struct pollfd pollfd;
-+	struct clone_args args = {
-+		.flags = CLONE_FILES,
-+		.exit_signal = SIGCHLD,
-+	};
-+
-+	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-+	ASSERT_EQ(0, ret) {
-+		TH_LOG("Kernel does not support PR_SET_NO_NEW_PRIVS!");
-+	}
-+
-+	pid = sys_clone3(&args, sizeof(args));
-+	ASSERT_GE(pid, 0);
-+
-+	if (pid == 0) {
-+		int listener;
-+
-+		listener = user_trap_syscall(__NR_mknod, SECCOMP_FILTER_FLAG_NEW_LISTENER);
-+		if (listener < 0)
-+			_exit(EXIT_FAILURE);
-+
-+		if (dup2(listener, 200) != 200)
-+			_exit(EXIT_FAILURE);
-+
-+		close(listener);
-+
-+		_exit(EXIT_SUCCESS);
-+	}
-+
-+	EXPECT_EQ(waitpid(pid, &status, 0), pid);
-+	EXPECT_EQ(true, WIFEXITED(status));
-+	EXPECT_EQ(0, WEXITSTATUS(status));
-+
-+	/*
-+	 * The seccomp filter has become unused so we should be notified once
-+	 * the kernel gets around to cleaning up task struct.
-+	 */
-+	pollfd.fd = 200;
-+	pollfd.events = POLLHUP;
-+
-+	EXPECT_GT(poll(&pollfd, 1, -1), 0);
-+	EXPECT_GT((pollfd.revents & POLLHUP) ?: 0, 0);
-+}
-+
-+static void *do_thread(void *data)
-+{
-+	return NULL;
-+}
-+
-+TEST(user_notification_filter_empty_threaded)
-+{
-+	pid_t pid;
-+	long ret;
-+	int status;
-+	struct pollfd pollfd;
-+	struct clone_args args = {
-+		.flags = CLONE_FILES,
-+		.exit_signal = SIGCHLD,
-+	};
-+
-+	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-+	ASSERT_EQ(0, ret) {
-+		TH_LOG("Kernel does not support PR_SET_NO_NEW_PRIVS!");
-+	}
-+
-+	pid = sys_clone3(&args, sizeof(args));
-+	ASSERT_GE(pid, 0);
-+
-+	if (pid == 0) {
-+		pid_t pid1, pid2;
-+		int listener, status;
-+		pthread_t thread;
-+
-+		listener = user_trap_syscall(__NR_dup, SECCOMP_FILTER_FLAG_NEW_LISTENER);
-+		if (listener < 0)
-+			_exit(EXIT_FAILURE);
-+
-+		if (dup2(listener, 200) != 200)
-+			_exit(EXIT_FAILURE);
-+
-+		close(listener);
-+
-+		pid1 = fork();
-+		if (pid1 < 0)
-+			_exit(EXIT_FAILURE);
-+
-+		if (pid1 == 0)
-+			_exit(EXIT_SUCCESS);
-+
-+		pid2 = fork();
-+		if (pid2 < 0)
-+			_exit(EXIT_FAILURE);
-+
-+		if (pid2 == 0)
-+			_exit(EXIT_SUCCESS);
-+
-+		if (pthread_create(&thread, NULL, do_thread, NULL) ||
-+		    pthread_join(thread, NULL))
-+			_exit(EXIT_FAILURE);
-+
-+		if (pthread_create(&thread, NULL, do_thread, NULL) ||
-+		    pthread_join(thread, NULL))
-+			_exit(EXIT_FAILURE);
-+
-+		if (waitpid(pid1, &status, 0) != pid1 || !WIFEXITED(status) ||
-+		    WEXITSTATUS(status))
-+			_exit(EXIT_FAILURE);
-+
-+		if (waitpid(pid2, &status, 0) != pid2 || !WIFEXITED(status) ||
-+		    WEXITSTATUS(status))
-+			_exit(EXIT_FAILURE);
-+
-+		exit(EXIT_SUCCESS);
-+	}
-+
-+	EXPECT_EQ(waitpid(pid, &status, 0), pid);
-+	EXPECT_EQ(true, WIFEXITED(status));
-+	EXPECT_EQ(0, WEXITSTATUS(status));
-+
-+	/*
-+	 * The seccomp filter has become unused so we should be notified once
-+	 * the kernel gets around to cleaning up task struct.
-+	 */
-+	pollfd.fd = 200;
-+	pollfd.events = POLLHUP;
-+
-+	EXPECT_GT(poll(&pollfd, 1, -1), 0);
-+	EXPECT_GT((pollfd.revents & POLLHUP) ?: 0, 0);
-+}
-+
- /*
-  * TODO:
-  * - add microbenchmarks
--- 
-2.26.2
-
+Acked-by: Rob Herring <robh@kernel.org>
