@@ -2,173 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4451E628B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 15:43:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABFC91E6268
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 15:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390520AbgE1Nni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 09:43:38 -0400
-Received: from pio-pvt-msa3.bahnhof.se ([79.136.2.42]:33920 "EHLO
-        pio-pvt-msa3.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390468AbgE1Nng (ORCPT
+        id S2390449AbgE1Nhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 09:37:54 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:52754 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390335AbgE1Nhx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 09:43:36 -0400
-X-Greylist: delayed 352 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 May 2020 09:43:35 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by pio-pvt-msa3.bahnhof.se (Postfix) with ESMTP id D92C53F3E6;
-        Thu, 28 May 2020 15:37:40 +0200 (CEST)
-Authentication-Results: pio-pvt-msa3.bahnhof.se;
-        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b=i8189QXo;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Flag: NO
-X-Spam-Score: -2.099
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.099 tagged_above=-999 required=6.31
-        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
-        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, URIBL_BLOCKED=0.001]
-        autolearn=ham autolearn_force=no
-Received: from pio-pvt-msa3.bahnhof.se ([127.0.0.1])
-        by localhost (pio-pvt-msa3.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id tWEVle6VlQ0m; Thu, 28 May 2020 15:37:36 +0200 (CEST)
-Received: from mail1.shipmail.org (h-205-35.A357.priv.bahnhof.se [155.4.205.35])
-        (Authenticated sender: mb878879)
-        by pio-pvt-msa3.bahnhof.se (Postfix) with ESMTPA id 4772F3F398;
-        Thu, 28 May 2020 15:37:33 +0200 (CEST)
-Received: from Gunillas-MacBook-Pro.local (h-205-35.A357.priv.bahnhof.se [155.4.205.35])
-        by mail1.shipmail.org (Postfix) with ESMTPSA id 5B030360165;
-        Thu, 28 May 2020 15:37:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
-        t=1590673053; bh=hzBvGtdMVY1yFDhX6vHBpO0alm4n63ua22McT7gZosc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=i8189QXoVaRwcn+moTSIMQD7TJ7H9n0I1yFj2IMYL7PullzNred3UO8BAAnz2DeMq
-         j/VrfOha1hYBt/0oje3SsVmDflH1Wva31htryiedFwwGczZJYD1NmbCNmJNQfVSK5z
-         6PWj3YdF/MSpTB+pJ0H/4RhVF8RvgNw2PZv4Ful4=
-Subject: Re: [RFC 02/17] dma-fence: basic lockdep annotations
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>
-Cc:     linux-rdma@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        linaro-mm-sig@lists.linaro.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        linux-media@vger.kernel.org
-References: <20200512085944.222637-1-daniel.vetter@ffwll.ch>
- <20200512085944.222637-3-daniel.vetter@ffwll.ch>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>
-Message-ID: <81b3a3be-b818-9e7c-e93e-ecf161bec94c@shipmail.org>
-Date:   Thu, 28 May 2020 15:36:56 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.1
+        Thu, 28 May 2020 09:37:53 -0400
+Received: by mail-pj1-f65.google.com with SMTP id k2so2158671pjs.2;
+        Thu, 28 May 2020 06:37:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=aQV6CwzBmrGEG9swVeTMKCGFEpgz2wMm2rS1osfawFM=;
+        b=cGBx+XTqBjKIxvGgXRlu4pU6MxZhNgIj6DEqrEeCsmj/BSUKxYVbYFgQYbbXVQnfvU
+         kV57NK8u2Q9lJruYXY+uCuKjcuavhrBidVuWdYB3AkGvK+Nkuu/smqT+JG3GiGR4VRl5
+         Iz06gFbZmoYLaccKtKMW/cTfjkYj8lHzKnRSa1GDUU2GPCnbalHyDi3W+AVpIruwvhiv
+         ub9tN7k66qFBMAcvg4Rp5WHXJo4/SOwyVxmJd8Pm6JrVd0HU2ERC2EA3HU0ekh4DdOr+
+         QCzmFLn6LkAYT1WQf+gp+xH84pywAXiCMwQKhbf19Li3antdrWGLeBVKiRNZ4wHhM5wG
+         g4oQ==
+X-Gm-Message-State: AOAM533EmcLJbrgjLsOU3vyg2sRuDhAIfreQWV8WqMZCXDdnQ7IsYZG2
+        y9uKDpDj7XpPzIT9B6Er6fgx2vM1
+X-Google-Smtp-Source: ABdhPJyMiGo8X9zkrNeqAFY9ccqWKXXAfJwLN1ebTGmlMDcp/57AU842L36nZGoT78lP0k6aDjFkIw==
+X-Received: by 2002:a17:90a:4811:: with SMTP id a17mr3822782pjh.130.1590673070454;
+        Thu, 28 May 2020 06:37:50 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:40e6:aa88:9c03:e0b4? ([2601:647:4000:d7:40e6:aa88:9c03:e0b4])
+        by smtp.gmail.com with ESMTPSA id j13sm4829574pfe.48.2020.05.28.06.37.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 May 2020 06:37:49 -0700 (PDT)
+Subject: Re: [PATCH 8/8] blk-mq: drain I/O when all CPUs in a hctx are offline
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
+        John Garry <john.garry@huawei.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20200527180644.514302-1-hch@lst.de>
+ <20200527180644.514302-9-hch@lst.de>
+ <7acc7ab5-02f9-e6ee-e95f-175bc0df9cbc@acm.org> <20200528014601.GC933147@T590>
+ <1ec7922c-f2b0-08ec-5849-f4eb7f71e9e7@acm.org>
+ <20200528051932.GA1008129@T590>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <4fb6f0cf-a356-833e-25ab-47f9131c729b@acm.org>
+Date:   Thu, 28 May 2020 06:37:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200512085944.222637-3-daniel.vetter@ffwll.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200528051932.GA1008129@T590>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-12 10:59, Daniel Vetter wrote:
-> Design is similar to the lockdep annotations for workers, but with
-> some twists:
->
-> - We use a read-lock for the execution/worker/completion side, so that
->    this explicit annotation can be more liberally sprinkled around.
->    With read locks lockdep isn't going to complain if the read-side
->    isn't nested the same way under all circumstances, so ABBA deadlocks
->    are ok. Which they are, since this is an annotation only.
->
-> - We're using non-recursive lockdep read lock mode, since in recursive
->    read lock mode lockdep does not catch read side hazards. And we
->    _very_ much want read side hazards to be caught. For full details of
->    this limitation see
->
->    commit e91498589746065e3ae95d9a00b068e525eec34f
->    Author: Peter Zijlstra <peterz@infradead.org>
->    Date:   Wed Aug 23 13:13:11 2017 +0200
->
->        locking/lockdep/selftests: Add mixed read-write ABBA tests
->
-> - To allow nesting of the read-side explicit annotations we explicitly
->    keep track of the nesting. lock_is_held() allows us to do that.
->
-> - The wait-side annotation is a write lock, and entirely done within
->    dma_fence_wait() for everyone by default.
->
-> - To be able to freely annotate helper functions I want to make it ok
->    to call dma_fence_begin/end_signalling from soft/hardirq context.
->    First attempt was using the hardirq locking context for the write
->    side in lockdep, but this forces all normal spinlocks nested within
->    dma_fence_begin/end_signalling to be spinlocks. That bollocks.
->
->    The approach now is to simple check in_atomic(), and for these cases
->    entirely rely on the might_sleep() check in dma_fence_wait(). That
->    will catch any wrong nesting against spinlocks from soft/hardirq
->    contexts.
->
-> The idea here is that every code path that's critical for eventually
-> signalling a dma_fence should be annotated with
-> dma_fence_begin/end_signalling. The annotation ideally starts right
-> after a dma_fence is published (added to a dma_resv, exposed as a
-> sync_file fd, attached to a drm_syncobj fd, or anything else that
-> makes the dma_fence visible to other kernel threads), up to and
-> including the dma_fence_wait(). Examples are irq handlers, the
-> scheduler rt threads, the tail of execbuf (after the corresponding
-> fences are visible), any workers that end up signalling dma_fences and
-> really anything else. Not annotated should be code paths that only
-> complete fences opportunistically as the gpu progresses, like e.g.
-> shrinker/eviction code.
->
-> The main class of deadlocks this is supposed to catch are:
->
-> Thread A:
->
-> 	mutex_lock(A);
-> 	mutex_unlock(A);
->
-> 	dma_fence_signal();
->
-> Thread B:
->
-> 	mutex_lock(A);
-> 	dma_fence_wait();
-> 	mutex_unlock(A);
->
-> Thread B is blocked on A signalling the fence, but A never gets around
-> to that because it cannot acquire the lock A.
->
-> Note that dma_fence_wait() is allowed to be nested within
-> dma_fence_begin/end_signalling sections. To allow this to happen the
-> read lock needs to be upgraded to a write lock, which means that any
-> other lock is acquired between the dma_fence_begin_signalling() call and
-> the call to dma_fence_wait(), and still held, this will result in an
-> immediate lockdep complaint. The only other option would be to not
-> annotate such calls, defeating the point. Therefore these annotations
-> cannot be sprinkled over the code entirely mindless to avoid false
-> positives.
->
-> v2: handle soft/hardirq ctx better against write side and dont forget
-> EXPORT_SYMBOL, drivers can't use this otherwise.
->
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Cc: linux-rdma@vger.kernel.org
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: intel-gfx@lists.freedesktop.org
-> Cc: Chris Wilson <chris@chris-wilson.co.uk>
-> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> Cc: Christian König <christian.koenig@amd.com>
-> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+On 2020-05-27 22:19, Ming Lei wrote:
+> On Wed, May 27, 2020 at 08:33:48PM -0700, Bart Van Assche wrote:
+>> My understanding is that operations that have acquire semantics pair
+>> with operations that have release semantics. I haven't been able to find
+>> any documentation that shows that smp_mb__after_atomic() has release
+>> semantics. So I looked up its definition. This is what I found:
+>>
+>> $ git grep -nH 'define __smp_mb__after_atomic'
+>> arch/ia64/include/asm/barrier.h:49:#define __smp_mb__after_atomic()
+>> barrier()
+>> arch/mips/include/asm/barrier.h:133:#define __smp_mb__after_atomic()
+>> smp_llsc_mb()
+>> arch/s390/include/asm/barrier.h:50:#define __smp_mb__after_atomic()
+>> barrier()
+>> arch/sparc/include/asm/barrier_64.h:57:#define __smp_mb__after_atomic()
+>> barrier()
+>> arch/x86/include/asm/barrier.h:83:#define __smp_mb__after_atomic()	do {
+>> } while (0)
+>> arch/xtensa/include/asm/barrier.h:20:#define __smp_mb__after_atomic()	
+>> barrier()
+>> include/asm-generic/barrier.h:116:#define __smp_mb__after_atomic()
+>> __smp_mb()
+>>
+>> My interpretation of the above is that not all smp_mb__after_atomic()
+>> implementations have release semantics. Do you agree with this conclusion?
+> 
+> I understand smp_mb__after_atomic() orders set_bit(BLK_MQ_S_INACTIVE)
+> and reading the tag bit which is done in blk_mq_all_tag_iter().
+> 
+> So the two pair of OPs are ordered:
+> 
+> 1) if one request(tag bit) is allocated before setting BLK_MQ_S_INACTIVE,
+> the tag bit will be observed in blk_mq_all_tag_iter() from blk_mq_hctx_has_requests(),
+> so the request will be drained.
+> 
+> OR
+> 
+> 2) if one request(tag bit) is allocated after setting BLK_MQ_S_INACTIVE,
+> the request(tag bit) will be released and retried on another CPU
+> finally, see __blk_mq_alloc_request().
+> 
+> Cc Paul and linux-kernel list.
 
-LGTM. Perhaps some in-code documentation on how to use the new functions 
-are called.
+I do not agree with the above conclusion. My understanding of
+acquire/release labels is that if the following holds:
+(1) A store operation that stores the value V into memory location M has
+a release label.
+(2) A load operation that reads memory location M has an acquire label.
+(3) The load operation (2) retrieves the value V that was stored by (1).
 
-Otherwise for patch 2 and 3,
+that the following ordering property holds: all load and store
+instructions that happened before the store instruction (1) in program
+order are guaranteed to happen before the load and store instructions
+that follow (2) in program order.
 
-Reviewed-by: Thomas Hellstrom <thomas.hellstrom@intel.com>
+In the ARM manual these semantics have been described as follows: "A
+Store-Release instruction is multicopy atomic when observed with a
+Load-Acquire instruction".
 
+In this case the load-acquire operation is the
+"test_and_set_bit_lock(nr, word)" statement from the sbitmap code. That
+code is executed indirectly by blk_mq_get_tag(). Since there is no
+matching store-release instruction in __blk_mq_alloc_request() for
+'word', ordering of the &data->hctx->state and 'tag' memory locations is
+not guaranteed by the acquire property of the "test_and_set_bit_lock(nr,
+word)" statement from the sbitmap code.
 
+Thanks,
+
+Bart.
