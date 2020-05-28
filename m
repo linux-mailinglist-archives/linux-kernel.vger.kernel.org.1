@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A743A1E5FBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D60F1E5F3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389604AbgE1MEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:04:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49636 "EHLO mail.kernel.org"
+        id S2389141AbgE1L56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 07:57:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388946AbgE1L5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 07:57:11 -0400
+        id S2388953AbgE1L5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 07:57:13 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0EF221532;
-        Thu, 28 May 2020 11:57:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 000452158C;
+        Thu, 28 May 2020 11:57:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590667030;
-        bh=ZhZPSssN0l0R0iPEyKYkxGNrxu4H7TAb2zwRX4z54t8=;
+        s=default; t=1590667032;
+        bh=wa6/VyqRftc183tLN+IpPw5dqH9ERY51scjelX0jqUI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RpSkLybSz45nAM8d4DXPG+sTSr6dEa9UoZBFQQVCyBO3ikgiLCuP55NcdiLRb5XzJ
-         2iaPozkjVYtO2RiN05/liV3t+R71Epgjcq3JSbVcYv9vFpo19S/GINbVN0SUvPbvuT
-         Rsx5QkTDRVMyBJxFhgZq3GoOQqyRvZsF3JTn+jhs=
+        b=IopbP2b/XI+YOg6zQTySNkUvhBJfO4q+v71vhAT+1ExjLA3wq5WaTQWQNm5+JUQiq
+         Kj1tt6Im7cs3yhKJKpmofqhDKDVMfyUvPAnQ8tYRPr4khh3wEkuDc9TO5rRaTnwUa7
+         hfA24gOKGrzCf8sQ4JtIonKEcJrByWICDUDNspL8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Russell King <rmk+kernel@armlinux.org.uk>,
-        Matteo Croce <mcroce@redhat.com>,
+Cc:     Jonathan McDowell <noodles@earth.li>,
         "David S . Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 14/26] net: mvpp2: fix RX hashing for non-10G ports
-Date:   Thu, 28 May 2020 07:56:42 -0400
-Message-Id: <20200528115654.1406165-14-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 16/26] net: ethernet: stmmac: Enable interface clocks on probe for IPQ806x
+Date:   Thu, 28 May 2020 07:56:44 -0400
+Message-Id: <20200528115654.1406165-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200528115654.1406165-1-sashal@kernel.org>
 References: <20200528115654.1406165-1-sashal@kernel.org>
@@ -44,190 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russell King <rmk+kernel@armlinux.org.uk>
+From: Jonathan McDowell <noodles@earth.li>
 
-[ Upstream commit 3138a07ce219acde4c0d7ea0b6d54ba64153328b ]
+[ Upstream commit a96ac8a0045e3cbe3e5af6d1b3c78c6c2065dec5 ]
 
-When rxhash is enabled on any ethernet port except the first in each CP
-block, traffic flow is prevented.  The analysis is below:
+The ipq806x_gmac_probe() function enables the PTP clock but not the
+appropriate interface clocks. This means that if the bootloader hasn't
+done so attempting to bring up the interface will fail with an error
+like:
 
-I've been investigating this afternoon, and what I've found, comparing
-a kernel without 895586d5dc32 and with 895586d5dc32 applied is:
+[   59.028131] ipq806x-gmac-dwmac 37600000.ethernet: Failed to reset the dma
+[   59.028196] ipq806x-gmac-dwmac 37600000.ethernet eth1: stmmac_hw_setup: DMA engine initialization failed
+[   59.034056] ipq806x-gmac-dwmac 37600000.ethernet eth1: stmmac_open: Hw setup failed
 
-- The table programmed into the hardware via mvpp22_rss_fill_table()
-  appears to be identical with or without the commit.
+This patch, a slightly cleaned up version of one posted by Sergey
+Sergeev in:
 
-- When rxhash is enabled on eth2, mvpp2_rss_port_c2_enable() reports
-  that c2.attr[0] and c2.attr[2] are written back containing:
+https://forum.openwrt.org/t/support-for-mikrotik-rb3011uias-rm/4064/257
 
-   - with 895586d5dc32, failing:    00200000 40000000
-   - without 895586d5dc32, working: 04000000 40000000
+correctly enables the clock; we have already configured the source just
+before this.
 
-- When disabling rxhash, c2.attr[0] and c2.attr[2] are written back as:
+Tested on a MikroTik RB3011.
 
-   04000000 00000000
-
-The second value represents the MVPP22_CLS_C2_ATTR2_RSS_EN bit, the
-first value is the queue number, which comprises two fields. The high
-5 bits are 24:29 and the low three are 21:23 inclusive. This comes
-from:
-
-       c2.attr[0] = MVPP22_CLS_C2_ATTR0_QHIGH(qh) |
-                     MVPP22_CLS_C2_ATTR0_QLOW(ql);
-
-So, the working case gives eth2 a queue id of 4.0, or 32 as per
-port->first_rxq, and the non-working case a queue id of 0.1, or 1.
-The allocation of queue IDs seems to be in mvpp2_port_probe():
-
-        if (priv->hw_version == MVPP21)
-                port->first_rxq = port->id * port->nrxqs;
-        else
-                port->first_rxq = port->id * priv->max_port_rxqs;
-
-Where:
-
-        if (priv->hw_version == MVPP21)
-                priv->max_port_rxqs = 8;
-        else
-                priv->max_port_rxqs = 32;
-
-Making the port 0 (eth0 / eth1) have port->first_rxq = 0, and port 1
-(eth2) be 32. It seems the idea is that the first 32 queues belong to
-port 0, the second 32 queues belong to port 1, etc.
-
-mvpp2_rss_port_c2_enable() gets the queue number from it's parameter,
-'ctx', which comes from mvpp22_rss_ctx(port, 0). This returns
-port->rss_ctx[0].
-
-mvpp22_rss_context_create() is responsible for allocating that, which
-it does by looking for an unallocated priv->rss_tables[] pointer. This
-table is shared amongst all ports on the CP silicon.
-
-When we write the tables in mvpp22_rss_fill_table(), the RSS table
-entry is defined by:
-
-                u32 sel = MVPP22_RSS_INDEX_TABLE(rss_ctx) |
-                          MVPP22_RSS_INDEX_TABLE_ENTRY(i);
-
-where rss_ctx is the context ID (queue number) and i is the index in
-the table.
-
-If we look at what is written:
-
-- The first table to be written has "sel" values of 00000000..0000001f,
-  containing values 0..3. This appears to be for eth1. This is table 0,
-  RX queue number 0.
-- The second table has "sel" values of 00000100..0000011f, and appears
-  to be for eth2.  These contain values 0x20..0x23. This is table 1,
-  RX queue number 0.
-- The third table has "sel" values of 00000200..0000021f, and appears
-  to be for eth3.  These contain values 0x40..0x43. This is table 2,
-  RX queue number 0.
-
-How do queue numbers translate to the RSS table?  There is another
-table - the RXQ2RSS table, indexed by the MVPP22_RSS_INDEX_QUEUE field
-of MVPP22_RSS_INDEX and accessed through the MVPP22_RXQ2RSS_TABLE
-register. Before 895586d5dc32, it was:
-
-       mvpp2_write(priv, MVPP22_RSS_INDEX,
-                   MVPP22_RSS_INDEX_QUEUE(port->first_rxq));
-       mvpp2_write(priv, MVPP22_RXQ2RSS_TABLE,
-                   MVPP22_RSS_TABLE_POINTER(port->id));
-
-and after:
-
-       mvpp2_write(priv, MVPP22_RSS_INDEX, MVPP22_RSS_INDEX_QUEUE(ctx));
-       mvpp2_write(priv, MVPP22_RXQ2RSS_TABLE, MVPP22_RSS_TABLE_POINTER(ctx));
-
-Before the commit, for eth2, that would've contained '32' for the
-index and '1' for the table pointer - mapping queue 32 to table 1.
-Remember that this is queue-high.queue-low of 4.0.
-
-After the commit, we appear to map queue 1 to table 1. That again
-looks fine on the face of it.
-
-Section 9.3.1 of the A8040 manual seems indicate the reason that the
-queue number is separated. queue-low seems to always come from the
-classifier, whereas queue-high can be from the ingress physical port
-number or the classifier depending on the MVPP2_CLS_SWFWD_PCTRL_REG.
-
-We set the port bit in MVPP2_CLS_SWFWD_PCTRL_REG, meaning that queue-high
-comes from the MVPP2_CLS_SWFWD_P2HQ_REG() register... and this seems to
-be where our bug comes from.
-
-mvpp2_cls_oversize_rxq_set() sets this up as:
-
-        mvpp2_write(port->priv, MVPP2_CLS_SWFWD_P2HQ_REG(port->id),
-                    (port->first_rxq >> MVPP2_CLS_OVERSIZE_RXQ_LOW_BITS));
-
-        val = mvpp2_read(port->priv, MVPP2_CLS_SWFWD_PCTRL_REG);
-        val |= MVPP2_CLS_SWFWD_PCTRL_MASK(port->id);
-        mvpp2_write(port->priv, MVPP2_CLS_SWFWD_PCTRL_REG, val);
-
-Setting the MVPP2_CLS_SWFWD_PCTRL_MASK bit means that the queue-high
-for eth2 is _always_ 4, so only queues 32 through 39 inclusive are
-available to eth2. Yet, we're trying to tell the classifier to set
-queue-high, which will be ignored, to zero. Hence, the queue-high
-field (MVPP22_CLS_C2_ATTR0_QHIGH()) from the classifier will be
-ignored.
-
-This means we end up directing traffic from eth2 not to queue 1, but
-to queue 33, and then we tell it to look up queue 33 in the RSS table.
-However, RSS table has not been programmed for queue 33, and so it ends
-up (presumably) dropping the packets.
-
-It seems that mvpp22_rss_context_create() doesn't take account of the
-fact that the upper 5 bits of the queue ID can't actually be changed
-due to the settings in mvpp2_cls_oversize_rxq_set(), _or_ it seems that
-mvpp2_cls_oversize_rxq_set() has been missed in this commit. Either
-way, these two functions mutually disagree with what queue number
-should be used.
-
-Looking deeper into what mvpp2_cls_oversize_rxq_set() and the MTU
-validation is doing, it seems that MVPP2_CLS_SWFWD_P2HQ_REG() is used
-for over-sized packets attempting to egress through this port. With
-the classifier having had RSS enabled and directing eth2 traffic to
-queue 1, we may still have packets appearing on queue 32 for this port.
-
-However, the only way we may end up with over-sized packets attempting
-to egress through eth2 - is if the A8040 forwards frames between its
-ports. From what I can see, we don't support that feature, and the
-kernel restricts the egress packet size to the MTU. In any case, if we
-were to attempt to transmit an oversized packet, we have no support in
-the kernel to deal with that appearing in the port's receive queue.
-
-So, this patch attempts to solve the issue by clearing the
-MVPP2_CLS_SWFWD_PCTRL_MASK() bit, allowing MVPP22_CLS_C2_ATTR0_QHIGH()
-from the classifier to define the queue-high field of the queue number.
-
-My testing seems to confirm my findings above - clearing this bit
-means that if I enable rxhash on eth2, the interface can then pass
-traffic, as we are now directing traffic to RX queue 1 rather than
-queue 33. Traffic still seems to work with rxhash off as well.
-
-Reported-by: Matteo Croce <mcroce@redhat.com>
-Tested-by: Matteo Croce <mcroce@redhat.com>
-Fixes: 895586d5dc32 ("net: mvpp2: cls: Use RSS contexts to handle RSS tables")
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Jonathan McDowell <noodles@earth.li>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.c
-index 4344a59c823f..6122057d60c0 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.c
-@@ -1070,7 +1070,7 @@ void mvpp2_cls_oversize_rxq_set(struct mvpp2_port *port)
- 		    (port->first_rxq >> MVPP2_CLS_OVERSIZE_RXQ_LOW_BITS));
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
+index 0d21082ceb93..4d75158c64b2 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
+@@ -318,6 +318,19 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
+ 	/* Enable PTP clock */
+ 	regmap_read(gmac->nss_common, NSS_COMMON_CLK_GATE, &val);
+ 	val |= NSS_COMMON_CLK_GATE_PTP_EN(gmac->id);
++	switch (gmac->phy_mode) {
++	case PHY_INTERFACE_MODE_RGMII:
++		val |= NSS_COMMON_CLK_GATE_RGMII_RX_EN(gmac->id) |
++			NSS_COMMON_CLK_GATE_RGMII_TX_EN(gmac->id);
++		break;
++	case PHY_INTERFACE_MODE_SGMII:
++		val |= NSS_COMMON_CLK_GATE_GMII_RX_EN(gmac->id) |
++				NSS_COMMON_CLK_GATE_GMII_TX_EN(gmac->id);
++		break;
++	default:
++		/* We don't get here; the switch above will have errored out */
++		unreachable();
++	}
+ 	regmap_write(gmac->nss_common, NSS_COMMON_CLK_GATE, val);
  
- 	val = mvpp2_read(port->priv, MVPP2_CLS_SWFWD_PCTRL_REG);
--	val |= MVPP2_CLS_SWFWD_PCTRL_MASK(port->id);
-+	val &= ~MVPP2_CLS_SWFWD_PCTRL_MASK(port->id);
- 	mvpp2_write(port->priv, MVPP2_CLS_SWFWD_PCTRL_REG, val);
- }
- 
+ 	if (gmac->phy_mode == PHY_INTERFACE_MODE_SGMII) {
 -- 
 2.25.1
 
