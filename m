@@ -2,84 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673AF1E5EBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:54:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC581E5EC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388533AbgE1LyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 07:54:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388480AbgE1LyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 07:54:12 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 19208207D3;
-        Thu, 28 May 2020 11:54:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590666851;
-        bh=Jq88qShvPLUl1jSHeV+HkTpQ/DEqP0CcIR4U0/qY5Wc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zSCuC/GdyC1xvDEeZtfH+KztwBTdusP9Jn9Qo081KnVeRTifE5bbwKgpfgvzGSOJB
-         f8Wwi4S/afpXabkNBcAdx3VHGl6PyOmuz8dIWERfvBq/PiUr32VXziW9Ur6rgCOUcG
-         +ZxAYFkTLlaMc9+RxpO/60q0FEId87wu16JU96Do=
-Date:   Thu, 28 May 2020 12:54:08 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Steve Lee <steves.lee@maximintegrated.com>
-Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        ckeepax@opensource.cirrus.com, geert@linux-m68k.org,
-        rf@opensource.wolfsonmicro.com, shumingf@realtek.com,
-        srinivas.kandagatla@linaro.org, krzk@kernel.org, dmurphy@ti.com,
-        jack.yu@realtek.com, nuno.sa@analog.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        ryan.lee.maxim@gmail.com, ryans.lee@maximintegrated.com,
-        steves.lee.maxim@gmail.com
-Subject: Re: [V6 PATCH 2/2] ASoC: max98390: Added Amplifier Driver
-Message-ID: <20200528115408.GA15800@sirena.org.uk>
-References: <20200528103942.17432-1-steves.lee@maximintegrated.com>
+        id S2388608AbgE1Lyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 07:54:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388560AbgE1Lyb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 07:54:31 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFFD1C05BD1E
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 04:54:31 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jeH77-0003bN-PB; Thu, 28 May 2020 13:54:21 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jeH71-00030g-Ky; Thu, 28 May 2020 13:54:15 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        "John W. Linville" <linville@tuxdriver.com>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        David Jander <david@protonic.nl>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
+        Marek Vasut <marex@denx.de>,
+        Christian Herber <christian.herber@nxp.com>,
+        Amit Cohen <amitc@mellanox.com>,
+        Petr Machata <petrm@mellanox.com>
+Subject: [PATCH v2 0/3] Add support for SQI and master-slave
+Date:   Thu, 28 May 2020 13:54:11 +0200
+Message-Id: <20200528115414.11516-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7JfCtLOvnd9MIVvH"
-Content-Disposition: inline
-In-Reply-To: <20200528103942.17432-1-steves.lee@maximintegrated.com>
-X-Cookie: It is your destiny.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch set is extending ethtool to make it more usable on automotive
+PHYs like NXP TJA11XX.
 
---7JfCtLOvnd9MIVvH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+They make use of new KAPI (currently in net-next, will go probably to the
+kernel 5.8-rc1):
+- PHY master-slave role configuration and status informaton. Mostly needed
+  for 100Base-T1 PHYs due the lack of autonegatiation support.
+- Signal Quality Index to investigate cable related issues.
 
-On Thu, May 28, 2020 at 07:39:42PM +0900, Steve Lee wrote:
-> This is the initial amplifier driver for max98390.
+changes v2:
+- add master-slave information to the "ethtool --help" and man page
+- move KAPI update changes to the separate patch. 
 
-Please do not submit new versions of already applied patches, please
-submit incremental updates to the existing code.  Modifying existing
-commits creates problems for other users building on top of those
-commits so it's best practice to only change pubished git commits if
-absolutely essential.
+Oleksij Rempel (3):
+  update UAPI header copies
+  netlink: add master/slave configuration support
+  netlink: add LINKSTATE SQI support
 
-> Reported-by: kbuild test robot <lkp@intel.com>
+ ethtool.8.in                 |  19 ++
+ ethtool.c                    |   1 +
+ netlink/desc-ethtool.c       |   4 +
+ netlink/settings.c           |  66 +++++++
+ uapi/linux/ethtool.h         |  25 ++-
+ uapi/linux/ethtool_netlink.h | 326 +++++++++++++++++++++++++++++++++++
+ uapi/linux/genetlink.h       |   2 +
+ uapi/linux/if_link.h         |   7 +-
+ uapi/linux/net_tstamp.h      |   6 +
+ uapi/linux/netlink.h         | 103 +++++++++++
+ uapi/linux/rtnetlink.h       |   6 +
+ 11 files changed, 561 insertions(+), 4 deletions(-)
 
-Don't think the lkp bot asked for this driver! :P
+-- 
+2.26.2
 
---7JfCtLOvnd9MIVvH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7Ppl8ACgkQJNaLcl1U
-h9D2Cwf/Qy+1GYjYeCfDvjmqMPaI3X7St5/fWnywllbLp9VBVpQfpvVVblIm5kSv
-ar+TVL9TRPLG0Za0y2udP4JxjHivDO+BJRInFTtl+8E2sP81BF+iz0nAjO073vFR
-9+zoiZK+Y0XqH6j7cjFw0XRjkBduft6iQ/X9oeCT6Bhe5o0XTJz9yQO5GVgNvl3g
-hDj5sh+bwDgGblV+LfavnqbzYe1jchiqa9kwFokig7mE6AURsV0XmPgxKig3gCvC
-fXxEwkORlUh3VFAIoSmT7FEI2qqECkrvpPY4KiVuxIlbzJmkJgPwwzgI4n2AcBRu
-VcM7W+rLl8wX4LwTvE6YjNvXWGxssQ==
-=ieAp
------END PGP SIGNATURE-----
-
---7JfCtLOvnd9MIVvH--
