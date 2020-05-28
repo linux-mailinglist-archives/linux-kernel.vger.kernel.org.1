@@ -2,116 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5FFF1E6808
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 19:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A715C1E6830
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 19:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405338AbgE1RDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 13:03:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405249AbgE1RDG (ORCPT
+        id S2405484AbgE1RGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 13:06:21 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:38324 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2405416AbgE1RFn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 13:03:06 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82581C08C5C6;
-        Thu, 28 May 2020 10:03:06 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 36CAE22F00;
-        Thu, 28 May 2020 19:03:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1590685383;
+        Thu, 28 May 2020 13:05:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590685542;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kRkWyHSLP+PL3/CxPz0W0cQ0NOZCetcZm+7o0UT7twM=;
-        b=tbyE9CsEUfcgu9qiNTD4RRHyuT8jaCqXf8fhiMhYakyCflnyrP0+rzLBNxzepbyDYFU9CU
-        QF4t94w/I1IbVDRB5XsmMo7TWtt02BuApwgCcqtFPGXslSpZp/RlloZPIkCUubSAGfWyAm
-        1qI5UU0X5vczZ2464tBCKGymJPCVVeE=
+        bh=02+n8WhlcZn6syAKy48PivTOXkOr7c4aT+4TmC5jGUk=;
+        b=MIkO6Bjs9LMzngDOtpqHiW/GzlGcx8pGV+c9OwF5k9muiT6NE+f0HcEiIylpqR4m/eM4sT
+        enUTAq5e0IGXVx6PRO6xJZRR0bI+hzqY4GzGNfDhKWGCmoXYYIiWYrjybfntYGrYChgi9Z
+        2JOkckjpJ+jrVwbpPeE9FIbXO/uNkgM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-155-VUcco52XOkOg08iPLKepFQ-1; Thu, 28 May 2020 13:05:26 -0400
+X-MC-Unique: VUcco52XOkOg08iPLKepFQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 615F28904C9;
+        Thu, 28 May 2020 17:04:03 +0000 (UTC)
+Received: from treble (ovpn-117-65.rdu2.redhat.com [10.10.117.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F2A3410013DB;
+        Thu, 28 May 2020 17:04:01 +0000 (UTC)
+Date:   Thu, 28 May 2020 12:04:00 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, broonie@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: mmotm 2020-05-13-20-30 uploaded (objtool warnings)
+Message-ID: <20200528170400.cvsdws6k724gu6qs@treble>
+References: <20200514033104.kRFL_ctMQ%akpm@linux-foundation.org>
+ <611fa14d-8d31-796f-b909-686d9ebf84a9@infradead.org>
+ <20200528155409.vv3zzxov7qn4ohna@treble>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 28 May 2020 19:03:02 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v6 2/3] gpio: add a reusable generic gpio_chip using
- regmap
-In-Reply-To: <adb4eba6-c6c4-a403-dead-1951050eec26@linux.intel.com>
-References: <20200528145845.31436-1-michael@walle.cc>
- <20200528145845.31436-3-michael@walle.cc>
- <adb4eba6-c6c4-a403-dead-1951050eec26@linux.intel.com>
-User-Agent: Roundcube Webmail/1.4.4
-Message-ID: <7d281a1e30ea40837ab1a156c561ca6b@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200528155409.vv3zzxov7qn4ohna@treble>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-05-28 17:55, schrieb Pierre-Louis Bossart:
->> +    /* if we have a direction register we need both input and
->> output */
->> +    if ((config->reg_dir_out_base || config->reg_dir_in_base) &&
->> +        (!config->reg_dat_base || !config->reg_set_base))
->> +        return ERR_PTR(-EINVAL);
->  This failed for me since I didn't have the 'dat' base assigned. I
-> still can't figure out what 'dat' stands for...I just assigned it to
-> the same offset as the 'set' base but really don't understand what
-> this is supposed to do.
-
-DAT is the data register, aka input register, if the GPIO is in input
-mode.
-
-If I read the datasheet correctly you should use the following:
-
-PCM512x_GPIO_EN should be reg_dir_out_base
-PCM512x_GPIO_CONTROL_1 should be reg_set_base
-PCM512x_GPIN should be reg_dat_base
-
-no custom xlate necessary. GPIN looks a bit fishy in that datasheet:
-  http://www.ti.com/lit/ds/symlink/pcm5121.pdf?ts=1590684141147
-
-PCM512x_GPIO_OUTPUT_1..6 is pinmux control and shouldn't be part of
-the gpio-regmap. Your driver needs to take care of that.
-
->> +
->> +    /* we don't support having both registers simultaneously for
->> now */
->> +    if (config->reg_dir_out_base && config->reg_dir_in_base)
->> +        return ERR_PTR(-EINVAL);
+On Thu, May 28, 2020 at 10:54:09AM -0500, Josh Poimboeuf wrote:
+> On Thu, May 14, 2020 at 08:32:22AM -0700, Randy Dunlap wrote:
+> > On 5/13/20 8:31 PM, Andrew Morton wrote:
+> > > The mm-of-the-moment snapshot 2020-05-13-20-30 has been uploaded to
+> > > 
+> > >    http://www.ozlabs.org/~akpm/mmotm/
+> > > 
+> > > mmotm-readme.txt says
+> > > 
+> > > README for mm-of-the-moment:
+> > > 
+> > > http://www.ozlabs.org/~akpm/mmotm/
+> > > 
+> > > This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+> > > more than once a week.
+> > > 
+> > > You will need quilt to apply these patches to the latest Linus release (5.x
+> > > or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+> > > http://ozlabs.org/~akpm/mmotm/series
+> > > 
+> > > The file broken-out.tar.gz contains two datestamp files: .DATE and
+> > > .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+> > > followed by the base kernel version against which this patch series is to
+> > > be applied.
+> > 
+> > 
+> > on x86_64:
+> > 
+> > arch/x86/lib/csum-wrappers_64.o: warning: objtool: csum_and_copy_from_user()+0x2a4: call to memset() with UACCESS enabled
+> > arch/x86/lib/csum-wrappers_64.o: warning: objtool: csum_and_copy_to_user()+0x243: return with UACCESS enabled
 > 
-> and this second test seems to contradict the notion of 'both input and
-> output' above?
-
-dir_out_base is used if the register is high active to select an output.
-dir_in_base is used for a low active register. Thus both bases are used
-to switch a GPIO between input and output.
-
-> re-adding comment from previous series:
->  >> I still have a series of odd warnings I didn't have before: >> >>
-> [  101.400263] WARNING: CPU: 3 PID: 1129 at >>
-> drivers/gpio/gpiolib.c:4084 gpiod_set_value+0x3f/0x50 >> >> This seems
-> to come from >>     /* Should be using gpiod_set_value_cansleep() */
->>>     WARN_ON(desc->gdev->chip->can_sleep); > > Right now,
-> gpio-regmap hardcodes can_sleep to true. But the only regmap > which
-> don't sleep is regmap-mmio. The PCM512x seems to be either I2C or >
-> SPI, which can both sleep. So this warning is actually correct and >
-> wherever this gpio is set should do it by calling the _cansleep() >
-> version.
+> Randy,
 > 
-> I still have the warnings with this version, not sure if you wanted to
-> fix it in the v6 or is this needs to be fixed in another piece of
-> code/patch. How would we go about removing this warning?
+> I wasn't able to recreate this one.  If you can still do so, can you
+> share the .o file?
 
-There is no fix in gpio-regmap. wherever this GPIO is connected to must
-not call gpiod_set_value() but have to use gpiod_set_value_cansleep().
+Actually, never mind... user error :-)  Will take a look.
 
--michael
+-- 
+Josh
+
