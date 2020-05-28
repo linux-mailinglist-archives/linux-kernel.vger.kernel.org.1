@@ -2,138 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9501E549D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 05:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C0A71E5464
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 05:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727112AbgE1DXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 23:23:22 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:55764 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727068AbgE1DXR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 23:23:17 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 385F81A0BA1;
-        Thu, 28 May 2020 05:23:16 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 1D1D31A0A6D;
-        Thu, 28 May 2020 05:23:08 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id E725E402FB;
-        Thu, 28 May 2020 11:22:57 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, daniel.baluta@nxp.com,
-        leonard.crestez@nxp.com, peng.fan@nxp.com, aford173@gmail.com,
-        jun.li@nxp.com, shengjiu.wang@nxp.com, horia.geanta@nxp.com,
-        aisheng.dong@nxp.com, fugang.duan@nxp.com, agx@sigxcpu.org,
-        l.stach@pengutronix.de, andrew.smirnov@gmail.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH 4/4] ARM: dts: imx: change iim node name on i.MX SoCs
-Date:   Thu, 28 May 2020 11:12:50 +0800
-Message-Id: <1590635570-8541-5-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1590635570-8541-1-git-send-email-Anson.Huang@nxp.com>
-References: <1590635570-8541-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726921AbgE1DRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 23:17:15 -0400
+Received: from out28-97.mail.aliyun.com ([115.124.28.97]:33075 "EHLO
+        out28-97.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726563AbgE1DRP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 23:17:15 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.2034777|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0142839-7.76422e-05-0.985638;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03309;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.HeebJ-Y_1590635771;
+Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.HeebJ-Y_1590635771)
+          by smtp.aliyun-inc.com(10.147.42.22);
+          Thu, 28 May 2020 11:17:10 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     linux-clk@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        sboyd@kernel.org, mturquette@baylibre.com, robh+dt@kernel.org,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com, paul@crapouillou.net
+Subject: [PATCH v13 0/7] Add support for the X1830 and fix bugs for X1000.
+Date:   Thu, 28 May 2020 11:15:42 +0800
+Message-Id: <20200528031549.13846-1-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.11.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change IIM node name from iim to efuse to be compliant
-with yaml schema, it requires the nodename to be one of
-"eeprom|efuse|nvram".
+v10->v11:
+Split [3/6] in v10 to [3/7] in v11 and [4/7] in v11.
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- arch/arm/boot/dts/imx25.dtsi | 2 +-
- arch/arm/boot/dts/imx27.dtsi | 2 +-
- arch/arm/boot/dts/imx31.dtsi | 2 +-
- arch/arm/boot/dts/imx35.dtsi | 2 +-
- arch/arm/boot/dts/imx51.dtsi | 2 +-
- arch/arm/boot/dts/imx53.dtsi | 2 +-
- 6 files changed, 6 insertions(+), 6 deletions(-)
+v11->v12:
+Use "CLK_OF_DECLARE_DRIVER" instead "CLK_OF_DECLARE",
+this modification was mentioned in the comments, but
+did not really exist in the patch.
+Reported-by: Paul Cercueil <paul@crapouillou.net>
 
-diff --git a/arch/arm/boot/dts/imx25.dtsi b/arch/arm/boot/dts/imx25.dtsi
-index 1123e683..4eaf4eb 100644
---- a/arch/arm/boot/dts/imx25.dtsi
-+++ b/arch/arm/boot/dts/imx25.dtsi
-@@ -542,7 +542,7 @@
- 				interrupts = <26>;
- 			};
- 
--			iim: iim@53ff0000 {
-+			iim: efuse@53ff0000 {
- 				compatible = "fsl,imx25-iim", "fsl,imx27-iim";
- 				reg = <0x53ff0000 0x4000>;
- 				interrupts = <19>;
-diff --git a/arch/arm/boot/dts/imx27.dtsi b/arch/arm/boot/dts/imx27.dtsi
-index 002cd22..ee04771 100644
---- a/arch/arm/boot/dts/imx27.dtsi
-+++ b/arch/arm/boot/dts/imx27.dtsi
-@@ -540,7 +540,7 @@
- 				#clock-cells = <1>;
- 			};
- 
--			iim: iim@10028000 {
-+			iim: efuse@10028000 {
- 				compatible = "fsl,imx27-iim";
- 				reg = <0x10028000 0x1000>;
- 				interrupts = <62>;
-diff --git a/arch/arm/boot/dts/imx31.dtsi b/arch/arm/boot/dts/imx31.dtsi
-index 18270ec..4f3d7ab 100644
---- a/arch/arm/boot/dts/imx31.dtsi
-+++ b/arch/arm/boot/dts/imx31.dtsi
-@@ -217,7 +217,7 @@
- 				status = "disabled";
- 			};
- 
--			iim: iim@5001c000 {
-+			iim: efuse@5001c000 {
- 				compatible = "fsl,imx31-iim", "fsl,imx27-iim";
- 				reg = <0x5001c000 0x1000>;
- 				interrupts = <19>;
-diff --git a/arch/arm/boot/dts/imx35.dtsi b/arch/arm/boot/dts/imx35.dtsi
-index 2ebf2c1..502112b 100644
---- a/arch/arm/boot/dts/imx35.dtsi
-+++ b/arch/arm/boot/dts/imx35.dtsi
-@@ -320,7 +320,7 @@
- 				status = "disabled";
- 			};
- 
--			iim@53ff0000 {
-+			efuse@53ff0000 {
- 				compatible = "fsl,imx35-iim";
- 				reg = <0x53ff0000 0x4000>;
- 				interrupts = <19>;
-diff --git a/arch/arm/boot/dts/imx51.dtsi b/arch/arm/boot/dts/imx51.dtsi
-index d3583aa..c83bc77 100644
---- a/arch/arm/boot/dts/imx51.dtsi
-+++ b/arch/arm/boot/dts/imx51.dtsi
-@@ -466,7 +466,7 @@
- 				reg = <0x83f00000 0x60>;
- 			};
- 
--			iim: iim@83f98000 {
-+			iim: efuse@83f98000 {
- 				compatible = "fsl,imx51-iim", "fsl,imx27-iim";
- 				reg = <0x83f98000 0x4000>;
- 				interrupts = <69>;
-diff --git a/arch/arm/boot/dts/imx53.dtsi b/arch/arm/boot/dts/imx53.dtsi
-index afa57bf..ed6b0c8 100644
---- a/arch/arm/boot/dts/imx53.dtsi
-+++ b/arch/arm/boot/dts/imx53.dtsi
-@@ -667,7 +667,7 @@
- 				reg = <0x63f00000 0x60>;
- 			};
- 
--			iim: iim@63f98000 {
-+			iim: efuse@63f98000 {
- 				compatible = "fsl,imx53-iim", "fsl,imx27-iim";
- 				reg = <0x63f98000 0x4000>;
- 				interrupts = <69>;
+v12->v13:
+1.Add Rob Herring's Acked-by for [4/7].
+2.Add "#include <linux/io.h>" for writel/readl.
+3.Add a comment on why use "CLK_OF_DECLARE_DRIVER()".
+  Suggested-by: Stephen Boyd <sboyd@kernel.org>
+
+周琰杰 (Zhou Yanjie) (7):
+  clk: Ingenic: Remove unnecessary spinlock when reading registers.
+  clk: Ingenic: Adjust cgu code to make it compatible with X1830.
+  dt-bindings: clock: Add documentation for X1830 bindings.
+  dt-bindings: clock: Add X1830 clock bindings.
+  clk: Ingenic: Add CGU driver for X1830.
+  dt-bindings: clock: Add and reorder ABI for X1000.
+  clk: X1000: Add FIXDIV for SSI clock of X1000.
+
+ .../devicetree/bindings/clock/ingenic,cgu.yaml     |   2 +
+ drivers/clk/ingenic/Kconfig                        |  10 +
+ drivers/clk/ingenic/Makefile                       |   1 +
+ drivers/clk/ingenic/cgu.c                          |  28 +-
+ drivers/clk/ingenic/cgu.h                          |   4 +
+ drivers/clk/ingenic/jz4725b-cgu.c                  |   4 +
+ drivers/clk/ingenic/jz4740-cgu.c                   |   4 +
+ drivers/clk/ingenic/jz4770-cgu.c                   |   8 +-
+ drivers/clk/ingenic/jz4780-cgu.c                   |   3 +
+ drivers/clk/ingenic/x1000-cgu.c                    | 123 +++++-
+ drivers/clk/ingenic/x1830-cgu.c                    | 448 +++++++++++++++++++++
+ include/dt-bindings/clock/x1000-cgu.h              |  64 +--
+ include/dt-bindings/clock/x1830-cgu.h              |  55 +++
+ 13 files changed, 705 insertions(+), 49 deletions(-)
+ create mode 100644 drivers/clk/ingenic/x1830-cgu.c
+ create mode 100644 include/dt-bindings/clock/x1830-cgu.h
+
 -- 
-2.7.4
+2.11.0
 
