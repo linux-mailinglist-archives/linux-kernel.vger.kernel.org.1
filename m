@@ -2,98 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F4D1E5A04
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 09:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DECBA1E59FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 09:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726931AbgE1H7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 03:59:20 -0400
-Received: from mga02.intel.com ([134.134.136.20]:17342 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726906AbgE1H7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 03:59:18 -0400
-IronPort-SDR: LSSGo7e/mPDd8n8AS1G+2RUx0fBRHEfIMKWQAPI055ZE/1GTD8zAwfxNVI1Hh75uPQpro+LDjF
- 0ZBbsSjs8B0A==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 00:59:17 -0700
-IronPort-SDR: uA22schnODGB7VawxSgXdwQGKqWAhOhJSX5RxNNbBbG+fSzWFNyhKwNzshopI4FYwfwrCCYHI4
- Hs9kZ2TSoGIw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,444,1583222400"; 
-   d="scan'208";a="469029754"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.157]) ([10.237.72.157])
-  by fmsmga005.fm.intel.com with ESMTP; 28 May 2020 00:59:07 -0700
-Subject: Re: [PATCH V7 04/15] kprobes: Add perf ksymbol events for kprobe insn
- pages
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>, Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel@vger.kernel.org
-References: <20200512121922.8997-1-adrian.hunter@intel.com>
- <20200512121922.8997-5-adrian.hunter@intel.com>
- <20200527161732.GA706495@hirez.programming.kicks-ass.net>
- <20200527172011.GA706518@hirez.programming.kicks-ass.net>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <b9609bc3-2aee-9bf3-87bf-38a8f3d60eee@intel.com>
-Date:   Thu, 28 May 2020 10:58:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726893AbgE1H7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 03:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726857AbgE1H7I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 03:59:08 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AAEBC08C5C2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 00:59:08 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id u26so3910845wmn.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 00:59:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=/k5PRZqrTr/okP/ue5AUSy+6fHt8kWqrhC3KChUGYlE=;
+        b=f06X9bMILNGRerqSPyRUBylhnUHAyyk+VuMHZxYr8BmHOkV+aOhGS6lYLatqUsg+FJ
+         WzjMl+sMuJI1Ujrzqb7qyecJzbgkPUhnMiF/L7hBH7q7OTRT8FUNnWdprgqB0UjHHGZB
+         vt8agbDswCGjrwcKoQ2ljNeDVpcm0ungs40XB6jhy1imuPjrQwd+sNa8vvCONPO/Ebin
+         2N0PRzBff5aOD/2LydaK2zdYgRfbUjU7zNeel6H7CNfIjuNS50fUpSfdaNgfc4tJHZwE
+         trBjlHiEgpJJIqKjaWgaxrRBklrYlozg05PtTAxG6wNyEst0R2oMn1mP4a5E/ZkTFw1s
+         Yc3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=/k5PRZqrTr/okP/ue5AUSy+6fHt8kWqrhC3KChUGYlE=;
+        b=k20Eh4jrZBbMwXPucQ9QVutq0QmSzIIKOqikcQmZyd/19I0G2d56Ln+SDBkjxmgQ1X
+         +8WIJImQzjRx80H/pu7q+sCtMdVYCHD9kRXeqTQnSaddXkZsNpyCvUs5Mis3bN9ge/Al
+         u1mdCqDAvIq0ibz9yX+5a+IX1Qk1obHLKuE0bDM8+xNvP8N8IqYVJKe7O/FK++lpITil
+         X9K7XfMzeQyHeaGgrwijs6ERKUlEuBpxBTJOjn+64jDii6yFf4G9DVC76K+Ip8KJ4sxj
+         qvA9QmwFpKmubcEAhEVlPKpjaKiTjVy51shJyPzp8SrzhwAj6advyK/EJMZLuWoAUOnU
+         JQOA==
+X-Gm-Message-State: AOAM533xMCksi7JfZIWuN9k5zfALxHlBkW/Ka4h9f6tsFhBbeQKAuSq2
+        kL92wlTUDvoU/DFlqJW0vLe0mg==
+X-Google-Smtp-Source: ABdhPJz8hbY7QI6ZmAP07xr1w3ABtn59eI5lHeeg/9O0ZaDlaJSV/s26Z5yge3qDhTRGa+y8nI6ePg==
+X-Received: by 2002:a1c:810a:: with SMTP id c10mr2106423wmd.107.1590652746531;
+        Thu, 28 May 2020 00:59:06 -0700 (PDT)
+Received: from google.com ([100.105.32.75])
+        by smtp.gmail.com with ESMTPSA id d13sm5375172wmb.39.2020.05.28.00.59.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 00:59:05 -0700 (PDT)
+Date:   Thu, 28 May 2020 09:59:00 +0200
+From:   Marco Elver <elver@google.com>
+To:     Borislav Petkov <bp@suse.de>
+Cc:     kbuild test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-sparse@vger.kernel.org, luc.vanoostenryck@gmail.com,
+        arnd@arndb.de, will@kernel.org
+Subject: Re: [tip:locking/kcsan 12/12] /bin/bash: line 1: 61526 Segmentation
+ fault  sparse ...
+Message-ID: <20200528075900.GA236442@google.com>
+References: <202005280727.lXn1VnTw%lkp@intel.com>
+ <20200527235442.GC1805@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <20200527172011.GA706518@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200527235442.GC1805@zn.tnic>
+User-Agent: Mutt/1.13.2 (2019-12-18)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/05/20 8:20 pm, Peter Zijlstra wrote:
-> On Wed, May 27, 2020 at 06:17:32PM +0200, Peter Zijlstra wrote:
->> On Tue, May 12, 2020 at 03:19:11PM +0300, Adrian Hunter wrote:
->>> @@ -202,6 +207,13 @@ static int collect_one_slot(struct kprobe_insn_page *kip, int idx)
->>>  		 * next time somebody inserts a probe.
->>>  		 */
->>>  		if (!list_is_singular(&kip->list)) {
->>> +			/*
->>> +			 * Record perf ksymbol unregister event before removing
->>> +			 * the page.
->>> +			 */
->>> +			perf_event_ksymbol(PERF_RECORD_KSYMBOL_TYPE_OOL,
->>> +					   (u64)kip->insns, PAGE_SIZE, true,
->>> +					   kip->cache->sym);
->>>  			list_del_rcu(&kip->list);
->>>  			synchronize_rcu();
->>>  			kip->cache->free(kip->insns);
->>
->> My manual build script haz complaints:
->>
->> i386-defconfig  ../kernel/kprobes.c: In function ‘__get_insn_slot’:
->> ../kernel/kprobes.c:190:51: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
->> perf_event_ksymbol(PERF_RECORD_KSYMBOL_TYPE_OOL, (u64)kip->insns,
->> ^
->> ../kernel/kprobes.c: In function ‘collect_one_slot’:
->> ../kernel/kprobes.c:215:9: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
->> (u64)kip->insns, PAGE_SIZE, true,
->> ^
->> FAIL
->>
->>
->> Now, there's a ton of such warnings elsewhere in the tree, but still I
->> feel we should perhaps strive for a clean build.
-> 
-> Fixed those for you. On to cross-builds... :/
-> 
+On Thu, 28 May 2020, Borislav Petkov wrote:
 
-Thank you!
+> On Thu, May 28, 2020 at 07:39:31AM +0800, kbuild test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git loc=
+king/kcsan
+> > head:   a5dead405f6be1fb80555bdcb77c406bf133fdc8
+> > commit: a5dead405f6be1fb80555bdcb77c406bf133fdc8 [12/12] compiler_types=
+=2Eh: Optimize __unqual_scalar_typeof compilation time
+> > config: i386-randconfig-s002-20200527 (attached as .config)
+> > compiler: gcc-9 (Debian 9.3.0-13) 9.3.0
+> > reproduce:
+> >         # apt-get install sparse
+> >         # sparse version: v0.6.1-240-gf0fe1cd9-dirty
+> >         git checkout a5dead405f6be1fb80555bdcb77c406bf133fdc8
+> >         # save the attached .config to linux build tree
+> >         make W=3D1 C=3D1 ARCH=3Di386 CF=3D'-fdiagnostic-prefix -D__CHEC=
+K_ENDIAN__'
+> >=20
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kbuild test robot <lkp@intel.com>
+> >=20
+> > All errors (new ones prefixed by >>, old ones prefixed by <<):
+>=20
+> I'll say.
+>=20
+> Looking at the subject, that broke the 0day bot too. :-)
+>=20
+> /me trims it.
+>=20
+> Looks like we need __CHECKER__ ifdeffery somewhere but it is too late
+> for me to think straight so tomorrow...
+
+Ouch. The below should be all we need, assuming it's the best we can do
+for sparse right now.
+
+Thanks,
+-- Marco
+
+------ >8 ------
+
+=46rom: Marco Elver <elver@google.com>
+Date: Thu, 28 May 2020 09:43:13 +0200
+Subject: [PATCH] compiler_types.h: Use unoptimized __unqual_scalar_typeof f=
+or
+ sparse
+
+If the file is being checked with sparse, use the unoptimized version of
+__unqual_scalar_typeof(), since sparse does not support _Generic.
+
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Marco Elver <elver@google.com>
+---
+ include/linux/compiler_types.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index a529fa263906..c1ee20812a8c 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -246,7 +246,7 @@ struct ftrace_likely_data {
+  * __unqual_scalar_typeof(x) - Declare an unqualified scalar type, leaving
+  *			       non-scalar types unchanged.
+  */
+-#if defined(CONFIG_CC_IS_GCC) && CONFIG_GCC_VERSION < 40900
++#if (defined(CONFIG_CC_IS_GCC) && CONFIG_GCC_VERSION < 40900) || defined(_=
+_CHECKER__)
+ /*
+  * We build this out of a couple of helper macros in a vain attempt to
+  * help you keep your lunch down while reading it.
+--=20
+2.27.0.rc0.183.gde8f92d652-goog
+
