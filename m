@@ -2,106 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC561E5BC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 11:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B782E1E5BC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 11:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728298AbgE1JWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 05:22:55 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:54718 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728264AbgE1JWy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 05:22:54 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04S9MmsX130695;
-        Thu, 28 May 2020 04:22:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1590657768;
-        bh=/Wdo0if7NVPAlofWxugu+NvYgar4E2L7mukGEI+7YkA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=WXdtZJBV1eqGnMZaIRytmy8jZXYyuT1gaWy/IN+RuWc7/ylU2HKeyTpMb28wziMF9
-         tywXTeptrDPyFOvJIA++2kjjW2nW+EC52mylyNx1XteJdbkAN+UFKjy+zQa0k9PXSV
-         1+J0zOP53GfHov1eVqh9nOrpvArsB21InxiVnd8E=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04S9MmIO001252
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 28 May 2020 04:22:48 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 28
- May 2020 04:22:48 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 28 May 2020 04:22:48 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04S9MeUk095917;
-        Thu, 28 May 2020 04:22:41 -0500
-Subject: Re: [PATCHv2] media: videobuf2-dma-contig: fix bad kfree in
- vb2_dma_contig_clear_max_seg_size
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "# 4.0+" <stable@vger.kernel.org>
-References: <20200527082334.20774-1-tomi.valkeinen@ti.com>
- <CAPDyKFqRa81q9EYFKB52kr6+EPJBK5u+4_hC0+ZnxU_axbxAZQ@mail.gmail.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
-Message-ID: <77572269-ca18-acd4-89c6-ca4145ed29db@ti.com>
-Date:   Thu, 28 May 2020 12:22:35 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1728370AbgE1JY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 05:24:26 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:27467 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728356AbgE1JYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 05:24:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590657863; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=iMb1wbf6uPwfZB8sG11hmQ4ZThGw/6wXcct0WODPnkE=; b=kd5gft2wuaGl5YDZOnIVjGnKOWMyaux1nEW94nqkwBW0Q1iAffB4mFKeQAdKaHLHgkLV8E/i
+ 4QgNko7If2RDDGY86jo57vShkcEv6bduPncYCQ9vy0QLXvBxp+/dJUNHGEN0xFZHdXcqHgc8
+ SA0qcSkzreswdKKVOOB0eogKRrk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5ecf8344c6d4683243ce189d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 May 2020 09:24:20
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9D2DFC43391; Thu, 28 May 2020 09:24:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.206.24.160] (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sanm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0BCF3C433C9;
+        Thu, 28 May 2020 09:24:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0BCF3C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sanm@codeaurora.org
+Subject: Re: [PATCH v7 2/4] usb: dwc3: qcom: Add interconnect support in dwc3
+ driver
+To:     Felipe Balbi <balbi@kernel.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Matthias Kaehlcke <mka@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Chandana Kishori Chiluveru <cchiluve@codeaurora.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+References: <1585718145-29537-1-git-send-email-sanm@codeaurora.org>
+ <1585718145-29537-3-git-send-email-sanm@codeaurora.org>
+ <878shu4uwk.fsf@kernel.org> <875zcy4uuj.fsf@kernel.org>
+ <20200514171352.GP4525@google.com>
+ <abbc3f8c-c8c9-c189-735e-f8058dab3e40@linaro.org> <87tv0h3fpv.fsf@kernel.org>
+ <090e48d7-7988-eea1-bf39-f6820578d354@linaro.org> <87r1vl3e42.fsf@kernel.org>
+ <20200518183512.GE2165@builder.lan>
+ <b20775ba-7870-b0ca-7c65-d72a08fdacb2@codeaurora.org>
+ <0723aee9-9ea4-dab5-e083-3cf3858a8f96@linaro.org> <871rn63orz.fsf@kernel.org>
+From:   "Sandeep Maheswaram (Temp)" <sanm@codeaurora.org>
+Message-ID: <158003c3-6d8a-52c2-cfd6-3904ac7376c5@codeaurora.org>
+Date:   Thu, 28 May 2020 14:54:12 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFqRa81q9EYFKB52kr6+EPJBK5u+4_hC0+ZnxU_axbxAZQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <871rn63orz.fsf@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/05/2020 12:14, Ulf Hansson wrote:
-> On Wed, 27 May 2020 at 10:23, Tomi Valkeinen <tomi.valkeinen@ti.com> wrote:
->>
->> Commit 9495b7e92f716ab2bd6814fab5e97ab4a39adfdd ("driver core: platform:
->> Initialize dma_parms for platform devices") in v5.7-rc5 causes
->> vb2_dma_contig_clear_max_seg_size() to kfree memory that was not
->> allocated by vb2_dma_contig_set_max_seg_size().
->>
->> The assumption in vb2_dma_contig_set_max_seg_size() seems to be that
->> dev->dma_parms is always NULL when the driver is probed, and the case
->> where dev->dma_parms has bee initialized by someone else than the driver
->> (by calling vb2_dma_contig_set_max_seg_size) will cause a failure.
->>
->> All the current users of these functions are platform devices, which now
->> always have dma_parms set by the driver core. To fix the issue for v5.7,
->> make vb2_dma_contig_set_max_seg_size() return an error if dma_parms is
->> NULL to be on the safe side, and remove the kfree code from
->> vb2_dma_contig_clear_max_seg_size().
->>
->> For v5.8 we should remove the two functions and move the
->> dma_set_max_seg_size() calls into the drivers.
->>
->> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
->> Fixes: 9495b7e92f71 ("driver core: platform: Initialize dma_parms for platform devices")
->> Cc: stable@vger.kernel.org
-> 
-> Thanks for fixing this!
-> 
-> However, as I tried to point out in v1, don't you need to care about
-> drivers/media/platform/s5p-mfc/s5p_mfc.c, which allocates its own type
-> of struct device (non-platform). No?
 
-Oh my bad. I thought Marek posted a patch for it, but now that I look, Marek's patch was for 
-ExynosDRM. Somehow I managed to mix up that with the s5p in my head.
+On 5/26/2020 5:13 PM, Felipe Balbi wrote:
+> Hi,
+>
+> Georgi Djakov <georgi.djakov@linaro.org> writes:
+>> On 26.05.20 14:04, Sandeep Maheswaram (Temp) wrote:
+>>> Hi Felipe,
+>>>
+>>> Please let me know how to go forward with this patch
+> (don't top-post!)
+>
+>> Please just add a patch to fix the allmodconfig error. Felipe has
+>> suggested to introduce a separate patch which exports the
+>> device_is_bound() function. This export should precede the addition
+>> of interconnect support.
+>>
+>> Also regarding the "depends on INTERCONNECT || !INTERCONNECT" change,
+>> no "depends on" would be needed, as we just made the interconnect
+>> framework bool.
+> y'all have lost the current merge window, I guess. I'm not sure Greg
+> will take last minute changes to drivers base and I have already sent
+> him my pull request for v5.8. On the plus side, this gives you the
+> chance to run hundreds of randbuilds with your patches.
+Hi  Georgi,
 
-I'll try to find time to look at s5p too, but if anyone gets there first, feel free to fix it.
-
-  Tomi
+I am assuming that the patch which exports the device_is_bound() function will solve the allmodconfig error.
+Or do i need to change anything in dwc3 driver?
 
 -- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+
