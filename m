@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDBF81E64E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF751E64EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403847AbgE1O4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 10:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46256 "EHLO
+        id S2403887AbgE1O4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 10:56:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403786AbgE1O4N (ORCPT
+        with ESMTP id S2403813AbgE1O4O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 10:56:13 -0400
+        Thu, 28 May 2020 10:56:14 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50BAC08C5C6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 07:56:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C3FC08C5C6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 07:56:14 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jeJx4-0002Q5-Ub; Thu, 28 May 2020 16:56:11 +0200
+        id 1jeJx6-0002QG-PO; Thu, 28 May 2020 16:56:13 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 75C61FF834;
-        Thu, 28 May 2020 16:56:10 +0200 (CEST)
-Message-Id: <20200528145522.715816477@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id AD680FF834;
+        Thu, 28 May 2020 16:56:11 +0200 (CEST)
+Message-Id: <20200528145522.807135882@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Thu, 28 May 2020 16:53:16 +0200
+Date:   Thu, 28 May 2020 16:53:17 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org
-Subject: [patch 1/5] x86/idt: Mark init only functions __init
+Subject: [patch 2/5] x86/idt: Add comments about early #PF handling
 References: <20200528145315.727724091@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,33 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since 8175cfbbbfcb ("x86/idt: Remove update_intr_gate()") set_intr_gate()
-and idt_setup_from_table() are only called from __init functions. Mark them
-as well.
+The difference between 32 and 64 bit vs. early #PF handling is not
+documented. Replace the FIXME at idt_setup_early_pf() with proper comments.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/kernel/idt.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/kernel/idt.c |   10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
 --- a/arch/x86/kernel/idt.c
 +++ b/arch/x86/kernel/idt.c
-@@ -217,7 +217,7 @@ static inline void idt_init_desc(gate_de
+@@ -61,7 +61,11 @@ static bool idt_setup_done __initdata;
+ static const __initconst struct idt_data early_idts[] = {
+ 	INTG(X86_TRAP_DB,		asm_exc_debug),
+ 	SYSG(X86_TRAP_BP,		asm_exc_int3),
++
+ #ifdef CONFIG_X86_32
++	/*
++	 * Not possible on 64-bit. See idt_setup_early_pf() for details.
++	 */
+ 	INTG(X86_TRAP_PF,		asm_exc_page_fault),
  #endif
- }
- 
--static void
-+static __init void
- idt_setup_from_table(gate_desc *idt, const struct idt_data *t, int size, bool sys)
+ };
+@@ -276,8 +280,10 @@ void __init idt_setup_traps(void)
+  * cpu_init() is invoked and sets up TSS. The IST variant is installed
+  * after that.
+  *
+- * FIXME: Why is 32bit and 64bit installing the PF handler at different
+- * places in the early setup code?
++ * Note, that X86_64 cannot install the real #PF handler in
++ * idt_setup_early_traps() because the memory intialization needs the #PF
++ * handler from the early_idt_handler_array to initialize the early page
++ * tables.
+  */
+ void __init idt_setup_early_pf(void)
  {
- 	gate_desc desc;
-@@ -230,7 +230,7 @@ idt_setup_from_table(gate_desc *idt, con
- 	}
- }
- 
--static void set_intr_gate(unsigned int n, const void *addr)
-+static __init void set_intr_gate(unsigned int n, const void *addr)
- {
- 	struct idt_data data;
- 
 
