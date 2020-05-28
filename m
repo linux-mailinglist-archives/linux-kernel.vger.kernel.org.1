@@ -2,82 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190FF1E7000
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 01:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E46C1E7004
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 01:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391528AbgE1XFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 19:05:54 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:41507 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391479AbgE1XFw (ORCPT
+        id S2391554AbgE1XGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 19:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391546AbgE1XGG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 19:05:52 -0400
-Received: by mail-il1-f195.google.com with SMTP id d1so645842ila.8;
-        Thu, 28 May 2020 16:05:50 -0700 (PDT)
+        Thu, 28 May 2020 19:06:06 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B081FC08C5C6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 16:06:06 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id 17so685365ilj.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 16:06:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g6efeBhEA8jJzf2TongZsZb2kdgbZpcm87yBeRzV8Z8=;
+        b=rNkIsmkictXvRJP/m/oj5PkfPXtaolbz1ryoC1zATCnLBUUI6doLG4GjZQ5Oqin+ND
+         kqCsQaCtltq+o8tYNedwZnMOEJB9/Rkv0mDb3xn7SbluKABQUp/CmhITSLBs9/F2PGjb
+         HKvFBCSHtE4RBUXW+mPDQKbpmqw8UoVwjJDrSPxB0VHKK4N8k8HLp1I84IVB4Hrp3BVb
+         C+/aINZdwV3wbbbK3gNEC21VyUhoNWV2tjEgiJqeTGeYYe+ErxdI+dACy84Jpe/mJk61
+         P3uj+TjDOdl4DaV+nbrt6knNeAhH+ReGlZmaeE64xKQAYAGAOzX+K5v/WyN1cCm5dBH5
+         40uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VvqN/oDoNwzvlnZA88yP5/utg3xHmVNHiIF/avCzb2Y=;
-        b=i5z5pxbXKN0cw2vy/K4G2vwlvhQSdFkUr+Enx2rnKciH6tvVgbBTBeFRR+Z6YOnr9F
-         EzpAeO+03s6kVLbZg+wU4XY+TqyB1SfUjEWtGcMobGHr5mdQLLEhryO047hwTPRabRKP
-         +ESSClDyXl2GVBXjx3AppbR/LBXT100tzVc67nVzbiCah+DnASiatKLS0rIuYCugvtHV
-         QxoM0Uc4VKKxsftGSkmfn6vxLkWTwroRsegKaj74OGSn1CBmtNJKozvW2tyTVfeLWUTp
-         BVqKX5Yisd8ejvz3ENp47xbC9qKf79dike5uQv4pbOTNhvEwkoealX1IwpJfU+gxvVFA
-         qFRQ==
-X-Gm-Message-State: AOAM532xvXnjePifeEWsNKSAX0obZhesHICeabSrWJiGJ3Pbsy+NKSGh
-        cnRkNytw+YEPlY0F0Zi1gA==
-X-Google-Smtp-Source: ABdhPJxg3gvRTZK70YFNM+YsMmqVV2mj9HEEcnLZ9Kt/WJ5NGd+pc/Uoe3VuIvw2K5r5oGukL7Vfig==
-X-Received: by 2002:a92:c88b:: with SMTP id w11mr4796589ilo.244.1590707150647;
-        Thu, 28 May 2020 16:05:50 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id f9sm3930037ile.39.2020.05.28.16.05.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 16:05:49 -0700 (PDT)
-Received: (nullmailer pid 845762 invoked by uid 1000);
-        Thu, 28 May 2020 23:05:48 -0000
-Date:   Thu, 28 May 2020 17:05:48 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Lubomir Rintel <lkundrak@v3.sk>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        devicetree@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Jason Cooper <jason@lakedaemon.net>
-Subject: Re: [PATCH v2 9/9] dt-bindings: usb: Convert ehci-mv to json-schema
-Message-ID: <20200528230548.GA845704@bogus>
-References: <20200521091356.2211020-1-lkundrak@v3.sk>
- <20200521091356.2211020-10-lkundrak@v3.sk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g6efeBhEA8jJzf2TongZsZb2kdgbZpcm87yBeRzV8Z8=;
+        b=YxAd21IgkyY6GYSJmOuev2WUUWMaL0eYaXu53WAChER7p1GP1Um0DhximaTwDRsZCG
+         cYfrJtgz8zqzUEBFoFA3ngrULqQBalp7lhd0kgAvHggS5J03B0+Pe211Ik68W2ZNOyc7
+         MgwzT4YFlbCBN+rzwr+vbNbTG/Jh3KfLfjp9WEzLq7l3XZBciqHTlP7mgi3R0tr2P9cR
+         EjePLRXaOkuoWU4VcMMwGO0hRcKFfHvUaS+HGqhHUGchVGpbR/52AdgZjHXAnUWBx/Hq
+         A93e8/bD5QVT0XCPnQzKudReGA3i+ouDnyNDoumNBGrmaGOqc0oYa5FP1o+IAHIvccsi
+         kRcQ==
+X-Gm-Message-State: AOAM533fCnf9Dulw/8sOXD6ZOpY9lAEvWxc0w1+ZbWhFo3s/9qKfdwug
+        aQXrtERRnQjJmyOx0wWwd3kiabz5PDQCTc4shGU=
+X-Google-Smtp-Source: ABdhPJxsDKPL8OE4rF6BZY8g3R4IgYZUEAO5LFnxqpeLJ2NPmbF/1ODG+oBo0rAq3gPNE5J7O3gtLYv+qofEmCkJsX4=
+X-Received: by 2002:a92:c8d1:: with SMTP id c17mr4806716ilq.308.1590707166189;
+ Thu, 28 May 2020 16:06:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200521091356.2211020-10-lkundrak@v3.sk>
+References: <20200528201937.038455891@infradead.org> <CAJhGHyCua-oTww9U26CJvfojxdfQGewH1T-JUro7gLKucT2+kw@mail.gmail.com>
+ <20200528224835.GU2483@worktop.programming.kicks-ass.net>
+In-Reply-To: <20200528224835.GU2483@worktop.programming.kicks-ass.net>
+From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Date:   Fri, 29 May 2020 07:05:54 +0800
+Message-ID: <CAJhGHyAZVVyQx_3gEtcxF_NaOov4=oR9kN4qO4FAR==hTNa+4Q@mail.gmail.com>
+Subject: Re: [PATCH 0/6] x86/entry: disallow #DB more
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@amacapital.net>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        andrew.cooper3@citrix.com, daniel.thompson@linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 May 2020 11:13:56 +0200, Lubomir Rintel wrote:
-> A straightforward conversion of the ehci-mv binding to DT schema format
-> using json-schema.
-> 
-> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
-> 
-> ---
-> Changes since v1:
-> - s/GPL-2.0-or-later/GPL-2.0-only/
-> 
->  .../devicetree/bindings/usb/ehci-mv.txt       | 23 -------
->  .../bindings/usb/marvell,pxau2o-ehci.yaml     | 60 +++++++++++++++++++
->  2 files changed, 60 insertions(+), 23 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/usb/ehci-mv.txt
->  create mode 100644 Documentation/devicetree/bindings/usb/marvell,pxau2o-ehci.yaml
-> 
+On Fri, May 29, 2020 at 6:48 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Fri, May 29, 2020 at 06:42:46AM +0800, Lai Jiangshan wrote:
+> > On Fri, May 29, 2020 at 4:25 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > These patches disallow #DB during NMI/#MC and allow removing a lot of fugly code.
+> > >
+> >
+> > Hello
+> >
+> > Will #DB be allowed in #DF?
+>
+> No, that whole thing is noinstr.
 
-Applied, thanks!
+But it calls many functions, including die(), panic().
+We don't want #DB to interfere how it die() and panic().
+Since it is in fragile #DF, the #DB may mess it up and
+make #DF fails to report and die.
