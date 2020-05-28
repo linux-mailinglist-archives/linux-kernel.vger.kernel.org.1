@@ -2,99 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC68D1E66E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 438871E66B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404832AbgE1PzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 11:55:25 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:51923 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404654AbgE1PzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 11:55:15 -0400
-X-Greylist: delayed 431 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 May 2020 11:55:14 EDT
-IronPort-SDR: ju0s3cShC548PVB0OFvt3B1Fc0gbVAl0k1p7+rfUk+DmeMA7RbHCHHzs7GnluNPf+DWNeWSTlH
- sKGVLoBDbvNaXuO4C4+rgqj3GGaweNazLeqp63Bpa4kLVzdl8je3Y8YIdTirQ8MNoU3xUQ1pKu
- AbgsDZyaGyeBgw5sRBAWVkmjdHASJK6fUuWysldp4G5F16BntA36+eNdq1Lpe/QtSyXYiNAk67
- r6K1/2RM8fUZLQbszihlFowdzT90Ms/NaSP/OfSu+ob4FDfSpxS25dkmICZVpcbvCNPeUGUpNj
- QwU=
-X-IronPort-AV: E=Sophos;i="5.73,445,1583190000"; 
-   d="scan'208";a="12467472"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 28 May 2020 17:48:01 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Thu, 28 May 2020 17:48:01 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Thu, 28 May 2020 17:48:01 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1590680881; x=1622216881;
-  h=from:to:cc:subject:date:message-id;
-  bh=Sw9zOSroZ9SJ13/VWfo6J3/CTkEe0YQ1ov3hXyiqHjU=;
-  b=o6VEYz6g2+uUCIm6pOwgrfz/+MQTuWCV+uE3fh0ueXURKM7vqkTT8p5l
-   39F1FyW06A7/wLOkN+fTggsyCXKENzJs4bqLpHhM19nzszD3NnIc6O/Nm
-   PcBl2zma1DqO1Bassg/NG89dUJNARNtjmJ7G89IPyFD7R6JYDegFdSUe3
-   FGQvgYDuxq1DOdVcQ58VEw38iRe6+KQxL2wpMOhdJ3P5ePGILrMkMgT/O
-   EFexqVCSgiI0G/JzSsrl+NOolvGWetWesUBh4fl9nd3bTr1DyBGDHL1nP
-   ZU4qNp4qs+X3TBLlBehL9i+X92JLq6Z5fwwdff8cKJNM8UirEwf6FNVD9
-   g==;
-IronPort-SDR: RrXTpHqHWtOzMSM6Sus6P6W4/PMG5G2AVnztXyMkjiMfLXzXgNWpNtue6Z0+Vi5LV5JTU0iYdi
- Xqv9zqfnfzB4jlhxvs/RNlqXSCV0/5aKNy6ykd54R4XYxNs29AyIPd8qOiZgzpa6cqpXXjq7Xw
- ctD8232wIvotrcu8wJClvJXpNUwDFiL5UfuNi8xvjhgbUSDNrMzfqVcXjZ9koDdqJ0QbSFJ7Q8
- 0VLiAYH/ulF+IxWGPssFJds4XldgSdM7Z0HPYT/RjUiMwcLceIdO3SG4MVe8PwLoN7PMsclkLN
- N3s=
-X-IronPort-AV: E=Sophos;i="5.73,445,1583190000"; 
-   d="scan'208";a="12467471"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 28 May 2020 17:48:00 +0200
-Received: from schifferm-ubuntu4.tq-net.de (unknown [10.117.49.26])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 90B93280065;
-        Thu, 28 May 2020 17:48:08 +0200 (CEST)
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH tty-next] tty: serial: imx: clear Ageing Timer Interrupt in handler
-Date:   Thu, 28 May 2020 17:47:47 +0200
-Message-Id: <20200528154747.14201-1-matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.17.1
+        id S2404753AbgE1PsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 11:48:17 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:43943 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404544AbgE1PsO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 11:48:14 -0400
+Received: by mail-wr1-f68.google.com with SMTP id l10so5708996wrr.10
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 08:48:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ouG0vTXmGAj+06x++6dy4/bSuy/A+T+LxvF64Ruzwmg=;
+        b=VBYBiLp7C7HubQQmFr+S3joJsOU0ByoSvYGPxzBF+mbm/6OgTTxX1hE9GwpMtedl2b
+         GQ2UlOqmwGEvDbT5Qzrqe/GCE5zaHGk6eF9nwQlh2LwkkCjsRUngefBRM8uPjeaPRwrz
+         uREzmW4GW0i4japiAFC30JDFVWjHkkhnO/rj3/Q4HE8peUYa9Yu2Jp9D84iY9ZLowV9M
+         DrLAWjTK0GUBcnXzwhQ91CiIkCdPHjPGrGwpfsoghBTUgfHLRkjJWfCtU7DzvfPRYI1V
+         NaDwtzg9OteaQ47bOWWHDKvS9lIErKvAMLvZUf6AOhbLTdUXoAJB3Gk65hUuQ36GUFNM
+         Cr2Q==
+X-Gm-Message-State: AOAM531+JsV/w0brzDJ/MKHFyZ8O0SFVju0HMu0LliSpchdioTeKHg85
+        iYGqizqogwiQOANhUxgLCPw=
+X-Google-Smtp-Source: ABdhPJzQcHNKp5TZkGwD+fTTqSoVUWoSoJEjD9qq+DSxu9ct6RREji7n8yMuueaiovMAPJl5iqNKcg==
+X-Received: by 2002:a5d:4d4d:: with SMTP id a13mr4216876wru.252.1590680891902;
+        Thu, 28 May 2020 08:48:11 -0700 (PDT)
+Received: from localhost (ip-37-188-185-40.eurotel.cz. [37.188.185.40])
+        by smtp.gmail.com with ESMTPSA id l5sm6381630wml.27.2020.05.28.08.48.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 08:48:10 -0700 (PDT)
+Date:   Thu, 28 May 2020 17:48:09 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Qian Cai <cai@lca.pw>, Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>, andi.kleen@intel.com,
+        tim.c.chen@intel.com, dave.hansen@intel.com, ying.huang@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] make vm_committed_as_batch aware of vm overcommit
+ policy
+Message-ID: <20200528154809.GH27484@dhcp22.suse.cz>
+References: <1588922717-63697-1-git-send-email-feng.tang@intel.com>
+ <20200521212726.GC6367@ovpn-112-192.phx2.redhat.com>
+ <20200526181459.GD991@lca.pw>
+ <20200527014647.GB93879@shbuild999.sh.intel.com>
+ <20200527022539.GK991@lca.pw>
+ <20200527104606.GE93879@shbuild999.sh.intel.com>
+ <20200528141802.GB1810@lca.pw>
+ <20200528151020.GF93879@shbuild999.sh.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200528151020.GF93879@shbuild999.sh.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The AGTIM flag must be cleared explicitly, otherwise the IRQ handler
-will be called in an endless loop.
+On Thu 28-05-20 23:10:20, Feng Tang wrote:
+[...]
+> If it's true, then there could be 2 solutions, one is to
+> skip the WARN_ONCE as it has no practical value, as the real
+> check is the following code, the other is to rectify the
+> percpu counter when the policy is changing to OVERCOMMIT_NEVER. 
 
-Fortunately, this issue currently doesn't affect mainline kernels in
-practice, as the the RX FIFO trigger level is set to 1 in UFCR. When
-setting the trigger level to a higher number, the issue is trivially
-reproducible by any RX without DMA that doesn't fill the FIFO up to the
-configured level.
-
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
----
- drivers/tty/serial/imx.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-index 6b078e395931..1265e8d86d8a 100644
---- a/drivers/tty/serial/imx.c
-+++ b/drivers/tty/serial/imx.c
-@@ -909,6 +909,8 @@ static irqreturn_t imx_uart_int(int irq, void *dev_id)
- 		usr2 &= ~USR2_ORE;
- 
- 	if (usr1 & (USR1_RRDY | USR1_AGTIM)) {
-+		imx_uart_writel(sport, USR1_AGTIM, USR1);
-+
- 		__imx_uart_rxint(irq, dev_id);
- 		ret = IRQ_HANDLED;
- 	}
+I would simply drop the WARN_ONCE. Looking at the history this has been
+added by 82f71ae4a2b8 ("mm: catch memory commitment underflow") to have
+a safety check for issues which have been fixed. There doesn't seem to
+be any bug reports mentioning this splat since then so it is likely just
+spending cycles for a hot path (yes many people run with DEBUG_VM)
+without a strong reason.
 -- 
-2.17.1
-
+Michal Hocko
+SUSE Labs
