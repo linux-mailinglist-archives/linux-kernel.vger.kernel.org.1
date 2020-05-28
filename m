@@ -2,95 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4E941E6175
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7B61E6116
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389904AbgE1Mw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:52:57 -0400
-Received: from mail-m974.mail.163.com ([123.126.97.4]:44044 "EHLO
-        mail-m974.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389828AbgE1Mw4 (ORCPT
+        id S2389803AbgE1MjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 08:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389734AbgE1Mit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 08:52:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=2Dyep
-        fzfBy/KOzfvHORsBmKYgJNqknyTEsRuBABT7qc=; b=Foj/fqXxXyDIVuGFEl7qi
-        UlBxG5Za9tlCt3B/5YEQmywa9p9RNwgyUZ3sKhVgyOQct6Nm5A8MA45/q45nIOVV
-        d2IetGiMAgSzc2tcmXfXYc6hGmD3t9slGCecKoMbJXhVFssB/29qGB0pvht5WzJ5
-        o1NrqGhEWXp+XeJEda3KzE=
-Received: from [172.20.10.2] (unknown [124.64.18.22])
-        by smtp4 (Coremail) with SMTP id HNxpCgB3LyuIsM9ev5+aBA--.24S2;
-        Thu, 28 May 2020 20:37:37 +0800 (CST)
-Subject: Re: [PATCH] MIPS: Fix IRQ tracing when call handle_fpe() and
- handle_msa_fpe()
-To:     tsbogend@alpha.franken.de
-Cc:     paulburton@kernel.org, chenhc@lemote.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liulichao@loongson.cn
-References: <20200528123505.4219-1-yuanjunqing66@163.com>
-From:   yuanjunqing <yuanjunqing66@163.com>
-Message-ID: <57a8191b-1c64-9a5e-7935-050263d715fb@163.com>
-Date:   Thu, 28 May 2020 20:37:28 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 28 May 2020 08:38:49 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9669C05BD1E;
+        Thu, 28 May 2020 05:38:49 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0be200b0299b2dfed8209e.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:e200:b029:9b2d:fed8:209e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 076D81EC02CF;
+        Thu, 28 May 2020 14:38:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1590669528;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=0opdngyx2K/yyYLMUGP93EKBwY9KCD9g0UxDDXfrvcQ=;
+        b=OTstkblyMvF224WY8T7jjseB4wM38dKW4H4F/RPxzwKpxlwqaUV8iXiCvcpbsYrOZlNn7p
+        063TkMHt3P+ev+xJU6BTFKFiV7r5lABDEarM088hPKFm2ruuj0wHKLlSV/6wSVcYKcB6nw
+        0T4+F+gnvXWLVPJcyikeGbz1M+l6ZTU=
+Date:   Thu, 28 May 2020 14:38:42 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        Doug Covelli <dcovelli@vmware.com>
+Subject: Re: [PATCH v3 67/75] x86/vmware: Add VMware specific handling for
+ VMMCALL under SEV-ES
+Message-ID: <20200528123842.GA382@zn.tnic>
+References: <20200428151725.31091-1-joro@8bytes.org>
+ <20200428151725.31091-68-joro@8bytes.org>
 MIME-Version: 1.0
-In-Reply-To: <20200528123505.4219-1-yuanjunqing66@163.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: HNxpCgB3LyuIsM9ev5+aBA--.24S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Wr4UAr18Cw1kWry5Aw1UZFb_yoWkJFc_Kr
-        42kw4DKrn8Grn3ur17tay8X3s7tw4agrnayr1qvw1Yvr45Wrn0kFZ5K3Wvqwn3XrsakF4I
-        y3W5JFnFkF1IyjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUe-Vy7UUUUU==
-X-Originating-IP: [124.64.18.22]
-X-CM-SenderInfo: h1xd0ypxqtx0rjwwqiywtou0bp/xtbBzxEyXFaD7WC+bwAAs5
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200428151725.31091-68-joro@8bytes.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sorry!
+On Tue, Apr 28, 2020 at 05:17:17PM +0200, Joerg Roedel wrote:
+> From: Doug Covelli <dcovelli@vmware.com>
+> 
+> This change adds VMware specific handling for #VC faults caused by
 
-ÔÚ 2020/5/28 ÏÂÎç8:35, YuanJunQing Ð´µÀ:
->  Register "a1" is unsaved in this function,
->  when CONFIG_TRACE_IRQFLAGS is enabled,
->  the TRACE_IRQS_OFF macro will call trace_hardirqs_off(),
->  and this may change register "a1".
->  The changed register "a1" as argument will be send
->  to do_fpe() and do_msa_fpe().
->
-> Signed-off-by: YuanJunQing <yuanjunqing66@163.com>
-> ---
->  arch/mips/kernel/genex.S | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
-> index 8236fb291e3f..a1b966f3578e 100644
-> --- a/arch/mips/kernel/genex.S
-> +++ b/arch/mips/kernel/genex.S
-> @@ -476,20 +476,20 @@ NESTED(nmi_handler, PT_SIZE, sp)
->  	.endm
->  
->  	.macro	__build_clear_fpe
-> +	CLI
-> +	TRACE_IRQS_OFF
->  	.set	push
->  	/* gas fails to assemble cfc1 for some archs (octeon).*/ \
->  	.set	mips1
->  	SET_HARDFLOAT
->  	cfc1	a1, fcr31
->  	.set	pop
-> -	CLI
-> -	TRACE_IRQS_OFF
->  	.endm
->  
->  	.macro	__build_clear_msa_fpe
-> -	_cfcmsa	a1, MSA_CSR
->  	CLI
->  	TRACE_IRQS_OFF
-> +	_cfcmsa	a1, MSA_CSR
->  	.endm
->  
->  	.macro	__build_clear_ade
+s/This change adds/Add/
 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
