@@ -2,87 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52CCC1E6A3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 21:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2DC81E6A44
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 21:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406262AbgE1TTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 15:19:22 -0400
-Received: from mga17.intel.com ([192.55.52.151]:42100 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405596AbgE1TTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 15:19:19 -0400
-IronPort-SDR: 9beMskLDrBnv9zTRO0fyo5YNu+oh5B+fVcaIOwX7TpKHSOU6RoZbWmKZHkmpd8OzzjIml8psUr
- mRIZLj23nRBw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 12:19:18 -0700
-IronPort-SDR: rYxDEesOM5+HpYuOiYxDoBMxJa241T34T363LDDQv41MwgTvB1xQcu+kixQR7ANse9fBmli7tS
- QoMPJO31GvrQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,445,1583222400"; 
-   d="scan'208";a="292105760"
-Received: from jtitox-mobl.ger.corp.intel.com (HELO localhost) ([10.252.56.171])
-  by fmsmga004.fm.intel.com with ESMTP; 28 May 2020 12:19:12 -0700
-Date:   Thu, 28 May 2020 22:19:10 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Don Porter <porter@cs.unc.edu>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        bp@alien8.de, luto@kernel.org, hpa@zytor.com,
-        dave.hansen@intel.com, tony.luck@intel.com,
-        ravi.v.shankar@intel.com, chang.seok.bae@intel.com
-Subject: Re: [PATCH v12 00/18] Enable FSGSBASE instructions
-Message-ID: <20200528191910.GC2147934@linux.intel.com>
-References: <c566b89cc3ef6c164160cc56a820abac3fd70839.camel@linux.intel.com>
- <20200518153407.GA499505@tassilo.jf.intel.com>
- <371e6a92cad25cbe7a8489785efa7d3457ecef3b.camel@linux.intel.com>
- <87v9ksvoaq.fsf@nanos.tec.linutronix.de>
- <20200519164853.GA19706@linux.intel.com>
- <7eb45e02-03bf-0af0-c915-794bf49d66d7@cs.unc.edu>
- <87h7w7qy18.fsf@nanos.tec.linutronix.de>
- <c5fffcd1-c262-7046-a047-67de2bbccd78@cs.unc.edu>
- <87d06opd3a.fsf@nanos.tec.linutronix.de>
- <e9a0a521-104b-5c3a-a689-78f878e73d31@cs.unc.edu>
+        id S2406282AbgE1TTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 15:19:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406174AbgE1TTv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 15:19:51 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DEC7C08C5C6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 12:19:51 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id c11so32692187ljn.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 12:19:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tXlOeBf65Yp/6+PYQ/Z9dU3rb5mmnB5fZhc6BFlghL8=;
+        b=Ov16wjFjaWguOkasn4nII0ijglrU3+OtQR6YIUxtzgdjczhR53GIDLYdX2Ud5H6s15
+         ESTVoCZ2J1sFDQCI2eFnXOIPmdcn91ROMSyAUtXYgy7SvXWaW78+Za9U4KxtI3DoEBA0
+         LKqf4jSgi5lcQf6E8bem7624bpLp+5UoHp/dk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tXlOeBf65Yp/6+PYQ/Z9dU3rb5mmnB5fZhc6BFlghL8=;
+        b=WFwjpQXDTkV7XoLSgnDv2Ysl3KmzeeQS/N721L4ojrp90M/N+ZaMpcdxnrFHdz9zLq
+         M5bnBqtGTM9/6jw2TKFnZcXDOledQzLvgwfEm3tQpgTsdU9a1WTmmX9SvREfKQVdId9F
+         oJSYCX7B/e1N7Tnx9b10og2LV+0to4NmE2677VSuAUI6t+SitDaYKhT6KC08oJr5pNTG
+         Fwj1RJOgyV2TXOFOiPqSsqHe88xTwtlRBHcY2KWq2Bx8BL8JcVpm4QxAPx+GppBALdL5
+         9uBM2t5qabAIVObbpdLZXKwJyScuzPwGOginsjeYZlkv1UVMK5CiMfIgGtStQ9OT5ZXm
+         j0aA==
+X-Gm-Message-State: AOAM533zJwvO/EmIh3P71L2mL7GFl2OyjwhGZ5im/s30BfbFBB0CElGx
+        xEEN9xBVdm+IYsw5W00aWup1WlgUHgA=
+X-Google-Smtp-Source: ABdhPJwSX0lpO6NTUUGide9BBYgfHmjVZg5uSsSLy7SX6/NL0+Nvon34BABcEHKmEd9UmdNpoLt2EA==
+X-Received: by 2002:a05:651c:304:: with SMTP id a4mr2274667ljp.46.1590693589652;
+        Thu, 28 May 2020 12:19:49 -0700 (PDT)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id 1sm1782825lft.95.2020.05.28.12.19.48
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 May 2020 12:19:48 -0700 (PDT)
+Received: by mail-lj1-f181.google.com with SMTP id e4so12372648ljn.4
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 12:19:48 -0700 (PDT)
+X-Received: by 2002:a05:651c:2c6:: with SMTP id f6mr2174859ljo.371.1590693588214;
+ Thu, 28 May 2020 12:19:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e9a0a521-104b-5c3a-a689-78f878e73d31@cs.unc.edu>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200527213447.GH23230@ZenIV.linux.org.uk> <20200528070255.GA790247@gmail.com>
+ <CAHk-=wgXqVTGA-HrzJZ_yboLrtQ4rK-qoz8AfwLV=PT7ke4fbA@mail.gmail.com>
+ <20200528190555.GO23230@ZenIV.linux.org.uk> <CAHk-=wi3dVgSn8xMC2Uqs8aahFfeqO0Wue2KqxnDYrbBM+6uZQ@mail.gmail.com>
+ <20200528191712.GP23230@ZenIV.linux.org.uk>
+In-Reply-To: <20200528191712.GP23230@ZenIV.linux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 28 May 2020 12:19:32 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whsZ_en9wEwk+VuAGMXACcSDCYhMD-GmQER0snpp9S6yg@mail.gmail.com>
+Message-ID: <CAHk-=whsZ_en9wEwk+VuAGMXACcSDCYhMD-GmQER0snpp9S6yg@mail.gmail.com>
+Subject: Re: [git pull] coredump infoleak fix
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 01:40:16PM -0400, Don Porter wrote:
-> Hi Thomas,
-> 
-> On 5/28/20 6:29 AM, Thomas Gleixner wrote:
-> > > Until recently, we were doing proof-of-concept research, not product
-> > > development, and there are limited hours in the day.  I also hasten to
-> > > say that the product of research is an article, the software artifact
-> > > serves as documentation of the experiment.  In contrast, the product of
-> > > software development is software.  It takes significant time and effort
-> > > to convert one to the other.  Upstreaming code is of little scientific
-> > > interest.  But things have changed for our project; we had no users in
-> > > 2015 and we are now un-cutting corners that are appropriate for research
-> > > but inappropriate for production.  For a research artifact with an
-> > > audience that knew the risks, we shipped a module because it was easier
-> > > to maintain and install than a kernel patch.
-> > 
-> > I understand that and with a big fat warning and documentation from
-> > start I wouldn't have complained so vehemently.
-> 
-> This is a fair point.  We will fix this ASAP, and I will be more careful
-> about this going forward.
+On Thu, May 28, 2020 at 12:17 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> Might make sense to change the summary of that pull request to something
+> like
+>         make sure we don't forget to report the xstate components that happen
+> to be in init state - both for coredump and for PTRACE_GETREGSET
 
-Are you going to experiment with this patch set and Graphene? Just
-sanity checking so that I don't unnecessarily do duplicate work.
+Note that this has nothing to do with x86 per se.
 
-I ignored most of the discussion since I came here only with the
-motivation of testing Graphene together with this patch set. I'm
-assuming that motivation is always good no matter which angle you come
-from. Thus, I might have missed the part I'm asking.
+It's more about ->getregs() being a horrid interface, and being easy
+to get wrong in general. The fact that xstate is complex is just one
+such trigger.
 
-/Jarkko
+              Linus
