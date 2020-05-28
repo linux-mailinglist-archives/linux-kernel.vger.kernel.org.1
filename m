@@ -2,103 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5EF81E6D60
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 23:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE231E6D7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 23:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407544AbgE1VOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 17:14:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407489AbgE1VOp (ORCPT
+        id S2436530AbgE1VSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 17:18:22 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:40252 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436512AbgE1VSR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 17:14:45 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C28C08C5C6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 14:14:44 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id l10so815959wrr.10
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 14:14:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Md5HCLgP2FEvxYLu9x06BehC1qjXovJHaXEUB6IGroo=;
-        b=tVtux6suf22nedoh998nr2nUX5JUphMEZFx1Mo5ltS8yQR6kIabLVyb+3YEpbDz5OG
-         vQXWDGS1o1GyJcdyLG/lH+pz8BSLyVItVBFyS1IDgO033yA5fsTuAysRfzYRrHiwtbxP
-         t9F33VrCQRi12tf3yFgiOPMHjDXOjcKQ8rFW4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Md5HCLgP2FEvxYLu9x06BehC1qjXovJHaXEUB6IGroo=;
-        b=dJMUcI8lfWO5Qc8cCFOUTL7ECoCv/EenZk/L6AyUqwkOnOPLwFtnMngOaCOoZnGpTb
-         GzxTcEuGyMVDeope4IG6xIOoqmNENojf0Wp2deDxD2jqB7fljxmNuGd/WYFoxo9Ek9La
-         bOquYQK1jci76xt9O/mpDPgG5HJHYOoXymFBo0WzuL5lz3U5AD06UpS23DGswsv38/MC
-         Uh4miMKWYXDFuTL0rx8Nx7ItRg6WNe0pQXKQeyBM/6dzDhNU4VOIRUgwKnAtIzTOqC9p
-         WniP3SDiq+cbJI03xeBSJDayCG6Zvi1RmOu8A8usu3GB7Eb1T/ed55CLOvcJHCR92Lfc
-         e94A==
-X-Gm-Message-State: AOAM532Qj0xqsCoc6OV/y6DuJ89+0NabTdHTHUOTAaqIMxJjwJvRQqTh
-        34dz21MMN6F2A2YHrD2C6Z9eGLCnS+uCNym+
-X-Google-Smtp-Source: ABdhPJy9x8tatjpCo/n0+suEu+dHg+NV6QVGsjjs9Au1vBlu6M/wADBmns2Aje7ULPrXqU9Km8vpNQ==
-X-Received: by 2002:adf:ed51:: with SMTP id u17mr4889766wro.285.1590700482631;
-        Thu, 28 May 2020 14:14:42 -0700 (PDT)
-Received: from localhost ([2a01:4b00:8432:8a00:56e1:adff:fe3f:49ed])
-        by smtp.gmail.com with ESMTPSA id k26sm8205312wmi.27.2020.05.28.14.14.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 14:14:41 -0700 (PDT)
-Date:   Thu, 28 May 2020 22:14:41 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH] mm, memcg: reclaim more aggressively before high
- allocator throttling
-Message-ID: <20200528211441.GA3410@chrisdown.name>
-References: <20200520143712.GA749486@chrisdown.name>
- <CALvZod7rSeAKXKq_V0SggZWn4aL8pYWJiej4NdRd8MmuwUzPEw@mail.gmail.com>
- <20200528194831.GA2017@chrisdown.name>
- <20200528202944.GA76514@cmpxchg.org>
+        Thu, 28 May 2020 17:18:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=lUS35dWHopmjHYi1wh0fu3s1mgrtzO4Eqb+3dIqscp8=; b=aumhm4Kq+S9r8bDWZ/Mxe1d3gA
+        6a9EnbrSTU28mRmYgGlOJSUqJ6z9Y4v6pSN0TqQwgfnFVvgQAPTM6gjMTxOMad2vgu7garQ3XDZ0d
+        ME6wKtkYqX6BMgEmFDKLhI35/gXoDceh/9z65QVkSUxhobRDVRYoZrL4c038GGYskkgs7w6aom4zT
+        mtm1SFZgwBgmMJTSh7D81zORzw+xELgAqg60t1nxoGC//3RWVkv35YM7EkRaCIOIL3P4LxOrWo56w
+        U7H8djIJz1nh/L3/d4ZpozfwoA8xYbvcen/W058wCn5hZjDyH6X2vmX+VVtbG9md+ES39JtEXoRpd
+        fpGZm6Xw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jePsX-000504-H8; Thu, 28 May 2020 21:15:54 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D34399836F8; Thu, 28 May 2020 23:15:50 +0200 (CEST)
+Date:   Thu, 28 May 2020 23:15:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     tglx@linutronix.de, luto@amacapital.net,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        sean.j.christopherson@intel.com, daniel.thompson@linaro.org
+Subject: Re: [PATCH 1/6] x86/entry: Introduce local_db_{save,restore}()
+Message-ID: <20200528211550.GR2483@worktop.programming.kicks-ass.net>
+References: <20200528201937.038455891@infradead.org>
+ <20200528202328.418625592@infradead.org>
+ <17e097f5-f92c-bd7e-fb1d-ee08c4169dbe@citrix.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200528202944.GA76514@cmpxchg.org>
-User-Agent: Mutt/1.14.2 (2020-05-25)
+In-Reply-To: <17e097f5-f92c-bd7e-fb1d-ee08c4169dbe@citrix.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Johannes Weiner writes:
->> I don't feel strongly either way, but current->memcg_nr_pages_over_high can
->> be very large for large allocations.
->>
->> That said, maybe we should just reclaim `max(SWAP_CLUSTER_MAX, current -
->> high)` for each loop? I agree that with this design it looks like perhaps we
->> don't need it any more.
->>
->> Johannes, what do you think?
->
->How about this:
->
->Reclaim memcg_nr_pages_over_high in the first iteration, then switch
->to SWAP_CLUSTER_MAX in the retries.
->
->This acknowledges that while the page allocator and memory.max reclaim
->every time an allocation is made, memory.high is currently batched and
->can have larger targets. We want the allocating thread to reclaim at
->least the batch size, but beyond that only what's necessary to prevent
->premature OOM or failing containment.
->
->Add a comment stating as much.
->
->Once we reclaim memory.high synchronously instead of batched, this
->exceptional handling is no longer needed and can be deleted again.
->
->Does that sound reasonable?
+On Thu, May 28, 2020 at 09:52:30PM +0100, Andrew Cooper wrote:
+> On 28/05/2020 21:19, Peter Zijlstra wrote:
+> > --- a/arch/x86/include/asm/debugreg.h
+> > +++ b/arch/x86/include/asm/debugreg.h
+> > @@ -113,6 +113,31 @@ static inline void debug_stack_usage_inc
+> >  static inline void debug_stack_usage_dec(void) { }
+> >  #endif /* X86_64 */
+> >  
+> > +static __always_inline void local_db_save(unsigned long *dr7)
+> > +{
+> > +	get_debugreg(*dr7, 7);
+> > +	if (*dr7)
+> > +		set_debugreg(0, 7);
+> 
+> %dr7 has an architecturally stuck bit in it.
+> 
+> You want *dr7 != 0x400 to avoid writing 0 unconditionally.
 
-That sounds good to me, thanks. I'll change that in v2 soonish and update the 
-changelog.
+Do we have to have that bit set when writing it? Otherwise I might
+actually prefer masking it out.
+
+> Also, API wise, wouldn't it be nicer to write "dr7 = local_db_save()"
+> rather than having a void function returning a single long via pointer?
+
+Probably.. I started with local_irq_save() and .. well, n/m. I'll change
+it ;-)
