@@ -2,97 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC311E60A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 365381E60D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389668AbgE1MXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:23:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388767AbgE1MXk (ORCPT
+        id S2389721AbgE1M2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 08:28:00 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:46340 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389675AbgE1M15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 08:23:40 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7376C05BD1E
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 05:23:39 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Xn1363Fzz9sSF;
-        Thu, 28 May 2020 22:23:35 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1590668617;
-        bh=hIKUVBa7d1wuMGALSM0shNFll3TSEEkKGOhFvLGz82Y=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=QVgS1zFfMMqL1C0G1D9y0F8uEplEaqsZuG6w6vpbUDMY7yuD7IrhWYi5xmwJX831P
-         U9xV7nTUP4uf6TqM8IrShFCPwUCUH0HlF5Cwan4ANsBrHF4Jdf6bCYvNzCFU3eHsL2
-         xb2rEQhJzoACq34EZhmwPQcUwPZk5DlNJeXxWdk6ZPF10P/ucxOkda++nnMde1FhC4
-         yP+E/UZsizfT/DXyA0Y1s+UTPjjRpQPNboTtorlYWOKyoL3goRsylVVdZqyRBe6/7V
-         9kuzfkjLWza0P8eUO8Fae1QlcsAcKzpH6DAYA0AlXcw5yyN0BvCQDNDT1iVnXLl6lo
-         +Y+3U/6Pms/oA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Miroslav Benes <mbenes@suse.cz>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH] powerpc/bpf: Enable bpf_probe_read{, str}() on powerpc again
-In-Reply-To: <20200528091351.GE3529@linux-b0ei>
-References: <20200527122844.19524-1-pmladek@suse.com> <87ftbkkh00.fsf@mpe.ellerman.id.au> <20200528091351.GE3529@linux-b0ei>
-Date:   Thu, 28 May 2020 22:23:56 +1000
-Message-ID: <87d06ojlib.fsf@mpe.ellerman.id.au>
+        Thu, 28 May 2020 08:27:57 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SCHg4j105579;
+        Thu, 28 May 2020 12:27:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=qj7TwkNy6GSpmtn4DBIaqHpZf2eLD34oVXAXPSaBBmQ=;
+ b=Xx3rm++DGiMaFVjj14hvg1DHV0Gv3osjoM8m7skZUmFXKMyHg/WIoEyoMpsFRwxGUCP6
+ OOCrXZpU4UyDdeEUAUF1BoD26XWnJ6IAUxAfdefJSTk25VOEHvkzj8OP01Y7oSu/CFsy
+ FTyGRqKdc5lJUkLo8KFwe+4y6k2G5qf/I8Z6gro7WH3lBF3Sl+WYscQ5IrWeXX9HR+b3
+ /jjcqQ4yHtPahf0szuM3UVkhJwNxG1N05gi/34nHX/fR0y6BPfyEXLd/m4BTlQpU5OPu
+ SIUxIoqZcZv5/X54tNS3vEdtRKdWB9eVFcbpF7EOFx8Zo0VgAxvozxaXYIUd3XW2jQsR Tg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 316u8r4pat-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 28 May 2020 12:27:54 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SCHcF4115358;
+        Thu, 28 May 2020 12:25:54 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 317j5v5eef-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 May 2020 12:25:54 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04SCPqLF025280;
+        Thu, 28 May 2020 12:25:52 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 28 May 2020 05:25:51 -0700
+Date:   Thu, 28 May 2020 15:25:45 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
+        Markus Elfring <markus.elfring@web.de>,
+        Tejun Heo <tj@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: Re: =?utf-8?B?5Zue5aSNOiBbUEFUQ0ggdjU=?= =?utf-8?Q?=5D?= workqueue:
+ Remove unnecessary kfree() call in rcu_free_wq()
+Message-ID: <20200528122545.GP22511@kadam>
+References: <20200527075715.36849-1-qiang.zhang@windriver.com>
+ <284c7851-4e89-a00f-a2e6-aa8e2e1f3fce@web.de>
+ <DM6PR11MB32573F3884A864ECD586235EFF8E0@DM6PR11MB3257.namprd11.prod.outlook.com>
+ <DM6PR11MB3257D6E7E93A518392502809FF8E0@DM6PR11MB3257.namprd11.prod.outlook.com>
+ <20200528095703.GH30374@kadam>
+ <CAJhGHyD1nV=M=ccycqCMt86GMuZGkO9trbJ=4ti4EzP9kta6iA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJhGHyD1nV=M=ccycqCMt86GMuZGkO9trbJ=4ti4EzP9kta6iA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9634 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 suspectscore=2
+ mlxlogscore=999 mlxscore=0 adultscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005280086
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9634 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 spamscore=0 cotscore=-2147483648 suspectscore=2
+ phishscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005280086
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Petr Mladek <pmladek@suse.com> writes:
-> On Thu 2020-05-28 11:03:43, Michael Ellerman wrote:
->> Petr Mladek <pmladek@suse.com> writes:
->> > The commit 0ebeea8ca8a4d1d453a ("bpf: Restrict bpf_probe_read{, str}() only
->> > to archs where they work") caused that bpf_probe_read{, str}() functions
->> > were not longer available on architectures where the same logical address
->> > might have different content in kernel and user memory mapping. These
->> > architectures should use probe_read_{user,kernel}_str helpers.
->> >
->> > For backward compatibility, the problematic functions are still available
->> > on architectures where the user and kernel address spaces are not
->> > overlapping. This is defined CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE.
->> >
->> > At the moment, these backward compatible functions are enabled only
->> > on x86_64, arm, and arm64. Let's do it also on powerpc that has
->> > the non overlapping address space as well.
->> >
->> > Signed-off-by: Petr Mladek <pmladek@suse.com>
->> 
->> This seems like it should have a Fixes: tag and go into v5.7?
->
-> Good point:
->
-> Fixes: commit 0ebeea8ca8a4d1d4 ("bpf: Restrict bpf_probe_read{, str}() only to archs where they work")
->
-> And yes, it should ideally go into v5.7 either directly or via stable.
->
-> Should I resend the patch with Fixes and
-> Cc: stable@vger.kernel.org #v45.7 lines, please?
+On Thu, May 28, 2020 at 08:08:06PM +0800, Lai Jiangshan wrote:
+> On Thu, May 28, 2020 at 5:57 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> >
+> > Guys, the patch is wrong.  The kfree is harmless when this is called
+> > from destroy_workqueue() and required when it's called from
+> > pwq_unbound_release_workfn().  Lai Jiangshan already explained this
+> > already.  Why are we still discussing this?
+> >
+> 
+> I'm also confused why they have been debating about the changelog
+> after the patch was queued. My statement was about "the patch is
+> a correct cleanup, but the changelog is totally misleading".
+> 
+> destroy_workqueue(percpu_wq) -> rcu_free_wq()
+> or
+> destroy_workqueue(unbound_wq) -> put_pwq() ->
+> pwq_unbound_release_workfn() -> rcu_free_wq()
+> 
+> So the patch is correct to me. Only can destroy_workqueue()
+> lead to rcu_free_wq().
 
-If it goes into v5.7 then it doesn't need a Cc: stable, and I guess a
-Fixes: tag is nice to have but not so important as it already mentions
-the commit that caused the problem. So a resend probably isn't
-necessary.
+It looks like there are lots of paths which call put_pwq() and
+put_pwq_unlocked().
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+  1168  static void pwq_dec_nr_in_flight(struct pool_workqueue *pwq, int color)
+  1169  {
+  1170          /* uncolored work items don't participate in flushing or nr_active */
+  1171          if (color == WORK_NO_COLOR)
+  1172                  goto out_put;
+  1173  
 
+We don't take an extra reference in this function.
 
-Daniel can you pick this up, or should I?
+  1200  out_put:
+  1201          put_pwq(pwq);
+  1202  }
 
-cheers
+I don't know this code well, so I will defer to your expertise if you
+say it is correct.
 
+> 
+> Still, the kfree(NULL) is harmless. But it is cleaner
+> to have the patch. But the changelog is wrong, even after
+> the lengthened debating, and English is not my mother tongue,
+> so I just looked on.
+
+We have tried to tell Markus not to advise people about commit messages
+but he doesn't listen.  He has discouraged some contributors.  :/
+
+regards,
+dan carpenter
