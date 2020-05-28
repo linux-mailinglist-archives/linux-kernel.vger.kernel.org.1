@@ -2,315 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A37F1E546D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 05:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204141E547A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 05:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727073AbgE1DR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 23:17:26 -0400
-Received: from out28-76.mail.aliyun.com ([115.124.28.76]:59176 "EHLO
-        out28-76.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727047AbgE1DRX (ORCPT
+        id S1727774AbgE1DSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 23:18:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726770AbgE1DSj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 23:17:23 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436322|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0118111-0.000128806-0.98806;FP=0|0|0|0|0|-1|-1|-1;HT=e01a16378;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.HeebJ-Y_1590635771;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.HeebJ-Y_1590635771)
-          by smtp.aliyun-inc.com(10.147.42.22);
-          Thu, 28 May 2020 11:17:18 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     linux-clk@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        sboyd@kernel.org, mturquette@baylibre.com, robh+dt@kernel.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com, paul@crapouillou.net
-Subject: [PATCH v13 7/7] clk: X1000: Add FIXDIV for SSI clock of X1000.
-Date:   Thu, 28 May 2020 11:15:49 +0800
-Message-Id: <20200528031549.13846-8-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200528031549.13846-1-zhouyanjie@wanyeetech.com>
-References: <20200528031549.13846-1-zhouyanjie@wanyeetech.com>
+        Wed, 27 May 2020 23:18:39 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2998AC05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 20:18:39 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id b13so5538864vsm.13
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 20:18:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=P08I4zE8K6u9H+J6vCBj42y9SdfxKpWel+GAURaf55w=;
+        b=Gd5v0fpc/RFo1Ol6DaU34Ei/B53PMuWccibMO+SiIRAsMklYODgeub7I1ybVBAtl83
+         C2GZm0bqmHCqTQGRKsC7QBYB9cI6OxJUYpYspoBcW7PgrkZsYHtMEtLHvYzVmEIS6Wcz
+         ZnryfEXgbfi0ZB+Tqog2Dn9yKwEdRwlaR1d4c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=P08I4zE8K6u9H+J6vCBj42y9SdfxKpWel+GAURaf55w=;
+        b=K4rqw5aNll3oY1Cq+BtmPMtWa4qn5TbUXCIGT2/3+KwfAEhWwbDNFp+A+sD0BJRR1e
+         9hQSs6v9AmcuyDrEdNnGOJucVpQIcxyR2gQXDqeIhGF9CAfbog8WmviR/J5udE9gIPJh
+         KFUL2HpNhwFhZnYQYctSHCMOa9ZtklI0Dy68sxTHcJrdMtpKhQPUaXYiCmHNTnloGPR0
+         H8N/MWfCxOouX2922Hwh5tT0DHUmw9Jwp81/gUoSZqDjTWx93YlQHelN8pfqqbDm77L/
+         5fUjmNbIj8W44GGF6ZMsuMppXoByW4A0pBRVqJn+N2s51l+frs7clh+gKNvMFIzQLBJt
+         4IkA==
+X-Gm-Message-State: AOAM530BfEWNS/QxHcWXvMR5Puc32YGBgIB2UTxaXIdvlP3IQmivm2k0
+        46hePKF6kCSF0NJK0LWrZIB0aS8v5pb4gPTYQeRGfg==
+X-Google-Smtp-Source: ABdhPJyafa1Y72O3e35J2AfGiJYhGkInFgYvxBjxjENSmn59akurnb83CPrUP7sxd4ACZgLhsri2ry65RkRI/k11er8=
+X-Received: by 2002:a67:2e11:: with SMTP id u17mr582429vsu.1.1590635918188;
+ Wed, 27 May 2020 20:18:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200528025503.24003-1-wuxy@bitland.com.cn> <CANMq1KDWp7ztviO+ZoXeEqek3uCzPDKjteahO32C3b-=OxerUQ@mail.gmail.com>
+ <tencent_353523967C92024E04C83463@qq.com>
+In-Reply-To: <tencent_353523967C92024E04C83463@qq.com>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Thu, 28 May 2020 11:18:27 +0800
+Message-ID: <CANMq1KBvUMWj_gySA27WuxAOW3dT2-vGaKc=yn3ztR94WO-Gxw@mail.gmail.com>
+Subject: Re: [PATCH] [v3]mtd: spi-nor: winbond: add 1.8v SPI NOR Flash IDs
+To:     =?UTF-8?B?5ZC05YW06IKyQjAxNzc5?= <wuxy@bitland.com.cn>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        stlin2 <stlin2@winbond.com>,
+        wuxy <wuxy@bitland.corp-partner.google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1.The SSI clock of X1000 not like JZ4770 and JZ4780, they are not
-  directly derived from the output of SSIPLL, but from the clock
-  obtained by dividing the frequency by 2. "X1000_CLK_SSIPLL_DIV2"
-  is added for this purpose, and ensure that it initialized before
-  "X1000_CLK_SSIMUX" when initializing the clocks.
-2.Clocks of LCD, OTG, EMC, EFUSE, OST, TCU, and gates of CPU, PCLK
-  are also added.
-3.Use "CLK_OF_DECLARE_DRIVER" like the other CGU drivers.
+On Thu, May 28, 2020 at 11:16 AM =E5=90=B4=E5=85=B4=E8=82=B2B01779 <wuxy@bi=
+tland.com.cn> wrote:
+>
+>
+> >
+> > This patch copied from:https://patchwork.ozlabs.org/patch/1150756/,
+> > The original patch is invalid,so re-submit a new patch for this.
+>
+> This belongs below the ---, but I guess the maintainer can help you with =
+that.
+> --->This --- is automatically generated, it looks like I can't move it to=
+ below  ---
 
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
----
+Sure, but you can always edit the message before you send it
+(--annotate parameter of git send-email).
 
-Notes:
-    v5:
-    New patch.
-    
-    V5->v6:
-    Add missing part of X1000's CGU.
-    
-    v6->v7:
-    Update commit message.
-    
-    v7->v8:
-    No change.
-    
-    v8->v9:
-    Add Paul Cercueil's Reviewed-by, somehow his emails are not displayed
-    on the mailing list and patchwork of clock framework subsystem.
-    
-    v9->v10:
-    No change.
-    
-    v10->v11:
-    No change.
-    
-    v11->v12:
-    Use "CLK_OF_DECLARE_DRIVER" instead "CLK_OF_DECLARE",
-    this modification was mentioned in the comments, but
-    did not really exist in the patch.
-    Reported-by: Paul Cercueil <paul@crapouillou.net>
-    
-    v12->v13:
-    1.Add "#include <linux/io.h>" for writel/readl.
-    2.Add a comment on why use "CLK_OF_DECLARE_DRIVER()".
-      Suggested-by: Stephen Boyd <sboyd@kernel.org>
-
- drivers/clk/ingenic/x1000-cgu.c | 117 +++++++++++++++++++++++++++++++++++++---
- 1 file changed, 111 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/clk/ingenic/x1000-cgu.c b/drivers/clk/ingenic/x1000-cgu.c
-index c33934d8ac14..fc37c1fc0ee6 100644
---- a/drivers/clk/ingenic/x1000-cgu.c
-+++ b/drivers/clk/ingenic/x1000-cgu.c
-@@ -1,11 +1,12 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-  * X1000 SoC CGU driver
-- * Copyright (c) 2019 Zhou Yanjie <zhouyanjie@zoho.com>
-+ * Copyright (c) 2019 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-  */
- 
- #include <linux/clk-provider.h>
- #include <linux/delay.h>
-+#include <linux/io.h>
- #include <linux/of.h>
- 
- #include <dt-bindings/clock/x1000-cgu.h>
-@@ -20,6 +21,9 @@
- #define CGU_REG_CLKGR		0x20
- #define CGU_REG_OPCR		0x24
- #define CGU_REG_DDRCDR		0x2c
-+#define CGU_REG_USBPCR		0x3c
-+#define CGU_REG_USBPCR1		0x48
-+#define CGU_REG_USBCDR		0x50
- #define CGU_REG_MACCDR		0x54
- #define CGU_REG_I2SCDR		0x60
- #define CGU_REG_LPCDR		0x64
-@@ -40,8 +44,47 @@
- #define OPCR_SPENDN0		BIT(7)
- #define OPCR_SPENDN1		BIT(6)
- 
-+/* bits within the USBPCR register */
-+#define USBPCR_SIDDQ		BIT(21)
-+#define USBPCR_OTG_DISABLE	BIT(20)
-+
- static struct ingenic_cgu *cgu;
- 
-+static int x1000_usb_phy_enable(struct clk_hw *hw)
-+{
-+	void __iomem *reg_opcr		= cgu->base + CGU_REG_OPCR;
-+	void __iomem *reg_usbpcr	= cgu->base + CGU_REG_USBPCR;
-+
-+	writel(readl(reg_opcr) | OPCR_SPENDN0, reg_opcr);
-+	writel(readl(reg_usbpcr) & ~USBPCR_OTG_DISABLE & ~USBPCR_SIDDQ, reg_usbpcr);
-+	return 0;
-+}
-+
-+static void x1000_usb_phy_disable(struct clk_hw *hw)
-+{
-+	void __iomem *reg_opcr		= cgu->base + CGU_REG_OPCR;
-+	void __iomem *reg_usbpcr	= cgu->base + CGU_REG_USBPCR;
-+
-+	writel(readl(reg_opcr) & ~OPCR_SPENDN0, reg_opcr);
-+	writel(readl(reg_usbpcr) | USBPCR_OTG_DISABLE | USBPCR_SIDDQ, reg_usbpcr);
-+}
-+
-+static int x1000_usb_phy_is_enabled(struct clk_hw *hw)
-+{
-+	void __iomem *reg_opcr		= cgu->base + CGU_REG_OPCR;
-+	void __iomem *reg_usbpcr	= cgu->base + CGU_REG_USBPCR;
-+
-+	return (readl(reg_opcr) & OPCR_SPENDN0) &&
-+		!(readl(reg_usbpcr) & USBPCR_SIDDQ) &&
-+		!(readl(reg_usbpcr) & USBPCR_OTG_DISABLE);
-+}
-+
-+static const struct clk_ops x1000_otg_phy_ops = {
-+	.enable		= x1000_usb_phy_enable,
-+	.disable	= x1000_usb_phy_disable,
-+	.is_enabled	= x1000_usb_phy_is_enabled,
-+};
-+
- static const s8 pll_od_encoding[8] = {
- 	0x0, 0x1, -1, 0x2, -1, -1, -1, 0x3,
- };
-@@ -101,6 +144,15 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 		},
- 	},
- 
-+
-+	/* Custom (SoC-specific) OTG PHY */
-+
-+	[X1000_CLK_OTGPHY] = {
-+		"otg_phy", CGU_CLK_CUSTOM,
-+		.parents = { -1, -1, X1000_CLK_EXCLK, -1 },
-+		.custom = { &x1000_otg_phy_ops },
-+	},
-+
- 	/* Muxes & dividers */
- 
- 	[X1000_CLK_SCLKA] = {
-@@ -116,9 +168,10 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 	},
- 
- 	[X1000_CLK_CPU] = {
--		"cpu", CGU_CLK_DIV,
-+		"cpu", CGU_CLK_DIV | CGU_CLK_GATE,
- 		.parents = { X1000_CLK_CPUMUX, -1, -1, -1 },
- 		.div = { CGU_REG_CPCCR, 0, 1, 4, 22, -1, -1 },
-+		.gate = { CGU_REG_CLKGR, 30 },
- 	},
- 
- 	[X1000_CLK_L2CACHE] = {
-@@ -147,9 +200,10 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 	},
- 
- 	[X1000_CLK_PCLK] = {
--		"pclk", CGU_CLK_DIV,
-+		"pclk", CGU_CLK_DIV | CGU_CLK_GATE,
- 		.parents = { X1000_CLK_AHB2PMUX, -1, -1, -1 },
- 		.div = { CGU_REG_CPCCR, 16, 1, 4, 20, -1, -1 },
-+		.gate = { CGU_REG_CLKGR, 28 },
- 	},
- 
- 	[X1000_CLK_DDR] = {
-@@ -162,12 +216,20 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 
- 	[X1000_CLK_MAC] = {
- 		"mac", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL},
-+		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL },
- 		.mux = { CGU_REG_MACCDR, 31, 1 },
- 		.div = { CGU_REG_MACCDR, 0, 1, 8, 29, 28, 27 },
- 		.gate = { CGU_REG_CLKGR, 25 },
- 	},
- 
-+	[X1000_CLK_LCD] = {
-+		"lcd", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
-+		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL },
-+		.mux = { CGU_REG_LPCDR, 31, 1 },
-+		.div = { CGU_REG_LPCDR, 0, 1, 8, 28, 27, 26 },
-+		.gate = { CGU_REG_CLKGR, 23 },
-+	},
-+
- 	[X1000_CLK_MSCMUX] = {
- 		"msc_mux", CGU_CLK_MUX,
- 		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL},
-@@ -188,6 +250,15 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 		.gate = { CGU_REG_CLKGR, 5 },
- 	},
- 
-+	[X1000_CLK_OTG] = {
-+		"otg", CGU_CLK_DIV | CGU_CLK_GATE | CGU_CLK_MUX,
-+		.parents = { X1000_CLK_EXCLK, -1,
-+					 X1000_CLK_APLL, X1000_CLK_MPLL },
-+		.mux = { CGU_REG_USBCDR, 30, 2 },
-+		.div = { CGU_REG_USBCDR, 0, 1, 8, 29, 28, 27 },
-+		.gate = { CGU_REG_CLKGR, 3 },
-+	},
-+
- 	[X1000_CLK_SSIPLL] = {
- 		"ssi_pll", CGU_CLK_MUX | CGU_CLK_DIV,
- 		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL, -1, -1 },
-@@ -195,14 +266,32 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 		.div = { CGU_REG_SSICDR, 0, 1, 8, 29, 28, 27 },
- 	},
- 
-+	[X1000_CLK_SSIPLL_DIV2] = {
-+		"ssi_pll_div2", CGU_CLK_FIXDIV,
-+		.parents = { X1000_CLK_SSIPLL },
-+		.fixdiv = { 2 },
-+	},
-+
- 	[X1000_CLK_SSIMUX] = {
- 		"ssi_mux", CGU_CLK_MUX,
--		.parents = { X1000_CLK_EXCLK, X1000_CLK_SSIPLL, -1, -1 },
-+		.parents = { X1000_CLK_EXCLK, X1000_CLK_SSIPLL_DIV2, -1, -1 },
- 		.mux = { CGU_REG_SSICDR, 30, 1 },
- 	},
- 
- 	/* Gate-only clocks */
- 
-+	[X1000_CLK_EMC] = {
-+		"emc", CGU_CLK_GATE,
-+		.parents = { X1000_CLK_AHB2, -1, -1, -1 },
-+		.gate = { CGU_REG_CLKGR, 0 },
-+	},
-+
-+	[X1000_CLK_EFUSE] = {
-+		"efuse", CGU_CLK_GATE,
-+		.parents = { X1000_CLK_AHB2, -1, -1, -1 },
-+		.gate = { CGU_REG_CLKGR, 1 },
-+	},
-+
- 	[X1000_CLK_SFC] = {
- 		"sfc", CGU_CLK_GATE,
- 		.parents = { X1000_CLK_SSIPLL, -1, -1, -1 },
-@@ -245,12 +334,24 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 		.gate = { CGU_REG_CLKGR, 16 },
- 	},
- 
-+	[X1000_CLK_TCU] = {
-+		"tcu", CGU_CLK_GATE,
-+		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
-+		.gate = { CGU_REG_CLKGR, 18 },
-+	},
-+
- 	[X1000_CLK_SSI] = {
- 		"ssi", CGU_CLK_GATE,
- 		.parents = { X1000_CLK_SSIMUX, -1, -1, -1 },
- 		.gate = { CGU_REG_CLKGR, 19 },
- 	},
- 
-+	[X1000_CLK_OST] = {
-+		"ost", CGU_CLK_GATE,
-+		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
-+		.gate = { CGU_REG_CLKGR, 20 },
-+	},
-+
- 	[X1000_CLK_PDMA] = {
- 		"pdma", CGU_CLK_GATE,
- 		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
-@@ -277,4 +378,8 @@ static void __init x1000_cgu_init(struct device_node *np)
- 
- 	ingenic_cgu_register_syscore_ops(cgu);
- }
--CLK_OF_DECLARE(x1000_cgu, "ingenic,x1000-cgu", x1000_cgu_init);
-+/*
-+ * CGU has some children devices, this is useful for probing children devices
-+ * in the case where the device node is compatible with "simple-mfd".
-+ */
-+CLK_OF_DECLARE_DRIVER(x1000_cgu, "ingenic,x1000-cgu", x1000_cgu_init);
--- 
-2.11.0
-
+>
+> ------------------ Original ------------------
+> From:  "Nicolas Boichat"<drinkcat@chromium.org>;
+> Date:  Thu, May 28, 2020 11:06 AM
+> To:  "wuxy"<wuxy@bitland.com.cn>;
+> Cc:  "lkml"<linux-kernel@vger.kernel.org>; "linux-mtd"<linux-mtd@lists.in=
+fradead.org>; "stlin2"<stlin2@winbond.com>; "wuxy"<wuxy@bitland.corp-partne=
+r.google.com>;
+> Subject:  Re: [PATCH] [v3]mtd: spi-nor: winbond: add 1.8v SPI NOR Flash I=
+Ds
+>
+> On Thu, May 28, 2020 at 10:55 AM <wuxy@bitland.com.cn> wrote:
+> >
+> > From: wuxy <wuxy@bitland.corp-partner.google.com>
+> >
+> > Winbond has new 1.8V SPI NOR Flash IDs,we need to use the SPI
+> > flash IDs in kukui series,this patch can support the new flash IDs.
+> >
+> > TEST=3Dboot to shell,get the spi information from 'dmesg'.
+>
+> TEST=3D is Chromium OS specific, you can drop this line.
+>
+> >
+> > Signed-off-by: Xingyu Wu <wuxy@bitland.corp-partner.google.com>
+> > Signed-off-by: ST Lin <stlin2@winbond.com>
+>
+> Tested-by: Nicolas Boichat <drinkcat@chromium.org>
+>
+> >
+> > This patch copied from:https://patchwork.ozlabs.org/patch/1150756/,
+> > The original patch is invalid,so re-submit a new patch for this.
+>
+> This belongs below the ---, but I guess the maintainer can help you with =
+that.
+>
+> > ---
+> >  drivers/mtd/spi-nor/winbond.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> >
+> > diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbon=
+d.c
+> > index 17deabad57e1..cda4f8847bd6 100644
+> > --- a/drivers/mtd/spi-nor/winbond.c
+> > +++ b/drivers/mtd/spi-nor/winbond.c
+> > @@ -61,6 +61,15 @@ static const struct flash_info winbond_parts[] =3D {
+> >                              SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD=
+_READ) },
+> >         { "w25m512jv", INFO(0xef7119, 0, 64 * 1024, 1024,
+> >                             SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_=
+READ) },
+> > +       { "w25q64jwxxIM", INFO(0xef8017, 0, 64 * 1024, 128,
+> > +                           SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_=
+READ |
+> > +                           SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+> > +       { "w25q128jwxxIM", INFO(0xef8018, 0, 64 * 1024, 256,
+> > +                           SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_=
+READ |
+> > +                           SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+> > +       { "w25q256jwxxIM", INFO(0xef8019, 0, 64 * 1024, 512,
+> > +                           SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_=
+READ |
+> > +                           SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+> >  };
+> >
+> >  /**
+> > --
+> > 2.20.1
+> >
+> >
+> >
