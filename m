@@ -2,112 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B65E1E621A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 15:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D631E6224
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 15:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390350AbgE1NXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 09:23:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:52694 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390339AbgE1NXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 09:23:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 59D0ED6E;
-        Thu, 28 May 2020 06:23:08 -0700 (PDT)
-Received: from [192.168.1.84] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C92433F52E;
-        Thu, 28 May 2020 06:23:06 -0700 (PDT)
-Subject: Re: [PATCH 11/15] drm/panfrost: set devfreq clock name
-To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20200510165538.19720-1-peron.clem@gmail.com>
- <20200510165538.19720-12-peron.clem@gmail.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <8bc659b4-dbf9-5ae6-a677-937cab6bd798@arm.com>
-Date:   Thu, 28 May 2020 14:23:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2390381AbgE1NXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 09:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390295AbgE1NXt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 09:23:49 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B27C05BD1E;
+        Thu, 28 May 2020 06:23:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=876zKjaeAoHItKy5v6K+oJgLPOJlwJDj+y9Y+u5ub3Q=; b=oCffCv1kWlYM7vfE13NaT/An7r
+        FivxfRrag/U7kCLFWrdaTBOn1MfgamU6vtb7+86bOlktrTuPU0RMc7tN8UBT66EdDHqq9wKLsBQwB
+        BheUjDeh1TCkHl904kAKiyVFjkgm9qGMjitFbP0vIBf7o9YDTUSegr2VGOoABaxqQs0adNbRROgFK
+        bvNf6ZMqbKBfKdm18q8XE4YAYrMT2/cEq2caDtfQ2VJiJ8QUZB/w6gPJSQVNqMOp1J1RjMcDYU2Kb
+        sRZdgxRBV7TY0InZfFLKWsUxav6oCggbvU7rLVIx6d97gCuIe5HxWQtqUre10DFvb21uVR8jTDgLJ
+        n2Vl6v4g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jeIVQ-00056k-0N; Thu, 28 May 2020 13:23:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C9832307643;
+        Thu, 28 May 2020 15:23:27 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BD35D20D0904E; Thu, 28 May 2020 15:23:27 +0200 (CEST)
+Date:   Thu, 28 May 2020 15:23:27 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/2] sched/uclamp: Add a new sysctl to control RT default
+ boost value
+Message-ID: <20200528132327.GB706460@hirez.programming.kicks-ass.net>
+References: <20200511154053.7822-1-qais.yousef@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20200510165538.19720-12-peron.clem@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200511154053.7822-1-qais.yousef@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/05/2020 17:55, Clément Péron wrote:
-> Some SoCs have  several clocks defined and the OPP core
-> needs to know the exact name of the clk to use.
-> 
-> Set the clock name to "core".
-> 
-> Signed-off-by: Clément Péron <peron.clem@gmail.com>
-
-This is unfortunately a regression for the RK3288. The device tree 
-binding doesn't require "clock-names", and for the RK3288 it currently 
-isn't specified. So this breaks the platform.
-
-Adding the "clock-names" to the device tree 'fixes' it, but we really 
-need to keep backwards compatibility.
-
-Steve
-
-> ---
->   drivers/gpu/drm/panfrost/panfrost_devfreq.c | 13 +++++++++++++
->   drivers/gpu/drm/panfrost/panfrost_devfreq.h |  1 +
->   2 files changed, 14 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> index 9ffea0d4a087..6bf3541b4d53 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> @@ -103,6 +103,14 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
->   
->   	spin_lock_init(&pfdevfreq->lock);
->   
-> +	opp_table = dev_pm_opp_set_clkname(dev, "core");
-> +	if (IS_ERR(opp_table)) {
-> +		ret = PTR_ERR(opp_table);
-> +		goto err_fini;
-> +	}
+On Mon, May 11, 2020 at 04:40:52PM +0100, Qais Yousef wrote:
+> +/*
+> + * By default RT tasks run at the maximum performance point/capacity of the
+> + * system. Uclamp enforces this by always setting UCLAMP_MIN of RT tasks to
+> + * SCHED_CAPACITY_SCALE.
+> + *
+> + * This knob allows admins to change the default behavior when uclamp is being
+> + * used. In battery powered devices, particularly, running at the maximum
+> + * capacity and frequency will increase energy consumption and shorten the
+> + * battery life.
+> + *
+> + * This knob only affects RT tasks that their uclamp_se->user_defined == false.
+> + *
+> + * This knob will not override the system default sched_util_clamp_min defined
+> + * above.
+> + *
+> + * Any modification is applied lazily on the next attempt to calculate the
+> + * effective value of the task.
+> + */
+> +unsigned int sysctl_sched_uclamp_util_min_rt_default = SCHED_CAPACITY_SCALE;
 > +
-> +	pfdevfreq->clkname_opp_table = opp_table;
+>  /* All clamps are required to be less or equal than these values */
+>  static struct uclamp_se uclamp_default[UCLAMP_CNT];
+>  
+> @@ -872,6 +892,28 @@ unsigned int uclamp_rq_max_value(struct rq *rq, enum uclamp_id clamp_id,
+>  	return uclamp_idle_value(rq, clamp_id, clamp_value);
+>  }
+>  
+> +static inline void uclamp_sync_util_min_rt_default(struct task_struct *p,
+> +						   enum uclamp_id clamp_id)
+> +{
+> +	unsigned int default_util_min = sysctl_sched_uclamp_util_min_rt_default;
+> +	struct uclamp_se *uc_se;
 > +
->   	opp_table = dev_pm_opp_set_regulators(dev, pfdev->comp->supply_names,
->   					      pfdev->comp->num_supplies);
->   	if (IS_ERR(opp_table)) {
-> @@ -176,6 +184,11 @@ void panfrost_devfreq_fini(struct panfrost_device *pfdev)
->   		dev_pm_opp_put_regulators(pfdevfreq->regulators_opp_table);
->   		pfdevfreq->regulators_opp_table = NULL;
->   	}
+> +	/* Only sync for UCLAMP_MIN and RT tasks */
+> +	if (clamp_id != UCLAMP_MIN || !rt_task(p))
+> +		return;
 > +
-> +	if (pfdevfreq->clkname_opp_table) {
-> +		dev_pm_opp_put_clkname(pfdevfreq->clkname_opp_table);
-> +		pfdevfreq->clkname_opp_table = NULL;
-> +	}
->   }
->   
->   void panfrost_devfreq_resume(struct panfrost_device *pfdev)
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.h b/drivers/gpu/drm/panfrost/panfrost_devfreq.h
-> index 347cde4786cf..1f2475e1d034 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.h
-> @@ -16,6 +16,7 @@ struct panfrost_device;
->   struct panfrost_devfreq {
->   	struct devfreq *devfreq;
->   	struct opp_table *regulators_opp_table;
-> +	struct opp_table *clkname_opp_table;
->   	struct thermal_cooling_device *cooling;
->   	bool opp_of_table_added;
->   
-> 
+> +	uc_se = &p->uclamp_req[UCLAMP_MIN];
+> +
+> +	/*
+> +	 * Only sync if user didn't override the default request and the sysctl
+> +	 * knob has changed.
+> +	 */
+> +	if (uc_se->user_defined || uc_se->value == default_util_min)
+> +		return;
+> +
+> +	uclamp_se_set(uc_se, default_util_min, false);
+> +}
 
+So afaict this is directly added to the enqueue/dequeue path, and we've
+recently already had complaints that uclamp is too slow.
+
+Is there really no other way?
