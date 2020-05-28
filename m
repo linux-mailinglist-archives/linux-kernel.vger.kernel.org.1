@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F51A1E6974
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 20:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E2D1E6976
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 20:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405922AbgE1SgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 14:36:11 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:42498 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405891AbgE1Sf4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 14:35:56 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 49XxGf65JDzBn;
-        Thu, 28 May 2020 20:35:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1590690954; bh=QjngVfF3jGFX7hjsYC0+ki+GV1G3GFLfuWLY+mPbiy8=;
-        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=mjOQBr4a0z6i6cI5tKBgwyT5sDSr+t668gVJneiKtoM8WU27fbdcalb43S5QkFoJ5
-         idpS8+XgQIXeIK0cX+uBp3z6rbvLhe2Q7xmL+nGTh9CEAqIFHasXlJ2ai4yQQBwFtN
-         A2GuVMXuhg6g7lCM081DGpeCJjH2TFsWkkOJKQ6Oh1EHb95Wz4Dq9Z1QrqETuIOsv/
-         XuwG9FZ9vNw0TDieZibrq989ipD0ypwzy9orWcSQEJwK52S18WVKTFhlf8FPP8CS4T
-         MAjH6iuiD8WurIhd/K8NBHsnm82furj3JTSieDPiRGzBlua33OwlyM3ULgUTjIm84+
-         TlQAc1yXCB/SA==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-Date:   Thu, 28 May 2020 20:35:54 +0200
-Message-Id: <e4d649e657f67ca422252331b560c29bc3f63515.1590690650.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <cover.1590690650.git.mirq-linux@rere.qmqm.pl>
-References: <cover.1590690650.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 3/3] usb: gadget: udc: atmel: implement .pullup callback
+        id S2405946AbgE1Sg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 14:36:27 -0400
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:26976 "EHLO
+        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405890AbgE1SgU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 14:36:20 -0400
+Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
+ EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
+ 15.0.1156.6; Thu, 28 May 2020 11:36:15 -0700
+Received: from ubuntu.eng.vmware.com (unknown [10.20.113.240])
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id A5F84B2240;
+        Thu, 28 May 2020 14:36:19 -0400 (EDT)
+From:   Ronak Doshi <doshir@vmware.com>
+To:     <netdev@vger.kernel.org>
+CC:     Ronak Doshi <doshir@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 net-next 0/4] vmxnet3: upgrade to version 4
+Date:   Thu, 28 May 2020 11:36:11 -0700
+Message-ID: <20200528183615.27212-1-doshir@vmware.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     Cristian Birsan <cristian.birsan@microchip.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Songjun Wu <songjun.wu@atmel.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain
+Received-SPF: None (EX13-EDG-OU-001.vmware.com: doshir@vmware.com does not
+ designate permitted sender hosts)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement udc->pullup callback, so that udc_connect/disconnect work.
-This is needed for composite gadget, as it assumes udc_disconnect()
-actually works and calls gadget's ->disconnect callback.
+vmxnet3 emulation has recently added several new features which includes
+offload support for tunnel packets, support for new commands the driver
+can issue to emulation, change in descriptor fields, etc. This patch
+series extends the vmxnet3 driver to leverage these new features.
 
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
----
- drivers/usb/gadget/udc/atmel_usba_udc.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+Compatibility is maintained using existing vmxnet3 versioning mechanism as
+follows:
+ - new features added to vmxnet3 emulation are associated with new vmxnet3
+   version viz. vmxnet3 version 4.
+ - emulation advertises all the versions it supports to the driver.
+ - during initialization, vmxnet3 driver picks the highest version number
+ supported by both the emulation and the driver and configures emulation
+ to run at that version.
 
-diff --git a/drivers/usb/gadget/udc/atmel_usba_udc.c b/drivers/usb/gadget/udc/atmel_usba_udc.c
-index 9342a3d24963..c5128c229c52 100644
---- a/drivers/usb/gadget/udc/atmel_usba_udc.c
-+++ b/drivers/usb/gadget/udc/atmel_usba_udc.c
-@@ -1028,6 +1028,7 @@ usba_udc_set_selfpowered(struct usb_gadget *gadget, int is_selfpowered)
- 	return 0;
- }
- 
-+static int atmel_usba_pullup(struct usb_gadget *gadget, int is_on);
- static int atmel_usba_start(struct usb_gadget *gadget,
- 		struct usb_gadget_driver *driver);
- static int atmel_usba_stop(struct usb_gadget *gadget);
-@@ -1101,6 +1102,7 @@ static const struct usb_gadget_ops usba_udc_ops = {
- 	.get_frame		= usba_udc_get_frame,
- 	.wakeup			= usba_udc_wakeup,
- 	.set_selfpowered	= usba_udc_set_selfpowered,
-+	.pullup			= atmel_usba_pullup,
- 	.udc_start		= atmel_usba_start,
- 	.udc_stop		= atmel_usba_stop,
- 	.match_ep		= atmel_usba_match_ep,
-@@ -1957,6 +1959,24 @@ static irqreturn_t usba_vbus_irq_thread(int irq, void *devid)
- 	return IRQ_HANDLED;
- }
- 
-+static int atmel_usba_pullup(struct usb_gadget *gadget, int is_on)
-+{
-+	struct usba_udc *udc = container_of(gadget, struct usba_udc, gadget);
-+	unsigned long flags;
-+	u32 ctrl;
-+
-+	spin_lock_irqsave(&udc->lock, flags);
-+	ctrl = usba_readl(udc, CTRL);
-+	if (is_on)
-+		ctrl &= ~USBA_DETACH;
-+	else
-+		ctrl |= USBA_DETACH;
-+	usba_writel(udc, CTRL, ctrl);
-+	spin_unlock_irqrestore(&udc->lock, flags);
-+
-+	return 0;
-+}
-+
- static int atmel_usba_start(struct usb_gadget *gadget,
- 		struct usb_gadget_driver *driver)
- {
+In particular, following changes are introduced:
+
+Patch 1:
+  This patch introduces utility macros for vmxnet3 version 4 comparison
+  and updates Copyright information.
+
+Patch 2:
+  This patch implements get_rss_hash_opts and set_rss_hash_opts methods
+  to allow querying and configuring different Rx flow hash configurations
+  which can be used to support UDP/ESP RSS.
+
+Patch 3:
+  This patch introduces segmentation and checksum offload support for
+  encapsulated packets. This avoids segmenting and calculating checksum
+  for each segment and hence gives performance boost.
+
+Patch 4:
+  With all vmxnet3 version 4 changes incorporated in the vmxnet3 driver,
+  with this patch, the driver can configure emulation to run at vmxnet3
+  version 4.
+
+Changes in v2:
+   - Fixed compilation issue due to missing closed brace
+   - added fallthrough comment
+
+Ronak Doshi (4):
+  vmxnet3: prepare for version 4 changes
+  vmxnet3: add support to get/set rx flow hash
+  vmxnet3: add geneve and vxlan tunnel offload support
+  vmxnet3: update to version 4
+
+ drivers/net/vmxnet3/Makefile          |   2 +-
+ drivers/net/vmxnet3/upt1_defs.h       |   5 +-
+ drivers/net/vmxnet3/vmxnet3_defs.h    |  31 +++-
+ drivers/net/vmxnet3/vmxnet3_drv.c     | 164 ++++++++++++++++++---
+ drivers/net/vmxnet3/vmxnet3_ethtool.c | 268 +++++++++++++++++++++++++++++++++-
+ drivers/net/vmxnet3/vmxnet3_int.h     |  25 +++-
+ 6 files changed, 453 insertions(+), 42 deletions(-)
+
 -- 
-2.20.1
+2.11.0
 
