@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C901E5EE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036791E5EEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388969AbgE1L5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 07:57:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48880 "EHLO mail.kernel.org"
+        id S2389040AbgE1L5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 07:57:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388809AbgE1L4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 07:56:46 -0400
+        id S2388597AbgE1L4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 07:56:53 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E08C207D3;
-        Thu, 28 May 2020 11:56:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 418B221532;
+        Thu, 28 May 2020 11:56:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590667006;
-        bh=rLPYZy8BfA6VlzlWQXP+dW2j7mV2wYkXIstlwBNSK4M=;
+        s=default; t=1590667012;
+        bh=yU3uM29KX3qFLteU6zpD378KlUSl1Mc08N73Woceycc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S5mVgIKQjjpxnx6RS36+Imb4OZWp9A2AGmlPz1AY13u1FuS/AvXQl21EqPSVqTfl5
-         a0hqn89sBZt3uDPUoV+b+eChLX+sf5k1FEZ/KD183f/MPELwgFbD7JMZUTvNNtguOs
-         nbGyCGFW3rCfwfIS3MThmsuTRrg13GAMeDFaufa8=
+        b=a6ge4CrTEIYrJ7qD97xRa3KK7UDes8xgBsvFkT5XZUjYJNT35wltX2SQh/IXgwt2m
+         tJ1qRtFe5EK5g5GZtjRQTtpHFoEOtGk2zJ3DihgzRyFmRPsfOmKbPeLOl+gaoyLnhU
+         Dhc2m0THhXt5/9bzfQEKvg9TBreNNBxZjwv4EwRU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Moshe Shemesh <moshe@mellanox.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 40/47] net/mlx5: Fix memory leak in mlx5_events_init
-Date:   Thu, 28 May 2020 07:55:53 -0400
-Message-Id: <20200528115600.1405808-40-sashal@kernel.org>
+Cc:     Qiushi Wu <wu000273@umn.edu>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 46/47] net/mlx4_core: fix a memory leak bug.
+Date:   Thu, 28 May 2020 07:55:59 -0400
+Message-Id: <20200528115600.1405808-46-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200528115600.1405808-1-sashal@kernel.org>
 References: <20200528115600.1405808-1-sashal@kernel.org>
@@ -45,39 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Moshe Shemesh <moshe@mellanox.com>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit df14ad1eccb04a4a28c90389214dbacab085b244 ]
+[ Upstream commit febfd9d3c7f74063e8e630b15413ca91b567f963 ]
 
-Fix memory leak in mlx5_events_init(), in case
-create_single_thread_workqueue() fails, events
-struct should be freed.
+In function mlx4_opreq_action(), pointer "mailbox" is not released,
+when mlx4_cmd_box() return and error, causing a memory leak bug.
+Fix this issue by going to "out" label, mlx4_free_cmd_mailbox() can
+free this pointer.
 
-Fixes: 5d3c537f9070 ("net/mlx5: Handle event of power detection in the PCIE slot")
-Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
-Reviewed-by: Tariq Toukan <tariqt@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Fixes: fe6f700d6cbb ("net/mlx4_core: Respond to operation request by firmware")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/events.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx4/fw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/events.c b/drivers/net/ethernet/mellanox/mlx5/core/events.c
-index 8bcf3426b9c6..3ce17c3d7a00 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/events.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/events.c
-@@ -346,8 +346,10 @@ int mlx5_events_init(struct mlx5_core_dev *dev)
- 	events->dev = dev;
- 	dev->priv.events = events;
- 	events->wq = create_singlethread_workqueue("mlx5_events");
--	if (!events->wq)
-+	if (!events->wq) {
-+		kfree(events);
- 		return -ENOMEM;
-+	}
- 	INIT_WORK(&events->pcie_core_work, mlx5_pcie_event);
- 
- 	return 0;
+diff --git a/drivers/net/ethernet/mellanox/mlx4/fw.c b/drivers/net/ethernet/mellanox/mlx4/fw.c
+index 6e501af0e532..f6ff9620a137 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/fw.c
++++ b/drivers/net/ethernet/mellanox/mlx4/fw.c
+@@ -2734,7 +2734,7 @@ void mlx4_opreq_action(struct work_struct *work)
+ 		if (err) {
+ 			mlx4_err(dev, "Failed to retrieve required operation: %d\n",
+ 				 err);
+-			return;
++			goto out;
+ 		}
+ 		MLX4_GET(modifier, outbox, GET_OP_REQ_MODIFIER_OFFSET);
+ 		MLX4_GET(token, outbox, GET_OP_REQ_TOKEN_OFFSET);
 -- 
 2.25.1
 
