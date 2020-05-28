@@ -2,82 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9A91E64FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB9C1E64DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403941AbgE1O6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 10:58:18 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:37342 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403773AbgE1O6D (ORCPT
+        id S2391333AbgE1O4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 10:56:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391336AbgE1Oz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 10:58:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XfDBa6L5beYtY9Mm6rzbZ08MMV6LAgrWZgziccfPExk=; b=2hjQjRWxqtCnbGeD8fBkZSGqOy
-        HJNJVsY4UHmFTBSAiHibHn+yESXpMZIHT8lrOtHuXQeqa9IqGo0948KIWACXK+La1VlTKioEj4ThK
-        MPw11b4tERh9bXYPPXs3vMD4BQhE49MYn3g+nZfYBY5806qkTRW/CJdd4QSeT/MIIkgqVNkemYNQ5
-        TRfqk9DTiRz41a9cjBq+nxS8hlvISxtENsvmD4tr8vhdMRigKJITZzK8varrK6BlSaaZMNf2hQ/3o
-        aueutvbdJDWsrqcED1JGLETAHBAW6iZ/uX4fafsdxIP9Y68nzp5mBWN6QJQeAoz7IZLMgNnCDPSMT
-        DnBXLzjg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jeJwS-00037f-Sp; Thu, 28 May 2020 14:55:33 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7270F301205;
-        Thu, 28 May 2020 16:55:30 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 555032B9FB566; Thu, 28 May 2020 16:55:30 +0200 (CEST)
-Date:   Thu, 28 May 2020 16:55:30 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Qian Cai <cai@lca.pw>, Andrey Konovalov <andreyknvl@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH 2/3] kasan: move kasan_report() into report.c
-Message-ID: <20200528145530.GG706495@hirez.programming.kicks-ass.net>
-References: <29bd753d5ff5596425905b0b07f51153e2345cc1.1589297433.git.andreyknvl@google.com>
- <78a81fde6eeda9db72a7fd55fbc33173a515e4b1.1589297433.git.andreyknvl@google.com>
- <20200528134913.GA1810@lca.pw>
- <20200528143341.ntxtnq4rw5ypu3k5@treble>
+        Thu, 28 May 2020 10:55:59 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B9BC08C5C8
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 07:55:59 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id t18so14176423wru.6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 07:55:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cumulusnetworks.com; s=google;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EneWOSiakfCEBaGnxTPG1pDLBtx0joXUVr4u5ehgW3o=;
+        b=E48ktRuxhpbVEBsogPQwIhCX+QdVASFipvgGxF9Jh2+6mBhSWXz+xMMaAOTNP6CyPe
+         9ztFbUVfCr/1IU06ipTsV+cU/HKxibCQAiBxazot2AGMjqj/UtJjY5b/6cyFlG0FktES
+         CjEqaPrDQ3Zwh3yN54NVP7gE5yXe1oyl6Wgz4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EneWOSiakfCEBaGnxTPG1pDLBtx0joXUVr4u5ehgW3o=;
+        b=c17koVioJIcu6S8g1FiB7JQHJuMsAMTdkx+wLU6c3QdCsF5dKsDBAD5Gx8tT9Yszz1
+         Zi9AEsB6Sy5OanXiiHoL4xCBOHY6KupHvN64VVIYKz9VxxCp5KfCnZ4N7bL4J1fe7TdP
+         eLiJWmTbwq79ogj+dDIsn5PO8pDB3W7Fl1+CODg1bBbFcdVYnqy7X4yMvTRHTJxgXdgj
+         UdpXCnYNorezeU+1CHk7+NFQ7Ixp8Ud8HuTLKCCi41FF3HefbUeAUIg/5+Na1PeggUt+
+         oM1PyGurTvFsat395dg+6EySiRGeD+X1GzIc1bI0St2MOPodfQMWgH1kxNLbWkkuVPfF
+         1g+g==
+X-Gm-Message-State: AOAM532gHQee0qN+H3SKfM9R8ALqeGRbHyA04USjGyXuXjRWtBEkAKgv
+        E0CAnyVSVqYNZzotX0yDfptUCk+Za524wQ==
+X-Google-Smtp-Source: ABdhPJzQUq72JztGH2vQBnYxdj0ih8RSMgb5VMRbG33nWrvt2fkhWG9C9dpWueI/PvK7ArgQjpCE8Q==
+X-Received: by 2002:a05:6000:1192:: with SMTP id g18mr4141547wrx.326.1590677757388;
+        Thu, 28 May 2020 07:55:57 -0700 (PDT)
+Received: from [192.168.51.243] ([78.128.78.220])
+        by smtp.gmail.com with ESMTPSA id y37sm7276009wrd.55.2020.05.28.07.55.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 May 2020 07:55:56 -0700 (PDT)
+Subject: Re: [PATCH][net-next] nexthop: fix incorrect allocation failure on
+ nhg->spare
+From:   Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
+To:     Colin King <colin.king@canonical.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200528145114.420100-1-colin.king@canonical.com>
+ <8b73e872-c05e-e93f-1d2d-3466da4ddbcc@cumulusnetworks.com>
+Message-ID: <b0852a83-c3a5-a1be-6554-dc035e5b3d6e@cumulusnetworks.com>
+Date:   Thu, 28 May 2020 17:55:55 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200528143341.ntxtnq4rw5ypu3k5@treble>
+In-Reply-To: <8b73e872-c05e-e93f-1d2d-3466da4ddbcc@cumulusnetworks.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 09:33:41AM -0500, Josh Poimboeuf wrote:
-> On Thu, May 28, 2020 at 09:49:13AM -0400, Qian Cai wrote:
-> > On Tue, May 12, 2020 at 05:33:20PM +0200, 'Andrey Konovalov' via kasan-dev wrote:
-> > > The kasan_report() functions belongs to report.c, as it's a common
-> > > functions that does error reporting.
-> > > 
-> > > Reported-by: Leon Romanovsky <leon@kernel.org>
-> > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > 
-> > Today's linux-next produced this with Clang 11.
-> > 
-> > mm/kasan/report.o: warning: objtool: kasan_report()+0x8a: call to __stack_chk_fail() with UACCESS enabled
-> > 
-> > kasan_report at mm/kasan/report.c:536
+On 28/05/2020 17:53, Nikolay Aleksandrov wrote:
+> On 28/05/2020 17:51, Colin King wrote:
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> The allocation failure check for nhg->spare is currently checking
+>> the pointer nhg rather than nhg->spare which is never false. Fix
+>> this by checking nhg->spare instead.
+>>
+>> Addresses-Coverity: ("Logically dead code")
+>> Fixes: 430a049190de ("nexthop: Add support for nexthop groups")
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>> ---
+>>  net/ipv4/nexthop.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/net/ipv4/nexthop.c b/net/ipv4/nexthop.c
+>> index ebafa5ed91ac..97423d6f2de9 100644
+>> --- a/net/ipv4/nexthop.c
+>> +++ b/net/ipv4/nexthop.c
+>> @@ -1185,7 +1185,7 @@ static struct nexthop *nexthop_create_group(struct net *net,
+>>  
+>>  	/* spare group used for removals */
+>>  	nhg->spare = nexthop_grp_alloc(num_nh);
+>> -	if (!nhg) {
+>> +	if (!nhg->spare) {
+>>  		kfree(nhg);
+>>  		kfree(nh);
+>>  		return NULL;
+>>
 > 
-> Peter, this was also reported with GCC about a month ago.  Should we add
-> __stack_chk_fail() to the uaccess safe list?
+> Good catch, embarrassing copy paste error :-/
+> Acked-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
+> 
 
-It calls panic(), which I suppose is pretty safe, it kills the entire
-machine dead :-)
+Wait - that should be targeted at -net, that's where the fixes went.
+And the fixes tag is wrong, nhg->spare was very recently added by:
+commit 90f33bffa382
+Author: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
+Date:   Tue May 26 12:56:15 2020 -0600
 
-Ok.
+    nexthops: don't modify published nexthop groups
+
