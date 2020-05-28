@@ -2,115 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB9C1E64DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 717FB1E64F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391333AbgE1O4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 10:56:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46216 "EHLO
+        id S2403922AbgE1O5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 10:57:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391336AbgE1Oz7 (ORCPT
+        with ESMTP id S2403787AbgE1O5p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 10:55:59 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B9BC08C5C8
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 07:55:59 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id t18so14176423wru.6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 07:55:59 -0700 (PDT)
+        Thu, 28 May 2020 10:57:45 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 946CAC08C5C6;
+        Thu, 28 May 2020 07:57:45 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id w90so249078qtd.8;
+        Thu, 28 May 2020 07:57:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cumulusnetworks.com; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EneWOSiakfCEBaGnxTPG1pDLBtx0joXUVr4u5ehgW3o=;
-        b=E48ktRuxhpbVEBsogPQwIhCX+QdVASFipvgGxF9Jh2+6mBhSWXz+xMMaAOTNP6CyPe
-         9ztFbUVfCr/1IU06ipTsV+cU/HKxibCQAiBxazot2AGMjqj/UtJjY5b/6cyFlG0FktES
-         CjEqaPrDQ3Zwh3yN54NVP7gE5yXe1oyl6Wgz4=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=xh10qpgo8ZBw04J26d6TmP95SZB7leV7haVSlHLd2KM=;
+        b=buvCKmjhmmNh95OXQOYAHAM2JXnioPPtZVlMoCCsXWBaJ3npB99IVwgHzFzJtc6zSP
+         zDjcxjevo3MiKIzQ9qD2q4UN54h+GgmyrSayNYjdsKD0gqkbwgsmER+rP6mJd3fHzcRd
+         5x01uE9OP109aSO+MJbm3KtnapOmJqn4wx2SWY1EPUOUJQTXW/88KJFjmZdBpEx+HfF5
+         ij8wcGSaSrH8O+zdmKr1AxorBSDOh/iFZm0o9Dxtm9KxvsVj6+cz7QttVQnGSbyYV/d3
+         AXZgy+kakANhfFsMRviQYQKjBwivSIHY0XkbNd7VFw2ELV/m7bMgGxgPRM3hpFmCr/Vh
+         jPWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EneWOSiakfCEBaGnxTPG1pDLBtx0joXUVr4u5ehgW3o=;
-        b=c17koVioJIcu6S8g1FiB7JQHJuMsAMTdkx+wLU6c3QdCsF5dKsDBAD5Gx8tT9Yszz1
-         Zi9AEsB6Sy5OanXiiHoL4xCBOHY6KupHvN64VVIYKz9VxxCp5KfCnZ4N7bL4J1fe7TdP
-         eLiJWmTbwq79ogj+dDIsn5PO8pDB3W7Fl1+CODg1bBbFcdVYnqy7X4yMvTRHTJxgXdgj
-         UdpXCnYNorezeU+1CHk7+NFQ7Ixp8Ud8HuTLKCCi41FF3HefbUeAUIg/5+Na1PeggUt+
-         oM1PyGurTvFsat395dg+6EySiRGeD+X1GzIc1bI0St2MOPodfQMWgH1kxNLbWkkuVPfF
-         1g+g==
-X-Gm-Message-State: AOAM532gHQee0qN+H3SKfM9R8ALqeGRbHyA04USjGyXuXjRWtBEkAKgv
-        E0CAnyVSVqYNZzotX0yDfptUCk+Za524wQ==
-X-Google-Smtp-Source: ABdhPJzQUq72JztGH2vQBnYxdj0ih8RSMgb5VMRbG33nWrvt2fkhWG9C9dpWueI/PvK7ArgQjpCE8Q==
-X-Received: by 2002:a05:6000:1192:: with SMTP id g18mr4141547wrx.326.1590677757388;
-        Thu, 28 May 2020 07:55:57 -0700 (PDT)
-Received: from [192.168.51.243] ([78.128.78.220])
-        by smtp.gmail.com with ESMTPSA id y37sm7276009wrd.55.2020.05.28.07.55.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 May 2020 07:55:56 -0700 (PDT)
-Subject: Re: [PATCH][net-next] nexthop: fix incorrect allocation failure on
- nhg->spare
-From:   Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-To:     Colin King <colin.king@canonical.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200528145114.420100-1-colin.king@canonical.com>
- <8b73e872-c05e-e93f-1d2d-3466da4ddbcc@cumulusnetworks.com>
-Message-ID: <b0852a83-c3a5-a1be-6554-dc035e5b3d6e@cumulusnetworks.com>
-Date:   Thu, 28 May 2020 17:55:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <8b73e872-c05e-e93f-1d2d-3466da4ddbcc@cumulusnetworks.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=xh10qpgo8ZBw04J26d6TmP95SZB7leV7haVSlHLd2KM=;
+        b=uc2qwrgR7Q0npWB5pasIU6+oXyNh3xbIj0tbUFxODaEx9SOPBzNRhYYDHR2ZNUfEwM
+         Lr0PupT84Oi/LazVKLKLYJBTMqOYj8+YJvHhqzWBntEpc5+SlnhhX8QaILi8XIoVSPqf
+         eoIywXB4nV95MquKmgvgxqhHEer46ty9vcsHnRALhEc8On+o9kVindIFgCc9E9LtUHQI
+         W7xEdWbad3TKLxnmGUMXe7n/4oy+L+IdG+JDj87+xLsu39v0pga3W9FumGPp4yBzK7vp
+         hBz0zhWZim005gUUdCvrcgspZFXiAVlMbvUyV5b3HtKLW3mdmqxZy49PiU1Tar5atoet
+         ND9w==
+X-Gm-Message-State: AOAM531avRyRSXf08HwS0gcLmD3e8jhRgbwmacCRCmm/KDnC2kJNMNqz
+        0TzN8MqPX3o5neBAydhdZg0Jub1W7ic=
+X-Google-Smtp-Source: ABdhPJyWo3QAAo1dPoftO2PinkN6bcnQYbJ0FqVZ+8djxEm/X53BTqJcBHwILXOjtO5Ln5D/WVF+5w==
+X-Received: by 2002:ac8:e8f:: with SMTP id v15mr3413836qti.391.1590677864325;
+        Thu, 28 May 2020 07:57:44 -0700 (PDT)
+Received: from ict14-OptiPlex-980.kataweb.it ([178.23.248.46])
+        by smtp.googlemail.com with ESMTPSA id s74sm5116876qka.54.2020.05.28.07.57.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 07:57:43 -0700 (PDT)
+From:   Jonathan Albrieux <jonathan.albrieux@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        Jonathan Albrieux <jonathan.albrieux@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), Hartmut Knaack <knaack.h@gmx.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-iio@vger.kernel.org (open list:IIO SUBSYSTEM AND DRIVERS),
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Subject: [PATCH v7 0/5] iio: magnetometer: ak8975: Add gpio reset support
+Date:   Thu, 28 May 2020 16:56:03 +0200
+Message-Id: <20200528145631.11608-1-jonathan.albrieux@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/05/2020 17:53, Nikolay Aleksandrov wrote:
-> On 28/05/2020 17:51, Colin King wrote:
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> The allocation failure check for nhg->spare is currently checking
->> the pointer nhg rather than nhg->spare which is never false. Fix
->> this by checking nhg->spare instead.
->>
->> Addresses-Coverity: ("Logically dead code")
->> Fixes: 430a049190de ("nexthop: Add support for nexthop groups")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->> ---
->>  net/ipv4/nexthop.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/net/ipv4/nexthop.c b/net/ipv4/nexthop.c
->> index ebafa5ed91ac..97423d6f2de9 100644
->> --- a/net/ipv4/nexthop.c
->> +++ b/net/ipv4/nexthop.c
->> @@ -1185,7 +1185,7 @@ static struct nexthop *nexthop_create_group(struct net *net,
->>  
->>  	/* spare group used for removals */
->>  	nhg->spare = nexthop_grp_alloc(num_nh);
->> -	if (!nhg) {
->> +	if (!nhg->spare) {
->>  		kfree(nhg);
->>  		kfree(nh);
->>  		return NULL;
->>
-> 
-> Good catch, embarrassing copy paste error :-/
-> Acked-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-> 
+v7:
+ - fix documentation style, removing documentation unnecessary parts
 
-Wait - that should be targeted at -net, that's where the fixes went.
-And the fixes tag is wrong, nhg->spare was very recently added by:
-commit 90f33bffa382
-Author: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-Date:   Tue May 26 12:56:15 2020 -0600
+v6:
+ - reword documentation for gpios, add interrupt documentation
+https://lore.kernel.org/linux-iio/20200525151117.32540-1-jonathan.albrieux@gmail.com/
 
-    nexthops: don't modify published nexthop groups
+v5:
+ - add maintainer
+https://lore.kernel.org/linux-iio/20200520163417.27805-1-jonathan.albrieux@gmail.com/
+
+v4:
+ - fix some typo
+ - use gpio's dt-bindings for more clarity in documentation
+ - set compatible properties without vendor prefix as deprecated
+https://lore.kernel.org/linux-iio/20200520073125.30808-1-jonathan.albrieux@gmail.com/
+
+v3:
+ - fix patch messages style
+ - align reset gpio comment to kernel doc reccomendation
+ - introduce changelog
+https://lore.kernel.org/linux-iio/20200519124402.26076-1-jonathan.albrieux@gmail.com/
+
+v2:
+ - rewording of reset gpio comment and patch messages to better clarify
+   reset gpio behaviour
+https://lore.kernel.org/linux-iio/20200518133645.19127-1-jonathan.albrieux@gmail.com/
+
+v1:
+ - initial patch submission
+https://lore.kernel.org/linux-iio/20200519065749.4624-1-jonathan.albrieux@gmail.com/
+
+Convert documentation from txt format to yaml. Add documentation about
+reset-gpio.
+
+Deassert reset on ak8975_power_on(), assert reset on ak8975_power_off().
+
+Without reset's deassertion during ak8975_power_on(), driver's probe fails
+on ak8975_who_i_am() while checking for device identity for AK09911 chip.
+
+AK09911 has an active low reset gpio to handle register's reset.
+AK09911 datasheet says that, if not used, reset pin should be connected
+to VID. This patch emulates this situation.
+
+JonnyMe (5):
+  dt-bindings: iio: magnetometer: ak8975: reword gpios, add interrupts,
+    fix style
+  dt-bindings: iio: magnetometer: ak8975: convert format to yaml, add
+    maintainer
+  dt-bindings: iio: magnetometer: ak8975: add gpio reset support
+  iio: magnetometer: ak8975: Fix typo, uniform measurement unit style
+  iio: magnetometer: ak8975: Add gpio reset support
+
+ .../bindings/iio/magnetometer/ak8975.txt      | 30 -------
+ .../iio/magnetometer/asahi-kasei,ak8975.yaml  | 84 +++++++++++++++++++
+ drivers/iio/magnetometer/ak8975.c             | 22 ++++-
+ 3 files changed, 104 insertions(+), 32 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/iio/magnetometer/ak8975.txt
+ create mode 100644 Documentation/devicetree/bindings/iio/magnetometer/asahi-kasei,ak8975.yaml
+
+-- 
+2.17.1
 
