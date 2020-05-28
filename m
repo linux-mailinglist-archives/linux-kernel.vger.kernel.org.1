@@ -2,109 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C221E644A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E58EC1E6452
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728544AbgE1Ons convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 May 2020 10:43:48 -0400
-Received: from skedge04.snt-world.com ([91.208.41.69]:44114 "EHLO
-        skedge04.snt-world.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728473AbgE1Onq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 10:43:46 -0400
-Received: from sntmail12r.snt-is.com (unknown [10.203.32.182])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1728577AbgE1OpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 10:45:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725922AbgE1OpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 10:45:00 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by skedge04.snt-world.com (Postfix) with ESMTPS id BA50A67A7D5;
-        Thu, 28 May 2020 16:43:43 +0200 (CEST)
-Received: from sntmail12r.snt-is.com (10.203.32.182) by sntmail12r.snt-is.com
- (10.203.32.182) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 28 May
- 2020 16:43:43 +0200
-Received: from sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305]) by
- sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305%3]) with mapi id
- 15.01.1913.007; Thu, 28 May 2020 16:43:43 +0200
-From:   Schrempf Frieder <frieder.schrempf@kontron.de>
-To:     Fabio Estevam <festevam@gmail.com>,
-        Schrempf Frieder <frieder.schrempf@kontron.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "NXP Linux Team" <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>
-CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH 2/2] ARM: dts: Change WDOG_ANY signal from push-pull to
- open-drain
-Thread-Topic: [PATCH 2/2] ARM: dts: Change WDOG_ANY signal from push-pull to
- open-drain
-Thread-Index: AQHWNP5ijHzvHqv1VUeZ8FZvaT2asA==
-Date:   Thu, 28 May 2020 14:43:43 +0000
-Message-ID: <20200528144312.25980-2-frieder.schrempf@kontron.de>
-References: <20200528144312.25980-1-frieder.schrempf@kontron.de>
-In-Reply-To: <20200528144312.25980-1-frieder.schrempf@kontron.de>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: git-send-email 2.17.1
-x-originating-ip: [172.25.9.193]
-x-c2processedorg: 51b406b7-48a2-4d03-b652-521f56ac89f3
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        by mail.kernel.org (Postfix) with ESMTPSA id 5BEB6207D3;
+        Thu, 28 May 2020 14:44:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590677100;
+        bh=X9YK+GDEsdW2T8WyDGxweojlNXR+vB7BnE1HKRUoVxo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l2E2WVrocVGuy1b/MoQhvijltZBfFRIPA1HuIMFqM5dN6XLFuQWc89P9MA+V3Em7x
+         9Rgm9qI719tIY6fUpzodZNDu7Nt24Upte5jX83v0rzQGTFaN+0PlHnIxzjfDBJ8YwR
+         f5bCGf7jklLlgV/qFq/P4M6JnQzRot0Ta1CnpqS0=
+Date:   Thu, 28 May 2020 15:44:56 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Fabien Parent <fparent@baylibre.com>,
+        Stephane Le Provost <stephane.leprovost@mediatek.com>,
+        Pedro Tsai <pedro.tsai@mediatek.com>,
+        Andrew Perepech <andrew.perepech@mediatek.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v2 1/2] regmap: provide helpers for simple bit operations
+Message-ID: <20200528144456.GG3606@sirena.org.uk>
+References: <20200528142241.20466-1-brgl@bgdev.pl>
+ <20200528142241.20466-2-brgl@bgdev.pl>
 MIME-Version: 1.0
-X-SnT-MailScanner-Information: Please contact the ISP for more information
-X-SnT-MailScanner-ID: BA50A67A7D5.AF756
-X-SnT-MailScanner: Not scanned: please contact your Internet E-Mail Service Provider for details
-X-SnT-MailScanner-SpamCheck: 
-X-SnT-MailScanner-From: frieder.schrempf@kontron.de
-X-SnT-MailScanner-To: devicetree@vger.kernel.org, festevam@gmail.com,
-        kernel@pengutronix.de, krzk@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org, robh@kernel.org,
-        s.hauer@pengutronix.de, shawnguo@kernel.org, stable@vger.kernel.org
-X-Spam-Status: No
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="RMedoP2+Pr6Rq0N2"
+Content-Disposition: inline
+In-Reply-To: <20200528142241.20466-2-brgl@bgdev.pl>
+X-Cookie: Small is beautiful.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-The WDOG_ANY signal is connected to the RESET_IN signal of the SoM
-and baseboard. It is currently configured as push-pull, which means
-that if some external device like a programmer wants to assert the
-RESET_IN signal by pulling it to ground, it drives against the high
-level WDOG_ANY output of the SoC.
+--RMedoP2+Pr6Rq0N2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-To fix this we set the WDOG_ANY signal to open-drain configuration.
-That way we make sure that the RESET_IN can be asserted by the
-watchdog as well as by external devices.
+On Thu, May 28, 2020 at 04:22:40PM +0200, Bartosz Golaszewski wrote:
 
-Fixes: 1ea4b76cdfde ("ARM: dts: imx6ul-kontron-n6310: Add Kontron i.MX6UL N6310 SoM and boards")
-Cc: stable@vger.kernel.org
-Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
----
- arch/arm/boot/dts/imx6ul-kontron-n6x1x-som-common.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +	return (val & bits) == bits ? 1 : 0;
 
-diff --git a/arch/arm/boot/dts/imx6ul-kontron-n6x1x-som-common.dtsi b/arch/arm/boot/dts/imx6ul-kontron-n6x1x-som-common.dtsi
-index fc316408721d..61ba21a605a8 100644
---- a/arch/arm/boot/dts/imx6ul-kontron-n6x1x-som-common.dtsi
-+++ b/arch/arm/boot/dts/imx6ul-kontron-n6x1x-som-common.dtsi
-@@ -116,7 +116,7 @@
- 
- 	pinctrl_wdog: wdoggrp {
- 		fsl,pins = <
--			MX6UL_PAD_GPIO1_IO09__WDOG1_WDOG_ANY    0x30b0
-+			MX6UL_PAD_GPIO1_IO09__WDOG1_WDOG_ANY    0x18b0
- 		>;
- 	};
- };
--- 
-2.17.1
+The tenery here is redundant, it's converting a boolean value into a
+boolean value.  Otherwise this looks good.
+
+--RMedoP2+Pr6Rq0N2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7PzmcACgkQJNaLcl1U
+h9DzXAf9EwegJko8ZtKiJNAmWI/0roZMdNBpTkKJLOfFqs0LbMZdg1Tg3UA+jOe6
+AM9PSwU009hn4dmLdAbnqIfXhp1e1zPUb537lozVi/6cAbc6yzwzZBxajJjUxjk9
+amrt61H/LZBJyyP1qrY4a/vNtu0R558ozAuMmINAfkEsFdGQq6WZ63N+bcJzPiF4
+kxSTX7Mewb0jyB6ZAilOMkuRFNR+bCGjV0MNVd41MUT+zEcgaMP7Dv6eJ/PUBJ2y
+klySoD2xOzlpxBUpKblFYuso9Q8iRrGGjr49/rh1rYuKjRz/wt8cbwe4NjrG0N+q
+E8vZUZWNgG2ZVnG3DbKIx5QlNJxtDA==
+=EkdN
+-----END PGP SIGNATURE-----
+
+--RMedoP2+Pr6Rq0N2--
