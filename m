@@ -2,100 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B33D1E5793
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 08:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A82271E579B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 08:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725928AbgE1GeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 02:34:21 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:22674 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725601AbgE1GeV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 02:34:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590647660;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=A0TbfU1Wtk9UqNPHb2mnR7GHgRz5NlicH2MG30iIhdQ=;
-        b=OjwtmTh0zrTrT55C1ugNY2uw/mCJiqwKZQPEcS9nFMDoY7Uj8LOigV5n9YQzGECOMVXP5Q
-        UCVszqXIQFgl5u7w1vyTkSGzLnYxdhO09ZDldXEe0h+d1I4w9SXCeoHmN9ZTgQAafVqfnk
-        X6YWrIvsBJSxvpMNQ4Vt8//23QvCE/M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-337-V0gHZIGzPNaVCuaWjLDYHA-1; Thu, 28 May 2020 02:34:16 -0400
-X-MC-Unique: V0gHZIGzPNaVCuaWjLDYHA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1725958AbgE1GfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 02:35:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40382 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725601AbgE1GfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 02:35:03 -0400
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9313E1005510;
-        Thu, 28 May 2020 06:34:14 +0000 (UTC)
-Received: from localhost.localdomain (vpn2-54-130.bne.redhat.com [10.64.54.130])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 048385C1B0;
-        Thu, 28 May 2020 06:34:07 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH RFCv2 3/9] kvm/arm64: Rename kvm_vcpu_get_hsr() to
- kvm_vcpu_get_esr()
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        will@kernel.org, catalin.marinas@arm.com, james.morse@arm.com,
-        suzuki.poulose@arm.com, drjones@redhat.com, eric.auger@redhat.com,
-        aarcange@redhat.com, shan.gavin@gmail.com
-References: <20200508032919.52147-1-gshan@redhat.com>
- <20200508032919.52147-4-gshan@redhat.com>
- <20200526104249.GB1363@C02TD0UTHF1T.local>
- <2e4dd03f-656a-c32b-5e87-ca28583999ef@redhat.com>
- <359dad5546a428ea963781f2728e70bf@kernel.org>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <e71af813-7f72-9d2e-2419-f4e03cf35369@redhat.com>
-Date:   Thu, 28 May 2020 16:34:05 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 00181207D3;
+        Thu, 28 May 2020 06:35:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590647703;
+        bh=NuGCPmxAGBI2XK8Nm9wCfXWioEgp2KAM821Yx4GB6vY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hBkGKwKaOLoXTSF2wTsqB3XRiFaK9iNxYq4NWm8JGcWnlrm4CKncsJCylmJkXMdel
+         SpQ/qZUXC0Z78TuhINGVMQ94Vu/RvBi4+0KYrIyOZwediIFmRY+Jv7Aol/OfdTUDgr
+         ytFM2BNE7Bjq5YA7WBPLJRAsmyTMb3b37fqQLi+A=
+Received: by mail-io1-f42.google.com with SMTP id c8so8427529iob.6;
+        Wed, 27 May 2020 23:35:02 -0700 (PDT)
+X-Gm-Message-State: AOAM530keRgFmV+8xsMlkiuBRXWK+Xl3Celi6A4oK95yBvx2H1WGzyZP
+        ZO8jxFC6M0ONnrHek7cB6Guba1khrm9VUVUpjhM=
+X-Google-Smtp-Source: ABdhPJznn4Cx3G1U8IfKievX2GTQvjlLB94d6qrtuij0ra7aauuhDyzjASGycwEt2xh3e/kXI5QpCJHBTCdgwh4eNYM=
+X-Received: by 2002:a02:3341:: with SMTP id k1mr1322375jak.74.1590647702377;
+ Wed, 27 May 2020 23:35:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <359dad5546a428ea963781f2728e70bf@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <CAPcyv4hO1XEMHPLY-W6g_=TK2Dv=rLgJoVeKrBEHP63zTeq-sA@mail.gmail.com>
+ <20200527232602.21596-1-nivedita@alum.mit.edu>
+In-Reply-To: <20200527232602.21596-1-nivedita@alum.mit.edu>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 28 May 2020 08:34:50 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXH+FAdSbM7BEmMY7KOKnuUetx8zo42zPuhfnmf206AunQ@mail.gmail.com>
+Message-ID: <CAMj1kXH+FAdSbM7BEmMY7KOKnuUetx8zo42zPuhfnmf206AunQ@mail.gmail.com>
+Subject: Re: [PATCH] efi/x86: Don't blow away existing initrd
+To:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/27/20 5:20 PM, Marc Zyngier wrote:
-> On 2020-05-27 03:43, Gavin Shan wrote:
->> Hi Mark,
->>
->> On 5/26/20 8:42 PM, Mark Rutland wrote:
->>> On Fri, May 08, 2020 at 01:29:13PM +1000, Gavin Shan wrote:
->>>> Since kvm/arm32 was removed, this renames kvm_vcpu_get_hsr() to
->>>> kvm_vcpu_get_esr() to it a bit more self-explaining because the
->>>> functions returns ESR instead of HSR on aarch64. This shouldn't
->>>> cause any functional changes.
->>>>
->>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
->>>
->>> I think that this would be a nice cleanup on its own, and could be taken
->>> independently of the rest of this series if it were rebased and sent as
->>> a single patch.
->>>
->>
->> Yeah, I'll see how PATCH[3,4,5] can be posted independently
->> as part of the preparatory work, which is suggested by you
->> in another reply.
->>
->> By the way, I assume the cleanup patches are good enough to
->> target 5.8.rc1/rc2 if you agree.
-> 
-> It's fine to base them on -rc1 or -rc2. They will not be merged
-> before 5.9 though.
-> 
-> Thanks,
-> 
->          M.
+(+ Stephen, Boris)
 
-Sure, Thanks, Marc!
+On Thu, 28 May 2020 at 01:26, Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> Commit
+>   987053a30016 ("efi/x86: Move command-line initrd loading to efi_main")
+> moved the command-line initrd loading into efi_main, with a check to
+> ensure that it was attempted only if the EFI stub was booted via
+> efi_pe_entry rather than the EFI handover entry.
+>
+> However, in the case where it was booted via handover entry, and thus an
+> initrd may have already been loaded by the bootloader, it then wrote 0
+> for the initrd address and size, removing any existing initrd.
+>
+> Fix this by checking if size is positive before setting the fields in
+> the bootparams structure.
+>
+> Fixes: 987053a30016 ("efi/x86: Move command-line initrd loading to efi_main")
+> Reported-by: Dan Williams <dan.j.williams@intel.com>
+> Tested-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 
+Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+
+Apologies to all for the breakage, and for not catching this in review.
+
+Ingo, Thomas, Boris: please apply this directly to efi/core asap.
+
+Stephen: gives that this breaks the boot for a lot of people, you
+might want to pull this into -next directly.
+
+Thanks,
+Ard.
+
+
+> ---
+>  drivers/firmware/efi/libstub/x86-stub.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
+> index 072b7cf40475..ceb8e16c8b75 100644
+> --- a/drivers/firmware/efi/libstub/x86-stub.c
+> +++ b/drivers/firmware/efi/libstub/x86-stub.c
+> @@ -774,10 +774,12 @@ unsigned long efi_main(efi_handle_t handle,
+>                         efi_err("Failed to load initrd!\n");
+>                         goto fail;
+>                 }
+> -               efi_set_u64_split(addr, &hdr->ramdisk_image,
+> -                                 &boot_params->ext_ramdisk_image);
+> -               efi_set_u64_split(size, &hdr->ramdisk_size,
+> -                                 &boot_params->ext_ramdisk_size);
+> +               if (size > 0) {
+> +                       efi_set_u64_split(addr, &hdr->ramdisk_image,
+> +                                         &boot_params->ext_ramdisk_image);
+> +                       efi_set_u64_split(size, &hdr->ramdisk_size,
+> +                                         &boot_params->ext_ramdisk_size);
+> +               }
+>         }
+>
+>         /*
+> --
+> 2.26.2
+>
