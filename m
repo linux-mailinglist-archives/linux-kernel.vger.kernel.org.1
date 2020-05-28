@@ -2,75 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D97B1E5DBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 863791E5DA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388230AbgE1LDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 07:03:08 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:44826 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387926AbgE1LDG (ORCPT
+        id S2388126AbgE1LBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 07:01:43 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:52084 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388073AbgE1LBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 07:03:06 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SB2204028445;
-        Thu, 28 May 2020 11:02:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=AbiKRX/dqvcBx3/Gr1Dt2VgVAqB6aC+uNXh9UFbdScg=;
- b=PcsbN6yDWZnVY8qqvNyrN9Cr9rObIpuLRgMNcImys3HhcW+qV/Avpg6h6QWF59CyfKh7
- 7BdjLtCF0SEqS/iJieg4+TKNfNEO2eN1C+cwZFeb51yDB4Cu+EFcG5XecQuRrwbfMsWn
- cT4FP6jvdxfyki6Lcc2TeDZGvdtBK+N4LNO04E9yT9/JIb9Y81OF8U8gEueoJ5UdXD4/
- G9z6c4WNF14F4CD03Kw/rftnSryrX8r7nv0FhOlrGpzKss6AsnJd/wthhJ5jgVyXTwTK
- mJ+OwVMTaduKcTRE/pP/V6wwcHVviX8TKyl02m7mCQTiGMlNTeAytXxKNEUwmD86isHb 9w== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 318xbk4cfm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 28 May 2020 11:02:29 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SAvc2V111379;
-        Thu, 28 May 2020 11:00:28 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 317j5uxn1f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 May 2020 11:00:27 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04SB0MER019427;
-        Thu, 28 May 2020 11:00:23 GMT
-Received: from [192.168.0.110] (/73.243.10.6)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 28 May 2020 04:00:22 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH v4 00/36] Large pages in the page cache
-From:   William Kucharski <william.kucharski@oracle.com>
-In-Reply-To: <20200515131656.12890-1-willy@infradead.org>
-Date:   Thu, 28 May 2020 05:00:20 -0600
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <ABDA7F4D-8CBA-4D29-A46C-2359DE271AE8@oracle.com>
-References: <20200515131656.12890-1-willy@infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9634 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 suspectscore=0
- mlxlogscore=999 mlxscore=0 adultscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005280074
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9634 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0 mlxscore=0
- lowpriorityscore=0 priorityscore=1501 phishscore=0 cotscore=-2147483648
- suspectscore=0 bulkscore=0 clxscore=1015 impostorscore=0 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2005280075
+        Thu, 28 May 2020 07:01:35 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0TztM4bJ_1590663683;
+Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TztM4bJ_1590663683)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 28 May 2020 19:01:24 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
+        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>
+Subject: [PATCH v11 00/16] per memcg lru lock
+Date:   Thu, 28 May 2020 19:00:42 +0800
+Message-Id: <1590663658-184131-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Except for [PATCH v4 36/36], which I can't approve for obvious reasons:
+This is a new version which bases on linux-next 
 
-Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+Johannes Weiner has suggested:
+"So here is a crazy idea that may be worth exploring:
+
+Right now, pgdat->lru_lock protects both PageLRU *and* the lruvec's
+linked list.
+
+Can we make PageLRU atomic and use it to stabilize the lru_lock
+instead, and then use the lru_lock only serialize list operations?
+..."
+
+With new memcg charge path and this solution, we could isolate
+LRU pages to exclusive visit them in compaction, page migration, reclaim,
+memcg move_accunt, huge page split etc scenarios while keeping pages' 
+memcg stable. Then possible to change per node lru locking to per memcg
+lru locking. As to pagevec_lru_move_fn funcs, it would be safe to let
+pages remain on lru list, lru lock could guard them for list integrity.
+
+The patchset includes 3 parts:
+1, some code cleanup and minimum optimization as a preparation.
+2, use TestCleanPageLRU as page isolation's precondition
+3, replace per node lru_lock with per memcg per node lru_lock
+
+The 3rd part moves per node lru_lock into lruvec, thus bring a lru_lock for
+each of memcg per node. So on a large machine, each of memcg don't
+have to suffer from per node pgdat->lru_lock competition. They could go
+fast with their self lru_lock
+
+Following Daniel Jordan's suggestion, I have run 208 'dd' with on 104
+containers on a 2s * 26cores * HT box with a modefied case:
+https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
+
+With this patchset, the readtwice performance increased about 80%
+in concurrent containers.
+
+Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
+idea 8 years ago, and others who give comments as well: Daniel Jordan, 
+Mel Gorman, Shakeel Butt, Matthew Wilcox etc.
+
+Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
+and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
+
+
+Alex Shi (14):
+  mm/vmscan: remove unnecessary lruvec adding
+  mm/page_idle: no unlikely double check for idle page counting
+  mm/compaction: correct the comments of compact_defer_shift
+  mm/compaction: rename compact_deferred as compact_should_defer
+  mm/thp: move lru_add_page_tail func to huge_memory.c
+  mm/thp: clean up lru_add_page_tail
+  mm/thp: narrow lru locking
+  mm/memcg: add debug checking in lock_page_memcg
+  mm/lru: introduce TestClearPageLRU
+  mm/compaction: do page isolation first in compaction
+  mm/mlock: reorder isolation sequence during munlock
+  mm/lru: replace pgdat lru_lock with lruvec lock
+  mm/lru: introduce the relock_page_lruvec function
+  mm/pgdat: remove pgdat lru_lock
+
+Hugh Dickins (2):
+  mm/vmscan: use relock for move_pages_to_lru
+  mm/lru: revise the comments of lru_lock
+
+ Documentation/admin-guide/cgroup-v1/memcg_test.rst |  15 +-
+ Documentation/admin-guide/cgroup-v1/memory.rst     |   8 +-
+ Documentation/trace/events-kmem.rst                |   2 +-
+ Documentation/vm/unevictable-lru.rst               |  22 +--
+ include/linux/compaction.h                         |   4 +-
+ include/linux/memcontrol.h                         |  92 +++++++++++
+ include/linux/mm_types.h                           |   2 +-
+ include/linux/mmzone.h                             |   6 +-
+ include/linux/page-flags.h                         |   1 +
+ include/linux/swap.h                               |   4 +-
+ include/trace/events/compaction.h                  |   2 +-
+ mm/compaction.c                                    | 104 ++++++++-----
+ mm/filemap.c                                       |   4 +-
+ mm/huge_memory.c                                   |  51 +++++--
+ mm/memcontrol.c                                    |  87 ++++++++++-
+ mm/mlock.c                                         |  93 ++++++------
+ mm/mmzone.c                                        |   1 +
+ mm/page_alloc.c                                    |   1 -
+ mm/page_idle.c                                     |   8 -
+ mm/rmap.c                                          |   2 +-
+ mm/swap.c                                          | 112 ++++----------
+ mm/swap_state.c                                    |   6 +-
+ mm/vmscan.c                                        | 168 +++++++++++----------
+ mm/workingset.c                                    |   4 +-
+ 24 files changed, 487 insertions(+), 312 deletions(-)
+
+-- 
+1.8.3.1
+
