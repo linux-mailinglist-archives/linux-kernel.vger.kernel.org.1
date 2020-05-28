@@ -2,182 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8855A1E5DCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9240C1E5DD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388348AbgE1LEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 07:04:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388339AbgE1LEU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 07:04:20 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EFAC05BD1E;
-        Thu, 28 May 2020 04:04:19 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id EA6BF23E46;
-        Thu, 28 May 2020 13:04:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1590663857;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jz5PJHH2h2A/8f24evk4T0wO6B2JhEYzejhlcN74ubc=;
-        b=ggMqRKbcUpifdIRJX3TruE8OJ8w30ioCU4jsBlO1IqJ6dUVJ8ARlXwH44RuZboH0+Q01WJ
-        jCijQsAMcjUnYcmI6nVRxGlWmddEENXDs8oPkI9S6vlX7q73IkQYGPJSk/bJp4oOGMWJzU
-        E1c55GBP5Xrv1zbSt7CHs40PoDNT/hA=
+        id S2388156AbgE1LFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 07:05:25 -0400
+Received: from mail-am6eur05on2089.outbound.protection.outlook.com ([40.107.22.89]:16992
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388148AbgE1LFX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 07:05:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hd6KrV3o/S4K59MykVlVyNLP1Q1Bn7y93eATP7yTFPVKA7vcfEQbtIjk/XgQ3iMkQqHdADx+/HCIrNZ/rZzgLb53GdrZUxv3FnjIaAMA3I6RSREKyTPMC9BSbpC2VeeUV8IHO5Q0fIUZUcz77Sjl5iMxtxYku1/hy69J1bYyKKgcJP1/peyEyWVX6QmNjkR3JNtZYDtLN96jOpkkluVnRDwUIXeIKPYfxiVrTiWg7tygOHWXZVHYkqO+3vCUXCCu4lWtk2viu1gVWSEgNan7BW2czMwgy7B/MTvpN1ReXebd5D3WWSQnuGiqObrd+orNDtXQm9ZvGYhSscHU7pCMiA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Vx7BcKxHLeLCO54ROpM0unFeU4Yc4w0UNGQHCZyTWI8=;
+ b=Hlux+/64+BtSCG2WI93mKK3yTJE99uF/yrCikLz6qLJ/MQTwYyB5QG0LfZMKKk+S9+28zwNHwEHWyWiyF8MUU8Y8aj2ig2C8H6flqzIFH2g8HaL0CUyQso80qsy8pnaKZq/FsVnSwK9fH1UArC2AhoX//hDK95gwhIRopEeTabJ+iCjw/JJo5raXVhyea9ognyudaATr1sUtpQVDU1SYN5re1eXH0riWAHm8wSJVibtP2VkqD+8bnIlToZ51E7QwbYDI9/nN+X7KCHd/UXnMXH9htvpanx4MeUTpbgaHRquyONyvJFkj+Ewxx7r9FPG3kW7EW3ckX9+0bbfWi3fExA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Vx7BcKxHLeLCO54ROpM0unFeU4Yc4w0UNGQHCZyTWI8=;
+ b=bQ5S1q6SC/rzo6I2Vvfeqln/lnDQVl3mZ5GtrfAnYmwyUZfhhbYc04TTdIdbRRtLoAkC75hhN04DzrvDAt1/l7GlKM3JC5dWF26IOUFMU/GyXUIU9MCPNYHHJruGPYG/DzVQX6dwh1GhvUBVEu6y3eS1RQLQHL2UiWAM6WpVwJM=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from VE1PR04MB6608.eurprd04.prod.outlook.com (2603:10a6:803:125::12)
+ by VE1PR04MB6558.eurprd04.prod.outlook.com (2603:10a6:803:11b::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.27; Thu, 28 May
+ 2020 11:05:18 +0000
+Received: from VE1PR04MB6608.eurprd04.prod.outlook.com
+ ([fe80::282c:7a7:6583:903b]) by VE1PR04MB6608.eurprd04.prod.outlook.com
+ ([fe80::282c:7a7:6583:903b%7]) with mapi id 15.20.3045.018; Thu, 28 May 2020
+ 11:05:18 +0000
+From:   Andrei Botila <andrei.botila@oss.nxp.com>
+To:     Horia Geanta <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: caam/qi2 - add support for dpseci_reset()
+Date:   Thu, 28 May 2020 14:04:50 +0300
+Message-Id: <20200528110450.11279-1-andrei.botila@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: AM4PR0101CA0081.eurprd01.prod.exchangelabs.com
+ (2603:10a6:200:41::49) To VE1PR04MB6608.eurprd04.prod.outlook.com
+ (2603:10a6:803:125::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 28 May 2020 13:04:16 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v5 2/2] gpio: add a reusable generic gpio_chip using
- regmap
-In-Reply-To: <20200528035841.16800-3-michael@walle.cc>
-References: <20200528035841.16800-1-michael@walle.cc>
- <20200528035841.16800-3-michael@walle.cc>
-User-Agent: Roundcube Webmail/1.4.4
-Message-ID: <002382bd764becfc10a2c2ac17f54fa7@walle.cc>
-X-Sender: michael@walle.cc
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from lsv15007.swis.ro-buh01.nxp.com (83.217.231.2) by AM4PR0101CA0081.eurprd01.prod.exchangelabs.com (2603:10a6:200:41::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17 via Frontend Transport; Thu, 28 May 2020 11:05:17 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [83.217.231.2]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 54e79a73-b42f-4668-2f4a-08d802f701c4
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6558:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB65584BC87C8E091259D74330B48E0@VE1PR04MB6558.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
+X-Forefront-PRVS: 0417A3FFD2
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yDolNckV1U+6LSIaYqHAVtfXC83FDYGMLPC6lE6Ajpp3P5GRWKkIzab6bQ3WRDR+TUH19LPfc3eL+CZPRDI8OY8kqr7P8HvZIoJXbg6gFOp+ShXr3WIcCnWulmLyughFlzYW35M/y/4DIXgbRwgPrqLQwxxE6kckv0oVdaH2zlJUS0fmlXbVkhQdwa8SVcF4Mf0HqNos/KZDc09A/6ghg8o7lqupL+W+eGxaAzdw70VBt+tebsILSEbr8tEwMo4iycPhrRL+dywd1rEHzOfNBljFpwBFknkk4xn5iuiMWJlyobVOrDfVUH2hgFvUFM7M
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6608.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(366004)(396003)(136003)(39860400002)(44832011)(66556008)(66476007)(6666004)(4326008)(86362001)(2906002)(83380400001)(6486002)(316002)(6512007)(1076003)(66946007)(8936002)(110136005)(5660300002)(26005)(478600001)(52116002)(6506007)(16526019)(956004)(8676002)(2616005)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: dedseuTg+Kf44Y7FSvtBi5djQu2MHpjx5+wZEUaQ/uFfqtkyGaGLSMducd8fvW9kz483BFaX6S+k4YjD2bM3t+m+KguHBD6Q8wxVO8/f7cEgAALYFttvJhrBxWSmJOHkyblbjEnpZ/BDRHg26tVhuF/32gi1xhiJ1hs8ROqLx9stfyfTma4t56kNj6PBJe97txsNlaafkWjBgBouRQub8Hmum1MtNykkNs4xlY5yuLlOxIXD5pvBlIiABPENfDjQvxSsc5sgOD+4SO7DbT6vnubq2U1FVRK5LOG5WXgmnNsgbfTZr+EnCTQqRoZclLMLm2tPGYf+IDNIUNqFW7wVK/lTp/nILH84+3ztE2YeGWrDTFkxV0G3/fuZO5xCKn6k/3l89Nw1tXNgCYg3iqFdEnFToB3+LoCovJt93g+3xMthFQk3m+2HY1z9c21kYOrtRhp7UCm3QIIXvNOThQDjrX/S/xYavGVQK8JSnTrmDfo=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54e79a73-b42f-4668-2f4a-08d802f701c4
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2020 11:05:18.4176
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: roMIyF3BC6g6LSmeeWcijuQzwaAb1h/TkpThYKBHg8SG/AXblPPw4Ra254Gl2YpLnRlPLk1QgqEOPxWG7KuhBA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6558
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-05-28 05:58, schrieb Michael Walle:
-> There are quite a lot simple GPIO controller which are using regmap to
-> access the hardware. This driver tries to be a base to unify existing
-> code into one place. This won't cover everything but it should be a 
-> good
-> starting point.
-> 
-> It does not implement its own irq_chip because there is already a
-> generic one for regmap based devices. Instead, the irq_chip will be
-> instantiated in the parent driver and its irq domain will be associate
-> to this driver.
-> 
-> For now it consists of the usual registers, like set (and an optional
-> clear) data register, an input register and direction registers.
-> Out-of-the-box, it supports consecutive register mappings and mappings
-> where the registers have gaps between them with a linear mapping 
-> between
-> GPIO offset and bit position. For weirder mappings the user can 
-> register
-> its own .xlate().
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
->  drivers/gpio/Kconfig        |   4 +
->  drivers/gpio/Makefile       |   1 +
->  drivers/gpio/gpio-regmap.c  | 352 ++++++++++++++++++++++++++++++++++++
->  include/linux/gpio-regmap.h |  70 +++++++
->  4 files changed, 427 insertions(+)
->  create mode 100644 drivers/gpio/gpio-regmap.c
->  create mode 100644 include/linux/gpio-regmap.h
-> 
-[..]
+From: Andrei Botila <andrei.botila@nxp.com>
 
-> --- /dev/null
-> +++ b/include/linux/gpio-regmap.h
-> @@ -0,0 +1,70 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +
-> +#ifndef _LINUX_GPIO_REGMAP_H
-> +#define _LINUX_GPIO_REGMAP_H
-> +
-> +struct gpio_regmap;
-> +
-> +#define GPIO_REGMAP_ADDR_ZERO ((unsigned long)(-1))
-> +#define GPIO_REGMAP_ADDR(addr) ((addr) ? : GPIO_REGMAP_ADDR_ZERO)
-> +
-> +/**
-> + * struct gpio_regmap_config - Description of a generic regmap 
-> gpio_chip.
-> + *
-> + * @parent:		The parent device
-> + * @regmap:		The regmap used to access the registers
-> + *			given, the name of the device is used
-> + * @label:		(Optional) Descriptive name for GPIO controller.
-> + *			If not given, the name of the device is used.
-> + * @ngpio:		Number of GPIOs
-> + * @names:		(Optional) Array of names for gpios
-> + * @reg_dat_base:	(Optional) (in) register base address
-> + * @reg_set_base:	(Optional) set register base address
-> + * @reg_clr_base:	(Optional) clear register base address
-> + * @reg_dir_in_base:	(Optional) in setting register base address
-> + * @reg_dir_out_base:	(Optional) out setting register base address
-> + * @reg_stride:		(Optional) May be set if the registers (of the
-> + *			same type, dat, set, etc) are not consecutive.
-> + * @ngpio_per_reg:	Number of GPIOs per register
-> + * @irq_domain:		(Optional) IRQ domain if the controller is
-> + *			interrupt-capable
-> + * @reg_mask_xlate:     (Optional) Translates base address and GPIO
-> + *			offset to a register/bitmask pair. If not
-> + *			given the default gpio_regmap_simple_xlate()
-> + *			is used.
-> + *
-> + * The reg_mask_xlate translates a given base address and GPIO offset 
-> to
-> + * register and mask pair. The base address is one of the given 
-> reg_*_base.
-> + *
-> + * All base addresses may have the special value GPIO_REGMAP_ADDR_ZERO
-> + * which forces the address to the value 0.
-> + */
-> +struct gpio_regmap_config {
-> +	struct device *parent;
-> +	struct regmap *regmap;
-> +
-> +	const char *label;
-> +	int ngpio;
+Add support for dpseci_reset() command for DPSECI objects.
+For DPSECI DPAA2 objects with version lower than v5.4 reset command
+was broken in MC f/w.
 
-damn.. I shouldn't send patches early in the morning. I've forgot to 
-actually
-enable my GPIO driver before compiling. And of course.. it doesn't 
-compile.
+Signed-off-by: Andrei Botila <andrei.botila@nxp.com>
+---
+ drivers/crypto/caam/caamalg_qi2.c | 11 +++++++++++
+ drivers/crypto/caam/dpseci.c      | 18 ++++++++++++++++++
+ drivers/crypto/caam/dpseci.h      |  2 ++
+ drivers/crypto/caam/dpseci_cmd.h  |  1 +
+ 4 files changed, 32 insertions(+)
 
-const char *const *names;
+diff --git a/drivers/crypto/caam/caamalg_qi2.c b/drivers/crypto/caam/caamalg_qi2.c
+index 28669cbecf77..ed52f0f4fb2c 100644
+--- a/drivers/crypto/caam/caamalg_qi2.c
++++ b/drivers/crypto/caam/caamalg_qi2.c
+@@ -4698,6 +4698,9 @@ static void dpaa2_dpseci_free(struct dpaa2_caam_priv *priv)
+ 	struct device *dev = priv->dev;
+ 	struct fsl_mc_device *ls_dev = to_fsl_mc_device(dev);
+ 
++	if (DPSECI_VER(priv->major_ver, priv->minor_ver) > DPSECI_VER(5, 3))
++		dpseci_reset(priv->mc_io, 0, ls_dev->mc_handle);
++
+ 	dpaa2_dpseci_congestion_free(priv);
+ 	dpseci_close(priv->mc_io, 0, ls_dev->mc_handle);
+ }
+@@ -4894,6 +4897,14 @@ static int __cold dpaa2_dpseci_setup(struct fsl_mc_device *ls_dev)
+ 
+ 	dev_info(dev, "dpseci v%d.%d\n", priv->major_ver, priv->minor_ver);
+ 
++	if (DPSECI_VER(priv->major_ver, priv->minor_ver) > DPSECI_VER(5, 3)) {
++		err = dpseci_reset(priv->mc_io, 0, ls_dev->mc_handle);
++		if (err) {
++			dev_err(dev, "dpseci_reset() failed\n");
++			goto err_get_vers;
++		}
++	}
++
+ 	err = dpseci_get_attributes(priv->mc_io, 0, ls_dev->mc_handle,
+ 				    &priv->dpseci_attr);
+ 	if (err) {
+diff --git a/drivers/crypto/caam/dpseci.c b/drivers/crypto/caam/dpseci.c
+index 8a68531ded0b..039df6c5790c 100644
+--- a/drivers/crypto/caam/dpseci.c
++++ b/drivers/crypto/caam/dpseci.c
+@@ -103,6 +103,24 @@ int dpseci_disable(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token)
+ 	return mc_send_command(mc_io, &cmd);
+ }
+ 
++/**
++ * dpseci_reset() - Reset the DPSECI, returns the object to initial state
++ * @mc_io:	Pointer to MC portal's I/O object
++ * @cmd_flags:	Command flags; one or more of 'MC_CMD_FLAG_'
++ * @token:	Token of DPSECI object
++ *
++ * Return:	'0' on success, error code otherwise
++ */
++int dpseci_reset(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token)
++{
++	struct fsl_mc_command cmd = { 0 };
++
++	cmd.header = mc_encode_cmd_header(DPSECI_CMDID_RESET,
++					  cmd_flags,
++					  token);
++	return mc_send_command(mc_io, &cmd);
++}
++
+ /**
+  * dpseci_is_enabled() - Check if the DPSECI is enabled.
+  * @mc_io:	Pointer to MC portal's I/O object
+diff --git a/drivers/crypto/caam/dpseci.h b/drivers/crypto/caam/dpseci.h
+index 4550e134d166..6dcd9be8144b 100644
+--- a/drivers/crypto/caam/dpseci.h
++++ b/drivers/crypto/caam/dpseci.h
+@@ -59,6 +59,8 @@ int dpseci_enable(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token);
+ 
+ int dpseci_disable(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token);
+ 
++int dpseci_reset(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token);
++
+ int dpseci_is_enabled(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
+ 		      int *en);
+ 
+diff --git a/drivers/crypto/caam/dpseci_cmd.h b/drivers/crypto/caam/dpseci_cmd.h
+index 6ab77ead6e3d..71a007c85adb 100644
+--- a/drivers/crypto/caam/dpseci_cmd.h
++++ b/drivers/crypto/caam/dpseci_cmd.h
+@@ -33,6 +33,7 @@
+ #define DPSECI_CMDID_ENABLE				DPSECI_CMD_V1(0x002)
+ #define DPSECI_CMDID_DISABLE				DPSECI_CMD_V1(0x003)
+ #define DPSECI_CMDID_GET_ATTR				DPSECI_CMD_V1(0x004)
++#define DPSECI_CMDID_RESET				DPSECI_CMD_V1(0x005)
+ #define DPSECI_CMDID_IS_ENABLED				DPSECI_CMD_V1(0x006)
+ 
+ #define DPSECI_CMDID_SET_RX_QUEUE			DPSECI_CMD_V1(0x194)
+-- 
+2.17.1
 
-is missing here. So I have to send a v6 anyway. Let's wait what Linus 
-and Bert
-says about the location of the gpio-regmap.h header.
-
-Sorry for the noise.
-
--michael
-
-> +
-> +	unsigned int reg_dat_base;
-> +	unsigned int reg_set_base;
-> +	unsigned int reg_clr_base;
-> +	unsigned int reg_dir_in_base;
-> +	unsigned int reg_dir_out_base;
-> +	int reg_stride;
-> +	int ngpio_per_reg;
-> +	struct irq_domain *irq_domain;
-> +
-> +	int (*reg_mask_xlate)(struct gpio_regmap *gpio, unsigned int base,
-> +			      unsigned int offset, unsigned int *reg,
-> +			      unsigned int *mask);
-> +};
-> +
-> +struct gpio_regmap *gpio_regmap_register(const struct
-> gpio_regmap_config *config);
-> +void gpio_regmap_unregister(struct gpio_regmap *gpio);
-> +struct gpio_regmap *devm_gpio_regmap_register(struct device *dev,
-> +					      const struct gpio_regmap_config *config);
-> +void gpio_regmap_set_drvdata(struct gpio_regmap *gpio, void *data);
-> +void *gpio_regmap_get_drvdata(struct gpio_regmap *gpio);
-> +
-> +#endif /* _LINUX_GPIO_REGMAP_H */
