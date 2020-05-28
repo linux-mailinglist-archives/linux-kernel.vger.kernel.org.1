@@ -2,82 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9BD1E5795
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 08:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B33D1E5793
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 08:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726006AbgE1Ge3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 02:34:29 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:34684 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725601AbgE1Ge2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 02:34:28 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1jeC6w-0007mj-Vx; Thu, 28 May 2020 16:33:52 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 28 May 2020 16:33:50 +1000
-Date:   Thu, 28 May 2020 16:33:50 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     davem@davemloft.net, jsrikanth@marvell.com, phemadri@marvell.com,
-        gustavo@embeddedor.com, tglx@linutronix.de,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] crypto: cavium/nitrox - Fix 'nitrox_get_first_device()'
- when ndevlist is fully iterated
-Message-ID: <20200528063350.GA26818@gondor.apana.org.au>
-References: <20200519204503.281872-1-christophe.jaillet@wanadoo.fr>
+        id S1725928AbgE1GeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 02:34:21 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:22674 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725601AbgE1GeV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 02:34:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590647660;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A0TbfU1Wtk9UqNPHb2mnR7GHgRz5NlicH2MG30iIhdQ=;
+        b=OjwtmTh0zrTrT55C1ugNY2uw/mCJiqwKZQPEcS9nFMDoY7Uj8LOigV5n9YQzGECOMVXP5Q
+        UCVszqXIQFgl5u7w1vyTkSGzLnYxdhO09ZDldXEe0h+d1I4w9SXCeoHmN9ZTgQAafVqfnk
+        X6YWrIvsBJSxvpMNQ4Vt8//23QvCE/M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-337-V0gHZIGzPNaVCuaWjLDYHA-1; Thu, 28 May 2020 02:34:16 -0400
+X-MC-Unique: V0gHZIGzPNaVCuaWjLDYHA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9313E1005510;
+        Thu, 28 May 2020 06:34:14 +0000 (UTC)
+Received: from localhost.localdomain (vpn2-54-130.bne.redhat.com [10.64.54.130])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 048385C1B0;
+        Thu, 28 May 2020 06:34:07 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH RFCv2 3/9] kvm/arm64: Rename kvm_vcpu_get_hsr() to
+ kvm_vcpu_get_esr()
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        will@kernel.org, catalin.marinas@arm.com, james.morse@arm.com,
+        suzuki.poulose@arm.com, drjones@redhat.com, eric.auger@redhat.com,
+        aarcange@redhat.com, shan.gavin@gmail.com
+References: <20200508032919.52147-1-gshan@redhat.com>
+ <20200508032919.52147-4-gshan@redhat.com>
+ <20200526104249.GB1363@C02TD0UTHF1T.local>
+ <2e4dd03f-656a-c32b-5e87-ca28583999ef@redhat.com>
+ <359dad5546a428ea963781f2728e70bf@kernel.org>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <e71af813-7f72-9d2e-2419-f4e03cf35369@redhat.com>
+Date:   Thu, 28 May 2020 16:34:05 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200519204503.281872-1-christophe.jaillet@wanadoo.fr>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <359dad5546a428ea963781f2728e70bf@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 10:45:03PM +0200, Christophe JAILLET wrote:
-> When a list is completely iterated with 'list_for_each_entry(x, ...)', x is
-> not NULL at the end.
+On 5/27/20 5:20 PM, Marc Zyngier wrote:
+> On 2020-05-27 03:43, Gavin Shan wrote:
+>> Hi Mark,
+>>
+>> On 5/26/20 8:42 PM, Mark Rutland wrote:
+>>> On Fri, May 08, 2020 at 01:29:13PM +1000, Gavin Shan wrote:
+>>>> Since kvm/arm32 was removed, this renames kvm_vcpu_get_hsr() to
+>>>> kvm_vcpu_get_esr() to it a bit more self-explaining because the
+>>>> functions returns ESR instead of HSR on aarch64. This shouldn't
+>>>> cause any functional changes.
+>>>>
+>>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>>>
+>>> I think that this would be a nice cleanup on its own, and could be taken
+>>> independently of the rest of this series if it were rebased and sent as
+>>> a single patch.
+>>>
+>>
+>> Yeah, I'll see how PATCH[3,4,5] can be posted independently
+>> as part of the preparatory work, which is suggested by you
+>> in another reply.
+>>
+>> By the way, I assume the cleanup patches are good enough to
+>> target 5.8.rc1/rc2 if you agree.
 > 
-> Introduce an intermediate variable and test it instead, in order to
-> reliably know if something was found or not.
+> It's fine to base them on -rc1 or -rc2. They will not be merged
+> before 5.9 though.
 > 
-> Fixes: f2663872f073 ("crypto: cavium - Register the CNN55XX supported crypto algorithms.")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/crypto/cavium/nitrox/nitrox_main.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
+> Thanks,
 > 
-> diff --git a/drivers/crypto/cavium/nitrox/nitrox_main.c b/drivers/crypto/cavium/nitrox/nitrox_main.c
-> index 788c6607078b..172cafe7c039 100644
-> --- a/drivers/crypto/cavium/nitrox/nitrox_main.c
-> +++ b/drivers/crypto/cavium/nitrox/nitrox_main.c
-> @@ -278,15 +278,18 @@ static void nitrox_remove_from_devlist(struct nitrox_device *ndev)
->  
->  struct nitrox_device *nitrox_get_first_device(void)
->  {
-> -	struct nitrox_device *ndev = NULL;
-> +	struct nitrox_device *ndev;
-> +	bool found = false;
->  
->  	mutex_lock(&devlist_lock);
->  	list_for_each_entry(ndev, &ndevlist, list) {
-> -		if (nitrox_ready(ndev))
-> +		if (nitrox_ready(ndev)) {
-> +			found = true;
->  			break;
-> +		}
->  	}
->  	mutex_unlock(&devlist_lock);
-> -	if (!ndev)
+>          M.
 
-Instead of adding found, you could fix this by changing the test to
+Sure, Thanks, Marc!
 
-	if (&ndev->list == &nevlist)
-
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
