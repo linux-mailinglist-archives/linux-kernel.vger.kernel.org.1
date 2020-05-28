@@ -2,80 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8791E5790
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 08:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9BD1E5795
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 08:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725907AbgE1Gcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 02:32:32 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:12530 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725308AbgE1Gcb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 02:32:31 -0400
-X-UUID: fdc33ac2baf7469cbd786d81f5623493-20200528
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=X5yIYJsx3HE5VilfUgdZ3rZhUrrpxFF0glSlGP64Xxw=;
-        b=f5aQgYOOaRvemxhGQK9nd3qsWQRbZsKUHsRC1cApktA7NMY0WMUo9s4AUnwC8HvE/pfpddsXWXhz+p89Luohacgx3xmwgxRLjzywFqWcvkthib8uEtlUavFENnqilmVojxSrtcf36CrXdt7SPBaDRyYIixMLhgTFd1cod21uy/g=;
-X-UUID: fdc33ac2baf7469cbd786d81f5623493-20200528
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1923720607; Thu, 28 May 2020 14:32:27 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 28 May 2020 14:32:25 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 28 May 2020 14:32:25 +0800
-Message-ID: <1590647545.25636.0.camel@mtkswgap22>
-Subject: Re: [PATCH v1 1/1] scsi: ufs: Don't update urgent bkops level when
- toggle auto bkops
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Can Guo <cang@codeaurora.org>
-CC:     <stanley.chu@mediatek.com>, <asutoshd@codeaurora.org>,
-        <nguyenb@codeaurora.org>, <hongwus@codeaurora.org>,
-        <rnayak@codeaurora.org>, <linux-scsi@vger.kernel.org>,
-        <kernel-team@android.com>, <saravanak@google.com>,
-        <salyzyn@google.com>, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Thu, 28 May 2020 14:32:25 +0800
-In-Reply-To: <1590632686-17866-1-git-send-email-cang@codeaurora.org>
-References: <1590632686-17866-1-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S1726006AbgE1Ge3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 02:34:29 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:34684 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725601AbgE1Ge2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 02:34:28 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1jeC6w-0007mj-Vx; Thu, 28 May 2020 16:33:52 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 28 May 2020 16:33:50 +1000
+Date:   Thu, 28 May 2020 16:33:50 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     davem@davemloft.net, jsrikanth@marvell.com, phemadri@marvell.com,
+        gustavo@embeddedor.com, tglx@linutronix.de,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] crypto: cavium/nitrox - Fix 'nitrox_get_first_device()'
+ when ndevlist is fully iterated
+Message-ID: <20200528063350.GA26818@gondor.apana.org.au>
+References: <20200519204503.281872-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200519204503.281872-1-christophe.jaillet@wanadoo.fr>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTA1LTI3IGF0IDE5OjI0IC0wNzAwLCBDYW4gR3VvIHdyb3RlOg0KPiBVcmdl
-bnQgYmtvcHMgbGV2ZWwgaXMgdXNlZCB0byBjb21wYXJlIGFnYWluc3QgYWN0dWFsIGJrb3BzIHN0
-YXR1cyByZWFkDQo+IGZyb20gVUZTIGRldmljZS4gVXJnZW50IGJrb3BzIGxldmVsIGlzIHNldCBk
-dXJpbmcgaW5pdGlhbGl6YXRpb24gYW5kIG1pZ2h0DQo+IGJlIHVwZGF0ZWQgaW4gZXhjZXB0aW9u
-IGV2ZW50IGhhbmRsZXIgZHVyaW5nIHJ1bnRpbWUsIGJ1dCBpdCBzaG91bGQgbm90IGJlDQo+IHVw
-ZGF0ZWQgdG8gdGhlIGFjdHVhbCBia29wcyBzdGF0dXMgZXZlcnkgdGltZSB3aGVuIGF1dG8gYmtv
-cHMgaXMgdG9nZ2xlZC4NCj4gT3RoZXJ3aXNlLCBpZiB1cmdlbnQgYmtvcHMgbGV2ZWwgaXMgdXBk
-YXRlZCB0byAwLCBhdXRvIGJrb3BzIHNoYWxsIGFsd2F5cw0KPiBiZSBrZXB0IGVuYWJsZWQuDQo+
-IA0KPiBGaXhlczogMjQzNjZjMmFmYmIwICgic2NzaTogdWZzOiBSZWNoZWNrIGJrb3BzIGxldmVs
-IGlmIGJrb3BzIGlzIGRpc2FibGVkIikNCj4gU2lnbmVkLW9mZi1ieTogQ2FuIEd1byA8Y2FuZ0Bj
-b2RlYXVyb3JhLm9yZz4NCj4gLS0tDQo+ICBkcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jIHwgMSAt
-DQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBkZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2Ry
-aXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQo+IGlu
-ZGV4IDE4MjdiNTcuLjE3ODMyMmUgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvc2NzaS91ZnMvdWZz
-aGNkLmMNCj4gKysrIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYw0KPiBAQCAtNTEzMyw3ICs1
-MTMzLDYgQEAgc3RhdGljIGludCB1ZnNoY2RfYmtvcHNfY3RybChzdHJ1Y3QgdWZzX2hiYSAqaGJh
-LA0KPiAgCQllcnIgPSB1ZnNoY2RfZW5hYmxlX2F1dG9fYmtvcHMoaGJhKTsNCj4gIAllbHNlDQo+
-ICAJCWVyciA9IHVmc2hjZF9kaXNhYmxlX2F1dG9fYmtvcHMoaGJhKTsNCj4gLQloYmEtPnVyZ2Vu
-dF9ia29wc19sdmwgPSBjdXJyX3N0YXR1czsNCj4gIG91dDoNCj4gIAlyZXR1cm4gZXJyOw0KPiAg
-fQ0KDQpSZXZpZXdlZC1ieTogU3RhbmxleSBDaHUgPHN0YW5sZXkuY2h1QG1lZGlhdGVrLmNvbT4N
-Cg0K
+On Tue, May 19, 2020 at 10:45:03PM +0200, Christophe JAILLET wrote:
+> When a list is completely iterated with 'list_for_each_entry(x, ...)', x is
+> not NULL at the end.
+> 
+> Introduce an intermediate variable and test it instead, in order to
+> reliably know if something was found or not.
+> 
+> Fixes: f2663872f073 ("crypto: cavium - Register the CNN55XX supported crypto algorithms.")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/crypto/cavium/nitrox/nitrox_main.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/crypto/cavium/nitrox/nitrox_main.c b/drivers/crypto/cavium/nitrox/nitrox_main.c
+> index 788c6607078b..172cafe7c039 100644
+> --- a/drivers/crypto/cavium/nitrox/nitrox_main.c
+> +++ b/drivers/crypto/cavium/nitrox/nitrox_main.c
+> @@ -278,15 +278,18 @@ static void nitrox_remove_from_devlist(struct nitrox_device *ndev)
+>  
+>  struct nitrox_device *nitrox_get_first_device(void)
+>  {
+> -	struct nitrox_device *ndev = NULL;
+> +	struct nitrox_device *ndev;
+> +	bool found = false;
+>  
+>  	mutex_lock(&devlist_lock);
+>  	list_for_each_entry(ndev, &ndevlist, list) {
+> -		if (nitrox_ready(ndev))
+> +		if (nitrox_ready(ndev)) {
+> +			found = true;
+>  			break;
+> +		}
+>  	}
+>  	mutex_unlock(&devlist_lock);
+> -	if (!ndev)
 
+Instead of adding found, you could fix this by changing the test to
+
+	if (&ndev->list == &nevlist)
+
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
