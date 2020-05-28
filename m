@@ -2,84 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD991E6AA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 21:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4941E6ACB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 21:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406349AbgE1TXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 15:23:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51762 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406300AbgE1TXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 15:23:44 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B275207BC;
-        Thu, 28 May 2020 19:23:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590693823;
-        bh=KWIzbnUdC0/WL0P4Z1bjwKBGnAgV6PACPp1qBqkmfOE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=IW/bkGhIbncJGc2idclnVVmK54Dm09dZ8pvN2ZYPXRa9osghjVdrkr5zdOQNP4yPk
-         h4mf680CpeabAzzXMzZBnMQVROL1MW1W9oIPunSyKYRkxNqBDhI/isso0zFpMeBjdS
-         NbY+A39KRCp8HPTEvyg7cFxsfQjFlQTVpee8GO60=
-Date:   Thu, 28 May 2020 12:23:42 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Bibo Mao <maobibo@loongson.cn>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Dmitry Korotin <dkorotin@wavecomp.com>,
-        Philippe =?ISO-8859-1?Q?Mathieu-Daud=E9?= <f4bug@amsat.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        "Maciej W. Rozycki" <macro@wdc.com>, linux-mm@kvack.org,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v7 2/4] mm/memory.c: Update local TLB if PTE entry
- exists
-Message-Id: <20200528122342.11e51dd9c7698d68632f2a81@linux-foundation.org>
-In-Reply-To: <1590546320-21814-3-git-send-email-maobibo@loongson.cn>
-References: <1590546320-21814-1-git-send-email-maobibo@loongson.cn>
-        <1590546320-21814-3-git-send-email-maobibo@loongson.cn>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S2406442AbgE1TZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 15:25:47 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62674 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2406229AbgE1TZp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 15:25:45 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04SJ28ce108867;
+        Thu, 28 May 2020 15:25:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=JA0rH5xJR6r+pQyEyY/QRuP6P8EeneHRb5BX3Gz2Bhk=;
+ b=a3QZniOpxUue/SLMFToIHssEKgXk1HkymkiiLbVVlyXZ4lIiK8NjXjZZHW8Q+ExYkw8E
+ JKgQWHO3O/AY22uFySzNK0iFC+C/em4ga9C3sTzu98WejnVp0zoBSoLM9viT+QH9iTMW
+ oGjO08xYCZy/LuyDV5cxAps6LGI4a1FJsmfuxjxSg3SWAtv49zCgc8mRIkDy0/nU9gny
+ Yq832Gny373LF1tpKqwO9jKRWt4vs/itIyqmBT5vJX7YK7fHi29wZC5FRG6C5XgiD69Y
+ fFn6opAnCWEegyWhAdyK936OTXKwXN3OxU4PGmpTgxtdmU5h1lHg8bPMOivSzX4VY8eZ 0A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 319t3jtwsh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 May 2020 15:25:08 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04SJ3RdU116858;
+        Thu, 28 May 2020 15:25:08 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 319t3jtwrk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 May 2020 15:25:08 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 04SJ5liZ013680;
+        Thu, 28 May 2020 19:25:05 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 316uf92gg1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 May 2020 19:25:05 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04SJP3Tw62587254
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 May 2020 19:25:03 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 65CB511C05B;
+        Thu, 28 May 2020 19:25:03 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A55C611C04C;
+        Thu, 28 May 2020 19:24:57 +0000 (GMT)
+Received: from vajain21-in-ibm-com (unknown [9.85.68.59])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Thu, 28 May 2020 19:24:57 +0000 (GMT)
+Received: by vajain21-in-ibm-com (sSMTP sendmail emulation); Fri, 29 May 2020 00:54:55 +0530
+From:   Vaibhav Jain <vaibhav@linux.ibm.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH v8 1/5] powerpc: Document details on H_SCM_HEALTH hcall
+In-Reply-To: <CAPcyv4jXp1FocSe-fFBA_00TnsjPudrBCuHBfv+zwHA_R0353A@mail.gmail.com>
+References: <20200527041244.37821-1-vaibhav@linux.ibm.com> <20200527041244.37821-2-vaibhav@linux.ibm.com> <CAPcyv4jXp1FocSe-fFBA_00TnsjPudrBCuHBfv+zwHA_R0353A@mail.gmail.com>
+Date:   Fri, 29 May 2020 00:54:55 +0530
+Message-ID: <87o8q7lv5k.fsf@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-05-28_04:2020-05-28,2020-05-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 cotscore=-2147483648
+ phishscore=0 bulkscore=0 clxscore=1015 lowpriorityscore=0 impostorscore=0
+ mlxlogscore=999 suspectscore=1 spamscore=0 priorityscore=1501 adultscore=0
+ mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005280125
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 May 2020 10:25:18 +0800 Bibo Mao <maobibo@loongson.cn> wrote:
+Thanks for looking into this patchset Dan,
 
-> If two threads concurrently fault at the same page, the thread that
-> won the race updates the PTE and its local TLB. For now, the other
-> thread gives up, simply does nothing, and continues.
-> 
-> It could happen that this second thread triggers another fault, whereby
-> it only updates its local TLB while handling the fault. Instead of
-> triggering another fault, let's directly update the local TLB of the
-> second thread. Function update_mmu_tlb is used here to update local
-> TLB on the second thread, and it is defined as empty on other arches.
-> 
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -2752,6 +2752,7 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
->  		new_page = old_page;
->  		page_copied = 1;
->  	} else {
-> +		update_mmu_tlb(vma, vmf->address, vmf->pte);
->  		mem_cgroup_cancel_charge(new_page, memcg, false);
->  	}
->  
 
-When applying your patches on top of the -mm tree's changes, the above
-hunk didn't apply.  The entire `else' block was removed by
-https://ozlabs.org/~akpm/mmotm/broken-out/mm-memcontrol-convert-anon-and-file-thp-to-new-mem_cgroup_charge-api.patch
+Dan Williams <dan.j.williams@intel.com> writes:
 
-I assumed that dropping this hunk was appropriate.  Please check?
+> On Tue, May 26, 2020 at 9:13 PM Vaibhav Jain <vaibhav@linux.ibm.com> wrote:
+>>
+>> Add documentation to 'papr_hcalls.rst' describing the bitmap flags
+>> that are returned from H_SCM_HEALTH hcall as per the PAPR-SCM
+>> specification.
+>>
+>
+> Please do a global s/SCM/PMEM/ or s/SCM/NVDIMM/. It's unfortunate that
+> we already have 2 ways to describe persistent memory devices, let's
+> not perpetuate a third so that "grep" has a chance to find
+> interrelated code across architectures. Other than that this looks
+> good to me.
+
+Sure, will use PAPR_NVDIMM instead of PAPR_SCM for new code being
+introduced. However certain identifiers like H_SCM_HEALTH are taken from
+the papr specificiation hence need to use the same name.
+
+>
+>> Cc: "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+>> Cc: Dan Williams <dan.j.williams@intel.com>
+>> Cc: Michael Ellerman <mpe@ellerman.id.au>
+>> Cc: Ira Weiny <ira.weiny@intel.com>
+>> Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
+>> ---
+>> Changelog:
+>> v7..v8:
+>> * Added a clarification on bit-ordering of Health Bitmap
+>>
+>> Resend:
+>> * None
+>>
+>> v6..v7:
+>> * None
+>>
+>> v5..v6:
+>> * New patch in the series
+>> ---
+>>  Documentation/powerpc/papr_hcalls.rst | 45 ++++++++++++++++++++++++---
+>>  1 file changed, 41 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/Documentation/powerpc/papr_hcalls.rst b/Documentation/powerpc/papr_hcalls.rst
+>> index 3493631a60f8..45063f305813 100644
+>> --- a/Documentation/powerpc/papr_hcalls.rst
+>> +++ b/Documentation/powerpc/papr_hcalls.rst
+>> @@ -220,13 +220,50 @@ from the LPAR memory.
+>>  **H_SCM_HEALTH**
+>>
+>>  | Input: drcIndex
+>> -| Out: *health-bitmap, health-bit-valid-bitmap*
+>> +| Out: *health-bitmap (r4), health-bit-valid-bitmap (r5)*
+>>  | Return Value: *H_Success, H_Parameter, H_Hardware*
+>>
+>>  Given a DRC Index return the info on predictive failure and overall health of
+>> -the NVDIMM. The asserted bits in the health-bitmap indicate a single predictive
+>> -failure and health-bit-valid-bitmap indicate which bits in health-bitmap are
+>> -valid.
+>> +the NVDIMM. The asserted bits in the health-bitmap indicate one or more states
+>> +(described in table below) of the NVDIMM and health-bit-valid-bitmap indicate
+>> +which bits in health-bitmap are valid. The bits are reported in
+>> +reverse bit ordering for example a value of 0xC400000000000000
+>> +indicates bits 0, 1, and 5 are valid.
+>> +
+>> +Health Bitmap Flags:
+>> +
+>> ++------+-----------------------------------------------------------------------+
+>> +|  Bit |               Definition                                              |
+>> ++======+=======================================================================+
+>> +|  00  | SCM device is unable to persist memory contents.                      |
+>> +|      | If the system is powered down, nothing will be saved.                 |
+>> ++------+-----------------------------------------------------------------------+
+>> +|  01  | SCM device failed to persist memory contents. Either contents were not|
+>> +|      | saved successfully on power down or were not restored properly on     |
+>> +|      | power up.                                                             |
+>> ++------+-----------------------------------------------------------------------+
+>> +|  02  | SCM device contents are persisted from previous IPL. The data from    |
+>> +|      | the last boot were successfully restored.                             |
+>> ++------+-----------------------------------------------------------------------+
+>> +|  03  | SCM device contents are not persisted from previous IPL. There was no |
+>> +|      | data to restore from the last boot.                                   |
+>> ++------+-----------------------------------------------------------------------+
+>> +|  04  | SCM device memory life remaining is critically low                    |
+>> ++------+-----------------------------------------------------------------------+
+>> +|  05  | SCM device will be garded off next IPL due to failure                 |
+>> ++------+-----------------------------------------------------------------------+
+>> +|  06  | SCM contents cannot persist due to current platform health status. A  |
+>> +|      | hardware failure may prevent data from being saved or restored.       |
+>> ++------+-----------------------------------------------------------------------+
+>> +|  07  | SCM device is unable to persist memory contents in certain conditions |
+>> ++------+-----------------------------------------------------------------------+
+>> +|  08  | SCM device is encrypted                                               |
+>> ++------+-----------------------------------------------------------------------+
+>> +|  09  | SCM device has successfully completed a requested erase or secure     |
+>> +|      | erase procedure.                                                      |
+>> ++------+-----------------------------------------------------------------------+
+>> +|10:63 | Reserved / Unused                                                     |
+>> ++------+-----------------------------------------------------------------------+
+>>
+>>  **H_SCM_PERFORMANCE_STATS**
+>>
+>> --
+>> 2.26.2
+>>
+
+-- 
+Cheers
+~ Vaibhav
