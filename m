@@ -2,144 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D86981E554C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 07:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A26501E554F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 07:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726080AbgE1FDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 01:03:14 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:52650 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725764AbgE1FDM (ORCPT
+        id S1727066AbgE1FEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 01:04:42 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:41796 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725298AbgE1FEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 01:03:12 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200528050308epoutp037e9dab6702f83cdf67b5c6d0dfd0295c~TGKSh5Vaz1766617666epoutp03j
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 05:03:08 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200528050308epoutp037e9dab6702f83cdf67b5c6d0dfd0295c~TGKSh5Vaz1766617666epoutp03j
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1590642188;
-        bh=xD4XmvUgu/OdTokoZ/Ks5/KdOZvToRWCxhjAPwMBgho=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=cFBPJrVfM4mYzmvNAOAFQ/H02Jh7jPHdwFUOn7ZR+qyaVp6bj2jhPTvyLS++7ouhT
-         2bZlUOwcz43lDYjgB8yfW/IW2RRIfMIDe5Td0xNIjSbToP+kS657vo0jbzvWS48D3i
-         sGirQgpgfNjtEwokXut+EJCQbFEBf7Jva5mX1oTA=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20200528050308epcas1p3a5db166606dacdaa653023696d638e60~TGKR6ABeM0641606416epcas1p3p;
-        Thu, 28 May 2020 05:03:08 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.160]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 49XbDp68t4zMqYkZ; Thu, 28 May
-        2020 05:03:06 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        9D.9D.04392.A064FCE5; Thu, 28 May 2020 14:03:06 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200528050306epcas1p473209d12f3dc8b54b05c08bf6604e79d~TGKQSIvLg3127731277epcas1p4F;
-        Thu, 28 May 2020 05:03:06 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200528050306epsmtrp11cc61c035301d1ce57410677cfe85dc9~TGKQRbvJf1473214732epsmtrp12;
-        Thu, 28 May 2020 05:03:06 +0000 (GMT)
-X-AuditID: b6c32a37-cabff70000001128-17-5ecf460ab0e1
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        9E.E7.08382.A064FCE5; Thu, 28 May 2020 14:03:06 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20200528050306epsmtip1a41794baa008dc834d7c550117599d4a~TGKQI0dLc2192221922epsmtip18;
-        Thu, 28 May 2020 05:03:06 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     "'Tetsuhiro Kohada'" <kohada.t2@gmail.com>
-Cc:     <kohada.tetsuhiro@dc.mitsubishielectric.co.jp>,
-        <mori.takahiro@ab.mitsubishielectric.co.jp>,
-        <motai.hirotaka@aj.mitsubishielectric.co.jp>,
-        "'Sungjong Seo'" <sj1557.seo@samsung.com>,
-        "'Namjae Jeon'" <linkinjeon@kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <ccb66f50-b275-4717-f165-98390520077b@gmail.com>
-Subject: RE: [PATCH 4/4] exfat: standardize checksum calculation
-Date:   Thu, 28 May 2020 14:03:06 +0900
-Message-ID: <015401d634ad$4628e4c0$d27aae40$@samsung.com>
+        Thu, 28 May 2020 01:04:41 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590642281; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=F/YkHIoGTRVe20hlMQi6nd837QqDHegA5W6Ur6tUtDU=; b=LcGOHsKAYLm9xnjo07PODs+ZBpnmdmrgERnsKKBNAZJ38IZws/TPIo+cEF7kmuyWDcAFKxnI
+ qgMZQ9/I2p0Ba8KWxFL8ob6LR+gPBqHyLM1pKy3zO7lWxPJxwNNP9BEeKOe+nfjdpvZEHPGY
+ 3VJuQH6SP8X12aD1lRgBwj27+qk=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5ecf465ebf0e32d254f19f85 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 May 2020 05:04:30
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8DC82C433C9; Thu, 28 May 2020 05:04:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+Received: from [10.253.38.28] (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: zijuhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 37DA9C433C6;
+        Thu, 28 May 2020 05:04:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 37DA9C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=zijuhu@codeaurora.org
+Subject: Re: [PATCH v3] bluetooth: hci_qca: Fix qca6390 enable failure after
+ warm reboot
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
+        rjliao@codeaurora.org
+References: <1590546759-27387-1-git-send-email-zijuhu@codeaurora.org>
+ <20200527164832.GH4525@google.com>
+From:   Zijun Hu <zijuhu@codeaurora.org>
+Message-ID: <4c5c9fd8-e90c-c7e2-8f21-edad3c3ca7ff@codeaurora.org>
+Date:   Thu, 28 May 2020 13:04:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
+In-Reply-To: <20200527164832.GH4525@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQEl0VwLAqGTGno4seWfP7lwGg+RAAKJW6foAcSd2fUB9WovMgNdMeCFAbRhwtQCDDf9yamyrSRA
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0hTYRjm2zk75zhanOaqtwU1DxUlqFtzeioXUVGjC4wUAw314I4X2o2d
-        zW4/spuVRGVR4LLULpqGGmZeShGWJbMsKkEqu9BVpcTMTMm0bcfIf8/7vO/7PN/zfR+FKW4R
-        Kirb5uKdNs7CEDK8/t4yTYRsw5MUTV2bjh29+Apnv/rO4WzB+WsY29ziw9nnd4oI9vnkEM6W
-        DZ/F2bqJNukayjhc1E4a885OkMZDDyoIY5PnNWmsrTxOGE/WVSLjj9oFJjLJEpfFc2beqeZt
-        6XZzti3TwGyOT12Xqo/RaCO0K9hYRm3jrLyBWb/FFLEh2+I/FaPO4SxuP2XiBIGJWh3ntLtd
-        vDrLLrgMDO8wWxxajSNS4KyC25YZmW63rtRqNMv1/sk0S1Z+4SPS0ULtft3RQeaibiIfhVBA
-        R0PP2xEsH8koBd2IoLG8BheLIQRjvWMSsRhBMNng8Xeo4Mq7oWiRb0Hw/s1VqVj0IejpGZcE
-        dAk6AibGW4MeSjoSfL6An4zC6EoJnH95ThpohNAGqL5ynwiohtJr4H7p0gCN04uhvtob1JHT
-        K+Buz2lCxLPAV/gRD2CMXggN34owMYMaxj6VSUWvJBgvb5maUcKF43nBbEBXUdB2pngq9Ho4
-        0OVBIg6F/vY6UsQq6DuVR4op98H31in9Ywh6fxlErIMXNTelgRGMXgY1d6JEOgyafl9Eou1M
-        GPh5QiqqyOFYnkIcWQwnn92TiHg+5B8dJE8jxjMtmGdaMM+0AJ7/ZiUIr0RzeIdgzeQFrUM3
-        /a1rUfDDhsc2opuPt3gRTSFmhlxjfJyikHI5wh6rFwGFMUr52s6HKQq5mduzl3faU51uCy94
-        kd5/7wWYana63f/9ba5UrX65Tqdjo2NiY/Q6Zq68ePRRioLO5Fz8Tp538M5/exIqRJWLIhPN
-        6SMH/iwcIA/7Ek2jtozSVar37pLC1W+ampxfjhTEK3c0xEtaK9BuecKiXZcVn61lCUQiW/jx
-        cvvT8ksDnVXbDGVxpiUbb4cl19+WXb+xruLQh0sxve+KM+RbD6Y19+/vbt/uklUL1cokr2AK
-        6ypIS1bO25jzIW0T3fl1cNLM4EIWpw3HnAL3FzYOC9HGAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprIIsWRmVeSWpSXmKPExsWy7bCSnC6X2/k4g9d/BC1+zL3NYvHm5FQW
-        i4nTljJb7Nl7ksXi8q45bBaX/39isVj2ZTKLxZZ/R1gdODy+zDnO7tE2+R+7R/OxlWweO2fd
-        ZffYtKqTzaNvyypGj8+b5ALYo7hsUlJzMstSi/TtErgyumaeYS/Yy1Fx99Qp9gbG62xdjBwc
-        EgImEg8+mXQxcnEICexmlLjYvpO1i5ETKC4tcezEGWaIGmGJw4eLIWqeM0rsb3/MDFLDJqAr
-        8e/PfjYQW0RAT+LkSZCZXBzMAuuYJD7t28wG0dHDLDFnbQcLSBWngK3EusVHwTYLCzhIHF2o
-        ARJmEVCV2LbuEBOIzStgKbH7zgQ2CFtQ4uTMJ2CtzALaEk9vPoWy5SW2v53DDHGogsTPp8tY
-        IY6IkvizfC9UjYjE7M425gmMwrOQjJqFZNQsJKNmIWlZwMiyilEytaA4Nz232LDAMC+1XK84
-        Mbe4NC9dLzk/dxMjONa0NHcwbl/1Qe8QIxMH4yFGCQ5mJRFep7On44R4UxIrq1KL8uOLSnNS
-        iw8xSnOwKInz3ihcGCckkJ5YkpqdmlqQWgSTZeLglGpg2tocZHqEwU7h4i9lxohd4v9mXwyb
-        9meFmcCnlAXRxQwbe3blMrnXrNugubmg2CpbfkPDz++TK2cGvZFJeq3W6p35ddUeF+vqVQZb
-        ihvFg1M/vf1aqXRM5cPLdPVKK4NpafwJ/DlZ/1NZDyZd7zYLdvlQ36Ba2XUt9qq79/QiX0aN
-        NsXOsg8Z4StZ3l//1crebblohv+lhaweNhqCxg+DG5nCniWJzBDkv9CUNf2q3PXXC/W/hlxI
-        3PVEt/jiTI+8jslXr39467gn8u6S9o11+SXLL65RvzmraXXZ5TfzVilwnf64uLax8thpc43C
-        mQ87NrU/idLnm68+Q1h4378Eu3UnrbzXiJ5q2d3V8DlViaU4I9FQi7moOBEA/bcHWCQDAAA=
-X-CMS-MailID: 20200528050306epcas1p473209d12f3dc8b54b05c08bf6604e79d
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200525115121epcas1p2843be2c4af35d5d7e176c68af95052f8
-References: <20200525115052.19243-1-kohada.t2@gmail.com>
-        <CGME20200525115121epcas1p2843be2c4af35d5d7e176c68af95052f8@epcas1p2.samsung.com>
-        <20200525115052.19243-4-kohada.t2@gmail.com>
-        <00d301d6332f$d4a52300$7def6900$@samsung.com>
-        <d0d2e4b3-436e-3bad-770c-21c9cbddf80e@gmail.com>
-        <CAKYAXd9GzYTxjtFuUJe+WjEOHSJnVbOfwn_4ZXZgmiVtjV4z6A@mail.gmail.com>
-        <ccb66f50-b275-4717-f165-98390520077b@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >> II tried applying patch to dev-tree (4c4dbb6ad8e8).
-> >> -The .patch file I sent
-> >> -mbox file downloaded from archive
-> >> But I can't reproduce the error. (Both succeed) How do you reproduce
-> >> the error?
-> > I tried to appy your patches in the following order.
-> > 1. [PATCH] exfat: optimize dir-cache
-> > 2. [PATCH 1/4] exfat: redefine PBR as boot_sector 3. [PATCH 2/4]
-> > exfat: separate the boot sector analysis 4. [PATCH 3/4] exfat: add
-> > boot region verification 5. [PATCH 4/4] exfat: standardize checksum
-> > calculation
-> 
-> I was able to reproduce it.
-> 
-> The dir-cache patch was created based on the HEAD of dev-tree.
-> The 4 patches for boot_sector were also created based on the HEAD of dev-tree.
-> (at physically separated place)
-> 
-> I'm sorry I didn't check any conflicts with these patches.
-> 
-> I'll repost the patch, based on the dir-cache patched dev-tree.
-> If dir-cache patch will merge into dev-tree, should I wait until then?
-I will apply them after testing at once if you send updated 5 patches again.
-Thanks!
-> 
-> BR
 
+
+On 5/28/2020 12:48 AM, Matthias Kaehlcke wrote:
+> Hi Zijun,
+> 
+> On Wed, May 27, 2020 at 10:32:39AM +0800, Zijun Hu wrote:
+>> Warm reboot can not restore qca6390 controller baudrate
+>> to default due to lack of controllable BT_EN pin or power
+>> supply, so fails to download firmware after warm reboot.
+>>
+>> Fixed by sending EDL_SOC_RESET VSC to reset controller
+>> within added device shutdown implementation.
+>>
+>> Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
+>> ---
+>>  drivers/bluetooth/hci_qca.c | 29 +++++++++++++++++++++++++++++
+>>  1 file changed, 29 insertions(+)
+>>
+>> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+>> index e4a6823..4b6f8b6 100644
+>> --- a/drivers/bluetooth/hci_qca.c
+>> +++ b/drivers/bluetooth/hci_qca.c
+>> @@ -1975,6 +1975,34 @@ static void qca_serdev_remove(struct serdev_device *serdev)
+>>  	hci_uart_unregister_device(&qcadev->serdev_hu);
+>>  }
+>>  
+>> +static void qca_serdev_shutdown(struct device *dev)
+>> +{
+>> +	int ret;
+>> +	int timeout = msecs_to_jiffies(CMD_TRANS_TIMEOUT_MS);
+>> +	struct serdev_device *serdev = to_serdev_device(dev);
+>> +	struct qca_serdev *qcadev = serdev_device_get_drvdata(serdev);
+>> +	const u8 ibs_wake_cmd[] = { 0xFD };
+>> +	const u8 edl_reset_soc_cmd[] = { 0x01, 0x00, 0xFC, 0x01, 0x05 };
+>> +
+>> +	if (qcadev->btsoc_type == QCA_QCA6390) {
+>> +		serdev_device_write_flush(serdev);
+>> +		serdev_device_write_buf(serdev,
+>> +				ibs_wake_cmd, sizeof(ibs_wake_cmd));
+>> +		serdev_device_wait_until_sent(serdev, timeout);
+> 
+> Why no check of the return value of serdev_device_write_buf() here,
+> does it make sense to continue if sending the wakeup command failed?
+> 
+i will correct it at v4 patch
+> Couldn't serdev_device_write() be used instead of the _write_buf() +
+> _wait_until_sent() combo?
+> 
+i don't think so, serdev_device_write() is not appropriate at here.
+serdev_device_write_wakeup() should be used to release completion hold
+by serdev_device_write(), however @hci_serdev_client_ops doesn't use
+serdev_device_write_wakeup() to implement its write_wakeup operation.
+we don't want to touch common hci_serdev.c code.
+
+>> +		usleep_range(8000, 10000);
+>> +
+>> +		serdev_device_write_flush(serdev);
+> 
+> I suppose the flush is done because _wait_until_sent() could have timed out.
+> Another reason to use _device_write() (if suitable), since it returns
+> -ETIMEDOUT in that case?
+>
+flush is prefixed at write operation to speed up
+shutdown procedure in case of unexpected data injected
+during waiting for controller wakeup.
+the combo have been used and i just follow it>> +		ret = serdev_device_write_buf(serdev,
+>> +				edl_reset_soc_cmd, sizeof(edl_reset_soc_cmd));
+>> +		if (ret < 0) {
+>> +			BT_ERR("QCA send EDL_RESET_REQ error: %d", ret);
+>> +			return;
+>> +		}
+>> +		serdev_device_wait_until_sent(serdev, timeout);
+>> +		usleep_range(8000, 10000);
+>> +	}
+>> +}
+>> +
+>>  static int __maybe_unused qca_suspend(struct device *dev)
+>>  {
+>>  	struct hci_dev *hdev = container_of(dev, struct hci_dev, dev);
+>> @@ -2100,6 +2128,7 @@ static struct serdev_device_driver qca_serdev_driver = {
+>>  		.name = "hci_uart_qca",
+>>  		.of_match_table = of_match_ptr(qca_bluetooth_of_match),
+>>  		.acpi_match_table = ACPI_PTR(qca_bluetooth_acpi_match),
+>> +		.shutdown = qca_serdev_shutdown,
+>>  		.pm = &qca_pm_ops,
+>>  	},
+>>  };
+>> -- 
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+>>
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
