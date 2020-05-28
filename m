@@ -2,98 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7521E707F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 01:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D781E7086
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 01:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437643AbgE1Xki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 19:40:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55388 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437593AbgE1Xkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 19:40:35 -0400
-Received: from localhost (lfbn-ncy-1-324-171.w83-196.abo.wanadoo.fr [83.196.159.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89D392074B;
-        Thu, 28 May 2020 23:40:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590709235;
-        bh=kk35OEDgCoskWQ5BkKq+DIzRA811R/sfM9ATykL5fvA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EhlpWSFqONV6ey1TFLTxCLpOnT4c7xFhzBaaHRAqSr3rLMYrsvAtmcblX8boWQiX2
-         OrAzw0nFfclqB5wI1qq3N2sZq85CxxHwdGzszLup1AcN3t7Lc/RW9XHBAlTBJ0ArTn
-         UZ4HRRlwb47aNgIn38M14ltIbpAR8cllx0GhcOTc=
-Date:   Fri, 29 May 2020 01:40:32 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org, x86@kernel.org,
-        cai@lca.pw, mgorman@techsingularity.net
-Subject: Re: [RFC][PATCH 5/7] irq_work, smp: Allow irq_work on
- call_single_queue
-Message-ID: <20200528234031.GB551@lenoir>
-References: <20200526161057.531933155@infradead.org>
- <20200526161908.011635912@infradead.org>
+        id S2437665AbgE1Xlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 19:41:36 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:36206 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437593AbgE1XlU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 19:41:20 -0400
+Received: by mail-il1-f195.google.com with SMTP id 17so751485ilj.3;
+        Thu, 28 May 2020 16:41:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ypfIIDza/08sqd4tW33oT01BD9y9sXiyifz9nYv051M=;
+        b=fsRuQVoRgfq6M69OxL6KjuNBv0G0vJgqaens804f66zQRq+iXjk2ntqRwAXFiYpbGg
+         M/8PVPA6ZzE94MEfHAXK6RmFP6HDRee6e1D3JjIcPKW/X2ZOhJhjvNI0s2kFuPULpYjr
+         42f9KaE6sTSmSzZ60O1lZww5aM4MZTBqJs0NQv5l0+wD8Ze4d4R/YwkJbQtG/UKPUmNH
+         1M0ddCckPNTc3m1NiXfQnMXGYEXm9X2KwIShSZrespEkq4P2zLCgh5S+bx5TV1vMiKnc
+         tlLK8g2GwMCqTRg5wz8edqjHgACgG0A6DlGaWxg6G8KKZfOM+qYTRRTKs097HGxJTbD4
+         AOxg==
+X-Gm-Message-State: AOAM531fnX11SQZ0cYSuumnwkA8G5dSTHOomKwvrJNebg63aehWfcTA/
+        JeT8FAWDnhIg9tO2MWIaB3wcAodsmg==
+X-Google-Smtp-Source: ABdhPJwkYkB51TMDa1sXJoxCcE7geVsDSvUfsrHGWXxX0xBbn7n5sLreOJIOOVEACZSIfr9KjUy4FA==
+X-Received: by 2002:a92:894e:: with SMTP id n75mr5117600ild.271.1590709279650;
+        Thu, 28 May 2020 16:41:19 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id l26sm12905ild.59.2020.05.28.16.41.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 16:41:19 -0700 (PDT)
+Received: (nullmailer pid 895152 invoked by uid 1000);
+        Thu, 28 May 2020 23:41:18 -0000
+Date:   Thu, 28 May 2020 17:41:18 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 05/10] dt-bindings: clock: Introduce SM8150 QCOM Graphics
+ clock bindings
+Message-ID: <20200528234118.GA892766@bogus>
+References: <20200524210615.17035-1-jonathan@marek.ca>
+ <20200524210615.17035-6-jonathan@marek.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200526161908.011635912@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200524210615.17035-6-jonathan@marek.ca>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 06:11:02PM +0200, Peter Zijlstra wrote:
-> Currently irq_work_queue_on() will issue an unconditional
-> arch_send_call_function_single_ipi() and has the handler do
-> irq_work_run().
+On Sun, May 24, 2020 at 05:06:06PM -0400, Jonathan Marek wrote:
+> Add device tree bindings for graphics clock controller for
+> Qualcomm Technology Inc's SM8150 SoCs.
+
+Where's the schema?
+
 > 
-> This is unfortunate in that it makes the IPI handler look at a second
-> cacheline and it misses the opportunity to avoid the IPI. Instead note
-> that struct irq_work and struct __call_single_data are very similar in
-> layout, so use a few bits in the flags word to encode a type and stick
-> the irq_work on the call_single_queue list.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 > ---
->  include/linux/irq_work.h |    7 ++
->  include/linux/smp.h      |   23 ++++++++-
->  kernel/irq_work.c        |   53 +++++++++++---------
->  kernel/smp.c             |  119 ++++++++++++++++++++++++++++-------------------
->  4 files changed, 130 insertions(+), 72 deletions(-)
-> 
-> --- a/include/linux/irq_work.h
-> +++ b/include/linux/irq_work.h
-> @@ -13,6 +13,8 @@
->   * busy      NULL, 2 -> {free, claimed} : callback in progress, can be claimed
->   */
->  
-> +/* flags share CSD_FLAG_ space */
-> +
->  #define IRQ_WORK_PENDING	BIT(0)
->  #define IRQ_WORK_BUSY		BIT(1)
->  
-> @@ -23,9 +25,12 @@
->  
->  #define IRQ_WORK_CLAIMED	(IRQ_WORK_PENDING | IRQ_WORK_BUSY)
->  
-> +/*
-> + * structure shares layout with single_call_data_t.
-> + */
->  struct irq_work {
-> -	atomic_t flags;
->  	struct llist_node llnode;
-> +	atomic_t flags;
-
-
-We should probably have:
-
-struct csd_node {
-       atomic_t flags;
-       struct llist_node;
-}
-
-embed inside struct irq_work and struct __call_single_data. Relying on
-structure layout for things to work doesn't really clarify things :-)
-
-Thanks.
+>  include/dt-bindings/clock/qcom,gpucc-sm8150.h | 40 +++++++++++++++++++
+>  1 file changed, 40 insertions(+)
+>  create mode 100644 include/dt-bindings/clock/qcom,gpucc-sm8150.h
