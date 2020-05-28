@@ -2,195 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E511E6C47
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098D51E6C4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406923AbgE1UQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 16:16:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39824 "EHLO
+        id S2407212AbgE1UQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 16:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407182AbgE1UQH (ORCPT
+        with ESMTP id S2407201AbgE1UQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 16:16:07 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B35C08C5C6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:16:07 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id a137so383424oii.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:16:07 -0700 (PDT)
+        Thu, 28 May 2020 16:16:28 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8BDC08C5C6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:16:26 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id q10so309164qvs.16
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:16:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=G9v5weXtyKc3IseC+Bgo2LPHDLXxu13c4mrDGZBtUCE=;
-        b=eBP0mtNvcqAXHNF0oqezhSLg2+R9bsxXj2wGfcc+ZrrnECjL5kT+NTlWHIiaphnLEs
-         5ZW+iIPq+L4cKRFphq4YPLqDAYjSMYFJxjGY7/EK7LlPGvTAvLZQ8e3PsScFeRSuqBni
-         85hZxAyNviK+7hpeZ0/4JOV8MJHcGYCYrkYDc=
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=GQWu2f9NZklLdzS60+6PL6niL+TWcaL7F+qGquV9Sfs=;
+        b=FKHrqtqa3eX/hMTxYWddZEa9nZwZ+EgoSp0U4z1O+zsruv/JzsOkJxkcT7AwTLQuSm
+         DB7/datS6wCAPgguo/zzbtCmiqJS0vH92GN6Bw47Rv7Tg5XnblrXysvgqlU1S4M1VSnX
+         pGl3DHxi/TuXF793E99WTgjyfHY3PrgLh04mXcNqPE40Iqww31qL2K6Iqk/Fn6t0pwnN
+         y2YQluplGgt51z/TEivFDgPviY2Czk9fgtJd0cw95n3eAG9CJf9jTlXlwS1uoSp9U0SS
+         lWUVJkPdHRtbaPedqumv4WF6RqbsBsfaxnORdbtgwK8uW39LrGSYSB5UUTQLrCTUG/C0
+         y9ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=G9v5weXtyKc3IseC+Bgo2LPHDLXxu13c4mrDGZBtUCE=;
-        b=Y94Vlz9jPcE3dedfm3VZ4knrR+W2f2qxtRmHY+cTbOyWZXHCmIzAdXDyGmab4gvBd+
-         V9w0kJ0wh8x3fTxK83FsYt31QvmZoL5qQ9XqDvNsw9ogb11ZrakmwPtYhoRNupUzmT/4
-         XwoRLUlMZszPRkgJ6aauK9ifykTw6HnAmsG1RDOHLhFZm3F3/q+OPp5tRjVJvQo0+Y7F
-         COasknouAfosoILyUilfFmCq3GRO8WVbGBBO8rNuSuFX4ZQ86o1FeBhzrW8AYCdxBiiR
-         RkeqQKT56PH4NmN7oj7cbVssLXBvkIasP/g/eIJbqCKSQ9R1oNdnffRyoTpRP64A5HOY
-         WcKA==
-X-Gm-Message-State: AOAM530br39i6YRbYQiOUBmL7POlryfUJtSXteEh6NLgBsQqkhpojuRZ
-        zfFCC/LC4hhAtrAoajFh4BQRKQ==
-X-Google-Smtp-Source: ABdhPJyar0ROKJIh65Mms+BI2c6G8U9WoJVjmRuNtKFOtHoLQ/lggDpLkCc+D6/P+K4DF/1+c3KJGQ==
-X-Received: by 2002:a54:460a:: with SMTP id p10mr3528564oip.136.1590696966382;
-        Thu, 28 May 2020 13:16:06 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id k69sm2109002oib.26.2020.05.28.13.16.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 May 2020 13:16:05 -0700 (PDT)
-Subject: Re: [PATCH v7 0/5] KUnit-KASAN Integration
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>
-Cc:     shuah <shuah@kernel.org>, Alan Maguire <alan.maguire@oracle.com>,
-        Patricia Alfonso <trishalfonso@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20200424061342.212535-1-davidgow@google.com>
- <alpine.LRH.2.21.2005031101130.20090@localhost>
- <26d96fb9-392b-3b20-b689-7bc2c6819e7b@kernel.org>
- <CABVgOS=MueiJ6AHH6QUSWjipSezi1AvggxBCrh0Q9P_wa55XZQ@mail.gmail.com>
- <CAFd5g46Y-9vSSSke05hNyOoj3=OXcJh8bHGFciDVnwkSrpcjZw@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <cadaba3e-f679-e275-4196-4e497eb27624@linuxfoundation.org>
-Date:   Thu, 28 May 2020 14:16:04 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <CAFd5g46Y-9vSSSke05hNyOoj3=OXcJh8bHGFciDVnwkSrpcjZw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=GQWu2f9NZklLdzS60+6PL6niL+TWcaL7F+qGquV9Sfs=;
+        b=Fl2LmVdNqNBLyGFX06To3q5QGG36xlzPK81GVW9kd9spfhpig1ursJ+XQo267ZN2DN
+         YQmUeLNV8CeE9h8nMUGr0uB7QQKdyGxAP0QfE5UTEs494bJb/1V4arcxtT6gnJS/XZZb
+         xsUNwDuhVDlJCJSoloUdEcIjx9e/sneowh47Xhe7IZTTvu/PnPANNZPlapmlt/wG2hsu
+         ifgIX6AgLpyEIsFPClDqMDqmn5gr5EdSy44ZhZhe4uJwFOA83WL6u+D+YpwUvB5xILnm
+         fFLxQeAd38R/tZn/Yw+Pcr5pKt4UA6J3Sfz4G2bwW/hrusXCaUwswzkHqiYgoUZb3zYy
+         W9CA==
+X-Gm-Message-State: AOAM530EC/+JTnj56SlXWxzASTNOfGsqMUq+nQyekm74fjcD/B7HGzkW
+        oQWcE7EVl5rIUDwJDe/0gWI1+I44rpDB41ad2tG1l3x8MZkZ074WalolHUAzVq07kVBUJcS8o9t
+        /IsVwC7Et2P9tjs4oG4mjI+9iCOfxNPxCamqFF6Iw8olK7OqtU4sW13W2cVELmnjxH6f4m4hw
+X-Google-Smtp-Source: ABdhPJy9GV4l+facI1wkwZDvgu/LpZCxjhKHu8zuw9pBLwV0bfFJ8JKc356FUr/X1sv4D8mFtNqgQ1GHPF1u
+X-Received: by 2002:a05:6214:11f0:: with SMTP id e16mr4834216qvu.37.1590696985936;
+ Thu, 28 May 2020 13:16:25 -0700 (PDT)
+Date:   Thu, 28 May 2020 13:16:14 -0700
+Message-Id: <20200528201614.250182-1-eranian@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.rc2.251.g90737beb825-goog
+Subject: [PATCH] perf/x86/rapl: fix rapl config variable bug
+From:   Stephane Eranian <eranian@google.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, mingo@elte.hu, irogers@google.com,
+        kim.phillips@amd.com, jolsa@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/28/20 1:52 PM, Brendan Higgins wrote:
-> On Tue, May 26, 2020 at 7:51 PM David Gow <davidgow@google.com> wrote:
->>
->> On Sat, May 23, 2020 at 6:30 AM shuah <shuah@kernel.org> wrote:
->>>
->>> On 5/3/20 4:09 AM, Alan Maguire wrote:
->>>> On Thu, 23 Apr 2020, David Gow wrote:
->>>>
->>>>> This patchset contains everything needed to integrate KASAN and KUnit.
->>>>>
->>>>> KUnit will be able to:
->>>>> (1) Fail tests when an unexpected KASAN error occurs
->>>>> (2) Pass tests when an expected KASAN error occurs
->>>>>
->>>>> Convert KASAN tests to KUnit with the exception of copy_user_test
->>>>> because KUnit is unable to test those.
->>>>>
->>>>> Add documentation on how to run the KASAN tests with KUnit and what to
->>>>> expect when running these tests.
->>>>>
->>>>> This patchset depends on:
->>>>> - "[PATCH v3 kunit-next 0/2] kunit: extend kunit resources API" [1]
->>>>> - "[PATCH v3 0/3] Fix some incompatibilites between KASAN and
->>>>>     FORTIFY_SOURCE" [2]
->>>>>
->>>>> Changes from v6:
->>>>>    - Rebased on top of kselftest/kunit
->>>>>    - Rebased on top of Daniel Axtens' fix for FORTIFY_SOURCE
->>>>>      incompatibilites [2]
->>>>>    - Removed a redundant report_enabled() check.
->>>>>    - Fixed some places with out of date Kconfig names in the
->>>>>      documentation.
->>>>>
->>>>
->>>> Sorry for the delay in getting to this; I retested the
->>>> series with the above patchsets pre-applied; all looks
->>>> good now, thanks!  Looks like Daniel's patchset has a v4
->>>> so I'm not sure if that will have implications for applying
->>>> your changes on top of it (haven't tested it yet myself).
->>>>
->>>> For the series feel free to add
->>>>
->>>> Tested-by: Alan Maguire <alan.maguire@oracle.com>
->>>>
->>>> I'll try and take some time to review v7 shortly, but I wanted
->>>> to confirm the issues I saw went away first in case you're
->>>> blocked.  The only remaining issue I see is that we'd need the
->>>> named resource patchset to land first; it would be good
->>>> to ensure the API it provides is solid so you won't need to
->>>> respin.
->>>>
->>>> Thanks!
->>>>
->>>> Alan
->>>>
->>>>> Changes from v5:
->>>>>    - Split out the panic_on_warn changes to a separate patch.
->>>>>    - Fix documentation to fewer to the new Kconfig names.
->>>>>    - Fix some changes which were in the wrong patch.
->>>>>    - Rebase on top of kselftest/kunit (currently identical to 5.7-rc1)
->>>>>
->>>>
->>>
->>> Hi Brendan,
->>>
->>> Is this series ready to go inot Linux 5.8-rc1? Let me know.
->>> Probably needs rebase on top of kselftest/kunit. I applied
->>> patches from David and Vitor
->>>
->>> thanks,
->>> -- Shuah
->>>
->>
->> Hi Shuah,
->>
->> I think the only things holding this up are the missing dependencies:
->> the "extend kunit resources API" patches[1] for KUnit (which look
->> ready to me), and the "Fix some incompatibilities between KASAN and
->> FORTIFY_SOURCE" changes[2] on the KASAN side (which also seem ready).
->>
->> This patchset may need a (likely rather trivial) rebase on top of
->> whatever versions of those end up merged: I'm happy to do that if
->> necessary.
->>
->> Cheers,
->> -- David
->>
->> [1]: https://lore.kernel.org/linux-kselftest/1585313122-26441-1-git-send-email-alan.maguire@oracle.com/T/#t
->> [2]: http://lkml.iu.edu/hypermail/linux/kernel/2004.3/00735.html
-> 
-> As David pointed out, this series is waiting on its dependencies.
-> Sorry, I thought the "extend KUnit resources API" patchset was ready
-> to go, but I realized I only gave a reviewed-by to one of the patches.
-> Both have been reviewed now, but one patch needs a minor fix.
-> 
+This patch fixes a bug introduced by:
 
-Yes. Thanks David.
+commit fd3ae1e1587d6 ("perf/x86/rapl: Move RAPL support to common x86 code")
 
-> As for other patches, the patches from David, Vitor, and Anders should
-> cover everything. Thanks!
->
-I pulled David's and Vitor's patches. I am waiting for patch from
-Vitor to fix a problem that was introduced when I was resolving merge
-conflicts between Vitor's and David's patches.
+The Kconfig variable name was wrong. It was missing the CONFIG_ prefix.
 
-I will pull Anders patches.
+Signed-off-by: Stephane Eranian <eraniangoogle.com>
 
-thanks,
--- Shuah
+---
+ arch/x86/events/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/arch/x86/events/Makefile b/arch/x86/events/Makefile
+index 12c42eba77ec3..9933c0e8e97a9 100644
+--- a/arch/x86/events/Makefile
++++ b/arch/x86/events/Makefile
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-y					+= core.o probe.o
+-obj-$(PERF_EVENTS_INTEL_RAPL)		+= rapl.o
++obj-$(CONFIG_PERF_EVENTS_INTEL_RAPL)	+= rapl.o
+ obj-y					+= amd/
+ obj-$(CONFIG_X86_LOCAL_APIC)            += msr.o
+ obj-$(CONFIG_CPU_SUP_INTEL)		+= intel/
+-- 
+2.27.0.rc2.251.g90737beb825-goog
 
