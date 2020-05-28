@@ -2,132 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C13511E5EB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 416321E5E8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388536AbgE1Lva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 07:51:30 -0400
-Received: from mail.jv-coder.de ([5.9.79.73]:45294 "EHLO mail.jv-coder.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388480AbgE1Lv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 07:51:29 -0400
-X-Greylist: delayed 624 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 May 2020 07:51:28 EDT
-Received: from [192.168.178.40] (unknown [188.192.1.13])
-        by mail.jv-coder.de (Postfix) with ESMTPSA id E0CECA3440;
-        Thu, 28 May 2020 11:41:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
-        t=1590666063; bh=WXDcfwZSvWW9FRRstQ/LEdAer2SgJFTyaVpYap2AsCM=;
-        h=To:From:Subject:Message-ID:Date:MIME-Version;
-        b=NxXBPn8SA6q5GXMYZUMoqF61RuAezvi8W7SvY0Do8AnVGL0EOxTlLcDwykFKXtO7j
-         Qse4MvfR3KYkzkWmZlTyarv7VCJnXyTnola52jD42GuJD1mvJ8tdFATDmgqIrGp1rD
-         9/yvbRZKuSiuTs2rcgdYWPfhbVOwoQp/PYuWbqUs=
-To:     linux-kernel@vger.kernel.org,
-        Joerg Vehlow <joerg.vehlow@aox-tech.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>
-From:   Joerg Vehlow <lkml@jv-coder.de>
-Subject: [BUG RT] dump-capture kernel not executed for panic in interrupt
- context
-Message-ID: <2c243f59-6d10-7abb-bab4-e7b1796cd54f@jv-coder.de>
-Date:   Thu, 28 May 2020 13:41:08 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S2388459AbgE1Ll4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 07:41:56 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:59765 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388441AbgE1Llz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 07:41:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1590666115; x=1622202115;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=JUbfJ/grhJxrmxMI/oPm120rZDkN7Hmpw01cYXHJ9dY=;
+  b=kHBw8hU4AGXsn8eFYbwF238euhJ2wQss3l+oogo+GSFVA7m/7vnSa4kl
+   w5AIKHFFKLmRTdC0AeBZbc6U3U2jbcONgYMjlLDAvL5yojkXuZx/Qo3Qf
+   pRFb/HO4IzZLjVAOTxVSV4ZCEX5fhVVJ+sOqKzScACvonI317oAgjUMxA
+   d7bBejUwYX4k066nxiUHtGvgtoTsLo6d0ADoW3Bj3J6ahHpJ+Vaq8pYip
+   IxTa+IT2VF7kUyjBm4mYV1MMlt/EepcAWaTJ3ILWeXCLmwrE5EDyNaGI3
+   J2iGumI4n2G3CCBTOxC9d1Mei7AkLgg7/3dstfxwkpYg70J/Cz9n1xKNh
+   w==;
+IronPort-SDR: a7pGp6+oj069KOC7r5VWT1Htpwy8sY0tMJV6RYrQoWE1/BjWXs++i3N2cMbUndK9A9eay6XVMU
+ L/54xWWPEs655iKicgb2+d3bT8RcAH5uBnDFVq/dST40szQBHzbllKaoYcj6ct0vCJhRnlQL1U
+ 2xwYvg/o3MsknkyluVGzL8s1j4ouunefDBIfuVJdfygBG+oJpditYWpNEuqZmfucw3y6qUFFjy
+ FrGqMydsvE8yFaWPjb6rqXdKx/sC57OLSdixCYOzIclJPobtNMhJE20oZ82fUe5n6GYD1jBoy0
+ z3w=
+X-IronPort-AV: E=Sophos;i="5.73,444,1583218800"; 
+   d="scan'208";a="76630723"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 May 2020 04:41:54 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 28 May 2020 04:41:53 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Thu, 28 May 2020 04:41:53 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oftR6w/RzFrsGudlG2dnkuTW1NHPfHwa0tvNSfuJuFrpV9lQvU6uviIZJBmrwidSBk0jZvR04bQZkLpkKZdg0vTAJFJYL5pwqjWP7YZss1VHM3IcywbtH6ZHA/nocjmparBJXqSWscGVUSyUcKrOYEc8bh3maIG2ImDRgBb2IaHSsihQFDbvV8v0VIhBYboidlSAHEdpTdpUB8CRxNk9RZ56FIkJk/Elts2vdkmAYJ5G0E6FgubS/Xs8TZyqJoETqxhscABlMVc18FxQPl1CNYFUyy1FvsVFfibgeZmWDsW1wZ0uIK7JnbBwjuZMFeh05u0HvZQMCxTyDfEY2/Qq6A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aeTYXWsxjySzl0PIFbR/C1JOTy3mq7Z/MvfNUykkXco=;
+ b=gwrTB7I4C6JqfG7/g8e8GL91JJANBEzxJj4ud0x13BZC8xFO/9LsyeavZG/8RYp0AmiOO/bxLnpcx0PnOSfVwUVMn2skcGwCb/EBt08th1PP1PpreZ763YkLOiJrIdJNOcQEwZnLgGF48lgRMumA0RhZ5OAYt50svgzKPcyLKKcS3nHgQaPisXjJ5reNSbD8bb6Rfr7XjNEOfcnS6qkRDrQ3z5nuktEQSbzLnJN1IqtxqTKwxlsBs7JejvfRdRDdQj5KCRNlKlFyb4URpttWvaQmWP/n0gLf39MLg1l5jXdlI4pQsWpiSnA8cCs+IvemNSspXpN725A12j4uGrM0xA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aeTYXWsxjySzl0PIFbR/C1JOTy3mq7Z/MvfNUykkXco=;
+ b=iLHhQKjsmQLo83MhYUDwPtsl7Q9mDQWa1SReGHKBZDB7tLY0VNdq7TAkBbG0z9y1jOH1HrlhhA4oHekLLwbbeBmfsCb7rFtF5kOfBIjnXNiiuWX5ffMmABUvZm9gMvoYd/JOL+ohR5E+IYdTnwQcRgYHmGGOijlyqHnmWL15iiM=
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
+ by BY5PR11MB3991.namprd11.prod.outlook.com (2603:10b6:a03:186::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17; Thu, 28 May
+ 2020 11:41:52 +0000
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.3045.018; Thu, 28 May 2020
+ 11:41:52 +0000
+From:   <Tudor.Ambarus@microchip.com>
+To:     <vigneshr@ti.com>
+CC:     <broonie@kernel.org>, <bbrezillon@kernel.org>,
+        <vadivel.muruganx.ramuthevar@linux.intel.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <simon.k.r.goldschmidt@gmail.com>,
+        <dinguyen@kernel.org>, <marex@denx.de>
+Subject: Re: [PATCH v2 1/6] mtd: spi-nor: cadence-quadspi: Make driver
+ independent of flash geometry
+Thread-Topic: [PATCH v2 1/6] mtd: spi-nor: cadence-quadspi: Make driver
+ independent of flash geometry
+Thread-Index: AQHWM0FZFb5dBCwkWUGeiULRbnlz0Ki9Y2+A
+Date:   Thu, 28 May 2020 11:41:52 +0000
+Message-ID: <1873244.LXWL5g5pfh@192.168.0.120>
+References: <20200526093604.11846-1-vigneshr@ti.com>
+ <20200526093604.11846-2-vigneshr@ti.com>
+In-Reply-To: <20200526093604.11846-2-vigneshr@ti.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-Spam-Status: No, score=4.6 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_PBL,RCVD_IN_SORBS_DUL,RDNS_NONE
-        autolearn=no autolearn_force=no version=3.4.4
-X-Spam-Level: ****
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mail.jv-coder.de
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: af228cdd-6b87-4a99-beac-08d802fc1d6c
+x-ms-traffictypediagnostic: BY5PR11MB3991:
+x-microsoft-antispam-prvs: <BY5PR11MB3991AD97A483D63F91E9A6A2F08E0@BY5PR11MB3991.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-forefront-prvs: 0417A3FFD2
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jZR1qZS2xvDLpofo0BT8Wd6U24hLeeVt2O5Lh2cgFr5RsPslq2uAhgQOXrDFP7pZTJYnSm2Hz31hN8b+FjXD7mFNcJS6+nSq8zd8OLcoUvTjf6dqRJBNtVyB8p1xelS/LeT7qMq7mO7R1a6vJzvem9t19EakNhlPr0XYpZDlIrXPEp9LOYzy3NBV+ntdC+CdLg1kyrpTwfmyE1cnmoXcEzfc4FXPdD769SyDteHh1DryxXC7cW1lbGktedW+TpwMddLwi8EItQJB2SufhxU0d2qTihKVyKoLEHDN3q0loKKWUFD2pxWxU7xpAjXU4DpHxJE+QW53kZWGfEO2lpQMz6/8IBQVlHsk9tuRXncqIyIk014MhIsknw3lruhuWtWh
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4419.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(136003)(39860400002)(346002)(366004)(376002)(6486002)(86362001)(4744005)(14286002)(8676002)(316002)(2906002)(9686003)(6512007)(54906003)(478600001)(26005)(66446008)(71200400001)(83380400001)(64756008)(66946007)(76116006)(66556008)(6916009)(53546011)(6506007)(66476007)(8936002)(5660300002)(186003)(4326008)(7416002)(39026012);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: ZMyCWGbfSI2PhMmllIabsxWuaAodLIsWULrXHLgCDqEjFn3iovKqFtrZ/46oW/jtTKDb5V91FeKXkI2pIGzOp9+5AfYcfKv227iaF9bKvj+hC6FSbrMu1o3qu1iDZ6yVSdLQkdMBnZYOzMhVD/MjIIsicxKe7gbJqJKZDNahkxR6QxlEEYqYupI7llFqUNj7q/k70RQJkoslbsnLt5FNp6EDr0Tu/xciPuhyqx1UdUGoi+oyZoGmJ95T+U0PmOI+pA8AOnzJr4t8WUGQV7WAXZAq0ikJnDQ2JdfnEtzlRtlIZYr6Q7j1MqMCtw+SoQ+ykrJOb1e5ww0Ypfo5MlM8LJFQrrdmbdA5RasGHLrlBq3rRptM9MxiRn9qw1s+pxwEM9KEXIqc78wskQJV+tVkXUP80RTiQs0R8QSnh4Z9RIjt4Qp07ts0Sp4t1OdiWzXv4LoOJlplZBFuuCDKFEsRuw4b0FrTR4aKjx7GcEA/oSY=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <107AB70B0512164CAB04DCFA413C114A@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: af228cdd-6b87-4a99-beac-08d802fc1d6c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 May 2020 11:41:52.0186
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3AGHmC4EdhSFHRJyacN3NRT1uGk4BQTn5eyg1onQAar6Vtnr3nesLGCpICdvnbi71S4U8R74g4cD5p+KU71ImM3rwmTimFkrAGQwVdFIuAc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB3991
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tuesday, May 26, 2020 12:35:59 PM EEST Vignesh Raghavendra wrote:
+> Drop configuration of Flash size, erase size and page size
+> configuration. Flash size is needed only if using AHB decoder (BIT 23 of
+> CONFIG_REG) which is not used by the driver.
+> Erase size and page size are needed if IP is configured to send WREN
+> automatically. But since SPI NOR layer takes care of sending WREN, there
+> is no need to configure these fields either.
+>=20
+> Therefore drop these in preparation to move the driver to spi-mem
+> framework where flash geometry is not visible to controller driver.
+>=20
+> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+> ---
+>  .../mtd/spi-nor/controllers/cadence-quadspi.c | 36 +------------------
+>  1 file changed, 1 insertion(+), 35 deletions(-)
 
-I think I found a bug in the kernel with rt patches (or maybe even without).
-This applies to all kernels propably starting at 2.6.27.
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-When a kernel panic is triggered from an interrupt handler, the dump-capture
-kernel is not started, instead the system acts as if it was not installed.
-The reason for this is, that panic calls __crash_kexec, which is protected
-by a mutex. On an rt kernel this mutex is an rt mutex and when trylock 
-is called
-on an rt mutex, the first check is whether the current kthread is in an 
-nmi or
-irq handler. If it is, the function just returns 0 -> locking failed.
-
-According to rt_mutex_trylock documentation, it is not allowed to call this
-function from an irq handler, but panic can be called from everywhere 
-and thus
-rt_mutex_trylock can be called from everywhere. Actually even 
-mutex_trylock has
-the comment, that it is not supposed to be used from interrupt context, 
-but it
-still locks the mutex. I guess this could also be a bug in the non-rt 
-kernel.
-
-I found this problem using a test module, that triggers the softlock 
-detection.
-It is a pretty simple module, that creates a kthread, that disables 
-preemption,
-spins 60 seconds in an endless loop and then reenables preemption and 
-terminates
-the thread. This reliably triggers the softlock detection and if
-kernel.softlockup_panic=0, the system resumes perfectly fine afterwards. If
-kernel.softlockup_panic=1 I would expect the dump-capture kernel to be 
-executed,
-but it is not due to the bug (without rt patches it works), instead the 
-panic
-function is executed until the end to the endless loop.
-
-
-A stacktrace captured at the trylock call inside kexec_code looks like this:
-#0  __rt_mutex_trylock (lock=0xffffffff81701aa0 <kexec_mutex>) at 
-/usr/src/kernel/kernel/locking/rtmutex.c:2110
-#1  0xffffffff8087601a in _mutex_trylock (lock=<optimised out>) at 
-/usr/src/kernel/kernel/locking/mutex-rt.c:185
-#2  0xffffffff803022a0 in __crash_kexec (regs=0x0 <irq_stack_union>) at 
-/usr/src/kernel/kernel/kexec_core.c:941
-#3  0xffffffff8027af59 in panic (fmt=0xffffffff80fa3d66 "softlockup: 
-hung tasks") at /usr/src/kernel/kernel/panic.c:198
-#4  0xffffffff80325b6d in watchdog_timer_fn (hrtimer=<optimised out>) at 
-/usr/src/kernel/kernel/watchdog.c:464
-#5  0xffffffff802e6b90 in __run_hrtimer (flags=<optimised out>, 
-now=<optimised out>, timer=<optimised out>, base=<optimised out>, 
-cpu_base=<optimised out>) at /usr/src/kernel/kernel/time/hrtimer.c:1417
-#6  __hrtimer_run_queues (cpu_base=0xffff88807db1c000, now=<optimised 
-out>, flags=<optimised out>, active_mask=<optimised out>) at 
-/usr/src/kernel/kernel/time/hrtimer.c:1479
-#7  0xffffffff802e7704 in hrtimer_interrupt (dev=<optimised out>) at 
-/usr/src/kernel/kernel/time/hrtimer.c:1539
-#8  0xffffffff80a020f2 in local_apic_timer_interrupt () at 
-/usr/src/kernel/arch/x86/kernel/apic/apic.c:1067
-#9  smp_apic_timer_interrupt (regs=<optimised out>) at 
-/usr/src/kernel/arch/x86/kernel/apic/apic.c:1092
-#10 0xffffffff80a015df in apic_timer_interrupt () at 
-/usr/src/kernel/arch/x86/entry/entry_64.S:909
-
-
-Obviously and as expected the panic was triggered in the context of the apic
-interrupt. So in_irq() is true and trylock fails.
-
-
-About 12 years ago this was not implemented using a mutex, but using xchg.
-See: 8c5a1cf0ad3ac5fcdf51314a63b16a440870f6a2
-
-
-Since my knowledege about mutexes inside the kernel is very limited, I 
-do not
-know how this can be fixed and whether it should be fixed in the rt 
-patches or
-if this really is a bug in mainline kernel (because trylock is also not 
-allowed
-to be used in interrupt handlers.
-
-
-Jörg
