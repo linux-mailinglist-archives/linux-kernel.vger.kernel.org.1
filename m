@@ -2,98 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C91081E610E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4D551E611D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389830AbgE1Mhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389734AbgE1Mha (ORCPT
+        id S2389846AbgE1Mjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 08:39:52 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:47472 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389746AbgE1Mjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 08:37:30 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA24C05BD1E;
-        Thu, 28 May 2020 05:37:30 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id bg4so6210603plb.3;
-        Thu, 28 May 2020 05:37:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RM0jC6/bK9EWgc1Qw8f8+WAZXDRRPqoeOxNOPG73+XE=;
-        b=hKu9CeaaS+mslu3Q1X0iGY0CW6r39ADgkAiRHv1Yh7yNQc/dlCRWfnBARzeqToqJGl
-         LHsEQn3Vf5hTe7KFbvXmmh7FT6dwSuLzG5uC0GTOr92P6HJLB1vl5MTCq3rnztYCqABP
-         RRWmqvbKeSQTunoMpuN28/Eg41A45vKTDzHBwYO0kOrcAcLW5uUm3ZgZs/XK8MUSzGOY
-         J8mSM5bg5rOj1QRVAPuQpvJvjzhwQybYhEVPH7FbpSrZ9bbITw50HtYg8wDmpMLEBuFA
-         4Sr+Rr2F0Hl8J6i+61rSJR9CehfRRqMzu1wWVXstI3F+OynaTv92fR13DBn/KUJ91t7y
-         CUwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RM0jC6/bK9EWgc1Qw8f8+WAZXDRRPqoeOxNOPG73+XE=;
-        b=AZgLH+7s6NAGk7vG9qx5zRbQ3S7a1iEKsrMRpHaYpy+r38XNKLwsS3zCOc5/reH4u0
-         qYmyyJhfkTbmdXETyyLOvksAYaHs/Mt+d7NhOgyhvtJkJEcPTGEtpX3AEFJclS1WJDwE
-         YEQtLJmklvNkezjo0m4VVZAhC3hfvdpDXjFmotF3mOm6ks/0HxCuBG0uRSex02PlJJ99
-         BTm5nE90ni0YFfMqO7gJYXVH/y+0PN0C4njtDUht/o+sy07ail3bpwW7XlX3a04Ru/5T
-         lObHz/u1tuPEaWu/LBIO4b0cH3NG6HzjNqPXCZuGG+sgeOhyR7f4yRzvg3wGCRxfrh9T
-         Vy5A==
-X-Gm-Message-State: AOAM5327v503AnBvLWaOdRCMPJ8KFhHceH2OD684zA7ChXCDxHZIUhQe
-        aLdmVVkJ+J0hbggARL5mb4ryIRR8
-X-Google-Smtp-Source: ABdhPJx7z9QuO4L0+TpymOSFszjMcFDePZFwW4qWwGFP/4My3SJTa6YvRHDPBlJWIc+q9/c4MbHx7w==
-X-Received: by 2002:a17:902:4b:: with SMTP id 69mr3057047pla.99.1590669449950;
-        Thu, 28 May 2020 05:37:29 -0700 (PDT)
-Received: from [0.0.0.0] ([198.211.10.140])
-        by smtp.gmail.com with ESMTPSA id n205sm4842592pfd.50.2020.05.28.05.37.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 May 2020 05:37:29 -0700 (PDT)
-Subject: Re: [PATCH] of/fdt: Remove redundant kbasename function call
-To:     Rob Herring <robh@kernel.org>
-Cc:     frowand.list@gmail.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200512154909.279788-1-arch0.zheng@gmail.com>
- <20200527182708.GA2458626@bogus>
-From:   Qi Zheng <arch0.zheng@gmail.com>
-Message-ID: <ab0ce429-a70e-990b-bef4-290deb36ddab@gmail.com>
-Date:   Thu, 28 May 2020 20:37:21 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 28 May 2020 08:39:49 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SCcBWp077816;
+        Thu, 28 May 2020 12:39:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=9zN7Q4P5SLs/uK+J0DPJ8yIEgj4koWHklFCW9uYBztE=;
+ b=OkNfGYgtVkPs5Vi30Ub2tw+HfAZ0nBlOoZTXHNlSVbs6yQvaoLG2Of2gMe3QDw5xa+wO
+ Xl/+Y5+/OmShBO28mJ4sjL7+EAhIBw9B7m+kMO4YDDBcK4YDADEemELI7gLLDBtiACdm
+ D+iriZQ2k6xvLSqUENZsyWPUlVCRR4JQZPaWTyPt4KZM3f2mYTRMI8fqevg2ZOIkp4fH
+ 7kOQp0tIOJBAM+MYF17CifP3hpN8RYDomEapPCPRtduE5if0IEHZ6Zg49+D+LKpHMn83
+ eyEhG6gcW/c2zu7VKDx/DM36CjSXDPo2C2qSLX34ecqK78jugbcQVKRpaPei7CzGRXY9 Sg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 318xe1mqrt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 28 May 2020 12:39:37 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SCJ6Ww003852;
+        Thu, 28 May 2020 12:37:37 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 317ddsq3cc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 May 2020 12:37:37 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04SCbYFX004962;
+        Thu, 28 May 2020 12:37:35 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 28 May 2020 05:37:33 -0700
+Date:   Thu, 28 May 2020 15:37:26 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Omer Shpigelman <oshpigelman@habana.ai>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] habanalabs: fix error code in unmap_device_va()
+Message-ID: <20200528123726.GB1219412@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <20200527182708.GA2458626@bogus>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9634 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 mlxscore=0
+ phishscore=0 adultscore=0 suspectscore=2 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005280086
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9634 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ adultscore=0 cotscore=-2147483648 mlxscore=0 bulkscore=0
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 malwarescore=0
+ clxscore=1015 impostorscore=0 suspectscore=2 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005280087
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Smatch complains that "rc" can be uninitialized on certain paths.
 
-Thanks for your review.
-I will send you a patch of v2 later.
+Fixes: 8ff5f4fd40df ("habanalabs: handle MMU cache invalidation timeout")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/misc/habanalabs/memory.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yours,
-Qi Zheng
+diff --git a/drivers/misc/habanalabs/memory.c b/drivers/misc/habanalabs/memory.c
+index 4b8eed1ca5130..47da84a177197 100644
+--- a/drivers/misc/habanalabs/memory.c
++++ b/drivers/misc/habanalabs/memory.c
+@@ -1023,7 +1023,7 @@ static int unmap_device_va(struct hl_ctx *ctx, u64 vaddr, bool ctx_free)
+ 	struct hl_va_range *va_range;
+ 	enum vm_type_t *vm_type;
+ 	bool is_userptr;
+-	int rc;
++	int rc = 0;
+ 
+ 	/* protect from double entrance */
+ 	mutex_lock(&ctx->mem_hash_lock);
+-- 
+2.26.2
 
-On 2020/5/28 上午2:27, Rob Herring wrote:
-> On Tue, May 12, 2020 at 11:49:09PM +0800, Qi Zheng wrote:
->> For version 1 to 3 of the device tree, this is the node full
->> path as a zero terminated string, starting with "/". The
->> following equation will not hold, since the node name has
->> been processed in the fdt_get_name().
->>
->> 	*pathp == '/'
->>
->> For version 16 and later, this is the node unit name only
->> (or an empty string for the root node). So the above
->> equation will still not hold.
->>
->> So the kbasename() is redundant, just remove it.
-> 
-> There's 2 occurrences of this. Can you remove the other one too.
-> 
-> Rob
-> 
