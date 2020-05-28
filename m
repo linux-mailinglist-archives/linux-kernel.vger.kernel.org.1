@@ -2,68 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBD421E64B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D91DE1E64E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391338AbgE1OxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 10:53:12 -0400
-Received: from mga07.intel.com ([134.134.136.100]:1728 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391349AbgE1OxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 10:53:06 -0400
-IronPort-SDR: LBwS2Hp/10q4c/MqEDIgNTM9n1fCbS9PAtOg6P9J4l7YvToGZ0lnHdXBIfYjHOmfRcNf5C00V9
- SPWpXam2xI/g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 07:53:06 -0700
-IronPort-SDR: XJE73Pykesx7YX0HnG+ihINBfAg2RBknVwW8TgTVC9TylLzeFvcDRBXHaw5SjxfjkTG6n5+EOB
- B/5TcXTxj6BA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,445,1583222400"; 
-   d="scan'208";a="310945955"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by FMSMGA003.fm.intel.com with ESMTP; 28 May 2020 07:53:01 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jeJu3-009Rb9-H3; Thu, 28 May 2020 17:53:03 +0300
-Date:   Thu, 28 May 2020 17:53:03 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 08/10] dmaengine: dw: Add dummy device_caps callback
-Message-ID: <20200528145303.GU1634618@smile.fi.intel.com>
-References: <20200526225022.20405-1-Sergey.Semin@baikalelectronics.ru>
- <20200526225022.20405-9-Sergey.Semin@baikalelectronics.ru>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200526225022.20405-9-Sergey.Semin@baikalelectronics.ru>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S2403834AbgE1O4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 10:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403780AbgE1O4L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 10:56:11 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 824B4C08C5C6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 07:56:11 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jeJx3-0002Pv-SQ; Thu, 28 May 2020 16:56:09 +0200
+Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 3DC2AFF834;
+        Thu, 28 May 2020 16:56:09 +0200 (CEST)
+Message-Id: <20200528145315.727724091@linutronix.de>
+User-Agent: quilt/0.65
+Date:   Thu, 28 May 2020 16:53:15 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org
+Subject: [patch 0/5] x86/idt: Cleanups and consolidation
+Content-transfer-encoding: 8-bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 01:50:19AM +0300, Serge Semin wrote:
-> Since some DW DMA controllers (like one installed on Baikal-T1 SoC) may
-> have non-uniform DMA capabilities per device channels, let's add
-> the DW DMA specific device_caps callback to expose that specifics up to
-> the DMA consumer. It's a dummy function for now. We'll fill it in with
-> capabilities overrides in the next commits.
+IDT functionality is spread out to places which results in way too many
+globals.
 
-I think per se it is not worth to have it separated. Squash into the next one.
+This series cleans that up, fixes comments and a few other oddities which I
+noticed while working on that code.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks,
+
+	tglx
+
+---
+ include/asm/desc.h  |   47 --------------------
+ kernel/cpu/common.c |   17 -------
+ kernel/idt.c        |  120 +++++++++++++++++++++++++++++++++++++---------------
+ kernel/traps.c      |   11 ----
+ 4 files changed, 88 insertions(+), 107 deletions(-)
 
 
