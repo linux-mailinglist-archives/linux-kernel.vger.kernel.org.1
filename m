@@ -2,52 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43EC01E70B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 01:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7521E707F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 01:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437759AbgE1Xrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 19:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437727AbgE1Xrj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 19:47:39 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 776E6C008632;
-        Thu, 28 May 2020 16:40:27 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
-        id 1jeS8P-00HDQd-Q4; Thu, 28 May 2020 23:40:25 +0000
-Date:   Fri, 29 May 2020 00:40:25 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCHES] uaccess base
-Message-ID: <20200528234025.GT23230@ZenIV.linux.org.uk>
+        id S2437643AbgE1Xki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 19:40:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437593AbgE1Xkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 19:40:35 -0400
+Received: from localhost (lfbn-ncy-1-324-171.w83-196.abo.wanadoo.fr [83.196.159.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89D392074B;
+        Thu, 28 May 2020 23:40:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590709235;
+        bh=kk35OEDgCoskWQ5BkKq+DIzRA811R/sfM9ATykL5fvA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EhlpWSFqONV6ey1TFLTxCLpOnT4c7xFhzBaaHRAqSr3rLMYrsvAtmcblX8boWQiX2
+         OrAzw0nFfclqB5wI1qq3N2sZq85CxxHwdGzszLup1AcN3t7Lc/RW9XHBAlTBJ0ArTn
+         UZ4HRRlwb47aNgIn38M14ltIbpAR8cllx0GhcOTc=
+Date:   Fri, 29 May 2020 01:40:32 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org, x86@kernel.org,
+        cai@lca.pw, mgorman@techsingularity.net
+Subject: Re: [RFC][PATCH 5/7] irq_work, smp: Allow irq_work on
+ call_single_queue
+Message-ID: <20200528234031.GB551@lenoir>
+References: <20200526161057.531933155@infradead.org>
+ <20200526161908.011635912@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20200526161908.011635912@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	Base of uaccess pile - series from Christophe Leroy adding
-user_{read,write}_access_begin().  Sat in ppc tree all along,
-in vfs.git it's #uaccess.base.  No changes since the last time
-it got posted, repeated for reference, based at v5.7-rc1
+On Tue, May 26, 2020 at 06:11:02PM +0200, Peter Zijlstra wrote:
+> Currently irq_work_queue_on() will issue an unconditional
+> arch_send_call_function_single_ipi() and has the handler do
+> irq_work_run().
+> 
+> This is unfortunate in that it makes the IPI handler look at a second
+> cacheline and it misses the opportunity to avoid the IPI. Instead note
+> that struct irq_work and struct __call_single_data are very similar in
+> layout, so use a few bits in the flags word to encode a type and stick
+> the irq_work on the call_single_queue list.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  include/linux/irq_work.h |    7 ++
+>  include/linux/smp.h      |   23 ++++++++-
+>  kernel/irq_work.c        |   53 +++++++++++---------
+>  kernel/smp.c             |  119 ++++++++++++++++++++++++++++-------------------
+>  4 files changed, 130 insertions(+), 72 deletions(-)
+> 
+> --- a/include/linux/irq_work.h
+> +++ b/include/linux/irq_work.h
+> @@ -13,6 +13,8 @@
+>   * busy      NULL, 2 -> {free, claimed} : callback in progress, can be claimed
+>   */
+>  
+> +/* flags share CSD_FLAG_ space */
+> +
+>  #define IRQ_WORK_PENDING	BIT(0)
+>  #define IRQ_WORK_BUSY		BIT(1)
+>  
+> @@ -23,9 +25,12 @@
+>  
+>  #define IRQ_WORK_CLAIMED	(IRQ_WORK_PENDING | IRQ_WORK_BUSY)
+>  
+> +/*
+> + * structure shares layout with single_call_data_t.
+> + */
+>  struct irq_work {
+> -	atomic_t flags;
+>  	struct llist_node llnode;
+> +	atomic_t flags;
 
-Christophe Leroy (3):
-      uaccess: Add user_read_access_begin/end and user_write_access_begin/end
-      uaccess: Selectively open read or write user access
-      drm/i915/gem: Replace user_access_begin by user_write_access_begin
 
- drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c |  5 +++--
- fs/readdir.c                                   | 12 ++++++------
- include/linux/uaccess.h                        |  8 ++++++++
- kernel/compat.c                                | 12 ++++++------
- kernel/exit.c                                  | 12 ++++++------
- lib/strncpy_from_user.c                        |  4 ++--
- lib/strnlen_user.c                             |  4 ++--
- lib/usercopy.c                                 |  6 +++---
- 8 files changed, 36 insertions(+), 27 deletions(-)
+We should probably have:
 
+struct csd_node {
+       atomic_t flags;
+       struct llist_node;
+}
+
+embed inside struct irq_work and struct __call_single_data. Relying on
+structure layout for things to work doesn't really clarify things :-)
+
+Thanks.
