@@ -2,89 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A30D21E6958
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 20:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15091E6954
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 20:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405851AbgE1Sar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 14:30:47 -0400
-Received: from rnd-relay.smtp.broadcom.com ([192.19.229.170]:60406 "EHLO
-        rnd-relay.smtp.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405835AbgE1Sak (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 14:30:40 -0400
-Received: from mail-irv-17.broadcom.com (mail-irv-17.lvn.broadcom.net [10.75.242.48])
-        by rnd-relay.smtp.broadcom.com (Postfix) with ESMTP id 2476B30D739;
-        Thu, 28 May 2020 11:20:30 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 rnd-relay.smtp.broadcom.com 2476B30D739
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1590690030;
-        bh=/wzEsGsZX3oj///RlV8+bfcA1u7yygbmy2y0Yml+keA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SojDiFWas3ner6nC5UWQYjADQd3hA+iUokOuq2TDm6bgGjE02VZFDS8oX+IEExpBi
-         StWhIbmhgPYpZo19CXx6OqaOiZzbDxymSH8m47jEUy8IbKe2vZQNbnNB/mecLuJt8b
-         hZUFlOCuyCZ+nYXREms5r4qIMSO2vGf7iv+MdxAU=
-Received: from lbrmn-mmayer.ric.broadcom.net (lbrmn-mmayer.ric.broadcom.net [10.136.28.150])
-        by mail-irv-17.broadcom.com (Postfix) with ESMTP id 6AA7014008B;
-        Thu, 28 May 2020 11:20:29 -0700 (PDT)
-From:   Markus Mayer <markus.mayer@broadcom.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Markus Mayer <markus.mayer@broadcom.com>,
-        Linux Power Management List <linux-pm@vger.kernel.org>,
-        Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
-        ARM Kernel List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [PATCH 3/3] cpufreq: brcmstb-avs-cpufreq: send S2_ENTER / S2_EXIT commands to AVS
-Date:   Thu, 28 May 2020 11:20:14 -0700
-Message-Id: <20200528182014.20021-3-mmayer@broadcom.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200528182014.20021-1-mmayer@broadcom.com>
-References: <20200528182014.20021-1-mmayer@broadcom.com>
+        id S2405833AbgE1Sae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 14:30:34 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:39577 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405803AbgE1Sab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 14:30:31 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 49Xx8N2wkvz63;
+        Thu, 28 May 2020 20:30:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1590690629; bh=wyk1Xu6FHxs00Uj8yLfVamGMvT7czOOsTndQSx9fs8A=;
+        h=Date:From:Subject:To:Cc:From;
+        b=eBxrUA/+NVA3frxBWe/uNipfhphrdxrnbO+QVsyc2NKfb4EGBpJcs2UohSLpDFIhr
+         d7Z8q4sg6xd5TxvxBazcy9UgEJYV8WRwcWauVfYz15zNWiIP0Y9TC50CFl9dMCpigz
+         GJUcK4BIDQDLmvVwBNuEK+cScQZdRAwfd9tGuK+bRQj/DW2YQskjqt8zyjucNN8oYB
+         GPz248JYO9lF02C+Khq/FeigGaLORj4W0jHzUOMKM11nZsZrzImKM9B4eEAh2vH3r1
+         +FUHviTw1zhlKhtytHgcwKSwDdM+w9TF/sE2xz9uMVLbDVHbNd67kHRq8Ke/VON9HF
+         J5vBtQAHmYQYA==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+Date:   Thu, 28 May 2020 20:30:28 +0200
+Message-Id: <237e4bc8c63680f9ce0388d35b4c34a856ed8595.1590690518.git.mirq-linux@rere.qmqm.pl>
+From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Subject: [PATCH] usb: gadget: f_acm: don't disable disabled EP
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+To:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Robert Baldyga <r.baldyga@samsung.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On suspend we send AVS_CMD_S2_ENTER and on resume AVS_CMD_S2_EXIT.
-These are best effort calls, so we don't check the return code or take
-any action if either of the calls fails.
+Make debugging real problems easier by not trying to disable an EP that
+was not yet enabled.
 
-Signed-off-by: Markus Mayer <mmayer@broadcom.com>
+Fixes: 4aab757ca44a ("usb: gadget: f_acm: eliminate abuse of ep->driver data")
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
- drivers/cpufreq/brcmstb-avs-cpufreq.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/usb/gadget/function/f_acm.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/cpufreq/brcmstb-avs-cpufreq.c b/drivers/cpufreq/brcmstb-avs-cpufreq.c
-index 79a0538a531a..3e31e5d28b79 100644
---- a/drivers/cpufreq/brcmstb-avs-cpufreq.c
-+++ b/drivers/cpufreq/brcmstb-avs-cpufreq.c
-@@ -506,7 +506,14 @@ static int brcm_avs_suspend(struct cpufreq_policy *policy)
- 	 * AVS co-processor, not necessarily the P-state we are running at now.
- 	 * So, we get the current P-state explicitly.
- 	 */
--	return brcm_avs_get_pstate(priv, &priv->pmap.state);
-+	ret = brcm_avs_get_pstate(priv, &priv->pmap.state);
-+	if (ret)
-+		return ret;
-+
-+	/* This is best effort. Nothing to do if it fails. */
-+	(void)__issue_avs_command(priv, AVS_CMD_S2_ENTER, 0, 0, NULL);
-+
-+	return 0;
- }
+diff --git a/drivers/usb/gadget/function/f_acm.c b/drivers/usb/gadget/function/f_acm.c
+index 200596ea9557..46647bfac2ef 100644
+--- a/drivers/usb/gadget/function/f_acm.c
++++ b/drivers/usb/gadget/function/f_acm.c
+@@ -425,9 +425,11 @@ static int acm_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
+ 	/* we know alt == 0, so this is an activation or a reset */
  
- static int brcm_avs_resume(struct cpufreq_policy *policy)
-@@ -514,6 +521,9 @@ static int brcm_avs_resume(struct cpufreq_policy *policy)
- 	struct private_data *priv = policy->driver_data;
- 	int ret;
+ 	if (intf == acm->ctrl_id) {
+-		dev_vdbg(&cdev->gadget->dev,
+-				"reset acm control interface %d\n", intf);
+-		usb_ep_disable(acm->notify);
++		if (acm->notify->enabled) {
++			dev_vdbg(&cdev->gadget->dev,
++					"reset acm control interface %d\n", intf);
++			usb_ep_disable(acm->notify);
++		}
  
-+	/* This is best effort. Nothing to do if it fails. */
-+	(void)__issue_avs_command(priv, AVS_CMD_S2_EXIT, 0, 0, NULL);
-+
- 	ret = brcm_avs_set_pmap(priv, &priv->pmap);
- 	if (ret == -EEXIST) {
- 		struct platform_device *pdev  = cpufreq_get_driver_data();
+ 		if (!acm->notify->desc)
+ 			if (config_ep_by_speed(cdev->gadget, f, acm->notify))
 -- 
-2.17.1
+2.20.1
 
