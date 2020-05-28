@@ -2,134 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C85701E685A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 19:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3362E1E6869
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 19:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405406AbgE1RJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 13:09:34 -0400
-Received: from mout.web.de ([212.227.15.14]:57239 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405314AbgE1RJc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 13:09:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1590685759;
-        bh=p69aR/nzaRPTpqEpuHitn5IvyCINJBKAMa323BW+lFY=;
-        h=X-UI-Sender-Class:Cc:Subject:From:To:Date;
-        b=g+g9aK35W80VreSFHoYkUcbrmKo3i8elKoo4gS2qujGz4g/zIaT/XIeWEyWvD6AWX
-         F5GCTvolFCT8AE1syLLEdTn1HHxzWmQOzwYiiBx4vz9z5ahfZu7DsXgVG021vAXBo+
-         jYkQQBNDAba3T1YSuWb5QTHi69j0kbAYi2OeJMbY=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.3] ([2.244.30.242]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MsJP4-1ikc4q3nPG-00tgiv; Thu, 28
- May 2020 19:09:19 +0200
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>
-Subject: Re: [PATCH] Bluetooth: btmtkuart: Improve exception handling in
- btmtuart_probe()
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-To:     Chuhong Yuan <hslester96@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-bluetooth@vger.kernel.org, linux-mediatek@lists.infradead.org
-Message-ID: <dd458e1d-26cf-2cc6-4fdb-fb464f9c3ac6@web.de>
-Date:   Thu, 28 May 2020 19:09:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2405395AbgE1RLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 13:11:32 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:39064 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405334AbgE1RLa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 13:11:30 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SH1hYO194536;
+        Thu, 28 May 2020 17:11:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=RNA5EiRdOxWHyc773hcc18vsX6Aelg58rv1UtOvHwJQ=;
+ b=MtsVz8pGALILYv7e1mzQeP0pv92sFhFkk09VDqZZGhlYjcWUBYuXag4BRTHpcnV7zr7V
+ YZDOJNvlP8tQnEzXwMEaHTzifoa4FV6xT+vfzW3+Xq81d8J3PV/SOidDzivt+dEdy0Oi
+ HMLrT31elMelMcV6+KiSNV3HgaX6vcwTl3DFEAyO4pJoMkvdgNc14tjPfdoZr2I4eku8
+ ptLmSvWgIeqng2FXqHIkjZaCyd4yIkLSFCi3ZXJtv74P8kSEOI9aFKEzKDpC1vzeR2Pf
+ R6A3NWDSkPmmHNRbRXvKBl6mTGmJm5VotUEpqmhJhCT6D+uZoacpkekvh7C3FhdhpxoC /A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 316u8r68ba-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 28 May 2020 17:11:19 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SH8wRm012360;
+        Thu, 28 May 2020 17:11:18 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 317ds2xtmj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 May 2020 17:11:18 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04SHBHit019755;
+        Thu, 28 May 2020 17:11:17 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 28 May 2020 10:11:16 -0700
+Date:   Thu, 28 May 2020 13:11:41 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH -V3] swap: Reduce lock contention on swap cache from swap
+ slots allocation
+Message-ID: <20200528171141.k3lc3mf7taqadv3v@ca-dmjordan1.us.oracle.com>
+References: <20200525002648.336325-1-ying.huang@intel.com>
+ <20200528013724.flx6pwcmaazpek32@ca-dmjordan1.us.oracle.com>
+ <87h7w0hbev.fsf@yhuang-dev.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:HFJVBKBfwx0BNkuJVnzSfsep+qen5ugQ2lnxQrmomHOtQfGba7Z
- rJiWEr4b3kJL2GNgc9vP/hSOvBCEdkSuGQ3jHIVvxslVHZc5VZ/0qNPkKN3UlaAg2VSefSj
- ejdyEEA3yBSElB/TBHtYbcVt2e3tqsCZrEHKSLlmFTcHLUTui1WLpsywmVS7aT484Cx5MlP
- EuPm7xaDFTuFWLXCjZCsw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:LZNn0mmb3u0=:6LsgHWgEz2hDXrj8PKKaB+
- U50BTzHMVQh30L6ETjehkxyOXZRwf8wuCYIYMvBU8TV/4hFYjid9h8cJTaONmYr4umbUSc3vP
- GyldNHjjwZxT6LUBujJvU/JtgefcORHdCc31XRo+nLjLKaJQB5O1qlXt4dTHevrOvsH4dZdpR
- cR1FuAusyTes0KtBWEuWgnWy539s8ltkf67JUNGmNK2U3r27nsCQprynQVE09QxcguNGCXq8g
- vXs+hJM9fabWY5PiNwVF+P4A0m+jRYzFjNDwh41dkSy5xz2N1R1b1jdRQViVdPcbMeIqf8W7G
- DyX86uPfk9kc/5lUGDE4Px2n3SCI9FtOxs9roputVg+H9accphilh6t+xgZQ01VlhcD6y95Cq
- ayqdKdlJxg2fZAqW44i506OYQpSpZVZxEXOS4Oh12sxpsDYpp5Lm/B9BKhA2gUj89ioOoa61a
- mstAEa/eUgDYllnvwCXNYHhoFn2o0S3yMbqLG3WkEjSbJvY8mDccQNFKwl2qNcQhNZcDM0LtP
- k5gmO/OxPPh3pF0Q6kJur7876DcEfo4JCWmR4qJCovu8M2nqC62LnrIIKeRhOiDpcVVYXyRzr
- of9w2SNvMJ4sPPxE7vubDU5nMou9gL+jyUZsdUE3+Nz5hPHgHty5MhlUhVZHGIihK7YXbmpcL
- T6asi8L3WdYPW1awMBay9mCa3hMr3cr8F1Js8aDV5Z9Mf5tdLKyGErrUtSpFXbkFs8weMObST
- RAEnaxWMv78xGlz4Gh4JekK2cKzKmbL72EoaQdLJRIADnqTw5bT8EckGyC/CNUWvnJktJSDg+
- pG8BubmpVF2qAGpWMavUtzuP7l2EG0o8vphzEKylV9kxNADg4+FDPsGgg9KNzBllUWEcVHDhq
- PPz+GGNrQhVkOenHkUHMY3XwTa7Pj/Hn/pgxP3Gf1zYofYoM0aWoIeHJdtluI9FrJHkBr6pSp
- 7ZVvor7o+xIDXjel1Fy4AM3Ilz8p/DDrJytakNvs27e9rWNyAKlJW0WEwxXLoqGbouWNKqVRG
- Fyn0lqHnMA/M5t85U3ATOTwxNBOVpoT1EkGi9eCTjGacsuFgqHw+7XB/w8sxgQWvOnvK13kFv
- yvVmW7nqvLKxoR09Oz3XRn1Agor+saY6SsXJ05qZQSLZ46Mu09jj4drm48K73bEyu/R2YAUSV
- 9LBlmkW2SmcmsdSETolSTsYMHzGgnTdroJ6PeCNTa/itA7S1LMQF920kyVlohc22UwgC1Ikxa
- IZpoYBPXhEiAC5fzc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87h7w0hbev.fsf@yhuang-dev.intel.com>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9635 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
+ mlxlogscore=999 adultscore=0 suspectscore=0 bulkscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005280119
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9635 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 spamscore=0 cotscore=-2147483648 suspectscore=0
+ phishscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005280118
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> btmtuart_probe() misses several function calls in its error paths,
-> including hci_free_dev() and clk_disable_unprepare().
-> Refactor the code and call correct undo functions to fix the error
-> paths.
+On Thu, May 28, 2020 at 01:32:40PM +0800, Huang, Ying wrote:
+> Daniel Jordan <daniel.m.jordan@oracle.com> writes:
+> 
+> > On Mon, May 25, 2020 at 08:26:48AM +0800, Huang Ying wrote:
+> >> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> >> index 423c234aca15..0abd93d2a4fc 100644
+> >> --- a/mm/swapfile.c
+> >> +++ b/mm/swapfile.c
+> >> @@ -615,7 +615,8 @@ static bool scan_swap_map_try_ssd_cluster(struct swap_info_struct *si,
+> >>  			 * discarding, do discard now and reclaim them
+> >>  			 */
+> >>  			swap_do_scheduled_discard(si);
+> >> -			*scan_base = *offset = si->cluster_next;
+> >> +			*scan_base = this_cpu_read(*si->cluster_next_cpu);
+> >> +			*offset = *scan_base;
+> >>  			goto new_cluster;
+> >
+> > Why is this done?  As far as I can tell, the values always get overwritten at
+> > the end of the function with tmp and tmp isn't derived from them.  Seems
+> > ebc2a1a69111 moved some logic that used to make sense but doesn't have any
+> > effect now.
+> 
+> If we fail to allocate from cluster, "scan_base" and "offset" will not
+> be overridden.
 
-How do you think about a wording variant like the following?
+Ok, if another task races to allocate the clusters the first just discarded.
 
-   Change description:
-   Calls of the functions =E2=80=9Cclk_disable_unprepare=E2=80=9D and =E2=
-=80=9Chci_free_dev=E2=80=9D
-   were missing for the exception handling.
-   Thus add the missed function calls together with corresponding
-   jump targets.
+> And "cluster_next" or "cluster_next_cpu" may be changed
+> in swap_do_scheduled_discard(), because the lock is released and
+> re-acquired there.
 
+I see, by another task on the same cpu for cluster_next_cpu.
 
-Would you like to add the tag =E2=80=9CFixes=E2=80=9D to the commit messag=
-e?
+Both probably unlikely, but at least it tries to pick up where the racing task
+left off.  You might tack this onto the comment:
 
-Regards,
-Markus
+		 * discarding, do discard now and reclaim them, then reread
+                 * cluster_next_cpu since we dropped si->lock
+                /*
+
+> The code may not have much value.
+
+No, it makes sense.
+
+> > These aside, patch looks good to me.
+> 
+> Thanks for your review!  It really help me to improve the quality of the
+> patch.  Can I add your "Reviewed-by" in the next version?
+
+Sure,
+Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
