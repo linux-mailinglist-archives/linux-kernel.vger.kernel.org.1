@@ -2,98 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F23AC1E59ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 09:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0007C1E59F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 09:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726350AbgE1Hza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 03:55:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbgE1Hza (ORCPT
+        id S1726114AbgE1H6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 03:58:30 -0400
+Received: from twhmllg4.macronix.com ([122.147.135.202]:31097 "EHLO
+        TWHMLLG4.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725779AbgE1H6a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 03:55:30 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10384C05BD1E
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 00:55:29 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id g18so4603201qtu.13
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 00:55:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=v5UsUhJ0bTobpKZ8F3/LmZTk9aYFGr2oX9z+vAftnoQ=;
-        b=EMYDaxPpjbuG+SDalhzEaEE6SpgkD99qC2lepZha7xPr8cResCIM93Yi2GTs7BnSnu
-         /wiZpTm9USIWyHJEfvwPPLnpIPWKJplP2iEy3TC1T3arfUvSXGV/OghNPPE7PSvkHvrH
-         r+RHU4eFgwJQhPKMzITVaqdJUJ9PFtN+gG5N0WC4XfdJzZqvsrIT2WCqx9B/Ij+GC9nh
-         Kgxie7dI2UAJ3K41uJIqu3UvEiSrXSTefaq/QyyHsHyDew/rFSR8ai1B0CZqGx+rgtXR
-         Z8Ba7PeXN0E3hzosh3M4bXvOysv2R809JRfN+rFwYV9Sn8mQxZMLA6cTha50OlEdmgw6
-         BHxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=v5UsUhJ0bTobpKZ8F3/LmZTk9aYFGr2oX9z+vAftnoQ=;
-        b=o9/Hbe8qV5loZUSQW+wrAR5gbg45+mieUyYTm9mKyld97SVCVfr0I7LsIst+hxz5+7
-         5+IkVX8uK6QAopdgqp26s6ogHGTRkfHKBLzZmCfWHObPP4/i8Dii0bDX1lL0VVz+Kks0
-         mACFM6Rdl0poh1p8V3w/C/fNjgwp3Mq/WrNfdPL37bYLlHREai+rEwfvlD0pCNPzL4gy
-         9a1XazklAOrjNLY1d8T2l9Aa4Vm1iKNbuN+BfEvrcWgnLpzA2VbqVxnKCpii7GzdqDCU
-         n3dYzr6UHhHx43WspAV0QY8vbQeyyAIrpTBPSFQWvmGltSRP21vUjNFU2zW18ElbePB5
-         tRHw==
-X-Gm-Message-State: AOAM533Mi3KBPjIrKWpbQ7mLPEulkc11AaEccT3oQBHV+6SBwMXG9V0Z
-        GJ3RMmNwF+qmFQCat+yfBklqRlyfmlwjdSz6nLA=
-X-Google-Smtp-Source: ABdhPJwmuAUrd3nhNZYdci9JvAj5nosOW0SaiqRHsBXY0GMy27adWTRvD+wA1EEJeq7R0CA8XmZxASnE5n9n1JQ82zM=
-X-Received: by 2002:aed:3ea1:: with SMTP id n30mr1733699qtf.31.1590652527411;
- Thu, 28 May 2020 00:55:27 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a05:6214:58e:0:0:0:0 with HTTP; Thu, 28 May 2020 00:55:26
- -0700 (PDT)
-From:   Donna Louise <donnalouisemchince@gmail.com>
-Date:   Wed, 27 May 2020 19:55:26 -1200
-X-Google-Sender-Auth: 1SgBOLH6VzG3tCJ-K0_P82i6IoU
-Message-ID: <CAEwunR80p7vYXHWSLUZ+EO08rZ8-MJ6CB4Oe0AG22AEY8cP=eA@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 28 May 2020 03:58:30 -0400
+Received: from localhost.localdomain ([172.17.195.96])
+        by TWHMLLG4.macronix.com with ESMTP id 04S7wMHZ030973;
+        Thu, 28 May 2020 15:58:22 +0800 (GMT-8)
+        (envelope-from masonccyang@mxic.com.tw)
+From:   Mason Yang <masonccyang@mxic.com.tw>
+To:     broonie@kernel.org, tudor.ambarus@microchip.com,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        boris.brezillon@collabora.com, matthias.bgg@gmail.com
+Cc:     p.yadav@ti.com, juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+        Mason Yang <masonccyang@mxic.com.tw>
+Subject: [PATCH v3 00/14] mtd: spi-nor: add xSPI Octal DTR support 
+Date:   Thu, 28 May 2020 15:58:02 +0800
+Message-Id: <1590652696-8844-1-git-send-email-masonccyang@mxic.com.tw>
+X-Mailer: git-send-email 1.9.1
+X-MAIL: TWHMLLG4.macronix.com 04S7wMHZ030973
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+Hello,
 
-  I am glad to know you, but God knows you better and he knows why he
-has directed me to you at this point in time so do not be surprise at
-all. My names are Mrs. Donna Louise McInnes a widow, i have been
-suffering from ovarian cancer disease. At this moment i am about to
-end the race like this because the illness has gotten to a very bad
-stage, without any family members and no child. I hoped that you will
-not expose or betray this trust and confident that I am about to
-entrust on you for the mutual benefit of the orphans and the less
-privileges ones. I have some funds I inherited from my late husband,
-the sum of ($11.000.000 Eleven million dollars.) deposited in the
-Bank.  Having known my present health status, I decided to entrust
-this fund to you believing that you will utilize it the way i am going
-to instruct herein.
+JESD216C has defined specification for Octal 8S-8S-8S and 8D-8D-8D.
+Based on JEDEC216C Basic Flash Parameter Table (BFPT) driver extract
+DWORD-18: command and command extension type.
+DWORD-20: Maximum operation speed of device in Octal mode.
 
-Therefore I need you to assist me and reclaim this money and use it
-for Charity works, for orphanages and gives justice and help to the
-poor, needy and to promote the words of God and the effort that the
-house of God will be maintained says The Lord." Jeremiah 22:15-16.=E2=80=9C
+xSPI profile 1.0 table:
+DWORD-1: Read Fast command, the number of dummy cycles and address nbytes
+	 for Read Status Register command.
+DWORD-2: Read/Write volatile Register command for CFG Reg2.
+DWORD-4 and DWORD-5: dummy cycles used for various frequencies based on
+maximum speed of device from BFPT 20th DWORD.
 
-It will be my great pleasure to compensate you with 35 % percent of
-the total money for your personal use, 5 % percent for any expenses
-that may occur during the international transfer process while 60% of
-the money will go to the charity project.
+Ccommand sequences to change to octal DTR mode:
+The length of each command sequence is 8 per byte for single SPI mode and
+patching driver to parse and execute these sequences for octal DTR mode.
 
-All I require from you is sincerity and ability to complete God task
-without any failure. It will be my pleasure to see that the bank has
-finally release and transfer the fund into your bank account therein
-your country even before I die here in the hospital, because of my
-present health status everything need to be process rapidly as soon as
-possible. I am waiting for your immediate reply, if only you are
-interested for further details of the transaction and execution of
-this charitable project.
+By Vignesh's comments to patch these drivers based on Pratyush's patches
+set [1].
 
-Best Regards your friend Mrs.
-Donna Louise McInnes.
+This series adds support for Macronix mx25uw51245g works in octal DTR mode.
+
+Tested on Macronix's Zynq PicoZed board with Macronix's SPI controller
+(spi-mxic.c) driver patched on mx25uw51245g Octal flash.
+
+
+[1] https://patchwork.ozlabs.org/project/linux-mtd/cover/20200525091544.17270-1-p.yadav@ti.com/
+
+
+Summary of change log
+v3:
+Add support command sequences to change octal DTR mode and based on
+part of Pratyush's patches set.
+
+v2: 
+Parse BFPT & xSPI table for Octal 8D-8D-8D mode parameters and enable Octal
+mode in spi_nor_late_init_params().
+Using Macros in spi_nor_spimem_read_data, spi_nor_spimem_write_data and
+so on by Vignesh comments.
+
+v1:
+Without parsing BFPT & xSPI profile 1.0 table and enter Octal 8D-8D-8D
+mode directly in spi_nor_fixups hooks.
+
+
+thnaks for your time and review.
+best regards,
+Mason
+
+--
+Mason Yang (7):
+  mtd: spi-nor: sfdp: get octal mode maximum speed from BFPT
+  mtd: spi-nor: sfdp: parse xSPI Profile 1.0 table
+  mtd: spi-nor: sfdp: parse command sequences to change octal DTR mode
+  mtd: spi-nor: core: add configuration register 2 read & write support
+  spi: mxic: patch for octal DTR mode support
+  mtd: spi-nor: core: execute command sequences to change octal DTR mode
+  mtd: spi-nor: macronix: Add Octal 8D-8D-8D supports for Macronix
+    mx25uw51245g
+
+Pratyush Yadav (7):
+  spi: spi-mem: allow specifying whether an op is DTR or not
+  spi: spi-mem: allow specifying a command's extension
+  mtd: spi-nor: add support for DTR protocol
+  mtd: spi-nor: sfdp: prepare BFPT parsing for JESD216 rev D
+  mtd: spi-nor: sfdp: get command opcode extension type from BFPT
+  mtd: spi-nor: core: use dummy cycle and address width info from SFDP
+  mtd: spi-nor: core: enable octal DTR mode when possible
+
+ drivers/mtd/spi-nor/core.c     | 514 +++++++++++++++++++++++++++++++++++------
+ drivers/mtd/spi-nor/core.h     |  49 ++++
+ drivers/mtd/spi-nor/macronix.c |  55 +++++
+ drivers/mtd/spi-nor/sfdp.c     | 278 +++++++++++++++++++++-
+ drivers/mtd/spi-nor/sfdp.h     |  15 +-
+ drivers/spi/spi-mem.c          |  16 +-
+ drivers/spi/spi-mtk-nor.c      |   4 +-
+ drivers/spi/spi-mxic.c         | 101 +++++---
+ drivers/spi/spi-zynq-qspi.c    |  11 +-
+ include/linux/mtd/spi-nor.h    |  51 ++--
+ include/linux/spi/spi-mem.h    |  14 +-
+ 11 files changed, 980 insertions(+), 128 deletions(-)
+
+-- 
+1.9.1
+
