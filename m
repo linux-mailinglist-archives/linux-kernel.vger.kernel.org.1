@@ -2,84 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58EC1E6452
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 085AF1E6459
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:45:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728577AbgE1OpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 10:45:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54578 "EHLO mail.kernel.org"
+        id S2391197AbgE1OpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 10:45:25 -0400
+Received: from mout.web.de ([212.227.17.12]:60099 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725922AbgE1OpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 10:45:00 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5BEB6207D3;
-        Thu, 28 May 2020 14:44:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590677100;
-        bh=X9YK+GDEsdW2T8WyDGxweojlNXR+vB7BnE1HKRUoVxo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l2E2WVrocVGuy1b/MoQhvijltZBfFRIPA1HuIMFqM5dN6XLFuQWc89P9MA+V3Em7x
-         9Rgm9qI719tIY6fUpzodZNDu7Nt24Upte5jX83v0rzQGTFaN+0PlHnIxzjfDBJ8YwR
-         f5bCGf7jklLlgV/qFq/P4M6JnQzRot0Ta1CnpqS0=
-Date:   Thu, 28 May 2020 15:44:56 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Fabien Parent <fparent@baylibre.com>,
-        Stephane Le Provost <stephane.leprovost@mediatek.com>,
-        Pedro Tsai <pedro.tsai@mediatek.com>,
-        Andrew Perepech <andrew.perepech@mediatek.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v2 1/2] regmap: provide helpers for simple bit operations
-Message-ID: <20200528144456.GG3606@sirena.org.uk>
-References: <20200528142241.20466-1-brgl@bgdev.pl>
- <20200528142241.20466-2-brgl@bgdev.pl>
+        id S1725922AbgE1OpS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 10:45:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1590677106;
+        bh=Ji+TnI2/l/tfPAhTFGuY2bDQt0RWf1M1u3vwa2F6Hss=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=pVhJ0QiyzrelEonbutiGe/B4RvYYC5lOTafZl0dgU/mK9PBqWKiW5PEcjs4iaEVWs
+         iLnVdOoAjgZEAF2ku8Tc8JMdRVuQBqd90X4J/6vOLy3/lL4jtYmCSuPLYLsThxFJ0R
+         zq/hyJuZgRFc5kkajyywUtbSeuGFPDrujsocoMlk=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.3] ([2.244.30.242]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MBB3s-1jjHqu0IWc-00CkOR; Thu, 28
+ May 2020 16:45:06 +0200
+Subject: Re: [v5] workqueue: Remove unnecessary kfree() call in rcu_free_wq()
+To:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Zhang Qiang <qiang.zhang@windriver.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <20200527075715.36849-1-qiang.zhang@windriver.com>
+ <284c7851-4e89-a00f-a2e6-aa8e2e1f3fce@web.de>
+ <DM6PR11MB32573F3884A864ECD586235EFF8E0@DM6PR11MB3257.namprd11.prod.outlook.com>
+ <DM6PR11MB3257D6E7E93A518392502809FF8E0@DM6PR11MB3257.namprd11.prod.outlook.com>
+ <20200528095703.GH30374@kadam>
+ <CAJhGHyD1nV=M=ccycqCMt86GMuZGkO9trbJ=4ti4EzP9kta6iA@mail.gmail.com>
+ <20200528122545.GP22511@kadam>
+ <CAJhGHyBUkMZ=cV+Qf-5+PMAFqgebbRLc46OZSSUSgoRROpUk2A@mail.gmail.com>
+ <20200528140357.GL83516@mtj.thefacebook.com>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ mQINBFg2+xABEADBJW2hoUoFXVFWTeKbqqif8VjszdMkriilx90WB5c0ddWQX14h6w5bT/A8
+ +v43YoGpDNyhgA0w9CEhuwfZrE91GocMtjLO67TAc2i2nxMc/FJRDI0OemO4VJ9RwID6ltwt
+ mpVJgXGKkNJ1ey+QOXouzlErVvE2fRh+KXXN1Q7fSmTJlAW9XJYHS3BDHb0uRpymRSX3O+E2
+ lA87C7R8qAigPDZi6Z7UmwIA83ZMKXQ5stA0lhPyYgQcM7fh7V4ZYhnR0I5/qkUoxKpqaYLp
+ YHBczVP+Zx/zHOM0KQphOMbU7X3c1pmMruoe6ti9uZzqZSLsF+NKXFEPBS665tQr66HJvZvY
+ GMDlntZFAZ6xQvCC1r3MGoxEC1tuEa24vPCC9RZ9wk2sY5Csbva0WwYv3WKRZZBv8eIhGMxs
+ rcpeGShRFyZ/0BYO53wZAPV1pEhGLLxd8eLN/nEWjJE0ejakPC1H/mt5F+yQBJAzz9JzbToU
+ 5jKLu0SugNI18MspJut8AiA1M44CIWrNHXvWsQ+nnBKHDHHYZu7MoXlOmB32ndsfPthR3GSv
+ jN7YD4Ad724H8fhRijmC1+RpuSce7w2JLj5cYj4MlccmNb8YUxsE8brY2WkXQYS8Ivse39MX
+ BE66MQN0r5DQ6oqgoJ4gHIVBUv/ZwgcmUNS5gQkNCFA0dWXznQARAQABtCZNYXJrdXMgRWxm
+ cmluZyA8TWFya3VzLkVsZnJpbmdAd2ViLmRlPokCVAQTAQgAPhYhBHDP0hzibeXjwQ/ITuU9
+ Figxg9azBQJYNvsQAhsjBQkJZgGABQsJCAcCBhUICQoLAgQWAgMBAh4BAheAAAoJEOU9Figx
+ g9azcyMP/iVihZkZ4VyH3/wlV3nRiXvSreqg+pGPI3c8J6DjP9zvz7QHN35zWM++1yNek7Ar
+ OVXwuKBo18ASlYzZPTFJZwQQdkZSV+atwIzG3US50ZZ4p7VyUuDuQQVVqFlaf6qZOkwHSnk+
+ CeGxlDz1POSHY17VbJG2CzPuqMfgBtqIU1dODFLpFq4oIAwEOG6fxRa59qbsTLXxyw+PzRaR
+ LIjVOit28raM83Efk07JKow8URb4u1n7k9RGAcnsM5/WMLRbDYjWTx0lJ2WO9zYwPgRykhn2
+ sOyJVXk9xVESGTwEPbTtfHM+4x0n0gC6GzfTMvwvZ9G6xoM0S4/+lgbaaa9t5tT/PrsvJiob
+ kfqDrPbmSwr2G5mHnSM9M7B+w8odjmQFOwAjfcxoVIHxC4Cl/GAAKsX3KNKTspCHR0Yag78w
+ i8duH/eEd4tB8twcqCi3aCgWoIrhjNS0myusmuA89kAWFFW5z26qNCOefovCx8drdMXQfMYv
+ g5lRk821ZCNBosfRUvcMXoY6lTwHLIDrEfkJQtjxfdTlWQdwr0mM5ye7vd83AManSQwutgpI
+ q+wE8CNY2VN9xAlE7OhcmWXlnAw3MJLW863SXdGlnkA3N+U4BoKQSIToGuXARQ14IMNvfeKX
+ NphLPpUUnUNdfxAHu/S3tPTc/E/oePbHo794dnEm57LuuQINBFg2+xABEADZg/T+4o5qj4cw
+ nd0G5pFy7ACxk28mSrLuva9tyzqPgRZ2bdPiwNXJUvBg1es2u81urekeUvGvnERB/TKekp25
+ 4wU3I2lEhIXj5NVdLc6eU5czZQs4YEZbu1U5iqhhZmKhlLrhLlZv2whLOXRlLwi4jAzXIZAu
+ 76mT813jbczl2dwxFxcT8XRzk9+dwzNTdOg75683uinMgskiiul+dzd6sumdOhRZR7YBT+xC
+ wzfykOgBKnzfFscMwKR0iuHNB+VdEnZw80XGZi4N1ku81DHxmo2HG3icg7CwO1ih2jx8ik0r
+ riIyMhJrTXgR1hF6kQnX7p2mXe6K0s8tQFK0ZZmYpZuGYYsV05OvU8yqrRVL/GYvy4Xgplm3
+ DuMuC7/A9/BfmxZVEPAS1gW6QQ8vSO4zf60zREKoSNYeiv+tURM2KOEj8tCMZN3k3sNASfoG
+ fMvTvOjT0yzMbJsI1jwLwy5uA2JVdSLoWzBD8awZ2X/eCU9YDZeGuWmxzIHvkuMj8FfX8cK/
+ 2m437UA877eqmcgiEy/3B7XeHUipOL83gjfq4ETzVmxVswkVvZvR6j2blQVr+MhCZPq83Ota
+ xNB7QptPxJuNRZ49gtT6uQkyGI+2daXqkj/Mot5tKxNKtM1Vbr/3b+AEMA7qLz7QjhgGJcie
+ qp4b0gELjY1Oe9dBAXMiDwARAQABiQI8BBgBCAAmFiEEcM/SHOJt5ePBD8hO5T0WKDGD1rMF
+ Alg2+xACGwwFCQlmAYAACgkQ5T0WKDGD1rOYSw/+P6fYSZjTJDAl9XNfXRjRRyJSfaw6N1pA
+ Ahuu0MIa3djFRuFCrAHUaaFZf5V2iW5xhGnrhDwE1Ksf7tlstSne/G0a+Ef7vhUyeTn6U/0m
+ +/BrsCsBUXhqeNuraGUtaleatQijXfuemUwgB+mE3B0SobE601XLo6MYIhPh8MG32MKO5kOY
+ hB5jzyor7WoN3ETVNQoGgMzPVWIRElwpcXr+yGoTLAOpG7nkAUBBj9n9TPpSdt/npfok9ZfL
+ /Q+ranrxb2Cy4tvOPxeVfR58XveX85ICrW9VHPVq9sJf/a24bMm6+qEg1V/G7u/AM3fM8U2m
+ tdrTqOrfxklZ7beppGKzC1/WLrcr072vrdiN0icyOHQlfWmaPv0pUnW3AwtiMYngT96BevfA
+ qlwaymjPTvH+cTXScnbydfOQW8220JQwykUe+sHRZfAF5TS2YCkQvsyf7vIpSqo/ttDk4+xc
+ Z/wsLiWTgKlih2QYULvW61XU+mWsK8+ZlYUrRMpkauN4CJ5yTpvp+Orcz5KixHQmc5tbkLWf
+ x0n1QFc1xxJhbzN+r9djSGGN/5IBDfUqSANC8cWzHpWaHmSuU3JSAMB/N+yQjIad2ztTckZY
+ pwT6oxng29LzZspTYUEzMz3wK2jQHw+U66qBFk8whA7B2uAU1QdGyPgahLYSOa4XAEGb6wbI FEE=
+Message-ID: <a3349efe-5291-637a-f98d-407a33f2fede@web.de>
+Date:   Thu, 28 May 2020 16:45:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="RMedoP2+Pr6Rq0N2"
-Content-Disposition: inline
-In-Reply-To: <20200528142241.20466-2-brgl@bgdev.pl>
-X-Cookie: Small is beautiful.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200528140357.GL83516@mtj.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+X-Provags-ID: V03:K1:SEPL94SsTVWqsHP+v75Rc9Xv5QXiVgVLCbgV//JUdIwaxlNCPaM
+ FryG8tBcnSJ2nKvUJ0Q298R4uiDRj2GpN2JuYJK5fnJmCT0SJRjRDrZ5PoId/Vb5VR/p/ul
+ SBeMHiMgviud4J7GPdlwtFFu7fhy1grsOET32MjdqYbiRYVyYOAsZwMKnyes/51T1ZH8NTz
+ Sh80XKB2o1z2opRKBYfXQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:axBDLpeRwhk=:DTDhoN+CvquUprReTOYZO3
+ 691D2ldjxpZfqaUfktWxUpIgu5qeeIb6btsUf/12bQIUCvHumYVQ0LrzAoSQuJ2hQlODdWzdT
+ XWryfgpiE7KqhFd88knIQgnaAoDE6bM3PYsUEKgM5PmhLhy1tuVKqYXfZ2+KyV/2cKljkQ5FG
+ +xqpePzcb9nAU+JE44wEnmM1qLgGy2XozW+b+a1NMNNKB/F1G8bE8Vg0aKkh7oxkeMAMRVlc8
+ WxK3j6ciXy+qrARWQc655TBk+ZWf6kjItA0sJ83rbKt93WHX9tR35uaU1WXH0ApI7WoEyEB2E
+ /2pnB2v+iATuwUUl2YVL16jmuumqkD4PRXrJQm33KmESV0ezRRXh4mbqhBLya3EjKnD8HZH8K
+ ucqoR6LZUe4ABWregE/zD1Q8Z3IiStptujhXcLYi9Tffb2wTmf0e5iU02ETttV8IrOyHVyAbg
+ +tktd9f2XHgnl2Hs+1IULUprxTxg/dli/BM3ChBxcBbUYt1Ysdol8hEmjMhqqetJxWVFhiSdJ
+ F37FXatP3gKnlaBLAQbptt2ataiM/XpopwLkUWUfAJgFiNTjeLVZCO6dXF+u3sxfwaKmPV04q
+ evHDlWhZpALSXBu54NeZEdX0EIJc/a/Iv28VSQHILxz383LZGP5q+IKFGLzqAviTWHsVNeAMG
+ C9NJJD7HO2f0tVbkqWS25tNPrAewj5KVt0OAVtyi0mG5w/kcFYZLMeS1nlZQi9cd4FELOrE9c
+ HGZ+pNrIKNmsJn9g4dJ5SgUzJ+OM3BJpu4DYZuQHIExRADheeVuMK3NiErumYx0le+1y7GuGD
+ ADkx01AtNoogdWfd8Rh+PKaCWfDbCzITr0jde+Yihm8e6nJtlW2KkkkFcjeA3Nkyb9rDeClAx
+ jkUAvXO0h90buw9ovIUEd7i4mXokefHAaF8fh3ctit2SUlgrNfcJN/Zo8d9bBHoz+TNpEiX9p
+ tlVRZ6dOIyq+1XcVPuEX3NbS+qZ7VyN52rLrkilUhQkXnbAU+ioCw6+LYjayCD8RlPmW3ViT8
+ OWrREZT1MwAorvgRMo2HtYtzQmeZT730nDe3ES0JSsKF7zEnljWtF496l7yJtpwEczByUl5Un
+ YytbiZpE2tH0gSZItJ4zBBpDgrGA0U7RHHSBIt9AK5VZEAlHO+1RQuuur++9qlcXzhqPf2yjY
+ 4bIdnkG9Qkk8qbovC8wCdi1Ooe7cGs6EdGHU1mxRuJRtJZtxkk8FwIQaIt3h9yfZTLudGwMe0
+ I6NwrcgRUHKa6xr+U
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> Yeah, regardless of who puts a wq the last time, the base reference is put
+> by destroy_workqueue() and thus it's guaranteed that a wq can't be rcu freed
+> without going through destroy_workqueue(). lol I'm undoing the revert.
 
---RMedoP2+Pr6Rq0N2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+* Would you like to add such background information to the change description?
 
-On Thu, May 28, 2020 at 04:22:40PM +0200, Bartosz Golaszewski wrote:
+* How do you think about integrate a following patch version after
+  the extra clarification?
 
-> +	return (val & bits) == bits ? 1 : 0;
-
-The tenery here is redundant, it's converting a boolean value into a
-boolean value.  Otherwise this looks good.
-
---RMedoP2+Pr6Rq0N2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7PzmcACgkQJNaLcl1U
-h9DzXAf9EwegJko8ZtKiJNAmWI/0roZMdNBpTkKJLOfFqs0LbMZdg1Tg3UA+jOe6
-AM9PSwU009hn4dmLdAbnqIfXhp1e1zPUb537lozVi/6cAbc6yzwzZBxajJjUxjk9
-amrt61H/LZBJyyP1qrY4a/vNtu0R558ozAuMmINAfkEsFdGQq6WZ63N+bcJzPiF4
-kxSTX7Mewb0jyB6ZAilOMkuRFNR+bCGjV0MNVd41MUT+zEcgaMP7Dv6eJ/PUBJ2y
-klySoD2xOzlpxBUpKblFYuso9Q8iRrGGjr49/rh1rYuKjRz/wt8cbwe4NjrG0N+q
-E8vZUZWNgG2ZVnG3DbKIx5QlNJxtDA==
-=EkdN
------END PGP SIGNATURE-----
-
---RMedoP2+Pr6Rq0N2--
+Regards,
+Markus
