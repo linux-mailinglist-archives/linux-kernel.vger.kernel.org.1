@@ -2,106 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4660A1E6ECB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 00:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3E51E6EDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 00:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437172AbgE1WYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 18:24:52 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:44694 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437117AbgE1WYS (ORCPT
+        id S2436969AbgE1W0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 18:26:48 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:46115 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437180AbgE1WY7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 18:24:18 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 326178030839;
-        Thu, 28 May 2020 22:24:16 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id tZprco_SoX-N; Fri, 29 May 2020 01:24:15 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 11/11] dmaengine: dw: Initialize max_sg_nents capability
-Date:   Fri, 29 May 2020 01:24:01 +0300
-Message-ID: <20200528222401.26941-12-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200528222401.26941-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200528222401.26941-1-Sergey.Semin@baikalelectronics.ru>
+        Thu, 28 May 2020 18:24:59 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jeQxK-0000Up-4x; Thu, 28 May 2020 22:24:54 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mukul Joshi <mukul.joshi@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] drm/amdkfd: fix a dereference of pdd before it is null checked
+Date:   Thu, 28 May 2020 23:24:53 +0100
+Message-Id: <20200528222453.536137-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Multi-block support provides a way to map the kernel-specific SG-table so
-the DW DMA device would handle it as a whole instead of handling the
-SG-list items or so called LLP block items one by one. So if true LLP
-list isn't supported by the DW DMA engine, then soft-LLP mode will be
-utilized to load and execute each LLP-block one by one. The soft-LLP mode
-of the DMA transactions execution might not work well for some DMA
-consumers like SPI due to its Tx and Rx buffers inter-dependency. Let's
-initialize the max_sg_nents DMA channels capability based on the nollp
-flag state. If it's true, no hardware accelerated LLP is available and
-max_sg_nents should be set with 1, which means that the DMA engine
-can handle only a single SG list entry at a time. If noLLP is set to
-false, then hardware accelerated LLP is supported and the DMA engine
-can handle infinite number of SG entries in a single DMA transaction.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Cc: devicetree@vger.kernel.org
+Currently pointer pdd is being dereferenced when assigning pointer
+dpm and then pdd is being null checked.  Fix this by checking if
+pdd is null before the dereference of pdd occurs.
 
+Addresses-Coverity: ("Dereference before null check")
+Fixes: 522b89c63370 ("drm/amdkfd: Track SDMA utilization per process")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
+ drivers/gpu/drm/amd/amdkfd/kfd_process.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Changelog v3:
-- This is a new patch created as a result of the discussion with Vinud and
-  Andy in the framework of DW DMA burst and LLP capabilities.
-
-Changelog v4:
-- Use explicit if-else statement when assigning the max_sg_nents field.
----
- drivers/dma/dw/core.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/dma/dw/core.c b/drivers/dma/dw/core.c
-index 60ef779fc5e0..b76eee75fde8 100644
---- a/drivers/dma/dw/core.c
-+++ b/drivers/dma/dw/core.c
-@@ -1059,6 +1059,18 @@ static void dwc_caps(struct dma_chan *chan, struct dma_slave_caps *caps)
- 	struct dw_dma_chan *dwc = to_dw_dma_chan(chan);
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+index 25636789f3d3..bdc58741b32e 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+@@ -103,10 +103,11 @@ static void kfd_sdma_activity_worker(struct work_struct *work)
+ 		return;
  
- 	caps->max_burst = dwc->max_burst;
-+
-+	/*
-+	 * It might be crucial for some devices to have the hardware
-+	 * accelerated multi-block transfers supported, aka LLPs in DW DMAC
-+	 * notation. So if LLPs are supported then max_sg_nents is set to
-+	 * zero which means unlimited number of SG entries can be handled in a
-+	 * single DMA transaction, otherwise it's just one SG entry.
-+	 */
-+	if (dwc->nollp)
-+		caps->max_sg_nents = 1;
-+	else
-+		caps->max_sg_nents = 0;
- }
+ 	pdd = workarea->pdd;
++	if (!pdd)
++		return;
+ 	dqm = pdd->dev->dqm;
+ 	qpd = &pdd->qpd;
+-
+-	if (!pdd || !dqm || !qpd)
++	if (!dqm || !qpd)
+ 		return;
  
- int do_dma_probe(struct dw_dma_chip *chip)
+ 	mm = get_task_mm(pdd->process->lead_thread);
 -- 
-2.26.2
+2.25.1
 
