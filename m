@@ -2,74 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4F31E68B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 19:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0E51E68BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 19:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405603AbgE1Rek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 13:34:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405041AbgE1Rei (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 13:34:38 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA56DC08C5C6;
-        Thu, 28 May 2020 10:34:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=4NdQPXiGDixOac6odaLZpaKeHwDqQiLCg9d5gMfwitA=; b=OtrKgaVabU9dshlSL2ah+NMvpj
-        P/E2tv8DAG9LEQ/A9rfJekihp466NZCR8qKnzZkZlFl0jsAR/07+K/34A0p85riFpDGZB9Pn+ewMy
-        SKALxjKuSPFxZ1dmpi8scQ4O3Ez6mjixP2R2t9InyAbxT4LAV3/XIGacW8UkDfsx1pMTNCirM/Lby
-        SyXp12aASXMlQjEYbmFE1nDLtmfLkdlJFkM2Z+PRJeCiJ55dpWK+m0wxYQFJzRyOQgAInezcmjs3Q
-        4FjTrFhZgIytfI1qJDSjbWmB2cY7KAiB7i71erW34gXXZ5ERAm/Zw/QskVU4bbdvte7Ki9pR2r3j/
-        VI7/SosQ==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jeMQN-0005CN-U7; Thu, 28 May 2020 17:34:35 +0000
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH -next] kbuild: modpost: fix a message typo
-Message-ID: <085ad1e6-f9a1-06ee-c8f1-7ac6b6ae8552@infradead.org>
-Date:   Thu, 28 May 2020 10:34:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S2405615AbgE1RhC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 May 2020 13:37:02 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2255 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2405372AbgE1RhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 13:37:00 -0400
+Received: from lhreml733-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id C8640A9161F1612A8E21;
+        Thu, 28 May 2020 18:36:56 +0100 (IST)
+Received: from fraeml702-chm.china.huawei.com (10.206.15.51) by
+ lhreml733-chm.china.huawei.com (10.201.108.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Thu, 28 May 2020 18:36:56 +0100
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Thu, 28 May 2020 19:36:55 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.1913.007;
+ Thu, 28 May 2020 19:36:55 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Takashi Iwai <tiwai@suse.de>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Silviu Vlasceanu" <Silviu.Vlasceanu@huawei.com>
+Subject: RE: Oops at boot with linux-next kernel with IMA boot options
+Thread-Topic: Oops at boot with linux-next kernel with IMA boot options
+Thread-Index: AQHWNQWdtGASKXj1EUeXcoX7+5fwg6i9kOcAgAAmYdA=
+Date:   Thu, 28 May 2020 17:36:55 +0000
+Message-ID: <4de686af78e94893b3578f6970d783d5@huawei.com>
+References: <s5htv00m5sb.wl-tiwai@suse.de> <s5hk10wm2x3.wl-tiwai@suse.de>
+In-Reply-To: <s5hk10wm2x3.wl-tiwai@suse.de>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.220.71.234]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+> From: linux-integrity-owner@vger.kernel.org [mailto:linux-integrity-
+> owner@vger.kernel.org] On Behalf Of Takashi Iwai
+> On Thu, 28 May 2020 17:35:16 +0200,
+> Takashi Iwai wrote:
+> >
+> > Hi Roberto,
+> >
+> > it seems that the recent changes in IMA in linux-next caused a
+> > regression: namely it triggers an Oops when booting with the options
+> >   ima_policy=tcb ima_template_fmt='d-ng|n-ng|d|ng'
+> 
+> And further experiment revealed that passing only ima_template_fmt=d
+> is enough for triggering the bug.  Other formats don't matter.
+> 
+> (snip)
+> > It's a KVM instance without any TPM stuff, just passed the options
+> > above.  I could trigger the same bug on a bare metal, too.
+> >
+> > Then I performed bisection and it spotted the commit:
+> > 6f1a1d103b48b1533a9c804e7a069e2c8e937ce7
+> >   ima: Switch to ima_hash_algo for boot aggregate
+> >
+> > Actually reverting this commit fixed the Oops again.
+> 
+> So, looking at the fact above (triggered by "d") and this bisection
+> result, it seems that the issue is specific to ima_eventdigest_init().
+> The difference from others is that this has a check by
+> ima_template_hash_algo_allowed(), and currently the check allows only
+> SHA1 and MD5, while now SHA256 is assigned as default.  So I tested
+> adding SHA256 there like below, and it seems working.
+> 
+> Hopefully I'm heading to a right direction...
 
-Fix typo/spello:
+Hi Takashi
 
-WARNING: modpost: Symbol dump file is missing. Modules may not have dependencies or movversions.
+boot_aggregate is the only entry for which there is no file descriptor.
+The file descriptor is used to recalculate the digest if it is not SHA1
+or MD5. For boot_aggregate, we should use instead
+ima_calc_boot_aggregate(). I will provide a patch.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Michal Marek <michal.lkml@markovi.net>
-Cc: linux-kbuild@vger.kernel.org
----
- scripts/mod/modpost.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I see that the .file member of event_data in
+ima_add_boot_aggregate() is not initialized. Can you please try
+to set .file to NULL?
 
---- linux-next-20200528.orig/scripts/mod/modpost.c
-+++ linux-next-20200528/scripts/mod/modpost.c
-@@ -2600,7 +2600,7 @@ int main(int argc, char **argv)
- 		read_symbols_from_files(files_source);
- 
- 	if (missing_dump_file)
--		warn("Symbol dump file is missing. Modules may not have dependencies or movversions.\n");
-+		warn("Symbol dump file is missing. Modules may not have dependencies or modversions.\n");
- 
- 	/*
- 	 * When there's no vmlinux, don't print warnings about
+Thanks
 
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
+
+> thanks,
+> 
+> Takashi
+> 
+> --- a/security/integrity/ima/ima_template_lib.c
+> +++ b/security/integrity/ima/ima_template_lib.c
+> @@ -13,7 +13,8 @@
+> 
+>  static bool ima_template_hash_algo_allowed(u8 algo)
+>  {
+> -	if (algo == HASH_ALGO_SHA1 || algo == HASH_ALGO_MD5)
+> +	if (algo == HASH_ALGO_SHA1 || algo == HASH_ALGO_SHA256 ||
+> +	    algo == HASH_ALGO_MD5)
+>  		return true;
+> 
+>  	return false;
