@@ -2,126 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3C61E698A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 20:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207D61E698D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 20:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405986AbgE1SiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 14:38:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405786AbgE1SiG (ORCPT
+        id S2406003AbgE1SiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 14:38:25 -0400
+Received: from mta-p7.oit.umn.edu ([134.84.196.207]:57304 "EHLO
+        mta-p7.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405786AbgE1SiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 14:38:06 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9204C08C5C6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 11:38:06 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id bh7so5053260plb.11
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 11:38:06 -0700 (PDT)
+        Thu, 28 May 2020 14:38:12 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-p7.oit.umn.edu (Postfix) with ESMTP id 49XxKH6tGRz9vpNP
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 18:38:11 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at umn.edu
+Received: from mta-p7.oit.umn.edu ([127.0.0.1])
+        by localhost (mta-p7.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id hh-TLH4RfBLC for <linux-kernel@vger.kernel.org>;
+        Thu, 28 May 2020 13:38:11 -0500 (CDT)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mta-p7.oit.umn.edu (Postfix) with ESMTPS id 49XxKH5CqQz9vpP2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:38:11 -0500 (CDT)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p7.oit.umn.edu 49XxKH5CqQz9vpP2
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p7.oit.umn.edu 49XxKH5CqQz9vpP2
+Received: by mail-il1-f198.google.com with SMTP id m7so55577ill.19
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 11:38:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=+s1IaVbmnL9yBRcZ3BjJ3ucj5/q4zxOlTyNgvpB+MwY=;
-        b=0Nl6IpetJJlL2sY/xdUrtiGf71qCqKaMz3tYwG0BjLShyZFuWH3MzGQgD05EWh8Ki8
-         1CwnGi3TFGVjxMg/fK9XJlA9N2ExT5nYc3g+MJkaYSTy639r4LxBWQZ2jDAoOJ8Tg2jn
-         G+skcjEedXqRJ+VRDnL2vtJdSh8T9MHVN0SvBUrmtzCTfnG2UpGejhCjBoAXmCWnvTi+
-         x0gpLK11fRau3FTi9e2fGJ51AP7Z+92Gv9BYKDKBIZODOhJxrTG8zo5+er8AT6Db9v08
-         Xgere7E42Z3/7kxWz68YHFqtTSx/aNIYb+AKpfjnHcr9NcdlMiqurbhwxeFeOlNOgNQT
-         GNtw==
+        d=umn.edu; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=c1TTnDVto3wkCZeSMQka6W/DEVeWf5sl9QQWLQgXN9k=;
+        b=drHw+/cEwBVwGldaRHVnRcYHMf95jXEAagHcGST8WG3PdUnHW1OZewz7BMmxvxp1yM
+         Z0GjkBUrfOsTgT2qlIAVhGJnWCVDcu8fCcQpQoidDCITqaPGR/++9h81+sxomz5OmWSs
+         ht8U30P2CTMSiK/nwR9qcjh9fbnZCweqrOgTo4bwLQ/aG8J3Fx/M6zLXUy1XvC6TWGST
+         GvTAjWKuX51Yndju7P1KyJyY3SHZCdcOuucCvCdnC5ujqYXVpizHwkoxFpXGsyNlMSww
+         GK0EOCUIkua4jFO3v4tUENgH3Wk0kJv2L1Jyofk5chHTgESNo/UYB7qxcryS1PcRJZ51
+         wiiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=+s1IaVbmnL9yBRcZ3BjJ3ucj5/q4zxOlTyNgvpB+MwY=;
-        b=TQHvoWb7a4UL2pT0AIbPvc0NVVKdWqxbgYe2IJMiOQ7hb8T8hj4kGgD1cjdjFsRmMr
-         M+mmZKpGNPyZTWGEviQ7ncBUiBvdD0urH/y/whLkJDhH92K/EQ4aTqczsY4DHzUfKGe4
-         HE9bHMz7zFj/objGhQUf0Be7z8Dwmx3RM3+GO7jtyW+NVtWlJkCMChlZ93MWQkiyRGaA
-         vGAqII0BNcLMQMMCHTiM3m86bSb0YXKID/Mra4jO6amFUP38X6fc3ZUyha6XSJ9q8fdU
-         VCldPpWod0a7rCfCLIYlAXWb5NJwUq2WBInfHgFgdvki7iuR09pBrVGXmclPrDMDDxEj
-         TneA==
-X-Gm-Message-State: AOAM530MbrDVvnClQMaanaxmlS9vXVE6T804dC7FIcz0nrCP9yj8e2/d
-        3RY2QPyhpmBt6XdzKhQC6WqQvw==
-X-Google-Smtp-Source: ABdhPJyM7C3Oox9ZE5dQwghEseeqHdY1i0Kbp/kZqkxtjWNV6S40kso18zAIiU5+94/1wOhze+nIog==
-X-Received: by 2002:a17:90a:950d:: with SMTP id t13mr5580197pjo.102.1590691086116;
-        Thu, 28 May 2020 11:38:06 -0700 (PDT)
-Received: from [192.168.86.238] (c-73-170-200-117.hsd1.ca.comcast.net. [73.170.200.117])
-        by smtp.gmail.com with ESMTPSA id j26sm5378855pfr.215.2020.05.28.11.38.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 May 2020 11:38:05 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v12 00/18] Enable FSGSBASE instructions
-Date:   Thu, 28 May 2020 11:38:01 -0700
-Message-Id: <7A3EBAB0-B3B3-4CB7-AA6A-FDF29D03E30D@amacapital.net>
-References: <e9a0a521-104b-5c3a-a689-78f878e73d31@cs.unc.edu>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        bp@alien8.de, luto@kernel.org, hpa@zytor.com,
-        dave.hansen@intel.com, tony.luck@intel.com,
-        ravi.v.shankar@intel.com, chang.seok.bae@intel.com
-In-Reply-To: <e9a0a521-104b-5c3a-a689-78f878e73d31@cs.unc.edu>
-To:     Don Porter <porter@cs.unc.edu>
-X-Mailer: iPhone Mail (17E262)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=c1TTnDVto3wkCZeSMQka6W/DEVeWf5sl9QQWLQgXN9k=;
+        b=efFOclE/cIqyNRugpN8+6wbEQF9QRdJ4FX9b+pGbIedoQQT3M/JFHBZuc6zWWtJ1FW
+         qJjUkVLwdPAEl4SLvgjsXrnJ6/rtF8dF5tahikMsFr6bVZK2gQDOqZU7zLDSj5OrIfGA
+         2KUNG4LyhGcS98Uc0I2nQral0JQDza3JMAX5jftIvBR5nDGQWofQSTiI9pz4IjqzstpV
+         SgbWdQ3tPIDHgfkJINhJ44WWIDhseBbDIhvMjFC0QHgj6oTI05tYgjHQiAopEXGqKo5E
+         hRq7x6ZeNh61PsQWfADKMtjuKPDAZ5fX7+ZJ9xTb4PSuvgmze1TGZFbe8a+mRFqOQkVM
+         Xs0g==
+X-Gm-Message-State: AOAM532i9iz3IS6aN87K1vDbVGqIrMVHRQmcplzRRgcn1/WvM3NqHo5h
+        IS2Ijc4NTV3kTat5hfuZJcvkx6A3oslJvaX4muruT5Ii+3zqE2tNrsVmQGQKSylp9omPiC+CfSm
+        8bCtJcsbwojm9zcp1tcvhs+74E2bF
+X-Received: by 2002:a05:6e02:13e2:: with SMTP id w2mr4148969ilj.264.1590691090659;
+        Thu, 28 May 2020 11:38:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzVPW9yLSepCvAllSlkGigtULfsb2Nh6cdvsTpPFGOt+J3pcMQEfAYp4Vvxp0BCM63yq1AvpA==
+X-Received: by 2002:a05:6e02:13e2:: with SMTP id w2mr4148945ilj.264.1590691090336;
+        Thu, 28 May 2020 11:38:10 -0700 (PDT)
+Received: from qiushi.dtc.umn.edu (cs-kh5248-02-umh.cs.umn.edu. [128.101.106.4])
+        by smtp.gmail.com with ESMTPSA id i13sm3701456ill.65.2020.05.28.11.38.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 11:38:09 -0700 (PDT)
+From:   wu000273@umn.edu
+To:     kjlu@umn.edu
+Cc:     wu000273@umn.edu, Ard Biesheuvel <ardb@kernel.org>,
+        Peter Jones <pjones@redhat.com>,
+        Matt Fleming <matt.fleming@intel.com>,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] efi/esrt: Fix reference count leak in esre_create_sysfs_entry.
+Date:   Thu, 28 May 2020 13:38:04 -0500
+Message-Id: <20200528183804.4497-1-wu000273@umn.edu>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Qiushi Wu <wu000273@umn.edu>
 
+kobject_init_and_add() takes reference even when it fails.
+If this function returns an error, kobject_put() must be called to
+properly clean up the memory associated with the object. Previous
+commit "b8eb718348b8" fixed a similar problem.
 
-> On May 28, 2020, at 10:40 AM, Don Porter <porter@cs.unc.edu> wrote:
->=20
-> =EF=BB=BFHi Thomas,
->=20
-> On 5/28/20 6:29 AM, Thomas Gleixner wrote:
->>> Until recently, we were doing proof-of-concept research, not product
->>> development, and there are limited hours in the day.  I also hasten to
->>> say that the product of research is an article, the software artifact
->>> serves as documentation of the experiment.  In contrast, the product of
->>> software development is software.  It takes significant time and effort
->>> to convert one to the other.  Upstreaming code is of little scientific
->>> interest.  But things have changed for our project; we had no users in
->>> 2015 and we are now un-cutting corners that are appropriate for research=
+Fixes: 0bb549052d33 ("efi: Add esrt support")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+---
+ drivers/firmware/efi/esrt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->>> but inappropriate for production.  For a research artifact with an
->>> audience that knew the risks, we shipped a module because it was easier
->>> to maintain and install than a kernel patch.
->> I understand that and with a big fat warning and documentation from
->> start I wouldn't have complained so vehemently.
->=20
-> This is a fair point.  We will fix this ASAP, and I will be more careful a=
-bout this going forward.
->=20
->>=20
->> Sorry for that innuendo. Now that my anger and general frustration about
->> this whole disaster have calmed down, I surely would not write that
->> again.
->=20
-> I appreciate you saying so.  Thank you.
->=20
-> I can also understand how frustrating the history was with this feature, a=
-nd we missed an opportunity to help sooner.  There is a lot I still don't un=
-derstand about the process of merging and testing patches in this community,=
- but if it makes sense for us to help now, we would be willing.
->=20
->=20
+diff --git a/drivers/firmware/efi/esrt.c b/drivers/firmware/efi/esrt.c
+index e3d692696583..d5915272141f 100644
+--- a/drivers/firmware/efi/esrt.c
++++ b/drivers/firmware/efi/esrt.c
+@@ -181,7 +181,7 @@ static int esre_create_sysfs_entry(void *esre, int entry_num)
+ 		rc = kobject_init_and_add(&entry->kobj, &esre1_ktype, NULL,
+ 					  "entry%d", entry_num);
+ 		if (rc) {
+-			kfree(entry);
++			kobject_put(&entry->kobj);
+ 			return rc;
+ 		}
+ 	}
+-- 
+2.17.1
 
-With my x86 hat on, I have no particular expectation that you would be famil=
-iar with the particular problems wi TV FSGSBASE. One sequence that will kill=
- the kernel is to use WRGSBASE to load a negative value (e.g. ~0), then set E=
-FLAGS.TF and do SYSENTER. I=E2=80=99m adding a test like this to the x86 sel=
-ftests.
-
-One useful test for the actual kernel patches would be to run your SGX workl=
-oad on a loaded core.  That is, do
-something like taskset -c 0 graphene_thing and, simultaneously, write a triv=
-ial infinite loop program and run that under taskset -c 0 as well. For good m=
-easure, you could have perf top or perf record running at the same time.  Lo=
-ok for kernel errors, but also look for any evidence of your workload malfun=
-ctioning.
-
-=E2=80=94Andy=
