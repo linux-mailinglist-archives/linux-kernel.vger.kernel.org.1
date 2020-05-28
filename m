@@ -2,82 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64CE81E6A1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 21:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E631E6A24
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 21:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406166AbgE1TKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 15:10:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406129AbgE1TKH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 15:10:07 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32EB9C08C5C6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 12:10:07 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id x27so17208806lfg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 12:10:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R5QaC7zkAZZvfEZZJnqo7rI0BwuGIzysoGf9yj6DhPY=;
-        b=Oyp8Kr588/cPDx5RD8b3bsiUnE+YQ2WkW3H4H3gawu0qmPA/QFVO2d69AH2CX4ouxv
-         L5CwQD2ftmMzzRUoAsCynb9v1hxvuA+JFAHDHgIFfDweDYc0sdqPbJ1edenfzl6FfJkY
-         YDfT/dq7werTzLi2TQz9MpGnKaUzqLQeAzrKI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R5QaC7zkAZZvfEZZJnqo7rI0BwuGIzysoGf9yj6DhPY=;
-        b=C3RG7D6qWCAqqLKU6kCLSKuQpgf019y+L8qEXAylRzWGrzh7vM58b6/aj+YVaj/ZtB
-         g0AXZXf409sOdJ1KCNcb109aW5wbDOVQ54CHETL691OkGp8m7SQg6HWG1e8zE24Fx5nJ
-         g7cko8xYEObKEb+osgLcDktbtgqJfSAmmu7pfjFzv0BuCHg+n7fpFuTOCirZ45XAnO7D
-         5ozpp1p4+B8LaSeCUHvRAqrA/EYyvBNFhPvduZofZW+iG0hSwciNQ4ByGeim8FF+RCkw
-         fM/6f6Nzbos9BIY//yOPecncxix+2JQh1CrjyAOIFz/gsbm5dtHCIexSdJOLODMXCMFT
-         87Ww==
-X-Gm-Message-State: AOAM532WLn1k7XjetxFUIvzxkf1XIY6+qnIywutfRRHmUdJrSn0F7I8P
-        /DU13X9ioREC675vxnGNCPhNSaNry6o=
-X-Google-Smtp-Source: ABdhPJwVeYoWt5lzrV71+SZU5tvTG+xifFHsN37N0bI5lHJ9k+DwN3y9Evns/r6BUKsE0PfM6Z9dkQ==
-X-Received: by 2002:ac2:5314:: with SMTP id c20mr2399484lfh.75.1590693005303;
-        Thu, 28 May 2020 12:10:05 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id f9sm1812475ljf.99.2020.05.28.12.10.04
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 May 2020 12:10:04 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id c12so17228058lfc.10
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 12:10:04 -0700 (PDT)
-X-Received: by 2002:a05:6512:62:: with SMTP id i2mr2373367lfo.152.1590693004037;
- Thu, 28 May 2020 12:10:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200527213447.GH23230@ZenIV.linux.org.uk> <20200528070255.GA790247@gmail.com>
- <CAHk-=wgXqVTGA-HrzJZ_yboLrtQ4rK-qoz8AfwLV=PT7ke4fbA@mail.gmail.com> <20200528190555.GO23230@ZenIV.linux.org.uk>
-In-Reply-To: <20200528190555.GO23230@ZenIV.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 28 May 2020 12:09:48 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi3dVgSn8xMC2Uqs8aahFfeqO0Wue2KqxnDYrbBM+6uZQ@mail.gmail.com>
-Message-ID: <CAHk-=wi3dVgSn8xMC2Uqs8aahFfeqO0Wue2KqxnDYrbBM+6uZQ@mail.gmail.com>
-Subject: Re: [git pull] coredump infoleak fix
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S2406163AbgE1TK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 15:10:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45096 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406096AbgE1TK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 15:10:58 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E9122075A;
+        Thu, 28 May 2020 19:10:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590693057;
+        bh=McL+fVFL7VEwzes5MBT2HIhkPQz4yeJG/DEEGLug2z0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hDypazUDM3h5eepOjW5JZ/+I4UObiA44nyq+DaXGct/jyfhNeJpNT+l5yOQERP/46
+         mYHyrxau90uzB+7IPVW15Cp0ihC5nwvVDjuT7d2EEYdumOdTDvWf5t1KmA7EyUyghb
+         y6SHBK1qeZcpcC1YbdAP+KiEqUBp0khzjby11rOw=
+Date:   Thu, 28 May 2020 12:10:57 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v2] twist: allow converting pr_devel()/pr_debug() into
+ snprintf()
+Message-Id: <20200528121057.d47c47c67d5f7419f7557b84@linux-foundation.org>
+In-Reply-To: <e0d6c04f-7601-51e7-c969-300e938dedc0@i-love.sakura.ne.jp>
+References: <e3b30905-4497-29b4-4636-a313283dbc56@i-love.sakura.ne.jp>
+        <20200528065603.3596-1-penguin-kernel@I-love.SAKURA.ne.jp>
+        <20200528110646.GC11286@linux-b0ei>
+        <e0d6c04f-7601-51e7-c969-300e938dedc0@i-love.sakura.ne.jp>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 12:06 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> It doesn't fix all problems, though - you don't get an infoleak, but
-> you do get incorrect data...
+On Fri, 29 May 2020 00:16:22 +0900 Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> wrote:
 
-Oh, I'm not saying it should replace any fix to regset->get(). I'm
-just saying it is in addition to.
+> On 2020/05/28 20:06, Petr Mladek wrote:
+> > Now, it requires lib/Kconfig.twist that is added by a patch in
+> > Andrew's tree. One approach is to push this into linux-next
+> > via Andrew's -mm tree.
+> > 
+> > Another possibility would be to remove lib/Kconfig.twist
+> > changes from this patch and replace
+> > CONFIG_TWIST_ALWAYS_EVALUATE_PRINTK_ARGUMENTS with
+> > CONFIG_TWIST_FOR_SYZKALLER_TESTING.
+> > Then I could push it into linux-next via printk/linux.git tree.
+> 
+> CONFIG_TWIST_FOR_SYZKALLER_TESTING is meant for linux-next only.
+> But CONFIG_TWIST_KERNEL_BEHAVIOR is meant for Linus's tree.
+> 
+> That is, lib/Kconfig.twist will be there in printk/linux.git tree
+> after 5.8-rc1. But maybe twist related patches should be gathered
+> into one tree for easier management.
 
-So if a regset has a reason to return less than the asked-for data, it
-can do so and there's no leak.
-
-               Linus
+Yup.  I'll drop the twist patches from -mm.
