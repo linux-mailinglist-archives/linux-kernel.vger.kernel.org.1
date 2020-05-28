@@ -2,144 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38321E62D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 15:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA86C1E62D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 15:52:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390730AbgE1NwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 09:52:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390577AbgE1NvP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 09:51:15 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A13C08C5C8;
-        Thu, 28 May 2020 06:51:15 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id ci21so3222588pjb.3;
-        Thu, 28 May 2020 06:51:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B1VCJJnYQntCaHq/bCL7ytqI8GL57Z8GxGPvzlNy5Jc=;
-        b=uL9UixqSt756rdZNvsXFJYNS/zS3+QPBkXCGeFXy4x6t+XA9XbJ2XVnjXZAAvNvkFW
-         c8cz8lKeHjYMTUWtCapDDRequ0hWqOuD0QafNpbd/2mH4ksrf7d/c8VN7fTtJqq/aWl2
-         rkDyVyzu0odHs3b4u1bK+EQHgFYPDnAawqVFwIVA9VBtNXpAa5SoNF0xSkPfCgvNF7X4
-         o3nqEPbKOleJVPrF0ywx7WG+RP6x5UjnLGJjpuimqu+oc2R/0bwkUGwfpA3vXGMdhOjS
-         2UmgwSXRZxxdJRiDyc3iwSyhGev1KyoWu5nzNCsWvRN0G0gqaJFOU6IQhp64I3+dQEey
-         aSlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B1VCJJnYQntCaHq/bCL7ytqI8GL57Z8GxGPvzlNy5Jc=;
-        b=E0pUiAHMpLLMtCzzyvoSjR3TPx0AkmrCsJJSjgF3ULtyQLnL/zqsr5yAgGtuJgOGAl
-         5+IuPmX7due+4hwqImSc3qwEVSK0FQEXRQ3G+g+dL+o/rBmnJkVfbl4qx7cVYmRnrHie
-         nHjsxNpcZfwFz39x2FZVK6zGhZZD1Sq6F5JFi9re8WMIgzxnTOEFp4o9alfdQtOKuf2u
-         kew5mH647L+L98XxCUkBXwqBJMD0PxW4a99uki5lcpqEurTAzwnMpE6bTyVTt6nHmmwp
-         +qaEXnvUd+XnQMqFkGMClJmuFBK6Qw88Cbsistxifjt5CyNLT8j4AzBCoP9j+jV0hLOh
-         6etA==
-X-Gm-Message-State: AOAM530v5F9HiwiD9v9kOC1+/fbw3TelwkdF88DYK2mJUU8ZEyoFIwcp
-        c7ELtvbQngRqxqy0BBn06xrvmOpsoUnt2VXOcgE=
-X-Google-Smtp-Source: ABdhPJyOPrVNPIxx9eAv48xneIkt1SACLcGfOZUeXikQzCHe7fIw9bajSfsIbkfCgstMRCZRJ9nAWtuKZ74GlGhw1A4=
-X-Received: by 2002:a17:90b:3651:: with SMTP id nh17mr4030548pjb.228.1590673874690;
- Thu, 28 May 2020 06:51:14 -0700 (PDT)
+        id S2390721AbgE1Nvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 09:51:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49414 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390558AbgE1Nvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 09:51:42 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A7722084C;
+        Thu, 28 May 2020 13:51:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590673901;
+        bh=rwZkjmLkk9aTqQtncfEJhSAVrHT45B5WwHx0Y2xPmz4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=SWhH7H0WQyGumlNuFuZO8WLMK2BJ5gq/vem64gucpyTDiH19GTGaYDyFveqcu+8Fg
+         YORdXSS33Hz70BAsBsgDVrXXp4bMk/O6xDTexuwUw20AtD3E+fipPD0hYu1RCDHIkz
+         HqeGPa5Gr9XPJUEZTd6teohytrr6jwn6DHJ6nsfs=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 5FD3635228F0; Thu, 28 May 2020 06:51:41 -0700 (PDT)
+Date:   Thu, 28 May 2020 06:51:41 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     kbuild test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [rcu:dev.2020.05.26a 56/72] refperf.c:undefined reference to
+ `__umoddi3'
+Message-ID: <20200528135141.GE2869@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <202005280819.lJ4qjCcP%lkp@intel.com>
+ <CAMuHMdUsD=xGa97tHmHZhohHiEqn5eD0QaOEwGNW7DGibkhB+g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200526125928.17096-1-Sergey.Semin@baikalelectronics.ru>
- <20200526125928.17096-5-Sergey.Semin@baikalelectronics.ru>
- <CAHp75VcfkPPy5YjNrcv8c6doyQz5C47QyREE0v6tfQjXYrBijQ@mail.gmail.com> <20200528134046.scxig3she3wyjyko@mobilestation>
-In-Reply-To: <20200528134046.scxig3she3wyjyko@mobilestation>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 28 May 2020 16:51:03 +0300
-Message-ID: <CAHp75VfqnLTK-fT-KdzN-3=u=dLTJjo=9+b=oKXUoUOsbeg00Q@mail.gmail.com>
-Subject: Re: [PATCH v3 4/6] bus: Add Baikal-T1 AXI-bus driver
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Paul Burton <paulburton@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "soc@kernel.org" <soc@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUsD=xGa97tHmHZhohHiEqn5eD0QaOEwGNW7DGibkhB+g@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 4:40 PM Serge Semin
-<Sergey.Semin@baikalelectronics.ru> wrote:
->
-> On Thu, May 28, 2020 at 01:00:57AM +0300, Andy Shevchenko wrote:
-> > On Tuesday, May 26, 2020, Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > wrote:
+On Thu, May 28, 2020 at 09:04:38AM +0200, Geert Uytterhoeven wrote:
+> On Thu, May 28, 2020 at 5:26 AM kbuild test robot <lkp@intel.com> wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2020.05.26a
+> > head:   63fdce1252f16032c9e1eb7244bb674ba4f84855
+> > commit: bd5b16d6c88da451a46d068a25fafad8e83d14a6 [56/72] refperf: Allow decimal nanoseconds
+> > config: m68k-allyesconfig (attached as .config)
+> > compiler: m68k-linux-gcc (GCC) 9.3.0
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         git checkout bd5b16d6c88da451a46d068a25fafad8e83d14a6
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=m68k
 > >
-> > > AXI3-bus is the main communication bus connecting all high-speed
-> > > peripheral IP-cores with RAM controller and MIPS P5600 cores on Baikal-T1
-> > > SoC. Bus traffic arbitration is done by means of DW AMBA 3 AXI
-> > > Interconnect (so called AXI Main Interconnect) routing IO requests from
-> > > one SoC block to another. This driver provides a way to detect any bus
-> > > protocol errors and device not responding situations by means of an
-> > > embedded on top of the interconnect errors handler block (EHB). AXI
-> > > Interconnect QoS arbitration tuning is currently unsupported.
-> > > The bus doesn't provide a way to detect the interconnected devices,
-> > > so they are supposed to be statically defined like by means of the
-> > > simple-bus sub-nodes.
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kbuild test robot <lkp@intel.com>
 > >
+> > All errors (new ones prefixed by >>, old ones prefixed by <<):
 > >
-> >
-> > Few comments in case if you need a new version. Main point is about
-> > sysfs_streq().
->
-> Hello, Andy. Thanks for your comments. I'll address most of them in a follow-up
-> patches. See just one note below.
->
-> >
-> >
-> > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > > Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> > > Cc: Paul Burton <paulburton@kernel.org>
-> > > Cc: Olof Johansson <olof@lixom.net>
-> > > Cc: Rob Herring <robh+dt@kernel.org>
-> > > Cc: linux-mips@vger.kernel.org
-> > > Cc: soc@kernel.org
-> > > Cc: devicetree@vger.kernel.org
-> > >
->
-> [nip]
->
-> > > +
-> > > +static void bt1_axi_clear_data(void *data)
-> > > +{
-> > > +       struct bt1_axi *axi = data;
-> > > +       struct platform_device *pdev = to_platform_device(axi->dev);
-> > > +
-> > > +       platform_set_drvdata(pdev, NULL);
-> >
-> >
->
-> > Doesn't device driver core do this already?
->
-> It doesn't on remove.
+> > m68k-linux-ld: kernel/rcu/refperf.o: in function `main_func':
+> > >> refperf.c:(.text+0x762): undefined reference to `__umoddi3'
+> > >> m68k-linux-ld: refperf.c:(.text+0x8f2): undefined reference to `__udivdi3'
+> > m68k-linux-ld: refperf.c:(.text+0x97c): undefined reference to `__udivdi3'
+> 
+> | --- a/kernel/rcu/refperf.c
+> | +++ b/kernel/rcu/refperf.c
+> | @@ -375,7 +375,7 @@ static int main_func(void *arg)
+> |                 if (torture_must_stop())
+> |                         goto end;
+> |
+> | -               reader_tasks[exp].result_avg =
+> process_durations(exp) / ((exp + 1) * loops);
+> | +               reader_tasks[exp].result_avg = 1000 *
+> process_durations(exp) / ((exp + 1) * loops);
+> 
+> div64_ul() for 64-by-unsigned-long division
 
-__device_release_driver() calls dev_set_drvdata(dev, NULL);
-What did I miss?
+Ah, thank you for the explanation!
 
-> This cleanups the drvdata pointer when the driver is
-> unloaded at the moment of remove() callback calling. This is a good
-> practice to leave the device the same as it has been before usage including
-> the pointer value. In this case if theoretically someone (though very
-> unlikely, but anyway) would try to use the pointer without having it
-> initialized, the NULL-dereference would pop up, otherwise we may
-> corrupt someones memory, which is very nasty.
+This is just a performance-test module intended for SMP systems, so
+I don't see much point in making it work on m68k, which looks to be
+UP-only.  But it is clearly useful to prevent the test bots from building
+refperf on m68k.  So one approach would be for me to make its Kconfig
+option depend on SMP.  Another would be to make it depend on 64BIT.
+Still another would be to make it depend on !M68K.
 
-The above is right and I agree with.
+I could potentially dump out the numbers in picoseconds, then
+do the averaging and other division operations in userspace,
+but that is strange enough to cause more trouble than it is worth.
+(An rcu_read_lock()/rcu_read_unlock() pair takes -how- long???)  Though if
+there was some point in running this on m68k, it might be worth it (with
+"PICOSECONDS" in all caps or some such), but in this case it is not.
+But this would probably require more data to be dumped to allow userspace
+to do the operations, increasing the probability of lost printk()s.  :-/
 
--- 
-With Best Regards,
-Andy Shevchenko
+Left to myself, I would take the easy way out and make this depend
+on 64BIT.
+
+But you must have run into this situation before.  Any thoughts?
+
+							Thanx, Paul
+
+> |         }
+> |
+> |         // Print the average of all experiments
+> | @@ -386,7 +386,7 @@ static int main_func(void *arg)
+> |         strcat(buf, "Threads\tTime(ns)\n");
+> |
+> |         for (exp = 0; exp < nreaders; exp++) {
+> | -               sprintf(buf1, "%d\t%llu\n", exp + 1,
+> reader_tasks[exp].result_avg);
+> | +               sprintf(buf1, "%d\t%llu.%03d\n", exp + 1,
+> reader_tasks[exp].result_avg / 1000,
+> (int)(reader_tasks[exp].result_avg % 1000));
+> 
+> do_div() for 64-by-32 division/modulo
+> 
+> |                 strcat(buf, buf1);
+> |         }
+> 
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+> -- 
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
