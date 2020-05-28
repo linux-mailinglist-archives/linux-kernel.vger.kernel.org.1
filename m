@@ -2,167 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432951E5E35
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:27:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1B01E5E3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388369AbgE1L1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 07:27:41 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:51930 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388270AbgE1L1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 07:27:40 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1590665259; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=PxcTF5qcXa2+jnUc/8q+qdeZeapYDpOgOomfvwsus1c=; b=pmXxheEzenpAj/GEmT8iUBWrn8/H4z+dnYwDe8REjIpx0fBES6lvsvQccQOtfRyE30HKFVcp
- mjSiiu8XGHUio7AI5OO2JRkEdOCG57WLS3dHE2aH2y+PSysk/e1qKOYum9ZA7TG3kjNTc6W0
- 9lfoEHGcV6JrzyejbIL5DLiz3+0=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5ecfa01f3131442d9512b868 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 May 2020 11:27:27
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4D040C43387; Thu, 28 May 2020 11:27:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: zijuhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 69921C433C6;
-        Thu, 28 May 2020 11:27:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 69921C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=zijuhu@codeaurora.org
-From:   Zijun Hu <zijuhu@codeaurora.org>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org
-Subject: [PATCH v3] bluetooth: hci_qca: Fix QCA6390 memdump failure
-Date:   Thu, 28 May 2020 19:27:19 +0800
-Message-Id: <1590665239-18993-1-git-send-email-zijuhu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S2388397AbgE1L3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 07:29:44 -0400
+Received: from cmccmta1.chinamobile.com ([221.176.66.79]:4394 "EHLO
+        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388190AbgE1L3n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 07:29:43 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.7]) by rmmx-syy-dmz-app02-12002 (RichMail) with SMTP id 2ee25ecfa089b11-1547a; Thu, 28 May 2020 19:29:13 +0800 (CST)
+X-RM-TRANSID: 2ee25ecfa089b11-1547a
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[112.25.154.146])
+        by rmsmtp-syy-appsvr04-12004 (RichMail) with SMTP id 2ee45ecfa086616-732fc;
+        Thu, 28 May 2020 19:29:13 +0800 (CST)
+X-RM-TRANSID: 2ee45ecfa086616-732fc
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     gregkh@linuxfoundation.org, thierry.reding@gmail.com,
+        balbi@kernel.org, jonathanh@nvidia.com
+Cc:     linux-usb@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Subject: [PATCH] usb: phy: tegra: Remove unnecessary spaces and tables
+Date:   Thu, 28 May 2020 19:28:59 +0800
+Message-Id: <20200528112859.6160-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QCA6390 memdump VSE sometimes come to bluetooth driver
-with wrong sequence number as illustrated as follows:
-frame # in DEC: frame data in HEX
-1396: ff fd 01 08 74 05 00 37 8f 14
-1397: ff fd 01 08 75 05 00 ff bf 38
-1414: ff fd 01 08 86 05 00 fb 5e 4b
-1399: ff fd 01 08 77 05 00 f3 44 0a
-1400: ff fd 01 08 78 05 00 ca f7 41
-it is mistook for controller missing packets, so results
-in page fault after overwriting memdump buffer allocated.
+The macros in phy-tegra-usb.c have inconsistent sapces between
+the macro name and the value. Thus sets all the macros to have
+a signal space between the name and value.
 
-it is fixed by ignoring QCA6390 sequence number error
-and checking buffer space before writing.
-
-Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 ---
- drivers/bluetooth/hci_qca.c | 45 ++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 38 insertions(+), 7 deletions(-)
+ drivers/usb/phy/phy-tegra-usb.c | 214 ++++++++++++++++----------------
+ 1 file changed, 107 insertions(+), 107 deletions(-)
 
-diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index e4a6823..f5f4508 100644
---- a/drivers/bluetooth/hci_qca.c
-+++ b/drivers/bluetooth/hci_qca.c
-@@ -114,6 +114,7 @@ struct qca_memdump_data {
- 	char *memdump_buf_tail;
- 	u32 current_seq_no;
- 	u32 received_dump;
-+	u32 ram_dump_size;
- };
+diff --git a/drivers/usb/phy/phy-tegra-usb.c b/drivers/usb/phy/phy-tegra-usb.c
+index 6153cc35a..c294dc617 100644
+--- a/drivers/usb/phy/phy-tegra-usb.c
++++ b/drivers/usb/phy/phy-tegra-usb.c
+@@ -30,124 +30,124 @@
+ #include <linux/usb/tegra_usb_phy.h>
+ #include <linux/usb/ulpi.h>
  
- struct qca_memdump_event_hdr {
-@@ -976,6 +977,8 @@ static void qca_controller_memdump(struct work_struct *work)
- 	char nullBuff[QCA_DUMP_PACKET_SIZE] = { 0 };
- 	u16 seq_no;
- 	u32 dump_size;
-+	u32 rx_size;
-+	enum qca_btsoc_type soc_type = qca_soc_type(hu);
+-#define ULPI_VIEWPORT				0x170
++#define ULPI_VIEWPORT	0x170
  
- 	while ((skb = skb_dequeue(&qca->rx_memdump_q))) {
+ /* PORTSC PTS/PHCD bits, Tegra20 only */
+-#define TEGRA_USB_PORTSC1			0x184
+-#define TEGRA_USB_PORTSC1_PTS(x)		(((x) & 0x3) << 30)
+-#define TEGRA_USB_PORTSC1_PHCD			BIT(23)
++#define TEGRA_USB_PORTSC1	0x184
++#define TEGRA_USB_PORTSC1_PTS(x)	(((x) & 0x3) << 30)
++#define TEGRA_USB_PORTSC1_PHCD	BIT(23)
  
-@@ -1029,6 +1032,7 @@ static void qca_controller_memdump(struct work_struct *work)
+ /* HOSTPC1 PTS/PHCD bits, Tegra30 and above */
+-#define TEGRA_USB_HOSTPC1_DEVLC			0x1b4
+-#define TEGRA_USB_HOSTPC1_DEVLC_PTS(x)		(((x) & 0x7) << 29)
+-#define TEGRA_USB_HOSTPC1_DEVLC_PHCD		BIT(22)
++#define TEGRA_USB_HOSTPC1_DEVLC	0x1b4
++#define TEGRA_USB_HOSTPC1_DEVLC_PTS(x)	(((x) & 0x7) << 29)
++#define TEGRA_USB_HOSTPC1_DEVLC_PHCD	BIT(22)
  
- 			skb_pull(skb, sizeof(dump_size));
- 			memdump_buf = vmalloc(dump_size);
-+			qca_memdump->ram_dump_size = dump_size;
- 			qca_memdump->memdump_buf_head = memdump_buf;
- 			qca_memdump->memdump_buf_tail = memdump_buf;
- 		}
-@@ -1052,25 +1056,52 @@ static void qca_controller_memdump(struct work_struct *work)
- 		 * packets in the buffer.
- 		 */
- 		while ((seq_no > qca_memdump->current_seq_no + 1) &&
-+		       (soc_type != QCA_QCA6390) &&
- 			seq_no != QCA_LAST_SEQUENCE_NUM) {
- 			bt_dev_err(hu->hdev, "QCA controller missed packet:%d",
- 				   qca_memdump->current_seq_no);
-+			rx_size = qca_memdump->received_dump;
-+			rx_size += QCA_DUMP_PACKET_SIZE;
-+			if (rx_size > qca_memdump->ram_dump_size) {
-+				bt_dev_err(hu->hdev,
-+					   "QCA memdump received %d, no space for missed packet",
-+					   qca_memdump->received_dump);
-+				break;
-+			}
- 			memcpy(memdump_buf, nullBuff, QCA_DUMP_PACKET_SIZE);
- 			memdump_buf = memdump_buf + QCA_DUMP_PACKET_SIZE;
- 			qca_memdump->received_dump += QCA_DUMP_PACKET_SIZE;
- 			qca_memdump->current_seq_no++;
- 		}
+ /* Bits of PORTSC1, which will get cleared by writing 1 into them */
+ #define TEGRA_PORTSC1_RWC_BITS	(PORT_CSC | PORT_PEC | PORT_OCC)
  
--		memcpy(memdump_buf, (unsigned char *) skb->data, skb->len);
--		memdump_buf = memdump_buf + skb->len;
--		qca_memdump->memdump_buf_tail = memdump_buf;
--		qca_memdump->current_seq_no = seq_no + 1;
--		qca_memdump->received_dump += skb->len;
-+		rx_size = qca_memdump->received_dump + skb->len;
-+		if (rx_size <= qca_memdump->ram_dump_size) {
-+			if ((seq_no != QCA_LAST_SEQUENCE_NUM) &&
-+			    (seq_no != qca_memdump->current_seq_no))
-+				bt_dev_err(hu->hdev,
-+					   "QCA memdump unexpected packet %d",
-+					   seq_no);
-+			bt_dev_dbg(hu->hdev,
-+				   "QCA memdump packet %d with length %d",
-+				   seq_no, skb->len);
-+			memcpy(memdump_buf, (unsigned char *)skb->data,
-+			       skb->len);
-+			memdump_buf = memdump_buf + skb->len;
-+			qca_memdump->memdump_buf_tail = memdump_buf;
-+			qca_memdump->current_seq_no = seq_no + 1;
-+			qca_memdump->received_dump += skb->len;
-+		} else {
-+			bt_dev_err(hu->hdev,
-+				   "QCA memdump received %d, no space for packet %d",
-+				   qca_memdump->received_dump, seq_no);
-+		}
- 		qca->qca_memdump = qca_memdump;
- 		kfree_skb(skb);
- 		if (seq_no == QCA_LAST_SEQUENCE_NUM) {
--			bt_dev_info(hu->hdev, "QCA writing crash dump of size %d bytes",
--				   qca_memdump->received_dump);
-+			bt_dev_info(hu->hdev,
-+				    "QCA memdump Done, received %d, total %d",
-+				    qca_memdump->received_dump,
-+				    qca_memdump->ram_dump_size);
- 			memdump_buf = qca_memdump->memdump_buf_head;
- 			dev_coredumpv(&hu->serdev->dev, memdump_buf,
- 				      qca_memdump->received_dump, GFP_KERNEL);
+-#define USB_SUSP_CTRL				0x400
+-#define   USB_WAKE_ON_CNNT_EN_DEV		BIT(3)
+-#define   USB_WAKE_ON_DISCON_EN_DEV		BIT(4)
+-#define   USB_SUSP_CLR				BIT(5)
+-#define   USB_PHY_CLK_VALID			BIT(7)
+-#define   UTMIP_RESET				BIT(11)
+-#define   UHSIC_RESET				BIT(11)
+-#define   UTMIP_PHY_ENABLE			BIT(12)
+-#define   ULPI_PHY_ENABLE			BIT(13)
+-#define   USB_SUSP_SET				BIT(14)
+-#define   USB_WAKEUP_DEBOUNCE_COUNT(x)		(((x) & 0x7) << 16)
+-
+-#define USB1_LEGACY_CTRL			0x410
+-#define   USB1_NO_LEGACY_MODE			BIT(0)
+-#define   USB1_VBUS_SENSE_CTL_MASK		(3 << 1)
+-#define   USB1_VBUS_SENSE_CTL_VBUS_WAKEUP	(0 << 1)
+-#define   USB1_VBUS_SENSE_CTL_AB_SESS_VLD_OR_VBUS_WAKEUP \
++#define USB_SUSP_CTRL	0x400
++#define USB_WAKE_ON_CNNT_EN_DEV	BIT(3)
++#define USB_WAKE_ON_DISCON_EN_DEV	BIT(4)
++#define USB_SUSP_CLR	BIT(5)
++#define USB_PHY_CLK_VALID	BIT(7)
++#define UTMIP_RESET	BIT(11)
++#define UHSIC_RESET	BIT(11)
++#define UTMIP_PHY_ENABLE	BIT(12)
++#define ULPI_PHY_ENABLE	BIT(13)
++#define USB_SUSP_SET	BIT(14)
++#define USB_WAKEUP_DEBOUNCE_COUNT(x)	(((x) & 0x7) << 16)
++
++#define USB1_LEGACY_CTRL	0x410
++#define USB1_NO_LEGACY_MODE	BIT(0)
++#define USB1_VBUS_SENSE_CTL_MASK	(3 << 1)
++#define USB1_VBUS_SENSE_CTL_VBUS_WAKEUP	(0 << 1)
++#define USB1_VBUS_SENSE_CTL_AB_SESS_VLD_OR_VBUS_WAKEUP \
+ 						(1 << 1)
+-#define   USB1_VBUS_SENSE_CTL_AB_SESS_VLD	(2 << 1)
+-#define   USB1_VBUS_SENSE_CTL_A_SESS_VLD	(3 << 1)
+-
+-#define ULPI_TIMING_CTRL_0			0x424
+-#define   ULPI_OUTPUT_PINMUX_BYP		BIT(10)
+-#define   ULPI_CLKOUT_PINMUX_BYP		BIT(11)
+-
+-#define ULPI_TIMING_CTRL_1			0x428
+-#define   ULPI_DATA_TRIMMER_LOAD		BIT(0)
+-#define   ULPI_DATA_TRIMMER_SEL(x)		(((x) & 0x7) << 1)
+-#define   ULPI_STPDIRNXT_TRIMMER_LOAD		BIT(16)
+-#define   ULPI_STPDIRNXT_TRIMMER_SEL(x)		(((x) & 0x7) << 17)
+-#define   ULPI_DIR_TRIMMER_LOAD			BIT(24)
+-#define   ULPI_DIR_TRIMMER_SEL(x)		(((x) & 0x7) << 25)
+-
+-#define UTMIP_PLL_CFG1				0x804
+-#define   UTMIP_XTAL_FREQ_COUNT(x)		(((x) & 0xfff) << 0)
+-#define   UTMIP_PLLU_ENABLE_DLY_COUNT(x)	(((x) & 0x1f) << 27)
+-
+-#define UTMIP_XCVR_CFG0				0x808
+-#define   UTMIP_XCVR_SETUP(x)			(((x) & 0xf) << 0)
+-#define   UTMIP_XCVR_SETUP_MSB(x)		((((x) & 0x70) >> 4) << 22)
+-#define   UTMIP_XCVR_LSRSLEW(x)			(((x) & 0x3) << 8)
+-#define   UTMIP_XCVR_LSFSLEW(x)			(((x) & 0x3) << 10)
+-#define   UTMIP_FORCE_PD_POWERDOWN		BIT(14)
+-#define   UTMIP_FORCE_PD2_POWERDOWN		BIT(16)
+-#define   UTMIP_FORCE_PDZI_POWERDOWN		BIT(18)
+-#define   UTMIP_XCVR_LSBIAS_SEL			BIT(21)
+-#define   UTMIP_XCVR_HSSLEW(x)			(((x) & 0x3) << 4)
+-#define   UTMIP_XCVR_HSSLEW_MSB(x)		((((x) & 0x1fc) >> 2) << 25)
+-
+-#define UTMIP_BIAS_CFG0				0x80c
+-#define   UTMIP_OTGPD				BIT(11)
+-#define   UTMIP_BIASPD				BIT(10)
+-#define   UTMIP_HSSQUELCH_LEVEL(x)		(((x) & 0x3) << 0)
+-#define   UTMIP_HSDISCON_LEVEL(x)		(((x) & 0x3) << 2)
+-#define   UTMIP_HSDISCON_LEVEL_MSB(x)		((((x) & 0x4) >> 2) << 24)
+-
+-#define UTMIP_HSRX_CFG0				0x810
+-#define   UTMIP_ELASTIC_LIMIT(x)		(((x) & 0x1f) << 10)
+-#define   UTMIP_IDLE_WAIT(x)			(((x) & 0x1f) << 15)
+-
+-#define UTMIP_HSRX_CFG1				0x814
+-#define   UTMIP_HS_SYNC_START_DLY(x)		(((x) & 0x1f) << 1)
+-
+-#define UTMIP_TX_CFG0				0x820
+-#define   UTMIP_FS_PREABMLE_J			BIT(19)
+-#define   UTMIP_HS_DISCON_DISABLE		BIT(8)
+-
+-#define UTMIP_MISC_CFG0				0x824
+-#define   UTMIP_DPDM_OBSERVE			BIT(26)
+-#define   UTMIP_DPDM_OBSERVE_SEL(x)		(((x) & 0xf) << 27)
+-#define   UTMIP_DPDM_OBSERVE_SEL_FS_J		UTMIP_DPDM_OBSERVE_SEL(0xf)
+-#define   UTMIP_DPDM_OBSERVE_SEL_FS_K		UTMIP_DPDM_OBSERVE_SEL(0xe)
+-#define   UTMIP_DPDM_OBSERVE_SEL_FS_SE1		UTMIP_DPDM_OBSERVE_SEL(0xd)
+-#define   UTMIP_DPDM_OBSERVE_SEL_FS_SE0		UTMIP_DPDM_OBSERVE_SEL(0xc)
+-#define   UTMIP_SUSPEND_EXIT_ON_EDGE		BIT(22)
+-
+-#define UTMIP_MISC_CFG1				0x828
+-#define   UTMIP_PLL_ACTIVE_DLY_COUNT(x)		(((x) & 0x1f) << 18)
+-#define   UTMIP_PLLU_STABLE_COUNT(x)		(((x) & 0xfff) << 6)
+-
+-#define UTMIP_DEBOUNCE_CFG0			0x82c
+-#define   UTMIP_BIAS_DEBOUNCE_A(x)		(((x) & 0xffff) << 0)
+-
+-#define UTMIP_BAT_CHRG_CFG0			0x830
+-#define   UTMIP_PD_CHRG				BIT(0)
+-
+-#define UTMIP_SPARE_CFG0			0x834
+-#define   FUSE_SETUP_SEL			BIT(3)
+-
+-#define UTMIP_XCVR_CFG1				0x838
+-#define   UTMIP_FORCE_PDDISC_POWERDOWN		BIT(0)
+-#define   UTMIP_FORCE_PDCHRP_POWERDOWN		BIT(2)
+-#define   UTMIP_FORCE_PDDR_POWERDOWN		BIT(4)
+-#define   UTMIP_XCVR_TERM_RANGE_ADJ(x)		(((x) & 0xf) << 18)
+-
+-#define UTMIP_BIAS_CFG1				0x83c
+-#define   UTMIP_BIAS_PDTRK_COUNT(x)		(((x) & 0x1f) << 3)
++#define USB1_VBUS_SENSE_CTL_AB_SESS_VLD	(2 << 1)
++#define USB1_VBUS_SENSE_CTL_A_SESS_VLD	(3 << 1)
++
++#define ULPI_TIMING_CTRL_0	0x424
++#define ULPI_OUTPUT_PINMUX_BYP	BIT(10)
++#define ULPI_CLKOUT_PINMUX_BYP	BIT(11)
++
++#define ULPI_TIMING_CTRL_1	0x428
++#define ULPI_DATA_TRIMMER_LOAD	BIT(0)
++#define ULPI_DATA_TRIMMER_SEL(x)	(((x) & 0x7) << 1)
++#define ULPI_STPDIRNXT_TRIMMER_LOAD	BIT(16)
++#define ULPI_STPDIRNXT_TRIMMER_SEL(x)	(((x) & 0x7) << 17)
++#define ULPI_DIR_TRIMMER_LOAD	BIT(24)
++#define ULPI_DIR_TRIMMER_SEL(x)	(((x) & 0x7) << 25)
++
++#define UTMIP_PLL_CFG1	0x804
++#define UTMIP_XTAL_FREQ_COUNT(x)	(((x) & 0xfff) << 0)
++#define UTMIP_PLLU_ENABLE_DLY_COUNT(x)	(((x) & 0x1f) << 27)
++
++#define UTMIP_XCVR_CFG0	0x808
++#define UTMIP_XCVR_SETUP(x)	(((x) & 0xf) << 0)
++#define UTMIP_XCVR_SETUP_MSB(x)	((((x) & 0x70) >> 4) << 22)
++#define UTMIP_XCVR_LSRSLEW(x)	(((x) & 0x3) << 8)
++#define UTMIP_XCVR_LSFSLEW(x)	(((x) & 0x3) << 10)
++#define UTMIP_FORCE_PD_POWERDOWN	BIT(14)
++#define UTMIP_FORCE_PD2_POWERDOWN	BIT(16)
++#define UTMIP_FORCE_PDZI_POWERDOWN	BIT(18)
++#define UTMIP_XCVR_LSBIAS_SEL	BIT(21)
++#define UTMIP_XCVR_HSSLEW(x)	(((x) & 0x3) << 4)
++#define UTMIP_XCVR_HSSLEW_MSB(x)	((((x) & 0x1fc) >> 2) << 25)
++
++#define UTMIP_BIAS_CFG0	0x80c
++#define UTMIP_OTGPD	BIT(11)
++#define UTMIP_BIASPD	BIT(10)
++#define UTMIP_HSSQUELCH_LEVEL(x)	(((x) & 0x3) << 0)
++#define UTMIP_HSDISCON_LEVEL(x)	(((x) & 0x3) << 2)
++#define UTMIP_HSDISCON_LEVEL_MSB(x)	((((x) & 0x4) >> 2) << 24)
++
++#define UTMIP_HSRX_CFG0	0x810
++#define UTMIP_ELASTIC_LIMIT(x)	(((x) & 0x1f) << 10)
++#define UTMIP_IDLE_WAIT(x)	(((x) & 0x1f) << 15)
++
++#define UTMIP_HSRX_CFG1	0x814
++#define UTMIP_HS_SYNC_START_DLY(x)	(((x) & 0x1f) << 1)
++
++#define UTMIP_TX_CFG0	0x820
++#define UTMIP_FS_PREABMLE_J	BIT(19)
++#define UTMIP_HS_DISCON_DISABLE	BIT(8)
++
++#define UTMIP_MISC_CFG0	0x824
++#define UTMIP_DPDM_OBSERVE	BIT(26)
++#define UTMIP_DPDM_OBSERVE_SEL(x)	(((x) & 0xf) << 27)
++#define UTMIP_DPDM_OBSERVE_SEL_FS_J	UTMIP_DPDM_OBSERVE_SEL(0xf)
++#define UTMIP_DPDM_OBSERVE_SEL_FS_K	UTMIP_DPDM_OBSERVE_SEL(0xe)
++#define UTMIP_DPDM_OBSERVE_SEL_FS_SE1	UTMIP_DPDM_OBSERVE_SEL(0xd)
++#define UTMIP_DPDM_OBSERVE_SEL_FS_SE0	UTMIP_DPDM_OBSERVE_SEL(0xc)
++#define UTMIP_SUSPEND_EXIT_ON_EDGE	BIT(22)
++
++#define UTMIP_MISC_CFG1	0x828
++#define UTMIP_PLL_ACTIVE_DLY_COUNT(x)	(((x) & 0x1f) << 18)
++#define UTMIP_PLLU_STABLE_COUNT(x)	(((x) & 0xfff) << 6)
++
++#define UTMIP_DEBOUNCE_CFG0	0x82c
++#define UTMIP_BIAS_DEBOUNCE_A(x)	(((x) & 0xffff) << 0)
++
++#define UTMIP_BAT_CHRG_CFG0	0x830
++#define UTMIP_PD_CHRG	BIT(0)
++
++#define UTMIP_SPARE_CFG0	0x834
++#define FUSE_SETUP_SEL	BIT(3)
++
++#define UTMIP_XCVR_CFG1	0x838
++#define UTMIP_FORCE_PDDISC_POWERDOWN	BIT(0)
++#define UTMIP_FORCE_PDCHRP_POWERDOWN	BIT(2)
++#define UTMIP_FORCE_PDDR_POWERDOWN	BIT(4)
++#define UTMIP_XCVR_TERM_RANGE_ADJ(x)	(((x) & 0xf) << 18)
++
++#define UTMIP_BIAS_CFG1	0x83c
++#define UTMIP_BIAS_PDTRK_COUNT(x)	(((x) & 0x1f) << 3)
+ 
+ /* For Tegra30 and above only, the address is different in Tegra20 */
+-#define USB_USBMODE				0x1f8
+-#define   USB_USBMODE_MASK			(3 << 0)
+-#define   USB_USBMODE_HOST			(3 << 0)
+-#define   USB_USBMODE_DEVICE			(2 << 0)
++#define USB_USBMODE	0x1f8
++#define USB_USBMODE_MASK	(3 << 0)
++#define USB_USBMODE_HOST	(3 << 0)
++#define USB_USBMODE_DEVICE	(2 << 0)
+ 
+ static DEFINE_SPINLOCK(utmip_pad_lock);
+ static unsigned int utmip_pad_count;
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+2.20.1.windows.1
+
+
 
