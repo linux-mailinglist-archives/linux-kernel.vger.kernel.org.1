@@ -2,158 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4821B1E60CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1181E60D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389697AbgE1M1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:27:50 -0400
-Received: from mga11.intel.com ([192.55.52.93]:16903 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389675AbgE1M1s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 08:27:48 -0400
-IronPort-SDR: 2/IcI2OulU+JkRWr4ee1//DzNP1rDu5GlecFYz2P5gt6Oqy5g+LtiGPdQ9B+puqGjNZwEZmDGg
- v6gHTE7CMDzg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 05:27:47 -0700
-IronPort-SDR: MypxDfRB2sIs9htk4yaWbvhBd0aSzxNRN/zYKyd8SIU1VEb5RwfVdabVJJ3mjW5Z5NcGn5h4BM
- ZOWQwuVFk+VQ==
-X-IronPort-AV: E=Sophos;i="5.73,444,1583222400"; 
-   d="scan'208";a="442931475"
-Received: from cmccarth-mobl.ger.corp.intel.com ([10.252.7.149])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 05:27:43 -0700
-Message-ID: <0d5fd14a0641b5ac2ed880da1b03458608116058.camel@linux.intel.com>
-Subject: Re: [PATCH 1/1] soc: keembay: Add Keem Bay IMR driver
-From:   Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     "pavel@ucw.cz" <pavel@ucw.cz>, "robh@kernel.org" <robh@kernel.org>,
-        "Murphy, Paul J" <paul.j.murphy@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Thu, 28 May 2020 13:27:40 +0100
-In-Reply-To: <CAK8P3a0OK+BRF2t=8V6Pa95b6Ldcfn3AP1VM+GSsruGRVH=MXQ@mail.gmail.com>
-References: <cover.1587485099.git.daniele.alessandrelli@intel.com>
-         <13ca92165fab2827b6d439661e75f5b91ef083c2.1587485099.git.daniele.alessandrelli@intel.com>
-         <20200501081002.GA1055721@kroah.com>
-         <f60aece195cd0700728fc38b0398949a82b72fc3.camel@linux.intel.com>
-         <20200524212851.GG1192@bug>
-         <CAK8P3a225pqBfzQ19e6Gt0s_tYBp29xLb8EG==hhz=1wc7aVCA@mail.gmail.com>
-         <ac0534138facc25c4cbcbbff68fc0ba3c2de87b6.camel@linux.intel.com>
-         <CAK8P3a2MzqF3P8nY3hAUaAXhTV8ZGQd187UDbNV1GBdu+_z5-g@mail.gmail.com>
-         <561ea2aabf919ef332ec0165351791f6148e8597.camel@linux.intel.com>
-         <CAK8P3a0OK+BRF2t=8V6Pa95b6Ldcfn3AP1VM+GSsruGRVH=MXQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
+        id S2389741AbgE1M2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 08:28:09 -0400
+Received: from mail-eopbgr00053.outbound.protection.outlook.com ([40.107.0.53]:64583
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389675AbgE1M2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 08:28:04 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CZJOBhsSD7G97hU6jHwRMUk36yf0G6ENxvyZ7+nvgABCq2/e+q+OWD/ZJsRUccDcuxUHCbbJYUpXfj8DP9ThzrguxCM2nc7zbec1qt0P1+VlggSggnSscIUXKb0y2MUYohLCQwgcalT9Mt1EPi09FsYoVxSRH3aQEiXdwiqpBlwECYrkWrl7OgCbjRPfWDH4raYyth0gpulQ9OlUJO9WFq8Q6158rwxtdeBGToDQDxLzKWpHKqGFs0cloqQQkHvvXLvnckibdgOI8i8DyjXK/GpCJYUhbCqEmLMja56J5fEfuBZk9alR8uM4yVyfp0si1ApmzeLzUoat+OLSxL+wDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sxUhPFjBba9j9NTmmRFl38ADoehkBBskOCr6VfVPWeA=;
+ b=c4inaiMmU9aePCPr3U0CEyChGqRw6o9EDkU/5Vo5wgevLW6JSQYkYRuQn4baB5VOTMT7WsZFoAQ4v48SZ0Il65hA6qDm085yRckZxE2OJrA4dcArqELAxLwP5Lp61vPymabE60nOZLxZ6i/zWboNjcUOagxXRyU8CgZBjgD+6cV4JznkKiS4DWoeHdq6QVVvapif2HEsQQYs2OMSWQuRlAIDKUWRcnmPdn2cqKCFRC8DBAip6ZTkxYFHwK6Bja4lCTZdHD6CeFl0VYZhZFi3gKP4g/GhiZMiymeMQ2BCETl2PCXzZYdlxXRU7WBeQJD+8k64lvx6myIfB31zPct8Ug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sxUhPFjBba9j9NTmmRFl38ADoehkBBskOCr6VfVPWeA=;
+ b=L7xsA4H12ldOsLrFMhBAuzqnVTURUoqnr+gknjVeYntsH/x/nbd6gOJM6nfWqYVbauhDYo5qwm2aeKMldgSfYZgrrhex+m8VtgRAH4q5flf8rUFp7k/O7/MGrbJrZw6ml/Qy+GQQSOwQ8oyYrgS+amEYvEUPPTykUIHo2DlU4WQ=
+Received: from VI1PR04MB4366.eurprd04.prod.outlook.com (2603:10a6:803:3d::27)
+ by VI1PR04MB6095.eurprd04.prod.outlook.com (2603:10a6:803:f7::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.26; Thu, 28 May
+ 2020 12:27:59 +0000
+Received: from VI1PR04MB4366.eurprd04.prod.outlook.com
+ ([fe80::8102:b59d:36b:4d09]) by VI1PR04MB4366.eurprd04.prod.outlook.com
+ ([fe80::8102:b59d:36b:4d09%7]) with mapi id 15.20.3045.018; Thu, 28 May 2020
+ 12:27:59 +0000
+From:   Ganapathi Bhat <ganapathi.bhat@nxp.com>
+To:     =?utf-8?B?UGFsaSBSb2jDoXI=?= <pali@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>,
+        "b43-dev@lists.infradead.org" <b43-dev@lists.infradead.org>,
+        "brcm80211-dev-list.pdl@broadcom.com" 
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        "brcm80211-dev-list@cypress.com" <brcm80211-dev-list@cypress.com>,
+        "libertas-dev@lists.infradead.org" <libertas-dev@lists.infradead.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        =?utf-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>
+Subject: RE: [EXT] [PATCH 04/11] mmc: sdio: Move SDIO IDs from btmrvl driver
+ to common include file
+Thread-Topic: [EXT] [PATCH 04/11] mmc: sdio: Move SDIO IDs from btmrvl driver
+ to common include file
+Thread-Index: AQHWMEeyh682z/ig0kGzv14HIh2QU6i9deIQ
+Date:   Thu, 28 May 2020 12:27:59 +0000
+Message-ID: <VI1PR04MB4366DC81FF6F107CDA1A658B8F8E0@VI1PR04MB4366.eurprd04.prod.outlook.com>
+References: <20200522144412.19712-1-pali@kernel.org>
+ <20200522144412.19712-5-pali@kernel.org>
+In-Reply-To: <20200522144412.19712-5-pali@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [103.54.18.180]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 230124b8-4ca4-4d1a-0da0-08d803028f1c
+x-ms-traffictypediagnostic: VI1PR04MB6095:
+x-microsoft-antispam-prvs: <VI1PR04MB6095F3D40CC36660FA73A7848F8E0@VI1PR04MB6095.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-forefront-prvs: 0417A3FFD2
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: v5gYnGTpkDezkHfd0x7wrYWPe5b9jgVoDH7lHXnjLDXAg8WSZ4I/rBYy9KpD2O55MgD1YwaOehYwTdDI/6E6Eq185spaq17qhQLFVMzLwD+P1xCuVyNEDxOf6FfMTVHFNZ5108sgk3ttvCkqqrteBNjw+S9EW00mUgX/emlUkuYfXTK+o9Z6jwcc0Nji2TBXVJxrIh7yoyiGY/jmAQQoiwdArJZn0edK/ujyK+q1jIGK3hs2h0VyuAWpW+6zjA34DCOO89AsqRAgiZe8//mXQBNr07XCIQ0S2nrtWU+EJyQMBnIRRcfrGInKiaTSrTmb9ZZlCgC2lCF7NTRdPquEl48sxbY5arJdOX9zqXGwae8dNGvHDeN68CD8HJleQmMB
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4366.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(396003)(376002)(366004)(136003)(346002)(44832011)(33656002)(316002)(55016002)(110136005)(558084003)(7416002)(8676002)(9686003)(4326008)(2906002)(8936002)(186003)(26005)(66946007)(86362001)(5660300002)(52536014)(6506007)(76116006)(66446008)(66556008)(66476007)(54906003)(478600001)(71200400001)(64756008)(7696005)(40753002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: pMsDcOYGepsi9ye1X4VLuFQcUp6AwMHjvDkLIw+NVcs3SVhhCnuB2hyMFGgcCsoevvVq68aZWzrQ7xBXyERHTnhPsv1lltA9LxcsgMMV65eommKY1NZdmwHXtBVAwfa7saaF8fCdDH6qhGlfoWqV6EalTymzPzpDQQM0qe3cKGKqnRR7npjQnEM2xFX5XPMZW5yy/pyBig9y4r0G/8ZzllysIzz3Ij7a4tlIwQJ58MonP4HmdWcX1YV95t/L3ScsxjUJn/A/Ijhj9nibWKVZOl0nGaGbqDhtvvI9gFuN0YQDjUYMohfL5I+PYOskuqWwZXlOSKlqkIhAJIQIOC34WRSXIYb+uKsQQA5r+AjNsI5uiunbo+0HmbntqZeEDQJLC78pQ83QWBuOfUilGOD9HSpMjTfGqApGHEnFPNpePadEZtRJ+B6XyqhZIM8AnqWsf5xMf2bJyW/Qfmn6LR4DHRKC811W+LqB3ShqghYAZxI=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 230124b8-4ca4-4d1a-0da0-08d803028f1c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 May 2020 12:27:59.7334
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: a5IZeovv3ghdmaaRezjp5Od7sctFpha2SfibEXlAmbqERQyE5R1ccYIrW3KZ1F9h/GmJgCO42oY1hD0GDLYxUA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6095
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-05-27 at 20:59 +0200, Arnd Bergmann wrote:
-> On Wed, May 27, 2020 at 7:43 PM Daniele Alessandrelli
-> <daniele.alessandrelli@linux.intel.com> wrote:
-> > On Wed, 2020-05-27 at 16:33 +0200, Arnd Bergmann wrote:
-> > > On Wed, May 27, 2020 at 3:31 PM Alessandrelli, Daniele <
-> > > daniele.alessandrelli@intel.com> wrote:
-> > > 
-> > > Adding it back later on with a loadable device driver should
-> > > not be a problem, as this is not a violation of the boot
-> > > protocol.
-> > 
-> > Cool, I'll try to do that then, thanks!
-> > 
-> > I see two ways to do that though:
-> > 
-> > 1. Create a device driver that gets a reference to the memory
-> > region
-> > from its DT node and then re-adds the memory to the pool of
-> > available
-> > memory.
-> > 
-> > 2. Use a special "compatible" string for my memory region and
-> > create a
-> > driver to handle it.
-> 
-> I think the first approach is more common.
-> 
-> > However, I think that in the second case the driver must be
-> > builtin.
-> > Would that be okay?
-> 
-> It's better to avoid that.
-> 
-> > Also, from a quick look, it seems that I can re-add that memory
-> > back by
-> > calling memblock_free() (or a similar memblock_* function). Am I on
-> > the
-> > right track?
-> 
-> I'm not sure if memblock_free() works after early memory
-> initialization
-> is complete, but I think there is some way to do it later. Maybe try
-> memblock_free() first, and then look for something else if it doesn't
-> work.
-> 
-
-Brilliant. I will create a new patch using the 1st approach and see if
-memblock_free() works; if not, I will look for something else.
-
-Thanks a lot for your valuable feedback and advice.
-
-> > > It seems that just reserving the u-boot area and optionally
-> > > freeing it later from a driver solves most of your problem.
-> > > I have one related question though: if the kernel itself is
-> > > protected, does that mean that any driver that does a DMA
-> > > to statically allocated memory inside of the kernel is broken
-> > > as well? I think this is something that a couple of USB drivers
-> > > do, though it is fairly rare. Does u-boot protect both only
-> > > the executable sections of the kernel or also data, and does
-> > > the hardware block both read and write on the IMR, or just
-> > > writes?
-> > 
-> > Yes, you're very right. Drivers that do DMA transfers to statically
-> > allocated memory inside the kernel will be broken.
-> > 
-> > We are currently seeing this with our eMMC driver.
-> > 
-> > Current solution is to add the eMMC controller to the list of
-> > allowed
-> > "agents" for the IMR. This will reduce the level of protection, but
-> > since we expect to have only a few of these exceptions (since, as
-> > you
-> > pointed out, drivers that do DMA to static kernel memory seem to be
-> > quite rare), we think that there is still value in having the
-> > Kernel
-> > IMR.
-> > 
-> > Do you see any issue with this?
-> 
-> I think you should try to fix the driver rather than making an
-> exception for it.
-
-Yes, we'll look into that.
-
-> Hot-pluggable drivers are a much more interesting
-> case I think, because on the one hand you have no idea what
-> users might want to plug in legitimately, but on the other hand
-> those are also the most likely attack vectors (driver bugs for
-> random USB drivers overwriting kernel memory when faced with
-> malicious hardware) that this feature is trying to prevent.
-> 
-> I also wonder whether we should do something in the normal
-> iommu code that prevents one from mapping a page that the
-> kernel would consider as protected (kernel .text, freed memory,
-> ...) into the iommu in the first place.
-
-Sounds like an iteresting security feature; expecially because it would
-apply to any hardware.
-
-> 
->         Arnd
-
-
-
+SGkgUGFsaSwNCg0KPiBEZWZpbmUgYXBwcm9wcmlhdGUgbWFjcm8gbmFtZXMgZm9yIGNvbnNpc3Rl
+bmN5IHdpdGggb3RoZXIgTWFydmVsbCBtYWNyb3MuDQo+IA0KVGhhbmtzIGZvciB0aGUgY2hhbmdl
+Ow0KDQpBY2tlZC1ieTogR2FuYXBhdGhpIEJoYXQgPGdhbmFwYXRoaS5iaGF0QG54cC5jb20+DQo=
