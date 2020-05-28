@@ -2,123 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFBF81E566C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 07:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12CA61E5678
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 07:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727771AbgE1FWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 01:22:33 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:57963 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725811AbgE1FWc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 01:22:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590643351;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J+iKV2WQ6lOBXo37IQKk0z/KDQxyIDc+E74qSJBHsLY=;
-        b=OKOARx7BkpiMICv2pzmLgGgjeglp4xzkNrgqYosRwBTkmJp/Sl2sHxuIwEu0A8QdjBfdnr
-        bTm+FCSoQ70GwlyHAsxUSKzn1CMJo92Cdhk6mVXcmS0V50qVGgxmirS/s3GuG7y1Yk1evX
-        RHTuTa9Q/ZjmBqJd3r+8R1pLyCEs5a8=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-59-IMkxvjunNXKT31O58aB-YA-1; Thu, 28 May 2020 01:22:30 -0400
-X-MC-Unique: IMkxvjunNXKT31O58aB-YA-1
-Received: by mail-ed1-f71.google.com with SMTP id w15so10392283edi.11
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 22:22:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=J+iKV2WQ6lOBXo37IQKk0z/KDQxyIDc+E74qSJBHsLY=;
-        b=f+jtZf7/FYck2tzgIp64JTii08B8xJwoIKpvrb9FHA5CB0ffHtlK51j4aMfPTFAf0P
-         IxgyKUSmtcajkAsaHInBGyGZOcjgI058bkBQQcNVPsVjOTIrnCQGn+CVMk+pOn1STY/L
-         JJjWtwujLGsy/RqPYawnF+XuSW7Hn3iyPsk9t9Nqg0JJJxKtQfj+4D9kr+meG9Jz3E0l
-         d0rOZk2Fptm2R9mbC0GXCbQxWY+u9jbx5/SxaMcnphR2K6CGTiq/5kJOE4j2/TrvM8wc
-         aKEsGAmIc8g9sasJliMoJ6icrknQe2uPveAFVezrYwPcJeeXUrJb5JerGQ/58wFbWqC5
-         Mvpg==
-X-Gm-Message-State: AOAM532DDMlcEmUi07lhJAQD/RV2nXeRTr6+HR35thmTNZY5S7Vj22/x
-        cAyfFSMWuTkmjG6GK5KxObZg+tpNp2cDNLXOAh9OlL37flqAkCvwf6xj37z5Q65gMvYuSjSsUWP
-        OhfC/L4nZhpauPkXbXV9u5CNy
-X-Received: by 2002:a50:d6d0:: with SMTP id l16mr1387313edj.317.1590643349023;
-        Wed, 27 May 2020 22:22:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzJyu6Bj2R7xQtg6fbTx+WdDfElhcWjvy2DluItTe1wU0Un+QkFMtlI7BVZ+bXqt+0zrNq85A==
-X-Received: by 2002:a50:d6d0:: with SMTP id l16mr1387289edj.317.1590643348729;
-        Wed, 27 May 2020 22:22:28 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:3c1c:ffba:c624:29b8? ([2001:b07:6468:f312:3c1c:ffba:c624:29b8])
-        by smtp.gmail.com with ESMTPSA id g23sm4521316ejo.28.2020.05.27.22.22.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 May 2020 22:22:28 -0700 (PDT)
-Subject: Re: [PATCH v3 0/7] Statsfs: a new ram-based file system for Linux
- kernel statistics
-To:     David Ahern <dsahern@gmail.com>, Jakub Kicinski <kuba@kernel.org>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>
-Cc:     kvm@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Jim Mattson <jmattson@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Emanuele Giuseppe Esposito <e.emanuelegiuseppe@gmail.com>,
-        David Rientjes <rientjes@google.com>,
-        Jonathan Adams <jwadams@google.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>
-References: <20200526110318.69006-1-eesposit@redhat.com>
- <20200526153128.448bfb43@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <6a754b40-b148-867d-071d-8f31c5c0d172@redhat.com>
- <20200527132321.54bcdf04@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <af2ba926-73bc-26c3-7ce7-bd45f657fd85@redhat.com>
- <b6fa4439-c6b8-63a4-84fd-fbac3d4f10fd@gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c33f59e4-36ca-8fa9-af8f-b4cec4896b00@redhat.com>
-Date:   Thu, 28 May 2020 07:22:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1727065AbgE1FZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 01:25:44 -0400
+Received: from mga06.intel.com ([134.134.136.31]:27121 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725808AbgE1FZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 01:25:44 -0400
+IronPort-SDR: w+nvGRhvbA+oeY4uqcKxUF/0oje+jlPietzziripJ/rgRTACHEHDdLlgVgpQx+8k72YecuXevo
+ 8ELuchUawSFw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 22:25:43 -0700
+IronPort-SDR: +lRnOgpI8iltSAJYC4pR8BxL2xDN56ECI1hsyHNVuZhkowuAUi0dpw6UNF4QTIThjK8xR2yNqe
+ LbTy1dUxUmMQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,443,1583222400"; 
+   d="scan'208";a="255691351"
+Received: from dmescala-mobl1.amr.corp.intel.com (HELO localhost) ([10.252.59.102])
+  by fmsmga007.fm.intel.com with ESMTP; 27 May 2020 22:25:34 -0700
+Date:   Thu, 28 May 2020 08:25:32 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        akpm@linux-foundation.org, dave.hansen@intel.com,
+        nhorman@redhat.com, npmccallum@redhat.com, haitao.huang@intel.com,
+        andriy.shevchenko@linux.intel.com, tglx@linutronix.de,
+        kai.svahn@intel.com, josh@joshtriplett.org, luto@kernel.org,
+        kai.huang@intel.com, rientjes@google.com, cedric.xing@intel.com,
+        puiterwijk@redhat.com, Serge Ayoun <serge.ayoun@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>
+Subject: Re: [PATCH v30 07/20] x86/sgx: Enumerate and track EPC sections
+Message-ID: <20200528052532.GA63435@linux.intel.com>
+References: <20200515004410.723949-1-jarkko.sakkinen@linux.intel.com>
+ <20200515004410.723949-8-jarkko.sakkinen@linux.intel.com>
+ <20200525092304.GD25636@zn.tnic>
+ <20200527035613.GH31696@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <b6fa4439-c6b8-63a4-84fd-fbac3d4f10fd@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200527035613.GH31696@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/05/20 00:21, David Ahern wrote:
-> On 5/27/20 3:07 PM, Paolo Bonzini wrote:
->> I see what you meant now.  statsfs can also be used to enumerate objects
->> if one is so inclined (with the prototype in patch 7, for example, each
->> network interface becomes a directory).
+On Tue, May 26, 2020 at 08:56:14PM -0700, Sean Christopherson wrote:
+> On Mon, May 25, 2020 at 11:23:04AM +0200, Borislav Petkov wrote:
+> > On Fri, May 15, 2020 at 03:43:57AM +0300, Jarkko Sakkinen wrote:
+> > > +struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
+> > > +int sgx_nr_epc_sections;
+> > 
+> > We have become very averse against global stuff. What is going to use
+> > those, only sgx code I assume...?
 > 
-> there are many use cases that have 100's to 1000's have network devices.
-> Having a sysfs entry per device already bloats memory usage for these
-> use cases; another filesystem with an entry per device makes that worse.
-> Really the wrong direction for large scale systems.
+> Yes, only SGX code.  The reclaim/swap code needs access to the sections,
+> and that code is in a different file, reclaim.c.  I don't have a super
+> strong objection to sucking reclaim.c into main.c, but I'm somewhat
+> indifferent on code organization as a whole.  Jarkko likely has a stronger
+> opinion.
 
-Hi David,
+I'll change it.
 
-IMO the important part for now is having a flexible kernel API for
-exposing statistics across multiple subsystems, so that they can be
-harvested in an efficient way.  The userspace API is secondary, and
-multiple APIs can be added to cater for different usecases.
+It's not quite as easy as just "sucking the file in". All the commits
+that touch the file need to be reworked:
 
-For example, as of the first five patches the memory usage is the same
-as what is now in the mainline kernel, since all the patchset does is
-take existing debugfs inodes and move them to statsfs.  I agree that, if
-the concept is extended to the whole kernel, scalability and memory
-usage becomes an issue; and indeed, the long-term plan is to support a
-binary format that is actually _more_ efficient than the status quo for
-large scale systems.
+$ git --no-pager log --format="%H %s" arch/x86/kernel/cpu/sgx/reclaim.c
+5aeca6dabf767e9350ee3188ba25ceb21f3162b4 x86/sgx: Add a page reclaimer
+de9b1088959f36ffdaf43a49bfea1c7f9f81cac7 x86/sgx: Linux Enclave Driver
+08d8fcb74fe268059ee58fcc2a0833b244e1f22a x86/sgx: Enumerate and track EPC sections
 
-In the meanwhile, the new filesystem can be disabled (see the difference
-between "STATS_FS" and "STATS_FS_API") if it imposes undesirable overhead.
-
-Thanks,
-
-Paolo
-
+/Jarkko
