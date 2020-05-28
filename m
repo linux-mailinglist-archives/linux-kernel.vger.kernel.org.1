@@ -2,100 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF8D1E5B02
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 10:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECCB1E5B08
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 10:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727879AbgE1Ij3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 04:39:29 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:40208 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726955AbgE1Ij2 (ORCPT
+        id S1727909AbgE1Ijz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 04:39:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727087AbgE1Ijy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 04:39:28 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 6C2CF80307C0;
-        Thu, 28 May 2020 08:39:25 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ionmEv71tfBL; Thu, 28 May 2020 11:39:24 +0300 (MSK)
-Date:   Thu, 28 May 2020 11:39:23 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        <linux-mips@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 02/11] dt-bindings: i2c: Discard i2c-slave flag from
- the DW I2C example
-Message-ID: <20200528083923.yjlm5ur7cslgxdau@mobilestation>
-References: <20200527120111.5781-1-Sergey.Semin@baikalelectronics.ru>
- <20200527120111.5781-3-Sergey.Semin@baikalelectronics.ru>
- <20200527171204.GA2348490@bogus>
- <20200527171841.am2iaynff243xoep@mobilestation>
- <20200527175624.GT1634618@smile.fi.intel.com>
+        Thu, 28 May 2020 04:39:54 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9026C05BD1E
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 01:39:54 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id bs4so22529179edb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 01:39:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=XDdmB/aDu7vmw0I5lDV1Q4+gB4BypwighQ3lORBH3wc=;
+        b=CAf+Dz0VmWC9ztDzhIYSQC5YVbiHg299UsxRcMebMK3XVuQcskr9cr//obYizUBr+R
+         SKVtD55+vPtxiw53ri8K5USs5DFmuFlSazeRgHvcrAmaaeDFhJ+uUJtwxZQnq+7B6oyM
+         zWNmnMPBYfdRFb5U/GUekJn3HfUFhIrm4XixJSRFtA4ymOC7zXxK8WJ1BHqFmaae6lXT
+         5Us1elbOj6TDt69XYXExD6KadgdBL4mBFR+6Aa96MYHUMH84S/tkiyI5vphWCawc22pK
+         pe1eEI8Hp4dBVsvnANDTySVLCVBzOApuuVA4YBL8FRi/ElxKqW5yqqKIUBMAI6Szc5cX
+         vk3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=XDdmB/aDu7vmw0I5lDV1Q4+gB4BypwighQ3lORBH3wc=;
+        b=sMb1nLDZbGoBRDgZ6e/FYw9WpIIR+aEU/PmawSnszm8w+tkRa7j7CzcEcG2FlvFAwy
+         dX9Je+gyb3X8gNG5Qfa8zf3N6zEQ2sj1V+ZOHItVaBw36ZVEiJNlIdIkjTIJ86jh2Dtj
+         IYZ4DUonL+1NrOzbpi2QfwlSEjX0m2AGdcka0wm3gVwV4QVhKN0hXLRLMOZvAVFKoY+J
+         EWzsz2h/89lqjMcYeAnev0P/ukCVe8/k+vNBRyFPWt9/78h4MwAI9eYfNYllTcv/T5MJ
+         2SJm5/Y6h2sWNSiBfx/CbxN7+Eq69Z1i9hLIdmUKhLVqsgR23BY5JsSvX47WtNb8Q5gJ
+         TMxw==
+X-Gm-Message-State: AOAM532gQlfIfa9sjU4+WUSqwZNd2EQIO7h8pfg9r1cAMs7BCcwhPXpY
+        z0JENwRyEoPAHnReBfvQUMEX+w==
+X-Google-Smtp-Source: ABdhPJzvS0PuIZ3CoJAyjzLsVMlgK6IFKiAxLwcj9LsbX/47TMdsJOcP881ALFfWIKg9AldDIGqiIA==
+X-Received: by 2002:a50:d715:: with SMTP id t21mr1892086edi.194.1590655191533;
+        Thu, 28 May 2020 01:39:51 -0700 (PDT)
+Received: from ?IPv6:2001:16b8:4811:7000:e80e:f5df:f780:7d57? ([2001:16b8:4811:7000:e80e:f5df:f780:7d57])
+        by smtp.gmail.com with ESMTPSA id r9sm4367835edg.13.2020.05.28.01.39.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 May 2020 01:39:50 -0700 (PDT)
+Subject: Re: [PATCH 08/10] orangefs: use attach/detach_page_private
+To:     Mike Marshall <hubcap@omnibond.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Martin Brandenburg <martin@omnibond.com>,
+        devel@lists.orangefs.org
+References: <20200517214718.468-1-guoqing.jiang@cloud.ionos.com>
+ <20200517214718.468-9-guoqing.jiang@cloud.ionos.com>
+ <CAOg9mSQ+nGCD-k2OwWWd6Ze_PAh3mhSOwYcLugD-SQHCb0ymWw@mail.gmail.com>
+From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Message-ID: <bd3495e7-1820-6268-1a5a-76f54421fb16@cloud.ionos.com>
+Date:   Thu, 28 May 2020 10:39:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200527175624.GT1634618@smile.fi.intel.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <CAOg9mSQ+nGCD-k2OwWWd6Ze_PAh3mhSOwYcLugD-SQHCb0ymWw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 08:56:24PM +0300, Andy Shevchenko wrote:
-> On Wed, May 27, 2020 at 08:18:41PM +0300, Serge Semin wrote:
-> > On Wed, May 27, 2020 at 11:12:04AM -0600, Rob Herring wrote:
-> > > On Wed, May 27, 2020 at 03:01:02PM +0300, Serge Semin wrote:
-> > > > dtc currently doesn't support I2C_OWN_SLAVE_ADDRESS flag set in the
-> > > > i2c "reg" property. If it is the compiler will print a warning:
-> > > > 
-> > > > Warning (i2c_bus_reg): /example-2/i2c@1120000/eeprom@64: I2C bus unit address format error, expected "40000064"
-> > > > Warning (i2c_bus_reg): /example-2/i2c@1120000/eeprom@64:reg: I2C address must be less than 10-bits, got "0x40000064"
-> > > > 
-> > > > In order to silence dtc up let's discard the flag from the DW I2C DT
-> > > > binding example for now. Just revert this commit when dtc is fixed.
-> 
-> > > >        eeprom@64 {
-> > > >          compatible = "linux,slave-24c02";
-> > > > -        reg = <0x40000064>;
-> > > > +        reg = <0x64>;
-> > > 
-> > > But the compatible is a slave, so you need an example with a different 
-> > > device.
-> > 
-> 
-> > Ok. I'll replace the sub-node with just "atmel,24c02" compatible string then.
-> 
-> But how it will be different to the another slave connected to the master?
-> 
-> This example is specifically to show that DesingWare I²C controller may be
-> switched to slave mode.
+On 5/26/20 11:54 PM, Mike Marshall wrote:
+> I apologize for not mentioning that I ran this patch set
+> through orangefs xfstests at 5.7 rc5 with no problems
+> or regressions.
 
-Well, dtc doesn't support it and prints warning that the address is invalid.
-Though I do understand you concern and is mostly agree with it. Let's do this in
-the next way. I'll resend the series with eeprom@64 sub-node replaced with just
-a normal eeprom-device. The message log will have an info why this has been
-done. In the non-mergeable section of the patch I'll suggest to Rob reconsider
-the patch acking, since we can leave the slave-marked sub-node and just live
-with the dtc warning until it's fixed in there.
+Glad to hear that, thanks for your effort.
 
--Sergey
-
-> 
-> > > >        };
-> > > >      };
-> > > >    - |
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+Thanks,
+Guoqing
