@@ -2,225 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C641E5D50
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 12:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E55C1E5D59
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 12:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387979AbgE1Kmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 06:42:54 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:41166 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387927AbgE1Kmy (ORCPT
+        id S2387973AbgE1KrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 06:47:07 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:58334 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387907AbgE1KrG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 06:42:54 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 9237780307C0;
-        Thu, 28 May 2020 10:42:48 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id BDWl3gmag4Ug; Thu, 28 May 2020 13:42:47 +0300 (MSK)
-Date:   Thu, 28 May 2020 13:42:45 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Thu, 28 May 2020 06:47:06 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04SAkhE8004770;
+        Thu, 28 May 2020 05:46:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1590662803;
+        bh=ZPjFAkrhohtOWysHkDufv/up5EjeMBFf0vptLVKfvv8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=VKqdkfJw+vMDIUfjPknI8oiw+BLVIbXKLkbP+DA7UwJEC/5nb/94Nzj3gr79TdwLt
+         JCvVPgveTO7cnAOc/iAaTJ+Kl0bjxb64nxUaL2+3PYNcUeGNlIZG80hOYEdFsVFWpm
+         7iPQCeW2tkdgKFeI//rFS78DBr9F6Zv8pJtOlsCY=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04SAkhP5115978
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 28 May 2020 05:46:43 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 28
+ May 2020 05:46:42 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 28 May 2020 05:46:43 -0500
+Received: from [10.250.234.195] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04SAkcw4106483;
+        Thu, 28 May 2020 05:46:39 -0500
+Subject: Re: [PATCH 1/2] mtd: spi-nor: create/Export parameter softwareseq for
+ intel-spi driver to user
+To:     Daniel Walker <danielwa@cisco.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     Bobby Liu <bobbliu@cisco.com>, <xe-linux-external@cisco.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
         Richard Weinberger <richard@nod.at>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
-        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
-        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Lee Jones <lee.jones@linaro.org>, <linux-mips@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH RESEND v2] mtd: physmap: Add Baikal-T1 physically mapped
- ROMs support
-Message-ID: <20200528104245.jurucbblufluyjut@mobilestation>
-References: <20200526225849.20985-1-Sergey.Semin@baikalelectronics.ru>
- <5f5fc883-1cf0-f0b8-11bb-a60b45d135cd@ti.com>
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+References: <20200518175930.10948-1-danielwa@cisco.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <589a2ef5-e086-766d-44b3-1d2b990f1f67@ti.com>
+Date:   Thu, 28 May 2020 16:16:38 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <5f5fc883-1cf0-f0b8-11bb-a60b45d135cd@ti.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <20200518175930.10948-1-danielwa@cisco.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 03:36:55PM +0530, Vignesh Raghavendra wrote:
-> Hi,
-> 
-> On 27/05/20 4:28 am, Serge Semin wrote:
-> > Baikal-T1 Boot Controller provides an access to a RO storages, which are
-> > physically mapped into the MMIO space. In particularly there are the
-> > Internal ROM embedded into the SoC with a pre-installed firmware,
-> > externally attached SPI flash (also accessed in the read-only mode) and a
-> > memory region, which mirrors one of them in accordance with the currently
-> > enabled system boot mode (also called Boot ROM).
-> > 
-> > This commit adds the ROMs support to the physmap driver of the MTD kernel
-> > subsystem. Currently the driver only supports the Internal ROM, since
-> > physically mapped SPI flash is utilized by the Baikal-T1 System Boot
-> > Controller driver so won't be available over mtd-rom interface and
-> > the Boot ROM mirror mapping has dependency on the SPI flash mapping
-> > switcher available within the SPI flash registers space. The real access
-> > to the Boot ROM memory will be added in future.
-> > 
-> > Note we had to create a dedicated code for the ROMs since read from the
-> > corresponding memory regions must be done via the dword-aligned addresses.
-> > In addition the driver in future states will have to take into account
-> > that the Boot ROM might mirror the SPI flash region so before accessing it
-> > the SPI flash direct mapping must be enabled by means of a dedicated flag
-> > in the Baikal-T1 System SPI register flag.
-> > 
-> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> > Cc: Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>
-> > Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
-> > Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
-> > Cc: Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>
-> > Cc: Vadim Vlasov <V.Vlasov@baikalelectronics.ru>
-> > Cc: Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>
-> > Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> > Cc: Arnd Bergmann <arnd@arndb.de>
-> > Cc: Lee Jones <lee.jones@linaro.org>
-> > Cc: linux-mips@vger.kernel.org
-> > 
-> > ---
-> > 
-> > Miquel, Richard, Vignesh, the merge window is upon us, please review/merge
-> > in/whatever this patch.
-> > 
-> > This patchset is rebased and tested on the mainline Linux kernel 5.7-rc4:
-> > base-commit: 0e698dfa2822 ("Linux 5.7-rc4")
-> > tag: v5.7-rc4
-> > 
-> > New vendor prefix will be added in the framework of the next patchset:
-> > https://lkml.org/lkml/2020/5/6/1047
-> 
-> 
-> Sorry, driver patch and dt bindings have to be proposed together...
-> Driver cannot be accepted ahead of DT bindings been reviewed.
++Mika Westerberg original author of the driver
 
-Understood. I'll fix it in v3. Thanks.
-
+On 18/05/20 11:29 pm, Daniel Walker wrote:
+> From: Bobby Liu <bobbliu@cisco.com>
 > 
-> > 
-> > Note since the next patchset is no longer relevant (as a result of a
-> > discussion with @Lee and @Miquel)
-> > https://lkml.org/lkml/2020/3/6/421
-> > and Boot ROM mtd is currently unsupported I can freely submit this patch,
-> > while in former case I had to wait for the patchset merged.
-> > 
-> 
-> [...]
-> > +static void __xipram bt1_rom_map_copy_from(struct map_info *map,
-> > +					   void *to, unsigned long from,
-> > +					   ssize_t len)
-> > +{
-> > +	void __iomem *src = map->virt + from;
-> > +	ssize_t shift, chunk;
-> > +	u32 data;
-> > +
-> > +	if (len <= 0 || from >= map->size)
-> > +		return;
-> > +
-> > +	/* Make sure we don't go over the map limit. */
-> > +	len = min_t(ssize_t, map->size - from, len);
-> > +
-> > +	/*
-> > +	 * Since requested data size can be pretty big we have to implement
-> > +	 * the copy procedure as optimal as possible. That's why it's split
-> > +	 * up into the next three stages: unaligned head, aligned body,
-> > +	 * unaligned tail.
-> > +	 */
-> > +	shift = (ssize_t)src & 0x3;
-> > +	if (shift) {
-> > +		chunk = min_t(ssize_t, 4 - shift, len);
-> > +		data = readl_relaxed(src - shift);
-> > +		memcpy(to, &data + shift, chunk);
-> > +		src += chunk;
-> > +		to += chunk;
-> > +		len -= chunk;
-> > +	}
-> > +
-> > +	while (len >= 4) {
-> > +		data = readl_relaxed(src);
-> > +		memcpy(to, &data, 4);
-> > +		src += 4;
-> > +		to += 4;
-> > +		len -= 4;
-> > +	}
-> > +
-> > +	if (len) {
-> > +		data = readl_relaxed(src);
-> > +		memcpy(to, &data, len);
-> > +	}
-> > +}
-> > +
-> > +static map_word __xipram bt1_rom_dummy_read(struct map_info *map,
-> > +					  unsigned long ofs)
-> > +{
-> > +	map_word ret;
-> > +
-> > +	ret.x[0] = 0xFF;
-> > +
-> > +	return ret;
-> > +}
+> How to use:
+> append softwareseq=1 while probe the driver.
+> example:
+> modprobe intel-spi writeable=1 softwareseq=1
+> it will let driver use software sequence to write register for opt=EN4B
+> by default it's 0 if not specified, driver will do usual HW cycle
 > 
 
-> Why define dummy_io for "baikal,bt1-boot-rom"? I don't see any use of
-> adding a driver that always reads 0xFFs
+Could some one from Intel please review this patch?
 
-This is supposed to be temporary solution for the baikal,bt1-boot-rom ROM.
-The Boot ROM mirror might reflect either an embedded firmware or the SPI flash
-directly mapped into the memory. In former case there is no problem, we can
-freely read from the Boot ROM region. But in the later case the mirrored region
-(memory mapped SPI flash) is not always accessible. If normal Boot SPI
-controller is enabled, then the SPI flash mapping isn't accessible (any attempt
-will cause a bus-error). In order to fix this we'd need a mutual exclusive lock,
-which would disable the SPI controller while the mirrored memory mapped SPI flash
-region needs to be accessed. Such mechanism isn't currently implemented, but it
-will in be in the framework of my patch created for the SPI subsystem.
+Regards
+Vignesh
 
-My idea was to just provide a dummy callback for now and replace it with normal
-IO-methods with mutual exclusive lock-unlocks when the corresponding SPI driver
-is accepted.
-
--Sergey
-
+> Why this parameter is posted to user:
+> Intel PCH provides two groups of registers for SPI flash operation,
+> Hard Sequence registers and Software Sequence registers,
+> corresponding to intel_spi_hw_cycle() and intel_spi_sw_cycle()
+> respectively in driver code. But HW sequence register won't send EN4B
+> opcode to SPI flash. BIOS code use SW register to send EN4B.
 > 
+> On some Cisco routers, two 32M SPI flashes, which require 4-byte address mode enabled,
+> are physically connected to an FPGA, one flash is active and one is inactive.
+> When we do BIOS upgrade, we need switch to the inactive one,
+> but unfortunately, this one is still 3-byte address mode as default,
+> after we do real-time switch, we need reload SPI driver to send EN4B code to
+> enable 4-byte address mode.
 > 
-> > +
-> > +/*
-> > + * Currently Baikal-T1 SoC internal ROM is only supported. Boot ROM region is
-> > + * dummy-data filled for now since in case of the system booted up from an
-> > + * external SPI flash the ROM will mirror the Baikal-T1 System Boot SPI direct
-> > + * mapping memory region. That region can be only accessed when transparent
-> > + * mode is enabled, which we unable to do here because this feature is provided
-> > + * by the SPI controller config space occupied by the corresponding driver.
-> > + * In future we'll export the mode setting method from the Baikal-T1 System
-> > + * Boot SPI Controller driver to also have the Boot ROM supported here.
-> > + */
-> > +static const struct of_device_id bt1_rom_of_match[] = {
-> > +	{
-> > +		.compatible = "baikal,bt1-int-rom",
-> > +		.data = &bt1_rom_normal_io
-> > +	},
+> Refering to our BIOS code, Software sequence register is processed
+> while sending EN4B opcode. So here we use sw_cycle in driver for EN4B as well.
 > 
-> > +	{
-> > +		.compatible = "baikal,bt1-boot-rom",
-> > +		.data = &bt1_rom_dummy_io
-> > +	},
-> > +	{ }
+> Why I don't just easily use software sequence for all:
+> 1.It will impact all flash operation, include flash W/R, high risk
+> 2.The only SPI type I can use is INTEL_SPI_BXT according to datasheet,
+>   this will require using hw seq.
+>   I tried to specify other SPI type, it couldn't work with Intel PCH.
+>   If I force SW seq for all, during boot up, sw_cycle fails to read
+>   vendor ID.
 > 
+> In conclusion, I only use SW cycle for EN4B opcode to minimize impact.
+> It won't impact other users as well.
 > 
+> Why the default flash can work at 4-byte address mode:
+> BIOS sets 4-byte address mode for the current active SPI flash with SW seq registers.
+> So we don't need append softwareseq=1 for normal boot up script,
+> it will only be used in BIOS upgrade script.
 > 
-> [...]
+> Cc: xe-linux-external@cisco.com
+> Signed-off-by: Bobby Liu <bobbliu@cisco.com>
+> [ danielwa: edited the commit message a little. ]
+> Signed-off-by: Daniel Walker <danielwa@cisco.com>
+> ---
+>  drivers/mtd/spi-nor/controllers/intel-spi.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
 > 
-> Regards
-> Vignesh
+> diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
+> index 61d2a0ad2131..e5a3d51a2e4d 100644
+> --- a/drivers/mtd/spi-nor/controllers/intel-spi.c
+> +++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
+> @@ -163,6 +163,10 @@ static bool writeable;
+>  module_param(writeable, bool, 0);
+>  MODULE_PARM_DESC(writeable, "Enable write access to SPI flash chip (default=0)");
+>  
+> +static bool softwareseq;
+> +module_param(softwareseq, bool, 0);
+> +MODULE_PARM_DESC(softwareseq, "Use software sequence for register write (default=0)");
+> +
+>  static void intel_spi_dump_regs(struct intel_spi *ispi)
+>  {
+>  	u32 value;
+> @@ -619,6 +623,18 @@ static int intel_spi_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
+>  	if (ret)
+>  		return ret;
+>  
+> +	/*
+> +	 * Intel Skylake will not send EN4B to SPI flash if we use HW sequence
+> +	 * Here export one interface "softwareseq" to OS,
+> +	 * let driver user decide if use SW sequence or not
+> +	 */
+> +	if (opcode == SPINOR_OP_EN4B && softwareseq) {
+> +	    dev_info(ispi->dev,
+> +		"Write register opcode is SPINOR_OP_EN4B, do SW cycle\n");
+> +	    return intel_spi_sw_cycle(ispi, opcode, len,
+> +		OPTYPE_WRITE_NO_ADDR);
+> +	}
+> +
+>  	if (ispi->swseq_reg)
+>  		return intel_spi_sw_cycle(ispi, opcode, len,
+>  					  OPTYPE_WRITE_NO_ADDR);
+> 
