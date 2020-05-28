@@ -2,124 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1064C1E64F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B501E64EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403778AbgE1O6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 10:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403787AbgE1O6B (ORCPT
+        id S2403879AbgE1O4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 10:56:42 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:38164 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403836AbgE1O4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 10:58:01 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E6EC08C5C6;
-        Thu, 28 May 2020 07:58:00 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id w1so3344095qkw.5;
-        Thu, 28 May 2020 07:58:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=gzI5VT3HoLRyAyzvufJuU0rnVQlP8Cfplvh+aTwNJOI=;
-        b=KEvXp2ETmxGb5UfS97Z7dC86BLXH8Ke8H2UHphVLV36mliF1c493OnRDRHcaC3mPRt
-         BgFIq0i00r31XTm2i92stxp0f97+Bvuo1egxIvIYKUhDKEKQSDSz5Zhi5lH06pkutnN4
-         SUvJRIJRgMxMBG1kilAEhkj5MIT0k2VJceHU92x+D7aCJpHg9hQLnJxAigjsZ848z/E7
-         Tt/2kA4JfUPpfu6RyM+p5MQYLC/xH8R4ul1wf/hJJAZKNpnBThoWZObOmqmZcBY353dp
-         IRs8Mf7plbctXT32WZFqCM9f+HgV1SeDNSpOBngcv1YUvhFXr4muwiazli7bIyMPOPys
-         f7UQ==
+        Thu, 28 May 2020 10:56:18 -0400
+Received: by mail-pg1-f194.google.com with SMTP id u5so13594117pgn.5;
+        Thu, 28 May 2020 07:56:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=gzI5VT3HoLRyAyzvufJuU0rnVQlP8Cfplvh+aTwNJOI=;
-        b=tvpWgwXvwRd6fbVMJfOvollXEwjPifZog9gKfEiwmPd4jTlhsY7nPBPXnCZsrGD2Py
-         8gI3mHz4bl0Ch3GZILP8g7zGzYBX89Eu8Z3FZz+QqQfKI/P/S6KdYnvX9fPyQ+FQWtAE
-         GZlOmFW1DICps+OsWKVwP2JPROy9EItWeDQufteJ/KVXKPuJ0a2ZPafyz0yxVUSl2eX5
-         QpZTOOb0w+/xr+UxTcUfxo7M8S/dXdHIhspiefmeGnIY+zLxZmE+TMJkr1jBFDMCtqx3
-         Mgir1vBAxULnHe0a7n6EBp2G2E7wfRKazbiyfTzsXXkWZ/4iMhtQuORmrkSHXeI+z9ML
-         2plw==
-X-Gm-Message-State: AOAM532rErXRx7xin4VNNCfbBNEXFz6S4dal+8kFDOFN23JxDv+VKrRs
-        f6uKwPp8OOG61nlYRgXpWfDUTGRXhXk=
-X-Google-Smtp-Source: ABdhPJzUaDMzlKbRDkRY5VshnmUm0YPFb9V/m5sbZPcSMyqNGIlrVoK/gPx5NP9LGcwp+tVnN556Dw==
-X-Received: by 2002:a37:a74a:: with SMTP id q71mr3273396qke.446.1590677879288;
-        Thu, 28 May 2020 07:57:59 -0700 (PDT)
-Received: from ict14-OptiPlex-980.kataweb.it ([178.23.248.46])
-        by smtp.googlemail.com with ESMTPSA id s74sm5116876qka.54.2020.05.28.07.57.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 07:57:47 -0700 (PDT)
-From:   Jonathan Albrieux <jonathan.albrieux@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        Jonathan Albrieux <jonathan.albrieux@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), Hartmut Knaack <knaack.h@gmx.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-iio@vger.kernel.org (open list:IIO SUBSYSTEM AND DRIVERS),
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v7 1/5] dt-bindings: iio: magnetometer: ak8975: reword gpios, add interrupts, fix style
-Date:   Thu, 28 May 2020 16:56:04 +0200
-Message-Id: <20200528145631.11608-2-jonathan.albrieux@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200528145631.11608-1-jonathan.albrieux@gmail.com>
-References: <20200528145631.11608-1-jonathan.albrieux@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=H+E2Cht00Nd0DyuFWKpXcfzkYTJQqhpE9g+HMMzT2t4=;
+        b=AukvJJi+JSoc+LXI2gQFvoLutNSDStYEYeQ329NKyksukuA0J89bfVy6OzxnDyJalL
+         xupgiBpxYsb9JwQNg324uYuJ8p4El1er6hriWQX/ufya5h2kV4ioQJ56DOWeDBSk0eWD
+         1iaRRpqj0VFkQOe2/DC45VCDBwzwQXkeglMP+oRspYroH3OVAH/ltEEbFZ1CRyDgXKyD
+         sZjL0uFEaemxxfPE3ZzZoceTmXRfeHBI6eKhjztpDalF2V1oQvRbwHqSJ9qMqUAo3Snh
+         a9V31hKTVmigRU46ZWt0JypulMNfw5NIAcmPWTbgWcSlPDf1xU8e9Un33gyf/aTjiNwl
+         JDcQ==
+X-Gm-Message-State: AOAM533kCoJim2wOKUPzDBkQnisck14QWHJZEf9+YmNh3aX2JtL9VOgQ
+        L6thFIABZPeCcYYbOICE712fka3M85s=
+X-Google-Smtp-Source: ABdhPJwzgmR9uvuJLqZGMMf741Tm5oZbzLL+Pv0IXaQ/pTgWbCG4spiyqc1p2fcO179r87QrtZNa0Q==
+X-Received: by 2002:a62:d41a:: with SMTP id a26mr3425951pfh.290.1590677776672;
+        Thu, 28 May 2020 07:56:16 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:40e6:aa88:9c03:e0b4? ([2601:647:4000:d7:40e6:aa88:9c03:e0b4])
+        by smtp.gmail.com with ESMTPSA id u45sm5816165pjb.7.2020.05.28.07.56.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 May 2020 07:56:15 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] scsi: ufs: remove max_t in ufs_get_device_desc
+To:     Bean Huo <huobean@gmail.com>, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, tomas.winkler@intel.com, cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200528115616.9949-1-huobean@gmail.com>
+ <20200528115616.9949-2-huobean@gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <85bbc91f-7b91-46fc-acff-3bcc2288c4ae@acm.org>
+Date:   Thu, 28 May 2020 07:56:14 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200528115616.9949-2-huobean@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reword gpios documentation, add interrupt documentation and fix styles.
-Update example to use interrupts instead of gpios.
+On 2020-05-28 04:56, Bean Huo wrote:
+> From: Bean Huo <beanhuo@micron.com>
+> 
+> For the UFS device, the maximum descriptor size is 255, max_t called in
+> ufs_get_device_desc() is useless.
+> 
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index aca50ed39844..0f8c7e05df29 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -6881,8 +6881,7 @@ static int ufs_get_device_desc(struct ufs_hba *hba)
+>  	u8 *desc_buf;
+>  	struct ufs_dev_info *dev_info = &hba->dev_info;
+>  
+> -	buff_len = max_t(size_t, hba->desc_size.dev_desc,
+> -			 QUERY_DESC_MAX_SIZE + 1);
+> +	buff_len = QUERY_DESC_MAX_SIZE + 1;
+>  	desc_buf = kmalloc(buff_len, GFP_KERNEL);
+>  	if (!desc_buf) {
+>  		err = -ENOMEM;
 
-Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../bindings/iio/magnetometer/ak8975.txt      | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+Since the buff_len variable is not changed after its initial assignment,
+please remove it entirely.
 
-diff --git a/Documentation/devicetree/bindings/iio/magnetometer/ak8975.txt b/Documentation/devicetree/bindings/iio/magnetometer/ak8975.txt
-index aa67ceb0d4e0..0576b9df0bf2 100644
---- a/Documentation/devicetree/bindings/iio/magnetometer/ak8975.txt
-+++ b/Documentation/devicetree/bindings/iio/magnetometer/ak8975.txt
-@@ -2,21 +2,28 @@
- 
- Required properties:
- 
--  - compatible : should be "asahi-kasei,ak8975"
--  - reg : the I2C address of the magnetometer
-+  - compatible : should be "asahi-kasei,ak8975".
-+  - reg : the I2C address of the magnetometer.
- 
- Optional properties:
- 
--  - gpios : should be device tree identifier of the magnetometer DRDY pin
--  - vdd-supply: an optional regulator that needs to be on to provide VDD
--  - mount-matrix: an optional 3x3 mounting rotation matrix
-+  - gpios : AK8975 has a "Data ready" pin (DRDY) which informs that data
-+      is ready to be read and is possible to listen on it. If used,
-+      this should be active high. Prefer interrupt over this.
-+
-+  - interrupts : interrupt for DRDY pin. Triggered on rising edge.
-+
-+  - vdd-supply: an optional regulator that needs to be on to provide VDD.
-+
-+  - mount-matrix: an optional 3x3 mounting rotation matrix.
- 
- Example:
- 
- ak8975@c {
-         compatible = "asahi-kasei,ak8975";
-         reg = <0x0c>;
--        gpios = <&gpj0 7 0>;
-+        interrupt-parent = <&gpio6>;
-+        interrupts = <15 IRQ_TYPE_EDGE_RISING>;
-         vdd-supply = <&ldo_3v3_gnss>;
-         mount-matrix = "-0.984807753012208",  /* x0 */
-                        "0",                   /* y0 */
--- 
-2.17.1
+Thanks,
+
+Bart.
+
 
