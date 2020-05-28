@@ -2,109 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44BFA1E5E7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C13511E5EB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388434AbgE1Lja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 07:39:30 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:28940 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388392AbgE1Lj2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 07:39:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590665966;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tU/P76gUgCUjIYLmfhLoBs07Rafiz+cVEPVVpjAFAAk=;
-        b=Cglb7SE0sTjcpsSBBGlNHAR5TN4Lc4W8bzWMS1OyFTXs0qEJwCXz1Cyy/DoXiPAC4I/RTc
-        E+Uoke5q3hJrg5aUAcz1xmCm2jdzoRb9xIMKLhqZ1UTfBa3fM4i1LbM+lgXsYL+Mn2iJ30
-        8ap2dJzkXwjzaAK/L7ArSbvzKOHQ0II=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-157-XYRcPQTxM6iHkNXUMsGsmQ-1; Thu, 28 May 2020 07:39:25 -0400
-X-MC-Unique: XYRcPQTxM6iHkNXUMsGsmQ-1
-Received: by mail-ed1-f70.google.com with SMTP id c10so11361034edw.17
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 04:39:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=tU/P76gUgCUjIYLmfhLoBs07Rafiz+cVEPVVpjAFAAk=;
-        b=mc2YudK+ySJ7KIyN4swZQoP9mseTK93kdfyxxtjHmYxGeRBL7egO5vexNUL2nLI8kz
-         XnBZ+LC0mwWVGDcCUoBNX+GSW+d8rxdJjFr/pDLwnS/0dVbbWHzDs/g6pwtQEXgEFWJ9
-         0QflzcVCJrnwhXJ+Bpgi/BAnPDjMzLchbRFN+R5BJKkyvs86PyDJMmqhYrkl1OjanIZM
-         cTag5ZMzAv6rweAEAn7XaQEBVJWUNfcLIFhTQAZ0Gz6MRXk4Wt6B+nQBerGTMXBaHptJ
-         CAmbNE0Dw6GyrfhdOD4S2AAYY9ySOnobp+JlNE71PtpMOxS/uwXb02yKn9VWIEKhkXsI
-         MjjA==
-X-Gm-Message-State: AOAM531YGQeON7P4RBX4dga+Tho3fxWhC+ICScEMuVBYgY10VCPkkAzb
-        NzdRCfqfOcy0CQNDe3KgN7Y/0ybbDNYevaGLL0WwYcMgjlt1WnPo5E2nQ2KQWql2hF8jYuPmJqn
-        dC/01tOi8jtQZxBT7WMOKcauM
-X-Received: by 2002:aa7:c887:: with SMTP id p7mr2576191eds.269.1590665963639;
-        Thu, 28 May 2020 04:39:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyAC0sFE6cKf2uAh541PEavwlw1Pez2X0cPDx1gikDvelrU7CmH5jbuidUWxsG3tn4K+fXDuQ==
-X-Received: by 2002:aa7:c887:: with SMTP id p7mr2576164eds.269.1590665963456;
-        Thu, 28 May 2020 04:39:23 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id i4sm4671308eja.92.2020.05.28.04.39.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 04:39:22 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        x86@kernel.org
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Vivek Goyal <vgoyal@redhat.com>, Gavin Shan <gshan@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 06/10] KVM: x86: acknowledgment mechanism for async pf page ready notifications
-In-Reply-To: <f9d32c25-9167-f1a7-cda7-182a785b92aa@redhat.com>
-References: <20200525144125.143875-1-vkuznets@redhat.com> <20200525144125.143875-7-vkuznets@redhat.com> <f9d32c25-9167-f1a7-cda7-182a785b92aa@redhat.com>
-Date:   Thu, 28 May 2020 13:39:21 +0200
-Message-ID: <87wo4w2sra.fsf@vitty.brq.redhat.com>
+        id S2388536AbgE1Lva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 07:51:30 -0400
+Received: from mail.jv-coder.de ([5.9.79.73]:45294 "EHLO mail.jv-coder.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388480AbgE1Lv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 07:51:29 -0400
+X-Greylist: delayed 624 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 May 2020 07:51:28 EDT
+Received: from [192.168.178.40] (unknown [188.192.1.13])
+        by mail.jv-coder.de (Postfix) with ESMTPSA id E0CECA3440;
+        Thu, 28 May 2020 11:41:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
+        t=1590666063; bh=WXDcfwZSvWW9FRRstQ/LEdAer2SgJFTyaVpYap2AsCM=;
+        h=To:From:Subject:Message-ID:Date:MIME-Version;
+        b=NxXBPn8SA6q5GXMYZUMoqF61RuAezvi8W7SvY0Do8AnVGL0EOxTlLcDwykFKXtO7j
+         Qse4MvfR3KYkzkWmZlTyarv7VCJnXyTnola52jD42GuJD1mvJ8tdFATDmgqIrGp1rD
+         9/yvbRZKuSiuTs2rcgdYWPfhbVOwoQp/PYuWbqUs=
+To:     linux-kernel@vger.kernel.org,
+        Joerg Vehlow <joerg.vehlow@aox-tech.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>
+From:   Joerg Vehlow <lkml@jv-coder.de>
+Subject: [BUG RT] dump-capture kernel not executed for panic in interrupt
+ context
+Message-ID: <2c243f59-6d10-7abb-bab4-e7b1796cd54f@jv-coder.de>
+Date:   Thu, 28 May 2020 13:41:08 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Spam-Status: No, score=4.6 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_PBL,RCVD_IN_SORBS_DUL,RDNS_NONE
+        autolearn=no autolearn_force=no version=3.4.4
+X-Spam-Level: ****
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mail.jv-coder.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paolo Bonzini <pbonzini@redhat.com> writes:
+Hi,
 
-> On 25/05/20 16:41, Vitaly Kuznetsov wrote:
->> +	case MSR_KVM_ASYNC_PF_ACK:
->> +		if (data & 0x1) {
->> +			vcpu->arch.apf.pageready_pending = false;
->> +			kvm_check_async_pf_completion(vcpu);
->> +		}
->> +		break;
->>  	case MSR_KVM_STEAL_TIME:
->>  
->>  		if (unlikely(!sched_info_on()))
->> @@ -3183,6 +3189,9 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->>  	case MSR_KVM_ASYNC_PF_INT:
->>  		msr_info->data = vcpu->arch.apf.msr_int_val;
->>  		break;
->> +	case MSR_KVM_ASYNC_PF_ACK:
->> +		msr_info->data = 0;
->> +		break;
->
-> How is the pageready_pending flag migrated?  Should we revert the
-> direction of the MSR (i.e. read the flag, and write 0 to clear it)?
+I think I found a bug in the kernel with rt patches (or maybe even without).
+This applies to all kernels propably starting at 2.6.27.
 
-The flag is not migrated so it will be 'false'. This can just cause an
-extra kick in kvm_arch_async_page_present_queued() but this shouldn't be
-a big deal. Also, after migration we will just send 'wakeup all' event,
-async pf queue will be empty. MSR_KVM_ASYNC_PF_ACK by itself is not
-migrated, we don't even store it, not sure how invering it would change
-things.
+When a kernel panic is triggered from an interrupt handler, the dump-capture
+kernel is not started, instead the system acts as if it was not installed.
+The reason for this is, that panic calls __crash_kexec, which is protected
+by a mutex. On an rt kernel this mutex is an rt mutex and when trylock 
+is called
+on an rt mutex, the first check is whether the current kthread is in an 
+nmi or
+irq handler. If it is, the function just returns 0 -> locking failed.
 
--- 
-Vitaly
+According to rt_mutex_trylock documentation, it is not allowed to call this
+function from an irq handler, but panic can be called from everywhere 
+and thus
+rt_mutex_trylock can be called from everywhere. Actually even 
+mutex_trylock has
+the comment, that it is not supposed to be used from interrupt context, 
+but it
+still locks the mutex. I guess this could also be a bug in the non-rt 
+kernel.
 
+I found this problem using a test module, that triggers the softlock 
+detection.
+It is a pretty simple module, that creates a kthread, that disables 
+preemption,
+spins 60 seconds in an endless loop and then reenables preemption and 
+terminates
+the thread. This reliably triggers the softlock detection and if
+kernel.softlockup_panic=0, the system resumes perfectly fine afterwards. If
+kernel.softlockup_panic=1 I would expect the dump-capture kernel to be 
+executed,
+but it is not due to the bug (without rt patches it works), instead the 
+panic
+function is executed until the end to the endless loop.
+
+
+A stacktrace captured at the trylock call inside kexec_code looks like this:
+#0  __rt_mutex_trylock (lock=0xffffffff81701aa0 <kexec_mutex>) at 
+/usr/src/kernel/kernel/locking/rtmutex.c:2110
+#1  0xffffffff8087601a in _mutex_trylock (lock=<optimised out>) at 
+/usr/src/kernel/kernel/locking/mutex-rt.c:185
+#2  0xffffffff803022a0 in __crash_kexec (regs=0x0 <irq_stack_union>) at 
+/usr/src/kernel/kernel/kexec_core.c:941
+#3  0xffffffff8027af59 in panic (fmt=0xffffffff80fa3d66 "softlockup: 
+hung tasks") at /usr/src/kernel/kernel/panic.c:198
+#4  0xffffffff80325b6d in watchdog_timer_fn (hrtimer=<optimised out>) at 
+/usr/src/kernel/kernel/watchdog.c:464
+#5  0xffffffff802e6b90 in __run_hrtimer (flags=<optimised out>, 
+now=<optimised out>, timer=<optimised out>, base=<optimised out>, 
+cpu_base=<optimised out>) at /usr/src/kernel/kernel/time/hrtimer.c:1417
+#6  __hrtimer_run_queues (cpu_base=0xffff88807db1c000, now=<optimised 
+out>, flags=<optimised out>, active_mask=<optimised out>) at 
+/usr/src/kernel/kernel/time/hrtimer.c:1479
+#7  0xffffffff802e7704 in hrtimer_interrupt (dev=<optimised out>) at 
+/usr/src/kernel/kernel/time/hrtimer.c:1539
+#8  0xffffffff80a020f2 in local_apic_timer_interrupt () at 
+/usr/src/kernel/arch/x86/kernel/apic/apic.c:1067
+#9  smp_apic_timer_interrupt (regs=<optimised out>) at 
+/usr/src/kernel/arch/x86/kernel/apic/apic.c:1092
+#10 0xffffffff80a015df in apic_timer_interrupt () at 
+/usr/src/kernel/arch/x86/entry/entry_64.S:909
+
+
+Obviously and as expected the panic was triggered in the context of the apic
+interrupt. So in_irq() is true and trylock fails.
+
+
+About 12 years ago this was not implemented using a mutex, but using xchg.
+See: 8c5a1cf0ad3ac5fcdf51314a63b16a440870f6a2
+
+
+Since my knowledege about mutexes inside the kernel is very limited, I 
+do not
+know how this can be fixed and whether it should be fixed in the rt 
+patches or
+if this really is a bug in mainline kernel (because trylock is also not 
+allowed
+to be used in interrupt handlers.
+
+
+Jörg
