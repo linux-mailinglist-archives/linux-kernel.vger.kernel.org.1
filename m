@@ -2,100 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6FD1E6069
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3945B1E5FF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388868AbgE1MJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:09:59 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:52798 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388719AbgE1L4Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 07:56:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590666984;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=G6bfws9MwiCCMvZrWzAJyuiNns7YUWzpHu60JOrsU/o=;
-        b=ioNAQOyAk3Nvh4QkzR9TsE/eZ4ArnhV+SbravI0D11VUtU8XxidrQU3SRkSUNoOzm0PZpq
-        9OT1YIzOpLXC46huL3kR03ueZlyGUhVQM9VbjqA7RuvEq9LNNV028FKMqohbfgZT1lSHO+
-        74iraG9KhcTY/0DSlGcTaKzY0FEhQUA=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-430-WdqUe5YLP1Od-t-09kMlbQ-1; Thu, 28 May 2020 07:56:23 -0400
-X-MC-Unique: WdqUe5YLP1Od-t-09kMlbQ-1
-Received: by mail-wm1-f69.google.com with SMTP id u15so887658wmm.5
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 04:56:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=G6bfws9MwiCCMvZrWzAJyuiNns7YUWzpHu60JOrsU/o=;
-        b=Nsgp2vrhYvld0edhf0hDl9+xwUq/AsxiypO+c9Zgzzh+8Nz/i7D9RZPkPRDd2pPzYo
-         2mGYdCRU08JD+MJbW0j94iVgzheIEWUa/sTmBrakZwNKQw5WqwrkI1K3f+N7jZFv9Eq0
-         ACDYyEmK3hrq1+NinTjcIh6Stl5C3ZqyJdOs+rL8Nk49OjqUKs3842WdmoXWEdp9cHsU
-         WNTqRauaFi+Lt9L8gKajuj8u9alc6qk7ofmfqOa/UN9Xm5Hyas0I0Lp8W09zXybZ/owU
-         m9ZjKvl8gyOyigf9f0rVqzq6GyuL+6MQhOMFocOgRuyxZuNxdeHpM36628ba9Jqz0u67
-         sssg==
-X-Gm-Message-State: AOAM531LCBp4w3eZTfuVR8MPCiBeHdzWOBmlqASAcqzlw/K+TePG2W2u
-        J0MqzsLKf9khaMryiOgh6E9tn/jqsvSTRd2SFezpYZxvf6bPQPNcJFTKFlZ2wS/xClUJafGluo2
-        CCBIl+0VjRfYTzR/guP+OfCwc
-X-Received: by 2002:a05:600c:146:: with SMTP id w6mr2984000wmm.97.1590666981590;
-        Thu, 28 May 2020 04:56:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyJbHKuC/6XBtiV1KUuSLpUmiBDD5SLecdb26n6zIP6TbQf3zEubqSsXxt97G1Deyo1noUmFA==
-X-Received: by 2002:a05:600c:146:: with SMTP id w6mr2983988wmm.97.1590666981329;
-        Thu, 28 May 2020 04:56:21 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:3c1c:ffba:c624:29b8? ([2001:b07:6468:f312:3c1c:ffba:c624:29b8])
-        by smtp.gmail.com with ESMTPSA id h74sm5853862wrh.76.2020.05.28.04.56.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 May 2020 04:56:20 -0700 (PDT)
-Subject: Re: [PATCH] KVM: selftests: Add .gitignore entry for
- KVM_SET_GUEST_DEBUG test
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200528021624.28348-1-sean.j.christopherson@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <ce6a5284-e09b-2f51-8cb6-baa29b3ac5c3@redhat.com>
-Date:   Thu, 28 May 2020 13:56:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S2389657AbgE1MFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 08:05:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49304 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388746AbgE1L47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 07:56:59 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C1ED32158C;
+        Thu, 28 May 2020 11:56:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590667018;
+        bh=prOMc/RStpaK3YUH4KzHyr5ESVXotKLWP1/xmvu8a7w=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ew3Hp2CiAAFPfGhjVISk9gRB1awnu9QBcOqXAAhWyNy7954ADKWkcrtBPi22F28ne
+         /fTisDf45FRPOtkVvVyYvWdyc918DYDKQgakk/kzQodh5Eb7AiqNQzqC57P67iYhkK
+         TY90Vzf+syJL/WlX6fmixk/tCIoyE0mWfjQEE44M=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        kernel test robot <lkp@intel.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-ima-devel@lists.sourceforge.net,
+        linux-security-module@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 03/26] evm: Fix RCU list related warnings
+Date:   Thu, 28 May 2020 07:56:31 -0400
+Message-Id: <20200528115654.1406165-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200528115654.1406165-1-sashal@kernel.org>
+References: <20200528115654.1406165-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200528021624.28348-1-sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/05/20 04:16, Sean Christopherson wrote:
-> Add the KVM_SET_GUEST_DEBUG test's output binary to .gitignore.
-> 
-> Fixes: 449aa906e67e ("KVM: selftests: Add KVM_SET_GUEST_DEBUG test")
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> ---
->  tools/testing/selftests/kvm/.gitignore | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
-> index 222e50104296a..d0079fce1764f 100644
-> --- a/tools/testing/selftests/kvm/.gitignore
-> +++ b/tools/testing/selftests/kvm/.gitignore
-> @@ -3,6 +3,7 @@
->  /s390x/resets
->  /s390x/sync_regs_test
->  /x86_64/cr4_cpuid_sync_test
-> +/x86_64/debug_regs
->  /x86_64/evmcs_test
->  /x86_64/hyperv_cpuid
->  /x86_64/mmio_warning_test
-> 
+From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-Queued, thanks.
+[ Upstream commit 770f60586d2af0590be263f55fd079226313922c ]
 
-Paolo
+This patch fixes the following warning and few other instances of
+traversal of evm_config_xattrnames list:
+
+[   32.848432] =============================
+[   32.848707] WARNING: suspicious RCU usage
+[   32.848966] 5.7.0-rc1-00006-ga8d5875ce5f0b #1 Not tainted
+[   32.849308] -----------------------------
+[   32.849567] security/integrity/evm/evm_main.c:231 RCU-list traversed in non-reader section!!
+
+Since entries are only added to the list and never deleted, use
+list_for_each_entry_lockless() instead of list_for_each_entry_rcu for
+traversing the list.  Also, add a relevant comment in evm_secfs.c to
+indicate this fact.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Acked-by: Paul E. McKenney <paulmck@kernel.org> (RCU viewpoint)
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ security/integrity/evm/evm_crypto.c | 2 +-
+ security/integrity/evm/evm_main.c   | 4 ++--
+ security/integrity/evm/evm_secfs.c  | 9 ++++++++-
+ 3 files changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
+index cc826c2767a3..fbc2ee6d46fc 100644
+--- a/security/integrity/evm/evm_crypto.c
++++ b/security/integrity/evm/evm_crypto.c
+@@ -209,7 +209,7 @@ static int evm_calc_hmac_or_hash(struct dentry *dentry,
+ 	data->hdr.length = crypto_shash_digestsize(desc->tfm);
+ 
+ 	error = -ENODATA;
+-	list_for_each_entry_rcu(xattr, &evm_config_xattrnames, list) {
++	list_for_each_entry_lockless(xattr, &evm_config_xattrnames, list) {
+ 		bool is_ima = false;
+ 
+ 		if (strcmp(xattr->name, XATTR_NAME_IMA) == 0)
+diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
+index f9a81b187fae..a2c393385db0 100644
+--- a/security/integrity/evm/evm_main.c
++++ b/security/integrity/evm/evm_main.c
+@@ -99,7 +99,7 @@ static int evm_find_protected_xattrs(struct dentry *dentry)
+ 	if (!(inode->i_opflags & IOP_XATTR))
+ 		return -EOPNOTSUPP;
+ 
+-	list_for_each_entry_rcu(xattr, &evm_config_xattrnames, list) {
++	list_for_each_entry_lockless(xattr, &evm_config_xattrnames, list) {
+ 		error = __vfs_getxattr(dentry, inode, xattr->name, NULL, 0);
+ 		if (error < 0) {
+ 			if (error == -ENODATA)
+@@ -230,7 +230,7 @@ static int evm_protected_xattr(const char *req_xattr_name)
+ 	struct xattr_list *xattr;
+ 
+ 	namelen = strlen(req_xattr_name);
+-	list_for_each_entry_rcu(xattr, &evm_config_xattrnames, list) {
++	list_for_each_entry_lockless(xattr, &evm_config_xattrnames, list) {
+ 		if ((strlen(xattr->name) == namelen)
+ 		    && (strncmp(req_xattr_name, xattr->name, namelen) == 0)) {
+ 			found = 1;
+diff --git a/security/integrity/evm/evm_secfs.c b/security/integrity/evm/evm_secfs.c
+index c11c1f7b3ddd..0f37ef27268d 100644
+--- a/security/integrity/evm/evm_secfs.c
++++ b/security/integrity/evm/evm_secfs.c
+@@ -234,7 +234,14 @@ static ssize_t evm_write_xattrs(struct file *file, const char __user *buf,
+ 		goto out;
+ 	}
+ 
+-	/* Guard against races in evm_read_xattrs */
++	/*
++	 * xattr_list_mutex guards against races in evm_read_xattrs().
++	 * Entries are only added to the evm_config_xattrnames list
++	 * and never deleted. Therefore, the list is traversed
++	 * using list_for_each_entry_lockless() without holding
++	 * the mutex in evm_calc_hmac_or_hash(), evm_find_protected_xattrs()
++	 * and evm_protected_xattr().
++	 */
+ 	mutex_lock(&xattr_list_mutex);
+ 	list_for_each_entry(tmp, &evm_config_xattrnames, list) {
+ 		if (strcmp(xattr->name, tmp->name) == 0) {
+-- 
+2.25.1
 
