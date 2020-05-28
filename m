@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189EC1E5901
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 09:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7517A1E5904
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 09:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726689AbgE1Hkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 03:40:37 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:37244 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727035AbgE1Hke (ORCPT
+        id S1727070AbgE1Hko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 03:40:44 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:29008 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726612AbgE1Hkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 03:40:34 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04S7bYHs027404;
-        Thu, 28 May 2020 09:40:10 +0200
+        Thu, 28 May 2020 03:40:43 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04S7cETe026352;
+        Thu, 28 May 2020 09:40:33 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=V658O7acapdBO2YkB9RbwR06ZSaEppsTrdRBJUuLL0w=;
- b=dUxTXPl+MM1S9zwJ/QVm/iwWXUwMj4UHVYkWvAcsKii7gUWLIfEsp72LBkRwJbkI2XwF
- IHJOY9qq+kVaBzrKSVkMXncNli5K1OEvJjQsvo821dQxmeD/nRiJPgibIoMyWQBg1QDY
- OGqdrEG9A/eq15BoUF8mQaExXUwnQD/W3geNKTpYYhlxe5NLlsd0lqWp+HcBpj/YPUJR
- PnPbS04YdDJgSj86Y6CYRM5tKNdYbQsh+kS8j/h9NLBVXmhNO89GFw0xi4jM0T+j25i1
- HIq5kqXahef/ERXiwPNm0Pn2UFY1f54xsSXhxFDsDMn3yZQn2sqRU43OHZ81UpVTGN2B 7w== 
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=F0CSKYQZT68+zKtxWpxCiuTHpdOupT99p18Bp2qGxBA=;
+ b=MB7IdLLLtPoa85owg5fmWE+JnUJkDKgsIaf6q71Oxwc8TfaS3wqp4UFrnXPAle3CCihl
+ Pb+7tAChXc93afIKPed2DSAgryCXvXBtSEgFBeT7klsspyotAGW9z23uSBjhd48pJLYF
+ 7eeYzGKAXeBTx51lXbEyxOuk3oAZSNty2sETBFmY8K9RefahHa99K0BrUKRbC33/2bqj
+ lxGsMhDiDNeaTjPmbF82ZS2Ert3dE+PvY9HIVyGrKNaKObpMr+52/mpE4W7bf6CGkczt
+ OeA6pvvEYSrr7TcyL164TTjpaPopmBTupImSVxk0ULOyHKr0o/r34epli0vB/+NOE6sQ 5g== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 316tqh9na5-1
+        by mx07-00178001.pphosted.com with ESMTP id 316skwj24m-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 May 2020 09:40:10 +0200
+        Thu, 28 May 2020 09:40:33 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B3683100040;
-        Thu, 28 May 2020 09:40:09 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 44F1210002A;
+        Thu, 28 May 2020 09:40:33 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A189A2B1882;
-        Thu, 28 May 2020 09:40:09 +0200 (CEST)
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 32A442B188D;
+        Thu, 28 May 2020 09:40:33 +0200 (CEST)
 Received: from localhost (10.75.127.47) by SFHDAG3NODE1.st.com (10.75.127.7)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 28 May 2020 09:40:09
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 28 May 2020 09:40:32
  +0200
 From:   Erwan Le Ray <erwan.leray@st.com>
 To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
@@ -47,12 +46,10 @@ CC:     <linux-stm32@st-md-mailman.stormreply.com>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Erwan Le Ray <erwan.leray@st.com>,
         Fabrice Gasnier <fabrice.gasnier@st.com>
-Subject: [PATCH 2/2] ARM: dts: stm32: fix uart7_pins_a comments in stm32mp15-pinctrl
-Date:   Thu, 28 May 2020 09:40:03 +0200
-Message-ID: <20200528074003.24875-3-erwan.leray@st.com>
+Subject: [PATCH 0/5] STM32 add usart nodes support
+Date:   Thu, 28 May 2020 09:40:24 +0200
+Message-ID: <20200528074029.24962-1-erwan.leray@st.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200528074003.24875-1-erwan.leray@st.com>
-References: <20200528074003.24875-1-erwan.leray@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.75.127.47]
@@ -65,36 +62,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix uart7_pins_a comments to indicate UART7 pins instead of UART4 pins.
+Add the support of uart instances available on STM32MP157 boards:
+- usart3 on stm32mp157c-ev1, stm32mp157a-dk1, and stm32mp157c-dk2
+- uart7 on stm32mp157a-dk1 and stm32mp157c-dk2
+- usart2 on stm32mp157c-dk2
 
-Fixes: bf4b5f379fed ("ARM: dts: stm32: Add missing pinctrl definitions for STM32MP157")
+The aliases are following this order.
 
-Signed-off-by: Erwan Le Ray <erwan.leray@st.com>
+Erwan Le Ray (5):
+  ARM: dts: stm32: add usart2, usart3 and uart7 pins in
+    stm32mp15-pinctrl
+  ARM: dts: stm32: add usart3 node to stm32mp15xx-dkx boards
+  ARM: dts: stm32: add usart3 node to stm32mp157c-ev1
+  ARM: dts: stm32: add uart7 support to stm32mp15xx-dkx boards
+  ARM: dts: stm32: add usart2 node to stm32mp157c-dk2
 
-diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-index 5ff1323236e1..fb98a66977fe 100644
---- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-@@ -1632,15 +1632,15 @@
- 
- 	uart7_pins_a: uart7-0 {
- 		pins1 {
--			pinmux = <STM32_PINMUX('E', 8, AF7)>; /* UART4_TX */
-+			pinmux = <STM32_PINMUX('E', 8, AF7)>; /* UART7_TX */
- 			bias-disable;
- 			drive-push-pull;
- 			slew-rate = <0>;
- 		};
- 		pins2 {
--			pinmux = <STM32_PINMUX('E', 7, AF7)>, /* UART4_RX */
--				 <STM32_PINMUX('E', 10, AF7)>, /* UART4_CTS */
--				 <STM32_PINMUX('E', 9, AF7)>; /* UART4_RTS */
-+			pinmux = <STM32_PINMUX('E', 7, AF7)>, /* UART7_RX */
-+				 <STM32_PINMUX('E', 10, AF7)>, /* UART7_CTS */
-+				 <STM32_PINMUX('E', 9, AF7)>; /* UART7_RTS */
- 			bias-disable;
- 		};
- 	};
+ arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 138 +++++++++++++++++++++++
+ arch/arm/boot/dts/stm32mp157a-dk1.dts    |   2 +
+ arch/arm/boot/dts/stm32mp157c-dk2.dts    |  11 ++
+ arch/arm/boot/dts/stm32mp157c-ev1.dts    |  10 ++
+ arch/arm/boot/dts/stm32mp15xx-dkx.dtsi   |  17 +++
+ 5 files changed, 178 insertions(+)
+
 -- 
 2.17.1
 
