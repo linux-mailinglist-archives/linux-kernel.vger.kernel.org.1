@@ -2,91 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 639591E6330
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D0B1E6333
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390843AbgE1OD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 10:03:57 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:51528 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390540AbgE1ODy (ORCPT
+        id S2390872AbgE1OEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 10:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390644AbgE1OEE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 10:03:54 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04SE3qOZ053937;
-        Thu, 28 May 2020 09:03:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1590674632;
-        bh=j+jYUA7ka/3qyjpxH/nDKvWzSCPoUhZ1c6rVQDSScB8=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=csRnMECVMfu7GrC4mbKtruH14oxp2yNBYNcPrRN9+BuAwBnO+yK+uSKajHV0I3v+2
-         TnXbSyPvwExCPBGUtXdRcbpTJVQYO9GQCApPTB5G4NKeH/14JoNPVWdEbFBUIBOiYH
-         Y4eIaHGOCxT3unsxGHv92wyMg91NJy6f6cr/6KJs=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04SE3q8T078279
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 28 May 2020 09:03:52 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 28
- May 2020 09:03:52 -0500
-Received: from DFLE110.ent.ti.com ([fe80::c545:bde0:ab70:bae9]) by
- DFLE110.ent.ti.com ([fe80::c545:bde0:ab70:bae9%19]) with mapi id
- 15.01.1979.003; Thu, 28 May 2020 09:03:51 -0500
-From:   "Rivera-Matos, Ricardo" <r-rivera-matos@ti.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "Murphy, Dan" <dmurphy@ti.com>,
+        Thu, 28 May 2020 10:04:04 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1D8C05BD1E;
+        Thu, 28 May 2020 07:04:04 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id z1so122650qtn.2;
+        Thu, 28 May 2020 07:04:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EBD7IPZhPK6LYEpuUm9uYZgoKSKV6F+qQYG7TUFwOBk=;
+        b=qOzW1pAeJlvpU3IPXP5a+SZ03JGuxgKHseAl/bi7J7DqaZVwJa5QmrtrPr5e5etDfB
+         2Zjs3Jenivlp6HhzVugJ1rvqIWm9lau58W/4Ju1loK8vxQYYSMm2G2le6dt+crmwYLi7
+         2EH0IOA6U44/TDz6WEK4KEuiGeqcoPaTFcJSywkkZsUITScl6COflTq22fN89s7GSUQO
+         ebJCE/xZu1wSjfoQiKNvTXy+Y7rgrpU8ysy1D5kR1eRIDNsQe0EBnBYmylOIACQNhxhR
+         TUlV7kaMSEKfjzMmF6ROisX/YJ+vMXnuB0Et4Trc1jlqw0wT9KBLjLLr1OWlFtMkTM8q
+         Njig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=EBD7IPZhPK6LYEpuUm9uYZgoKSKV6F+qQYG7TUFwOBk=;
+        b=BAQ0eueq2UtpAdwX9SAZ88AatJ5Sa+PYURFjQy8ENdkayFY7sC01eFcW/18m7a2MJg
+         OXbxG/f65W1tO7F+bDgADtZ2s6+5gIBnvIOSUzpBTpew3oCd4/4zn1GsDqoj9kw/je4o
+         qhAfAoS+8OFIuOoUmbelJGH0W7EH6G3J5+Iu4ioCTouyvA8LAzliycVt5erExdiEz6Iu
+         1Twjo3fPR/jCxGfi5HPzDp1/l/i+mjBMncSdJbmoDjQrEGcUFePNw6eOTyzv83/hxjR6
+         UCG3zVCBKCRCdckZmZlZGuoAFiqxoYwfv+C+vbKuTFE1OA4rV6hjB17z+I1/HrHFCEsy
+         PB3Q==
+X-Gm-Message-State: AOAM533iGZ54MpL+MkeMg4ruwdrOe9pIAeFZfmmGUgz9B6CG5uebz5yw
+        8CZ0LiG67dV3wNF2pNwH+8w=
+X-Google-Smtp-Source: ABdhPJxLDJSpWjyDvtA1dv/WxHHofDQc5w+PCpAkPSnNcrs107St/oCxV6bvuJPWfG09qxgbbNbq9Q==
+X-Received: by 2002:ac8:4e4a:: with SMTP id e10mr3112122qtw.203.1590674640313;
+        Thu, 28 May 2020 07:04:00 -0700 (PDT)
+Received: from localhost ([199.96.181.106])
+        by smtp.gmail.com with ESMTPSA id w10sm5779166qtc.15.2020.05.28.07.03.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 07:03:59 -0700 (PDT)
+Date:   Thu, 28 May 2020 10:03:57 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
+        Markus Elfring <markus.elfring@web.de>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "sspatil@android.com" <sspatil@android.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "Davis, Andrew" <afd@ti.com>, "sre@kernel.org" <sre@kernel.org>,
-        "pali@kernel.org" <pali@kernel.org>
-Subject: Re: [EXTERNAL] Re: [PATCH v10 3/4] dt-bindings: power: Add the
- bindings for the bq2515x family of chargers.
-Thread-Topic: [EXTERNAL] Re: [PATCH v10 3/4] dt-bindings: power: Add the
- bindings for the bq2515x family of chargers.
-Thread-Index: AQHWNH0upizOK6Pkw0S1By7U4xiB96i92X4A//+vKWU=
-Date:   Thu, 28 May 2020 14:03:51 +0000
-Message-ID: <5936FE36-AF55-41EF-80DA-786A4111BAF2@ti.com>
-References: <20200527231743.18066-1-r-rivera-matos@ti.com>
- <20200527231743.18066-4-r-rivera-matos@ti.com>,<20200528135312.GA4156923@bogus>
-In-Reply-To: <20200528135312.GA4156923@bogus>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-exclaimer-md-config: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: Re: =?utf-8?B?5Zue5aSNOiBbUEFUQ0ggdjU=?= =?utf-8?Q?=5D?= workqueue:
+ Remove unnecessary kfree() call in rcu_free_wq()
+Message-ID: <20200528140357.GL83516@mtj.thefacebook.com>
+References: <20200527075715.36849-1-qiang.zhang@windriver.com>
+ <284c7851-4e89-a00f-a2e6-aa8e2e1f3fce@web.de>
+ <DM6PR11MB32573F3884A864ECD586235EFF8E0@DM6PR11MB3257.namprd11.prod.outlook.com>
+ <DM6PR11MB3257D6E7E93A518392502809FF8E0@DM6PR11MB3257.namprd11.prod.outlook.com>
+ <20200528095703.GH30374@kadam>
+ <CAJhGHyD1nV=M=ccycqCMt86GMuZGkO9trbJ=4ti4EzP9kta6iA@mail.gmail.com>
+ <20200528122545.GP22511@kadam>
+ <CAJhGHyBUkMZ=cV+Qf-5+PMAFqgebbRLc46OZSSUSgoRROpUk2A@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJhGHyBUkMZ=cV+Qf-5+PMAFqgebbRLc46OZSSUSgoRROpUk2A@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gT24gTWF5IDI4LCAyMDIwLCBhdCAwODo1MywgUm9iIEhlcnJpbmcgPHJvYmhAa2VybmVs
-Lm9yZz4gd3JvdGU6DQo+IA0KPiDvu79PbiBXZWQsIDI3IE1heSAyMDIwIDE4OjE3OjQyIC0wNTAw
-LCBSaWNhcmRvIFJpdmVyYS1NYXRvcyB3cm90ZToNCj4+IFRoZSBCUTI1MTVYIGZhbWlseSBvZiBk
-ZXZpY2VzIGFyZSBoaWdobHkgaW50ZWdyYXRlZCBiYXR0ZXJ5IG1hbmFnZW1lbnQNCj4+IElDcyB0
-aGF0IGludGVncmF0ZSB0aGUgbW9zdCBjb21tb24gZnVuY3Rpb25zIGZvciB3ZWFyYWJsZSBkZXZp
-Y2VzDQo+PiBuYW1lbHkgYSBjaGFyZ2VyLCBhbiBvdXRwdXQgdm9sdGFnZSByYWlsLCBBREMgZm9y
-IGJhdHRlcnkgYW5kIHN5c3RlbQ0KPj4gbW9uaXRvcmluZywgYW5kIGEgcHVzaC1idXR0b24gY29u
-dHJvbGxlci4NCj4+IA0KPj4gRGF0YXNoZWV0czoNCj4+IGh0dHA6Ly93d3cudGkuY29tL2xpdC9k
-cy9zeW1saW5rL2JxMjUxNTAucGRmDQo+PiBodHRwOi8vd3d3LnRpLmNvbS9saXQvZHMvc3ltbGlu
-ay9icTI1MTU1LnBkZg0KPj4gDQo+PiBTaWduZWQtb2ZmLWJ5OiBSaWNhcmRvIFJpdmVyYS1NYXRv
-cyA8ci1yaXZlcmEtbWF0b3NAdGkuY29tPg0KPj4gLS0tDQo+PiAuLi4vYmluZGluZ3MvcG93ZXIv
-c3VwcGx5L2JxMjUxNXgueWFtbCAgICAgICAgfCA5MSArKysrKysrKysrKysrKysrKysrDQo+PiAx
-IGZpbGUgY2hhbmdlZCwgOTEgaW5zZXJ0aW9ucygrKQ0KPj4gY3JlYXRlIG1vZGUgMTAwNjQ0IERv
-Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9wb3dlci9zdXBwbHkvYnEyNTE1eC55YW1s
-DQo+PiANCj4gDQo+IA0KPiBNeSBib3QgZm91bmQgZXJyb3JzIHJ1bm5pbmcgJ21ha2UgZHRfYmlu
-ZGluZ19jaGVjaycgb24geW91ciBwYXRjaDoNCj4gDQo+IC9idWlsZHMvcm9iaGVycmluZy9saW51
-eC1kdC1yZXZpZXcvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3Bvd2VyL3N1cHBs
-eS9icTI1MTV4LmV4YW1wbGUuZHQueWFtbDogY2hhcmdlckA2YjogJ2xvdy1wb3dlci1ncGlvcycg
-ZG9lcyBub3QgbWF0Y2ggYW55IG9mIHRoZSByZWdleGVzOiAncGluY3RybC1bMC05XSsnDQo+IA0K
-PiBTZWUgaHR0cHM6Ly9wYXRjaHdvcmsub3psYWJzLm9yZy9wYXRjaC8xMjk5MjYxDQo+IA0KPiBJ
-ZiB5b3UgYWxyZWFkeSByYW4gJ21ha2UgZHRfYmluZGluZ19jaGVjaycgYW5kIGRpZG4ndCBzZWUg
-dGhlIGFib3ZlDQo+IGVycm9yKHMpLCB0aGVuIG1ha2Ugc3VyZSBkdC1zY2hlbWEgaXMgdXAgdG8g
-ZGF0ZToNCj4gDQo+IHBpcDMgaW5zdGFsbCBnaXQraHR0cHM6Ly9naXRodWIuY29tL2RldmljZXRy
-ZWUtb3JnL2R0LXNjaGVtYS5naXRAbWFzdGVyIC0tdXBncmFkZQ0KPiANCj4gUGxlYXNlIGNoZWNr
-IGFuZCByZS1zdWJtaXQuDQpBQ0sNCj4gDQo=
+Hello,
+
+On Thu, May 28, 2020 at 09:27:03PM +0800, Lai Jiangshan wrote:
+> wq owns the ultimate or permanent references to itself by
+> owning references to wq->numa_pwq_tbl[node], wq->dfl_pwq.
+> The pwq's references keep the pwq in wq->pwqs.
+
+Yeah, regardless of who puts a wq the last time, the base reference is put
+by destroy_workqueue() and thus it's guaranteed that a wq can't be rcu freed
+without going through destroy_workqueue(). lol I'm undoing the revert.
+
+Thanks.
+
+-- 
+tejun
