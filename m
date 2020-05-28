@@ -2,95 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D551E611D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E941E6175
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389846AbgE1Mjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:39:52 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:47472 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389746AbgE1Mjt (ORCPT
+        id S2389904AbgE1Mw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 08:52:57 -0400
+Received: from mail-m974.mail.163.com ([123.126.97.4]:44044 "EHLO
+        mail-m974.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389828AbgE1Mw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 08:39:49 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SCcBWp077816;
-        Thu, 28 May 2020 12:39:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=9zN7Q4P5SLs/uK+J0DPJ8yIEgj4koWHklFCW9uYBztE=;
- b=OkNfGYgtVkPs5Vi30Ub2tw+HfAZ0nBlOoZTXHNlSVbs6yQvaoLG2Of2gMe3QDw5xa+wO
- Xl/+Y5+/OmShBO28mJ4sjL7+EAhIBw9B7m+kMO4YDDBcK4YDADEemELI7gLLDBtiACdm
- D+iriZQ2k6xvLSqUENZsyWPUlVCRR4JQZPaWTyPt4KZM3f2mYTRMI8fqevg2ZOIkp4fH
- 7kOQp0tIOJBAM+MYF17CifP3hpN8RYDomEapPCPRtduE5if0IEHZ6Zg49+D+LKpHMn83
- eyEhG6gcW/c2zu7VKDx/DM36CjSXDPo2C2qSLX34ecqK78jugbcQVKRpaPei7CzGRXY9 Sg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 318xe1mqrt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 28 May 2020 12:39:37 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SCJ6Ww003852;
-        Thu, 28 May 2020 12:37:37 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 317ddsq3cc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 May 2020 12:37:37 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04SCbYFX004962;
-        Thu, 28 May 2020 12:37:35 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 28 May 2020 05:37:33 -0700
-Date:   Thu, 28 May 2020 15:37:26 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Omer Shpigelman <oshpigelman@habana.ai>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] habanalabs: fix error code in unmap_device_va()
-Message-ID: <20200528123726.GB1219412@mwanda>
+        Thu, 28 May 2020 08:52:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=2Dyep
+        fzfBy/KOzfvHORsBmKYgJNqknyTEsRuBABT7qc=; b=Foj/fqXxXyDIVuGFEl7qi
+        UlBxG5Za9tlCt3B/5YEQmywa9p9RNwgyUZ3sKhVgyOQct6Nm5A8MA45/q45nIOVV
+        d2IetGiMAgSzc2tcmXfXYc6hGmD3t9slGCecKoMbJXhVFssB/29qGB0pvht5WzJ5
+        o1NrqGhEWXp+XeJEda3KzE=
+Received: from [172.20.10.2] (unknown [124.64.18.22])
+        by smtp4 (Coremail) with SMTP id HNxpCgB3LyuIsM9ev5+aBA--.24S2;
+        Thu, 28 May 2020 20:37:37 +0800 (CST)
+Subject: Re: [PATCH] MIPS: Fix IRQ tracing when call handle_fpe() and
+ handle_msa_fpe()
+To:     tsbogend@alpha.franken.de
+Cc:     paulburton@kernel.org, chenhc@lemote.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liulichao@loongson.cn
+References: <20200528123505.4219-1-yuanjunqing66@163.com>
+From:   yuanjunqing <yuanjunqing66@163.com>
+Message-ID: <57a8191b-1c64-9a5e-7935-050263d715fb@163.com>
+Date:   Thu, 28 May 2020 20:37:28 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9634 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 mlxscore=0
- phishscore=0 adultscore=0 suspectscore=2 spamscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005280086
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9634 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- adultscore=0 cotscore=-2147483648 mlxscore=0 bulkscore=0
- priorityscore=1501 phishscore=0 lowpriorityscore=0 malwarescore=0
- clxscore=1015 impostorscore=0 suspectscore=2 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005280087
+In-Reply-To: <20200528123505.4219-1-yuanjunqing66@163.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: HNxpCgB3LyuIsM9ev5+aBA--.24S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Wr4UAr18Cw1kWry5Aw1UZFb_yoWkJFc_Kr
+        42kw4DKrn8Grn3ur17tay8X3s7tw4agrnayr1qvw1Yvr45Wrn0kFZ5K3Wvqwn3XrsakF4I
+        y3W5JFnFkF1IyjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUe-Vy7UUUUU==
+X-Originating-IP: [124.64.18.22]
+X-CM-SenderInfo: h1xd0ypxqtx0rjwwqiywtou0bp/xtbBzxEyXFaD7WC+bwAAs5
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Smatch complains that "rc" can be uninitialized on certain paths.
+sorry!
 
-Fixes: 8ff5f4fd40df ("habanalabs: handle MMU cache invalidation timeout")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/misc/habanalabs/memory.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/misc/habanalabs/memory.c b/drivers/misc/habanalabs/memory.c
-index 4b8eed1ca5130..47da84a177197 100644
---- a/drivers/misc/habanalabs/memory.c
-+++ b/drivers/misc/habanalabs/memory.c
-@@ -1023,7 +1023,7 @@ static int unmap_device_va(struct hl_ctx *ctx, u64 vaddr, bool ctx_free)
- 	struct hl_va_range *va_range;
- 	enum vm_type_t *vm_type;
- 	bool is_userptr;
--	int rc;
-+	int rc = 0;
- 
- 	/* protect from double entrance */
- 	mutex_lock(&ctx->mem_hash_lock);
--- 
-2.26.2
+ÔÚ 2020/5/28 ÏÂÎç8:35, YuanJunQing Ð´µÀ:
+>  Register "a1" is unsaved in this function,
+>  when CONFIG_TRACE_IRQFLAGS is enabled,
+>  the TRACE_IRQS_OFF macro will call trace_hardirqs_off(),
+>  and this may change register "a1".
+>  The changed register "a1" as argument will be send
+>  to do_fpe() and do_msa_fpe().
+>
+> Signed-off-by: YuanJunQing <yuanjunqing66@163.com>
+> ---
+>  arch/mips/kernel/genex.S | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+> index 8236fb291e3f..a1b966f3578e 100644
+> --- a/arch/mips/kernel/genex.S
+> +++ b/arch/mips/kernel/genex.S
+> @@ -476,20 +476,20 @@ NESTED(nmi_handler, PT_SIZE, sp)
+>  	.endm
+>  
+>  	.macro	__build_clear_fpe
+> +	CLI
+> +	TRACE_IRQS_OFF
+>  	.set	push
+>  	/* gas fails to assemble cfc1 for some archs (octeon).*/ \
+>  	.set	mips1
+>  	SET_HARDFLOAT
+>  	cfc1	a1, fcr31
+>  	.set	pop
+> -	CLI
+> -	TRACE_IRQS_OFF
+>  	.endm
+>  
+>  	.macro	__build_clear_msa_fpe
+> -	_cfcmsa	a1, MSA_CSR
+>  	CLI
+>  	TRACE_IRQS_OFF
+> +	_cfcmsa	a1, MSA_CSR
+>  	.endm
+>  
+>  	.macro	__build_clear_ade
 
