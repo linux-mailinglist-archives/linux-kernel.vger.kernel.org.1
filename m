@@ -2,91 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1B21E6170
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 639E01E617D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390032AbgE1Mvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:51:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389873AbgE1Mvx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 08:51:53 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C90C05BD1E;
-        Thu, 28 May 2020 05:51:53 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id 1so15652160vsl.9;
-        Thu, 28 May 2020 05:51:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=lt0aJ/HKY3louy8TYKyi0MkEQNaEc9fCj6oIXB48VFQ=;
-        b=TJ92fK8qL246A8nOM5+5qXGRx3BB4SkxAQKInO/7psKXNC/ZHMNacF6wXsnsy2jdyV
-         OzEGZYo1pcBk1/JltGEHWzI6PKDE6muiYbB2IRohny0bEkbiB7iQM/bj80YXNht5GpFD
-         BDfrrZqiaU3Uup/yaVIbeWMfjx6kM366fMA5D4rfLlsSeZB4/JHn2/Lzj7OurLNyzjmZ
-         sHD1vfxWk6omsxb15Vr7vIjzi6py73u8e88VJYn3gAanuwaFj20EOuq2Y3HqPDr1YU9J
-         1AMoeD4EC5LHEPWq5jQ9Ynea22LBVceNdk5TTd/P9kEv0FcQbBBRLYBriaxxEzZnKEqf
-         JbRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lt0aJ/HKY3louy8TYKyi0MkEQNaEc9fCj6oIXB48VFQ=;
-        b=mn+9gQ2EEA/K7ioYA5L0jlbDcr3K+KpL+SmjG7GbVsY5nRrAR6JwMExkkMD6as8GKs
-         gRxCD0yK773hP4vaEgJc5WzpIURt49tpGl8OSY+njrsW57htcrYHOZihApU5GsskuFe/
-         Vvox9IqBHJwbRW+EwaWF20OGRywQpLEtCzeSgXccwG4Kmcf/I5E8W/1x0+wkjel2S0Kd
-         efb2A5N9YkqqgW7uwfnYbg8r0HQtsSYxlE+GZYDEeiKCpa7+fiCJ1PMLb1mkkic8/Dfa
-         nq5t5biJH3zeJTK/shvYH9Fp/tVnDyWkAFcx/6koykkf9oOYXLWaXVOXJk7e1C+TK6do
-         9MGA==
-X-Gm-Message-State: AOAM532e8rl/hicf23lebAb6Az4LwEiasXLZzJQFf6HpySNS6GgbQtbW
-        du9p78hnwJRc0qDtxzd1czG+NG+o1QJjs2pAZ0E=
-X-Google-Smtp-Source: ABdhPJyiA4HP9FtEREIW9ZmZ9toaJsyV9aglFdMu/vg2mezc8Vcr3ocA/07CzY15XP7SRq6hvc6uXL/R+3504/iKxVY=
-X-Received: by 2002:a67:e012:: with SMTP id c18mr1712875vsl.12.1590670312908;
- Thu, 28 May 2020 05:51:52 -0700 (PDT)
+        id S2389962AbgE1Mxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 08:53:43 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:38181 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389899AbgE1Mxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 08:53:41 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Xngk1GHNz9sSF;
+        Thu, 28 May 2020 22:53:38 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1590670420;
+        bh=if7jQmZfG6lRcbOj6WB0TjZbqpX42ichS7+r4E0q2xY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DqxdiboIX52vd97+6EWS/vyv8TKyyXlXZPWj5X5qnIZyVM9tTT57M1RvOF+jEa8lF
+         3hiJilNIBE4cfDtLRGIFQ0/6dDxWHUL/2Wy2B1AaZXwhYIgBHsv7K671iaveDpp0+E
+         Q9oOcErGQR4g2LD8yhd97sWHkMFfQLoV4H9woytdX/revyNjP1k4q50QPnGCELsaRJ
+         6CXgfeDxC6Jj5TtOArxrtF02i+d/pk/CihuQdxQ6YXxC/VnSE9jSVhThVDZjiCosIB
+         QPmpSiM9A0gXvPugJOjbt8G/WzMd5TQnOnYtd4i8GLHVZON4yJDQ7d3UfkWqkOFoOu
+         GOtrbhAVc/9HQ==
+Date:   Thu, 28 May 2020 22:53:36 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Marco Elver <elver@google.com>, Will Deacon <will@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Borislav Petkov <bp@alien8.de>
+Subject: Re: [PATCH -tip v3 09/11] data_race: Avoid nested statement
+ expression
+Message-ID: <20200528225336.2defab20@canb.auug.org.au>
+In-Reply-To: <CAK8P3a1BH5nXDK2VS7jWc_u2B1kztr4u9JMXhWF9-iZdrsb-7Q@mail.gmail.com>
+References: <20200521142047.169334-1-elver@google.com>
+        <20200521142047.169334-10-elver@google.com>
+        <CAKwvOdnR7BXw_jYS5PFTuUamcwprEnZ358qhOxSu6wSSSJhxOA@mail.gmail.com>
+        <CAK8P3a0RJtbVi1JMsfik=jkHCNFv+DJn_FeDg-YLW+ueQW3tNg@mail.gmail.com>
+        <20200526120245.GB27166@willie-the-truck>
+        <CAK8P3a29BNwvdN1YNzoN966BF4z1QiSxdRXTP+BzhM9H07LoYQ@mail.gmail.com>
+        <CANpmjNOUdr2UG3F45=JaDa0zLwJ5ukPc1MMKujQtmYSmQnjcXg@mail.gmail.com>
+        <20200526173312.GA30240@google.com>
+        <CAK8P3a3ZawPnzmzx4q58--M1h=v4X-1GtQLiwL1=G6rDK8=Wpg@mail.gmail.com>
+        <CAK8P3a3UYQeXhiufUevz=rwe09WM_vSTCd9W+KvJHJcOeQyWVA@mail.gmail.com>
+        <20200527072248.GA9887@willie-the-truck>
+        <CANpmjNO2A39XRQ9OstwKGKpZ6wQ4ebVcBNfH_ZhCTi8RG6WqYw@mail.gmail.com>
+        <CAK8P3a1BH5nXDK2VS7jWc_u2B1kztr4u9JMXhWF9-iZdrsb-7Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <e218bc34-b8cf-cf0d-aaf1-e1f259d29f7c@web.de>
-In-Reply-To: <e218bc34-b8cf-cf0d-aaf1-e1f259d29f7c@web.de>
-From:   Tao pilgrim <pilgrimtao@gmail.com>
-Date:   Thu, 28 May 2020 20:51:41 +0800
-Message-ID: <CAAWJmAYox7VNCzj7FnRdiX450wd=DtZAcZv3_2JiPmBuLvUMeQ@mail.gmail.com>
-Subject: Re: [PATCH] proc/fd: Remove the initialization of variables in seq_show()
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/=gXnD5Mwv9r7w5Lq6vJ+mEE";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > The variables{files, file} will definitely be assigned,
->
-> I find an other specification nicer for these identifiers.
->
->
-> > so we don't need to initialize them.
->
-> I suggest to recheck programming concerns around the handling
-> of the null pointer for the variable =E2=80=9Cfile=E2=80=9D.
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/f=
-s/proc/fd.c?id=3Dcaffb99b6929f41a69edbb5aef3a359bf45f3315#n20
-> https://elixir.bootlin.com/linux/v5.7-rc6/source/fs/proc/fd.c#L20
+--Sig_/=gXnD5Mwv9r7w5Lq6vJ+mEE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-We don't need to initialize the variable =E2=80=9Cfile=E2=80=9D.
-On line 34, if (files) is true,
-{file =3D fcheck_files(files, fd)} will be executed on line 38.
-On line 34, if (files) is flse,
-{return ret;} will be executed on line 54, and seq_show() will exit directl=
-y.
-I don't find the programming concerns around the handling of the null
-pointer for the variable =E2=80=9Cfile=E2=80=9D.
+Hi Arnd,
 
-If you have other suggestions, please elaborate on the details.
+On Wed, 27 May 2020 11:26:51 +0200 Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> Right. I think there is still room for optimization around here, but
+> for v5.8 I'm happy enough with Marco's__unqual_scalar_typeof()
+> change. Stephen Rothwell is probably the one who's most affected
+> by compile speed, so it would be good to get an Ack/Nak from him
+> on whether this brings speed and memory usage back to normal
+> for him as well.
 
---
-Yours,
-Kaitao Cheng
+Assuming you meant "[PATCH -tip] compiler_types.h: Optimize
+__unqual_scalar_typeof  compilation time"
+https://lore.kernel.org/lkml/20200527103236.148700-1-elver@google.com/
+
+I did some x86_64 allmodconfig builds (as I do all day):
+
+Linus' tree:
+
+36884.15user 1439.31system 9:05.46elapsed 7025%CPU (0avgtext+0avgdata 50041=
+6maxresident)k
+0inputs+128outputs (0major+64821256minor)pagefaults 0swaps
+36878.19user 1436.60system 9:05.37elapsed 7025%CPU (0avgtext+0avgdata 49465=
+6maxresident)k
+0inputs+128outputs (0major+64771097minor)pagefaults 0swaps
+
+linux-next:
+
+42378.58user 1513.34system 9:59.33elapsed 7323%CPU (0avgtext+0avgdata 53792=
+0maxresident)k
+0inputs+384outputs (0major+65102976minor)pagefaults 0swaps
+42378.38user 1509.52system 9:59.12elapsed 7325%CPU (0avgtext+0avgdata 53536=
+0maxresident)k
+0inputs+384outputs (0major+65102513minor)pagefaults 0swaps
+
+linux-next+patch:
+
+39090.54user 1464.71system 9:17.36elapsed 7276%CPU (0avgtext+0avgdata 52057=
+6maxresident)k
+0inputs+384outputs (0major+62226026minor)pagefaults 0swaps
+39101.66user 1471.55system 9:18.13elapsed 7269%CPU (0avgtext+0avgdata 51385=
+6maxresident)k
+0inputs+384outputs (0major+62243972minor)pagefaults 0swaps
+
+So, it is a bit better than current linux-next, but not quita back to
+Linus' tree (but that is not unexpected as there are over 12000 new
+commits in -next).
+
+$ x86_64-linux-gnu-gcc --version
+x86_64-linux-gnu-gcc (Debian 9.3.0-8) 9.3.0
+
+80 thread Power8 using -j100
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/=gXnD5Mwv9r7w5Lq6vJ+mEE
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7PtFAACgkQAVBC80lX
+0GwShgf/WE8dBTWi5LGlN07/ZZepqF0bEYhRDibb43csv7ZTlkh/o57GpSMNFz5P
+WTFPsP/oiD6mNhZVkuu5vZfNTocZo/r4f5n4CsIF5Tn9PSHVXw8nSYmC9GmLV/+K
+LCSNsc6d/TQQRBPY7fSMlSh12NxhQ2nE1LbbxRZpnZT852NnCncBfFsKMGEb1ue0
+AVzcq4+iModfjf2dqRJKUgBwpD8VxfBPgV9zjmH3U4BW9NgYVTndW5E/ceXCM6Yd
+cOQCADKJP4qWLETMrC4oTiXMwRP5pHjZ7oXOccD7XsKnPWrHLFET8G5KAySIiA9e
+Xz7rs85KHwGG5zkogSTDHVkNUkg0vA==
+=YOpz
+-----END PGP SIGNATURE-----
+
+--Sig_/=gXnD5Mwv9r7w5Lq6vJ+mEE--
