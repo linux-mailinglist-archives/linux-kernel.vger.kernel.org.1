@@ -2,288 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1B01E5E3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A781E5E37
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388397AbgE1L3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 07:29:44 -0400
-Received: from cmccmta1.chinamobile.com ([221.176.66.79]:4394 "EHLO
-        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388190AbgE1L3n (ORCPT
+        id S2388377AbgE1L3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 07:29:09 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:29992 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2388271AbgE1L3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 07:29:43 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.7]) by rmmx-syy-dmz-app02-12002 (RichMail) with SMTP id 2ee25ecfa089b11-1547a; Thu, 28 May 2020 19:29:13 +0800 (CST)
-X-RM-TRANSID: 2ee25ecfa089b11-1547a
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.25.154.146])
-        by rmsmtp-syy-appsvr04-12004 (RichMail) with SMTP id 2ee45ecfa086616-732fc;
-        Thu, 28 May 2020 19:29:13 +0800 (CST)
-X-RM-TRANSID: 2ee45ecfa086616-732fc
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     gregkh@linuxfoundation.org, thierry.reding@gmail.com,
-        balbi@kernel.org, jonathanh@nvidia.com
-Cc:     linux-usb@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-Subject: [PATCH] usb: phy: tegra: Remove unnecessary spaces and tables
-Date:   Thu, 28 May 2020 19:28:59 +0800
-Message-Id: <20200528112859.6160-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        Thu, 28 May 2020 07:29:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590665345;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5jkGnU9IhZ9f76OQSbwe6teWCCTmgG0EZGcGlII1Znw=;
+        b=WL/+nwCMDMOUu4W9VzIpOhZaV3hdfckNRK8cTX/ywWHznORPLVoGiYlU/PmF+lPsEUtdha
+        RJblRjnk0wrLN3bCUlaaoYm1UKgrMPGPSSmVBvw6r/qNmhXLWjlG4O+CVHK9vdhRwmmvfw
+        sYWMg86ddOd2prWReBqQoNaUrzs5lcc=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-482-FjGJksUQN8eNdHSYxK7IuA-1; Thu, 28 May 2020 07:29:04 -0400
+X-MC-Unique: FjGJksUQN8eNdHSYxK7IuA-1
+Received: by mail-ed1-f69.google.com with SMTP id y5so3485532edw.19
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 04:29:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5jkGnU9IhZ9f76OQSbwe6teWCCTmgG0EZGcGlII1Znw=;
+        b=YjypOEVgnkOdK6ZBZxI2YyL+DZRHjQhotPzGg7kZi2+2AQd2u9jvSXzMKixzASB8bW
+         NI7r4ebQO7+XLHYyU+YBGVWEO/i/cgIbCh+4V8+a/1No9bXEaA+xNaOputG1zjZMfP7x
+         kbWCahJ2wnyKG24VsRGSmAa1ArKwszz+RbMoCwEkE2+dwTOI+DkDdAFp0Iu8dBit1lWg
+         QGJg0xI7acsKlixuOpWCfxI3ihd/1AgwKSAlbT2e38O03s389he+kg+ri9sPGxFOt+mN
+         XlMjcGYs0nWzh4m17HSInabesdQ3aWl0L5UkQnFgtcIUOwVIB6mynCakpl4slpNt94dv
+         ci+g==
+X-Gm-Message-State: AOAM530QZDzZDKxH5/zuxRg1Zr3yIE3FpOBizzLX1rpegmenRLQfoIyF
+        qg7YbSuShBIcHqd0e3T1ybrdSbKKPZnRbBDGmLE2DCnq2AKU1id5HCNwGXaPZM1tzHT9R+PCelh
+        TbelRojlYf/i7E1ff7bIr9v2J
+X-Received: by 2002:a50:fc83:: with SMTP id f3mr2710541edq.138.1590665342665;
+        Thu, 28 May 2020 04:29:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJySYdErOVnXb5nGRwttKS53jtfg1bKwk3/b9HzdBfcf3eYOFduECx7Urge3ndc527hNlaGAgg==
+X-Received: by 2002:a50:fc83:: with SMTP id f3mr2710523edq.138.1590665342479;
+        Thu, 28 May 2020 04:29:02 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:3c1c:ffba:c624:29b8? ([2001:b07:6468:f312:3c1c:ffba:c624:29b8])
+        by smtp.gmail.com with ESMTPSA id a3sm4469745edv.70.2020.05.28.04.29.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 May 2020 04:29:01 -0700 (PDT)
+Subject: Re: [PATCH v2 06/10] KVM: x86: acknowledgment mechanism for async pf
+ page ready notifications
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        x86@kernel.org
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        Vivek Goyal <vgoyal@redhat.com>, Gavin Shan <gshan@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
+References: <20200525144125.143875-1-vkuznets@redhat.com>
+ <20200525144125.143875-7-vkuznets@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f9d32c25-9167-f1a7-cda7-182a785b92aa@redhat.com>
+Date:   Thu, 28 May 2020 13:29:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200525144125.143875-7-vkuznets@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The macros in phy-tegra-usb.c have inconsistent sapces between
-the macro name and the value. Thus sets all the macros to have
-a signal space between the name and value.
+On 25/05/20 16:41, Vitaly Kuznetsov wrote:
+> +	case MSR_KVM_ASYNC_PF_ACK:
+> +		if (data & 0x1) {
+> +			vcpu->arch.apf.pageready_pending = false;
+> +			kvm_check_async_pf_completion(vcpu);
+> +		}
+> +		break;
+>  	case MSR_KVM_STEAL_TIME:
+>  
+>  		if (unlikely(!sched_info_on()))
+> @@ -3183,6 +3189,9 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  	case MSR_KVM_ASYNC_PF_INT:
+>  		msr_info->data = vcpu->arch.apf.msr_int_val;
+>  		break;
+> +	case MSR_KVM_ASYNC_PF_ACK:
+> +		msr_info->data = 0;
+> +		break;
 
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
----
- drivers/usb/phy/phy-tegra-usb.c | 214 ++++++++++++++++----------------
- 1 file changed, 107 insertions(+), 107 deletions(-)
+How is the pageready_pending flag migrated?  Should we revert the
+direction of the MSR (i.e. read the flag, and write 0 to clear it)?
 
-diff --git a/drivers/usb/phy/phy-tegra-usb.c b/drivers/usb/phy/phy-tegra-usb.c
-index 6153cc35a..c294dc617 100644
---- a/drivers/usb/phy/phy-tegra-usb.c
-+++ b/drivers/usb/phy/phy-tegra-usb.c
-@@ -30,124 +30,124 @@
- #include <linux/usb/tegra_usb_phy.h>
- #include <linux/usb/ulpi.h>
- 
--#define ULPI_VIEWPORT				0x170
-+#define ULPI_VIEWPORT	0x170
- 
- /* PORTSC PTS/PHCD bits, Tegra20 only */
--#define TEGRA_USB_PORTSC1			0x184
--#define TEGRA_USB_PORTSC1_PTS(x)		(((x) & 0x3) << 30)
--#define TEGRA_USB_PORTSC1_PHCD			BIT(23)
-+#define TEGRA_USB_PORTSC1	0x184
-+#define TEGRA_USB_PORTSC1_PTS(x)	(((x) & 0x3) << 30)
-+#define TEGRA_USB_PORTSC1_PHCD	BIT(23)
- 
- /* HOSTPC1 PTS/PHCD bits, Tegra30 and above */
--#define TEGRA_USB_HOSTPC1_DEVLC			0x1b4
--#define TEGRA_USB_HOSTPC1_DEVLC_PTS(x)		(((x) & 0x7) << 29)
--#define TEGRA_USB_HOSTPC1_DEVLC_PHCD		BIT(22)
-+#define TEGRA_USB_HOSTPC1_DEVLC	0x1b4
-+#define TEGRA_USB_HOSTPC1_DEVLC_PTS(x)	(((x) & 0x7) << 29)
-+#define TEGRA_USB_HOSTPC1_DEVLC_PHCD	BIT(22)
- 
- /* Bits of PORTSC1, which will get cleared by writing 1 into them */
- #define TEGRA_PORTSC1_RWC_BITS	(PORT_CSC | PORT_PEC | PORT_OCC)
- 
--#define USB_SUSP_CTRL				0x400
--#define   USB_WAKE_ON_CNNT_EN_DEV		BIT(3)
--#define   USB_WAKE_ON_DISCON_EN_DEV		BIT(4)
--#define   USB_SUSP_CLR				BIT(5)
--#define   USB_PHY_CLK_VALID			BIT(7)
--#define   UTMIP_RESET				BIT(11)
--#define   UHSIC_RESET				BIT(11)
--#define   UTMIP_PHY_ENABLE			BIT(12)
--#define   ULPI_PHY_ENABLE			BIT(13)
--#define   USB_SUSP_SET				BIT(14)
--#define   USB_WAKEUP_DEBOUNCE_COUNT(x)		(((x) & 0x7) << 16)
--
--#define USB1_LEGACY_CTRL			0x410
--#define   USB1_NO_LEGACY_MODE			BIT(0)
--#define   USB1_VBUS_SENSE_CTL_MASK		(3 << 1)
--#define   USB1_VBUS_SENSE_CTL_VBUS_WAKEUP	(0 << 1)
--#define   USB1_VBUS_SENSE_CTL_AB_SESS_VLD_OR_VBUS_WAKEUP \
-+#define USB_SUSP_CTRL	0x400
-+#define USB_WAKE_ON_CNNT_EN_DEV	BIT(3)
-+#define USB_WAKE_ON_DISCON_EN_DEV	BIT(4)
-+#define USB_SUSP_CLR	BIT(5)
-+#define USB_PHY_CLK_VALID	BIT(7)
-+#define UTMIP_RESET	BIT(11)
-+#define UHSIC_RESET	BIT(11)
-+#define UTMIP_PHY_ENABLE	BIT(12)
-+#define ULPI_PHY_ENABLE	BIT(13)
-+#define USB_SUSP_SET	BIT(14)
-+#define USB_WAKEUP_DEBOUNCE_COUNT(x)	(((x) & 0x7) << 16)
-+
-+#define USB1_LEGACY_CTRL	0x410
-+#define USB1_NO_LEGACY_MODE	BIT(0)
-+#define USB1_VBUS_SENSE_CTL_MASK	(3 << 1)
-+#define USB1_VBUS_SENSE_CTL_VBUS_WAKEUP	(0 << 1)
-+#define USB1_VBUS_SENSE_CTL_AB_SESS_VLD_OR_VBUS_WAKEUP \
- 						(1 << 1)
--#define   USB1_VBUS_SENSE_CTL_AB_SESS_VLD	(2 << 1)
--#define   USB1_VBUS_SENSE_CTL_A_SESS_VLD	(3 << 1)
--
--#define ULPI_TIMING_CTRL_0			0x424
--#define   ULPI_OUTPUT_PINMUX_BYP		BIT(10)
--#define   ULPI_CLKOUT_PINMUX_BYP		BIT(11)
--
--#define ULPI_TIMING_CTRL_1			0x428
--#define   ULPI_DATA_TRIMMER_LOAD		BIT(0)
--#define   ULPI_DATA_TRIMMER_SEL(x)		(((x) & 0x7) << 1)
--#define   ULPI_STPDIRNXT_TRIMMER_LOAD		BIT(16)
--#define   ULPI_STPDIRNXT_TRIMMER_SEL(x)		(((x) & 0x7) << 17)
--#define   ULPI_DIR_TRIMMER_LOAD			BIT(24)
--#define   ULPI_DIR_TRIMMER_SEL(x)		(((x) & 0x7) << 25)
--
--#define UTMIP_PLL_CFG1				0x804
--#define   UTMIP_XTAL_FREQ_COUNT(x)		(((x) & 0xfff) << 0)
--#define   UTMIP_PLLU_ENABLE_DLY_COUNT(x)	(((x) & 0x1f) << 27)
--
--#define UTMIP_XCVR_CFG0				0x808
--#define   UTMIP_XCVR_SETUP(x)			(((x) & 0xf) << 0)
--#define   UTMIP_XCVR_SETUP_MSB(x)		((((x) & 0x70) >> 4) << 22)
--#define   UTMIP_XCVR_LSRSLEW(x)			(((x) & 0x3) << 8)
--#define   UTMIP_XCVR_LSFSLEW(x)			(((x) & 0x3) << 10)
--#define   UTMIP_FORCE_PD_POWERDOWN		BIT(14)
--#define   UTMIP_FORCE_PD2_POWERDOWN		BIT(16)
--#define   UTMIP_FORCE_PDZI_POWERDOWN		BIT(18)
--#define   UTMIP_XCVR_LSBIAS_SEL			BIT(21)
--#define   UTMIP_XCVR_HSSLEW(x)			(((x) & 0x3) << 4)
--#define   UTMIP_XCVR_HSSLEW_MSB(x)		((((x) & 0x1fc) >> 2) << 25)
--
--#define UTMIP_BIAS_CFG0				0x80c
--#define   UTMIP_OTGPD				BIT(11)
--#define   UTMIP_BIASPD				BIT(10)
--#define   UTMIP_HSSQUELCH_LEVEL(x)		(((x) & 0x3) << 0)
--#define   UTMIP_HSDISCON_LEVEL(x)		(((x) & 0x3) << 2)
--#define   UTMIP_HSDISCON_LEVEL_MSB(x)		((((x) & 0x4) >> 2) << 24)
--
--#define UTMIP_HSRX_CFG0				0x810
--#define   UTMIP_ELASTIC_LIMIT(x)		(((x) & 0x1f) << 10)
--#define   UTMIP_IDLE_WAIT(x)			(((x) & 0x1f) << 15)
--
--#define UTMIP_HSRX_CFG1				0x814
--#define   UTMIP_HS_SYNC_START_DLY(x)		(((x) & 0x1f) << 1)
--
--#define UTMIP_TX_CFG0				0x820
--#define   UTMIP_FS_PREABMLE_J			BIT(19)
--#define   UTMIP_HS_DISCON_DISABLE		BIT(8)
--
--#define UTMIP_MISC_CFG0				0x824
--#define   UTMIP_DPDM_OBSERVE			BIT(26)
--#define   UTMIP_DPDM_OBSERVE_SEL(x)		(((x) & 0xf) << 27)
--#define   UTMIP_DPDM_OBSERVE_SEL_FS_J		UTMIP_DPDM_OBSERVE_SEL(0xf)
--#define   UTMIP_DPDM_OBSERVE_SEL_FS_K		UTMIP_DPDM_OBSERVE_SEL(0xe)
--#define   UTMIP_DPDM_OBSERVE_SEL_FS_SE1		UTMIP_DPDM_OBSERVE_SEL(0xd)
--#define   UTMIP_DPDM_OBSERVE_SEL_FS_SE0		UTMIP_DPDM_OBSERVE_SEL(0xc)
--#define   UTMIP_SUSPEND_EXIT_ON_EDGE		BIT(22)
--
--#define UTMIP_MISC_CFG1				0x828
--#define   UTMIP_PLL_ACTIVE_DLY_COUNT(x)		(((x) & 0x1f) << 18)
--#define   UTMIP_PLLU_STABLE_COUNT(x)		(((x) & 0xfff) << 6)
--
--#define UTMIP_DEBOUNCE_CFG0			0x82c
--#define   UTMIP_BIAS_DEBOUNCE_A(x)		(((x) & 0xffff) << 0)
--
--#define UTMIP_BAT_CHRG_CFG0			0x830
--#define   UTMIP_PD_CHRG				BIT(0)
--
--#define UTMIP_SPARE_CFG0			0x834
--#define   FUSE_SETUP_SEL			BIT(3)
--
--#define UTMIP_XCVR_CFG1				0x838
--#define   UTMIP_FORCE_PDDISC_POWERDOWN		BIT(0)
--#define   UTMIP_FORCE_PDCHRP_POWERDOWN		BIT(2)
--#define   UTMIP_FORCE_PDDR_POWERDOWN		BIT(4)
--#define   UTMIP_XCVR_TERM_RANGE_ADJ(x)		(((x) & 0xf) << 18)
--
--#define UTMIP_BIAS_CFG1				0x83c
--#define   UTMIP_BIAS_PDTRK_COUNT(x)		(((x) & 0x1f) << 3)
-+#define USB1_VBUS_SENSE_CTL_AB_SESS_VLD	(2 << 1)
-+#define USB1_VBUS_SENSE_CTL_A_SESS_VLD	(3 << 1)
-+
-+#define ULPI_TIMING_CTRL_0	0x424
-+#define ULPI_OUTPUT_PINMUX_BYP	BIT(10)
-+#define ULPI_CLKOUT_PINMUX_BYP	BIT(11)
-+
-+#define ULPI_TIMING_CTRL_1	0x428
-+#define ULPI_DATA_TRIMMER_LOAD	BIT(0)
-+#define ULPI_DATA_TRIMMER_SEL(x)	(((x) & 0x7) << 1)
-+#define ULPI_STPDIRNXT_TRIMMER_LOAD	BIT(16)
-+#define ULPI_STPDIRNXT_TRIMMER_SEL(x)	(((x) & 0x7) << 17)
-+#define ULPI_DIR_TRIMMER_LOAD	BIT(24)
-+#define ULPI_DIR_TRIMMER_SEL(x)	(((x) & 0x7) << 25)
-+
-+#define UTMIP_PLL_CFG1	0x804
-+#define UTMIP_XTAL_FREQ_COUNT(x)	(((x) & 0xfff) << 0)
-+#define UTMIP_PLLU_ENABLE_DLY_COUNT(x)	(((x) & 0x1f) << 27)
-+
-+#define UTMIP_XCVR_CFG0	0x808
-+#define UTMIP_XCVR_SETUP(x)	(((x) & 0xf) << 0)
-+#define UTMIP_XCVR_SETUP_MSB(x)	((((x) & 0x70) >> 4) << 22)
-+#define UTMIP_XCVR_LSRSLEW(x)	(((x) & 0x3) << 8)
-+#define UTMIP_XCVR_LSFSLEW(x)	(((x) & 0x3) << 10)
-+#define UTMIP_FORCE_PD_POWERDOWN	BIT(14)
-+#define UTMIP_FORCE_PD2_POWERDOWN	BIT(16)
-+#define UTMIP_FORCE_PDZI_POWERDOWN	BIT(18)
-+#define UTMIP_XCVR_LSBIAS_SEL	BIT(21)
-+#define UTMIP_XCVR_HSSLEW(x)	(((x) & 0x3) << 4)
-+#define UTMIP_XCVR_HSSLEW_MSB(x)	((((x) & 0x1fc) >> 2) << 25)
-+
-+#define UTMIP_BIAS_CFG0	0x80c
-+#define UTMIP_OTGPD	BIT(11)
-+#define UTMIP_BIASPD	BIT(10)
-+#define UTMIP_HSSQUELCH_LEVEL(x)	(((x) & 0x3) << 0)
-+#define UTMIP_HSDISCON_LEVEL(x)	(((x) & 0x3) << 2)
-+#define UTMIP_HSDISCON_LEVEL_MSB(x)	((((x) & 0x4) >> 2) << 24)
-+
-+#define UTMIP_HSRX_CFG0	0x810
-+#define UTMIP_ELASTIC_LIMIT(x)	(((x) & 0x1f) << 10)
-+#define UTMIP_IDLE_WAIT(x)	(((x) & 0x1f) << 15)
-+
-+#define UTMIP_HSRX_CFG1	0x814
-+#define UTMIP_HS_SYNC_START_DLY(x)	(((x) & 0x1f) << 1)
-+
-+#define UTMIP_TX_CFG0	0x820
-+#define UTMIP_FS_PREABMLE_J	BIT(19)
-+#define UTMIP_HS_DISCON_DISABLE	BIT(8)
-+
-+#define UTMIP_MISC_CFG0	0x824
-+#define UTMIP_DPDM_OBSERVE	BIT(26)
-+#define UTMIP_DPDM_OBSERVE_SEL(x)	(((x) & 0xf) << 27)
-+#define UTMIP_DPDM_OBSERVE_SEL_FS_J	UTMIP_DPDM_OBSERVE_SEL(0xf)
-+#define UTMIP_DPDM_OBSERVE_SEL_FS_K	UTMIP_DPDM_OBSERVE_SEL(0xe)
-+#define UTMIP_DPDM_OBSERVE_SEL_FS_SE1	UTMIP_DPDM_OBSERVE_SEL(0xd)
-+#define UTMIP_DPDM_OBSERVE_SEL_FS_SE0	UTMIP_DPDM_OBSERVE_SEL(0xc)
-+#define UTMIP_SUSPEND_EXIT_ON_EDGE	BIT(22)
-+
-+#define UTMIP_MISC_CFG1	0x828
-+#define UTMIP_PLL_ACTIVE_DLY_COUNT(x)	(((x) & 0x1f) << 18)
-+#define UTMIP_PLLU_STABLE_COUNT(x)	(((x) & 0xfff) << 6)
-+
-+#define UTMIP_DEBOUNCE_CFG0	0x82c
-+#define UTMIP_BIAS_DEBOUNCE_A(x)	(((x) & 0xffff) << 0)
-+
-+#define UTMIP_BAT_CHRG_CFG0	0x830
-+#define UTMIP_PD_CHRG	BIT(0)
-+
-+#define UTMIP_SPARE_CFG0	0x834
-+#define FUSE_SETUP_SEL	BIT(3)
-+
-+#define UTMIP_XCVR_CFG1	0x838
-+#define UTMIP_FORCE_PDDISC_POWERDOWN	BIT(0)
-+#define UTMIP_FORCE_PDCHRP_POWERDOWN	BIT(2)
-+#define UTMIP_FORCE_PDDR_POWERDOWN	BIT(4)
-+#define UTMIP_XCVR_TERM_RANGE_ADJ(x)	(((x) & 0xf) << 18)
-+
-+#define UTMIP_BIAS_CFG1	0x83c
-+#define UTMIP_BIAS_PDTRK_COUNT(x)	(((x) & 0x1f) << 3)
- 
- /* For Tegra30 and above only, the address is different in Tegra20 */
--#define USB_USBMODE				0x1f8
--#define   USB_USBMODE_MASK			(3 << 0)
--#define   USB_USBMODE_HOST			(3 << 0)
--#define   USB_USBMODE_DEVICE			(2 << 0)
-+#define USB_USBMODE	0x1f8
-+#define USB_USBMODE_MASK	(3 << 0)
-+#define USB_USBMODE_HOST	(3 << 0)
-+#define USB_USBMODE_DEVICE	(2 << 0)
- 
- static DEFINE_SPINLOCK(utmip_pad_lock);
- static unsigned int utmip_pad_count;
--- 
-2.20.1.windows.1
-
-
+Paolo
 
