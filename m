@@ -2,74 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 717581E6CAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7561E6CB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407316AbgE1Ufg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 16:35:36 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:42497 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407267AbgE1Ufc (ORCPT
+        id S2407308AbgE1Ugp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 16:36:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407237AbgE1Ugh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 16:35:32 -0400
-Received: by mail-io1-f66.google.com with SMTP id d5so22152665ios.9;
-        Thu, 28 May 2020 13:35:31 -0700 (PDT)
+        Thu, 28 May 2020 16:36:37 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2947DC08C5C6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:36:37 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id bg4so47650plb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:36:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vRratM29kdQLg6OaUHiYE8TMO8cnRbvNntJYzvfFXSk=;
+        b=T7eZHHorrBd8JFM+hOZZRuALMG/zzJsIFsg+LxOKQwBMyAHrC262d4inPtrnaJt+va
+         yLEq0Qez19ig8V3/ALoOaNLZPEJbfrEWnUbvJDIATCHuvynuk0yuEpDMOIKeHMPTYzuD
+         yIYJU60JDMPHw6GSHpcbJISLoidt1oq371dSk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=R1LLM7xnfdvcgFQRKV14YzdSlvQJ4RI+sB1xnpIODbo=;
-        b=EADPYqQc+4Y1n4IfWTm1INZXCIljSKNbWg3XP8KFEU7O7H+OLYWlg64TrlsCsNQjZc
-         ojhkA5J+/RScb5qkeSWPPa+Es5K5axsC1dtqPC3yySffYVxEgdQsbZ/bfOhe3/uWMqcp
-         gr9QOBOkOpvtNcVNyUuk18HAJuYN7u+A3E7T84cSv+a66X1JhnytCb3dG992jNroL4V2
-         AXRoKXym3GXdJnmFm2thCaJICzfdlKAUbaJzkoNI8+5FqA6Mn11lrtHH3aDeg+aHxdxA
-         szbz5ov4pY7s9wXo/y/dwIygR08xgmBJur3FXV/W6ZPJmLUyT1gDM7M8rsVzMQjNm9m0
-         HkfA==
-X-Gm-Message-State: AOAM533VXYNvfPlbFS00nku5XE/FpXR1dTqrEBf1633/2ZoefHqGdmY1
-        72bnX/l7GI+GMtOkRoM2aQ==
-X-Google-Smtp-Source: ABdhPJxLNPfzvPou+nEraMmQPrlQ/n6yBhSboqmWZZKjRfj8axP7upEERZ+wrmhmueCUpUq9OGYxPQ==
-X-Received: by 2002:a02:58c3:: with SMTP id f186mr4317387jab.120.1590698131111;
-        Thu, 28 May 2020 13:35:31 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id y13sm3007418iob.51.2020.05.28.13.35.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 13:35:30 -0700 (PDT)
-Received: (nullmailer pid 633109 invoked by uid 1000);
-        Thu, 28 May 2020 20:35:29 -0000
-Date:   Thu, 28 May 2020 14:35:29 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org, maz@kernel.org,
-        jason@lakedaemon.net, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, Linux-imx@nxp.com,
-        l.stach@pengutronix.de
-Subject: Re: [PATCH V3] dt-bindings: interrupt-controller: Convert imx
- irqsteer to json-schema
-Message-ID: <20200528203529.GA633058@bogus>
-References: <1589790957-7904-1-git-send-email-Anson.Huang@nxp.com>
+        bh=vRratM29kdQLg6OaUHiYE8TMO8cnRbvNntJYzvfFXSk=;
+        b=TbfQsdnSnA6e/a/jp7901XXwJ+VocAByjiCC/DrbIHml2YcEHlHi1ZIAwVrMd7E7iQ
+         9hs3OLBEjYh63q+2fDXZmhjqq6wuAx8g/A4pxy/XamTsGLmQRg+h615hMFM+6vJ2j+Kv
+         nWieN8WH7Caw7BwRynX5VFh9P/bXkaQNgIx7LK9Hy7tJKm6yu7BnBAay4KrBbwPRGQSU
+         Kbxumtqd7LNLfyQshApV8QPf87HgR+4EOroqF0ZVmd/cIzCYzOzxLMH6lAih9ugC3fia
+         70LH8j3xMO9m+c7w2hFIqFl76E5FH3ezZ9UEnest/83RfHwdHFtGzrVuLcq4XrO6fZs9
+         MmyQ==
+X-Gm-Message-State: AOAM531zXVqhv/q8gdwhyGWLnWy3juAPs/CPx9686DEb+RGTxQmx94P3
+        wzVz7f5g2e59h/AmzFsRUV2yvg==
+X-Google-Smtp-Source: ABdhPJz0vzCp28UVxFHgxO6i1oU9ENre+0ToKo3mus4i/ki7fmTgbriZthiFUhxD0Bpkb4yypDwBjA==
+X-Received: by 2002:a17:90a:1b41:: with SMTP id q59mr5462545pjq.218.1590698196726;
+        Thu, 28 May 2020 13:36:36 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
+        by smtp.gmail.com with ESMTPSA id w26sm5411392pfj.20.2020.05.28.13.36.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 May 2020 13:36:36 -0700 (PDT)
+Date:   Thu, 28 May 2020 13:36:34 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Zijun Hu <zijuhu@codeaurora.org>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
+        rjliao@codeaurora.org
+Subject: Re: [PATCH v3] Bluetooth: hci_qca: Improve controller ID info log
+ level
+Message-ID: <20200528203634.GL4525@google.com>
+References: <1590663797-16531-1-git-send-email-zijuhu@codeaurora.org>
+ <20200528151700.GI4525@google.com>
+ <f336a66a-d392-c995-e28d-34c9cc465371@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1589790957-7904-1-git-send-email-Anson.Huang@nxp.com>
+In-Reply-To: <f336a66a-d392-c995-e28d-34c9cc465371@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 May 2020 16:35:57 +0800, Anson Huang wrote:
-> Convert the i.MX IRQSTEER binding to DT schema format using json-schema.
+On Fri, May 29, 2020 at 03:42:54AM +0800, Zijun Hu wrote:
 > 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
-> ---
-> Changes since V2:
-> 	- Improve the interrupt items description.
-> ---
->  .../bindings/interrupt-controller/fsl,irqsteer.txt | 35 ---------
->  .../interrupt-controller/fsl,irqsteer.yaml         | 89 ++++++++++++++++++++++
->  2 files changed, 89 insertions(+), 35 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.txt
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml
 > 
+> On 5/28/2020 11:17 PM, Matthias Kaehlcke wrote:
+> > On Thu, May 28, 2020 at 07:03:17PM +0800, Zijun Hu wrote:
+> >> Controller ID info got by VSC EDL_PATCH_GETVER is very
+> >> important, so improve its log level from DEBUG to INFO.
+> >>
+> >> Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
+> > 
+> > Please add the tags from earlier version unless the new patch has
+> > substantial changes.
+> > 
+> actually, this v3 patch is only to correct the code stye issue pointed
+> by you. let me resend it.
 
-Applied, thanks!
+no need to resend it, it was just a reminder to do it in the futre.
