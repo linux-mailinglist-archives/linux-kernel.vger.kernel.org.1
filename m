@@ -2,156 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB7F1E5573
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 07:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 341D21E555A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 07:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727916AbgE1FNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 01:13:41 -0400
-Received: from mga09.intel.com ([134.134.136.24]:1646 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727896AbgE1FNi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 01:13:38 -0400
-IronPort-SDR: ImV7ws41MY1JqxolhFoZD72UmkhEpEPbFP1C9SUpv0x2nd9EymslzpcjHmkR3ZmphKapX3d0vJ
- ibcUBVo4lYEg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 22:13:37 -0700
-IronPort-SDR: nrT4BrWIWNwvR5rQfELYTwjIrfw8uZM85wNV6TkXXfnvdZk5VQryfNlw4Mklxbwihq46FNka7n
- bdnUPUadj9yA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,443,1583222400"; 
-   d="scan'208";a="345789079"
-Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
-  by orsmga001.jf.intel.com with ESMTP; 27 May 2020 22:13:33 -0700
-From:   "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-To:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        devicetree@vger.kernel.org, miquel.raynal@bootlin.com
-Cc:     richard@nod.at, vigneshr@ti.com, arnd@arndb.de,
-        brendanhiggins@google.com, tglx@linutronix.de,
-        boris.brezillon@collabora.com, anders.roxell@linaro.org,
-        masonccyang@mxic.com.tw, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, hauke.mehrtens@intel.com,
-        andriy.shevchenko@intel.com, qi-ming.wu@intel.com,
-        cheol.yong.kim@intel.com,
-        "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Subject: [PATCH v9 0/2] mtd: rawnand: Add NAND controller support on Intel LGM SoC
-Date:   Thu, 28 May 2020 13:12:09 +0800
-Message-Id: <20200528051211.3063-1-vadivel.muruganx.ramuthevar@linux.intel.com>
-X-Mailer: git-send-email 2.11.0
+        id S1727064AbgE1FNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 01:13:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725298AbgE1FNM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 01:13:12 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0498BC05BD1E;
+        Wed, 27 May 2020 22:13:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=9xOqzrCxNtxuit01AXUXzcEccsdTiA/8eNviWpVQUhs=; b=Ioj04R1RREtEzCEgjxdGyZ5TP1
+        t7IWlKs1hd/sVt40NVr62d5dtqH/tnxww5HN76uwfAl2pGIctusRH4aynVRX7vjCLc3FVCEyT2f90
+        BfNOPlrS3y6wONd8J1z0ZDSeA84JnmSVvXsv5wVfeVHwSEIkTljVDsiR1ezjYV8+/Z0RL9Y4VvZMP
+        rqL23uGJsN60sMI/i6ZUmTx6bKBk7ongWne1ULqLktDZ+zcra3SR8Iu6fAHEA1+rvds2xIxqwnQRT
+        dq8jAkEiuUvtwrV7g4ky/aZK43duCEkh8lfOfBkzybZiO+qQfIA1b1EBhJGppoN4gIUuzXtZVfhD+
+        jR761tdQ==;
+Received: from p4fdb1ad2.dip0.t-ipconnect.de ([79.219.26.210] helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jeAqQ-0001QX-Nf; Thu, 28 May 2020 05:12:43 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>, drbd-dev@lists.linbit.com,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nvme@lists.infradead.org, target-devel@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+        cluster-devel@redhat.com, ocfs2-devel@oss.oracle.com,
+        netdev@vger.kernel.org, ceph-devel@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-nfs@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        Sagi Grimberg <sagi@grimberg.me>
+Subject: [PATCH 01/28] net: add sock_set_reuseaddr
+Date:   Thu, 28 May 2020 07:12:09 +0200
+Message-Id: <20200528051236.620353-2-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200528051236.620353-1-hch@lst.de>
+References: <20200528051236.620353-1-hch@lst.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds the new IP of Nand Flash Controller(NFC) support
-on Intel's Lightning Mountain(LGM) SoC.
+Add a helper to directly set the SO_REUSEADDR sockopt from kernel space
+without going through a fake uaccess.
 
-DMA is used for burst data transfer operation, also DMA HW supports
-aligned 32bit memory address and aligned data access by default.
-DMA burst of 8 supported. Data register used to support the read/write
-operation from/to device.
+For this the iscsi target now has to formally depend on inet to avoid
+a mostly theoretical compile failure.  For actual operation it already
+did depend on having ipv4 or ipv6 support.
 
-NAND controller also supports in-built HW ECC engine.
-
-NAND controller driver implements ->exec_op() to replace legacy hooks,
-these specific call-back method to execute NAND operations.
-
-Thanks Boris, Andy, Arnd and Rob for the review comments and suggestions.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Sagi Grimberg <sagi@grimberg.me>
 ---
-v9:
-   No change 
-v8:
-  - fix the kbuild bot warnings
-  - correct the typo's
-v7:
-  - indentation issue is fixed
-  - add error check for retrieve the resource from dt
-v6:
-  - update EBU_ADDR_SELx register base value build it from DT
-  - Add tabs in in Kconfig
-v5:
-  - replace by 'HSNAND_CLE_OFFS | HSNAND_CS_OFFS' to NAND_WRITE_CMD and NAND_WRITE_ADDR
-  - remove the unused macros
-  - update EBU_ADDR_MASK(x) macro
-  - update the EBU_ADDR_SELx register values to be written
-v4:
-  - add ebu_nand_cs structure for multiple-CS support
-  - mask/offset encoding for 0x51 value
-  - update macro HSNAND_CTL_ENABLE_ECC
-  - drop the op argument and un-used macros.
-  - updated the datatype and macros
-  - add function disable nand module
-  - remove ebu_host->dma_rx = NULL;
-  - rename MMIO address range variables to ebu and hsnand
-  - implement ->setup_data_interface()
-  - update label err_cleanup_nand and err_cleanup_dma
-  - add return value check in the nand_remove function
-  - add/remove tabs and spaces as per coding standard
-  - encoded CS ids by reg property
-v3:
-  - Add depends on MACRO in Kconfig
-  - file name update in Makefile
-  - file name update to intel-nand-controller
-  - modification of MACRO divided like EBU, HSNAND and NAND
-  - add NAND_ALE_OFFS, NAND_CLE_OFFS and NAND_CS_OFFS
-  - rename lgm_ to ebu_ and _va suffix is removed in the whole file
-  - rename structure and varaibles as per review comments.
-  - remove lgm_read_byte(), lgm_dev_ready() and cmd_ctrl() un-used function
-  - update in exec_op() as per review comments
-  - rename function lgm_dma_exit() by lgm_dma_cleanup()
-  - hardcoded magic value  for base and offset replaced by MACRO defined
-  - mtd_device_unregister() + nand_cleanup() instead of nand_release()
-v2:
-  - implement the ->exec_op() to replaces the legacy hook-up.
-  - update the commit message
-  - add MIPS maintainers and xway_nand driver author in CC
+ drivers/infiniband/sw/siw/siw_cm.c        | 18 +++++-------------
+ drivers/nvme/target/tcp.c                 |  8 +-------
+ drivers/target/iscsi/Kconfig              |  2 +-
+ drivers/target/iscsi/iscsi_target_login.c |  9 +--------
+ fs/dlm/lowcomms.c                         |  6 +-----
+ include/net/sock.h                        |  2 ++
+ net/core/sock.c                           |  8 ++++++++
+ 7 files changed, 19 insertions(+), 34 deletions(-)
 
-v1:
- - initial version
-
-dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
----
-v9:
-  - Rob's review comments address
-  - dual licensed
-  - compatible change
-  - add reg-names
-  - drop clock-names and clock-cells
-  - correct typo's
-v8:
-  No change
-v7:
-  - Rob's review comments addressed
-  - dt-schema build issue fixed with upgraded dt-schema
-v6:
-  - Rob's review comments addressed in YAML file
-  - add addr_sel0 and addr_sel1 reg-names in YAML example
-v5:
-  - add the example in YAML file
-v4:
-  - No change
-v3:
-  - No change
-v2:
-  YAML compatible string update to intel, lgm-nand-controller
-v1:
-  - initial version
-
-Ramuthevar Vadivel Murugan (2):
-  dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
-  mtd: rawnand: Add NAND controller support on Intel LGM SoC
-
- .../devicetree/bindings/mtd/intel,lgm-nand.yaml    |  93 +++
- drivers/mtd/nand/raw/Kconfig                       |   8 +
- drivers/mtd/nand/raw/Makefile                      |   1 +
- drivers/mtd/nand/raw/intel-nand-controller.c       | 747 +++++++++++++++++++++
- 4 files changed, 849 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
- create mode 100644 drivers/mtd/nand/raw/intel-nand-controller.c
-
+diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
+index 559e5fd3bad8b..d1860f3e87401 100644
+--- a/drivers/infiniband/sw/siw/siw_cm.c
++++ b/drivers/infiniband/sw/siw/siw_cm.c
+@@ -1312,17 +1312,14 @@ static void siw_cm_llp_state_change(struct sock *sk)
+ static int kernel_bindconnect(struct socket *s, struct sockaddr *laddr,
+ 			      struct sockaddr *raddr)
+ {
+-	int rv, flags = 0, s_val = 1;
++	int rv, flags = 0;
+ 	size_t size = laddr->sa_family == AF_INET ?
+ 		sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
+ 
+ 	/*
+ 	 * Make address available again asap.
+ 	 */
+-	rv = kernel_setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *)&s_val,
+-			       sizeof(s_val));
+-	if (rv < 0)
+-		return rv;
++	sock_set_reuseaddr(s->sk);
+ 
+ 	rv = s->ops->bind(s, laddr, size);
+ 	if (rv < 0)
+@@ -1781,7 +1778,7 @@ int siw_create_listen(struct iw_cm_id *id, int backlog)
+ 	struct siw_cep *cep = NULL;
+ 	struct siw_device *sdev = to_siw_dev(id->device);
+ 	int addr_family = id->local_addr.ss_family;
+-	int rv = 0, s_val;
++	int rv = 0;
+ 
+ 	if (addr_family != AF_INET && addr_family != AF_INET6)
+ 		return -EAFNOSUPPORT;
+@@ -1793,13 +1790,8 @@ int siw_create_listen(struct iw_cm_id *id, int backlog)
+ 	/*
+ 	 * Allow binding local port when still in TIME_WAIT from last close.
+ 	 */
+-	s_val = 1;
+-	rv = kernel_setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *)&s_val,
+-			       sizeof(s_val));
+-	if (rv) {
+-		siw_dbg(id->device, "setsockopt error: %d\n", rv);
+-		goto error;
+-	}
++	sock_set_reuseaddr(s->sk);
++
+ 	if (addr_family == AF_INET) {
+ 		struct sockaddr_in *laddr = &to_sockaddr_in(id->local_addr);
+ 
+diff --git a/drivers/nvme/target/tcp.c b/drivers/nvme/target/tcp.c
+index f0da04e960f40..40757a63f4553 100644
+--- a/drivers/nvme/target/tcp.c
++++ b/drivers/nvme/target/tcp.c
+@@ -1632,6 +1632,7 @@ static int nvmet_tcp_add_port(struct nvmet_port *nport)
+ 	port->sock->sk->sk_user_data = port;
+ 	port->data_ready = port->sock->sk->sk_data_ready;
+ 	port->sock->sk->sk_data_ready = nvmet_tcp_listen_data_ready;
++	sock_set_reuseaddr(port->sock->sk);
+ 
+ 	opt = 1;
+ 	ret = kernel_setsockopt(port->sock, IPPROTO_TCP,
+@@ -1641,13 +1642,6 @@ static int nvmet_tcp_add_port(struct nvmet_port *nport)
+ 		goto err_sock;
+ 	}
+ 
+-	ret = kernel_setsockopt(port->sock, SOL_SOCKET, SO_REUSEADDR,
+-			(char *)&opt, sizeof(opt));
+-	if (ret) {
+-		pr_err("failed to set SO_REUSEADDR sock opt %d\n", ret);
+-		goto err_sock;
+-	}
+-
+ 	if (so_priority > 0) {
+ 		ret = kernel_setsockopt(port->sock, SOL_SOCKET, SO_PRIORITY,
+ 				(char *)&so_priority, sizeof(so_priority));
+diff --git a/drivers/target/iscsi/Kconfig b/drivers/target/iscsi/Kconfig
+index 1f93ea3813536..922484ea4e304 100644
+--- a/drivers/target/iscsi/Kconfig
++++ b/drivers/target/iscsi/Kconfig
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ config ISCSI_TARGET
+ 	tristate "Linux-iSCSI.org iSCSI Target Mode Stack"
+-	depends on NET
++	depends on INET
+ 	select CRYPTO
+ 	select CRYPTO_CRC32C
+ 	select CRYPTO_CRC32C_INTEL if X86
+diff --git a/drivers/target/iscsi/iscsi_target_login.c b/drivers/target/iscsi/iscsi_target_login.c
+index 731ee67fe914b..91acb3f07b4cc 100644
+--- a/drivers/target/iscsi/iscsi_target_login.c
++++ b/drivers/target/iscsi/iscsi_target_login.c
+@@ -909,14 +909,7 @@ int iscsit_setup_np(
+ 		}
+ 	}
+ 
+-	/* FIXME: Someone please explain why this is endian-safe */
+-	ret = kernel_setsockopt(sock, SOL_SOCKET, SO_REUSEADDR,
+-			(char *)&opt, sizeof(opt));
+-	if (ret < 0) {
+-		pr_err("kernel_setsockopt() for SO_REUSEADDR"
+-			" failed\n");
+-		goto fail;
+-	}
++	sock_set_reuseaddr(sock->sk);
+ 
+ 	ret = kernel_setsockopt(sock, IPPROTO_IP, IP_FREEBIND,
+ 			(char *)&opt, sizeof(opt));
+diff --git a/fs/dlm/lowcomms.c b/fs/dlm/lowcomms.c
+index cdfaf4f0e11a0..b801e77e3e596 100644
+--- a/fs/dlm/lowcomms.c
++++ b/fs/dlm/lowcomms.c
+@@ -1244,12 +1244,8 @@ static struct socket *tcp_create_listen_sock(struct connection *con,
+ 	kernel_setsockopt(sock, SOL_TCP, TCP_NODELAY, (char *)&one,
+ 			  sizeof(one));
+ 
+-	result = kernel_setsockopt(sock, SOL_SOCKET, SO_REUSEADDR,
+-				   (char *)&one, sizeof(one));
++	sock_set_reuseaddr(sock->sk);
+ 
+-	if (result < 0) {
+-		log_print("Failed to set SO_REUSEADDR on socket: %d", result);
+-	}
+ 	write_lock_bh(&sock->sk->sk_callback_lock);
+ 	sock->sk->sk_user_data = con;
+ 	save_listen_callbacks(sock);
+diff --git a/include/net/sock.h b/include/net/sock.h
+index 3e8c6d4b4b59f..2ec085044790c 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -2688,4 +2688,6 @@ static inline bool sk_dev_equal_l3scope(struct sock *sk, int dif)
+ 
+ void sock_def_readable(struct sock *sk);
+ 
++void sock_set_reuseaddr(struct sock *sk);
++
+ #endif	/* _SOCK_H */
+diff --git a/net/core/sock.c b/net/core/sock.c
+index fd85e651ce284..18eb84fdf5fbe 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -712,6 +712,14 @@ bool sk_mc_loop(struct sock *sk)
+ }
+ EXPORT_SYMBOL(sk_mc_loop);
+ 
++void sock_set_reuseaddr(struct sock *sk)
++{
++	lock_sock(sk);
++	sk->sk_reuse = SK_CAN_REUSE;
++	release_sock(sk);
++}
++EXPORT_SYMBOL(sock_set_reuseaddr);
++
+ /*
+  *	This is meant for all protocols to use and covers goings on
+  *	at the socket level. Everything here is generic.
 -- 
-2.11.0
+2.26.2
 
