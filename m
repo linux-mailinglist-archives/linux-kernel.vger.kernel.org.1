@@ -2,113 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E66EB1E5E22
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A91F61E5E19
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388328AbgE1LUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 07:20:47 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:30686 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2388303AbgE1LUn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 07:20:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590664841;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0pDdsaPJ9DSWTCG29xVVgPA72+92+ZpKaGKhvHYc8/o=;
-        b=cnGYK2JC5bYnTT2Pd08ImODjvO31mfBzx6DCuwCatJUslkIA68z3sN8V+SAI0uwCmF7riy
-        oZ98Ejx2vo6hC9D5lt4lZqF3Ah6wX+67qWpQUied2otSd9O0NlcXwKUJNXT0AMsTpkVBtM
-        qZOOCOQ7RFgWFcEOIQTt0/klvhEp9jc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-357-rz4JWXClNKyU_Z2vtGkSbw-1; Thu, 28 May 2020 07:20:37 -0400
-X-MC-Unique: rz4JWXClNKyU_Z2vtGkSbw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C3F14805730;
-        Thu, 28 May 2020 11:20:32 +0000 (UTC)
-Received: from redhat.com (ovpn-113-1.rdu2.redhat.com [10.10.113.1])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E409A7A8B6;
-        Thu, 28 May 2020 11:20:26 +0000 (UTC)
-Date:   Thu, 28 May 2020 07:20:25 -0400
-From:   Jerome Glisse <jglisse@redhat.com>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Huang Ying <ying.huang@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Steven Capper <steve.capper@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Rabin Vincent <rabinv@axis.com>,
-        linux-arm-kernel@lists.infradead.org, rmk+kernel@arm.linux.org.uk,
-        Guo Ren <guoren@kernel.org>, linux-mips@vger.kernel.org,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>,
-        James Hogan <jhogan@kernel.org>,
-        Ley Foon Tan <lftan@altera.com>,
-        nios2-dev@lists.rocketboards.org, linux-parisc@vger.kernel.org,
-        Helge Deller <deller@gmx.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org, Guan Xuetao <gxt@pku.edu.cn>,
-        linux-xtensa@linux-xtensa.org, Max Filippov <jcmvbkbc@gmail.com>,
-        Chris Zankel <chris@zankel.net>
-Subject: Re: Cache flush issue with page_mapping_file() and swap back shmem
- page ?
-Message-ID: <20200528112025.GA10175@redhat.com>
-References: <20200528002033.GB1992500@redhat.com>
- <alpine.LSU.2.11.2005272021220.3857@eggly.anvils>
+        id S2388291AbgE1LUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 07:20:33 -0400
+Received: from mail-eopbgr30068.outbound.protection.outlook.com ([40.107.3.68]:38381
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388038AbgE1LUb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 07:20:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l9D46ALSyMQ7QpkRBBgoITcCr2XtbL6EqgJSZ0IO5b8X9lHCBAaOV7TqreT4RCFeSRsyR76qupgsxxUvK5TPaRS2u1RgEbaKgnxdQJK5XrBG5c1HXX2d80dSSjZRSTfGg4Z4zkrhLcvyS60ivL1bIjjS9EmbXr+F3D/QqDqIiCjsgcRQP93bepb78UaH4qFzlgSpcgUUQUTksWw4fdEMpeH/ZPmZivDFFdnSqCs5gaa3t+WWVXsxfMWxPOTyNshdSgw+VzfOiwTnPUUzPVtIhNawbIphd6UOOf5b1IZK6ZVV1tSFUKlJu3QuIWP/LCf7OalOYnpFes+R0EnJqGn2Xg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TfZYXV5ntPrwIvB91G2ZTNsNM2tBLs2x21ESuz/udbo=;
+ b=nCQaLxj55sLd5ovgrAxum7ScIhyy85RcRLv6FzrYVuKTttBRKYyH9Y5Iq5tmgN2mNNvPAe8ryeIjsy5r2D/7uiI67kPRQYyG+zjQyt6ue5sx8l67iCPFCtHbxd2ToYmDzKryVoESDAVs3GL0xI/iDE79s/OaEzTlKJjicOZ0MWHEAEt2Y2C2vQoYfwJHWSmXkXPdpVGj7rGNS+kZfxXbXyFN2F6IfXnZQFLmExqfu9IfqK9KeAHyJCfGrC6PUwEIZ+Ymh1koPE3YMyUjqrv854j5+f5kvTjBFfGMM3OwgMTwxpN41K5ZdLn10dtu1V8AAwrAu2jvXiGWQKeQT9qljA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TfZYXV5ntPrwIvB91G2ZTNsNM2tBLs2x21ESuz/udbo=;
+ b=fngdbhO2mk4SWC1b31IQT2lwgkgE6LUJff6+z5EDDgOkdsQQ10QlWXWKEFnIrisH59jF3vKBmEjWZy9AwhdkgVcEvJlQ2deEplMtucSK8sD5e1x70NzxS4jgClT3b+U4W/3WtmLhGEaYxAZEKNJqVxfWP+P3nnN1HnjSumd25BI=
+Received: from AM7PR04MB7157.eurprd04.prod.outlook.com (2603:10a6:20b:118::20)
+ by AM7PR04MB6871.eurprd04.prod.outlook.com (2603:10a6:20b:109::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17; Thu, 28 May
+ 2020 11:20:26 +0000
+Received: from AM7PR04MB7157.eurprd04.prod.outlook.com
+ ([fe80::1101:adaa:ee89:af2a]) by AM7PR04MB7157.eurprd04.prod.outlook.com
+ ([fe80::1101:adaa:ee89:af2a%3]) with mapi id 15.20.3045.018; Thu, 28 May 2020
+ 11:20:26 +0000
+From:   Peter Chen <peter.chen@nxp.com>
+To:     Mike Looijmans <mike.looijmans@topic.nl>
+CC:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "balbi@kernel.org" <balbi@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] usb/phy-generic: Add support for OTG VBUS supply control
+Thread-Topic: [PATCH] usb/phy-generic: Add support for OTG VBUS supply control
+Thread-Index: AQHWM23eFY1+Pfs1gUaTviqfbn5UWqi9XTqA
+Date:   Thu, 28 May 2020 11:20:26 +0000
+Message-ID: <20200528112051.GB2604@b29397-desktop>
+References: <20200526145051.31520-1-mike.looijmans@topic.nl>
+In-Reply-To: <20200526145051.31520-1-mike.looijmans@topic.nl>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: topic.nl; dkim=none (message not signed)
+ header.d=none;topic.nl; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.66]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 9745a6a5-5672-45f9-ef15-08d802f91f4a
+x-ms-traffictypediagnostic: AM7PR04MB6871:
+x-microsoft-antispam-prvs: <AM7PR04MB68714A8674D7F3DB6D9920068B8E0@AM7PR04MB6871.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-forefront-prvs: 0417A3FFD2
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0R3vUz48/EjMQdENLWv9v+AU+Mcc0MqRGShqEFW9BxFCSrtT4ZqEiz2AHnO5wj/Z+NyCA+D1IocM+IeHtM7VhWjetb+e9hPs8ABKh6uIUdYQEFaEH0kRLYQrh0nXCMHHzvLTHkf0BzhaIpJPIK9xYTOqxDaqLQHfPGjT7mc4ve9e7aymUrcWq+0hAJl6oDw/CFA08UKhWELL8bXYuU8OHkQWhQ7kiGNG/LZBaVarJw7DJF2a9w0XTfFxRflJnnirYRJKBj0cnvBgkI0BpdnC9byAXkMP7kvh1cnM3QHtRcakJeTLTb8AlCeab4D6fHrjY4L4JWMyWzTbpXRRThNhrQYh80rLy4Isojzg/eCzVAlLJgpMfgDBlaDj5FpyVcEE
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB7157.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(7916004)(4636009)(136003)(39860400002)(376002)(346002)(396003)(366004)(54906003)(4326008)(6486002)(316002)(5660300002)(83380400001)(33716001)(6916009)(66476007)(8676002)(478600001)(33656002)(2906002)(86362001)(8936002)(6506007)(26005)(66446008)(64756008)(91956017)(53546011)(71200400001)(76116006)(44832011)(9686003)(1076003)(186003)(66946007)(6512007)(66556008)(41533002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: Up9mKF7pbfrR76u8jDLT+DD9daH6PVlgybdG+8kp9MNhRpidI6xWFowiFfBtmTo4a28kPp2Y/FROAa9rA3z7W5aJXHFRTNVvFESxBfHbejGLE4FvareO2ML/3tw3YR1bHR6MmLHnR17IZa68Ctj+gOMlkYz5Ba9RFfhN5jBi07EEZU9CWgith+3jPVXpf8eQHamhdWgb4Lggn+A4a9yzJuEujOJmP1g6Fn5AEccDkA+JoqpFB/UsxOvDBBihDHFds9c6gPnmZghDzxLHhdlG2wlCDq645vwJ/fPFoNbKfWnsUzDAZjk99YLkMF8hsCBpVk+F6nuDOHHT4gXEE/IREaF7FfT6dN2LMzjmQrF/Jk19kX4MACo8++Vq3j7P5k6hixfLKm+Lp5flHAWmHZj9vfVcEABpArJtfrSWClMkQhyX/C6whQTfBgf6BJDUz2faFJf4MM6dBQJFT9XjBmYAsmdoxE18i211tABOh5+VKIs=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <31785CD05404F846A4943BB0C30CC070@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <alpine.LSU.2.11.2005272021220.3857@eggly.anvils>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9745a6a5-5672-45f9-ef15-08d802f91f4a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 May 2020 11:20:26.6727
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8YHiIr6Evy/RDOGWxtLl+PhOsCpK1n4Ij/rs06XDkWUDzN2eTe4SRf4TDRLH9QgaS9qiG3jDHe2lnMyaiHHY2w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6871
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 08:46:22PM -0700, Hugh Dickins wrote:
-> Hi Jerome,
-> 
-> On Wed, 27 May 2020, Jerome Glisse wrote:
-> > So any arch code which uses page_mapping_file() might get the wrong
-> > answer, this function will return NULL for a swap backed page which
-> > can be a shmem pages. But shmem pages can still be shared among
-> > multiple process (and possibly at different virtual addresses if
-> > mremap was use).
-> > 
-> > Attached is a patch that changes page_mapping_file() to return the
-> > shmem mapping for swap backed shmem page. I have not tested it (no
-> > way for me to test all those architecture) and i spotted this while
-> > working on something else. So i hope someone can take a closer look.
-> 
-> I'm certainly no expert on flush_dcache_page() and friends, but I'd
-> be very surprised if such a problem exists, yet has gone unnoticed
-> for so long.  page_mapping_file() itself is fairly new, added when
-> a risk of crashing on a race with swapoff came in: but the previous
-> use of page_mapping() would have suffered equally if there were such
-> a cache flushinhg problem here.
-> 
-> And I'm afraid your patch won't do anything to help if there is a
-> problem: very soon after shmem calls add_to_swap_cache(), it calls
-> shmem_delete_from_page_cache(), which sets page->mapping to NULL.
-> 
-> But I can assure you that a shmem page (unlike an anon page) is never
-> put into swap cache while it is mapped into userspace, and never
-> mapped into userspace while it is still in swap cache: does that help?
-> 
+On 20-05-26 16:50:51, Mike Looijmans wrote:
+> This enables support for VBUS on boards where the power is supplied
+> by a regulator. The regulator is enabled when the USB port enters
+> HOST mode.
+>=20
 
-You are right i missed/forgot the part where shmem is never swapcache
-and mapped at the same time, thus page_mapping_file() can return NULL
-for those as they can no longer have alias mapping.
+Why you don't do this at your host controller driver?
 
-Thank you Hugh
-Jérôme
+Peter
+> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+> ---
+>  .../devicetree/bindings/usb/usb-nop-xceiv.txt |  3 ++
+>  drivers/usb/phy/phy-generic.c                 | 44 ++++++++++++++++++-
+>  drivers/usb/phy/phy-generic.h                 |  2 +
+>  3 files changed, 48 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/usb/usb-nop-xceiv.txt b/Do=
+cumentation/devicetree/bindings/usb/usb-nop-xceiv.txt
+> index 4dc6a8ee3071..775a19fdb613 100644
+> --- a/Documentation/devicetree/bindings/usb/usb-nop-xceiv.txt
+> +++ b/Documentation/devicetree/bindings/usb/usb-nop-xceiv.txt
+> @@ -16,6 +16,9 @@ Optional properties:
+> =20
+>  - vcc-supply: phandle to the regulator that provides power to the PHY.
+> =20
+> +- vbus-supply: phandle to the regulator that provides the VBUS power for=
+ when
+> +  the device is in HOST mode.
+> +
+>  - reset-gpios: Should specify the GPIO for reset.
+> =20
+>  - vbus-detect-gpio: should specify the GPIO detecting a VBus insertion
+> diff --git a/drivers/usb/phy/phy-generic.c b/drivers/usb/phy/phy-generic.=
+c
+> index 661a229c105d..ebfb90764511 100644
+> --- a/drivers/usb/phy/phy-generic.c
+> +++ b/drivers/usb/phy/phy-generic.c
+> @@ -203,13 +203,43 @@ static int nop_set_host(struct usb_otg *otg, struct=
+ usb_bus *host)
+>  	return 0;
+>  }
+> =20
+> +static int nop_set_vbus(struct usb_otg *otg, bool enabled)
+> +{
+> +	struct usb_phy_generic *nop;
+> +	int ret;
+> +
+> +	if (!otg)
+> +		return -ENODEV;
+> +
+> +	nop =3D container_of(otg->usb_phy, struct usb_phy_generic, phy);
+> +
+> +	if (!nop->vbus_reg)
+> +		return 0;
+> +
+> +	if (enabled) {
+> +		if (nop->vbus_reg_enabled)
+> +			return 0;
+> +		ret =3D regulator_enable(nop->vbus_reg);
+> +		if (ret < 0)
+> +			return ret;
+> +		nop->vbus_reg_enabled =3D true;
+> +	} else {
+> +		if (!nop->vbus_reg_enabled)
+> +			return 0;
+> +		ret =3D regulator_disable(nop->vbus_reg);
+> +		if (ret < 0)
+> +			return ret;
+> +		nop->vbus_reg_enabled =3D false;
+> +	}
+> +}
+> +
+>  int usb_phy_gen_create_phy(struct device *dev, struct usb_phy_generic *n=
+op)
+>  {
+>  	enum usb_phy_type type =3D USB_PHY_TYPE_USB2;
+>  	int err =3D 0;
+> =20
+>  	u32 clk_rate =3D 0;
+> -	bool needs_vcc =3D false, needs_clk =3D false;
+> +	bool needs_vcc =3D false, needs_clk =3D false, needs_vbus =3D false;
+> =20
+>  	if (dev->of_node) {
+>  		struct device_node *node =3D dev->of_node;
+> @@ -219,6 +249,7 @@ int usb_phy_gen_create_phy(struct device *dev, struct=
+ usb_phy_generic *nop)
+> =20
+>  		needs_vcc =3D of_property_read_bool(node, "vcc-supply");
+>  		needs_clk =3D of_property_read_bool(node, "clocks");
+> +		needs_vbus =3D of_property_read_bool(node, "vbus-supply");
+>  	}
+>  	nop->gpiod_reset =3D devm_gpiod_get_optional(dev, "reset",
+>  						   GPIOD_ASIS);
+> @@ -268,6 +299,16 @@ int usb_phy_gen_create_phy(struct device *dev, struc=
+t usb_phy_generic *nop)
+>  			return -EPROBE_DEFER;
+>  	}
+> =20
+> +	nop->vbus_reg =3D devm_regulator_get(dev, "vbus");
+> +	if (IS_ERR(nop->vbus_reg)) {
+> +		dev_dbg(dev, "Error getting vbus regulator: %ld\n",
+> +					PTR_ERR(nop->vbus_reg));
+> +		if (needs_vbus)
+> +			return -EPROBE_DEFER;
+> +
+> +		nop->vbus_reg =3D NULL;
+> +	}
+> +
+>  	nop->dev		=3D dev;
+>  	nop->phy.dev		=3D nop->dev;
+>  	nop->phy.label		=3D "nop-xceiv";
+> @@ -278,6 +319,7 @@ int usb_phy_gen_create_phy(struct device *dev, struct=
+ usb_phy_generic *nop)
+>  	nop->phy.otg->usb_phy		=3D &nop->phy;
+>  	nop->phy.otg->set_host		=3D nop_set_host;
+>  	nop->phy.otg->set_peripheral	=3D nop_set_peripheral;
+> +	nop->phy.otg->set_vbus		=3D nop_set_vbus;
+> =20
+>  	return 0;
+>  }
+> diff --git a/drivers/usb/phy/phy-generic.h b/drivers/usb/phy/phy-generic.=
+h
+> index 7ee80211a688..a3663639ea1e 100644
+> --- a/drivers/usb/phy/phy-generic.h
+> +++ b/drivers/usb/phy/phy-generic.h
+> @@ -14,7 +14,9 @@ struct usb_phy_generic {
+>  	struct gpio_desc *gpiod_reset;
+>  	struct gpio_desc *gpiod_vbus;
+>  	struct regulator *vbus_draw;
+> +	struct regulator *vbus_reg;
+>  	bool vbus_draw_enabled;
+> +	bool vbus_reg_enabled;
+>  	unsigned long mA;
+>  	unsigned int vbus;
+>  };
+> --=20
+> 2.17.1
+>=20
 
+--=20
+
+Thanks,
+Peter Chen=
