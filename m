@@ -2,167 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A33751E603B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF141E6066
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388829AbgE1MI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:08:59 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:33690 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388769AbgE1MIx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 08:08:53 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SC7eHU096738;
-        Thu, 28 May 2020 12:08:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=qcIsNVi0wvZGA81ns5t/6g7btQGknY8Bh4yUt78pyTY=;
- b=nUj6qZ87t7W5q+Ao5Jo7TVPU46xmgqP6A3Ok65J42ozQFt6pjh9M4ga4GcvvdWU/b1s9
- aSnmlyOLDlYkALrr6oR5HbtiPheeCXP+XSwpBjZ8VfsV5e84MYQ7ne83NWcz3yLYpa3U
- YTIgdHYuF+fz00IC1FLnucuY+zvixh/xJRjWGcbpYEPa9MogmECfL598HG2NfbIwzvXH
- MpW8q1abR/2TSDQ5zwmavuUXgJMm4IfJRwIg+bcpUST4xYAwmjvFJPt48gP4xaFYze/n
- Bju3SPGT01K5bNGr059rgkFoKQkSMfUzOQ7FK3/SHa752kCBjxTnkk9J0/Cy9N4GV5uR IA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 316u8r4kjk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 28 May 2020 12:08:39 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SC38KS124411;
-        Thu, 28 May 2020 12:08:38 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 317ddsnvd6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 May 2020 12:08:38 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04SC8TXf014768;
-        Thu, 28 May 2020 12:08:29 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 28 May 2020 05:08:28 -0700
-Date:   Thu, 28 May 2020 15:08:18 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     devel@driverdev.osuosl.org, Len Brown <len.brown@intel.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        dinghao.liu@zju.edu.cn, Kangjie Lu <kjlu@umn.edu>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org
-Subject: Re: Re: [PATCH] media: staging: tegra-vde: fix runtime pm imbalance
- on error
-Message-ID: <20200528120818.GO22511@kadam>
-References: <20200520095148.10995-1-dinghao.liu@zju.edu.cn>
- <2b5d64f5-825f-c081-5d03-02655c2d9491@gmail.com>
- <20200520150230.GC30374@kadam>
- <2a46539d.b977f.1723553aa81.Coremail.dinghao.liu@zju.edu.cn>
- <20200521091505.GF30374@kadam>
- <CAJZ5v0irLayBUPRWNT1tcZivz9inS1YbUgGj5WXvucLKKwRQAw@mail.gmail.com>
- <20200521173901.GA22310@kadam>
- <20200522131031.GL2163848@ulmo>
- <20200522132318.GM30374@kadam>
- <20200522144312.GA2374603@ulmo>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200522144312.GA2374603@ulmo>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9634 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 mlxscore=0
- phishscore=0 adultscore=0 suspectscore=21 spamscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005280084
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9634 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
- priorityscore=1501 spamscore=0 cotscore=-2147483648 suspectscore=21
- phishscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0 adultscore=0
- lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005280084
+        id S2389630AbgE1MJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 08:09:43 -0400
+Received: from mga17.intel.com ([192.55.52.151]:6222 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389606AbgE1MJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 08:09:33 -0400
+IronPort-SDR: gYBULXFrKWVOPYFxQeyhyo+/QKmL7+KKZR3RppU535WgSVxVqq7UPumCDPJuczehaa9Uww+6Fj
+ Mm6WZEcdnkCg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 05:09:32 -0700
+IronPort-SDR: yEqBFzBhFJBzCxZe5wTwFWbikt1bebQbKFHccRu7uTwdxRQQfW+uOem1sgQPOBoKeulwstEtwj
+ Y8TjfiaqUSbg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,444,1583222400"; 
+   d="scan'208";a="270831798"
+Received: from ahunter-desktop.fi.intel.com ([10.237.72.157])
+  by orsmga006.jf.intel.com with ESMTP; 28 May 2020 05:09:30 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        linux-kernel@vger.kernel.org,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Subject: [PATCH 1/2] perf record: Respect --no-switch-events
+Date:   Thu, 28 May 2020 15:08:58 +0300
+Message-Id: <20200528120859.21604-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.17.1
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 22, 2020 at 04:43:12PM +0200, Thierry Reding wrote:
-> On Fri, May 22, 2020 at 04:23:18PM +0300, Dan Carpenter wrote:
-> > On Fri, May 22, 2020 at 03:10:31PM +0200, Thierry Reding wrote:
-> > > On Thu, May 21, 2020 at 08:39:02PM +0300, Dan Carpenter wrote:
-> > > > On Thu, May 21, 2020 at 05:22:05PM +0200, Rafael J. Wysocki wrote:
-> > > > > On Thu, May 21, 2020 at 11:15 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> > > > > >
-> > > > > > On Thu, May 21, 2020 at 11:42:55AM +0800, dinghao.liu@zju.edu.cn wrote:
-> > > > > > > Hi, Dan,
-> > > > > > >
-> > > > > > > I agree the best solution is to fix __pm_runtime_resume(). But there are also
-> > > > > > > many cases that assume pm_runtime_get_sync() will change PM usage
-> > > > > > > counter on error. According to my static analysis results, the number of these
-> > > > > > > "right" cases are larger. Adjusting __pm_runtime_resume() directly will introduce
-> > > > > > > more new bugs. Therefore I think we should resolve the "bug" cases individually.
-> > > > > > >
-> > > > > >
-> > > > > > That's why I was saying that we may need to introduce a new replacement
-> > > > > > function for pm_runtime_get_sync() that works as expected.
-> > > > > >
-> > > > > > There is no reason why we have to live with the old behavior.
-> > > > > 
-> > > > > What exactly do you mean by "the old behavior"?
-> > > > 
-> > > > I'm suggesting we leave pm_runtime_get_sync() alone but we add a new
-> > > > function which called pm_runtime_get_sync_resume() which does something
-> > > > like this:
-> > > > 
-> > > > static inline int pm_runtime_get_sync_resume(struct device *dev)
-> > > > {
-> > > > 	int ret;
-> > > > 
-> > > > 	ret = __pm_runtime_resume(dev, RPM_GET_PUT);
-> > > > 	if (ret < 0) {
-> > > > 		pm_runtime_put(dev);
-> > > > 		return ret;
-> > > > 	}
-> > > > 	return 0;
-> > > > }
-> > > > 
-> > > > I'm not sure if pm_runtime_put() is the correct thing to do?  The other
-> > > > thing is that this always returns zero on success.  I don't know that
-> > > > drivers ever care to differentiate between one and zero returns.
-> > > > 
-> > > > Then if any of the caller expect that behavior we update them to use the
-> > > > new function.
-> > > 
-> > > Does that really have many benefits, though? I understand that this
-> > > would perhaps be easier to use because it is more in line with how other
-> > > functions operate. On the other hand, in some cases you may want to call
-> > > a different version of pm_runtime_put() on failure, as discussed in
-> > > other threads.
-> > 
-> > I wasn't CC'd on the other threads so I don't know.  :/
-> 
-> It was actually earlier in this thread, see here for example:
-> 
-> 	http://patchwork.ozlabs.org/project/linux-tegra/patch/20200520095148.10995-1-dinghao.liu@zju.edu.cn/#2438776
+Context switch events are added automatically by Intel PT and Coresight.
+Make it possible to suppress them. That is useful for tracing the
+scheduler without the disturbance that the switch event processing
+creates.
 
-I'm not seeing what you're talking about.
+Example:
 
-The only thing I see in this thread is that we don't want to call
-pm_runtime_mark_last_busy(dev) which updates the last_busy time that is
-used for autosuspend.
+  Prerequisites:
 
-The other thing that was discussed was pm_runtime_put_noidle() vs
-pm_runtime_put_autosuspend().  "The pm_runtime_put_noidle() should have
-the same effect as yours variant".  So apparently they are equivalent
-in this situation.  How should we choose one vs the other?
+    $ which perf
+    ~/bin/perf
+    $ sudo setcap "cap_sys_rawio,cap_sys_admin,cap_sys_ptrace,cap_syslog,cap_ipc_lock=ep" ~/bin/perf
+    $ sudo chmod +r /proc/kcore
 
-I'm not trying to be obtuse.  I understand that probably if I worked in
-PM then I wouldn't need documentation...  :/
+  Before:
 
-regards,
-dan carpenter
+    $ perf record --no-switch-events --kcore -a -e intel_pt//k -- sleep 0.001
+    [ perf record: Woken up 1 times to write data ]
+    [ perf record: Captured and wrote 0.938 MB perf.data ]
+    $ perf script -D | grep PERF_RECORD_SWITCH | wc -l
+    572
+
+  After:
+
+    $ perf record --no-switch-events --kcore -a -e intel_pt//k -- sleep 0.001
+    Warning:
+    Intel Processor Trace decoding will not be possible except for kernel tracing!
+    [ perf record: Woken up 1 times to write data ]
+    [ perf record: Captured and wrote 0.838 MB perf.data ]
+    $ perf script -D | grep PERF_RECORD_SWITCH | wc -l
+    0
+
+    $ sudo chmod go-r /proc/kcore
+    $ sudo setcap -r ~/bin/perf
+
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+---
+ tools/perf/Documentation/perf-record.txt | 4 +++-
+ tools/perf/arch/arm/util/cs-etm.c        | 3 ++-
+ tools/perf/arch/x86/util/intel-pt.c      | 3 ++-
+ tools/perf/builtin-record.c              | 5 +++--
+ tools/perf/util/record.h                 | 6 ++++++
+ 5 files changed, 16 insertions(+), 5 deletions(-)
+
+diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+index 561ef55743e2..97b1a866ab22 100644
+--- a/tools/perf/Documentation/perf-record.txt
++++ b/tools/perf/Documentation/perf-record.txt
+@@ -458,7 +458,9 @@ This option sets the time out limit. The default value is 500 ms.
+ 
+ --switch-events::
+ Record context switch events i.e. events of type PERF_RECORD_SWITCH or
+-PERF_RECORD_SWITCH_CPU_WIDE.
++PERF_RECORD_SWITCH_CPU_WIDE. In some cases (e.g. Intel PT or CoreSight)
++switch events will be enabled automatically, which can be suppressed by
++by the option --no-switch-events.
+ 
+ --clang-path=PATH::
+ Path to clang binary to use for compiling BPF scriptlets.
+diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
+index 607499b41bea..cea5e33d61d2 100644
+--- a/tools/perf/arch/arm/util/cs-etm.c
++++ b/tools/perf/arch/arm/util/cs-etm.c
+@@ -265,7 +265,8 @@ static int cs_etm_recording_options(struct auxtrace_record *itr,
+ 	ptr->evlist = evlist;
+ 	ptr->snapshot_mode = opts->auxtrace_snapshot_mode;
+ 
+-	if (perf_can_record_switch_events())
++	if (!record_opts__no_switch_events(opts) &&
++	    perf_can_record_switch_events())
+ 		opts->record_switch_events = true;
+ 
+ 	evlist__for_each_entry(evlist, evsel) {
+diff --git a/tools/perf/arch/x86/util/intel-pt.c b/tools/perf/arch/x86/util/intel-pt.c
+index fdb917fcf511..3fc547769707 100644
+--- a/tools/perf/arch/x86/util/intel-pt.c
++++ b/tools/perf/arch/x86/util/intel-pt.c
+@@ -779,7 +779,8 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
+ 	 * Per-cpu recording needs sched_switch events to distinguish different
+ 	 * threads.
+ 	 */
+-	if (have_timing_info && !perf_cpu_map__empty(cpus)) {
++	if (have_timing_info && !perf_cpu_map__empty(cpus) &&
++	    !record_opts__no_switch_events(opts)) {
+ 		if (perf_can_record_switch_events()) {
+ 			bool cpu_wide = !target__none(&opts->target) &&
+ 					!target__has_task(&opts->target);
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 02d85f4e4517..dc6d5ba2fff8 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -2490,8 +2490,9 @@ static struct option __record_options[] = {
+ 		    "Record namespaces events"),
+ 	OPT_BOOLEAN(0, "all-cgroups", &record.opts.record_cgroup,
+ 		    "Record cgroup events"),
+-	OPT_BOOLEAN(0, "switch-events", &record.opts.record_switch_events,
+-		    "Record context switch events"),
++	OPT_BOOLEAN_SET(0, "switch-events", &record.opts.record_switch_events,
++			&record.opts.record_switch_events_set,
++			"Record context switch events"),
+ 	OPT_BOOLEAN_FLAG(0, "all-kernel", &record.opts.all_kernel,
+ 			 "Configure all used events to run in kernel space.",
+ 			 PARSE_OPT_EXCLUSIVE),
+diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
+index dce6332f5071..84dbbc3f0204 100644
+--- a/tools/perf/util/record.h
++++ b/tools/perf/util/record.h
+@@ -36,6 +36,7 @@ struct record_opts {
+ 	bool	      record_namespaces;
+ 	bool	      record_cgroup;
+ 	bool	      record_switch_events;
++	bool	      record_switch_events_set;
+ 	bool	      all_kernel;
+ 	bool	      all_user;
+ 	bool	      kernel_callchains;
+@@ -77,4 +78,9 @@ extern struct option *record_options;
+ 
+ int record__parse_freq(const struct option *opt, const char *str, int unset);
+ 
++static inline bool record_opts__no_switch_events(const struct record_opts *opts)
++{
++	return opts->record_switch_events_set && !opts->record_switch_events;
++}
++
+ #endif // _PERF_RECORD_H
+-- 
+2.17.1
+
