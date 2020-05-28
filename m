@@ -2,76 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A344A1E6D04
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 23:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B271E6D08
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 23:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407458AbgE1VAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 17:00:16 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:34947 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407396AbgE1VAH (ORCPT
+        id S2407435AbgE1VBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 17:01:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407395AbgE1VA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 17:00:07 -0400
-Received: by mail-il1-f193.google.com with SMTP id a14so381178ilk.2;
-        Thu, 28 May 2020 14:00:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=j9/zXo1D/MaHPT4W5dtBptKFjKcNZZ5DUc8Iw936Zdg=;
-        b=jk54fGZEG0C+EwMxg9g/IFIDxkNUb7BNpEC37W5a9WocIGGbSGULnPObAky1eE6Bar
-         Rwh7SFp7zPGfqgfULn7rpVWE8w2SdvB+/WH6ZK9jx/4ThV5sfO5DhG5SHB+Xbh9hRb4M
-         LZUtBJ710seW5faTuhRpW1xGQL2t14XCrevmImGXEp2icDe5mSdq9LTBhvVrfRjfVyHe
-         OuGWV0DKUwBPTnfsaFVPjMrawGrs7GIddXB85tVRGh9QsNM4knYCdYCxlHZ3Eydj9327
-         W9F3TjUb23xAmnrJyEmT6jpIbrAoW8dEyKP4p9VVz9z4nW7iuGN2PKHHLMXuxwRZsM2b
-         weSw==
-X-Gm-Message-State: AOAM532mP+9ViuoRiN7sun91hQ43N4et9QkI3+1Lwelyp2lxtpLs+Zy2
-        /o+3eFlRYtRqsOBF7RbJfQ==
-X-Google-Smtp-Source: ABdhPJxGSDGqe1jHsfiIWe7poFysMf6a/HV4i8103L/vkn9OHjEfZF/3cHeecQok/kGcda130WSE2w==
-X-Received: by 2002:a05:6e02:965:: with SMTP id q5mr4481965ilt.272.1590699606434;
-        Thu, 28 May 2020 14:00:06 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id k18sm3038277iok.4.2020.05.28.14.00.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 14:00:05 -0700 (PDT)
-Received: (nullmailer pid 666474 invoked by uid 1000);
-        Thu, 28 May 2020 21:00:04 -0000
-Date:   Thu, 28 May 2020 15:00:04 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     aisheng.dong@nxp.com, devicetree@vger.kernel.org,
-        Linux-imx@nxp.com, daniel.lezcano@linaro.org, ping.bai@nxp.com,
-        linux-kernel@vger.kernel.org, s.hauer@pengutronix.de,
-        robh+dt@kernel.org, tglx@linutronix.de,
-        linux-arm-kernel@lists.infradead.org, festevam@gmail.com,
-        shawnguo@kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH V2 3/3] dt-bindings: timer: Convert i.MX SYSCTR to
- json-schema
-Message-ID: <20200528210004.GA666410@bogus>
-References: <1589860547-3207-1-git-send-email-Anson.Huang@nxp.com>
- <1589860547-3207-4-git-send-email-Anson.Huang@nxp.com>
+        Thu, 28 May 2020 17:00:56 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E7FAC08C5C6;
+        Thu, 28 May 2020 14:00:56 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Y0Tx4jpCz9sSn;
+        Fri, 29 May 2020 07:00:53 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1590699654;
+        bh=wLYHzL/mcZeb8818+XIZiJAx0cHJCqrE8aFQSWPnBgA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Yb3ihQC6DmxJ9V/ZY5NfHiOnqZRMowr6290IF6aMk5k0T74nMCVh/HFRod15qKxWw
+         5kHbS035yfCXJpqJ5QCKB45uCJgcNRF2XZXRl1ccU9Atql5egWvCzyQ6f3UE3kHvEC
+         70C+jrwrq2euyvzV+tHoNDLX8YNGjrhV58XgthienCPEpvpeohTZVEizsawLWKlHGu
+         0lg7APeBY3dNf7DEdelBul4DmaFJNHCJnPSTXtcJdyD0MNGGjTjM7NbVV3/Gqlm+RB
+         hhwdq8/4jcXLcgw0hF53CZFTZJyEL/yHK5CbD4MrxLbtC+0H16R1MkbbKLOB5uxCXl
+         tydt7HhJnqYxQ==
+Date:   Fri, 29 May 2020 07:00:52 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>
+Subject: linux-next: Signed-off-by missing for commit in the net-next tree
+Message-ID: <20200529070052.2c171fd3@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1589860547-3207-4-git-send-email-Anson.Huang@nxp.com>
+Content-Type: multipart/signed; boundary="Sig_/yV9Kli2BjNSFa9uZ1NGtJGa";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 May 2020 11:55:47 +0800, Anson Huang wrote:
-> Convert the i.MX SYSCTR binding to DT schema format using json-schema.
-> 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
-> ---
-> No changes.
-> ---
->  .../devicetree/bindings/timer/nxp,sysctr-timer.txt | 25 ----------
->  .../bindings/timer/nxp,sysctr-timer.yaml           | 54 ++++++++++++++++++++++
->  2 files changed, 54 insertions(+), 25 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/timer/nxp,sysctr-timer.txt
->  create mode 100644 Documentation/devicetree/bindings/timer/nxp,sysctr-timer.yaml
-> 
+--Sig_/yV9Kli2BjNSFa9uZ1NGtJGa
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Applied, thanks!
+Hi all,
+
+Commit
+
+  07bab9502641 ("net/mlx5: E-Switch, Refactor eswitch ingress acl codes")
+
+is missing a Signed-off-by from its committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/yV9Kli2BjNSFa9uZ1NGtJGa
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7QJoQACgkQAVBC80lX
+0Gzb/wf+IQy0vyjWMHkRQTtl7Yd75nQbRY30Y5Z1fIA5S0t8r2NxXDjkcZzd13Zo
+wRLm6Ne7Pby5kuxRyVe9xfXkCzOACloLiAaocPyPKFP2n4O67bAdPZUaBYyDbYhu
+FWNqJnhZwNw0YiMxC0czhlxq3iX0ef+8Grl5FDDqU58YOddZKyy6iTVaobBW+b46
+JMdWZg9j4asx4d3DNm1OyFma4vw2iKpvwVAiDi/ftHFj7PvaZkrpu3qEKRngiiBc
+DU5TD183U4lrYgrGIHwvfhcJB26XKrOU0JT3+idYZvcz434bbzty7svXuobbpBmp
+g1lSdcCP2WvojhIvSvcuFCeedk2Zvg==
+=fbfH
+-----END PGP SIGNATURE-----
+
+--Sig_/yV9Kli2BjNSFa9uZ1NGtJGa--
