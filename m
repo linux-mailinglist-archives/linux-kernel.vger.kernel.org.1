@@ -2,251 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62AC61E5C14
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 11:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEEDB1E5C27
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 11:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387526AbgE1Jd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 05:33:59 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:40576 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387444AbgE1Jdi (ORCPT
+        id S1728383AbgE1JgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 05:36:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727981AbgE1JgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 05:33:38 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id F2F4B8030778;
-        Thu, 28 May 2020 09:33:35 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id XqrFLhHAZGQJ; Thu, 28 May 2020 12:33:35 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v6 11/11] i2c: designware: Add Baikal-T1 System I2C support
-Date:   Thu, 28 May 2020 12:33:21 +0300
-Message-ID: <20200528093322.23553-12-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200528093322.23553-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200528093322.23553-1-Sergey.Semin@baikalelectronics.ru>
+        Thu, 28 May 2020 05:36:02 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B69D1C05BD1E
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 02:36:01 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id x14so21769059wrp.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 02:36:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HLigFKoZxJnnvAQ0/slq9LtsKPu9OoevHAv5EJtiE/Q=;
+        b=iIg4txwxNphRwkyWUYTIdfMbaShaHiy+NWUQW5rl+yLZLTpYNucwz6/flPzvdaLBa/
+         ZbSslc966IC43y9kUMwnQi3jNP+iI2tFkM9ah8IC6d07SjXgtpUZIdvc2S6HuNEU9wt8
+         I8Unh6VICaKKrgAwCEZIoeusENozgLCDjuOqccKFGgAyvXwgSsRcVNyh7CwV3PZGPHee
+         Hoj8SFYu3qyZM1RnH6gGy45w1y5Pc8GORwrZLnsvtTJTfeLDwvFIRPJVo5y8LgKdodc9
+         o5QrUFYr+YSYcCpurz6jvMdujlCptI+SR+t7KlcbN/3pLAwZmmu9A+9vjFdItTQn7fKz
+         5RWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HLigFKoZxJnnvAQ0/slq9LtsKPu9OoevHAv5EJtiE/Q=;
+        b=qao38GF4A5qPxdytl+aMVYqOe/TlEfSmM/eykKD2/qa49Xk4eDHzNDPWkP2SsLn7OF
+         bbSF+YUDVwvgr8zFB26m1jk0eLodjbACSkTYlIGOfHrNrTaS4uk9Fy45ou9qrQlHGjij
+         XdKWL8ZEd7X/U+inlgUBNhnXxRLq1HaSupenJOtVQRmww3GxVWiQwL3kMXsMJNwwBeXH
+         iUf4jEwnUAEuIpO5XdvtL07T/t7lDUuRg7DvhRZTQqsLppmZMsh4DOfcadp935lu2oGD
+         5Bo2eQwEej51XcLykDTbsZVaIsWPOSmIH/+4E7Dn98gXBK0KCkw41ju51yMfavs9cO5L
+         B/tQ==
+X-Gm-Message-State: AOAM53022X1lx1HHzYBoFlcVqWuz1MQyb9K5WVP9CVtovMgxJRFEw3cr
+        RnyMZtCrAKiGaA+gZ8N0SbVIhw==
+X-Google-Smtp-Source: ABdhPJxRAyELTwseA0cA1weHd9Qbi/caPi324Kxi1F9917DchR5vs916B8o3dd0DJ4+CS1K9Z1ee+A==
+X-Received: by 2002:adf:8b55:: with SMTP id v21mr2776926wra.187.1590658560438;
+        Thu, 28 May 2020 02:36:00 -0700 (PDT)
+Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
+        by smtp.gmail.com with ESMTPSA id d18sm5298451wrn.34.2020.05.28.02.35.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 02:35:59 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Fabien Parent <fparent@baylibre.com>,
+        Stephane Le Provost <stephane.leprovost@mediatek.com>,
+        Pedro Tsai <pedro.tsai@mediatek.com>,
+        Andrew Perepech <andrew.perepech@mediatek.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH] irqchip/irq-mtk-sysirq: replace spinlock with raw_spinlock
+Date:   Thu, 28 May 2020 11:35:50 +0200
+Message-Id: <20200528093550.11511-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Baikal-T1 System Controller is equipped with a dedicated I2C Controller
-which functionality is based on the DW APB I2C IP-core, the only
-difference in a way it' registers are accessed. There are three access
-register provided in the System Controller registers map, which indirectly
-address the normal DW APB I2C registers space. So in order to have the
-Baikal-T1 System I2C Controller supported by the common DW APB I2C driver
-we created a dedicated Dw I2C controller model quirk, which retrieves the
-syscon regmap from the parental dt node and creates a new regmap based on
-it.
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Cc: devicetree@vger.kernel.org
+This driver may take a regular spinlock when a raw spinlock
+(irq_desc->lock) is already taken which results in the following
+lockdep splat:
 
+=============================
+[ BUG: Invalid wait context ]
+5.7.0-rc7 #1 Not tainted
+-----------------------------
+swapper/0/0 is trying to lock:
+ffffff800303b798 (&chip_data->lock){....}-{3:3}, at: mtk_sysirq_set_type+0x48/0xc0
+other info that might help us debug this:
+context-{5:5}
+2 locks held by swapper/0/0:
+ #0: ffffff800302ee68 (&desc->request_mutex){....}-{4:4}, at: __setup_irq+0xc4/0x8a0
+ #1: ffffff800302ecf0 (&irq_desc_lock_class){....}-{2:2}, at: __setup_irq+0xe4/0x8a0
+stack backtrace:
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.7.0-rc7 #1
+Hardware name: Pumpkin MT8516 (DT)
+Call trace:
+ dump_backtrace+0x0/0x180
+ show_stack+0x14/0x20
+ dump_stack+0xd0/0x118
+ __lock_acquire+0x8c8/0x2270
+ lock_acquire+0xf8/0x470
+ _raw_spin_lock_irqsave+0x50/0x78
+ mtk_sysirq_set_type+0x48/0xc0
+ __irq_set_trigger+0x58/0x170
+ __setup_irq+0x420/0x8a0
+ request_threaded_irq+0xd8/0x190
+ timer_of_init+0x1e8/0x2c4
+ mtk_gpt_init+0x5c/0x1dc
+ timer_probe+0x74/0xf4
+ time_init+0x14/0x44
+ start_kernel+0x394/0x4f0
+
+Replace the spinlock_t with raw_spinlock_t to avoid this warning.
+
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
+ drivers/irqchip/irq-mtk-sysirq.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Changelog v3:
-- This is a new patch, which has been created due to declining the
-  glue-layer approach.
-
-Changelog v4:
-- Use PTR_ERR_OR_ZERO() helper in the bt1_i2c_request_regs() method.
-
-Changelog v6:
-- Add comma in the last explicitly initialized member of the bt1_i2c_cfg
-  struct regmap_config instance.
----
- drivers/i2c/busses/Kconfig                  |  3 +-
- drivers/i2c/busses/i2c-designware-core.h    |  3 +
- drivers/i2c/busses/i2c-designware-platdrv.c | 78 ++++++++++++++++++++-
- 3 files changed, 81 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index 259e2325712a..0cf7aea30138 100644
---- a/drivers/i2c/busses/Kconfig
-+++ b/drivers/i2c/busses/Kconfig
-@@ -541,8 +541,9 @@ config I2C_DESIGNWARE_SLAVE
+diff --git a/drivers/irqchip/irq-mtk-sysirq.c b/drivers/irqchip/irq-mtk-sysirq.c
+index 73eae5966a40..6ff98b87e5c0 100644
+--- a/drivers/irqchip/irq-mtk-sysirq.c
++++ b/drivers/irqchip/irq-mtk-sysirq.c
+@@ -15,7 +15,7 @@
+ #include <linux/spinlock.h>
  
- config I2C_DESIGNWARE_PLATFORM
- 	tristate "Synopsys DesignWare Platform"
--	select I2C_DESIGNWARE_CORE
- 	depends on (ACPI && COMMON_CLK) || !ACPI
-+	select I2C_DESIGNWARE_CORE
-+	select MFD_SYSCON if MIPS_BAIKAL_T1
- 	help
- 	  If you say yes to this option, support will be included for the
- 	  Synopsys DesignWare I2C adapter.
-diff --git a/drivers/i2c/busses/i2c-designware-core.h b/drivers/i2c/busses/i2c-designware-core.h
-index f5bbe3d6bcf8..556673a1f61b 100644
---- a/drivers/i2c/busses/i2c-designware-core.h
-+++ b/drivers/i2c/busses/i2c-designware-core.h
-@@ -183,6 +183,7 @@ struct reset_control;
-  * struct dw_i2c_dev - private i2c-designware data
-  * @dev: driver model device node
-  * @map: IO registers map
-+ * @sysmap: System controller registers map
-  * @base: IO registers pointer
-  * @ext: Extended IO registers pointer
-  * @cmd_complete: tx completion indicator
-@@ -235,6 +236,7 @@ struct reset_control;
- struct dw_i2c_dev {
- 	struct device		*dev;
- 	struct regmap		*map;
-+	struct regmap		*sysmap;
- 	void __iomem		*base;
- 	void __iomem		*ext;
- 	struct completion	cmd_complete;
-@@ -290,6 +292,7 @@ struct dw_i2c_dev {
- #define ACCESS_NO_IRQ_SUSPEND	0x00000002
+ struct mtk_sysirq_chip_data {
+-	spinlock_t lock;
++	raw_spinlock_t lock;
+ 	u32 nr_intpol_bases;
+ 	void __iomem **intpol_bases;
+ 	u32 *intpol_words;
+@@ -37,7 +37,7 @@ static int mtk_sysirq_set_type(struct irq_data *data, unsigned int type)
+ 	reg_index = chip_data->which_word[hwirq];
+ 	offset = hwirq & 0x1f;
  
- #define MODEL_MSCC_OCELOT	0x00000100
-+#define MODEL_BAIKAL_BT1	0x00000200
- #define MODEL_MASK		0x00000f00
+-	spin_lock_irqsave(&chip_data->lock, flags);
++	raw_spin_lock_irqsave(&chip_data->lock, flags);
+ 	value = readl_relaxed(base + reg_index * 4);
+ 	if (type == IRQ_TYPE_LEVEL_LOW || type == IRQ_TYPE_EDGE_FALLING) {
+ 		if (type == IRQ_TYPE_LEVEL_LOW)
+@@ -53,7 +53,7 @@ static int mtk_sysirq_set_type(struct irq_data *data, unsigned int type)
  
- int i2c_dw_init_regmap(struct dw_i2c_dev *dev);
-diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
-index 9d467fa0e163..b55c730f28cf 100644
---- a/drivers/i2c/busses/i2c-designware-platdrv.c
-+++ b/drivers/i2c/busses/i2c-designware-platdrv.c
-@@ -18,6 +18,7 @@
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/kernel.h>
-+#include <linux/mfd/syscon.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/platform_data/i2c-designware.h>
-@@ -25,6 +26,7 @@
- #include <linux/pm.h>
- #include <linux/pm_runtime.h>
- #include <linux/property.h>
-+#include <linux/regmap.h>
- #include <linux/reset.h>
- #include <linux/sched.h>
- #include <linux/slab.h>
-@@ -58,6 +60,63 @@ MODULE_DEVICE_TABLE(acpi, dw_i2c_acpi_match);
- #endif
- 
- #ifdef CONFIG_OF
-+#define BT1_I2C_CTL			0x100
-+#define BT1_I2C_CTL_ADDR_MASK		GENMASK(7, 0)
-+#define BT1_I2C_CTL_WR			BIT(8)
-+#define BT1_I2C_CTL_GO			BIT(31)
-+#define BT1_I2C_DI			0x104
-+#define BT1_I2C_DO			0x108
-+
-+static int bt1_i2c_read(void *context, unsigned int reg, unsigned int *val)
-+{
-+	struct dw_i2c_dev *dev = context;
-+	int ret;
-+
-+	/*
-+	 * Note these methods shouldn't ever fail because the system controller
-+	 * registers are memory mapped. We check the return value just in case.
-+	 */
-+	ret = regmap_write(dev->sysmap, BT1_I2C_CTL,
-+			   BT1_I2C_CTL_GO | (reg & BT1_I2C_CTL_ADDR_MASK));
-+	if (ret)
-+		return ret;
-+
-+	return regmap_read(dev->sysmap, BT1_I2C_DO, val);
-+}
-+
-+static int bt1_i2c_write(void *context, unsigned int reg, unsigned int val)
-+{
-+	struct dw_i2c_dev *dev = context;
-+	int ret;
-+
-+	ret = regmap_write(dev->sysmap, BT1_I2C_DI, val);
-+	if (ret)
-+		return ret;
-+
-+	return regmap_write(dev->sysmap, BT1_I2C_CTL,
-+		BT1_I2C_CTL_GO | BT1_I2C_CTL_WR | (reg & BT1_I2C_CTL_ADDR_MASK));
-+}
-+
-+static struct regmap_config bt1_i2c_cfg = {
-+	.reg_bits = 32,
-+	.val_bits = 32,
-+	.reg_stride = 4,
-+	.fast_io = true,
-+	.reg_read = bt1_i2c_read,
-+	.reg_write = bt1_i2c_write,
-+	.max_register = DW_IC_COMP_TYPE,
-+};
-+
-+static int bt1_i2c_request_regs(struct dw_i2c_dev *dev)
-+{
-+	dev->sysmap = syscon_node_to_regmap(dev->dev->of_node->parent);
-+	if (IS_ERR(dev->sysmap))
-+		return PTR_ERR(dev->sysmap);
-+
-+	dev->map = devm_regmap_init(dev->dev, NULL, dev, &bt1_i2c_cfg);
-+	return PTR_ERR_OR_ZERO(dev->map);
-+}
-+
- #define MSCC_ICPU_CFG_TWI_DELAY		0x0
- #define MSCC_ICPU_CFG_TWI_DELAY_ENABLE	BIT(0)
- #define MSCC_ICPU_CFG_TWI_SPIKE_FILTER	0x4
-@@ -90,10 +149,16 @@ static int dw_i2c_of_configure(struct platform_device *pdev)
- static const struct of_device_id dw_i2c_of_match[] = {
- 	{ .compatible = "snps,designware-i2c", },
- 	{ .compatible = "mscc,ocelot-i2c", .data = (void *)MODEL_MSCC_OCELOT },
-+	{ .compatible = "baikal,bt1-sys-i2c", .data = (void *)MODEL_BAIKAL_BT1 },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, dw_i2c_of_match);
- #else
-+static int bt1_i2c_request_regs(struct dw_i2c_dev *dev)
-+{
-+	return -ENODEV;
-+}
-+
- static inline int dw_i2c_of_configure(struct platform_device *pdev)
- {
- 	return -ENODEV;
-@@ -111,10 +176,19 @@ static void dw_i2c_plat_pm_cleanup(struct dw_i2c_dev *dev)
- static int dw_i2c_plat_request_regs(struct dw_i2c_dev *dev)
- {
- 	struct platform_device *pdev = to_platform_device(dev->dev);
-+	int ret;
- 
--	dev->base = devm_platform_ioremap_resource(pdev, 0);
-+	switch (dev->flags & MODEL_MASK) {
-+	case MODEL_BAIKAL_BT1:
-+		ret = bt1_i2c_request_regs(dev);
-+		break;
-+	default:
-+		dev->base = devm_platform_ioremap_resource(pdev, 0);
-+		ret = PTR_ERR_OR_ZERO(dev->base);
-+		break;
-+	}
- 
--	return PTR_ERR_OR_ZERO(dev->base);
-+	return ret;
+ 	data = data->parent_data;
+ 	ret = data->chip->irq_set_type(data, type);
+-	spin_unlock_irqrestore(&chip_data->lock, flags);
++	raw_spin_unlock_irqrestore(&chip_data->lock, flags);
+ 	return ret;
  }
  
- static int dw_i2c_plat_probe(struct platform_device *pdev)
+@@ -212,7 +212,7 @@ static int __init mtk_sysirq_of_init(struct device_node *node,
+ 		ret = -ENOMEM;
+ 		goto out_free_which_word;
+ 	}
+-	spin_lock_init(&chip_data->lock);
++	raw_spin_lock_init(&chip_data->lock);
+ 
+ 	return 0;
+ 
 -- 
-2.26.2
+2.25.0
 
