@@ -2,160 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AE71E6940
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 20:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C4C1E694A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 20:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405794AbgE1SY7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 May 2020 14:24:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50538 "EHLO
+        id S2405821AbgE1S05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 14:26:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405744AbgE1SY5 (ORCPT
+        with ESMTP id S2405744AbgE1S0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 14:24:57 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17447C08C5C6;
-        Thu, 28 May 2020 11:24:57 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jeND0-0006Bd-A3; Thu, 28 May 2020 20:24:50 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id B8F091C0051;
-        Thu, 28 May 2020 20:24:49 +0200 (CEST)
-Date:   Thu, 28 May 2020 18:24:49 -0000
-From:   "tip-bot2 for Alexander Dahl" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/dma: Fix max PFN arithmetic overflow on 32 bit systems
-Cc:     Alan Jenkins <alan.christopher.jenkins@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Alexander Dahl <post@lespocky.de>,
-        Borislav Petkov <bp@suse.de>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200526175749.20742-1-post@lespocky.de>
-References: <20200526175749.20742-1-post@lespocky.de>
+        Thu, 28 May 2020 14:26:54 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB2DC08C5C6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 11:26:54 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id a68so5486545vsd.8
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 11:26:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uL3WL3wjiZS/WqaVMZN+pC1EDFb5Gzm+8f1ZDs/CoM8=;
+        b=jUoiY6LwAn07lRdvLrd7+LZ7B/jHbDcfvdN0Ne3nGHXtGE8ltaz1br+6TuczOyb0EM
+         6PVc1y9DTOLiZH/DTqEJd/ph2qQvzaSL1LFK16lCvD6rCVKstqKERnU7vy/kO0Y6U6ub
+         1TChCOSrsNHthGlfltW/Aw6cnWWm1DEMjSSe4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uL3WL3wjiZS/WqaVMZN+pC1EDFb5Gzm+8f1ZDs/CoM8=;
+        b=QzyZO9SG7WfIpVvX7Kwq+lT82M230Er3UwCCayLXmgcyymebUuJaL+hnmoBTbuMvsm
+         eFShZog8RDxWbkFQmJsl1RPSmvnovYWTNIpMjL3YbophSPBoIuOrPdvFczoLORUMl5ax
+         SgwWaMvp62CJMZ+YLSYxqeUR83BuF/1dI8JKR3yFqYM4eQzovr/mcIyOxEhrLIeUtbJP
+         ZyV5EajWO4LzBVLPrBqNCTWDfntcEvhD4MY50IUzMML0AHCRbDbPJrlr6PYXGLtI0uiS
+         alwJn7Z3b7wHZ6+1VjotzGugr6snec6GVarcnFa6jPtzRunRUNIy40VNxRYKPsA+GbLT
+         7opg==
+X-Gm-Message-State: AOAM533JtYRzUuvtOXwsfELhmDBjEyjqxesu7xc0hApbXtzqyhpljf7R
+        +gMWieR/3dvpUdtS81wcRQEUthZAdmiTZfQZmk/xgw==
+X-Google-Smtp-Source: ABdhPJw/uHcsZ0Kjg/6YjwtpPe8hS3OBN+zaPsqHmKdhUTROZyx2CYYR66/fHjXBifjuPn1PMRenLs3FT5lqHrBgNUI=
+X-Received: by 2002:a67:d119:: with SMTP id u25mr3001502vsi.96.1590690413360;
+ Thu, 28 May 2020 11:26:53 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <159069028956.17951.16863245734810894294.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+References: <1590550627-24618-1-git-send-email-zijuhu@codeaurora.org>
+ <CANFp7mXMiYKY-33xZX2MaHd5RyicbRb2fZHo8mk4-VM_Jf47UQ@mail.gmail.com> <cdc9c050-c7e4-da5c-defa-65abb397afd1@codeaurora.org>
+In-Reply-To: <cdc9c050-c7e4-da5c-defa-65abb397afd1@codeaurora.org>
+From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Date:   Thu, 28 May 2020 11:26:40 -0700
+Message-ID: <CANFp7mVkJ4CXyP4ASTaTVQmR2Z9jgzcJ4k5rwaUwec6T=i+2Qg@mail.gmail.com>
+Subject: Re: [PATCH v2] bluetooth: hci_qca: Fix QCA6390 memdump failure
+To:     Zijun Hu <zijuhu@codeaurora.org>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bluez mailing list <linux-bluetooth@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
+        Matthias Kaehlcke <mka@chromium.org>, rjliao@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+Hi,
 
-Commit-ID:     88743470668ef5eb6b7ba9e0f99888e5999bf172
-Gitweb:        https://git.kernel.org/tip/88743470668ef5eb6b7ba9e0f99888e5999bf172
-Author:        Alexander Dahl <post@lespocky.de>
-AuthorDate:    Tue, 26 May 2020 19:57:49 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 28 May 2020 20:21:32 +02:00
+On Wed, May 27, 2020 at 11:19 PM Zijun Hu <zijuhu@codeaurora.org> wrote:
+>
+>
+>
+> On 5/28/2020 11:42 AM, Abhishek Pandit-Subedi wrote:
+> > Hi Zijun,
+> >
+> > On Tue, May 26, 2020 at 8:37 PM Zijun Hu <zijuhu@codeaurora.org> wrote:
+> >>
+> >> QCA6390 memdump VSE sometimes come to bluetooth driver
+> >> with wrong sequence number as illustrated as follows:
+> >> frame # in DEC: frame data in HEX
+> >> 1396: ff fd 01 08 74 05 00 37 8f 14
+> >> 1397: ff fd 01 08 75 05 00 ff bf 38
+> >> 1414: ff fd 01 08 86 05 00 fb 5e 4b
+> >> 1399: ff fd 01 08 77 05 00 f3 44 0a
+> >> 1400: ff fd 01 08 78 05 00 ca f7 41
+> >> it is mistook for controller missing packets, so results
+> >> in page fault after overwriting memdump buffer allocated.
+> >>
+> >> it is fixed by ignoring QCA6390 sequence number error
+> >> and checking buffer space before writing.
+> >>
+> >> Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
+> >> ---
+> >>  drivers/bluetooth/hci_qca.c | 45 ++++++++++++++++++++++++++++++++++++++-------
+> >>  1 file changed, 38 insertions(+), 7 deletions(-)
+> >>
+> >> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+> >> index e4a6823..388fe01b 100644
+> >> --- a/drivers/bluetooth/hci_qca.c
+> >> +++ b/drivers/bluetooth/hci_qca.c
+> >> @@ -114,6 +114,7 @@ struct qca_memdump_data {
+> >>         char *memdump_buf_tail;
+> >>         u32 current_seq_no;
+> >>         u32 received_dump;
+> >> +       u32 ram_dump_size;
+> >>  };
+> >>
+> >>  struct qca_memdump_event_hdr {
+> >> @@ -976,6 +977,8 @@ static void qca_controller_memdump(struct work_struct *work)
+> >>         char nullBuff[QCA_DUMP_PACKET_SIZE] = { 0 };
+> >>         u16 seq_no;
+> >>         u32 dump_size;
+> >> +       u32 rx_size;
+> >> +       enum qca_btsoc_type soc_type = qca_soc_type(hu);
+> >>
+> >>         while ((skb = skb_dequeue(&qca->rx_memdump_q))) {
+> >>
+> >> @@ -1029,6 +1032,7 @@ static void qca_controller_memdump(struct work_struct *work)
+> >>
+> >>                         skb_pull(skb, sizeof(dump_size));
+> >>                         memdump_buf = vmalloc(dump_size);
+> >> +                       qca_memdump->ram_dump_size = dump_size;
+> >>                         qca_memdump->memdump_buf_head = memdump_buf;
+> >>                         qca_memdump->memdump_buf_tail = memdump_buf;
+> >>                 }
+> >> @@ -1052,25 +1056,52 @@ static void qca_controller_memdump(struct work_struct *work)
+> >>                  * packets in the buffer.
+> >>                  */
+> >>                 while ((seq_no > qca_memdump->current_seq_no + 1) &&
+> >> +                       (soc_type != QCA_QCA6390) &&
+> >
+> > This probably shouldn't be SOC specific.
+> >
+> make sense. but this logic block should be skipped for QCA6390
+> the present logic to fix controller missing packets for the other products
+> is not suitable for QCA6390. for QCA6390, it doesn't miss packet and sequence
+> number field of the packet maybe have data error, but serdev driver doesn't propagate
+> these error info detected by UART driver to bluetooth driver. so the sequence number
+> extracted from packet received is not reliable.
 
-x86/dma: Fix max PFN arithmetic overflow on 32 bit systems
+Ok -- then I think it would be clearer to just set seq_no =
+qca_memdump->current_seq_no for QCA6390 and leave a comment about it.
 
-The intermediate result of the old term (4UL * 1024 * 1024 * 1024) is
-4 294 967 296 or 0x100000000 which is no problem on 64 bit systems.
-The patch does not change the later overall result of 0x100000 for
-MAX_DMA32_PFN (after it has been shifted by PAGE_SHIFT). The new
-calculation yields the same result, but does not require 64 bit
-arithmetic.
+>
+> >>                         seq_no != QCA_LAST_SEQUENCE_NUM) {
+> >>                         bt_dev_err(hu->hdev, "QCA controller missed packet:%d",
+> >>                                    qca_memdump->current_seq_no);
+> >> +                       rx_size = qca_memdump->received_dump;
+> >> +                       rx_size += QCA_DUMP_PACKET_SIZE;
+> >> +                       if (rx_size > qca_memdump->ram_dump_size) {
+> >> +                               bt_dev_err(hu->hdev,
+> >> +                                               "QCA memdump received %d, no space for missed packet",
+> >> +                                               qca_memdump->received_dump);
+> >> +                               break;
+> >> +                       }
+> >>                         memcpy(memdump_buf, nullBuff, QCA_DUMP_PACKET_SIZE);
+> >>                         memdump_buf = memdump_buf + QCA_DUMP_PACKET_SIZE;
+> >>                         qca_memdump->received_dump += QCA_DUMP_PACKET_SIZE;
+> >>                         qca_memdump->current_seq_no++;
+> >>                 }
+> >
+> > You can replace this loop with a memset(memdump_buf, 0, (seq_no -
+> > qca_memdump->current_seq_no) * QCA_DUMP_PACKET_SIZE). This simplifies
+> > the ram_dump_size check as well because it won't zero fill until the
+> > end anymore (meaning a single bad seq_no doesn't make the rest of the
+> > dump incorrect).
+> >
+> i don't think so
+> as explained above, the sequence number is not reliable, so we can't memset buffer
+> area calculated from seqence number. i just dump all the packets we received without
+> any handling for QCA6390.
 
-On 32 bit systems the old calculation suffers from an arithmetic
-overflow in that intermediate term in braces: 4UL aka unsigned long int
-is 4 byte wide and an arithmetic overflow happens (the 0x100000000 does
-not fit in 4 bytes), the in braces result is truncated to zero, the
-following right shift does not alter that, so MAX_DMA32_PFN evaluates to
-0 on 32 bit systems.
+I suggest the following:
 
-That wrong value is a problem in a comparision against MAX_DMA32_PFN in
-the init code for swiotlb in pci_swiotlb_detect_4gb() to decide if
-swiotlb should be active.  That comparison yields the opposite result,
-when compiling on 32 bit systems.
+/* For QCA6390, ignore the seq_no and always assume packets are in order */
+if (soc_type == QCA_QCA6390 && seq_no != QCA_LAST_SEQUENCE_NUM) {
+    seq_no = qca_memdump->current_seq_no;
+} else if (seq_no > qca_memdump->current_seq_no &&
+             seq_no != QCA_LAST_SEQUENCE_NUM) {
+    /* For bounds checking, add the sizes of the current pkt + the
+number of missing pkts.
+     * If the given seq_no exceeds the allocated size of the dump,
+assume the seq_no is
+     * wrong.
+     */
+    rx_size = (seq_no - qca_memdump->current_seq_no) * QCA_DUMP_PACKET_SIZE;
+    if (rx_size + skb->len <= (qca_memdump->ram_dump_size -
+qca_memdump->received_dump)) {
+        memset(memdump_buf, 0, rx_size);
+        memdump_buf += rx_size;
+        qca_memdump->received_dump += rx_size;
+        qca_memdump->current_seq_no = seq_no;
+    } else {
+        seq_no = qca_memdump->current_seq_no;
+    }
+}
 
-This was not possible before
+> >>
+> >> -               memcpy(memdump_buf, (unsigned char *) skb->data, skb->len);
+> >> -               memdump_buf = memdump_buf + skb->len;
+> >> -               qca_memdump->memdump_buf_tail = memdump_buf;
+> >> -               qca_memdump->current_seq_no = seq_no + 1;
+> >> -               qca_memdump->received_dump += skb->len;
+> >> +               rx_size = qca_memdump->received_dump + skb->len;
+> >> +               if (rx_size <= qca_memdump->ram_dump_size) {
+> >> +                       if ((seq_no != QCA_LAST_SEQUENCE_NUM) &&
+> >> +                                       (seq_no != qca_memdump->current_seq_no))
+> >> +                               bt_dev_err(hu->hdev,
+> >> +                                               "QCA memdump unexpected packet %d",
+> >> +                                               seq_no);
 
-  1b7e03ef7570 ("x86, NUMA: Enable emulation on 32bit too")
+This message doesn't make sense here anymore and should be removed.
 
-when that MAX_DMA32_PFN was first made visible to x86_32 (and which
-landed in v3.0).
-
-In practice this wasn't a problem, unless CONFIG_SWIOTLB is active on
-x86-32.
-
-However if one has set CONFIG_IOMMU_INTEL, since
-
-  c5a5dc4cbbf4 ("iommu/vt-d: Don't switch off swiotlb if bounce page is used")
-
-there's a dependency on CONFIG_SWIOTLB, which was not necessarily
-active before. That landed in v5.4, where we noticed it in the fli4l
-Linux distribution. We have CONFIG_IOMMU_INTEL active on both 32 and 64
-bit kernel configs there (I could not find out why, so let's just say
-historical reasons).
-
-The effect is at boot time 64 MiB (default size) were allocated for
-bounce buffers now, which is a noticeable amount of memory on small
-systems like pcengines ALIX 2D3 with 256 MiB memory, which are still
-frequently used as home routers.
-
-We noticed this effect when migrating from kernel v4.19 (LTS) to v5.4
-(LTS) in fli4l and got that kernel messages for example:
-
-  Linux version 5.4.22 (buildroot@buildroot) (gcc version 7.3.0 (Buildroot 2018.02.8)) #1 SMP Mon Nov 26 23:40:00 CET 2018
-  …
-  Memory: 183484K/261756K available (4594K kernel code, 393K rwdata, 1660K rodata, 536K init, 456K bss , 78272K reserved, 0K cma-reserved, 0K highmem)
-  …
-  PCI-DMA: Using software bounce buffering for IO (SWIOTLB)
-  software IO TLB: mapped [mem 0x0bb78000-0x0fb78000] (64MB)
-
-The initial analysis and the suggested fix was done by user 'sourcejedi'
-at stackoverflow and explicitly marked as GPLv2 for inclusion in the
-Linux kernel:
-
-  https://unix.stackexchange.com/a/520525/50007
-
-The new calculation, which does not suffer from that overflow, is the
-same as for arch/mips now as suggested by Robin Murphy.
-
-The fix was tested by fli4l users on round about two dozen different
-systems, including both 32 and 64 bit archs, bare metal and virtualized
-machines.
-
- [ bp: Massage commit message. ]
-
-Fixes: 1b7e03ef7570 ("x86, NUMA: Enable emulation on 32bit too")
-Reported-by: Alan Jenkins <alan.christopher.jenkins@gmail.com>
-Suggested-by: Robin Murphy <robin.murphy@arm.com>
-Signed-off-by: Alexander Dahl <post@lespocky.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org
-Link: https://unix.stackexchange.com/q/520065/50007
-Link: https://web.nettworks.org/bugs/browse/FFL-2560
-Link: https://lkml.kernel.org/r/20200526175749.20742-1-post@lespocky.de
----
- arch/x86/include/asm/dma.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/dma.h b/arch/x86/include/asm/dma.h
-index 00f7cf4..8e95aa4 100644
---- a/arch/x86/include/asm/dma.h
-+++ b/arch/x86/include/asm/dma.h
-@@ -74,7 +74,7 @@
- #define MAX_DMA_PFN   ((16UL * 1024 * 1024) >> PAGE_SHIFT)
- 
- /* 4GB broken PCI/AGP hardware bus master zone */
--#define MAX_DMA32_PFN ((4UL * 1024 * 1024 * 1024) >> PAGE_SHIFT)
-+#define MAX_DMA32_PFN (1UL << (32 - PAGE_SHIFT))
- 
- #ifdef CONFIG_X86_32
- /* The maximum address that we can perform a DMA transfer to on this platform */
+> >> +                       bt_dev_dbg(hu->hdev,
+> >> +                                       "QCA memdump packet %d with length %d",
+> >> +                                       seq_no, skb->len);
+> >> +                       memcpy(memdump_buf, (unsigned char *)skb->data,
+> >> +                                       skb->len);
+> >> +                       memdump_buf = memdump_buf + skb->len;
+> >> +                       qca_memdump->memdump_buf_tail = memdump_buf;
+> >> +                       qca_memdump->current_seq_no = seq_no + 1;
+> >> +                       qca_memdump->received_dump += skb->len;
+> >> +               } else {
+> >> +                       bt_dev_err(hu->hdev,
+> >> +                                       "QCA memdump received %d, no space for packet %d",
+> >> +                                       qca_memdump->received_dump, seq_no);
+> >> +               }
+> >>                 qca->qca_memdump = qca_memdump;
+> >>                 kfree_skb(skb);
+> >>                 if (seq_no == QCA_LAST_SEQUENCE_NUM) {
+> >> -                       bt_dev_info(hu->hdev, "QCA writing crash dump of size %d bytes",
+> >> -                                  qca_memdump->received_dump);
+> >> +                       bt_dev_info(hu->hdev,
+> >> +                                       "QCA memdump Done, received %d, total %d",
+> >> +                                       qca_memdump->received_dump,
+> >> +                                       qca_memdump->ram_dump_size);
+> >>                         memdump_buf = qca_memdump->memdump_buf_head;
+> >>                         dev_coredumpv(&hu->serdev->dev, memdump_buf,
+> >>                                       qca_memdump->received_dump, GFP_KERNEL);
+> >> --
+> >> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+> >>
+>
+> --
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
