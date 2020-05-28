@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E283F1E6C4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E93E41E6C26
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407221AbgE1UQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 16:16:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41630 "EHLO mail.kernel.org"
+        id S2407034AbgE1UOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 16:14:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406998AbgE1UOQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 16:14:16 -0400
+        id S2407003AbgE1UOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 16:14:18 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C37E02145D;
-        Thu, 28 May 2020 20:14:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EF9A0214D8;
+        Thu, 28 May 2020 20:14:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590696855;
-        bh=qn510wgUCURz8e5nXmTkZDJ1jP1E7gkThyqKFt10Ac0=;
+        s=default; t=1590696857;
+        bh=+eYS9oHOKcd0uUUZbrhUmgVDl9ydhKQO6aeYAXoVQa8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=odS2hHpLsQKsBqaTLmFgt88Bl6lo67HxWKF+WpQrQpckOM6c4cUlR6hC3GqTAVPu4
-         Da+msFzakb3SqybAz1TKbnlILwQ2lWRsnoDFgnglCWixfFAAxJ2rdn70Z8ixmhGKXl
-         y7sGCFKRBAAx8Dij4zsfAPBSN4WZsD3kL+GZ3AsY=
+        b=2fokc3SqHVJKnZSQZakWKTq7Mi6E+maaDqDadOByPsBWo3pm40b70Y8C293DqO2fk
+         iXCtuGDS74oC7yQ6CLJS1Oxbi6LzbP8d3nyL8+zy0kNkh/90P3DDvq22jPg6TOEYzl
+         VcjqhwbDYqnqLLY+H6u++w+AaKGMH6R3xTnZnfb0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     tglx@linutronix.de, luto@kernel.org, ak@linux.intel.com
 Cc:     corbet@lwn.net, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
@@ -31,12 +31,10 @@ Cc:     corbet@lwn.net, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
         peterz@infradead.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, jarkko.sakkinen@linux.intel.com,
         Ravi Shankar <ravi.v.shankar@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
         "H . Peter Anvin" <hpa@zytor.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH v13 02/16] x86/cpu: Add 'unsafe_fsgsbase' to enable CR4.FSGSBASE
-Date:   Thu, 28 May 2020 16:13:48 -0400
-Message-Id: <20200528201402.1708239-3-sashal@kernel.org>
+Subject: [PATCH v13 03/16] x86/fsgsbase/64: Add intrinsics for FSGSBASE instructions
+Date:   Thu, 28 May 2020 16:13:49 -0400
+Message-Id: <20200528201402.1708239-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200528201402.1708239-1-sashal@kernel.org>
 References: <20200528201402.1708239-1-sashal@kernel.org>
@@ -47,85 +45,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Lutomirski <luto@kernel.org>
+From: Andi Kleen <ak@linux.intel.com>
 
-This is temporary.  It will allow the next few patches to be tested
-incrementally.
+[ luto: Rename the variables from FS and GS to FSBASE and GSBASE and
+  make <asm/fsgsbase.h> safe to include on 32-bit kernels. ]
 
-Setting unsafe_fsgsbase is a root hole.  Don't do it.
-
+Signed-off-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Andy Lutomirski <luto@kernel.org>
 Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Reviewed-by: Andy Lutomirski <luto@kernel.org>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Cc: Ravi Shankar <ravi.v.shankar@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Randy Dunlap <rdunlap@infradead.org>
 Cc: H. Peter Anvin <hpa@zytor.com>
-Link: https://lkml.kernel.org/r/1557309753-24073-4-git-send-email-chang.seok.bae@intel.com
+Link: https://lkml.kernel.org/r/1557309753-24073-6-git-send-email-chang.seok.bae@intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../admin-guide/kernel-parameters.txt         |  3 +++
- arch/x86/kernel/cpu/common.c                  | 24 +++++++++++++++++++
- 2 files changed, 27 insertions(+)
+ arch/x86/include/asm/fsgsbase.h | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 7bc83f3d9bdf..af3aaade195b 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3033,6 +3033,9 @@
- 	no5lvl		[X86-64] Disable 5-level paging mode. Forces
- 			kernel to use 4-level paging instead.
+diff --git a/arch/x86/include/asm/fsgsbase.h b/arch/x86/include/asm/fsgsbase.h
+index bca4c743de77..fdd1177499b4 100644
+--- a/arch/x86/include/asm/fsgsbase.h
++++ b/arch/x86/include/asm/fsgsbase.h
+@@ -19,6 +19,36 @@ extern unsigned long x86_gsbase_read_task(struct task_struct *task);
+ extern void x86_fsbase_write_task(struct task_struct *task, unsigned long fsbase);
+ extern void x86_gsbase_write_task(struct task_struct *task, unsigned long gsbase);
  
-+	unsafe_fsgsbase	[X86] Allow FSGSBASE instructions.  This will be
-+			replaced with a nofsgsbase flag.
++/* Must be protected by X86_FEATURE_FSGSBASE check. */
 +
- 	no_console_suspend
- 			[HW] Never suspend the console
- 			Disable suspending of consoles during suspend and
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index bed0cb83fe24..4224760c74e2 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -418,6 +418,22 @@ static void __init setup_cr_pinning(void)
- 	static_key_enable(&cr_pinning.key);
- }
- 
-+/*
-+ * Temporary hack: FSGSBASE is unsafe until a few kernel code paths are
-+ * updated. This allows us to get the kernel ready incrementally.
-+ *
-+ * Once all the pieces are in place, these will go away and be replaced with
-+ * a nofsgsbase chicken flag.
-+ */
-+static bool unsafe_fsgsbase;
-+
-+static __init int setup_unsafe_fsgsbase(char *arg)
++static __always_inline unsigned long rdfsbase(void)
 +{
-+	unsafe_fsgsbase = true;
-+	return 1;
++	unsigned long fsbase;
++
++	asm volatile("rdfsbase %0" : "=r" (fsbase) :: "memory");
++
++	return fsbase;
 +}
-+__setup("unsafe_fsgsbase", setup_unsafe_fsgsbase);
 +
- /*
-  * Protection Keys are not available in 32-bit mode.
-  */
-@@ -1478,6 +1494,14 @@ static void identify_cpu(struct cpuinfo_x86 *c)
- 	setup_smap(c);
- 	setup_umip(c);
++static __always_inline unsigned long rdgsbase(void)
++{
++	unsigned long gsbase;
++
++	asm volatile("rdgsbase %0" : "=r" (gsbase) :: "memory");
++
++	return gsbase;
++}
++
++static __always_inline void wrfsbase(unsigned long fsbase)
++{
++	asm volatile("wrfsbase %0" :: "r" (fsbase) : "memory");
++}
++
++static __always_inline void wrgsbase(unsigned long gsbase)
++{
++	asm volatile("wrgsbase %0" :: "r" (gsbase) : "memory");
++}
++
+ /* Helper functions for reading/writing FS/GS base */
  
-+	/* Enable FSGSBASE instructions if available. */
-+	if (cpu_has(c, X86_FEATURE_FSGSBASE)) {
-+		if (unsafe_fsgsbase)
-+			cr4_set_bits(X86_CR4_FSGSBASE);
-+		else
-+			clear_cpu_cap(c, X86_FEATURE_FSGSBASE);
-+	}
-+
- 	/*
- 	 * The vendor-specific functions might have changed features.
- 	 * Now we do "generic changes."
+ static inline unsigned long x86_fsbase_read_cpu(void)
 -- 
 2.25.1
 
