@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64AF41E6215
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 15:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 823A81E621C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 15:23:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390342AbgE1NXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 09:23:10 -0400
-Received: from foss.arm.com ([217.140.110.172]:52640 "EHLO foss.arm.com"
+        id S2390366AbgE1NXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 09:23:25 -0400
+Received: from foss.arm.com ([217.140.110.172]:52656 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390252AbgE1NW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 09:22:59 -0400
+        id S2390295AbgE1NXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 09:23:01 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E16D0D6E;
-        Thu, 28 May 2020 06:22:58 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EB5B6D6E;
+        Thu, 28 May 2020 06:23:00 -0700 (PDT)
 Received: from [192.168.1.84] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 581A63F52E;
-        Thu, 28 May 2020 06:22:57 -0700 (PDT)
-Subject: Re: [PATCH 08/15] drm/panfrost: move devfreq_init()/fini() in device
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 80D8E3F52E;
+        Thu, 28 May 2020 06:22:59 -0700 (PDT)
+Subject: Re: [PATCH 09/15] drm/panfrost: dynamically alloc regulators
 To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
         Rob Herring <robh@kernel.org>,
         Tomeu Vizoso <tomeu.vizoso@collabora.com>,
@@ -28,14 +28,14 @@ To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
         Chen-Yu Tsai <wens@csie.org>
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
 References: <20200510165538.19720-1-peron.clem@gmail.com>
- <20200510165538.19720-9-peron.clem@gmail.com>
+ <20200510165538.19720-10-peron.clem@gmail.com>
 From:   Steven Price <steven.price@arm.com>
-Message-ID: <3ca4dd51-d868-0d6a-d4ca-37af572190bd@arm.com>
-Date:   Thu, 28 May 2020 14:22:55 +0100
+Message-ID: <1988db9d-6340-1e36-d567-21b2164fbeb2@arm.com>
+Date:   Thu, 28 May 2020 14:22:57 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200510165538.19720-9-peron.clem@gmail.com>
+In-Reply-To: <20200510165538.19720-10-peron.clem@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
@@ -45,173 +45,74 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 10/05/2020 17:55, Clément Péron wrote:
-> Later we will introduce devfreq probing regulator if they
-> are present. As regulator should be probe only one time we
-> need to get this logic in the device_init().
+> We will later introduce regulators managed by OPP.
 > 
-> panfrost_device is already taking care of devfreq_resume()
-> and devfreq_suspend(), so it's not totally illogic to move
-> the devfreq_init() and devfreq_fini() here.
+> Only alloc regulators when it's needed. This also help use
+> to release the regulators only when they are allocated.
 > 
 > Signed-off-by: Clément Péron <peron.clem@gmail.com>
+
+LGTM:
+
+Reviewed-by: Steven Price <steven.price@arm.com>
+
 > ---
->   drivers/gpu/drm/panfrost/panfrost_device.c | 37 ++++++++++++++--------
->   drivers/gpu/drm/panfrost/panfrost_drv.c    | 15 ++-------
->   2 files changed, 25 insertions(+), 27 deletions(-)
+>   drivers/gpu/drm/panfrost/panfrost_device.c | 14 +++++++++-----
+>   drivers/gpu/drm/panfrost/panfrost_device.h |  3 +--
+>   2 files changed, 10 insertions(+), 7 deletions(-)
 > 
 > diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
-> index 8136babd3ba9..f480127205d6 100644
+> index f480127205d6..67eedf64e82d 100644
 > --- a/drivers/gpu/drm/panfrost/panfrost_device.c
 > +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
-> @@ -212,59 +212,67 @@ int panfrost_device_init(struct panfrost_device *pfdev)
->   		return err;
->   	}
+> @@ -90,9 +90,11 @@ static int panfrost_regulator_init(struct panfrost_device *pfdev)
+>   {
+>   	int ret, i;
 >   
-> +	err = panfrost_devfreq_init(pfdev);
-> +	if (err) {
-> +		dev_err(pfdev->dev, "devfreq init failed %d\n", err);
-> +		goto err_out0;
-> +	}
+> -	if (WARN(pfdev->comp->num_supplies > ARRAY_SIZE(pfdev->regulators),
+> -			"Too many supplies in compatible structure.\n"))
+> -		return -EINVAL;
+> +	pfdev->regulators = devm_kcalloc(pfdev->dev, pfdev->comp->num_supplies,
+> +					 sizeof(*pfdev->regulators),
+> +					 GFP_KERNEL);
+> +	if (!pfdev->regulators)
+> +		return -ENOMEM;
+>   
+>   	for (i = 0; i < pfdev->comp->num_supplies; i++)
+>   		pfdev->regulators[i].supply = pfdev->comp->supply_names[i];
+> @@ -117,8 +119,10 @@ static int panfrost_regulator_init(struct panfrost_device *pfdev)
+>   
+>   static void panfrost_regulator_fini(struct panfrost_device *pfdev)
+>   {
+> -	regulator_bulk_disable(pfdev->comp->num_supplies,
+> -			pfdev->regulators);
+> +	if (!pfdev->regulators)
+> +		return;
 > +
->   	err = panfrost_regulator_init(pfdev);
->   	if (err) {
->   		dev_err(pfdev->dev, "regulator init failed %d\n", err);
-> -		goto err_out0;
-> +		goto err_out1;
-
-NIT: Rather than just renumbering these can we give them sensible names 
-so we don't have this sort of refactoring in future?
-
->   	}
->   
->   	err = panfrost_reset_init(pfdev);
->   	if (err) {
->   		dev_err(pfdev->dev, "reset init failed %d\n", err);
-> -		goto err_out1;
-> +		goto err_out2;
->   	}
->   
->   	err = panfrost_pm_domain_init(pfdev);
->   	if (err)
-> -		goto err_out2;
-> +		goto err_out3;
->   
->   	res = platform_get_resource(pfdev->pdev, IORESOURCE_MEM, 0);
->   	pfdev->iomem = devm_ioremap_resource(pfdev->dev, res);
->   	if (IS_ERR(pfdev->iomem)) {
->   		dev_err(pfdev->dev, "failed to ioremap iomem\n");
->   		err = PTR_ERR(pfdev->iomem);
-> -		goto err_out3;
-> +		goto err_out4;
->   	}
->   
->   	err = panfrost_gpu_init(pfdev);
->   	if (err)
-> -		goto err_out3;
-> +		goto err_out4;
->   
->   	err = panfrost_mmu_init(pfdev);
->   	if (err)
-> -		goto err_out4;
-> +		goto err_out5;
->   
->   	err = panfrost_job_init(pfdev);
->   	if (err)
-> -		goto err_out5;
-> +		goto err_out6;
->   
->   	err = panfrost_perfcnt_init(pfdev);
->   	if (err)
-> -		goto err_out6;
-> +		goto err_out7;
->   
->   	return 0;
-> -err_out6:
-> +err_out7:
->   	panfrost_job_fini(pfdev);
-> -err_out5:
-> +err_out6:
->   	panfrost_mmu_fini(pfdev);
-> -err_out4:
-> +err_out5:
->   	panfrost_gpu_fini(pfdev);
-> -err_out3:
-> +err_out4:
->   	panfrost_pm_domain_fini(pfdev);
-> -err_out2:
-> +err_out3:
->   	panfrost_reset_fini(pfdev);
-> -err_out1:
-> +err_out2:
->   	panfrost_regulator_fini(pfdev);
-> +err_out1:
-> +	panfrost_devfreq_fini(pfdev);
->   err_out0:
->   	panfrost_clk_fini(pfdev);
->   	return err;
-> @@ -278,6 +286,7 @@ void panfrost_device_fini(struct panfrost_device *pfdev)
->   	panfrost_gpu_fini(pfdev);
->   	panfrost_pm_domain_fini(pfdev);
->   	panfrost_reset_fini(pfdev);
-> +	panfrost_devfreq_fini(pfdev);
->   	panfrost_regulator_fini(pfdev);
->   	panfrost_clk_fini(pfdev);
+> +	regulator_bulk_disable(pfdev->comp->num_supplies, pfdev->regulators);
 >   }
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> index 882fecc33fdb..4dda68689015 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> @@ -14,7 +14,6 @@
->   #include <drm/drm_utils.h>
 >   
->   #include "panfrost_device.h"
-> -#include "panfrost_devfreq.h"
->   #include "panfrost_gem.h"
->   #include "panfrost_mmu.h"
->   #include "panfrost_job.h"
-> @@ -606,13 +605,6 @@ static int panfrost_probe(struct platform_device *pdev)
->   		goto err_out0;
->   	}
+>   static void panfrost_pm_domain_fini(struct panfrost_device *pfdev)
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+> index 2efa59c9d1c5..953f7536a773 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
+> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+> @@ -22,7 +22,6 @@ struct panfrost_job;
+>   struct panfrost_perfcnt;
 >   
-> -	err = panfrost_devfreq_init(pfdev);
-> -	if (err) {
-> -		if (err != -EPROBE_DEFER)
-> -			dev_err(&pdev->dev, "Fatal error during devfreq init\n");
-
-You seem to have lost the check for EPROBE_DEFER during the move.
-
-> -		goto err_out1;
-> -	}
-> -
->   	pm_runtime_set_active(pfdev->dev);
->   	pm_runtime_mark_last_busy(pfdev->dev);
->   	pm_runtime_enable(pfdev->dev);
-> @@ -625,16 +617,14 @@ static int panfrost_probe(struct platform_device *pdev)
->   	 */
->   	err = drm_dev_register(ddev, 0);
->   	if (err < 0)
-> -		goto err_out2;
-> +		goto err_out1;
+>   #define NUM_JOB_SLOTS 3
+> -#define MAX_REGULATORS 2
+>   #define MAX_PM_DOMAINS 3
 >   
->   	panfrost_gem_shrinker_init(ddev);
->   
->   	return 0;
->   
-> -err_out2:
-> -	pm_runtime_disable(pfdev->dev);
-> -	panfrost_devfreq_fini(pfdev);
->   err_out1:
-> +	pm_runtime_disable(pfdev->dev);
->   	panfrost_device_fini(pfdev);
->   err_out0:
->   	drm_dev_put(ddev);
-> @@ -650,7 +640,6 @@ static int panfrost_remove(struct platform_device *pdev)
->   	panfrost_gem_shrinker_cleanup(ddev);
->   
->   	pm_runtime_get_sync(pfdev->dev);
-> -	panfrost_devfreq_fini(pfdev);
->   	panfrost_device_fini(pfdev);
->   	pm_runtime_put_sync_suspend(pfdev->dev);
->   	pm_runtime_disable(pfdev->dev);
+>   struct panfrost_features {
+> @@ -81,7 +80,7 @@ struct panfrost_device {
+>   	void __iomem *iomem;
+>   	struct clk *clock;
+>   	struct clk *bus_clock;
+> -	struct regulator_bulk_data regulators[MAX_REGULATORS];
+> +	struct regulator_bulk_data *regulators;
+>   	struct reset_control *rstc;
+>   	/* pm_domains for devices with more than one. */
+>   	struct device *pm_domain_devs[MAX_PM_DOMAINS];
 > 
 
