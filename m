@@ -2,99 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C0B1E69E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 21:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46AFB1E69F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 21:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406046AbgE1TAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 15:00:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406018AbgE1TAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 15:00:12 -0400
-Received: from localhost (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D8DD208A7;
-        Thu, 28 May 2020 19:00:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590692411;
-        bh=IBEXcJa5SZhZ23qO9uJI7HCaq75DLLMpP4eqn+jfAFM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YUCZZwbwvxE/dv74jVYYRkbAOdMaZ60UPrX80T8LV4B2i1Y88+ZdTIbc9gjcNbERe
-         IDtz1LMY9A2VZT/seUPpll60XHOAGxnS8FDdWgpp2D1lemfr0XbzXzIY1eHT5v2rcz
-         RyEXMS8zfSot99O/44ZbsAIWh53vW2KTlvSV/xIY=
-Date:   Thu, 28 May 2020 12:00:10 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, chao@kernel.org
-Subject: Re: [PATCH 3/3] f2fs: fix to cover meta flush with cp_lock
-Message-ID: <20200528190010.GA162605@google.com>
-References: <20200527102753.15743-1-yuchao0@huawei.com>
- <20200527102753.15743-3-yuchao0@huawei.com>
- <20200527210233.GC206249@google.com>
- <23245f6e-528d-43ab-57b6-4ca16db43fe5@huawei.com>
- <20200528012615.GA232094@google.com>
- <8e30b18d-bf8e-dd2f-35fa-08bbfd1b507e@huawei.com>
+        id S2406079AbgE1TBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 15:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406082AbgE1TBf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 15:01:35 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2167C08C5C6;
+        Thu, 28 May 2020 12:01:34 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id l27so1153483ejc.1;
+        Thu, 28 May 2020 12:01:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=j0MYj8Ipmt8xXyoUeRuSIQ/UfKCEmpy3Z2Hbpa9+pow=;
+        b=qGGfxL55Xf/KNFJq17UFdFOPwFIGiZZRGtBt7m2pE3MyF0Zz2VCVQ7j/isc2STj9zp
+         nUG928sndbC3RTnXFK8aqFl6F57QTGq5D8ekPwfRj48UsAQqXJ4Df1FgDtjnAi5jn27D
+         CcHjfHAdPpPRwmvU8H8LbsXJkPsg3DrezXLQwgIzlgdFN3hsL9QvPD2/ahqTZfAgRHv0
+         nL14m5ZrFwdh1QTvCu7QWJnaZudmnDo37J7Wj8uzmEk66f74+S5vMM7nASIwy3cOtvce
+         qbF5Bs3E2G8RJK5itlBsoKlZQRgmfiVC8gvqAD0JymVWp9mkH3yXo6OFl41ofNn7mAnV
+         xl1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=j0MYj8Ipmt8xXyoUeRuSIQ/UfKCEmpy3Z2Hbpa9+pow=;
+        b=To/KR4pJJ35WkoBXyQy8ul99y5J80UOBGjplxv0rF4c3jVkqNd7Jom6ft/HBGVRZUD
+         jDZgsknv1pnis54w7BZEvCTzDVbg8RibxGdVB2+xtdrNZdlMiYe4/3wTCfK8y2r7CZm9
+         7erItsJzPKTJSI8lWE45sfpw8p5DbGFGgwIW2HafjROlYSZg3hTBN+Yn+Mw7LY7wQyO2
+         VA95IrjUpRbka2pkCp3yz+Adci1y+rmfNYaTRLDJujYEARmv9jWLlCaDXoHlmz0+Xwa+
+         pD9yiCQwQH5z57eR0srtui624GkUN24sZ0y5BBX9uh6vxS0kG1kY6+6ffKpw+KPx+ITF
+         2r9A==
+X-Gm-Message-State: AOAM53128fT/Sa3zXFXlqGVZy4Ql0repJvor2p7W0vYhyzotf2/V8+nF
+        3W4ZeR4T/ziNDcqVK89CAu5CTPf3
+X-Google-Smtp-Source: ABdhPJy4tZ5KolUuKBwNRg9w/I1PpC7IwqxSLlejHRH3OHgtwMguzAU4TtE3ZNPpSKBWtRtIgtzitg==
+X-Received: by 2002:a17:906:15cb:: with SMTP id l11mr4221301ejd.224.1590692493388;
+        Thu, 28 May 2020 12:01:33 -0700 (PDT)
+Received: from [10.67.49.116] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id r9sm5428558edg.13.2020.05.28.12.01.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 May 2020 12:01:32 -0700 (PDT)
+Subject: Re: [PATCH] spi: bcm2835: Enable shared interrupt support
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Mark Brown <broonie@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com
+Cc:     Martin Sperl <kernel@martin.sperl.org>, linux-spi@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20200528185805.28991-1-nsaenzjulienne@suse.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+ G10n8gCguORqNGMsVRxrlLs7/himep7MrCc=
+Message-ID: <bb82ab33-69b4-b407-ef1a-08f6326d5d93@gmail.com>
+Date:   Thu, 28 May 2020 12:00:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8e30b18d-bf8e-dd2f-35fa-08bbfd1b507e@huawei.com>
+In-Reply-To: <20200528185805.28991-1-nsaenzjulienne@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/28, Chao Yu wrote:
-> On 2020/5/28 9:26, Jaegeuk Kim wrote:
-> > On 05/28, Chao Yu wrote:
-> >> On 2020/5/28 5:02, Jaegeuk Kim wrote:
-> >>> On 05/27, Chao Yu wrote:
-> >>>> meta inode page should be flushed under cp_lock, fix it.
-> >>>
-> >>> It doesn't matter for this case, yes?
-> >>
-> >> It's not related to discard issue.
-> > 
-> > I meant we really need this or not. :P
+On 5/28/20 11:58 AM, Nicolas Saenz Julienne wrote:
+> From: Martin Sperl <kernel@martin.sperl.org>
 > 
-> Yes, let's keep that rule: flush meta pages under cp_lock, otherwise
-> checkpoint flush order may be broken due to race, right? as checkpoint
-> should write 2rd cp park page after flushing all meta pages.
-
-Well, this is for shutdown test, and thus we don't need to sync up here.
-
+> bcm2711, Rasberry Pi 4's SoC, shares one interrupt for multiple
+> instances of the bcm2835 SPI controller. So this enables shared
+> interrupt support for them.
 > 
-> > 
-> >>
-> >> Now, I got some progress, I can reproduce that bug occasionally.
-> >>
-> >> Thanks,
-> >>
-> >>>
-> >>>>
-> >>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> >>>> ---
-> >>>>  fs/f2fs/file.c | 2 ++
-> >>>>  1 file changed, 2 insertions(+)
-> >>>>
-> >>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> >>>> index f7de2a1da528..0fcae4d90074 100644
-> >>>> --- a/fs/f2fs/file.c
-> >>>> +++ b/fs/f2fs/file.c
-> >>>> @@ -2260,7 +2260,9 @@ static int f2fs_ioc_shutdown(struct file *filp, unsigned long arg)
-> >>>>  		set_sbi_flag(sbi, SBI_IS_SHUTDOWN);
-> >>>>  		break;
-> >>>>  	case F2FS_GOING_DOWN_METAFLUSH:
-> >>>> +		mutex_lock(&sbi->cp_mutex);
-> >>>>  		f2fs_sync_meta_pages(sbi, META, LONG_MAX, FS_META_IO);
-> >>>> +		mutex_unlock(&sbi->cp_mutex);
-> >>>>  		f2fs_stop_checkpoint(sbi, false);
-> >>>>  		set_sbi_flag(sbi, SBI_IS_SHUTDOWN);
-> >>>>  		break;
-> >>>> -- 
-> >>>> 2.18.0.rc1
-> >>> .
-> >>>
-> > .
-> > 
+> The early bail out in the interrupt routine avoids messing with buffers
+> of transfers being done by other means. Otherwise, the driver can handle
+> receiving interrupts asserted by other controllers during an IRQ based
+> transfer.
+> 
+> Signed-off-by: Martin Sperl <kernel@martin.sperl.org>
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+
+Thanks Nicolas, we have been using this patch on 7211 (which is very
+similar to 2711):
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
