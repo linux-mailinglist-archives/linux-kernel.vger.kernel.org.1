@@ -2,84 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134971E5F95
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F361E5FB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389324AbgE1MCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:02:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389044AbgE1MCr (ORCPT
+        id S2389588AbgE1MD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 08:03:59 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:34038 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389200AbgE1MD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 08:02:47 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52E7C05BD1E;
-        Thu, 28 May 2020 05:02:46 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id c11so30885044ljn.2;
-        Thu, 28 May 2020 05:02:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tZAAtlUG9AhJ/Atr4cE+FEtEOyGU5vjMq1zxXLMbm/M=;
-        b=ZorZ4K4yDcy4gsjhpUw7Oun7inOYaU2WCjP9bqsic1m6WYUd5QevLW3/AXbdkm9PSu
-         AtB17UQLllBYLMI2by7yQ/c81HwSUzqR3UaR4eLOGejdMjdkEGu2DOZqq/PjvMNhV/WO
-         IgLAw0dNHgMGV1Gl1G2XsYG/ZqXTLaNLsalsaENaqueEf5htqY3JpIvAvzu21614JVsG
-         nxQ1j1MNmF3fl4n/1s5aXXsUOXwwfoq44wwDJMHhTqc6NlDEE3cY6dsyisuxJIpAWFp3
-         51r6WCC3chucPPhGUpM1BKRABx4bbGSCVPdYfplXOSQul4vdHxTnFqChe0DT59uJiTC7
-         8HVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tZAAtlUG9AhJ/Atr4cE+FEtEOyGU5vjMq1zxXLMbm/M=;
-        b=DfTLA3K1ote8Qt0/DEiiCGHmnhDUqdc7waqJsN4q1lZDs7UJYl0H71nxEgSSouohv9
-         fgROrl596WMRH7+YD2f072HSs+GRhJVeEC9iZZf4SEKK9n6TFsuBqk9HjqE7v8rTw6nc
-         4Uc3jM8N0gOYxuFQks2RtO5wxJPpF9wILFra+NdX/T1hC54YD38JJnF0kgzm8hzcqz5y
-         fZImjkvFniuPs2sBuhzpSKzHD7YzbPxhVlJGiKoi5yxbX9s1nO2o5RwWQGMRtpotiHVk
-         BUu4pDqVpYOCJJ4jNWIDZltQd2rgv02zWeBDnU5jgHL4xPVne3CbJyZ9OHBZO4nOWM/Y
-         OryA==
-X-Gm-Message-State: AOAM530LP4kbJ+cIE5te5hwKyRGi1RPnZKceoiaA4Vf5v/S1jZhpKHb/
-        bwKgYpAnf6FLyHi24Avfg13uwggbCnw4DCNNnX63LA==
-X-Google-Smtp-Source: ABdhPJwmCZRWpoHjgLbsA2QTPKomwsN+ITixXa7o67e3iIg1zmy/OAFe7ddh+2EQj5ThIgflVLMLH3fIhHSR6K+mtUg=
-X-Received: by 2002:a2e:9891:: with SMTP id b17mr1395244ljj.319.1590667363018;
- Thu, 28 May 2020 05:02:43 -0700 (PDT)
+        Thu, 28 May 2020 08:03:56 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 139401C0351; Thu, 28 May 2020 14:03:55 +0200 (CEST)
+Date:   Thu, 28 May 2020 14:03:54 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@osdl.org>, airlied@linux.ie,
+        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com
+Subject: Re: next-20200515: Xorg killed due to "OOM"
+Message-ID: <20200528120354.GB22054@duo.ucw.cz>
+References: <20200526091054.GA12103@amd>
+ <20200528090517.GA27484@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <20200527165718.129307-1-briannorris@chromium.org>
-In-Reply-To: <20200527165718.129307-1-briannorris@chromium.org>
-From:   Julian Calaby <julian.calaby@gmail.com>
-Date:   Thu, 28 May 2020 22:02:31 +1000
-Message-ID: <CAGRGNgX5n=0OEi7hMrmgVZGD=orGpgvkyLrhmXVKSFYdBJ+eUw@mail.gmail.com>
-Subject: Re: [PATCH] Revert "ath: add support for special 0x0 regulatory domain"
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        Wen Gong <wgong@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="EuxKj2iCbKjpUGkD"
+Content-Disposition: inline
+In-Reply-To: <20200528090517.GA27484@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Brian,
 
-On Thu, May 28, 2020 at 5:18 AM Brian Norris <briannorris@chromium.org> wrote:
->
-> This reverts commit 2dc016599cfa9672a147528ca26d70c3654a5423.
->
-> Users are reporting regressions in regulatory domain detection and
-> channel availability.
->
-> The problem this was trying to resolve was fixed in firmware anyway:
+--EuxKj2iCbKjpUGkD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Should we tell the user their firmware needs to be upgraded if it
-reports this regulatory domain instead of completely dropping support
-for it?
+On Thu 2020-05-28 11:05:17, Michal Hocko wrote:
+> On Tue 26-05-20 11:10:54, Pavel Machek wrote:
+> [...]
+> > [38617.276517] oom_reaper: reaped process 31769 (chromium), now anon-rs=
+s:0kB, file-rss:0kB, shmem-rss:7968kB
+> > [38617.277232] Xorg invoked oom-killer: gfp_mask=3D0x0(), order=3D0, oo=
+m_score_adj=3D0
+> > [38617.277247] CPU: 0 PID: 2978 Comm: Xorg Not tainted 5.7.0-rc5-next-2=
+0200515+ #117
+> > [38617.277256] Hardware name: LENOVO 17097HU/17097HU, BIOS 7BETD8WW (2.=
+19 ) 03/31/2011
+> > [38617.277266] Call Trace:
+> > [38617.277286]  dump_stack+0x54/0x6e
+> > [38617.277300]  dump_header+0x45/0x321
+> > [38617.277313]  oom_kill_process.cold+0x9/0xe
+> > [38617.277324]  ? out_of_memory+0x167/0x420
+> > [38617.277336]  out_of_memory+0x1f2/0x420
+> > [38617.277348]  pagefault_out_of_memory+0x34/0x56
+> > [38617.277361]  mm_fault_error+0x4a/0x130
+> > [38617.277372]  do_page_fault+0x3ce/0x416
+>=20
+> The reason the OOM killer has been invoked is that the page fault
+> handler has returned VM_FAULT_OOM. So this is not a result of the page
+> allocator struggling to allocate a memory. It would be interesting to
+> check which code path has returned this.=20
 
-Thanks,
+Should the core WARN_ON if that happens and there's enough memory, or
+something like that?
 
--- 
-Julian Calaby
+I grepped, and there are not too many users of VM_FAULT_OOM. These
+might be relevant:
 
-Email: julian.calaby@gmail.com
-Profile: http://www.google.com/profiles/julian.calaby/
+drivers/gpu/drm/ttm/ttm_bo_vm.c: *   VM_FAULT_OOM on out-of-memory
+drivers/gpu/drm/ttm/ttm_bo_vm.c:			ret =3D VM_FAULT_OOM;
+drivers/gpu/drm/ttm/ttm_bo_vm.c:				ret =3D VM_FAULT_OOM;
+drivers/gpu/drm/i915/gem/i915_gem_mman.c:		return VM_FAULT_OOM;
+drivers/gpu/drm/vkms/vkms_gem.c:				ret =3D VM_FAULT_OOM;
+drivers/gpu/drm/vgem/vgem_drv.c:				ret =3D VM_FAULT_OOM;
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--EuxKj2iCbKjpUGkD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXs+oqgAKCRAw5/Bqldv6
+8pKPAKC2x1jO4iv3PZ1UfH48WV8rdHtrpACgu+FXMqEg7DpKpVXKzbGrjcb2Rps=
+=7MLL
+-----END PGP SIGNATURE-----
+
+--EuxKj2iCbKjpUGkD--
