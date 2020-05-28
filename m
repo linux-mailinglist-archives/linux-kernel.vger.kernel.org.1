@@ -2,96 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590411E6A2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 21:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB941E6A1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 21:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406181AbgE1TNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 15:13:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405596AbgE1TNt (ORCPT
+        id S2406133AbgE1TIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 15:08:36 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:44029 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406081AbgE1TId (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 15:13:49 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35343C08C5C6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 12:13:49 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id f7so868691ejq.6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 12:13:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0HTVBakDVN8XNdtT+CkYT4htvCqU+BWizMrhpaCpVUU=;
-        b=aFMSYB2ECpaxe8CY18ljTFJv4xRZ5bv1Zi4GWChAC1vehbJjLJ6zd3EKxvcmaiQMve
-         SRJN/ivKuQqNVzeGQp3DjmIyYFrTa8FYINcRjHaUHAuPfavRik3b9xZHsSgl1vMIU6Gg
-         uFypusNji8uKclzDC/fRxY3b+szIfbFvyasjI=
+        Thu, 28 May 2020 15:08:33 -0400
+Received: by mail-ej1-f67.google.com with SMTP id a2so1108946ejb.10;
+        Thu, 28 May 2020 12:08:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0HTVBakDVN8XNdtT+CkYT4htvCqU+BWizMrhpaCpVUU=;
-        b=dRVw53xMWu3HKKO7JZ1nugSMft9lWalpz6pmJ95vTYokc/nw1Xqe1AHogA/skul2PT
-         3AJS5FrXfH3Zy3wB0nu5TZBoyFm8NroKQcXyA+7Sb5fVdSYhKRg4YFk3xd+XwCeE89Yb
-         SiWVFHdTB7KV83ZhnY/6vZirJ7Si+oSa24rOhSkaTVwH+hf4o/HfouLYYVeffGeuyKw7
-         mBX38HFOwtUckuD2gT8P/n7Xuj6o85bfQ8dcJ6DaruG/UNBU5bUhLN5S5Ed3wAAk8oSz
-         9rYMQroMiCXyep86U58a5syW9gXWcdZIPEH9FDtabunYQip7ZaoSQ8+XA6IsxmbN6Jfs
-         spKQ==
-X-Gm-Message-State: AOAM530BjEjT3ELkRKSVqjvKZWzPD4FF0ehQcMocEBioVpZNbXskeS62
-        rMx5HGsn7FOtAhfQmWq0xptBaD8greE=
-X-Google-Smtp-Source: ABdhPJwzppfNAK/Du222WU6wyLv9gHjIhWtI2hAjFcH9MOcoZAF7td1SuFDl7/04HVY4APQzbOqcgg==
-X-Received: by 2002:a17:906:57c5:: with SMTP id u5mr4331699ejr.419.1590693227612;
-        Thu, 28 May 2020 12:13:47 -0700 (PDT)
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
-        by smtp.gmail.com with ESMTPSA id v6sm5919433ejv.120.2020.05.28.12.13.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 May 2020 12:13:47 -0700 (PDT)
-Received: by mail-ej1-f48.google.com with SMTP id y13so1183498eju.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 12:13:47 -0700 (PDT)
-X-Received: by 2002:a2e:150f:: with SMTP id s15mr2157651ljd.102.1590692898773;
- Thu, 28 May 2020 12:08:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <87h7wujhmz.fsf@x220.int.ebiederm.org> <87sgga6ze4.fsf@x220.int.ebiederm.org>
- <87v9l4zyla.fsf_-_@x220.int.ebiederm.org> <877dx822er.fsf_-_@x220.int.ebiederm.org>
- <87k10wysqz.fsf_-_@x220.int.ebiederm.org> <87y2pcvz3b.fsf_-_@x220.int.ebiederm.org>
-In-Reply-To: <87y2pcvz3b.fsf_-_@x220.int.ebiederm.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 28 May 2020 12:08:02 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiAG4tpPoWsWSqHbyMZDnWR8RHUpbwxB9_tdAqbE59NxA@mail.gmail.com>
-Message-ID: <CAHk-=wiAG4tpPoWsWSqHbyMZDnWR8RHUpbwxB9_tdAqbE59NxA@mail.gmail.com>
-Subject: Re: [PATCH 09/11] exec: In bprm_fill_uid only set per_clear when
- honoring suid or sgid
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=A3AB3XwTTYzt1zONUlGDw1t5RFjEaflenV4Wqzl2A4A=;
+        b=gPbV4Hx/5UZ7SPPS8e8R1QNd+d1fPglmN4O+z0VaSDvGSE1/l7B9hrCXrrMlEF6vab
+         EazsmY6iRVVWdDogBnBhasX8moWX6PhVetpjHmoSVjbGhnoskmlm28b9YHH2l9A5g5j4
+         9UJBLWBPDRKOfX4RFxV+XeTm4THSO+L/YH1k1j0H4i7XmacjGd4vzKGepURymiy+ceIa
+         6Rnj8zYXWGVYnBsZr6dPonYm1D+lf4VR56VUjR5mQjQO5r7ASs2Z79LLHSI+xPbSS+b/
+         cvJMxoXzROpqWWyPO+nBodgAs3INjqDdWvS9VE1M4IgelNV6oIZl+Qq7TimRvtXE6m+A
+         UFAw==
+X-Gm-Message-State: AOAM531spj+Jx2Vi4qdqvpqbuGZYcM5EM4msc/Bfg0LEbN9k3YJT0NDr
+        ByHDQgjwTKLq05voLxgnYl6YaleKN7w=
+X-Google-Smtp-Source: ABdhPJxHprawmsGEdEbW5FMlvuq5wQanGA4PqoeRbJBN6xHhW/L2Fvt/XHMK8cJRmwE1KMis7HFL1g==
+X-Received: by 2002:a17:906:7d90:: with SMTP id v16mr4270015ejo.554.1590692911706;
+        Thu, 28 May 2020 12:08:31 -0700 (PDT)
+Received: from darkstar ([51.154.17.58])
+        by smtp.gmail.com with ESMTPSA id j31sm1208387edb.12.2020.05.28.12.08.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 28 May 2020 12:08:30 -0700 (PDT)
+References: <20200511154053.7822-1-qais.yousef@arm.com> <20200528132327.GB706460@hirez.programming.kicks-ass.net> <20200528155800.yjrmx3hj72xreryh@e107158-lin.cambridge.arm.com> <20200528161112.GI2483@worktop.programming.kicks-ass.net> <20200528165130.m5unoewcncuvxynn@e107158-lin.cambridge.arm.com> <20200528182913.GQ2483@worktop.programming.kicks-ass.net>
+User-agent: mu4e 1.4.3; emacs 26.3
+From:   Patrick Bellasi <patrick.bellasi@matbug.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Qais Yousef <qais.yousef@arm.com>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Ingo Molnar <mingo@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
         Kees Cook <keescook@chromium.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Rob Landley <rob@landley.net>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andy Lutomirski <luto@amacapital.net>
-Content-Type: text/plain; charset="UTF-8"
+        Iurii Zaikin <yzaikin@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/2] sched/uclamp: Add a new sysctl to control RT default boost value
+In-reply-to: <20200528182913.GQ2483@worktop.programming.kicks-ass.net>
+Message-ID: <878shb3mj6.derkling@matbug.net>
+Date:   Thu, 28 May 2020 21:08:29 +0200
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 8:53 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+
+[+Giovanni]
+
+On Thu, May 28, 2020 at 20:29:14 +0200, Peter Zijlstra <peterz@infradead.org> wrote...
+
+> On Thu, May 28, 2020 at 05:51:31PM +0100, Qais Yousef wrote:
+
+>> I had a humble try to catch the overhead but wasn't successful. The observation
+>> wasn't missed by us too then.
 >
-> It makes no sense to set active_per_clear when the kernel decides not
-> to honor the executables setuid or or setgid bits.  Instead set
-> active_per_clear when the kernel actually decides to honor the suid or
-> sgid permission bits of an executable.
+> Right, I remember us doing benchmarks when we introduced all this and
+> clearly we missed something. I would be good if Mel can share which
+> benchmark hurt most so we can go have a look.
 
-You seem to be confused about the naming yourself.
+Indeed, would be great to have a description of their test setup and
+results. Perhaps Giovanni can also support us on that.
 
-You talk about "active_per_clear", but the code is about "per_clear". WTF?
-
-              Linus
