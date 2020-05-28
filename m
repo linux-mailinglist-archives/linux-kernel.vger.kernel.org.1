@@ -2,182 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CDF31E54E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 06:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A5E1E54EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 06:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbgE1EHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 00:07:46 -0400
-Received: from smtprelay0226.hostedemail.com ([216.40.44.226]:53618 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725830AbgE1EHp (ORCPT
+        id S1726085AbgE1EO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 00:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725308AbgE1EO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 00:07:45 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 8167D18029597;
-        Thu, 28 May 2020 04:07:44 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:2:41:355:379:599:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1593:1594:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3167:3354:3622:3865:3867:3868:3872:4050:4119:4321:4605:5007:7875:8603:10004:10848:11026:11232:11233:11658:11914:12043:12296:12297:12438:12740:12760:12895:13439:14659:21080:21451:21627:21990:30034:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: hill77_1b1293126d57
-X-Filterd-Recvd-Size: 8369
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf08.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 28 May 2020 04:07:43 +0000 (UTC)
-Message-ID: <d46604df8e64fd91c6fea5073c6cb5eb20184baf.camel@perches.com>
-Subject: Re: [PATCH 1/2] xen-pciback: Use dev_printk() when possible
-From:   Joe Perches <joe@perches.com>
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Juergen Gross <jgross@suse.com>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>
-Date:   Wed, 27 May 2020 21:07:41 -0700
-In-Reply-To: <612fee00-4e7c-9b90-511d-4efb7676cbed@oracle.com>
-References: <20200527174326.254329-1-helgaas@kernel.org>
-         <20200527174326.254329-2-helgaas@kernel.org>
-         <612fee00-4e7c-9b90-511d-4efb7676cbed@oracle.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        Thu, 28 May 2020 00:14:56 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F120C05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 21:14:56 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id z13so21955223ljn.7
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 21:14:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=whokj7dhyD8nKdYthVeJGDFA0AYbgH+VAE8dNabj+Nw=;
+        b=fEXn0tJWaEcS1/o9rxuVZxV/ZZ8RppTt9wKLPP/VzEZKAcFJF1/V5Xxm71Geeljn7x
+         8KdzwbxxwOaUxY2h4tCDaNXTmaagWb12o7BSvnVuNSK5+cVn1ayVf4F4F36HF/mNWA0E
+         CrmAraECFr86U8gMhGTqyqYw81IuVNGhevHsd5hDPnYljHUudd3UM8/8PUMgnqsxACE5
+         lt1dTFS8UP8pSzzUwqm64j8JOFez8tg3ldCFxRxqa7EzJX7Up8FV+tQXLUUpnqH8+Mn9
+         7urqU0X7nx40l7g0xlIh9J/zcrXKTDzwXgUEKukSDIcEKxl5XzLzGFH5TLbCcolu9FPa
+         kAiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=whokj7dhyD8nKdYthVeJGDFA0AYbgH+VAE8dNabj+Nw=;
+        b=sIS3Y2mgboEjt3LYN+s8NTmF+4ZHoNwZfuk1/7Ezq1+ZsPxaIoVT6aJFHmI8dGE70a
+         7o/sLcpiWl6gEF0UdPaLdqKOnLeyqDDRpVewXM7ElPp1Kshqt+SXFnhSXNSK6nNCxmT4
+         kwF9YmhK7sdWXqcEZ9KMgo43/l8otIful4YzUz4B2Y/2RvDRTXMvb4MBhQv6Cwd35qbm
+         6hnYw5AJOeJNq7VTXC8oK4hzQLmoKGq2V6g2R5vH/s2FllbG+9rW/luHU1bN1J8VBxRy
+         GT5raGYDE/2Kp/LokXoSul3aoywkvNUYmDDOXxaN07z3l6fWy/rh9r4KYIfllroj56VU
+         OVmg==
+X-Gm-Message-State: AOAM533hRy269jNie9YigWbwbRTC5HIwCY1G1keLgYxsyu6Rh/MQliKG
+        MuNk5Z7y1Mg/zdzDyC/jecqdElzXMmzYFv5W+/X1nvn9
+X-Google-Smtp-Source: ABdhPJwj+PIfUBYviPwcbQC2/sgGSyj7GVt/ly1AHD6JA7ry08MYxylj/6ZU9cubc2XQbE8HW1jFAhlShFrz9Iv0jy0=
+X-Received: by 2002:a2e:91c3:: with SMTP id u3mr476939ljg.365.1590639294595;
+ Wed, 27 May 2020 21:14:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200527111902.163213-1-christian.brauner@ubuntu.com>
+ <202005271408.58F806514@keescook> <20200527220532.jplypougn3qzwrms@wittgenstein>
+ <202005271537.75548B6@keescook> <20200527224501.jddwcmvtvjtjsmsx@wittgenstein>
+ <20200527231646.4v743erjpzh6qe5f@wittgenstein> <202005271851.B7FBA02F@keescook>
+In-Reply-To: <202005271851.B7FBA02F@keescook>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 28 May 2020 06:14:28 +0200
+Message-ID: <CAG48ez017z2SrNvvc0BfsCM4DTXTdzMPdfYcT61XsXU2a4FUZQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] seccomp: notify user trap about unused filter
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Tycho Andersen <tycho@tycho.ws>,
+        Matt Denton <mpdenton@google.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Chris Palmer <palmer@google.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Robert Sesek <rsesek@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Linux Containers <containers@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-05-27 at 15:34 -0700, Boris Ostrovsky wrote:
-> On 5/27/20 1:43 PM, Bjorn Helgaas wrote:
-> > @@ -155,8 +157,8 @@ int xen_pcibk_config_read(struct pci_dev *dev, int offset, int size,
-> >  	u32 value = 0, tmp_val;
-> >  
-> >  	if (unlikely(verbose_request))
-> > -		printk(KERN_DEBUG DRV_NAME ": %s: read %d bytes at 0x%x\n",
-> > -		       pci_name(dev), size, offset);
-> > +		dev_printk(KERN_DEBUG, &dev->dev, "read %d bytes at 0x%x\n",
-> > +			   size, offset);
-> 
-> Maybe then dev_dbg() ?
+On Thu, May 28, 2020 at 3:59 AM Kees Cook <keescook@chromium.org> wrote:
+> On Thu, May 28, 2020 at 01:16:46AM +0200, Christian Brauner wrote:
+> > I'm also starting to think this isn't even possible or currently doable
+> > safely.
+> > The fdtable in the kernel would end up with a dangling pointer, I would
+> > think. Unless you backtrack all fds that still have a reference into the
+> > fdtable and refer to that file and close them all in the kernel which I
+> > don't think is possible and also sounds very dodgy. This also really
+> > seems like we would be breaking a major contract, namely that fds stay
+> > valid until userspace calls close, execve(), or exits.
+>
+> Right, I think I was just using the wrong words? I was looking at it
+> like a pipe, or a socket, where you still have an fd, but reads return
+> 0, you might get SIGPIPE, etc. The VFS clearly knows what a
+> "disconnected" fd is, and I had assumed there was general logic for it
+> to indicate "I'm not here any more".
 
-It likely would be better to remove verbose_request altogether
-and just use dynamic debugging and dev_dbg for all the output.
-
-$ git grep -w -A3 verbose_request
-drivers/pci/xen-pcifront.c:static int verbose_request;
-drivers/pci/xen-pcifront.c:module_param(verbose_request, int, 0644);
-drivers/pci/xen-pcifront.c-
-drivers/pci/xen-pcifront.c-static int errno_to_pcibios_err(int errno)
-drivers/pci/xen-pcifront.c-{
---
-drivers/pci/xen-pcifront.c:	if (verbose_request)
-drivers/pci/xen-pcifront.c-		dev_info(&pdev->xdev->dev,
-drivers/pci/xen-pcifront.c-			 "read dev=%04x:%02x:%02x.%d - offset %x size %d\n",
-drivers/pci/xen-pcifront.c-			 pci_domain_nr(bus), bus->number, PCI_SLOT(devfn),
---
-drivers/pci/xen-pcifront.c:		if (verbose_request)
-drivers/pci/xen-pcifront.c-			dev_info(&pdev->xdev->dev, "read got back value %x\n",
-drivers/pci/xen-pcifront.c-				 op.value);
-drivers/pci/xen-pcifront.c-
---
-drivers/pci/xen-pcifront.c:	if (verbose_request)
-drivers/pci/xen-pcifront.c-		dev_info(&pdev->xdev->dev,
-drivers/pci/xen-pcifront.c-			 "write dev=%04x:%02x:%02x.%d - "
-drivers/pci/xen-pcifront.c-			 "offset %x size %d val %x\n",
---
-drivers/xen/xen-pciback/conf_space.c:	if (unlikely(verbose_request))
-drivers/xen/xen-pciback/conf_space.c-		printk(KERN_DEBUG DRV_NAME ": %s: read %d bytes at 0x%x\n",
-drivers/xen/xen-pciback/conf_space.c-		       pci_name(dev), size, offset);
-drivers/xen/xen-pciback/conf_space.c-
---
-drivers/xen/xen-pciback/conf_space.c:	if (unlikely(verbose_request))
-drivers/xen/xen-pciback/conf_space.c-		printk(KERN_DEBUG DRV_NAME ": %s: read %d bytes at 0x%x = %x\n",
-drivers/xen/xen-pciback/conf_space.c-		       pci_name(dev), size, offset, value);
-drivers/xen/xen-pciback/conf_space.c-
---
-drivers/xen/xen-pciback/conf_space.c:	if (unlikely(verbose_request))
-drivers/xen/xen-pciback/conf_space.c-		printk(KERN_DEBUG
-drivers/xen/xen-pciback/conf_space.c-		       DRV_NAME ": %s: write request %d bytes at 0x%x = %x\n",
-drivers/xen/xen-pciback/conf_space.c-		       pci_name(dev), size, offset, value);
---
-drivers/xen/xen-pciback/conf_space_header.c:		if (unlikely(verbose_request))
-drivers/xen/xen-pciback/conf_space_header.c-			printk(KERN_DEBUG DRV_NAME ": %s: enable\n",
-drivers/xen/xen-pciback/conf_space_header.c-			       pci_name(dev));
-drivers/xen/xen-pciback/conf_space_header.c-		err = pci_enable_device(dev);
---
-drivers/xen/xen-pciback/conf_space_header.c:		if (unlikely(verbose_request))
-drivers/xen/xen-pciback/conf_space_header.c-			printk(KERN_DEBUG DRV_NAME ": %s: disable\n",
-drivers/xen/xen-pciback/conf_space_header.c-			       pci_name(dev));
-drivers/xen/xen-pciback/conf_space_header.c-		pci_disable_device(dev);
---
-drivers/xen/xen-pciback/conf_space_header.c:		if (unlikely(verbose_request))
-drivers/xen/xen-pciback/conf_space_header.c-			printk(KERN_DEBUG DRV_NAME ": %s: set bus master\n",
-drivers/xen/xen-pciback/conf_space_header.c-			       pci_name(dev));
-drivers/xen/xen-pciback/conf_space_header.c-		pci_set_master(dev);
---
-drivers/xen/xen-pciback/conf_space_header.c:		if (unlikely(verbose_request))
-drivers/xen/xen-pciback/conf_space_header.c-			printk(KERN_DEBUG DRV_NAME ": %s: clear bus master\n",
-drivers/xen/xen-pciback/conf_space_header.c-			       pci_name(dev));
-drivers/xen/xen-pciback/conf_space_header.c-		pci_clear_master(dev);
---
-drivers/xen/xen-pciback/conf_space_header.c:		if (unlikely(verbose_request))
-drivers/xen/xen-pciback/conf_space_header.c-			printk(KERN_DEBUG
-drivers/xen/xen-pciback/conf_space_header.c-			       DRV_NAME ": %s: enable memory-write-invalidate\n",
-drivers/xen/xen-pciback/conf_space_header.c-			       pci_name(dev));
---
-drivers/xen/xen-pciback/conf_space_header.c:		if (unlikely(verbose_request))
-drivers/xen/xen-pciback/conf_space_header.c-			printk(KERN_DEBUG
-drivers/xen/xen-pciback/conf_space_header.c-			       DRV_NAME ": %s: disable memory-write-invalidate\n",
-drivers/xen/xen-pciback/conf_space_header.c-			       pci_name(dev));
---
-drivers/xen/xen-pciback/pciback.h:extern int verbose_request;
-drivers/xen/xen-pciback/pciback.h-
-drivers/xen/xen-pciback/pciback.h-void xen_pcibk_test_and_schedule_op(struct xen_pcibk_device *pdev);
-drivers/xen/xen-pciback/pciback.h-#endif
---
-drivers/xen/xen-pciback/pciback_ops.c:int verbose_request;
-drivers/xen/xen-pciback/pciback_ops.c:module_param(verbose_request, int, 0644);
-drivers/xen/xen-pciback/pciback_ops.c-
-drivers/xen/xen-pciback/pciback_ops.c-static irqreturn_t xen_pcibk_guest_interrupt(int irq, void *dev_id);
-drivers/xen/xen-pciback/pciback_ops.c-
---
-drivers/xen/xen-pciback/pciback_ops.c:	if (unlikely(verbose_request))
-drivers/xen/xen-pciback/pciback_ops.c-		printk(KERN_DEBUG DRV_NAME ": %s: enable MSI\n", pci_name(dev));
-drivers/xen/xen-pciback/pciback_ops.c-
-drivers/xen/xen-pciback/pciback_ops.c-	if (dev->msi_enabled)
---
-drivers/xen/xen-pciback/pciback_ops.c:	if (unlikely(verbose_request))
-drivers/xen/xen-pciback/pciback_ops.c-		printk(KERN_DEBUG DRV_NAME ": %s: MSI: %d\n", pci_name(dev),
-drivers/xen/xen-pciback/pciback_ops.c-			op->value);
-drivers/xen/xen-pciback/pciback_ops.c-
---
-drivers/xen/xen-pciback/pciback_ops.c:	if (unlikely(verbose_request))
-drivers/xen/xen-pciback/pciback_ops.c-		printk(KERN_DEBUG DRV_NAME ": %s: disable MSI\n",
-drivers/xen/xen-pciback/pciback_ops.c-		       pci_name(dev));
-drivers/xen/xen-pciback/pciback_ops.c-
---
-drivers/xen/xen-pciback/pciback_ops.c:	if (unlikely(verbose_request))
-drivers/xen/xen-pciback/pciback_ops.c-		printk(KERN_DEBUG DRV_NAME ": %s: MSI: %d\n", pci_name(dev),
-drivers/xen/xen-pciback/pciback_ops.c-			op->value);
-drivers/xen/xen-pciback/pciback_ops.c-	return 0;
---
-drivers/xen/xen-pciback/pciback_ops.c:	if (unlikely(verbose_request))
-drivers/xen/xen-pciback/pciback_ops.c-		printk(KERN_DEBUG DRV_NAME ": %s: enable MSI-X\n",
-drivers/xen/xen-pciback/pciback_ops.c-		       pci_name(dev));
-drivers/xen/xen-pciback/pciback_ops.c-
---
-drivers/xen/xen-pciback/pciback_ops.c:				if (unlikely(verbose_request))
-drivers/xen/xen-pciback/pciback_ops.c-					printk(KERN_DEBUG DRV_NAME ": %s: " \
-drivers/xen/xen-pciback/pciback_ops.c-						"MSI-X[%d]: %d\n",
-drivers/xen/xen-pciback/pciback_ops.c-						pci_name(dev), i,
---
-drivers/xen/xen-pciback/pciback_ops.c:	if (unlikely(verbose_request))
-drivers/xen/xen-pciback/pciback_ops.c-		printk(KERN_DEBUG DRV_NAME ": %s: disable MSI-X\n",
-drivers/xen/xen-pciback/pciback_ops.c-			pci_name(dev));
-drivers/xen/xen-pciback/pciback_ops.c-
---
-drivers/xen/xen-pciback/pciback_ops.c:	if (unlikely(verbose_request))
-drivers/xen/xen-pciback/pciback_ops.c-		printk(KERN_DEBUG DRV_NAME ": %s: MSI-X: %d\n",
-drivers/xen/xen-pciback/pciback_ops.c-		       pci_name(dev), op->value);
-drivers/xen/xen-pciback/pciback_ops.c-	return 0;
-
-
+Nope. For example, pipes have manual checks based on pipe->readers and
+pipe->writers, and manually send SIGPIPE and stuff from inside
+fs/pipe.c. And pipes are not actually permanently "disconnected" -
+someone can e.g. open a pipe that previously had no readers in read
+mode, and suddenly you can write to it again.
