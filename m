@@ -2,122 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F631E567E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 07:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A34411E5692
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 07:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727088AbgE1Fco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 01:32:44 -0400
-Received: from mga11.intel.com ([192.55.52.93]:54187 "EHLO mga11.intel.com"
+        id S1727824AbgE1Ff0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 01:35:26 -0400
+Received: from mga06.intel.com ([134.134.136.31]:27657 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725808AbgE1Fco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 01:32:44 -0400
-IronPort-SDR: LJS73g4EG92pLliactKOujehg4ZS5JpcVpX/5Ezug9iZyD8FyQp1iD+apQLdfaQmwiuyqfMoe7
- 6IuG6NhFiYAA==
+        id S1725984AbgE1FfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 01:35:24 -0400
+IronPort-SDR: FHXnK9Maj7ZNZj53iIigx+O+2NCN+ULZ3KGQ4ARvyKs0B60rytQek2lSH64nh2cUcq5Q4yQl3T
+ LA1jz4OWjssA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 22:32:43 -0700
-IronPort-SDR: bsfo8pNe49nYQ0/GNqtd3UEJUSoRZQDa1Pbp2efFOQ3mivCF3w9mSiPALYXhivu/kWEdUkT6Oc
- 1E4/2DVdFfOg==
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 22:35:24 -0700
+IronPort-SDR: 2SdZPj0yQJCpDgubaEXU7UpditVC8ZiB2VgwMVvDrrBNNM3qQfr4Hc8v+7E2YIyPA5DxAwDcQp
+ tqsYYv4V1sbg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,443,1583222400"; 
-   d="scan'208";a="291877792"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.23])
-  by fmsmga004.fm.intel.com with ESMTP; 27 May 2020 22:32:41 -0700
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH -V3] swap: Reduce lock contention on swap cache from swap slots allocation
-References: <20200525002648.336325-1-ying.huang@intel.com>
-        <20200528013724.flx6pwcmaazpek32@ca-dmjordan1.us.oracle.com>
-Date:   Thu, 28 May 2020 13:32:40 +0800
-In-Reply-To: <20200528013724.flx6pwcmaazpek32@ca-dmjordan1.us.oracle.com>
-        (Daniel Jordan's message of "Wed, 27 May 2020 21:37:24 -0400")
-Message-ID: <87h7w0hbev.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+   d="scan'208";a="468995652"
+Received: from dmescala-mobl1.amr.corp.intel.com (HELO localhost) ([10.252.59.102])
+  by fmsmga005.fm.intel.com with ESMTP; 27 May 2020 22:35:16 -0700
+Date:   Thu, 28 May 2020 08:35:15 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        akpm@linux-foundation.org, dave.hansen@intel.com,
+        nhorman@redhat.com, npmccallum@redhat.com, haitao.huang@intel.com,
+        andriy.shevchenko@linux.intel.com, tglx@linutronix.de,
+        kai.svahn@intel.com, josh@joshtriplett.org, luto@kernel.org,
+        kai.huang@intel.com, rientjes@google.com, cedric.xing@intel.com,
+        puiterwijk@redhat.com, Serge Ayoun <serge.ayoun@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>
+Subject: Re: [PATCH v30 07/20] x86/sgx: Enumerate and track EPC sections
+Message-ID: <20200528053515.GA64796@linux.intel.com>
+References: <20200515004410.723949-1-jarkko.sakkinen@linux.intel.com>
+ <20200515004410.723949-8-jarkko.sakkinen@linux.intel.com>
+ <20200525092304.GD25636@zn.tnic>
+ <20200527035613.GH31696@linux.intel.com>
+ <20200528052532.GA63435@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200528052532.GA63435@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel Jordan <daniel.m.jordan@oracle.com> writes:
+On Thu, May 28, 2020 at 08:25:43AM +0300, Jarkko Sakkinen wrote:
+> On Tue, May 26, 2020 at 08:56:14PM -0700, Sean Christopherson wrote:
+> > On Mon, May 25, 2020 at 11:23:04AM +0200, Borislav Petkov wrote:
+> > > On Fri, May 15, 2020 at 03:43:57AM +0300, Jarkko Sakkinen wrote:
+> > > > +struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
+> > > > +int sgx_nr_epc_sections;
+> > > 
+> > > We have become very averse against global stuff. What is going to use
+> > > those, only sgx code I assume...?
+> > 
+> > Yes, only SGX code.  The reclaim/swap code needs access to the sections,
+> > and that code is in a different file, reclaim.c.  I don't have a super
+> > strong objection to sucking reclaim.c into main.c, but I'm somewhat
+> > indifferent on code organization as a whole.  Jarkko likely has a stronger
+> > opinion.
+> 
+> I'll change it.
+> 
+> It's not quite as easy as just "sucking the file in". All the commits
+> that touch the file need to be reworked:
+> 
+> $ git --no-pager log --format="%H %s" arch/x86/kernel/cpu/sgx/reclaim.c
+> 5aeca6dabf767e9350ee3188ba25ceb21f3162b4 x86/sgx: Add a page reclaimer
+> de9b1088959f36ffdaf43a49bfea1c7f9f81cac7 x86/sgx: Linux Enclave Driver
+> 08d8fcb74fe268059ee58fcc2a0833b244e1f22a x86/sgx: Enumerate and track EPC sections
 
-> On Mon, May 25, 2020 at 08:26:48AM +0800, Huang Ying wrote:
->> diff --git a/mm/swapfile.c b/mm/swapfile.c
->> index 423c234aca15..0abd93d2a4fc 100644
->> --- a/mm/swapfile.c
->> +++ b/mm/swapfile.c
->> @@ -615,7 +615,8 @@ static bool scan_swap_map_try_ssd_cluster(struct swap_info_struct *si,
->>  			 * discarding, do discard now and reclaim them
->>  			 */
->>  			swap_do_scheduled_discard(si);
->> -			*scan_base = *offset = si->cluster_next;
->> +			*scan_base = this_cpu_read(*si->cluster_next_cpu);
->> +			*offset = *scan_base;
->>  			goto new_cluster;
->
-> Why is this done?  As far as I can tell, the values always get overwritten at
-> the end of the function with tmp and tmp isn't derived from them.  Seems
-> ebc2a1a69111 moved some logic that used to make sense but doesn't have any
-> effect now.
+Not that I haven't done this a lot last few years. A proven approach
+is to do it in two "git rebase -i mainline/master" sweeps:
 
-If we fail to allocate from cluster, "scan_base" and "offset" will not
-be overridden.  And "cluster_next" or "cluster_next_cpu" may be changed
-in swap_do_scheduled_discard(), because the lock is released and
-re-acquired there.
+1. For each commit, remove reclaim.c entry from the Makefile and import
+   reclaim.c contents to main.c.
+2. For each commit, delete reclaim.c.
 
-The code may not have much value.  And you may think that it's better to
-remove it.  But that should be in another patch.
+I've tried quite a few different angles and this what I've converged
+into. Very hard to hit messy into messy merge conflicts.
 
->>  		} else
->>  			return false;
->> @@ -721,6 +722,34 @@ static void swap_range_free(struct swap_info_struct *si, unsigned long offset,
->>  	}
->>  }
->>  
->> +static void set_cluster_next(struct swap_info_struct *si, unsigned long next)
->> +{
->> +	unsigned long prev;
->> +
->> +	if (!(si->flags & SWP_SOLIDSTATE)) {
->> +		si->cluster_next = next;
->> +		return;
->> +	}
->> +
->> +	prev = this_cpu_read(*si->cluster_next_cpu);
->> +	/*
->> +	 * Cross the swap address space size aligned trunk, choose
->> +	 * another trunk randomly to avoid lock contention on swap
->> +	 * address space if possible.
->> +	 */
->> +	if ((prev >> SWAP_ADDRESS_SPACE_SHIFT) !=
->> +	    (next >> SWAP_ADDRESS_SPACE_SHIFT)) {
->> +		/* No free swap slots available */
->> +		if (si->highest_bit <= si->lowest_bit)
->> +			return;
->> +		next = si->lowest_bit +
->> +			prandom_u32_max(si->highest_bit - si->lowest_bit + 1);
->> +		next = ALIGN(next, SWAP_ADDRESS_SPACE_PAGES);
->> +		next = max_t(unsigned int, next, si->lowest_bit);
->
-> next is always greater than lowest_bit because it's aligned up.  I think the
-> intent of the max_t line is to handle when next is aligned outside the valid
-> range, so it'd have to be ALIGN_DOWN instead?
-
-Oops.  I misunderstood "ALIGN()" here.  Yes.  we should use ALIGN_DOWN()
-instead.  Thanks for pointing this out!
-
->
-> These aside, patch looks good to me.
-
-Thanks for your review!  It really help me to improve the quality of the
-patch.  Can I add your "Reviewed-by" in the next version?
-
-Best Regards,
-Huang, Ying
+/Jarkko
