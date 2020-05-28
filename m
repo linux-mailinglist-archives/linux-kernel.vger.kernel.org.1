@@ -2,219 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 940651E5CE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 12:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA7E1E5CF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 12:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387803AbgE1KPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 06:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387790AbgE1KPa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 06:15:30 -0400
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB6ADC08C5C5
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 03:15:29 -0700 (PDT)
-Received: by mail-ua1-x942.google.com with SMTP id g7so9456762uap.7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 03:15:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=BKEIjQJJ2XLguXGcY1rDMpRw0nRNveaRpquZJVMVnN0=;
-        b=VAV5oYZPbSfl1mtfwGLOgjRNNdmZXdqLTgn2STY1fmyoFIfKHwiaiNVNx95/Zu3pls
-         sv1wgi5AgbjUdWpr8QI0gQCI1FKJPR8UPqejSYWd1J+pjZRAfo+1ZVDVMvwNSpjN/9qL
-         2vqaTAf7fmlANLPG6iZyNEVAzs5HlGvn83BSddlMwe9jQ3dfzHP6PBJTOenuzYXv79HA
-         cqI/zBUtNNwq/3tCGjVUqjdWe4vfzTlpfzoFI/veMOT+ddmi5gZvtrI8cqR+quC3TGC1
-         vO/QkCWmQw54XLR8vsgwYURGI1jl7KhAFrpVZHy52zJCsoRXXILG4gC0PMxtlXJ6KulR
-         cLvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=BKEIjQJJ2XLguXGcY1rDMpRw0nRNveaRpquZJVMVnN0=;
-        b=Z878GzE3XE9AUvt7/ctYwmNgBF47wlzScfwFzhXSw9t5hR2MuCBOXeeU4IGPtrPFfX
-         qRztoUGiv03cGFdB3SQ3UoRMLf40cfU34zFtoaxOwVmbrDcCgVu2Y8jsmAKdFDQSVLdR
-         ZBlJ+D2M65KslxBYzkPMdLF+8oecs/MtWt8aUJsVLbbqMQ8NmHiuK4Ee7ehqfuvvR5BN
-         +Z/6YzDnxkJFY+mpLd+bHGAFWRA+cmYnKT9filSoFdfQxaHKPY19S3lkGOy+oY0wlpnE
-         PJLEpcqPNX2iZo9ZoZ3PFQ4OQiG45KeusanLqhvyH9fhjdcRyvqtCtDW/f2NQenSzPF/
-         8goA==
-X-Gm-Message-State: AOAM5327ERpOBCtAB1gIzoaVxUyRlXb0ll2SnkD3tEEu8K5AmytZLlev
-        hZN5Z8cwpkCGiXUEPW77HMHXZZEwpurt2zu1Gxe4NA==
-X-Google-Smtp-Source: ABdhPJx8ruuWKsaOFlI5aHqXzRzJdm+MXa3lFs2gDbssBdgU8tMH2X9vljvFTY62HtS3+JpPq7vEx1jfxJxgtoYTohI=
-X-Received: by 2002:ab0:70c9:: with SMTP id r9mr1356601ual.15.1590660929116;
- Thu, 28 May 2020 03:15:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200526154334.21222-2-pali@kernel.org> <20200527110858.17504-1-pali@kernel.org>
- <20200527110858.17504-2-pali@kernel.org>
-In-Reply-To: <20200527110858.17504-2-pali@kernel.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 28 May 2020 12:14:51 +0200
-Message-ID: <CAPDyKFpgvfzgb4Td+57dRAu95y8fRSF01CBi-PBYNdpm_4-WWQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] mmc: core: Export device/vendor ids from Common
- CIS for SDIO cards
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S2387831AbgE1KRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 06:17:11 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:27694 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387677AbgE1KRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 06:17:09 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 49XkC35QDRz9v2VX;
+        Thu, 28 May 2020 12:17:03 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id vKnYqLkA819M; Thu, 28 May 2020 12:17:03 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49XkC34Wf4z9v2Tv;
+        Thu, 28 May 2020 12:17:03 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3DE918B797;
+        Thu, 28 May 2020 12:17:05 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id gQVUZ4WXfqwl; Thu, 28 May 2020 12:17:05 +0200 (CEST)
+Received: from pc16570vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E56B68B794;
+        Thu, 28 May 2020 12:17:04 +0200 (CEST)
+Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 55AF565A60; Thu, 28 May 2020 10:17:04 +0000 (UTC)
+Message-Id: <7195fcde7314ccbf7a081b356084a69d421b10d4.1590660977.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/32: disable KASAN with pages bigger than 16k
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Thu, 28 May 2020 10:17:04 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 May 2020 at 13:09, Pali Roh=C3=A1r <pali@kernel.org> wrote:
->
-> Device/vendor ids from Common CIS (Card Information Structure) may be
-> different as device/vendor ids from CIS on particular SDIO function.
->
-> Kernel currently exports only device/vendor ids from SDIO functions and n=
-ot
-> "main" device/vendor ids from Common CIS.
->
-> This patch exports "main" device/vendor ids for SDIO and SD combo cards a=
-t
-> top level mmc device in sysfs hierarchy.
->
-> Userspace can use e.g. udev rules to correctly match whole SDIO card base=
-d
-> on Common CIS device/vendor id and not only one particular SDIO function.
-> Having this information in userspace also helps developers to debug whole
-> SDIO card as e.g. kernel mmc quirks use device/vendor ids from Common CIS
-> and not from particular SDIO function. Also it allows to write userspace
-> applications which list all connected SDIO cards based on CIS ids.
->
-> Signed-off-by: Pali Roh=C3=A1r <pali@kernel.org>
-> Reviewed-by: Marek Beh=C3=BAn <marek.behun@nic.cz>
+Mapping of early shadow area is implemented by using a single static
+page table having all entries pointing to the same early shadow page.
+The shadow area must therefore occupy full PGD entries.
 
-Applied for next, thanks!
+The shadow area has a size of 128Mbytes starting at 0xf8000000.
+With 4k pages, a PGD entry is 4Mbytes
+With 16k pages, a PGD entry is 64Mbytes
+With 64k pages, a PGD entry is 256Mbytes which is too big.
 
-Kind regards
-Uffe
+Until we rework the early shadow mapping, disable KASAN when the
+page size is too big.
 
+Reported-by: kbuild test robot <lkp@intel.com>
+Fixes: 2edb16efc899 ("powerpc/32: Add KASAN support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
->
-> ---
-> Changes in V2:
-> * Make sd_std_group static
-> * Put more information into commit message
-> ---
->  drivers/mmc/core/bus.c  |  7 +++++++
->  drivers/mmc/core/sd.c   | 26 +++++++++++++++++++++++++-
->  drivers/mmc/core/sdio.c | 20 +++++++++++++++++++-
->  3 files changed, 51 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mmc/core/bus.c b/drivers/mmc/core/bus.c
-> index b1cb447da..70207f11a 100644
-> --- a/drivers/mmc/core/bus.c
-> +++ b/drivers/mmc/core/bus.c
-> @@ -93,6 +93,13 @@ mmc_bus_uevent(struct device *dev, struct kobj_uevent_=
-env *env)
->                         return retval;
->         }
->
-> +       if (card->type =3D=3D MMC_TYPE_SDIO || card->type =3D=3D MMC_TYPE=
-_SD_COMBO) {
-> +               retval =3D add_uevent_var(env, "SDIO_ID=3D%04X:%04X",
-> +                                       card->cis.vendor, card->cis.devic=
-e);
-> +               if (retval)
-> +                       return retval;
-> +       }
-> +
->         /*
->          * SDIO (non-combo) cards are not handled by mmc_block driver and=
- do not
->          * have accessible CID register which used by mmc_card_name() fun=
-ction.
-> diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
-> index 76c7add36..ee1a51ff6 100644
-> --- a/drivers/mmc/core/sd.c
-> +++ b/drivers/mmc/core/sd.c
-> @@ -707,7 +707,12 @@ static ssize_t mmc_dsr_show(struct device *dev,
->
->  static DEVICE_ATTR(dsr, S_IRUGO, mmc_dsr_show, NULL);
->
-> +MMC_DEV_ATTR(vendor, "0x%04x\n", card->cis.vendor);
-> +MMC_DEV_ATTR(device, "0x%04x\n", card->cis.device);
-> +
->  static struct attribute *sd_std_attrs[] =3D {
-> +       &dev_attr_vendor.attr,
-> +       &dev_attr_device.attr,
->         &dev_attr_cid.attr,
->         &dev_attr_csd.attr,
->         &dev_attr_scr.attr,
-> @@ -726,7 +731,26 @@ static struct attribute *sd_std_attrs[] =3D {
->         &dev_attr_dsr.attr,
->         NULL,
->  };
-> -ATTRIBUTE_GROUPS(sd_std);
-> +
-> +static umode_t sd_std_is_visible(struct kobject *kobj, struct attribute =
-*attr,
-> +                                int index)
-> +{
-> +       struct device *dev =3D container_of(kobj, struct device, kobj);
-> +       struct mmc_card *card =3D mmc_dev_to_card(dev);
-> +
-> +       /* CIS vendor and device ids are available only for Combo cards *=
-/
-> +       if ((attr =3D=3D &dev_attr_vendor.attr || attr =3D=3D &dev_attr_d=
-evice.attr) &&
-> +           card->type !=3D MMC_TYPE_SD_COMBO)
-> +               return 0;
-> +
-> +       return attr->mode;
-> +}
-> +
-> +static const struct attribute_group sd_std_group =3D {
-> +       .attrs =3D sd_std_attrs,
-> +       .is_visible =3D sd_std_is_visible,
-> +};
-> +__ATTRIBUTE_GROUPS(sd_std);
->
->  struct device_type sd_type =3D {
->         .groups =3D sd_std_groups,
-> diff --git a/drivers/mmc/core/sdio.c b/drivers/mmc/core/sdio.c
-> index ebb387aa5..2d86a9db5 100644
-> --- a/drivers/mmc/core/sdio.c
-> +++ b/drivers/mmc/core/sdio.c
-> @@ -27,6 +27,24 @@
->  #include "sdio_ops.h"
->  #include "sdio_cis.h"
->
-> +MMC_DEV_ATTR(vendor, "0x%04x\n", card->cis.vendor);
-> +MMC_DEV_ATTR(device, "0x%04x\n", card->cis.device);
-> +MMC_DEV_ATTR(ocr, "0x%08x\n", card->ocr);
-> +MMC_DEV_ATTR(rca, "0x%04x\n", card->rca);
-> +
-> +static struct attribute *sdio_std_attrs[] =3D {
-> +       &dev_attr_vendor.attr,
-> +       &dev_attr_device.attr,
-> +       &dev_attr_ocr.attr,
-> +       &dev_attr_rca.attr,
-> +       NULL,
-> +};
-> +ATTRIBUTE_GROUPS(sdio_std);
-> +
-> +static struct device_type sdio_type =3D {
-> +       .groups =3D sdio_std_groups,
-> +};
-> +
->  static int sdio_read_fbr(struct sdio_func *func)
->  {
->         int ret;
-> @@ -598,7 +616,7 @@ static int mmc_sdio_init_card(struct mmc_host *host, =
-u32 ocr,
->         /*
->          * Allocate card structure.
->          */
-> -       card =3D mmc_alloc_card(host, NULL);
-> +       card =3D mmc_alloc_card(host, &sdio_type);
->         if (IS_ERR(card)) {
->                 err =3D PTR_ERR(card);
->                 goto err;
-> --
-> 2.20.1
->
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 1dfa59126fcf..066b36bf9efa 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -169,8 +169,8 @@ config PPC
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_ARCH_HUGE_VMAP		if PPC_BOOK3S_64 && PPC_RADIX_MMU
+ 	select HAVE_ARCH_JUMP_LABEL
+-	select HAVE_ARCH_KASAN			if PPC32
+-	select HAVE_ARCH_KASAN_VMALLOC		if PPC32
++	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
++	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <= 14
+ 	select HAVE_ARCH_KGDB
+ 	select HAVE_ARCH_MMAP_RND_BITS
+ 	select HAVE_ARCH_MMAP_RND_COMPAT_BITS	if COMPAT
+-- 
+2.25.0
+
