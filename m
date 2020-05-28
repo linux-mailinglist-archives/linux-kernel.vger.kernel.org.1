@@ -2,111 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80AFE1E5615
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 07:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87DFB1E55E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 07:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727956AbgE1FQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 01:16:18 -0400
-Received: from mail-eopbgr750045.outbound.protection.outlook.com ([40.107.75.45]:23020
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727912AbgE1FNl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 01:13:41 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ra0aqFewEH2yloT3xbq6tzuwtEgqIV38D+FBJVg2zgpIs99BriSaygjTonQU0JbmTCpzoBwudT2frhwMFrlmWvdWzFiCKUZLLWCZMEsAzw+d/SJc0u0/rBJKJGLylGdrXOkrTe89/ELUi3ihRPtnEEi67sz9rtNeNmQepFCoJSUzGTEKXQcGbREoB/UdB4/aPu+vgkK33WtdEmOz9SmY31/ehNdBq/jbwFNSA8RWYm+M2xVY5Kr8WxrPPkjQ5Cg+JgcoiegvYZSXDspjNKd6fTq3ljG7fcjquFGvKk+byHJWAv/dpAMMP5L3WGu1Am7QPzVQF6G6LsGMP56+LT2nlw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NyZyvLGxmUexrAGRZG+pWuMycvgxrij/r9Y946voejw=;
- b=TT/2jPGzcMcfyMnJDe+nLNmKOGrCCOjxdaK5OefQx3pJlsUYYIYWcBJX3Vp8KIBUl0VNSzUnhT56ynGza0ZjO84pnenW4GvldRcPYck/nApf9PISmk2RhkKMSXZMakIQ3Cc3hInTBm2b9ODaEsDtZRDuYSScUbwj0eT4D9V4/aCtwjSQcJzRU8r8UvoR6dTbMjQOjW79uO+rooBSPZgbXF3dz1hEm7Kk/gU7SQkwcYK7F2cvhaMcnB2aSdFi9LU1TDN0Oy2VZMIaR+g3ocdcZmaavh1DricJzJFHifBA/eMTfMFUHnbkicfjcx6VYsSfuqNG0jdUqrOtv/IjwO4ucg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1728368AbgE1FPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 01:15:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727047AbgE1FP2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 01:15:28 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31FCBC05BD1E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 22:15:28 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id n5so1848379wmd.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 22:15:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NyZyvLGxmUexrAGRZG+pWuMycvgxrij/r9Y946voejw=;
- b=Uy8iAaoUD0PT1g7j+U9HrC+95A2wtYe0QEp7ITjuLOvjyaRFUtnFAIJhtx9WNoet+pF00VuI7oeylk2Bl2gdUQCsg5VvrryKjaO6biWPCVGrBFYXQ25NQdDeAk4gqRTzaMomCvis9HbGYDoDsMmWZKVHdXi2xzegrt9B0huT0fo=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR12MB1855.namprd12.prod.outlook.com (2603:10b6:300:10e::23)
- by MWHPR12MB1838.namprd12.prod.outlook.com (2603:10b6:300:106::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.27; Thu, 28 May
- 2020 05:13:38 +0000
-Received: from MWHPR12MB1855.namprd12.prod.outlook.com
- ([fe80::25ab:aac8:ecf3:59a0]) by MWHPR12MB1855.namprd12.prod.outlook.com
- ([fe80::25ab:aac8:ecf3:59a0%5]) with mapi id 15.20.3045.018; Thu, 28 May 2020
- 05:13:38 +0000
-Subject: Re: [PATCH] ASoC: AMD: Use mixer control to switch between DMICs
-To:     Mark Brown <broonie@kernel.org>,
-        Akshu Agrawal <akshu.agrawal@amd.com>
-Cc:     yuhsuan@chromium.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200527014023.2781-1-akshu.agrawal@amd.com>
- <20200527112758.GE5308@sirena.org.uk>
-From:   "Agrawal, Akshu" <aagrawal2@amd.com>
-Message-ID: <f0087d94-c81d-3dc0-9b6d-473795a89918@amd.com>
-Date:   Thu, 28 May 2020 10:43:25 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-In-Reply-To: <20200527112758.GE5308@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: MAXPR0101CA0032.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:d::18) To MWHPR12MB1855.namprd12.prod.outlook.com
- (2603:10b6:300:10e::23)
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9ogbDNvgcnvbjK2u+CfCd7F7vOweOB0DcAaASJSQleM=;
+        b=gK1Wa8QlQn0RzLYnPm0DOAuWIsb3ZgQVejc8of4HcZHM9bTmfb7ku5IuobyHBWLV+A
+         4pfX2QFACm9JWcZbeVXnuhuEeCC7j9gvmyRWHbderhxw2Wo93egg9/eMdIOKPW2vJ+Hi
+         sdBTJqihazq9u6DGx72wef17BzJOJywp3pC7M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9ogbDNvgcnvbjK2u+CfCd7F7vOweOB0DcAaASJSQleM=;
+        b=btBzYYhx8LnebZ1I1Qndye39GRygrhwf1n/58R2HlyI5i9UvaKTD4wYDSTVxqnN52U
+         kkpp3T8AKyska0BfObu4PgVr6TcbgfA+86S61jITjaMw+dqwSRP7Kmt8JMa8ldK8AS6q
+         BZO68uAl6kbdu6peaVm5d/0DbKrDtwTFskNo86yfAT+wqK5EP5mWRXJ/CznW8SNY3ZNW
+         Of0jygnk22OcMXgG7XtrUVNharkrRDzOCvX02GskTICJ6AARdnGHq5wJNLi3TWnVq3l/
+         qaoubP+FiC6bIKGb/ZQpYIWqSbLsy5o3oJsBKVgPtfdEDHElaHsvvZ48A8qkaTrlUH9I
+         LNtA==
+X-Gm-Message-State: AOAM5334K3xu9/SQEQMi0ELIlHy+8DHa6A8X3Z6HnKCIsR2uNc9X+fZ5
+        SpXuvEWpbXmWi999WkUFjhy5vgPJtgSPzkvNTpDsiQ==
+X-Google-Smtp-Source: ABdhPJyMEj45EPh84qpSCpk1vUfDmAAfVx6Q6El+wTjic65DGrkCvumgrm1PCn0JrZdJJegdiRkqrF1LAf1puxUo8xQ=
+X-Received: by 2002:a1c:740e:: with SMTP id p14mr1592366wmc.155.1590642926688;
+ Wed, 27 May 2020 22:15:26 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.107] (122.171.58.15) by MAXPR0101CA0032.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:d::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17 via Frontend Transport; Thu, 28 May 2020 05:13:35 +0000
-X-Originating-IP: [122.171.58.15]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 029d2749-bc0b-4013-5291-08d802c5e0d7
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1838:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR12MB18381FF98A36C515A297B39EF88E0@MWHPR12MB1838.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1443;
-X-Forefront-PRVS: 0417A3FFD2
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: a7et0J+8cDeLjk+XOpcmK1TyljnkmfoT+/NoWWnKp/dJImX+0q8xAUjsHMpKzGoXeLvDk25HR1z4cXmW2zV+RR3FA0kzppGynPAxm8zk5LdnJ15s/r/MloEl/vg88cWCdHpYxvvTVARrcxtHzoGolPRXynAOlVIUFn4HaWoqi9q4pPSnD9zlVjRnC41qjhMM+kZKX4TM/xIE1krzwm6rFcLcqH1pf1Pb1WPrmmXm6xU/u5omHIJHXYba/wm/eVg+lO/r8HNiuoiQVK/NWHbgcZRa65chKbznG6xE2xLKeSc++qXy120XzXJmyOFobSbcFKCEgp20CGP3KFMHpqJElaGU+krUSidIwEUR2GYSYGgPlx3ZKn8fZyPIYsN2qvV/
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR12MB1855.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(136003)(366004)(396003)(39860400002)(346002)(4744005)(2616005)(66556008)(2906002)(956004)(31696002)(53546011)(4326008)(8936002)(66476007)(54906003)(478600001)(110136005)(6636002)(31686004)(16526019)(16576012)(186003)(36756003)(26005)(5660300002)(8676002)(6666004)(316002)(52116002)(66946007)(6486002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: GkFMvTLT7VbgjDG+/mByRCvCreSusPytJZyuyJwVfMP4aFL3UBDlmCJVEOQJSGQJkGqJWmhOn+riRhGGoOjjVO0eA3zYwF0wZ87PCS82Bl5cYfpSPo1282KtpvlfIJiozbncEUICYWw3X4vO8a4hft32Re7LEZoOCo0IDST4yOa+ZgDj0EHvylSDD5/iDC+zsZmMd0Ivfvk6yTcRd6uzHwuB7mY/uMep66Jj2YOMiQIPjygt9o3lqlxmhnqSn4xYh7gMVQ3osurNO2u3qISJM2R+//X46HljH2ml//OHYd27wAnzdzGSAlHevUyJMYaWfdgcmhOicu5dJhsEiyh5eP9JpfZ5SRTe7R624uZpTIIPx1yJQTUc7OA4pzI13che6K/bmOtZsQoPseDyIXnhZhD0srgD3pOgsWfSIB7ny5Yh1PKNOSjZ/lPW4cMVxElEm27P68v4AeB0aZhm80NL6vaBgCQMMMb8KcuHPRy7chk=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 029d2749-bc0b-4013-5291-08d802c5e0d7
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2020 05:13:38.2463
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: g9BvGvO2wgu9jJSenPHRC8x8hFLt1xswi8DGNGIq+kceuf29Upfv1pFYIcDHm/y6DLLBJf6UiyWtG07N/VTMyQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1838
+References: <1590595398-4217-1-git-send-email-srinath.mannam@broadcom.com> <f9b221cf-1c7f-9f95-133b-dca65197b6c2@arm.com>
+In-Reply-To: <f9b221cf-1c7f-9f95-133b-dca65197b6c2@arm.com>
+From:   Srinath Mannam <srinath.mannam@broadcom.com>
+Date:   Thu, 28 May 2020 10:45:14 +0530
+Message-ID: <CABe79T7WwD2AyWp2e5pAi8TO2r5=-v5gPb2Gjtf8EhHOn3dogQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] iommu/arm-smmu: Add module parameter to set msi iova address
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        iommu@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eric Auger <eric.auger@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 5/27/2020 4:57 PM, Mark Brown wrote:
-> On Wed, May 27, 2020 at 07:10:16AM +0530, Akshu Agrawal wrote:
+On Wed, May 27, 2020 at 11:00 PM Robin Murphy <robin.murphy@arm.com> wrote:
 >
->> +	SOC_SINGLE_BOOL_EXT("Front Mic", 0, front_mic_get, front_mic_set),
-> This should probably be a mux with two labelled options, or if it's a
-> boolean control it should end in Switch.  A mux definitely seems like a
-> better option though.
-
-Actually it's a dmic switch, so will change it to boolean control named 
-"DMIC switch". Front or rear mic might change with variants.
+Thanks Robin for your quick response.
+> On 2020-05-27 17:03, Srinath Mannam wrote:
+> > This patch gives the provision to change default value of MSI IOVA base
+> > to platform's suitable IOVA using module parameter. The present
+> > hardcoded MSI IOVA base may not be the accessible IOVA ranges of platform.
+>
+> That in itself doesn't seem entirely unreasonable; IIRC the current
+> address is just an arbitrary choice to fit nicely into Qemu's memory
+> map, and there was always the possibility that it wouldn't suit everything.
+>
+> > Since commit aadad097cd46 ("iommu/dma: Reserve IOVA for PCIe inaccessible
+> > DMA address"), inaccessible IOVA address ranges parsed from dma-ranges
+> > property are reserved.
+>
+> That, however, doesn't seem to fit here; iommu-dma maps MSI doorbells
+> dynamically, so they aren't affected by reserved regions any more than
+> regular DMA pages are. In fact, it explicitly ignores the software MSI
+> region, since as the comment says, it *is* the software that manages those.
+Yes you are right, we don't see any issues with kernel drivers(PCI EP) because
+MSI IOVA allocated dynamically by honouring reserved regions same as DMA pages.
+>
+> The MSI_IOVA_BASE region exists for VFIO, precisely because in that case
+> the kernel *doesn't* control the address space, but still needs some way
+> to steal a bit of it for MSIs that the guest doesn't necessarily know
+> about, and give userspace a fighting chance of knowing what it's taken.
+> I think at the time we discussed the idea of adding something to the
+> VFIO uapi such that userspace could move this around if it wanted or
+> needed to, but decided we could live without that initially. Perhaps now
+> the time has come?
+Yes, we see issues only with user-space drivers(DPDK) in which MSI_IOVA_BASE
+region is considered to map MSI registers. This patch helps us to fix the issue.
 
 Thanks,
-
-Akshu
-
+Srinath.
+>
+> Robin.
+>
+> > If any platform has the limitaion to access default MSI IOVA, then it can
+> > be changed using "arm-smmu.msi_iova_base=0xa0000000" command line argument.
+> >
+> > Signed-off-by: Srinath Mannam <srinath.mannam@broadcom.com>
+> > ---
+> >   drivers/iommu/arm-smmu.c | 5 ++++-
+> >   1 file changed, 4 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
+> > index 4f1a350..5e59c9d 100644
+> > --- a/drivers/iommu/arm-smmu.c
+> > +++ b/drivers/iommu/arm-smmu.c
+> > @@ -72,6 +72,9 @@ static bool disable_bypass =
+> >   module_param(disable_bypass, bool, S_IRUGO);
+> >   MODULE_PARM_DESC(disable_bypass,
+> >       "Disable bypass streams such that incoming transactions from devices that are not attached to an iommu domain will report an abort back to the device and will not be allowed to pass through the SMMU.");
+> > +static unsigned long msi_iova_base = MSI_IOVA_BASE;
+> > +module_param(msi_iova_base, ulong, S_IRUGO);
+> > +MODULE_PARM_DESC(msi_iova_base, "msi iova base address.");
+> >
+> >   struct arm_smmu_s2cr {
+> >       struct iommu_group              *group;
+> > @@ -1566,7 +1569,7 @@ static void arm_smmu_get_resv_regions(struct device *dev,
+> >       struct iommu_resv_region *region;
+> >       int prot = IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
+> >
+> > -     region = iommu_alloc_resv_region(MSI_IOVA_BASE, MSI_IOVA_LENGTH,
+> > +     region = iommu_alloc_resv_region(msi_iova_base, MSI_IOVA_LENGTH,
+> >                                        prot, IOMMU_RESV_SW_MSI);
+> >       if (!region)
+> >               return;
+> >
