@@ -2,195 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977F51E6540
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 004571E654C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404123AbgE1PBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 11:01:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47058 "EHLO
+        id S2403969AbgE1PBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 11:01:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403869AbgE1PBG (ORCPT
+        with ESMTP id S2403800AbgE1PBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 11:01:06 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E20C08C5C6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 08:01:06 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id 5so3224717pjd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 08:01:06 -0700 (PDT)
+        Thu, 28 May 2020 11:01:42 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A6ACC08C5C6;
+        Thu, 28 May 2020 08:01:42 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id n141so3384388qke.2;
+        Thu, 28 May 2020 08:01:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k4gasz7E8Vka0VphamQPgsMwOl6rPaC5hW405KW6cAI=;
-        b=OYx1azbF4P0dfQ10iSb9La9p4gAK2jIv1Jyus2X+j/g6v3DL392OEZJCMm6Gubuxt8
-         9B93plARWlCI4yChxjLUa6wtP8iFtPYo3Fob5WH+3DD/hZZ9IN4v13ZXa8Njy19M3w90
-         5xh6LsJfF8CqhmZueR/sIIgcudTwgCdX8SmdLF3zNwLUL58j2SX4AwlRAC+RzF7Wn5V4
-         /RdBd83tXL/sKKUzTvL1MHStduUDIOEFxz8tqTe0GX2paOOzPf/ekGvWJgzgtTyuIRvc
-         1DQfX6vwtJnkDRl39I7N9HAa5GqPluQfoDlQ9rb1nS71Jv+Rbt8U6F79BeEuYlzV+ubl
-         wYmg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=ru/VedSe7R+1+BFX/X1C1fyozp4gv15sJxfe6kqv7eI=;
+        b=gY02BO7j1hfkO7xiJppNT1VA/huyBuSeTxCzHxMDgCdPs2hZPHZA4Hb7RDN99RAwXo
+         1vUp0AIkVEQUKHMxpcD6hKK5H9YHqVfOLUE9MjorAy2+YVsApWCC1b0daaq2OkVcbRSr
+         wSFH89UeUm16lCXZl9woAiO2O/I4azVKFzv6hUoC6P1fl+HY1brKQOW5+9yCP4+qCtwJ
+         spX281uWTwZT2YgeT+7Wc70mhxexRyF8381oySA42ZwfnIcClWlUdQrnMexX6SlZA/1B
+         bgjtAWVQmuFPWPT1rB+/SfWq2tE4hCV7WqEEIBYo6gei70YU3XPbmsjQv1KurdJ3g6Kj
+         UIHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k4gasz7E8Vka0VphamQPgsMwOl6rPaC5hW405KW6cAI=;
-        b=pWPWYXELb+hlJAeCUicKim3zxXFXKJBR1Dw6G7vTBEKj841t/deM9UwRIKGoasTeJf
-         9zxX6hStbr0g53AdLucANYht3RZU6n/wULPIfE2VKF9dZHhdz+l679/94jazZoEmwKv3
-         yZ0Q15e4Dxe25rRmbvn6NA9eJ54Wnialhak/s6lCFQAk2AxbrocH9OK3J8KRknUCcD3n
-         bGAOFZgcpyz6OmCiCK0M/6gOIwMjZQsm71kFFENj7tPdAFgq/bNuvkEP2iseX3gBGfZ/
-         sxm65k7h9GimC8R2rk2Hqfe0rWxJycSOEq4f1HRtRbvIzoyjW8i48jZfDmCTPOlTUEw8
-         J/WA==
-X-Gm-Message-State: AOAM533gNAWiXkJcxkJQiItE0C/ZB3SAy80PDPrJQ1gBkugdwB99GBPq
-        U67hOryxEPyazJ7pxGFtI58wp4yv8xFifCW9CeYduv8MB50=
-X-Google-Smtp-Source: ABdhPJyyVAv6fiUo0j3cap9zCp8UlZcYGzN4ZXwcx0fZ4+b4Gd56xyiNHKoTi+8a/20TZ9ed9h9YvvDZRqDlC/LfwtA=
-X-Received: by 2002:a17:90a:2a8e:: with SMTP id j14mr4202521pjd.136.1590678065375;
- Thu, 28 May 2020 08:01:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <29bd753d5ff5596425905b0b07f51153e2345cc1.1589297433.git.andreyknvl@google.com>
- <78a81fde6eeda9db72a7fd55fbc33173a515e4b1.1589297433.git.andreyknvl@google.com>
- <20200528134913.GA1810@lca.pw>
-In-Reply-To: <20200528134913.GA1810@lca.pw>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Thu, 28 May 2020 17:00:54 +0200
-Message-ID: <CAAeHK+zELpKm7QA7PCxRtvRDTCXpjef9wOcOuRwjc-RcT2HSiA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] kasan: move kasan_report() into report.c
-To:     Qian Cai <cai@lca.pw>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ru/VedSe7R+1+BFX/X1C1fyozp4gv15sJxfe6kqv7eI=;
+        b=HFa6UZgLYA/5LrJ0uxm0LIKiyDetGe0/AQxxcGAY0T1CUB+lAd/KuDMQwFcXVUWTcp
+         9RKvYuakHVR2GmasfHra1/9IAmKKeowkdlfuV15LOphjYMeU3/dR77rMb+2OCKinEyuZ
+         bfoNK9EhaJ7wpaUF51wDVwjpRgGabfN+Qv/aa0efRecJttEh/yN34DWtdwcp8cdsKMhJ
+         H8vTd8Z8i8lYXbHdpm5VyjIl2F0+9bQnKVAQIC4XHILTPQ7ogT4ME/7eQnkTNH4bnEfP
+         uD/pMf7A4VEfLnsJZ6LqW36FTuRbMl63Citu7WXq8VvXC+cfbG/x56H+HAg7xXcatudW
+         cF2w==
+X-Gm-Message-State: AOAM532OrfFVlZedUB2Y6QBeTLno4MbwrD8APETc0wBdBP86g6YeSh26
+        H7lVBj+42Nh/X5smyT6KoWrBhFsaSLs=
+X-Google-Smtp-Source: ABdhPJymSeEM3dwFkTKYe6p4AbCg0clNODe/pHDF4729SUqxt3feu2P4iGlIHeubzLIqkRrS/cMq+g==
+X-Received: by 2002:a37:7745:: with SMTP id s66mr3231700qkc.429.1590678099683;
+        Thu, 28 May 2020 08:01:39 -0700 (PDT)
+Received: from ict14-OptiPlex-980.kataweb.it ([178.23.248.46])
+        by smtp.googlemail.com with ESMTPSA id q32sm3901881qtf.36.2020.05.28.08.01.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 08:01:39 -0700 (PDT)
+From:   Jonathan Albrieux <jonathan.albrieux@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        Jonathan Albrieux <jonathan.albrieux@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-iio@vger.kernel.org (open list:IIO SUBSYSTEM AND DRIVERS)
+Subject: [PATCH v7 5/5] iio: magnetometer: ak8975: Add gpio reset support
+Date:   Thu, 28 May 2020 17:01:05 +0200
+Message-Id: <20200528150106.12022-1-jonathan.albrieux@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 3:49 PM Qian Cai <cai@lca.pw> wrote:
->
-> On Tue, May 12, 2020 at 05:33:20PM +0200, 'Andrey Konovalov' via kasan-dev wrote:
-> > The kasan_report() functions belongs to report.c, as it's a common
-> > functions that does error reporting.
-> >
-> > Reported-by: Leon Romanovsky <leon@kernel.org>
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
->
-> Today's linux-next produced this with Clang 11.
->
-> mm/kasan/report.o: warning: objtool: kasan_report()+0x8a: call to __stack_chk_fail() with UACCESS enabled
->
-> kasan_report at mm/kasan/report.c:536
+According to AK09911 datasheet, if reset gpio is provided then
+deassert reset on ak8975_power_on() and assert reset on ak8975_power_off().
 
-Hm, the first patch in the series ("kasan: consistently disable
-debugging features") disables stack protector for kasan files. Is that
-patch in linux-next?
+Without reset's deassertion during ak8975_power_on(), driver's probe fails
+on ak8975_who_i_am() while checking for device identity for AK09911 chip.
 
->
-> > ---
-> >  mm/kasan/common.c | 19 -------------------
-> >  mm/kasan/report.c | 22 ++++++++++++++++++++--
-> >  2 files changed, 20 insertions(+), 21 deletions(-)
-> >
-> > diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> > index 2906358e42f0..757d4074fe28 100644
-> > --- a/mm/kasan/common.c
-> > +++ b/mm/kasan/common.c
-> > @@ -33,7 +33,6 @@
-> >  #include <linux/types.h>
-> >  #include <linux/vmalloc.h>
-> >  #include <linux/bug.h>
-> > -#include <linux/uaccess.h>
-> >
-> >  #include <asm/cacheflush.h>
-> >  #include <asm/tlbflush.h>
-> > @@ -613,24 +612,6 @@ void kasan_free_shadow(const struct vm_struct *vm)
-> >  }
-> >  #endif
-> >
-> > -extern void __kasan_report(unsigned long addr, size_t size, bool is_write, unsigned long ip);
-> > -extern bool report_enabled(void);
-> > -
-> > -bool kasan_report(unsigned long addr, size_t size, bool is_write, unsigned long ip)
-> > -{
-> > -     unsigned long flags = user_access_save();
-> > -     bool ret = false;
-> > -
-> > -     if (likely(report_enabled())) {
-> > -             __kasan_report(addr, size, is_write, ip);
-> > -             ret = true;
-> > -     }
-> > -
-> > -     user_access_restore(flags);
-> > -
-> > -     return ret;
-> > -}
-> > -
-> >  #ifdef CONFIG_MEMORY_HOTPLUG
-> >  static bool shadow_mapped(unsigned long addr)
-> >  {
-> > diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> > index 80f23c9da6b0..51ec45407a0b 100644
-> > --- a/mm/kasan/report.c
-> > +++ b/mm/kasan/report.c
-> > @@ -29,6 +29,7 @@
-> >  #include <linux/kasan.h>
-> >  #include <linux/module.h>
-> >  #include <linux/sched/task_stack.h>
-> > +#include <linux/uaccess.h>
-> >
-> >  #include <asm/sections.h>
-> >
-> > @@ -454,7 +455,7 @@ static void print_shadow_for_address(const void *addr)
-> >       }
-> >  }
-> >
-> > -bool report_enabled(void)
-> > +static bool report_enabled(void)
-> >  {
-> >       if (current->kasan_depth)
-> >               return false;
-> > @@ -479,7 +480,8 @@ void kasan_report_invalid_free(void *object, unsigned long ip)
-> >       end_report(&flags);
-> >  }
-> >
-> > -void __kasan_report(unsigned long addr, size_t size, bool is_write, unsigned long ip)
-> > +static void __kasan_report(unsigned long addr, size_t size, bool is_write,
-> > +                             unsigned long ip)
-> >  {
-> >       struct kasan_access_info info;
-> >       void *tagged_addr;
-> > @@ -518,6 +520,22 @@ void __kasan_report(unsigned long addr, size_t size, bool is_write, unsigned lon
-> >       end_report(&flags);
-> >  }
-> >
-> > +bool kasan_report(unsigned long addr, size_t size, bool is_write,
-> > +                     unsigned long ip)
-> > +{
-> > +     unsigned long flags = user_access_save();
-> > +     bool ret = false;
-> > +
-> > +     if (likely(report_enabled())) {
-> > +             __kasan_report(addr, size, is_write, ip);
-> > +             ret = true;
-> > +     }
-> > +
-> > +     user_access_restore(flags);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> >  #ifdef CONFIG_KASAN_INLINE
-> >  /*
-> >   * With CONFIG_KASAN_INLINE, accesses to bogus pointers (outside the high
-> > --
-> > 2.26.2.645.ge9eca65c58-goog
-> >
-> > --
-> > You received this message because you are subscribed to the Google Groups "kasan-dev" group.
-> > To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
-> > To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/78a81fde6eeda9db72a7fd55fbc33173a515e4b1.1589297433.git.andreyknvl%40google.com.
+AK09911 has an active low reset gpio to handle register's reset.
+AK09911 datasheet says that, if not used, reset pin should be connected
+to VID. This patch emulates this situation.
+
+Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
+---
+ drivers/iio/magnetometer/ak8975.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/drivers/iio/magnetometer/ak8975.c b/drivers/iio/magnetometer/ak8975.c
+index fd368455cd7b..a23422aad97d 100644
+--- a/drivers/iio/magnetometer/ak8975.c
++++ b/drivers/iio/magnetometer/ak8975.c
+@@ -358,6 +358,7 @@ struct ak8975_data {
+ 	u8			asa[3];
+ 	long			raw_to_gauss[3];
+ 	struct gpio_desc	*eoc_gpiod;
++	struct gpio_desc	*reset_gpiod;
+ 	int			eoc_irq;
+ 	wait_queue_head_t	data_ready_queue;
+ 	unsigned long		flags;
+@@ -384,6 +385,9 @@ static int ak8975_power_on(const struct ak8975_data *data)
+ 			 "Failed to enable specified Vid supply\n");
+ 		return ret;
+ 	}
++
++	gpiod_set_value_cansleep(data->reset_gpiod, 0);
++
+ 	/*
+ 	 * According to the datasheet the power supply rise time is 200us
+ 	 * and the minimum wait time before mode setting is 100us, in
+@@ -396,6 +400,8 @@ static int ak8975_power_on(const struct ak8975_data *data)
+ /* Disable attached power regulator if any. */
+ static void ak8975_power_off(const struct ak8975_data *data)
+ {
++	gpiod_set_value_cansleep(data->reset_gpiod, 1);
++
+ 	regulator_disable(data->vid);
+ 	regulator_disable(data->vdd);
+ }
+@@ -839,6 +845,7 @@ static int ak8975_probe(struct i2c_client *client,
+ 	struct ak8975_data *data;
+ 	struct iio_dev *indio_dev;
+ 	struct gpio_desc *eoc_gpiod;
++	struct gpio_desc *reset_gpiod;
+ 	const void *match;
+ 	unsigned int i;
+ 	int err;
+@@ -856,6 +863,16 @@ static int ak8975_probe(struct i2c_client *client,
+ 	if (eoc_gpiod)
+ 		gpiod_set_consumer_name(eoc_gpiod, "ak_8975");
+ 
++	/*
++	 * According to AK09911 datasheet, if reset GPIO is provided then
++	 * deassert reset on ak8975_power_on() and assert reset on
++	 * ak8975_power_off().
++	 */
++	reset_gpiod = devm_gpiod_get_optional(&client->dev,
++					      "reset", GPIOD_OUT_HIGH);
++	if (IS_ERR(reset_gpiod))
++		return PTR_ERR(reset_gpiod);
++
+ 	/* Register with IIO */
+ 	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*data));
+ 	if (indio_dev == NULL)
+@@ -866,6 +883,7 @@ static int ak8975_probe(struct i2c_client *client,
+ 
+ 	data->client = client;
+ 	data->eoc_gpiod = eoc_gpiod;
++	data->reset_gpiod = reset_gpiod;
+ 	data->eoc_irq = 0;
+ 
+ 	err = iio_read_mount_matrix(&client->dev, "mount-matrix", &data->orientation);
+-- 
+2.17.1
+
