@@ -2,130 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 416CB1E64ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2141E64F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403897AbgE1O4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 10:56:53 -0400
-Received: from mga03.intel.com ([134.134.136.65]:22928 "EHLO mga03.intel.com"
+        id S2403915AbgE1O5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 10:57:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51446 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403856AbgE1O4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 10:56:31 -0400
-IronPort-SDR: Z+MLV+sAeMSBjmKCUUIEDqzmEl09hTjz+Z0QZtnqu+YHylte+gzYfQiM+xnTirh7RkZ236gJ7l
- GRSgux8OQoMg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 07:56:30 -0700
-IronPort-SDR: 9GMNO2dpZ8QHEws0zoKx0e5A/SnV4klKacWqjY2NfFml2EkkB8oynn2CAv6xDVVdBX+drSM/66
- 3qbgPnlal6tw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,445,1583222400"; 
-   d="scan'208";a="267241338"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003.jf.intel.com with ESMTP; 28 May 2020 07:56:27 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jeJxO-009Rcl-2C; Thu, 28 May 2020 17:56:30 +0300
-Date:   Thu, 28 May 2020 17:56:30 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 10/10] dmaengine: dw: Initialize max_sg_nents with
- nollp flag
-Message-ID: <20200528145630.GV1634618@smile.fi.intel.com>
-References: <20200526225022.20405-1-Sergey.Semin@baikalelectronics.ru>
- <20200526225022.20405-11-Sergey.Semin@baikalelectronics.ru>
+        id S2403902AbgE1O50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 10:57:26 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id BB96DAEC3;
+        Thu, 28 May 2020 14:57:22 +0000 (UTC)
+Date:   Thu, 28 May 2020 16:57:22 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Sumit Garg <sumit.garg@linaro.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 4/4] kdb: Switch kdb_msg_write() to use safer polling
+ I/O
+Message-ID: <20200528145721.GE11286@linux-b0ei>
+References: <1590560759-21453-1-git-send-email-sumit.garg@linaro.org>
+ <1590560759-21453-5-git-send-email-sumit.garg@linaro.org>
+ <20200527133115.x5hqzttsg73saiky@holly.lan>
+ <CAFA6WYNeBDRdRqb8dB5HA923ujD3zq7JEQQnV4WJr_fthCc=GQ@mail.gmail.com>
+ <20200528112620.a6zhgnkl2izuggsa@holly.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200526225022.20405-11-Sergey.Semin@baikalelectronics.ru>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200528112620.a6zhgnkl2izuggsa@holly.lan>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 01:50:21AM +0300, Serge Semin wrote:
-> Multi-block support provides a way to map the kernel-specific SG-table so
-> the DW DMA device would handle it as a whole instead of handling the
-> SG-list items or so called LLP block items one by one. So if true LLP
-> list isn't supported by the DW DMA engine, then soft-LLP mode will be
-> utilized to load and execute each LLP-block one by one. The soft-LLP mode
-> of the DMA transactions execution might not work well for some DMA
-> consumers like SPI due to its Tx and Rx buffers inter-dependency. Let's
-> expose the nollp flag indicating the soft-LLP mode by means of the
-> max_sg_nents capability, so the DMA consumer would be ready to somehow
-> workaround errors caused by such mode being utilized.
+On Thu 2020-05-28 12:26:20, Daniel Thompson wrote:
+> On Thu, May 28, 2020 at 11:48:48AM +0530, Sumit Garg wrote:
+> > On Wed, 27 May 2020 at 19:01, Daniel Thompson
+> > <daniel.thompson@linaro.org> wrote:
+> > >
+> > > On Wed, May 27, 2020 at 11:55:59AM +0530, Sumit Garg wrote:
+> > > > In kgdb NMI context, calling console handlers isn't safe due to locks
+> > > > used in those handlers which could lead to a deadlock. Although, using
+> > > > oops_in_progress increases the chance to bypass locks in most console
+> > > > handlers but it might not be sufficient enough in case a console uses
+> > > > more locks (VT/TTY is good example).
+> > > >
+> > > > Currently when a driver provides both polling I/O and a console then kdb
+> > > > will output using the console. We can increase robustness by using the
+> > > > currently active polling I/O driver (which should be lockless) instead
+> > > > of the corresponding console. For several common cases (e.g. an
+> > > > embedded system with a single serial port that is used both for console
+> > > > output and debugger I/O) this will result in no console handler being
+> > > > used.
+> > >
+> > > > diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
+> > > > index b072aeb..05d165d 100644
+> > > > --- a/include/linux/kgdb.h
+> > > > +++ b/include/linux/kgdb.h
+> > > > @@ -275,6 +275,7 @@ struct kgdb_arch {
+> > > >   * for the I/O driver.
+> > > >   * @is_console: 1 if the end device is a console 0 if the I/O device is
+> > > >   * not a console
+> > > > + * @tty_drv: Pointer to polling tty driver.
+> > > >   */
+> > > >  struct kgdb_io {
+> > > >       const char              *name;
+> > > > @@ -285,6 +286,7 @@ struct kgdb_io {
+> > > >       void                    (*pre_exception) (void);
+> > > >       void                    (*post_exception) (void);
+> > > >       int                     is_console;
+> > > > +     struct tty_driver       *tty_drv;
+> > >
+> > > Should this be a struct tty_driver or a struct console?
+> > >
+> > > In other words if the lifetime the console structure is the same as the
+> > > tty_driver then isn't it better to capture the console instead
+> > > (easier to compare and works with non-tty devices such as the
+> > > USB debug mode).
+> > >
+> > 
+> > IIUC, you mean to say we can easily replace "is_console" with "struct
+> > console". This sounds feasible and should be a straightforward
+> > comparison in order to prefer "dbg_io_ops" over console handlers. So I
+> > will switch to use "struct console" instead.
 > 
+> My comment contains an if ("if the lifetime of the console structure is
+> the same") so you need to check that it is true before sharing a patch to
+> make the change.
 
-In principal I agree, one nit below.
-If you are okay with it, feel free to add my Rb tag.
+Honestly, I am not completely familiar with the console an tty drivers
+code.
 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: linux-mips@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> 
-> ---
-> 
-> Changelog v3:
-> - This is a new patch created as a result of the discussion with Vinud and
->   Andy in the framework of DW DMA burst and LLP capabilities.
-> ---
->  drivers/dma/dw/core.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/dma/dw/core.c b/drivers/dma/dw/core.c
-> index 29c4ef08311d..b850eb7fd084 100644
-> --- a/drivers/dma/dw/core.c
-> +++ b/drivers/dma/dw/core.c
-> @@ -1054,6 +1054,15 @@ static void dwc_caps(struct dma_chan *chan, struct dma_slave_caps *caps)
->  	struct dw_dma_chan *dwc = to_dw_dma_chan(chan);
->  
->  	caps->max_burst = dwc->max_burst;
-> +
-> +	/*
-> +	 * It might be crucial for some devices to have the hardware
-> +	 * accelerated multi-block transfers supported, aka LLPs in DW DMAC
-> +	 * notation. So if LLPs are supported then max_sg_nents is set to
-> +	 * zero which means unlimited number of SG entries can be handled in a
-> +	 * single DMA transaction, otherwise it's just one SG entry.
-> +	 */
+Anyway, struct console is typically statically defined by the console
+driver code. It is not must to have but I am not aware of any
+driver where it would be dynamically defined.
 
-> +	caps->max_sg_nents = dwc->nollp;
+On the other hand, struct tty_driver is dynamically allocated
+when the driver gets initialized.
 
-To be on the safer side I would explicitly do it like
+So I would say that it is pretty safe to store struct console.
+Well, you need to call con->device() to see if the tty_driver
+is actually initialized.
 
-	if (dwc->nollp)
-	 /* your nice comment */
-	 = 1;
-	else
-	 /* Unlimited */
-	 = 0;
-
-type or content of nollp theoretically can be changed and this will affect maximum segments.
-
->  }
->  
->  int do_dma_probe(struct dw_dma_chip *chip)
-> -- 
-> 2.26.2
-> 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Best Regards,
+Petr
