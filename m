@@ -2,195 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53AEF1E520B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 02:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A1A1E521D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 02:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725915AbgE1ACm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 20:02:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49024 "EHLO
+        id S1725879AbgE1AM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 20:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725294AbgE1ACm (ORCPT
+        with ESMTP id S1725681AbgE1AM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 20:02:42 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81A07C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 17:02:41 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id t4so12875729vsq.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 17:02:41 -0700 (PDT)
+        Wed, 27 May 2020 20:12:56 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6912EC05BD1E;
+        Wed, 27 May 2020 17:12:56 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id z26so12599173pfk.12;
+        Wed, 27 May 2020 17:12:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=okC+75ZCtKbM15r3x670gRBve7kChxs6sV2debOxPB0=;
-        b=kwQn58I6KeEnpxDEukm9xPGz2qfO5MESqkwTzLFeIX7J+dgM+ZV5QNN+lC+OhzIS6/
-         96qBokhRcNk/JSx/rvGCUB4rIcTSWxyujirTeUBc8+5OBTrU8vvBdnCKLujPdEXA1HVh
-         nxigoKotEtS8ni6ue0pj3Jeo723HpsQl8aLkQ=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=P8ZX6NswqYpmp7AerrBDt1jBaXqAyhSsaEu8p+L3oCE=;
+        b=iKLqcWmV5z5p/JypITIwKEFX2LyCZV9tu37lGMrCJvoOrB+JBVptoFiBh5FgHaUjF0
+         wOqAigXgQ4PhC/G9wWNnNPI4VG1aZsCSJZVY6Fo4s/xWgeXEeJbWGQuOn1XiZSDo2vTt
+         sIVJq4JN0uOo25JAznQVs7c8LVC0xmI++cZK+XSr5f5GeVvIKF+PJRtP1bFAud4HVWQy
+         3CAKwCM//8w28wWFoNKwy+qOQG5rnMDB9cjTm54fLySgkhnBeTGHJqFBHj+0Nd4qLgOe
+         RfWLucbAEZOnfsQRqdxWAUaPLzN5s0ggQNbKaMWdliVyILqQk1ocXrtPe+i86S5gTbF5
+         j7fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=okC+75ZCtKbM15r3x670gRBve7kChxs6sV2debOxPB0=;
-        b=F9U/MtBE6o3eGoN47A0evDMfiatjeyI/yjO3btCzRIYUZVqGHYIEpW7tWyHytfYOfg
-         6SRWTwTv/FpHP5e2nrGF7TBuIJgKWftGShgroVjE0AUBaQjYgqf41oNMvthuKfyVlWjI
-         aeQd1RIq9AIG0eBDzkS4YrN5dQDplkp5819bOusfWPdEh0PV0869V8RRkBII/oFVgiKY
-         EGgSxhvXT9Xe8n6F91ObSt9zK6dpasKoOdOIcG7KRT1AFSxgD7k/cPMXNgFVYWqGLcoF
-         njb8NkbPw7EEtb2nzFMvG8nJgQW7/QZssrznz8x36SJCvQLS/5wjUPWmpHuYyk3da0Zg
-         RZqQ==
-X-Gm-Message-State: AOAM531UW+KOmtyjLtEGgTJTTulyi8jfj0R7s1gHjiv6pDaqgQIY8/yO
-        gvu56phOZ9NHHXTjoYUB1O/GsQnI4Qo=
-X-Google-Smtp-Source: ABdhPJwICH7vlBI78FMfaPUrU9uSqptECiOSu9V6ENmZsLkImx8h/DvLFBzwX/NMHEMx0lBa4I6BPg==
-X-Received: by 2002:a67:ad0e:: with SMTP id t14mr229690vsl.87.1590624160342;
-        Wed, 27 May 2020 17:02:40 -0700 (PDT)
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com. [209.85.222.44])
-        by smtp.gmail.com with ESMTPSA id i199sm417539vke.20.2020.05.27.17.02.39
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 May 2020 17:02:39 -0700 (PDT)
-Received: by mail-ua1-f44.google.com with SMTP id g7so9055717uap.7
-        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 17:02:39 -0700 (PDT)
-X-Received: by 2002:ab0:1684:: with SMTP id e4mr240126uaf.22.1590624158874;
- Wed, 27 May 2020 17:02:38 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=P8ZX6NswqYpmp7AerrBDt1jBaXqAyhSsaEu8p+L3oCE=;
+        b=nfRMEhBtbNZfiRmBIHFN7K/s+X4xdJmFSwqBDdvYa9rQNtMeBF9gDKSYPwkGPzfzAB
+         PIbJqpqeoMn6kdJiQ6cwgfziJ4IU/bXt5inISavF443IiS8YJ5xbOs8FdToH8neMHIZf
+         fXzHSjNQQadepUm7vFVcnG4G3BtQnY7042xAfFD9w+eCr0Yp9oCPU7IGkGWP5xoJ9Y3c
+         MKi6F2g01e6pxdoYcliyB50uEnh2VRDcYXe3d4DuCW7xcuHwNfg8rrtYtV5NZVu2GhxK
+         oKCs78CWFF1cMQb+a2CTKlLydJxdgJpvS+jHwaeyjDp2ZjYI9c5khSyX1fuJUzu245St
+         jl2Q==
+X-Gm-Message-State: AOAM532OViw58fl/o9Q31NKXirZoHz5r1s7dkVmQdToEkJcFP84cf9Xd
+        8AJ4E8cpkJOmtGm6GiWsW1hHUz6VI2E=
+X-Google-Smtp-Source: ABdhPJyybKRjHW/e8Wn8InRXBVk2d8dp4EgOWi6G1U18Odv3v3aOGhPI7vHfAxUxrSGaWJqSIn/WRg==
+X-Received: by 2002:a05:6a00:134c:: with SMTP id k12mr275880pfu.313.1590624775625;
+        Wed, 27 May 2020 17:12:55 -0700 (PDT)
+Received: from ?IPv6:::1? ([2404:7a87:83e0:f800:295a:ef64:e071:39ab])
+        by smtp.gmail.com with ESMTPSA id f136sm2915747pfa.59.2020.05.27.17.12.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 May 2020 17:12:54 -0700 (PDT)
+Subject: Re: [PATCH] exfat: optimize dir-cache
+To:     Sungjong Seo <sj1557.seo@samsung.com>,
+        'Namjae Jeon' <linkinjeon@kernel.org>,
+        "'Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp'" 
+        <Kohada.Tetsuhiro@dc.mitsubishielectric.co.jp>
+Cc:     "'Mori.Takahiro@ab.MitsubishiElectric.co.jp'" 
+        <Mori.Takahiro@ab.mitsubishielectric.co.jp>,
+        "'Motai.Hirotaka@aj.MitsubishiElectric.co.jp'" 
+        <Motai.Hirotaka@aj.mitsubishielectric.co.jp>,
+        'Namjae Jeon' <namjae.jeon@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <CGME20200520075735epcas1p269372d222e25f3fd51b7979f5b7cdc61@epcas1p2.samsung.com>
+ <20200520075641.32441-1-kohada.tetsuhiro@dc.mitsubishielectric.co.jp>
+ <055a01d63306$82b13440$88139cc0$@samsung.com>
+ <TY1PR01MB15784E70CEACDA05F688AE6790B10@TY1PR01MB1578.jpnprd01.prod.outlook.com>
+ <CAKYAXd_oG6dc7CNiHszKmhabHd2zrN_VOaNYaWRPES=7hRu+pA@mail.gmail.com>
+ <000701d63432$ace24f10$06a6ed30$@samsung.com>
+From:   Tetsuhiro Kohada <kohada.t2@gmail.com>
+Message-ID: <22dfcd8a-4416-e2a7-b8a7-0375660ba465@gmail.com>
+Date:   Thu, 28 May 2020 09:12:52 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-References: <20200507153444.1.I70e0d4fd46d5ed2aaf0c98a355e8e1b7a5bb7e4e@changeid>
- <20200519104151.6evv3hizm5dbjjq2@holly.lan>
-In-Reply-To: <20200519104151.6evv3hizm5dbjjq2@holly.lan>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 27 May 2020 17:02:27 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XCFxgO-s--jw9CTgQUxtQfteoQ4XSL_bbjW4s82Wd3pg@mail.gmail.com>
-Message-ID: <CAD=FV=XCFxgO-s--jw9CTgQUxtQfteoQ4XSL_bbjW4s82Wd3pg@mail.gmail.com>
-Subject: Re: [PATCH] kgdb: Avoid suspicious RCU usage warning
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        kgdb-bugreport@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <000701d63432$ace24f10$06a6ed30$@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Antivirus: Avast (VPS 200527-0, 2020/05/27), Outbound message
+X-Antivirus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+>>>   > In order to prevent illegal accesses to bh and dentries, it would
+>>> be better to check validation for num and bh.
+>>>
+>>>   There is no new error checking for same reason as above.
+>>>
+>>>   I'll try to add error checking to this v2 patch.
+>>>   Or is it better to add error checking in another patch?
+>> The latter:)
+>> Thanks!
+> 
+> Yes, the latter looks better.
 
-On Tue, May 19, 2020 at 3:41 AM Daniel Thompson
-<daniel.thompson@linaro.org> wrote:
->
-> On Thu, May 07, 2020 at 03:53:58PM -0700, Douglas Anderson wrote:
-> > At times when I'm using kgdb I see a splat on my console about
-> > suspicious RCU usage.  I managed to come up with a case that could
-> > reproduce this that looked like this:
-> >
-> >   WARNING: suspicious RCU usage
-> >   5.7.0-rc4+ #609 Not tainted
-> >   -----------------------------
-> >   kernel/pid.c:395 find_task_by_pid_ns() needs rcu_read_lock() protection!
-> >
-> >   other info that might help us debug this:
-> >
-> >     rcu_scheduler_active = 2, debug_locks = 1
-> >   3 locks held by swapper/0/1:
-> >    #0: ffffff81b6b8e988 (&dev->mutex){....}-{3:3}, at: __device_attach+0x40/0x13c
-> >    #1: ffffffd01109e9e8 (dbg_master_lock){....}-{2:2}, at: kgdb_cpu_enter+0x20c/0x7ac
-> >    #2: ffffffd01109ea90 (dbg_slave_lock){....}-{2:2}, at: kgdb_cpu_enter+0x3ec/0x7ac
-> >
-> >   stack backtrace:
-> >   CPU: 7 PID: 1 Comm: swapper/0 Not tainted 5.7.0-rc4+ #609
-> >   Hardware name: Google Cheza (rev3+) (DT)
-> >   Call trace:
-> >    dump_backtrace+0x0/0x1b8
-> >    show_stack+0x1c/0x24
-> >    dump_stack+0xd4/0x134
-> >    lockdep_rcu_suspicious+0xf0/0x100
-> >    find_task_by_pid_ns+0x5c/0x80
-> >    getthread+0x8c/0xb0
-> >    gdb_serial_stub+0x9d4/0xd04
-> >    kgdb_cpu_enter+0x284/0x7ac
-> >    kgdb_handle_exception+0x174/0x20c
-> >    kgdb_brk_fn+0x24/0x30
-> >    call_break_hook+0x6c/0x7c
-> >    brk_handler+0x20/0x5c
-> >    do_debug_exception+0x1c8/0x22c
-> >    el1_sync_handler+0x3c/0xe4
-> >    el1_sync+0x7c/0x100
-> >    rpmh_rsc_probe+0x38/0x420
-> >    platform_drv_probe+0x94/0xb4
-> >    really_probe+0x134/0x300
-> >    driver_probe_device+0x68/0x100
-> >    __device_attach_driver+0x90/0xa8
-> >    bus_for_each_drv+0x84/0xcc
-> >    __device_attach+0xb4/0x13c
-> >    device_initial_probe+0x18/0x20
-> >    bus_probe_device+0x38/0x98
-> >    device_add+0x38c/0x420
-> >
-> > If I understand properly we should just be able to blanket kgdb under
-> > one big RCU read lock and the problem should go away.  We'll add it to
-> > the beast-of-a-function known as kgdb_cpu_enter().
-> >
-> > With this I no longer get any splats and things seem to work fine.
-> >
-> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
->
-> In principle this looks OK but I'm curious why we don't cuddle these
-> calls up to the local interrupt locking (and also whether we want to
-> keep hold of the lock during stepping). If nothing else that would make
-> review easier.
+I will do so.
 
-It probably wouldn't hurt to keep hold of the lock during single
-stepping but I don't think there's any real reason we'd want to.
-Specifically the only real reason we're calling rcu_read_lock() is to
-avoid the warning.  Since we're a stop-the-world debugger it's not
-like something else could be messing with state at the same time.
-
-I'm looking at the whole function though and I don't really understand
-all the comments about interrupts being restored by the 'trap return'
-code, do you?  Specifically: as far as I can tell we _always_ restore
-interrupts when exiting the function.  There are only two return
-statements and both have "local_irq_restore(flags);" right before
-them.  We never modify the flags directly and the one other usage of
-"flags" is effectively the statement "local_irq_restore(flags);
-local_irq_save(flags);" which will, I guess, allow any interrupts that
-were already pending to take place.  Are you saying that you want me
-to match that and do a "rcu_read_unlock(); rcu_read_lock()" there?
-
-If I understand things correctly (and there's maybe a better chance
-after I read Wei Li's recent patches) the disabling of IRQs for single
-stepping happens in a different way.  It looks like we update the
-"struct pt_regs" of the task we're stepping so that when we exit kgdb
-and start running the task again that the interrupts are off.  That
-seems reasonable to me and this function has nothing to do with it.
-
-...and further confusion on my part: does the whole saving / restoring
-of interrupts in kgdb_cpu_enter() make any sense anyway?  Is this
-function ever called from a context that's not an interrupt context?
-How do we get the pt_regs in that case?  Just for fun, I tried doing
-this:
-
-    local_irq_save(flags);
-+   if (!arch_irqs_disabled_flags(flags))
-+           pr_warn("I was wrong\n");
-
-...and I never saw "I was wrong" on my system.  Maybe it matters for
-something not arm64?  ...or, maybe, this is from when kgdb worked in a
-completely different way?
+I will post additional patches for error checking, after this patch is merged into tree.
+OK?
 
 
-In general I made my patch by:
-* Calling rcu_read_lock() at the start of the function.
-* Calling rcu_read_unlock() right before all 2 of the "return" calls of
-  the function.
 
-...I was hoping that would actually make it easier to reason about
-even if the function is a beast.
-
-
-Hopefully the above makes sense.  I wouldn't rule out me just being
-utterly confused, but I _think_ I reasoned through it all.  ;-)  If it
-all makes sense, I'm inclined to:
-
-1. Leave my patch the way it is.
-
-2. Perhaps remove the whole irq saving / restoring in kgdb_cpu_enter().
-
-
--Doug
