@@ -2,75 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83A451E674A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 18:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505591E673A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 18:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405008AbgE1QSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 12:18:48 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:45386 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404997AbgE1QSn (ORCPT
+        id S2404964AbgE1QQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 12:16:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404906AbgE1QQa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 12:18:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=htjljCPzd1c4kmormW0XrtycmMbB50z3R0kch7eOlKE=; b=Fv6Rb/bQHB9l3LlI4jwJZGNRwt
-        dEs9f7NJAyK83DaeQ7V1GTzKHgB6IkHiIioGU/Pz7oUK+T4Kk7WPFc5qKIcANwP4plOuts6rymW5g
-        IENc9JY/Tx1d/XserZp1yNyoSw0Uvqrdb07uWILrYTC0vTmGcKeC8ue4doDNKFistGf1vMg85/c5O
-        Qplex2ZVceaIw5NjwHB2q1pbL2V6df91IswtVMJWyUcrAf9sja8bDfo+g7JIiUMtlWFV/zn/nraIt
-        sngDxnqI1E0dU9afoTDavZzJ9fPb5Iq0T0eHTZK5sMwPrfu+kJX+FkLG+2GQw3WtUuOXjE5C4dvrE
-        ScNBBx5Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jeLCl-0005W6-KN; Thu, 28 May 2020 16:16:28 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2AE229836F8; Thu, 28 May 2020 18:16:16 +0200 (CEST)
-Date:   Thu, 28 May 2020 18:16:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org
-Subject: Re: [patch 5/5] x86/idt: Consolidate idt functionality
-Message-ID: <20200528161616.GK2483@worktop.programming.kicks-ass.net>
-References: <20200528145315.727724091@linutronix.de>
- <20200528145523.084915381@linutronix.de>
+        Thu, 28 May 2020 12:16:30 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A2A5C08C5C7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 09:16:30 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id a45so815102pje.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 09:16:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=S76ddrdGq/cBbQZ5tUQB2unFDdKjzHHbrT8hpYe9YzM=;
+        b=JiWpVhyw1smRR696kDsmG/PvNo7sZu5e24qbl+VPXErlBMim+HjZG2Z2tGTg+EQ3c6
+         5K/pnLuPLxYJWoQDn9cFgvvzrAYr2oaWTol8ilzpzHKI9n+DCLhZPLSDfA/RFV9JAUDD
+         dNZ7x5M2uU8VqhhdK5Om372FdLpWT3N2o341M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S76ddrdGq/cBbQZ5tUQB2unFDdKjzHHbrT8hpYe9YzM=;
+        b=idIdvqNo1WNSIcmfnsjY5NM8dYHkJVA4QGwGRrkB62ME9j424aGpSU9Jju8B6+wvu1
+         NUyJclPuH3Bu3F4DC0C9kZeuNQSqfUnUwuJsgAK07FT+fM+0sDlZd73jMoyQRjEDdQWr
+         +Lbfh0Mb9IIDEAlStqw//1rq9p80/htyDh9wr/WGA3QHbld9b+IMnDXX+OQjubNYgLeq
+         P5LcMvJs7MOkWOCY9FiAGPRAm3Qw4LRaxLZjwqOtU7I18M+Wnsa9bOXJq9JKI4VdPFZF
+         DRpBTqSFW+uIoWJb+q+OTx04V49Ej6xYUvSe7KeVwOa6FCWgBfvxIRqHUcrHIIhqUM10
+         z1Lw==
+X-Gm-Message-State: AOAM532nuDU2L0jJNgl/LlS0YSxKPN6zsquHCjJtkwrEEhqaPVRhy7vM
+        n8cyRUcwcnQYs1RbaQc1MvIlcvk+L6g=
+X-Google-Smtp-Source: ABdhPJx8NV9kadMCeflkmPi1yiAesNMW3uLpAf3Uo3Djp1f3fesJ94fSB9RULJ/7tXTLkUaRNCdO2A==
+X-Received: by 2002:a17:902:b289:: with SMTP id u9mr4327057plr.138.1590682589611;
+        Thu, 28 May 2020 09:16:29 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
+        by smtp.gmail.com with ESMTPSA id lj12sm5932279pjb.21.2020.05.28.09.16.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 May 2020 09:16:28 -0700 (PDT)
+Date:   Thu, 28 May 2020 09:16:27 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Zijun Hu <zijuhu@codeaurora.org>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
+        rjliao@codeaurora.org
+Subject: Re: [PATCH v1] bluetooth: hci_qca: Fix suspend/resume functionality
+ failure
+Message-ID: <20200528161627.GK4525@google.com>
+References: <1590662302-10102-1-git-send-email-zijuhu@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200528145523.084915381@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1590662302-10102-1-git-send-email-zijuhu@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 04:53:20PM +0200, Thomas Gleixner wrote:
+Hi Zijun,
 
-> -#ifdef CONFIG_X86_64
-> -DECLARE_PER_CPU(u32, debug_idt_ctr);
-> -static __always_inline bool is_debug_idt_enabled(void)
-> -{
-> -	if (this_cpu_read(debug_idt_ctr))
-> -		return true;
-> -
-> -	return false;
-> -}
-> -
-> -static __always_inline void load_debug_idt(void)
-> -{
-> -	load_idt((const struct desc_ptr *)&debug_idt_descr);
-> -}
-> -#else
-> -static inline bool is_debug_idt_enabled(void)
-> -{
-> -	return false;
-> -}
-> -
-> -static inline void load_debug_idt(void)
-> -{
-> -}
-> -#endif
+On Thu, May 28, 2020 at 06:38:22PM +0800, Zijun Hu wrote:
+> @dev parameter of qca_suspend()/qca_resume() represents
+> serdev_device, but it is mistook for hci_dev and causes
+> succedent unexpected memory access.
+> 
+> Fix by taking @dev as serdev_device.
+> 
+> Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
 
-I have a patch that does this too; except it doesn't put it back. I like
-that one better :-)
+Please add:
+
+Fixes: 41d5b25fed0 ("Bluetooth: hci_qca: add PM support")
+
+and add stable@kernel.org to cc:
+
+> ---
+>  drivers/bluetooth/hci_qca.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+> index e4a6823..c159161 100644
+> --- a/drivers/bluetooth/hci_qca.c
+> +++ b/drivers/bluetooth/hci_qca.c
+> @@ -1977,8 +1977,10 @@ static void qca_serdev_remove(struct serdev_device *serdev)
+>  
+>  static int __maybe_unused qca_suspend(struct device *dev)
+>  {
+> -	struct hci_dev *hdev = container_of(dev, struct hci_dev, dev);
+> -	struct hci_uart *hu = hci_get_drvdata(hdev);
+> +	struct serdev_device *serdev = to_serdev_device(dev);
+> +	struct qca_serdev *qcadev = serdev_device_get_drvdata(serdev);
+> +	struct hci_uart *hu = &qcadev->serdev_hu;
+> +	struct hci_dev *hdev __maybe_unused = hu->hdev;
+
+hdev is not used, please remove
+
+>  	struct qca_data *qca = hu->priv;
+>  	unsigned long flags;
+>  	int ret = 0;
+> @@ -2057,8 +2059,10 @@ static int __maybe_unused qca_suspend(struct device *dev)
+>  
+>  static int __maybe_unused qca_resume(struct device *dev)
+>  {
+> -	struct hci_dev *hdev = container_of(dev, struct hci_dev, dev);
+> -	struct hci_uart *hu = hci_get_drvdata(hdev);
+> +	struct serdev_device *serdev = to_serdev_device(dev);
+> +	struct qca_serdev *qcadev = serdev_device_get_drvdata(serdev);
+> +	struct hci_uart *hu = &qcadev->serdev_hu;
+> +	struct hci_dev *hdev __maybe_unused = hu->hdev;
+
+hdev is not used, please remove
+
+>  	struct qca_data *qca = hu->priv;
+>  
+>  	clear_bit(QCA_SUSPENDING, &qca->flags);
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+> 
