@@ -2,252 +2,561 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9084B1E5BA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 11:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 485541E5B9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 11:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728285AbgE1JRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 05:17:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728131AbgE1JRe (ORCPT
+        id S1728215AbgE1JQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 05:16:29 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:59258 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728129AbgE1JQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 05:17:34 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1DF2C05BD1E;
-        Thu, 28 May 2020 02:17:34 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id r10so13191659pgv.8;
-        Thu, 28 May 2020 02:17:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/jcDBsPI903pyRvfIkLqQWOFZxwnSVi5Gs6NDZoWMa0=;
-        b=r1ktsoa9buca5nMl07pH1Fo4Mtt6pJMG0uuMD7OQGp93C9u8tZgb9RnOWVqOBTQ5nG
-         4myRVAsMEa+vq65o8ynR36eq60n3vaif8Ix6MDCeof4aDGZxId7WHLo1cgSrJNJJR/4f
-         ZZ5aEYgyScqOZXIuOVyV5u35lRQ5K1IzlO+K9ZxYhIwN/4uPxiKFxzSRS5r3/cGAQN0G
-         Zg2itMYYWbXQeytEz2yIWgjmN+uyb3QqPiEMXEN1h70OtGFzZcEhWk32u2khJ7309HLs
-         zkCaATl3NVvZjNVY0vVPXkQ+5ag7vYm4QBRRl8aQkL3kJKQSEr+cftWsKEoRNi2nBTT1
-         3BDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/jcDBsPI903pyRvfIkLqQWOFZxwnSVi5Gs6NDZoWMa0=;
-        b=uA8SOym57VUauQdE6gF29fF2Jx9MJ+Gt9OAWDR+j4KOjtQw7tRRBy7S12+pUjds0/i
-         z/mXa4dIE8y/u5p9xU6WPnSyPl/vR8hJSbLOqi3N+ErKx3cbOnCLd5fyVM5f5GEvFT2j
-         yzWTbfOu3raEQoGaGqDdGcFpf225zxsynUzFVtv7KvZExAwxOBVszx+3C1sLVOeDUNOH
-         YPJWNib8VlOzE1gJOJ89jAyvDGq89nGhwIKR7wp5Xm1wgYFVJDoBO+2ZOsOoflZHF2HF
-         73AMqNegUNKhRpcS9IstFHetuaBX35T5lpUbdLfJNM56+dEoqlXmDvdLnkoQ9VPcQVoZ
-         lXMQ==
-X-Gm-Message-State: AOAM532ZqSfTwK3DKUvSszlRXmJNaCLRISzlC57AqTQ0d0K7Htk7M1AC
-        CrRonj2PZWIXnJuygXov2S0=
-X-Google-Smtp-Source: ABdhPJwh4jBKkwAiDrpOVYcEB8GmRyOmPg+lbGk1naJmpqfttxti/NjnwtJO6Nw1ved6qcQ/iPXnQA==
-X-Received: by 2002:a63:eb03:: with SMTP id t3mr2108708pgh.222.1590657454241;
-        Thu, 28 May 2020 02:17:34 -0700 (PDT)
-Received: from dc803.flets-west.jp ([2404:7a87:83e0:f800:295a:ef64:e071:39ab])
-        by smtp.gmail.com with ESMTPSA id d15sm5856185pjc.0.2020.05.28.02.17.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 02:17:33 -0700 (PDT)
-From:   Tetsuhiro Kohada <kohada.t2@gmail.com>
-To:     kohada.t2@gmail.com
-Cc:     kohada.tetsuhiro@dc.mitsubishielectric.co.jp,
-        mori.takahiro@ab.mitsubishielectric.co.jp,
-        motai.hirotaka@aj.mitsubishielectric.co.jp,
-        Namjae Jeon <namjae.jeon@samsung.com>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4 v2] exfat: standardize checksum calculation
-Date:   Thu, 28 May 2020 18:16:04 +0900
-Message-Id: <20200528091605.13016-4-kohada.t2@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200528091605.13016-1-kohada.t2@gmail.com>
-References: <20200528091605.13016-1-kohada.t2@gmail.com>
+        Thu, 28 May 2020 05:16:27 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04S9CcOV139899;
+        Thu, 28 May 2020 09:16:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=Y2lyja0RpoMvlQmp8pjV7g3iSap75rGmaDj4kM0xMWs=;
+ b=LYrI36JZbny3MLaHEE2xyuNDfzJ5iw+Vbl2k/oqWpB65E4iZUjH/xwUOTWfVt2whsaHz
+ gHX8mbrxJxPHK0x1MTnDf7slV8rT6Rs9CJJWDm9aQGLGihh+xpWqQ7q6BHtC3EM7s+BR
+ MjysqVJ65aSObMMKDEh/EWYHpdJFoucaZg3PlpOFvFhMbpPxzhIhSaJ8JKeiEGTbaw8m
+ 0IurH2J39w2igwWdImsYKKr0IdIu/u65biPwSZ/RsBijbXLouyt66amlJWvvgUd8N8S0
+ XzqawVY9XloWtt9xgOUqLu3nCZimPo2VuAAUVCBNfwzb56Ew2dhtl4+NVRyrnZALqxJU PQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 318xe1kxd6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 28 May 2020 09:16:20 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04S9DcKX136036;
+        Thu, 28 May 2020 09:16:19 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 31a9ks377q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 May 2020 09:16:19 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04S9GHhY030577;
+        Thu, 28 May 2020 09:16:18 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 28 May 2020 02:16:16 -0700
+Date:   Thu, 28 May 2020 12:16:07 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Pascal Terjan <pterjan@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: Use shared header constants
+Message-ID: <20200528091607.GN22511@kadam>
+References: <20200523212919.33181-1-pterjan@google.com>
+ <20200527194811.GF30374@kadam>
+ <CAANdO=LqcHOzxSjudw+G+292sjguOoA-E2y4iAFZtCfa0UFe1A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="7lMq7vMTJT4tNk0a"
+Content-Disposition: inline
+In-Reply-To: <CAANdO=LqcHOzxSjudw+G+292sjguOoA-E2y4iAFZtCfa0UFe1A@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9634 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 adultscore=0
+ mlxlogscore=999 malwarescore=0 spamscore=0 bulkscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005280063
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9634 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ adultscore=0 cotscore=-2147483648 mlxscore=0 bulkscore=0
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 malwarescore=0
+ clxscore=1015 impostorscore=0 suspectscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005280063
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To clarify that it is a 16-bit checksum, the parts related to the 16-bit
-checksum are renamed and change type to u16.
-Furthermore, replace checksum calculation in exfat_load_upcase_table()
-with exfat_calc_checksum32().
 
-Signed-off-by: Tetsuhiro Kohada <kohada.t2@gmail.com>
----
-Changes in v2:
- - rebase with patch 'optimize dir-cache' applied
+--7lMq7vMTJT4tNk0a
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- fs/exfat/dir.c      | 12 ++++++------
- fs/exfat/exfat_fs.h |  5 ++---
- fs/exfat/misc.c     | 10 ++++------
- fs/exfat/nls.c      | 19 +++++++------------
- 4 files changed, 19 insertions(+), 27 deletions(-)
+On Wed, May 27, 2020 at 09:33:03PM +0100, Pascal Terjan wrote:
+> On Wed, 27 May 2020 at 20:48, Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> > >       /* eth_type = (psnap_type[0] << 8) | psnap_type[1]; */
+> > > -     if ((!memcmp(psnap, rtw_rfc1042_header, SNAP_SIZE) &&
+> > > -             (memcmp(psnap_type, SNAP_ETH_TYPE_IPX, 2)) &&
+> > > -             (memcmp(psnap_type, SNAP_ETH_TYPE_APPLETALK_AARP, 2))) ||
+> > > -             /* eth_type != ETH_P_AARP && eth_type != ETH_P_IPX) || */
+> > > -              !memcmp(psnap, rtw_bridge_tunnel_header, SNAP_SIZE)) {
+> > > +     if ((!memcmp(psnap, rfc1042_header, SNAP_SIZE) &&
+> > > +          memcmp(psnap_type, SNAP_ETH_TYPE_IPX, 2) &&
+> > > +          memcmp(psnap_type, SNAP_ETH_TYPE_APPLETALK_AARP, 2)) ||
+> > > +         /* eth_type != ETH_P_AARP && eth_type != ETH_P_IPX) || */
+> > > +         !memcmp(psnap, bridge_tunnel_header, SNAP_SIZE)) {
+> > >               /* remove RFC1042 or Bridge-Tunnel encapsulation and replace EtherType */
+> > >               bsnaphdr = true;
+> >
+> > Your indenting is correct, but I would probably do that in a separate
+> > patch.  It makes it harder to review.  Also probably delete the
+> > commented out code.  Do you see how if we don't touch the indenting then
+> > it doesn't raise the question about if we should delete the comments as
+> > well?
+> 
+> I initially didn't want to change it but checkpatch was sad which
+> makes me sad, maybe I should have cleaned up this area in a first
+> trivial patch before touching that line.
 
-diff --git a/fs/exfat/dir.c b/fs/exfat/dir.c
-index 2902d285bf20..de43534aa299 100644
---- a/fs/exfat/dir.c
-+++ b/fs/exfat/dir.c
-@@ -491,7 +491,7 @@ int exfat_update_dir_chksum(struct inode *inode, struct exfat_chain *p_dir,
- 	int ret = 0;
- 	int i, num_entries;
- 	sector_t sector;
--	unsigned short chksum;
-+	u16 chksum;
- 	struct exfat_dentry *ep, *fep;
- 	struct buffer_head *fbh, *bh;
- 
-@@ -500,7 +500,7 @@ int exfat_update_dir_chksum(struct inode *inode, struct exfat_chain *p_dir,
- 		return -EIO;
- 
- 	num_entries = fep->dentry.file.num_ext + 1;
--	chksum = exfat_calc_chksum_2byte(fep, DENTRY_SIZE, 0, CS_DIR_ENTRY);
-+	chksum = exfat_calc_chksum16(fep, DENTRY_SIZE, 0, CS_DIR_ENTRY);
- 
- 	for (i = 1; i < num_entries; i++) {
- 		ep = exfat_get_dentry(sb, p_dir, entry + i, &bh, NULL);
-@@ -508,7 +508,7 @@ int exfat_update_dir_chksum(struct inode *inode, struct exfat_chain *p_dir,
- 			ret = -EIO;
- 			goto release_fbh;
- 		}
--		chksum = exfat_calc_chksum_2byte(ep, DENTRY_SIZE, chksum,
-+		chksum = exfat_calc_chksum16(ep, DENTRY_SIZE, chksum,
- 				CS_DEFAULT);
- 		brelse(bh);
- 	}
-@@ -593,8 +593,8 @@ void exfat_update_dir_chksum_with_entry_set(struct exfat_entry_set_cache *es)
- 
- 	for (i = 0; i < es->num_entries; i++) {
- 		ep = exfat_get_dentry_cached(es, i);
--		chksum = exfat_calc_chksum_2byte(ep, DENTRY_SIZE, chksum,
--						 chksum_type);
-+		chksum = exfat_calc_chksum16(ep, DENTRY_SIZE, chksum,
-+					     chksum_type);
- 		chksum_type = CS_DEFAULT;
- 	}
- 	ep = exfat_get_dentry_cached(es, 0);
-@@ -1000,7 +1000,7 @@ int exfat_find_dir_entry(struct super_block *sb, struct exfat_inode_info *ei,
- 			}
- 
- 			if (entry_type == TYPE_STREAM) {
--				unsigned short name_hash;
-+				u16 name_hash;
- 
- 				if (step != DIRENT_STEP_STRM) {
- 					step = DIRENT_STEP_FILE;
-diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h
-index eebbe5a84b2b..9188985694f0 100644
---- a/fs/exfat/exfat_fs.h
-+++ b/fs/exfat/exfat_fs.h
-@@ -137,7 +137,7 @@ struct exfat_dentry_namebuf {
- struct exfat_uni_name {
- 	/* +3 for null and for converting */
- 	unsigned short name[MAX_NAME_LENGTH + 3];
--	unsigned short name_hash;
-+	u16 name_hash;
- 	unsigned char name_len;
- };
- 
-@@ -512,8 +512,7 @@ void exfat_get_entry_time(struct exfat_sb_info *sbi, struct timespec64 *ts,
- void exfat_truncate_atime(struct timespec64 *ts);
- void exfat_set_entry_time(struct exfat_sb_info *sbi, struct timespec64 *ts,
- 		u8 *tz, __le16 *time, __le16 *date, u8 *time_cs);
--unsigned short exfat_calc_chksum_2byte(void *data, int len,
--		unsigned short chksum, int type);
-+u16 exfat_calc_chksum16(void *data, int len, u16 chksum, int type);
- u32 exfat_calc_chksum32(void *data, int len, u32 chksum, int type);
- void exfat_update_bh(struct super_block *sb, struct buffer_head *bh, int sync);
- void exfat_chain_set(struct exfat_chain *ec, unsigned int dir,
-diff --git a/fs/exfat/misc.c b/fs/exfat/misc.c
-index b82d2dd5bd7c..17d41f3d3709 100644
---- a/fs/exfat/misc.c
-+++ b/fs/exfat/misc.c
-@@ -136,17 +136,15 @@ void exfat_truncate_atime(struct timespec64 *ts)
- 	ts->tv_nsec = 0;
- }
- 
--unsigned short exfat_calc_chksum_2byte(void *data, int len,
--		unsigned short chksum, int type)
-+u16 exfat_calc_chksum16(void *data, int len, u16 chksum, int type)
- {
- 	int i;
--	unsigned char *c = (unsigned char *)data;
-+	u8 *c = (u8 *)data;
- 
- 	for (i = 0; i < len; i++, c++) {
--		if (((i == 2) || (i == 3)) && (type == CS_DIR_ENTRY))
-+		if (unlikely(type == CS_DIR_ENTRY && (i == 2 || i == 3)))
- 			continue;
--		chksum = (((chksum & 1) << 15) | ((chksum & 0xFFFE) >> 1)) +
--			(unsigned short)*c;
-+		chksum = ((chksum << 15) | (chksum >> 1)) + *c;
- 	}
- 	return chksum;
- }
-diff --git a/fs/exfat/nls.c b/fs/exfat/nls.c
-index 1ebda90cbdd7..19321773dd07 100644
---- a/fs/exfat/nls.c
-+++ b/fs/exfat/nls.c
-@@ -527,7 +527,7 @@ static int exfat_utf8_to_utf16(struct super_block *sb,
- 
- 	*uniname = '\0';
- 	p_uniname->name_len = unilen;
--	p_uniname->name_hash = exfat_calc_chksum_2byte(upname, unilen << 1, 0,
-+	p_uniname->name_hash = exfat_calc_chksum16(upname, unilen << 1, 0,
- 			CS_DEFAULT);
- 
- 	if (p_lossy)
-@@ -623,7 +623,7 @@ static int exfat_nls_to_ucs2(struct super_block *sb,
- 
- 	*uniname = '\0';
- 	p_uniname->name_len = unilen;
--	p_uniname->name_hash = exfat_calc_chksum_2byte(upname, unilen << 1, 0,
-+	p_uniname->name_hash = exfat_calc_chksum16(upname, unilen << 1, 0,
- 			CS_DEFAULT);
- 
- 	if (p_lossy)
-@@ -655,7 +655,8 @@ static int exfat_load_upcase_table(struct super_block *sb,
- {
- 	struct exfat_sb_info *sbi = EXFAT_SB(sb);
- 	unsigned int sect_size = sb->s_blocksize;
--	unsigned int i, index = 0, checksum = 0;
-+	unsigned int i, index = 0;
-+	u32 chksum = 0;
- 	int ret;
- 	unsigned char skip = false;
- 	unsigned short *upcase_table;
-@@ -681,13 +682,6 @@ static int exfat_load_upcase_table(struct super_block *sb,
- 		for (i = 0; i < sect_size && index <= 0xFFFF; i += 2) {
- 			unsigned short uni = get_unaligned_le16(bh->b_data + i);
- 
--			checksum = ((checksum & 1) ? 0x80000000 : 0) +
--				(checksum >> 1) +
--				*(((unsigned char *)bh->b_data) + i);
--			checksum = ((checksum & 1) ? 0x80000000 : 0) +
--				(checksum >> 1) +
--				*(((unsigned char *)bh->b_data) + (i + 1));
--
- 			if (skip) {
- 				index += uni;
- 				skip = false;
-@@ -701,13 +695,14 @@ static int exfat_load_upcase_table(struct super_block *sb,
- 			}
- 		}
- 		brelse(bh);
-+		chksum = exfat_calc_chksum32(bh->b_data, i, chksum, CS_DEFAULT);
- 	}
- 
--	if (index >= 0xFFFF && utbl_checksum == checksum)
-+	if (index >= 0xFFFF && utbl_checksum == chksum)
- 		return 0;
- 
- 	exfat_err(sb, "failed to load upcase table (idx : 0x%08x, chksum : 0x%08x, utbl_chksum : 0x%08x)",
--		  index, checksum, utbl_checksum);
-+		  index, chksum, utbl_checksum);
- 	ret = -EINVAL;
- free_table:
- 	exfat_free_upcase_table(sbi);
--- 
-2.25.1
+Just ignore checkpatch in this case because it's not a warning that your
+patch introduced.
 
+Say if you re-name a function, then you *must* re-indent the parameters
+because that's a warning the change introduces.  If there is a
+checkpatch warning and it's on a line that you touch then you can change
+that.  But once you start changing other nearby lines you might run into
+trouble.
+
+The other thing that you fixed is you removed unnecessary parentheses
+and that's good but it actually broke my review script for renaming
+variables.  (Attached).  I do `cat email.txt | rename_rev.pl -a`  It's
+easier in mutt.
+
+regards,
+dan carpenter
+
+--7lMq7vMTJT4tNk0a
+Content-Type: text/x-perl; charset=us-ascii
+Content-Disposition: attachment; filename="rename_rev.pl"
+
+#!/usr/bin/perl
+
+# This is a tool to help review variable rename patches. The goal is
+# to strip out the automatic sed renames and the white space changes
+# and leaves the interesting code changes.
+#
+# Example 1: A patch renames openInfo to open_info:
+#     cat diff | rename_review.pl openInfo open_info
+#
+# Example 2: A patch swaps the first two arguments to some_func():
+#     cat diff | rename_review.pl \
+#                    -e 's/some_func\((.*?),(.*?),/some_func\($2, $1,/'
+#
+# Example 3: A patch removes the xkcd_ prefix from some but not all the
+# variables.  Instead of trying to figure out which variables were renamed
+# just remove the prefix from them all:
+#     cat diff | rename_review.pl -ea 's/xkcd_//g'
+#
+# Example 4: A patch renames 20 CamelCase variables.  To review this let's
+# just ignore all case changes and all '_' chars.
+#     cat diff | rename_review -ea 'tr/[A-Z]/[a-z]/' -ea 's/_//g'
+#
+# The other arguments are:
+# -nc removes comments
+# -ns removes '\' chars if they are at the end of the line.
+
+use strict;
+use File::Temp qw/ :mktemp  /;
+
+sub usage() {
+    print "usage: cat diff | $0 old new old new old new...\n";
+    print "   or: cat diff | $0 -e 's/old/new/g'\n";
+    print " -a : auto";
+    print " -e : execute on old lines\n";
+    print " -ea: execute on all lines\n";
+    print " -nc: no comments\n";
+    print " -nb: no unneeded braces\n";
+    print " -ns: no slashes at the end of a line\n";
+    print " -pull: for function pull.  deletes context.\n";
+    print " -r <recipe>: NULL, bool";
+    exit(1);
+}
+my @subs;
+my @strict_subs;
+my @cmds;
+my $strip_comments;
+my $strip_braces;
+my $strip_slashes;
+my $pull_context;
+my $auto;
+
+sub filter($) {
+    my $line = shift();
+    my $old = 0;
+    if ($line =~ /^-/) {
+        $old = 1;
+    }
+    # remove the first char
+    $line =~ s/^[ +-]//;
+    if ($strip_comments) {
+        $line =~ s/\/\*.*?\*\///g;
+        $line =~ s/\/\/.*//;
+    }
+    foreach my $cmd (@cmds) {
+        if ($old || $cmd->[0] =~ /^-ea$/) {
+            eval "\$line =~ $cmd->[1]";
+        }
+    }
+    foreach my $sub (@subs) {
+        if ($old) {
+            $line =~ s/$sub->[0]/$sub->[1]/g;
+        }
+    }
+    foreach my $sub (@strict_subs) {
+        if ($old) {
+            $line =~ s/\b$sub->[0]\b/$sub->[1]/g;
+        }
+    }
+
+    # remove the newline so we can move curly braces here if we want.
+    $line =~ s/\n//;
+    return $line;
+}
+
+while (my $param1 = shift()) {
+    if ($param1 =~ /^-a$/) {
+        $auto = 1;
+        next;
+    }
+    if ($param1 =~ /^-nc$/) {
+        $strip_comments = 1;
+        next;
+    }
+    if ($param1 =~ /^-nb$/) {
+        $strip_braces = 1;
+        next;
+    }
+    if ($param1 =~ /^-ns$/) {
+        $strip_slashes = 1;
+        next;
+    }
+    if ($param1 =~ /^-pull$/) {
+        $pull_context = 1;
+        next;
+    }
+    my $param2 = shift();
+    if ($param2 =~ /^$/) {
+        usage();
+    }
+    if ($param1 =~ /^-e(a|)$/) {
+        push @cmds, [$param1, $param2];
+        next;
+    }
+    if ($param1 =~ /^-r$/) {
+        if ($param2 =~ /bool/) {
+            push @cmds, ["-e", "s/== true//"];
+            push @cmds, ["-e", "s/true ==//"];
+            push @cmds, ["-e", "s/([a-zA-Z\-\>\._]+) == false/!\$1/"];
+            next;
+        } elsif ($param2 =~ /NULL/) {
+            push @cmds, ["-e", "s/ != NULL//"];
+            push @cmds, ["-e", "s/([a-zA-Z\-\>\._0-9]+) == NULL/!\$1/"];
+            next;
+        } elsif ($param2 =~ /^BIT$/) {
+            push @cmds, ["-e", 's/1[uU]* *<< *(\d+)/BIT($1)/'];
+            push @cmds, ["-e", 's/\(1 *<< *(\w+)\)/BIT($1)/'];
+            push @cmds, ["-e", 's/\(BIT\((.*?)\)\)/BIT($1)/'];
+            next;
+        } elsif ($param2 =~ /^HBIT$/) {
+            push @cmds, ["-e", 's/0x0*1\b/BIT(0)/'];
+            push @cmds, ["-e", 's/0x0*2\b/BIT(1)/'];
+            push @cmds, ["-e", 's/0x0*4\b/BIT(2)/'];
+            push @cmds, ["-e", 's/0x0*8\b/BIT(3)/'];
+            push @cmds, ["-e", 's/0x0*10\b/BIT(4)/'];
+            push @cmds, ["-e", 's/0x0*20\b/BIT(5)/'];
+            push @cmds, ["-e", 's/0x0*40\b/BIT(6)/'];
+            push @cmds, ["-e", 's/0x0*80\b/BIT(7)/'];
+            next;
+        }
+
+        usage();
+    }
+
+    push @subs, [$param1, $param2];
+}
+
+my ($oldfh, $oldfile) = mkstemp("/tmp/oldXXXXX");
+my ($newfh, $newfile) = mkstemp("/tmp/newXXXXX");
+
+my @input = <STDIN>;
+
+# auto works on the observation that the - line comes before the + line when we
+# rename variables.  Take the first - line.  Find the first + line.  Find the
+# one word difference.  Test that the old word never occurs in the new text.
+if ($auto) {
+    my %c_keywords = (  auto => 1,
+                        break => 1,
+                        case => 1,
+                        char => 1,
+                        const => 1,
+                        continue => 1,
+                        default => 1,
+                        do => 1,
+                        double => 1,
+                        else => 1,
+                        enum => 1,
+                        extern => 1,
+                        float => 1,
+                        for => 1,
+                        goto => 1,
+                        if => 1,
+                        int => 1,
+                        long => 1,
+                        register => 1,
+                        return => 1,
+                        short => 1,
+                        signed => 1,
+                        sizeof => 1,
+                        static => 1,
+                        struct => 1,
+                        switch => 1,
+                        typedef => 1,
+                        union => 1,
+                        unsigned => 1,
+                        void => 1,
+                        volatile => 1,
+                        while => 1);
+    my %old_words;
+    my %new_words;
+    my %added_cmds;
+    my @new_subs;
+
+    my $inside = 0;
+    foreach my $line (@input) {
+        if ($line =~ /^(---|\+\+\+)/) {
+            next;
+        }
+
+        if ($line =~ /^@/) {
+            $inside = 1;
+        }
+        if ($inside && !(($_ =~ /^[- @+]/) || ($_ =~ /^$/))) {
+            $inside = 0;
+        }
+        if (!$inside) {
+            next;
+        }
+
+        if ($line =~ /^-/) {
+            s/-//;
+            my @words = split(/\W+/, $line);
+            foreach my $word (@words) {
+                $old_words{$word} = 1;
+            }
+        } elsif ($line =~ /^\+/) {
+            s/\+//;
+            my @words = split(/\W+/, $line);
+            foreach my $word (@words) {
+                $new_words{$word} = 1;
+            }
+        }
+    }
+
+    my $old_line;
+    my $new_line;
+    $inside = 0;
+    foreach my $line (@input) {
+        if ($line =~ /^(---|\+\+\+)/) {
+            next;
+        }
+
+        if ($line =~ /^@/) {
+            $inside = 1;
+        }
+        if ($inside && !(($_ =~ /^[- @+]/) || ($_ =~ /^$/))) {
+            $inside = 0;
+        }
+        if (!$inside) {
+            next;
+        }
+
+
+        if ($line =~ /^-/ && !$old_line) {
+            s/^-//;
+            $old_line = $line;
+            next;
+        } elsif ($old_line && $line =~ /^\+/) {
+            s/^\+//;
+            $new_line = $line;
+        } else {
+            next;
+        }
+
+        my @old_words = split(/\W+/, $old_line);
+        my @new_words = split(/\W+/, $new_line);
+        my @new_cmds;
+
+        my $i;
+        my $diff_count = 0;
+        for ($i = 0; ; $i++) {
+            if (!defined($old_words[$i]) && !defined($new_words[$i])) {
+                last;
+            }
+            if (!defined($old_words[$i]) || !defined($new_words[$i])) {
+                $diff_count = 1000;
+                last;
+            }
+            if ($old_words[$i] eq $new_words[$i]) {
+                next;
+            }
+            if ($c_keywords{$old_words[$i]}) {
+                $diff_count = 1000;
+                last;
+            }
+            if ($new_words{$old_words[$i]}) {
+                $diff_count++;
+            }
+            push @new_cmds, [$old_words[$i], $new_words[$i]];
+        }
+        if ($diff_count <= 2) {
+            foreach my $sub (@new_cmds) {
+                if ($added_cmds{$sub->[0] . $sub->[1]}) {
+                    next;
+                }
+                $added_cmds{$sub->[0] . $sub->[1]} = 1;
+                push @new_subs, [$sub->[0] , $sub->[1]];
+            }
+        }
+
+        $old_line = 0;
+    }
+
+    if (@new_subs) {
+        print "RENAMES:\n";
+        foreach my $sub (@new_subs) {
+            print "$sub->[0] => $sub->[1]\n";
+            push @strict_subs, [$sub->[0] , $sub->[1]];
+        }
+        print "---\n";
+    }
+}
+
+my $output;
+
+#recreate an old file and a new file
+my $inside = 0;
+foreach (@input) {
+    if ($pull_context && !($_ =~ /^[+-@]/)) {
+        next;
+    }
+
+    if ($_ =~ /^(---|\+\+\+)/) {
+        next;
+    }
+
+    if ($_ =~ /^@/) {
+        $inside = 1;
+    }
+    if ($inside && !(($_ =~ /^[- @+]/) || ($_ =~ /^$/))) {
+        $inside = 0;
+    }
+    if (!$inside) {
+        next;
+    }
+
+    $output = filter($_);
+
+    if ($strip_braces && $_ =~ /^(\+|-)\W+{/) {
+        $output =~ s/^[\t ]+(.*)/ $1/;
+    } else {
+        $output = "\n" . $output;
+    }
+
+    if ($_ =~ /^-/) {
+        print $oldfh $output;
+        next;
+    }
+    if ($_ =~ /^\+/) {
+        print $newfh $output;
+        next;
+    }
+    print $oldfh $output;
+    print $newfh $output;
+
+}
+print $oldfh "\n";
+print $newfh "\n";
+# git diff puts a -- and version at the end of the diff.  put the -- into the
+# new file as well so it's ignored
+if ($output =~ /\n-/) {
+    print $newfh "-\n";
+}
+
+my $hunk;
+my $old_txt;
+my $new_txt;
+
+open diff, "diff -uw $oldfile $newfile |";
+while (<diff>) {
+    if ($_ =~ /^(---|\+\+\+)/) {
+        next;
+    }
+
+    if ($_ =~ /^@/) {
+
+        if ($strip_comments) {
+            $old_txt =~ s/\/\*.*?\*\///g;
+            $new_txt =~ s/\/\*.*?\*\///g;
+        }
+        if ($strip_braces) {
+            $old_txt =~ s/{([^;{]*?);}/$1;/g;
+            $new_txt =~ s/{([^;{]*?);}/$1;/g;
+            # this is a hack because i don't know how to replace nested
+            # unneeded curly braces.
+            $old_txt =~ s/{([^;{]*?);}/$1;/g;
+            $new_txt =~ s/{([^;{]*?);}/$1;/g;
+        }
+
+        if ($old_txt ne $new_txt) {
+            print $hunk;
+            print $_;
+        }
+        $hunk = "";
+        $old_txt = "";
+        $new_txt = "";
+        next;
+    }
+
+    $hunk = $hunk . $_;
+
+    if ($strip_slashes) {
+        s/\\$//;
+    }
+
+    if ($_ =~ /^-/) {
+        s/-//;
+        s/[ \t\n]//g;
+        $old_txt = $old_txt . $_;
+        next;
+    }
+    if ($_ =~ /^\+/) {
+        s/\+//;
+        s/[ \t\n]//g;
+        $new_txt = $new_txt . $_;
+        next;
+    }
+    if ($_ =~ /^ /) {
+        s/^ //;
+        s/[ \t\n]//g;
+        $old_txt = $old_txt . $_;
+        $new_txt = $new_txt . $_;
+    }
+}
+
+if ($old_txt ne $new_txt) {
+    if ($strip_comments) {
+        $old_txt =~ s/\/\*.*?\*\///g;
+        $new_txt =~ s/\/\*.*?\*\///g;
+    }
+    if ($strip_braces) {
+        $old_txt =~ s/{([^;{]*?);}/$1;/g;
+        $new_txt =~ s/{([^;{]*?);}/$1;/g;
+        $old_txt =~ s/{([^;{]*?);}/$1;/g;
+        $new_txt =~ s/{([^;{]*?);}/$1;/g;
+    }
+
+    print $hunk;
+}
+
+unlink($oldfile);
+unlink($newfile);
+
+print "\ndone.\n";
+
+--7lMq7vMTJT4tNk0a--
