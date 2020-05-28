@@ -2,157 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB531E6E92
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 00:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 738571E6F02
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 00:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436988AbgE1WWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 18:22:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436937AbgE1WWC (ORCPT
+        id S2437137AbgE1W3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 18:29:03 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:44514 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436979AbgE1WYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 18:22:02 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5403C08C5C8
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 15:22:02 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id q16so164620plr.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 15:22:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=zR2fG0eW95HQgLEHmYKc0XBvdKWrxCRz+Y0bsh4hA5c=;
-        b=nK14RNmJZ+2gzteD6OHGX1MsDlbcZFSoVjcGLb6DDkXBtr/EOxLM6pULUZUdxS5yV+
-         4Mo7UpXVv2tWJfWx+pG8Nn0kl9qVhmmZZs8TIWzNOD92AiPtn6TwASimgJ0ii5Kpu+vC
-         M1EvCxJzXdr4qiAxtlgEIlzJ5/Uec7chgJUDw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=zR2fG0eW95HQgLEHmYKc0XBvdKWrxCRz+Y0bsh4hA5c=;
-        b=tV2Oxc3xzT7DZ0oJBDPneycp3IQFVcNtt1ENN6mRwV2VPxGlP2mVmIupNIFZN4cvVN
-         DOMCmerudxsx8b2H9YYkQYyfvQP+/xddrhPp86J3LGVcHtyAgVLcZgsfJFdxajqCAH1x
-         47KEEzM+F2I0QGeIe7RKFZGkebs1ayfCnxoPvi+fJE85e8T8jCK9V5C1KASEzUQxR7ZK
-         RadjmtetmKi+vjOO7zL1Jd6VmnN/x3VqH1UTQuiAKB9XH4IyC+vo6KLyRK6ksbpt2gFq
-         xUc+YqqRFN13/TrlcPsxHlZtSIU+s6wZsrvPR93Nv4oF1AAduSDicXpOM/4jYTjvNq5Z
-         Wxsg==
-X-Gm-Message-State: AOAM533gV5Y3cjFvlWlwq7OC6DydmfqgXUMNnjd6dK53fuy6GJ9gFppU
-        oxhzkCdRpnlvw/WtOGwyXjObOU+3NDA=
-X-Google-Smtp-Source: ABdhPJx0JT5kNpcMVzTUkxPDxiL6FXGYJtLfzLVV1TUbRyTY4BJPE9G4vAd0jIZf3PrHIpeE8pmfCg==
-X-Received: by 2002:a17:902:8e87:: with SMTP id bg7mr5682983plb.91.1590704521839;
-        Thu, 28 May 2020 15:22:01 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id a85sm5470786pfd.181.2020.05.28.15.22.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 15:22:01 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 28 May 2020 18:24:15 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 821DC80307C7;
+        Thu, 28 May 2020 22:24:09 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id uzcmceul0Kpr; Fri, 29 May 2020 01:24:08 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
+        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
+        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 00/11] dmaengine: dw: Take Baikal-T1 SoC DW DMAC peculiarities into account
+Date:   Fri, 29 May 2020 01:23:50 +0300
+Message-ID: <20200528222401.26941-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <948defc1-5ea0-adbb-185b-5f5a81f2e28a@codeaurora.org>
-References: <1590253873-11556-1-git-send-email-mkshah@codeaurora.org> <1590253873-11556-2-git-send-email-mkshah@codeaurora.org> <159057264232.88029.4708934729701385486@swboyd.mtv.corp.google.com> <4e070cda-8c22-c554-610e-172320045840@codeaurora.org> <159062812628.69627.2153485337510882984@swboyd.mtv.corp.google.com> <948defc1-5ea0-adbb-185b-5f5a81f2e28a@codeaurora.org>
-Subject: Re: [PATCH v2 1/4] gpio: gpiolib: Allow GPIO IRQs to lazy disable
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-gpio@vger.kernel.org, agross@kernel.org, tglx@linutronix.de,
-        jason@lakedaemon.net, dianders@chromium.org, rnayak@codeaurora.org,
-        ilina@codeaurora.org, lsrao@codeaurora.org
-To:     Maulik Shah <mkshah@codeaurora.org>, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, linus.walleij@linaro.org, maz@kernel.org,
-        mka@chromium.org
-Date:   Thu, 28 May 2020 15:22:00 -0700
-Message-ID: <159070452036.69627.17850758520477366824@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Maulik Shah (2020-05-28 06:11:23)
-> Hi,
->=20
-> On 5/28/2020 6:38 AM, Stephen Boyd wrote:
-> > Quoting Maulik Shah (2020-05-27 04:26:14)
-> >> On 5/27/2020 3:14 PM, Stephen Boyd wrote:
-> >>> Quoting Maulik Shah (2020-05-23 10:11:10)
-> >>>> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> >>>> index eaa0e20..3810cd0 100644
-> >>>> --- a/drivers/gpio/gpiolib.c
-> >>>> +++ b/drivers/gpio/gpiolib.c
-> >>>> @@ -2465,32 +2465,37 @@ static void gpiochip_irq_relres(struct irq_d=
-ata *d)
-> >>>>           gpiochip_relres_irq(gc, d->hwirq);
-> >>>>    }
-> >>>>   =20
-> >>>> +static void gpiochip_irq_mask(struct irq_data *d)
-> >>>> +{
-> >>>> +       struct gpio_chip *gc =3D irq_data_get_irq_chip_data(d);
-> >>>> +
-> >>>> +       if (gc->irq.irq_mask)
-> >>>> +               gc->irq.irq_mask(d);
-> >>>> +       gpiochip_disable_irq(gc, d->hwirq);
-> >>> How does this work in the lazy case when I want to drive the GPIO? Sa=
-y I
-> >>> have a GPIO that is also an interrupt. The code would look like
-> >>>
-> >>>    struct gpio_desc *gpio =3D gpiod_get(...)
-> >>>    unsigned int girq =3D gpiod_to_irq(gpio)
-> >>>
-> >>>    request_irq(girq, ...);
-> >>>
-> >>>    disable_irq(girq);
-> >>>    gpiod_direction_output(gpio, 1);
-> >>>
-> >>> In the lazy case genirq wouldn't call the mask function until the fir=
-st
-> >>> interrupt arrived on the GPIO line. If that never happened then would=
-n't
-> >>> we be blocked in gpiod_direction_output() when the test_bit() sees
-> >>> FLAG_USED_AS_IRQ? Or do we need irqs to be released before driving
-> >>> gpios?
-> >> The client driver can decide to unlazy disable IRQ with below API...
-> >>
-> >>   =C2=A0irq_set_status_flags(girq, IRQ_DISABLE_UNLAZY);
-> >>
-> >> This will immediatly invoke mask function (unlazy disable) from genirq,
-> >> even though irq_disable is not implemented.
-> >>
-> > Sure a consumer can disable the lazy feature, but that shouldn't be
-> > required to make this work. The flag was introduced in commit
-> > e9849777d0e2 ("genirq: Add flag to force mask in
-> > disable_irq[_nosync]()") specifically to help devices that can't disable
-> > the interrupt in their own device avoid a double interrupt.
-> i don't think this will be a problem.
->=20
-> Case 1) Client driver have locked gpio to be used as IRQ using=20
-> gpiochip_lock_as_irq()
->=20
-> In this case, When client driver want to change the direction for a=20
-> gpio, they will invoke gpiod_direction_output().
-> I see it checks for two flags (pasted below), if GPIO is used as IRQ and =
+Baikal-T1 SoC has an DW DMAC on-board to provide a Mem-to-Mem, low-speed
+peripherals Dev-to-Mem and Mem-to-Dev functionality. Mostly it's compatible
+with currently implemented in the kernel DW DMAC driver, but there are some
+peculiarities which must be taken into account in order to have the device
+fully supported.
 
-> whether its enabled IRQ or not.
->=20
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* GPIOs used for enabled IRQs shal=
-l not be set as output */
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (test_bit(FLAG_USED_AS_IRQ=
-, &desc->flags) &&
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 test_=
-bit(FLAG_IRQ_IS_ENABLED, &desc->flags)) {
->=20
-> The first one (FLAG_USED_AS_IRQ) is set only if client driver in past=20
-> have locked gpio to use as IRQ with a call to gpiochip_lock_as_irq()
-> then it never gets unlocked until clients invoke gpiochip_unlock_as_irq().
->=20
-> So i presume the client driver which in past locked gpio to be used as=20
-> IRQ, now wants to change direction then it will
-> a. first unlock to use as IRQ
-> b. then change the direction.
+First of all traditionally we replaced the legacy plain text-based dt-binding
+file with yaml-based one. Secondly Baikal-T1 DW DMA Controller provides eight
+channels, which alas have different max burst length configuration.
+In particular first two channels may burst up to 128 bits (16 bytes) at a time
+while the rest of them just up to 32 bits. We must make sure that the DMA
+subsystem doesn't set values exceeding these limitations otherwise the
+controller will hang up. In third currently we discovered the problem in using
+the DW APB SPI driver together with DW DMAC. The problem happens if there is no
+natively implemented multi-block LLP transfers support and the SPI-transfer
+length exceeds the max lock size. In this case due to asynchronous handling of
+Tx- and Rx- SPI transfers interrupt we might end up with Dw APB SSI Rx FIFO
+overflow. So if DW APB SSI (or any other DMAC service consumer) intends to use
+the DMAC to asynchronously execute the transfers we'd have to at least warn
+the user of the possible errors. In forth it's worth to set the DMA device max
+segment size with max block size config specific to the DW DMA controller. It
+shall help the DMA clients to create size-optimized SG-list items for the
+controller. This in turn will cause less dw_desc allocations, less LLP
+reinitializations, better DMA device performance.
 
-How does a client driver unlock to use as an IRQ though? I don't
-understand how that is done. gpiochip_lock_as_irq() isn't a gpio
-consumer API, it's a gpiochip/gpio provider API.
+Finally there is a bug in the algorithm of the nollp flag detection.
+In particular even if DW DMAC parameters state the multi-block transfers
+support there is still HC_LLP (hardcode LLP) flag, which if set makes expected
+by the driver true multi-block LLP functionality unusable. This happens cause'
+if HC_LLP flag is set the LLP registers will be hardcoded to zero so the
+contiguous multi-block transfers will be only supported. We must take the
+flag into account when detecting the LLP support otherwise the driver just
+won't work correctly.
 
->=20
-> Once it unlocks in step (a), both these flags will be cleared and there=20
-> won't be any error in changing direction in step (b).
+This patchset is rebased and tested on the mainline Linux kernel 5.7-rc4:
+0e698dfa2822 ("Linux 5.7-rc4")
+tag: v5.7-rc4
+
+Changelog v2:
+- Rearrange SoBs.
+- Move $ref to the root level of the properties. So do do with the
+  constraints in the DT binding.
+- Replace "additionalProperties: false" with "unevaluatedProperties: false"
+  property in the DT binding file.
+- Discard default settings defined out of property enum constraint.
+- Set default max-burst-len to 256 TR-WIDTH words in the DT binding.
+- Discard noLLP and block_size accessors.
+- Set max segment size of the DMA device structure with the DW DMA block size
+  config.
+- Print warning if noLLP flag is set.
+- Discard max burst length accessor.
+- Add comment about why hardware accelerated LLP list support depends
+  on both MBLK_EN and HC_LLP configs setting.
+- Use explicit bits state comparison operator in noLLP flag setting.
+
+Link: https://lore.kernel.org/dmaengine/20200508105304.14065-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v3:
+- Use the block_size found for the very first channel instead of looking for
+  the maximum of maximum block sizes.
+- Don't define device-specific device_dma_parameters object, since it has
+  already been defined by the platform device core.
+- Add more details into the property description about what limitations
+  snps,max-burst-len defines.
+- Move commit fb7e3bbfc830 ("dmaengine: dw: Take HC_LLP flag into account for
+  noLLP auto-config") to the head of the series.
+- Add a new patch "dmaengine: Introduce min burst length capability" as a
+  result of the discussion with Vinod and Andy regarding the burst length
+  capability.
+- Add a new patch "dmaengine: Introduce max SG list entries capability"
+  suggested by Andy.
+- Add a new patch "dmaengine: Introduce DMA-device device_caps callback" as
+  a result of the discussion with Vinud and Andy in the framework of DW DMA
+  burst and LLP capabilities.
+- Add a new patch "dmaengine: dw: Add dummy device_caps callback" as a
+  preparation commit before setting the max_burst and max_sg_nents
+  DW DMA capabilities.
+- Override the slave channel max_burst capability instead of calculating
+  the minimum value of max burst lengths and setting the DMA-device
+  generic capability.
+- Add a new patch "dmaengine: dw: Initialize max_sg_nents with nollp flag".
+  This is required to fix the DW APB SSI issue of the Tx and Rx DMA
+  channels de-synchronization.
+
+Link: https://lore.kernel.org/dmaengine/20200526225022.20405-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v4:
+- Use explicit if-else statement when assigning the max_sg_nents field.
+- Clamp the dst and src burst lengths in the generic dwc_config() method
+  instead of doing that in the encode_maxburst() callback.
+- Define max_burst with u32 type in struct dw_dma_platform_data.
+- Perform of_property_read_u32_array() with the platform data
+  max_burst member passed directly.
+- Add a new patch "dmaengine: dw: Initialize min_burst capability",
+  which initializes the min_burst capability with 1.
+- Fix of->if typo. It should be definitely "of" in the max_sg_list
+  capability description.
+
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+Cc: Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>
+Cc: Vadim Vlasov <V.Vlasov@baikalelectronics.ru>
+Cc: Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: linux-mips@vger.kernel.org
+Cc: dmaengine@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (11):
+  dt-bindings: dma: dw: Convert DW DMAC to DT binding
+  dt-bindings: dma: dw: Add max burst transaction length property
+  dmaengine: Introduce min burst length capability
+  dmaengine: Introduce max SG list entries capability
+  dmaengine: Introduce DMA-device device_caps callback
+  dmaengine: dw: Take HC_LLP flag into account for noLLP auto-config
+  dmaengine: dw: Set DMA device max segment size parameter
+  dmaengine: dw: Add dummy device_caps callback
+  dmaengine: dw: Initialize min_burst capability
+  dmaengine: dw: Introduce max burst length hw config
+  dmaengine: dw: Initialize max_sg_nents capability
+
+ .../bindings/dma/snps,dma-spear1340.yaml      | 176 ++++++++++++++++++
+ .../devicetree/bindings/dma/snps-dma.txt      |  69 -------
+ drivers/dma/dmaengine.c                       |   5 +
+ drivers/dma/dw/core.c                         |  47 ++++-
+ drivers/dma/dw/of.c                           |   5 +
+ drivers/dma/dw/regs.h                         |   3 +
+ include/linux/dmaengine.h                     |  14 ++
+ include/linux/platform_data/dma-dw.h          |   4 +
+ 8 files changed, 253 insertions(+), 70 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/dma/snps,dma-spear1340.yaml
+ delete mode 100644 Documentation/devicetree/bindings/dma/snps-dma.txt
+
+-- 
+2.26.2
+
