@@ -2,146 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DECBA1E59FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 09:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09FC11E5A1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 10:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726893AbgE1H7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 03:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37836 "EHLO
+        id S1727078AbgE1IAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 04:00:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726857AbgE1H7I (ORCPT
+        with ESMTP id S1726161AbgE1IAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 03:59:08 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AAEBC08C5C2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 00:59:08 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id u26so3910845wmn.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 00:59:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=/k5PRZqrTr/okP/ue5AUSy+6fHt8kWqrhC3KChUGYlE=;
-        b=f06X9bMILNGRerqSPyRUBylhnUHAyyk+VuMHZxYr8BmHOkV+aOhGS6lYLatqUsg+FJ
-         WzjMl+sMuJI1Ujrzqb7qyecJzbgkPUhnMiF/L7hBH7q7OTRT8FUNnWdprgqB0UjHHGZB
-         vt8agbDswCGjrwcKoQ2ljNeDVpcm0ungs40XB6jhy1imuPjrQwd+sNa8vvCONPO/Ebin
-         2N0PRzBff5aOD/2LydaK2zdYgRfbUjU7zNeel6H7CNfIjuNS50fUpSfdaNgfc4tJHZwE
-         trBjlHiEgpJJIqKjaWgaxrRBklrYlozg05PtTAxG6wNyEst0R2oMn1mP4a5E/ZkTFw1s
-         Yc3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=/k5PRZqrTr/okP/ue5AUSy+6fHt8kWqrhC3KChUGYlE=;
-        b=k20Eh4jrZBbMwXPucQ9QVutq0QmSzIIKOqikcQmZyd/19I0G2d56Ln+SDBkjxmgQ1X
-         +8WIJImQzjRx80H/pu7q+sCtMdVYCHD9kRXeqTQnSaddXkZsNpyCvUs5Mis3bN9ge/Al
-         u1mdCqDAvIq0ibz9yX+5a+IX1Qk1obHLKuE0bDM8+xNvP8N8IqYVJKe7O/FK++lpITil
-         X9K7XfMzeQyHeaGgrwijs6ERKUlEuBpxBTJOjn+64jDii6yFf4G9DVC76K+Ip8KJ4sxj
-         qvA9QmwFpKmubcEAhEVlPKpjaKiTjVy51shJyPzp8SrzhwAj6advyK/EJMZLuWoAUOnU
-         JQOA==
-X-Gm-Message-State: AOAM533xMCksi7JfZIWuN9k5zfALxHlBkW/Ka4h9f6tsFhBbeQKAuSq2
-        kL92wlTUDvoU/DFlqJW0vLe0mg==
-X-Google-Smtp-Source: ABdhPJz8hbY7QI6ZmAP07xr1w3ABtn59eI5lHeeg/9O0ZaDlaJSV/s26Z5yge3qDhTRGa+y8nI6ePg==
-X-Received: by 2002:a1c:810a:: with SMTP id c10mr2106423wmd.107.1590652746531;
-        Thu, 28 May 2020 00:59:06 -0700 (PDT)
-Received: from google.com ([100.105.32.75])
-        by smtp.gmail.com with ESMTPSA id d13sm5375172wmb.39.2020.05.28.00.59.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 00:59:05 -0700 (PDT)
-Date:   Thu, 28 May 2020 09:59:00 +0200
-From:   Marco Elver <elver@google.com>
-To:     Borislav Petkov <bp@suse.de>
-Cc:     kbuild test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-sparse@vger.kernel.org, luc.vanoostenryck@gmail.com,
-        arnd@arndb.de, will@kernel.org
-Subject: Re: [tip:locking/kcsan 12/12] /bin/bash: line 1: 61526 Segmentation
- fault  sparse ...
-Message-ID: <20200528075900.GA236442@google.com>
-References: <202005280727.lXn1VnTw%lkp@intel.com>
- <20200527235442.GC1805@zn.tnic>
+        Thu, 28 May 2020 04:00:02 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADECC05BD1E;
+        Thu, 28 May 2020 01:00:02 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id E4C8E2A3CC0
+Received: by earth.universe (Postfix, from userid 1000)
+        id AB0D83C08C7; Thu, 28 May 2020 09:59:58 +0200 (CEST)
+Date:   Thu, 28 May 2020 09:59:58 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 3/3] power: charger: max14577: Add proper
+ dt-compatible strings
+Message-ID: <20200528075958.3ck2gh7t2ubi4w6m@earth.universe>
+References: <20200522102448.30209-1-m.szyprowski@samsung.com>
+ <CGME20200522102455eucas1p13700db68b90ec05bd02d21014b81b656@eucas1p1.samsung.com>
+ <20200522102448.30209-3-m.szyprowski@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="t4rywburgusgvb6o"
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200527235442.GC1805@zn.tnic>
-User-Agent: Mutt/1.13.2 (2019-12-18)
+In-Reply-To: <20200522102448.30209-3-m.szyprowski@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 May 2020, Borislav Petkov wrote:
 
-> On Thu, May 28, 2020 at 07:39:31AM +0800, kbuild test robot wrote:
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git loc=
-king/kcsan
-> > head:   a5dead405f6be1fb80555bdcb77c406bf133fdc8
-> > commit: a5dead405f6be1fb80555bdcb77c406bf133fdc8 [12/12] compiler_types=
-=2Eh: Optimize __unqual_scalar_typeof compilation time
-> > config: i386-randconfig-s002-20200527 (attached as .config)
-> > compiler: gcc-9 (Debian 9.3.0-13) 9.3.0
-> > reproduce:
-> >         # apt-get install sparse
-> >         # sparse version: v0.6.1-240-gf0fe1cd9-dirty
-> >         git checkout a5dead405f6be1fb80555bdcb77c406bf133fdc8
-> >         # save the attached .config to linux build tree
-> >         make W=3D1 C=3D1 ARCH=3Di386 CF=3D'-fdiagnostic-prefix -D__CHEC=
-K_ENDIAN__'
-> >=20
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kbuild test robot <lkp@intel.com>
-> >=20
-> > All errors (new ones prefixed by >>, old ones prefixed by <<):
+--t4rywburgusgvb6o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Fri, May 22, 2020 at 12:24:48PM +0200, Marek Szyprowski wrote:
+> Add device tree compatible strings and create proper modalias structures
+> to let this driver load automatically if compiled as module, because
+> max14577 MFD driver creates MFD cells with such compatible strings.
 >=20
-> I'll say.
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+
+I saw some discussion for patch 1, but still queued this considering
+the compatible string is already documented in the DT bindings and
+at least one of them is already being used in DT files.
+
+TL;DR: Thanks, queued.
+
+-- Sebastian
+
+> v3:
+> - sorted of_max14577_charger_dt_match
+> v2:
+> - added .of_match_table pointer
+> ---
+>  drivers/power/supply/max14577_charger.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 >=20
-> Looking at the subject, that broke the 0day bot too. :-)
+> diff --git a/drivers/power/supply/max14577_charger.c b/drivers/power/supp=
+ly/max14577_charger.c
+> index 8a59feac6468..96f4cd1941b2 100644
+> --- a/drivers/power/supply/max14577_charger.c
+> +++ b/drivers/power/supply/max14577_charger.c
+> @@ -623,9 +623,19 @@ static const struct platform_device_id max14577_char=
+ger_id[] =3D {
+>  };
+>  MODULE_DEVICE_TABLE(platform, max14577_charger_id);
+> =20
+> +static const struct of_device_id of_max14577_charger_dt_match[] =3D {
+> +	{ .compatible =3D "maxim,max14577-charger",
+> +	  .data =3D (void *)MAXIM_DEVICE_TYPE_MAX14577, },
+> +	{ .compatible =3D "maxim,max77836-charger",
+> +	  .data =3D (void *)MAXIM_DEVICE_TYPE_MAX77836, },
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(of, of_max14577_charger_dt_match);
+> +
+>  static struct platform_driver max14577_charger_driver =3D {
+>  	.driver =3D {
+>  		.name	=3D "max14577-charger",
+> +		.of_match_table =3D of_max14577_charger_dt_match,
+>  	},
+>  	.probe		=3D max14577_charger_probe,
+>  	.remove		=3D max14577_charger_remove,
+> --=20
+> 2.17.1
 >=20
-> /me trims it.
->=20
-> Looks like we need __CHECKER__ ifdeffery somewhere but it is too late
-> for me to think straight so tomorrow...
 
-Ouch. The below should be all we need, assuming it's the best we can do
-for sparse right now.
+--t4rywburgusgvb6o
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
--- Marco
+-----BEGIN PGP SIGNATURE-----
 
------- >8 ------
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl7Pb2sACgkQ2O7X88g7
++ppNTQ//bZc44aH3MWRyOYyniSgeTQoZ+iZph/9Z70FlNCFCYuBw2XlsyE/4myyx
+1P1n6ynzHHCLpsiQUJYVhBxRiAf+/KYEVdniB8ZiIOapGuaqKxJvGebQQPKsRJf8
+ch+OVgpEYRwGatd9Y7bF0F5SEGKxxGEvApqkp+C5q+gL4Qt5yKg89lI9vc8pbNTL
+Rb8/tlI0GLmkF8REhB0gb0DQFukCXIb8ZBp786eNMocVn68nuISopop4p3zbh9oo
+FLWpWwaXBfZR7MeP80EAuhGrSPLXl3063FS/zgTZ4YSvNVqN3TjH+YiV2gdfrcE8
+oX9IZwHA5NY1sGo9dVt9fYIzFFv5sGP8oabdZCWlJawQDc7DZr5Lk/3kNntvsTA5
+FFQgjWor7QiprWGVtoKzjAOqeagY6GWK5KZO/nCLGqJ/nMvxadxiPzzKDRMrcskE
+aL7XlVgaPZ9oho4IboIXn8wjKvYOpICN3VO553rnzVxYLrKNBZqlEdqVFp+AGiAK
+nKg6SdVaQu6o3fY/8yNUoEe8ZmCiPOPl2DCSVSX/i5suZrHkt/n5/90DGH/DW0wo
+TbOd5eLaMzKSNkcK17TfoF2/g6ZKSUIQoaJJHXU8UDeX2xXrwPRT9t0kSoHWVy0g
+ZN+D/JMumOBi5Py6OMDPMrNscXIMZwW1AApSUBSK/EaEMcklQ98=
+=CSm8
+-----END PGP SIGNATURE-----
 
-=46rom: Marco Elver <elver@google.com>
-Date: Thu, 28 May 2020 09:43:13 +0200
-Subject: [PATCH] compiler_types.h: Use unoptimized __unqual_scalar_typeof f=
-or
- sparse
-
-If the file is being checked with sparse, use the unoptimized version of
-__unqual_scalar_typeof(), since sparse does not support _Generic.
-
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Marco Elver <elver@google.com>
----
- include/linux/compiler_types.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-index a529fa263906..c1ee20812a8c 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -246,7 +246,7 @@ struct ftrace_likely_data {
-  * __unqual_scalar_typeof(x) - Declare an unqualified scalar type, leaving
-  *			       non-scalar types unchanged.
-  */
--#if defined(CONFIG_CC_IS_GCC) && CONFIG_GCC_VERSION < 40900
-+#if (defined(CONFIG_CC_IS_GCC) && CONFIG_GCC_VERSION < 40900) || defined(_=
-_CHECKER__)
- /*
-  * We build this out of a couple of helper macros in a vain attempt to
-  * help you keep your lunch down while reading it.
---=20
-2.27.0.rc0.183.gde8f92d652-goog
-
+--t4rywburgusgvb6o--
