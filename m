@@ -2,91 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFAC1E632D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8A91E6332
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390819AbgE1ODs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 10:03:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390540AbgE1ODq (ORCPT
+        id S2390864AbgE1OEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 10:04:10 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:34192 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390540AbgE1OEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 10:03:46 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6862DC05BD1E;
-        Thu, 28 May 2020 07:03:46 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jeJ8J-00015x-LB; Thu, 28 May 2020 16:03:43 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 2AEC61C0051;
-        Thu, 28 May 2020 16:03:43 +0200 (CEST)
-Date:   Thu, 28 May 2020 14:03:42 -0000
-From:   "tip-bot2 for Marek Vasut" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] genirq: Check irq_data_get_irq_chip() return value before use
-Cc:     Marek Vasut <marex@denx.de>, Thomas Gleixner <tglx@linutronix.de>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+        Thu, 28 May 2020 10:04:02 -0400
+Received: by mail-oi1-f195.google.com with SMTP id w4so124718oia.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 07:04:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9xwH3ve1krCLi8y1IXws3TlA6kQno3U7f/kCcQRsHcE=;
+        b=aype7HTAS44qDgFVgc0a0M4sGlj6y11BCLtVKFyNzofyMkce1Uzqqx3Dh4L5AJKKWu
+         i0DK0jY2r4XUaVNhixjs0WhebjwZH5+4ezkJxuIyNjbZALYSX8P2cQZcO5vsbioGe0BE
+         82cxb4DJ2B5XBBkLdipp6U7vZNtLuA/lcwUX+hQVH7909sL18ZFdZsoSHSp4pHrr0Ymq
+         8Wx7ljSKtDGo3Yh6oAXppSmJaKFve/DWerU71bOc+hvNVOxoINezAzKxHlq6h0trvwYq
+         rA1Ch/2qmRWJJ4k6KndIIDnm4K/S5rzyg5vzbq4E97pBQ4/GONuApxevdYcVEnE+noRu
+         aJfQ==
+X-Gm-Message-State: AOAM531qRyinuBlCan3OQKqJN0sMnUDjBuDG8BR6OJxmIAkB3s3ESuDT
+        ykkr0xLCW6HupMKrTh+yg+hnvdF41E3EmMo9tcQ=
+X-Google-Smtp-Source: ABdhPJxZGEdE0NTXrH7/roYIA4lfVOkHJIsKosvzgDBT5Xesc6EAkiDq23rUgiBC7IkB8ReEAYBXrjVNj79tIxddfaI=
+X-Received: by 2002:aca:eb56:: with SMTP id j83mr2379166oih.110.1590674641617;
+ Thu, 28 May 2020 07:04:01 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <159067462294.17951.4575635791673961345.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+References: <20200524153041.2361-1-gregkh@linuxfoundation.org>
+ <20200527075048.GD3284396@kuha.fi.intel.com> <CAJZ5v0h0Xjovm-eVyiOG+j7kNEPxB=PZF4rLVEgwUW+H+61DFg@mail.gmail.com>
+ <2407984.idRd5kzSG0@kreacher> <20200527222515.GA89212@roeck-us.net>
+ <CAJZ5v0jPoi+5d+jv0iAuKkObSr=EDxmMhNqMTvLQNUEc_i9zcg@mail.gmail.com> <64eb962a-eaef-9747-9408-eb9061cb42f6@roeck-us.net>
+In-Reply-To: <64eb962a-eaef-9747-9408-eb9061cb42f6@roeck-us.net>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 28 May 2020 16:03:49 +0200
+Message-ID: <CAJZ5v0i+Kz9U7EHx-KMiqpKnzdbNc-u0gMZ7v0=fGDcqKa28vQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kobject: send KOBJ_REMOVE uevent when the object is
+ removed from sysfs
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+On Thu, May 28, 2020 at 3:56 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 5/28/20 3:57 AM, Rafael J. Wysocki wrote:
+> > On Thu, May 28, 2020 at 12:25 AM Guenter Roeck <linux@roeck-us.net> wrote:
+> >>
+> >> On Wed, May 27, 2020 at 11:01:16AM +0200, Rafael J. Wysocki wrote:
+> >>>
+> >>> So Guenter, can you please test the patch below to see if it still introduces
+> >>> the problems seen by you on ARM?
+> >>>
+> >>
+> >> arm64 and arm64be boot tests pass with the patch below.
+> >
+> > Great, thanks!
+> >
+> >> Some arm boot tests fail, but I think that is due to some other problem with -next.
+> >> Hard to say for sure at this point because -next is pretty badly broken
+> >> overall. I'll need to run some bisects to see what is going on.
+> >
+> > I see.
+> >
+>
+> The failing arm boot tests are due to various dts changes (commit "arm64:
+> dts: vexpress: Move fixed devices out of bus node" and associated),
+> unrelated to this patch.
 
-Commit-ID:     1d0326f352bb094771df17f045bdbadff89a43e6
-Gitweb:        https://git.kernel.org/tip/1d0326f352bb094771df17f045bdbadff89a43e6
-Author:        Marek Vasut <marex@denx.de>
-AuthorDate:    Thu, 14 May 2020 02:25:55 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 28 May 2020 15:58:04 +02:00
-
-genirq: Check irq_data_get_irq_chip() return value before use
-
-irq_data_get_irq_chip() can return NULL, however it is expected that this
-never happens. If a buggy driver leads to NULL being returned from
-irq_data_get_irq_chip(), warn about it instead of crashing the machine.
-
-Signed-off-by: Marek Vasut <marex@denx.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-
-To: linux-arm-kernel@lists.infradead.org
----
- kernel/irq/manage.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index 453a8a0..7619111 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -2619,6 +2619,8 @@ int __irq_get_irqchip_state(struct irq_data *data, enum irqchip_irq_state which,
- 
- 	do {
- 		chip = irq_data_get_irq_chip(data);
-+		if (WARN_ON_ONCE(!chip))
-+			return -ENODEV;
- 		if (chip->irq_get_irqchip_state)
- 			break;
- #ifdef CONFIG_IRQ_DOMAIN_HIERARCHY
-@@ -2696,6 +2698,8 @@ int irq_set_irqchip_state(unsigned int irq, enum irqchip_irq_state which,
- 
- 	do {
- 		chip = irq_data_get_irq_chip(data);
-+		if (WARN_ON_ONCE(!chip))
-+			return -ENODEV;
- 		if (chip->irq_set_irqchip_state)
- 			break;
- #ifdef CONFIG_IRQ_DOMAIN_HIERARCHY
+Thanks for the confirmation!
