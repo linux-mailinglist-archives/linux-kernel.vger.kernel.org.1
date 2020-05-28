@@ -2,148 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106561E6E8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 00:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D142C1E6EB1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 00:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436982AbgE1WUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 18:20:47 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:59984 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436963AbgE1WUb (ORCPT
+        id S2437095AbgE1WXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 18:23:35 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:45162 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436992AbgE1WX3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 18:20:31 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04SMKTWT072526;
-        Thu, 28 May 2020 17:20:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1590704429;
-        bh=sFhoRUjpWpckGrIRZv0+gAaF+mAJGjBievnYGInopm0=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=CWN6ATmsTh6iS7yRGcONHV1AhmI+iBsdZouAi7ufk9stba20ea6zvOVNTHaEvinLg
-         CwyjQ+JYfcdgMXS7hmPI0HyzFj77exF3yLFK7tIlzfDooECfqjNFdJminm5tTcYcmb
-         gFPF6kspDzrwOfJYSHXcKWVScLlPn8TcBzHBOszM=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04SMKTUG124478
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 28 May 2020 17:20:29 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 28
- May 2020 17:20:28 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 28 May 2020 17:20:28 -0500
-Received: from [10.250.43.45] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04SMKSTr035317;
-        Thu, 28 May 2020 17:20:28 -0500
-Subject: Re: [PATCH v11 4/4] power: supply: bq25150 introduce the bq25150
-To:     "Andrew F. Davis" <afd@ti.com>, <sre@kernel.org>,
-        <pali@kernel.org>, <robh@kernel.org>
-CC:     <dmurphy@ti.com>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <sspatil@android.com>
-References: <20200528140546.25260-1-r-rivera-matos@ti.com>
- <20200528140546.25260-5-r-rivera-matos@ti.com>
- <95fcf5ae-cf49-4618-08cc-da7487450e53@ti.com>
-From:   Ricardo Rivera-Matos <r-rivera-matos@ti.com>
-Message-ID: <5792b63e-37cc-7110-4767-df300385eb7b@ti.com>
-Date:   Thu, 28 May 2020 17:20:27 -0500
+        Thu, 28 May 2020 18:23:29 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SMMCO8077828;
+        Thu, 28 May 2020 22:22:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=pgGnLsM1bSn7Hitbxv/OnsybTse9rQRdmkPsorQ6A70=;
+ b=HZLKPY0RlGYg8QG5DpTqwSBVmljIjt4jzyRpaOst39SbYms+6S9VtDBIaX0P1HDNk8rD
+ +AYsE1YiSh4T3tZoB9JqlGbu0WIeeGbU0sl+InLeDMZV/bv5gK7NLfcFZpvaEB5syy3h
+ I4IxgkqNx13bynn9sos6GcR82P7pdKMbEAS/8VFaUNMV/dB5DHnC14bspIoWiDzrqmsU
+ 7FMCxx2brbqH8lFoNkM1+ilWS7sy41RSI5hH/mh8f7eyFLMA0DURe8jE3gl+8a+hNXM6
+ tPAOtjiY598J7XNKWpMdmj0pRPPkV9YtSB8KanlB0v0gFlRYtCPax+KenAhV84UE552W IA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 318xe1qhca-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 28 May 2020 22:22:47 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SMDflD066940;
+        Thu, 28 May 2020 22:20:46 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 31a9kt94ry-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 May 2020 22:20:46 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04SMKa36012836;
+        Thu, 28 May 2020 22:20:36 GMT
+Received: from [192.168.1.106] (/47.220.71.223)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 28 May 2020 15:20:36 -0700
+Subject: Re: [PATCH v8 0/5] support reserving crashkernel above 4G on arm64
+ kdump
+To:     Baoquan He <bhe@redhat.com>, Chen Zhou <chenzhou10@huawei.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, catalin.marinas@arm.com,
+        will@kernel.org, dyoung@redhat.com, robh+dt@kernel.org,
+        arnd@arndb.de, devicetree@vger.kernel.org,
+        linux-doc@vger.kernel.org, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org, horms@verge.net.au,
+        guohanjun@huawei.com, pkushwaha@marvell.com,
+        linux-arm-kernel@lists.infradead.org
+References: <20200521093805.64398-1-chenzhou10@huawei.com>
+ <20200526014242.GF20045@MiWiFi-R3L-srv>
+From:   John Donnelly <John.P.donnelly@oracle.com>
+Message-ID: <897ea1b9-a68c-8544-6532-a21be135ce01@oracle.com>
+Date:   Thu, 28 May 2020 17:20:34 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <95fcf5ae-cf49-4618-08cc-da7487450e53@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200526014242.GF20045@MiWiFi-R3L-srv>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9635 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 adultscore=0
+ mlxlogscore=999 malwarescore=0 spamscore=0 bulkscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005280142
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9635 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ adultscore=0 cotscore=-2147483648 mlxscore=0 bulkscore=0
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 malwarescore=0
+ clxscore=1011 impostorscore=0 suspectscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005280143
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 5/28/20 9:43 AM, Andrew F. Davis wrote:
-> On 5/28/20 10:05 AM, Ricardo Rivera-Matos wrote:
->> +static int bq2515x_set_precharge_current(struct bq2515x_device *bq2515x,
->> +					int val)
->> +{
->> +	int ret;
->> +	unsigned int pchrgctrl;
->> +	unsigned int icharge_range;
->> +	unsigned int precharge_reg_code;
->> +	u16 precharge_multiplier = BQ2515X_ICHG_RNG_1B0_UA;
->> +	u16 precharge_max_ua = BQ2515X_PRECHRG_ICHRG_RNGE_1875_UA;
->
-> Why u16? looks like it gets promoted everywhere it's used anyway.
-ACK
->
->
->> +
->> +	ret = regmap_read(bq2515x->regmap, BQ2515X_PCHRGCTRL, &pchrgctrl);
->> +	if (ret)
->> +		return ret;
->> +
->> +	icharge_range = pchrgctrl & BQ2515X_ICHARGE_RANGE;
->> +
->> +	if (icharge_range) {
->> +		precharge_max_ua = BQ2515X_PRECHRG_ICHRG_RNGE_3750_UA;
->> +		precharge_multiplier = BQ2515X_ICHG_RNG_1B1_UA;
-> This is a little hard to read when we have a default value overwritten
-> in an if, it basically hides the else logic, suggest:
->
->
-> if (icharge_range) {
-> 	precharge_max_ua = BQ2515X_PRECHRG_ICHRG_RNGE_3750_UA;
-> 	precharge_multiplier = BQ2515X_ICHG_RNG_1B1_UA;
-> } else {
-> 	precharge_max_ua = BQ2515X_PRECHRG_ICHRG_RNGE_1875_UA;
-> 	precharge_multiplier = BQ2515X_ICHG_RNG_1B0_UA;
-> }
-ACK. I originally had it as an if/else deal, but I got feedback it was 
-too verbose. It will stay verbose.
->
->
->> +	}
->> +	if (val > precharge_max_ua || val < BQ2515X_ICHG_MIN_UA)
->> +		return -EINVAL;
->> +
->> +	precharge_reg_code = val / precharge_multiplier;
->> +
->> +	ret = bq2515x_set_charge_disable(bq2515x, 1);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = regmap_update_bits(bq2515x->regmap, BQ2515X_PCHRGCTRL,
->> +				BQ2515X_PRECHARGE_MASK, precharge_reg_code);
->> +	if (ret)
->> +		return ret;
->> +
->> +	return bq2515x_set_charge_disable(bq2515x, 0);
->> +}
-> [snip]
->
->> +
->> +static int bq2515x_set_ilim_lvl(struct bq2515x_device *bq2515x, int val)
->> +{
->> +	int i = 0;
->> +	unsigned int array_size = ARRAY_SIZE(bq2515x_ilim_lvl_values);
->> +
->> +	if (val >= bq2515x_ilim_lvl_values[array_size - 1]) {
->
-> Isn't this check the same as is done in first iteration of the below loop?
->
-> Andrew
-ACK
+On 5/25/20 8:42 PM, Baoquan He wrote:
+> On 05/21/20 at 05:38pm, Chen Zhou wrote:
+>> This patch series enable reserving crashkernel above 4G in arm64.
+>>
+>> There are following issues in arm64 kdump:
+>> 1. We use crashkernel=X to reserve crashkernel below 4G, which will fail
+>> when there is no enough low memory.
+>> 2. Currently, crashkernel=Y@X can be used to reserve crashkernel above 4G,
+>> in this case, if swiotlb or DMA buffers are required, crash dump kernel
+>> will boot failure because there is no low memory available for allocation.
+>>
+>> To solve these issues, introduce crashkernel=X,low to reserve specified
+>> size low memory.
+>> Crashkernel=X tries to reserve memory for the crash dump kernel under
+>> 4G. If crashkernel=Y,low is specified simultaneously, reserve spcified
+>> size low memory for crash kdump kernel devices firstly and then reserve
+>> memory above 4G.
+>>
+>> When crashkernel is reserved above 4G in memory, that is, crashkernel=X,low
+>> is specified simultaneously, kernel should reserve specified size low memory
+>> for crash dump kernel devices. So there may be two crash kernel regions, one
+>> is below 4G, the other is above 4G.
+>> In order to distinct from the high region and make no effect to the use of
+>> kexec-tools, rename the low region as "Crash kernel (low)", and add DT property
+>> "linux,low-memory-range" to crash dump kernel's dtb to pass the low region.
+>>
+>> Besides, we need to modify kexec-tools:
+>> arm64: kdump: add another DT property to crash dump kernel's dtb(see [1])
+>>
+>> The previous changes and discussions can be retrieved from:
+>>
+>> Changes since [v7]
+>> - Move x86 CRASH_ALIGN to 2M
+>> Suggested by Dave and do some test, move x86 CRASH_ALIGN to 2M.
+> OK, moving x86 CRASH_ALIGN to 2M is suggested by Dave. Because
+> CONFIG_PHYSICAL_ALIGN can be selected from 2M to 16M. So 2M seems good.
+> But, anyway, we should tell the reason why it need be changed in commit
+> log.
 >
 >
->> +		i = array_size - 1;
->> +	} else {
->> +		for (i = array_size - 1; i > 0; i--) {
->> +			if (val >= bq2515x_ilim_lvl_values[i])
->> +				break;
->> +		}
->> +	}
->> +	return regmap_write(bq2515x->regmap, BQ2515X_ILIMCTRL, i);
->> +}
->> +
+> arch/x86/Kconfig:
+> config PHYSICAL_ALIGN
+>          hex "Alignment value to which kernel should be aligned"
+>          default "0x200000"
+>          range 0x2000 0x1000000 if X86_32
+>          range 0x200000 0x1000000 if X86_64
+>
+>> - Update Documentation/devicetree/bindings/chosen.txt
+>> Add corresponding documentation to Documentation/devicetree/bindings/chosen.txt suggested by Arnd.
+>> - Add Tested-by from Jhon and pk
+>>
+>> Changes since [v6]
+>> - Fix build errors reported by kbuild test robot.
+>>
+>> Changes since [v5]
+>> - Move reserve_crashkernel_low() into kernel/crash_core.c.
+>> - Delete crashkernel=X,high.
+> And the crashkernel=X,high being deleted need be told too. Otherwise
+> people reading the commit have to check why themselves. I didn't follow
+> the old version, can't see why ,high can't be specified explicitly.
+>
+>> - Modify crashkernel=X,low.
+>> If crashkernel=X,low is specified simultaneously, reserve spcified size low
+>> memory for crash kdump kernel devices firstly and then reserve memory above 4G.
+>> In addition, rename crashk_low_res as "Crash kernel (low)" for arm64, and then
+>> pass to crash dump kernel by DT property "linux,low-memory-range".
+>> - Update Documentation/admin-guide/kdump/kdump.rst.
+>>
+>> Changes since [v4]
+>> - Reimplement memblock_cap_memory_ranges for multiple ranges by Mike.
+>>
+>> Changes since [v3]
+>> - Add memblock_cap_memory_ranges back for multiple ranges.
+>> - Fix some compiling warnings.
+>>
+>> Changes since [v2]
+>> - Split patch "arm64: kdump: support reserving crashkernel above 4G" as
+>> two. Put "move reserve_crashkernel_low() into kexec_core.c" in a separate
+>> patch.
+>>
+>> Changes since [v1]:
+>> - Move common reserve_crashkernel_low() code into kernel/kexec_core.c.
+>> - Remove memblock_cap_memory_ranges() i added in v1 and implement that
+>> in fdt_enforce_memory_region().
+>> There are at most two crash kernel regions, for two crash kernel regions
+>> case, we cap the memory range [min(regs[*].start), max(regs[*].end)]
+>> and then remove the memory range in the middle.
+>>
+>> [1]: https://urldefense.com/v3/__http://lists.infradead.org/pipermail/kexec/2020-May/025128.html__;!!GqivPVa7Brio!NHQIQVbVz5bR1SSP7U7SwT3uHb6OnycPGa6nM0oLTaQdZT4pjRsjrMjn5GqOJwQs3C4x$
+>> [v1]: https://urldefense.com/v3/__https://lkml.org/lkml/2019/4/2/1174__;!!GqivPVa7Brio!NHQIQVbVz5bR1SSP7U7SwT3uHb6OnycPGa6nM0oLTaQdZT4pjRsjrMjn5GqOJ6e-mIEp$
+>> [v2]: https://urldefense.com/v3/__https://lkml.org/lkml/2019/4/9/86__;!!GqivPVa7Brio!NHQIQVbVz5bR1SSP7U7SwT3uHb6OnycPGa6nM0oLTaQdZT4pjRsjrMjn5GqOJyUVjUta$
+>> [v3]: https://urldefense.com/v3/__https://lkml.org/lkml/2019/4/9/306__;!!GqivPVa7Brio!NHQIQVbVz5bR1SSP7U7SwT3uHb6OnycPGa6nM0oLTaQdZT4pjRsjrMjn5GqOJ3CXBRdT$
+>> [v4]: https://urldefense.com/v3/__https://lkml.org/lkml/2019/4/15/273__;!!GqivPVa7Brio!NHQIQVbVz5bR1SSP7U7SwT3uHb6OnycPGa6nM0oLTaQdZT4pjRsjrMjn5GqOJ7SxW1Vj$
+>> [v5]: https://urldefense.com/v3/__https://lkml.org/lkml/2019/5/6/1360__;!!GqivPVa7Brio!NHQIQVbVz5bR1SSP7U7SwT3uHb6OnycPGa6nM0oLTaQdZT4pjRsjrMjn5GqOJ2wyJ9tj$
+>> [v6]: https://urldefense.com/v3/__https://lkml.org/lkml/2019/8/30/142__;!!GqivPVa7Brio!NHQIQVbVz5bR1SSP7U7SwT3uHb6OnycPGa6nM0oLTaQdZT4pjRsjrMjn5GqOJzvGhWBh$
+>> [v7]: https://urldefense.com/v3/__https://lkml.org/lkml/2019/12/23/411__;!!GqivPVa7Brio!NHQIQVbVz5bR1SSP7U7SwT3uHb6OnycPGa6nM0oLTaQdZT4pjRsjrMjn5GqOJ6pAg6tX$
+>>
+>> Chen Zhou (5):
+>>    x86: kdump: move reserve_crashkernel_low() into crash_core.c
+>>    arm64: kdump: reserve crashkenel above 4G for crash dump kernel
+>>    arm64: kdump: add memory for devices by DT property, low-memory-range
+>>    kdump: update Documentation about crashkernel on arm64
+>>    dt-bindings: chosen: Document linux,low-memory-range for arm64 kdump
+>>
+>>   Documentation/admin-guide/kdump/kdump.rst     | 13 ++-
+>>   .../admin-guide/kernel-parameters.txt         | 12 ++-
+>>   Documentation/devicetree/bindings/chosen.txt  | 25 ++++++
+>>   arch/arm64/kernel/setup.c                     |  8 +-
+>>   arch/arm64/mm/init.c                          | 61 ++++++++++++-
+>>   arch/x86/kernel/setup.c                       | 66 ++------------
+>>   include/linux/crash_core.h                    |  3 +
+>>   include/linux/kexec.h                         |  2 -
+>>   kernel/crash_core.c                           | 85 +++++++++++++++++++
+>>   kernel/kexec_core.c                           | 17 ----
+>>   10 files changed, 208 insertions(+), 84 deletions(-)
+>>
+>> -- 
+>> 2.20.1
+>>
+>>
+>> _______________________________________________
+>> kexec mailing list
+>> kexec@lists.infradead.org
+>> https://urldefense.com/v3/__http://lists.infradead.org/mailman/listinfo/kexec__;!!GqivPVa7Brio!NHQIQVbVz5bR1SSP7U7SwT3uHb6OnycPGa6nM0oLTaQdZT4pjRsjrMjn5GqOJwwX8HSl$
+>>
+
+
+
+Hi,
+
+
+
+This proposal to improve vmcore creation on Arm  has been going on for 
+almost a year now.
+
+Who is the  final maintainer that needs to approve and except these ?
+
+What are the lingering issues that are remaining so we get these 
+accepted into a upstream commit ?
+
+
+Thank you.
+
+John.
+
+
+
