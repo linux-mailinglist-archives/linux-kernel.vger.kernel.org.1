@@ -2,91 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0131E53AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 04:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23611E53B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 04:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgE1CHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 22:07:19 -0400
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:51826 "EHLO
-        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726990AbgE1CHS (ORCPT
+        id S1726701AbgE1CLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 22:11:42 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:46712 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725849AbgE1CLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 22:07:18 -0400
-Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
- EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Wed, 27 May 2020 19:07:12 -0700
-Received: from ubuntu.eng.vmware.com (unknown [10.20.113.240])
-        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id BC7EFB2720;
-        Wed, 27 May 2020 22:07:15 -0400 (EDT)
-From:   Ronak Doshi <doshir@vmware.com>
-To:     <netdev@vger.kernel.org>
-CC:     Ronak Doshi <doshir@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next 4/4] vmxnet3: update to version 4
-Date:   Wed, 27 May 2020 19:07:06 -0700
-Message-ID: <20200528020707.10036-5-doshir@vmware.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200528020707.10036-1-doshir@vmware.com>
-References: <20200528020707.10036-1-doshir@vmware.com>
+        Wed, 27 May 2020 22:11:42 -0400
+Received: by mail-il1-f194.google.com with SMTP id h3so3581561ilh.13;
+        Wed, 27 May 2020 19:11:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8/7AtcVQnogEJMITKMjo/+NbsrcSCHvci6t4MVh9Kc8=;
+        b=d5LCXuCw9SWG3qJRvbpPLoPX1fFN0k4rSS+k2b8ciZ5tLE7LW9rVeDljwHKt9HwMoA
+         eM61FFhMlHVN64eSvJR5u/HQoNULb5gbqImMZbJo5PvmXVkKDJ2h6cn86Sgsh04DThd8
+         97VEYkK+vGvbd9unwiqtfnQ2HBOaoMHZjHKm6KxfOduTUMGko90uCLYw0bn1kHCM6Yu3
+         cxXDurYVoUWSleiS2WVJMsZmjvDrnGiDH8UATpGIQWQWNM2ujKy6akwRcgi9q7WeIq4M
+         Y6sgDzTFzcDX0LL9ijawjdCj30I7K97QcHL/I+OTdAUH8doYLC/cV4TiuyVoE/jBu+18
+         IWtw==
+X-Gm-Message-State: AOAM531dUBirf/D4cLh3LG/F1Wus7fGl1zqBFkhbePHwf0SIveYPD0N7
+        hWUBbVuCy55tujqk8YRqaQ==
+X-Google-Smtp-Source: ABdhPJyarlfDg0topsEF4LLMlLljnAFIUiSejKfnwzERU46ep1pIjMA9nxf26wH/i1HT1FPTA9wZsg==
+X-Received: by 2002:a92:2907:: with SMTP id l7mr1061985ilg.48.1590631899776;
+        Wed, 27 May 2020 19:11:39 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id b18sm2458167ilh.77.2020.05.27.19.11.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 19:11:39 -0700 (PDT)
+Received: (nullmailer pid 3220699 invoked by uid 1000);
+        Thu, 28 May 2020 02:11:37 -0000
+Date:   Wed, 27 May 2020 20:11:37 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Lars Povlsen <lars.povlsen@microchip.com>
+Cc:     SoC Team <soc@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Olof Johansson <olof@lixom.net>,
+        Michael Turquette <mturquette@baylibre.com>,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH 05/14] dt-bindings: arm: sparx5: Add documentation for
+ Microchip Sparx5 SoC
+Message-ID: <20200528021137.GA3214411@bogus>
+References: <20200513125532.24585-1-lars.povlsen@microchip.com>
+ <20200513125532.24585-6-lars.povlsen@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Received-SPF: None (EX13-EDG-OU-001.vmware.com: doshir@vmware.com does not
- designate permitted sender hosts)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200513125532.24585-6-lars.povlsen@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With all vmxnet3 version 4 changes incorporated in the vmxnet3 driver,
-the driver can configure emulation to run at vmxnet3 version 4, provided
-the emulation advertises support for version 4.
+On Wed, May 13, 2020 at 02:55:23PM +0200, Lars Povlsen wrote:
+> This adds the main Sparx5 SoC DT documentation file, with information
+> abut the supported board types.
+> 
+> Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+> ---
+>  .../bindings/arm/microchip,sparx5.yaml        | 87 +++++++++++++++++++
+>  1 file changed, 87 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/arm/microchip,sparx5.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/microchip,sparx5.yaml b/Documentation/devicetree/bindings/arm/microchip,sparx5.yaml
+> new file mode 100644
+> index 0000000000000..83b36d1217988
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/microchip,sparx5.yaml
+> @@ -0,0 +1,87 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/arm/microchip,sparx5.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip Sparx5 Boards Device Tree Bindings
+> +
+> +maintainers:
+> +  - Lars Povlsen <lars.povlsen@microchip.com>
+> +
+> +description: |+
+> +   The Microchip Sparx5 SoC is a ARMv8-based used in a family of
+> +   gigabit TSN-capable gigabit switches.
+> +
+> +   The SparX-5 Ethernet switch family provides a rich set of switching
+> +   features such as advanced TCAM-based VLAN and QoS processing
+> +   enabling delivery of differentiated services, and security through
+> +   TCAM-based frame processing using versatile content aware processor
+> +   (VCAP)
+> +
+> +properties:
+> +  $nodename:
+> +    const: '/'
+> +  compatible:
+> +    oneOf:
+> +      - description: The Sparx5 pcb125 board is a modular board,
+> +          which has both spi-nor and eMMC storage. The modular design
+> +          allows for connection of different network ports.
+> +        items:
+> +          - const: microchip,sparx5-pcb125
+> +          - const: microchip,sparx5
+> +
+> +      - description: The Sparx5 pcb134 is a pizzabox form factor
+> +          gigabit switch with 20 SFP ports. It features spi-nor and
+> +          either spi-nand or eMMC storage (mount option).
+> +        items:
+> +          - const: microchip,sparx5-pcb134
+> +          - const: microchip,sparx5
+> +
+> +      - description: The Sparx5 pcb135 is a pizzabox form factor
+> +          gigabit switch with 48+4 Cu ports. It features spi-nor and
+> +          either spi-nand or eMMC storage (mount option).
+> +        items:
+> +          - const: microchip,sparx5-pcb135
+> +          - const: microchip,sparx5
+> +
+> +  axi@600000000:
+> +    type: object
+> +    description: the root node in the Sparx5 platforms must contain
+> +      an axi bus child node. They are always at physical address
+> +      0x600000000 in all the Sparx5 variants.
+> +    properties:
+> +      compatible:
+> +        items:
+> +          - const: simple-bus
+> +      reg:
+> +        maxItems: 1
 
-Signed-off-by: Ronak Doshi <doshir@vmware.com>
----
- drivers/net/vmxnet3/vmxnet3_drv.c | 7 ++++++-
- drivers/net/vmxnet3/vmxnet3_int.h | 4 ++--
- 2 files changed, 8 insertions(+), 3 deletions(-)
+simple-bus doesn't have 'reg'. If there's bus registers, then it's not 
+simple.
 
-diff --git a/drivers/net/vmxnet3/vmxnet3_drv.c b/drivers/net/vmxnet3/vmxnet3_drv.c
-index b764f24b646b..ceafa3619858 100644
---- a/drivers/net/vmxnet3/vmxnet3_drv.c
-+++ b/drivers/net/vmxnet3/vmxnet3_drv.c
-@@ -3492,7 +3492,12 @@ vmxnet3_probe_device(struct pci_dev *pdev,
- 		goto err_alloc_pci;
- 
- 	ver = VMXNET3_READ_BAR1_REG(adapter, VMXNET3_REG_VRRS);
--	if (ver & (1 << VMXNET3_REV_3)) {
-+	if (ver & (1 << VMXNET3_REV_4)) {
-+		VMXNET3_WRITE_BAR1_REG(adapter,
-+				       VMXNET3_REG_VRRS,
-+				       1 << VMXNET3_REV_4);
-+		adapter->version = VMXNET3_REV_4 + 1;
-+	} else if (ver & (1 << VMXNET3_REV_3)) {
- 		VMXNET3_WRITE_BAR1_REG(adapter,
- 				       VMXNET3_REG_VRRS,
- 				       1 << VMXNET3_REV_3);
-diff --git a/drivers/net/vmxnet3/vmxnet3_int.h b/drivers/net/vmxnet3/vmxnet3_int.h
-index 86db809c7592..5d2b062215a2 100644
---- a/drivers/net/vmxnet3/vmxnet3_int.h
-+++ b/drivers/net/vmxnet3/vmxnet3_int.h
-@@ -69,12 +69,12 @@
- /*
-  * Version numbers
-  */
--#define VMXNET3_DRIVER_VERSION_STRING   "1.4.17.0-k"
-+#define VMXNET3_DRIVER_VERSION_STRING   "1.5.0.0-k"
- 
- /* Each byte of this 32-bit integer encodes a version number in
-  * VMXNET3_DRIVER_VERSION_STRING.
-  */
--#define VMXNET3_DRIVER_VERSION_NUM      0x01041100
-+#define VMXNET3_DRIVER_VERSION_NUM      0x01050000
- 
- #if defined(CONFIG_PCI_MSI)
- 	/* RSS only makes sense if MSI-X is supported. */
--- 
-2.11.0
+> +
+> +    required:
+> +      - compatible
+> +      - reg
+> +
+> +patternProperties:
+> +  "^syscon@[0-9a-f]+$":
 
+This should be under a bus node.
+
+> +    description: All Sparx5 boards must provide a system controller,
+> +      typically under the axi bus node. It contain reset registers and
+> +      other system control.
+> +    type: object
+> +    properties:
+> +      compatible:
+> +        items:
+> +          - const: microchip,sparx5-cpu-syscon
+> +          - const: syscon
+
+This probably should be in its own document. If really this simple, 
+there's already syscon.yaml you can add to. 
+
+> +      reg:
+> +        maxItems: 1
+> +
+> +    required:
+> +      - compatible
+> +      - reg
+> +
+> +required:
+> +  - compatible
+> +  - axi@600000000
+> +  - syscon@600000000
+> +
+> +...
+> --
+> 2.26.2
