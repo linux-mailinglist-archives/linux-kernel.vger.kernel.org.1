@@ -2,78 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 750F21E6651
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B07F1E6664
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404516AbgE1PjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 11:39:21 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:41099 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S2404416AbgE1PjR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 11:39:17 -0400
-Received: (qmail 13719 invoked by uid 1000); 28 May 2020 11:39:14 -0400
-Date:   Thu, 28 May 2020 11:39:14 -0400
-From:   "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     "Sverdlin, Alexander \(Nokia - DE/Ulm\)" 
-        <alexander.sverdlin@nokia.com>,
-        "dinghao.liu@zju.edu.cn" <dinghao.liu@zju.edu.cn>,
-        "kjlu@umn.edu" <kjlu@umn.edu>, "mpm@selenic.com" <mpm@selenic.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "ben.dooks@codethink.co.uk" <ben.dooks@codethink.co.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "allison@lohutok.net" <allison@lohutok.net>,
-        "yuehaibing@huawei.com" <yuehaibing@huawei.com>,
-        "rfontana@redhat.com" <rfontana@redhat.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH] hwrng: ks-sa - fix runtime pm imbalance on error
-Message-ID: <20200528153914.GA11831@rowland.harvard.edu>
-References: <20200520132957.18776-1-dinghao.liu@zju.edu.cn>
- <ab400cba7523e69b15360b0928cb8fa8b9432d86.camel@nokia.com>
- <20200520164556.GC11084@rowland.harvard.edu>
- <20200528065519.GA26960@gondor.apana.org.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200528065519.GA26960@gondor.apana.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S2404549AbgE1PlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 11:41:01 -0400
+Received: from mga06.intel.com ([134.134.136.31]:54841 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404538AbgE1Pk6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 11:40:58 -0400
+IronPort-SDR: PqtUecNVM4VdFkQCbT9kfFXkM0qpgoAnLsa+tCB5lpzEno+KtkYjSTW+e08Yusz8e7saUOV2zQ
+ E7RRVRoa5p7g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 08:40:55 -0700
+IronPort-SDR: t3jJpTLklTUfu9+PbASaz3ZHWDvl+/mHzqyV1ImCImAJtS4wrGRZvj4ZirXckChfNZrYTAQA4v
+ yoF9teUTPweA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,445,1583222400"; 
+   d="scan'208";a="256199245"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by orsmga007.jf.intel.com with ESMTP; 28 May 2020 08:40:50 -0700
+From:   "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, miquel.raynal@bootlin.com
+Cc:     richard@nod.at, vigneshr@ti.com, arnd@arndb.de,
+        brendanhiggins@google.com, tglx@linutronix.de,
+        boris.brezillon@collabora.com, anders.roxell@linaro.org,
+        masonccyang@mxic.com.tw, robh+dt@kernel.org,
+        linux-mips@vger.kernel.org, hauke.mehrtens@intel.com,
+        andriy.shevchenko@intel.com, qi-ming.wu@intel.com,
+        cheol.yong.kim@intel.com,
+        "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: [PATCH v10 0/2] mtd: rawnand: Add NAND controller support on Intel LGM SoC 
+Date:   Thu, 28 May 2020 23:39:27 +0800
+Message-Id: <20200528153929.46859-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 04:55:19PM +1000, Herbert Xu wrote:
-> On Wed, May 20, 2020 at 12:45:56PM -0400, stern@rowland.harvard.edu wrote:
-> > On Wed, May 20, 2020 at 03:42:17PM +0000, Sverdlin, Alexander (Nokia - DE/Ulm) wrote:
-> > > Hello Dinghao,
-> > > 
-> > > On Wed, 2020-05-20 at 21:29 +0800, Dinghao Liu wrote:
-> > > > pm_runtime_get_sync() increments the runtime PM usage counter even
-> > > > the call returns an error code. Thus a pairing decrement is needed
-> > > > on the error handling path to keep the counter balanced.
-> > > 
-> > > I believe, this is the wrong place for such kind of fix.
-> > > pm_runtime_get_sync() has obviously a broken semantics with regards to
-> > > your observation but no other driver does what you propose.
-> > 
-> > Look again.  For example, see what usb_autoresume_device() in 
-> > drivers/usb/core/driver.c does.
-> 
-> However, there seems to be some disagreement as to what to do
-> when pm_runtime_get_sync fails.  Your driver chooses to call
-> put_sync while others prefer pm_runtime_put_noidle (e.g., see
-> drivers/base/power/runtime.c).
+This patch adds the new IP of Nand Flash Controller(NFC) support
+on Intel's Lightning Mountain(LGM) SoC.
 
-It doesn't matter which function gets called; in these circumstances 
-(device still suspended or in an error state because a resume attempt 
-failed) they will do the same thing.
+DMA is used for burst data transfer operation, also DMA HW supports
+aligned 32bit memory address and aligned data access by default.
+DMA burst of 8 supported. Data register used to support the read/write
+operation from/to device.
 
-> This API does seem to be in a bit of a mess.
+NAND controller also supports in-built HW ECC engine.
 
-Suggestions and patches are welcome.
+NAND controller driver implements ->exec_op() to replace legacy hooks,
+these specific call-back method to execute NAND operations.
 
-Alan Stern
+Thanks Boris, Andy, Arnd and Rob for the review comments and suggestions.
+---
+v10:
+  - No Change
+v9:
+  - No change 
+v8:
+  - fix the kbuild bot warnings
+  - correct the typo's
+v7:
+  - indentation issue is fixed
+  - add error check for retrieve the resource from dt
+v6:
+  - update EBU_ADDR_SELx register base value build it from DT
+  - Add tabs in in Kconfig
+v5:
+  - replace by 'HSNAND_CLE_OFFS | HSNAND_CS_OFFS' to NAND_WRITE_CMD and NAND_WRITE_ADDR
+  - remove the unused macros
+  - update EBU_ADDR_MASK(x) macro
+  - update the EBU_ADDR_SELx register values to be written
+v4:
+  - add ebu_nand_cs structure for multiple-CS support
+  - mask/offset encoding for 0x51 value
+  - update macro HSNAND_CTL_ENABLE_ECC
+  - drop the op argument and un-used macros.
+  - updated the datatype and macros
+  - add function disable nand module
+  - remove ebu_host->dma_rx = NULL;
+  - rename MMIO address range variables to ebu and hsnand
+  - implement ->setup_data_interface()
+  - update label err_cleanup_nand and err_cleanup_dma
+  - add return value check in the nand_remove function
+  - add/remove tabs and spaces as per coding standard
+  - encoded CS ids by reg property
+v3:
+  - Add depends on MACRO in Kconfig
+  - file name update in Makefile
+  - file name update to intel-nand-controller
+  - modification of MACRO divided like EBU, HSNAND and NAND
+  - add NAND_ALE_OFFS, NAND_CLE_OFFS and NAND_CS_OFFS
+  - rename lgm_ to ebu_ and _va suffix is removed in the whole file
+  - rename structure and varaibles as per review comments.
+  - remove lgm_read_byte(), lgm_dev_ready() and cmd_ctrl() un-used function
+  - update in exec_op() as per review comments
+  - rename function lgm_dma_exit() by lgm_dma_cleanup()
+  - hardcoded magic value  for base and offset replaced by MACRO defined
+  - mtd_device_unregister() + nand_cleanup() instead of nand_release()
+v2:
+  - implement the ->exec_op() to replaces the legacy hook-up.
+  - update the commit message
+  - add MIPS maintainers and xway_nand driver author in CC
+
+v1:
+ - initial version
+
+dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
+---
+v10:
+  - fix bot errors
+v9:
+  - Rob's review comments address
+  - dual licensed
+  - compatible change
+  - add reg-names
+  - drop clock-names and clock-cells
+  - correct typo's
+v8:
+  No change
+v7:
+  - Rob's review comments addressed
+  - dt-schema build issue fixed with upgraded dt-schema
+v6:
+  - Rob's review comments addressed in YAML file
+  - add addr_sel0 and addr_sel1 reg-names in YAML example
+v5:
+  - add the example in YAML file
+v4:
+  - No change
+v3:
+  - No change
+v2:
+  YAML compatible string update to intel, lgm-nand-controller
+v1:
+  - initial version
+
+Ramuthevar Vadivel Murugan (2):
+  dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
+  mtd: rawnand: Add NAND controller support on Intel LGM SoC
+
+ .../devicetree/bindings/mtd/intel,lgm-nand.yaml    |  93 +++
+ drivers/mtd/nand/raw/Kconfig                       |   8 +
+ drivers/mtd/nand/raw/Makefile                      |   1 +
+ drivers/mtd/nand/raw/intel-nand-controller.c       | 747 +++++++++++++++++++++
+ 4 files changed, 849 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+ create mode 100644 drivers/mtd/nand/raw/intel-nand-controller.c
+
+-- 
+2.11.0
