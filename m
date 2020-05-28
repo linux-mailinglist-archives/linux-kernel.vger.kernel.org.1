@@ -2,465 +2,507 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D131E61B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 15:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D15561E61B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 15:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390133AbgE1NHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 09:07:09 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:46168 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390079AbgE1NHG (ORCPT
+        id S2390143AbgE1NHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 09:07:44 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:43185 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390031AbgE1NHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 09:07:06 -0400
-Received: by mail-lf1-f65.google.com with SMTP id r125so16486892lff.13;
-        Thu, 28 May 2020 06:07:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jkI1fSmr7NLokyM8fHRV6r1fVitlrGo+0RtUIbQpqRQ=;
-        b=VMIddiRVjk8AJxfPvNVEtCjssonFaedjjdAc/8J9i0rZkee/fDwf4q6nyxXzx6biK0
-         2CJewAx6eT5rZ26oAJMWbGMSnpiOlwWfnX0vY8cBDqvIUV+8r2todVOJfNG026+tM2Gy
-         4UI3wWEPLqC7iweaKfdHXAt1rlPmheLLZC0LDZqTBGb1cREKmK85LP+izw7+YWDtiVn1
-         J+qYW78hcud6AzrUM4kdMe4wcPbwWCN0lY+1lo9R23kIqNi/rXQAIdU+2q+pX2muvuJm
-         a7otQ13qyZnkB6r/kL55YGrnVX9jm+cSqbh+XYAf5er2RpTi+cbWsAsFF5/ggUltceQO
-         IjUA==
-X-Gm-Message-State: AOAM530JMPoiQ/aQJ5OO/diWT/bVkRwTCgzJFtbVmRl81u55UYy+vVfO
-        QOP1wxu7YYpvnc78CbF+9uI=
-X-Google-Smtp-Source: ABdhPJzd6zYpOIGMceQIThtWejSufuaPRYLPZvBs3R+p0dc1VKv/0d9grUaorSC0Lg5FfI839RqoqA==
-X-Received: by 2002:ac2:5cac:: with SMTP id e12mr1694160lfq.92.1590671221193;
-        Thu, 28 May 2020 06:07:01 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id f10sm1625387lfm.34.2020.05.28.06.06.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 06:06:59 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1jeIFJ-0004C6-2q; Thu, 28 May 2020 15:06:53 +0200
-Date:   Thu, 28 May 2020 15:06:53 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johan Hovold <johan@kernel.org>, Rob Herring <robh@kernel.org>,
-        Alan Cox <gnomes@lxorguk.ukuu.org.uk>,
-        Lee Jones <lee.jones@linaro.org>, Jiri Slaby <jslaby@suse.cz>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Peter Hurley <peter@hurleysoftware.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
-Subject: Re: [PATCH 5/6] gnss: motmdm: Add support for Motorola Mapphone
- MDM6600 modem
-Message-ID: <20200528130653.GG10358@localhost>
-References: <20200512214713.40501-1-tony@atomide.com>
- <20200512214713.40501-6-tony@atomide.com>
+        Thu, 28 May 2020 09:07:42 -0400
+X-Originating-IP: 90.112.45.105
+Received: from [192.168.1.14] (lfbn-gre-1-325-105.w90-112.abo.wanadoo.fr [90.112.45.105])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 0C052FF806;
+        Thu, 28 May 2020 13:07:34 +0000 (UTC)
+Subject: Re: [PATCH v3 1/3] riscv: Move kernel mapping to vmalloc zone
+From:   Alex Ghiti <alex@ghiti.fr>
+To:     Zong Li <zong.li@sifive.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-riscv <linux-riscv@lists.infradead.org>
+References: <20200524085259.24784-1-alex@ghiti.fr>
+ <20200524085259.24784-2-alex@ghiti.fr>
+ <CANXhq0q_ba+zQrGUN0L+FQMPz6hWbYSQa2c8wLO3M-JTPWginA@mail.gmail.com>
+ <6d6b09bc-32e4-4969-7020-12f9f02e557e@ghiti.fr>
+ <CANXhq0qBOjFNvRB4QL-AoWzr5dU6Pz=tbf2qJMQxJjR99NHU3A@mail.gmail.com>
+ <28e9d2ab-074c-90c2-73b5-a85d30f828cc@ghiti.fr>
+Message-ID: <f1cce8c9-8c5c-ddc0-fe07-09fafe7c0827@ghiti.fr>
+Date:   Thu, 28 May 2020 09:07:34 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200512214713.40501-6-tony@atomide.com>
+In-Reply-To: <28e9d2ab-074c-90c2-73b5-a85d30f828cc@ghiti.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: fr
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 02:47:12PM -0700, Tony Lindgren wrote:
-> Motorola is using a custom TS 27.010 based serial port line discipline
-> for various devices on the modem. These devices can be accessed on
-> dedicated channels using Linux kernel serdev-ngsm driver.
-> 
-> For the GNSS on these devices, we need to kick the GNSS device at a
-> desired rate. Otherwise the GNSS device stops sending data after a
-> few minutes. The rate we poll data defaults to 1000 ms, and can be
-> specified with a module option rate_ms between 1 to 16 seconds.
-> 
-> Note that AGPS with xtra2.bin is not yet supported, so getting a fix
-> can take quite a while. And a recent gpsd is needed to parse the
-> $GNGNS output, and to properly handle the /dev/gnss0 character device.
-> I've confirmed it works properly with gpsd-3.20.
-> 
-> Tested-by: Pavel Machek <pavel@ucw.cz>
-> Reviewed-by: Pavel Machek <pavel@ucw.cz>
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> ---
->  drivers/gnss/Kconfig  |   8 +
->  drivers/gnss/Makefile |   3 +
->  drivers/gnss/motmdm.c | 419 ++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 430 insertions(+)
->  create mode 100644 drivers/gnss/motmdm.c
-> 
-> diff --git a/drivers/gnss/Kconfig b/drivers/gnss/Kconfig
-> --- a/drivers/gnss/Kconfig
-> +++ b/drivers/gnss/Kconfig
-> @@ -13,6 +13,14 @@ menuconfig GNSS
->  
->  if GNSS
->  
-> +config GNSS_MOTMDM
-> +	tristate "Motorola Modem TS 27.010 serdev GNSS receiver support"
-> +	depends on SERIAL_DEV_N_GSM
-> +	---help---
-> +	  Say Y here if you have a Motorola modem using TS 27.010 line
-> +	  discipline for GNSS such as a Motorola Mapphone series device
-> +	  like Droid 4.
-> +
->  config GNSS_SERIAL
->  	tristate
->  
-> diff --git a/drivers/gnss/Makefile b/drivers/gnss/Makefile
-> --- a/drivers/gnss/Makefile
-> +++ b/drivers/gnss/Makefile
-> @@ -6,6 +6,9 @@
->  obj-$(CONFIG_GNSS)			+= gnss.o
->  gnss-y := core.o
->  
-> +obj-$(CONFIG_GNSS_MOTMDM)		+= gnss-motmdm.o
-> +gnss-motmdm-y := motmdm.o
-> +
->  obj-$(CONFIG_GNSS_SERIAL)		+= gnss-serial.o
->  gnss-serial-y := serial.o
->  
-> diff --git a/drivers/gnss/motmdm.c b/drivers/gnss/motmdm.c
-> new file mode 100644
-> --- /dev/null
-> +++ b/drivers/gnss/motmdm.c
-> @@ -0,0 +1,419 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Motorola Modem TS 27.010 serdev GNSS driver
-> + *
-> + * Copyright (C) 2018 - 2020 Tony Lindgren <tony@atomide.com>
-> + *
-> + * Based on drivers/gnss/sirf.c driver example:
-> + * Copyright (C) 2018 Johan Hovold <johan@kernel.org>
-> + */
-> +
-> +#include <linux/errno.h>
-> +#include <linux/gnss.h>
-> +#include <linux/init.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/serdev-gsm.h>
-> +#include <linux/slab.h>
-> +
-> +#define MOTMDM_GNSS_TIMEOUT	1000
-> +#define MOTMDM_GNSS_RATE	1000
-> +
-> +/*
-> + * Motorola MDM GNSS device communicates over a dedicated TS 27.010 channel
-> + * using custom data packets. The packets look like AT commands embedded into
-> + * a Motorola invented packet using format like "U1234AT+MPDSTART=0,1,100,0".
-> + * But it's not an AT compatible serial interface, it's a packet interface
-> + * using AT like commands.
-> + */
+Hi Zong,
 
-So this shouldn't depend on TS 27.010 and instead be a generic gnss
-serial driver. 
+Le 5/27/20 à 3:29 AM, Alex Ghiti a écrit :
+> Le 5/27/20 à 2:05 AM, Zong Li a écrit :
+>> On Wed, May 27, 2020 at 1:06 AM Alex Ghiti <alex@ghiti.fr> wrote:
+>>> Hi Zong,
+>>>
+>>> Le 5/26/20 à 5:43 AM, Zong Li a écrit :
+>>>> On Sun, May 24, 2020 at 4:54 PM Alexandre Ghiti <alex@ghiti.fr> wrote:
+>>>>> This is a preparatory patch for relocatable kernel.
+>>>>>
+>>>>> The kernel used to be linked at PAGE_OFFSET address and used to be 
+>>>>> loaded
+>>>>> physically at the beginning of the main memory. Therefore, we 
+>>>>> could use
+>>>>> the linear mapping for the kernel mapping.
+>>>>>
+>>>>> But the relocated kernel base address will be different from 
+>>>>> PAGE_OFFSET
+>>>>> and since in the linear mapping, two different virtual addresses 
+>>>>> cannot
+>>>>> point to the same physical address, the kernel mapping needs to 
+>>>>> lie outside
+>>>>> the linear mapping.
+>>>>>
+>>>>> In addition, because modules and BPF must be close to the kernel 
+>>>>> (inside
+>>>>> +-2GB window), the kernel is placed at the end of the vmalloc zone 
+>>>>> minus
+>>>>> 2GB, which leaves room for modules and BPF. The kernel could not be
+>>>>> placed at the beginning of the vmalloc zone since other vmalloc
+>>>>> allocations from the kernel could get all the +-2GB window around the
+>>>>> kernel which would prevent new modules and BPF programs to be loaded.
+>>>>>
+>>>>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+>>>>> ---
+>>>>>    arch/riscv/boot/loader.lds.S     |  3 +-
+>>>>>    arch/riscv/include/asm/page.h    | 10 +++++-
+>>>>>    arch/riscv/include/asm/pgtable.h | 37 +++++++++++++-------
+>>>>>    arch/riscv/kernel/head.S         |  3 +-
+>>>>>    arch/riscv/kernel/module.c       |  4 +--
+>>>>>    arch/riscv/kernel/vmlinux.lds.S  |  3 +-
+>>>>>    arch/riscv/mm/init.c             | 58 
+>>>>> +++++++++++++++++++++++++-------
+>>>>>    arch/riscv/mm/physaddr.c         |  2 +-
+>>>>>    8 files changed, 87 insertions(+), 33 deletions(-)
+>>>>>
+>>>>> diff --git a/arch/riscv/boot/loader.lds.S 
+>>>>> b/arch/riscv/boot/loader.lds.S
+>>>>> index 47a5003c2e28..62d94696a19c 100644
+>>>>> --- a/arch/riscv/boot/loader.lds.S
+>>>>> +++ b/arch/riscv/boot/loader.lds.S
+>>>>> @@ -1,13 +1,14 @@
+>>>>>    /* SPDX-License-Identifier: GPL-2.0 */
+>>>>>
+>>>>>    #include <asm/page.h>
+>>>>> +#include <asm/pgtable.h>
+>>>>>
+>>>>>    OUTPUT_ARCH(riscv)
+>>>>>    ENTRY(_start)
+>>>>>
+>>>>>    SECTIONS
+>>>>>    {
+>>>>> -       . = PAGE_OFFSET;
+>>>>> +       . = KERNEL_LINK_ADDR;
+>>>>>
+>>>>>           .payload : {
+>>>>>                   *(.payload)
+>>>>> diff --git a/arch/riscv/include/asm/page.h 
+>>>>> b/arch/riscv/include/asm/page.h
+>>>>> index 2d50f76efe48..48bb09b6a9b7 100644
+>>>>> --- a/arch/riscv/include/asm/page.h
+>>>>> +++ b/arch/riscv/include/asm/page.h
+>>>>> @@ -90,18 +90,26 @@ typedef struct page *pgtable_t;
+>>>>>
+>>>>>    #ifdef CONFIG_MMU
+>>>>>    extern unsigned long va_pa_offset;
+>>>>> +extern unsigned long va_kernel_pa_offset;
+>>>>>    extern unsigned long pfn_base;
+>>>>>    #define ARCH_PFN_OFFSET                (pfn_base)
+>>>>>    #else
+>>>>>    #define va_pa_offset           0
+>>>>> +#define va_kernel_pa_offset    0
+>>>>>    #define ARCH_PFN_OFFSET                (PAGE_OFFSET >> PAGE_SHIFT)
+>>>>>    #endif /* CONFIG_MMU */
+>>>>>
+>>>>>    extern unsigned long max_low_pfn;
+>>>>>    extern unsigned long min_low_pfn;
+>>>>> +extern unsigned long kernel_virt_addr;
+>>>>>
+>>>>>    #define __pa_to_va_nodebug(x)  ((void *)((unsigned long) (x) + 
+>>>>> va_pa_offset))
+>>>>> -#define __va_to_pa_nodebug(x)  ((unsigned long)(x) - va_pa_offset)
+>>>>> +#define linear_mapping_va_to_pa(x)     ((unsigned long)(x) - 
+>>>>> va_pa_offset)
+>>>>> +#define kernel_mapping_va_to_pa(x)     \
+>>>>> +       ((unsigned long)(x) - va_kernel_pa_offset)
+>>>>> +#define __va_to_pa_nodebug(x)          \
+>>>>> +       (((x) >= PAGE_OFFSET) ?         \
+>>>>> +               linear_mapping_va_to_pa(x) : 
+>>>>> kernel_mapping_va_to_pa(x))
+>>>>>
+>>>>>    #ifdef CONFIG_DEBUG_VIRTUAL
+>>>>>    extern phys_addr_t __virt_to_phys(unsigned long x);
+>>>>> diff --git a/arch/riscv/include/asm/pgtable.h 
+>>>>> b/arch/riscv/include/asm/pgtable.h
+>>>>> index 35b60035b6b0..25213cfaf680 100644
+>>>>> --- a/arch/riscv/include/asm/pgtable.h
+>>>>> +++ b/arch/riscv/include/asm/pgtable.h
+>>>>> @@ -11,23 +11,29 @@
+>>>>>
+>>>>>    #include <asm/pgtable-bits.h>
+>>>>>
+>>>>> -#ifndef __ASSEMBLY__
+>>>>> -
+>>>>> -/* Page Upper Directory not used in RISC-V */
+>>>>> -#include <asm-generic/pgtable-nopud.h>
+>>>>> -#include <asm/page.h>
+>>>>> -#include <asm/tlbflush.h>
+>>>>> -#include <linux/mm_types.h>
+>>>>> -
+>>>>> -#ifdef CONFIG_MMU
+>>>>> +#ifndef CONFIG_MMU
+>>>>> +#define KERNEL_VIRT_ADDR       PAGE_OFFSET
+>>>>> +#define KERNEL_LINK_ADDR       PAGE_OFFSET
+>>>>> +#else
+>>>>> +/*
+>>>>> + * Leave 2GB for modules and BPF that must lie within a 2GB range 
+>>>>> around
+>>>>> + * the kernel.
+>>>>> + */
+>>>>> +#define KERNEL_VIRT_ADDR       (VMALLOC_END - SZ_2G + 1)
+>>>>> +#define KERNEL_LINK_ADDR       KERNEL_VIRT_ADDR
+>>>>>
+>>>>>    #define VMALLOC_SIZE     (KERN_VIRT_SIZE >> 1)
+>>>>>    #define VMALLOC_END      (PAGE_OFFSET - 1)
+>>>>>    #define VMALLOC_START    (PAGE_OFFSET - VMALLOC_SIZE)
+>>>>>
+>>>>>    #define BPF_JIT_REGION_SIZE    (SZ_128M)
+>>>>> -#define BPF_JIT_REGION_START   (PAGE_OFFSET - BPF_JIT_REGION_SIZE)
+>>>>> -#define BPF_JIT_REGION_END     (VMALLOC_END)
+>>>>> +#define BPF_JIT_REGION_START   (kernel_virt_addr)
+>>>>> +#define BPF_JIT_REGION_END     (kernel_virt_addr + 
+>>>>> BPF_JIT_REGION_SIZE)
+>>>> It seems to have a potential risk here, the region of bpf is
+>>>> overlapping with kernel mapping, so if kernel size is bigger than
+>>>> 128MB, bpf region would be occupied and run out by kernel mapping.
+>> Is there the risk as I mentioned?
+>
+>
+> Sorry I forgot to answer this one: I was confident that 128MB was 
+> large enough for kernel
+> and BPF. But I see no reason to leave this risk so I'll change 
+> kernel_virt_addr for _end so
+> BPF will have its 128MB reserved.
+>
+> Thanks !
+>
+> Alex
+>
+>
+>>
+>>>>> +
+>>>>> +#ifdef CONFIG_64BIT
+>>>>> +#define VMALLOC_MODULE_START   BPF_JIT_REGION_END
+>>>>> +#define VMALLOC_MODULE_END     VMALLOC_END
+>>>>> +#endif
+>>>>>
+>>>> Although kernel_virt_addr is a fixed address now, I think it could be
+>>>> changed for the purpose of relocatable or KASLR, so if
+>>>> kernel_virt_addr is moved to far from VMALLOC_END than 2G, the region
+>>>> of module would be too big.
+>>>
+>>> Yes you're right, that's wrong to allow modules to lie outside
+>>> the 2G window, thanks for noticing.
+>>>
+>>>
+>>>> In addition, the region of module could be
+>>>> +-2G around the kernel, so we don't be limited in one direction as
+>>>> before. It seems to me that the region of the module could be decided
+>>>> at runtime, for example, VMALLOC_MODULE_START is "&_end - 2G" and
+>>>> VMLLOC_MODULE_END is "&_start + 2G".
+>>>
+>>> I had tried that, but as we need to make sure BPF region is different
+>>> from the module's
+>>> that makes the macro definitions really cumbersome. I'll give a try
+>>> again anyway. And
+>>> I tried to use _end and _start here but it failed, I have to debug 
+>>> this.
 
-What does the interface look like over the corresponding USB port?
-AT-commands without the U1234 prefix?
 
-> +#define MOTMDM_GNSS_HEADER_LEN	5				/* U1234 */
-> +#define MOTMDM_GNSS_RESP_LEN	(MOTMDM_GNSS_HEADER_LEN + 4)	/* U1234+MPD */
-> +#define MOTMDM_GNSS_DATA_LEN	(MOTMDM_GNSS_RESP_LEN + 1)	/* U1234~+MPD */
-> +#define MOTMDM_GNSS_STATUS_LEN	(MOTMDM_GNSS_DATA_LEN + 7)	/* STATUS= */
-> +#define MOTMDM_GNSS_NMEA_LEN	(MOTMDM_GNSS_DATA_LEN + 8)	/* NMEA=NN, */
-> +
-> +enum motmdm_gnss_status {
-> +	MOTMDM_GNSS_UNKNOWN,
-> +	MOTMDM_GNSS_INITIALIZED,
-> +	MOTMDM_GNSS_DATA_OR_TIMEOUT,
-> +	MOTMDM_GNSS_STARTED,
-> +	MOTMDM_GNSS_STOPPED,
-> +};
-> +
-> +struct motmdm_gnss_data {
-> +	struct gnss_device *gdev;
-> +	struct device *modem;
-> +	struct gsm_serdev_dlci dlci;
-> +	struct delayed_work restart_work;
-> +	struct mutex mutex;	/* For modem commands */
-> +	ktime_t last_update;
-> +	int status;
-> +	unsigned char *buf;
-> +	size_t len;
-> +	wait_queue_head_t read_queue;
-> +	unsigned int parsed:1;
-> +};
-> +
-> +static unsigned int rate_ms = MOTMDM_GNSS_RATE;
-> +module_param(rate_ms, uint, 0644);
-> +MODULE_PARM_DESC(rate_ms, "GNSS refresh rate between 1000 and 16000 ms (default 1000 ms)");
+I gave more thought about that and it is actually not possible to use 
+the 2GB
+before and after the kernel: modules can call exported functions from 
+each other,
+so we need to make sure that the "distance" between 2 modules is at most 
+2GB.
+And I assume BPF comes with the same restrictions with respect to 
+modules so the
+kernel + BPF + modules must live in the same 2GB region.
 
-No module parameters please. Either pick a good default or we need to
-come up with a generic (sysfs) interface for polled drivers like this
-one.
+I'll come with a v4 quickly,
 
-> +
-> +/*
-> + * Note that multiple commands can be sent in series with responses coming
-> + * out-of-order. For GNSS, we don't need to care about the out-of-order
-> + * responses, and can assume we have at most one command active at a time.
-> + * For the commands, can use just a jiffies base packet ID and let the modem
-> + * sort out the ID conflicts with the modem's unsolicited message ID
-> + * numbering.
-> + */
-> +static int motmdm_gnss_send_command(struct motmdm_gnss_data *ddata,
-> +				    const u8 *buf, int len)
-> +{
-> +	struct gnss_device *gdev = ddata->gdev;
-> +	const int timeout_ms = 1000;
-> +	unsigned char cmd[128];
-> +	int ret, cmdlen;
-> +
-> +	cmdlen = len + 5 + 1;
-> +	if (cmdlen > 128)
-> +		return -EINVAL;
-> +
-> +	mutex_lock(&ddata->mutex);
-> +	memset(ddata->buf, 0, ddata->len);
-> +	ddata->parsed = false;
-> +	snprintf(cmd, cmdlen, "U%04li%s", jiffies % 10000, buf);
-> +	ret = serdev_ngsm_write(ddata->modem, &ddata->dlci, cmd, cmdlen);
-> +	if (ret < 0)
-> +		goto out_unlock;
-> +
-> +	ret = wait_event_timeout(ddata->read_queue, ddata->parsed,
-> +				 msecs_to_jiffies(timeout_ms));
-> +	if (ret == 0) {
-> +		ret = -ETIMEDOUT;
-> +		goto out_unlock;
-> +	} else if (ret < 0) {
-> +		goto out_unlock;
-> +	}
-> +
-> +	if (!strstr(ddata->buf, ":OK")) {
-> +		dev_err(&gdev->dev, "command %s error %s\n",
-> +			cmd, ddata->buf);
-> +		ret = -EPIPE;
-> +	}
+Thanks,
 
-I'm still not sure I like all this string parsing being done inside the
-kernel (and reimplemented in every driver using an AT interface).
+Alex
 
-> +
-> +	ret = len;
-> +
-> +out_unlock:
-> +	mutex_unlock(&ddata->mutex);
-> +
-> +	return ret;
-> +}
-> +
-> +/*
-> + * Android uses AT+MPDSTART=0,1,100,0 which starts GNSS for a while,
-> + * and then GNSS needs to be kicked with an AT command based on a
-> + * status message.
-> + */
-> +static void motmdm_gnss_restart(struct work_struct *work)
-> +{
-> +	struct motmdm_gnss_data *ddata =
-> +		container_of(work, struct motmdm_gnss_data,
-> +			     restart_work.work);
 
-Split declaration and initialisation to avoid the line breaks.
-
-> +	struct gnss_device *gdev = ddata->gdev;
-> +	const unsigned char *cmd = "AT+MPDSTART=0,1,100,0";
-> +	int error;
-> +
-> +	ddata->last_update = ktime_get();
-> +
-> +	error = motmdm_gnss_send_command(ddata, cmd, strlen(cmd));
-> +	if (error < 0) {
-> +		/* Timeouts can happen, don't warn and try again */
-> +		if (error != -ETIMEDOUT)
-> +			dev_warn(&gdev->dev, "%s: could not start: %i\n",
-> +				 __func__, error);
-
-No function names in messages, please. Just spell out what went wrong.
-
-> +
-> +		schedule_delayed_work(&ddata->restart_work,
-> +				      msecs_to_jiffies(MOTMDM_GNSS_RATE));
-> +
-> +		return;
-> +	}
-> +}
-> +
-> +static void motmdm_gnss_start(struct gnss_device *gdev, int delay_ms)
-> +{
-> +	struct motmdm_gnss_data *ddata = gnss_get_drvdata(gdev);
-> +	ktime_t now, next, delta;
-> +	int next_ms;
-> +
-> +	now = ktime_get();
-> +	next = ktime_add_ms(ddata->last_update, delay_ms);
-> +	delta = ktime_sub(next, now);
-> +	next_ms = ktime_to_ms(delta);
-> +
-> +	if (next_ms < 0)
-> +		next_ms = 0;
-> +	if (next_ms > delay_ms)
-> +		next_ms = delay_ms;
-> +
-> +	schedule_delayed_work(&ddata->restart_work, msecs_to_jiffies(next_ms));
-> +}
-> +
-> +static int motmdm_gnss_stop(struct gnss_device *gdev)
-> +{
-> +	struct motmdm_gnss_data *ddata = gnss_get_drvdata(gdev);
-> +	const unsigned char *cmd = "AT+MPDSTOP";
-> +
-> +	cancel_delayed_work_sync(&ddata->restart_work);
-> +
-> +	return motmdm_gnss_send_command(ddata, cmd, strlen(cmd));
-> +}
-> +
-> +static int motmdm_gnss_init(struct gnss_device *gdev)
-> +{
-> +	struct motmdm_gnss_data *ddata = gnss_get_drvdata(gdev);
-> +	const unsigned char *cmd = "AT+MPDINIT=1";
-> +	int error;
-> +
-> +	error = motmdm_gnss_send_command(ddata, cmd, strlen(cmd));
-> +	if (error < 0)
-> +		return error;
-> +
-> +	motmdm_gnss_start(gdev, 0);
-> +
-> +	return 0;
-> +}
-> +
-> +static int motmdm_gnss_finish(struct gnss_device *gdev)
-> +{
-> +	struct motmdm_gnss_data *ddata = gnss_get_drvdata(gdev);
-> +	const unsigned char *cmd = "AT+MPDINIT=0";
-> +	int error;
-> +
-> +	error = motmdm_gnss_stop(gdev);
-> +	if (error < 0)
-> +		return error;
-> +
-> +	return motmdm_gnss_send_command(ddata, cmd, strlen(cmd));
-> +}
-> +
-> +static int motmdm_gnss_receive_data(struct gsm_serdev_dlci *dlci,
-> +				    const unsigned char *buf,
-> +				    size_t len)
-> +{
-> +	struct gnss_device *gdev = dlci->drvdata;
-> +	struct motmdm_gnss_data *ddata = gnss_get_drvdata(gdev);
-> +	const unsigned char *msg;
-> +	size_t msglen;
-> +	int error = 0;
-> +
-> +	if (len <= MOTMDM_GNSS_RESP_LEN)
-> +		return 0;
-> +
-> +	/* Handle U1234+MPD style command response */
-> +	if (buf[MOTMDM_GNSS_HEADER_LEN] != '~') {
-> +		msg = buf + MOTMDM_GNSS_RESP_LEN;
-> +		strncpy(ddata->buf, msg, len - MOTMDM_GNSS_RESP_LEN);
-> +		ddata->parsed = true;
-> +		wake_up(&ddata->read_queue);
-> +
-> +		return len;
-> +	}
-> +
-> +	if (len <= MOTMDM_GNSS_DATA_LEN)
-> +		return 0;
-> +
-> +	/* Handle U1234~+MPD style unsolicted message */
-> +	switch (buf[MOTMDM_GNSS_DATA_LEN]) {
-
-Shouldn't you check the command string?
-
-> +	case 'N':	/* UNNNN~+MPDNMEA=NN, */
-> +		msg = buf + MOTMDM_GNSS_NMEA_LEN;
-> +		msglen = len - MOTMDM_GNSS_NMEA_LEN;
-> +
-> +		/*
-> +		 * Firmware bug: Strip out extra duplicate line break always
-> +		 * in the data
-> +		 */
-> +		msglen--;
-> +
-> +		/*
-> +		 * Firmware bug: Strip out extra data based on an
-> +		 * earlier line break in the data
-> +		 */
-> +		if (msg[msglen - 5 - 1] == 0x0a)
-> +			msglen -= 5;
-> +
-> +		error = gnss_insert_raw(gdev, msg, msglen);
-> +		break;
-> +	case 'S':	/* UNNNN~+MPDSTATUS=N,NN */
-> +		msg = buf + MOTMDM_GNSS_STATUS_LEN;
-> +		msglen = len - MOTMDM_GNSS_STATUS_LEN;
-> +
-> +		switch (msg[0]) {
-> +		case '1':
-> +			ddata->status = MOTMDM_GNSS_INITIALIZED;
-> +			break;
-> +		case '2':
-> +			ddata->status = MOTMDM_GNSS_DATA_OR_TIMEOUT;
-> +			if (rate_ms < MOTMDM_GNSS_RATE)
-> +				rate_ms = MOTMDM_GNSS_RATE;
-> +			if (rate_ms > 16 * MOTMDM_GNSS_RATE)
-> +				rate_ms = 16 * MOTMDM_GNSS_RATE;
-> +			motmdm_gnss_start(gdev, rate_ms);
-> +			break;
-> +		case '3':
-> +			ddata->status = MOTMDM_GNSS_STARTED;
-> +			break;
-> +		case '4':
-> +			ddata->status = MOTMDM_GNSS_STOPPED;
-> +			break;
-> +		default:
-> +			ddata->status = MOTMDM_GNSS_UNKNOWN;
-> +			break;
-> +		}
-> +		break;
-> +	case 'X':	/* UNNNN~+MPDXREQ=N for updated xtra2.bin needed */
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return len;
-> +}
-> +
-> +static int motmdm_gnss_open(struct gnss_device *gdev)
-> +{
-> +	struct motmdm_gnss_data *ddata = gnss_get_drvdata(gdev);
-> +	struct gsm_serdev_dlci *dlci = &ddata->dlci;
-> +	int error;
-> +
-> +	dlci->drvdata = gdev;
-> +	dlci->receive_buf = motmdm_gnss_receive_data;
-> +
-> +	error = serdev_ngsm_register_dlci(ddata->modem, dlci);
-> +	if (error)
-> +		return error;
-> +
-> +	error = motmdm_gnss_init(gdev);
-> +	if (error) {
-> +		serdev_ngsm_unregister_dlci(ddata->modem, dlci);
-> +
-> +		return error;
-> +	}
-> +
-> +	return 0;
-> +}
-
-How does your "aggressive pm" gsmmux implementation work with the gps if
-there are no other clients keeping the modem awake? It seems the modem
-would be suspended after 600 milliseconds after being woken up every 10
-seconds or so by the polling gnss driver?
-
-What happens to the satellite lock in between? Does the request block
-until the gps has an updated position?
-
-Johan
+>>>
+>>>
+>>>>    I'm not sure whether the size of
+>>>> region of bpf has to be 128MB for some particular reason, if not,
+>>>> maybe the region of bpf could be the same with module to avoid being
+>>>> run out by module.
+>>>
+>>> On the contrary, BPF region must not be the same as module's since in
+>>> that case,
+>>> modules could take all the space and make BPF fail.
+>> ok, I got it. Thanks for the explaining.
+>>
+>>
+>>>
+>>> Thanks for your review Zong,
+>>>
+>>>
+>>> Alex
+>>>
+>>>
+>>>>>    /*
+>>>>>     * Roughly size the vmemmap space to be large enough to fit enough
+>>>>> @@ -57,9 +63,16 @@
+>>>>>    #define FIXADDR_SIZE     PGDIR_SIZE
+>>>>>    #endif
+>>>>>    #define FIXADDR_START    (FIXADDR_TOP - FIXADDR_SIZE)
+>>>>> -
+>>>>>    #endif
+>>>>>
+>>>>> +#ifndef __ASSEMBLY__
+>>>>> +
+>>>>> +/* Page Upper Directory not used in RISC-V */
+>>>>> +#include <asm-generic/pgtable-nopud.h>
+>>>>> +#include <asm/page.h>
+>>>>> +#include <asm/tlbflush.h>
+>>>>> +#include <linux/mm_types.h>
+>>>>> +
+>>>>>    #ifdef CONFIG_64BIT
+>>>>>    #include <asm/pgtable-64.h>
+>>>>>    #else
+>>>>> diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
+>>>>> index 98a406474e7d..8f5bb7731327 100644
+>>>>> --- a/arch/riscv/kernel/head.S
+>>>>> +++ b/arch/riscv/kernel/head.S
+>>>>> @@ -49,7 +49,8 @@ ENTRY(_start)
+>>>>>    #ifdef CONFIG_MMU
+>>>>>    relocate:
+>>>>>           /* Relocate return address */
+>>>>> -       li a1, PAGE_OFFSET
+>>>>> +       la a1, kernel_virt_addr
+>>>>> +       REG_L a1, 0(a1)
+>>>>>           la a2, _start
+>>>>>           sub a1, a1, a2
+>>>>>           add ra, ra, a1
+>>>>> diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
+>>>>> index 8bbe5dbe1341..1a8fbe05accf 100644
+>>>>> --- a/arch/riscv/kernel/module.c
+>>>>> +++ b/arch/riscv/kernel/module.c
+>>>>> @@ -392,12 +392,10 @@ int apply_relocate_add(Elf_Shdr *sechdrs, 
+>>>>> const char *strtab,
+>>>>>    }
+>>>>>
+>>>>>    #if defined(CONFIG_MMU) && defined(CONFIG_64BIT)
+>>>>> -#define VMALLOC_MODULE_START \
+>>>>> -        max(PFN_ALIGN((unsigned long)&_end - SZ_2G), VMALLOC_START)
+>>>>>    void *module_alloc(unsigned long size)
+>>>>>    {
+>>>>>           return __vmalloc_node_range(size, 1, VMALLOC_MODULE_START,
+>>>>> -                                   VMALLOC_END, GFP_KERNEL,
+>>>>> +                                   VMALLOC_MODULE_END, GFP_KERNEL,
+>>>>>                                       PAGE_KERNEL_EXEC, 0, 
+>>>>> NUMA_NO_NODE,
+>>>>> __builtin_return_address(0));
+>>>>>    }
+>>>>> diff --git a/arch/riscv/kernel/vmlinux.lds.S 
+>>>>> b/arch/riscv/kernel/vmlinux.lds.S
+>>>>> index 0339b6bbe11a..a9abde62909f 100644
+>>>>> --- a/arch/riscv/kernel/vmlinux.lds.S
+>>>>> +++ b/arch/riscv/kernel/vmlinux.lds.S
+>>>>> @@ -4,7 +4,8 @@
+>>>>>     * Copyright (C) 2017 SiFive
+>>>>>     */
+>>>>>
+>>>>> -#define LOAD_OFFSET PAGE_OFFSET
+>>>>> +#include <asm/pgtable.h>
+>>>>> +#define LOAD_OFFSET KERNEL_LINK_ADDR
+>>>>>    #include <asm/vmlinux.lds.h>
+>>>>>    #include <asm/page.h>
+>>>>>    #include <asm/cache.h>
+>>>>> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+>>>>> index 27a334106708..17f108baec4f 100644
+>>>>> --- a/arch/riscv/mm/init.c
+>>>>> +++ b/arch/riscv/mm/init.c
+>>>>> @@ -22,6 +22,9 @@
+>>>>>
+>>>>>    #include "../kernel/head.h"
+>>>>>
+>>>>> +unsigned long kernel_virt_addr = KERNEL_VIRT_ADDR;
+>>>>> +EXPORT_SYMBOL(kernel_virt_addr);
+>>>>> +
+>>>>>    unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)]
+>>>>> __page_aligned_bss;
+>>>>>    EXPORT_SYMBOL(empty_zero_page);
+>>>>> @@ -178,8 +181,12 @@ void __init setup_bootmem(void)
+>>>>>    }
+>>>>>
+>>>>>    #ifdef CONFIG_MMU
+>>>>> +/* Offset between linear mapping virtual address and kernel load 
+>>>>> address */
+>>>>>    unsigned long va_pa_offset;
+>>>>>    EXPORT_SYMBOL(va_pa_offset);
+>>>>> +/* Offset between kernel mapping virtual address and kernel load 
+>>>>> address */
+>>>>> +unsigned long va_kernel_pa_offset;
+>>>>> +EXPORT_SYMBOL(va_kernel_pa_offset);
+>>>>>    unsigned long pfn_base;
+>>>>>    EXPORT_SYMBOL(pfn_base);
+>>>>>
+>>>>> @@ -271,7 +278,7 @@ static phys_addr_t __init alloc_pmd(uintptr_t va)
+>>>>>           if (mmu_enabled)
+>>>>>                   return memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
+>>>>>
+>>>>> -       pmd_num = (va - PAGE_OFFSET) >> PGDIR_SHIFT;
+>>>>> +       pmd_num = (va - kernel_virt_addr) >> PGDIR_SHIFT;
+>>>>>           BUG_ON(pmd_num >= NUM_EARLY_PMDS);
+>>>>>           return (uintptr_t)&early_pmd[pmd_num * PTRS_PER_PMD];
+>>>>>    }
+>>>>> @@ -372,14 +379,30 @@ static uintptr_t __init 
+>>>>> best_map_size(phys_addr_t base, phys_addr_t size)
+>>>>>    #error "setup_vm() is called from head.S before relocate so it 
+>>>>> should not use absolute addressing."
+>>>>>    #endif
+>>>>>
+>>>>> +static uintptr_t load_pa, load_sz;
+>>>>> +
+>>>>> +void create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
+>>>>> +{
+>>>>> +       uintptr_t va, end_va;
+>>>>> +
+>>>>> +       end_va = kernel_virt_addr + load_sz;
+>>>>> +       for (va = kernel_virt_addr; va < end_va; va += map_size)
+>>>>> +               create_pgd_mapping(pgdir, va,
+>>>>> +                                  load_pa + (va - kernel_virt_addr),
+>>>>> +                                  map_size, PAGE_KERNEL_EXEC);
+>>>>> +}
+>>>>> +
+>>>>>    asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>>>>>    {
+>>>>>           uintptr_t va, end_va;
+>>>>> -       uintptr_t load_pa = (uintptr_t)(&_start);
+>>>>> -       uintptr_t load_sz = (uintptr_t)(&_end) - load_pa;
+>>>>>           uintptr_t map_size = best_map_size(load_pa, 
+>>>>> MAX_EARLY_MAPPING_SIZE);
+>>>>>
+>>>>> +       load_pa = (uintptr_t)(&_start);
+>>>>> +       load_sz = (uintptr_t)(&_end) - load_pa;
+>>>>> +
+>>>>>           va_pa_offset = PAGE_OFFSET - load_pa;
+>>>>> +       va_kernel_pa_offset = kernel_virt_addr - load_pa;
+>>>>> +
+>>>>>           pfn_base = PFN_DOWN(load_pa);
+>>>>>
+>>>>>           /*
+>>>>> @@ -402,26 +425,22 @@ asmlinkage void __init setup_vm(uintptr_t 
+>>>>> dtb_pa)
+>>>>>           create_pmd_mapping(fixmap_pmd, FIXADDR_START,
+>>>>>                              (uintptr_t)fixmap_pte, PMD_SIZE, 
+>>>>> PAGE_TABLE);
+>>>>>           /* Setup trampoline PGD and PMD */
+>>>>> -       create_pgd_mapping(trampoline_pg_dir, PAGE_OFFSET,
+>>>>> +       create_pgd_mapping(trampoline_pg_dir, kernel_virt_addr,
+>>>>>                              (uintptr_t)trampoline_pmd, 
+>>>>> PGDIR_SIZE, PAGE_TABLE);
+>>>>> -       create_pmd_mapping(trampoline_pmd, PAGE_OFFSET,
+>>>>> +       create_pmd_mapping(trampoline_pmd, kernel_virt_addr,
+>>>>>                              load_pa, PMD_SIZE, PAGE_KERNEL_EXEC);
+>>>>>    #else
+>>>>>           /* Setup trampoline PGD */
+>>>>> -       create_pgd_mapping(trampoline_pg_dir, PAGE_OFFSET,
+>>>>> +       create_pgd_mapping(trampoline_pg_dir, kernel_virt_addr,
+>>>>>                              load_pa, PGDIR_SIZE, PAGE_KERNEL_EXEC);
+>>>>>    #endif
+>>>>>
+>>>>>           /*
+>>>>> -        * Setup early PGD covering entire kernel which will allows
+>>>>> +        * Setup early PGD covering entire kernel which will allow
+>>>>>            * us to reach paging_init(). We map all memory banks later
+>>>>>            * in setup_vm_final() below.
+>>>>>            */
+>>>>> -       end_va = PAGE_OFFSET + load_sz;
+>>>>> -       for (va = PAGE_OFFSET; va < end_va; va += map_size)
+>>>>> -               create_pgd_mapping(early_pg_dir, va,
+>>>>> -                                  load_pa + (va - PAGE_OFFSET),
+>>>>> -                                  map_size, PAGE_KERNEL_EXEC);
+>>>>> +       create_kernel_page_table(early_pg_dir, map_size);
+>>>>>
+>>>>>           /* Create fixed mapping for early FDT parsing */
+>>>>>           end_va = __fix_to_virt(FIX_FDT) + FIX_FDT_SIZE;
+>>>>> @@ -441,6 +460,7 @@ static void __init setup_vm_final(void)
+>>>>>           uintptr_t va, map_size;
+>>>>>           phys_addr_t pa, start, end;
+>>>>>           struct memblock_region *reg;
+>>>>> +       static struct vm_struct vm_kernel = { 0 };
+>>>>>
+>>>>>           /* Set mmu_enabled flag */
+>>>>>           mmu_enabled = true;
+>>>>> @@ -467,10 +487,22 @@ static void __init setup_vm_final(void)
+>>>>>                   for (pa = start; pa < end; pa += map_size) {
+>>>>>                           va = (uintptr_t)__va(pa);
+>>>>> create_pgd_mapping(swapper_pg_dir, va, pa,
+>>>>> -                                          map_size, 
+>>>>> PAGE_KERNEL_EXEC);
+>>>>> +                                          map_size, PAGE_KERNEL);
+>>>>>                   }
+>>>>>           }
+>>>>>
+>>>>> +       /* Map the kernel */
+>>>>> +       create_kernel_page_table(swapper_pg_dir, PMD_SIZE);
+>>>>> +
+>>>>> +       /* Reserve the vmalloc area occupied by the kernel */
+>>>>> +       vm_kernel.addr = (void *)kernel_virt_addr;
+>>>>> +       vm_kernel.phys_addr = load_pa;
+>>>>> +       vm_kernel.size = (load_sz + PMD_SIZE) & ~(PMD_SIZE - 1);
+>>>>> +       vm_kernel.flags = VM_MAP | VM_NO_GUARD;
+>>>>> +       vm_kernel.caller = __builtin_return_address(0);
+>>>>> +
+>>>>> +       vm_area_add_early(&vm_kernel);
+>>>>> +
+>>>>>           /* Clear fixmap PTE and PMD mappings */
+>>>>>           clear_fixmap(FIX_PTE);
+>>>>>           clear_fixmap(FIX_PMD);
+>>>>> diff --git a/arch/riscv/mm/physaddr.c b/arch/riscv/mm/physaddr.c
+>>>>> index e8e4dcd39fed..35703d5ef5fd 100644
+>>>>> --- a/arch/riscv/mm/physaddr.c
+>>>>> +++ b/arch/riscv/mm/physaddr.c
+>>>>> @@ -23,7 +23,7 @@ EXPORT_SYMBOL(__virt_to_phys);
+>>>>>
+>>>>>    phys_addr_t __phys_addr_symbol(unsigned long x)
+>>>>>    {
+>>>>> -       unsigned long kernel_start = (unsigned long)PAGE_OFFSET;
+>>>>> +       unsigned long kernel_start = (unsigned long)kernel_virt_addr;
+>>>>>           unsigned long kernel_end = (unsigned long)_end;
+>>>>>
+>>>>>           /*
+>>>>> -- 
+>>>>> 2.20.1
+>>>>>
