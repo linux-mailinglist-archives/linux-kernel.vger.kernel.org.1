@@ -2,262 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133381E5B6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 11:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23FA71E5BC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 11:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728122AbgE1JHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 05:07:44 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:38954 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728028AbgE1JHn (ORCPT
+        id S1728344AbgE1JXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 05:23:24 -0400
+Received: from m4a0073g.houston.softwaregrp.com ([15.124.2.131]:36612 "EHLO
+        m4a0073g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728161AbgE1JXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 05:07:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590656861;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wQmI0+P/PEpIKaNOyFwxoTQFEAf09zsYAcbhQ4pxdC8=;
-        b=D1ZT3ivhRaWaGwS8KqXtyyboK6i6AolOiuTqByhPBA58ci/mkI70Oi/Py/XzGX01gZkdgy
-        W4BPMScsfEbc8hn0ZrupvBGokOSlEHEsXLltoiuHpLBJJ2359MJsgOpfGdCUvN8UAVfCLM
-        7jTbM0nLYrvijfadqB4z09Y1bOtMq/I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-173-9ryIWqjjO7G9vB1sAO4Fuw-1; Thu, 28 May 2020 05:07:39 -0400
-X-MC-Unique: 9ryIWqjjO7G9vB1sAO4Fuw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D9CDE107ACCA;
-        Thu, 28 May 2020 09:07:37 +0000 (UTC)
-Received: from localhost (ovpn-12-80.pek2.redhat.com [10.72.12.80])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E404B62932;
-        Thu, 28 May 2020 09:07:33 +0000 (UTC)
-Date:   Thu, 28 May 2020 17:07:31 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Mike Rapoport <rppt@linux.ibm.com>, mgorman@suse.de,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, cai@lca.pw, mhocko@kernel.org,
-        steve.wahl@hpe.com
-Subject: Re: [PATCH] mm/compaction: Fix the incorrect hole in
- fast_isolate_freepages()
-Message-ID: <20200528090731.GI20045@MiWiFi-R3L-srv>
-References: <20200521014407.29690-1-bhe@redhat.com>
- <20200521092612.GP1059226@linux.ibm.com>
- <20200521155225.GA20045@MiWiFi-R3L-srv>
- <20200521171836.GU1059226@linux.ibm.com>
- <20200522070114.GE26955@MiWiFi-R3L-srv>
- <20200522072524.GF26955@MiWiFi-R3L-srv>
- <20200522142053.GW1059226@linux.ibm.com>
- <20200526084543.GG26955@MiWiFi-R3L-srv>
- <20200526113244.GH13212@linux.ibm.com>
- <01beec81-565f-d335-5eff-22693fc09c0e@redhat.com>
+        Thu, 28 May 2020 05:23:23 -0400
+Received: FROM m4a0073g.houston.softwaregrp.com (15.120.17.147) BY m4a0073g.houston.softwaregrp.com WITH ESMTP;
+ Thu, 28 May 2020 09:20:49 +0000
+Received: from M4W0334.microfocus.com (2002:f78:1192::f78:1192) by
+ M4W0335.microfocus.com (2002:f78:1193::f78:1193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10; Thu, 28 May 2020 09:08:26 +0000
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (15.124.8.12) by
+ M4W0334.microfocus.com (15.120.17.146) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10 via Frontend Transport; Thu, 28 May 2020 09:08:26 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ALSUkPsCt019wMaWuZGag7+2LY0fss7WVgJuGR+jAnZ3WY/RxKGPPdjN6GClmaFBKT9oCQMYe2YZS7h8qeOZe469q+thxvaNPbEoocNpqKo+DSWYqAotg7aj+qH3LReJRUXcyUqM/ReH41OpxSH0EYd/NsBzfBzRkLZlgq6AwityC2sF8yN6+INGg4RfCspFAZlgKPnHtoE2YMjW6oLbFOI5+qjSwL0M9i0LUYQy62CSh82nSUXZQ2l9VlFgkdpoj5Tqln87hvq2aIJqTqGj4wEXjqZ1Kdzc7GchnrVfhfzCws+UhhMWJJGU131e3eELHXKE3RCBA7lFipPb1YX6ag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EDLFn5nbX+C4dGsd+vzzVyStqbalOdwaNAJ9XagCRE0=;
+ b=VM44fLRHNSP+U2OvDQ1FMFHyA9Qq+2gjOAbCUzY4obboHbnPpZhlWGZpj89aRs/jSuWyvd522yjlpmbCd+9zPC1w/ze1rbitM6GNKRhAEiTJYcqvae8m7sGtgrEn87QOXFJk5utd01Z+riLNoQ+9lkRvGeF9wqkh49JInY2LKgNbqsdMOkdpHmL7OW3uHcHIkVAi7dLhYptasvNFnYfLIlNV9KBeRnjWESp1XroLCI9SjursXDssKxk+MH6mC708oPceQ+QKgIZ5SR4/H6VxpVOAI/bsoN96UXpsJbJ+RAVvuhObmTnj9zrpkdqc73A1f32Amnn6gF/OUaZg5YsCsw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from DM6PR18MB3084.namprd18.prod.outlook.com (2603:10b6:5:161::24)
+ by DM6PR18MB3602.namprd18.prod.outlook.com (2603:10b6:5:2a4::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.18; Thu, 28 May
+ 2020 09:08:25 +0000
+Received: from DM6PR18MB3084.namprd18.prod.outlook.com
+ ([fe80::f45a:3f0:2fa:c5ef]) by DM6PR18MB3084.namprd18.prod.outlook.com
+ ([fe80::f45a:3f0:2fa:c5ef%5]) with mapi id 15.20.3045.018; Thu, 28 May 2020
+ 09:08:25 +0000
+Date:   Thu, 28 May 2020 11:08:13 +0200
+From:   Petr Tesarik <ptesarik@suse.com>
+To:     <linux-s390@vger.kernel.org>
+CC:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] s390/pci: Log new handle in clp_disable_fh()
+Message-ID: <20200528110813.7eb1fc1f@ezekiel.suse.cz>
+In-Reply-To: <20200522183922.5253-1-ptesarik@suse.com>
+References: <20200522183922.5253-1-ptesarik@suse.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        boundary="Sig_/CQYNDMfSK8dU_Z=bSKKA6eJ";
+        protocol="application/pgp-signature"
+X-ClientProxiedBy: AM0PR06CA0094.eurprd06.prod.outlook.com
+ (2603:10a6:208:fa::35) To DM6PR18MB3084.namprd18.prod.outlook.com
+ (2603:10b6:5:161::24)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <01beec81-565f-d335-5eff-22693fc09c0e@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ezekiel.suse.cz (2a00:1028:83b8:1e7a:5a6e:d5af:320a:e57) by AM0PR06CA0094.eurprd06.prod.outlook.com (2603:10a6:208:fa::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19 via Frontend Transport; Thu, 28 May 2020 09:08:23 +0000
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
+X-Originating-IP: [2a00:1028:83b8:1e7a:5a6e:d5af:320a:e57]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4fd69b7c-ce74-4d1f-55a2-08d802e6ad83
+X-MS-TrafficTypeDiagnostic: DM6PR18MB3602:
+X-Microsoft-Antispam-PRVS: <DM6PR18MB36027A1137620422335FF78FA68E0@DM6PR18MB3602.namprd18.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1169;
+X-Forefront-PRVS: 0417A3FFD2
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aVLn47WbsOGEJ66HvwwQmRa54Q8zbK28d9U1u0znVlM0fCneFmbfpx7pdrUs2FrNpBJdUARyb96G34M6Jpg0WkE10BhXGvxPJCom4POTrtL0EDE6ydc2ABM8qNDE3Fm6BNYCYMUGOlp5vj2e3cdTJbSYAhvsCFvPaC1K8dAhbpliSoH3E++bujNGSBAbYaMzXSja2JdEcaFppFj71JV4RjhFSE1Fz1VIcZ91htU4Otc99fZMVKIFZFvta6YpxCdyGwfuBAT3W4gGAKGTWIVrY8eEUxdpMzyT4yYjpu3bb17JHG/VwHQc4zSQJVqe5G+a
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR18MB3084.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(346002)(366004)(136003)(396003)(39860400002)(6506007)(55016002)(6916009)(66946007)(6666004)(66556008)(66476007)(83380400001)(16526019)(8936002)(4326008)(52116002)(5660300002)(7696005)(186003)(2906002)(8676002)(1076003)(316002)(86362001)(66574014)(54906003)(478600001)(9686003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 7qOgkXTyr5Mu5WhB8wTCMF2p0gq9ntttolkUfDjjd4CjAvlX5XHkpLJJjTGlM74UuRQNPxWsiHE1+adAQuXc52tpFvRHPO/VgX40DeSLlx51jpHNAAFW7ayMUemKvalimMs7Gh1vn3yM64Anl3bRQ07ZKxKkWh+r3r/JFoqvsqeCb1OaULTXPD/XFPY5PBtSllYHFl3Ec/flDJGul6f8eQ0GziRAJ/Zmi5OEXzjzJlhJtUv4TpPIG/hihg/5cSootJQ3SvYRwc8VCOKZOuiuqbVQKHFiEeSJ757Vvy9lYhMdJPqKiMQjE3Vrhr1/lwFO89OtiF3ptfwPFyNYT8HRXWJAEj5p8pvA5KXnftsxmH/RYUDUajqGoeuKLXiRqXxug4yEEdvqLybdkccR9fRmEAn+Y/Y0WXwwFCPd1bVnIoXtyKt8v/MR/GvpHqJNCqfNYR7TBE7SK44Pxvu6IQV4vLd0guvSkrcODTJfAN1OrKJcEljw+LN3GU6k5j+DSSOww+O2f7VCc69movpH4c4YLkkjJuTgg1R3h+cdcHc/BuvNH7OmvQ/+KPSYDRbYjXXK
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4fd69b7c-ce74-4d1f-55a2-08d802e6ad83
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2020 09:08:25.5361
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 856b813c-16e5-49a5-85ec-6f081e13b527
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TT/NP1W7UX07UlyurPvGT+Yt23ijrfVEkBe9E+kCR0AC/fZQFYrSfOpdEnG0ktkulcQdj+QH2xhIj4yLZGO2Eg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR18MB3602
+X-OriginatorOrg: suse.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/26/20 at 01:49pm, David Hildenbrand wrote:
-> On 26.05.20 13:32, Mike Rapoport wrote:
-> > Hello Baoquan,
-> > 
-> > On Tue, May 26, 2020 at 04:45:43PM +0800, Baoquan He wrote:
-> >> On 05/22/20 at 05:20pm, Mike Rapoport wrote:
-> >>> Hello Baoquan,
-> >>>
-> >>> On Fri, May 22, 2020 at 03:25:24PM +0800, Baoquan He wrote:
-> >>>> On 05/22/20 at 03:01pm, Baoquan He wrote:
-> >>>>>
-> >>>>> So let's add these unavailable ranges into memblock and reserve them
-> >>>>> in init_unavailable_range() instead. With this change, they will be added
-> >>>>> into appropriate node and zone in memmap_init(), and initialized in
-> >>>>> reserve_bootmem_region() just like any other memblock reserved regions.
-> >>>>
-> >>>> Seems this is not right. They can't get nid in init_unavailable_range().
-> >>>> Adding e820 ranges may let them get nid. But the hole range won't be
-> >>>> added to memblock, and still has the issue.
-> >>>>
-> >>>> Nack this one for now, still considering.
-> >>>
-> >>> Why won't we add  the e820 reserved ranges to memblock.memory during
-> >>> early boot as I suggested?
-> >>>
-> >>> diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
-> >>> index c5399e80c59c..b0940c618ed9 100644
-> >>> --- a/arch/x86/kernel/e820.c
-> >>> +++ b/arch/x86/kernel/e820.c
-> >>> @@ -1301,8 +1301,11 @@ void __init e820__memblock_setup(void)
-> >>>  		if (end != (resource_size_t)end)
-> >>>  			continue;
-> >>>  
-> >>> -		if (entry->type == E820_TYPE_SOFT_RESERVED)
-> >>> +		if (entry->type == E820_TYPE_SOFT_RESERVED ||
-> >>> +		    entry->type == E820_TYPE_RESERVED) {
-> >>> +			memblock_add(entry->addr, entry->size);
-> >>>  			memblock_reserve(entry->addr, entry->size);
-> >>> +		}
-> >>>  
-> >>>  		if (entry->type != E820_TYPE_RAM && entry->type != E820_TYPE_RESERVED_KERN)
-> >>>  			continue;
-> >>>
-> >>> The setting of node later  in numa_init() will assign the proper node
-> >>> for these regions as it does for the usable memory.
-> >>
-> >> Yes, if it's only related to e820 reserved region, this truly works.
-> >>
-> >> However, it also has ACPI table regions. That's why I changed to call
-> >> the problematic area as firmware reserved ranges later.
-> >>
-> >> Bisides, you can see below line, there's another reserved region which only
-> >> occupies one page in one memory seciton. If adding to memblock.memory, we also
-> >> will build struct mem_section and the relevant struct pages for the whole
-> >> section. And then the holes around that page will be added and initialized in
-> >> init_unavailable_mem(). numa_init() will assign proper node for memblock.memory
-> >> and memblock.reserved, but won't assign proper node for the holes.
-> >>
-> >> ~~~
-> >> [    0.000000] BIOS-e820: [mem 0x00000000fed80000-0x00000000fed80fff] reserved
-> >> ~~~
-> >>
-> >> So I still think we should not add firmware reserved range into
-> >> memblock for fixing this issue.
-> >>
-> >> And, the fix in the original patch seems necessary. You can see in
-> >> compaction code, the migration source is chosen from LRU pages or
-> >> movable pages, the migration target has to be got from Buddy. However,
-> >> only the min_pfn in fast_isolate_freepages(), it's calculated by
-> >> distance between cc->free_pfn - cc->migrate_pfn, we can't guarantee it's
-> >> safe, then use it as the target to handle.
-> > 
-> > I do not object to your original fix with careful check for pfn validity.
-> > 
-> > But I still think that the memory reserved by the firmware is still
-> > memory and it should be added to memblock.memory. This way the memory
-> 
-> If it's really memory that could be read/written, I think I agree.
+--Sig_/CQYNDMfSK8dU_Z=bSKKA6eJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I would say some of them may not be allowed to be read/written, if I
-understand it correctly. I roughly went through the x86 init code, there
-are some places where mem region is marked as E820_TYPE_RESERVED so that
-they are not touched after initialization. E.g:
+Hi all,
 
-1) pfn 0
-In trim_bios_range(), we set the pfn 0 as E820_TYPE_RESERVED. You can
-see the code comment, this is a BIOS owned area, but not kernel RAM.
+just a gentle ping.
 
-2)GART reserved region
-In early_gart_iommu_check(), GART IOMMU firmware will reserve a region
-in an area, firmware designer won't map system RAM into that area.
+If the current behaviour (logging the original handle) was intended,
+then it was worth mentioning in the commit message for 17cdec960cf77,
+which made the change, but since that's no longer an option, I'd be
+happy with an explanation in email.
 
-And also intel_graphics_stolen(), arch_rmrr_sanity_check(), these
-regions are not system RAM backed area, reading from or writting into
-these area may cause error.
+Petr T
 
-Futhermore, there's a KASLR bug found by HPE, its triggering and root
-cause are written into below commit log. You can see that accessing to
-firmware reserved region caused BIOS to halt system when cpu doing
-speculative.
+On Fri, 22 May 2020 20:39:22 +0200
+Petr Tesarik <ptesarik@suse.com> wrote:
 
-commit 2aa85f246c181b1fa89f27e8e20c5636426be624
-Author: Steve Wahl <steve.wahl@hpe.com>
-Date:   Tue Sep 24 16:03:55 2019 -0500
+> After disabling a function, the original handle is logged instead of
+> the disabled handle.
+>=20
+> Fixes: 17cdec960cf77 (s390/pci: Recover handle in clp_set_pci_fn())
+> Signed-off-by: Petr Tesarik <ptesarik@suse.com>
+> ---
+>  arch/s390/pci/pci_clp.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>=20
+> diff --git a/arch/s390/pci/pci_clp.c b/arch/s390/pci/pci_clp.c
+> index ea794ae755ae..179bcecefdee 100644
+> --- a/arch/s390/pci/pci_clp.c
+> +++ b/arch/s390/pci/pci_clp.c
+> @@ -309,14 +309,13 @@ int clp_enable_fh(struct zpci_dev *zdev, u8 nr_dma_=
+as)
+> =20
+>  int clp_disable_fh(struct zpci_dev *zdev)
+>  {
+> -	u32 fh =3D zdev->fh;
+>  	int rc;
+> =20
+>  	if (!zdev_enabled(zdev))
+>  		return 0;
+> =20
+>  	rc =3D clp_set_pci_fn(zdev, 0, CLP_SET_DISABLE_PCI_FN);
+> -	zpci_dbg(3, "dis fid:%x, fh:%x, rc:%d\n", zdev->fid, fh, rc);
+> +	zpci_dbg(3, "dis fid:%x, fh:%x, rc:%d\n", zdev->fid, zdev->fh, rc);
+>  	return rc;
+>  }
+> =20
 
-    x86/boot/64: Make level2_kernel_pgt pages invalid outside kernel area
 
-    Our hardware (UV aka Superdome Flex) has address ranges marked
-    reserved by the BIOS. Access to these ranges is caught as an error,
-    causing the BIOS to halt the system.
+--Sig_/CQYNDMfSK8dU_Z=bSKKA6eJ
+Content-Type: application/pgp-signature
+Content-Description: Digitální podpis OpenPGP
 
-> 
-> > map will be properly initialized from the very beginning and we won't
-> > need init_unavailable_mem() and alike workarounds and. Obviously, the patch
-> 
-> I remember init_unavailable_mem() is necessary for holes within
-> sections, where we actually *don't* have memory, but we still have have
-> a valid memmap (full section) that we have to initialize.
-> 
-> See the example from 4b094b7851bf ("mm/page_alloc.c: initialize memmap
-> of unavailable memory directly"). Our main memory ends within a section,
-> so we have to initialize the remaining parts because the whole section
-> will be marked valid/online.
+-----BEGIN PGP SIGNATURE-----
 
-Yes, memory hole need be handled in init_unavailable_mem(). Since we
-have created struct page for them, need initialize them. We can't
-discard init_unavailable_mem() for now.
+iQEzBAEBCAAdFiEEHl2YIZkIo5VO2MxYqlA7ya4PR6cFAl7Pf30ACgkQqlA7ya4P
+R6edXgf/SOTHcC+zEGL/Nw3PDeNRDhU7NJ22hTmyULZtqgAOGCBF5z1/6NtMD+wm
+yIfS83Y687EmSkHSGj/w9WQ48F75dUxXGVVjyGcKMaAbe1e3gjqTnsQ5mI0zHU0O
+786+7AI+sviai9UeM+5xCaXriExgaMnSjhT98udUZSxXOsYC1WhtBctvVJvLjFog
+TsmDdNytv74TgBEN2e2HZmxyrHUSk6lPVF3YNpvxg33WUo2s435tP+He7ePYfKY2
+BdxJcweVTPyffg5RFAaij9JbCXga2aologtPCAb1DX5rtRMZt7rorj/XV0DZho7j
+fEvIUMezalXdzQrtt31pq2kB/3ni3w==
+=71b3
+-----END PGP SIGNATURE-----
 
-> 
-> Any way to improve this handling is appreciated. In that patch I also
-> spelled out that we might want to mark such holes via a new page type,
-> e.g., PageHole(). Such a page is a memory hole, but has a valid memmap.
-> Any content in the memmap (zone/node) should be ignored.
-
-As I said at above, I am a little conservative to add all those regions of
-E820_TYPE_RESERVED into memblock.memory and memblock.reserved, because
-most of them are firmware reserved region, they may be not backed by normal
-RAM.
-
-I was thinking to step back to use mm_zero_struct_page() inside
-init_unavailable_range() as below. But it doesn't differ much
-from __init_single_page(), except of the _refcount and mapcount.
-Zeroing struct page equals to putting them into node 0, zero 0.
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 3973b5fdfe3f..4e4b72cf5283 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6901,7 +6901,7 @@ static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn)
-                 * (in memblock.reserved but not in memblock.memory) will
-                 * get re-initialized via reserve_bootmem_region() later.
-                 */
--               __init_single_page(pfn_to_page(pfn), pfn, 0, 0);
-+               mm_zero_struct_page(pfn_to_page(pfn));
-                __SetPageReserved(pfn_to_page(pfn));
-                pgcnt++;
-        }
-
-About adding these unavailable ranges into node/zone, in the old code,
-it just happened to add them into expected node/zone. You can see in
-early_pfn_in_nid(), if no nid found from memblock, the returned '-1'
-will make it true ironically. But that is not saying the bad thing
-always got good result. If the last zone of node 0 is DMA32 zone, the
-deferred init will skip the only chance to add some of unavailable
-rnages into expected node/zone. Means they were not always added into
-appropriate node/zone before, the change of iterating memblock.memory in
-memmap_init() dones't introduce regression.
-
-static inline bool __meminit early_pfn_in_nid(unsigned long pfn, int node)
-{
-        int nid;
-
-        nid = __early_pfn_to_nid(pfn, &early_pfnnid_cache);
-        if (nid >= 0 && nid != node)
-                return false;
-        return true;
-}
-
-So if no anybody need access them after boot, not adding them into any
-node/zone sounds better. Otherwise, better add them in the appropriate
-node/zone.
-
-> 
-> But it's all quite confusing, especially across architectures and ...
-> 
-> > above is not enough, but it's a small step in this direction.
-> > 
-> > I believe that improving the early memory initialization would make many
-> > things simpler and more robust, but that's a different story :)
-> 
-> ... I second that.
-> 
-> -- 
-> Thanks,
-> 
-> David / dhildenb
-
+--Sig_/CQYNDMfSK8dU_Z=bSKKA6eJ--
