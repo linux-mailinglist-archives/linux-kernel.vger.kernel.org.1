@@ -2,144 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30F71E5CD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 12:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E95331E5CE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 12:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387793AbgE1KPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 06:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58930 "EHLO
+        id S2387819AbgE1KQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 06:16:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387769AbgE1KPG (ORCPT
+        with ESMTP id S2387698AbgE1KPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 06:15:06 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9869C08C5C8
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 03:15:06 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id 1so15423596vsl.9
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 03:15:06 -0700 (PDT)
+        Thu, 28 May 2020 06:15:22 -0400
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20ABC08C5C6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 03:15:21 -0700 (PDT)
+Received: by mail-ua1-x943.google.com with SMTP id 14so9447774uaq.11
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 03:15:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=NnFvkEinSu8JNeeiaCqqDDP3KthjxwCRXHN9I0khteE=;
-        b=JKXLgYnRrXprs68FC8fP4Hq7I9VPldQJYeOyc/9tZMIvKGkf3t5OoImS5K4atsMnAN
-         r27FPxAuUszQNOJP2Mc0e0W6PepVkbJr7xfkUcfmu59eRZHeKzQsqFqgPrCLjhZ2QcZm
-         B98a7+5hvdsR4PehdNAbX2Q5Irc8IRfgouLxpRWRu9GLQmRxE+zYRiXyI51m7zoRSkTJ
-         +rswdazaCjsE26eujh5yTeYERp1E0iZsmhEVLg3VEOfm4tqR8fEEMp3c4DUPAf0RW48B
-         6C4TICJ1VGKAY2wPQ1LKT6XGF2yPvJNdhTWDNUDY6Dvh2AZDUdM0GPcSLgQ5yRXyb7ex
-         BfEQ==
+        bh=ud/RiagjQwezZ9O6WViaS3IQ8v4tVVsn5ht8/yzb11s=;
+        b=DhWW2TZaU6JSigxodhdP2DkzM4mSPNd/RucxhTUXSsjV2pHcFpvc8dEh3Ov7JMQxW6
+         fsUmTCaDFFHufNAajsvLIzzYGP27pmDxmGitL7edYHfBuuBBtFXfv/oGTsfoH/k9HpXO
+         YFjP318+AFWQO5KHD3GxtTJLxRgCuuogI11pGC2wv09t42wptDew4J71VpJrkm0yNN7X
+         ztL9NDef6xu6ZxXatZVug/HPuCc7NzpsKknCfdtuZQ8WKAaG23yuNJ8T6dCSkBhWfVJQ
+         5pvbOSmYg8z0luYXa051rY+OPSqgN1Sl+Hdx8FpAGQhONh4SiM57g8CEvgyQT3b44vPz
+         3pNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NnFvkEinSu8JNeeiaCqqDDP3KthjxwCRXHN9I0khteE=;
-        b=Bu6mHaahRUsZ6fKEuNbR4FaAoje7NZwZxWR5RlgOc9360meIOYinlrLphFAh01e+ft
-         HyYx56F6dVDfL3YlT2acd66p5B9dvZ4z9B/4N0PciP4Pr9FWWXcceGqQ/GCbTKSZuQJx
-         GSC7v+y2+aV0FXHsn8rgFuy2ACh9XXtC8BkJZsrk4HdxZAmyhyotLVGisxpHedfwdP0p
-         uaFHHK+yVsU8ALdLR/0GsZyKcttBB+z/V7odYqlzehfciucml1MnG/0vCur/yk+duyG8
-         /+4Y24EhyeSYzy4cEAFnYGD7+ObPO7i1kcuMdaukgkABeqhSqSimhXONo6Uf7zv4xL7/
-         OzNg==
-X-Gm-Message-State: AOAM530X4+Sq7ASyK4g6ZFD048eQB0EoQpHZa/LbaD77ZaEDrol5+WSq
-        4iGYV58r/5YkmXDipOvu3PNBnkFbtA9F7oVIX+u4YxG0MAk=
-X-Google-Smtp-Source: ABdhPJzVo18IfEZvDNjehMuUK+Er1KC2DxaDvMSbNlAbvNzpRPVY17HtVDdF3JBPl18RRNoiV/BlCC6N4HoAjWTgSlA=
-X-Received: by 2002:a67:ec58:: with SMTP id z24mr1378822vso.200.1590660905952;
- Thu, 28 May 2020 03:15:05 -0700 (PDT)
+        bh=ud/RiagjQwezZ9O6WViaS3IQ8v4tVVsn5ht8/yzb11s=;
+        b=rJVyhXeaRb+AeltS8RBuGKReYFAyAygi85zX8v6ZEEM+1zM6oEgVIGI1y8HlLUHRs8
+         7UWgVID+gp1NpZ49Z4VWDIQr2xWUIBqkccC+sbUHx61U5jv/jVzoU0CPcDiK+W7ZUgjh
+         WD9YqDoGQvQ5sFuPFCdjFYkPoTupq6YV5nrSM0PNuS0Pm8UhuyYPvAvlkN9hYHY1yySQ
+         rLsr8foqaKIAEWD4sNUd+y1+MiJiTIpmgSt1SLT3HGV5tO1rLUJV8Hk6e1RQnpoVgw1P
+         8ftrgr41Tm84ACoJw6DwY0hIk1+l9S+vpwLeiM7KlSAQmU82EjMKAoNyFu/rmHRkfjFo
+         mUqA==
+X-Gm-Message-State: AOAM531ti54TK9zmJiwBDbTjcPAgOLO4IxR8PiQOmaODZysbz+h/5xTv
+        onx7H4HZZOab1LWNb5BFO+ueD+M5bDk2QWk8x8/MXw==
+X-Google-Smtp-Source: ABdhPJzzUCLBDPc9vy6c4Wlx/ry5lzfnFWaQGL62VHDyVauoVjIMYJ4ubcUNE8X304skZQRC7fxZJhLStDrVyXFD/q4=
+X-Received: by 2002:a9f:3701:: with SMTP id z1mr1467376uad.100.1590660920925;
+ Thu, 28 May 2020 03:15:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200526155103.12514-1-ludovic.barre@st.com> <20200526155103.12514-3-ludovic.barre@st.com>
-In-Reply-To: <20200526155103.12514-3-ludovic.barre@st.com>
+References: <20200527105659.142560-1-eugen.hristev@microchip.com>
+In-Reply-To: <20200527105659.142560-1-eugen.hristev@microchip.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 28 May 2020 12:14:28 +0200
-Message-ID: <CAPDyKForRHZFGEzn=5OVY8YP6okFj7G2e6QTJFH5-Q_xP3QLBw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mmc: mmci_sdmmc: fix DMA API warning max segment size
-To:     Ludovic Barre <ludovic.barre@st.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
+Date:   Thu, 28 May 2020 12:14:44 +0200
+Message-ID: <CAPDyKFrQXNVbwKrt10kZUBd-edGq+GbLM2rB+vsRrnd+JE_gLw@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci-of-at91: fix CALCR register being rewritten
+To:     Eugen Hristev <eugen.hristev@microchip.com>
+Cc:     Ludovic Desroches <ludovic.desroches@microchip.com>,
         "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 May 2020 at 17:51, Ludovic Barre <ludovic.barre@st.com> wrote:
+On Wed, 27 May 2020 at 12:57, Eugen Hristev <eugen.hristev@microchip.com> wrote:
 >
-> Turning on CONFIG_DMA_API_DEBUG_SG results in the following warning:
-> WARNING: CPU: 1 PID: 85 at kernel/dma/debug.c:1302 debug_dma_map_sg+0x2a0/0x3cc
-> mmci-pl18x 58005000.sdmmc: DMA-API: mapping sg segment longer than device claims to support [len=126976] [max=65536]
+> When enabling calibration at reset, the CALCR register was completely
+> rewritten. This may cause certain bits being deleted unintentedly.
+> Fix by issuing a read-modify-write operation.
 >
-> dma api debug checks and compares the segment size to
-> dma_get_max_seg_size (dev->dma_parms->max_segment_size),
-> the sdmmc variant has an internal DMA and should define
-> its max_segment_size constraint to avoid this warning.
->
-> This Patch defines the dev->dma_parms->max_segment_size
-> with the constraint already set for mmc core
-> (host->mmc->max_seg_size).
->
-> Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
+> Fixes: 727d836a375a ("mmc: sdhci-of-at91: add DT property to enable calibration on full reset")
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
 
-Applied for next, thanks!
-
-Note, a manual backport is needed for stable, as
-dma_set_max_seg_size() will fail for older kernels.
-We needed to revert 9495b7e92f7 ("driver core: platform: Initialize
-dma_parms for platform devices"), for stable kernels [1].
+Applied for next and by adding a stable tag, thanks!
 
 Kind regards
 Uffe
 
-[1]
-https://lkml.org/lkml/2020/5/26/1216
-
 
 > ---
->  drivers/mmc/host/mmci_stm32_sdmmc.c | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
+>  drivers/mmc/host/sdhci-of-at91.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 >
-> diff --git a/drivers/mmc/host/mmci_stm32_sdmmc.c b/drivers/mmc/host/mmci_stm32_sdmmc.c
-> index 2965b1c062e1..51db30acf4dc 100644
-> --- a/drivers/mmc/host/mmci_stm32_sdmmc.c
-> +++ b/drivers/mmc/host/mmci_stm32_sdmmc.c
-> @@ -119,20 +119,19 @@ static void sdmmc_idma_unprep_data(struct mmci_host *host,
->  static int sdmmc_idma_setup(struct mmci_host *host)
->  {
->         struct sdmmc_idma *idma;
-> +       struct device *dev = mmc_dev(host->mmc);
+> diff --git a/drivers/mmc/host/sdhci-of-at91.c b/drivers/mmc/host/sdhci-of-at91.c
+> index 25f4e0f4f53b..1ece2c50042c 100644
+> --- a/drivers/mmc/host/sdhci-of-at91.c
+> +++ b/drivers/mmc/host/sdhci-of-at91.c
+> @@ -121,9 +121,12 @@ static void sdhci_at91_reset(struct sdhci_host *host, u8 mask)
+>             || mmc_gpio_get_cd(host->mmc) >= 0)
+>                 sdhci_at91_set_force_card_detect(host);
 >
-> -       idma = devm_kzalloc(mmc_dev(host->mmc), sizeof(*idma), GFP_KERNEL);
-> +       idma = devm_kzalloc(dev, sizeof(*idma), GFP_KERNEL);
->         if (!idma)
->                 return -ENOMEM;
->
->         host->dma_priv = idma;
->
->         if (host->variant->dma_lli) {
-> -               idma->sg_cpu = dmam_alloc_coherent(mmc_dev(host->mmc),
-> -                                                  SDMMC_LLI_BUF_LEN,
-> +               idma->sg_cpu = dmam_alloc_coherent(dev, SDMMC_LLI_BUF_LEN,
->                                                    &idma->sg_dma, GFP_KERNEL);
->                 if (!idma->sg_cpu) {
-> -                       dev_err(mmc_dev(host->mmc),
-> -                               "Failed to alloc IDMA descriptor\n");
-> +                       dev_err(dev, "Failed to alloc IDMA descriptor\n");
->                         return -ENOMEM;
->                 }
->                 host->mmc->max_segs = SDMMC_LLI_BUF_LEN /
-> @@ -143,7 +142,7 @@ static int sdmmc_idma_setup(struct mmci_host *host)
->                 host->mmc->max_seg_size = host->mmc->max_req_size;
->         }
->
-> -       return 0;
-> +       return dma_set_max_seg_size(dev, host->mmc->max_seg_size);
+> -       if (priv->cal_always_on && (mask & SDHCI_RESET_ALL))
+> -               sdhci_writel(host, SDMMC_CALCR_ALWYSON | SDMMC_CALCR_EN,
+> +       if (priv->cal_always_on && (mask & SDHCI_RESET_ALL)) {
+> +               u32 calcr = sdhci_readl(host, SDMMC_CALCR);
+> +
+> +               sdhci_writel(host, calcr | SDMMC_CALCR_ALWYSON | SDMMC_CALCR_EN,
+>                              SDMMC_CALCR);
+> +       }
 >  }
 >
->  static int sdmmc_idma_start(struct mmci_host *host, unsigned int *datactrl)
+>  static const struct sdhci_ops sdhci_at91_sama5d2_ops = {
 > --
-> 2.17.1
+> 2.25.1
 >
