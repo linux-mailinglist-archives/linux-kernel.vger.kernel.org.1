@@ -2,83 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3FE1E5A21
+	by mail.lfdr.de (Postfix) with ESMTP id B7BFF1E5A22
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 10:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727087AbgE1IAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 04:00:31 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:59372 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725779AbgE1IAa (ORCPT
+        id S1726393AbgE1IAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 04:00:50 -0400
+Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:3526 "EHLO
+        SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725882AbgE1IAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 04:00:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0npeI6eY1T2CI7ZWFHA7J8k1+OIRaMrorW/cS+eT7aU=; b=kvRLyc/kHN8Nkm1VEIl1vFJsWx
-        4rXTFCksoOTrIMbxGnzQo0f+mnrMNkLPn84W90YcAhWXCrAG2AknPelIanxSpy+JCLJqvxMoybmOF
-        C0F00xhRTNIKnIezaWasFil5bOxmSTWGRCUJ1RDW3H2CJcqbYCpW7/tTO3Hb8JYZ+QYLJVR1z6E3S
-        UZN9A4UP+be2j9wj8v6cjoiwx2mfoVrjhzOILXyTdY7u/Uz365mGS2KcjieB+3T7ksGXKnJyjWc81
-        voYjjNwolOajZSU55m3TP2loLMVt9UHCO8ACGhgfw9H6Dt0upFVawSEfOGPNBkOji2HAOybOd4K6x
-        HNFbQxxw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jeDOV-0008JB-76; Thu, 28 May 2020 07:56:03 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C4C1A301205;
-        Thu, 28 May 2020 09:55:53 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A25EB20D6F3AC; Thu, 28 May 2020 09:55:53 +0200 (CEST)
-Date:   Thu, 28 May 2020 09:55:53 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Borislav Petkov <bp@suse.de>
-Cc:     kbuild test robot <lkp@intel.com>, Marco Elver <elver@google.com>,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, luc.vanoostenryck@gmail.com
-Subject: Re: [tip:locking/kcsan 12/12] /bin/bash: line 1: 61526 Segmentation
- fault  sparse ...
-Message-ID: <20200528075553.GC706478@hirez.programming.kicks-ass.net>
-References: <202005280727.lXn1VnTw%lkp@intel.com>
- <20200527235442.GC1805@zn.tnic>
+        Thu, 28 May 2020 04:00:49 -0400
+From:   Peter Enderborg <peter.enderborg@sony.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     Peter Enderborg <peter.enderborg@sony.com>
+Subject: [PATCH] debugfs: Add mount restriction option
+Date:   Thu, 28 May 2020 10:00:31 +0200
+Message-ID: <20200528080031.24149-1-peter.enderborg@sony.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200527235442.GC1805@zn.tnic>
+Content-Type: text/plain
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=VdGJw2h9 c=1 sm=1 tr=0 a=Jtaq2Av1iV2Yg7i8w6AGMw==:117 a=sTwFKg_x9MkA:10 a=z6gsHLkEAAAA:8 a=Cn-iF0jY07eQLtR_xsEA:9 a=d-OLMTCWyvARjPbQ-enb:22
+X-SEG-SpamProfiler-Score: 0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 01:54:42AM +0200, Borislav Petkov wrote:
-> On Thu, May 28, 2020 at 07:39:31AM +0800, kbuild test robot wrote:
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/kcsan
-> > head:   a5dead405f6be1fb80555bdcb77c406bf133fdc8
-> > commit: a5dead405f6be1fb80555bdcb77c406bf133fdc8 [12/12] compiler_types.h: Optimize __unqual_scalar_typeof compilation time
-> > config: i386-randconfig-s002-20200527 (attached as .config)
-> > compiler: gcc-9 (Debian 9.3.0-13) 9.3.0
-> > reproduce:
-> >         # apt-get install sparse
-> >         # sparse version: v0.6.1-240-gf0fe1cd9-dirty
-> >         git checkout a5dead405f6be1fb80555bdcb77c406bf133fdc8
-> >         # save the attached .config to linux build tree
-> >         make W=1 C=1 ARCH=i386 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
-> > 
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kbuild test robot <lkp@intel.com>
-> > 
-> > All errors (new ones prefixed by >>, old ones prefixed by <<):
-> 
-> I'll say.
-> 
-> Looking at the subject, that broke the 0day bot too. :-)
-> 
-> /me trims it.
-> 
-> Looks like we need __CHECKER__ ifdeffery somewhere but it is too late
-> for me to think straight so tomorrow...
+Since debugfs include sensitive information it need to be treated
+carefully. But it also has many very useful debug functions for userspace.
+With this option we can have same configuration for system with
+need of debugfs and a way to turn it off. It is needed new
+kernel command line parameter to be activated.
 
-I think the problem is that sparse can't parse the C11 _Generic thing.
-Someone needs to teach it new tricks.
+Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
+---
+ fs/debugfs/inode.c | 17 ++++++++++++++++-
+ lib/Kconfig.debug  | 10 ++++++++++
+ 2 files changed, 26 insertions(+), 1 deletion(-)
+
+diff --git a/fs/debugfs/inode.c b/fs/debugfs/inode.c
+index b7f2e971ecbc..bde37dab77e0 100644
+--- a/fs/debugfs/inode.c
++++ b/fs/debugfs/inode.c
+@@ -786,10 +786,25 @@ bool debugfs_initialized(void)
+ }
+ EXPORT_SYMBOL_GPL(debugfs_initialized);
+ 
++static int allow_debugfs;
++
++static int __init debugfs_kernel(char *str)
++{
++	if (str && !strcmp(str, "true"))
++		allow_debugfs = true;
++
++	return 0;
++
++}
++early_param("debugfs", debugfs_kernel);
++
+ static int __init debugfs_init(void)
+ {
+ 	int retval;
+-
++#ifdef CONFIG_DEBUG_FS_MOUNT_RESTRICTED
++	if (!allow_debugfs)
++		return -EPERM;
++#endif
+ 	retval = sysfs_create_mount_point(kernel_kobj, "debug");
+ 	if (retval)
+ 		return retval;
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 21d9c5f6e7ec..d3a3338740d2 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -443,6 +443,16 @@ config DEBUG_FS
+ 
+ 	  If unsure, say N.
+ 
++config DEBUG_FS_MOUNT_RESTRICTED
++	bool "Debug Filesystem mount restricted"
++	depends on DEBUG_FS
++	help
++	  This is an additional restriction for mounting debugfs. It allows
++	  the kernel to have debugfs compiled, but requires that kernel command
++	  line has a debugfs parameter to register as a filesystem.
++
++	  If unsure, say N.
++
+ source "lib/Kconfig.kgdb"
+ 
+ source "lib/Kconfig.ubsan"
+-- 
+2.26.2
+
