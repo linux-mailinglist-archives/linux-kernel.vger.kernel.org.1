@@ -2,162 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1421E5BBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 11:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC561E5BC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 11:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728219AbgE1JWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 05:22:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728161AbgE1JWT (ORCPT
+        id S1728298AbgE1JWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 05:22:55 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:54718 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728264AbgE1JWy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 05:22:19 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB7C7C05BD1E;
-        Thu, 28 May 2020 02:22:18 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Xhzm2Lltz9sSJ;
-        Thu, 28 May 2020 19:22:12 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1590657735;
-        bh=Fp4GVOzcbEnK6RqBJSixgdXUegD8+m1wTRF4rLXA8uE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ZOH/Rv4/V12lXoLDkgggMxYq4i04upO/0MpPYwMvwW0p0reAI1zM5fpKiqif4TPIx
-         Ly9n6fV3ys7GFE2dAF93e7HwFy6AgTWulXeQj3o18jIqtQsUp2T3bzyuVj/xvT+/L2
-         WA4n5Uwm/hMYjNTa0LT7UIiudY0HL90mDFPyiBBswOWvGqT2651emvERRW9GA41A0M
-         tc/esK+byQK7h7WtwnRHbf+e7xUs+Y5t2wU+12vQgY9NCfSHqXqDRxElwxSbMa85gN
-         2tGYYWRCHP6i2eNTjMjV/qTf+edMI8CLuNzedg4ChzUzm9R0/+ool2r4OAdvVbO/0E
-         bd4HHCqeDuxQA==
-Date:   Thu, 28 May 2020 19:22:11 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul@pwsan.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Zong Li <zong.li@sifive.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: linux-next: manual merge of the akpm-current tree with the rsic-v
- tree
-Message-ID: <20200528192211.2449bd4f@canb.auug.org.au>
+        Thu, 28 May 2020 05:22:54 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04S9MmsX130695;
+        Thu, 28 May 2020 04:22:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1590657768;
+        bh=/Wdo0if7NVPAlofWxugu+NvYgar4E2L7mukGEI+7YkA=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=WXdtZJBV1eqGnMZaIRytmy8jZXYyuT1gaWy/IN+RuWc7/ylU2HKeyTpMb28wziMF9
+         tywXTeptrDPyFOvJIA++2kjjW2nW+EC52mylyNx1XteJdbkAN+UFKjy+zQa0k9PXSV
+         1+J0zOP53GfHov1eVqh9nOrpvArsB21InxiVnd8E=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04S9MmIO001252
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 28 May 2020 04:22:48 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 28
+ May 2020 04:22:48 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 28 May 2020 04:22:48 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04S9MeUk095917;
+        Thu, 28 May 2020 04:22:41 -0500
+Subject: Re: [PATCHv2] media: videobuf2-dma-contig: fix bad kfree in
+ vb2_dma_contig_clear_max_seg_size
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+CC:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "# 4.0+" <stable@vger.kernel.org>
+References: <20200527082334.20774-1-tomi.valkeinen@ti.com>
+ <CAPDyKFqRa81q9EYFKB52kr6+EPJBK5u+4_hC0+ZnxU_axbxAZQ@mail.gmail.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+Message-ID: <77572269-ca18-acd4-89c6-ca4145ed29db@ti.com>
+Date:   Thu, 28 May 2020 12:22:35 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/G4jwG.GiBQmy5HOToZ+j._7";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <CAPDyKFqRa81q9EYFKB52kr6+EPJBK5u+4_hC0+ZnxU_axbxAZQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/G4jwG.GiBQmy5HOToZ+j._7
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 28/05/2020 12:14, Ulf Hansson wrote:
+> On Wed, 27 May 2020 at 10:23, Tomi Valkeinen <tomi.valkeinen@ti.com> wrote:
+>>
+>> Commit 9495b7e92f716ab2bd6814fab5e97ab4a39adfdd ("driver core: platform:
+>> Initialize dma_parms for platform devices") in v5.7-rc5 causes
+>> vb2_dma_contig_clear_max_seg_size() to kfree memory that was not
+>> allocated by vb2_dma_contig_set_max_seg_size().
+>>
+>> The assumption in vb2_dma_contig_set_max_seg_size() seems to be that
+>> dev->dma_parms is always NULL when the driver is probed, and the case
+>> where dev->dma_parms has bee initialized by someone else than the driver
+>> (by calling vb2_dma_contig_set_max_seg_size) will cause a failure.
+>>
+>> All the current users of these functions are platform devices, which now
+>> always have dma_parms set by the driver core. To fix the issue for v5.7,
+>> make vb2_dma_contig_set_max_seg_size() return an error if dma_parms is
+>> NULL to be on the safe side, and remove the kfree code from
+>> vb2_dma_contig_clear_max_seg_size().
+>>
+>> For v5.8 we should remove the two functions and move the
+>> dma_set_max_seg_size() calls into the drivers.
+>>
+>> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+>> Fixes: 9495b7e92f71 ("driver core: platform: Initialize dma_parms for platform devices")
+>> Cc: stable@vger.kernel.org
+> 
+> Thanks for fixing this!
+> 
+> However, as I tried to point out in v1, don't you need to care about
+> drivers/media/platform/s5p-mfc/s5p_mfc.c, which allocates its own type
+> of struct device (non-platform). No?
 
-Hi all,
+Oh my bad. I thought Marek posted a patch for it, but now that I look, Marek's patch was for 
+ExynosDRM. Somehow I managed to mix up that with the s5p in my head.
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+I'll try to find time to look at s5p too, but if anyone gets there first, feel free to fix it.
 
-  arch/riscv/Kconfig
+  Tomi
 
-between commit:
-
-  b151fefd23b7 ("riscv: sort select statements alphanumerically")
-
-from the rsic-v tree and commits:
-
-  e8d3552c4f20 ("mm: remove CONFIG_HAVE_MEMBLOCK_NODE_MAP option")
-  4d01b8e6220f ("riscv: support DEBUG_WX")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/riscv/Kconfig
-index de5c95119de9,68418201734a..000000000000
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@@ -12,47 -12,29 +12,47 @@@ config 32BI
- =20
-  config RISCV
-  	def_bool y
- -	select OF
- -	select OF_EARLY_FLATTREE
- -	select OF_IRQ
-  	select ARCH_HAS_BINFMT_FLAT
- +	select ARCH_HAS_DEBUG_VIRTUAL if MMU
-+ 	select ARCH_HAS_DEBUG_WX
- +	select ARCH_HAS_GCOV_PROFILE_ALL
- +	select ARCH_HAS_GIGANTIC_PAGE
- +	select ARCH_HAS_MMIOWB
- +	select ARCH_HAS_PTE_SPECIAL
- +	select ARCH_HAS_SET_DIRECT_MAP
- +	select ARCH_HAS_SET_MEMORY
- +	select ARCH_HAS_STRICT_KERNEL_RWX if MMU
- +	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
-  	select ARCH_WANT_FRAME_POINTERS
- +	select ARCH_WANT_HUGE_PMD_SHARE if 64BIT
-  	select CLONE_BACKWARDS
-  	select COMMON_CLK
- +	select EDAC_SUPPORT
- +	select GENERIC_ARCH_TOPOLOGY if SMP
- +	select GENERIC_ATOMIC64 if !64BIT
-  	select GENERIC_CLOCKEVENTS
- +	select GENERIC_IOREMAP
- +	select GENERIC_IRQ_MULTI_HANDLER
-  	select GENERIC_IRQ_SHOW
-  	select GENERIC_PCI_IOMAP
- +	select GENERIC_PTDUMP if MMU
-  	select GENERIC_SCHED_CLOCK
- +	select GENERIC_SMP_IDLE_THREAD
-  	select GENERIC_STRNCPY_FROM_USER if MMU
-  	select GENERIC_STRNLEN_USER if MMU
- -	select GENERIC_SMP_IDLE_THREAD
- -	select GENERIC_ATOMIC64 if !64BIT
- -	select GENERIC_IOREMAP
- -	select GENERIC_PTDUMP if MMU
-  	select HAVE_ARCH_AUDITSYSCALL
- +	select HAVE_ARCH_KASAN if MMU && 64BIT
- +	select HAVE_ARCH_KGDB
- +	select HAVE_ARCH_KGDB_QXFER_PKT
- +	select HAVE_ARCH_MMAP_RND_BITS if MMU
-  	select HAVE_ARCH_SECCOMP_FILTER
- +	select HAVE_ARCH_TRACEHOOK
-  	select HAVE_ASM_MODVERSIONS
- +	select HAVE_COPY_THREAD_TLS
-  	select HAVE_DMA_CONTIGUOUS if MMU
- +	select HAVE_EBPF_JIT if MMU
-  	select HAVE_FUTEX_CMPXCHG if FUTEX
-- 	select HAVE_MEMBLOCK_NODE_MAP
- +	select HAVE_PCI
-  	select HAVE_PERF_EVENTS
-  	select HAVE_PERF_REGS
-  	select HAVE_PERF_USER_STACK_DUMP
-
---Sig_/G4jwG.GiBQmy5HOToZ+j._7
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7PgsMACgkQAVBC80lX
-0GyzTggAilHQ0D6JscPlzKcd95bmH2hEEHQSF1YaSsfdjhbF6j+TmfRDTLA64zKr
-pslx5bbBTdLZQeYTOgmZCJim3mCIBRITsfiyOnetcGLN5G70oOrI6jpf3rHy5rH0
-zCcQ6xf77v1dcMHNL8L0GOtFlGrQNQo19/LI9lhZSDH2Sxt/vjPOIQAImZ2/PrBu
-S84YvMUnc65t3hpIhDE0PbkMULQ0pjg1eiFAhuaFvj4ojyGY2hvaOSXfbIfBYVNK
-XxP1jc2MLyS19DEGuBA+yjFbjhqdwGdHcCf1xwRF+p1Krpf6EXLSQr/5FPAc60yG
-ESHAEKrd3LqMebqLW14ZtheXqN21Rw==
-=0l/H
------END PGP SIGNATURE-----
-
---Sig_/G4jwG.GiBQmy5HOToZ+j._7--
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
