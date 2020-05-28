@@ -2,210 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 715DA1E685D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 19:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096EE1E6833
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 19:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405450AbgE1RJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 13:09:50 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:59176 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405394AbgE1RJs (ORCPT
+        id S2405497AbgE1RGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 13:06:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405416AbgE1RGX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 13:09:48 -0400
+        Thu, 28 May 2020 13:06:23 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C67C08C5C6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 10:06:23 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id bg4so6527452plb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 10:06:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1590685787; x=1622221787;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=Y47PD9Fgt1BpAPCnLD3kkehkyhpdAZIUSbUqVBrWCEQ=;
-  b=TtWlT2D6wJZmWrAsIiQjaV6ahrOHzQAAuaQIRhpPUIFasKTVqg8eBw6O
-   pZXju5qTLrPdW2jg4fxT6TMyGsQoPIWD9gJNMpzijdvdmFLsv7mLTOFqL
-   IyVKjrmekU26qGdPq3vydMuckNFotabF5IWzCMCxIEo8VpbOdDMFcBjTj
-   4=;
-IronPort-SDR: W7t8AI/CpDTG5V31eWTPKNgImk05ZFAZUU9Ld1WEMb0RcKMLAneaSKaNep7WBSe2EkgcjCBmUq
- 5PAR+rMIyRLw==
-X-IronPort-AV: E=Sophos;i="5.73,445,1583193600"; 
-   d="scan'208";a="32862205"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-821c648d.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 28 May 2020 17:06:37 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1a-821c648d.us-east-1.amazon.com (Postfix) with ESMTPS id 32D04A1881;
-        Thu, 28 May 2020 17:06:35 +0000 (UTC)
-Received: from EX13D16EUB003.ant.amazon.com (10.43.166.99) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 28 May 2020 17:06:34 +0000
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.160.48) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 28 May 2020 17:06:25 +0000
-Subject: Re: [PATCH v3 07/18] nitro_enclaves: Init misc device providing the
- ioctl interface
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Alexander Graf <graf@amazon.de>
-CC:     <linux-kernel@vger.kernel.org>,
-        Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Frank van der Linden <fllinden@amazon.com>,
-        "Martin Pohlack" <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        Uwe Dannowski <uwed@amazon.de>, <kvm@vger.kernel.org>,
-        <ne-devel-upstream@amazon.com>
-References: <20200525221334.62966-1-andraprs@amazon.com>
- <20200525221334.62966-8-andraprs@amazon.com>
- <20200526065133.GD2580530@kroah.com>
- <72647fa4-79d9-7754-9843-a254487703ea@amazon.de>
- <20200526123300.GA2798@kroah.com>
- <59007eb9-fad3-9655-a856-f5989fa9fdb3@amazon.de>
- <20200526131708.GA9296@kroah.com>
- <29ebdc29-2930-51af-8a54-279c1e449a48@amazon.de>
- <20200526222402.GC179549@kroah.com>
- <b4f17cbd-7471-fe61-6e7e-1399bd96e24e@amazon.de>
- <20200528131259.GA3345766@kroah.com>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Message-ID: <46b2e9c5-6186-5c37-197c-8acd0bce358e@amazon.com>
-Date:   Thu, 28 May 2020 20:06:19 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.1
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iT5rezqL21tlOm+HcQxeqnOcsO/zlgv0oQIuL0r2Tvk=;
+        b=g9jlowS4x5LkXCCyzKW89bhZzpd8BmLxl9gYLan/bQnsd4kg9oEfQ1ib63qh6qedJx
+         zMquSBlwzNj27Yybfr6wpm/mgDZNKRYXWB4heMU2A8oQeETetFue6n8M8vOajW/EREh3
+         y/VoYy/8DeejrqHoYxiCO0diBZD6emWH/e+FFADqui9G6uA2H7i5NqxGQdgiOLTRtRHY
+         VUMYBYaFSdXRk9WpBqRdWn7kMeaoZ6QqrLiDs0GF6vAy0Qa4ZYlRPKXzkOkN9pXMftlO
+         m4cLOwJ2s5TdWy5IyidY3LlpO8YGSaI6OhehiDw2S2sbM3gZmPUC+q7WoeHVMu5R6Hh9
+         FQ2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iT5rezqL21tlOm+HcQxeqnOcsO/zlgv0oQIuL0r2Tvk=;
+        b=E0tXFM1Wd9swuH6ywLmbXvI15yTX8/5DKEtLuk6qVr53DChMfnehnet6zDIQDFaIHg
+         E4Nqt/AzmJ99tHiq6uHjGyxOVkalZvlL4muLt4q3uLPxP0vxhbkGCs/xlM2qlh1brGOZ
+         +nkzY5WJC6pnl8SEQvlrXTA26j7bzZTYEnoImXX3OSY9wBH8PH5PNIfwQeo/guxXPPFs
+         br+FYqh434/U8BOTSASrRV/XfzI1OPQ5Y/G/hF/EOfLFSHg3hwSflM6KTBtjen+UIXqX
+         /WDJFucGLgfFcyLq9GlC+mUrjYubVG+yW+K89pbcPSFpfjaWUhGcjVM7ZgBfX5L2xVWU
+         Jf1w==
+X-Gm-Message-State: AOAM533fBS//Hop7SF0EemDijuEpa5pTDMUPXdeM1sclDpUjd6of7xyh
+        cW7YYrAGUFbgb1IrvH7+Msp9ww==
+X-Google-Smtp-Source: ABdhPJzBQtX9IkxbTiq9LQQhfAIkNAs+QMc7PlP4FZdv+BJKB7P+GdnfDGUw875LRqPUpzLnyZOlSA==
+X-Received: by 2002:a17:90a:8814:: with SMTP id s20mr4988444pjn.74.1590685582354;
+        Thu, 28 May 2020 10:06:22 -0700 (PDT)
+Received: from [192.168.1.159] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id d2sm4768862pgp.56.2020.05.28.10.06.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 May 2020 10:06:21 -0700 (PDT)
+Subject: Re: [PATCHSET v5 0/12] Add support for async buffered reads
+To:     sedat.dilek@gmail.com
+Cc:     io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org
+References: <20200526195123.29053-1-axboe@kernel.dk>
+ <CA+icZUWfX+QmroE6j74C7o-BdfMF5=6PdYrA=5W_JCKddqkJgQ@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <bab2d6f8-4c65-be21-6a8e-29b76c06807d@kernel.dk>
+Date:   Thu, 28 May 2020 11:06:20 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200528131259.GA3345766@kroah.com>
+In-Reply-To: <CA+icZUWfX+QmroE6j74C7o-BdfMF5=6PdYrA=5W_JCKddqkJgQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Originating-IP: [10.43.160.48]
-X-ClientProxiedBy: EX13D16UWB003.ant.amazon.com (10.43.161.194) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAyOC8wNS8yMDIwIDE2OjEyLCBHcmVnIEtIIHdyb3RlOgo+Cj4gT24gVGh1LCBNYXkgMjgs
-IDIwMjAgYXQgMDM6MDE6MzZQTSArMDIwMCwgQWxleGFuZGVyIEdyYWYgd3JvdGU6Cj4+Cj4+IE9u
-IDI3LjA1LjIwIDAwOjI0LCBHcmVnIEtIIHdyb3RlOgo+Pj4gT24gVHVlLCBNYXkgMjYsIDIwMjAg
-YXQgMDM6NDQ6MzBQTSArMDIwMCwgQWxleGFuZGVyIEdyYWYgd3JvdGU6Cj4+Pj4KPj4+PiBPbiAy
-Ni4wNS4yMCAxNToxNywgR3JlZyBLSCB3cm90ZToKPj4+Pj4gT24gVHVlLCBNYXkgMjYsIDIwMjAg
-YXQgMDI6NDQ6MThQTSArMDIwMCwgQWxleGFuZGVyIEdyYWYgd3JvdGU6Cj4+Pj4+Pgo+Pj4+Pj4g
-T24gMjYuMDUuMjAgMTQ6MzMsIEdyZWcgS0ggd3JvdGU6Cj4+Pj4+Pj4gT24gVHVlLCBNYXkgMjYs
-IDIwMjAgYXQgMDE6NDI6NDFQTSArMDIwMCwgQWxleGFuZGVyIEdyYWYgd3JvdGU6Cj4+Pj4+Pj4+
-Cj4+Pj4+Pj4+IE9uIDI2LjA1LjIwIDA4OjUxLCBHcmVnIEtIIHdyb3RlOgo+Pj4+Pj4+Pj4gT24g
-VHVlLCBNYXkgMjYsIDIwMjAgYXQgMDE6MTM6MjNBTSArMDMwMCwgQW5kcmEgUGFyYXNjaGl2IHdy
-b3RlOgo+Pj4+Pj4+Pj4+ICsjZGVmaW5lIE5FICJuaXRyb19lbmNsYXZlczogIgo+Pj4+Pj4+Pj4g
-QWdhaW4sIG5vIG5lZWQgZm9yIHRoaXMuCj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+ICsjZGVmaW5lIE5F
-X0RFVl9OQU1FICJuaXRyb19lbmNsYXZlcyIKPj4+Pj4+Pj4+IEtCVUlMRF9NT0ROQU1FPwo+Pj4+
-Pj4+Pj4KPj4+Pj4+Pj4+PiArI2RlZmluZSBORV9JTUFHRV9MT0FEX09GRlNFVCAoOCAqIDEwMjRV
-TCAqIDEwMjRVTCkKPj4+Pj4+Pj4+PiArCj4+Pj4+Pj4+Pj4gK3N0YXRpYyBjaGFyICpuZV9jcHVz
-Owo+Pj4+Pj4+Pj4+ICttb2R1bGVfcGFyYW0obmVfY3B1cywgY2hhcnAsIDA2NDQpOwo+Pj4+Pj4+
-Pj4+ICtNT0RVTEVfUEFSTV9ERVNDKG5lX2NwdXMsICI8Y3B1LWxpc3Q+IC0gQ1BVIHBvb2wgdXNl
-ZCBmb3IgTml0cm8gRW5jbGF2ZXMiKTsKPj4+Pj4+Pj4+IEFnYWluLCBwbGVhc2UgZG8gbm90IGRv
-IHRoaXMuCj4+Pj4+Pj4+IEkgYWN0dWFsbHkgYXNrZWQgaGVyIHRvIHB1dCB0aGlzIG9uZSBpbiBz
-cGVjaWZpY2FsbHkuCj4+Pj4+Pj4+Cj4+Pj4+Pj4+IFRoZSBjb25jZXB0IG9mIHRoaXMgcGFyYW1l
-dGVyIGlzIHZlcnkgc2ltaWxhciB0byBpc29sY3B1cz0gYW5kIG1heGNwdXM9IGluCj4+Pj4+Pj4+
-IHRoYXQgaXQgdGFrZXMgQ1BVcyBhd2F5IGZyb20gTGludXggYW5kIGluc3RlYWQgZG9uYXRlcyB0
-aGVtIHRvIHRoZQo+Pj4+Pj4+PiB1bmRlcmx5aW5nIGh5cGVydmlzb3IsIHNvIHRoYXQgaXQgY2Fu
-IHNwYXduIGVuY2xhdmVzIHVzaW5nIHRoZW0uCj4+Pj4+Pj4+Cj4+Pj4+Pj4+ICAgICBGcm9tIGFu
-IGFkbWluJ3MgcG9pbnQgb2YgdmlldywgdGhpcyBpcyBhIHNldHRpbmcgSSB3b3VsZCBsaWtlIHRv
-IGtlZXAKPj4+Pj4+Pj4gcGVyc2lzdGVkIGFjcm9zcyByZWJvb3RzLiBIb3cgd291bGQgdGhpcyB3
-b3JrIHdpdGggc3lzZnM/Cj4+Pj4+Pj4gSG93IGFib3V0IGp1c3QgYXMgdGhlICJpbml0aWFsIiBp
-b2N0bCBjb21tYW5kIHRvIHNldCB0aGluZ3MgdXA/ICBEb24ndAo+Pj4+Pj4+IGdyYWIgYW55IGNw
-dSBwb29scyB1bnRpbCBhc2tlZCB0by4gIE90aGVyd2lzZSwgd2hhdCBoYXBwZW5zIHdoZW4geW91
-Cj4+Pj4+Pj4gbG9hZCB0aGlzIG1vZHVsZSBvbiBhIHN5c3RlbSB0aGF0IGNhbid0IHN1cHBvcnQg
-aXQ/Cj4+Pj4+PiBUaGF0IHdvdWxkIGdpdmUgYW55IHVzZXIgd2l0aCBhY2Nlc3MgdG8gdGhlIGVu
-Y2xhdmUgZGV2aWNlIHRoZSBhYmlsaXR5IHRvCj4+Pj4+PiByZW1vdmUgQ1BVcyBmcm9tIHRoZSBz
-eXN0ZW0uIFRoYXQncyBjbGVhcmx5IGEgQ0FQX0FETUlOIHRhc2sgaW4gbXkgYm9vay4KPj4+Pj4g
-T2ssIHdoYXQncyB3cm9uZyB3aXRoIHRoYXQ/Cj4+Pj4gV291bGQgeW91IHdhbnQgcmFuZG9tIHVz
-ZXJzIHRvIGdldCB0aGUgYWJpbGl0eSB0byBob3QgdW5wbHVnIENQVXMgZnJvbSB5b3VyCj4+Pj4g
-c3lzdGVtPyBBdCB1bmxpbWl0ZWQgcXVhbnRpdHk/IEkgZG9uJ3QgOikuCj4+PiBBIHJhbmRvbSB1
-c2VyLCBubywgYnV0IG9uZSB3aXRoIGFkbWluIHJpZ2h0cywgd2h5IG5vdD8gIFRoZXkgY2FuIGRv
-IHRoYXQKPj4+IGFscmVhZHkgdG9kYXkgb24geW91ciBzeXN0ZW0sIHRoaXMgaXNuJ3QgbmV3Lgo+
-Pj4KPj4+Pj4+IEhlbmNlIHRoaXMgd2hvbGUgc3BsaXQ6IFRoZSBhZG1pbiBkZWZpbmVzIHRoZSBD
-UFUgUG9vbCwgdXNlcnMgY2FuIHNhZmVseQo+Pj4+Pj4gY29uc3VtZSB0aGlzIHBvb2wgdG8gc3Bh
-d24gZW5jbGF2ZXMgZnJvbSBpdC4KPj4+Pj4gQnV0IGhhdmluZyB0aGUgYWRtaW4gZGVmaW5lIHRo
-YXQgYXQgbW9kdWxlIGxvYWQgLyBib290IHRpbWUsIGlzIGEgbWFqb3IKPj4+Pj4gcGFpbi4gIFdo
-YXQgdG9vbHMgZG8gdGhleSBoYXZlIHRoYXQgYWxsb3cgdGhlbSB0byBkbyB0aGF0IGVhc2lseT8K
-Pj4+PiBUaGUgbm9ybWFsIHRvb2xib3g6IGVkaXRpbmcgL2V0Yy9kZWZhdWx0L2dydWIsIGFkZGlu
-ZyBhbiAvZXRjL21vZHByb2JlLmQvCj4+Pj4gZmlsZS4KPj4+IEVkaXRpbmcgZ3J1YiBmaWxlcyBp
-cyBob3JyaWQsIGNvbWUgb24uLi4KPj4gSXQncyBub3QgZWRpdGluZyBncnViIGZpbGVzLCBpdCdz
-IGVkaXRpbmcgdGVtcGxhdGUgY29uZmlnIGZpbGVzIHRoYXQgdGhlbgo+PiBhcmUgdXNlZCBhcyBp
-bnB1dCBmb3IgZ3J1YiBjb25maWcgZmlsZSBnZW5lcmF0aW9uIDopLgo+Pgo+Pj4+IFdoZW4gYnV0
-IGF0IG1vZHVsZSBsb2FkIC8gYm9vdCB0aW1lIHdvdWxkIHlvdSBkZWZpbmUgaXQ/IEkgcmVhbGx5
-IGRvbid0IHdhbnQKPj4+PiB0byBoYXZlIGEgZGV2aWNlIG5vZGUgdGhhdCBpbiB0aGVvcnkgInRo
-ZSB3b3JsZCIgY2FuIHVzZSB3aGljaCB0aGVuIGFsbG93cwo+Pj4+IGFueSB1c2VyIG9uIHRoZSBz
-eXN0ZW0gdG8gaG90IHVucGx1ZyBldmVyeSBDUFUgYnV0IDAgZnJvbSBteSBzeXN0ZW0uCj4+PiBC
-dXQgeW91IGhhdmUgdGhhdCBhbHJlYWR5IHdoZW4gdGhlIFBDSSBkZXZpY2UgaXMgZm91bmQsIHJp
-Z2h0PyAgV2hhdCBpcwo+Pj4gdGhlIGluaXRpYWwgaW50ZXJmYWNlIHRvIHRoZSBkcml2ZXI/ICBX
-aGF0J3Mgd3Jvbmcgd2l0aCB1c2luZyB0aGF0Pwo+Pj4KPj4+IE9yIGFtIEkgcmVhbGx5IG1pc3Np
-bmcgc29tZXRoaW5nIGFzIHRvIGhvdyB0aGlzIGFsbCBmaXRzIHRvZ2V0aGVyIHdpdGgKPj4+IHRo
-ZSBkaWZmZXJlbnQgcGllY2VzPyAgU2VlaW5nIHRoZSBwYXRjaGVzIGFzLWlzIGRvZXNuJ3QgcmVh
-bGx5IHByb3ZpZGUgYQo+Pj4gZ29vZCBvdmVydmlldywgc29ycnkuCj4+IE9rLCBsZXQgbWUgd2Fs
-ayB5b3UgdGhyb3VnaCB0aGUgY29yZSBkb25hdGlvbiBwcm9jZXNzLgo+Pgo+PiBJbWFnaW5lIHlv
-dSBoYXZlIGEgcGFyZW50IFZNIHdpdGggOCBjb3Jlcy4gRXZlcnkgb25lIG9mIHRob3NlIHZpcnR1
-YWwgY29yZXMKPj4gaXMgMToxIG1hcHBlZCB0byBhIHBoeXNpY2FsIGNvcmUuCj4+Cj4+IFlvdSBl
-bnVtZXJhdGUgdGhlIFBDSSBkZXZpY2UsIHlvdSBzdGFydCB3b3JraW5nIHdpdGggaXQuIE5vbmUg
-b2YgdGhhdAo+PiBjaGFuZ2VzIHlvdXIgdG9wb2xvZ3kuCj4+Cj4+IFlvdSBub3cgY3JlYXRlIGFu
-IGVuY2xhdmUgc3Bhbm5pbmcgMiBjb3Jlcy4gVGhlIGh5cGVydmlzb3Igd2lsbCByZW1vdmUgdGhl
-Cj4+IDE6MSBtYXAgZm9yIHRob3NlIDIgY29yZXMgYW5kIGluc3RlYWQgbWFyayB0aGVtIGFzICJm
-cmVlIGZsb2F0aW5nIiBvbiB0aGUKPj4gcmVtYWluaW5nIDYgY29yZXMuIEl0IHRoZW4gdXNlcyB0
-aGUgMiBmcmVlZCB1cCBjb3JlcyBhbmQgY3JlYXRlcyBhIDE6MSBtYXAKPj4gZm9yIHRoZSBlbmNs
-YXZlJ3MgMiBjb3Jlcwo+Pgo+PiBUbyBlbnN1cmUgdGhhdCB3ZSBzdGlsbCBzZWUgYSByZWFsaXN0
-aWMgbWFwcGluZyBvZiBjb3JlIHRvcG9sb2d5LCB3ZSBuZWVkIHRvCj4+IHJlbW92ZSB0aG9zZSAy
-IGNvcmVzIGZyb20gdGhlIHBhcmVudCBWTSdzIHNjb3BlIG9mIGV4ZWN1dGlvbi4gVGhlIHdheSB0
-aGlzCj4+IGlzIGRvbmUgdG9kYXkgaXMgYnkgZ29pbmcgdGhyb3VnaCBDUFUgb2ZmbGluaW5nLgo+
-Pgo+PiBUaGUgZmlyc3QgYW5kIG9idmlvdXMgb3B0aW9uIHdvdWxkIGJlIHRvIG9mZmxpbmUgYWxs
-IHJlc3BlY3RpdmUgQ1BVcyB3aGVuIGFuCj4+IGVuY2xhdmUgZ2V0cyBjcmVhdGVkLiBCdXQgdW5w
-cml2aWxlZ2VkIHVzZXJzIHNob3VsZCBiZSBhYmxlIHRvIHNwYXduCj4+IGVuY2xhdmVzLiBTbyBo
-b3cgZG8gSSBlbnN1cmUgdGhhdCBteSB1bnByaXZpbGVnZWQgdXNlciBkb2Vzbid0IGp1c3Qgb2Zm
-bGluZQo+PiBhbGwgb2YgbXkgcGFyZW50IFZNJ3MgQ1BVcz8KPj4KPj4gVGhlIG9wdGlvbiBpbXBs
-ZW1lbnRlZCBoZXJlIGlzIHRoYXQgd2UgZm9sZCB0aGlzIGludG8gYSB0d28tc3RhZ2UgYXBwcm9h
-Y2guCj4+IFRoZSBhZG1pbiByZXNlcnZlcyBhICJwb29sIiBvZiBjb3JlcyBmb3IgZW5jbGF2ZXMg
-dG8gdXNlLiBVbnByaXZpbGVnZWQgdXNlcnMKPj4gY2FuIHRoZW4gY29uc3VtZSBjb3JlcyBmcm9t
-IHRoYXQgcG9vbCwgYnV0IG5vdCBtb3JlIHRoYW4gdGhvc2UuCj4+Cj4+IFRoYXQgd2F5LCB1bnBy
-aXZpbGVnZWQgdXNlcnMgaGF2ZSBubyBpbmZsdWVuY2Ugb3ZlciB3aGV0aGVyIGEgY29yZSBpcwo+
-PiBlbmFibGVkIG9yIG5vdC4gVGhleSBjYW4gb25seSBjb25zdW1lIHRoZSBwb29sIG9mIGNvcmVz
-IHRoYXQgd2FzIGRlZGljYXRlZAo+PiBmb3IgZW5jbGF2ZSB1c2UuCj4+Cj4+IEl0IGFsc28gaGFz
-IHRoZSBiaWcgYWR2YW50YWdlIHRoYXQgeW91IGRvbid0IGhhdmUgZHluYW1pY2FsbHkgY2hhbmdp
-bmcgQ1BVCj4+IHRvcG9sb2d5IGluIHlvdXIgc3lzdGVtLiBMb25nIGxpdmluZyBwcm9jZXNzZXMg
-dGhhdCBhZGp1c3QgdGhlaXIgZW52aXJvbm1lbnQKPj4gdG8gdGhlIHRvcG9sb2d5IGNhbiBzdGls
-bCBkbyBzbywgd2l0aG91dCBjb3JlcyBnZXR0aW5nIHB1bGxlZCBvdXQgdW5kZXIKPj4gdGhlaXIg
-ZmVldC4KPiBPaywgdGhhdCBtYWtlcyBtb3JlIHNlbnNlLCBidXQ6Cj4KPj4+Pj4+IFNvIEkgcmVh
-bGx5IGRvbid0IHRoaW5rIGFuIGlvY3RsIHdvdWxkIGJlIGEgZ3JlYXQgdXNlciBleHBlcmllbmNl
-LiBTYW1lIGZvcgo+Pj4+Pj4gYSBzeXNmcyBmaWxlIC0gYWx0aG91Z2ggdGhhdCdzIHByb2JhYmx5
-IHNsaWdodGx5IGJldHRlciB0aGFuIHRoZSBpb2N0bC4KPj4+Pj4gWW91IGFscmVhZHkgYXJlIHVz
-aW5nIGlvY3RscyB0byBjb250cm9sIHRoaXMgdGhpbmcsIHJpZ2h0PyAgV2hhdCdzIHdyb25nCj4+
-Pj4+IHdpdGggIm9uZSBtb3JlIj8gOikKPj4+PiBTbyB3aGF0IHdlICpjb3VsZCogZG8gaXMgYWRk
-IGFuIGlvY3RsIHRvIHNldCB0aGUgcG9vbCBzaXplIHdoaWNoIHRoZW4gZG9lcyBhCj4+Pj4gQ0FQ
-X0FETUlOIGNoZWNrLiBUaGF0IGhvd2V2ZXIgbWVhbnMgeW91IG5vdyBhcmUgaW4gcHJpb3JpdHkg
-aGVsbDoKPj4+Pgo+Pj4+IEEgdXNlciB0aGF0IHdhbnRzIHRvIHNwYXduIGFuIGVuY2xhdmUgYXMg
-cGFydCBvZiBhbiBuZ2lueCBzZXJ2aWNlIHdvdWxkIG5lZWQKPj4+PiB0byBjcmVhdGUgYW5vdGhl
-ciBzZXJ2aWNlIHRvIHNldCB0aGUgcG9vbCBzaXplIGFuZCBpbmRpY2F0ZSB0aGUgZGVwZW5kZW5j
-eQo+Pj4+IGluIHN5c3RlbWQgY29udHJvbCBmaWxlcy4KPj4+Pgo+Pj4+IElzIHRoYXQgcmVhbGx5
-IGJldHRlciB0aGFuIGEgbW9kdWxlIHBhcmFtZXRlcj8KPj4+IG1vZHVsZSBwYXJhbWV0ZXJzIGFy
-ZSBoYXJkIHRvIGNoYW5nZSwgYW5kIG1hbmFnZSBjb250cm9sIG92ZXIgd2hvIHJlYWxseQo+Pj4g
-aXMgY2hhbmdpbmcgdGhlbS4KPj4gV2hhdCBpcyBoYXJkIGFib3V0Cj4+Cj4+ICQgZWNobyAxLTUg
-PiAvc3lzL21vZHVsZS9uaXRyb19lbmNsYXZlcy9wYXJhbWV0ZXJzL25lX2NwdXMKPiBTbyBhdCBy
-dW50aW1lLCBhZnRlciBhbGwgaXMgYm9vdGVkIGFuZCB1cCBhbmQgZ29pbmcsIHlvdSBqdXN0IHJp
-cHBlZAo+IGNvcmVzIG91dCBmcm9tIHVuZGVyIHNvbWVvbmUncyBmZWV0PyAgOikKPgo+IEFuZCB0
-aGUgY29kZSByZWFsbHkgaGFuZGxlcyB3cml0aW5nIHRvIHRoYXQgdmFsdWUgd2hpbGUgdGhlIG1v
-ZHVsZSBpcwo+IGFscmVhZHkgbG9hZGVkIGFuZCB1cCBhbmQgcnVubmluZz8gIEF0IGEgcXVpY2sg
-Z2xhbmNlLCBpdCBkaWRuJ3Qgc2VlbQo+IGxpa2UgaXQgd291bGQgaGFuZGxlIHRoYXQgdmVyeSB3
-ZWxsIGFzIGl0IG9ubHkgaXMgY2hlY2tlZCBhdCBuZV9pbml0KCkKPiB0aW1lLgo+Cj4gT3IgYW0g
-SSBtaXNzaW5nIHNvbWV0aGluZz8KCkl0J3MgY2hlY2tlZCBmb3Igbm93IGF0IG1vZHVsZSBpbml0
-LCB0cnVlLgoKSSBzdGFydGVkIHdpdGggaW5pdCBhbmQgaXQgcmVtYWluZWQgYXMgYSBUT0RPIG9u
-IG15IHNpZGUgdG8gYWRhcHQgdGhlIApsb2dpYyB0byBiZSBhYmxlIHRvIGhhbmRsZSB0aGUgc2V0
-dXAgdmlhIHRoZSBzeXNmcyBmaWxlIGZvciB0aGUgbW9kdWxlLgoKClRoYW5rcywKQW5kcmEKCj4K
-PiBBbnl3YXksIHllcywgaWYgeW91IGNhbiBkeW5hbWljYWxseSBkbyB0aGlzIGF0IHJ1bnRpbWUs
-IHRoYXQncyBncmVhdCwKPiBidXQgaXQgZmVlbHMgYWNrd2FyZCB0byBtZSB0byByZWx5IG9uIG9u
-ZSBjb25maWd1cmF0aW9uIHRoaW5nIGFzIGEKPiBtb2R1bGUgcGFyYW1ldGVyLCBhbmQgZXZlcnl0
-aGluZyBlbHNlIHRocm91Z2ggdGhlIGlvY3RsIGludGVyZmFjZS4KPiBVbmlmaWNhdGlvbiB3b3Vs
-ZCBzZWVtIHRvIGJlIGEgZ29vZCB0aGluZywgcmlnaHQ/Cj4KPiB0aGFua3MsCj4KPiBncmVnIGst
-aAoKCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciAoUm9tYW5pYSkgUy5SLkwuIHJlZ2lzdGVy
-ZWQgb2ZmaWNlOiAyN0EgU2YuIExhemFyIFN0cmVldCwgVUJDNSwgZmxvb3IgMiwgSWFzaSwgSWFz
-aSBDb3VudHksIDcwMDA0NSwgUm9tYW5pYS4gUmVnaXN0ZXJlZCBpbiBSb21hbmlhLiBSZWdpc3Ry
-YXRpb24gbnVtYmVyIEoyMi8yNjIxLzIwMDUuCg==
+On 5/28/20 11:02 AM, Sedat Dilek wrote:
+> On Tue, May 26, 2020 at 10:59 PM Jens Axboe <axboe@kernel.dk> wrote:
+>>
+>> We technically support this already through io_uring, but it's
+>> implemented with a thread backend to support cases where we would
+>> block. This isn't ideal.
+>>
+>> After a few prep patches, the core of this patchset is adding support
+>> for async callbacks on page unlock. With this primitive, we can simply
+>> retry the IO operation. With io_uring, this works a lot like poll based
+>> retry for files that support it. If a page is currently locked and
+>> needed, -EIOCBQUEUED is returned with a callback armed. The callers
+>> callback is responsible for restarting the operation.
+>>
+>> With this callback primitive, we can add support for
+>> generic_file_buffered_read(), which is what most file systems end up
+>> using for buffered reads. XFS/ext4/btrfs/bdev is wired up, but probably
+>> trivial to add more.
+>>
+>> The file flags support for this by setting FMODE_BUF_RASYNC, similar
+>> to what we do for FMODE_NOWAIT. Open to suggestions here if this is
+>> the preferred method or not.
+>>
+>> In terms of results, I wrote a small test app that randomly reads 4G
+>> of data in 4K chunks from a file hosted by ext4. The app uses a queue
+>> depth of 32. If you want to test yourself, you can just use buffered=1
+>> with ioengine=io_uring with fio. No application changes are needed to
+>> use the more optimized buffered async read.
+>>
+>> preadv for comparison:
+>>         real    1m13.821s
+>>         user    0m0.558s
+>>         sys     0m11.125s
+>>         CPU     ~13%
+>>
+>> Mainline:
+>>         real    0m12.054s
+>>         user    0m0.111s
+>>         sys     0m5.659s
+>>         CPU     ~32% + ~50% == ~82%
+>>
+>> This patchset:
+>>         real    0m9.283s
+>>         user    0m0.147s
+>>         sys     0m4.619s
+>>         CPU     ~52%
+>>
+>> The CPU numbers are just a rough estimate. For the mainline io_uring
+>> run, this includes the app itself and all the threads doing IO on its
+>> behalf (32% for the app, ~1.6% per worker and 32 of them). Context
+>> switch rate is much smaller with the patchset, since we only have the
+>> one task performing IO.
+>>
+>> Also ran a simple fio based test case, varying the queue depth from 1
+>> to 16, doubling every time:
+>>
+>> [buf-test]
+>> filename=/data/file
+>> direct=0
+>> ioengine=io_uring
+>> norandommap
+>> rw=randread
+>> bs=4k
+>> iodepth=${QD}
+>> randseed=89
+>> runtime=10s
+>>
+>> QD/Test         Patchset IOPS           Mainline IOPS
+>> 1               9046                    8294
+>> 2               19.8k                   18.9k
+>> 4               39.2k                   28.5k
+>> 8               64.4k                   31.4k
+>> 16              65.7k                   37.8k
+>>
+>> Outside of my usual environment, so this is just running on a virtualized
+>> NVMe device in qemu, using ext4 as the file system. NVMe isn't very
+>> efficient virtualized, so we run out of steam at ~65K which is why we
+>> flatline on the patched side (nvme_submit_cmd() eats ~75% of the test app
+>> CPU). Before that happens, it's a linear increase. Not shown is context
+>> switch rate, which is massively lower with the new code. The old thread
+>> offload adds a blocking thread per pending IO, so context rate quickly
+>> goes through the roof.
+>>
+>> The goal here is efficiency. Async thread offload adds latency, and
+>> it also adds noticable overhead on items such as adding pages to the
+>> page cache. By allowing proper async buffered read support, we don't
+>> have X threads hammering on the same inode page cache, we have just
+>> the single app actually doing IO.
+>>
+>> Been beating on this and it's solid for me, and I'm now pretty happy
+>> with how it all turned out. Not aware of any missing bits/pieces or
+>> code cleanups that need doing.
+>>
+>> Series can also be found here:
+>>
+>> https://git.kernel.dk/cgit/linux-block/log/?h=async-buffered.5
+>>
+>> or pull from:
+>>
+>> git://git.kernel.dk/linux-block async-buffered.5
+>>
+> 
+> Hi Jens,
+> 
+> I have pulled linux-block.git#async-buffered.5 on top of Linux v5.7-rc7.
+> 
+> From first feelings:
+> The booting into the system (until sddm display-login-manager) took a
+> bit longer.
+> The same after login and booting into KDE/Plasma.
+
+There is no difference for "regular" use cases, only io_uring with
+buffered reads will behave differently. So I don't think you have longer
+boot times due to this.
+
+> I am building/linking with LLVM/Clang/LLD v10.0.1-rc1 on Debian/testing AMD64.
+> 
+> Here I have an internal HDD (SATA) and my Debian-system is on an
+> external HDD connected via USB-3.0.
+> Primarily, I use Ext4-FS.
+> 
+> As said above is the "emotional" side, but I need some technical instructions.
+> 
+> How can I see Async Buffer Reads is active on a Ext4-FS-formatted partition?
+
+You can't see that. It'll always be available on ext4 with this series,
+and you can watch io_uring instances to see if anyone is using it.
+
+> Do I need a special boot-parameter (GRUB line)?
+> 
+> Do I need to activate some cool variables via sysfs?
+> 
+> Do I need to pass an option via fstab entry?
+
+No to all of these, you don't need anything to activate it. You need the
+program to use io_uring to do buffered reads.
+
+> Are any Async Buffer Reads related linux-kconfig options not set?
+> Which make sense?
+
+No kconfig options are needed.
+
+-- 
+Jens Axboe
 
