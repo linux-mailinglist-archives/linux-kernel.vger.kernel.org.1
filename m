@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD27D1E5F0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC2A1E5F18
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389266AbgE1L6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 07:58:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50498 "EHLO mail.kernel.org"
+        id S2389274AbgE1L6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 07:58:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389102AbgE1L5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 07:57:50 -0400
+        id S2389106AbgE1L5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 07:57:51 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 07E6121655;
-        Thu, 28 May 2020 11:57:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1BF91216C4;
+        Thu, 28 May 2020 11:57:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590667069;
-        bh=qkGNjMmm+S4irgDGtCS4ZXNDosUQ/t/lZmeoUOkqREY=;
+        s=default; t=1590667071;
+        bh=oneoTHrWpzNqI69GqpPe4DfpOYXgyNGWsMPEeL0cg/Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fws11Nhxb2WkRMvG6CbxwrG92SWYUf7aF6zoh6gw6nmw9YZxv2CzDQSZF6ToPgGUg
-         6gGZnoCjHuMdYUI4D7QfX3ptOrq1CDFYxXr6aNnPLYVhT8zegKh3BCojIglsa9xJH4
-         YLZeGmfiHCf8uGjHxzOpzhOUFQVnVZ79rKUlfOZQ=
+        b=Snrz18/cRX/t7sqJaUujcmfQqip7qgFkmvV9LU8LaXq7bHRwLu06zxfwItAKr5SPm
+         JuKKHqJWAc8fzA1xb4zKZXsI3Yn4CWEgdPXKoAq66eI9rFVkQbY5U0sFEsgdicRtZI
+         bCUnSi4KMyXsnFJWXZO2DYfQolFbk4FLrUR/q2PQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Roman Mashak <mrv@mojatatu.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 04/13] net sched: fix reporting the first-time use timestamp
-Date:   Thu, 28 May 2020 07:57:35 -0400
-Message-Id: <20200528115744.1406533-4-sashal@kernel.org>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Borislav Petkov <bp@suse.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 05/13] x86/mmiotrace: Use cpumask_available() for cpumask_var_t variables
+Date:   Thu, 28 May 2020 07:57:36 -0400
+Message-Id: <20200528115744.1406533-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200528115744.1406533-1-sashal@kernel.org>
 References: <20200528115744.1406533-1-sashal@kernel.org>
@@ -44,40 +46,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roman Mashak <mrv@mojatatu.com>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-[ Upstream commit b15e62631c5f19fea9895f7632dae9c1b27fe0cd ]
+[ Upstream commit d7110a26e5905ec2fe3fc88bc6a538901accb72b ]
 
-When a new action is installed, firstuse field of 'tcf_t' is explicitly set
-to 0. Value of zero means "new action, not yet used"; as a packet hits the
-action, 'firstuse' is stamped with the current jiffies value.
+When building with Clang + -Wtautological-compare and
+CONFIG_CPUMASK_OFFSTACK unset:
 
-tcf_tm_dump() should return 0 for firstuse if action has not yet been hit.
+  arch/x86/mm/mmio-mod.c:375:6: warning: comparison of array 'downed_cpus'
+  equal to a null pointer is always false [-Wtautological-pointer-compare]
+          if (downed_cpus == NULL &&
+              ^~~~~~~~~~~    ~~~~
+  arch/x86/mm/mmio-mod.c:405:6: warning: comparison of array 'downed_cpus'
+  equal to a null pointer is always false [-Wtautological-pointer-compare]
+          if (downed_cpus == NULL || cpumask_weight(downed_cpus) == 0)
+              ^~~~~~~~~~~    ~~~~
+  2 warnings generated.
 
-Fixes: 48d8ee1694dd ("net sched actions: aggregate dumping of actions timeinfo")
-Cc: Jamal Hadi Salim <jhs@mojatatu.com>
-Signed-off-by: Roman Mashak <mrv@mojatatu.com>
-Acked-by: Jamal Hadi Salim <jhs@mojatatu.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Commit
+
+  f7e30f01a9e2 ("cpumask: Add helper cpumask_available()")
+
+added cpumask_available() to fix warnings of this nature. Use that here
+so that clang does not warn regardless of CONFIG_CPUMASK_OFFSTACK's
+value.
+
+Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Link: https://github.com/ClangBuiltLinux/linux/issues/982
+Link: https://lkml.kernel.org/r/20200408205323.44490-1-natechancellor@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/act_api.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/mm/mmio-mod.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/net/act_api.h b/include/net/act_api.h
-index 775387d6ca95..ff268bb0c60f 100644
---- a/include/net/act_api.h
-+++ b/include/net/act_api.h
-@@ -69,7 +69,8 @@ static inline void tcf_tm_dump(struct tcf_t *dtm, const struct tcf_t *stm)
- {
- 	dtm->install = jiffies_to_clock_t(jiffies - stm->install);
- 	dtm->lastuse = jiffies_to_clock_t(jiffies - stm->lastuse);
--	dtm->firstuse = jiffies_to_clock_t(jiffies - stm->firstuse);
-+	dtm->firstuse = stm->firstuse ?
-+		jiffies_to_clock_t(jiffies - stm->firstuse) : 0;
- 	dtm->expires = jiffies_to_clock_t(stm->expires);
- }
+diff --git a/arch/x86/mm/mmio-mod.c b/arch/x86/mm/mmio-mod.c
+index 4d434ddb75db..f140b2d39319 100644
+--- a/arch/x86/mm/mmio-mod.c
++++ b/arch/x86/mm/mmio-mod.c
+@@ -385,7 +385,7 @@ static void enter_uniprocessor(void)
+ 	int cpu;
+ 	int err;
  
+-	if (downed_cpus == NULL &&
++	if (!cpumask_available(downed_cpus) &&
+ 	    !alloc_cpumask_var(&downed_cpus, GFP_KERNEL)) {
+ 		pr_notice("Failed to allocate mask\n");
+ 		goto out;
+@@ -415,7 +415,7 @@ static void leave_uniprocessor(void)
+ 	int cpu;
+ 	int err;
+ 
+-	if (downed_cpus == NULL || cpumask_weight(downed_cpus) == 0)
++	if (!cpumask_available(downed_cpus) || cpumask_weight(downed_cpus) == 0)
+ 		return;
+ 	pr_notice("Re-enabling CPUs...\n");
+ 	for_each_cpu(cpu, downed_cpus) {
 -- 
 2.25.1
 
