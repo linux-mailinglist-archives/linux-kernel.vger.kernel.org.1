@@ -2,96 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8935E1E5ACF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 10:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D141E5AD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 10:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726978AbgE1IbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 04:31:20 -0400
-Received: from ozlabs.org ([203.11.71.1]:33933 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726085AbgE1IbU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 04:31:20 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Xgs20GpXz9sSF;
-        Thu, 28 May 2020 18:31:18 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1590654678;
-        bh=TcuCLidhBGrqpz8f7Da8lwxBBe2IKefCUZaDVklYjzI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kBEm+Lar6Bl/Z6Qt/i+uKgN9/IbMKnOmLm5z1NixPDFdj4opJO/LcirQIPQqiaVFP
-         kOhC9Hns2QHxvWVAB6BO/pTqUmbuOWfudtHfEBr09kmBCYD3ZVA3i1bkubKbn8wrKx
-         zXmoNKXKUqvWDpE5PKX4NBS85UetwOmCEDNZHC3JRx2cf9i9pdmgkwfMyPbYTzWYc9
-         fqgqHJLQPWL4Hj0iQ3ZNsEeGGNcBVAYWAG1p3OHx+8QnLEzlekEXyWsGDEtWzp9Bco
-         wvGiWPVwRT3cGk/35tCT/jGXaYp4KOfiaZyJUTBRKQaoTQW3a7/BgQf4Q53ZTdc52i
-         x499tyFYoFneg==
-Date:   Thu, 28 May 2020 18:31:15 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     devicetree-compiler@vger.kernel.org,
-        David Gibson <david@gibson.dropbear.id.au>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v2 2/2] checks: Improve i2c reg property checking
-Message-ID: <20200528183115.05b2519a@canb.auug.org.au>
-In-Reply-To: <20200528072037.1402346-3-joel@jms.id.au>
-References: <20200528072037.1402346-1-joel@jms.id.au>
-        <20200528072037.1402346-3-joel@jms.id.au>
+        id S1727053AbgE1Ib4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 04:31:56 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:40166 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726085AbgE1Ib4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 04:31:56 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 262EF80307C0;
+        Thu, 28 May 2020 08:31:47 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id mso_D6x-Sr2v; Thu, 28 May 2020 11:31:46 +0300 (MSK)
+Date:   Thu, 28 May 2020 11:31:44 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
+        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
+        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RESEND v3 0/2] syscon: Alter syscon and reboot drivers
+Message-ID: <20200528083144.5r2qn3mule4dvvgf@mobilestation>
+References: <20200526135102.21236-1-Sergey.Semin@baikalelectronics.ru>
+ <20200528070311.uj6bxlplxe2bths5@earth.universe>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/B8RJ8yx8LlQ3KMb_xSLNXNQ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200528070311.uj6bxlplxe2bths5@earth.universe>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/B8RJ8yx8LlQ3KMb_xSLNXNQ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, May 28, 2020 at 09:03:11AM +0200, Sebastian Reichel wrote:
+> Hi,
+> 
+> On Tue, May 26, 2020 at 04:50:59PM +0300, Serge Semin wrote:
+> > This is a small patchset about tuning the syscon infrastructure a bit.
+> > As it's going to be general in the framework of the Baikal-T1 SoC support
+> > integration into the kernel, we suggest to replace the legacy text-based
+> > syscon-reboot-mode dts-bindings file with yaml-based one. Then seeing a
+> > syscon reboot block is normally expected to be a part of a system
+> > controller and based on the discussion
+> > https://lore.kernel.org/linux-pm/20200306130402.1F4F0803079F@mail.baikalelectronics.ru/
+> > we decided to alter the syscon reboot driver so one would also try to fetch
+> > the syscon registers map from a parental DT node. regmap property is left
+> > supported although it's marked as deprecated from now.
+> > 
+> > This patchset is rebased and tested on the mainline Linux kernel 5.7-rc4:
+> > 0e698dfa2822 ("Linux 5.7-rc4")
+> > tag: v5.7-rc4
+> > 
+> > Changelog v2:
+> > - Add Sebastian' Acked-by tag to patch 1.
+> > - Use a shorter summary describing the bindings modification patches.
+> > - Our corporate email server doesn't change Message-Id anymore, so the patchset
+> >   is resubmitted being in the cover-letter-threaded format.
+> > - Discard patch with syscon "-endian" property support. As Rob said It shall be
+> >   in the common dt-schema.
+> > - Replace patches of adding a regmap property support to the syscon-reboot-mode
+> >   with patches making syscon-reboot a sub-node of a system controller node.
+> > - Mark regmap property as deprecated from now.
+> > 
+> > Link: https://lore.kernel.org/linux-pm/20200507233846.11548-1-Sergey.Semin@baikalelectronics.ru/
+> > Changelog v3:
+> > - Discard the commit 6acd3ecd88ff ("dt-bindings: power: reset: Convert
+> >   syscon-reboot-mode to DT schema") since it has been merged in by Sebatian.
+> > - Add Rob's Reviewed-by tag to the patch "dt-bindings: power: reset: Unrequire
+> >   regmap property in syscon-reboot node"
+> > 
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> > Cc: Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>
+> > Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+> > Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+> > Cc: Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>
+> > Cc: Vadim Vlasov <V.Vlasov@baikalelectronics.ru>
+> > Cc: Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>
+> > Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: linux-mips@vger.kernel.org
+> > Cc: devicetree@vger.kernel.org
+> > Cc: linux-pm@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > 
+> > Serge Semin (2):
+> >   dt-bindings: power: reset: Unrequire regmap property in syscon-reboot
+> >     node
+> >   power: reset: syscon-reboot: Add parental syscon support
+> > 
+> >  .../bindings/power/reset/syscon-reboot.yaml       | 15 ++++++++++-----
+> >  drivers/power/reset/syscon-reboot.c               |  7 +++++--
+> >  2 files changed, 15 insertions(+), 7 deletions(-)
+> 
+> Thanks, I queued both patches to power-supply's for-next branch.
+> 
+> -- Sebastian
 
-Hi Joel,
+Great! Thanks.
 
-On Thu, 28 May 2020 16:50:37 +0930 Joel Stanley <joel@jms.id.au> wrote:
->
-> =20
->  #define I2C_OWN_SLAVE_ADDRESS	(1 << 30)
-> +#define I2C_TEN_BIT_ADDRESS	(1 << 31)
-> =20
->  static void check_i2c_bus_reg(struct check *c, struct dt_info *dti, stru=
-ct node *node)
->  {
-> @@ -1057,10 +1058,13 @@ static void check_i2c_bus_reg(struct check *c, st=
-ruct dt_info *dti, struct node
->  		reg =3D fdt32_to_cpu(*(cells++));
->  		/* Ignore I2C_OWN_SLAVE_ADDRESS */
->  		reg &=3D ~I2C_OWN_SLAVE_ADDRESS;
-> -		if (reg > 0x3ff)
-> +
-> +		if ((reg & I2C_TEN_BIT_ADDRESS) && reg > 0x3ff)
-
-Shouldn't this be
-
-		if ((reg & I2C_TEN_BIT_ADDRESS) && ((reg & ~I2C_TEN_BIT_ADDRESS) > 0x3ff))
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/B8RJ8yx8LlQ3KMb_xSLNXNQ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7PdtQACgkQAVBC80lX
-0GyV8Af9F1S4vT1OP+5Ba9ZY+iXYNXYFe8vwj3rPqVNTfFjtinquTwP6Z+NhWyfP
-rsRE/HeOAqyD1Pjt6KNrg+guz2GRFZ69DMMeKwidf9KNVxQbf1IHr0TP9Dhk9kiI
-fbTYi5mpE/DNgfOC4HQa04kryp9Jrz/e1xNxNyi2NKQtU+h7K4AaFoayonUBxuXt
-4FqIxa7i3QuRYyBuwmM+mIOf06RJJSGz18f/gLGO6Db3xQNqEY0jaEoC7c7p1Hyn
-SO2DcIZpv411HXmgpCip6e8u4Lv/lCZf12mPX9t8pDkoppZuxVnl5/bmDYDMgtks
-Y24XQYMY50Q5d1QG7ifIETNVwWc+Og==
-=qhJ5
------END PGP SIGNATURE-----
-
---Sig_/B8RJ8yx8LlQ3KMb_xSLNXNQ--
+-Sergey
