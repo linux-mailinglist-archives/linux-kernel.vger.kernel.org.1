@@ -2,255 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B551E5208
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 02:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AEF1E520B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 02:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725826AbgE1ABm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 20:01:42 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:36206 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725294AbgE1ABl (ORCPT
+        id S1725915AbgE1ACm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 20:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725294AbgE1ACm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 20:01:41 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04RNvdea188654;
-        Thu, 28 May 2020 00:01:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=1u3KnY7wsn8eqS5LxH5DG3FtH5UMSs7unlE6FhJcW6A=;
- b=q//hMjAVRFCgFyxmIxFf/zWdcT7o6cFAZeSYEKSslEFYMehBIducY0I60EPGzhnIj0HE
- xM2TO3v5Zzs198xwSPjULYUrRUPk3Zc6t59pE6K8Beat1djjfWZKAUJ7/wKremLa/b0G
- NSUBU/chouDa4Y6kDe+AMjwm+xTRqbZytGf37p2l/tql5RxJqMZMHgvxhuoMI0QnT9nn
- lIurwPMiHk0h/fegYIl4qHXMV48WP+b3l8I1uksR5DW1R+3cCMzoR74pTElGumXYWT3N
- GgYiLFd/b9+bSr2YwY6FN8lonz/9Wttl+N8SZz5MxVIWCKlt6ezsVs97wGkq0NU+BfXx 3A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 316u8r27w1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 28 May 2020 00:01:29 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04RNvaGf155723;
-        Thu, 28 May 2020 00:01:28 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 317j5td1ce-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 May 2020 00:01:28 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04S01PV0024374;
-        Thu, 28 May 2020 00:01:26 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 27 May 2020 17:01:25 -0700
-Subject: Re: kernel BUG at mm/hugetlb.c:LINE!
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Colin Walters <walters@verbum.org>,
-        syzbot <syzbot+d6ec23007e951dadf3de@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-unionfs@vger.kernel.org
-References: <000000000000b4684e05a2968ca6@google.com>
- <aa7812b8-60ae-8578-40db-e71ad766b4d3@oracle.com>
- <CAJfpegtVca6H1JPW00OF-7sCwpomMCo=A2qr5K=9uGKEGjEp3w@mail.gmail.com>
- <bb232cfa-5965-42d0-88cf-46d13f7ebda3@www.fastmail.com>
- <9a56a79a-88ed-9ff4-115e-ec169cba5c0b@oracle.com>
- <CAJfpegsNVB12MQ-Jgbb-f=+i3g0Xy52miT3TmUAYL951HVQS_w@mail.gmail.com>
- <78313ae9-8596-9cbe-f648-3152660be9b3@oracle.com>
- <20200522100553.GE13131@miu.piliscsaba.redhat.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <4ebd0429-f715-d523-4c09-43fa2c3bc338@oracle.com>
-Date:   Wed, 27 May 2020 17:01:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Wed, 27 May 2020 20:02:42 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81A07C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 17:02:41 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id t4so12875729vsq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 17:02:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=okC+75ZCtKbM15r3x670gRBve7kChxs6sV2debOxPB0=;
+        b=kwQn58I6KeEnpxDEukm9xPGz2qfO5MESqkwTzLFeIX7J+dgM+ZV5QNN+lC+OhzIS6/
+         96qBokhRcNk/JSx/rvGCUB4rIcTSWxyujirTeUBc8+5OBTrU8vvBdnCKLujPdEXA1HVh
+         nxigoKotEtS8ni6ue0pj3Jeo723HpsQl8aLkQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=okC+75ZCtKbM15r3x670gRBve7kChxs6sV2debOxPB0=;
+        b=F9U/MtBE6o3eGoN47A0evDMfiatjeyI/yjO3btCzRIYUZVqGHYIEpW7tWyHytfYOfg
+         6SRWTwTv/FpHP5e2nrGF7TBuIJgKWftGShgroVjE0AUBaQjYgqf41oNMvthuKfyVlWjI
+         aeQd1RIq9AIG0eBDzkS4YrN5dQDplkp5819bOusfWPdEh0PV0869V8RRkBII/oFVgiKY
+         EGgSxhvXT9Xe8n6F91ObSt9zK6dpasKoOdOIcG7KRT1AFSxgD7k/cPMXNgFVYWqGLcoF
+         njb8NkbPw7EEtb2nzFMvG8nJgQW7/QZssrznz8x36SJCvQLS/5wjUPWmpHuYyk3da0Zg
+         RZqQ==
+X-Gm-Message-State: AOAM531UW+KOmtyjLtEGgTJTTulyi8jfj0R7s1gHjiv6pDaqgQIY8/yO
+        gvu56phOZ9NHHXTjoYUB1O/GsQnI4Qo=
+X-Google-Smtp-Source: ABdhPJwICH7vlBI78FMfaPUrU9uSqptECiOSu9V6ENmZsLkImx8h/DvLFBzwX/NMHEMx0lBa4I6BPg==
+X-Received: by 2002:a67:ad0e:: with SMTP id t14mr229690vsl.87.1590624160342;
+        Wed, 27 May 2020 17:02:40 -0700 (PDT)
+Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com. [209.85.222.44])
+        by smtp.gmail.com with ESMTPSA id i199sm417539vke.20.2020.05.27.17.02.39
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 May 2020 17:02:39 -0700 (PDT)
+Received: by mail-ua1-f44.google.com with SMTP id g7so9055717uap.7
+        for <linux-kernel@vger.kernel.org>; Wed, 27 May 2020 17:02:39 -0700 (PDT)
+X-Received: by 2002:ab0:1684:: with SMTP id e4mr240126uaf.22.1590624158874;
+ Wed, 27 May 2020 17:02:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200522100553.GE13131@miu.piliscsaba.redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9634 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 suspectscore=0
- mlxlogscore=999 mlxscore=0 adultscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005270177
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9634 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
- priorityscore=1501 spamscore=0 cotscore=-2147483648 suspectscore=0
- phishscore=0 clxscore=1011 mlxlogscore=999 bulkscore=0 adultscore=0
- lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005270177
+References: <20200507153444.1.I70e0d4fd46d5ed2aaf0c98a355e8e1b7a5bb7e4e@changeid>
+ <20200519104151.6evv3hizm5dbjjq2@holly.lan>
+In-Reply-To: <20200519104151.6evv3hizm5dbjjq2@holly.lan>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 27 May 2020 17:02:27 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XCFxgO-s--jw9CTgQUxtQfteoQ4XSL_bbjW4s82Wd3pg@mail.gmail.com>
+Message-ID: <CAD=FV=XCFxgO-s--jw9CTgQUxtQfteoQ4XSL_bbjW4s82Wd3pg@mail.gmail.com>
+Subject: Re: [PATCH] kgdb: Avoid suspicious RCU usage warning
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Jason Wessel <jason.wessel@windriver.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/22/20 3:05 AM, Miklos Szeredi wrote:
-> On Wed, May 20, 2020 at 10:27:15AM -0700, Mike Kravetz wrote:
-> 
->> I am fairly confident it is all about checking limits and alignment.  The
->> filesystem knows if it can/should align to base or huge page size. DAX has
->> some interesting additional restrictions, and several 'traditional' filesystems
->> check if they are 'on DAX'.
-> 
-> 
-> Okay, I haven't looked at DAX vs. overlay.  I'm sure it's going to come up at
-> some point, if it hasn't already.
-> 
->>
->> In a previous e-mail, you suggested hugetlb_get_unmapped_area could do the
->> length adjustment in hugetlb_get_unmapped_area (generic and arch specific).
->> I agree, although there may be the need to add length overflow checks in
->> these routines (after round up) as this is done in core code now.  However,
->> this can be done as a separate cleanup patch.
->>
->> In any case, we need to get the core mmap code to call filesystem specific
->> get_unmapped_area if on a union/overlay.  The patch I suggested does this
->> by simply calling real_file to determine if there is a filesystem specific
->> get_unmapped_area.  The other approach would be to provide an overlayfs
->> get_unmapped_area that calls the underlying filesystem get_unmapped_area.
-> 
-> That latter is what's done for all other stacked operations in overlayfs.
-> 
-> Untested patch below.
-> 
+Hi,
 
-Thanks Miklos!
+On Tue, May 19, 2020 at 3:41 AM Daniel Thompson
+<daniel.thompson@linaro.org> wrote:
+>
+> On Thu, May 07, 2020 at 03:53:58PM -0700, Douglas Anderson wrote:
+> > At times when I'm using kgdb I see a splat on my console about
+> > suspicious RCU usage.  I managed to come up with a case that could
+> > reproduce this that looked like this:
+> >
+> >   WARNING: suspicious RCU usage
+> >   5.7.0-rc4+ #609 Not tainted
+> >   -----------------------------
+> >   kernel/pid.c:395 find_task_by_pid_ns() needs rcu_read_lock() protection!
+> >
+> >   other info that might help us debug this:
+> >
+> >     rcu_scheduler_active = 2, debug_locks = 1
+> >   3 locks held by swapper/0/1:
+> >    #0: ffffff81b6b8e988 (&dev->mutex){....}-{3:3}, at: __device_attach+0x40/0x13c
+> >    #1: ffffffd01109e9e8 (dbg_master_lock){....}-{2:2}, at: kgdb_cpu_enter+0x20c/0x7ac
+> >    #2: ffffffd01109ea90 (dbg_slave_lock){....}-{2:2}, at: kgdb_cpu_enter+0x3ec/0x7ac
+> >
+> >   stack backtrace:
+> >   CPU: 7 PID: 1 Comm: swapper/0 Not tainted 5.7.0-rc4+ #609
+> >   Hardware name: Google Cheza (rev3+) (DT)
+> >   Call trace:
+> >    dump_backtrace+0x0/0x1b8
+> >    show_stack+0x1c/0x24
+> >    dump_stack+0xd4/0x134
+> >    lockdep_rcu_suspicious+0xf0/0x100
+> >    find_task_by_pid_ns+0x5c/0x80
+> >    getthread+0x8c/0xb0
+> >    gdb_serial_stub+0x9d4/0xd04
+> >    kgdb_cpu_enter+0x284/0x7ac
+> >    kgdb_handle_exception+0x174/0x20c
+> >    kgdb_brk_fn+0x24/0x30
+> >    call_break_hook+0x6c/0x7c
+> >    brk_handler+0x20/0x5c
+> >    do_debug_exception+0x1c8/0x22c
+> >    el1_sync_handler+0x3c/0xe4
+> >    el1_sync+0x7c/0x100
+> >    rpmh_rsc_probe+0x38/0x420
+> >    platform_drv_probe+0x94/0xb4
+> >    really_probe+0x134/0x300
+> >    driver_probe_device+0x68/0x100
+> >    __device_attach_driver+0x90/0xa8
+> >    bus_for_each_drv+0x84/0xcc
+> >    __device_attach+0xb4/0x13c
+> >    device_initial_probe+0x18/0x20
+> >    bus_probe_device+0x38/0x98
+> >    device_add+0x38c/0x420
+> >
+> > If I understand properly we should just be able to blanket kgdb under
+> > one big RCU read lock and the problem should go away.  We'll add it to
+> > the beast-of-a-function known as kgdb_cpu_enter().
+> >
+> > With this I no longer get any splats and things seem to work fine.
+> >
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>
+> In principle this looks OK but I'm curious why we don't cuddle these
+> calls up to the local interrupt locking (and also whether we want to
+> keep hold of the lock during stepping). If nothing else that would make
+> review easier.
 
-We still need the 'real_file()' routine for is_file_hugepages.  So combining
-these, I propose the following patch.  It addresses the known issue as well
-as potential issues with is_file_hugepages returning incorrect information.
-I don't really like a separate header file for real_file, but I can not
-think of any good place to put it.
+It probably wouldn't hurt to keep hold of the lock during single
+stepping but I don't think there's any real reason we'd want to.
+Specifically the only real reason we're calling rcu_read_lock() is to
+avoid the warning.  Since we're a stop-the-world debugger it's not
+like something else could be messing with state at the same time.
 
-Let me know what you think,
+I'm looking at the whole function though and I don't really understand
+all the comments about interrupts being restored by the 'trap return'
+code, do you?  Specifically: as far as I can tell we _always_ restore
+interrupts when exiting the function.  There are only two return
+statements and both have "local_irq_restore(flags);" right before
+them.  We never modify the flags directly and the one other usage of
+"flags" is effectively the statement "local_irq_restore(flags);
+local_irq_save(flags);" which will, I guess, allow any interrupts that
+were already pending to take place.  Are you saying that you want me
+to match that and do a "rcu_read_unlock(); rcu_read_lock()" there?
 
-From 33f6bbd19406108b61a4113b1ec8e4e6888cd482 Mon Sep 17 00:00:00 2001
-From: Mike Kravetz <mike.kravetz@oracle.com>
-Date: Wed, 27 May 2020 16:58:58 -0700
-Subject: [PATCH v2] ovl: provide real_file() and overlayfs get_unmapped_area()
+If I understand things correctly (and there's maybe a better chance
+after I read Wei Li's recent patches) the disabling of IRQs for single
+stepping happens in a different way.  It looks like we update the
+"struct pt_regs" of the task we're stepping so that when we exit kgdb
+and start running the task again that the interrupts are off.  That
+seems reasonable to me and this function has nothing to do with it.
 
-If a file is on a union/overlay, then the 'struct file *' will have
-overlayfs file operations.  The routine is_file_hugepages() compares
-f->f_op to hugetlbfs_file_operations to determine if it is a hugetlbfs
-file.  If a hugetlbfs file is on a union/overlay, this comparison is
-false and is_file_hugepages() incorrectly indicates the underlying
-file is not hugetlbfs.  One result of this is a BUG as shown in [1].
+...and further confusion on my part: does the whole saving / restoring
+of interrupts in kgdb_cpu_enter() make any sense anyway?  Is this
+function ever called from a context that's not an interrupt context?
+How do we get the pt_regs in that case?  Just for fun, I tried doing
+this:
 
-mmap uses is_file_hugepages() because hugetlbfs files have different
-alignment restrictions.  In addition, mmap code would like to use the
-filesystem specific get_unmapped_area() routine if one is defined.
+    local_irq_save(flags);
++   if (!arch_irqs_disabled_flags(flags))
++           pr_warn("I was wrong\n");
 
-To address this issue,
-- Add a new routine real_file() which will return the underlying file.
-- Update is_file_hugepages to get the real file.
-- Add get_unmapped_area f_op to oerrlayfs to call underlying routine.
+...and I never saw "I was wrong" on my system.  Maybe it matters for
+something not arm64?  ...or, maybe, this is from when kgdb worked in a
+completely different way?
 
-[1] https://lore.kernel.org/linux-mm/000000000000b4684e05a2968ca6@google.com/
 
-Reported-by: syzbot+d6ec23007e951dadf3de@syzkaller.appspotmail.com
-Signed-off-by: Miklos Szeredi <miklos@szeredi.hu>
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
----
- fs/overlayfs/file.c       | 13 +++++++++++++
- include/linux/hugetlb.h   |  3 +++
- include/linux/overlayfs.h | 27 +++++++++++++++++++++++++++
- 3 files changed, 43 insertions(+)
- create mode 100644 include/linux/overlayfs.h
+In general I made my patch by:
+* Calling rcu_read_lock() at the start of the function.
+* Calling rcu_read_unlock() right before all 2 of the "return" calls of
+  the function.
 
-diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-index 87c362f65448..cc020e1c72d5 100644
---- a/fs/overlayfs/file.c
-+++ b/fs/overlayfs/file.c
-@@ -12,6 +12,7 @@
- #include <linux/splice.h>
- #include <linux/mm.h>
- #include <linux/fs.h>
-+#include <linux/overlayfs.h>
- #include "overlayfs.h"
- 
- struct ovl_aio_req {
-@@ -757,6 +758,17 @@ static loff_t ovl_remap_file_range(struct file *file_in, loff_t pos_in,
- 			    remap_flags, op);
- }
- 
-+static unsigned long ovl_get_unmapped_area(struct file *file,
-+				unsigned long uaddr, unsigned long len,
-+				unsigned long pgoff, unsigned long flags)
-+{
-+	struct file *realfile = real_file(file);
-+
-+	return (realfile->f_op->get_unmapped_area ?:
-+		current->mm->get_unmapped_area)(realfile,
-+						uaddr, len, pgoff, flags);
-+}
-+
- const struct file_operations ovl_file_operations = {
- 	.open		= ovl_open,
- 	.release	= ovl_release,
-@@ -774,6 +786,7 @@ const struct file_operations ovl_file_operations = {
- 
- 	.copy_file_range	= ovl_copy_file_range,
- 	.remap_file_range	= ovl_remap_file_range,
-+	.get_unmapped_area	= ovl_get_unmapped_area,
- };
- 
- int __init ovl_aio_request_cache_init(void)
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 43a1cef8f0f1..fb22c0a7474a 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -9,6 +9,7 @@
- #include <linux/cgroup.h>
- #include <linux/list.h>
- #include <linux/kref.h>
-+#include <linux/overlayfs.h>
- #include <asm/pgtable.h>
- 
- struct ctl_table;
-@@ -437,6 +438,8 @@ struct file *hugetlb_file_setup(const char *name, size_t size, vm_flags_t acct,
- 
- static inline bool is_file_hugepages(struct file *file)
- {
-+	file = real_file(file);
-+
- 	if (file->f_op == &hugetlbfs_file_operations)
- 		return true;
- 
-diff --git a/include/linux/overlayfs.h b/include/linux/overlayfs.h
-new file mode 100644
-index 000000000000..eecdfda0286f
---- /dev/null
-+++ b/include/linux/overlayfs.h
-@@ -0,0 +1,27 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_OVERLAYFS_H
-+#define _LINUX_OVERLAYFS_H
-+
-+#include <linux/fs.h>
-+
-+extern const struct file_operations ovl_file_operations;
-+
-+#ifdef CONFIG_OVERLAY_FS
-+/*
-+ * If file is on a union/overlay, then return the underlying real file.
-+ * Otherwise return the file itself.
-+ */
-+static inline struct file *real_file(struct file *file)
-+{
-+	while (unlikely(file->f_op == &ovl_file_operations))
-+		file = file->private_data;
-+	return file;
-+}
-+#else
-+static inline struct file *real_file(struct file *file)
-+{
-+	return file;
-+}
-+#endif
-+
-+#endif /* _LINUX_OVERLAYFS_H */
--- 
-2.25.4
+...I was hoping that would actually make it easier to reason about
+even if the function is a beast.
 
+
+Hopefully the above makes sense.  I wouldn't rule out me just being
+utterly confused, but I _think_ I reasoned through it all.  ;-)  If it
+all makes sense, I'm inclined to:
+
+1. Leave my patch the way it is.
+
+2. Perhaps remove the whole irq saving / restoring in kgdb_cpu_enter().
+
+
+-Doug
