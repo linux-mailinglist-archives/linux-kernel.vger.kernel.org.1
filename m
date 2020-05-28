@@ -2,99 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4770C1E63A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B65BF1E63A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391014AbgE1OUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 10:20:55 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:56096 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390924AbgE1OUw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 10:20:52 -0400
-Received: from mail-qt1-f198.google.com ([209.85.160.198])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <gpiccoli@canonical.com>)
-        id 1jeJOs-0002Ip-07
-        for linux-kernel@vger.kernel.org; Thu, 28 May 2020 14:20:50 +0000
-Received: by mail-qt1-f198.google.com with SMTP id o11so118817qti.23
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 07:20:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:in-reply-to:from:subject:autocrypt
-         :message-id:date:user-agent:mime-version:content-language
-         :content-transfer-encoding;
-        bh=GL47WqaNh0Bxpyg70k1tnSp6HYgAjXbkmzgdit/0Vrk=;
-        b=NNYL/gxXZSxWxjyn/QIZFPSn5BPGu0vKrmBVuwfujx4R0QfmsqJkv3spzJ7QlWQw0x
-         qZErvNqw9wmyRB1z2cP2UxMfDUJfu8sPbuEBI0cE13GouT4W5Kn3xNKNWws2Vp+PLEpq
-         kKSEndNGXkXYvffhfCUnNUOPHIso/ysWzxzmD2y/Newwu+jsl0mb5Sd1NOGY0dHDekZH
-         kfWhVrpdtCF0bshCSPzL4Yyhv50V34W9aZnXAI/YuKFbpYmvBX5A/jVi1hLlm6CcKzVp
-         UEq0XGBdlrgaYPaAnbT7ARbxvHdwYomg/TaSXoZiJxNYRxKf7CkMZ1GnYjYcoxdqL/4n
-         2k+g==
-X-Gm-Message-State: AOAM5307TlHkZY6oaqdVGCbxBHzYtfpaOIQ5TeXHD4HusgCp1Gaq/pPu
-        cqHS42S5w64n2djyQb0iekOViSQ0rFai8HOo9011pVXRoq39/Ms0XNO41QXwl5sRKnlGeO0Qr3j
-        W6LuzePsEBVNmIq9HdcUJlKeyhPP9LB/2ghQZunXv1Q==
-X-Received: by 2002:ae9:e901:: with SMTP id x1mr2838244qkf.131.1590675645854;
-        Thu, 28 May 2020 07:20:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzfLsLHRDVTzCMMlEhcaEuL7V6F7lbQ8otswg8xlmGEJtSPm6X/ZKu9EoeL9JWyyFLQl2fIyg==
-X-Received: by 2002:ae9:e901:: with SMTP id x1mr2838216qkf.131.1590675645576;
-        Thu, 28 May 2020 07:20:45 -0700 (PDT)
-Received: from [192.168.1.75] ([179.110.231.191])
-        by smtp.gmail.com with ESMTPSA id n75sm846338qke.52.2020.05.28.07.20.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 May 2020 07:20:44 -0700 (PDT)
-To:     jan@schnhrr.de
-Cc:     linux-kernel@vger.kernel.org, Thomas.Lendacky@amd.com,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        pmenzel@molgen.mpg.de, Thomas Gleixner <tglx@linutronix.de>,
-        x86@kernel.org, gpiccoli@canonical.com
-In-Reply-To: 
-From:   "Guilherme G. Piccoli" <gpiccoli@canonical.com>
-Subject: Re: [PATCH v2] x86/tsc: Allow quick PIT calibration despite
- interruptions
-Autocrypt: addr=gpiccoli@canonical.com; prefer-encrypt=mutual; keydata=
- xsBNBFpVBxcBCADPNKmu2iNKLepiv8+Ssx7+fVR8lrL7cvakMNFPXsXk+f0Bgq9NazNKWJIn
- Qxpa1iEWTZcLS8ikjatHMECJJqWlt2YcjU5MGbH1mZh+bT3RxrJRhxONz5e5YILyNp7jX+Vh
- 30rhj3J0vdrlIhPS8/bAt5tvTb3ceWEic9mWZMsosPavsKVcLIO6iZFlzXVu2WJ9cov8eQM/
- irIgzvmFEcRyiQ4K+XUhuA0ccGwgvoJv4/GWVPJFHfMX9+dat0Ev8HQEbN/mko/bUS4Wprdv
- 7HR5tP9efSLucnsVzay0O6niZ61e5c97oUa9bdqHyApkCnGgKCpg7OZqLMM9Y3EcdMIJABEB
- AAHNLUd1aWxoZXJtZSBHLiBQaWNjb2xpIDxncGljY29saUBjYW5vbmljYWwuY29tPsLAdwQT
- AQgAIQUCWmClvQIbAwULCQgHAgYVCAkKCwIEFgIDAQIeAQIXgAAKCRDOR5EF9K/7Gza3B/9d
- 5yczvEwvlh6ksYq+juyuElLvNwMFuyMPsvMfP38UslU8S3lf+ETukN1S8XVdeq9yscwtsRW/
- 4YoUwHinJGRovqy8gFlm3SAtjfdqysgJqUJwBmOtcsHkmvFXJmPPGVoH9rMCUr9s6VDPox8f
- q2W5M7XE9YpsfchS/0fMn+DenhQpV3W6pbLtuDvH/81GKrhxO8whSEkByZbbc+mqRhUSTdN3
- iMpRL0sULKPVYbVMbQEAnfJJ1LDkPqlTikAgt3peP7AaSpGs1e3pFzSEEW1VD2jIUmmDku0D
- LmTHRl4t9KpbU/H2/OPZkrm7809QovJGRAxjLLPcYOAP7DUeltvezsBNBFpVBxcBCADbxD6J
- aNw/KgiSsbx5Sv8nNqO1ObTjhDR1wJw+02Bar9DGuFvx5/qs3ArSZkl8qX0X9Vhptk8rYnkn
- pfcrtPBYLoux8zmrGPA5vRgK2ItvSc0WN31YR/6nqnMfeC4CumFa/yLl26uzHJa5RYYQ47jg
- kZPehpc7IqEQ5IKy6cCKjgAkuvM1rDP1kWQ9noVhTUFr2SYVTT/WBHqUWorjhu57/OREo+Tl
- nxI1KrnmW0DbF52tYoHLt85dK10HQrV35OEFXuz0QPSNrYJT0CZHpUprkUxrupDgkM+2F5LI
- bIcaIQ4uDMWRyHpDbczQtmTke0x41AeIND3GUc+PQ4hWGp9XABEBAAHCwF8EGAEIAAkFAlpV
- BxcCGwwACgkQzkeRBfSv+xv1wwgAj39/45O3eHN5pK0XMyiRF4ihH9p1+8JVfBoSQw7AJ6oU
- 1Hoa+sZnlag/l2GTjC8dfEGNoZd3aRxqfkTrpu2TcfT6jIAsxGjnu+fUCoRNZzmjvRziw3T8
- egSPz+GbNXrTXB8g/nc9mqHPPprOiVHDSK8aGoBqkQAPZDjUtRwVx112wtaQwArT2+bDbb/Y
- Yh6gTrYoRYHo6FuQl5YsHop/fmTahpTx11IMjuh6IJQ+lvdpdfYJ6hmAZ9kiVszDF6pGFVkY
- kHWtnE2Aa5qkxnA2HoFpqFifNWn5TyvJFpyqwVhVI8XYtXyVHub/WbXLWQwSJA4OHmqU8gDl
- X18zwLgdiQ==
-Message-ID: <9bfbe39b-fcf1-0e05-ae36-e13e7e63194d@canonical.com>
-Date:   Thu, 28 May 2020 11:20:40 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2391070AbgE1OVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 10:21:12 -0400
+Received: from mga03.intel.com ([134.134.136.65]:20668 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390924AbgE1OVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 10:21:09 -0400
+IronPort-SDR: lwKWPPpfCUBJU3dam2bE/0jMqpJA8LN84Ga4uMfHoqm0O2LDKfYlrBSstawzBPwbmKvY0ICh2+
+ ltQp7l6BTv2g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 07:21:05 -0700
+IronPort-SDR: RbBOw7sCwjdGD+r6XWfXsZOuFjUtGlLTVQc41w4UEzOUe0AuN9UGJnNDQcyvlokBiRqVwZyWKo
+ iFk1h8NQGUXg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,444,1583222400"; 
+   d="scan'208";a="302827105"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 28 May 2020 07:21:01 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jeJP6-009RKe-LU; Thu, 28 May 2020 17:21:04 +0300
+Date:   Thu, 28 May 2020 17:21:04 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 03/10] dmaengine: Introduce min burst length capability
+Message-ID: <20200528142104.GQ1634618@smile.fi.intel.com>
+References: <20200526225022.20405-1-Sergey.Semin@baikalelectronics.ru>
+ <20200526225022.20405-4-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200526225022.20405-4-Sergey.Semin@baikalelectronics.ru>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jan and all involved here, I'd like to know if there was any news on
-this patch - seems users are still facing this issue on AMD systems.
+On Wed, May 27, 2020 at 01:50:14AM +0300, Serge Semin wrote:
+> Some hardware aside from default 0/1 may have greater minimum burst
+> transactions length constraints. Here we introduce the DMA device
+> and slave capability, which if required can be initialized by the DMA
+> engine driver with the device-specific value.
 
-Thanks in advance,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: linux-mips@vger.kernel.org
+> Cc: devicetree@vger.kernel.org
+> 
+> ---
+> 
+> Changelog v3:
+> - This is a new patch created as a result of the discussion with Vinud and
+>   Andy in the framework of DW DMA burst and LLP capabilities.
+> ---
+>  drivers/dma/dmaengine.c   | 1 +
+>  include/linux/dmaengine.h | 4 ++++
+>  2 files changed, 5 insertions(+)
+> 
+> diff --git a/drivers/dma/dmaengine.c b/drivers/dma/dmaengine.c
+> index d31076d9ef25..b332ffe52780 100644
+> --- a/drivers/dma/dmaengine.c
+> +++ b/drivers/dma/dmaengine.c
+> @@ -590,6 +590,7 @@ int dma_get_slave_caps(struct dma_chan *chan, struct dma_slave_caps *caps)
+>  	caps->src_addr_widths = device->src_addr_widths;
+>  	caps->dst_addr_widths = device->dst_addr_widths;
+>  	caps->directions = device->directions;
+> +	caps->min_burst = device->min_burst;
+>  	caps->max_burst = device->max_burst;
+>  	caps->residue_granularity = device->residue_granularity;
+>  	caps->descriptor_reuse = device->descriptor_reuse;
+> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+> index e1c03339918f..0c7403b27133 100644
+> --- a/include/linux/dmaengine.h
+> +++ b/include/linux/dmaengine.h
+> @@ -465,6 +465,7 @@ enum dma_residue_granularity {
+>   *	Since the enum dma_transfer_direction is not defined as bit flag for
+>   *	each type, the dma controller should set BIT(<TYPE>) and same
+>   *	should be checked by controller as well
+> + * @min_burst: min burst capability per-transfer
+>   * @max_burst: max burst capability per-transfer
+>   * @cmd_pause: true, if pause is supported (i.e. for reading residue or
+>   *	       for resume later)
+> @@ -478,6 +479,7 @@ struct dma_slave_caps {
+>  	u32 src_addr_widths;
+>  	u32 dst_addr_widths;
+>  	u32 directions;
+> +	u32 min_burst;
+>  	u32 max_burst;
+>  	bool cmd_pause;
+>  	bool cmd_resume;
+> @@ -769,6 +771,7 @@ struct dma_filter {
+>   *	Since the enum dma_transfer_direction is not defined as bit flag for
+>   *	each type, the dma controller should set BIT(<TYPE>) and same
+>   *	should be checked by controller as well
+> + * @min_burst: min burst capability per-transfer
+>   * @max_burst: max burst capability per-transfer
+>   * @residue_granularity: granularity of the transfer residue reported
+>   *	by tx_status
+> @@ -839,6 +842,7 @@ struct dma_device {
+>  	u32 src_addr_widths;
+>  	u32 dst_addr_widths;
+>  	u32 directions;
+> +	u32 min_burst;
+>  	u32 max_burst;
+>  	bool descriptor_reuse;
+>  	enum dma_residue_granularity residue_granularity;
+> -- 
+> 2.26.2
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-Guilherme
