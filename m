@@ -2,57 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8BA81E6C6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF731E6C7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407081AbgE1UYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 16:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406986AbgE1UYc (ORCPT
+        id S2407252AbgE1U05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 16:26:57 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:36700 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407016AbgE1U0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 16:24:32 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451ECC08C5C6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:24:32 -0700 (PDT)
+        Thu, 28 May 2020 16:26:54 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Subject:Cc:To:From:Date:Message-ID:
-        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=ZlitLrg58PjBubp1jZcu8kKsgkfU14EybJiixuLj3Ro=; b=MhXBQfags+orS9/WAp5Xvw/ePk
-        OQ4klb6NH0QGlt5FJXhVfYtqdSoLIBNrTL+HxO5pKmYJICdp2esm+TPpyx2ZhPmkUqDZoYF68LAuR
-        ueENZp8g3aa6gjzLMfLlL+cx7YwFQLBiMmJBL4tIQ++5JeM7kv4rv9w2eSRkI0MqUIPwsmzyWiDQU
-        3QDszMg9naP7XRXVHABBJTjHLT/mK5bFxcQLl+HTFwUT8ZL4vukb4YKGw84BLczi8pw6H2vrSSege
-        GSsIbNIqQIsjI/IGdTD5naI81QvfwIUDTKCaC1O4UcSQNsRYC4JiDEBsLU0ZlSgcsI9O1/qNrqt9A
-        pozzj2mA==;
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To;
+        bh=UxjfvjgRuchdbQ1Ws3uYJW3D/1z0lF3If9pdqFqKFgU=; b=KTdP/zoV0Gr5w4fObWyACUelOZ
+        ju0hCNKdW6KWZYbFQzhCjeu5caSu9zf/AC1wyEy/MDgIWQfGxACCJVB+kAzaMZuyn+gtFGHe8+0/j
+        ABz7oRhEluZ/b6X5DjXkAa5FdDCvhfvBt3Q9ioQB36+xiKv9Omq34nB1kHAeiYQpsRm8BbyMMlRiR
+        p5I4SxS6gnNmv8By8nRis1tlZLEwtWglJl3COdWIRF3W0rCvLiL1bfXY3a2+pOizvOm55udCHQAqY
+        RCEKCebd6aXpqM7vbxPa1ZETa2Ry3CNptUhBxSkHeCYYo70Qj+c0G1sfN1lpogh+kh3l7c8sz0LQn
+        2PGvBwLQ==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jeP4j-0005Zn-72; Thu, 28 May 2020 20:24:25 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jeP4m-0003gZ-Sz; Thu, 28 May 2020 20:24:29 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D6868301205;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E25723012C3;
         Thu, 28 May 2020 22:24:22 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id CABFA203C05AF; Thu, 28 May 2020 22:24:22 +0200 (CEST)
-Message-ID: <20200528201937.038455891@infradead.org>
+        id CE5C0203B84BB; Thu, 28 May 2020 22:24:22 +0200 (CEST)
+Message-ID: <20200528202328.418625592@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 28 May 2020 22:19:37 +0200
+Date:   Thu, 28 May 2020 22:19:38 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     tglx@linutronix.de, luto@amacapital.net, peterz@infradead.org
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
         Lai Jiangshan <laijs@linux.alibaba.com>,
         sean.j.christopherson@intel.com, andrew.cooper3@citrix.com,
         daniel.thompson@linaro.org
-Subject: [PATCH 0/6] x86/entry: disallow #DB more
+Subject: [PATCH 1/6] x86/entry: Introduce local_db_{save,restore}()
+References: <20200528201937.038455891@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These patches disallow #DB during NMI/#MC and allow removing a lot of fugly code.
+In order to allow other exceptions than #DB to disable breakpoints,
+provide a common helper.
 
-Patch #6 should probably wait until we've got the KGDB situation sorted
-because applying that makes a bad situation worse.
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ arch/x86/include/asm/debugreg.h |   25 +++++++++++++++++++++++++
+ arch/x86/kernel/traps.c         |   18 ++----------------
+ 2 files changed, 27 insertions(+), 16 deletions(-)
+
+--- a/arch/x86/include/asm/debugreg.h
++++ b/arch/x86/include/asm/debugreg.h
+@@ -113,6 +113,31 @@ static inline void debug_stack_usage_inc
+ static inline void debug_stack_usage_dec(void) { }
+ #endif /* X86_64 */
+ 
++static __always_inline void local_db_save(unsigned long *dr7)
++{
++	get_debugreg(*dr7, 7);
++	if (*dr7)
++		set_debugreg(0, 7);
++	/*
++	 * Ensure the compiler doesn't lower the above statements into
++	 * the critical section; disabling breakpoints late would not
++	 * be good.
++	 */
++	barrier();
++}
++
++static __always_inline void local_db_restore(unsigned long dr7)
++{
++	/*
++	 * Ensure the compiler doesn't raise this statement into
++	 * the critical section; enabling breakpoints early would
++	 * not be good.
++	 */
++	barrier();
++	if (dr7)
++		set_debugreg(dr7, 7);
++}
++
+ #ifdef CONFIG_CPU_SUP_AMD
+ extern void set_dr_addr_mask(unsigned long mask, int dr);
+ #else
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -727,15 +727,7 @@ static __always_inline void debug_enter(
+ 	 * Entry text is excluded for HW_BP_X and cpu_entry_area, which
+ 	 * includes the entry stack is excluded for everything.
+ 	 */
+-	get_debugreg(*dr7, 7);
+-	set_debugreg(0, 7);
+-
+-	/*
+-	 * Ensure the compiler doesn't lower the above statements into
+-	 * the critical section; disabling breakpoints late would not
+-	 * be good.
+-	 */
+-	barrier();
++	local_db_save(dr7);
+ 
+ 	/*
+ 	 * The Intel SDM says:
+@@ -756,13 +748,7 @@ static __always_inline void debug_enter(
+ 
+ static __always_inline void debug_exit(unsigned long dr7)
+ {
+-	/*
+-	 * Ensure the compiler doesn't raise this statement into
+-	 * the critical section; enabling breakpoints early would
+-	 * not be good.
+-	 */
+-	barrier();
+-	set_debugreg(dr7, 7);
++	local_db_restore(dr7);
+ }
+ 
+ /*
 
 
