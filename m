@@ -2,46 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3611E6C7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 163361E6C6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407271AbgE1U1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 16:27:17 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:36696 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407244AbgE1U0z (ORCPT
+        id S2407126AbgE1UYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 16:24:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407005AbgE1UYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 16:26:55 -0400
+        Thu, 28 May 2020 16:24:32 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA138C08C5C7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 13:24:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=g4EutcNkbbAZwusJhcuddPUd/QbVZ/YWbgBnEdm30HY=; b=spyrhmMGGG80+lAOKsWFm0kWZg
-        jwKSMKWms4F8g4SvH3UWrkBmI+H4N9P2fa4t7g1DfPL4DLP2MJJO00MA0ubjvT1eTU2OyeRZVeX9B
-        CV6WzNSHX/9XfIPFIauml2leVdhEZyRnN9HoPjjY4aju+7m+smm8vGV3HSBycBEXvovYOmxb/ops9
-        epSDmrk094A3JraI0Ks3KE+S1IYBYDkI0MkhX6Me8mRtIcP0F8SNhPQrUxjhFKQ5acQv861qOHyYk
-        3mV7zNxD7gzjq5UBM1qSNpHaZ55xx6v80UXxVOXfKyxP9H56UgYx9VSdAYRdU6ysTTnaxjNjZHR9z
-        2f+mQDcQ==;
+        bh=qMCxHctrgB8Amxt8+Sy2C8EBmEEsBxJ2aZxwz+7Pd7g=; b=utBQmy337C8cWOxekKM9Iv6D14
+        SezsMwmljVldrXXtDmSRVgfrHb2DkdQMhdo8ImZ5vSFdDDVpedSZMquev6N76Q2JHshxWfoeYKSxu
+        0VnA5qGzz2099U36rfCH1d1rL2piaCSWY0wePG25ds9LI5EMn4s0QI0aUkBVMpPPUSOPLvrxC6jwi
+        fIj2RHrdXidzi4cAhek70eWfvuejkmxrKLX0f0aoewhqDmcgsZhaEn44Qt/2Ca/bOymsZJm2jFOC8
+        p0PwfiFGMa9thvZO/Cj60N51Ms96rzXMsPMMC4nO3b0qrf2fhr7vZLVAKdWxRG5NL+sU5prGV8++8
+        juY5KTzg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jeP4m-0003gd-TP; Thu, 28 May 2020 20:24:29 +0000
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jeP4j-0005Zo-6e; Thu, 28 May 2020 20:24:25 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EB8C9306108;
-        Thu, 28 May 2020 22:24:22 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2C5C03062EA;
+        Thu, 28 May 2020 22:24:23 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id D6FC82BA01B18; Thu, 28 May 2020 22:24:22 +0200 (CEST)
-Message-ID: <20200528202328.588432451@infradead.org>
+        id DC85C2BA01B19; Thu, 28 May 2020 22:24:22 +0200 (CEST)
+Message-ID: <20200528202328.651765983@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 28 May 2020 22:19:41 +0200
+Date:   Thu, 28 May 2020 22:19:42 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     tglx@linutronix.de, luto@amacapital.net, peterz@infradead.org
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
         Lai Jiangshan <laijs@linux.alibaba.com>,
         sean.j.christopherson@intel.com, andrew.cooper3@citrix.com,
-        daniel.thompson@linaro.org, Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH 4/6] x86/entry: Optimize local_db_save() for virt
+        daniel.thompson@linaro.org
+Subject: [PATCH 5/6] x86/entry: Remove debug IDT frobbing
 References: <20200528201937.038455891@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,105 +53,227 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because DRn access is 'difficult' with virt; but the DR7 read is
-cheaper than a cacheline miss on native, add a virt specific
-fast path to local_db_save(), such that when breakpoints are not in
-use we avoid touching DRn entirely.
+This is all unused now.
 
-Suggested-by: Andy Lutomirski <luto@kernel.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/include/asm/debugreg.h |    6 ++++++
- arch/x86/kernel/hw_breakpoint.c |   26 ++++++++++++++++++++++----
- arch/x86/kvm/vmx/nested.c       |    2 ++
- 3 files changed, 30 insertions(+), 4 deletions(-)
+ arch/x86/include/asm/debugreg.h |   19 -------------------
+ arch/x86/include/asm/desc.h     |   34 +---------------------------------
+ arch/x86/kernel/cpu/common.c    |   17 -----------------
+ arch/x86/kernel/idt.c           |   30 ------------------------------
+ arch/x86/kernel/traps.c         |    9 ---------
+ 5 files changed, 1 insertion(+), 108 deletions(-)
 
 --- a/arch/x86/include/asm/debugreg.h
 +++ b/arch/x86/include/asm/debugreg.h
-@@ -115,6 +115,12 @@ static inline void debug_stack_usage_dec
+@@ -94,25 +94,6 @@ extern void aout_dump_debugregs(struct u
  
+ extern void hw_breakpoint_restore(void);
+ 
+-#ifdef CONFIG_X86_64
+-DECLARE_PER_CPU(int, debug_stack_usage);
+-static inline void debug_stack_usage_inc(void)
+-{
+-	__this_cpu_inc(debug_stack_usage);
+-}
+-static inline void debug_stack_usage_dec(void)
+-{
+-	__this_cpu_dec(debug_stack_usage);
+-}
+-void debug_stack_set_zero(void);
+-void debug_stack_reset(void);
+-#else /* !X86_64 */
+-static inline void debug_stack_set_zero(void) { }
+-static inline void debug_stack_reset(void) { }
+-static inline void debug_stack_usage_inc(void) { }
+-static inline void debug_stack_usage_dec(void) { }
+-#endif /* X86_64 */
+-
  static __always_inline void local_db_save(unsigned long *dr7)
  {
-+	if (static_cpu_has(X86_FEATURE_HYPERVISOR) && !hw_breakpoint_active()) {
-+		*dr7 = 0;
-+		barrier();
-+		return;
-+	}
-+
- 	get_debugreg(*dr7, 7);
- 	if (*dr7)
- 		set_debugreg(0, 7);
---- a/arch/x86/kernel/hw_breakpoint.c
-+++ b/arch/x86/kernel/hw_breakpoint.c
-@@ -97,6 +97,8 @@ int arch_install_hw_breakpoint(struct pe
- 	unsigned long *dr7;
- 	int i;
+ 	if (static_cpu_has(X86_FEATURE_HYPERVISOR) && !hw_breakpoint_active()) {
+--- a/arch/x86/include/asm/desc.h
++++ b/arch/x86/include/asm/desc.h
+@@ -42,8 +42,6 @@ static inline void fill_ldt(struct desc_
  
-+	lockdep_assert_irqs_disabled();
-+
- 	for (i = 0; i < HBP_NUM; i++) {
- 		struct perf_event **slot = this_cpu_ptr(&bp_per_reg[i]);
+ extern struct desc_ptr idt_descr;
+ extern gate_desc idt_table[];
+-extern const struct desc_ptr debug_idt_descr;
+-extern gate_desc debug_idt_table[];
  
-@@ -115,6 +117,12 @@ int arch_install_hw_breakpoint(struct pe
- 	dr7 = this_cpu_ptr(&cpu_dr7);
- 	*dr7 |= encode_dr7(i, info->len, info->type);
+ struct gdt_page {
+ 	struct desc_struct gdt[GDT_ENTRIES];
+@@ -390,31 +388,6 @@ void alloc_intr_gate(unsigned int n, con
  
-+	/*
-+	 * Ensure we first write cpu_dr7 before we set the DR7 register.
-+	 * This ensures an NMI never see cpu_dr7 0 when DR7 is not.
-+	 */
-+	barrier();
-+
- 	set_debugreg(*dr7, 7);
- 	if (info->mask)
- 		set_dr_addr_mask(info->mask, i);
-@@ -134,9 +142,11 @@ int arch_install_hw_breakpoint(struct pe
- void arch_uninstall_hw_breakpoint(struct perf_event *bp)
+ extern unsigned long system_vectors[];
+ 
+-#ifdef CONFIG_X86_64
+-DECLARE_PER_CPU(u32, debug_idt_ctr);
+-static __always_inline bool is_debug_idt_enabled(void)
+-{
+-	if (this_cpu_read(debug_idt_ctr))
+-		return true;
+-
+-	return false;
+-}
+-
+-static __always_inline void load_debug_idt(void)
+-{
+-	load_idt((const struct desc_ptr *)&debug_idt_descr);
+-}
+-#else
+-static inline bool is_debug_idt_enabled(void)
+-{
+-	return false;
+-}
+-
+-static inline void load_debug_idt(void)
+-{
+-}
+-#endif
+-
+ /*
+  * The load_current_idt() must be called with interrupts disabled
+  * to avoid races. That way the IDT will always be set back to the expected
+@@ -424,10 +397,7 @@ static inline void load_debug_idt(void)
+  */
+ static __always_inline void load_current_idt(void)
  {
- 	struct arch_hw_breakpoint *info = counter_arch_bp(bp);
--	unsigned long *dr7;
-+	unsigned long dr7;
- 	int i;
- 
-+	lockdep_assert_irqs_disabled();
-+
- 	for (i = 0; i < HBP_NUM; i++) {
- 		struct perf_event **slot = this_cpu_ptr(&bp_per_reg[i]);
- 
-@@ -149,12 +159,20 @@ void arch_uninstall_hw_breakpoint(struct
- 	if (WARN_ONCE(i == HBP_NUM, "Can't find any breakpoint slot"))
- 		return;
- 
--	dr7 = this_cpu_ptr(&cpu_dr7);
--	*dr7 &= ~__encode_dr7(i, info->len, info->type);
-+	dr7 = this_cpu_read(cpu_dr7);
-+	dr7 &= ~__encode_dr7(i, info->len, info->type);
- 
--	set_debugreg(*dr7, 7);
-+	set_debugreg(dr7, 7);
- 	if (info->mask)
- 		set_dr_addr_mask(0, i);
-+
-+	/*
-+	 * Ensure the write to cpu_dr7 is after we've set the DR7 register.
-+	 * This ensures an NMI never see cpu_dr7 0 when DR7 is not.
-+	 */
-+	barrier();
-+
-+	this_cpu_write(cpu_dr7, dr7);
+-	if (is_debug_idt_enabled())
+-		load_debug_idt();
+-	else
+-		load_idt((const struct desc_ptr *)&idt_descr);
++	load_idt((const struct desc_ptr *)&idt_descr);
  }
  
- static int arch_bp_generic_len(int x86_len)
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -3027,6 +3027,8 @@ static int nested_vmx_check_vmentry_hw(s
+ extern void idt_setup_early_handler(void);
+@@ -438,11 +408,9 @@ extern void idt_setup_apic_and_irq_gates
+ #ifdef CONFIG_X86_64
+ extern void idt_setup_early_pf(void);
+ extern void idt_setup_ist_traps(void);
+-extern void idt_setup_debugidt_traps(void);
+ #else
+ static inline void idt_setup_early_pf(void) { }
+ static inline void idt_setup_ist_traps(void) { }
+-static inline void idt_setup_debugidt_traps(void) { }
+ #endif
  
- 	/*
- 	 * VMExit clears RFLAGS.IF and DR7, even on a consistency check.
-+	 * XXX how is this not broken? access to cpu_dr7 ought to be with
-+	 * IRQs disabled.
- 	 */
- 	local_irq_enable();
- 	if (hw_breakpoint_active())
+ extern void idt_invalidate(void *addr);
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1672,23 +1672,6 @@ void syscall_init(void)
+ 	       X86_EFLAGS_IOPL|X86_EFLAGS_AC|X86_EFLAGS_NT);
+ }
+ 
+-DEFINE_PER_CPU(int, debug_stack_usage);
+-DEFINE_PER_CPU(u32, debug_idt_ctr);
+-
+-noinstr void debug_stack_set_zero(void)
+-{
+-	this_cpu_inc(debug_idt_ctr);
+-	load_current_idt();
+-}
+-
+-noinstr void debug_stack_reset(void)
+-{
+-	if (WARN_ON(!this_cpu_read(debug_idt_ctr)))
+-		return;
+-	if (this_cpu_dec_return(debug_idt_ctr) == 0)
+-		load_current_idt();
+-}
+-
+ #else	/* CONFIG_X86_64 */
+ 
+ DEFINE_PER_CPU(struct task_struct *, current_task) = &init_task;
+--- a/arch/x86/kernel/idt.c
++++ b/arch/x86/kernel/idt.c
+@@ -158,14 +158,6 @@ static const __initconst struct idt_data
+ static const __initconst struct idt_data early_pf_idts[] = {
+ 	INTG(X86_TRAP_PF,		asm_exc_page_fault),
+ };
+-
+-/*
+- * Override for the debug_idt. Same as the default, but with interrupt
+- * stack set to DEFAULT_STACK (0). Required for NMI trap handling.
+- */
+-static const __initconst struct idt_data dbg_idts[] = {
+-	INTG(X86_TRAP_DB,		asm_exc_debug),
+-};
+ #endif
+ 
+ /* Must be page-aligned because the real IDT is used in a fixmap. */
+@@ -177,9 +169,6 @@ struct desc_ptr idt_descr __ro_after_ini
+ };
+ 
+ #ifdef CONFIG_X86_64
+-/* No need to be aligned, but done to keep all IDTs defined the same way. */
+-gate_desc debug_idt_table[IDT_ENTRIES] __page_aligned_bss;
+-
+ /*
+  * The exceptions which use Interrupt stacks. They are setup after
+  * cpu_init() when the TSS has been initialized.
+@@ -192,15 +181,6 @@ static const __initconst struct idt_data
+ 	ISTG(X86_TRAP_MC,	asm_exc_machine_check,	IST_INDEX_MCE),
+ #endif
+ };
+-
+-/*
+- * Override for the debug_idt. Same as the default, but with interrupt
+- * stack set to DEFAULT_STACK (0). Required for NMI trap handling.
+- */
+-const struct desc_ptr debug_idt_descr = {
+-	.size		= IDT_ENTRIES * 16 - 1,
+-	.address	= (unsigned long) debug_idt_table,
+-};
+ #endif
+ 
+ static inline void idt_init_desc(gate_desc *gate, const struct idt_data *d)
+@@ -292,16 +272,6 @@ void __init idt_setup_ist_traps(void)
+ {
+ 	idt_setup_from_table(idt_table, ist_idts, ARRAY_SIZE(ist_idts), true);
+ }
+-
+-/**
+- * idt_setup_debugidt_traps - Initialize the debug idt table with debug traps
+- */
+-void __init idt_setup_debugidt_traps(void)
+-{
+-	memcpy(&debug_idt_table, &idt_table, IDT_ENTRIES * 16);
+-
+-	idt_setup_from_table(debug_idt_table, dbg_idts, ARRAY_SIZE(dbg_idts), false);
+-}
+ #endif
+ 
+ /**
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -798,12 +798,6 @@ static void noinstr handle_debug(struct
+ 		return;
+ 	}
+ 
+-	/*
+-	 * Let others (NMI) know that the debug stack is in use
+-	 * as we may switch to the interrupt stack.
+-	 */
+-	debug_stack_usage_inc();
+-
+ 	/* It's safe to allow irq's after DR6 has been saved */
+ 	cond_local_irq_enable(regs);
+ 
+@@ -831,7 +825,6 @@ static void noinstr handle_debug(struct
+ 
+ out:
+ 	cond_local_irq_disable(regs);
+-	debug_stack_usage_dec();
+ 	instrumentation_end();
+ }
+ 
+@@ -1077,6 +1070,4 @@ void __init trap_init(void)
+ 	cpu_init();
+ 
+ 	idt_setup_ist_traps();
+-
+-	idt_setup_debugidt_traps();
+ }
 
 
