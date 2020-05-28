@@ -2,121 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587581E5765
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 08:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1F41E576D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 08:18:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727917AbgE1GPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 02:15:05 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:20423 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727895AbgE1GPE (ORCPT
+        id S1727876AbgE1GSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 02:18:55 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:40887 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726913AbgE1GSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 02:15:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590646503;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4HlwVLTYjSh4OXGx2V1FosENazDNDDnLDE+J78PlVsQ=;
-        b=WC9iOvNSL7NXYxFrDXtU+PTqxW1sKCknvURnpHGwnVNd3NNx++ZJaZu5heLUXDsQkhDlD+
-        cunFLPiBMRPY77C1JNSevbci9vmguRMsjY1Ha8moFKdpuMBdmJV71qQe+ahsDiRGYfgXzg
-        u/yLUoadqf1z53dbk/1th8ogHYL3Eh0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-292-Jyx1kD06MQi5z-b6o7S42A-1; Thu, 28 May 2020 02:14:59 -0400
-X-MC-Unique: Jyx1kD06MQi5z-b6o7S42A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 23FF0100CCC0;
-        Thu, 28 May 2020 06:14:58 +0000 (UTC)
-Received: from localhost.localdomain (vpn2-54-130.bne.redhat.com [10.64.54.130])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D8E9E19D82;
-        Thu, 28 May 2020 06:14:55 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH RFCv2 9/9] arm64: Support async page fault
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvmarm@lists.cs.columbia.edu
-Cc:     maz@kernel.org, linux-kernel@vger.kernel.org, shan.gavin@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20200508032919.52147-1-gshan@redhat.com>
- <20200508032919.52147-10-gshan@redhat.com>
- <81adf013-3de7-23e6-7648-8aec821b033c@redhat.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <a6addc25-29af-3690-8392-efa5e8381e98@redhat.com>
-Date:   Thu, 28 May 2020 16:14:52 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Thu, 28 May 2020 02:18:54 -0400
+X-UUID: 5089073cb53a4d67ac27a7c76a50a6ae-20200528
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=k9n3h0/X69wAHhYT1nFTsKcL3wy3KEtSe7PgG0o+trw=;
+        b=hIAZb1puZnLEPVjq5jDmEkjVsbzUDIAt6MA0YBUDYkSkrXCtKWMYhOx7bqxk1MEBjozlQmX9srmcs67BfeqDYGT+EMtoEOAVnv9cvBYun9/Na6JQsNKGjFxIRNUB+2P0SSEGwb7wViOOFuUdFPTj7vHeJskAeY0zxtmq/2qBYrE=;
+X-UUID: 5089073cb53a4d67ac27a7c76a50a6ae-20200528
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <chuanjia.liu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1704384534; Thu, 28 May 2020 14:18:49 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 28 May 2020 14:18:47 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 28 May 2020 14:18:46 +0800
+From:   <chuanjia.liu@mediatek.com>
+To:     <robh+dt@kernel.org>, <ryder.lee@mediatek.com>,
+        <matthias.bgg@gmail.com>
+CC:     <lorenzo.pieralisi@arm.com>, <amurray@thegoodpenguin.co.uk>,
+        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <bhelgaas@google.com>,
+        <chuanjia.liu@mediatek.com>, <jianjun.wang@mediatek.com>,
+        <yong.wu@mediatek.com>, <srv_heupstream@mediatek.com>
+Subject: [PATCH v2 0/4] Spilt PCIe node to comply with hardware design
+Date:   Thu, 28 May 2020 14:16:44 +0800
+Message-ID: <20200528061648.32078-1-chuanjia.liu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <81adf013-3de7-23e6-7648-8aec821b033c@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 8CF1375321BD3043410D80C9D460D099090CF36CFC4DCB666F3A8866FC761E1E2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paolo,
-
-On 5/27/20 4:48 PM, Paolo Bonzini wrote:
-> I definitely appreciate the work, but this is repeating most of the
-> mistakes done in the x86 implementation.  In particular:
-> 
-> - the page ready signal can be done as an interrupt, rather than an
-> exception.  This is because "page ready" can be handled asynchronously,
-> in contrast to "page not present" which must be done on the same
-> instruction that triggers it.  You can refer to the recent series from
-> Vitaly Kuznetsov that switched "page ready" to an interrupt.
-> 
-
-Yeah, page ready can be handled asynchronously. I think it would be
-nice for x86/arm64 to share same design. x86 has 256 vectors and it
-seems 0xec is picked for the purpose. However, arm64 doesn't have so
-many (interrupt/exception) vectors and PPI might be appropriate for
-the purpose if I'm correct, because it has same INTD for all CPUs.
- From this point, it's similar to x86's vector. There are 16 PPIs, which
-are in range of 16 to 31, and we might reserve one for this. According
-to GICv3/v4 spec, 22 - 30 have been assigned.
-
-> - the page not present is reusing the memory abort exception, and
-> there's really no reason to do so.  I think it would be best if ARM
-> could reserve one ESR exception code for the hypervisor.  Mark, any
-> ideas how to proceed here?
-> 
-
-Well, a subclass of ESR exception code, whose DFSC (Data Fault Status
-Code) is 0x34, was taken for the purpose in RFCv1. The code is IMPDEF
-one and Mark suggested not to do so. I agree the page not present needs a
-separately subclass of exception. With that, there will be less conflicts
-and complexity. However, the question is which subclass or DFSC code I should
-used for the purpose.
-
-> - for x86 we're also thinking of initiating the page fault from the
-> exception handler, rather than doing so from the hypervisor before
-> injecting the exception.  If ARM leads the way here, we would do our
-> best to share code when x86 does the same.
-> 
-
-Sorry, Paolo, I don't follow your idea here. Could you please provide
-more details?
-
-> - do not bother with using KVM_ASYNC_PF_SEND_ALWAYS, it's a fringe case
-> that adds a lot of complexity.
-> 
-
-Yeah, I don't consider it so far.
-
-> Also, please include me on further iterations of the series.
-> 
-
-Sure.
-
-Thanks,
-Gavin
-
-[...]
+VGhlcmUgYXJlIHR3byBpbmRlcGVuZGVudCBQQ0llIGNvbnRyb2xsZXJzIGluIE1UMjcxMi9NVDc2
+MjIgcGxhdGZvcm0sDQphbmQgZWFjaCBvZiB0aGVtIHNob3VsZCBjb250YWluIGFuIGluZGVwZW5k
+ZW50IE1TSSBkb21haW4uDQoNCkluIGN1cnJlbnQgYXJjaGl0ZWN0dXJlLCBNU0kgZG9tYWluIHdp
+bGwgYmUgaW5oZXJpdGVkIGZyb20gdGhlIHJvb3QNCmJyaWRnZSwgYW5kIGFsbCBvZiB0aGUgZGV2
+aWNlcyB3aWxsIHNoYXJlIHRoZSBzYW1lIE1TSSBkb21haW4uDQpIZW5jZSB0aGF0LCB0aGUgUENJ
+ZSBkZXZpY2VzIHdpbGwgbm90IHdvcmsgcHJvcGVybHkgaWYgdGhlIGlycSBudW1iZXINCndoaWNo
+IHJlcXVpcmVkIGlzIG1vcmUgdGhhbiAzMi4NCg0KU3BsaXQgdGhlIFBDSWUgbm9kZSBmb3IgTVQy
+NzEyL01UNzYyMiBwbGF0Zm9ybSB0byBmaXggTVNJIGlzc3VlIGFuZA0KY29tcGx5IHdpdGggdGhl
+IGhhcmR3YXJlIGRlc2lnbi4NCg0KY2hhbmdlIG5vdGU6DQp2MjogY2hhbmdlIHRoZSBhbGxvY2F0
+aW9uIG9mIG10MjcxMiBQQ0llIE1NSU8gc3BhY2UgZHVlIHRvIHRoZSBhbGxjYXRpb24NCnNpemUg
+aXMgbm90IHJpZ2h0IGluIHYxLg0KDQpjaHVhbmppYS5saXUgKDQpOg0KICBkdC1iaW5kaW5nczog
+UENJOiBNZWRpYXRlazogVXBkYXRlIFBDSWUgYmluZGluZw0KICBQQ0k6IG1lZGlhdGVrOiBVc2Ug
+cmVnbWFwIHRvIGdldCBzaGFyZWQgcGNpZS1jZmcgYmFzZQ0KICBhcm02NDogZHRzOiBtZWRpYXRl
+azogU3BsaXQgUENJZSBub2RlIGZvciBNVDI3MTIvTVQ3NjIyDQogIEFSTTogZHRzOiBtZWRpYXRl
+azogVXBkYXRlIG10NzYyOSBQQ0llIG5vZGUNCg0KIC4uLi9iaW5kaW5ncy9wY2kvbWVkaWF0ZWst
+cGNpZS1jZmcueWFtbCAgICAgICB8ICAzOCArKysrKw0KIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdz
+L3BjaS9tZWRpYXRlay1wY2llLnR4dCB8IDE0NCArKysrKysrKysrKy0tLS0tLS0NCiBhcmNoL2Fy
+bS9ib290L2R0cy9tdDc2MjktcmZiLmR0cyAgICAgICAgICAgICAgfCAgIDMgKy0NCiBhcmNoL2Fy
+bS9ib290L2R0cy9tdDc2MjkuZHRzaSAgICAgICAgICAgICAgICAgfCAgMjMgKy0tDQogYXJjaC9h
+cm02NC9ib290L2R0cy9tZWRpYXRlay9tdDI3MTJlLmR0c2kgICAgIHwgIDc1ICsrKysrLS0tLQ0K
+IC4uLi9kdHMvbWVkaWF0ZWsvbXQ3NjIyLWJhbmFuYXBpLWJwaS1yNjQuZHRzICB8ICAxNiArLQ0K
+IGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ3NjIyLXJmYjEuZHRzICB8ICAgNiArLQ0K
+IGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ3NjIyLmR0c2kgICAgICB8ICA2OCArKysr
+KystLS0NCiBkcml2ZXJzL3BjaS9jb250cm9sbGVyL3BjaWUtbWVkaWF0ZWsuYyAgICAgICAgfCAg
+MjUgKystDQogOSBmaWxlcyBjaGFuZ2VkLCAyNTggaW5zZXJ0aW9ucygrKSwgMTQwIGRlbGV0aW9u
+cygtKQ0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
+Z3MvcGNpL21lZGlhdGVrLXBjaWUtY2ZnLnlhbWwNCg0KLS0NCjIuMTguMA0KDQo=
 
