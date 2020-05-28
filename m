@@ -2,81 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776B91E5B22
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 10:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B47E1E5B25
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 10:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727948AbgE1Iq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 04:46:59 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:51419 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727114AbgE1Iq6 (ORCPT
+        id S1727953AbgE1It1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 04:49:27 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:36633 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727799AbgE1It1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 04:46:58 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 5F22F23E44;
-        Thu, 28 May 2020 10:46:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1590655616;
+        Thu, 28 May 2020 04:49:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590655765;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IK4vU5+OQ5YrFbM2Kz/+PVKRgvmjl3u1QdENmhkQt68=;
-        b=Hs2fkRNkUbzgXfwyZmr7p3oMzYsTzGg8D81nkF4VYPVdsTxebYmjV6rYEkji6LS12LG/G8
-        tRM6Nmg8fC1kcsy4/OMqFV4mgxpySPVY43IltKO/chUviAYQMW2b63fe2g2cHuSgT1mENd
-        cnNhdTYHVNZsY504djT2LhiVFcaUieg=
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 28 May 2020 10:46:56 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v4 2/2] gpio: add a reusable generic gpio_chip using
- regmap
-In-Reply-To: <CAHp75Vf7XxNFJMSOr6SzKHm0tssEVKzokaEeZ8nts5xQ2hQLNA@mail.gmail.com>
-References: <20200525160741.21729-1-michael@walle.cc>
- <20200525160741.21729-3-michael@walle.cc>
- <d245b4f5-065f-4c82-ef8e-d906b363fdcf@linux.intel.com>
- <6d08ebbfbc9f656cb5650ede988cf36d@walle.cc>
- <fe44039a-4fa9-dab3-cd14-04967b729158@linux.intel.com>
- <143ec2f44c881706db9744465328329f@walle.cc>
- <CAHp75Vf7XxNFJMSOr6SzKHm0tssEVKzokaEeZ8nts5xQ2hQLNA@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.4
-Message-ID: <0d4bce3de91df9526ada76f4f2347d25@walle.cc>
-X-Sender: michael@walle.cc
+         to:to:cc:cc; bh=2pnC083V0pnYzb6yk8o50sOtDplBpj/ICt68p1h9nVg=;
+        b=TlJXAd6dGROvQoandy9Y6V6YUe8yLFmOUbL5jZZUH7yeNBfdo8M9i1bsAL/Vjh26tGCwDt
+        968h7j+15qntyKMWLh12kcAEFC6lmbzZgZNFQbDRZaJ94R2X68nUDpk02ldliEkFtn8D24
+        gCBh3MWXgjm6Wi7xMySGPvNyG2Izkqg=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-336-mPxtGOyNMWOW3vkd4grCRA-1; Thu, 28 May 2020 04:49:24 -0400
+X-MC-Unique: mPxtGOyNMWOW3vkd4grCRA-1
+Received: by mail-pl1-f197.google.com with SMTP id s9so20067650plq.18
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 01:49:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=2pnC083V0pnYzb6yk8o50sOtDplBpj/ICt68p1h9nVg=;
+        b=kmmRegpv2WF0vNiD0kuIrXUrB2P3vbtjLg+0rKxw2KOzfpWNKimDzDtZEZJfwa3iwm
+         O9Ub87BldsrZ6O5TOb7AJlYHzP6Xw9nUEIUheL3KGE9HtcPBkySr0waNTWD6XUbsrpWc
+         WekV7P2XXvuVxROYq9Dc0n0V9zj15nwom+GiZJpF1+uRBWIhhHYo0hD49ral1FSIPz1z
+         pwg5EjokvvzA/ES2luPJdRvdE6q2Mk3nzJZYQ5YHW2FjVSuFHoQd0VmRHrbq5sdZn2jB
+         mbtK2t4YuLl+KcBHA+U9PNBHaBBoifXPjb22h0c9tEaxchAcDxQbH+q6bqxkcDyQOLnj
+         Omsw==
+X-Gm-Message-State: AOAM532ggWDKaLMUavGuw3aYLwuTrQye7lbIW7/lV7vU4eJfo7Xk5ETB
+        lfRK8fkPS34lrqob43sBZHk6q0n0gkd/NhJ1+eUMVQ/gaRYdTozBOMqvTntlf/iMpcX/7Tdym90
+        lEYqlWv+oMsfconakBFKiB4vy
+X-Received: by 2002:a17:902:a502:: with SMTP id s2mr2517701plq.267.1590655762864;
+        Thu, 28 May 2020 01:49:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzlfbw5cs5+wHYj6N0Z8vXHmqrSjF0itXJonVuBbXoOBY00ULWOzWT03Au0097wsdr6IHNWBA==
+X-Received: by 2002:a17:902:a502:: with SMTP id s2mr2517681plq.267.1590655762531;
+        Thu, 28 May 2020 01:49:22 -0700 (PDT)
+Received: from xiangao.remote.csb ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id q9sm4099712pff.62.2020.05.28.01.49.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 01:49:22 -0700 (PDT)
+From:   Gao Xiang <hsiangkao@redhat.com>
+To:     linux-erofs@lists.ozlabs.org, Chao Yu <chao@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Gao Xiang <hsiangkao@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] erofs: suppress false positive last_block warning
+Date:   Thu, 28 May 2020 04:48:44 -0400
+Message-Id: <20200528084844.23359-1-hsiangkao@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-05-28 10:37, schrieb Andy Shevchenko:
-> On Thu, May 28, 2020 at 7:11 AM Michael Walle <michael@walle.cc> wrote:
->> Am 2020-05-28 02:31, schrieb Pierre-Louis Bossart:
-> 
-> 
->> I've send a v5 with that fix and your names property.
-> 
-> Did you already?
+As Andrew mentioned, some rare specific gcc versions could report
+last_block uninitialized warning. Actually last_block doesn't need
+to be uninitialized first from its implementation due to bio == NULL
+condition. After a bio is allocated, last_block will be assigned
+then.
 
-Yes, I forgot to add you :(
+The detailed analysis is in this thread [1]. So let's silence those
+confusing gccs simply.
 
-> Because I have a question why we have gpio-regmap.h instead of
-> gpio/regmap.h ?
+[1] https://lore.kernel.org/r/20200421072839.GA13867@hsiangkao-HP-ZHAN-66-Pro-G1
 
-No particular reason, I thought gpio/ was for low level gpio stuff (like
-the consumer.h, driver.h etc) or lets say - more integrated stuff.
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
+---
+ fs/erofs/data.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I don't have a strong opinion. I can send a v6 with that change, on
-short notice if the maintainers prefer that location.
+diff --git a/fs/erofs/data.c b/fs/erofs/data.c
+index fc3a8d8064f8..2812645b361e 100644
+--- a/fs/erofs/data.c
++++ b/fs/erofs/data.c
+@@ -265,7 +265,7 @@ static inline struct bio *erofs_read_raw_page(struct bio *bio,
+  */
+ static int erofs_raw_access_readpage(struct file *file, struct page *page)
+ {
+-	erofs_off_t last_block;
++	erofs_off_t uninitialized_var(last_block);
+ 	struct bio *bio;
+ 
+ 	trace_erofs_readpage(page, true);
+@@ -285,7 +285,7 @@ static int erofs_raw_access_readpages(struct file *filp,
+ 				      struct list_head *pages,
+ 				      unsigned int nr_pages)
+ {
+-	erofs_off_t last_block;
++	erofs_off_t uninitialized_var(last_block);
+ 	struct bio *bio = NULL;
+ 	gfp_t gfp = readahead_gfp_mask(mapping);
+ 	struct page *page = list_last_entry(pages, struct page, lru);
+-- 
+2.18.1
 
--michael
