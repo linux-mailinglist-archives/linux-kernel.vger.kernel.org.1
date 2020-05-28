@@ -2,94 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496AD1E65AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33CDB1E65B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404279AbgE1POe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 11:14:34 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:38118 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404206AbgE1POa (ORCPT
+        id S2404304AbgE1PQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 11:16:10 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:59152 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404142AbgE1PQA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 11:14:30 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1590678867; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=h4qi7yJ1wKkDLO7TOjVp4zfX/ugxHLRzaf+TIRV8OVw=; b=vIpd9STB4YHrzSNrZQVUC24jGULszDZsb/l99zaD35mGCiv/TkaUTuhY+DPrjIUFQ/quciBS
- trXddRLe2W0y4uwDHHF0gMLj/mb8wDYKrz51IIAfycZj/FawVhVnoFQgM+ld2M9h2iMabZwi
- j4AA/zgo1RAkQh8pPtetjFloVCA=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5ecfd54f4776d1da6d686377 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 May 2020 15:14:23
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3C996C433C6; Thu, 28 May 2020 15:14:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from vbadigan-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: vbadigan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E2423C433C9;
-        Thu, 28 May 2020 15:14:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E2423C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=vbadigan@codeaurora.org
-From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-To:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
-        bjorn.andersson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        stable@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Ritesh Harjani <riteshh@codeaurora.org>,
-        Venkat Gopalakrishnan <venkatg@codeaurora.org>
-Subject: [PATCH V1] mmc: sdhci-msm: Clear tuning done flag while hs400 tuning
-Date:   Thu, 28 May 2020 20:43:52 +0530
-Message-Id: <1590678838-18099-1-git-send-email-vbadigan@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
+        Thu, 28 May 2020 11:16:00 -0400
+Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein.fritz.box)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jeKGD-000145-EV; Thu, 28 May 2020 15:15:57 +0000
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Cc:     Andy Lutomirski <luto@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
+        Matt Denton <mpdenton@google.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Robert Sesek <rsesek@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: [PATCH v2 1/2] seccomp: notify user trap about unused filter
+Date:   Thu, 28 May 2020 17:14:11 +0200
+Message-Id: <20200528151412.265444-1-christian.brauner@ubuntu.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clear tuning_done flag while executing tuning to ensure vendor
-specific HS400 settings are applied properly when the controller
-is re-initialized in HS400 mode.
+We've been making heavy use of the seccomp notifier to intercept and
+handle certain syscalls for containers. This patch allows a syscall
+supervisor listening on a given notifier to be notified when a seccomp
+filter has become unused.
 
-Without this, re-initialization of the qcom SDHC in HS400 mode fails
-while resuming the driver from runtime-suspend or system-suspend.
+A container is often managed by a singleton supervisor process the
+so-called "monitor". This monitor process has an event loop which has
+various event handlers registered. If the user specified a seccomp
+profile that included a notifier for various syscalls then we also
+register a seccomp notify even handler. For any container using a
+separate pid namespace the lifecycle of the seccomp notifier is bound to
+the init process of the pid namespace, i.e. when the init process exits
+the filter must be unused.
+If a new process attaches to a container we force it to assume a seccomp
+profile. This can either be the same seccomp profile as the container
+was started with or a modified one. If the attaching process makes use
+of the seccomp notifier we will register a new seccomp notifier handler
+in the monitor's event loop. However, when the attaching process exits
+we can't simply delete the handler since other child processes could've
+been created (daemons spawned etc.) that have inherited the seccomp
+filter and so we need to keep the seccomp notifier fd alive in the event
+loop. But this is problematic since we don't get a notification when the
+seccomp filter has become unused and so we currently never remove the
+seccomp notifier fd from the event loop and just keep accumulating fds
+in the event loop. We've had this issue for a while but it has recently
+become more pressing as more and larger users make use of this.
 
-Fixes: ff06ce4 ("mmc: sdhci-msm: Add HS400 platform support")
-Cc: stable@vger.kernel.org
-Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+To fix this, we introduce a new "live" reference counter that tracks the
+live tasks making use of a given filter and when a notifier is
+registered waiting tasks will be notified that the filter is now empty
+by receiving a (E)POLLHUP event.
+The concept in this patch introduces is the same as for signal_struct,
+i.e. reference counting for life-cycle management is decoupled from
+reference counting live taks using the object.
+
+There's probably some trickery possible but the second counter is just
+the correct way of doing this imho and has precedence. The patch also
+lifts the waitqeue from struct notification into into sruct
+seccomp_filter. This is cleaner overall and let's us avoid having to
+take the notifier mutex since we neither need to read nor modify the
+notifier specific aspects of the seccomp filter. In the exit path I'd
+very much like to avoid having to take the notifier mutex for each
+filter in the task's filter hierarchy.
+
+Cc: Tycho Andersen <tycho@tycho.ws>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Matt Denton <mpdenton@google.com>
+Cc: Sargun Dhillon <sargun@sargun.me>
+Cc: Jann Horn <jannh@google.com>
+Cc: Chris Palmer <palmer@google.com>
+Cc: Aleksa Sarai <cyphar@cyphar.com>
+Cc: Robert Sesek <rsesek@google.com>
+Cc: Jeffrey Vander Stoep <jeffv@google.com>
+Cc: Linux Containers <containers@lists.linux-foundation.org>
+Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 ---
- drivers/mmc/host/sdhci-msm.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+/* v2 */
+- Jann Horn <jannh@google.com>:
+  - Use more descriptive instead of seccomp_filter_notify().
+    (I went with seccomp_filter_release().)
+---
+ include/linux/seccomp.h |  5 +++++
+ kernel/exit.c           |  2 ++
+ kernel/seccomp.c        | 33 +++++++++++++++++++++++++++------
+ 3 files changed, 34 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-index 95cd973..b277dd7 100644
---- a/drivers/mmc/host/sdhci-msm.c
-+++ b/drivers/mmc/host/sdhci-msm.c
-@@ -1174,6 +1174,12 @@ static int sdhci_msm_execute_tuning(struct mmc_host *mmc, u32 opcode)
- 	msm_host->use_cdr = true;
+diff --git a/include/linux/seccomp.h b/include/linux/seccomp.h
+index 4192369b8418..d72b5b43f8ea 100644
+--- a/include/linux/seccomp.h
++++ b/include/linux/seccomp.h
+@@ -84,6 +84,7 @@ static inline int seccomp_mode(struct seccomp *s)
+ #ifdef CONFIG_SECCOMP_FILTER
+ extern void put_seccomp_filter(struct task_struct *tsk);
+ extern void get_seccomp_filter(struct task_struct *tsk);
++extern void seccomp_filter_release(const struct task_struct *tsk);
+ #else  /* CONFIG_SECCOMP_FILTER */
+ static inline void put_seccomp_filter(struct task_struct *tsk)
+ {
+@@ -93,6 +94,10 @@ static inline void get_seccomp_filter(struct task_struct *tsk)
+ {
+ 	return;
+ }
++static inline void seccomp_filter_release(const struct task_struct *tsk)
++{
++	return;
++}
+ #endif /* CONFIG_SECCOMP_FILTER */
+ 
+ #if defined(CONFIG_SECCOMP_FILTER) && defined(CONFIG_CHECKPOINT_RESTORE)
+diff --git a/kernel/exit.c b/kernel/exit.c
+index ce2a75bc0ade..b332e3635eb5 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -193,6 +193,8 @@ void release_task(struct task_struct *p)
+ 
+ 	cgroup_release(p);
+ 
++	seccomp_filter_release(p);
++
+ 	write_lock_irq(&tasklist_lock);
+ 	ptrace_release_task(p);
+ 	thread_pid = get_pid(p->thread_pid);
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 55a6184f5990..9fa642d6d549 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -94,13 +94,11 @@ struct seccomp_knotif {
+  *           filter->notify_lock.
+  * @next_id: The id of the next request.
+  * @notifications: A list of struct seccomp_knotif elements.
+- * @wqh: A wait queue for poll.
+  */
+ struct notification {
+ 	struct semaphore request;
+ 	u64 next_id;
+ 	struct list_head notifications;
+-	wait_queue_head_t wqh;
+ };
+ 
+ /**
+@@ -115,6 +113,10 @@ struct notification {
+  * @prog: the BPF program to evaluate
+  * @notif: the struct that holds all notification related information
+  * @notify_lock: A lock for all notification-related accesses.
++ * @wqh: A wait queue for poll if a notifier is in use.
++ * @live: Number of tasks that use this filter directly and number
++ *	  of dependent filters that have a non-zero @live counter.
++ *	  Altered during fork(), exit(), and filter installation
+  *
+  * seccomp_filter objects are organized in a tree linked via the @prev
+  * pointer.  For any task, it appears to be a singly-linked list starting
+@@ -133,6 +135,8 @@ struct seccomp_filter {
+ 	struct bpf_prog *prog;
+ 	struct notification *notif;
+ 	struct mutex notify_lock;
++	refcount_t live;
++	wait_queue_head_t wqh;
+ };
+ 
+ /* Limit any path through the tree to 256KB worth of instructions. */
+@@ -396,6 +400,7 @@ static inline void seccomp_sync_threads(unsigned long flags)
+ 		 * allows a put before the assignment.)
+ 		 */
+ 		put_seccomp_filter(thread);
++		seccomp_filter_release(thread);
+ 		smp_store_release(&thread->seccomp.filter,
+ 				  caller->seccomp.filter);
+ 
+@@ -462,6 +467,8 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
+ 	}
+ 
+ 	refcount_set(&sfilter->usage, 1);
++	refcount_set(&sfilter->live, 1);
++	init_waitqueue_head(&sfilter->wqh);
+ 
+ 	return sfilter;
+ }
+@@ -564,6 +571,7 @@ void get_seccomp_filter(struct task_struct *tsk)
+ 	if (!orig)
+ 		return;
+ 	__get_seccomp_filter(orig);
++	refcount_inc(&orig->live);
+ }
+ 
+ static inline void seccomp_filter_free(struct seccomp_filter *filter)
+@@ -590,6 +598,17 @@ void put_seccomp_filter(struct task_struct *tsk)
+ 	__put_seccomp_filter(tsk->seccomp.filter);
+ }
+ 
++void seccomp_filter_release(const struct task_struct *tsk)
++{
++	struct seccomp_filter *orig = tsk->seccomp.filter;
++
++	while (orig && refcount_dec_and_test(&orig->live)) {
++		if (waitqueue_active(&orig->wqh))
++			wake_up_poll(&orig->wqh, EPOLLHUP);
++		orig = orig->prev;
++	}
++}
++
+ static void seccomp_init_siginfo(kernel_siginfo_t *info, int syscall, int reason)
+ {
+ 	clear_siginfo(info);
+@@ -757,7 +776,7 @@ static int seccomp_do_user_notification(int this_syscall,
+ 	list_add(&n.list, &match->notif->notifications);
+ 
+ 	up(&match->notif->request);
+-	wake_up_poll(&match->notif->wqh, EPOLLIN | EPOLLRDNORM);
++	wake_up_poll(&match->wqh, EPOLLIN | EPOLLRDNORM);
+ 	mutex_unlock(&match->notify_lock);
  
  	/*
-+	 * Clear tuning_done flag before tuning to ensure proper
-+	 * HS400 settings.
-+	 */
-+	msm_host->tuning_done = 0;
+@@ -1064,7 +1083,7 @@ static long seccomp_notify_recv(struct seccomp_filter *filter,
+ 	unotif.data = *(knotif->data);
+ 
+ 	knotif->state = SECCOMP_NOTIFY_SENT;
+-	wake_up_poll(&filter->notif->wqh, EPOLLOUT | EPOLLWRNORM);
++	wake_up_poll(&filter->wqh, EPOLLOUT | EPOLLWRNORM);
+ 	ret = 0;
+ out:
+ 	mutex_unlock(&filter->notify_lock);
+@@ -1200,7 +1219,7 @@ static __poll_t seccomp_notify_poll(struct file *file,
+ 	__poll_t ret = 0;
+ 	struct seccomp_knotif *cur;
+ 
+-	poll_wait(file, &filter->notif->wqh, poll_tab);
++	poll_wait(file, &filter->wqh, poll_tab);
+ 
+ 	if (mutex_lock_interruptible(&filter->notify_lock) < 0)
+ 		return EPOLLERR;
+@@ -1216,6 +1235,9 @@ static __poll_t seccomp_notify_poll(struct file *file,
+ 
+ 	mutex_unlock(&filter->notify_lock);
+ 
++	if (refcount_read(&filter->live) == 0)
++		ret |= EPOLLHUP;
 +
-+	/*
- 	 * For HS400 tuning in HS200 timing requires:
- 	 * - select MCLK/2 in VENDOR_SPEC
- 	 * - program MCLK to 400MHz (or nearest supported) in GCC
+ 	return ret;
+ }
+ 
+@@ -1244,7 +1266,6 @@ static struct file *init_listener(struct seccomp_filter *filter)
+ 	sema_init(&filter->notif->request, 0);
+ 	filter->notif->next_id = get_random_u64();
+ 	INIT_LIST_HEAD(&filter->notif->notifications);
+-	init_waitqueue_head(&filter->notif->wqh);
+ 
+ 	ret = anon_inode_getfile("seccomp notify", &seccomp_notify_ops,
+ 				 filter, O_RDWR);
+
+base-commit: b9bbe6ed63b2b9f2c9ee5cbd0f2c946a2723f4ce
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc., is a member of Code Aurora Forum, a Linux Foundation Collaborative Project
+2.26.2
 
