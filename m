@@ -2,54 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A25D51E61B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 15:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A241E618B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 15:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390135AbgE1NHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 09:07:37 -0400
-Received: from elvis.franken.de ([193.175.24.41]:42402 "EHLO elvis.franken.de"
+        id S2390017AbgE1NAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 09:00:37 -0400
+Received: from mga01.intel.com ([192.55.52.88]:48839 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390049AbgE1NHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 09:07:35 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jeIFt-0002v1-00; Thu, 28 May 2020 15:07:29 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 173F2C05A4; Thu, 28 May 2020 14:39:20 +0200 (CEST)
-Date:   Thu, 28 May 2020 14:39:20 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH] MIPS: Loongson64: Remove not used pci.c
-Message-ID: <20200528123920.GA18321@alpha.franken.de>
-References: <1590665351-2956-1-git-send-email-yangtiezhu@loongson.cn>
+        id S2389954AbgE1NAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 09:00:36 -0400
+IronPort-SDR: 02pW02f1rdmgCM4gslr5i2a5pW+uhdEIb7y7Zanxo1gl24nhvl8jqsrl46d4lvmiszretFyPRf
+ Y27gMsoMZwqg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 06:00:35 -0700
+IronPort-SDR: hxb+UYqB8FrmnMs1FjY/zGUfF1Iq94qe4NxTXvK1A15ltbAqsRewE0lAHkW6dIHf+U80+vHSfa
+ OiVHQzeOz13A==
+X-IronPort-AV: E=Sophos;i="5.73,444,1583222400"; 
+   d="scan'208";a="442939274"
+Received: from cmccarth-mobl.ger.corp.intel.com ([10.252.7.149])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 06:00:32 -0700
+Message-ID: <b674e0b3900c4ac6b9a67cf9e041c642c0639679.camel@linux.intel.com>
+Subject: Re: [PATCH 1/1] soc: keembay: Add Keem Bay IMR driver
+From:   Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     "arnd@arndb.de" <arnd@arndb.de>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "Murphy, Paul J" <paul.j.murphy@intel.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Thu, 28 May 2020 14:00:29 +0100
+In-Reply-To: <20200528112231.GA22054@duo.ucw.cz>
+References: <cover.1587485099.git.daniele.alessandrelli@intel.com>
+         <13ca92165fab2827b6d439661e75f5b91ef083c2.1587485099.git.daniele.alessandrelli@intel.com>
+         <20200501081002.GA1055721@kroah.com>
+         <f60aece195cd0700728fc38b0398949a82b72fc3.camel@linux.intel.com>
+         <20200524212851.GG1192@bug>
+         <CAK8P3a225pqBfzQ19e6Gt0s_tYBp29xLb8EG==hhz=1wc7aVCA@mail.gmail.com>
+         <ac0534138facc25c4cbcbbff68fc0ba3c2de87b6.camel@linux.intel.com>
+         <20200528112231.GA22054@duo.ucw.cz>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1590665351-2956-1-git-send-email-yangtiezhu@loongson.cn>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 07:29:11PM +0800, Tiezhu Yang wrote:
-> After commit 6423e59a64e7 ("MIPS: Loongson64: Switch to generic PCI
-> driver"), arch/mips/loongson64/pci.c is not used any more, remove it.
+On Thu, 2020-05-28 at 13:22 +0200, Pavel Machek wrote:
+> Hi!
 > 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  arch/mips/loongson64/pci.c | 49 ----------------------------------------------
->  1 file changed, 49 deletions(-)
->  delete mode 100644 arch/mips/loongson64/pci.c
+> > > Agreed, this sounds like an incompatible extension of the boot
+> > > protocol
+> > > that we should otherwise not merge.
+> > > 
+> > > However, there is also a lot of missing information here, and it
+> > > is
+> > > always
+> > > possible they are trying to something for a good reason. As long
+> > > as
+> > > the
+> > > problem that the bootloader is trying to solve is explained well
+> > > enough
+> > > in the changelog, we can discuss it to see how it should be done
+> > > properly.
+> > 
+> > Apologies, I should have provided more information. Here it is :)
+> > 
+> > Basically, at boot time U-Boot code and core memory (.text, .data,
+> > .bss, etc.) is protected by this Isolated Memory Region (IMR) which
+> > prevents any device or processing units other than the ARM CPU to
+> > access/modify the memory.
+> > 
+> > This is done for security reasons, to reduce the risks that a
+> > potential
+> > attacker can use "hijacked" HW devices to interfere with the boot
+> > process (and break the secure boot flow in place).
+> 
+> Dunno. You disable that after boot anyway. Whether it is disabled
+> just before starting kernel or just after it makes very little
+> difference.
 
-applied to mips-next.
+Not sure I get your point. Disabling it while U-Boot is still running
+poses a security risk (even if arguably tiny), while doing it once the
+the Kernel is running is  totally safe. So, I'd prefer to do it in the
+Kernel, unless practical reasons prevent it.
 
-Thomas.
+> 
+> Plus, I'm not sure if this has much security value at all. If I can
+> corrupt data u-boot works _with_ (such as kernel, dtb), I'll take
+> over the system anyway.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+True, U-Boot data needs to be protected too and, in fact, we're trying
+to do that as well. Other IMRs are used to protect the kernel, dtb, and
+other critical memory sections.
+
+> 
+> IOW I believe the best/simplest way is to simply disable this in
+> u-boot before jumping to kernel entrypoint.
+
+Yes, that's definitely the simplest solution, but, IMO, not the safest
+one. So, I'd prefer to build on your initial suggestion and Arnd's
+advice and create a new device driver to disable the IMR once Linux is
+running. But, yes, if that eventually proves unfeasible, I might just
+have the bootloader disable the protection right before booting the OS.
+
+> 
+> Best regards,
+> 									
+> Pavel
+> 
+
