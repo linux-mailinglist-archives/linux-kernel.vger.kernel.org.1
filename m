@@ -2,45 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE321E6FB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 00:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD111E6FCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 00:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437436AbgE1Wy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 18:54:56 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:39503 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437426AbgE1Wyr (ORCPT
+        id S2437369AbgE1W5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 18:57:53 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:45727 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437266AbgE1W5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 18:54:47 -0400
-Received: by mail-il1-f193.google.com with SMTP id c20so636432ilk.6;
-        Thu, 28 May 2020 15:54:47 -0700 (PDT)
+        Thu, 28 May 2020 18:57:51 -0400
+Received: by mail-io1-f65.google.com with SMTP id y5so284533iob.12;
+        Thu, 28 May 2020 15:57:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=fHTcd6mWpJbJXhPxK/FEpQ2LRlSdDHwTREj7/ugkb8o=;
-        b=J+eKmhTmAQOtphNGVTR5rw9u6ML83gdgb8MQla1lFfcP68kajqYn46drXHb94+8yyR
-         yMlCegvJ1CB2EQo3MzG1caWanHzTKfbGiZa3d8LGvfK2xe9LqZyH1dVpGe37fxhMQWKo
-         pXn1K7p8t4QLo9d1AJNrtMGmmB7q4/nWxTCOInQkfM3n7p3p9PhNt5z3jfQZah0r0wWm
-         xpTI6rVR/G+PFkhluVlzk8q/bK+JCVTCgcd5PvWbs2LUx9ktM1Q+zdpU3KnBga5WTTfR
-         OTpswGCOJ838PKf7b1eaRA4OYHhJ1c72vt71dz13ccNA0y/V8rezVcchlSrcDkAxFUxr
-         FYvw==
-X-Gm-Message-State: AOAM531TLNQVaxradgxxcGmHgBeYrzzOZRc7lUx/32OnhhL1tU4DoqeY
-        ZGJsIThos/Odkcyryz7BLQ==
-X-Google-Smtp-Source: ABdhPJzhfQ0MMJipRgtSPxtaAn3yPH1kW6NrGMRNpCd+X5e+SOVycOllyPQEgLEwN36Ol5zaHVHGKA==
-X-Received: by 2002:a92:8b13:: with SMTP id i19mr5129875ild.46.1590706486779;
-        Thu, 28 May 2020 15:54:46 -0700 (PDT)
+        bh=j4A67w1UWrqcRvidWlMOv3lJRuAexfTn44t8+Gt+Mvw=;
+        b=QT3GzN3PzhMnUGX0zHXDKnR7H66FB1n4up1Kt3RUgaUkJKa5XUFGWAtpBN4x5wu72p
+         dyGr8796AhOnOgJlROocG+gOxGKHWOeiTn9UZ9pYw0uRluKkipBM1PKIjNeqOYBzTCJ/
+         vim1Hl7d7sI7/5E/jr2rrr3VMC9/7oVpUI8QM1OREEe/tmmkcXqbvDS3WX7N2C5vB62M
+         z2nldpXkE3CFSIZc+Xjvq1eJLQ3b3p8WgprUl96mYa8jKzYS9tMW6C7nINEEKcz7uUEO
+         ZsPsu5HMA/LYv6MgVVbmu0en0GrcucCSo3Z5AXjo/2R9Pd0BGNu6o31L01KXwcFXz+MB
+         HAQQ==
+X-Gm-Message-State: AOAM532lvRUKx20tFftP3HkwjSz1iYi01tOpVz77ZwwM2m16Y0W/Wvex
+        dV3Sb8aXrk6MkGtYDDL02g==
+X-Google-Smtp-Source: ABdhPJx6c5l7FsTPgjtXHegskhHp+62+vfCSYFInsfYA747A6V9kogbZxZQTlFTCLxnSzMDWjHCSPA==
+X-Received: by 2002:a02:a99a:: with SMTP id q26mr4581344jam.61.1590706668793;
+        Thu, 28 May 2020 15:57:48 -0700 (PDT)
 Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id f10sm3739295ilj.85.2020.05.28.15.54.45
+        by smtp.gmail.com with ESMTPSA id j2sm3060713ioo.8.2020.05.28.15.57.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 15:54:46 -0700 (PDT)
-Received: (nullmailer pid 830413 invoked by uid 1000);
-        Thu, 28 May 2020 22:54:45 -0000
-Date:   Thu, 28 May 2020 16:54:45 -0600
+        Thu, 28 May 2020 15:57:48 -0700 (PDT)
+Received: (nullmailer pid 834510 invoked by uid 1000);
+        Thu, 28 May 2020 22:57:47 -0000
+Date:   Thu, 28 May 2020 16:57:47 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Lubomir Rintel <lkundrak@v3.sk>,
-        Alessandro Zummo <a.zummo@towertech.it>,
+To:     Lubomir Rintel <lkundrak@v3.sk>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
@@ -48,37 +47,164 @@ Cc:     Lubomir Rintel <lkundrak@v3.sk>,
         Linus Walleij <linus.walleij@linaro.org>,
         Marc Zyngier <maz@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/9] dt-bindings: mmc: Convert sdhci-pxa to json-schema
-Message-ID: <20200528225445.GB815881@bogus>
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/9] dt-bindings: i2c: Convert i2c-pxa to json-schema
+Message-ID: <20200528225747.GA830663@bogus>
 References: <20200521091356.2211020-1-lkundrak@v3.sk>
- <20200521091356.2211020-2-lkundrak@v3.sk>
- <CAPDyKFogpp+9d44Dgc8gXmeULj2CxoUzo4EhnLp+=_1YcvXT-g@mail.gmail.com>
+ <20200521091356.2211020-4-lkundrak@v3.sk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPDyKFogpp+9d44Dgc8gXmeULj2CxoUzo4EhnLp+=_1YcvXT-g@mail.gmail.com>
+In-Reply-To: <20200521091356.2211020-4-lkundrak@v3.sk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 09:59:10AM +0200, Ulf Hansson wrote:
-> On Thu, 21 May 2020 at 11:14, Lubomir Rintel <lkundrak@v3.sk> wrote:
-> >
-> > Convert the sdhci-pxa binding to DT schema format using json-schema.
-> >
-> > At the same time, fix a couple of issues with the examples discovered by
-> > the validation tool -- a semicolon instead of a comma and wrong node names.
-> >
-> > Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+On Thu, May 21, 2020 at 11:13:50AM +0200, Lubomir Rintel wrote:
+> A conversion of the i2c-pxa binding to DT schema format using json-schema.
 > 
-> Rob, are you fine with this v2? I am intending to queue it up via my
-> mmc tree, unless you want to pick it?
+> This also cleans ups some errors in the binding: The compatible string
+> description suggested that "mmp" in "mrvl,mmp-twsi" is to be substituted
+> with a processor model, which wouldn't be a right thing to do and indeed
+> nobody seems to have been doing that. There also was "Recommended
+> properties" section that included optional as well as mandatory
+> properties. Missing mandatory properties were added to the example.
+> 
+> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+> 
+> ---
+> Changes since v1:
+> - Add default GPL-2.0-only license tag
+> - Fill in maintainers from MAINTAINERS file
+> 
+>  .../devicetree/bindings/i2c/i2c-pxa.txt       | 31 --------
+>  .../devicetree/bindings/i2c/i2c-pxa.yaml      | 72 +++++++++++++++++++
+>  2 files changed, 72 insertions(+), 31 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-pxa.txt
+>  create mode 100644 Documentation/devicetree/bindings/i2c/i2c-pxa.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-pxa.txt b/Documentation/devicetree/bindings/i2c/i2c-pxa.txt
+> deleted file mode 100644
+> index c30783c0eca0..000000000000
+> --- a/Documentation/devicetree/bindings/i2c/i2c-pxa.txt
+> +++ /dev/null
+> @@ -1,31 +0,0 @@
+> -* Marvell MMP I2C controller
+> -
+> -Required properties :
+> -
+> - - reg : Offset and length of the register set for the device
+> - - compatible : should be "mrvl,mmp-twsi" where mmp is the name of a
+> -   compatible processor, e.g. pxa168, pxa910, mmp2, mmp3.
+> -   For the pxa2xx/pxa3xx, an additional node "mrvl,pxa-i2c" is required
+> -   as shown in the example below.
+> -   For the Armada 3700, the compatible should be "marvell,armada-3700-i2c".
+> -
+> -Recommended properties :
+> -
+> - - interrupts : the interrupt number
+> - - mrvl,i2c-polling : Disable interrupt of i2c controller. Polling
+> -   status register of i2c controller instead.
+> - - mrvl,i2c-fast-mode : Enable fast mode of i2c controller.
+> -
+> -Examples:
+> -	twsi1: i2c@d4011000 {
+> -		compatible = "mrvl,mmp-twsi";
+> -		reg = <0xd4011000 0x1000>;
+> -		interrupts = <7>;
+> -		mrvl,i2c-fast-mode;
+> -	};
+> -	
+> -	twsi2: i2c@d4025000 {
+> -		compatible = "mrvl,mmp-twsi";
+> -		reg = <0xd4025000 0x1000>;
+> -		interrupts = <58>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-pxa.yaml b/Documentation/devicetree/bindings/i2c/i2c-pxa.yaml
+> new file mode 100644
+> index 000000000000..19c81972243d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/i2c/i2c-pxa.yaml
+> @@ -0,0 +1,72 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/i2c/i2c-pxa.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Marvell MMP I2C controller bindings
+> +
+> +maintainers:
+> +  - Rob Herring <robh+dt@kernel.org>
+> +
+> +allOf:
+> +  - $ref: /schemas/i2c/i2c-controller.yaml#
+> +  - if:
+> +      not:
+> +        required:
+> +          - mrvl,i2c-polling
+> +    then:
+> +        required:
+> +          - interrupts
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - mrvl,mmp-twsi
+> +      - mrvl,pxa-i2c
+> +      - marvell,armada-3700-i2c
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    minItems: 1
+> +
+> +  resets:
+> +    minItems: 1
+> +
+> +  mrvl,i2c-polling:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description: |
+> +      Disable interrupt of i2c controller. Polling status register of i2c
+> +      controller instead.
+> +
+> +  mrvl,i2c-fast-mode:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description: Enable fast mode of i2c controller.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - '#address-cells'
+> +  - '#size-cells'
 
-You can take it if you drop my name from 'maintainers'. Ideally, it 
-shouldn't be your name either (should have called it 'owners' 
-instead...).
+Add: 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+unevaluatedProperties: false
+
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/marvell,mmp2.h>
+> +    i2c@d4011000 {
+> +        compatible = "mrvl,mmp-twsi";
+> +        reg = <0xd4011000 0x1000>;
+> +        interrupts = <7>;
+> +        clocks = <&soc_clocks MMP2_CLK_TWSI1>;
+> +        mrvl,i2c-fast-mode;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +    };
+> +
+> +...
+> -- 
+> 2.26.2
+> 
