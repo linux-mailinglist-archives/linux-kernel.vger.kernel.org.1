@@ -2,107 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8AB01E6C3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 511681E6C1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 22:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407178AbgE1UQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 16:16:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42378 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407058AbgE1UOo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 16:14:44 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3124A2158C;
-        Thu, 28 May 2020 20:14:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590696884;
-        bh=BqmnFnU6JQ5sVJZD7pDiEmHsE9uhUAQzeEl2GAeaCaM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AOtWhQA4VrqO+lc1MKMukEK7nmnA+eVi2fNq1NkcbbUwMMc3eqNdzpgAxfIfQ5D5a
-         KASFwA+3rjyN/D/6B/ArD03vIOuDguf5WpYCL8c9fCi0pj8LV83tacZJNDTIUhfSlh
-         dBh5/bMADaGIaptsLbLHcC6kHxet2jrFpcT0LO7c=
-From:   Sasha Levin <sashal@kernel.org>
-To:     tglx@linutronix.de, luto@kernel.org, ak@linux.intel.com
-Cc:     corbet@lwn.net, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        shuah@kernel.org, gregkh@linuxfoundation.org, tony.luck@intel.com,
-        chang.seok.bae@intel.com, dave.hansen@linux.intel.com,
-        peterz@infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko.sakkinen@linux.intel.com,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH v13 16/16] selftests/x86/fsgsbase: Test ptracer-induced GS base write with FSGSBASE
-Date:   Thu, 28 May 2020 16:14:02 -0400
-Message-Id: <20200528201402.1708239-17-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200528201402.1708239-1-sashal@kernel.org>
-References: <20200528201402.1708239-1-sashal@kernel.org>
+        id S2406994AbgE1UOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 16:14:11 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:36542 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406973AbgE1UOG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 16:14:06 -0400
+Received: by mail-io1-f67.google.com with SMTP id y18so11137569iow.3;
+        Thu, 28 May 2020 13:14:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ordAPfbXh0vTNSOfZvda6IBNsIk8jcPKfQPA59PO4to=;
+        b=rNOJyA3UV9c8t5pVI3h0GYZ+nFv8Ug+cM91taFhqyuZSxgHfQfDRRIy0wjCrWWCmC3
+         65TqCwK2qDg3sRTVI+WTIrtnqpjqMemGxQQnETYHu1aP6sKr4xUPUbZ7GEdi9jG8Xd4g
+         GmY1r3s89pp8LWVusysSVpA2TlNi01kqYPEWRdSRpYwQCuMh9VNNSUjhzJsO363ssG0H
+         DB5cKf4fK036sjFip2vLFmG7+MqxnDao7tc5DHyJprclxfIURysxXx/MaW8mfA0FJEs4
+         CbRqZ1U1aNvZIKVsg3dg8s4vNRZbJF0fUTYhmSqi5NznNJB5UcJ0HAhSoCFZEapSfw7c
+         KenQ==
+X-Gm-Message-State: AOAM531C7Fa+TvE2B/lC0Bv/2ig3N6cbj+WphU8ATjOn+z91XMjc43Fm
+        0Q0wPUwMphXiC6udWX6/yxMm/B8=
+X-Google-Smtp-Source: ABdhPJxh7MERH4GHV2KajE30fu7LTfYiwUY/qTaDCstjWq7UDy4hWBP06+bJtHaPjrz4TakTgO7OaQ==
+X-Received: by 2002:a6b:e215:: with SMTP id z21mr3836350ioc.115.1590696844953;
+        Thu, 28 May 2020 13:14:04 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id y23sm956109ior.38.2020.05.28.13.14.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 13:14:04 -0700 (PDT)
+Received: (nullmailer pid 603972 invoked by uid 1000);
+        Thu, 28 May 2020 20:14:03 -0000
+Date:   Thu, 28 May 2020 14:14:03 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        maz@kernel.org
+Subject: Re: [PATCH v4 2/6] dt-bindings: interrupt-controller: Add Loongson
+ HTVEC
+Message-ID: <20200528201403.GA603926@bogus>
+References: <20200427060551.1372591-1-jiaxun.yang@flygoat.com>
+ <20200516082912.3673033-1-jiaxun.yang@flygoat.com>
+ <20200516082912.3673033-2-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200516082912.3673033-2-jiaxun.yang@flygoat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Chang S. Bae" <chang.seok.bae@intel.com>
+On Sat, 16 May 2020 16:29:02 +0800, Jiaxun Yang wrote:
+> Add binding for Loongson-3 HyperTransport Interrupt Vector Controller.
+> 
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> --
+> v4: Drop ref, '|', add additionalProperties, fix example
+> ---
+>  .../interrupt-controller/loongson,htvec.yaml  | 58 +++++++++++++++++++
+>  1 file changed, 58 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/loongson,htvec.yaml
+> 
 
-This validates that GS selector and base are independently preserved in
-ptrace commands.
-
-Suggested-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: Dave Hansen <dave.hansen@intel.com>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/testing/selftests/x86/fsgsbase.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/x86/fsgsbase.c b/tools/testing/selftests/x86/fsgsbase.c
-index 950a48b2e366..9a4349813a30 100644
---- a/tools/testing/selftests/x86/fsgsbase.c
-+++ b/tools/testing/selftests/x86/fsgsbase.c
-@@ -465,7 +465,7 @@ static void test_ptrace_write_gsbase(void)
- 	wait(&status);
- 
- 	if (WSTOPSIG(status) == SIGTRAP) {
--		unsigned long gs;
-+		unsigned long gs, base;
- 		unsigned long gs_offset = USER_REGS_OFFSET(gs);
- 		unsigned long base_offset = USER_REGS_OFFSET(gs_base);
- 
-@@ -481,6 +481,7 @@ static void test_ptrace_write_gsbase(void)
- 			err(1, "PTRACE_POKEUSER");
- 
- 		gs = ptrace(PTRACE_PEEKUSER, child, gs_offset, NULL);
-+		base = ptrace(PTRACE_PEEKUSER, child, base_offset, NULL);
- 
- 		/*
- 		 * In a non-FSGSBASE system, the nonzero selector will load
-@@ -501,8 +502,14 @@ static void test_ptrace_write_gsbase(void)
- 			 */
- 			if (gs == 0)
- 				printf("\tNote: this is expected behavior on older kernels.\n");
-+		} else if (have_fsgsbase && (base != 0xFF)) {
-+			nerrs++;
-+			printf("[FAIL]\tGSBASE changed to %lx\n", base);
- 		} else {
--			printf("[OK]\tGS remained 0x%hx\n", *shared_scratch);
-+			printf("[OK]\tGS remained 0x%hx", *shared_scratch);
-+			if (have_fsgsbase)
-+				printf(" and GSBASE changed to 0xFF");
-+			printf("\n");
- 		}
- 	}
- 
--- 
-2.25.1
-
+Reviewed-by: Rob Herring <robh@kernel.org>
