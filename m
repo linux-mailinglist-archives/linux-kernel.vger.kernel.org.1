@@ -2,113 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D6F1E5339
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 03:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE34D1E5343
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 03:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726235AbgE1Boq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 21:44:46 -0400
-Received: from mail-mw2nam12on2083.outbound.protection.outlook.com ([40.107.244.83]:36317
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725294AbgE1Boq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 21:44:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kU7T+MI7x7XR3Px/C/OIK8/jkEAM0RlMI0eSUWeJDVGwaqkSu4gpaTs/QntiZpy7vI7Ecr3t85i3LKTj/X3iLWwh3aQfeHYHvgwI6r+j/mlHNvb8QXSw8LIxXr20v1FQ1RpyOMcFp9DEHNaJa4y3GPua6MAZAv6lUg3U1gFBuJM5qSYHUKSyv6r8kP2ZHN5upqFJKi99zmtWnvmU9IOdz+99ulCcF0J+aH6AVIt5n7AesECeX5r0x4+BO8qB4uH7uVwV/PQ8XjFcQHqagoN9nT4hjwfZDI1sl76EkqvAPv9AAG5ygt0MBzyzXY2zR6Mji6wndKox81cvLVDrRgbAbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ohI81OQyDdz1Zw8CqOCwLpqkpffNKp1TS1gRmIr0OLs=;
- b=LoULZ1sWp8JQ4JMK+U2q9X0JSvfHgvoLNFpyh8me7+PxofX4b2HbOj1M4ffC35zcOofWJmoGkUbKgG2wydGK+WA6uxIoPBkXMk+u0J30oLdUuNEJVRb++B5dQQPTWu1apkbf/dYj27ulWcFFUlk/senBjHEXGpRVoh6BThfHemRUC9YaIuJlrryb/eHz6axkMAX/413xxuaKNaIhnyktpyZ9TsNoIGT+TmgScXSPEWAuLN5CEmfPNpUpMcC9TXYos9pKTNS3OTr/mhWOIEsa+zFLYxgou9dZl0EYTCIjBntaUeydB6ggHdOktjp5vpr+2N8llIp3xrLFzZzJZ3QTgg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ohI81OQyDdz1Zw8CqOCwLpqkpffNKp1TS1gRmIr0OLs=;
- b=HhR7BXoPOpGMgi5ZYC130w9rNaxo6y2BAAGDernNJE0Ht3h6GIQ5D55jaeFn4+tApBmuvn5Zd9HYZSd14fBpkmnXr3fJCfB0vC014p6fdGSQNpBLgeA+sAnzfmFvY5D5VUio1u1GJBuY7IlVgYokNHGzxOqeQe/t35UwylrcqOw=
-Received: from DM6PR11MB3257.namprd11.prod.outlook.com (2603:10b6:5:5c::21) by
- DM6PR11MB4692.namprd11.prod.outlook.com (2603:10b6:5:2aa::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3045.19; Thu, 28 May 2020 01:44:44 +0000
-Received: from DM6PR11MB3257.namprd11.prod.outlook.com
- ([fe80::cc67:a9f1:5cc2:72c0]) by DM6PR11MB3257.namprd11.prod.outlook.com
- ([fe80::cc67:a9f1:5cc2:72c0%6]) with mapi id 15.20.3021.029; Thu, 28 May 2020
- 01:44:44 +0000
-From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-To:     Markus Elfring <markus.elfring@web.de>, Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-Subject: =?gb2312?B?u9i4tDogW1BBVENIIHY1XSB3b3JrcXVldWU6IFJlbW92ZSB1bm5lY2Vzc2Fy?=
- =?gb2312?B?eSBrZnJlZSgpIGNhbGwgaW4gcmN1X2ZyZWVfd3EoKQ==?=
-Thread-Topic: [PATCH v5] workqueue: Remove unnecessary kfree() call in
- rcu_free_wq()
-Thread-Index: AQHWM/tQSttnTCPl40yJQVJDnEmgd6i7l3oAgAEgMAmAAANGQA==
-Date:   Thu, 28 May 2020 01:44:43 +0000
-Message-ID: <DM6PR11MB3257D6E7E93A518392502809FF8E0@DM6PR11MB3257.namprd11.prod.outlook.com>
-References: <20200527075715.36849-1-qiang.zhang@windriver.com>,<284c7851-4e89-a00f-a2e6-aa8e2e1f3fce@web.de>,<DM6PR11MB32573F3884A864ECD586235EFF8E0@DM6PR11MB3257.namprd11.prod.outlook.com>
-In-Reply-To: <DM6PR11MB32573F3884A864ECD586235EFF8E0@DM6PR11MB3257.namprd11.prod.outlook.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: web.de; dkim=none (message not signed)
- header.d=none;web.de; dmarc=none action=none header.from=windriver.com;
-x-originating-ip: [60.247.85.82]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1aff99fe-83b3-4bbb-c5f1-08d802a8b23c
-x-ms-traffictypediagnostic: DM6PR11MB4692:
-x-microsoft-antispam-prvs: <DM6PR11MB469231AEEF8943B2976FEF4BFF8E0@DM6PR11MB4692.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 0417A3FFD2
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: GWBUU454yxlncTTHmSvMnaLHW1dWdL+GNmzBf9oKW3j6W5wMUFFtzR6euefQ3vcdCCQlBi4yhvKPLmNGYtP3vmG0Gk8l6+hwXU2SBW5tQln5v+PC0Bf1/YTPwWhrt3Cwei45+5od/RWhVjtEoavhbT6NtPyT0jxzcMNcg7FaeN5TirGpI1DdMziZ6+O9rvCR/BMNYw8MWtig2qZtexZhvj4KIuJiVsUzj2klNjgRxgLtpwEIqRYDvOaJbyPsZpm8igkky9/ywLIickwKlsWRGggWiyao24LJzlFAEGItG8TanIZCpsy8vzjcJEfZrsX00lMOEM0pVmB4XqCJNjkbhw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3257.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39850400004)(396003)(346002)(376002)(366004)(136003)(5660300002)(478600001)(54906003)(2940100002)(2906002)(110136005)(316002)(224303003)(7696005)(26005)(186003)(6506007)(4326008)(55016002)(9686003)(71200400001)(8936002)(52536014)(64756008)(66556008)(66476007)(66946007)(66446008)(86362001)(33656002)(91956017)(76116006)(83380400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: JjTg1b8Dn1XeIQo2Q4fXfNN8Uw2cxdElIWZoVziHeBw1+L9BAsI1blMnsPTJSyIH22mIhyI5yDwVaJbVRSv5khml2+P3VFdL2mDMvuGaEyYAlIUUe7rgxVPvi/+KaAXQxy8PcQ85od11eCuISafuP9IoFg8QmY+nUHVtHTP9OKf56667/fVAeh2jdLTwe58aCOf7ybSgtWWCBGH8HMwxrmhN4TbjeF0DiY24VVSaqsbbxHvjBh+hUcCsrQ4twz/NsKSCtZzLH74SGTvgE8qtciHWB148neB1t/JbwyAt3BX6E4SNfpgxOgXuTG8Zh02F9CEGOHDlUYW3OwmrUpRuUJHVooQiXZTodnzyecEsPUcQiNT0NOmkqeowV7HxsqWezCaRRHtJyahkkUKguRo0rqZxa8HJ66rLosQ/ZQqdfgrkWx6ZQWcCTa0JyFyeH9JtM7Df1tWWecqfQ9/urZrC3PDAUTJMr1pu1xYgWEp1DKE=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1aff99fe-83b3-4bbb-c5f1-08d802a8b23c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 May 2020 01:44:43.9684
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: aoqdAFRhVhJPw/gAvotbWccQF35vt4gDm31GhqFdcUDcD4xLicjZVSfbHJdJ8c9cAOxVfVvny1wqgW+02K8eL0i1hoR/VCK129Xj5tc66L8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4692
+        id S1726799AbgE1BqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 21:46:21 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:64492 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726701AbgE1BqT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 21:46:19 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590630378; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=gsae93ir+ItLa/44z4Kb7YzT3RCzLDKMFjSmE3LcBIY=; b=FFHb7eho5bS5Ce6HfizikK0wPMSC3aKrgL0fxKUKCd6MDqDYNCx2LS3IviGcrpBW1gSuYaBl
+ Hw2mbcihbNiczlMJzmoTVZbU6wPSB01OKe5yQ1DhAk6Zaf5X9zo0iANx04v8zw7mh2igHe47
+ KDNb/oX7Q7Wyc40sE/IetPh0rhk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5ecf17e344a25e0052c67b7d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 May 2020 01:46:11
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B59ADC43387; Thu, 28 May 2020 01:46:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 56E69C433C9;
+        Thu, 28 May 2020 01:46:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 56E69C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=wcheng@codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     robh+dt@kernel.org, bjorn.andersson@linaro.org, balbi@kernel.org,
+        gregkh@linuxfoundation.org, agross@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
+        Wesley Cheng <wcheng@codeaurora.org>
+Subject: [RFC v3 0/3] Re-introduce TX FIFO resize for larger EP bursting
+Date:   Wed, 27 May 2020 18:46:00 -0700
+Message-Id: <1590630363-3934-1-git-send-email-wcheng@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhhbmtzIGZvciB5b3VyIGd1aWRlLg0KSSB3aWxsIHRyeSB0byBjaGFuZ2UgdGhlIHdlYWtuZXNz
-IG9mIHdlYWsgd29yZGluZy4NCg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXw0Kt6K8/sjLOiBaaGFuZywgUWlhbmcgPFFpYW5nLlpoYW5nQHdpbmRyaXZlci5jb20+DQq3
-osvNyrG85DogMjAyMMTqNdTCMjjI1SA5OjQxDQrK1bz+yMs6IE1hcmt1cyBFbGZyaW5nOyBUZWp1
-biBIZW87IExhaSBKaWFuZ3NoYW4NCrOty806IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7
-IGtlcm5lbC1qYW5pdG9yc0B2Z2VyLmtlcm5lbC5vcmcNCtb3zOI6ILvYuLQ6IFtQQVRDSCB2NV0g
-d29ya3F1ZXVlOiBSZW1vdmUgdW5uZWNlc3Nhcnkga2ZyZWUoKSBjYWxsIGluIHJjdV9mcmVlX3dx
-KCkNCg0KVGhhbmtzIGZvciB5b3VyIGd1aWRlLiBJIHRyaWVkIHRvIGNoYW5nZSB0aGUgd2Vha25l
-c3Mgb2Ygd2VhayB3b3JkaW5nDQoNCg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18N
-CreivP7IyzogbGludXgta2VybmVsLW93bmVyQHZnZXIua2VybmVsLm9yZyA8bGludXgta2VybmVs
-LW93bmVyQHZnZXIua2VybmVsLm9yZz4gtPqx7SBNYXJrdXMgRWxmcmluZyA8TWFya3VzLkVsZnJp
-bmdAd2ViLmRlPg0Kt6LLzcqxvOQ6IDIwMjDE6jXUwjI3yNUgMTY6MjANCsrVvP7IyzogWmhhbmcs
-IFFpYW5nIDxRaWFuZy5aaGFuZ0B3aW5kcml2ZXIuY29tPjsgVGVqdW4gSGVvIDx0akBrZXJuZWwu
-b3JnPjsgTGFpIEppYW5nc2hhbiA8amlhbmdzaGFubGFpQGdtYWlsLmNvbT4NCrOty806IGxpbnV4
-LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcgPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+OyBr
-ZXJuZWwtamFuaXRvcnNAdmdlci5rZXJuZWwub3JnIDxrZXJuZWwtamFuaXRvcnNAdmdlci5rZXJu
-ZWwub3JnPg0K1vfM4jogUmU6IFtQQVRDSCB2NV0gd29ya3F1ZXVlOiBSZW1vdmUgdW5uZWNlc3Nh
-cnkga2ZyZWUoKSBjYWxsIGluIHJjdV9mcmVlX3dxKCkNCg0KPiBUaHVzIGRlbGV0ZSB0aGlzIGZ1
-bmN0aW9uIGNhbGwgd2hpY2ggYmVjYW1lIHVubmVjZXNzYXJ5IHdpdGggdGhlIHJlZmVyZW5jZWQN
-Cj4gc29mdHdhcmUgdXBkYXRlLg0Koa0NCj4gU3VnZ2VzdGVkLWJ5OiBNYXJrdXMgRWxmcmluZyA8
-TWFya3VzLkVsZnJpbmdAd2ViLmRlPg0KDQpXb3VsZCB0aGUgdGFnIKGwQ28tZGV2ZWxvcGVkLWJ5
-obEgYmUgbW9yZSBhcHByb3ByaWF0ZSBhY2NvcmRpbmcgdG8gdGhlIHBhdGNoIHJldmlldw0KdG8g
-YWNoaWV2ZSBhIG1vcmUgcGxlYXNpbmcgY29tbWl0IG1lc3NhZ2U/DQoNCg0KPiAgdjEtPnYyLT52
-My0+djQtPnY1Og0KPiAgTW9kaWZ5IHdlYWtseSBzdWJtaXR0ZWQgaW5mb3JtYXRpb24uDQoNCk5v
-dyBJIHdvbmRlciBhYm91dCB5b3VyIHdvcmRpbmcgY2hvaWNlIKGwd2Vha2x5obEuDQoNClJlZ2Fy
-ZHMsDQpNYXJrdXMNCg==
+Changes in V3:
+ - Removed "Reviewed-by" tags
+ - Renamed series back to RFC
+ - Modified logic to ensure that fifo_size is reset if we pass the minimum
+   threshold.  Tested with binding multiple FDs requesting 6 FIFOs.
+
+Changes in V2:
+ - Modified TXFIFO resizing logic to ensure that each EP is reserved a
+   FIFO.
+ - Removed dev_dbg() prints and fixed typos from patches
+ - Added some more description on the dt-bindings commit message
+
+Currently, there is no functionality to allow for resizing the TXFIFOs, and
+relying on the HW default setting for the TXFIFO depth.  In most cases, the
+HW default is probably sufficient, but for USB compositions that contain
+multiple functions that require EP bursting, the default settings
+might not be enough.  Also to note, the current SW will assign an EP to a
+function driver w/o checking to see if the TXFIFO size for that particular
+EP is large enough. (this is a problem if there are multiple HW defined
+values for the TXFIFO size)
+
+It is mentioned in the SNPS databook that a minimum of TX FIFO depth = 3
+is required for an EP that supports bursting.  Otherwise, there may be
+frequent occurences of bursts ending.  For high bandwidth functions,
+such as data tethering (protocols that support data aggregation), mass
+storage, and media transfer protocol (over FFS), the bMaxBurst value can be
+large, and a bigger TXFIFO depth may prove to be beneficial in terms of USB
+throughput. (which can be associated to system access latency, etc...)  It
+allows for a more consistent burst of traffic, w/o any interruptions, as
+data is readily available in the FIFO.
+
+With testing done using the mass storage function driver, the results show
+that with a larger TXFIFO depth, the bandwidth increased significantly.
+
+Test Parameters:
+ - Platform: Qualcomm SM8150
+ - bMaxBurst = 6
+ - USB req size = 256kB
+ - Num of USB reqs = 16
+ - USB Speed = Super-Speed
+ - Function Driver: Mass Storage (w/ ramdisk)
+ - Test Application: CrystalDiskMark
+
+Results:
+
+TXFIFO Depth = 3 max packets
+
+Test Case | Data Size | AVG tput (in MB/s)
+-------------------------------------------
+Sequential|1 GB x     | 
+Read      |9 loops    | 193.60
+	  |           | 195.86
+          |           | 184.77
+          |           | 193.60
+-------------------------------------------
+
+TXFIFO Depth = 6 max packets
+
+Test Case | Data Size | AVG tput (in MB/s)
+-------------------------------------------
+Sequential|1 GB x     | 
+Read      |9 loops    | 287.35
+	  |           | 304.94
+          |           | 289.64
+          |           | 293.61
+-------------------------------------------
+
+Wesley Cheng (3):
+  usb: dwc3: Resize TX FIFOs to meet EP bursting requirements
+  arm64: boot: dts: qcom: sm8150: Enable dynamic TX FIFO resize logic
+  dt-bindings: usb: dwc3: Add entry for tx-fifo-resize
+
+ Documentation/devicetree/bindings/usb/dwc3.txt |   2 +-
+ arch/arm64/boot/dts/qcom/sm8150.dtsi           |   1 +
+ drivers/usb/dwc3/core.c                        |   2 +
+ drivers/usb/dwc3/core.h                        |   8 ++
+ drivers/usb/dwc3/ep0.c                         |  37 +++++++-
+ drivers/usb/dwc3/gadget.c                      | 115 +++++++++++++++++++++++++
+ 6 files changed, 163 insertions(+), 2 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
