@@ -2,63 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0DBA1E6004
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 888FC1E6028
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389320AbgE1MGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389059AbgE1MG2 (ORCPT
+        id S2388866AbgE1MIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 08:08:02 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:38101 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389353AbgE1MHz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 08:06:28 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAB29C05BD1E
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 05:06:27 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jeHIg-0006Uf-J5; Thu, 28 May 2020 14:06:18 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 09E65100D01; Thu, 28 May 2020 14:06:18 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: TSC problems with Acer TravelMate 5735Z
-In-Reply-To: <20200524185800.GV325280@hirez.programming.kicks-ass.net>
-References: <a8c0c572-6dba-8d35-69bd-5e7b19bf6aba@molgen.mpg.de> <20200524185800.GV325280@hirez.programming.kicks-ass.net>
-Date:   Thu, 28 May 2020 14:06:17 +0200
-Message-ID: <874ks0p8li.fsf@nanos.tec.linutronix.de>
+        Thu, 28 May 2020 08:07:55 -0400
+Received: by mail-wm1-f65.google.com with SMTP id f185so1772842wmf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 05:07:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fX1cujbgfbt/VM5a/7eMs0kHkEp+fJc6bInREoz+SAI=;
+        b=SpEc7hFsTY4g2zT7Z8I3MiCr4QQD7Mpbe4nGYDU9O2ojdQJMmTk1jUpu/RHf9NUkI+
+         Ams1rjbxRyHxhL4P1YcYaqezvcL1mmEbYqOZmUzcGU35lTrpUoxdKSg0ZYM5a/4KTKeH
+         YdtJyaICSmo+FuuMMA5Z/1ntoUGLHKbVpGbcZKGExD9f89ZVYr0pxjoWfxgcea86o/Dn
+         1GLgvfLurs1viGUFJ7Xk8fVHKsD5ROncJcp4YiRomkfwC4rbqZ1RVs20Oz1Lz5DMcQJ4
+         oplxMxyyDNW78+vE44t9o5dVgDjmGRjXuyI6fBvr22I3ueUO8QxaAXSPoHhaeboo0m+w
+         IHCA==
+X-Gm-Message-State: AOAM530k47M4mBa1X4qEQ6KEBG+tDnIx1t/mNdpx5HQk8OWHCwrAFRTO
+        +XiawZWsJhW0UrccwQ7lbVE=
+X-Google-Smtp-Source: ABdhPJw2dn25o5ZhsRcMskgXExklPfpC8pBiTQuJ7MSlKTB+XEWW9AxfZMKa8mVSNRnjxPHc3rxpfA==
+X-Received: by 2002:a1c:117:: with SMTP id 23mr3291422wmb.90.1590667673252;
+        Thu, 28 May 2020 05:07:53 -0700 (PDT)
+Received: from localhost (ip-37-188-185-40.eurotel.cz. [37.188.185.40])
+        by smtp.gmail.com with ESMTPSA id 62sm5912776wrm.1.2020.05.28.05.07.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 05:07:52 -0700 (PDT)
+Date:   Thu, 28 May 2020 14:07:50 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@osdl.org>, airlied@linux.ie,
+        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com
+Subject: Re: next-20200515: Xorg killed due to "OOM"
+Message-ID: <20200528120750.GC27484@dhcp22.suse.cz>
+References: <20200526091054.GA12103@amd>
+ <20200528090517.GA27484@dhcp22.suse.cz>
+ <20200528120354.GB22054@duo.ucw.cz>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200528120354.GB22054@duo.ucw.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Zijlstra <peterz@infradead.org> writes:
-> On Sun, May 24, 2020 at 07:09:18PM +0200, Paul Menzel wrote:
->> Dear Linux folks,
->> 
->> 
->> I got my hands on an old Acer TravelMate 5735Z (Intel GM45/Cantiga) and
->> installed Debian Sid/unstable with Linux 5.6.7 on it.
->> 
->> Booting the system it takes a long time, and the systemd units fail to
->> start. The logs contain that the TSC is unstable. Adding `tsc=unstable` to
->> the Linux kernel command line fixes this.
->
-> It fixes nothing; it just doesn't get you the warning because you told
-> it upfront.
+On Thu 28-05-20 14:03:54, Pavel Machek wrote:
+> On Thu 2020-05-28 11:05:17, Michal Hocko wrote:
+> > On Tue 26-05-20 11:10:54, Pavel Machek wrote:
+> > [...]
+> > > [38617.276517] oom_reaper: reaped process 31769 (chromium), now anon-rss:0kB, file-rss:0kB, shmem-rss:7968kB
+> > > [38617.277232] Xorg invoked oom-killer: gfp_mask=0x0(), order=0, oom_score_adj=0
+> > > [38617.277247] CPU: 0 PID: 2978 Comm: Xorg Not tainted 5.7.0-rc5-next-20200515+ #117
+> > > [38617.277256] Hardware name: LENOVO 17097HU/17097HU, BIOS 7BETD8WW (2.19 ) 03/31/2011
+> > > [38617.277266] Call Trace:
+> > > [38617.277286]  dump_stack+0x54/0x6e
+> > > [38617.277300]  dump_header+0x45/0x321
+> > > [38617.277313]  oom_kill_process.cold+0x9/0xe
+> > > [38617.277324]  ? out_of_memory+0x167/0x420
+> > > [38617.277336]  out_of_memory+0x1f2/0x420
+> > > [38617.277348]  pagefault_out_of_memory+0x34/0x56
+> > > [38617.277361]  mm_fault_error+0x4a/0x130
+> > > [38617.277372]  do_page_fault+0x3ce/0x416
+> > 
+> > The reason the OOM killer has been invoked is that the page fault
+> > handler has returned VM_FAULT_OOM. So this is not a result of the page
+> > allocator struggling to allocate a memory. It would be interesting to
+> > check which code path has returned this. 
+> 
+> Should the core WARN_ON if that happens and there's enough memory, or
+> something like that?
 
-Well, it prevents the kernel to use TSC upfront and not wait until it's
-discovered to be crap. That might make a difference.
+I wish it would simply go away. There shouldn't be really any reason for
+VM_FAULT_OOM to exist. The real low on memory situation is already
+handled in the page allocator.
 
-Thanks,
-
-        tglx
+-- 
+Michal Hocko
+SUSE Labs
