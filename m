@@ -2,125 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166021E5A10
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 10:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F4D1E5A04
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 09:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727056AbgE1H7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 03:59:37 -0400
-Received: from twhmllg4.macronix.com ([122.147.135.202]:31330 "EHLO
-        TWHMLLG4.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726961AbgE1H70 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 03:59:26 -0400
-Received: from localhost.localdomain ([172.17.195.96])
-        by TWHMLLG4.macronix.com with ESMTP id 04S7wMHn030973;
-        Thu, 28 May 2020 15:58:34 +0800 (GMT-8)
-        (envelope-from masonccyang@mxic.com.tw)
-From:   Mason Yang <masonccyang@mxic.com.tw>
-To:     broonie@kernel.org, tudor.ambarus@microchip.com,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        boris.brezillon@collabora.com, matthias.bgg@gmail.com
-Cc:     p.yadav@ti.com, juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
-        Mason Yang <masonccyang@mxic.com.tw>
-Subject: [PATCH v3 14/14] mtd: spi-nor: macronix: Add Octal 8D-8D-8D supports for Macronix mx25uw51245g
-Date:   Thu, 28 May 2020 15:58:16 +0800
-Message-Id: <1590652696-8844-15-git-send-email-masonccyang@mxic.com.tw>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1590652696-8844-1-git-send-email-masonccyang@mxic.com.tw>
-References: <1590652696-8844-1-git-send-email-masonccyang@mxic.com.tw>
-X-MAIL: TWHMLLG4.macronix.com 04S7wMHn030973
+        id S1726931AbgE1H7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 03:59:20 -0400
+Received: from mga02.intel.com ([134.134.136.20]:17342 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726906AbgE1H7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 03:59:18 -0400
+IronPort-SDR: LSSGo7e/mPDd8n8AS1G+2RUx0fBRHEfIMKWQAPI055ZE/1GTD8zAwfxNVI1Hh75uPQpro+LDjF
+ 0ZBbsSjs8B0A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 00:59:17 -0700
+IronPort-SDR: uA22schnODGB7VawxSgXdwQGKqWAhOhJSX5RxNNbBbG+fSzWFNyhKwNzshopI4FYwfwrCCYHI4
+ Hs9kZ2TSoGIw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,444,1583222400"; 
+   d="scan'208";a="469029754"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.157]) ([10.237.72.157])
+  by fmsmga005.fm.intel.com with ESMTP; 28 May 2020 00:59:07 -0700
+Subject: Re: [PATCH V7 04/15] kprobes: Add perf ksymbol events for kprobe insn
+ pages
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>, Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel@vger.kernel.org
+References: <20200512121922.8997-1-adrian.hunter@intel.com>
+ <20200512121922.8997-5-adrian.hunter@intel.com>
+ <20200527161732.GA706495@hirez.programming.kicks-ass.net>
+ <20200527172011.GA706518@hirez.programming.kicks-ass.net>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <b9609bc3-2aee-9bf3-87bf-38a8f3d60eee@intel.com>
+Date:   Thu, 28 May 2020 10:58:36 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200527172011.GA706518@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Macronix mx25uw51245g is a SPI NOR that supports 1-1-1/8-8-8 mode.
+On 27/05/20 8:20 pm, Peter Zijlstra wrote:
+> On Wed, May 27, 2020 at 06:17:32PM +0200, Peter Zijlstra wrote:
+>> On Tue, May 12, 2020 at 03:19:11PM +0300, Adrian Hunter wrote:
+>>> @@ -202,6 +207,13 @@ static int collect_one_slot(struct kprobe_insn_page *kip, int idx)
+>>>  		 * next time somebody inserts a probe.
+>>>  		 */
+>>>  		if (!list_is_singular(&kip->list)) {
+>>> +			/*
+>>> +			 * Record perf ksymbol unregister event before removing
+>>> +			 * the page.
+>>> +			 */
+>>> +			perf_event_ksymbol(PERF_RECORD_KSYMBOL_TYPE_OOL,
+>>> +					   (u64)kip->insns, PAGE_SIZE, true,
+>>> +					   kip->cache->sym);
+>>>  			list_del_rcu(&kip->list);
+>>>  			synchronize_rcu();
+>>>  			kip->cache->free(kip->insns);
+>>
+>> My manual build script haz complaints:
+>>
+>> i386-defconfig  ../kernel/kprobes.c: In function ‘__get_insn_slot’:
+>> ../kernel/kprobes.c:190:51: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+>> perf_event_ksymbol(PERF_RECORD_KSYMBOL_TYPE_OOL, (u64)kip->insns,
+>> ^
+>> ../kernel/kprobes.c: In function ‘collect_one_slot’:
+>> ../kernel/kprobes.c:215:9: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+>> (u64)kip->insns, PAGE_SIZE, true,
+>> ^
+>> FAIL
+>>
+>>
+>> Now, there's a ton of such warnings elsewhere in the tree, but still I
+>> feel we should perhaps strive for a clean build.
+> 
+> Fixed those for you. On to cross-builds... :/
+> 
 
-Correct the dummy cycles to device for various frequencies
-after xSPI profile 1.0 table parsed.
-
-Enable mx25uw51245g to Octal DTR mode by executing the command sequences
-to change to octal DTR mode.
-
-Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
----
- drivers/mtd/spi-nor/macronix.c | 55 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 55 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index 96735d8..6c9a24c 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -8,6 +8,57 @@
- 
- #include "core.h"
- 
-+#define MXIC_CR2_DUMMY_SET_ADDR 0x300
-+
-+/* Fixup the dummy cycles to device and setup octa_dtr_enable() */
-+static void mx25uw51245g_post_sfdp_fixups(struct spi_nor *nor)
-+{
-+	struct spi_nor_flash_parameter *params = nor->params;
-+	int ret;
-+	u8 rdc, wdc;
-+
-+	ret = spi_nor_read_cr2(nor, MXIC_CR2_DUMMY_SET_ADDR, &rdc);
-+	if (ret)
-+		return;
-+
-+	/* Refer to dummy cycle and frequency table(MHz) */
-+	switch (params->dummy_cycles) {
-+	case 10:	/* 10 dummy cycles for 104 MHz */
-+		wdc = 5;
-+		break;
-+	case 12:	/* 12 dummy cycles for 133 MHz */
-+		wdc = 4;
-+		break;
-+	case 16:	/* 16 dummy cycles for 166 MHz */
-+		wdc = 2;
-+		break;
-+	case 18:	/* 18 dummy cycles for 173 MHz */
-+		wdc = 1;
-+		break;
-+	case 20:	/* 20 dummy cycles for 200 MHz */
-+	default:
-+		wdc = 0;
-+	}
-+
-+	if (rdc != wdc)
-+		spi_nor_write_cr2(nor, MXIC_CR2_DUMMY_SET_ADDR, &wdc);
-+
-+	if (params->cmd_seq[0].len) {
-+		params->octal_dtr_enable = spi_nor_cmd_seq_octal_dtr;
-+		params->hwcaps.mask |= SNOR_HWCAPS_READ_8_8_8_DTR;
-+		params->hwcaps.mask |= SNOR_HWCAPS_PP_8_8_8_DTR;
-+
-+	} else {
-+		params->octal_dtr_enable = NULL;
-+		params->hwcaps.mask &= ~SNOR_HWCAPS_READ_8_8_8_DTR;
-+		params->hwcaps.mask &= ~SNOR_HWCAPS_PP_8_8_8_DTR;
-+	}
-+}
-+
-+static struct spi_nor_fixups mx25uw51245g_fixups = {
-+	.post_sfdp = mx25uw51245g_post_sfdp_fixups,
-+};
-+
- static int
- mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
- 			    const struct sfdp_parameter_header *bfpt_header,
-@@ -84,6 +135,10 @@
- 			      SPI_NOR_QUAD_READ) },
- 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048,
- 			      SPI_NOR_QUAD_READ) },
-+	{ "mx25uw51245g", INFO(0xc2813a, 0, 64 * 1024, 1024,
-+			      SECT_4K | SPI_NOR_4B_OPCODES |
-+			      SPI_NOR_OCTAL_DTR_READ)
-+			      .fixups = &mx25uw51245g_fixups },
- };
- 
- static void macronix_default_init(struct spi_nor *nor)
--- 
-1.9.1
-
+Thank you!
