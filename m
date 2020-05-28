@@ -2,224 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DFB51E52DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 03:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B7741E52DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 03:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726733AbgE1BUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 May 2020 21:20:50 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:48924 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725294AbgE1BUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 May 2020 21:20:50 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 1F5C510104ED80D4744C;
-        Thu, 28 May 2020 09:20:47 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.206) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 28 May
- 2020 09:20:41 +0800
-Subject: Re: [f2fs-dev] [PATCH v3] f2fs: avoid inifinite loop to wait for
- flushing node pages at cp_error
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <kernel-team@android.com>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20200522144752.216197-1-jaegeuk@kernel.org>
- <20200522233243.GA94020@google.com> <20200525035655.GA135148@google.com>
- <565af47c-8364-d910-8d1c-93645c12e660@huawei.com>
- <20200525150608.GA55033@google.com>
- <92afae8b-2dd3-171a-562c-404a67f9aab2@huawei.com>
- <a44f9c2e-3859-6c5d-6f06-7c4c6b4c01c5@huawei.com>
- <20200526015650.GA207949@google.com>
- <765a1ac5-a318-14d6-666f-eab46f892d01@huawei.com>
- <20200527205603.GB206249@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <d2f2c623-b0e8-e875-410d-f542e86417e4@huawei.com>
-Date:   Thu, 28 May 2020 09:20:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1726235AbgE1BXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 May 2020 21:23:32 -0400
+Received: from mga04.intel.com ([192.55.52.120]:38741 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725747AbgE1BXb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 May 2020 21:23:31 -0400
+IronPort-SDR: E8aktFxO/gwpocDw2/sjRk4LFGYAnb2uqYnSISjQBY7MATiPfboDOcSqiTtpsvy5yO1QIUO7S0
+ DDWRrtw7Ol6Q==
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 18:23:30 -0700
+IronPort-SDR: NGyjpN/SxYtMmRAZ7PoIsAytx8WAUyQ+JgCrWDFkqig0EJrEiVtkET7fJM1IWAUPHWjxGo4QBg
+ SFfH6BAEp4lw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,443,1583222400"; 
+   d="scan'208,223";a="285002293"
+Received: from ederaloi-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.44.51])
+  by orsmga002.jf.intel.com with ESMTP; 27 May 2020 18:23:21 -0700
+Date:   Thu, 28 May 2020 04:23:19 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-sgx@vger.kernel.org, akpm@linux-foundation.org,
+        dave.hansen@intel.com, nhorman@redhat.com, npmccallum@redhat.com,
+        haitao.huang@intel.com, andriy.shevchenko@linux.intel.com,
+        tglx@linutronix.de, kai.svahn@intel.com, josh@joshtriplett.org,
+        luto@kernel.org, kai.huang@intel.com, rientjes@google.com,
+        cedric.xing@intel.com, puiterwijk@redhat.com,
+        Jethro Beekman <jethro@fortanix.com>
+Subject: Re: [PATCH v30 08/20] x86/sgx: Add functions to allocate and free
+ EPC pages
+Message-ID: <20200528012319.GA7577@linux.intel.com>
+References: <20200515004410.723949-1-jarkko.sakkinen@linux.intel.com>
+ <20200515004410.723949-9-jarkko.sakkinen@linux.intel.com>
+ <20200526125207.GE28228@zn.tnic>
+ <20200527042111.GI31696@linux.intel.com>
+ <20200527204638.GG1721@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <20200527205603.GB206249@google.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/mixed; boundary="PEIAKu/WMn1b1Hv9"
+Content-Disposition: inline
+In-Reply-To: <20200527204638.GG1721@zn.tnic>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/5/28 4:56, Jaegeuk Kim wrote:
-> On 05/27, Chao Yu wrote:
->> On 2020/5/26 9:56, Jaegeuk Kim wrote:
->>> On 05/26, Chao Yu wrote:
->>>> On 2020/5/26 9:11, Chao Yu wrote:
->>>>> On 2020/5/25 23:06, Jaegeuk Kim wrote:
->>>>>> On 05/25, Chao Yu wrote:
->>>>>>> On 2020/5/25 11:56, Jaegeuk Kim wrote:
->>>>>>>> Shutdown test is somtimes hung, since it keeps trying to flush dirty node pages
->>
->>     71.07%     0.01%  kworker/u256:1+  [kernel.kallsyms]  [k] wb_writeback
->>             |
->>              --71.06%--wb_writeback
->>                        |
->>                        |--68.96%--__writeback_inodes_wb
->>                        |          |
->>                        |           --68.95%--writeback_sb_inodes
->>                        |                     |
->>                        |                     |--65.08%--__writeback_single_inode
->>                        |                     |          |
->>                        |                     |           --64.35%--do_writepages
->>                        |                     |                     |
->>                        |                     |                     |--59.83%--f2fs_write_node_pages
->>                        |                     |                     |          |
->>                        |                     |                     |           --59.74%--f2fs_sync_node_pages
->>                        |                     |                     |                     |
->>                        |                     |                     |                     |--27.91%--pagevec_lookup_range_tag
->>                        |                     |                     |                     |          |
->>                        |                     |                     |                     |           --27.90%--find_get_pages_range_tag
->>
->> Before umount, kworker will always hold one core, that looks not reasonable,
->> to avoid that, could we just allow node write, since it's out-place-update,
->> and cp is not allowed, we don't need to worry about its effect on data on
->> previous checkpoint, and it can decrease memory footprint cost by node pages.
+
+--PEIAKu/WMn1b1Hv9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, May 27, 2020 at 10:46:38PM +0200, Borislav Petkov wrote:
+> On Tue, May 26, 2020 at 09:21:11PM -0700, Sean Christopherson wrote:
+> > In other words, sgx_alloc_epc_section() is poorly named.  It doesn't
+> > actually allocate EPC, it allocates kernel structures to map and track EPC.
+> > sgx_(un)map_epc_section() would be more accurate and would hopefully
+> > alleviate some of the confusion.
 > 
-> It can cause some roll-forward recovery?
-
-Yup, recovery should be considered,
-
-Later fsync() will fail due to:
-
-int f2fs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
-{
-	if (unlikely(f2fs_cp_error(F2FS_I_SB(file_inode(file)))))
-		return -EIO;
-
-
-And we need to adjust f2fs_fsync_node_pages() to handle in-process fsyncing node
-pages as well:
-
-if (f2fs_cp_error()) {
-	set_fsync_mark(page, 0);
-	set_dentry_mark(page, 0);
-	if (atomic) {
-		unlock & put page;
-		ret = -EIO;
-		break;
-	}
-}
-
-ret = __write_node_page();
-
-Thanks,
-
+> Makes sense.
 > 
->>
->> Thanks,
->>
->>>>>>>
->>>>>>> IMO, for umount case, we should drop dirty reference and dirty pages on meta/data
->>>>>>> pages like we change for node pages to avoid potential dead loop...
->>>>>>
->>>>>> I believe we're doing for them. :P
->>>>>
->>>>> Actually, I mean do we need to drop dirty meta/data pages explicitly as below:
->>>>>
->>>>> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
->>>>> index 3dc3ac6fe143..4c08fd0a680a 100644
->>>>> --- a/fs/f2fs/checkpoint.c
->>>>> +++ b/fs/f2fs/checkpoint.c
->>>>> @@ -299,8 +299,15 @@ static int __f2fs_write_meta_page(struct page *page,
->>>>>
->>>>>  	trace_f2fs_writepage(page, META);
->>>>>
->>>>> -	if (unlikely(f2fs_cp_error(sbi)))
->>>>> +	if (unlikely(f2fs_cp_error(sbi))) {
->>>>> +		if (is_sbi_flag_set(sbi, SBI_IS_CLOSE)) {
->>>>> +			ClearPageUptodate(page);
->>>>> +			dec_page_count(sbi, F2FS_DIRTY_META);
->>>>> +			unlock_page(page);
->>>>> +			return 0;
->>>>> +		}
->>>>>  		goto redirty_out;
->>>>> +	}
->>>>>  	if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
->>>>>  		goto redirty_out;
->>>>>  	if (wbc->for_reclaim && page->index < GET_SUM_BLOCK(sbi, 0))
->>>>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
->>>>> index 48a622b95b76..94b342802513 100644
->>>>> --- a/fs/f2fs/data.c
->>>>> +++ b/fs/f2fs/data.c
->>>>> @@ -2682,6 +2682,12 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
->>>>>
->>>>>  	/* we should bypass data pages to proceed the kworkder jobs */
->>>>>  	if (unlikely(f2fs_cp_error(sbi))) {
->>>>> +		if (is_sbi_flag_set(sbi, SBI_IS_CLOSE)) {
->>>>> +			ClearPageUptodate(page);
->>>>> +			inode_dec_dirty_pages(inode);
->>>>> +			unlock_page(page);
->>>>> +			return 0;
->>>>> +		}
->>>>
->>>> Oh, I notice previously, we will drop non-directory inode's dirty pages directly,
->>>> however, during umount, we'd better drop directory inode's dirty pages as well, right?
->>>
->>> Hmm, I remember I dropped them before. Need to double check.
->>>
->>>>
->>>>>  		mapping_set_error(page->mapping, -EIO);
->>>>>  		/*
->>>>>  		 * don't drop any dirty dentry pages for keeping lastest
->>>>>
->>>>>>
->>>>>>>
->>>>>>> Thanks,
->>>>>>>
->>>>>>>> in an inifinite loop. Let's drop dirty pages at umount in that case.
->>>>>>>>
->>>>>>>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
->>>>>>>> ---
->>>>>>>> v3:
->>>>>>>>  - fix wrong unlock
->>>>>>>>
->>>>>>>> v2:
->>>>>>>>  - fix typos
->>>>>>>>
->>>>>>>>  fs/f2fs/node.c | 9 ++++++++-
->>>>>>>>  1 file changed, 8 insertions(+), 1 deletion(-)
->>>>>>>>
->>>>>>>> diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
->>>>>>>> index e632de10aedab..e0bb0f7e0506e 100644
->>>>>>>> --- a/fs/f2fs/node.c
->>>>>>>> +++ b/fs/f2fs/node.c
->>>>>>>> @@ -1520,8 +1520,15 @@ static int __write_node_page(struct page *page, bool atomic, bool *submitted,
->>>>>>>>  
->>>>>>>>  	trace_f2fs_writepage(page, NODE);
->>>>>>>>  
->>>>>>>> -	if (unlikely(f2fs_cp_error(sbi)))
->>>>>>>> +	if (unlikely(f2fs_cp_error(sbi))) {
->>>>>>>> +		if (is_sbi_flag_set(sbi, SBI_IS_CLOSE)) {
->>>>>>>> +			ClearPageUptodate(page);
->>>>>>>> +			dec_page_count(sbi, F2FS_DIRTY_NODES);
->>>>>>>> +			unlock_page(page);
->>>>>>>> +			return 0;
->>>>>>>> +		}
->>>>>>>>  		goto redirty_out;
->>>>>>>> +	}
->>>>>>>>  
->>>>>>>>  	if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
->>>>>>>>  		goto redirty_out;
->>>>>>>>
->>>>>> .
->>>>>>
->>>>>
->>>>>
->>>>> _______________________________________________
->>>>> Linux-f2fs-devel mailing list
->>>>> Linux-f2fs-devel@lists.sourceforge.net
->>>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
->>>>> .
->>>>>
->>> .
->>>
-> .
+> > I have no objection to renaming __sgx_alloc_try_alloc_page() to something
+> > like sgx_alloc_epc_page_section or whatever, but IMO using get/put will be
+> > horrendously confusing.
 > 
+> Ok. My only issue is that the naming nomenclature sounds strange and
+> confusing as it is. "try" in an "alloc" function is kinda tautological -
+> of course the function will try to do its best. :)
+> 
+> And there are three functions having "alloc" in the name so I can
+> imagine someone getting very confused when having to stare at that code.
+> 
+> So at least naming them in a way so that it is clear what kind of pages
+> they "allocate" - i.e., what they actually do - would be a step in the
+> right direction...
+> 
+> Thx.
+
+I also think sgx_get_epc_page() is also kind of confusing name. The
+reason is that "get" can many things.
+
+I'm not sure I follow fully Sean's reasoning but the way alloc is used
+mostly in Linux is to ask through some API the used kernel memory
+allocator to give memory for some kernel data structures.
+
+Agreed that it is not the best match on what we are doing.
+
+The first common verb that comes to my mind about the action taken is
+grabbing. Attached a patch reflecting this idea that I'm ready to
+squash.
+
+/Jarkko
+
+--PEIAKu/WMn1b1Hv9
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0001-x86-sgx-sgx_alloc_page-to-sgx_grab_page.patch"
+
+From 2598b920fc917790966ba314a2df524ff4695c75 Mon Sep 17 00:00:00 2001
+From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Date: Thu, 28 May 2020 04:21:08 +0300
+Subject: [PATCH] x86/sgx: sgx_alloc_page() to sgx_grab_page()
+
+$ git  grep -l sgx_alloc_page | xargs sed -i 's/sgx_alloc_page/sgx_grab_page/g'
+$ git  grep -l sgx_try_alloc_page | xargs sed -i 's/sgx_try_alloc_page/sgx_try_grab_page/g'
+
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+---
+ arch/x86/kernel/cpu/sgx/encl.c  |  6 +++---
+ arch/x86/kernel/cpu/sgx/ioctl.c |  4 ++--
+ arch/x86/kernel/cpu/sgx/main.c  | 14 +++++++-------
+ arch/x86/kernel/cpu/sgx/sgx.h   |  4 ++--
+ 4 files changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
+index c070aa90b5fe..fab2a8aec410 100644
+--- a/arch/x86/kernel/cpu/sgx/encl.c
++++ b/arch/x86/kernel/cpu/sgx/encl.c
+@@ -67,7 +67,7 @@ static struct sgx_epc_page *sgx_encl_eldu(struct sgx_encl_page *encl_page,
+ 	struct sgx_epc_page *epc_page;
+ 	int ret;
+ 
+-	epc_page = sgx_alloc_page(encl_page, false);
++	epc_page = sgx_grab_page(encl_page, false);
+ 	if (IS_ERR(epc_page))
+ 		return epc_page;
+ 
+@@ -686,7 +686,7 @@ struct sgx_encl_page *sgx_encl_reserve_page(struct sgx_encl *encl,
+ }
+ 
+ /**
+- * sgx_alloc_page - allocate a VA page
++ * sgx_grab_page - allocate a VA page
+  *
+  * Allocates an &sgx_epc_page instance and converts it to a VA page.
+  *
+@@ -699,7 +699,7 @@ struct sgx_epc_page *sgx_alloc_va_page(void)
+ 	struct sgx_epc_page *epc_page;
+ 	int ret;
+ 
+-	epc_page = sgx_alloc_page(NULL, true);
++	epc_page = sgx_grab_page(NULL, true);
+ 	if (IS_ERR(epc_page))
+ 		return ERR_CAST(epc_page);
+ 
+diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
+index 81b6c5d64c96..c880dc40310c 100644
+--- a/arch/x86/kernel/cpu/sgx/ioctl.c
++++ b/arch/x86/kernel/cpu/sgx/ioctl.c
+@@ -183,7 +183,7 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
+ 
+ 	encl->backing = backing;
+ 
+-	secs_epc = sgx_alloc_page(&encl->secs, true);
++	secs_epc = sgx_grab_page(&encl->secs, true);
+ 	if (IS_ERR(secs_epc)) {
+ 		ret = PTR_ERR(secs_epc);
+ 		goto err_out_backing;
+@@ -376,7 +376,7 @@ static int sgx_encl_add_page(struct sgx_encl *encl, unsigned long src,
+ 	if (IS_ERR(encl_page))
+ 		return PTR_ERR(encl_page);
+ 
+-	epc_page = sgx_alloc_page(encl_page, true);
++	epc_page = sgx_grab_page(encl_page, true);
+ 	if (IS_ERR(epc_page)) {
+ 		kfree(encl_page);
+ 		return PTR_ERR(epc_page);
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index 5ce77e554676..b5cd941861bc 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -14,7 +14,7 @@
+ struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
+ int sgx_nr_epc_sections;
+ 
+-static struct sgx_epc_page *__sgx_try_alloc_page(struct sgx_epc_section *section)
++static struct sgx_epc_page *__sgx_try_grab_page(struct sgx_epc_section *section)
+ {
+ 	struct sgx_epc_page *page;
+ 
+@@ -29,7 +29,7 @@ static struct sgx_epc_page *__sgx_try_alloc_page(struct sgx_epc_section *section
+ }
+ 
+ /**
+- * sgx_try_alloc_page() - Allocate an EPC page
++ * sgx_try_grab_page() - Allocate an EPC page
+  *
+  * Try to grab a page from the free EPC page list.
+  *
+@@ -37,7 +37,7 @@ static struct sgx_epc_page *__sgx_try_alloc_page(struct sgx_epc_section *section
+  *   a pointer to a &struct sgx_epc_page instance,
+  *   -errno on error
+  */
+-struct sgx_epc_page *sgx_try_alloc_page(void)
++struct sgx_epc_page *sgx_try_grab_page(void)
+ {
+ 	struct sgx_epc_section *section;
+ 	struct sgx_epc_page *page;
+@@ -46,7 +46,7 @@ struct sgx_epc_page *sgx_try_alloc_page(void)
+ 	for (i = 0; i < sgx_nr_epc_sections; i++) {
+ 		section = &sgx_epc_sections[i];
+ 		spin_lock(&section->lock);
+-		page = __sgx_try_alloc_page(section);
++		page = __sgx_try_grab_page(section);
+ 		spin_unlock(&section->lock);
+ 
+ 		if (page)
+@@ -57,7 +57,7 @@ struct sgx_epc_page *sgx_try_alloc_page(void)
+ }
+ 
+ /**
+- * sgx_alloc_page() - Allocate an EPC page
++ * sgx_grab_page() - Allocate an EPC page
+  * @owner:	the owner of the EPC page
+  * @reclaim:	reclaim pages if necessary
+  *
+@@ -69,12 +69,12 @@ struct sgx_epc_page *sgx_try_alloc_page(void)
+  *   a pointer to a &struct sgx_epc_page instance,
+  *   -errno on error
+  */
+-struct sgx_epc_page *sgx_alloc_page(void *owner, bool reclaim)
++struct sgx_epc_page *sgx_grab_page(void *owner, bool reclaim)
+ {
+ 	struct sgx_epc_page *entry;
+ 
+ 	for ( ; ; ) {
+-		entry = sgx_try_alloc_page();
++		entry = sgx_try_grab_page();
+ 		if (!IS_ERR(entry)) {
+ 			entry->owner = owner;
+ 			break;
+diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
+index 0c481e6f2c95..84198c17e766 100644
+--- a/arch/x86/kernel/cpu/sgx/sgx.h
++++ b/arch/x86/kernel/cpu/sgx/sgx.h
+@@ -101,8 +101,8 @@ void sgx_mark_page_reclaimable(struct sgx_epc_page *page);
+ int sgx_unmark_page_reclaimable(struct sgx_epc_page *page);
+ void sgx_reclaim_pages(void);
+ 
+-struct sgx_epc_page *sgx_try_alloc_page(void);
+-struct sgx_epc_page *sgx_alloc_page(void *owner, bool reclaim);
++struct sgx_epc_page *sgx_try_grab_page(void);
++struct sgx_epc_page *sgx_grab_page(void *owner, bool reclaim);
+ void sgx_free_page(struct sgx_epc_page *page);
+ 
+ #endif /* _X86_SGX_H */
+-- 
+2.25.1
+
+
+--PEIAKu/WMn1b1Hv9--
