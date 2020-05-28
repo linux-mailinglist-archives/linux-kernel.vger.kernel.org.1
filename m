@@ -2,90 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 888FC1E6028
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F651E6032
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388866AbgE1MIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:08:02 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:38101 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389353AbgE1MHz (ORCPT
+        id S2389562AbgE1MI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 08:08:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389674AbgE1MIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 08:07:55 -0400
-Received: by mail-wm1-f65.google.com with SMTP id f185so1772842wmf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 05:07:53 -0700 (PDT)
+        Thu, 28 May 2020 08:08:19 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1DBC05BD1E;
+        Thu, 28 May 2020 05:08:18 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id q8so28261885iow.7;
+        Thu, 28 May 2020 05:08:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0xg0QPxu1ZcXwi3FZlEd1nHSUYYcxk/H+be8VUas4WI=;
+        b=DUTCSEp+0VouInoDHWVK37LO0AztXs67n/B34PE+3fFo0TvjRancJtR1Dmlw3Gj5/F
+         Xm/xLkvkrtguVpxCr1h9I47Xagl+y0ZDzQWz6cd6EIimVdapLCyUBhHkYo9pOhZrJHK3
+         gvckwiYbcKKqSQDiz+Et7z3mkEn4thxs7K1yiIppDEB7sODKNdfVxOwLilCjah2ecbxr
+         9hmm4jFbeGAmonlPZT0dLYOtK2UC4G6k96cIRQgzTFPbBXxikI6ZgRqfzeqlEc/80rkZ
+         X881udcPebn7/dOptUnbCMHEdpZiHmIwM0t0MmehFjfIzH7tdmZIAdXtuZiCndV6WLye
+         d36Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fX1cujbgfbt/VM5a/7eMs0kHkEp+fJc6bInREoz+SAI=;
-        b=SpEc7hFsTY4g2zT7Z8I3MiCr4QQD7Mpbe4nGYDU9O2ojdQJMmTk1jUpu/RHf9NUkI+
-         Ams1rjbxRyHxhL4P1YcYaqezvcL1mmEbYqOZmUzcGU35lTrpUoxdKSg0ZYM5a/4KTKeH
-         YdtJyaICSmo+FuuMMA5Z/1ntoUGLHKbVpGbcZKGExD9f89ZVYr0pxjoWfxgcea86o/Dn
-         1GLgvfLurs1viGUFJ7Xk8fVHKsD5ROncJcp4YiRomkfwC4rbqZ1RVs20Oz1Lz5DMcQJ4
-         oplxMxyyDNW78+vE44t9o5dVgDjmGRjXuyI6fBvr22I3ueUO8QxaAXSPoHhaeboo0m+w
-         IHCA==
-X-Gm-Message-State: AOAM530k47M4mBa1X4qEQ6KEBG+tDnIx1t/mNdpx5HQk8OWHCwrAFRTO
-        +XiawZWsJhW0UrccwQ7lbVE=
-X-Google-Smtp-Source: ABdhPJw2dn25o5ZhsRcMskgXExklPfpC8pBiTQuJ7MSlKTB+XEWW9AxfZMKa8mVSNRnjxPHc3rxpfA==
-X-Received: by 2002:a1c:117:: with SMTP id 23mr3291422wmb.90.1590667673252;
-        Thu, 28 May 2020 05:07:53 -0700 (PDT)
-Received: from localhost (ip-37-188-185-40.eurotel.cz. [37.188.185.40])
-        by smtp.gmail.com with ESMTPSA id 62sm5912776wrm.1.2020.05.28.05.07.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 05:07:52 -0700 (PDT)
-Date:   Thu, 28 May 2020 14:07:50 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     kernel list <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@osdl.org>, airlied@linux.ie,
-        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com
-Subject: Re: next-20200515: Xorg killed due to "OOM"
-Message-ID: <20200528120750.GC27484@dhcp22.suse.cz>
-References: <20200526091054.GA12103@amd>
- <20200528090517.GA27484@dhcp22.suse.cz>
- <20200528120354.GB22054@duo.ucw.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0xg0QPxu1ZcXwi3FZlEd1nHSUYYcxk/H+be8VUas4WI=;
+        b=ahhp18AQrYNveGhwDgPjNtrIrOhSfc3pOLsIAaq5naXpaICYdjR2e9Oc7iV9j92zte
+         it3gNdBiCCUmpHxjD4dCrKqGqhYba1CW8984gT4rH2XHspHkSEBC6JcEta6LTppgMc1h
+         Oiit4pkB9lSBywKCcGwEKOoS2mcafAaiy9rW/VRi8sb7B9EkyN6gR4EFfdzeuoRE+56o
+         smdz6Kgi5U0Y8o5VrJ6s1NRynWxDZlA/FGMcZi2wf75jOg60q9mKVA1onAkLb4mzUV5R
+         f0U0DN0TMduhuKlIp317SQkJKcWkDdcgzUYlNA8Xogh5FbslGtCDu+q0UGBuA1b0RxkF
+         m19A==
+X-Gm-Message-State: AOAM5316yDZgLqsu1XXAG8xKR23pgc6EChnl7AgZS8JnSp0YKIOJNSZu
+        e/GdqPNK+Ke7c7i6YZDK/AZ6ofrS/WLfcvtqsw3utt4A
+X-Google-Smtp-Source: ABdhPJzkKearcqBhw4Pr966FRVJJxc8ygvEkNMHoQhFIKcaLjSP3PyULF5sgdY1/EXULPKhc23v/kMvP/Xui/2T4ing=
+X-Received: by 2002:a5d:8146:: with SMTP id f6mr2001054ioo.154.1590667697930;
+ Thu, 28 May 2020 05:08:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200528120354.GB22054@duo.ucw.cz>
+References: <20200527075715.36849-1-qiang.zhang@windriver.com>
+ <284c7851-4e89-a00f-a2e6-aa8e2e1f3fce@web.de> <DM6PR11MB32573F3884A864ECD586235EFF8E0@DM6PR11MB3257.namprd11.prod.outlook.com>
+ <DM6PR11MB3257D6E7E93A518392502809FF8E0@DM6PR11MB3257.namprd11.prod.outlook.com>
+ <20200528095703.GH30374@kadam>
+In-Reply-To: <20200528095703.GH30374@kadam>
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Thu, 28 May 2020 20:08:06 +0800
+Message-ID: <CAJhGHyD1nV=M=ccycqCMt86GMuZGkO9trbJ=4ti4EzP9kta6iA@mail.gmail.com>
+Subject: =?UTF-8?B?UmU6IOWbnuWkjTogW1BBVENIIHY1XSB3b3JrcXVldWU6IFJlbW92ZSB1bm5lY2Vzc2FyeQ==?=
+        =?UTF-8?B?IGtmcmVlKCkgY2FsbCBpbiByY3VfZnJlZV93cSgp?=
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
+        Markus Elfring <markus.elfring@web.de>,
+        Tejun Heo <tj@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 28-05-20 14:03:54, Pavel Machek wrote:
-> On Thu 2020-05-28 11:05:17, Michal Hocko wrote:
-> > On Tue 26-05-20 11:10:54, Pavel Machek wrote:
-> > [...]
-> > > [38617.276517] oom_reaper: reaped process 31769 (chromium), now anon-rss:0kB, file-rss:0kB, shmem-rss:7968kB
-> > > [38617.277232] Xorg invoked oom-killer: gfp_mask=0x0(), order=0, oom_score_adj=0
-> > > [38617.277247] CPU: 0 PID: 2978 Comm: Xorg Not tainted 5.7.0-rc5-next-20200515+ #117
-> > > [38617.277256] Hardware name: LENOVO 17097HU/17097HU, BIOS 7BETD8WW (2.19 ) 03/31/2011
-> > > [38617.277266] Call Trace:
-> > > [38617.277286]  dump_stack+0x54/0x6e
-> > > [38617.277300]  dump_header+0x45/0x321
-> > > [38617.277313]  oom_kill_process.cold+0x9/0xe
-> > > [38617.277324]  ? out_of_memory+0x167/0x420
-> > > [38617.277336]  out_of_memory+0x1f2/0x420
-> > > [38617.277348]  pagefault_out_of_memory+0x34/0x56
-> > > [38617.277361]  mm_fault_error+0x4a/0x130
-> > > [38617.277372]  do_page_fault+0x3ce/0x416
-> > 
-> > The reason the OOM killer has been invoked is that the page fault
-> > handler has returned VM_FAULT_OOM. So this is not a result of the page
-> > allocator struggling to allocate a memory. It would be interesting to
-> > check which code path has returned this. 
-> 
-> Should the core WARN_ON if that happens and there's enough memory, or
-> something like that?
+On Thu, May 28, 2020 at 5:57 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> Guys, the patch is wrong.  The kfree is harmless when this is called
+> from destroy_workqueue() and required when it's called from
+> pwq_unbound_release_workfn().  Lai Jiangshan already explained this
+> already.  Why are we still discussing this?
+>
 
-I wish it would simply go away. There shouldn't be really any reason for
-VM_FAULT_OOM to exist. The real low on memory situation is already
-handled in the page allocator.
+I'm also confused why they have been debating about the changelog
+after the patch was queued. My statement was about "the patch is
+a correct cleanup, but the changelog is totally misleading".
 
--- 
-Michal Hocko
-SUSE Labs
+destroy_workqueue(percpu_wq) -> rcu_free_wq()
+or
+destroy_workqueue(unbound_wq) -> put_pwq() ->
+pwq_unbound_release_workfn() -> rcu_free_wq()
+
+So the patch is correct to me. Only can destroy_workqueue()
+lead to rcu_free_wq().
+
+Still, the kfree(NULL) is harmless. But it is cleaner
+to have the patch. But the changelog is wrong, even after
+the lengthened debating, and English is not my mother tongue,
+so I just looked on.
