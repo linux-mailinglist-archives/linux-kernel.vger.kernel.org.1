@@ -2,89 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8841E6532
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F921E653B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404067AbgE1PAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 11:00:33 -0400
-Received: from mga18.intel.com ([134.134.136.126]:59623 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403933AbgE1PAW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 11:00:22 -0400
-IronPort-SDR: 9IrUsf65/sxCy5Ek2tAmnuyh/LxlvysYoajdIoZuvU4dfGROnHmXqG7hHCm091PJQyDVyDhNVB
- ZBNtzgD0imSQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 08:00:12 -0700
-IronPort-SDR: IQoaQF4QNlijXhTZVhp1aYk63DUWeazbrKW1+FmpERrzKf06zIFbwvfXh4HNE9QTzKQQ2+hECt
- X+dUJ9l3ULZA==
-X-IronPort-AV: E=Sophos;i="5.73,445,1583222400"; 
-   d="scan'208";a="345927916"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 08:00:11 -0700
-From:   ira.weiny@intel.com
-To:     linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Eric Biggers <ebiggers@kernel.org>
-Cc:     Ira Weiny <ira.weiny@intel.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V5 9/9] Documentation/dax: Update DAX enablement for ext4
-Date:   Thu, 28 May 2020 08:00:03 -0700
-Message-Id: <20200528150003.828793-10-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200528150003.828793-1-ira.weiny@intel.com>
-References: <20200528150003.828793-1-ira.weiny@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S2404103AbgE1PA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 11:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404093AbgE1PAy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 11:00:54 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57FDC08C5C6;
+        Thu, 28 May 2020 08:00:54 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id r16so4232320qvm.6;
+        Thu, 28 May 2020 08:00:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=hOveqjYBk1+7IoXrKWjzzpmC29NQEFV/46uICdldkHU=;
+        b=R6CmW4t3PZoxMLhXXqF21mgPrCitlcN57Qw20bjS4rukcgaIGsUOPADPd2HdiSg7zE
+         7vfVSXbaltKMMXByDjXdsC2aE9Gv3Ine54sSQIj2ME9sI3c5UeyQbb9QBnxQZEqA45IQ
+         DnRyLCe9/Kl/EptavKDVgIT3gVNCU/lFyzdWRAHAqJ1V64rgKepxyYCWP2loOhxoGJWM
+         uQo/+mAmwqGNMQ+EDjEKYvn9EazOkRXwacoqmsbnar36JCZfd0bAuEnC024QcOpHMwun
+         ssnIT9RlnHCqzUBEBZ1VbJmYF4CTrhm4saPaYicEVwHEGbl2YXsKOClODlCTShpqt94G
+         vmXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=hOveqjYBk1+7IoXrKWjzzpmC29NQEFV/46uICdldkHU=;
+        b=NsrxdPfRtiFB5zYDfIlSbFYw9MsdYP2nHn7f7/8rfZl5WC262/ikL+H5X6rnK+97oh
+         n65rswwP1odZao59T2RFikG7+DqiNDfLGoTIQIf0SVGYH5BCcw+SUxW4FZfdFJlBzKM1
+         Znbalt/lOg0BMNT8ITCHpnBlIN8sw1HF9RQhcsoVI6r+qcTZWrLRO3ZoyQ/f3snA3cSD
+         ribML2RekKDVxobCL4iT9/iZldE9jxCZBMZGIeNLFXEbYiOZCBYev+jf/HarysvdypdH
+         tgbrZD1BfKvSC1b9TR1p3aiRtGcu9SzRYPzW5v6Gxqv6x1mt83Oz07mWIGtdXDEydT5w
+         Ewug==
+X-Gm-Message-State: AOAM532SyXu0ox3o9/NrGXEpo99FhNjlBSBjmuV2lU4eCWrf1vUqVAYe
+        T5zvX5uIjcXCG8NjMf984tVpissexY0=
+X-Google-Smtp-Source: ABdhPJzPhG0IW+LCYGZjfDhJfB+0UePFmkjOgyoL1ECG5lrH1SYq47IbzNf/+U6rG7orJiuQfArK4w==
+X-Received: by 2002:a0c:ba22:: with SMTP id w34mr3246638qvf.129.1590678052974;
+        Thu, 28 May 2020 08:00:52 -0700 (PDT)
+Received: from ict14-OptiPlex-980.kataweb.it ([178.23.248.46])
+        by smtp.googlemail.com with ESMTPSA id l188sm4938778qke.127.2020.05.28.08.00.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 08:00:41 -0700 (PDT)
+From:   Jonathan Albrieux <jonathan.albrieux@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        Jonathan Albrieux <jonathan.albrieux@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-iio@vger.kernel.org (open list:IIO SUBSYSTEM AND DRIVERS)
+Subject: [PATCH v7 4/5] iio: magnetometer: ak8975: Fix typo, uniform measurement unit style
+Date:   Thu, 28 May 2020 17:00:17 +0200
+Message-Id: <20200528150018.11953-1-jonathan.albrieux@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+Minor comment style edits.
 
-Update the document to reflect ext4 and xfs now behave the same.
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
+Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
-Changes from RFC:
-	Update with ext2 text...
----
- Documentation/filesystems/dax.txt | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/iio/magnetometer/ak8975.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
-index 735fb4b54117..265c4f808dbf 100644
---- a/Documentation/filesystems/dax.txt
-+++ b/Documentation/filesystems/dax.txt
-@@ -25,7 +25,7 @@ size when creating the filesystem.
- Currently 3 filesystems support DAX: ext2, ext4 and xfs.  Enabling DAX on them
- is different.
- 
--Enabling DAX on ext4 and ext2
-+Enabling DAX on ext2
- -----------------------------
- 
- When mounting the filesystem, use the "-o dax" option on the command line or
-@@ -33,8 +33,8 @@ add 'dax' to the options in /etc/fstab.  This works to enable DAX on all files
- within the filesystem.  It is equivalent to the '-o dax=always' behavior below.
- 
- 
--Enabling DAX on xfs
---------------------
-+Enabling DAX on xfs and ext4
-+----------------------------
- 
- Summary
- -------
+diff --git a/drivers/iio/magnetometer/ak8975.c b/drivers/iio/magnetometer/ak8975.c
+index 3c881541ae72..fd368455cd7b 100644
+--- a/drivers/iio/magnetometer/ak8975.c
++++ b/drivers/iio/magnetometer/ak8975.c
+@@ -385,9 +385,9 @@ static int ak8975_power_on(const struct ak8975_data *data)
+ 		return ret;
+ 	}
+ 	/*
+-	 * According to the datasheet the power supply rise time i 200us
++	 * According to the datasheet the power supply rise time is 200us
+ 	 * and the minimum wait time before mode setting is 100us, in
+-	 * total 300 us. Add some margin and say minimum 500us here.
++	 * total 300us. Add some margin and say minimum 500us here.
+ 	 */
+ 	usleep_range(500, 1000);
+ 	return 0;
 -- 
-2.25.1
+2.17.1
 
