@@ -2,79 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 656CF1E6BAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 21:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 658451E6BAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 21:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406825AbgE1TtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 15:49:24 -0400
-Received: from mga18.intel.com ([134.134.136.126]:16414 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406796AbgE1TtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 15:49:10 -0400
-IronPort-SDR: fbmfp/K5pdOxVUhXE1rW+XZbcSDxBJ3rVNwkP1GpRESjDKzorSCaPH1Pv2Wy2FaUQvelUEA2t1
- B138melZn1MQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 12:49:06 -0700
-IronPort-SDR: 8F9810rEMx6IOPi3omf7m2l5VhxDBULuRDgai1F3PxuNtSGrcFhENKjpRoocZqPScKVtj3DuEJ
- lVfUp+VG43sQ==
-X-IronPort-AV: E=Sophos;i="5.73,446,1583222400"; 
-   d="scan'208";a="469254374"
-Received: from agluck-desk2.sc.intel.com ([10.3.52.68])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 12:49:06 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Tony Luck <tony.luck@intel.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Matthew Garrett <matthew.garrett@nebula.com>,
-        Jeremy Kerr <jk@ozlabs.org>, linux-efi@vger.kernel.org,
+        id S2406842AbgE1Tt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 15:49:57 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:51058 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2406793AbgE1Ttz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 15:49:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590695394;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bGEwxwS7tZTWjiMY8Vu7E2VO0RKA+bB59w6D9Y1acyk=;
+        b=RWr8IXePEfJaW2u/XvhoM3WoMGIbAYoUlMNlMMYTtamR342Xn/WTxelw2vKps5bhuX7OLn
+        VizRqz9HK7IYZH+Uzev8+1EMR6YaWsQyS8L1TNbEBlXsPNc19HU/7gNd5vHd3hXUKJJXwy
+        iVsbc+y43rpICrMsNVEN87s3rtAZzwM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-329-DMIMTC5sN_WX3GnguJDP0Q-1; Thu, 28 May 2020 15:49:51 -0400
+X-MC-Unique: DMIMTC5sN_WX3GnguJDP0Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 164AB107ACCA;
+        Thu, 28 May 2020 19:49:50 +0000 (UTC)
+Received: from localhost (unknown [10.10.110.53])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5DF991992F;
+        Thu, 28 May 2020 19:49:47 +0000 (UTC)
+Date:   Thu, 28 May 2020 12:49:46 -0700 (PDT)
+Message-Id: <20200528.124946.275321353658990898.davem@redhat.com>
+To:     arnd@arndb.de
+Cc:     linux-net-drivers@solarflare.com, ecree@solarflare.com,
+        mhabets@solarflare.com, kuba@kernel.org, amaftei@solarflare.com,
+        tzhao@solarflare.com, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] efivarfs: Don't return -EINTR when rate-limiting reads
-Date:   Thu, 28 May 2020 12:49:05 -0700
-Message-Id: <20200528194905.690-3-tony.luck@intel.com>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200528194905.690-1-tony.luck@intel.com>
-References: <20200528194905.690-1-tony.luck@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] [net-next] sfc: avoid an unused-variable warning
+From:   David Miller <davem@redhat.com>
+In-Reply-To: <20200527134113.827128-1-arnd@arndb.de>
+References: <20200527134113.827128-1-arnd@arndb.de>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applications that read EFI variables may see a return
-value of -EINTR if they exceed the rate limit and a
-signal delivery is attempted while the process is sleeping.
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Wed, 27 May 2020 15:41:06 +0200
 
-This is quite surprising to the application, which probably
-doesn't have code to handle it.
+> 'nic_data' is no longer used outside of the #ifdef block
+> in efx_ef10_set_mac_address:
+> 
+> drivers/net/ethernet/sfc/ef10.c:3231:28: error: unused variable 'nic_data' [-Werror,-Wunused-variable]
+>         struct efx_ef10_nic_data *nic_data = efx->nic_data;
+> 
+> Move the variable into a local scope.
+> 
+> Fixes: dfcabb078847 ("sfc: move vport_id to struct efx_nic")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Change the interruptible sleep to a non-interruptible one.
-
-Reported-by: Lennart Poettering <mzxreary@0pointer.de>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- fs/efivarfs/file.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/fs/efivarfs/file.c b/fs/efivarfs/file.c
-index 4b8bc4560d70..feaa5e182b7b 100644
---- a/fs/efivarfs/file.c
-+++ b/fs/efivarfs/file.c
-@@ -73,10 +73,8 @@ static ssize_t efivarfs_file_read(struct file *file, char __user *userbuf,
- 	ssize_t size = 0;
- 	int err;
- 
--	while (!__ratelimit(&file->f_cred->user->ratelimit)) {
--		if (!msleep_interruptible(50))
--			return -EINTR;
--	}
-+	while (!__ratelimit(&file->f_cred->user->ratelimit))
-+		msleep(50);
- 
- 	err = efivar_entry_size(var, &datasize);
- 
--- 
-2.21.1
+Applid, thanks.
 
