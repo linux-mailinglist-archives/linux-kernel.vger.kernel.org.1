@@ -2,88 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 440671E5CB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 12:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C951E5CB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 12:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387730AbgE1KIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 06:08:10 -0400
-Received: from mga18.intel.com ([134.134.136.126]:46347 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387624AbgE1KII (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 06:08:08 -0400
-IronPort-SDR: yj9bYpMAfDabcsP635o9OgsE5VR0GDN17cCJ6pnzS37FsHWJ9mdJDJwbe49DlbfY9D2MTdNj/m
- Vuu+HJKS8PgA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 03:08:07 -0700
-IronPort-SDR: f0QxIkCXMLpT7uPGwjlQr/w3sy+LgAkB6jAzbE0bp7IxkzPCC4JoUQbaRhXNnXItyFYmyzVX9o
- 8W4eyG73WF9g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,444,1583222400"; 
-   d="scan'208";a="345862249"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001.jf.intel.com with ESMTP; 28 May 2020 03:08:05 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1jeFSK-009PCc-Aq; Thu, 28 May 2020 13:08:08 +0300
-Date:   Thu, 28 May 2020 13:08:08 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Michael Walle <michael@walle.cc>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 2/2] gpio: add a reusable generic gpio_chip using
- regmap
-Message-ID: <20200528100808.GI1634618@smile.fi.intel.com>
-References: <20200525160741.21729-1-michael@walle.cc>
- <20200525160741.21729-3-michael@walle.cc>
- <d245b4f5-065f-4c82-ef8e-d906b363fdcf@linux.intel.com>
- <6d08ebbfbc9f656cb5650ede988cf36d@walle.cc>
- <fe44039a-4fa9-dab3-cd14-04967b729158@linux.intel.com>
- <143ec2f44c881706db9744465328329f@walle.cc>
- <CAHp75Vf7XxNFJMSOr6SzKHm0tssEVKzokaEeZ8nts5xQ2hQLNA@mail.gmail.com>
- <0d4bce3de91df9526ada76f4f2347d25@walle.cc>
+        id S2387732AbgE1KJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 06:09:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387597AbgE1KJI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 06:09:08 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE354C05BD1E;
+        Thu, 28 May 2020 03:09:07 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id m1so7010945pgk.1;
+        Thu, 28 May 2020 03:09:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aNL4rrbHRBiHzlIt6XKjh1SWIm34V5I2S8EBeVbO3Z0=;
+        b=HJSrLMIIanLw1HMAG8ROB7qcD3+KlHBCN411s7WgKjiBPhymzTFUzYA0nnbPwikIwp
+         vHBtvlImlO43CkpGhFeOHp8PNUdxQ2ZOlBMoBB4aUA2jkV3wmyhftHmFCNl6f8MdXuhP
+         ebjEJnB4s+kaz+xnXzTg957gqcJbreoGhMMDb9XnTk8Jtu/m/pMi0dzpxf3hbVHqPhTL
+         kGfpEtzle/b+T8YG4EI/eo/qtdzhsTPBn4/aQUPq14qkdGum+VSYsrIfAHqgPn6Gmp93
+         Io9Rn6NYBDRpIioPam9P4UMsYODyg6C8i7nRsfvJix8T8QgSMzLd/BHlIIE7Jni+5VZL
+         P0Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aNL4rrbHRBiHzlIt6XKjh1SWIm34V5I2S8EBeVbO3Z0=;
+        b=TKWfkodWzOeJzXDv2IEMe1nc1L2TsOydcYGOMseq5pKKn1FGxwP8CuQY4MNijA+esC
+         LDuqAAa3Ki9gqSdAKTYzXaUhfb05CGD1BLvqLnJDVs5flJPCkFkloxi81MheRDoDWDBN
+         2QGiTfz6SBDlvAx4ZrnU0waUReBeKBrbnl4r99ZkKqiJgic1bOygXTPjz0refGGUn6mX
+         t5TvlMqbkefPtz3B98Bu6g1jYzLyCPKjteZ4qrAwGxBH9rm5B0UF0jvd57/P89bL9IWs
+         Qzoa2nZkwcctse7B8xWcxcZR1By2jKlokHY3cxGrzG3Zbgc7KpTxDsgY+0bWGtb9nzEH
+         Q7vg==
+X-Gm-Message-State: AOAM5333+fuTamtxFqsDntAUN5GbtwvY5CDBZJVT+oHM49qAPhpOc7g0
+        F1jTsQZZ4dUfi+St2vCXHDEZmkW9HZM=
+X-Google-Smtp-Source: ABdhPJxX3CR2VS66Sg0ylHR9qDL1Vu5o/xb1qcb1Qnnr+H020EQ88Jx2pMo+Pmm2WfQ4Gux0oDrI7Q==
+X-Received: by 2002:a65:6550:: with SMTP id a16mr2152926pgw.183.1590660547178;
+        Thu, 28 May 2020 03:09:07 -0700 (PDT)
+Received: from ?IPv6:2404:7a87:83e0:f800:295a:ef64:e071:39ab? ([2404:7a87:83e0:f800:295a:ef64:e071:39ab])
+        by smtp.gmail.com with ESMTPSA id j24sm4158533pga.51.2020.05.28.03.09.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 May 2020 03:09:06 -0700 (PDT)
+Subject: Re: [PATCH 4/4] exfat: standardize checksum calculation
+To:     Namjae Jeon <namjae.jeon@samsung.com>
+Cc:     kohada.tetsuhiro@dc.mitsubishielectric.co.jp,
+        mori.takahiro@ab.mitsubishielectric.co.jp,
+        motai.hirotaka@aj.mitsubishielectric.co.jp,
+        'Sungjong Seo' <sj1557.seo@samsung.com>,
+        'Namjae Jeon' <linkinjeon@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200525115052.19243-1-kohada.t2@gmail.com>
+ <CGME20200525115121epcas1p2843be2c4af35d5d7e176c68af95052f8@epcas1p2.samsung.com>
+ <20200525115052.19243-4-kohada.t2@gmail.com>
+ <00d301d6332f$d4a52300$7def6900$@samsung.com>
+ <d0d2e4b3-436e-3bad-770c-21c9cbddf80e@gmail.com>
+ <CAKYAXd9GzYTxjtFuUJe+WjEOHSJnVbOfwn_4ZXZgmiVtjV4z6A@mail.gmail.com>
+ <ccb66f50-b275-4717-f165-98390520077b@gmail.com>
+ <015401d634ad$4628e4c0$d27aae40$@samsung.com>
+From:   Tetsuhiro Kohada <kohada.t2@gmail.com>
+Message-ID: <780793fc-029a-28a6-5970-c21ffc91268b@gmail.com>
+Date:   Thu, 28 May 2020 19:09:04 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0d4bce3de91df9526ada76f4f2347d25@walle.cc>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <015401d634ad$4628e4c0$d27aae40$@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 10:46:56AM +0200, Michael Walle wrote:
-> Am 2020-05-28 10:37, schrieb Andy Shevchenko:
-> > On Thu, May 28, 2020 at 7:11 AM Michael Walle <michael@walle.cc> wrote:
-> > > Am 2020-05-28 02:31, schrieb Pierre-Louis Bossart:
-> > 
-> > 
-> > > I've send a v5 with that fix and your names property.
-> > 
-> > Did you already?
-> 
-> Yes, I forgot to add you :(
-> 
-> > Because I have a question why we have gpio-regmap.h instead of
-> > gpio/regmap.h ?
-> 
-> No particular reason, I thought gpio/ was for low level gpio stuff (like
-> the consumer.h, driver.h etc) or lets say - more integrated stuff.
-> 
-> I don't have a strong opinion. I can send a v6 with that change, on
-> short notice if the maintainers prefer that location.
+>> I'll repost the patch, based on the dir-cache patched dev-tree.
+>> If dir-cache patch will merge into dev-tree, should I wait until then?
+> I will apply them after testing at once if you send updated 5 patches again.
 
-I guess it's quite close to core and belongs to GPIO family of headers, I
-definitely would like to see it there, but let's wait for Linus and Bart to
-speak up.
+I resend patches for boot_sector.
+However, the dir-cache patch hasn't changed, so I haven't reposted it.
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+BR
