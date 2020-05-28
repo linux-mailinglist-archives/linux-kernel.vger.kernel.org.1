@@ -2,127 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0524E1E5EC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B16331E5EE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388616AbgE1Lzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 07:55:51 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:27787 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2388549AbgE1Lzu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 07:55:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590666948;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kMrXL5UTOuAfzZCPWxCDdnj8ZN3SNqipk1q2lcevpUM=;
-        b=fzE8EdJGON1UeeaJ4FgOFOqb79FtYwoqrn91MdR67ysf9DFmH3mXXT4u6/hZBHPexDuWQy
-        i+eTQAOdW/ahUq7jT6LeFD6Q1CddRG7yzrZPM6KcZ9O/bQvT/2yFsNLfHzdyt2KyDzXUyq
-        0d1vMR0u7UPuIZ8RRwmevPR6LorS9FM=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-370-3P1kaEzoN_mK9KqRKbfxfQ-1; Thu, 28 May 2020 07:55:47 -0400
-X-MC-Unique: 3P1kaEzoN_mK9KqRKbfxfQ-1
-Received: by mail-wm1-f71.google.com with SMTP id u15so887053wmm.5
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 04:55:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kMrXL5UTOuAfzZCPWxCDdnj8ZN3SNqipk1q2lcevpUM=;
-        b=j4gjbASIf08JvgRVdxgtrLBAyetUYevHtN9jb45+FW5D+Rj9IXQFKkh60rxqwbS//v
-         bjXQI/ixdj5NHqKsu/UxntiP/arDr52mICcwi38V5pPp/evxLWl8Fu5J2Dq4vUkQWtu0
-         LEoES31MfDqx9UiFBUjpsRwwciifZ1rX9Rf6/Ja7ZKUOu935vLRoMCEcMsD8IgvR2PcW
-         jNUgcL0nsw7CQwzluTU1gEj8MdGnIHmWnHVOjbKasfC6H+smH7Bl42CiqaNF6vTaSC9C
-         O3HfprFrvsr2aoSuxt+NJevb84/W4wE2rmxiNG91WKDM43OqtiQuLSLE9u7tn4Q5jdM3
-         OvDw==
-X-Gm-Message-State: AOAM531BGBxV8mUG++YTLUQXWXlxryl7wkqWB3Nz/JkXjz5BhVw1z0pp
-        OmnqOB/IBxZkbq1EK7fwr+TnARUbMt6MM4N+pMzUm8f75yc1JQOB5uAp5zjCy96s6NqgKmo1Ok9
-        uMkOSsr3PvtwSsQEEoJVggWAA
-X-Received: by 2002:a1c:4d11:: with SMTP id o17mr2983436wmh.37.1590666945765;
-        Thu, 28 May 2020 04:55:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyRaCegJZCXeJg+DyF1D0t/2pQf4m0FYJJ1fMY2jcdAySIKDs/WMA30cgVqg6evvPOvJlfuvA==
-X-Received: by 2002:a1c:4d11:: with SMTP id o17mr2983415wmh.37.1590666945527;
-        Thu, 28 May 2020 04:55:45 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:3c1c:ffba:c624:29b8? ([2001:b07:6468:f312:3c1c:ffba:c624:29b8])
-        by smtp.gmail.com with ESMTPSA id n23sm3423436wmc.21.2020.05.28.04.55.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 May 2020 04:55:45 -0700 (PDT)
-Subject: Re: [PATCH] KVM: selftests: Ignore KVM 5-level paging support for
- VM_MODE_PXXV48_4K
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergio Perez Gonzalez <sergio.perez.gonzalez@intel.com>,
-        Adriana Cervantes Jimenez <adriana.cervantes.jimenez@intel.com>,
-        Peter Xu <peterx@redhat.com>
-References: <20200528021530.28091-1-sean.j.christopherson@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <ed65de29-a07a-f424-937e-38576e740de7@redhat.com>
-Date:   Thu, 28 May 2020 13:55:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S2388949AbgE1L5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 07:57:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48926 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388802AbgE1L4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 07:56:44 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC34421548;
+        Thu, 28 May 2020 11:56:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590667003;
+        bh=spiQCSehLksZ1U1DFOVj36xXX1RJUiJgJUZFd14D1qw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=U03P5kSNppCpXfBP8IABSKxsWzxOtiEHlOhHmS3XbjJL34rizyvQe9P28IyYgYQOt
+         75+LTdOMB/2o3B0EWdDUp7jX+qPRnPoWf17qTMDFsXtoxRTjy1gIEltd8qj31uQ1U1
+         +kjbu72i65INrZcG295MS+UCX5lXsVHf3bgBf+qU=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Eran Ben Elisha <eranbe@mellanox.com>,
+        Moshe Shemesh <moshe@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 38/47] net/mlx5: Fix a race when moving command interface to events mode
+Date:   Thu, 28 May 2020 07:55:51 -0400
+Message-Id: <20200528115600.1405808-38-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200528115600.1405808-1-sashal@kernel.org>
+References: <20200528115600.1405808-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200528021530.28091-1-sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/05/20 04:15, Sean Christopherson wrote:
-> Explicitly set the VA width to 48 bits for the x86_64-only PXXV48_4K VM
-> mode instead of asserting the guest VA width is 48 bits.  The fact that
-> KVM supports 5-level paging is irrelevant unless the selftests opt-in to
-> 5-level paging by setting CR4.LA57 for the guest.  The overzealous
-> assert prevents running the selftests on a kernel with 5-level paging
-> enabled.
-> 
-> Incorporate LA57 into the assert instead of removing the assert entirely
-> as a sanity check of KVM's CPUID output.
-> 
-> Fixes: 567a9f1e9deb ("KVM: selftests: Introduce VM_MODE_PXXV48_4K")
-> Reported-by: Sergio Perez Gonzalez <sergio.perez.gonzalez@intel.com>
-> Cc: Adriana Cervantes Jimenez <adriana.cervantes.jimenez@intel.com>
-> Cc: Peter Xu <peterx@redhat.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> ---
->  tools/testing/selftests/kvm/lib/kvm_util.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> index c9cede5c7d0de..74776ee228f2d 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -195,11 +195,18 @@ struct kvm_vm *_vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm)
->  	case VM_MODE_PXXV48_4K:
->  #ifdef __x86_64__
->  		kvm_get_cpu_address_width(&vm->pa_bits, &vm->va_bits);
-> -		TEST_ASSERT(vm->va_bits == 48, "Linear address width "
-> -			    "(%d bits) not supported", vm->va_bits);
-> +		/*
-> +		 * Ignore KVM support for 5-level paging (vm->va_bits == 57),
-> +		 * it doesn't take effect unless a CR4.LA57 is set, which it
-> +		 * isn't for this VM_MODE.
-> +		 */
-> +		TEST_ASSERT(vm->va_bits == 48 || vm->va_bits == 57,
-> +			    "Linear address width (%d bits) not supported",
-> +			    vm->va_bits);
->  		pr_debug("Guest physical address width detected: %d\n",
->  			 vm->pa_bits);
->  		vm->pgtable_levels = 4;
-> +		vm->va_bits = 48;
->  #else
->  		TEST_FAIL("VM_MODE_PXXV48_4K not supported on non-x86 platforms");
->  #endif
-> 
+From: Eran Ben Elisha <eranbe@mellanox.com>
 
-Queued, thnaks.
+[ Upstream commit d43b7007dbd1195a5b6b83213e49b1516aaf6f5e ]
 
-Paolo
+After driver creates (via FW command) an EQ for commands, the driver will
+be informed on new commands completion by EQE. However, due to a race in
+driver's internal command mode metadata update, some new commands will
+still be miss-handled by driver as if we are in polling mode. Such commands
+can get two non forced completion, leading to already freed command entry
+access.
+
+CREATE_EQ command, that maps EQ to the command queue must be posted to the
+command queue while it is empty and no other command should be posted.
+
+Add SW mechanism that once the CREATE_EQ command is about to be executed,
+all other commands will return error without being sent to the FW. Allow
+sending other commands only after successfully changing the driver's
+internal command mode metadata.
+We can safely return error to all other commands while creating the command
+EQ, as all other commands might be sent from the user/application during
+driver load. Application can rerun them later after driver's load was
+finished.
+
+Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
+Signed-off-by: Eran Ben Elisha <eranbe@mellanox.com>
+Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c | 35 ++++++++++++++++---
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c  |  3 ++
+ include/linux/mlx5/driver.h                   |  6 ++++
+ 3 files changed, 40 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+index d695b75bc0af..2f3cafdc3b1f 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+@@ -848,6 +848,14 @@ static void free_msg(struct mlx5_core_dev *dev, struct mlx5_cmd_msg *msg);
+ static void mlx5_free_cmd_msg(struct mlx5_core_dev *dev,
+ 			      struct mlx5_cmd_msg *msg);
+ 
++static bool opcode_allowed(struct mlx5_cmd *cmd, u16 opcode)
++{
++	if (cmd->allowed_opcode == CMD_ALLOWED_OPCODE_ALL)
++		return true;
++
++	return cmd->allowed_opcode == opcode;
++}
++
+ static void cmd_work_handler(struct work_struct *work)
+ {
+ 	struct mlx5_cmd_work_ent *ent = container_of(work, struct mlx5_cmd_work_ent, work);
+@@ -914,7 +922,8 @@ static void cmd_work_handler(struct work_struct *work)
+ 
+ 	/* Skip sending command to fw if internal error */
+ 	if (pci_channel_offline(dev->pdev) ||
+-	    dev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR) {
++	    dev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR ||
++	    !opcode_allowed(&dev->cmd, ent->op)) {
+ 		u8 status = 0;
+ 		u32 drv_synd;
+ 
+@@ -1405,6 +1414,22 @@ static void create_debugfs_files(struct mlx5_core_dev *dev)
+ 	mlx5_cmdif_debugfs_init(dev);
+ }
+ 
++void mlx5_cmd_allowed_opcode(struct mlx5_core_dev *dev, u16 opcode)
++{
++	struct mlx5_cmd *cmd = &dev->cmd;
++	int i;
++
++	for (i = 0; i < cmd->max_reg_cmds; i++)
++		down(&cmd->sem);
++	down(&cmd->pages_sem);
++
++	cmd->allowed_opcode = opcode;
++
++	up(&cmd->pages_sem);
++	for (i = 0; i < cmd->max_reg_cmds; i++)
++		up(&cmd->sem);
++}
++
+ static void mlx5_cmd_change_mod(struct mlx5_core_dev *dev, int mode)
+ {
+ 	struct mlx5_cmd *cmd = &dev->cmd;
+@@ -1681,12 +1706,13 @@ static int cmd_exec(struct mlx5_core_dev *dev, void *in, int in_size, void *out,
+ 	int err;
+ 	u8 status = 0;
+ 	u32 drv_synd;
++	u16 opcode;
+ 	u8 token;
+ 
++	opcode = MLX5_GET(mbox_in, in, opcode);
+ 	if (pci_channel_offline(dev->pdev) ||
+-	    dev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR) {
+-		u16 opcode = MLX5_GET(mbox_in, in, opcode);
+-
++	    dev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR ||
++	    !opcode_allowed(&dev->cmd, opcode)) {
+ 		err = mlx5_internal_err_ret_value(dev, opcode, &drv_synd, &status);
+ 		MLX5_SET(mbox_out, out, status, status);
+ 		MLX5_SET(mbox_out, out, syndrome, drv_synd);
+@@ -1988,6 +2014,7 @@ int mlx5_cmd_init(struct mlx5_core_dev *dev)
+ 	mlx5_core_dbg(dev, "descriptor at dma 0x%llx\n", (unsigned long long)(cmd->dma));
+ 
+ 	cmd->mode = CMD_MODE_POLLING;
++	cmd->allowed_opcode = CMD_ALLOWED_OPCODE_ALL;
+ 
+ 	create_msg_cache(dev);
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+index cccea3a8eddd..ce6c621af043 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+@@ -611,11 +611,13 @@ static int create_async_eqs(struct mlx5_core_dev *dev)
+ 		.nent = MLX5_NUM_CMD_EQE,
+ 		.mask[0] = 1ull << MLX5_EVENT_TYPE_CMD,
+ 	};
++	mlx5_cmd_allowed_opcode(dev, MLX5_CMD_OP_CREATE_EQ);
+ 	err = setup_async_eq(dev, &table->cmd_eq, &param, "cmd");
+ 	if (err)
+ 		goto err1;
+ 
+ 	mlx5_cmd_use_events(dev);
++	mlx5_cmd_allowed_opcode(dev, CMD_ALLOWED_OPCODE_ALL);
+ 
+ 	param = (struct mlx5_eq_param) {
+ 		.irq_index = 0,
+@@ -645,6 +647,7 @@ err2:
+ 	mlx5_cmd_use_polling(dev);
+ 	cleanup_async_eq(dev, &table->cmd_eq, "cmd");
+ err1:
++	mlx5_cmd_allowed_opcode(dev, CMD_ALLOWED_OPCODE_ALL);
+ 	mlx5_eq_notifier_unregister(dev, &table->cq_err_nb);
+ 	return err;
+ }
+diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
+index b596353a3a12..6050264ebde1 100644
+--- a/include/linux/mlx5/driver.h
++++ b/include/linux/mlx5/driver.h
+@@ -301,6 +301,7 @@ struct mlx5_cmd {
+ 	struct semaphore sem;
+ 	struct semaphore pages_sem;
+ 	int	mode;
++	u16     allowed_opcode;
+ 	struct mlx5_cmd_work_ent *ent_arr[MLX5_MAX_COMMANDS];
+ 	struct dma_pool *pool;
+ 	struct mlx5_cmd_debug dbg;
+@@ -893,10 +894,15 @@ mlx5_frag_buf_get_idx_last_contig_stride(struct mlx5_frag_buf_ctrl *fbc, u32 ix)
+ 	return min_t(u32, last_frag_stride_idx - fbc->strides_offset, fbc->sz_m1);
+ }
+ 
++enum {
++	CMD_ALLOWED_OPCODE_ALL,
++};
++
+ int mlx5_cmd_init(struct mlx5_core_dev *dev);
+ void mlx5_cmd_cleanup(struct mlx5_core_dev *dev);
+ void mlx5_cmd_use_events(struct mlx5_core_dev *dev);
+ void mlx5_cmd_use_polling(struct mlx5_core_dev *dev);
++void mlx5_cmd_allowed_opcode(struct mlx5_core_dev *dev, u16 opcode);
+ 
+ struct mlx5_async_ctx {
+ 	struct mlx5_core_dev *dev;
+-- 
+2.25.1
 
