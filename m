@@ -2,103 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E18331E6671
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B071E6697
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 17:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404573AbgE1PmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 11:42:04 -0400
-Received: from mail-eopbgr80049.outbound.protection.outlook.com ([40.107.8.49]:26086
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2404445AbgE1PmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 11:42:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NGQLYTpfb59OWxk0RND3ci5x1F+lB5AnGguhh3tMvTMq/akwMwgvfEBwCoBKDG9Po8N5u/0sTHJ8h5uub4ybp16eQcc3FvskAhKNLFNvq+FHnr5MmiY3ptWvFE0b9sVupYmFFVxkejkJMbWkRLuNftJRIdTkO04g7ZMvKrCdX90cdCnmoFm8kmLch1ddm0NHAzXfSTsc8XN75Xsb8It/oDCwXaJu574eyjGAidm4bkA81AzeTPEY5vljDqVj7HbSaKJEezYd3ZEwyrm216e481jm73/nHI/AsR4wT1N92nqiValoHdcpkEyewOEsmjuHGEQFc7J/3I9yEEcrWJP9hg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uaNt60oByRSxZWIhbZsqCAjydNRv4pjGU7evR7F2PAw=;
- b=P1wfjkAm+32kO4JXT2+W1oavPXSklZRrOxDv5nbzpiBiUsoZy7kFz32/mByQ7i3e9+gaCu/eMSiw1dK65YRZEevHSBkDXUOCV8lflSYSHzRlohKQTtHVA84TeaeitYUCd6NWqYfdjimySTF/fWBQdkVASqgPRZ/cmWgtKmsHWQtQnDhxFzip5y6Y+aPqWDVyuaSmp2cFJVdeDrePonWO/6eA3JiwE43+HvOLcZXgi8neH4fUBC7iwpBEF3mkn6a7QYEjDCp+rKpOb7kL6fyMzZ2jRGSDuboCns3o8oPQHpqkNxxYv3XR6TwT+ZvKgSv3FAJst2NQ2F/JIyWF0/Kc4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uaNt60oByRSxZWIhbZsqCAjydNRv4pjGU7evR7F2PAw=;
- b=YaxKCe17yL09X3kqmo+3eHKs5WYXbyOqkE7qTVMIPRoZ7eyCN+L30LMY6mvIk7ebO41aYJbYNxw2voBgEGWbPODEhS+e+hnY32uTKc49IfteQB07exhIec9ADJUmlnv/WE5WlxhiYoYpMkF6MB+6av15AUA6ZJFaI2WL/M9tM50=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
- by VI1PR04MB5917.eurprd04.prod.outlook.com (2603:10a6:803:ec::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.27; Thu, 28 May
- 2020 15:41:57 +0000
-Received: from VI1PR04MB4046.eurprd04.prod.outlook.com
- ([fe80::4cf0:3c9c:ed2:aacd]) by VI1PR04MB4046.eurprd04.prod.outlook.com
- ([fe80::4cf0:3c9c:ed2:aacd%4]) with mapi id 15.20.3021.029; Thu, 28 May 2020
- 15:41:57 +0000
-Subject: Re: [PATCH] crypto: caam/qi2 - add support for dpseci_reset()
-To:     "Andrei Botila (OSS)" <andrei.botila@oss.nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200528110450.11279-1-andrei.botila@oss.nxp.com>
-From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
-Message-ID: <7474713b-93b1-6f8b-600b-08d473ca92c4@nxp.com>
-Date:   Thu, 28 May 2020 18:41:55 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-In-Reply-To: <20200528110450.11279-1-andrei.botila@oss.nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM4PR07CA0003.eurprd07.prod.outlook.com
- (2603:10a6:205:1::16) To VI1PR04MB4046.eurprd04.prod.outlook.com
- (2603:10a6:803:4d::29)
+        id S2404652AbgE1PqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 11:46:10 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:47054 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404511AbgE1PqB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 11:46:01 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jeKjH-0003Zc-Mm; Thu, 28 May 2020 09:45:59 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jeKjF-0006q8-Rr; Thu, 28 May 2020 09:45:59 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     <linux-kernel@vger.kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Rob Landley <rob@landley.net>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        <linux-fsdevel@vger.kernel.org>, Al Viro <viro@ZenIV.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        linux-security-module@vger.kernel.org,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andy Lutomirski <luto@amacapital.net>
+References: <87h7wujhmz.fsf@x220.int.ebiederm.org>
+        <87sgga6ze4.fsf@x220.int.ebiederm.org>
+        <87v9l4zyla.fsf_-_@x220.int.ebiederm.org>
+        <877dx822er.fsf_-_@x220.int.ebiederm.org>
+        <87k10wysqz.fsf_-_@x220.int.ebiederm.org>
+Date:   Thu, 28 May 2020 10:42:06 -0500
+In-Reply-To: <87k10wysqz.fsf_-_@x220.int.ebiederm.org> (Eric W. Biederman's
+        message of "Thu, 28 May 2020 10:38:28 -0500")
+Message-ID: <878shcyskx.fsf_-_@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.129] (84.117.251.185) by AM4PR07CA0003.eurprd07.prod.outlook.com (2603:10a6:205:1::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.7 via Frontend Transport; Thu, 28 May 2020 15:41:56 +0000
-X-Originating-IP: [84.117.251.185]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 78b835ed-c830-4988-668b-08d8031da792
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5917:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB59175E782F73202BD1B56B7C988E0@VI1PR04MB5917.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
-X-Forefront-PRVS: 0417A3FFD2
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: S92/nENXv06zwKk6XHQ4pYiT8t6dEWS5EsKISTWzte0uwpoL2b0Q6KQ0sx3IlnJ9K9b1IhBb61SfO9BOKl07CisOBRqB63KxZGjm6fWgptklQ9vevEe9D2bjRgvyqRahkWQ1AdbQ2iWKBdedYnsJkgfWt+d5HMIfF+UkE3bgAtUdKKnHy9B75WUDWszE9b2xyQ/04oZFJbJpDMI2ZIoXzTudFoO2rG0sM9kPkY7FNPo60zbigA2XVSn+++zG5JzdfELGYaOEhpqWdbtqMF2EQFUnvWaNwS0EcWNGtcOYQbAFYLeMbCka/4J/q6uH6T/0aQ75U9fiKsbsjfAj2YL2hsQkfXEZskbCBCyITII3qqrqk3NY75oQVZoxa4i12C0t
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(366004)(376002)(136003)(346002)(39860400002)(66946007)(4744005)(4326008)(5660300002)(83380400001)(2906002)(110136005)(16576012)(316002)(2616005)(86362001)(478600001)(66556008)(66476007)(54906003)(956004)(8676002)(36756003)(26005)(8936002)(6486002)(53546011)(31686004)(31696002)(52116002)(186003)(16526019)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 0XsrGfxYGGNhcWUh6QWu82V215qt+ZLVaANPeFIKuVb02C+KlxiHaZfLGT1nPvPgqY+fVmK+lL4K//NDoCQawe6E8VUBenl9fg2yGO2HEFmsGTR70P/fgRj4O0lwexlYl0FTiIkFDJo1nEIqkEO1KGhrB3OwC2BsMMnvaVCm2i6kkOboo8Il1ASjV7kcO+tZOK46gC9Xzr4iSvUgmfP2iCi7FAbbgPTO5z8HMeuIQFbZU6GwhaWZvZOTVBwHEL4MetCtvf/2c/jjCn1hicsM/mUCO9UOhJLIo3At52SJkjEVuVhBhck8nzOIVHp0nD8E4vhpLWGC45K3pzd2lkslzIw7amvXxk4gWyqU7wQqmnKACiV61hbe+ednBH0DyX5ee3DMPfdyFeMZNToJvzGYxWkEb0cA843nu1UA7SP6BGs3phANYWHvPtmOs5Z3z03FkiATKrRrVhxyab0qBIjovNvUR6wqufg0xCynUQZa5TjdMD5fjUY4CqovFjHrojy+
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 78b835ed-c830-4988-668b-08d8031da792
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2020 15:41:57.5128
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oX8zyhLGqwp69uAPgtf6MwDK2g9OQng8P1lkUjmPmGV+68TqctUgPHoaNnXNbDe7X7kZ0pbaqXeMnpTWEVuozg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5917
+Content-Type: text/plain
+X-XM-SPF: eid=1jeKjF-0006q8-Rr;;;mid=<878shcyskx.fsf_-_@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+Bo5/YnCMJYnYnBAcEfoRXNYXUapdUns8=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,NO_DNS_FOR_FROM,T_TooManySym_01,XMNoVowels,
+        XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.7 XMSubLong Long Subject
+        *  0.0 NO_DNS_FOR_FROM DNS: Envelope sender has no MX or A DNS records
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa01 0; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: ; sa01 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;<linux-kernel@vger.kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1354 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 4.0 (0.3%), b_tie_ro: 2.7 (0.2%), parse: 1.78
+        (0.1%), extract_message_metadata: 15 (1.1%), get_uri_detail_list: 3.8
+        (0.3%), tests_pri_-1000: 4.3 (0.3%), tests_pri_-950: 1.49 (0.1%),
+        tests_pri_-900: 1.17 (0.1%), tests_pri_-90: 103 (7.6%), check_bayes:
+        101 (7.5%), b_tokenize: 14 (1.0%), b_tok_get_all: 9 (0.7%),
+        b_comp_prob: 2.3 (0.2%), b_tok_touch_all: 72 (5.3%), b_finish: 0.74
+        (0.1%), tests_pri_0: 1212 (89.5%), check_dkim_signature: 0.40 (0.0%),
+        check_dkim_adsp: 862 (63.7%), poll_dns_idle: 858 (63.3%),
+        tests_pri_10: 1.74 (0.1%), tests_pri_500: 5 (0.4%), rewrite_mail: 0.00
+        (0.0%)
+Subject: [PATCH 02/11] exec: Introduce active_per_clear the per file version of per_clear
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/28/2020 2:05 PM, Andrei Botila (OSS) wrote:
-> @@ -4698,6 +4698,9 @@ static void dpaa2_dpseci_free(struct dpaa2_caam_priv *priv)
->  	struct device *dev = priv->dev;
->  	struct fsl_mc_device *ls_dev = to_fsl_mc_device(dev);
->  
-> +	if (DPSECI_VER(priv->major_ver, priv->minor_ver) > DPSECI_VER(5, 3))
-> +		dpseci_reset(priv->mc_io, 0, ls_dev->mc_handle);
-Even though dpseci_close() should be called in all cases,
-a warning when reset fails would be useful.
 
-> +
->  	dpaa2_dpseci_congestion_free(priv);
->  	dpseci_close(priv->mc_io, 0, ls_dev->mc_handle);
->  }
+When the credentials have been recomputed per file the per_clear
+status has not been recomputed.  Update the per file calcuations to
+recompute per_clear on a per file basis in a separate variable and to
+combine that variable into the final per_clear value.
+
+This makes which personality bits are clear not depend on the
+permissions of shell scripts with interpreters, but instead only on
+the final bprm->file that bprm_fill_uid and
+security_bprm_repopulate_creds are called upon.
+
+History Tree: git://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
+Fixes: 1bb0fa189c6a ("[PATCH] NX: clean up legacy binary support")
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ fs/exec.c                 | 7 ++++---
+ include/linux/binfmts.h   | 3 +++
+ include/linux/lsm_hooks.h | 2 +-
+ security/commoncap.c      | 2 +-
+ 4 files changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/fs/exec.c b/fs/exec.c
+index 51fab62b9fca..221d12dcaa3e 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1354,7 +1354,7 @@ int begin_new_exec(struct linux_binprm * bprm)
+ 	me->flags &= ~(PF_RANDOMIZE | PF_FORKNOEXEC | PF_KTHREAD |
+ 					PF_NOFREEZE | PF_NO_SETAFFINITY);
+ 	flush_thread();
+-	if (bprm->per_clear)
++	if (bprm->per_clear || bprm->active_per_clear)
+ 		me->personality &= ~PER_CLEAR_ON_SETID;
+ 
+ 	/*
+@@ -1629,12 +1629,12 @@ static void bprm_fill_uid(struct linux_binprm *bprm)
+ 		return;
+ 
+ 	if (mode & S_ISUID) {
+-		bprm->per_clear = 1;
++		bprm->active_per_clear = 1;
+ 		bprm->cred->euid = uid;
+ 	}
+ 
+ 	if ((mode & (S_ISGID | S_IXGRP)) == (S_ISGID | S_IXGRP)) {
+-		bprm->per_clear = 1;
++		bprm->active_per_clear = 1;
+ 		bprm->cred->egid = gid;
+ 	}
+ }
+@@ -1655,6 +1655,7 @@ static int prepare_binprm(struct linux_binprm *bprm)
+ 
+ 		/* Recompute parts of bprm->cred based on bprm->file */
+ 		bprm->active_secureexec = 0;
++		bprm->active_per_clear = 0;
+ 		bprm_fill_uid(bprm);
+ 		retval = security_bprm_repopulate_creds(bprm);
+ 		if (retval)
+diff --git a/include/linux/binfmts.h b/include/linux/binfmts.h
+index e7959a6a895a..89231a689957 100644
+--- a/include/linux/binfmts.h
++++ b/include/linux/binfmts.h
+@@ -26,6 +26,9 @@ struct linux_binprm {
+ 	unsigned long p; /* current top of mem */
+ 	unsigned long argmin; /* rlimit marker for copy_strings() */
+ 	unsigned int
++		/* Does bprm->file warrant clearing personality bits? */
++		active_per_clear:1,
++
+ 		/* Should unsafe personality bits be cleared? */
+ 		per_clear:1,
+ 
+diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+index 0ca68ad53592..62e60e55cb99 100644
+--- a/include/linux/lsm_hooks.h
++++ b/include/linux/lsm_hooks.h
+@@ -57,7 +57,7 @@
+  *	transitions between security domains).
+  *	The hook must set @bprm->active_secureexec to 1 if AT_SECURE should be set to
+  *	request libc enable secure mode.
+- *	The hook must set @bprm->per_clear to 1 if the dangerous personality
++ *	The hook must set @bprm->active_per_clear to 1 if the dangerous personality
+  *	bits must be cleared from current->personality.
+  *	@bprm contains the linux_binprm structure.
+  *	Return 0 if the hook is successful and permission is granted.
+diff --git a/security/commoncap.c b/security/commoncap.c
+index 48b556046483..0b72d7bf23e1 100644
+--- a/security/commoncap.c
++++ b/security/commoncap.c
+@@ -826,7 +826,7 @@ int cap_bprm_repopulate_creds(struct linux_binprm *bprm)
+ 
+ 	/* if we have fs caps, clear dangerous personality flags */
+ 	if (__cap_gained(permitted, new, old))
+-		bprm->per_clear = 1;
++		bprm->active_per_clear = 1;
+ 
+ 	/* Don't let someone trace a set[ug]id/setpcap binary with the revised
+ 	 * credentials unless they have the appropriate permit.
+-- 
+2.25.0
+
