@@ -2,112 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC1C1E5EBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 765011E5EC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 13:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388564AbgE1Lyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 07:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388480AbgE1Lyb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 07:54:31 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A703C05BD1E
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 04:54:30 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jeH77-0003bQ-PA; Thu, 28 May 2020 13:54:21 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jeH74-00031C-8Z; Thu, 28 May 2020 13:54:18 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        "John W. Linville" <linville@tuxdriver.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        David Jander <david@protonic.nl>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
-        Marek Vasut <marex@denx.de>,
-        Christian Herber <christian.herber@nxp.com>,
-        Amit Cohen <amitc@mellanox.com>,
-        Petr Machata <petrm@mellanox.com>
-Subject: [PATCH v2 3/3] netlink: add LINKSTATE SQI support
-Date:   Thu, 28 May 2020 13:54:14 +0200
-Message-Id: <20200528115414.11516-4-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200528115414.11516-1-o.rempel@pengutronix.de>
-References: <20200528115414.11516-1-o.rempel@pengutronix.de>
+        id S2388626AbgE1L4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 07:56:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388532AbgE1L4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 07:56:03 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F8822074B;
+        Thu, 28 May 2020 11:56:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590666962;
+        bh=6lfb7wQDy8XOEZ/WYA0tSYBztD39KIGmFvRx0mhnJ4I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Un11iNc8BIRTa2BM2RYESzieHWAxGnY96wdWqVg1xr1le/ExaFA8HluM6TEZ8Ln6w
+         gyAKqZV4GNjCKC0IC79JoFIe1BFuTv+mCDrbM7RUChvHZAhz4ufNNusJSdMuKg9fNk
+         eIsLfkecp1SGpjh8XSnlMAAntuoPoWgdtCGhS7RQ=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+        Paul Greco <pmgreco@us.ibm.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-snps-arc@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.6 01/47] ARC: Fix ICCM & DCCM runtime size checks
+Date:   Thu, 28 May 2020 07:55:14 -0400
+Message-Id: <20200528115600.1405808-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some PHYs provide Signal Quality Index (SQI) if the link is in active
-state. This information can help to diagnose cable and system design
-related issues.
+From: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+[ Upstream commit 43900edf67d7ef3ac8909854d75b8a1fba2d570c ]
+
+As of today the ICCM and DCCM size checks are incorrectly using
+mismatched units (KiB checked against bytes). The CONFIG_ARC_DCCM_SZ
+and CONFIG_ARC_ICCM_SZ are in KiB, but the size calculated in
+runtime and stored in cpu->dccm.sz and cpu->iccm.sz is in bytes.
+
+Fix that.
+
+Reported-by: Paul Greco <pmgreco@us.ibm.com>
+Signed-off-by: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- netlink/desc-ethtool.c |  2 ++
- netlink/settings.c     | 16 ++++++++++++++++
- 2 files changed, 18 insertions(+)
+ arch/arc/kernel/setup.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/netlink/desc-ethtool.c b/netlink/desc-ethtool.c
-index b0a793c..8f4c36b 100644
---- a/netlink/desc-ethtool.c
-+++ b/netlink/desc-ethtool.c
-@@ -93,6 +93,8 @@ static const struct pretty_nla_desc __linkstate_desc[] = {
- 	NLATTR_DESC_INVALID(ETHTOOL_A_LINKSTATE_UNSPEC),
- 	NLATTR_DESC_NESTED(ETHTOOL_A_LINKSTATE_HEADER, header),
- 	NLATTR_DESC_BOOL(ETHTOOL_A_LINKSTATE_LINK),
-+	NLATTR_DESC_U32(ETHTOOL_A_LINKSTATE_SQI),
-+	NLATTR_DESC_U32(ETHTOOL_A_LINKSTATE_SQI_MAX),
- };
+diff --git a/arch/arc/kernel/setup.c b/arch/arc/kernel/setup.c
+index aa41af6ef4ac..efdedf83b954 100644
+--- a/arch/arc/kernel/setup.c
++++ b/arch/arc/kernel/setup.c
+@@ -11,6 +11,7 @@
+ #include <linux/clocksource.h>
+ #include <linux/console.h>
+ #include <linux/module.h>
++#include <linux/sizes.h>
+ #include <linux/cpu.h>
+ #include <linux/of_clk.h>
+ #include <linux/of_fdt.h>
+@@ -409,12 +410,12 @@ static void arc_chk_core_config(void)
+ 	if ((unsigned int)__arc_dccm_base != cpu->dccm.base_addr)
+ 		panic("Linux built with incorrect DCCM Base address\n");
  
- static const struct pretty_nla_desc __debug_desc[] = {
-diff --git a/netlink/settings.c b/netlink/settings.c
-index 851de15..cd4b9a7 100644
---- a/netlink/settings.c
-+++ b/netlink/settings.c
-@@ -638,6 +638,22 @@ int linkstate_reply_cb(const struct nlmsghdr *nlhdr, void *data)
- 		printf("\tLink detected: %s\n", val ? "yes" : "no");
- 	}
+-	if (CONFIG_ARC_DCCM_SZ != cpu->dccm.sz)
++	if (CONFIG_ARC_DCCM_SZ * SZ_1K != cpu->dccm.sz)
+ 		panic("Linux built with incorrect DCCM Size\n");
+ #endif
  
-+	if (tb[ETHTOOL_A_LINKSTATE_SQI]) {
-+		uint32_t val = mnl_attr_get_u32(tb[ETHTOOL_A_LINKSTATE_SQI]);
-+
-+		print_banner(nlctx);
-+		printf("\tSQI: %u", val);
-+
-+		if (tb[ETHTOOL_A_LINKSTATE_SQI_MAX]) {
-+			uint32_t max;
-+
-+			max = mnl_attr_get_u32(tb[ETHTOOL_A_LINKSTATE_SQI_MAX]);
-+			printf("/%u\n", max);
-+		} else {
-+			printf("\n");
-+		}
-+	}
-+
- 	return MNL_CB_OK;
- }
+ #ifdef CONFIG_ARC_HAS_ICCM
+-	if (CONFIG_ARC_ICCM_SZ != cpu->iccm.sz)
++	if (CONFIG_ARC_ICCM_SZ * SZ_1K != cpu->iccm.sz)
+ 		panic("Linux built with incorrect ICCM Size\n");
+ #endif
  
 -- 
-2.26.2
+2.25.1
 
