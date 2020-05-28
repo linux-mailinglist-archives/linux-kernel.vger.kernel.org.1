@@ -2,138 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E931E6998
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 20:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE031E699E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 20:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405925AbgE1Slk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 14:41:40 -0400
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:38383 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405873AbgE1Slj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 14:41:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1590691298; x=1622227298;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=DJNy/U6JZQBTLNlcaasLEMF3o/nqkAzJOUQEQBZLZ/k=;
-  b=b/NA67tV3qpOkG1F8WJ+uF1bN4OoJ5tUE4mDMpjHedcX/wAYiHu0A5me
-   sS5TG4f15fajX1EBhh3cYcbritLYzabHcwU+zhmx9JAd7NnFSS8Xb5m+s
-   SrdtJrs4HBimrpODCc52JCOjT/BzM6UeDEK/xEoe1/nY13QAXBgQFUuIS
-   XgvStZe0VoLMEjguzy+qyw+rqupMMCO7fnbmvCTifMLD1j5578HIe4O7N
-   D7/ZqwOuGsejiPmlAELcVgCt5QGyZO6kXvwRfUXJUIb8Zb62ni8HRrHGb
-   Gq38vWp/HKZRBfaoVYYE2iEplBWM0h5fpaTCGozA5vEBimRqc3Z1N88I6
-   A==;
-IronPort-SDR: LZTKUfnsSoZqEh8fLx8Ayv4VvU6Wvu5vMXnTXXVPEZnQy7o2Trn1KBjCuzvYLhcY8Ruq5uEeGF
- EOHjzCvsVU+o+yRGav+GYSoimgLT2rMBG9WCg9WVrlFSswUl/rqUJ8OV6rAnmBmQhtl618JMd2
- CakuJSczc49vCaqvUAzFvMTH3BC5gto8N/IDFFv7n6Ri8NXntTcG028aNo7GFeJ0F9c4trGcPV
- G1ZXL0edk5w11qhXzO9PhHuov/qCTFXZu++qb7qxhOoKHtwuKdDq4xCPs/eHeBaHx7YQAfsqLT
- rFI=
-X-IronPort-AV: E=Sophos;i="5.73,445,1583218800"; 
-   d="scan'208";a="74798972"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 May 2020 11:41:37 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 28 May 2020 11:41:37 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 28 May 2020 11:41:36 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NFBgfX6w/OqIQ0eO0NDcMdNTW/B3CoOKYUCIyKaNsHqS83rr2g6xtPcBL9Z3BxLzI7DBwOxVODbv3zC6YaisZOl5DZBYGOX6+rlRhb7Mvyze0mvoVZwD+H5Egy17qFWXeF9MjmhOczpok5BPzlrYFpWXNJZvUWnF/MkZOVIvNgEz3XrTU+bcyjDHTP997h4J7OMnMSsxhXu+VdmRqaDQW/5DF/pAqFetNd2b4dONQX3KvkiktwkAQ2cTUvDD3Iwp8fU+xSSLlcIuzWECNK4qopfZWKdaL63PdCuINCzJ/YYHr/1kQuTE9Q5iR6NACBAfmrsgU26bBIWvnggXq2mFAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gnMraFO11CWmJMKesD4z3qcQtm/Ev8BM0olQa9kzbws=;
- b=VPwoor397b7sNOuwmTehsyD8+EtvcpymXLZJN+occ3Y4ZCWSI4Xift76w88LvDR7pF4QG8s5QAfTuLq4ZbVFPgCHEq406HQ63gs+AzQB/aDuZY5SNRb2TIMk/wgVrU2sS1MMzK5YwgeIh671PncTR2nMm2bvI/sYeBlXmIJFD7i+vgsRkziT1MQ5HunmYNXt/ajHdc4BApJcEDcRmFUZwHg4eycI7rEIjtJGNdE7gov3oQVYyAPiNUCRZ/BSkrkfNscu71Jy54aF2EJZSLw4y/vWBrmKaVMWULj3yto8VQWVQpEke30nYc6T2fBpCt/RU4RnZkBgPWxM8RDOLYuzsw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gnMraFO11CWmJMKesD4z3qcQtm/Ev8BM0olQa9kzbws=;
- b=IyXanwmidHgbwufYj4OzKF4nxPgjS2rm43yaDNIXzvu9bYRRAdS9DGfrrqU0gtlz2lHGDFCudio/4+trHUuNplc1tOlAX/AWFc3CcO56/NOK6shB/+Bi1R1oy1i66ToFQzm0gI3PU6JIqnzmwlg1HwdyJ/MYeMBa8kwYSeQTMqA=
-Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
- by BY5PR11MB4085.namprd11.prod.outlook.com (2603:10b6:a03:18d::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19; Thu, 28 May
- 2020 18:41:35 +0000
-Received: from BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.3045.018; Thu, 28 May 2020
- 18:41:35 +0000
-From:   <Tudor.Ambarus@microchip.com>
-To:     <vigneshr@ti.com>
-CC:     <broonie@kernel.org>, <bbrezillon@kernel.org>,
-        <vadivel.muruganx.ramuthevar@linux.intel.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <simon.k.r.goldschmidt@gmail.com>,
-        <dinguyen@kernel.org>, <marex@denx.de>
-Subject: Re: [PATCH v2 2/6] mtd: spi-nor: cadence-quadspi: Provide a way to
- disable DAC mode
-Thread-Topic: [PATCH v2 2/6] mtd: spi-nor: cadence-quadspi: Provide a way to
- disable DAC mode
-Thread-Index: AQHWM0FZdMrQfpcZVUCj9p3WoPBZUqi92LYA
-Date:   Thu, 28 May 2020 18:41:35 +0000
-Message-ID: <2690575.R1takI9ffF@192.168.0.120>
-References: <20200526093604.11846-1-vigneshr@ti.com>
- <20200526093604.11846-3-vigneshr@ti.com>
-In-Reply-To: <20200526093604.11846-3-vigneshr@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [94.177.32.156]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 72ea0703-6349-44d3-7181-08d80336bff4
-x-ms-traffictypediagnostic: BY5PR11MB4085:
-x-microsoft-antispam-prvs: <BY5PR11MB408562ADB4D68EA5CF59D7CDF08E0@BY5PR11MB4085.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-forefront-prvs: 0417A3FFD2
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AqHxYGDaJd24vpiiJaAJdUU+hcdv+6aP7mp5d3a/bUqsnZSh+kM7bL0AYY9CjFLZeMNrZQnvqmlhOnkpyst/ROFn+JwAi1soG0htu+b6Ch9Rf/XwCaxfDWVNDtY/Xfsfxws0/4R49US23quobZjxTfbHQKVSYxg+QrUX0sVpjsWrl7retX/o2rOsLoqLtHut10itlqPFeWEth4pTvBx6NDxWlwA12dAGRNoqLtAP373tT5tTbWLQtm3xY+Ft+h4sZNud9ZfOMAmHGqqZlhbgCOJ+lV9gCrHinp6ay3eEdFST04JfcKcdwlzday9y5fhC8utQGnm1ALJG6za3j1vepPoTAcEp4z/DX+noUTH8Kmw4IZZn56IuUVaVUZqFT3zPEFZ6rhz3YU/02Rj03PkfEw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4419.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(396003)(376002)(39860400002)(346002)(136003)(316002)(66446008)(64756008)(66556008)(66476007)(2906002)(186003)(4326008)(86362001)(4744005)(8936002)(8676002)(6506007)(6916009)(53546011)(76116006)(91956017)(6486002)(66946007)(5660300002)(9686003)(14286002)(54906003)(83380400001)(6512007)(7416002)(71200400001)(478600001)(26005)(39026012)(43043002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 6qW/yydW2lhYyOaF7z9vE56Wfw55c4biR0Cc0DhkTTl3xX8z4VA9R+INjW6N3ti/PMg2b5395+r8EG3ugx0cHTK8WdeLuSjW0cVhqoKczHNd79Ac1mTmkiSeVFY604TWMtLLo7wDf21T8IWDPp+lKwfj52/et03lPUI5y9xcu1/kjqETPkCxmvGz2wDuM1r+fNHGO5XCSTi118/88w3yt5V1RqmznV98FpX3CuWXBHNOdFZRErSdXqaKZ+6i2+YNfHtLPrcQNRHr9AwRq2JoQgtMBE3m8w5KxoxhX7zE4NAiDMUVYhkNAZNxRuuS/4y348t5qoh4KfB+tC67Ivth6EEJrdlH/kajbhqDJl6PeYBwC4niH/b1joB9b1TJvJm8L1E9oOb5hq8hIH8IBAJO4W2rVnjblN4eozdab/Nrs5evXUMvw3UGh2aOhBGG3bQ7G/gVuuAfYNvtkCJqN3Z0MLd3m/ONORiDbSUh3ON5qoA=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <47753298B8923749A91118FADD2111CE@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S2391481AbgE1Smv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 14:42:51 -0400
+Received: from mout.web.de ([212.227.15.4]:48951 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387957AbgE1Smt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 14:42:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1590691348;
+        bh=Dr1CBHpOrxp9SApbNucgC7CtWN+YIJh7k98R9//crL8=;
+        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
+        b=UmLRuMXl/UVkcegw6c+XKzm7ruTt2CiFLGqDLDRTtLDI03zCV/id/zm5iZ72Sq6HV
+         qkEMuE9Cj02l4g2MA4yu89HUciBJCz3BtoZJNfJb2HgQHrIlko53/pQ0yv7KHJuiXN
+         j2iKfN5WeD9RpTZatt/fSTaqK0agl2JxX3rs9P5k=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.3] ([2.244.30.242]) by smtp.web.de (mrweb003
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0LyDqv-1itbxW3adB-015ZaI; Thu, 28
+ May 2020 20:42:27 +0200
+To:     Huazhong Tan <tanhuazhong@huawei.com>, netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linuxarm@huawei.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: Re: [PATCH 02/12] net: hns3: Destroy a mutex after initialisation
+ failure in hclge_init_ad_dev()
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <913bb77c-6190-9ce7-a46d-906998866073@web.de>
+Date:   Thu, 28 May 2020 20:42:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 72ea0703-6349-44d3-7181-08d80336bff4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 May 2020 18:41:35.4901
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qL4LOsX0QbJOVz6EbLx24FbaQHvOkpcVKLKdLCtoiQcoFMDdlWqIscvYOdfseR1yzZ643ffwhbzCmhaadqdlY2D0xO99c57pevYfaXL9HKc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4085
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:MC2UOQX5quZ0ULRGHkD3BQqj7OPFeRxXfjYllgb02PBDBasp3tf
+ VbfYkNJkZi/iSElIDNL9B79PqlrdJCPruGgux7ljGWy/NySslXOvyrTe7wnnE9zu4QeXCrv
+ Lg7Uh5IH5MNEOsRTHS5PDjNEldlEEHcOwwHzLF2ZH1cp8BTPe1kb7QWx8QfFpj7AzksYFl1
+ NfO3Vrwiy1bWWN1l2KEKw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UIp4rW8w4Vo=:Iz71a/Guef6gMAmnUWIGwc
+ 8vHl5C3MtqqlbVCcSuZ04GxuUfK1Uc1OrqP8R8tpGZeFHj7gn/h1UNeT8tWeREbRJvsdRa6wz
+ 9rrN45Fuu+E8gzDpaPO31e9bhg3rxuPuooiLjbsKgZEKahn2NwF7xSeOBjlHnQpU/Zen9MfBL
+ eVyy+ZstWQlvOIeN41jvqjjGbp8v6xuPDqQUkzY4oRMlsS5By01vs5pl9jUSm9xQsk8z23q3m
+ ZdzRFudOzm0Iqew1MjrY3AqjQ5v6eOH3BsdmMC+af3UN+BCwoCx2Ne44Hwkm2Vxx23v99f/IC
+ jWevpVeIQBTe0jveRbNSpGya05YUxEbTY9DgEd3dd5e0ZSaB+HnQfdhAHu2HaGIEn4SS5znmJ
+ zINMlIj2+0QRHyK4LL66QpaDouAPLk/6cwgN23+gO4n0UkhiAe0sTYMkALNh4B96Wjq22M3Mp
+ hF7Rgu5aJDzOdAC4trZ9tK2Y0QRpfVRYf+T+gyfMnMxoCpdT9xRNPnFwzBcfr6M4bT18y7pQW
+ mrz/7qf1mWrXc82G8vKgPb+9oppTLGN5JQXzCN7v+gmz9hRcAX8r58V1zHasPNhTKvABD4SqD
+ dpE51bbh3UmsjSXpmG3iiQqWwvCUNv6KbZWPHeZeLujnizRzdKMJadYaCASc6fehQ4g1RMSPi
+ BPfoWeaBGnNqMn2F+eZZ5BNX809NuU9RCEannjCndk5QU/OWwhuB1TiHJTMUydi8WrY8HNJaS
+ fvRb40eeZEd5M5RgUXYf3dP2VT1PzGMq5HA3Go6LBDTS3lGa4un2v4mJTbjhYf/sCwKJ9LM5l
+ D4KkFyq+Y5S957gVh3MidDLAxDWUe7p7HjPYHsogqx/pQQeK+H26Zf4j6ZMQSlzmoXmB9DAek
+ 6BbsFG3tZJzWISMBlZQ7qch1hKmn46JdUoG7+QkAmYAq7dZEx9hbN0R4gj0bSQoWdhNwrvhXb
+ TBRswmxvXp1JIz4RDJbPpOXVao6ApN1ngwU52pkT2sHHRmBPr93Ebt00yp8A5de1o7Cpqub3F
+ DytBOWHnqx6xDmkAUSfELdDY94Y57aOA7iBX3SMYDSWVHwxyrYDbcQ9oxFkwqscmB+UO2Q3tQ
+ GoC1tSamzIFsQLBL8O1/M3NnFwxOKIfA6yizSSP7x8FWHo1T/dG+M1bdhWes2OSR3nkPnieMT
+ FDk8nIwMeP7CF5ZEOjQ8C8twPKopsdCmwWvna8Iamf3B625po2iqNKIJd15s+HDUotqA/G3xu
+ 7aOt2YIiZ7pSrpPdi
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, May 26, 2020 12:36:00 PM EEST Vignesh Raghavendra wrote:
-> Currently direct access mode is used on platforms that have AHB window
-> (memory mapped window) larger than flash size. This feature is limited
-> to TI platforms as non TI platforms have < 1MB of AHB window.
-> Therefore introduce a driver quirk to disable DAC mode and set it for
-> non TI compatibles. This is in preparation to move to spi-mem framework
-> where flash geometry cannot be known.
->=20
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> ---
->  drivers/mtd/spi-nor/controllers/cadence-quadspi.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+> Add a mutex destroy call in hclge_init_ae_dev() when fails.
 
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+How do you think about a wording variant like the following?
 
+   Change description:
+   The function =E2=80=9Cmutex_init=E2=80=9D was called before a call of
+   the function =E2=80=9Chclge_pci_init=E2=80=9D.
+   But the function =E2=80=9Cmutex_destroy=E2=80=9D was not called after i=
+nitialisation
+   steps failed.
+   Thus add the missed function call for the completion of
+   the exception handling.
+
+
+Would you like to add the tag =E2=80=9CFixes=E2=80=9D to the commit messag=
+e?
+
+
+=E2=80=A6
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+> @@ -10108,6 +10108,7 @@ static int hclge_init_ae_dev(struct hnae3_ae_dev=
+ *ae_dev)
+>  	pci_release_regions(pdev);
+>  	pci_disable_device(pdev);
+>  out:
+> +	mutex_destroy(&hdev->vport_lock);
+>  	return ret;
+>  }
+
+How do you think about to use the label =E2=80=9Cdestroy_mutex=E2=80=9D in=
+stead?
+
+Regards,
+Markus
