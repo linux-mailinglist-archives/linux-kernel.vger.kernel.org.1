@@ -2,191 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6781B1E6236
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 15:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9821E623D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 15:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390400AbgE1N2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 09:28:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37978 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390378AbgE1N1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 09:27:51 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8932B207D3;
-        Thu, 28 May 2020 13:27:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590672470;
-        bh=9QJwwGWsp8hwAWmIKUl9/OFqCBaZim9J8JpR/AXprbU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uTM2FjUyRRLXViwazNlf69EuLlh0GaBcN5pCJdEliuyA6tHT/hPv8qeAF7VPvWCBH
-         9Z9BNZ/iwmFT0DCPltiDOfeXP3PN5rIGokFbsaraO3LIunBZCHVAt8fwamepsJtbJx
-         wONwi7hlpuA/BBSfIT0RU+2iwOqmU9STe4K1v+FQ=
-Date:   Thu, 28 May 2020 14:27:46 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] regulator: Add support for sync_state() callbacks
-Message-ID: <20200528132746.GB3606@sirena.org.uk>
-References: <20200527074057.246606-1-saravanak@google.com>
- <20200527111750.GB5308@sirena.org.uk>
- <CAGETcx_Hr75W7VJT-2CnS=VVCW+B4ktv=4vdVQoxkhP4TAPF6Q@mail.gmail.com>
- <20200527203453.GJ5308@sirena.org.uk>
- <CAGETcx_2W4YG+KcoDpRMRDUJ=o9GC-f=e0GSPyx=_ZpnDrFkxQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="neYutvxvOLaeuPCA"
-Content-Disposition: inline
-In-Reply-To: <CAGETcx_2W4YG+KcoDpRMRDUJ=o9GC-f=e0GSPyx=_ZpnDrFkxQ@mail.gmail.com>
-X-Cookie: Small is beautiful.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S2390415AbgE1N3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 09:29:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390413AbgE1N25 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 09:28:57 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F761C08C5C7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 06:28:56 -0700 (PDT)
+Received: from ramsan ([IPv6:2a02:1810:ac12:ed60:21:946d:6344:ccc1])
+        by michel.telenet-ops.be with bizsmtp
+        id kDUu2200G55ue4H06DUu0H; Thu, 28 May 2020 15:28:55 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jeIac-000869-NQ; Thu, 28 May 2020 15:28:54 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jeIac-0000T6-LX; Thu, 28 May 2020 15:28:54 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Chris Brandt <chris.brandt@renesas.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] dt-bindings: irqchip: renesas-rza1-irqc: Convert to json-schema
+Date:   Thu, 28 May 2020 15:28:53 +0200
+Message-Id: <20200528132853.1751-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Convert the Renesas RZ/A1 Interrupt Controller Device Tree binding
+documentation to json-schema.
 
---neYutvxvOLaeuPCA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+Validation depends on "[PATCH dt-schema] Fix interrupt controllers with
+interrupt-map".
+http://lore.kernel.org/r/20200528132323.30288-1-geert+renesas@glider.be
+---
+ .../renesas,rza1-irqc.txt                     | 43 ----------
+ .../renesas,rza1-irqc.yaml                    | 80 +++++++++++++++++++
+ 2 files changed, 80 insertions(+), 43 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/renesas,rza1-irqc.txt
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/renesas,rza1-irqc.yaml
 
-On Wed, May 27, 2020 at 07:16:26PM -0700, Saravana Kannan wrote:
-> On Wed, May 27, 2020 at 1:34 PM Mark Brown <broonie@kernel.org> wrote:
-> > On Wed, May 27, 2020 at 10:17:21AM -0700, Saravana Kannan wrote:
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/renesas,rza1-irqc.txt b/Documentation/devicetree/bindings/interrupt-controller/renesas,rza1-irqc.txt
+deleted file mode 100644
+index 727b7e4cd6e01110..0000000000000000
+--- a/Documentation/devicetree/bindings/interrupt-controller/renesas,rza1-irqc.txt
++++ /dev/null
+@@ -1,43 +0,0 @@
+-DT bindings for the Renesas RZ/A1 Interrupt Controller
+-
+-The RZ/A1 Interrupt Controller is a front-end for the GIC found on Renesas
+-RZ/A1 and RZ/A2 SoCs:
+-  - IRQ sense select for 8 external interrupts, 1:1-mapped to 8 GIC SPI
+-    interrupts,
+-  - NMI edge select.
+-
+-Required properties:
+-  - compatible: Must be "renesas,<soctype>-irqc", and "renesas,rza1-irqc" as
+-		fallback.
+-		Examples with soctypes are:
+-		  - "renesas,r7s72100-irqc" (RZ/A1H)
+-		  - "renesas,r7s9210-irqc" (RZ/A2M)
+-  - #interrupt-cells: Must be 2 (an interrupt index and flags, as defined
+-				 in interrupts.txt in this directory)
+-  - #address-cells: Must be zero
+-  - interrupt-controller: Marks the device as an interrupt controller
+-  - reg: Base address and length of the memory resource used by the interrupt
+-         controller
+-  - interrupt-map: Specifies the mapping from external interrupts to GIC
+-		   interrupts
+-  - interrupt-map-mask: Must be <7 0>
+-
+-Example:
+-
+-	irqc: interrupt-controller@fcfef800 {
+-		compatible = "renesas,r7s72100-irqc", "renesas,rza1-irqc";
+-		#interrupt-cells = <2>;
+-		#address-cells = <0>;
+-		interrupt-controller;
+-		reg = <0xfcfef800 0x6>;
+-		interrupt-map =
+-			<0 0 &gic GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>,
+-			<1 0 &gic GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>,
+-			<2 0 &gic GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>,
+-			<3 0 &gic GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
+-			<4 0 &gic GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
+-			<5 0 &gic GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
+-			<6 0 &gic GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
+-			<7 0 &gic GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
+-		interrupt-map-mask = <7 0>;
+-	};
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/renesas,rza1-irqc.yaml b/Documentation/devicetree/bindings/interrupt-controller/renesas,rza1-irqc.yaml
+new file mode 100644
+index 0000000000000000..755cdfabfcd06c85
+--- /dev/null
++++ b/Documentation/devicetree/bindings/interrupt-controller/renesas,rza1-irqc.yaml
+@@ -0,0 +1,80 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/interrupt-controller/renesas,rza1-irqc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Renesas RZ/A1 Interrupt Controller
++
++maintainers:
++  - Chris Brandt <chris.brandt@renesas.com>
++  - Geert Uytterhoeven <geert+renesas@glider.be>
++
++description: |
++  The RZ/A1 Interrupt Controller is a front-end for the GIC found on Renesas RZ/A1 and
++  RZ/A2 SoCs:
++    - IRQ sense select for 8 external interrupts, 1:1-mapped to 8 GIC SPI interrupts,
++    - NMI edge select.
++
++allOf:
++  - $ref: /schemas/interrupt-controller.yaml#
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - renesas,r7s72100-irqc # RZ/A1H
++          - renesas,r7s9210-irqc  # RZ/A2M
++      - const: renesas,rza1-irqc
++
++  '#interrupt-cells':
++    const: 2
++
++  '#address-cells':
++    const: 0
++
++  interrupt-controller: true
++
++  reg:
++    maxItems: 1
++
++  interrupt-map:
++    maxItems: 8
++    description: Specifies the mapping from external interrupts to GIC interrupts.
++
++  interrupt-map-mask:
++    items:
++      - const: 7
++      - const: 0
++
++required:
++  - compatible
++  - '#interrupt-cells'
++  - '#address-cells'
++  - interrupt-controller
++  - reg
++  - interrupt-map
++  - interrupt-map-mask
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    irqc: interrupt-controller@fcfef800 {
++            compatible = "renesas,r7s72100-irqc", "renesas,rza1-irqc";
++            #interrupt-cells = <2>;
++            #address-cells = <0>;
++            interrupt-controller;
++            reg = <0xfcfef800 0x6>;
++            interrupt-map =
++                    <0 0 &gic GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>,
++                    <1 0 &gic GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>,
++                    <2 0 &gic GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>,
++                    <3 0 &gic GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
++                    <4 0 &gic GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
++                    <5 0 &gic GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
++                    <6 0 &gic GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
++                    <7 0 &gic GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
++            interrupt-map-mask = <7 0>;
++    };
+-- 
+2.17.1
 
-> > > If fw_devlink is off or not supported by the firmware (Eg: ACPI), the
-
-> > No, it doesn't help at all with figuring out if consumers will ever
-> > instantiate...
-
-> It doesn't help with knowing IF all the consumers will instantiate,
-> but it does help put an upper bound on when it's okay to release the
-> "boot on" regulators/resources.
-
-It's helping with a lower bound, not an upper bound, and it's the upper
-bound that's the problem.
-
-> > ...due to this issue.  The DT describes the hardware, not the software
-> > that will run on it.  Making the timeout configurable is fine.
-
-> Right, but knowing the hardware descriptions allows us to put an upper
-> bound on how long we'll have to wait. And for cases where we don't
-> want to listen to hardware description for whatever reason, we can
-> have the timeout option to be backwards compatible.
-
-On larger server systems boot can take a surprisingly long time, and
-it's possible that someone might do something like put modules on
-encrypted storage and need the user to authenticate before they can
-load.  There were concerns that the existing 30 second timeout is not
-long enough, though the systems where there's fragilities are mainly
-laptops which boot much more quickly.  I'm also worrying that there may
-be cases where our current behaviour is helping the system run,
-especially in warm boot situations where the hardware may not have been
-entirely reset.  Such systems are a bit fragile obviously but so's your
-proposal.
-
-You can't assume server type hardware runs ACPI, there are some very big
-semi-embedded systems for applications like telephony switches or larger
-medical devices that look like a server with a bunch of specialist
-hardware bolted on the side.
-
-> The idea is to keep the settings at a minimum of what the boot loader
-> left the "boot on" regulators at. For voltage, we can just do this for
-> regulators that support "get_voltage" and it's fairly trivial to do
-> with sync_supply. For "load" there is no "get_load" because it kinda
-> doesn't make sense (most regulator can't measure the load?), but maybe
-> we can add something like get_max_load() (current max load it can
-> support) and then set that as the minimum load the regulator needs to
-> support.
-
-If you're trying to bodge this by adding an extra consumer that won't
-work since the current requirements from consumers are additive.
-
-> > We do gradual API updates when there are actual changes required in
-> > drivers.  This change requires *zero* changes to drivers, there is
-> > absolutely nothing driver specific or relevant about it.  Nothing about
-> > the driver tells you if the flag should be set or not (it's a callback
-> > in the code but since there's only one possible implementation it's
-> > really a flag) so there's no purpose in having a flag in the driver in
-> > the first place.
-
-> Well, for a device that registers with multiple frameworks, they might
-> implement their own sync_state() that then calls into the helpers
-> provided by multiple frameworks. Or they might want to do additional
-> clean up over what regulator_sync_state() does, etc. So it makes sense
-> for the callback to go to the driver and it's not just a flag. But in
-> the context of this patch, I get what you are saying and I agree.
-
-A device that's in multiple frameworks is probably a MFD, especially the
-regulator portion.
-
-> Both of those threads are from a long time back. And one of them was
-> from me :) Things have changed a lot since then -- device links,
-> sync_state(), fw_devlinks, wanting this to work for modules, etc. And
-> what they are proposing is very different from what I'm suggesting
-> here. And some of the older arguments against this aren't valid
-> either. I'm happy to shoot them down if they are brought up here.
-
-The requirement for modules has always been there, that's what causes
-problems for most of the things people propose.  Like I said above I
-don't think fwlink helps for the cases that cause problems, it can only
-confirm that nothing will ever load without an overlay, it can't tell us
-if anything is actually going to appear.
-
-> > but in general these things are init ordering
-> > issues, if some device (typically the display stuff) is going to cause
-> > user visible glitches during init then things will work best if the
-> > system tries to ensure that that device gets started as early as
-> > possible.
-
-> There's no way to order/guarantee device probe ordering. The closest
-> we can get to that is initcall ordering or module load ordering. But
-> that has a couple of problems:
-
-This is overly pessimistic, we can do a lot better than we currently do
-especially when things are built as modules.
-
-> - Can't handle cases where the same driver probes two different
-> devices with different ordering requirements.
-> - Falls apart when a driver defers probe of a device.
-> - Doesn't work with async probing
-
-> Initcall can only order driver registration, which isn't really very
-> useful for what we need here.
-
-These really only apply to trying to do things with initcall ordering,
-and even there there's room for improvement - if we were going to try to
-do things in some sort of dependency directed order we could just defer
-actually binding anything until much later on in init, there's no *need*
-to do immediate binds.  Similarly for async probing, the dependency
-information could be used there.  With module loading userspace gets to
-pick what order it does things in, especially with the initial coldplug
-step, so it should be easier still to look at what's a priority and what
-the dependencies are and optimize the ordering.
-
-> Anyway, I'll rework my patch to do the timeout and/or do this for all
-> drivers and we'll take it from there?
-
-Sure.
-
---neYutvxvOLaeuPCA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7PvFEACgkQJNaLcl1U
-h9AkAQf+MaD6RtbCbGcXh59s/oqGm2KHuvGILW4LZqUdWoVNw1JY85sR/skzXJOU
-sVI6PB4Rr3A62w4Pc6xB2wSi0BoIe8XgfUacGZifgvR3qLMrKB03ObT0Vw5phfCw
-Q7iHStM3v4zFbpzuHPrMKtGok0c0IFjx9LRA+2aZaUdGBFsE5jEx2v/1kEfEogzA
-MWRTBjgOL7nNjvKDjwMyGjmeUdavCVZpAeUKkb28NsezgEu5fyjZxksFMgrS7Vyn
-qMFHuoF4UUgPt72dNDOIRNEOLA/Hz6Ka+XjeCvonB6VFmEQ77//WUuroIxoFE5lp
-OM0yJPh1wUuiII8QfgHApQTFE8wI1A==
-=3bHd
------END PGP SIGNATURE-----
-
---neYutvxvOLaeuPCA--
