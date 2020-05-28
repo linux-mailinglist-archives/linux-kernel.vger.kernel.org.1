@@ -2,128 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329DE1E7082
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 01:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8DB01E7073
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 01:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437653AbgE1Xku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 19:40:50 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:40680 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437593AbgE1Xkq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 19:40:46 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04SNYfv7090690;
-        Thu, 28 May 2020 18:34:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1590708881;
-        bh=rl7/xrN4dyHCY0P9+fejZ1982cTwA0TKyTv5w1Z40oA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=iM2RRmz4/3X5f176xVtTiWBycEJKu+Heq2CbqG5eR0d6bNtQ+WIcMlVIcRDeC7/yl
-         35/hMLFEeKXzzrrGHFsSXLXcDKemIdhgbvq3BOXdLZaqGnQ00zNDwv6BX4CpjpgCF5
-         83y1ahAhQxC/Rc2zgX/gORZFZ62zBbjxsBlm71GI=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04SNYfPu022920
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 28 May 2020 18:34:41 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 28
- May 2020 18:34:40 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 28 May 2020 18:34:40 -0500
-Received: from [10.250.38.163] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04SNYdoL029206;
-        Thu, 28 May 2020 18:34:40 -0500
-Subject: Re: [PATCH v12 1/4] power_supply: Add additional health properties to
- the header
-To:     Ricardo Rivera-Matos <r-rivera-matos@ti.com>, <sre@kernel.org>,
-        <pali@kernel.org>, <robh@kernel.org>
-CC:     <dmurphy@ti.com>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <sspatil@android.com>, Guru Das Srinagesh <gurus@codeaurora.org>
-References: <20200528225350.661-1-r-rivera-matos@ti.com>
- <20200528225350.661-2-r-rivera-matos@ti.com>
-From:   "Andrew F. Davis" <afd@ti.com>
-Message-ID: <5be7933c-dc85-d526-a321-1cc0ce127ddc@ti.com>
-Date:   Thu, 28 May 2020 19:34:39 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2437585AbgE1XiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 19:38:25 -0400
+Received: from muru.com ([72.249.23.125]:56102 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437447AbgE1XiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 19:38:24 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 857E780BF;
+        Thu, 28 May 2020 23:39:12 +0000 (UTC)
+Date:   Thu, 28 May 2020 16:38:18 -0700
+From:   Tony Lindgren <tony@atomide.com>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, Jiri Slaby <jslaby@suse.cz>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Peter Hurley <peter@hurleysoftware.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
+Subject: Re: [PATCH 5/6] gnss: motmdm: Add support for Motorola Mapphone
+ MDM6600 modem
+Message-ID: <20200528233818.GR37466@atomide.com>
+References: <20200512214713.40501-1-tony@atomide.com>
+ <20200512214713.40501-6-tony@atomide.com>
+ <20200528130653.GG10358@localhost>
 MIME-Version: 1.0
-In-Reply-To: <20200528225350.661-2-r-rivera-matos@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200528130653.GG10358@localhost>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/28/20 6:53 PM, Ricardo Rivera-Matos wrote:
-> From: Dan Murphy <dmurphy@ti.com>
-> 
-> Add HEALTH_WARM, HEALTH_COOL and HEALTH_HOT to the health enum.
-> 
-> HEALTH_WARM, HEALTH_COOL, and HEALTH_HOT properties are taken
-> from JEITA specification JISC8712:2015
-> 
-> Tested-by: Guru Das Srinagesh <gurus@codeaurora.org>
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+Hi,
 
-
-You should collect the acks and such you have received in previous
-versions here, like mine from v11:
-
-Acked-by: Andrew F. Davis <afd@ti.com>
-
-
-> ---
->  Documentation/ABI/testing/sysfs-class-power | 2 +-
->  drivers/power/supply/power_supply_sysfs.c   | 2 +-
->  include/linux/power_supply.h                | 3 +++
->  3 files changed, 5 insertions(+), 2 deletions(-)
+* Johan Hovold <johan@kernel.org> [200528 13:07]:
+> On Tue, May 12, 2020 at 02:47:12PM -0700, Tony Lindgren wrote:
+> > +/*
+> > + * Motorola MDM GNSS device communicates over a dedicated TS 27.010 channel
+> > + * using custom data packets. The packets look like AT commands embedded into
+> > + * a Motorola invented packet using format like "U1234AT+MPDSTART=0,1,100,0".
+> > + * But it's not an AT compatible serial interface, it's a packet interface
+> > + * using AT like commands.
+> > + */
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-class-power b/Documentation/ABI/testing/sysfs-class-power
-> index bf3b48f022dc..9f3fd01a9373 100644
-> --- a/Documentation/ABI/testing/sysfs-class-power
-> +++ b/Documentation/ABI/testing/sysfs-class-power
-> @@ -190,7 +190,7 @@ Description:
->  		Valid values: "Unknown", "Good", "Overheat", "Dead",
->  			      "Over voltage", "Unspecified failure", "Cold",
->  			      "Watchdog timer expire", "Safety timer expire",
-> -			      "Over current"
-> +			      "Over current", "Warm", "Cool", "Hot"
->  
->  What:		/sys/class/power_supply/<supply_name>/precharge_current
->  Date:		June 2017
-> diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/supply/power_supply_sysfs.c
-> index f37ad4eae60b..d0d549611794 100644
-> --- a/drivers/power/supply/power_supply_sysfs.c
-> +++ b/drivers/power/supply/power_supply_sysfs.c
-> @@ -61,7 +61,7 @@ static const char * const power_supply_charge_type_text[] = {
->  static const char * const power_supply_health_text[] = {
->  	"Unknown", "Good", "Overheat", "Dead", "Over voltage",
->  	"Unspecified failure", "Cold", "Watchdog timer expire",
-> -	"Safety timer expire", "Over current"
-> +	"Safety timer expire", "Over current", "Warm", "Cool", "Hot"
->  };
->  
->  static const char * const power_supply_technology_text[] = {
-> diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
-> index dcd5a71e6c67..8670e90c1d51 100644
-> --- a/include/linux/power_supply.h
-> +++ b/include/linux/power_supply.h
-> @@ -61,6 +61,9 @@ enum {
->  	POWER_SUPPLY_HEALTH_WATCHDOG_TIMER_EXPIRE,
->  	POWER_SUPPLY_HEALTH_SAFETY_TIMER_EXPIRE,
->  	POWER_SUPPLY_HEALTH_OVERCURRENT,
-> +	POWER_SUPPLY_HEALTH_WARM,
-> +	POWER_SUPPLY_HEALTH_COOL,
-> +	POWER_SUPPLY_HEALTH_HOT,
->  };
->  
->  enum {
-> 
+> So this shouldn't depend on TS 27.010 and instead be a generic gnss
+> serial driver. 
+
+Hmm not sure if it makes sense to try to represent packet data as
+a virtual serial port :) But sure let's at least investigate it.
+
+> What does the interface look like over the corresponding USB port?
+> AT-commands without the U1234 prefix?
+
+I don't know if it's using the same commands as the ttyUSB* GNSS device
+seems disabled. From what I understand, gobi2000 has just $gps_start and
+$gps_stop commands for the ttyUSB* GNSS device. Those don't exist
+here. Also the command style seems to follow the modem firmware for
+various other devices on the modem.
+
+> No module parameters please. Either pick a good default or we need to
+> come up with a generic (sysfs) interface for polled drivers like this
+> one.
+
+OK yeah this could be a generic sysfs option.
+
+> How does your "aggressive pm" gsmmux implementation work with the gps if
+> there are no other clients keeping the modem awake? It seems the modem
+> would be suspended after 600 milliseconds after being woken up every 10
+> seconds or so by the polling gnss driver?
+
+Well we still have /dev/gnss open, so GNSS stays active and won't get
+disabled until the device is closed. The shared GPIOs with the USB PHY
+are used to signal port traffic.
+
+> What happens to the satellite lock in between? Does the request block
+> until the gps has an updated position?
+
+It seems to regain the lock in about one or two seconds, so it's some
+kind of modem PM state for allowing the SoC to idle it seems.
+
+Regards,
+
+Tony
