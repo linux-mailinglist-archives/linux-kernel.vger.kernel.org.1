@@ -2,87 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B96A1E6173
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8963F1E6105
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 14:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390041AbgE1MwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 08:52:15 -0400
-Received: from mail-m974.mail.163.com ([123.126.97.4]:43186 "EHLO
-        mail-m974.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389872AbgE1MwM (ORCPT
+        id S2389814AbgE1Mgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 08:36:53 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43488 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2389734AbgE1Mgu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 08:52:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=rJIh2AejiX4PKP3jTj
-        J9LO2IPzXQUYbqGWE95oZGZ7k=; b=MNIuw83YOgF2J3XpCvs+SlJyPlEG0fnFX6
-        etbGZl6O6zQIDn4F7PYZHARsnGIoADaY8SZSxx2onQNntfYx/TKIVTR7J1aywPAu
-        +fnRkXGw/6UtPW4A8I5DOzgwts3GnRUYlP0UiGIsFyzuasllO5wtoMMPwd+hu0XL
-        yO3d0rcpU=
-Received: from localhost.localdomain (unknown [124.64.18.22])
-        by smtp4 (Coremail) with SMTP id HNxpCgB3FCBZsM9epnuaBA--.138S4;
-        Thu, 28 May 2020 20:36:51 +0800 (CST)
-From:   YuanJunQing <yuanjunqing66@163.com>
-To:     tsbogend@alpha.franken.de
-Cc:     paulburton@kernel.org, chenhc@lemote.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liulichao@loongson.cn, YuanJunQing <yuanjunqing66@163.com>
-Subject: [PATCH] function:stacktrace/mips: Fix function:stacktrace for mips
-Date:   Thu, 28 May 2020 20:36:40 +0800
-Message-Id: <20200528123640.4285-1-yuanjunqing66@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: HNxpCgB3FCBZsM9epnuaBA--.138S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW7CFyrKr13tF47ArW7urW3ZFb_yoW8Gw4Upr
-        yqyF9rGrW8XFs0k3y3WF95ur15XrZ5J3y2vrW7Jrsak3Z8XFs3ZFn2y3Z8K34q9rWxGa4f
-        uF18ur4UAr4kC37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRXzVnUUUUU=
-X-Originating-IP: [124.64.18.22]
-X-CM-SenderInfo: h1xd0ypxqtx0rjwwqiywtou0bp/1tbiQAMyXFSIfPOk7QAAs3
+        Thu, 28 May 2020 08:36:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590669408;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GRwkxAXKadNb8L6vblVDH1YHL3lLq/VSX5Jl4TgNeUQ=;
+        b=aisp8qREGtJsTbhPQlr2s8xSZwp7hGPo1T28LgtDPb5QIxQIwcQYEhGT491TzHBOzU8x35
+        7GyoCgLjPa/s4OYmJIr9YVFm/gGS092UoYxLMP9CMMbp4VusWw3PvfHZqFpzVKkPtFunbI
+        YQ5kzlTrzrE0soVaAApCl+ZX5hO0hKI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-485-EyyxwPu9Nla98fHg1KPQ8w-1; Thu, 28 May 2020 08:36:45 -0400
+X-MC-Unique: EyyxwPu9Nla98fHg1KPQ8w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 81F52108597B;
+        Thu, 28 May 2020 12:36:43 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.7])
+        by smtp.corp.redhat.com (Postfix) with SMTP id A969F1001268;
+        Thu, 28 May 2020 12:36:41 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 28 May 2020 14:36:43 +0200 (CEST)
+Date:   Thu, 28 May 2020 14:36:40 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Greentime Hu <greentime.hu@sifive.com>
+Cc:     guoren@linux.alibaba.com, vincent.chen@sifive.com,
+        paul.walmsley@sifive.com, palmerdabbelt@google.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v5 01/13] ptrace: Use regset_size() for dynamic regset
+Message-ID: <20200528123639.GA19813@redhat.com>
+References: <cover.1590646208.git.greentime.hu@sifive.com>
+ <e490cf0a1b57b7cb34a5ea1252e7a71109d6ffee.1590646208.git.greentime.hu@sifive.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e490cf0a1b57b7cb34a5ea1252e7a71109d6ffee.1590646208.git.greentime.hu@sifive.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ftrace_call as global symbol in ftrace_caller(), this
-will cause function:stacktrace can not work well.
-i.e. echo do_IRQ:stacktrace > set_ftrace_filte
+On 05/28, Greentime Hu wrote:
+>
+> --- a/kernel/ptrace.c
+> +++ b/kernel/ptrace.c
+> @@ -888,7 +888,7 @@ static int ptrace_regset(struct task_struct *task, int req, unsigned int type,
+>  
+>  	regset_no = regset - view->regsets;
+>  	kiov->iov_len = min(kiov->iov_len,
+> -			    (__kernel_size_t) (regset->n * regset->size));
+> +			    (__kernel_size_t) regset_size(task, regset));
 
-Signed-off-by: YuanJunQing <yuanjunqing66@163.com>
----
- arch/mips/kernel/mcount.S | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/kernel/mcount.S b/arch/mips/kernel/mcount.S
-index cff52b283e03..cd5545764e5f 100644
---- a/arch/mips/kernel/mcount.S
-+++ b/arch/mips/kernel/mcount.S
-@@ -87,8 +87,15 @@ EXPORT_SYMBOL(_mcount)
- 	PTR_LA   t1, _etext
- 	sltu     t3, t1, a0	/* t3 = (a0 > _etext) */
- 	or       t1, t2, t3
-+	PTR_LA	 t2, stlab-4 	/* t2: "function:stacktrace" return address */
-+	move	 a1, AT		/* arg2: parent's return address */
- 	beqz     t1, ftrace_call
--	 nop
-+	 nop			/* "function:stacktrace" return address */
-+stlab:
-+	PTR_LA	t2, stlab-4
-+	/* ftrace_call_end: ftrace_call return address */
-+	beq	t2,ra, ftrace_call_end
-+	nop
- #if defined(KBUILD_MCOUNT_RA_ADDRESS) && defined(CONFIG_32BIT)
- 	PTR_SUBU a0, a0, 16	/* arg1: adjust to module's recorded callsite */
- #else
-@@ -98,7 +105,9 @@ EXPORT_SYMBOL(_mcount)
- 	.globl ftrace_call
- ftrace_call:
- 	nop	/* a placeholder for the call to a real tracing function */
--	 move	a1, AT		/* arg2: parent's return address */
-+	move	ra, t2		/* t2: "function:stacktrace" return address */
-+
-+ftrace_call_end:
- 
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
- 	.globl ftrace_graph_call
--- 
-2.17.1
+Acked-by: Oleg Nesterov <oleg@redhat.com>
 
