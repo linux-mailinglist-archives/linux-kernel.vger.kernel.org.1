@@ -2,114 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2141E64F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7FD1E64FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 May 2020 16:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403915AbgE1O5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 10:57:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51446 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403902AbgE1O50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 10:57:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id BB96DAEC3;
-        Thu, 28 May 2020 14:57:22 +0000 (UTC)
-Date:   Thu, 28 May 2020 16:57:22 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        kgdb-bugreport@lists.sourceforge.net,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 4/4] kdb: Switch kdb_msg_write() to use safer polling
- I/O
-Message-ID: <20200528145721.GE11286@linux-b0ei>
-References: <1590560759-21453-1-git-send-email-sumit.garg@linaro.org>
- <1590560759-21453-5-git-send-email-sumit.garg@linaro.org>
- <20200527133115.x5hqzttsg73saiky@holly.lan>
- <CAFA6WYNeBDRdRqb8dB5HA923ujD3zq7JEQQnV4WJr_fthCc=GQ@mail.gmail.com>
- <20200528112620.a6zhgnkl2izuggsa@holly.lan>
+        id S2403947AbgE1O62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 10:58:28 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:37414 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403770AbgE1O6Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 10:58:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1590677905; x=1622213905;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=7Rbg+fpxveZyYmBJCf2fzaHoUltLb5FDdPTSlCWwK/U=;
+  b=IDRJir4zUurARgNyaWWj+LVEBqRdgeBOvFe8aoxpeAjMWkM+ZhCxa+7d
+   S7Ak+LKU9JnXvyQFsTMp8nUM01kHSq8U3z8Z0YTxhCQh9M8ypxzLQDO9F
+   44lwISL6FOW5mfM44SC9AS9ok1Oc+UPdWOO1Yn9IrpCYFYPW7Vl89dz8l
+   KEZFdfnifVGtxgX3xL+g9g0lQG9UiWpmGX11QMMB6IEZHOo7qLtLc2KqY
+   Pu5/ksUdHgk0jHVjwrA0kd6KqmTYDituJXJ5azoOeNUCeGkK26W8WsBwM
+   5jyamd7OXZwYP/RywUaz6XlH6+YiKp4VzB6jbL8y1EaQEoxkOte8e35V2
+   Q==;
+IronPort-SDR: 00Ai3wkTbUDxmrkH4dhmlHIZbUlcINxTRtiRQuBsXpnY2QdQ1wLiJgPwir8H0TjySgf8ffAFY4
+ 0/6VMhR8BZ0POfTL1+d2jAOv8FcUUxvNw6YXvlgamYVWQKKcXGx0TFCNSrx8qPmaGaYYWXYrfB
+ Eit67PO9E7NgXFapHOO+DB0HRSc5DU1w/OlsBkKzec7CK5ZHh7bogEFqzITxHGnOWVnhx48kIr
+ U6LfWSuWN1mBnG4bhahaFCBA8zzORm5OcFHj+Y8COTloFL4BpfG7vvWJZ5uWCxpY/9Qaqzdiu2
+ EdA=
+X-IronPort-AV: E=Sophos;i="5.73,445,1583164800"; 
+   d="scan'208";a="143042279"
+Received: from mail-sn1nam04lp2052.outbound.protection.outlook.com (HELO NAM04-SN1-obe.outbound.protection.outlook.com) ([104.47.44.52])
+  by ob1.hgst.iphmx.com with ESMTP; 28 May 2020 22:58:24 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=X1Yn/9mwO+//PY/4XJ7WJSm3kG0mZDserOTW0B8o8novydSWqsfnhdiKdvvUL/nCUIsH0wLuxESrtRaDtJyKBVJS4SdDBDFzlNPjIoUG3k7lPmB5Tb6ANXu2MUkaEWhqyl2K8sLa72v+zH/uV/Iq9Uc/ND7B4XX8mz4aSh63AjjiivOEVI2QDOvG+H0hi4JxMncfCAbOdBMoHictt2U59LBmXYpxX6TXKAIW1aMLl1KTyWBycD3oRDnis4DTrie2fYfSyU2liUKIP5aLpvik5AQd/jupauE0XeKUUPAI7sGf/3I7CuPjniy54sJshiq1K6bGmUQlcS6t4VeKo8dOAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TLXjBbCuD8rQJ8nfOKVhEvGVQxvceGsvOBLoEwbdkLE=;
+ b=jlsbIFH7Ir8Mi1Z6jTPGcNNn7GSNwlgFuQjLbj9+2SmEsiLQzYbiuL9o9Uis+YM6q68wEqxrlxjC4MogB/uQLPqZDKbGD7sYwhkkzAEMSWpN1K7/1ziVFNKW8BREc3nHEO4L0kgEiWPRFgbwNPmt3BZ0aYlWti9JFSY+T0+pwX1MnT6LOYgHMmUk/vLWEyScK+SXeKrUHIOK2JZe+awTedID0M1N4R/aRQ/XG6J5vqkTDn+LZes4KuROTqFzt8sMQURUE7cfqITcwOcms5IE41SvJTs1T9sdA1nuGqN7q7qedYtMnylxDXgeEEmY/kHbSIwmdEC8GHWGpsVyIPVUag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TLXjBbCuD8rQJ8nfOKVhEvGVQxvceGsvOBLoEwbdkLE=;
+ b=E0HIZurXUZDmrwLb48TEo7NPFbnaYx7+r9GxBcIrnXm0zQmdJix8KgvTIoqTL9PquHiPmxcxucVPRhCeHkHDHVsYHg4TDryLLqPXpxlO2PxUsQ62X3r3f5O4DzYBhu/5hdb2wcrhroSl6MiP+KeS3GZz6UY7k4thaayNwmZPZ8o=
+Received: from SN6PR04MB4640.namprd04.prod.outlook.com (2603:10b6:805:a4::19)
+ by SN6PR04MB5213.namprd04.prod.outlook.com (2603:10b6:805:fa::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19; Thu, 28 May
+ 2020 14:58:22 +0000
+Received: from SN6PR04MB4640.namprd04.prod.outlook.com
+ ([fe80::9cbe:995f:c25f:d288]) by SN6PR04MB4640.namprd04.prod.outlook.com
+ ([fe80::9cbe:995f:c25f:d288%6]) with mapi id 15.20.3045.016; Thu, 28 May 2020
+ 14:58:22 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Bean Huo <huobean@gmail.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 3/3] scsi: ufs: cleanup ufs initialization path
+Thread-Topic: [PATCH v2 3/3] scsi: ufs: cleanup ufs initialization path
+Thread-Index: AQHWNOcS9knWlNkkEEihSjLjCZj2TKi9j3+Q
+Date:   Thu, 28 May 2020 14:58:22 +0000
+Message-ID: <SN6PR04MB4640F8F4B293E6D3980952D5FC8E0@SN6PR04MB4640.namprd04.prod.outlook.com>
+References: <20200528115616.9949-1-huobean@gmail.com>
+ <20200528115616.9949-4-huobean@gmail.com>
+In-Reply-To: <20200528115616.9949-4-huobean@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2a00:a040:188:8f6c:a5cd:360c:eac5:60d4]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 0ef18296-6ed1-4cc9-f85e-08d803179119
+x-ms-traffictypediagnostic: SN6PR04MB5213:
+x-microsoft-antispam-prvs: <SN6PR04MB5213138190C992079FC2BB67FC8E0@SN6PR04MB5213.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:330;
+x-forefront-prvs: 0417A3FFD2
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xyfv1lUWxXxkvasQVLSe2rjXaQcDPJf56oNCiw6M7ZB14bCV5LqS3ApnmgF6i6srxaAy3DpmlgK5LbxqTiA5B+tqaKh7GPwP11HaheQAJABm5DyR0WZlIoUVfW+sMvSYBMFMYaXO8A230YCRdMpqEvjdFr8pCzFZvXC9mqwVNU1BYvXfdhucNuQwBHwCWiIUGuVaw9KtG0IB/AAlPGn61DAkcn0txD8ukcFluFWbSFDC0eI3QjWotpEaVbDfubGB+VOFfWtbNmpHqjJFnus150BHVbakD1gNWfGAHpexZBpKmdgFK8WhRKwjQFDa6bWY+dHoaGQK7ONPs0yR8sIIQLVRzJk2UnGGrqgsWKefu6C7XtSFAuChMetaiq0WeLVn
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR04MB4640.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(346002)(366004)(39860400002)(396003)(136003)(71200400001)(54906003)(478600001)(110136005)(66556008)(66476007)(66446008)(76116006)(52536014)(5660300002)(66946007)(64756008)(6506007)(8676002)(186003)(83380400001)(7696005)(33656002)(4326008)(9686003)(86362001)(55016002)(8936002)(2906002)(7416002)(316002)(921003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: LkoWfdp3GeqEvgOzHMZTKxJRT7mQGO7CIffQ/b6z9J8u081pSvy81x95AerEizbwL6fdcqsbDbnN3VaRd79JtCAFCeIGG5qRMi41ePT/N2vstEQMcx6VPxGdbT5NwnJ4kswmV80pNi6dc+TtgD/Cb6t7x637IUuyJxJPXJJkI3AdJbkmn/28VB02c0EymaaUqcvErVGutHj0DpZFAngF6itQGb0V24jeHYHOoWEcdj3pGQ29mX6Lev/Q+5SREjEEHwt4MWpJEPfuuIdVqYEkuw4n2Uax+vlNcXn8WjuIyyRdXtMzqTDpE4y1ApQzDkdvkcnZ9IdwJMQqrDGFi+QGlKW0Dk8wg004AaUnozZLeBvVH8rH98HR7UrFI2h/8pSPGllLHFWVCA1lS/b5WS35RAOQg55YrKeJ96HoMwAFdNOwBOWU9BLDrlBuw4d0MZazGetLkBEXqotr4lzTbRYBhjfJugpAq+QqNNLA5Am0lJbQHy6XwHTnx437vqAXbtTEFt1JbJCJDXPmcsn2WxB5ZTznE/D0K6hOBzJlTLrw7gX4WRz9HdLh7f50IEBD9Ehg
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200528112620.a6zhgnkl2izuggsa@holly.lan>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0ef18296-6ed1-4cc9-f85e-08d803179119
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 May 2020 14:58:22.5025
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: lvhL3Sspv8uG2Xr6e6oVYlLGCURGdVNSJN8KzNXDBwfCs8+2hEU6F3sxOF0v8xzEHP5aSG9k7qd5l8KiYLUiuA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB5213
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2020-05-28 12:26:20, Daniel Thompson wrote:
-> On Thu, May 28, 2020 at 11:48:48AM +0530, Sumit Garg wrote:
-> > On Wed, 27 May 2020 at 19:01, Daniel Thompson
-> > <daniel.thompson@linaro.org> wrote:
-> > >
-> > > On Wed, May 27, 2020 at 11:55:59AM +0530, Sumit Garg wrote:
-> > > > In kgdb NMI context, calling console handlers isn't safe due to locks
-> > > > used in those handlers which could lead to a deadlock. Although, using
-> > > > oops_in_progress increases the chance to bypass locks in most console
-> > > > handlers but it might not be sufficient enough in case a console uses
-> > > > more locks (VT/TTY is good example).
-> > > >
-> > > > Currently when a driver provides both polling I/O and a console then kdb
-> > > > will output using the console. We can increase robustness by using the
-> > > > currently active polling I/O driver (which should be lockless) instead
-> > > > of the corresponding console. For several common cases (e.g. an
-> > > > embedded system with a single serial port that is used both for console
-> > > > output and debugger I/O) this will result in no console handler being
-> > > > used.
-> > >
-> > > > diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
-> > > > index b072aeb..05d165d 100644
-> > > > --- a/include/linux/kgdb.h
-> > > > +++ b/include/linux/kgdb.h
-> > > > @@ -275,6 +275,7 @@ struct kgdb_arch {
-> > > >   * for the I/O driver.
-> > > >   * @is_console: 1 if the end device is a console 0 if the I/O device is
-> > > >   * not a console
-> > > > + * @tty_drv: Pointer to polling tty driver.
-> > > >   */
-> > > >  struct kgdb_io {
-> > > >       const char              *name;
-> > > > @@ -285,6 +286,7 @@ struct kgdb_io {
-> > > >       void                    (*pre_exception) (void);
-> > > >       void                    (*post_exception) (void);
-> > > >       int                     is_console;
-> > > > +     struct tty_driver       *tty_drv;
-> > >
-> > > Should this be a struct tty_driver or a struct console?
-> > >
-> > > In other words if the lifetime the console structure is the same as the
-> > > tty_driver then isn't it better to capture the console instead
-> > > (easier to compare and works with non-tty devices such as the
-> > > USB debug mode).
-> > >
-> > 
-> > IIUC, you mean to say we can easily replace "is_console" with "struct
-> > console". This sounds feasible and should be a straightforward
-> > comparison in order to prefer "dbg_io_ops" over console handlers. So I
-> > will switch to use "struct console" instead.
-> 
-> My comment contains an if ("if the lifetime of the console structure is
-> the same") so you need to check that it is true before sharing a patch to
-> make the change.
+Hi,
 
-Honestly, I am not completely familiar with the console an tty drivers
-code.
+> From: Bean Huo <beanhuo@micron.com>
+>=20
+> At UFS initialization stage, to get the length of the descriptor,
+> ufshcd_read_desc_length() being called 6 times.
+May I suggest one more clarifying sentence to your commit log:
+"Instead, we will capture the descriptor size the first time we'll read it.=
+"
 
-Anyway, struct console is typically statically defined by the console
-driver code. It is not must to have but I am not aware of any
-driver where it would be dynamically defined.
+>This patch is to
+> delete unnecessary reduntant code, remove ufshcd_read_desc_length()
+typo: redundant
 
-On the other hand, struct tty_driver is dynamically allocated
-when the driver gets initialized.
+> and boost UFS initialization.
+>=20
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
 
-So I would say that it is pretty safe to store struct console.
-Well, you need to call con->device() to see if the tty_driver
-is actually initialized.
+> +       if (desc_id >=3D QUERY_DESC_IDN_MAX) {
+>                 *desc_len =3D 0;
+>                 return -EINVAL;
+>         }
+if (desc_id =3D=3D QUERY_DESC_IDN_RFU_0 || desc_id =3D=3D QUERY_DESC_IDN_RF=
+U_1)
+	*desc_len =3D 0;
+else
+> +
+> +       *desc_len =3D hba->desc_size[desc_id];
+>         return 0;
+>  }
+>  EXPORT_SYMBOL(ufshcd_map_desc_id_to_length);
+>=20
+> +static void ufshcd_update_desc_length(struct ufs_hba *hba,
+> +                                     enum desc_idn desc_id, int desc_len=
+)
+desc_len is at most 255 so maybe u8?
 
-Best Regards,
-Petr
+> +{
+> +       if (hba->desc_size[desc_id] =3D=3D QUERY_DESC_MAX_SIZE &&
+> +           desc_id !=3D QUERY_DESC_IDN_STRING)
+> +               hba->desc_size[desc_id] =3D desc_len;
+> +}
+> +
+
+
+Thanks,
+Avri
