@@ -2,182 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03FA71E8637
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 20:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F001E863E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 20:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727108AbgE2SGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 14:06:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgE2SGe (ORCPT
+        id S1728012AbgE2SHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 14:07:30 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:57055 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727000AbgE2SHa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 14:06:34 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAE8C03E969;
-        Fri, 29 May 2020 11:06:34 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id u13so4518107wml.1;
-        Fri, 29 May 2020 11:06:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=upQJf5klT3BJhtYCik8Xt8ZFwpOd8Ec+MHPem0ZBw8c=;
-        b=DspHGxQfaOC5kX6RIxvC1n0CE1qXRgsL4blUue2WedwR0X4NsElEG3XCCag9mBzcQl
-         SoDHlqHZQhspzDo2d39Tk8dusf7LAbUo2KjrJmovrmVwFR0zVdMp+mPfJ4uN6KNOoqCq
-         RlF4tIZ2BjAg8cVTd871wAQoep+io91MgCroMR7R03/Bbh1m0bmhDcsNtSCXPlkMEroT
-         9rsOHe/mfn+oieHO8JQ52AzRCk02VeLf96AkXC6H87KqMhteuJw/6cFM89V5xstClfv4
-         e67/ytujHYHO8XkBTNYkMKN36PBwQTDSsZENgnT6pft3mm5PbQyjIIwn0KQqJxc95uap
-         qVWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=upQJf5klT3BJhtYCik8Xt8ZFwpOd8Ec+MHPem0ZBw8c=;
-        b=BUEv85iIC5DbB5tW7ST5ULv77qZOLwkUE7JxTeSQ5MK9fQ/urpmpTJUlY2HT5doQur
-         zeXhtLqdte3YDybs13cj87ZNOsuuZk+tfyKCyAcEXN4gpGa/zj1nvUYDd6o+y+FWO2Bj
-         M++bUBrbr1EkhAw0kzPgDsbYOP6FB9+alz+2PCWeZDAwpd25RaGjbp5s93L8NF8Ns3+n
-         ThUVVmzMOFdVx6MQIB+WYzuv/lNSHiijqtPHMOr8n3s9extNnmFTz8hcsuNZMBKpg8hH
-         XD/Ap8jsNqMV2S21L2Bh35DAB6jMVpj8bLa9Shf1OVCxce2q8pbUJhoX8fLIso0IVLVi
-         pf9g==
-X-Gm-Message-State: AOAM5333HASH9Yz85YzAZeTqvAMbSkzyzvmIziqv3LOveJQQw/DsouV8
-        pTS4xZ/flTSmlOO8m3r18Sg=
-X-Google-Smtp-Source: ABdhPJxECAbSxRGc7r2e70SdPbZdEqtqwn8on6WG0NbbGyW+QD1yZ66KVZEWblueeLh61ipr8/Nl1Q==
-X-Received: by 2002:a1c:a905:: with SMTP id s5mr9433945wme.120.1590775593019;
-        Fri, 29 May 2020 11:06:33 -0700 (PDT)
-Received: from localhost (pd9e51079.dip0.t-ipconnect.de. [217.229.16.121])
-        by smtp.gmail.com with ESMTPSA id t185sm299618wmt.28.2020.05.29.11.06.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 11:06:32 -0700 (PDT)
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Prashant Malani <pmalani@chromium.org>,
-        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: Merge gpio-usb-b-connector with usb-connector
-Date:   Fri, 29 May 2020 20:06:31 +0200
-Message-Id: <20200529180631.3200680-1-thierry.reding@gmail.com>
-X-Mailer: git-send-email 2.24.1
+        Fri, 29 May 2020 14:07:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590775648;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=czEdY+XGz5LqFpm62jaCPb/A59YOV2vdcF74WufIJLA=;
+        b=Q7R6m9wbNhZi9E3rz6g3XjjbX6ExN7GMgQERHgjJ9swJv+HZDwNlJqVosL4meiuE4xpTPP
+        yMRQZZvZEynZovbbP7NX6vLI0o0G18Xdd16sSeQ94G0W/pozKtDoXB2L2hPDy8AEdICnJ8
+        yfFTO00TkXesLkS/9p7C+iBjqtcchKI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-448-pJhQuBDeOwmkcW3QZI6X1w-1; Fri, 29 May 2020 14:07:22 -0400
+X-MC-Unique: pJhQuBDeOwmkcW3QZI6X1w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 509BB1800D42;
+        Fri, 29 May 2020 18:07:21 +0000 (UTC)
+Received: from krava (unknown [10.40.192.29])
+        by smtp.corp.redhat.com (Postfix) with SMTP id CFE8460BF1;
+        Fri, 29 May 2020 18:07:18 +0000 (UTC)
+Date:   Fri, 29 May 2020 20:07:17 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Clark Williams <williams@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 2/2] perf build: Allow explicitely disabling the
+ NO_SYSCALL_TABLE variable
+Message-ID: <20200529180717.GF506785@krava>
+References: <20200529155552.463-1-acme@kernel.org>
+ <20200529155552.463-3-acme@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200529155552.463-3-acme@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thierry Reding <treding@nvidia.com>
+On Fri, May 29, 2020 at 12:55:52PM -0300, Arnaldo Carvalho de Melo wrote:
+> From: Arnaldo Carvalho de Melo <acme@redhat.com>
+> 
+> This is useful to see if, on x86, the legacy libaudit still works, as it
+> is used in architectures that don't have the SYSCALL_TABLE logic and we
+> want to have it tested in 'make -C tools/perf/ build-test'.
+> 
+> E.g.:
+> 
+> Without having audit-libs-devel installed:
+> 
+>   $ make NO_SYSCALL_TABLE=1 O=/tmp/build/perf -C tools/perf install-bin
+>   make: Entering directory '/home/acme/git/perf/tools/perf'
+>     BUILD:   Doing 'make -j12' parallel build
+>   <SNIP>
+>   Auto-detecting system features:
+>   <SNIP>
+>   ...                      libaudit: [ OFF ]
+>   ...                        libbfd: [ on  ]
+>   ...                        libcap: [ on  ]
+>   <SNIP>
+>   Makefile.config:664: No libaudit.h found, disables 'trace' tool, please install audit-libs-devel or libaudit-dev
+>   <SNIP>
+> 
+> After installing it:
+> 
+>   $ rm -rf /tmp/build/perf ; mkdir -p /tmp/build/perf
+>   $ time make NO_SYSCALL_TABLE=1 O=/tmp/build/perf  -C tools/perf install-bin ; perf test python
 
-The binding for usb-connector is a superset of gpio-usb-b-connector. One
-major difference is that gpio-usb-b-connector requires at least one of
-the vbus-gpios and id-gpios properties to be specified. Merge the two
-bindings by adding the compatible string combination for the GPIO USB-B
-variant and an extra conditional for the required properties list to the
-usb-connector.yaml file.
+heya,
+seems ok, perhaps also put it in comment to Makefile.perf
+among other NO_* stuff and to tests/make
 
-Signed-off-by: Thierry Reding <treding@nvidia.com>
----
- .../bindings/connector/usb-connector.yaml     | 39 +++++++++++++++++--
- .../devicetree/bindings/usb/usb-conn-gpio.txt | 30 --------------
- 2 files changed, 35 insertions(+), 34 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/usb/usb-conn-gpio.txt
+jirka
 
-diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-index 03b92b6f35fa..9bd52e63c935 100644
---- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
-+++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-@@ -15,10 +15,15 @@ description:
- 
- properties:
-   compatible:
--    enum:
--      - usb-a-connector
--      - usb-b-connector
--      - usb-c-connector
-+    oneOf:
-+      - enum:
-+          - usb-a-connector
-+          - usb-b-connector
-+          - usb-c-connector
-+
-+      - items:
-+          - const: gpio-usb-b-connector
-+          - const: usb-b-connector
- 
-   label:
-     description: Symbolic name for the connector.
-@@ -140,6 +145,19 @@ properties:
- required:
-   - compatible
- 
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: gpio-usb-b-connector
-+    then:
-+      anyOf:
-+        - required:
-+            - vbus-gpios
-+        - required:
-+            - id-gpios
-+
- examples:
-   # Micro-USB connector with HS lines routed via controller (MUIC).
-   - |
-@@ -202,3 +220,16 @@ examples:
-         op-sink-microwatt = <10000000>;
-       };
-     };
-+
-+  # USB connector with GPIO control lines
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    usb {
-+      connector {
-+        compatible = "gpio-usb-b-connector", "usb-b-connector";
-+        type = "micro";
-+        id-gpios = <&pio 12 GPIO_ACTIVE_HIGH>;
-+        vbus-supply = <&usb_p0_vbus>;
-+      };
-+    };
-diff --git a/Documentation/devicetree/bindings/usb/usb-conn-gpio.txt b/Documentation/devicetree/bindings/usb/usb-conn-gpio.txt
-deleted file mode 100644
-index ec80641208a5..000000000000
---- a/Documentation/devicetree/bindings/usb/usb-conn-gpio.txt
-+++ /dev/null
-@@ -1,30 +0,0 @@
--USB GPIO Based Connection Detection
--
--This is typically used to switch dual role mode from the USB ID pin connected
--to an input GPIO, and also used to enable/disable device mode from the USB
--Vbus pin connected to an input GPIO.
--
--Required properties:
--- compatible : should include "gpio-usb-b-connector" and "usb-b-connector".
--- id-gpios, vbus-gpios : input gpios, either one of them must be present,
--	and both can be present as well.
--	see connector/usb-connector.yaml
--
--Optional properties:
--- vbus-supply : can be present if needed when supports dual role mode.
--	see connector/usb-connector.yaml
--
--- Sub-nodes:
--	- port : can be present.
--		see graph.txt
--
--Example:
--
--&mtu3 {
--	connector {
--		compatible = "gpio-usb-b-connector", "usb-b-connector";
--		type = "micro";
--		id-gpios = <&pio 12 GPIO_ACTIVE_HIGH>;
--		vbus-supply = <&usb_p0_vbus>;
--	};
--};
--- 
-2.24.1
+>   make: Entering directory '/home/acme/git/perf/tools/perf'
+>     BUILD:   Doing 'make -j12' parallel build
+>     HOSTCC   /tmp/build/perf/fixdep.o
+>     HOSTLD   /tmp/build/perf/fixdep-in.o
+>     LINK     /tmp/build/perf/fixdep
+>   Warning: Kernel ABI header at 'tools/arch/x86/include/asm/msr-index.h' differs from latest version at 'arch/x86/include/asm/msr-index.h'
+>   diff -u tools/arch/x86/include/asm/msr-index.h arch/x86/include/asm/msr-index.h
+>   Warning: Kernel ABI header at 'tools/perf/util/hashmap.h' differs from latest version at 'tools/lib/bpf/hashmap.h'
+>   diff -u tools/perf/util/hashmap.h tools/lib/bpf/hashmap.h
+>   Warning: Kernel ABI header at 'tools/perf/util/hashmap.c' differs from latest version at 'tools/lib/bpf/hashmap.c'
+>   diff -u tools/perf/util/hashmap.c tools/lib/bpf/hashmap.c
+> 
+>   Auto-detecting system features:
+>   <SNIP>
+>   ...                      libaudit: [ on  ]
+>   ...                        libbfd: [ on  ]
+>   ...                        libcap: [ on  ]
+>   <SNIP>
+>   $ ldd ~/bin/perf | grep audit
+>   	libaudit.so.1 => /lib64/libaudit.so.1 (0x00007fc18978e000)
+>   $
+> 
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> ---
+>  tools/perf/Makefile.config | 24 +++++++++++++-----------
+>  1 file changed, 13 insertions(+), 11 deletions(-)
+> 
+> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+> index 93fb7510a9a9..6bc9251f1634 100644
+> --- a/tools/perf/Makefile.config
+> +++ b/tools/perf/Makefile.config
+> @@ -24,20 +24,22 @@ $(call detected_var,SRCARCH)
+>  
+>  NO_PERF_REGS := 1
+>  
+> -NO_SYSCALL_TABLE := 1
+> +ifneq ($(NO_SYSCALL_TABLE),1)
+> +  NO_SYSCALL_TABLE := 1
+>  
+> -ifeq ($(SRCARCH),x86)
+> -  ifeq (${IS_64_BIT}, 1)
+> -    NO_SYSCALL_TABLE := 0
+> -  endif
+> -else
+> -  ifneq ($(SRCARCH),$(filter $(SRCARCH),powerpc arm64 s390))
+> -    NO_SYSCALL_TABLE := 0
+> +  ifeq ($(SRCARCH),x86)
+> +    ifeq (${IS_64_BIT}, 1)
+> +      NO_SYSCALL_TABLE := 0
+> +    endif
+> +  else
+> +    ifneq ($(SRCARCH),$(filter $(SRCARCH),powerpc arm64 s390))
+> +      NO_SYSCALL_TABLE := 0
+> +    endif
+>    endif
+> -endif
+>  
+> -ifneq ($(NO_SYSCALL_TABLE),1)
+> -  CFLAGS += -DHAVE_SYSCALL_TABLE_SUPPORT
+> +  ifneq ($(NO_SYSCALL_TABLE),1)
+> +    CFLAGS += -DHAVE_SYSCALL_TABLE_SUPPORT
+> +  endif
+>  endif
+>  
+>  # Additional ARCH settings for ppc
+> -- 
+> 2.25.3
+> 
 
