@@ -2,73 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 733951E7316
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 05:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 392CA1E7344
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 05:26:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407617AbgE2C7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 22:59:23 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:43900 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407560AbgE2C6u (ORCPT
+        id S2388970AbgE2DCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 23:02:20 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:39219 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390168AbgE2DBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 22:58:50 -0400
-Received: by mail-il1-f193.google.com with SMTP id l20so1027444ilj.10;
-        Thu, 28 May 2020 19:58:48 -0700 (PDT)
+        Thu, 28 May 2020 23:01:25 -0400
+Received: by mail-io1-f65.google.com with SMTP id c8so801511iob.6;
+        Thu, 28 May 2020 20:01:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=m6kcwlIC7SKtx9thDsfIOgDZfkogbuD8SNG7gHAFV2g=;
-        b=s4aBb0TzRVNe4K4CCs7+pXaeD3TSO/nKwYdZEBOfCxcoFziIt4BIumIb6at8uYdYfl
-         dPgxXy0B59b2s0iXzcpIZgueiagK9VHXJY443wAs2Xx0BUfcwmrInnZ75E6E3EpIbWgm
-         Y+UgA/Q9q6ohu6mhImnsmukzkKrjyBgoK+AjiWeS6BU7joyGodbylH9ZSmhMm5/f2FVD
-         JC5ZmiNDbZ1iGY8TNVAE81VPBLdinmHahZ/+aoFseUMUVkhDYtOdhY8SMSb2VXJnEs55
-         YVIG5HmeqAE00DuynVHTD4qkN/SjAQ6x39tJ1kFjGm9p7Ih2FaKiabYltgiaIWAGmzXG
-         HK6A==
-X-Gm-Message-State: AOAM530iCUN34/HSFeexXqoOki8wfTQZ5AW7g4K1Kg0YI1ZTl5rmSDYK
-        13ySgXlwlxiXxAIMffAaSg==
-X-Google-Smtp-Source: ABdhPJzvfcF83aDlvSVv+tXYOmvv+ugf8LjGNXP4oxa2f48ct9MiDm/qpBCJ2AWztc8Ety30ZSqprg==
-X-Received: by 2002:a92:9c04:: with SMTP id h4mr5267706ili.190.1590721128061;
-        Thu, 28 May 2020 19:58:48 -0700 (PDT)
+        bh=mCk2KWwnIfBIEmQLrjuIlBW17EAKY/fGWJtKTwA9/g0=;
+        b=D/gcPelBI4rxGYVC6qyhQGDYZnFq9A+HKU7/z5wpLUoQnC8m7dWShR60gIULl049JE
+         a4TBlbA9xrGLAtUz2fTc8LljCkgAN7vdogK1lOZIH1/L8aHibMr8s2WRmyN49M7z8NWw
+         9rlw/NcC13/HXMPKZEBjhdmh8+nSXUGIubPDn3BhmWHw/YIZHwnBdZeb02YuokdfAhvg
+         XbWp6CPoFOF/Ygtozm6x8CkTpUPP0eU55welYVaLVmhkISgArUCyWhm6T2W35bBbUqHD
+         /rggQh2roiCpCDiJmR6lvEWZofYeEkSMYVQd4rE3MqgKZRSO4saFy5P3gMQIGKXrWRpP
+         3QrA==
+X-Gm-Message-State: AOAM532t04Ykb2dIExpInQ1S+cRpgQ/OmOY3L5oMZBvVZF/2zpl0a1gp
+        QrS4s5Ys/v2th9j/iYJsyLihJUVdyQ==
+X-Google-Smtp-Source: ABdhPJxAwggDYZtalBjJo3AvhM496oWJaFC2RV8/EtvTQ4YGZKkavrgup6mDnycN9zFgI8KXCD2rgA==
+X-Received: by 2002:a05:6602:2ac9:: with SMTP id m9mr5010558iov.68.1590721283890;
+        Thu, 28 May 2020 20:01:23 -0700 (PDT)
 Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id p75sm4101531ilb.23.2020.05.28.19.58.46
+        by smtp.gmail.com with ESMTPSA id c10sm3024045iob.22.2020.05.28.20.01.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 19:58:47 -0700 (PDT)
-Received: (nullmailer pid 1186722 invoked by uid 1000);
-        Fri, 29 May 2020 02:58:46 -0000
-Date:   Thu, 28 May 2020 20:58:46 -0600
+        Thu, 28 May 2020 20:01:23 -0700 (PDT)
+Received: (nullmailer pid 1190529 invoked by uid 1000);
+        Fri, 29 May 2020 03:01:22 -0000
+Date:   Thu, 28 May 2020 21:01:22 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: sound: tlv320adcx140: Fix dt-binding-check
- issue
-Message-ID: <20200529025846.GA1185629@bogus>
-References: <20200528144711.18065-1-dmurphy@ti.com>
+To:     Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     kgunda@codeaurora.org, nishakumari@codeaurora.org,
+        agross@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, bjorn.andersson@linaro.org,
+        robh+dt@kernel.org, rnayak@codeaurora.org, lgirdwood@gmail.com,
+        broonie@kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] dt-bindings: regulator: Add labibb regulator
+Message-ID: <20200529030122.GA1190091@bogus>
+References: <20200528154625.17742-1-sumit.semwal@linaro.org>
+ <20200528154625.17742-3-sumit.semwal@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200528144711.18065-1-dmurphy@ti.com>
+In-Reply-To: <20200528154625.17742-3-sumit.semwal@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 09:47:11AM -0500, Dan Murphy wrote:
-> Fix dt-binding-check issue
+On Thu, 28 May 2020 21:16:22 +0530, Sumit Semwal wrote:
+> From: Nisha Kumari <nishakumari@codeaurora.org>
 > 
-> ti,gpi-config:0:0: 4 is greater than the maximum of 1
-> ti,gpi-config:0:1: 5 is greater than the maximum of 1
-> ti,gpi-config:0:2: 6 is greater than the maximum of 1
-> ti,gpi-config:0:3: 7 is greater than the maximum of 1
+> Adding the devicetree binding for labibb regulator.
 > 
-> Reported-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> Signed-off-by: Nisha Kumari <nishakumari@codeaurora.org>
+> Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
+> 
+> --
+> v2: updated for better compatible string and names.
+> v3: moved to yaml
+> 
 > ---
->  Documentation/devicetree/bindings/sound/tlv320adcx140.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  .../regulator/qcom-labibb-regulator.yaml      | 63 +++++++++++++++++++
+>  1 file changed, 63 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
+> 
 
-Thanks for the quick fix.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+My bot found errors running 'make dt_binding_check' on your patch:
+
+Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml:  while scanning for the next token
+found character that cannot start any token
+  in "<unicode string>", line 48, column 1
+Documentation/devicetree/bindings/Makefile:12: recipe for target 'Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.example.dts' failed
+make[1]: *** [Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.example.dts] Error 1
+make[1]: *** Waiting for unfinished jobs....
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml: ignoring, error parsing file
+warning: no schema found in file: ./Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml: ignoring, error parsing file
+warning: no schema found in file: ./Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
+Makefile:1300: recipe for target 'dt_binding_check' failed
+make: *** [dt_binding_check] Error 2
+
+See https://patchwork.ozlabs.org/patch/1299916
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
+
