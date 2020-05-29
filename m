@@ -2,126 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 054031E71E6
+	by mail.lfdr.de (Postfix) with ESMTP id DFBC21E71E8
 	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 03:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438267AbgE2BFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 21:05:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56730 "EHLO
+        id S2438283AbgE2BF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 21:05:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438203AbgE2BFo (ORCPT
+        with ESMTP id S2438203AbgE2BFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 21:05:44 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 138DEC08C5C6;
-        Thu, 28 May 2020 18:05:44 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Y5wM48S4z9sSm;
-        Fri, 29 May 2020 11:05:39 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1590714340;
-        bh=Z20gFtDzP5c0COPxIaNotJ+e2emc7JlN6W9UKhFm/ys=;
-        h=Date:From:To:Cc:Subject:From;
-        b=VYrurR55T1tiJOS0rPb3cKu32pwneL2cf1e40/C2YzRpiYf7wCUJQyAnJH4IzpcU7
-         QgiXSOxFhMmLiXEfbeexuR9byrJZ3FUIFEah6CN6OiMTAPADw7MX+YoW37FoQM8vyB
-         g2Aot5yVvyu+IP+wG2C6H+FF6PM8jzNL66XuXzVeWbqQaayWojAY2avMigRboEztaK
-         hCtAu7trxm6Z8ymaqfyRi2KIdHMFzhUZjo89YOq/KnXwd8S43SmEtMk23NGwy9psgw
-         aHmaYVZTTiFZ+0agPpVfeiD2EhT9GyV5F5dU7Ha4GYkKeByVDn1dbtm2LRPzNuVmPu
-         oC10srNwRpEZw==
-Date:   Fri, 29 May 2020 11:05:38 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>,
-        Trond Myklebust <trondmy@gmail.com>,
-        NFS Mailing List <linux-nfs@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>
-Subject: linux-next: manual merge of the nfsd tree with the nfs-anna tree
-Message-ID: <20200529110538.73d3fecb@canb.auug.org.au>
+        Thu, 28 May 2020 21:05:53 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6007DC08C5C6;
+        Thu, 28 May 2020 18:05:53 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id z206so278708lfc.6;
+        Thu, 28 May 2020 18:05:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=W5t5VFsoLBXmenoX347jKHn4U2gPV8qf+vAZBbiyle8=;
+        b=luWUDREQxObwgj2vwuOUloQFgFs3TXhvyHtvtJu2noTXvctvOCuIvVf9G5ew6z0v+S
+         99GvM3DOg8x3Qfa6410ku/AkyPd1IiPBJe2P4JBkEKCI5EEPaKfsIImsF4zFc2hnG8rS
+         BBJflZYbb1+olUADMRtjjShnyF0pbthZG18Ml6gJ0ukwswoo98UD5fJVOt3HJ14+u4Pl
+         UOKcrTWHqgz5RHvcsirlQPu9T/5PU3UQE5oSo04o2dL/N7UDsDDRWYStE5intz6YSc3f
+         SagghPabz+r7JK7gcXsdaX5BUNDIb6prqQr4ZzF5GzPAgLQAV8gUpo5n4UpBOx+G76bQ
+         M6ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=W5t5VFsoLBXmenoX347jKHn4U2gPV8qf+vAZBbiyle8=;
+        b=GgPRQ3k1k5X3jsuBQ4MyJp+tIHyhzR3PODkPgoWlrGw8vfVdG31F3wwyXJc1fgZ3wP
+         1FtTitVxquDtzBIEGEEkSHyQEXI7ZfgWp8MbQWf7mltA9ViszQrBVG5CNxsazr6ZMBS4
+         Rw9ynlLb2aB1/8277jTEEoHVP30aI/QvYlk1zPl6sVHCvbSwk97hT9WVOJ184kJ6QK3T
+         hRP2wPlLMw5omfEDn6fWVT6fdruBcKxDXkl5AA5zLaRUH2/fi0AtnIbVf2tzh8ONMWpb
+         oNkIRX2ZzWUgF+x2xNNbathJD37WNB7x1tEqCrjwjohaxRCfhOyeOcJGNVePbdTjBLub
+         HDhQ==
+X-Gm-Message-State: AOAM531mRQa1ElYCFTcrS/WocRWxC9XEInce7uJ2vXzxcNEOjn8dbblb
+        tRSv622mPgvjdyl64/8hxa7NJPJlc4emqw==
+X-Google-Smtp-Source: ABdhPJzKg9cQeT1QQMJ5sr/pyaDpYzqAzMjt6Ajm3i0wOPng9GdbX5EzQs0NJXhwk4LJhlucduwm3w==
+X-Received: by 2002:a05:6512:3111:: with SMTP id n17mr2999438lfb.137.1590714351866;
+        Thu, 28 May 2020 18:05:51 -0700 (PDT)
+Received: from dmitry-T520 ([185.57.31.227])
+        by smtp.gmail.com with ESMTPSA id y24sm1975866ljh.18.2020.05.28.18.05.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 18:05:51 -0700 (PDT)
+Date:   Fri, 29 May 2020 11:05:47 +1000
+From:   Dmitry Buzdyk <dima.buzdyk@gmail.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] uvcvideo: Add mapping for HEVC payloads
+Message-ID: <20200529010547.GA630131@dmitry-T520>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/NW_NhJTiMGTvMnqUr88BAds";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/NW_NhJTiMGTvMnqUr88BAds
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Add HEVC GUID and assotiate with HEVC pixel format so that frame
+based format descriptors recognized by the UVC video driver.
 
-Hi all,
+Signed-off-by: Dmitry Buzdyk <dima.buzdyk@gmail.com>
+---
+ drivers/media/usb/uvc/uvc_driver.c | 5 +++++
+ drivers/media/usb/uvc/uvcvideo.h   | 4 ++++
+ 2 files changed, 9 insertions(+)
 
-Today's linux-next merge of the nfsd tree got a conflict in:
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index 431d86e1c94b..825ee3601661 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -214,6 +214,11 @@ static struct uvc_format_desc uvc_fmts[] = {
+ 		.guid		= UVC_GUID_FORMAT_CNF4,
+ 		.fcc		= V4L2_PIX_FMT_CNF4,
+ 	},
++	{
++		.name		= "HEVC",
++		.guid		= UVC_GUID_FORMAT_HEVC,
++		.fcc		= V4L2_PIX_FMT_HEVC,
++	},
+ };
+ 
+ /* ------------------------------------------------------------------------
+diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+index 6ab972c643e3..c7f043121b41 100644
+--- a/drivers/media/usb/uvc/uvcvideo.h
++++ b/drivers/media/usb/uvc/uvcvideo.h
+@@ -165,6 +165,10 @@
+ 	{0x32, 0x00, 0x00, 0x00, 0x02, 0x00, 0x10, 0x00, \
+ 	 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}
+ 
++#define UVC_GUID_FORMAT_HEVC \
++	{ 'H',  'E',  'V',  'C', 0x00, 0x00, 0x10, 0x00, \
++	 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}
++
+ 
+ /* ------------------------------------------------------------------------
+  * Driver specific constants.
+-- 
+Dmitry Buzdyk
+Rhonda Software
 
-  net/sunrpc/svc_xprt.c
-
-between commit:
-
-  2baebf955125 ("SUNRPC: Split the xdr_buf event class")
-
-from the nfs-anna tree and commit:
-
-  ca4faf543a33 ("SUNRPC: Move xpt_mutex into socket xpo_sendto methods")
-
-from the nfsd tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc net/sunrpc/svc_xprt.c
-index 8ef44275c255,c1ff8cdb5b2b..000000000000
---- a/net/sunrpc/svc_xprt.c
-+++ b/net/sunrpc/svc_xprt.c
-@@@ -913,17 -906,11 +906,11 @@@ int svc_send(struct svc_rqst *rqstp
-  	xb->len =3D xb->head[0].iov_len +
-  		xb->page_len +
-  		xb->tail[0].iov_len;
- -	trace_svc_sendto(xb);
- +	trace_svc_xdr_sendto(rqstp, xb);
--=20
-- 	/* Grab mutex to serialize outgoing data. */
-- 	mutex_lock(&xprt->xpt_mutex);
-  	trace_svc_stats_latency(rqstp);
-- 	if (test_bit(XPT_DEAD, &xprt->xpt_flags)
-- 			|| test_bit(XPT_CLOSE, &xprt->xpt_flags))
-- 		len =3D -ENOTCONN;
-- 	else
-- 		len =3D xprt->xpt_ops->xpo_sendto(rqstp);
-- 	mutex_unlock(&xprt->xpt_mutex);
-+=20
-+ 	len =3D xprt->xpt_ops->xpo_sendto(rqstp);
-+=20
-  	trace_svc_send(rqstp, len);
-  	svc_xprt_release(rqstp);
- =20
-
---Sig_/NW_NhJTiMGTvMnqUr88BAds
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7QX+IACgkQAVBC80lX
-0Gyt1gf+OMS3j3SLMuMh+LFnRiOzJF2bVDwyuFIN+f+eep4ykrPs6DsasAcw0FiY
-iI5hKJOAiAQTIw0mN2QS04dB9ZWhD8J6aZHc+mKXw6PqOEqaT+aMtQiNjtPmdXkI
-PuDxHRMzeUcjr0Ov9TQl0U32Angg+lDERNaoZ8td4QUh//rCR2ljXsLjzYTXca3J
-bVf7uaxPFmZhfYHiCg0SEDhWlyWHOz0mtBsxPha7JUt9fqfSTsWCCecEjShrzJUa
-yGiiA6+x6sTtgkhRIiHOrRSe2rFnHLBefp/Lutw+oyYHE8OeHWcCZbCzxoAziEDf
-zP7OD067BAQw1EXFAXVo/C1k5HBWgQ==
-=jAGc
------END PGP SIGNATURE-----
-
---Sig_/NW_NhJTiMGTvMnqUr88BAds--
