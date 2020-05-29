@@ -2,183 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C5F1E7E01
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 15:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BBC1E7DCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 15:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726866AbgE2NHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 09:07:08 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:44020 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726518AbgE2NHI (ORCPT
+        id S1726878AbgE2NEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 09:04:20 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:41425 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726477AbgE2NES (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 09:07:08 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jeeiv-00076E-WD; Fri, 29 May 2020 07:06:58 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jeeiu-000531-Ok; Fri, 29 May 2020 07:06:57 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     keescook@chromium.org, yzaikin@google.com, nixiaoming@huawei.com,
-        axboe@kernel.dk, clemens@ladisch.de, arnd@arndb.de,
-        gregkh@linuxfoundation.org, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        airlied@linux.ie, daniel@ffwll.ch, benh@kernel.crashing.org,
-        rdna@fb.com, viro@zeniv.linux.org.uk, mark@fasheh.com,
-        jlbec@evilplan.org, joseph.qi@linux.alibaba.com, vbabka@suse.cz,
-        sfr@canb.auug.org.au, jack@suse.cz, amir73il@gmail.com,
-        rafael@kernel.org, tytso@mit.edu, julia.lawall@lip6.fr,
-        akpm@linux-foundation.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linuxppc-dev@lists.ozlabs.org,
-        ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-References: <20200529074108.16928-1-mcgrof@kernel.org>
-        <20200529074108.16928-13-mcgrof@kernel.org>
-Date:   Fri, 29 May 2020 08:03:02 -0500
-In-Reply-To: <20200529074108.16928-13-mcgrof@kernel.org> (Luis Chamberlain's
-        message of "Fri, 29 May 2020 07:41:07 +0000")
-Message-ID: <878shasxkp.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 29 May 2020 09:04:18 -0400
+X-Originating-IP: 86.250.147.67
+Received: from pc-10.home (lfbn-tou-1-695-67.w86-250.abo.wanadoo.fr [86.250.147.67])
+        (Authenticated sender: maxime.chevallier@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 0A213C000C;
+        Fri, 29 May 2020 13:04:14 +0000 (UTC)
+From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Subject: [PATCH v2 0/3] media: rockchip: Introduce driver for the camera interface on PX30
+Date:   Fri, 29 May 2020 15:04:02 +0200
+Message-Id: <20200529130405.929429-1-maxime.chevallier@bootlin.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jeeiu-000531-Ok;;;mid=<878shasxkp.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/iLtuGsGMkvU0ljnm4/gjNHORnB+bZL0A=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMNoVowels,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Luis Chamberlain <mcgrof@kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 734 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 11 (1.5%), b_tie_ro: 10 (1.3%), parse: 1.12
-        (0.2%), extract_message_metadata: 4.0 (0.5%), get_uri_detail_list:
-        1.99 (0.3%), tests_pri_-1000: 4.2 (0.6%), tests_pri_-950: 1.38 (0.2%),
-        tests_pri_-900: 1.07 (0.1%), tests_pri_-90: 240 (32.7%), check_bayes:
-        238 (32.4%), b_tokenize: 17 (2.3%), b_tok_get_all: 11 (1.4%),
-        b_comp_prob: 4.5 (0.6%), b_tok_touch_all: 202 (27.5%), b_finish: 0.93
-        (0.1%), tests_pri_0: 454 (61.8%), check_dkim_signature: 0.79 (0.1%),
-        check_dkim_adsp: 2.6 (0.4%), poll_dns_idle: 0.60 (0.1%), tests_pri_10:
-        2.2 (0.3%), tests_pri_500: 7 (1.0%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 12/13] sysctl: add helper to register empty subdir
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Luis Chamberlain <mcgrof@kernel.org> writes:
+Hello everyone,
 
-> The way to create a subdirectory from the base set of directories
-> is a bit obscure, so provide a helper which makes this clear, and
-> also helps remove boiler plate code required to do this work.
+Here's a V2 of the series adding very basic support for the camera interface on
+the Rockchip PX30 SoC.
 
-I agreee calling:
-register_sysctl("fs/binfmt_misc", sysctl_mount_point)
-is a bit obscure but if you are going to make a wrapper
-please make it the trivial one liner above.
+Thanks to everyone that commented on the first series, your reviews were
+very helpful :)
 
-Say something that looks like:
-	struct sysctl_header *register_sysctl_mount_point(const char *path)
-        {
-        	return register_sysctl(path, sysctl_mount_point);
-        }
+This Camera Interface is also supported on other Rockchip SoC such as
+the RK1808, RK3128, RK3288 and RK3288, but for now I've only been able to
+test it on the PX30, using a PAL format.
 
-And yes please talk about a mount point and not an empty dir, as these
-are permanently empty directories to serve as mount points.  There are
-some subtle but important permission checks this allows in the case of
-unprivileged mounts.
+This driver is mostly based on the driver found in Rockchip's BSP, that
+has been trimmed down to support the set of features that I was able to test,
+that is pretty much a very basic one-frame capture and video streaming
+with GStreamer. 
 
-Further code like this belong in proc_sysctl.c next to all of the code
-it is related to so that it is easier to see how to refactor the code if
-necessary.
+This first draft only supports the Parallel interface, although the
+controller has support for BT656 and CSI2.
 
-Eric
+Finally, this controller has an iommu that could be used in this driver,
+but as of today I've not been able to get it to work.
 
->
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->  include/linux/sysctl.h |  7 +++++++
->  kernel/sysctl.c        | 16 +++++++++++++---
->  2 files changed, 20 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
-> index 33a471b56345..89c92390e6de 100644
-> --- a/include/linux/sysctl.h
-> +++ b/include/linux/sysctl.h
-> @@ -208,6 +208,8 @@ extern void register_sysctl_init(const char *path, struct ctl_table *table,
->  extern struct ctl_table_header *register_sysctl_subdir(const char *base,
->  						       const char *subdir,
->  						       struct ctl_table *table);
-> +extern void register_sysctl_empty_subdir(const char *base, const char *subdir);
-> +
->  void do_sysctl_args(void);
->  
->  extern int pwrsw_enabled;
-> @@ -231,6 +233,11 @@ inline struct ctl_table_header *register_sysctl_subdir(const char *base,
->  	return NULL;
->  }
->  
-> +static inline void register_sysctl_empty_subdir(const char *base,
-> +						const char *subdir)
-> +{
-> +}
-> +
->  static inline struct ctl_table_header *register_sysctl_paths(
->  			const struct ctl_path *path, struct ctl_table *table)
->  {
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index f9a35325d5d5..460532cd5ac8 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -3188,13 +3188,17 @@ struct ctl_table_header *register_sysctl_subdir(const char *base,
->  		{ }
->  	};
->  
-> -	if (!table->procname)
-> +	if (table != sysctl_mount_point && !table->procname)
->  		goto out;
->  
->  	hdr = register_sysctl_table(base_table);
->  	if (unlikely(!hdr)) {
-> -		pr_err("failed when creating subdirectory sysctl %s/%s/%s\n",
-> -		       base, subdir, table->procname);
-> +		if (table != sysctl_mount_point)
-> +			pr_err("failed when creating subdirectory sysctl %s/%s/%s\n",
-> +			       base, subdir, table->procname);
-> +		else
-> +			pr_err("failed when creating empty subddirectory %s/%s\n",
-> +			       base, subdir);
->  		goto out;
->  	}
->  	kmemleak_not_leak(hdr);
-> @@ -3202,6 +3206,12 @@ struct ctl_table_header *register_sysctl_subdir(const char *base,
->  	return hdr;
->  }
->  EXPORT_SYMBOL_GPL(register_sysctl_subdir);
-> +
-> +void register_sysctl_empty_subdir(const char *base,
-> +				  const char *subdir)
-> +{
-> +	register_sysctl_subdir(base, subdir, sysctl_mount_point);
-> +}
->  #endif /* CONFIG_SYSCTL */
->  /*
->   * No sense putting this after each symbol definition, twice,
+Any review is welcome.
+
+Thanks,
+
+Maxime
+
+--- Changes since V1 ---
+
+ - Took reviews from Rob, Hans, Robin and Heiko into account :
+  - Renamed the clocks in the binding
+  - Fixed the DT schema compiling
+  - Fixed a few typos
+  - Used the clk bulk API
+  - Used the reset array API
+  - Changed a few helpers for more suitable ones
+  - Rebased on 5.7-rc7
+
+
+
+Maxime Chevallier (3):
+  media: dt-bindings: media: Document Rockchip CIF bindings
+  media: rockchip: Introduce driver for Rockhip's camera interface
+  arm64: dts: rockchip: Add the camera interface description of the PX30
+
+ .../bindings/media/rockchip-cif.yaml          |  100 ++
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |   12 +
+ drivers/media/platform/Kconfig                |   13 +
+ drivers/media/platform/Makefile               |    1 +
+ drivers/media/platform/rockchip/cif/Makefile  |    3 +
+ drivers/media/platform/rockchip/cif/capture.c | 1170 +++++++++++++++++
+ drivers/media/platform/rockchip/cif/dev.c     |  358 +++++
+ drivers/media/platform/rockchip/cif/dev.h     |  213 +++
+ drivers/media/platform/rockchip/cif/regs.h    |  256 ++++
+ 9 files changed, 2126 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/rockchip-cif.yaml
+ create mode 100644 drivers/media/platform/rockchip/cif/Makefile
+ create mode 100644 drivers/media/platform/rockchip/cif/capture.c
+ create mode 100644 drivers/media/platform/rockchip/cif/dev.c
+ create mode 100644 drivers/media/platform/rockchip/cif/dev.h
+ create mode 100644 drivers/media/platform/rockchip/cif/regs.h
+
+-- 
+2.25.4
+
