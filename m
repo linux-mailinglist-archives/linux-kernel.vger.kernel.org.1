@@ -2,126 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB05E1E72A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55CCF1E72AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390679AbgE2CiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 22:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389013AbgE2CiE (ORCPT
+        id S2391588AbgE2CkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 22:40:16 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:51811 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2389013AbgE2CkP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 22:38:04 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A2DC08C5C6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 19:38:04 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id n24so564082ejd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 19:38:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=LRWL3md3cdfmyEEJJW9b1YfTGvsPpjYM45xVODC6cfc=;
-        b=PWbxRWqfCKXeJr+EPrN+hJitAczR2rWP+QP2s/cIcVNKpQy7BtLNt0pCGIjwGby667
-         4RdLLFRuWU3RU7CNx40+MaNrKjI8fZWt3LJQK/IhGvKimWhThZe2EGUqwenVIB2sxdV1
-         FU3nUXh5J/+sJ+OjyR7yiIeJ0S2ahL7kI/YSPK0NXPx4787GGrIlKsWY3quqZtTlrMps
-         1nZrFpq/ER6cFFgJzWZ3L6HzFajogsYMCeDeeEfIzMrBTgD/0WamHS786L/zqHhim8lq
-         H8kwxnRzBjGeJy7VCsT3BoLtlq3S5b/v151SW8CLSn+NS1P9a90ENkKOHLtZxXplDgDE
-         Ffpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=LRWL3md3cdfmyEEJJW9b1YfTGvsPpjYM45xVODC6cfc=;
-        b=tY5txD2Eth/w1QPqZr0jdlGtwK7lsm4uH7bprmzHrAvmoC4qaQfld2QBOCP2S5VLRz
-         CvV4f6KRoU/E3+lxhEuazJrVuD1WwGngqTIzyT2tWCdTbJNCoeBgEnstuWc3JNe9KCqC
-         zFAT7BM6aZltTRhA8dxr27KqYf2HRtiPUJWcYecy5XQEU6981y/r6EYUlL0EtuavjgH0
-         wPJ20gi9pNn4FxPMGZ4iP4ELxAL798K+payNbbVnq/cbPQhj6bvmwuPTo5QfbtqZRqnO
-         9M6mlwXK97uLKSBjOOn7l7HuyqozxY4I+SGAw3ASb2VZdy2CiJPB9je21h9hh6sIRlA9
-         8kqg==
-X-Gm-Message-State: AOAM530UKAS4Ws0KOYc51lO70harGiLxCq8kGGpp/HWuPs/h8e98GaZx
-        p+G4KsGq7rUwkJA7f5f7KdqCX4oP7FRO9yT7XXA=
-X-Google-Smtp-Source: ABdhPJwuQwT+mh59AfvI9h748+ECizDXZ6gIe+r811X0N6LfgmL4jbXZrAOk/o8tGqll+chuI/++ePZj/hfmwWJqnTQ=
-X-Received: by 2002:a17:906:f115:: with SMTP id gv21mr104958ejb.340.1590719882776;
- Thu, 28 May 2020 19:38:02 -0700 (PDT)
+        Thu, 28 May 2020 22:40:15 -0400
+Received: from callcc.thunk.org (pool-100-0-195-244.bstnma.fios.verizon.net [100.0.195.244])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 04T2e6no018287
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 May 2020 22:40:07 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 431C2420304; Thu, 28 May 2020 22:40:06 -0400 (EDT)
+Date:   Thu, 28 May 2020 22:40:06 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jan Kara <jack@suse.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv5 0/5] Improve ext4 handling of ENOSPC with
+ multi-threaded use-case
+Message-ID: <20200529024006.GF228632@mit.edu>
+References: <cover.1589955723.git.riteshh@linux.ibm.com>
 MIME-Version: 1.0
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Fri, 29 May 2020 12:37:51 +1000
-Message-ID: <CAPM=9tznwDT9GEhbAHD1dkUVY_OF5bQNzxX7sBjXPkSH6VFjcw@mail.gmail.com>
-Subject: [git pull] drm fixes for 5.7 final (apologies release)
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1589955723.git.riteshh@linux.ibm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
 
-Apologies for previous PR, I did build it locally, I just don't build
-EXPERT kernels, I expect if I ever get a new builder I should add a
-few more configs to my list.
+Thanks, I've applied this patch series.
 
-I've just dropped the i915 PR from this completely, I'm sure when they
-wake up they'll be able to tell us what we are missing due to mistakes
-made.
+					- Ted
 
-Dave.
-
-drm-fixes-2020-05-29-1:
-drm fixes for 5.7 final
-
-amdgpu:
-- display atomic test fix
-- Fix soft hang in display vupdate code
-
-ingenic:
-- fix pointer cast
-- fix crtc atomic check callback
-The following changes since commit 9cb1fd0efd195590b828b9b865421ad345a4a145:
-
-  Linux 5.7-rc7 (2020-05-24 15:32:54 -0700)
-
-are available in the Git repository at:
-
-  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-05-29-1
-
-for you to fetch changes up to ed9244bd0b265c4c0866a9246c6e7cca1cca3acf:
-
-  Merge tag 'drm-misc-fixes-2020-05-28' of
-git://anongit.freedesktop.org/drm/drm-misc into drm-fixes (2020-05-29
-12:11:11 +1000)
-
-----------------------------------------------------------------
-drm fixes for 5.7 final
-
-amdgpu:
-- display atomic test fix
-- Fix soft hang in display vupdate code
-
-ingenic:
-- fix pointer cast
-- fix crtc atomic check callback
-
-----------------------------------------------------------------
-Aric Cyr (1):
-      drm/amd/display: Fix potential integer wraparound resulting in a hang
-
-Dave Airlie (2):
-      Merge tag 'amd-drm-fixes-5.7-2020-05-27' of
-git://people.freedesktop.org/~agd5f/linux into drm-fixes
-      Merge tag 'drm-misc-fixes-2020-05-28' of
-git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
-
-Paul Cercueil (2):
-      gpu/drm: ingenic: Fix bogus crtc_atomic_check callback
-      gpu/drm: Ingenic: Fix opaque pointer casted to wrong type
-
-Simon Ser (1):
-      drm/amd/display: drop cursor position check in atomic test
-
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c         | 7 -------
- drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c | 2 ++
- drivers/gpu/drm/ingenic/ingenic-drm.c                     | 6 +++---
- 3 files changed, 5 insertions(+), 10 deletions(-)
