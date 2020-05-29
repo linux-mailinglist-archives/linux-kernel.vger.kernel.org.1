@@ -2,118 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED5CF1E84A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C48A91E8490
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727884AbgE2RTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 13:19:42 -0400
-Received: from mout.gmx.net ([212.227.17.22]:48865 "EHLO mout.gmx.net"
+        id S1727808AbgE2RSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 13:18:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725821AbgE2RTl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 13:19:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1590772760;
-        bh=SSghX4fQBGTxIf7PjXQdIdo641GED8Z6u8uODLHkLDM=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=cTh6g67vPidzhusXMiiOXzRh2/xcUyHgOUse9mkFeBTjoojXuy0bAQWGX9TJkBj+I
-         OL8omeQ8PHgv6K5/DngMw/EZtj9VhfxUKaXWsLneGXqbsLRlfC1mD+DNbYFiDrT2aZ
-         f3QKgRcHxlKKe/qc5mINlUCrIHnY4rUceTSevThM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.229.196]) by mail.gmx.com
- (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1MqaxU-1jA6wZ3U5Q-00mfVU; Fri, 29 May 2020 19:19:20 +0200
-From:   Oscar Carter <oscar.carter@gmx.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Cc:     Oscar Carter <oscar.carter@gmx.com>,
-        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: [PATCH v3 1/2] drivers/irqchip: Add new macro ACPI_DECLARE_SUBTABLE_PROBE_ENTRY
-Date:   Fri, 29 May 2020 19:18:46 +0200
-Message-Id: <20200529171847.10267-2-oscar.carter@gmx.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200529171847.10267-1-oscar.carter@gmx.com>
-References: <20200529171847.10267-1-oscar.carter@gmx.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:rdaSFSQvyzluIQEylm4cUlsIYa3IM62+UJqstrmCUjnSAfZ7Go+
- mLXSMyT5rc6iZdKd8YcgHLT1bROWSa7tzBdY+DgUjeO0rTWcRNkGTYBCI6wIzhJa9kzm92l
- B9ISgIG0Atx+KEWvnKYfS9EoqJZovI8UkostenIRlfTK2sutw9evu6jBiXptbifD56dwmpV
- Ic6fXNOgJYcHF3o0ZjLtw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:B8FFhg+6+eE=:yTZz1wtcsksQD5aBjUyp1u
- gdWRPiklZ9r9msMJHM0+V6l5WCfq6EwZr7hhcW6tDl1DgkmG9Dfgkn3I+oEiarScWMJJVXBfr
- 6XpV8K00igtTs0JY8wBREVWl0KTCRgV8HQnsJMvz1SeekaQAvZP/GB1H6EoMYccS9lHFfHzo1
- quUs3FFVOsWggtOYshYWD5etQVNlDjK2VBK5eNt1oGPYAFdgSOx+gBQpH6s44qVzn9ue73qUm
- VydN3ZyR9YVMNV8X1Z74izVkk8d4W3oZBzbOHmRAsrOCH8ILghkebyx1EmEA7RlIUHhpXlu/c
- W9q9aDgkYS/aNTnRKEKaKtzE/oyIIXPXrHA0k214bSelW7/kHu4guMgWhd+3S+a2fCPtop4MS
- OOm3zkOhPb5QGgZcYATp12BK7uvX6E5WOZno40XsBQDAfoY2oY628piG20/qalJAHI337CgT8
- gAyStAbBzmT6lJ0dGXIdfNClzxlbuo+71nOKcK6urBNuGfvFngN6A0+sMHZ6q5eTo32TjEHbQ
- S5pH32CjbtPzFn6j6PKCsGw9FoI+5GzJ++4MmYbYIpMIPdXJ1KT2Jz8pp/qGuAvm75dZV4KdE
- QDoojVvSYuA/18bVOcMt2LglIb94Mc2sKtKnGKjLO61INCvQaNq5/1czi06r4E7f6CejtdvJM
- Cv9/wSqIZTishRyXJSSjOP6mO4bkciHGmhcjOstTlJltTOlhzqRaN4qVFitHSfLzhG0HlcqB4
- jSOgNbx12FkiNR4g6yPS8vkCi1nfT5JusGEnlIxSMJOE3cjFWubnCbFTBOT6/NmXFnHVfzl26
- RW3l3a821UFXImKIYaru69xYAjGAO5+9/z+EFCeR4fms4iQc9QAjRMaBtECICNxKMeIhdRU7K
- ZcdAnHIDW8mmfozW6HttAeP3D7UPusneDiD1+iicWPmb+YRdpbXcxE8obhUmP5fpZMkKS1KhA
- egyumwHaimpPQAn7L9PH8n9typUFZASXoFNeUaLkJ88t32xviuV0mJsFgEgYJzNAw7wFx9yzE
- Fb8jDob464yQlYRJtGODGC1CujCIWnkGVhKYUtsd4Q8a/hS27s9ohQHM/o6q2fcH8czEBoARp
- 847P860ThMHEXE55M+m/HTByaEtDWvMhLqCJqNSTBSTM+zZKXPp7P2m0i+qvUQ2VqFzWzMaaa
- AKxc9ICQ3G3caJhjtioUC2v94TApojbPuv5SVSdeyq+23bmLjNwLTovIhS8v7dsjCqMNx+8YA
- vB8zqDKJ7bttSdsmf
+        id S1725821AbgE2RSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 13:18:51 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EFB852074D;
+        Fri, 29 May 2020 17:18:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590772730;
+        bh=a5S1gx+JJjYPO8/mi+Gcgzo3QS58fT7hT71d61WRYqY=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=fr3b99EKpWX6dNiBPw7VavMlT7GriqwmdJIPGhfIMPclSFt3svBQ+4tI6fWQ90ct2
+         ux78Dcs4U0fu896v258Aup5J1T495R63lJH5K7WGmMOnz/c1jBJ+UruRGE6+O91nAG
+         uKEGDpzO80C/Q23LkPLZ3VSJqY94VGd97iPWWdME=
+Date:   Fri, 29 May 2020 18:18:47 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>
+In-Reply-To: <20200528190605.24850-1-f.fainelli@gmail.com>
+References: <20200528190605.24850-1-f.fainelli@gmail.com>
+Subject: Re: [PATCH] spi: bcm2835: Implement shutdown callback
+Message-Id: <159077271266.17043.15897964625717364519.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In an effort to enable -Wcast-function-type in the top-level Makefile to
-support Control Flow Integrity builds, there are the need to remove all
-the function callback casts.
+On Thu, 28 May 2020 12:06:05 -0700, Florian Fainelli wrote:
+> Make sure we clear the FIFOs, stop the block, disable the clock and
+> release the DMA channel.
 
-To do this, create a new macro called ACPI_DECLARE_SUBTABLE_PROBE_ENTRY
-to initialize the acpi_probe_entry struct using the probe_subtbl field
-instead of the probe_table field. This is a previous work to be able to
-modify the IRQCHIP_ACPI_DECLARE macro to use this new defined macro.
+Applied to
 
-Even though these two commented fields are part of a union, this is
-necessary to avoid function cast mismatches. That is, due to the
-IRQCHIP_ACPI_DECLARE invocations use as last parameter a function with
-the protoype "int (*func)(struct acpi_subtable_header *, const unsigned
-long)" it's necessary that this macro initialize the probe_subtbl field
-of the acpi_probe_entry struct and not the probe_table field.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-Co-developed-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
-=2D--
- include/linux/acpi.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Thanks!
 
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index d661cd0ee64d..cf74e044a570 100644
-=2D-- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -1154,6 +1154,17 @@ struct acpi_probe_entry {
- 			.driver_data =3D data, 				\
- 		   }
+[1/1] spi: bcm2835: Implement shutdown callback
+      commit: 118eb0e52eb74b899053a0f46dfe7e178788d23b
 
-+#define ACPI_DECLARE_SUBTABLE_PROBE_ENTRY(table, name, table_id,	\
-+					  subtable, valid, data, fn)	\
-+	static const struct acpi_probe_entry __acpi_probe_##name	\
-+		__used __section(__##table##_acpi_probe_table) =3D {	\
-+			.id =3D table_id,					\
-+			.type =3D subtable,				\
-+			.subtable_valid =3D valid,			\
-+			.probe_subtbl =3D fn,				\
-+			.driver_data =3D data,				\
-+		}
-+
- #define ACPI_PROBE_TABLE(name)		__##name##_acpi_probe_table
- #define ACPI_PROBE_TABLE_END(name)	__##name##_acpi_probe_table_end
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-=2D-
-2.20.1
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
