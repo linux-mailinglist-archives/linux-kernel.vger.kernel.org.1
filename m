@@ -2,95 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 474D01E859C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07EAA1E85D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727941AbgE2RrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 13:47:24 -0400
-Received: from bmailout3.hostsharing.net ([176.9.242.62]:42463 "EHLO
-        bmailout3.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgE2RrW (ORCPT
+        id S1727090AbgE2Rx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 13:53:29 -0400
+Received: from correo.sedis.gob.hn ([181.210.29.20]:44746 "EHLO
+        correo.sedis.gob.hn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725913AbgE2Rx3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 13:47:22 -0400
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
-        by bmailout3.hostsharing.net (Postfix) with ESMTPS id 10E47102F54BE;
-        Fri, 29 May 2020 19:47:20 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 906A018297B; Fri, 29 May 2020 19:47:19 +0200 (CEST)
-Date:   Fri, 29 May 2020 19:47:19 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] spi: bcm2835: Implement shutdown callback
-Message-ID: <20200529174719.5tvchnoov747fm2x@wunner.de>
-References: <20200528190605.24850-1-f.fainelli@gmail.com>
+        Fri, 29 May 2020 13:53:29 -0400
+X-Greylist: delayed 359 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 May 2020 13:53:28 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by correo.sedis.gob.hn (Postfix) with ESMTP id 29A523A45B17
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 11:36:02 -0600 (CST)
+Received: from correo.sedis.gob.hn ([127.0.0.1])
+        by localhost (correo.sedis.gob.hn [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 7MI_DW4rSqZV for <linux-kernel@vger.kernel.org>;
+        Fri, 29 May 2020 11:35:55 -0600 (CST)
+Received: from localhost (localhost [127.0.0.1])
+        by correo.sedis.gob.hn (Postfix) with ESMTP id 874D33A45BBF
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 11:35:55 -0600 (CST)
+DKIM-Filter: OpenDKIM Filter v2.9.2 correo.sedis.gob.hn 874D33A45BBF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sedis.gob.hn;
+        s=A427C38E-D248-11E8-9BA0-D0B28049A209; t=1590773755;
+        bh=miIl7TnFRsNIe8Gr2ygzvdWD4shZqBrPDoXAmd2y9pA=;
+        h=Date:Subject:Message-Id:From:To:Reply-To:MIME-Version:
+         Content-Type:Content-Transfer-Encoding;
+        b=Q7DQy0Tvs74qZoRT/fLJiBMX3vbzuTsTc7LutnJUOY2D2Wquz4no/5/vTOn5t3xay
+         Klb2Mb8ImGA0ra+QSsiU2GnM80PHoy62EQbvFhQUtBrvWYJyuB+mYtjVbZpnazSqWZ
+         xCSwXizAcp/o0oN2mWkb5OG/OpU8ESzZ+sOB7DJk=
+X-Virus-Scanned: amavisd-new at correo.sedis.gob.hn
+Received: from correo.sedis.gob.hn ([127.0.0.1])
+        by localhost (correo.sedis.gob.hn [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id FwY9xyxD7pUe for <linux-kernel@vger.kernel.org>;
+        Fri, 29 May 2020 11:35:55 -0600 (CST)
+Received: from correo.sedis.gob.hn (unknown [123.21.29.15])
+        by correo.sedis.gob.hn (Postfix) with ESMTPSA id A4DCD3A45BCF
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 11:35:54 -0600 (CST)
+Date:   Fri, 29 May 2020 20:47:20 +0300
+Subject: 
+Message-Id: <yqmkn04881g8938frxusv7kg.15907744402443@email.android.com>
+From:   "Chris Rankin" <rankincj@sedis.gob.hn>
+To:     "linux kernel" <linux-kernel@vger.kernel.org>
+Reply-To: "Chris Rankin" <rankincjr@yahoo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200528190605.24850-1-f.fainelli@gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 12:06:05PM -0700, Florian Fainelli wrote:
-> Make sure we clear the FIFOs, stop the block, disable the clock and
-> release the DMA channel.
+ICAgTGludXgNCg0KaHR0cHM6Ly9qLm1wLzJYQzQzOXoNCg0KDQpDaHJpcyBSYW5raW4=
 
-To what end?  Why is this change necessary?  Sorry but this seems like
-an awfully terse commit message.
-
-Thanks,
-
-Lukas
-
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  drivers/spi/spi-bcm2835.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/drivers/spi/spi-bcm2835.c b/drivers/spi/spi-bcm2835.c
-> index 20d8581fdf88..237bd306c268 100644
-> --- a/drivers/spi/spi-bcm2835.c
-> +++ b/drivers/spi/spi-bcm2835.c
-> @@ -1391,6 +1391,15 @@ static int bcm2835_spi_remove(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> +static void bcm2835_spi_shutdown(struct platform_device *pdev)
-> +{
-> +	int ret;
-> +
-> +	ret = bcm2835_spi_remove(pdev);
-> +	if (ret)
-> +		dev_err(&pdev->dev, "failed to shutdown\n");
-> +}
-> +
->  static const struct of_device_id bcm2835_spi_match[] = {
->  	{ .compatible = "brcm,bcm2835-spi", },
->  	{}
-> @@ -1404,6 +1413,7 @@ static struct platform_driver bcm2835_spi_driver = {
->  	},
->  	.probe		= bcm2835_spi_probe,
->  	.remove		= bcm2835_spi_remove,
-> +	.shutdown	= bcm2835_spi_shutdown,
->  };
->  module_platform_driver(bcm2835_spi_driver);
->  
-> -- 
-> 2.17.1
-> 
