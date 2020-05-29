@@ -2,244 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB451E7707
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 09:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F691E76A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 09:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgE2HjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 03:39:15 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:43666 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725906AbgE2HjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 03:39:13 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5AA131A003B;
-        Fri, 29 May 2020 09:39:10 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5342A1A0034;
-        Fri, 29 May 2020 09:39:06 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 50235402A7;
-        Fri, 29 May 2020 15:39:01 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        amit.kucheria@verdurent.com, robh+dt@kernel.org,
-        hongtao.jia@freescale.com, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH] dt-bindings: thermal: Convert qoriq to json-schema
-Date:   Fri, 29 May 2020 15:28:58 +0800
-Message-Id: <1590737338-7318-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1725833AbgE2HbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 03:31:24 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:56086 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725562AbgE2HbX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 03:31:23 -0400
+Received: by mail-wm1-f68.google.com with SMTP id c71so2015839wmd.5;
+        Fri, 29 May 2020 00:31:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ffhLZMrViw3MrgcjzzAlVHQkuqxpqvv1nCa66wY1aZo=;
+        b=PczKixOTHrtiPvjgB2DJyuCIxde8avftNJttXvmcON7Rct7YZLQNcis4v8bZAUabnJ
+         oJ5lPYS0d/0kRGph8lOEtbWOO/A2lq7IvQjLjhhH0jZNbnFhduNqF6GbL08XXsQewD3k
+         Vu/IGralvFqPULjc5GJIDKue8AbCGwgcwv4sq50iA1jR084fZib0GOmU6LK6skpHMMOw
+         VnAxFJldxltR40AgH211NhYvojBvUmMQ8tIKTn2/a6uXT997yYpL3tv21CeX6jqimo0/
+         aOdNQOTvpbULsm7V0QE9HxPAu5t4O8PpAy4XRf4zS5QJAUh18V8c8zOGihnD0n2lakHs
+         SXrQ==
+X-Gm-Message-State: AOAM531TOFtboXUjyAYPZgxeGwiJWGVA4Ac4WWKr+ZRCbNIplYNdOmFw
+        qBzW+AjAepjhWXeX/JpelBc=
+X-Google-Smtp-Source: ABdhPJwqGRvBJZ39RA8lb+c5fQWLg7apIx+WQpWJMiVct5D3jPraX49B8Wt72Som/FLeLVqDkSKw1A==
+X-Received: by 2002:a7b:cc06:: with SMTP id f6mr7086871wmh.119.1590737481490;
+        Fri, 29 May 2020 00:31:21 -0700 (PDT)
+Received: from localhost (ip-37-188-185-40.eurotel.cz. [37.188.185.40])
+        by smtp.gmail.com with ESMTPSA id s5sm9358013wme.37.2020.05.29.00.31.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2020 00:31:19 -0700 (PDT)
+Date:   Fri, 29 May 2020 09:31:18 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm, memcg: reclaim more aggressively before high
+ allocator throttling
+Message-ID: <20200529073118.GE4406@dhcp22.suse.cz>
+References: <20200520170430.GG6462@dhcp22.suse.cz>
+ <20200520175135.GA793901@cmpxchg.org>
+ <20200521073245.GI6462@dhcp22.suse.cz>
+ <20200521135152.GA810429@cmpxchg.org>
+ <20200521143515.GU6462@dhcp22.suse.cz>
+ <20200521163833.GA813446@cmpxchg.org>
+ <20200521173701.GX6462@dhcp22.suse.cz>
+ <20200521184505.GA815980@cmpxchg.org>
+ <20200528163101.GJ27484@dhcp22.suse.cz>
+ <20200528164848.GB839178@chrisdown.name>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200528164848.GB839178@chrisdown.name>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the qoriq thermal binding to DT schema format using json-schema
+On Thu 28-05-20 17:48:48, Chris Down wrote:
+> Michal Hocko writes:
+> > > We send a simple bug fix: bring this instance of reclaim in line with
+> > > how everybody else is using the reclaim API, to meet the semantics as
+> > > they are intendend and documented.
+> > 
+> > Here is where we are not on the same page though. Once you have identified
+> > that the main problem is that the reclaim fails too early to meet the
+> > target then the fix would be to enforce that target. I have asked why
+> > this hasn't been done and haven't got any real answer for that. Instead
+> > what you call "a simple bug fix" has larger consequences which are not
+> > really explained in the changelog and they are also not really trivial
+> > to see. If the changelog explicitly stated that the proportional memory
+> > reclaim is not sufficient because XYZ and the implementation has been
+> > changed to instead meet the high limit target then this would be a
+> > completely different story and I believe we could have saved some
+> > discussion.
+> 
+> I agree that the changelog can be made more clear. Any objection if I send
+> v2 with changelog changes to that effect, then? :-)
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- .../devicetree/bindings/thermal/qoriq-thermal.txt  |  71 -------------
- .../devicetree/bindings/thermal/qoriq-thermal.yaml | 111 +++++++++++++++++++++
- 2 files changed, 111 insertions(+), 71 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/thermal/qoriq-thermal.txt
- create mode 100644 Documentation/devicetree/bindings/thermal/qoriq-thermal.yaml
+Yes, please. And I would highly appreciate to have the above addressed.
+So that we do not have to really scratch heads why a particular design
+decision has been made and argue what was the thinking behind.
 
-diff --git a/Documentation/devicetree/bindings/thermal/qoriq-thermal.txt b/Documentation/devicetree/bindings/thermal/qoriq-thermal.txt
-deleted file mode 100644
-index 28f2cba..0000000
---- a/Documentation/devicetree/bindings/thermal/qoriq-thermal.txt
-+++ /dev/null
-@@ -1,71 +0,0 @@
--* Thermal Monitoring Unit (TMU) on Freescale QorIQ SoCs
--
--Required properties:
--- compatible : Must include "fsl,qoriq-tmu" or "fsl,imx8mq-tmu". The
--	version of the device is determined by the TMU IP Block Revision
--	Register (IPBRR0) at offset 0x0BF8.
--	Table of correspondences between IPBRR0 values and example  chips:
--		Value           Device
--		----------      -----
--		0x01900102      T1040
--- reg : Address range of TMU registers.
--- interrupts : Contains the interrupt for TMU.
--- fsl,tmu-range : The values to be programmed into TTRnCR, as specified by
--	the SoC reference manual. The first cell is TTR0CR, the second is
--	TTR1CR, etc.
--- fsl,tmu-calibration : A list of cell pairs containing temperature
--	calibration data, as specified by the SoC reference manual.
--	The first cell of each pair is the value to be written to TTCFGR,
--	and the second is the value to be written to TSCFGR.
--- #thermal-sensor-cells : Must be 1. The sensor specifier is the monitoring
--	site ID, and represents the "n" in TRITSRn and TRATSRn.
--
--Optional property:
--- little-endian : If present, the TMU registers are little endian. If absent,
--	the default is big endian.
--- clocks : the clock for clocking the TMU silicon.
--
--Example:
--
--tmu@f0000 {
--	compatible = "fsl,qoriq-tmu";
--	reg = <0xf0000 0x1000>;
--	interrupts = <18 2 0 0>;
--	fsl,tmu-range = <0x000a0000 0x00090026 0x0008004a 0x0001006a>;
--	fsl,tmu-calibration = <0x00000000 0x00000025
--			       0x00000001 0x00000028
--			       0x00000002 0x0000002d
--			       0x00000003 0x00000031
--			       0x00000004 0x00000036
--			       0x00000005 0x0000003a
--			       0x00000006 0x00000040
--			       0x00000007 0x00000044
--			       0x00000008 0x0000004a
--			       0x00000009 0x0000004f
--			       0x0000000a 0x00000054
--
--			       0x00010000 0x0000000d
--			       0x00010001 0x00000013
--			       0x00010002 0x00000019
--			       0x00010003 0x0000001f
--			       0x00010004 0x00000025
--			       0x00010005 0x0000002d
--			       0x00010006 0x00000033
--			       0x00010007 0x00000043
--			       0x00010008 0x0000004b
--			       0x00010009 0x00000053
--
--			       0x00020000 0x00000010
--			       0x00020001 0x00000017
--			       0x00020002 0x0000001f
--			       0x00020003 0x00000029
--			       0x00020004 0x00000031
--			       0x00020005 0x0000003c
--			       0x00020006 0x00000042
--			       0x00020007 0x0000004d
--			       0x00020008 0x00000056
--
--			       0x00030000 0x00000012
--			       0x00030001 0x0000001d>;
--	#thermal-sensor-cells = <1>;
--};
-diff --git a/Documentation/devicetree/bindings/thermal/qoriq-thermal.yaml b/Documentation/devicetree/bindings/thermal/qoriq-thermal.yaml
-new file mode 100644
-index 0000000..bfbfa04
---- /dev/null
-+++ b/Documentation/devicetree/bindings/thermal/qoriq-thermal.yaml
-@@ -0,0 +1,111 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/thermal/qoriq-thermal.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Thermal Monitoring Unit (TMU) on Freescale QorIQ SoCs
-+
-+maintainers:
-+  - Hongtao Jia <hongtao.jia@freescale.com>
-+
-+properties:
-+  compatible:
-+    description: |
-+      The version of the device is determined by the TMU IP Block Revision
-+      Register (IPBRR0) at offset 0x0BF8.
-+      Table of correspondences between IPBRR0 values and example chips:
-+            Value           Device
-+            ----------      -----
-+            0x01900102      T1040
-+    enum:
-+      - fsl,qoriq-tmu
-+      - fsl,imx8mq-tmu
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  fsl,tmu-range:
-+    $ref: '/schemas/types.yaml#/definitions/uint32-array'
-+    description: |
-+      The values to be programmed into TTRnCR, as specified by the SoC
-+      reference manual. The first cell is TTR0CR, the second is TTR1CR, etc.
-+
-+  fsl,tmu-calibration:
-+    $ref: '/schemas/types.yaml#/definitions/uint32-array'
-+    description: |
-+      A list of cell pairs containing temperature calibration data, as
-+      specified by the SoC reference manual. The first cell of each pair
-+      is the value to be written to TTCFGR, and the second is the value
-+      to be written to TSCFGR.
-+
-+  little-endian:
-+    description: |
-+      boolean, if present, the TMU registers are little endian. If absent,
-+      the default is big endian.
-+    type: boolean
-+
-+  clocks:
-+    maxItems: 1
-+
-+  "#thermal-sensor-cells":
-+    const: 1
-+    description: |
-+      Number of cells required to uniquely identify the thermal sensors. This
-+      is set to 1 for multiple sensors.
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - fsl,tmu-range
-+  - fsl,tmu-calibration
-+  - '#thermal-sensor-cells'
-+
-+examples:
-+  - |
-+    tmu@f0000 {
-+        compatible = "fsl,qoriq-tmu";
-+        reg = <0xf0000 0x1000>;
-+        interrupts = <18 2 0 0>;
-+        fsl,tmu-range = <0x000a0000 0x00090026 0x0008004a 0x0001006a>;
-+        fsl,tmu-calibration = <0x00000000 0x00000025
-+                               0x00000001 0x00000028
-+                               0x00000002 0x0000002d
-+                               0x00000003 0x00000031
-+                               0x00000004 0x00000036
-+                               0x00000005 0x0000003a
-+                               0x00000006 0x00000040
-+                               0x00000007 0x00000044
-+                               0x00000008 0x0000004a
-+                               0x00000009 0x0000004f
-+                               0x0000000a 0x00000054
-+
-+                               0x00010000 0x0000000d
-+                               0x00010001 0x00000013
-+                               0x00010002 0x00000019
-+                               0x00010003 0x0000001f
-+                               0x00010004 0x00000025
-+                               0x00010005 0x0000002d
-+                               0x00010006 0x00000033
-+                               0x00010007 0x00000043
-+                               0x00010008 0x0000004b
-+                               0x00010009 0x00000053
-+
-+                               0x00020000 0x00000010
-+                               0x00020001 0x00000017
-+                               0x00020002 0x0000001f
-+                               0x00020003 0x00000029
-+                               0x00020004 0x00000031
-+                               0x00020005 0x0000003c
-+                               0x00020006 0x00000042
-+                               0x00020007 0x0000004d
-+                               0x00020008 0x00000056
-+
-+                               0x00030000 0x00000012
-+                               0x00030001 0x0000001d>;
-+        #thermal-sensor-cells = <1>;
-+    };
+> > > And somehow this is controversial, and we're just changing around user
+> > > promises as we see fit for our particular usecase?
+> > > 
+> > > I don't even understand how the supposed alternate semantics you read
+> > > between the lines in the documentation would make for a useful
+> > > feature: It may fail to contain a group of offending tasks to the
+> > > configured limit, but it will be fair to those tasks while doing so?
+> > > 
+> > > > But if your really want to push this through then let's do it
+> > > > properly at least. memcg->memcg_nr_pages_over_high has only very
+> > > > vague meaning if the reclaim target is the high limit.
+> > > 
+> > > task->memcg_nr_pages_over_high is not vague, it's a best-effort
+> > > mechanism to distribute fairness. It's the current task's share of the
+> > > cgroup's overage, and it allows us in the majority of situations to
+> > > distribute reclaim work and sleeps in proportion to how much the task
+> > > is actually at fault.
+> > 
+> > Agreed. But this stops being the case as soon as the reclaim target has
+> > been reached and new reclaim attempts are enforced because the memcg is
+> > still above the high limit. Because then you have a completely different
+> > reclaim target - get down to the limit. This would be especially visible
+> > with a large memcg_nr_pages_over_high which could even lead to an over
+> > reclaim.
+> 
+> We actually over reclaim even before this patch -- this patch doesn't bring
+> much new in that regard.
+> 
+> Tracing try_to_free_pages for a cgroup at the memory.high threshold shows
+> that before this change, we sometimes even reclaim on the order of twice the
+> number of pages requested. For example, I see cases where we requested 1000
+> pages to be reclaimed, but end up reclaiming 2000 in a single reclaim
+> attempt.
+
+This is interesting and worth looking into. I am aware that we can
+reclaim potentially much more pages during the icache reclaim and that
+there was a heated discussion without any fix merged in the end IIRC.
+Do you have any details?
+
 -- 
-2.7.4
-
+Michal Hocko
+SUSE Labs
