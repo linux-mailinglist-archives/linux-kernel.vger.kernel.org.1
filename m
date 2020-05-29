@@ -2,93 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E65781E88E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC97F1E891C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728134AbgE2U2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 16:28:43 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:19292 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726926AbgE2U2m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 16:28:42 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ed170250000>; Fri, 29 May 2020 13:27:17 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Fri, 29 May 2020 13:28:42 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Fri, 29 May 2020 13:28:42 -0700
-Received: from [10.2.87.173] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 29 May
- 2020 20:28:41 +0000
-Subject: Re: [PATCH] staging: gasket: Convert get_user_pages*() -->
- pin_user_pages*()
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Souptick Joarder <jrdr.linux@gmail.com>
-CC:     <devel@driverdev.osuosl.org>, <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>, <rspringer@google.com>,
-        <toddpoynor@google.com>
-References: <1590613362-27495-1-git-send-email-jrdr.linux@gmail.com>
- <20200528110408.GJ30374@kadam> <20200529115330.GO30374@kadam>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <bd1064bf-65ae-2c5f-0dad-b52ae12c2ece@nvidia.com>
-Date:   Fri, 29 May 2020 13:28:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1728285AbgE2Up5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 16:45:57 -0400
+Received: from myself5.de ([5.230.26.43]:48400 "EHLO myself5.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726975AbgE2Up5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 16:45:57 -0400
+X-Greylist: delayed 2346 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 May 2020 16:45:56 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=myself5.de; s=mail;
+        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From; bh=iZ1nU2Th/78kpVP/x2Kp7M+JS1r1Au1YceHQ2YXu6h8=;
+        b=WbTVhuq2UGLuVX2ir0f8NOCO7jy7Q70dFtbWqnuCVXzBbCMT6O2EQipB4IVfsOHZKF9Olzo2hP14wq0ncQX2JF5sXYDj9JqZgptd/cHvQLYlSaNXetgFUQj/+iXribwfXW4jYR8T6MjbuQvVxnkAHQQOgshtlQrXoskaHQ4DysbNRfc4q4IwMkKZqX4Ir5VC8uorlXTn8MQId/UieA1niwVO8E48umO7RCKutOCZwThO9dEl9qWKwkBdKZvokC2zRqy3YOE/K3INV2ZbsmyUwWJbQL6xHp9sP4Awey9EobYJUdaBTaxc5U4yh3IKCNT5Z/ypGbJlw00WfqjNpXgdaw==;
+Received: from hsi-kbw-085-216-061-247.hsi.kabelbw.de ([85.216.61.247] helo=M5TR.fritz.box)
+        by myself5.de with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.84_2)
+        (envelope-from <me@myself5.de>)
+        id 1jelGz-0003rj-FV; Fri, 29 May 2020 22:06:33 +0200
+From:   Christian Oder <me@myself5.de>
+Cc:     myself5@carbonrom.org, Christian Oder <me@myself5.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Allison Randal <allison@lohutok.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Chuhong Yuan <hslester96@gmail.com>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] iio: accel: mxc4005: add support for mxc6655
+Date:   Fri, 29 May 2020 22:05:49 +0200
+Message-Id: <20200529200550.357118-1-me@myself5.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200529115330.GO30374@kadam>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1590784037; bh=/zEeOofiTZp0ZN4TMVdNueb74rWQtstcMaq8AqpNAXo=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=TNx4pfV1Oa5Gt92dyvF6CRTaALmkT1IqZLtRev4uhQqtIZ+IAVkhIXy4c/Ktu6Wjk
-         3RnO4Goto2RAnvTjfqV+DXrgpiTlBVU6LqoH9louFwwgn/Y72hijNJeeC4Yg6cV7+c
-         2WiBK1iZmAjABwfMmFeM5FbeOItOax32HVaTLJvlfxH38v3QjK8pzMDVHK3BzhNdht
-         gEPGLsWkNT/2jmvGUFQqlC+KPm/3uVvgbdzWlykBAiRiI+r4/S9wZAUnmm/Pxv7svm
-         5ISgugk4zGmuDa8pt3c9viPzCcKg3JPaEPkG3CRoV1ftf6P2vdv9ryHTgf6sVY5nI6
-         +1uHGUPhExX6Q==
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-29 04:53, Dan Carpenter wrote:
-...
-> What are the runtime implications of this patch?  I'm still not clear on
-> that honestly.
+The mxc6655 is fully working with the existing mxc4005 driver.
+Add support for it.
 
-Instead of incrementing each page's refcount by 1 (with get_user_pages()),
-pin_user_pages*() will increment by GUP_PIN_COUNTING_BIAS, which is 1024.
-That by itself should not have any performance impact, of course, but
-there's a couple more things:
+Signed-off-by: Christian Oder <me@myself5.de>
+---
+ drivers/iio/accel/mxc4005.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-For compound pages of more than 2 page size, it will also increment
-a separate struct page's field, via hpage_pincount_add().
-
-And finally, it will update /proc/vmstat counters on pin and unpin, via
-the optimized mod_node_page_state() call.
-
-So it's expected to be very light. And, for DMA (as opposed to DIO)
-situations, the DMA setup time is inevitably much greater than any of
-the above overheads, so I expect that this patch will be completely
-invisible from a performance point of view.
-
-It would be a "nice to have", though, if anyone were able to do a
-performance comparison on the gasket driver for this patch, and/or
-basic runtime verification, since I'm sure it's a specialized setup.
-
-
-thanks,
+diff --git a/drivers/iio/accel/mxc4005.c b/drivers/iio/accel/mxc4005.c
+index 3d5bea651923..3b8614352cb4 100644
+--- a/drivers/iio/accel/mxc4005.c
++++ b/drivers/iio/accel/mxc4005.c
+@@ -474,12 +474,14 @@ static int mxc4005_probe(struct i2c_client *client,
+ 
+ static const struct acpi_device_id mxc4005_acpi_match[] = {
+ 	{"MXC4005",	0},
++	{"MXC6655",	0},
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(acpi, mxc4005_acpi_match);
+ 
+ static const struct i2c_device_id mxc4005_id[] = {
+ 	{"mxc4005",	0},
++	{"mxc6655",	0},
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(i2c, mxc4005_id);
 -- 
-John Hubbard
-NVIDIA
+2.26.2
+
