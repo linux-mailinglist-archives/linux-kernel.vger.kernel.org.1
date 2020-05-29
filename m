@@ -2,81 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BEC61E87C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 21:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9871E87C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 21:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728102AbgE2T1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 15:27:20 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:40086 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726866AbgE2T1T (ORCPT
+        id S1727995AbgE2T2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 15:28:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726487AbgE2T2u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 15:27:19 -0400
-Received: by mail-io1-f67.google.com with SMTP id q8so543999iow.7;
-        Fri, 29 May 2020 12:27:17 -0700 (PDT)
+        Fri, 29 May 2020 15:28:50 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577D2C08C5C8
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 12:28:50 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id j32so2875647qte.10
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 12:28:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=massaru-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2yrhlCJB5EdnMFeYW6dCoHgeGO9Wv2PNUyggTiWf66I=;
+        b=rM5yGeEPKD1ETwS8p5hRXM1GRXsRU0ckAKC3dyimsrlw1vS2rJwpsAMVoQTgtFp/DV
+         FZHDJ4blwRXdYidNVLHlZkwf/JjNlrxftmAzDI4YNv57PCZn16bKvW8Nbet9apvrGJpB
+         Dh/cAqXEbs7XMI6pWL93SaGxEWJjols/VZTB7lraAPLuupPcyjB0vvNei3Ax64CJmVDM
+         fDdTBepAccSwosJIH6L02feciSsBqqz9GGij+ncBgVWBDiSlua+gQtWczj/baqHgZweG
+         vY9vh+CxNJf5TEjZa/UxWbHsZHQAJuqz41u1xCrnAOxcLSk6oJQpkOk8MnbC/Csho+Nl
+         jpxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/aw5rjkKZ1aNLtzNBPRgdXUzA/GNRGygjmxINK2X5fA=;
-        b=eV/Mi4WwwWa3DWlq519I98Q3928vrnTRASTCn849XMHBKmAXmumMefZvMbmQ/c39J2
-         mf15nHjRuncP+U/dafc0XBoFcS+sA6WTfVWFqdmrJoLKjsC80+1/fv/d4aCW6vat1P2h
-         6PsMwmR0M/xEri9+CfvHlmp/C4eJsbAsYDVNe81nNSjhp/Lnk9CHyGz9/8E9q6UWZ2wu
-         IEZx6DstJbcZkrgMZ4GBu/+KB6G9Yud7y6srdniKgsUgh/15Tdt/qFNnoDC1cqBfMQh5
-         +ZXHfkw2eqG/8OSsxx7SjKLn5iImW42VvUlWe6ef4NchAsQc+srkhgLKYALbMy3uRNz0
-         misA==
-X-Gm-Message-State: AOAM531ElIaDi2EQtygdQiKcgBwmU9LaQ9yfACV5r4ho6Jg+glTbercb
-        lDEWp9KgWYGNGSVaQ2zGlw==
-X-Google-Smtp-Source: ABdhPJzI+XOVZoeOXsD31yjOKfbl4d6VkVa2jbPtpd2RLN5CANUU/Kj27igKjwRkwCJ3YG/2Z4DjRQ==
-X-Received: by 2002:a02:90cd:: with SMTP id c13mr8587847jag.83.1590780437502;
-        Fri, 29 May 2020 12:27:17 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id v76sm5436198ill.73.2020.05.29.12.27.16
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2yrhlCJB5EdnMFeYW6dCoHgeGO9Wv2PNUyggTiWf66I=;
+        b=G9KolZpzVqt2qNkbgjDyWjV+75lgwbXmzmAr5zpo5x04UgEkUZFYxklCAFAXzeZCXH
+         FchnxPn/C7mccOWjpYv6tcuFFO/y1g723aZCFIjYUftcR0kKqHY0ZqO+Zu06Tq6lDT4O
+         MUgmte62wkSmatrARaUsmBsREhqMWKiXTvUJzdoHIck3znlKIygSe53Z2QtpRh8VoTkl
+         3YYU4hPVZv0Q57je1mpCGEmWEMWqelMG4xYdptcq+y85jvUnaa3xvmm5m5LomxgJtSLS
+         wiSBRX7BPPj64f50RHnNUHBSBaM1QeKpeIeoOeZGQg82m8qRWqzkNcCC90MsQjURcndV
+         gZ9Q==
+X-Gm-Message-State: AOAM532epQze9x4sEc0WIw7IhojNIV9WZtcUjfM6D9skV3A0LpAbwRAK
+        JFnIx5CoCKd8J/8LRra4zkrF5Q==
+X-Google-Smtp-Source: ABdhPJx5RzeYnSHBhEQtvg6BqNax43i3eDbcLHygMZ5Uh9urOiS7DO2jD4wj/aIF6aluVDFXTouPAw==
+X-Received: by 2002:ac8:4556:: with SMTP id z22mr10639657qtn.37.1590780529381;
+        Fri, 29 May 2020 12:28:49 -0700 (PDT)
+Received: from bbking.lan ([2804:14c:4a5:36c::cd2])
+        by smtp.gmail.com with ESMTPSA id v126sm7486339qkd.36.2020.05.29.12.28.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 12:27:16 -0700 (PDT)
-Received: (nullmailer pid 2799831 invoked by uid 1000);
-        Fri, 29 May 2020 19:27:15 -0000
-Date:   Fri, 29 May 2020 13:27:15 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Pedro Tsai <pedro.tsai@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        Fabien Parent <fparent@baylibre.com>,
-        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Stephane Le Provost <stephane.leprovost@mediatek.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andrew Perepech <andrew.perepech@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next v2] dt-bindings: net: rename the bindings
- document for MediaTek STAR EMAC
-Message-ID: <20200529192715.GA2799386@bogus>
-References: <20200528135902.14041-1-brgl@bgdev.pl>
+        Fri, 29 May 2020 12:28:48 -0700 (PDT)
+From:   Vitor Massaru Iha <vitor@massaru.org>
+To:     kunit-dev@googlegroups.com, skhan@linuxfoundation.org
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brendanhiggins@google.com,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] kunit: Fix TabError, remove defconfig code and handle when there is no kunitconfig
+Date:   Fri, 29 May 2020 16:28:45 -0300
+Message-Id: <20200529192845.60468-1-vitor@massaru.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200528135902.14041-1-brgl@bgdev.pl>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 May 2020 15:59:02 +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> 
-> The driver itself was renamed before getting merged into mainline, but
-> the binding document kept the old name. This makes both names consistent.
-> 
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> ---
-> v1 -> v2:
-> - update the id field as well
-> 
->  .../net/{mediatek,eth-mac.yaml => mediatek,star-emac.yaml}      | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->  rename Documentation/devicetree/bindings/net/{mediatek,eth-mac.yaml => mediatek,star-emac.yaml} (96%)
-> 
+The identation before this code (`if not os.path.exists(cli_args.build_dir):``)
+was with spaces instead of tabs after fixed up merge conflits,
+this commit revert spaces to tabs:
 
-Acked-by: Rob Herring <robh@kernel.org>
+[iha@bbking linux]$ tools/testing/kunit/kunit.py run
+  File "tools/testing/kunit/kunit.py", line 247
+    if not linux:
+                ^
+TabError: inconsistent use of tabs and spaces in indentation
+
+Remove defconfig related code to fix these two errors,
+the commit 9bdf64b35 was created before 45ba7a893ad,
+and the commit 9bdf64b35 removes defconfig related code:
+
+[iha@bbking linux]$ tools/testing/kunit/kunit.py run
+Traceback (most recent call last):
+  File "tools/testing/kunit/kunit.py", line 338, in <module>
+    main(sys.argv[1:])
+  File "tools/testing/kunit/kunit.py", line 215, in main
+    add_config_opts(config_parser)
+
+[iha@bbking linux]$ tools/testing/kunit/kunit.py run
+Traceback (most recent call last):
+  File "tools/testing/kunit/kunit.py", line 337, in <module>
+    main(sys.argv[1:])
+  File "tools/testing/kunit/kunit.py", line 255, in main
+    result = run_tests(linux, request)
+  File "tools/testing/kunit/kunit.py", line 133, in run_tests
+    request.defconfig,
+AttributeError: 'KunitRequest' object has no attribute 'defconfig'
+
+Handles when there is no .kunitconfig, the error occurs because
+commit 9bdf64b35 was created before 45ba7a893ad.
+
+[iha@bbking linux]$ tools/testing/kunit/kunit.py run
+Traceback (most recent call last):
+  File "tools/testing/kunit/kunit.py", line 335, in <module>
+    main(sys.argv[1:])
+  File "tools/testing/kunit/kunit.py", line 246, in main
+    linux = kunit_kernel.LinuxSourceTree()
+  File "/home/iha/sdb/opensource/lkmp/linux/tools/testing/kunit/kunit_kernel.py", line 109, in __init__
+    self._kconfig.read_from_file(kunitconfig_path)
+  File "/home/iha/sdb/opensource/lkmp/linux/tools/testing/kunit/kunit_config.py", line 88, in read_from_file
+    with open(path, 'r') as f:
+FileNotFoundError: [Errno 2] No such file or directory: '.kunit/.kunitconfig'
+
+Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+---
+Fix the fixup on this commits: 9bdf64b, ddbd60c.
+
+Some errors occurs because these commits were created before
+this commit 45ba7a8, as explained in the commit message.
+---
+ tools/testing/kunit/kunit.py | 27 ++++++++++++++++++---------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
+
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index ec73b07d1265..787b6d4ad716 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -23,7 +23,7 @@ import kunit_parser
+ KunitResult = namedtuple('KunitResult', ['status','result','elapsed_time'])
+ 
+ KunitConfigRequest = namedtuple('KunitConfigRequest',
+-				['build_dir', 'defconfig', 'make_options'])
++				['build_dir', 'make_options'])
+ KunitBuildRequest = namedtuple('KunitBuildRequest',
+ 			       ['jobs', 'build_dir', 'alltests',
+ 				'make_options'])
+@@ -130,7 +130,6 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
+ 	run_start = time.time()
+ 
+ 	config_request = KunitConfigRequest(request.build_dir,
+-					    request.defconfig,
+ 					    request.make_options)
+ 	config_result = config_tests(linux, config_request)
+ 	if config_result.status != KunitStatus.SUCCESS:
+@@ -212,7 +211,6 @@ def main(argv, linux=None):
+ 						help='Ensures that .config contains all of '
+ 						'the options in .kunitconfig')
+ 	add_common_opts(config_parser)
+-	add_config_opts(config_parser)
+ 
+ 	build_parser = subparser.add_parser('build', help='Builds a kernel with KUnit tests')
+ 	add_common_opts(build_parser)
+@@ -238,11 +236,14 @@ def main(argv, linux=None):
+ 	cli_args = parser.parse_args(argv)
+ 
+ 	if cli_args.subcommand == 'run':
+-                if not os.path.exists(cli_args.build_dir):
+-                    os.mkdir(cli_args.build_dir)
+-                kunit_kernel.kunitconfig_path = os.path.join(
+-                        cli_args.build_dir,
+-                        kunit_kernel.kunitconfig_path)
++		if not os.path.exists(cli_args.build_dir):
++			os.mkdir(cli_args.build_dir)
++		kunit_kernel.kunitconfig_path = os.path.join(
++			cli_args.build_dir,
++			kunit_kernel.kunitconfig_path)
++
++		if not os.path.exists(kunit_kernel.kunitconfig_path):
++			create_default_kunitconfig()
+ 
+ 		if not linux:
+ 			linux = kunit_kernel.LinuxSourceTree()
+@@ -264,11 +265,13 @@ def main(argv, linux=None):
+ 				cli_args.build_dir,
+ 				kunit_kernel.kunitconfig_path)
+ 
++		if not os.path.exists(kunit_kernel.kunitconfig_path):
++			create_default_kunitconfig()
++
+ 		if not linux:
+ 			linux = kunit_kernel.LinuxSourceTree()
+ 
+ 		request = KunitConfigRequest(cli_args.build_dir,
+-					     cli_args.defconfig,
+ 					     cli_args.make_options)
+ 		result = config_tests(linux, request)
+ 		kunit_parser.print_with_timestamp((
+@@ -284,6 +287,9 @@ def main(argv, linux=None):
+ 				cli_args.build_dir,
+ 				kunit_kernel.kunitconfig_path)
+ 
++		if not os.path.exists(kunit_kernel.kunitconfig_path):
++			create_default_kunitconfig()
++
+ 		if not linux:
+ 			linux = kunit_kernel.LinuxSourceTree()
+ 
+@@ -305,6 +311,9 @@ def main(argv, linux=None):
+ 				cli_args.build_dir,
+ 				kunit_kernel.kunitconfig_path)
+ 
++		if not os.path.exists(kunit_kernel.kunitconfig_path):
++			create_default_kunitconfig()
++
+ 		if not linux:
+ 			linux = kunit_kernel.LinuxSourceTree()
+ 
+-- 
+2.26.2
+
