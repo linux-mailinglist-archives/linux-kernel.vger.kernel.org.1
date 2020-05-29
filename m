@@ -2,160 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 367F31E721A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 03:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDFE01E721F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 03:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390678AbgE2BhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 21:37:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33442 "EHLO
+        id S2390799AbgE2Biy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 21:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725775AbgE2BhV (ORCPT
+        with ESMTP id S2390743AbgE2Biu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 21:37:21 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248C8C08C5C7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 18:37:21 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id z15so2608778pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 18:37:21 -0700 (PDT)
+        Thu, 28 May 2020 21:38:50 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78666C08C5C7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 18:38:50 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id m1so544827pgk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 18:38:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=54DCvOoLnizb5obZMAZVVx9Mv/OX4h8r+9BZvz/kgMQ=;
-        b=U2si59PcIwQdRP0198eEg3UKKcFQdWu8G73ty3feD5zJQpYCYj5PLyrOUg0YGSDynP
-         P8AsxWwvi5pS1/nJJtZ0mqi7TWudIvpOoyQnIRoPvx5KddTY8p6bdLagjsYzylno5x8Y
-         zmrLZkQ4MBXMesRFgXzD25d3j0ErwigZPva0SYRkW17R55/DEhlcLbjPGIjgfyXzMCKs
-         0SkWYT3MNGHYZ4sygKUKr44YZ0dqysBAcJ4nuTAe7g75P3rQ0QUte6/AU765BBBOp2s/
-         sUm3CKglPkD1sI6ldoRIut3RumVNfaq2qaDohHBkswKy0g7WG029y1e+ReK3/aoV5fHp
-         TsFw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TdQg+fivBnczs2lb7tarAIsmkoEmc6eowGbAVZodCK0=;
+        b=Hw6+Tuard4AD3/vUIts7Cbac2h+EizLNBIGuRfgksogG1PQk5znvug5MG4ZNXdeoWY
+         r/iv5pXaNa8pjSF0+ZNYjbZ/iOlk3Ga1qoaJSjVA66HuWJUpeRpNWMY/jBWITtEVft8n
+         JmQfThjT8G69YGm88lTyQJW6A0w8sxM+4V7dVnd37rNX7XmiVdx13yftMHoMulWWiDnx
+         cDZ1N+mLZptgB0PLFwkZQz35Q/lFJPPHNgm2q8m2xV6MXhIOxabMiRVlHv6BbyKwA0gJ
+         nR5fN9klhY9kcwwlE4NoP6y7hvfvmIemgSWkNimxP21uieX2wj9x6ztgjSLV0QGGlSPj
+         I5Mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=54DCvOoLnizb5obZMAZVVx9Mv/OX4h8r+9BZvz/kgMQ=;
-        b=G4PNasWQqAIvjky+aMb97HkqvCff5ZjQD2cd2wTePoz7Is/JTyQ3oLGdYPeUk01ZBo
-         0pLjhJhMBzQt4KHcdvAOm2TWjUZY+ciWEkPQnWB5nptHdmzxLabJCRBPaltJhg7Nr86t
-         kdiU2GTTSZ1d9KbHLGqgByLrvB2xyVfpKIZOIQojgUltnlh4gXRukBlexE2EbfH2cSq9
-         vpr9zBotFV5G3U6z0q0NyaRXnUYlhPEAVdv7bD6Oil4nfDecy9BUPd1TTfsp1Ij2Wobm
-         Bx7rMvRqBrO4eiPvcDfb6cQr3ZKZ89I/KQAN4XyEV8pEbLI5L0lYPwZjm3SDnygUqj1z
-         fGnA==
-X-Gm-Message-State: AOAM530D1+zA1/0wFKO9WV1V0gBLl3L7g7Z/ls1pEDr0LsPSOcYx0FZe
-        XZJKg1yT9chpWVc1RUSASDLvVw==
-X-Google-Smtp-Source: ABdhPJxlWIJRdZOM13t5KHV4l2LKIM6WzweKTrtfFnHnk2Innr77blSbNP+HyURHeOuLSfvcYJZMBQ==
-X-Received: by 2002:a17:90a:ad86:: with SMTP id s6mr4592794pjq.193.1590716240544;
-        Thu, 28 May 2020 18:37:20 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id w73sm5969863pfd.113.2020.05.28.18.37.19
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TdQg+fivBnczs2lb7tarAIsmkoEmc6eowGbAVZodCK0=;
+        b=qasQ9oprMoLwYum8Ug7fy2ZKkBcOyb2AdEkGzLc0KWp+4KGK3O1uHqo0kngm2BnjAP
+         j3IO/5vzp7TO6ddgkNr7X6eQRiNP652HtxasrSTC9CVBMc3PGDgBr61AypaXFKTBstZy
+         L1EogLLfUgmWJdBlenlbOJDM/7mnPizGOGd1xn4frQXj7zDhmgTzFYgXLnd6p6PEAWH1
+         ktPGyneIiTFLrqLF7E7aUIKJUf+n1eZqsEhooav006qfxroXGv8LntjNm4vBr7LRk9cu
+         T2wyprikEi0Jv9AAcugfkatHr0s4SfwJrYgrNCvJPMQIWAMR1twxjGIRT1maC3yknHqC
+         T7gw==
+X-Gm-Message-State: AOAM532dmij11wuTYPsbKpZAxef5jiE3B8bvTl7zxOIIecR35TPlvk7n
+        Debo0BPfIJu24pHzV7eND2uuXg==
+X-Google-Smtp-Source: ABdhPJxOTmTsMKTFLK6nGt+6SuzLQpgZHZ8QORG/lxSaXzWRBDQLvtLtNKdQvhDfCWgfBGWI9YkgTQ==
+X-Received: by 2002:a63:451c:: with SMTP id s28mr6059359pga.340.1590716329674;
+        Thu, 28 May 2020 18:38:49 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id w19sm5750068pfq.43.2020.05.28.18.38.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 18:37:19 -0700 (PDT)
-Date:   Thu, 28 May 2020 18:37:19 -0700 (PDT)
-X-Google-Original-Date: Thu, 28 May 2020 18:28:08 PDT (-0700)
-Subject:     Re: [PATCH v5 2/6] RISC-V: Rename and move plic_find_hart_id() to arch directory
-In-Reply-To: <20200521133301.816665-3-anup.patel@wdc.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        daniel.lezcano@linaro.org, tglx@linutronix.de,
-        jason@lakedaemon.net, Marc Zyngier <maz@kernel.org>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        anup@brainfault.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Anup Patel <Anup.Patel@wdc.com>
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Anup Patel <Anup.Patel@wdc.com>
-Message-ID: <mhng-6df8942f-32e6-4334-82c4-1721e571ab1b@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Thu, 28 May 2020 18:38:49 -0700 (PDT)
+Date:   Thu, 28 May 2020 18:37:43 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     agross@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+        robh+dt@kernel.org, nishakumari@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org,
+        rnayak@codeaurora.org
+Subject: Re: [PATCH v3 1/5] regulator: Allow regulators to verify enabled
+ during enable()
+Message-ID: <20200529013743.GL279327@builder.lan>
+References: <20200528154625.17742-1-sumit.semwal@linaro.org>
+ <20200528154625.17742-2-sumit.semwal@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200528154625.17742-2-sumit.semwal@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 May 2020 06:32:57 PDT (-0700), Anup Patel wrote:
-> The plic_find_hart_id() can be useful to other interrupt controller
-> drivers (such as RISC-V local interrupt driver) so we rename this
-> function to riscv_of_parent_hartid() and place it in arch directory
-> along with riscv_of_processor_hartid().
->
-> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+On Thu 28 May 08:46 PDT 2020, Sumit Semwal wrote:
+
+> Some regulators might need to verify that they have indeed been enabled
+> after the enable() call is made and enable_time delay has passed.
+> 
+> This is implemented by repeatedly checking is_enabled() upto
+> poll_enabled_time, waiting for the already calculated enable delay in
+> each iteration.
+> 
+> Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
 > ---
->  arch/riscv/include/asm/processor.h |  1 +
->  arch/riscv/kernel/cpu.c            | 16 ++++++++++++++++
->  drivers/irqchip/irq-sifive-plic.c  | 16 +---------------
->  3 files changed, 18 insertions(+), 15 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
-> index 3ddb798264f1..b1efd840003c 100644
-> --- a/arch/riscv/include/asm/processor.h
-> +++ b/arch/riscv/include/asm/processor.h
-> @@ -75,6 +75,7 @@ static inline void wait_for_interrupt(void)
->
->  struct device_node;
->  int riscv_of_processor_hartid(struct device_node *node);
-> +int riscv_of_parent_hartid(struct device_node *node);
->
->  extern void riscv_fill_hwcap(void);
->
-> diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
-> index 40a3c442ac5f..6d59e6906fdd 100644
-> --- a/arch/riscv/kernel/cpu.c
-> +++ b/arch/riscv/kernel/cpu.c
-> @@ -44,6 +44,22 @@ int riscv_of_processor_hartid(struct device_node *node)
->  	return hart;
->  }
->
-> +/*
-> + * Find hart ID of the CPU DT node under which given DT node falls.
-> + *
-> + * To achieve this, we walk up the DT tree until we find an active
-> + * RISC-V core (HART) node and extract the cpuid from it.
-> + */
-> +int riscv_of_parent_hartid(struct device_node *node)
-> +{
-> +	for (; node; node = node->parent) {
-> +		if (of_device_is_compatible(node, "riscv"))
-> +			return riscv_of_processor_hartid(node);
+>  drivers/regulator/core.c         | 28 ++++++++++++++++++++++++++++
+>  include/linux/regulator/driver.h |  5 +++++
+>  2 files changed, 33 insertions(+)
+> 
+> diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+> index 7486f6e4e613..06199f182114 100644
+> --- a/drivers/regulator/core.c
+> +++ b/drivers/regulator/core.c
+> @@ -2409,6 +2409,34 @@ static int _regulator_do_enable(struct regulator_dev *rdev)
+>  
+>  	_regulator_enable_delay(delay);
+
+My interpretation of "enable_time" (i.e. the value of delay) is that it
+denotes the maximum time it will take for the regulator to turn on, and
+the purpose of this patch is to be able to handle cases where we can
+poll the hardware to see if it completed earlier.
+
+So I think you should flip the meaning of your two variables around,
+making "delay" the total time to sleep and the newly introduced
+"poll_enabled_time" the interval at which you check if the hardware
+finished early.
+
+Regards,
+Bjorn
+
+>  
+> +	/* If set, poll upto poll_enabled_time uS to see if the regulator
+> +	 * actually got enabled.
+> +	 * For each iteration, wait for the enable_time delay calculated
+> +	 * above already.
+> +	 * If the regulator isn't enabled after poll_enabled_time has
+> +	 * expired, return -ETIMEDOUT.
+> +	 */
+> +	if (rdev->desc->poll_enabled_time) {
+> +		unsigned int time_remaining = rdev->desc->poll_enabled_time;
+> +
+> +		while (time_remaining > 0) {
+> +			/* We've already waited for enable_time above;
+> +			 * so we can start with immediate check of the
+> +			 * status of the regulator.
+> +			 */
+> +			if (rdev->desc->ops->is_enabled(rdev))
+> +				break;
+> +
+> +			_regulator_enable_delay(delay);
+> +			time_remaining -= delay;
+> +		}
+> +
+> +		if (time_remaining <= 0) {
+> +			rdev_err(rdev, "Enabled check failed.\n");
+> +			return -ETIMEDOUT;
+> +		}
 > +	}
 > +
-> +	return -1;
-> +}
+>  	trace_regulator_enable_complete(rdev_get_name(rdev));
+>  
+>  	return 0;
+> diff --git a/include/linux/regulator/driver.h b/include/linux/regulator/driver.h
+> index 29d920516e0b..bb50e943010f 100644
+> --- a/include/linux/regulator/driver.h
+> +++ b/include/linux/regulator/driver.h
+> @@ -322,6 +322,9 @@ enum regulator_type {
+>   * @enable_time: Time taken for initial enable of regulator (in uS).
+>   * @off_on_delay: guard time (in uS), before re-enabling a regulator
+>   *
+> + * @poll_enabled_time: Maximum time (in uS) to poll if the regulator is
+> + *                          actually enabled, after enable() call
+> + *
+>   * @of_map_mode: Maps a hardware mode defined in a DeviceTree to a standard mode
+>   */
+>  struct regulator_desc {
+> @@ -389,6 +392,8 @@ struct regulator_desc {
+>  
+>  	unsigned int off_on_delay;
+>  
+> +	unsigned int poll_enabled_time;
 > +
->  #ifdef CONFIG_PROC_FS
->
->  static void print_isa(struct seq_file *f, const char *isa)
-> diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-> index d9c53f85a68e..16d31d114c30 100644
-> --- a/drivers/irqchip/irq-sifive-plic.c
-> +++ b/drivers/irqchip/irq-sifive-plic.c
-> @@ -240,20 +240,6 @@ static void plic_handle_irq(struct pt_regs *regs)
->  	csr_set(CSR_IE, IE_EIE);
->  }
->
-> -/*
-> - * Walk up the DT tree until we find an active RISC-V core (HART) node and
-> - * extract the cpuid from it.
-> - */
-> -static int plic_find_hart_id(struct device_node *node)
-> -{
-> -	for (; node; node = node->parent) {
-> -		if (of_device_is_compatible(node, "riscv"))
-> -			return riscv_of_processor_hartid(node);
-> -	}
-> -
-> -	return -1;
-> -}
-> -
->  static void plic_set_threshold(struct plic_handler *handler, u32 threshold)
->  {
->  	/* priority must be > threshold to trigger an interrupt */
-> @@ -330,7 +316,7 @@ static int __init plic_init(struct device_node *node,
->  		if (parent.args[0] != RV_IRQ_EXT)
->  			continue;
->
-> -		hartid = plic_find_hart_id(parent.np);
-> +		hartid = riscv_of_parent_hartid(parent.np);
->  		if (hartid < 0) {
->  			pr_warn("failed to parse hart ID for context %d.\n", i);
->  			continue;
-
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+>  	unsigned int (*of_map_mode)(unsigned int mode);
+>  };
+>  
+> -- 
+> 2.26.2
+> 
