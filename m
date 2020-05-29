@@ -2,79 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5AFC1E88B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 269871E88BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728219AbgE2UOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 16:14:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38048 "EHLO
+        id S1728243AbgE2UPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 16:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726866AbgE2UOm (ORCPT
+        with ESMTP id S1728188AbgE2UPA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 16:14:42 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967ADC03E969;
-        Fri, 29 May 2020 13:14:42 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
-        id 1jelOk-000794-SV; Fri, 29 May 2020 20:14:34 +0000
-Date:   Fri, 29 May 2020 21:14:34 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.cz>, mm-commits@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: mmotm 2020-05-13-20-30 uploaded (objtool warnings)
-Message-ID: <20200529201434.GH23230@ZenIV.linux.org.uk>
-References: <20200528172005.GP2483@worktop.programming.kicks-ass.net>
- <20200529135750.GA1580@lst.de>
- <20200529143556.GE706478@hirez.programming.kicks-ass.net>
- <20200529145325.GB706518@hirez.programming.kicks-ass.net>
- <20200529153336.GC706518@hirez.programming.kicks-ass.net>
- <20200529160514.cyaytn33thphb3tz@treble>
- <20200529161253.GD706460@hirez.programming.kicks-ass.net>
- <20200529165011.o7vvhn4wcj6zjxux@treble>
- <CAHk-=wi7xda+zM=iRGXWbU9i8S7kbNaSfPhXVXR-vK6uEFNx_w@mail.gmail.com>
- <20200529200856.GG23230@ZenIV.linux.org.uk>
+        Fri, 29 May 2020 16:15:00 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF65C08C5C8
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 13:14:59 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id m7so1686817plt.5
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 13:14:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=43C+pRXNPgAMVhwiYz5UucFsjABxpoowLodbLHMi21k=;
+        b=aTOw0dCAP9TME+W+TRoQL9YN6hlr+OudY32PgYQij21goUWVujpoJSdGyYQ2kyfXS+
+         K+q0YyKlvL/XkAkGMI5cr510tpa9WL2c1mUlF9MDv92RyRJHQEiSa56RQ7GDzwUt0rQ1
+         Uy8zXnbc6tLhqq80hAPAhNq8pY/LCfCFYH8yA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=43C+pRXNPgAMVhwiYz5UucFsjABxpoowLodbLHMi21k=;
+        b=XaMcIa9qXXHPONt2M6JL6GqVk9m1V9jcZlHS+PlaNDG18gK23RkZoz19n8+7uvsLui
+         KIx3dCDwt+VcljtwOyk6hclV+PqMW5qnBwJie4ocq4BxFqcaHguBkxxKsOjHxJ89zTg4
+         yA8ZdADR+ZACtNS6lCbvo47XrJrPhqJhSMAm33Ix+MA3B8Uzgn/UJWVlL8LqX9VS8qzg
+         gykXvksTc2RJpW1ijOC6C3ez79/NZ3QqgW1lwjIicQM0KRbH6ywdHQKqLUPLRvwIVCx2
+         fgDPAaqBqab7h3C6sc85/bp+sZeURoDrtfOm6DCVIPI0MY09sWNxNDwv7KbZfJQuorIG
+         OQjw==
+X-Gm-Message-State: AOAM531aEw3DWRP1f7ZHCXd7riXo4iyTVGvm/oi35BBeALaOPJ1brRPa
+        pIx7kFPRUmC1JVONID2Mr+ZRoWrh/4Htwg==
+X-Google-Smtp-Source: ABdhPJyukKn4U/p75qp2C5HMUUWtzzkP26zk+6iOa2JKVkpgy2boV7h+dizljyFUZyW8FK/Ohy8bjQ==
+X-Received: by 2002:a17:902:aa88:: with SMTP id d8mr10342437plr.257.1590783298799;
+        Fri, 29 May 2020 13:14:58 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id bu7sm261872pjb.41.2020.05.29.13.14.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2020 13:14:57 -0700 (PDT)
+Date:   Fri, 29 May 2020 13:14:56 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     christian.brauner@ubuntu.com,
+        containers@lists.linux-foundation.org, cyphar@cyphar.com,
+        jannh@google.com, jeffv@google.com, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org, palmer@google.com, rsesek@google.com,
+        tycho@tycho.ws, Matt Denton <mpdenton@google.com>
+Subject: Re: [PATCH v2 1/3] seccomp: Add find_notification helper
+Message-ID: <202005291309.6183EC0604@keescook>
+References: <20200528110858.3265-1-sargun@sargun.me>
+ <20200528110858.3265-2-sargun@sargun.me>
+ <202005282319.2BA6AD88@keescook>
+ <20200529174037.GA11153@ircssh-2.c.rugged-nimbus-611.internal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200529200856.GG23230@ZenIV.linux.org.uk>
+In-Reply-To: <20200529174037.GA11153@ircssh-2.c.rugged-nimbus-611.internal>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 09:08:56PM +0100, Al Viro wrote:
-> On Fri, May 29, 2020 at 12:31:04PM -0700, Linus Torvalds wrote:
-> > On Fri, May 29, 2020 at 9:50 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> > >
-> > > From staring at the asm I think the generated code is correct, it's just
-> > > that the nested likelys with ftrace profiling cause GCC to converge the
-> > > error/success paths.  But objtool doesn't do register value tracking so
-> > > it's not smart enough to know that it's safe.
+On Fri, May 29, 2020 at 05:40:38PM +0000, Sargun Dhillon wrote:
 > > 
-> > I'm surprised that gcc doesn't end up doing the obvious CSE and then
-> > branch following and folding it all away in the end, but your patch is
-> > obviously the right thing to do regardless, so ack on that.
+> > While the comment is good, let's actually enforce this with:
 > > 
-> > Al - I think this had best go into your uaccess cleanup branch with
-> > that csum-wrapper update, to avoid any unnecessary conflicts or
-> > dependencies.
+> > if (WARN_ON(!mutex_is_locked(&filter->notif_lock)))
+> > 	return NULL;
+> > 
+> I don't see much use of lockdep in seccomp (well, any), but
+> wouldn't a stronger statement be to use lockdep, and just have:
 > 
-> Sure, just let me verify that other branches don't introduce anything
-> of that sort...
+> lockdep_assert_held(&filter->notify_lock);
+> 
+> As that checks that the lock is held by the current task.
 
-... they don't.
+/me slaps his forehead
 
-OK, folded, rebuild #for-next, pushed both out...
+Yes. I need more coffee or something. Yes, I meant
+lockdep_assert_held(), and now I need to go fix my pstore series since I
+confused myself into the wrong function and using it so many times in
+pstore overwrote the correct function in my head. Thank you!
+
+> Although, that does put this check behind lockdep, which means
+> that running in "normal" circumstances is less safe (but faster?).
+
+Now, that's fine. The check needs to be "am *I* holding this mutex?" and
+I don't think anything except lockdep can do that.
+
+-- 
+Kees Cook
