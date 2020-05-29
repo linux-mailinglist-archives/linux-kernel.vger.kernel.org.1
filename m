@@ -2,123 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C831E7295
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3368E1E729D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406783AbgE2C3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 22:29:30 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:26557 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405031AbgE2C33 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 22:29:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1590719368; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=6ZkZeLjBfTWlGAiLQK4hHlaxQJ7Mx2KTNta8bDJGGoU=; b=LN13hocvMrOzYJXYlyxPF8M61JrNQ567sUYdVz+nxNtq4PU2a25qrUHedwcgWuZgqZByD5Q5
- d6abQYRNfO92g4KRslkH3CY6YqzxUKRdIlGPabgtnNKR6J0b6OkY+0Oxy7/K5fVSUQzjwhsf
- GJtVyhj4IKVBlUfFOFnwHsZ6enw=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5ed073864776d1da6d7d0714 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 May 2020 02:29:26
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9E3FAC433CA; Fri, 29 May 2020 02:29:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: zijuhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CA4B3C433C6;
-        Fri, 29 May 2020 02:29:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CA4B3C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=zijuhu@codeaurora.org
-From:   Zijun Hu <zijuhu@codeaurora.org>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org
-Subject: [PATCH v1] Bluetooth: hci_qca: Fix qca6390 enable failure after warm reboot
-Date:   Fri, 29 May 2020 10:29:20 +0800
-Message-Id: <1590719360-28257-1-git-send-email-zijuhu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S2436657AbgE2Cap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 22:30:45 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:50122 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2405151AbgE2Can (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 22:30:43 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 0E5DE91E7189AB9DFF33;
+        Fri, 29 May 2020 10:30:40 +0800 (CST)
+Received: from [127.0.0.1] (10.166.215.101) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Fri, 29 May 2020
+ 10:30:32 +0800
+Subject: Re: [PATCH v4 1/2] cpufreq: change '.set_boost' to act on only one
+ policy
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+CC:     <viresh.kumar@linaro.org>, <Souvik.Chakravarty@arm.com>,
+        <Thanu.Rangarajan@arm.com>, <Sudeep.Holla@arm.com>,
+        <guohanjun@huawei.com>, <john.garry@huawei.com>,
+        <jonathan.cameron@huawei.com>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1590118476-28742-1-git-send-email-wangxiongfeng2@huawei.com>
+ <1590118476-28742-2-git-send-email-wangxiongfeng2@huawei.com>
+ <5425098.HjpDb7yAz6@kreacher>
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Message-ID: <1ff97ec7-2111-e4a7-c6d5-9f1c983239e3@huawei.com>
+Date:   Fri, 29 May 2020 10:30:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <5425098.HjpDb7yAz6@kreacher>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.166.215.101]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Warm reboot can not reset controller qca6390 due to
-lack of controllable power supply, so causes firmware
-download failure during enable.
+Hi Rafael,
 
-Fixed by sending VSC EDL_SOC_RESET to reset qca6390
-within added device shutdown implementation.
+Thanks for your reply !
 
-Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
-Tested-by: Zijun Hu <zijuhu@codeaurora.org>
----
- drivers/bluetooth/hci_qca.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+On 2020/5/28 20:48, Rafael J. Wysocki wrote:
+> On Friday, May 22, 2020 5:34:35 AM CEST Xiongfeng Wang wrote:
+>> Macro 'for_each_active_policy()' is defined internally. To avoid some
+>> cpufreq driver needing this macro to iterate over all the policies in
+>> '.set_boost' callback, we redefine '.set_boost' to act on only one
+>> policy and pass the policy as an argument.
+>> 'cpufreq_boost_trigger_state()' iterate over all the policies to set
+>> boost for the system. This is preparation for adding SW BOOST support
+>> for CPPC.
+>>
+>> Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+>> Suggested-by: Viresh Kumar <viresh.kumar@linaro.org>
+>> ---
+>>  drivers/cpufreq/acpi-cpufreq.c | 10 ++++----
+>>  drivers/cpufreq/cpufreq.c      | 53 +++++++++++++++++++++---------------------
+>>  include/linux/cpufreq.h        |  2 +-
+>>  3 files changed, 34 insertions(+), 31 deletions(-)
+>>
+>> diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
+>> index 289e8ce..813aabf 100644
+>> --- a/drivers/cpufreq/acpi-cpufreq.c
+>> +++ b/drivers/cpufreq/acpi-cpufreq.c
+>> @@ -126,12 +126,14 @@ static void boost_set_msr_each(void *p_en)
+>>  	boost_set_msr(enable);
+>>  }
+>>  
+>> -static int set_boost(int val)
+>> +static int set_boost(struct cpufreq_policy *policy, int val)
+>>  {
+>>  	get_online_cpus();
+>> -	on_each_cpu(boost_set_msr_each, (void *)(long)val, 1);
+>> +	on_each_cpu_mask(policy->cpus, boost_set_msr_each,
+>> +			 (void *)(long)val, 1);
+>>  	put_online_cpus();
+>> -	pr_debug("Core Boosting %sabled.\n", val ? "en" : "dis");
+>> +	pr_debug("CPU %*pbl: Core Boosting %sabled.\n",
+>> +		 cpumask_pr_args(policy->cpus), val ? "en" : "dis");
+>>  
+>>  	return 0;
+>>  }
+>> @@ -162,7 +164,7 @@ static ssize_t store_cpb(struct cpufreq_policy *policy, const char *buf,
+>>  	if (ret || val > 1)
+>>  		return -EINVAL;
+>>  
+>> -	set_boost(val);
+>> +	set_boost(policy, val);
+>>  
+>>  	return count;
+>>  }
+>> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+>> index d03f250..d0d86b1 100644
+>> --- a/drivers/cpufreq/cpufreq.c
+>> +++ b/drivers/cpufreq/cpufreq.c
+>> @@ -2532,34 +2532,29 @@ void cpufreq_update_limits(unsigned int cpu)
+>>  /*********************************************************************
+>>   *               BOOST						     *
+>>   *********************************************************************/
+>> -static int cpufreq_boost_set_sw(int state)
+>> +static int cpufreq_boost_set_sw(struct cpufreq_policy *policy, int state)
+>>  {
+>> -	struct cpufreq_policy *policy;
+>> -
+>> -	for_each_active_policy(policy) {
+>> -		int ret;
+>> -
+>> -		if (!policy->freq_table)
+>> -			return -ENXIO;
+>> +	int ret;
+>>  
+>> -		ret = cpufreq_frequency_table_cpuinfo(policy,
+>> -						      policy->freq_table);
+>> -		if (ret) {
+>> -			pr_err("%s: Policy frequency update failed\n",
+>> -			       __func__);
+>> -			return ret;
+>> -		}
+>> +	if (!policy->freq_table)
+>> +		return -ENXIO;
+>>  
+>> -		ret = freq_qos_update_request(policy->max_freq_req, policy->max);
+>> -		if (ret < 0)
+>> -			return ret;
+>> +	ret = cpufreq_frequency_table_cpuinfo(policy, policy->freq_table);
+>> +	if (ret) {
+>> +		pr_err("%s: Policy frequency update failed\n", __func__);
+>> +		return ret;
+>>  	}
+>>  
+>> +	ret = freq_qos_update_request(policy->max_freq_req, policy->max);
+>> +	if (ret < 0)
+>> +		return ret;
+>> +
+>>  	return 0;
+>>  }
+>>  
+>>  int cpufreq_boost_trigger_state(int state)
+>>  {
+>> +	struct cpufreq_policy *policy;
+>>  	unsigned long flags;
+>>  	int ret = 0;
+>>  
+>> @@ -2570,16 +2565,22 @@ int cpufreq_boost_trigger_state(int state)
+> 
+> AFAICS this gets called via sysfs without any cpufreq locking whatever, so
+> I'm not really sure what causes it to be safe with respect to CPU offline /
+> online, especially if the ->set_boost() callback only wants to do stuff
+> for CPUs that are online.
 
-diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index e4a6823..f525656 100644
---- a/drivers/bluetooth/hci_qca.c
-+++ b/drivers/bluetooth/hci_qca.c
-@@ -1975,6 +1975,38 @@ static void qca_serdev_remove(struct serdev_device *serdev)
- 	hci_uart_unregister_device(&qcadev->serdev_hu);
- }
- 
-+static void qca_serdev_shutdown(struct device *dev)
-+{
-+	int ret;
-+	int timeout = msecs_to_jiffies(CMD_TRANS_TIMEOUT_MS);
-+	struct serdev_device *serdev = to_serdev_device(dev);
-+	struct qca_serdev *qcadev = serdev_device_get_drvdata(serdev);
-+	const u8 ibs_wake_cmd[] = { 0xFD };
-+	const u8 edl_reset_soc_cmd[] = { 0x01, 0x00, 0xFC, 0x01, 0x05 };
-+
-+	if (qcadev->btsoc_type == QCA_QCA6390) {
-+		serdev_device_write_flush(serdev);
-+		ret = serdev_device_write_buf(serdev, ibs_wake_cmd,
-+					      sizeof(ibs_wake_cmd));
-+		if (ret < 0) {
-+			BT_ERR("QCA send IBS_WAKE_IND error: %d", ret);
-+			return;
-+		}
-+		serdev_device_wait_until_sent(serdev, timeout);
-+		usleep_range(8000, 10000);
-+
-+		serdev_device_write_flush(serdev);
-+		ret = serdev_device_write_buf(serdev, edl_reset_soc_cmd,
-+					      sizeof(edl_reset_soc_cmd));
-+		if (ret < 0) {
-+			BT_ERR("QCA send EDL_RESET_REQ error: %d", ret);
-+			return;
-+		}
-+		serdev_device_wait_until_sent(serdev, timeout);
-+		usleep_range(8000, 10000);
-+	}
-+}
-+
- static int __maybe_unused qca_suspend(struct device *dev)
- {
- 	struct hci_dev *hdev = container_of(dev, struct hci_dev, dev);
-@@ -2100,6 +2132,7 @@ static struct serdev_device_driver qca_serdev_driver = {
- 		.name = "hci_uart_qca",
- 		.of_match_table = of_match_ptr(qca_bluetooth_of_match),
- 		.acpi_match_table = ACPI_PTR(qca_bluetooth_acpi_match),
-+		.shutdown = qca_serdev_shutdown,
- 		.pm = &qca_pm_ops,
- 	},
- };
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+Thanks for your advice. Yes, we have 'cpu_hotplug_lock' in 'set_boost' in
+acpi_cpufreq. But we don't have 'cpu_hotplug_lock' for the general SW BOOST
+framework. So I think I will need to move the lock from 'set_boost()' to
+'store_cpb()' and add lock in 'cpufreq_boost_trigger_state' for the general SW
+BOOST.
+
+Thanks,
+Xiongfeng
+
+> 
+>>  	cpufreq_driver->boost_enabled = state;
+>>  	write_unlock_irqrestore(&cpufreq_driver_lock, flags);
+>>  
+>> -	ret = cpufreq_driver->set_boost(state);
+>> -	if (ret) {
+>> -		write_lock_irqsave(&cpufreq_driver_lock, flags);
+>> -		cpufreq_driver->boost_enabled = !state;
+>> -		write_unlock_irqrestore(&cpufreq_driver_lock, flags);
+>> -
+>> -		pr_err("%s: Cannot %s BOOST\n",
+>> -		       __func__, state ? "enable" : "disable");
+>> +	for_each_active_policy(policy) {
+>> +		ret = cpufreq_driver->set_boost(policy, state);
+>> +		if (ret)
+>> +			goto err_reset_state;
+>>  	}
+>>  
+>> +	return 0;
+>> +
+>> +err_reset_state:
+>> +	write_lock_irqsave(&cpufreq_driver_lock, flags);
+>> +	cpufreq_driver->boost_enabled = !state;
+>> +	write_unlock_irqrestore(&cpufreq_driver_lock, flags);
+>> +
+>> +	pr_err("%s: Cannot %s BOOST\n",
+>> +	       __func__, state ? "enable" : "disable");
+>> +
+>>  	return ret;
+>>  }
+>>  
+>> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
+>> index 67d5950..3494f67 100644
+>> --- a/include/linux/cpufreq.h
+>> +++ b/include/linux/cpufreq.h
+>> @@ -367,7 +367,7 @@ struct cpufreq_driver {
+>>  
+>>  	/* platform specific boost support code */
+>>  	bool		boost_enabled;
+>> -	int		(*set_boost)(int state);
+>> +	int		(*set_boost)(struct cpufreq_policy *policy, int state);
+>>  };
+>>  
+>>  /* flags */
+>>
+> 
+> 
+> 
+> 
+> 
+> .
+> 
 
