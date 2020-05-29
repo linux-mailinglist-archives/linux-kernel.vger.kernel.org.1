@@ -2,97 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B132D1E871D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 21:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4CA01E872B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 21:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727921AbgE2TCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 15:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727094AbgE2TC2 (ORCPT
+        id S1728043AbgE2TFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 15:05:16 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:43564 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726829AbgE2TFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 15:02:28 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F101C08C5C8
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 12:02:27 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id x1so3081172ejd.8
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 12:02:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vj9D4U4So1ra9Zm9hnNGo7stdHYSpNs6NtruFkUFgeo=;
-        b=PVSJoPpmVjSmJFILAcMsDnWtnz8yzzzzxyuIuH6IOFqDD/1Yx2gAZuyAoegjLdcJss
-         srDdbIWUxBH29A6pHzwXdtZAVkXndvDtQloYk2w+TqGAM2Irhstx8xMOi37Ad7Qh8+Ax
-         0rSUA/1K4tlavO2P/idQzvgLPvKekCioSb9wXPyTe5A6WjDUToCvzu4oIuY/2wcajnZX
-         B/EK09TXTE3ZwMa5/9lCXVwrxdDlNSNvPsBFaZy8FCc+Fy/+/5RQpzce8G7dbDo7wB4k
-         3HFtMEeM1dt85rUCtGqugQg8Od6zBukGPYPgOt4zEUPh6jgktgJq2EhF1eTowmz7EqJy
-         3rsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vj9D4U4So1ra9Zm9hnNGo7stdHYSpNs6NtruFkUFgeo=;
-        b=q3znicskZr6HLDcD8mbnGT6Pwls3b0sv2IBLYE2LjyNVlp62CbzdaWXDYM1bGQs35j
-         krfSqwXPVbuD3u/BEeXlSnlxJKH+0i7qJb/3uuDaYoBrN+AUoumHMkj8zhy0gVK6tdaB
-         wHc13j22r2aDfUz/twiFrARIbUTkyUPWxLgoemu7bEZz+QVC4KxVveGD+40X35lzqnvX
-         7WE8LCK6m5vD9qclUttejdc5CvOIhuqd2/BjyTL4UeaTt7lo4Phzy8KqcLMuKTbb4bVD
-         iZGHWVi4f0vxwZvvQPuWTJ2Y2HASoRsakoWPxPtpWiU1BJsvGbOhoXzrq6lyPqJmEN42
-         XIMg==
-X-Gm-Message-State: AOAM530TBWVDdVc2a/mVsNsspD8z6GBvOQbsn7e6gJXpMmaP2k24eT5E
-        VPtlN1VeiVK9GyR68XfeatL4/HBv
-X-Google-Smtp-Source: ABdhPJyQx2RUSz7R1gfHefn9U0kmUE2GFhFldxj0rbBxbVcvlhcRfXqs29T8F/j2u4gKQmfl5E45Vw==
-X-Received: by 2002:a17:907:40f1:: with SMTP id no1mr8830682ejb.178.1590778946181;
-        Fri, 29 May 2020 12:02:26 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:a03f:b7f9:7600:1951:ff2b:10f0:1763])
-        by smtp.gmail.com with ESMTPSA id f4sm8166135ejk.17.2020.05.29.12.02.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 12:02:25 -0700 (PDT)
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        kbuild test robot <lkp@intel.com>
-Subject: [PATCH v2 1/2] m68k,nommu: add missing __user in uaccess' __ptr() macro
-Date:   Fri, 29 May 2020 21:02:17 +0200
-Message-Id: <20200529190218.36560-2-luc.vanoostenryck@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200529190218.36560-1-luc.vanoostenryck@gmail.com>
-References: <20200529190218.36560-1-luc.vanoostenryck@gmail.com>
+        Fri, 29 May 2020 15:05:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=thn7TMkwb5FVZbIobG9IjrSgpGicxOEnfAegFwtUQ9Q=; b=OJyHQWJ025zNOPknTYZbwW+IcS
+        6qmc1yzs5g43hxKLNNudj30TImVKiIVvVB/vUfz87vN8Umc0VR459hh+55Uffdh86hqTxh+Q4csvW
+        xEvZKBtS6hSqG4dJTyPy8q2a7ZPya33yiaY5mWarfF+8XwfhQgylaUYH3axPlQiwMxMY99S51hLTT
+        gW1/OWLUVBF4ikyzoSWHqnjQhJLq33ZK5QYT9ygTyinoxe2gXVTEXzdjtMBPGBY3XZzCQLLpDfTq+
+        nFqGP9kx8s3V70F+EiHN3vMNQE8TUnYA7SOrgSv8ohurUxxY8nOYM/dPbO1AiZ+bgZcH6ahDxszkK
+        xxiGkoZA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jekGy-0003zK-5w; Fri, 29 May 2020 19:02:28 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0F21530047A;
+        Fri, 29 May 2020 21:02:19 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E8B562021AF65; Fri, 29 May 2020 21:02:18 +0200 (CEST)
+Date:   Fri, 29 May 2020 21:02:18 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Andrew Cooper <andrew.cooper3@citrix.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        sean.j.christopherson@intel.com, daniel.thompson@linaro.org
+Subject: Re: [PATCH 1/6] x86/entry: Introduce local_db_{save,restore}()
+Message-ID: <20200529190218.GP706495@hirez.programming.kicks-ass.net>
+References: <20200528213352.GC4496@worktop.programming.kicks-ass.net>
+ <AC94E789-9EC7-4156-955C-841FF7114176@amacapital.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AC94E789-9EC7-4156-955C-841FF7114176@amacapital.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The assembly for __get_user() & __put_user() uses a macro, __ptr(),
-to cast the pointer to 'unsigned long *' but the pointer is always
-a __user one and so this cast creates a lot of warnings when using
-Sparse.
+On Fri, May 29, 2020 at 10:28:33AM -0700, Andy Lutomirski wrote:
+> > +static __always_inline unsigned long local_db_save(void)
+> > +{
+> > +    unsigned long dr7;
+> > +
+> > +    get_debugreg(&dr7, 7);
+> > +    dr7 ^= 0x400;
+> 
+> Why xor?  This seems extra confusing.
 
-So, change to the cast to 'unsigned long __user *'.
-
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
----
- arch/m68k/include/asm/uaccess_no.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/m68k/include/asm/uaccess_no.h b/arch/m68k/include/asm/uaccess_no.h
-index a24cfe4a0d32..9651766a62af 100644
---- a/arch/m68k/include/asm/uaccess_no.h
-+++ b/arch/m68k/include/asm/uaccess_no.h
-@@ -60,7 +60,7 @@ extern int __put_user_bad(void);
-  * aliasing issues.
-  */
- 
--#define __ptr(x) ((unsigned long *)(x))
-+#define __ptr(x) ((unsigned long __user *)(x))
- 
- #define __put_user_asm(err,x,ptr,bwl)				\
- 	__asm__ ("move" #bwl " %0,%1"				\
--- 
-2.26.2
-
+I'll do the normal mask thing ..
