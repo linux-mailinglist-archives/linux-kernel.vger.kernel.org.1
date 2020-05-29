@@ -2,89 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71381E8558
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B19951E8579
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727909AbgE2Rlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 13:41:40 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:50310 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726974AbgE2Rli (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 13:41:38 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1590774097; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=z3/+BzcNWuNyJ/PPhv1oZOQCAe8HxM1NQYnZ727fjl4=;
- b=VQxAXh1VQ8/V3xZvSFrWh4z/ur/UFkCqrh8hEszC9pAquiQoQ/0hZJdc9xh7Js8CaP32O2/i
- 6/uqfkZi7QQXroBMAMst6IITttE4Ytc/vUBFy8XHeO71jO7+cvRvLzXQpOPhMUxZXR+vzF2Q
- ka8NA3JdpxvPHDzFQxeYxNSsFm4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5ed1494744a25e00522de95b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 May 2020 17:41:27
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 384F8C433C6; Fri, 29 May 2020 17:41:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
-        MISSING_MID,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D082AC433CA;
-        Fri, 29 May 2020 17:41:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D082AC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1727995AbgE2RoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 13:44:10 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:46978 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726555AbgE2RoK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 13:44:10 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04THRxjl063466;
+        Fri, 29 May 2020 17:44:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=ygp+b2CwOObfl6QpIHhCnCkG/Gju2Rtfb6hrd2ha3sg=;
+ b=Fq39hMHMKgxlceUPXiFEHnDLCyvZK/4tu39RupcDX4FCyl+hCoTWt7PAIVY5ibil3hQ1
+ MjSl2F0Ji9dJAoJDetAbCAuPENOhZQPJhGjRG3qgJU7xPRAjfVsHESLajxGZrbAMCQaA
+ bpecJ92e2E+ZIiLceGnDgVkNXAUfK4k5HK+F6VvTYL5Dr53BuEMXkybXggKc2YwUZrn2
+ zqe9rg2/XC/5xqbHmW38NH0ulUM+m5OGi75Sk9M3c/hGY4+wlevbCcZNMTV5e7sN7h19
+ t+NcjMUH9LZYi6XFK6zTZuL+7t119/4Nd3GMSnx2ZVSuzFYIbI+p+QjpJbmKiyAedKCn 9w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 318xbkbq45-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 29 May 2020 17:44:07 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04THTAWj157566;
+        Fri, 29 May 2020 17:42:06 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 317ddur01p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 29 May 2020 17:42:06 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04THg5gD026971;
+        Fri, 29 May 2020 17:42:05 GMT
+Received: from localhost.localdomain (/10.159.246.35)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 29 May 2020 10:42:04 -0700
+Subject: Re: [PATCH 06/30] KVM: SVM: always update CR3 in VMCB
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+References: <20200529153934.11694-1-pbonzini@redhat.com>
+ <20200529153934.11694-7-pbonzini@redhat.com>
+From:   Krish Sadhukhan <krish.sadhukhan@oracle.com>
+Message-ID: <07139fc2-39bd-5bc5-ef23-a98681013665@oracle.com>
+Date:   Fri, 29 May 2020 10:41:58 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] mwifiex: Parse all API_VER_ID properties
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200521123444.28957-1-pali@kernel.org>
-References: <20200521123444.28957-1-pali@kernel.org>
-To:     =?utf-8?q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        =?utf-8?q?Marek_Beh=C3=BAn?= <marek.behun@nic.cz>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200529174126.384F8C433C6@smtp.codeaurora.org>
-Date:   Fri, 29 May 2020 17:41:26 +0000 (UTC)
+In-Reply-To: <20200529153934.11694-7-pbonzini@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9636 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 mlxscore=0
+ phishscore=0 adultscore=0 suspectscore=0 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005290133
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9636 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0 mlxscore=0
+ lowpriorityscore=0 priorityscore=1501 phishscore=0 cotscore=-2147483648
+ suspectscore=0 bulkscore=0 clxscore=1015 impostorscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005290133
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pali Rohár <pali@kernel.org> wrote:
 
-> During initialization of SD8997 wifi chip kernel prints warnings:
-> 
->   mwifiex_sdio mmc0:0001:1: Unknown api_id: 3
->   mwifiex_sdio mmc0:0001:1: Unknown api_id: 4
-> 
-> This patch adds support for parsing all api ids provided by SD8997
-> firmware.
-> 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> Acked-by: Ganapathi Bhat <ganapathi.bhat@nxp.com>
+On 5/29/20 8:39 AM, Paolo Bonzini wrote:
+> svm_load_mmu_pgd is delaying the write of GUEST_CR3 to prepare_vmcs02
 
-Patch applied to wireless-drivers-next.git, thanks.
-
-86cffb2c0a59 mwifiex: Parse all API_VER_ID properties
-
--- 
-https://patchwork.kernel.org/patch/11562833/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Did you mean to say enter_svm_guest_mode here ?
+> as
+> an optimization, but this is only correct before the nested vmentry.
+> If userspace is modifying CR3 with KVM_SET_SREGS after the VM has
+> already been put in guest mode, the value of CR3 will not be updated.
+> Remove the optimization, which almost never triggers anyway.
+> This was was added in commit 689f3bf21628 ("KVM: x86: unify callbacks
+> to load paging root", 2020-03-16) just to keep the two vendor-specific
+> modules closer, but we'll fix VMX too.
+>
+> Fixes: 689f3bf21628 ("KVM: x86: unify callbacks to load paging root")
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>   arch/x86/kvm/svm/nested.c |  6 +-----
+>   arch/x86/kvm/svm/svm.c    | 16 +++++-----------
+>   2 files changed, 6 insertions(+), 16 deletions(-)
+>
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index dcac4c3510ab..8756c9f463fd 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -256,11 +256,7 @@ void enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
+>   	svm_set_efer(&svm->vcpu, nested_vmcb->save.efer);
+>   	svm_set_cr0(&svm->vcpu, nested_vmcb->save.cr0);
+>   	svm_set_cr4(&svm->vcpu, nested_vmcb->save.cr4);
+> -	if (npt_enabled) {
+> -		svm->vmcb->save.cr3 = nested_vmcb->save.cr3;
+> -		svm->vcpu.arch.cr3 = nested_vmcb->save.cr3;
+> -	} else
+> -		(void)kvm_set_cr3(&svm->vcpu, nested_vmcb->save.cr3);
+> +	(void)kvm_set_cr3(&svm->vcpu, nested_vmcb->save.cr3);
+>   
+>   	/* Guest paging mode is active - reset mmu */
+>   	kvm_mmu_reset_context(&svm->vcpu);
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 545f63ebc720..feb96a410f2d 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -3447,7 +3447,6 @@ static fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+>   static void svm_load_mmu_pgd(struct kvm_vcpu *vcpu, unsigned long root)
+>   {
+>   	struct vcpu_svm *svm = to_svm(vcpu);
+> -	bool update_guest_cr3 = true;
+>   	unsigned long cr3;
+>   
+>   	cr3 = __sme_set(root);
+> @@ -3456,18 +3455,13 @@ static void svm_load_mmu_pgd(struct kvm_vcpu *vcpu, unsigned long root)
+>   		mark_dirty(svm->vmcb, VMCB_NPT);
+>   
+>   		/* Loading L2's CR3 is handled by enter_svm_guest_mode.  */
+> -		if (is_guest_mode(vcpu))
+> -			update_guest_cr3 = false;
+> -		else if (test_bit(VCPU_EXREG_CR3, (ulong *)&vcpu->arch.regs_avail))
+> -			cr3 = vcpu->arch.cr3;
+> -		else /* CR3 is already up-to-date.  */
+> -			update_guest_cr3 = false;
+> +		if (!test_bit(VCPU_EXREG_CR3, (ulong *)&vcpu->arch.regs_avail))
+> +			return;
+> +		cr3 = vcpu->arch.cr3;
+>   	}
+>   
+> -	if (update_guest_cr3) {
+> -		svm->vmcb->save.cr3 = cr3;
+> -		mark_dirty(svm->vmcb, VMCB_CR);
+> -	}
+> +	svm->vmcb->save.cr3 = cr3;
+> +	mark_dirty(svm->vmcb, VMCB_CR);
+>   }
+>   
+>   static int is_disabled(void)
