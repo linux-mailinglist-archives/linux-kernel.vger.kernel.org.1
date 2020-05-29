@@ -2,107 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4008C1E808E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 16:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 128501E80AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 16:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727889AbgE2OlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 10:41:21 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:48900 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727793AbgE2OlI (ORCPT
+        id S1727966AbgE2OmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 10:42:20 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:40048 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726887AbgE2OmT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 10:41:08 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id A04E380307C7;
-        Fri, 29 May 2020 14:41:06 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id D_okDCmiNr_L; Fri, 29 May 2020 17:41:06 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5 11/11] dmaengine: dw: Initialize max_sg_nents capability
-Date:   Fri, 29 May 2020 17:40:54 +0300
-Message-ID: <20200529144054.4251-12-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200529144054.4251-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200529144054.4251-1-Sergey.Semin@baikalelectronics.ru>
+        Fri, 29 May 2020 10:42:19 -0400
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id C252C2A466D;
+        Fri, 29 May 2020 15:42:17 +0100 (BST)
+Date:   Fri, 29 May 2020 16:42:14 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Parshuram Thombare <pthombar@cadence.com>, <bbrezillon@kernel.org>,
+        <vitor.soares@synopsys.com>, <pgaj@cadence.com>,
+        <linux-i3c@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <mparab@cadence.com>, <praneeth@ti.com>
+Subject: Re: [PATCH v2 1/2] i3c: master add i3c_master_attach_boardinfo to
+ preserve boardinfo
+Message-ID: <20200529164214.49ba670c@collabora.com>
+In-Reply-To: <1590053542-389-1-git-send-email-pthombar@cadence.com>
+References: <1590053467-32079-1-git-send-email-pthombar@cadence.com>
+        <1590053542-389-1-git-send-email-pthombar@cadence.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Multi-block support provides a way to map the kernel-specific SG-table so
-the DW DMA device would handle it as a whole instead of handling the
-SG-list items or so called LLP block items one by one. So if true LLP
-list isn't supported by the DW DMA engine, then soft-LLP mode will be
-utilized to load and execute each LLP-block one by one. The soft-LLP mode
-of the DMA transactions execution might not work well for some DMA
-consumers like SPI due to its Tx and Rx buffers inter-dependency. Let's
-initialize the max_sg_nents DMA channels capability based on the nollp
-flag state. If it's true, no hardware accelerated LLP is available and
-max_sg_nents should be set with 1, which means that the DMA engine
-can handle only a single SG list entry at a time. If noLLP is set to
-false, then hardware accelerated LLP is supported and the DMA engine
-can handle infinite number of SG entries in a single DMA transaction.
+On Thu, 21 May 2020 11:32:22 +0200
+Parshuram Thombare <pthombar@cadence.com> wrote:
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Cc: devicetree@vger.kernel.org
+> Boardinfo was lost if I3C object for devices with boardinfo
+> available are not created or not added to the I3C device list
+> because of some failure e.g. SETDASA failed, retrieve info failed etc
+> This patch adds i3c_master_attach_boardinfo which scan boardinfo list
+> in the master object and 'attach' it to the I3C device object.
+> 
+> Fixes: 3a379bbcea0a ("i3c: Add core I3C infrastructure")
+> Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
 
----
+This patch looks good to me. I'll apply it just after the merge window.
 
-Changelog v3:
-- This is a new patch created as a result of the discussion with Vinud and
-  Andy in the framework of DW DMA burst and LLP capabilities.
-
-Changelog v4:
-- Use explicit if-else statement when assigning the max_sg_nents field.
----
- drivers/dma/dw/core.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/dma/dw/core.c b/drivers/dma/dw/core.c
-index 588b9bae827c..9dee5fa65153 100644
---- a/drivers/dma/dw/core.c
-+++ b/drivers/dma/dw/core.c
-@@ -1059,6 +1059,18 @@ static void dwc_caps(struct dma_chan *chan, struct dma_slave_caps *caps)
- 	struct dw_dma_chan *dwc = to_dw_dma_chan(chan);
- 
- 	caps->max_burst = dwc->max_burst;
-+
-+	/*
-+	 * It might be crucial for some devices to have the hardware
-+	 * accelerated multi-block transfers supported, aka LLPs in DW DMAC
-+	 * notation. So if LLPs are supported then max_sg_nents is set to
-+	 * zero which means unlimited number of SG entries can be handled in a
-+	 * single DMA transaction, otherwise it's just one SG entry.
-+	 */
-+	if (dwc->nollp)
-+		caps->max_sg_nents = 1;
-+	else
-+		caps->max_sg_nents = 0;
- }
- 
- int do_dma_probe(struct dw_dma_chip *chip)
--- 
-2.26.2
+> ---
+>  drivers/i3c/master.c | 19 +++++++++++++++++--
+>  1 file changed, 17 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
+> index 5f4bd52121fe..3d995f247cb7 100644
+> --- a/drivers/i3c/master.c
+> +++ b/drivers/i3c/master.c
+> @@ -1776,6 +1776,21 @@ static void i3c_master_bus_cleanup(struct i3c_master_controller *master)
+>  	i3c_master_detach_free_devs(master);
+>  }
+>  
+> +static void i3c_master_attach_boardinfo(struct i3c_dev_desc *i3cdev)
+> +{
+> +	struct i3c_master_controller *master = i3cdev->common.master;
+> +	struct i3c_dev_boardinfo *i3cboardinfo;
+> +
+> +	list_for_each_entry(i3cboardinfo, &master->boardinfo.i3c, node) {
+> +		if (i3cdev->info.pid != i3cboardinfo->pid)
+> +			continue;
+> +
+> +		i3cdev->boardinfo = i3cboardinfo;
+> +		i3cdev->info.static_addr = i3cboardinfo->static_addr;
+> +		return;
+> +	}
+> +}
+> +
+>  static struct i3c_dev_desc *
+>  i3c_master_search_i3c_dev_duplicate(struct i3c_dev_desc *refdev)
+>  {
+> @@ -1831,10 +1846,10 @@ int i3c_master_add_i3c_dev_locked(struct i3c_master_controller *master,
+>  	if (ret)
+>  		goto err_detach_dev;
+>  
+> +	i3c_master_attach_boardinfo(newdev);
+> +
+>  	olddev = i3c_master_search_i3c_dev_duplicate(newdev);
+>  	if (olddev) {
+> -		newdev->boardinfo = olddev->boardinfo;
+> -		newdev->info.static_addr = olddev->info.static_addr;
+>  		newdev->dev = olddev->dev;
+>  		if (newdev->dev)
+>  			newdev->dev->desc = newdev;
 
