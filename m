@@ -2,92 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84BD91E8939
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 602B51E894A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728207AbgE2Uvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 16:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43776 "EHLO
+        id S1728314AbgE2Uxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 16:53:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727024AbgE2Uvr (ORCPT
+        with ESMTP id S1728293AbgE2Uxs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 16:51:47 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0662C03E969
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 13:51:46 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id u5so483903pgn.5
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 13:51:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8RJwxpvXZ7yHUIYItjDCi3nEt97AjOQZqm5mktIKglM=;
-        b=M/KDB9MVaJ3bKK/pSESfGDhUz2/eSe8W2P3XY9ttwdBfbkd2+ZwCKif/7rKU8+FZne
-         6pRhMTY1Ee9UfZ5VyWUThjzb8XwTmQ6C5UOdp7MI6rT5x4/FKGRCqO7wwaTVedFFOJqM
-         eUUxTb2emHppUghqPa+BKIje7JIAwBlz2f087ZkLF018eRz8boXoVqOa53W3RnqKVaS9
-         lWKzFj+LVMjz36NVbwhSi1TC3+lMsyufmMTZIQEZghxhB7ZORyPnPciLj/i4E2mAlx4o
-         By89gmt+knU/npTwLbi3RePvKtwYVg/TyDa5EBnkMoekT1/nAMZwy6mEMfhUuIIJfU5Z
-         rn4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=8RJwxpvXZ7yHUIYItjDCi3nEt97AjOQZqm5mktIKglM=;
-        b=WD2c8CRdoMyhUzzGHn9tIylZt23+GxG2mvbE8BXWmcHmF8qttcakBhUKS3pquJkbKN
-         VLi+Fc4exIxlMiTU7s55IINu+sa39CLvmj+k86pM99qnbirX8eCBZDtZT7ZK/eJ9dsJA
-         rJS03Ky3pUXbftUnc71PeGsOr94eY481oxAXET5441HS3XyjzrmK4rIapGVmVQ69kVEq
-         3IKUx5ZUEa0RjDC3v7cikKhz21RupAShXUnGqOjAfWKm7L7HBff8zb+mh6QvrH4wN5yi
-         6d0M+7VfODto/bC4RqHimQwnGYuHZs2D2FsYGpq0QTPp17uLxL9RhdTwhg9Jmh7eT7Fq
-         Ov0A==
-X-Gm-Message-State: AOAM533MWg7IKd/w1ZCle+PM8BuryBwNBw/bbyW6BgcIN12hBnaCT38v
-        p/W+88mM/PBGIj6uL8dGDy0=
-X-Google-Smtp-Source: ABdhPJyNoA/GZeqgO4Y+adzG5eB639WejmPT5GFCWGmSayfvnl6iB8AzfdqsTvoSm68wTf+ydNVklQ==
-X-Received: by 2002:a63:ff07:: with SMTP id k7mr9168036pgi.449.1590785506465;
-        Fri, 29 May 2020 13:51:46 -0700 (PDT)
-Received: from google.com ([2620:15c:211:1:3e01:2939:5992:52da])
-        by smtp.gmail.com with ESMTPSA id f66sm8313300pfg.174.2020.05.29.13.51.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 13:51:45 -0700 (PDT)
-Date:   Fri, 29 May 2020 13:51:43 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Subject: Re: [PATCH v3 6/7] zram: Allocate struct zcomp_strm as per-CPU memory
-Message-ID: <20200529205143.GC86436@google.com>
-References: <20200527201119.1692513-1-bigeasy@linutronix.de>
- <20200527201119.1692513-7-bigeasy@linutronix.de>
+        Fri, 29 May 2020 16:53:48 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF686C03E969;
+        Fri, 29 May 2020 13:53:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6nnpKQ78aF/xhKEUVRrmt4yxxhj1GTVxNLuwok3N+bc=; b=IQaWs8OREKI3KCKjJJReDHgeP2
+        /B9o2SCenhLoFC955fx8N8oXk8MK5T23dO5W07voFMuxVTFBhLVnmXl+CKy15WDYUCFleb17WuIIo
+        HSv3WM7NX/sLsKG/JOdedYW0GaOVQ5mNc3v6LBnPxWMdsnXDp4O/rOvtNATTjISUqMs/zmQxrTC7X
+        Qmezao7kSCjI2BdMCuqTENeTDaSs17eYrEXpO7ODtB7X0l2vBiOQwax/gSYW6yFNMoz3qPiPxSj9u
+        Lf46T1dSHd+0RDbRwcBBsMe+w6VDCsFWEPhzzN/YnvNuFMlD5glrq5eKAvMdfxd8C9DwCrr6myXmO
+        OZ0iF66Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jem0V-0007Vh-7h; Fri, 29 May 2020 20:53:35 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DE2A69834CF; Fri, 29 May 2020 22:53:31 +0200 (CEST)
+Date:   Fri, 29 May 2020 22:53:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alan Stern <stern@rowland.harvard.edu>, parri.andrea@gmail.com,
+        will@kernel.org, Boqun Feng <boqun.feng@gmail.com>,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, Akira Yokosawa <akiyks@gmail.com>,
+        dlustig@nvidia.com, open list <linux-kernel@vger.kernel.org>,
+        linux-arch@vger.kernel.org
+Subject: Re: Some -serious- BPF-related litmus tests
+Message-ID: <20200529205331.GV2483@worktop.programming.kicks-ass.net>
+References: <006e2bc6-7516-1584-3d8c-e253211c157e@fb.com>
+ <20200525112521.GD317569@hirez.programming.kicks-ass.net>
+ <20200525154730.GW2869@paulmck-ThinkPad-P72>
+ <20200525170257.GA325280@hirez.programming.kicks-ass.net>
+ <20200525172154.GZ2869@paulmck-ThinkPad-P72>
+ <20200528220047.GB211369@google.com>
+ <20200528221659.GS2483@worktop.programming.kicks-ass.net>
+ <CAEf4BzYf6jjrStc08R1bDASFyEdKj6vYg_MOaipUJ3vbdqNrSg@mail.gmail.com>
+ <20200529123626.GL706495@hirez.programming.kicks-ass.net>
+ <CAEf4Bzb9D1jTdmUzopc35qmFopaW-UfvLO9ohFsFsBuLVm0ZCw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200527201119.1692513-7-bigeasy@linutronix.de>
+In-Reply-To: <CAEf4Bzb9D1jTdmUzopc35qmFopaW-UfvLO9ohFsFsBuLVm0ZCw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 10:11:18PM +0200, Sebastian Andrzej Siewior wrote:
-> zcomp::stream is a per-CPU pointer, pointing to struct zcomp_strm
-> which contains two pointers. Having struct zcomp_strm allocated
-> directly as per-CPU memory would avoid one additional memory
-> allocation and a pointer dereference. This also simplifies the
-> addition of a local_lock to struct zcomp_strm.
-> 
-> Allocate zcomp::stream directly as per-CPU memory.
-> 
-> Cc: Minchan Kim <minchan@kernel.org>
-> Cc: Nitin Gupta <ngupta@vflare.org>
-> Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Acked-by: Minchan Kim <minchan@kernel.org>
+On Fri, May 29, 2020 at 01:01:51PM -0700, Andrii Nakryiko wrote:
 
-Looks good to me.
+> > question though; why are you using xchg() for the commit? Isn't that
+> > more expensive than it should be?
+> >
+> > That is, why isn't that:
+> >
+> >   smp_store_release(&hdr->len, new_len);
+> >
+> > ? Or are you needing the smp_mb() for the store->load ordering for the
+> > ->consumer_pos load? That really needs a comment.
+> 
+> Yeah, smp_store_release() is not strong enough, this memory barrier is
+> necessary. And yeah, I'll follow up with some more comments, that's
+> been what Joel requested as well.
+
+Ok, great.
+
+> > I think you can get rid of the smp_load_acquire() there, you're ordering
+> > a load->store and could rely on the branch to do that:
+> >
+> >         cons_pos = READ_ONCE(&rb->consumer_pos) & rb->mask;
+> >         if ((flags & BPF_RB_FORCE_WAKEUP) || (cons_pos == rec_pos && !(flags &BPF_RB_NO_WAKEUP))
+> >                 irq_work_queue(&rq->work);
+> >
+> > should be a control dependency.
+> 
+> Could be. I tried to keep consistent
+> smp_load_acquire/smp_store_release usage to keep it simpler. It might
+> not be the absolutely minimal amount of ordering that would still be
+> correct. We might be able to tweak and tune this without changing
+> correctness.
+
+We can even rely on the irq_work_queue() being an atomic, but sure, get
+it all working and correct first before you wreck it ;-)
