@@ -2,110 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F831E7D3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 14:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE6E1E7D5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 14:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbgE2Ma2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 08:30:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726052AbgE2Ma2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 08:30:28 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 170BE206E2;
-        Fri, 29 May 2020 12:30:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590755427;
-        bh=rp2b8rWaD3B9YlhcDDtcfPJDfthWSHlXIfqwbA4J2mo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IW85YkPfDOytODuyVvF5uGzi+PcUOgUwF4SPceFv7a4blGFfhuLKzzsm6a2Oulwen
-         EESmw/UOKGXHy4qwXGFtZv0Ma8bMNKZydX8eHXUHo5MUY5ay10qAL8Oj6EFVZDHtFk
-         aHh2M+wG8csug7wy1ZUzgmfbkMnXZXEMeY6U4u/c=
-Date:   Fri, 29 May 2020 14:30:25 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [PATCH v3 0/3] driver core: Add device link related sysfs files
-Message-ID: <20200529123025.GA1710508@kroah.com>
-References: <20200521191800.136035-1-saravanak@google.com>
- <CAGETcx8UGps6bz1YhYcbjCAAXenBuR6XDT0qv5WED5zbyfzNFw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx8UGps6bz1YhYcbjCAAXenBuR6XDT0qv5WED5zbyfzNFw@mail.gmail.com>
+        id S1726927AbgE2Mgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 08:36:47 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:17711 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726568AbgE2Mgp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 08:36:45 -0400
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200529123642epoutp041508ebd34429d9659ac56c351d19d065~Tf-lK9Il_3148131481epoutp04B
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 12:36:42 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200529123642epoutp041508ebd34429d9659ac56c351d19d065~Tf-lK9Il_3148131481epoutp04B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1590755802;
+        bh=J49SSn9UF1qlBD1LQ3PUEtbn/nUXaru2NxUEX14GL+M=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=YJifHKh/ZlOkmmpku+3p0VqbeI2I9I5vlcalPMGUtatTr+vtOqtSv6d2VjRMjM5dD
+         /mlw/dna79y0A6qn5gguVQMOwjhklyMJRtbpWE9Yfjwj10lFM+/z8NZGUoRbqzzWud
+         Vx02iiNM0JnfJ4b0UzjweXZvgJ1zp6/D0H/ztbu4=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+        20200529123640epcas5p25cadb932855c3328753282da6ec26894~Tf-j27gZz1526315263epcas5p2b;
+        Fri, 29 May 2020 12:36:40 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        82.D2.09475.8D101DE5; Fri, 29 May 2020 21:36:40 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200529121821epcas5p24b23172c6a1956ed4a2ef06d5c44619b~TfvkHHUk_1550815508epcas5p2b;
+        Fri, 29 May 2020 12:18:21 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200529121821epsmtrp1e52afc3e5c4add6bc332af26a8d5a934~TfvkGcoBL0701107011epsmtrp1D;
+        Fri, 29 May 2020 12:18:21 +0000 (GMT)
+X-AuditID: b6c32a4b-39fff70000002503-04-5ed101d86fab
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        14.B3.08303.D8DF0DE5; Fri, 29 May 2020 21:18:21 +0900 (KST)
+Received: from localhost.localdomain (unknown [107.109.224.135]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200529121819epsmtip178c5205fbbd84f3079fee798c877a2e7~TfviS0QTP3038930389epsmtip1-;
+        Fri, 29 May 2020 12:18:19 +0000 (GMT)
+From:   Anupam Aggarwal <anupam.al@samsung.com>
+To:     mchehab+samsung@kernel.org, corbet@lwn.net,
+        darrick.wong@oracle.com, viro@zeniv.linux.org.uk,
+        ira.weiny@intel.com, dhowells@redhat.com
+Cc:     a.sahrawat@samsung.com, t.vivek@samsung.com,
+        linux-kernel@vger.kernel.org,
+        Anupam Aggarwal <anupam.al@samsung.com>
+Subject: [PATCH] dcache: use of d_time under required configs
+Date:   Fri, 29 May 2020 17:47:36 +0530
+Message-Id: <1590754656-25878-1-git-send-email-anupam.al@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrOIsWRmVeSWpSXmKPExsWy7bCmlu4NxotxBjfPKFtc3J1q8b7hCrvF
+        kwPtjBZ3329ntXjX9JvFYv/T5ywWl3fNYbN4/6mTyeJl30Y2i/N/j7M6cHks3vOSyWPTqk42
+        j8V9k1k9Pj69xeLxft9VNo++LasYPT5vkvPY9OQtUwBHFJdNSmpOZllqkb5dAlfGlgs3WAtm
+        clZMnLGeuYHxAnsXIyeHhICJxMfbS1m7GLk4hAR2M0r0bVwM5XxilLi6+xAzhPOZUeLWqkY2
+        mJbJ+1uYQWwhgV2MEueauSGKvjJKrN/ZwQqSYBPQlZj7YjbYKBGBHkaJS1PvMIIkmAUqJLoe
+        rQeaxMEhLGAr8fy1D0iYRUBVouvybxYQm1fAVeLBtIVMEMvkJG6e6wS7QkLgFrvEy8MnoK5w
+        kZh18QozhC0s8er4FqiHpCRe9rexQzT0M0p0LbvACuHMYJQ4smcbC0SVvcTr5gYmkCuYBTQl
+        1u/ShwjLSkw9tY4J4lA+id7fT6Cu4JXYMQ/GVpaYeu01K4QtKfG4sxXqCA+JplUL2SDBEitx
+        8fR5pgmMsrMQNixgZFzFKJlaUJybnlpsWmCcl1quV5yYW1yal66XnJ+7iRGcNrS8dzA+evBB
+        7xAjEwfjIUYJDmYlEd41Z8/HCfGmJFZWpRblxxeV5qQWH2KU5mBREudV+nEmTkggPbEkNTs1
+        tSC1CCbLxMEp1cC0/3VNiPYZW4PnNv9Ys+ouWW9ma+MxMZPbcauybOl0pi86YlY/J516HKxe
+        VrV4UXZ4fe0B7Xz1/zbl57x1T/UbV7K69lw90XEkyVRDqtLZLsyvIpAnV3GHxLqDf/Ws7kjn
+        F9o8lpOaqLtMQ+awl4LS1+Wus2TNIgSmXQjh6NNjNVqxov1V5xTjxlNemtIvnCp9TDu/9254
+        EJh55tO8mKe1By5dbP/sP3dJKv/rshOlFyJ6en9OCt185pipgfFWW6aZl+c/z1v5j8siWP02
+        x4RTDY11b3/+8782a7X6m4Sfi+Nq2gUtv6drm58UOTVjc7v5PkVmUcndn+K6ppytjcmZ6BsU
+        q7Ve1P1j1rU5PUosxRmJhlrMRcWJAHq/+Y2KAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNLMWRmVeSWpSXmKPExsWy7bCSnG7v3wtxBjMOiFhc3J1q8b7hCrvF
+        kwPtjBZ3329ntXjX9JvFYv/T5ywWl3fNYbN4/6mTyeJl30Y2i/N/j7M6cHks3vOSyWPTqk42
+        j8V9k1k9Pj69xeLxft9VNo++LasYPT5vkvPY9OQtUwBHFJdNSmpOZllqkb5dAlfGlgs3WAtm
+        clZMnLGeuYHxAnsXIyeHhICJxOT9LcxdjFwcQgI7GCVaD8xmg0hISjS93sAIYQtLrPz3HKxB
+        SOAzo8S9CQkgNpuArsTcF7NZQZpFBKYwSvSuvQLWzCxQI3Hm/C6gBAeHsICtxPPXPiBhFgFV
+        ia7Lv1lAbF4BV4kH0xYyQcyXk7h5rpN5AiPPAkaGVYySqQXFuem5xYYFRnmp5XrFibnFpXnp
+        esn5uZsYweGnpbWDcc+qD3qHGJk4GA8xSnAwK4nwrjl7Pk6INyWxsiq1KD++qDQntfgQozQH
+        i5I479dZC+OEBNITS1KzU1MLUotgskwcnFINTJXftBLEzrBx6pYGLjPkqNSSuHT8lUC3wc8J
+        i978/JAbLCu613F9jO7Cmyd2rl20MPY4f1dFwYqtHMVMr9uenmu+VxNx15MlSuHWhTap70v6
+        fQqPvwvj4NJPlF6yMoOdc/9zlnNv3757Pt3+eZsqb0rSsW6xbgZlLt9mxcYdBx+qruqU/9FV
+        Nffziwd1dwRi9j88/aUn6HKt9Zc1E/maPEvVvii1/2V8fzX75pbu69WPt0k/fLhvnYBukY/q
+        pyBVpX+zjWMOJUjptrJv2yVj593L8veiGTvT0cYJt2fslbsoN/GJAZ+PzCfhg1p/Sn1iWeWE
+        FhWcOcmz0sFvGvfpMypmR9XmHZ/woNZUcePnxUosxRmJhlrMRcWJAJzhUMuuAgAA
+X-CMS-MailID: 20200529121821epcas5p24b23172c6a1956ed4a2ef06d5c44619b
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200529121821epcas5p24b23172c6a1956ed4a2ef06d5c44619b
+References: <CGME20200529121821epcas5p24b23172c6a1956ed4a2ef06d5c44619b@epcas5p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 02:18:23PM -0700, Saravana Kannan wrote:
-> On Thu, May 21, 2020 at 12:18 PM Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > With fw_devlink and with sync_state() callback features, there's a lot
-> > of device/device link related information that's not available in sysfs.
-> >
-> > Exposing these details to user space can be very useful in understanding
-> > suspend/resume issues, runtime pm issues, probing issues, figuring out
-> > the modules that'd be needed for first stage init, etc. In fact, an
-> > earlier verion of this series was very helpful in debugging and
-> > validating the recent memory leak fix[1].
-> >
-> > This series is based on driver-core-next and [1] cherry-picked on top of
-> > it.
-> >
-> > [1] - https://lore.kernel.org/lkml/20200519063000.128819-1-saravanak@google.com/
-> >
-> > v1->v2:
-> > Patch 1/4
-> > - New patch
-> > Patch 2/4
-> > - Fixed the warnings I saw before that were related to incorrect
-> >   sysfs removal code when a device link is deleted.
-> > - Fixed error handling in device_link_add()
-> > - Split up flags into more meaningful files.
-> > - Added status file.
-> > Patch 3/4
-> > - Fixed error handling that Greg pointed out before.
-> > Patch 4/4
-> > - New patch
-> >
-> > v2->v3:
-> > - Dropped patch 1/4 from v2 since it was already picked up. So numbering
-> >   has shifted.
-> > Patch 1/3
-> > - Added documentation
-> >
-> > Saravana Kannan (3):
-> >   driver core: Expose device link details in sysfs
-> >   driver core: Add state_synced sysfs file for devices that support it
-> >   driver core: Add waiting_for_supplier sysfs file for devices
-> >
-> >  Documentation/ABI/testing/sysfs-class-devlink | 126 ++++++++++
-> >  .../ABI/testing/sysfs-devices-consumer        |   8 +
-> >  .../ABI/testing/sysfs-devices-state_synced    |  24 ++
-> >  .../ABI/testing/sysfs-devices-supplier        |   8 +
-> >  .../sysfs-devices-waiting_for_supplier        |  17 ++
-> >  drivers/base/core.c                           | 237 +++++++++++++++++-
-> >  drivers/base/dd.c                             |  22 ++
-> >  include/linux/device.h                        |  58 ++---
-> >  8 files changed, 464 insertions(+), 36 deletions(-)
-> >  create mode 100644 Documentation/ABI/testing/sysfs-class-devlink
-> >  create mode 100644 Documentation/ABI/testing/sysfs-devices-consumer
-> >  create mode 100644 Documentation/ABI/testing/sysfs-devices-state_synced
-> >  create mode 100644 Documentation/ABI/testing/sysfs-devices-supplier
-> >  create mode 100644 Documentation/ABI/testing/sysfs-devices-waiting_for_supplier
-> 
-> Friendly reminder.
+struct dentry{}->d_time is used when CONFIG_NFS_FS or
+CONFIG_VBOXSF_FS is on.
+Limit the d_time only when either of configs CONFIG_NFS_FS or
+CONFIG_VBOXSF_FS is enabled
+With this change size of "struct dentry" is reduced by 8-bytes
+on 64-bit system, while of 32-bit system size remains unchanged
+dentry object is vastly used, so this change should be useful
+for memory saving
 
-Looks semi-sane, but it's too close to the merge window at the moment
-for me to take this.  If there's no objections by the time 5.8-rc1 is
-out, I'll queue it up in my tree for 5.9-rc1.
+Signed-off-by: Anupam Aggarwal <anupam.al@samsung.com>
+Signed-off-by: Vivek Trivedi <t.vivek@samsung.com>
+Signed-off-by: Amit Sahrawat <a.sahrawat@samsung.com>
+---
+ include/linux/dcache.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-thanks,
+diff --git a/include/linux/dcache.h b/include/linux/dcache.h
+index a94c551..d90da5e 100644
+--- a/include/linux/dcache.h
++++ b/include/linux/dcache.h
+@@ -101,7 +101,9 @@ struct dentry {
+ 	struct lockref d_lockref;	/* per-dentry lock and refcount */
+ 	const struct dentry_operations *d_op;
+ 	struct super_block *d_sb;	/* The root of the dentry tree */
++#if IS_ENABLED(CONFIG_NFS_FS) || IS_ENABLED(CONFIG_VBOXSF_FS)
+ 	unsigned long d_time;		/* used by d_revalidate */
++#endif
+ 	void *d_fsdata;			/* fs-specific data */
+ 
+ 	union {
+-- 
+1.9.1
 
-greg k-h
