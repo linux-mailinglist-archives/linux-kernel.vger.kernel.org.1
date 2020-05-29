@@ -2,74 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414B81E87F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 21:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D6FF1E87F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 21:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728080AbgE2Tgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 15:36:47 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:36395 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726487AbgE2Tgq (ORCPT
+        id S1728092AbgE2Thl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 15:37:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726487AbgE2Thi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 15:36:46 -0400
-Received: by mail-il1-f195.google.com with SMTP id 17so3664215ilj.3;
-        Fri, 29 May 2020 12:36:46 -0700 (PDT)
+        Fri, 29 May 2020 15:37:38 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C41D2C03E969
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 12:37:37 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id z64so351326pfb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 12:37:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=fNXcIddLpH8ebppSuMU7PyvoPN2gD0pHIru8c+y94h4=;
+        b=ZS30t7zQelDxYgde+Pm23ZECUTBbawnDW7kC0IVILV0ne90m612Nb5l3YsRQE/oHl2
+         1vJcSu/x/6MRV1jBng+N0PRhk/5T7jcfqm9ohPaSS2K/eybU1guf0QAuMkinuhwjvt0i
+         TF2tuAI2alWe1Wrb1/G1ovrHuKai8rFuCwtwE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=u4JJuz4TAar60F38SQZw2KBTCJrS5nElM3p5G9Nq7yQ=;
-        b=kFAOC7/BdGdB+xX+accui/3ZkWeOykFfFrU57UP/RHW2Nroua+Zylk078lDBBojFgp
-         eOVrX44wJT/CYsmrceni/AMXapgTtBEreRDFulDh5AGN/RwppdjIdlfRUYFE3MlA6m4Z
-         +xnYgHzQbmII4E4mpea28SfCKrkSoD8J/WnfUBLJFsc6JVxYaNoDXQ9DtTmZIgHcoPsm
-         CmCJAAf73OfCKg1yCSSMpPrkqQp7NbRPTC6lcO4f112bggwVSqOEnz6Fsc+AZ4CwbkmA
-         YYS2tWEq1/PRp0eHW701PhJXHKeTXkVy0H+opkV3pxeySOAzK70opY4K8GlqPFEjmou5
-         H7wA==
-X-Gm-Message-State: AOAM533x7QHsmin+RC1zn0fAgn6A/s/m1cR/43EnktET4gEXiaSx97kw
-        tIH8fLI3kH0oGYlCftoMnA==
-X-Google-Smtp-Source: ABdhPJz+wV8UcwQ0Kd/c679Va6YB924PcALUTRcMGJuXlpRNr8Q7V/3QZdJFrUIiLqnJWf5HqXDRvQ==
-X-Received: by 2002:a92:cd11:: with SMTP id z17mr7965249iln.12.1590781005909;
-        Fri, 29 May 2020 12:36:45 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id s15sm5239645iln.49.2020.05.29.12.36.44
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=fNXcIddLpH8ebppSuMU7PyvoPN2gD0pHIru8c+y94h4=;
+        b=hrBYuFZpbltLEZ9+7Ckpas4+972dsjZbnWLo4C2ZQAMBvSrcT28IFTiXExuxpk6zNO
+         21KulvM4v3hUn/W4qnqzQ3AdjcyCSxs1trEeDK2Knpi8kV5URxYHyBGa1UpjQ/VZeCnB
+         6VhD3w2+tSUVuXybcSAi6EO0AIMMTK5Cz3/bw5yhOfro7udWSsk72oLj+2BGjTcAIxPT
+         afDaqXZsP8ebIM7I/w/R5wB4Bf73ZHa2cLVvApTenvXrwd1b+oFMz19qIQm20lB5GO8w
+         lwARilRpp9TnuKskyKWguFxl4Yv8y/mAbzqueOsFHsq6rY28+0ZZLDLAZEOIYmPqOxlq
+         XhGA==
+X-Gm-Message-State: AOAM530uSMSrvLeGqr4gnw6xCw2Qwgt8gkpUPPyZhAaDJjepXXYj9WNJ
+        YX+tL35hmwV4dX8MDe73miq+sA==
+X-Google-Smtp-Source: ABdhPJya1s3vNg0rE6Fc75stD21lk3k+Kj0U12nwo3z5KVQaqPWvt9Xf14iZY0IqMpxDJMM/eRbs0w==
+X-Received: by 2002:a62:5ac1:: with SMTP id o184mr9922534pfb.97.1590781057299;
+        Fri, 29 May 2020 12:37:37 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 70sm7797958pfx.78.2020.05.29.12.37.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 12:36:45 -0700 (PDT)
-Received: (nullmailer pid 2815499 invoked by uid 1000);
-        Fri, 29 May 2020 19:36:44 -0000
-Date:   Fri, 29 May 2020 13:36:44 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     linux-arm-kernel@lists.infradead.org, s.hauer@pengutronix.de,
-        robh+dt@kernel.org, daniel.lezcano@linaro.org, shawnguo@kernel.org,
-        Linux-imx@nxp.com, festevam@gmail.com, kernel@pengutronix.de,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de
-Subject: Re: [PATCH V3] dt-bindings: timer: Convert i.MX GPT to json-schema
-Message-ID: <20200529193644.GA2815265@bogus>
-References: <1590717882-20922-1-git-send-email-Anson.Huang@nxp.com>
+        Fri, 29 May 2020 12:37:36 -0700 (PDT)
+Date:   Fri, 29 May 2020 12:37:35 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ubsan: Entirely disable alignment checks under UBSAN_TRAP
+Message-ID: <202005291236.000FCB6@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1590717882-20922-1-git-send-email-Anson.Huang@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 May 2020 10:04:42 +0800, Anson Huang wrote:
-> Convert the i.MX GPT binding to DT schema format using json-schema.
-> 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> ---
-> Changes since V2:
-> 	- in compatible properties, group all the ones with the same
-> 	  fallback to a single 'items' list using enum for the first entry.
-> ---
->  .../devicetree/bindings/timer/fsl,imxgpt.txt       | 45 --------------
->  .../devicetree/bindings/timer/fsl,imxgpt.yaml      | 72 ++++++++++++++++++++++
->  2 files changed, 72 insertions(+), 45 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/timer/fsl,imxgpt.txt
->  create mode 100644 Documentation/devicetree/bindings/timer/fsl,imxgpt.yaml
-> 
+Commit 8d58f222e85f ("ubsan: disable UBSAN_ALIGNMENT under
+COMPILE_TEST") tried to fix the pathological results of UBSAN_ALIGNMENT
+with UBSAN_TRAP (which objtool would rightly scream about), but it made
+an assumption about how COMPILE_TEST gets set (it is not set for
+randconfig). As a result, we need a bigger hammer here: just don't allow
+the alignment checks with the trap mode.
 
-Applied, thanks!
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Link: https://lore.kernel.org/lkml/742521db-1e8c-0d7a-1ed4-a908894fb497@infradead.org/
+Fixes: 8d58f222e85f ("ubsan: disable UBSAN_ALIGNMENT under COMPILE_TEST")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+---
+ lib/Kconfig.ubsan | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
+index 929211039bac..27bcc2568c95 100644
+--- a/lib/Kconfig.ubsan
++++ b/lib/Kconfig.ubsan
+@@ -63,7 +63,7 @@ config UBSAN_SANITIZE_ALL
+ config UBSAN_ALIGNMENT
+ 	bool "Enable checks for pointers alignment"
+ 	default !HAVE_EFFICIENT_UNALIGNED_ACCESS
+-	depends on !X86 || !COMPILE_TEST
++	depends on !UBSAN_TRAP
+ 	help
+ 	  This option enables the check of unaligned memory accesses.
+ 	  Enabling this option on architectures that support unaligned
+-- 
+2.25.1
+
+
+-- 
+Kees Cook
