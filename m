@@ -2,95 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B701E8B2E
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 00:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7CE1E8B4E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 00:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728399AbgE2WUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 18:20:01 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:26933 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726555AbgE2WUB (ORCPT
+        id S1728360AbgE2W1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 18:27:19 -0400
+Received: from saraswati.nitrkl.ac.in ([27.48.137.18]:34737 "EHLO
+        mailhost2.nitrkl.ac.in" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726555AbgE2W1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 18:20:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590790800;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VApPujRUVX7cEh65SicFqJGyG5bmdkomZyrWPZ9YdFY=;
-        b=ApPBEqg8aQv+YsQDWWDLIAracPWZ7WW5+RTsGYbCDdyhDZrfxAOCAwWIK1B83DnVqAow+P
-        Y454MgaiPgVuGFwgN+mxidoDh9mMZBVI5PGmvA+DBF8GLmLy7Wmpp0z16406LGdjDunCIL
-        t5M1Mk42c6cmNfmi0afzeX6BkfQV+JI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-372-J1-KAj-VPV6uqRB0g60qIg-1; Fri, 29 May 2020 18:19:56 -0400
-X-MC-Unique: J1-KAj-VPV6uqRB0g60qIg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D10B0100A630;
-        Fri, 29 May 2020 22:19:54 +0000 (UTC)
-Received: from x1.home (ovpn-112-195.phx2.redhat.com [10.3.112.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 355FF62932;
-        Fri, 29 May 2020 22:19:54 +0000 (UTC)
-Date:   Fri, 29 May 2020 16:19:53 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     wu000273@umn.edu
-Cc:     kjlu@umn.edu, Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
-        Dong Jia Shi <bjsdjshi@linux.vnet.ibm.com>,
-        Jike Song <jike.song@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vfio/mdev: Fix reference count leak in
- add_mdev_supported_type.
-Message-ID: <20200529161953.449ced87@x1.home>
-In-Reply-To: <20200528020109.31664-1-wu000273@umn.edu>
-References: <20200528020109.31664-1-wu000273@umn.edu>
-Organization: Red Hat
+        Fri, 29 May 2020 18:27:19 -0400
+X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 May 2020 18:27:17 EDT
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mailhost2.nitrkl.ac.in (Postfix) with ESMTP id 38A9A10101C;
+        Sat, 30 May 2020 03:50:33 +0530 (IST)
+Received: from mailhost2.nitrkl.ac.in ([127.0.0.1])
+        by localhost (mailhost2.nitrkl.ac.in [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id XKViYSdzGldJ; Sat, 30 May 2020 03:50:33 +0530 (IST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mailhost2.nitrkl.ac.in (Postfix) with ESMTP id AD17E100FA8;
+        Sat, 30 May 2020 03:50:32 +0530 (IST)
+DKIM-Filter: OpenDKIM Filter v2.9.2 mailhost2.nitrkl.ac.in AD17E100FA8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nitrkl.ac.in;
+        s=4391B05C-0340-11E3-8D52-6A4624F1C1DB; t=1590790832;
+        bh=ZFdHQiiTcpDHsxvgTORJoeG5QneqYviTaGh13SXv4Ew=;
+        h=Date:From:Reply-To:Message-ID:Subject:MIME-Version:Content-Type:
+         Content-Transfer-Encoding;
+        b=VWl9ChSoCAfseSqUje1HNCExj9HOZkg58HS5R0kfT/OIZfK2w0Ed+jBYmhIcRisiV
+         96H8o21hVKOXjkmLdS6ROkSxrXTxBl4GSqSkT6y7CohnO+e69BRN/YMsYMy3OQ0ZQD
+         a55z/iz6VU3FMOntQkOw0+jAI+goOhmRjVoMNYxE=
+X-Virus-Scanned: amavisd-new at nitrkl.ac.in
+Received: from mailhost2.nitrkl.ac.in ([127.0.0.1])
+        by localhost (mailhost2.nitrkl.ac.in [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id ylQizP9LYPPl; Sat, 30 May 2020 03:50:32 +0530 (IST)
+Received: from zmbox2.nitrkl.ac.in (zmbox2.nitrkl.ac.in [172.16.0.24])
+        by mailhost2.nitrkl.ac.in (Postfix) with ESMTP id 6EB8110101C;
+        Sat, 30 May 2020 03:50:28 +0530 (IST)
+Date:   Sat, 30 May 2020 03:50:28 +0530 (IST)
+From:   Anastasia McDonald <617cs3001@nitrkl.ac.in>
+Reply-To: Anastasia McDonald <anastasia.mcdon@gmail.com>
+Message-ID: <2102052608.955385.1590790828220.JavaMail.zimbra@nitrkl.ac.in>
+Subject: donation
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Originating-IP: [172.16.0.20]
+X-Mailer: Zimbra 8.6.0_GA_1229 (zclient/8.6.0_GA_1229)
+Thread-Topic: donation
+Thread-Index: lIE8WMYbr+odrH8crE40F7hRONhIzg==
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 May 2020 21:01:09 -0500
-wu000273@umn.edu wrote:
+You have a sum donation for Catholic Charities Foundation, kindly contact the Program Coordinator through  her email  anastasia.mcdon@gmail.com  for details of claim.
 
-> From: Qiushi Wu <wu000273@umn.edu>
-> 
-> kobject_init_and_add() takes reference even when it fails.
-> If this function returns an error, kobject_put() must be called to
-> properly clean up the memory associated with the object. Thus,
-> replace kfree() by kobject_put() to fix this issue. Previous
-> commit "b8eb718348b8" fixed a similar problem.
-> 
-> Fixes: 7b96953bc640 ("vfio: Mediated device Core driver")
-> Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-> ---
-
-Applied to vfio next branch for v5.8 with Connie's and Kirti's reviews.
-Thanks,
-
-Alex
-
->  drivers/vfio/mdev/mdev_sysfs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/vfio/mdev/mdev_sysfs.c b/drivers/vfio/mdev/mdev_sysfs.c
-> index 8ad14e5c02bf..917fd84c1c6f 100644
-> --- a/drivers/vfio/mdev/mdev_sysfs.c
-> +++ b/drivers/vfio/mdev/mdev_sysfs.c
-> @@ -110,7 +110,7 @@ static struct mdev_type *add_mdev_supported_type(struct mdev_parent *parent,
->  				   "%s-%s", dev_driver_string(parent->dev),
->  				   group->name);
->  	if (ret) {
-> -		kfree(type);
-> +		kobject_put(&type->kobj);
->  		return ERR_PTR(ret);
->  	}
->  
-
+Regard
+Sir. Angelo Tony.
