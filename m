@@ -2,100 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B43861E835F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 18:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D76E1E8354
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 18:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727085AbgE2QPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 12:15:31 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:58682 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbgE2QPb (ORCPT
+        id S1726882AbgE2QOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 12:14:19 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:45405 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725795AbgE2QOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 12:15:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xKE4iU4tL+hNaGx/FSTJV5asiZmclaundn7b5eVYaJA=; b=V2vJfvPFWaLSd/C8i8efXx0Oae
-        8eabsyjI/uaqb/8MWLPjD2t7RHs6xqCboxmyOZvHENqIOnPQ9SITwT+8+nrq+etzD4SDYffWmv9uG
-        RBw6KKbt6WdM9PofbYUY1/XPERVENziT80bPAeONAW7O/EnmRvpDPjiQ0N9K/LkHWaQnn2EkfkLeF
-        VhGKawKxETn6Bk0ZOXhohHvuang7C6oCETIY7kIELtmWZh2HZhrYMeHn5c6OawEHV9NvFn8CjEnWP
-        1SnJlGWzCwlGglVUV/kJtIkWGnwmOQt8yOfx2qAvuP3zREApQz9oZm/lYFW7TMbJws6Bio4+zLwME
-        bIrqxtjg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jehct-0000rm-3K; Fri, 29 May 2020 16:12:55 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7A7AC30047A;
-        Fri, 29 May 2020 18:12:53 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 418422BABEA78; Fri, 29 May 2020 18:12:53 +0200 (CEST)
-Date:   Fri, 29 May 2020 18:12:53 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, broonie@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        viro@zeniv.linux.org.uk, x86@kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: mmotm 2020-05-13-20-30 uploaded (objtool warnings)
-Message-ID: <20200529161253.GD706460@hirez.programming.kicks-ass.net>
-References: <20200514033104.kRFL_ctMQ%akpm@linux-foundation.org>
- <611fa14d-8d31-796f-b909-686d9ebf84a9@infradead.org>
- <20200528172005.GP2483@worktop.programming.kicks-ass.net>
- <20200529135750.GA1580@lst.de>
- <20200529143556.GE706478@hirez.programming.kicks-ass.net>
- <20200529145325.GB706518@hirez.programming.kicks-ass.net>
- <20200529153336.GC706518@hirez.programming.kicks-ass.net>
- <20200529160514.cyaytn33thphb3tz@treble>
+        Fri, 29 May 2020 12:14:18 -0400
+Received: by mail-il1-f193.google.com with SMTP id 9so2971724ilg.12;
+        Fri, 29 May 2020 09:14:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6nfDO8tXYNOep2brkAvXF5zbOelR4aGWgBOnUITKsRY=;
+        b=a/dd5bVcUf0T1BGip0H1c0xH69gt4bWMgoLAIoxFxqM2cDs/p82VrhSJ7zNraLZmKC
+         yTHElaRJozBLwe266IGT3xRwt38iHVZpK0LmwXERjGYofpXeh3jjX2BYGLBv+45KPZcC
+         vSyWRfWksrn6kfEYhbvXUrO9OKrenetPoDpyfyqmGq9/+2JBvvguoQRN2iF2J7vLucAw
+         iL6a2Um09416uNDjHGfMgt3qGNmktO23ERtOS1KHQshtUEgA+ze7VcVatd9wrkH9l33x
+         nKRKpJNQY1KJ+lsSsdH9rJieoPrz+UzaB/tIcxc5+WLehfr7IoO+caEUsCPpZh6HAf0E
+         KBFw==
+X-Gm-Message-State: AOAM533mXO+S3j6nfGXBDUQvYpUl8+IFRE5KMcyUra5pS5NFgTQlTMqL
+        Zdw3GFgCVoQmeveaPFaUXw==
+X-Google-Smtp-Source: ABdhPJzuA2ktlJSd7UpbtEyBcgxYph+D4vfBmHw7TqTGpIjDXq5GoyDnI8okzTy3qfkjCk3IZhpDPA==
+X-Received: by 2002:a92:c90a:: with SMTP id t10mr8539976ilp.39.1590768857895;
+        Fri, 29 May 2020 09:14:17 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id 129sm3806916ioy.0.2020.05.29.09.14.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2020 09:14:16 -0700 (PDT)
+Received: (nullmailer pid 2487571 invoked by uid 1000);
+        Fri, 29 May 2020 16:14:15 -0000
+Date:   Fri, 29 May 2020 10:14:15 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        devicetree@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-rockchip@lists.infradead.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] media: dt-bindings: media: Document Rockchip CIF
+ bindings
+Message-ID: <20200529161415.GA2486902@bogus>
+References: <20200529130405.929429-1-maxime.chevallier@bootlin.com>
+ <20200529130405.929429-2-maxime.chevallier@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200529160514.cyaytn33thphb3tz@treble>
+In-Reply-To: <20200529130405.929429-2-maxime.chevallier@bootlin.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 11:05:14AM -0500, Josh Poimboeuf wrote:
+On Fri, 29 May 2020 15:04:03 +0200, Maxime Chevallier wrote:
+> Add a documentation for the Rockchip Camera Interface controller
+> binding.
+> 
+> This controller can be found on platforms such as the PX30 or the
+> RK3288, the PX30 being the only platform supported so far.
+> 
+> Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+> ---
+> 
+> Changes since V1
+> 
+>  - Updated the clock and reset names
+>  - Added missing includes in the example, so that the make dt_binding_check passes
+> 
+>  .../bindings/media/rockchip-cif.yaml          | 100 ++++++++++++++++++
+>  1 file changed, 100 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/rockchip-cif.yaml
+> 
 
-> It looks to me like GCC is doing the right thing.  That likely()
-> translates to:
-> 
-> #  define likely(x)	(__branch_check__(x, 1, __builtin_constant_p(x)))
-> 
-> which becomes:
-> 
-> #define __branch_check__(x, expect, is_constant) ({			\
-> 			long ______r;					\
-> 			static struct ftrace_likely_data		\
-> 				__aligned(4)				\
-> 				__section(_ftrace_annotated_branch)	\
-> 				______f = {				\
-> 				.data.func = __func__,			\
-> 				.data.file = __FILE__,			\
-> 				.data.line = __LINE__,			\
-> 			};						\
-> 			______r = __builtin_expect(!!(x), expect);	\
-> 			ftrace_likely_update(&______f, ______r,		\
-> 					     expect, is_constant);	\
-> 			______r;					\
-> 		})
-> 
-> Here 'x' is the call to user_access_begin().  It evaluates 'x' -- and
-> thus calls user_access_begin() -- before the call to
-> ftrace_likely_update().
-> 
-> So it's working as designed, right?  The likely() just needs to be
-> changed to likely_notrace().
 
-But if !x (ie we fail user_access_begin()), we should not pass STAC() on
-the way to out_err. OTOH if x, we should not be jumping to out_err.
+My bot found errors running 'make dt_binding_check' on your patch:
 
-I'm most confused... must not stare at asm for a while.
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/rockchip-cif.example.dt.yaml: cif@ff490000: clock-names: Additional items are not allowed ('cif_out' was unexpected)
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/rockchip-cif.example.dt.yaml: cif@ff490000: clock-names:0: 'aclk' was expected
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/rockchip-cif.example.dt.yaml: cif@ff490000: clock-names:1: 'hclkf' was expected
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/rockchip-cif.example.dt.yaml: cif@ff490000: clock-names:2: 'pclkin' was expected
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/rockchip-cif.example.dt.yaml: cif@ff490000: clock-names: ['aclk_cif', 'hclk_cif', 'pclk_cif', 'cif_out'] is too long
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/rockchip-cif.example.dt.yaml: cif@ff490000: clocks: Additional items are not allowed ([4294967295, 52] was unexpected)
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/rockchip-cif.example.dt.yaml: cif@ff490000: clocks: [[4294967295, 179], [4294967295, 249], [4294967295, 352], [4294967295, 52]] is too long
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/rockchip-cif.example.dt.yaml: cif@ff490000: reset-names:0: 'axi' was expected
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/rockchip-cif.example.dt.yaml: cif@ff490000: reset-names:1: 'ahb' was expected
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/rockchip-cif.example.dt.yaml: cif@ff490000: reset-names:2: 'pclkin' was expected
+
+See https://patchwork.ozlabs.org/patch/1300680
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
+
