@@ -2,358 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F3D1E767C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 09:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2371E7683
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 09:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726080AbgE2HS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 03:18:57 -0400
-Received: from alexa-out-blr-02.qualcomm.com ([103.229.18.198]:21985 "EHLO
-        alexa-out-blr-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725833AbgE2HS4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 03:18:56 -0400
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by alexa-out-blr-02.qualcomm.com with ESMTP/TLS/AES256-SHA; 29 May 2020 12:48:52 +0530
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 29 May 2020 12:48:52 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id 8F46C3B73; Fri, 29 May 2020 12:48:51 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, majja@codeaurora.org,
-        Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH] venus: Add platform specific capabilities
-Date:   Fri, 29 May 2020 12:48:29 +0530
-Message-Id: <1590736709-508-1-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
+        id S1726350AbgE2HUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 03:20:19 -0400
+Received: from mail-eopbgr80075.outbound.protection.outlook.com ([40.107.8.75]:5352
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725355AbgE2HUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 03:20:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HKmyEEWOYtwM4uv6QraucmEtAwht32nCL3ImWmwcBV7+ZAiPMkkglZVbrCT5okB1X7TyrsBZFP9nWsVwot1F+SglHejj5OGK3MLCpwnG/ZF9nurTkjl2JfdD2NWkMYG+pN8FspAwUHYlmvD3s6ZIlnJ3v50B+JDcMTcItja8C53Xs6BEyrHf7baBO5IyXxPnalbF0Z4FdmECETTEgYZM80zIAf9mN2jUU5cX5Lw3VYcBm/EfSjv4RHXJ+Mh4/jG56rhfsSn9jOjr6G4xnO5bNoPij5lJoGBw2URNWb4Xc3BaYuRSw1UQGRrIARur3mnhUtAS0M7WODCeIJ9e0jBwxQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P06kTL9wNE/9ZX/r7XbwXCd4CuSOnccM8OO+rnVKulA=;
+ b=k4e4Jlkv4hYD8jgghVw4p+wW0yUfgFrvvIqiU0e1f5EiRbSKprTTAgOBQpT3Y3aWEEeSWdOjPNcGMJDNVWyUJ/mR2cQZhwKqnPiWI7XMi9EiwnAfN3fY8cbZQuRX+YGlwPryK27RHO2WMMLfVw2JPs9IrcVLcdTiSTyRDF2Mi3wTq0SwWOEhA/XO1odVOC88KTZXqZBPrdEDBft0ZO4kR+uFgtpse+HZxXPP/PefWDv7WlrR1GJds5e3QYU5RwY+WAQZ0O1fmSSNZehs+KvbPqEutNRvzqIDrPs8xRpUQLJzYyENIpJ8Cxk581x2sE4idI+YuvlxpkA7XTSuwWIWXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P06kTL9wNE/9ZX/r7XbwXCd4CuSOnccM8OO+rnVKulA=;
+ b=QNlJLET6zHulijIiwUQaJ0fKM+SSXPwzOPt60KIec3Ts0+zrVGVttAg3MignWWLF1xg3HFmDWx5rvKAo2ru1z3o5dbQEclpZNapBWsl5ZGHqtTa+eLj4vK1epJHBeZytdh4x4nKmZlnzTtME1fnzBflKPUGT5PUsiNHt6qVBXyM=
+Received: from AM7PR04MB7157.eurprd04.prod.outlook.com (2603:10a6:20b:118::20)
+ by AM7PR04MB6840.eurprd04.prod.outlook.com (2603:10a6:20b:10f::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19; Fri, 29 May
+ 2020 07:20:14 +0000
+Received: from AM7PR04MB7157.eurprd04.prod.outlook.com
+ ([fe80::1101:adaa:ee89:af2a]) by AM7PR04MB7157.eurprd04.prod.outlook.com
+ ([fe80::1101:adaa:ee89:af2a%3]) with mapi id 15.20.3045.018; Fri, 29 May 2020
+ 07:20:14 +0000
+From:   Peter Chen <peter.chen@nxp.com>
+To:     Mike Looijmans <mike.looijmans@topic.nl>
+CC:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "balbi@kernel.org" <balbi@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] usb/phy-generic: Add support for OTG VBUS supply control
+Thread-Topic: [PATCH] usb/phy-generic: Add support for OTG VBUS supply control
+Thread-Index: AQHWM23eFY1+Pfs1gUaTviqfbn5UWqi9XTqAgAE1OoCAABn7AA==
+Date:   Fri, 29 May 2020 07:20:14 +0000
+Message-ID: <20200529072036.GA32755@b29397-desktop>
+References: <20200526145051.31520-1-mike.looijmans@topic.nl>
+ <20200528112051.GB2604@b29397-desktop>
+ <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.976751ef-854e-4011-a18e-b2d0439b2aee@emailsignatures365.codetwo.com>
+ <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.0d2bd5fa-15cc-4b27-b94e-83614f9e5b38.5ef445e7-974a-4eff-8ab7-9d43664977e4@emailsignatures365.codetwo.com>
+ <3fe53080-cc74-3b0b-3041-2c4fde1b7e30@topic.nl>
+In-Reply-To: <3fe53080-cc74-3b0b-3041-2c4fde1b7e30@topic.nl>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: topic.nl; dkim=none (message not signed)
+ header.d=none;topic.nl; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.66]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 809032a4-a738-4592-fea4-08d803a0bb5c
+x-ms-traffictypediagnostic: AM7PR04MB6840:
+x-microsoft-antispam-prvs: <AM7PR04MB684037A2FC6F20097F1DA4058B8F0@AM7PR04MB6840.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 04180B6720
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: MLQHP4jH5dTzDmSvc5PROVKezuPcNMip3k3wZJqR3bR6ZeQfKMLrVArxEkDjTr97ciC5aE7UG8HTtj1h6inCixCljk+3/nTpQxgFMSptmsDO/vKqy6pThGScOYTM1qBgRjPWxeGIQcY8o3t8MenGCg1nPgrg1QD9dQVgdgqFovKjtDztch2uqSWnxr2bxKEtXJ9rb5f74gyFSDG6/KK0bZfW7eaRsRyBDL2cCjkMIpLbRAdJq6d4pdaIfx1eGdGPv2OR71tepxLrjqXc6UhU5NADYBF3Q2LbdBJW/1H5R2tf2/QfxiAVL1kto88lw+6UUuMUG+0dUcyZUW4vHzlnhAX6WRZ/9LrLCzG23VRVAYnC3AIEYmcOg8UZxCyw6KCUMpohgssiC6ynxBhu2vXAG9vbKNvPvpnhkw0moniCZPwc0NSZ8mtTi+UVj/aGzRdgzblaNpn8/c1Wc7LWiir2ww==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB7157.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(7916004)(4636009)(376002)(136003)(346002)(366004)(39860400002)(396003)(6916009)(966005)(186003)(91956017)(76116006)(8676002)(66946007)(9686003)(66556008)(64756008)(66476007)(66446008)(45080400002)(4326008)(6512007)(6486002)(8936002)(478600001)(83380400001)(5660300002)(2906002)(53546011)(44832011)(26005)(6506007)(86362001)(33716001)(33656002)(54906003)(1076003)(71200400001)(316002)(41533002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 2x1bDl7+/gaZyZVQW6B47e3lQA3jfF+5RryNjFem9GkRCes+qcyzhrfTpe4SJhHXPNwP+CB5Pztdo60Ki9IDzt1wJvO5mXMEJwFo2MSB2HFVwPe/js1Hza2a3f0bx5kcbQRJmhzN95ZdCbXgzfmt5XQ9YB7hIiQ7+RwaG4jFQvnzwyCkAk+5ByoFuLOLbZkULxp1Ahc6k+GsPyX2jkljJCPwMQ6wQWd+pv7N/L0iZBfnPiC0oNvSNuZ0QmJjSQ38ytUjHhWaJLGnH0wVr0b3w3eU9MAOLXmFdgBbk6J8NN2yAKgAco3dR2m4ZGUYLarRRvelnRGuhhV9rlB2SJxwOvpsF1xGWDu4/IyeelMzc43ybrm/aNvlsDJXfvrn3fsq0kWoz76v6udDcOj85eIUjIE+slhxIZABWsbW+j7MK+UtFVSm3IZ7uKbf7P9auV6LF51XSUsnqlKv1o5CQzv2IpBJzrrkU0eZzuI2MRLpqG4=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <ED25584213755B4FBEE5008A6C765D7E@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 809032a4-a738-4592-fea4-08d803a0bb5c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 May 2020 07:20:14.4785
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 5UbueCNL0ascPEzp04MjQabJYO7eOJRpqUZbyJQq9skozqC68pUSpZCwbm/5D1JRyNDzWAuKjNRsgTF4gyWhig==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6840
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add platform specific capabilities and use them
-in place of firmware capabilities.
+On 20-05-29 07:47:37, Mike Looijmans wrote:
+>=20
+> Met vriendelijke groet / kind regards,
+>=20
+> Mike Looijmans
+> System Expert
+>=20
+>=20
+> TOPIC Embedded Products B.V.
+> Materiaalweg 4, 5681 RJ Best
+> The Netherlands
+>=20
+> T: +31 (0) 499 33 69 69
+> E: mike.looijmans@topicproducts.com
+> W: https://eur01.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Fwww=
+.topicproducts.com%2F&amp;data=3D02%7C01%7Cpeter.chen%40nxp.com%7Cc8a5e33bb=
+d3141b57d5408d80393cff2%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637263=
+280668758097&amp;sdata=3De5yJuVtOJ9%2BUqmRl6HNk14Fd0%2FPR2jQAhOl1vHtYJKg%3D=
+&amp;reserved=3D0
+>=20
+> Please consider the environment before printing this e-mail
+> On 28-05-2020 13:20, Peter Chen wrote:
+> > On 20-05-26 16:50:51, Mike Looijmans wrote:
+> > > This enables support for VBUS on boards where the power is supplied
+> > > by a regulator. The regulator is enabled when the USB port enters
+> > > HOST mode.
+> > >=20
+> > Why you don't do this at your host controller driver?
+>=20
+> That was my first thought too, but it made more sense to do it here. It's
+> about how things are connected on the board, and not about the controller=
+.
+> Also makes for a consistent devicetree when using different SOCs on the s=
+ame
+> carrier board.
 
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
----
- drivers/media/platform/qcom/venus/core.c           |   3 +
- drivers/media/platform/qcom/venus/hfi_helper.h     |   3 +-
- drivers/media/platform/qcom/venus/hfi_parser.c     |  21 +--
- .../media/platform/qcom/venus/hfi_platform_data.c  | 153 ++++++++++++++++++++-
- .../media/platform/qcom/venus/hfi_platform_data.h  |  37 ++++-
- 5 files changed, 193 insertions(+), 24 deletions(-)
+A standard interface is: port_power for hc_driver, but seems the xHCI
+doesn't implement it.
 
-diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-index 4fde4aa..8221e5c 100644
---- a/drivers/media/platform/qcom/venus/core.c
-+++ b/drivers/media/platform/qcom/venus/core.c
-@@ -273,6 +273,9 @@ static int venus_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_venus_shutdown;
- 
-+	if (core->hfi_data && core->hfi_data->venus_parse_resources)
-+		venus_parse_resources(core);
-+
- 	ret = hfi_core_init(core);
- 	if (ret)
- 		goto err_venus_shutdown;
-diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h b/drivers/media/platform/qcom/venus/hfi_helper.h
-index f6613df..1671012 100644
---- a/drivers/media/platform/qcom/venus/hfi_helper.h
-+++ b/drivers/media/platform/qcom/venus/hfi_helper.h
-@@ -520,7 +520,8 @@
- enum hfi_version {
- 	HFI_VERSION_1XX,
- 	HFI_VERSION_3XX,
--	HFI_VERSION_4XX
-+	HFI_VERSION_4XX,
-+	HFI_VERSION_6XX
- };
- 
- struct hfi_buffer_info {
-diff --git a/drivers/media/platform/qcom/venus/hfi_parser.c b/drivers/media/platform/qcom/venus/hfi_parser.c
-index 7f515a4..b4b60e1 100644
---- a/drivers/media/platform/qcom/venus/hfi_parser.c
-+++ b/drivers/media/platform/qcom/venus/hfi_parser.c
-@@ -10,30 +10,11 @@
- #include "core.h"
- #include "hfi_helper.h"
- #include "hfi_parser.h"
-+#include "hfi_platform_data.h"
- 
- typedef void (*func)(struct venus_caps *cap, const void *data,
- 		     unsigned int size);
- 
--static void init_codecs(struct venus_core *core)
--{
--	struct venus_caps *caps = core->caps, *cap;
--	unsigned long bit;
--
--	for_each_set_bit(bit, &core->dec_codecs, MAX_CODEC_NUM) {
--		cap = &caps[core->codecs_count++];
--		cap->codec = BIT(bit);
--		cap->domain = VIDC_SESSION_TYPE_DEC;
--		cap->valid = false;
--	}
--
--	for_each_set_bit(bit, &core->enc_codecs, MAX_CODEC_NUM) {
--		cap = &caps[core->codecs_count++];
--		cap->codec = BIT(bit);
--		cap->domain = VIDC_SESSION_TYPE_ENC;
--		cap->valid = false;
--	}
--}
--
- static void for_each_codec(struct venus_caps *caps, unsigned int caps_num,
- 			   u32 codecs, u32 domain, func cb, void *data,
- 			   unsigned int size)
-diff --git a/drivers/media/platform/qcom/venus/hfi_platform_data.c b/drivers/media/platform/qcom/venus/hfi_platform_data.c
-index 9d9035f..fc838f5 100644
---- a/drivers/media/platform/qcom/venus/hfi_platform_data.c
-+++ b/drivers/media/platform/qcom/venus/hfi_platform_data.c
-@@ -5,8 +5,132 @@
- #include "hfi_platform_data.h"
- #include "core.h"
- 
-+void init_codecs(struct venus_core *core)
-+{
-+	struct venus_caps *caps = core->caps, *cap;
-+	unsigned long bit;
-+
-+	for_each_set_bit(bit, &core->dec_codecs, MAX_CODEC_NUM) {
-+		cap = &caps[core->codecs_count++];
-+		cap->codec = BIT(bit);
-+		cap->domain = VIDC_SESSION_TYPE_DEC;
-+		cap->valid = false;
-+	}
-+
-+	for_each_set_bit(bit, &core->enc_codecs, MAX_CODEC_NUM) {
-+		cap = &caps[core->codecs_count++];
-+		cap->codec = BIT(bit);
-+		cap->domain = VIDC_SESSION_TYPE_ENC;
-+		cap->valid = false;
-+	}
-+}
-+
-+static void parse_codecs(struct venus_core *core)
-+{
-+	const struct venus_hfi_platform_data *hfi_data = core->hfi_data;
-+	const struct venus_codecs *codecs = hfi_data->venus_codecs;
-+	unsigned int i, codecs_size;
-+
-+	core->enc_codecs = 0;
-+	core->dec_codecs = 0;
-+	codecs_size = hfi_data->venus_codecs_size;
-+
-+	for (i = 0; i < codecs_size; i++) {
-+		if (codecs[i].domain == VIDC_SESSION_TYPE_ENC)
-+			core->enc_codecs |= codecs[i].codecs;
-+		else
-+			core->dec_codecs |= codecs[i].codecs;
-+	}
-+	init_codecs(core);
-+}
-+
-+static int fill_raw_fmt(struct venus_capability *hfi_data_caps,
-+			struct venus_caps *core_caps)
-+{
-+	if ((core_caps->num_pl + 1) == HFI_MAX_PROFILE_COUNT)
-+		return -EINVAL;
-+
-+	core_caps->fmts[core_caps->num_fmts].buftype =
-+		hfi_data_caps->capability_type;
-+	core_caps->fmts[core_caps->num_fmts].fmt =
-+		hfi_data_caps->defaul_value;
-+	core_caps->num_fmts += 1;
-+
-+	return 0;
-+}
-+
-+static int fill_profile(struct venus_capability *hfi_data_caps,
-+			struct venus_caps *core_caps)
-+{
-+	if ((core_caps->num_pl + 1) == HFI_MAX_PROFILE_COUNT)
-+		return -EINVAL;
-+
-+	core_caps->pl[core_caps->num_pl].profile =
-+		hfi_data_caps->capability_type;
-+	core_caps->pl[core_caps->num_pl].level = hfi_data_caps->defaul_value;
-+	core_caps->num_pl += 1;
-+
-+	return 0;
-+}
-+
-+static int fill_capabilities(struct venus_capability *hfi_data_caps,
-+			     struct venus_caps *core_caps)
-+{
-+	if ((core_caps->num_caps + 1) == MAX_CAP_ENTRIES)
-+		return -EINVAL;
-+
-+	core_caps->caps[core_caps->num_caps].capability_type =
-+		hfi_data_caps->capability_type;
-+	core_caps->caps[core_caps->num_caps].min = hfi_data_caps->min;
-+	core_caps->caps[core_caps->num_caps].max = hfi_data_caps->max;
-+	core_caps->caps[core_caps->num_caps].step_size =
-+		hfi_data_caps->step_size;
-+	core_caps->num_caps += 1;
-+	return 0;
-+}
-+
-+static int fill_caps(struct venus_capability *hfi_data_caps,
-+		     struct venus_caps *core_caps)
-+{
-+	if (hfi_data_caps->entry_type == CAPABILITY_ENTRY)
-+		return fill_capabilities(hfi_data_caps, core_caps);
-+	else if (hfi_data_caps->entry_type == PROFILE_ENTRY)
-+		return fill_profile(hfi_data_caps, core_caps);
-+	else
-+		return fill_raw_fmt(hfi_data_caps, core_caps);
-+}
-+
-+static void parse_capabilities(struct venus_core *core)
-+{
-+	unsigned int i, j, ret;
-+	const struct venus_hfi_platform_data *hfi_data = core->hfi_data;
-+	struct venus_capability *hfi_data_caps = hfi_data->capabilities;
-+	unsigned int hfi_data_caps_size = hfi_data->capabilities_size;
-+	const unsigned int codecs_size = hfi_data->venus_codecs_size;
-+
-+	for (i = 0; i < hfi_data_caps_size; i++) {
-+		for (j = 0; j < codecs_size; j++) {
-+			if ((hfi_data_caps[i].domain &
-+				core->caps[j].domain) &&
-+				(hfi_data_caps[i].codecs &
-+				core->caps[j].codec)) {
-+				ret = fill_caps(&hfi_data_caps[i],
-+						core->caps);
-+				if (!ret)
-+					break;
-+			}
-+		}
-+	}
-+}
-+
-+void venus_parse_resources(struct venus_core *core)
-+{
-+	parse_codecs(core);
-+	parse_capabilities(core);
-+}
-+
- static struct codec_freq_data hfi4_codec_freq_data[] =  {
--{ V4L2_PIX_FMT_H264, VIDC_SESSION_TYPE_ENC, 675, 10 },
-+	{ V4L2_PIX_FMT_H264, VIDC_SESSION_TYPE_ENC, 675, 10 },
- 	{ V4L2_PIX_FMT_HEVC, VIDC_SESSION_TYPE_ENC, 675, 10 },
- 	{ V4L2_PIX_FMT_VP8, VIDC_SESSION_TYPE_ENC, 675, 10 },
- 	{ V4L2_PIX_FMT_MPEG2, VIDC_SESSION_TYPE_DEC, 200, 10 },
-@@ -16,20 +140,45 @@
- 	{ V4L2_PIX_FMT_VP9, VIDC_SESSION_TYPE_DEC, 200, 10 },
- };
- 
-+static struct venus_codecs default_codecs[] = { {DEC, H264}, {DEC, HEVC},
-+	{DEC, VP8}, {DEC, MPEG2}, {ENC, H264}, {ENC, HEVC}, {ENC, VP8},
-+};
-+
-+static struct venus_capability hfi6_capabilities[] = {
-+	/* {cap_type, codecs, domains, min, max, step_size, default} */
-+	{ HFI_CAPABILITY_FRAME_WIDTH, CODECS_ALL, DOMAINS_ALL, 96, 5760, 1,
-+		96, CAPABILITY_ENTRY },
-+	{ HFI_CAPABILITY_FRAME_HEIGHT, CODECS_ALL, DOMAINS_ALL, 96, 5760, 1,
-+		96, CAPABILITY_ENTRY },
-+	{ HFI_CAPABILITY_FRAMERATE, CODECS_ALL, DOMAINS_ALL, 1, 480, 1,
-+		1, CAPABILITY_ENTRY },
-+	{ HFI_CAPABILITY_MAX_VIDEOCORES, CODECS_ALL, DOMAINS_ALL, 1, 2, 1,
-+		1, CAPABILITY_ENTRY },
-+};
-+
- static const struct venus_hfi_platform_data hfi4_data = {
- 	.codec_freq_data = hfi4_codec_freq_data,
- 	.codec_freq_data_size = ARRAY_SIZE(hfi4_codec_freq_data),
- };
- 
-+static const struct venus_hfi_platform_data hfi6_data = {
-+	.venus_codecs = default_codecs,
-+	.venus_codecs_size = ARRAY_SIZE(default_codecs),
-+	.capabilities = hfi6_capabilities,
-+	.capabilities_size = ARRAY_SIZE(hfi6_capabilities),
-+	.venus_parse_resources = venus_parse_resources,
-+};
-+
- const struct venus_hfi_platform_data *venus_get_hfi_platform
- 	(enum hfi_version version)
- {
- 	switch (version) {
- 	case HFI_VERSION_4XX:
- 		return &hfi4_data;
-+	case HFI_VERSION_6XX:
-+		return &hfi6_data;
- 	default:
- 		return NULL;
- 	}
- 	return NULL;
- }
--
-diff --git a/drivers/media/platform/qcom/venus/hfi_platform_data.h b/drivers/media/platform/qcom/venus/hfi_platform_data.h
-index 1b4bfb6..55de59b 100644
---- a/drivers/media/platform/qcom/venus/hfi_platform_data.h
-+++ b/drivers/media/platform/qcom/venus/hfi_platform_data.h
-@@ -8,6 +8,19 @@
- 
- #include "core.h"
- 
-+#define ENC    VIDC_SESSION_TYPE_ENC
-+#define DEC    VIDC_SESSION_TYPE_DEC
-+#define H264 HFI_VIDEO_CODEC_H264
-+#define MPEG2 HFI_VIDEO_CODEC_MPEG2
-+#define HEVC HFI_VIDEO_CODEC_HEVC
-+#define VP8 HFI_VIDEO_CODEC_VP8
-+#define DOMAINS_ALL    (HFI_DOMAIN_BASE_VENC | HFI_DOMAIN_BASE_VDEC)
-+#define CODECS_ALL (HFI_VIDEO_CODEC_H264 | HFI_VIDEO_CODEC_H264    \
-+					| HFI_VIDEO_CODEC_VP8)
-+#define CAPABILITY_ENTRY	0
-+#define PROFILE_ENTRY	1
-+#define FMT_ENTRY	2
-+
- struct codec_freq_data {
- 	u32 pixfmt;
- 	u32 session_type;
-@@ -15,13 +28,35 @@ struct codec_freq_data {
- 	unsigned long vsp_freq;
- };
- 
-+struct venus_codecs {
-+	u32 codecs;
-+	u32 domain;
-+};
-+
-+struct venus_capability {
-+	u32 capability_type;
-+	u32 codecs;
-+	u32 domain;
-+	u32 min;
-+	u32 max;
-+	u32 step_size;
-+	u32 defaul_value;
-+	u32 entry_type;
-+};
-+
- struct venus_hfi_platform_data {
- 	const struct codec_freq_data *codec_freq_data;
- 	unsigned int codec_freq_data_size;
-+	struct venus_codecs *venus_codecs;
-+	unsigned int venus_codecs_size;
-+	struct venus_capability *capabilities;
-+	unsigned int capabilities_size;
-+	void (*venus_parse_resources)(struct venus_core *core);
- };
- 
- const struct venus_hfi_platform_data *venus_get_hfi_platform
- 	(enum hfi_version version);
-+void venus_parse_resources(struct venus_core *core);
-+void init_codecs(struct venus_core *core);
- 
- #endif
--
--- 
-1.9.1
+>=20
+> I already needed this driver to properly reset the USB phy, which the
+> controller driver also did not do. So it made sense to add the vbus power
+> control to this driver too.
+>=20
+> If you have a strong preference for the controller driver, I can move thi=
+s
+> to the DWC3 driver which happens to be the controller for the latest batc=
+h
+> of SOMs.
+>=20
 
+You may ask Mathias or Felipe for comments where is suitable for vbus
+regulator.
+
+> > > +
+> > >   	nop->dev		=3D dev;
+> > >   	nop->phy.dev		=3D nop->dev;
+> > >   	nop->phy.label		=3D "nop-xceiv";
+> > > @@ -278,6 +319,7 @@ int usb_phy_gen_create_phy(struct device *dev, st=
+ruct usb_phy_generic *nop)
+> > >   	nop->phy.otg->usb_phy		=3D &nop->phy;
+> > >   	nop->phy.otg->set_host		=3D nop_set_host;
+> > >   	nop->phy.otg->set_peripheral	=3D nop_set_peripheral;
+> > > +	nop->phy.otg->set_vbus		=3D nop_set_vbus;
+
+OTG is dead, even USB-IF has refused OTG test since 2019-09, you may
+avoid to use OTG structure.
+
+Peter
+
+
+> > >   	return 0;
+> > >   }
+> > > diff --git a/drivers/usb/phy/phy-generic.h b/drivers/usb/phy/phy-gene=
+ric.h
+> > > index 7ee80211a688..a3663639ea1e 100644
+> > > --- a/drivers/usb/phy/phy-generic.h
+> > > +++ b/drivers/usb/phy/phy-generic.h
+> > > @@ -14,7 +14,9 @@ struct usb_phy_generic {
+> > >   	struct gpio_desc *gpiod_reset;
+> > >   	struct gpio_desc *gpiod_vbus;
+> > >   	struct regulator *vbus_draw;
+> > > +	struct regulator *vbus_reg;
+> > >   	bool vbus_draw_enabled;
+> > > +	bool vbus_reg_enabled;
+> > >   	unsigned long mA;
+> > >   	unsigned int vbus;
+> > >   };
+> > > --=20
+> > > 2.17.1
+> > >=20
+>=20
+> --=20
+> Mike Looijmans
+>=20
+
+--=20
+
+Thanks,
+Peter Chen=
