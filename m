@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 011EE1E7C14
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 13:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4416A1E7C1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 13:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726310AbgE2Lhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 07:37:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51032 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725562AbgE2Lho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 07:37:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6E4A2AE54;
-        Fri, 29 May 2020 11:37:43 +0000 (UTC)
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Daniel Wagner <dwagner@suse.de>,
-        Max Gurtovoy <maxg@mellanox.com>
-Subject: [PATCH] nvme-fc: Only call nvme_cleanup_cmd() for normal operations
-Date:   Fri, 29 May 2020 13:37:40 +0200
-Message-Id: <20200529113740.31269-1-dwagner@suse.de>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726568AbgE2LjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 07:39:07 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:43837 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725562AbgE2LjH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 07:39:07 -0400
+Received: from marcel-macbook.fritz.box (p4fefc5a7.dip0.t-ipconnect.de [79.239.197.167])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 678C0CECD3;
+        Fri, 29 May 2020 13:48:51 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH v2] bluetooth: hci_qca: Fix suspend/resume functionality
+ failure
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <1590697867-7618-1-git-send-email-zijuhu@codeaurora.org>
+Date:   Fri, 29 May 2020 13:39:03 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:BLUETOOTH DRIVERS" <linux-bluetooth@vger.kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
+        Harish Bandi <c-hbandi@codeaurora.org>,
+        Hemantg <hemantg@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rocky Liao <rjliao@codeaurora.org>, stable@kernel.org,
+        tientzu@chromium.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <EF31B890-1520-460B-B337-46D99DAB999A@holtmann.org>
+References: <1590697867-7618-1-git-send-email-zijuhu@codeaurora.org>
+To:     Zijun Hu <zijuhu@codeaurora.org>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Asynchronous event notifications do not have an request
-associated. When fcp_io() fails we unconditionally call
-nvme_cleanup_cmd() which leads to a crash.
+Hi Zijun,
 
-Fixes: 16686f3a6c3c ("nvme: move common call to nvme_cleanup_cmd to core layer")
-Cc: Max Gurtovoy <maxg@mellanox.com>
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
----
- drivers/nvme/host/fc.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> @dev parameter of qca_suspend()/qca_resume() represents
+> serdev_device, but it is mistook for hci_dev and causes
+> succedent unexpected memory access.
+> 
+> Fix by taking @dev as serdev_device.
+> 
+> Fixes: 41d5b25fed0 ("Bluetooth: hci_qca: add PM support")
+> Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
+> ---
+> Changes in v2:
+> - remove unused variable @hdev
+> 
+> drivers/bluetooth/hci_qca.c | 10 ++++++----
+> 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
-index 7dfc4a2ecf1e..287a3e8ea317 100644
---- a/drivers/nvme/host/fc.c
-+++ b/drivers/nvme/host/fc.c
-@@ -2300,10 +2300,11 @@ nvme_fc_start_fcp_op(struct nvme_fc_ctrl *ctrl, struct nvme_fc_queue *queue,
- 		opstate = atomic_xchg(&op->state, FCPOP_STATE_COMPLETE);
- 		__nvme_fc_fcpop_chk_teardowns(ctrl, op, opstate);
- 
--		if (!(op->flags & FCOP_FLAGS_AEN))
-+		if (!(op->flags & FCOP_FLAGS_AEN)) {
- 			nvme_fc_unmap_data(ctrl, op->rq, op);
-+			nvme_cleanup_cmd(op->rq);
-+		}
- 
--		nvme_cleanup_cmd(op->rq);
- 		nvme_fc_ctrl_put(ctrl);
- 
- 		if (ctrl->rport->remoteport.port_state == FC_OBJSTATE_ONLINE &&
--- 
-2.26.2
+patch has been applied to bluetooth-next tree.
+
+Regards
+
+Marcel
 
