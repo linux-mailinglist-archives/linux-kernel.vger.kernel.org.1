@@ -2,150 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6CF1E883A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 860AE1E885A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727924AbgE2T75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 15:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726866AbgE2T74 (ORCPT
+        id S1728228AbgE2UBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 16:01:11 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:41475 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728124AbgE2UAy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 15:59:56 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA89C03E969;
-        Fri, 29 May 2020 12:59:55 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id q16so1670113plr.2;
-        Fri, 29 May 2020 12:59:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=NqCh5MuSBiPzMUhleT1sZw8juhuIUtQrFL1mEW53Q4s=;
-        b=mj5+iTyniqmHjsnJZCR+wxrcaPZD3SthbrpEGnjj6uw6toTDl8uRi7su0+pSi12Pxj
-         +8XEe/lG6NE9SH5ucyxo3bK5DFKJrQN/SWzw932+ppnqcFr/KWF9I2NrCgf3FRIiONn8
-         dgm+6F0uW9BPOWYjRlBakZab1Az65eA//okVNAfUClpx1ixMU6tOnYUoD1FlarBULW5i
-         439tzmt6c3CgFO2OZ0Q14z19kqDiSnJQXNzij7fI1XSkEloVbzL6KVCm0N830EvbsPZM
-         EkizbX0/2AsCQZ2aJMoZTdJPi/xIpF9r5eAE1orTb1wAM5WZhmt27duqxXo+J8zcNsmI
-         YA/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=NqCh5MuSBiPzMUhleT1sZw8juhuIUtQrFL1mEW53Q4s=;
-        b=Baao3BHIqgocunhOfPXjWrerSbR123mNs+PyeoS4rJ8oZ4keveB4e9+FIpT0nn4QQI
-         G5zZvu/rmfTVS5rENKtgt+A6aru8VZuaF++fqqfDtPQq1dAxO7aLCB54HKyr+8mNJPIB
-         PhEaRvzSa7On2arQKzJUYUeFhGSCezz1LNCYQYQv6eRuRIv+PABtd2bCxc4z6UuTlKhl
-         k1oXBf+l4h2nsjyJxIk06u+iUWubcq1yrpotJdjQruHEh66fOBjDhHYFIQNyCLHwqZTn
-         WWvvVALR6utke/vvE3/fGz1t0SW+AL8z8DdcjMGwEoGPWLtVWhivy6OpxU5+Hwv69pYN
-         0uXg==
-X-Gm-Message-State: AOAM5306gCxNLDrh9nIa1X7RVOcJy8ZC6sYyORoqajI1tgR76PrR2XQf
-        n5eUHMCiY7FayLUF2ExS/9Nd5iiG
-X-Google-Smtp-Source: ABdhPJw0upWt+qRhajyHtIOjnw74ra+SoT6WwUUEVOb6liaLdQy/i5yVCr2Oo2w72txXs2X2kLvHfQ==
-X-Received: by 2002:a17:902:7602:: with SMTP id k2mr9490608pll.296.1590782394849;
-        Fri, 29 May 2020 12:59:54 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:3c2a:73a9:c2cf:7f45])
-        by smtp.gmail.com with ESMTPSA id z8sm7379120pgc.80.2020.05.29.12.59.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 12:59:53 -0700 (PDT)
-Date:   Fri, 29 May 2020 12:59:51 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     groeck@chromium.org, Nicolas Boichat <drinkcat@chromium.org>,
-        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] HID: usbhid: do not sleep when opening device
-Message-ID: <20200529195951.GA3767@dtor-ws>
+        Fri, 29 May 2020 16:00:54 -0400
+Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
+ (mreue109 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MKKd7-1jQfCx0lln-00Ljen; Fri, 29 May 2020 22:00:40 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 1/9] staging: media: atomisp: fix incorrect NULL pointer check
+Date:   Fri, 29 May 2020 22:00:23 +0200
+Message-Id: <20200529200031.4117841-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:+wQ8TKuZZFLgm1wvXX36wv2lc/zCPOC+vLEJsLC5Yfq1Bumz0qA
+ guL6S2PS4PsHYgRs6AxROCr3xIHck0FKrrQlrX11NPPgtcKwlYyZm1wIqSETblJZmtl7T5Q
+ 9Y8Q/hqtBh2TXLhX0n+ATAYM9+2CXXVm5CZ8ebg+cLCQRvcKPwGEPKuqX8s1AX+iPmXYS+5
+ LdYgEDEprrkuRJEtVt7AQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:D1UYBQNkCe8=:PoxgIynrxog2/f95h2DvhW
+ KWSbQWmBKPhWkPo92ILPY191ysfIIZbyZrU4X7NvsdDq2ed/cMecws2eRNuCL6tv/BrcExBLi
+ JH6uy4mOm9wRdW3jkOdno+QWekRW3rBVYtgKm/aSsCFRagCw73cgZDBut4FPm54VJjJVUsg1D
+ HUGUrLtH94rvbXgJ2vJv30x2YzY5QtTh1/4+DJXsLqBXpyBj2e//I5pjXoRey3ZhL09tqlmPR
+ O/xnl8gBilayf+tLsYztc1EITkIiyiW0NMgEQx/6/cnmFBsHowomsG2IsZo3EwSMgIMeNLnQ/
+ rszbEok0VTx/pVnc0XZJaq5XJJhIPICZ+HGa/Yc5198Y8uizDu8AVs4VsRv5HD0gEV1HouKEd
+ dhl7FNNg/LWRP+IrPGZC3kOD/tw59v+zZE/BCKUuupbxdJjzd+fyutM1ykGKpw7KiZLvaweAr
+ +bKNWCZAznU9cZzjeNRSwD8jljMMBkfi39NmMh9EzGvaFVJrc7by5yku3hdYOfqeguNgEs55L
+ Xz/foeYVwH3w2giLZmXd8hslWjXIX4dROy9CHlE00jgVg83ONq44rpfEZDcNv09I/KJ9mwcW2
+ 0oencPzEzNRT4cgeGXG00/aq8/1gQHZw0Z7Q+uJ2HU1DOzEX28oxWA1KzshMAGan93YjFI2sM
+ 9NtGL23eo7y42lTFCqaZMTV+X4y9s+6GaMy9f/ORvb19uJK76ZLrAYtQcpevFBiSQx/JKMKao
+ Eno9LVJ9KGHw3apIDZF76sQXrnkP1KhanVMUelCj5LB69uPhmL8ooG5dNl25lYHkugfl1R4VK
+ q0ez07EkbKXswv4PRv5/qfsqezpa1ieV/tBy0TKUDCYpQMuiy4=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-usbhid tries to give the device 50 milliseconds to drain its queues
-when opening the device, but does it naively by simply sleeping in open
-handler, which slows down device probing (and thus may affect overall
-boot time).
+Checking the pointer to a member of a struct against NULL
+is pointless as clang points out:
 
-However we do not need to sleep as we can instead mark a point of time
-in the future when we should start processing the events.
+drivers/staging/media/atomisp/pci/atomisp_cmd.c:4278:17: error: address of 'config->info' will always evaluate to 'true'
 
-Reported-by: Nicolas Boichat <drinkcat@chromium.org>
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Check the original pointer instead, which may also be
+unnecessary here, but makes a little more sense.
+
+Fixes: 9d4fa1a16b28 ("media: atomisp: cleanup directory hierarchy")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/hid/usbhid/hid-core.c | 27 +++++++++++++++------------
- drivers/hid/usbhid/usbhid.h   |  1 +
- 2 files changed, 16 insertions(+), 12 deletions(-)
+ drivers/staging/media/atomisp/pci/atomisp_cmd.c | 2 +-
+ drivers/staging/media/atomisp/pci/sh_css.c      | 4 ++--
+ drivers/staging/media/atomisp/pci/sh_css_sp.c   | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
-index c7bc9db5b192..e69992e945b2 100644
---- a/drivers/hid/usbhid/hid-core.c
-+++ b/drivers/hid/usbhid/hid-core.c
-@@ -95,6 +95,19 @@ static int hid_start_in(struct hid_device *hid)
- 				set_bit(HID_NO_BANDWIDTH, &usbhid->iofl);
- 		} else {
- 			clear_bit(HID_NO_BANDWIDTH, &usbhid->iofl);
-+
-+			if (test_and_clear_bit(HID_RESUME_RUNNING,
-+					       &usbhid->iofl)) {
-+				/*
-+				 * In case events are generated while nobody was
-+				 * listening, some are released when the device
-+				 * is re-opened. Wait 50 msec for the queue to
-+				 * empty before allowing events to go through
-+				 * hid.
-+				 */
-+				usbhid->input_start_time = jiffies +
-+							   msecs_to_jiffies(50);
-+			}
+diff --git a/drivers/staging/media/atomisp/pci/atomisp_cmd.c b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
+index 5be690f876c1..342fc3b34fe0 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp_cmd.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
+@@ -4275,7 +4275,7 @@ int atomisp_param(struct atomisp_sub_device *asd, int flag,
+ 		    atomisp_css_get_dvs_grid_info(
+ 			&asd->params.curr_grid_info);
+ 
+-		if (!&config->info) {
++		if (!config) {
+ 			dev_err(isp->dev, "ERROR: NULL pointer in grid_info\n");
+ 			return -EINVAL;
  		}
- 	}
- 	spin_unlock_irqrestore(&usbhid->lock, flags);
-@@ -280,7 +293,8 @@ static void hid_irq_in(struct urb *urb)
- 		if (!test_bit(HID_OPENED, &usbhid->iofl))
- 			break;
- 		usbhid_mark_busy(usbhid);
--		if (!test_bit(HID_RESUME_RUNNING, &usbhid->iofl)) {
-+		if (!test_bit(HID_RESUME_RUNNING, &usbhid->iofl) &&
-+		    time_after(jiffies, usbhid->input_start_time)) {
- 			hid_input_report(urb->context, HID_INPUT_REPORT,
- 					 urb->transfer_buffer,
- 					 urb->actual_length, 1);
-@@ -714,17 +728,6 @@ static int usbhid_open(struct hid_device *hid)
- 	}
+diff --git a/drivers/staging/media/atomisp/pci/sh_css.c b/drivers/staging/media/atomisp/pci/sh_css.c
+index d77432254a2c..e91c6029c651 100644
+--- a/drivers/staging/media/atomisp/pci/sh_css.c
++++ b/drivers/staging/media/atomisp/pci/sh_css.c
+@@ -8534,7 +8534,7 @@ ia_css_pipe_load_extension(struct ia_css_pipe *pipe,
  
- 	usb_autopm_put_interface(usbhid->intf);
--
--	/*
--	 * In case events are generated while nobody was listening,
--	 * some are released when the device is re-opened.
--	 * Wait 50 msec for the queue to empty before allowing events
--	 * to go through hid.
--	 */
--	if (res == 0)
--		msleep(50);
--
--	clear_bit(HID_RESUME_RUNNING, &usbhid->iofl);
- 	return res;
- }
- 
-diff --git a/drivers/hid/usbhid/usbhid.h b/drivers/hid/usbhid/usbhid.h
-index 8620408bd7af..805949671b96 100644
---- a/drivers/hid/usbhid/usbhid.h
-+++ b/drivers/hid/usbhid/usbhid.h
-@@ -82,6 +82,7 @@ struct usbhid_device {
- 
- 	spinlock_t lock;						/* fifo spinlock */
- 	unsigned long iofl;                                             /* I/O flags (CTRL_RUNNING, OUT_RUNNING) */
-+	unsigned long input_start_time;					/* When to start handling input, in jiffies */
- 	struct timer_list io_retry;                                     /* Retry timer */
- 	unsigned long stop_retry;                                       /* Time to give up, in jiffies */
- 	unsigned int retry_delay;                                       /* Delay length in ms */
+ 	if (firmware->info.isp.type == IA_CSS_ACC_OUTPUT)
+ 	{
+-		if (&pipe->output_stage)
++		if (pipe)
+ 			append_firmware(&pipe->output_stage, firmware);
+ 		else {
+ 			IA_CSS_LEAVE_ERR_PRIVATE(IA_CSS_ERR_INTERNAL_ERROR);
+@@ -8542,7 +8542,7 @@ ia_css_pipe_load_extension(struct ia_css_pipe *pipe,
+ 		}
+ 	} else if (firmware->info.isp.type == IA_CSS_ACC_VIEWFINDER)
+ 	{
+-		if (&pipe->vf_stage)
++		if (pipe)
+ 			append_firmware(&pipe->vf_stage, firmware);
+ 		else {
+ 			IA_CSS_LEAVE_ERR_PRIVATE(IA_CSS_ERR_INTERNAL_ERROR);
+diff --git a/drivers/staging/media/atomisp/pci/sh_css_sp.c b/drivers/staging/media/atomisp/pci/sh_css_sp.c
+index e574396ad0f4..c0e579c1705f 100644
+--- a/drivers/staging/media/atomisp/pci/sh_css_sp.c
++++ b/drivers/staging/media/atomisp/pci/sh_css_sp.c
+@@ -1022,7 +1022,7 @@ sh_css_sp_init_stage(struct ia_css_binary *binary,
+ 		if (!pipe)
+ 			return IA_CSS_ERR_INTERNAL_ERROR;
+ 		ia_css_get_crop_offsets(pipe, &args->in_frame->info);
+-	} else if (&binary->in_frame_info)
++	} else if (binary)
+ 	{
+ 		pipe = find_pipe_by_num(sh_css_sp_group.pipe[thread_id].pipe_num);
+ 		if (!pipe)
+@@ -1036,7 +1036,7 @@ sh_css_sp_init_stage(struct ia_css_binary *binary,
+ 			if (!pipe)
+ 				return IA_CSS_ERR_INTERNAL_ERROR;
+ 			ia_css_get_crop_offsets(pipe, &args->in_frame->info);
+-		} else if (&binary->in_frame_info) {
++		} else if (binary) {
+ 			pipe = find_pipe_by_num(sh_css_sp_group.pipe[thread_id].pipe_num);
+ 			if (!pipe)
+ 				return IA_CSS_ERR_INTERNAL_ERROR;
 -- 
-2.27.0.rc0.183.gde8f92d652-goog
+2.26.2
 
-
--- 
-Dmitry
