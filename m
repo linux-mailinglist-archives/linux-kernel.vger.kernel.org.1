@@ -2,91 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C521E8527
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B53511E854F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727793AbgE2RjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 13:39:00 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:52948 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725601AbgE2Ri7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 13:38:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1590773938; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=n5Q3O7Qj1s+IMMzJhVxucgSmGDGOFWJ8QL4ROWr7YZw=;
- b=PmHBZLZcMurT+/s3cHPYhGrXOrW23isCsDWicldJNLbCyKjKWiReZ1d/xTC6XEBmCFtz6Lhc
- n0igY6TUvLYQC7NN8eBYLLSE3xJIfRgaWS8bLUNBlVbtrb6PxNPrGpuTkbjM4zrmyZaiGi6p
- l90TXFum1wu87pd2FkHqIpq4bmE=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5ed148a437a454afcb4b1c1f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 May 2020 17:38:44
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2FF0AC433A0; Fri, 29 May 2020 17:38:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
-        MISSING_MID,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E58B6C433C6;
-        Fri, 29 May 2020 17:38:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E58B6C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1727989AbgE2RlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 13:41:06 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:59336 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726549AbgE2RlC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 13:41:02 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 3F377F1FABD7EF8DA97A;
+        Sat, 30 May 2020 01:40:59 +0800 (CST)
+Received: from DESKTOP-6T4S3DQ.china.huawei.com (10.47.92.215) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 30 May 2020 01:40:48 +0800
+From:   Shiju Jose <shiju.jose@huawei.com>
+To:     <linux-acpi@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <rjw@rjwysocki.net>,
+        <bp@alien8.de>, <james.morse@arm.com>, <helgaas@kernel.org>,
+        <lenb@kernel.org>, <tony.luck@intel.com>,
+        <dan.carpenter@oracle.com>, <gregkh@linuxfoundation.org>,
+        <zhangliguang@linux.alibaba.com>, <tglx@linutronix.de>
+CC:     Shiju Jose <shiju.jose@huawei.com>, <linuxarm@huawei.com>,
+        <yangyicong@hisilicon.com>
+Subject: [PATCH v8 0/2] ACPI / APEI: Add support to notify the vendor specific HW errors
+Date:   Fri, 29 May 2020 18:38:52 +0100
+Message-ID: <20200529173854.2521-1-shiju.jose@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] wlcore: fix runtime pm imbalance in wlcore_irq_locked
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200522044906.29564-1-dinghao.liu@zju.edu.cn>
-References: <20200522044906.29564-1-dinghao.liu@zju.edu.cn>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     dinghao.liu@zju.edu.cn, kjlu@umn.edu,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>, Guy Mishol <guym@ti.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Maital Hahn <maitalm@ti.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Tony Lindgren <tony@atomide.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200529173844.2FF0AC433A0@smtp.codeaurora.org>
-Date:   Fri, 29 May 2020 17:38:44 +0000 (UTC)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.47.92.215]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
+Presently the vendor drivers are unable to do the recovery for the
+vendor specific recoverable HW errors because APEI driver does not
+support reporting the error to the vendor drivers.
 
-> When wlcore_fw_status() returns an error code, a pairing
-> runtime PM usage counter decrement is needed to keep the
-> counter balanced. It's the same for all error paths after
-> wlcore_fw_status().
-> 
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> Acked-by: Tony Lindgren <tony@atomide.com>
+patch set
+1. add new interface to the APEI driver for reporting the 
+   vendor specific non-fatal HW errors to the drivers.
 
-Patch applied to wireless-drivers-next.git, thanks.
+2. add driver to handle HiSilicon hip PCIe controller's errors.
 
-da74b6933b3b wlcore: fix runtime pm imbalance in wlcore_irq_locked
+V8:
+1. Removed reporting the standard errors through the interface
+   because of the conflict with the changes in the
+   memory error handling path.
+2. Fix comments by Dan Carpenter.
+   
+V7:
+1. Add changes in the APEI driver suggested by Borislav Petkov, for
+   queuing up all the non-fatal HW errors to the work queue and
+   notify the registered kernel drivers from the bottom half using
+   blocking notifier, common interface for both standard and
+   vendor-spcific errors.
+2. Fix for further feedbacks in v5 HIP PCIe error handler driver
+   by Bjorn Helgaas.
+
+V6:
+1. Fix few changes in the patch subject line suggested by Bjorn Helgaas.
+
+V5:
+1. Fix comments from James Morse.
+1.1 Changed the notification method to use the atomic_notifier_chain.
+1.2 Add the error handled status for the user space.  
+
+V4:
+1. Fix for the following smatch warning in the PCIe error driver,
+   reported by kbuild test robot<lkp@intel.com>:
+   warn: should '((((1))) << (9 + i))' be a 64 bit type?
+   if (err->val_bits & BIT(HISI_PCIE_LOCAL_VALID_ERR_MISC + i))
+	^^^ This should be BIT_ULL() because it goes up to 9 + 32.
+
+V3:
+1. Fix the comments from Bjorn Helgaas.
+
+V2:
+1. Changes in the HiSilicon PCIe controller's error handling driver
+   for the comments from Bjorn Helgaas.
+   
+2. Changes in the APEI interface to support reporting the vendor error
+   for module with multiple devices, but use the same section type.
+   In the error handler will use socket id/sub module id etc to distinguish
+   the device.
+
+V1:  
+1. Fix comments from James Morse.
+
+2. add driver to handle HiSilicon hip08 PCIe controller's errors,
+   which is an application of the above interface.   
+   
+Shiju Jose (1):
+  ACPI / APEI: Add support to notify the vendor specific HW errors
+
+Yicong Yang (1):
+  PCI: hip: Add handling of HiSilicon HIP PCIe controller errors
+
+ drivers/acpi/apei/ghes.c                 | 126 ++++++++-
+ drivers/pci/controller/Kconfig           |   8 +
+ drivers/pci/controller/Makefile          |   1 +
+ drivers/pci/controller/pcie-hisi-error.c | 321 +++++++++++++++++++++++
+ include/acpi/ghes.h                      |  28 ++
+ 5 files changed, 483 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/pci/controller/pcie-hisi-error.c
 
 -- 
-https://patchwork.kernel.org/patch/11564675/
+2.17.1
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
