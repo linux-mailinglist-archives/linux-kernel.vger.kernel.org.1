@@ -2,71 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2D31E77BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 623C91E77C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgE2IEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 04:04:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33356 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726629AbgE2IDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 04:03:43 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 074D0206F1;
-        Fri, 29 May 2020 08:03:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590739423;
-        bh=douQtXqt1bLulssMQ62YOJgjfN2ETkl+BkTbiEledHQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EoETBXB74eUUyusE3Qg9jdnipa71lglt+UrGVdjOD+g9sQBmC1izHTfodIUWZCA+s
-         yHNdgsaOhgwGVr1Mhq6OVIXLVmK9m8oZt2J4t2h9eOBoh5EfhJzVec1+3lFVXB19W4
-         AktEhrLLBd338zvzOze03aOO2Dw63pbQJKj9wb8k=
-Date:   Fri, 29 May 2020 10:03:41 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Chanwoo Choi (chanwoo@kernel.org)" <chanwoo@kernel.org>,
-        =?utf-8?B?7ZWo66qF7KO8?= <myungjoo.ham@samsung.com>
-Subject: Re: [GIT PULL] extcon next for v5.8
-Message-ID: <20200529080341.GB599635@kroah.com>
-References: <CGME20200529030043epcas1p2a41f6271b91e086a2e730a488ce53015@epcas1p2.samsung.com>
- <a7f317f3-5499-d1d5-cabd-b53d7e8d9977@samsung.com>
+        id S1726459AbgE2IEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 04:04:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725855AbgE2IEt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 04:04:49 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58904C03E969
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 01:04:49 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id e4so1496592ljn.4
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 01:04:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1Xro8I38WGB1vy4pn7r6IuOsUYoevHSF9a+82U3l5yY=;
+        b=MQJ/t30zQcK6C9mw2k6k+xRtyvza3+g5NHHI4THl99n7ec9e17BtB1OzrvB3OB0g1z
+         hjHnr9kYPJ2ZERhidkb3XANBk69T4Rko1VbwMrvGx8fLS0Ic+tvmb0XpEAk9YY6rQMTY
+         ayDFinZWg5ZRmGs2MuOFArBSEAHcGNiI+u/6lGC+OLJ/mTmJEu88Be1AauOpQagHG+0C
+         GNRD+wA8yFdvgTABgxdXFOlwvwnVh45gZH8raON/pp/zqqua/DgS0gO6J7XKsX1NiQzE
+         jJoqqT4wAD3c6YO+T+InW1bDZsZpU/7PVAVAV7K1j+Y3YI41CVPPUeKGZbsJIY2iZ0KN
+         U+HA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1Xro8I38WGB1vy4pn7r6IuOsUYoevHSF9a+82U3l5yY=;
+        b=Jf+m89aG20ysxIIRTEc5jtsXxs4auBd4k+sH6cRMMC9aiSkHBc2eAhIn4822BOKB4E
+         kBdDiHdhVtj/C8SEVpW8wHcA+MDweIZx6jvVuSwbybL4Qxtuk52lexguyDaGqbAIwTVF
+         QT2nImvvLWKDrNLTSgqQmlXNN4/nfutHSSPwiMMl8yDe4N4+JPPo21zY/xK1Z0ijR0wX
+         eRAvx0RkKqXfDoJs+haMi2jAwYwsFwHd7L66Cws8xc6famrFtoY7o2LTuQHsEluCJWQp
+         Oyw79hgMSaQBsBJo+AgYBOkEuyXR6u5VARtbu+MRVdHqEmmxh0Ceoqz8qLox9eBrFQu4
+         Rmxg==
+X-Gm-Message-State: AOAM531IgWkDfRIwyl3Yr+f/zxWDVyImZg4gNCayGyh2NTMXjwi4gNxZ
+        /4wQezkLrfmcB3dbDq6grkbOzc2wYrPy1gFg6qk=
+X-Google-Smtp-Source: ABdhPJwyA+BHbVbYT1WVanqisX6tqpuXN2oOqrt/1LkU+5dRO5m92sc1wnozuX8q5uyeHHTICQA6kmzYrqyxuhrwL84=
+X-Received: by 2002:a2e:5712:: with SMTP id l18mr1246986ljb.87.1590739487819;
+ Fri, 29 May 2020 01:04:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a7f317f3-5499-d1d5-cabd-b53d7e8d9977@samsung.com>
+References: <20200528103942.17432-1-steves.lee@maximintegrated.com> <20200528115408.GA15800@sirena.org.uk>
+In-Reply-To: <20200528115408.GA15800@sirena.org.uk>
+From:   Steve Lee <steves.lee.maxim@gmail.com>
+Date:   Fri, 29 May 2020 17:04:36 +0900
+Message-ID: <CABff4NSc6oW9dt-2VbdKUnk=+8Tc52m8f2irr1P4_cGyXNq41A@mail.gmail.com>
+Subject: Re: [V6 PATCH 2/2] ASoC: max98390: Added Amplifier Driver
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Steve Lee <steves.lee@maximintegrated.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, ckeepax@opensource.cirrus.com,
+        geert@linux-m68k.org, rf@opensource.wolfsonmicro.com,
+        =?UTF-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?= <shumingf@realtek.com>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>, dmurphy@ti.com,
+        jack.yu@realtek.com, nuno.sa@analog.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ALSA development <alsa-devel@alsa-project.org>,
+        ryan.lee.maxim@gmail.com, ryans.lee@maximintegrated.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 12:11:03PM +0900, Chanwoo Choi wrote:
-> Dear Greg,
-> 
-> This is extcon-next pull request for v5.8. I add detailed description of
-> this pull request on below. Please pull extcon with following updates.
-> 
-> Best Regards,
-> Chanwoo Choi
-> 
-> 
-> The following changes since commit 9cb1fd0efd195590b828b9b865421ad345a4a145:
-> 
->   Linux 5.7-rc7 (2020-05-24 15:32:54 -0700)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/extcon.git tags/extcon-next-for-5.8
+On Thu, May 28, 2020 at 8:54 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Thu, May 28, 2020 at 07:39:42PM +0900, Steve Lee wrote:
+> > This is the initial amplifier driver for max98390.
+>
+> Please do not submit new versions of already applied patches, please
+> submit incremental updates to the existing code.  Modifying existing
+> commits creates problems for other users building on top of those
+> commits so it's best practice to only change pubished git commits if
+> absolutely essential.
+>
 
-As my char-misc-next branch is currently at 5.7-rc5, why did you need to
-make this against -rc7?
+  Thanks for feedback. I will send incremental patches.
 
-Mind if I just rebase your patches against my tree instead of pulling
-the whole thing up to -rc7, or is there some dependancy there that you
-needed to do this?
+> > Reported-by: kbuild test robot <lkp@intel.com>
+>
+> Don't think the lkp bot asked for this driver! :P
 
-thanks,
-
-greg k-h
+  Thanks, I will send split patch for this.
