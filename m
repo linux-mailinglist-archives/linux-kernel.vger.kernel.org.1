@@ -2,123 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363381E868F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 20:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F90A1E8696
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 20:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727900AbgE2SXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 14:23:06 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:51002 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgE2SXE (ORCPT
+        id S1727085AbgE2S0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 14:26:07 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:50484 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725839AbgE2S0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 14:23:04 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04TIMrg8100299;
-        Fri, 29 May 2020 13:22:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1590776573;
-        bh=sPL+7JF8rHgYei8jMdMnhOJQnH3qvwFo9YiQ/UVOtBk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=OFpF9T6aPW1jiMAsw+jzoXiPteEzQWhRGAILRgyXSNnAa+jp7eel8S2M00s2gyOVq
-         l/fvmMxrA3Zf7mTbwEAQKCGHMF/Q5ppbGpisOy5WVldIBX/mKLjFUN0/EWRvHlOMBE
-         aAD63HCd+8PwKaqFxG7TORxY/H86X78JJdq5nc2M=
-Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04TIMrTS013909
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 29 May 2020 13:22:53 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 29
- May 2020 13:22:53 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 29 May 2020 13:22:53 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04TIMoKe058585;
-        Fri, 29 May 2020 13:22:51 -0500
-Subject: Re: [PATCH v4 0/2] soc: ti: add k3 platforms chipid module driver
-To:     Santosh Shilimkar <ssantosh@kernel.org>,
-        Tero Kristo <t-kristo@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        <devicetree@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>
-CC:     Dave Gerlach <d-gerlach@ti.com>, Sekhar Nori <nsekhar@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Nishanth Menon <nm@ti.com>
-References: <20200512123449.16517-1-grygorii.strashko@ti.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <a132765e-f4e4-a1e8-fb43-239188fecf1b@ti.com>
-Date:   Fri, 29 May 2020 21:22:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 29 May 2020 14:26:07 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 0C9C28030772;
+        Fri, 29 May 2020 18:26:03 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id HTBV-D7sdvH6; Fri, 29 May 2020 21:26:01 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Feng Tang <feng.tang@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, <linux-mips@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v7] dt-bindings: spi: Convert DW SPI binding to DT schema
+Date:   Fri, 29 May 2020 21:25:43 +0300
+Message-ID: <20200529182544.9807-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-In-Reply-To: <20200512123449.16517-1-grygorii.strashko@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Santosh,
+Modern device tree bindings are supposed to be created as YAML-files
+in accordance with dt-schema. This commit replaces two DW SPI legacy
+bare text bindings with YAML file. As before the bindings file states
+that the corresponding dts node is supposed to be compatible either
+with generic DW APB SSI controller or with Microsemi/Amazon/Renesas/Intel
+vendors-specific controllers, to have registers, interrupts and clocks
+properties. Though in case of Microsemi version of the controller
+there must be two registers resources specified. Properties like
+clock-names, reg-io-width, cs-gpio, num-cs, DMA and slave device
+sub-nodes are optional.
 
-On 12/05/2020 15:34, Grygorii Strashko wrote:
-> Hi All,
-> 
-> This series introduces TI K3 Multicore SoC platforms chipid module driver
-> which provides identification support of the TI K3 SoCs (family, revision)
-> and register this information with the SoC bus. It is available under
-> /sys/devices/soc0/ for user space, and can be checked, where needed,
-> in Kernel using soc_device_match().
-> It is also required for introducing support for new revisions of
-> K3 AM65x/J721E SoCs.
-> 
-> Example J721E:
->    # cat /sys/devices/soc0/{machine,family,revision}
->    Texas Instruments K3 J721E SoC
->    J721E
->    SR1.0
-> 
-> Example AM65x:
->    # cat /sys/devices/soc0/{machine,family,revision}
->    Texas Instruments AM654 Base Board
->    AM65X
->    SR1.0
-> 
-> Changes in v4:
->   - convert to platform_driver as suggested by Arnd Bergmann <arnd@arndb.de>
-> 
-> Changes in v3:
->   - add handling of kasprintf() fail
-> 
-> Changes in v2:
->   - pr_debug() replaced with pr_info() to show SoC info on init
->   - minor format change
->   - split series on driver and platform changes
->   - add Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
-> 
-> v3: https://lkml.org/lkml/2020/5/8/357
-> v2: https://lkml.org/lkml/2020/5/5/1193
-> v1: https://lwn.net/Articles/818577/
-> 
-> Grygorii Strashko (2):
->    dt-bindings: soc: ti: add binding for k3 platforms chipid module
->    soc: ti: add k3 platforms chipid module driver
-> 
->   .../bindings/soc/ti/k3-socinfo.yaml           |  40 +++++
->   drivers/soc/ti/Kconfig                        |  10 ++
->   drivers/soc/ti/Makefile                       |   1 +
->   drivers/soc/ti/k3-socinfo.c                   | 152 ++++++++++++++++++
->   4 files changed, 203 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/soc/ti/k3-socinfo.yaml
->   create mode 100644 drivers/soc/ti/k3-socinfo.c
-> 
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Cc: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
+Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Feng Tang <feng.tang@intel.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-mips@vger.kernel.org
 
-Any chances you can pick this up?
+---
 
+Changelog v7:
+- Rebase on top of the spi/for-next branch.
+- Add resets and reset-names properties, since Dinh Nguyen has slipped the
+  patchset optional reset-support in right in front of my nose.
+---
+ .../bindings/spi/snps,dw-apb-ssi.txt          |  49 -------
+ .../bindings/spi/snps,dw-apb-ssi.yaml         | 133 ++++++++++++++++++
+ .../devicetree/bindings/spi/spi-dw.txt        |  24 ----
+ 3 files changed, 133 insertions(+), 73 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.txt
+ create mode 100644 Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+ delete mode 100644 Documentation/devicetree/bindings/spi/spi-dw.txt
+
+diff --git a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.txt b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.txt
+deleted file mode 100644
+index 0f21407a7ea3..000000000000
+--- a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.txt
++++ /dev/null
+@@ -1,49 +0,0 @@
+-Synopsys DesignWare AMBA 2.0 Synchronous Serial Interface.
+-
+-Required properties:
+-- compatible : "snps,dw-apb-ssi" or "mscc,<soc>-spi", where soc is "ocelot" or
+-  "jaguar2", or "amazon,alpine-dw-apb-ssi", or "snps,dwc-ssi-1.01a" or
+-  "intel,keembay-ssi"
+-- reg : The register base for the controller. For "mscc,<soc>-spi", a second
+-  register set is required (named ICPU_CFG:SPI_MST)
+-- interrupts : One interrupt, used by the controller.
+-- #address-cells : <1>, as required by generic SPI binding.
+-- #size-cells : <0>, also as required by generic SPI binding.
+-- clocks : phandles for the clocks, see the description of clock-names below.
+-   The phandle for the "ssi_clk" is required. The phandle for the "pclk" clock
+-   is optional. If a single clock is specified but no clock-name, it is the
+-   "ssi_clk" clock. If both clocks are listed, the "ssi_clk" must be first.
+-
+-Optional properties:
+-- clock-names : Contains the names of the clocks:
+-    "ssi_clk", for the core clock used to generate the external SPI clock.
+-    "pclk", the interface clock, required for register access. If a clock domain
+-     used to enable this clock then it should be named "pclk_clkdomain".
+-- cs-gpios : Specifies the gpio pins to be used for chipselects.
+-- num-cs : The number of chipselects. If omitted, this will default to 4.
+-- reg-io-width : The I/O register width (in bytes) implemented by this
+-  device.  Supported values are 2 or 4 (the default).
+-- dmas : Phandle + identifiers of Tx and Rx DMA channels.
+-- dma-names : Contains the names of the DMA channels. Must be "tx" and "rx".
+-- resets : contains an entry for each entry in reset-names.
+-	   See ../reset/reset.txt for details.
+-- reset-names : must contain "spi"
+-
+-Child nodes as per the generic SPI binding.
+-
+-Example:
+-
+-	spi@fff00000 {
+-		compatible = "snps,dw-apb-ssi";
+-		reg = <0xfff00000 0x1000>;
+-		interrupts = <0 154 4>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		clocks = <&spi_m_clk>;
+-		num-cs = <2>;
+-		cs-gpios = <&gpio0 13 0>,
+-			   <&gpio0 14 0>;
+-		resets = <&rst SPIM0_RST>;
+-		reset-names = "spi";
+-	};
+-
+diff --git a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+new file mode 100644
+index 000000000000..c62cbe79f00d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+@@ -0,0 +1,133 @@
++# SPDX-License-Identifier: GPL-2.0-only
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/spi/snps,dw-apb-ssi.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Synopsys DesignWare AMBA 2.0 Synchronous Serial Interface
++
++maintainers:
++  - Mark Brown <broonie@kernel.org>
++
++allOf:
++  - $ref: "spi-controller.yaml#"
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - mscc,ocelot-spi
++              - mscc,jaguar2-spi
++    then:
++      properties:
++        reg:
++          minItems: 2
++
++properties:
++  compatible:
++    oneOf:
++      - description: Generic DW SPI Controller
++        enum:
++          - snps,dw-apb-ssi
++          - snps,dwc-ssi-1.01a
++      - description: Microsemi Ocelot/Jaguar2 SoC SPI Controller
++        items:
++          - enum:
++              - mscc,ocelot-spi
++              - mscc,jaguar2-spi
++          - const: snps,dw-apb-ssi
++      - description: Amazon Alpine SPI Controller
++        const: amazon,alpine-dw-apb-ssi
++      - description: Renesas RZ/N1 SPI Controller
++        items:
++          - const: renesas,rzn1-spi
++          - const: snps,dw-apb-ssi
++      - description: Intel Keem Bay SPI Controller
++        const: intel,keembay-ssi
++
++  reg:
++    minItems: 1
++    items:
++      - description: DW APB SSI controller memory mapped registers
++      - description: SPI MST region map
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    minItems: 1
++    items:
++      - description: SPI Controller reference clock source
++      - description: APB interface clock source
++
++  clock-names:
++    minItems: 1
++    items:
++      - const: ssi_clk
++      - const: pclk
++
++  resets:
++    maxItems: 1
++
++  reset-names:
++    const: spi
++
++  reg-io-width:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: I/O register width (in bytes) implemented by this device
++    default: 4
++    enum: [ 2, 4 ]
++
++  num-cs:
++    default: 4
++    minimum: 1
++    maximum: 4
++
++  dmas:
++    items:
++      - description: TX DMA Channel
++      - description: RX DMA Channel
++
++  dma-names:
++    items:
++      - const: tx
++      - const: rx
++
++patternProperties:
++  "^.*@[0-9a-f]+$":
++    type: object
++    properties:
++      reg:
++        minimum: 0
++        maximum: 3
++
++      spi-rx-bus-width:
++        const: 1
++
++      spi-tx-bus-width:
++        const: 1
++
++unevaluatedProperties: false
++
++required:
++  - compatible
++  - reg
++  - "#address-cells"
++  - "#size-cells"
++  - interrupts
++  - clocks
++
++examples:
++  - |
++    spi@fff00000 {
++      compatible = "snps,dw-apb-ssi";
++      reg = <0xfff00000 0x1000>;
++      #address-cells = <1>;
++      #size-cells = <0>;
++      interrupts = <0 154 4>;
++      clocks = <&spi_m_clk>;
++      num-cs = <2>;
++      cs-gpios = <&gpio0 13 0>,
++                 <&gpio0 14 0>;
++    };
++...
+diff --git a/Documentation/devicetree/bindings/spi/spi-dw.txt b/Documentation/devicetree/bindings/spi/spi-dw.txt
+deleted file mode 100644
+index 7b63ed601990..000000000000
+--- a/Documentation/devicetree/bindings/spi/spi-dw.txt
++++ /dev/null
+@@ -1,24 +0,0 @@
+-Synopsys DesignWare SPI master
+-
+-Required properties:
+-- compatible: should be "snps,designware-spi"
+-- #address-cells: see spi-bus.txt
+-- #size-cells: see spi-bus.txt
+-- reg: address and length of the spi master registers
+-- interrupts: should contain one interrupt
+-- clocks: spi clock phandle
+-- num-cs: see spi-bus.txt
+-
+-Optional properties:
+-- cs-gpios: see spi-bus.txt
+-
+-Example:
+-
+-spi: spi@4020a000 {
+-	compatible = "snps,designware-spi";
+-	interrupts = <11 1>;
+-	reg = <0x4020a000 0x1000>;
+-	clocks = <&pclk>;
+-	num-cs = <2>;
+-	cs-gpios = <&banka 0 0>;
+-};
 -- 
-Best regards,
-grygorii
+2.26.2
+
