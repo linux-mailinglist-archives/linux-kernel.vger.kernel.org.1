@@ -2,97 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 507011E7B15
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 12:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE82C1E7AE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 12:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726649AbgE2K67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 06:58:59 -0400
-Received: from smtp114.iad3a.emailsrvr.com ([173.203.187.114]:60902 "EHLO
-        smtp114.iad3a.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725306AbgE2K67 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 06:58:59 -0400
-X-Greylist: delayed 605 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 May 2020 06:58:58 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20190130-41we5z8j; t=1590749333;
-        bh=t15gD2na0/H2x24kYLMgRSaadArXUlcGrrVA6FeEnP8=;
-        h=Subject:To:From:Date:From;
-        b=P/yGFFHljNvaZB92yovb2fTGfsmbboM+7kHjf49CcRed3UyoIxTvNSKc8/KCS2yGQ
-         NgmlJNW6mAaQfF2noDdlFzI5YWwrc2P2SzFQu3D0NWpJP5qlQjQLfnmxcHMb2I83CN
-         K1KqOuUJIQ86AS5zdbn67rMde5utdtP+K1L6qFCA=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp7.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 9B9C04E77;
-        Fri, 29 May 2020 06:48:52 -0400 (EDT)
-X-Sender-Id: abbotti@mev.co.uk
-Received: from [10.0.0.173] (remote.quintadena.com [81.133.34.160])
-        (using TLSv1.2 with cipher DHE-RSA-AES128-SHA)
-        by 0.0.0.0:465 (trex/5.7.12);
-        Fri, 29 May 2020 06:48:53 -0400
-Subject: Re: [PATCHES] uaccess comedi compat
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <20200528234025.GT23230@ZenIV.linux.org.uk>
- <20200529003419.GX23230@ZenIV.linux.org.uk>
-From:   Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-Message-ID: <b18a9407-8124-ff94-8c9b-333a32e0a137@mev.co.uk>
-Date:   Fri, 29 May 2020 11:48:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1726638AbgE2Kts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 06:49:48 -0400
+Received: from ozlabs.org ([203.11.71.1]:57411 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725562AbgE2Ktr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 06:49:47 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49YLtH6lLNz9sSp;
+        Fri, 29 May 2020 20:49:43 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1590749385;
+        bh=jsv/liaUrR517PU6UZH68DhnNcK32p5YqRZISEQvKy4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=cTlsuYrT6DmdVkLjeHoAZ3ZHt1W2odpilsuV0h2baE5t+seFN4XOBpLl3ELxvuJtJ
+         9nf+xf4WMw+xCKRp3rLLEqMxO5iAFuOse/r1cwEJf9Y0pbe5t3y1lcX5nU9H1TZfeP
+         xMOHEdWZpCBAxkB9/pRh5Ey8/vNK+TLCgCEd616PMhAUQUBfzYN76+N/vaDUxOkQga
+         HjvyHvMxSIMWwMwPt77qR7Cw1bOcKMcozBKAt/loH1RA/MKBcDyco0fB2xiCptxM2T
+         jCpe94RqiTKd0AB8HKu5T17RzUpWjk/9jIORdKhZ7hyo6ce55k9dGFlw24D2tmfFJz
+         1oTvYW9kD9e+g==
+Date:   Fri, 29 May 2020 20:49:42 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Qian Cai <cai@lca.pw>
+Subject: linux-next: manual merge of the akpm tree with the tip tree
+Message-ID: <20200529204942.0edf6cf6@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20200529003419.GX23230@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Classification-ID: d43e263d-a7dd-4e12-b35f-2b944c640f45-1-1
+Content-Type: multipart/signed; boundary="Sig_/3fs8AHix+/YNeajC7eNy448";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/05/2020 01:34, Al Viro wrote:
-> 	The way comedi compat ioctls are done is wrong.
-> Instead of having ->compat_ioctl() copying the 32bit
-> stuff in, then passing the kernel copies to helpers shared
-> with native ->ioctl() and doing copyout with conversion if
-> needed, it's playing silly buggers with creating a 64bit
-> copy on user stack, then calling native ioctl (which copies
-> that copy into the kernel), then fetching it from user stack,
-> converting to 32bit variant and copying that to user.
-> 	Extra headache for no good reason.  And the single
-> largest remaining pile of __put_user()/__get_user() this side
-> of arch/*.  IMO compat_alloc_user_space() should die...
-> 
-> 	NOTE: this is only compile-tested - I simply don't
-> have the hardware in question.
-> 
-> 	Anyway, the branch lives in #uaccess.comedi, based
-> at v5.7-rc1
-> 	
-> Al Viro (10):
->        comedi: move compat ioctl handling to native fops
->        comedi: get rid of indirection via translated_ioctl()
->        comedi: get rid of compat_alloc_user_space() mess in COMEDI_CHANINFO compat
->        comedi: get rid of compat_alloc_user_space() mess in COMEDI_RANGEINFO compat
->        comedi: get rid of compat_alloc_user_space() mess in COMEDI_INSN compat
->        comedi: get rid of compat_alloc_user_space() mess in COMEDI_INSNLIST compat
->        comedi: lift copy_from_user() into callers of __comedi_get_user_cmd()
->        comedi: do_cmdtest_ioctl(): lift copyin/copyout into the caller
->        comedi: do_cmd_ioctl(): lift copyin/copyout into the caller
->        comedi: get rid of compat_alloc_user_space() mess in COMEDI_CMD{,TEST} compat
+--Sig_/3fs8AHix+/YNeajC7eNy448
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-There is a bug in patch 05. Patch 10 doesn't seem to have been sent yet 
-(I didn't receive it and I can't see it in the thread in the LKML 
-archives). I've signed off on 01-04, 06-09.
+Hi all,
 
-These should be Cc'd to Greg KH and to devel@driverdev.osuosl.org.
+Today's linux-next merge of the akpm tree got a conflict in:
 
+  mm/swap.c
+
+between commit:
+
+  b01b21419999 ("mm/swap: Use local_lock for protection")
+
+from the tip tree and patch:
+
+  "mm/swap.c: annotate data races for lru_rotate_pvecs"
+
+from the akpm tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
 Cheers,
-Ian
+Stephen Rothwell
 
--- 
--=( Ian Abbott <abbotti@mev.co.uk> || Web: www.mev.co.uk )=-
--=( MEV Ltd. is a company registered in England & Wales. )=-
--=( Registered number: 02862268.  Registered address:    )=-
--=( 15 West Park Road, Bramhall, STOCKPORT, SK7 3JZ, UK. )=-
+diff --git a/mm/swap.c b/mm/swap.c
+index a8442ed0bb16..936d6b545217 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -620,7 +620,8 @@ void lru_add_drain_cpu(int cpu)
+ 		__pagevec_lru_add(pvec);
+=20
+ 	pvec =3D &per_cpu(lru_rotate.pvec, cpu);
+-	if (pagevec_count(pvec)) {
++	/* Disabling interrupts below acts as a compiler barrier. */
++	if (data_race(pagevec_count(pvec))) {
+ 		unsigned long flags;
+=20
+ 		/* No harm done if a racing interrupt already did this */
+@@ -781,7 +782,7 @@ void lru_add_drain_all(void)
+ 		struct work_struct *work =3D &per_cpu(lru_add_drain_work, cpu);
+=20
+ 		if (pagevec_count(&per_cpu(lru_pvecs.lru_add, cpu)) ||
+-		    pagevec_count(&per_cpu(lru_rotate.pvec, cpu)) ||
++		    data_race(pagevec_count(&per_cpu(lru_rotate.pvec, cpu))) ||
+ 		    pagevec_count(&per_cpu(lru_pvecs.lru_deactivate_file, cpu)) ||
+ 		    pagevec_count(&per_cpu(lru_pvecs.lru_deactivate, cpu)) ||
+ 		    pagevec_count(&per_cpu(lru_pvecs.lru_lazyfree, cpu)) ||
+
+--Sig_/3fs8AHix+/YNeajC7eNy448
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7Q6MYACgkQAVBC80lX
+0Gxf7Qf9GafonTBYFJ1TBhbZjKcBo4bG+VYP8KT+pvxJKu/MK0VcAjhwxeyUo3sU
+ng9ag/S2EI9mhuwmbcr6zUPh30Mm8Ps55bVGBPf5yYFhSO8t430pWAe5tdeHRgbV
+d+t6alDhCdBf+GHnmYpRXRSIhKU7QhM69i3UREtK9DbVG03g5mwP7BOTaIKX0HTQ
+CJfHNj0Y97a+Mhngn8yPYl/b9RSpD2CCTNxxq4SsQ8getcoh3tWKxvPPF2V4FN+M
+bpLvHRXZxxppGACxa88mQ4Bws/69JEJCxt4RGtg5cCI3Saq5JM1xO6LoSOhLg7wM
+63b2ZSp/36L52k6DZ+C8Cpfzbh+8Hg==
+=ZGY/
+-----END PGP SIGNATURE-----
+
+--Sig_/3fs8AHix+/YNeajC7eNy448--
