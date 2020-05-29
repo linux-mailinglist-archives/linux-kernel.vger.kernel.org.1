@@ -2,91 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271411E84E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C6F1E852B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727843AbgE2Rcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 13:32:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725839AbgE2Rck (ORCPT
+        id S1727816AbgE2Rjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 13:39:49 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:50280 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725601AbgE2Rjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 13:32:40 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1191BC08C5C9
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 10:26:33 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id j8so118500iog.13
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 10:26:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z8OACykXjIzxNzzYJDcQomDu+bSaXx9nM76v7J1rnOc=;
-        b=N4jmxuBRHu9i+7FFNASFaQjN4abnqiZo4PhPXmtm959rzOBOSm+7Huvel2yMZOGL6J
-         L3YDrdL0zD8zpqbQ04ZWiR4x4O3kagbBm6APPFB13kSMk3H1QROQY+2vIF1ZldyGqRDF
-         bAqJl18vR4TiVZQr/619DbLOoqewiS/BKYAMfJOp9Jj+S+C/J3VS8STRCBBSmsSkaksb
-         ApY3WPl8R/Eic5rKAOi0eDW1pnrW2e+US63v/lpJ9u7BBUa2IFu/beqHQ72ET5FqhBIi
-         lt/RcnyklXiCgf7y8HknKN3BSNFEwTssq3fjHwaUyqIQmXDKR6d1H5VWpqgkblSyq2n9
-         SueA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z8OACykXjIzxNzzYJDcQomDu+bSaXx9nM76v7J1rnOc=;
-        b=gPOynwox3ubqrPiqHAlY/PeWSKZ8ksJaFh0PKyb/7sggEJNjJRBLkiUNhC1szmvbzU
-         QW7w/DjXyUVmTOAln379dyPN9gpHnCPbep/WiXROuCottrWR0dj/aDzzSf/6yxWkKQh4
-         nRlQ/90S2pQGfm/Kk/azvQtecrnd5pS1Cv0xSpoIvi4AFjoSse0hKV0mgQt/kxbdqSwt
-         EcIWtpDIIuTFhsBUOxqQGymHDLb7XRug+Hjtve2kvUbuYn3mrIOtv8KmgVE3S14ORNam
-         TMyMWUWSFyxgE5c9V3ErI4GxqiPQwzpMWQYxCe3PQZTsRhzJ6J925ttp2K0D2fCsTTC7
-         vQAQ==
-X-Gm-Message-State: AOAM533nwbbIjdWt6MTpQhRWR90vYULc3EFAKOZvhikeik0EhmvxGR4N
-        s1Ob0KuqUGviX6Owq/XKuWz0J8i9MulNfrM6x6uvSQ==
-X-Google-Smtp-Source: ABdhPJwbz0o/jI3+dVTtyWVPjpigszAYMfgQJZaWm9/WbEOU+YXtNt0QJXWVbd3dmvHCuLQo0DqWifEdtyW1qHfQRg4=
-X-Received: by 2002:a6b:38c4:: with SMTP id f187mr7311468ioa.205.1590773192031;
- Fri, 29 May 2020 10:26:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <1590750293-12769-1-git-send-email-jiaxin.yu@mediatek.com>
- <20200529110915.GH4610@sirena.org.uk> <CA+Px+wVSwJK-=75chKLjSEe3bPRtV2wD95W5D_pdR0Pw0G470A@mail.gmail.com>
- <20200529130539.GK4610@sirena.org.uk>
-In-Reply-To: <20200529130539.GK4610@sirena.org.uk>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Sat, 30 May 2020 01:26:20 +0800
-Message-ID: <CA+Px+wVhXoU=BdBmMW0sdPtUrnQH+Kn6dkFdW-n67qEDGceCEQ@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: mediatek: mt6358: support DMIC one-wire mode
+        Fri, 29 May 2020 13:39:49 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 160CD8030777;
+        Fri, 29 May 2020 17:26:45 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id xOu8vfYUNsLU; Fri, 29 May 2020 20:26:44 +0300 (MSK)
+Date:   Fri, 29 May 2020 20:26:42 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mark Brown <broonie@kernel.org>
-Cc:     Jiaxin Yu <jiaxin.yu@mediatek.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hariprasad Kelam <hariprasad.kelam@gmail.com>,
-        ALSA development <alsa-devel@alsa-project.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        howie.huang@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
+        Feng Tang <feng.tang@intel.com>, <devicetree@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
+        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        <linux-mips@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>
+Subject: Re: [PATCH v6 00/16] spi: dw: Add generic DW DMA controller support
+Message-ID: <20200529172642.hcnvyzv2ocizsvpy@mobilestation>
+References: <20200529131205.31838-1-Sergey.Semin@baikalelectronics.ru>
+ <159077271266.17043.13820488074564153429.b4-ty@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <159077271266.17043.13820488074564153429.b4-ty@kernel.org>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 9:05 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Fri, May 29, 2020 at 07:22:43PM +0800, Tzung-Bi Shih wrote:
-> > On Fri, May 29, 2020 at 7:09 PM Mark Brown <broonie@kernel.org> wrote:
->
-> > > What is DMIC one wire mode?  This doesn't sound like something I'd
-> > > expect to vary at runtime.
->
-> > It means: 1 PDM data wire carries 2 channel data (rising edge for left
-> > and falling edge for right).
->
-> I thought that was normal for DMICs - is this selecting between left and
-> right or something?
+Mark
 
-Not sure what is the common name but use the same context here.
+On Fri, May 29, 2020 at 06:18:32PM +0100, Mark Brown wrote:
+> On Fri, 29 May 2020 16:11:49 +0300, Serge Semin wrote:
+> > Baikal-T1 SoC provides a DW DMA controller to perform low-speed peripherals
+> > Mem-to-Dev and Dev-to-Mem transaction. This is also applicable to the DW
+> > APB SSI devices embedded into the SoC. Currently the DMA-based transfers
+> > are supported by the DW APB SPI driver only as a middle layer code for
+> > Intel MID/Elkhart PCI devices. Seeing the same code can be used for normal
+> > platform DMAC device we introduced a set of patches to fix it within this
+> > series.
+> > 
+> > [...]
+> 
+> Applied to
+> 
+>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+> 
+> Thanks!
+> 
+> [01/15] spi: dw: Set xfer effective_speed_hz
+>         commit: de4c2875a5ff2c886df60f2086c6affca83f890a
+> [02/15] spi: dw: Return any value retrieved from the dma_transfer callback
+>         commit: f0410bbf7d0fb80149e3b17d11d31f5b5197873e
+> [03/15] spi: dw: Locally wait for the DMA transfers completion
+>         commit: bdbdf0f06337d3661b64c0288c291cb06624065e
+> [04/15] spi: dw: Add SPI Tx-done wait method to DMA-based transfer
+>         commit: 1ade2d8a72f9240825f6be050f0d49c840f7daeb
+> [05/15] spi: dw: Add SPI Rx-done wait method to DMA-based transfer
+>         commit: 33726eff3d98e643f7d7a0940f4024844b430c82
+> [06/15] spi: dw: Parameterize the DMA Rx/Tx burst length
+>         commit: c534df9d6225314d1403e4330a22d68c35e0eb55
+> [07/15] spi: dw: Use DMA max burst to set the request thresholds
+>         commit: 0b2b66514fc9971b3a6002ba038d74f77705fd34
+> [08/15] spi: dw: Fix Rx-only DMA transfers
+>         commit: 46164fde6b7890e7a3982d54549947c8394c0192
+> [09/15] spi: dw: Add core suffix to the DW APB SSI core source file
+>         commit: 77ccff803d27279ccc100dc906c6f456c8fa515c
+> [10/15] spi: dw: Move Non-DMA code to the DW PCIe-SPI driver
+>         commit: 6c710c0cb6725bdbe647b958756685aed0295936
+> [11/15] spi: dw: Remove DW DMA code dependency from DW_DMAC_PCI
+>         commit: 06cfadb8c51b05c6b91c2d43e0fe72b3d643dced
+> [12/15] spi: dw: Add DW SPI DMA/PCI/MMIO dependency on the DW SPI core
+>         commit: ecb3a67edfd353837dc23b538fb250d1dfd88e7b
+> [13/15] spi: dw: Cleanup generic DW DMA code namings
+>         commit: 57784411728ff4d72ae051fdbba1e54fcb1f8d6f
+> [14/15] spi: dw: Add DMA support to the DW SPI MMIO driver
+>         commit: 0fdad596d46b28d5c3e39d1897c5e3878b64d9a2
+> [15/15] spi: dw: Use regset32 DebugFS method to create regdump file
+>         commit: 8378449d1f79add31be77e77fc7df9f639878e9c
 
-MT6358 accepts up to 2 PDM wires for 2 DMICs.
-If one wire mode is on, MT6358 only accepts 1 PDM wire.
-If one wire mode is off, MT6358 merges L/R from 2 PDM wires into 1
-I2S-like to SoC.
+You must have missed the patch 16:
+0e8332aaf059 dt-bindings: spi: Convert DW SPI binding to DT schema
+As you can see it has been acked by Rob. So you can also merge it into your
+repo. Though It has to be rebased first due to the Dinh Nguyen patches
+recently merged in. Do you want me to do the rebasing?
+
+-Sergey
+
+> 
+> All being well this means that it will be integrated into the linux-next
+> tree (usually sometime in the next 24 hours) and sent to Linus during
+> the next merge window (or sooner if it is a bug fix), however if
+> problems are discovered then the patch may be dropped or reverted.
+> 
+> You may get further e-mails resulting from automated or manual testing
+> and review of the tree, please engage with people reporting problems and
+> send followup patches addressing any issues that are reported if needed.
+> 
+> If any updates are required or you are submitting further changes they
+> should be sent as incremental updates against current git, existing
+> patches will not be replaced.
+> 
+> Please add any relevant lists and maintainers to the CCs when replying
+> to this mail.
+> 
+> Thanks,
+> Mark
