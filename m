@@ -2,73 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1247D1E72C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B501E72CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406858AbgE2Csn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 22:48:43 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:43920 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406751AbgE2Csl (ORCPT
+        id S2436546AbgE2CuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 22:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436466AbgE2Ct5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 22:48:41 -0400
-Received: by mail-io1-f65.google.com with SMTP id h10so749404iob.10;
-        Thu, 28 May 2020 19:48:41 -0700 (PDT)
+        Thu, 28 May 2020 22:49:57 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52290C08C5C7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 19:49:57 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id x18so438528pll.6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 19:49:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hPip9sj+gT94IHX91SMv58k+bcYoNsqlEOg/dBUQ/BY=;
+        b=pKc8no9EwMGl+SmmziguyIc8O2W2iMjna021zlfs9PD0U7z795t3f5ZCYmV5dwuGNy
+         lh41h5fLmXXbMbeaQCOuEsEBnmZXXwnBOw0KbjkXCHqCoAvc7wpNcMO304+OFcfVEaCc
+         9/3+FxOmMw0bksABX67lYX6HGpflgVgbHxaYIw1VZjh7BoVXTXVhfZdb3z5p67q8hY88
+         OxSVlliRWGD9FtYXQOiK0KWX/L1MR3QcRVtIxsOWPLHH8nWmlCAefY2+JMwEFIueMk/+
+         5WcbZe/9Nr1l0UdyKICRgLFH5iLHx6/OeFhs5ssf2f1xOLIl7UxB8r/bW2e0Sow+xQYN
+         k0gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=2wOEByp6gUNrdU4BNTFl/gH2hxnA8FPWu2vBLdfhtz0=;
-        b=GMg0Xsg5Il3Pb/gXIR+Y/FBt7eKQB1fZj0VfurI89bQ8uWTDVNYqorGCzNmqqULNgF
-         SwgjazO1jKhc9EMx1YMnIRINuBbMy+G7mEjkk5syC/QnHX3SaNDAA4nkUlhnifzdgpaA
-         4KrCCqs46QU2Zhoza6Bzbc/7R9xRrVXKFL7kKXZ3KH9S0MfuQV8RFTXYKSMj9t1gBmwY
-         crG0NAf0/i3W0kZn8fCm9etqtrE7dunR87tXrKM3OVs/VtW6md8ILrKWt1N4q4mD8iI7
-         H1cT6qzJQvPQ/4r89MxpUkuR815DhMSvX7MTNMwTxrlhLpdx+uVTYaNCzrYDJh+PYHwH
-         A6wQ==
-X-Gm-Message-State: AOAM5305t7Q5TLsTjaerliEbuVkTJllmUC0BT3y0PL+vNQsRRsAWQ/RK
-        SSo27U+2s8aFCakly8XF0w==
-X-Google-Smtp-Source: ABdhPJwaVZjnnoKp02/s1snipVdrssvc2EzQh9OAl8zSZDlr1KNefyoQMWawpPD/c9VL/HI8n3SvZA==
-X-Received: by 2002:a02:a80f:: with SMTP id f15mr5497366jaj.90.1590720520911;
-        Thu, 28 May 2020 19:48:40 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id o15sm4084317ilg.46.2020.05.28.19.48.39
+        bh=hPip9sj+gT94IHX91SMv58k+bcYoNsqlEOg/dBUQ/BY=;
+        b=MjGfBZswufU/+QxcDPSX3WoGsLFAX7uV67KJeRllv21rki+ZL6Us34WYu7P/JC3xd8
+         gCzfAhePx97aezocM56zE6mmaGkMR8ycoJ446YF56xKrvo/BdF8WQBfDCOLXOw96Zhax
+         WcnqQzoF/CKs9cmmU+Uvx/w1J+BBdJBndbRgS+4KB1rXxQjKM/z2XLnodWjimJdHcPZz
+         5S5PnLxmLmLRJ8gcqEEvCPvOekgeEaXwOA+DLQ15Ax4r1C7im/jmnL4qjcAjNdiDpQpi
+         4sI3wg+ijUkC1qHLkK6c70X68a0vBgVT3E2dQAj6uANc+qUThjV2KGbhbHp8BT1Nk76D
+         QnFw==
+X-Gm-Message-State: AOAM531THxyIK/yUY9H6pQ0ma+W6aOj4YXcPws/rKy/fBSw+E7PVKhHJ
+        UF5J1Grsm6iwrfVsQelLtFuDZg==
+X-Google-Smtp-Source: ABdhPJz09a79Fui6XxV+b6zrEokUmrQ2Q/jUgp2UxhnPU19f2ePwbMGzsXNI11Mg/LSXdryCF0u5hA==
+X-Received: by 2002:a17:902:848a:: with SMTP id c10mr6716560plo.124.1590720596694;
+        Thu, 28 May 2020 19:49:56 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id z23sm5445646pga.86.2020.05.28.19.49.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 19:48:40 -0700 (PDT)
-Received: (nullmailer pid 1171117 invoked by uid 1000);
-        Fri, 29 May 2020 02:48:39 -0000
-Date:   Thu, 28 May 2020 20:48:39 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        shc_work@mail.ru, s.hauer@pengutronix.de, shawnguo@kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, festevam@gmail.com,
-        linux-clk@vger.kernel.org, kernel@pengutronix.de,
-        Linux-imx@nxp.com, s.trumtrar@pengutronix.de,
-        mturquette@baylibre.com, sboyd@kernel.org
-Subject: Re: [PATCH 3/9] dt-bindings: clock: Convert i.MX31 clock to
- json-schema
-Message-ID: <20200529024839.GA1170982@bogus>
-References: <1590650879-18288-1-git-send-email-Anson.Huang@nxp.com>
- <1590650879-18288-4-git-send-email-Anson.Huang@nxp.com>
+        Thu, 28 May 2020 19:49:55 -0700 (PDT)
+Date:   Thu, 28 May 2020 19:48:50 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [PATCH 2/6] arm64: dts: qcom: sm8250: add apps_smmu node
+Message-ID: <20200529024850.GU279327@builder.lan>
+References: <20200524023815.21789-1-jonathan@marek.ca>
+ <20200524023815.21789-3-jonathan@marek.ca>
+ <42f39eeb2af9c82a551a417c62ea21d7@codeaurora.org>
+ <0f58e2fd-ef55-cf38-d403-4782662aa89e@marek.ca>
+ <2a35f3b85d8311fb4298aaea82236967@codeaurora.org>
+ <c9c21e4c-fc89-5a74-fa78-203e5fb64e27@marek.ca>
+ <72d771390af9a68759d3f81cb79e46a6@codeaurora.org>
+ <33b34a58-46d2-80ec-1d79-8e02aa5ae026@marek.ca>
+ <1adedb96a999a08809afe62416e80075@codeaurora.org>
+ <8f9a5750-7909-4be7-6780-198d8c242af3@marek.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1590650879-18288-4-git-send-email-Anson.Huang@nxp.com>
+In-Reply-To: <8f9a5750-7909-4be7-6780-198d8c242af3@marek.ca>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 May 2020 15:27:53 +0800, Anson Huang wrote:
-> Convert the i.MX31 clock binding to DT schema format using json-schema.
-> 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> ---
->  .../devicetree/bindings/clock/imx31-clock.txt      |  90 ----------------
->  .../devicetree/bindings/clock/imx31-clock.yaml     | 118 +++++++++++++++++++++
->  2 files changed, 118 insertions(+), 90 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/clock/imx31-clock.txt
->  create mode 100644 Documentation/devicetree/bindings/clock/imx31-clock.yaml
+On Mon 25 May 04:53 PDT 2020, Jonathan Marek wrote:
+[..]
+> I guess the commit message is ambiguous, that's not what I meant. Is "Now
+> that the kernel initializes the iommu, the bypass mappings set by the
+> bootloader are cleared. Adding the iommus property is required so that new
+> mappings are created for UFS." better?
 > 
 
-Applied, thanks!
+This looks better, but it's actually not a bypass mapping that we
+inherit from the bootloader, it's the stream mapping pointing to a
+disabled (~ARM_SMMU_SCTLR_M) context bank. So when we wipe the stream
+mappings we will fault on the unmatched stream - which secure world
+"handles" for us...
+
+As such, I think you should replace "bypass" with "stream".
+
+Regards,
+Bjorn
