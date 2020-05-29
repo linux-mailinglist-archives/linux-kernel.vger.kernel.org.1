@@ -2,86 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5674E1E7939
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 11:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C3E1E793D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 11:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726469AbgE2JW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 05:22:56 -0400
-Received: from mga03.intel.com ([134.134.136.65]:58466 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725790AbgE2JWz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 05:22:55 -0400
-IronPort-SDR: po+Rh+KuiIzoqfeQ+HGBzCSw2ecwAMz9QbR/6KpOOeO61nHKXIkTK23m+gyL6+PGQ+4jVqlNdr
- 2Dsqc8CcfYaw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 May 2020 02:22:55 -0700
-IronPort-SDR: 1Xj1C1O0pgSJ2WSOdmZ/In1Xx/hkP4t33kAUPtFWU3if0MV/azVq9A2agljxXNdy4z1P+kB+uj
- QTeiINh3V61A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,448,1583222400"; 
-   d="scan'208";a="256454017"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga007.jf.intel.com with ESMTP; 29 May 2020 02:22:52 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jebE7-009aHF-8z; Fri, 29 May 2020 12:22:55 +0300
-Date:   Fri, 29 May 2020 12:22:55 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yi Wang <wang.yi59@zte.com.cn>
-Cc:     davem@davemloft.net, kuba@kernel.org, mst@redhat.com,
-        hkallweit1@gmail.com, snelson@pensando.io,
-        xiyou.wangcong@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xue.zhihong@zte.com.cn,
-        wang.liang82@zte.com.cn, Liao Pingfang <liao.pingfang@zte.com.cn>
-Subject: Re: [PATCH] net: atm: Replace kmalloc with kzalloc in the error
- message
-Message-ID: <20200529092255.GW1634618@smile.fi.intel.com>
-References: <1590714102-15651-1-git-send-email-wang.yi59@zte.com.cn>
+        id S1726767AbgE2JXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 05:23:19 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:4907 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726477AbgE2JXQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 05:23:16 -0400
+X-UUID: d8ec2b1b71fc4adc99538fcfd922340c-20200529
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=C7jiqWJqQUQFX3wanPIiepBSjlj6iNhBD/xNOyaJx/o=;
+        b=kDCJTzk4x9EtqMkosbm3DAGFx0pWXlTB7sW3ZcZqrgz+AXw6iJUOLZqazpKxcEMmA9jmKCICggLLMID5HMjyDYmJ1ig5CfhfcE04ZC+Rd7OOnM/EZ40UtPNZqaudmFALvmHyaPlPP22b6OjO2toRWq7109FZebZaPy1ayyuQRcM=;
+X-UUID: d8ec2b1b71fc4adc99538fcfd922340c-20200529
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1832165055; Fri, 29 May 2020 17:23:14 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 29 May 2020 17:23:10 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 29 May 2020 17:23:09 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>
+CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
+        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
+        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <cc.chou@mediatek.com>,
+        <chaotian.jing@mediatek.com>, <pengshun.zhao@mediatek.com>,
+        Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v2 0/5] scsi: ufs-mediatek: Fix clk-gating and introduce low-power mode for vccq2
+Date:   Fri, 29 May 2020 17:23:05 +0800
+Message-ID: <20200529092310.1106-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1590714102-15651-1-git-send-email-wang.yi59@zte.com.cn>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
+X-TM-SNTS-SMTP: BC13AC5E0CEC9B039233AABE34122B89E422FCA98B5DA0A01FF13D32ED2EEF7E2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 09:01:42AM +0800, Yi Wang wrote:
-> From: Liao Pingfang <liao.pingfang@zte.com.cn>
-> 
-> Use kzalloc instead of kmalloc in the error message according to
-> the previous kzalloc() call.
-
-Looking into the context (atomic!) and error message itself I would rather drop
-message completely.
-
-> Signed-off-by: Liao Pingfang <liao.pingfang@zte.com.cn>
-> ---
->  net/atm/lec.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/atm/lec.c b/net/atm/lec.c
-> index ca37f5a..33033d7 100644
-> --- a/net/atm/lec.c
-> +++ b/net/atm/lec.c
-> @@ -1537,7 +1537,7 @@ static struct lec_arp_table *make_entry(struct lec_priv *priv,
->  
->  	to_return = kzalloc(sizeof(struct lec_arp_table), GFP_ATOMIC);
->  	if (!to_return) {
-> -		pr_info("LEC: Arp entry kmalloc failed\n");
-> +		pr_info("LEC: Arp entry kzalloc failed\n");
->  		return NULL;
->  	}
->  	ether_addr_copy(to_return->mac_addr, mac_addr);
-> -- 
-> 2.9.5
-> 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+SGksDQpUaGlzIHNlcmllcyBmaXhlcyBjbGstZ2F0aW5nIGlzc3VlcyBhbmQgaW50cm9kdWNlcyBs
+b3ctcG93ZXIgbW9kZSBmb3IgdmNjcTIgaW4gTWVkaWFUZWsgcGxhdGZvcm1zLg0KDQp2MSAtPiB2
+MjoNCiAgLSBBZGQgcGF0Y2ggWzRdIGFuZCBbNV0NCg0KU3RhbmxleSBDaHUgKDUpOg0KICBzY3Np
+OiB1ZnMtbWVkaWF0ZWs6IEZpeCBpbXByZWNpc2Ugd2FpdGluZyB0aW1lIGZvciByZWYtY2xrIGNv
+bnRyb2wNCiAgc2NzaTogdWZzLW1lZGlhdGVrOiBEbyBub3QgZ2F0ZSBjbG9ja3MgaWYgYXV0by1o
+aWJlcm44IGlzIG5vdCBlbnRlcmVkDQogICAgeWV0DQogIHNjc2k6IHVmcy1tZWRpYXRlazogSW50
+cm9kdWNlIGxvdy1wb3dlciBtb2RlIGZvciBkZXZpY2UgcG93ZXIgc3VwcGx5DQogIHNjc2k6IHVm
+cy1tZWRpYXRlazogRml4IHVuYmFsYW5jZWQgY2xvY2sgb24vb2ZmDQogIHNjc2k6IHVmcy1tZWRp
+YXRlazogQWxsb3cgdW5ib3VuZCBtcGh5DQoNCiBkcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRl
+ay5jIHwgMTEyICsrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tDQogZHJpdmVycy9zY3Np
+L3Vmcy91ZnMtbWVkaWF0ZWsuaCB8ICAgMiArLQ0KIDIgZmlsZXMgY2hhbmdlZCwgODQgaW5zZXJ0
+aW9ucygrKSwgMzAgZGVsZXRpb25zKC0pDQoNCi0tIA0KMi4xOC4wDQo=
 
