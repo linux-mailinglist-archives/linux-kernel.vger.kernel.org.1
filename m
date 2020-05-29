@@ -2,374 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23B7D1E7229
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 03:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B81321E7225
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 03:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390930AbgE2Bou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 21:44:50 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:22772 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390874AbgE2Bos (ORCPT
+        id S2390778AbgE2BoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 21:44:25 -0400
+Received: from sonic308-3.consmr.mail.bf2.yahoo.com ([74.6.130.42]:43445 "EHLO
+        sonic308-3.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390601AbgE2BoW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 21:44:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590716685;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=Xyxj5/TDbjdlA3+eV4LtEp/i31Q4MHxvnPp9oxxL0qc=;
-        b=bzUt4OyTe0xvt9JkA7SEtf89TuKsxsHNErQpYBInwmqzvQqbPA+8+x4Wtw1hCylWSMbzfb
-        kQvLkV5LQY/cTWsXZaaFYH4i0fMnkLNsT2rgWP6n2xJR/vA5H3Z6VnvF5UQ+aZZ7PFI0p7
-        KPTXT7bwY8hY2uLEBoJXOoCRgA98ZM8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-276-If5AABpnOQmO7Qix9sPqsA-1; Thu, 28 May 2020 21:44:40 -0400
-X-MC-Unique: If5AABpnOQmO7Qix9sPqsA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5ED61EC1A5;
-        Fri, 29 May 2020 01:44:39 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.54])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7D50F5C1C3;
-        Fri, 29 May 2020 01:44:26 +0000 (UTC)
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org
-Cc:     Paul Moore <paul@paul-moore.com>, sgrubb@redhat.com,
-        omosnace@redhat.com, fw@strlen.de, twoerner@redhat.com,
-        eparis@parisplace.org, tgraf@infradead.org,
-        Richard Guy Briggs <rgb@redhat.com>
-Subject: [PATCH ghak124 v2] audit: log nftables configuration change events
-Date:   Thu, 28 May 2020 21:44:00 -0400
-Message-Id: <d45d23ba6d58b1513c641dfb24f009cbc1b7aad6.1590716354.git.rgb@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Thu, 28 May 2020 21:44:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1590716660; bh=YjoMWJbzwim5rmbOfzRawArenzz2ibTTWXogglyySJ0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=Ui+8GP6NWA/X+l8d3UjXIEB6BbV6+OwJYUuVo/Vhk+GNRDs02io0rl5iyH/iEmECt1j1Es5Vyp6Bh+r4G0XHCc3joCgOPPfUKqNLmVc56CIh7lj+8uDrrsSgfM9fn7Dc/e0Sspiwh/QYUgd5I8dVOmi2kszBQ5Go2mgl/mX+TiNSb0L7LE+rsNWAhrx4oRS8O1OayN9KwDOmowIHm/Bc+XCc0+47zzf531fVYGa2g4hyvy2wyTvbg7se0rhfKUTLv8kQ1Umv0kMjMEbSsvL8K0jsJfEW2rHoyjJFQX3W4GjoLW2QYkYv9rttoehTeNkO7jSEWXGpp38SEDqlenVJ6A==
+X-YMail-OSG: xlmqNFAVM1mQEDMlc0mboZ4V70vm4GbeYuWEPyXRb1qEZu_Q2gjGaki9yBvOcT7
+ 0VvEEP4u2q_Car4KEnFqjUPEGJUE3CBpbqHr7npx5Jar2yOrd01QY.E0PHMUhNJeUtJhnl4ODBoF
+ kFP_A6I3zE0baiYXYbZMd71FV.gNK9guGaVe_Kk31Gd.59cwVIgBcspCnzjJs_c41p7Tzy2IPZdd
+ UZX1E5EgPMSAP0E2xBza30WBd7az_d5G21bw.rOOX1W3e3QhzZnyf2LVHBkm6K17Lm2SUK54qRn2
+ jcRsWvZ3Ll9R_reHXgqF0u05OaFmBHwKEgy3z.NEmk6s6Bz0g4JRznWtwOtmc6y2bsuwCvZ_Qx5F
+ SKW7O.V3_PYy3N6aAa2Y2EoV5OleCQ.OKOoaSPAC_jqaF4J.n98ZI91p2csP8Aaivc6mFk8Z7mEg
+ co9sW4U78E9p.9WozRwpn9NoX9_10Jd3wy0Hj3_JVYpzlRYSxAeCt1AXaFadMtQgCPV5iu3L0.BR
+ 5Ruwxqbx7BV4tpap_XqzORD3ZWIJBndRLgpvdDavczfBsVAsjZlbb3zgcm_IEJwUNahZFFezZmRt
+ pLoMkB9X_zwz2CzVgK8hGFRscw9M5s5NUVITQjIP1C1XywvJyciH.V78bPBj4M6.lFiNI5gyTFqC
+ AS_XCAPMLGVIaqeJ_nM93tNDATwuqcBMn9e2oIjRMFL6adZgJZPsH2U2Uvekvw0zjz5IjTTbFvbp
+ DzBgK47g.DOEPEjwaCc2.iPxzuLhXCK5u_mdcXt3hWXCKPFcncpYsS_nTS8IrHvO81pYFOYy.qzF
+ pGgPTI1h82_f5UvV7wfaBI_UMGNHtn_OABkpcJErfd8tCx_IXF3nT5al3Sf_pj.pySfJEjr3Q8Dk
+ pNOK1onuGmUP_X8L.ScKJCSMQ5cTt1oxvOXR8poIjWcTTG2EY3ueVtMVXqUkWVGzED7w_.0kcuzX
+ KS8_Yv8JgbMUOHZE.Mc0qtYYsoXVXdrBd3cZmT0vDTyzEnGUysPTkJR1sjr3UYZhWR1Qv0NwG0r3
+ oEAKMmJ7v_C_fDY_bIN3P6DuXiZccdXBj6rKGXd9N60sAoZF_genCzw5Wj5oh1nAe0yfrrSL_xXp
+ CAUYa9VJb3czc.uQ_WlIVnZyRGoYZ6ewoxtxCi3_3vbkQKd7DGtsMjLV4zOFVKZ6bkfAlVHZJhe7
+ dKvPph2fnRUW_XUVubBpueJ27XNMt9BUxLrvNq3UfDTYYUBuXGtFqenDYxayQO0twbsaMz08yOPj
+ 3AIaoTdjXCRG5iXf3IcB.U1pbI2Nbc1qciN9N3Wq27SC4d_IhG0xq4IeYvq5D7r6KoybXoWUefvG
+ n4Ko-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.bf2.yahoo.com with HTTP; Fri, 29 May 2020 01:44:20 +0000
+Date:   Fri, 29 May 2020 01:44:18 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <mrsminaabrunel2@gmail.com>
+Reply-To: smrsminaabrunel63@gmail.com
+Message-ID: <669533066.972960.1590716658717@mail.yahoo.com>
+Subject: My Dear in the lord
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <669533066.972960.1590716658717.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15959 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-iptables, ip6tables, arptables and ebtables table registration,
-replacement and unregistration configuration events are logged for the
-native (legacy) iptables setsockopt api, but not for the
-nftables netlink api which is used by the nft-variant of iptables in
-addition to nftables itself.
 
-Add calls to log the configuration actions in the nftables netlink api.
 
-This uses the same NETFILTER_CFG record format but overloads the table
-field.
+My=C2=A0Dear=C2=A0in=C2=A0the=C2=A0lord
 
-  type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.878:162) : table=?:0;?:0 family=unspecified entries=2 op=nft_register_gen pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-  ...
-  type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.878:162) : table=firewalld:1;?:0 family=inet entries=0 op=nft_register_table pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-  ...
-  type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.911:163) : table=firewalld:1;filter_FORWARD:85 family=inet entries=8 op=nft_register_chain pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-  ...
-  type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.911:163) : table=firewalld:1;filter_FORWARD:85 family=inet entries=101 op=nft_register_rule pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-  ...
-  type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.911:163) : table=firewalld:1;__set0:87 family=inet entries=87 op=nft_register_setelem pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-  ...
-  type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.911:163) : table=firewalld:1;__set0:87 family=inet entries=0 op=nft_register_set pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
 
-For further information please see issue
-https://github.com/linux-audit/audit-kernel/issues/124
+My=C2=A0name=C2=A0is=C2=A0Mrs.=C2=A0Mina=C2=A0A.=C2=A0Brunel=C2=A0I=C2=A0am=
+=C2=A0a=C2=A0Norway=C2=A0Citizen=C2=A0who=C2=A0is=C2=A0living=C2=A0in=C2=A0=
+Burkina=C2=A0Faso,=C2=A0I=C2=A0am=C2=A0married=C2=A0to=C2=A0Mr.=C2=A0Brunel=
+=C2=A0Patrice,=C2=A0a=C2=A0politicians=C2=A0who=C2=A0owns=C2=A0a=C2=A0small=
+=C2=A0gold=C2=A0company=C2=A0in=C2=A0Burkina=C2=A0Faso;=C2=A0He=C2=A0died=
+=C2=A0of=C2=A0Leprosy=C2=A0and=C2=A0Radesyge,=C2=A0in=C2=A0year=C2=A0Februa=
+ry=C2=A02010,=C2=A0During=C2=A0his=C2=A0lifetime=C2=A0he=C2=A0deposited=C2=
+=A0the=C2=A0sum=C2=A0of=C2=A0=E2=82=AC=C2=A08.5=C2=A0Million=C2=A0Euro)=C2=
+=A0Eight=C2=A0million,=C2=A0Five=C2=A0hundred=C2=A0thousand=C2=A0Euros=C2=
+=A0in=C2=A0a=C2=A0bank=C2=A0in=C2=A0Ouagadougou=C2=A0the=C2=A0capital=C2=A0=
+city=C2=A0of=C2=A0of=C2=A0Burkina=C2=A0in=C2=A0West=C2=A0Africa.=C2=A0The=
+=C2=A0money=C2=A0was=C2=A0from=C2=A0the=C2=A0sale=C2=A0of=C2=A0his=C2=A0com=
+pany=C2=A0and=C2=A0death=C2=A0benefits=C2=A0payment=C2=A0and=C2=A0entitleme=
+nts=C2=A0of=C2=A0my=C2=A0deceased=C2=A0husband=C2=A0by=C2=A0his=C2=A0compan=
+y.
 
-Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
----
-Changelog:
-v2:
-- differentiate between xtables and nftables
-- add set, setelem, obj, flowtable, gen
-- use nentries field as appropriate per type
-- overload the "tables" field with table handle and chain/set/flowtable
+I=C2=A0am=C2=A0sending=C2=A0you=C2=A0this=C2=A0message=C2=A0with=C2=A0heavy=
+=C2=A0tears=C2=A0in=C2=A0my=C2=A0eyes=C2=A0and=C2=A0great=C2=A0sorrow=C2=A0=
+in=C2=A0my=C2=A0heart,=C2=A0and=C2=A0also=C2=A0praying=C2=A0that=C2=A0it=C2=
+=A0will=C2=A0reach=C2=A0you=C2=A0in=C2=A0good=C2=A0health=C2=A0because=C2=
+=A0I=C2=A0am=C2=A0not=C2=A0in=C2=A0good=C2=A0health,=C2=A0I=C2=A0sleep=C2=
+=A0every=C2=A0night=C2=A0without=C2=A0knowing=C2=A0if=C2=A0I=C2=A0may=C2=A0=
+be=C2=A0alive=C2=A0to=C2=A0see=C2=A0the=C2=A0next=C2=A0day.=C2=A0I=C2=A0am=
+=C2=A0suffering=C2=A0from=C2=A0long=C2=A0time=C2=A0cancer=C2=A0and=C2=A0pre=
+sently=C2=A0I=C2=A0am=C2=A0partially=C2=A0suffering=C2=A0from=C2=A0Leprosy,=
+=C2=A0which=C2=A0has=C2=A0become=C2=A0difficult=C2=A0for=C2=A0me=C2=A0to=C2=
+=A0move=C2=A0around.=C2=A0I=C2=A0was=C2=A0married=C2=A0to=C2=A0my=C2=A0late=
+=C2=A0husband=C2=A0for=C2=A0more=C2=A0than=C2=A06=C2=A0years=C2=A0without=
+=C2=A0having=C2=A0a=C2=A0child=C2=A0and=C2=A0my=C2=A0doctor=C2=A0confided=
+=C2=A0that=C2=A0I=C2=A0have=C2=A0less=C2=A0chance=C2=A0to=C2=A0live,=C2=A0h=
+aving=C2=A0to=C2=A0know=C2=A0when=C2=A0the=C2=A0cup=C2=A0of=C2=A0death=C2=
+=A0will=C2=A0come,=C2=A0I=C2=A0decided=C2=A0to=C2=A0contact=C2=A0you=C2=A0t=
+o=C2=A0claim=C2=A0the=C2=A0fund=C2=A0since=C2=A0I=C2=A0don't=C2=A0have=C2=
+=A0any=C2=A0relation=C2=A0I=C2=A0grew=C2=A0up=C2=A0from=C2=A0an=C2=A0orphan=
+age=C2=A0home.
 
- include/linux/audit.h         | 52 +++++++++++++++++++++++++
- kernel/auditsc.c              | 24 ++++++++++--
- net/netfilter/nf_tables_api.c | 89 +++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 162 insertions(+), 3 deletions(-)
+I=C2=A0have=C2=A0decided=C2=A0to=C2=A0donate=C2=A0this=C2=A0money=C2=A0for=
+=C2=A0the=C2=A0support=C2=A0of=C2=A0helping=C2=A0Motherless=C2=A0babies/Les=
+s=C2=A0privileged/Widows=C2=A0and=C2=A0churches=C2=A0also=C2=A0to=C2=A0buil=
+d=C2=A0the=C2=A0house=C2=A0of=C2=A0God=C2=A0because=C2=A0I=C2=A0am=C2=A0dyi=
+ng=C2=A0and=C2=A0diagnosed=C2=A0with=C2=A0cancer=C2=A0for=C2=A0about=C2=A03=
+=C2=A0years=C2=A0ago.=C2=A0I=C2=A0have=C2=A0decided=C2=A0to=C2=A0donate=C2=
+=A0from=C2=A0what=C2=A0I=C2=A0have=C2=A0inherited=C2=A0from=C2=A0my=C2=A0la=
+te=C2=A0husband=C2=A0to=C2=A0you=C2=A0for=C2=A0the=C2=A0good=C2=A0work=C2=
+=A0of=C2=A0Almighty=C2=A0God;=C2=A0I=C2=A0will=C2=A0be=C2=A0going=C2=A0in=
+=C2=A0for=C2=A0an=C2=A0operation=C2=A0surgery=C2=A0soon.
 
-diff --git a/include/linux/audit.h b/include/linux/audit.h
-index 3fcd9ee49734..d79866a38505 100644
---- a/include/linux/audit.h
-+++ b/include/linux/audit.h
-@@ -12,6 +12,7 @@
- #include <linux/sched.h>
- #include <linux/ptrace.h>
- #include <uapi/linux/audit.h>
-+#include <uapi/linux/netfilter/nf_tables.h>
- 
- #define AUDIT_INO_UNSET ((unsigned long)-1)
- #define AUDIT_DEV_UNSET ((dev_t)-1)
-@@ -98,6 +99,57 @@ enum audit_nfcfgop {
- 	AUDIT_XT_OP_REGISTER,
- 	AUDIT_XT_OP_REPLACE,
- 	AUDIT_XT_OP_UNREGISTER,
-+	AUDIT_NFT_OP_TABLE_REGISTER,
-+	AUDIT_NFT_OP_TABLE_UNREGISTER,
-+	AUDIT_NFT_OP_CHAIN_REGISTER,
-+	AUDIT_NFT_OP_CHAIN_UNREGISTER,
-+	AUDIT_NFT_OP_RULE_REGISTER,
-+	AUDIT_NFT_OP_RULE_UNREGISTER,
-+	AUDIT_NFT_OP_SET_REGISTER,
-+	AUDIT_NFT_OP_SET_UNREGISTER,
-+	AUDIT_NFT_OP_SETELEM_REGISTER,
-+	AUDIT_NFT_OP_SETELEM_UNREGISTER,
-+	AUDIT_NFT_OP_GEN_REGISTER,
-+	AUDIT_NFT_OP_OBJ_REGISTER,
-+	AUDIT_NFT_OP_OBJ_UNREGISTER,
-+	AUDIT_NFT_OP_OBJ_RESET,
-+	AUDIT_NFT_OP_FLOWTABLE_REGISTER,
-+	AUDIT_NFT_OP_FLOWTABLE_UNREGISTER,
-+	AUDIT_NFT_OP_INVALID,
-+};
-+
-+struct audit_nftcfgop_tab {
-+	enum nf_tables_msg_types	nftop;
-+	enum audit_nfcfgop		op;
-+};
-+
-+static const struct audit_nftcfgop_tab audit_nftcfgs[] = {
-+	{ NFT_MSG_NEWTABLE,	AUDIT_NFT_OP_TABLE_REGISTER		},
-+	{ NFT_MSG_GETTABLE,	AUDIT_NFT_OP_INVALID			},
-+	{ NFT_MSG_DELTABLE,	AUDIT_NFT_OP_TABLE_UNREGISTER		},
-+	{ NFT_MSG_NEWCHAIN,	AUDIT_NFT_OP_CHAIN_REGISTER		},
-+	{ NFT_MSG_GETCHAIN,	AUDIT_NFT_OP_INVALID			},
-+	{ NFT_MSG_DELCHAIN,	AUDIT_NFT_OP_CHAIN_UNREGISTER		},
-+	{ NFT_MSG_NEWRULE,	AUDIT_NFT_OP_RULE_REGISTER		},
-+	{ NFT_MSG_GETRULE,	AUDIT_NFT_OP_INVALID			},
-+	{ NFT_MSG_DELRULE,	AUDIT_NFT_OP_RULE_UNREGISTER		},
-+	{ NFT_MSG_NEWSET,	AUDIT_NFT_OP_SET_REGISTER		},
-+	{ NFT_MSG_GETSET,	AUDIT_NFT_OP_INVALID			},
-+	{ NFT_MSG_DELSET,	AUDIT_NFT_OP_SET_UNREGISTER		},
-+	{ NFT_MSG_NEWSETELEM,	AUDIT_NFT_OP_SETELEM_REGISTER		},
-+	{ NFT_MSG_GETSETELEM,	AUDIT_NFT_OP_INVALID			},
-+	{ NFT_MSG_DELSETELEM,	AUDIT_NFT_OP_SETELEM_UNREGISTER		},
-+	{ NFT_MSG_NEWGEN,	AUDIT_NFT_OP_GEN_REGISTER		},
-+	{ NFT_MSG_GETGEN,	AUDIT_NFT_OP_INVALID			},
-+	{ NFT_MSG_TRACE,	AUDIT_NFT_OP_INVALID			},
-+	{ NFT_MSG_NEWOBJ,	AUDIT_NFT_OP_OBJ_REGISTER		},
-+	{ NFT_MSG_GETOBJ,	AUDIT_NFT_OP_INVALID			},
-+	{ NFT_MSG_DELOBJ,	AUDIT_NFT_OP_OBJ_UNREGISTER		},
-+	{ NFT_MSG_GETOBJ_RESET,	AUDIT_NFT_OP_OBJ_RESET			},
-+	{ NFT_MSG_NEWFLOWTABLE,	AUDIT_NFT_OP_FLOWTABLE_REGISTER		},
-+	{ NFT_MSG_GETFLOWTABLE,	AUDIT_NFT_OP_INVALID			},
-+	{ NFT_MSG_DELFLOWTABLE,	AUDIT_NFT_OP_FLOWTABLE_UNREGISTER	},
-+	{ NFT_MSG_MAX,		AUDIT_NFT_OP_INVALID			},
- };
- 
- extern int is_audit_feature_set(int which);
-diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-index 468a23390457..3a9100e95fda 100644
---- a/kernel/auditsc.c
-+++ b/kernel/auditsc.c
-@@ -75,6 +75,7 @@
- #include <linux/uaccess.h>
- #include <linux/fsnotify_backend.h>
- #include <uapi/linux/limits.h>
-+#include <uapi/linux/netfilter/nf_tables.h>
- 
- #include "audit.h"
- 
-@@ -136,9 +137,26 @@ struct audit_nfcfgop_tab {
- };
- 
- static const struct audit_nfcfgop_tab audit_nfcfgs[] = {
--	{ AUDIT_XT_OP_REGISTER,		"register"	},
--	{ AUDIT_XT_OP_REPLACE,		"replace"	},
--	{ AUDIT_XT_OP_UNREGISTER,	"unregister"	},
-+	{ AUDIT_XT_OP_REGISTER,			"xt_register"		   },
-+	{ AUDIT_XT_OP_REPLACE,			"xt_replace"		   },
-+	{ AUDIT_XT_OP_UNREGISTER,		"xt_unregister"		   },
-+	{ AUDIT_NFT_OP_TABLE_REGISTER,		"nft_register_table"	   },
-+	{ AUDIT_NFT_OP_TABLE_UNREGISTER,	"nft_unregister_table"	   },
-+	{ AUDIT_NFT_OP_CHAIN_REGISTER,		"nft_register_chain"	   },
-+	{ AUDIT_NFT_OP_CHAIN_UNREGISTER,	"nft_unregister_chain"	   },
-+	{ AUDIT_NFT_OP_RULE_REGISTER,		"nft_register_rule"	   },
-+	{ AUDIT_NFT_OP_RULE_UNREGISTER,		"nft_unregister_rule"	   },
-+	{ AUDIT_NFT_OP_SET_REGISTER,		"nft_register_set"	   },
-+	{ AUDIT_NFT_OP_SET_UNREGISTER,		"nft_unregister_set"	   },
-+	{ AUDIT_NFT_OP_SETELEM_REGISTER,	"nft_register_setelem"	   },
-+	{ AUDIT_NFT_OP_SETELEM_UNREGISTER,	"nft_unregister_setelem"   },
-+	{ AUDIT_NFT_OP_GEN_REGISTER,		"nft_register_gen"	   },
-+	{ AUDIT_NFT_OP_OBJ_REGISTER,		"nft_register_obj"	   },
-+	{ AUDIT_NFT_OP_OBJ_UNREGISTER,		"nft_unregister_obj"	   },
-+	{ AUDIT_NFT_OP_OBJ_RESET,		"nft_reset_obj"		   },
-+	{ AUDIT_NFT_OP_FLOWTABLE_REGISTER,	"nft_register_flowtable"   },
-+	{ AUDIT_NFT_OP_FLOWTABLE_UNREGISTER,	"nft_unregister_flowtable" },
-+	{ AUDIT_NFT_OP_INVALID,			"nft_invalid"		   },
- };
- 
- static int audit_match_perm(struct audit_context *ctx, int mask)
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 4471393da6d8..7a386eca6e04 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -12,6 +12,7 @@
- #include <linux/netlink.h>
- #include <linux/vmalloc.h>
- #include <linux/rhashtable.h>
-+#include <linux/audit.h>
- #include <linux/netfilter.h>
- #include <linux/netfilter/nfnetlink.h>
- #include <linux/netfilter/nf_tables.h>
-@@ -693,6 +694,14 @@ static void nf_tables_table_notify(const struct nft_ctx *ctx, int event)
- {
- 	struct sk_buff *skb;
- 	int err;
-+	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;?:0",
-+			      ctx->table->name, ctx->table->handle);
-+
-+	audit_log_nfcfg(buf,
-+			ctx->family,
-+			ctx->table->use,
-+			audit_nftcfgs[event].op);
-+	kfree(buf);
- 
- 	if (!ctx->report &&
- 	    !nfnetlink_has_listeners(ctx->net, NFNLGRP_NFTABLES))
-@@ -1428,6 +1437,15 @@ static void nf_tables_chain_notify(const struct nft_ctx *ctx, int event)
- {
- 	struct sk_buff *skb;
- 	int err;
-+	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;%s:%llu",
-+			      ctx->table->name, ctx->table->handle,
-+			      ctx->chain->name, ctx->chain->handle);
-+
-+	audit_log_nfcfg(buf,
-+			ctx->family,
-+			ctx->chain->use,
-+			audit_nftcfgs[event].op);
-+	kfree(buf);
- 
- 	if (!ctx->report &&
- 	    !nfnetlink_has_listeners(ctx->net, NFNLGRP_NFTABLES))
-@@ -2691,6 +2709,15 @@ static void nf_tables_rule_notify(const struct nft_ctx *ctx,
- {
- 	struct sk_buff *skb;
- 	int err;
-+	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;%s:%llu",
-+			      ctx->table->name, ctx->table->handle,
-+			      ctx->chain->name, ctx->chain->handle);
-+
-+	audit_log_nfcfg(buf,
-+			ctx->family,
-+			rule->handle,
-+			audit_nftcfgs[event].op);
-+	kfree(buf);
- 
- 	if (!ctx->report &&
- 	    !nfnetlink_has_listeners(ctx->net, NFNLGRP_NFTABLES))
-@@ -3692,6 +3719,15 @@ static void nf_tables_set_notify(const struct nft_ctx *ctx,
- 	struct sk_buff *skb;
- 	u32 portid = ctx->portid;
- 	int err;
-+	char *buf = kasprintf(gfp_flags, "%s:%llu;%s:%llu",
-+			      ctx->table->name, ctx->table->handle,
-+			      set->name, set->handle);
-+
-+	audit_log_nfcfg(buf,
-+			ctx->family,
-+			set->field_count,
-+			audit_nftcfgs[event].op);
-+	kfree(buf);
- 
- 	if (!ctx->report &&
- 	    !nfnetlink_has_listeners(ctx->net, NFNLGRP_NFTABLES))
-@@ -4789,6 +4825,15 @@ static void nf_tables_setelem_notify(const struct nft_ctx *ctx,
- 	u32 portid = ctx->portid;
- 	struct sk_buff *skb;
- 	int err;
-+	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;%s:%llu",
-+			      ctx->table->name, ctx->table->handle,
-+			      set->name, set->handle);
-+
-+	audit_log_nfcfg(buf,
-+			ctx->family,
-+			set->handle,
-+			audit_nftcfgs[event].op);
-+	kfree(buf);
- 
- 	if (!ctx->report && !nfnetlink_has_listeners(net, NFNLGRP_NFTABLES))
- 		return;
-@@ -5875,6 +5920,19 @@ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
- 			    obj->ops->type->type != filter->type)
- 				goto cont;
- 
-+			if (reset) {
-+				char *buf = kasprintf(GFP_KERNEL,
-+						      "%s:%llu;?:0",
-+						      table->name,
-+						      table->handle);
-+
-+				audit_log_nfcfg(buf,
-+						family,
-+						obj->handle,
-+						audit_nftcfgs[NFT_MSG_GETOBJ_RESET].op);
-+				kfree(buf);
-+			}
-+
- 			if (nf_tables_fill_obj_info(skb, net, NETLINK_CB(cb->skb).portid,
- 						    cb->nlh->nlmsg_seq,
- 						    NFT_MSG_NEWOBJ,
-@@ -5985,6 +6043,17 @@ static int nf_tables_getobj(struct net *net, struct sock *nlsk,
- 	if (NFNL_MSG_TYPE(nlh->nlmsg_type) == NFT_MSG_GETOBJ_RESET)
- 		reset = true;
- 
-+	if (reset) {
-+		char *buf = kasprintf(GFP_KERNEL, "%s:%llu;?:0",
-+				      table->name, table->handle);
-+
-+		audit_log_nfcfg(buf,
-+				family,
-+				obj->handle,
-+				audit_nftcfgs[NFT_MSG_GETOBJ_RESET].op);
-+		kfree(buf);
-+	}
-+
- 	err = nf_tables_fill_obj_info(skb2, net, NETLINK_CB(skb).portid,
- 				      nlh->nlmsg_seq, NFT_MSG_NEWOBJ, 0,
- 				      family, table, obj, reset);
-@@ -6060,6 +6129,14 @@ void nft_obj_notify(struct net *net, const struct nft_table *table,
- {
- 	struct sk_buff *skb;
- 	int err;
-+	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;?:0",
-+			      table->name, table->handle);
-+
-+	audit_log_nfcfg(buf,
-+			family,
-+			obj->handle,
-+			audit_nftcfgs[event].op);
-+	kfree(buf);
- 
- 	if (!report &&
- 	    !nfnetlink_has_listeners(net, NFNLGRP_NFTABLES))
-@@ -6686,6 +6763,15 @@ static void nf_tables_flowtable_notify(struct nft_ctx *ctx,
- {
- 	struct sk_buff *skb;
- 	int err;
-+	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;%s:%llu",
-+			      flowtable->table->name, flowtable->table->handle,
-+			      flowtable->name, flowtable->handle);
-+
-+	audit_log_nfcfg(buf,
-+			ctx->family,
-+			flowtable->hooknum,
-+			audit_nftcfgs[event].op);
-+	kfree(buf);
- 
- 	if (ctx->report &&
- 	    !nfnetlink_has_listeners(ctx->net, NFNLGRP_NFTABLES))
-@@ -6807,6 +6893,9 @@ static void nf_tables_gen_notify(struct net *net, struct sk_buff *skb,
- 	struct sk_buff *skb2;
- 	int err;
- 
-+	audit_log_nfcfg("?:0;?:0", 0, net->nft.base_seq,
-+			audit_nftcfgs[event].op);
-+
- 	if (nlmsg_report(nlh) &&
- 	    !nfnetlink_has_listeners(net, NFNLGRP_NFTABLES))
- 		return;
--- 
-1.8.3.1
+Now=C2=A0I=C2=A0want=C2=A0you=C2=A0to=C2=A0stand=C2=A0as=C2=A0my=C2=A0next=
+=C2=A0of=C2=A0kin=C2=A0to=C2=A0claim=C2=A0the=C2=A0funds=C2=A0for=C2=A0char=
+ity=C2=A0purposes.=C2=A0Because=C2=A0of=C2=A0this=C2=A0money=C2=A0remains=
+=C2=A0unclaimed=C2=A0after=C2=A0my=C2=A0death,=C2=A0the=C2=A0bank=C2=A0exec=
+utives=C2=A0or=C2=A0the=C2=A0government=C2=A0will=C2=A0take=C2=A0the=C2=A0m=
+oney=C2=A0as=C2=A0unclaimed=C2=A0fund=C2=A0and=C2=A0maybe=C2=A0use=C2=A0it=
+=C2=A0for=C2=A0selfishness=C2=A0and=C2=A0worthless=C2=A0ventures,=C2=A0I=C2=
+=A0need=C2=A0a=C2=A0very=C2=A0honest=C2=A0person=C2=A0who=C2=A0can=C2=A0cla=
+im=C2=A0this=C2=A0money=C2=A0and=C2=A0use=C2=A0it=C2=A0for=C2=A0Charity=C2=
+=A0works,=C2=A0for=C2=A0orphanages,=C2=A0widows=C2=A0and=C2=A0also=C2=A0bui=
+ld=C2=A0schools=C2=A0and=C2=A0churches=C2=A0for=C2=A0less=C2=A0privilege=C2=
+=A0that=C2=A0will=C2=A0be=C2=A0named=C2=A0after=C2=A0my=C2=A0late=C2=A0husb=
+and=C2=A0and=C2=A0my=C2=A0name.
 
+I=C2=A0need=C2=A0your=C2=A0urgent=C2=A0answer=C2=A0to=C2=A0know=C2=A0if=C2=
+=A0you=C2=A0will=C2=A0be=C2=A0able=C2=A0to=C2=A0execute=C2=A0this=C2=A0proj=
+ect,=C2=A0and=C2=A0I=C2=A0will=C2=A0give=C2=A0you=C2=A0more=C2=A0informatio=
+n=C2=A0on=C2=A0how=C2=A0the=C2=A0fund=C2=A0will=C2=A0be=C2=A0transferred=C2=
+=A0to=C2=A0your=C2=A0bank=C2=A0account=C2=A0or=C2=A0online=C2=A0banking.
+
+Thanks
+Mrs.=C2=A0Mina=C2=A0A.=C2=A0Brunel
