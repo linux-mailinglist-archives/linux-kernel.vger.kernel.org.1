@@ -2,291 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E41221E8961
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 23:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A671E8968
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 23:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728274AbgE2VBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 17:01:32 -0400
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:31982 "EHLO
-        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727106AbgE2VBb (ORCPT
+        id S1728330AbgE2VC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 17:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728298AbgE2VCY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 17:01:31 -0400
-Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
- EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Fri, 29 May 2020 14:01:22 -0700
-Received: from sc9-mailhost2.vmware.com (unknown [10.200.192.41])
-        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 6430BB2A01;
-        Fri, 29 May 2020 17:01:26 -0400 (EDT)
-From:   Matt Helsley <mhelsley@vmware.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Julien Thierry <jthierry@redhat.com>,
-        Matt Helsley <mhelsley@vmware.com>
-Subject: [PATCH 2/2] objtool: Add support for relocations without addends
-Date:   Fri, 29 May 2020 14:01:14 -0700
-Message-ID: <af8b5d5bffc64af00ad88e0b7bd216e91cbfdb36.1590785960.git.mhelsley@vmware.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1590785960.git.mhelsley@vmware.com>
-References: <cover.1590785960.git.mhelsley@vmware.com>
+        Fri, 29 May 2020 17:02:24 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526BCC03E969
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 14:02:24 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id cx22so2028224pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 14:02:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qIcELL/cWodxAT+xrcJD6L0svSyXvOgsSBmnAU1Opv8=;
+        b=XqxlDAevdvypUT9MRPBfOGKx8Zz8OjK8Z8UtA60K04UledJFknaky0CyWVGEqakY0Z
+         +Ci6+ANCWWCV22dn5+60hex5/tAGiRKgSjAaBeKebTfHQ7HRYMbMofJvZ9SeE9Ot2Qsa
+         TXHbsf+mwXz7b4QiYXXV5k6TePQ7R/Od75GLNG12Lw0wyu59jKcXSYv5Wr/LJ83qHcmL
+         OzISjg91B0X3e50wmJ5znNv+RrpAQuVoafAwFaW4rAB7FCjT7+pIKb2eBBnesXQKA6eG
+         P5j6BKbCUBL1Hg5zmMuOCXmaqfau/gLRYONFYnwC/PGEvhm6gOA9t0ZYzqE7svSyATCy
+         yLLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qIcELL/cWodxAT+xrcJD6L0svSyXvOgsSBmnAU1Opv8=;
+        b=A0KRdiu5e9GbvGqRl45fBNNFQI215svjLM4RAszknIUIQt2Di0084jJt6xpi7xRtV+
+         BbaGZEVMU4ABLXsIhnYLEgUXVf+X5dmof4FDm/+s9iDxSLDMQSDpmPYlLSOr13ALWX+D
+         iiRVOpJr7F7F2KEqr47yyDVvpPAKKatdcXTAM4R/E2glaMZ+b6XBwrypmziH/iuu6Ra9
+         YfB5X4szM01aZ/Z9Su5mQr2iqhBjiHGa4QP0wHEEp8WEq/3QZSabi/qzS86aed7ZhEvx
+         rUvo8IOQFBFiCk3/LviPGRSEMBy1NtaENkvAYlxcBpUJjpSKRXCSE4atJu4gt7JuqQ0g
+         xhYw==
+X-Gm-Message-State: AOAM533DLGe9HQbXLX01WEDX3kcffe2GMEtFd++hTmVE0Ekxy67TovmU
+        t4oN61NMoZQDXAHeLKKmfYzJaQ==
+X-Google-Smtp-Source: ABdhPJxQgJK3CjFBg/U/IEPDJ5zZBjb1yrnDxxPZhXa47bGPD3W0Z7Npx0t1d2Vvl/F4Rr6jQCQn3g==
+X-Received: by 2002:a17:90a:a613:: with SMTP id c19mr11145385pjq.155.1590786143680;
+        Fri, 29 May 2020 14:02:23 -0700 (PDT)
+Received: from yoga (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id h3sm310054pjk.10.2020.05.29.14.02.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2020 14:02:23 -0700 (PDT)
+Date:   Fri, 29 May 2020 14:02:20 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cpuidle/firmware: qcom: fix smcc dependencies
+Message-ID: <20200529210220.GO11847@yoga>
+References: <20200529200531.31738-1-arnd@arndb.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-Received-SPF: None (EX13-EDG-OU-001.vmware.com: mhelsley@vmware.com does not
- designate permitted sender hosts)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200529200531.31738-1-arnd@arndb.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently objtool only collects information about relocations with
-addends. In recordmcount, which we are about to merge into objtool,
-some supported architectures do not use rela relocations.
+On Fri 29 May 13:04 PDT 2020, Arnd Bergmann wrote:
 
-Signed-off-by: Matt Helsley <mhelsley@vmware.com>
----
- tools/objtool/elf.c     | 146 +++++++++++++++++++++++++++++++++++-----
- tools/objtool/elf.h     |   7 +-
- tools/objtool/orc_gen.c |   2 +-
- 3 files changed, 135 insertions(+), 20 deletions(-)
+> Selecting QCOM_SCM for compile-tests is broken when the smcc firmware
+> is not provided:
+> 
+> drivers/firmware/qcom_scm-smc.o: in function `scm_smc_call':
+> qcom_scm-smc.c:(.text+0x110): undefined reference to `__arm_smccc_smc'
+> drivers/firmware/qcom_scm-legacy.o: in function `scm_legacy_call':
+> qcom_scm-smc.c:(.text+0x1bc): undefined reference to `__arm_smccc_smc'
+> 
+> Add a Kconfig dependency for the QCOM_SCM to make it easier to catch
+> this, and fix the dependency for the newly added ARM_QCOM_SPM_CPUIDLE
+> symbol that triggered it this time.
+> 
+> Fixes: a871be6b8eee ("cpuidle: Convert Qualcomm SPM driver to a generic CPUidle driver")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> As the bug is currently only present in the cpuidle tree, can we
+> merge it through that?
 
-diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-index c21e8417637b..5034918494b6 100644
---- a/tools/objtool/elf.c
-+++ b/tools/objtool/elf.c
-@@ -490,6 +490,32 @@ void elf_add_reloc(struct elf *elf, struct reloc *reloc)
- 	elf_hash_add(elf->reloc_hash, &reloc->hash, reloc_hash(reloc));
- }
- 
-+static int read_rel_reloc(struct section *sec, int i, struct reloc *reloc, unsigned int *symndx)
-+{
-+	if (!gelf_getrel(sec->data, i, &reloc->rel)) {
-+		WARN_ELF("gelf_getrel");
-+		return -1;
-+	}
-+	reloc->type = GELF_R_TYPE(reloc->rel.r_info);
-+	reloc->addend = 0;
-+	reloc->offset = reloc->rel.r_offset;
-+	*symndx = GELF_R_SYM(reloc->rel.r_info);
-+	return 0;
-+}
-+
-+static int read_rela_reloc(struct section *sec, int i, struct reloc *reloc, unsigned int *symndx)
-+{
-+	if (!gelf_getrela(sec->data, i, &reloc->rela)) {
-+		WARN_ELF("gelf_getrela");
-+		return -1;
-+	}
-+	reloc->type = GELF_R_TYPE(reloc->rela.r_info);
-+	reloc->addend = reloc->rela.r_addend;
-+	reloc->offset = reloc->rela.r_offset;
-+	*symndx = GELF_R_SYM(reloc->rela.r_info);
-+	return 0;
-+}
-+
- static int read_relocs(struct elf *elf)
- {
- 	struct section *sec;
-@@ -499,7 +525,8 @@ static int read_relocs(struct elf *elf)
- 	unsigned long nr_reloc, max_reloc = 0, tot_reloc = 0;
- 
- 	list_for_each_entry(sec, &elf->sections, list) {
--		if (sec->sh.sh_type != SHT_RELA)
-+		if ((sec->sh.sh_type != SHT_RELA) &&
-+		    (sec->sh.sh_type != SHT_REL))
- 			continue;
- 
- 		sec->base = find_section_by_index(elf, sec->sh.sh_info);
-@@ -519,16 +546,17 @@ static int read_relocs(struct elf *elf)
- 				return -1;
- 			}
- 			memset(reloc, 0, sizeof(*reloc));
--
--			if (!gelf_getrela(sec->data, i, &reloc->rela)) {
--				WARN_ELF("gelf_getrela");
--				return -1;
-+			switch(sec->sh.sh_type) {
-+			case SHT_REL:
-+				if (read_rel_reloc(sec, i, reloc, &symndx))
-+					return -1;
-+				break;
-+			case SHT_RELA:
-+				if (read_rela_reloc(sec, i, reloc, &symndx))
-+					return -1;
-+				break;
-+			default: return -1;
- 			}
--
--			reloc->type = GELF_R_TYPE(reloc->rela.r_info);
--			reloc->addend = reloc->rela.r_addend;
--			reloc->offset = reloc->rela.r_offset;
--			symndx = GELF_R_SYM(reloc->rela.r_info);
- 			reloc->sym = find_symbol_by_index(elf, symndx);
- 			reloc->sec = sec;
- 			if (!reloc->sym) {
-@@ -716,7 +744,38 @@ struct section *elf_create_section(struct elf *elf, const char *name,
- 	return sec;
- }
- 
--struct section *elf_create_reloc_section(struct elf *elf, struct section *base)
-+static struct section *elf_create_rel_reloc_section(struct elf *elf, struct section *base)
-+{
-+	char *relocname;
-+	struct section *sec;
-+
-+	relocname = malloc(strlen(base->name) + strlen(".rel") + 1);
-+	if (!relocname) {
-+		perror("malloc");
-+		return NULL;
-+	}
-+	strcpy(relocname, ".rel");
-+	strcat(relocname, base->name);
-+
-+	sec = elf_create_section(elf, relocname, sizeof(GElf_Rel), 0);
-+	free(relocname);
-+	if (!sec)
-+		return NULL;
-+
-+	base->reloc = sec;
-+	sec->base = base;
-+
-+	sec->sh.sh_type = SHT_REL;
-+	sec->sh.sh_addralign = 8;
-+	sec->sh.sh_link = find_section_by_name(elf, ".symtab")->idx;
-+	sec->sh.sh_info = base->idx;
-+	sec->sh.sh_flags = SHF_INFO_LINK;
-+
-+	return sec;
-+}
-+
-+
-+static struct section *elf_create_rela_reloc_section(struct elf *elf, struct section *base)
- {
- 	char *relocname;
- 	struct section *sec;
-@@ -746,16 +805,53 @@ struct section *elf_create_reloc_section(struct elf *elf, struct section *base)
- 	return sec;
- }
- 
--int elf_rebuild_reloc_section(struct section *sec)
-+struct section *elf_create_reloc_section(struct elf *elf,
-+					 struct section *base,
-+					 int reltype)
-+{
-+	switch(reltype) {
-+	case SHT_REL:  return elf_create_rel_reloc_section(elf, base);
-+	case SHT_RELA: return elf_create_rela_reloc_section(elf, base);
-+	default:       return NULL;
-+	}
-+}
-+
-+static int elf_rebuild_rel_reloc_section(struct section *sec, int nr)
- {
- 	struct reloc *reloc;
--	int nr, idx = 0, size;
--	GElf_Rela *relocs;
-+	int idx = 0, size;
-+	GElf_Rel *relocs;
- 
--	nr = 0;
--	list_for_each_entry(reloc, &sec->reloc_list, list)
--		nr++;
-+	/* Allocate a buffer for relocations */
-+	size = nr * sizeof(*relocs);
-+	relocs = malloc(size);
-+	if (!relocs) {
-+		perror("malloc");
-+		return -1;
-+	}
-+
-+	sec->data->d_buf = relocs;
-+	sec->data->d_size = size;
- 
-+	sec->sh.sh_size = size;
-+
-+	idx = 0;
-+	list_for_each_entry(reloc, &sec->reloc_list, list) {
-+		relocs[idx].r_offset = reloc->offset;
-+		relocs[idx].r_info = GELF_R_INFO(reloc->sym->idx, reloc->type);
-+		idx++;
-+	}
-+
-+	return 0;
-+}
-+
-+static int elf_rebuild_rela_reloc_section(struct section *sec, int nr)
-+{
-+	struct reloc *reloc;
-+	int idx = 0, size;
-+	GElf_Rela *relocs;
-+
-+	/* Allocate a buffer for relocations with addends */
- 	size = nr * sizeof(*relocs);
- 	relocs = malloc(size);
- 	if (!relocs) {
-@@ -779,6 +875,22 @@ int elf_rebuild_reloc_section(struct section *sec)
- 	return 0;
- }
- 
-+int elf_rebuild_reloc_section(struct section *sec)
-+{
-+	struct reloc *reloc;
-+	int nr;
-+
-+	nr = 0;
-+	list_for_each_entry(reloc, &sec->reloc_list, list)
-+		nr++;
-+
-+	switch(sec->sh.sh_type) {
-+	case SHT_REL:  return elf_rebuild_rel_reloc_section(sec, nr);
-+	case SHT_RELA: return elf_rebuild_rela_reloc_section(sec, nr);
-+	default:       return -1;
-+	}
-+}
-+
- int elf_write(const struct elf *elf)
- {
- 	struct section *sec;
-diff --git a/tools/objtool/elf.h b/tools/objtool/elf.h
-index 6ad759fd778e..78a2db23b8b6 100644
---- a/tools/objtool/elf.h
-+++ b/tools/objtool/elf.h
-@@ -61,7 +61,10 @@ struct symbol {
- struct reloc {
- 	struct list_head list;
- 	struct hlist_node hash;
--	GElf_Rela rela;
-+	union {
-+		GElf_Rela rela;
-+		GElf_Rel  rel;
-+	};
- 	struct section *sec;
- 	struct symbol *sym;
- 	unsigned int type;
-@@ -116,7 +119,7 @@ static inline u32 reloc_hash(struct reloc *reloc)
- 
- struct elf *elf_open_read(const char *name, int flags);
- struct section *elf_create_section(struct elf *elf, const char *name, size_t entsize, int nr);
--struct section *elf_create_reloc_section(struct elf *elf, struct section *base);
-+struct section *elf_create_reloc_section(struct elf *elf, struct section *base, int reltype);
- void elf_add_reloc(struct elf *elf, struct reloc *reloc);
- int elf_write(const struct elf *elf);
- void elf_close(struct elf *elf);
-diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
-index b538a0408cde..47875e83598b 100644
---- a/tools/objtool/orc_gen.c
-+++ b/tools/objtool/orc_gen.c
-@@ -181,7 +181,7 @@ int create_orc_sections(struct objtool_file *file)
- 	if (!sec)
- 		return -1;
- 
--	ip_relocsec = elf_create_reloc_section(file->elf, sec);
-+	ip_relocsec = elf_create_reloc_section(file->elf, sec, SHT_RELA);
- 	if (!ip_relocsec)
- 		return -1;
- 
--- 
-2.20.1
+Sounds good to me.
 
+Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+> ---
+>  drivers/cpuidle/Kconfig.arm | 3 ++-
+>  drivers/firmware/Kconfig    | 1 +
+>  2 files changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/cpuidle/Kconfig.arm b/drivers/cpuidle/Kconfig.arm
+> index 51a7e89085c0..6cdcf5698c4c 100644
+> --- a/drivers/cpuidle/Kconfig.arm
+> +++ b/drivers/cpuidle/Kconfig.arm
+> @@ -97,7 +97,8 @@ config ARM_TEGRA_CPUIDLE
+>  
+>  config ARM_QCOM_SPM_CPUIDLE
+>  	bool "CPU Idle Driver for Qualcomm Subsystem Power Manager (SPM)"
+> -	depends on (ARCH_QCOM || COMPILE_TEST) && !ARM64
+> +	depends on ARCH_QCOM || (COMPILE_TEST && HAVE_ARM_SMCCC)
+> +	depends on ARM
+>  	select ARM_CPU_SUSPEND
+>  	select CPU_IDLE_MULTIPLE_DRIVERS
+>  	select DT_IDLE_STATES
+> diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
+> index fbd785dd0513..297bed30a632 100644
+> --- a/drivers/firmware/Kconfig
+> +++ b/drivers/firmware/Kconfig
+> @@ -238,6 +238,7 @@ config INTEL_STRATIX10_RSU
+>  config QCOM_SCM
+>  	bool
+>  	depends on ARM || ARM64
+> +	depends on HAVE_ARM_SMCCC
+
+While this is correct I wonder if we're not opening up for drivers (such
+as QCOM_RMTFS_MEM) to be selected without HAVE_ARM_SMCCC and cause an
+unmet dependency issue.
+
+Regards,
+Bjorn
+
+>  	select RESET_CONTROLLER
+>  
+>  config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
+> -- 
+> 2.26.2
+> 
