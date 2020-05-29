@@ -2,97 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E291E7CA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 14:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ABDA1E7CB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 14:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726882AbgE2MJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 08:09:16 -0400
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:39077 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgE2MJP (ORCPT
+        id S1726923AbgE2MKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 08:10:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbgE2MKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 08:09:15 -0400
-Received: by mail-pj1-f68.google.com with SMTP id h95so374791pje.4
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 05:09:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6vvgKHZv01UUvGrvhAsOqf6+UpVrlcy+OwWplQqQmoA=;
-        b=AEXCCEFXfWm5zZ114b0KWuB6nfRF8NMepHdNcqkFDCVJtmmHI1BeyolNi4xvRZT4c9
-         6MaHrXdsGgJAQqbbYvybIKPu8jZ2aDqjoEQAOrnMpvD0sy7QSvbJoJt1Bx51vWwoeU/o
-         t7s2VJabJcG21+DMEluiYflda2X4xUA3iTo4xO0drxQlg7K0CEOh601kBFfpbggZbqkA
-         124w+0DTNnwsW5icBVhp4I5N6H94iwqNT7Fj8Jl3mXew7b0FXJXE7BRCJIwkZCG1P/Oe
-         VrgKmBQiO0ixSovohDli8cniqmhMIyY3x9b16mWfOBAXHrs0J9PyWG+82sEQyBH1HXbD
-         jUZA==
-X-Gm-Message-State: AOAM533Cxd3p00nIgp1fV6beFZ1R3CFwqELbsjge3w0L8Bz7yfy1j8Jh
-        6MWShLwvuBeWYkfXQkGwDow=
-X-Google-Smtp-Source: ABdhPJwH0ItHfFV94FqIi+i7pGGCJoHNOMavuCMZwaTSNJ24JRmSNe+lTFt06Kawbit8Fif5KqcKXw==
-X-Received: by 2002:a17:90a:ce11:: with SMTP id f17mr2283340pju.123.1590754154418;
-        Fri, 29 May 2020 05:09:14 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id l187sm7199102pfl.218.2020.05.29.05.09.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 05:09:13 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id AE8314046C; Fri, 29 May 2020 12:09:12 +0000 (UTC)
-Date:   Fri, 29 May 2020 12:09:12 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     keescook@chromium.org, yzaikin@google.com, nixiaoming@huawei.com,
-        ebiederm@xmission.com, axboe@kernel.dk, clemens@ladisch.de,
-        arnd@arndb.de, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        airlied@linux.ie, daniel@ffwll.ch, benh@kernel.crashing.org,
-        rdna@fb.com, viro@zeniv.linux.org.uk, mark@fasheh.com,
-        jlbec@evilplan.org, joseph.qi@linux.alibaba.com, vbabka@suse.cz,
-        sfr@canb.auug.org.au, jack@suse.cz, amir73il@gmail.com,
-        rafael@kernel.org, tytso@mit.edu, julia.lawall@lip6.fr,
-        akpm@linux-foundation.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linuxppc-dev@lists.ozlabs.org,
-        ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/13] firmware_loader: simplify sysctl declaration with
- register_sysctl_subdir()
-Message-ID: <20200529120912.GD11244@42.do-not-panic.com>
-References: <20200529074108.16928-1-mcgrof@kernel.org>
- <20200529074108.16928-10-mcgrof@kernel.org>
- <20200529102613.GA1345939@kroah.com>
+        Fri, 29 May 2020 08:10:09 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E753C03E969;
+        Fri, 29 May 2020 05:10:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=VtzD/DOrIbOSbWqnH7ekyZS7ktdyydGbSi7u5pKRl0c=; b=gsUvQZcTaDoWTT2KCICsr9QqEp
+        p5U8dPpzp/FmP1kAVFcsJPNlPUDl3k8sKIANK0cXFoK0q/Q9295kCxvgQbL3rPujMpQhJHzyXfDC4
+        A47pcS7In+Nf9iR/g1sxo8FBbkIf7uLelLjFCd1K/3Ece2T3FmShRHEGlt9X4oyY4CrKBOSAKiYJZ
+        9DNuKB1siT7+BI5SjBDOuCsBeFmGJDI6bPsJn00PQ6r/j2JpnOZtuxRlC1x0KN36mRmi1KdaK7kS6
+        kUnTztljy/5i2bydZL1r9rhQTVSsV2A7uxZl4eGjKWt13JGRdsryCXudkIlU8jZIio5SKmGGUhu/T
+        dZdYGJow==;
+Received: from p4fdb1ad2.dip0.t-ipconnect.de ([79.219.26.210] helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jedpf-0006KS-K2; Fri, 29 May 2020 12:09:52 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Cc:     David Laight <David.Laight@ACULAB.COM>, linux-sctp@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cluster-devel@redhat.com,
+        netdev@vger.kernel.org
+Subject: remove kernel_setsockopt v4
+Date:   Fri, 29 May 2020 14:09:39 +0200
+Message-Id: <20200529120943.101454-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200529102613.GA1345939@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 12:26:13PM +0200, Greg KH wrote:
-> On Fri, May 29, 2020 at 07:41:04AM +0000, Luis Chamberlain wrote:
-> > From: Xiaoming Ni <nixiaoming@huawei.com>
-> > 
-> > Move the firmware config sysctl table to fallback_table.c and use the
-> > new register_sysctl_subdir() helper. This removes the clutter from
-> > kernel/sysctl.c.
-> > 
-> > Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
-> > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> > ---
-> >  drivers/base/firmware_loader/fallback.c       |  4 ++++
-> >  drivers/base/firmware_loader/fallback.h       | 11 ++++++++++
-> >  drivers/base/firmware_loader/fallback_table.c | 22 +++++++++++++++++--
-> >  include/linux/sysctl.h                        |  1 -
-> >  kernel/sysctl.c                               |  7 ------
-> >  5 files changed, 35 insertions(+), 10 deletions(-)
-> 
-> So it now takes more lines than the old stuff?  :(
+Hi Dave and Marcelo,
 
-Pretty much agreed with the other changes, thanks for the review!
+now that only the dlm calls to sctp are left for kernel_setsockopt,
+while we haven't really made much progress with the sctp setsockopt
+refactoring, how about this small series that splits out a
+sctp_setsockopt_bindx_kernel that takes a kernel space address array
+to share more code as requested by Marcelo.  This should fit in with
+whatever variant of the refator of sctp setsockopt we go with, but
+just solved the immediate problem for now.
 
-But this diff-stat change, indeed, it is unfortunate that we end up
-with more code here than before. We'll try to reduce it instead
-somehow, however in some cases during this spring-cleaning, since
-the goal is to move code from one file to another, it *may* require
-more code. So it won't always be negative. But we'll try!
+Changes since v3:
+ - dropped all the merged patches, just sctp setsockopt left now
+ - factor out a new sctp_setsockopt_bindx_kernel helper instead of
+   duplicating a small amount of logic
 
-  Luis
+Changes since v2:
+ - drop the separately merged kernel_getopt_removal
+ - drop the sctp patches, as there is conflicting cleanup going on
+ - add an additional ACK for the rxrpc changes
+
+Changes since v1:
+ - use ->getname for sctp sockets in dlm
+ - add a new ->bind_add struct proto method for dlm/sctp
+ - switch the ipv6 and remaining sctp helpers to inline function so that
+   the ipv6 and sctp modules are not pulled in by any module that could
+   potentially use ipv6 or sctp connections
+ - remove arguments to various sock_* helpers that are always used with
+   the same constant arguments
