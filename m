@@ -2,78 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C48A91E8490
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1931E84A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727808AbgE2RSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 13:18:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37926 "EHLO mail.kernel.org"
+        id S1727915AbgE2RTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 13:19:48 -0400
+Received: from mout.gmx.net ([212.227.17.21]:37435 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725821AbgE2RSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 13:18:51 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EFB852074D;
-        Fri, 29 May 2020 17:18:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590772730;
-        bh=a5S1gx+JJjYPO8/mi+Gcgzo3QS58fT7hT71d61WRYqY=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=fr3b99EKpWX6dNiBPw7VavMlT7GriqwmdJIPGhfIMPclSFt3svBQ+4tI6fWQ90ct2
-         ux78Dcs4U0fu896v258Aup5J1T495R63lJH5K7WGmMOnz/c1jBJ+UruRGE6+O91nAG
-         uKEGDpzO80C/Q23LkPLZ3VSJqY94VGd97iPWWdME=
-Date:   Fri, 29 May 2020 18:18:47 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>
-In-Reply-To: <20200528190605.24850-1-f.fainelli@gmail.com>
-References: <20200528190605.24850-1-f.fainelli@gmail.com>
-Subject: Re: [PATCH] spi: bcm2835: Implement shutdown callback
-Message-Id: <159077271266.17043.15897964625717364519.b4-ty@kernel.org>
+        id S1727900AbgE2RTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 13:19:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1590772765;
+        bh=neh9UrSP9bO+wKS/cV7Mb81hOYu1y9//cRNSX6IME/o=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=T1T9LR/w3kBuqWO8Su09Op1EFM06tPZn4twLi9YwSV4LstFuZw8hrEoa5l5R8Ij+u
+         ZhaED2tY7CVwC6hqKCXXxiMNO5bZyR/xtHF6Uuq1dsQs6PfCfmY/avjTdNxiXYzpcP
+         EFtXIpEhp+7VbeTeVLwOTO8oifcEU8hmbUULqkx4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.229.196]) by mail.gmx.com
+ (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1Msq24-1iqCVY3XtA-00t8ge; Fri, 29 May 2020 19:19:25 +0200
+From:   Oscar Carter <oscar.carter@gmx.com>
+To:     Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Cc:     Oscar Carter <oscar.carter@gmx.com>,
+        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: [PATCH v3 2/2] drivers/irqchip: Use new macro ACPI_DECLARE_SUBTABLE_PROBE_ENTRY
+Date:   Fri, 29 May 2020 19:18:47 +0200
+Message-Id: <20200529171847.10267-3-oscar.carter@gmx.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200529171847.10267-1-oscar.carter@gmx.com>
+References: <20200529171847.10267-1-oscar.carter@gmx.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Xbh6bc2AmKF5eUpe1JkLy04Gyi3Hb9L75YPMV4IOuT+BURFd86X
+ QvCGG2899ZFmQmHxw4xv0sgrlbLGNr6vXbyyEUTV/j7WUl1KXnS/cSM5ZOFaWzMkqwMOUlh
+ lAJfFVQQErGpc1+tiKPw+AKBMTpJ+duPgHDtZcDIR2dt98493If6An2WKlqLdDcZVvsdgWm
+ i4pAUsQPQz8viQ6vtuxGA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:cK5pSdYPuYw=:cgBVRC43BeXuVFlw7NN1y5
+ UBXR7VOvd0fbpnIL6EOPaqUSD23+KtXJCFi13A1RPvw8934ONa3QUNJ7HeK/a5bELNDW7b3YV
+ KpTux8y6DvlapqfhfKnBO7UQdH1mCUag5uLd2i182hO7RMvZGeS3z2oacIuSL+RSGk9WNlv6z
+ zO65gGkxuJ6zKQ40vXqeWeExhzToVnsnUvPQrWtay+tn2biPumJz7OW9gs+hg7UnsZC5UBNt4
+ 6sLnj3EAJ3+rCMalXr4hJZEqzF7QkGNjfZPQuhEQGvoNptSDGoNK/SVDnIlNONYolOex5b2xF
+ l4OR1jWPkPgpgfCimojidEoKin2EOE4GIiWTIYemXBeDT5ge8tpjsgam6RyakcNL3vKFnimRp
+ OEeEoFVAhbQx7ag34TEdyZNAIBIMA1UbLQqAYE7UkKe88alRgBcxkIUGwFrM4VrlFFKpnf0zq
+ aMeMXpeLnwN/me1S6Ua/QQDh6a9GKaBI24WI5MBAV/NTT3Nb8A1uIEIXbhIK+6DI8Vjw7i8ZH
+ FXPpQyQVgxAbv79UcORvXb3CIqQOendix1Wv+xVum9hlR8DnSa9SNwDBgcWkgNO66s4P/xOkR
+ LHbYU5feM+QDugil6JBHIp4zng6vfNOivSdrlQYGqGBBXO0FH+6PulUw9HPSvYtbQALOjgUuj
+ SzSkhRkjkJxNsKX5V69hnISQApJtYKEsS+hVrDq1aQUL2oT2xEeBtowactJKMHGJjJyzTJ74B
+ CErkJPo9H2mmYdekKODtaN1f5AciV2dquEQ4TrZYhT6odGevQ8b+AFAYy7T9QffDiTmmxMD+7
+ d++FsMUhOU14+kbGAMHvURc2e/4+sQdmHgD30AO3P+5TxeP+0wsXY1OpbkjU0uyMy+heXlkXt
+ MQU0HWuo5plfNxf7lFqtCMHCtBr6EvywqKFZdock4Ux28MYfR3Tkmc30hxehESkh9eNpqkot+
+ +9MQOnIjBslV8o/OIIKFBqwCEYQEJV0mnvxcfqJaPTWGLI6wLp6WDMiavYTxiQ1Wn5MI5cH+a
+ zJEV44S/t+juj945Snbv+AyrmHKEqXYFjXN9vOjkVfdeT0MUYHUAXcn1WZqgDj+lETTD2cNAv
+ 87YicXY4DNA7+t58loMex8QgKKsG5fwW32QziQXxbLGxAsg5JSB9xgtQwlT5O57mZF8YIRkFM
+ 3hjnCIOTRWMXbjZvmAls+EGFwqVP0BBo3O6nDyTf1bbPduV0ReV+HL6X+e28Bxod0ZNLwFl13
+ qMzqawkInlseylrYd
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 May 2020 12:06:05 -0700, Florian Fainelli wrote:
-> Make sure we clear the FIFOs, stop the block, disable the clock and
-> release the DMA channel.
+In an effort to enable -Wcast-function-type in the top-level Makefile to
+support Control Flow Integrity builds, there are the need to remove all
+the function callback casts.
 
-Applied to
+To do this, modify the IRQCHIP_ACPI_DECLARE macro to use the new defined
+macro ACPI_DECLARE_SUBTABLE_PROBE_ENTRY instead of the macro
+ACPI_DECLARE_PROBE_ENTRY. This is necessary to be able to initialize the
+the acpi_probe_entry struct using the probe_subtbl field instead of the
+probe_table field and avoid function cast mismatches.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+Also, modify the prototype of the functions used by the invocation of the
+IRQCHIP_ACPI_DECLARE macro to match all the parameters.
 
-Thanks!
+Co-developed-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
+=2D--
+ drivers/irqchip/irq-gic-v3.c | 2 +-
+ drivers/irqchip/irq-gic.c    | 2 +-
+ include/linux/irqchip.h      | 5 +++--
+ 3 files changed, 5 insertions(+), 4 deletions(-)
 
-[1/1] spi: bcm2835: Implement shutdown callback
-      commit: 118eb0e52eb74b899053a0f46dfe7e178788d23b
+diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+index d7006ef18a0d..3870e9d4d3a8 100644
+=2D-- a/drivers/irqchip/irq-gic-v3.c
++++ b/drivers/irqchip/irq-gic-v3.c
+@@ -2117,7 +2117,7 @@ static void __init gic_acpi_setup_kvm_info(void)
+ }
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+ static int __init
+-gic_acpi_init(struct acpi_subtable_header *header, const unsigned long en=
+d)
++gic_acpi_init(union acpi_subtable_headers *header, const unsigned long en=
+d)
+ {
+ 	struct acpi_madt_generic_distributor *dist;
+ 	struct fwnode_handle *domain_handle;
+diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
+index 30ab623343d3..fc431857ce90 100644
+=2D-- a/drivers/irqchip/irq-gic.c
++++ b/drivers/irqchip/irq-gic.c
+@@ -1593,7 +1593,7 @@ static void __init gic_acpi_setup_kvm_info(void)
+ 	gic_set_kvm_info(&gic_v2_kvm_info);
+ }
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+-static int __init gic_v2_acpi_init(struct acpi_subtable_header *header,
++static int __init gic_v2_acpi_init(union acpi_subtable_headers *header,
+ 				   const unsigned long end)
+ {
+ 	struct acpi_madt_generic_distributor *dist;
+diff --git a/include/linux/irqchip.h b/include/linux/irqchip.h
+index 950e4b2458f0..447f22880a69 100644
+=2D-- a/include/linux/irqchip.h
++++ b/include/linux/irqchip.h
+@@ -39,8 +39,9 @@
+  * @fn: initialization function
+  */
+ #define IRQCHIP_ACPI_DECLARE(name, subtable, validate, data, fn)	\
+-	ACPI_DECLARE_PROBE_ENTRY(irqchip, name, ACPI_SIG_MADT, 		\
+-				 subtable, validate, data, fn)
++	ACPI_DECLARE_SUBTABLE_PROBE_ENTRY(irqchip, name,		\
++					  ACPI_SIG_MADT, subtable,	\
++					  validate, data, fn)
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+ #ifdef CONFIG_IRQCHIP
+ void irqchip_init(void);
+=2D-
+2.20.1
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
