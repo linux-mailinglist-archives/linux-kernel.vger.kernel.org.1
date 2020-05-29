@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 202EF1E7733
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 09:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B21671E773D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 09:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726767AbgE2HlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 03:41:23 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:40128 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725906AbgE2HlS (ORCPT
+        id S1727022AbgE2Hlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 03:41:47 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:44060 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726518AbgE2HlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 03:41:18 -0400
-Received: by mail-pl1-f193.google.com with SMTP id t16so758572plo.7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 00:41:17 -0700 (PDT)
+        Fri, 29 May 2020 03:41:19 -0400
+Received: by mail-pl1-f195.google.com with SMTP id bh7so759210plb.11
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 00:41:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=iFuOAMMzx366XD73njtfa9qdyal/YI+SEog1dnntDeg=;
-        b=TIAsSYlZK0Pl5EcXWlYqbBC9/l733LCYbQd86Z9hi0ZQHKAnAp2THUrTSlmtS2IaD9
-         fHI8KpaRq4HlJ115GeLfolOx9Lv77hA5M3yMwpRnx8zB2DpUJJKfvcsWkuEyICCIPLhs
-         UZlnmOLkjHf7c2z6zSu5zpyZWNul08YS7s+5BFGSmibJPFsPY4E3XO69zeoY5H2E/Kln
-         tqXh+c59D2jotbGwSxQW/QEf8XmfnG5s1/ic2bGUqmDCDBmz0QSAo7DvFxLF1jpt49Gu
-         f6faKNVLUVPJulf+yYPknbOhCxmnHSn11Vl7z53LGcD7Of0AYhIlOztAHYiwYF9HOA46
-         MlMA==
-X-Gm-Message-State: AOAM533HDuv4anPbt15h9+WVq3xcH73zWuautjZFa9QHjAFybJbLOGt5
-        g6cicPd1f0dTyw1kmgp404g=
-X-Google-Smtp-Source: ABdhPJyWq+uNBt+z7g4lF4BNt9x39LLqlR7x3RVbHVyGUC5VKz7sfj4vqnpPnSKalsV1vnr314j4sQ==
-X-Received: by 2002:a17:902:82c9:: with SMTP id u9mr7568085plz.179.1590738077450;
-        Fri, 29 May 2020 00:41:17 -0700 (PDT)
+        bh=GvzomajvqaDlmHgD5CFBW/9i29+5hKQDe8Dyx3XaSq4=;
+        b=m6qT/y157svFvH84cfTgQ+ib2CEff3V0Rn3p8D/QM+vlXCmqdc3VQjmoR79Ngm4ceW
+         FJZ6tpYG1eTW2gAH27irsPol5xfWaoOdziCSfIaqHe7laUFGu5h1tYVJNrJT0ILCxTe8
+         WTVvuOYXZdn9RiWJCWIzPZ+E1cDH5MlkUQHIKrh2Wd2wbkBJYl/2xc6iBXDTFvCyMkkq
+         DkJAuKWjMN+y9zEDZxZrDKnILlLHaUvnDkGFGUJ5Ic86KZMSW4//NJAxPStq4TUXuFWN
+         opXECVMiMd1oAvh0RIMo+Uka6Km1d4pfTuiJr6yD0dRAwVM+LP8f2EMI9KmwG8DavxKN
+         IhCg==
+X-Gm-Message-State: AOAM531vlttg51soEmRh/YQ3DQX6mi5GVZkgic20Hx9QOapZ89CeIezq
+        NzEyTkAfRBBvPOEKeGyXWJk=
+X-Google-Smtp-Source: ABdhPJzaH+urrC8l82AOcunlppRYvCYY8eRn8tjh5bOS5g7bJ5viHl156VGCztJ4ox/+xnpOBndUZg==
+X-Received: by 2002:a17:902:7001:: with SMTP id y1mr7344091plk.114.1590738078586;
+        Fri, 29 May 2020 00:41:18 -0700 (PDT)
 Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id 70sm6443717pfx.78.2020.05.29.00.41.12
+        by smtp.gmail.com with ESMTPSA id gd1sm7404001pjb.14.2020.05.29.00.41.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 29 May 2020 00:41:16 -0700 (PDT)
 Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id B233242337; Fri, 29 May 2020 07:41:10 +0000 (UTC)
+        id BDFF742340; Fri, 29 May 2020 07:41:10 +0000 (UTC)
 From:   Luis Chamberlain <mcgrof@kernel.org>
 To:     keescook@chromium.org, yzaikin@google.com, nixiaoming@huawei.com,
         ebiederm@xmission.com, axboe@kernel.dk, clemens@ladisch.de,
@@ -50,9 +50,9 @@ Cc:     julia.lawall@lip6.fr, akpm@linux-foundation.org,
         intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linuxppc-dev@lists.ozlabs.org, ocfs2-devel@oss.oracle.com,
         linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 05/13] macintosh/mac_hid.c: use new sysctl subdir helper register_sysctl_subdir()
-Date:   Fri, 29 May 2020 07:41:00 +0000
-Message-Id: <20200529074108.16928-6-mcgrof@kernel.org>
+Subject: [PATCH 06/13] ocfs2: use new sysctl subdir helper register_sysctl_subdir()
+Date:   Fri, 29 May 2020 07:41:01 +0000
+Message-Id: <20200529074108.16928-7-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.23.0.rc1
 In-Reply-To: <20200529074108.16928-1-mcgrof@kernel.org>
 References: <20200529074108.16928-1-mcgrof@kernel.org>
@@ -66,7 +66,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 This simplifies the code considerably. The following coccinelle
 SmPL grammar rule was used to transform this code.
 
-// pycocci sysctl-subdir.cocci drivers/macintosh/mac_hid.c
+// pycocci sysctl-subdir.cocci fs/ocfs2/stackglue.c
 
 @c1@
 expression E1;
@@ -154,49 +154,54 @@ Generated-by: Coccinelle SmPL
 
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/macintosh/mac_hid.c | 25 ++-----------------------
- 1 file changed, 2 insertions(+), 23 deletions(-)
+ fs/ocfs2/stackglue.c | 27 ++++-----------------------
+ 1 file changed, 4 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/macintosh/mac_hid.c b/drivers/macintosh/mac_hid.c
-index 28b8581b44dd..736d0e151716 100644
---- a/drivers/macintosh/mac_hid.c
-+++ b/drivers/macintosh/mac_hid.c
-@@ -239,33 +239,12 @@ static struct ctl_table mac_hid_files[] = {
+diff --git a/fs/ocfs2/stackglue.c b/fs/ocfs2/stackglue.c
+index a191094694c6..addafced7f59 100644
+--- a/fs/ocfs2/stackglue.c
++++ b/fs/ocfs2/stackglue.c
+@@ -677,28 +677,8 @@ static struct ctl_table ocfs2_mod_table[] = {
+ 	},
  	{ }
  };
- 
--/* dir in /proc/sys/dev */
--static struct ctl_table mac_hid_dir[] = {
+-
+-static struct ctl_table ocfs2_kern_table[] = {
 -	{
--		.procname	= "mac_hid",
+-		.procname	= "ocfs2",
+-		.data		= NULL,
 -		.maxlen		= 0,
 -		.mode		= 0555,
--		.child		= mac_hid_files,
+-		.child		= ocfs2_mod_table
 -	},
 -	{ }
 -};
 -
--/* /proc/sys/dev itself, in case that is not there yet */
--static struct ctl_table mac_hid_root_dir[] = {
+-static struct ctl_table ocfs2_root_table[] = {
 -	{
--		.procname	= "dev",
+-		.procname	= "fs",
+-		.data		= NULL,
 -		.maxlen		= 0,
 -		.mode		= 0555,
--		.child		= mac_hid_dir,
+-		.child		= ocfs2_kern_table
 -	},
 -	{ }
 -};
--
- static struct ctl_table_header *mac_hid_sysctl_header;
++	.data		= NULL,
++	.data		= NULL,
  
- static int __init mac_hid_init(void)
+ static struct ctl_table_header *ocfs2_table_header;
+ 
+@@ -711,7 +691,8 @@ static int __init ocfs2_stack_glue_init(void)
  {
--	mac_hid_sysctl_header = register_sysctl_table(mac_hid_root_dir);
-+	mac_hid_sysctl_header = register_sysctl_subdir("dev", "mac_hid",
-+						       mac_hid_files);
- 	if (!mac_hid_sysctl_header)
- 		return -ENOMEM;
+ 	strcpy(cluster_stack_name, OCFS2_STACK_PLUGIN_O2CB);
  
+-	ocfs2_table_header = register_sysctl_table(ocfs2_root_table);
++	ocfs2_table_header = register_sysctl_subdir("fs", "ocfs2",
++						    ocfs2_mod_table);
+ 	if (!ocfs2_table_header) {
+ 		printk(KERN_ERR
+ 		       "ocfs2 stack glue: unable to register sysctl\n");
 -- 
 2.26.2
 
