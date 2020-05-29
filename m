@@ -2,106 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD8D1E7737
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 09:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97BEE1E773F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 09:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726938AbgE2Hlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 03:41:31 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:33082 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726579AbgE2Hl2 (ORCPT
+        id S1727030AbgE2Hlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 03:41:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725855AbgE2Hly (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 03:41:28 -0400
-Received: by mail-pl1-f194.google.com with SMTP id t7so776943plr.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 00:41:27 -0700 (PDT)
+        Fri, 29 May 2020 03:41:54 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6CD0C08C5C6
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 00:41:53 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id u5so1022653pgn.5
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 00:41:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=D/FCxX5pB5cDe1przyEmHXhlMth++c0s0oXQmAAAst0=;
+        b=SZ2XDhXdgXF9gXa/YYaV8xv05/2ugn/MAJInuUPW3bNWxSpgl99DiDHX3uqJ9/IEgG
+         rlSAfgiizw5nE2fdqm8w2juC5/lcr/siNIujuHB3G+/e/78SuC+6SevpOWq32R/aIrb4
+         Fwa+S3DY6L7F82nZS+3T7szgNlQ5DjcQOsP2Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1PG5LVb0n4wOO6VZREoyBILeBAzco+IYNIeDXsX/FzY=;
-        b=R2e9F5rxEHDkQcp9lRtm6/0ZWEpmBXeCLjTSYq2fyAeuTxqS5XjGgo3VGGtxNcQLHZ
-         Q2AczsBC3RYYfVZaEcrISI5KyDopiTbTjQ3YQbIw2hGclJhdLTvAu/+ZEZbtdYrtG336
-         vH9EKW/Kb0M/4Ypa/13XU7J25ewYRZuXzZnM/zG8b7owM/8+3ULJH98YbXqZCrhM0kKu
-         lAbBFeFJNJ6kCKH8KjEC43K4/XLPSfKGF01F96hk8+AJRG/k3V9izs5j5akzQUKY9Nm+
-         9zSURA+1c0M7IO3KAz4uN3l7QBo1aSavAndbQO8Ihindi1rXbskC3VjpmtzGSzoE3sY8
-         O3/g==
-X-Gm-Message-State: AOAM533M1JmqsAM/Oiixi4dnUTM/7ut1AR6q1lWDLti2pa+oPLppLHmp
-        UktjbJ99a3JsROeAo063iGM=
-X-Google-Smtp-Source: ABdhPJxM98lxrupu0HzIVHkaILQ2GJoC5HA3ATmBk5nOeI56XgjTlxA112dIBe6io3Hl67zR6z+BjQ==
-X-Received: by 2002:a17:90a:db0c:: with SMTP id g12mr7872171pjv.5.1590738086768;
-        Fri, 29 May 2020 00:41:26 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id q21sm919935pfn.209.2020.05.29.00.41.17
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=D/FCxX5pB5cDe1przyEmHXhlMth++c0s0oXQmAAAst0=;
+        b=f15ToMtcror+O8H1+M7FPSSwvGRG6+jrc2S1G47OsXJ1z4ahkWQJIYrI4skFIwTEfh
+         uoJw1W2B+B5LiR7PkuB/K++ULljYxNZmBohp46fHIC5bahDLo+cfcsVfJqTPEtYOoPvH
+         XFAHyPUiEnY6B5p5NGqeLnmDI0yxB5XQ0B3YQ4TPKN+4eh40Nc+HQjjlbaj2hmJL0wpW
+         +dmjZF79QcZ9s8BqswsejujVJBq40hdAlnp7o+PVQH+c4fCJxoUAOjH/3lBSogavMnbE
+         6IPm5SGgRvXn+Vmj1bC3wsrF5HbplPEj45qV8pyS/gRRv7aL1FTlgP0x1GT2zCZ6aKYa
+         1Skg==
+X-Gm-Message-State: AOAM5322RVULpEtKm4epdVq/UkvP8p5dY+Ab08Ig12hqcidPxsgBB4/g
+        0BVhlf4yIWQvlNGy9QqDF2RrIw==
+X-Google-Smtp-Source: ABdhPJyXTrb2Wfs+ZscuyVmfsjlwaoPtnFGd2l48sxq08vNJtLnBj5nzpKzKmnmEoGxTnKsO27ywhg==
+X-Received: by 2002:a63:4563:: with SMTP id u35mr7129481pgk.163.1590738113369;
+        Fri, 29 May 2020 00:41:53 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id t201sm3705620pfc.104.2020.05.29.00.41.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 00:41:25 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 13BC8423BF; Fri, 29 May 2020 07:41:11 +0000 (UTC)
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     keescook@chromium.org, yzaikin@google.com, nixiaoming@huawei.com,
-        ebiederm@xmission.com, axboe@kernel.dk, clemens@ladisch.de,
-        arnd@arndb.de, gregkh@linuxfoundation.org,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
-        benh@kernel.crashing.org, rdna@fb.com, viro@zeniv.linux.org.uk,
-        mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
-        vbabka@suse.cz, sfr@canb.auug.org.au, jack@suse.cz,
-        amir73il@gmail.com, rafael@kernel.org, tytso@mit.edu
-Cc:     julia.lawall@lip6.fr, akpm@linux-foundation.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linuxppc-dev@lists.ozlabs.org, ocfs2-devel@oss.oracle.com,
-        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 13/13] fs: move binfmt_misc sysctl to its own file
-Date:   Fri, 29 May 2020 07:41:08 +0000
-Message-Id: <20200529074108.16928-14-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.23.0.rc1
-In-Reply-To: <20200529074108.16928-1-mcgrof@kernel.org>
-References: <20200529074108.16928-1-mcgrof@kernel.org>
+        Fri, 29 May 2020 00:41:52 -0700 (PDT)
+Date:   Fri, 29 May 2020 00:41:51 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     christian.brauner@ubuntu.com,
+        containers@lists.linux-foundation.org, cyphar@cyphar.com,
+        jannh@google.com, jeffv@google.com, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org, palmer@google.com, rsesek@google.com,
+        tycho@tycho.ws, Matt Denton <mpdenton@google.com>
+Subject: Re: [PATCH v2 3/3] selftests/seccomp: Test SECCOMP_IOCTL_NOTIF_ADDFD
+Message-ID: <202005290036.3FEFFDA@keescook>
+References: <20200528110858.3265-1-sargun@sargun.me>
+ <20200528110858.3265-4-sargun@sargun.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200528110858.3265-4-sargun@sargun.me>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This moves the binfmt_misc sysctl to its own file to help remove
-clutter from kernel/sysctl.c.
+On Thu, May 28, 2020 at 04:08:58AM -0700, Sargun Dhillon wrote:
+> +	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_SEND, &resp), 0);
+> +
+> +	nextid = req.id + 1;
+> +
+> +	/* Wait for getppid to be called for the second time */
+> +	sleep(1);
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- fs/binfmt_misc.c | 1 +
- kernel/sysctl.c  | 7 -------
- 2 files changed, 1 insertion(+), 7 deletions(-)
+I always rebel at finding "sleep" in tests. ;) Is this needed? IIUC,
+userspace will immediately see EINPROGRESS after the NOTIF_SEND
+finishes, yes?
 
-diff --git a/fs/binfmt_misc.c b/fs/binfmt_misc.c
-index f69a043f562b..656b3f5f3bbf 100644
---- a/fs/binfmt_misc.c
-+++ b/fs/binfmt_misc.c
-@@ -821,6 +821,7 @@ static int __init init_misc_binfmt(void)
- 	int err = register_filesystem(&bm_fs_type);
- 	if (!err)
- 		insert_binfmt(&misc_format);
-+	register_sysctl_empty_subdir("fs", "binfmt_misc");
- 	return err;
- }
- 
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 460532cd5ac8..7714e7b476c2 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -3042,13 +3042,6 @@ static struct ctl_table fs_table[] = {
- 		.extra1		= SYSCTL_ZERO,
- 		.extra2		= SYSCTL_TWO,
- 	},
--#if defined(CONFIG_BINFMT_MISC) || defined(CONFIG_BINFMT_MISC_MODULE)
--	{
--		.procname	= "binfmt_misc",
--		.mode		= 0555,
--		.child		= sysctl_mount_point,
--	},
--#endif
- 	{
- 		.procname	= "pipe-max-size",
- 		.data		= &pipe_max_size,
+Otherwise, yes, this looks good.
+
 -- 
-2.26.2
-
+Kees Cook
