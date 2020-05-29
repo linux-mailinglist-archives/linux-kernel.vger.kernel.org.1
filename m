@@ -2,148 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 295FD1E7287
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8981E726E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405339AbgE2CTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 22:19:14 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5385 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390679AbgE2CTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 22:19:08 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id E4D644F99BDED776F98E;
-        Fri, 29 May 2020 10:19:03 +0800 (CST)
-Received: from localhost.localdomain (10.175.118.36) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 29 May 2020 10:18:57 +0800
-From:   Luo bin <luobin9@huawei.com>
-To:     <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <luoxianjun@huawei.com>, <luobin9@huawei.com>,
-        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>
-Subject: [PATCH net-next v2] hinic: add set_channels ethtool_ops support
-Date:   Thu, 28 May 2020 18:36:33 +0000
-Message-ID: <20200528183633.6689-1-luobin9@huawei.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.118.36]
-X-CFilter-Loop: Reflected
+        id S2404916AbgE2CJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 22:09:27 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:34098 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404458AbgE2CJ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 22:09:26 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6EA48200D12;
+        Fri, 29 May 2020 04:09:23 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 2B993200056;
+        Fri, 29 May 2020 04:09:20 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 04788402D3;
+        Fri, 29 May 2020 10:09:15 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        paul.liu@linaro.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V2] dt-bindings: regulator: Convert anatop regulator to json-schema
+Date:   Fri, 29 May 2020 09:59:11 +0800
+Message-Id: <1590717551-20772-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add support to change TX/RX queue number with ethtool -L
+Convert the anatop regulator binding to DT schema format using json-schema.
 
-Signed-off-by: Luo bin <luobin9@huawei.com>
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 ---
- .../net/ethernet/huawei/hinic/hinic_ethtool.c | 46 +++++++++++++++----
- .../net/ethernet/huawei/hinic/hinic_main.c    |  2 +-
- drivers/net/ethernet/huawei/hinic/hinic_tx.c  |  5 ++
- 3 files changed, 44 insertions(+), 9 deletions(-)
+Changes since V1:
+	- remove definition of "regulator-name" which is a standrad property;
+	- add "unevaluatedProperties: false".
+---
+ .../bindings/regulator/anatop-regulator.txt        | 40 ---------
+ .../bindings/regulator/anatop-regulator.yaml       | 94 ++++++++++++++++++++++
+ 2 files changed, 94 insertions(+), 40 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/regulator/anatop-regulator.txt
+ create mode 100644 Documentation/devicetree/bindings/regulator/anatop-regulator.yaml
 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-index ace18d258049..9796c1fbe132 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-@@ -619,14 +619,43 @@ static void hinic_get_channels(struct net_device *netdev,
- 	struct hinic_dev *nic_dev = netdev_priv(netdev);
- 	struct hinic_hwdev *hwdev = nic_dev->hwdev;
- 
--	channels->max_rx = hwdev->nic_cap.max_qps;
--	channels->max_tx = hwdev->nic_cap.max_qps;
--	channels->max_other = 0;
--	channels->max_combined = 0;
--	channels->rx_count = hinic_hwdev_num_qps(hwdev);
--	channels->tx_count = hinic_hwdev_num_qps(hwdev);
--	channels->other_count = 0;
--	channels->combined_count = 0;
-+	channels->max_combined = nic_dev->max_qps;
-+	channels->combined_count = hinic_hwdev_num_qps(hwdev);
-+}
+diff --git a/Documentation/devicetree/bindings/regulator/anatop-regulator.txt b/Documentation/devicetree/bindings/regulator/anatop-regulator.txt
+deleted file mode 100644
+index a3106c7..0000000
+--- a/Documentation/devicetree/bindings/regulator/anatop-regulator.txt
++++ /dev/null
+@@ -1,40 +0,0 @@
+-Anatop Voltage regulators
+-
+-Required properties:
+-- compatible: Must be "fsl,anatop-regulator"
+-- regulator-name: A string used as a descriptive name for regulator outputs
+-- anatop-reg-offset: Anatop MFD register offset
+-- anatop-vol-bit-shift: Bit shift for the register
+-- anatop-vol-bit-width: Number of bits used in the register
+-- anatop-min-bit-val: Minimum value of this register
+-- anatop-min-voltage: Minimum voltage of this regulator
+-- anatop-max-voltage: Maximum voltage of this regulator
+-
+-Optional properties:
+-- anatop-delay-reg-offset: Anatop MFD step time register offset
+-- anatop-delay-bit-shift: Bit shift for the step time register
+-- anatop-delay-bit-width: Number of bits used in the step time register
+-- vin-supply: The supply for this regulator
+-- anatop-enable-bit: Regulator enable bit offset
+-
+-Any property defined as part of the core regulator
+-binding, defined in regulator.txt, can also be used.
+-
+-Example:
+-
+-	regulator-vddpu {
+-		compatible = "fsl,anatop-regulator";
+-		regulator-name = "vddpu";
+-		regulator-min-microvolt = <725000>;
+-		regulator-max-microvolt = <1300000>;
+-		regulator-always-on;
+-		anatop-reg-offset = <0x140>;
+-		anatop-vol-bit-shift = <9>;
+-		anatop-vol-bit-width = <5>;
+-		anatop-delay-reg-offset = <0x170>;
+-		anatop-delay-bit-shift = <24>;
+-		anatop-delay-bit-width = <2>;
+-		anatop-min-bit-val = <1>;
+-		anatop-min-voltage = <725000>;
+-		anatop-max-voltage = <1300000>;
+-	};
+diff --git a/Documentation/devicetree/bindings/regulator/anatop-regulator.yaml b/Documentation/devicetree/bindings/regulator/anatop-regulator.yaml
+new file mode 100644
+index 0000000..e7b3abe
+--- /dev/null
++++ b/Documentation/devicetree/bindings/regulator/anatop-regulator.yaml
+@@ -0,0 +1,94 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/regulator/anatop-regulator.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+static int hinic_set_channels(struct net_device *netdev,
-+			      struct ethtool_channels *channels)
-+{
-+	struct hinic_dev *nic_dev = netdev_priv(netdev);
-+	unsigned int count = channels->combined_count;
-+	int err;
++title: Freescale Anatop Voltage Regulators
 +
-+	if (!count) {
-+		netif_err(nic_dev, drv, netdev,
-+			  "Unsupported combined_count: 0\n");
-+		return -EINVAL;
-+	}
++maintainers:
++  - Ying-Chun Liu (PaulLiu) <paul.liu@linaro.org>
 +
-+	netif_info(nic_dev, drv, netdev, "Set max combined queue number from %d to %d\n",
-+		   hinic_hwdev_num_qps(nic_dev->hwdev), count);
++allOf:
++  - $ref: "regulator.yaml#"
 +
-+	if (netif_running(netdev)) {
-+		netif_info(nic_dev, drv, netdev, "Restarting netdev\n");
-+		hinic_close(netdev);
++properties:
++  compatible:
++    const: fsl,anatop-regulator
 +
-+		nic_dev->hwdev->nic_cap.num_qps = count;
++  regulator-name: true
 +
-+		err = hinic_open(netdev);
-+		if (err) {
-+			netif_err(nic_dev, drv, netdev,
-+				  "Failed to open netdev\n");
-+			return -EFAULT;
-+		}
-+	} else {
-+		nic_dev->hwdev->nic_cap.num_qps = count;
-+	}
++  anatop-reg-offset:
++    $ref: '/schemas/types.yaml#/definitions/uint32'
++    description: u32 value representing the anatop MFD register offset.
 +
-+	return 0;
- }
- 
- static int hinic_get_rss_hash_opts(struct hinic_dev *nic_dev,
-@@ -1219,6 +1248,7 @@ static const struct ethtool_ops hinic_ethtool_ops = {
- 	.get_ringparam = hinic_get_ringparam,
- 	.set_ringparam = hinic_set_ringparam,
- 	.get_channels = hinic_get_channels,
-+	.set_channels = hinic_set_channels,
- 	.get_rxnfc = hinic_get_rxnfc,
- 	.set_rxnfc = hinic_set_rxnfc,
- 	.get_rxfh_key_size = hinic_get_rxfh_key_size,
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_main.c b/drivers/net/ethernet/huawei/hinic/hinic_main.c
-index c8ab129a7ae8..e9e6f4c9309a 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_main.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_main.c
-@@ -326,7 +326,6 @@ static void hinic_enable_rss(struct hinic_dev *nic_dev)
- 	int i, node, err = 0;
- 	u16 num_cpus = 0;
- 
--	nic_dev->max_qps = hinic_hwdev_max_num_qps(hwdev);
- 	if (nic_dev->max_qps <= 1) {
- 		nic_dev->flags &= ~HINIC_RSS_ENABLE;
- 		nic_dev->rss_limit = nic_dev->max_qps;
-@@ -1031,6 +1030,7 @@ static int nic_dev_init(struct pci_dev *pdev)
- 	nic_dev->rq_depth = HINIC_RQ_DEPTH;
- 	nic_dev->sriov_info.hwdev = hwdev;
- 	nic_dev->sriov_info.pdev = pdev;
-+	nic_dev->max_qps = num_qps;
- 
- 	sema_init(&nic_dev->mgmt_lock, 1);
- 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_tx.c b/drivers/net/ethernet/huawei/hinic/hinic_tx.c
-index 4c66a0bc1b28..6da761d7a6ef 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_tx.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_tx.c
-@@ -470,6 +470,11 @@ netdev_tx_t hinic_xmit_frame(struct sk_buff *skb, struct net_device *netdev)
- 	struct hinic_txq *txq;
- 	struct hinic_qp *qp;
- 
-+	if (unlikely(!netif_carrier_ok(netdev))) {
-+		dev_kfree_skb_any(skb);
-+		return NETDEV_TX_OK;
-+	}
++  anatop-vol-bit-shift:
++    $ref: '/schemas/types.yaml#/definitions/uint32'
++    description: u32 value representing the bit shift for the register.
 +
- 	txq = &nic_dev->txqs[q_id];
- 	qp = container_of(txq->sq, struct hinic_qp, sq);
- 
++  anatop-vol-bit-width:
++    $ref: '/schemas/types.yaml#/definitions/uint32'
++    description: u32 value representing the number of bits used in the register.
++
++  anatop-min-bit-val:
++    $ref: '/schemas/types.yaml#/definitions/uint32'
++    description: u32 value representing the minimum value of this register.
++
++  anatop-min-voltage:
++    $ref: '/schemas/types.yaml#/definitions/uint32'
++    description: u32 value representing the minimum voltage of this regulator.
++
++  anatop-max-voltage:
++    $ref: '/schemas/types.yaml#/definitions/uint32'
++    description: u32 value representing the maximum voltage of this regulator.
++
++  anatop-delay-reg-offset:
++    $ref: '/schemas/types.yaml#/definitions/uint32'
++    description: u32 value representing the anatop MFD step time register offset.
++
++  anatop-delay-bit-shift:
++    $ref: '/schemas/types.yaml#/definitions/uint32'
++    description: u32 value representing the bit shift for the step time register.
++
++  anatop-delay-bit-width:
++    $ref: '/schemas/types.yaml#/definitions/uint32'
++    description: u32 value representing the number of bits used in the step time register.
++
++  anatop-enable-bit:
++    $ref: '/schemas/types.yaml#/definitions/uint32'
++    description: u32 value representing regulator enable bit offset.
++
++  vin-supply:
++    $ref: '/schemas/types.yaml#/definitions/phandle'
++    description: input supply phandle.
++
++required:
++  - compatible
++  - regulator-name
++  - anatop-reg-offset
++  - anatop-vol-bit-shift
++  - anatop-vol-bit-width
++  - anatop-min-bit-val
++  - anatop-min-voltage
++  - anatop-max-voltage
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    regulator-vddpu {
++        compatible = "fsl,anatop-regulator";
++        regulator-name = "vddpu";
++        regulator-min-microvolt = <725000>;
++        regulator-max-microvolt = <1300000>;
++        regulator-always-on;
++        anatop-reg-offset = <0x140>;
++        anatop-vol-bit-shift = <9>;
++        anatop-vol-bit-width = <5>;
++        anatop-delay-reg-offset = <0x170>;
++        anatop-delay-bit-shift = <24>;
++        anatop-delay-bit-width = <2>;
++        anatop-min-bit-val = <1>;
++        anatop-min-voltage = <725000>;
++        anatop-max-voltage = <1300000>;
++    };
 -- 
-2.17.1
+2.7.4
 
