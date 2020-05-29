@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4DE21E8BED
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 01:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 685981E8BF1
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 01:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728643AbgE2X1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 19:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728536AbgE2X10 (ORCPT
+        id S1728674AbgE2X16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 19:27:58 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:38033 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728493AbgE2X15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 19:27:26 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCBEC08C5CA;
-        Fri, 29 May 2020 16:27:25 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
-        id 1jeoPM-000BiA-AQ; Fri, 29 May 2020 23:27:24 +0000
-From:   Al Viro <viro@ZenIV.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH 8/9] x86: kvm_hv_set_msr(): use __put_user() instead of 32bit __clear_user()
-Date:   Sat, 30 May 2020 00:27:23 +0100
-Message-Id: <20200529232723.44942-8-viro@ZenIV.linux.org.uk>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200529232723.44942-1-viro@ZenIV.linux.org.uk>
-References: <20200528234025.GT23230@ZenIV.linux.org.uk>
- <20200529232723.44942-1-viro@ZenIV.linux.org.uk>
+        Fri, 29 May 2020 19:27:57 -0400
+X-Originating-IP: 86.202.110.81
+Received: from localhost (lfbn-lyo-1-15-81.w86-202.abo.wanadoo.fr [86.202.110.81])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id A4C9C20007;
+        Fri, 29 May 2020 23:27:52 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        kamel.bouhara@bootlin.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: [PATCH v4 0/9] clocksource/drivers/timer-atmel-tcb: add sama5d2 support
+Date:   Sat, 30 May 2020 01:27:40 +0200
+Message-Id: <20200529232749.299627-1-alexandre.belloni@bootlin.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -34,26 +36,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+Hello,
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
- arch/x86/kvm/hyperv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This series mainly adds sama5d2 support where we need to avoid using
+clock index 0 because that clock is never enabled by the driver.
 
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index bcefa9d4e57e..b85b211d4676 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -1129,7 +1129,7 @@ static int kvm_hv_set_msr(struct kvm_vcpu *vcpu, u32 msr, u64 data, bool host)
- 		 * only, there can be valuable data in the rest which needs
- 		 * to be preserved e.g. on migration.
- 		 */
--		if (__clear_user((void __user *)addr, sizeof(u32)))
-+		if (__put_user(0, (u32 __user *)addr))
- 			return 1;
- 		hv_vcpu->hv_vapic = data;
- 		kvm_vcpu_mark_page_dirty(vcpu, gfn);
+There is also a rework of the 32khz clock handling so it is not used for
+clockevents on 32 bit counter because the increased rate improves the
+resolution and doesn't have any drawback with that counter width. This
+replaces a patch that has been carried in the linux-rt tree for a while.
+
+Changes in v4:
+ - Rework binding documentation
+
+Changes in v3:
+ - Moved the child node documentation to the parent documentation
+
+Changes in v2:
+ - Rebased on v5.7-rc1
+ - Moved the binding documentation to its proper place
+ - Added back the atmel,tcb-timer child node documentation
+
+Alexandre Belloni (8):
+  dt-bindings: atmel-tcb: convert bindings to json-schema
+  dt-bindings: microchip: atmel,at91rm9200-tcb: add sama5d2 compatible
+  ARM: dts: at91: sama5d2: add TCB GCLK
+  clocksource/drivers/timer-atmel-tcb: rework 32khz clock selection
+  clocksource/drivers/timer-atmel-tcb: fill tcb_config
+  clocksource/drivers/timer-atmel-tcb: stop using the 32kHz for
+    clockevents
+  clocksource/drivers/timer-atmel-tcb: allow selecting first divider
+  clocksource/drivers/timer-atmel-tcb: add sama5d2 support
+
+Kamel Bouhara (1):
+  ARM: at91: add atmel tcb capabilities
+
+ .../devicetree/bindings/mfd/atmel-tcb.txt     |  56 -------
+ .../soc/microchip/atmel,at91rm9200-tcb.yaml   | 155 ++++++++++++++++++
+ arch/arm/boot/dts/sama5d2.dtsi                |  12 +-
+ drivers/clocksource/timer-atmel-tcb.c         | 101 +++++++-----
+ include/soc/at91/atmel_tcb.h                  |   5 +
+ 5 files changed, 224 insertions(+), 105 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mfd/atmel-tcb.txt
+ create mode 100644 Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
+
 -- 
-2.11.0
+2.26.2
 
