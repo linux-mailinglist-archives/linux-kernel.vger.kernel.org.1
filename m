@@ -2,131 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C6F1E852B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2591E850E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727816AbgE2Rjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 13:39:49 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:50280 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgE2Rjt (ORCPT
+        id S1727843AbgE2RgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 13:36:19 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:46945 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728062AbgE2RgP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 13:39:49 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 160CD8030777;
-        Fri, 29 May 2020 17:26:45 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id xOu8vfYUNsLU; Fri, 29 May 2020 20:26:44 +0300 (MSK)
-Date:   Fri, 29 May 2020 20:26:42 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
-        Feng Tang <feng.tang@intel.com>, <devicetree@vger.kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
-        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        <linux-mips@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>
-Subject: Re: [PATCH v6 00/16] spi: dw: Add generic DW DMA controller support
-Message-ID: <20200529172642.hcnvyzv2ocizsvpy@mobilestation>
-References: <20200529131205.31838-1-Sergey.Semin@baikalelectronics.ru>
- <159077271266.17043.13820488074564153429.b4-ty@kernel.org>
+        Fri, 29 May 2020 13:36:15 -0400
+Received: by mail-il1-f195.google.com with SMTP id h3so3251437ilh.13;
+        Fri, 29 May 2020 10:36:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+vldnj1A/A3DB6U9SQBWonFdPuOH0+2SZoMnNU6BJCY=;
+        b=II2Q3vIN8TseP2BdYARKsz50LyWiVH7k3ubfvt591B/r5ayZFYoBaYjIGSt4oEDsqH
+         H38qJIgMAJBb7Mpuji6JMMatG5Qtd3Q3+r2fqVmdQTpBC1hSGt6ZpucTQQ/ACg1I5YwT
+         sjGozx170hLitaZp64J68Pihmkq/7dLFckS+j8NHrMQrOwrzRs4y1xAZeE0oLEcECS/p
+         EDCqvLqv28sfUXQ6Vmb4aBbmVI98hmaHVkgTJn9mjXoYeo5G/VWO4i5UZMCnuIhB2cvp
+         uJXzJ2/R1tujvBK91hqM8/DjE8PbhiwogZbvEvBNZ2iL2K+zGZt4TU8Y8l4GJpnqUOPB
+         lswA==
+X-Gm-Message-State: AOAM533esXrcxeXrWlHHpGOa2S834o84RI0y42GVlsoLXKU635Vsd500
+        lntslRILk1Njr7Lf/dXYrZ5m/0c=
+X-Google-Smtp-Source: ABdhPJw0D9Aj4dJOagyxhADhUi0We3v2dIBpchp7r06PGdMsavEqNpTwmfpl5+OcDOLyr+R5c/ad9g==
+X-Received: by 2002:a6b:7c45:: with SMTP id b5mr7568415ioq.31.1590773240343;
+        Fri, 29 May 2020 10:27:20 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id p75sm5083828ilb.23.2020.05.29.10.27.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2020 10:27:19 -0700 (PDT)
+Received: (nullmailer pid 2610380 invoked by uid 1000);
+        Fri, 29 May 2020 17:27:18 -0000
+Date:   Fri, 29 May 2020 11:27:18 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        devicetree@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-leds@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: leds: fix macro names for pca955x
+Message-ID: <20200529172718.GA2610321@bogus>
+References: <20200526092052.24172-1-f.suligoi@asem.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <159077271266.17043.13820488074564153429.b4-ty@kernel.org>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <20200526092052.24172-1-f.suligoi@asem.it>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark
+On Tue, 26 May 2020 11:20:52 +0200, Flavio Suligoi wrote:
+> The documentation reports the wrong macro names
+> related to the pca9532 instead of the pca955x
+> 
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> ---
+>  Documentation/devicetree/bindings/leds/leds-pca955x.txt | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
 
-On Fri, May 29, 2020 at 06:18:32PM +0100, Mark Brown wrote:
-> On Fri, 29 May 2020 16:11:49 +0300, Serge Semin wrote:
-> > Baikal-T1 SoC provides a DW DMA controller to perform low-speed peripherals
-> > Mem-to-Dev and Dev-to-Mem transaction. This is also applicable to the DW
-> > APB SSI devices embedded into the SoC. Currently the DMA-based transfers
-> > are supported by the DW APB SPI driver only as a middle layer code for
-> > Intel MID/Elkhart PCI devices. Seeing the same code can be used for normal
-> > platform DMAC device we introduced a set of patches to fix it within this
-> > series.
-> > 
-> > [...]
-> 
-> Applied to
-> 
->    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-> 
-> Thanks!
-> 
-> [01/15] spi: dw: Set xfer effective_speed_hz
->         commit: de4c2875a5ff2c886df60f2086c6affca83f890a
-> [02/15] spi: dw: Return any value retrieved from the dma_transfer callback
->         commit: f0410bbf7d0fb80149e3b17d11d31f5b5197873e
-> [03/15] spi: dw: Locally wait for the DMA transfers completion
->         commit: bdbdf0f06337d3661b64c0288c291cb06624065e
-> [04/15] spi: dw: Add SPI Tx-done wait method to DMA-based transfer
->         commit: 1ade2d8a72f9240825f6be050f0d49c840f7daeb
-> [05/15] spi: dw: Add SPI Rx-done wait method to DMA-based transfer
->         commit: 33726eff3d98e643f7d7a0940f4024844b430c82
-> [06/15] spi: dw: Parameterize the DMA Rx/Tx burst length
->         commit: c534df9d6225314d1403e4330a22d68c35e0eb55
-> [07/15] spi: dw: Use DMA max burst to set the request thresholds
->         commit: 0b2b66514fc9971b3a6002ba038d74f77705fd34
-> [08/15] spi: dw: Fix Rx-only DMA transfers
->         commit: 46164fde6b7890e7a3982d54549947c8394c0192
-> [09/15] spi: dw: Add core suffix to the DW APB SSI core source file
->         commit: 77ccff803d27279ccc100dc906c6f456c8fa515c
-> [10/15] spi: dw: Move Non-DMA code to the DW PCIe-SPI driver
->         commit: 6c710c0cb6725bdbe647b958756685aed0295936
-> [11/15] spi: dw: Remove DW DMA code dependency from DW_DMAC_PCI
->         commit: 06cfadb8c51b05c6b91c2d43e0fe72b3d643dced
-> [12/15] spi: dw: Add DW SPI DMA/PCI/MMIO dependency on the DW SPI core
->         commit: ecb3a67edfd353837dc23b538fb250d1dfd88e7b
-> [13/15] spi: dw: Cleanup generic DW DMA code namings
->         commit: 57784411728ff4d72ae051fdbba1e54fcb1f8d6f
-> [14/15] spi: dw: Add DMA support to the DW SPI MMIO driver
->         commit: 0fdad596d46b28d5c3e39d1897c5e3878b64d9a2
-> [15/15] spi: dw: Use regset32 DebugFS method to create regdump file
->         commit: 8378449d1f79add31be77e77fc7df9f639878e9c
-
-You must have missed the patch 16:
-0e8332aaf059 dt-bindings: spi: Convert DW SPI binding to DT schema
-As you can see it has been acked by Rob. So you can also merge it into your
-repo. Though It has to be rebased first due to the Dinh Nguyen patches
-recently merged in. Do you want me to do the rebasing?
-
--Sergey
-
-> 
-> All being well this means that it will be integrated into the linux-next
-> tree (usually sometime in the next 24 hours) and sent to Linus during
-> the next merge window (or sooner if it is a bug fix), however if
-> problems are discovered then the patch may be dropped or reverted.
-> 
-> You may get further e-mails resulting from automated or manual testing
-> and review of the tree, please engage with people reporting problems and
-> send followup patches addressing any issues that are reported if needed.
-> 
-> If any updates are required or you are submitting further changes they
-> should be sent as incremental updates against current git, existing
-> patches will not be replaced.
-> 
-> Please add any relevant lists and maintainers to the CCs when replying
-> to this mail.
-> 
-> Thanks,
-> Mark
+Acked-by: Rob Herring <robh@kernel.org>
