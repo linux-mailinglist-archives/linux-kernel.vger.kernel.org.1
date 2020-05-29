@@ -2,199 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8831E7378
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 05:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 732441E7340
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 05:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391691AbgE2DKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 23:10:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389625AbgE2DKj (ORCPT
+        id S2390273AbgE2DB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 23:01:57 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:30345 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391785AbgE2DA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 23:10:39 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1334FC08C5C6;
-        Thu, 28 May 2020 20:10:39 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
-        id 1jeVPo-00HJwb-1G; Fri, 29 May 2020 03:10:36 +0000
-Date:   Fri, 29 May 2020 04:10:36 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] dlmfs: convert dlmfs_file_read() to copy_to_user()
-Message-ID: <20200529031036.GB23230@ZenIV.linux.org.uk>
-References: <20200529000345.GV23230@ZenIV.linux.org.uk>
- <20200529000419.4106697-1-viro@ZenIV.linux.org.uk>
- <20200529000419.4106697-2-viro@ZenIV.linux.org.uk>
- <CAHk-=wgnxFLm3ZTwx3XYnJL7_zPNSWf1RbMje22joUj9QADnMQ@mail.gmail.com>
- <20200529014753.GZ23230@ZenIV.linux.org.uk>
- <CAHk-=wiBqa6dZ0Sw0DvHjnCp727+0RAwnNCyA=ur_gAE4C05fg@mail.gmail.com>
+        Thu, 28 May 2020 23:00:57 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200529030053epoutp021858d98fc89e477865dd890429393397~TYI1PTFuw0660306603epoutp02k
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 03:00:53 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200529030053epoutp021858d98fc89e477865dd890429393397~TYI1PTFuw0660306603epoutp02k
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1590721253;
+        bh=rSVo7ud+9TszCLiyewFEvOoTOG9lXMM1SQDasks6Ths=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=MkeuGMA3DZ9eyhsUEzuzfCpyPkbAHwHfKhDjkGDmJlEbpOyD04Pnp5o8AuCZxLDTf
+         YVqR7V/NW47rTGLW0A7XS40ptMFK8h0OQxdv/prjuphzmP8PyEtSJjO7VGpBPGMcQU
+         bgjbHrUJhOHs6JlDNqHzBpa5yvuO0m0XswPNAIdE=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200529030052epcas1p2403069f73d1d61282f1488e0a72cd81a~TYI0yKqh-0334803348epcas1p2f;
+        Fri, 29 May 2020 03:00:52 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.154]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 49Y8TF3B33zMqYkp; Fri, 29 May
+        2020 03:00:49 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        35.F3.29173.CDA70DE5; Fri, 29 May 2020 12:00:44 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200529030043epcas1p2a41f6271b91e086a2e730a488ce53015~TYIsSdkSP1023810238epcas1p2K;
+        Fri, 29 May 2020 03:00:43 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200529030043epsmtrp2016b1b89e4aac5ef2a4a97a3096a89f5~TYIsR4iGf0654606546epsmtrp2R;
+        Fri, 29 May 2020 03:00:43 +0000 (GMT)
+X-AuditID: b6c32a37-9b7ff700000071f5-7c-5ed07adc0972
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        BD.DB.08303.BDA70DE5; Fri, 29 May 2020 12:00:43 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200529030043epsmtip1e9be7ed341d230145d48b218584cf3e0~TYIsFxk__0604606046epsmtip1f;
+        Fri, 29 May 2020 03:00:43 +0000 (GMT)
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Chanwoo Choi (samsung.com)" <cw00.choi@samsung.com>,
+        "Chanwoo Choi (chanwoo@kernel.org)" <chanwoo@kernel.org>,
+        =?UTF-8?B?7ZWo66qF7KO8?= <myungjoo.ham@samsung.com>
+Subject: [GIT PULL] extcon next for v5.8
+Message-ID: <a7f317f3-5499-d1d5-cabd-b53d7e8d9977@samsung.com>
+Date:   Fri, 29 May 2020 12:11:03 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiBqa6dZ0Sw0DvHjnCp727+0RAwnNCyA=ur_gAE4C05fg@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupmk+LIzCtJLcpLzFFi42LZdlhTV/dO1YU4gxV3FSwm3rjCYnH9y3NW
+        i+bF69ksLu+aw2Zxu3EFmwOrx6ZVnWwe++euYffo27KK0ePzJrkAlqhsm4zUxJTUIoXUvOT8
+        lMy8dFsl7+B453hTMwNDXUNLC3MlhbzE3FRbJRefAF23zBygvUoKZYk5pUChgMTiYiV9O5ui
+        /NKSVIWM/OISW6XUgpScAssCveLE3OLSvHS95PxcK0MDAyNToMKE7Iw5D66yFTTwVWx62Mbc
+        wHicu4uRk0NCwERiS+cppi5GLg4hgR2MEp3rPjFDOJ8YJU5sOskK4XxmlNj2oJ8ZpuXqjoWM
+        EIldjBIvN3dBtbxnlFjwZAU7SBWbgJbE/hc32EBsfgFFias/HjOC2CICGhIvj95iAWlgFnjD
+        KLHvcycrSEIYKDFz0QkWEJtXwE7iQ9NGsGYWAVWJe7dvgdmiAmESJ7e1MELUCEqcnPkErJ5Z
+        QFzi1pP5TBC2vMT2t3PALpIQeMsu8a/9ICPE3S4S8+90s0HYwhKvjm9hh7ClJD6/2wsVr5ZY
+        efIIG0RzB6PElv0XWCESxhL7l04G2sABtEFTYv0ufYiwosTO33MZIRbzSbz72sMKUiIhwCvR
+        0SYEUaIscfnBXSYIW1JicXsn1CoPib8PtrJNYFScheSdWUjemYXknVkIixcwsqxiFEstKM5N
+        Ty02LDBGju9NjOBUqWW+g3Ha2w96hxiZOBgPMUpwMCuJ8K45ez5OiDclsbIqtSg/vqg0J7X4
+        EKMpMIAnMkuJJucDk3VeSbyhqZGxsbGFiaGZqaGhkjivr9WFOCGB9MSS1OzU1ILUIpg+Jg5O
+        qQam68dX+kw1/nKlgeOjcJXwrR9VOtu/S6d033yk8bwwPuRs68Hqmq4CN+emFTvU/h03/ee3
+        s7pTX6/ixEXdj/KZc3ta7zGuK3l27W0Dt5Lyvc4z/QU/tbjN3j2pm7V37qIXPsvf9SvPyIqv
+        l9dhy+pR6H3O/3ymR3t1v4Xh+v2JmUkqLYxJWX+5PkZLH5X/wLTEeJMjeyDXuvXhbIvcJjiJ
+        JL9pDuC6f/zo1TMdpf+9asX3PTZ5yBbYd89UINPO8NoJszlHRflO1iSFsxfvzhNawf1AvGfd
+        vqOOb3I299qdt1WOYDpUO8FyjtueZNYU2Qnzbhg4rfdL/SLd862/b9eCGStTnSXnTt3d5CE2
+        yUeJpTgj0VCLuag4EQCjR9yDHgQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrDLMWRmVeSWpSXmKPExsWy7bCSnO7tqgtxBrunaFtMvHGFxeL6l+es
+        Fs2L17NZXN41h83iduMKNgdWj02rOtk89s9dw+7Rt2UVo8fnTXIBLFFcNimpOZllqUX6dglc
+        GXMeXGUraOCr2PSwjbmB8Th3FyMnh4SAicTVHQsZuxi5OIQEdjBK7GnYxwyRkJSYdvEokM0B
+        ZAtLHD5cDFHzllHi6NsPrCA1bAJaEvtf3GADsfkFFCWu/njMCGKLCGhIvDx6iwWkgVngDaNE
+        /5ot7CAJYaDEzEUnWEBsXgE7iQ9NG8GaWQRUJe7dvgVmiwqESexc8pgJokZQ4uTMJ2D1zALq
+        En/mXWKGsMUlbj2ZzwRhy0tsfzuHeQKj4CwkLbOQtMxC0jILScsCRpZVjJKpBcW56bnFhgVG
+        eanlesWJucWleel6yfm5mxjBEaCltYNxz6oPeocYmTgYDzFKcDArifCuOXs+Tog3JbGyKrUo
+        P76oNCe1+BCjNAeLkjjv11kL44QE0hNLUrNTUwtSi2CyTBycUg1MR7Mz4/58W76o4OEHpyWc
+        jO0XvO+/3LPJcelUCabbEXtjN0StFljTvlZIdUW8IAd3bsREtda6yXsvzq65LJE2UWf67Vkf
+        2+VXLHO5Fi8aFrpKanH6nm9Zr8++ij5TuWj5vf9WmtOOMLwsDdPYWqVun9WYs9r3zFZJW4+t
+        n98fmWjjx/nHOK3CSLw53FN2x68Dry96PH1ldfRVYpDBpqZ4+2yWaUfbOYtM3+8sfS44s8Ak
+        p/Fgv69h9BqO0m9O/SaMvCElgi2t1/ZvVW7aGCLQ4Hqg3eD1UaGXheduXtD48SZbLXL5qwxB
+        p58ujUuNes9zqD87FvGWafa/mquabmdXiZ25m/Jn7bUHf5clVsoLKLEUZyQaajEXFScCANiw
+        awzvAgAA
+X-CMS-MailID: 20200529030043epcas1p2a41f6271b91e086a2e730a488ce53015
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200529030043epcas1p2a41f6271b91e086a2e730a488ce53015
+References: <CGME20200529030043epcas1p2a41f6271b91e086a2e730a488ce53015@epcas1p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 06:54:11PM -0700, Linus Torvalds wrote:
-> On Thu, May 28, 2020 at 6:47 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> >
-> >         case S_IFREG:
-> >                 inode->i_op = &dlmfs_file_inode_operations;
-> >                 inode->i_fop = &dlmfs_file_operations;
-> >
-> >                 i_size_write(inode,  DLM_LVB_LEN);
-> > is the only thing that does anything to size of that sucker.  IOW, that
-> > i_size_read() might as well had been an explicit 64.
-> 
-> Heh. Indeed. I did actually grep for i_size_write() use in ocfs2 and
-> saw several. But I didn't realize to limit it to just the dlmfs part.
-> 
-> So it does that crazy sequence number lock dance on 32-bit just to
-> read a constant value.
-> 
-> Oh well.
-> 
-> It would be nice to get those follow-up cleanups eventually, but I
-> guess the general user access cleanups are more important than this
-> very odd special case silliness.
+Dear Greg,
 
-Not a problem - I'll put it into work.misc for the next cycle...
-BTW, regarding uaccess - how badly does the following offend your taste?
-Normally I'd just go for copy_from_user(), but these syscalls just might
-be hot enough for overhead to matter...
+This is extcon-next pull request for v5.8. I add detailed description of
+this pull request on below. Please pull extcon with following updates.
 
-commit 40f443f132306d724f43eaff5330b31c632455a6
-Author: Al Viro <viro@zeniv.linux.org.uk>
-Date:   Wed Feb 19 09:54:24 2020 -0500
+Best Regards,
+Chanwoo Choi
 
-    pselect6() and friends: take handling the combined 6th/7th args into helper
-    
-    ... and use unsafe_get_user(), while we are at it.
-    
-    Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 
-diff --git a/fs/select.c b/fs/select.c
-index 11d0285d46b7..ff0489c67e3f 100644
---- a/fs/select.c
-+++ b/fs/select.c
-@@ -766,6 +766,24 @@ static long do_pselect(int n, fd_set __user *inp, fd_set __user *outp,
-  * which has a pointer to the sigset_t itself followed by a size_t containing
-  * the sigset size.
-  */
-+static inline int unkludge_sigmask(void __user *sig,
-+				   sigset_t __user **up,
-+				   size_t *sigsetsize)
-+{
-+	if (sig) {
-+		if (!user_read_access_begin(sig, sizeof(void *)+sizeof(size_t)))
-+			return -EFAULT;
-+		unsafe_get_user(*up, (sigset_t __user * __user *)sig, Efault);
-+		unsafe_get_user(*sigsetsize,
-+				(size_t __user *)(sig+sizeof(void *)), Efault);
-+		user_read_access_end();
-+	}
-+	return 0;
-+Efault:
-+	user_access_end();
-+	return -EFAULT;
-+}
-+
- SYSCALL_DEFINE6(pselect6, int, n, fd_set __user *, inp, fd_set __user *, outp,
- 		fd_set __user *, exp, struct __kernel_timespec __user *, tsp,
- 		void __user *, sig)
-@@ -773,13 +791,8 @@ SYSCALL_DEFINE6(pselect6, int, n, fd_set __user *, inp, fd_set __user *, outp,
- 	size_t sigsetsize = 0;
- 	sigset_t __user *up = NULL;
- 
--	if (sig) {
--		if (!access_ok(sig, sizeof(void *)+sizeof(size_t))
--		    || __get_user(up, (sigset_t __user * __user *)sig)
--		    || __get_user(sigsetsize,
--				(size_t __user *)(sig+sizeof(void *))))
--			return -EFAULT;
--	}
-+	if (unkludge_sigmask(sig, &up, &sigsetsize))
-+		return -EFAULT;
- 
- 	return do_pselect(n, inp, outp, exp, tsp, up, sigsetsize, PT_TIMESPEC);
- }
-@@ -793,13 +806,8 @@ SYSCALL_DEFINE6(pselect6_time32, int, n, fd_set __user *, inp, fd_set __user *,
- 	size_t sigsetsize = 0;
- 	sigset_t __user *up = NULL;
- 
--	if (sig) {
--		if (!access_ok(sig, sizeof(void *)+sizeof(size_t))
--		    || __get_user(up, (sigset_t __user * __user *)sig)
--		    || __get_user(sigsetsize,
--				(size_t __user *)(sig+sizeof(void *))))
--			return -EFAULT;
--	}
-+	if (unkludge_sigmask(sig, &up, &sigsetsize))
-+		return -EFAULT;
- 
- 	return do_pselect(n, inp, outp, exp, tsp, up, sigsetsize, PT_OLD_TIMESPEC);
- }
-@@ -1325,6 +1333,25 @@ static long do_compat_pselect(int n, compat_ulong_t __user *inp,
- 	return poll_select_finish(&end_time, tsp, type, ret);
- }
- 
-+static inline int unkludge_compat_sigmask(void __user *sig,
-+				   compat_uptr_t *up,
-+				   compat_size_t *sigsetsize)
-+{
-+	if (sig) {
-+		if (!user_read_access_begin(sig,
-+				sizeof(compat_uptr_t)+sizeof(compat_size_t)))
-+			return -EFAULT;
-+		unsafe_get_user(*up, (compat_uptr_t __user *)sig, Efault);
-+		unsafe_get_user(*sigsetsize,
-+				(compat_size_t __user *)(sig+sizeof(up)), Efault);
-+		user_read_access_end();
-+	}
-+	return 0;
-+Efault:
-+	user_access_end();
-+	return -EFAULT;
-+}
-+
- COMPAT_SYSCALL_DEFINE6(pselect6_time64, int, n, compat_ulong_t __user *, inp,
- 	compat_ulong_t __user *, outp, compat_ulong_t __user *, exp,
- 	struct __kernel_timespec __user *, tsp, void __user *, sig)
-@@ -1332,14 +1359,8 @@ COMPAT_SYSCALL_DEFINE6(pselect6_time64, int, n, compat_ulong_t __user *, inp,
- 	compat_size_t sigsetsize = 0;
- 	compat_uptr_t up = 0;
- 
--	if (sig) {
--		if (!access_ok(sig,
--				sizeof(compat_uptr_t)+sizeof(compat_size_t)) ||
--				__get_user(up, (compat_uptr_t __user *)sig) ||
--				__get_user(sigsetsize,
--				(compat_size_t __user *)(sig+sizeof(up))))
--			return -EFAULT;
--	}
-+	if (unkludge_compat_sigmask(sig, &up, &sigsetsize))
-+		return -EFAULT;
- 
- 	return do_compat_pselect(n, inp, outp, exp, tsp, compat_ptr(up),
- 				 sigsetsize, PT_TIMESPEC);
-@@ -1354,14 +1375,8 @@ COMPAT_SYSCALL_DEFINE6(pselect6_time32, int, n, compat_ulong_t __user *, inp,
- 	compat_size_t sigsetsize = 0;
- 	compat_uptr_t up = 0;
- 
--	if (sig) {
--		if (!access_ok(sig,
--				sizeof(compat_uptr_t)+sizeof(compat_size_t)) ||
--		    	__get_user(up, (compat_uptr_t __user *)sig) ||
--		    	__get_user(sigsetsize,
--				(compat_size_t __user *)(sig+sizeof(up))))
--			return -EFAULT;
--	}
-+	if (unkludge_compat_sigmask(sig, &up, &sigsetsize))
-+		return -EFAULT;
- 
- 	return do_compat_pselect(n, inp, outp, exp, tsp, compat_ptr(up),
- 				 sigsetsize, PT_OLD_TIMESPEC);
+The following changes since commit 9cb1fd0efd195590b828b9b865421ad345a4a145:
+
+  Linux 5.7-rc7 (2020-05-24 15:32:54 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/extcon.git tags/extcon-next-for-5.8
+
+for you to fetch changes up to bef91b5ad53981b6cb4db7f6253d1808cfef593d:
+
+  extcon: arizona: Fix runtime PM imbalance on error (2020-05-28 18:02:29 +0900)
+
+----------------------------------------------------------------
+
+Update extcon for v5.8
+
+Detailed description for this pull request:
+1. Update extcon provider driver
+- Fix an error handling code by using devm_iio_channel_get() for extcon-adc-jac.c
+- Fix the usage counter imbalance of runtime PM for extcon-arizona.c.
+- Add proper dt-compatible string for extcon-max14577.c.
+
+2. Update extcon core with minor updates:
+- Remove unneeded initialization of local variable in extcon_register_notifier.
+
+----------------------------------------------------------------
+Christophe JAILLET (1):
+      extcon: adc-jack: Fix an error handling path in 'adc_jack_probe()'
+
+Colin Ian King (1):
+      extcon: remove redundant assignment to variable idx
+
+Dinghao Liu (1):
+      extcon: arizona: Fix runtime PM imbalance on error
+
+Marek Szyprowski (1):
+      extcon: max14577: Add proper dt-compatible strings
+
+ drivers/extcon/extcon-adc-jack.c |  3 +--
+ drivers/extcon/extcon-arizona.c  | 17 +++++++++--------
+ drivers/extcon/extcon-max14577.c | 10 ++++++++++
+ drivers/extcon/extcon.c          |  2 +-
+ 4 files changed, 21 insertions(+), 11 deletions(-)
