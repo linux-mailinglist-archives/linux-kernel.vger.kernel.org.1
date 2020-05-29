@@ -2,64 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970B91E7530
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 07:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41EE61E7531
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 07:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726021AbgE2FHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 01:07:19 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:50739 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgE2FHS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 01:07:18 -0400
-Received: from fsav304.sakura.ne.jp (fsav304.sakura.ne.jp [153.120.85.135])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 04T56Xl9023447;
-        Fri, 29 May 2020 14:06:33 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav304.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp);
- Fri, 29 May 2020 14:06:33 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 04T56W7f023444
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Fri, 29 May 2020 14:06:33 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH] twist: allow converting pr_devel()/pr_debug() into
- printk(KERN_DEBUG)
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <20200524145034.10697-1-penguin-kernel@I-love.SAKURA.ne.jp>
- <20200525084218.GC5300@linux-b0ei>
- <20200525091157.GF755@jagdpanzerIV.localdomain>
- <f02a71bc-0867-be60-182b-10d7377b2b04@i-love.sakura.ne.jp>
- <20200529020442.GA526@jagdpanzerIV.localdomain>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <c3bc433e-bd6f-5661-819c-9672b69891e5@i-love.sakura.ne.jp>
-Date:   Fri, 29 May 2020 14:06:33 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1726068AbgE2FHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 01:07:53 -0400
+Received: from mga07.intel.com ([134.134.136.100]:49235 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725601AbgE2FHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 01:07:53 -0400
+IronPort-SDR: lisWPwDnly30+7nT6PvH3DEo5FVB8rgjyajNHPDHcSlMnULQAKSHGveGqMpSHRsrq503YYMScG
+ NPkcOTtw927w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 22:07:53 -0700
+IronPort-SDR: TCTtQwQ/9D/CeQcuyLzcUu01e/1fX4vn77VHCy6I355FWsre3hskqcd8ZkPJJ26ylXvtKmDPTe
+ v6rzZ7oV/GcA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,447,1583222400"; 
+   d="scan'208";a="285412395"
+Received: from pratuszn-mobl.ger.corp.intel.com (HELO localhost) ([10.252.58.65])
+  by orsmga002.jf.intel.com with ESMTP; 28 May 2020 22:07:43 -0700
+Date:   Fri, 29 May 2020 08:07:42 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        akpm@linux-foundation.org, dave.hansen@intel.com,
+        nhorman@redhat.com, npmccallum@redhat.com, haitao.huang@intel.com,
+        andriy.shevchenko@linux.intel.com, tglx@linutronix.de,
+        kai.svahn@intel.com, josh@joshtriplett.org, luto@kernel.org,
+        kai.huang@intel.com, rientjes@google.com, cedric.xing@intel.com,
+        puiterwijk@redhat.com, Jethro Beekman <jethro@fortanix.com>
+Subject: Re: [PATCH v30 08/20] x86/sgx: Add functions to allocate and free
+ EPC pages
+Message-ID: <20200529050742.GA424225@linux.intel.com>
+References: <20200527042111.GI31696@linux.intel.com>
+ <20200527204638.GG1721@zn.tnic>
+ <20200528012319.GA7577@linux.intel.com>
+ <20200528013617.GD25962@linux.intel.com>
+ <20200528065223.GB188849@linux.intel.com>
+ <20200528171635.GB382@zn.tnic>
+ <20200528190718.GA2147934@linux.intel.com>
+ <20200528195917.GF30353@linux.intel.com>
+ <20200529032816.GC6182@linux.intel.com>
+ <20200529033716.GH30353@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200529020442.GA526@jagdpanzerIV.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200529033716.GH30353@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/05/29 11:04, Sergey Senozhatsky wrote:
-> You are not going to add pr_debug() all over the kernel, are you?
+On Thu, May 28, 2020 at 08:37:16PM -0700, Sean Christopherson wrote:
+> On Fri, May 29, 2020 at 06:28:16AM +0300, Jarkko Sakkinen wrote:
+> > On Thu, May 28, 2020 at 12:59:17PM -0700, Sean Christopherson wrote:
+> > > On Thu, May 28, 2020 at 10:07:18PM +0300, Jarkko Sakkinen wrote:
+> > > >  * sgx_grab_page() - Grab a free EPC page
+> > > >  * @owner:	the owner of the EPC page
+> > > >  * @reclaim:	reclaim pages if necessary
+> > > >  *
+> > > >  * Iterate through EPC sections and borrow a free EPC page to the caller. When a
+> > > >  * page is no longer needed it must be released with sgx_free_page(). If
+> > > >  * @reclaim is set to true, directly reclaim pages when we are out of pages. No
+> > > >  * mm's can be locked when @reclaim is set to true.
+> > > >  *
+> > > >  * Finally, wake up ksgxswapd when the number of pages goes below the watermark
+> > > >  * before returning back to the caller.
+> > > >  *
+> > > >  * Return:
+> > > >  *   an EPC page,
+> > > >  *   -errno on error
+> > > >  */
+> > > > 
+> > > > I also rewrote the kdoc.
+> > > > 
+> > > > I do agree that sgx_try_grab_page() should be renamed as __sgx_grab_page().
+> > > 
+> > > FWIW, I really, really dislike "grab".  The nomenclature for normal memory
+> > > and pages uses "alloc" when taking a page off a free list, and "grab" when
+> > > elevating the refcount.  I don't understand the motivation for diverging
+> > > from that.  SGX is weird enough as is, using names that don't align with
+> > > exist norms will only serve to further obfuscate the code.
+> > 
+> > OK, what would be a better name then? The semantics are not standard
+> > memory allocation semantics in the first place. And kdoc in v30 speaks
+> > about grabbing.
+> 
+> In what way are they not standard allocation semantics?  sgx_alloc_page()
+> is an API to allocate (EPC) memory on-demand, sgx_free_page() is its partner
+> to free that memory when it is no longer needed.  There are many different
+> ways to manage and allocate memory, but the basic premise is the same for
+> all and no different than what we're doing.
 
-Of course, I'm not planning to add pr_debug() all over the kernel.
+I'll go with sgx_alloc_epc_page(). It is more precise name.
 
-When I need to print something to consoles, I will use one-time patch
-(like https://syzkaller.appspot.com/text?tag=Patch&x=135f254a100000 ) for
-adding custom printk() and turning on some switches for making existing
-printk() calls work.
+It's not as precise as sgx_alloc_epc_page_from_section but is a great
+compromise between scree estate and clarity of expression :-)
+
+/Jarkko
