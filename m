@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF1B31E7C63
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 13:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCFC51E7C61
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 13:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726920AbgE2L4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 07:56:00 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:33928 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725775AbgE2Lzz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726807AbgE2Lzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 29 May 2020 07:55:55 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:33918 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725775AbgE2Lzy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 07:55:54 -0400
 Received: from mailhost.synopsys.com (mdc-mailhost2.synopsys.com [10.225.0.210])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id C25B3C041F;
-        Fri, 29 May 2020 11:55:53 +0000 (UTC)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 378AEC03B4;
+        Fri, 29 May 2020 11:55:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1590753355; bh=rl/j7/Cjm4X4ANhwe64JdR/bQf2UVY53T+qmbOpaUEE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HRGJQXJr7UqQH3Sy7emt2qiI8WsBKHurEtJeJ0tJHpXaqN9wFxlv4yn7rt/SpuvVh
-         qYUMI6fnzye9F5T7d6vsPAqJBLZVODNTI1GJuMrmM3jFEGC7yn3rwwOb3TnIOKikZs
-         lnaE8D436I5P/7JnKMj0YT/RZ406NGn2Gq+GkikRf4HDYNieYwxbLyUZRlFoM6PhxP
-         eInDZeqd57F1vC0azOHexptgG03Sc7FMfQ9qu0VzTdg6aRfEkWiQtoE0wUZxDiMZtd
-         c6EptXd6moMsJ9yiVLpwWvcRBGDxM8aC/+jOJWN0yaoaytp9emu3/fEYZWp4SpkLIw
-         hO0J6tnuYzK3w==
+        t=1590753354; bh=4tHxSBkm1m3j6WDpl6aUjwp+PqWpmQzY0kj71pY8N/M=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=EYl+2DGGka2JLbMyxCQCsVi+jOsRthQ1TxJLGOHMrUt3kqk8DuGGyDi/BT9iBgosC
+         XzeCMD/UlphfSakd7L5vGkXQyynDwe3DHa04mu2BtgMH5kvMSTjKO5QOhj4H2J2NKD
+         W+w5HREfg1qB9sPTs9MWaixUjzu5LUb4ORWpKq1fbrMfcnVqZ5Fx4sjj0bAgngKudz
+         h7yeUtEH9Tq0aQ3m3qz1qGiWGSka6wwOvFoVmtc6oQnRXFCirgTLaC6f1PF8b/WEMn
+         ILf0Y2BI3hnOl9JMUFvWwtgUrew5/i6VbHB4vKWdAl9odmUr6YBnLrIuSz/9+bWJzI
+         yYBSp9MreQLRg==
 Received: from paltsev-e7480.internal.synopsys.com (ru20-e7250.internal.synopsys.com [10.225.50.16])
-        by mailhost.synopsys.com (Postfix) with ESMTP id 2C138A005C;
-        Fri, 29 May 2020 11:55:51 +0000 (UTC)
+        by mailhost.synopsys.com (Postfix) with ESMTP id A2760A005D;
+        Fri, 29 May 2020 11:55:52 +0000 (UTC)
 X-SNPS-Relay: synopsys.com
 From:   Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
 To:     linux-snps-arc@lists.infradead.org,
@@ -36,10 +36,12 @@ To:     linux-snps-arc@lists.infradead.org,
 Cc:     linux-kernel@vger.kernel.org,
         Alexey Brodkin <Alexey.Brodkin@synopsys.com>,
         Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
-Subject: [PATCH 0/3] ARC: [plat-hsdk-4xd] initial port for HSDK-4xD board
-Date:   Fri, 29 May 2020 14:55:30 +0300
-Message-Id: <20200529115534.22883-1-Eugeniy.Paltsev@synopsys.com>
+Subject: [PATCH 1/3] ARC: allow to overide default mcpu compiler flag
+Date:   Fri, 29 May 2020 14:55:31 +0300
+Message-Id: <20200529115534.22883-2-Eugeniy.Paltsev@synopsys.com>
 X-Mailer: git-send-email 2.21.3
+In-Reply-To: <20200529115534.22883-1-Eugeniy.Paltsev@synopsys.com>
+References: <20200529115534.22883-1-Eugeniy.Paltsev@synopsys.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -47,23 +49,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eugeniy Paltsev (3):
-  ARC: allow to overide default mcpu compiler flag
-  ARC: ARCv2: support loop buffer (LPB) disabling
-  ARC: [plat-hsdk-4xd] initial port for HSDK-4xD board
+By default we set -mcpu=xxx compiler flag depending on the CPU ISA
+version. It's good starting point, however that may be not enough
+as for some platforms we may want to use some specific 'mcpu'
+options for better optimization or to workaround HW issues.
 
- arch/arc/Kconfig                    |  13 ++
- arch/arc/Makefile                   |   4 +
- arch/arc/boot/dts/hsdk-4xd.dts      | 322 ++++++++++++++++++++++++++++
- arch/arc/configs/hsdk_4xd_defconfig |  99 +++++++++
- arch/arc/kernel/devtree.c           |   1 +
- arch/arc/kernel/head.S              |   8 +
- arch/arc/plat-hsdk/Kconfig          |  24 ++-
- arch/arc/plat-hsdk/platform.c       |   6 +
- 8 files changed, 476 insertions(+), 1 deletion(-)
- create mode 100644 arch/arc/boot/dts/hsdk-4xd.dts
- create mode 100644 arch/arc/configs/hsdk_4xd_defconfig
+We are going to use this option for HSDK-4xD board support.
+In addition it also allows to awoid patching 'mcpu' in ARC Makefile
+when we building Linux for some non-standard simulation or FPGA-based
+platforms.
 
+Signed-off-by: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+---
+ arch/arc/Kconfig  | 7 +++++++
+ arch/arc/Makefile | 4 ++++
+ 2 files changed, 11 insertions(+)
+
+diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
+index ff306246d0f8..2d4f85dc914e 100644
+--- a/arch/arc/Kconfig
++++ b/arch/arc/Kconfig
+@@ -377,6 +377,13 @@ config ARC_HAS_SWAPE
+ 	bool "Insn: SWAPE (endian-swap)"
+ 	default y
+ 
++config ARC_TUNE_MCPU
++	string "Overide default -mcpu compiler flag"
++	default ""
++	help
++	  Overide default -mcpu=xxx compiler flag (which is set depending on
++	  the ISA version) with the specified value.
++
+ if ISA_ARCV2
+ 
+ config ARC_USE_UNALIGNED_MEM_ACCESS
+diff --git a/arch/arc/Makefile b/arch/arc/Makefile
+index 20e9ab6cc521..eb88ba5b1573 100644
+--- a/arch/arc/Makefile
++++ b/arch/arc/Makefile
+@@ -10,8 +10,12 @@ CROSS_COMPILE := $(call cc-cross-prefix, arc-linux- arceb-linux-)
+ endif
+ 
+ cflags-y	+= -fno-common -pipe -fno-builtin -mmedium-calls -D__linux__
++ifeq ($(CONFIG_ARC_TUNE_MCPU),"")
+ cflags-$(CONFIG_ISA_ARCOMPACT)	+= -mA7
+ cflags-$(CONFIG_ISA_ARCV2)	+= -mcpu=hs38
++else
++cflags-y			+= $(shell echo $(CONFIG_ARC_TUNE_MCPU))
++endif
+ 
+ ifdef CONFIG_ARC_CURR_IN_REG
+ # For a global register defintion, make sure it gets passed to every file
 -- 
 2.21.3
 
