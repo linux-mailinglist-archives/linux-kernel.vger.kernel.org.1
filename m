@@ -2,108 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A851E765E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 09:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDFCD1E7673
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 09:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725863AbgE2HJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 03:09:07 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:44850 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725775AbgE2HJH (ORCPT
+        id S1725928AbgE2HRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 03:17:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgE2HRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 03:09:07 -0400
-Received: by mail-pl1-f193.google.com with SMTP id bh7so723755plb.11;
-        Fri, 29 May 2020 00:09:06 -0700 (PDT)
+        Fri, 29 May 2020 03:17:10 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2E6C03E969
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 00:17:10 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id ci21so818847pjb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 00:17:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=P5u/NbTWEXJl8r2ntb3RMUbWPRi8ebmRq4q1xRNaxs0=;
+        b=EXjRYk2eE8ul6RkMaGwpyALBo5BTSDqE3OyHZPZb+x6FV1PL83C4t1UyRjx0Rl7Hlh
+         4MnRprcXutzOk7MZJ5HWAaNu6U2ubJrQmyn3RFoi9Iph7iubNRbqUT/6SvDrCTr8f79M
+         hfqJPtxO8+UDIaGmdlY5wINH9dUZxOi7NC/SY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=izb4AXomeV4nhRoa/kLIpNkINoxthQhgyKrp7sV45uQ=;
-        b=lJT3CrFhl7DFfjokxorfwJ5U0KTfzulSvvHkky1gyAZNrVIkTGzzOlGE0WI7XT+HMq
-         L1pL0Qc8HW3xPplfG640wGXrgMj/G9j5tYqw/5zWAzUzgMOGB8uTws9CB6gutwx4GfS5
-         KOGkB5AgS74gYjLwQR267X3CZUTGqPTghF4o1TJktkXHYDhb8NgZXwQKx+rf/GYdoyRI
-         6Xj0itibh+8V56mQOMStV2eM38tsu0PFJHPVyPRYqrfXhWPTnefa4guJUlr6Y0xu5MFN
-         khOqm0LdK6hP5RBDwkd2a8thCjOib9OhgTvxq8We6wIANRXtkGUWRtYpVtFVgGiN2d9S
-         Bs3g==
-X-Gm-Message-State: AOAM530Ab2EOsCSKQ9eB8XMhyHGCseygXhelvgbjCAvO0WFRhmgHx5D/
-        Yg+nfe9lKy24x4DyEkxd5e4=
-X-Google-Smtp-Source: ABdhPJzyw/EmLS6P6gA+UXFUO2+GOJKytJKtXYwmn15KMxZO6/5Ci4PhPjByG8xtYUqfMCS/DLKzeA==
-X-Received: by 2002:a17:90a:b00d:: with SMTP id x13mr8040370pjq.11.1590736146458;
-        Fri, 29 May 2020 00:09:06 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id gd1sm7290749pjb.14.2020.05.29.00.09.04
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=P5u/NbTWEXJl8r2ntb3RMUbWPRi8ebmRq4q1xRNaxs0=;
+        b=Hmj6lQcZOaUG++KriEcyjcv5YvSAN603jZSUN1AdUjOj2DqKD0+ipIp28Dmh0UH0+H
+         FE7slYLWHn65bfpGLaivxkSYpwO8c3nCYS63ZbWuGXK7IT7WkjsGGmbNImUfhAAk06IY
+         zM7RwAJXW64A7+868yR6EMXKYGHgpH+vvjFimK207XgjrVMrAQHCz8Fj5N/8hy9UAJIT
+         r/wG+15q+tY1Qj+btWt5sPPWvS3ZIA7QKtjREwRONOHN/Qj0UxBktOnZ2ZbMIYGNcj++
+         TIvL2BNv3kQWvSPD3LZYSO6S1Y355L3w/lSVn3HwIzva61X6ao7pbksf7JBZ3bsyFAIL
+         7JXw==
+X-Gm-Message-State: AOAM5330GAU148ez8m5UJxyKoOjZhj/bzsnVH/+Pd00ifNsQUbO2JMdE
+        J0kb2O96BCjjDvM3mvZ0rosAIw==
+X-Google-Smtp-Source: ABdhPJyqIMaXyY94gFD+xEgk1Xo4EiJRBAUruzIQi6emdvQxnhR6IlFqXi9tfWoyUkrXC2CoQoI4aw==
+X-Received: by 2002:a17:902:6b09:: with SMTP id o9mr7778933plk.100.1590736629784;
+        Fri, 29 May 2020 00:17:09 -0700 (PDT)
+Received: from rayagonda.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id w65sm6418005pfb.160.2020.05.29.00.17.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 00:09:04 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id F422440605; Fri, 29 May 2020 07:09:03 +0000 (UTC)
-Date:   Fri, 29 May 2020 07:09:03 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Xiaoming Ni <nixiaoming@huawei.com>
-Cc:     keescook@chromium.org, yzaikin@google.com, adobriyan@gmail.com,
-        mingo@kernel.org, gpiccoli@canonical.com, rdna@fb.com,
-        patrick.bellasi@arm.com, sfr@canb.auug.org.au,
-        akpm@linux-foundation.org, mhocko@suse.com,
-        penguin-kernel@i-love.sakura.ne.jp, vbabka@suse.cz,
-        tglx@linutronix.de, peterz@infradead.org,
-        Jisheng.Zhang@synaptics.com, khlebnikov@yandex-team.ru,
-        bigeasy@linutronix.de, pmladek@suse.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        wangle6@huawei.com, alex.huangjianhui@huawei.com
-Subject: Re: [PATCH v4 1/4] sysctl: Add register_sysctl_init() interface
-Message-ID: <20200529070903.GV11244@42.do-not-panic.com>
-References: <1589859071-25898-1-git-send-email-nixiaoming@huawei.com>
- <1589859071-25898-2-git-send-email-nixiaoming@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1589859071-25898-2-git-send-email-nixiaoming@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Fri, 29 May 2020 00:17:08 -0700 (PDT)
+From:   Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+Subject: [PATCH v2 1/1] drivers: mtd: spi-nor: update read capabilities for w25q64 and s25fl064k
+Date:   Fri, 29 May 2020 12:46:55 +0530
+Message-Id: <20200529071655.739-1-rayagonda.kokatanur@broadcom.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 11:31:08AM +0800, Xiaoming Ni wrote:
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -3358,6 +3358,25 @@ int __init sysctl_init(void)
->  	kmemleak_not_leak(hdr);
->  	return 0;
->  }
-> +
-> +/*
-> + * The sysctl interface is used to modify the interface value,
-> + * but the feature interface has default values. Even if register_sysctl fails,
-> + * the feature body function can also run. At the same time, malloc small
-> + * fragment of memory during the system initialization phase, almost does
-> + * not fail. Therefore, the function return is designed as void
-> + */
+Both w25q64 and s25fl064k nor flash support QUAD and DUAL read
+command, hence update the same in flash_info table.
 
-Let's use kdoc while at it. Can you convert this to proper kdoc?
+This is tested on Broadcom Stingray SoC (bcm958742t).
 
-> +void __init register_sysctl_init(const char *path, struct ctl_table *table,
-> +				 const char *table_name)
-> +{
-> +	struct ctl_table_header *hdr = register_sysctl(path, table);
-> +
-> +	if (unlikely(!hdr)) {
-> +		pr_err("failed when register_sysctl %s to %s\n", table_name, path);
-> +		return;
+Signed-off-by: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+---
+Changes from v1:
+ -Address review comments from Vignesh Raghavendra
+  Update commit message with testing details.
 
-table_name is only used for this, however we can easily just make
-another _register_sysctl_init() helper first, and then use a macro
-which will concatenate this to something useful if you want to print
-a string. I see no point in the description for this, specially since
-the way it was used was not to be descriptive, but instead just a name
-followed by some underscore and something else.
+ drivers/mtd/spi-nor/spansion.c | 3 ++-
+ drivers/mtd/spi-nor/winbond.c  | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-> +	}
-> +	kmemleak_not_leak(hdr);
+diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+index 6756202ace4b..c91bbb8d9cd6 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -52,7 +52,8 @@ static const struct flash_info spansion_parts[] = {
+ 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl016k",  INFO(0xef4015,      0,  64 * 1024,  32,
+ 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+-	{ "s25fl064k",  INFO(0xef4017,      0,  64 * 1024, 128, SECT_4K) },
++	{ "s25fl064k",  INFO(0xef4017,      0,  64 * 1024, 128,
++			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl116k",  INFO(0x014015,      0,  64 * 1024,  32,
+ 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl132k",  INFO(0x014016,      0,  64 * 1024,  64, SECT_4K) },
+diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+index 17deabad57e1..2028cab3eff9 100644
+--- a/drivers/mtd/spi-nor/winbond.c
++++ b/drivers/mtd/spi-nor/winbond.c
+@@ -39,7 +39,8 @@ static const struct flash_info winbond_parts[] = {
+ 			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+ 	{ "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
+-	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128, SECT_4K) },
++	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128,
++			 SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "w25q64dw", INFO(0xef6017, 0, 64 * 1024, 128,
+ 			   SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			   SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+-- 
+2.17.1
 
-Is it *wrong* to run kmemleak_not_leak() when hdr was not allocated?
-If so, can you fix the sysctl __init call itself?
-
-PS. Since you have given me your series, feel free to send me a patch
-as a follow up to this in privae and I can integrate it into my tree.
-
-  Luis
