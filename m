@@ -2,142 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD1D1E7D5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 14:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBDC01E7D60
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 14:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726958AbgE2Mgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 08:36:51 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:5449 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726568AbgE2Mgt (ORCPT
+        id S1727008AbgE2MhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 08:37:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726459AbgE2MhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 08:36:49 -0400
+        Fri, 29 May 2020 08:37:16 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E20C03E969
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 05:37:16 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id 9so2209743ilg.12
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 05:37:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1590755809; x=1622291809;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=woh8X2qLrbIivKtA6+U+XPyL5ypCpHHxsWaHLUytZKA=;
-  b=AogmTAY111V33REybQg+qmLwlkzlyH63n3mOGJaPs90kRqJgqrxm9/IM
-   23HuKll6K7S0JyA1wGwrvX48ESLdLAgYXqNsfvJFjaAnDtjg4Ne0JqfS/
-   qcgNlOtZu++ZNQXdmn/coJ/oApAq5y/FcBzGXm+hs/SdPMo/dALilRJdN
-   w=;
-IronPort-SDR: i7jAYIcp/8lJse9/Fl3P00Ar8WnP5toJeJ93ITjuwxTGsMUN0ZVc5ttZhRs/GcHkBEadvX+1aC
- SUzg+QPdoYCQ==
-X-IronPort-AV: E=Sophos;i="5.73,448,1583193600"; 
-   d="scan'208";a="39186509"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 29 May 2020 12:36:46 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com (Postfix) with ESMTPS id 769AAA262A;
-        Fri, 29 May 2020 12:36:44 +0000 (UTC)
-Received: from EX13D21UWB002.ant.amazon.com (10.43.161.177) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 29 May 2020 12:36:42 +0000
-Received: from EX13D02UWB004.ant.amazon.com (10.43.161.11) by
- EX13D21UWB002.ant.amazon.com (10.43.161.177) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 29 May 2020 12:36:42 +0000
-Received: from EX13D02UWB004.ant.amazon.com ([10.43.161.11]) by
- EX13D02UWB004.ant.amazon.com ([10.43.161.11]) with mapi id 15.00.1497.006;
- Fri, 29 May 2020 12:36:43 +0000
-From:   "Saidi, Ali" <alisaidi@amazon.com>
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "Herrenschmidt, Benjamin" <benh@amazon.com>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "Zilberman, Zeev" <zeev@amazon.com>,
-        "Machulsky, Zorik" <zorik@amazon.com>
-Subject: Re: [PATCH] irqchip/gic-v3-its: Don't try to move a disabled irq
-Thread-Topic: [PATCH] irqchip/gic-v3-its: Don't try to move a disabled irq
-Thread-Index: AQHWNbXOKigmt6yOIESl6vIJ9+Em4g==
-Date:   Fri, 29 May 2020 12:36:42 +0000
-Message-ID: <2C4F431F-8140-4C82-B4BD-E51DE618FC08@amazon.com>
-References: <20200529015501.15771-1-alisaidi@amazon.com>,<8c3be990888ecfb7cca9503853dc4aac@kernel.org>
-In-Reply-To: <8c3be990888ecfb7cca9503853dc4aac@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=fb+W3gmU5L5sIfBg+Srp3Nm9jSCqSskItiXjvtBQMeg=;
+        b=as9DdhASixL2BD+vWAWuMWXlgnW5ZOaAr/TpJELhlv3XMbLE/NUkIEG6Ni3EgQvQGV
+         Lo14n5BvxRFUCOv1onoLOfWjUYa11xq5aVMSl6XBa2d2g5fBMq+mLJI6uyBGqLPCIJia
+         2tU8tAlCvQvKXQqNBfbjbZWuHseT0ecJhJIza6zSeIihDqYDThvMyduVlEJkXesay3m0
+         q1cKdSrnvAug7uPFIzIqL3ISlgpxswwEIlxY0lBycr7h4DKQXj9assshgsYJp9t2F7Pi
+         /HJetSckNvFkjiqC0Lgv/jjy1B80WSrrrpsqDBcUcZg1XgmeWnwA6jIuYf1a8BUFGGcb
+         v1wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fb+W3gmU5L5sIfBg+Srp3Nm9jSCqSskItiXjvtBQMeg=;
+        b=hNzb44YweKZjsMdztzwdUDYzha5OVbd45x4brIN2EmErmwcSKRQ3o4Ed2IEgbdK4+q
+         U//u2XCizu4jalh+DGCNALNMOMv2Sb8ky/SjQNNIP9lWReBPJ1yhahSlYV9XadhmQtEl
+         qZmXtiMmOBq/ZQYNQUka9dRr0F1XN0ybxD9KNeFZ8J1SVoXZQSw14YqnNphAIx7ANyrC
+         3LerZf6exU/tPh9HjgRI+ydF5fweYZWFkwzZ+WptzgxkfQ81bjGK82DVyMDlJSzH6BI3
+         va0ZzLBcgKP9cbsIlbO/1dvCY+RqwsapNceF012MmWtq6xGAzSM/n5CuslK7vp1rvEek
+         zNBw==
+X-Gm-Message-State: AOAM531FMDRd05lkADcwRKKkxYH4u4h4HKJXHzlFS4T5p6WDVBKw6uSr
+        ZbZXE8LVYFQE67soWPB8iAVzs23WoX0gZQpSChc=
+X-Google-Smtp-Source: ABdhPJxxEfv6IvdL+8cTmPKajhIN/6WuoIqhPyobZ8GRAjXV7kfity+v9VBcksLLW2KTaXA0nH8HYLdUF7l3M4YjN2E=
+X-Received: by 2002:a92:d64f:: with SMTP id x15mr7066090ilp.118.1590755835306;
+ Fri, 29 May 2020 05:37:15 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200510165538.19720-1-peron.clem@gmail.com> <20200510165538.19720-11-peron.clem@gmail.com>
+ <2f0d2cd6-481c-26ce-fcef-ee5b4fdb249b@arm.com>
+In-Reply-To: <2f0d2cd6-481c-26ce-fcef-ee5b4fdb249b@arm.com>
+From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Date:   Fri, 29 May 2020 14:37:04 +0200
+Message-ID: <CAJiuCccL+rv3jMX33CwqcJyiFeAy9Ur=1Z2644k8-SJ5cgh8Dw@mail.gmail.com>
+Subject: Re: [PATCH 10/15] drm/panfrost: add regulators to devfreq
+To:     Steven Price <steven.price@arm.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTWFyYywNCg0KPiBPbiBNYXkgMjksIDIwMjAsIGF0IDM6MzMgQU0sIE1hcmMgWnluZ2llciA8
-bWF6QGtlcm5lbC5vcmc+IHdyb3RlOg0KPiANCj4gSGkgQWxpLA0KPiANCj4+IE9uIDIwMjAtMDUt
-MjkgMDI6NTUsIEFsaSBTYWlkaSB3cm90ZToNCj4+IElmIGFuIGludGVycnVwdCBpcyBkaXNhYmxl
-ZCB0aGUgSVRTIGRyaXZlciBoYXMgc2VudCBhIGRpc2NhcmQgcmVtb3ZpbmcNCj4+IHRoZSBEZXZp
-Y2VJRCBhbmQgRXZlbnRJRCBmcm9tIHRoZSBJVFQuIEFmdGVyIHRoaXMgb2NjdXJzIGl0IGNhbid0
-IGJlDQo+PiBtb3ZlZCB0byBhbm90aGVyIGNvbGxlY3Rpb24gd2l0aCBhIE1PVkkgYW5kIGEgY29t
-bWFuZCBlcnJvciBvY2N1cnMgaWYNCj4+IGF0dGVtcHRlZC4gQmVmb3JlIGlzc3VpbmcgdGhlIE1P
-VkkgY29tbWFuZCBtYWtlIHN1cmUgdGhhdCB0aGUgSVJRIGlzbid0DQo+PiBkaXNhYmxlZCBhbmQg
-Y2hhbmdlIHRoZSBhY3RpdmF0ZSBjb2RlIHRvIHRyeSBhbmQgdXNlIHRoZSBwcmV2aW91cw0KPj4g
-YWZmaW5pdHkuDQo+PiANCj4+IFNpZ25lZC1vZmYtYnk6IEFsaSBTYWlkaSA8YWxpc2FpZGlAYW1h
-em9uLmNvbT4NCj4+IC0tLQ0KPj4gZHJpdmVycy9pcnFjaGlwL2lycS1naWMtdjMtaXRzLmMgfCAx
-OCArKysrKysrKysrKysrKystLS0NCj4+IDEgZmlsZSBjaGFuZ2VkLCAxNSBpbnNlcnRpb25zKCsp
-LCAzIGRlbGV0aW9ucygtKQ0KPj4gDQo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pcnFjaGlwL2ly
-cS1naWMtdjMtaXRzLmMNCj4+IGIvZHJpdmVycy9pcnFjaGlwL2lycS1naWMtdjMtaXRzLmMNCj4+
-IGluZGV4IDEyNDI1MWIwY2NiYS4uMTIzNWRkOWEyZmIyIDEwMDY0NA0KPj4gLS0tIGEvZHJpdmVy
-cy9pcnFjaGlwL2lycS1naWMtdjMtaXRzLmMNCj4+ICsrKyBiL2RyaXZlcnMvaXJxY2hpcC9pcnEt
-Z2ljLXYzLWl0cy5jDQo+PiBAQCAtMTU0MCw3ICsxNTQwLDExIEBAIHN0YXRpYyBpbnQgaXRzX3Nl
-dF9hZmZpbml0eShzdHJ1Y3QgaXJxX2RhdGEgKmQsDQo+PiBjb25zdCBzdHJ1Y3QgY3B1bWFzayAq
-bWFza192YWwsDQo+PiAgICAgIC8qIGRvbid0IHNldCB0aGUgYWZmaW5pdHkgd2hlbiB0aGUgdGFy
-Z2V0IGNwdSBpcyBzYW1lIGFzIGN1cnJlbnQgb25lDQo+PiAqLw0KPj4gICAgICBpZiAoY3B1ICE9
-IGl0c19kZXYtPmV2ZW50X21hcC5jb2xfbWFwW2lkXSkgew0KPj4gICAgICAgICAgICAgIHRhcmdl
-dF9jb2wgPSAmaXRzX2Rldi0+aXRzLT5jb2xsZWN0aW9uc1tjcHVdOw0KPj4gLSAgICAgICAgICAg
-ICBpdHNfc2VuZF9tb3ZpKGl0c19kZXYsIHRhcmdldF9jb2wsIGlkKTsNCj4+ICsNCj4+ICsgICAg
-ICAgICAgICAgLyogSWYgdGhlIElSUSBpcyBkaXNhYmxlZCBhIGRpc2NhcmQgd2FzIHNlbnQgc28g
-ZG9uJ3QgbW92ZSAqLw0KPj4gKyAgICAgICAgICAgICBpZiAoIWlycWRfaXJxX2Rpc2FibGVkKGQp
-KQ0KPj4gKyAgICAgICAgICAgICAgICAgICAgIGl0c19zZW5kX21vdmkoaXRzX2RldiwgdGFyZ2V0
-X2NvbCwgaWQpOw0KPj4gKw0KPiANCj4gVGhpcyBsb29rcyB3cm9uZy4gV2hhdCB5b3UgYXJlIHRl
-c3RpbmcgaGVyZSBpcyB3aGV0aGVyIHRoZSBpbnRlcnJ1cHQNCj4gaXMgbWFza2VkLCBub3QgdGhh
-dCB0aGVyZSBpc24ndCBhIHZhbGlkIHRyYW5zbGF0aW9uLg0KSeKAmW0gbm90IGV4YWN0bHkgc3Vy
-ZSB0aGUgY29ycmVjdCBjb25kaXRpb24sIGJ1dCB3aGF0IEnigJltIGxvb2tpbmcgZm9yIGlzIGlu
-dGVycnVwdHMgd2hpY2ggYXJlIGRlYWN0aXZhdGVkIGFuZCB3ZSBoYXZlIHRodXMgc2VudCBhIGRp
-c2NhcmQuIA0KDQo+IA0KPiBJbiB0aGUgY29tbWl0IG1lc3NhZ2UsIHlvdSdyZSBzYXlpbmcgdGhh
-dCB3ZSd2ZSBpc3N1ZWQgYSBkaXNjYXJkLiBUaGlzDQo+IGhpbnRzIGF0IGRvaW5nIGEgc2V0X2Fm
-ZmluaXR5IG9uIGFuIGludGVycnVwdCB0aGF0IGhhcyBiZWVuIGRlYWN0aXZhdGVkDQo+IChtYXBw
-aW5nIHJlbW92ZWQpLiBJcyB0aGF0IGFjdHVhbGx5IHRoZSBjYXNlPyBJZiBzbywgd2h5IHdhcyBp
-dA0KPiBkZWFjdGl2YXRlZA0KPiB0aGUgZmlyc3QgcGxhY2U/DQpUaGlzIGlzIHRoZSBjYXNlLiBJ
-ZiB3ZSBkb3duIGEgTklDLCB0aGF0IGludGVyZmFjZeKAmXMgTVNJcyB3aWxsIGJlIGRlYWN0aXZh
-dGVkIGJ1dCByZW1haW4gYWxsb2NhdGVkIHVudGlsIHRoZSBkZXZpY2UgaXMgdW5ib3VuZCBmcm9t
-IHRoZSBkcml2ZXIgb3IgdGhlIE5JQyBpcyBicm91Z2h0IHVwLiANCg0KV2hpbGUgc3RyZXNzaW5n
-IGRvd24vdXAgYSBkZXZpY2UgSeKAmXZlIGZvdW5kIHRoYXQgaXJxYmFsYW5jZSBjYW4gbW92ZSBp
-bnRlcnJ1cHRzIGFuZCB5b3UgZW5kIHVwIHdpdGggdGhlIHNpdHVhdGlvbiBkZXNjcmliZWQuIFRo
-ZSBkZXZpY2UgaXMgZG93bmVkLCB0aGUgaW50ZXJydXB0cyBhcmUgZGVhY3RpdmF0ZWQgYnV0IHN0
-aWxsIHByZXNlbnQgYW5kIHRoZW4gdHJ5aW5nIHRvIG1vdmUgb25lIHJlc3VsdHMgaW4gc2VuZGlu
-ZyBhIE1PVkkgYWZ0ZXIgdGhlIERJU0NBUkQgd2hpY2ggaXMgYW4gZXJyb3IgcGVyIHRoZSBHSUMg
-c3BlYy4gDQoNCj4gDQo+PiAgICAgICAgICAgICAgaXRzX2Rldi0+ZXZlbnRfbWFwLmNvbF9tYXBb
-aWRdID0gY3B1Ow0KPj4gICAgICAgICAgICAgIGlycV9kYXRhX3VwZGF0ZV9lZmZlY3RpdmVfYWZm
-aW5pdHkoZCwgY3B1bWFza19vZihjcHUpKTsNCj4+ICAgICAgfQ0KPj4gQEAgLTM0MzksOCArMzQ0
-MywxNiBAQCBzdGF0aWMgaW50IGl0c19pcnFfZG9tYWluX2FjdGl2YXRlKHN0cnVjdA0KPj4gaXJx
-X2RvbWFpbiAqZG9tYWluLA0KPj4gICAgICBpZiAoaXRzX2Rldi0+aXRzLT5udW1hX25vZGUgPj0g
-MCkNCj4+ICAgICAgICAgICAgICBjcHVfbWFzayA9IGNwdW1hc2tfb2Zfbm9kZShpdHNfZGV2LT5p
-dHMtPm51bWFfbm9kZSk7DQo+PiANCj4+IC0gICAgIC8qIEJpbmQgdGhlIExQSSB0byB0aGUgZmly
-c3QgcG9zc2libGUgQ1BVICovDQo+PiAtICAgICBjcHUgPSBjcHVtYXNrX2ZpcnN0X2FuZChjcHVf
-bWFzaywgY3B1X29ubGluZV9tYXNrKTsNCj4+ICsgICAgIC8qIElmIHRoZSBjcHUgc2V0IHRvIGEg
-ZGlmZmVyZW50IENQVSB0aGF0IGlzIHN0aWxsIG9ubGluZSB1c2UgaXQgKi8NCj4+ICsgICAgIGNw
-dSA9IGl0c19kZXYtPmV2ZW50X21hcC5jb2xfbWFwW2V2ZW50XTsNCj4+ICsNCj4+ICsgICAgIGNw
-dW1hc2tfYW5kKGNwdV9tYXNrLCBjcHVfbWFzaywgY3B1X29ubGluZV9tYXNrKTsNCj4+ICsNCj4+
-ICsgICAgIGlmICghY3B1bWFza190ZXN0X2NwdShjcHUsIGNwdV9tYXNrKSkgew0KPj4gKyAgICAg
-ICAgICAgICAvKiBCaW5kIHRoZSBMUEkgdG8gdGhlIGZpcnN0IHBvc3NpYmxlIENQVSAqLw0KPj4g
-KyAgICAgICAgICAgICBjcHUgPSBjcHVtYXNrX2ZpcnN0KGNwdV9tYXNrKTsNCj4+ICsgICAgIH0N
-Cj4+ICsNCj4+ICAgICAgaWYgKGNwdSA+PSBucl9jcHVfaWRzKSB7DQo+PiAgICAgICAgICAgICAg
-aWYgKGl0c19kZXYtPml0cy0+ZmxhZ3MgJiBJVFNfRkxBR1NfV09SS0FST1VORF9DQVZJVU1fMjMx
-NDQpDQo+PiAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsNCj4gDQo+IFNvIHlv
-dSBkZWFjdGl2YXRlIGFuIGludGVycnVwdCwgZG8gYSBzZXRfYWZmaW5pdHkgdGhhdCBkb2Vzbid0
-IGlzc3VlDQo+IGEgTU9WSSBidXQgcHJlc2VydmVzIHRoZSBhZmZpbml0eSwgdGhlbiByZWFjdGl2
-YXRlIGl0IGFuZCBob3BlIHRoYXQNCj4gdGhlIG5ldyBtYXBwaW5nIHdpbGwgdGFyZ2V0IHRoZSAi
-cmlnaHQiIENQVS4NCj4gDQo+IFRoYXQgc2VlbXMgYSBiaXQgbWFkLCBidXQgSSBwcmVzdW1lIHRo
-aXMgaXNuJ3QgdGhlIHdob2xlIHN0b3J5Li4uDQpEb2luZyBzb21lIGV4cGVyaW1lbnRzIGl0IGFw
-cGVhcnMgYXMgdGhvdWdoIG90aGVyIGludGVycnVwdHMgY29udHJvbGxlcnMgZG8gcHJlc2VydmUg
-YWZmaW5pdHkgYWNyb3NzIGRlYWN0aXZhdGUvYWN0aXZhdGUsIHNvIHRoaXMgaXMgbXkgYXR0ZW1w
-dCBhdCBkb2luZyB0aGUgc2FtZS4gDQoNClRoYW5rcywNCkFsaQ==
+Hi Steven,
+
+On Thu, 28 May 2020 at 15:23, Steven Price <steven.price@arm.com> wrote:
+>
+> On 10/05/2020 17:55, Cl=C3=A9ment P=C3=A9ron wrote:
+> > Some OPP tables specify voltage for each frequency. Devfreq can
+> > handle these regulators but they should be get only 1 time to avoid
+> > issue and know who is in charge.
+> >
+> > If OPP table is probe don't init regulator.
+> >
+> > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
+>
+> This looks like it should work - thanks for doing this!
+
+Yes but I'm not really happy how it's implemented.
+
+Looks like a bit a workaround but didn't found a better solution.
+
+Thanks for your review,
+Clement
+
+>
+> Reviewed-by: Steven Price <steven.price@arm.com>
+>
+> > ---
+> >   drivers/gpu/drm/panfrost/panfrost_devfreq.c | 19 +++++++++++++++++++
+> >   drivers/gpu/drm/panfrost/panfrost_devfreq.h |  2 ++
+> >   drivers/gpu/drm/panfrost/panfrost_device.c  | 11 +++++++----
+> >   3 files changed, 28 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/=
+drm/panfrost/panfrost_devfreq.c
+> > index fce21c682414..9ffea0d4a087 100644
+> > --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
+> > +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
+> > @@ -93,6 +93,7 @@ int panfrost_devfreq_init(struct panfrost_device *pfd=
+ev)
+> >       unsigned long cur_freq;
+> >       struct device *dev =3D &pfdev->pdev->dev;
+> >       struct devfreq *devfreq;
+> > +     struct opp_table *opp_table;
+> >       struct thermal_cooling_device *cooling;
+> >       struct panfrost_devfreq *pfdevfreq =3D &pfdev->pfdevfreq;
+> >
+> > @@ -102,6 +103,19 @@ int panfrost_devfreq_init(struct panfrost_device *=
+pfdev)
+> >
+> >       spin_lock_init(&pfdevfreq->lock);
+> >
+> > +     opp_table =3D dev_pm_opp_set_regulators(dev, pfdev->comp->supply_=
+names,
+> > +                                           pfdev->comp->num_supplies);
+> > +     if (IS_ERR(opp_table)) {
+> > +             ret =3D PTR_ERR(opp_table);
+> > +             /* Continue if the optional regulator is missing */
+> > +             if (ret !=3D -ENODEV) {
+> > +                     DRM_DEV_ERROR(dev, "Couldn't set OPP regulators\n=
+");
+> > +                     goto err_fini;
+> > +             }
+> > +     } else {
+> > +             pfdevfreq->regulators_opp_table =3D opp_table;
+> > +     }
+> > +
+> >       ret =3D dev_pm_opp_of_add_table(dev);
+> >       if (ret) {
+> >               DRM_DEV_ERROR(dev, "Couldn't add OPP table\n");
+> > @@ -157,6 +171,11 @@ void panfrost_devfreq_fini(struct panfrost_device =
+*pfdev)
+> >               dev_pm_opp_of_remove_table(&pfdev->pdev->dev);
+> >               pfdevfreq->opp_of_table_added =3D false;
+> >       }
+> > +
+> > +     if (pfdevfreq->regulators_opp_table) {
+> > +             dev_pm_opp_put_regulators(pfdevfreq->regulators_opp_table=
+);
+> > +             pfdevfreq->regulators_opp_table =3D NULL;
+> > +     }
+> >   }
+> >
+> >   void panfrost_devfreq_resume(struct panfrost_device *pfdev)
+> > diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.h b/drivers/gpu/=
+drm/panfrost/panfrost_devfreq.h
+> > index add203cb00c2..347cde4786cf 100644
+> > --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.h
+> > +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.h
+> > @@ -8,12 +8,14 @@
+> >   #include <linux/ktime.h>
+> >
+> >   struct devfreq;
+> > +struct opp_table;
+> >   struct thermal_cooling_device;
+> >
+> >   struct panfrost_device;
+> >
+> >   struct panfrost_devfreq {
+> >       struct devfreq *devfreq;
+> > +     struct opp_table *regulators_opp_table;
+> >       struct thermal_cooling_device *cooling;
+> >       bool opp_of_table_added;
+> >
+> > diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/d=
+rm/panfrost/panfrost_device.c
+> > index 67eedf64e82d..8b17fb2e3369 100644
+> > --- a/drivers/gpu/drm/panfrost/panfrost_device.c
+> > +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
+> > @@ -222,10 +222,13 @@ int panfrost_device_init(struct panfrost_device *=
+pfdev)
+> >               goto err_out0;
+> >       }
+> >
+> > -     err =3D panfrost_regulator_init(pfdev);
+> > -     if (err) {
+> > -             dev_err(pfdev->dev, "regulator init failed %d\n", err);
+> > -             goto err_out1;
+> > +     /* OPP will handle regulators */
+> > +     if (!pfdev->pfdevfreq.opp_of_table_added) {
+> > +             err =3D panfrost_regulator_init(pfdev);
+> > +             if (err) {
+> > +                     dev_err(pfdev->dev, "regulator init failed %d\n",=
+ err);
+> > +                     goto err_out1;
+> > +             }
+> >       }
+> >
+> >       err =3D panfrost_reset_init(pfdev);
+> >
+>
