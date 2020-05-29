@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 511B51E7E0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 15:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A30201E7EB1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 15:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726936AbgE2NJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 09:09:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726509AbgE2NJU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 09:09:20 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1C60206B6;
-        Fri, 29 May 2020 13:09:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590757760;
-        bh=WVNaQgrBuW8xSyrTk5uLxPHCK2TRYribBU0LjW0spnY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KMPW1sYJhgVDgcKmnynvA9sVxosTyYE/98PyLzdGhIB0i0/pSAth5FqDaJFyNhCP6
-         J9I6oJQxBfKHJOUD0AnNLXnjkX/AjZ1Y2Rznl+d6voTTZ5R1m/bQ5BpWN/+ODVJh18
-         p6Fv426iel/u3fjn40e05c5dI1lM3vJVOOKDKgG4=
-Date:   Fri, 29 May 2020 14:09:17 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Stultz <john.stultz@linaro.org>,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH v2 0/2] regulator_sync_state() support
-Message-ID: <20200529130917.GM4610@sirena.org.uk>
-References: <20200528190610.179984-1-saravanak@google.com>
+        id S1727004AbgE2N3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 09:29:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726866AbgE2N3X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 09:29:23 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC44C08C5C6
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 06:29:23 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id r3so1048931qve.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 06:29:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=IhjCRLuc4096hHqDODXUrHbkgDI43xJRrphYmOLQ/E8=;
+        b=JJV7lFTyOJBj4EQeAQALEBsEu+uWvSAy/0OqJRQGyJDzX69ALjbWx/22xils7Xh3jh
+         6aiRS3fAUelZL5uEF9CC0Lx0/d3oUwYa0Ukyjfmwo06tH2NrJQcWEOeYyEbJJkkjJtkC
+         gf2C/A1Wvfot78+i5nYjDzCDIRgmnIToVwKarC0KGdwq4271zB92OxnuzKWV53XKcwTN
+         SliFYsuuvuaU6ADEh72zwMA1RrDXe5qBfrA+25Ti5NxG8w7Xib8kksKkIvvraM8G89/s
+         e+TTEEB0MfRQmm+0vqIZ63VMth0r6ZGAUl/lvZa1Mu+gdTjGQTW2QwsUqBuTeMQCVqCc
+         n6VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=IhjCRLuc4096hHqDODXUrHbkgDI43xJRrphYmOLQ/E8=;
+        b=t+eqE9Sk38Yv6s5gr3ZDtOl4wsATH22t3yF7M338cqT76fF1tmEvnWPzXgVNCwQfUT
+         Z/0VGo1gYxWsnHNko147trpauw93mmuTfwMcpXRSzDUjwvsTXyukrAqrTk9wpi2u3/Kt
+         7kZVVe0LRTssAGLcveJBfPefRxncPS6xBk33P3dZAMCxsMwySzQXpKjK0X94KDVZPhEM
+         H6ELUVLkNtLOxEsaSE+on28pZM1OamdUfDcbriYVbL8fOPvI86Mza/RfiYICcKhpsPKm
+         HM9/hpD7Wj0ndGDm7k2pkJHbRW/mSXeT41E6OuqXPTribJmPJaCN0saZmZm/BemdNI6w
+         k11Q==
+X-Gm-Message-State: AOAM533vCUclqXRRfEiBXfQ5v9MJfNn1Wkj0e5iYqL4xIoIJNqbzb9QE
+        Ijf+KdzGV5BrHAhjinbrf+CghA==
+X-Google-Smtp-Source: ABdhPJwBk/u8BjN2Lsc6KJXrjlC+JoQf/i4zOmXIAyovGLn6ZnPX/loXE9zTynG8SFRWakhghez2eA==
+X-Received: by 2002:a05:6214:3ee:: with SMTP id cf14mr8493899qvb.128.1590758962369;
+        Fri, 29 May 2020 06:29:22 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id p13sm500215qtk.24.2020.05.29.06.29.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 29 May 2020 06:29:21 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jeelm-0007zu-EH; Fri, 29 May 2020 10:09:54 -0300
+Date:   Fri, 29 May 2020 10:09:54 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     syzbot <syzbot+478fd0d54412b8759e0d@syzkaller.appspotmail.com>,
+        dledford@redhat.com, leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, michal.kalderon@marvell.com,
+        syzkaller-bugs@googlegroups.com, yishaih@mellanox.com
+Subject: Re: KASAN: use-after-free Read in ib_uverbs_remove_one
+Message-ID: <20200529130954.GA21651@ziepe.ca>
+References: <00000000000095442505a6b63551@google.com>
+ <20200529083126.15808-1-hdanton@sina.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Aaj1jBvBEV7KRjLi"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200528190610.179984-1-saravanak@google.com>
-X-Cookie: The Killer Ducks are coming!!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200529083126.15808-1-hdanton@sina.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, May 29, 2020 at 04:31:26PM +0800, Hillf Danton wrote:
+> Hold another grab to dev to prevent it from going home before work gets
+> done with it.
+> 
+> +++ b/drivers/infiniband/core/uverbs_main.c
+> @@ -1152,6 +1152,8 @@ static int ib_uverbs_add_one(struct ib_d
+>  		  device->ops.mmap ? &uverbs_mmap_fops : &uverbs_fops);
+>  	uverbs_dev->cdev.owner = THIS_MODULE;
+>  
+> +	/* pair with put_device() in ib_uverbs_remove_one() */
+> +	get_device(&uverbs_dev->dev);
+>  	ret = cdev_device_add(&uverbs_dev->cdev, &uverbs_dev->dev);
+>  	if (ret)
+>  		goto err_uapi;
 
---Aaj1jBvBEV7KRjLi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Doesn't look right, the put_device() in uverbs_remove_one() pairs with
+the device_initialize() in this function.
 
-On Thu, May 28, 2020 at 12:06:08PM -0700, Saravana Kannan wrote:
+The only thing I can think of is we called remove_once twice
+somehow or had an extra put on some error path. But I couldn't find
+any flow that would do either of those things
 
-> The simplified explanation of the problem is, for regulators left on by
-> the bootloader, we want to keep them on until all the consumers are
-> probed. This is because we need to protect consumer-A from turning off a
-> shared regulator used by consumer-B. Once consumer-B (and all the other
-> consumers come up), they can do it themselves and the regulator
-> framework no longer needs to keep the regulator on.
-
-> So, this is not just about module or device probe ordering between
-> suppliers and consumers. Even if we get the probe order prefectly right,
-> it still won't solve this problem.
-
-This logic seems to be circular - can you be concrete please?
-
-> We can eventually extend this to also cover voltage and other
-> properties, but in this patch series I want to get this right for
-> "enabled/disabled" first.
-
-I'm quite worried about the extension to voltage changes.
-
---Aaj1jBvBEV7KRjLi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7RCXwACgkQJNaLcl1U
-h9DTVAf/cyo3Pdnub/fGisKcVmt+/TfgiIBfnUq0evlcTwZ4viGLuJMGaxIhNZlt
-1Kl/iUbWkCqY9UWCbQhWBm4Xhvf/iJzxrdDJa7Hs9rRhG7f5ghwGtXjY1nXAZXV5
-G/b+tJw8EV+RoA1ZuSKlp39uTB3OThbdXS/KxL8FLvACoW1J+UIhOEuf2gflbAz5
-67evFohcnVvsqafBfOWnw2BLzABLVmGPL6CoWd4SFHe/Vri0sFEQdpKO/jQnFzdr
-fG2nfcmkgVv/WxqHLOWcYgwy7u0+flOR4ZuCPBwhT+DYCK0aPI2pNA9/44HZK6t4
-v7bmdXgD+VNixIln4y2AWuS78t+nsQ==
-=ISsk
------END PGP SIGNATURE-----
-
---Aaj1jBvBEV7KRjLi--
+Jason
