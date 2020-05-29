@@ -2,130 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7A81E76C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 09:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 560E81E76F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 09:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726593AbgE2Hgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 03:36:52 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:34096 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgE2Hgu (ORCPT
+        id S1726883AbgE2Hi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 03:38:29 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18465 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725768AbgE2HiV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 03:36:50 -0400
-Received: by mail-pg1-f195.google.com with SMTP id m1so1028513pgk.1;
-        Fri, 29 May 2020 00:36:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=e/Dq53c8uDy6FXsZCkAfA0J4N/qAFegmUO6SfVHHBbk=;
-        b=sXitWiUD1nf2jHOY6KDectVpwrJMzz45xIsQdeVlc8SzI1WyaK1s77O+/9o9VYBePy
-         lhDw0s9Ck5hwXJLcfAb34bdX9YwqAVIz2uh259Ajj8TjN+TRMEn+nfTjQpWwNwTjwtp1
-         FPTCNRcdV7sZTqLW6lYZtzeL5SkAx1/9AILBoadmtbf/4QtFPjD+9JzseSsXOf5FXRiL
-         EeAKC5DdjfSB2fgZm8ZkFdeH5Dr0O31ZgOeK06RPQXuvOY7JkV22hQzSVR1wrk/KMjCB
-         YNAl/TDZPfCqk9XLtts6oiUgET+LAAW5WHA0ShU+tGkgmhiHE2tcpYbAl20H7357GNyk
-         IcYg==
-X-Gm-Message-State: AOAM530Y6I2I4Tzwx+DRfEQvY87k3uazKxrzBH4U7cOUyYXuMXW7rSQA
-        LAbyqY5dZGIEFRLHoqw4Sak=
-X-Google-Smtp-Source: ABdhPJzLyyoab/Jq8rDy/ilcEU+5Ad5PE/VwdJ24NfW+vJHD7/Lb+0gPTdYLr8bk8o9PYRtVGmsdoQ==
-X-Received: by 2002:a65:5206:: with SMTP id o6mr6779108pgp.16.1590737808812;
-        Fri, 29 May 2020 00:36:48 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id q100sm7136958pjc.11.2020.05.29.00.36.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 00:36:47 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id DA81940605; Fri, 29 May 2020 07:36:46 +0000 (UTC)
-Date:   Fri, 29 May 2020 07:36:46 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Xiaoming Ni <nixiaoming@huawei.com>
-Cc:     keescook@chromium.org, yzaikin@google.com, adobriyan@gmail.com,
-        mingo@kernel.org, gpiccoli@canonical.com, rdna@fb.com,
-        patrick.bellasi@arm.com, sfr@canb.auug.org.au,
-        akpm@linux-foundation.org, mhocko@suse.com,
-        penguin-kernel@i-love.sakura.ne.jp, vbabka@suse.cz,
-        tglx@linutronix.de, peterz@infradead.org,
-        Jisheng.Zhang@synaptics.com, khlebnikov@yandex-team.ru,
-        bigeasy@linutronix.de, pmladek@suse.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        wangle6@huawei.com, alex.huangjianhui@huawei.com
-Subject: Re: [PATCH v4 1/4] sysctl: Add register_sysctl_init() interface
-Message-ID: <20200529073646.GW11244@42.do-not-panic.com>
-References: <1589859071-25898-1-git-send-email-nixiaoming@huawei.com>
- <1589859071-25898-2-git-send-email-nixiaoming@huawei.com>
- <20200529070903.GV11244@42.do-not-panic.com>
- <3d2d4b2e-db9e-aa91-dd29-e15d24028964@huawei.com>
+        Fri, 29 May 2020 03:38:21 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ed0bb980002>; Fri, 29 May 2020 00:36:56 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Fri, 29 May 2020 00:38:20 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Fri, 29 May 2020 00:38:20 -0700
+Received: from [10.2.62.53] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 29 May
+ 2020 07:38:20 +0000
+Subject: Re: [PATCH] staging: gasket: Convert get_user_pages*() -->
+ pin_user_pages*()
+To:     Souptick Joarder <jrdr.linux@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+CC:     Rob Springer <rspringer@google.com>,
+        Todd Poynor <toddpoynor@google.com>, <benchan@chromium.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1590613362-27495-1-git-send-email-jrdr.linux@gmail.com>
+ <20200528110408.GJ30374@kadam>
+ <CAFqt6zaKWBQTy9XfvxwVAvzGS+gz9Qv1gL8Bv1VxLq+THYf+Aw@mail.gmail.com>
+ <CAFqt6zbtg0NWbAnDGPC0ZddEiTeohz=8JN+S_KxqM0bnnvar3g@mail.gmail.com>
+X-Nvconfidentiality: public
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <52f75ec4-a2a0-f979-a3b9-ef016b88907c@nvidia.com>
+Date:   Fri, 29 May 2020 00:38:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3d2d4b2e-db9e-aa91-dd29-e15d24028964@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAFqt6zbtg0NWbAnDGPC0ZddEiTeohz=8JN+S_KxqM0bnnvar3g@mail.gmail.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1590737816; bh=XWCdO8mYOyEYgSPs/AOwnpRK3mO1gnW/W16YV5NbFoI=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=LpUx1Wncnmb399lTdHKiChW4/LIM/4KS90LFgdoM3OW6sX5VfId8KEPOTovNg/NKD
+         e98V/5wu2deHhZOAfccSC4jlEHLf3K/ZDbRg7s6b1xkuN+Xw1ko1+pUogIi4nDHe2c
+         N3jXmEhUoHB3tqGc/WjC1cYYv6XpDeEobHRH66FaDOT6/C9rRqG3AVbjTovluE0jcu
+         4elCV1sbxRwbg9R354aIkaKBxrjHwffvXUBicyehr0YDFOtd2erEeK+EqqCRCBW/vy
+         0ZrmJKVnl/OPnO8vNTMMdBn8fWW9JyBhuMhXkgVSNlmYQWF+Po+3iwMgS7nyZ31RMe
+         X40kvrJCuDxtQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 03:27:22PM +0800, Xiaoming Ni wrote:
-> On 2020/5/29 15:09, Luis Chamberlain wrote:
-> > On Tue, May 19, 2020 at 11:31:08AM +0800, Xiaoming Ni wrote:
-> > > --- a/kernel/sysctl.c
-> > > +++ b/kernel/sysctl.c
-> > > @@ -3358,6 +3358,25 @@ int __init sysctl_init(void)
-> > >   	kmemleak_not_leak(hdr);
-> > >   	return 0;
-> > >   }
-> > > +
-> > > +/*
-> > > + * The sysctl interface is used to modify the interface value,
-> > > + * but the feature interface has default values. Even if register_sysctl fails,
-> > > + * the feature body function can also run. At the same time, malloc small
-> > > + * fragment of memory during the system initialization phase, almost does
-> > > + * not fail. Therefore, the function return is designed as void
-> > > + */
-> > 
-> > Let's use kdoc while at it. Can you convert this to proper kdoc?
-> > 
-> Sorry, I do n’t know the format requirements of Kdoc, can you give me some
-> tips for writing?
+On 2020-05-28 23:27, Souptick Joarder wrote:
+> On Fri, May 29, 2020 at 11:46 AM Souptick Joarder <jrdr.linux@gmail.com> wrote:
+>>
+>> On Thu, May 28, 2020 at 4:34 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>>>
+>>> On Thu, May 28, 2020 at 02:32:42AM +0530, Souptick Joarder wrote:
+>>>> This code was using get_user_pages_fast(), in a "Case 2" scenario
+>>>> (DMA/RDMA), using the categorization from [1]. That means that it's
+>>>> time to convert the get_user_pages_fast() + put_page() calls to
+>>>> pin_user_pages_fast() + unpin_user_page() calls.
+>>>
+>>> You are saying that the page is used for DIO and not DMA, but it sure
+>>> looks to me like it is used for DMA.
+>>
+>> No, I was referring to "Case 2" scenario in change log which means  it is
+>> used for DMA, not DIO.
 
-Sure, include/net/mac80211.h is a good example.
+Hi,
 
-> > > +void __init register_sysctl_init(const char *path, struct ctl_table *table,
-> > > +				 const char *table_name)
-> > > +{
-> > > +	struct ctl_table_header *hdr = register_sysctl(path, table);
-> > > +
-> > > +	if (unlikely(!hdr)) {
-> > > +		pr_err("failed when register_sysctl %s to %s\n", table_name, path);
-> > > +		return;
-> > 
-> > table_name is only used for this, however we can easily just make
-> > another _register_sysctl_init() helper first, and then use a macro
-> > which will concatenate this to something useful if you want to print
-> > a string. I see no point in the description for this, specially since
-> > the way it was used was not to be descriptive, but instead just a name
-> > followed by some underscore and something else.
-> > 
-> Good idea, I will fix and send the patch to you as soon as possible
+Dan, I also uncertain as to how you read this as referring to DIO. Case 2 is
+DMA or RDMA, and in fact the proposed commit log says both of those things:
+Case 2 and DMA/RDMA. I don't see "DIO" anywhere here...
 
-No rush :)
 
-> > > +	}
-> > > +	kmemleak_not_leak(hdr);
-> > 
-> > Is it *wrong* to run kmemleak_not_leak() when hdr was not allocated?
-> > If so, can you fix the sysctl __init call itself?
-> I don't understand here, do you mean that register_sysctl_init () does not
-> need to call kmemleak_not_leak (hdr), or does it mean to add check hdr
-> before calling kmemleak_not_leak (hdr) in sysctl_init ()?
+>>
+>>>
+>>>     503                          /* Map the page into DMA space. */
+>>>     504                          ptes[i].dma_addr =
+>>>     505                                  dma_map_page(pg_tbl->device, page, 0, PAGE_SIZE,
+>>>     506                                               DMA_BIDIRECTIONAL);
+>>>
+>>> To be honest, that starting paragraph was confusing.  At first I thought
+>>> you were saying gasket was an RDMA driver. :P  I shouldn't have to read
+>>> a different document to understand the commit message.  It should be
+>>> summarized enough and the other documentation is supplemental.
+>>>
+>>> "In 2019 we introduced pin_user_pages() and now we are converting
+>>> get_user_pages() to the new API as appropriate".
+>>
+>> As all other similar conversion have similar change logs, so I was trying
+>> to maintain the same. John might have a different opinion on this.
+> 
+> For example, I was referring to few recent similar commits for change logs.
+> 
+> http://lkml.kernel.org/r/20200519002124.2025955-5-jhubbard@nvidia.com
+> https://lore.kernel.org/r/20200518015237.1568940-1-jhubbard@nvidia.com
+> 
+> 
+>>
+>> John, Any further opinion ??
 
-I'm asking that the way you are adding it, you don't run
-kmemleak_not_leak(hdr) if the hdr allocation filed. If that is
-right then it seems that sysctl_init() might not be doing it
-right.
 
-Can that code be shared somehow?
+Well, I've gotten away with the current wording for quite a few patches so
+far, but that sure doesn't mean it's perfect! :)
 
-  Luis
+Maybe adding the words that Dan suggests, above, will suffice? Here:
+
+ >>> "In 2019 we introduced pin_user_pages() and now we are converting
+ >>> get_user_pages() to the new API as appropriate".
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
