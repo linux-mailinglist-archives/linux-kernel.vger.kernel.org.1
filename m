@@ -2,56 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CECF1E876F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 21:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED171E8774
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 21:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728056AbgE2TOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 15:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56936 "EHLO
+        id S1727923AbgE2TQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 15:16:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgE2TOs (ORCPT
+        with ESMTP id S1726487AbgE2TQv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 15:14:48 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21C28C03E969;
-        Fri, 29 May 2020 12:14:48 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 700F3128166EC;
-        Fri, 29 May 2020 12:14:44 -0700 (PDT)
-Date:   Fri, 29 May 2020 12:14:41 -0700 (PDT)
-Message-Id: <20200529.121441.2114086642433348007.davem@davemloft.net>
-To:     doshir@vmware.com
-Cc:     netdev@vger.kernel.org, pv-drivers@vmware.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] vmxnet3: use correct hdr reference when
- packet is encapsulated
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200529025352.786-1-doshir@vmware.com>
-References: <20200529025352.786-1-doshir@vmware.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 29 May 2020 12:14:44 -0700 (PDT)
+        Fri, 29 May 2020 15:16:51 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AAE3C03E969;
+        Fri, 29 May 2020 12:16:50 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id bh7so1616480plb.11;
+        Fri, 29 May 2020 12:16:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=W8tHM5A9x7hCqXrGZPnl9PrgU0zBShy7MiBX6R7IaoQ=;
+        b=vcuiL7NkFG8ibcD+t4OJB+dwcTKukbeTVrKXO6VB7PLb24zP+KGR/q7WmfKrlyL0g1
+         2qyiprG+r2j83U+/1nRNIDegSL9MGMUBcdHwLP8j71QJ2v8OKQ5hSIzhMx6OMAtOCU30
+         7tG2fhk9zL9qksdFlHKguAmz4SR4Zjf74/6M/z2CKhO7bBOZme5m4J3/2f5+MylBXrUc
+         AgiSj+fM1UBbUruXsKRSVt7L0RUAR2wImmE+eMgCU3n/gbXr6Zl7mzZjs6U4EpcVNoJY
+         PUN0pd7X2xTd07ik9+NxJTr7YYKA4+A4gp4/TCXkEpPDcPpj4Rthqzelse7XBqzpLrjI
+         XKVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=W8tHM5A9x7hCqXrGZPnl9PrgU0zBShy7MiBX6R7IaoQ=;
+        b=ZvpmeZkv/0eu/g/qdl6EXNz++sM33XjvcTsimiafgN1boAVehzBftk0FGN//BDAFG2
+         MvPJnkcpw52oramDimQT613E6aJw65M4vzknGpuFu+IWKOq+rRsnw+JEX/coA+XxtuwZ
+         bwvyye35T1d1nY4UH/mVldhHKWZdTpgAwyAZEIKjnRj2lKPItwe5vrqYH7t3yb7D9Wfi
+         Gb7+ISfNSAYJERGVViwUh2mtMLzY571zGvJiEKhur0sgA0QXKZ/3noP5F06WEj4usUVH
+         s0BABmrXMmGzSxtGJS/szjgsDoOxokDMIS7/idc0J+9V9ZC5CHrUIQuLIW7jDfw+UBbD
+         pYyw==
+X-Gm-Message-State: AOAM531+kLxbRC0CF6nuEcScxZUTD6K4AebeUKnOEGgqYGMEZwKFG9r3
+        cSBmHmIosra/dd1DwtHIa1xA30ax
+X-Google-Smtp-Source: ABdhPJzEcRhz8HJANDPWTtoAXzpRH7F78bIl5xxDea2VL93YQoccdWOgpSwJNj5a/nZywqr9nj+hLA==
+X-Received: by 2002:a17:902:bd47:: with SMTP id b7mr10457105plx.79.1590779809488;
+        Fri, 29 May 2020 12:16:49 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id g92sm202505pje.13.2020.05.29.12.16.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2020 12:16:48 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM
+        BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE...),
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        linux-gpio@vger.kernel.org (open list:PIN CONTROL SUBSYSTEM),
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE)
+Subject: [PATCH v2 0/4] pinctrl: bcm2835: Support for wake-up interrupts
+Date:   Fri, 29 May 2020 12:15:18 -0700
+Message-Id: <20200529191522.27938-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ronak Doshi <doshir@vmware.com>
-Date: Thu, 28 May 2020 19:53:52 -0700
+Hi Linus,
 
-> 'Commit dacce2be3312 ("vmxnet3: add geneve and vxlan tunnel offload
-> support")' added support for encapsulation offload. However, while
-> preparing inner tso packet, it uses reference to outer ip headers.
-> 
-> This patch fixes this issue by using correct reference for inner
-> headers.
-> 
-> Fixes: dacce2be3312 ("vmxnet3: add geneve and vxlan tunnel offload support")
-> Signed-off-by: Ronak Doshi <doshir@vmware.com>
+This patch series updates the bcm2835 pinctrl driver to support
+the BCM7211 SoC which is quite similar to 2711 (Raspberry Pi 4)
+except that it also supports wake-up interrupts.
 
-Applied.
+Thanks!
+
+Changes in v2:
+
+- fixed patch #3 to reference the correct data structure (Stefan)
+- fixed patch #4 to use conditional initialization and fetching of
+  interrupt resources to limit the memory overhead for non-7211 chips
+
+Florian Fainelli (4):
+  dt-bindings: pinctrl: Document 7211 compatible for
+    brcm,bcm2835-gpio.txt
+  dt-bindings: pinctrl: Document optional BCM7211 wake-up interrupts
+  pinctrl: bcm2835: Match BCM7211 compatible string
+  pinctrl: bcm2835: Add support for wake-up interrupts
+
+ .../bindings/pinctrl/brcm,bcm2835-gpio.txt    |  5 +-
+ drivers/pinctrl/bcm/pinctrl-bcm2835.c         | 80 ++++++++++++++++++-
+ 2 files changed, 83 insertions(+), 2 deletions(-)
+
+-- 
+2.17.1
+
