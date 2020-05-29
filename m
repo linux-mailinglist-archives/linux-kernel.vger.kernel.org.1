@@ -2,108 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F24E1E7F93
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 16:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82761E7F99
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 16:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726955AbgE2OD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 10:03:59 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:41747 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbgE2OD6 (ORCPT
+        id S1727004AbgE2OEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 10:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbgE2OEW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 10:03:58 -0400
-Received: by mail-oi1-f193.google.com with SMTP id 23so2622019oiq.8;
-        Fri, 29 May 2020 07:03:57 -0700 (PDT)
+        Fri, 29 May 2020 10:04:22 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE986C03E969
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 07:04:21 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id q11so3785953wrp.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 07:04:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=KDeE+8oQiy/tdt3YMNlNg7u7djTcDajJsPZXHZoo1Ho=;
+        b=m+5jLXgWjDfUNvfAZv8/R3Md4cEr4hF346AC+w6M+sBWbF3d4l9v1lRjLQK09fHFas
+         JzshuQOo1xiAYfc7fKzCub22st4yUqESiUkIrh7OfTjjoOe4fM6naBfFwtSlqmc0xWAW
+         qjlvhmkSxaFbNCSVe55CgZYu2uL+3IxrX5LcpAfliodvVRXQe8kkvSPRO+PDI8CaUyNH
+         diCeRR5A1VglIdPsqQHobAdiPHNzziP3zvOSCBvM9ibki1Q6yegXvO+wTSK2I59bEntr
+         TzxTVBezmKyMux+tw7E54JpVk2WW5+qr/RvtFd5U4aw1QWj6+p3izDZGEg6MILb923wF
+         3ZaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uDJ4Btq9hlxbNCcGfnKl79K6Z3PoAMkIaZIqBmoR+cM=;
-        b=WeWrj+BP3yx4IWJGiqemW7wE/cv+fD96YF+aF+25HB3i7HIWBBfIXu60rdRozyeFn+
-         W6Bv/FVbAcKy6/bIe9dWyIpAd5rAx5Qi4ZQFqKnUwGNdWw6AZsMp9Fym593kEr3/Y1Bh
-         ugfdlAJqWFEa+7kDbSDT19RCzSLSgyU0t7Lj1dDehYSaj5gQ/6CG//dal7s/SfaNcc7Y
-         QAc+SltzYb71UlDmI7rKyKUqne66HX0cEtuKyqF/PprftzhFRbuVflQ0zj4OXCxsEb4z
-         /nmGCODzkHiZyNAb5QBny/ouGwxSxdI2eughW8X+FDU6831euSuQtSz35KgJORBu+MgO
-         mrww==
-X-Gm-Message-State: AOAM533sbv+05j4BiWOFs2mTfYnH034p+HzdhG3ogsiONkF8d6XcIKhf
-        M7+SAT/HeNYSCzLp+yRDIpjlh1r8Hk55C6fpbns=
-X-Google-Smtp-Source: ABdhPJxuWZmx/BcGQIQHL9kIiVbCuLv+D17s9jpKNSJyt4pYIoAZ3H0oH9tfjaD4OV5KJpPxJtLI4f36mhQ2co+tUv8=
-X-Received: by 2002:aca:210a:: with SMTP id 10mr5565192oiz.153.1590761036723;
- Fri, 29 May 2020 07:03:56 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=KDeE+8oQiy/tdt3YMNlNg7u7djTcDajJsPZXHZoo1Ho=;
+        b=AfTv42yXOYGXnfEHK7ul1VsNoolYIEzsbmCKcV6ZZZX/ky9yMT4PuhswquWduH89AS
+         e4q80uIoiCruapbVjhER2fe0n3vE4JTyMUO2heXAd/PpJmSw/rshlHy9IUea7IIRACwy
+         aAmTRqMv7xjEeH7QOnsVsTsJy/RVVKU01P9eRlbhMOBz2YecUpDiaGlD5gtO9R7Wajtf
+         1tpkrsLZhqJjxf+g3vMq6gPFO4+4e+srt0l077fDZ64HjeaMpFPfU9WmxPwHAzPdiSBq
+         hhBJMfO3u5Hb71msl4nLwpZFeiN6qrin1DnqPb2+Aeh2SK0oLwy7NlbZfEJx0syuKvWf
+         cs8A==
+X-Gm-Message-State: AOAM533B+Trq7A1Qzr4CrUoKmQ25PpnjSOm0qbsat9I1yjBqAl4pQkIT
+        jpNV/4xygo6DDS1ZIBbR2ioVzFVLFXrzUAFzdss=
+X-Google-Smtp-Source: ABdhPJxcnagxCJx4H+rTO6LuqyDmigS4hvfDmhDWd1enxijn8En4SCXGTuQaHOLH7ei21UE1vn685xsjcNnr/UVa6wc=
+X-Received: by 2002:a5d:4d89:: with SMTP id b9mr9616264wru.210.1590761059685;
+ Fri, 29 May 2020 07:04:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <1590611013-26029-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1590611013-26029-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <1590611013-26029-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 29 May 2020 16:03:45 +0200
-Message-ID: <CAMuHMdWmasOizdsNqz+w0HzmmiAHtJY1Jv0twte671p_p6=0Rw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] ARM: dts: r8a7742-iwg21d-q7: Enable HSUSB, USB2.0 and XHCI
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
+Reply-To: bashamzebdani@gmail.com
+Received: by 2002:adf:9525:0:0:0:0:0 with HTTP; Fri, 29 May 2020 07:04:18
+ -0700 (PDT)
+From:   "Mr.Basham Zebdani" <bashamzebdani@gmail.com>
+Date:   Fri, 29 May 2020 07:04:18 -0700
+X-Google-Sender-Auth: j0ZwU-p7RAlBX0NdGfBYRF9Kg6c
+Message-ID: <CAOmrfMuFZeAAs+PQQ85kbMDj8NWddzQ2y6enr-vm24+so3X44Q@mail.gmail.com>
+Subject: VERY VERY URGENT,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+FROM MR.BASHAM ZEBDANI
+AUDIT& ACCOUNT MANAGER
+BANK OF AFRICA (B.O.A)
+OUAGADOUGOU BURKINA FASO
+WEST AFRICA.
 
-On Wed, May 27, 2020 at 10:24 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Enable support for HSUB, USB2.0 and xhci on iWave RZ/G1H carrier board.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+Dear Friend,
 
-Thanks for your patch!
+With due respect, I have decided to contact you on
+abusinesstransaction  that will be beneficial to both of us. At the
+bank last account and  auditing evaluation, my staffs came across an
+old account which was being maintained by a foreign client who we
+learn was among the deceased passengers of motor accident on
+November.2003, the deceased was unable to run this account since his
+death. Theaccount has  remained dormant without the knowledge of his
+family since it was put in a  safe deposit account in the bank for
+future investment by the client.
 
-> --- a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
-> +++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
+Since his demise, even the members of his family haven't applied for
+claims  over this fund and it has been in the safe deposit account
+until I  discovered that it cannot be claimed since our client
+isaforeign national and we are sure that he has no next of kin here to
+file claims over the money. As the director of the department, this
+discovery was brought to my office so as to decide what is to bedone.I
+decided to seek ways through which to transfer this money out of the
+bank and out of the country too.
 
-> @@ -88,6 +114,21 @@
->                 function = "sdhi2";
->                 power-source = <1800>;
->         };
-> +
-> +       usb0_pins: usb0 {
-> +               groups = "usb0";
-> +               function = "usb0";
-> +       };
-> +
-> +       usb1_pins: usb1 {
-> +               groups = "usb1";
-> +               function = "usb1";
-> +       };
-> +
-> +       usb2_pins: usb2 {
-> +               groups = "usb2";
-> +               function = "usb2";
-> +       };
->  };
+The total amount in the account is 18.6 million with my positions as
+staffs  of the bank, I am handicapped because I cannot operate foreign
+accounts and  cannot lay bonafide claim over this money. The client
+was a foreign  national and you will only be asked to act as his next
+of kin and I will  supply you with all the necessary information and
+bank data to assist you in being able to transfer this money to any
+bank of your  choice where this money could be transferred into.The
+total sum will be shared as follows: 50% for me, 50% for you and
+expenses incidental occur  during the transfer will be incur by both
+of us. The transfer is risk free on both sides hence you are going to
+follow my instruction till the fund  transfer to your account. Since I
+work in this bank that is why you should  be confident in the success
+of this transaction because you will be updated with information as at
+when desired.
 
-Looking at the schematics[*], I'm having a hard time making some sense
-out of this.
+I will wish you to keep this transaction secret and confidential as I
+am hoping to retire with my share of this money at the end of
+transaction  which will be when this money is safety in your account.I
+will then come over to your country for sharing according to the
+previously agreed percentages. You might even have to advise me on
+possibilities of investment in your country or elsewhere of our
+choice. May  God help you to help me to a restive retirement,Amen,And
+You have to  contact me through my private e-mail
+at(bashamzebdani@gmail.com)Please for further information and inquires
+feel free to contact me back immediately for more explanation and
+better understanding I want you to assure me your capability of
+handling this  project with trust by providing me your following
+information details such as:
 
-GP5_21 (USB1_OVC) seems to be GPIO_AVB_SEL, and
-GP5_22 (USB2_PWEN) is GPIO_SD1_LED?
+(1)NAME..............
+(2)AGE:................
+(3)SEX:.....................
+(4)PHONE NUMBER:.................
+(5)OCCUPATION:.....................
+(6)YOUR COUNTRY:.....................
 
-I must be missing something?
-
-[*] *RZ_G1H_SOM.pdf, *RZ_G1M_G1N_G1H_Q7 carrierBoard.pdf
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Yours sincerely,
+Mr.Basham Zebdani
