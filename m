@@ -2,128 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C17C41E7D57
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 14:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C39AD1E7D45
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 14:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726864AbgE2Mgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 08:36:38 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:46751 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbgE2Mgh (ORCPT
+        id S1726836AbgE2Mb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 08:31:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725865AbgE2Mb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 08:36:37 -0400
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200529123633epoutp0137e23ca8f84804394d08cb09e4d5882c~Tf-dJB04i0460404604epoutp01E
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 12:36:33 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200529123633epoutp0137e23ca8f84804394d08cb09e4d5882c~Tf-dJB04i0460404604epoutp01E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1590755793;
-        bh=qVRse0t/lKrDbVySbUMpwja/fCaCoeHHAoOhemPtOeA=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=FulXStSjuuoNrWUlEz9BJ9ZiBBMDJsuhZ4AqwGSNRKAdTvfBQjRxxkdXwywUpJmzU
-         S6iKUzA2iEtyAwodKAP9w/0gyqeeTYBd4DsZ1QUvunOZdbqjs1qxpUh+Btjnsohanp
-         QCGjqnvnHHkzlg/33qx6+kSL1EHZzcbAEICLOYN4=
-Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-        20200529123633epcas5p26729ea8c5a671a64e4eff849ca7753fe~Tf-cxAZIv1526315263epcas5p2W;
-        Fri, 29 May 2020 12:36:33 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        DD.D2.09467.0D101DE5; Fri, 29 May 2020 21:36:32 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
-        20200529122842epcas5p319a1fd6d29aa4b645f0d64c38f550971~Tf4mygg8k2103021030epcas5p3t;
-        Fri, 29 May 2020 12:28:42 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200529122842epsmtrp158d86b55ab154dd98270950d2f98b071~Tf4mxz9zl1294412944epsmtrp1s;
-        Fri, 29 May 2020 12:28:42 +0000 (GMT)
-X-AuditID: b6c32a49-a3fff700000024fb-6f-5ed101d0fed6
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        00.44.08382.AFFF0DE5; Fri, 29 May 2020 21:28:42 +0900 (KST)
-Received: from localhost.localdomain (unknown [107.109.224.135]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200529122841epsmtip182ddff703e1a9b6bb08fca16dc119f29~Tf4lPoZy93038630386epsmtip1g;
-        Fri, 29 May 2020 12:28:40 +0000 (GMT)
-From:   Anupam Aggarwal <anupam.al@samsung.com>
-To:     viro@zeniv.linux.org.uk, linux@dominikbrodowski.net, pc@cjr.nz,
-        dhowells@redhat.com
-Cc:     a.sahrawat@samsung.com, t.vivek@samsung.com,
-        linux-kernel@vger.kernel.org,
-        Anupam Aggarwal <anupam.al@samsung.com>
-Subject: [PATCH] init: include nfs header files when CONFIG_ROOT_NFS is
- enabled
-Date:   Fri, 29 May 2020 17:58:21 +0530
-Message-Id: <1590755301-26094-1-git-send-email-anupam.al@samsung.com>
-X-Mailer: git-send-email 2.7.4
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMIsWRmVeSWpSXmKPExsWy7bCmpu4FxotxBk2PLC0u7k61eN9whd3i
-        XdNvFovLu+awWSxo+cBqceNyE7PFy76NbBbn/x5ndeDw2NZ3itXjwk5uj/f7rrJ59G1Zxejx
-        eZOcx6Ynb5kC2KK4bFJSczLLUov07RK4Mu79WMBe8Jm14vu+SWwNjI2sXYycHBICJhI3f55g
-        6mLk4hAS2M0ocWvVBkYI5xOjxLGuTmYI5xujxMEDy5hhWv4cXwVVtZdR4tyR56wQzldGiSc7
-        LoFVsQnoSsx9MRtsiYhApMSjsxeZQGxmgQqJrkfr2UBsYYFAiV9dW8HqWQRUJbY1nAGzeQVc
-        JZqPbIY6UE7i5jmIMyQEtrFLTH35iQUi4SJx6OhpRghbWOLV8S3sELaUxMv+NnaIhn5Gia5l
-        F1ghnBmMEkf2bIPqtpd43dwAdBIH0EmaEut36UOEZSWmnloHdSmfRO/vJ0wQcV6JHfNgbGWJ
-        qddeQ10nKfG4sxUaLh4SW6edBTtCSCBW4uaV72wTGGVnIWxYwMi4ilEytaA4Nz212LTAMC+1
-        XK84Mbe4NC9dLzk/dxMjOB1oee5gvPvgg94hRiYOxkOMEhzMSiK8a86ejxPiTUmsrEotyo8v
-        Ks1JLT7EKM3BoiTOq/TjTJyQQHpiSWp2ampBahFMlomDU6qBSSXQfPHly/9zNwZLJ5ezyUVY
-        Oh25tvb65S2OT1bZuWpWX/CZUX5Ue84Nprit37dNn7Ety2/69z+vP7gGirW6yj+0dV+ZovXq
-        6fuPXmLzzs/uP8HUlr85z0kxMnf25K+vi18vWJRctWS6palXu8LV+5pxamda+4y+T/UqDFf5
-        nKDu13U0Qmn1yfIPN0wUNZnfsIX1bTolxCGy/t+8c0vKflU77Fs4IWzVXLeYyJZy1j+vrmls
-        cn3fmvR6c8gEW4FF23kNjEVf6uZ+dQ+7wZOUU7dx1SKtpdmu+w5Nmje9f/vh5j23Mk4dLDj4
-        aZOVdE9Qg9TLeX52zFvPXRTd98zpTmj5xTNzNde7elksPc/+5LoSS3FGoqEWc1FxIgA1jwgf
-        dgMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpnluLIzCtJLcpLzFFi42LZdlhJTvfX/wtxBvM+qVtc3J1q8b7hCrvF
-        u6bfLBaXd81hs1jQ8oHV4sblJmaLl30b2SzO/z3O6sDhsa3vFKvHhZ3cHu/3XWXz6NuyitHj
-        8yY5j01P3jIFsEVx2aSk5mSWpRbp2yVwZdz7sYC94DNrxfd9k9gaGBtZuxg5OSQETCT+HF/F
-        2MXIxSEksJtR4s6t04wQCUmJptcboGxhiZX/nrNDFH1mlPh/ZiILSIJNQFdi7ovZYJNEBGIl
-        jv37DRZnFqiROHN+F1hcWMBf4uiMXnYQm0VAVWJbwxlmEJtXwFWi+chmqCvkJG6e62SewMiz
-        gJFhFaNkakFxbnpusWGBYV5quV5xYm5xaV66XnJ+7iZGcFhpae5g3L7qg94hRiYOxkOMEhzM
-        SiK8a86ejxPiTUmsrEotyo8vKs1JLT7EKM3BoiTOe6NwYZyQQHpiSWp2ampBahFMlomDU6qB
-        af76vy4aDVM5lqQyqj8MWsQqUbKh86zcCdWOjQ9bA3q+GJvtknNJ/Sy7b2afIZNKvLv5hFfa
-        ga0fRD+eVptR3Tqtplyzr+tnZLdw/PvLbOo9Kgujz4jvZ5crNAl4H1sS5l7uEHb0CN/Kt/Nm
-        eX2cG+mxNdzM+vaz119vLe38wX/mYKxk07oN1h3brrJdnNQzZ95s3+SXGbM3L7mdn6pgI5v6
-        V1vPeXFJp7y6Q9w2iXOqkgr9gSbVPtx5jo8LJm0xVTs24bxRq9Xe01enavbzzj+4Pbb35ZQF
-        x+O7v156POvA8+aHHqYeLS+N2o3OeU1iWrVHdkqIgs7SNR/lWrfrP8q4v9Rudeq8xoLW09sM
-        lFiKMxINtZiLihMBcIdzyJoCAAA=
-X-CMS-MailID: 20200529122842epcas5p319a1fd6d29aa4b645f0d64c38f550971
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20200529122842epcas5p319a1fd6d29aa4b645f0d64c38f550971
-References: <CGME20200529122842epcas5p319a1fd6d29aa4b645f0d64c38f550971@epcas5p3.samsung.com>
+        Fri, 29 May 2020 08:31:57 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1308FC03E969
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 05:31:57 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id e10so1626683edq.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 05:31:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BSX+fgALxeDo66TlmBZRvGUGpirIUX7OaMfEiJ8VgVc=;
+        b=Ed756vTx8vjBHmmtuSvsE+s5/eTQIQZkHdjkSOIvH5dbxiRq4xJ49dIXhAxD2nncE8
+         imzXFTYbRNqurkW4gOK3fXeFbv1M8bCQ/VYojaotKpmsr9kkG5NaJefAsy3Ss1vlVDgj
+         XiK/n7NHoaT6ELCXRMWt57emfy3wGlO5DEzHw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BSX+fgALxeDo66TlmBZRvGUGpirIUX7OaMfEiJ8VgVc=;
+        b=NTWkriNNSyKzgtyv5CuitE62Fex6kLelvXbaqIBPZc1tEl5LdwTq3ERwgCObE5EVIi
+         dPGglUekdT18w0yZ/WpwCtwn8373fvi7u+ybn2JB2yqWjjjFA3rDZwwVnngXXfDCZjiw
+         AydPK5Ol2z/W3xKuY4fK4AH2U9bb6jNYBmYm+xF5MzEUheDZuo1DNxNazt5gAzK44/k0
+         C90HmPFTS4r94mQz/WhPuRWLtxqSFiHxhye1DDS8jIFQjfELWiKwbSZvUTV2PByda5qa
+         ZOcraIWUHk/EfCWjr7KfY6Do3CiER36QxwnQyGY1FzO+OgpFqoyDTHTXwhVy+B4U1QFP
+         lz2g==
+X-Gm-Message-State: AOAM5335pNgpR4/puQLMfWbvMdvh38mjKzGOiLMFWuE556KovhYgLFKD
+        uYdENjEzqcynWwocjwTdWDh0v1OxTsAUFT3W0069cA==
+X-Google-Smtp-Source: ABdhPJy0e6fY0Xa6ObKsKhUbrEvASjVKRznwsK6CXtLI4IX90rRdLXrflSh7Onj4tM1lwBhnFn0kMLdjl65XhCkNElc=
+X-Received: by 2002:a50:d785:: with SMTP id w5mr7827583edi.212.1590755515767;
+ Fri, 29 May 2020 05:31:55 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAJfpegstNYeseo_C4KOF9Y74qRxr78x2tK-9rTgmYM4CK30nRQ@mail.gmail.com>
+ <875zcfoko9.fsf@nanos.tec.linutronix.de> <CAJfpegsjd+FJ0ZNHJ_qzJo0Dx22ZaWh-WZ48f94Z3AUXbJfYYQ@mail.gmail.com>
+ <CAJfpegv0fNfHrkovSXCNq5Hk+yHP7usfMgr0qjPfwqiovKygDA@mail.gmail.com> <87r1v3lynm.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87r1v3lynm.fsf@nanos.tec.linutronix.de>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Fri, 29 May 2020 14:31:44 +0200
+Message-ID: <CAJfpegt6js2WK6SjSZHsz+fg7ZLU+AL6TzrsDYmRfp7vNrtXyw@mail.gmail.com>
+Subject: Re: system time goes weird in kvm guest after host suspend/resume
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Juergen Gross <jgross@suse.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move inclusion of header files linux/nfs_fs.h, linux/nfs_fs_sb.h &
-linux/nfs_mount.h under config CONFIG_ROOT_NFS
+On Fri, May 29, 2020 at 2:21 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Miklos,
+>
+> Miklos Szeredi <miklos@szeredi.hu> writes:
+> > On Fri, May 29, 2020 at 11:51 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
+> >> On Thu, May 28, 2020 at 10:43 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+> >> >
+> >> > Miklos Szeredi <miklos@szeredi.hu> writes:
+> >> > > Bisected it to:
+> >> > >
+> >> > > b95a8a27c300 ("x86/vdso: Use generic VDSO clock mode storage")
+> >> > >
+> >> > > The effect observed is that after the host is resumed, the clock in
+> >> > > the guest is somewhat in the future and is stopped.  I.e. repeated
+> >> > > date(1) invocations show the same time.
+> >> >
+> >> > TBH, the bisect does not make any sense at all. It's renaming the
+> >> > constants and moving the storage space and I just read it line for line
+> >> > again that the result is equivalent. I'll have a look once the merge
+> >> > window dust settles a bit.
+> >>
+> >> Yet, reverting just that single commit against latest linus tree fixes
+> >> the issue.  Which I think is a pretty good indication that that commit
+> >> *is* doing something.
+>
+> A revert on top of Linus latest surely does something, it disables VDSO
+> because clocksource.vdso_clock_mode becomes NONE.
+>
+> That's a data point maybe, but it clearly does not restore the situation
+> _before_ that commit.
+>
+> >> The jump forward is around 35 minutes; that seems to be consistent as
+> >> well.
+> >
+> > Oh, and here's a dmesg extract for the good case:
+> >
+> > [   26.402239] clocksource: timekeeping watchdog on CPU0: Marking
+> > clocksource 'tsc' as unstable because the skew is too large:
+> > [   26.407029] clocksource:                       'kvm-clock' wd_now:
+> > 635480f3c wd_last: 3ce94a718 mask: ffffffffffffffff
+> > [   26.407632] clocksource:                       'tsc' cs_now:
+> > 92d2e5d08 cs_last: 81305ceee mask: ffffffffffffffff
+> > [   26.409097] tsc: Marking TSC unstable due to clocksource watchdog
+> >
+> > and the bad one:
+> >
+> > [   36.667576] clocksource: timekeeping watchdog on CPU1: Marking
+> > clocksource 'tsc' as unstable because the skew is too large:
+> > [   36.690441] clocksource:                       'kvm-clock' wd_now:
+> > 89885027c wd_last: 3ea987282 mask: ffffffffffffffff
+> > [   36.690994] clocksource:                       'tsc' cs_now:
+> > 95666ec22 cs_last: 84e747930 mask: ffffffffffffffff
+> > [   36.691901] tsc: Marking TSC unstable due to clocksource watchdog
+>
+> And the difference is? It's 10 seconds later and the detection happens
+> on CPU1 and not on CPU0. I really don't see what you are reading out of
+> this.
 
-Signed-off-by: Anupam Aggarwal <anupam.al@samsung.com>
-Signed-off-by: Vivek Trivedi <t.vivek@samsung.com>
-Signed-off-by: Amit Sahrawat <a.sahrawat@samsung.com>
----
- init/do_mounts.c | 2 ++
- 1 file changed, 2 insertions(+)
+I didn't even try to interpret this.  Just reporting what I'm seeing.
 
-diff --git a/init/do_mounts.c b/init/do_mounts.c
-index 29d326b..02baec4 100644
---- a/init/do_mounts.c
-+++ b/init/do_mounts.c
-@@ -20,9 +20,11 @@
- #include <linux/ramfs.h>
- #include <linux/shmem_fs.h>
- 
-+#ifdef CONFIG_ROOT_NFS
- #include <linux/nfs_fs.h>
- #include <linux/nfs_fs_sb.h>
- #include <linux/nfs_mount.h>
-+#endif
- #include <uapi/linux/mount.h>
- 
- #include "do_mounts.h"
--- 
-1.9.1
+> Can you please describe the setup of this test?
+>
+>  - Host kernel version
+>  - Guest kernel version
+>  - Is the revert done on the host or guest or both?
+>  - Test flow is:
+>
+>    Boot host, start guest, suspend host, resume host, guest is screwed
+>
+>    correct?
 
+Yep.
+
+Thanks,
+Miklos
