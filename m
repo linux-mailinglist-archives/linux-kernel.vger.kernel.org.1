@@ -2,71 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEDB61E7474
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 06:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13AC41E745B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 06:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728834AbgE2ESz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 00:18:55 -0400
-Received: from m17747.mail.qiye.163.com ([123.58.177.47]:42949 "EHLO
-        m17747.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725795AbgE2ESy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 00:18:54 -0400
-X-Greylist: delayed 504 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 May 2020 00:18:54 EDT
-Received: from vivo.com (sdy-hm7.qy.internal [127.0.0.1])
-        by m17747.mail.qiye.163.com (Hmail) with ESMTP id 5A6687C1731;
-        Fri, 29 May 2020 12:10:27 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AJIAHAA7CLDayC1bgc0c0qq9.1.1590725427357.Hmail.zhucancan@vivo.com>
-To:     lgirdwood <lgirdwood@gmail.com>, broonie <broonie@kernel.org>,
-        perex <perex@perex.cz>, tiwai <tiwai@suse.com>,
-        alsa-devel <alsa-devel@alsa-project.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     kernel <kernel@vivo.com>,
-        =?UTF-8?B?5pyx54G/54G/?= <zhucancan@vivo.com>,
-        trivial <trivial@kernel.org>
-Subject: =?UTF-8?B?U3ViamVjdDogW1BBVENIXSBBU29DOiBzb2MtcGNtOiBmaXggQkUgZGFpIG5vdCBod19mcmVlIGFuZCBzaHV0ZG93biBkdXJpbmcgbWl4ZXIgdXBkYXRl?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 58.251.74.226
+        id S2388187AbgE2ELC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 00:11:02 -0400
+Received: from ozlabs.org ([203.11.71.1]:36511 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725936AbgE2ELB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 00:11:01 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49YB295DpQz9sSm;
+        Fri, 29 May 2020 14:10:57 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1590725458;
+        bh=MvpExw+kJlNIs4OW+iB1XEUz15syI6U7hZfNtJIbGQQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aRxk05nJsPY5NTsjlEzowXfRCYmKxrJ5BsffyUDehUYpB8Gy7jIxaofSp2l3LGQD3
+         9b0F/KXu35uI4YM4PTcO8qCIp8rt30UOv2ptIBmw5mLqNTa2P767SkLgRbfUnABn6P
+         8OYFN+8q8ftN34KEYRAso5xbty1zdhvnDlWh3kdwynGXha3flJnm1flUbb9jbUUUzU
+         mkRNK5nAOU58uoeZ5tBOphTTudsvB0NZ6JfHVSW7inx8Wv4fTiaTiuY2CRjmwQ5RDA
+         C4BTgkbp9f4J73eZLaa0sQmQCP9L+LzKSOpvePaQX1kPLtuO1cus2DibT6AEsF3qyu
+         6qCBmxHLeXyKg==
+Date:   Fri, 29 May 2020 14:10:56 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>
+Subject: Re: inux-next: build failure after merge of the drm-msm tree
+Message-ID: <20200529141056.000f78ba@canb.auug.org.au>
+In-Reply-To: <20200526140841.0a1d5c7b@canb.auug.org.au>
+References: <20200519150955.1667566a@canb.auug.org.au>
+        <20200526140841.0a1d5c7b@canb.auug.org.au>
 MIME-Version: 1.0
-Received: from zhucancan@vivo.com( [58.251.74.226) ] by ajax-webmail ( [127.0.0.1] ) ; Fri, 29 May 2020 12:10:27 +0800 (GMT+08:00)
-From:   zhucancan <zhucancan@vivo.com>
-Date:   Fri, 29 May 2020 12:10:26 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VNS0JLS0tJS05CQkhNTllXWShZQU
-        hPN1dZLVlBSVdZDwkaFQgSH1lBWRgxKzI4HDgzMzVPARJCOR40MBAtOjpWVlVKT0IoSVlXWQkOFx
-        4IWUFZNTQpNjo3JCkuNz5ZV1kWGg8SFR0UWUFZNDBZBg++
-X-HM-Sender-Digest: e1kMHhlZQQ8JDh5XWRIfHhUPWUFZRzoxMjozOjpMODc*GgI4ShkcGEsY
-        SwoKQlVKVUpOQktMSU5PSUxPSkxVMxYaEhdVARMOGBoVGBoVOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlJTVlXWQgBWUFITUhNNwY+
-X-HM-Tid: 0a725e9fc0af64a7kurs5a6687c1731
+Content-Type: multipart/signed; boundary="Sig_/0s2XPM_4kygMGPSAs87Bbrq";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RkUgc3RhdGUgaXMgU05EX1NPQ19EUENNX1NUQVRFX1BSRVBBUkUgbm93LCBCRTEgaXMNCnVzZWQg
-YnkgRkUuDQoNCkxhdGVyIHdoZW4gbmV3IEJFMiBpcyBhZGRlZCB0byBGRSBieSBtaXhlciB1cGRh
-dGUsDQppdCB3aWxsIGNhbGwgZHBjbV9ydW5fdXBkYXRlX3N0YXJ0dXAoKSB0byB1cGRhdGUNCkJF
-MidzIHN0YXRlLCBidXQgdW5mb3J0dW5hdGVseSBCRTIgLnByZXBhcmUoKSBtZWV0cw0KZXJyb3Is
-IGl0IHdpbGwgZGlzY29ubmVjdCBhbGwgbm9uIHN0YXJ0ZWQgQkUuDQoNClRoaXMgbWFrZSBCRTEg
-ZGFpIHNraXAgLmh3X2ZyZWUoKSBhbmQgLnNodXRkb3duKCksDQphbmQgdGhlIEJFMSB1c2VycyB3
-aWxsIG5ldmVyIGRlY3JlYXNlIHRvIHplcm8uDQoNClNpZ25lZC1vZmYtYnk6IHpodWNhbmNhbiA8
-emh1Y2FuY2FuQHZpdm8uY29tPg0KLS0tDQogc291bmQvc29jL3NvYy1wY20uYyB8IDYgKysrLS0t
-DQogMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCg0KZGlm
-ZiAtLWdpdCBhL3NvdW5kL3NvYy9zb2MtcGNtLmMgYi9zb3VuZC9zb2Mvc29jLXBjbS5jDQppbmRl
-eCAxZjMwMmRlNDQwNTIuLmRmMzQ0MjJiZDBkZCAxMDA2NDQNCi0tLSBhL3NvdW5kL3NvYy9zb2Mt
-cGNtLmMNCisrKyBiL3NvdW5kL3NvYy9zb2MtcGNtLmMNCkBAIC0yNzMwLDEyICsyNzMwLDEyIEBA
-IHN0YXRpYyBpbnQgZHBjbV9ydW5fdXBkYXRlX3N0YXJ0dXAoc3RydWN0IHNuZF9zb2NfcGNtX3J1
-bnRpbWUgKmZlLCBpbnQgc3RyZWFtKQ0KIGNsb3NlOg0KICBkcGNtX2JlX2RhaV9zaHV0ZG93bihm
-ZSwgc3RyZWFtKTsNCiBkaXNjb25uZWN0Og0KLSAvKiBkaXNjb25uZWN0IGFueSBub24gc3RhcnRl
-ZCBCRXMgKi8NCisgLyogZGlzY29ubmVjdCBhbnkgY2xvc2VkIEJFcyAqLw0KICBzcGluX2xvY2tf
-aXJxc2F2ZSgmZmUtPmNhcmQtPmRwY21fbG9jaywgZmxhZ3MpOw0KICBmb3JfZWFjaF9kcGNtX2Jl
-KGZlLCBzdHJlYW0sIGRwY20pIHsNCiAgIHN0cnVjdCBzbmRfc29jX3BjbV9ydW50aW1lICpiZSA9
-IGRwY20tPmJlOw0KLSAgaWYgKGJlLT5kcGNtW3N0cmVhbV0uc3RhdGUgIT0gU05EX1NPQ19EUENN
-X1NUQVRFX1NUQVJUKQ0KLSAgICBkcGNtLT5zdGF0ZSA9IFNORF9TT0NfRFBDTV9MSU5LX1NUQVRF
-X0ZSRUU7DQorICBpZiAoYmUtPmRwY21bc3RyZWFtXS5zdGF0ZSA9PSBTTkRfU09DX0RQQ01fU1RB
-VEVfQ0xPU0UpDQorICAgZHBjbS0+c3RhdGUgPSBTTkRfU09DX0RQQ01fTElOS19TVEFURV9GUkVF
-Ow0KICB9DQogIHNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmZlLT5jYXJkLT5kcGNtX2xvY2ssIGZs
-YWdzKTsNCiANCi0tIA0KMi4yMS4wDQoNCg0KDQoyMDIwLTA1LTI5DQoNCnpodWNhbmNhbiANCg0K
+--Sig_/0s2XPM_4kygMGPSAs87Bbrq
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+On Tue, 26 May 2020 14:08:41 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Hi all,
+>=20
+> On Tue, 19 May 2020 15:09:55 +1000 Stephen Rothwell <sfr@canb.auug.org.au=
+> wrote:
+> >
+> > Hi all,
+> >=20
+> > After merging the drm-msm tree, today's linux-next build (arm
+> > multi_v7_defconfig) failed like this:
+> >=20
+> > ERROR: modpost: "__aeabi_ldivmod" [drivers/gpu/drm/msm/msm.ko] undefine=
+d!
+> > ERROR: modpost: "__aeabi_uldivmod" [drivers/gpu/drm/msm/msm.ko] undefin=
+ed!
+> >=20
+> > Caused by commit
+> >=20
+> >   04d9044f6c57 ("drm/msm/dpu: add support for clk and bw scaling for di=
+splay")
+> >=20
+> > I applied the following patch for today (this is mechanical, there may
+> > be a better way):
+> >=20
+> > From: Stephen Rothwell <sfr@canb.auug.org.au>
+> > Date: Tue, 19 May 2020 14:12:39 +1000
+> > Subject: [PATCH] drm/msm/dpu: fix up u64/u32 division for 32 bit archit=
+ectures
+> >=20
+> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> > ---
+> >  drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c | 23 ++++++++++++++-----
+> >  drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c     | 15 ++++++++----
+> >  2 files changed, 28 insertions(+), 10 deletions(-)
+> >=20
+> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c b/drivers/gp=
+u/drm/msm/disp/dpu1/dpu_core_perf.c
+> > index 9697abcbec3f..85c2a4190840 100644
+> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c
+> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c
+> > @@ -10,6 +10,7 @@
+> >  #include <linux/sort.h>
+> >  #include <linux/clk.h>
+> >  #include <linux/bitmap.h>
+> > +#include <asm/div64.h>
+> > =20
+> >  #include "dpu_kms.h"
+> >  #include "dpu_trace.h"
+> > @@ -53,8 +54,11 @@ static u64 _dpu_core_perf_calc_bw(struct dpu_kms *km=
+s,
+> >  	}
+> > =20
+> >  	bw_factor =3D kms->catalog->perf.bw_inefficiency_factor;
+> > -	if (bw_factor)
+> > -		crtc_plane_bw =3D mult_frac(crtc_plane_bw, bw_factor, 100);
+> > +	if (bw_factor) {
+> > +		u64 quot =3D crtc_plane_bw;
+> > +		u32 rem =3D do_div(quot, 100);
+> > +		crtc_plane_bw =3D (quot * bw_factor) + ((rem * bw_factor) / 100);
+> > +	}
+> > =20
+> >  	return crtc_plane_bw;
+> >  }
+> > @@ -89,8 +93,11 @@ static u64 _dpu_core_perf_calc_clk(struct dpu_kms *k=
+ms,
+> >  	}
+> > =20
+> >  	clk_factor =3D kms->catalog->perf.clk_inefficiency_factor;
+> > -	if (clk_factor)
+> > -		crtc_clk =3D mult_frac(crtc_clk, clk_factor, 100);
+> > +	if (clk_factor) {
+> > +		u64 quot =3D crtc_clk;
+> > +		u32 rem =3D do_div(quot, 100);
+> > +		crtc_clk =3D (quot * clk_factor) + ((rem * clk_factor) / 100);
+> > +	}
+> > =20
+> >  	return crtc_clk;
+> >  }
+> > @@ -234,8 +241,12 @@ static int _dpu_core_perf_crtc_update_bus(struct d=
+pu_kms *kms,
+> >  		}
+> >  	}
+> > =20
+> > -	avg_bw =3D kms->num_paths ?
+> > -			perf.bw_ctl / kms->num_paths : 0;
+> > +	if (kms->num_paths) {
+> > +		avg_bw =3D perf.bw_ctl;
+> > +		do_div(avg_bw, kms->num_paths);
+> > +	} else {
+> > +		avg_bw =3D 0;
+> > +	}
+> > =20
+> >  	for (i =3D 0; i < kms->num_paths; i++)
+> >  		icc_set_bw(kms->path[i],
+> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c b/drivers/gpu/dr=
+m/msm/disp/dpu1/dpu_plane.c
+> > index c2a6e3dacd68..ad95f32eac13 100644
+> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
+> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
+> > @@ -9,6 +9,7 @@
+> > =20
+> >  #include <linux/debugfs.h>
+> >  #include <linux/dma-buf.h>
+> > +#include <asm/div64.h>
+> > =20
+> >  #include <drm/drm_atomic_uapi.h>
+> >  #include <drm/drm_damage_helper.h>
+> > @@ -174,7 +175,11 @@ static void _dpu_plane_calc_bw(struct drm_plane *p=
+lane,
+> >  	plane_prefill_bw =3D
+> >  		src_width * hw_latency_lines * fps * fmt->bpp * scale_factor;
+> > =20
+> > -	plane_prefill_bw =3D mult_frac(plane_prefill_bw, mode->vtotal, (vbp+v=
+pw));
+> > +	{
+> > +		u64 quot =3D plane_prefill_bw;
+> > +		u32 rem =3D do_div(plane_prefill_bw, vbp + vpw);
+> > +		plane_prefill_bw =3D quot * mode->vtotal + rem * mode->vtotal / (vbp=
+ + vpw);
+> > +	}
+> > =20
+> >  	pstate->plane_fetch_bw =3D max(plane_bw, plane_prefill_bw);
+> >  }
+> > @@ -204,9 +209,11 @@ static void _dpu_plane_calc_clk(struct drm_plane *=
+plane)
+> >  	pstate->plane_clk =3D
+> >  		dst_width * mode->vtotal * fps;
+> > =20
+> > -	if (src_height > dst_height)
+> > -		pstate->plane_clk =3D mult_frac(pstate->plane_clk,
+> > -					src_height, dst_height);
+> > +	if (src_height > dst_height) {
+> > +		u64 quot =3D pstate->plane_clk;
+> > +		u32 rem =3D do_div(quot, dst_height);
+> > +		pstate->plane_clk =3D quot * src_height + rem * src_height / dst_hei=
+ght;
+> > +	}
+> >  }
+> > =20
+> >  /**
+> > --=20
+> > 2.26.2 =20
+>=20
+> I am still applying the above ...
+
+Still applying.
+
+Any comment even?
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/0s2XPM_4kygMGPSAs87Bbrq
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7Qi1EACgkQAVBC80lX
+0Gx0zgf/X659iSWvO2inqpuJ5Lw0ff+VXrOwRqFtXe9XvCVJhzgn8hftFc5OmQD7
+I+ggS+f7HGbnU8UeUaXUXtDzrkkXAUaraFFKtKLKMy1vL7AVcw4JpgJuC2IWG10I
+Se1tLsjOgUSiD1QkEiJ7dSeTSNslTWwnadnF0VPnOvaThySnEIf2rBySacafpoTc
+4xKPt5od2iUe18UTEwzl1tulNQChvv/xwTUGpzp4iAmdQiAz+8eh5TIRYzY91Gba
+7vHH+mEuEid7EXZ6+9wwm8+43Ls4EHOWVyQ0sIMBMglO8a784CMY+6Mu0tzYkr2d
+trsvETdbQUvWMFZ8xcCBYh0lH6cR8w==
+=dEIo
+-----END PGP SIGNATURE-----
+
+--Sig_/0s2XPM_4kygMGPSAs87Bbrq--
