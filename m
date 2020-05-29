@@ -2,109 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DEAD1E7B49
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 13:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E0D1E7B58
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 13:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726487AbgE2LKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 07:10:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43056 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725306AbgE2LKf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 07:10:35 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA07B20663;
-        Fri, 29 May 2020 11:10:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590750635;
-        bh=BY3ChC/IaZNPa69hWhSGAWZe9xHacZ7qkDacn1aMT6g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Wy5wMivxtP/gY9Qx5SLx5Xh3rPJtZPeilcXR06MG/JumsXxlN93N3zrkaw5q/RcMo
-         zuxSs+3pgZAnAyjaB+yhCZER1ehf902wDAJmifRTw0yMoij3gIGZYo2UTw6NNKeKB0
-         b/ZsaiAyTrP8hcOMMbc7GJyVS68ovtyKeF4micho=
-Date:   Fri, 29 May 2020 12:10:31 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>, peron.clem@gmail.com,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        linux-samsung-soc@vger.kernel.org,
-        Chanwoo Choi <cw00.choi@samsung.com>
-Subject: Re: [PATCH] regulator: do not balance regulators without constraints
-Message-ID: <20200529111031.GI4610@sirena.org.uk>
-References: <CGME20200528131144eucas1p121b9151996fa3f780a5028f68c69d5ba@eucas1p1.samsung.com>
- <20200528131130.17984-1-m.szyprowski@samsung.com>
- <20200528134338.GD3606@sirena.org.uk>
- <56e496bc-172f-d62f-5376-c8d734af6a51@samsung.com>
+        id S1726934AbgE2LLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 07:11:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726310AbgE2LLY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 07:11:24 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D34C08C5C6
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 04:11:23 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id w20so647120uaa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 04:11:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2AwrUer66OLVbJn9gdzvmfOhYQqwIlg5wUQfH8z+L9E=;
+        b=gIiY2uXfVx/jE5BgaImYNhlcq8Xd5qTnTI7LkXYOntgiBeoPwssFpKuZ8wqLvAvB4/
+         LX7Jb9eMDQ53brUmKsW0F2XDgbLPzN4Q4FoFuovNs+Cc2B4y4GKpsfw2g//pgZBK2Vob
+         +bnRipihc4uKFDvIBdDOsJdKn3Mc8C1MrKkbEErgX5WGdtOn6AyBk1TRQdAbwRDahkqN
+         IIC/J1PGd7xwDYV8nGUKaW0Ib2K4I9bxCpo+SZIFPdOB9Ho/PjsQXvuDvv6ZEveExO3G
+         Wb+c+piCnfmHOantUQDNU3hAcLsNGrgbcjaD/HehEBR66mk+O7DDpSZAPBikBGgHQ0Gj
+         8x7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2AwrUer66OLVbJn9gdzvmfOhYQqwIlg5wUQfH8z+L9E=;
+        b=dyL0sLlOobmHqXMYfXZhizC1OEvUstfmJfQ/1zTNX+PM8PnRhkMgK+MsGZ08xvcF1R
+         mHAqSd3xJnKIkVJFWK5tyaUcbSHoNxFB3UjTG5r9IWuUzSEgmiA6qzKsBVizAEIudP+H
+         1ozyJZtwpiPPQF6I2f3v8XVEtFV2lgTKjITEwJ6QrHq4o0V1S2s0l/Ib37e1kNh08Ixr
+         ioO8QKOnVBajDBBnAP/o8t8oeh66nt4isdFhWQZZCM0W/Lry53sGKXLPnb89QSmbShUD
+         tADYHOUb5RA8wg+MZQIXUJYU4cc/WDQBGC3CB18t7qpCc1dFX1wOmfKNCGaSCBNCRSw8
+         22mg==
+X-Gm-Message-State: AOAM5321l8awrCO4DTJ82RjauryfiLPDGyiCP+2uTlZ2VHBnWGjHlnDF
+        U1DOG0Y8GjgsKfyaeMhc/6F/8KDeSTS+WEbukaRhvlRJOaM=
+X-Google-Smtp-Source: ABdhPJxzIJYkIIPCpHPcwk9GVxYXgVz7s/pLv3zscWWcayOPhVZi78TJgQ2gcLvnE1Sv4H8X+ooqNNHjqbT8vtW53Xg=
+X-Received: by 2002:ab0:70c9:: with SMTP id r9mr5439045ual.15.1590750682843;
+ Fri, 29 May 2020 04:11:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="a7XSrSxqzVsaECgU"
-Content-Disposition: inline
-In-Reply-To: <56e496bc-172f-d62f-5376-c8d734af6a51@samsung.com>
-X-Cookie: The Killer Ducks are coming!!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200521091356.2211020-1-lkundrak@v3.sk> <20200521091356.2211020-2-lkundrak@v3.sk>
+ <CAPDyKFogpp+9d44Dgc8gXmeULj2CxoUzo4EhnLp+=_1YcvXT-g@mail.gmail.com> <20200528225445.GB815881@bogus>
+In-Reply-To: <20200528225445.GB815881@bogus>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 29 May 2020 13:10:46 +0200
+Message-ID: <CAPDyKFpcxncUFf+qMaRGnC1qA0ST1HzQCrars5YZTeMfFVHj6Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/9] dt-bindings: mmc: Convert sdhci-pxa to json-schema
+To:     Rob Herring <robh@kernel.org>, Lubomir Rintel <lkundrak@v3.sk>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 29 May 2020 at 00:54, Rob Herring <robh@kernel.org> wrote:
+>
+> On Wed, May 27, 2020 at 09:59:10AM +0200, Ulf Hansson wrote:
+> > On Thu, 21 May 2020 at 11:14, Lubomir Rintel <lkundrak@v3.sk> wrote:
+> > >
+> > > Convert the sdhci-pxa binding to DT schema format using json-schema.
+> > >
+> > > At the same time, fix a couple of issues with the examples discovered by
+> > > the validation tool -- a semicolon instead of a comma and wrong node names.
+> > >
+> > > Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+> >
+> > Rob, are you fine with this v2? I am intending to queue it up via my
+> > mmc tree, unless you want to pick it?
+>
+> You can take it if you drop my name from 'maintainers'. Ideally, it
+> shouldn't be your name either (should have called it 'owners'
+> instead...).
 
---a7XSrSxqzVsaECgU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Patch amended!
 
-On Fri, May 29, 2020 at 07:45:06AM +0200, Marek Szyprowski wrote:
-> On 28.05.2020 15:43, Mark Brown wrote:
+>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-> > This forces every supply to have something which explicitly manages
-> > voltages which means that if one of the coupled supplies doesn't really
-> > care about the voltage (perhaps doesn't even have any explicit
-> > consumers) and just needs to be within a certain range of another supply
-> > then it'll end up restricting things needlessly.
+Thanks, applied to my next branch!
 
-> Frankly, that's exactly what we need for Exynos5422 case. If devfreq=20
-> driver is not enabled/compiled, we want to keep the "vdd_int" volatage=20
-> unchanged. This confirms me that we really need to have a custom coupler=
-=20
-> for Exynos5422 case. It will solve such issues without adding hacks to=20
-> regulator core.
-
-It sounds like you need that or some form of cooperation between the
-devfreq and cpufreq drivers.
-
-> > Saravana was trying to do some stuff with sync_state() which might be
-> > interesting here although I have concerns with that approach too:
-
-> >     https://lore.kernel.org/lkml/20200527074057.246606-1-saravanak@goog=
-le.com/
-
-> This still doesn't solve the above mentioned case.
-
-I didn't mean the particular patch, I meant something using the
-sync_state() callback.
-
---a7XSrSxqzVsaECgU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7Q7aYACgkQJNaLcl1U
-h9DSMQgAgbeb3psUrmh+k8IJNk9lxznRjlF9o9ykd+JUnv7FBkSsqc1h45q66Owv
-acsuM90K2nI00+p4BOFppnFDdqwDFrVTDxXwXq37zXRy47TS+eOabwD1Ykvvwei1
-rQmgVZm/M7hlCawKjyrLAADmWHU7u0tcKAeuCbP7ch1Ze3kyBoeoSOlXcdz3LwAn
-ZWTISkGoGoIJLMEehxQAercXRD3JqSQjZcW6W6UugrzL1a1B125hW0MTxItnbRW0
-YIIebA+wuOL2jffXjTqP54zNgnS/HC+F3am1lWJhEQX/kcyzZfb6/pK4SWTkvyoO
-vwTCMVfZqb9pnKFzvNdcDlrBopclKw==
-=dVIH
------END PGP SIGNATURE-----
-
---a7XSrSxqzVsaECgU--
+Kind regards
+Uffe
