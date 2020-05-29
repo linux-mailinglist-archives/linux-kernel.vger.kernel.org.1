@@ -2,53 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5914C1E8B56
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 00:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D87C11E8B59
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 00:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728363AbgE2W2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 18:28:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56390 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726555AbgE2W2a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 18:28:30 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4829B20897;
-        Fri, 29 May 2020 22:28:29 +0000 (UTC)
-Date:   Fri, 29 May 2020 18:28:27 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, luto@amacapital.net,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        sean.j.christopherson@intel.com, andrew.cooper3@citrix.com,
-        daniel.thompson@linaro.org, a.darwish@linutronix.de,
-        bigeasy@linutronix.de
-Subject: Re: [PATCH 13/14] lockdep: Prepare for NMI IRQ state tracking
-Message-ID: <20200529182827.64a5f58d@oasis.local.home>
-In-Reply-To: <20200529222505.GW2483@worktop.programming.kicks-ass.net>
-References: <20200529212728.795169701@infradead.org>
-        <20200529213321.471984676@infradead.org>
-        <20200529181401.1f01bdc5@oasis.local.home>
-        <20200529222505.GW2483@worktop.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728489AbgE2W2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 18:28:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726555AbgE2W2s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 18:28:48 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34470C03E969
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 15:28:48 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id n15so522938pfd.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 15:28:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kY4yj9c52oXZ2jWS1wKDWOQi2s1UaHS96yM6OzNUtkQ=;
+        b=K1NuNPjgow6uSw+YTDTgFTw1YZCCGa3PWnxcKw9xJSNMVu5gT76WtnwBNVpum8llTI
+         CIvg+UUtsESCCaRi6wPmxp/nfgtR7gA8SMW9N4432o1sn5QDKT168OsWWhZxQgN/n5tZ
+         Av09LwWkvdcLCaTsznEQfcFK+2LymblRcx+rd6yK4qG8maaIOALFPoqCxETQyPU7V6LX
+         mA1HGUmme6EF31wu2ODcY1UTpYjfJvza5F8xxZfOA2lOx53XL34mLnzSN9cOSf7r/zRJ
+         Hc8b37+oaKCdAAvMSTsx66xxwe24QTA16bobPojqDjif5ez8mWN4i1lDMbcReLVY6m7z
+         5cRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kY4yj9c52oXZ2jWS1wKDWOQi2s1UaHS96yM6OzNUtkQ=;
+        b=o7S4dYhqU6pbti1lfSERRHyrHi4Lglic/gXBHQmBy49tIFPN9llKQtzhyYk3G1We6+
+         vF9y7x9AYzVQOtms4cwFbDH+E7N6tSFzrSsqJIDuDaOqozezGm/EUyPJY4usaJ+vfjPc
+         4CCe3/6D/2NchFrQ1z7XaZafyEZOT0BQn6Gp17lrLISUtuI5rLZkVX43ingRtdHOgOvx
+         ftCHnemzyLsYELeUBglA7MMj9+32/A6HEDbh3UxQfSt8HROyApgnWOn1MnDhXz9WSiMx
+         ZYs+BLLCMSN9FUOvYkWpjlf1oujm4w/KV382h1H9yR4bF8QOrgBoXDO9iud/85ZHn6or
+         lwpQ==
+X-Gm-Message-State: AOAM531ERleYKrhn+ZtOscBKQ71GN6gPk5nfzDlb+XVTZydBdLMT2ft3
+        wwcZP2NhG9kArd4FK37ywdsM00cGQzzupxv9EeCbTA==
+X-Google-Smtp-Source: ABdhPJypYCEj58QUBMMWF8HLNAkwydZlcTVlbef1RmaxQLKbAxhCK9jmVIFdYzld+qcFnxYeGlu+V9Mh9X9aFB6fgIs=
+X-Received: by 2002:a65:40c3:: with SMTP id u3mr10617456pgp.305.1590791327745;
+ Fri, 29 May 2020 15:28:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <11459cde-7f57-c95b-8cac-4301f0a2390e@gmail.com> <9d75a67b-87f0-161c-02d7-c9fc4efe97e7@intel.com>
+In-Reply-To: <9d75a67b-87f0-161c-02d7-c9fc4efe97e7@intel.com>
+From:   Tri Vo <trong@android.com>
+Date:   Fri, 29 May 2020 15:28:32 -0700
+Message-ID: <CANA+-vBURc0ivB=UHXK5Xg_tVJOV_h9Uz_Ke4ZG3Gu_sMhfTvQ@mail.gmail.com>
+Subject: Re: Regression with PM / wakeup: Show wakeup sources stats in sysfs"
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Stephen Boyd <swboyd@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 30 May 2020 00:25:05 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
+On Fri, May 29, 2020 at 9:51 AM Rafael J. Wysocki
+<rafael.j.wysocki@intel.com> wrote:
+>
+> On 5/28/2020 10:46 PM, Florian Fainelli wrote:
+> > Hi,
+> >
+> > Commit c8377adfa78103be5380200eb9dab764d7ca890e ("PM / wakeup: Show
+> > wakeup sources stats in sysfs") is causing some of our tests to fail
+> > because /sys/class/net/*/device/power/wakeup_count is now 0, despite
+> > /sys/kernel/debug/wakeup_sources clearly indicating that the Ethernet
+> > device was responsible for system wake-up.
+> >
+> > What's more in looking at /sys/class/wakekup/wakeup2/event_count, we
+> > have the number of Wake-on-LAN wakeups recorded properly, but
+> > wakeup_count is desperately 0, why is that?
+>
+> I need to look at that commit in detail to find out what is going on.
 
-> > > +	if (DEBUG_LOCKS_WARN_ON(current->lockdep_recursion & LOCKDEP_RECURSION_MASK))
-> > >  		return;  
-> 
-> ^^ there's your regular recursion check.
-
-Yes, but this is more of a "bug if it happens" than just "ignore it".
-
--- Steve
+It would be helpful to see the contents of
+/sys/kernel/debug/wakeup_sources, /sys/class/net/*/device/power/*, and
+/sys/class/wakekup/* corresponding to the device in question. The
+values in these files are queried from the same struct wakeup_source.
+So it's odd if wakeup_count diverges.
