@@ -2,87 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5BEF1E88EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D5B1E88F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728199AbgE2UcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 16:32:03 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:39251 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727947AbgE2UcC (ORCPT
+        id S1728284AbgE2Udg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 16:33:36 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:48003 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728263AbgE2Ude (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 16:32:02 -0400
-Received: from mail-qk1-f171.google.com ([209.85.222.171]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MAP77-1jq19e12oF-00BrSB; Fri, 29 May 2020 22:32:01 +0200
-Received: by mail-qk1-f171.google.com with SMTP id c14so2461426qka.11;
-        Fri, 29 May 2020 13:32:00 -0700 (PDT)
-X-Gm-Message-State: AOAM5318lLLsJ1yaC2zkb/R1kJVM6sTJGoff93JZgTJ5ErhtJ1pjFNbw
-        NH3m74yXZl45Fnw5PbwkZrmophSjUQYz1LAyKWE=
-X-Google-Smtp-Source: ABdhPJy22yz3chCQpFZuSTeS6bry0c1AdpBaXRM1H0/FX/oT/GPx28PEHETRXkrO9QPJfadK30BEV25AFXtnDouepOo=
-X-Received: by 2002:a37:554:: with SMTP id 81mr9541210qkf.394.1590784320047;
- Fri, 29 May 2020 13:32:00 -0700 (PDT)
+        Fri, 29 May 2020 16:33:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590784412;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l8PbJoOH9aDezxgmzJ1TZq5s7Zncxp4A2MUMvmD67D8=;
+        b=I/n2IkvAYIzdg2J7SbBhClEWW3mk4yHHamREQBP1o8vahFL3WcdW93BPn36+KAlCDQAOca
+        Jm77ViuAitgMlc+eha8/lbnA3YwFoD603nZyuAntzFZhbc6/NUss5yiy9H8Vx1xbr6x13M
+        hQ5Y85PJpuHrfm9ef66YwIjd9zzuzyY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-11-Dj63E_4GPCGmXu4XWuPxwA-1; Fri, 29 May 2020 16:33:28 -0400
+X-MC-Unique: Dj63E_4GPCGmXu4XWuPxwA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DD902460;
+        Fri, 29 May 2020 20:33:26 +0000 (UTC)
+Received: from krava (unknown [10.40.192.29])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 14C2E5C1B5;
+        Fri, 29 May 2020 20:33:21 +0000 (UTC)
+Date:   Fri, 29 May 2020 22:33:20 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Clark Williams <williams@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 2/2] perf build: Allow explicitely disabling the
+ NO_SYSCALL_TABLE variable
+Message-ID: <20200529203320.GG506785@krava>
+References: <20200529155552.463-1-acme@kernel.org>
+ <20200529155552.463-3-acme@kernel.org>
+ <20200529180717.GF506785@krava>
+ <20200529194515.GB31795@kernel.org>
 MIME-Version: 1.0
-References: <20200529200031.4117841-1-arnd@arndb.de> <CAKwvOdnND7XFgr7W9PvZAikJB1nKxB4K5N-oP0YrBT74oX_C9g@mail.gmail.com>
- <CAK8P3a2UKC=s7re2P+qfxz8eqeC+yCcPGuYKkgji9N_ugdgWhg@mail.gmail.com>
-In-Reply-To: <CAK8P3a2UKC=s7re2P+qfxz8eqeC+yCcPGuYKkgji9N_ugdgWhg@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 29 May 2020 22:31:44 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3u9fs9pSOXSkrmO=xNWUZ5fxZnL_O=f=0BDZ8DkHNYWQ@mail.gmail.com>
-Message-ID: <CAK8P3a3u9fs9pSOXSkrmO=xNWUZ5fxZnL_O=f=0BDZ8DkHNYWQ@mail.gmail.com>
-Subject: Re: [PATCH 1/9] staging: media: atomisp: fix incorrect NULL pointer check
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <natechancellor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:VHREXwc0XWusFwT1ic++5+K5VSWyqLNGGBt7xBzjbXtTV2wXIe8
- ulBcDS2OA46REJItTfkNbVIJeojJfq5wfcLz1dFk0e6y5Qp+Y+WAX+r1MXjBViHnR4Dry15
- sRngMxOPntWQwLdRGRYpk2euT07PWWhrYIb4lrYp9HcuQgDdJV8Kcw8+dLWW5YiOqoXdL40
- x9hvJTc0a3YXjOnHb7lOw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2YINzZMFQ9s=:Dk5f0+qbLfL0w7NkeLT96B
- IdKkgFL0FvYj9O8omvbiQnNXP7rQEV9sqsk9VnL5e9dN2oSbTccXzWLnYPSnPGFyq7/vV9czb
- vLVISdmF2ksMO41jNvg/PzXSZh9MNBfkIRrDNcWMsLAN67g5un9220HwKz9rhtduGeVFboBYo
- p6/yHRm2KFXopuFUplkn+EBUxT5DGH5JJEAymVf021VDFgn1RWhUkbqgolfnxVHY0eLUAFkez
- P72sJ3Gb1bxVJbgwR2iXuLr2s3SuaId07x3KgRNQ6B2KUy+DbKxOFcxbLCIrFU7tKNOi1c+K4
- v3pgk3etkJpAdH8CGfvL+XKwN7eLeBmBrlh70n6iF5mDAT5n+f8xT97AEfGYKzq9hjF5YUUFi
- NOjfItTF9kN9Bx7udKWQ7z9jWXzxzNUzZWb9SeVPKJv3jMMcYZKIcM5FCkZLugz+4XJtamn+n
- D25JwTJHHJMUELxbCgAgFMUDURiWMSEcMWMhsuG4AxG6m0Jt0vuTG8dyK93MvsplJ6M7eKJcF
- Oy0z6TMHCBsFmbrxPHZWFLXot8f102LypbTP9cIq/mQ6vYHZSGNrwiKAenCTpqReYBk0MHsnV
- nlQv0jrIkZkzf8RwlbG1oUI6nl+ZWgLpluIrqJRdY06KxBu95mpkBOFveAqTc3OIvBh2vvvTF
- e/VKpB2TlMhMZfmLZ1bwiM7KWguXbSIe9HuY8wKZl0eu2TfyidOG6PQdCFfpOLLuD1usnNzQs
- 8unlgm9y7sxujUe3kRfA1l/VtHR/L5BlA9tZIH+oEggfeQoCoYl2EVPtxh6SUwjN6Z6van/T0
- EsRFOpHIUFtDFda2OJGqMOJbG2OcUkmZpbBvYIcVtvBtyEdf3I=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200529194515.GB31795@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 10:23 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Fri, May 29, 2020 at 10:04 PM 'Nick Desaulniers' via Clang Built
-> Linux <clang-built-linux@googlegroups.com> wrote:
-> >
-> > See also Nathan's 7 patch series.
-> > https://lore.kernel.org/lkml/20200527071150.3381228-1-natechancellor@gmail.com/
-> >
-> > Might be some overlap between series?
-> >
->
-> Probably. I really should have checked when I saw the number of warnings.
->
-> At least this gives Mauro a chance to double-check the changes and see if
-> Nathan and I came to different conclusions on any of them.
+On Fri, May 29, 2020 at 04:45:15PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Fri, May 29, 2020 at 08:07:17PM +0200, Jiri Olsa escreveu:
+> > On Fri, May 29, 2020 at 12:55:52PM -0300, Arnaldo Carvalho de Melo wrote:
+> > > From: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > > 
+> > > This is useful to see if, on x86, the legacy libaudit still works, as it
+> > > is used in architectures that don't have the SYSCALL_TABLE logic and we
+> > > want to have it tested in 'make -C tools/perf/ build-test'.
+> > > 
+> > > E.g.:
+> > > 
+> > > Without having audit-libs-devel installed:
+> > > 
+> > >   $ make NO_SYSCALL_TABLE=1 O=/tmp/build/perf -C tools/perf install-bin
+> > >   make: Entering directory '/home/acme/git/perf/tools/perf'
+> > >     BUILD:   Doing 'make -j12' parallel build
+> > >   <SNIP>
+> > >   Auto-detecting system features:
+> > >   <SNIP>
+> > >   ...                      libaudit: [ OFF ]
+> > >   ...                        libbfd: [ on  ]
+> > >   ...                        libcap: [ on  ]
+> > >   <SNIP>
+> > >   Makefile.config:664: No libaudit.h found, disables 'trace' tool, please install audit-libs-devel or libaudit-dev
+> > >   <SNIP>
+> > > 
+> > > After installing it:
+> > > 
+> > >   $ rm -rf /tmp/build/perf ; mkdir -p /tmp/build/perf
+> > >   $ time make NO_SYSCALL_TABLE=1 O=/tmp/build/perf  -C tools/perf install-bin ; perf test python
+> > 
+> > heya,
+> > seems ok, perhaps also put it in comment to Makefile.perf
+> > among other NO_* stuff and to tests/make
+> 
+> 
+> Added this and your Acked-by (from the "seems ok") :-) Ok?
 
-I checked now and found that the overlap is smaller than I expected.
-In each case, Nathans' solution seems more complete than mine,
-so this patch ("staging: media: atomisp: fix incorrect NULL pointer check")
-and also "staging: media: atomisp: fix a type conversion warning" can be
-dropped, but I think the others are still needed.
+yep ;-)
 
-        Arnd
+jirka
+
+> 
+> - Arnaldo
+> 
+> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> index 30e41dcd4095..e3a34af38130 100644
+> --- a/tools/perf/Makefile.perf
+> +++ b/tools/perf/Makefile.perf
+> @@ -118,6 +118,9 @@ include ../scripts/utilities.mak
+>  #
+>  # Define LIBBPF_DYNAMIC to enable libbpf dynamic linking.
+>  #
+> +# Define NO_SYSCALL_TABLE=1 to disable the use of syscall id to/from name tables
+> +# generated from the kernel .tbl or unistd.h files and use, if available, libaudit
+> +# for doing the conversions to/from strings/id.
+>  
+>  # As per kernel Makefile, avoid funny character set dependencies
+>  unexport LC_ALL
+> 
+
