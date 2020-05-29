@@ -2,87 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463461E8B6A
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 00:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 698AE1E8B65
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 00:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728451AbgE2Wg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 18:36:27 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:59096 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726555AbgE2WgZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 18:36:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uLG47Mpo1MtU06H8naVZ7P5E2DCID3fGpuS5yrZPyog=; b=iyGPDrgp0t+Y2yH2ZgyuLSziPN
-        Rj1T8Aoa5vutvrpUHB/WxFFEA4CYuQynOSlY/sNIT9sgNJP0VQxsh0/N5kAILovVR5XAfw3CggK4w
-        dbNDBLl/mzEr7hWR4sjg8uEBsz3VL7DbTlRRdX0hISeWhn419pwNB68Uk2P9jaWqSJcVy1fI92kg7
-        MyfcrNDkV5yzfOtMisXJPEQFrRNPko1RGMT6KMFulugjCaarnizqVxBH1+V6YShBVq6KTMAibaa7a
-        djenN2MCEP37wJAqbN1Z5ppUpCa1Wyy/uYbegeig8Ex9LQ1ykbKEFWOjtgH3WZeL7mziYYiY5ZiwV
-        7enRKlvw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jenZc-0008M8-OD; Fri, 29 May 2020 22:33:56 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 354BF9834CF; Sat, 30 May 2020 00:33:54 +0200 (CEST)
-Date:   Sat, 30 May 2020 00:33:54 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     tglx@linutronix.de, luto@amacapital.net,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        sean.j.christopherson@intel.com, andrew.cooper3@citrix.com,
-        daniel.thompson@linaro.org, a.darwish@linutronix.de,
-        bigeasy@linutronix.de
-Subject: Re: [PATCH 13/14] lockdep: Prepare for NMI IRQ state tracking
-Message-ID: <20200529223354.GX2483@worktop.programming.kicks-ass.net>
-References: <20200529212728.795169701@infradead.org>
- <20200529213321.471984676@infradead.org>
- <20200529181401.1f01bdc5@oasis.local.home>
- <20200529222505.GW2483@worktop.programming.kicks-ass.net>
+        id S1728395AbgE2We1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 18:34:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725913AbgE2We1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 18:34:27 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CEFD9207BC;
+        Fri, 29 May 2020 22:34:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590791666;
+        bh=sIRfQ3q0FdVrLrcacZUMj2UJNEZ8rAbw9XTInJzIN6Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fa+Q/aSTV9wLSV01WhvK9mJWIvVAIlvy00i+VyPnViUJlguFAKEoIghscwH3zxG0a
+         nOvjMznGQrjVCSyYEQ8mwESXT32FPNb8Lfz/FyqVdZqoNozyb+QOTvy60qxKkHpiMd
+         LrHRgTQzgwwwzI0B1arUCEYCP2YB0vpUprP47Zv0=
+Date:   Fri, 29 May 2020 15:34:26 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, chao@kernel.org
+Subject: Re: [PATCH] Revert "f2fs: fix quota_sync failure due to f2fs_lock_op"
+Message-ID: <20200529223426.GA249109@google.com>
+References: <20200529092947.7890-1-yuchao0@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200529222505.GW2483@worktop.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200529092947.7890-1-yuchao0@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 30, 2020 at 12:25:05AM +0200, Peter Zijlstra wrote:
-> On Fri, May 29, 2020 at 06:14:01PM -0400, Steven Rostedt wrote:
-> > On Fri, 29 May 2020 23:27:41 +0200
-> > Peter Zijlstra <peterz@infradead.org> wrote:
-> > 
-> > > There is no reason not to always, accurately, track IRQ state.
-> > > 
-> > > This change also makes IRQ state tracking ignore lockdep_off().
-> > > 
-> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > > ---
-> > >  kernel/locking/lockdep.c |   33 ++++++++++++++++++++++++++++++---
-> > >  1 file changed, 30 insertions(+), 3 deletions(-)
-> > > 
-> > > --- a/kernel/locking/lockdep.c
-> > > +++ b/kernel/locking/lockdep.c
-> > > @@ -3646,7 +3646,13 @@ static void __trace_hardirqs_on_caller(v
-> > >   */
-> > >  void lockdep_hardirqs_on_prepare(unsigned long ip)
-> > >  {
-> > > -	if (unlikely(!debug_locks || current->lockdep_recursion))
-> > 
-> > Why remove the check for debug_locks? Isn't that there to disable
-> > everything at once to prevent more warnings to be printed?
+On 05/29, Chao Yu wrote:
+> Under heavy fsstress, we may triggle panic while issuing discard,
+> because __check_sit_bitmap() detects that discard command may earse
+> valid data blocks, the root cause is as below race stack described,
+> since we removed lock when flushing quota data, quota data writeback
+> may race with write_checkpoint(), so that it causes inconsistency in
+> between cached discard entry and segment bitmap.
 > 
-> Yeah, maybe. I was thinking we could keep IRQ state running. But you're
-> right, if we mess up the IRQ state itself this might generate a wee
-> mess.
+> - f2fs_write_checkpoint
+>  - block_operations
+>   - set_sbi_flag(sbi, SBI_QUOTA_SKIP_FLUSH)
+>  - f2fs_flush_sit_entries
+>   - add_discard_addrs
+>    - __set_bit_le(i, (void *)de->discard_map);
+> 						- f2fs_write_data_pages
+> 						 - f2fs_write_single_data_page
+> 						   : inode is quota one, cp_rwsem won't be locked
+> 						  - f2fs_do_write_data_page
+> 						   - f2fs_allocate_data_block
+> 						    - f2fs_wait_discard_bio
+> 						      : discard entry has not been added yet.
+> 						    - update_sit_entry
+>  - f2fs_clear_prefree_segments
+>   - f2fs_issue_discard
+>   : add discard entry
+> 
+> This patch fixes this issue by reverting 435cbab95e39 ("f2fs: fix quota_sync
+> failure due to f2fs_lock_op").
+> 
+> Fixes: 435cbab95e39 ("f2fs: fix quota_sync failure due to f2fs_lock_op")
 
-That is, mostly the IRQ state recovers when we mess up. It's only when
-we then trigger more fail that we crash and burn, and that will likely
-already give more warnings.
+The previous patch fixes quota_sync gets EAGAIN all the time.
+How about this? It seems this works for fsstress test.
 
-But I can put the debug_locks check back.
+---
+ fs/f2fs/segment.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index ebbadde6cbced..f67cffc38975e 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -3095,6 +3095,14 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
+ 	struct curseg_info *curseg = CURSEG_I(sbi, type);
+ 	bool put_pin_sem = false;
+ 
++	/*
++	 * We need to wait for node_write to avoid block allocation during
++	 * checkpoint. This can only happen to quota writes which can cause
++	 * the below discard race condition.
++	 */
++	if (IS_DATASEG(type))
++		down_write(&sbi->node_write);
++
+ 	if (type == CURSEG_COLD_DATA) {
+ 		/* GC during CURSEG_COLD_DATA_PINNED allocation */
+ 		if (down_read_trylock(&sbi->pin_sem)) {
+@@ -3174,6 +3182,9 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
+ 
+ 	if (put_pin_sem)
+ 		up_read(&sbi->pin_sem);
++
++	if (IS_DATASEG(type))
++		up_write(&sbi->node_write);
+ }
+ 
+ static void update_device_state(struct f2fs_io_info *fio)
+-- 
+2.27.0.rc0.183.gde8f92d652-goog
+
