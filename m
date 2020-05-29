@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 096341E8A24
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 23:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D471E8A1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 23:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728516AbgE2Vhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 17:37:32 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:54870 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728384AbgE2VhN (ORCPT
+        id S1728426AbgE2VfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 17:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728293AbgE2Ve5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 17:37:13 -0400
+        Fri, 29 May 2020 17:34:57 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87878C0A88B4
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 14:34:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=3j+8HW8DRn65B84KwGMDa4sT4LDFXxq3rVrzf2aFY78=; b=y/uW4R2DjxeuIuuoGZ+vO3lsnG
-        rJnxmb9i6zZkOyCgLn4TBpGGHnRjRiNJr57WQSFQpQ2UuT2tvgFypnXTbQy4WarufFMzLHKhvW9Uo
-        xX+zyMUy0VsDNY3YBrn5q5JbpLCsTfpnNT2nODfaU8mDugwhUAX0yia+DIioZDD08NH55EYCrbG0w
-        rOuwwJ0/V/+TlRH4B3Oc/9LfxDD0sqaMYeC+gU7LQfe5V891PxOspqMGh749Sj7KW06g9TLPn91IX
-        Lv5ikS/fC422yqQmZWFF6X1bglPEN/74md4viEGRd7/7w7r/juoU6LIcExzCdyEihUDOQag85HkGs
-        4t3rHIew==;
+        bh=UThm2s6MWUqiRJgBmbSHnhYghVR8OnAOcp/LyBU2xnc=; b=prAImoHuICySZ5zjm5DvEfXcHI
+        Odyp6Ma02KVKLHpQtueCYG5vUHGQKXFSNqLZS3tuw4DfKlBF/k+1mCgplXIlrnDYAH496T+O4o680
+        IY5RMTyWftckOjmo/ZCMqGtARV/3lFpys3i76P8HGeUszpXgA3v6G2bgneKbXXxedB4sxS3A96L05
+        ikhY8cCfF/hZMtvNZVUZ6ArgzDnDVm7L1BY4LFUjqJotf5wpN9b9FrdjibophOA/SZJLD3EmtboGR
+        VK7vJ8/NgfUbEePJoaO3LT9+J8mFLOjvbjrcBn8/MQzLuqPsz8mu95URTgShWU2nVD07MQQhFBymt
+        lgqoVspA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jemeP-0007Ix-V1; Fri, 29 May 2020 21:34:50 +0000
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jemeP-0000Lb-25; Fri, 29 May 2020 21:34:49 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 39F82306574;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EF9373073EC;
         Fri, 29 May 2020 23:34:41 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 24EC020FF0A0B; Fri, 29 May 2020 23:34:41 +0200 (CEST)
-Message-ID: <20200529213320.955117574@infradead.org>
+        id 26D8D20FF0A0A; Fri, 29 May 2020 23:34:41 +0200 (CEST)
+Message-ID: <20200529213321.012060983@infradead.org>
 User-Agent: quilt/0.66
-Date:   Fri, 29 May 2020 23:27:32 +0200
+Date:   Fri, 29 May 2020 23:27:33 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     tglx@linutronix.de, luto@amacapital.net, peterz@infradead.org
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
@@ -42,7 +45,7 @@ Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
         sean.j.christopherson@intel.com, andrew.cooper3@citrix.com,
         daniel.thompson@linaro.org, a.darwish@linutronix.de,
         rostedt@goodmis.org, bigeasy@linutronix.de
-Subject: [PATCH 04/14] x86/hw_breakpoint: Prevent data breakpoints on user_pcid_flush_mask
+Subject: [PATCH 05/14] x86/entry: Introduce local_db_{save,restore}()
 References: <20200529212728.795169701@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,49 +54,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+In order to allow other exceptions than #DB to disable breakpoints,
+provide common helpers.
 
-The percpu user_pcid_flush_mask is used for CPU entry
-If a data breakpoint on it, it will cause an unwanted #DB.
-Protect the full cpu_tlbstate structure to be sure.
-
-There are some other percpu data used in CPU entry, but they are
-either in already-protected cpu_tss_rw or are safe to trigger #DB
-(espfix_waddr, espfix_stack).
-
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200526014221.2119-5-laijs@linux.alibaba.com
 ---
- arch/x86/kernel/hw_breakpoint.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/x86/include/asm/debugreg.h |   30 ++++++++++++++++++++++++++++++
+ arch/x86/kernel/traps.c         |   18 ++----------------
+ 2 files changed, 32 insertions(+), 16 deletions(-)
 
---- a/arch/x86/kernel/hw_breakpoint.c
-+++ b/arch/x86/kernel/hw_breakpoint.c
-@@ -33,6 +33,7 @@
- #include <asm/debugreg.h>
- #include <asm/user.h>
- #include <asm/desc.h>
-+#include <asm/tlbflush.h>
+--- a/arch/x86/include/asm/debugreg.h
++++ b/arch/x86/include/asm/debugreg.h
+@@ -113,6 +113,36 @@ static inline void debug_stack_usage_inc
+ static inline void debug_stack_usage_dec(void) { }
+ #endif /* X86_64 */
  
- /* Per cpu debug control register value */
- DEFINE_PER_CPU(unsigned long, cpu_dr7);
-@@ -264,6 +265,16 @@ static inline bool within_cpu_entry(unsi
- 				(unsigned long)&per_cpu(cpu_tss_rw, cpu),
- 				sizeof(struct tss_struct)))
- 			return true;
++static __always_inline unsigned long local_db_save(void)
++{
++	unsigned long dr7;
 +
-+		/*
-+		 * cpu_tlbstate.user_pcid_flush_mask is used for CPU entry.
-+		 * If a data breakpoint on it, it will cause an unwanted #DB.
-+		 * Protect the full cpu_tlbstate structure to be sure.
-+		 */
-+		if (within_area(addr, end,
-+				(unsigned long)&per_cpu(cpu_tlbstate, cpu),
-+				sizeof(struct tlb_state)))
-+			return true;
- 	}
++	get_debugreg(dr7, 7);
++	dr7 &= ~0x400; /* architecturally set bit */
++	if (dr7)
++		set_debugreg(0, 7);
++	/*
++	 * Ensure the compiler doesn't lower the above statements into
++	 * the critical section; disabling breakpoints late would not
++	 * be good.
++	 */
++	barrier();
++
++	return dr7;
++}
++
++static __always_inline void local_db_restore(unsigned long dr7)
++{
++	/*
++	 * Ensure the compiler doesn't raise this statement into
++	 * the critical section; enabling breakpoints early would
++	 * not be good.
++	 */
++	barrier();
++	if (dr7)
++		set_debugreg(dr7, 7);
++}
++
+ #ifdef CONFIG_CPU_SUP_AMD
+ extern void set_dr_addr_mask(unsigned long mask, int dr);
+ #else
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -727,15 +727,7 @@ static __always_inline void debug_enter(
+ 	 * Entry text is excluded for HW_BP_X and cpu_entry_area, which
+ 	 * includes the entry stack is excluded for everything.
+ 	 */
+-	get_debugreg(*dr7, 7);
+-	set_debugreg(0, 7);
+-
+-	/*
+-	 * Ensure the compiler doesn't lower the above statements into
+-	 * the critical section; disabling breakpoints late would not
+-	 * be good.
+-	 */
+-	barrier();
++	*dr7 = local_db_save();
  
- 	return false;
+ 	/*
+ 	 * The Intel SDM says:
+@@ -756,13 +748,7 @@ static __always_inline void debug_enter(
+ 
+ static __always_inline void debug_exit(unsigned long dr7)
+ {
+-	/*
+-	 * Ensure the compiler doesn't raise this statement into
+-	 * the critical section; enabling breakpoints early would
+-	 * not be good.
+-	 */
+-	barrier();
+-	set_debugreg(dr7, 7);
++	local_db_restore(dr7);
+ }
+ 
+ /*
 
 
