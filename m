@@ -2,223 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6D11E8190
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 17:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6EDC1E819E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 17:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727812AbgE2PUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 11:20:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727098AbgE2PTz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 11:19:55 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12FEC08C5C6
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 08:19:53 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id l10so4044069wrr.10
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 08:19:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ci6ooCorfZ5Pyg0EKRJeiIb8tL4fvaY6SA1psV8+SCw=;
-        b=ebeiHui+gb0SaexTEeiiNYaNrYp9uJKBSGyCsZsbv7S2yZ1npfUepK5stN7XcIBsjx
-         0C0wFuLZ7C1cP9JnwZ2/cn2wI82XWJrTGuSOOEiwE4febxj1zy/p1G5Jo9uVwXvnEB1Q
-         OX0n8l4Tcah7xmI1iequpYrLaDOeyOFcRJPTvH1jvvkLJkh5ZB0UZAwWLJqcYPSDT8A/
-         IB6/FwDkhx7P+ve1uDPTuIiup8N/fC9fMlm5TZjgHtiPOygOSX5kdMRuT7REcchDaG/u
-         B4hWhi9HK/XGK83oa5Qp4wYJONN+at5RwkS090LpCYoQyt2ywwCdGJHT7DPXbQI1EHT5
-         uXcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ci6ooCorfZ5Pyg0EKRJeiIb8tL4fvaY6SA1psV8+SCw=;
-        b=nbQn1qEeRMZ//xImPEE/cRrdiImzvFCQunRJp2YwEPguEUj+uFd4tey3r42P72YNQp
-         Y4lcCZgaiyp1q59knqIetXCdnBtf+zecN3IFIMBFNpBnatz7+6UHzQam6RbIFTpiat4o
-         iKpping28k0i66yM9gL0a6M7NrfU1wEb6Rhm+O8fq2+qD8Cib2GqKHIrjFdfjHZOpLwz
-         Qz18dytzIt0+r2fkMv8/srgzDq6N6X/jnEmm0jkF8ej+fkGOHR6V1VWVD/S5uZe9j5w+
-         nXDhiOY6IUyzHSr62o90PZYI9Z6nJm2xP1Q0den7O7t/fFW5a1PHLLVYOnjMe0OxtToU
-         nbmw==
-X-Gm-Message-State: AOAM532n4nCB/E1iTfc1shT7SbPxLAzS8FCQPw2pHTH+IzAwzwhs05AC
-        JokYtqQjul+1GsF+xRUUEraagg==
-X-Google-Smtp-Source: ABdhPJxlmEawJReBNJCAkcPlO2zWAadd4qjgDEw3TpFI6PsFWA4NuoVaNPZXnjjj3Pvau7zSZMlV2g==
-X-Received: by 2002:a5d:45c2:: with SMTP id b2mr8688524wrs.323.1590765592325;
-        Fri, 29 May 2020 08:19:52 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:acf8:18a8:b3a5:a17b])
-        by smtp.gmail.com with ESMTPSA id x66sm9220421wmb.40.2020.05.29.08.19.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 08:19:51 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     daniel@ffwll.ch, dri-devel@lists.freedesktop.org
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kevin Hilman <khilman@baylibre.com>
-Subject: [PATCH v7 6/6] drm/meson: crtc: handle commit of Amlogic FBC frames
-Date:   Fri, 29 May 2020 17:19:35 +0200
-Message-Id: <20200529151935.13418-7-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20200529151935.13418-1-narmstrong@baylibre.com>
-References: <20200529151935.13418-1-narmstrong@baylibre.com>
+        id S1727879AbgE2PUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 11:20:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34384 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726845AbgE2PUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 11:20:41 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 72902B07D;
+        Fri, 29 May 2020 15:20:37 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 024501E1289; Fri, 29 May 2020 17:20:36 +0200 (CEST)
+Date:   Fri, 29 May 2020 17:20:36 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Martijn Coenen <maco@android.com>
+Cc:     Jan Kara <jack@suse.cz>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, miklos@szeredi.hu, tj@kernel.org,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        kernel-team@android.com
+Subject: Re: Writeback bug causing writeback stalls
+Message-ID: <20200529152036.GA22885@quack2.suse.cz>
+References: <CAB0TPYGCOZmixbzrV80132X=V5TcyQwD6V7x-8PKg_BqCva8Og@mail.gmail.com>
+ <20200522144100.GE14199@quack2.suse.cz>
+ <CAB0TPYF+Nqd63Xf_JkuepSJV7CzndBw6_MUqcnjusy4ztX24hQ@mail.gmail.com>
+ <20200522153615.GF14199@quack2.suse.cz>
+ <CAB0TPYGJ6WkaKLoqQhsxa2FQ4s-jYKkDe1BDJ89CE_QUM_aBVw@mail.gmail.com>
+ <20200525073140.GI14199@quack2.suse.cz>
+ <CAB0TPYHVfkYyFYqp96-PfcP60PKRX6VqrfMHJPkG=UT2956EqQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="RnlQjJ0d97Da+TV1"
+Content-Disposition: inline
+In-Reply-To: <CAB0TPYHVfkYyFYqp96-PfcP60PKRX6VqrfMHJPkG=UT2956EqQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the VD1 Amlogic FBC decoder is now configured by the overlay driver,
-commit the right registers to decode the Amlogic FBC frame.
 
-Tested-by: Kevin Hilman <khilman@baylibre.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
----
- drivers/gpu/drm/meson/meson_crtc.c | 118 +++++++++++++++++++++--------
- 1 file changed, 88 insertions(+), 30 deletions(-)
+--RnlQjJ0d97Da+TV1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/gpu/drm/meson/meson_crtc.c b/drivers/gpu/drm/meson/meson_crtc.c
-index e66b6271ff58..2854272dc2d9 100644
---- a/drivers/gpu/drm/meson/meson_crtc.c
-+++ b/drivers/gpu/drm/meson/meson_crtc.c
-@@ -291,6 +291,10 @@ static void meson_crtc_enable_vd1(struct meson_drm *priv)
- 			    VPP_VD1_PREBLEND | VPP_VD1_POSTBLEND |
- 			    VPP_COLOR_MNG_ENABLE,
- 			    priv->io_base + _REG(VPP_MISC));
-+
-+	writel_bits_relaxed(VIU_CTRL0_AFBC_TO_VD1,
-+			    priv->viu.vd1_afbc ? VIU_CTRL0_AFBC_TO_VD1 : 0,
-+			    priv->io_base + _REG(VIU_MISC_CTRL0));
- }
- 
- static void meson_g12a_crtc_enable_vd1(struct meson_drm *priv)
-@@ -300,6 +304,10 @@ static void meson_g12a_crtc_enable_vd1(struct meson_drm *priv)
- 		       VD_BLEND_POSTBLD_SRC_VD1 |
- 		       VD_BLEND_POSTBLD_PREMULT_EN,
- 		       priv->io_base + _REG(VD1_BLEND_SRC_CTRL));
-+
-+	writel_relaxed(priv->viu.vd1_afbc ?
-+		       (VD1_AXI_SEL_AFBC | AFBC_VD1_SEL) : 0,
-+		       priv->io_base + _REG(VD1_AFBCD0_MISC_CTRL));
- }
- 
- void meson_crtc_irq(struct meson_drm *priv)
-@@ -383,36 +391,86 @@ void meson_crtc_irq(struct meson_drm *priv)
- 	/* Update the VD1 registers */
- 	if (priv->viu.vd1_enabled && priv->viu.vd1_commit) {
- 
--		switch (priv->viu.vd1_planes) {
--		case 3:
--			meson_canvas_config(priv->canvas,
--					    priv->canvas_id_vd1_2,
--					    priv->viu.vd1_addr2,
--					    priv->viu.vd1_stride2,
--					    priv->viu.vd1_height2,
--					    MESON_CANVAS_WRAP_NONE,
--					    MESON_CANVAS_BLKMODE_LINEAR,
--					    MESON_CANVAS_ENDIAN_SWAP64);
--		/* fallthrough */
--		case 2:
--			meson_canvas_config(priv->canvas,
--					    priv->canvas_id_vd1_1,
--					    priv->viu.vd1_addr1,
--					    priv->viu.vd1_stride1,
--					    priv->viu.vd1_height1,
--					    MESON_CANVAS_WRAP_NONE,
--					    MESON_CANVAS_BLKMODE_LINEAR,
--					    MESON_CANVAS_ENDIAN_SWAP64);
--		/* fallthrough */
--		case 1:
--			meson_canvas_config(priv->canvas,
--					    priv->canvas_id_vd1_0,
--					    priv->viu.vd1_addr0,
--					    priv->viu.vd1_stride0,
--					    priv->viu.vd1_height0,
--					    MESON_CANVAS_WRAP_NONE,
--					    MESON_CANVAS_BLKMODE_LINEAR,
--					    MESON_CANVAS_ENDIAN_SWAP64);
-+		if (priv->viu.vd1_afbc) {
-+			writel_relaxed(priv->viu.vd1_afbc_head_addr,
-+				       priv->io_base +
-+				       _REG(AFBC_HEAD_BADDR));
-+			writel_relaxed(priv->viu.vd1_afbc_body_addr,
-+				       priv->io_base +
-+				       _REG(AFBC_BODY_BADDR));
-+			writel_relaxed(priv->viu.vd1_afbc_en,
-+				       priv->io_base +
-+				       _REG(AFBC_ENABLE));
-+			writel_relaxed(priv->viu.vd1_afbc_mode,
-+				       priv->io_base +
-+				       _REG(AFBC_MODE));
-+			writel_relaxed(priv->viu.vd1_afbc_size_in,
-+				       priv->io_base +
-+				       _REG(AFBC_SIZE_IN));
-+			writel_relaxed(priv->viu.vd1_afbc_dec_def_color,
-+				       priv->io_base +
-+				       _REG(AFBC_DEC_DEF_COLOR));
-+			writel_relaxed(priv->viu.vd1_afbc_conv_ctrl,
-+				       priv->io_base +
-+				       _REG(AFBC_CONV_CTRL));
-+			writel_relaxed(priv->viu.vd1_afbc_size_out,
-+				       priv->io_base +
-+				       _REG(AFBC_SIZE_OUT));
-+			writel_relaxed(priv->viu.vd1_afbc_vd_cfmt_ctrl,
-+				       priv->io_base +
-+				       _REG(AFBC_VD_CFMT_CTRL));
-+			writel_relaxed(priv->viu.vd1_afbc_vd_cfmt_w,
-+				       priv->io_base +
-+				       _REG(AFBC_VD_CFMT_W));
-+			writel_relaxed(priv->viu.vd1_afbc_mif_hor_scope,
-+				       priv->io_base +
-+				       _REG(AFBC_MIF_HOR_SCOPE));
-+			writel_relaxed(priv->viu.vd1_afbc_mif_ver_scope,
-+				       priv->io_base +
-+				       _REG(AFBC_MIF_VER_SCOPE));
-+			writel_relaxed(priv->viu.vd1_afbc_pixel_hor_scope,
-+				       priv->io_base+
-+				       _REG(AFBC_PIXEL_HOR_SCOPE));
-+			writel_relaxed(priv->viu.vd1_afbc_pixel_ver_scope,
-+				       priv->io_base +
-+				       _REG(AFBC_PIXEL_VER_SCOPE));
-+			writel_relaxed(priv->viu.vd1_afbc_vd_cfmt_h,
-+				       priv->io_base +
-+				       _REG(AFBC_VD_CFMT_H));
-+		} else {
-+			switch (priv->viu.vd1_planes) {
-+			case 3:
-+				meson_canvas_config(priv->canvas,
-+						    priv->canvas_id_vd1_2,
-+						    priv->viu.vd1_addr2,
-+						    priv->viu.vd1_stride2,
-+						    priv->viu.vd1_height2,
-+						    MESON_CANVAS_WRAP_NONE,
-+						    MESON_CANVAS_BLKMODE_LINEAR,
-+						    MESON_CANVAS_ENDIAN_SWAP64);
-+				fallthrough;
-+			case 2:
-+				meson_canvas_config(priv->canvas,
-+						    priv->canvas_id_vd1_1,
-+						    priv->viu.vd1_addr1,
-+						    priv->viu.vd1_stride1,
-+						    priv->viu.vd1_height1,
-+						    MESON_CANVAS_WRAP_NONE,
-+						    MESON_CANVAS_BLKMODE_LINEAR,
-+						    MESON_CANVAS_ENDIAN_SWAP64);
-+				fallthrough;
-+			case 1:
-+				meson_canvas_config(priv->canvas,
-+						    priv->canvas_id_vd1_0,
-+						    priv->viu.vd1_addr0,
-+						    priv->viu.vd1_stride0,
-+						    priv->viu.vd1_height0,
-+						    MESON_CANVAS_WRAP_NONE,
-+						    MESON_CANVAS_BLKMODE_LINEAR,
-+						    MESON_CANVAS_ENDIAN_SWAP64);
-+			}
-+
-+			writel_relaxed(0, priv->io_base + _REG(AFBC_ENABLE));
- 		}
- 
- 		writel_relaxed(priv->viu.vd1_if0_gen_reg,
+Hello Martinj!
+
+On Wed 27-05-20 10:14:09, Martijn Coenen wrote:
+> On Mon, May 25, 2020 at 9:31 AM Jan Kara <jack@suse.cz> wrote:
+> > Well, most importantly filesystems like ext4, xfs, btrfs don't hold i_rwsem
+> > when writing back inode and that's deliberate because of performance. We
+> > don't want to block writes (or event reads in case of XFS) for the inode
+> > during writeback.
+> 
+> Thanks for clarifying, that makes sense. By the way, do you have an
+> ETA for your fix? We are under some time pressure to get this fixed in
+> our downstream kernels, but I'd much rather take a fix from upstream
+> from somebody who knows this code well. Alternatively, I can take a
+> stab at the idea you proposed and send a patch to LKML for review this
+> week.
+
+I understand. I have written a fix (attached). Currently its under testing
+together with other cleanups. If everything works fine, I plan to submit
+the patches on Monday.
+
+								Honza
 -- 
-2.22.0
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
+--RnlQjJ0d97Da+TV1
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="0001-writeback-Avoid-skipping-inode-writeback.patch"
+
+From 6d0d46bfddccff7aa4ed114ce15c23dfb68ad2b2 Mon Sep 17 00:00:00 2001
+From: Jan Kara <jack@suse.cz>
+Date: Fri, 29 May 2020 15:05:22 +0200
+Subject: [PATCH] writeback: Avoid skipping inode writeback
+
+Inode's i_io_list list head is used to attach inode to several different
+lists - wb->{b_dirty, b_dirty_time, b_io, b_more_io}. When flush worker
+prepares a list of inodes to writeback e.g. for sync(2), it moves inodes
+to b_io list. Thus it is critical for sync(2) data integrity guarantees
+that inode is not requeued to any other writeback list when inode is
+queued for processing by flush worker. That's the reason why
+writeback_single_inode() does not touch i_io_list (unless the inode is
+completely clean) and why __mark_inode_dirty() does not touch i_io_list
+if I_SYNC flag is set.
+
+However there are two flaws in the current logic:
+
+1) When inode has only I_DIRTY_TIME set but it is already queued in b_io
+list due to sync(2), concurrent __mark_inode_dirty(inode, I_DIRTY_SYNC)
+can still move inode back to b_dirty list resulting in skipping
+writeback of inode time stamps during sync(2).
+
+2) When inode is on b_dirty_time list and writeback_single_inode() races
+with __mark_inode_dirty() like:
+
+writeback_single_inode()		__mark_inode_dirty(inode, I_DIRTY_PAGES)
+  inode->i_state |= I_SYNC
+  __writeback_single_inode()
+					  inode->i_state |= I_DIRTY_PAGES;
+					  if (inode->i_state & I_SYNC)
+					    bail
+  if (!(inode->i_state & I_DIRTY_ALL))
+  - not true so nothing done
+
+We end up with I_DIRTY_PAGES inode on b_dirty_time list and thus
+standard background writeback will not writeback this inode leading to
+possible dirty throttling stalls etc. (thanks to Martijn Coenen for this
+analysis).
+
+Fix these problems by tracking whether inode is queued in b_io or
+b_more_io lists in a new I_SYNC_QUEUED flag. When this flag is set, we
+know flush worker has queued inode and we should not touch i_io_list.
+On the other hand we also know that once flush worker is done with the
+inode it will requeue the inode to appropriate dirty list. When
+I_SYNC_QUEUED is not set, __mark_inode_dirty() can (and must) move inode
+to appropriate dirty list.
+
+Reported-by: Martijn Coenen <maco@android.com>
+Fixes: 0ae45f63d4ef ("vfs: add support for a lazytime mount option")
+CC: stable@vger.kernel.org
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/fs-writeback.c  | 39 +++++++++++++++++++++++++++++----------
+ include/linux/fs.h |  8 ++++++--
+ 2 files changed, 35 insertions(+), 12 deletions(-)
+
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index 76ac9c7d32ec..855c6611710a 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -144,7 +144,9 @@ static void inode_io_list_del_locked(struct inode *inode,
+ 				     struct bdi_writeback *wb)
+ {
+ 	assert_spin_locked(&wb->list_lock);
++	assert_spin_locked(&inode->i_lock);
+ 
++	inode->i_state &= ~I_SYNC_QUEUED;
+ 	list_del_init(&inode->i_io_list);
+ 	wb_io_lists_depopulated(wb);
+ }
+@@ -1123,7 +1125,9 @@ void inode_io_list_del(struct inode *inode)
+ 	struct bdi_writeback *wb;
+ 
+ 	wb = inode_to_wb_and_lock_list(inode);
++	spin_lock(&inode->i_lock);
+ 	inode_io_list_del_locked(inode, wb);
++	spin_unlock(&inode->i_lock);
+ 	spin_unlock(&wb->list_lock);
+ }
+ 
+@@ -1172,8 +1176,9 @@ void sb_clear_inode_writeback(struct inode *inode)
+  * the case then the inode must have been redirtied while it was being written
+  * out and we don't reset its dirtied_when.
+  */
+-static void redirty_tail(struct inode *inode, struct bdi_writeback *wb)
++static void __redirty_tail(struct inode *inode, struct bdi_writeback *wb)
+ {
++	assert_spin_locked(&inode->i_lock);
+ 	if (!list_empty(&wb->b_dirty)) {
+ 		struct inode *tail;
+ 
+@@ -1182,6 +1187,14 @@ static void redirty_tail(struct inode *inode, struct bdi_writeback *wb)
+ 			inode->dirtied_when = jiffies;
+ 	}
+ 	inode_io_list_move_locked(inode, wb, &wb->b_dirty);
++	inode->i_state &= ~I_SYNC_QUEUED;
++}
++
++static void redirty_tail(struct inode *inode, struct bdi_writeback *wb)
++{
++	spin_lock(&inode->i_lock);
++	__redirty_tail(inode, wb);
++	spin_unlock(&inode->i_lock);
+ }
+ 
+ /*
+@@ -1250,8 +1263,11 @@ static int move_expired_inodes(struct list_head *delaying_queue,
+ 			break;
+ 		list_move(&inode->i_io_list, &tmp);
+ 		moved++;
++		spin_lock(&inode->i_lock);
+ 		if (flags & EXPIRE_DIRTY_ATIME)
+-			set_bit(__I_DIRTY_TIME_EXPIRED, &inode->i_state);
++			inode->i_state |= I_DIRTY_TIME_EXPIRED;
++		inode->i_state |= I_SYNC_QUEUED;
++		spin_unlock(&inode->i_lock);
+ 		if (sb_is_blkdev_sb(inode->i_sb))
+ 			continue;
+ 		if (sb && sb != inode->i_sb)
+@@ -1394,7 +1410,7 @@ static void requeue_inode(struct inode *inode, struct bdi_writeback *wb,
+ 		 * writeback is not making progress due to locked
+ 		 * buffers. Skip this inode for now.
+ 		 */
+-		redirty_tail(inode, wb);
++		__redirty_tail(inode, wb);
+ 		return;
+ 	}
+ 
+@@ -1414,7 +1430,7 @@ static void requeue_inode(struct inode *inode, struct bdi_writeback *wb,
+ 			 * retrying writeback of the dirty page/inode
+ 			 * that cannot be performed immediately.
+ 			 */
+-			redirty_tail(inode, wb);
++			__redirty_tail(inode, wb);
+ 		}
+ 	} else if (inode->i_state & I_DIRTY) {
+ 		/*
+@@ -1422,10 +1438,11 @@ static void requeue_inode(struct inode *inode, struct bdi_writeback *wb,
+ 		 * such as delayed allocation during submission or metadata
+ 		 * updates after data IO completion.
+ 		 */
+-		redirty_tail(inode, wb);
++		__redirty_tail(inode, wb);
+ 	} else if (inode->i_state & I_DIRTY_TIME) {
+ 		inode->dirtied_when = jiffies;
+ 		inode_io_list_move_locked(inode, wb, &wb->b_dirty_time);
++		inode->i_state &= ~I_SYNC_QUEUED;
+ 	} else {
+ 		/* The inode is clean. Remove from writeback lists. */
+ 		inode_io_list_del_locked(inode, wb);
+@@ -1669,8 +1686,9 @@ static long writeback_sb_inodes(struct super_block *sb,
+ 		 */
+ 		spin_lock(&inode->i_lock);
+ 		if (inode->i_state & (I_NEW | I_FREEING | I_WILL_FREE)) {
++			inode->i_state &= ~I_SYNC_QUEUED;
++			__redirty_tail(inode, wb);
+ 			spin_unlock(&inode->i_lock);
+-			redirty_tail(inode, wb);
+ 			continue;
+ 		}
+ 		if ((inode->i_state & I_SYNC) && wbc.sync_mode != WB_SYNC_ALL) {
+@@ -2289,11 +2307,12 @@ void __mark_inode_dirty(struct inode *inode, int flags)
+ 		inode->i_state |= flags;
+ 
+ 		/*
+-		 * If the inode is being synced, just update its dirty state.
+-		 * The unlocker will place the inode on the appropriate
+-		 * superblock list, based upon its state.
++		 * If the inode is queued for writeback by flush worker, just
++		 * update its dirty state. Once the flush worker is done with
++		 * the inode it will place it on the appropriate superblock
++		 * list, based upon its state.
+ 		 */
+-		if (inode->i_state & I_SYNC)
++		if (inode->i_state & I_SYNC_QUEUED)
+ 			goto out_unlock_inode;
+ 
+ 		/*
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 45cc10cdf6dd..b02290d19edd 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2156,6 +2156,10 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
+  *
+  * I_CREATING		New object's inode in the middle of setting up.
+  *
++ * I_SYNC_QUEUED	Inode is queued in b_io or b_more_io writeback lists.
++ *			Used to detect that mark_inode_dirty() should not move
++ * 			inode between dirty lists.
++ *
+  * Q: What is the difference between I_WILL_FREE and I_FREEING?
+  */
+ #define I_DIRTY_SYNC		(1 << 0)
+@@ -2173,11 +2177,11 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
+ #define I_DIO_WAKEUP		(1 << __I_DIO_WAKEUP)
+ #define I_LINKABLE		(1 << 10)
+ #define I_DIRTY_TIME		(1 << 11)
+-#define __I_DIRTY_TIME_EXPIRED	12
+-#define I_DIRTY_TIME_EXPIRED	(1 << __I_DIRTY_TIME_EXPIRED)
++#define I_DIRTY_TIME_EXPIRED	(1 << 12)
+ #define I_WB_SWITCH		(1 << 13)
+ #define I_OVL_INUSE		(1 << 14)
+ #define I_CREATING		(1 << 15)
++#define I_SYNC_QUEUED		(1 << 16)
+ 
+ #define I_DIRTY_INODE (I_DIRTY_SYNC | I_DIRTY_DATASYNC)
+ #define I_DIRTY (I_DIRTY_INODE | I_DIRTY_PAGES)
+-- 
+2.16.4
+
+
+--RnlQjJ0d97Da+TV1--
