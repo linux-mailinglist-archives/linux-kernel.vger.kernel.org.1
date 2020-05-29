@@ -2,93 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C27B1E73F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 05:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4BFB1E73FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 05:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388495AbgE2D6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 23:58:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388051AbgE2D6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 23:58:16 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CCB520707;
-        Fri, 29 May 2020 03:58:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590724696;
-        bh=0vBV99ZFoDE78hmS00XWWh1eWVWzltIqUwO4mwvXYTQ=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=vwUJK0QtRXDHofHc9kAHoxEkZEEGMMh44xFgVy+P7Aufc/bQn6vm8RQkgwKQIRZwM
-         D66bLCQoR4Y184HBDTJh9KAbZSYdWKxLq0DdxBc5+JmA79UwoNHP5OIPA3QZT45/PL
-         Oh+EadJnNzwEjIXLTzSGl8GiOdTjGZBRml91go54=
-Content-Type: text/plain; charset="utf-8"
+        id S2390805AbgE2D7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 23:59:51 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:45310 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388510AbgE2D7h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 23:59:37 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 1766D80307C7;
+        Fri, 29 May 2020 03:59:32 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id XYirinZVskJm; Fri, 29 May 2020 06:59:30 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Mark Brown <broonie@kernel.org>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
+        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
+        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v5 00/16] spi: dw: Add generic DW DMA controller support
+Date:   Fri, 29 May 2020 06:58:58 +0300
+Message-ID: <20200529035915.20790-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <be070b91-4954-c66c-970c-a64f72eb54dc@loongson.cn>
-References: <1590590362-11570-1-git-send-email-yangtiezhu@loongson.cn> <159060638492.88029.3855641102752089121@swboyd.mtv.corp.google.com> <51c21311-a301-1a55-3eb1-a11583e7df43@loongson.cn> <159070775347.69627.5841986835404441281@swboyd.mtv.corp.google.com> <be070b91-4954-c66c-970c-a64f72eb54dc@loongson.cn>
-Subject: Re: [PATCH v4 1/2] clk: hisilicon: Use correct return value about hisi_reset_init()
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-Date:   Thu, 28 May 2020 20:58:15 -0700
-Message-ID: <159072469537.69627.2358538167030427315@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Tiezhu Yang (2020-05-28 19:03:54)
-> On 05/29/2020 07:15 AM, Stephen Boyd wrote:
-> > Quoting Tiezhu Yang (2020-05-27 19:27:42)
-> >> On 05/28/2020 03:06 AM, Stephen Boyd wrote:
-> >>> Quoting Tiezhu Yang (2020-05-27 07:39:21)
-> >>>> The return value about hisi_reset_init() is not correct, fix it.
-> >>>>
-> >>>> Fixes: e9a2310fb689 ("reset: hisilicon: fix potential NULL pointer d=
-ereference")
-> >>> hisi_reset_init() returns NULL on error in that commit. This patch
-> >>> doesn't make sense.
-> >> Hi Stephen,
-> >>
-> >> The initial aim of this patch is to use correct return value about
-> >> hisi_reset_init(), maybe NULL is OK, but the return value in this
-> >> patch is more accurate.
-> > The implementation of hisi_reset_init() that I see is this:
-> >
-> >
-> >       struct hisi_reset_controller *rstc;
-> >
-> >       rstc =3D devm_kmalloc(&pdev->dev, sizeof(*rstc), GFP_KERNEL);
-> >       if (!rstc)
-> >               return NULL;
-> >
-> >       rstc->membase =3D devm_platform_ioremap_resource(pdev, 0);
-> >       if (IS_ERR(rstc->membase))
-> >               return NULL;
-> >
-> >       spin_lock_init(&rstc->lock);
-> >       rstc->rcdev.owner =3D THIS_MODULE;
-> >       rstc->rcdev.ops =3D &hisi_reset_ops;
-> >       rstc->rcdev.of_node =3D pdev->dev.of_node;
-> >       rstc->rcdev.of_reset_n_cells =3D 2;
-> >       rstc->rcdev.of_xlate =3D hisi_reset_of_xlate;
-> >       reset_controller_register(&rstc->rcdev);
-> >
-> >       return rstc;
-> >
-> > And that returns NULL on an error and a valid pointer on success.
-> > Changing the code to check the return value of hisi_reset_init() for an
-> > error pointer is simply wrong without updating hisi_reset_init() to
-> > return an error pointer on error. Where is the patch that changes
-> > hisi_reset_init() to return an error pointer?
->=20
-> Hi Stephen,
->=20
-> Do you mean the following changes?
+Baikal-T1 SoC provides a DW DMA controller to perform low-speed peripherals
+Mem-to-Dev and Dev-to-Mem transaction. This is also applicable to the DW
+APB SSI devices embedded into the SoC. Currently the DMA-based transfers
+are supported by the DW APB SPI driver only as a middle layer code for
+Intel MID/Elkhart PCI devices. Seeing the same code can be used for normal
+platform DMAC device we introduced a set of patches to fix it within this
+series.
 
-Yes where is this change?
+First of all we need to add the Tx and Rx DMA channels support into the DW
+APB SSI binding. Then there are several fixes and cleanups provided as a
+initial preparation for the Generic DMA support integration: add Tx/Rx
+finish wait methods, clear DMAC register when done or stopped, Fix native
+CS being unset, enable interrupts in accordance with DMA xfer mode,
+discard static DW DMA slave structures, discard unused void priv pointer
+and dma_width member of the dw_spi structure, provide the DMA Tx/Rx burst
+length parametrisation and make sure it's optionally set in accordance
+with the DMA max-burst capability.
+
+In order to have the DW APB SSI MMIO driver working with DMA we need to
+initialize the paddr field with the physical base address of the DW APB SSI
+registers space. Then we unpin the Intel MID specific code from the
+generic DMA one and placed it into the spi-dw-pci.c driver, which is a
+better place for it anyway. After that the naming cleanups are performed
+since the code is going to be used for a generic DMAC device. Finally the
+Generic DMA initialization can be added to the generic version of the
+DW APB SSI IP.
+
+Last but not least we traditionally convert the legacy plain text-based
+dt-binding file with yaml-based one and as a cherry on a cake replace
+the manually written DebugFS registers read method with a ready-to-use
+for the same purpose regset32 DebugFS interface usage.
+
+This patchset is rebased and tested on the spi/for-next (5.7-rc5):
+base-commit: fe9fce6b2cf3 ("Merge remote-tracking branch 'spi/for-5.8' into spi-next")
+
+Link: https://lore.kernel.org/linux-spi/20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v2:
+- Rebase on top of the spi repository for-next branch.
+- Move bindings conversion patch to the tail of the series.
+- Move fixes to the head of the series.
+- Apply as many changes as possible to be applied the Generic DMA
+  functionality support is added and the spi-dw-mid is moved to the
+  spi-dw-dma driver.
+- Discard patch "spi: dw: Fix dma_slave_config used partly uninitialized"
+  since the problem has already been fixed.
+- Add new patch "spi: dw: Discard unused void priv pointer".
+- Add new patch "spi: dw: Discard dma_width member of the dw_spi structure".
+  n_bytes member of the DW SPI data can be used instead.
+- Build the DMA functionality into the DW APB SSI core if required instead
+  of creating a separate kernel module.
+- Use conditional statement instead of the ternary operator in the ref
+  clock getter.
+
+Link: https://lore.kernel.org/linux-spi/20200515104758.6934-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v3:
+- Use spi_delay_exec() method to wait for the DMA operation completion.
+- Explicitly initialize the dw_dma_slave members on stack.
+- Discard the dws->fifo_len utilization in the Tx FIFO DMA threshold
+  setting from the patch where we just add the default burst length
+  constants.
+- Use min() method to calculate the optimal burst values.
+- Add new patch which moves the spi-dw.c source file to spi-dw-core.c in
+  order to preserve the DW APB SSI core driver name.
+- Add commas in the debugfs_reg32 structure initializer and after the last
+  entry of the dw_spi_dbgfs_regs array.
+
+Link: https://lore.kernel.org/linux-spi/20200521012206.14472-1-Sergey.Semin@baikalelectronics.ru
+Changelog v4:
+- Get back ndelay() method to wait for an SPI transfer completion.
+  spi_delay_exec() isn't suitable for the atomic context.
+
+Link: https://lore.kernel.org/linux-spi/20200522000806.7381-1-Sergey.Semin@baikalelectronics.ru
+Changelog v5:
+- Refactor the Tx/Rx DMA-based SPI transfers wait methods.
+- Add a new patch "spi: dw: Set xfer effective_speed_hz".
+- Add a new patch "spi: dw: Return any value retrieved from the
+  dma_transfer callback" as a preparation patch before implementing
+  the local DMA, Tx SPI and Rx SPI transfers wait methods.
+- Add a new patch "spi: dw: Locally wait for the DMA transactions
+  completion", which provides a local DMA transaction complete
+  method
+- Create a dedicated patch which adds the Rx-done wait method:
+  "spi: dw: Add SPI Rx-done wait method to DMA-based transfer".
+- Add more detailed description of the problems the Tx/Rx-wait
+  methods-related patches fix.
+- Wait for the SPI Tx and Rx transfers being finished in the
+  mid_spi_dma_transfer() method executed in the task context.
+- Use spi_delay_exec() to wait for the SPI Tx/Rx completion, since now
+  the driver calls the wait methods in the kernel thread context.
+- Use SPI_DELAY_UNIT_SCK spi_delay unit for Tx-wait delay, since SPI
+  xfer's are now have the effective_speed_hz initialized.
+- Rx-wait for a delay correlated with the APB/SSI synchronous clock
+  rate instead of using the SPI bus clock rate.
+
+Co-developed-by: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
+Signed-off-by: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
+Co-developed-by: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+Signed-off-by: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>
+Cc: Vadim Vlasov <V.Vlasov@baikalelectronics.ru>
+Cc: Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Feng Tang <feng.tang@intel.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-spi@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (16):
+  spi: dw: Set xfer effective_speed_hz
+  spi: dw: Return any value retrieved from the dma_transfer callback
+  spi: dw: Locally wait for the DMA transactions completion
+  spi: dw: Add SPI Tx-done wait method to DMA-based transfer
+  spi: dw: Add SPI Rx-done wait method to DMA-based transfer
+  spi: dw: Parameterize the DMA Rx/Tx burst length
+  spi: dw: Use DMA max burst to set the request thresholds
+  spi: dw: Fix Rx-only DMA transfers
+  spi: dw: Add core suffix to the DW APB SSI core source file
+  spi: dw: Move Non-DMA code to the DW PCIe-SPI driver
+  spi: dw: Remove DW DMA code dependency from DW_DMAC_PCI
+  spi: dw: Add DW SPI DMA/PCI/MMIO dependency on the DW SPI core
+  spi: dw: Cleanup generic DW DMA code namings
+  spi: dw: Add DMA support to the DW SPI MMIO driver
+  spi: dw: Use regset32 DebugFS method to create regdump file
+  dt-bindings: spi: Convert DW SPI binding to DT schema
+
+ .../bindings/spi/snps,dw-apb-ssi.txt          |  44 --
+ .../bindings/spi/snps,dw-apb-ssi.yaml         | 127 +++++
+ .../devicetree/bindings/spi/spi-dw.txt        |  24 -
+ drivers/spi/Kconfig                           |  15 +-
+ drivers/spi/Makefile                          |   5 +-
+ drivers/spi/{spi-dw.c => spi-dw-core.c}       |  95 ++--
+ drivers/spi/spi-dw-dma.c                      | 482 ++++++++++++++++++
+ drivers/spi/spi-dw-mid.c                      | 382 --------------
+ drivers/spi/spi-dw-mmio.c                     |   4 +
+ drivers/spi/spi-dw-pci.c                      |  50 +-
+ drivers/spi/spi-dw.h                          |  20 +-
+ 11 files changed, 719 insertions(+), 529 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.txt
+ create mode 100644 Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+ delete mode 100644 Documentation/devicetree/bindings/spi/spi-dw.txt
+ rename drivers/spi/{spi-dw.c => spi-dw-core.c} (82%)
+ create mode 100644 drivers/spi/spi-dw-dma.c
+ delete mode 100644 drivers/spi/spi-dw-mid.c
+
+-- 
+2.26.2
+
