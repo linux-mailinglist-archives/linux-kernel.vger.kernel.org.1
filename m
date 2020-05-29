@@ -2,132 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D451E7A21
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 12:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3081E7A25
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 12:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725914AbgE2KLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 06:11:30 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:58174 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725601AbgE2KL3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 06:11:29 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id C003B6E80F94C9C22371;
-        Fri, 29 May 2020 18:11:26 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Fri, 29 May 2020
- 18:11:15 +0800
-From:   Wang ShaoBo <bobo.shaobowang@huawei.com>
-CC:     <huawei.libin@huawei.com>, <xiexiuqi@huawei.com>,
-        <cj.chengjian@huawei.com>, <bobo.shaobowang@huawei.com>,
-        <mingo@redhat.com>, <x86@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <live-patching@vger.kernel.org>,
-        <mbenes@suse.cz>, <jpoimboe@redhat.com>, <devel@etsukata.com>,
-        <viro@zeniv.linux.org.uk>, <esyr@redhat.com>
-Subject: Question: livepatch failed for new fork() task stack unreliable
-Date:   Fri, 29 May 2020 18:10:59 +0800
-Message-ID: <20200529101059.39885-1-bobo.shaobowang@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726767AbgE2KMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 06:12:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42356 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725775AbgE2KMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 06:12:17 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 99C412074D;
+        Fri, 29 May 2020 10:12:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590747137;
+        bh=Yl+5FEwzOOeZ8hYUoXsCXAbU3LDBkX87gD4CrrxKtSs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yNzc+6/JphBjd5egkaD9BnpKWOOfFI4ax9kFqcSb30A43a5fGOeZLBcjqQ5K12KpQ
+         BBhsv8gKvsvILykkAjdjQv8OBLRXBiUK1QcJD+1VHoovufrAK8bAlisdKfQycTSCqg
+         VLyxNIVURxjUGEHIJg9LzB1m/DgVdPm8VbkzD7iA=
+Date:   Fri, 29 May 2020 12:12:14 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Wesley Cheng <wcheng@codeaurora.org>
+Cc:     robh+dt@kernel.org, bjorn.andersson@linaro.org, balbi@kernel.org,
+        agross@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [RFC v3 0/3] Re-introduce TX FIFO resize for larger EP bursting
+Message-ID: <20200529101214.GA1321073@kroah.com>
+References: <1590630363-3934-1-git-send-email-wcheng@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1590630363-3934-1-git-send-email-wcheng@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stack unreliable error is reported by stack_trace_save_tsk_reliable() when trying
-to insmod a hot patch for module modification, this results in frequent failures
-sometimes. We found this 'unreliable' stack is from task just fork.
+On Wed, May 27, 2020 at 06:46:00PM -0700, Wesley Cheng wrote:
+> Changes in V3:
+>  - Removed "Reviewed-by" tags
+>  - Renamed series back to RFC
+>  - Modified logic to ensure that fifo_size is reset if we pass the minimum
+>    threshold.  Tested with binding multiple FDs requesting 6 FIFOs.
+> 
+> Changes in V2:
+>  - Modified TXFIFO resizing logic to ensure that each EP is reserved a
+>    FIFO.
+>  - Removed dev_dbg() prints and fixed typos from patches
+>  - Added some more description on the dt-bindings commit message
+> 
+> Currently, there is no functionality to allow for resizing the TXFIFOs, and
+> relying on the HW default setting for the TXFIFO depth.  In most cases, the
+> HW default is probably sufficient, but for USB compositions that contain
+> multiple functions that require EP bursting, the default settings
+> might not be enough.  Also to note, the current SW will assign an EP to a
+> function driver w/o checking to see if the TXFIFO size for that particular
+> EP is large enough. (this is a problem if there are multiple HW defined
+> values for the TXFIFO size)
+> 
+> It is mentioned in the SNPS databook that a minimum of TX FIFO depth = 3
+> is required for an EP that supports bursting.  Otherwise, there may be
+> frequent occurences of bursts ending.  For high bandwidth functions,
+> such as data tethering (protocols that support data aggregation), mass
+> storage, and media transfer protocol (over FFS), the bMaxBurst value can be
+> large, and a bigger TXFIFO depth may prove to be beneficial in terms of USB
+> throughput. (which can be associated to system access latency, etc...)  It
+> allows for a more consistent burst of traffic, w/o any interruptions, as
+> data is readily available in the FIFO.
+> 
+> With testing done using the mass storage function driver, the results show
+> that with a larger TXFIFO depth, the bandwidth increased significantly.
 
-The task just fork need to go through these steps will the problem not appear:
-
-_do_fork
-    -=> copy_process
-    ...
-    -=> ret_from_fork
-            -=> UNWIND_HINT_REGS
-
-Call trace as follow when stack_trace_save_tsk_reliable() return failure:
-    [ 896.214710] livepatch: klp_check_stack: monitor-process:41642 has an unreliable stack
-    [ 896.214735] livepatch: Call Trace:    # print trace entries by myself
-    [ 896.214760] Call Trace:               # call show_stack()
-    [ 896.214763] ? __switch_to_asm+0x70/0x70
-
-Only for user mode task, there are two cases related for one task just created:
-
-1) The task was not actually scheduled to excute, at this time UNWIND_HINT_EMPTY in
-ret_from_fork() has not reset unwind_hint, it's sp_reg and end field remain default value
-and end up throwing an error in unwind_next_frame() when called by arch_stack_walk_reliable();
-
-2) The task has been scheduled but UNWIND_HINT_REGS not finished, at this time
-arch_stack_walk_reliable() terminates it's backtracing loop for pt_regs unknown
-and return -EINVAL because it's a user task.
-
-As shown below, for user task, There exists a gap where ORC unwinder cannot
-capture the stack state of task immediately, at this time the task has already been
-created but ret_from_fork() has not complete it's mission.
-
-We attempt to append a bit field orc_info_prepared in task_struct to probe when
-related actions finished in ret_from_fork, we found scenario 1) 2) can be capatured.
-It's a informal solution, just for testing our conjecture.
-
-I am eager to purse an effective answer, welcome any ideas.
-Another similar question: https://lkml.org/lkml/2020/3/12/590
-
-Following is the draft modification:
-
-1. Add a bit field orc_info_prepared int task_struct.
-
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 4418f5cb8324..3ff1368b8877 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -791,6 +791,9 @@ struct task_struct {
-	/* Stalled due to lack of memory */
-	unsigned			in_memstall:1;
- #endif
-+#ifdef CONFIG_UNWINDER_ORC
-+	unsigned			orc_info_prepared:1;
-+#endif
- 
-	unsigned long			atomic_flags; /* Flags requiring atomic access. */
-
-
-2. if UNWIND_HINT_REGS complete, pt_regs can be known by orc unwinder,
-   set orc_info_prepared = 1 in orc_info_prepared_fini().
-
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 3063aa9090f9..637bdb091090 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -339,6 +339,7 @@ SYM_CODE_START(ret_from_fork)
- 
- 2:
- 	UNWIND_HINT_REGS
-+	call	orc_info_prepared_fini
- 	movq	%rsp, %rdi
- 	call	syscall_return_slowpath	/* returns with IRQs disabled */
- 	TRACE_IRQS_ON			/* user mode is traced as IRQS on */
- 
-3. Simply judge orc_info_prepared if task is user mode process.
-
-diff --git a/arch/x86/kernel/stacktrace.c b/arch/x86/kernel/stacktrace.c
-index 6ad43fc44556..bf1d2887f00b 100644
---- a/arch/x86/kernel/stacktrace.c
-+++ b/arch/x86/kernel/stacktrace.c
-@@ -77,6 +77,10 @@ int arch_stack_walk_reliable(stack_trace_consume_fn consume_entry,
- 			return -EINVAL;
- 	}
-
-
-+	if (!(task->flags & (PF_KTHREAD | PF_IDLE)) &&
-+		!task_orc_info_prepared(task))
-+		return 0;
-+
- 	/* Check for stack corruption */
- 	if (unwind_error(&state))
- 		return -EINVAL;
+Why is this still a "RFC" series?  That implies you don't want this
+applied...
 
