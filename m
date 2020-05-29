@@ -2,135 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A17381E7290
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5DB1E729B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405421AbgE2C1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 22:27:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41242 "EHLO
+        id S2436616AbgE2C35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 22:29:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404312AbgE2C1n (ORCPT
+        with ESMTP id S2406807AbgE2C3z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 22:27:43 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF8BC08C5C6;
-        Thu, 28 May 2020 19:27:43 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id q8so461136pfu.5;
-        Thu, 28 May 2020 19:27:42 -0700 (PDT)
+        Thu, 28 May 2020 22:29:55 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BFF8C08C5C7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 19:29:54 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id z26so445898pfk.12
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 19:29:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Q7Ds55mrogGXuEM4SJQgAqnILsJS644/RVVdZVRg++g=;
-        b=NdaMAUAEDkjuPmLDmz0DlFfsp4ufVxj0FWetWnq1nPXQTn0gJydk3i7kHOD2PRXom3
-         c29KH/BGst0jdrowBQuRWgbkg+GoAXln+xEXP1NqwS47xG3aHSDk1M5w+vVHQpAliTsw
-         DeiA/FQE5G/vByHeDu3RZNFz342dKsAcSGOI+Y0MFO2j6LDESQrHfi/LIundli+NzACx
-         cONgLmFWbTXn4pbj1NX7NnNFCZuUFS69lclsOMCxJw+eF+FOil6ro4HRH9JAsz7x1Q84
-         iwwSNSABC9+blpWz19mnQXvvlQgGvMEwGmhcMWmDRQGo/EYN6d1mnktit0bwCI1FnaLK
-         L8YQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3l/uy9rkSgcqOcPxEDKlHX2a7wRD2FJSR8LJkg5Mydk=;
+        b=PDpAVMHjMU8db05ww6y3TqOibPw36FTVxG+D7IDJUwbM1cQCQXH7DmukxiTiLAOMne
+         XDEnWH4pU5A2U0tBJSbRNF8XGvgU4EX3zrSzgjE35h7Z1Lz/FioBStsmSfmf0HFIifXC
+         hO4cctO+/7ye+4E9wOy7DiPLuPSct4qM9RT74aK8vz+/rsR7Yx65qWT/hN7NJSkW6WFw
+         j00nHXD9zgWFtVnD0PrpN1fPnSuLkNAF5nJsD7IRvBpCyemRAgNY0oOR2inpmTaztsHq
+         hLsznz5dVev3nGHMHgj8hPXVGTaOkh3O7kw4uSowLYmqtcrxJDtROsLmSxuqCgu4sODz
+         eR1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Q7Ds55mrogGXuEM4SJQgAqnILsJS644/RVVdZVRg++g=;
-        b=GziKYztqRs3kieWU/dTo5KtZZuBM8cd3E7jfH3HO3dwJandvBDk6rkg7X9ivRrVe0v
-         kA4KYTfzPpKwWcqwBmSsR2nYDeCv7qBooWERILZnZCYwhETC4sy3wQxD9gcV2t0CP0yR
-         pPSq5Qlh6TvRyjvMFNI7QsechE0rLvJc0TtYgBtZWYGTaXGrKVDgDU4hAfT/gXJeSSJC
-         KuANMgwKEUE00v42vm9YXEM0cVyTb39o1FqEC7uhpBFX7Q6fydMWU41EQiSo1XHqZBgY
-         he2t6P1wFSZHDKCoPwrXPOU5ZIYctA49kZMzgy1hBi9jsBoioaI6V5W5XZRfcqer3CXN
-         CwiA==
-X-Gm-Message-State: AOAM531tTCq6UPHfQszumHB87fNZ0+zVUWO/Z2dute7AiNVIv57M6lfT
-        wqP1H4IxFTV1+rAKJJSK7axO8F9Wz88=
-X-Google-Smtp-Source: ABdhPJzx/ymfutkB2+J7IwEf32NLdzpK09ZlEr9zw9Gmck5sFYIuhFuU6NGYaBcMyXxxLR/h8SccjA==
-X-Received: by 2002:a62:2f45:: with SMTP id v66mr6665066pfv.45.1590719262506;
-        Thu, 28 May 2020 19:27:42 -0700 (PDT)
-Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
-        by smtp.gmail.com with ESMTPSA id u26sm5850316pfn.88.2020.05.28.19.27.37
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3l/uy9rkSgcqOcPxEDKlHX2a7wRD2FJSR8LJkg5Mydk=;
+        b=qtBJviW3n1DmrSoPO8++1TNgEebxUn6tNv6DyMMCh4m7qyPgM7+MQ1YRROeUculiBW
+         dj3pVl36t1lS9ztef9rr3HBcLMxBRgjgB4D8anmCFnycw4dNANz1jkZJQ0xVJWjajI/7
+         t3+J0P+DJLoUqOlKQWciwgsvkt7ZVPrPNRtMTPMWfITMC2PTfcsPUQ3O2LnDhg4kJamX
+         HfgKi23M9JFIJCQKRp6LA4c5cDEFhXN7QrAzcJXO2zf8nAeQ1Yvxy/49ZUiFrU4v8fTb
+         9dJUo2NyEHV5JV9u1p15nTJUR0B8D9orZ5117mC2HkJnY0cOs4dAAIgixu9Z7PFRMwgY
+         WZIg==
+X-Gm-Message-State: AOAM532lw06fwrcZcxzT6GeW3xxe0KBoBYLf3PP0F/DgJRHe2onp7XL2
+        rboamJ7gePInGr99IdbV27tiaQ==
+X-Google-Smtp-Source: ABdhPJxhTrem+6swxocNd1/XW0+hUviSs6g6emgO+YsgjaI4iM4SJVt84no+lZF35PTPOpy7jDNRFw==
+X-Received: by 2002:a65:52cd:: with SMTP id z13mr5961753pgp.259.1590719393398;
+        Thu, 28 May 2020 19:29:53 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id v9sm5541381pgj.54.2020.05.28.19.29.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 19:27:41 -0700 (PDT)
-From:   Chuhong Yuan <hslester96@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        linux-bluetooth@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Chuhong Yuan <hslester96@gmail.com>
-Subject: [PATCH v2] Bluetooth: btmtkuart: Improve exception handling in btmtuart_probe()
-Date:   Fri, 29 May 2020 10:27:26 +0800
-Message-Id: <20200529022726.917826-1-hslester96@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Thu, 28 May 2020 19:29:52 -0700 (PDT)
+Date:   Thu, 28 May 2020 19:28:47 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     agross@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+        robh+dt@kernel.org, nishakumari@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org,
+        rnayak@codeaurora.org
+Subject: Re: [PATCH v3 5/5] regulator: qcom: labibb: Add SC interrupt handling
+Message-ID: <20200529022847.GO279327@builder.lan>
+References: <20200528154625.17742-1-sumit.semwal@linaro.org>
+ <20200528154625.17742-6-sumit.semwal@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200528154625.17742-6-sumit.semwal@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Calls of the functions clk_disable_unprepare() and hci_free_dev()
-were missing for the exception handling.
-Thus add the missed function calls together with corresponding
-jump targets.
+On Thu 28 May 08:46 PDT 2020, Sumit Semwal wrote:
 
-Fixes: 055825614c6b ("Bluetooth: btmtkuart: add an implementation for clock osc property")
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
----
-Changes in v2:
-  - Modify description.
-  - Add fixes tag.
+> From: Nisha Kumari <nishakumari@codeaurora.org>
+> 
+> Add Short circuit interrupt handling and recovery for the lab and
+> ibb regulators on qcom platforms.
+> 
+> The client panel drivers need to register for REGULATOR_EVENT_OVER_CURRENT
+> notification which will be triggered on short circuit. They should
+> try to enable the regulator once, and if it doesn't get enabled,
+> handle shutting down the panel accordingly.
+> 
+> Signed-off-by: Nisha Kumari <nishakumari@codeaurora.org>
 
- drivers/bluetooth/btmtkuart.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+It would be nice to see a short summary of your changes from the
+original patch here, like:
 
-diff --git a/drivers/bluetooth/btmtkuart.c b/drivers/bluetooth/btmtkuart.c
-index e11169ad8247..8a81fbca5c9d 100644
---- a/drivers/bluetooth/btmtkuart.c
-+++ b/drivers/bluetooth/btmtkuart.c
-@@ -1015,7 +1015,7 @@ static int btmtkuart_probe(struct serdev_device *serdev)
- 	if (btmtkuart_is_standalone(bdev)) {
- 		err = clk_prepare_enable(bdev->osc);
- 		if (err < 0)
--			return err;
-+			goto err_hci_free_dev;
- 
- 		if (bdev->boot) {
- 			gpiod_set_value_cansleep(bdev->boot, 1);
-@@ -1028,10 +1028,8 @@ static int btmtkuart_probe(struct serdev_device *serdev)
- 
- 		/* Power on */
- 		err = regulator_enable(bdev->vcc);
--		if (err < 0) {
--			clk_disable_unprepare(bdev->osc);
--			return err;
--		}
-+		if (err < 0)
-+			goto err_clk_disable_unprepare;
- 
- 		/* Reset if the reset-gpios is available otherwise the board
- 		 * -level design should be guaranteed.
-@@ -1063,7 +1061,6 @@ static int btmtkuart_probe(struct serdev_device *serdev)
- 	err = hci_register_dev(hdev);
- 	if (err < 0) {
- 		dev_err(&serdev->dev, "Can't register HCI device\n");
--		hci_free_dev(hdev);
- 		goto err_regulator_disable;
- 	}
- 
-@@ -1072,6 +1069,11 @@ static int btmtkuart_probe(struct serdev_device *serdev)
- err_regulator_disable:
- 	if (btmtkuart_is_standalone(bdev))
- 		regulator_disable(bdev->vcc);
-+err_clk_disable_unprepare:
-+	if (btmtkuart_is_standalone(bdev))
-+		clk_disable_unprepare(bdev->osc);
-+err_hci_free_dev:
-+	hci_free_dev(hdev);
- 
- 	return err;
- }
--- 
-2.26.2
+[sumit: Changed this and that]
 
+> Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
+> 
+> --
+> v2: sumits: reworked handling to user regmap_read_poll_timeout, and handle it
+>      per-regulator instead of clearing both lab and ibb errors on either irq
+>      triggering. Also added REGULATOR_EVENT_OVER_CURRENT handling and
+>      notification to clients.
+> v3: sumits: updated as per review comments of v2: removed spurious check for
+>      irq in handler and some unused variables; inlined some of the code,
+>      omitted IRQF_TRIGGER_RISING as it's coming from DT.
+> 
+> ---
+>  drivers/regulator/qcom-labibb-regulator.c | 92 +++++++++++++++++++++++
+>  1 file changed, 92 insertions(+)
+> 
+> diff --git a/drivers/regulator/qcom-labibb-regulator.c b/drivers/regulator/qcom-labibb-regulator.c
+> index 634d08461c6e..695ffac71e81 100644
+> --- a/drivers/regulator/qcom-labibb-regulator.c
+> +++ b/drivers/regulator/qcom-labibb-regulator.c
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+>  // Copyright (c) 2020, The Linux Foundation. All rights reserved.
+>  
+> +#include <linux/interrupt.h>
+>  #include <linux/module.h>
+>  #include <linux/of_irq.h>
+>  #include <linux/of.h>
+> @@ -18,6 +19,7 @@
+>  #define REG_LABIBB_ENABLE_CTL		0x46
+>  #define LABIBB_STATUS1_VREG_OK_BIT	BIT(7)
+>  #define LABIBB_CONTROL_ENABLE		BIT(7)
+> +#define LABIBB_STATUS1_SC_DETECT_BIT	BIT(6)
+>  
+>  #define LAB_ENABLE_CTL_MASK		BIT(7)
+>  #define IBB_ENABLE_CTL_MASK		(BIT(7) | BIT(6))
+> @@ -27,12 +29,17 @@
+>  #define IBB_POLL_ENABLED_TIME		(LABIBB_ENABLE_TIME * 10)
+>  #define LABIBB_OFF_ON_DELAY		(8200)
+>  
+> +#define POLLING_SCP_DONE_INTERVAL_US	5000
+> +#define POLLING_SCP_TIMEOUT		16000
+> +
+>  struct labibb_regulator {
+>  	struct regulator_desc		desc;
+>  	struct device			*dev;
+>  	struct regmap			*regmap;
+>  	struct regulator_dev		*rdev;
+>  	u16				base;
+> +	int				sc_irq;
+
+This is now a local variable in register_labibb_regulator().
+
+> +	int				vreg_enabled;
+
+bool is a better representation of this (and the vreg_ prefix doesn't
+really add value).
+
+>  	u8				type;
+>  };
+>  
+> @@ -65,6 +72,8 @@ static int qcom_labibb_regulator_enable(struct regulator_dev *rdev)
+>  	if (ret < 0)
+>  		dev_err(reg->dev, "Write failed: enable %s regulator\n",
+>  			reg->desc.name);
+> +	else
+> +		reg->vreg_enabled = 1;
+
+No I see why you add these wrappers around the regmap in the previous
+patch.
+
+My request to not print an error message on enable/disable errors
+remains.
+
+>  
+>  	return ret;
+>  }
+> @@ -78,6 +87,8 @@ static int qcom_labibb_regulator_disable(struct regulator_dev *rdev)
+>  	if (ret < 0)
+>  		dev_err(reg->dev, "Disable failed: disable %s\n",
+>  			reg->desc.name);
+> +	else
+> +		reg->vreg_enabled = 0;
+>  
+>  	return ret;
+>  }
+> @@ -88,11 +99,70 @@ static struct regulator_ops qcom_labibb_ops = {
+>  	.is_enabled		= qcom_labibb_regulator_is_enabled,
+>  };
+>  
+> +static irqreturn_t labibb_sc_err_handler(int irq, void *_reg)
+> +{
+> +	int ret;
+> +	u16 reg;
+> +	unsigned int val;
+> +	struct labibb_regulator *labibb_reg = _reg;
+> +	bool in_sc_err, scp_done = false;
+> +
+> +	ret = regmap_read(labibb_reg->regmap,
+> +			  labibb_reg->base + REG_LABIBB_STATUS1, &val);
+> +	if (ret < 0) {
+> +		dev_err(labibb_reg->dev, "sc_err_irq: Read failed, ret=%d\n",
+> +			ret);
+> +		return IRQ_HANDLED;
+> +	}
+> +
+> +	dev_dbg(labibb_reg->dev, "%s SC error triggered! STATUS1 = %d\n",
+> +		labibb_reg->desc.name, val);
+> +
+> +	in_sc_err = !!(val & LABIBB_STATUS1_SC_DETECT_BIT);
+> +
+> +	/*
+> +	 * The SC(short circuit) fault would trigger PBS(Portable Batch
+> +	 * System) to disable regulators for protection. This would
+> +	 * cause the SC_DETECT status being cleared so that it's not
+> +	 * able to get the SC fault status.
+> +	 * Check if the regulator is enabled in the driver but
+> +	 * disabled in hardware, this means a SC fault had happened
+> +	 * and SCP handling is completed by PBS.
+> +	 */
+> +	if (!in_sc_err) {
+> +
+
+Empty line
+
+Regards,
+Bjorn
+
+> +		reg = labibb_reg->base + REG_LABIBB_ENABLE_CTL;
+> +
+> +		ret = regmap_read_poll_timeout(labibb_reg->regmap,
+> +					reg, val,
+> +					!(val & LABIBB_CONTROL_ENABLE),
+> +					POLLING_SCP_DONE_INTERVAL_US,
+> +					POLLING_SCP_TIMEOUT);
+> +
+> +		if (!ret && labibb_reg->vreg_enabled) {
+> +			dev_dbg(labibb_reg->dev,
+> +				"%s has been disabled by SCP\n",
+> +				labibb_reg->desc.name);
+> +			scp_done = true;
+> +		}
+> +	}
+> +
+> +	if (in_sc_err || scp_done) {
+> +		regulator_lock(labibb_reg->rdev);
+> +		regulator_notifier_call_chain(labibb_reg->rdev,
+> +						REGULATOR_EVENT_OVER_CURRENT,
+> +						NULL);
+> +		regulator_unlock(labibb_reg->rdev);
+> +	}
+> +	return IRQ_HANDLED;
+> +}
+> +
+>  static int register_labibb_regulator(struct labibb_regulator *reg,
+>  				const struct labibb_regulator_data *reg_data,
+>  				struct device_node *of_node)
+>  {
+>  	struct regulator_config cfg = {};
+> +	int ret;
+>  
+>  	reg->base = reg_data->base;
+>  	reg->type = reg_data->type;
+> @@ -108,6 +178,28 @@ static int register_labibb_regulator(struct labibb_regulator *reg,
+>  	reg->desc.poll_enabled_time = reg_data->poll_enabled_time;
+>  	reg->desc.off_on_delay = LABIBB_OFF_ON_DELAY;
+>  
+> +	reg->sc_irq = -EINVAL;
+> +	ret = of_irq_get_byname(of_node, "sc-err");
+> +	if (ret < 0) {
+> +		dev_err(reg->dev, "Unable to get sc-err, ret = %d\n",
+> +			ret);
+> +		return ret;
+> +	} else
+> +		reg->sc_irq = ret;
+> +
+> +	if (reg->sc_irq > 0) {
+> +		ret = devm_request_threaded_irq(reg->dev,
+> +						reg->sc_irq,
+> +						NULL, labibb_sc_err_handler,
+> +						IRQF_ONESHOT,
+> +						"sc-err", reg);
+> +		if (ret) {
+> +			dev_err(reg->dev, "Failed to register sc-err irq ret=%d\n",
+> +				ret);
+> +			return ret;
+> +		}
+> +	}
+> +
+>  	cfg.dev = reg->dev;
+>  	cfg.driver_data = reg;
+>  	cfg.regmap = reg->regmap;
+> -- 
+> 2.26.2
+> 
