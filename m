@@ -2,131 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 157121E756F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 07:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6451E7573
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 07:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725914AbgE2FfL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 May 2020 01:35:11 -0400
-Received: from mga02.intel.com ([134.134.136.20]:15353 "EHLO mga02.intel.com"
+        id S1726071AbgE2FgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 01:36:10 -0400
+Received: from mga14.intel.com ([192.55.52.115]:3675 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725308AbgE2FfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 01:35:10 -0400
-IronPort-SDR: Nr8GJnKLkkq7JkdDtxsHPUTabbtSHn5N8zNfabu2iS6Fnqwq46jL9Zi8mtlWbWzaJ9biDdTVph
- n32Rg9iHNCew==
+        id S1725308AbgE2FgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 01:36:08 -0400
+IronPort-SDR: VYBQpytP0low8wbaM9K1kZITtXCc1zpeFGM7xLF+4YQ+9uH2zWyTYeAdr8pzYnKH2+acsWBMSG
+ HnpsIO+oU2gA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 22:35:10 -0700
-IronPort-SDR: x400dgFeBGYYcZf6at12iSswF0xD65yizzDfsHkKQorANkWQH8dBDMs/iN7EFBJpejnqYz2AVt
- zvwbRSCrA5YA==
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 22:36:04 -0700
+IronPort-SDR: tFxe2BIxiPncpHrnHQKfWj9p753Jl38BkPgEowEyCCXBfhuxe0OTUteghpYeL/ARwT5aZQMPBN
+ 8jDENjB0GgZQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,447,1583222400"; 
-   d="scan'208";a="302723578"
-Received: from orsmsx110.amr.corp.intel.com ([10.22.240.8])
-  by fmsmga002.fm.intel.com with ESMTP; 28 May 2020 22:35:09 -0700
-Received: from orsmsx112.amr.corp.intel.com ([169.254.3.61]) by
- ORSMSX110.amr.corp.intel.com ([169.254.10.119]) with mapi id 14.03.0439.000;
- Thu, 28 May 2020 22:35:09 -0700
-From:   "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Allan, Bruce W" <bruce.w.allan@intel.com>
-CC:     "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: RE: [PATCH net-next v3] ice: Replace one-element arrays with
- flexible-arrays
-Thread-Topic: [PATCH net-next v3] ice: Replace one-element arrays with
- flexible-arrays
-Thread-Index: AQHWNDACNpPEgN+IHEW5ZY2UVT3OQ6i+jFOg
-Date:   Fri, 29 May 2020 05:35:09 +0000
-Message-ID: <61CC2BC414934749BD9F5BF3D5D94044986DE746@ORSMSX112.amr.corp.intel.com>
-References: <20200527141119.GA30849@embeddedor>
-In-Reply-To: <20200527141119.GA30849@embeddedor>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.22.254.140]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+   d="scan'208";a="376607924"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by fmsmga001.fm.intel.com with SMTP; 28 May 2020 22:36:00 -0700
+Received: by lahna (sSMTP sendmail emulation); Fri, 29 May 2020 08:36:00 +0300
+Date:   Fri, 29 May 2020 08:36:00 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     Daniel Walker <danielwa@cisco.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Bobby Liu <bobbliu@cisco.com>, xe-linux-external@cisco.com,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mtd: spi-nor: create/Export parameter softwareseq
+ for intel-spi driver to user
+Message-ID: <20200529053600.GG247495@lahna.fi.intel.com>
+References: <20200518175930.10948-1-danielwa@cisco.com>
+ <589a2ef5-e086-766d-44b3-1d2b990f1f67@ti.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <589a2ef5-e086-766d-44b3-1d2b990f1f67@ti.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Sent: Wednesday, May 27, 2020 07:11
-> To: Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>; David S. Miller
-> <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>
-> Cc: intel-wired-lan@lists.osuosl.org; netdev@vger.kernel.org; linux-
-> kernel@vger.kernel.org; Gustavo A. R. Silva <gustavo@embeddedor.com>;
-> Kees Cook <keescook@chromium.org>
-> Subject: [PATCH net-next v3] ice: Replace one-element arrays with flexible-
-> arrays
-> 
-> The current codebase makes use of one-element arrays in the following
-> form:
-> 
-> struct something {
->     int length;
->     u8 data[1];
-> };
-> 
-> struct something *instance;
-> 
-> instance = kmalloc(sizeof(*instance) + size, GFP_KERNEL);
-> instance->length = size;
-> memcpy(instance->data, source, size);
-> 
-> but the preferred mechanism to declare variable-length types such as these
-> ones is a flexible array member[1][2], introduced in C99:
-> 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
-> 
-> By making use of the mechanism above, we will get a compiler warning in case
-> the flexible array does not occur last in the structure, which will help us prevent
-> some kind of undefined behavior bugs from being inadvertently introduced[3]
-> to the codebase from now on. So, replace the one-element array with a
-> flexible-array member.
-> 
-> Also, make use of the offsetof() helper in order to simplify some macros and
-> properly calculate the size of the structures that contain flexible-array members.
-> 
-> This issue was found with the help of Coccinelle and, audited _manually_.
-> 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-[Kirsher, Jeffrey T] 
+Hi,
 
-Thanks Gustavo, but we (or I should say Bruce Allan) already has a patch to resolve this,
-and is a bit more thorough.  I will make sure you get CC'd on the patch, for your review.
+I wonder if we can "generalize" this a bit and use SW sequencer to run
+commands HW sequencer does not support? The BIOS can then setup the
+allowed SW sequencer opcodes and lock the thing down if needed.
 
-> ---
-> Changes in v3:
->  - We still can simply the code even more by using offsetof() just once. :)
+There are couple of other commands related to FSR register where this
+could be useful.
+
+On Thu, May 28, 2020 at 04:16:38PM +0530, Vignesh Raghavendra wrote:
+> +Mika Westerberg original author of the driver
 > 
-> Changes in v2:
->  - Use offsetof(struct ice_aqc_sw_rules_elem, pdata) instead of
->    sizeof(struct ice_aqc_sw_rules_elem) - sizeof(((struct ice_aqc_sw_rules_elem
-> *)0)->pdata)
->  - Update changelog text.
+> On 18/05/20 11:29 pm, Daniel Walker wrote:
+> > From: Bobby Liu <bobbliu@cisco.com>
+> > 
+> > How to use:
+> > append softwareseq=1 while probe the driver.
+> > example:
+> > modprobe intel-spi writeable=1 softwareseq=1
+> > it will let driver use software sequence to write register for opt=EN4B
+> > by default it's 0 if not specified, driver will do usual HW cycle
+> > 
 > 
->  .../net/ethernet/intel/ice/ice_adminq_cmd.h   |  6 ++---
->  drivers/net/ethernet/intel/ice/ice_switch.c   | 23 ++++++-------------
->  2 files changed, 10 insertions(+), 19 deletions(-)
+> Could some one from Intel please review this patch?
 > 
+> Regards
+> Vignesh
+> 
+> > Why this parameter is posted to user:
+> > Intel PCH provides two groups of registers for SPI flash operation,
+> > Hard Sequence registers and Software Sequence registers,
+> > corresponding to intel_spi_hw_cycle() and intel_spi_sw_cycle()
+> > respectively in driver code. But HW sequence register won't send EN4B
+> > opcode to SPI flash. BIOS code use SW register to send EN4B.
+> > 
+> > On some Cisco routers, two 32M SPI flashes, which require 4-byte address mode enabled,
+> > are physically connected to an FPGA, one flash is active and one is inactive.
+> > When we do BIOS upgrade, we need switch to the inactive one,
+> > but unfortunately, this one is still 3-byte address mode as default,
+> > after we do real-time switch, we need reload SPI driver to send EN4B code to
+> > enable 4-byte address mode.
+> > 
+> > Refering to our BIOS code, Software sequence register is processed
+> > while sending EN4B opcode. So here we use sw_cycle in driver for EN4B as well.
+> > 
+> > Why I don't just easily use software sequence for all:
+> > 1.It will impact all flash operation, include flash W/R, high risk
+> > 2.The only SPI type I can use is INTEL_SPI_BXT according to datasheet,
+> >   this will require using hw seq.
+> >   I tried to specify other SPI type, it couldn't work with Intel PCH.
+> >   If I force SW seq for all, during boot up, sw_cycle fails to read
+> >   vendor ID.
+> > 
+> > In conclusion, I only use SW cycle for EN4B opcode to minimize impact.
+> > It won't impact other users as well.
+> > 
+> > Why the default flash can work at 4-byte address mode:
+> > BIOS sets 4-byte address mode for the current active SPI flash with SW seq registers.
+> > So we don't need append softwareseq=1 for normal boot up script,
+> > it will only be used in BIOS upgrade script.
+> > 
+> > Cc: xe-linux-external@cisco.com
+> > Signed-off-by: Bobby Liu <bobbliu@cisco.com>
+> > [ danielwa: edited the commit message a little. ]
+> > Signed-off-by: Daniel Walker <danielwa@cisco.com>
+> > ---
+> >  drivers/mtd/spi-nor/controllers/intel-spi.c | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
+> > index 61d2a0ad2131..e5a3d51a2e4d 100644
+> > --- a/drivers/mtd/spi-nor/controllers/intel-spi.c
+> > +++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
+> > @@ -163,6 +163,10 @@ static bool writeable;
+> >  module_param(writeable, bool, 0);
+> >  MODULE_PARM_DESC(writeable, "Enable write access to SPI flash chip (default=0)");
+> >  
+> > +static bool softwareseq;
+> > +module_param(softwareseq, bool, 0);
+> > +MODULE_PARM_DESC(softwareseq, "Use software sequence for register write (default=0)");
+> > +
+> >  static void intel_spi_dump_regs(struct intel_spi *ispi)
+> >  {
+> >  	u32 value;
+> > @@ -619,6 +623,18 @@ static int intel_spi_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
+> >  	if (ret)
+> >  		return ret;
+> >  
+> > +	/*
+> > +	 * Intel Skylake will not send EN4B to SPI flash if we use HW sequence
+> > +	 * Here export one interface "softwareseq" to OS,
+> > +	 * let driver user decide if use SW sequence or not
+> > +	 */
+> > +	if (opcode == SPINOR_OP_EN4B && softwareseq) {
+> > +	    dev_info(ispi->dev,
+> > +		"Write register opcode is SPINOR_OP_EN4B, do SW cycle\n");
+> > +	    return intel_spi_sw_cycle(ispi, opcode, len,
+> > +		OPTYPE_WRITE_NO_ADDR);
+> > +	}
+> > +
+> >  	if (ispi->swseq_reg)
+> >  		return intel_spi_sw_cycle(ispi, opcode, len,
+> >  					  OPTYPE_WRITE_NO_ADDR);
+> > 
