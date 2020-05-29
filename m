@@ -2,263 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 442EA1E7D64
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 14:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107431E7D71
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 14:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726616AbgE2Miz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 08:38:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbgE2Miy (ORCPT
+        id S1726629AbgE2Mod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 08:44:33 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:35400 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbgE2Moc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 08:38:54 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55DD0C03E969
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 05:38:54 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id o5so2110104iow.8
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 05:38:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GpFpmfPvBmGCrG+YRKg1DrvOcE2InyRqDPpkvzlFCeM=;
-        b=mVj1SxIGA3hVciY4NUFoGwHDguUdi8OCtpuRPDrjBwFaVKkhs1v55X0i1OCPFqCHpt
-         4rBTnBYnJBmYkfpLc+ndkygjilRiqdzjzJYQ4yJK6NL6PueO8q6FueVbdpfFnfQhfs2E
-         NpDpzxYXS1JYaL2scfsyM1nreK4qCmmRFNCawu3VKCvSNWVIRNRoxrGVDLQJkn2ST54I
-         qvwRGncVUaze0w9H6AnElFUr91zBTEcXalYBNfP0zCX7CNpDkgNfcFVMFGew7A+YaeFH
-         u108q6hPTtFJ1TGTyCu/QujkVDrjG9qp8OIzRSi44tDrgrT9UORoRbLQWWYYjw8dkU44
-         MD/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GpFpmfPvBmGCrG+YRKg1DrvOcE2InyRqDPpkvzlFCeM=;
-        b=Ul1S0hAutCNcjtqExGssmKymBd5N+vFw9xNcRSU6ktfg2VEoGS7xW+tDGQNCpymEuQ
-         SfYUxBBTi2d07yPmHDQ8Zt4jbgkCsGaKLWYNM+nii2pFgdxmvpz4z7G2fIstjOm152K1
-         ALcjSh5k+88m9KUvZAzGa0zJ5zBTGAKoniHIiIp/6sa9iW2bhuKklFIZ05IzKjKu0POd
-         zUhrvw1yDdxoNAf15o95u19Gtkt5stkVk/vch/XanpsUkkTI865+BQgMPcKCd7Kw3fnD
-         GsVJta33S8RjATQd2YwHD3znH9j966aJe1eLGp8KADEqwOnlQfQ5hon+ZGCcUhjhM6Dc
-         tUKw==
-X-Gm-Message-State: AOAM533qB6m0Dgx/K5+sX2fulP9f5X6uKUuufLijyJWdxVkIcccMU+/P
-        BenoxRX59uYb3lbFbw1Z8XRWgqJj7AEvix3A1mQ=
-X-Google-Smtp-Source: ABdhPJzC5HqY80HYqaqZ/++TCc0BhpKqOpSkx5Q2xANUotb6MLwGX7JT8NDyyJ7xjrJ3CWH29iviOulcsIucJd2TYx4=
-X-Received: by 2002:a6b:7841:: with SMTP id h1mr6339900iop.101.1590755933524;
- Fri, 29 May 2020 05:38:53 -0700 (PDT)
+        Fri, 29 May 2020 08:44:32 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jeeN4-0001tU-LB; Fri, 29 May 2020 06:44:22 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jeeN3-0002Zm-Qy; Fri, 29 May 2020 06:44:22 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     keescook@chromium.org, yzaikin@google.com, nixiaoming@huawei.com,
+        axboe@kernel.dk, clemens@ladisch.de, arnd@arndb.de,
+        gregkh@linuxfoundation.org, jani.nikula@linux.intel.com,
+        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        airlied@linux.ie, daniel@ffwll.ch, benh@kernel.crashing.org,
+        rdna@fb.com, viro@zeniv.linux.org.uk, mark@fasheh.com,
+        jlbec@evilplan.org, joseph.qi@linux.alibaba.com, vbabka@suse.cz,
+        sfr@canb.auug.org.au, jack@suse.cz, amir73il@gmail.com,
+        rafael@kernel.org, tytso@mit.edu, julia.lawall@lip6.fr,
+        akpm@linux-foundation.org, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linuxppc-dev@lists.ozlabs.org,
+        ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+References: <20200529074108.16928-1-mcgrof@kernel.org>
+        <20200529074108.16928-2-mcgrof@kernel.org>
+Date:   Fri, 29 May 2020 07:40:27 -0500
+In-Reply-To: <20200529074108.16928-2-mcgrof@kernel.org> (Luis Chamberlain's
+        message of "Fri, 29 May 2020 07:40:56 +0000")
+Message-ID: <87ftbiud6s.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20200510165538.19720-1-peron.clem@gmail.com> <20200510165538.19720-9-peron.clem@gmail.com>
- <3ca4dd51-d868-0d6a-d4ca-37af572190bd@arm.com>
-In-Reply-To: <3ca4dd51-d868-0d6a-d4ca-37af572190bd@arm.com>
-From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date:   Fri, 29 May 2020 14:38:42 +0200
-Message-ID: <CAJiuCceH-wOHc7wEEtmd+CC==QgqK1nOG6YB389Gs=+0t8i=wg@mail.gmail.com>
-Subject: Re: [PATCH 08/15] drm/panfrost: move devfreq_init()/fini() in device
-To:     Steven Price <steven.price@arm.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-XM-SPF: eid=1jeeN3-0002Zm-Qy;;;mid=<87ftbiud6s.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/CdRjCqR5tocQPa3WmKA+dtgVA1qYSKWY=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,T_TooManySym_03,XMNoVowels,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4765]
+        *  0.7 XMSubLong Long Subject
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 0; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_03 6+ unique symbols in subject
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+X-Spam-DCC: ; sa07 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Luis Chamberlain <mcgrof@kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 395 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 10 (2.6%), b_tie_ro: 9 (2.3%), parse: 1.08 (0.3%),
+         extract_message_metadata: 3.1 (0.8%), get_uri_detail_list: 0.85
+        (0.2%), tests_pri_-1000: 4.0 (1.0%), tests_pri_-950: 1.27 (0.3%),
+        tests_pri_-900: 1.05 (0.3%), tests_pri_-90: 172 (43.4%), check_bayes:
+        170 (43.0%), b_tokenize: 7 (1.8%), b_tok_get_all: 7 (1.9%),
+        b_comp_prob: 2.3 (0.6%), b_tok_touch_all: 149 (37.8%), b_finish: 1.08
+        (0.3%), tests_pri_0: 183 (46.4%), check_dkim_signature: 0.46 (0.1%),
+        check_dkim_adsp: 2.6 (0.7%), poll_dns_idle: 0.92 (0.2%), tests_pri_10:
+        2.9 (0.7%), tests_pri_500: 8 (2.1%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 01/13] sysctl: add new register_sysctl_subdir() helper
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven
+Luis Chamberlain <mcgrof@kernel.org> writes:
 
-On Thu, 28 May 2020 at 15:22, Steven Price <steven.price@arm.com> wrote:
+> Often enough all we need to do is create a subdirectory so that
+> we can stuff sysctls underneath it. However, *if* that directory
+> was already created early on the boot sequence we really have no
+> need to use the full boiler plate code for it, we can just use
+> local variables to help us guide sysctl to place the new leaf files.
 >
-> On 10/05/2020 17:55, Cl=C3=A9ment P=C3=A9ron wrote:
-> > Later we will introduce devfreq probing regulator if they
-> > are present. As regulator should be probe only one time we
-> > need to get this logic in the device_init().
-> >
-> > panfrost_device is already taking care of devfreq_resume()
-> > and devfreq_suspend(), so it's not totally illogic to move
-> > the devfreq_init() and devfreq_fini() here.
-> >
-> > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
-> > ---
-> >   drivers/gpu/drm/panfrost/panfrost_device.c | 37 ++++++++++++++-------=
--
-> >   drivers/gpu/drm/panfrost/panfrost_drv.c    | 15 ++-------
-> >   2 files changed, 25 insertions(+), 27 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/d=
-rm/panfrost/panfrost_device.c
-> > index 8136babd3ba9..f480127205d6 100644
-> > --- a/drivers/gpu/drm/panfrost/panfrost_device.c
-> > +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
-> > @@ -212,59 +212,67 @@ int panfrost_device_init(struct panfrost_device *=
-pfdev)
-> >               return err;
-> >       }
-> >
-> > +     err =3D panfrost_devfreq_init(pfdev);
-> > +     if (err) {
-> > +             dev_err(pfdev->dev, "devfreq init failed %d\n", err);
-> > +             goto err_out0;
-> > +     }
-> > +
-> >       err =3D panfrost_regulator_init(pfdev);
-> >       if (err) {
-> >               dev_err(pfdev->dev, "regulator init failed %d\n", err);
-> > -             goto err_out0;
-> > +             goto err_out1;
->
-> NIT: Rather than just renumbering these can we give them sensible names
-> so we don't have this sort of refactoring in future?
+> So use a helper to do precisely this.
 
-Agree, I will change that in v2
+Reset restart.  This is patch is total nonsense.
 
->
-> >       }
-> >
-> >       err =3D panfrost_reset_init(pfdev);
-> >       if (err) {
-> >               dev_err(pfdev->dev, "reset init failed %d\n", err);
-> > -             goto err_out1;
-> > +             goto err_out2;
-> >       }
-> >
-> >       err =3D panfrost_pm_domain_init(pfdev);
-> >       if (err)
-> > -             goto err_out2;
-> > +             goto err_out3;
-> >
-> >       res =3D platform_get_resource(pfdev->pdev, IORESOURCE_MEM, 0);
-> >       pfdev->iomem =3D devm_ioremap_resource(pfdev->dev, res);
-> >       if (IS_ERR(pfdev->iomem)) {
-> >               dev_err(pfdev->dev, "failed to ioremap iomem\n");
-> >               err =3D PTR_ERR(pfdev->iomem);
-> > -             goto err_out3;
-> > +             goto err_out4;
-> >       }
-> >
-> >       err =3D panfrost_gpu_init(pfdev);
-> >       if (err)
-> > -             goto err_out3;
-> > +             goto err_out4;
-> >
-> >       err =3D panfrost_mmu_init(pfdev);
-> >       if (err)
-> > -             goto err_out4;
-> > +             goto err_out5;
-> >
-> >       err =3D panfrost_job_init(pfdev);
-> >       if (err)
-> > -             goto err_out5;
-> > +             goto err_out6;
-> >
-> >       err =3D panfrost_perfcnt_init(pfdev);
-> >       if (err)
-> > -             goto err_out6;
-> > +             goto err_out7;
-> >
-> >       return 0;
-> > -err_out6:
-> > +err_out7:
-> >       panfrost_job_fini(pfdev);
-> > -err_out5:
-> > +err_out6:
-> >       panfrost_mmu_fini(pfdev);
-> > -err_out4:
-> > +err_out5:
-> >       panfrost_gpu_fini(pfdev);
-> > -err_out3:
-> > +err_out4:
-> >       panfrost_pm_domain_fini(pfdev);
-> > -err_out2:
-> > +err_out3:
-> >       panfrost_reset_fini(pfdev);
-> > -err_out1:
-> > +err_out2:
-> >       panfrost_regulator_fini(pfdev);
-> > +err_out1:
-> > +     panfrost_devfreq_fini(pfdev);
-> >   err_out0:
-> >       panfrost_clk_fini(pfdev);
-> >       return err;
-> > @@ -278,6 +286,7 @@ void panfrost_device_fini(struct panfrost_device *p=
-fdev)
-> >       panfrost_gpu_fini(pfdev);
-> >       panfrost_pm_domain_fini(pfdev);
-> >       panfrost_reset_fini(pfdev);
-> > +     panfrost_devfreq_fini(pfdev);
-> >       panfrost_regulator_fini(pfdev);
-> >       panfrost_clk_fini(pfdev);
-> >   }
-> > diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/=
-panfrost/panfrost_drv.c
-> > index 882fecc33fdb..4dda68689015 100644
-> > --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-> > +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> > @@ -14,7 +14,6 @@
-> >   #include <drm/drm_utils.h>
-> >
-> >   #include "panfrost_device.h"
-> > -#include "panfrost_devfreq.h"
-> >   #include "panfrost_gem.h"
-> >   #include "panfrost_mmu.h"
-> >   #include "panfrost_job.h"
-> > @@ -606,13 +605,6 @@ static int panfrost_probe(struct platform_device *=
-pdev)
-> >               goto err_out0;
-> >       }
-> >
-> > -     err =3D panfrost_devfreq_init(pfdev);
-> > -     if (err) {
-> > -             if (err !=3D -EPROBE_DEFER)
-> > -                     dev_err(&pdev->dev, "Fatal error during devfreq i=
-nit\n");
->
-> You seem to have lost the check for EPROBE_DEFER during the move.
+- You are using register_sysctl_table which as I believe I have
+  mentioned is a deprecated compatibility wrapper.  The point of
+  spring house cleaning is to get off of the deprecated functions
+  isn't it?
 
-Correct, sorry for that, I will fix it in v2.
+- You are using the old nasty form for creating directories instead
+  of just passing in a path.
 
-Thanks for your review,
-Clement
+- None of this is even remotely necessary.  The directories
+  are created automatically if you just register their entries.
 
->
-> > -             goto err_out1;
-> > -     }
-> > -
-> >       pm_runtime_set_active(pfdev->dev);
-> >       pm_runtime_mark_last_busy(pfdev->dev);
-> >       pm_runtime_enable(pfdev->dev);
-> > @@ -625,16 +617,14 @@ static int panfrost_probe(struct platform_device =
-*pdev)
-> >        */
-> >       err =3D drm_dev_register(ddev, 0);
-> >       if (err < 0)
-> > -             goto err_out2;
-> > +             goto err_out1;
-> >
-> >       panfrost_gem_shrinker_init(ddev);
-> >
-> >       return 0;
-> >
-> > -err_out2:
-> > -     pm_runtime_disable(pfdev->dev);
-> > -     panfrost_devfreq_fini(pfdev);
-> >   err_out1:
-> > +     pm_runtime_disable(pfdev->dev);
-> >       panfrost_device_fini(pfdev);
-> >   err_out0:
-> >       drm_dev_put(ddev);
-> > @@ -650,7 +640,6 @@ static int panfrost_remove(struct platform_device *=
-pdev)
-> >       panfrost_gem_shrinker_cleanup(ddev);
-> >
-> >       pm_runtime_get_sync(pfdev->dev);
-> > -     panfrost_devfreq_fini(pfdev);
-> >       panfrost_device_fini(pfdev);
-> >       pm_runtime_put_sync_suspend(pfdev->dev);
-> >       pm_runtime_disable(pfdev->dev);
-> >
->
+Eric
