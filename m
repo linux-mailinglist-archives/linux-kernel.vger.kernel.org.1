@@ -2,85 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E69811E7DD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 15:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D521E7DDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 15:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726968AbgE2NE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 09:04:27 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:54075 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726955AbgE2NEZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 09:04:25 -0400
-X-Originating-IP: 86.250.147.67
-Received: from pc-10.home (lfbn-tou-1-695-67.w86-250.abo.wanadoo.fr [86.250.147.67])
-        (Authenticated sender: maxime.chevallier@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 01CB8C0004;
-        Fri, 29 May 2020 13:04:21 +0000 (UTC)
-From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Subject: [PATCH v2 3/3] arm64: dts: rockchip: Add the camera interface description of the PX30
-Date:   Fri, 29 May 2020 15:04:05 +0200
-Message-Id: <20200529130405.929429-4-maxime.chevallier@bootlin.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200529130405.929429-1-maxime.chevallier@bootlin.com>
-References: <20200529130405.929429-1-maxime.chevallier@bootlin.com>
+        id S1727022AbgE2NE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 09:04:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726549AbgE2NE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 09:04:56 -0400
+Received: from localhost (lfbn-ncy-1-324-171.w83-196.abo.wanadoo.fr [83.196.159.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B3E52077D;
+        Fri, 29 May 2020 13:04:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590757496;
+        bh=5xmseH3wj1bkjpjrcWDcs26t3O2XwvF9rOv+Agfah8o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=z/xoTBl51+PF9jpmcPDeILvKwOdk3mW7ZMiO0uauYjljHTR2i1N5w1eAb8wgIeZdg
+         Mx6H8DqmeRNDF7dgYJEmPVBzQVqhiipzkP/027scNpDXRgGdg+UizA4cSQqOnDiLcA
+         liX9KXZBkmis7zNTWnKELhavkP0LFExok0e085qo=
+Date:   Fri, 29 May 2020 15:04:54 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org, x86@kernel.org,
+        cai@lca.pw, mgorman@techsingularity.net
+Subject: Re: [RFC][PATCH 3/7] smp: Move irq_work_run() out of
+ flush_smp_call_function_queue()
+Message-ID: <20200529130453.GB19915@lenoir>
+References: <20200526161057.531933155@infradead.org>
+ <20200526161907.895109676@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200526161907.895109676@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PX30 has a camera interface, supporting CSI2, BT656 and Parallel
-modes. Add a DT description for this interface.
+On Tue, May 26, 2020 at 06:11:00PM +0200, Peter Zijlstra wrote:
+> This ensures flush_smp_call_function_queue() is strictly about
+> call_single_queue.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  kernel/smp.c |   17 +++++++++--------
+>  1 file changed, 9 insertions(+), 8 deletions(-)
+> 
+> --- a/kernel/smp.c
+> +++ b/kernel/smp.c
+> @@ -84,6 +84,7 @@ int smpcfd_dying_cpu(unsigned int cpu)
+>  	 * still pending.
+>  	 */
+>  	flush_smp_call_function_queue(false);
+> +	irq_work_run();
+>  	return 0;
+>  }
+>  
+> @@ -191,6 +192,14 @@ static int generic_exec_single(int cpu,
+>  void generic_smp_call_function_single_interrupt(void)
+>  {
+>  	flush_smp_call_function_queue(true);
+> +
+> +	/*
+> +	 * Handle irq works queued remotely by irq_work_queue_on().
+> +	 * Smp functions above are typically synchronous so they
+> +	 * better run first since some other CPUs may be busy waiting
+> +	 * for them.
+> +	 */
 
-Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
----
+You may want to update that comment once you merge remote irq_work and csd.
 
-Changes since V1:
+Thanks.
 
- - Updated the clock and reset names
- - Reordered the properties to have clocks and resets bundled together
-
- arch/arm64/boot/dts/rockchip/px30.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts/rockchip/px30.dtsi
-index 9f84aaaf3fba..d895541b7216 100644
---- a/arch/arm64/boot/dts/rockchip/px30.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
-@@ -1140,6 +1140,18 @@ vopl_mmu: iommu@ff470f00 {
- 		status = "disabled";
- 	};
- 
-+	cif: cif@ff490000 {
-+		compatible = "rockchip,px30-cif";
-+		reg = <0x0 0xff490000 0x0 0x200>;
-+		interrupts = <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru ACLK_CIF>, <&cru HCLK_CIF>, <&cru PCLK_CIF>, <&cru SCLK_CIF_OUT>;
-+		clock-names = "aclk", "hclk", "pclkin";
-+		power-domains = <&power PX30_PD_VI>;
-+		resets = <&cru SRST_CIF_A>, <&cru SRST_CIF_H>, <&cru SRST_CIF_PCLKIN>;
-+		reset-names = "axi", "ahb", "pclkin";
-+		status = "disabled";
-+	};
-+
- 	qos_gmac: qos@ff518000 {
- 		compatible = "syscon";
- 		reg = <0x0 0xff518000 0x0 0x20>;
--- 
-2.25.4
-
+> +	irq_work_run();
+>  }
+>  
+>  /**
+> @@ -267,14 +276,6 @@ static void flush_smp_call_function_queu
+>  		csd_unlock(csd);
+>  		func(info);
+>  	}
+> -
+> -	/*
+> -	 * Handle irq works queued remotely by irq_work_queue_on().
+> -	 * Smp functions above are typically synchronous so they
+> -	 * better run first since some other CPUs may be busy waiting
+> -	 * for them.
+> -	 */
+> -	irq_work_run();
+>  }
+>  
+>  /*
+> 
+> 
