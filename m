@@ -2,75 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B111E7CCF
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 14:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48BD51E7CD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 14:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727053AbgE2MKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 08:10:46 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:45864 "EHLO mail.skyhub.de"
+        id S1727083AbgE2MLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 08:11:33 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:38025 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725865AbgE2MKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 08:10:44 -0400
-Received: from zn.tnic (p200300ec2f0f5e0065ddb5c3466bc22e.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:5e00:65dd:b5c3:466b:c22e])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725865AbgE2MLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 08:11:33 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 90DD31EC0322;
-        Fri, 29 May 2020 14:10:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1590754243;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=fme/ekO6mAFo1VevPB2Wamp5hira7XgWhTb1mRZL0U4=;
-        b=LcyrG+cmwwpLX+o0JQl1zIoxCxanONmg2wiJWs4F5IegP7PRg18vBlIXRKwhjpwJSEgLPI
-        wp+tLtAIrRJQ6VvWBdEBSnOtY+p5FNmjRW57S0BYFrBoZtAIE5SVOW5LoD4vZ2tEn258lq
-        8FWZfbwGa9PdfJ3MzXK4wFWiYzMbpd0=
-Date:   Fri, 29 May 2020 14:10:38 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-sgx@vger.kernel.org, akpm@linux-foundation.org,
-        dave.hansen@intel.com, sean.j.christopherson@intel.com,
-        nhorman@redhat.com, npmccallum@redhat.com, haitao.huang@intel.com,
-        andriy.shevchenko@linux.intel.com, tglx@linutronix.de,
-        kai.svahn@intel.com, josh@joshtriplett.org, luto@kernel.org,
-        kai.huang@intel.com, rientjes@google.com, cedric.xing@intel.com,
-        puiterwijk@redhat.com, Jethro Beekman <jethro@fortanix.com>
-Subject: Re: [PATCH v30 09/20] mm: Introduce vm_ops->may_mprotect()
-Message-ID: <20200529121038.GG9011@zn.tnic>
-References: <20200515004410.723949-1-jarkko.sakkinen@linux.intel.com>
- <20200515004410.723949-10-jarkko.sakkinen@linux.intel.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49YNhd4kC6z9sT2;
+        Fri, 29 May 2020 22:11:29 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1590754289;
+        bh=osB1gIlDBBXEjeXVAF6KWKSbfiB8hYfQ/nUnza0+KOg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=WnDxyBD0A8l3iSQFsGgD3JscNX6G5E1XXFLIinh3a1kyO8PmIK81pSbhq4DgAocfd
+         ae1e2ncwfeyniSLoxWiJ0K6F+IyFamRpi/K15Uv8qhVJZe4MdnXZv5aXjtlk/W1dle
+         8tq8x1B5SwMmtZQIK+mJOIlCXZGCW8vlrVwVDCceg3nTUelHvUGPuAbDegRaAzhdGA
+         hLbYgEyQfx25RzmQQb6cVpXyExrJBEADGn6jr1DeBWaZ/n7EXvFA8YkFKuiozOm/jY
+         YUIhhOAqDdtL9+DSc8jNRlFxvRp7AOfmsrsCUoWwwrOZySXf0tNfV/KhwVv1FkpbzE
+         3UqV96q8iOGCQ==
+Date:   Fri, 29 May 2020 22:11:28 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: linux-next: Signed-off-by missing for commit in the ext4 tree
+Message-ID: <20200529221128.668844ca@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200515004410.723949-10-jarkko.sakkinen@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/eD7.5XL7X+zXjnQdb9Ya69A";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 03:43:59AM +0300, Jarkko Sakkinen wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
-> 
-> Add vm_ops()->may_mprotect() to check additional constrains set by a
+--Sig_/eD7.5XL7X+zXjnQdb9Ya69A
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-"constraints"
+Hi all,
 
-> subsystem for a mprotect() call.
-> 
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Acked-by: Jethro Beekman <jethro@fortanix.com>
-> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> ---
->  include/linux/mm.h |  2 ++
->  mm/mprotect.c      | 14 +++++++++++---
->  2 files changed, 13 insertions(+), 3 deletions(-)
+Commit
 
-This needs an ACK from an mm person.
+  560d6b3da024 ("ext4: mballoc: fix possible NULL ptr & remove BUG_ONs from=
+ DOUBLE_CHECK")
 
--- 
-Regards/Gruss,
-    Boris.
+is missing a Signed-off-by from its author.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/eD7.5XL7X+zXjnQdb9Ya69A
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7Q+/AACgkQAVBC80lX
+0Gy7iQf/Q25HAnmdPNn/xFOcFYvuibvdurQDGPndGqvaNR//Nh1pF/NJz+/emkCt
+Ry7iQz4cA5oEEZMytHwVVMcIjkMJXJKAmyxCmHdWb3OBIuYbw+iTdJLrrJ3AGmMl
+FQa8cWZ7Z5mmexxYxMOp4UQ2Wl5S0SN1nf4rHNI++TElc89XOPiubW8O8ilEOOo7
+LgNoOjuD6LUbhZz4F54VXKCgm1hoIfaGewavapBYCEI517pjWHfSeIdZEANAIkqJ
+X4gHEr7oj615yCz04aDXfsWtyzURvIlSHWR7AO+x4jvCFayNTQv354+JFMI0ZA2F
+7Y9+OICdLGYI0RhNrgeYgLFkK1fqtw==
+=q2aj
+-----END PGP SIGNATURE-----
+
+--Sig_/eD7.5XL7X+zXjnQdb9Ya69A--
