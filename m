@@ -2,277 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E9DA1E83BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 18:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 689C11E83C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 18:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726887AbgE2Qcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 12:32:36 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:54875 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725681AbgE2Qcd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 12:32:33 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200529163230euoutp0130793859f0e77fa2688bffb5cceab7c3~TjNd8ePyL1129311293euoutp01F
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 16:32:30 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200529163230euoutp0130793859f0e77fa2688bffb5cceab7c3~TjNd8ePyL1129311293euoutp01F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1590769950;
-        bh=ZA0i9eHHG5iu5/RTCzNyz3w0SkS4Fkzs8grCQaAd27k=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AMP42dGdaoNciWAvezQNZhZOqLlFNpf5q4Q569M4OGLHmaxhtUMmSOutb1G4hXmpv
-         5Pfki1rRO4k3rcAx1GHx7PtvCjoBrZWHQX1jrwqPuc0jk7PqAiaTs/kH/Lp7itYluV
-         iu//CxdVlUvZHWUkuztdl6cFMTxqYiRtOvppEx0k=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200529163230eucas1p17a7d2b6bfadc0e04b85afd2e276ad790~TjNdseh5o2226622266eucas1p1I;
-        Fri, 29 May 2020 16:32:30 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 2D.5D.61286.E1931DE5; Fri, 29
-        May 2020 17:32:30 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200529163229eucas1p2ee6394f184e5eba12599559f8a621fde~TjNdXTWjd2862228622eucas1p2a;
-        Fri, 29 May 2020 16:32:29 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200529163229eusmtrp1babf093f6914f71910758ef451f0ee69~TjNdRHHOa2579525795eusmtrp1L;
-        Fri, 29 May 2020 16:32:29 +0000 (GMT)
-X-AuditID: cbfec7f2-f0bff7000001ef66-5f-5ed1391e0a89
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 75.25.07950.D1931DE5; Fri, 29
-        May 2020 17:32:29 +0100 (BST)
-Received: from AMDC3061.digital.local (unknown [106.120.51.75]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200529163228eusmtip1d835c6b590f59bad320b4e50b49b9452~TjNcgtTCT1280712807eusmtip1F;
-        Fri, 29 May 2020 16:32:28 +0000 (GMT)
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-To:     georgi.djakov@linaro.org, cw00.choi@samsung.com, krzk@kernel.org
-Cc:     a.swigon@samsung.com, myungjoo.ham@samsung.com,
-        inki.dae@samsung.com, sw0312.kim@samsung.com,
-        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
-        s.nawrocki@samsung.com, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [RFC PATCH v5 6/6] drm: exynos: mixer: Add interconnect support
-Date:   Fri, 29 May 2020 18:32:00 +0200
-Message-Id: <20200529163200.18031-7-s.nawrocki@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200529163200.18031-1-s.nawrocki@samsung.com>
+        id S1727814AbgE2Qdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 12:33:45 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:57136 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725821AbgE2Qdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 12:33:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=kj8QWZuKpt6K2mv0dyf3jA1S8ZK8klAJXGcqBjNLHFw=; b=3nF+HtN70czA2ZUrlO8RvfT7ZY
+        LM1+wj23jWGpb9yCNquZLmigo7UjP5/D7lTURFkKIZmSwwcoCA+oK3N4zrH1+McODCf3I8nhVWg+e
+        WzHm5DGc616VMuWnQOmFuisu/RI9NUUunCizXF4ehZHT/EyHrPCVKfGzSE9UhBLjWURU=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jehwy-003f86-S4; Fri, 29 May 2020 18:33:40 +0200
+Date:   Fri, 29 May 2020 18:33:40 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Thomas Bogendoerfer <tbogendoerfer@suse.de>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: mvpp2: Enable autoneg bypass for
+ 1000BaseX/2500BaseX ports
+Message-ID: <20200529163340.GI869823@lunn.ch>
+References: <20200528130738.GT1551@shell.armlinux.org.uk>
+ <20200528151733.f1bc2fcdcb312b19b2919be9@suse.de>
+ <20200528135608.GU1551@shell.armlinux.org.uk>
+ <20200528163335.8f730b5a3ddc8cd9beab367f@suse.de>
+ <20200528144805.GW1551@shell.armlinux.org.uk>
+ <20200528204312.df9089425162a22e89669cf1@suse.de>
+ <20200528220420.GY1551@shell.armlinux.org.uk>
+ <20200529130539.3fe944fed7228e2b061a1e46@suse.de>
+ <20200529145928.GF869823@lunn.ch>
+ <20200529175225.a3be1b4faaa0408e165435ad@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCKsWRmVeSWpSXmKPExsWy7djPc7pylhfjDFo+cFrcn9fKaLFxxnpW
-        i+tfnrNaXPn6ns1i+t5NbBaT7k9gsTh/fgO7xabH11gtLu+aw2Yx4/w+Jou1R+6yW9xuXMFm
-        cfhNO6vFjMkv2Rz4PDat6mTzuHNtD5vH/e7jTB6bl9R79G1ZxejxeZNcAFsUl01Kak5mWWqR
-        vl0CV8alyc/YCq5qVjQf/MTUwDhdqYuRk0NCwERi0Y/VLF2MXBxCAisYJfbPWccE4XxhlHi9
-        ZBcLSJWQwGdGiacbrWE6Dl3eygxRtJxR4kD7VEaIIqCOtwtTQWw2AUOJ3qN9YHERAReJtqfz
-        wFYwC+xhktg3+x2Qw8EhLOAh0TmzCKSGRUBVYsamJnaQMK+AtcSRTSoQu+QlVm84wAxicwrY
-        SHT/mQFm8woISpyc+QTsNmagmuats8HukRC4xS5x+ccyRohmF4ltXavYIWxhiVfHt0DZMhKn
-        J/ewQDQ0M0r07L7NDuFMYJS4f3wBVLe1xJ1zv9hALmIW0JRYv0sfIuwocbm/lxUkLCHAJ3Hj
-        rSDEEXwSk7ZNZ4YI80p0tAlBVKtI/F41nQnClpLofvKfBcL2kOhqnsQ0gVFxFpJ3ZiF5ZxbC
-        3gWMzKsYxVNLi3PTU4sN81LL9YoTc4tL89L1kvNzNzEC09bpf8c/7WD8einpEKMAB6MSD2+F
-        1sU4IdbEsuLK3EOMEhzMSiK8TmdPxwnxpiRWVqUW5ccXleakFh9ilOZgURLnNV70MlZIID2x
-        JDU7NbUgtQgmy8TBKdXA6L7Z93jrct4em9nPGsU2xH+/0XV4obhHc/T7g/+Lp52aFtgrYHp0
-        j89XlZZ/NeE7k9coT9D48e2UpoFP4Wb+rdMSI9cvVMqwvl7GfyXLbm7sfoWipNnr5v902fBV
-        rpnhi+isgrCr6fZ6YYZCPydNKM8LbU3j5da+k8FhvXi1/Qv/HZ9O7V+yV4mlOCPRUIu5qDgR
-        ADHSCiFXAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrBIsWRmVeSWpSXmKPExsVy+t/xu7qylhfjDC6t17W4P6+V0WLjjPWs
-        Fte/PGe1uPL1PZvF9L2b2Cwm3Z/AYnH+/AZ2i02Pr7FaXN41h81ixvl9TBZrj9xlt7jduILN
-        4vCbdlaLGZNfsjnweWxa1cnmcefaHjaP+93HmTw2L6n36NuyitHj8ya5ALYoPZui/NKSVIWM
-        /OISW6VoQwsjPUNLCz0jE0s9Q2PzWCsjUyV9O5uU1JzMstQifbsEvYxLk5+xFVzVrGg++Imp
-        gXG6UhcjJ4eEgInEoctbmbsYuTiEBJYyShxdfYmti5EDKCElMb8FqkZY4s+1LjaImk+MEmtv
-        rmMHSbAJGEr0Hu1jBLFFBDwkTrWuZQUpYhY4wSTxpHcj2CBhoETnzCKQGhYBVYkZm5rYQcK8
-        AtYSRzapQMyXl1i94QAziM0pYCPR/WcGmC0EVNL2eBYriM0rIChxcuYTFpBWZgF1ifXzhEDC
-        zECtzVtnM09gFJyFpGoWQtUsJFULGJlXMYqklhbnpucWG+kVJ+YWl+al6yXn525iBMbitmM/
-        t+xg7HoXfIhRgINRiYf3gs7FOCHWxLLiytxDjBIczEoivE5nT8cJ8aYkVlalFuXHF5XmpBYf
-        YjQF+mwis5Rocj4wTeSVxBuaGppbWBqaG5sbm1koifN2CByMERJITyxJzU5NLUgtgulj4uCU
-        amDcsVOXaZrktxOqfqeLzit1By/pVl2XZemprlJnvaXPUdXLd2nzBbHiU5lFNswfe8MNt52J
-        a4mTPqI4aVs6y8fjvnxMXZNuz5j8wqO6W2h5pe9fuxUWKx5qBSrkzUyIUG/Q/nj/p7mSxuo6
-        NnOp6vX/W70Wdrpo3UvJmPMh6JjOsf53G6RNKpVYijMSDbWYi4oTAYOAGL/bAgAA
-X-CMS-MailID: 20200529163229eucas1p2ee6394f184e5eba12599559f8a621fde
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200529163229eucas1p2ee6394f184e5eba12599559f8a621fde
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200529163229eucas1p2ee6394f184e5eba12599559f8a621fde
-References: <20200529163200.18031-1-s.nawrocki@samsung.com>
-        <CGME20200529163229eucas1p2ee6394f184e5eba12599559f8a621fde@eucas1p2.samsung.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200529175225.a3be1b4faaa0408e165435ad@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Szyprowski <m.szyprowski@samsung.com>
+> > By propagated, you mean if the external link is down, the link between
+> > the switch and node 1 will also be forced down, at the SERDES level?
+> 
+> yes
+> 
+> > And if external ports are down, the nodes cannot talk to each other?
+> 
+> correct
+> 
+> > External link down causes the whole in box network to fall apart? That
+> > seems a rather odd design.
+> 
+> as I'm not an expert in ceph, I can't judge. But I'll bring it up.
 
-This patch adds interconnect support to exynos-mixer. The mixer works
-the same as before when CONFIG_INTERCONNECT is 'n'.
+I guess for a single use appliance this is O.K. But it makes the
+hardware unusable as a general purpose server.
 
-For proper operation of the video mixer block we need to ensure the
-interconnect busses like DMC or LEFTBUS provide enough bandwidth so
-as to avoid DMA buffer underruns in the mixer block. i.e we need to
-prevent those busses from operating in low perfomance OPPs when
-the mixer is running.
-In this patch the bus bandwidth request is done through the interconnect
-API, the bandiwidth value is calculated from selected DRM mode, i.e.
-video plane width, height, refresh rate and pixel format.
+Is there a variant of the hardware to be used as a general purpose
+server, rather than as a Ceph appliance? If so, does it share the same
+DT files?
 
-Co-developed-by: Artur Świgoń <a.swigon@samsung.com>
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-[s.nawrocki: renamed soc_path variable to icc_path, edited commit desc.]
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
----
-Changes for v5:
- - renamed soc_path variable to icc_path
----
- drivers/gpu/drm/exynos/exynos_mixer.c | 73 ++++++++++++++++++++++++++++++++---
- 1 file changed, 68 insertions(+), 5 deletions(-)
+> > What you are actually interested in is the sync state of the SERDES?
+> > The link is up if the SERDES has sync.
+> 
+> yes, that's what I need. How can I do that ?
 
-diff --git a/drivers/gpu/drm/exynos/exynos_mixer.c b/drivers/gpu/drm/exynos/exynos_mixer.c
-index 21b726b..bdae683 100644
---- a/drivers/gpu/drm/exynos/exynos_mixer.c
-+++ b/drivers/gpu/drm/exynos/exynos_mixer.c
-@@ -13,6 +13,7 @@
- #include <linux/component.h>
- #include <linux/delay.h>
- #include <linux/i2c.h>
-+#include <linux/interconnect.h>
- #include <linux/interrupt.h>
- #include <linux/irq.h>
- #include <linux/kernel.h>
-@@ -98,6 +99,7 @@ struct mixer_context {
- 	struct exynos_drm_crtc	*crtc;
- 	struct exynos_drm_plane	planes[MIXER_WIN_NR];
- 	unsigned long		flags;
-+	struct icc_path		*icc_path;
- 
- 	int			irq;
- 	void __iomem		*mixer_regs;
-@@ -934,6 +936,42 @@ static void mixer_disable_vblank(struct exynos_drm_crtc *crtc)
- 	mixer_reg_writemask(mixer_ctx, MXR_INT_EN, 0, MXR_INT_EN_VSYNC);
- }
- 
-+static void mixer_set_memory_bandwidth(struct exynos_drm_crtc *crtc)
-+{
-+	struct drm_display_mode *mode = &crtc->base.state->adjusted_mode;
-+	struct mixer_context *ctx = crtc->ctx;
-+	unsigned long bw, bandwidth = 0;
-+	u32 avg_bw, peak_bw;
-+	int i, j, sub;
-+
-+	if (!ctx->icc_path)
-+		return;
-+
-+	for (i = 0; i < MIXER_WIN_NR; i++) {
-+		struct drm_plane *plane = &ctx->planes[i].base;
-+		const struct drm_format_info *format;
-+
-+		if (plane->state && plane->state->crtc && plane->state->fb) {
-+			format = plane->state->fb->format;
-+			bw = mode->hdisplay * mode->vdisplay *
-+							drm_mode_vrefresh(mode);
-+			if (mode->flags & DRM_MODE_FLAG_INTERLACE)
-+				bw /= 2;
-+			for (j = 0; j < format->num_planes; j++) {
-+				sub = j ? (format->vsub * format->hsub) : 1;
-+				bandwidth += format->cpp[j] * bw / sub;
-+			}
-+		}
-+	}
-+
-+	/* add 20% safety margin */
-+	bandwidth = bandwidth / 4 * 5;
-+	dev_dbg(ctx->dev, "exynos-mixer: safe bandwidth %ld Bps\n", bandwidth);
-+
-+	avg_bw = peak_bw = Bps_to_icc(bandwidth);
-+	icc_set_bw(ctx->icc_path, avg_bw, peak_bw);
-+}
-+
- static void mixer_atomic_begin(struct exynos_drm_crtc *crtc)
- {
- 	struct mixer_context *ctx = crtc->ctx;
-@@ -985,6 +1023,7 @@ static void mixer_atomic_flush(struct exynos_drm_crtc *crtc)
- 	if (!test_bit(MXR_BIT_POWERED, &mixer_ctx->flags))
- 		return;
- 
-+	mixer_set_memory_bandwidth(crtc);
- 	mixer_enable_sync(mixer_ctx);
- 	exynos_crtc_handle_event(crtc);
- }
-@@ -1032,6 +1071,7 @@ static void mixer_atomic_disable(struct exynos_drm_crtc *crtc)
- 	for (i = 0; i < MIXER_WIN_NR; i++)
- 		mixer_disable_plane(crtc, &ctx->planes[i]);
- 
-+	mixer_set_memory_bandwidth(crtc);
- 	exynos_drm_pipe_clk_enable(crtc, false);
- 
- 	pm_runtime_put(ctx->dev);
-@@ -1223,12 +1263,22 @@ static int mixer_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	const struct mixer_drv_data *drv;
- 	struct mixer_context *ctx;
-+	struct icc_path *path;
- 	int ret;
- 
-+	/*
-+	 * Returns NULL if CONFIG_INTERCONNECT is disabled.
-+	 * May return ERR_PTR(-EPROBE_DEFER).
-+	 */
-+	path = of_icc_get(dev, NULL);
-+	if (IS_ERR(path))
-+		return PTR_ERR(path);
-+
- 	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
- 	if (!ctx) {
- 		DRM_DEV_ERROR(dev, "failed to alloc mixer context.\n");
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto err;
- 	}
- 
- 	drv = of_device_get_match_data(dev);
-@@ -1236,6 +1286,7 @@ static int mixer_probe(struct platform_device *pdev)
- 	ctx->pdev = pdev;
- 	ctx->dev = dev;
- 	ctx->mxr_ver = drv->version;
-+	ctx->icc_path = path;
- 
- 	if (drv->is_vp_enabled)
- 		__set_bit(MXR_BIT_VP_ENABLED, &ctx->flags);
-@@ -1245,17 +1296,29 @@ static int mixer_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, ctx);
- 
- 	ret = component_add(&pdev->dev, &mixer_component_ops);
--	if (!ret)
--		pm_runtime_enable(dev);
-+	if (ret < 0)
-+		goto err;
-+
-+	pm_runtime_enable(dev);
-+
-+	return 0;
-+
-+err:
-+	icc_put(path);
- 
- 	return ret;
- }
- 
- static int mixer_remove(struct platform_device *pdev)
- {
--	pm_runtime_disable(&pdev->dev);
-+	struct device *dev = &pdev->dev;
-+	struct mixer_context *ctx = dev_get_drvdata(dev);
-+
-+	pm_runtime_disable(dev);
-+
-+	component_del(dev, &mixer_component_ops);
- 
--	component_del(&pdev->dev, &mixer_component_ops);
-+	icc_put(ctx->icc_path);
- 
- 	return 0;
- }
--- 
-2.7.4
+Given the current code, you cannot. Now we understand the
+requirements, we can come up with some ideas how to do this properly.
 
+      Andrew
