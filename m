@@ -2,128 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4901E8771
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 21:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A741E877C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 21:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727989AbgE2TPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 15:15:21 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:10448 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgE2TPV (ORCPT
+        id S1728087AbgE2TRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 15:17:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726487AbgE2TQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 15:15:21 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ed15f3c0001>; Fri, 29 May 2020 12:15:08 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Fri, 29 May 2020 12:15:20 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Fri, 29 May 2020 12:15:20 -0700
-Received: from [10.2.87.173] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 29 May
- 2020 19:15:20 +0000
-Subject: Re: [PATCH 0/3] misc: xilinx-sdfec: convert get_user_pages() -->
- pin_user_pages()
-To:     Dragan Cvetic <draganc@xilinx.com>,
-        LKML <linux-kernel@vger.kernel.org>
-CC:     Souptick Joarder <jrdr.linux@gmail.com>,
-        Derek Kiernan <dkiernan@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michal Simek <michals@xilinx.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20200527012628.1100649-1-jhubbard@nvidia.com>
- <DM6PR02MB41405A1300813F8A511BE449CB8F0@DM6PR02MB4140.namprd02.prod.outlook.com>
-X-Nvconfidentiality: public
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <c01d2d45-250f-e8a9-cfc0-0f0df6db13b4@nvidia.com>
-Date:   Fri, 29 May 2020 12:15:20 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
-MIME-Version: 1.0
-In-Reply-To: <DM6PR02MB41405A1300813F8A511BE449CB8F0@DM6PR02MB4140.namprd02.prod.outlook.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1590779708; bh=fzhGtzZMcfGKFcA4Tvhs0mwDOSypFMG8kMfO5rPUm/E=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=e+r/k5WqVFkAi2PibQRZ6bmKhraegciNQsi76G3cRF+zPtEfWvG/Fptuf90ZMBfnc
-         20fqiotqN8AdRUzB6gPpRSJFcRRzRQX9/XdpQb7nScTTu876Bz7/PsSZCa0XzfIiEn
-         5M2ut6nC9ozgHHDK3uTQWTMSfMtsMkJdpm0jlWx1CzTkoe4N9jHBilpG6wQ8hoGMDE
-         hCsDoWDlGmfXlB3BpEl72NLx0PixwbxJM/2i4ojGR2ECEtd4XpcTlmE7ikP9mzjp3S
-         xz2H5RgtgoEf4qPfE2o/eU2TFtKNRDcKTP+m8qwgjI/0tO4UIDPsQIBWaJ2JpnMVDF
-         j49Xc5ebg7z4Q==
+        Fri, 29 May 2020 15:16:55 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03DE3C03E969;
+        Fri, 29 May 2020 12:16:55 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id j21so376967pgb.7;
+        Fri, 29 May 2020 12:16:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=rVJ4oym9rXNaA44QDrgvFNwDxvnSEboxykGaMiySkgs=;
+        b=e8bCMAyLHpJLcqYLQqZZDht6uuebj1TuWkqtHigbjOtfuYf7r7e2Z2nuDzvmeYWye8
+         ISLuDOIDYjYLgMr2fp1fS2EyCOkdolUyYJ0P4ayRk1lHPo4NbMvYUSIle6gYCWxMnrY5
+         HizoyhEWEXujdeh84kihxqQOmxlox72Q4Mcb/NiNxh+UHn/Cxmr9MVW1vvprYdxFs6Jr
+         zMKzecjD5RVozG5UQHC8FFquRl97KQj+3FDl/9aCV/wTQ/ordlwKbUCy3Fn22Q7rQuoy
+         1W4joTFu/WZObaCZucseqLwJ/sEERl/KzykmRAq4PLNAbD0hL8CbiBMM3e3WL8U+Wvq6
+         HnEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=rVJ4oym9rXNaA44QDrgvFNwDxvnSEboxykGaMiySkgs=;
+        b=rlpihcSZauWOQT1jabhWd7X5RjCsi47BnLcbVSKxZTXiiM5ZtlL33KAMESUMyqyIJf
+         7MlZBuDmw3q2s6vIrNagtp2Gjt7PVP2KAYNuYk6SCCfv2bS+b5715xfN0xx+9CWbrGUF
+         cWQa85X424EVK5Bjdcm/vN4Wxs298ki1r8CwM3AOSgtjaGAUIEM8xWcPinbSsCMzgd4m
+         +k2aRZIxwUk1Gn5AuHblyQWyiojN+JOAqsXsrD/jlBfu+jpVKziL+/Zior6IQM1xmqc+
+         QSvVxodB9kaotJLpmNkGx1v4jegybgvmRf9/dpS9FgC1Q0wDIhET4P8PJcVoIVhBVt7R
+         qoRg==
+X-Gm-Message-State: AOAM532rBlSF8I6/k00ugbz2mmML0ksSqCsOfaf1+FnuNuI/eWdz9xvi
+        J9duAE2K9qD+lCC2VJGNmwiK7cbX
+X-Google-Smtp-Source: ABdhPJx7r38iIDo0qGEq+vFJYFEOCNcSDuK8YR7v1WEhbpUkyWY4kW5XuMX9Kn5N8uN+upi4P1k3zg==
+X-Received: by 2002:a63:b10b:: with SMTP id r11mr9210726pgf.27.1590779814156;
+        Fri, 29 May 2020 12:16:54 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id g92sm202505pje.13.2020.05.29.12.16.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2020 12:16:53 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM
+        BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE...),
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        linux-gpio@vger.kernel.org (open list:PIN CONTROL SUBSYSTEM),
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE)
+Subject: [PATCH v2 3/4] pinctrl: bcm2835: Match BCM7211 compatible string
+Date:   Fri, 29 May 2020 12:15:21 -0700
+Message-Id: <20200529191522.27938-4-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200529191522.27938-1-f.fainelli@gmail.com>
+References: <20200529191522.27938-1-f.fainelli@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-29 01:29, Dragan Cvetic wrote:
-> Hi John,
-> 
-> Thank you for the suggestion, please find my comment below:
-> 
->> -----Original Message-----
->> From: John Hubbard <jhubbard@nvidia.com>
->> Sent: Wednesday 27 May 2020 02:26
->> To: LKML <linux-kernel@vger.kernel.org>
->> Cc: Souptick Joarder <jrdr.linux@gmail.com>; John Hubbard <jhubbard@nvidia.com>; Derek Kiernan <dkiernan@xilinx.com>; Dragan
->> Cvetic <draganc@xilinx.com>; Arnd Bergmann <arnd@arndb.de>; Greg Kroah-Hartman <gregkh@linuxfoundation.org>; Michal Simek
->> <michals@xilinx.com>; linux-arm-kernel@lists.infradead.org
->> Subject: [PATCH 0/3] misc: xilinx-sdfec: convert get_user_pages() --> pin_user_pages()
->>
->> Hi,
->>
->> There are also a couple of tiny cleanup patches, just to fix up a few
->> minor issues that I spotted while converting from get_user_pages_fast()
->> to pin_user_pages_fast().
->>
->> Note that I have only compile-tested these patches, although that does
->> also include cross-compiling for a few other arches. Any run-time
->> testing would be greatly appreciated!
->>
->> Cc: Derek Kiernan <derek.kiernan@xilinx.com>
->> Cc: Dragan Cvetic <dragan.cvetic@xilinx.com>
->> Cc: Arnd Bergmann <arnd@arndb.de>
->> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Cc: Michal Simek <michal.simek@xilinx.com>
->> Cc: linux-arm-kernel@lists.infradead.org
->>
->> John Hubbard (3):
->>    misc: xilinx-sdfec: improve get_user_pages_fast() error handling
->>    misc: xilinx-sdfec: cleanup return value in xsdfec_table_write()
->>    misc: xilinx-sdfec: convert get_user_pages() --> pin_user_pages()
-> 
-> 
-> Reviewed-by:
-> 	Technically there is no problem in this patch, but as you said this should be tested.
-> 	Currently due to Covid-19 I'm not able to access the HW and I cannot validate this suggestion.
-> 
+The BCM7211 SoC uses the same pinconf_ops as the ones defined for the
+BCM2711 SoC, match the compatible string and use the correct set of
+options.
 
-Hi Dragan,
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ drivers/pinctrl/bcm/pinctrl-bcm2835.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Thanks for the review, and for *wanting* to do the testing, even though you
-can't right now. :)
-
-thanks,
+diff --git a/drivers/pinctrl/bcm/pinctrl-bcm2835.c b/drivers/pinctrl/bcm/pinctrl-bcm2835.c
+index 06bd2b70af3c..1b00d93aa66e 100644
+--- a/drivers/pinctrl/bcm/pinctrl-bcm2835.c
++++ b/drivers/pinctrl/bcm/pinctrl-bcm2835.c
+@@ -1137,6 +1137,10 @@ static const struct of_device_id bcm2835_pinctrl_match[] = {
+ 		.compatible = "brcm,bcm2711-gpio",
+ 		.data = &bcm2711_plat_data,
+ 	},
++	{
++		.compatible = "brcm,bcm7211-gpio",
++		.data = &bcm2711_plat_data,
++	},
+ 	{}
+ };
+ 
 -- 
-John Hubbard
-NVIDIA
+2.17.1
 
->>
->>   drivers/misc/xilinx_sdfec.c | 30 +++++++++++++++++-------------
->>   1 file changed, 17 insertions(+), 13 deletions(-)
->>
->>
->> base-commit: 9cb1fd0efd195590b828b9b865421ad345a4a145
->> --
->> 2.26.2
-> 
