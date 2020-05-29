@@ -2,112 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B611E7572
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 07:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A82801E7576
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 07:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725959AbgE2FgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 01:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725308AbgE2FgH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 01:36:07 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90131C08C5C6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 22:36:06 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id f21so826739pgg.12
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 22:36:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=o7dKRf0Hebx8bKbWSLBiy415oUNWb1twJmt55KaFsGM=;
-        b=Ktyd7gBsXKBCrU/QvdFNHGZTfvb+lBDDjjqC4JXPHIMB4WQNZ4Ube+TAzWaFo/cvPK
-         XlqggI2Ayrf+yRjAO1GhueCpe7CIneXBaVPns19Iqwkw9BwrrLm9IGkY5jm2cgL6F7+5
-         4+KUrgC0NVNJo5539ewaELoVXT1OMiq+OBnig=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=o7dKRf0Hebx8bKbWSLBiy415oUNWb1twJmt55KaFsGM=;
-        b=g6gHH+WRtSiO8nX9BKGDDcNuGLBUGmr3R0noM8tM2uZKOpig1o4mjXJY6xWjeV229J
-         owt4Uo3fx4fkEPBdQKWN7Tx+bTUVj59JaywmzqAR1pYUNFB8vyDN3VhPJMalXgFvuP8Q
-         NH9RLxIN8UsAzvzA0riCZx1kp7uF/NqkM8VcyN09uV42tzO7WpjmlACS1/B4PAO6lq8n
-         TVClAOME4y2EMnOLD0xJ2kLmdJRZJ5fvRac2STA2cDQtGagyGx7Vf+h1LRI6xcgLX1j1
-         5JZ47vOxfFIqzNoMrXe2m8jYhlswsFsK+Qax2KHnwLtru9ToOvibGsnRmvhv3qAfON8L
-         97BQ==
-X-Gm-Message-State: AOAM53367vpIu0y4Bv0VI/GADU4islhFpggOHbp8wd030C0aJ55DzrCL
-        69tXz85LGL8HsD7/+VW4EKON1Nnniv7T+g==
-X-Google-Smtp-Source: ABdhPJzMN/wUdi7aywrcMuZINHoO1NBXeKKVrsdWbONwZ8EtvEcjL4kPE+/JS29Bf2N2gcOlAsytfg==
-X-Received: by 2002:a63:e60b:: with SMTP id g11mr7006842pgh.120.1590730566107;
-        Thu, 28 May 2020 22:36:06 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v17sm6012834pfg.164.2020.05.28.22.36.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 22:36:05 -0700 (PDT)
-Date:   Thu, 28 May 2020 22:36:03 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Matt Denton <mpdenton@google.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Chris Palmer <palmer@google.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Robert Sesek <rsesek@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Linux Containers <containers@lists.linux-foundation.org>
-Subject: Re: [PATCH v2 1/2] seccomp: notify user trap about unused filter
-Message-ID: <202005282229.3D87432@keescook>
-References: <20200528151412.265444-1-christian.brauner@ubuntu.com>
- <202005281404.276641223F@keescook>
- <CAG48ez0k23qM2QEi42VTjCbnoY9_nfTH09B_Qr2zu+m3KWWUiQ@mail.gmail.com>
+        id S1726106AbgE2FhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 01:37:19 -0400
+Received: from mga07.intel.com ([134.134.136.100]:50821 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725308AbgE2FhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 01:37:17 -0400
+IronPort-SDR: oDqi3RttSbizmzPa9HQPLdFpXI2fgZhHZLMXtk1ZgurikbD7d2E1CRDXyT2BmsPSjRFhY9AsJf
+ R6bZG+hICAYg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 22:37:17 -0700
+IronPort-SDR: 6ypjrCpGe+u2ZKOsSiOCn+oHK1f4MCoA7qld/0DTbkf5PThk4gEcABNY/WvkBHNGUS/PuTL+S/
+ vO8+CcBfH0Vw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,447,1583222400"; 
+   d="scan'208";a="302724034"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.107])
+  by fmsmga002.fm.intel.com with ESMTP; 28 May 2020 22:37:13 -0700
+Date:   Fri, 29 May 2020 13:37:13 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Qian Cai <cai@lca.pw>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Kees Cook <keescook@chromium.org>, andi.kleen@intel.com,
+        tim.c.chen@intel.com, dave.hansen@intel.com, ying.huang@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Konstantin Khlebnikov <koct9i@gmail.com>
+Subject: Re: [PATCH v4 3/4] mm/util.c: remove the VM_WARN_ONCE for
+ vm_committed_as underflow check
+Message-ID: <20200529053713.GH93879@shbuild999.sh.intel.com>
+References: <1590714370-67182-1-git-send-email-feng.tang@intel.com>
+ <1590714370-67182-4-git-send-email-feng.tang@intel.com>
+ <20200529024928.GA4566@lca.pw>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAG48ez0k23qM2QEi42VTjCbnoY9_nfTH09B_Qr2zu+m3KWWUiQ@mail.gmail.com>
+In-Reply-To: <20200529024928.GA4566@lca.pw>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 01:32:03AM +0200, Jann Horn wrote:
-> On Fri, May 29, 2020 at 1:11 AM Kees Cook <keescook@chromium.org> wrote:
-> > So, is it safe to detach the filter in release_task()? Has dethreading
-> > happened yet? i.e. can we race TSYNC? -- is there a possible
-> > inc-from-zero?
+On Thu, May 28, 2020 at 10:49:28PM -0400, Qian Cai wrote:
+> On Fri, May 29, 2020 at 09:06:09AM +0800, Feng Tang wrote:
+> > As is explained by Michal Hocko:
+> > 
+> > : Looking at the history, this has been added by 82f71ae4a2b8
+> > : ("mm: catch memory commitment underflow") to have a safety check
+> > : for issues which have been fixed. There doesn't seem to be any bug
+> > : reports mentioning this splat since then so it is likely just
+> > : spending cycles for a hot path (yes many people run with DEBUG_VM)
+> > : without a strong reason.
 > 
-> release_task -> __exit_signal -> __unhash_process ->
-> list_del_rcu(&p->thread_node) drops us from the thread list under
-> siglock, which is the same lock TSYNC uses.
-
-Ah, there it is. I missed the __unhash_process() in __exit_signal, but
-once I saw the call to release_task(), I figured it was safe at that
-point. So this seems correct:
-
-> > I *think* we can do it
-> > before the release_thread() call (instead of after cgroup_release()).
-
-> One other interesting thing that can look at seccomp state is
-> task_seccomp() in procfs - that can still happen at this point. At the
-> moment, procfs only lets you see the numeric filter state, not the
-> actual filter contents, so that's not a problem; but if we ever add a
-> procfs interface for dumping seccomp filters (in addition to the
-> ptrace interface that already exists), that's something to keep in
-> mind.
-
-Right -- but we can just reuse the get/put to pin the filter while
-dumping it from proc (there IS someone working on this feature...)
-
-> > (Actually, all our refcount_inc()s should be
-> > refcount_inc_not_zero() just for robustness.)
+> Hmm, it looks like the warning is still useful to catch issues in,
 > 
-> Eeeh... wouldn't that just make the code more complicated for no good reason?
+> https://lore.kernel.org/linux-mm/20140624201606.18273.44270.stgit@zurg
+> https://lore.kernel.org/linux-mm/54BB9A32.7080703@oracle.com/
+> 
+> After read the whole discussion in that thread, I actually disagree with
+> Michal. In order to get ride of this existing warning, it is rather
+> someone needs a strong reason that could prove the performance hit is
+> noticeable with some data.
 
-Sorry, ignore that. I got myself briefly confused -- we're fine;
-refcount_inc() already does inc-from-zero checking.
+One problem with current check is percpu_counter_read(&vm_committed_as)
+is not accurate, and percpu_counter_sum() is way too heavy.
 
--- 
-Kees Cook
+Thanks,
+Feng
