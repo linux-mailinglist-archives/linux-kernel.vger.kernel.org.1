@@ -2,90 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8F11E84F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB6E1E8559
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727035AbgE2Ren (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 13:34:43 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:57503 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725914AbgE2Reb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 13:34:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1590773671; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=W8wyMUvwjMDCZ9Sv3jn0FsTSp4N8lUAu7mFaaau8Scg=;
- b=o9rtauooJsz455gDtMoEXRFBYgRwi8dwT16A8AY3n9NcH6whLw3TRjfcOJSGhuoFd57oXeYi
- sB2/Oo7zZGe1biDHEAzevX7/CEAYdTywffM+8nzPtecVHZyVRhwPTFhQDJ/smmAPZdxrBpMv
- TBa0QQMtUN3OORT6F5i8c1kloBM=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5ed14791508673248100b302 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 May 2020 17:34:09
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D509DC433C6; Fri, 29 May 2020 17:34:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
-        MISSING_MID,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DED60C433C9;
-        Fri, 29 May 2020 17:34:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DED60C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] wlcore: fix runtime pm imbalance in
- wlcore_regdomain_config
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200520124649.10848-1-dinghao.liu@zju.edu.cn>
-References: <20200520124649.10848-1-dinghao.liu@zju.edu.cn>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     dinghao.liu@zju.edu.cn, kjlu@umn.edu,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Fuqian Huang <huangfq.daxian@gmail.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Tony Lindgren <tony@atomide.com>, Maital Hahn <maitalm@ti.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        id S1728019AbgE2Rlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 13:41:46 -0400
+Received: from outpost5.zedat.fu-berlin.de ([130.133.4.89]:56487 "EHLO
+        outpost5.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726974AbgE2Rlq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 13:41:46 -0400
+X-Greylist: delayed 431 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 May 2020 13:41:45 EDT
+Received: from relay1.zedat.fu-berlin.de ([130.133.4.67])
+          by outpost.zedat.fu-berlin.de (Exim 4.93)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1jeitp-002w2B-Im; Fri, 29 May 2020 19:34:29 +0200
+Received: from z6.physik.fu-berlin.de ([160.45.32.137] helo=z6)
+          by relay1.zedat.fu-berlin.de (Exim 4.93)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1jeitp-001GCj-Ga; Fri, 29 May 2020 19:34:29 +0200
+Received: from glaubitz by z6 with local (Exim 4.93)
+        (envelope-from <glaubitz@physik.fu-berlin.de>)
+        id 1jeiti-00HZGa-MO; Fri, 29 May 2020 19:34:22 +0200
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     linux-sh@vger.kernel.org
+Cc:     Rich Felker <dalias@libc.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
         linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200529173408.D509DC433C6@smtp.codeaurora.org>
-Date:   Fri, 29 May 2020 17:34:08 +0000 (UTC)
+Subject: 
+Date:   Fri, 29 May 2020 19:34:18 +0200
+Message-Id: <20200529173419.4185337-1-glaubitz@physik.fu-berlin.de>
+X-Mailer: git-send-email 2.27.0.rc2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: 160.45.32.137
+X-ZEDAT-Hint: R
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
 
-> pm_runtime_get_sync() increments the runtime PM usage counter even
-> the call returns an error code. Thus a pairing decrement is needed
-> on the error handling path to keep the counter balanced.
-> 
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> Acked-by: Tony Lindgren <tony@atomide.com>
+Hi!
 
-Patch applied to wireless-drivers-next.git, thanks.
+This is my attempt of implementing a 64-bit get_user() for SH to address the
+build problem when CONFIG_INFINIBAND_USER_ACCESS is enabled.
 
-282a04bf1d80 wlcore: fix runtime pm imbalance in wlcore_regdomain_config
+I have carefully looked at the existing implementations of __get_user_asm(),
+__put_user_asm() and the 64-bit __put_user_u64() to come up with the 64-bit
+__get_user_u64().
 
--- 
-https://patchwork.kernel.org/patch/11560391/
+I'm admittedly not an expert when it comes to writing GCC contraints, so the
+code might be completely wrong. However, it builds fine without warnings
+and fixes the aforementioned issue for me.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Hopefully someone from the more experienced group of kernel developers can
+review my code and help me get it into proper shape for submission.
 
+Thanks,
+Adrian
+
+--
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
