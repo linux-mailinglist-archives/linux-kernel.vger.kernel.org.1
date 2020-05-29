@@ -2,136 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C532A1E7898
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D60A1E78A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726549AbgE2IpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 04:45:17 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:9464 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725681AbgE2IpQ (ORCPT
+        id S1726695AbgE2Iq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 04:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725928AbgE2IqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 04:45:16 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ed0cb900000>; Fri, 29 May 2020 01:45:04 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Fri, 29 May 2020 01:45:16 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Fri, 29 May 2020 01:45:16 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 29 May
- 2020 08:45:16 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Fri, 29 May 2020 08:45:16 +0000
-Received: from sandstorm.nvidia.com (Not Verified[10.2.62.53]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5ed0cb9c0002>; Fri, 29 May 2020 01:45:16 -0700
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Souptick Joarder <jrdr.linux@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Jan Kara <jack@suse.cz>, Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH] mm/gup: documentation fix for pin_user_pages*() APIs
-Date:   Fri, 29 May 2020 01:45:15 -0700
-Message-ID: <20200529084515.46259-1-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.26.2
+        Fri, 29 May 2020 04:46:24 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E95C08C5C8
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 01:46:23 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id t16so851210plo.7
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 01:46:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=XiIwcIBaCjacNvQQiGLxskNtGMHCMoH6FbpJtFd+1bk=;
+        b=xeh7YBtNLEg/HSHajEUKqjg00CUU1WpaXmJGLNkGlhAEyBmFt0sUQ+SEm4iiDCg6Ap
+         4hiWdMIri0YvFdptKT236rPnFWAse7EO0mwSgX3dwsi41CIjD5XNM+TpZIXfU0wCkWEa
+         F4/S+lzMYxRF4Uvl31ZjzVoEpXMr4ml7Nyh4EKm/gpF2qlJtdNIfcv3d0zdx/eIm3Wyl
+         95Bh9PElu3SB0xXOKliink64R6ECiTuBIX4geW1ol4dHZyLEhMz8Bbv2EBwuhD886IHu
+         t3+Ovs+G1V6GSYC8sV89Fzj2PGmJ2Uocd19lpFoDNjaHWms+7zgLhy4LtR7JumPEGtTD
+         jWWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XiIwcIBaCjacNvQQiGLxskNtGMHCMoH6FbpJtFd+1bk=;
+        b=n5LtImMTTLf/OQ7wTEZGCKwzbfS49sCeEBIhZ3iC3ndV2ocCLsys0puZtUsF8yJBm1
+         EU8BqqfXVHFKr7+iMLKXnycHn1/ioNzC0P9nNMaaKSMe5BRK2ufRfYCLC9syum+goYpN
+         t+g82pWDzdcmFQN6j/MUAADGasyRP5Xz/+n+74ROxJqwVtnhUPxKoA8AIlDGhpeDn9V3
+         pg2HR2wJb0e6c/GTWgkLNnNIeKW9RO3a3AlFTAfpFwW9dY8kAQydI93cyeAhuvl5GatE
+         mMT0HDl8nCkEwRP85BOvbB9NH8myTNWz5q+pqFqvyVZQZ0IlMn/3p7cJ5qBPSWrOcPxA
+         knMQ==
+X-Gm-Message-State: AOAM530qozTKJh+OKOqhFPj4emtOxnTRZItCRbYE92Fkf1L+Bboe+Wvg
+        SrbZ+CIkFOrCghMmWuIVdT/h0pt3pA==
+X-Google-Smtp-Source: ABdhPJw2IVsRy1qcylsIEgJDPGvIMlFPrIHQgr9qNQXu3NhWSVtIWrdCs97oISksqqFQyrjbCnIsZw==
+X-Received: by 2002:a17:902:8218:: with SMTP id x24mr7894288pln.150.1590741983196;
+        Fri, 29 May 2020 01:46:23 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:6417:1d6e:1408:1e13:b32e:6edf])
+        by smtp.gmail.com with ESMTPSA id i29sm6950738pfk.38.2020.05.29.01.46.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 29 May 2020 01:46:22 -0700 (PDT)
+Date:   Fri, 29 May 2020 14:16:14 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Chris Lew <clew@codeaurora.org>
+Cc:     davem@davemloft.net, bjorn.andersson@linaro.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] net: qrtr: Allocate workqueue before kernel_bind
+Message-ID: <20200529084613.GA23769@Mani-XPS-13-9360>
+References: <1590707126-16957-1-git-send-email-clew@codeaurora.org>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1590741904; bh=YJZ6AZpFhdMTjSg3xt2syrJQG9Kn4gqR1ugcbx4KgGM=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
-         Content-Type;
-        b=epnH81UON5VVHMciiZrqvpQ2bMB4L++EGy4Shh6SqZ77UhDzeAgjGlBgP1nR7N2se
-         /FZV3hWdEDGdb+OG7S27dN+YJnE2DC8zMzKE5IylPGrSS+DrFhHuErTFvRD3S3+mOu
-         hjgMT/lkDWJvFZPrN9gdEriE/o8/zSJpxdyFZKbJPJtzEQduNDubhFZa0Ylol3pHOJ
-         mDUX6+nT+odFDhF4n0tt2AEqv4ApLKnyVH9P+sLw1MA3+QfCnFb8vOiAZEUEJ91JPM
-         L9DPxbLFZoc3+Jg6AJ2o29m4p95HPdcuXds79QLaEMcnATya+OBrTkADyp9Ns2mTdi
-         P7yu4KUsp3KxQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1590707126-16957-1-git-send-email-clew@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All of the pin_user_pages*() API calls will cause pages to be
-dma-pinned. As such, they are all suitable for either DMA, RDMA,
-and/or Direct IO. The documentation should say so, but it was
-instead saying that three of the API calls were only suitable for
-Direct IO. This was discovered when a reviewer wondered why an
-API call that specifically recommended against Case 2 (DMA/RDMA)
-was being used in a DMA situation [1].
+On Thu, May 28, 2020 at 04:05:26PM -0700, Chris Lew wrote:
+> A null pointer dereference in qrtr_ns_data_ready() is seen if a client
+> opens a qrtr socket before qrtr_ns_init() can bind to the control port.
+> When the control port is bound, the ENETRESET error will be broadcasted
+> and clients will close their sockets. This results in DEL_CLIENT
+> packets being sent to the ns and qrtr_ns_data_ready() being called
+> without the workqueue being allocated.
+> 
+> Allocate the workqueue before setting sk_data_ready and binding to the
+> control port. This ensures that the work and workqueue structs are
+> allocated and initialized before qrtr_ns_data_ready can be called.
+> 
+> Fixes: 0c2204a4ad71 ("net: qrtr: Migrate nameservice to kernel from userspace")
+> Signed-off-by: Chris Lew <clew@codeaurora.org>
 
-Fix this by simply deleting those claims. The gup.c comments already
-refer to the more extensive Documentation/core-api/pin_user_pages.rst,
-which does have the correct guidance. So let's just write it once,
-there.
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-[1] https://lore.kernel.org/r/20200529074658.GM30374@kadam
+Thanks,
+Mani
 
-Cc: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Jan Kara <jack@suse.cz>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
-
-Hi,
-
-This applies on top of linux-next, in order to avoid a conflict with
-Mauro Carvalho Chehab's fix to the lines right above these.
-
-thanks,
-John Hubbard
-NVIDIA
-
-
- mm/gup.c | 9 ---------
- 1 file changed, 9 deletions(-)
-
-diff --git a/mm/gup.c b/mm/gup.c
-index ee039d421746d..311d0f11b35e6 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -2875,9 +2875,6 @@ EXPORT_SYMBOL_GPL(get_user_pages_fast);
-  *
-  * FOLL_PIN means that the pages must be released via unpin_user_page(). P=
-lease
-  * see Documentation/core-api/pin_user_pages.rst for further details.
-- *
-- * This is intended for Case 1 (DIO) in Documentation/core-api/pin_user_pa=
-ges.rst. It
-- * is NOT intended for Case 2 (RDMA: long-term pins).
-  */
- int pin_user_pages_fast(unsigned long start, int nr_pages,
- 			unsigned int gup_flags, struct page **pages)
-@@ -2951,9 +2948,6 @@ EXPORT_SYMBOL_GPL(pin_user_pages_fast_only);
-  *
-  * FOLL_PIN means that the pages must be released via unpin_user_page(). P=
-lease
-  * see Documentation/core-api/pin_user_pages.rst for details.
-- *
-- * This is intended for Case 1 (DIO) in Documentation/core-api/pin_user_pa=
-ges.rst. It
-- * is NOT intended for Case 2 (RDMA: long-term pins).
-  */
- long pin_user_pages_remote(struct task_struct *tsk, struct mm_struct *mm,
- 			   unsigned long start, unsigned long nr_pages,
-@@ -2987,9 +2981,6 @@ EXPORT_SYMBOL(pin_user_pages_remote);
-  *
-  * FOLL_PIN means that the pages must be released via unpin_user_page(). P=
-lease
-  * see Documentation/core-api/pin_user_pages.rst for details.
-- *
-- * This is intended for Case 1 (DIO) in Documentation/core-api/pin_user_pa=
-ges.rst. It
-- * is NOT intended for Case 2 (RDMA: long-term pins).
-  */
- long pin_user_pages(unsigned long start, unsigned long nr_pages,
- 		    unsigned int gup_flags, struct page **pages,
---=20
-2.26.2
-
+> ---
+>  net/qrtr/ns.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/net/qrtr/ns.c b/net/qrtr/ns.c
+> index e7d0fe3f4330..c5b3202a14ca 100644
+> --- a/net/qrtr/ns.c
+> +++ b/net/qrtr/ns.c
+> @@ -712,6 +712,10 @@ void qrtr_ns_init(void)
+>  		goto err_sock;
+>  	}
+>  
+> +	qrtr_ns.workqueue = alloc_workqueue("qrtr_ns_handler", WQ_UNBOUND, 1);
+> +	if (!qrtr_ns.workqueue)
+> +		goto err_sock;
+> +
+>  	qrtr_ns.sock->sk->sk_data_ready = qrtr_ns_data_ready;
+>  
+>  	sq.sq_port = QRTR_PORT_CTRL;
+> @@ -720,17 +724,13 @@ void qrtr_ns_init(void)
+>  	ret = kernel_bind(qrtr_ns.sock, (struct sockaddr *)&sq, sizeof(sq));
+>  	if (ret < 0) {
+>  		pr_err("failed to bind to socket\n");
+> -		goto err_sock;
+> +		goto err_wq;
+>  	}
+>  
+>  	qrtr_ns.bcast_sq.sq_family = AF_QIPCRTR;
+>  	qrtr_ns.bcast_sq.sq_node = QRTR_NODE_BCAST;
+>  	qrtr_ns.bcast_sq.sq_port = QRTR_PORT_CTRL;
+>  
+> -	qrtr_ns.workqueue = alloc_workqueue("qrtr_ns_handler", WQ_UNBOUND, 1);
+> -	if (!qrtr_ns.workqueue)
+> -		goto err_sock;
+> -
+>  	ret = say_hello(&qrtr_ns.bcast_sq);
+>  	if (ret < 0)
+>  		goto err_wq;
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
