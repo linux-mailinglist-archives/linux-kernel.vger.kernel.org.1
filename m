@@ -2,119 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08BE81E7834
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA3F1E783B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgE2IXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 04:23:38 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:42059 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgE2IXh (ORCPT
+        id S1725928AbgE2I03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 04:26:29 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:34987 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725601AbgE2I01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 04:23:37 -0400
-X-Originating-IP: 86.202.110.81
-Received: from localhost (lfbn-lyo-1-15-81.w86-202.abo.wanadoo.fr [86.202.110.81])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 0556FFF819;
-        Fri, 29 May 2020 08:23:34 +0000 (UTC)
-Date:   Fri, 29 May 2020 10:23:34 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Ran Wang <ran.wang_1@nxp.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Rob Herring <robh+dt@kernel.org>, Li Biwen <biwen.li@nxp.com>,
-        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] rtc: fsl-ftm-alarm: fix freeze(s2idle) doesnot wake
-Message-ID: <20200529082334.GY3972@piout.net>
-References: <20200529061035.18912-1-ran.wang_1@nxp.com>
- <20200529061035.18912-2-ran.wang_1@nxp.com>
+        Fri, 29 May 2020 04:26:27 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0TzyIzVr_1590740783;
+Received: from localhost(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0TzyIzVr_1590740783)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 29 May 2020 16:26:24 +0800
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jann Horn <jannh@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: [PATCH V2 0/4] x86/entry: simply stack switching when exception on userspace
+Date:   Fri, 29 May 2020 08:26:13 +0000
+Message-Id: <20200529082618.1697-1-laijs@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <87mu5roov6.fsf@nanos.tec.linutronix.de>
+References: <87mu5roov6.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200529061035.18912-2-ran.wang_1@nxp.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/05/2020 14:10:35+0800, Ran Wang wrote:
-> Use dev_pm_set_wake_irq() instead of flag IRQF_NO_SUSPEND to enable
-> wakeup system feature for both freeze(s2idle) and mem(deep).
-> 
-> Use property 'wakeup-source' to control this feature.
-> 
-> Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
-> ---
->  drivers/rtc/rtc-fsl-ftm-alarm.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/rtc/rtc-fsl-ftm-alarm.c b/drivers/rtc/rtc-fsl-ftm-alarm.c
-> index 756af62..c6945d84 100644
-> --- a/drivers/rtc/rtc-fsl-ftm-alarm.c
-> +++ b/drivers/rtc/rtc-fsl-ftm-alarm.c
-> @@ -21,6 +21,7 @@
->  #include <linux/rtc.h>
->  #include <linux/time.h>
->  #include <linux/acpi.h>
-> +#include <linux/pm_wakeirq.h>
->  
->  #define FTM_SC_CLK(c)		((c) << FTM_SC_CLK_MASK_SHIFT)
->  
-> @@ -41,6 +42,7 @@ struct ftm_rtc {
->  	struct rtc_device *rtc_dev;
->  	void __iomem *base;
->  	bool big_endian;
-> +	bool wakeup;
->  	u32 alarm_freq;
->  };
->  
-> @@ -267,6 +269,9 @@ static int ftm_rtc_probe(struct platform_device *pdev)
->  		return PTR_ERR(rtc->base);
->  	}
->  
-> +	rtc->wakeup =
-> +		device_property_read_bool(&pdev->dev, "wakeup-source");
-> +
->  	irq = platform_get_irq(pdev, 0);
->  	if (irq < 0) {
->  		dev_err(&pdev->dev, "can't get irq number\n");
-> @@ -274,7 +279,7 @@ static int ftm_rtc_probe(struct platform_device *pdev)
->  	}
->  
->  	ret = devm_request_irq(&pdev->dev, irq, ftm_rtc_alarm_interrupt,
-> -			       IRQF_NO_SUSPEND, dev_name(&pdev->dev), rtc);
-> +			       0, dev_name(&pdev->dev), rtc);
->  	if (ret < 0) {
->  		dev_err(&pdev->dev, "failed to request irq\n");
->  		return ret;
-> @@ -286,7 +291,10 @@ static int ftm_rtc_probe(struct platform_device *pdev)
->  	rtc->alarm_freq = (u32)FIXED_FREQ_CLK / (u32)MAX_FREQ_DIV;
->  	rtc->rtc_dev->ops = &ftm_rtc_ops;
->  
-> -	device_init_wakeup(&pdev->dev, true);
-> +	device_init_wakeup(&pdev->dev, rtc->wakeup);
+7f2590a110b8("x86/entry/64: Use a per-CPU trampoline stack for IDT entries")
+has resulted that when exception on userspace, the kernel (error_entry)
+always push the pt_regs to entry stack(sp0), and then copy them to the
+kernel stack.
 
-As long as you have an irq, you should be able to wakeup, do you really
-need the wakeup-source property?
+And recent x86/entry work makes interrupt also use idtentry
+and makes all the interrupt code save the pt_regs on the sp0 stack
+and then copy it to the thread stack like exception.
 
-Usually, wakeup-source is used when the RTC interrupt line is not
-connected directly to the SoC but is still able to wake it up.
+This is hot path (page fault, ipi), such overhead should be avoided.
+And the original interrupt_entry directly switches to kernel stack
+and pushes pt_regs to kernel stack. We should do it for error_entry.
+This is the job of patch1.
 
-In your case, is it to cover the  case of the flex timers that can't
-wake the CPU? If so, then please be more explicit in your commit
-message.
+Patch 2-4 simply stack switching for .Lerror_bad_iret by just doing
+all the work in one function (fixup_bad_iret()).
 
-> +	ret = dev_pm_set_wake_irq(&pdev->dev, irq);
-> +	if (ret)
-> +		dev_err(&pdev->dev, "irq wake enable failed.\n");
->  
->  	ret = rtc_register_device(rtc->rtc_dev);
->  	if (ret) {
-> -- 
-> 2.7.4
-> 
+The patch set is based on tip/x86/entry (28447ea41542) (May 20).
+
+Changed from V1:
+	based on tip/master -> based on tip/x86/entry
+
+	patch 1 replaces the patch1,2 of V1, it borrows the
+	original interrupt_entry's code into error_entry.
+
+	patch2-4 is V1's patch3-5, unchanged (but rebased)
+
+Cc: Andy Lutomirski <luto@kernel.org>,
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+Cc: Ingo Molnar <mingo@redhat.com>,
+Cc: Borislav Petkov <bp@alien8.de>,
+Cc: x86@kernel.org,
+Cc: "H. Peter Anvin" <hpa@zytor.com>,
+Cc: Peter Zijlstra <peterz@infradead.org>,
+Cc: Alexandre Chartre <alexandre.chartre@oracle.com>,
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
+Cc: Jann Horn <jannh@google.com>,
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+
+Lai Jiangshan (4):
+  x86/entry: avoid calling into sync_regs() when entering from userspace
+  x86/entry: directly switch to kernel stack when .Lerror_bad_iret
+  x86/entry: remove unused sync_regs()
+  x86/entry: don't copy to tmp in fixup_bad_iret
+
+ arch/x86/entry/entry_64.S    | 52 +++++++++++++++++++++++-------------
+ arch/x86/include/asm/traps.h |  1 -
+ arch/x86/kernel/traps.c      | 42 ++++++++++++-----------------
+ 3 files changed, 51 insertions(+), 44 deletions(-)
 
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.20.1
+
