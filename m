@@ -2,97 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2360D1E8337
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 18:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1660F1E8343
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 18:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727105AbgE2QJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 12:09:04 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:36061 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgE2QJC (ORCPT
+        id S1727119AbgE2QKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 12:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725601AbgE2QKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 12:09:02 -0400
-Received: by mail-ot1-f65.google.com with SMTP id h7so2342138otr.3;
-        Fri, 29 May 2020 09:09:02 -0700 (PDT)
+        Fri, 29 May 2020 12:10:22 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 415C7C03E969;
+        Fri, 29 May 2020 09:10:22 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id c12so2303364qtq.11;
+        Fri, 29 May 2020 09:10:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=y+4rgbyVFdpWdnFfPGEMNo5bmNIxGC5yE0lzC9sLPDI=;
+        b=He6U0kOOqDx77apNaftx5iqXRCDUN/Q0QfmkJGZh0UUkTo6DoVWVYfdVm0xV7GhS54
+         paGRE7yOH2nkcx/QmMeoozsSehWhqDWlsRZb7upJbRD2cnjdkR9XOJoGQVTTT1m4r+Q6
+         Vsqx5aoEd8LY0sZIGDHtWZfkZ9noCBXKEiz7DH1TB6ZhNPu+FXVwRoD3bvnMZJc9GXp7
+         +puTBeFtuw54e8+uXT2kZoD+EuuH3SXs/o2Vgb2aSrBWuEaM21t6EV35fFvTAeX8P9Fy
+         hoR0YPt+cG5imBcraVSGgle5EhazdJSU4n6jKIpG53l/0qetDLvQ2VVPXbE05oh29DK2
+         DY9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kor8EfOYBepC7cHCZaAuPT3ixwWluZI0nzQn7RAc+Mk=;
-        b=pmnCeBnZPckulMfXWGNoS/JaLRGoXvCTVU5gV5arG3Po0iX9Unm59kJamHQ/GZ7Wj1
-         CBAfMZVtw5ZrLCyZZaBibhNdBgAp4OPTheq2PTWZvh2/rbKvlOgpQ54EeIUwejb1SEH9
-         FBR80efQqT2ePxmSPvi1YWolJwKsjanGqRFiPLibf3qIRysi0KSOBFRG2KwHY+HnCJbK
-         xv9Nmw+0LC44GTS2aGRiITvlyP2+aIsQKS5QFXI5UZylJPjN4qJ3NlU+oTiyhtfRh25F
-         0/Hu386Uanvu3WBW2gK1ZphKG8GohxvXRG8Qam+ujhN8F858NQQn7qD922d6z5nxscqE
-         SYKg==
-X-Gm-Message-State: AOAM532ALUm/PMUNRGppj0VAwF+4Pz7zo/U44ZNhyO1JoqcMQyIPCGPr
-        vs2uh1o72YLfg0Xkf0M9gl+/j7wzMSNqZWnSNDc=
-X-Google-Smtp-Source: ABdhPJwjM+ICsGKgZcwtJbIgXNIutRUNdgtdT7teYn4gCXH8umdEGlq2PjsB+thkpYgdWrHDyg/zMnhD7No8oyJhyXE=
-X-Received: by 2002:a05:6830:20d1:: with SMTP id z17mr4810443otq.167.1590768541943;
- Fri, 29 May 2020 09:09:01 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=y+4rgbyVFdpWdnFfPGEMNo5bmNIxGC5yE0lzC9sLPDI=;
+        b=U1QRvmu44BDyXhHZnZnszlMbf702tC5y2lDECFCrrFuIG8QdKvmXijGudQN6pZ+Ze8
+         ZCRbsuwoE1QuwlPWVe8sRggukNwwd8Pg+tmlHmtrG+3n5Qx3cT6hF9BrUYkN+HwB7fdV
+         TyrXGSqoupPIoUEcKDuYVLd/gBuP4A2DwhogU8iNNgwrKM2l273jMAspwJpjvpXAERQq
+         9geGkzw0ZivrRD8o8ljP7kK8W66KMmgv5KfD9Fk26uvplo2tIvI2lwlvVzydYzQncfrR
+         ISy7xI85CZFX0PT5wRcQh+6wT3NGQM7NyQP5W/nQkU4y2RLJgE38sGD5+eCdyvKc1IqJ
+         vtxA==
+X-Gm-Message-State: AOAM531pIFVPIZLyoqyU/w8cyxTNvyjIUxZIVuDBmcAjLEcEGksHx9ih
+        3ap5zF7VqwPC60i/YI846DQ=
+X-Google-Smtp-Source: ABdhPJwymhddx06bqmGhYsTfxrNsNdKqxYLST86rY0HaDO5CDiSL28xMj8JFIw+ygnudI/qKx7P/NQ==
+X-Received: by 2002:ac8:7ca1:: with SMTP id z1mr8885022qtv.334.1590768621466;
+        Fri, 29 May 2020 09:10:21 -0700 (PDT)
+Received: from localhost.localdomain ([2001:1284:f013:516d:2604:bfa5:7157:afa1])
+        by smtp.gmail.com with ESMTPSA id c83sm7579257qkb.103.2020.05.29.09.10.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2020 09:10:20 -0700 (PDT)
+Received: by localhost.localdomain (Postfix, from userid 1000)
+        id 6C60EC1B84; Fri, 29 May 2020 13:10:18 -0300 (-03)
+Date:   Fri, 29 May 2020 13:10:18 -0300
+From:   Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-sctp@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cluster-devel@redhat.com, netdev@vger.kernel.org
+Subject: Re: [PATCH 4/4] net: remove kernel_setsockopt
+Message-ID: <20200529161018.GK2491@localhost.localdomain>
+References: <20200529120943.101454-1-hch@lst.de>
+ <20200529120943.101454-5-hch@lst.de>
 MIME-Version: 1.0
-References: <20200528182046.845-1-wu000273@umn.edu>
-In-Reply-To: <20200528182046.845-1-wu000273@umn.edu>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 29 May 2020 18:08:50 +0200
-Message-ID: <CAJZ5v0jNUPqAGZ9RO4UYyT_kQdG1fPqkFaRLp854tavzLe8R+A@mail.gmail.com>
-Subject: Re: [PATCH] cpuidle: Fix several reference count leaks.
-To:     wu000273@umn.edu
-Cc:     Kangjie Lu <kjlu@umn.edu>, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200529120943.101454-5-hch@lst.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 8:21 PM <wu000273@umn.edu> wrote:
->
-> From: Qiushi Wu <wu000273@umn.edu>
->
-> kobject_init_and_add() takes reference even when it fails.
-> If this function returns an error, kobject_put() must be called to
-> properly clean up the memory associated with the object. Previous
-> commit "b8eb718348b8" fixed a similar problem.
->
-> Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-> ---
->  drivers/cpuidle/sysfs.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/cpuidle/sysfs.c b/drivers/cpuidle/sysfs.c
-> index cdeedbf02646..55107565b319 100644
-> --- a/drivers/cpuidle/sysfs.c
-> +++ b/drivers/cpuidle/sysfs.c
-> @@ -515,7 +515,7 @@ static int cpuidle_add_state_sysfs(struct cpuidle_device *device)
->                 ret = kobject_init_and_add(&kobj->kobj, &ktype_state_cpuidle,
->                                            &kdev->kobj, "state%d", i);
->                 if (ret) {
-> -                       kfree(kobj);
-> +                       kobject_put(&kobj->kobj);
->                         goto error_state;
->                 }
->                 cpuidle_add_s2idle_attr_group(kobj);
-> @@ -646,7 +646,7 @@ static int cpuidle_add_driver_sysfs(struct cpuidle_device *dev)
->         ret = kobject_init_and_add(&kdrv->kobj, &ktype_driver_cpuidle,
->                                    &kdev->kobj, "driver");
->         if (ret) {
-> -               kfree(kdrv);
-> +               kobject_put(&kdrv->kobj);
->                 return ret;
->         }
->
-> @@ -740,7 +740,7 @@ int cpuidle_add_sysfs(struct cpuidle_device *dev)
->         error = kobject_init_and_add(&kdev->kobj, &ktype_cpuidle, &cpu_dev->kobj,
->                                    "cpuidle");
->         if (error) {
-> -               kfree(kdev);
-> +               kobject_put(&kdev->kobj);
->                 return error;
->         }
->
-> --
+On Fri, May 29, 2020 at 02:09:43PM +0200, Christoph Hellwig wrote:
+> No users left.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Applied as 5.8 material, thanks!
+Reviewed-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+
+Thanks.
+
+> ---
+>  include/linux/net.h |  2 --
+>  net/socket.c        | 31 -------------------------------
+>  2 files changed, 33 deletions(-)
+> 
+> diff --git a/include/linux/net.h b/include/linux/net.h
+> index 74ef5d7315f70..e10f378194a59 100644
+> --- a/include/linux/net.h
+> +++ b/include/linux/net.h
+> @@ -303,8 +303,6 @@ int kernel_connect(struct socket *sock, struct sockaddr *addr, int addrlen,
+>  		   int flags);
+>  int kernel_getsockname(struct socket *sock, struct sockaddr *addr);
+>  int kernel_getpeername(struct socket *sock, struct sockaddr *addr);
+> -int kernel_setsockopt(struct socket *sock, int level, int optname, char *optval,
+> -		      unsigned int optlen);
+>  int kernel_sendpage(struct socket *sock, struct page *page, int offset,
+>  		    size_t size, int flags);
+>  int kernel_sendpage_locked(struct sock *sk, struct page *page, int offset,
+> diff --git a/net/socket.c b/net/socket.c
+> index 81a98b6cbd087..976426d03f099 100644
+> --- a/net/socket.c
+> +++ b/net/socket.c
+> @@ -3624,37 +3624,6 @@ int kernel_getpeername(struct socket *sock, struct sockaddr *addr)
+>  }
+>  EXPORT_SYMBOL(kernel_getpeername);
+>  
+> -/**
+> - *	kernel_setsockopt - set a socket option (kernel space)
+> - *	@sock: socket
+> - *	@level: API level (SOL_SOCKET, ...)
+> - *	@optname: option tag
+> - *	@optval: option value
+> - *	@optlen: option length
+> - *
+> - *	Returns 0 or an error.
+> - */
+> -
+> -int kernel_setsockopt(struct socket *sock, int level, int optname,
+> -			char *optval, unsigned int optlen)
+> -{
+> -	mm_segment_t oldfs = get_fs();
+> -	char __user *uoptval;
+> -	int err;
+> -
+> -	uoptval = (char __user __force *) optval;
+> -
+> -	set_fs(KERNEL_DS);
+> -	if (level == SOL_SOCKET)
+> -		err = sock_setsockopt(sock, level, optname, uoptval, optlen);
+> -	else
+> -		err = sock->ops->setsockopt(sock, level, optname, uoptval,
+> -					    optlen);
+> -	set_fs(oldfs);
+> -	return err;
+> -}
+> -EXPORT_SYMBOL(kernel_setsockopt);
+> -
+>  /**
+>   *	kernel_sendpage - send a &page through a socket (kernel space)
+>   *	@sock: socket
+> -- 
+> 2.26.2
+> 
