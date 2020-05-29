@@ -2,73 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810F41E7DC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 15:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C5F1E7E01
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 15:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726934AbgE2NCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 09:02:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726467AbgE2NCp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 09:02:45 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBBC02077D;
-        Fri, 29 May 2020 13:02:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590757365;
-        bh=ARNaKA1yb6DwZcc1AOHUze81r84J7znpXdtHEL2hu1M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wUQdH/bBmjvDlHFUmOvB6Sid7DD19xBcYEJP1s+aUiC6byvu1z4ZQ1HY+J+0iSnPY
-         YDH8gXxysP1y8ocbXMv23OxD/W7ebndxojTaKmK5+JtrgLkVfuUC/YOCpv6cSq4dvY
-         +hj/+PfJVGx22pNPNa6bEPgAuYgnw0O3DDn/5SIU=
-Date:   Fri, 29 May 2020 14:02:42 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Dinh Nguyen <dinguyen@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, linux-spi@vger.kernel.org,
-        Sergey.Semin@baikalelectronics.ru, fancer.lancer@gmail.com,
-        andriy.shevchenko@linux.intel.com, lars.povlsen@microchip.com
-Subject: Re: [PATCHv3 2/2] spi: dw: add optional reset property
-Message-ID: <20200529130242.GA52828@sirena.org.uk>
-References: <20200527204110.25676-1-dinguyen@kernel.org>
- <20200527204110.25676-2-dinguyen@kernel.org>
+        id S1726866AbgE2NHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 09:07:08 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:44020 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726518AbgE2NHI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 09:07:08 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jeeiv-00076E-WD; Fri, 29 May 2020 07:06:58 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jeeiu-000531-Ok; Fri, 29 May 2020 07:06:57 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     keescook@chromium.org, yzaikin@google.com, nixiaoming@huawei.com,
+        axboe@kernel.dk, clemens@ladisch.de, arnd@arndb.de,
+        gregkh@linuxfoundation.org, jani.nikula@linux.intel.com,
+        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        airlied@linux.ie, daniel@ffwll.ch, benh@kernel.crashing.org,
+        rdna@fb.com, viro@zeniv.linux.org.uk, mark@fasheh.com,
+        jlbec@evilplan.org, joseph.qi@linux.alibaba.com, vbabka@suse.cz,
+        sfr@canb.auug.org.au, jack@suse.cz, amir73il@gmail.com,
+        rafael@kernel.org, tytso@mit.edu, julia.lawall@lip6.fr,
+        akpm@linux-foundation.org, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linuxppc-dev@lists.ozlabs.org,
+        ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+References: <20200529074108.16928-1-mcgrof@kernel.org>
+        <20200529074108.16928-13-mcgrof@kernel.org>
+Date:   Fri, 29 May 2020 08:03:02 -0500
+In-Reply-To: <20200529074108.16928-13-mcgrof@kernel.org> (Luis Chamberlain's
+        message of "Fri, 29 May 2020 07:41:07 +0000")
+Message-ID: <878shasxkp.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="CE+1k2dSO48ffgeK"
-Content-Disposition: inline
-In-Reply-To: <20200527204110.25676-2-dinguyen@kernel.org>
-X-Cookie: Use extra care when cleaning on stairs.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-XM-SPF: eid=1jeeiu-000531-Ok;;;mid=<878shasxkp.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/iLtuGsGMkvU0ljnm4/gjNHORnB+bZL0A=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMNoVowels,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Luis Chamberlain <mcgrof@kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 734 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 11 (1.5%), b_tie_ro: 10 (1.3%), parse: 1.12
+        (0.2%), extract_message_metadata: 4.0 (0.5%), get_uri_detail_list:
+        1.99 (0.3%), tests_pri_-1000: 4.2 (0.6%), tests_pri_-950: 1.38 (0.2%),
+        tests_pri_-900: 1.07 (0.1%), tests_pri_-90: 240 (32.7%), check_bayes:
+        238 (32.4%), b_tokenize: 17 (2.3%), b_tok_get_all: 11 (1.4%),
+        b_comp_prob: 4.5 (0.6%), b_tok_touch_all: 202 (27.5%), b_finish: 0.93
+        (0.1%), tests_pri_0: 454 (61.8%), check_dkim_signature: 0.79 (0.1%),
+        check_dkim_adsp: 2.6 (0.4%), poll_dns_idle: 0.60 (0.1%), tests_pri_10:
+        2.2 (0.3%), tests_pri_500: 7 (1.0%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 12/13] sysctl: add helper to register empty subdir
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Luis Chamberlain <mcgrof@kernel.org> writes:
 
---CE+1k2dSO48ffgeK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> The way to create a subdirectory from the base set of directories
+> is a bit obscure, so provide a helper which makes this clear, and
+> also helps remove boiler plate code required to do this work.
 
-On Wed, May 27, 2020 at 03:41:10PM -0500, Dinh Nguyen wrote:
-> Add optional reset property.
+I agreee calling:
+register_sysctl("fs/binfmt_misc", sysctl_mount_point)
+is a bit obscure but if you are going to make a wrapper
+please make it the trivial one liner above.
 
-This doesn't apply against current code, please check and resend.
+Say something that looks like:
+	struct sysctl_header *register_sysctl_mount_point(const char *path)
+        {
+        	return register_sysctl(path, sysctl_mount_point);
+        }
 
---CE+1k2dSO48ffgeK
-Content-Type: application/pgp-signature; name="signature.asc"
+And yes please talk about a mount point and not an empty dir, as these
+are permanently empty directories to serve as mount points.  There are
+some subtle but important permission checks this allows in the case of
+unprivileged mounts.
 
------BEGIN PGP SIGNATURE-----
+Further code like this belong in proc_sysctl.c next to all of the code
+it is related to so that it is easier to see how to refactor the code if
+necessary.
 
-iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7RB/EACgkQJNaLcl1U
-h9CRYwf2Nalr3n2GMXgyhS8OMZTZaoN0+7yQk4fX/asqaFYHtVinVvj2mVqReiwo
-wBJ5PUtxGDLAj8XLvgbg33H1VAKOolO2/lxUvB5tSsy8OOThLB4auqXgqgUz5OTk
-x6OWGsYxX947lvjJ5VLw56qSqLxcjkR4hHLQXS4ycwYPgMe43oLgAFveoBg7fy6+
-Dt02YIeXgkfl1DOHlMii22qRoQy4FzeDEhDt0o1YYGGveSmRf6ee5SnbR9dYWpmL
-ARZdxf8b+xiigdDBVCJJf5427eFk/qrYQiAAqn5lDHccmHGE53sJwu/c530foiLw
-4o/vA82KVuVqhtfWv9ZXnnyq2UQg
-=tV+V
------END PGP SIGNATURE-----
+Eric
 
---CE+1k2dSO48ffgeK--
+>
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+>  include/linux/sysctl.h |  7 +++++++
+>  kernel/sysctl.c        | 16 +++++++++++++---
+>  2 files changed, 20 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
+> index 33a471b56345..89c92390e6de 100644
+> --- a/include/linux/sysctl.h
+> +++ b/include/linux/sysctl.h
+> @@ -208,6 +208,8 @@ extern void register_sysctl_init(const char *path, struct ctl_table *table,
+>  extern struct ctl_table_header *register_sysctl_subdir(const char *base,
+>  						       const char *subdir,
+>  						       struct ctl_table *table);
+> +extern void register_sysctl_empty_subdir(const char *base, const char *subdir);
+> +
+>  void do_sysctl_args(void);
+>  
+>  extern int pwrsw_enabled;
+> @@ -231,6 +233,11 @@ inline struct ctl_table_header *register_sysctl_subdir(const char *base,
+>  	return NULL;
+>  }
+>  
+> +static inline void register_sysctl_empty_subdir(const char *base,
+> +						const char *subdir)
+> +{
+> +}
+> +
+>  static inline struct ctl_table_header *register_sysctl_paths(
+>  			const struct ctl_path *path, struct ctl_table *table)
+>  {
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index f9a35325d5d5..460532cd5ac8 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -3188,13 +3188,17 @@ struct ctl_table_header *register_sysctl_subdir(const char *base,
+>  		{ }
+>  	};
+>  
+> -	if (!table->procname)
+> +	if (table != sysctl_mount_point && !table->procname)
+>  		goto out;
+>  
+>  	hdr = register_sysctl_table(base_table);
+>  	if (unlikely(!hdr)) {
+> -		pr_err("failed when creating subdirectory sysctl %s/%s/%s\n",
+> -		       base, subdir, table->procname);
+> +		if (table != sysctl_mount_point)
+> +			pr_err("failed when creating subdirectory sysctl %s/%s/%s\n",
+> +			       base, subdir, table->procname);
+> +		else
+> +			pr_err("failed when creating empty subddirectory %s/%s\n",
+> +			       base, subdir);
+>  		goto out;
+>  	}
+>  	kmemleak_not_leak(hdr);
+> @@ -3202,6 +3206,12 @@ struct ctl_table_header *register_sysctl_subdir(const char *base,
+>  	return hdr;
+>  }
+>  EXPORT_SYMBOL_GPL(register_sysctl_subdir);
+> +
+> +void register_sysctl_empty_subdir(const char *base,
+> +				  const char *subdir)
+> +{
+> +	register_sysctl_subdir(base, subdir, sysctl_mount_point);
+> +}
+>  #endif /* CONFIG_SYSCTL */
+>  /*
+>   * No sense putting this after each symbol definition, twice,
