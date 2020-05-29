@@ -2,93 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 334B71E8693
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 20:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F111C1E869C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 20:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726962AbgE2SZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 14:25:48 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:43834 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725839AbgE2SZs (ORCPT
+        id S1727807AbgE2S2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 14:28:01 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:34894 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725839AbgE2S2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 14:25:48 -0400
-Received: by mail-il1-f193.google.com with SMTP id l20so3396072ilj.10;
-        Fri, 29 May 2020 11:25:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RepKSadxVLPOnr4s22M6tXbcQ3t0H5ceA8/dUh0fqas=;
-        b=iDHil1LddmmV7JALIuauqX0rUTY67E9pJ25vZ46IERa9FCpW21hODqfXIGGrOIgjuH
-         fn6qlXAKLHezvozwHR/zztreOQI1julK5gEuPsDSYtXCf3LHKWeBb9WsYFEt1PBnNRUM
-         skUip02m8m7HxomOURTP/O0pI9Tf83A/6TbhGzTkdwBVaOd4BsKS+eOfJm52/lzL8+KY
-         mgwgez7zkcYxMlPnqUjPvB7gMXa3xenAgRjkB8q5q7cV/MlPIi4AS5C4OCo3cquGANJD
-         7lVXyWaleKpcIIC1hGLHbNDjv5gpLT2y6hWXxHFGoycwjOa59FcK8YP0j8Iu5PGwdc25
-         ReSg==
-X-Gm-Message-State: AOAM533a6Tb+1U9Aa6OO/QntNLNi6q7nWla8AXMhRSHC/UtpzSG2wr7J
-        /loutdIpwKU+PnJQYlFbl+M4wq6caA==
-X-Google-Smtp-Source: ABdhPJzmQ2Je3XeGl2oNSzphQ0kirFYFeAGrBx5ngsUNmG4mc9hVYpv/dAR3ujj1Ciyrrncy7xuQlw==
-X-Received: by 2002:a05:6e02:ea2:: with SMTP id u2mr8636655ilj.202.1590776747252;
-        Fri, 29 May 2020 11:25:47 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id m5sm4029358ioj.52.2020.05.29.11.25.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 11:25:46 -0700 (PDT)
-Received: (nullmailer pid 2702525 invoked by uid 1000);
-        Fri, 29 May 2020 18:25:44 -0000
-Date:   Fri, 29 May 2020 12:25:44 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     andrew@lunn.ch, f.fainelli@gmail.com, hkallweit1@gmail.com,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next v4 1/4] dt-bindings: net: Add tx and rx internal
- delays
-Message-ID: <20200529182544.GA2691697@bogus>
-References: <20200527164934.28651-1-dmurphy@ti.com>
- <20200527164934.28651-2-dmurphy@ti.com>
+        Fri, 29 May 2020 14:28:00 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04TIIxgN027628;
+        Fri, 29 May 2020 18:27:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=NnBhVkik+DPjxPNgherj6ybw5/R0wr5vT5i5/UWWsqY=;
+ b=z4CGYlD6baoYOD1TzwdUW77pHp7Nua3J5PPrMFyyouDKpELHZ43Mxeiy2KT6Rbse0SmM
+ HIHArTEPOibKStlmc2eONgPzXNbO9nLlIofScJo8Uk7MbUjZHRanWeRpZJdwmh/KDLYB
+ wR/MaZP/j/P5dtwbOjbFDtbBLg67WNK16FHyVcq/CdY6iZBpG06yysdIIo2Y4rikPs7D
+ qu7EJHrQYk0cJTyaDU+F4MShkjQXbljg49Ay1WavdKod35GQx9ez7GxYJDFcMmTgdSA7
+ x+Wk2dg/3pGai+OtCtekINr4/g1xUs+KzHEBJyMIw4d5c8rqPhUoEoobJ/e5ofdTdfUT uA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 318xe1uugn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 29 May 2020 18:27:58 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04TIJBtZ113228;
+        Fri, 29 May 2020 18:27:57 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 317ddus6tg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 29 May 2020 18:27:57 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04TIRuhG016282;
+        Fri, 29 May 2020 18:27:56 GMT
+Received: from localhost.localdomain (/10.159.246.35)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 29 May 2020 11:27:56 -0700
+Subject: Re: [PATCH 10/30] KVM: nSVM: extract preparation of VMCB for nested
+ run
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+References: <20200529153934.11694-1-pbonzini@redhat.com>
+ <20200529153934.11694-11-pbonzini@redhat.com>
+From:   Krish Sadhukhan <krish.sadhukhan@oracle.com>
+Message-ID: <bf123ad6-3313-351c-a7b8-e55cefb53f63@oracle.com>
+Date:   Fri, 29 May 2020 11:27:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200527164934.28651-2-dmurphy@ti.com>
+In-Reply-To: <20200529153934.11694-11-pbonzini@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9636 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 mlxscore=0
+ phishscore=0 adultscore=0 suspectscore=0 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005290138
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9636 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ adultscore=0 cotscore=-2147483648 mlxscore=0 bulkscore=0
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 malwarescore=0
+ clxscore=1015 impostorscore=0 suspectscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005290138
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 11:49:31AM -0500, Dan Murphy wrote:
-> tx-internal-delays and rx-internal-delays are a common setting for RGMII
-> capable devices.
-> 
-> These properties are used when the phy-mode or phy-controller is set to
-> rgmii-id, rgmii-rxid or rgmii-txid.  These modes indicate to the
-> controller that the PHY will add the internal delay for the connection.
-> 
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+
+On 5/29/20 8:39 AM, Paolo Bonzini wrote:
+> Split out filling svm->vmcb.save and svm->vmcb.control before VMRUN.
+> Only the latter will be useful when restoring nested SVM state.
+>
+> This patch introduces no semantic change, so the MMU setup is still
+> done in nested_prepare_vmcb_save.  The next patch will clean up things.
+>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 > ---
->  .../bindings/net/ethernet-controller.yaml          | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/ethernet-controller.yaml b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
-> index ac471b60ed6a..70702a4ef5e8 100644
-> --- a/Documentation/devicetree/bindings/net/ethernet-controller.yaml
-> +++ b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
-> @@ -143,6 +143,20 @@ properties:
->        Specifies the PHY management type. If auto is set and fixed-link
->        is not specified, it uses MDIO for management.
->  
-> +  rx-internal-delay-ps:
-> +    $ref: /schemas/types.yaml#definitions/uint32
-> +    description: |
-> +      RGMII Receive PHY Clock Delay defined in pico seconds.  This is used for
-> +      PHY's that have configurable RX internal delays.  This property is only
-> +      used when the phy-mode or phy-connection-type is rgmii-id or rgmii-rxid.
+>   arch/x86/kvm/svm/nested.c | 40 +++++++++++++++++++++++----------------
+>   1 file changed, 24 insertions(+), 16 deletions(-)
+>
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index fc0c6d1678eb..73be7af79453 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -245,21 +245,8 @@ static void load_nested_vmcb_control(struct vcpu_svm *svm,
+>   	svm->vcpu.arch.tsc_offset += control->tsc_offset;
+>   }
+>   
+> -void enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
+> -			  struct vmcb *nested_vmcb)
+> +static void nested_prepare_vmcb_save(struct vcpu_svm *svm, struct vmcb *nested_vmcb)
 
-Isn't this a property of the phy (this is the controller schema)? Looks 
-like we have similar properties already and they go in phy nodes. Would 
-be good to have a standard property, but let's be clear where it goes.
 
-We need to add '-ps' as a standard unit suffix (in dt-schema) and then a 
-type is not needed here.
+Not a big deal, but I feel that it helps a lot in readability if we keep 
+the names symmetric. This one could be named prepare_nested_vmcb_save to 
+match load_nested_vmcb_control that you created in the previous patch. 
+Or load_nested_vmcb_control could be renamed to nested_load_vmcb_control 
+to match the name here.
 
-Rob
+>   {
+> -	bool evaluate_pending_interrupts =
+> -		is_intercept(svm, INTERCEPT_VINTR) ||
+> -		is_intercept(svm, INTERCEPT_IRET);
+> -
+> -	svm->nested.vmcb = vmcb_gpa;
+> -	if (kvm_get_rflags(&svm->vcpu) & X86_EFLAGS_IF)
+> -		svm->vcpu.arch.hflags |= HF_HIF_MASK;
+> -	else
+> -		svm->vcpu.arch.hflags &= ~HF_HIF_MASK;
+> -
+> -	load_nested_vmcb_control(svm, &nested_vmcb->control);
+> -
+>   	if (nested_vmcb->control.nested_ctl & SVM_NESTED_CTL_NP_ENABLE)
+>   		nested_svm_init_mmu_context(&svm->vcpu);
+>   
+> @@ -291,7 +278,10 @@ void enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
+>   	svm->vmcb->save.dr7 = nested_vmcb->save.dr7;
+>   	svm->vcpu.arch.dr6  = nested_vmcb->save.dr6;
+>   	svm->vmcb->save.cpl = nested_vmcb->save.cpl;
+> +}
+>   
+> +static void nested_prepare_vmcb_control(struct vcpu_svm *svm, struct vmcb *nested_vmcb)
+> +{
+>   	svm_flush_tlb(&svm->vcpu);
+>   	if (nested_vmcb->control.int_ctl & V_INTR_MASKING_MASK)
+>   		svm->vcpu.arch.hflags |= HF_VINTR_MASK;
+> @@ -321,6 +311,26 @@ void enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
+>   	 */
+>   	recalc_intercepts(svm);
+>   
+> +	mark_all_dirty(svm->vmcb);
+> +}
+> +
+> +void enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
+> +			  struct vmcb *nested_vmcb)
+> +{
+> +	bool evaluate_pending_interrupts =
+> +		is_intercept(svm, INTERCEPT_VINTR) ||
+> +		is_intercept(svm, INTERCEPT_IRET);
+> +
+> +	svm->nested.vmcb = vmcb_gpa;
+> +	if (kvm_get_rflags(&svm->vcpu) & X86_EFLAGS_IF)
+> +		svm->vcpu.arch.hflags |= HF_HIF_MASK;
+> +	else
+> +		svm->vcpu.arch.hflags &= ~HF_HIF_MASK;
+> +
+> +	load_nested_vmcb_control(svm, &nested_vmcb->control);
+> +	nested_prepare_vmcb_save(svm, nested_vmcb);
+> +	nested_prepare_vmcb_control(svm, nested_vmcb);
+> +
+>   	/*
+>   	 * If L1 had a pending IRQ/NMI before executing VMRUN,
+>   	 * which wasn't delivered because it was disallowed (e.g.
+> @@ -336,8 +346,6 @@ void enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
+>   	enable_gif(svm);
+>   	if (unlikely(evaluate_pending_interrupts))
+>   		kvm_make_request(KVM_REQ_EVENT, &svm->vcpu);
+> -
+> -	mark_all_dirty(svm->vmcb);
+>   }
+>   
+>   int nested_svm_vmrun(struct vcpu_svm *svm)
