@@ -2,65 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A511E74D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 06:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 763FC1E74DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 06:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbgE2E0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 00:26:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48556 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725817AbgE2E0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 00:26:37 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F0B7E2074D;
-        Fri, 29 May 2020 04:26:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590726397;
-        bh=biY26RlQtZl+eOvAa3r0qNI+95AZPiHE6MWy69incsQ=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=uR/4VKmjPeu7nUm0lkHtc5fQuVyg9Cv8k9mjBTofLk9uGIZ+gv7NcC1inBtBriBu5
-         ydFYWUvxalNlqlw/nKCPjTvH8jWZ1TRiCEu7pDvB5+NSVdzR97iRZSQekgx7ct8aTp
-         2NgFtT9YMZWTQ17NB/enzc0fLu2TBOXJ+pMrMYyw=
-Content-Type: text/plain; charset="utf-8"
+        id S1725928AbgE2E3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 00:29:48 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:32195 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725777AbgE2E3r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 00:29:47 -0400
+X-UUID: a79da786f4844c81b39505ffcaeaae55-20200529
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=/8kwEHmJ6TaKvbOevYpGl57UqTkIwazDt7MXIqKtVPY=;
+        b=qmcsrnbzADgRypVyMJU/lHib1OIYoafb48XWw0diQCBr5kUmgwZdXKklqZ1Fi1qVyq03f566vBPsrL2TKUXxgAaaLoDCArZedcz7sRnM9s9n1QFioPpp55RyTdxuTXqBTN+i58a/2xhF1SM5fOhtqzlG6bi6edI4X7602P3DsF4=;
+X-UUID: a79da786f4844c81b39505ffcaeaae55-20200529
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <macpaul.lin@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1712265074; Fri, 29 May 2020 12:29:43 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 29 May 2020 12:29:30 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 29 May 2020 12:29:34 +0800
+From:   Macpaul Lin <macpaul.lin@mediatek.com>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
+        Macpaul Lin <macpaul.lin@mediatek.com>,
+        Macpaul Lin <macpaul.lin@gmail.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-usb@vger.kernel.org>, <linux-mediatek@lists.infradead.org>
+Subject: [PATCH] usb: host: xhci-mtk: avoid runtime suspend when removing hcd
+Date:   Fri, 29 May 2020 12:29:28 +0800
+Message-ID: <1590726569-28248-1-git-send-email-macpaul.lin@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1590560749-29136-1-git-send-email-weiyi.lu@mediatek.com>
-References: <1590560749-29136-1-git-send-email-weiyi.lu@mediatek.com>
-Subject: Re: [PATCH v2] clk: mediatek: assign the initial value to clk_init_data of mtk_mux
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     James Liao <jamesjj.liao@mediatek.com>,
-        Fan Chen <fan.chen@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
-        srv_heupstream@mediatek.com, stable@vger.kernel.org,
-        Weiyi Lu <weiyi.lu@mediatek.com>,
-        Owen Chen <owen.chen@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Weiyi Lu <weiyi.lu@mediatek.com>
-Date:   Thu, 28 May 2020 21:26:36 -0700
-Message-ID: <159072639634.69627.7492835408539422310@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Weiyi Lu (2020-05-26 23:25:49)
-> When some new clock supports are introduced, e.g. [1]
-> it might lead to an error although it should be NULL because
-> clk_init_data is on the stack and it might have random values
-> if using without initialization.
-> Add the missing initial value to clk_init_data.
->=20
-> [1] https://android-review.googlesource.com/c/kernel/common/+/1278046
->=20
-> Fixes: a3ae549917f1 ("clk: mediatek: Add new clkmux register API")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
-> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-> ---
+V2hlbiBydW50aW1lIHN1c3BlbmQgd2FzIGVuYWJsZWQsIHJ1bnRpbWUgc3VzcGVuZCBtaWdodCBo
+YXBwZW5lZA0Kd2hlbiB4aGNpIGlzIHJlbW92aW5nIGhjZC4gVGhpcyBtaWdodCBjYXVzZSBrZXJu
+ZWwgcGFuaWMgd2hlbiBoY2QNCmhhcyBiZWVuIGZyZWVkIGJ1dCBydW50aW1lIHBtIHN1c3BlbmQg
+cmVsYXRlZCBoYW5kbGUgbmVlZCB0bw0KcmVmZXJlbmNlIGl0Lg0KDQpDaGFuZ2UtSWQ6IEk3MGE1
+ZGM4MDA2MjA3Y2FlZWNiYWM2OTU1Y2U4ZTUzNDVkY2M3MGU2DQpTaWduZWQtb2ZmLWJ5OiBNYWNw
+YXVsIExpbiA8bWFjcGF1bC5saW5AbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJpdmVycy91c2IvaG9z
+dC94aGNpLW10ay5jIHwgICAgNSArKystLQ0KIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMo
+KyksIDIgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL3VzYi9ob3N0L3hoY2kt
+bXRrLmMgYi9kcml2ZXJzL3VzYi9ob3N0L3hoY2ktbXRrLmMNCmluZGV4IGJmYmRiM2MuLjY0MWQy
+NGUgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3VzYi9ob3N0L3hoY2ktbXRrLmMNCisrKyBiL2RyaXZl
+cnMvdXNiL2hvc3QveGhjaS1tdGsuYw0KQEAgLTU4Nyw2ICs1ODcsOSBAQCBzdGF0aWMgaW50IHho
+Y2lfbXRrX3JlbW92ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpkZXYpDQogCXN0cnVjdCB4aGNp
+X2hjZAkqeGhjaSA9IGhjZF90b194aGNpKGhjZCk7DQogCXN0cnVjdCB1c2JfaGNkICAqc2hhcmVk
+X2hjZCA9IHhoY2ktPnNoYXJlZF9oY2Q7DQogDQorCXBtX3J1bnRpbWVfcHV0X3N5bmMoJmRldi0+
+ZGV2KTsNCisJcG1fcnVudGltZV9kaXNhYmxlKCZkZXYtPmRldik7DQorDQogCXVzYl9yZW1vdmVf
+aGNkKHNoYXJlZF9oY2QpOw0KIAl4aGNpLT5zaGFyZWRfaGNkID0gTlVMTDsNCiAJZGV2aWNlX2lu
+aXRfd2FrZXVwKCZkZXYtPmRldiwgZmFsc2UpOw0KQEAgLTU5Nyw4ICs2MDAsNiBAQCBzdGF0aWMg
+aW50IHhoY2lfbXRrX3JlbW92ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpkZXYpDQogCXhoY2lf
+bXRrX3NjaF9leGl0KG10ayk7DQogCXhoY2lfbXRrX2Nsa3NfZGlzYWJsZShtdGspOw0KIAl4aGNp
+X210a19sZG9zX2Rpc2FibGUobXRrKTsNCi0JcG1fcnVudGltZV9wdXRfc3luYygmZGV2LT5kZXYp
+Ow0KLQlwbV9ydW50aW1lX2Rpc2FibGUoJmRldi0+ZGV2KTsNCiANCiAJcmV0dXJuIDA7DQogfQ0K
+LS0gDQoxLjcuOS41DQo=
 
-Applied to clk-next
