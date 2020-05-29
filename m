@@ -2,83 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B8631E7888
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4938A1E788D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726529AbgE2Ijv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 May 2020 04:39:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgE2Ijt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 04:39:49 -0400
-Received: from eggs.gnu.org (eggs.gnu.org [IPv6:2001:470:142:3::10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA91C03E969;
-        Fri, 29 May 2020 01:39:49 -0700 (PDT)
-Received: from fencepost.gnu.org ([2001:470:142:3::e]:51136)
-        by eggs.gnu.org with esmtp (Exim 4.90_1)
-        (envelope-from <janneke@gnu.org>)
-        id 1jeaYK-000171-17; Fri, 29 May 2020 04:39:44 -0400
-Received: from [2001:980:1b4f:1:42d2:832d:bb59:862] (port=36364 helo=dundal.peder.onsbrabantnet.nl)
-        by fencepost.gnu.org with esmtpsa (TLS1.2:RSA_AES_256_CBC_SHA1:256)
-        (Exim 4.82)
-        (envelope-from <janneke@gnu.org>)
-        id 1jeaYJ-0002yQ-G1; Fri, 29 May 2020 04:39:43 -0400
-From:   Jan Nieuwenhuizen <janneke@gnu.org>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Danny Milosavljevic <dannym@scratchpost.org>,
-        Samuel Thibault <samuel.thibault@gnu.org>
-Subject: Re: [PATCH v2] ext4: support xattr gnu.* namespace for the Hurd
-Organization: AvatarAcademy.nl
-References: <20200525193940.878-1-janneke@gnu.org>
-        <20200529032505.GM228632@mit.edu>
-X-Url:  http://AvatarAcademy.nl
-Date:   Fri, 29 May 2020 10:39:39 +0200
-In-Reply-To: <20200529032505.GM228632@mit.edu> (Theodore Y. Ts'o's message of
-        "Thu, 28 May 2020 23:25:05 -0400")
-Message-ID: <87imgfuoc4.fsf@gnu.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S1725865AbgE2In0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 04:43:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49638 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725306AbgE2InZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 04:43:25 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E166A207F5;
+        Fri, 29 May 2020 08:43:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590741804;
+        bh=WXicRjEV9+SwtPOR0p72vmHsLtEkefjIl0MeB7P2Oxw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k8NCpCv1ynYu622W2ei3j0eZMTPaPzkG1WuE6hqEyd18fPypoDGS0rdsKRqxrHuRh
+         /ZgUfi0BdN/NT8iJfCZ9gSRKdjGir0auX6Sx/T4sioVFI8H0pCCZaxwzE91f0Yijky
+         Xe+dGSdg92ilKctSzFnefAr4MmlryojB5cOHVYvM=
+Date:   Fri, 29 May 2020 10:43:09 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] GNSS updates for 5.8-rc1
+Message-ID: <20200529084309.GA996343@kroah.com>
+References: <20200529074915.GA14457@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200529074915.GA14457@localhost>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Theodore Y. Ts'o writes:
+On Fri, May 29, 2020 at 09:49:15AM +0200, Johan Hovold wrote:
+> The following changes since commit 2ef96a5bb12be62ef75b5828c0aab838ebb29cb8:
+> 
+>   Linux 5.7-rc5 (2020-05-10 15:16:58 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/johan/gnss.git tags/gnss-5.8-rc1
 
-Hello!
+Pulled and pushed out, thanks.
 
-> On Mon, May 25, 2020 at 09:39:40PM +0200, Jan (janneke) Nieuwenhuizen wrote:
->> The Hurd gained[0] support for moving the translator and author
->> fields out of the inode and into the "gnu.*" xattr namespace.
->> 
->> In anticipation of that, an xattr INDEX was reserved[1].  The Hurd has
->> now been brought into compliance[2] with that.
->> 
->> This patch adds support for reading and writing such attributes from
->> Linux; you can now do something like
-
-[...]
->
-> This patch is missing a Signed-off-by.  If you don't understand why
-> this is really important, please read: 
->
-> https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
-
-Ah, that makes sense.  Sorry for omitting that/being not clear on it.
-
-> Can you resubmit with the DCO or confirm that it's OK for me to add
-> your Signed-off-by?
-
-Yes, that's OK, please do!  I am the original author of this patch.
-
-Greetings,
-Janneke
-
--- 
-Jan Nieuwenhuizen <janneke@gnu.org> | GNU LilyPond http://lilypond.org
-Freelance IT http://JoyofSource.com | Avatar® http://AvatarAcademy.com
+greg k-h
