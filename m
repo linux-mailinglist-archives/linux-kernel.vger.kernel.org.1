@@ -2,77 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD85A1E80B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 16:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A441E80BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 16:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727983AbgE2OnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 10:43:03 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:39267 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726887AbgE2OnC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 10:43:02 -0400
-Received: by mail-oi1-f193.google.com with SMTP id a7so2387659oic.6;
-        Fri, 29 May 2020 07:43:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rPY/wNV8YP0SBveUEbPZoXtMjIbvbN5AtrIKyFHWbWU=;
-        b=heKZ6ETFA6s1FB3VUeAZt7dymIwNYSHW2tCpjaAi+egju7f4sPgaV+o3LiU3o+wyKS
-         muyMaIW+fehz7+GcOvmrccOLiLPzlahUQYUcpxCTwIbF6K/UyZAiYi318L1wnNjesft2
-         7a7FZxFIdVePJnY7mN4WxCETS4mLtXLmeEGPHSbROdjcqwnHfYZNiVck5Z20+HXMy7e8
-         maFBwyR3C7m8j9/1E+0ly7vWjsi4mcQdkJvwsAHfBQyuRh20dfth7tFbtpZSQdLoBwbj
-         yj84XAYTGCmJRJQdE4xTuMxTlhRMm0uPw0833NnM2071XX2Md5fcECpVrTKq6CwHechL
-         /nkg==
-X-Gm-Message-State: AOAM5329Wg603ddmsEVDDUBySwAlcRxVxIXcI2FnbKkPxyOTgASqLZuO
-        ZwndWV7SRoYjuWjF3lY1qTleb4WCC7dV0TSpPI8=
-X-Google-Smtp-Source: ABdhPJzmWtSxLVFgpDh/6SvlDYjaJ+B2sAtwHZzkioXeuMMP3MpiTfJThmmhXeOnVG7R7L1RUx2h5RvyoQlpO5vXuwA=
-X-Received: by 2002:aca:eb56:: with SMTP id j83mr6323511oih.110.1590763375867;
- Fri, 29 May 2020 07:42:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <CGME20200529023722epcas1p4062a6826d015c249adddd45bf28c0a29@epcas1p4.samsung.com>
- <eba2afce-78d0-50ba-8907-da2f61f0df9e@samsung.com>
-In-Reply-To: <eba2afce-78d0-50ba-8907-da2f61f0df9e@samsung.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 29 May 2020 16:42:43 +0200
-Message-ID: <CAJZ5v0jNPH0cCc-mCKMJnNDyC6K29Yw8UOZA2TFMqL8k+eCprg@mail.gmail.com>
-Subject: Re: [GIT PULL] devfreq next for v5.8
-To:     Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     "Rafael J. Wysocki <rjw@rjwysocki.net>" <rjw@rjwysocki.net>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Chanwoo Choi (chanwoo@kernel.org)" <chanwoo@kernel.org>,
-        =?UTF-8?B?7ZWo66qF7KO8?= <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727068AbgE2Oq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 10:46:27 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:17266 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726849AbgE2OqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 10:46:23 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590763583; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=5zi+dHY2H+udPHk6hvdgwxKhHZOYwiTIbkrPlGN9DOA=; b=fCrrqSTglm0w8NajSLSgiBNUyFHkQj5aDGUCUn4Bsa+AcZ7yUL3083y8oU2pqoemZxNbhC25
+ xeSvnkShODRemp0ILwDvb1RfLXyZ/GzzYxq7EOcNI25sgJvs/QjKH37mt6wTa7T9r685dr3w
+ +7xDcRfpwqmhgTwbalh1CBFieNY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5ed1203eb4f0a9ae22e9c776 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 May 2020 14:46:22
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9E37BC43387; Fri, 29 May 2020 14:46:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: zijuhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EA227C433C9;
+        Fri, 29 May 2020 14:46:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EA227C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=zijuhu@codeaurora.org
+From:   Zijun Hu <zijuhu@codeaurora.org>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org
+Subject: [PATCH v4] Bluetooth: hci_qca: Improve controller ID info log level
+Date:   Fri, 29 May 2020 22:46:13 +0800
+Message-Id: <1590763573-8302-1-git-send-email-zijuhu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 4:37 AM Chanwoo Choi <cw00.choi@samsung.com> wrote:
->
-> Dear Rafael,
->
-> This is devfreq-next pull request for v5.8-rc1. I add detailed description of
-> this pull request on the following tag. Please pull devfreq with following updates.
-> - tag name : devfreq-next-for-5.8
->
-> Best Regards,
-> Chanwoo Choi
->
->
-> The following changes since commit 9cb1fd0efd195590b828b9b865421ad345a4a145:
->
->   Linux 5.7-rc7 (2020-05-24 15:32:54 -0700)
->
-> are available in the Git repository at:
->
->    git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git tags/devfreq-next-for-5.8
->
-> for you to fetch changes up to 8fc0e48e0faefef5064f3cb803d3d12314e16ec4:
->
->   PM / devfreq: Use lockdep asserts instead of manual checks for locked mutex (2020-05-28 18:02:40 +0900)
+Controller ID info got by VSC EDL_PATCH_GETVER is very
+important, so improve its log level from DEBUG to INFO.
 
-Pulled, thanks!
+Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
+---
+Changes in v4:
+- correct coding style of qca_read_soc_version()
+
+Changes in v3:
+- correct coding style
+
+Changes in v2:
+- adjust controller ID info print order
+
+ drivers/bluetooth/btqca.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
+index 3ea866d44568..5629e2c80b97 100644
+--- a/drivers/bluetooth/btqca.c
++++ b/drivers/bluetooth/btqca.c
+@@ -74,17 +74,21 @@ int qca_read_soc_version(struct hci_dev *hdev, u32 *soc_version,
+ 
+ 	ver = (struct qca_btsoc_version *)(edl->data);
+ 
+-	BT_DBG("%s: Product:0x%08x", hdev->name, le32_to_cpu(ver->product_id));
+-	BT_DBG("%s: Patch  :0x%08x", hdev->name, le16_to_cpu(ver->patch_ver));
+-	BT_DBG("%s: ROM    :0x%08x", hdev->name, le16_to_cpu(ver->rom_ver));
+-	BT_DBG("%s: SOC    :0x%08x", hdev->name, le32_to_cpu(ver->soc_id));
++	bt_dev_info(hdev, "QCA Product ID   :0x%08x",
++		    le32_to_cpu(ver->product_id));
++	bt_dev_info(hdev, "QCA SOC Version  :0x%08x",
++		    le32_to_cpu(ver->soc_id));
++	bt_dev_info(hdev, "QCA ROM Version  :0x%08x",
++		    le16_to_cpu(ver->rom_ver));
++	bt_dev_info(hdev, "QCA Patch Version:0x%08x",
++		    le16_to_cpu(ver->patch_ver));
+ 
+ 	/* QCA chipset version can be decided by patch and SoC
+ 	 * version, combination with upper 2 bytes from SoC
+ 	 * and lower 2 bytes from patch will be used.
+ 	 */
+ 	*soc_version = (le32_to_cpu(ver->soc_id) << 16) |
+-			(le16_to_cpu(ver->rom_ver) & 0x0000ffff);
++		(le16_to_cpu(ver->rom_ver) & 0x0000ffff);
+ 	if (*soc_version == 0)
+ 		err = -EILSEQ;
+ 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+
