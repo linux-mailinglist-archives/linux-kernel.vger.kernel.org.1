@@ -2,61 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DC61E80B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 16:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4911E80C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 16:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726988AbgE2OqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 10:46:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60024 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726849AbgE2OqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 10:46:18 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4BB620721;
-        Fri, 29 May 2020 14:46:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590763578;
-        bh=PTcudGkQlxs5GmPidtQXzhIo/iu9BqsWKC/ypA5RqWU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZZqGz0cqdYF13kt3KpKmZ9nT7SCbfil3VF3OrR9+ViXvOemDoiiNrPzIF1gaOCP9k
-         lIYPZHUbKe08WT/nopp1OZnOBMXpPhu2QosQF30a2xBH25FwkxofzeyhRP4edAF8El
-         hbnMEZjn09QFwFSMtNm8BF2MQ6cx77ERni4TlA4E=
-Date:   Fri, 29 May 2020 16:46:15 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: please revert "Revert "media: staging: atomisp: Remove driver""
-Message-ID: <20200529144615.GA2168030@kroah.com>
-References: <20200529140907.GA2916@lst.de>
+        id S1726968AbgE2OsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 10:48:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726838AbgE2OsH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 10:48:07 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4220EC03E969;
+        Fri, 29 May 2020 07:48:07 -0700 (PDT)
+Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
+        (envelope-from <bigeasy@linutronix.de>)
+        id 1jegIn-00070i-Hl; Fri, 29 May 2020 16:48:05 +0200
+Date:   Fri, 29 May 2020 16:48:05 +0200
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-rt-users@vger.kernel.org
+Subject: Re: linux-rt stall on imx6dl on patch-5.4.22-rt13.patch
+Message-ID: <20200529144805.i3j3zx76r4nvjxth@linutronix.de>
+References: <CAOf5uw=DU4KdLXt=VEU+Uv3+W3jUMXE393FO3_v2smScR6Xf-Q@mail.gmail.com>
+ <20200529133107.y65eta5btvgpk6pu@linutronix.de>
+ <CAOf5uwmQnX8SNOxD71mwcxc5Q4hKXo1VqnMbaSArNg0SmE5dqA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200529140907.GA2916@lst.de>
+In-Reply-To: <CAOf5uwmQnX8SNOxD71mwcxc5Q4hKXo1VqnMbaSArNg0SmE5dqA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 04:09:07PM +0200, Christoph Hellwig wrote:
-> Hi Mauro and Greg,
-> 
-> the commit mentioned in the subject (commit id ad85094b293e in
-> linux-next) contains the grave offense of adding a new set_fs address
-> space override in "new" code.  It also doesn't have an Ack from Greg
-> despite showing up in drives/staging, which looks very suspicious.
-> 
-> Please don't just add crap like this back if it doesn't pass the
-> most basic sanity tests.
+On 2020-05-29 15:46:46 [+0200], Michael Nazzareno Trimarchi wrote:
+> Hi
+Hi,
 
-Mauro "owns" drivers/staging/media/ which is where this ended up in,
-right?  And I thought he had a bunch of follow-on patches that fixed up
-crud like set_fs and friends.
+> No, I'm not surprised but my answer to them was not enough. Right now
+> they are executing some bench.
 
-Mauro, is your fixes not pushed in your tree as well?
+Oh yeah? Tell them to think about what they want to test and then make a
+proper test for it. Not just randomly piecing together commands from the
+internet and complaining about the results, that were not understood.
 
-thanks,
+> Best
+> Michael
 
-greg k-h
+Sebastian
