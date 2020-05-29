@@ -2,199 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 948221E7472
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 06:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AEC1E7479
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 06:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728821AbgE2ERo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 00:17:44 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34700 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727875AbgE2ERm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 00:17:42 -0400
-Received: from callcc.thunk.org (pool-100-0-195-244.bstnma.fios.verizon.net [100.0.195.244])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 04T4HIhU009522
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 May 2020 00:17:18 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id D8E4D420304; Fri, 29 May 2020 00:17:17 -0400 (EDT)
-Date:   Fri, 29 May 2020 00:17:17 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     ira.weiny@intel.com
-Cc:     linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Eric Biggers <ebiggers@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V5 0/9] Enable ext4 support for per-file/directory DAX
- operations
-Message-ID: <20200529041717.GN228632@mit.edu>
-References: <20200528150003.828793-1-ira.weiny@intel.com>
- <20200529025441.GI228632@mit.edu>
+        id S1728839AbgE2ETn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 00:19:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45512 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726074AbgE2ETk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 00:19:40 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C252207D3;
+        Fri, 29 May 2020 04:19:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590725979;
+        bh=lPI6A83ttQ/c1j1m7UcKEFeIJazjx5XcZ050fvSwitM=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=FLoDt9ZaYlmcWVtsbov0qFpFQnYWpDrZlJE8pluEIXwGBFctnyQ70IBUVDMCHnTPC
+         ySnCdMFeCBEQag+v9idxiHKADP31tRaLwg7xGqsD5++rkjuyvjLtAS7mWz8zzH+1oL
+         RdrggKyTQ+m2k9Nwbzkj658elIKf729eZieXBJCg=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200529025441.GI228632@mit.edu>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1582278742-1626-2-git-send-email-macpaul.lin@mediatek.com>
+References: <1582278742-1626-1-git-send-email-macpaul.lin@mediatek.com> <1582278742-1626-2-git-send-email-macpaul.lin@mediatek.com>
+Subject: Re: [PATCH 1/5] dt-bindings: clock: mediatek: document clk bindings for Mediatek MT6765 SoC
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
+        CC Hwang <cc.hwang@mediatek.com>,
+        Loda Chou <loda.chou@mediatek.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Evan Green <evgreen@chromium.org>,
+        Fabien Parent <fparent@baylibre.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Macpaul Lin <macpaul.lin@mediatek.com>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mars Cheng <mars.cheng@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Owen Chen <owen.chen@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ryder Lee <Ryder.Lee@mediatek.com>,
+        Sean Wang <Sean.Wang@mediatek.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Weiyi Lu <weiyi.lu@mediatek.com>,
+        Will Deacon <will@kernel.org>, Yong Wu <yong.wu@mediatek.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        mtk01761 <wendell.lin@mediatek.com>
+Date:   Thu, 28 May 2020 21:19:38 -0700
+Message-ID: <159072597842.69627.10940278621295452958@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 10:54:41PM -0400, Theodore Y. Ts'o wrote:
-> 
-> Thanks, applied to the ext4-dax branch.
-> 
+Quoting Macpaul Lin (2020-02-21 01:52:18)
+> This patch adds the binding documentation for apmixedsys, audsys, camsys,
+> imgsys, infracfg, mmsys, pericfg, topckgen
+>=20
+> Signed-off-by: Mars Cheng <mars.cheng@mediatek.com>
+> Signed-off-by: Owen Chen <owen.chen@mediatek.com>
+> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+> ---
 
-I spoke too soon.  While I tried merging with the ext4.git dev branch,
-a merge conflict made me look closer and I realize I needed to make
-the following changes (see diff between your patch set and what is
-currently in ext4-dax).
-
-Essentially, I needed to rework the branch to take into account commit
-e0198aff3ae3 ("ext4: reject mount options not supported when
-remounting in handle_mount_opt()").
-
-The problem is that if you allow handle_mount_opt() to apply the
-changes to the dax settings, and then later on, ext4_remount() realize
-that we're remounting, and we need to reject the change, there's a
-race if we restore the mount options to the original configuration.
-Specifically, as Syzkaller pointed out, between when we change the dax
-settings and then reset them, it's possible for some file to be opened
-with "wrong" dax setting, and then when they are reset, *boom*.
-
-The correct way to deal with this is to reject the mount option change
-much earlier, in handle_mount_opt(), *before* we mess with the dax
-settings.
-
-Please take a look at the ext4-dax for the actual changes which I
-made.
-
-Cheers,
-
-					- Ted
-
-
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 3658e3016999..9a37d70394b2 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1733,7 +1733,7 @@ static int clear_qf_name(struct super_block *sb, int qtype)
- #define MOPT_NO_EXT3	0x0200
- #define MOPT_EXT4_ONLY	(MOPT_NO_EXT2 | MOPT_NO_EXT3)
- #define MOPT_STRING	0x0400
--#define MOPT_SKIP	0x0800
-+#define MOPT_NO_REMOUNT	0x0800
- 
- static const struct mount_opts {
- 	int	token;
-@@ -1783,18 +1783,15 @@ static const struct mount_opts {
- 	{Opt_min_batch_time, 0, MOPT_GTE0},
- 	{Opt_inode_readahead_blks, 0, MOPT_GTE0},
- 	{Opt_init_itable, 0, MOPT_GTE0},
--	{Opt_dax, EXT4_MOUNT_DAX_ALWAYS, MOPT_SET | MOPT_SKIP},
--	{Opt_dax_always, EXT4_MOUNT_DAX_ALWAYS,
--		MOPT_EXT4_ONLY | MOPT_SET | MOPT_SKIP},
--	{Opt_dax_inode, EXT4_MOUNT2_DAX_INODE,
--		MOPT_EXT4_ONLY | MOPT_SET | MOPT_SKIP},
--	{Opt_dax_never, EXT4_MOUNT2_DAX_NEVER,
--		MOPT_EXT4_ONLY | MOPT_SET | MOPT_SKIP},
-+	{Opt_dax, 0, MOPT_NO_REMOUNT},
-+	{Opt_dax_always, 0, MOPT_NO_REMOUNT},
-+	{Opt_dax_inode, 0, MOPT_NO_REMOUNT},
-+	{Opt_dax_never, 0, MOPT_NO_REMOUNT},
- 	{Opt_stripe, 0, MOPT_GTE0},
- 	{Opt_resuid, 0, MOPT_GTE0},
- 	{Opt_resgid, 0, MOPT_GTE0},
--	{Opt_journal_dev, 0, MOPT_NO_EXT2 | MOPT_GTE0},
--	{Opt_journal_path, 0, MOPT_NO_EXT2 | MOPT_STRING},
-+	{Opt_journal_dev, 0, MOPT_NO_EXT2 | MOPT_GTE0 | MOPT_NO_REMOUNT},
-+	{Opt_journal_path, 0, MOPT_NO_EXT2 | MOPT_STRING | MOPT_NO_REMOUNT},
- 	{Opt_journal_ioprio, 0, MOPT_NO_EXT2 | MOPT_GTE0},
- 	{Opt_data_journal, EXT4_MOUNT_JOURNAL_DATA, MOPT_NO_EXT2 | MOPT_DATAJ},
- 	{Opt_data_ordered, EXT4_MOUNT_ORDERED_DATA, MOPT_NO_EXT2 | MOPT_DATAJ},
-@@ -1831,7 +1828,7 @@ static const struct mount_opts {
- 	{Opt_jqfmt_vfsv1, QFMT_VFS_V1, MOPT_QFMT},
- 	{Opt_max_dir_size_kb, 0, MOPT_GTE0},
- 	{Opt_test_dummy_encryption, 0, MOPT_GTE0},
--	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET},
-+	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET | MOPT_NO_REMOUNT},
- 	{Opt_err, 0, 0}
- };
- 
-@@ -1929,6 +1926,12 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
- 			 "Mount option \"%s\" incompatible with ext3", opt);
- 		return -1;
- 	}
-+	if ((m->flags & MOPT_NO_REMOUNT) && is_remount) {
-+		ext4_msg(sb, KERN_ERR,
-+			 "Mount option \"%s\" not supported when remounting",
-+			 opt);
-+		return -1;
-+	}
- 
- 	if (args->from && !(m->flags & MOPT_STRING) && match_int(args, &arg))
- 		return -1;
-@@ -2008,11 +2011,6 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
- 		}
- 		sbi->s_resgid = gid;
- 	} else if (token == Opt_journal_dev) {
--		if (is_remount) {
--			ext4_msg(sb, KERN_ERR,
--				 "Cannot specify journal on remount");
--			return -1;
--		}
- 		*journal_devnum = arg;
- 	} else if (token == Opt_journal_path) {
- 		char *journal_path;
-@@ -2020,11 +2018,6 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
- 		struct path path;
- 		int error;
- 
--		if (is_remount) {
--			ext4_msg(sb, KERN_ERR,
--				 "Cannot specify journal on remount");
--			return -1;
--		}
- 		journal_path = match_strdup(&args[0]);
- 		if (!journal_path) {
- 			ext4_msg(sb, KERN_ERR, "error: could not dup "
-@@ -2287,7 +2280,7 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
- 	for (m = ext4_mount_opts; m->token != Opt_err; m++) {
- 		int want_set = m->flags & MOPT_SET;
- 		if (((m->flags & (MOPT_SET|MOPT_CLEAR)) == 0) ||
--		    (m->flags & MOPT_CLEAR_ERR) || m->flags & MOPT_SKIP)
-+		    (m->flags & MOPT_CLEAR_ERR))
- 			continue;
- 		if (!nodefs && !(m->mount_opt & (sbi->s_mount_opt ^ def_mount_opt)))
- 			continue; /* skip if same as the default */
-@@ -5474,24 +5467,6 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 		}
- 	}
- 
--	if ((sbi->s_mount_opt ^ old_opts.s_mount_opt) & EXT4_MOUNT_NO_MBCACHE) {
--		ext4_msg(sb, KERN_ERR, "can't enable nombcache during remount");
--		err = -EINVAL;
--		goto restore_opts;
--	}
--
--	if ((sbi->s_mount_opt ^ old_opts.s_mount_opt) & EXT4_MOUNT_DAX_ALWAYS ||
--	    (sbi->s_mount_opt2 ^ old_opts.s_mount_opt2) & EXT4_MOUNT2_DAX_NEVER ||
--	    (sbi->s_mount_opt2 ^ old_opts.s_mount_opt2) & EXT4_MOUNT2_DAX_INODE) {
--		ext4_msg(sb, KERN_WARNING, "warning: refusing change of "
--			"dax mount option with busy inodes while remounting");
--		sbi->s_mount_opt &= ~EXT4_MOUNT_DAX_ALWAYS;
--		sbi->s_mount_opt |= old_opts.s_mount_opt & EXT4_MOUNT_DAX_ALWAYS;
--		sbi->s_mount_opt2 &= ~(EXT4_MOUNT2_DAX_NEVER | EXT4_MOUNT2_DAX_INODE);
--		sbi->s_mount_opt2 |= old_opts.s_mount_opt2 &
--				     (EXT4_MOUNT2_DAX_NEVER | EXT4_MOUNT2_DAX_INODE);
--	}
--
- 	if (sbi->s_mount_flags & EXT4_MF_FS_ABORTED)
- 		ext4_abort(sb, EXT4_ERR_ESHUTDOWN, "Abort forced by user");
- 
+Applied to clk-next
