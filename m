@@ -2,148 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC0B1E73C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 05:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E611E73CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 05:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406660AbgE2Dmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 23:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52970 "EHLO
+        id S2436798AbgE2Dnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 23:43:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388880AbgE2Dmp (ORCPT
+        with ESMTP id S2389043AbgE2Dni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 23:42:45 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49CA3C08C5C6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 20:42:45 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id b6so842367ljj.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 20:42:45 -0700 (PDT)
+        Thu, 28 May 2020 23:43:38 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC02C08C5C8
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 20:43:37 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id z26so547285pfk.12
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 20:43:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ykCqer43vvinTLl1/KaSTddkvLcnjIn2m2bT/JiFhwY=;
-        b=E2rNqx0swaCy081n6r34uQJWGEBtWcGNDZzf83xsFcZDAUMLwb8XgmJ5cMfUy50Whw
-         Q13wMk7KW68F+h5PLSKyBMeYVXY/H3tdiRjBMyTs1/9BXGS7QKjCvNYoq9h9U7oAv/RJ
-         lbHJGbX8Jd1OJmqDQDSIzju38gQE7bg+bU298=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3XR7QJKmL5fxVgpEHnbXhWBYoXXokdRRh1j2h2NbRQU=;
+        b=VZzDCliJGfOlt4tH8T34NNHm24YmzWjQH6Vz5bL2rCq9/BiO69K98p/HefqFg4eFaD
+         BDshO8R2j+NA4WugUeEK/EwnBbpcl8fxh01FMWj2CCx/aK6KLE9OlyknJwguWrWyyuij
+         jp5GIr0dKrc3tp1JJzyxazBJ2XX83usJ442iL2lWZZuPAgbsidrmzTU4YR59CY+ItGev
+         PAN7rSWOUpy2sL3siqvaqfsrUsupUZuf4kLZCPwkrlZpG1+Tm/Gyi4CW0Z8xzb1mB+ki
+         9ZTYCVl3CsiEAfa7Xv81ahzmdceuGnnnggCDyiJkp5kZg1uVx/b/1Ho8TYO+IyzGk2O2
+         rMtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ykCqer43vvinTLl1/KaSTddkvLcnjIn2m2bT/JiFhwY=;
-        b=rIx1RNiyX6iItsWAtQnpkBUISf+SstHrxME79TwcZb7hjb+zwr/WE6wqeH5hjAK6Nx
-         /NFjnV5CFT7pScgkWZhWp2klO1Ve+fU7W2Rcnd5K147FUghMzq7fhh3uG+hqZpMWOVIX
-         RMIHjG7gJNWxQ4m4vjWstZ+KZuC3OO5T4dLROQHnN+gKVAOF9g1L4OePCSsCDJjHIF8G
-         0UsqD1jy6vgfo1ZHK3SqEmWmr51L2EbJg12aNRhR5RSLGBHTKjkvSfTWenOStM+05rBo
-         tNeh7FkHhNnAS2ZMg1qxCtxxBOzq/uq7R8NQVZagshqPGk+PHfWWhgRekeJHZJKSkF2F
-         IkMQ==
-X-Gm-Message-State: AOAM5305dln0Roiwp1Vw5hGev6WrXWOrSzdSx7/BCYJ9Y6cC9ZTLGjsW
-        DRlLcAeCwimeL/wznTVg5q8nGAnmA7Y=
-X-Google-Smtp-Source: ABdhPJwiOxj+1b3HUlWVz2PJj6eKet/6vD+npnEzyY07IGpre0iSCJRaSdhqoKZdKZ/0ZRzcfmVB6w==
-X-Received: by 2002:a2e:95d2:: with SMTP id y18mr2896006ljh.342.1590723763368;
-        Thu, 28 May 2020 20:42:43 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id k27sm1976702lfe.88.2020.05.28.20.42.42
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 May 2020 20:42:42 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id e4so827839ljn.4
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 20:42:42 -0700 (PDT)
-X-Received: by 2002:a2e:9f43:: with SMTP id v3mr3270285ljk.285.1590723761862;
- Thu, 28 May 2020 20:42:41 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3XR7QJKmL5fxVgpEHnbXhWBYoXXokdRRh1j2h2NbRQU=;
+        b=LfftrcDgmsFfEiKJ9rhs8vweDawbjFfEpmgxogyTCqtD4QECwrTs73Mm3rytZ/22iF
+         7exx6w5vh8tKwQfMxuV8r+QsHyXKG6Oybu9diJX8uI2h7I69Z5l6aej11Zg9Fy0BQXyc
+         hlHNWKnwUlm2PLlkEjYgPlzUcYYlQXJzjDsEbIql/5vnE0X9Ko/hoiwoQiLCnb/yguQx
+         J/KwCl32yVjYOPNfF/d092QzBidqWJtSXkGvJSj1rXlDJSksWNoBtnnahyzgg8BRi18O
+         QQ4FLczcjTOR4xWBiryD6YVKsF68f9qJdB8G/Z+THYR1HiG18i6p6f9Wax2tUFcxXXsn
+         T5qA==
+X-Gm-Message-State: AOAM530tVi8hhXxxMbTrxMYYXuQG5sQ5EtdDi0z1UdkHzEUq7v2xjjeF
+        jPu/4nHgxE8auNv/7nATeHgglA==
+X-Google-Smtp-Source: ABdhPJwHfgoT1qJoRd8XA+Tzc9s/OsDLzwP+ALpVeOVyed8xHlA7HDd8qgf/35ZMZ5FMJUCCmtFqAw==
+X-Received: by 2002:a63:6605:: with SMTP id a5mr6122534pgc.50.1590723817296;
+        Thu, 28 May 2020 20:43:37 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id b63sm5930269pfg.86.2020.05.28.20.43.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 20:43:36 -0700 (PDT)
+Date:   Thu, 28 May 2020 20:42:31 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/6] arm64: dts: qcom: sm8150: add apps_smmu node
+Message-ID: <20200529034231.GB1799770@builder.lan>
+References: <20200524023815.21789-1-jonathan@marek.ca>
+ <20200524023815.21789-2-jonathan@marek.ca>
+ <20200529025246.GV279327@builder.lan>
+ <d0908f34-a698-3449-35b9-7a98e9641295@marek.ca>
+ <20200529031520.GA1799770@builder.lan>
+ <00b8f010-1ae1-45b2-8dd0-a1b582861a2e@marek.ca>
 MIME-Version: 1.0
-References: <20200529000345.GV23230@ZenIV.linux.org.uk> <20200529000419.4106697-1-viro@ZenIV.linux.org.uk>
- <20200529000419.4106697-2-viro@ZenIV.linux.org.uk> <CAHk-=wgnxFLm3ZTwx3XYnJL7_zPNSWf1RbMje22joUj9QADnMQ@mail.gmail.com>
- <20200529014753.GZ23230@ZenIV.linux.org.uk> <CAHk-=wiBqa6dZ0Sw0DvHjnCp727+0RAwnNCyA=ur_gAE4C05fg@mail.gmail.com>
- <20200529031036.GB23230@ZenIV.linux.org.uk>
-In-Reply-To: <20200529031036.GB23230@ZenIV.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 28 May 2020 20:42:25 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgM0KbsiYd+USqbiDgW8WyvAFMfLXMgebc7Z+-Q6WjZqQ@mail.gmail.com>
-Message-ID: <CAHk-=wgM0KbsiYd+USqbiDgW8WyvAFMfLXMgebc7Z+-Q6WjZqQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] dlmfs: convert dlmfs_file_read() to copy_to_user()
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00b8f010-1ae1-45b2-8dd0-a1b582861a2e@marek.ca>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 8:10 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> BTW, regarding uaccess - how badly does the following offend your taste?
-> Normally I'd just go for copy_from_user(), but these syscalls just might
-> be hot enough for overhead to matter...
+On Thu 28 May 20:34 PDT 2020, Jonathan Marek wrote:
 
-Hmm. So the code itself per se doesn't really offend me, but:
+> On 5/28/20 11:15 PM, Bjorn Andersson wrote:
+> > On Thu 28 May 20:02 PDT 2020, Jonathan Marek wrote:
+> > 
+> > > 
+> > > 
+> > > On 5/28/20 10:52 PM, Bjorn Andersson wrote:
+> > > > On Sat 23 May 19:38 PDT 2020, Jonathan Marek wrote:
+> > > > 
+> > > > > Add the apps_smmu node for sm8150. Note that adding the iommus field for
+> > > > > UFS is required because initializing the iommu removes the bypass mapping
+> > > > > that created by the bootloader.
+> > > > > 
+> > > > 
+> > > > Unrelated to the patch itself; how do you disable the splash screen on
+> > > > 8150? "fastboot oem select-display-panel none" doesn't seem to work for
+> > > > me on the MTP - and hence this would prevent my device from booting.
+> > > > 
+> > > > Thanks,
+> > > > Bjorn
+> > > > 
+> > > 
+> > > I don't have a MTP, but on HDK855, "fastboot oem select-display-panel none"
+> > > combined with setting the physical switch to HDMI mode (which switches off
+> > > the 1440x2560 panel) gets it to not setup the display at all (just the
+> > > fastboot command isn't enough).
+> > > 
+> > 
+> > Okay, I don't think we have anything equivalent on the MTP, but good to
+> > know.
+> > 
+> > > With HDK865 though that doesn't work and I have a hack to work around it
+> > > (writing 0 to INTF_TIMING_ENGINE_EN early on in boot will stop video mode
+> > > scanout and it won't crash).
+> > > 
+> > 
+> > Then we need to sort this out in the arm-smmu driver before we can
+> > enable the apps_smmu node on 8250. I did receive some guidance from Will
+> > on the subject and have started looking into this.
+> > 
+> 
+> That's annoying because a lot depends on apps_mmu. GPU is an exception with
+> its own MMU but pretty much everything else uses apps_smmu (does it make
+> sense to add USB nodes if it won't work without apps_smmu?) Is this
+> something that will get resolved soon?
+> 
 
-> +static inline int unkludge_sigmask(void __user *sig,
-> +                                  sigset_t __user **up,
-> +                                  size_t *sigsetsize)
+We have a number of boards where this is becoming a critical issue, so
+we better find an acceptable solution to this very soon.
 
-That's a rather odd function, and if there's a reason for it I have no
-issue, but I dislike the combination of "odd semantics" together with
-"nondescriptive naming".
+Regards,
+Bjorn
 
-"unkludge" really doesn't describe anything.
-
-Why is that "sig" pointer "void __user *" instead of being an actually
-descriptive structure pointer:
-
-   struct sigset_argpack {
-        sigset_t __user *sigset;
-        size_t sigset_size;
-  };
-
-and then it would be "struct sigset_size_argpack __user *" instead?
-And same with compat_uptr_t */compat_size_t for the compat case?
-
-Yeah, yeah, maybe I got that struct definition wrong when writing it
-in the email, but wouldn't that make it much more understandable?
-
-Then the output arguments could be just a pointer to that struct too
-(except now in kernel space), and change that "unkludge" to
-"get_sigset_argpack()", and the end result would be
-
-    static inline int get_sigset_argpack(
-          struct sigset_argpack __user *uarg,
-          struct sigset_argpack *out)
-
-and I think the implementation would be simpler and more
-understandable too when it didn't need those odd casts and "+sizeof"
-things etc..
-
-So then the call-site would go from
-
->         size_t sigsetsize = 0;
->         sigset_t __user *up = NULL;
->
->         if (unkludge_sigmask(sig, &up, &sigsetsize))
->                 return -EFAULT;
-
-to
-
->         struct sigset_argpack argpack = { NULL, 0 };
->
->         if (get_sigset_argpack(sig, &argpack))
->                 return -EFAULT;
-
-and now you can use "argpack.sigset" and "argpack.sigset_size".
-
-No?
-
-Same exact deal for the compat case, where you'd just need that compat
-struct (using "compat_uptr_t" and "compat_size_t"), and then
-
->         struct compat_sigset_argpack argpack = { 0, 0 };
->
-> +       if (get_compat_sigset_argpack(sig, &argpack))
-> +               return -EFAULT;
-
-and then you use the result with "compat_ptr(argpack.sigset)" and
-"argpack.sigset_size".
-
-Or did I mis-read anything and get confused by that code in your patch?
-
-                 Linus
+> FWIW, I have another sm8250 board which does not need the workaround (its
+> bootloader does not set up the display). AFAIK modifying the bootloader to
+> not set up any display is a trivial modification (assuming that's an
+> option).
+> 
+> > Thanks,
+> > Bjorn
+> > 
+> > > > > Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> > > > > ---
+> > > > >    arch/arm64/boot/dts/qcom/sm8150.dtsi | 91 ++++++++++++++++++++++++++++
+> > > > >    1 file changed, 91 insertions(+)
+> > > > > 
+> > > > > diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> > > > > index a36512d1f6a1..acb839427b12 100644
+> > > > > --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> > > > > +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> > > > > @@ -442,6 +442,8 @@ ufs_mem_hc: ufshc@1d84000 {
+> > > > >    			resets = <&gcc GCC_UFS_PHY_BCR>;
+> > > > >    			reset-names = "rst";
+> > > > > +			iommus = <&apps_smmu 0x300 0>;
+> > > > > +
+> > > > >    			clock-names =
+> > > > >    				"core_clk",
+> > > > >    				"bus_aggr_clk",
+> > > > > @@ -706,6 +708,7 @@ usb_1_dwc3: dwc3@a600000 {
+> > > > >    				compatible = "snps,dwc3";
+> > > > >    				reg = <0 0x0a600000 0 0xcd00>;
+> > > > >    				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
+> > > > > +				iommus = <&apps_smmu 0x140 0>;
+> > > > >    				snps,dis_u2_susphy_quirk;
+> > > > >    				snps,dis_enblslpm_quirk;
+> > > > >    				phys = <&usb_1_hsphy>, <&usb_1_ssphy>;
+> > > > > @@ -742,6 +745,94 @@ spmi_bus: spmi@c440000 {
+> > > > >    			cell-index = <0>;
+> > > > >    		};
+> > > > > +		apps_smmu: iommu@15000000 {
+> > > > > +			compatible = "qcom,sdm845-smmu-500", "arm,mmu-500";
+> > > > > +			reg = <0 0x15000000 0 0x100000>;
+> > > > > +			#iommu-cells = <2>;
+> > > > > +			#global-interrupts = <1>;
+> > > > > +			interrupts = <GIC_SPI 65 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 104 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 107 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 108 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 111 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 181 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 182 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 183 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 184 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 185 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 186 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 187 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 188 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 189 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 190 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 191 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 192 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 315 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 316 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 317 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 318 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 319 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 320 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 321 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 322 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 323 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 324 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 325 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 326 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 327 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 328 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 329 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 330 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 331 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 332 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 333 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 334 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 335 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 336 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 337 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 338 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 339 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 340 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 341 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 342 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 343 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 344 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 345 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 395 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 396 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 397 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 398 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 399 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 400 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 401 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 402 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 403 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 404 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 405 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 406 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 407 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 408 IRQ_TYPE_LEVEL_HIGH>,
+> > > > > +				     <GIC_SPI 409 IRQ_TYPE_LEVEL_HIGH>;
+> > > > > +		};
+> > > > > +
+> > > > >    		remoteproc_adsp: remoteproc@17300000 {
+> > > > >    			compatible = "qcom,sm8150-adsp-pas";
+> > > > >    			reg = <0x0 0x17300000 0x0 0x4040>;
+> > > > > -- 
+> > > > > 2.26.1
+> > > > > 
