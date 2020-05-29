@@ -2,154 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203971E71F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 03:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B767E1E7203
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 03:18:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438326AbgE2BNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 21:13:45 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:34316 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2438263AbgE2BNm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 21:13:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590714819;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Dn+2f2IgafZyi4AA23TOauEQLxRsqGyFtRoJ5BVY2dM=;
-        b=Z8DVb5Fjye1haI88VKpkjmpz1sXbf08u29J2SCZ3yI5p9ViGnTkNGkOfdDjfwKALd8Q6RJ
-        VxOD6o/psY80Yw88KrVynV13P6YMizTva/p44NAcVUFIBfG9xFY9dvyoEgvi6MQReG66Ny
-        OHExMalz3pifwo2dTjuK2PEaDBsqFiw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-100-k_QOnMtCPJWWtMBIdjcohQ-1; Thu, 28 May 2020 21:13:35 -0400
-X-MC-Unique: k_QOnMtCPJWWtMBIdjcohQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7F3DE18A8220;
-        Fri, 29 May 2020 01:13:34 +0000 (UTC)
-Received: from T590 (ovpn-12-157.pek2.redhat.com [10.72.12.157])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BDD695F7EA;
-        Fri, 29 May 2020 01:13:25 +0000 (UTC)
-Date:   Fri, 29 May 2020 09:13:21 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 8/8] blk-mq: drain I/O when all CPUs in a hctx are offline
-Message-ID: <20200529011321.GA1075489@T590>
-References: <20200527180644.514302-1-hch@lst.de>
- <20200527180644.514302-9-hch@lst.de>
- <7acc7ab5-02f9-e6ee-e95f-175bc0df9cbc@acm.org>
- <20200528014601.GC933147@T590>
- <1ec7922c-f2b0-08ec-5849-f4eb7f71e9e7@acm.org>
- <20200528051932.GA1008129@T590>
- <4fb6f0cf-a356-833e-25ab-47f9131c729b@acm.org>
+        id S2438335AbgE2BSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 21:18:16 -0400
+Received: from mga17.intel.com ([192.55.52.151]:3080 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2438235AbgE2BSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 21:18:13 -0400
+IronPort-SDR: eGYaZq2LHJzI8stHColteOOHXHq0O+L8iEUb9VMlDJKLNmSwOFwxnWc48/lWAKUFEEZpOijTdi
+ 7EJR6Y+UYwGA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 18:18:13 -0700
+IronPort-SDR: pYAkOFqJS85gf8WFj0pB76a3znPeQAAtzirRV3L4VR3S3fRYnqq0epE1FMfZI1wddIiPC+r1e1
+ 8M7B4I13TUCA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,446,1583222400"; 
+   d="scan'208";a="443190922"
+Received: from lkp-server02.sh.intel.com (HELO 5e8f22f9921b) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 28 May 2020 18:18:11 -0700
+Received: from kbuild by 5e8f22f9921b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jeTf1-0000ER-4x; Fri, 29 May 2020 01:18:11 +0000
+Date:   Fri, 29 May 2020 09:17:16 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/misc] BUILD SUCCESS
+ 140fd4ac78d385e6c8e6a5757585f6c707085f87
+Message-ID: <5ed0629c.PnKxrh91F/vyWxcV%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4fb6f0cf-a356-833e-25ab-47f9131c729b@acm.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 06:37:47AM -0700, Bart Van Assche wrote:
-> On 2020-05-27 22:19, Ming Lei wrote:
-> > On Wed, May 27, 2020 at 08:33:48PM -0700, Bart Van Assche wrote:
-> >> My understanding is that operations that have acquire semantics pair
-> >> with operations that have release semantics. I haven't been able to find
-> >> any documentation that shows that smp_mb__after_atomic() has release
-> >> semantics. So I looked up its definition. This is what I found:
-> >>
-> >> $ git grep -nH 'define __smp_mb__after_atomic'
-> >> arch/ia64/include/asm/barrier.h:49:#define __smp_mb__after_atomic()
-> >> barrier()
-> >> arch/mips/include/asm/barrier.h:133:#define __smp_mb__after_atomic()
-> >> smp_llsc_mb()
-> >> arch/s390/include/asm/barrier.h:50:#define __smp_mb__after_atomic()
-> >> barrier()
-> >> arch/sparc/include/asm/barrier_64.h:57:#define __smp_mb__after_atomic()
-> >> barrier()
-> >> arch/x86/include/asm/barrier.h:83:#define __smp_mb__after_atomic()	do {
-> >> } while (0)
-> >> arch/xtensa/include/asm/barrier.h:20:#define __smp_mb__after_atomic()	
-> >> barrier()
-> >> include/asm-generic/barrier.h:116:#define __smp_mb__after_atomic()
-> >> __smp_mb()
-> >>
-> >> My interpretation of the above is that not all smp_mb__after_atomic()
-> >> implementations have release semantics. Do you agree with this conclusion?
-> > 
-> > I understand smp_mb__after_atomic() orders set_bit(BLK_MQ_S_INACTIVE)
-> > and reading the tag bit which is done in blk_mq_all_tag_iter().
-> > 
-> > So the two pair of OPs are ordered:
-> > 
-> > 1) if one request(tag bit) is allocated before setting BLK_MQ_S_INACTIVE,
-> > the tag bit will be observed in blk_mq_all_tag_iter() from blk_mq_hctx_has_requests(),
-> > so the request will be drained.
-> > 
-> > OR
-> > 
-> > 2) if one request(tag bit) is allocated after setting BLK_MQ_S_INACTIVE,
-> > the request(tag bit) will be released and retried on another CPU
-> > finally, see __blk_mq_alloc_request().
-> > 
-> > Cc Paul and linux-kernel list.
-> 
-> I do not agree with the above conclusion. My understanding of
-> acquire/release labels is that if the following holds:
-> (1) A store operation that stores the value V into memory location M has
-> a release label.
-> (2) A load operation that reads memory location M has an acquire label.
-> (3) The load operation (2) retrieves the value V that was stored by (1).
-> 
-> that the following ordering property holds: all load and store
-> instructions that happened before the store instruction (1) in program
-> order are guaranteed to happen before the load and store instructions
-> that follow (2) in program order.
-> 
-> In the ARM manual these semantics have been described as follows: "A
-> Store-Release instruction is multicopy atomic when observed with a
-> Load-Acquire instruction".
-> 
-> In this case the load-acquire operation is the
-> "test_and_set_bit_lock(nr, word)" statement from the sbitmap code. That
-> code is executed indirectly by blk_mq_get_tag(). Since there is no
-> matching store-release instruction in __blk_mq_alloc_request() for
-> 'word', ordering of the &data->hctx->state and 'tag' memory locations is
-> not guaranteed by the acquire property of the "test_and_set_bit_lock(nr,
-> word)" statement from the sbitmap code.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  x86/misc
+branch HEAD: 140fd4ac78d385e6c8e6a5757585f6c707085f87  x86/reboot/quirks: Add MacBook6,1 reboot quirk
 
-If the order isn't guaranteed, either of the following two documents has to be wrong:
+elapsed time: 4774m
 
-Documentation/memory-barriers.txt:
-	...
-	In all cases there are variants on "ACQUIRE" operations and "RELEASE" operations
-	for each construct.  These operations all imply certain barriers:
-	
-	 (1) ACQUIRE operation implication:
-	
-	     Memory operations issued after the ACQUIRE will be completed after the
-	     ACQUIRE operation has completed.
+configs tested: 137
+configs skipped: 87
 
-Documentation/atomic_bitops.txt:
-	...
-	Except for a successful test_and_set_bit_lock() which has ACQUIRE semantics and
-	clear_bit_unlock() which has RELEASE semantics.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Setting the tag bit is part of successful test_and_set_bit_lock(), which has ACQUIRE
-semantics, and any Memory operations(test_bit(INACTIVE)) after the ACQUIRE will be
-completed after the ACQUIRE has completed according to the above two documents.
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+xtensa                         virt_defconfig
+arm                   milbeaut_m10v_defconfig
+arm                          lpd270_defconfig
+arc                     nsimosci_hs_defconfig
+sh                           se7722_defconfig
+arc                        vdk_hs38_defconfig
+arm                          gemini_defconfig
+sh                          sdk7786_defconfig
+powerpc                      ppc64e_defconfig
+h8300                               defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+arc                              allyesconfig
+openrisc                         allyesconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+x86_64               randconfig-a006-20200527
+x86_64               randconfig-a002-20200527
+x86_64               randconfig-a005-20200527
+x86_64               randconfig-a003-20200527
+x86_64               randconfig-a004-20200527
+x86_64               randconfig-a001-20200527
+i386                 randconfig-a001-20200527
+i386                 randconfig-a004-20200527
+i386                 randconfig-a003-20200527
+i386                 randconfig-a006-20200527
+i386                 randconfig-a002-20200527
+i386                 randconfig-a005-20200527
+i386                 randconfig-a001-20200526
+i386                 randconfig-a004-20200526
+i386                 randconfig-a003-20200526
+i386                 randconfig-a006-20200526
+i386                 randconfig-a002-20200526
+i386                 randconfig-a005-20200526
+x86_64               randconfig-a013-20200528
+x86_64               randconfig-a015-20200528
+x86_64               randconfig-a012-20200528
+x86_64               randconfig-a016-20200528
+x86_64               randconfig-a014-20200528
+x86_64               randconfig-a011-20200528
+x86_64               randconfig-a015-20200526
+x86_64               randconfig-a013-20200526
+x86_64               randconfig-a016-20200526
+x86_64               randconfig-a012-20200526
+x86_64               randconfig-a014-20200526
+x86_64               randconfig-a011-20200526
+i386                 randconfig-a013-20200527
+i386                 randconfig-a015-20200527
+i386                 randconfig-a012-20200527
+i386                 randconfig-a011-20200527
+i386                 randconfig-a016-20200527
+i386                 randconfig-a014-20200527
+i386                 randconfig-a013-20200528
+i386                 randconfig-a011-20200528
+i386                 randconfig-a012-20200528
+i386                 randconfig-a015-20200528
+i386                 randconfig-a016-20200528
+i386                 randconfig-a014-20200528
+i386                 randconfig-a013-20200526
+i386                 randconfig-a015-20200526
+i386                 randconfig-a012-20200526
+i386                 randconfig-a011-20200526
+i386                 randconfig-a016-20200526
+i386                 randconfig-a014-20200526
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allyesconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                               defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc                            allyesconfig
+sparc64                             defconfig
+sparc64                          allmodconfig
+um                                allnoconfig
+um                                  defconfig
+um                               allmodconfig
+um                               allyesconfig
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
 
-Thanks,
-Ming
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
