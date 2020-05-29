@@ -2,151 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1D511E88F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90CAC1E88FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728257AbgE2Udc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 16:33:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728129AbgE2Ud1 (ORCPT
+        id S1728084AbgE2Ugr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 16:36:47 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:38866 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727024AbgE2Ugr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 16:33:27 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD88C08C5CB;
-        Fri, 29 May 2020 13:33:27 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id p30so451530pgl.11;
-        Fri, 29 May 2020 13:33:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SFmuSEf0AGpMxKm8V34s/d7k2oUKvRzQXSbrrQduN4k=;
-        b=LM1dPShEli098FLDwnYhkV+0T2hp8Uwz984pm/7QF4xIByrHV/6bRnEvoAL59nx1Ek
-         lWt+92RZtwue8pHMoXS1yN+So60GTR+wtRgKzqimp6JhUQh5KqHa3Ua6JmfMF3CBeBr5
-         diK6yJrOHUfwiH73ui1MfXPWaPbTfpxf/fax8XLb0eUt7cGij5ikAlfVmZ7sq1Hvci0Y
-         aR6v3w1jLkXzvQpnO2aN++0QYGOqFRmvQhxXxewrF/mvOA5SoA6P/lkAtCjlS8ofUFEj
-         UlEFtEezp3VpUT4O7+AWbEzELarcEbG2x2xzqWgAvuuHj4llEenZvcM23PkOV+1tIQze
-         ucQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SFmuSEf0AGpMxKm8V34s/d7k2oUKvRzQXSbrrQduN4k=;
-        b=SRBKOYXItjhI9kYt5S4U126y1Ng9q849l7qPQ1EbdIpubfOjrmoHObbhfFForReJOb
-         Zgx1CQX2gTSw6uPqq0TRb3ZTYdKNjMrpZoI46yasNddWvOfVuvmsYJII8XRBNChfYO+Q
-         kAenGZJ/BHtIhghxX2qkzZFvsR6yj04GxGP6h8RHW5+r9faFI/Ys6NgJTK9IIy0yv77l
-         SkMWW8nwLOWbjXWujS7s1hhf6kjEDyQ6zxe6f1uEQx9eyEEBRE8FilRENEPjGmBC7MLW
-         GVoXNlmKBhm0wn6TO6Wkq0D6kBuqjq1B0qVOS7KW2m3FaDqscRb/mME6NsHD2YsH+hTN
-         p4Ow==
-X-Gm-Message-State: AOAM532l8UGnsJInUYgwEyByw9WekEiCMrGYzgEwB25MlG8OZCjVd/S4
-        cif9YDcTnBSJ+YioDLCH5ZI9oNSf
-X-Google-Smtp-Source: ABdhPJzhaSX/OYtOM2+g4EKqdUmnyU/S1XaNnapVtdvqpdgjvRfde7Y1l6mMzph3FlWapk0JPV+aRQ==
-X-Received: by 2002:aa7:8c44:: with SMTP id e4mr10221335pfd.108.1590784406650;
-        Fri, 29 May 2020 13:33:26 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:3c2a:73a9:c2cf:7f45])
-        by smtp.gmail.com with ESMTPSA id y4sm7834796pfn.101.2020.05.29.13.33.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 13:33:26 -0700 (PDT)
-Date:   Fri, 29 May 2020 13:33:24 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        groeck@chromium.org, Nicolas Boichat <drinkcat@chromium.org>,
-        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] HID: usbhid: do not sleep when opening device
-Message-ID: <20200529203324.GL89269@dtor-ws>
-References: <20200529195951.GA3767@dtor-ws>
- <20200529201424.GA180211@roeck-us.net>
+        Fri, 29 May 2020 16:36:47 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04TKLvJt073818;
+        Fri, 29 May 2020 20:36:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=cQWqf751vaM12XLOvQMT0qGfaWHdXNL8jZ6GqIv8JAI=;
+ b=kG3hZ67OYuUdfYaYoSZ4rmbP4c9eJFk4EAmHgt505+H9wNCubbrjD1ZoR3fh2RbvPkKT
+ WIa2GQdTL2fukPQ4Z+dQAT2nEKcpPpDJZ24Y1kZNqHdBBZf0ZPAmVvAcUvh2VqPs7qio
+ aGcJKwINvY0siQVUfNtL8Krb8okIMQVqGbgcXhehNY1zVN7gYQP1J1+3AaORIAuS4QSx
+ L/x4ib5Wh5hGL0J9hwNGW1AKfMYION5Jr06QGNxaAEssG7yKE1SgVr1i1E6NRyeJhBN0
+ pyVSSYhl7pkaUeu6OeIjczqowpBi9A7sCSvkLtdeIuIJDW3SiTlTp3HR6rG3gQyPAgfD KA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 316u8rcc7p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 29 May 2020 20:36:25 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04TKHhF1086414;
+        Fri, 29 May 2020 20:36:24 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 317j60cjep-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 29 May 2020 20:36:24 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04TKaMmw007436;
+        Fri, 29 May 2020 20:36:22 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 29 May 2020 13:36:21 -0700
+Date:   Fri, 29 May 2020 16:36:46 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Michel Lespinasse <walken@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Liam Howlett <Liam.Howlett@oracle.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        David Rientjes <rientjes@google.com>,
+        Hugh Dickins <hughd@google.com>, Ying Han <yinghan@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [PATCH v6 09/12] mmap locking API: add mmap_assert_locked() and
+ mmap_assert_write_locked()
+Message-ID: <20200529203646.anfey4maordepkd2@ca-dmjordan1.us.oracle.com>
+References: <20200520052908.204642-1-walken@google.com>
+ <20200520052908.204642-10-walken@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200529201424.GA180211@roeck-us.net>
+In-Reply-To: <20200520052908.204642-10-walken@google.com>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9636 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 suspectscore=0
+ mlxlogscore=999 mlxscore=0 adultscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005290150
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9636 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 spamscore=0 cotscore=-2147483648 suspectscore=0
+ phishscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005290150
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 01:14:24PM -0700, Guenter Roeck wrote:
-> On Fri, May 29, 2020 at 12:59:51PM -0700, Dmitry Torokhov wrote:
-> > usbhid tries to give the device 50 milliseconds to drain its queues
-> > when opening the device, but does it naively by simply sleeping in open
-> > handler, which slows down device probing (and thus may affect overall
-> > boot time).
-> > 
-> > However we do not need to sleep as we can instead mark a point of time
-> > in the future when we should start processing the events.
-> > 
-> > Reported-by: Nicolas Boichat <drinkcat@chromium.org>
-> > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> > ---
-> >  drivers/hid/usbhid/hid-core.c | 27 +++++++++++++++------------
-> >  drivers/hid/usbhid/usbhid.h   |  1 +
-> >  2 files changed, 16 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
-> > index c7bc9db5b192..e69992e945b2 100644
-> > --- a/drivers/hid/usbhid/hid-core.c
-> > +++ b/drivers/hid/usbhid/hid-core.c
-> > @@ -95,6 +95,19 @@ static int hid_start_in(struct hid_device *hid)
-> >  				set_bit(HID_NO_BANDWIDTH, &usbhid->iofl);
-> >  		} else {
-> >  			clear_bit(HID_NO_BANDWIDTH, &usbhid->iofl);
-> > +
-> > +			if (test_and_clear_bit(HID_RESUME_RUNNING,
-> > +					       &usbhid->iofl)) {
-> > +				/*
-> > +				 * In case events are generated while nobody was
-> > +				 * listening, some are released when the device
-> > +				 * is re-opened. Wait 50 msec for the queue to
-> > +				 * empty before allowing events to go through
-> > +				 * hid.
-> > +				 */
-> > +				usbhid->input_start_time = jiffies +
-> > +							   msecs_to_jiffies(50);
-> > +			}
-> >  		}
-> >  	}
-> >  	spin_unlock_irqrestore(&usbhid->lock, flags);
-> > @@ -280,7 +293,8 @@ static void hid_irq_in(struct urb *urb)
-> >  		if (!test_bit(HID_OPENED, &usbhid->iofl))
-> >  			break;
-> >  		usbhid_mark_busy(usbhid);
-> > -		if (!test_bit(HID_RESUME_RUNNING, &usbhid->iofl)) {
-> > +		if (!test_bit(HID_RESUME_RUNNING, &usbhid->iofl) &&
-> > +		    time_after(jiffies, usbhid->input_start_time)) {
-> >  			hid_input_report(urb->context, HID_INPUT_REPORT,
-> >  					 urb->transfer_buffer,
-> >  					 urb->actual_length, 1);
-> > @@ -714,17 +728,6 @@ static int usbhid_open(struct hid_device *hid)
-> >  	}
-> >  
-> >  	usb_autopm_put_interface(usbhid->intf);
-> > -
-> > -	/*
-> > -	 * In case events are generated while nobody was listening,
-> > -	 * some are released when the device is re-opened.
-> > -	 * Wait 50 msec for the queue to empty before allowing events
-> > -	 * to go through hid.
-> > -	 */
-> > -	if (res == 0)
-> > -		msleep(50);
-> > -
-> Can you just set usbhid->input_start_time here ?
-> 	if (res == 0)
-> 		usbhid->input_start_time = jiffies + msecs_to_jiffies(50);
-> 	clear_bit(HID_RESUME_RUNNING, &usbhid->iofl);
+On Tue, May 19, 2020 at 10:29:05PM -0700, Michel Lespinasse wrote:
+> Add new APIs to assert that mmap_sem is held.
 > 
-> Then you might not need the added code in hid_start_in().
+> Using this instead of rwsem_is_locked and lockdep_assert_held[_write]
+> makes the assertions more tolerant of future changes to the lock type.
+> 
+> Signed-off-by: Michel Lespinasse <walken@google.com>
 
-That was my first version, but if hid_start_in() fails we start a timer
-and try to retry the IO (and the "res" in 0 in this case). And we want
-to mark the time only after we successfully submitted the interrupt URB,
-that is why the code is in hid_start_in().
-
-Thanks.
-
--- 
-Dmitry
+Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
