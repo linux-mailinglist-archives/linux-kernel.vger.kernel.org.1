@@ -2,52 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E82A11E7D4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 14:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 507C71E7D50
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 14:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726971AbgE2Mcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 08:32:45 -0400
-Received: from verein.lst.de ([213.95.11.211]:32812 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726920AbgE2Mcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 08:32:43 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 8B0A968B02; Fri, 29 May 2020 14:32:39 +0200 (CEST)
-Date:   Fri, 29 May 2020 14:32:39 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
-        Ian Kent <raven@themaw.net>,
-        David Howells <dhowells@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>
-Subject: Re: [PATCH 09/14] fs: don't change the address limit for
- ->write_iter in __kernel_write
-Message-ID: <20200529123239.GA28608@lst.de>
-References: <20200528054043.621510-1-hch@lst.de> <20200528054043.621510-10-hch@lst.de> <CAHk-=wgpnR9sBeie_z0xA3mYzG50Oiw1jZjyHt0eLX6p45ARvQ@mail.gmail.com>
+        id S1726920AbgE2MeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 08:34:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726052AbgE2MeI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 08:34:08 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 939F4C08C5C6
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 05:34:07 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id l1so759322ede.11
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 05:34:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cPeigCK2KYvMiq+sG6KOj8Q7ndlYO2BcnUQP68RJYdw=;
+        b=dYNCwrc6IlS6OKS+HOUMs4HsVIYIFLl3Gqz0TZPCqS9Ciejf3uEtVff4+mgBC61GXT
+         NJ/hJPkBr8k58Qzihx7KUMfArdD71UUqclR2W/iM9FLIOLjMEXLVyv6plFqv1dWzEWQ9
+         /hOfJz1qPlzSRqe7UWMHr1HOday4CmE9WpEpc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cPeigCK2KYvMiq+sG6KOj8Q7ndlYO2BcnUQP68RJYdw=;
+        b=NqDf/jIrBQfa6uIJZ3/+a1+Q4jTea+mry0hXCWpvdWhxe2/dbQ4e4ssntXjkNMndv4
+         jhz1sAB9nn3HmVOECNvfgnMZmhj6x8/UK9h1oa/f0N5N+5rfwrbbKdMMZtkqa9C2iszP
+         PqmQS5C/T30jjnrVuDNtHRJkE+fQEFpNWA7XPU9HV8p2FUE8ap3493nkCISyS+piysG9
+         3BzJiO3p7xfSXuZYd49Pb5MA0RXKriIaJs4WDEcfbAPn+P/1MlXTpXREdR/Hu0z5LGBF
+         F9qnPgl0QbSxZU2M8c174k3gfXLq82lfL+SHvJDRJ+X0MM5UYbcvC7tKtKZmamAmpLPv
+         nN2w==
+X-Gm-Message-State: AOAM533+g/ptCtILy4VNRqngHqBS45URfUGwBRD9pi1FrsGvSs7mXrQp
+        M8RuPTKkFd4aYxEar19dBpz2GN9qnol/t4qskP/Kcg==
+X-Google-Smtp-Source: ABdhPJyUnTM45zN0/5rNoZumMBq2dmAT3t3ZWSRcUjdBPA2OW7R/LUnUGuKWy/5vRX1XdxS74d3SlLrqc3MOIkpgBnE=
+X-Received: by 2002:a05:6402:17f9:: with SMTP id t25mr8224125edy.134.1590755646368;
+ Fri, 29 May 2020 05:34:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgpnR9sBeie_z0xA3mYzG50Oiw1jZjyHt0eLX6p45ARvQ@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <CAJfpegstNYeseo_C4KOF9Y74qRxr78x2tK-9rTgmYM4CK30nRQ@mail.gmail.com>
+ <875zcfoko9.fsf@nanos.tec.linutronix.de> <CAJfpegsjd+FJ0ZNHJ_qzJo0Dx22ZaWh-WZ48f94Z3AUXbJfYYQ@mail.gmail.com>
+ <CAJfpegv0fNfHrkovSXCNq5Hk+yHP7usfMgr0qjPfwqiovKygDA@mail.gmail.com>
+ <87r1v3lynm.fsf@nanos.tec.linutronix.de> <CAJfpegt6js2WK6SjSZHsz+fg7ZLU+AL6TzrsDYmRfp7vNrtXyw@mail.gmail.com>
+In-Reply-To: <CAJfpegt6js2WK6SjSZHsz+fg7ZLU+AL6TzrsDYmRfp7vNrtXyw@mail.gmail.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Fri, 29 May 2020 14:33:55 +0200
+Message-ID: <CAJfpegtH7C0cu2iPv8gLq5_+=U3-XWZ3XRsP64h6Gbx-qqyZTQ@mail.gmail.com>
+Subject: Re: system time goes weird in kvm guest after host suspend/resume
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Juergen Gross <jgross@suse.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 11:43:13AM -0700, Linus Torvalds wrote:
-> On Wed, May 27, 2020 at 10:41 PM Christoph Hellwig <hch@lst.de> wrote:
-> >
-> > -ssize_t __kernel_write(struct file *file, const void *buf, size_t count, loff_t *pos)
-> > +ssize_t __kernel_write(struct file *file, const void *buf, size_t count,
-> > +               loff_t *pos)
-> 
-> Please don't do these kinds of pointless whitespace changes.
-> 
-> If you have an actual 80x25 vt100 sitting in a corner, it's not really
-> conducive to kernel development any more.
+On Fri, May 29, 2020 at 2:31 PM Miklos Szeredi <miklos@szeredi.hu> wrote:
 
-I have real 80x25 xterms, as that allows me to comfortably fit 4 of
-them onto my latop screen.
+> > Can you please describe the setup of this test?
+> >
+> >  - Host kernel version
+
+5.5.16-100.fc30.x86_64
+
+> >  - Guest kernel version
+
+75caf310d16c ("Merge branch 'akpm' (patches from Andrew)")
+
+> >  - Is the revert done on the host or guest or both?
+
+Guest.
+
+> >  - Test flow is:
+> >
+> >    Boot host, start guest, suspend host, resume host, guest is screwed
+> >
+> >    correct?
+>
+> Yep.
+>
+> Thanks,
+> Miklos
