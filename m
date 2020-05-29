@@ -2,158 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96FA21E81B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 17:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9021E81BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 17:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727024AbgE2PWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 11:22:21 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:20634 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726907AbgE2PWV (ORCPT
+        id S1727101AbgE2PYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 11:24:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726849AbgE2PYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 11:22:21 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04TFBqic028326;
-        Fri, 29 May 2020 10:22:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type;
- s=PODMain02222019; bh=QEYbg2+Ahs1TNWlsutMPnvo9AK2POBWtyD3yCVoZr4M=;
- b=WLriwvQVmnt6gcRbtuKh3c4ierLOSf/0307Vwp230IRgiycCgvYcWHwGUxQvRgQfLjLS
- z5olqdf7AJQ+m/MsvpVAPBrZU41gyvQqcdXjHbm8ogfbWFWpBd/vqvZy232jrIwX7Dow
- dpqHrarBBrmXTUK1PfAkdR6uPpq0BayzFhHuS9cC70ZGs3XJUuZzPvtdvkHz3w4Qz8y4
- EHpMNcVLWltE71+e8lD6qJukVooVCBDqlwMzdq8PpHwFo5N3iO7TZquzbwnAYH6K5OBz
- DyZ7UC6lW2dsamgi/awomyHZUOGH+nffwiXpxqZFuolltmjiSopzEBxzVd06nG8Oiuyw KA== 
-Authentication-Results: ppops.net;
-        spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 31708q113g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 29 May 2020 10:22:18 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 29 May
- 2020 16:22:17 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Fri, 29 May 2020 16:22:16 +0100
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E07E42C8;
-        Fri, 29 May 2020 15:22:16 +0000 (UTC)
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     <broonie@kernel.org>
-CC:     <lgirdwood@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>
-Subject: [PATCH] regulator: core: Add regulator bypass trace points
-Date:   Fri, 29 May 2020 16:22:16 +0100
-Message-ID: <20200529152216.9671-1-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.11.0
+        Fri, 29 May 2020 11:24:15 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8233C08C5C6
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 08:24:14 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id u5so1630360pgn.5
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 08:24:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3qfv4Y4PkjJEv7bG2fRuJoW0d/ix4Crcs/JJo3CxTpE=;
+        b=cxxJkSGUH/75rwZte/yl5nsogU3Io2X7B5Ceghm+YvVBTEthbLL/BTrq7PzpquaxPc
+         QAkpHnqU7YpJytQmKVELXJTs8FlRwqkNz8NUDqNhO9mJOgLXMt+jSFjRyNnDnutPAHmc
+         /mrmK3l+gFurvxd2kQOtCCz7slTaPyaMpYTfg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3qfv4Y4PkjJEv7bG2fRuJoW0d/ix4Crcs/JJo3CxTpE=;
+        b=bWi82CzJhQbTcltoQj6ep+ERRcqVogy7OdqHI7NqqSppCtdp5Hld3sqaqHOYT/YonX
+         ypB1N1j1a9uZhFcHXZbHNDmr/VbWDRw+0czxi9lXH6iLKeB7TIYACRiCKttQqdBL4AcZ
+         sfzmaIXc0pQ02RnrhWEfKvbDIwypdXWfzZ8GJM/wtN7Zrrm9K+53RaFX2r8ttkM2amev
+         b10m3CsmsA2s1+gktWpn+UUftKLss6esZMAGaTzft6BsVEicZ7esm1S0kvymddMK5VPi
+         GKnkMsU7e91l1WIqNdwiXWUMj7xTqNZuquaJtzZ8RXiMq/6m5d4wAZjtgxiYUOqLCVIw
+         8m+w==
+X-Gm-Message-State: AOAM532rUbRfdhRms9VPcFgum1wzZ/t0t9hzQZEdK0T1Lk7e9CNIN5Ou
+        iwzJQe0ilNSx8RxU8iW+YA/B7A==
+X-Google-Smtp-Source: ABdhPJw9Vm+OKtbf8TSG39uU5ZeGM2/j91AXK4EGxqkr5hCiiGU7wluib2DWEf6SIxfxmAf0np70PQ==
+X-Received: by 2002:a62:4dc3:: with SMTP id a186mr8879636pfb.269.1590765854190;
+        Fri, 29 May 2020 08:24:14 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 192sm7177979pfz.198.2020.05.29.08.24.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2020 08:24:13 -0700 (PDT)
+Date:   Fri, 29 May 2020 08:24:11 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Rientjes <rientjes@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Will Drewry <wad@chromium.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [RFC 06/16] KVM: Use GUP instead of copy_from/to_user() to
+ access guest memory
+Message-ID: <202005290815.9ABDE475@keescook>
+References: <20200522125214.31348-1-kirill.shutemov@linux.intel.com>
+ <20200522125214.31348-7-kirill.shutemov@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-SPF-Result: fail
-X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com include:spf.protection.outlook.com
- ip4:5.172.152.52 -all
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 phishscore=0
- adultscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1015
- mlxscore=0 spamscore=0 mlxlogscore=951 cotscore=-2147483648
- priorityscore=1501 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005290122
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200522125214.31348-7-kirill.shutemov@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new trace points for the start and end of enabling bypass on a
-regulator, to allow monitoring of when regulators are moved into bypass
-and how long that takes.
+On Fri, May 22, 2020 at 03:52:04PM +0300, Kirill A. Shutemov wrote:
+> +int copy_from_guest(void *data, unsigned long hva, int len)
+> +{
+> +	int offset = offset_in_page(hva);
+> +	struct page *page;
+> +	int npages, seg;
+> +
+> +	while ((seg = next_segment(len, offset)) != 0) {
+> +		npages = get_user_pages_unlocked(hva, 1, &page, 0);
+> +		if (npages != 1)
+> +			return -EFAULT;
+> +		memcpy(data, page_address(page) + offset, seg);
+> +		put_page(page);
+> +		len -= seg;
+> +		hva += seg;
+> +		offset = 0;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int copy_to_guest(unsigned long hva, const void *data, int len)
+> +{
+> +	int offset = offset_in_page(hva);
+> +	struct page *page;
+> +	int npages, seg;
+> +
+> +	while ((seg = next_segment(len, offset)) != 0) {
+> +		npages = get_user_pages_unlocked(hva, 1, &page, FOLL_WRITE);
+> +		if (npages != 1)
+> +			return -EFAULT;
+> +		memcpy(page_address(page) + offset, data, seg);
+> +		put_page(page);
+> +		len -= seg;
+> +		hva += seg;
+> +		offset = 0;
+> +	}
+> +	return 0;
+> +}
+> +
+>  static int __kvm_read_guest_page(struct kvm_memory_slot *slot, gfn_t gfn,
+> -				 void *data, int offset, int len)
+> +				 void *data, int offset, int len,
+> +				 bool protected)
+>  {
+>  	int r;
+>  	unsigned long addr;
+> @@ -2257,7 +2297,10 @@ static int __kvm_read_guest_page(struct kvm_memory_slot *slot, gfn_t gfn,
+>  	addr = gfn_to_hva_memslot_prot(slot, gfn, NULL);
+>  	if (kvm_is_error_hva(addr))
+>  		return -EFAULT;
+> -	r = __copy_from_user(data, (void __user *)addr + offset, len);
+> +	if (protected)
+> +		r = copy_from_guest(data, addr + offset, len);
+> +	else
+> +		r = __copy_from_user(data, (void __user *)addr + offset, len);
+>  	if (r)
+>  		return -EFAULT;
+>  	return 0;
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- drivers/regulator/core.c         |  9 +++++++++
- include/trace/events/regulator.h | 32 ++++++++++++++++++++++++++++++++
- 2 files changed, 41 insertions(+)
+This ends up removing KASAN and object size tests. Compare to:
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index 941783a14b454..ec04fe8ece475 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -4312,6 +4312,7 @@ EXPORT_SYMBOL_GPL(regulator_set_load);
- int regulator_allow_bypass(struct regulator *regulator, bool enable)
- {
- 	struct regulator_dev *rdev = regulator->rdev;
-+	const char *name = rdev_get_name(rdev);
- 	int ret = 0;
- 
- 	if (!rdev->desc->ops->set_bypass)
-@@ -4326,18 +4327,26 @@ int regulator_allow_bypass(struct regulator *regulator, bool enable)
- 		rdev->bypass_count++;
- 
- 		if (rdev->bypass_count == rdev->open_count) {
-+			trace_regulator_bypass_enable(name);
-+
- 			ret = rdev->desc->ops->set_bypass(rdev, enable);
- 			if (ret != 0)
- 				rdev->bypass_count--;
-+			else
-+				trace_regulator_bypass_enable_complete(name);
- 		}
- 
- 	} else if (!enable && regulator->bypass) {
- 		rdev->bypass_count--;
- 
- 		if (rdev->bypass_count != rdev->open_count) {
-+			trace_regulator_bypass_disable(name);
-+
- 			ret = rdev->desc->ops->set_bypass(rdev, enable);
- 			if (ret != 0)
- 				rdev->bypass_count++;
-+			else
-+				trace_regulator_bypass_disable_complete(name);
- 		}
- 	}
- 
-diff --git a/include/trace/events/regulator.h b/include/trace/events/regulator.h
-index b70583c32c08c..72b3ba93b0a5a 100644
---- a/include/trace/events/regulator.h
-+++ b/include/trace/events/regulator.h
-@@ -70,6 +70,38 @@ DEFINE_EVENT(regulator_basic, regulator_disable_complete,
- 
- );
- 
-+DEFINE_EVENT(regulator_basic, regulator_bypass_enable,
-+
-+	TP_PROTO(const char *name),
-+
-+	TP_ARGS(name)
-+
-+);
-+
-+DEFINE_EVENT(regulator_basic, regulator_bypass_enable_complete,
-+
-+	TP_PROTO(const char *name),
-+
-+	TP_ARGS(name)
-+
-+);
-+
-+DEFINE_EVENT(regulator_basic, regulator_bypass_disable,
-+
-+	TP_PROTO(const char *name),
-+
-+	TP_ARGS(name)
-+
-+);
-+
-+DEFINE_EVENT(regulator_basic, regulator_bypass_disable_complete,
-+
-+	TP_PROTO(const char *name),
-+
-+	TP_ARGS(name)
-+
-+);
-+
- /*
-  * Events that take a range of numerical values, mostly for voltages
-  * and so on.
+__copy_from_user(void *to, const void __user *from, unsigned long n)
+{
+        might_fault();
+        kasan_check_write(to, n);
+        check_object_size(to, n, false);
+        return raw_copy_from_user(to, from, n);
+}
+
+Those will need to get added back. :)
+
+Additionally, I see that copy_from_guest() neither clears the
+destination memory on a short read, nor does KVM actually handle the
+short read case correctly now. See the notes in uaccess.h:
+
+ * NOTE: only copy_from_user() zero-pads the destination in case of short copy.
+ * Neither __copy_from_user() nor __copy_from_user_inatomic() zero anything
+ * at all; their callers absolutely must check the return value.
+
+It's not clear to me how the destination buffers get reused, but the has
+the potential to leak kernel memory contents. This needs separate
+fixing, I think.
+
+-Kees
+
 -- 
-2.11.0
-
+Kees Cook
