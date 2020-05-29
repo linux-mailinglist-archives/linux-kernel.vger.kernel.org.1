@@ -2,114 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93D51E8632
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 20:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D591E863B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 20:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727880AbgE2SFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 14:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46056 "EHLO
+        id S1727963AbgE2SGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 14:06:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726849AbgE2SFY (ORCPT
+        with ESMTP id S1725808AbgE2SGo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 14:05:24 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39569C03E969;
-        Fri, 29 May 2020 11:05:24 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id e1so4808419wrt.5;
-        Fri, 29 May 2020 11:05:24 -0700 (PDT)
+        Fri, 29 May 2020 14:06:44 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71D6C08C5C9
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 11:06:42 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id b62so1561997ybh.8
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 11:06:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=oaV3HDgGaW/NdtRSKlBZ4ciqfTWQuovxIxjYOpe1nbU=;
-        b=MComGRxNSGOa2AQcZx8svu/uqApOWKEYSEr2xBJDnae+l5DzInr1bPXiPAH+Fna2w8
-         QOoAzytrQn9ZyvJ0B6YJUJIvAzc+ETN9gBglLQBM5HRcN+K33ubV8ts7QyGrlYhaLEv1
-         ebNasHcWy12Mx8+fAnzNK3pJPqS0+B0rSvIsLYGUguzA0pzvqix4meK7bxRLFKcqFIzm
-         0b1rEjyO+aV0eVutL7TO55I2WAPfo2o1FYIkEEbcuw4XvIRXN/CjdmEvxQWG1TWFpfdf
-         4gyhbbz4Q9N2Z+7yh01woPV/QR9FjUJzefck20Xy0Lny2vqrBcGqIiC1zkieeOxWEtGz
-         Jadg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KZK+8UJPDvoWxLT1ls7FV08vAkICvPhNOZ41LMQ196g=;
+        b=chJtAfry35Q2oD16l2AjPX6HqRlPNb0/ez0r3C9G0r/kOI3lYIGFsT1AoDdpr+FQ3r
+         quJ3fjB4Mc60gbRvnNx0kbYPF5sL3KjmnBaAm3sa5CH6XVscrItXTk7XmGN9Dn66CHMu
+         MhtJVWC94Z/AcXGWzVh7+GCd4G0eCy8QDS7Cfiw7BpEpuMcpATlspDYG2z4BwkZNxvL4
+         CDpNB/9p7QuUO+e7eCxFzkhIdn4p++upzRKL5KLZ+UzZQVuLnq1tADlqcHJqnZicnfSj
+         Ne73UTe9rFKd9aaiSAOznJRMiV0dwtfvcCwMIZMvdBJ+JYSqm8NJQhf9mLzCR9O8sFgq
+         /Iww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oaV3HDgGaW/NdtRSKlBZ4ciqfTWQuovxIxjYOpe1nbU=;
-        b=OruHiKZaVunDLfCT7ixKx+dCr0t9wWOFM9gUj0aIYtneq0nULxy95ONMW1SzjdxFYK
-         ydoztacbGN3+oAMIdpwUPON9R1tHn6iKqZuKH8NRSgz4cRDcjc5nICpCqaiJ0pMI18mb
-         0x7A1fbeu4nOJMPz5RX2fM1usJbbiVUEt2DI5L8c/CLbUz+BQwU1PKoZSHpX+32Dqhlh
-         wa+rccAd7In4XbSwncHaTtAJuwxP54bYNawVIGQi3xT+0x9gj3DG+kFk2f15c0ska0T3
-         homqkR01qCXEBNGT4rj4zeg5mypwUkYWtmL5aiOrLRaPWQAgMgn1ZwGIDYFw5VTVoNO4
-         i1Yg==
-X-Gm-Message-State: AOAM530zetuUoqN8JzouzhIgNt9tvxAQUECnsFDnUnMWzlWiSowS6vpD
-        RGMJNA/3JiO4WVcsV6x8irA=
-X-Google-Smtp-Source: ABdhPJxWYCv97CQHbzXupNUr3SbhQeyf/jQNBDfH31WBn02Uqr5j6SgI7ipKH03fRVpx/lh3Omy+1w==
-X-Received: by 2002:adf:f707:: with SMTP id r7mr10497594wrp.390.1590775522997;
-        Fri, 29 May 2020 11:05:22 -0700 (PDT)
-Received: from localhost (pd9e51079.dip0.t-ipconnect.de. [217.229.16.121])
-        by smtp.gmail.com with ESMTPSA id u10sm248995wmc.31.2020.05.29.11.05.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 11:05:20 -0700 (PDT)
-Date:   Fri, 29 May 2020 20:05:18 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2] PCI: tegra: Fix runtime PM imbalance on error
-Message-ID: <20200529180518.GA3078281@ulmo>
-References: <20200521024709.2368-1-dinghao.liu@zju.edu.cn>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KZK+8UJPDvoWxLT1ls7FV08vAkICvPhNOZ41LMQ196g=;
+        b=sCrSJfJJ1UgGSKfwKb+wZB0qpGabDNP4Z5LEj++t3t9cXCeYNEbFd/a5tU+NTSJywS
+         ZIhBN5rJqHcsWu4My+yx+3ZCmqDpw5tj2hqb2CeN3CzuN/gqF4OnX/+j98qm8wQr8ZqV
+         oK+m1TrM3FM4Rp3LjXDpq7yBJMALIxEALpLTCUwnGERpMVYyPKdN2hcKUF1moditQu/x
+         lzsdgK6fAZFw8toVbclfHUBz+qWudNIWW3QXIN0Nr6BbZ6VhtI76QBsai3W+4QkTcDe+
+         ohh7w+qegEnG7MuURUUpJuHw2I43ZufM4sDK0+KuUUeJT4npDl8fd/w3JyvjT63fpkjd
+         qANA==
+X-Gm-Message-State: AOAM530Fy5D3GQ0hmja/rvExCZ7jiug5v5fxnmloxavrEDWA1N30iqzj
+        UiPsCd4v1COOp7Wr8Q5GRzx+beozvlswh3r0Wm/hsQ==
+X-Google-Smtp-Source: ABdhPJxh25r7yWeJw77p1Ajo+tQM0emJtz5ylrx7H0oiWwQmIvx3M0l6vcxUOKJe5LRJ4r0O/jjBgdXd6mno0LOQwlY=
+X-Received: by 2002:a25:790e:: with SMTP id u14mr14907935ybc.324.1590775601615;
+ Fri, 29 May 2020 11:06:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="vkogqOf2sHV7VnPd"
-Content-Disposition: inline
-In-Reply-To: <20200521024709.2368-1-dinghao.liu@zju.edu.cn>
-User-Agent: Mutt/1.13.1 (2019-12-14)
+References: <20200505182943.218248-1-irogers@google.com> <20200505182943.218248-2-irogers@google.com>
+ <CAP-5=fWn1=DtZyfGtYEFd=-zDY1O+9A1fcG_3bDKsuoQDZ4i=Q@mail.gmail.com>
+ <20200529172310.GE537@kernel.org> <20200529173608.GA31795@kernel.org>
+In-Reply-To: <20200529173608.GA31795@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Fri, 29 May 2020 11:06:28 -0700
+Message-ID: <CAP-5=fX5rqFiEiDcWVOdzY68AX=-ZjDL1WgeUC+7TdvT6Yi+hA@mail.gmail.com>
+Subject: Re: [PATCH v14 1/1] perf tools: add support for libpfm4
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jiwei Sun <jiwei.sun@windriver.com>,
+        yuzhoujian <yuzhoujian@didichuxing.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.garry@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, May 29, 2020 at 10:36 AM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Fri, May 29, 2020 at 02:23:10PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Fri, May 29, 2020 at 10:03:51AM -0700, Ian Rogers escreveu:
+> > > On Tue, May 5, 2020 at 11:29 AM Ian Rogers <irogers@google.com> wrote:
+> > > >
+> > > > From: Stephane Eranian <eranian@google.com>
+> > > >
+> > > > This patch links perf with the libpfm4 library if it is available
+> > > > and LIBPFM4 is passed to the build. The libpfm4 library
+> > > > contains hardware event tables for all processors supported by
+> > > > perf_events. It is a helper library that helps convert from a
+> > > > symbolic event name to the event encoding required by the
+> > > > underlying kernel interface. This library is open-source and
+> > > > available from: http://perfmon2.sf.net.
+> > > >
+> > > > With this patch, it is possible to specify full hardware events
+> > > > by name. Hardware filters are also supported. Events must be
+> > > > specified via the --pfm-events and not -e option. Both options
+> > > > are active at the same time and it is possible to mix and match:
+> > > >
+> > > > $ perf stat --pfm-events inst_retired:any_p:c=1:i -e cycles ....
+> > > >
+> > > > Signed-off-by: Stephane Eranian <eranian@google.com>
+> > > > Reviewed-by: Ian Rogers <irogers@google.com>
+> > >
+> > > Ping.
+> >
+> > Check my tmp.perf/core branch, I had to make some adjustments, mostly in
+> > the 'perf test' entries as I merged a java demangle test that touched
+> > the same files,
+> >
+> > I'm now doing the build tests.
+>
+> Talking about build  tests, you forgot to add it there, like I did
+> below, I'll eventually do it, as it is opt-in, no biggie at this point.
+>
+> I'll install libpfm-devel that is in fedora and do further tests, later
+> today.
 
---vkogqOf2sHV7VnPd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sorry for that, tbh I wasn't sure what to do. When I test locally I
+make sure the build is and isn't adding libpfm into the man pages, the
+libpfm tests pass, some command line uses. It'd be great to automate
+this as it is not something you'd want to do for every patch and there
+is some build sensitivity that potentially could break it.
 
-On Thu, May 21, 2020 at 10:47:09AM +0800, Dinghao Liu wrote:
-> pm_runtime_get_sync() increments the runtime PM usage counter even
-> when it returns an error code. Thus a pairing decrement is needed on
-> the error handling path to keep the counter balanced.
->=20
-> Also, call pm_runtime_disable() when pm_runtime_get_sync() returns
-> an error code.
->=20
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
->  drivers/pci/controller/pci-tegra.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+Thanks,
+Ian
 
-Acked-by: Thierry Reding <treding@nvidia.com>
-
---vkogqOf2sHV7VnPd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl7RTtcACgkQ3SOs138+
-s6FFww/+KMM+DRTaPWNZojZr63GKToc/xvSE1Nb55d6CJHWJdLjxwzaoeVxmMAzO
-W9sX31ectNIrK1a1p+4TiErNIrzNr4bEyjZWpGMlljo2LJrS3e7n5VNVHrZBK5PW
-mfxdVWdhYWVoVtQOeXf193TSRLkAuvsiznFknYHr4sKCBTXCm06zaRucjFxIX2Jt
-EzF0L72aKYGQe93JmSGh3HJdOrryiCd3f5IAc8kc+KfYRAUm8jlLIgmUUGM9o+GR
-NQGhHFHm/fnsQAehXieRx1DR4GwZPa1FzrBBkhGcMNcg+io8Qe1rdH3imSD17P5D
-v+lB6v3SMHOdf0/ahUGHf6/xkuX2oBvOYEhmMucguOXksM0N/QsuyHUAkIc/W6Tc
-RnPrxtK4ui8LrCJtrLb4+Qn3L33IMj0eIKEajY7/IA1Z/ElILC25HgQHlsbFWPis
-WCbAv7vYvdf7uunrys6fTr2WIuX6f3lOI2svqfVfWFkmzAN3D0Cxl1vOyTb5FXjG
-CH/1Jf0CxgCMZDMB4F/7NNH1snTQ8hNPe+u40TjlDexYV28ArVCzJ+IH3ghdUb9O
-2RcDyL4yIpAJJ5VPwd9ao9HEg9TiRzGoi0nqSWtauGDbasTFLcDtpFSQYijJpJfg
-JFgpeJ4a5Cn54XZSwdZs9oWaXvkJoP902S5fUZkuHgDc8SQXtqU=
-=3fsG
------END PGP SIGNATURE-----
-
---vkogqOf2sHV7VnPd--
+> - Arnaldo
+>
+> commit a01c205e3c4cd6d134317413f2dc3129c4ab7a5a
+> Author: Arnaldo Carvalho de Melo <acme@redhat.com>
+> Date:   Fri May 29 11:31:23 2020 -0300
+>
+>     perf build: Add NO_SYSCALL_TABLE=1 to the build tests
+>
+>     So that we make sure that even on x86-64 and other architectures where
+>     that is the default method we test build the fallback to libaudit that
+>     other architectures use.
+>
+>     I.e. now this line got added to:
+>
+>       $ make -C tools/perf build-test
+>       <SNIP>
+>            make_no_syscall_tbl_O: cd . && make NO_SYSCALL_TABLE=1 FEATURES_DUMP=/home/acme/git/perf/tools/perf/BUILD_TEST_FEATURE_DUMP -j12 O=/tmp/tmp.W0HtKR1mfr DESTDIR=/tmp/tmp.lNezgCVPzW
+>       <SNIP>
+>       $
+>
+>     Cc: Adrian Hunter <adrian.hunter@intel.com>
+>     Cc: Ingo Molnar <mingo@kernel.org>
+>     Cc: Jiri Olsa <jolsa@kernel.org>
+>     Cc: Namhyung Kim <namhyung@kernel.org>
+>     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+>
+> diff --git a/tools/perf/tests/make b/tools/perf/tests/make
+> index 29ce0da7fca6..a4ffa3c7fcb6 100644
+> --- a/tools/perf/tests/make
+> +++ b/tools/perf/tests/make
+> @@ -88,6 +88,7 @@ make_no_libbpf_DEBUG := NO_LIBBPF=1 DEBUG=1
+>  make_no_libcrypto   := NO_LIBCRYPTO=1
+>  make_with_babeltrace:= LIBBABELTRACE=1
+>  make_no_sdt        := NO_SDT=1
+> +make_no_syscall_tbl := NO_SYSCALL_TABLE=1
+>  make_with_clangllvm := LIBCLANGLLVM=1
+>  make_tags           := tags
+>  make_cscope         := cscope
+> @@ -113,7 +114,7 @@ make_minimal        += NO_DEMANGLE=1 NO_LIBELF=1 NO_LIBUNWIND=1 NO_BACKTRACE=1
+>  make_minimal        += NO_LIBNUMA=1 NO_LIBAUDIT=1 NO_LIBBIONIC=1
+>  make_minimal        += NO_LIBDW_DWARF_UNWIND=1 NO_AUXTRACE=1 NO_LIBBPF=1
+>  make_minimal        += NO_LIBCRYPTO=1 NO_SDT=1 NO_JVMTI=1 NO_LIBZSTD=1
+> -make_minimal        += NO_LIBCAP=1
+> +make_minimal        += NO_LIBCAP=1 NO_SYSCALL_TABLE=1
+>
+>  # $(run) contains all available tests
+>  run := make_pure
+> @@ -146,6 +147,7 @@ run += make_no_libbionic
+>  run += make_no_auxtrace
+>  run += make_no_libbpf
+>  run += make_no_libbpf_DEBUG
+> +run += make_no_syscall_tbl
+>  run += make_with_babeltrace
+>  run += make_with_clangllvm
+>  run += make_help
