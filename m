@@ -2,278 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8893D1E7C77
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 13:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7A81E7C38
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 13:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726907AbgE2L7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 07:59:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725775AbgE2L7Y (ORCPT
+        id S1726874AbgE2Lrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 07:47:35 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:60315 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725795AbgE2Lrf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 07:59:24 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5DFFC03E969;
-        Fri, 29 May 2020 04:59:22 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id l1so678408ede.11;
-        Fri, 29 May 2020 04:59:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eV9CwBqylCF7CPOO0rRld4R7dHmlZE7+GnaGmpmW08E=;
-        b=KqdlDvVvSZUDRV0eq2aLhSZdGFxOHL/xT+EO4kB28G026EuulXkl7lVmMO26DrvSiL
-         htDWHaLOeV4FdQVtQ2wBVm+toUqQqCsAj3K5VpHlh8Lob2WQDFexNK8bkQAPUj17SQN3
-         hBZLa+X2jSuIQ5jAIsLZ5fIeh6dldNL6fjvitNuZPYQm5GGeIkIUnreYwURIaa7c1lNo
-         86T6dC7NeBVXEMfojOU1IuCOn+xC/Ui9+m/qIxSt1GTOjhel7aDC5T1E5k9n30zFRA/c
-         S8sR0dkym+u12hqgONI8w6YW1nKZXL/692/Ak0dsSWecE2XqOryGTdis9RYaY8LdPSMG
-         l83Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eV9CwBqylCF7CPOO0rRld4R7dHmlZE7+GnaGmpmW08E=;
-        b=mMQ3NibStqmpdcn6ihzt6QHzIzNQZV7GUvLoZrlMkJnqRO0wa8BRKTmqVlr5TNIMv5
-         /Z9uN8ZUU38c0V1NYhv5f43JQvFYDP6W2EyjV5ZIPWWP1a6xZCwIpVmo0uu7cbQs51gP
-         JDCLNtNyEMuyvwqEKTOd3MK3+qnis9qzINfNskkXhAX7Q7VwB5VoRV2DzEffueCxAW/Y
-         fzMmyn6C9DGZp8yYZVT51XEspZuWGrQO249iahCVuCm1p9bVLCCZv1rN2RgcxjCTB190
-         gEJSIog0d/zL7UX0B6PvA9oZT7xWqHY2P6YN54o/LTN8KdNH4Hct/tPuMAJkir73H6qN
-         KrOw==
-X-Gm-Message-State: AOAM533fQyH6ESctpmZKGuG69FdQRfeZLxUtFo8VfoTW3KWXSsBuYyuK
-        uuxbajX/mWAP5iPqsSFNNB56xgZ8Bp8=
-X-Google-Smtp-Source: ABdhPJxYXnp2pxEEYgWRfJyEi+fg5/wsiAZbfBfeqsd9iS7sqgrPA5RYNr7TcRovs4iwD6H03FMS8A==
-X-Received: by 2002:aa7:dd16:: with SMTP id i22mr8273414edv.366.1590753561153;
-        Fri, 29 May 2020 04:59:21 -0700 (PDT)
-Received: from [192.168.15.109] ([194.152.46.38])
-        by smtp.gmail.com with ESMTPSA id w7sm6517186edq.94.2020.05.29.04.59.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 May 2020 04:59:19 -0700 (PDT)
-Subject: Re: [Patch 2/2] media: use v4l2_rect_enclosed helper
-To:     Benoit Parrot <bparrot@ti.com>, Hans Verkuil <hverkuil@xs4all.nl>,
-        Prabhakar Lad <prabhakar.csengg@gmail.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200528132605.18339-1-bparrot@ti.com>
- <20200528132605.18339-3-bparrot@ti.com>
-From:   Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
-Message-ID: <a282e6f4-8400-1fd8-81c1-9f0e281d9c6a@gmail.com>
-Date:   Fri, 29 May 2020 13:59:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 29 May 2020 07:47:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1590752854; x=1622288854;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=r0LsLIe3f2cpj18gV8W+yu6tvgZ5rEPFEFqWzmvLmbw=;
+  b=ANlGprWElVPnJGfXukYQxS4Ue4tRaaVItdm93ejT3cbOlg2+H9izbisl
+   jD7wZKATvvpke1wT9hBNfRAmwnF3GNv1kG2y8Z0YRySVdoMijTPsUHTgP
+   JOrai7nw2Hfguf8wN7Hs6mLSv795tji6HuyX6VCIDxx2UfS1pkcJggNWn
+   p2fW05eTEZvx3AbFryiAC1pUClbowLx57roqsIbyIuDgbrImE9E/YrzOP
+   SM7dKW8EiLeFeAtkRe5dzQYHpJ3y9YdJWNV6ZMSa8BptGspKYpNqtFrqT
+   RtGcA3DSt7fQDC6LtRbJljZ2puYeL4mqy6xXMErZPQ2n8SRCWgFKXQBkD
+   g==;
+IronPort-SDR: nnx5ftn4eJeRPJUpRzrRfyUoXBFl+4hodo2iZqxNdsZdzo9QxsEXKsJ45C81surIZXsv3Wb6nV
+ jkebu2++bYfexAKEawErCa6hxk0FMXr3mtDcpWFMkNe71ln2IoUPGPXb4jhBYuYea2yba0eErs
+ eyhIhJMWzbM51pG+sEIw0CiaOhuNlOWXIVTZNJtmwJKl98xoI+p+eYQg9048o4qScHC2YSEk2W
+ tRx5ADLvuqz76P3tFbOaSCOi7UgwW8qN2eRQ3szKsNv+9DzMgZ1voRf4WzGOby3+zGwZ8igQ9S
+ Gpo=
+X-IronPort-AV: E=Sophos;i="5.73,448,1583218800"; 
+   d="scan'208";a="76749262"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 May 2020 04:47:34 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 29 May 2020 04:47:33 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
+ Transport; Fri, 29 May 2020 04:47:24 -0700
+Date:   Fri, 29 May 2020 13:47:12 +0000
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
+CC:     <roopa@cumulusnetworks.com>, <jiri@resnulli.us>,
+        <ivecera@redhat.com>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <UNGLinuxDriver@microchip.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bridge@lists.linux-foundation.org>
+Subject: Re: [PATCH net-next 1/2] bridge: mrp: Set the priority of MRP
+ instance
+Message-ID: <20200529134712.qtua2ys4mxw7h77i@soft-dev3.localdomain>
+References: <20200529100514.920537-1-horatiu.vultur@microchip.com>
+ <20200529100514.920537-2-horatiu.vultur@microchip.com>
+ <fc47aca8-a188-5e57-fe76-8e57c2910920@cumulusnetworks.com>
 MIME-Version: 1.0
-In-Reply-To: <20200528132605.18339-3-bparrot@ti.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <fc47aca8-a188-5e57-fe76-8e57c2910920@cumulusnetworks.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Benoit,
-
-Thank you for the patch.
-
-W dniu 28.05.2020 o 15:26, Benoit Parrot pisze:
-> Several drivers implement the same enclosed_rectangle() function to
-> check if a rectangle is enclosed into another. Replace this with the
-> newly added v4l2_rect_enclosed() helper function.
+The 05/29/2020 11:12, Nikolay Aleksandrov wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 > 
-> Signed-off-by: Benoit Parrot <bparrot@ti.com>
-
-for the s5p-jpeg part:
-
-Acked-by: Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
-
-> ---
->   drivers/media/platform/am437x/am437x-vpfe.c   | 19 +++----------------
->   .../media/platform/exynos4-is/fimc-capture.c  | 18 +++---------------
->   drivers/media/platform/exynos4-is/fimc-lite.c | 18 +++---------------
->   drivers/media/platform/s5p-jpeg/jpeg-core.c   | 16 ++--------------
->   4 files changed, 11 insertions(+), 60 deletions(-)
+> On 29/05/2020 13:05, Horatiu Vultur wrote:
+> > Each MRP instance has a priority, a lower value means a higher priority.
+> > The priority of MRP instance is stored in MRP_Test frame in this way
+> > all the MRP nodes in the ring can see other nodes priority.
+> >
+> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > ---
+> >  include/net/switchdev.h        | 1 +
+> >  include/uapi/linux/if_bridge.h | 2 ++
+> >  net/bridge/br_mrp.c            | 3 ++-
+> >  net/bridge/br_mrp_netlink.c    | 5 +++++
+> >  net/bridge/br_mrp_switchdev.c  | 1 +
+> >  net/bridge/br_private_mrp.h    | 1 +
+> >  6 files changed, 12 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/net/switchdev.h b/include/net/switchdev.h
+> > index db519957e134b..f82ef4c45f5ed 100644
+> > --- a/include/net/switchdev.h
+> > +++ b/include/net/switchdev.h
+> > @@ -116,6 +116,7 @@ struct switchdev_obj_mrp {
+> >       struct net_device *p_port;
+> >       struct net_device *s_port;
+> >       u32 ring_id;
+> > +     u16 prio;
+> >  };
+> >
+> >  #define SWITCHDEV_OBJ_MRP(OBJ) \
+> > diff --git a/include/uapi/linux/if_bridge.h b/include/uapi/linux/if_bridge.h
+> > index 5a43eb86c93bf..0162c1370ecb6 100644
+> > --- a/include/uapi/linux/if_bridge.h
+> > +++ b/include/uapi/linux/if_bridge.h
+> > @@ -176,6 +176,7 @@ enum {
+> >       IFLA_BRIDGE_MRP_INSTANCE_RING_ID,
+> >       IFLA_BRIDGE_MRP_INSTANCE_P_IFINDEX,
+> >       IFLA_BRIDGE_MRP_INSTANCE_S_IFINDEX,
+> > +     IFLA_BRIDGE_MRP_INSTANCE_PRIO,
+> >       __IFLA_BRIDGE_MRP_INSTANCE_MAX,
+> >  };
+> >
+> > @@ -230,6 +231,7 @@ struct br_mrp_instance {
+> >       __u32 ring_id;
+> >       __u32 p_ifindex;
+> >       __u32 s_ifindex;
+> > +     __u16 prio;
+> >  };
+> >
+> >  struct br_mrp_ring_state {
+> > diff --git a/net/bridge/br_mrp.c b/net/bridge/br_mrp.c
+> > index 8ea59504ef47a..f8fd037219fe9 100644
+> > --- a/net/bridge/br_mrp.c
+> > +++ b/net/bridge/br_mrp.c
+> > @@ -147,7 +147,7 @@ static struct sk_buff *br_mrp_alloc_test_skb(struct br_mrp *mrp,
+> >       br_mrp_skb_tlv(skb, BR_MRP_TLV_HEADER_RING_TEST, sizeof(*hdr));
+> >       hdr = skb_put(skb, sizeof(*hdr));
+> >
+> > -     hdr->prio = cpu_to_be16(MRP_DEFAULT_PRIO);
+> > +     hdr->prio = cpu_to_be16(mrp->prio);
+> >       ether_addr_copy(hdr->sa, p->br->dev->dev_addr);
+> >       hdr->port_role = cpu_to_be16(port_role);
+> >       hdr->state = cpu_to_be16(mrp->ring_state);
+> > @@ -290,6 +290,7 @@ int br_mrp_add(struct net_bridge *br, struct br_mrp_instance *instance)
+> >               return -ENOMEM;
+> >
+> >       mrp->ring_id = instance->ring_id;
+> > +     mrp->prio = instance->prio;
+> >
+> >       p = br_mrp_get_port(br, instance->p_ifindex);
+> >       spin_lock_bh(&br->lock);
+> > diff --git a/net/bridge/br_mrp_netlink.c b/net/bridge/br_mrp_netlink.c
+> > index d9de780d2ce06..332d9894a9485 100644
+> > --- a/net/bridge/br_mrp_netlink.c
+> > +++ b/net/bridge/br_mrp_netlink.c
+> > @@ -22,6 +22,7 @@ br_mrp_instance_policy[IFLA_BRIDGE_MRP_INSTANCE_MAX + 1] = {
+> >       [IFLA_BRIDGE_MRP_INSTANCE_RING_ID]      = { .type = NLA_U32 },
+> >       [IFLA_BRIDGE_MRP_INSTANCE_P_IFINDEX]    = { .type = NLA_U32 },
+> >       [IFLA_BRIDGE_MRP_INSTANCE_S_IFINDEX]    = { .type = NLA_U32 },
+> > +     [IFLA_BRIDGE_MRP_INSTANCE_PRIO]         = { .type = NLA_U16 },
+> >  };
+> >
+> >  static int br_mrp_instance_parse(struct net_bridge *br, struct nlattr *attr,
+> > @@ -49,6 +50,10 @@ static int br_mrp_instance_parse(struct net_bridge *br, struct nlattr *attr,
+> >       inst.ring_id = nla_get_u32(tb[IFLA_BRIDGE_MRP_INSTANCE_RING_ID]);
+> >       inst.p_ifindex = nla_get_u32(tb[IFLA_BRIDGE_MRP_INSTANCE_P_IFINDEX]);
+> >       inst.s_ifindex = nla_get_u32(tb[IFLA_BRIDGE_MRP_INSTANCE_S_IFINDEX]);
+> > +     inst.prio = MRP_DEFAULT_PRIO;
+> > +
+> > +     if (tb[IFLA_BRIDGE_MRP_INSTANCE_PRIO])
+> > +             inst.prio = nla_get_u32(tb[IFLA_BRIDGE_MRP_INSTANCE_PRIO]);
 > 
-> diff --git a/drivers/media/platform/am437x/am437x-vpfe.c b/drivers/media/platform/am437x/am437x-vpfe.c
-> index 66079cc41f38..0fb9f9ba1219 100644
-> --- a/drivers/media/platform/am437x/am437x-vpfe.c
-> +++ b/drivers/media/platform/am437x/am437x-vpfe.c
-> @@ -26,6 +26,7 @@
->   #include <media/v4l2-ctrls.h>
->   #include <media/v4l2-event.h>
->   #include <media/v4l2-fwnode.h>
-> +#include <media/v4l2-rect.h>
->   
->   #include "am437x-vpfe.h"
->   
-> @@ -1987,20 +1988,6 @@ vpfe_g_selection(struct file *file, void *fh, struct v4l2_selection *s)
->   	return 0;
->   }
->   
-> -static int enclosed_rectangle(struct v4l2_rect *a, struct v4l2_rect *b)
-> -{
-> -	if (a->left < b->left || a->top < b->top)
-> -		return 0;
-> -
-> -	if (a->left + a->width > b->left + b->width)
-> -		return 0;
-> -
-> -	if (a->top + a->height > b->top + b->height)
-> -		return 0;
-> -
-> -	return 1;
-> -}
-> -
->   static int
->   vpfe_s_selection(struct file *file, void *fh, struct v4l2_selection *s)
->   {
-> @@ -2025,10 +2012,10 @@ vpfe_s_selection(struct file *file, void *fh, struct v4l2_selection *s)
->   	r.left = clamp_t(unsigned int, r.left, 0, cr.width - r.width);
->   	r.top  = clamp_t(unsigned int, r.top, 0, cr.height - r.height);
->   
-> -	if (s->flags & V4L2_SEL_FLAG_LE && !enclosed_rectangle(&r, &s->r))
-> +	if (s->flags & V4L2_SEL_FLAG_LE && !v4l2_rect_enclosed(&r, &s->r))
->   		return -ERANGE;
->   
-> -	if (s->flags & V4L2_SEL_FLAG_GE && !enclosed_rectangle(&s->r, &r))
-> +	if (s->flags & V4L2_SEL_FLAG_GE && !v4l2_rect_enclosed(&s->r, &r))
->   		return -ERANGE;
->   
->   	s->r = vpfe->crop = r;
-> diff --git a/drivers/media/platform/exynos4-is/fimc-capture.c b/drivers/media/platform/exynos4-is/fimc-capture.c
-> index 705f182330ca..8b10741a847a 100644
-> --- a/drivers/media/platform/exynos4-is/fimc-capture.c
-> +++ b/drivers/media/platform/exynos4-is/fimc-capture.c
-> @@ -21,6 +21,7 @@
->   #include <media/v4l2-device.h>
->   #include <media/v4l2-ioctl.h>
->   #include <media/v4l2-mem2mem.h>
-> +#include <media/v4l2-rect.h>
->   #include <media/videobuf2-v4l2.h>
->   #include <media/videobuf2-dma-contig.h>
->   
-> @@ -1299,19 +1300,6 @@ static int fimc_cap_g_selection(struct file *file, void *fh,
->   	return -EINVAL;
->   }
->   
-> -/* Return 1 if rectangle a is enclosed in rectangle b, or 0 otherwise. */
-> -static int enclosed_rectangle(struct v4l2_rect *a, struct v4l2_rect *b)
-> -{
-> -	if (a->left < b->left || a->top < b->top)
-> -		return 0;
-> -	if (a->left + a->width > b->left + b->width)
-> -		return 0;
-> -	if (a->top + a->height > b->top + b->height)
-> -		return 0;
-> -
-> -	return 1;
-> -}
-> -
->   static int fimc_cap_s_selection(struct file *file, void *fh,
->   				struct v4l2_selection *s)
->   {
-> @@ -1334,11 +1322,11 @@ static int fimc_cap_s_selection(struct file *file, void *fh,
->   	fimc_capture_try_selection(ctx, &rect, s->target);
->   
->   	if (s->flags & V4L2_SEL_FLAG_LE &&
-> -	    !enclosed_rectangle(&rect, &s->r))
-> +	    !v4l2_rect_enclosed(&rect, &s->r))
->   		return -ERANGE;
->   
->   	if (s->flags & V4L2_SEL_FLAG_GE &&
-> -	    !enclosed_rectangle(&s->r, &rect))
-> +	    !v4l2_rect_enclosed(&s->r, &rect))
->   		return -ERANGE;
->   
->   	s->r = rect;
-> diff --git a/drivers/media/platform/exynos4-is/fimc-lite.c b/drivers/media/platform/exynos4-is/fimc-lite.c
-> index 394e0818f2d5..9c666f663ab4 100644
-> --- a/drivers/media/platform/exynos4-is/fimc-lite.c
-> +++ b/drivers/media/platform/exynos4-is/fimc-lite.c
-> @@ -25,6 +25,7 @@
->   #include <media/v4l2-device.h>
->   #include <media/v4l2-ioctl.h>
->   #include <media/v4l2-mem2mem.h>
-> +#include <media/v4l2-rect.h>
->   #include <media/videobuf2-v4l2.h>
->   #include <media/videobuf2-dma-contig.h>
->   #include <media/drv-intf/exynos-fimc.h>
-> @@ -868,19 +869,6 @@ static int fimc_lite_reqbufs(struct file *file, void *priv,
->   	return ret;
->   }
->   
-> -/* Return 1 if rectangle a is enclosed in rectangle b, or 0 otherwise. */
-> -static int enclosed_rectangle(struct v4l2_rect *a, struct v4l2_rect *b)
-> -{
-> -	if (a->left < b->left || a->top < b->top)
-> -		return 0;
-> -	if (a->left + a->width > b->left + b->width)
-> -		return 0;
-> -	if (a->top + a->height > b->top + b->height)
-> -		return 0;
-> -
-> -	return 1;
-> -}
-> -
->   static int fimc_lite_g_selection(struct file *file, void *fh,
->   				 struct v4l2_selection *sel)
->   {
-> @@ -922,11 +910,11 @@ static int fimc_lite_s_selection(struct file *file, void *fh,
->   	fimc_lite_try_compose(fimc, &rect);
->   
->   	if ((sel->flags & V4L2_SEL_FLAG_LE) &&
-> -	    !enclosed_rectangle(&rect, &sel->r))
-> +	    !v4l2_rect_enclosed(&rect, &sel->r))
->   		return -ERANGE;
->   
->   	if ((sel->flags & V4L2_SEL_FLAG_GE) &&
-> -	    !enclosed_rectangle(&sel->r, &rect))
-> +	    !v4l2_rect_enclosed(&sel->r, &rect))
->   		return -ERANGE;
->   
->   	sel->r = rect;
-> diff --git a/drivers/media/platform/s5p-jpeg/jpeg-core.c b/drivers/media/platform/s5p-jpeg/jpeg-core.c
-> index 86bda3947110..9b22dd8e34f4 100644
-> --- a/drivers/media/platform/s5p-jpeg/jpeg-core.c
-> +++ b/drivers/media/platform/s5p-jpeg/jpeg-core.c
-> @@ -24,6 +24,7 @@
->   #include <media/v4l2-event.h>
->   #include <media/v4l2-mem2mem.h>
->   #include <media/v4l2-ioctl.h>
-> +#include <media/v4l2-rect.h>
->   #include <media/videobuf2-v4l2.h>
->   #include <media/videobuf2-dma-contig.h>
->   
-> @@ -1735,19 +1736,6 @@ static int exynos3250_jpeg_try_downscale(struct s5p_jpeg_ctx *ctx,
->   	return 0;
->   }
->   
-> -/* Return 1 if rectangle a is enclosed in rectangle b, or 0 otherwise. */
-> -static int enclosed_rectangle(struct v4l2_rect *a, struct v4l2_rect *b)
-> -{
-> -	if (a->left < b->left || a->top < b->top)
-> -		return 0;
-> -	if (a->left + a->width > b->left + b->width)
-> -		return 0;
-> -	if (a->top + a->height > b->top + b->height)
-> -		return 0;
-> -
-> -	return 1;
-> -}
-> -
->   static int exynos3250_jpeg_try_crop(struct s5p_jpeg_ctx *ctx,
->   				   struct v4l2_rect *r)
->   {
-> @@ -1780,7 +1768,7 @@ static int exynos3250_jpeg_try_crop(struct s5p_jpeg_ctx *ctx,
->   	r->left = round_down(r->left, 2);
->   	r->top = round_down(r->top, 2);
->   
-> -	if (!enclosed_rectangle(r, &base_rect))
-> +	if (!v4l2_rect_enclosed(r, &base_rect))
->   		return -EINVAL;
->   
->   	ctx->crop_rect.left = r->left;
+>         [IFLA_BRIDGE_MRP_INSTANCE_PRIO]         = { .type = NLA_U16 },
 > 
+> it seems you should be using nla_get_u16 above
+
+Good catch, I will update this in the next version.
+
+> 
+> >
+> >       if (cmd == RTM_SETLINK)
+> >               return br_mrp_add(br, &inst);
+> > diff --git a/net/bridge/br_mrp_switchdev.c b/net/bridge/br_mrp_switchdev.c
+> > index 51cb1d5a24b4f..3a776043bf80d 100644
+> > --- a/net/bridge/br_mrp_switchdev.c
+> > +++ b/net/bridge/br_mrp_switchdev.c
+> > @@ -12,6 +12,7 @@ int br_mrp_switchdev_add(struct net_bridge *br, struct br_mrp *mrp)
+> >               .p_port = rtnl_dereference(mrp->p_port)->dev,
+> >               .s_port = rtnl_dereference(mrp->s_port)->dev,
+> >               .ring_id = mrp->ring_id,
+> > +             .prio = mrp->prio,
+> >       };
+> >       int err;
+> >
+> > diff --git a/net/bridge/br_private_mrp.h b/net/bridge/br_private_mrp.h
+> > index a0f53cc3ab85c..558941ce23669 100644
+> > --- a/net/bridge/br_private_mrp.h
+> > +++ b/net/bridge/br_private_mrp.h
+> > @@ -14,6 +14,7 @@ struct br_mrp {
+> >       struct net_bridge_port __rcu    *s_port;
+> >
+> >       u32                             ring_id;
+> > +     u16                             prio;
+> >
+> >       enum br_mrp_ring_role_type      ring_role;
+> >       u8                              ring_role_offloaded;
+> >
+> 
+
+-- 
+/Horatiu
