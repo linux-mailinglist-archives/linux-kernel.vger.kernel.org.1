@@ -2,72 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3231E7ED2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 15:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4189E1E7ED7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 15:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726975AbgE2Nd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 09:33:56 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:46728 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726549AbgE2Nd4 (ORCPT
+        id S1727047AbgE2Nem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 09:34:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726905AbgE2Nei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 09:33:56 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id C71731C0388; Fri, 29 May 2020 15:33:54 +0200 (CEST)
-Date:   Fri, 29 May 2020 15:33:46 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Jonathan Albrieux <jonathan.albrieux@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Steve Winslow <swinslow@gmail.com>,
+        Fri, 29 May 2020 09:34:38 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34468C03E969;
+        Fri, 29 May 2020 06:34:38 -0700 (PDT)
+Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
+        (envelope-from <bigeasy@linutronix.de>)
+        id 1jef9d-0005JK-K9; Fri, 29 May 2020 15:34:33 +0200
+Date:   Fri, 29 May 2020 15:34:33 +0200
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH 3/3] iio: magnetometer: ak8975: Add gpio reset support
-Message-ID: <20200529133346.GC1339@bug>
-References: <20200518133645.19127-1-jonathan.albrieux@gmail.com>
- <20200518133645.19127-4-jonathan.albrieux@gmail.com>
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        kamel.bouhara@bootlin.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/9] dt-bindings: atmel-tcb: convert bindings to
+ json-schema
+Message-ID: <20200529133433.mr3fp4rfd5l4scxw@linutronix.de>
+References: <20200506080554.283177-1-alexandre.belloni@bootlin.com>
+ <20200506080554.283177-2-alexandre.belloni@bootlin.com>
+ <20200529101314.2ueuhgnrqq3a764f@linutronix.de>
+ <20200529132118.GF3972@piout.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200518133645.19127-4-jonathan.albrieux@gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20200529132118.GF3972@piout.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On 2020-05-29 15:21:18 [+0200], Alexandre Belloni wrote:
+> There is actually one comment I need to address that Rob made on another
+> series that was also including this patch. I'll send a new version
+> today.
 
-> AK09911 has a reset gpio to handle register's reset. If reset gpio is
-> set to low it will trigger the reset. AK09911 datasheed says that if not
-> used reset pin should be connected to VID and this patch emulates this
-> situation
-> 
-> Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
-> ---
->  drivers/iio/magnetometer/ak8975.c | 21 +++++++++++++++++++--
->  1 file changed, 19 insertions(+), 2 deletions(-)
-> 
->  	/*
-> -	 * According to the datasheet the power supply rise time i 200us
-> +	 * According to the datasheet the power supply rise time is 200us
->  	 * and the minimum wait time before mode setting is 100us, in
-> -	 * total 300 us. Add some margin and say minimum 500us here.
-> +	 * total 300us. Add some margin and say minimum 500us here.
->  	 */
->  	usleep_range(500, 1000);
+Ah, okay. Thanks for the info, that thread looked dead.
 
-I'd assume that datasheet added some safety margin too, and there's another one in usleep...
-So I believe usleep..(300) should be okay..
-
-Best regards,
-										Pavel
+Sebastian
