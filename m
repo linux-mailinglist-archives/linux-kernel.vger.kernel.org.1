@@ -2,68 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9717E1E8B64
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 00:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 463461E8B6A
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 00:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728347AbgE2Wdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 18:33:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726555AbgE2Wdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 18:33:43 -0400
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB86D208B8;
-        Fri, 29 May 2020 22:33:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590791622;
-        bh=DZ1HDwCj+CJ7ngO6dIiPzILmvtMM8AsDswbq/ID7FzA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QYPOGsk3oeLV0aKww7opPiF8/10mcztg1cLICQxa916usvGPf06xrT+GqWFS/NBEM
-         eb8r6RN34SzvpDPJm7vFSGJPJ/Vijhsujx04/Bdv083Nd5aWwvG5KlaFEfWe/QDnGQ
-         boxpx5d0YP/XJAKDZRHKWdiLudWPg8EpHyf2RR2Y=
-Received: by mail-oi1-f176.google.com with SMTP id b3so3996807oib.13;
-        Fri, 29 May 2020 15:33:42 -0700 (PDT)
-X-Gm-Message-State: AOAM5328ENDnU3fITbF+VhRiG7bqrRep8+IFIctc7Krq2IulnqRiVKhD
-        OLFIQ+xzSlI+N61tWwXp0HcI8YbMcVZb96s2HQ==
-X-Google-Smtp-Source: ABdhPJwRV5dVPqJiprfdXK/FwvoQGRu4x3lbanx+BE4Nr4ohpwjk6aELloQAO4wH2FvT0QD278W7CzF0QflsKCrQF6I=
-X-Received: by 2002:aca:564a:: with SMTP id k71mr7503532oib.147.1590791622045;
- Fri, 29 May 2020 15:33:42 -0700 (PDT)
+        id S1728451AbgE2Wg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 18:36:27 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:59096 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726555AbgE2WgZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 18:36:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uLG47Mpo1MtU06H8naVZ7P5E2DCID3fGpuS5yrZPyog=; b=iyGPDrgp0t+Y2yH2ZgyuLSziPN
+        Rj1T8Aoa5vutvrpUHB/WxFFEA4CYuQynOSlY/sNIT9sgNJP0VQxsh0/N5kAILovVR5XAfw3CggK4w
+        dbNDBLl/mzEr7hWR4sjg8uEBsz3VL7DbTlRRdX0hISeWhn419pwNB68Uk2P9jaWqSJcVy1fI92kg7
+        MyfcrNDkV5yzfOtMisXJPEQFrRNPko1RGMT6KMFulugjCaarnizqVxBH1+V6YShBVq6KTMAibaa7a
+        djenN2MCEP37wJAqbN1Z5ppUpCa1Wyy/uYbegeig8Ex9LQ1ykbKEFWOjtgH3WZeL7mziYYiY5ZiwV
+        7enRKlvw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jenZc-0008M8-OD; Fri, 29 May 2020 22:33:56 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 354BF9834CF; Sat, 30 May 2020 00:33:54 +0200 (CEST)
+Date:   Sat, 30 May 2020 00:33:54 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     tglx@linutronix.de, luto@amacapital.net,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        sean.j.christopherson@intel.com, andrew.cooper3@citrix.com,
+        daniel.thompson@linaro.org, a.darwish@linutronix.de,
+        bigeasy@linutronix.de
+Subject: Re: [PATCH 13/14] lockdep: Prepare for NMI IRQ state tracking
+Message-ID: <20200529223354.GX2483@worktop.programming.kicks-ass.net>
+References: <20200529212728.795169701@infradead.org>
+ <20200529213321.471984676@infradead.org>
+ <20200529181401.1f01bdc5@oasis.local.home>
+ <20200529222505.GW2483@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20200528085650.1417942-1-joel@jms.id.au>
-In-Reply-To: <20200528085650.1417942-1-joel@jms.id.au>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 29 May 2020 16:33:30 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+1dtBtY0fd1XZ0BFqwzwz26WU3cVKwyR7H+MtxE+hJBA@mail.gmail.com>
-Message-ID: <CAL_Jsq+1dtBtY0fd1XZ0BFqwzwz26WU3cVKwyR7H+MtxE+hJBA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/2] dtc: Improve checks for i2c reg properties
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Devicetree Compiler <devicetree-compiler@vger.kernel.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200529222505.GW2483@worktop.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 2:57 AM Joel Stanley <joel@jms.id.au> wrote:
->
-> This is to fix a build warning in the Linux kernel caused by dtc
-> incorrectly warning about I2C_OWN_SLAVE_ADDRESS.
->
-> v3 fixes the 10 bit size check
-> v2 contains a second patch to check for 10 bit vs 7 bit addresses.
->
-> Joel Stanley (2):
->   checks: Remove warning for I2C_OWN_SLAVE_ADDRESS
->   checks: Improve i2c reg property checking
+On Sat, May 30, 2020 at 12:25:05AM +0200, Peter Zijlstra wrote:
+> On Fri, May 29, 2020 at 06:14:01PM -0400, Steven Rostedt wrote:
+> > On Fri, 29 May 2020 23:27:41 +0200
+> > Peter Zijlstra <peterz@infradead.org> wrote:
+> > 
+> > > There is no reason not to always, accurately, track IRQ state.
+> > > 
+> > > This change also makes IRQ state tracking ignore lockdep_off().
+> > > 
+> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > > ---
+> > >  kernel/locking/lockdep.c |   33 ++++++++++++++++++++++++++++++---
+> > >  1 file changed, 30 insertions(+), 3 deletions(-)
+> > > 
+> > > --- a/kernel/locking/lockdep.c
+> > > +++ b/kernel/locking/lockdep.c
+> > > @@ -3646,7 +3646,13 @@ static void __trace_hardirqs_on_caller(v
+> > >   */
+> > >  void lockdep_hardirqs_on_prepare(unsigned long ip)
+> > >  {
+> > > -	if (unlikely(!debug_locks || current->lockdep_recursion))
+> > 
+> > Why remove the check for debug_locks? Isn't that there to disable
+> > everything at once to prevent more warnings to be printed?
+> 
+> Yeah, maybe. I was thinking we could keep IRQ state running. But you're
+> right, if we mess up the IRQ state itself this might generate a wee
+> mess.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+That is, mostly the IRQ state recovers when we mess up. It's only when
+we then trigger more fail that we crash and burn, and that will likely
+already give more warnings.
 
-I'll sync the kernel copy when David applies.
-
-Rob
+But I can put the debug_locks check back.
