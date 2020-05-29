@@ -2,106 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41EE61E7531
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 07:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE561E7534
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 07:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726068AbgE2FHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 01:07:53 -0400
-Received: from mga07.intel.com ([134.134.136.100]:49235 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725601AbgE2FHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 01:07:53 -0400
-IronPort-SDR: lisWPwDnly30+7nT6PvH3DEo5FVB8rgjyajNHPDHcSlMnULQAKSHGveGqMpSHRsrq503YYMScG
- NPkcOTtw927w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 22:07:53 -0700
-IronPort-SDR: TCTtQwQ/9D/CeQcuyLzcUu01e/1fX4vn77VHCy6I355FWsre3hskqcd8ZkPJJ26ylXvtKmDPTe
- v6rzZ7oV/GcA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,447,1583222400"; 
-   d="scan'208";a="285412395"
-Received: from pratuszn-mobl.ger.corp.intel.com (HELO localhost) ([10.252.58.65])
-  by orsmga002.jf.intel.com with ESMTP; 28 May 2020 22:07:43 -0700
-Date:   Fri, 29 May 2020 08:07:42 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        akpm@linux-foundation.org, dave.hansen@intel.com,
-        nhorman@redhat.com, npmccallum@redhat.com, haitao.huang@intel.com,
-        andriy.shevchenko@linux.intel.com, tglx@linutronix.de,
-        kai.svahn@intel.com, josh@joshtriplett.org, luto@kernel.org,
-        kai.huang@intel.com, rientjes@google.com, cedric.xing@intel.com,
-        puiterwijk@redhat.com, Jethro Beekman <jethro@fortanix.com>
-Subject: Re: [PATCH v30 08/20] x86/sgx: Add functions to allocate and free
- EPC pages
-Message-ID: <20200529050742.GA424225@linux.intel.com>
-References: <20200527042111.GI31696@linux.intel.com>
- <20200527204638.GG1721@zn.tnic>
- <20200528012319.GA7577@linux.intel.com>
- <20200528013617.GD25962@linux.intel.com>
- <20200528065223.GB188849@linux.intel.com>
- <20200528171635.GB382@zn.tnic>
- <20200528190718.GA2147934@linux.intel.com>
- <20200528195917.GF30353@linux.intel.com>
- <20200529032816.GC6182@linux.intel.com>
- <20200529033716.GH30353@linux.intel.com>
+        id S1725852AbgE2FLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 01:11:44 -0400
+Received: from mag112.magazineer.net ([157.7.134.112]:60970 "EHLO
+        157.7.134.112" rhost-flags-OK-OK-FAIL-FAIL) by vger.kernel.org
+        with ESMTP id S1725768AbgE2FLn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 01:11:43 -0400
+To:     <linux-kernel@vger.kernel.org>
+Subject: =?iso-2022-jp?B?GyRCSVQ2NyRLNi8kJDxSMnFKITtjO3Y2SCEhPzc1LDsyRn4lKiVzJWklJCVzJTslXyVKITwbKEI=?=
+From:   =?ISO-2022-JP?B?GyRCPFIycUohO2MlVyVtJTglJyUvJUgbKEI=?= 
+        <info@fukushi-service.work>
+Date:   Fri, 29 May 2020 14:11:42 +0900
+Reply-To: info@fukushi-service.work
+Message-Id: <20200429141142.27557@fukushi-service.work>
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200529033716.GH30353@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 08:37:16PM -0700, Sean Christopherson wrote:
-> On Fri, May 29, 2020 at 06:28:16AM +0300, Jarkko Sakkinen wrote:
-> > On Thu, May 28, 2020 at 12:59:17PM -0700, Sean Christopherson wrote:
-> > > On Thu, May 28, 2020 at 10:07:18PM +0300, Jarkko Sakkinen wrote:
-> > > >  * sgx_grab_page() - Grab a free EPC page
-> > > >  * @owner:	the owner of the EPC page
-> > > >  * @reclaim:	reclaim pages if necessary
-> > > >  *
-> > > >  * Iterate through EPC sections and borrow a free EPC page to the caller. When a
-> > > >  * page is no longer needed it must be released with sgx_free_page(). If
-> > > >  * @reclaim is set to true, directly reclaim pages when we are out of pages. No
-> > > >  * mm's can be locked when @reclaim is set to true.
-> > > >  *
-> > > >  * Finally, wake up ksgxswapd when the number of pages goes below the watermark
-> > > >  * before returning back to the caller.
-> > > >  *
-> > > >  * Return:
-> > > >  *   an EPC page,
-> > > >  *   -errno on error
-> > > >  */
-> > > > 
-> > > > I also rewrote the kdoc.
-> > > > 
-> > > > I do agree that sgx_try_grab_page() should be renamed as __sgx_grab_page().
-> > > 
-> > > FWIW, I really, really dislike "grab".  The nomenclature for normal memory
-> > > and pages uses "alloc" when taking a page off a free list, and "grab" when
-> > > elevating the refcount.  I don't understand the motivation for diverging
-> > > from that.  SGX is weird enough as is, using names that don't align with
-> > > exist norms will only serve to further obfuscate the code.
-> > 
-> > OK, what would be a better name then? The semantics are not standard
-> > memory allocation semantics in the first place. And kdoc in v30 speaks
-> > about grabbing.
-> 
-> In what way are they not standard allocation semantics?  sgx_alloc_page()
-> is an API to allocate (EPC) memory on-demand, sgx_free_page() is its partner
-> to free that memory when it is no longer needed.  There are many different
-> ways to manage and allocate memory, but the basic premise is the same for
-> all and no different than what we're doing.
+代表者様
 
-I'll go with sgx_alloc_epc_page(). It is more precise name.
+社会福祉事業を応援するメディアを運営しております
+社会福祉プロジェクトと申します。
 
-It's not as precise as sgx_alloc_epc_page_from_section but is a great
-compromise between scree estate and clarity of expression :-)
+今、新規事業をお考えの経営者様を対象に
+社会福祉事業が大変注目されているのを
+ご存知でしょうか？
 
-/Jarkko
+
+今月複数回にわたって開催された
+社会福祉プロジェクトオンラインセミナーも
+大変な盛会のうちに終える事となりました。
+
+社会福祉プロジェクトセミナーを少しのぞいてみる。
+https://fukushi-service.work/seminar/
+
+
+実際にセミナーに参加された方からも
+
+「福祉総合企業というビジネスモデルが
+印象的でした。」
+
+「リピート率が高い、高収益、貢献ビジネス。
+青山先生の熱意に感銘を受けました。」
+
+「国を相手にする手堅いビジネスであること。
+実は同様の事を目立たずにやっている人達が
+いることが知れた。」
+
+「労働時間に対して売り上げが高いことに
+驚きました。」
+
+
+などなど
+
+ここでは全部紹介しきれませんが
+参加後のアンケートでも93.6%の方から
+大変満足の声をいただきました。
+
+社会福祉プロジェクトセミナーを少しのぞいてみる。
+https://fukushi-service.work/seminar/
+
+今月24日が最後のセミナー開催でしたが
+大変好評の声をいただいており
+
+もう一度この優れたビジネスモデルについて
+知っていただく機会を特別に設ける事にしました。
+
+この特別開催のお知らせを告知して早速申し込みの
+数も殺到しており、残り枠数も大変少なくなってきて
+おります。
+
+「やっぱりあの時話だけでも聞いておくべきだった。」
+と後から後悔するまえに
+
+まずは参加枠の確保をしていただく事を
+強くオススメ致します。
+
+
+社会福祉プロジェクトセミナーの残り席数と日程を確認する。
+https://fukushi-service.work/seminar/
+
+
+大切なお子様をお預かりする福祉事業
+を、ビジネスと呼ぶのは少し抵抗がありますが
+
+収益面でも充実しなければ、質の高い
+サービスを提供する事も困難になります。
+
+このセミナーでお伝えするのは
+
+福祉事業を通じた高い社会貢献の実現と、
+資産形成含め、効果実証済みのビジネスモデルを
+活用した安定した収益の確保。
+
+この２つを両立させ、物心両面を満たす
+再現性ある経営ノウハウについてです。
+
+社会福祉プロジェクトセミナーの残り席数と日程を確認する。
+https://fukushi-service.work/seminar/
+
+
+特に人一倍働いているのに、利益が
+なかなか伸びない。上がらない。
+
+自分が働けなくなったら、事業として
+成り立たない。
+
+人財がなかなか定着しない。育たない。
+
+
+そのような事でお悩みの経営者の方や
+事業主の方に、知っていただきたい内容です。
+
+次回セミナー開催の予定はございません。
+
+今回がラストチャンスとなるかもしれませんので
+少しでも興味がある方は
+
+この機を逃さず物心両面を満たすノウハウを
+手に入れて下さい。
+
+社会福祉プロジェクト最終セミナーの残り席数と日程を確認する。
+https://fukushi-service.work/seminar/
+
+
+それでは、当日お会いできる事を
+楽しみにしております。
+
+
+主催：社会福祉プロジェクト
+
+-----------------------------------------
+社会福祉プロジェクト
+
+info@fukushi-service.work
+https://fukushi-service.work/seminar/
+
+〒531-0072
+大阪府大阪市北区豊崎２丁目７−９いずみビル4F
+TEL : 06-7777-4030
+-----------------------------------------
+
+配信停止をご希望の方は下記ＵＲＬより
+ご登録いただくか、本メールにそのまま
+『配信停止』の旨を記載しご返信をお願いいたします。
+配信停止フォーム：https://form2dm.site/kaijo/
