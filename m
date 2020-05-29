@@ -2,123 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12BC71E7D83
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 14:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A2A1E7D75
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 14:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726944AbgE2Mq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 08:46:28 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:36010 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbgE2Mq1 (ORCPT
+        id S1726860AbgE2MpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 08:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726767AbgE2MpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 08:46:27 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jeeP4-0002A8-13; Fri, 29 May 2020 06:46:26 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jeeP3-0007XO-9w; Fri, 29 May 2020 06:46:25 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     keescook@chromium.org, yzaikin@google.com, nixiaoming@huawei.com,
-        axboe@kernel.dk, clemens@ladisch.de, arnd@arndb.de,
-        gregkh@linuxfoundation.org, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        airlied@linux.ie, daniel@ffwll.ch, benh@kernel.crashing.org,
-        rdna@fb.com, viro@zeniv.linux.org.uk, mark@fasheh.com,
-        jlbec@evilplan.org, joseph.qi@linux.alibaba.com, vbabka@suse.cz,
-        sfr@canb.auug.org.au, jack@suse.cz, amir73il@gmail.com,
-        rafael@kernel.org, tytso@mit.edu, julia.lawall@lip6.fr,
-        akpm@linux-foundation.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linuxppc-dev@lists.ozlabs.org,
-        ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-References: <20200529074108.16928-1-mcgrof@kernel.org>
-        <20200529074108.16928-2-mcgrof@kernel.org>
-        <87ftbiud6s.fsf@x220.int.ebiederm.org>
-Date:   Fri, 29 May 2020 07:42:31 -0500
-In-Reply-To: <87ftbiud6s.fsf@x220.int.ebiederm.org> (Eric W. Biederman's
-        message of "Fri, 29 May 2020 07:40:27 -0500")
-Message-ID: <878shaud3c.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 29 May 2020 08:45:16 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFFDC03E969
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 05:45:16 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id j8so2103457iog.13
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 05:45:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=r7UrsGfrrB/vHkjSY/mF0dPH3VfmRDjaMhCcaEN7Oro=;
+        b=C0r/f0dYZuUL3gtrgb341aeH+a3RRbFgDN8WABIDMQ4CWOg0oUOEWV44SFWs91MrD3
+         l+v1XHlA3qT+zSg8N3ZMtNe8AynwbfZ2sz34jS/oYopc528jqn7GMQ0QItbrGnl+ZnXx
+         rMAeHhGlmNCulmea83iFMYAN13+NxAhfCbzcKWcdivAoKqFjhVurnRuEd97Uhrq989pH
+         QRlCPlybXXfx1Z2IqoluFEB/slBKEjdXKJP5ZvyWlkM2RUVpahjp1LWZKhmZUYTWS11i
+         i7WZ/oEv2JQFoAJy30va82fvaIsC4GH69VjoyDknDfXwa/zR6UpAguyCcjXn8s6t6kAD
+         KOhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=r7UrsGfrrB/vHkjSY/mF0dPH3VfmRDjaMhCcaEN7Oro=;
+        b=Z/FoqrUW4Mmo2njkfNWYYx7i2+xmp8ldl7fGpz90eNC3NavL52oVIyG7zNB+hFeDVk
+         5vkskQyGewEgSjqBKbdTS2sAU7M7+BI0WJ0wPlqeuEvolX0TUtSdCWqN8cFWY5CLR2YE
+         BDowaFUj6TlU8GgqfaYkqPdJkj9qbc6w3vZJSyNscnW90e29LKxr5MsVoHi9rb2hbLmn
+         MX9R37zV0J8oOl4NOkQqzqTa5treXwoR7k5T/amBmD4aohFPAdfjSvp/POfOxPY3A6Fz
+         ob/E6FHIDWp4lz6JjhHWyWDrFjP5SXbn6oRmQZqSV6/Mnr4fQcZnnRk/IEmmeofHIaFC
+         HQeQ==
+X-Gm-Message-State: AOAM531t72hasWdI2udbCpDWWDw4g+QZghN2QWkt5c8Bp0pn/j6wLJNE
+        cR2+6fRxV/o180NGJjFOwaTHgkEtGyzHsKFHuW8AY627
+X-Google-Smtp-Source: ABdhPJwQN7PrsvBPgSXBXTv22bRouiS21NBduFpKqOYI96L9PLyEwcQxFBcRZlVWcv10lm9jwrJXrH+ncv06l+AZAwg=
+X-Received: by 2002:a6b:1543:: with SMTP id 64mr6528705iov.123.1590756315926;
+ Fri, 29 May 2020 05:45:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jeeP3-0007XO-9w;;;mid=<878shaud3c.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18Q4ZChrgvw1NHSy03cGUWR9nu5bHWud8U=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,T_TooManySym_03,XMNoVowels,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4452]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_03 6+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-X-Spam-DCC: ; sa07 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Luis Chamberlain <mcgrof@kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 375 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 10 (2.7%), b_tie_ro: 9 (2.4%), parse: 1.21 (0.3%),
-         extract_message_metadata: 16 (4.3%), get_uri_detail_list: 1.59 (0.4%),
-         tests_pri_-1000: 26 (7.1%), tests_pri_-950: 1.29 (0.3%),
-        tests_pri_-900: 1.26 (0.3%), tests_pri_-90: 58 (15.5%), check_bayes:
-        57 (15.1%), b_tokenize: 7 (1.9%), b_tok_get_all: 8 (2.1%),
-        b_comp_prob: 2.5 (0.7%), b_tok_touch_all: 36 (9.5%), b_finish: 0.87
-        (0.2%), tests_pri_0: 246 (65.4%), check_dkim_signature: 0.55 (0.1%),
-        check_dkim_adsp: 2.2 (0.6%), poll_dns_idle: 0.58 (0.2%), tests_pri_10:
-        2.3 (0.6%), tests_pri_500: 8 (2.2%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 01/13] sysctl: add new register_sysctl_subdir() helper
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <20200510165538.19720-1-peron.clem@gmail.com> <20200510165538.19720-8-peron.clem@gmail.com>
+ <2f7a41d6-325d-3731-0a6a-fa2e41d4e33a@arm.com>
+In-Reply-To: <2f7a41d6-325d-3731-0a6a-fa2e41d4e33a@arm.com>
+From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Date:   Fri, 29 May 2020 14:45:05 +0200
+Message-ID: <CAJiuCcfJnBxh6McsNLKJ=HegS6dCVNVOChCOrcPGWobU3G8KKg@mail.gmail.com>
+Subject: Re: [PATCH 07/15] drm/panfrost: use device_property_present to check
+ for OPP
+To:     Steven Price <steven.price@arm.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ebiederm@xmission.com (Eric W. Biederman) writes:
+Hi Steven,
 
-> Luis Chamberlain <mcgrof@kernel.org> writes:
+On Thu, 28 May 2020 at 15:22, Steven Price <steven.price@arm.com> wrote:
 >
->> Often enough all we need to do is create a subdirectory so that
->> we can stuff sysctls underneath it. However, *if* that directory
->> was already created early on the boot sequence we really have no
->> need to use the full boiler plate code for it, we can just use
->> local variables to help us guide sysctl to place the new leaf files.
->>
->> So use a helper to do precisely this.
+> On 10/05/2020 17:55, Cl=C3=A9ment P=C3=A9ron wrote:
+> > Instead of expecting an error from dev_pm_opp_of_add_table()
+> > do a simple device_property_present() check.
+> >
+> > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
 >
-> Reset restart.  This is patch is total nonsense.
+> I'm not sure I understand why this is better. We seem to have more code
+> to do roughly the same thing just with the hard-coded
+> "operating-points-v2" name (if there's ever a 'v3' we'll then have to
+> update this).
 >
-> - You are using register_sysctl_table which as I believe I have
->   mentioned is a deprecated compatibility wrapper.  The point of
->   spring house cleaning is to get off of the deprecated functions
->   isn't it?
+> Is the desire just to get an error on probe if the table is malformed?
+> Have you hit this situation? If so this sounds like something which
+> would be better fixed in the generic OPP code rather than Panfrost itself=
+.
+
+The idea was to avoid calling devfreq if there is no opp table.
+But I think you're right we don't have to check for malformed
+device-tree in the driver.
+
+I will drop this patch,
+
+Regards,
+Clement
+
+
 >
-> - You are using the old nasty form for creating directories instead
->   of just passing in a path.
+> Steve
 >
-> - None of this is even remotely necessary.  The directories
->   are created automatically if you just register their entries.
-
-Oh.  *blink*  The poor naming threw me off.
-
-This is a clumsy and poorly named version of register_sysctl();
-
-Yes. This change is totally unnecessary.
-
-Eric
-
+> > ---
+> >   drivers/gpu/drm/panfrost/panfrost_devfreq.c | 14 +++++++++-----
+> >   1 file changed, 9 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/=
+drm/panfrost/panfrost_devfreq.c
+> > index d9007f44b772..fce21c682414 100644
+> > --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
+> > +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
+> > @@ -96,15 +96,19 @@ int panfrost_devfreq_init(struct panfrost_device *p=
+fdev)
+> >       struct thermal_cooling_device *cooling;
+> >       struct panfrost_devfreq *pfdevfreq =3D &pfdev->pfdevfreq;
+> >
+> > -     ret =3D dev_pm_opp_of_add_table(dev);
+> > -     if (ret =3D=3D -ENODEV) /* Optional, continue without devfreq */
+> > +     if (!device_property_present(dev, "operating-points-v2"))
+> > +             /* Optional, continue without devfreq */
+> >               return 0;
+> > -     else if (ret)
+> > -             return ret;
+> > -     pfdevfreq->opp_of_table_added =3D true;
+> >
+> >       spin_lock_init(&pfdevfreq->lock);
+> >
+> > +     ret =3D dev_pm_opp_of_add_table(dev);
+> > +     if (ret) {
+> > +             DRM_DEV_ERROR(dev, "Couldn't add OPP table\n");
+> > +             goto err_fini;
+> > +     }
+> > +     pfdevfreq->opp_of_table_added =3D true;
+> > +
+> >       panfrost_devfreq_reset(pfdevfreq);
+> >
+> >       cur_freq =3D clk_get_rate(pfdev->clock);
+> >
+>
