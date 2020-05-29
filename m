@@ -2,71 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C971E7B56
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 13:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E624D1E7B5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 13:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726923AbgE2LLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 07:11:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726518AbgE2LLJ (ORCPT
+        id S1726940AbgE2LMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 07:12:05 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:43067 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725790AbgE2LME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 07:11:09 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B18C03E969;
-        Fri, 29 May 2020 04:11:09 -0700 (PDT)
-Received: from [IPv6:2a02:810c:c200:2e91:c5de:fbc5:d517:dd4f] (unknown [IPv6:2a02:810c:c200:2e91:c5de:fbc5:d517:dd4f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id EC56822F00;
-        Fri, 29 May 2020 13:11:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1590750664;
+        Fri, 29 May 2020 07:12:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590750723;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6gJBtfDC8Gbsc3WVhcu8v47PRfEmyI/yc6+d2gBht10=;
-        b=vN1Lrdc6IcsLtQ3QPRqbT1Dfcjk9MYJzdDjBi5t1bRwcVSW4UcLYMQSshfNbTGlqKLRcH1
-        jFwnoGaNwF8V89xoiCd5EosezGT5NikEPiYLz+uNiHsF++ZE+c+DiVc1ecR9nlz2s9eh9F
-        D+DwKQtLVAN1UmuS63G0e+8WKviu9vo=
-Date:   Fri, 29 May 2020 13:11:00 +0200
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20200529094909.1254629-1-antoine.tenart@bootlin.com>
-References: <20200529094909.1254629-1-antoine.tenart@bootlin.com>
+        bh=9M/dfx/AlUONwh5MphhAji3d3cM3kUpcCH4+D+us/Ew=;
+        b=QJxM1O0Ub52xPJ5rYY8sYjbJBLtCMwfAnuDJb5MKX3nY9Amo9JrLir8b2J81qSL3Wjz9p/
+        EeczS8jZAWE5KZLmvX5rhpyEdS1TgSWY0pe8fF1JaD3b0Vsfz+pb09Q/qgS/oGPGixDo4u
+        0Ga3BrP93l2lh4sSz0itZ26OKhOJXxs=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-408-7gwBcquZNkSNAm1888XoGw-1; Fri, 29 May 2020 07:12:01 -0400
+X-MC-Unique: 7gwBcquZNkSNAm1888XoGw-1
+Received: by mail-wr1-f69.google.com with SMTP id 3so905904wrs.10
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 04:12:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9M/dfx/AlUONwh5MphhAji3d3cM3kUpcCH4+D+us/Ew=;
+        b=YOV6k3qvttzaIPSVk497krl8YCk3FIlb4UJA7+Q1CJ0qYyGEd3eUg/bRv/28tTdQHL
+         v7gZpq+di6Yq1GapP0uSPcPT5HyDjw+XCL1zV56m1Deovv3wR7Z7CqmhZA+dfjcDfxip
+         VQorwE0A/iMJk3rWvN84hS8/u7UmHlqtQodz9OV5m7JC0+pU5dn2bD9qzSQgilABlMom
+         k67jx3Od2ujt0grRmru985UdV9798yxBwx5zCF4gickCgtRy2kFWIQaR4WxEDqcvglI+
+         fT2TffifhZumoC/qrOwz25XrqygeMWioZMTAn/VmWH0MiDUioQYpEa0MrEWspCa/OWoh
+         WGAQ==
+X-Gm-Message-State: AOAM531DMBH16ENbU45jneCLRgbZP85fKQCuHXmLEnrnaY0qLje0UH/E
+        rmDCv2tAySqzWWR0mhx6cEGlty5LIYXON28cWqjZ9RKWQqGPm/mtPirzhMrj8eALcAZJWF0X2p4
+        Gj+nU8P/yN4UNiSsB8c9TI/kR
+X-Received: by 2002:a7b:c5cc:: with SMTP id n12mr8037160wmk.69.1590750720112;
+        Fri, 29 May 2020 04:12:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzXn3TKEVztYoQ/UzuKg90zh74+FaWzUOHiQ5op3FdCYq5th45LuGb7iOizyYyyR3rfbSOLuQ==
+X-Received: by 2002:a7b:c5cc:: with SMTP id n12mr8037141wmk.69.1590750719880;
+        Fri, 29 May 2020 04:11:59 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:b096:1b7:7695:e4f7? ([2001:b07:6468:f312:b096:1b7:7695:e4f7])
+        by smtp.gmail.com with ESMTPSA id t8sm9309944wro.56.2020.05.29.04.11.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 May 2020 04:11:59 -0700 (PDT)
+Subject: Re: [PATCH RFCv2 9/9] arm64: Support async page fault
+To:     Marc Zyngier <maz@kernel.org>, Gavin Shan <gshan@redhat.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org,
+        shan.gavin@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20200508032919.52147-1-gshan@redhat.com>
+ <20200508032919.52147-10-gshan@redhat.com>
+ <81adf013-3de7-23e6-7648-8aec821b033c@redhat.com>
+ <a6addc25-29af-3690-8392-efa5e8381e98@redhat.com>
+ <8ab64c6a-582b-691d-79ab-21cdc0455cd3@redhat.com>
+ <6a4a82a4-af01-98c2-c854-9199f55f7bd3@redhat.com>
+ <6965aaf641a23fab64fbe2ceeb790272@kernel.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <d0bfb944-b50a-608a-7dcc-5a409cdc4524@redhat.com>
+Date:   Fri, 29 May 2020 13:11:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH net-next] net: phy: mscc: fix PHYs using the vsc8574_probe
-To:     Antoine Tenart <antoine.tenart@bootlin.com>, davem@davemloft.net,
-        andrew@lunn.ch, f.fainelli@gmail.com, hkallweit1@gmail.com
-CC:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Michael Walle <michael@walle.cc>
-Message-ID: <223CE44E-8ACF-4F31-B5EC-FA5468F9D54A@walle.cc>
+In-Reply-To: <6965aaf641a23fab64fbe2ceeb790272@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 29=2E Mai 2020 11:49:09 MESZ schrieb Antoine Tenart <antoine=2Etenart@bo=
-otlin=2Ecom>:
->PHYs using the vsc8574_probe fail to be initialized and their
->config_init return -EIO leading to errors like:
->"could not attach PHY: -5"=2E
->
->This is because when the conversion of the MSCC PHY driver to use the
->shared PHY package helpers was done, the base address retrieval and the
->base PHY read and write helpers in the driver were modified=2E In
->particular, the base address retrieval logic was moved from the
->config_init to the probe=2E But the vsc8574_probe was forgotten=2E This
->patch fixes it=2E
->
->Fixes: deb04e9c0ff2 ("net: phy: mscc: use phy_package_shared")
->Signed-off-by: Antoine Tenart <antoine=2Etenart@bootlin=2Ecom>
+On 29/05/20 11:41, Marc Zyngier wrote:
+>>>
+>>>
+>>> For x86 the advantage is that the processor can take care of raising the
+>>> stage2 page fault in the guest, so it's faster.
+>>>
+>> I think there might be too much overhead if the page can be populated
+>> quickly by host. For example, it's fast to populate the pages if swapin
+>> isn't involved.
 
-Reviewed-by: Michael Walle <michael@walle=2Ecc>
+Those would still be handled by the host.  Only those that are not
+present in the host (which you can see through the MMU notifier) would
+be routed to the guest.  You can do things differently between "not
+present fault because the page table does not exist" and "not present
+fault because the page is missing in the host".
 
-thanks,=20
--michael
+>> If I'm correct enough, it seems arm64 doesn't have similar mechanism,
+>> routing stage2 page fault to guest.
+> 
+> Indeed, this isn't a thing on arm64. Exception caused by a S2 fault are
+> always routed to EL2.
+
+Is there an ARM-approved way to reuse the S2 fault syndromes to detect
+async page faults?
+
+(By the way, another "modern" use for async page faults is for postcopy
+live migration).
+
+Thanks,
+
+Paolo
 
