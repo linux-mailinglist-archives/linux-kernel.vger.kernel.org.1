@@ -2,264 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96FEB1E8A3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 23:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B10451E8A28
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 23:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728428AbgE2VnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 17:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51826 "EHLO
+        id S1728444AbgE2Vic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 17:38:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728385AbgE2VnQ (ORCPT
+        with ESMTP id S1727879AbgE2Vib (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 17:43:16 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 190E9C08C5C9;
-        Fri, 29 May 2020 14:43:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=nhbwxUUlPI+chouh1KJuBjV9Ingp0nmsf6VxXQj6Kuo=; b=Z6Txg7GjoZPTJf8duH+GLUyEDJ
-        u4kaMLC7N+Dx6VXDwY04jOczBS4kJ6IDPzpTUGOgXwRyJbIhDSNPJxKMS9bC8ZuWTKW11vc71FhKN
-        7PR+foScH0l6IiN/rLJpr+9kmF3gCZ+ATpO1Sm6lCp6tJvojESRzp24uGFoNufptCQ8kExNXvNH+E
-        MhymazHJTQQmRMszDxAQp0Gl1/V9O+uK/ziughQ5jIGK9y8XGD9YHgCS72Ov6eFm7uLDOaGr3H3O9
-        FQ2c/mF7Sx01tKihq56S+agZr9vEj/s1+OhD/swdE0xnQc0kvM/ii/yFH6aXtLIf2uQEtuHd/0mCA
-        aarhzo0Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jemmK-0006Ht-3e; Fri, 29 May 2020 21:43:00 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8EDBF306A9D;
-        Fri, 29 May 2020 23:42:58 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id DC7442B9B1BC7; Fri, 29 May 2020 23:42:57 +0200 (CEST)
-Message-ID: <20200529214203.900682204@infradead.org>
-User-Agent: quilt/0.66
-Date:   Fri, 29 May 2020 23:35:55 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     mingo@kernel.org, will@kernel.org, tglx@linutronix.de
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        a.darwish@linutronix.de, rostedt@goodmis.org,
-        bigeasy@linutronix.de, peterz@infradead.org, davem@davemloft.net,
-        sparclinux@vger.kernel.org, mpe@ellerman.id.au,
-        linuxppc-dev@lists.ozlabs.org, heiko.carstens@de.ibm.com,
-        linux-s390@vger.kernel.org
-Subject: [PATCH v3 5/5] lockdep: Remove lockdep_hardirq{s_enabled,_context}() argument
-References: <20200529213550.683440625@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        Fri, 29 May 2020 17:38:31 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D964C03E969
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 14:38:31 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id k2so2052260pjs.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 14:38:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=U/JCQHWiwK23f0xFBIe6II6wByU6wFtw8VXlLquuDwE=;
+        b=T7X6k9UBCwiGjhA/q7YA+IYVp60Sl9Oq9FRGyG5tLFbtmsWN5VvFE26WaMbbeOovkv
+         OF/ldU0YDz1oJRqaJ5L9jy/y573Gq44pRL+kuNN3g6aU2BJkhfAgzl9nU6s57E4t7vHU
+         v+BDXk459rTRhpFcftbfPDOZCkhpLOfnONHb+TU7e3f3ancqtLpwjERiAFBsE5wMWgMC
+         TCtg/oAHLHQvkD5suKBbFMRr4fjmiaKZ5lDzhzSAQQh1f7lNQ32dZWwFJ7LXXPu67plz
+         XWZbTNuuVYizWXma5v6FMCxzJtAngM4epA87s071QgRJpcYiintDfvwMSt6SIK+TC/eY
+         9hog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=U/JCQHWiwK23f0xFBIe6II6wByU6wFtw8VXlLquuDwE=;
+        b=mp3HxeCaf/AxsTIxhKzzuLvQJ8XbV2XWJ2/tj9B+IkAS8MxQx1ZNA8H+o3x1Bz7wRe
+         FtwpkpvdZSr3c1fOEAPPZyDN4OsN15p/4Lrbpa16zekhdBrT0EQDn7MkrNT0dW2nXQWA
+         9+t2bQBb/GzU1amD36EDDoH7qoeDJ/K6sXPI7PAzetgx4/KetuFMnuEgKo77M+/q7mzy
+         8RIl8/7NAkgF7YcrsWAAZ3ySVwt+C0HsdKTc63OiGGLz9J3+PxdbIqPpz3G4cYg7dsUR
+         Gd22KQ73nPWdhih6rx3d2BDYVlyNjojnsyqftQk3C1apQcXm2qbC5vKDCQKHfBe0YAtJ
+         xPHw==
+X-Gm-Message-State: AOAM531V5GQZFMxszGqVdeFVhuiheo8aOeZgWNYypRv1fNlzOhtKRv7u
+        oTx6c3Rng4ZZBKFpSOqlQlef4q65BOw=
+X-Google-Smtp-Source: ABdhPJzkXew6827lBFOqhUNImfruIgLQKY4yL6SEaYsd4psiMfMw7eB14pTrasZI2VKBt37TklCBqw==
+X-Received: by 2002:a17:90a:aa8f:: with SMTP id l15mr12104229pjq.156.1590788310361;
+        Fri, 29 May 2020 14:38:30 -0700 (PDT)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id c24sm313775pjs.51.2020.05.29.14.38.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2020 14:38:29 -0700 (PDT)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Todd Kjos <tkjos@google.com>,
+        Alistair Delva <adelva@google.com>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        alsa-devel@alsa-project.org
+Subject: [RFC][PATCH] ASoC: qcom: q6asm-dai: kCFI fix
+Date:   Fri, 29 May 2020 21:38:23 +0000
+Message-Id: <20200529213823.98812-1-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the macros use per-cpu data, we no longer need the argument.
+Fixes the following kCFI crash seen on db845c, caused
+by the function prototypes not matching the callback
+function prototype.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+[   82.585661] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000001
+[   82.595387] Mem abort info:
+[   82.599463]   ESR = 0x96000005
+[   82.602658]   EC = 0x25: DABT (current EL), IL = 32 bits
+[   82.608177]   SET = 0, FnV = 0
+[   82.611829]   EA = 0, S1PTW = 0
+[   82.615369] Data abort info:
+[   82.618751]   ISV = 0, ISS = 0x00000005
+[   82.622641]   CM = 0, WnR = 0
+[   82.625774] user pgtable: 4k pages, 39-bit VAs, pgdp=0000000174259000
+[   82.632292] [0000000000000001] pgd=0000000000000000, pud=0000000000000000
+[   82.639167] Internal error: Oops: 96000005 [#1] PREEMPT SMP
+[   82.644795] Modules linked in: hci_uart btqca xhci_plat_hcd xhci_pci_renesas xhci_pci xhci_hcd wcn36xx wcnss_ctrl wcd934x vctrl_regulator ufs_qcom syscon_reboot_e
+[   82.644927]  qcom_apcs_ipc_mailbox q6asm_dai q6routing q6asm q6afe_dai q6adm q6afe q6core q6dsp_common pm8941_pwrkey pm8916_wdt platform_mhu pinctrl_spmi_mpp pine
+[   82.812982] CPU: 3 PID: 240 Comm: kworker/u16:4 Tainted: G        W         5.6.0-rc7-mainline-00960-g0c34353d11b9-dirty #1
+[   82.824201] Hardware name: Thundercomm Dragonboard 845c (DT)
+[   82.829937] Workqueue: qcom_apr_rx apr_rxwq [apr]
+[   82.834698] pstate: 80c00005 (Nzcv daif +PAN +UAO)
+[   82.839553] pc : __cfi_check_fail+0x4/0x1c [q6asm_dai]
+[   82.844754] lr : __cfi_check+0x3a8/0x3b0 [q6asm_dai]
+[   82.849767] sp : ffffffc0105f3c20
+[   82.853123] x29: ffffffc0105f3c30 x28: 0000000000000020
+[   82.858489] x27: ffffff80f4588400 x26: ffffff80f458ec94
+[   82.863854] x25: ffffff80f458ece8 x24: ffffffe3670c7000
+[   82.869220] x23: ffffff8094bb7b34 x22: ffffffe367137000
+[   82.874585] x21: bd07909b332eada6 x20: 0000000000000001
+[   82.879950] x19: ffffffe36713863c x18: ffffff80f8df4430
+[   82.885316] x17: 0000000000000001 x16: ffffffe39d15e660
+[   82.890681] x15: 0000000000000001 x14: 0000000000000027
+[   82.896047] x13: 0000000000000000 x12: ffffffe39e6465a0
+[   82.901413] x11: 0000000000000051 x10: 000000000000ffff
+[   82.906779] x9 : 000ffffffe366c19 x8 : c3c5f18762d1ceef
+[   82.912145] x7 : 0000000000000000 x6 : ffffffc010877698
+[   82.917511] x5 : ffffffc0105f3c00 x4 : 0000000000000000
+[   82.922877] x3 : 0000000000000000 x2 : 0000000000000001
+[   82.928243] x1 : ffffffe36713863c x0 : 0000000000000001
+[   82.933610] Call trace:
+[   82.936099]  __cfi_check_fail+0x4/0x1c [q6asm_dai]
+[   82.940955]  q6asm_srvc_callback+0x22c/0x618 [q6asm]
+[   82.945973]  apr_rxwq+0x1a8/0x27c [apr]
+[   82.949861]  process_one_work+0x2e8/0x54c
+[   82.953919]  worker_thread+0x27c/0x4d4
+[   82.957715]  kthread+0x144/0x154
+[   82.960985]  ret_from_fork+0x10/0x18
+[   82.964603] Code: a8c37bfd f85f8e5e d65f03c0 b40000a0 (39400008)
+[   82.970762] ---[ end trace 410accb839617143 ]---
+[   82.975429] Kernel panic - not syncing: Fatal exception
+
+Cc: Patrick Lai <plai@codeaurora.org>
+Cc: Banajit Goswami <bgoswami@codeaurora.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Stephan Gerhold <stephan@gerhold.net>
+Cc: Sami Tolvanen <samitolvanen@google.com>
+Cc: Todd Kjos <tkjos@google.com>
+Cc: Alistair Delva <adelva@google.com>
+Cc: Amit Pundir <amit.pundir@linaro.org>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: alsa-devel@alsa-project.org
+Signed-off-by: John Stultz <john.stultz@linaro.org>
 ---
- arch/x86/entry/common.c        |    2 +-
- include/linux/irqflags.h       |    8 ++++----
- include/linux/lockdep.h        |    2 +-
- kernel/locking/lockdep.c       |   30 +++++++++++++++---------------
- kernel/softirq.c               |    2 +-
- tools/include/linux/irqflags.h |    4 ++--
- 6 files changed, 24 insertions(+), 24 deletions(-)
+ sound/soc/qcom/qdsp6/q6asm-dai.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -689,7 +689,7 @@ noinstr void idtentry_exit_user(struct p
+diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
+index 125af00bba53..4640804aab7f 100644
+--- a/sound/soc/qcom/qdsp6/q6asm-dai.c
++++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
+@@ -176,7 +176,7 @@ static const struct snd_compr_codec_caps q6asm_compr_caps = {
+ };
  
- noinstr bool idtentry_enter_nmi(struct pt_regs *regs)
+ static void event_handler(uint32_t opcode, uint32_t token,
+-			  uint32_t *payload, void *priv)
++			  void *payload, void *priv)
  {
--	bool irq_state = lockdep_hardirqs_enabled(current);
-+	bool irq_state = lockdep_hardirqs_enabled();
- 
- 	__nmi_enter();
- 	lockdep_hardirqs_off(CALLER_ADDR0);
---- a/include/linux/irqflags.h
-+++ b/include/linux/irqflags.h
-@@ -40,9 +40,9 @@ DECLARE_PER_CPU(int, hardirq_context);
-   extern void trace_hardirqs_off_finish(void);
-   extern void trace_hardirqs_on(void);
-   extern void trace_hardirqs_off(void);
--# define lockdep_hardirq_context(p)	(this_cpu_read(hardirq_context))
-+# define lockdep_hardirq_context()	(this_cpu_read(hardirq_context))
- # define lockdep_softirq_context(p)	((p)->softirq_context)
--# define lockdep_hardirqs_enabled(p)	(this_cpu_read(hardirqs_enabled))
-+# define lockdep_hardirqs_enabled()	(this_cpu_read(hardirqs_enabled))
- # define lockdep_softirqs_enabled(p)	((p)->softirqs_enabled)
- # define lockdep_hardirq_enter()			\
- do {							\
-@@ -109,9 +109,9 @@ do {						\
- # define trace_hardirqs_off_finish()		do { } while (0)
- # define trace_hardirqs_on()		do { } while (0)
- # define trace_hardirqs_off()		do { } while (0)
--# define lockdep_hardirq_context(p)	0
-+# define lockdep_hardirq_context()	0
- # define lockdep_softirq_context(p)	0
--# define lockdep_hardirqs_enabled(p)	0
-+# define lockdep_hardirqs_enabled()	0
- # define lockdep_softirqs_enabled(p)	0
- # define lockdep_hardirq_enter()	do { } while (0)
- # define lockdep_hardirq_threaded()	do { } while (0)
---- a/include/linux/lockdep.h
-+++ b/include/linux/lockdep.h
-@@ -736,7 +736,7 @@ do {									\
- 
- # define lockdep_assert_RT_in_threaded_ctx() do {			\
- 		WARN_ONCE(debug_locks && !current->lockdep_recursion &&	\
--			  lockdep_hardirq_context(current) &&		\
-+			  lockdep_hardirq_context() &&			\
- 			  !(current->hardirq_threaded || current->irq_config),	\
- 			  "Not in threaded context on PREEMPT_RT as expected\n");	\
- } while (0)
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -2062,9 +2062,9 @@ print_bad_irq_dependency(struct task_str
- 	pr_warn("-----------------------------------------------------\n");
- 	pr_warn("%s/%d [HC%u[%lu]:SC%u[%lu]:HE%u:SE%u] is trying to acquire:\n",
- 		curr->comm, task_pid_nr(curr),
--		lockdep_hardirq_context(curr), hardirq_count() >> HARDIRQ_SHIFT,
-+		lockdep_hardirq_context(), hardirq_count() >> HARDIRQ_SHIFT,
- 		curr->softirq_context, softirq_count() >> SOFTIRQ_SHIFT,
--		lockdep_hardirqs_enabled(curr),
-+		lockdep_hardirqs_enabled(),
- 		curr->softirqs_enabled);
- 	print_lock(next);
- 
-@@ -3331,9 +3331,9 @@ print_usage_bug(struct task_struct *curr
- 
- 	pr_warn("%s/%d [HC%u[%lu]:SC%u[%lu]:HE%u:SE%u] takes:\n",
- 		curr->comm, task_pid_nr(curr),
--		lockdep_hardirq_context(curr), hardirq_count() >> HARDIRQ_SHIFT,
-+		lockdep_hardirq_context(), hardirq_count() >> HARDIRQ_SHIFT,
- 		lockdep_softirq_context(curr), softirq_count() >> SOFTIRQ_SHIFT,
--		lockdep_hardirqs_enabled(curr),
-+		lockdep_hardirqs_enabled(),
- 		lockdep_softirqs_enabled(curr));
- 	print_lock(this);
- 
-@@ -3655,7 +3655,7 @@ void lockdep_hardirqs_on_prepare(unsigne
- 	if (DEBUG_LOCKS_WARN_ON(current->lockdep_recursion & LOCKDEP_RECURSION_MASK))
- 		return;
- 
--	if (unlikely(lockdep_hardirqs_enabled(current))) {
-+	if (unlikely(lockdep_hardirqs_enabled())) {
- 		/*
- 		 * Neither irq nor preemption are disabled here
- 		 * so this is racy by nature but losing one hit
-@@ -3683,7 +3683,7 @@ void lockdep_hardirqs_on_prepare(unsigne
- 	 * Can't allow enabling interrupts while in an interrupt handler,
- 	 * that's general bad form and such. Recursion, limited stack etc..
- 	 */
--	if (DEBUG_LOCKS_WARN_ON(lockdep_hardirq_context(current)))
-+	if (DEBUG_LOCKS_WARN_ON(lockdep_hardirq_context()))
- 		return;
- 
- 	current->hardirq_chain_key = current->curr_chain_key;
-@@ -3718,7 +3718,7 @@ void noinstr lockdep_hardirqs_on(unsigne
- 	if (DEBUG_LOCKS_WARN_ON(curr->lockdep_recursion & LOCKDEP_RECURSION_MASK))
- 		return;
- 
--	if (lockdep_hardirqs_enabled(curr)) {
-+	if (lockdep_hardirqs_enabled()) {
- 		/*
- 		 * Neither irq nor preemption are disabled here
- 		 * so this is racy by nature but losing one hit
-@@ -3772,7 +3772,7 @@ void noinstr lockdep_hardirqs_off(unsign
- 	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
- 		return;
- 
--	if (lockdep_hardirqs_enabled(curr)) {
-+	if (lockdep_hardirqs_enabled()) {
- 		/*
- 		 * We have done an ON -> OFF transition:
- 		 */
-@@ -3821,7 +3821,7 @@ void lockdep_softirqs_on(unsigned long i
- 	 * usage bit for all held locks, if hardirqs are
- 	 * enabled too:
- 	 */
--	if (lockdep_hardirqs_enabled(curr))
-+	if (lockdep_hardirqs_enabled())
- 		mark_held_locks(curr, LOCK_ENABLED_SOFTIRQ);
- 	lockdep_recursion_finish();
- }
-@@ -3870,7 +3870,7 @@ mark_usage(struct task_struct *curr, str
- 	 */
- 	if (!hlock->trylock) {
- 		if (hlock->read) {
--			if (lockdep_hardirq_context(curr))
-+			if (lockdep_hardirq_context())
- 				if (!mark_lock(curr, hlock,
- 						LOCK_USED_IN_HARDIRQ_READ))
- 					return 0;
-@@ -3879,7 +3879,7 @@ mark_usage(struct task_struct *curr, str
- 						LOCK_USED_IN_SOFTIRQ_READ))
- 					return 0;
- 		} else {
--			if (lockdep_hardirq_context(curr))
-+			if (lockdep_hardirq_context())
- 				if (!mark_lock(curr, hlock, LOCK_USED_IN_HARDIRQ))
- 					return 0;
- 			if (curr->softirq_context)
-@@ -3917,7 +3917,7 @@ mark_usage(struct task_struct *curr, str
- 
- static inline unsigned int task_irq_context(struct task_struct *task)
- {
--	return LOCK_CHAIN_HARDIRQ_CONTEXT * !!lockdep_hardirq_context(task) +
-+	return LOCK_CHAIN_HARDIRQ_CONTEXT * !!lockdep_hardirq_context() +
- 	       LOCK_CHAIN_SOFTIRQ_CONTEXT * !!task->softirq_context;
+ 	struct q6asm_dai_rtd *prtd = priv;
+ 	struct snd_pcm_substream *substream = prtd->substream;
+@@ -490,7 +490,7 @@ static int q6asm_dai_hw_params(struct snd_soc_component *component,
  }
  
-@@ -4010,7 +4010,7 @@ static inline short task_wait_context(st
- 	 * Set appropriate wait type for the context; for IRQs we have to take
- 	 * into account force_irqthread as that is implied by PREEMPT_RT.
- 	 */
--	if (lockdep_hardirq_context(curr)) {
-+	if (lockdep_hardirq_context()) {
- 		/*
- 		 * Check if force_irqthreads will run us threaded.
- 		 */
-@@ -4853,11 +4853,11 @@ static void check_flags(unsigned long fl
- 		return;
- 
- 	if (irqs_disabled_flags(flags)) {
--		if (DEBUG_LOCKS_WARN_ON(lockdep_hardirqs_enabled(current))) {
-+		if (DEBUG_LOCKS_WARN_ON(lockdep_hardirqs_enabled())) {
- 			printk("possible reason: unannotated irqs-off.\n");
- 		}
- 	} else {
--		if (DEBUG_LOCKS_WARN_ON(!lockdep_hardirqs_enabled(current))) {
-+		if (DEBUG_LOCKS_WARN_ON(!lockdep_hardirqs_enabled())) {
- 			printk("possible reason: unannotated irqs-on.\n");
- 		}
- 	}
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -230,7 +230,7 @@ static inline bool lockdep_softirq_start
+ static void compress_event_handler(uint32_t opcode, uint32_t token,
+-				   uint32_t *payload, void *priv)
++				   void *payload, void *priv)
  {
- 	bool in_hardirq = false;
- 
--	if (lockdep_hardirq_context(current)) {
-+	if (lockdep_hardirq_context()) {
- 		in_hardirq = true;
- 		lockdep_hardirq_exit();
- 	}
---- a/tools/include/linux/irqflags.h
-+++ b/tools/include/linux/irqflags.h
-@@ -2,9 +2,9 @@
- #ifndef _LIBLOCKDEP_LINUX_TRACE_IRQFLAGS_H_
- #define _LIBLOCKDEP_LINUX_TRACE_IRQFLAGS_H_
- 
--# define lockdep_hardirq_context(p)	0
-+# define lockdep_hardirq_context()	0
- # define lockdep_softirq_context(p)	0
--# define lockdep_hardirqs_enabled(p)	0
-+# define lockdep_hardirqs_enabled()	0
- # define lockdep_softirqs_enabled(p)	0
- # define lockdep_hardirq_enter()	do { } while (0)
- # define lockdep_hardirq_exit()		do { } while (0)
-
+ 	struct q6asm_dai_rtd *prtd = priv;
+ 	struct snd_compr_stream *substream = prtd->cstream;
+-- 
+2.17.1
 
