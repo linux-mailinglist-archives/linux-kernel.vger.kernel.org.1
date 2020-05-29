@@ -2,161 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 228E41E7277
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B54721E727C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405037AbgE2CNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 22:13:38 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:53884 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404344AbgE2CNf (ORCPT
+        id S2404574AbgE2CPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 22:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390679AbgE2CPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 22:13:35 -0400
-Received: from fsav405.sakura.ne.jp (fsav405.sakura.ne.jp [133.242.250.104])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 04T2DVaU065086;
-        Fri, 29 May 2020 11:13:31 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav405.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav405.sakura.ne.jp);
- Fri, 29 May 2020 11:13:31 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav405.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 04T2DVHe065067
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Fri, 29 May 2020 11:13:31 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH v2] twist: allow converting pr_devel()/pr_debug() into
- snprintf()
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <e3b30905-4497-29b4-4636-a313283dbc56@i-love.sakura.ne.jp>
- <20200528065603.3596-1-penguin-kernel@I-love.SAKURA.ne.jp>
- <20200528110646.GC11286@linux-b0ei>
- <e0d6c04f-7601-51e7-c969-300e938dedc0@i-love.sakura.ne.jp>
- <CAHk-=wgz=7MGxxX-tmMmdCsKyYJkuyxNc-4uLP=e_eEV=OzUaw@mail.gmail.com>
- <CAHk-=wjW+_pjJzVRMuCbLhbWLkvEQVYJoXVBYGNW2PUgtX1fDw@mail.gmail.com>
- <13b0a475-e70e-c490-d34d-0c7a34facf7c@i-love.sakura.ne.jp>
- <CAHk-=wjj9ooYACNvO2P_Gr_=aN0g=iEqtg0TwBJo18wbn4gthg@mail.gmail.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <6116ed2e-cee1-d82f-6b68-ddb1bbb6abe2@i-love.sakura.ne.jp>
-Date:   Fri, 29 May 2020 11:13:31 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        Thu, 28 May 2020 22:15:40 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA644C08C5C6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 19:15:39 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id e2so453390eje.13
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 19:15:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PoRZPQciUjW0VCWgrvWzNEBESY0jfZ3/WBQnF/AySco=;
+        b=rhdpJDQQejWKnSlXPmeIE88URsUfXVm0a7+esvI8MRip1/sAbPXHD12VkPtq8exsUN
+         Pk6dsRxsQSJ0V4BgyN9neaqH0/epkDX1VQwsfhvCSAPRxQC7TYMQLau0nfev15sHUsht
+         vuhVpYwXiHwqN3ejc81Q/trn4wirmZvlagVbK2A349sGibnr4JpRh3o/SV2FGoVYQdHJ
+         xuAC5WvvqyLLc/Hhwxr7OxWDashXsPKofGJ1J0WTBpB/lZ7hqiOhpvladh5e3L3fbmNQ
+         papT9qREaDH1jUAcKHWcTAHaE9d5uV3B3ZrijCZPqLpdFmfIY4GTsKXzPr0VmbAlN1QD
+         hrJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PoRZPQciUjW0VCWgrvWzNEBESY0jfZ3/WBQnF/AySco=;
+        b=Vb/UfgkNGjCPnG+kXOIg1Oe2jT7ZaoYiH50KDpjG+ImUdbB6DcJXOake+TGK04pFMR
+         BdiZTjwREW55xf2R5tIRu4OXkfc02wW/vcfFm3LKeHlrxVujtHfq4YABBgV8JsYoJAb7
+         sByr+4FDPS+VlsN8qsuXdeMtAwHokiQUgEPCg1ptTwqGE27EbuqhhMUMQp+hIJnAT6QT
+         XMvzI+VKn8mfJVGZ/O28tVPSQfsNUW1mfp/0m1tiuJ5Hag+SjtUqOXGbaMk+2U/zp5WS
+         OHCfrPC0nBnDDv7DnjZ26CieC8SRDD6mhs3ywZEYR/wiGmuPSLA4rN52RHF0p51wP1LN
+         QExw==
+X-Gm-Message-State: AOAM531eqocrtmP9XYhFyExszrmSWsY5XAjyNYnxkoeFVNsZmk6pKHA6
+        4fdRfv9Oz1E7CXTmOJglqkJmrcnNfUv5d9Vhj9E=
+X-Google-Smtp-Source: ABdhPJw1xLHrMLHiUyZNFBHXB7bZmFXA7631wc1GNiTSKobEUFpMwo9k7uw0mmtHkMVjK+9TfVJe5Zy/uGKwSvQI/dw=
+X-Received: by 2002:a17:906:c9d6:: with SMTP id hk22mr5608919ejb.101.1590718538464;
+ Thu, 28 May 2020 19:15:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wjj9ooYACNvO2P_Gr_=aN0g=iEqtg0TwBJo18wbn4gthg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAPM=9ty+Vyn8aSxNqWY+_KEnqj8nGZbp2PRJTvQLcV1iPhG7dA@mail.gmail.com>
+ <CAHk-=wgo1HUhSj-kGO8u+iUCxp+QS+rNenbM8gywbF3pdQ_DQA@mail.gmail.com> <CAPM=9ty5ce2mm7Di6qvRKy2Jg2Tw-Cd8U6ypN=Abc2NCGmQWWQ@mail.gmail.com>
+In-Reply-To: <CAPM=9ty5ce2mm7Di6qvRKy2Jg2Tw-Cd8U6ypN=Abc2NCGmQWWQ@mail.gmail.com>
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 29 May 2020 12:15:27 +1000
+Message-ID: <CAPM=9tza6oC3tBHaYq+nLGh0fwwZAKR3U-HVvn8jzN9myMz0dA@mail.gmail.com>
+Subject: Re: [git pull] drm fixes for 5.7-rc8/final
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/05/29 9:28, Linus Torvalds wrote:
->> Current kernel is not well segmented enough to allow switching based on
->> per process flags. We can't distinguish whether some kernel message was
->> caused by a process with such flags.
-> 
-> Who said anything at all about per process?
-> 
+On Fri, 29 May 2020 at 12:02, Dave Airlie <airlied@gmail.com> wrote:
+>
+> On Fri, 29 May 2020 at 11:49, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > On Thu, May 28, 2020 at 5:21 PM Dave Airlie <airlied@gmail.com> wrote:
+> > >
+> > > Seems to have wound down nicely, a couple of i915 fixes, amdgpu fixes
+> > > and minor ingenic fixes.
+> >
+> > Dave, this doesn't even build. WTF?
+> >
+> > In drivers/gpu/drm/i915/gt/selftest_lrc.c, there's a
+> > engine_heartbeat_disable() function that takes two arguments, but the
+> > new "live_timeslice_nopreempt()" gives it only one.
+> >
+> > I'd blame a merge problem, since the failure is in new code, but the
+> > problem exists in your top-of-tree, not just my merge.
+> >
+> > In fact, it's not even your merge of the i915 tree that is the source
+> > of the problem (although the fact that you clearly didn't _test_ the
+> > end result most definitely is _part_ of the problem!).
+> >
+> > Because the problem exists in the commit that introduced that thing:
+> > commit 1f65efb624c4 ("drm/i915/gt: Prevent timeslicing into
+> > unpreemptable requests").
+> >
+> > It's garbage, and never compiled.
+>
+> I thought I'd dropped the ball completely. but I see it's a selftest
+> failure, I must not have selftests built in my config here, I don't do
+> exhaustive builds randconfig
+>
+> This has also been built by Intel, but I'm assuming they missed their
+> selftest bits as well.
+>
+> I'll revert that and resend.
 
-You said
+I did drop the ball in one way, I see sfr reported it broken this morning
 
-  Some kind of "not even root" flag, which might be per-process and not
-  possible to clear once set (so that your _normal_ system binaries
-  could still do the root-only stuff, but then you could start a fuzzing
-  process with that flag set, knowing that the fuzzing process - and
-  it's children - are not able to do things).
+I normally expect stuff coming from Intel has been through their CI,
+even their fixes tree generally gets pushed through that system before
+I get it, and it usually catches these things.
 
-  Honestly, in a perfect world, it has nothing at all to do with
-  fuzzing, and people could even have some local rules like "anybody who
-  came in through ssh from the network will also have this flag set".
+I might have to push back on intel fixes this late in the day, as
+maybe the land on next and cherry-pick to fixes model has made them a
+bit lax on how much stuff goes through CI.
 
-at https://lkml.kernel.org/r/CAHk-=wgbMi2+VBN0SCEw9GeoiWgui034AOBwbt_dW9tdCa3Nig@mail.gmail.com
-and I said
+I've just drop the whole i915 fixes from the tree and will resend with
+it removed.
 
-  I don't think per-process flags will work. Not every action is taken inside
-  process context who issued a syscall. Some action might be taken in interrupt
-  context or in kthread context. Since we have no means to propagate per-process
-  flags, we will need to give up more than we have to give up.
-
-at https://lkml.kernel.org/r/f2b9ef2a-8449-72fc-4f87-8bf65d713800@i-love.sakura.ne.jp .
-
-
-
->> Why do you think "syzkaller is special" ? There is no syzkaller-specific
->> choice.
-> 
-> ALL of these are designed to be totally about syzkaller. Nobody else
-> has ever asked for the TWIST options. And if they have, they'd still
-> make more sense as generic real actual options than as some odd
-> "twist" thing.
-
-Because syzkaller is the first user who needs the TWIST options. syzkaller is
-creative enough to trigger unexpected syscalls with unexpected arguments.
-Some of unexpected arguments can be filtered out by sanitization steps, but not all
-arguments can be filtered out. Some examples which syzkaller expects the TWIST options
-to filter out are described at https://github.com/google/syzkaller/issues/1622 .
-
-Who can implement a fuzzer which never triggers unexpected syscalls with unexpected
-arguments? If somebody implemented one, that fuzzer will not be testing as deep as
-syzkaller does. It is natural that nobody else has ever asked for the TWIST options.
-
-> And if it's about things like "disable sysrq-k", and it might be
-> useful to somebody else than syzkaller, then it would be *much* better
-> off as a boot option so that you don't have to recompile the kernel to
-> pick it.
-
-Recompiling the kernel to pick something is not a difficult thing. Avoiding bugs
-caused by allowing runtime enable/disable is far more difficult thing, for fuzz
-testing might unexpectedly overwrite flag variables due to unexpected arguments
-or memory corruption.
-
->> After all, switching at the kernel configuration phase is the most simple
->> approach.
-> 
-> No it isn't. It's the UGLIEST possible approach, forcing a nasty
-> horrible config process to be even worse, forcing a compile-time
-> decision for something that isn't at all obvious should be
-> compile-time, and forcing crazy ugly config option names because they
-> are all just odd.
-
-If the code is fixed at build-time and the data does not contain flag variables,
-it improves the reliability/robustness of fuzz testing.
-
-Given that one of TWIST switches allows administrator to disable reboot() syscall,
-who would use that switch? Only kernel fuzzing projects would use that switch. How
-allowing administrators to control such switch at kernel command line can be useful?
-
-> Some things might even be worth having a runtime option for.
-
-If somebody starts asking for boot time switching of the TWIST options, we can consider
-it then. Until then, I don't think supporting boot time switching is worth the effort.
-
-> But this "put random options, give them random names, and force them
-> all as compile-time options in a nasty kernel config process" just
-> smells.
-
-Switching at build-time has a reason for switching at build-time; it is to
-improve the reliability/robustness of fuzz testing.
-
-> And if they are _so_ specialized that only syzkaller could possibly
-> care, I still maintain that they shouldn't go upstream at all.
-
-Without the support from the kernel side, we will fail to find deep kernel bugs
-because we will fail upon unexpected syscalls with unexpected arguments.
-
-The TWIST options are not only for syzkaller. Any fuzzers which try to find deep
-kernel bugs will need the TWIST options.
-
-You are free to add runtime switches for things like "disable sysrq-k".
-Please don't consider the TWIST options as "for userspace's convenience".
-The TWIST options are intended for "improving the quality of kernel testing".
-
+Dave.
