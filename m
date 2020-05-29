@@ -2,153 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3D31E7D56
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 14:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9201E7D5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 14:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726816AbgE2MgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 08:36:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbgE2MgF (ORCPT
+        id S1726974AbgE2MhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 08:37:07 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:37462 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726459AbgE2MhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 08:36:05 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8F5C03E969
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 05:36:05 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id q8so2109067iow.7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 05:36:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=etVz/z0FCCoXbxju8q2TMA+/hX1IuOuxlidkT33un9k=;
-        b=avs33Dos29eqzbPIer4J7wfZqsXbXJva2SA8UzJI1OPCLjhXDEF+vGOny7agxhbwYO
-         s5/+6KT/fdOq1Jaz7WTDoY9Vd8aL/eFK2+tvY2z0jkKIPySamRpSBbAd0sC5NEF9ARdC
-         30Nr2t6tUpO74p0iDBKDDi6/rMjHJlc7usNPdP/hNT7waZZcj6fBnMYHq5QjCXqpOUZH
-         s8GeT7vOJ5RGX1jn2IrOD07VI/bmt+cINSjtganGhMbFGa6TqkF2loE/p/he9jTa16hZ
-         4+d0UVw7kOrnvLn9pQ3E13QwUukFZpCC5QPj3D3BLL3er15yu63h/0pTgqzBxFR0eX5H
-         imEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=etVz/z0FCCoXbxju8q2TMA+/hX1IuOuxlidkT33un9k=;
-        b=Blpl2QwMzG4q5QVJM0t+wld6PxD5EfGSefMAgU1QWfWc0WGYFAhm6Trs6PI/xCMVeP
-         /5Sb76EWQG01epGg6wki5xMvB4TFn1RjCztqMOy3WfSZXRRZZs/qzcuwDeU82QfqmGnE
-         /1aRQpoRu4FtqyGy3ZfBgQHU4psvrxx51kOuKnA3EQp+yCveFQQNuQ627M88+JSYNIAb
-         9PJ2TCyKC5GNqFF0EGOaiymAzvVYOjPGlJY8P2MPCNlzYWcs1xDPg5b6UdY2plOhMsKM
-         l2D06YvQFCSQAFchr9fo3oJJ2SuWK2pzyUHUC89xy7TuV2X93BNoW9aqS9D5uEocnevC
-         bR6A==
-X-Gm-Message-State: AOAM5318QMYPTPKTMjzJZkJ9alpy544Na5Jg8Z2awLObbXuJKIZXjCFi
-        CvbqGyauFZc6Hw7jCZREAkUxb86fuRgcI8180UA=
-X-Google-Smtp-Source: ABdhPJxps5J+f5BjuG4lwLto/KMwaQ3VLsBSceOKC0vF6QwNUWHy+oJPaIsh6dbGT8NiJkG55XKwhA4wiqbLtxWWLhY=
-X-Received: by 2002:a6b:1543:: with SMTP id 64mr6493948iov.123.1590755765005;
- Fri, 29 May 2020 05:36:05 -0700 (PDT)
+        Fri, 29 May 2020 08:37:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DptdA1/V+5FkC3vPba0mtFM4V0F9ANd+9Ig+L5lvr7Q=; b=qXYsXDjDNmBXT8VWhFUDC9YDld
+        oIgSZAsorhm+KlpiAXKflk7WhSslRt205AP30suHRrQrKIzOkOjUl8P17PmsiX5nazLaZuXizywjI
+        cwZRsGBmu8FoEglYiduB64OUUqork3+TlBNyW87Mdt+0+NeNBtQIo9xcr78LM9gdb2iDDmn/G8bjF
+        JSAxJTr3cyx64178NPHUFbTNzkp+c/awB65bE/NznrhbmbQSZqX9UAcdpV91BWMgjW3ihWWyaa9hw
+        5XMLpkx6y5fx8qJhVle97YE20kaLP83rmjAY485MT7teqsMEYmI9YoGVRpgGTHDd84Babaf3S8LGP
+        m+I03HZg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jeeFX-0005PL-P9; Fri, 29 May 2020 12:36:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1D333301A80;
+        Fri, 29 May 2020 14:36:27 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 05A9E203C05AF; Fri, 29 May 2020 14:36:27 +0200 (CEST)
+Date:   Fri, 29 May 2020 14:36:26 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alan Stern <stern@rowland.harvard.edu>, parri.andrea@gmail.com,
+        will@kernel.org, Boqun Feng <boqun.feng@gmail.com>,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, Akira Yokosawa <akiyks@gmail.com>,
+        dlustig@nvidia.com, open list <linux-kernel@vger.kernel.org>,
+        linux-arch@vger.kernel.org
+Subject: Re: Some -serious- BPF-related litmus tests
+Message-ID: <20200529123626.GL706495@hirez.programming.kicks-ass.net>
+References: <20200522143201.GB32434@rowland.harvard.edu>
+ <20200522174352.GJ2869@paulmck-ThinkPad-P72>
+ <006e2bc6-7516-1584-3d8c-e253211c157e@fb.com>
+ <20200525112521.GD317569@hirez.programming.kicks-ass.net>
+ <20200525154730.GW2869@paulmck-ThinkPad-P72>
+ <20200525170257.GA325280@hirez.programming.kicks-ass.net>
+ <20200525172154.GZ2869@paulmck-ThinkPad-P72>
+ <20200528220047.GB211369@google.com>
+ <20200528221659.GS2483@worktop.programming.kicks-ass.net>
+ <CAEf4BzYf6jjrStc08R1bDASFyEdKj6vYg_MOaipUJ3vbdqNrSg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200510165538.19720-1-peron.clem@gmail.com> <20200510165538.19720-12-peron.clem@gmail.com>
- <8bc659b4-dbf9-5ae6-a677-937cab6bd798@arm.com>
-In-Reply-To: <8bc659b4-dbf9-5ae6-a677-937cab6bd798@arm.com>
-From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date:   Fri, 29 May 2020 14:35:54 +0200
-Message-ID: <CAJiuCce2vb+M5Dn7FSr=N2WfrAEQrUjLPuShqFyPFxwfrdDqaA@mail.gmail.com>
-Subject: Re: [PATCH 11/15] drm/panfrost: set devfreq clock name
-To:     Steven Price <steven.price@arm.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYf6jjrStc08R1bDASFyEdKj6vYg_MOaipUJ3vbdqNrSg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven,
+On Thu, May 28, 2020 at 10:14:21PM -0700, Andrii Nakryiko wrote:
 
-On Thu, 28 May 2020 at 15:23, Steven Price <steven.price@arm.com> wrote:
->
-> On 10/05/2020 17:55, Cl=C3=A9ment P=C3=A9ron wrote:
-> > Some SoCs have  several clocks defined and the OPP core
-> > needs to know the exact name of the clk to use.
-> >
-> > Set the clock name to "core".
-> >
-> > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
->
-> This is unfortunately a regression for the RK3288. The device tree
-> binding doesn't require "clock-names", and for the RK3288 it currently
-> isn't specified. So this breaks the platform.
->
-> Adding the "clock-names" to the device tree 'fixes' it, but we really
-> need to keep backwards compatibility.
+> There is another cluster of applications which are unnecessarily more
+> complicated just for the fact that there is no ordering between
+> correlated events that happen on different CPUs. Per-CPU buffers are
+> not well suited for such cases, unfortunately.
 
-Yes you're right, thanks for cathing this.
+And yet, I've been debugging concurrency issues with ftrace for well
+over a decade.
 
-Regards,
-Clement
+In fact, adding a spinlock in the mix will make a certain class of
+concurrency problems go-away! because you introduce artificial
+serialization between CPUs.
 
->
-> Steve
->
-> > ---
-> >   drivers/gpu/drm/panfrost/panfrost_devfreq.c | 13 +++++++++++++
-> >   drivers/gpu/drm/panfrost/panfrost_devfreq.h |  1 +
-> >   2 files changed, 14 insertions(+)
-> >
-> > diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/=
-drm/panfrost/panfrost_devfreq.c
-> > index 9ffea0d4a087..6bf3541b4d53 100644
-> > --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> > +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> > @@ -103,6 +103,14 @@ int panfrost_devfreq_init(struct panfrost_device *=
-pfdev)
-> >
-> >       spin_lock_init(&pfdevfreq->lock);
-> >
-> > +     opp_table =3D dev_pm_opp_set_clkname(dev, "core");
-> > +     if (IS_ERR(opp_table)) {
-> > +             ret =3D PTR_ERR(opp_table);
-> > +             goto err_fini;
-> > +     }
-> > +
-> > +     pfdevfreq->clkname_opp_table =3D opp_table;
-> > +
-> >       opp_table =3D dev_pm_opp_set_regulators(dev, pfdev->comp->supply_=
-names,
-> >                                             pfdev->comp->num_supplies);
-> >       if (IS_ERR(opp_table)) {
-> > @@ -176,6 +184,11 @@ void panfrost_devfreq_fini(struct panfrost_device =
-*pfdev)
-> >               dev_pm_opp_put_regulators(pfdevfreq->regulators_opp_table=
-);
-> >               pfdevfreq->regulators_opp_table =3D NULL;
-> >       }
-> > +
-> > +     if (pfdevfreq->clkname_opp_table) {
-> > +             dev_pm_opp_put_clkname(pfdevfreq->clkname_opp_table);
-> > +             pfdevfreq->clkname_opp_table =3D NULL;
-> > +     }
-> >   }
-> >
-> >   void panfrost_devfreq_resume(struct panfrost_device *pfdev)
-> > diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.h b/drivers/gpu/=
-drm/panfrost/panfrost_devfreq.h
-> > index 347cde4786cf..1f2475e1d034 100644
-> > --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.h
-> > +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.h
-> > @@ -16,6 +16,7 @@ struct panfrost_device;
-> >   struct panfrost_devfreq {
-> >       struct devfreq *devfreq;
-> >       struct opp_table *regulators_opp_table;
-> > +     struct opp_table *clkname_opp_table;
-> >       struct thermal_cooling_device *cooling;
-> >       bool opp_of_table_added;
-> >
-> >
->
+Heck, even the ftrace buffer can sometimes make problems go way just
+because of the overhead of tracing itself changes the timing.
+
+It is perfectly possible to reconstruct order with per-cpu buffers in so
+far as that there is order to begin with. Esp on modern CPUs that have
+synchronized TSC.
+
+Computers are not SC, pretending that events are is just a lie.
+
+> > people, but apparently they've not spend enough time debugging stuff
+> > with partial logs yet. Of course, bpf_prog_active already makes BPF
+> > lossy, so maybe they went with that.
+> 
+> Not sure which "partial logs" you mean, I'll assume dropped samples?
+
+Yep. Trying to reconstruct what actually happened from incomplete logs
+is one of the most frustrating things in the world.
+
+> All production BPF applications are already designed to handle data
+> loss, because it could and does happen due to running out of buffer
+> space. Of course, amount of such drops is minimized however possible,
+> but applications still need to be able to handle that.
+
+Running out of space is fixable and 'obvious'. Missing random events in
+the middle is bloody infuriating. Even more so if you can't tell there's
+gaps in the midle.
+
+AFAICT, you don't even mark a reservation fail.... ah, you leave that to
+the user :-( And it can't tell if it's spurious or space related.
+
+Same with bpf_prog_active, it's silent 'random' data loss. You can
+easily tell where a CPU buffer starts and stops, and thus if the events
+are contained within, but not if there's random bits missing from the
+middle.
+
+> Now, though, there will be more options. Now it's not just a question
+> of whether to allocate a tiny 64KB per-CPU buffer on 80 core server
+> and use reasonable 5MB for perfbuf overall, but suffer high and
+> frequent data loss whenever a burst of incoming events happen. Or bump
+> it up to, say, 256KB (or higher) and use 20MB+ now, which most of the
+> time will be completely unused, but be able to absorb 4x more events.
+> Now it might be more than enough to just allocate a single shared 5MB
+> buffer and be able to absorb much higher spikes (of course, assuming
+> not all CPUs will be spiking at the same time, in which case nothing
+> can really help you much w.r.t. data loss).
+
+Muwhahaha, a single shared buffer with 80 CPUs! That's bloody murder on
+performance.
+
+> So many BPF users are acutely aware of data loss and care a lot, but
+> there are other constraints that they have to take into account.
+> 
+> As for expensiveness of spinlock and atomics, a lot of applications we
+> are seeing do not require huge throughput that per-CPU data structures
+> provide, so such overhead is acceptable. Even under high contention,
+> BPF ringbuf performance is pretty reasonable and will satisfy a lot of
+> applications, see [1].
+
+I've done benchmarks on contended atomic ops, and they go from ~20
+cycles (uncontended, cache hot) to well over 10k cycles when you jump on
+them with say a dozen cores across a few nodes (more numa, more
+horrible).
+
+>   [1] https://patchwork.ozlabs.org/project/netdev/patch/20200526063255.1675186-5-andriin@fb.com/
+
+From that: "Ringbuf, multi-producer contention", right? I read that as:
+'performance is bloody horrible if you add contention'.
+
+I suppose most of your users have very low event rates, otherwise I
+can't see that working.
+
+> > All reasons why I never bother with BPF, aside from it being more
+> > difficult than hacking up a kernel in the first place.
+> 
+> It's not my goal to pitch BPF here, but for a lot of real-world use
+> cases, hacking kernel is not an option at all, for many reasons. One
+> of them is that kernel upgrades across huge fleet of servers take a
+> long time, which teams can't afford to wait. In such cases, BPF is a
+> perfect solution, which can't be beaten, as evidenced by a wide
+> variety of BPF applications solving real problems.
+
+Yeah; lots of people use it because they really have nothing better for
+their situation.
+
+As long as people understand the constraints (and that's a *BIG* if) I
+suppose it's usable.
+
+It's just things I don't want to have to worry about.
+
+Anyway, all that said, I like how you did the commits, I should look to
+see if I can retro-fit the perf buffer to have some of that. Once
+question though; why are you using xchg() for the commit? Isn't that
+more expensive than it should be?
+
+That is, why isn't that:
+
+  smp_store_release(&hdr->len, new_len);
+
+? Or are you needing the smp_mb() for the store->load ordering for the
+->consumer_pos load? That really needs a comment.
+
+I think you can get rid of the smp_load_acquire() there, you're ordering
+a load->store and could rely on the branch to do that:
+
+	cons_pos = READ_ONCE(&rb->consumer_pos) & rb->mask;
+	if ((flags & BPF_RB_FORCE_WAKEUP) || (cons_pos == rec_pos && !(flags &BPF_RB_NO_WAKEUP))
+		irq_work_queue(&rq->work);
+
+should be a control dependency.
