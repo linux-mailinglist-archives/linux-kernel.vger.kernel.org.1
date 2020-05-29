@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 956C41E7711
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 09:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 969041E7732
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 09:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726350AbgE2HlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 03:41:15 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:42003 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725817AbgE2HlO (ORCPT
+        id S1726649AbgE2HlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 03:41:21 -0400
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:54264 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726467AbgE2HlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 03:41:14 -0400
-Received: by mail-pl1-f196.google.com with SMTP id x11so758352plv.9
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 00:41:13 -0700 (PDT)
+        Fri, 29 May 2020 03:41:17 -0400
+Received: by mail-pj1-f67.google.com with SMTP id ci21so847340pjb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 00:41:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BHxoRQ8DQnoY6+qppetqlnLxkIDVt5zoxa4p3m8u/9c=;
-        b=YNdmLQP0dXVPgRpCHFmE8lIzYTpSqatNB3NVKzP4IBx2JN2Wyq8zsPXaKDmhI796Lp
-         mnoffEsT5xHJyPyInoEEZsHcJNmo/hUWTBwzu8lcyT0O06tTwE6oBF/+hrQy7YQh8x0m
-         kAyTgpHAzCPpwLvzRo7wwAP0BLk0xNXfc1RmgbmoaWNjIhikZ5fivaNRxsKKpBWQQ81V
-         +t/cZf7aqUhTQqLHrgneB+HbLHYVK8bi4zBFCOmyloFN1FqfPsSczboFG8UJA+s3a2CK
-         6g5WtpHXCAGFS75ZTCwrglNIh9w4mfjg0/Rho36ZZRqtGUZuzw1x/5ogrOLDpyaKHifx
-         4KGQ==
-X-Gm-Message-State: AOAM532ODHQbhLm1kOQM/dxMhaM+1nCBE+BzvyVco498IfCGeuyaLpRW
-        ymkbkMuKejBsZqc1yw+GXCI=
-X-Google-Smtp-Source: ABdhPJz9K7PsnpIxJ4x5guwmAs1js3ue6vgA1iDyjZ0vgKrdY1ea32qFpSEMLF6sE+IfeMdGGrIA9g==
-X-Received: by 2002:a17:90b:4c4b:: with SMTP id np11mr8141669pjb.58.1590738073301;
-        Fri, 29 May 2020 00:41:13 -0700 (PDT)
+        bh=2jHA8VIMvKgrxc1AW+DPbkuZZuKskUQcNv9lMPkimBs=;
+        b=sFiY7a9O23vHdPbjXpqEIsFJlRaUMMDNd1rAjCG/4Kxg2gkI5Xpq/Vc3zkBRPO00Cs
+         2FK6/gnCJ6wWY1fs/3agmSm1BUZFLcudHEc7KThpIDjjNhZbuhxx+7ZNKlZ2YBU9Dj1o
+         Yln4q+PnOYPN60QxKKW5dxMUj4NXKyAmhK1w282xymrVOY614FETlEWVS7HW1FVpT9k5
+         ZC7leHMa+rNrC5j7fqJHeVUCuOVmfHggLhy7i0taXaq82IINNGMTAniHqPKDQS5DPrby
+         a0sZYOI0Xv2d9RGUZyMSA4c08MqHMC81x16eFfF4aptfwZzOkCor6tDSo7vUUdZae/TN
+         j8DQ==
+X-Gm-Message-State: AOAM532QSwnalS4vS6ElS0aOj7WvK7cKrvig6QopIKvbhP40Zb8QuC+p
+        fRuHiIdGj2XaQusNlBqnLXw=
+X-Google-Smtp-Source: ABdhPJwLKp4Ek16GIR6wfTGzoNi9sGCN2B5VA54FGeDyqorTPtnWjcRjvN0kcQMGbXM4anhxYRPvyw==
+X-Received: by 2002:a17:90a:b011:: with SMTP id x17mr8088274pjq.175.1590738075444;
+        Fri, 29 May 2020 00:41:15 -0700 (PDT)
 Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id hb3sm7267617pjb.57.2020.05.29.00.41.11
+        by smtp.gmail.com with ESMTPSA id a7sm6765760pfa.187.2020.05.29.00.41.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 29 May 2020 00:41:12 -0700 (PDT)
 Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 3DF66422E5; Fri, 29 May 2020 07:41:10 +0000 (UTC)
+        id 67FA942309; Fri, 29 May 2020 07:41:10 +0000 (UTC)
 From:   Luis Chamberlain <mcgrof@kernel.org>
 To:     keescook@chromium.org, yzaikin@google.com, nixiaoming@huawei.com,
         ebiederm@xmission.com, axboe@kernel.dk, clemens@ladisch.de,
@@ -50,9 +50,9 @@ Cc:     julia.lawall@lip6.fr, akpm@linux-foundation.org,
         intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linuxppc-dev@lists.ozlabs.org, ocfs2-devel@oss.oracle.com,
         linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 02/13] cdrom: use new sysctl subdir helper register_sysctl_subdir()
-Date:   Fri, 29 May 2020 07:40:57 +0000
-Message-Id: <20200529074108.16928-3-mcgrof@kernel.org>
+Subject: [PATCH 03/13] hpet: use new sysctl subdir helper register_sysctl_subdir()
+Date:   Fri, 29 May 2020 07:40:58 +0000
+Message-Id: <20200529074108.16928-4-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.23.0.rc1
 In-Reply-To: <20200529074108.16928-1-mcgrof@kernel.org>
 References: <20200529074108.16928-1-mcgrof@kernel.org>
@@ -66,7 +66,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 This simplifies the code considerably. The following coccinelle
 SmPL grammar rule was used to transform this code.
 
-// pycocci sysctl-subdir.cocci drivers/cdrom/cdrom.c
+// pycocci sysctl-subdir.cocci drivers/char/hpet.c
 
 @c1@
 expression E1;
@@ -151,52 +151,52 @@ header =
 +register_sysctl_subdir(E2, E1, sysctls);
 
 Generated-by: Coccinelle SmPL
+
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/cdrom/cdrom.c | 23 ++---------------------
- 1 file changed, 2 insertions(+), 21 deletions(-)
+ drivers/char/hpet.c | 22 +---------------------
+ 1 file changed, 1 insertion(+), 21 deletions(-)
 
-diff --git a/drivers/cdrom/cdrom.c b/drivers/cdrom/cdrom.c
-index a0a7ae705de8..3c638f464cef 100644
---- a/drivers/cdrom/cdrom.c
-+++ b/drivers/cdrom/cdrom.c
-@@ -3719,26 +3719,6 @@ static struct ctl_table cdrom_table[] = {
- 	{ }
+diff --git a/drivers/char/hpet.c b/drivers/char/hpet.c
+index ed3b7dab678d..169c970d5ff8 100644
+--- a/drivers/char/hpet.c
++++ b/drivers/char/hpet.c
+@@ -746,26 +746,6 @@ static struct ctl_table hpet_table[] = {
+ 	{}
  };
  
--static struct ctl_table cdrom_cdrom_table[] = {
+-static struct ctl_table hpet_root[] = {
 -	{
--		.procname	= "cdrom",
--		.maxlen		= 0,
--		.mode		= 0555,
--		.child		= cdrom_table,
--	},
--	{ }
+-	 .procname = "hpet",
+-	 .maxlen = 0,
+-	 .mode = 0555,
+-	 .child = hpet_table,
+-	 },
+-	{}
 -};
 -
--/* Make sure that /proc/sys/dev is there */
--static struct ctl_table cdrom_root_table[] = {
+-static struct ctl_table dev_root[] = {
 -	{
--		.procname	= "dev",
--		.maxlen		= 0,
--		.mode		= 0555,
--		.child		= cdrom_cdrom_table,
--	},
--	{ }
+-	 .procname = "dev",
+-	 .maxlen = 0,
+-	 .mode = 0555,
+-	 .child = hpet_root,
+-	 },
+-	{}
 -};
- static struct ctl_table_header *cdrom_sysctl_header;
+-
+ static struct ctl_table_header *sysctl_header;
  
- static void cdrom_sysctl_register(void)
-@@ -3748,7 +3728,8 @@ static void cdrom_sysctl_register(void)
- 	if (!atomic_add_unless(&initialized, 1, 1))
- 		return;
+ /*
+@@ -1059,7 +1039,7 @@ static int __init hpet_init(void)
+ 	if (result < 0)
+ 		return -ENODEV;
  
--	cdrom_sysctl_header = register_sysctl_table(cdrom_root_table);
-+	cdrom_sysctl_header = register_sysctl_subdir("dev", "cdrom",
-+						     cdrom_table);
+-	sysctl_header = register_sysctl_table(dev_root);
++	sysctl_header = register_sysctl_subdir("dev", "hpet", hpet_table);
  
- 	/* set the defaults */
- 	cdrom_sysctl_settings.autoclose = autoclose;
+ 	result = acpi_bus_register_driver(&hpet_acpi_driver);
+ 	if (result < 0) {
 -- 
 2.26.2
 
