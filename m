@@ -2,78 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39121E82A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 17:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA001E82AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 17:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727956AbgE2P6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 11:58:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726845AbgE2P6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 11:58:15 -0400
-Received: from localhost.localdomain (cpe-70-114-128-244.austin.res.rr.com [70.114.128.244])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727851AbgE2P71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 11:59:27 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:31961 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727809AbgE2P70 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 11:59:26 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590767965; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=D/JMvgaJGqi1jK8NRGNKnGGrv9rdFQusuj9ABakOAT0=; b=Q7qutTWugHwaGFoE1EIMCVwZHnV+kMbrN7eL9hiPNesgIIaLNmdY2noaXCSMba2UdzJ/Fl8P
+ VKfZ+LH+dESsGvEWfsKhSCsjC3/xdYl2xjYxwAjwopA1nVwLmvTWPqAtqzJyVVoe8xIRLp6X
+ 7eDCWxwUAwpMByZPShwMaEmm6GU=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5ed131483ac6f4f603087c72 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 May 2020 15:59:04
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3FE88C433CB; Fri, 29 May 2020 15:59:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF8E1208B8;
-        Fri, 29 May 2020 15:58:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590767894;
-        bh=zL5cZTZL9Q9NYyBA9lT7dprVoQEUmueen5FwUFKr71A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CMiV2+SxCCGbgl65XqB38WA3kKS1Bk6V3pQDJ9ZVs9H5VI9Z2pWzAuHF2cFqMwoHt
-         Je4vYsI3doBvrNkWOw1FAxlzrIZN8qXBrkCgTZS+jpv6SBLhxkgW8NG55CjUUXmMY2
-         +2yQwFVDA+koPTa89gsX0B4sZ7SYsvpMNcivVRYE=
-From:   Dinh Nguyen <dinguyen@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     dinguyen@kernel.org, devicetree@vger.kernel.org,
-        linux-spi@vger.kernel.org, broonie@kernel.org, robh+dt@kernel.org,
-        Sergey.Semin@baikalelectronics.ru, fancer.lancer@gmail.com,
-        andriy.shevchenko@linux.intel.com, lars.povlsen@microchip.com,
-        liang.j.jin@ericsson.com
-Subject: [PATCHv4 2/2] dt-bindings: snps,dw-apb-ssi: add optional reset property
-Date:   Fri, 29 May 2020 10:58:06 -0500
-Message-Id: <20200529155806.16758-2-dinguyen@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200529155806.16758-1-dinguyen@kernel.org>
-References: <20200529155806.16758-1-dinguyen@kernel.org>
+        (Authenticated sender: zijuhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B3176C433C6;
+        Fri, 29 May 2020 15:59:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B3176C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=zijuhu@codeaurora.org
+From:   Zijun Hu <zijuhu@codeaurora.org>
+To:     sean.wang@mediatek.com, marcel@holtmann.org,
+        johan.hedberg@gmail.com, matthias.bgg@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, mka@chromium.org,
+        zijuhu@codeaurora.org
+Subject: [PATCH v1] Bluetooth: btmtkuart: Use serdev_device_write_buf() instead of serdev_device_write()
+Date:   Fri, 29 May 2020 23:58:56 +0800
+Message-Id: <1590767936-21907-1-git-send-email-zijuhu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add optional reset property.
+serdev_device_write() is not appropriate at here because
+serdev_device_write_wakeup() is not used to release completion hold
+by the former at @write_wakeup member of struct serdev_device_ops.
 
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
----
-v4: rebased to linux-next 20200529
-v3: no change
-v2: actually document the "resets" and "reset-names" optional properties
----
- Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.txt | 5 +++++
- 1 file changed, 5 insertions(+)
+Fix by using serdev_device_write_buf() instead of serdev_device_write().
 
-diff --git a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.txt b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.txt
-index 020e3168ee41..0f21407a7ea3 100644
---- a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.txt
-+++ b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.txt
-@@ -25,6 +25,9 @@ Optional properties:
-   device.  Supported values are 2 or 4 (the default).
- - dmas : Phandle + identifiers of Tx and Rx DMA channels.
- - dma-names : Contains the names of the DMA channels. Must be "tx" and "rx".
-+- resets : contains an entry for each entry in reset-names.
-+	   See ../reset/reset.txt for details.
-+- reset-names : must contain "spi"
+Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
+---
+ drivers/bluetooth/btmtkuart.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/bluetooth/btmtkuart.c b/drivers/bluetooth/btmtkuart.c
+index 8a81fbca5c9d..6c40bc75fb5b 100644
+--- a/drivers/bluetooth/btmtkuart.c
++++ b/drivers/bluetooth/btmtkuart.c
+@@ -695,8 +695,7 @@ static int btmtkuart_change_baudrate(struct hci_dev *hdev)
  
- Child nodes as per the generic SPI binding.
- 
-@@ -40,5 +43,7 @@ Example:
- 		num-cs = <2>;
- 		cs-gpios = <&gpio0 13 0>,
- 			   <&gpio0 14 0>;
-+		resets = <&rst SPIM0_RST>;
-+		reset-names = "spi";
- 	};
+ 	/* Send a dummy byte 0xff to activate the new baudrate */
+ 	param = 0xff;
+-	err = serdev_device_write(bdev->serdev, &param, sizeof(param),
+-				  MAX_SCHEDULE_TIMEOUT);
++	err = serdev_device_write_buf(bdev->serdev, &param, sizeof(param));
+ 	if (err < 0 || err < sizeof(param))
+ 		return err;
  
 -- 
-2.17.1
+2.7.4
 
