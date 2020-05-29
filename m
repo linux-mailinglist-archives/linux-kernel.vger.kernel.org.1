@@ -2,85 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2EFA1E77E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 596CC1E77A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725988AbgE2IJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 04:09:28 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:28756 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725601AbgE2IJ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 04:09:28 -0400
-Received: from localhost.localdomain (unknown [222.205.60.151])
-        by mail-app3 (Coremail) with SMTP id cC_KCgAHD+MrwdBe0KQfAA--.26998S4;
-        Fri, 29 May 2020 16:00:47 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/nouveau/clk/gm20b: Fix memory leak in gm20b_clk_new
-Date:   Fri, 29 May 2020 16:00:39 +0800
-Message-Id: <20200529080042.6082-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgAHD+MrwdBe0KQfAA--.26998S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Jr1Dur1rZF1DurW8Wr4fuFg_yoW8Jr1xpF
-        40qayj9rWUJF4xCw17Aw1UWF98ua1vyFyxG34SkwnIgrs8Jr95ZFWYyryrJayrXFW5GFWY
-        vFsrKFy5ur45uFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUv21xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r43MxAIw28IcxkI7VAKI48J
-        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-        7VUjNJ55UUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0OBlZdtOWM2gAPsE
+        id S1726350AbgE2IC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 04:02:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725710AbgE2ICU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 04:02:20 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51609C03E969
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 01:02:20 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id cx22so883811pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 01:02:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FH4qW28ZV11K1NJ8SgsxqpyEJdDXv+9PfynuvH0m1ZA=;
+        b=PKvBlHRssXBF/CGUw0qX4NviijQzAG0OL5AGitmwtk1EWwxFWvDwx+ZQH+228Vc7Yi
+         7SYv8mVyb6DJ/1xrXsGkJCiM+bn52Nr5TZbmGN1RyTPQXVAZXQ9breNX1wunEuo/73H+
+         plPjjqJYBoXFjV2VIDZ6SdREICwi4b0BPZ9Kk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FH4qW28ZV11K1NJ8SgsxqpyEJdDXv+9PfynuvH0m1ZA=;
+        b=o4n9DcZlyAMCaNjfMb4fLcV4jQpohGwSJXZAMqvbQsp4/y7wD+pXCv070m1rkvHwvJ
+         +ne+RqDdLEK+DxjW3SkhlZRzN+fFPPmTpEY+sIWjXL9dklgbHvTxLE9xh5H5+QU3SaLU
+         QHyqDS0+zXkxk+2hlTjDrhhswO0dtZcvgiWMOzN1VDXGy2hVU82jTvsSogAjfERQIiYv
+         HxPX0OMEVcI6qZFcOeYrxvPKtYxtvoNCgbZeqhEfBRoSAm+POqj60kIGfbO2oNKJCgYQ
+         ZlQDS44VKIH/yCv+U4/PJh7OrCEJ4kBaDbp+aALJ06cHjBVLk22cVgtdEdPkaA7Xale/
+         70Mw==
+X-Gm-Message-State: AOAM5308Vf7Ey+YSztgSKbma/zgR/jxcJ7uzAhgYk92bGrH+Wv/w7vr7
+        6iOIdIIVYbslmRfAiZ6FrfgvT/TyEy5NEA==
+X-Google-Smtp-Source: ABdhPJxOxAOl3PDJHnW4UY/3/6ePmWU/5PEvPRRRRXIViE/b/RGVejNHgYBs2M8HkKHPoKhkoJXufw==
+X-Received: by 2002:a17:90a:c004:: with SMTP id p4mr8581844pjt.170.1590739339904;
+        Fri, 29 May 2020 01:02:19 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c7sm7574099pjr.32.2020.05.29.01.02.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2020 01:02:18 -0700 (PDT)
+Date:   Fri, 29 May 2020 01:02:17 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Tycho Andersen <tycho@tycho.ws>,
+        Matt Denton <mpdenton@google.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Robert Sesek <rsesek@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Linux Containers <containers@lists.linux-foundation.org>
+Subject: Re: [PATCH v2 1/2] seccomp: notify user trap about unused filter
+Message-ID: <202005290058.926E6B5421@keescook>
+References: <20200528151412.265444-1-christian.brauner@ubuntu.com>
+ <202005281404.276641223F@keescook>
+ <20200529074744.nf6g5mdeqz6zp4un@wittgenstein>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200529074744.nf6g5mdeqz6zp4un@wittgenstein>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When gk20a_clk_ctor() returns an error code, pointer "clk"
-should be released. It's the same when gm20b_clk_new()
-returns from elsewhere following this call.
+On Fri, May 29, 2020 at 09:47:44AM +0200, Christian Brauner wrote:
+> Well the correct way would probably be:
+> "usage" -> "refs"
+> "live"  -> "users"
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/gpu/drm/nouveau/nvkm/subdev/clk/gm20b.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Yeah, I like it! :)
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/clk/gm20b.c b/drivers/gpu/drm/nouveau/nvkm/subdev/clk/gm20b.c
-index b284e949f732..a5aeba74d3b7 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/clk/gm20b.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/clk/gm20b.c
-@@ -1039,7 +1039,7 @@ gm20b_clk_new(struct nvkm_device *device, int index, struct nvkm_clk **pclk)
- 	ret = gk20a_clk_ctor(device, index, &gm20b_clk, clk_params,
- 			     &clk->base);
- 	if (ret)
--		return ret;
-+		goto out_free;
- 
- 	/*
- 	 * NAPLL can only work with max_u, clamp the m range so
-@@ -1067,8 +1067,8 @@ gm20b_clk_new(struct nvkm_device *device, int index, struct nvkm_clk **pclk)
- 		nvkm_warn(subdev, "no fused calibration parameters\n");
- 
- 	ret = gm20b_clk_init_safe_fmax(clk);
--	if (ret)
--		return ret;
- 
--	return 0;
-+out_free:
-+	kfree(clk);
-+	return ret;
- }
+> So we'd need a first patch to convert "usage" to "refs" and then
+> introduce "users".
+
+Yup, sounds right.
+
+> > signal_struct has "sigcnt" and "live". I find "sigcnt" to be an
+> > unhelpful name too. (And why isn't it refcount_t?)
+> 
+> I think I once looked that up and there was some sort of "not needed, no
+> gain" style rationale.
+
+hrm. it uses _inc and _dec_and_test... imo, that should make it be a
+refcount_t. Even if we're not protecting some clear UAF issue, it's
+still good to notification of potential bugs.
+
 -- 
-2.17.1
-
+Kees Cook
