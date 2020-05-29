@@ -2,59 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F05081E82A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 17:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B3D1E82B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 18:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727959AbgE2P7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 11:59:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37568 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726962AbgE2P7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 11:59:07 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3A7F2072D;
-        Fri, 29 May 2020 15:59:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590767947;
-        bh=VzmONYoZ1NiOqrvgLKYRTNZmB1gMj7QtP1/8E6WrElk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zAbJlZeJ04N2S9fB1FWPLhO5n9QXjxjVz1+072GDVP/e4v+VUis/GpeS89gjM/NZ5
-         MeP7pUaPkzLT+briUXfE9w8lHRG90W7RgCjQo7yBKzYsbpFPVV1O5cNgarJy7ckKVs
-         ykdsJ41PYSUYdaRCVHPNj2xAiY+y2ihVg6ZV3fts=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id AFED240AFD; Fri, 29 May 2020 12:59:04 -0300 (-03)
-Date:   Fri, 29 May 2020 12:59:04 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Nick Gasson <nick.gasson@arm.com>, Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] perf jvmti: Remove redundant jitdump line table
- entries
-Message-ID: <20200529155904.GA537@kernel.org>
-References: <20200528054049.13662-1-nick.gasson@arm.com>
- <CAP-5=fWcMKtPa3C9Jbyf=zY=YmTRaoiyc837nYJcK9pC+NJ-LA@mail.gmail.com>
+        id S1728014AbgE2P74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 11:59:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727857AbgE2P7y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 11:59:54 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C87C08C5C6
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 08:59:54 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id i17so1297612pli.13
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 08:59:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kurCmkIiK6G16S1AS8MjE3nGZ5QMFbDaJnDr19QRtow=;
+        b=P4jV66QAnPYba6PsFDUDr1f6sy7Ye12Q/5dWhR5ZwIKceETcyEqNKs1s6UYIKj140U
+         DKCSzND8cGlwh197eDms/epq3q4w1x6YqaqhjBLumAbsr1EMuO42IE/3ZgKLrHD0azZb
+         WLuikp4YBl2qTTbDlCepkKiRA02G8QEjZLHiY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kurCmkIiK6G16S1AS8MjE3nGZ5QMFbDaJnDr19QRtow=;
+        b=TcJ2HKRRe5IlvyBRB8hu3UVR+//exit+XOD1DqvqmST/R/F+Tj3nqhS1hwaujyoe9o
+         EJl8RQSDFVyRRjMJ6uHmJqMGgMSOqmEinMMdndHOpqAwF5rGVJmQ8CABJJjWMxTqb7K6
+         ncRM70oOmkAItdmmQb4FfNYKCcVq3xfYYp76drIuEalRTsvVnkzC1fuMISC0Qv38gpRz
+         000Jog+irBUNnLBvOJfsLRQ+Ij7PIh5myyEuQ4Q3XjZnWFF2ybTY1Yf+Jbb143O/ElhR
+         IFGSRgOal9rOBQk5rnxFiKcHVJyEFrfXdkeGl82i2/0nES2zAFf0yGYRBzTyfUnx0qZF
+         nNRQ==
+X-Gm-Message-State: AOAM5336DeAnXozh1Jjhq+iBlvzk1sy4SS2lIdoDyNxNCPW9A3zoW5II
+        id1RrPboHBMGSTFZh8Z7n0UqMMmheos=
+X-Google-Smtp-Source: ABdhPJwtQNV2OvNaIRbkCIkqCwxriayrw68HJNbfr/VBL6ehccOxrthYFVFhrqhSbdeBanDCFD9b0A==
+X-Received: by 2002:a17:90a:1a17:: with SMTP id 23mr10401588pjk.198.1590767993701;
+        Fri, 29 May 2020 08:59:53 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
+        by smtp.gmail.com with ESMTPSA id gt10sm8447666pjb.30.2020.05.29.08.59.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 May 2020 08:59:53 -0700 (PDT)
+Date:   Fri, 29 May 2020 08:59:52 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Zijun Hu <zijuhu@codeaurora.org>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
+        rjliao@codeaurora.org
+Subject: Re: [PATCH v4] Bluetooth: hci_qca: Improve controller ID info log
+ level
+Message-ID: <20200529155952.GN4525@google.com>
+References: <1590763573-8302-1-git-send-email-zijuhu@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAP-5=fWcMKtPa3C9Jbyf=zY=YmTRaoiyc837nYJcK9pC+NJ-LA@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <1590763573-8302-1-git-send-email-zijuhu@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, May 28, 2020 at 12:31:31AM -0700, Ian Rogers escreveu:
-> On Wed, May 27, 2020 at 10:41 PM Nick Gasson <nick.gasson@arm.com> wrote:
-> > +                                 */
+On Fri, May 29, 2020 at 10:46:13PM +0800, Zijun Hu wrote:
+> Controller ID info got by VSC EDL_PATCH_GETVER is very
+> important, so improve its log level from DEBUG to INFO.
 > 
-> Thanks!
-> 
-> Acked-by: Ian Rogers <irogers@google.com>
+> Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
 
-Thanks, applied.
+As requested earlier, please add the tags from previous
+versions (in this case my 'Reviewed-by' tag from v2/v3),
+unless the new patch has substantial changes.
 
-- Arnaldo
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
