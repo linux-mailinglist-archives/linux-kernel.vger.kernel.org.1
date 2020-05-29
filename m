@@ -2,81 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3081E7A25
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 12:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A686F1E7A61
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 12:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726767AbgE2KMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 06:12:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42356 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725775AbgE2KMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 06:12:17 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 99C412074D;
-        Fri, 29 May 2020 10:12:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590747137;
-        bh=Yl+5FEwzOOeZ8hYUoXsCXAbU3LDBkX87gD4CrrxKtSs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yNzc+6/JphBjd5egkaD9BnpKWOOfFI4ax9kFqcSb30A43a5fGOeZLBcjqQ5K12KpQ
-         BBhsv8gKvsvILykkAjdjQv8OBLRXBiUK1QcJD+1VHoovufrAK8bAlisdKfQycTSCqg
-         VLyxNIVURxjUGEHIJg9LzB1m/DgVdPm8VbkzD7iA=
-Date:   Fri, 29 May 2020 12:12:14 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Wesley Cheng <wcheng@codeaurora.org>
-Cc:     robh+dt@kernel.org, bjorn.andersson@linaro.org, balbi@kernel.org,
-        agross@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [RFC v3 0/3] Re-introduce TX FIFO resize for larger EP bursting
-Message-ID: <20200529101214.GA1321073@kroah.com>
-References: <1590630363-3934-1-git-send-email-wcheng@codeaurora.org>
+        id S1726616AbgE2KTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 06:19:16 -0400
+Received: from mail-m127107.qiye.163.com ([115.236.127.107]:28719 "EHLO
+        mail-m127107.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725601AbgE2KTP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 06:19:15 -0400
+X-Greylist: delayed 387 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 May 2020 06:19:13 EDT
+Received: from vivo.com (wm-12.qy.internal [127.0.0.1])
+        by mail-m127107.qiye.163.com (Hmail) with ESMTP id 306C28109C;
+        Fri, 29 May 2020 18:12:44 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <ALMAWwB5CP9aAcKXCU5FzqqF.1.1590747164172.Hmail.zhucancan@vivo.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Cc:     trivial@kernel.org, kernel <kernel@vivo.com>,
+        zhucancan <zhucancan@vivo.com>,
+        =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>
+Subject: =?UTF-8?B?U3ViamVjdDogW1BBVENIIHYyXSBBU29DOiBzb2MtcGNtOiBmaXggQkUgZGFpIG5vdCBod19mcmVlIGFuZCBzaHV0ZG93biBkdXJpbmcgbWl4ZXIgdXBkYXRl?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 58.251.74.226
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1590630363-3934-1-git-send-email-wcheng@codeaurora.org>
+Received: from zhucancan@vivo.com( [58.251.74.226) ] by ajax-webmail ( [127.0.0.1] ) ; Fri, 29 May 2020 18:12:44 +0800 (GMT+08:00)
+From:   =?UTF-8?B?5pyx54G/54G/?= <zhucancan@vivo.com>
+Date:   Fri, 29 May 2020 18:12:44 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VLTkNLS0tLQ0xMSENLT1lXWShZQU
+        hPN1dZLVlBSVdZDwkaFQgSH1lBWRJOKzI4HDkjTigQGE81OR40LTIhOjpWVlVJSkMoSVlXWQkOFx
+        4IWUFZNTQpNjo3JCkuNz5ZV1kWGg8SFR0UWUFZNDBZBg++
+X-HM-Sender-Digest: e1kMHhlZQQ8JDh5XWRIfHhUPWUFZRzo3NjosDDlOOCtCGjoYMCM4Lk49
+        AQoKPVVKVUpOQktMT0xKTU9JTkhVMxYaEhdVARMOGBoVGBoVOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlJTVlXWQgBWUFITkhNNwY+
+X-HM-Tid: 0a725feb6e2d986bkuuu306c28109c
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 06:46:00PM -0700, Wesley Cheng wrote:
-> Changes in V3:
->  - Removed "Reviewed-by" tags
->  - Renamed series back to RFC
->  - Modified logic to ensure that fifo_size is reset if we pass the minimum
->    threshold.  Tested with binding multiple FDs requesting 6 FIFOs.
-> 
-> Changes in V2:
->  - Modified TXFIFO resizing logic to ensure that each EP is reserved a
->    FIFO.
->  - Removed dev_dbg() prints and fixed typos from patches
->  - Added some more description on the dt-bindings commit message
-> 
-> Currently, there is no functionality to allow for resizing the TXFIFOs, and
-> relying on the HW default setting for the TXFIFO depth.  In most cases, the
-> HW default is probably sufficient, but for USB compositions that contain
-> multiple functions that require EP bursting, the default settings
-> might not be enough.  Also to note, the current SW will assign an EP to a
-> function driver w/o checking to see if the TXFIFO size for that particular
-> EP is large enough. (this is a problem if there are multiple HW defined
-> values for the TXFIFO size)
-> 
-> It is mentioned in the SNPS databook that a minimum of TX FIFO depth = 3
-> is required for an EP that supports bursting.  Otherwise, there may be
-> frequent occurences of bursts ending.  For high bandwidth functions,
-> such as data tethering (protocols that support data aggregation), mass
-> storage, and media transfer protocol (over FFS), the bMaxBurst value can be
-> large, and a bigger TXFIFO depth may prove to be beneficial in terms of USB
-> throughput. (which can be associated to system access latency, etc...)  It
-> allows for a more consistent burst of traffic, w/o any interruptions, as
-> data is readily available in the FIFO.
-> 
-> With testing done using the mass storage function driver, the results show
-> that with a larger TXFIFO depth, the bandwidth increased significantly.
-
-Why is this still a "RFC" series?  That implies you don't want this
-applied...
-
+RkUgc3RhdGUgaXMgU05EX1NPQ19EUENNX1NUQVRFX1BSRVBBUkUgbm93LCBCRTEgaXMKdXNlZCBi
+eSBGRS4KCkxhdGVyIHdoZW4gbmV3IEJFMiBpcyBhZGRlZCB0byBGRSBieSBtaXhlciB1cGRhdGUs
+Cml0IHdpbGwgY2FsbCBkcGNtX3J1bl91cGRhdGVfc3RhcnR1cCgpIHRvIHVwZGF0ZQpCRTIncyBz
+dGF0ZSwgYnV0IHVuZm9ydHVuYXRlbHkgQkUyIC5wcmVwYXJlKCkgbWVldHMKZXJyb3IsIGl0IHdp
+bGwgZGlzY29ubmVjdCBhbGwgbm9uIHN0YXJ0ZWQgQkUuCgpUaGlzIG1ha2UgQkUxIGRhaSBza2lw
+IC5od19mcmVlKCkgYW5kIC5zaHV0ZG93bigpLAphbmQgdGhlIEJFMSB1c2VycyB3aWxsIG5ldmVy
+IGRlY3JlYXNlIHRvIHplcm8uCgpTaWduZWQtb2ZmLWJ5OiB6aHVjYW5jYW4gPHpodWNhbmNhbkB2
+aXZvLmNvbT4KLS0tCnJlLWZvcm1hdCBwYXRjaCBjb250ZW50IHYyCi0tLQogc291bmQvc29jL3Nv
+Yy1wY20uYyB8IDYgKysrLS0tCiAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAzIGRl
+bGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zb2MtcGNtLmMgYi9zb3VuZC9zb2Mv
+c29jLXBjbS5jCmluZGV4IDFmMzAyZGU0NDA1Mi4uZGYzNDQyMmJkMGRkIDEwMDY0NAotLS0gYS9z
+b3VuZC9zb2Mvc29jLXBjbS5jCisrKyBiL3NvdW5kL3NvYy9zb2MtcGNtLmMKQEAgLTI3MzAsMTIg
+KzI3MzAsMTIgQEAgc3RhdGljIGludCBkcGNtX3J1bl91cGRhdGVfc3RhcnR1cChzdHJ1Y3Qgc25k
+X3NvY19wY21fcnVudGltZSAqZmUsIGludCBzdHJlYW0pCiBjbG9zZToKIAlkcGNtX2JlX2RhaV9z
+aHV0ZG93bihmZSwgc3RyZWFtKTsKIGRpc2Nvbm5lY3Q6Ci0JLyogZGlzY29ubmVjdCBhbnkgbm9u
+IHN0YXJ0ZWQgQkVzICovCisJLyogZGlzY29ubmVjdCBhbnkgY2xvc2VkIEJFcyAqLwogCXNwaW5f
+bG9ja19pcnFzYXZlKCZmZS0+Y2FyZC0+ZHBjbV9sb2NrLCBmbGFncyk7CiAJZm9yX2VhY2hfZHBj
+bV9iZShmZSwgc3RyZWFtLCBkcGNtKSB7CiAJCXN0cnVjdCBzbmRfc29jX3BjbV9ydW50aW1lICpi
+ZSA9IGRwY20tPmJlOwotCQlpZiAoYmUtPmRwY21bc3RyZWFtXS5zdGF0ZSAhPSBTTkRfU09DX0RQ
+Q01fU1RBVEVfU1RBUlQpCi0JCQkJZHBjbS0+c3RhdGUgPSBTTkRfU09DX0RQQ01fTElOS19TVEFU
+RV9GUkVFOworCQlpZiAoYmUtPmRwY21bc3RyZWFtXS5zdGF0ZSA9PSBTTkRfU09DX0RQQ01fU1RB
+VEVfQ0xPU0UpCisJCQlkcGNtLT5zdGF0ZSA9IFNORF9TT0NfRFBDTV9MSU5LX1NUQVRFX0ZSRUU7
+CiAJfQogCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmZlLT5jYXJkLT5kcGNtX2xvY2ssIGZsYWdz
+KTsKIAotLSAKMi4yMS4wCgoKCg0KDQo=
