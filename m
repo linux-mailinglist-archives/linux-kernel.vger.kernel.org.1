@@ -2,51 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48BD31E8990
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 23:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8198E1E8991
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 23:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728388AbgE2VKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 17:10:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33662 "EHLO mail.kernel.org"
+        id S1728415AbgE2VKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 17:10:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728349AbgE2VKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728350AbgE2VKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 29 May 2020 17:10:06 -0400
-Subject: Re: [GIT PULL] GFS2 fix for v5.7-rc7
+Subject: Re: [GIT PULL] Ceph fixes for 5.7-rc8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1590786605;
-        bh=bc8wIUt8a4wMIp7OWkd0NWWttBsIK+rLxxFxaj4xGE4=;
+        bh=x7ak+HKJ19JERDJRy7L/qYqdy8S91ns4K/PnmrFInfc=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=EYEDydEq2n8NcKd6MViS9U1F4DBYrNpppk0gcz0zRfuiZpeuZjXDvkOtd3eXzZGX9
-         /p/p2TfFj7LfnFlS/inrv7vif1MpcjWU04DumVMV7bptH9yQsJiujUd7rh3UOHRuHt
-         DYU0zxVYUH3JDbL5idX8OoGeYCL0JdiULZ6r3XnY=
+        b=vv3FTqCzTGMVEl3lcd0EsHVWnFJ6o0cUtrS6MN2Uw9LsxZxArwfdSssL5DeXN/Fdm
+         A3PuMf4AIbzIEPblSeMFEhPXtsYD37fMRpksoIcxDg1gy2hl36OpNGHZnn99KbLdn7
+         c+bRRJ1M+f+lLQdgRMb/2jSl2vuWXoUi4KuesKCM=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAHc6FU6RofgpBz0t_DxGMKDbHJrVMcwHVBh63Pa6Tu2Wbiuaww@mail.gmail.com>
-References: <CAHc6FU6RofgpBz0t_DxGMKDbHJrVMcwHVBh63Pa6Tu2Wbiuaww@mail.gmail.com>
+In-Reply-To: <20200529155257.21043-1-idryomov@gmail.com>
+References: <20200529155257.21043-1-idryomov@gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAHc6FU6RofgpBz0t_DxGMKDbHJrVMcwHVBh63Pa6Tu2Wbiuaww@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git
- tags/gfs2-v5.7-rc7.fixes
-X-PR-Tracked-Commit-Id: 20be493b787cd581c9fffad7fcd6bfbe6af1050c
+X-PR-Tracked-Message-Id: <20200529155257.21043-1-idryomov@gmail.com>
+X-PR-Tracked-Remote: https://github.com/ceph/ceph-client.git
+ tags/ceph-for-5.7-rc8
+X-PR-Tracked-Commit-Id: fb33c114d3ed5bdac230716f5b0a93b56b92a90d
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 835e36b1197a4f066d0254c897f2c8b455cbb581
-Message-Id: <159078660565.32003.9740215447484581952.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: e2fce151d2b4bd9722b3344ae381c768d249761f
+Message-Id: <159078660588.32003.3531710216240216117.pr-tracker-bot@kernel.org>
 Date:   Fri, 29 May 2020 21:10:05 +0000
-To:     Andreas Gruenbacher <agruenba@redhat.com>
+To:     Ilya Dryomov <idryomov@gmail.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
+        ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 29 May 2020 17:11:33 +0200:
+The pull request you sent on Fri, 29 May 2020 17:52:57 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v5.7-rc7.fixes
+> https://github.com/ceph/ceph-client.git tags/ceph-for-5.7-rc8
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/835e36b1197a4f066d0254c897f2c8b455cbb581
+https://git.kernel.org/torvalds/c/e2fce151d2b4bd9722b3344ae381c768d249761f
 
 Thank you!
 
