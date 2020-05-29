@@ -2,90 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A23D21E8BFD
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 01:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9B91E8C11
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 01:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728768AbgE2X2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 19:28:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
+        id S1728478AbgE2X3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 19:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728738AbgE2X2Q (ORCPT
+        with ESMTP id S1728040AbgE2X3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 19:28:16 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 104E7C08C5CB;
-        Fri, 29 May 2020 16:28:16 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
-        id 1jeoQA-000Bks-2G; Fri, 29 May 2020 23:28:14 +0000
-From:   Al Viro <viro@ZenIV.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org
-Subject: [PATCH 9/9] bpf: make bpf_check_uarg_tail_zero() use check_zeroed_user()
-Date:   Sat, 30 May 2020 00:28:14 +0100
-Message-Id: <20200529232814.45149-1-viro@ZenIV.linux.org.uk>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200528234025.GT23230@ZenIV.linux.org.uk>
-References: <20200528234025.GT23230@ZenIV.linux.org.uk>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 29 May 2020 19:29:20 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A445DC03E969;
+        Fri, 29 May 2020 16:29:20 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id C393312863400;
+        Fri, 29 May 2020 16:29:19 -0700 (PDT)
+Date:   Fri, 29 May 2020 16:29:17 -0700 (PDT)
+Message-Id: <20200529.162917.1970892823680223252.davem@davemloft.net>
+To:     peterz@infradead.org
+Cc:     mingo@kernel.org, will@kernel.org, tglx@linutronix.de,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        a.darwish@linutronix.de, rostedt@goodmis.org,
+        bigeasy@linutronix.de, sparclinux@vger.kernel.org,
+        mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
+        heiko.carstens@de.ibm.com, linux-s390@vger.kernel.org
+Subject: Re: [RFC][PATCH v3 1/5] sparc64: Fix asm/percpu.h build error
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200529214203.673108357@infradead.org>
+References: <20200529213550.683440625@infradead.org>
+        <20200529214203.673108357@infradead.org>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 29 May 2020 16:29:20 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Fri, 29 May 2020 23:35:51 +0200
 
-... rather than open-coding it, and badly, at that.
+> ../arch/sparc/include/asm/percpu_64.h:7:24: warning: call-clobbered register used for global register variable
+> register unsigned long __local_per_cpu_offset asm("g5");
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
- kernel/bpf/syscall.c | 25 ++++++-------------------
- 1 file changed, 6 insertions(+), 19 deletions(-)
+The "-ffixed-g5" option on the command line tells gcc that we are
+using 'g5' as a fixed register, so some part of your build isn't using
+the:
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 64783da34202..41ba746ecbc2 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -67,32 +67,19 @@ int bpf_check_uarg_tail_zero(void __user *uaddr,
- 			     size_t expected_size,
- 			     size_t actual_size)
- {
--	unsigned char __user *addr;
--	unsigned char __user *end;
--	unsigned char val;
--	int err;
-+	unsigned char __user *addr = uaddr + expected_size;
-+	int res;
- 
- 	if (unlikely(actual_size > PAGE_SIZE))	/* silly large */
- 		return -E2BIG;
- 
--	if (unlikely(!access_ok(uaddr, actual_size)))
--		return -EFAULT;
--
- 	if (actual_size <= expected_size)
- 		return 0;
- 
--	addr = uaddr + expected_size;
--	end  = uaddr + actual_size;
--
--	for (; addr < end; addr++) {
--		err = get_user(val, addr);
--		if (err)
--			return err;
--		if (val)
--			return -E2BIG;
--	}
--
--	return 0;
-+	res = check_zeroed_user(addr, actual_size - expected_size);
-+	if (res < 0)
-+		return res;
-+	return res ? 0 : -E2BIG;
- }
- 
- const struct bpf_map_ops bpf_map_offload_ops = {
--- 
-2.11.0
+KBUILD_CFLAGS += -ffixed-g4 -ffixed-g5 -fcall-used-g7 -Wno-sign-compare
 
+from arch/sparc/Makefile for some reason.
