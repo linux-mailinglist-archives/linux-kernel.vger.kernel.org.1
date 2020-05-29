@@ -2,100 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D521E7DDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 15:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55BD01E7DFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 15:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbgE2NE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 09:04:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726549AbgE2NE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 09:04:56 -0400
-Received: from localhost (lfbn-ncy-1-324-171.w83-196.abo.wanadoo.fr [83.196.159.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B3E52077D;
-        Fri, 29 May 2020 13:04:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590757496;
-        bh=5xmseH3wj1bkjpjrcWDcs26t3O2XwvF9rOv+Agfah8o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=z/xoTBl51+PF9jpmcPDeILvKwOdk3mW7ZMiO0uauYjljHTR2i1N5w1eAb8wgIeZdg
-         Mx6H8DqmeRNDF7dgYJEmPVBzQVqhiipzkP/027scNpDXRgGdg+UizA4cSQqOnDiLcA
-         liX9KXZBkmis7zNTWnKELhavkP0LFExok0e085qo=
-Date:   Fri, 29 May 2020 15:04:54 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org, x86@kernel.org,
-        cai@lca.pw, mgorman@techsingularity.net
-Subject: Re: [RFC][PATCH 3/7] smp: Move irq_work_run() out of
- flush_smp_call_function_queue()
-Message-ID: <20200529130453.GB19915@lenoir>
-References: <20200526161057.531933155@infradead.org>
- <20200526161907.895109676@infradead.org>
+        id S1727069AbgE2NGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 09:06:20 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:16754 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726629AbgE2NGR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 09:06:17 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04TCxZMv028270;
+        Fri, 29 May 2020 09:05:58 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 316wp8c20d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 May 2020 09:05:58 -0400
+Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 04TD5u0X003709
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Fri, 29 May 2020 09:05:57 -0400
+Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Fri, 29 May 2020 06:05:55 -0700
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by
+ SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Fri, 29 May 2020 06:05:13 -0700
+Received: from zeus.spd.analog.com (10.64.82.11) by SCSQMBX10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Fri, 29 May 2020 06:05:55 -0700
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 04TD5pKM026894;
+        Fri, 29 May 2020 09:05:52 -0400
+From:   <alexandru.tachici@analog.com>
+To:     <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+CC:     <robh+dt@kernel.org>, <linux@roeck-us.net>,
+        Alexandru Tachici <alexandru.tachici@analog.com>
+Subject: [PATCH v3 0/6] hwmon: pmbus: adm1266: add support
+Date:   Fri, 29 May 2020 16:05:00 +0300
+Message-ID: <20200529130506.73511-1-alexandru.tachici@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200526161907.895109676@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-05-29_07:2020-05-28,2020-05-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ phishscore=0 adultscore=0 mlxlogscore=999 impostorscore=0 clxscore=1011
+ malwarescore=0 mlxscore=0 lowpriorityscore=0 cotscore=-2147483648
+ spamscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005290104
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 06:11:00PM +0200, Peter Zijlstra wrote:
-> This ensures flush_smp_call_function_queue() is strictly about
-> call_single_queue.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  kernel/smp.c |   17 +++++++++--------
->  1 file changed, 9 insertions(+), 8 deletions(-)
-> 
-> --- a/kernel/smp.c
-> +++ b/kernel/smp.c
-> @@ -84,6 +84,7 @@ int smpcfd_dying_cpu(unsigned int cpu)
->  	 * still pending.
->  	 */
->  	flush_smp_call_function_queue(false);
-> +	irq_work_run();
->  	return 0;
->  }
->  
-> @@ -191,6 +192,14 @@ static int generic_exec_single(int cpu,
->  void generic_smp_call_function_single_interrupt(void)
->  {
->  	flush_smp_call_function_queue(true);
-> +
-> +	/*
-> +	 * Handle irq works queued remotely by irq_work_queue_on().
-> +	 * Smp functions above are typically synchronous so they
-> +	 * better run first since some other CPUs may be busy waiting
-> +	 * for them.
-> +	 */
+From: Alexandru Tachici <alexandru.tachici@analog.com>
 
-You may want to update that comment once you merge remote irq_work and csd.
+Add PMBus probing driver for the adm1266 Cascadable
+Super Sequencer with Margin Control and Fault Recording.
+Driver is using the pmbus_core, creating sysfs files
+under hwmon for inputs: vh1->vh4 and vp1->vp13.
 
-Thanks.
+1. Add PMBus probing driver for inputs vh1->vh4
+and vp1->vp13.
 
-> +	irq_work_run();
->  }
->  
->  /**
-> @@ -267,14 +276,6 @@ static void flush_smp_call_function_queu
->  		csd_unlock(csd);
->  		func(info);
->  	}
-> -
-> -	/*
-> -	 * Handle irq works queued remotely by irq_work_queue_on().
-> -	 * Smp functions above are typically synchronous so they
-> -	 * better run first since some other CPUs may be busy waiting
-> -	 * for them.
-> -	 */
-> -	irq_work_run();
->  }
->  
->  /*
-> 
-> 
+2. Add Block WR command. A pmbus specific implementation
+was required because block write with I2C_SMBUS_PROC_CALL
+flag allows a maximum of 32 bytes to be received.
+
+3. This makes adm1266 driver expose GPIOs
+to user-space. Currently are read only. Future
+developments on the firmware will allow
+them to be writable.
+
+4. Add debugfs files for go_command and read_state.
+
+5. Blakcboxes are 64 bytes of chip state related data
+that is generated on faults. Use the nvmem kernel api
+to expose the blackbox chip functionality to userspace.
+
+6. Device tree bindings for ADM1266.
+
+Alexandru Tachici (6):
+  hwmon: pmbus: adm1266: add support
+  hwmon: (pmbus/core) Add Block WR
+  hwmon: pmbus: adm1266: Add support for GPIOs
+  hwmon: pmbus: adm1266: add debugfs attr for states
+  hwmon: pmbus: adm1266: read blackbox
+  dt-bindings: hwmon: Add bindings for ADM1266
+
+Changelog v2 -> v3:
+- added block write-read process call in pmbus-core
+- expose GPIOs/PDIOs to user-space as readonly
+- allow the user to issue commands to adm1266
+in go_command debugfs file
+- allow the user to read state of the adm1266 sequencer
+from debugfs file read_state
+- chip generated blackboxes can now be read
+from the nvmem file 
+
+ .../bindings/hwmon/adi,adm1266.yaml           |  56 ++
+ Documentation/hwmon/adm1266.rst               |  35 ++
+ drivers/hwmon/pmbus/Kconfig                   |  11 +-
+ drivers/hwmon/pmbus/Makefile                  |   1 +
+ drivers/hwmon/pmbus/adm1266.c                 | 500 ++++++++++++++++++
+ drivers/hwmon/pmbus/pmbus.h                   |   4 +
+ drivers/hwmon/pmbus/pmbus_core.c              |  88 +++
+ 7 files changed, 694 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/adi,adm1266.yaml
+ create mode 100644 Documentation/hwmon/adm1266.rst
+ create mode 100644 drivers/hwmon/pmbus/adm1266.c
+
+-- 
+2.20.1
+
