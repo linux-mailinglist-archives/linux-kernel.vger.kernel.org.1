@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D0D1E71FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 03:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A244E1E71DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 03:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438342AbgE2BQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 21:16:08 -0400
-Received: from mxhk.zte.com.cn ([63.217.80.70]:53008 "EHLO mxhk.zte.com.cn"
+        id S2438269AbgE2BAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 21:00:41 -0400
+Received: from mx7.zte.com.cn ([202.103.147.169]:27252 "EHLO mxct.zte.com.cn"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728340AbgE2BQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 21:16:06 -0400
-X-Greylist: delayed 941 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 May 2020 21:16:05 EDT
+        id S2438243AbgE2BAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 21:00:38 -0400
 Received: from mse-fl2.zte.com.cn (unknown [10.30.14.239])
-        by Forcepoint Email with ESMTPS id 05FAB560F5E999B3359A;
-        Fri, 29 May 2020 09:00:21 +0800 (CST)
-Received: from notes_smtp.zte.com.cn (notessmtp.zte.com.cn [10.30.1.239])
-        by mse-fl2.zte.com.cn with ESMTP id 04T10JBx015586;
-        Fri, 29 May 2020 09:00:19 +0800 (GMT-8)
+        by Forcepoint Email with ESMTPS id 9B525DCB201D2880862A;
+        Fri, 29 May 2020 09:00:34 +0800 (CST)
+Received: from notes_smtp.zte.com.cn (notes_smtp.zte.com.cn [10.30.1.239])
+        by mse-fl2.zte.com.cn with ESMTP id 04T10XuH015789;
+        Fri, 29 May 2020 09:00:33 +0800 (GMT-8)
         (envelope-from wang.yi59@zte.com.cn)
 Received: from fox-host8.localdomain ([10.74.120.8])
           by szsmtp06.zte.com.cn (Lotus Domino Release 8.5.3FP6)
-          with ESMTP id 2020052909005386-3735750 ;
-          Fri, 29 May 2020 09:00:53 +0800 
+          with ESMTP id 2020052909010711-3735763 ;
+          Fri, 29 May 2020 09:01:07 +0800 
 From:   Yi Wang <wang.yi59@zte.com.cn>
-To:     jeffm@suse.com
-Cc:     jack@suse.cz, reiserfs-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xue.zhihong@zte.com.cn,
-        wang.yi59@zte.com.cn, wang.liang82@zte.com.cn,
-        Liao Pingfang <liao.pingfang@zte.com.cn>
-Subject: [PATCH] reiserfs: Replace kmalloc with kcalloc in the comment
-Date:   Fri, 29 May 2020 09:02:30 +0800
-Message-Id: <1590714150-15895-1-git-send-email-wang.yi59@zte.com.cn>
+To:     linuxdrivers@attotech.com
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xue.zhihong@zte.com.cn, wang.yi59@zte.com.cn,
+        wang.liang82@zte.com.cn, Liao Pingfang <liao.pingfang@zte.com.cn>
+Subject: [PATCH] scsi: esas2r: Replace kzalloc with kmalloc in the log message
+Date:   Fri, 29 May 2020 09:02:43 +0800
+Message-Id: <1590714163-15966-1-git-send-email-wang.yi59@zte.com.cn>
 X-Mailer: git-send-email 1.8.3.1
 X-MIMETrack: Itemize by SMTP Server on SZSMTP06/server/zte_ltd(Release 8.5.3FP6|November
- 21, 2013) at 2020-05-29 09:00:54,
+ 21, 2013) at 2020-05-29 09:01:07,
         Serialize by Router on notes_smtp/zte_ltd(Release 9.0.1FP7|August  17, 2016) at
- 2020-05-29 09:00:24,
-        Serialize complete at 2020-05-29 09:00:24
-X-MAIL: mse-fl2.zte.com.cn 04T10JBx015586
+ 2020-05-29 09:00:37,
+        Serialize complete at 2020-05-29 09:00:37
+X-MAIL: mse-fl2.zte.com.cn 04T10XuH015789
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -46,27 +45,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Liao Pingfang <liao.pingfang@zte.com.cn>
 
-Use kcalloc instead of kmalloc in the comment according to
-the previous kcalloc() call.
+Use kmalloc instead of kzalloc in the log message according to
+the previous kmalloc() call.
 
 Signed-off-by: Liao Pingfang <liao.pingfang@zte.com.cn>
 ---
- fs/reiserfs/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/esas2r/esas2r_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/reiserfs/inode.c b/fs/reiserfs/inode.c
-index 6419e6d..21ad762 100644
---- a/fs/reiserfs/inode.c
-+++ b/fs/reiserfs/inode.c
-@@ -1066,7 +1066,7 @@ int reiserfs_get_block(struct inode *inode, sector_t block,
- 			} else {
- 				/* paste hole to the indirect item */
- 				/*
--				 * If kmalloc failed, max_to_insert becomes
-+				 * If kcalloc failed, max_to_insert becomes
- 				 * zero and it means we only have space for
- 				 * one block
- 				 */
+diff --git a/drivers/scsi/esas2r/esas2r_main.c b/drivers/scsi/esas2r/esas2r_main.c
+index 7b49e2e..2cdc4ea 100644
+--- a/drivers/scsi/esas2r/esas2r_main.c
++++ b/drivers/scsi/esas2r/esas2r_main.c
+@@ -198,8 +198,8 @@ static ssize_t write_hw(struct file *file, struct kobject *kobj,
+ 					      GFP_KERNEL);
+ 		if (a->local_atto_ioctl == NULL) {
+ 			esas2r_log(ESAS2R_LOG_WARN,
+-				   "write_hw kzalloc failed for %zu bytes",
+-				   sizeof(struct atto_ioctl));
++				   "%s kmalloc failed for %zu bytes",
++				   __func__, sizeof(struct atto_ioctl));
+ 			return -ENOMEM;
+ 		}
+ 	}
 -- 
 2.9.5
 
