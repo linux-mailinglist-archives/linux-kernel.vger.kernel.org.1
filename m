@@ -2,72 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A9C1E84F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 055C01E84E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727000AbgE2Re7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 13:34:59 -0400
-Received: from mga09.intel.com ([134.134.136.24]:13511 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725914AbgE2Rez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 13:34:55 -0400
-IronPort-SDR: 0oK4f+LtEWUP6m/LRl+af91AjsooN6Kc8AFiUK1QFde8bWialBlN0q067LvDEa+6gVk+iLZffX
- NqTTlpuPNHAA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 May 2020 10:24:49 -0700
-IronPort-SDR: pjit+dMEA0v2x6153vaNVYMCYKhJQLWoIcDIBmhsu+ASCXhOlJCgyc12otZuQNnEKZPHKk6okx
- kJ5GZswLDfUA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,449,1583222400"; 
-   d="scan'208";a="256568441"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by orsmga007.jf.intel.com with ESMTP; 29 May 2020 10:24:49 -0700
-Date:   Fri, 29 May 2020 10:24:49 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
+        id S1727882AbgE2Rdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 13:33:33 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:33066 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725808AbgE2RdX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 13:33:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590773602;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=x0aFDdEIWprzVJ+1w7q7ZPdjI2x8X8Jq4phAYixSU2s=;
+        b=Dpv39SVxYl199miMd6yBPTG9FVaLQGaOMrSEFXMe98e+firNhWHtGQjO1D2g1uAe6Q3usL
+        vxmK9DM6Qyilb7OdTO7xEEYYo7unhwV1q5Je1xBdQ/QXRyftJ3v0JbO0E8GYKNJFu7q/fE
+        cHuz5m217PLf4S2RwCC2xQDyHxACxS8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-349-fXOlowKrPN6-kKeCKTRHcw-1; Fri, 29 May 2020 13:25:12 -0400
+X-MC-Unique: fXOlowKrPN6-kKeCKTRHcw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 21AF5872FE0;
+        Fri, 29 May 2020 17:25:10 +0000 (UTC)
+Received: from treble (ovpn-116-170.rdu2.redhat.com [10.10.116.170])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CB56F7A1ED;
+        Fri, 29 May 2020 17:25:07 +0000 (UTC)
+Date:   Fri, 29 May 2020 12:25:05 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
 To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, luto@amacapital.net,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        andrew.cooper3@citrix.com, daniel.thompson@linaro.org,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH 4/6] x86/entry: Optimize local_db_save() for virt
-Message-ID: <20200529172448.GA1074@linux.intel.com>
-References: <20200528201937.038455891@infradead.org>
- <20200528202328.588432451@infradead.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, broonie@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        viro@zeniv.linux.org.uk, x86@kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH] x86/uaccess: Remove redundant likely/unlikely annotations
+Message-ID: <20200529172505.fdjppgquujab7ayv@treble>
+References: <611fa14d-8d31-796f-b909-686d9ebf84a9@infradead.org>
+ <20200528172005.GP2483@worktop.programming.kicks-ass.net>
+ <20200529135750.GA1580@lst.de>
+ <20200529143556.GE706478@hirez.programming.kicks-ass.net>
+ <20200529145325.GB706518@hirez.programming.kicks-ass.net>
+ <20200529153336.GC706518@hirez.programming.kicks-ass.net>
+ <20200529160514.cyaytn33thphb3tz@treble>
+ <20200529161253.GD706460@hirez.programming.kicks-ass.net>
+ <20200529165011.o7vvhn4wcj6zjxux@treble>
+ <20200529165419.GF706460@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200528202328.588432451@infradead.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200529165419.GF706460@hirez.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 10:19:41PM +0200, Peter Zijlstra wrote:
->  static int arch_bp_generic_len(int x86_len)
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -3027,6 +3027,8 @@ static int nested_vmx_check_vmentry_hw(s
->  
->  	/*
->  	 * VMExit clears RFLAGS.IF and DR7, even on a consistency check.
-> +	 * XXX how is this not broken? access to cpu_dr7 ought to be with
-> +	 * IRQs disabled.
-
-Ah, it's simply broken.  This code is conditional on a module param that's
-off by default, i.e. it's not run widely, and odds are intersection with
-debugging is rare.
-
-Moving local_irq_enable() below the DR7 restoration is not an issue.
-
-Maybe also add lockdep_assert_irqs_disabled() to hw_breakpoint_restore() or
-hw_breakpoint_active()?
-
->  	 */
->  	local_irq_enable();
->  	if (hw_breakpoint_active())
+On Fri, May 29, 2020 at 06:54:19PM +0200, Peter Zijlstra wrote:
+> On Fri, May 29, 2020 at 11:50:11AM -0500, Josh Poimboeuf wrote:
+> > The nested likelys seem like overkill anyway -- user_access_begin() is
+> > __always_inline and it already has unlikely(), which should be
+> > propagated.
+> > 
+> > So just remove the outer likelys?
 > 
-> 
+> That fixes it. Ack!
+
+If there are no objections to the patch, I can add it to my objtool-core
+branch unless anybody else wants to take it.  It only affects
+linux-next.
+
+---8<---
+
+From: Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [PATCH] x86/uaccess: Remove redundant likely/unlikely annotations
+
+Since user_access_begin() already has an unlikely() annotation for its
+access_ok() check, "if (likely(user_access_begin))" results in nested
+likely annotations.  When combined with CONFIG_TRACE_BRANCH_PROFILING,
+GCC converges the error/success paths of the nested ifs, using a
+register value to distinguish between them.
+
+While the code is technically uaccess safe, it complicates the
+branch-profiling generated code.  It also confuses objtool, because it
+doesn't do register value tracking, resulting in the following warnings:
+
+  arch/x86/lib/csum-wrappers_64.o: warning: objtool: csum_and_copy_from_user()+0x2a4: call to memset() with UACCESS enabled
+  arch/x86/lib/csum-wrappers_64.o: warning: objtool: csum_and_copy_to_user()+0x243: return with UACCESS enabled
+
+The outer likely annotations aren't actually needed anyway, since the
+compiler propagates the error path coldness when it inlines
+user_access_begin().
+
+Fixes: 18372ef87665 ("x86_64: csum_..._copy_..._user(): switch to unsafe_..._user()")
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Acked-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ arch/x86/lib/csum-wrappers_64.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/lib/csum-wrappers_64.c b/arch/x86/lib/csum-wrappers_64.c
+index a12b8629206d..ee63d7576fd2 100644
+--- a/arch/x86/lib/csum-wrappers_64.c
++++ b/arch/x86/lib/csum-wrappers_64.c
+@@ -27,7 +27,7 @@ csum_and_copy_from_user(const void __user *src, void *dst,
+ 	might_sleep();
+ 	*errp = 0;
+ 
+-	if (!likely(user_access_begin(src, len)))
++	if (!user_access_begin(src, len))
+ 		goto out_err;
+ 
+ 	/*
+@@ -89,7 +89,7 @@ csum_and_copy_to_user(const void *src, void __user *dst,
+ 
+ 	might_sleep();
+ 
+-	if (unlikely(!user_access_begin(dst, len))) {
++	if (!user_access_begin(dst, len)) {
+ 		*errp = -EFAULT;
+ 		return 0;
+ 	}
+-- 
+2.21.3
+
