@@ -2,122 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D5B1E88F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D15D1E88F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728284AbgE2Udg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 16:33:36 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:48003 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728263AbgE2Ude (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 16:33:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590784412;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=l8PbJoOH9aDezxgmzJ1TZq5s7Zncxp4A2MUMvmD67D8=;
-        b=I/n2IkvAYIzdg2J7SbBhClEWW3mk4yHHamREQBP1o8vahFL3WcdW93BPn36+KAlCDQAOca
-        Jm77ViuAitgMlc+eha8/lbnA3YwFoD603nZyuAntzFZhbc6/NUss5yiy9H8Vx1xbr6x13M
-        hQ5Y85PJpuHrfm9ef66YwIjd9zzuzyY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-11-Dj63E_4GPCGmXu4XWuPxwA-1; Fri, 29 May 2020 16:33:28 -0400
-X-MC-Unique: Dj63E_4GPCGmXu4XWuPxwA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DD902460;
-        Fri, 29 May 2020 20:33:26 +0000 (UTC)
-Received: from krava (unknown [10.40.192.29])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 14C2E5C1B5;
-        Fri, 29 May 2020 20:33:21 +0000 (UTC)
-Date:   Fri, 29 May 2020 22:33:20 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 2/2] perf build: Allow explicitely disabling the
- NO_SYSCALL_TABLE variable
-Message-ID: <20200529203320.GG506785@krava>
-References: <20200529155552.463-1-acme@kernel.org>
- <20200529155552.463-3-acme@kernel.org>
- <20200529180717.GF506785@krava>
- <20200529194515.GB31795@kernel.org>
-MIME-Version: 1.0
+        id S1728153AbgE2Uda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 16:33:30 -0400
+Received: from mail-eopbgr60047.outbound.protection.outlook.com ([40.107.6.47]:31494
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726975AbgE2Ud0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 16:33:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FxxefjzXIVfzVbHR963761g4KXnhEdeXHSftB72l1RpOVHnnucNcI97i4Ra9pZL2ozO7D/5aiYFjo2cKT4kcfkxTp8nMBd0hdDMyYRNFB3HwxYvq9EmH/tj64q8OUwZjQmbVVtFYo2EHFfBJ6W/i+jc+vEMbno3eWwmKkaaPgCAemHliaDE11YjAPxHwKLnZzAspfVL5yXUsYUalHbBv+HPt9h/95npzACTOF3LurPdd7RocbB+cq3riIYp7uTzeo+pshuAIUTEDE/37BXYKe65g4w/Z+Gs7cTPS3aU2A138uQZgJPZ5iT0hAz5VeT3cfQHFj1yKfpEyRJv/sn529g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xBjVpvxS/fB+qV1h6CHnny0SOXH56l+r13fTlD9qGRc=;
+ b=dvuoLTQtQ9jugkhuO8esVYOZCmOYSWkg8m9re9Y/h0F+vLyrTWlfOFsAk4Pav1p08DHyJN6nlzph6JY6E4KUHrNq1o8KMXxTbKzboWxhuOJVxGvQT7RFGuJVvTO7ytQPOh10WYu6HaA+WwxRRO305y4Q/ZO2/p8S4b/76oAf4rIPTrR/InXyQoYGnGw58jkGe/5DckMyrZEB5W0jDGVGQUNY7YuuI0HjIme61MB5kcUcxUyb7Xj7DMcEu7DYTN3nKJVCEawuo+D3+4svHBIl/hcbA1vgPD5o64EJIYbmDX483vXksCIVapO/GlN7MDsPHXYR0JtZLrM+ZsGlmXzvrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=silexinsight.com; dmarc=pass action=none
+ header.from=silexinsight.com; dkim=pass header.d=silexinsight.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=silexinside.onmicrosoft.com; s=selector2-silexinside-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xBjVpvxS/fB+qV1h6CHnny0SOXH56l+r13fTlD9qGRc=;
+ b=LtMYne0l4rXtqMQ0oSBNVT8vibpfeSQqwXpRn9TAURsHX03882DUCnMem/XKbYQXz4shJYA4QpUqhNkULixekXRQ3kkqrLZ1uvOYe/E9reQ6hDJlryJ/eYdhHqmWAGxsYFwVCDVproJCpoldMOU6UpscnofwsMv98n9v310IaMA=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none
+ header.from=silexinsight.com;
+Received: from AM7PR09MB3621.eurprd09.prod.outlook.com (2603:10a6:20b:10d::15)
+ by AM7PR09MB3704.eurprd09.prod.outlook.com (2603:10a6:20b:108::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17; Fri, 29 May
+ 2020 20:33:23 +0000
+Received: from AM7PR09MB3621.eurprd09.prod.outlook.com
+ ([fe80::e902:acdf:8750:e9e2]) by AM7PR09MB3621.eurprd09.prod.outlook.com
+ ([fe80::e902:acdf:8750:e9e2%8]) with mapi id 15.20.3045.022; Fri, 29 May 2020
+ 20:33:22 +0000
+Date:   Fri, 29 May 2020 22:33:21 +0200
+From:   Olivier Sobrie <olivier.sobrie@silexinsight.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>, DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Waleed Ziad <waleed94ziad@gmail.com>,
+        sebastien.rabou@silexinsight.com
+Subject: Re: [PATCH 3/3] hwrng: ba431-rng: add support for BA431 hwrng
+Message-ID: <20200529203321.GA793664@ultraoso.localdomain>
+References: <20200525195606.2941649-1-olivier.sobrie@silexinsight.com>
+ <20200525195606.2941649-4-olivier.sobrie@silexinsight.com>
+ <CAK8P3a3=HoQZuBoqyFgyde1X7BRfcH-GFQpu=8acOi_JhVU99g@mail.gmail.com>
+ <20200529171231.GA2581035@bogus>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200529194515.GB31795@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20200529171231.GA2581035@bogus>
+X-ClientProxiedBy: AM4PR0701CA0033.eurprd07.prod.outlook.com
+ (2603:10a6:200:42::43) To AM7PR09MB3621.eurprd09.prod.outlook.com
+ (2603:10a6:20b:10d::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2a02:a03f:a7df:f300:fd7f:ed6c:a5df:c492) by AM4PR0701CA0033.eurprd07.prod.outlook.com (2603:10a6:200:42::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.7 via Frontend Transport; Fri, 29 May 2020 20:33:22 +0000
+X-Originating-IP: [2a02:a03f:a7df:f300:fd7f:ed6c:a5df:c492]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: aad59dda-616a-4766-8341-08d8040f8803
+X-MS-TrafficTypeDiagnostic: AM7PR09MB3704:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM7PR09MB370407246A9DF80FAC89178DF48F0@AM7PR09MB3704.eurprd09.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-Forefront-PRVS: 04180B6720
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vFfx0FJ5Jjb86Ugn9Po28Scy7bneAOPEw+q6YzsJ2zET2WHSM8qUoJzEwPsr9QovEJIGbnm3kSZBWqCT3VGquq1o1TztxOvftHOuEJrwoClUVW7SBxivFOkLRu38dugz0EiiBhz/pjPAqFUnEInaY6NZp1raSr2g1CvT5vo8RJ5tEW4aBAhuDvSVKpq1RTsvFDyUkrSsMWhzyyZBfqZfG6w0ti2y0CKPX2SPW0DSr+LAnnbV1i3xq+n2QmhggGrugO3smbYaO+E/RKWVcdqaw8r8MqlQMtofyLbwVbNz1tboLfyVKW8BddhVyy6+Yf8r33EZNyFRlh1JN3AK/dZtNDxrMmfsnAJmiQk10uxKLWRESt2jYeNjzkMRTTuzpKqE
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR09MB3621.eurprd09.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(376002)(366004)(39840400004)(396003)(346002)(107886003)(6496006)(2906002)(6486002)(66946007)(316002)(54906003)(8936002)(6916009)(1076003)(86362001)(33656002)(83380400001)(4326008)(5660300002)(44832011)(52116002)(66476007)(186003)(66556008)(9686003)(8676002)(53546011)(16526019)(508600001)(17423001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: +sCP3lAdP39+da9BvX7PYRsAxBE9XDN49DVSMjocQ9bWLqRgN5zu3l/1q2WRg6gzUL7Qidm9r5+ZgQiRNfIH2aH3DOj5PtksDLHpq6aPqCV4PJPTsYE2AFV8H7ZbyjfEXstPMG7SdGln/mPmwGB76TNpK08dcqx9pMeZMhCNoMHb8HhzQRE6CP1WZj49OSUwN8E1KjVfma0bWyqIputgLC6trjQh59f6mweB21qMgCy0kmI50ay0VmbmfdyHEpewo2fNAmavxlIFy8f4zU57XIHzOnBtbUNqJVGTfNrZk1L4f2jwU4WzxmKNffxhCBy5L9VVgY+eFmk+Uh3GwPws1cAAOxGH7DqR04MRyK8wA3brkHBNeudsvs4oL8Ri6cM+lts5tj2vo2wdz72+YIHosJDm7jZTlgIDGz5f0/AgZfJenmb0VxtKWyZPzf+7fGZje6nm8iX81CFy8crSlHAHeGPEksbOx5XLCeqOLxoqp0wk33n4IEqUz7+cxcUn1r4C1Maj/mtPtGwYuFMot8mRPJIJWT1lib/yktNCwZJu7vvOOirG4l4RYYpryGiTsoTW
+X-OriginatorOrg: silexinsight.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aad59dda-616a-4766-8341-08d8040f8803
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 May 2020 20:33:22.8067
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a02f6f9b-0f64-4420-b881-fca545d421d8
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 15gNh3DQsPytSbUS7Ojx2TnntTaGMqLun+WSeOBaC6rbQ5JGcu9152Zkp4mt1cMcmQTZW+/u4DwMvdz/06NcUw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR09MB3704
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 04:45:15PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Fri, May 29, 2020 at 08:07:17PM +0200, Jiri Olsa escreveu:
-> > On Fri, May 29, 2020 at 12:55:52PM -0300, Arnaldo Carvalho de Melo wrote:
-> > > From: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > > 
-> > > This is useful to see if, on x86, the legacy libaudit still works, as it
-> > > is used in architectures that don't have the SYSCALL_TABLE logic and we
-> > > want to have it tested in 'make -C tools/perf/ build-test'.
-> > > 
-> > > E.g.:
-> > > 
-> > > Without having audit-libs-devel installed:
-> > > 
-> > >   $ make NO_SYSCALL_TABLE=1 O=/tmp/build/perf -C tools/perf install-bin
-> > >   make: Entering directory '/home/acme/git/perf/tools/perf'
-> > >     BUILD:   Doing 'make -j12' parallel build
-> > >   <SNIP>
-> > >   Auto-detecting system features:
-> > >   <SNIP>
-> > >   ...                      libaudit: [ OFF ]
-> > >   ...                        libbfd: [ on  ]
-> > >   ...                        libcap: [ on  ]
-> > >   <SNIP>
-> > >   Makefile.config:664: No libaudit.h found, disables 'trace' tool, please install audit-libs-devel or libaudit-dev
-> > >   <SNIP>
-> > > 
-> > > After installing it:
-> > > 
-> > >   $ rm -rf /tmp/build/perf ; mkdir -p /tmp/build/perf
-> > >   $ time make NO_SYSCALL_TABLE=1 O=/tmp/build/perf  -C tools/perf install-bin ; perf test python
+On Fri, May 29, 2020 at 11:12:31AM -0600, Rob Herring wrote:
+> On Mon, May 25, 2020 at 10:28:46PM +0200, Arnd Bergmann wrote:
+> > On Mon, May 25, 2020 at 10:07 PM Olivier Sobrie
+> > <olivier.sobrie@silexinsight.com> wrote:
+> > >
+> > > Silex insight BA431 is an IP designed to generate random numbers that
+> > > can be integrated in various FPGA.
+> > > This driver adds support for it through the hwrng interface.
+> > >
+> > > This driver is used in Silex Insight Viper OEM boards.
+> > >
+> > > Signed-off-by: Olivier Sobrie <olivier.sobrie@silexinsight.com>
+> > > Signed-off-by: Waleed Ziad <waleed94ziad@gmail.com>
 > > 
-> > heya,
-> > seems ok, perhaps also put it in comment to Makefile.perf
-> > among other NO_* stuff and to tests/make
+> > The driver looks good to me.
+> > 
+> > Acked-by: Arnd Bergmann  <arnd@arndb.de>
+> > 
+> > >  drivers/char/hw_random/Kconfig     |  10 ++
+> > >  drivers/char/hw_random/Makefile    |   1 +
+> > >  drivers/char/hw_random/ba431-rng.c | 240 +++++++++++++++++++++++++++++
+> > 
+> > I wonder if we should move drivers/char/hw_random to its own top-level drivers
+> > subsystem outside of drivers/char. It seems to be growing steadily and is larger
+> > than a lot of other subsystems with currently 34 drivers in there.
+> > 
+> > Not your problem though.
+> > 
+> > > +       /* Wait until the state changed */
+> > > +       for (i = 0; i < BA431_RESET_READ_STATUS_RETRIES; ++i) {
+> > > +               state = ba431_trng_get_state(ba431);
+> > > +               if (state >= BA431_STATE_STARTUP)
+> > > +                       break;
+> > > +
+> > > +               udelay(BA431_RESET_READ_STATUS_INTERVAL);
+> > > +       }
+> > 
+> > Looking for something to improve, I noticed that this loop can take over
+> > a millisecond to time out, and it always runs in non-atomic context.
+> > It may be better to use usleep_range() than udelay().
 > 
-> 
-> Added this and your Acked-by (from the "seems ok") :-) Ok?
+> Or better yet, use the register polling helpers.
 
-yep ;-)
+Indeed, thanks for the suggestion.
+I'll replace this loop by the readx_poll_timeout() macro.
 
-jirka
-
-> 
-> - Arnaldo
-> 
-> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> index 30e41dcd4095..e3a34af38130 100644
-> --- a/tools/perf/Makefile.perf
-> +++ b/tools/perf/Makefile.perf
-> @@ -118,6 +118,9 @@ include ../scripts/utilities.mak
->  #
->  # Define LIBBPF_DYNAMIC to enable libbpf dynamic linking.
->  #
-> +# Define NO_SYSCALL_TABLE=1 to disable the use of syscall id to/from name tables
-> +# generated from the kernel .tbl or unistd.h files and use, if available, libaudit
-> +# for doing the conversions to/from strings/id.
->  
->  # As per kernel Makefile, avoid funny character set dependencies
->  unexport LC_ALL
-> 
-
+Olivier
