@@ -2,210 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8BA1E7830
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08BE81E7834
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726803AbgE2IXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 04:23:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbgE2IXW (ORCPT
+        id S1726844AbgE2IXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 04:23:38 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:42059 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725306AbgE2IXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 04:23:22 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0AE0C03E969
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 01:23:21 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id fs4so917250pjb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 01:23:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AIdQINovPOSOTJO7LcbhlxJUhgtHjantuh4CQ+iWOIk=;
-        b=V5cw7BLL23TyvF7XSXItctQqYMbZHnd3YzoANtt528V7qq7xu1e8i/d5BPhYuuzcJA
-         S4SZfsMhz56qz6LHdqb9P3YxO98X4/nyW5suGrtljbQRKiFaxDCQddMjE6qySAsDecYm
-         59mGjrKtcG0wLlb2EG+x0AmjGyZj6GcSpchSs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AIdQINovPOSOTJO7LcbhlxJUhgtHjantuh4CQ+iWOIk=;
-        b=a9c19waSG9UQOrAZ5Pd9xhB5/4s3bAKWtV0hkzIJozXmJua3zroH+fjPDM4gbtBMO/
-         VV4wmi1Dw9QLH82JNU2vK76Sd7bKrpGWYc7bZemNTXxbk7yUWZ7Hortyys2IU+rvyG5W
-         3dLYfkbHwexSfSh7Nxq3yFezH79qvOxxcS5VCBc7Cj4VN6KT757sQqGeOSfT7JQ4MWPT
-         E/nG0W+laKe/gPVMbjJpWR2pbUlZ714qZVGPebqaDw3vEe4ytep/dW155nMJ9RzZCVO4
-         YBjSEdrbkutbJ56k8f6JG+E2pfez69y1DOuF+JO0WPQqs1DeZfpXGYwW2XgtYkDF1Zzp
-         4qOw==
-X-Gm-Message-State: AOAM530V/thLK4C1Be7bNKpNBvw/dRJVst5wj0VAXjFaEMPNiUTfMb29
-        UV97GaB5GMKsGhMSlNgkMGQdqQ==
-X-Google-Smtp-Source: ABdhPJxhe+HLIcubMtL5eQGoTBqj0FU4LjvgWIjKqizFmhGngk4G6mh/yk/MZlVlYeZObWjd5EoKaQ==
-X-Received: by 2002:a17:90a:2e8a:: with SMTP id r10mr8137536pjd.33.1590740601487;
-        Fri, 29 May 2020 01:23:21 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id gd1sm7532180pjb.14.2020.05.29.01.23.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 01:23:20 -0700 (PDT)
-Date:   Fri, 29 May 2020 01:23:19 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     yzaikin@google.com, nixiaoming@huawei.com, ebiederm@xmission.com,
-        axboe@kernel.dk, clemens@ladisch.de, arnd@arndb.de,
-        gregkh@linuxfoundation.org, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        airlied@linux.ie, daniel@ffwll.ch, benh@kernel.crashing.org,
-        rdna@fb.com, viro@zeniv.linux.org.uk, mark@fasheh.com,
-        jlbec@evilplan.org, joseph.qi@linux.alibaba.com, vbabka@suse.cz,
-        sfr@canb.auug.org.au, jack@suse.cz, amir73il@gmail.com,
-        rafael@kernel.org, tytso@mit.edu, julia.lawall@lip6.fr,
-        akpm@linux-foundation.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linuxppc-dev@lists.ozlabs.org,
-        ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 06/13] ocfs2: use new sysctl subdir helper
- register_sysctl_subdir()
-Message-ID: <202005290121.C78B4AC@keescook>
-References: <20200529074108.16928-1-mcgrof@kernel.org>
- <20200529074108.16928-7-mcgrof@kernel.org>
+        Fri, 29 May 2020 04:23:37 -0400
+X-Originating-IP: 86.202.110.81
+Received: from localhost (lfbn-lyo-1-15-81.w86-202.abo.wanadoo.fr [86.202.110.81])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 0556FFF819;
+        Fri, 29 May 2020 08:23:34 +0000 (UTC)
+Date:   Fri, 29 May 2020 10:23:34 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Ran Wang <ran.wang_1@nxp.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Rob Herring <robh+dt@kernel.org>, Li Biwen <biwen.li@nxp.com>,
+        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] rtc: fsl-ftm-alarm: fix freeze(s2idle) doesnot wake
+Message-ID: <20200529082334.GY3972@piout.net>
+References: <20200529061035.18912-1-ran.wang_1@nxp.com>
+ <20200529061035.18912-2-ran.wang_1@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200529074108.16928-7-mcgrof@kernel.org>
+In-Reply-To: <20200529061035.18912-2-ran.wang_1@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 07:41:01AM +0000, Luis Chamberlain wrote:
-> This simplifies the code considerably. The following coccinelle
-> SmPL grammar rule was used to transform this code.
+On 29/05/2020 14:10:35+0800, Ran Wang wrote:
+> Use dev_pm_set_wake_irq() instead of flag IRQF_NO_SUSPEND to enable
+> wakeup system feature for both freeze(s2idle) and mem(deep).
 > 
-> // pycocci sysctl-subdir.cocci fs/ocfs2/stackglue.c
+> Use property 'wakeup-source' to control this feature.
 > 
-> @c1@
-> expression E1;
-> identifier subdir, sysctls;
-> @@
-> 
-> static struct ctl_table subdir[] = {
-> 	{
-> 		.procname = E1,
-> 		.maxlen = 0,
-> 		.mode = 0555,
-> 		.child = sysctls,
-> 	},
-> 	{ }
-> };
-> 
-> @c2@
-> identifier c1.subdir;
-> 
-> expression E2;
-> identifier base;
-> @@
-> 
-> static struct ctl_table base[] = {
-> 	{
-> 		.procname = E2,
-> 		.maxlen = 0,
-> 		.mode = 0555,
-> 		.child = subdir,
-> 	},
-> 	{ }
-> };
-> 
-> @c3@
-> identifier c2.base;
-> identifier header;
-> @@
-> 
-> header = register_sysctl_table(base);
-> 
-> @r1 depends on c1 && c2 && c3@
-> expression c1.E1;
-> identifier c1.subdir, c1.sysctls;
-> @@
-> 
-> -static struct ctl_table subdir[] = {
-> -	{
-> -		.procname = E1,
-> -		.maxlen = 0,
-> -		.mode = 0555,
-> -		.child = sysctls,
-> -	},
-> -	{ }
-> -};
-> 
-> @r2 depends on c1 && c2 && c3@
-> identifier c1.subdir;
-> 
-> expression c2.E2;
-> identifier c2.base;
-> @@
-> -static struct ctl_table base[] = {
-> -	{
-> -		.procname = E2,
-> -		.maxlen = 0,
-> -		.mode = 0555,
-> -		.child = subdir,
-> -	},
-> -	{ }
-> -};
-> 
-> @r3 depends on c1 && c2 && c3@
-> expression c1.E1;
-> identifier c1.sysctls;
-> expression c2.E2;
-> identifier c2.base;
-> identifier c3.header;
-> @@
-> 
-> header =
-> -register_sysctl_table(base);
-> +register_sysctl_subdir(E2, E1, sysctls);
-> 
-> Generated-by: Coccinelle SmPL
-> 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
 > ---
->  fs/ocfs2/stackglue.c | 27 ++++-----------------------
->  1 file changed, 4 insertions(+), 23 deletions(-)
+>  drivers/rtc/rtc-fsl-ftm-alarm.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/ocfs2/stackglue.c b/fs/ocfs2/stackglue.c
-> index a191094694c6..addafced7f59 100644
-> --- a/fs/ocfs2/stackglue.c
-> +++ b/fs/ocfs2/stackglue.c
-> @@ -677,28 +677,8 @@ static struct ctl_table ocfs2_mod_table[] = {
->  	},
->  	{ }
+> diff --git a/drivers/rtc/rtc-fsl-ftm-alarm.c b/drivers/rtc/rtc-fsl-ftm-alarm.c
+> index 756af62..c6945d84 100644
+> --- a/drivers/rtc/rtc-fsl-ftm-alarm.c
+> +++ b/drivers/rtc/rtc-fsl-ftm-alarm.c
+> @@ -21,6 +21,7 @@
+>  #include <linux/rtc.h>
+>  #include <linux/time.h>
+>  #include <linux/acpi.h>
+> +#include <linux/pm_wakeirq.h>
+>  
+>  #define FTM_SC_CLK(c)		((c) << FTM_SC_CLK_MASK_SHIFT)
+>  
+> @@ -41,6 +42,7 @@ struct ftm_rtc {
+>  	struct rtc_device *rtc_dev;
+>  	void __iomem *base;
+>  	bool big_endian;
+> +	bool wakeup;
+>  	u32 alarm_freq;
 >  };
-> -
-> -static struct ctl_table ocfs2_kern_table[] = {
-> -	{
-> -		.procname	= "ocfs2",
-> -		.data		= NULL,
-> -		.maxlen		= 0,
-> -		.mode		= 0555,
-> -		.child		= ocfs2_mod_table
-> -	},
-> -	{ }
-> -};
-> -
-> -static struct ctl_table ocfs2_root_table[] = {
-> -	{
-> -		.procname	= "fs",
-> -		.data		= NULL,
-> -		.maxlen		= 0,
-> -		.mode		= 0555,
-> -		.child		= ocfs2_kern_table
-> -	},
-> -	{ }
-> -};
-> +	.data		= NULL,
-> +	.data		= NULL,
+>  
+> @@ -267,6 +269,9 @@ static int ftm_rtc_probe(struct platform_device *pdev)
+>  		return PTR_ERR(rtc->base);
+>  	}
+>  
+> +	rtc->wakeup =
+> +		device_property_read_bool(&pdev->dev, "wakeup-source");
+> +
+>  	irq = platform_get_irq(pdev, 0);
+>  	if (irq < 0) {
+>  		dev_err(&pdev->dev, "can't get irq number\n");
+> @@ -274,7 +279,7 @@ static int ftm_rtc_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	ret = devm_request_irq(&pdev->dev, irq, ftm_rtc_alarm_interrupt,
+> -			       IRQF_NO_SUSPEND, dev_name(&pdev->dev), rtc);
+> +			       0, dev_name(&pdev->dev), rtc);
+>  	if (ret < 0) {
+>  		dev_err(&pdev->dev, "failed to request irq\n");
+>  		return ret;
+> @@ -286,7 +291,10 @@ static int ftm_rtc_probe(struct platform_device *pdev)
+>  	rtc->alarm_freq = (u32)FIXED_FREQ_CLK / (u32)MAX_FREQ_DIV;
+>  	rtc->rtc_dev->ops = &ftm_rtc_ops;
+>  
+> -	device_init_wakeup(&pdev->dev, true);
+> +	device_init_wakeup(&pdev->dev, rtc->wakeup);
 
-The conversion script doesn't like the .data field assignments. ;)
+As long as you have an irq, you should be able to wakeup, do you really
+need the wakeup-source property?
 
-Was this series built with allmodconfig? I would have expected this to
-blow up very badly. :)
+Usually, wakeup-source is used when the RTC interrupt line is not
+connected directly to the SoC but is still able to wake it up.
+
+In your case, is it to cover the  case of the flex timers that can't
+wake the CPU? If so, then please be more explicit in your commit
+message.
+
+> +	ret = dev_pm_set_wake_irq(&pdev->dev, irq);
+> +	if (ret)
+> +		dev_err(&pdev->dev, "irq wake enable failed.\n");
+>  
+>  	ret = rtc_register_device(rtc->rtc_dev);
+>  	if (ret) {
+> -- 
+> 2.7.4
+> 
 
 -- 
-Kees Cook
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
