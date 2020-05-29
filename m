@@ -2,90 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC871E78C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C90321E78C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727017AbgE2Iwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 04:52:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53810 "EHLO mail.kernel.org"
+        id S1727058AbgE2Iwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 04:52:40 -0400
+Received: from mga07.intel.com ([134.134.136.100]:55753 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725836AbgE2Iwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 04:52:37 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64BD020776;
-        Fri, 29 May 2020 08:52:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590742356;
-        bh=lM0pqY9A9HZVoYYkL4jwxKyhd9Qx14GNUqXeaDFjVOo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZgClWNM0sAw4ZxYh9THr6qbNd7jM70YaNC0SdMPioFnxjGn4TcS7nYa5LWy/VP0+i
-         ExwrRSZ7UhSxoLq0udFelaLxB5gmonMSGF/EV90Bh2Km2pWII+L0wohxOBx5xnDnGc
-         a7Klo8lfxdyhf3TgBAi2FGW440lqLHzZp6h9SrS8=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jeakk-00GDsx-Na; Fri, 29 May 2020 09:52:34 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-kernel@vger.kernel.org, Jason Cooper <jason@lakedaemon.net>,
-        Huacai Chen <chenhc@lemote.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v5 0/6] Three Loongson irqchip support
-Date:   Fri, 29 May 2020 09:52:13 +0100
-Message-Id: <159074223979.887186.1909053030258448427.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200528152757.1028711-1-jiaxun.yang@flygoat.com>
-References: <20200528152757.1028711-1-jiaxun.yang@flygoat.com>
+        id S1725836AbgE2Iwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 04:52:38 -0400
+IronPort-SDR: foGOxCxYA2FwGq9TNiDaOLGEVMwltI18G0NZPAUC0gEW4exxKT55tqm5iiWug/EZyBN+nBhfCx
+ s1iAXRQonpzw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 May 2020 01:52:37 -0700
+IronPort-SDR: 9KFXrRfq7jvOdJ+Pa8JB5uZ41UtP3NO1E5ieKmGca4LGdurBRMFAqwI5NIoVgbDwpXZJW4t3wb
+ A3/m4CbS1L3A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,448,1583222400"; 
+   d="scan'208";a="311187339"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.141]) ([10.238.4.141])
+  by FMSMGA003.fm.intel.com with ESMTP; 29 May 2020 01:52:33 -0700
+Reply-To: like.xu@intel.com
+Subject: Re: [PATCH RESEND] Enable full width counting for KVM: x86/pmu
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Like Xu <like.xu@linux.intel.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200529074347.124619-1-like.xu@linux.intel.com>
+ <8ff77a5b-21fd-31f0-b97c-d188ec776808@redhat.com>
+From:   "Xu, Like" <like.xu@intel.com>
+Organization: Intel OTC
+Message-ID: <800997eb-91f9-efb4-34f5-44e130e720ab@intel.com>
+Date:   Fri, 29 May 2020 16:52:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: jiaxun.yang@flygoat.com, linux-kernel@vger.kernel.org, jason@lakedaemon.net, chenhc@lemote.com, robh+dt@kernel.org, devicetree@vger.kernel.org, linux-mips@vger.kernel.org, tglx@linutronix.de
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+In-Reply-To: <8ff77a5b-21fd-31f0-b97c-d188ec776808@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 May 2020 23:27:48 +0800, Jiaxun Yang wrote:
-> v5:
->   - Add some range checks in dt-schema
-> 
-> Jiaxun Yang (6):
->   irqchip: Add Loongson HyperTransport Vector support
->   dt-bindings: interrupt-controller: Add Loongson HTVEC
->   irqchip: Add Loongson PCH PIC controller
->   dt-bindings: interrupt-controller: Add Loongson PCH PIC
->   irqchip: Add Loongson PCH MSI controller
->   dt-bindings: interrupt-controller: Add Loongson PCH MSI
-> 
-> [...]
+On 2020/5/29 16:47, Paolo Bonzini wrote:
+> On 29/05/20 09:43, Like Xu wrote:
+>> Hi Paolo,
+>>
+>> As you said, you will queue the v3 of KVM patch, but it looks like we
+>> are missing that part at the top of the kvm/queue tree.
+>>
+>> For your convenience, let me resend v4 so that we can upstream this
+>> feature in the next merged window. Also this patch series includes
+>> patches for qemu and kvm-unit-tests. Please help review.
+>>
+>> Previous:
+>> https://lore.kernel.org/kvm/f1c77c79-7ff8-c5f3-e011-9874a4336217@redhat.com/
+>>
+>> Like Xu (1):
+>>    KVM: x86/pmu: Support full width counting
+>>    [kvm-unit-tests] x86: pmu: Test full-width counter writes
+>>    [Qemu-devel] target/i386: define a new MSR based feature
+>>   word - FEAT_PERF_CAPABILITIES
+>>
+>> Wei Wang (1):
+>>    KVM: x86/pmu: Tweak kvm_pmu_get_msr to pass 'struct msr_data' in
+>>
+>>   arch/x86/include/asm/kvm_host.h |  1 +
+>>   arch/x86/kvm/cpuid.c            |  2 +-
+>>   arch/x86/kvm/pmu.c              |  4 +-
+>>   arch/x86/kvm/pmu.h              |  4 +-
+>>   arch/x86/kvm/svm/pmu.c          |  7 ++--
+>>   arch/x86/kvm/vmx/capabilities.h | 11 +++++
+>>   arch/x86/kvm/vmx/pmu_intel.c    | 71 +++++++++++++++++++++++++++------
+>>   arch/x86/kvm/vmx/vmx.c          |  3 ++
+>>   arch/x86/kvm/x86.c              |  6 ++-
+>>   9 files changed, 87 insertions(+), 22 deletions(-)
+>>
+> Thanks, I was busy with AMD stuff as you saw. :)  I've queued it now.
+Yes, we all know you're busy.
 
-Applied to irq/irqchip-next, thanks!
+I will be very grateful if you could comment the KVM part for the LBR 
+feature. :D
 
-[1/6] irqchip: Add Loongson HyperTransport Vector support
-      commit: 818e915fbac518e8c78e1877a0048d92d4965e5a
-[2/6] dt-bindings: interrupt-controller: Add Loongson HTVEC
-      commit: 6c2832c3c6edc38ab58bad29731b4951c0a90cf8
-[3/6] irqchip: Add Loongson PCH PIC controller
-      commit: ef8c01eb64ca6719da449dab0aa9424e13c58bd0
-[4/6] dt-bindings: interrupt-controller: Add Loongson PCH PIC
-      commit: b6e4bc125fc517969f97d901b1845ebf47bbea26
-[5/6] irqchip: Add Loongson PCH MSI controller
-      commit: 632dcc2c75ef6de3272aa4ddd8f19da1f1ace323
-[6/6] dt-bindings: interrupt-controller: Add Loongson PCH MSI
-      commit: da10a4b626657387845f32d37141fc7d48ebbdb3
+https://lore.kernel.org/kvm/20200514083054.62538-1-like.xu@linux.intel.com/
 
-I've cherry-picked Rob's Rbs that were posted on the v4 series.
-
-Cheers,
-
-	M.
--- 
-Without deviation from the norm, progress is not possible.
-
+Thanks,
+Like Xu
+>
+> Paolo
+>
 
