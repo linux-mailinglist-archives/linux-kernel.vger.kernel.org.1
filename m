@@ -2,76 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA53C1E77D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADEC1E77E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727019AbgE2IGA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 May 2020 04:06:00 -0400
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:40359 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726350AbgE2IFw (ORCPT
+        id S1726593AbgE2IGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 04:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725562AbgE2IGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 04:05:52 -0400
-Received: by mail-ej1-f68.google.com with SMTP id d7so1174691eja.7;
-        Fri, 29 May 2020 01:05:50 -0700 (PDT)
+        Fri, 29 May 2020 04:06:38 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070DBC03E969;
+        Fri, 29 May 2020 01:06:38 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id x22so767085lfd.4;
+        Fri, 29 May 2020 01:06:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sOxRbojjekNIVLIANuIbdPZ8vuRLDilJnBU5D6z6Gc0=;
+        b=ARuHTCHvzl5pI1r2ksiKnlv/XQf2ZuP2puBHRogWZpZ+JSDk6spsZ6+Mi0HStWbjXp
+         RwKrapD/bAonIza1jawgeaHmEp75nantmy/WX1mK7jeJZz6C56ATAKBtO11qN7BECv7Z
+         D0rYzXDzvdn8VtHfMOuCM8Wyun1eLSue6t6iIBOvoh6D+6PifhHsutIgZ9GyWHfHcZL/
+         ZsM9igl7Uohtzye+ZVK+DQr9vz/lSscpBm3Q+fPjhFde3yFgzTtQLjWyEn0ZQr/E/Dt+
+         5QRGtr2efv0o59DkZlGinPFhE2tiD4eTO6cAOT07rMGXA8a+2uMjgRXCX2Aeyfmg3j8G
+         2DPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=aH7E55+g7tLuSmdUOuHD3M6Gj2I7pkdvk/bOkBrFD9s=;
-        b=aWy44fvGPmS9kfAO8oyaixY+yxR8/9+ymtIlqTIto0oabqHOs4OnN4VEg6xq1aRoxt
-         BGZzvexS6uCfNHYvLr5DXa4hyKsXE26gKC12XB/xTxUj/VZQp1MNTFeAIWVAM9PehGUb
-         VsVs9P251HhU/KEIhHKmL4m3TPNNWHtXF0jRB8boy1Ox+lAgGPYNIHDNohaGHkz+qKkT
-         y687c6kyU/qsCAZz4EJ4F1+T4+8YdcMIZ1dM4a2KN4kQxXZQ7ILW0J6Ovki/lpxDL41L
-         QTNZ1HDW3ylo5gF/WzeZ4WZLMpeoltqaE8jWz152PnzcIgEoJ7NEywrwKmFKwcaKCnvl
-         i8yg==
-X-Gm-Message-State: AOAM532GvAE2AF08RPJ7RGrw0BajekcX3iK6rV2G9xFutgZ/gm9SHL3K
-        XBLCjlj/Pt70OW21UcZS8e8=
-X-Google-Smtp-Source: ABdhPJx+ramGOxadWDDPayrB2z7pr/lamG6HZzIkpX+Z0OBDsG27LJ9P+Xa/l75LOv7pVv0uNZiXIQ==
-X-Received: by 2002:a17:906:70ca:: with SMTP id g10mr6704592ejk.171.1590739550084;
-        Fri, 29 May 2020 01:05:50 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.118])
-        by smtp.googlemail.com with ESMTPSA id k90sm6207616edc.2.2020.05.29.01.05.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 29 May 2020 01:05:49 -0700 (PDT)
-Date:   Fri, 29 May 2020 10:05:46 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Alim Akhtar <alim.akhtar@samsung.com>
-Cc:     robh@kernel.org, devicetree@vger.kernel.org,
-        linux-scsi@vger.kernel.org, avri.altman@wdc.com,
-        martin.petersen@oracle.com, kwmad.kim@samsung.com,
-        stanley.chu@mediatek.com, cang@codeaurora.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 10/10] arm64: dts: Add node for ufs exynos7
-Message-ID: <20200529080546.GB23221@kozik-lap>
-References: <20200528011658.71590-1-alim.akhtar@samsung.com>
- <CGME20200528013245epcas5p37851891649512882c7b1ffb5f903c506@epcas5p3.samsung.com>
- <20200528011658.71590-11-alim.akhtar@samsung.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sOxRbojjekNIVLIANuIbdPZ8vuRLDilJnBU5D6z6Gc0=;
+        b=B0O2PVbTeGQPJ3UoWt0Xte39ORntG0KIIHF2V/CPjBM59SjtpSxa3JV/rqsfjxWoRc
+         gukzbqilKMguPgwlSIjfyifEkyEbo2BY+LiUM7DlVgGwbbc9pn/B4tArywucfdmBXgBY
+         iyIcB6bAZbS2XAp/ldoLWMdq68geabr1gn8530uI2JzoTnLTPSYuNpgdneS4WcuTyhz+
+         uJJxyNAago33f6QZhYX4ga2gDQF1ddW4hM9dp6STlzkp9w+iIyfi98Kfu5RJ/41aCQ9Z
+         U4pocUdrgba9FKN7KZYIEOPwjupWTTxxaYvtgbytx0bzK/HFZGohI+kyLRIRButGV6mv
+         h+IQ==
+X-Gm-Message-State: AOAM530jD27upxLlSdep/oO/2uJ8Erq3V5EoCr6T9zzD4lb2jfhDGReb
+        AHISzY8NBw3V5IY1uC3lVzXrMO5ExD848NZS9PE=
+X-Google-Smtp-Source: ABdhPJwNGmSiyiqlfKOfqM6p+BHUruML1hsN7pjim5eRRpQvgIZUZhgXAjo9nWuTkMHvfN6OZzHb0HtACLwONLoR4Lg=
+X-Received: by 2002:a19:6a09:: with SMTP id u9mr3726110lfu.65.1590739596512;
+ Fri, 29 May 2020 01:06:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200528011658.71590-11-alim.akhtar@samsung.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200528103755.17381-1-steves.lee@maximintegrated.com> <20200528141542.GA4186430@bogus>
+In-Reply-To: <20200528141542.GA4186430@bogus>
+From:   Steve Lee <steves.lee.maxim@gmail.com>
+Date:   Fri, 29 May 2020 17:06:24 +0900
+Message-ID: <CABff4NRCfxo7MFvk72bOjPN5iJg5HaQk_U1nFpdPrJZ9nm5Jhw@mail.gmail.com>
+Subject: Re: [V6 PATCH 1/2] dt-bindings: Added device tree binding for max98390
+To:     Rob Herring <robh@kernel.org>
+Cc:     Steve Lee <steves.lee@maximintegrated.com>, robh+dt@kernel.org,
+        ryans.lee@maximintegrated.com, Mark Brown <broonie@kernel.org>,
+        ALSA development <alsa-devel@alsa-project.org>,
+        ryan.lee.maxim@gmail.com, devicetree@vger.kernel.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 06:46:58AM +0530, Alim Akhtar wrote:
-> Adding dt node foe UFS and UFS-PHY for exynos7 SoC.
-> 
-> Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
-> Tested-by: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
-> ---
->  .../boot/dts/exynos/exynos7-espresso.dts      |  4 ++
->  arch/arm64/boot/dts/exynos/exynos7.dtsi       | 43 ++++++++++++++++++-
-
-Thanks, applied to next/dt-late. It might miss this merge
-window and in such case I will keep it for v5.9 cycle.
-
-Best regards,
-Krzysztof
-
+On Thu, May 28, 2020 at 11:15 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Thu, 28 May 2020 19:37:55 +0900, Steve Lee wrote:
+> > Add DT binding of max98390 amplifier driver.
+> >
+> > Signed-off-by: Steve Lee <steves.lee@maximintegrated.com>
+> > ---
+> > Changed since V5:
+> >       * Change txt to yaml and fix up the examples.
+> > Changed since V4:
+> >       * No changes.
+> > Changed since V3:
+> >       * No changes.
+> > Changed since V2:
+> >       * No changes.
+> > Changed since V1:
+> >       * Modified sample text in example
+> >
+> >  .../bindings/sound/maxim,max98390.yaml        | 39 +++++++++++++++++++
+> >  1 file changed, 39 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/sound/maxim,max98390.yaml
+> >
+>
+>
+> My bot found errors running 'make dt_binding_check' on your patch:
+>
+> Documentation/devicetree/bindings/sound/maxim,max98390.yaml:  mapping values are not allowed in this context
+>   in "<unicode string>", line 22, column 97
+> Documentation/devicetree/bindings/Makefile:12: recipe for target 'Documentation/devicetree/bindings/sound/maxim,max98390.example.dts' failed
+> make[1]: *** [Documentation/devicetree/bindings/sound/maxim,max98390.example.dts] Error 1
+> make[1]: *** Waiting for unfinished jobs....
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/maxim,max98390.yaml: ignoring, error parsing file
+> warning: no schema found in file: ./Documentation/devicetree/bindings/sound/maxim,max98390.yaml
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/maxim,max98390.yaml: ignoring, error parsing file
+> warning: no schema found in file: ./Documentation/devicetree/bindings/sound/maxim,max98390.yaml
+> Makefile:1300: recipe for target 'dt_binding_check' failed
+> make: *** [dt_binding_check] Error 2
+>
+> See https://patchwork.ozlabs.org/patch/1299651
+>
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure dt-schema is up to date:
+>
+> pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+>
+> Please check and re-submit.
+>
+ Thanks for feedback. I re-submit with after dt binding check again.
