@@ -2,206 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4D81E845C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34131E8463
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726943AbgE2RKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 13:10:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37508 "EHLO
+        id S1726975AbgE2RLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 13:11:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725821AbgE2RKi (ORCPT
+        with ESMTP id S1725821AbgE2RLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 13:10:38 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7936AC03E969;
-        Fri, 29 May 2020 10:10:38 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id k11so2767322ejr.9;
-        Fri, 29 May 2020 10:10:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=WDKIKX1lbJucTTgJr5+MTkahkiaPobMxaKnS1Wdvl/c=;
-        b=oJJA9uvozHW0ofiymw21F8d1PYu2PWYbNXATWv2Cma0j7/VjXp6mi1yS0jKvwr3kED
-         zUZweQgWNosYY5HQrBS1mNWkVZcvstkkUutLLm6G2+qzUHx1wpM1JTOLQ/iFRc1vetix
-         izmUASDNm51tZW2QK7UhSQfiZVurM2MjYVabi30WhmkqeHzJHNl5QgPcRA1x+/oOCjSW
-         RF39a33sE/lbKpj1ABUUUAnbiAm/2e2RaGa/hfSb4bRxHehLDY9Kdq9A1munTtMaSbw0
-         bI96rsrrKCRD7xTqf4WIdWFfNF/tGKZ7iKfWNFnu+tlX9M7vjGA4Q5/8cmPYnbiSh8l1
-         qRvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=WDKIKX1lbJucTTgJr5+MTkahkiaPobMxaKnS1Wdvl/c=;
-        b=QUw9mTNHx+b2NL/rb1Ftq8B/Vwl4yFk8yD5XfNqk+PKjD047stHtLx8dZCOW8HiCJu
-         IIkrDgQzSTUGNkIjYdwwY8iohfczb2UYW7AMvtzwWJwfTi/OTM2THBRz6pngZt5E8c7h
-         6LHpSzllNx3NpOYMZqrksW8lhrZxGBJAdE2DYQngVjj8dJJfhVTp9NKWp4S4wbS6kQ0C
-         4c8/xEYsvFZByPfWnjmg/7Ye61rsaDeSSmoYZU5KtlsSwTra5z+h1z14ouDcKHnvDMDT
-         ejP4jf0ZylYBmNP/dyWp/AOepMhqyZVx/k2ro3u8QcPu74sYHbXWBTjj6UeuaehWAmFg
-         1y7g==
-X-Gm-Message-State: AOAM531NSac7MgqLfYPz/fJ3L/LmLcNDfksT6aKt08bdhQee4ak5R4V6
-        v8KWRlJuPaQQKi/egBX96yHpWbF0AL4=
-X-Google-Smtp-Source: ABdhPJw6wUAlq2Fosg/mAumHMUr0rJcmxqFtd4b6i9qv98juDHBgQYVuNyHFlfQU7csJJhx0XejmRA==
-X-Received: by 2002:a17:906:2c07:: with SMTP id e7mr8620770ejh.172.1590772237131;
-        Fri, 29 May 2020 10:10:37 -0700 (PDT)
-Received: from BV030612LT ([188.27.38.213])
-        by smtp.gmail.com with ESMTPSA id s2sm7740809ejm.50.2020.05.29.10.10.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 29 May 2020 10:10:35 -0700 (PDT)
-Date:   Fri, 29 May 2020 20:10:32 +0300
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>, linux-serial@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-actions@lists.infradead.org
-Subject: Re: [PATCH 1/1] tty: serial: owl: Add support for kernel debugger
-Message-ID: <20200529171032.GA26724@BV030612LT>
-References: <6ee88060c129715980592a1ae33c93923916a14b.1590766726.git.cristian.ciocaltea@gmail.com>
- <16ff435f-9172-e01d-dfe6-7aa8575c4bd6@suse.de>
+        Fri, 29 May 2020 13:11:15 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF73C03E969
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 10:11:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=f/in7NoroM39WHJQQWyyxGcdE2gOsEiL3/PCxFMMgDI=; b=CFd2q/Wj/2tYLwwP3ywqyKasst
+        ggOZHHxTqoELXqOLh6HPg7Yvgy9ANk/Yz4xuwOdN6ugzCgKFcU7WKKIKadEFt36ElGo8r9qLH6eLB
+        vOw3c3hT+E4Y9UkBPSdfsF6dpDi+NhFn7q/BtQhUmxc+rpdYq0BqxiGkFVv6RMcajMLEnA71bBXw8
+        1PsUMmpnCPM1aQI25RLPLTFgaF4tR8PFav30DzWMQzYDD6c5JaseDVAO9CEj5De8z8RRNgzgOKZHA
+        VnuX7uf48Yup68AfcsJnA+lQAY4ANGbz1ea57CS8NOFoT5N5ZaiPzUenrzTuGL4L2hBmGkfdiBLCg
+        CsfcBYUA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jeiXC-00057Q-0U; Fri, 29 May 2020 17:11:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4212730047A;
+        Fri, 29 May 2020 19:11:04 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2F5822BB51407; Fri, 29 May 2020 19:11:04 +0200 (CEST)
+Date:   Fri, 29 May 2020 19:11:04 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+dc1fa714cb070b184db5@syzkaller.appspotmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: Re: PANIC: double fault in fixup_bad_iret
+Message-ID: <20200529171104.GD706518@hirez.programming.kicks-ass.net>
+References: <000000000000d2474c05a6c938fe@google.com>
+ <CACT4Y+ajjB8RmG3_H_9r-kaRAZ05ejW02-Py47o7wkkBjwup3Q@mail.gmail.com>
+ <87o8q6n38p.fsf@nanos.tec.linutronix.de>
+ <20200529160711.GC706460@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <16ff435f-9172-e01d-dfe6-7aa8575c4bd6@suse.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200529160711.GC706460@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 05:56:47PM +0200, Andreas Färber wrote:
-> Hi,
-> 
-> Am 29.05.20 um 17:50 schrieb Cristian Ciocaltea:
-> > Implement poll_put_char and poll_get_char callbacks in struct uart_ops
-> > that enables OWL UART to be used for KGDB debugging over serial line.
-> > 
-> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > ---
-> >   drivers/tty/serial/owl-uart.c | 45 ++++++++++++++++++++++++++++++-----
-> >   1 file changed, 39 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/tty/serial/owl-uart.c b/drivers/tty/serial/owl-uart.c
-> > index c2fa2f15d50a..26dcc374dec5 100644
-> > --- a/drivers/tty/serial/owl-uart.c
-> > +++ b/drivers/tty/serial/owl-uart.c
-> > @@ -12,6 +12,7 @@
-> >   #include <linux/console.h>
-> >   #include <linux/delay.h>
-> >   #include <linux/io.h>
-> > +#include <linux/iopoll.h>
-> >   #include <linux/module.h>
-> >   #include <linux/of.h>
-> >   #include <linux/platform_device.h>
-> > @@ -20,13 +21,13 @@
-> >   #include <linux/tty.h>
-> >   #include <linux/tty_flip.h>
-> > -#define OWL_UART_PORT_NUM 7
-> > -#define OWL_UART_DEV_NAME "ttyOWL"
-> > +#define OWL_UART_PORT_NUM		7
-> > +#define OWL_UART_DEV_NAME		"ttyOWL"
-> > -#define OWL_UART_CTL	0x000
-> > -#define OWL_UART_RXDAT	0x004
-> > -#define OWL_UART_TXDAT	0x008
-> > -#define OWL_UART_STAT	0x00c
-> > +#define OWL_UART_CTL			0x000
-> > +#define OWL_UART_RXDAT			0x004
-> > +#define OWL_UART_TXDAT			0x008
-> > +#define OWL_UART_STAT			0x00c
-> 
-> Please do not unnecessarily re-indent kernel code. You can do so when you're
-> actually adding something new.
-> 
+On Fri, May 29, 2020 at 06:07:11PM +0200, Peter Zijlstra wrote:
 
-Hi Andreas,
+> Like with KCSAN, we should blanket kill KASAN/UBSAN and friends (at the
+> very least in arch/x86/) until they get that function attribute stuff
+> sorted.
 
-Thank you for reviewing!
+Something like so.
 
-Sure, I will revert unnecessary changes.
-
->
-> >   #define OWL_UART_CTL_DWLS_MASK		GENMASK(1, 0)
-> >   #define OWL_UART_CTL_DWLS_5BITS		(0x0 << 0)
-> > @@ -461,6 +462,34 @@ static void owl_uart_config_port(struct uart_port *port, int flags)
-> >   	}
-> >   }
-> > +#ifdef CONFIG_CONSOLE_POLL
-> > +
-> > +static int owl_uart_poll_get_char(struct uart_port *port)
-> > +{
-> > +	u32 c = NO_POLL_CHAR;
-> > +
-> > +	if (!(owl_uart_read(port, OWL_UART_STAT) & OWL_UART_STAT_RFEM))
-> > +		c = owl_uart_read(port, OWL_UART_RXDAT);
-> > +
-> > +	return c;
-> > +}
-> > +
-> > +static void owl_uart_poll_put_char(struct uart_port *port, unsigned char c)
-> > +{
-> > +	/* Wait while TX FIFO is full */
-> > +	while (owl_uart_read(port, OWL_UART_STAT) & OWL_UART_STAT_TFFU)
-> > +		cpu_relax();
-> > +
-> > +	/* Send the character out */
-> > +	owl_uart_write(port, c, OWL_UART_TXDAT);
-> > +
-> > +	/* Wait for transmitter to become empty */
-> > +	while (owl_uart_read(port, OWL_UART_STAT) & OWL_UART_STAT_TRFL_MASK)
-> > +		cpu_relax();
-> > +}
-> 
-> How is this different from earlycon? I dislike that this is being
-> open-coded. Please try to reuse existing functions for this.
->
-
-I actually tried initially to reuse the existing code, but I found
-a few (possible) issues:
-
-- owl_uart_port_write() does more things than I think it's really
-needed here, i.e. I'm not sure if the locking stuff and the IRQ
-setup are required. From what I've noticed, most serial drivers provide
-a very simple implementation (and lock free) for the callbacks, but
-I couldn't figure out if locking could be required in some
-circumstances.
-
-- owl_console_putchar() could be a better alternative, but it depends
-on CONFIG_SERIAL_OWL_CONSOLE which might not be enabled if the user
-only chooses CONFIG_KGDB_SERIAL_CONSOLE, although this is probably
-not a valid scenario.
-
-Kind regards,
-Cristi
-
-> 
-> Regards,
-> Andreas
-> 
-> > +
-> > +#endif /* CONFIG_CONSOLE_POLL */
-> > +
-> >   static const struct uart_ops owl_uart_ops = {
-> >   	.set_mctrl = owl_uart_set_mctrl,
-> >   	.get_mctrl = owl_uart_get_mctrl,
-> > @@ -476,6 +505,10 @@ static const struct uart_ops owl_uart_ops = {
-> >   	.request_port = owl_uart_request_port,
-> >   	.release_port = owl_uart_release_port,
-> >   	.verify_port = owl_uart_verify_port,
-> > +#ifdef CONFIG_CONSOLE_POLL
-> > +	.poll_get_char	= owl_uart_poll_get_char,
-> > +	.poll_put_char	= owl_uart_poll_put_char,
-> > +#endif
-> >   };
-> >   #ifdef CONFIG_SERIAL_OWL_CONSOLE
-> > 
-> 
-> 
-> -- 
-> SUSE Software Solutions Germany GmbH
-> Maxfeldstr. 5, 90409 Nürnberg, Germany
-> GF: Felix Imendörffer
-> HRB 36809 (AG Nürnberg)
+---
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 00e378de8bc0..a90d32b87d7e 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -1,6 +1,14 @@
+ # SPDX-License-Identifier: GPL-2.0
+ # Unified Makefile for i386 and x86_64
+ 
++#
++# Until such a time that __no_kasan and __no_ubsan work as expected (and are
++# made part of noinstr), don't sanitize anything.
++#
++KASAN_SANITIZE := n
++UBSAN_SANITIZE := n
++KCOV_INSTRUMENT := n
++
+ # select defconfig based on actual architecture
+ ifeq ($(ARCH),x86)
+   ifeq ($(shell uname -m),x86_64)
