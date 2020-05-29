@@ -2,192 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395E41E7BB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 13:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6471E7BD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 13:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbgE2L1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 07:27:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgE2L1n (ORCPT
+        id S1726476AbgE2LaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 07:30:18 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:46378 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725562AbgE2LaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 07:27:43 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 351FCC03E969
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 04:27:42 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id o6so546066pgh.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 04:27:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=mmVANo270ZVKU00Ntn1LhIr6gWxMXan2SJfCFjNoHEo=;
-        b=aZK2+XXMoRhPCXVUxsDPkb9kSqkhrNLxdLS+VK2l0Him6ssCZoZ21SrepRXjgt/lH1
-         wPjs4bZldxfBqAaXCCEOgOuDzZIo90LTmU1RT/71D8xO0wPNCIUzGGSYGdQ/YlanXpD5
-         tymc4udXM1EAeCFRdG9SjmTIW5McowgBQ5xdltp87Mjr/9ZLzv6N3NqTBvAjgtCeoxsu
-         v4PFPvGPqrYUCHiSh9M2l/R3XrNtZKY6OAI+2/ACo4+9Duzf3wYHSifzOX1jZu6qukFL
-         /EKSR23Jf8Bwkh8PskSWU0NwhMmi3NCwCZz4IMTmvf/+sWcAWs4bWG8i+OfY2epqOy06
-         S+Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=mmVANo270ZVKU00Ntn1LhIr6gWxMXan2SJfCFjNoHEo=;
-        b=sM/Xr4I7gOk3zUOJs+S+9k9vAUW+qsjF3zOFDeLU44YkqFAcdqDWr74SbI3b1G84hH
-         d2+sCogT46F/Mk6AwnZlOkVY7gy2dfm9Fd7EN08vBSYEPaLr2k2XAeGSB/5SfkSiDAqY
-         2AVf/Efn5G9uuvYUB8jpnwqJ5WMEW2+/240sjE/kF5GmAaSM48Z9mtz3WQLEj2Dj76M6
-         yMad4cy3I3f4zEs800rHArKogkyGFp+UivxLJcmcJ3K0xAwu2Z0DuHdibSH8/bG+kIJA
-         njkLB2LmGUFOKOfSx4ux4oIJNuUWQzptEkvDAXVKd2kwJDVfaIvUXL3TT/IEEQ6aBjOT
-         9yNw==
-X-Gm-Message-State: AOAM532o87hLwqcWAainSFv23PfOCE2+MZoo0WuyN2GXV66kV/17vxdu
-        mgGocsWugrN24lY5FOTwDZJIsA==
-X-Google-Smtp-Source: ABdhPJzS/gqMxxiyYyZH1I3fTV851M9JRdWhE5v8GMU+1CdSJsblvJLl+ZsTF6SL8JmpR+LIeAWx2w==
-X-Received: by 2002:a62:2ad1:: with SMTP id q200mr8012952pfq.225.1590751661689;
-        Fri, 29 May 2020 04:27:41 -0700 (PDT)
-Received: from localhost.localdomain ([117.252.66.248])
-        by smtp.gmail.com with ESMTPSA id w190sm7016741pfw.35.2020.05.29.04.27.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 29 May 2020 04:27:40 -0700 (PDT)
-From:   Sumit Garg <sumit.garg@linaro.org>
-To:     daniel.thompson@linaro.org
-Cc:     kgdb-bugreport@lists.sourceforge.net, jason.wessel@windriver.com,
-        dianders@chromium.org, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, gregkh@linuxfoundation.org,
-        jslaby@suse.com, linux-kernel@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH v4 4/4] kdb: Switch to use safer dbg_io_ops over console APIs
-Date:   Fri, 29 May 2020 16:56:47 +0530
-Message-Id: <1590751607-29676-5-git-send-email-sumit.garg@linaro.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1590751607-29676-1-git-send-email-sumit.garg@linaro.org>
-References: <1590751607-29676-1-git-send-email-sumit.garg@linaro.org>
+        Fri, 29 May 2020 07:30:18 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04TBRqwW031292;
+        Fri, 29 May 2020 11:29:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=6iJ4GznZqm2hlC858ywesGuHoOqwbI3EjIs9Cz3b8xw=;
+ b=lCxs8Ju2uHpWLEkPe2LPs/Zc/PUgNbNqoNOH1xPPrYxdgN+Dqlxj78SXBlz97UIGRkS3
+ sfwA4zGEz5LarLDbkUp/FU+MNB1SDgQQPet2LOmUIdQE8Hp2sqpvKwLN+S18j996ZLmm
+ ykS5TUe3gq7N5OFcBdOgjyfGSW1xIPKUCKm5lDzieQJ3bsg0S/1jpzJyq7LojDr8SHDZ
+ JvQlybZjNvoyKfMQm4RlorKoLDvviWwlJLje7FNdjLrie1et0wDka/p2du91XQXNYETI
+ AVJ1C7AL50/tHEDVHoxy7DEVQHkSAPODUOc/m3tZYaWihL71EsPHSAPSlL/ZkgDlVUjC aQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 318xbk9wc2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 29 May 2020 11:29:54 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04TBRfFK184985;
+        Fri, 29 May 2020 11:27:54 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 317j5y74m1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 29 May 2020 11:27:53 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04TBRhSd021678;
+        Fri, 29 May 2020 11:27:43 GMT
+Received: from tomti.i.net-space.pl (/10.175.161.105)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 29 May 2020 04:27:43 -0700
+Date:   Fri, 29 May 2020 13:27:35 +0200
+From:   Daniel Kiper <daniel.kiper@oracle.com>
+To:     grub-devel@gnu.org, linux-kernel@vger.kernel.org,
+        trenchboot-devel@googlegroups.com, x86@kernel.org,
+        xen-devel@lists.xenproject.org
+Cc:     alec.brown@oracle.com, alexander.burmashev@oracle.com,
+        andrew.cooper3@citrix.com, ard.biesheuvel@linaro.org,
+        dpsmith@apertussolutions.com, eric.snowberg@oracle.com,
+        hpa@zytor.com, javierm@redhat.com, kanth.ghatraju@oracle.com,
+        konrad.wilk@oracle.com, krystian.hebel@3mdeb.com,
+        leif@nuviainc.com, lukasz.hawrylko@linux.intel.com,
+        michal.zygowski@3mdeb.com, mjg59@google.com, mtottenh@akamai.com,
+        phcoder@gmail.com, piotr.krol@3mdeb.com, pjones@redhat.com,
+        ross.philipson@oracle.com
+Subject: [BOOTLOADER SPECIFICATION RFC] The bootloader log format for
+ TrenchBoot and others
+Message-ID: <20200529112735.qln44ds6z7djheof@tomti.i.net-space.pl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9635 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 suspectscore=0
+ mlxlogscore=999 mlxscore=0 adultscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005290092
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9635 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0 mlxscore=0
+ lowpriorityscore=0 priorityscore=1501 phishscore=0 cotscore=-2147483648
+ suspectscore=0 bulkscore=0 clxscore=1011 impostorscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005290092
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In kgdb context, calling console handlers aren't safe due to locks used
-in those handlers which could in turn lead to a deadlock. Although, using
-oops_in_progress increases the chance to bypass locks in most console
-handlers but it might not be sufficient enough in case a console uses
-more locks (VT/TTY is good example).
+Hey,
 
-Currently when a driver provides both polling I/O and a console then kdb
-will output using the console. We can increase robustness by using the
-currently active polling I/O driver (which should be lockless) instead
-of the corresponding console. For several common cases (e.g. an
-embedded system with a single serial port that is used both for console
-output and debugger I/O) this will result in no console handler being
-used.
+Below you can find my rough idea of the bootloader log format which is
+generic thing but initially will be used for TrenchBoot work. I discussed
+this proposal with Ross and Daniel S. So, the idea went through initial
+sanitization. Now I would like to take feedback from other folks too.
+So, please take a look and complain...
 
-In order to achieve this we need to reverse the order of preference to
-use dbg_io_ops (uses polling I/O mode) over console APIs. So we just
-store "struct console" that represents debugger I/O in dbg_io_ops and
-while emitting kdb messages, skip console that matches dbg_io_ops
-console in order to avoid duplicate messages. After this change,
-"is_console" param becomes redundant and hence removed.
+In general we want to pass the messages produced by the bootloader to the OS
+kernel and finally to the userspace for further processing and analysis. Below
+is the description of the structures which will be used for this thing.
 
-Suggested-by: Daniel Thompson <daniel.thompson@linaro.org>
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
----
- drivers/tty/serial/kgdb_nmi.c | 2 +-
- drivers/tty/serial/kgdboc.c   | 4 ++--
- drivers/usb/early/ehci-dbgp.c | 3 ++-
- include/linux/kgdb.h          | 5 ++---
- kernel/debug/kdb/kdb_io.c     | 4 +++-
- 5 files changed, 10 insertions(+), 8 deletions(-)
+  struct bootloader_log_msgs
+  {
+    grub_uint32_t level;
+    grub_uint32_t facility;
+    char type[];
+    char msg[];
+  }
 
-diff --git a/drivers/tty/serial/kgdb_nmi.c b/drivers/tty/serial/kgdb_nmi.c
-index 5022447..6004c0c 100644
---- a/drivers/tty/serial/kgdb_nmi.c
-+++ b/drivers/tty/serial/kgdb_nmi.c
-@@ -50,7 +50,7 @@ static int kgdb_nmi_console_setup(struct console *co, char *options)
- 	 * I/O utilities that messages sent to the console will automatically
- 	 * be displayed on the dbg_io.
- 	 */
--	dbg_io_ops->is_console = true;
-+	dbg_io_ops->cons = co;
- 
- 	return 0;
- }
-diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
-index c9f94fa..c7ffa87 100644
---- a/drivers/tty/serial/kgdboc.c
-+++ b/drivers/tty/serial/kgdboc.c
-@@ -153,7 +153,7 @@ static int configure_kgdboc(void)
- 		goto noconfig;
- 	}
- 
--	kgdboc_io_ops.is_console = 0;
-+	kgdboc_io_ops.cons = NULL;
- 	kgdb_tty_driver = NULL;
- 
- 	kgdboc_use_kms = 0;
-@@ -173,7 +173,7 @@ static int configure_kgdboc(void)
- 		int idx;
- 		if (cons->device && cons->device(cons, &idx) == p &&
- 		    idx == tty_line) {
--			kgdboc_io_ops.is_console = 1;
-+			kgdboc_io_ops.cons = cons;
- 			break;
- 		}
- 	}
-diff --git a/drivers/usb/early/ehci-dbgp.c b/drivers/usb/early/ehci-dbgp.c
-index ea0d531..8c32d1a 100644
---- a/drivers/usb/early/ehci-dbgp.c
-+++ b/drivers/usb/early/ehci-dbgp.c
-@@ -1058,7 +1058,8 @@ static int __init kgdbdbgp_parse_config(char *str)
- 		kgdbdbgp_wait_time = simple_strtoul(ptr, &ptr, 10);
- 	}
- 	kgdb_register_io_module(&kgdbdbgp_io_ops);
--	kgdbdbgp_io_ops.is_console = early_dbgp_console.index != -1;
-+	if (early_dbgp_console.index != -1)
-+		kgdbdbgp_io_ops.cons = early_dbgp_console;
- 
- 	return 0;
- }
-diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
-index b072aeb..bc0face3 100644
---- a/include/linux/kgdb.h
-+++ b/include/linux/kgdb.h
-@@ -273,8 +273,7 @@ struct kgdb_arch {
-  * the I/O driver.
-  * @post_exception: Pointer to a function that will do any cleanup work
-  * for the I/O driver.
-- * @is_console: 1 if the end device is a console 0 if the I/O device is
-- * not a console
-+ * @cons: valid if the I/O device is a console.
-  */
- struct kgdb_io {
- 	const char		*name;
-@@ -284,7 +283,7 @@ struct kgdb_io {
- 	int			(*init) (void);
- 	void			(*pre_exception) (void);
- 	void			(*post_exception) (void);
--	int			is_console;
-+	struct console		*cons;
- };
- 
- extern const struct kgdb_arch		arch_kgdb_ops;
-diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
-index 9e5a40d..5e00bc8 100644
---- a/kernel/debug/kdb/kdb_io.c
-+++ b/kernel/debug/kdb/kdb_io.c
-@@ -560,12 +560,14 @@ static void kdb_msg_write(char *msg, int msg_len)
- 	if (msg_len == 0)
- 		return;
- 
--	if (dbg_io_ops && !dbg_io_ops->is_console)
-+	if (dbg_io_ops)
- 		kdb_io_write(msg, msg_len);
- 
- 	for_each_console(c) {
- 		if (!(c->flags & CON_ENABLED))
- 			continue;
-+		if (c == dbg_io_ops->cons)
-+			continue;
- 		/*
- 		 * Set oops_in_progress to encourage the console drivers to
- 		 * disregard their internal spin locks: in the current calling
--- 
-2.7.4
+  struct bootloader_log
+  {
+    grub_uint32_t version;
+    grub_uint32_t producer;
+    grub_uint32_t size;
+    grub_uint32_t next_off;
+    bootloader_log_msgs msgs[];
+  }
 
+The members of struct bootloader_log:
+  - version: the bootloader log format version number, 1 for now,
+  - producer: the producer/bootloader type; we can steal some values from
+    linux/Documentation/x86/boot.rst:type_of_loader,
+  - size: total size of the log buffer including the bootloader_log struct,
+  - next_off: offset in bytes, from start of the bootloader_log struct,
+    of the next byte after the last log message in the msgs[];
+    i.e. the offset of the next available log message slot,
+  - msgs: the array of log messages.
+
+The members of struct bootloader_log_msgs:
+  - level: similar to syslog meaning; can be used to differentiate
+    normal messages from debug messages; exact interpretation depends
+    on the current producer/bootloader type specified in the
+    bootloader_log.producer,
+  - facility: similar to syslog meaning; can be used to differentiate
+    the sources of the messages, e.g. message produced by networking
+    module; exact interpretation depends on the current producer/bootloader
+    type specified in the bootloader_log.producer,
+  - type: similar to the facility member but NUL terminated string instead of integer;
+    this will be used by GRUB for messages printed using grub_dprintf(),
+  - msg: the bootloader log message, NUL terminated string.
+
+Note: The bootloaders are free to use/ignore any given set of level,
+      facility and/or type members. Though the usage of these members
+      has to be clearly defined. Ignored integer members should be set
+      to 0. Ignored type member should contain an empty NUL terminated
+      string. msg member is mandatory but can be an empty NUL terminated
+      string.
+
+Taking into account [1] and [2] I want to make this functionality generic
+as much as possible. So, this bootloader log can be used with any bootloader
+and OS kernel. However, initially the functionality will be implemented for
+the Linux kernel and its boot protocol.
+
+In case of Linux kernel the pointer to the bootloader_log struct should
+be passed from the bootloader to the kernel through the boot_params and
+the bootloader_log struct contents should be exposed via sysfs. E.g.
+somewhere at /sys/kernel/debug or /sys/kernel/tracing or maybe we should
+create new /sys/bootloader/log node.
+
+If everybody is OK with this rough proposal then I will start working
+on making it a part of Multiboot2 specification (the text above is just
+raw description of the idea; it is not final text which land into the
+spec). If you see better place for this thing just drop me a line.
+
+Daniel
+
+[1] https://lists.gnu.org/archive/html/grub-devel/2019-10/msg00107.html
+[2] https://lists.gnu.org/archive/html/grub-devel/2019-11/msg00079.html
