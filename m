@@ -2,75 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763FC1E74DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 06:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FFE11E74DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 06:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725928AbgE2E3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 00:29:48 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:32195 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725777AbgE2E3r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 00:29:47 -0400
-X-UUID: a79da786f4844c81b39505ffcaeaae55-20200529
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=/8kwEHmJ6TaKvbOevYpGl57UqTkIwazDt7MXIqKtVPY=;
-        b=qmcsrnbzADgRypVyMJU/lHib1OIYoafb48XWw0diQCBr5kUmgwZdXKklqZ1Fi1qVyq03f566vBPsrL2TKUXxgAaaLoDCArZedcz7sRnM9s9n1QFioPpp55RyTdxuTXqBTN+i58a/2xhF1SM5fOhtqzlG6bi6edI4X7602P3DsF4=;
-X-UUID: a79da786f4844c81b39505ffcaeaae55-20200529
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <macpaul.lin@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1712265074; Fri, 29 May 2020 12:29:43 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 29 May 2020 12:29:30 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 29 May 2020 12:29:34 +0800
-From:   Macpaul Lin <macpaul.lin@mediatek.com>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Macpaul Lin <macpaul.lin@gmail.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-usb@vger.kernel.org>, <linux-mediatek@lists.infradead.org>
-Subject: [PATCH] usb: host: xhci-mtk: avoid runtime suspend when removing hcd
-Date:   Fri, 29 May 2020 12:29:28 +0800
-Message-ID: <1590726569-28248-1-git-send-email-macpaul.lin@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
+        id S1725877AbgE2E3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 00:29:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49060 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725777AbgE2E3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 00:29:37 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75C732074D;
+        Fri, 29 May 2020 04:29:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590726577;
+        bh=qVwgudvkBtdmAIlD05bceR/5bThoNQ+jc6K0uU7r05o=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=iBFpgg1dHzFrT/weRqTvj39XGlmHSCtBfRIp2QoPRp21XePD4GcU5jUpYhaxcjY34
+         RPIvDgrnZxH/RbcNOSrJpjZsIb9mvvGZ9eMRtVGZHbs43D7WruhNswwpKxieG2D3OR
+         D1RBZC4nzQtcdZJQ3i50zrQ02s89R9jiJmlqYT34=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200502122126.188001-1-aford173@gmail.com>
+References: <20200502122126.188001-1-aford173@gmail.com>
+Subject: Re: [PATCH V2 1/3] clk: vc5: Allow Versaclock driver to support multiple instances
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     aford@beaconembedded.com, charles.stevens@logicpd.com,
+        Adam Ford <aford173@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Vasut <marek.vasut@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Adam Ford <aford173@gmail.com>, linux-clk@vger.kernel.org
+Date:   Thu, 28 May 2020 21:29:36 -0700
+Message-ID: <159072657670.69627.7898870559369627169@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-V2hlbiBydW50aW1lIHN1c3BlbmQgd2FzIGVuYWJsZWQsIHJ1bnRpbWUgc3VzcGVuZCBtaWdodCBo
-YXBwZW5lZA0Kd2hlbiB4aGNpIGlzIHJlbW92aW5nIGhjZC4gVGhpcyBtaWdodCBjYXVzZSBrZXJu
-ZWwgcGFuaWMgd2hlbiBoY2QNCmhhcyBiZWVuIGZyZWVkIGJ1dCBydW50aW1lIHBtIHN1c3BlbmQg
-cmVsYXRlZCBoYW5kbGUgbmVlZCB0bw0KcmVmZXJlbmNlIGl0Lg0KDQpDaGFuZ2UtSWQ6IEk3MGE1
-ZGM4MDA2MjA3Y2FlZWNiYWM2OTU1Y2U4ZTUzNDVkY2M3MGU2DQpTaWduZWQtb2ZmLWJ5OiBNYWNw
-YXVsIExpbiA8bWFjcGF1bC5saW5AbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJpdmVycy91c2IvaG9z
-dC94aGNpLW10ay5jIHwgICAgNSArKystLQ0KIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMo
-KyksIDIgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL3VzYi9ob3N0L3hoY2kt
-bXRrLmMgYi9kcml2ZXJzL3VzYi9ob3N0L3hoY2ktbXRrLmMNCmluZGV4IGJmYmRiM2MuLjY0MWQy
-NGUgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3VzYi9ob3N0L3hoY2ktbXRrLmMNCisrKyBiL2RyaXZl
-cnMvdXNiL2hvc3QveGhjaS1tdGsuYw0KQEAgLTU4Nyw2ICs1ODcsOSBAQCBzdGF0aWMgaW50IHho
-Y2lfbXRrX3JlbW92ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpkZXYpDQogCXN0cnVjdCB4aGNp
-X2hjZAkqeGhjaSA9IGhjZF90b194aGNpKGhjZCk7DQogCXN0cnVjdCB1c2JfaGNkICAqc2hhcmVk
-X2hjZCA9IHhoY2ktPnNoYXJlZF9oY2Q7DQogDQorCXBtX3J1bnRpbWVfcHV0X3N5bmMoJmRldi0+
-ZGV2KTsNCisJcG1fcnVudGltZV9kaXNhYmxlKCZkZXYtPmRldik7DQorDQogCXVzYl9yZW1vdmVf
-aGNkKHNoYXJlZF9oY2QpOw0KIAl4aGNpLT5zaGFyZWRfaGNkID0gTlVMTDsNCiAJZGV2aWNlX2lu
-aXRfd2FrZXVwKCZkZXYtPmRldiwgZmFsc2UpOw0KQEAgLTU5Nyw4ICs2MDAsNiBAQCBzdGF0aWMg
-aW50IHhoY2lfbXRrX3JlbW92ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpkZXYpDQogCXhoY2lf
-bXRrX3NjaF9leGl0KG10ayk7DQogCXhoY2lfbXRrX2Nsa3NfZGlzYWJsZShtdGspOw0KIAl4aGNp
-X210a19sZG9zX2Rpc2FibGUobXRrKTsNCi0JcG1fcnVudGltZV9wdXRfc3luYygmZGV2LT5kZXYp
-Ow0KLQlwbV9ydW50aW1lX2Rpc2FibGUoJmRldi0+ZGV2KTsNCiANCiAJcmV0dXJuIDA7DQogfQ0K
-LS0gDQoxLjcuOS41DQo=
+Quoting Adam Ford (2020-05-02 05:21:24)
+> diff --git a/drivers/clk/clk-versaclock5.c b/drivers/clk/clk-versaclock5.c
+> index fa96659f8023..81255d923f00 100644
+> --- a/drivers/clk/clk-versaclock5.c
+> +++ b/drivers/clk/clk-versaclock5.c
+> @@ -881,6 +871,8 @@ static int vc5_probe(struct i2c_client *client,
+>                 goto err_clk;
+>         }
+> =20
+> +       dev_info(&client->dev, "probed");
+> +
 
+Please remove this.
+
+>         return 0;
+> =20
+>  err_clk:
