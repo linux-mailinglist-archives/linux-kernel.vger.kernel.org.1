@@ -2,108 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 247C01E8A5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 23:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53BE01E8A64
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 23:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728555AbgE2VrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 17:47:00 -0400
-Received: from muru.com ([72.249.23.125]:56290 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728086AbgE2Vq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 17:46:59 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id A03A28030;
-        Fri, 29 May 2020 21:47:46 +0000 (UTC)
-Date:   Fri, 29 May 2020 14:46:53 -0700
-From:   Tony Lindgren <tony@atomide.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     SoC Team <soc@kernel.org>, Olof Johansson <olof@lixom.net>,
-        Stefan Agner <stefan@agner.ch>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        santosh.shilimkar@oracle.com
-Subject: Re: [PATCH] ARM: omap2: fix omap5_realtime_timer_init definition
-Message-ID: <20200529214653.GY37466@atomide.com>
-References: <20200529201701.521933-1-arnd@arndb.de>
- <20200529204404.GW37466@atomide.com>
- <CAK8P3a1fEq6n1pBqkY4CqxpSZnMLOQsNHFyhB_L4uo-oZVu4sw@mail.gmail.com>
- <20200529211440.GX37466@atomide.com>
- <CAK8P3a0oK-SqWHR9v0-2p3Fd_mCe2ibP_SQKf_W2A6cbEzVgWw@mail.gmail.com>
+        id S1728421AbgE2VsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 17:48:19 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:26656 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727964AbgE2VsS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 17:48:18 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04TLWv9o153644;
+        Fri, 29 May 2020 17:47:38 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31b7x83wtq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 May 2020 17:47:37 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04TLZsZh162891;
+        Fri, 29 May 2020 17:47:37 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31b7x83wt2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 May 2020 17:47:37 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 04TLjk9W014307;
+        Fri, 29 May 2020 21:47:34 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma02fra.de.ibm.com with ESMTP id 316uf8w6bs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 May 2020 21:47:34 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04TLlVXD7733744
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 29 May 2020 21:47:31 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CA68EAE04D;
+        Fri, 29 May 2020 21:47:31 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D4720AE058;
+        Fri, 29 May 2020 21:47:27 +0000 (GMT)
+Received: from vajain21-in-ibm-com (unknown [9.199.34.115])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Fri, 29 May 2020 21:47:27 +0000 (GMT)
+Received: by vajain21-in-ibm-com (sSMTP sendmail emulation); Sat, 30 May 2020 03:17:26 +0530
+From:   Vaibhav Jain <vaibhav@linux.ibm.com>
+To:     linuxppc-dev@lists.ozlabs.org, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org
+Cc:     Vaibhav Jain <vaibhav@linux.ibm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ira Weiny <ira.weiny@intel.com>
+Subject: [PATCH v9 0/5] powerpc/papr_scm: Add support for reporting nvdimm health
+Date:   Sat, 30 May 2020 03:17:14 +0530
+Message-Id: <20200529214719.223344-1-vaibhav@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a0oK-SqWHR9v0-2p3Fd_mCe2ibP_SQKf_W2A6cbEzVgWw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-05-29_10:2020-05-28,2020-05-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
+ impostorscore=0 adultscore=0 bulkscore=0 spamscore=0 mlxscore=0
+ phishscore=0 lowpriorityscore=0 cotscore=-2147483648 mlxlogscore=999
+ malwarescore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005290153
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Arnd Bergmann <arnd@arndb.de> [200529 21:41]:
-> On Fri, May 29, 2020 at 11:14 PM Tony Lindgren <tony@atomide.com> wrote:
-> > * Arnd Bergmann <arnd@arndb.de> [200529 21:09]:
-> > >
-> > > #ifdef CONFIG_SOC_HAS_REALTIME_COUNTER
-> > > extern void omap5_realtime_timer_init(void);
-> > > #else
-> > > static inline void omap5_realtime_timer_init(void)
-> > > {
-> > > }
-> > > #endif
-> > >
-> > > In fact, the inline stub is what that caused the regression,
-> > > so I think it's ok with my patch.
-> >
-> > To me it seems not having SOC_HAS_REALTIME_COUNTER will
-> > cause omap5_realtime_timer_init() not get called?
-> 
-> Correct, this looked to me like it was the intention of that
-> symbol. Unfortunately there is no help text but it is user
-> selectable:
-> 
-> config SOC_HAS_REALTIME_COUNTER
->         bool "Real time free running counter"
->         depends on SOC_OMAP5 || SOC_DRA7XX
->         default y
+Changes since v8 [1]:
 
-Maybe this is a legacy Kconfig option since Santosh got
-the cpuidle coupled to switch things to using the always on
-timers for idle modes years ago already.
+* Updated proposed changes to remove usage of term 'SCM' due to
+  ambiguity with 'PMEM' and 'NVDIMM'. [ Dan Williams ]
+* Replaced the usage of term 'SCM' with 'PMEM' in most contexts.
+  [ Aneesh ]
+* Renamed NVDIMM health defines from PAPR_SCM_DIMM_* to PAPR_PMEM_* .
+* Updates to various newly introduced identifiers in 'papr_scm.c'
+  removing the 'SCM' prefix from their names.
+* Renamed NVDIMM_FAMILY_PAPR_SCM to NVDIMM_FAMILY_PAPR
+* Renamed PAPR_SCM_PDSM_HEALTH PAPR_PDSM_HEALTH
+* Renamed uapi header 'papr_scm_pdsm.h' to 'papr_pdsm.h'.
+* Renamed sysfs ABI document from sysfs-bus-papr-scm to
+  sysfs-bus-papr-pmem.
+* No behavioural changes from v8 [1].
 
-> > That initializes clocks and calls timer_probe(). So this
-> > will result in non-booting system AFAIK, the header
-> > file stub should no rely CONFIG_SOC_HAS_REALTIME_COUNTER
-> > also, but rather ! CONFIG_SOC_OMAP5 || CONFIG_SOC_DRA7XX.
-> >
-> > Also the Makefile change at least seems wrong, that
-> > can't rely on CONFIG_SOC_HAS_REALTIME_COUNTER.
-> 
-> How about just removing the prompt on
-> CONFIG_SOC_HAS_REALTIME_COUNTER but keeping the
-> rest of my patch? That way it's just always enabled when
-> there is a chip that needs it enabled in the kernel config.
-> 
-> The only other usage of the symbol is
-> 
-> #ifdef CONFIG_SOC_HAS_REALTIME_COUNTER
-> void set_cntfreq(void);
-> #else
-> static inline void set_cntfreq(void)
-> {
-> }
-> #endif
+[1] https://lore.kernel.org/linux-nvdimm/20200527041244.37821-1-vaibhav@linux.ibm.com/
+---
 
-Yeah it's already default y, so I'd say let's just get
-rid of the option.
+The PAPR standard[2][4] provides mechanisms to query the health and
+performance stats of an NVDIMM via various hcalls as described in
+Ref[3].  Until now these stats were never available nor exposed to the
+user-space tools like 'ndctl'. This is partly due to PAPR platform not
+having support for ACPI and NFIT. Hence 'ndctl' is unable to query and
+report the dimm health status and a user had no way to determine the
+current health status of a NDVIMM.
 
-> Alternatively, we could just remove the Kconfig symbol
-> altogether and rely on (SOC_OMAP5 || SOC_DRA7XX)
-> everywhere, but that seems a little more fragile in case
-> there is going to be another chip that needs it.
+To overcome this limitation, this patch-set updates papr_scm kernel
+module to query and fetch NVDIMM health stats using hcalls described
+in Ref[3].  This health and performance stats are then exposed to
+userspace via sysfs and PAPR-NVDIMM-Specific-Methods(PDSM) issued by
+libndctl.
 
-Sounds like we can just remove CONFIG_SOC_HAS_REALTIME_COUNTER
-and rely on (SOC_OMAP5 || SOC_DRA7XX).
+These changes coupled with proposed ndtcl changes located at Ref[5]
+should provide a way for the user to retrieve NVDIMM health status
+using ndtcl.
 
-Regards,
+Below is a sample output using proposed kernel + ndctl for PAPR NVDIMM
+in a emulation environment:
 
-Tony
+ # ndctl list -DH
+[
+  {
+    "dev":"nmem0",
+    "health":{
+      "health_state":"fatal",
+      "shutdown_state":"dirty"
+    }
+  }
+]
+
+Dimm health report output on a pseries guest lpar with vPMEM or HMS
+based NVDIMMs that are in perfectly healthy conditions:
+
+ # ndctl list -d nmem0 -H
+[
+  {
+    "dev":"nmem0",
+    "health":{
+      "health_state":"ok",
+      "shutdown_state":"clean"
+    }
+  }
+]
+
+PAPR NVDIMM-Specific-Methods(PDSM)
+==================================
+
+PDSM requests are issued by vendor specific code in libndctl to
+execute certain operations or fetch information from NVDIMMS. PDSMs
+requests can be sent to papr_scm module via libndctl(userspace) and
+libnvdimm (kernel) using the ND_CMD_CALL ioctl command which can be
+handled in the dimm control function papr_scm_ndctl(). Current
+patchset proposes a single PDSM to retrieve NVDIMM health, defined in
+the newly introduced uapi header named 'papr_pdsm.h'. Support for
+more PDSMs will be added in future.
+
+Structure of the patch-set
+==========================
+
+The patch-set starts with a doc patch documenting details of hcall
+H_SCM_HEALTH. Second patch exports kernel symbol seq_buf_printf()
+thats used in subsequent patches to generate sysfs attribute content.
+
+Third patch implements support for fetching NVDIMM health information
+from PHYP and partially exposing it to user-space via a NVDIMM sysfs
+flag.
+
+Fourth patches deal with implementing support for servicing PDSM
+commands in papr_scm module.
+
+Finally the last patch implements support for servicing PDSM
+'PAPR_PDSM_HEALTH' that returns the NVDIMM health information to
+libndctl.
+
+References:
+[2] "Power Architecture Platform Reference"
+      https://en.wikipedia.org/wiki/Power_Architecture_Platform_Reference
+[3] commit 58b278f568f0
+     ("powerpc: Provide initial documentation for PAPR hcalls")
+[4] "Linux on Power Architecture Platform Reference"
+     https://members.openpowerfoundation.org/document/dl/469
+[5] https://github.com/vaibhav92/ndctl/tree/papr_scm_health_v9
+
+---
+
+Vaibhav Jain (5):
+  powerpc: Document details on H_SCM_HEALTH hcall
+  seq_buf: Export seq_buf_printf
+  powerpc/papr_scm: Fetch nvdimm health information from PHYP
+  ndctl/papr_scm,uapi: Add support for PAPR nvdimm specific methods
+  powerpc/papr_scm: Implement support for PAPR_PDSM_HEALTH
+
+ Documentation/ABI/testing/sysfs-bus-papr-pmem |  27 ++
+ Documentation/powerpc/papr_hcalls.rst         |  46 ++-
+ arch/powerpc/include/uapi/asm/papr_pdsm.h     | 175 +++++++++
+ arch/powerpc/platforms/pseries/papr_scm.c     | 363 +++++++++++++++++-
+ include/uapi/linux/ndctl.h                    |   1 +
+ lib/seq_buf.c                                 |   1 +
+ 6 files changed, 600 insertions(+), 13 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-papr-pmem
+ create mode 100644 arch/powerpc/include/uapi/asm/papr_pdsm.h
+
+-- 
+2.26.2
+
