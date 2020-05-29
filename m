@@ -2,166 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 768F11E88B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C291E88B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728064AbgE2UO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 16:14:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726866AbgE2UO2 (ORCPT
+        id S1728226AbgE2UO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 16:14:59 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:46029 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728001AbgE2UO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 16:14:28 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50ECEC03E969;
-        Fri, 29 May 2020 13:14:27 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id t16so1666793plo.7;
-        Fri, 29 May 2020 13:14:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=gwodJBChdGKyL7PUJtWDxlkfoJo0J3RohjY3HTDpfe4=;
-        b=fMeh6Hpu602J6Dz1PU9I7r79dwI9opLkbAMtwq3yxDr4a5/ezphEUvepwwZKGz0Gt7
-         i6g2DpWYycF2/YiM1/zn9beKx34MTb8DIwwLp2kNFZcdRpEsi/sMaReSHLsumiLdwSvV
-         7tK6GxdKzjGYbVvzlSRS7u4sA8IRzmUbIxh4AaFfEsrpZ8ljhit17LUyefNTdZzJ76r0
-         qcSu2Rq+OVtfnh/uyqKnFv2PLQWFE+ObcH58pxMTF8W8B+ceJOfBhnNzg5ONmXwHN66n
-         +T/UjmHBxNgfGaWJnH1HxygkCPJqP4p1DZztO0L/o+lcRrle9mSfPs9ysMXmOmEqkX0x
-         eM0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gwodJBChdGKyL7PUJtWDxlkfoJo0J3RohjY3HTDpfe4=;
-        b=dN3RC89ySHLRym9EPKmCYaKWMwgsSSrDY5wD0hVKXo/xa2p//3V5VKrTqzL5gKitq1
-         LeQypW0HAfjaHBzScVN2oTthwuDP9EILqrkRog8CqEwJA1fg5BFzGqSeST6nA/9dP41k
-         0ZTXK1HDl7jaG4tQ30LoEiK05Nw5nh6Jwmug20ZQCAAhgeTUqbM1pprxqupxuy9t+e8S
-         s/EB2W5KeGqinchHBptML1OC7mr+7D8jomvOqcq46YqNihhOGkn/AS/VxDiXvLFvpsn+
-         X+6h3k0ZMP1eDBeoxfKwkmj6pCqAKi0H6PnCPPR+79zA73lXgEyw8j11NYfIn5N0sa3e
-         jCNw==
-X-Gm-Message-State: AOAM530bgLMQAzenkOFwuB6SpJgPalX+E/N7KKQEm+zbqMJeW3lEIShq
-        x2vhChQKJ2mPtXVQvolB/OY=
-X-Google-Smtp-Source: ABdhPJz8FeU+qcN2XMjIm/YgSWs93WWo4kswOQ3IYLZeYyLqGWmNakujHQwW9U2PZk9lt6iF1970yA==
-X-Received: by 2002:a17:902:9689:: with SMTP id n9mr4957643plp.41.1590783266576;
-        Fri, 29 May 2020 13:14:26 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o14sm8065689pfp.89.2020.05.29.13.14.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 29 May 2020 13:14:26 -0700 (PDT)
-Date:   Fri, 29 May 2020 13:14:24 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        groeck@chromium.org, Nicolas Boichat <drinkcat@chromium.org>,
-        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] HID: usbhid: do not sleep when opening device
-Message-ID: <20200529201424.GA180211@roeck-us.net>
-References: <20200529195951.GA3767@dtor-ws>
+        Fri, 29 May 2020 16:14:58 -0400
+Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MS3zP-1jYKQZ31Ux-00TXuO; Fri, 29 May 2020 22:14:44 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        Ajay Joshi <ajay.joshi@wdc.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] block: add 'struct gendisk' declaration
+Date:   Fri, 29 May 2020 22:14:28 +0200
+Message-Id: <20200529201443.429167-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200529195951.GA3767@dtor-ws>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:ivtYp8Py2oTIXg3L4kC1QKwdqXma/ZiysiD2h1BzX0EhHte8T3s
+ 4lBj6kpZ2X5pszJGBBAAbZVnvgImu+ET7Fx2VejQKMPCJWryVUVUmHwBbJXFyHM3G4O2FVU
+ uWacjHiejhrJOzlx7BTZlekoJUksBJOqlEVDGnBK5Mny7D0RwEl4XDTwUI7MN+f9JqE47gI
+ kHmM/AzX+AUWQM+2URU1A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VD5XYlZyX3Q=:0ZpCXvWgttssF7m7KZYbql
+ fne2q7QM9eUg6Y7B9GkkFYaWU6WfpMJnJYddqWPKY6kXjunOG958BY63c2BY96VVVvFTWOOiR
+ oS/RcssTnyB3ZeulAkMOQ+RVagpGpC/pmHAbtn81yzPMnedccHrZGSPidcNo7MPD4v+05UA5U
+ URGo558YUtXPbkFju1ip0B4eQtqiQ2Ww4lN3klhY/gd63Oo8tK78VY5kYYa/dCNVV9W9Ula80
+ sWa9vWmvWEbbnfe/VY4/feh1jkPsTpsNr5TwQMXtatlzsME2b+x8S8sJFvvCgkvLUeenymXau
+ kRrydOIb9xJtSt1bn62Nmm0VB2fgAxkYvTTqgE0XWobnn6AAngvfUNXKo2WiCx/0oZ+gj/5nL
+ zd1xrJpFGtjeiUNvFDKSv5kWA7jsTjc1cA2YEgqQDFXrW0i5MZZ8NBFXIDgc1aKnUmFyoBgJI
+ s53/TztZ7Ub0iVhTiUkYkayXIcX8v2GHSz01NTG5gPRBQ+iQrauBIWRzuP2uOWmTsbyresqpa
+ 9k+MwEDo7ZaDoLDrraYpPLNlV4WZL1pnS4fWW/wVdA5QOcMQA5klfG61FI1M1Y3N/7sjYEg73
+ Rnp8/QyIa5D4D7N1JA2haEyGmggPEwg7xG16MldHzmcEixuvYtQnwzEzIqMrKipGvgpMXA0Ik
+ I+KU3/puVGvK58/cs5bBGfPIjRFxqRjR8GkpX7w2GaUljt3/TKcE6F7mDZvXn1p9muxIYiY9f
+ X8NIQ+7XLcAyEUEL/aYMvkX0Wj2/Npmmig9EpyCXRej1tGDoZeCpdu434t0CVVh//hCjO/JSK
+ Xq9hW0qQUg9lRtDZQ3fdYklzv8G8rds2pzyMfzbPfS+fdG7iDM=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 12:59:51PM -0700, Dmitry Torokhov wrote:
-> usbhid tries to give the device 50 milliseconds to drain its queues
-> when opening the device, but does it naively by simply sleeping in open
-> handler, which slows down device probing (and thus may affect overall
-> boot time).
-> 
-> However we do not need to sleep as we can instead mark a point of time
-> in the future when we should start processing the events.
-> 
-> Reported-by: Nicolas Boichat <drinkcat@chromium.org>
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> ---
->  drivers/hid/usbhid/hid-core.c | 27 +++++++++++++++------------
->  drivers/hid/usbhid/usbhid.h   |  1 +
->  2 files changed, 16 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
-> index c7bc9db5b192..e69992e945b2 100644
-> --- a/drivers/hid/usbhid/hid-core.c
-> +++ b/drivers/hid/usbhid/hid-core.c
-> @@ -95,6 +95,19 @@ static int hid_start_in(struct hid_device *hid)
->  				set_bit(HID_NO_BANDWIDTH, &usbhid->iofl);
->  		} else {
->  			clear_bit(HID_NO_BANDWIDTH, &usbhid->iofl);
-> +
-> +			if (test_and_clear_bit(HID_RESUME_RUNNING,
-> +					       &usbhid->iofl)) {
-> +				/*
-> +				 * In case events are generated while nobody was
-> +				 * listening, some are released when the device
-> +				 * is re-opened. Wait 50 msec for the queue to
-> +				 * empty before allowing events to go through
-> +				 * hid.
-> +				 */
-> +				usbhid->input_start_time = jiffies +
-> +							   msecs_to_jiffies(50);
-> +			}
->  		}
->  	}
->  	spin_unlock_irqrestore(&usbhid->lock, flags);
-> @@ -280,7 +293,8 @@ static void hid_irq_in(struct urb *urb)
->  		if (!test_bit(HID_OPENED, &usbhid->iofl))
->  			break;
->  		usbhid_mark_busy(usbhid);
-> -		if (!test_bit(HID_RESUME_RUNNING, &usbhid->iofl)) {
-> +		if (!test_bit(HID_RESUME_RUNNING, &usbhid->iofl) &&
-> +		    time_after(jiffies, usbhid->input_start_time)) {
->  			hid_input_report(urb->context, HID_INPUT_REPORT,
->  					 urb->transfer_buffer,
->  					 urb->actual_length, 1);
-> @@ -714,17 +728,6 @@ static int usbhid_open(struct hid_device *hid)
->  	}
->  
->  	usb_autopm_put_interface(usbhid->intf);
-> -
-> -	/*
-> -	 * In case events are generated while nobody was listening,
-> -	 * some are released when the device is re-opened.
-> -	 * Wait 50 msec for the queue to empty before allowing events
-> -	 * to go through hid.
-> -	 */
-> -	if (res == 0)
-> -		msleep(50);
-> -
-Can you just set usbhid->input_start_time here ?
-	if (res == 0)
-		usbhid->input_start_time = jiffies + msecs_to_jiffies(50);
-	clear_bit(HID_RESUME_RUNNING, &usbhid->iofl);
+The added disk_start_io_acct() function declaration causes a warning
+when CONFIG_BLOCK is disabled:
 
-Then you might not need the added code in hid_start_in().
+include/linux/blkdev.h:1895:41: error: declaration of 'struct gendisk' will not be visible outside of this function [-Werror,-Wvisibility]
 
-Thanks,
-Guenter
+Declare the struct tag before the function to suppress that warning.
 
-> -	clear_bit(HID_RESUME_RUNNING, &usbhid->iofl);
->  	return res;
->  }
->  
-> diff --git a/drivers/hid/usbhid/usbhid.h b/drivers/hid/usbhid/usbhid.h
-> index 8620408bd7af..805949671b96 100644
-> --- a/drivers/hid/usbhid/usbhid.h
-> +++ b/drivers/hid/usbhid/usbhid.h
-> @@ -82,6 +82,7 @@ struct usbhid_device {
->  
->  	spinlock_t lock;						/* fifo spinlock */
->  	unsigned long iofl;                                             /* I/O flags (CTRL_RUNNING, OUT_RUNNING) */
-> +	unsigned long input_start_time;					/* When to start handling input, in jiffies */
->  	struct timer_list io_retry;                                     /* Retry timer */
->  	unsigned long stop_retry;                                       /* Time to give up, in jiffies */
->  	unsigned int retry_delay;                                       /* Delay length in ms */
-> -- 
-> 2.27.0.rc0.183.gde8f92d652-goog
-> 
-> 
-> -- 
-> Dmitry
+Fixes: 956d510ee78c ("block: add disk/bio-based accounting helpers")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ include/linux/blkdev.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 36568c9d030a..96cf7af86b73 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -1892,6 +1892,7 @@ static inline void blk_wake_io_task(struct task_struct *waiter)
+ 		wake_up_process(waiter);
+ }
+ 
++struct gendisk;
+ unsigned long disk_start_io_acct(struct gendisk *disk, unsigned int sectors,
+ 		unsigned int op);
+ void disk_end_io_acct(struct gendisk *disk, unsigned int op,
+-- 
+2.26.2
+
