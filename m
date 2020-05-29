@@ -2,169 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D221E8874
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FAF11E887B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728288AbgE2UEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 16:04:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36378 "EHLO
+        id S1728170AbgE2UEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 16:04:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728164AbgE2UD7 (ORCPT
+        with ESMTP id S1728077AbgE2UET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 16:03:59 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6814C0A88B4
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 13:03:58 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id f21so423735pgg.12
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 13:03:58 -0700 (PDT)
+        Fri, 29 May 2020 16:04:19 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3DDC03E969
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 13:04:18 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id bg4so1672312plb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 13:04:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Ur0tRoXDFgucIHCcDSOWNJgdTr4CPZcipEuAfudLDPs=;
-        b=WExBOCKa/51JjvlYoHp9ASlcwtLNRpRKa8pS+Z8PisY4y16S1bwkNPZvmaFrXQ2XZx
-         ejqQJS1fBSF7ohENJ1qHiiqpyj1YrhivQLx1DRdFbyeoT5TH4Cja0qj3rKU+T4QWFDKa
-         WooH8sPPQLfkbzjb0NOudXvhGaXEPmZaQA4tU=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4+g7Oezu2RunpZeGCvY0b0s77w8UFoTcEBsYnh2aCmE=;
+        b=oIkV2IwxnKvjZgJ+qdLb8Jx8V/wvhITFMVzbJY5nzmFPezh71a7tDAioCbghNilrqs
+         yf84zuHV81ZntwYnrKWyOTM34RfkWDtvc91CAwfcOb5HwHt6B4JGIuGTCe/wMOHB291r
+         CTJHTLRbWq9I5PCPnqdJ53R1Y2qNC0FTlRUaecb83hWz+ZlkIRBlsB3o7WcIpN7t0ZN6
+         VFJHEH0lA2f4glK3hI6hWda5gKLsfuVoRvyNDt5Qf5nuhAhRM4Pyl8lucO5iZ2oOMKmZ
+         OpsQLoTKWgx/PG4/O3BnWMpiV0OLPhRPx3kbaB4J9OwG6eMdDqLVuPffUlG4qP0nvm++
+         bcvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Ur0tRoXDFgucIHCcDSOWNJgdTr4CPZcipEuAfudLDPs=;
-        b=LaKpU+BAQWZ9/FGw6pyQP5SbupLGUyR+eFWf8BAp+jtK/HZUVDieO3Vlg7jtY0oNWg
-         KMpyZDl5qHPWF+Bw+LoEY8K+Fm5NqiqjDVWV4K0cDEyKixQjmDMZdizA653YKYXvR8G7
-         FOVezssbLVCq1JhABDWJohPaA1J7rLuOstweWX7AdmTZYdkyfSjE1G01U/UK/mBekZdi
-         JzXB7LOifT7L16hz3s1qG9zbJi/qz/uRjK/W2PJrJbyOEezS/lSefFsHzgOVizOjga8v
-         P31NiffT+iTiCAbskHZc28j/ueat+6nzs/KSZhXG4liTXyB0mnMYdrqw4lHJpNNmPtnC
-         mkaw==
-X-Gm-Message-State: AOAM53348yZRFi9sMOrdIHJPL8pR0wx6MofUIxG4AiwjIxaFgDgZBqo0
-        VpSA6755WKRQ4T0al1IINVwq+A==
-X-Google-Smtp-Source: ABdhPJycncKsGEo8qJO+uytPUmbryktBpqNRcCiN+8goKytec/Tpui9cWq+9vCo2nCvXAd8MEj2XKQ==
-X-Received: by 2002:aa7:84da:: with SMTP id x26mr10167890pfn.24.1590782638413;
-        Fri, 29 May 2020 13:03:58 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k11sm1110168pgq.10.2020.05.29.13.03.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 13:03:54 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        linux-kselftest@vger.kernel.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] lkdtm: Make arch-specific tests always available
-Date:   Fri, 29 May 2020 13:03:47 -0700
-Message-Id: <20200529200347.2464284-5-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200529200347.2464284-1-keescook@chromium.org>
-References: <20200529200347.2464284-1-keescook@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4+g7Oezu2RunpZeGCvY0b0s77w8UFoTcEBsYnh2aCmE=;
+        b=EXQxkJyK+XuAjaKyNY+XqOHCMRepO6JHVQwk7btAlFn7eOGFvI7hEjlpqVXc5WDvDi
+         XMOX0HddJdbh13pONylTYFioZ5zGcFpn2ZeEZaqodQKEJ5GPXaNIp9V79JSJ9MoXhO/M
+         8NdGzQLJiaKojSXMkJbbuHYACcykNjm3gs3l8DAK1m7Ug6aZySrGIpxKXmi3OJcWa1cT
+         21cTIZiBUP9qYOzq0xdtwvi9qZkSahxZWvARN838sr4BcnXZ05hzlU7en8j0Zd68rmy0
+         THAemLDzQ+zGfwZP0qsiAdIQl2/bVv3nvs/EmtNeGinEOx/Kh6SLVDhqWo/UKLL7SCtY
+         kRiQ==
+X-Gm-Message-State: AOAM530g342Y2cIMSeUVbsjp7mqc2ii3MhbTFIbWJPFwwtuF/H3MzT/U
+        c9IE6JbF3XOp5YggkAd1bmpemm+DUFg2HL5iDnSNaA==
+X-Google-Smtp-Source: ABdhPJzajSAOEPn628sZLoiLTrRZedjCZBAQvwF+keg7C4ztulX0K1oUk7mF8ipVkXUUgKnRHQMl+6ln2r4LRdFYT5Q=
+X-Received: by 2002:a17:902:724a:: with SMTP id c10mr10068319pll.223.1590782657556;
+ Fri, 29 May 2020 13:04:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200529200031.4117841-1-arnd@arndb.de>
+In-Reply-To: <20200529200031.4117841-1-arnd@arndb.de>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 29 May 2020 13:04:05 -0700
+Message-ID: <CAKwvOdnND7XFgr7W9PvZAikJB1nKxB4K5N-oP0YrBT74oX_C9g@mail.gmail.com>
+Subject: Re: [PATCH 1/9] staging: media: atomisp: fix incorrect NULL pointer check
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <natechancellor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'd like arch-specific tests to XFAIL when on a mismatched architecture
-so that we can more easily compare test coverage across all systems.
-Lacking kernel configs or CPU features count as a FAIL, not an XFAIL.
+See also Nathan's 7 patch series.
+https://lore.kernel.org/lkml/20200527071150.3381228-1-natechancellor@gmail.com/
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/misc/lkdtm/bugs.c               | 34 ++++++++++++++-----------
- drivers/misc/lkdtm/lkdtm.h              |  2 --
- tools/testing/selftests/lkdtm/tests.txt |  1 +
- 3 files changed, 20 insertions(+), 17 deletions(-)
+Might be some overlap between series?
 
-diff --git a/drivers/misc/lkdtm/bugs.c b/drivers/misc/lkdtm/bugs.c
-index e1b43f615549..f3fde0759f2c 100644
---- a/drivers/misc/lkdtm/bugs.c
-+++ b/drivers/misc/lkdtm/bugs.c
-@@ -453,38 +453,42 @@ void lkdtm_DOUBLE_FAULT(void)
- #endif
- }
- 
--#ifdef CONFIG_ARM64_PTR_AUTH
-+#ifdef CONFIG_ARM64
- static noinline void change_pac_parameters(void)
- {
--	/* Reset the keys of current task */
--	ptrauth_thread_init_kernel(current);
--	ptrauth_thread_switch_kernel(current);
-+	if (IS_ENABLED(CONFIG_ARM64_PTR_AUTH)) {
-+		/* Reset the keys of current task */
-+		ptrauth_thread_init_kernel(current);
-+		ptrauth_thread_switch_kernel(current);
-+	}
- }
-+#endif
- 
--#define CORRUPT_PAC_ITERATE	10
- noinline void lkdtm_CORRUPT_PAC(void)
- {
-+#ifdef CONFIG_ARM64
-+#define CORRUPT_PAC_ITERATE	10
- 	int i;
- 
-+	if (!IS_ENABLED(CONFIG_ARM64_PTR_AUTH))
-+		pr_err("FAIL: kernel not built with CONFIG_ARM64_PTR_AUTH\n");
-+
- 	if (!system_supports_address_auth()) {
--		pr_err("FAIL: arm64 pointer authentication feature not present\n");
-+		pr_err("FAIL: CPU lacks pointer authentication feature\n");
- 		return;
- 	}
- 
--	pr_info("Change the PAC parameters to force function return failure\n");
-+	pr_info("changing PAC parameters to force function return failure...\n");
- 	/*
--	 * Pac is a hash value computed from input keys, return address and
-+	 * PAC is a hash value computed from input keys, return address and
- 	 * stack pointer. As pac has fewer bits so there is a chance of
- 	 * collision, so iterate few times to reduce the collision probability.
- 	 */
- 	for (i = 0; i < CORRUPT_PAC_ITERATE; i++)
- 		change_pac_parameters();
- 
--	pr_err("FAIL: %s test failed. Kernel may be unstable from here\n", __func__);
--}
--#else /* !CONFIG_ARM64_PTR_AUTH */
--noinline void lkdtm_CORRUPT_PAC(void)
--{
--	pr_err("FAIL: arm64 pointer authentication config disabled\n");
--}
-+	pr_err("FAIL: survived PAC changes! Kernel may be unstable from here\n");
-+#else
-+	pr_err("XFAIL: this test is arm64-only\n");
- #endif
-+}
-diff --git a/drivers/misc/lkdtm/lkdtm.h b/drivers/misc/lkdtm/lkdtm.h
-index 601a2156a0d4..8878538b2c13 100644
---- a/drivers/misc/lkdtm/lkdtm.h
-+++ b/drivers/misc/lkdtm/lkdtm.h
-@@ -31,9 +31,7 @@ void lkdtm_CORRUPT_USER_DS(void);
- void lkdtm_STACK_GUARD_PAGE_LEADING(void);
- void lkdtm_STACK_GUARD_PAGE_TRAILING(void);
- void lkdtm_UNSET_SMEP(void);
--#ifdef CONFIG_X86_32
- void lkdtm_DOUBLE_FAULT(void);
--#endif
- void lkdtm_CORRUPT_PAC(void);
- 
- /* lkdtm_heap.c */
-diff --git a/tools/testing/selftests/lkdtm/tests.txt b/tools/testing/selftests/lkdtm/tests.txt
-index 92ca32143ae5..9d266e79c6a2 100644
---- a/tools/testing/selftests/lkdtm/tests.txt
-+++ b/tools/testing/selftests/lkdtm/tests.txt
-@@ -14,6 +14,7 @@ STACK_GUARD_PAGE_LEADING
- STACK_GUARD_PAGE_TRAILING
- UNSET_SMEP CR4 bits went missing
- DOUBLE_FAULT
-+CORRUPT_PAC
- UNALIGNED_LOAD_STORE_WRITE
- #OVERWRITE_ALLOCATION Corrupts memory on failure
- #WRITE_AFTER_FREE Corrupts memory on failure
+On Fri, May 29, 2020 at 1:00 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> Checking the pointer to a member of a struct against NULL
+> is pointless as clang points out:
+>
+> drivers/staging/media/atomisp/pci/atomisp_cmd.c:4278:17: error: address of 'config->info' will always evaluate to 'true'
+>
+> Check the original pointer instead, which may also be
+> unnecessary here, but makes a little more sense.
+>
+> Fixes: 9d4fa1a16b28 ("media: atomisp: cleanup directory hierarchy")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/staging/media/atomisp/pci/atomisp_cmd.c | 2 +-
+>  drivers/staging/media/atomisp/pci/sh_css.c      | 4 ++--
+>  drivers/staging/media/atomisp/pci/sh_css_sp.c   | 4 ++--
+>  3 files changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/staging/media/atomisp/pci/atomisp_cmd.c b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
+> index 5be690f876c1..342fc3b34fe0 100644
+> --- a/drivers/staging/media/atomisp/pci/atomisp_cmd.c
+> +++ b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
+> @@ -4275,7 +4275,7 @@ int atomisp_param(struct atomisp_sub_device *asd, int flag,
+>                     atomisp_css_get_dvs_grid_info(
+>                         &asd->params.curr_grid_info);
+>
+> -               if (!&config->info) {
+> +               if (!config) {
+>                         dev_err(isp->dev, "ERROR: NULL pointer in grid_info\n");
+>                         return -EINVAL;
+>                 }
+> diff --git a/drivers/staging/media/atomisp/pci/sh_css.c b/drivers/staging/media/atomisp/pci/sh_css.c
+> index d77432254a2c..e91c6029c651 100644
+> --- a/drivers/staging/media/atomisp/pci/sh_css.c
+> +++ b/drivers/staging/media/atomisp/pci/sh_css.c
+> @@ -8534,7 +8534,7 @@ ia_css_pipe_load_extension(struct ia_css_pipe *pipe,
+>
+>         if (firmware->info.isp.type == IA_CSS_ACC_OUTPUT)
+>         {
+> -               if (&pipe->output_stage)
+> +               if (pipe)
+>                         append_firmware(&pipe->output_stage, firmware);
+>                 else {
+>                         IA_CSS_LEAVE_ERR_PRIVATE(IA_CSS_ERR_INTERNAL_ERROR);
+> @@ -8542,7 +8542,7 @@ ia_css_pipe_load_extension(struct ia_css_pipe *pipe,
+>                 }
+>         } else if (firmware->info.isp.type == IA_CSS_ACC_VIEWFINDER)
+>         {
+> -               if (&pipe->vf_stage)
+> +               if (pipe)
+>                         append_firmware(&pipe->vf_stage, firmware);
+>                 else {
+>                         IA_CSS_LEAVE_ERR_PRIVATE(IA_CSS_ERR_INTERNAL_ERROR);
+> diff --git a/drivers/staging/media/atomisp/pci/sh_css_sp.c b/drivers/staging/media/atomisp/pci/sh_css_sp.c
+> index e574396ad0f4..c0e579c1705f 100644
+> --- a/drivers/staging/media/atomisp/pci/sh_css_sp.c
+> +++ b/drivers/staging/media/atomisp/pci/sh_css_sp.c
+> @@ -1022,7 +1022,7 @@ sh_css_sp_init_stage(struct ia_css_binary *binary,
+>                 if (!pipe)
+>                         return IA_CSS_ERR_INTERNAL_ERROR;
+>                 ia_css_get_crop_offsets(pipe, &args->in_frame->info);
+> -       } else if (&binary->in_frame_info)
+> +       } else if (binary)
+>         {
+>                 pipe = find_pipe_by_num(sh_css_sp_group.pipe[thread_id].pipe_num);
+>                 if (!pipe)
+> @@ -1036,7 +1036,7 @@ sh_css_sp_init_stage(struct ia_css_binary *binary,
+>                         if (!pipe)
+>                                 return IA_CSS_ERR_INTERNAL_ERROR;
+>                         ia_css_get_crop_offsets(pipe, &args->in_frame->info);
+> -               } else if (&binary->in_frame_info) {
+> +               } else if (binary) {
+>                         pipe = find_pipe_by_num(sh_css_sp_group.pipe[thread_id].pipe_num);
+>                         if (!pipe)
+>                                 return IA_CSS_ERR_INTERNAL_ERROR;
+> --
+> 2.26.2
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200529200031.4117841-1-arnd%40arndb.de.
+
+
+
 -- 
-2.25.1
-
+Thanks,
+~Nick Desaulniers
