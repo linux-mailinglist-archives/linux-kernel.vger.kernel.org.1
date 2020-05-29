@@ -2,162 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8FA1E7BC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 13:29:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 617BA1E7BD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 13:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726878AbgE2L33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 07:29:29 -0400
-Received: from smtp-bc0c.mail.infomaniak.ch ([45.157.188.12]:52079 "EHLO
-        smtp-bc0c.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725306AbgE2L31 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 07:29:27 -0400
-Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 49YMm60yXyzlhZsb;
-        Fri, 29 May 2020 13:29:26 +0200 (CEST)
-Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
-        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 49YMm15fmSzlhFhw;
-        Fri, 29 May 2020 13:29:21 +0200 (CEST)
-Subject: Re: [PATCH v18 07/12] landlock: Support filesystem access-control
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mickael.salaun@ssi.gouv.fr>,
-        Richard Weinberger <richard@nod.at>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>,
-        x86@kernel.org
-References: <20200526205322.23465-1-mic@digikod.net>
- <20200526205322.23465-8-mic@digikod.net>
- <CAOQ4uxibpDTyjCJWLGG9jr-Gv9PwO==o50b9O8HGQeUfVMDFag@mail.gmail.com>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <8e76c2ed-1725-f0a5-bcfc-317c4277af3b@digikod.net>
-Date:   Fri, 29 May 2020 13:29:20 +0200
-User-Agent: 
+        id S1726827AbgE2LbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 07:31:23 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:40415 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725939AbgE2LbX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 07:31:23 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590751882; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=+b9xQUQFNN4Oe3TcPS9VmSMFWy3mqBpS5ldsN4JGRkk=;
+ b=oLjD8/gdiZGH/sJkhtEgtrUZjyacPG09P4r9FkDjIopEv2/eHa5/kin9e69ZeaSegQj6wr/L
+ UObY4e9o0ig3YDw5BskMaHEyOl3BWeS4H9qhKnhcADWHhVx4A0eQfXFdHUqlTCB2/VxZ4XWC
+ IMcOTZlST2hdNWqQbi7nL5c9pCg=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5ed0f272809d904967f05862 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 May 2020 11:30:58
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 87934C43395; Fri, 29 May 2020 11:30:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 556F1C433C9;
+        Fri, 29 May 2020 11:30:57 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <CAOQ4uxibpDTyjCJWLGG9jr-Gv9PwO==o50b9O8HGQeUfVMDFag@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Antivirus: Dr.Web (R) for Unix mail servers drweb plugin ver.6.0.2.8
-X-Antivirus-Code: 0x100000
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 29 May 2020 17:00:57 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     sboyd@kernel.org, georgi.djakov@linaro.org, saravanak@google.com,
+        mka@chromium.org, nm@ti.com, bjorn.andersson@linaro.org,
+        agross@kernel.org, rjw@rjwysocki.net,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, dianders@chromium.org,
+        vincent.guittot@linaro.org, amit.kucheria@linaro.org,
+        lukasz.luba@arm.com, sudeep.holla@arm.com, smasetty@codeaurora.org,
+        linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [PATCH v5 4/5] cpufreq: qcom: Update the bandwidth levels on
+ frequency change
+In-Reply-To: <20200529100028.2wz2iqi5vqji2heb@vireshk-i7>
+References: <20200527202153.11659-1-sibis@codeaurora.org>
+ <20200527202153.11659-5-sibis@codeaurora.org>
+ <20200529100028.2wz2iqi5vqji2heb@vireshk-i7>
+Message-ID: <a90bce2d52f7cdb726e8b799e3512fad@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hey Viresh,
+Thanks for taking time to review the
+series :)
 
-On 27/05/2020 05:07, Amir Goldstein wrote:
-> On Wed, May 27, 2020 at 3:36 AM Mickaël Salaün <mic@digikod.net> wrote:
->>
->> Thanks to the Landlock objects and ruleset, it is possible to identify
->> inodes according to a process's domain.  To enable an unprivileged
->> process to express a file hierarchy, it first needs to open a directory
->> (or a file) and pass this file descriptor to the kernel through
->> landlock(2).  When checking if a file access request is allowed, we walk
->> from the requested dentry to the real root, following the different
->> mount layers.  The access to each "tagged" inodes are collected
->> according to their rule layer level, and ANDed to create access to the
->> requested file hierarchy.  This makes possible to identify a lot of
->> files without tagging every inodes nor modifying the filesystem, while
->> still following the view and understanding the user has from the
->> filesystem.
->>
+On 2020-05-29 15:30, Viresh Kumar wrote:
+> On 28-05-20, 01:51, Sibi Sankar wrote:
+>> Add support to parse optional OPP table attached to the cpu node when
+>> the OPP bandwidth values are populated. This allows for scaling of
+>> DDR/L3 bandwidth levels with frequency change.
+>> 
+>> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+>> ---
+>> 
+>> V5:
+>>  * Use dev_pm_opp_adjust_voltage instead [Viresh]
+>>  * Misc cleanup
+>> 
+>> v4:
+>>  * Split fast switch disable into another patch [Lukasz]
+>> 
+>>  drivers/cpufreq/qcom-cpufreq-hw.c | 77 
+>> ++++++++++++++++++++++++++++++-
+>>  1 file changed, 75 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c 
+>> b/drivers/cpufreq/qcom-cpufreq-hw.c
+>> index fc92a8842e252..fbd73d106a3ae 100644
+>> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
+>> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+>> @@ -6,6 +6,7 @@
+>>  #include <linux/bitfield.h>
+>>  #include <linux/cpufreq.h>
+>>  #include <linux/init.h>
+>> +#include <linux/interconnect.h>
+>>  #include <linux/kernel.h>
+>>  #include <linux/module.h>
+>>  #include <linux/of_address.h>
+>> @@ -31,6 +32,52 @@
+>>  static unsigned long cpu_hw_rate, xo_rate;
+>>  static struct platform_device *global_pdev;
+>> 
+>> +static int qcom_cpufreq_set_bw(struct cpufreq_policy *policy,
+>> +			       unsigned long freq_khz)
+>> +{
+>> +	unsigned long freq_hz = freq_khz * 1000;
+>> +	struct dev_pm_opp *opp;
+>> +	struct device *dev;
+>> +	int ret;
+>> +
+>> +	dev = get_cpu_device(policy->cpu);
+>> +	if (!dev)
+>> +		return -ENODEV;
+>> +
+>> +	opp = dev_pm_opp_find_freq_exact(dev, freq_hz, true);
+>> +	if (IS_ERR(opp))
+>> +		return PTR_ERR(opp);
+>> +
+>> +	ret = dev_pm_opp_set_bw(dev, opp);
+>> +	dev_pm_opp_put(opp);
+>> +	return ret;
+>> +}
+>> +
+>> +static int qcom_cpufreq_update_opp(struct device *cpu_dev,
+>> +				   unsigned long freq_khz,
+>> +				   unsigned long volt)
+>> +{
+>> +	unsigned long freq_hz = freq_khz * 1000;
+>> +
+>> +	if (dev_pm_opp_adjust_voltage(cpu_dev, freq_hz, volt, volt, volt))
+>> +		return dev_pm_opp_add(cpu_dev, freq_hz, volt);
 > 
-> Hi Mickael,
-> 
-> Nice work! I am interested in the problem of system wide file access
-> rules based on directory hierarchy [1][2]. Not the same problem, but
-> with obvious overlaps.
+> What's going on here ? Why add OPP here ?
 
-Interesting. Landlock's goal is to restrict a set of processes, which
-can be a container.
-
-> 
-> I sketched this untested POC [2] a while ago -
-> It introduces the concept of "border control" LSM hooks to avoid the
-> need to check which sections in the hierarchy an inode belongs to
-> on every syscall.
-> 
-> With this, you could cache a topology with id's per section and
-> cache the section id + topology generation in the inode's security state.
-> When inode crosses border control hooks, it's section id is updated.
-> When directory hierarchy topology changes, some or all of the cached
-> section id's are invalidated and rules <-> sections relations may need
-> to be changed.
-> 
-> Do you think something like that could be useful for landlock?
-
-Because Landlock deals with unprivileged sandboxing, we must manage
-multiple layers. The current implementation in Landlock, according to
-the unprivileged constraints, is explained here:
-https://lore.kernel.org/lkml/e07fe473-1801-01cc-12ae-b3167f95250e@digikod.net/
-
-As briefly explained in this patch [1] [2], in the case of Landlock,
-being able to change the filesystem layout/topology may lead to
-privilege escalation. Currently, Landlock forbids inode reparenting, but
-I plan to implement a multilayer partial ordering mechanism to relax
-this constraint while still enforcing all layered policies. A short-term
-approach could also relaxes the first layer, but we need to think
-carefully about the potential implications (including ABI compatibility).
-
-[1]
-https://github.com/landlock-lsm/linux/commit/b670df6c5add5cf96870327871c35fccb97a0dd8#diff-39adb7412180a73fe7c6b91ae5435a5bR354
-(must clic on "Load diff")
-[2]
-https://github.com/landlock-lsm/linux/commit/b670df6c5add5cf96870327871c35fccb97a0dd8#diff-39adb7412180a73fe7c6b91ae5435a5bR450
-(must clic on "Load diff")
-
-I think Landlock could help in your use case, but could you clarify your
-thread model please?
-
-The main issue right now with Landlock is to deal with overlayfs.
-Indeed, Landlock's check_access_path() does not work with
-orphaned/private mounts like overlayfs layers (cf. ovl_path_real() and
-ovl_path_open()). Do you have an idea how to solve this properly? Could
-we add a "virtual" mount point to these layers to identify dentries they
-are anchored to?
-
-> 
-> Note that the POC is using d_mountpoint() as the only type of "fence"
-> mark. It is sufficient for controlling rename in and out of containers, so
-> I just used an already available dentry flag for "fence".
-> If the border control hook concept is useful, this could be extended to
-> a more generic d_border_passing(), with some internal kernel API
-> to manage it and with all the bike shedding that comes with it...
-
-Why not just compare struct path->mnt using the current hooks?
-
-About performances, I also thought that walking through every path
-directories would be an important issue, but after some quick benchmark
-(with and for Landlock) I'm not sure anymore. A caching mechanism may be
-useful but it should not be needed from the start.
+We update the voltage if opp were
+initially added as part of
+dev_pm_opp_of_add_table. However
+if the cpu node does not have an
+opp table associated with it, we
+do a opp_add_v1 instead.
 
 > 
-> Thanks,
-> Amir.
+>> +
+>> +	/* Enable the opp after voltage update */
+>> +	return dev_pm_opp_enable(cpu_dev, freq_hz);
+>> +}
+>> +
+>> +/* Check for optional interconnect paths on CPU0 */
+>> +static int qcom_cpufreq_find_icc_paths(struct device *dev)
+>> +{
+>> +	struct device *cpu_dev;
+>> +
+>> +	cpu_dev = get_cpu_device(0);
+>> +	if (!cpu_dev)
+>> +		return -EPROBE_DEFER;
+>> +
+>> +	return dev_pm_opp_of_find_icc_paths(cpu_dev, NULL);
+>> +}
+>> +
+> 
+> open code this into the probe routine.
 
-I would like to be in Cc in your next "fanotify and LSM path hooks"
-emails. Thanks.
+sure
 
 > 
-> [1] https://lore.kernel.org/linux-fsdevel/CAOQ4uxhBVhyyJv0+xSFQiGQEj60AbD3SADfKK40uAiC4GF2p9Q@mail.gmail.com/
-> [2] https://lore.kernel.org/linux-fsdevel/CAOQ4uxgn=YNj8cJuccx2KqxEVGZy1z3DBVYXrD=Mc7Dc=Je+-w@mail.gmail.com/
-> [3] https://github.com/amir73il/linux/commits/rename_xmnt
+>>  static int qcom_cpufreq_hw_target_index(struct cpufreq_policy 
+>> *policy,
+>>  					unsigned int index)
+>>  {
+>> @@ -39,6 +86,8 @@ static int qcom_cpufreq_hw_target_index(struct 
+>> cpufreq_policy *policy,
+>> 
+>>  	writel_relaxed(index, perf_state_reg);
+>> 
+>> +	qcom_cpufreq_set_bw(policy, freq);
+>> +
+>>  	arch_set_freq_scale(policy->related_cpus, freq,
+>>  			    policy->cpuinfo.max_freq);
+>>  	return 0;
+>> @@ -88,12 +137,30 @@ static int qcom_cpufreq_hw_read_lut(struct device 
+>> *cpu_dev,
+>>  {
+>>  	u32 data, src, lval, i, core_count, prev_freq = 0, freq;
+>>  	u32 volt;
+>> +	u64 rate;
+>>  	struct cpufreq_frequency_table	*table;
+>> +	struct device_node *opp_table_np, *np;
+>> +	int ret;
+>> 
+>>  	table = kcalloc(LUT_MAX_ENTRIES + 1, sizeof(*table), GFP_KERNEL);
+>>  	if (!table)
+>>  		return -ENOMEM;
+>> 
+>> +	ret = dev_pm_opp_of_add_table(cpu_dev);
+>> +	if (!ret) {
+>> +		/* Disable all opps and cross-validate against LUT */
+>> +		opp_table_np = dev_pm_opp_of_get_opp_desc_node(cpu_dev);
+>> +		for_each_available_child_of_node(opp_table_np, np) {
+>> +			ret = of_property_read_u64(np, "opp-hz", &rate);
 > 
+> No way, please use dev_pm_opp_find_freq_*() here instead to grab OPPs
+> one by one.
+
+sure I'll use a dev_pm_opp_find_freq_ceil
+loop to do the same :P
+
+> 
+>> +			if (!ret)
+>> +				dev_pm_opp_disable(cpu_dev, rate);
+>> +		}
+>> +		of_node_put(opp_table_np);
+>> +	} else if (ret != -ENODEV) {
+>> +		dev_err(cpu_dev, "Invalid OPP table in Device tree\n");
+>> +		return ret;
+>> +	}
+> 
+> Rather put this in the if (ret) block and so the else part doesn't
+> need extra indentation.
+
+https://patchwork.kernel.org/patch/11573905/
+
+I'll need to enable fast_switch
+when the device does not have a
+opp-table associated with it or
+throw a error when an improper
+table is specified. If a table
+with bw values is specified, we
+disable fast switch and enable
+scaling.
+
+> 
+>> +
+>>  	for (i = 0; i < LUT_MAX_ENTRIES; i++) {
+>>  		data = readl_relaxed(base + REG_FREQ_LUT +
+>>  				      i * LUT_ROW_SIZE);
+>> @@ -112,7 +179,7 @@ static int qcom_cpufreq_hw_read_lut(struct device 
+>> *cpu_dev,
+>> 
+>>  		if (freq != prev_freq && core_count != LUT_TURBO_IND) {
+>>  			table[i].frequency = freq;
+>> -			dev_pm_opp_add(cpu_dev, freq * 1000, volt);
+>> +			qcom_cpufreq_update_opp(cpu_dev, freq, volt);
+>>  			dev_dbg(cpu_dev, "index=%d freq=%d, core_count %d\n", i,
+>>  				freq, core_count);
+>>  		} else if (core_count == LUT_TURBO_IND) {
+>> @@ -133,7 +200,8 @@ static int qcom_cpufreq_hw_read_lut(struct device 
+>> *cpu_dev,
+>>  			if (prev->frequency == CPUFREQ_ENTRY_INVALID) {
+>>  				prev->frequency = prev_freq;
+>>  				prev->flags = CPUFREQ_BOOST_FREQ;
+>> -				dev_pm_opp_add(cpu_dev,	prev_freq * 1000, volt);
+>> +				qcom_cpufreq_update_opp(cpu_dev, prev_freq,
+>> +							volt);
+>>  			}
+>> 
+>>  			break;
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
