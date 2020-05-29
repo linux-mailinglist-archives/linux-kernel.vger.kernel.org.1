@@ -2,219 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3368E1E729D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB05E1E72A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:38:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436657AbgE2Cap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 22:30:45 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:50122 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2405151AbgE2Can (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 22:30:43 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 0E5DE91E7189AB9DFF33;
-        Fri, 29 May 2020 10:30:40 +0800 (CST)
-Received: from [127.0.0.1] (10.166.215.101) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Fri, 29 May 2020
- 10:30:32 +0800
-Subject: Re: [PATCH v4 1/2] cpufreq: change '.set_boost' to act on only one
- policy
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-CC:     <viresh.kumar@linaro.org>, <Souvik.Chakravarty@arm.com>,
-        <Thanu.Rangarajan@arm.com>, <Sudeep.Holla@arm.com>,
-        <guohanjun@huawei.com>, <john.garry@huawei.com>,
-        <jonathan.cameron@huawei.com>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1590118476-28742-1-git-send-email-wangxiongfeng2@huawei.com>
- <1590118476-28742-2-git-send-email-wangxiongfeng2@huawei.com>
- <5425098.HjpDb7yAz6@kreacher>
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Message-ID: <1ff97ec7-2111-e4a7-c6d5-9f1c983239e3@huawei.com>
-Date:   Fri, 29 May 2020 10:30:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S2390679AbgE2CiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 22:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389013AbgE2CiE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 22:38:04 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A2DC08C5C6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 19:38:04 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id n24so564082ejd.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 19:38:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=LRWL3md3cdfmyEEJJW9b1YfTGvsPpjYM45xVODC6cfc=;
+        b=PWbxRWqfCKXeJr+EPrN+hJitAczR2rWP+QP2s/cIcVNKpQy7BtLNt0pCGIjwGby667
+         4RdLLFRuWU3RU7CNx40+MaNrKjI8fZWt3LJQK/IhGvKimWhThZe2EGUqwenVIB2sxdV1
+         FU3nUXh5J/+sJ+OjyR7yiIeJ0S2ahL7kI/YSPK0NXPx4787GGrIlKsWY3quqZtTlrMps
+         1nZrFpq/ER6cFFgJzWZ3L6HzFajogsYMCeDeeEfIzMrBTgD/0WamHS786L/zqHhim8lq
+         H8kwxnRzBjGeJy7VCsT3BoLtlq3S5b/v151SW8CLSn+NS1P9a90ENkKOHLtZxXplDgDE
+         Ffpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=LRWL3md3cdfmyEEJJW9b1YfTGvsPpjYM45xVODC6cfc=;
+        b=tY5txD2Eth/w1QPqZr0jdlGtwK7lsm4uH7bprmzHrAvmoC4qaQfld2QBOCP2S5VLRz
+         CvV4f6KRoU/E3+lxhEuazJrVuD1WwGngqTIzyT2tWCdTbJNCoeBgEnstuWc3JNe9KCqC
+         zFAT7BM6aZltTRhA8dxr27KqYf2HRtiPUJWcYecy5XQEU6981y/r6EYUlL0EtuavjgH0
+         wPJ20gi9pNn4FxPMGZ4iP4ELxAL798K+payNbbVnq/cbPQhj6bvmwuPTo5QfbtqZRqnO
+         9M6mlwXK97uLKSBjOOn7l7HuyqozxY4I+SGAw3ASb2VZdy2CiJPB9je21h9hh6sIRlA9
+         8kqg==
+X-Gm-Message-State: AOAM530UKAS4Ws0KOYc51lO70harGiLxCq8kGGpp/HWuPs/h8e98GaZx
+        p+G4KsGq7rUwkJA7f5f7KdqCX4oP7FRO9yT7XXA=
+X-Google-Smtp-Source: ABdhPJwuQwT+mh59AfvI9h748+ECizDXZ6gIe+r811X0N6LfgmL4jbXZrAOk/o8tGqll+chuI/++ePZj/hfmwWJqnTQ=
+X-Received: by 2002:a17:906:f115:: with SMTP id gv21mr104958ejb.340.1590719882776;
+ Thu, 28 May 2020 19:38:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5425098.HjpDb7yAz6@kreacher>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.166.215.101]
-X-CFilter-Loop: Reflected
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 29 May 2020 12:37:51 +1000
+Message-ID: <CAPM=9tznwDT9GEhbAHD1dkUVY_OF5bQNzxX7sBjXPkSH6VFjcw@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.7 final (apologies release)
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+Hey,
 
-Thanks for your reply !
+Apologies for previous PR, I did build it locally, I just don't build
+EXPERT kernels, I expect if I ever get a new builder I should add a
+few more configs to my list.
 
-On 2020/5/28 20:48, Rafael J. Wysocki wrote:
-> On Friday, May 22, 2020 5:34:35 AM CEST Xiongfeng Wang wrote:
->> Macro 'for_each_active_policy()' is defined internally. To avoid some
->> cpufreq driver needing this macro to iterate over all the policies in
->> '.set_boost' callback, we redefine '.set_boost' to act on only one
->> policy and pass the policy as an argument.
->> 'cpufreq_boost_trigger_state()' iterate over all the policies to set
->> boost for the system. This is preparation for adding SW BOOST support
->> for CPPC.
->>
->> Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
->> Suggested-by: Viresh Kumar <viresh.kumar@linaro.org>
->> ---
->>  drivers/cpufreq/acpi-cpufreq.c | 10 ++++----
->>  drivers/cpufreq/cpufreq.c      | 53 +++++++++++++++++++++---------------------
->>  include/linux/cpufreq.h        |  2 +-
->>  3 files changed, 34 insertions(+), 31 deletions(-)
->>
->> diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
->> index 289e8ce..813aabf 100644
->> --- a/drivers/cpufreq/acpi-cpufreq.c
->> +++ b/drivers/cpufreq/acpi-cpufreq.c
->> @@ -126,12 +126,14 @@ static void boost_set_msr_each(void *p_en)
->>  	boost_set_msr(enable);
->>  }
->>  
->> -static int set_boost(int val)
->> +static int set_boost(struct cpufreq_policy *policy, int val)
->>  {
->>  	get_online_cpus();
->> -	on_each_cpu(boost_set_msr_each, (void *)(long)val, 1);
->> +	on_each_cpu_mask(policy->cpus, boost_set_msr_each,
->> +			 (void *)(long)val, 1);
->>  	put_online_cpus();
->> -	pr_debug("Core Boosting %sabled.\n", val ? "en" : "dis");
->> +	pr_debug("CPU %*pbl: Core Boosting %sabled.\n",
->> +		 cpumask_pr_args(policy->cpus), val ? "en" : "dis");
->>  
->>  	return 0;
->>  }
->> @@ -162,7 +164,7 @@ static ssize_t store_cpb(struct cpufreq_policy *policy, const char *buf,
->>  	if (ret || val > 1)
->>  		return -EINVAL;
->>  
->> -	set_boost(val);
->> +	set_boost(policy, val);
->>  
->>  	return count;
->>  }
->> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
->> index d03f250..d0d86b1 100644
->> --- a/drivers/cpufreq/cpufreq.c
->> +++ b/drivers/cpufreq/cpufreq.c
->> @@ -2532,34 +2532,29 @@ void cpufreq_update_limits(unsigned int cpu)
->>  /*********************************************************************
->>   *               BOOST						     *
->>   *********************************************************************/
->> -static int cpufreq_boost_set_sw(int state)
->> +static int cpufreq_boost_set_sw(struct cpufreq_policy *policy, int state)
->>  {
->> -	struct cpufreq_policy *policy;
->> -
->> -	for_each_active_policy(policy) {
->> -		int ret;
->> -
->> -		if (!policy->freq_table)
->> -			return -ENXIO;
->> +	int ret;
->>  
->> -		ret = cpufreq_frequency_table_cpuinfo(policy,
->> -						      policy->freq_table);
->> -		if (ret) {
->> -			pr_err("%s: Policy frequency update failed\n",
->> -			       __func__);
->> -			return ret;
->> -		}
->> +	if (!policy->freq_table)
->> +		return -ENXIO;
->>  
->> -		ret = freq_qos_update_request(policy->max_freq_req, policy->max);
->> -		if (ret < 0)
->> -			return ret;
->> +	ret = cpufreq_frequency_table_cpuinfo(policy, policy->freq_table);
->> +	if (ret) {
->> +		pr_err("%s: Policy frequency update failed\n", __func__);
->> +		return ret;
->>  	}
->>  
->> +	ret = freq_qos_update_request(policy->max_freq_req, policy->max);
->> +	if (ret < 0)
->> +		return ret;
->> +
->>  	return 0;
->>  }
->>  
->>  int cpufreq_boost_trigger_state(int state)
->>  {
->> +	struct cpufreq_policy *policy;
->>  	unsigned long flags;
->>  	int ret = 0;
->>  
->> @@ -2570,16 +2565,22 @@ int cpufreq_boost_trigger_state(int state)
-> 
-> AFAICS this gets called via sysfs without any cpufreq locking whatever, so
-> I'm not really sure what causes it to be safe with respect to CPU offline /
-> online, especially if the ->set_boost() callback only wants to do stuff
-> for CPUs that are online.
+I've just dropped the i915 PR from this completely, I'm sure when they
+wake up they'll be able to tell us what we are missing due to mistakes
+made.
 
-Thanks for your advice. Yes, we have 'cpu_hotplug_lock' in 'set_boost' in
-acpi_cpufreq. But we don't have 'cpu_hotplug_lock' for the general SW BOOST
-framework. So I think I will need to move the lock from 'set_boost()' to
-'store_cpb()' and add lock in 'cpufreq_boost_trigger_state' for the general SW
-BOOST.
+Dave.
 
-Thanks,
-Xiongfeng
+drm-fixes-2020-05-29-1:
+drm fixes for 5.7 final
 
-> 
->>  	cpufreq_driver->boost_enabled = state;
->>  	write_unlock_irqrestore(&cpufreq_driver_lock, flags);
->>  
->> -	ret = cpufreq_driver->set_boost(state);
->> -	if (ret) {
->> -		write_lock_irqsave(&cpufreq_driver_lock, flags);
->> -		cpufreq_driver->boost_enabled = !state;
->> -		write_unlock_irqrestore(&cpufreq_driver_lock, flags);
->> -
->> -		pr_err("%s: Cannot %s BOOST\n",
->> -		       __func__, state ? "enable" : "disable");
->> +	for_each_active_policy(policy) {
->> +		ret = cpufreq_driver->set_boost(policy, state);
->> +		if (ret)
->> +			goto err_reset_state;
->>  	}
->>  
->> +	return 0;
->> +
->> +err_reset_state:
->> +	write_lock_irqsave(&cpufreq_driver_lock, flags);
->> +	cpufreq_driver->boost_enabled = !state;
->> +	write_unlock_irqrestore(&cpufreq_driver_lock, flags);
->> +
->> +	pr_err("%s: Cannot %s BOOST\n",
->> +	       __func__, state ? "enable" : "disable");
->> +
->>  	return ret;
->>  }
->>  
->> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
->> index 67d5950..3494f67 100644
->> --- a/include/linux/cpufreq.h
->> +++ b/include/linux/cpufreq.h
->> @@ -367,7 +367,7 @@ struct cpufreq_driver {
->>  
->>  	/* platform specific boost support code */
->>  	bool		boost_enabled;
->> -	int		(*set_boost)(int state);
->> +	int		(*set_boost)(struct cpufreq_policy *policy, int state);
->>  };
->>  
->>  /* flags */
->>
-> 
-> 
-> 
-> 
-> 
-> .
-> 
+amdgpu:
+- display atomic test fix
+- Fix soft hang in display vupdate code
 
+ingenic:
+- fix pointer cast
+- fix crtc atomic check callback
+The following changes since commit 9cb1fd0efd195590b828b9b865421ad345a4a145:
+
+  Linux 5.7-rc7 (2020-05-24 15:32:54 -0700)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-05-29-1
+
+for you to fetch changes up to ed9244bd0b265c4c0866a9246c6e7cca1cca3acf:
+
+  Merge tag 'drm-misc-fixes-2020-05-28' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes (2020-05-29
+12:11:11 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.7 final
+
+amdgpu:
+- display atomic test fix
+- Fix soft hang in display vupdate code
+
+ingenic:
+- fix pointer cast
+- fix crtc atomic check callback
+
+----------------------------------------------------------------
+Aric Cyr (1):
+      drm/amd/display: Fix potential integer wraparound resulting in a hang
+
+Dave Airlie (2):
+      Merge tag 'amd-drm-fixes-5.7-2020-05-27' of
+git://people.freedesktop.org/~agd5f/linux into drm-fixes
+      Merge tag 'drm-misc-fixes-2020-05-28' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
+
+Paul Cercueil (2):
+      gpu/drm: ingenic: Fix bogus crtc_atomic_check callback
+      gpu/drm: Ingenic: Fix opaque pointer casted to wrong type
+
+Simon Ser (1):
+      drm/amd/display: drop cursor position check in atomic test
+
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c         | 7 -------
+ drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c | 2 ++
+ drivers/gpu/drm/ingenic/ingenic-drm.c                     | 6 +++---
+ 3 files changed, 5 insertions(+), 10 deletions(-)
