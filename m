@@ -2,142 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E8A1E73BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 05:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC0B1E73C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 05:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437311AbgE2Dk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 23:40:27 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:20080 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2436711AbgE2DkY (ORCPT
+        id S2406660AbgE2Dmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 23:42:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388880AbgE2Dmp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 23:40:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590723622;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LckFzfKpAYEdTFxchZpw4kb5NHTX4jw9/QaNtcrDL8Y=;
-        b=Y5bcbiTdeobRtLIqyihRRr/0dwpCzlbHKIybjQ2egxlw2o/yuOyP7B5NUef03++aCZYC8Y
-        8oNd6e9Uzza+aE6WBdCNq7aBzxjOuyubz/zeatrM2Ge7ipGwYMDsA6r3Q5ZtVUfKDMyuPL
-        NpuWo6lbSqhufByVz6qUgw/WGvwoogs=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-101-C74EUX2HPsuBx50igarJsg-1; Thu, 28 May 2020 23:40:20 -0400
-X-MC-Unique: C74EUX2HPsuBx50igarJsg-1
-Received: by mail-pg1-f197.google.com with SMTP id k124so888108pgc.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 20:40:20 -0700 (PDT)
+        Thu, 28 May 2020 23:42:45 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49CA3C08C5C6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 20:42:45 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id b6so842367ljj.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 20:42:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ykCqer43vvinTLl1/KaSTddkvLcnjIn2m2bT/JiFhwY=;
+        b=E2rNqx0swaCy081n6r34uQJWGEBtWcGNDZzf83xsFcZDAUMLwb8XgmJ5cMfUy50Whw
+         Q13wMk7KW68F+h5PLSKyBMeYVXY/H3tdiRjBMyTs1/9BXGS7QKjCvNYoq9h9U7oAv/RJ
+         lbHJGbX8Jd1OJmqDQDSIzju38gQE7bg+bU298=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LckFzfKpAYEdTFxchZpw4kb5NHTX4jw9/QaNtcrDL8Y=;
-        b=aUOJav0LhHcRgKFcq9hf0LzwzcNyMd48HcuYrZOw9kWizHkcdmUvIbxT0e+DFYlGn0
-         cDzHyjd7p/qXBDoIblLrdomyYAMqlYxkAALmN6iWQsCQSr6XrxLBdyGIF/jaX6j4+wBQ
-         cNIR8wFXHVj3XvZXkGL73EVpuLa5oWm+/3Fw3EHnQPTZU5g8BeDaAc+zcieeDEb3pmei
-         b6wG5sg3ZxqZIh07woQ6ugryun5eIvUly5ibMa/RbZ2Llc6e2DA835sGvb6VkKxMpMpA
-         DQVziYLfu/mqG8PH5PWCtHHMSPAvVPvndhkhRa4oxs5u1EaeOm2SPzJSMgA14aPYi7my
-         5wzw==
-X-Gm-Message-State: AOAM532NY07OUq8TVrnp6pSNiuFOFzrabS+deTRAS//rbaq944uJwF4G
-        a3ZzLfghK+xfG00p0BzA1TUDQmJmK9czmCrk2iBCvecKsOsYQiptG/zlP3sweaLWNggnkhxoQeV
-        UnFdHdGZ9B4Swo8KwFAFXLw7i
-X-Received: by 2002:a17:90a:ce17:: with SMTP id f23mr7691955pju.51.1590723619359;
-        Thu, 28 May 2020 20:40:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx3IqpxYfBR2MgUo03XNoATGGGr0gmcEv4dZim1Qi47Q05fk1p6AaoZkla7LLY0mrteGxh8cA==
-X-Received: by 2002:a17:90a:ce17:: with SMTP id f23mr7691933pju.51.1590723619100;
-        Thu, 28 May 2020 20:40:19 -0700 (PDT)
-Received: from xiangao.remote.csb ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id g65sm1947761pfb.61.2020.05.28.20.40.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 20:40:18 -0700 (PDT)
-Date:   Fri, 29 May 2020 11:40:07 +0800
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Gao Xiang <xiang@kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: Re: linux-next: manual merge of the vfs tree with the erofs tree
-Message-ID: <20200529034007.GA12648@xiangao.remote.csb>
-References: <20200529114501.3e2ecc14@canb.auug.org.au>
- <20200529015111.GA23230@ZenIV.linux.org.uk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ykCqer43vvinTLl1/KaSTddkvLcnjIn2m2bT/JiFhwY=;
+        b=rIx1RNiyX6iItsWAtQnpkBUISf+SstHrxME79TwcZb7hjb+zwr/WE6wqeH5hjAK6Nx
+         /NFjnV5CFT7pScgkWZhWp2klO1Ve+fU7W2Rcnd5K147FUghMzq7fhh3uG+hqZpMWOVIX
+         RMIHjG7gJNWxQ4m4vjWstZ+KZuC3OO5T4dLROQHnN+gKVAOF9g1L4OePCSsCDJjHIF8G
+         0UsqD1jy6vgfo1ZHK3SqEmWmr51L2EbJg12aNRhR5RSLGBHTKjkvSfTWenOStM+05rBo
+         tNeh7FkHhNnAS2ZMg1qxCtxxBOzq/uq7R8NQVZagshqPGk+PHfWWhgRekeJHZJKSkF2F
+         IkMQ==
+X-Gm-Message-State: AOAM5305dln0Roiwp1Vw5hGev6WrXWOrSzdSx7/BCYJ9Y6cC9ZTLGjsW
+        DRlLcAeCwimeL/wznTVg5q8nGAnmA7Y=
+X-Google-Smtp-Source: ABdhPJwiOxj+1b3HUlWVz2PJj6eKet/6vD+npnEzyY07IGpre0iSCJRaSdhqoKZdKZ/0ZRzcfmVB6w==
+X-Received: by 2002:a2e:95d2:: with SMTP id y18mr2896006ljh.342.1590723763368;
+        Thu, 28 May 2020 20:42:43 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id k27sm1976702lfe.88.2020.05.28.20.42.42
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 May 2020 20:42:42 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id e4so827839ljn.4
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 20:42:42 -0700 (PDT)
+X-Received: by 2002:a2e:9f43:: with SMTP id v3mr3270285ljk.285.1590723761862;
+ Thu, 28 May 2020 20:42:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200529015111.GA23230@ZenIV.linux.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200529000345.GV23230@ZenIV.linux.org.uk> <20200529000419.4106697-1-viro@ZenIV.linux.org.uk>
+ <20200529000419.4106697-2-viro@ZenIV.linux.org.uk> <CAHk-=wgnxFLm3ZTwx3XYnJL7_zPNSWf1RbMje22joUj9QADnMQ@mail.gmail.com>
+ <20200529014753.GZ23230@ZenIV.linux.org.uk> <CAHk-=wiBqa6dZ0Sw0DvHjnCp727+0RAwnNCyA=ur_gAE4C05fg@mail.gmail.com>
+ <20200529031036.GB23230@ZenIV.linux.org.uk>
+In-Reply-To: <20200529031036.GB23230@ZenIV.linux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 28 May 2020 20:42:25 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgM0KbsiYd+USqbiDgW8WyvAFMfLXMgebc7Z+-Q6WjZqQ@mail.gmail.com>
+Message-ID: <CAHk-=wgM0KbsiYd+USqbiDgW8WyvAFMfLXMgebc7Z+-Q6WjZqQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] dlmfs: convert dlmfs_file_read() to copy_to_user()
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Al,
+On Thu, May 28, 2020 at 8:10 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> BTW, regarding uaccess - how badly does the following offend your taste?
+> Normally I'd just go for copy_from_user(), but these syscalls just might
+> be hot enough for overhead to matter...
 
-On Fri, May 29, 2020 at 02:51:11AM +0100, Al Viro wrote:
-> On Fri, May 29, 2020 at 11:45:01AM +1000, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > Today's linux-next merge of the vfs tree got a conflict in:
-> > 
-> >   fs/erofs/super.c
-> > 
-> > between commit:
-> > 
-> >   e7cda1ee94f4 ("erofs: code cleanup by removing ifdef macro surrounding")
-> > 
-> > from the erofs tree and commit:
-> > 
-> >   91a7c5e1d30e ("erofs: convert to use the new mount fs_context api")
-> > 
-> > from the vfs tree.
-> > 
-> > I fixed it up (see below) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tree
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularly
-> > complex conflicts.
-> > 
-> > -- 
-> > Cheers,
-> > Stephen Rothwell
-> > 
-> > diff --cc fs/erofs/super.c
-> > index 8e46d204a0c2,2c0bad903fa6..000000000000
-> > --- a/fs/erofs/super.c
-> > +++ b/fs/erofs/super.c
-> > @@@ -408,16 -365,12 +365,9 @@@ static int erofs_fc_fill_super(struct s
-> >   	sb->s_time_gran = 1;
-> >   
-> >   	sb->s_op = &erofs_sops;
-> >  -
-> >  -#ifdef CONFIG_EROFS_FS_XATTR
-> >   	sb->s_xattr = erofs_xattr_handlers;
-> >  -#endif
-> >   
-> > - 	/* set erofs default mount options */
-> > - 	erofs_default_options(sbi);
-> > - 
-> > - 	err = erofs_parse_options(sb, data);
-> > - 	if (err)
-> > - 		return err;
-> > - 
-> > - 	if (test_opt(sbi, POSIX_ACL))
-> > + 	if (test_opt(ctx, POSIX_ACL))
-> >   		sb->s_flags |= SB_POSIXACL;
-> >   	else
-> >   		sb->s_flags &= ~SB_POSIXACL;
-> 
-> FWIW, I would be glad to have that old erofs commit moved over to
-> erofs tree...  Folks?
+Hmm. So the code itself per se doesn't really offend me, but:
 
-I'm fine with that, although I think it's mainly with vfs changes
-so could be better though with vfs tree. I will add this patch
-tomorrow anyway... Thanks for reminder!
+> +static inline int unkludge_sigmask(void __user *sig,
+> +                                  sigset_t __user **up,
+> +                                  size_t *sigsetsize)
 
-Thanks,
-Gao Xiang
+That's a rather odd function, and if there's a reason for it I have no
+issue, but I dislike the combination of "odd semantics" together with
+"nondescriptive naming".
 
+"unkludge" really doesn't describe anything.
 
+Why is that "sig" pointer "void __user *" instead of being an actually
+descriptive structure pointer:
+
+   struct sigset_argpack {
+        sigset_t __user *sigset;
+        size_t sigset_size;
+  };
+
+and then it would be "struct sigset_size_argpack __user *" instead?
+And same with compat_uptr_t */compat_size_t for the compat case?
+
+Yeah, yeah, maybe I got that struct definition wrong when writing it
+in the email, but wouldn't that make it much more understandable?
+
+Then the output arguments could be just a pointer to that struct too
+(except now in kernel space), and change that "unkludge" to
+"get_sigset_argpack()", and the end result would be
+
+    static inline int get_sigset_argpack(
+          struct sigset_argpack __user *uarg,
+          struct sigset_argpack *out)
+
+and I think the implementation would be simpler and more
+understandable too when it didn't need those odd casts and "+sizeof"
+things etc..
+
+So then the call-site would go from
+
+>         size_t sigsetsize = 0;
+>         sigset_t __user *up = NULL;
+>
+>         if (unkludge_sigmask(sig, &up, &sigsetsize))
+>                 return -EFAULT;
+
+to
+
+>         struct sigset_argpack argpack = { NULL, 0 };
+>
+>         if (get_sigset_argpack(sig, &argpack))
+>                 return -EFAULT;
+
+and now you can use "argpack.sigset" and "argpack.sigset_size".
+
+No?
+
+Same exact deal for the compat case, where you'd just need that compat
+struct (using "compat_uptr_t" and "compat_size_t"), and then
+
+>         struct compat_sigset_argpack argpack = { 0, 0 };
+>
+> +       if (get_compat_sigset_argpack(sig, &argpack))
+> +               return -EFAULT;
+
+and then you use the result with "compat_ptr(argpack.sigset)" and
+"argpack.sigset_size".
+
+Or did I mis-read anything and get confused by that code in your patch?
+
+                 Linus
