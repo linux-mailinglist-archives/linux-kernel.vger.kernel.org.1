@@ -2,119 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F96F1E85E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B32C21E85F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728106AbgE2Rz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 13:55:26 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:39940 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725914AbgE2Rz0 (ORCPT
+        id S1728167AbgE2Rzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 13:55:41 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:5170 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728148AbgE2Rzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 13:55:26 -0400
-Received: by mail-io1-f65.google.com with SMTP id q8so254077iow.7;
-        Fri, 29 May 2020 10:55:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sCElFn+makF2xMc8PNzE2ZdGJ2SF/IkCYZnmaXWZ07M=;
-        b=KwRTYO3GVz49OgLxTScBWlH2rqxuhPXxrcHA6AZL8tfnF5vOvbdIGxNHQy8F9FLs3k
-         czNdazm7wpPed7/mpCmwKt97KRRZTc2YcWXIpinP0xF/uDIEdZpd3X99ep6PbIlvVX84
-         FoWKWmIE2coM7Qf1Q3zeYjBE1GF1wUHFWntUv37SS2LDvl0X4Ky5ls4D/9wKnqy5Lvxg
-         aSamg1Cshe04DKh0ov66Exb8ua2CwepnxVRhxNUiH/k4TbJN42/zwznPJkflkPvjIvxv
-         w8NnHQqlDY8SuwrmbnfnmTajBqNwiSMG1vfHlSdkltYGo6M/1iT7gVfRFqHYs2Bicw43
-         EuaQ==
-X-Gm-Message-State: AOAM533hGY6WuoAOfsaMR1QWjX5NC/vbpGfwTOMXJtUXGCp4LRanhP4t
-        P29JNYHcgXH/o32sNiVN3A==
-X-Google-Smtp-Source: ABdhPJyGRSx1zsGx+aFM0ozLHvmn8pMnMIcHM8KSYgsavJtSR8i09xTEaDAwLEQvRAlf5guJKCIO+A==
-X-Received: by 2002:a05:6638:272:: with SMTP id x18mr8282523jaq.122.1590774925354;
-        Fri, 29 May 2020 10:55:25 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id c70sm2626688ila.42.2020.05.29.10.55.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 10:55:24 -0700 (PDT)
-Received: (nullmailer pid 2654498 invoked by uid 1000);
-        Fri, 29 May 2020 17:55:23 -0000
-Date:   Fri, 29 May 2020 11:55:23 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-mips@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>
-Subject: Re: [PATCH v3 2/4] dt-bindings: clk: Add Baikal-T1 CCU Dividers
- binding
-Message-ID: <20200529175523.GA2654444@bogus>
-References: <20200526222056.18072-1-Sergey.Semin@baikalelectronics.ru>
- <20200526222056.18072-3-Sergey.Semin@baikalelectronics.ru>
+        Fri, 29 May 2020 13:55:37 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ed14c8d0001>; Fri, 29 May 2020 10:55:25 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Fri, 29 May 2020 10:55:37 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Fri, 29 May 2020 10:55:37 -0700
+Received: from [10.40.100.117] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 29 May
+ 2020 17:55:33 +0000
+Subject: Re: [PATCH] vfio/mdev: Fix reference count leak in
+ add_mdev_supported_type.
+To:     Cornelia Huck <cohuck@redhat.com>, <wu000273@umn.edu>
+CC:     <kjlu@umn.edu>, Alex Williamson <alex.williamson@redhat.com>,
+        Neo Jia <cjia@nvidia.com>,
+        Dong Jia Shi <bjsdjshi@linux.vnet.ibm.com>,
+        Jike Song <jike.song@intel.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200528020109.31664-1-wu000273@umn.edu>
+ <20200528090220.6dc94bd7.cohuck@redhat.com>
+X-Nvconfidentiality: public
+From:   Kirti Wankhede <kwankhede@nvidia.com>
+Message-ID: <526ecc5d-a94a-e684-84a3-67eec43a370a@nvidia.com>
+Date:   Fri, 29 May 2020 23:25:29 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200526222056.18072-3-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20200528090220.6dc94bd7.cohuck@redhat.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1590774925; bh=RTZtHjkM06WGBBJ+JbuIE8VUHTj8mmRxaF6r7TBEWMY=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=UzLoiBvdVAwmUXUZ7nUVmXcHU0jdqbW03/n5sM8zabEXEs6afuYsXIdcnD6ezYfo4
+         jvBtx2QI1UZV6ftMTYyoNvXVU5bcABeN5ARsj0qbdWFYBA75baQS20Ve/vbGTAWJbc
+         HB24Y06k5Eu3JRP8jhdyYZuox1u1wilQIDoK4weHRW7YSQs2gVOyO15/9ndfiFvKJE
+         dJkMMmgBY6SS9+SoDijf/YHoa/q3jtCJ0hWTNqQWxRLaIOiVDXF7xwKaIEnciopv3m
+         KjyOXhvVt6Bw/PeZr+wu/4EBE/UkmH0Dez23jIvaP+a38smPFxpE9cJ14UaV6TQqwb
+         aP4YqPSSg5CHw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 May 2020 01:20:54 +0300, Serge Semin wrote:
-> After being gained by the CCU PLLs the signals must be transformed to
-> be suitable for the clock-consumers. This is done by a set of dividers
-> embedded into the CCU. A first block of dividers is used to create
-> reference clocks for AXI-bus of high-speed peripheral IP-cores of the
-> chip. The second block dividers alter the PLLs output signals to be then
-> consumed by SoC peripheral devices. Both block DT nodes are ordinary
-> clock-providers with standard set of properties supported. But in addition
-> to that each clock provider can be used to reset the corresponding clock
-> domain. This makes the AXI-bus and System Devices CCU DT nodes to be also
-> reset-providers.
+
+
+On 5/28/2020 12:32 PM, Cornelia Huck wrote:
+> On Wed, 27 May 2020 21:01:09 -0500
+> wu000273@umn.edu wrote:
 > 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: linux-mips@vger.kernel.org
+>> From: Qiushi Wu <wu000273@umn.edu>
+>>
+>> kobject_init_and_add() takes reference even when it fails.
+>> If this function returns an error, kobject_put() must be called to
+>> properly clean up the memory associated with the object. Thus,
+>> replace kfree() by kobject_put() to fix this issue. Previous
+>> commit "b8eb718348b8" fixed a similar problem.
+>>
+>> Fixes: 7b96953bc640 ("vfio: Mediated device Core driver")
+>> Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+>> ---
+>>   drivers/vfio/mdev/mdev_sysfs.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> ---
-> 
-> Changelog v2:
-> - Rearrange the SoBs.
-> - Combine AXI-bus and System Devices CCU bindings into a single file.
-> - Discard comments in the bindings file header.
-> - Add dual GPL/BSD license.
-> - Add spaces around the ASCII-graphics in the binding description.
-> - Remove reference to Documentation/devicetree/bindings/clock/clock-bindings.txt
->   file.
-> - Discard redundant object check against "/schemas/clock/clock.yaml#" schema.
-> - Discard redundant descriptions of "#clock-cells" and "#reset-cells"
->   properties.
-> - Discard "reg" property since the CCU dividers DT nodes are supposed be
->   children of the syscon-compatible system controller node.
-> - Remove "clock-output-names" property support.
-> - Replace "additionalProperties: false" with "unevaluatedProperties: false".
-> - Lowercase the nodes name in the examples.
-> - Use "clock-controller" node name suffix in the examples.
-> - Remove unnecessary comments in the clocks and resets dt-binding header
->   files.
-> - Discard label definitions in the examples.
-> 
-> Changelog v3:
-> - Get the reg property back even though the driver is using the parental
->   syscon regmap.
-> - The DT schema will live separately from the system controller, but the
->   corresponding sub-node of the later DT schema will $ref this one.
-> ---
->  .../bindings/clock/baikal,bt1-ccu-div.yaml    | 188 ++++++++++++++++++
->  include/dt-bindings/clock/bt1-ccu.h           |  32 +++
->  include/dt-bindings/reset/bt1-ccu.h           |  25 +++
->  3 files changed, 245 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/baikal,bt1-ccu-div.yaml
->  create mode 100644 include/dt-bindings/reset/bt1-ccu.h
+> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Thanks for fixing.
+
+Reviewed-by: Kirti Wankhede <kwankhede@nvidia.com>
