@@ -2,73 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A671E747C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 06:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB061E7484
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 06:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728856AbgE2ETu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 00:19:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45684 "EHLO mail.kernel.org"
+        id S1728870AbgE2EVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 00:21:07 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:54603 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728842AbgE2ETq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 00:19:46 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8981D20814;
-        Fri, 29 May 2020 04:19:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590725985;
-        bh=33+MHwIedDJ1eCtpRa7VZElWCFVUcTFTamW43B1VK2U=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=y1IYg0PlIZFZTBahbBdFs8PRajY+bFIxDvd3m3A7jSgE9aPPpaoBrSyJll/14YzzS
-         B2GDlFDstzXOLtacHn39d16w8THXHK4q1JFprQsFPKgXo3VVhIhZT2oQbx+JZE48fr
-         UohXpuwo6xCMOHhtpV/eCIPBUGhLacyHQaaTrJVE=
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1582278742-1626-3-git-send-email-macpaul.lin@mediatek.com>
-References: <1582278742-1626-1-git-send-email-macpaul.lin@mediatek.com> <1582278742-1626-3-git-send-email-macpaul.lin@mediatek.com>
-Subject: Re: [PATCH 2/5] dt-bindings: clock: mediatek: document clk bindings mipi0a for Mediatek MT6765 SoC
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
-        CC Hwang <cc.hwang@mediatek.com>,
-        Loda Chou <loda.chou@mediatek.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Evan Green <evgreen@chromium.org>,
-        Fabien Parent <fparent@baylibre.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mars Cheng <mars.cheng@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Owen Chen <owen.chen@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Ryder Lee <Ryder.Lee@mediatek.com>,
-        Sean Wang <Sean.Wang@mediatek.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Weiyi Lu <weiyi.lu@mediatek.com>,
-        Will Deacon <will@kernel.org>, Yong Wu <yong.wu@mediatek.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        mtk01761 <wendell.lin@mediatek.com>
-Date:   Thu, 28 May 2020 21:19:44 -0700
-Message-ID: <159072598489.69627.4505171077410009164@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+        id S1728916AbgE2EU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 00:20:27 -0400
+Received: by ozlabs.org (Postfix, from userid 1034)
+        id 49YBF35KWQz9sSr; Fri, 29 May 2020 14:20:23 +1000 (AEST)
+X-powerpc-patch-notification: thanks
+X-powerpc-patch-commit: 999a22890cb183b918e4372395d24426a755cef2
+In-Reply-To: <36e43241c7f043a24b5069e78c6a7edd11043be5.1585898438.git.christophe.leroy@c-s.fr>
+To:     Christophe Leroy <christophe.leroy@c-s.fr>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, airlied@linux.ie,
+        daniel@ffwll.ch, torvalds@linux-foundation.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        keescook@chromium.org, hpa@zytor.com
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+Cc:     linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        intel-gfx@lists.freedesktop.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] uaccess: Add user_read_access_begin/end and user_write_access_begin/end
+Message-Id: <49YBF35KWQz9sSr@ozlabs.org>
+Date:   Fri, 29 May 2020 14:20:23 +1000 (AEST)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Macpaul Lin (2020-02-21 01:52:19)
-> This patch adds the binding documentation for mipi0a.
->=20
-> Signed-off-by: Mars Cheng <mars.cheng@mediatek.com>
-> Signed-off-by: Owen Chen <owen.chen@mediatek.com>
-> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
-> ---
+On Fri, 2020-04-03 at 07:20:50 UTC, Christophe Leroy wrote:
+> Some architectures like powerpc64 have the capability to separate
+> read access and write access protection.
+> For get_user() and copy_from_user(), powerpc64 only open read access.
+> For put_user() and copy_to_user(), powerpc64 only open write access.
+> But when using unsafe_get_user() or unsafe_put_user(),
+> user_access_begin open both read and write.
+> 
+> Other architectures like powerpc book3s 32 bits only allow write
+> access protection. And on this architecture protection is an heavy
+> operation as it requires locking/unlocking per segment of 256Mbytes.
+> On those architecture it is therefore desirable to do the unlocking
+> only for write access. (Note that book3s/32 ranges from very old
+> powermac from the 90's with powerpc 601 processor, till modern
+> ADSL boxes with PowerQuicc II processors for instance so it
+> is still worth considering.)
+> 
+> In order to avoid any risk based of hacking some variable parameters
+> passed to user_access_begin/end that would allow hacking and
+> leaving user access open or opening too much, it is preferable to
+> use dedicated static functions that can't be overridden.
+> 
+> Add a user_read_access_begin and user_read_access_end to only open
+> read access.
+> 
+> Add a user_write_access_begin and user_write_access_end to only open
+> write access.
+> 
+> By default, when undefined, those new access helpers default on the
+> existing user_access_begin and user_access_end.
+> 
+> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Applied to clk-next
+Applied to powerpc topic/uaccess, thanks.
+
+https://git.kernel.org/powerpc/c/999a22890cb183b918e4372395d24426a755cef2
+
+cheers
