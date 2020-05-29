@@ -2,91 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1D31E833C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 18:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2360D1E8337
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 18:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726954AbgE2QJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 12:09:33 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:58140 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725681AbgE2QJc (ORCPT
+        id S1727105AbgE2QJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 12:09:04 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:36061 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725601AbgE2QJC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 12:09:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=brDBe8zkbDnfUIboOBhhAsaCy9eR3qJV3apR8YziRMA=; b=0Potvx4hwZE8LtSKCfp3SU+iB1
-        jSfJMba8qYbLrwdCSCtT/hshW7/pF16GR9UnuqjQQWo6SxTW6nwKEDOWOEWb7/jd2+XbJ0gHDNuRC
-        9cdX1Q+aBxFV74T8NpdVYzuxjpRG604D0AeS0a0rLO46cCTMkKfp0t7xmzX/+wqrm2gUiVQ/F2UrW
-        qq3S7LEjxrKFMjdiHTf+/RyK8MiIrWxMqPXHVnnx/dtft2ao65MFvU6arF8pPn4WHNURePKNvzgAA
-        5V4qG6wk+PW7hzJmeZfrpkHiD6VMfwZo6mU1Uk5G5eyW33trrz5GjZ8GBIHLj2Vqop9v1CLdMkK7J
-        WV4kwzmA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jehXN-0000nz-PB; Fri, 29 May 2020 16:07:13 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 52A9230280F;
-        Fri, 29 May 2020 18:07:11 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3F823286F9818; Fri, 29 May 2020 18:07:11 +0200 (CEST)
-Date:   Fri, 29 May 2020 18:07:11 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+dc1fa714cb070b184db5@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: Re: PANIC: double fault in fixup_bad_iret
-Message-ID: <20200529160711.GC706460@hirez.programming.kicks-ass.net>
-References: <000000000000d2474c05a6c938fe@google.com>
- <CACT4Y+ajjB8RmG3_H_9r-kaRAZ05ejW02-Py47o7wkkBjwup3Q@mail.gmail.com>
- <87o8q6n38p.fsf@nanos.tec.linutronix.de>
+        Fri, 29 May 2020 12:09:02 -0400
+Received: by mail-ot1-f65.google.com with SMTP id h7so2342138otr.3;
+        Fri, 29 May 2020 09:09:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kor8EfOYBepC7cHCZaAuPT3ixwWluZI0nzQn7RAc+Mk=;
+        b=pmnCeBnZPckulMfXWGNoS/JaLRGoXvCTVU5gV5arG3Po0iX9Unm59kJamHQ/GZ7Wj1
+         CBAfMZVtw5ZrLCyZZaBibhNdBgAp4OPTheq2PTWZvh2/rbKvlOgpQ54EeIUwejb1SEH9
+         FBR80efQqT2ePxmSPvi1YWolJwKsjanGqRFiPLibf3qIRysi0KSOBFRG2KwHY+HnCJbK
+         xv9Nmw+0LC44GTS2aGRiITvlyP2+aIsQKS5QFXI5UZylJPjN4qJ3NlU+oTiyhtfRh25F
+         0/Hu386Uanvu3WBW2gK1ZphKG8GohxvXRG8Qam+ujhN8F858NQQn7qD922d6z5nxscqE
+         SYKg==
+X-Gm-Message-State: AOAM532ALUm/PMUNRGppj0VAwF+4Pz7zo/U44ZNhyO1JoqcMQyIPCGPr
+        vs2uh1o72YLfg0Xkf0M9gl+/j7wzMSNqZWnSNDc=
+X-Google-Smtp-Source: ABdhPJwjM+ICsGKgZcwtJbIgXNIutRUNdgtdT7teYn4gCXH8umdEGlq2PjsB+thkpYgdWrHDyg/zMnhD7No8oyJhyXE=
+X-Received: by 2002:a05:6830:20d1:: with SMTP id z17mr4810443otq.167.1590768541943;
+ Fri, 29 May 2020 09:09:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o8q6n38p.fsf@nanos.tec.linutronix.de>
+References: <20200528182046.845-1-wu000273@umn.edu>
+In-Reply-To: <20200528182046.845-1-wu000273@umn.edu>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 29 May 2020 18:08:50 +0200
+Message-ID: <CAJZ5v0jNUPqAGZ9RO4UYyT_kQdG1fPqkFaRLp854tavzLe8R+A@mail.gmail.com>
+Subject: Re: [PATCH] cpuidle: Fix several reference count leaks.
+To:     wu000273@umn.edu
+Cc:     Kangjie Lu <kjlu@umn.edu>, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 05:57:10PM +0200, Thomas Gleixner wrote:
-> Dmitry,
-> 
-> Dmitry Vyukov <dvyukov@google.com> writes:
-> > On Fri, May 29, 2020 at 3:14 PM syzbot
-> > <syzbot+dc1fa714cb070b184db5@syzkaller.appspotmail.com> wrote:
-> >>
-> >> Hello,
-> >>
-> >> syzbot found the following crash on:
-> >>
-> >> HEAD commit:    7b4cb0a4 Add linux-next specific files for 20200525
-> >> git tree:       linux-next
-> >> console output: https://syzkaller.appspot.com/x/log.txt?x=15dc34ba100000
-> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=47b0740d89299c10
-> >> dashboard link: https://syzkaller.appspot.com/bug?extid=dc1fa714cb070b184db5
-> >> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> >> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14678626100000
-> >> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1017ef06100000
-> >>
-> >> IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> >> Reported-by: syzbot+dc1fa714cb070b184db5@syzkaller.appspotmail.com
-> >
-> > From the reproducer it seems to be either x86 related or ptrace
-> > related.
-> >
-> >> RIP: 0010:fixup_bad_iret+0x24/0x170 arch/x86/kernel/traps.c:665
-> 
-> as a quick assumption that's related to KASAN in fixup_bad_iret() which
-> is a frightenly bad idea. I'm about to verify.
+On Thu, May 28, 2020 at 8:21 PM <wu000273@umn.edu> wrote:
+>
+> From: Qiushi Wu <wu000273@umn.edu>
+>
+> kobject_init_and_add() takes reference even when it fails.
+> If this function returns an error, kobject_put() must be called to
+> properly clean up the memory associated with the object. Previous
+> commit "b8eb718348b8" fixed a similar problem.
+>
+> Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+> ---
+>  drivers/cpuidle/sysfs.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/cpuidle/sysfs.c b/drivers/cpuidle/sysfs.c
+> index cdeedbf02646..55107565b319 100644
+> --- a/drivers/cpuidle/sysfs.c
+> +++ b/drivers/cpuidle/sysfs.c
+> @@ -515,7 +515,7 @@ static int cpuidle_add_state_sysfs(struct cpuidle_device *device)
+>                 ret = kobject_init_and_add(&kobj->kobj, &ktype_state_cpuidle,
+>                                            &kdev->kobj, "state%d", i);
+>                 if (ret) {
+> -                       kfree(kobj);
+> +                       kobject_put(&kobj->kobj);
+>                         goto error_state;
+>                 }
+>                 cpuidle_add_s2idle_attr_group(kobj);
+> @@ -646,7 +646,7 @@ static int cpuidle_add_driver_sysfs(struct cpuidle_device *dev)
+>         ret = kobject_init_and_add(&kdrv->kobj, &ktype_driver_cpuidle,
+>                                    &kdev->kobj, "driver");
+>         if (ret) {
+> -               kfree(kdrv);
+> +               kobject_put(&kdrv->kobj);
+>                 return ret;
+>         }
+>
+> @@ -740,7 +740,7 @@ int cpuidle_add_sysfs(struct cpuidle_device *dev)
+>         error = kobject_init_and_add(&kdev->kobj, &ktype_cpuidle, &cpu_dev->kobj,
+>                                    "cpuidle");
+>         if (error) {
+> -               kfree(kdev);
+> +               kobject_put(&kdev->kobj);
+>                 return error;
+>         }
+>
+> --
 
-Like with KCSAN, we should blanket kill KASAN/UBSAN and friends (at the
-very least in arch/x86/) until they get that function attribute stuff
-sorted.
+Applied as 5.8 material, thanks!
