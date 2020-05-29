@@ -2,156 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B242C1E8865
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5471E8877
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727960AbgE2UC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 16:02:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36202 "EHLO
+        id S1728296AbgE2UEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 16:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726866AbgE2UC5 (ORCPT
+        with ESMTP id S1728129AbgE2UD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 16:02:57 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09569C03E969;
-        Fri, 29 May 2020 13:02:57 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id y5so617917iob.12;
-        Fri, 29 May 2020 13:02:57 -0700 (PDT)
+        Fri, 29 May 2020 16:03:58 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A3AC08C5C9
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 13:03:58 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id u5so437856pgn.5
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 13:03:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hZtbTwAj0lIfYzvNENTLyBSfS0LJ0yCLNur1aeSmgfQ=;
-        b=HxFIb0jCfOtSSdq6lyXoQx+BYeySUC6KpI7g63Ee6cm95kuwBW4oU//SZhuzFPi59W
-         xGgHzOUzjgbHIRmxzK3WGgHANpkbfT+LQYvYEiNDCwYSxDu+7mcR9f2LoYcl+D8HRpCN
-         sn5obL8xHSnnxVOv4ngQFKnKAbb23JH4A6aYLKo/wGXe0NIy3ouaqg+YMMasL+Z+xXx4
-         rgCtlWwNvbUR9KnMTmbBzFLFVdSrpeWxMMcizo9hv5x23pfJ1rz/hZzBdzVPiiRgh1Sp
-         YQkc+P8HSYzGnUhmLCl0KotLp2cW5yNtG6h9ddVy6+W3fDvF63i2068UReNWnm7kbLXP
-         cBxg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jc9W1lwloD2dKjs9tH5GF5HCcPhR+AQW3rE24ig1wNo=;
+        b=e1eTWdUfj0/uemCZrZndDP84V6F6lpImOpHhDUyzllRqWZlnKM6KITsLSam+a0R/bv
+         PoMO4JXmtX5ZMB9fmem1FG9RAtKBlLDbpHqrYncYIJYyEwBjuW+oJ6SrHW3Pv5OpoR/R
+         OoIyqaaLzHdjAuD1n5MLYvZmuqZghAa+a2OnQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hZtbTwAj0lIfYzvNENTLyBSfS0LJ0yCLNur1aeSmgfQ=;
-        b=m41KG/Ty89cLScNzUbGq+XUo6tlznJKclhtCZ05qLHStHBprdKPoiBBwfRt6z4Dl+R
-         7tIuyOp7l7tXp4BlOq1NYr+R0c9kvyAwYbZ7Bpp4jRXvx+kkfBLqu30+swa1zhS14E6V
-         rBlctMJSaCrvrRbaOwiwde4lp8YmIU4kIejzHNkAYgeqnZvxbyXvkzYT23tS6Pr3RKI0
-         E664aYINaMYorvDY7uXPbYJe585Q21qnVv/LliT9aeFnGv8LC9c20tqdmtRz5YpO2oya
-         ngkhjiOfhILk1NhP2fUb1aRH5DWCQRFTJQPb/lG12F0LoxlbHT16cgPrzuN50uxJi5po
-         VRXg==
-X-Gm-Message-State: AOAM5309z/uEuTXnsLJCttVpw2uK+byc8k1yqMcX1kP1DzyFUUQHaRG7
-        UoneHwjLhvdJ2k76fgH15QttKiALq68cUeJaQOM=
-X-Google-Smtp-Source: ABdhPJzyrSJO4Ra0iuDkgm4KVa4FRQM+r2An2zrayttiKnhr2ein+SbnCJRf7ncHZZEBXT1arFqv7wj5xzcq4X/54JQ=
-X-Received: by 2002:a6b:bb81:: with SMTP id l123mr7946142iof.2.1590782576377;
- Fri, 29 May 2020 13:02:56 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jc9W1lwloD2dKjs9tH5GF5HCcPhR+AQW3rE24ig1wNo=;
+        b=TgSLsV/V2M6sQp8glpG1YYSQHjCulB8gs0bwQV4PbVNNPB/H3Vin31QWPhhKPBX38V
+         xqmX4m4xPBxn6xGaC03dfUlN+DAjnacJ5nbeHLFw9qfS1Ta0xj4ExksiSidSKoswutM2
+         t150oJ4mgVZXl3tXz2quLLgPLLTJVyVcczTorQ52iQVrPZiHkRwfkI5anb3poe1ZQt6A
+         i5/mnjc425BG9AWf1Iz884kQ1+ERmvD83n2FMi2E5flqIDLEADE/bljG7Chxb7ya/CVE
+         6+9mPEjB82x5AN99HyAr4e2cTRYCwXic/e7oo8rkoiV73whe+IzBlSo2u51HhgZ2IBrw
+         Sr8A==
+X-Gm-Message-State: AOAM531qVuC9FcTiHSbFfYM6X2blwbits0TErf84/0cGWXCKo1VwsggP
+        ep6mI91XRr3KqsLzJqJftPOGQw==
+X-Google-Smtp-Source: ABdhPJwP7z6gIJI+dnYxn8KJ2aoaoXPzR+vI9pyJIkXlzmzjD/z7ey7U1doHvuvot75KEkzxR06v1g==
+X-Received: by 2002:a62:178b:: with SMTP id 133mr9871040pfx.238.1590782637803;
+        Fri, 29 May 2020 13:03:57 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q28sm8137946pfg.180.2020.05.29.13.03.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2020 13:03:54 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>,
+        linux-kselftest@vger.kernel.org,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: [PATCH drivers/misc 0/4] lkdtm: Various clean ups
+Date:   Fri, 29 May 2020 13:03:43 -0700
+Message-Id: <20200529200347.2464284-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <17cb2b080b9c4c36cf84436bc5690739590acc53.1590017578.git.syednwaris@gmail.com>
- <202005242236.NtfLt1Ae%lkp@intel.com> <CACG_h5oOsThkSfdN_adWHxHfAWfg=W72o5RM6JwHGVT=Zq9MiQ@mail.gmail.com>
- <20200529183824.GW1634618@smile.fi.intel.com>
-In-Reply-To: <20200529183824.GW1634618@smile.fi.intel.com>
-From:   Syed Nayyar Waris <syednwaris@gmail.com>
-Date:   Sat, 30 May 2020 01:32:44 +0530
-Message-ID: <CACG_h5pcd-3NWgE29enXAX8=zS-RWQZrh56wKaFbm8fLoCRiiw@mail.gmail.com>
-Subject: Re: [PATCH v7 1/4] bitops: Introduce the the for_each_set_clump macro
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 30, 2020 at 12:08 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Fri, May 29, 2020 at 11:38:18PM +0530, Syed Nayyar Waris wrote:
-> > On Sun, May 24, 2020 at 8:15 PM kbuild test robot <lkp@intel.com> wrote:
->
-> ...
->
-> > >    579  static inline unsigned long bitmap_get_value(const unsigned long *map,
-> > >    580                                                unsigned long start,
-> > >    581                                                unsigned long nbits)
-> > >    582  {
-> > >    583          const size_t index = BIT_WORD(start);
-> > >    584          const unsigned long offset = start % BITS_PER_LONG;
-> > >    585          const unsigned long ceiling = roundup(start + 1, BITS_PER_LONG);
-> > >    586          const unsigned long space = ceiling - start;
-> > >    587          unsigned long value_low, value_high;
-> > >    588
-> > >    589          if (space >= nbits)
-> > >  > 590                  return (map[index] >> offset) & GENMASK(nbits - 1, 0);
-> > >    591          else {
-> > >    592                  value_low = map[index] & BITMAP_FIRST_WORD_MASK(start);
-> > >    593                  value_high = map[index + 1] & BITMAP_LAST_WORD_MASK(start + nbits);
-> > >    594                  return (value_low >> offset) | (value_high << space);
-> > >    595          }
-> > >    596  }
->
-> > Regarding the above compilation warnings. All the warnings are because
-> > of GENMASK usage in my patch.
-> > The warnings are coming because of sanity checks present for 'GENMASK'
-> > macro in include/linux/bits.h.
-> >
-> > Taking the example statement (in my patch) where compilation warning
-> > is getting reported:
-> > return (map[index] >> offset) & GENMASK(nbits - 1, 0);
-> >
-> > 'nbits' is of type 'unsigned long'.
-> > In above, the sanity check is comparing '0' with unsigned value. And
-> > unsigned value can't be less than '0' ever, hence the warning.
-> > But this warning will occur whenever there will be '0' as one of the
-> > 'argument' and an unsigned variable as another 'argument' for GENMASK.
-> >
-> > This warning is getting cleared if I cast the 'nbits' to 'long'.
-> >
-> > Let me know if I should submit a next patch with the casts applied.
-> > What do you guys think?
->
-> Proper fix is to fix GENMASK(), but allowed workaround is to use
->         (BIT(nbits) - 1)
-> instead.
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
+Hi Greg,
 
-Hi Andy. Thank You for your comment.
+Can you please apply these patches to your drivers/misc tree for LKDTM?
+It's mostly a collection of fixes and improvements and tweaks to the
+selftest integration.
 
-When I used BIT macro (earlier), I had faced a problem. I want to tell
-you about that.
+Thanks!
 
-Inside functions 'bitmap_set_value' and 'bitmap_get_value' when nbits (or
-clump size) is BITS_PER_LONG, unexpected calculation happens.
+-Kees
 
-Explanation:
-Actually when nbits (clump size) is 64 (BITS_PER_LONG is 64 on my computer),
-(BIT(nbits) - 1)
-gives a value of zero and when this zero is ANDed with any value, it
-makes it full zero. This is unexpected and incorrect calculation happening.
+Kees Cook (4):
+  lkdtm: Avoid more compiler optimizations for bad writes
+  lkdtm/heap: Avoid edge and middle of slabs
+  selftests/lkdtm: Reset WARN_ONCE to avoid false negatives
+  lkdtm: Make arch-specific tests always available
 
-What actually happens is in the macro expansion of BIT(64), that is 1
-<< 64, the '1' overflows from leftmost bit position (most significant
-bit) and re-enters at the rightmost bit position (least significant
-bit), therefore 1 << 64 becomes '0x1', and when another '1' is
-subtracted from this, the final result becomes 0.
+ drivers/misc/lkdtm/bugs.c               | 45 +++++++++++++------------
+ drivers/misc/lkdtm/heap.c               |  9 ++---
+ drivers/misc/lkdtm/lkdtm.h              |  2 --
+ drivers/misc/lkdtm/perms.c              | 22 ++++++++----
+ drivers/misc/lkdtm/usercopy.c           |  7 ++--
+ tools/testing/selftests/lkdtm/run.sh    |  6 ++++
+ tools/testing/selftests/lkdtm/tests.txt |  1 +
+ 7 files changed, 56 insertions(+), 36 deletions(-)
 
-Since this macro is being used in both bitmap_get_value and
-bitmap_set_value functions, it will give unexpected results when nbits or clump
-size is BITS_PER_LONG (32 or 64 depending on arch).
+-- 
+2.25.1
 
-William also knows about this issue:
-
-"This is undefined behavior in the C standard (section 6.5.7 in the N1124)"
-
-Andy, William,
-Let me know what do you think ?
-
-Regards
-Syed Nayyar Waris
