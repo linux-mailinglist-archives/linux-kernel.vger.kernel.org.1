@@ -2,92 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C391E7210
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 03:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C877C1E721B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 03:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438235AbgE2B15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 21:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60228 "EHLO
+        id S2390714AbgE2Bh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 21:37:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437482AbgE2B14 (ORCPT
+        with ESMTP id S1728340AbgE2BhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 21:27:56 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B68C08C5C6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 18:27:55 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id e4so567005ljn.4
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 18:27:55 -0700 (PDT)
+        Thu, 28 May 2020 21:37:21 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 661FDC08C5C6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 18:37:20 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id fs4so412102pjb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 18:37:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g9DDH+ka577yWN8I1lwER+N2nfRC2WU0Ckv2Lu1OmbU=;
-        b=c3Co8BnhP/+fpOuPHGIDwU4Zp4Sa2cqOLC6C5vXoWp8xHdS4zCAeFxT3cnyP/W5jRQ
-         9z0IlAP5Pfc8kc9hkuA28qt6ar69ruD08xLRWHn6gdeuFA6y10LClepdBIXBKdhQGHiP
-         yAqpd4zJ1skPKdhgL9YZOnpw20LZMDWu0PnDE=
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=I9ySmq/ziTnD5JxWwfYJIk6GUKpSL6REIC8gk6+wZMc=;
+        b=fsfq+9tiV8u8HYp38iQg9BOoRCUTFfhL59YYTFKAt/ysAn3GrtGIwAl0STMCWez+jo
+         /B6RmKyjAds7rB03or7Y+orv4p6rsJrikLhB7tSomO/hVQNW4ttaJioNGBzcU4qqPgn2
+         JpX6+OyA6RBlEYD4kMIwwwk693CrdN+V+21ZyJ/dqMbJYnLGzYuNidneLt5MrKmCrM/6
+         9Wc5OsYLP+8GHrE/kO2GqNyDSAa2J3YGogjb/aThuaUX5QjqTutwQPhR+oeNdK5jiG55
+         C1qiYUOUgbXrMEj9rEvBFuV3wwYN/6horCIqfnAWOj9XOIi1ikpngxS9knF6H6KNDgjY
+         9nDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g9DDH+ka577yWN8I1lwER+N2nfRC2WU0Ckv2Lu1OmbU=;
-        b=Twr68fFmYkKY84Z40QPE0lXDDDIEe0pINwC4hSzCn+LK4OFaX0/p2xu9mIw4WHhFyf
-         hIh04F/oO6fJzpOn5afWkN3z2A4+k3LmWiVpcx0+Fdoe80Hl0GysPmIT4fzqEEgi2hSP
-         zEBqNWFnlGVfJLPQa18GoMQm5NY9jO77kGCeeQzuTYV4yp1eEeIEUikFLVXbFvJi8ptR
-         a8gAgs1swNS7WkK6CbWIDwAo1+pYvVqL+dCAdLivdNBRhHPRYAB9t/cPzCye0SdXE8Me
-         pMyIX/z86dICl5IgVl1GNLnP8csnOaVjMMv0Qh8A5n17BEbhp9WuwhFo4dWtQQNxQPdX
-         gQOQ==
-X-Gm-Message-State: AOAM531W7J6fMk5IsK69LuoDCbsDdCiadw+yImvay5pgN2WL10xYepM6
-        4eB8s9B8Rx19MPk0dfDG7Lwmc3ZJ5w4=
-X-Google-Smtp-Source: ABdhPJwBjdwm5zWF366QDT/cTTJI9WCduAlWnZUT872S4nAQqlORVe6GMOIsoHPmaNF5vNt9AIIhrw==
-X-Received: by 2002:a2e:b004:: with SMTP id y4mr3049845ljk.273.1590715673925;
-        Thu, 28 May 2020 18:27:53 -0700 (PDT)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id h26sm1996417lja.0.2020.05.28.18.27.52
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 May 2020 18:27:52 -0700 (PDT)
-Received: by mail-lf1-f46.google.com with SMTP id r125so281766lff.13
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 18:27:52 -0700 (PDT)
-X-Received: by 2002:a05:6512:62:: with SMTP id i2mr3050072lfo.152.1590715672160;
- Thu, 28 May 2020 18:27:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200529000345.GV23230@ZenIV.linux.org.uk> <20200529000419.4106697-1-viro@ZenIV.linux.org.uk>
- <20200529000419.4106697-2-viro@ZenIV.linux.org.uk>
-In-Reply-To: <20200529000419.4106697-2-viro@ZenIV.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 28 May 2020 18:27:36 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgnxFLm3ZTwx3XYnJL7_zPNSWf1RbMje22joUj9QADnMQ@mail.gmail.com>
-Message-ID: <CAHk-=wgnxFLm3ZTwx3XYnJL7_zPNSWf1RbMje22joUj9QADnMQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] dlmfs: convert dlmfs_file_read() to copy_to_user()
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=I9ySmq/ziTnD5JxWwfYJIk6GUKpSL6REIC8gk6+wZMc=;
+        b=VuVASk3g3kpzHbL0DZ/2x7sgdB1SpNE5yJBPGDLmnKeR3M6V4L5er38FUIRglrANiv
+         Yd+0JfgjvQoADjGMV5mlLERYoOg/XUTNG/lRAgla5ikYliBWJDOMdivBVlQ1Z3Gz4/rv
+         XT1XcK/Eva2EXWOk9u7nVhG3r3Bt0f3KrobQvy654vZwALhUit6CrGQpvMPwkVmDC5vl
+         AMZTGNZVsvdZk1mOpDSzsZn9NX4zopw/bg1sGcV1RyPPm0mVTj9PqMJk3EEtfSXwPOwF
+         qmT7U0xep1L0/pR7CuCa0BgkRI9MLX3tdYhu1sgTQrm1lgFCOptOvOhhHrtw+nzCzPpW
+         ZieQ==
+X-Gm-Message-State: AOAM5321UJUZyQMeDc1rrVmCmFbG/prrysJBmdwKoUMIfhUMPj78S2r3
+        kz/6t62kCXncbVnXbcGJiJ+qQg==
+X-Google-Smtp-Source: ABdhPJzMjKkIRn90tyhAd6Gm1cXusgxHVIqzD7pgn5rxO/zcNPjJe4FguS6UJqFgV09OVFl1uVDr8Q==
+X-Received: by 2002:a17:90b:110d:: with SMTP id gi13mr7084493pjb.173.1590716238955;
+        Thu, 28 May 2020 18:37:18 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id v197sm6073630pfc.4.2020.05.28.18.37.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 18:37:18 -0700 (PDT)
+Date:   Thu, 28 May 2020 18:37:18 -0700 (PDT)
+X-Google-Original-Date: Thu, 28 May 2020 18:25:39 PDT (-0700)
+Subject:     Re: [PATCH v5 1/6] RISC-V: self-contained IPI handling routine
+In-Reply-To: <20200521133301.816665-2-anup.patel@wdc.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        daniel.lezcano@linaro.org, tglx@linutronix.de,
+        jason@lakedaemon.net, Marc Zyngier <maz@kernel.org>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        anup@brainfault.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Anup Patel <Anup.Patel@wdc.com>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Anup Patel <Anup.Patel@wdc.com>
+Message-ID: <mhng-bd8faf3a-434c-4beb-a44a-3c71475304cd@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 5:04 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+On Thu, 21 May 2020 06:32:56 PDT (-0700), Anup Patel wrote:
+> Currently, the IPI handling routine riscv_software_interrupt() does
+> not take any argument and also does not perform irq_enter()/irq_exit().
 >
->         if (*ppos >= i_size_read(inode))
->                 return 0;
+> This patch makes IPI handling routine more self-contained by:
+> 1. Passing "pt_regs *" argument
+> 2. Explicitly doing irq_enter()/irq_exit()
+> 3. Explicitly save/restore "pt_regs *" using set_irq_regs()
 >
-> +       /* don't read past the lvb */
-> +       if (count > i_size_read(inode) - *ppos)
-> +               count = i_size_read(inode) - *ppos;
+> With above changes, IPI handling routine does not depend on caller
+> function to perform irq_enter()/irq_exit() and save/restore of
+> "pt_regs *" hence its more self-contained. This also enables us
+> to call IPI handling routine from IRQCHIP drivers.
+>
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> ---
+>  arch/riscv/include/asm/irq.h |  1 -
+>  arch/riscv/include/asm/smp.h |  3 +++
+>  arch/riscv/kernel/irq.c      | 16 ++++++++++------
+>  arch/riscv/kernel/smp.c      | 11 +++++++++--
+>  4 files changed, 22 insertions(+), 9 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/irq.h b/arch/riscv/include/asm/irq.h
+> index 6e1b0e0325eb..0183e15ace66 100644
+> --- a/arch/riscv/include/asm/irq.h
+> +++ b/arch/riscv/include/asm/irq.h
+> @@ -13,7 +13,6 @@
+>  #define NR_IRQS         0
+>
+>  void riscv_timer_interrupt(void);
+> -void riscv_software_interrupt(void);
+>
+>  #include <asm-generic/irq.h>
+>
+> diff --git a/arch/riscv/include/asm/smp.h b/arch/riscv/include/asm/smp.h
+> index f4c7cfda6b7f..40bb1c15a731 100644
+> --- a/arch/riscv/include/asm/smp.h
+> +++ b/arch/riscv/include/asm/smp.h
+> @@ -28,6 +28,9 @@ void show_ipi_stats(struct seq_file *p, int prec);
+>  /* SMP initialization hook for setup_arch */
+>  void __init setup_smp(void);
+>
+> +/* Called from C code, this handles an IPI. */
+> +void handle_IPI(struct pt_regs *regs);
+> +
+>  /* Hook for the generic smp_call_function_many() routine. */
+>  void arch_send_call_function_ipi_mask(struct cpumask *mask);
+>
+> diff --git a/arch/riscv/kernel/irq.c b/arch/riscv/kernel/irq.c
+> index 345c4f2eba13..bb0bfcd537e7 100644
+> --- a/arch/riscv/kernel/irq.c
+> +++ b/arch/riscv/kernel/irq.c
+> @@ -19,12 +19,15 @@ int arch_show_interrupts(struct seq_file *p, int prec)
+>
+>  asmlinkage __visible void __irq_entry do_IRQ(struct pt_regs *regs)
+>  {
+> -	struct pt_regs *old_regs = set_irq_regs(regs);
+> +	struct pt_regs *old_regs;
+>
+> -	irq_enter();
+>  	switch (regs->cause & ~CAUSE_IRQ_FLAG) {
+>  	case RV_IRQ_TIMER:
+> +		old_regs = set_irq_regs(regs);
+> +		irq_enter();
+>  		riscv_timer_interrupt();
+> +		irq_exit();
+> +		set_irq_regs(old_regs);
+>  		break;
+>  #ifdef CONFIG_SMP
+>  	case RV_IRQ_SOFT:
+> @@ -32,19 +35,20 @@ asmlinkage __visible void __irq_entry do_IRQ(struct pt_regs *regs)
+>  		 * We only use software interrupts to pass IPIs, so if a non-SMP
+>  		 * system gets one, then we don't know what to do.
+>  		 */
+> -		riscv_software_interrupt();
+> +		handle_IPI(regs);
+>  		break;
+>  #endif
+>  	case RV_IRQ_EXT:
+> +		old_regs = set_irq_regs(regs);
+> +		irq_enter();
+>  		handle_arch_irq(regs);
+> +		irq_exit();
+> +		set_irq_regs(old_regs);
+>  		break;
+>  	default:
+>  		pr_alert("unexpected interrupt cause 0x%lx", regs->cause);
+>  		BUG();
+>  	}
+> -	irq_exit();
+> -
+> -	set_irq_regs(old_regs);
+>  }
+>
+>  void __init init_IRQ(void)
+> diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
+> index a65a8fa0c22d..b1d4f452f843 100644
+> --- a/arch/riscv/kernel/smp.c
+> +++ b/arch/riscv/kernel/smp.c
+> @@ -123,11 +123,14 @@ static inline void clear_ipi(void)
+>  		clint_clear_ipi(cpuid_to_hartid_map(smp_processor_id()));
+>  }
+>
+> -void riscv_software_interrupt(void)
+> +void handle_IPI(struct pt_regs *regs)
+>  {
+> +	struct pt_regs *old_regs = set_irq_regs(regs);
+>  	unsigned long *pending_ipis = &ipi_data[smp_processor_id()].bits;
+>  	unsigned long *stats = ipi_data[smp_processor_id()].stats;
+>
+> +	irq_enter();
+> +
+>  	clear_ipi();
+>
+>  	while (true) {
+> @@ -138,7 +141,7 @@ void riscv_software_interrupt(void)
+>
+>  		ops = xchg(pending_ipis, 0);
+>  		if (ops == 0)
+> -			return;
+> +			goto done;
+>
+>  		if (ops & (1 << IPI_RESCHEDULE)) {
+>  			stats[IPI_RESCHEDULE]++;
+> @@ -160,6 +163,10 @@ void riscv_software_interrupt(void)
+>  		/* Order data access and bit testing. */
+>  		mb();
+>  	}
+> +
+> +done:
+> +	irq_exit();
+> +	set_irq_regs(old_regs);
+>  }
+>
+>  static const char * const ipi_names[] = {
 
-This isn't a new problem, since you effectively just moved this code,
-but it's perhaps more obvious now..
+I guess we still have to figure out which tree these are going in through, but
+I'm going to start acking them as I review them just so it all stays together.
 
-"i_size_read()" is not necessarily stable - we do special things on
-32-bit to make sure that we get _a_ stable value for it, but it's not
-necessarily guaranteed to be the same value when called twice. Think
-concurrent pread() with a write..
-
-So the inode size could change in between those two accesses, and the
-subtraction might end up underflowing despite the check just above.
-
-This might not be an issue with ocfs2 (I didn't check locking), but ..
-
-                  Linus
+Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
