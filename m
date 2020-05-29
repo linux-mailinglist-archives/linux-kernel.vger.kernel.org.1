@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0351E82DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 18:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9EF1E8304
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 18:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728036AbgE2QC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 12:02:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41640 "EHLO mail.kernel.org"
+        id S1728059AbgE2QEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 12:04:30 -0400
+Received: from mga18.intel.com ([134.134.136.126]:55080 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727808AbgE2QC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 12:02:28 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4EE52207BC;
-        Fri, 29 May 2020 16:02:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590768147;
-        bh=j16oqG0d3JC8Kaftc53VIsgS/8TyHAlk7NVIlo7m5XU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BKCjTooQF/qckSlhqOFpXbm0IWyijzZHVuR7Fkmr3bSgpiFQ49fQcYE88tDuhduIy
-         xPDQ/QBHTjJ3DjCWspnYsON3wBFc+kTICMCmoM4U0MB9hA9PH3E8MUU+hNfvU0zwq2
-         LNB6wFAd//ZATHnubEUKPleXNuYusrqRbnolwEE4=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 6D7D940AFD; Fri, 29 May 2020 13:02:25 -0300 (-03)
-Date:   Fri, 29 May 2020 13:02:25 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Nick Gasson <nick.gasson@arm.com>, Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] perf jit: Fix inaccurate DWARF line table
-Message-ID: <20200529160225.GB537@kernel.org>
-References: <20200528051916.6722-1-nick.gasson@arm.com>
- <CAP-5=fWCLq+2xjViJaYxFs9b=3BxSvKmVAdv6xX3re8AoBLHWg@mail.gmail.com>
+        id S1727802AbgE2QE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 12:04:28 -0400
+IronPort-SDR: 5B1mCrBfpGYtuv4TkZ1vHzhiOZWEETJNteUNfbOnUEktpoDopX/jw+Mhs7KPq1ylT405jCc3Fn
+ Vv1cDQ37CAAw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 May 2020 09:04:06 -0700
+IronPort-SDR: K7WQ+p+AHl9FA+PZJ9fVRcfm6XJL6rO5WjNsbRs9qi1hgdkp3g/MMKoB9+negJVRdgZtW4mY5r
+ HvJCZJldUXQw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,449,1583222400"; 
+   d="scan'208";a="469554686"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.107])
+  by fmsmga005.fm.intel.com with ESMTP; 29 May 2020 09:04:02 -0700
+Date:   Sat, 30 May 2020 00:04:01 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Andi Kleen <andi.kleen@intel.com>
+Cc:     Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Chen, Tim C" <tim.c.chen@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/3] make vm_committed_as_batch aware of vm overcommit
+ policy
+Message-ID: <20200529160401.GJ93879@shbuild999.sh.intel.com>
+References: <20200521212726.GC6367@ovpn-112-192.phx2.redhat.com>
+ <20200526181459.GD991@lca.pw>
+ <20200527014647.GB93879@shbuild999.sh.intel.com>
+ <20200527022539.GK991@lca.pw>
+ <20200527104606.GE93879@shbuild999.sh.intel.com>
+ <20200528141802.GB1810@lca.pw>
+ <20200528151020.GF93879@shbuild999.sh.intel.com>
+ <E8ECBC65D0B2554DAD44EBE43059B3741A2BFEEC@ORSMSX110.amr.corp.intel.com>
+ <20200529154315.GI93879@shbuild999.sh.intel.com>
+ <20200529155025.GC621576@tassilo.jf.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAP-5=fWCLq+2xjViJaYxFs9b=3BxSvKmVAdv6xX3re8AoBLHWg@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200529155025.GC621576@tassilo.jf.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, May 28, 2020 at 12:44:56AM -0700, Ian Rogers escreveu:
-> On Wed, May 27, 2020 at 10:19 PM Nick Gasson <nick.gasson@arm.com> wrote:
-> >
-> > Fix an issue where addresses in the DWARF line table are offset by
-> > -0x40 (GEN_ELF_TEXT_OFFSET). This can be seen with `objdump -S` on the
-> > ELF files after perf inject.
+On Fri, May 29, 2020 at 08:50:25AM -0700, Andi Kleen wrote:
+> >  
+> >  	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+> > -	if (ret == 0 && write)
+> > +	if (ret == 0 && write) {
+> > +		if (sysctl_overcommit_memory == OVERCOMMIT_NEVER)
+> > +			schedule_on_each_cpu(sync_overcommit_as);
 > 
-> Without too much knowledge this looks good to me. The original code
-> came from oprofile's jit support:
-> https://sourceforge.net/p/oprofile/oprofile/ci/master/tree/opjitconv/debug_line.c#l325
-> 
-> Acked-by: Ian Rogers <irogers@google.com>
-
-Thanks, applied and added your comment,
-
-- Arnaldo
+> The schedule is not atomic.
+> There's still a race window here over all the CPUs where the WARN_ON could
+> happen because you change the global first.
  
-> > Signed-off-by: Nick Gasson <nick.gasson@arm.com>
-> > ---
-> >  tools/perf/util/genelf_debug.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/perf/util/genelf_debug.c b/tools/perf/util/genelf_debug.c
-> > index 30e9f618f6cd..dd40683bd4c0 100644
-> > --- a/tools/perf/util/genelf_debug.c
-> > +++ b/tools/perf/util/genelf_debug.c
-> > @@ -342,7 +342,7 @@ static void emit_lineno_info(struct buffer_ext *be,
-> >          */
-> >
-> >         /* start state of the state machine we take care of */
-> > -       unsigned long last_vma = code_addr;
-> > +       unsigned long last_vma = 0;
-> >         char const  *cur_filename = NULL;
-> >         unsigned long cur_file_idx = 0;
-> >         int last_line = 1;
-> > @@ -473,7 +473,7 @@ jit_process_debug_info(uint64_t code_addr,
-> >                 ent = debug_entry_next(ent);
-> >         }
-> >         add_compilation_unit(di, buffer_ext_size(dl));
-> > -       add_debug_line(dl, debug, nr_debug_entries, 0);
-> > +       add_debug_line(dl, debug, nr_debug_entries, GEN_ELF_TEXT_OFFSET);
-> >         add_debug_abbrev(da);
-> >         if (0) buffer_ext_dump(da, "abbrev");
-> >
-> > --
-> > 2.26.2
-> >
+The re-computing of batch number comes after this sync, so at this
+point the batch is still the bigger one, and won't trigger the warning.
 
--- 
+> Probably you would need another global that says "i'm currently changing
+> the mode" and then skip the WARN_ON in that window. Maybe a sequence lock.
+> 
+> Seems all overkill to me. Better to kill the warning.
 
-- Arnaldo
+Yes, the cost is high, schedule_on_each_cpu is labeled as "very slow"
+in the code comments.
+
+Thanks,
+Feng
+
+> 
+> -Andi
