@@ -2,20 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4F01E8C0D
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 01:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 765FE1E8BF5
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 01:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728294AbgE2X2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 19:28:45 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:59871 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728493AbgE2X2C (ORCPT
+        id S1728697AbgE2X2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 19:28:06 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:59101 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728676AbgE2X2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 19:28:02 -0400
+        Fri, 29 May 2020 19:28:01 -0400
+X-Originating-IP: 86.202.110.81
 Received: from localhost (lfbn-lyo-1-15-81.w86-202.abo.wanadoo.fr [86.202.110.81])
         (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 26CA9240008;
-        Fri, 29 May 2020 23:27:54 +0000 (UTC)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id D5CFD20004;
+        Fri, 29 May 2020 23:27:59 +0000 (UTC)
 From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
 To:     Daniel Lezcano <daniel.lezcano@linaro.org>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -25,9 +26,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v4 1/9] dt-bindings: atmel-tcb: convert bindings to json-schema
-Date:   Sat, 30 May 2020 01:27:41 +0200
-Message-Id: <20200529232749.299627-2-alexandre.belloni@bootlin.com>
+Subject: [PATCH v4 2/9] dt-bindings: microchip: atmel,at91rm9200-tcb: add sama5d2 compatible
+Date:   Sat, 30 May 2020 01:27:42 +0200
+Message-Id: <20200529232749.299627-3-alexandre.belloni@bootlin.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200529232749.299627-1-alexandre.belloni@bootlin.com>
 References: <20200529232749.299627-1-alexandre.belloni@bootlin.com>
@@ -38,222 +39,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert Atmel Timer Counter Blocks bindings to DT schema format using
-json-schema.
+The sama5d2 TC block TIMER_CLOCK1 is different from the at91sam9x5 one.
+Instead of being MCK / 2, it is the TCB GCLK.
 
-Also move it out of mfd as it is not and has never been related to mfd.
-
-Cc: Rob Herring <robh+dt@kernel.org>
 Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Reviewed-by: Rob Herring <robh+dt@kernel.org>
 ---
-Changes in v4:
- - use oneOf to describe possible clock-names list
+Reviewed by tag taken from:
+https://lore.kernel.org/linux-arm-kernel/20200526225046.GA534667@bogus/
 
- .../devicetree/bindings/mfd/atmel-tcb.txt     |  56 --------
- .../soc/microchip/atmel,at91rm9200-tcb.yaml   | 131 ++++++++++++++++++
- 2 files changed, 131 insertions(+), 56 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mfd/atmel-tcb.txt
- create mode 100644 Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
+ .../soc/microchip/atmel,at91rm9200-tcb.yaml   | 42 +++++++++++++++----
+ 1 file changed, 33 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/atmel-tcb.txt b/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
-deleted file mode 100644
-index c4a83e364cb6..000000000000
---- a/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
-+++ /dev/null
-@@ -1,56 +0,0 @@
--* Device tree bindings for Atmel Timer Counter Blocks
--- compatible: Should be "atmel,<chip>-tcb", "simple-mfd", "syscon".
--  <chip> can be "at91rm9200" or "at91sam9x5"
--- reg: Should contain registers location and length
--- #address-cells: has to be 1
--- #size-cells: has to be 0
--- interrupts: Should contain all interrupts for the TC block
--  Note that you can specify several interrupt cells if the TC
--  block has one interrupt per channel.
--- clock-names: tuple listing input clock names.
--	Required elements: "t0_clk", "slow_clk"
--	Optional elements: "t1_clk", "t2_clk"
--- clocks: phandles to input clocks.
--
--The TCB can expose multiple subdevices:
-- * a timer
--   - compatible: Should be "atmel,tcb-timer"
--   - reg: Should contain the TCB channels to be used. If the
--     counter width is 16 bits (at91rm9200-tcb), two consecutive
--     channels are needed. Else, only one channel will be used.
--
--Examples:
--
--One interrupt per TC block:
--	tcb0: timer@fff7c000 {
--		compatible = "atmel,at91rm9200-tcb", "simple-mfd", "syscon";
--		#address-cells = <1>;
--		#size-cells = <0>;
--		reg = <0xfff7c000 0x100>;
--		interrupts = <18 4>;
--		clocks = <&tcb0_clk>, <&clk32k>;
--		clock-names = "t0_clk", "slow_clk";
--
--		timer@0 {
--			compatible = "atmel,tcb-timer";
--			reg = <0>, <1>;
--		};
--
--		timer@2 {
--			compatible = "atmel,tcb-timer";
--			reg = <2>;
--		};
--	};
--
--One interrupt per TC channel in a TC block:
--	tcb1: timer@fffdc000 {
--		compatible = "atmel,at91rm9200-tcb", "simple-mfd", "syscon";
--		#address-cells = <1>;
--		#size-cells = <0>;
--		reg = <0xfffdc000 0x100>;
--		interrupts = <26 4>, <27 4>, <28 4>;
--		clocks = <&tcb1_clk>, <&clk32k>;
--		clock-names = "t0_clk", "slow_clk";
--	};
--
--
 diff --git a/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml b/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
-new file mode 100644
-index 000000000000..9d680e0b9109
---- /dev/null
+index 9d680e0b9109..d226fd7d5258 100644
+--- a/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
 +++ b/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
-@@ -0,0 +1,131 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/soc/microchip/atmel,at91rm9200-tcb.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+@@ -19,6 +19,7 @@ properties:
+       - enum:
+           - atmel,at91rm9200-tcb
+           - atmel,at91sam9x5-tcb
++          - atmel,sama5d2-tcb
+       - const: simple-mfd
+       - const: syscon
+ 
+@@ -36,15 +37,6 @@ properties:
+     description:
+       List of clock names. Always includes t0_clk and slow clk. Also includes
+       t1_clk and t2_clk if a clock per channel is available.
+-    oneOf:
+-      - items:
+-        - const: t0_clk
+-        - const: slow_clk
+-      - items:
+-        - const: t0_clk
+-        - const: t1_clk
+-        - const: t2_clk
+-        - const: slow_clk
+     minItems: 2
+     maxItems: 4
+ 
+@@ -75,6 +67,38 @@ patternProperties:
+       - compatible
+       - reg
+ 
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: atmel,sama5d2-tcb
++    then:
++      properties:
++        clocks:
++          minItems: 3
++          maxItems: 3
++        clock-names:
++          items:
++            - const: t0_clk
++            - const: gclk
++            - const: slow_clk
++    else:
++      properties:
++        clocks:
++          minItems: 2
++          maxItems: 4
++        clock-names:
++          oneOf:
++            - items:
++              - const: t0_clk
++              - const: slow_clk
++            - items:
++              - const: t0_clk
++              - const: t1_clk
++              - const: t2_clk
++              - const: slow_clk
 +
-+title: Atmel Timer Counter Block
-+
-+maintainers:
-+  - Alexandre Belloni <alexandre.belloni@bootlin.com>
-+
-+description: |
-+  The Atmel (now Microchip) SoCs have timers named Timer Counter Block. Each
-+  timer has three channels with two counters each.
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - atmel,at91rm9200-tcb
-+          - atmel,at91sam9x5-tcb
-+      - const: simple-mfd
-+      - const: syscon
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    description:
-+      List of interrupts. One interrupt per TCB channel if available or one
-+      interrupt for the TC block
-+    minItems: 1
-+    maxItems: 3
-+
-+  clock-names:
-+    description:
-+      List of clock names. Always includes t0_clk and slow clk. Also includes
-+      t1_clk and t2_clk if a clock per channel is available.
-+    oneOf:
-+      - items:
-+        - const: t0_clk
-+        - const: slow_clk
-+      - items:
-+        - const: t0_clk
-+        - const: t1_clk
-+        - const: t2_clk
-+        - const: slow_clk
-+    minItems: 2
-+    maxItems: 4
-+
-+  clocks:
-+    minItems: 2
-+    maxItems: 4
-+
-+  '#address-cells':
-+    const: 1
-+
-+  '#size-cells':
-+    const: 0
-+
-+patternProperties:
-+  "^timer@[0-2]$":
-+    description: The timer block channels that are used as timers.
-+    type: object
-+    properties:
-+      compatible:
-+        const: atmel,tcb-timer
-+      reg:
-+        description:
-+          List of channels to use for this particular timer.
-+        minItems: 1
-+        maxItems: 3
-+
-+    required:
-+      - compatible
-+      - reg
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - '#address-cells'
-+  - '#size-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    /* One interrupt per TC block: */
-+        tcb0: timer@fff7c000 {
-+                compatible = "atmel,at91rm9200-tcb", "simple-mfd", "syscon";
-+                #address-cells = <1>;
-+                #size-cells = <0>;
-+                reg = <0xfff7c000 0x100>;
-+                interrupts = <18 4>;
-+                clocks = <&tcb0_clk>, <&clk32k>;
-+                clock-names = "t0_clk", "slow_clk";
-+
-+                timer@0 {
-+                        compatible = "atmel,tcb-timer";
-+                        reg = <0>, <1>;
-+                };
-+
-+                timer@2 {
-+                        compatible = "atmel,tcb-timer";
-+                        reg = <2>;
-+                };
-+        };
-+
-+    /* One interrupt per TC channel in a TC block: */
-+        tcb1: timer@fffdc000 {
-+                compatible = "atmel,at91rm9200-tcb", "simple-mfd", "syscon";
-+                #address-cells = <1>;
-+                #size-cells = <0>;
-+                reg = <0xfffdc000 0x100>;
-+                interrupts = <26 4>, <27 4>, <28 4>;
-+                clocks = <&tcb1_clk>, <&clk32k>;
-+                clock-names = "t0_clk", "slow_clk";
-+
-+                timer@0 {
-+                        compatible = "atmel,tcb-timer";
-+                        reg = <0>;
-+                };
-+
-+                timer@1 {
-+                        compatible = "atmel,tcb-timer";
-+                        reg = <1>;
-+                };
-+        };
+ required:
+   - compatible
+   - reg
 -- 
 2.26.2
 
