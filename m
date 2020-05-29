@@ -2,106 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CC01E79F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 11:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F05A81E79F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 11:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726393AbgE2J6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 05:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgE2J6B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 05:58:01 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EE99C08C5C6
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 02:58:00 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id l27so1504714ejc.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 02:58:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=99pOzzXbN5adJubUzcJGXQQVBGmFL/nmnlnO5ZMkTJo=;
-        b=gprvDCD/kRqOIy/BgHi73ZOyKU+h3Vg37a1mXEhQlyYlrku3TB6/A76nUIjpaO1btt
-         EQke9n3jMnQ/wZAeMgOMUcfevQ0bxQ5mrKEX6oYqc3jJn6VP9WIwAMmPKFTMJdRJ7g16
-         1atubjMdmy4paGmVrxzOP5bb7C99Mhzjc1+sI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=99pOzzXbN5adJubUzcJGXQQVBGmFL/nmnlnO5ZMkTJo=;
-        b=YGf2fmrtmyYdZ/g6ukvZCmp1d509kSYAIkQQjg2rCYEBpGkpAomal0d7E+h62QV975
-         EO9Yb9ufo82m3/+y8YFW71cY3j9PI6aVft0XVnSB2tDVmTi4ntPs43VVZLS3sDAsgI2t
-         ghn3XJGiVgVzVZMGlt0L9zYsz+SbZMI//+zG/0qM3jXaitUv4SeB0T3MlB30TcGeyxLb
-         ZQ4g5xHYfKVS+UY6ZejliCJN9dDsOGSbANKfIDlCz1XXo52B3dUWYDPw9kJ8gwAr3Cbm
-         65+qW7fscJB5MZLrVWldavwChvgyWEWu7e+N+tj4qm6qhWDRQlQyN7guwgKZ2WICuV7R
-         akrw==
-X-Gm-Message-State: AOAM531KNLGyz0cVa6SIciNs4yM21QPw4sZOB1hybXwtoucR0V7CJrIz
-        fAu39XbeVuaoMm9/VEkAmSwt9UXc++eTDK3k7MjfB45k0f7VnQ==
-X-Google-Smtp-Source: ABdhPJyb/rBlZlBbzxI1OWPb1qBLaJ06N49Sr4s+4Q+qqtyiGbwnxNhE0Ti1HY50v9eJThFRtvBgzAEfY0HHuTPZLDQ=
-X-Received: by 2002:a17:907:20d9:: with SMTP id qq25mr6687153ejb.202.1590746278813;
- Fri, 29 May 2020 02:57:58 -0700 (PDT)
+        id S1726629AbgE2J60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 05:58:26 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:27294 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726487AbgE2J6Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 05:58:25 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590746304; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=WpevIkTJ1MbRahbSDCiGvaiXrFgelDxdUivkVyI7CxE=; b=bbR3IUIMexRia1PpDWR2F/gzPcjGqRQ+zd/XtWyesPrgYg67JX2pu2ijm5VxFtOX1ECkdLjk
+ 66712ae/sUtACwjInvWXT4fC3auSQLrJ+wP6SJMOQpd4LVvTlNK8ZzN2cpE0iWb7umDqih5B
+ PzHK6yUT+zx38AmOfWGK8IvMbGU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5ed0dcabcb0458693383a809 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 May 2020 09:58:03
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AA186C43395; Fri, 29 May 2020 09:58:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.43.129] (unknown [106.222.19.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CBEA7C433C9;
+        Fri, 29 May 2020 09:57:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CBEA7C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=mkshah@codeaurora.org
+Subject: Re: [PATCH v2 1/4] gpio: gpiolib: Allow GPIO IRQs to lazy disable
+To:     Stephen Boyd <swboyd@chromium.org>, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, linus.walleij@linaro.org, maz@kernel.org,
+        mka@chromium.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-gpio@vger.kernel.org, agross@kernel.org, tglx@linutronix.de,
+        jason@lakedaemon.net, dianders@chromium.org, rnayak@codeaurora.org,
+        ilina@codeaurora.org, lsrao@codeaurora.org
+References: <1590253873-11556-1-git-send-email-mkshah@codeaurora.org>
+ <1590253873-11556-2-git-send-email-mkshah@codeaurora.org>
+ <159057264232.88029.4708934729701385486@swboyd.mtv.corp.google.com>
+ <4e070cda-8c22-c554-610e-172320045840@codeaurora.org>
+ <159062812628.69627.2153485337510882984@swboyd.mtv.corp.google.com>
+ <948defc1-5ea0-adbb-185b-5f5a81f2e28a@codeaurora.org>
+ <159070452036.69627.17850758520477366824@swboyd.mtv.corp.google.com>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <513b9bec-2a9e-3306-32d1-6cc500206645@codeaurora.org>
+Date:   Fri, 29 May 2020 15:27:52 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-References: <CAJfpegstNYeseo_C4KOF9Y74qRxr78x2tK-9rTgmYM4CK30nRQ@mail.gmail.com>
- <875zcfoko9.fsf@nanos.tec.linutronix.de> <CAJfpegsjd+FJ0ZNHJ_qzJo0Dx22ZaWh-WZ48f94Z3AUXbJfYYQ@mail.gmail.com>
-In-Reply-To: <CAJfpegsjd+FJ0ZNHJ_qzJo0Dx22ZaWh-WZ48f94Z3AUXbJfYYQ@mail.gmail.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 29 May 2020 11:57:45 +0200
-Message-ID: <CAJfpegv0fNfHrkovSXCNq5Hk+yHP7usfMgr0qjPfwqiovKygDA@mail.gmail.com>
-Subject: Re: system time goes weird in kvm guest after host suspend/resume
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Juergen Gross <jgross@suse.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <159070452036.69627.17850758520477366824@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 11:51 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
->
-> On Thu, May 28, 2020 at 10:43 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> >
-> > Miklos Szeredi <miklos@szeredi.hu> writes:
-> > > Bisected it to:
-> > >
-> > > b95a8a27c300 ("x86/vdso: Use generic VDSO clock mode storage")
-> > >
-> > > The effect observed is that after the host is resumed, the clock in
-> > > the guest is somewhat in the future and is stopped.  I.e. repeated
-> > > date(1) invocations show the same time.
-> >
-> > TBH, the bisect does not make any sense at all. It's renaming the
-> > constants and moving the storage space and I just read it line for line
-> > again that the result is equivalent. I'll have a look once the merge
-> > window dust settles a bit.
->
-> Yet, reverting just that single commit against latest linus tree fixes
-> the issue.  Which I think is a pretty good indication that that commit
-> *is* doing something.
->
-> The jump forward is around 35 minutes; that seems to be consistent as well.
+Hi,
 
-Oh, and here's a dmesg extract for the good case:
+On 5/29/2020 3:52 AM, Stephen Boyd wrote:
+> Quoting Maulik Shah (2020-05-28 06:11:23)
+>> Hi,
+>>
+>> On 5/28/2020 6:38 AM, Stephen Boyd wrote:
+>>> Quoting Maulik Shah (2020-05-27 04:26:14)
+>>>> On 5/27/2020 3:14 PM, Stephen Boyd wrote:
+>>>>> Quoting Maulik Shah (2020-05-23 10:11:10)
+>>>>>> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+>>>>>> index eaa0e20..3810cd0 100644
+>>>>>> --- a/drivers/gpio/gpiolib.c
+>>>>>> +++ b/drivers/gpio/gpiolib.c
+>>>>>> @@ -2465,32 +2465,37 @@ static void gpiochip_irq_relres(struct irq_data *d)
+>>>>>>            gpiochip_relres_irq(gc, d->hwirq);
+>>>>>>     }
+>>>>>>     
+>>>>>> +static void gpiochip_irq_mask(struct irq_data *d)
+>>>>>> +{
+>>>>>> +       struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+>>>>>> +
+>>>>>> +       if (gc->irq.irq_mask)
+>>>>>> +               gc->irq.irq_mask(d);
+>>>>>> +       gpiochip_disable_irq(gc, d->hwirq);
+>>>>> How does this work in the lazy case when I want to drive the GPIO? Say I
+>>>>> have a GPIO that is also an interrupt. The code would look like
+>>>>>
+>>>>>     struct gpio_desc *gpio = gpiod_get(...)
+>>>>>     unsigned int girq = gpiod_to_irq(gpio)
+>>>>>
+>>>>>     request_irq(girq, ...);
+>>>>>
+>>>>>     disable_irq(girq);
+>>>>>     gpiod_direction_output(gpio, 1);
+>>>>>
+>>>>> In the lazy case genirq wouldn't call the mask function until the first
+>>>>> interrupt arrived on the GPIO line. If that never happened then wouldn't
+>>>>> we be blocked in gpiod_direction_output() when the test_bit() sees
+>>>>> FLAG_USED_AS_IRQ? Or do we need irqs to be released before driving
+>>>>> gpios?
+>>>> The client driver can decide to unlazy disable IRQ with below API...
+>>>>
+>>>>     irq_set_status_flags(girq, IRQ_DISABLE_UNLAZY);
+>>>>
+>>>> This will immediatly invoke mask function (unlazy disable) from genirq,
+>>>> even though irq_disable is not implemented.
+>>>>
+>>> Sure a consumer can disable the lazy feature, but that shouldn't be
+>>> required to make this work. The flag was introduced in commit
+>>> e9849777d0e2 ("genirq: Add flag to force mask in
+>>> disable_irq[_nosync]()") specifically to help devices that can't disable
+>>> the interrupt in their own device avoid a double interrupt.
+>> i don't think this will be a problem.
+>>
+>> Case 1) Client driver have locked gpio to be used as IRQ using
+>> gpiochip_lock_as_irq()
+>>
+>> In this case, When client driver want to change the direction for a
+>> gpio, they will invoke gpiod_direction_output().
+>> I see it checks for two flags (pasted below), if GPIO is used as IRQ and
+>> whether its enabled IRQ or not.
+>>
+>>          /* GPIOs used for enabled IRQs shall not be set as output */
+>>           if (test_bit(FLAG_USED_AS_IRQ, &desc->flags) &&
+>>               test_bit(FLAG_IRQ_IS_ENABLED, &desc->flags)) {
+>>
+>> The first one (FLAG_USED_AS_IRQ) is set only if client driver in past
+>> have locked gpio to use as IRQ with a call to gpiochip_lock_as_irq()
+>> then it never gets unlocked until clients invoke gpiochip_unlock_as_irq().
+>>
+>> So i presume the client driver which in past locked gpio to be used as
+>> IRQ, now wants to change direction then it will
+>> a. first unlock to use as IRQ
+>> b. then change the direction.
+> How does a client driver unlock to use as an IRQ though? I don't
+> understand how that is done. gpiochip_lock_as_irq() isn't a gpio
+> consumer API, it's a gpiochip/gpio provider API.
 
-[   26.402239] clocksource: timekeeping watchdog on CPU0: Marking
-clocksource 'tsc' as unstable because the skew is too large:
-[   26.407029] clocksource:                       'kvm-clock' wd_now:
-635480f3c wd_last: 3ce94a718 mask: ffffffffffffffff
-[   26.407632] clocksource:                       'tsc' cs_now:
-92d2e5d08 cs_last: 81305ceee mask: ffffffffffffffff
-[   26.409097] tsc: Marking TSC unstable due to clocksource watchdog
+>>In the lazy case genirq wouldn't call the mask function until the first
+>>interrupt arrived on the GPIO line. If that never happened then wouldn't
+>>we be blocked in gpiod_direction_output() when the test_bit() sees
+>>FLAG_USED_AS_IRQ?
 
-and the bad one:
+What i was trying to explain in above two cases is..
+FLAG_USED_AS_IRQ is set only when client driver locks GPIO to be used as IRQ
+with gpiochip_lock_as_irq() API call.
 
-[   36.667576] clocksource: timekeeping watchdog on CPU1: Marking
-clocksource 'tsc' as unstable because the skew is too large:
-[   36.690441] clocksource:                       'kvm-clock' wd_now:
-89885027c wd_last: 3ea987282 mask: ffffffffffffffff
-[   36.690994] clocksource:                       'tsc' cs_now:
-95666ec22 cs_last: 84e747930 mask: ffffffffffffffff
-[   36.691901] tsc: Marking TSC unstable due to clocksource watchdog
+Coming to query of test_bit() seeing this flag as set won't be a problem.
+Lets take an example...
+
+1. Client driver locks gpio to be used as IRQ gpiochip_lock_as_irq()
+    This makes gpiolib set two flags..
+    a. FLAG_USED_AS_IRQ
+    b. FLAG_IRQ_IS_ENABLED
+    
+    Note that this is the only API which sets the flag (a) FLAG_USED_AS_IRQ.
+    
+2. During gpiochip_disable_irq() it only clears the flag (b) but the flag (a) is still set.
+
+3. Now client driver does disable_irq()...
+    With this patch, in case the irq_chip did not implement irq_disable callback then irq_mask will be overridden.
+    so during first disable_irq() call, the gpiolib won't come to immediatly know that interrupt is disabled (lazy disable)
+    hence both these flags are still set.
+
+4. After disabling irq, client driver want to change the direction, so it wants to now call gpiod_direction_output()
+    But before calling this, client driver knows that in step (1), client driver locked GPIO to be used only as IRQ.
+    So GPIO cannot be used as any other purpose other than IRQ till the point its locked.
+	
+    hence before calling  gpiod_direction_output(), it has to first invoke gpiochip_unlock_as_irq().
+    Calling this will clear both flags and allow GPIO to change the direction.
+	
+    Now client can invoke gpiod_direction_output() and the test_bit() check inside this won't complain.
+
+Case 1) in my previous mail was where in above example client driver did step (1) which locks the gpio as IRQ then
+its expected to do unlock in step (4) before changing direction.
+so no issue in case 1) regarding test_bit complain.
+
+Case 2) is where driver didn't even do step-1, so in step-4, they can directly invoke gpiod_direction_output()
+client didn't lock, so the flag FLAG_USED_AS_IRQ is never set, so test_bit for this flag won't complain.
+    
+So in both cases it looks to be working as expected to me.
+Hope that its answers your query.
 
 Thanks,
-Miklos
+Maulik
+
+>> Once it unlocks in step (a), both these flags will be cleared and there
+>> won't be any error in changing direction in step (b).
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+
