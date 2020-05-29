@@ -2,162 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CC81E7B1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 13:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9A01E7B21
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 13:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725901AbgE2LBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 07:01:05 -0400
-Received: from sauhun.de ([88.99.104.3]:49008 "EHLO pokefinder.org"
+        id S1726518AbgE2LCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 07:02:51 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:27788 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725562AbgE2LBE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 07:01:04 -0400
-Received: from localhost (p54b33184.dip0.t-ipconnect.de [84.179.49.132])
-        by pokefinder.org (Postfix) with ESMTPSA id 8A1C02C2034;
-        Fri, 29 May 2020 13:01:02 +0200 (CEST)
-Date:   Fri, 29 May 2020 13:01:02 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Chuhong Yuan <hslester96@gmail.com>,
-        Jan Glauber <jglauber@cavium.com>
-Cc:     David Daney <david.daney@cavium.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: thunderx: Add missed pci_release_regions
-Message-ID: <20200529110102.GD3417@ninjato>
-References: <20191206075349.18297-1-hslester96@gmail.com>
- <20200322160040.GD1091@ninjato>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="T7mxYSe680VjQnyC"
-Content-Disposition: inline
-In-Reply-To: <20200322160040.GD1091@ninjato>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1725562AbgE2LCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 07:02:50 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590750170; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=pN2fu1wh9sXdsnk7LncKzQzCSiSvZFUxatOkecyYeGI=; b=ovhBBOeP36pE3OJrj79oFU/xjsH/zFCtLRPBbHEiZaMY4JKngfpY1Ya6XFget9fmFDIPuUNv
+ zr5Adatm6Q4oEu/HeJ3qgLVL/fpC05ROXAylLZvpiI3DlIpszz+LvTfIf45GguDHY/bMfdlU
+ VHlQ2LEHMX2qAxFaePXpep2bd/Y=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5ed0ebd8b4f0a9ae2249eade (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 May 2020 11:02:48
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1BAAFC433CB; Fri, 29 May 2020 11:02:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mkshah-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 31609C433C9;
+        Fri, 29 May 2020 11:02:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 31609C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=mkshah@codeaurora.org
+From:   Maulik Shah <mkshah@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, ilina@codeaurora.org, lsrao@codeaurora.org
+Subject: [PATCH] soc: qcom: rpmh: Allow RPMH on ARM SoC
+Date:   Fri, 29 May 2020 16:32:38 +0530
+Message-Id: <1590750158-20661-1-git-send-email-mkshah@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Lina Iyer <ilina@codeaurora.org>
 
---T7mxYSe680VjQnyC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Remove config restriction for RPMH on ARM64 platforms only.
 
-On Sun, Mar 22, 2020 at 05:00:40PM +0100, Wolfram Sang wrote:
-> On Fri, Dec 06, 2019 at 03:53:49PM +0800, Chuhong Yuan wrote:
-> > The driver forgets to call pci_release_regions() in probe failure
-> > and remove.
-> > Add the missed calls to fix it.
-> >=20
-> > Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
->=20
-> Jan, any comment to this patch?
+Signed-off-by: Lina Iyer <ilina@codeaurora.org>
+---
+ drivers/soc/qcom/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Jan, are you still there?
+diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+index 07bb261..899f8c0 100644
+--- a/drivers/soc/qcom/Kconfig
++++ b/drivers/soc/qcom/Kconfig
+@@ -89,7 +89,7 @@ config QCOM_RMTFS_MEM
+ 
+ config QCOM_RPMH
+ 	bool "Qualcomm RPM-Hardened (RPMH) Communication"
+-	depends on ARCH_QCOM && ARM64 || COMPILE_TEST
++	depends on ARCH_QCOM || COMPILE_TEST
+ 	help
+ 	  Support for communication with the hardened-RPM blocks in
+ 	  Qualcomm Technologies Inc (QTI) SoCs. RPMH communication uses an
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
->=20
-> Chuhong Yang, please make sure you have a proper To-Header next time!
->=20
-> > ---
-> >  drivers/i2c/busses/i2c-thunderx-pcidrv.c | 19 ++++++++++++-------
-> >  1 file changed, 12 insertions(+), 7 deletions(-)
-> >=20
-> > diff --git a/drivers/i2c/busses/i2c-thunderx-pcidrv.c b/drivers/i2c/bus=
-ses/i2c-thunderx-pcidrv.c
-> > index 19f8eec38717..31f7e254e99f 100644
-> > --- a/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-> > +++ b/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-> > @@ -172,8 +172,10 @@ static int thunder_i2c_probe_pci(struct pci_dev *p=
-dev,
-> >  		return ret;
-> > =20
-> >  	i2c->twsi_base =3D pcim_iomap(pdev, 0, pci_resource_len(pdev, 0));
-> > -	if (!i2c->twsi_base)
-> > -		return -EINVAL;
-> > +	if (!i2c->twsi_base) {
-> > +		ret =3D -EINVAL;
-> > +		goto error_release_regions;
-> > +	}
-> > =20
-> >  	thunder_i2c_clock_enable(dev, i2c);
-> >  	ret =3D device_property_read_u32(dev, "clock-frequency", &i2c->twsi_f=
-req);
-> > @@ -189,16 +191,16 @@ static int thunder_i2c_probe_pci(struct pci_dev *=
-pdev,
-> > =20
-> >  	ret =3D pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_MSIX);
-> >  	if (ret < 0)
-> > -		goto error;
-> > +		goto error_disable_clock;
-> > =20
-> >  	ret =3D devm_request_irq(dev, pci_irq_vector(pdev, 0), octeon_i2c_isr=
-, 0,
-> >  			       DRV_NAME, i2c);
-> >  	if (ret)
-> > -		goto error;
-> > +		goto error_disable_clock;
-> > =20
-> >  	ret =3D octeon_i2c_init_lowlevel(i2c);
-> >  	if (ret)
-> > -		goto error;
-> > +		goto error_disable_clock;
-> > =20
-> >  	octeon_i2c_set_clock(i2c);
-> > =20
-> > @@ -214,7 +216,7 @@ static int thunder_i2c_probe_pci(struct pci_dev *pd=
-ev,
-> > =20
-> >  	ret =3D i2c_add_adapter(&i2c->adap);
-> >  	if (ret)
-> > -		goto error;
-> > +		goto error_disable_clock;
-> > =20
-> >  	dev_info(i2c->dev, "Probed. Set system clock to %u\n", i2c->sys_freq);
-> > =20
-> > @@ -224,8 +226,10 @@ static int thunder_i2c_probe_pci(struct pci_dev *p=
-dev,
-> > =20
-> >  	return 0;
-> > =20
-> > -error:
-> > +error_disable_clock:
-> >  	thunder_i2c_clock_disable(dev, i2c->clk);
-> > +error_release_regions:
-> > +	pci_release_regions(pdev);
-> >  	return ret;
-> >  }
-> > =20
-> > @@ -236,6 +240,7 @@ static void thunder_i2c_remove_pci(struct pci_dev *=
-pdev)
-> >  	thunder_i2c_smbus_remove(i2c);
-> >  	thunder_i2c_clock_disable(&pdev->dev, i2c->clk);
-> >  	i2c_del_adapter(&i2c->adap);
-> > +	pci_release_regions(pdev);
-> >  }
-> > =20
-> >  static const struct pci_device_id thunder_i2c_pci_id_table[] =3D {
-> > --=20
-> > 2.24.0
-> >=20
-
-
-
---T7mxYSe680VjQnyC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl7Q624ACgkQFA3kzBSg
-Kbbtpg/+L5P/8PE6Xaw90HATOaTCtM0KtQzkWcF6bGPAN/r0LBstX+5TjhIPyBnw
-3A3kWp+YlFbM3WAbHM1erjMWlIygCzTgKMqPA3KwFvImJ0Bhfo04pptvbOB6QTIM
-FuDBNIrM/QN5w59OzqkmhJ9OkXNNy64+KkVEUJSQcz4WnRinTgvyDPUdD0yHChtg
-78rqAiq+1WZDUkQajoKLqnkEQjVVVOF+S5AxDwc0neS0H55TuvvFaPR2JTiVKp6T
-VyCVe+lfS1v8m/2cQL4uxBLpxMwy7pr5eiaa9IF8XNmm5Ww+9ht7YWVnMn1KuOTM
-LAVID31cxjmL3W+6IVuRkfOwu49/V6NeVezChD0+XO+Eue84R7j0mRJg2epwRWw3
-xfMm6DKhwCNLOVpYCo9sCdkYB85Gg0ilaou6gYIpEiQmIzoXzjQ227BKh6kLwwj7
-RBmVSPg17JRlYoXLrmoDGmjjBvNh5GKxR+RnfvtRdsf1kcBK3TdQtMWbhZrr5n/w
-e5y6M6IHGUJ+ImsXWiwx3kZvee92wLcBvB3Zg17RGJBXI4IfP7/cu/iFttp58+Cu
-h3+FBEwbyhkxq0OIqBSvk3jjDnSNh1Vyf9uP93bzVyuPCDH+4SqYR9psC8Fn4Wza
-BNriZnMPXqFCdHEwkr96V+lRrnYhw2OvMryxYd6fk6vxA3FTGiQ=
-=R2TX
------END PGP SIGNATURE-----
-
---T7mxYSe680VjQnyC--
