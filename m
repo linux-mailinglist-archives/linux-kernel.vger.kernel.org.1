@@ -2,99 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40AB21E73B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 05:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173A51E73B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 05:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436965AbgE2DiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 23:38:18 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5386 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2436641AbgE2DiR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 23:38:17 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 63E0621DD35E910CA2B7;
-        Fri, 29 May 2020 11:38:13 +0800 (CST)
-Received: from DESKTOP-FKFNUOQ.china.huawei.com (10.67.101.2) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 29 May 2020 11:38:11 +0800
-From:   Zhe Li <lizhe67@huawei.com>
-To:     <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] jffs2: fix nothing output for "ls" command
-Date:   Fri, 29 May 2020 11:38:09 +0800
-Message-ID: <20200529033809.113516-1-lizhe67@huawei.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S2437181AbgE2Dis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 23:38:48 -0400
+Received: from mga14.intel.com ([192.55.52.115]:60881 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436976AbgE2Dir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 23:38:47 -0400
+IronPort-SDR: RmS+NA5X7ve+mSJLULcfAxFqcIGKGVqqkYpQglUdjOdfxM9Z5Zkn2u4y98WJtVTCmcA0vBiG4n
+ ryKEu5urIY4Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 20:38:46 -0700
+IronPort-SDR: srrZt4gXFrrJaj61QY8iym0VMpVidDaNCFWzex459ZE0DrikXr4RroEFkjyN5A5GkXGPp3Wzvd
+ QRf9YXr1lZow==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,447,1583222400"; 
+   d="scan'208";a="292232848"
+Received: from pratuszn-mobl.ger.corp.intel.com (HELO localhost) ([10.252.58.65])
+  by fmsmga004.fm.intel.com with ESMTP; 28 May 2020 20:38:37 -0700
+Date:   Fri, 29 May 2020 06:38:36 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        akpm@linux-foundation.org, dave.hansen@intel.com,
+        nhorman@redhat.com, npmccallum@redhat.com, haitao.huang@intel.com,
+        andriy.shevchenko@linux.intel.com, tglx@linutronix.de,
+        kai.svahn@intel.com, josh@joshtriplett.org, luto@kernel.org,
+        kai.huang@intel.com, rientjes@google.com, cedric.xing@intel.com,
+        puiterwijk@redhat.com, Jethro Beekman <jethro@fortanix.com>
+Subject: Re: [PATCH v30 08/20] x86/sgx: Add functions to allocate and free
+ EPC pages
+Message-ID: <20200529033836.GD6182@linux.intel.com>
+References: <20200526125207.GE28228@zn.tnic>
+ <20200527042111.GI31696@linux.intel.com>
+ <20200527204638.GG1721@zn.tnic>
+ <20200528012319.GA7577@linux.intel.com>
+ <20200528013617.GD25962@linux.intel.com>
+ <20200528065223.GB188849@linux.intel.com>
+ <20200528171635.GB382@zn.tnic>
+ <20200528190718.GA2147934@linux.intel.com>
+ <20200528195917.GF30353@linux.intel.com>
+ <20200529032816.GC6182@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.101.2]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200529032816.GC6182@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently I find a bug that I get nothing with shell
-command "ls". The test steps are listed below.
-1. cd $JFFS2_MOUNT_DIR
-2. touch file
-3. ls
+On Fri, May 29, 2020 at 06:28:28AM +0300, Jarkko Sakkinen wrote:
+> On Thu, May 28, 2020 at 12:59:17PM -0700, Sean Christopherson wrote:
+> > On Thu, May 28, 2020 at 10:07:18PM +0300, Jarkko Sakkinen wrote:
+> > > On Thu, May 28, 2020 at 07:16:35PM +0200, Borislav Petkov wrote:
+> > > > Lemme reply to all mails with one. :-)
+> > > > And except those last two. Those are allocating a page from the EPC
+> > > > sections so I'd call them:
+> > > > 
+> > > > sgx_try_alloc_page    -> sgx_alloc_epc_page_section
+> > > > __sgx_try_alloc_page  -> __sgx_alloc_epc_page_section
+> > > > 
+> > > > former doing the loop, latter doing the per-section list games.
+> > > 
+> > > sgx_alloc_epc_page_section() is a bit nasty and long name to use for
+> > > grabbing a page. And even the documentation spoke about grabbing before
+> > > this naming discussion. I think it is a great description what is going
+> > > on.  Everytime I talk about the subject I talk about grabbing.
+> > > Lets just say that your suggestion, I could not use in a conference
+> > > talk as a verb when I describe what is going on. That function > > > signature does not fit to my mouth :-) I would talk about
+> > > grabbing a page.
+> > 
+> > "allocate an EPC page from the specified section"
+> > 
+> > It also works if/when we add NUMA awareness, e.g. sgx_alloc_epc_page_node()
+> > means "allocate an EPC page from the specified node".  Note that I'm not
+> > inventing these from scratch, simply stealing them from alloc_pages() and
+> > alloc_pages_node().  The section thing is unique to SGX, but the underlying
+> > concept is the same.
+> 
+> Then it should be sgx_alloc_epc_page_from_section() if you go with that.
+> Otherwise it is mixes too much with the section. I did read these mails
+> first quickly and first thought that functions were doing something with
+> sgx_epc_section and not with pages.
+> 
+> Only with a deeper look that it's the name for allocating a page.
+> 
+> I think both names are waste of screen estate. Too long.
+> 
+> > >  * sgx_grab_page() - Grab a free EPC page
+> > >  * @owner:	the owner of the EPC page
+> > >  * @reclaim:	reclaim pages if necessary
+> > >  *
+> > >  * Iterate through EPC sections and borrow a free EPC page to the caller. When a
+> > >  * page is no longer needed it must be released with sgx_free_page(). If
+> > >  * @reclaim is set to true, directly reclaim pages when we are out of pages. No
+> > >  * mm's can be locked when @reclaim is set to true.
+> > >  *
+> > >  * Finally, wake up ksgxswapd when the number of pages goes below the watermark
+> > >  * before returning back to the caller.
+> > >  *
+> > >  * Return:
+> > >  *   an EPC page,
+> > >  *   -errno on error
+> > >  */
+> > > 
+> > > I also rewrote the kdoc.
+> > > 
+> > > I do agree that sgx_try_grab_page() should be renamed as __sgx_grab_page().
+> > 
+> > FWIW, I really, really dislike "grab".  The nomenclature for normal memory
+> > and pages uses "alloc" when taking a page off a free list, and "grab" when
+> > elevating the refcount.  I don't understand the motivation for diverging
+> > from that.  SGX is weird enough as is, using names that don't align with
+> > exist norms will only serve to further obfuscate the code.
+> 
+> OK, what would be a better name then? The semantics are not standard
+> memory allocation semantics in the first place. And kdoc in v30 speaks
+> about grabbing.
 
-Finally I find that when command "ls" going into
-function jffs2_readdir(), it get non-zero return
-value from function dir_emit(). So I get nothing
-from "ls", absolutely.
+I can live with sgx_alloc_epc_page() or sgx_alloc_epc_page_from_section()
+although I'd prefer the shorter form.
 
-After checking my file system image, I find a raw
-dirent node with nsize = 0. The full_scan mounting
-process do not check nsize and the return value
-of strnlen(rd->name, rd->nsize) carefully, which
-causes function jffs2_readdir pass 0 to parameter
-namelen of function dir_emit when we use command
-"ls".
-
-Of course it should never happened to find a raw
-dirent with nsize = 0. In my opinion, this abnormal
-phenomenon maybe cause by bad driver or bad medium.
-But for rebustness reason, jffs2 should handle it.
-
-This patch add codes to check the nsize and the
-return value of strnlen(rd->name, rd->nsize). If
-abnormal node is found, use function jffs2_scan_dirty_space
-to deal with it.
-
-Signed-off-by: Zhe Li <lizhe67@huawei.com>
----
- fs/jffs2/scan.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
-index 5f7e284..ff37d92 100644
---- a/fs/jffs2/scan.c
-+++ b/fs/jffs2/scan.c
-@@ -1065,8 +1065,21 @@ static int jffs2_scan_dirent_node(struct jffs2_sb_info *c, struct jffs2_eraseblo
- 
- 	pseudo_random += je32_to_cpu(rd->version);
- 
-+	if (rd->nsize == 0) {
-+		pr_err("%s(): Node nsize is zero at 0x%08x\n", __func__, ofs);
-+		if ((err = jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(rd->totlen)))))
-+			return err;
-+		return 0;
-+	}
-+
- 	/* Should never happen. Did. (OLPC trac #4184)*/
- 	checkedlen = strnlen(rd->name, rd->nsize);
-+	if (checkedlen == 0) {
-+		pr_err("Dirent at %08x get zero checkedlen\n", ofs);
-+		if ((err = jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(rd->totlen)))))
-+			return err;
-+		return 0;
-+	}
- 	if (checkedlen < rd->nsize) {
- 		pr_err("Dirent at %08x has zeroes in name. Truncating to %d chars\n",
- 		       ofs, checkedlen);
--- 
-2.7.4
-
-
+/Jarkko
