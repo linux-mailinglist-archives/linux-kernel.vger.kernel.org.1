@@ -2,128 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE621E826F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 17:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8311E827D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 17:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727088AbgE2Ps3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 11:48:29 -0400
-Received: from mga17.intel.com ([192.55.52.151]:9070 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726838AbgE2Ps2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 11:48:28 -0400
-IronPort-SDR: sOnZYYRLdCtMp3MPBKDg/eThkYEZopM5VtRKbFg6g0ZBuc86wgUF3s6WWrBlwg/Xm+BxIESxJN
- 03yU10PkQCLA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 May 2020 08:48:27 -0700
-IronPort-SDR: 8rg70f1m/iIwW8+EDUPTct8YHZ43T8EY1iyW9lBF7nyta2UH/zf11NB6nAF3S6iy4FrDiciOm3
- SK5FxgETFldQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,449,1583222400"; 
-   d="scan'208";a="311277341"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by FMSMGA003.fm.intel.com with ESMTP; 29 May 2020 08:48:24 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jehFD-009dqd-LX; Fri, 29 May 2020 18:48:27 +0300
-Date:   Fri, 29 May 2020 18:48:27 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 09/11] dmaengine: dw: Initialize min and max burst DMA
- device capability
-Message-ID: <20200529154827.GT1634618@smile.fi.intel.com>
-References: <20200529144054.4251-1-Sergey.Semin@baikalelectronics.ru>
- <20200529144054.4251-10-Sergey.Semin@baikalelectronics.ru>
+        id S1727842AbgE2Puc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 11:50:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726971AbgE2Pu3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 11:50:29 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B00C03E969;
+        Fri, 29 May 2020 08:50:29 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id s19so2067098edt.12;
+        Fri, 29 May 2020 08:50:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EsMvt8EiZib5FGRRaF/qmPkTiPSrV02BKHt077M8wMI=;
+        b=cGUtShBaCi9MqoE1+GESbw69dKQPzfpBkPzL3us2slLVv6fyW3FzZR38Ss0xy1A4Yh
+         8iss/1gsa3WW9/xeUZSAv4euyAve2ASBsIjapI7OxHttUYUEEopFsOQr5gtW2x5K5DVv
+         xVcOJQyCfYgiQM0ZEi2S3hc4pTM0phT9t8mt4RPzVUv4RbiwbWMbTC4Xda9iJQ19GUFU
+         4Vuze25Dm/GfmaXfyvhPMotiRoRlhae3fCXG+9MqDgTLBwr0foE2cAwLI/LkEyRSuBXL
+         YPVTXNicS/KYigpGnlH14hS02GzJL0KIS5PDjXI8yWtoebKHBFfq3ifTgX2kWJOrJtmT
+         +e1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EsMvt8EiZib5FGRRaF/qmPkTiPSrV02BKHt077M8wMI=;
+        b=tOmhRHW3FDVQMULiSoDaRuLgnK1Sowcr/+B7aCUe+5k06e9p0OuCElPBvaWXKQLxxJ
+         q7wsggLyrtfxGRBoBJ/LIN/hCMvq7Ve66Ctyhb0p2MGX3QoHRCUSm01ea884ZBzv0e3O
+         CIQWYdTdj7juBqFWpwEe8IW39990bwGtqQPFrTmkwrQtIjGj/TTfuguWRoAkQ6G7pG95
+         KVXvT9a9FPVzwCSS7BtIcFKMG2PiwoLWoFO2ExLcYCZs7ijY1bPCVmD75hXOS6j2v7kj
+         D1YlAwQpqDVGtvZ88DzVGI7dkRcL1hm/8IYduc6LwSlyDujSnhin6HBuAMYDnQAGrlg8
+         +uwA==
+X-Gm-Message-State: AOAM532xkH56YbQlztNYW3NeYizuW1UX22HPrjLlXvMNpx4NRBlxTGzh
+        3S1Rgmj4z7EjjGOqmgffkC4=
+X-Google-Smtp-Source: ABdhPJx6DPMPIrVyjdcMp9A6H0ZgGz361F/QduvdG+yveRgopAM+PuB1Tb/x09hjpiea6VuHfcN3Iw==
+X-Received: by 2002:a50:bb41:: with SMTP id y59mr8736067ede.311.1590767427825;
+        Fri, 29 May 2020 08:50:27 -0700 (PDT)
+Received: from localhost.localdomain ([188.27.38.213])
+        by smtp.gmail.com with ESMTPSA id cz9sm7068103edb.18.2020.05.29.08.50.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2020 08:50:27 -0700 (PDT)
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>
+Cc:     linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org
+Subject: [PATCH 1/1] tty: serial: owl: Add support for kernel debugger
+Date:   Fri, 29 May 2020 18:50:25 +0300
+Message-Id: <6ee88060c129715980592a1ae33c93923916a14b.1590766726.git.cristian.ciocaltea@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200529144054.4251-10-Sergey.Semin@baikalelectronics.ru>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 05:40:52PM +0300, Serge Semin wrote:
-> According to the DW APB DMAC data book the minimum burst transaction
-> length is 1 and it's true for any version of the controller since
-> isn't parametrised in the coreAssembler so can't be changed at the
-> IP-core synthesis stage. The maximum burst transaction can vary from
-> channel to channel and from controller to controller depending on a
-> IP-core parameter the system engineer activated during the IP-core
-> synthesis. Let's initialise both min_burst and max_burst members of the
-> DMA controller descriptor with extreme values so the DMA clients could
-> use them to properly optimize the DMA requests. The channels and
-> controller-specific max_burst length initialization will be introduced
-> by the follow-up patches.
+Implement poll_put_char and poll_get_char callbacks in struct uart_ops
+that enables OWL UART to be used for KGDB debugging over serial line.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+---
+ drivers/tty/serial/owl-uart.c | 45 ++++++++++++++++++++++++++++++-----
+ 1 file changed, 39 insertions(+), 6 deletions(-)
 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: linux-mips@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> 
-> ---
-> 
-> Changelog v4:
-> - This is a new patch suggested by Andy.
-> 
-> Changelog v5:
-> - Introduce macro with extreme min and max burst length supported by the
->   DW DMA controller.
-> - Initialize max_burst length capability with extreme burst length supported
->   by the DW DMAC IP-core.
-> ---
->  drivers/dma/dw/core.c                | 2 ++
->  include/linux/platform_data/dma-dw.h | 2 ++
->  2 files changed, 4 insertions(+)
-> 
-> diff --git a/drivers/dma/dw/core.c b/drivers/dma/dw/core.c
-> index ceded21537e2..4887aa2fc73c 100644
-> --- a/drivers/dma/dw/core.c
-> +++ b/drivers/dma/dw/core.c
-> @@ -1229,6 +1229,8 @@ int do_dma_probe(struct dw_dma_chip *chip)
->  	dw->dma.device_issue_pending = dwc_issue_pending;
->  
->  	/* DMA capabilities */
-> +	dw->dma.min_burst = DW_DMA_MIN_BURST;
-> +	dw->dma.max_burst = DW_DMA_MAX_BURST;
->  	dw->dma.src_addr_widths = DW_DMA_BUSWIDTHS;
->  	dw->dma.dst_addr_widths = DW_DMA_BUSWIDTHS;
->  	dw->dma.directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV) |
-> diff --git a/include/linux/platform_data/dma-dw.h b/include/linux/platform_data/dma-dw.h
-> index f3eaf9ec00a1..369e41e9dcc9 100644
-> --- a/include/linux/platform_data/dma-dw.h
-> +++ b/include/linux/platform_data/dma-dw.h
-> @@ -12,6 +12,8 @@
->  
->  #define DW_DMA_MAX_NR_MASTERS	4
->  #define DW_DMA_MAX_NR_CHANNELS	8
-> +#define DW_DMA_MIN_BURST	1
-> +#define DW_DMA_MAX_BURST	256
->  
->  /**
->   * struct dw_dma_slave - Controller-specific information about a slave
-> -- 
-> 2.26.2
-> 
-
+diff --git a/drivers/tty/serial/owl-uart.c b/drivers/tty/serial/owl-uart.c
+index c2fa2f15d50a..26dcc374dec5 100644
+--- a/drivers/tty/serial/owl-uart.c
++++ b/drivers/tty/serial/owl-uart.c
+@@ -12,6 +12,7 @@
+ #include <linux/console.h>
+ #include <linux/delay.h>
+ #include <linux/io.h>
++#include <linux/iopoll.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
+@@ -20,13 +21,13 @@
+ #include <linux/tty.h>
+ #include <linux/tty_flip.h>
+ 
+-#define OWL_UART_PORT_NUM 7
+-#define OWL_UART_DEV_NAME "ttyOWL"
++#define OWL_UART_PORT_NUM		7
++#define OWL_UART_DEV_NAME		"ttyOWL"
+ 
+-#define OWL_UART_CTL	0x000
+-#define OWL_UART_RXDAT	0x004
+-#define OWL_UART_TXDAT	0x008
+-#define OWL_UART_STAT	0x00c
++#define OWL_UART_CTL			0x000
++#define OWL_UART_RXDAT			0x004
++#define OWL_UART_TXDAT			0x008
++#define OWL_UART_STAT			0x00c
+ 
+ #define OWL_UART_CTL_DWLS_MASK		GENMASK(1, 0)
+ #define OWL_UART_CTL_DWLS_5BITS		(0x0 << 0)
+@@ -461,6 +462,34 @@ static void owl_uart_config_port(struct uart_port *port, int flags)
+ 	}
+ }
+ 
++#ifdef CONFIG_CONSOLE_POLL
++
++static int owl_uart_poll_get_char(struct uart_port *port)
++{
++	u32 c = NO_POLL_CHAR;
++
++	if (!(owl_uart_read(port, OWL_UART_STAT) & OWL_UART_STAT_RFEM))
++		c = owl_uart_read(port, OWL_UART_RXDAT);
++
++	return c;
++}
++
++static void owl_uart_poll_put_char(struct uart_port *port, unsigned char c)
++{
++	/* Wait while TX FIFO is full */
++	while (owl_uart_read(port, OWL_UART_STAT) & OWL_UART_STAT_TFFU)
++		cpu_relax();
++
++	/* Send the character out */
++	owl_uart_write(port, c, OWL_UART_TXDAT);
++
++	/* Wait for transmitter to become empty */
++	while (owl_uart_read(port, OWL_UART_STAT) & OWL_UART_STAT_TRFL_MASK)
++		cpu_relax();
++}
++
++#endif /* CONFIG_CONSOLE_POLL */
++
+ static const struct uart_ops owl_uart_ops = {
+ 	.set_mctrl = owl_uart_set_mctrl,
+ 	.get_mctrl = owl_uart_get_mctrl,
+@@ -476,6 +505,10 @@ static const struct uart_ops owl_uart_ops = {
+ 	.request_port = owl_uart_request_port,
+ 	.release_port = owl_uart_release_port,
+ 	.verify_port = owl_uart_verify_port,
++#ifdef CONFIG_CONSOLE_POLL
++	.poll_get_char	= owl_uart_poll_get_char,
++	.poll_put_char	= owl_uart_poll_put_char,
++#endif
+ };
+ 
+ #ifdef CONFIG_SERIAL_OWL_CONSOLE
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.26.2
 
