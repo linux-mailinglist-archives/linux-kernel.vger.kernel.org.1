@@ -2,106 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FDE41E8A0A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 23:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C49491E8A26
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 23:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728337AbgE2VaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 17:30:09 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:57710 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727947AbgE2VaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 17:30:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=EjeQ19nbXVFnrPaJuA6nByzgVYQHLpECzUkme2m6ZJg=; b=Bzs1i5FY6gDhqz5dw22fVgCH+5
-        yGk9i8r4QRg3Yv06muM526S+47nti+ir64nZJL6zuhg0sigIpX2JyXTpT3x8C1xh1w0DWaNg8xvLT
-        UqQssVPCzqYmKSnf1DW2g+BOvCiQ208FI873sP/WSlfk1KtXCjgAeh2eZ4N5Dyo/6x+A=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jemZk-003god-R6; Fri, 29 May 2020 23:30:00 +0200
-Date:   Fri, 29 May 2020 23:30:00 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Roelof Berg <rberg@berg-solutions.de>
-Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] lan743x: Added fixed link and RGMII support
-Message-ID: <20200529213000.GO869823@lunn.ch>
-References: <20200529193003.3717-1-rberg@berg-solutions.de>
+        id S1728407AbgE2Vh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 17:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728086AbgE2Vhz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 17:37:55 -0400
+X-Greylist: delayed 2331 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 29 May 2020 14:37:55 PDT
+Received: from cavan.codon.org.uk (cavan.codon.org.uk [IPv6:2a00:1098:0:80:1000:c:0:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5983BC03E969;
+        Fri, 29 May 2020 14:37:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=codon.org.uk; s=63138784; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=YPx1dfXvW+ZpSiTuV6jXC13OALT6CE29ww9A5tjGLrU=; b=egH9W/hhqtHW9AgPu/pu2D8F8
+        3rzNXyer2AJm6OpLVwb8C7WKIsxn34juTtE4lDQOeTQ1qpZXGpSZWFq7PNzbs1L/KgkIfDuqTP1Lf
+        gcLKpdMWPp0V15L/k0CsgAy6F8zZVmynWvMfTpoD3wS//+bmo7v4vM3Z+8eVPDaBePRvc=;
+Received: from mjg59 by cavan.codon.org.uk with local (Exim 4.89)
+        (envelope-from <mjg59@cavan.codon.org.uk>)
+        id 1jem5k-0007wb-6I; Fri, 29 May 2020 21:59:00 +0100
+Date:   Fri, 29 May 2020 21:59:00 +0100
+From:   Matthew Garrett <mjg59@srcf.ucam.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
+Subject: Re: Lost PCIe PME after a914ff2d78ce ("PCI/ASPM: Don't select
+ CONFIG_PCIEASPM by default")
+Message-ID: <20200529205900.whx3mxuvt6ijlqwg@srcf.ucam.org>
+References: <bdc33be8-1db6-b147-cbc4-90fa0dc3d999@gmail.com>
+ <20200529202135.GA461617@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200529193003.3717-1-rberg@berg-solutions.de>
+In-Reply-To: <20200529202135.GA461617@bjorn-Precision-5520>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: mjg59@cavan.codon.org.uk
+X-SA-Exim-Scanned: No (on cavan.codon.org.uk); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 09:30:02PM +0200, Roelof Berg wrote:
-> Microchip lan7431 is frequently connected to a phy. However, it
-> can also be directly connected to a MII remote peer without
-> any phy in between. For supporting such a phyless hardware setup
-> in Linux we utilized phylib, which supports a fixed-link
-> configuration via the device tree. And we added support for
-> defining the connection type R/GMII in the device tree.
-> 
-> New behavior:
-> -------------
-> . The automatic speed and duplex detection of the lan743x silicon
->   between mac and phy is disabled. Instead phylib is used like in
->   other typical Linux drivers. The usage of phylib allows to
->   specify fixed-link parameters in the device tree.
-> 
-> . The device tree entry phy-connection-type is supported now with
->   the modes RGMII or (G)MII (default).
-> 
-> Development state:
-> ------------------
-> . Tested with fixed-phy configurations. Not yet tested in normal
->   configurations with phy. Microchip kindly offered testing
->   as soon as the Corona measures allow this.
-> 
-> . All review findings of Andrew Lunn are included
-> 
-> Example:
-> --------
-> &pcie {
-> 	status = "okay";
-> 
-> 	host@0 {
-> 		reg = <0 0 0 0 0>;
-> 
-> 		#address-cells = <3>;
-> 		#size-cells = <2>;
-> 
-> 		ethernet@0 {
-> 			compatible = "weyland-yutani,noscom1", "microchip,lan743x";
-> 			status = "okay";
-> 			reg = <0 0 0 0 0>;
-> 			phy-connection-type = "rgmii";
-> 
-> 			fixed-link {
-> 				speed = <100>;
-> 				full-duplex;
-> 			};
-> 		};
-> 	};
-> };
-> 
-> Signed-off-by: Roelof Berg <rberg@berg-solutions.de>
+On Fri, May 29, 2020 at 03:21:35PM -0500, Bjorn Helgaas wrote:
 
-Hi Roelof
+> Yeah, that makes sense.  I can't remember the details, but I'm pretty
+> sure there's a reason why we ask for the whole set of things.  Seems
+> like it solved some problem.  I think Matthew Garrett might have been
+> involved in that.
 
-It looks like you took my suggestion as a basis. So i should give you:
+This was https://bugzilla.redhat.com/show_bug.cgi?id=638912 - some 
+firmware misbehaves unless you pass the same set of supported 
+functionality as Windows does.
 
-Signed-off-by: Andrew Lunn <andrew@lunn.ch>
-
-since i did not include one in my posting. I'm happy to see it helped,
-and fixed some other issues you were seeing.
-
-    Andrew
+-- 
+Matthew Garrett | mjg59@srcf.ucam.org
