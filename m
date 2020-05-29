@@ -2,109 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 140321E7842
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12F9E1E784B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726644AbgE2I1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 04:27:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40544 "EHLO
+        id S1726787AbgE2I1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 04:27:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgE2I1C (ORCPT
+        with ESMTP id S1726330AbgE2I1V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 04:27:02 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8826CC03E969
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 01:27:00 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id r15so2324306wmh.5
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 01:27:00 -0700 (PDT)
+        Fri, 29 May 2020 04:27:21 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B721C08C5C6
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 01:27:21 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id b6so1584533ljj.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 01:27:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=t01eFYsLCYMUh71LfaSG8m5mrKtEOYGphARGk4VMCAM=;
-        b=lv8wSlZ8RZbxv4EzSVhJKApyfdZ7Nh+/HRU+HHipFV78X0WwbyHNrNXRpz5EH6B++t
-         rgJH+656w6SCghD6FzHoThJhcaKOWNhRqehRcfLXOpyK2tmqPh2k37fl4zItPgWxHR6N
-         piQdqFalxkZGloVvY+akhG3uA4wIgZG+sEEJxkvdq3lx4GWKTQVx/YElTXAd+pc7fcj7
-         2X0SbguFhGiISftlDNtIiEhs0/mRtCXYhbj5Q70tyKk4QRInsa7g21CCaYLVj9F6dmlt
-         MfhCS7wbwjGBXDsuWfmvEjf9JqOlT6Wrew4ZO9MXzO9qSevqXxKkIShfSp6XlKninQCI
-         Cvtw==
+        bh=6UQE/mAll7rVLi4VPpwEHXC2IWoXCtROl3EiNZAwRO8=;
+        b=ycDzMQmtIxL6lDpp2m41RyTEW9DhzxlEQ9V9CAN9TJSEoRHJbfO+a3f7d9qf+hHNS4
+         Kj0KHIttMZI+Ag5l5vPWNv22AIBkAPezJI4Xs8zJWnZwuBHtoj0nxyFiwfGTwVO4Gx7Z
+         KSWUi4ruriRjaOsX7/QZbGC7JttB4VHY1U3OJERz07RVI7XBdkiqCe5N8idYvMfqnd/f
+         U1VdfT2SuGsi/mOL8p4NEghCog50AkMCEEOWLmUCB1KWUMYJYiHS98pQQjgM/RpENbQo
+         MM3wl4DT1UN2g6OjL+JVxa+uaVYP9f/c1ta3U91avAxHQTOomHOffmDovRTcjvd+pkb0
+         0PRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=t01eFYsLCYMUh71LfaSG8m5mrKtEOYGphARGk4VMCAM=;
-        b=DpuaRzRYohxQmpJqONFCSRLxuLGnYaUoxm1f56cWB0bGfriWhUH9Mo9p+CwYwP/Fbq
-         OOXJOX16pKQs0TCgYOR4Jx52GqTX27CD9Bb/r9PD7HZ9pIF3oB/kNr0xqD8TSIP3Xr0k
-         wBbliypIawoKonARbUel7ZY2dbLdRPScRWV0u2AH4JHTMGbaKQF1MceKbOQrjN7vc102
-         J6Q03YkXpkUT5JdS8zYWK8xI/PneRMTI6ld9P40a2wR0cCQ2cRUV6xk4ipfRv4whuaz9
-         upZFPMCdNxR333d7ZEwgirvUvPMmbg7VG7D/Wu+HWQpfsowa5IQvFZ1Jj7QP83GamR+Y
-         mt1w==
-X-Gm-Message-State: AOAM531RhTj1c1emlIwsnvV5qmS4pKfbyasg+tGKzGsCGNdPrJRtOqIH
-        55wnt0awq54sAsnZi4zycJ7vkA==
-X-Google-Smtp-Source: ABdhPJwQnfgPwNSZqbr6uVN9JRnU1eAWiaVFQT25mMZwuifAllPHXfm/vwdnHnTsmyOQBsz/JoesdA==
-X-Received: by 2002:a7b:cd04:: with SMTP id f4mr7741464wmj.118.1590740819317;
-        Fri, 29 May 2020 01:26:59 -0700 (PDT)
-Received: from localhost.localdomain (lfbn-nic-1-214-184.w2-15.abo.wanadoo.fr. [2.15.60.184])
-        by smtp.gmail.com with ESMTPSA id o20sm9208618wra.29.2020.05.29.01.26.57
+        bh=6UQE/mAll7rVLi4VPpwEHXC2IWoXCtROl3EiNZAwRO8=;
+        b=asUVzQ6HZe5670ls+4fsE4udtEgOPyeoy1NTOBIxoywlZXBldqK6xycFxLFNrsnenj
+         fQ9Iq+Cpeyb6vfqlZnFYOZVmApeAsT7DGcsOByLFqRXcpX0D/4FsG50uMegs9B+7+JMf
+         WFfI0zXvGI+1WO49PeLKx3/rFNjdHPlwnDra0PA8HWcsAhxAP2d4DqX+ULFEwWu3DqNT
+         x2P9Kqa9fBkZ3AgsaE4rlTUDSRdBYkVojjwNCVk+iyoZtINLvLttbSVC/PFHIE3xyvuQ
+         23gBuRzjpISpEfqd+uh6iHCQWezPKJUTl4pc3DDNs0fqgqLTSsbok/Y7fp0fG5gFCJgy
+         ui+g==
+X-Gm-Message-State: AOAM533nVaqtklzFARhQxhZlVtt2mYuSHUxd17k/yuxdfLt/h3iYn9l1
+        qp2VbueM5CzCCHPi8qlOSrOFm18tNC8=
+X-Google-Smtp-Source: ABdhPJwsoCOWGqkz3zk1Bc8knROHTezUnpe/8krWFSr26/RAH/a/Nb7QCfBniy0JZx6gbS+Mn08Y9w==
+X-Received: by 2002:a2e:750d:: with SMTP id q13mr185328ljc.448.1590740839237;
+        Fri, 29 May 2020 01:27:19 -0700 (PDT)
+Received: from localhost.localdomain ([176.59.41.83])
+        by smtp.gmail.com with ESMTPSA id y20sm1878450lji.31.2020.05.29.01.27.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 01:26:58 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Fabien Parent <fparent@baylibre.com>,
-        Stephane Le Provost <stephane.leprovost@mediatek.com>,
-        Pedro Tsai <pedro.tsai@mediatek.com>,
-        Andrew Perepech <andrew.perepech@mediatek.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        kbuild test robot <lkp@intel.com>
-Subject: [PATCH] net: ethernet: mtk-star-emac: remove unused variable
-Date:   Fri, 29 May 2020 10:26:48 +0200
-Message-Id: <20200529082648.19677-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.26.1
+        Fri, 29 May 2020 01:27:18 -0700 (PDT)
+From:   Maxim Uvarov <maxim.uvarov@linaro.org>
+To:     linux-kernel@vger.kernel.org, tee-dev@lists.linaro.org
+Cc:     peterhuewe@gmx.de, jarkko.sakkinen@linux.intel.com, jgg@ziepe.ca,
+        gregkh@linuxfoundation.org, jens.wiklander@linaro.org,
+        linux-integrity@vger.kernel.org, arnd@linaro.org,
+        sumit.garg@linaro.org, Maxim Uvarov <maxim.uvarov@linaro.org>
+Subject: [PATCHv5 0/3] optee: register drivers on optee bus
+Date:   Fri, 29 May 2020 11:26:58 +0300
+Message-Id: <20200529082701.13457-1-maxim.uvarov@linaro.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+v5: - removed pr_err and fix typos in description (Jarkko Sakkinen)
+    - added missed kfree in optee_open()
+v4: - sysfs entry is optee-ta-uuid (Jerome Forissier, Sumit Garg)
+    - added Documentation/ABI/testing/sysfs-bus-optee-devices (Greg Kroah-Hartman)
+v3: - support tee-suppicant restart (Jens Wiklander)
+    - description and comments (Jarkko Sakkinen)
+    - do not name optee drivers by index in sysfs (Sumit Garg)
+v2: - write TEE with capital letters.
+    - declare __optee_enumerate_device() as static.
 
-The desc pointer is set but not used. Remove it.
+Maxim Uvarov (3):
+  optee: do drivers initialization before and after tee-supplicant run
+  optee: use uuid for sysfs driver entry
+  tpm_ftpm_tee: register driver on TEE bus
 
-Reported-by: kbuild test robot <lkp@intel.com>
-Fixes: 8c7bd5a454ff ("net: ethernet: mtk-star-emac: new driver")
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/net/ethernet/mediatek/mtk_star_emac.c | 3 ---
- 1 file changed, 3 deletions(-)
+ .../ABI/testing/sysfs-bus-optee-devices       |  8 +++
+ MAINTAINERS                                   |  2 +
+ drivers/char/tpm/tpm_ftpm_tee.c               | 70 ++++++++++++++++---
+ drivers/tee/optee/core.c                      | 24 ++++++-
+ drivers/tee/optee/device.c                    | 23 +++---
+ drivers/tee/optee/optee_private.h             | 10 ++-
+ 6 files changed, 114 insertions(+), 23 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-optee-devices
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_star_emac.c b/drivers/net/ethernet/mediatek/mtk_star_emac.c
-index 8596ca0e60eb..7df35872c107 100644
---- a/drivers/net/ethernet/mediatek/mtk_star_emac.c
-+++ b/drivers/net/ethernet/mediatek/mtk_star_emac.c
-@@ -746,15 +746,12 @@ mtk_star_ring_free_skbs(struct mtk_star_priv *priv, struct mtk_star_ring *ring,
- 					   struct mtk_star_ring_desc_data *))
- {
- 	struct mtk_star_ring_desc_data desc_data;
--	struct mtk_star_ring_desc *desc;
- 	int i;
- 
- 	for (i = 0; i < MTK_STAR_RING_NUM_DESCS; i++) {
- 		if (!ring->dma_addrs[i])
- 			continue;
- 
--		desc = &ring->descs[i];
--
- 		desc_data.dma_addr = ring->dma_addrs[i];
- 		desc_data.skb = ring->skbs[i];
- 
 -- 
-2.26.1
+2.17.1
 
