@@ -2,95 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBF71E88CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5682B1E88C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728111AbgE2UUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 16:20:37 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:56210 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726975AbgE2UUg (ORCPT
+        id S1727951AbgE2US1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 16:18:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726878AbgE2US0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 16:20:36 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04TKC2gh052794;
-        Fri, 29 May 2020 20:17:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=cZAoPBZ5GxltMX66Hp611oXlcHnQvjlOfG4fyu8hV48=;
- b=QwXir7A9ZyhU/iRVvcwOU4nTZl3XZWDKFrFd9lyaTUKnG+4SemndF6de4DSoAUWJwvao
- DiRE6n9+LMDVnwYOVCrFrAcKp+e6x9cEZWMOcfYCWuTFW+YpVqinLnvCJrOyxXlZHSHJ
- wZuOyIFjIP4LMPxIvZwL6aAc+QjKzadjlYzI6JDKOi8eoEflQBDoyCKEi5dZa84frQb8
- jmwQIYzHvWk0QWbGI75oHfb+GnlMdlOTzhP4UiyfGKzfd9sj9zpDuwTRYPk/Vfiw5Cit
- o3BfsJ30XhmcCG4GJbGZ0aDOeUQPYrdakRsycxHjmi+jFLIW7y4peFQg6lT0BH60cFw+ Cw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 316u8rca4c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 29 May 2020 20:17:29 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04TKDjmb028513;
-        Fri, 29 May 2020 20:17:28 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 31a9kuqeta-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 29 May 2020 20:17:28 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04TKHPIH030039;
-        Fri, 29 May 2020 20:17:25 GMT
-Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 29 May 2020 13:17:25 -0700
-Date:   Fri, 29 May 2020 16:17:50 -0400
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Michel Lespinasse <walken@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        Liam Howlett <Liam.Howlett@oracle.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        David Rientjes <rientjes@google.com>,
-        Hugh Dickins <hughd@google.com>, Ying Han <yinghan@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [PATCH v6 08/12] mmap locking API: add MMAP_LOCK_INITIALIZER
-Message-ID: <20200529201750.64dy7mu7gtkwltvu@ca-dmjordan1.us.oracle.com>
-References: <20200520052908.204642-1-walken@google.com>
- <20200520052908.204642-9-walken@google.com>
+        Fri, 29 May 2020 16:18:26 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD13C03E969;
+        Fri, 29 May 2020 13:18:25 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id b27so3461447qka.4;
+        Fri, 29 May 2020 13:18:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IMNWvVI/SkfWrtqMWKu4366zhGU0Aa7OUZDeF0NtTRU=;
+        b=K8GCaJza/RAOi2tUOJ22ztmoK7ObfKpAKSkCVdc7JnqPXlxyrMOdjgjTFWcn+hPk2q
+         JuB4o4XZnK68jbUFdGC6Sx7sn/b2/3iUshPxRXxen5ZCmkeUTM469krXTPMdGU2lJHvn
+         qcN52uQrg1x6rqPGwFGtusfBd7s04LU8K5L34l/lZ9t3L68j6YykcwYC47AvGBsL6y8u
+         q/bc7faFPVacdibp6Ptuob9MR9up7o/jU5pGnCoBm9XffGsL08pzdGpYefi+pZEyEPUX
+         iVceom9ARpSMRfF3An3ziYD3wanHKOZ/f8KHMKINE7c2FFoFbkuW8NuStyarPyg02bx7
+         LGbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IMNWvVI/SkfWrtqMWKu4366zhGU0Aa7OUZDeF0NtTRU=;
+        b=eLuIuVE/x4VEhcSqjMq4u4mEl6jgOF6O5/1n8Dt6o4sK0PdkbiSuPPruoZB6SeEd39
+         Jx5lSac9is5SjmDkiHoNhrTWdn/mgLelGBgNY2bnv+j1nOUXgVCO2wIDxvdVhr3PW6lZ
+         SbKq4BRAacZbjEaPvWHaOVnuh5qSscG4mPSJZoyRHla+uUi0u+cjTssZtJo95r9ImL8m
+         Aruu03yhIX3qXTUl/pdHBXAU8SxSq7L1sfptlH0Lu58/7U5piVGZ93OegGNqBo1+THrx
+         nu84H+pcHtcqB0cU/krb/H4/DNVP21iUFmjEsvJ/M5je2/1W2pf/68qhFiCyYlCxlFpY
+         SYeg==
+X-Gm-Message-State: AOAM533UOnzgZisonH682+SJdFL4zkKpzsin4xhO/ThH4EWLmvYWrsyP
+        25MPrOcQo+wbvKTkYGAqS0vxfDCw3WKZNgVxrgE=
+X-Google-Smtp-Source: ABdhPJx27L/41HrHytn1rgWbhJdyXTCbPclzXuW4JKss+uDZOgFdyjGqQaiodREB4NWbAWLmW3xiOa001/hXuCXbT7k=
+X-Received: by 2002:a37:a89:: with SMTP id 131mr9317994qkk.92.1590783504644;
+ Fri, 29 May 2020 13:18:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200520052908.204642-9-walken@google.com>
-User-Agent: NeoMutt/20180716
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9636 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 adultscore=0
- mlxlogscore=974 malwarescore=0 spamscore=0 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005290149
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9636 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
- priorityscore=1501 spamscore=0 cotscore=-2147483648 suspectscore=0
- phishscore=0 clxscore=1011 mlxlogscore=999 bulkscore=0 adultscore=0
- lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005290149
+References: <20200528062408.547149-1-andriin@fb.com> <20200528225427.GA225299@google.com>
+ <CAEf4BzZ_g2RwOgaRL1Qa9yo-8dH4kpgNaBOWZznNxqxhJUM1aA@mail.gmail.com> <20200529173432.GC196085@google.com>
+In-Reply-To: <20200529173432.GC196085@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 29 May 2020 13:18:13 -0700
+Message-ID: <CAEf4BzaPoG1LhE3oi+eQ1_8wa4=V7gEc-Fk5-tRyeLRfCAu3Dg@mail.gmail.com>
+Subject: Re: [PATCH linux-rcu] docs/litmus-tests: add BPF ringbuf MPSC litmus tests
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>, parri.andrea@gmail.com,
+        will@kernel.org, Peter Ziljstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        Akira Yokosawa <akiyks@gmail.com>, dlustig@nvidia.com,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-arch@vger.kernel.org, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 10:29:04PM -0700, Michel Lespinasse wrote:
-> Define a new initializer for the mmap locking api.
-> Initially this just evaluates to __RWSEM_INITIALIZER as the API
-> is defined as wrappers around rwsem.
-> 
-> Signed-off-by: Michel Lespinasse <walken@google.com>
-> Reviewed-by: Laurent Dufour <ldufour@linux.ibm.com>
-> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+On Fri, May 29, 2020 at 10:34 AM Joel Fernandes <joel@joelfernandes.org> wrote:
+>
+> Hi Andrii,
+>
+> On Thu, May 28, 2020 at 10:50:30PM -0700, Andrii Nakryiko wrote:
+> > > [...]
+> > > > diff --git a/Documentation/litmus-tests/bpf-rb/bpf-rb+1p1c+bounded.litmus b/Documentation/litmus-tests/bpf-rb/bpf-rb+1p1c+bounded.litmus
+> > > > new file mode 100644
+> > > > index 000000000000..558f054fb0b4
+> > > > --- /dev/null
+> > > > +++ b/Documentation/litmus-tests/bpf-rb/bpf-rb+1p1c+bounded.litmus
+> > > > @@ -0,0 +1,91 @@
+> > > > +C bpf-rb+1p1c+bounded
+> > > > +
+> > > > +(*
+> > > > + * Result: Always
+> > > > + *
+> > > > + * This litmus test validates BPF ring buffer implementation under the
+> > > > + * following assumptions:
+> > > > + * - 1 producer;
+> > > > + * - 1 consumer;
+> > > > + * - ring buffer has capacity for only 1 record.
+> > > > + *
+> > > > + * Expectations:
+> > > > + * - 1 record pushed into ring buffer;
+> > > > + * - 0 or 1 element is consumed.
+> > > > + * - no failures.
+> > > > + *)
+> > > > +
+> > > > +{
+> > > > +     atomic_t dropped;
+> > > > +}
+> > > > +
+> > > > +P0(int *lenFail, int *len1, int *cx, int *px)
+> > > > +{
+> > > > +     int *rLenPtr;
+> > > > +     int rLen;
+> > > > +     int rPx;
+> > > > +     int rCx;
+> > > > +     int rFail;
+> > > > +
+> > > > +     rFail = 0;
+> > > > +
+> > > > +     rCx = smp_load_acquire(cx);
+> > > > +     rPx = smp_load_acquire(px);
+> > >
+> > > Is it possible for you to put some more comments around which ACQUIRE is
+> > > paired with which RELEASE? And, in general more comments around the reason
+> > > for a certain memory barrier and what pairs with what. In the kernel sources,
+> > > the barriers needs a comment anyway.
+>
+> This was the comment earlier that was missed.
 
-Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Right, I'll follow up extending kernel implementation comments, and
+will add some more to litmus tests.
+
+>
+> > > > +     if (rCx < rPx) {
+> > > > +             if (rCx == 0) {
+> > > > +                     rLenPtr = len1;
+> > > > +             } else {
+> > > > +                     rLenPtr = lenFail;
+> > > > +                     rFail = 1;
+> > > > +             }
+> > > > +
+> > > > +             rLen = smp_load_acquire(rLenPtr);
+> > > > +             if (rLen == 0) {
+> > > > +                     rFail = 1;
+> > > > +             } else if (rLen == 1) {
+> > > > +                     rCx = rCx + 1;
+> > > > +                     smp_store_release(cx, rCx);
+> > > > +             }
+> > > > +     }
+> > > > +}
+> > > > +
+> > > > +P1(int *lenFail, int *len1, spinlock_t *rb_lock, int *px, int *cx, atomic_t *dropped)
+> > > > +{
+> > > > +     int rPx;
+> > > > +     int rCx;
+> > > > +     int rFail;
+> > > > +     int *rLenPtr;
+> > > > +
+> > > > +     rFail = 0;
+> > > > +
+> > > > +     rCx = smp_load_acquire(cx);
+> > > > +     spin_lock(rb_lock);
+> > > > +
+> > > > +     rPx = *px;
+> > > > +     if (rPx - rCx >= 1) {
+> > > > +             atomic_inc(dropped);
+> > >
+> > > Why does 'dropped' need to be atomic if you are always incrementing under a
+> > > lock?
+> >
+> > It doesn't, strictly speaking, but making it atomic in litmus test was
+> > just more convenient, especially that I initially also had a lock-less
+> > variant of this algorithm.
+>
+> Ok, that's fine.
+>
+> > >
+> > > > +             spin_unlock(rb_lock);
+> > > > +     } else {
+> > > > +             if (rPx == 0) {
+> > > > +                     rLenPtr = len1;
+> > > > +             } else {
+> > > > +                     rLenPtr = lenFail;
+> > > > +                     rFail = 1;
+> > > > +             }
+> > > > +
+> > > > +             *rLenPtr = -1;
+> > >
+> > > Clarify please the need to set the length intermittently to -1. Thanks.
+> >
+> > This corresponds to setting a "busy bit" in kernel implementation.
+> > These litmus tests are supposed to be correlated with in-kernel
+> > implementation, I'm not sure I want to maintain extra 4 copies of
+> > comments here and in kernel code. Especially for 2-producer cases,
+> > there are 2 identical P1 and P2, which is unfortunate, but I haven't
+> > figured out how to have a re-usable pieces of code with litmus tests
+> > :)
+>
+> I disagree that comments related to memory ordering are optional. IMHO, the
+> documentation should be clear from a memory ordering standpoint. After all,
+> good Documentation/ always clarifies something / some concept to the reader
+> right? :-) Please have mercy on me, I am just trying to learn *your*
+> Documentation ;-)
+
+My point was that reading litmus test without also reading ringbuf
+implementation is pointless and is harder than necessary. I'll add few
+comments to litmus tests, but ultimately I view kernel implementation
+as the source of truth and litmus test as a simplified model of it. So
+having extensive comments in litmus test is just a maintenance burden
+and more chance to get confusing, out-of-sync documentation.
+
+>
+> > > > diff --git a/Documentation/litmus-tests/bpf-rb/bpf-rb+2p1c+bounded.litmus b/Documentation/litmus-tests/bpf-rb/bpf-rb+2p1c+bounded.litmus
+> [...]
+> > > > +P1(int *lenFail, int *len1, spinlock_t *rb_lock, int *px, int *cx, atomic_t *dropped)
+> > > > +{
+> > > > +     int rPx;
+> > > > +     int rCx;
+> > > > +     int rFail;
+> > > > +     int *rLenPtr;
+> > > > +
+> > > > +     rFail = 0;
+> > > > +     rLenPtr = lenFail;
+> > > > +
+> > > > +     rCx = smp_load_acquire(cx);
+> > > > +     spin_lock(rb_lock);
+> > > > +
+> > > > +     rPx = *px;
+> > > > +     if (rPx - rCx >= 1) {
+> > > > +             atomic_inc(dropped);
+> > > > +             spin_unlock(rb_lock);
+> > > > +     } else {
+> > > > +             if (rPx == 0) {
+> > > > +                     rLenPtr = len1;
+> > > > +             } else if (rPx == 1) {
+> > > > +                     rLenPtr = len1;
+> > > > +             } else {
+> > > > +                     rLenPtr = lenFail;
+> > > > +                     rFail = 1;
+> > > > +             }
+> > > > +
+> > > > +             *rLenPtr = -1;
+> > > > +             smp_store_release(px, rPx + 1);
+> > > > +
+> > > > +             spin_unlock(rb_lock);
+> > > > +
+> > > > +             smp_store_release(rLenPtr, 1);
+> > >
+> > > I ran a test replacing the last 2 statements above with the following and it
+> > > still works:
+> > >
+> > >                 spin_unlock(rb_lock);
+> > >                 WRITE_ONCE(*rLenPtr, 1);
+> > >
+> > > Wouldn't you expect the test to catch an issue? The spin_unlock is already a
+> > > RELEASE barrier.
+> >
+> > Well, apparently it's not an issue and WRITE_ONCE would work as well
+> > :) My original version actually used WRITE_ONCE here. See [0] and
+> > discussion in [1] after which I removed all the WRITE_ONCE/READ_ONCE
+> > in favor of store_release/load_acquire for consistency.
+> >
+> >   [0] https://patchwork.ozlabs.org/project/netdev/patch/20200513192532.4058934-3-andriin@fb.com/
+> >   [1] https://patchwork.ozlabs.org/project/netdev/patch/20200513192532.4058934-2-andriin@fb.com/
+>
+> Huh. So you are replacing the test to use WRITE_ONCE instead? Why did you
+> favor the acquire/release memory barriers over the _ONCE annotations, if that
+> was not really needed then?
+
+I replaced WRITE_ONCE with store_release. There was a request on
+initial version to keep it simple and use store_release/load_acquire
+pairings consistently and not mix up WRITE_ONCE and load_acquire, so
+that's what I did. As I mentioned elsewhere, this might not be the
+weakest possible set of orderings and we might improve that, but it
+seems to work well.
+
+>
+> > > Suggestion: It is hard to review the patch because it is huge, it would be
+> > > good to split this up into 4 patches for each of the tests. But upto you :)
+> >
+> > Those 4 files are partial copies of each other, not sure splitting
+> > them actually would be easier. If anyone else thinks the same, though,
+> > I'll happily split.
+>
+> I personally disagree. It would be much easier IMHO to review 4 different
+> files since some of them are also quite dissimilar. I frequently keep jumping
+> between diffs to find a different file and it makes the review that much
+> harder. But anything the LKMM experts decide in this regard is acceptable to me :)
+>
+> thanks,
+>
+>  - Joel
+>
