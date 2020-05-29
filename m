@@ -2,409 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 760521E77E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E5D1E77E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726115AbgE2IIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 04:08:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgE2IIP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 04:08:15 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EFAC08C5C6
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 01:08:14 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id r15so2248274wmh.5
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 01:08:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=BYoKb1ZwXWdA+/acuUHerHojHOVMSLm9UoOs8rK8P7o=;
-        b=pR97UXMokn5/7AKmtWLhqI2zPd3m5nxtQrLP0K+peMwlVkfDXQel32fLQDAgxRe4KQ
-         /Zf9hAYPmggR4mxL5DuTeZ/IR07dHhrigVJr+Kzw3vNenxlJkvte16gqRkIPgcjlIOqq
-         ba8zerCOMXMriHCJ9lQIIxZRVbrq8pRMXPugw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=BYoKb1ZwXWdA+/acuUHerHojHOVMSLm9UoOs8rK8P7o=;
-        b=iJ0Ljy/aYxfKf4n9+3ZDcUJPuR1IsXh7pRMK/XfLw1i3Ez3D3JJBBJOw8jM77cNeXU
-         NmROguNyjIGDuNyQSDuLgYC+YZ8i5Pczp0YIZYRtLyL49yOxvCtEtEoAT0d7Htdv3Hr/
-         xv/AS6fqPhJT8LxSVfgzOcWp+su7EuPThhguIYGh4kV+n44ueJbnDJmkR9zvlvTnUOZH
-         LPeX4rgonVTR+Uq34oa+IjVS8p0PkfBWVORMIeMrY5845CsypRxn+t3qAiRSf6RCYnlz
-         +LkRf88CuzaSbl0pNXhl9ZkOeft4xQtH/S9TimtNKTjWrpixEAQIETPaki597P1CUBAa
-         H2bw==
-X-Gm-Message-State: AOAM5323x2S13y1FD4heGSVf6J4thScNVFcpt1vQpfTEPWM/iBbHIV4V
-        zhN/tLytpLlymLoDjopgcx4H3wN3Ggt9NqBScCCwEHpwS1s=
-X-Google-Smtp-Source: ABdhPJwTPvAwBYG4lusQc7e0OVF2pROXLDZsf1ei5tYHbTcyWgXI9TQ0RjasPhT2ECi/Jl+mmSI1Daj0Fr9sp9DnMaE=
-X-Received: by 2002:a1c:5411:: with SMTP id i17mr7675147wmb.137.1590739692897;
- Fri, 29 May 2020 01:08:12 -0700 (PDT)
+        id S1725971AbgE2IKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 04:10:45 -0400
+Received: from mail-eopbgr150089.outbound.protection.outlook.com ([40.107.15.89]:33299
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725601AbgE2IKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 04:10:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mch9I+bTQUAJmUX7PILbiP5ki/j1wogqx8fFRfbYUkP54eNcdNnYX/0yG8dn0C0PAmtie0OP3BFxijCDFr68jv4gWNx9UClZGkZsxqk20S6+4TwI6rGFcCY/SfK+z8rEQJ2MpypJ7ABr1Htcwxtsh9/XgU8k+apQbI68qC4YxD4c+UCfvjX1Hi/2bBb5ev7JLpeGj6N93l3VroPE8wYnKyAjhFEF5b65jMcOpeowQHkG9QC3U81dnFy7FFiLXd+dBMqoVkkMs0YkXx1bxSMpTp41C3Osf7O84lRnpsljSU8Ct0Ric+86Li/9a5LfaFKCLBTljA7H2NtvxhMtWVVp6A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=INJTwu/NoL99K72Pbudw9zikPywqiqhv0ifvdoUYjys=;
+ b=XVScsj0oG7qURpNQ52gNMgCs2FD+a+RrmDU00yCbAEAbM4y7gS4pMqjeNBXU1Pj/fmACmMFXoJFvGSf+HLNJ4tr3IfbcdY2UDjbtEsNdKeeYIETEXFa3yso/GTGSBHX74ak2KPfrb9LsKKgXg4Kl242gU77KaQH2VXlrU9Ylb+AlB/ZaQ47F9gq9tEfqgO/lZEisq47+mbQZwTnud3RmEvjUSjCkLezjFeGpClbnJeHszXxDfrZv3/lhHCP0+0kfXDea0DDRo6AEH9e5yiQ5pdT30uRn6lSC3G4oGoBrKsYwK+oFptHS4WThUMjeIr9orSBI9THMUKATZNkIiUIuVg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=INJTwu/NoL99K72Pbudw9zikPywqiqhv0ifvdoUYjys=;
+ b=Qrh4vtzX9bz6+6q6BDNot65QGco4sBE377K886Jywd6x9A7y3XpuDKtSuxy3COhLjVOGWk1EuMqHdKuDCI9vk8plQNXcmzGqbDpZ11KCrfmfDL/ferdMGAjEFiTIYeYsCe9a5N0IrfegjxL5O3iidJ0nB4qpjo6213/ALMbZdgo=
+Received: from AM7PR04MB7157.eurprd04.prod.outlook.com (2603:10a6:20b:118::20)
+ by AM7PR04MB6919.eurprd04.prod.outlook.com (2603:10a6:20b:10e::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19; Fri, 29 May
+ 2020 08:10:40 +0000
+Received: from AM7PR04MB7157.eurprd04.prod.outlook.com
+ ([fe80::1101:adaa:ee89:af2a]) by AM7PR04MB7157.eurprd04.prod.outlook.com
+ ([fe80::1101:adaa:ee89:af2a%3]) with mapi id 15.20.3045.018; Fri, 29 May 2020
+ 08:10:40 +0000
+From:   Peter Chen <peter.chen@nxp.com>
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+CC:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Robert Baldyga <r.baldyga@samsung.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] usb: gadget: f_acm: don't disable disabled EP
+Thread-Topic: [PATCH] usb: gadget: f_acm: don't disable disabled EP
+Thread-Index: AQHWNXESSGSOBa+W40WQH/z+ZHSm4ai+toSA
+Date:   Fri, 29 May 2020 08:10:40 +0000
+Message-ID: <20200529081104.GD32755@b29397-desktop>
+References: <237e4bc8c63680f9ce0388d35b4c34a856ed8595.1590690518.git.mirq-linux@rere.qmqm.pl>
+In-Reply-To: <237e4bc8c63680f9ce0388d35b4c34a856ed8595.1590690518.git.mirq-linux@rere.qmqm.pl>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: rere.qmqm.pl; dkim=none (message not signed)
+ header.d=none;rere.qmqm.pl; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.66]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: b5c9daaa-6e85-4166-3373-08d803a7c725
+x-ms-traffictypediagnostic: AM7PR04MB6919:
+x-microsoft-antispam-prvs: <AM7PR04MB6919D740A0D8D6044BBD90528B8F0@AM7PR04MB6919.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4502;
+x-forefront-prvs: 04180B6720
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: drvH21Cs8abN8B8PwxoRW/HMAtZ00OSLYw9bC4DXQO/7M04D4kfrg9HD4PIZPOnIG6J7lUvIwTr5aa+clLFVD9Z3mk9WXzt1TUGsSSV1VBLERwwspzs6zYTz2VN0UdPSQxieRikdT+QNpt22u+OcFpPxc3zIR0aLx1/dDcGUrpicnpUPniwNtBcmADe/Z6EqRO6T8wQPr8n0JWr0lbCjgQbYdCS9J/gKUTWMjNEC1rKhLZZwj/UvaaMwNI4cbWD05pZrogslx1S+aeQV8KvyKboSYWsrmh967NVXchDiqaY2BPkBMVIbLkO+jeJLHUK/
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB7157.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(7916004)(396003)(136003)(346002)(39860400002)(376002)(366004)(2906002)(83380400001)(66574014)(316002)(33716001)(186003)(44832011)(1076003)(26005)(53546011)(6506007)(86362001)(54906003)(478600001)(8936002)(8676002)(4326008)(66946007)(5660300002)(6916009)(91956017)(66556008)(9686003)(66446008)(66476007)(76116006)(33656002)(6512007)(64756008)(6486002)(71200400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: rYF9YAMfRZhSAi4dlWXHHqcByzyBpzdw1QAEck+hLQXs8hnYPvB1n896+ORI3ojiHdQaBQ5cTri5Q6FY8xz5A6KOyHy5kmHN2bSv90mFievblT+7p8UrV2N5ONaFYjDwYdJe71DdjHOebfEeanMtjWWeiL5XHuzdweNlAoVq2/xOFcfDI5YHjiOWJa8LBy5HBDuVCw25PF7CFK1yv6BB2JtybUsm3lb4DqfjGzEDth2DD2XriRPyfJEmViN/ZB1v6D5iCRPqm8Zvy9qbyjxbrkX+XA+y1dnUV0O9sTA6FK5Fz6HmSnkJwAXHg0jSq2OJmwOg5+KEWsZN/eKjZ4qamcM8z/6GabLFX3uNnFn2uzAM8VX2nJ1pNIS1wo02OPWJ2uUtQ4BhgD9zrmXewfjNSdrZQ/ZwoFpt/K0sEraTfy5ymBCgUSN/plmxIx2CatyuhYpRCKz2hqju3b/Lxyykhi6CIM3ZnXlFo6JsmZSuHi8=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2CD7FF03DACB70458D69354DA88D5E47@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-From:   Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
-Date:   Fri, 29 May 2020 10:08:01 +0200
-Message-ID: <CAOf5uw=DU4KdLXt=VEU+Uv3+W3jUMXE393FO3_v2smScR6Xf-Q@mail.gmail.com>
-Subject: linux-rt stall on imx6dl on patch-5.4.22-rt13.patch
-To:     LKML <linux-kernel@vger.kernel.org>, linux-rt-users@vger.kernel.org
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b5c9daaa-6e85-4166-3373-08d803a7c725
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 May 2020 08:10:40.7126
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: VKCfBtfoAU63Rz2SBgv4FO0CbNngVAINMVk24eExa+UT01fpLrqOtYf+PdHmIFxiEROs9gvH94L+wyXlWL+LDQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6919
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all
-
-I get this stack trace
-echo 3 > /proc/sys/vm/drop_caches chrt -f 99 sysbench --test=cpu --num-threads=2
-
-First of all, I need to know that if it is a valid use case because
-was raised by the testing team and
-how can I start and where to take a look at it
-
-Best Regards
-Michael
-
-[  161.709260] 001: sh (480): drop_caches: 3
-[  180.234358] 001: sched: RT throttling activated
-[  180.283363] 001: fec 2188000.ethernet eth0: MDIO read timeout
-[  180.283406] 001: ------------[ cut here ]------------
-[  180.283416] 001: WARNING: CPU: 1 PID: 133 at
-drivers/net/phy/phy.c:716 phy_er
-
-                                               ror+0x24/0x64
-[  180.283460] 001: Modules linked in:
-[  180.283473] 001: CPU: 1 PID: 133 Comm: kworker/1:2 Tainted: G
- W
-
-                          5.4.23-rt13 #1
-[  180.283494] 001: Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-[  180.283531] 001: Workqueue: events_power_efficient phy_state_machine
-[  180.283550] 001: [<c0113880>] (unwind_backtrace) from [<c010d498>]
-(show_stac
-
-                         k+0x10/0x14)
-[  180.283591] 001: [<c010d498>] (show_stack) from [<c0c95ee4>]
-(dump_stack+0xd4
-
-                               /0x108)
-[  180.283624] 001: [<c0c95ee4>] (dump_stack) from [<c0129588>]
-(__warn+0xc0/0x1
-
-                               0c)
-[  180.283657] 001: [<c0129588>] (__warn) from [<c0129998>]
-(warn_slowpath_fmt+0
-
-                                   x5c/0xc0)
-[  180.283680] 001: [<c0129998>] (warn_slowpath_fmt) from [<c07b3fcc>]
-(phy_erro
-
-                        r+0x24/0x64)
-[  180.283706] 001: [<c07b3fcc>] (phy_error) from [<c07b5198>]
-(phy_state_machin
-
-                                e+0x68/0x148)
-[  180.283727] 001: [<c07b5198>] (phy_state_machine) from [<c014b25c>]
-(process_
-
-                        one_work+0x2c8/0x884)
-[  180.283760] 001: [<c014b25c>] (process_one_work) from [<c014b844>]
-(worker_th
-
-                         read+0x2c/0x580)
-[  180.283785] 001: [<c014b844>] (worker_thread) from [<c0153790>]
-(kthread+0x13
-
-                            4/0x148)
-[  180.283815] 001: [<c0153790>] (kthread) from [<c01010bc>]
-(ret_from_fork+0x14
-
-                                  /0x38)
-[  180.283836] 001: Exception stack(0xd8873fb0 to 0xd8873ff8)
-[  180.283854] 001: 3fa0:                                     00000000
-00000000
-
-                        00000000 00000000
-[  180.283874] 001: 3fc0: 00000000 00000000 00000000 00000000 00000000
-00000000
-
-                        00000000 00000000
-[  180.283890] 001: 3fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-[  181.243070] 001: irq event stamp: 52613
-[  181.243094] 001: hardirqs last  enabled at (52615): [<c0c9d23c>]
-prb_unlock+0
-
-                           x84/0x94
-[  181.243134] 001: hardirqs last disabled at (52616): [<c0c9d138>]
-prb_lock+0xb
-
-                           4/0x134
-[  181.243151] 001: softirqs last  enabled at (42468): [<c0ab1f80>]
-addrconf_ver
-
-                           ify_rtnl+0x20c/0x620
-[  181.243180] 001: softirqs last disabled at (42461): [<c0ab1d88>]
-addrconf_ver
-
-                           ify_rtnl+0x14/0x620
-[  181.243196] 001: ---[ end trace 0000000000000005 ]---
-[  181.244845] 001: fec 2188000.ethernet eth0: Link is Down
-[  182.243188] 001: fec 2188000.ethernet eth0: MDIO read timeout
-[  205.253023] 001: rcu: INFO: rcu_preempt self-detected stall on CPU
-[  205.253041] 001: rcu:        1-...!: (2599 ticks this GP)
-idle=50a/0/0x1 softirq=0/0 fqs=0
-[  205.253060] 001:     (t=2600 jiffies g=7097 q=301)
-[  205.253061] 001: rcu: rcu_preempt kthread starved for 2600 jiffies!
-g7097 f0x0 RCU_GP_WAIT_FQS(5) ->st
-
-                        ate=0x0 ->cpu=0
-[  205.253071] 001: rcu: RCU grace-period kthread stack dump:
-[  205.253078] 001: rcu_preempt     R  running task        0    10
- 2 0x00000000
-[  205.253096] 001: [<c0cb23b4>] (__schedule) from [<c0cb2900>]
-(schedule+0x50/0xf8)
-[  205.253121] 001: [<c0cb2900>] (schedule) from [<c0cb5fe0>]
-(schedule_timeout+0x1bc/0x39c)
-[  205.253137] 001: [<c0cb5fe0>] (schedule_timeout) from [<c01ad90c>]
-(rcu_gp_kthread+0x764/0x246c)
-[  205.253160] 001: [<c01ad90c>] (rcu_gp_kthread) from [<c0153790>]
-(kthread+0x134/0x148)
-[  205.253176] 001: [<c0153790>] (kthread) from [<c01010bc>]
-(ret_from_fork+0x14/0x38)
-[  205.253190] 001: Exception stack(0xd80e7fb0 to 0xd80e7ff8)
-[  205.253198] 001: 7fa0:                                     00000000
-00000000 00000000 00000000
-[  205.253208] 001: 7fc0: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000
-[  205.253217] 001: 7fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-[  205.253231] 001: NMI backtrace for cpu 1
-[  205.253238] 001: CPU: 1 PID: 0 Comm: swapper/1 Tainted: G        W
-       5.4.23-rt13 #1
-[  205.253246] 001: Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-[  205.253253] 001: [<c0113880>] (unwind_backtrace) from [<c010d498>]
-(show_stack+0x10/0x14)
-[  205.253271] 001: [<c010d498>] (show_stack) from [<c0c95ee4>]
-(dump_stack+0xd4/0x108)
-[  205.253288] 001: [<c0c95ee4>] (dump_stack) from [<c0c9cc44>]
-(nmi_cpu_backtrace+0x74/0xac)
-[  205.253303] 001: [<c0c9cc44>] (nmi_cpu_backtrace) from [<c0c9cdc0>]
-(nmi_trigger_cpumask_backtrace+0x1
-
-                        44/0x1ac)
-[  205.253315] 001: [<c0c9cdc0>] (nmi_trigger_cpumask_backtrace) from
-[<c01b4678>] (rcu_dump_cpu_stacks+0
-
-                         x98/0xd0)
-[  205.253329] 001: [<c01b4678>] (rcu_dump_cpu_stacks) from
-[<c01b35d4>] (rcu_sched_clock_irq+0x824/0xb48
-
-                                   )
-[  205.253344] 001: [<c01b35d4>] (rcu_sched_clock_irq) from
-[<c01bc950>] (update_process_times+0x2c/0x60)
-[  205.253361] 001: [<c01bc950>] (update_process_times) from
-[<c01d31e0>] (tick_sched_timer+0x64/0xcc)
-[  205.253376] 001: [<c01d31e0>] (tick_sched_timer) from [<c01bd9c8>]
-(__hrtimer_run_queues+0x170/0x788)
-[  205.253388] 001: [<c01bd9c8>] (__hrtimer_run_queues) from
-[<c01bf378>] (hrtimer_interrupt+0x130/0x2d8)
-[  205.253400] 001: [<c01bf378>] (hrtimer_interrupt) from [<c01128b4>]
-(twd_handler+0x2c/0x38)
-[  205.253413] 001: [<c01128b4>] (twd_handler) from [<c019ab28>]
-(handle_percpu_devid_irq+0xf0/0x4dc)
-[  205.253429] 001: [<c019ab28>] (handle_percpu_devid_irq) from
-[<c01941d4>] (generic_handle_irq+0x20/0x3
-
-                               4)
-[  205.253446] 001: [<c01941d4>] (generic_handle_irq) from
-[<c0194818>] (__handle_domain_irq+0x8c/0x128)
-[  205.253457] 001: [<c0194818>] (__handle_domain_irq) from
-[<c0550d6c>] (gic_handle_irq+0x4c/0xa8)
-[  205.253473] 001: [<c0550d6c>] (gic_handle_irq) from [<c0101ab0>]
-(__irq_svc+0x70/0xc4)
-[  205.253483] 001: Exception stack(0xd80f9f10 to 0xd80f9f58)
-[  205.253491] 001: 9f00:                                     00000001
-00000006 00000000 d80ec600
-[  205.253501] 001: 9f20: 00000000 c1318854 c1401768 ca083cee c9ae857c
-0000002f dbbb2ab8 00000000
-[  205.253510] 001: 9f40: 00000000 d80f9f60 c0187400 c08c60bc 200d0113 ffffffff
-[  205.253516] 001: [<c0101ab0>] (__irq_svc) from [<c08c60bc>]
-(cpuidle_enter_state+0x168/0x6c0)
-[  205.253530] 001: [<c08c60bc>] (cpuidle_enter_state) from
-[<c08c6650>] (cpuidle_enter+0x28/0x38)
-[  205.253540] 001: [<c08c6650>] (cpuidle_enter) from [<c0164b00>]
-(do_idle+0x258/0x2e4)
-[  205.253553] 001: [<c0164b00>] (do_idle) from [<c0164ed8>]
-(cpu_startup_entry+0x18/0x20)
-[  205.253563] 001: [<c0164ed8>] (cpu_startup_entry) from [<1010296c>]
-(0x1010296c)
-[  227.234448] 000: mmc1: Timeout waiting for hardware interrupt.
-[  227.234472] 000: mmc1: sdhci: ============ SDHCI REGISTER DUMP ===========
-[  227.234486] 000: mmc1: sdhci: Sys addr:  0x18e7d800 | Version:  0x00000002
-[  227.234502] 000: mmc1: sdhci: Blk size:  0x00000200 | Blk cnt:  0x00000000
-[  227.234515] 000: mmc1: sdhci: Argument:  0x000570bc | Trn mode: 0x0000003b
-[  227.234527] 000: mmc1: sdhci: Present:   0x01fd8008 | Host ctl: 0x00000013
-[  227.234539] 000: mmc1: sdhci: Power:     0x00000002 | Blk gap:  0x00000080
-[  227.234550] 000: mmc1: sdhci: Wake-up:   0x00000008 | Clock:    0x0000001f
-[  227.234560] 000: mmc1: sdhci: Timeout:   0x0000008f | Int stat: 0x00000003
-[  227.234570] 000: mmc1: sdhci: Int enab:  0x117f100b | Sig enab: 0x117f100b
-[  227.234582] 000: mmc1: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000103
-[  227.234593] 000: mmc1: sdhci: Caps:      0x07eb0000 | Caps_1:   0x0000a000
-[  227.234606] 000: mmc1: sdhci: Cmd:       0x0000123a | Max curr: 0x00ffffff
-[  227.234617] 000: mmc1: sdhci: Resp[0]:   0x00000900 | Resp[1]:  0xffffffff
-[  227.234629] 000: mmc1: sdhci: Resp[2]:   0x320f5903 | Resp[3]:  0x00000900
-[  227.234640] 000: mmc1: sdhci: Host ctl2: 0x00000000
-[  227.234650] 000: mmc1: sdhci: ADMA Err:  0x00000000 | ADMA Ptr: 0x2c047208
-[  227.234661] 000: mmc1: sdhci: ============================================
-[  283.293246] 001: rcu: INFO: rcu_preempt self-detected stall on CPU
-[  283.293276] 001: rcu:        1-...!: (10403 ticks this GP)
-idle=77a/1/0x40000002 softirq=0/0 fqs=0
-[  283.293313] 001:     (t=10404 jiffies g=7097 q=827)
-[  283.293316] 001: rcu: rcu_preempt kthread starved for 10404
-jiffies! g7097 f0x0 RCU_GP_WAIT_FQS(5) ->s
-
-                                tate=0x0 ->cpu=0
-[  283.293336] 001: rcu: RCU grace-period kthread stack dump:
-[  283.293350] 001: rcu_preempt     R  running task        0    10
- 2 0x00000000
-[  283.293381] 001: [<c0cb23b4>] (__schedule) from [<c0cb2900>]
-(schedule+0x50/0xf8)
-[  283.293430] 001: [<c0cb2900>] (schedule) from [<c0cb5fe0>]
-(schedule_timeout+0x1bc/0x39c)
-[  283.293460] 001: [<c0cb5fe0>] (schedule_timeout) from [<c01ad90c>]
-(rcu_gp_kthread+0x764/0x246c)
-[  283.293500] 001: [<c01ad90c>] (rcu_gp_kthread) from [<c0153790>]
-(kthread+0x134/0x148)
-[  283.293533] 001: [<c0153790>] (kthread) from [<c01010bc>]
-(ret_from_fork+0x14/0x38)
-[  283.293556] 001: Exception stack(0xd80e7fb0 to 0xd80e7ff8)
-[  283.293574] 001: 7fa0:                                     00000000
-00000000 00000000 00000000
-[  283.293593] 001: 7fc0: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000
-[  283.293610] 001: 7fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-[  283.293634] 001: NMI backtrace for cpu 1
-[  283.293647] 001: CPU: 1 PID: 484 Comm: sysbench Tainted: G        W
-        5.4.23-rt13 #1
-[  283.293662] 001: Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-[  283.293676] 001: [<c0113880>] (unwind_backtrace) from [<c010d498>]
-(show_stack+0x10/0x14)
-[  283.293713] 001: [<c010d498>] (show_stack) from [<c0c95ee4>]
-(dump_stack+0xd4/0x108)
-[  283.293743] 001: [<c0c95ee4>] (dump_stack) from [<c0c9cc44>]
-(nmi_cpu_backtrace+0x74/0xac)
-[  283.293772] 001: [<c0c9cc44>] (nmi_cpu_backtrace) from [<c0c9cdc0>]
-(nmi_trigger_cpumask_backtrace+0x1
-
-                        44/0x1ac)
-[  283.293795] 001: [<c0c9cdc0>] (nmi_trigger_cpumask_backtrace) from
-[<c01b4678>] (rcu_dump_cpu_stacks+0
-
-                         x98/0xd0)
-[  283.293829] 001: [<c01b4678>] (rcu_dump_cpu_stacks) from
-[<c01b35d4>] (rcu_sched_clock_irq+0x824/0xb48
-
-                                   )
-[  283.293852] 001: [<c01b35d4>] (rcu_sched_clock_irq) from
-[<c01bc950>] (update_process_times+0x2c/0x60)
-[  283.293887] 001: [<c01bc950>] (update_process_times) from
-[<c01d31e0>] (tick_sched_timer+0x64/0xcc)
-[  283.293914] 001: [<c01d31e0>] (tick_sched_timer) from [<c01bd9c8>]
-(__hrtimer_run_queues+0x170/0x788)
-[  283.293939] 001: [<c01bd9c8>] (__hrtimer_run_queues) from
-[<c01bf378>] (hrtimer_interrupt+0x130/0x2d8)
-[  283.293962] 001: [<c01bf378>] (hrtimer_interrupt) from [<c01128b4>]
-(twd_handler+0x2c/0x38)
-[  283.293988] 001: [<c01128b4>] (twd_handler) from [<c019ab28>]
-(handle_percpu_devid_irq+0xf0/0x4dc)
-[  283.294016] 001: [<c019ab28>] (handle_percpu_devid_irq) from
-[<c01941d4>] (generic_handle_irq+0x20/0x3
-
-                               4)
-[  283.294045] 001: [<c01941d4>] (generic_handle_irq) from
-[<c0194818>] (__handle_domain_irq+0x8c/0x128)
-[  283.294069] 001: [<c0194818>] (__handle_domain_irq) from
-[<c0550d6c>] (gic_handle_irq+0x4c/0xa8)
-[  283.294096] 001: [<c0550d6c>] (gic_handle_irq) from [<c0101ef4>]
-(__irq_usr+0x54/0x80)
-[  283.294116] 001: Exception stack(0xd8da7fb0 to 0xd8da7ff8)
-[  283.294134] 001: 7fa0:                                     00000332
-00000000 000010c0 00000004
-[  283.294154] 001: 7fc0: 00000860 00000000 00000006 b6f42d68 00000199
-00000000 00002710 00000666
-[  283.294174] 001: 7fe0: 00000000 b6f42d44 004547bd 004548f0 800d0030 ffffffff
-[  361.323392] 001: rcu: INFO: rcu_preempt self-detected stall on CPU
-[  361.323420] 001: rcu:        1-...!: (18206 ticks this GP)
-idle=a96/1/0x40000002 softirq=0/0 fqs=0
-[  361.323456] 001:     (t=18207 jiffies g=7097 q=1165)
-[  361.323459] 001: rcu: rcu_preempt kthread starved for 18207
-jiffies! g7097 f0x0 RCU_GP_WAIT_FQS(5) ->s
-
-                                tate=0x0 ->cpu=0
-[  361.323479] 001: rcu: RCU grace-period kthread stack dump:
-[  361.323491] 001: rcu_preempt     R  running task        0    10
- 2 0x00000000
-[  361.323523] 001: [<c0cb23b4>] (__schedule) from [<c0cb2900>]
-(schedule+0x50/0xf8)
-[  361.323571] 001: [<c0cb2900>] (schedule) from [<c0cb5fe0>]
-(schedule_timeout+0x1bc/0x39c)
-[  361.323600] 001: [<c0cb5fe0>] (schedule_timeout) from [<c01ad90c>]
-(rcu_gp_kthread+0x764/0x246c)
-[  361.323639] 001: [<c01ad90c>] (rcu_gp_kthread) from [<c0153790>]
-(kthread+0x134/0x148)
-[  361.323671] 001: [<c0153790>] (kthread) from [<c01010bc>]
-(ret_from_fork+0x14/0x38)
-[  361.323692] 001: Exception stack(0xd80e7fb0 to 0xd80e7ff8)
-[  361.323711] 001: 7fa0:                                     00000000
-00000000 00000000 00000000
-[  361.323730] 001: 7fc0: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000
-[  361.323747] 001: 7fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-[  361.323770] 001: NMI backtrace for cpu 1
-[  361.323783] 001: CPU: 1 PID: 484 Comm: sysbench Tainted: G        W
-        5.4.23-rt13 #1
-[  361.323798] 001: Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-[  361.323812] 001: [<c0113880>] (unwind_backtrace) from [<c010d498>]
-(show_stack+0x10/0x14)
-[  361.323850] 001: [<c010d498>] (show_stack) from [<c0c95ee4>]
-(dump_stack+0xd4/0x108)
-[  361.323879] 001: [<c0c95ee4>] (dump_stack) from [<c0c9cc44>]
-(nmi_cpu_backtrace+0x74/0xac)
-[  361.323906] 001: [<c0c9cc44>] (nmi_cpu_backtrace) from [<c0c9cdc0>]
-(nmi_trigger_cpumask_backtrace+0x1
-
-                        44/0x1ac)
-[  361.323929] 001: [<c0c9cdc0>] (nmi_trigger_cpumask_backtrace) from
-[<c01b4678>] (rcu_dump_cpu_stacks+0
-
-                         x98/0xd0)
-[  361.323960] 001: [<c01b4678>] (rcu_dump_cpu_stacks) from
-[<c01b35d4>] (rcu_sched_clock_irq+0x824/0xb48
-
-                                   )
-[  361.323985] 001: [<c01b35d4>] (rcu_sched_clock_irq) from
-[<c01bc950>] (update_process_times+0x2c/0x60)
-[  361.324018] 001: [<c01bc950>] (update_process_times) from
-[<c01d31e0>] (tick_sched_timer+0x64/0xcc)
-[  361.324047] 001: [<c01d31e0>] (tick_sched_timer) from [<c01bd9c8>]
-(__hrtimer_run_queues+0x170/0x788)
-[  361.324070] 001: [<c01bd9c8>] (__hrtimer_run_queues) from
-[<c01bf378>] (hrtimer_interrupt+0x130/0x2d8)
-[  361.324094] 001: [<c01bf378>] (hrtimer_interrupt) from [<c01128b4>]
-(twd_handler+0x2c/0x38)
-[  361.324119] 001: [<c01128b4>] (twd_handler) from [<c019ab28>]
-(handle_percpu_devid_irq+0xf0/0x4dc)
-[  361.324146] 001: [<c019ab28>] (handle_percpu_devid_irq) from
-[<c01941d4>] (generic_handle_irq+0x20/0x3
-
-                               4)
-[  361.324175] 001: [<c01941d4>] (generic_handle_irq) from
-[<c0194818>] (__handle_domain_irq+0x8c/0x128)
-[  361.324200] 001: [<c0194818>] (__handle_domain_irq) from
-[<c0550d6c>] (gic_handle_irq+0x4c/0xa8)
-[  361.324227] 001: [<c0550d6c>] (gic_handle_irq) from [<c0101ef4>]
-(__irq_usr+0x54/0x80)
-[  361.324249] 001: Exception stack(0xd8da7fb0 to 0xd8da7ff8)
-[  361.324264] 001: 7fa0:                                     00000e76
-00000000 00000000 00000000
-[  361.324283] 001: 7fc0: 00000800 00000000 0000000a b6f42d68 0000073b
-00000000 00002710 00000003
-[  361.324301] 001: 7fe0: 00000000 b6f42d44 004547bd 00454918 600d0030 ffffffff
+T24gMjAtMDUtMjggMjA6MzA6MjgsIE1pY2hhxYIgTWlyb3PFgmF3IHdyb3RlOg0KPiBNYWtlIGRl
+YnVnZ2luZyByZWFsIHByb2JsZW1zIGVhc2llciBieSBub3QgdHJ5aW5nIHRvIGRpc2FibGUgYW4g
+RVAgdGhhdA0KPiB3YXMgbm90IHlldCBlbmFibGVkLg0KPiANCj4gRml4ZXM6IDRhYWI3NTdjYTQ0
+YSAoInVzYjogZ2FkZ2V0OiBmX2FjbTogZWxpbWluYXRlIGFidXNlIG9mIGVwLT5kcml2ZXIgZGF0
+YSIpDQo+IFNpZ25lZC1vZmYtYnk6IE1pY2hhxYIgTWlyb3PFgmF3IDxtaXJxLWxpbnV4QHJlcmUu
+cW1xbS5wbD4NCj4gLS0tDQo+ICBkcml2ZXJzL3VzYi9nYWRnZXQvZnVuY3Rpb24vZl9hY20uYyB8
+IDggKysrKystLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKyksIDMgZGVsZXRp
+b25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvZ2FkZ2V0L2Z1bmN0aW9uL2Zf
+YWNtLmMgYi9kcml2ZXJzL3VzYi9nYWRnZXQvZnVuY3Rpb24vZl9hY20uYw0KPiBpbmRleCAyMDA1
+OTZlYTk1NTcuLjQ2NjQ3YmZhYzJlZiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy91c2IvZ2FkZ2V0
+L2Z1bmN0aW9uL2ZfYWNtLmMNCj4gKysrIGIvZHJpdmVycy91c2IvZ2FkZ2V0L2Z1bmN0aW9uL2Zf
+YWNtLmMNCj4gQEAgLTQyNSw5ICs0MjUsMTEgQEAgc3RhdGljIGludCBhY21fc2V0X2FsdChzdHJ1
+Y3QgdXNiX2Z1bmN0aW9uICpmLCB1bnNpZ25lZCBpbnRmLCB1bnNpZ25lZCBhbHQpDQo+ICAJLyog
+d2Uga25vdyBhbHQgPT0gMCwgc28gdGhpcyBpcyBhbiBhY3RpdmF0aW9uIG9yIGEgcmVzZXQgKi8N
+Cj4gIA0KPiAgCWlmIChpbnRmID09IGFjbS0+Y3RybF9pZCkgew0KPiAtCQlkZXZfdmRiZygmY2Rl
+di0+Z2FkZ2V0LT5kZXYsDQo+IC0JCQkJInJlc2V0IGFjbSBjb250cm9sIGludGVyZmFjZSAlZFxu
+IiwgaW50Zik7DQo+IC0JCXVzYl9lcF9kaXNhYmxlKGFjbS0+bm90aWZ5KTsNCj4gKwkJaWYgKGFj
+bS0+bm90aWZ5LT5lbmFibGVkKSB7DQo+ICsJCQlkZXZfdmRiZygmY2Rldi0+Z2FkZ2V0LT5kZXYs
+DQo+ICsJCQkJCSJyZXNldCBhY20gY29udHJvbCBpbnRlcmZhY2UgJWRcbiIsIGludGYpOw0KPiAr
+CQkJdXNiX2VwX2Rpc2FibGUoYWNtLT5ub3RpZnkpOw0KPiArCQl9DQoNCkJ1dCBpdCBkb2VzIG5v
+dCBmaXggYW55IGlzc3VlcywgdGhlIHVzYl9lcF9kaXNhYmxlIGNoZWNrcyAnZW5hYmxlZCcgZmxh
+Zy4NCg0KLS0gDQoNClRoYW5rcywNClBldGVyIENoZW4=
