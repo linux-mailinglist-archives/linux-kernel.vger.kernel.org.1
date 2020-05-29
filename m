@@ -2,209 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCDE21E8897
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A4B1E88A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728194AbgE2UJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 16:09:25 -0400
-Received: from mail-mw2nam10olkn2051.outbound.protection.outlook.com ([40.92.42.51]:2561
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728129AbgE2UJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 16:09:21 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I+k6F+88SLsJ1XiiC8uezPJAbUiDl7pEK9+f5phe63BsQkL67crGtaMqJoJQ4OMFmVRKhlG9hR0JnEEIGieOFx8xUPG2ndoMCaXbxcHD7auQJnSWN/HvImKaEC1aQgxze8PjPz3SX4rH9GXkxMRoIJYO+mP+ZeSF5e9XLaWWvctHKIy6axuQUkpZeVGwS25XEdHzLwABKzIDusEOg1Rw76OmI6M+XOJs8X8CnDCN4+XIsnqhMExT7t5w4N/T8rC07N8A+R1IjlH+y8yo4vlJvS5dSTVEmNRUlmY4akkjF44cKrk/Pog7EX3hOuterjBUwJHJpCehbggz34n3+rcyXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HoUEN1Q51FMql/RJqg3AP0EGPRI+p/TiK3KN6QT/5QA=;
- b=L7zDW0fUM5WXh8KeSxFU8blybNIyHMNA7QUdqT8fnH9GW8oLt6/1FmacW/HHgGmyHZ/77PhqC8mHA7/GeUtQP0aj94UvDuhYsljleVmf50lwz7i9Pz/v467dXrGc25Rf2kb3wvfuPUQN9Dyk0qltEEbTSTfmxrCKBgVBUNi2MeHmZ0s3+QzOK9f2R/Gz8UotJtoVjP628dwmQBJqwr3EtbQPgcFome374W538VHqjFQgw8/gJzOiOHxkJibNmZErxkqmBrPNIiR1MKZwSzJC1Lua4IKDN9qx9TeaIu3mWOM29wJEtjhGrGIdYhXtnRZh0ZpbFWLvJjudKUOloIK0+w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=live.ca; dmarc=pass action=none header.from=live.ca; dkim=pass
- header.d=live.ca; arc=none
-Received: from MW2NAM10FT034.eop-nam10.prod.protection.outlook.com
- (2a01:111:e400:7e87::48) by
- MW2NAM10HT028.eop-nam10.prod.protection.outlook.com (2a01:111:e400:7e87::189)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.23; Fri, 29 May
- 2020 20:09:19 +0000
-Received: from BN6PR04MB0660.namprd04.prod.outlook.com
- (2a01:111:e400:7e87::46) by MW2NAM10FT034.mail.protection.outlook.com
- (2a01:111:e400:7e87::231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.23 via Frontend
- Transport; Fri, 29 May 2020 20:09:19 +0000
-X-IncomingTopHeaderMarker: OriginalChecksum:F99B700F028E17DB1267AE68D1D09D364DE28EE78191EE13614794A9736C2306;UpperCasedChecksum:5C838F50370674E09656C0FA6359DA35D9CD8CF126345E879CA53DD9B7254A6E;SizeAsReceived:8288;Count:50
-Received: from BN6PR04MB0660.namprd04.prod.outlook.com
- ([fe80::ad10:4127:4bc8:76fc]) by BN6PR04MB0660.namprd04.prod.outlook.com
- ([fe80::ad10:4127:4bc8:76fc%6]) with mapi id 15.20.3045.018; Fri, 29 May 2020
- 20:09:18 +0000
-Subject: Re: [PATCH 3/3] power: supply: max17040: Set rcomp value
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org
-References: <20200504221300.3153-1-xc-racer2@live.ca>
- <BN6PR04MB066057B881DEFC0C48208589A3A60@BN6PR04MB0660.namprd04.prod.outlook.com>
- <20200528170230.62c7jvmyjkhpoykj@earth.universe>
-From:   Jonathan Bakker <xc-racer2@live.ca>
-Message-ID: <BN6PR04MB0660773C4CBAA1CB72D3DB25A38F0@BN6PR04MB0660.namprd04.prod.outlook.com>
-Date:   Fri, 29 May 2020 13:09:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-In-Reply-To: <20200528170230.62c7jvmyjkhpoykj@earth.universe>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MWHPR2201CA0038.namprd22.prod.outlook.com
- (2603:10b6:301:16::12) To BN6PR04MB0660.namprd04.prod.outlook.com
- (2603:10b6:404:d9::21)
-X-Microsoft-Original-Message-ID: <15e6ac50-5401-42f0-84aa-92966ba0e452@live.ca>
+        id S1728147AbgE2UKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 16:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727909AbgE2UKN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 16:10:13 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6874FC08C5C8
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 13:10:13 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id cx22so1985298pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 13:10:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k7qHvXfcLPRZW70K7Ww/JQ6soXN2aoKEcSnKsZaACQ8=;
+        b=rA1iDF4cxWswt0lv0uHlY+uj0PwqyydW9Hl5I7McjaeNHZJKz0ZygAaboXj/U2ht30
+         y2ULlnvIxq6MDVNsTjDkNOFjR1JSA5d5SBfoPXABzylMSTthpT7+q9N3HPGz9PgPwGyZ
+         CQoPKryj/6EDRYpQB9Cpf11oPsTZ3w7wERmEPav8OzvOOGmxzdorJMEixMoE+CPh9pkz
+         syG6gr+MXyy0Da16pEbd8wlay8tQs0K781mdz01Vdv6/cw4tDvJjzoR6HBCpESBy8O91
+         Sy8MKKumihPyI7/7J9ZaDHgIuuWMV6AfmKVUM1Sjf/Skt15oJXKdfCFhBSDnn99tyaZZ
+         FPVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k7qHvXfcLPRZW70K7Ww/JQ6soXN2aoKEcSnKsZaACQ8=;
+        b=HfIGqvo0kClniw7FX7N/VgiyBNQ8ToKItf1VrMbCz4cQ/Bi5tJ1JL9JXpCO091iCLD
+         VCnufhNtRfUvHGewSDlHLsLhIWD7YDFH+uRI9bYV/RLuncCvUkY2KZbOYqcnbeqRzB7K
+         ZiMhujH2UbNixJCBkjQUk1Qt/reDVGoufGZ7QkZZE5PyxXVBtlnrndAFONlu/XSD50Js
+         jCURtPVvfk1OXLg/2xs8AAmPr7NncPIpGYsrkpzlmGBvUA10tRM/RTAyh7tY3qzoAy1U
+         fPLQcwM+eiM+o4YjumAwOrJ2JU080SenWr5qFU2F4D7GIP36rfjt0Ho+XMlZaoxm550+
+         jqGA==
+X-Gm-Message-State: AOAM5320rf2TtSkkyNldqhieI9t+i8/7GWhAR/3uDxvxDa+MC1H5Q3QZ
+        kq2WTdINA5mpWxnVaSvywlHF7XN0zRl7XESVnlArfQ==
+X-Google-Smtp-Source: ABdhPJy30fvJvxwOhhkKSQc9ffBy+TdLVAL9sT6NZV9vZ2l2Hs9OoasuCB9wOwp5cBkDAKJV8S4bHPrLYKexH5C/g/g=
+X-Received: by 2002:a17:90a:4e8c:: with SMTP id o12mr10331146pjh.25.1590783012476;
+ Fri, 29 May 2020 13:10:12 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2001:569:fb68:9c00:8067:f823:1e15:7520] (2001:569:fb68:9c00:8067:f823:1e15:7520) by MWHPR2201CA0038.namprd22.prod.outlook.com (2603:10b6:301:16::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17 via Frontend Transport; Fri, 29 May 2020 20:09:17 +0000
-X-Microsoft-Original-Message-ID: <15e6ac50-5401-42f0-84aa-92966ba0e452@live.ca>
-X-TMN:  [CZtDKXxy0GeRm2v2TrxY29cCSgpjdJSxhhZE0A9hpyBCno/gFgY45cZbWF9ggbh9]
-X-MS-PublicTrafficType: Email
-X-IncomingHeaderCount: 50
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-Correlation-Id: df0e2a99-9ed7-46da-fa6a-08d8040c2b14
-X-MS-TrafficTypeDiagnostic: MW2NAM10HT028:
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KrJ7J4EzC4JURgmy1wAgnyyJUeOMKvOa/OGWI1uHpvxRQ0gL6R27rQaLoWSbjkpxfkOc+LaRPPOIlFjHhACm70YXPKXBxXCNJ3PnoamKZNPAWQGQvCLRou+7IPMBKNkPjucKMKv1t1qcgSrOPdbtJPQfunh0k7fF1yi9F7pAVjvMFBRIzPYs1X69Do25rCDULlVYw0342YWWJKbGESQ2SI5jQBWVY2NI18rshWC05dECbLosfN8KGTYPJVFEviyX
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:0;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR04MB0660.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:;DIR:OUT;SFP:1901;
-X-MS-Exchange-AntiSpam-MessageData: PPmpHMFz+ncIO3mi4BGpqvWOISk4GMPlfc7o9u57n64Vd6E4OWb2rOa3yn7bkVSjEqRlCZFza5GS2hKudYOz3LuP/H8badguiK6ko+jUq7piYaMWYa2TpC+GGGqpHGcfnvP0KgO/WB7fDKcCji/KuqcOn2IulpMZWSzpq7B7WgJ+SsABGQ9ieXwrKbjOLMZGUAB3FNdm66tG6HjHIgT5gw==
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: df0e2a99-9ed7-46da-fa6a-08d8040c2b14
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 May 2020 20:09:18.8965
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2NAM10HT028
+References: <20200529200347.2464284-1-keescook@chromium.org> <20200529200347.2464284-2-keescook@chromium.org>
+In-Reply-To: <20200529200347.2464284-2-keescook@chromium.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 29 May 2020 13:10:01 -0700
+Message-ID: <CAKwvOdn_gFaBbvdMDu9WuuzOyjZXxv4kJMGdO-71r-0Nz0wi5Q@mail.gmail.com>
+Subject: Re: [PATCH 1/4] lkdtm: Avoid more compiler optimizations for bad writes
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sebastian,
+On Fri, May 29, 2020 at 1:03 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> It seems at least Clang is able to throw away writes it knows are
+> destined for read-only memory, which makes things like the WRITE_RO test
+> fail, as the write gets elided. Instead, force the variable to be
 
-I'm sorry, I messed up my rebase on top of the low battery alert and it somehow
-slipped through my pre-submit checklist.
+Heh, yep.  I recall the exact patch in LLVM causing build breakages
+for kernels and various parts of Android userspace within the past
+year, for code that tried to write to variables declared const through
+casts that removed the const. (Was the last patch for us to build MIPS
+IIRC).  Doing so is explicitly UB.  I did feel that that particular
+"optimization" was very specific to C/C++, and should not have been
+performed in LLVM (which should be more agnostic to the front end
+language's wacky rules, IMO) but rather Clang (which doesn't do much
+C/C++ language specific optimizations currently, though there are
+rough plans forming to change that).
 
-Before resubmitting, do you want the rcomp changed in any manner (where the
-datasheet doesn't specify if its the full 16 bits or only 8 bites for max17040
-but does for the later max17043/max77836 where its only 8 bits)?
+> volatile, and make similar changes through-out other tests in an effort
+> to avoid needing to repeat fixing these kinds of problems. Also includes
+> pr_err() calls in failure paths so that kernel logs are more clear in
+> the failure case.
+>
+> Reported-by: Prasad Sodagudi <psodagud@codeaurora.org>
+> Suggested-by: Sami Tolvanen <samitolvanen@google.com>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  drivers/misc/lkdtm/bugs.c     | 11 +++++------
+>  drivers/misc/lkdtm/perms.c    | 22 +++++++++++++++-------
+>  drivers/misc/lkdtm/usercopy.c |  7 +++++--
+>  3 files changed, 25 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/misc/lkdtm/bugs.c b/drivers/misc/lkdtm/bugs.c
+> index 886459e0ddd9..e1b43f615549 100644
+> --- a/drivers/misc/lkdtm/bugs.c
+> +++ b/drivers/misc/lkdtm/bugs.c
+> @@ -118,9 +118,8 @@ noinline void lkdtm_CORRUPT_STACK(void)
+>         /* Use default char array length that triggers stack protection. */
+>         char data[8] __aligned(sizeof(void *));
+>
+> -       __lkdtm_CORRUPT_STACK(&data);
+> -
+> -       pr_info("Corrupted stack containing char array ...\n");
+> +       pr_info("Corrupting stack containing char array ...\n");
+> +       __lkdtm_CORRUPT_STACK((void *)&data);
+>  }
+>
+>  /* Same as above but will only get a canary with -fstack-protector-strong */
+> @@ -131,9 +130,8 @@ noinline void lkdtm_CORRUPT_STACK_STRONG(void)
+>                 unsigned long *ptr;
+>         } data __aligned(sizeof(void *));
+>
+> -       __lkdtm_CORRUPT_STACK(&data);
+> -
+> -       pr_info("Corrupted stack containing union ...\n");
+> +       pr_info("Corrupting stack containing union ...\n");
+> +       __lkdtm_CORRUPT_STACK((void *)&data);
+>  }
+>
+>  void lkdtm_UNALIGNED_LOAD_STORE_WRITE(void)
+> @@ -248,6 +246,7 @@ void lkdtm_ARRAY_BOUNDS(void)
+>
+>         kfree(not_checked);
+>         kfree(checked);
+> +       pr_err("FAIL: survived array bounds overflow!\n");
+>  }
+>
+>  void lkdtm_CORRUPT_LIST_ADD(void)
+> diff --git a/drivers/misc/lkdtm/perms.c b/drivers/misc/lkdtm/perms.c
+> index 62f76d506f04..2dede2ef658f 100644
+> --- a/drivers/misc/lkdtm/perms.c
+> +++ b/drivers/misc/lkdtm/perms.c
+> @@ -57,6 +57,7 @@ static noinline void execute_location(void *dst, bool write)
+>         }
+>         pr_info("attempting bad execution at %px\n", func);
+>         func();
+> +       pr_err("FAIL: func returned\n");
+>  }
+>
+>  static void execute_user_location(void *dst)
+> @@ -75,20 +76,22 @@ static void execute_user_location(void *dst)
+>                 return;
+>         pr_info("attempting bad execution at %px\n", func);
+>         func();
+> +       pr_err("FAIL: func returned\n");
+>  }
+>
+>  void lkdtm_WRITE_RO(void)
+>  {
+> -       /* Explicitly cast away "const" for the test. */
+> -       unsigned long *ptr = (unsigned long *)&rodata;
+> +       /* Explicitly cast away "const" for the test and make volatile. */
+> +       volatile unsigned long *ptr = (unsigned long *)&rodata;
+>
+>         pr_info("attempting bad rodata write at %px\n", ptr);
+>         *ptr ^= 0xabcd1234;
+> +       pr_err("FAIL: survived bad write\n");
+>  }
+>
+>  void lkdtm_WRITE_RO_AFTER_INIT(void)
+>  {
+> -       unsigned long *ptr = &ro_after_init;
+> +       volatile unsigned long *ptr = &ro_after_init;
+>
+>         /*
+>          * Verify we were written to during init. Since an Oops
+> @@ -102,19 +105,21 @@ void lkdtm_WRITE_RO_AFTER_INIT(void)
+>
+>         pr_info("attempting bad ro_after_init write at %px\n", ptr);
+>         *ptr ^= 0xabcd1234;
+> +       pr_err("FAIL: survived bad write\n");
+>  }
+>
+>  void lkdtm_WRITE_KERN(void)
+>  {
+>         size_t size;
+> -       unsigned char *ptr;
+> +       volatile unsigned char *ptr;
+>
+>         size = (unsigned long)do_overwritten - (unsigned long)do_nothing;
+>         ptr = (unsigned char *)do_overwritten;
+>
+>         pr_info("attempting bad %zu byte write at %px\n", size, ptr);
+> -       memcpy(ptr, (unsigned char *)do_nothing, size);
+> +       memcpy((void *)ptr, (unsigned char *)do_nothing, size);
+>         flush_icache_range((unsigned long)ptr, (unsigned long)(ptr + size));
+> +       pr_err("FAIL: survived bad write\n");
+>
+>         do_overwritten();
+>  }
+> @@ -193,9 +198,11 @@ void lkdtm_ACCESS_USERSPACE(void)
+>         pr_info("attempting bad read at %px\n", ptr);
+>         tmp = *ptr;
+>         tmp += 0xc0dec0de;
+> +       pr_err("FAIL: survived bad read\n");
+>
+>         pr_info("attempting bad write at %px\n", ptr);
+>         *ptr = tmp;
+> +       pr_err("FAIL: survived bad write\n");
+>
+>         vm_munmap(user_addr, PAGE_SIZE);
+>  }
+> @@ -203,19 +210,20 @@ void lkdtm_ACCESS_USERSPACE(void)
+>  void lkdtm_ACCESS_NULL(void)
+>  {
+>         unsigned long tmp;
+> -       unsigned long *ptr = (unsigned long *)NULL;
+> +       volatile unsigned long *ptr = (unsigned long *)NULL;
+>
+>         pr_info("attempting bad read at %px\n", ptr);
+>         tmp = *ptr;
+>         tmp += 0xc0dec0de;
+> +       pr_err("FAIL: survived bad read\n");
+>
+>         pr_info("attempting bad write at %px\n", ptr);
+>         *ptr = tmp;
+> +       pr_err("FAIL: survived bad write\n");
+>  }
+>
+>  void __init lkdtm_perms_init(void)
+>  {
+>         /* Make sure we can write to __ro_after_init values during __init */
+>         ro_after_init |= 0xAA;
+> -
+>  }
+> diff --git a/drivers/misc/lkdtm/usercopy.c b/drivers/misc/lkdtm/usercopy.c
+> index e172719dd86d..b833367a45d0 100644
+> --- a/drivers/misc/lkdtm/usercopy.c
+> +++ b/drivers/misc/lkdtm/usercopy.c
+> @@ -304,19 +304,22 @@ void lkdtm_USERCOPY_KERNEL(void)
+>                 return;
+>         }
+>
+> -       pr_info("attempting good copy_to_user from kernel rodata\n");
+> +       pr_info("attempting good copy_to_user from kernel rodata: %px\n",
+> +               test_text);
+>         if (copy_to_user((void __user *)user_addr, test_text,
+>                          unconst + sizeof(test_text))) {
+>                 pr_warn("copy_to_user failed unexpectedly?!\n");
+>                 goto free_user;
+>         }
+>
+> -       pr_info("attempting bad copy_to_user from kernel text\n");
+> +       pr_info("attempting bad copy_to_user from kernel text: %px\n",
+> +               vm_mmap);
+>         if (copy_to_user((void __user *)user_addr, vm_mmap,
+>                          unconst + PAGE_SIZE)) {
+>                 pr_warn("copy_to_user failed, but lacked Oops\n");
+>                 goto free_user;
+>         }
+> +       pr_err("FAIL: survived bad copy_to_user()\n");
+>
+>  free_user:
+>         vm_munmap(user_addr, PAGE_SIZE);
+> --
+> 2.25.1
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200529200347.2464284-2-keescook%40chromium.org.
 
-Thanks and sorry for the issues,
-Jonathan
 
-On 2020-05-28 10:02 a.m., Sebastian Reichel wrote:
-> Hi,
-> 
-> This patch does not even compile, how did you test it?
-> 
-> -- Sebastian
-> 
-> On Mon, May 04, 2020 at 03:13:00PM -0700, Jonathan Bakker wrote:
->> According to the datasheet (1), the rcomp parameter can
->> vary based on the typical operating temperature and the
->> battery chemistry.  If provided, make sure we set it after
->> we reset the chip on boot.
->>
->> 1) https://datasheets.maximintegrated.com/en/ds/MAX17040-MAX17041.pdf
->>
->> Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
->> ---
->>  drivers/power/supply/max17040_battery.c | 33 +++++++++++++++++++++----
->>  1 file changed, 28 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/power/supply/max17040_battery.c b/drivers/power/supply/max17040_battery.c
->> index 48aa44665e2f..f66e2fdc0a8a 100644
->> --- a/drivers/power/supply/max17040_battery.c
->> +++ b/drivers/power/supply/max17040_battery.c
->> @@ -10,6 +10,7 @@
->>  #include <linux/init.h>
->>  #include <linux/platform_device.h>
->>  #include <linux/mutex.h>
->> +#include <linux/property.h>
->>  #include <linux/err.h>
->>  #include <linux/i2c.h>
->>  #include <linux/delay.h>
->> @@ -31,6 +32,8 @@
->>  
->>  #define MAX17040_ATHD_MASK		0xFFC0
->>  #define MAX17040_ATHD_DEFAULT_POWER_UP	4
->> +#define MAX17040_RCOMP_MASK		0xFF
->> +#define MAX17040_RCOMP_DEFAULT_POWER_UP	0x97
->>  
->>  struct max17040_chip {
->>  	struct i2c_client		*client;
->> @@ -48,6 +51,8 @@ struct max17040_chip {
->>  	int status;
->>  	/* Low alert threshold from 32% to 1% of the State of Charge */
->>  	u32 low_soc_alert;
->> +	/* Optimization for specific chemistries */
->> +	u8 rcomp_value;
->>  };
->>  
->>  static int max17040_get_property(struct power_supply *psy,
->> @@ -119,6 +124,20 @@ static int max17040_set_low_soc_alert(struct i2c_client *client, u32 level)
->>  	return ret;
->>  }
->>  
->> +static int max17040_set_rcomp(struct i2c_client *client, u32 val)
->> +{
->> +	int ret;
->> +	u16 data;
->> +
->> +	data = max17040_read_reg(client, MAX17040_RCOMP);
->> +	/* clear the rcomp val and set MSb 8 bits */
->> +	data &= MAX17040_RCOMP_MASK;
->> +	data |= val << 8;
->> +	ret = max17040_write_reg(client, MAX17040_RCOMP, data);
->> +
->> +	return ret;
->> +}
->> +
->>  static void max17040_get_vcell(struct i2c_client *client)
->>  {
->>  	struct max17040_chip *chip = i2c_get_clientdata(client);
->> @@ -190,8 +209,14 @@ static int max17040_get_of_data(struct max17040_chip *chip)
->>  				 "maxim,alert-low-soc-level",
->>  				 &chip->low_soc_alert);
->>  
->> -	if (chip->low_soc_alert <= 0 || chip->low_soc_alert >= 33)
->> +	if (chip->low_soc_alert <= 0 || chip->low_soc_alert >= 33) {
->> +		dev_err(&client->dev,
->> +			"failed: low SOC alert OF data out of bounds\n");
->>  		return -EINVAL;
->> +	}
->> +
->> +	chip->rcomp_value = MAX17040_RCOMP_DEFAULT_POWER_UP;
->> +	device_property_read_u8(dev, "maxim,rcomp-value", &chip->rcomp_value);
->>  
->>  	return 0;
->>  }
->> @@ -289,11 +314,8 @@ static int max17040_probe(struct i2c_client *client,
->>  	chip->client = client;
->>  	chip->pdata = client->dev.platform_data;
->>  	ret = max17040_get_of_data(chip);
->> -	if (ret) {
->> -		dev_err(&client->dev,
->> -			"failed: low SOC alert OF data out of bounds\n");
->> +	if (ret)
->>  		return ret;
->> -	}
->>  
->>  	i2c_set_clientdata(client, chip);
->>  	psy_cfg.drv_data = chip;
->> @@ -307,6 +329,7 @@ static int max17040_probe(struct i2c_client *client,
->>  
->>  	max17040_reset(client);
->>  	max17040_get_version(client);
->> +	max17040_set_rcomp(client, chip->rcomp_value);
->>  
->>  	/* check interrupt */
->>  	if (client->irq && of_device_is_compatible(client->dev.of_node,
->> -- 
->> 2.20.1
+
+-- 
+Thanks,
+~Nick Desaulniers
