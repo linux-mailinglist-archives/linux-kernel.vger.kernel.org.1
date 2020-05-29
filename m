@@ -2,109 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B041E8882
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:05:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4791E887F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728258AbgE2UFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 16:05:46 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:52561 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726926AbgE2UFp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 16:05:45 -0400
-Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MV5nC-1jXVkY25l0-00S3kf; Fri, 29 May 2020 22:05:32 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] cpuidle/firmware: qcom: fix smcc dependencies
-Date:   Fri, 29 May 2020 22:04:53 +0200
-Message-Id: <20200529200531.31738-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.2
+        id S1728224AbgE2UFP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 May 2020 16:05:15 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2258 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726926AbgE2UFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 16:05:13 -0400
+Received: from lhreml715-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 9206CE851D406A4F47D9;
+        Fri, 29 May 2020 21:05:11 +0100 (IST)
+Received: from lhreml715-chm.china.huawei.com (10.201.108.66) by
+ lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Fri, 29 May 2020 21:05:11 +0100
+Received: from lhreml715-chm.china.huawei.com ([10.201.108.66]) by
+ lhreml715-chm.china.huawei.com ([10.201.108.66]) with mapi id 15.01.1913.007;
+ Fri, 29 May 2020 21:05:11 +0100
+From:   Shiju Jose <shiju.jose@huawei.com>
+To:     "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "helgaas@kernel.org" <helgaas@kernel.org>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "zhangliguang@linux.alibaba.com" <zhangliguang@linux.alibaba.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>
+CC:     Linuxarm <linuxarm@huawei.com>, yangyicong <yangyicong@huawei.com>
+Subject: RE: [PATCH v8 0/2] ACPI / APEI: Add support to notify the vendor
+ specific HW errors
+Thread-Topic: [PATCH v8 0/2] ACPI / APEI: Add support to notify the vendor
+ specific HW errors
+Thread-Index: AQHWNeBR/m4tj2cJW0qFvUY6/34P2qi/fFmg
+Date:   Fri, 29 May 2020 20:05:10 +0000
+Message-ID: <78a6dfbe246b4dbbbdd9534f87638f86@huawei.com>
+References: <20200529173854.2521-1-shiju.jose@huawei.com>
+In-Reply-To: <20200529173854.2521-1-shiju.jose@huawei.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.47.91.30]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:pIXF1xkXVTVFBDyEqcTIFQgUCSi0dC6StFHWCV7m9FMXRoiGaeT
- ZJJh7Ijz/XkAnssfaKOXaaAKXZ6EFNH10fWbZARu9gxcCFsr4GLd/UhWRve3RCCTZyNf+RS
- 4NgUCqW/YhGpz+TmJiOjbXs0KLGIybhNYrXJ8CfivTL5bEwyV3Ig9kqozJ80C68AIOEaZUT
- L0qRp0hTu95Xmj9rXffDQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Q7DYwVUAYas=:fcAKWDbA6tZN1ckkwOCGDG
- mUt1yZCkCa7p3QlBzlYKZ+P/ZidmpiGo3c47Q0BoAGKCamyxZdXF/1MARJAXbpyvNXcxnobB0
- SwVOLUvnVbdaEG7FKQ1pbOR5laSFXOmdTacYbOeoicdFt9+PHZJLVMootmQgGwnDBQQZsFrDS
- wJALx2S4eTKMMzq/+5hTV7tiDEuIl4w1d3lgMo2X4RfTJaFGt/wHQCPf8KS8Wxo4MW0tlcnSc
- 6SCffJLa2WJtYVQLjQNNtPjnsfTMtClwziADXXh+H5pVafl9YH2KMktZah+QHseWf9XXBktR8
- hY68ftvoz4Azu87IhraTiVbXbYBtDsxr7IS58VSIFf9aKt3LsiZxNF6iBh8p57UG3psUS98+G
- D93ZCB/cT3bvy3qOHKInx6ZAA33nt6Xi/F4qjom3Gn/LEsEd2LrKe3JUZFIXtfbyHf/tenCXY
- oZYYVaJ0781u6sUAC0/LGjlwB7r4KQ89Vsfn4RX9pYmYUFa2tEpm46h0N1vRfVbDFlfYHmVY2
- q12S/EERIKeXFlA9R+/nrGf+F5uQpnGwB8LzXtGdkLhVvg0czCoRSPG94kULWTXGtOO4Ti7n9
- kjjqlRno5xmbPNNMgCmpTfUYKAyNWxVfXd5w0mLyA/axBDzitNzFaKbZ6gXiFyjUWhNEQMSEp
- PRavV2sYxg1n94t0rXL436OP22euWlbr0bjeD4lvVyOK3iQxdmxTf6kuFyB5ey/knLbnDY99x
- tXhJE+f8l41Et4H+s1smB3XAnAEJpm4KZB5mPAd9iZFwyXmPzfRJXqhBgKailWk8oxIr2iG79
- MxMqrrgbKJFuA2fglLm7HnIXgVjXb+pfpscxKDWpAMQmkcE0xE=
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Selecting QCOM_SCM for compile-tests is broken when the smcc firmware
-is not provided:
+Please ignore this patch set. Resending soon.
 
-drivers/firmware/qcom_scm-smc.o: in function `scm_smc_call':
-qcom_scm-smc.c:(.text+0x110): undefined reference to `__arm_smccc_smc'
-drivers/firmware/qcom_scm-legacy.o: in function `scm_legacy_call':
-qcom_scm-smc.c:(.text+0x1bc): undefined reference to `__arm_smccc_smc'
+Thanks,
+Shiju
 
-Add a Kconfig dependency for the QCOM_SCM to make it easier to catch
-this, and fix the dependency for the newly added ARM_QCOM_SPM_CPUIDLE
-symbol that triggered it this time.
-
-Fixes: a871be6b8eee ("cpuidle: Convert Qualcomm SPM driver to a generic CPUidle driver")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-As the bug is currently only present in the cpuidle tree, can we
-merge it through that?
----
- drivers/cpuidle/Kconfig.arm | 3 ++-
- drivers/firmware/Kconfig    | 1 +
- 2 files changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/cpuidle/Kconfig.arm b/drivers/cpuidle/Kconfig.arm
-index 51a7e89085c0..6cdcf5698c4c 100644
---- a/drivers/cpuidle/Kconfig.arm
-+++ b/drivers/cpuidle/Kconfig.arm
-@@ -97,7 +97,8 @@ config ARM_TEGRA_CPUIDLE
- 
- config ARM_QCOM_SPM_CPUIDLE
- 	bool "CPU Idle Driver for Qualcomm Subsystem Power Manager (SPM)"
--	depends on (ARCH_QCOM || COMPILE_TEST) && !ARM64
-+	depends on ARCH_QCOM || (COMPILE_TEST && HAVE_ARM_SMCCC)
-+	depends on ARM
- 	select ARM_CPU_SUSPEND
- 	select CPU_IDLE_MULTIPLE_DRIVERS
- 	select DT_IDLE_STATES
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index fbd785dd0513..297bed30a632 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -238,6 +238,7 @@ config INTEL_STRATIX10_RSU
- config QCOM_SCM
- 	bool
- 	depends on ARM || ARM64
-+	depends on HAVE_ARM_SMCCC
- 	select RESET_CONTROLLER
- 
- config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
--- 
-2.26.2
+>-----Original Message-----
+>From: Shiju Jose
+>Sent: 29 May 2020 18:39
+>To: linux-acpi@vger.kernel.org; linux-pci@vger.kernel.org; linux-
+>kernel@vger.kernel.org; rjw@rjwysocki.net; bp@alien8.de;
+>james.morse@arm.com; helgaas@kernel.org; lenb@kernel.org;
+>tony.luck@intel.com; dan.carpenter@oracle.com;
+>gregkh@linuxfoundation.org; zhangliguang@linux.alibaba.com;
+>tglx@linutronix.de
+>Cc: Shiju Jose <shiju.jose@huawei.com>; Linuxarm <linuxarm@huawei.com>;
+>yangyicong <yangyicong@huawei.com>
+>Subject: [PATCH v8 0/2] ACPI / APEI: Add support to notify the vendor
+>specific HW errors
+>
+>Presently the vendor drivers are unable to do the recovery for the vendor
+>specific recoverable HW errors because APEI driver does not support
+>reporting the error to the vendor drivers.
+>
+>patch set
+>1. add new interface to the APEI driver for reporting the
+>   vendor specific non-fatal HW errors to the drivers.
+>
+>2. add driver to handle HiSilicon hip PCIe controller's errors.
+>
+>V8:
+>1. Removed reporting the standard errors through the interface
+>   because of the conflict with the changes in the
+>   memory error handling path.
+>2. Fix comments by Dan Carpenter.
+>
+>V7:
+>1. Add changes in the APEI driver suggested by Borislav Petkov, for
+>   queuing up all the non-fatal HW errors to the work queue and
+>   notify the registered kernel drivers from the bottom half using
+>   blocking notifier, common interface for both standard and
+>   vendor-spcific errors.
+>2. Fix for further feedbacks in v5 HIP PCIe error handler driver
+>   by Bjorn Helgaas.
+>
+>V6:
+>1. Fix few changes in the patch subject line suggested by Bjorn Helgaas.
+>
+>V5:
+>1. Fix comments from James Morse.
+>1.1 Changed the notification method to use the atomic_notifier_chain.
+>1.2 Add the error handled status for the user space.
+>
+>V4:
+>1. Fix for the following smatch warning in the PCIe error driver,
+>   reported by kbuild test robot<lkp@intel.com>:
+>   warn: should '((((1))) << (9 + i))' be a 64 bit type?
+>   if (err->val_bits & BIT(HISI_PCIE_LOCAL_VALID_ERR_MISC + i))
+>	^^^ This should be BIT_ULL() because it goes up to 9 + 32.
+>
+>V3:
+>1. Fix the comments from Bjorn Helgaas.
+>
+>V2:
+>1. Changes in the HiSilicon PCIe controller's error handling driver
+>   for the comments from Bjorn Helgaas.
+>
+>2. Changes in the APEI interface to support reporting the vendor error
+>   for module with multiple devices, but use the same section type.
+>   In the error handler will use socket id/sub module id etc to distinguish
+>   the device.
+>
+>V1:
+>1. Fix comments from James Morse.
+>
+>2. add driver to handle HiSilicon hip08 PCIe controller's errors,
+>   which is an application of the above interface.
+>
+>Shiju Jose (1):
+>  ACPI / APEI: Add support to notify the vendor specific HW errors
+>
+>Yicong Yang (1):
+>  PCI: hip: Add handling of HiSilicon HIP PCIe controller errors
+>
+> drivers/acpi/apei/ghes.c                 | 126 ++++++++-
+> drivers/pci/controller/Kconfig           |   8 +
+> drivers/pci/controller/Makefile          |   1 +
+> drivers/pci/controller/pcie-hisi-error.c | 321 +++++++++++++++++++++++
+> include/acpi/ghes.h                      |  28 ++
+> 5 files changed, 483 insertions(+), 1 deletion(-)  create mode 100644
+>drivers/pci/controller/pcie-hisi-error.c
+>
+>--
+>2.17.1
+>
 
