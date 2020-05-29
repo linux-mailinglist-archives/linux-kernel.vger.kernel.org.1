@@ -2,61 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7CE1E8B4E
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 00:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 489351E8B31
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 00:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728360AbgE2W1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 18:27:19 -0400
-Received: from saraswati.nitrkl.ac.in ([27.48.137.18]:34737 "EHLO
-        mailhost2.nitrkl.ac.in" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726555AbgE2W1T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 18:27:19 -0400
-X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 May 2020 18:27:17 EDT
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mailhost2.nitrkl.ac.in (Postfix) with ESMTP id 38A9A10101C;
-        Sat, 30 May 2020 03:50:33 +0530 (IST)
-Received: from mailhost2.nitrkl.ac.in ([127.0.0.1])
-        by localhost (mailhost2.nitrkl.ac.in [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id XKViYSdzGldJ; Sat, 30 May 2020 03:50:33 +0530 (IST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mailhost2.nitrkl.ac.in (Postfix) with ESMTP id AD17E100FA8;
-        Sat, 30 May 2020 03:50:32 +0530 (IST)
-DKIM-Filter: OpenDKIM Filter v2.9.2 mailhost2.nitrkl.ac.in AD17E100FA8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nitrkl.ac.in;
-        s=4391B05C-0340-11E3-8D52-6A4624F1C1DB; t=1590790832;
-        bh=ZFdHQiiTcpDHsxvgTORJoeG5QneqYviTaGh13SXv4Ew=;
-        h=Date:From:Reply-To:Message-ID:Subject:MIME-Version:Content-Type:
-         Content-Transfer-Encoding;
-        b=VWl9ChSoCAfseSqUje1HNCExj9HOZkg58HS5R0kfT/OIZfK2w0Ed+jBYmhIcRisiV
-         96H8o21hVKOXjkmLdS6ROkSxrXTxBl4GSqSkT6y7CohnO+e69BRN/YMsYMy3OQ0ZQD
-         a55z/iz6VU3FMOntQkOw0+jAI+goOhmRjVoMNYxE=
-X-Virus-Scanned: amavisd-new at nitrkl.ac.in
-Received: from mailhost2.nitrkl.ac.in ([127.0.0.1])
-        by localhost (mailhost2.nitrkl.ac.in [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id ylQizP9LYPPl; Sat, 30 May 2020 03:50:32 +0530 (IST)
-Received: from zmbox2.nitrkl.ac.in (zmbox2.nitrkl.ac.in [172.16.0.24])
-        by mailhost2.nitrkl.ac.in (Postfix) with ESMTP id 6EB8110101C;
-        Sat, 30 May 2020 03:50:28 +0530 (IST)
-Date:   Sat, 30 May 2020 03:50:28 +0530 (IST)
-From:   Anastasia McDonald <617cs3001@nitrkl.ac.in>
-Reply-To: Anastasia McDonald <anastasia.mcdon@gmail.com>
-Message-ID: <2102052608.955385.1590790828220.JavaMail.zimbra@nitrkl.ac.in>
-Subject: donation
+        id S1728423AbgE2WU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 18:20:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54306 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725913AbgE2WUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 18:20:55 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF152207BC;
+        Fri, 29 May 2020 22:20:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590790855;
+        bh=agdD1/H+81Es2zptPz+PFbSQEef+yi1Q2CkkQpaYadw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d25uxxSvOVTDAEhY2mZzCehPJUn6trRthfWg4110RR+pdJaVsqVuEtVfUDigi+C9e
+         jjgiskgtvbLdnFfXvpATI0QhqEhxDkD9VzO0kdZHnW5Hkd53n3N66lzvnGQA4/5h2n
+         vvLtujv35PQsKHnqu3ir0u5/slFsUAL1Wi+vwV1I=
+Date:   Fri, 29 May 2020 23:20:52 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Jens Thoms Toerring <jt@toerring.de>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] regmap: fix alignment issue
+Message-ID: <20200529222052.GX4610@sirena.org.uk>
+References: <20200529192538.GA28402@toerring.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.16.0.20]
-X-Mailer: Zimbra 8.6.0_GA_1229 (zclient/8.6.0_GA_1229)
-Thread-Topic: donation
-Thread-Index: lIE8WMYbr+odrH8crE40F7hRONhIzg==
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fqQSV+MVmQEkpBtA"
+Content-Disposition: inline
+In-Reply-To: <20200529192538.GA28402@toerring.de>
+X-Cookie: The Killer Ducks are coming!!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-You have a sum donation for Catholic Charities Foundation, kindly contact the Program Coordinator through  her email  anastasia.mcdon@gmail.com  for details of claim.
 
-Regard
-Sir. Angelo Tony.
+--fqQSV+MVmQEkpBtA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, May 29, 2020 at 09:25:38PM +0200, Jens Thoms Toerring wrote:
+> The assembly and disassembly of data to be sent to or received from a
+> device invoke functions (regmap_format_XXX() and regmap_parse_XXX())
+> that extract or insert data items from or into a buffer, using
+> assignments. In some cases those functions are called with buffer
+
+This doesn't apply against current code, please check and resend:
+
+HEAD is now at 93b929922dba Merge series "regmap: provide simple bitops and use them in a driver" from Bartosz Golaszewski <brgl@bgdev.pl> Bartosz Golaszewski <bgolaszewski@baylibre.com>:
+Applying: regmap: fix alignment issue
+Using index info to reconstruct a base tree...
+M	drivers/base/regmap/regmap.c
+error: patch failed: drivers/base/regmap/regmap.c:261
+error: drivers/base/regmap/regmap.c: patch does not apply
+error: Did you hand edit your patch?
+It does not apply to blobs recorded in its index.
+Patch failed at 0001 regmap: fix alignment issue
+
+(it also didn't apply against v5.7-rc1 and git didn't know the blobs it
+was based on, the most recent change to that code was in 2015 it
+seems...).
+
+--fqQSV+MVmQEkpBtA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7RisMACgkQJNaLcl1U
+h9C07wf9GRKDw3jvmyLkiZ5fmTbu5x9EkzTvWzOyn5ROc+Xr2SfULwAuhGVwWgcy
+QwyBILW6Zi7qiCMkt4r1E7DW5lZPh+cURAAe/lc8lXOKtt9Uz0ERf7HJOhMIWFzE
+rEr+RU4s37MGOWyNtAUZ/lbCtJ++gnbPF+KNSOYJuNGzwU+O2l72bpGuZiO7rAVP
+7mOrSnhyM2ua9Zmjmh8iDRnlQyvK6It5GrPvPZftMYIZDZd4rIVNwDlhKdL/fifM
+AcV8dsqIaCd3u+cVZLrY1FgXBOfgAmlU/0Nz8TL0hXPFTLtELV+5M6M4a2iE1cSJ
+z/dRgw/45nOtfnY0tRIHhC2vBpK6Uw==
+=Y9kj
+-----END PGP SIGNATURE-----
+
+--fqQSV+MVmQEkpBtA--
