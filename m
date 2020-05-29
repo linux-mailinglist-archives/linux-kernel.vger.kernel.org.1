@@ -2,158 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDAB71E7827
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1185E1E77D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725988AbgE2IV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 04:21:59 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:38357 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725775AbgE2IV5 (ORCPT
+        id S1726958AbgE2IFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 04:05:52 -0400
+Received: from esa1.microchip.iphmx.com ([68.232.147.91]:12007 "EHLO
+        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725306AbgE2IFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 04:21:57 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200529082154epoutp04034ed73e41a33eeba0076e78031686ec~TchHJkc070581605816epoutp04_
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 08:21:54 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200529082154epoutp04034ed73e41a33eeba0076e78031686ec~TchHJkc070581605816epoutp04_
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1590740514;
-        bh=lw0SzC3SAQW5JKafVbFUNX7KDgz+bam93L8VxRJ1b8E=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=dOndgz/k7oJzuDUt709qjeZYGZ2jMuNn6QJOfMAz5WEapefDHMGFeM8UJ3aXgSoU0
-         uOOY9mcD5OTOsG46KavehoGIoahSmOAokRTCQKNCij1ZxIlyZx5Hr4E6y1N7vorjzP
-         rsUZ+y+XEME196PpwzEuP0WjMp5DOwTx+WfcZ5kI=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20200529082153epcas1p3db8dc1dceacfc338d77d10fc32e64caa~TchGagBek3066230662epcas1p3w;
-        Fri, 29 May 2020 08:21:53 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.153]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 49YHbd2V9LzMqYkZ; Fri, 29 May
-        2020 08:21:49 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        9A.D5.28581.C16C0DE5; Fri, 29 May 2020 17:21:49 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20200529082148epcas1p331a3c943c20c12a92dcbf2c31ca4a61f~TchB8ug4g2843028430epcas1p3n;
-        Fri, 29 May 2020 08:21:48 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200529082148epsmtrp1b1dc07b273ec94dbe4b9a7658f3e40b3~TchB8C68v2036120361epsmtrp15;
-        Fri, 29 May 2020 08:21:48 +0000 (GMT)
-X-AuditID: b6c32a38-2cdff70000006fa5-29-5ed0c61c409c
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F1.17.08382.C16C0DE5; Fri, 29 May 2020 17:21:48 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200529082148epsmtip1e8c06acc4b851e3946dfecd6d5b3ad4d~TchB0W0Bq1274112741epsmtip13;
-        Fri, 29 May 2020 08:21:48 +0000 (GMT)
-Subject: Re: [GIT PULL] extcon next for v5.8
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Chanwoo Choi (chanwoo@kernel.org)" <chanwoo@kernel.org>,
-        =?UTF-8?B?7ZWo66qF7KO8?= <myungjoo.ham@samsung.com>
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <c716374a-dac4-11bc-818c-a583f1e1a365@samsung.com>
-Date:   Fri, 29 May 2020 17:32:07 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Fri, 29 May 2020 04:05:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1590739548; x=1622275548;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=1j8r2lwJHp5ulvUar/6tSATkidOUKeT/fSsRUakAa/4=;
+  b=IWOirYC1ZP6uVmw+pD5UCR8Hgy8hYGvJ1U84yJkL1LZ2QyFrnAfTMi5f
+   hpwChKmtiq85BukhCqTkxVYBUWzHFTJY6IbRHQHPN78DLmDAb2uO5qFef
+   noANQUcsADLmfcSKnGmIEWQI9/acVpy3/zpUmnJ04IIARyJSv7iQLIiAv
+   IXWpV6gIs4SNloh+lIyq5oUOafIkbahlOAaaBJvv169yR598fejgymu8z
+   odhcaJD49Y0jjphNJtK3OD98HVlnX0+LQa9XDG1NjjqFMSigqdTiWPBiJ
+   FPp0TUdrkel0HjHuv+aJZguH4cJc0YS/MRcyX9XrUrBbkMxRwwNXF2U0l
+   g==;
+IronPort-SDR: e5l2prvpyvdvJ/xf0M93avS/ZfurjyADByBkLuA0Mx9ni0bU/lkv0KvnDmHTh3eZ7mi8BItQh4
+ vGPgUhs77NHVpWa5+F2hikK+akbM7J5gJVbHgCfLPQdwiLjWFRyOdCGbTSfb97nzfBIqNp2g5g
+ z7O+/kNa3RDnMQ1nBLhAMVmc5UQsN3r/xuze0+6Wl5w+Zh1xVYwIxWJVupaR+hvwBuan/6y4PZ
+ 001d0Be3A2n/T5EsixXT8/nzWu2q/dpjMKObb/Igp31Xh4DPbxeAIrxZlrNvGIGkml5zorTpn+
+ 9iY=
+X-IronPort-AV: E=Sophos;i="5.73,447,1583218800"; 
+   d="scan'208";a="81492430"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 May 2020 01:05:48 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 29 May 2020 01:05:48 -0700
+Received: from soft-dev3.localdomain (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1713.5 via Frontend Transport; Fri, 29 May 2020 01:05:45 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <nikolay@cumulusnetworks.com>, <roopa@cumulusnetworks.com>,
+        <jiri@resnulli.us>, <ivecera@redhat.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bridge@lists.linux-foundation.org>
+CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH net-next 0/2] bridge: mrp: Add support for MRA role
+Date:   Fri, 29 May 2020 10:05:12 +0000
+Message-ID: <20200529100514.920537-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200529080341.GB599635@kroah.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmphk+LIzCtJLcpLzFFi42LZdljTQFf22IU4g5crmC0m3rjCYtG8eD2b
-        xeVdc9gsbjeuYHNg8di0qpPNY//cNewefVtWMXp83iQXwBKVbZORmpiSWqSQmpecn5KZl26r
-        5B0c7xxvamZgqGtoaWGupJCXmJtqq+TiE6DrlpkDtFJJoSwxpxQoFJBYXKykb2dTlF9akqqQ
-        kV9cYquUWpCSU2BZoFecmFtcmpeul5yfa2VoYGBkClSYkJ2x6N5hpoJOzorrn+obGCezdzFy
-        ckgImEh8/noYzBYS2MEo8agpuIuRC8j+xCjxtv8CK4TzjVHicedvZpiOr0t3MUMk9jJK3Hm4
-        ix3Cec8oMX3RUbAqYQEdiZezuhlBbBEBDYmXR2+xgBQxC2xhlHj9ZgcLSIJNQEti/4sbbCA2
-        v4CixNUfj8EaeAXsJH7M7QI7ikVAVWL6jUZWEFtUIEzi5LYWqBpBiZMzn4DN4RQwkLiwbgJY
-        DbOAuMStJ/OZIGx5ie1v54CdKiHQyCEx5cJhRogfXCS6jn2CsoUlXh3fAg0NKYmX/W1QdrXE
-        ypNH2CCaOxgltuy/wAqRMJbYv3Qy0AYOoA2aEut36UOEFSV2/p7LCLGYT+Ld1x5WkBIJAV6J
-        jjYhiBJlicsP7jJB2JISi9s72SYwKs1C8s4sJC/MQvLCLIRlCxhZVjGKpRYU56anFhsWmCDH
-        9iZGcHLUstjBOPftB71DjEwcjIcYJTiYlUR415w9HyfEm5JYWZValB9fVJqTWnyI0RQYwBOZ
-        pUST84HpOa8k3tDUyNjY2MLE0MzU0FBJnPek1YU4IYH0xJLU7NTUgtQimD4mDk6pBqaiQ7qP
-        OKXfr1XY9Dmrer7v5hPf3h5edO8X6/M5O168MH63/YRMcabKi4t8J/blNrZGxwfZHavOOrAn
-        XdiP4/CZvE/Kud92Jn39nrrBuPNmsnX/ZfX+RSWfn1c/a/z/aXeYruUzCX3f1OMVtnpCk00u
-        +Gxb9Lc6ycbjVfgb7Wf+XQKtb5IPfH91sLRs06a4nV8bSvy4lof1p4cp3OTUTSsVYtAs/T9b
-        d8W855++d6yauPFdBwfvC7VZE7efWr7kw88qUZaWwhjLG8pt9c/XdVQd+7/0k9KEgz/F1vuz
-        rqy6Fmu/KT1owqeILOXFhyInTtBbz97jqjVNeI6F+67FHWocrxdPFPh2mLXa+8QiMbZeJZbi
-        jERDLeai4kQAOIUjORcEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrPLMWRmVeSWpSXmKPExsWy7bCSnK7MsQtxBj/65Cwm3rjCYtG8eD2b
-        xeVdc9gsbjeuYHNg8di0qpPNY//cNewefVtWMXp83iQXwBLFZZOSmpNZllqkb5fAlbHo3mGm
-        gk7Oiuuf6hsYJ7N3MXJySAiYSHxduou5i5GLQ0hgN6NE69xtTBAJSYlpF48CJTiAbGGJw4eL
-        IWreMkrcPN8A1iwsoCPxclY3I4gtIqAh8fLoLRaQImaBLYwSbZNmMkF07ADqmPIObCqbgJbE
-        /hc32EBsfgFFias/HoN18wrYSfyY2wU2lUVAVWL6jUZWEFtUIExi55LHTBA1ghInZz5hAbE5
-        BQwkLqybAFbDLKAu8WfeJWYIW1zi1pP5TBC2vMT2t3OYJzAKz0LSPgtJyywkLbOQtCxgZFnF
-        KJlaUJybnltsWGCYl1quV5yYW1yal66XnJ+7iREcJ1qaOxi3r/qgd4iRiYPxEKMEB7OSCO+a
-        s+fjhHhTEiurUovy44tKc1KLDzFKc7AoifPeKFwYJySQnliSmp2aWpBaBJNl4uCUamCKniE1
-        fbrCrAbGzTMckyrXJNRt6k5/u13k/+m7DGeOlX2pvjNLep6eU3iPOuPEycxRj6I4Zgo8f/Wp
-        5My87brnb6yd+X7PlORtJnId999zRMxN3r7XnVXgzd2zfiH3HqoKzticJHGEp9h1df8qs9lz
-        bE4pLwmtO+k/JeLysjMrp72cs2RmT+/RFyzLFk6ddbynfstr2cWiC061fXzl5Lu+5LOL2+J6
-        Lf6+ZYdePChwcP11yvV5bceWhxraGt+WGod8zovQfOKo/oXr874ma4VnNz7lck2aX8t45e7R
-        a92d9dkvnWaZ7tNhWnrpvAyz70Fmmdn5NrvWF36qcPZksBL/nqy+7PveT2v3qi0Lf2a0KVyJ
-        pTgj0VCLuag4EQBvGX4QAgMAAA==
-X-CMS-MailID: 20200529082148epcas1p331a3c943c20c12a92dcbf2c31ca4a61f
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200529030043epcas1p2a41f6271b91e086a2e730a488ce53015
-References: <CGME20200529030043epcas1p2a41f6271b91e086a2e730a488ce53015@epcas1p2.samsung.com>
-        <a7f317f3-5499-d1d5-cabd-b53d7e8d9977@samsung.com>
-        <20200529080341.GB599635@kroah.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Greg,
+This patch series extends the MRP with the MRA role.
+A node that has the MRA role can behave as a MRM or as a MRC. In case there are
+multiple nodes in the topology that has the MRA role then only one node can
+behave as MRM and all the others need to be have as MRC. The node that has the
+higher priority(lower value) will behave as MRM.
+A node that has the MRA role and behaves as MRC, it just needs to forward the
+MRP_Test frames between the ring ports but also it needs to detect in case it
+stops receiving MRP_Test frames. In that case it would try to behave as MRM.
 
-On 5/29/20 5:03 PM, Greg KH wrote:
-> On Fri, May 29, 2020 at 12:11:03PM +0900, Chanwoo Choi wrote:
->> Dear Greg,
->>
->> This is extcon-next pull request for v5.8. I add detailed description of
->> this pull request on below. Please pull extcon with following updates.
->>
->> Best Regards,
->> Chanwoo Choi
->>
->>
->> The following changes since commit 9cb1fd0efd195590b828b9b865421ad345a4a145:
->>
->>   Linux 5.7-rc7 (2020-05-24 15:32:54 -0700)
->>
->> are available in the Git repository at:
->>
->>   git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/extcon.git tags/extcon-next-for-5.8
-> 
-> As my char-misc-next branch is currently at 5.7-rc5, why did you need to
-> make this against -rc7?
+Horatiu Vultur (2):
+  bridge: mrp: Set the priority of MRP instance
+  bridge: mrp: Add support for role MRA
 
-I'm sorry. I just checked the 'char-misc-linus' branch
-and then made it based on 5.7-rc7. It is my mistake.
-
-I'll make the pull-request based on v5.7-rc5 again.
-
-> 
-> Mind if I just rebase your patches against my tree instead of pulling
-> the whole thing up to -rc7, or is there some dependancy there that you
-> needed to do this?
-> 
-> thanks,
-> 
-> greg k-h
-> 
-> 
-
+ include/net/switchdev.h         |   2 +
+ include/uapi/linux/if_bridge.h  |   4 +
+ include/uapi/linux/mrp_bridge.h |  38 ++++++++++
+ net/bridge/br_mrp.c             | 128 +++++++++++++++++++++++++++-----
+ net/bridge/br_mrp_netlink.c     |  11 +++
+ net/bridge/br_mrp_switchdev.c   |   5 +-
+ net/bridge/br_private_mrp.h     |   5 +-
+ 7 files changed, 171 insertions(+), 22 deletions(-)
 
 -- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+2.26.2
+
