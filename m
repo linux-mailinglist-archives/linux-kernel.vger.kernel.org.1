@@ -2,83 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 479C41E7F53
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 15:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 709141E7F57
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 15:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726886AbgE2Nzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 09:55:33 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:23263 "EHLO rere.qmqm.pl"
+        id S1726974AbgE2Nzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 09:55:48 -0400
+Received: from mout.gmx.net ([212.227.15.15]:53291 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725901AbgE2Nzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 09:55:31 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 49YR0d0ByYz9s;
-        Fri, 29 May 2020 15:55:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1590760529; bh=Ahv7mUDTuyxTSHWyPZ7XPAxCgroBDI5D/yY3iwLuGsM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YXwJXHDI5Wnwz3Rjh57U0N5rjfWYb+GvadNg8fVhdT5nVC1m/v4p4kjuGsso/ybos
-         PKvv8/O+atjd/H8JMqF36T08BhnfUFaEhhwYplLAO0H4MFbNze4bl6Y0z91fsMPM2Y
-         UGFoiWq1iL3SmRU9viGjsgEkwoEJtVnCg4i0rsgU7T9nIdrxGTJ+AaM4jqIDjFQJun
-         ikpXm46j7+kGR1XoUwx9YXmv0iG5HpUA/tGAgv4AAPYZ8wKcXzFH82eEVeOPIQ/MSm
-         TrXE2GasbGM3U+Pyj1k+hOXdNR+onNYJ/v+PGN1JMftskIQNXW431ntQ6CuC33J5MB
-         0UFaBf4WvjXBA==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-Date:   Fri, 29 May 2020 15:55:24 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Peter Chen <peter.chen@nxp.com>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Robert Baldyga <r.baldyga@samsung.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] usb: gadget: f_acm: don't disable disabled EP
-Message-ID: <20200529135524.GA14614@qmqm.qmqm.pl>
-References: <237e4bc8c63680f9ce0388d35b4c34a856ed8595.1590690518.git.mirq-linux@rere.qmqm.pl>
- <20200529081104.GD32755@b29397-desktop>
+        id S1725901AbgE2Nzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 09:55:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1590760538;
+        bh=vOtlPo+kxfaF5urOoy4ajGIymjW7MTeGTHHQTTgEVBM=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=X5Xqbt2H/G12f0IMXLBJOm3ZOVxEbiNuaQBaQu6O33pJvPP0b81oJC/83ATzwua3y
+         Vk6/P44VlxnPFU8vEcvpkx1gNUja7trUsjvfBWiGiFL66R8iwiMFsBpesI0UWoOq+N
+         kEVXIbKFx5Ez4svVXcu+DrBr/jSC4cUJf9YmMpqY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530.fritz.box ([92.116.188.156]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MQMuR-1jIRlQ3yAD-00MK0h; Fri, 29
+ May 2020 15:55:38 +0200
+Date:   Fri, 29 May 2020 15:55:34 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [GIT PULL] parisc architecture fix for kernel v5.7
+Message-ID: <20200529135534.GA14973@ls3530.fritz.box>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200529081104.GD32755@b29397-desktop>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Provags-ID: V03:K1:wSUFAOI6IrImdYFaheneOISf2zfhYBBP1qqZ2gMe2fNTem7WcWm
+ 2bDGumueEAQUUw3uKbvIxr3R8tiuT4oRwnXPqq/k6vLlBwvwDb/wwJKKy0QGRe/FG+aOkf3
+ tyeVvy/WBnRahmi+JwDtrYgpuIv2cFS0qqaa+JM6Wn8rYOXvo3Eo6u9SlxG/wTKbldxIdcR
+ JHIsZ/H6Xm83G2qODf9nw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+cKNOiL8onU=:Bhequgb2EgK7DGcNSBrxX5
+ PtnabGeNQOvBxD7p0tg5LpfqwUZj96k+QH5kXo7bhsx5GDPWNpd8TK4Avk5ojg2zojNuI9LR/
+ Z9W5tvIAkEgiSA+cadAjEiZrS74Gjtct7v1Vn8XNHWUFiuXFdocQcSgwnLz/YxnM1IKsYhgfF
+ j66Bb/VX7S4+z885XPLXLb3QtiBURNSKn9tid8beFcYwMsA9CDM3fX66t2/uBX8eV6OrBNGHK
+ fsL4RVoVXIvTrcKo+uQkWkB7TxDvB0fkjARqTf4IB956QcriLqZLYt20/Vn6ODND/+CO4X4QR
+ Zf0U30OfWF/12G2cffSaFhz1BCIejHB+xXSyOaOoQfe86LyXWedJSRn9TBR+7CEiT3cHISBzf
+ 7FlTfRqFTWUpwq1uWSTLgennNMzAzUsjijPUtOqbAS9DSV39phfv7VSXQAYULNjeR6abQOukj
+ JqL9ouPTs0Haz+uhCZaLPgemoHQ778cfckGjAeE99nL/Vp+2NuPFgaEuNaeVm9yQgv9SrHn8S
+ 3I46ZYW23dL92mhvNFpmzwOX8AmnUkSPiVJVSkeSnHMGTFce5yXPSgSGhZEVEcn9+f2qBFTDL
+ pZlKIj8vn07dB1vRgTdKmmjuQKJB2XBM2vv5GJP5Qlfh+pOjuYM6JUch4ZeyO35pi14rp4B96
+ rc1WLpQSEj7hB+jWKjFC8laupi+fshALPsFNv3YLU+eW2ZAWmjc7NJpcGdycOaE6A5EgFda9x
+ +MMERt+F0MhQMvCfaZVLrM56I0tL4+CShceUZUL4Ot4Ed2jMGXztrkCVR+0Npmj3eOVqNjM0y
+ Y+0G5eMUso/PvV+gXXABwNBk/ihOo1F7UFJHM2pqWn7KtEm0W7KZ0Y4WEVtTfsPvp6fTiS/4O
+ 6fPsJhyIkBICSS+6AW1viJWaa9peuCbMqJcnhLXc3D79qre/ADUJhCbCWCBf2ZkbX9/qFNgtS
+ 5TLOKBwD+FgqsOCPmZZvkQg+1dhziJRQGYIja1e3HZRzKv5iHUy6UWFR6aG/dM8MvpHLxgR/Y
+ XdKCm2qToJVD6PHLkYPIP+mWJroOh0wp4WYKU/XYNhCFko94H3WbnyZ0NBrQAUAM1Hb/ZWkNk
+ 07eY6pDMcWi4p5bPm+4YgCSB8bv8/it2Pvh0G0YZ56WlgVhpAnOxSchoi21gEQ8g3kUG++ltU
+ oyMDjKKiVuaMvi+Uj8s2SOHfswPJz8xps/v1930L7dIXCMtqsDhM7agt3BlSu6vKNe6fd+vlo
+ azgxWYFQWt+7D07UC
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 08:10:40AM +0000, Peter Chen wrote:
-> On 20-05-28 20:30:28, Micha³ Miros³aw wrote:
-> > Make debugging real problems easier by not trying to disable an EP that
-> > was not yet enabled.
-> > 
-> > Fixes: 4aab757ca44a ("usb: gadget: f_acm: eliminate abuse of ep->driver data")
-> > Signed-off-by: Micha³ Miros³aw <mirq-linux@rere.qmqm.pl>
-> > ---
-> >  drivers/usb/gadget/function/f_acm.c | 8 +++++---
-> >  1 file changed, 5 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/usb/gadget/function/f_acm.c b/drivers/usb/gadget/function/f_acm.c
-> > index 200596ea9557..46647bfac2ef 100644
-> > --- a/drivers/usb/gadget/function/f_acm.c
-> > +++ b/drivers/usb/gadget/function/f_acm.c
-> > @@ -425,9 +425,11 @@ static int acm_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
-> >  	/* we know alt == 0, so this is an activation or a reset */
-> >  
-> >  	if (intf == acm->ctrl_id) {
-> > -		dev_vdbg(&cdev->gadget->dev,
-> > -				"reset acm control interface %d\n", intf);
-> > -		usb_ep_disable(acm->notify);
-> > +		if (acm->notify->enabled) {
-> > +			dev_vdbg(&cdev->gadget->dev,
-> > +					"reset acm control interface %d\n", intf);
-> > +			usb_ep_disable(acm->notify);
-> > +		}
-> 
-> But it does not fix any issues, the usb_ep_disable checks 'enabled' flag.
+Hi Linus,
 
-It generates spurious trace events if you enable them.
+please pull a kernel panic fix for the parisc architecture for kernel 5.7 =
+from:
 
-Best Regards,
-Micha³ Miros³aw
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git pa=
+risc-5.7-2
+
+Fix a kernel panic at boot time for some HP-PARISC machines.
+
+Thanks,
+Helge
+
+=2D---------------------------------------------------------------
+Helge Deller (1):
+      parisc: Fix kernel panic in mem_init()
+
+ arch/parisc/mm/init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
