@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BE41E8524
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D26291E84D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727056AbgE2Rir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 13:38:47 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:54352 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgE2Rir (ORCPT
+        id S1727108AbgE2RcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 13:32:09 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:58326 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725839AbgE2Rb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 13:38:47 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04THS2iw166071;
-        Fri, 29 May 2020 17:38:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id; s=corp-2020-01-29;
- bh=/RW+mkPDwSW00rWCQ1Qu/i8lGlTHo7jS5iJOYu2SJAg=;
- b=gqQCxF4Kh/ueAi+o0LfQggTdkrFPNMOAcWXw8fSEeV+74bqQ3PKXxIiXh1S1INQ4Y0te
- QHuurAoqGCtqpCT7vex8jSNEZb6oNCS0uzzGMfJjSIjRLxXFOoLNS+3tpXeqk20ZIcYp
- 8P4PC+jtsDdeziSort9gUr2Rm57dePw45le7gU0uE/OXywA1CpiqnDwRsuaFu24oqrJ0
- 72hJBwjjp8CuL5XQSgscbzhej6BK8klrgShRihuqzO1qrinCPIz7DFugjuSAIjl7ts5I
- bT4GgT4Lbz/o/IiOKIFx0ecF9shxmTx3Pntv6k505g98bisk9FQhtc17y3JVRDTACk1H bA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 316u8rbn4e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 29 May 2020 17:38:45 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04THRisL077787;
-        Fri, 29 May 2020 17:38:44 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 31a9kuhym6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 29 May 2020 17:38:44 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04THcfH6027323;
-        Fri, 29 May 2020 17:38:43 GMT
-Received: from localhost.localdomain (/10.211.9.80)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 29 May 2020 10:38:41 -0700
-From:   Dongli Zhang <dongli.zhang@oracle.com>
-To:     linux-block@vger.kernel.org
-Cc:     axboe@kernel.dk, linux-kernel@vger.kernel.org
-Subject: [PATCH for-next 1/1] null_blk: force complete for timeout request
-Date:   Fri, 29 May 2020 10:31:08 -0700
-Message-Id: <20200529173108.25198-1-dongli.zhang@oracle.com>
-X-Mailer: git-send-email 2.17.1
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9636 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxscore=0 adultscore=0
- mlxlogscore=999 malwarescore=0 spamscore=0 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005290133
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9636 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
- priorityscore=1501 spamscore=0 cotscore=-2147483648 suspectscore=1
- phishscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0 adultscore=0
- lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005290133
+        Fri, 29 May 2020 13:31:28 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590773483; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=6F9CNHe8Qpy8XEgxu8ud42/OjS8EjONkBKKX5sjGnLI=;
+ b=qbDoNgkctnj0eoZ7+KWN0q37YEEF74R9yESmhLwWEWDdff4gUYQ+/c7FqP7ZIMhg/BYJkRm1
+ ehY5gIqy/XQwpDf659+3Y8L9gIm8vQfEd/ZeT1wDy5/7YmxbMstaOOjHC2h2bgScxO6sYyg5
+ p2yVLGMSmDgubI9mE1GXzIUplgo=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5ed146eabf0e32d254900ee1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 May 2020 17:31:22
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CF15FC433CA; Fri, 29 May 2020 17:31:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 11E40C433C9;
+        Fri, 29 May 2020 17:31:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 11E40C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] wlcore: fix runtime pm imbalance in wl1271_tx_work
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200520124241.9931-1-dinghao.liu@zju.edu.cn>
+References: <20200520124241.9931-1-dinghao.liu@zju.edu.cn>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     dinghao.liu@zju.edu.cn, kjlu@umn.edu,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Allison Randal <allison@lohutok.net>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200529173122.CF15FC433CA@smtp.codeaurora.org>
+Date:   Fri, 29 May 2020 17:31:22 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 7b11eab041da ("blk-mq: blk-mq: provide forced completion
-method") exports new API to force a request to complete without error
-injection.
+Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
 
-There should be no error injection when completing a request by timeout
-handler.
+> There are two error handling paths in this functon. When
+> wlcore_tx_work_locked() returns an error code, we should
+> decrease the runtime PM usage counter the same way as the
+> error handling path beginning from pm_runtime_get_sync().
+> 
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> Acked-by: Tony Lindgren <tony@atomide.com>
 
-Otherwise, the below would hang because timeout handler is failed.
+Patch applied to wireless-drivers-next.git, thanks.
 
-echo 100 > /sys/kernel/debug/fail_io_timeout/probability
-echo 1000 > /sys/kernel/debug/fail_io_timeout/times
-echo 1 > /sys/block/nullb0/io-timeout-fail
-dd if=/dev/zero of=/dev/nullb0 bs=512 count=1 oflag=direct
+9604617e998b wlcore: fix runtime pm imbalance in wl1271_tx_work
 
-With this patch, the timeout handler is able to complete the IO.
-
-Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
----
- drivers/block/null_blk_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/block/null_blk_main.c b/drivers/block/null_blk_main.c
-index 6126f771ae99..87b31f9ca362 100644
---- a/drivers/block/null_blk_main.c
-+++ b/drivers/block/null_blk_main.c
-@@ -1423,7 +1423,7 @@ static bool should_requeue_request(struct request *rq)
- static enum blk_eh_timer_return null_timeout_rq(struct request *rq, bool res)
- {
- 	pr_info("rq %p timed out\n", rq);
--	blk_mq_complete_request(rq);
-+	blk_mq_force_complete_rq(rq);
- 	return BLK_EH_DONE;
- }
- 
 -- 
-2.17.1
+https://patchwork.kernel.org/patch/11560387/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
