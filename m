@@ -2,142 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC121E88CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 935171E88CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728077AbgE2UTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 16:19:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48576 "EHLO mail.kernel.org"
+        id S1728173AbgE2UVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 16:21:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726966AbgE2UTa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 16:19:30 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        id S1726926AbgE2UVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 16:21:38 -0400
+Received: from localhost (mobile-166-175-190-200.mycingular.net [166.175.190.200])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3CAC92074D;
-        Fri, 29 May 2020 20:19:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5EF2D2067B;
+        Fri, 29 May 2020 20:21:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590783569;
-        bh=54POcsKVLD+4Fr8LyFN7BTyjEdg9FvL0qMZYFmuBkKM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VGEzNVU9mu8GMwZFM5OvpFuRQbRT1vsAPttn4lGJIHDlYV8ooj9hvaERS/ZnH1i7c
-         navgYasAvAmMDBpOyFBhbNWqmLpHbA3+7xEB5+LFzJlfsiCSll5QkK9b8DJIdij543
-         UM5+mECzPPMaaiszVTQVGLmCV9O5s5ttsydL7GSA=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 2882B40AFD; Fri, 29 May 2020 17:19:27 -0300 (-03)
-Date:   Fri, 29 May 2020 17:19:27 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 1/2] perf build: Group the NO_SYSCALL_TABLE logic
-Message-ID: <20200529201927.GC31795@kernel.org>
-References: <20200529155552.463-1-acme@kernel.org>
- <20200529155552.463-2-acme@kernel.org>
+        s=default; t=1590783697;
+        bh=u/xAgf1SoAZEU7/fzVHpgObK98fuyG1PH8KttS3yQzI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=0SMY3R16bOLuO6gPIR28Kp1YYk6vVkRuqy/YcDAmT9bL5U+v6lA3QMixwePtm3ioB
+         hh7v06dELr89s0AmG42S0RwMRkj4nZY0qOIQ+AcX92WHzvSyTjs/0TmMV9zvGxHPkb
+         qYfuzjiRoShC/cHDes+g/gE73NDJSTK1pys4KMhU=
+Date:   Fri, 29 May 2020 15:21:35 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Matthew Garrett <mjg59@srcf.ucam.org>
+Subject: Re: Lost PCIe PME after a914ff2d78ce ("PCI/ASPM: Don't select
+ CONFIG_PCIEASPM by default")
+Message-ID: <20200529202135.GA461617@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200529155552.463-2-acme@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <bdc33be8-1db6-b147-cbc4-90fa0dc3d999@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, May 29, 2020 at 12:55:51PM -0300, Arnaldo Carvalho de Melo escreveu:
-> From: Arnaldo Carvalho de Melo <acme@redhat.com>
+[+cc Matthew]
+
+On Fri, May 29, 2020 at 10:09:08PM +0200, Heiner Kallweit wrote:
+> On 29.05.2020 21:40, Heiner Kallweit wrote:
+> > On 29.05.2020 21:21, Bjorn Helgaas wrote:
+> >> On Fri, May 29, 2020 at 08:50:46PM +0200, Heiner Kallweit wrote:
+> >>> On 28.05.2020 23:44, Heiner Kallweit wrote:
+> >>>> For whatever reason with this change (and losing ASPM control) I also
+> >>>> loose the PCIe PME interrupts. This prevents my network card from
+> >>>> resuming from runtime-suspend.
+> >>>> Reverting the change brings back ASPM control and the PCIe PME irq's.
+> >>>>
+> >>>> Affected system is a Zotac MiniPC with a N3450 CPU:
+> >>>> PCI bridge: Intel Corporation Celeron N3350/Pentium N4200/Atom E3900 Series PCI Express Port A #1 (rev fb)
+> >>>>
+> >>> I checked a little bit further and w/o ASPM control the root ports
+> >>> don't have the PME service bit set in their capabilities.
+> >>> Not sure whether this is a chipset bug or whether there's a better
+> >>> explanation. However more chipsets may have such a behavior.
+> >>
+> >> Hmm.  Is the difference simply changing the PCIEASPM config symbol, or
+> >> are you booting with command-line arguments like "pcie_aspm=off"?
+> >>
+> > Only difference is the config symbol. My command line is plain and simple:
+> > 
+> > Command line: initrd=\intel-ucode.img initrd=\initramfs-linux.img root=/dev/sda2 rw
+> > 
+> >> What's the specific PME bit that changes in the root ports?  Can you
+> >> collect the "sudo lspci -vvxxxx" output with and without ASPM?
+> >>
+> >> The capability bits are generally read-only as far as the PCI spec is
+> >> concerned, but devices have implementation-specific knobs that the
+> >> BIOS may use to change things.  Without CONFIG_PCIEASPM, Linux will
+> >> not request control of LTR, and that could cause the BIOS to change
+> >> something.  You should be able to see the LTR control difference in
+> >> the dmesg logging about _OSC.
+> >>
+> >>> W/o the "default y" for ASPM control we also have the situation now
+> >>> that the config option description says "When in doubt, say Y."
+> >>> but it takes the EXPERT mode to enable it. This seems to be a little
+> >>> bit inconsistent.
+> >>
+> >> We should probably remove the "if EXPERT" from the PCIEASPM kconfig.
+> >> But I would expect PME to work correctly regardless of PCIEASPM, so
+> >> removing "if EXPERT" doesn't solve the underlying problem.
+> >>
+> >> Rafael, does this ring any bells for you?  I don't remember a
+> >> connection between PME and ASPM, but maybe there is one.
+> >>
+> >>> To cut a long story short:
+> >>> At least on some systems this change has unwanted side effects.
+> > 
+> > lspci output w/ and w/o ASPM is attached incl. a diff.
+> > Here comes the _OSC difference.
+> > 
+> > w/o ASPM
+> > 
+> > [    0.386063] acpi PNP0A08:00: _OSC: OS supports [ExtendedConfig Segments MSI HPX-Type3]
+> > [    0.386918] acpi PNP0A08:00: _OSC: not requesting OS control; OS requires [ExtendedConfig ASPM ClockPM MSI]
+> > 
+> > w/ ASPM
+> > [    0.388141] acpi PNP0A08:00: _OSC: OS supports [ExtendedConfig ASPM ClockPM Segments MSI HPX-Type3]
+> > [    0.393648] acpi PNP0A08:00: _OSC: OS now controls [PME AER PCIeCapability LTR]
+> > 
+> > It's at least interesting that w/o ASPM OS doesn't control PME and AER.
+> > 
 > 
-> To help in allowing to disable it from the make command line.
+> This was the right entry point, also w/o ASPM control OS states to ACPI that it
+> needs ASPM and ClockPM. The following patch fixes the PME issue for me.
+> See also the _OSC part below.
 > 
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> ---
->  tools/perf/Makefile.config | 23 +++++++++++++++--------
->  1 file changed, 15 insertions(+), 8 deletions(-)
 > 
-> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> index ae325f79e598..93fb7510a9a9 100644
-> --- a/tools/perf/Makefile.config
-> +++ b/tools/perf/Makefile.config
-> @@ -23,12 +23,26 @@ include $(srctree)/tools/scripts/Makefile.arch
->  $(call detected_var,SRCARCH)
+> diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
+> index 9e235c1a7..8df1fa728 100644
+> --- a/drivers/acpi/pci_root.c
+> +++ b/drivers/acpi/pci_root.c
+> @@ -38,10 +38,15 @@ static int acpi_pci_root_scan_dependent(struct acpi_device *adev)
+>  	return 0;
+>  }
 >  
->  NO_PERF_REGS := 1
-> +
->  NO_SYSCALL_TABLE := 1
->  
-> +ifeq ($(SRCARCH),x86)
-> +  ifeq (${IS_64_BIT}, 1)
-> +    NO_SYSCALL_TABLE := 0
-> +  endif
-> +else
-> +  ifneq ($(SRCARCH),$(filter $(SRCARCH),powerpc arm64 s390))
+> +#ifdef CONFIG_PCIEASPM
+>  #define ACPI_PCIE_REQ_SUPPORT (OSC_PCI_EXT_CONFIG_SUPPORT \
+>  				| OSC_PCI_ASPM_SUPPORT \
+>  				| OSC_PCI_CLOCK_PM_SUPPORT \
+>  				| OSC_PCI_MSI_SUPPORT)
+> +#else
+> +#define ACPI_PCIE_REQ_SUPPORT (OSC_PCI_EXT_CONFIG_SUPPORT \
+> +				| OSC_PCI_MSI_SUPPORT)
+> +#endif
 
-The above should've been a ifeq, to see if SRCARCH is one of those,
-detected in the cross build tests, fixed.
-
-- Arnaldo
-
-> +    NO_SYSCALL_TABLE := 0
-> +  endif
-> +endif
-> +
-> +ifneq ($(NO_SYSCALL_TABLE),1)
-> +  CFLAGS += -DHAVE_SYSCALL_TABLE_SUPPORT
-> +endif
-> +
->  # Additional ARCH settings for ppc
->  ifeq ($(SRCARCH),powerpc)
->    NO_PERF_REGS := 0
-> -  NO_SYSCALL_TABLE := 0
->    CFLAGS += -I$(OUTPUT)arch/powerpc/include/generated
->    LIBUNWIND_LIBS := -lunwind -lunwind-ppc64
->  endif
-> @@ -37,7 +51,6 @@ endif
->  ifeq ($(SRCARCH),x86)
->    $(call detected,CONFIG_X86)
->    ifeq (${IS_64_BIT}, 1)
-> -    NO_SYSCALL_TABLE := 0
->      CFLAGS += -DHAVE_ARCH_X86_64_SUPPORT -I$(OUTPUT)arch/x86/include/generated
->      ARCH_INCLUDE = ../../arch/x86/lib/memcpy_64.S ../../arch/x86/lib/memset_64.S
->      LIBUNWIND_LIBS = -lunwind-x86_64 -lunwind -llzma
-> @@ -55,7 +68,6 @@ endif
->  
->  ifeq ($(SRCARCH),arm64)
->    NO_PERF_REGS := 0
-> -  NO_SYSCALL_TABLE := 0
->    CFLAGS += -I$(OUTPUT)arch/arm64/include/generated
->    LIBUNWIND_LIBS = -lunwind -lunwind-aarch64
->  endif
-> @@ -70,7 +82,6 @@ endif
->  
->  ifeq ($(ARCH),s390)
->    NO_PERF_REGS := 0
-> -  NO_SYSCALL_TABLE := 0
->    CFLAGS += -fPIC -I$(OUTPUT)arch/s390/include/generated
->  endif
->  
-> @@ -78,10 +89,6 @@ ifeq ($(NO_PERF_REGS),0)
->    $(call detected,CONFIG_PERF_REGS)
->  endif
->  
-> -ifneq ($(NO_SYSCALL_TABLE),1)
-> -  CFLAGS += -DHAVE_SYSCALL_TABLE_SUPPORT
-> -endif
-> -
->  # So far there's only x86 and arm libdw unwind support merged in perf.
->  # Disable it on all other architectures in case libdw unwind
->  # support is detected in system. Add supported architectures
-> -- 
-> 2.25.3
-> 
-
--- 
-
-- Arnaldo
+Yeah, that makes sense.  I can't remember the details, but I'm pretty
+sure there's a reason why we ask for the whole set of things.  Seems
+like it solved some problem.  I think Matthew Garrett might have been
+involved in that.
