@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B59391E71F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 03:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 266F41E71DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 03:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438333AbgE2BOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 21:14:52 -0400
-Received: from mxhk.zte.com.cn ([63.217.80.70]:52066 "EHLO mxhk.zte.com.cn"
+        id S2438260AbgE2BAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 21:00:21 -0400
+Received: from mx7.zte.com.cn ([202.103.147.169]:27221 "EHLO mxct.zte.com.cn"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438256AbgE2BOu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 21:14:50 -0400
-X-Greylist: delayed 927 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 May 2020 21:14:49 EDT
+        id S2438243AbgE2BAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 21:00:17 -0400
 Received: from mse-fl1.zte.com.cn (unknown [10.30.14.238])
-        by Forcepoint Email with ESMTPS id 57CA1D65B285BB26CA41;
-        Fri, 29 May 2020 08:59:19 +0800 (CST)
-Received: from notes_smtp.zte.com.cn (notessmtp.zte.com.cn [10.30.1.239])
-        by mse-fl1.zte.com.cn with ESMTP id 04T0xBPF058301;
-        Fri, 29 May 2020 08:59:11 +0800 (GMT-8)
+        by Forcepoint Email with ESMTPS id A9EB6564EFBEC90C84D5;
+        Fri, 29 May 2020 09:00:13 +0800 (CST)
+Received: from notes_smtp.zte.com.cn (notes_smtp.zte.com.cn [10.30.1.239])
+        by mse-fl1.zte.com.cn with ESMTP id 04T105YD060302;
+        Fri, 29 May 2020 09:00:05 +0800 (GMT-8)
         (envelope-from wang.yi59@zte.com.cn)
 Received: from fox-host8.localdomain ([10.74.120.8])
           by szsmtp06.zte.com.cn (Lotus Domino Release 8.5.3FP6)
-          with ESMTP id 2020052908594550-3735716 ;
-          Fri, 29 May 2020 08:59:45 +0800 
+          with ESMTP id 2020052909003964-3735731 ;
+          Fri, 29 May 2020 09:00:39 +0800 
 From:   Yi Wang <wang.yi59@zte.com.cn>
-To:     sudeep.dutt@intel.com
-Cc:     ashutosh.dixit@intel.com, arnd@arndb.de,
-        gregkh@linuxfoundation.org, alexios.zavras@intel.com,
-        tglx@linutronix.de, allison@lohutok.net,
+To:     mpe@ellerman.id.au
+Cc:     benh@kernel.crashing.org, paulus@samba.org, keescook@chromium.org,
+        anton@enomsg.org, ccross@android.com, tony.luck@intel.com,
+        gregkh@linuxfoundation.org, tglx@linutronix.de,
+        allison@lohutok.net, linuxppc-dev@lists.ozlabs.org,
         linux-kernel@vger.kernel.org, xue.zhihong@zte.com.cn,
         wang.yi59@zte.com.cn, wang.liang82@zte.com.cn,
         Liao Pingfang <liao.pingfang@zte.com.cn>
-Subject: [PATCH] misc: mic: Replace kmalloc with kzalloc in the error message
-Date:   Fri, 29 May 2020 09:01:21 +0800
-Message-Id: <1590714081-15574-1-git-send-email-wang.yi59@zte.com.cn>
+Subject: [PATCH] powerpc/nvram: Replace kmalloc with kzalloc in the error message
+Date:   Fri, 29 May 2020 09:02:15 +0800
+Message-Id: <1590714135-15818-1-git-send-email-wang.yi59@zte.com.cn>
 X-Mailer: git-send-email 1.8.3.1
 X-MIMETrack: Itemize by SMTP Server on SZSMTP06/server/zte_ltd(Release 8.5.3FP6|November
- 21, 2013) at 2020-05-29 08:59:45,
+ 21, 2013) at 2020-05-29 09:00:39,
         Serialize by Router on notes_smtp/zte_ltd(Release 9.0.1FP7|August  17, 2016) at
- 2020-05-29 08:59:16,
-        Serialize complete at 2020-05-29 08:59:16
-X-MAIL: mse-fl1.zte.com.cn 04T0xBPF058301
+ 2020-05-29 09:00:10,
+        Serialize complete at 2020-05-29 09:00:10
+X-MAIL: mse-fl1.zte.com.cn 04T105YD060302
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -53,22 +53,22 @@ the previous kzalloc() call.
 
 Signed-off-by: Liao Pingfang <liao.pingfang@zte.com.cn>
 ---
- drivers/misc/mic/host/mic_main.c | 2 +-
+ arch/powerpc/kernel/nvram_64.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/mic/host/mic_main.c b/drivers/misc/mic/host/mic_main.c
-index be0784f..8296f31 100644
---- a/drivers/misc/mic/host/mic_main.c
-+++ b/drivers/misc/mic/host/mic_main.c
-@@ -164,7 +164,7 @@ static int mic_probe(struct pci_dev *pdev,
- 	mdev = kzalloc(sizeof(*mdev), GFP_KERNEL);
- 	if (!mdev) {
- 		rc = -ENOMEM;
--		dev_err(&pdev->dev, "mdev kmalloc failed rc %d\n", rc);
-+		dev_err(&pdev->dev, "mdev kzalloc failed rc %d\n", rc);
- 		goto mdev_alloc_fail;
+diff --git a/arch/powerpc/kernel/nvram_64.c b/arch/powerpc/kernel/nvram_64.c
+index fb4f610..c3a0c8d 100644
+--- a/arch/powerpc/kernel/nvram_64.c
++++ b/arch/powerpc/kernel/nvram_64.c
+@@ -892,7 +892,7 @@ loff_t __init nvram_create_partition(const char *name, int sig,
+ 	/* Create our OS partition */
+ 	new_part = kzalloc(sizeof(*new_part), GFP_KERNEL);
+ 	if (!new_part) {
+-		pr_err("%s: kmalloc failed\n", __func__);
++		pr_err("%s: kzalloc failed\n", __func__);
+ 		return -ENOMEM;
  	}
- 	mdev->id = ida_simple_get(&g_mic_ida, 0, MIC_MAX_NUM_DEVS, GFP_KERNEL);
+ 
 -- 
 2.9.5
 
