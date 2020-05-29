@@ -2,94 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4B61E7B38
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 13:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E571E7B30
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 13:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726914AbgE2LG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 07:06:57 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:8567 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725863AbgE2LGw (ORCPT
+        id S1726849AbgE2LFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 07:05:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725562AbgE2LFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 07:06:52 -0400
-X-UUID: cf913136332d4bb09b331d247ef7b198-20200529
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=jZUffhDsS3iywjAJ/yJ5JfUnRTxh9XWi8vUqBMSK1xw=;
-        b=MAeKSDfGibfhzNGpPlWlhJ/kWsZ4/N80ioIeOhEGfnRn/faegoj3xhPuJufnwFq45IodCqZ+aF5bUNUbzM8rYaIWU0OjCsYFaNOpfs8fsCBPRhKtCJe/9TaHin9DIIrmv4bbFFCv/8ljt+sDmssUASCaQQOUMOXjv6XuBF8n3JU=;
-X-UUID: cf913136332d4bb09b331d247ef7b198-20200529
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <jiaxin.yu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 844972419; Fri, 29 May 2020 19:06:46 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 29 May 2020 19:06:43 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 29 May 2020 19:06:43 +0800
-From:   Jiaxin Yu <jiaxin.yu@mediatek.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>,
-        <matthias.bgg@gmail.com>, <hariprasad.kelam@gmail.com>
-CC:     <alsa-devel@alsa-project.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <howie.huang@mediatek.com>,
-        <tzungbi@google.com>, Jiaxin Yu <jiaxin.yu@mediatek.com>
-Subject: [PATCH] ASoC: mediatek: mt6358: support DMIC one-wire mode
-Date:   Fri, 29 May 2020 19:04:53 +0800
-Message-ID: <1590750293-12769-1-git-send-email-jiaxin.yu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
+        Fri, 29 May 2020 07:05:06 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0474DC03E969;
+        Fri, 29 May 2020 04:05:06 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49YMCz3Rdsz9sSw;
+        Fri, 29 May 2020 21:05:03 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1590750304;
+        bh=X9/iH2QW5nj+uSRfOVtvjzvMyjI9lS43iE4tK2tvSLI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=MFezuS/Gk/MkKjvcezYd3HmpQh/ulca07s5Ny2N+9nAD6K+KuJGx+ZKzFxYYX8t/O
+         PPXI/dAhQ7NuAde40BAeTaguqW7Hg7ba4vdIW2RfmqcByKvykl7x7gq9yfUAyL395v
+         M9dD+5UkyJAg2ooHmkW7aO9ODC9lzA2PfIYG6pyfhySFvppXr7cXazsH+xx7tqT1K7
+         pYV55ReP6IKa9fEaPE7vbNgDh+4uboqvpCiZ9fXh4dfnT+N99yY1QIHITk1Poz1ahq
+         iHrMHbSJjo0R9m+tbyltMfseAzeLm2NIRfRjGkC5VsB/v0AK4mVRRuoeh7+rSlFMCh
+         hoomyhA/k2SVQ==
+Date:   Fri, 29 May 2020 21:05:02 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: linux-next: manual merge of the akpm-current tree with the tip tree
+Message-ID: <20200529210502.0a594149@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 56AF50F10CD9D0433DF18F5F850C09F0DF00BA6224F5C412DE4A190D0C76F8BF2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; boundary="Sig_/3r/UW0HLudC_ic1rJBGbXa3";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-U3VwcG9ydHMgRE1JQyBvbmUtd2lyZSBtb2RlLiBBZGRzIGEgbWl4ZXIgY29udHJvbCB0byBlbmFi
-bGUgYW5kIGRpc2FibGUuDQoNClNpZ25lZC1vZmYtYnk6IEppYXhpbiBZdSA8amlheGluLnl1QG1l
-ZGlhdGVrLmNvbT4NClJldmlld2VkLWJ5OiBUenVuZy1CaSBTaGloIDx0enVuZ2JpQGdvb2dsZS5j
-b20+DQotLS0NCiBzb3VuZC9zb2MvY29kZWNzL210NjM1OC5jIHwgMzMgKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKystDQogMSBmaWxlIGNoYW5nZWQsIDMyIGluc2VydGlvbnMoKyksIDEg
-ZGVsZXRpb24oLSkNCg0KZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvbXQ2MzU4LmMgYi9z
-b3VuZC9zb2MvY29kZWNzL210NjM1OC5jDQppbmRleCAxYjgzMGVhLi5jYTc2MjhkIDEwMDY0NA0K
-LS0tIGEvc291bmQvc29jL2NvZGVjcy9tdDYzNTguYw0KKysrIGIvc291bmQvc29jL2NvZGVjcy9t
-dDYzNTguYw0KQEAgLTk1LDYgKzk1LDggQEAgc3RydWN0IG10NjM1OF9wcml2IHsNCiAJc3RydWN0
-IHJlZ3VsYXRvciAqYXZkZF9yZWc7DQogDQogCWludCB3b3ZfZW5hYmxlZDsNCisNCisJaW50IGRt
-aWNfb25lX3dpcmVfbW9kZTsNCiB9Ow0KIA0KIGludCBtdDYzNThfc2V0X210a2FpZl9wcm90b2Nv
-bChzdHJ1Y3Qgc25kX3NvY19jb21wb25lbnQgKmNtcG50LA0KQEAgLTU2Niw2ICs1NjgsMjggQEAg
-c3RhdGljIGludCBtdDYzNThfcHV0X3dvdihzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwN
-CiAJcmV0dXJuIDA7DQogfQ0KIA0KK3N0YXRpYyBpbnQgbXQ2MzU4X2RtaWNfb25lX3dpcmVfbW9k
-ZV9nZXQoc3RydWN0IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsDQorCQkJCQkgc3RydWN0IHNuZF9j
-dGxfZWxlbV92YWx1ZSAqdWNvbnRyb2wpDQorew0KKwlzdHJ1Y3Qgc25kX3NvY19jb21wb25lbnQg
-KmNtcG50ID0gc25kX3NvY19rY29udHJvbF9jb21wb25lbnQoa2NvbnRyb2wpOw0KKwlzdHJ1Y3Qg
-bXQ2MzU4X3ByaXYgKnByaXYgPSBzbmRfc29jX2NvbXBvbmVudF9nZXRfZHJ2ZGF0YShjbXBudCk7
-DQorDQorCXVjb250cm9sLT52YWx1ZS5pbnRlZ2VyLnZhbHVlWzBdID0gcHJpdi0+ZG1pY19vbmVf
-d2lyZV9tb2RlOw0KKw0KKwlyZXR1cm4gMDsNCit9DQorDQorc3RhdGljIGludCBtdDYzNThfZG1p
-Y19vbmVfd2lyZV9tb2RlX3NldChzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwNCisJCQkJ
-CSBzdHJ1Y3Qgc25kX2N0bF9lbGVtX3ZhbHVlICp1Y29udHJvbCkNCit7DQorCXN0cnVjdCBzbmRf
-c29jX2NvbXBvbmVudCAqY21wbnQgPSBzbmRfc29jX2tjb250cm9sX2NvbXBvbmVudChrY29udHJv
-bCk7DQorCXN0cnVjdCBtdDYzNThfcHJpdiAqcHJpdiA9IHNuZF9zb2NfY29tcG9uZW50X2dldF9k
-cnZkYXRhKGNtcG50KTsNCisNCisJcHJpdi0+ZG1pY19vbmVfd2lyZV9tb2RlID0gdWNvbnRyb2wt
-PnZhbHVlLmludGVnZXIudmFsdWVbMF07DQorDQorCXJldHVybiAwOw0KK30NCisNCiBzdGF0aWMg
-Y29uc3QgREVDTEFSRV9UTFZfREJfU0NBTEUocGxheWJhY2tfdGx2LCAtMTAwMCwgMTAwLCAwKTsN
-CiBzdGF0aWMgY29uc3QgREVDTEFSRV9UTFZfREJfU0NBTEUocGdhX3RsdiwgMCwgNjAwLCAwKTsN
-CiANCkBAIC01ODgsNiArNjEyLDEwIEBAIHN0YXRpYyBpbnQgbXQ2MzU4X3B1dF93b3Yoc3RydWN0
-IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsDQogDQogCVNPQ19TSU5HTEVfQk9PTF9FWFQoIldha2Ut
-b24tVm9pY2UgUGhhc2UyIFN3aXRjaCIsIDAsDQogCQkJICAgIG10NjM1OF9nZXRfd292LCBtdDYz
-NThfcHV0X3dvdiksDQorDQorCVNPQ19TSU5HTEVfQk9PTF9FWFQoIkRtaWMgT25lIFdpcmUgTW9k
-ZSIsIDAsDQorCQkJICAgIG10NjM1OF9kbWljX29uZV93aXJlX21vZGVfZ2V0LA0KKwkJCSAgICBt
-dDYzNThfZG1pY19vbmVfd2lyZV9tb2RlX3NldCksDQogfTsNCiANCiAvKiBNVVggKi8NCkBAIC0x
-NzQwLDcgKzE3NjgsMTAgQEAgc3RhdGljIGludCBtdDYzNThfYW1pY19lbmFibGUoc3RydWN0IG10
-NjM1OF9wcml2ICpwcml2KQ0KIAltdDYzNThfbXRrYWlmX3R4X2VuYWJsZShwcml2KTsNCiANCiAJ
-LyogVUwgZG1pYyBzZXR0aW5nIG9mZiAqLw0KLQlyZWdtYXBfd3JpdGUocHJpdi0+cmVnbWFwLCBN
-VDYzNThfQUZFX1VMX1NSQ19DT04wX0gsIDB4MDAwMCk7DQorCWlmIChwcml2LT5kbWljX29uZV93
-aXJlX21vZGUpDQorCQlyZWdtYXBfd3JpdGUocHJpdi0+cmVnbWFwLCBNVDYzNThfQUZFX1VMX1NS
-Q19DT04wX0gsIDB4MDQwMCk7DQorCWVsc2UNCisJCXJlZ21hcF93cml0ZShwcml2LT5yZWdtYXAs
-IE1UNjM1OF9BRkVfVUxfU1JDX0NPTjBfSCwgMHgwMDgwKTsNCiANCiAJLyogVUwgdHVybiBvbiAq
-Lw0KIAlyZWdtYXBfd3JpdGUocHJpdi0+cmVnbWFwLCBNVDYzNThfQUZFX1VMX1NSQ19DT04wX0ws
-IDB4MDAwMSk7DQotLSANCjEuOC4xLjEuZGlydHkNCg==
+--Sig_/3r/UW0HLudC_ic1rJBGbXa3
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
+
+Today's linux-next merge of the akpm-current tree got a conflict in:
+
+  arch/x86/include/asm/efi.h
+
+between commit:
+
+  9b47c5275614 ("efi/libstub: Add definitions for console input and events")
+
+from the tip tree and patch:
+
+  "mm: reorder includes after introduction of linux/pgtable.h"
+
+from the akpm-current tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --git a/arch/x86/include/asm/efi.h b/arch/x86/include/asm/efi.h
+index 129e62146cbc..e7d2ccfdd507 100644
+--- a/arch/x86/include/asm/efi.h
++++ b/arch/x86/include/asm/efi.h
+@@ -3,13 +3,13 @@
+ #define _ASM_X86_EFI_H
+=20
+ #include <asm/fpu/api.h>
+-#include <linux/pgtable.h>
+ #include <asm/processor-flags.h>
+ #include <asm/tlb.h>
+ #include <asm/nospec-branch.h>
+ #include <asm/mmu_context.h>
+ #include <linux/build_bug.h>
+ #include <linux/kernel.h>
++#include <linux/pgtable.h>
+=20
+ extern unsigned long efi_fw_vendor, efi_config_table;
+=20
+
+--Sig_/3r/UW0HLudC_ic1rJBGbXa3
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7Q7F4ACgkQAVBC80lX
+0GyKHQgAjBvBS1s36FXrkwKecTmN3fVdiivvvhBeQrsYi9D+8+vgs8TGbxG32ydg
+qczqcWQ9SkIXHrjD7QVvDKH7bz1hgah3jcjwo2YdvMH/BRJE+OTx1DoA3Cwlz+wS
+VKlTHNYSk1YPdwlCaEiDZUnnHM9Z2f6xGKgpqRv8sDRZWSdVYUj3jTGm39KPfoRf
+eFUqDxRJFSA+9IG4v815CsZbbvNZech/u7VWErPaLljzMKypCj2KIZsEi1dh/pyI
+/yBFMb2fNEDDvE//I1Nj793+4Y97MA1qZPlQBu0pMvviSK9bawdvfbNSDJoPXHjZ
+ve/KRxRDk5o0CBO3Srpli/tN2aYlzQ==
+=28YW
+-----END PGP SIGNATURE-----
+
+--Sig_/3r/UW0HLudC_ic1rJBGbXa3--
