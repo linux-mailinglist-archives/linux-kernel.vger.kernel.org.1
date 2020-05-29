@@ -2,183 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317DD1E851B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4AE41E8541
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbgE2Rho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 13:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgE2Rhk (ORCPT
+        id S1727913AbgE2RkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 13:40:20 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:24480 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725839AbgE2RkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 13:37:40 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 331CCC08C5D1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 10:28:37 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id q24so1613109pjd.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 10:28:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=cJfSRrco1qM2YXrH/DOel6eFytXDvyntky1ivJBXA2s=;
-        b=FUcPhaASBKsv07EL+A0n46iZVTYwgOoJKc6tUqYO+SGfn2KCRIqzZ7UoZ0UN0w6YcG
-         8mKgqSsAKSkNNPJomeokRa4O+O9kdc5lFT/SNfe0HJqkizwdh7ZNk5DqFSRI64df+CZj
-         LNIiVw8cmbXRVLDy1d8aeHqLeOmt8yjQlbg+UCtFrK81UW7CwKl4tq1PN3OFv3jN0x3S
-         ppnx1F5TAT60GCXZX6CJA0Vumqk6inj49KZbXncWaIaDym32BuXuBLuYZqBNfcLlPQiI
-         eCqhpsAO7mthFwM31OpugwKO0WHd9k7q4rNbt1A8WTaN1dcpovyS2bVapRfsjKDS1js5
-         zG4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=cJfSRrco1qM2YXrH/DOel6eFytXDvyntky1ivJBXA2s=;
-        b=Xu2OUseFLa273MIRKq9iTf9I8a+8jT48OXYplxbgbKA1kc88cbpQ+dbMfjMOLAAJKb
-         wdJLDmPZ+SZ3/vQ1WNkLt4HELF/iTtVtRePQt+ji0LAtD2/22h41xdI8njq1IW+7pDFz
-         YjdLGwK3WaIip7ZRGshjHk5n1VcnnT2AjioM1D5v+mXniS3JjtgYXKvtu6l7YH+4XB4n
-         9EQdTtXCwlMHc7Sad7aLmmpX5MjJrvgivQhTA6oVzVI2vj5BUdUz/S4NwLSeG1EBlruI
-         YZB+3MIaHUhNRw1DEkR0D5LMZb1BidJtphcxTpI+0+WsKaV2TWNls6bYbwQ4MN3dus38
-         cnPw==
-X-Gm-Message-State: AOAM532P9rwwVzjb3Q02LowRmElHiqZms3Gf692fkix7thRswTCHpczf
-        c4sPLnYKJnIuwzprYkMj70Rbcg==
-X-Google-Smtp-Source: ABdhPJx5OBH+PjgSMcKmkauk+xVTBh76bT3bcmamqtNOqKDFatNbm5efaTa3W/6/tP2SttaSx5IqqQ==
-X-Received: by 2002:a17:902:8c8a:: with SMTP id t10mr9864120plo.125.1590773316678;
-        Fri, 29 May 2020 10:28:36 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:2dc1:c1e9:9ff7:54d4? ([2601:646:c200:1ef2:2dc1:c1e9:9ff7:54d4])
-        by smtp.gmail.com with ESMTPSA id b4sm398931pfg.75.2020.05.29.10.28.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 May 2020 10:28:35 -0700 (PDT)
+        Fri, 29 May 2020 13:40:19 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590774018; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=kTdSjBnmUHE6a+/LCLe8XhWTibwfO24CX+6sF3cHX9U=; b=KxMpuEXTh5LgWLztSPqiUMXXAUoFIAXfgLbSZb1/foCBIK7YjFIhUIUAFooEgb0l/vG8vump
+ QQdtBvRwXoCjtRw1MtNPYVNfdV9y2Bjo5cO2fBmVLEICJmz0pvomVZeBmXGmO2FZAhifXsqj
+ Dc4aCZnj4FZPmCGBdgBHyPPke4A=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5ed146594776d1da6d03d722 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 May 2020 17:28:57
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8389DC43395; Fri, 29 May 2020 17:28:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C47CAC433C9;
+        Fri, 29 May 2020 17:28:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C47CAC433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Marek =?utf-8?Q?Beh=C3=BAn?= <marek.behun@nic.cz>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mwifiex: Add support for NL80211_ATTR_MAX_AP_ASSOC_STA
+References: <20200521123559.29028-1-pali@kernel.org>
+        <20200529171902.wwikyr4mmqin7ce2@pali>
+Date:   Fri, 29 May 2020 20:28:52 +0300
+In-Reply-To: <20200529171902.wwikyr4mmqin7ce2@pali> ("Pali \=\?utf-8\?Q\?Roh\?\=
+ \=\?utf-8\?Q\?\=C3\=A1r\=22's\?\= message of
+        "Fri, 29 May 2020 19:19:02 +0200")
+Message-ID: <87blm6sl9n.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 1/6] x86/entry: Introduce local_db_{save,restore}()
-Date:   Fri, 29 May 2020 10:28:33 -0700
-Message-Id: <AC94E789-9EC7-4156-955C-841FF7114176@amacapital.net>
-References: <20200528213352.GC4496@worktop.programming.kicks-ass.net>
-Cc:     Andrew Cooper <andrew.cooper3@citrix.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        sean.j.christopherson@intel.com, daniel.thompson@linaro.org
-In-Reply-To: <20200528213352.GC4496@worktop.programming.kicks-ass.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-X-Mailer: iPhone Mail (17E262)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Pali Roh=C3=A1r <pali@kernel.org> writes:
 
-
-> On May 28, 2020, at 2:34 PM, Peter Zijlstra <peterz@infradead.org> wrote:
->=20
-> =EF=BB=BFOn Thu, May 28, 2020 at 11:15:50PM +0200, Peter Zijlstra wrote:
->>> On Thu, May 28, 2020 at 09:52:30PM +0100, Andrew Cooper wrote:
->>> On 28/05/2020 21:19, Peter Zijlstra wrote:
->>>> --- a/arch/x86/include/asm/debugreg.h
->>>> +++ b/arch/x86/include/asm/debugreg.h
->>>> @@ -113,6 +113,31 @@ static inline void debug_stack_usage_inc
->>>> static inline void debug_stack_usage_dec(void) { }
->>>> #endif /* X86_64 */
->>>>=20
->>>> +static __always_inline void local_db_save(unsigned long *dr7)
->>>> +{
->>>> +    get_debugreg(*dr7, 7);
->>>> +    if (*dr7)
->>>> +        set_debugreg(0, 7);
->>>=20
->>> %dr7 has an architecturally stuck bit in it.
->>>=20
->>> You want *dr7 !=3D 0x400 to avoid writing 0 unconditionally.
+> On Thursday 21 May 2020 14:35:59 Pali Roh=C3=A1r wrote:
+>> SD8997 firmware sends TLV_TYPE_MAX_CONN with struct hw_spec_max_conn to
+>> inform kernel about maximum number of p2p connections and stations in AP
+>> mode.
 >>=20
->> Do we have to have that bit set when writing it? Otherwise I might
->> actually prefer masking it out.
->=20
-> I'm an idiot, we write a plain 9..
->=20
->>> Also, API wise, wouldn't it be nicer to write "dr7 =3D local_db_save()"
->>> rather than having a void function returning a single long via pointer?
+>> During initialization of SD8997 wifi chip kernel prints warning:
 >>=20
->> Probably.. I started with local_irq_save() and .. well, n/m. I'll change
->> it ;-)
->=20
-> How's this?
->=20
-> ---
-> --- a/arch/x86/include/asm/debugreg.h
-> +++ b/arch/x86/include/asm/debugreg.h
-> @@ -113,6 +113,36 @@ static inline void debug_stack_usage_inc
-> static inline void debug_stack_usage_dec(void) { }
-> #endif /* X86_64 */
->=20
-> +static __always_inline unsigned long local_db_save(void)
-> +{
-> +    unsigned long dr7;
-> +
-> +    get_debugreg(&dr7, 7);
-> +    dr7 ^=3D 0x400;
+>>   mwifiex_sdio mmc0:0001:1: Unknown GET_HW_SPEC TLV type: 0x217
+>>=20
+>> This patch adds support for parsing TLV_TYPE_MAX_CONN (0x217) and sets
+>> appropriate cfg80211 member 'max_ap_assoc_sta' from retrieved structure.
+>>=20
+>> It allows userspace to retrieve NL80211_ATTR_MAX_AP_ASSOC_STA attribute.
+>>=20
+>> Signed-off-by: Pali Roh=C3=A1r <pali@kernel.org>
+>
+> Hello Kalle and Ganapathi, could you please review this patch?
 
-Why xor?  This seems extra confusing.
+To reduce email please first check the status from patchwork:
 
-> +    if (dr7)
-> +        set_debugreg(0, 7);
-> +    /*
-> +     * Ensure the compiler doesn't lower the above statements into
-> +     * the critical section; disabling breakpoints late would not
-> +     * be good.
-> +     */
-> +    barrier();
-> +
-> +    return dr7;
-> +}
-> +
-> +static __always_inline void local_db_restore(unsigned long dr7)
-> +{
-> +    /*
-> +     * Ensure the compiler doesn't raise this statement into
-> +     * the critical section; enabling breakpoints early would
-> +     * not be good.
-> +     */
-> +    barrier();
-> +    if (dr7)
-> +        set_debugreg(dr7, 7);
-> +}
-> +
-> #ifdef CONFIG_CPU_SUP_AMD
-> extern void set_dr_addr_mask(unsigned long mask, int dr);
-> #else
-> --- a/arch/x86/kernel/traps.c
-> +++ b/arch/x86/kernel/traps.c
-> @@ -727,15 +727,7 @@ static __always_inline void debug_enter(
->     * Entry text is excluded for HW_BP_X and cpu_entry_area, which
->     * includes the entry stack is excluded for everything.
->     */
-> -    get_debugreg(*dr7, 7);
-> -    set_debugreg(0, 7);
-> -
-> -    /*
-> -     * Ensure the compiler doesn't lower the above statements into
-> -     * the critical section; disabling breakpoints late would not
-> -     * be good.
-> -     */
-> -    barrier();
-> +    *dr7 =3D local_db_save();
->=20
->    /*
->     * The Intel SDM says:
-> @@ -756,13 +748,7 @@ static __always_inline void debug_enter(
->=20
-> static __always_inline void debug_exit(unsigned long dr7)
-> {
-> -    /*
-> -     * Ensure the compiler doesn't raise this statement into
-> -     * the critical section; enabling breakpoints early would
-> -     * not be good.
-> -     */
-> -    barrier();
-> -    set_debugreg(dr7, 7);
-> +    local_db_restore(dr7);
-> }
->=20
-> /*
->=20
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes#checking_state_of_patches_from_patchwork
+
+--=20
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
