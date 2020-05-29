@@ -2,95 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69ACB1E7974
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 11:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6582B1E7976
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 11:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726071AbgE2J3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 05:29:30 -0400
-Received: from mail-m975.mail.163.com ([123.126.97.5]:35666 "EHLO
-        mail-m975.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725681AbgE2J33 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 05:29:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=+4EEy
-        wAUFITYWURokQ5kreGf4kDxLIlPgQaIE9PyRbY=; b=pRuK9fJQq1z9deHbRSWok
-        A+FwXAWRZBAtMFUiSdgU1qdI7iVoj76wdnVkxu3h8ZQpQi2UoUE08/2iAqdI9KUn
-        0Xmv3Xu/psDgBJK8vHCQdVbKW9nd/3X/7APjFSdHy32RgNEIk2UaVzXJv3SiTWnM
-        V1k2rzOaC130arGEbT4MFA=
-Received: from [172.20.10.2] (unknown [124.64.18.22])
-        by smtp5 (Coremail) with SMTP id HdxpCgCnUbXl1dBefUjPAA--.121S2;
-        Fri, 29 May 2020 17:29:19 +0800 (CST)
-Subject: Re: [PATCH] function:stacktrace/mips: Fix function:stacktrace for
- mips
-To:     tsbogend@alpha.franken.de
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liulichao@loongson.cn
-References: <20200528123640.4285-1-yuanjunqing66@163.com>
-From:   yuanjunqing <yuanjunqing66@163.com>
-Message-ID: <11c90f15-0a25-e628-c8db-53343c351085@163.com>
-Date:   Fri, 29 May 2020 17:29:08 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726411AbgE2JaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 05:30:09 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5391 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725601AbgE2JaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 05:30:08 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 9C4A5505144E1C536119;
+        Fri, 29 May 2020 17:30:06 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 29 May 2020 17:30:00 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH] Revert "f2fs: fix quota_sync failure due to f2fs_lock_op"
+Date:   Fri, 29 May 2020 17:29:47 +0800
+Message-ID: <20200529092947.7890-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.18.0.rc1
 MIME-Version: 1.0
-In-Reply-To: <20200528123640.4285-1-yuanjunqing66@163.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: HdxpCgCnUbXl1dBefUjPAA--.121S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxJrW5GryDtFW8JF4fJFWUJwb_yoW8Xw4rp3
-        4qyF9rGrWUXFs0k34fWF95ur1Yqr4kJ3y2vry7JrsIk3ZIgFs3AFn2k3Z0q3yq9ry8Ka4f
-        ur1kuF45Cr4v9rDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jfyCJUUUUU=
-X-Originating-IP: [124.64.18.22]
-X-CM-SenderInfo: h1xd0ypxqtx0rjwwqiywtou0bp/xtbBUQ8zXFaD7RE31AAAs7
+Content-Type: text/plain
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-May I ask if you have received this email.
+Under heavy fsstress, we may triggle panic while issuing discard,
+because __check_sit_bitmap() detects that discard command may earse
+valid data blocks, the root cause is as below race stack described,
+since we removed lock when flushing quota data, quota data writeback
+may race with write_checkpoint(), so that it causes inconsistency in
+between cached discard entry and segment bitmap.
 
-ÔÚ 2020/5/28 ÏÂÎç8:36, YuanJunQing Ð´µÀ:
-> ftrace_call as global symbol in ftrace_caller(), this
-> will cause function:stacktrace can not work well.
-> i.e. echo do_IRQ:stacktrace > set_ftrace_filte
->
-> Signed-off-by: YuanJunQing <yuanjunqing66@163.com>
-> ---
->  arch/mips/kernel/mcount.S | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/mips/kernel/mcount.S b/arch/mips/kernel/mcount.S
-> index cff52b283e03..cd5545764e5f 100644
-> --- a/arch/mips/kernel/mcount.S
-> +++ b/arch/mips/kernel/mcount.S
-> @@ -87,8 +87,15 @@ EXPORT_SYMBOL(_mcount)
->  	PTR_LA   t1, _etext
->  	sltu     t3, t1, a0	/* t3 = (a0 > _etext) */
->  	or       t1, t2, t3
-> +	PTR_LA	 t2, stlab-4 	/* t2: "function:stacktrace" return address */
-> +	move	 a1, AT		/* arg2: parent's return address */
->  	beqz     t1, ftrace_call
-> -	 nop
-> +	 nop			/* "function:stacktrace" return address */
-> +stlab:
-> +	PTR_LA	t2, stlab-4
-> +	/* ftrace_call_end: ftrace_call return address */
-> +	beq	t2,ra, ftrace_call_end
-> +	nop
->  #if defined(KBUILD_MCOUNT_RA_ADDRESS) && defined(CONFIG_32BIT)
->  	PTR_SUBU a0, a0, 16	/* arg1: adjust to module's recorded callsite */
->  #else
-> @@ -98,7 +105,9 @@ EXPORT_SYMBOL(_mcount)
->  	.globl ftrace_call
->  ftrace_call:
->  	nop	/* a placeholder for the call to a real tracing function */
-> -	 move	a1, AT		/* arg2: parent's return address */
-> +	move	ra, t2		/* t2: "function:stacktrace" return address */
-> +
-> +ftrace_call_end:
->  
->  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
->  	.globl ftrace_graph_call
+- f2fs_write_checkpoint
+ - block_operations
+  - set_sbi_flag(sbi, SBI_QUOTA_SKIP_FLUSH)
+ - f2fs_flush_sit_entries
+  - add_discard_addrs
+   - __set_bit_le(i, (void *)de->discard_map);
+						- f2fs_write_data_pages
+						 - f2fs_write_single_data_page
+						   : inode is quota one, cp_rwsem won't be locked
+						  - f2fs_do_write_data_page
+						   - f2fs_allocate_data_block
+						    - f2fs_wait_discard_bio
+						      : discard entry has not been added yet.
+						    - update_sit_entry
+ - f2fs_clear_prefree_segments
+  - f2fs_issue_discard
+  : add discard entry
+
+This patch fixes this issue by reverting 435cbab95e39 ("f2fs: fix quota_sync
+failure due to f2fs_lock_op").
+
+Fixes: 435cbab95e39 ("f2fs: fix quota_sync failure due to f2fs_lock_op")
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+ fs/f2fs/compress.c | 8 +++-----
+ fs/f2fs/data.c     | 4 ++--
+ 2 files changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index a53578a89211..62c4857ae46d 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -1097,7 +1097,7 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
+ 	loff_t psize;
+ 	int i, err;
+ 
+-	if (!IS_NOQUOTA(inode) && !f2fs_trylock_op(sbi))
++	if (!f2fs_trylock_op(sbi))
+ 		return -EAGAIN;
+ 
+ 	set_new_dnode(&dn, cc->inode, NULL, NULL, 0);
+@@ -1204,8 +1204,7 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
+ 		set_inode_flag(inode, FI_FIRST_BLOCK_WRITTEN);
+ 
+ 	f2fs_put_dnode(&dn);
+-	if (!IS_NOQUOTA(inode))
+-		f2fs_unlock_op(sbi);
++	f2fs_unlock_op(sbi);
+ 
+ 	spin_lock(&fi->i_size_lock);
+ 	if (fi->last_disk_size < psize)
+@@ -1231,8 +1230,7 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
+ out_put_dnode:
+ 	f2fs_put_dnode(&dn);
+ out_unlock_op:
+-	if (!IS_NOQUOTA(inode))
+-		f2fs_unlock_op(sbi);
++	f2fs_unlock_op(sbi);
+ 	return -EAGAIN;
+ }
+ 
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 999a36ff05f1..d983ad54f318 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -2724,8 +2724,8 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
+ 			f2fs_available_free_memory(sbi, BASE_CHECK))))
+ 		goto redirty_out;
+ 
+-	/* Dentry/quota blocks are controlled by checkpoint */
+-	if (S_ISDIR(inode->i_mode) || IS_NOQUOTA(inode)) {
++	/* Dentry blocks are controlled by checkpoint */
++	if (S_ISDIR(inode->i_mode)) {
+ 		fio.need_lock = LOCK_DONE;
+ 		err = f2fs_do_write_data_page(&fio);
+ 		goto done;
+-- 
+2.18.0.rc1
 
