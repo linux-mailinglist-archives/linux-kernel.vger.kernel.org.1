@@ -2,74 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB6E1E8559
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5728D1E855B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728019AbgE2Rlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 13:41:46 -0400
-Received: from outpost5.zedat.fu-berlin.de ([130.133.4.89]:56487 "EHLO
-        outpost5.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726974AbgE2Rlq (ORCPT
+        id S1728042AbgE2Rlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 13:41:49 -0400
+Received: from outpost17.zedat.fu-berlin.de ([130.133.4.110]:39935 "EHLO
+        outpost17.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726974AbgE2Rls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 13:41:46 -0400
-X-Greylist: delayed 431 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 May 2020 13:41:45 EDT
+        Fri, 29 May 2020 13:41:48 -0400
 Received: from relay1.zedat.fu-berlin.de ([130.133.4.67])
           by outpost.zedat.fu-berlin.de (Exim 4.93)
           with esmtps (TLS1.2)
           tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1jeitp-002w2B-Im; Fri, 29 May 2020 19:34:29 +0200
+          id 1jeitq-002w2G-JN; Fri, 29 May 2020 19:34:30 +0200
 Received: from z6.physik.fu-berlin.de ([160.45.32.137] helo=z6)
           by relay1.zedat.fu-berlin.de (Exim 4.93)
           with esmtps (TLS1.2)
           tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1jeitp-001GCj-Ga; Fri, 29 May 2020 19:34:29 +0200
+          id 1jeitq-001GCl-Gk; Fri, 29 May 2020 19:34:30 +0200
 Received: from glaubitz by z6 with local (Exim 4.93)
         (envelope-from <glaubitz@physik.fu-berlin.de>)
-        id 1jeiti-00HZGa-MO; Fri, 29 May 2020 19:34:22 +0200
+        id 1jeiti-00HZHI-QL; Fri, 29 May 2020 19:34:22 +0200
 From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 To:     linux-sh@vger.kernel.org
 Cc:     Rich Felker <dalias@libc.org>,
         Yoshinori Sato <ysato@users.sourceforge.jp>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
-        linux-kernel@vger.kernel.org
-Subject: 
-Date:   Fri, 29 May 2020 19:34:18 +0200
-Message-Id: <20200529173419.4185337-1-glaubitz@physik.fu-berlin.de>
+        linux-kernel@vger.kernel.org,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: [PATCH] sh: Implement __get_user_u64() required for 64-bit get_user()
+Date:   Fri, 29 May 2020 19:34:19 +0200
+Message-Id: <20200529173419.4185337-2-glaubitz@physik.fu-berlin.de>
 X-Mailer: git-send-email 2.27.0.rc2
+In-Reply-To: <20200529173419.4185337-1-glaubitz@physik.fu-berlin.de>
+References: <20200529173419.4185337-1-glaubitz@physik.fu-berlin.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Originating-IP: 160.45.32.137
-X-ZEDAT-Hint: R
+X-ZEDAT-Hint: RV
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Trying to build the kernel with CONFIG_INFINIBAND_USER_ACCESS enabled fails
 
-Hi!
+     ERROR: "__get_user_unknown" [drivers/infiniband/core/ib_uverbs.ko] undefined!
 
-This is my attempt of implementing a 64-bit get_user() for SH to address the
-build problem when CONFIG_INFINIBAND_USER_ACCESS is enabled.
+with on SH since the kernel misses a 64-bit implementation of get_user().
 
-I have carefully looked at the existing implementations of __get_user_asm(),
-__put_user_asm() and the 64-bit __put_user_u64() to come up with the 64-bit
-__get_user_u64().
+Implement the missing 64-bit get_user() as __get_user_u64(), matching the
+already existing __put_user_u64() which implements the 64-bit put_user().
 
-I'm admittedly not an expert when it comes to writing GCC contraints, so the
-code might be completely wrong. However, it builds fine without warnings
-and fixes the aforementioned issue for me.
+Signed-off-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+---
+ arch/sh/include/asm/uaccess_32.h | 49 ++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
-Hopefully someone from the more experienced group of kernel developers can
-review my code and help me get it into proper shape for submission.
+diff --git a/arch/sh/include/asm/uaccess_32.h b/arch/sh/include/asm/uaccess_32.h
+index 624cf55acc27..8bc1cb50f8bf 100644
+--- a/arch/sh/include/asm/uaccess_32.h
++++ b/arch/sh/include/asm/uaccess_32.h
+@@ -26,6 +26,9 @@ do {								\
+ 	case 4:							\
+ 		__get_user_asm(x, ptr, retval, "l");		\
+ 		break;						\
++	case 8:							\
++		__get_user_u64(x, ptr, retval);			\
++		break;						\
+ 	default:						\
+ 		__get_user_unknown();				\
+ 		break;						\
+@@ -66,6 +69,52 @@ do {							\
+ 
+ extern void __get_user_unknown(void);
+ 
++#if defined(CONFIG_CPU_LITTLE_ENDIAN)
++#define __get_user_u64(x, addr, err) \
++({ \
++__asm__ __volatile__( \
++	"1:\n\t" \
++	"mov.l	%2,%R1\n\t" \
++	"mov.l	%T2,%S1\n\t" \
++	"2:\n" \
++	".section	.fixup,\"ax\"\n" \
++	"3:\n\t" \
++	"mov	#0, %1\n\t" \
++	"mov.l	4f, %0\n\t" \
++	"jmp	@%0\n\t" \
++	" mov	%3, %0\n\t" \
++	".balign	4\n" \
++	"4:	.long	2b\n\t" \
++	".previous\n" \
++	".section	__ex_table,\"a\"\n\t" \
++	".long	1b, 3b\n\t" \
++	".previous" \
++	:"=&r" (err), "=&r" (x) \
++	:"m" (__m(addr)), "i" (-EFAULT), "0" (err)); })
++#else
++#define __get_user_u64(x, addr, err) \
++({ \
++__asm__ __volatile__( \
++	"1:\n\t" \
++	"mov.l	%2,%S1\n\t" \
++	"mov.l	%T2,%R1\n\t" \
++	"2:\n" \
++	".section	.fixup,\"ax\"\n" \
++	"3:\n\t" \
++	"mov	#0, %1\n\t" \
++	"mov.l	4f, %0\n\t" \
++	"jmp	@%0\n\t" \
++	" mov	%3, %0\n\t" \
++	".balign	4\n" \
++	"4:	.long	2b\n\t" \
++	".previous\n" \
++	".section	__ex_table,\"a\"\n\t" \
++	".long	1b, 3b\n\t" \
++	".previous" \
++	:"=&r" (err), "=&r" (x) \
++	:"m" (__m(addr)), "i" (-EFAULT), "0" (err)); })
++#endif
++
+ #define __put_user_size(x,ptr,size,retval)		\
+ do {							\
+ 	retval = 0;					\
+-- 
+2.27.0.rc2
 
-Thanks,
-Adrian
-
---
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
