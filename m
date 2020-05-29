@@ -2,100 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F29F1E725E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EFE21E7279
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404776AbgE2CEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 22:04:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390805AbgE2CEr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 22:04:47 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D49C08C5C6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 19:04:46 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id w20so560788pga.6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 19:04:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LL/jvqQlSfNLPZ0wfLwjnZyalyTmqHTub54bRD3jbnQ=;
-        b=CB8UJu43uLR+k80X1p0YZ9wcwqpXFIp4VKgWFtq1wfSf5yBA86r8kcWfxk2/wGwPFf
-         R68/mqP6pQ024kpfNyySiA7+ISmOeIe+DkTDJYzjgAqJk9jrNmA03/SN56eC2ul+C+aM
-         NoNeWf60hTtE7gEczG80K2ezDUc4RUceIbw3OgvIoUVG8UNngJpiiTXzHWGXb2MssrTv
-         MKswTNXx2oIkkeLOl9hdnVnxZS5UnZ+f6k78vr/ygq0/fBSN3NVlmnsP2dWijbeakwtt
-         /sduFzESsJOKOdRRVZm3PER+yZygU73bAdvp5jkNtNTi9gb9v/JwNk/EHiugFGzgniN/
-         midQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LL/jvqQlSfNLPZ0wfLwjnZyalyTmqHTub54bRD3jbnQ=;
-        b=DnOSFUeJ8UxX8paxyjQSx9cesfZm/bXLNTk0pIfAZpyinyqZ2kpjeZg+QRb7RA2WMZ
-         XlomuQ6o3H5n82a6J4GA2jiZBcZ46XTJjUymX+MNSgkKIyPv0Q0T0c9u/UKPW6/f2czg
-         Gt7iPQmqqe4h25OGLo96mPRY852PprzonMtPlRiuB0tLYzZk1EC/UPEKsWj/Drj/gd53
-         G0h2QlhQP9/1uiZmynnorKlCu2/EmB725IrCqgpP0dmRn9eHjlt0brN/cRADePOiHzU1
-         Bs/HB7277VQqwBHODcVZrd5dTns/SD+WdSQHsOfgL1U7NOj1Ems8BMxdG8AWK56nSiiw
-         gbyw==
-X-Gm-Message-State: AOAM530NmXhqGi2/XGmTqX7cBUNliAMIvEsAl+Z+/UgEDWXdGYEupMQ8
-        sZ+oos2uY4aA3qDqBe4j1UQ=
-X-Google-Smtp-Source: ABdhPJxYKd9G2iMUvq8h6/VFZyECUotvwOyFG6LXUPPS7iZIRlv0J4GKSMkKoV7U7VL/1QFoms8DXw==
-X-Received: by 2002:a63:ea42:: with SMTP id l2mr4235540pgk.198.1590717886358;
-        Thu, 28 May 2020 19:04:46 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id q44sm6842027pja.29.2020.05.28.19.04.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 19:04:45 -0700 (PDT)
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Date:   Fri, 29 May 2020 11:04:42 +0900
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH] twist: allow converting pr_devel()/pr_debug() into
- printk(KERN_DEBUG)
-Message-ID: <20200529020442.GA526@jagdpanzerIV.localdomain>
-References: <20200524145034.10697-1-penguin-kernel@I-love.SAKURA.ne.jp>
- <20200525084218.GC5300@linux-b0ei>
- <20200525091157.GF755@jagdpanzerIV.localdomain>
- <f02a71bc-0867-be60-182b-10d7377b2b04@i-love.sakura.ne.jp>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f02a71bc-0867-be60-182b-10d7377b2b04@i-love.sakura.ne.jp>
+        id S2405109AbgE2CO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 22:14:59 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:60110 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404344AbgE2CO6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 22:14:58 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6D7FF1A0098;
+        Fri, 29 May 2020 04:14:55 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A9EA31A0099;
+        Fri, 29 May 2020 04:14:50 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id BC2EE402DF;
+        Fri, 29 May 2020 10:14:44 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     daniel.lezcano@linaro.org, tglx@linutronix.de, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V3] dt-bindings: timer: Convert i.MX GPT to json-schema
+Date:   Fri, 29 May 2020 10:04:42 +0800
+Message-Id: <1590717882-20922-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/05/25 19:43), Tetsuo Handa wrote:
-> >> On Sun 2020-05-24 23:50:34, Tetsuo Handa wrote:
-> >>> syzbot found a NULL pointer dereference bug inside mptcp_recvmsg() due to
-> >>> ssock == NULL, but this bug manifested inside selinux_socket_recvmsg()
-> >>> because pr_debug() was no-op [1].
-> >>>
-> >>>   pr_debug("fallback-read subflow=%p",
-> >>>            mptcp_subflow_ctx(ssock->sk));
-> >>>   copied = sock_recvmsg(ssock, msg, flags);
-> >>
-> >> The NULL pointer deference was found even without this patch.
-> >> This patch would just cause that it will manifest itself on another
-> >> place. What is the benefit, please?
-> 
-> It would help localizing the bug in this specific case.
-> 
-> It's not only about %p, even %d can crash kernel or leak sensitive
-> info (if it happens after-free/out-of-bounds/uninit). Overall it
-> increases code coverage and allows to catch more bugs earlier.
+Convert the i.MX GPT binding to DT schema format using json-schema.
 
-I don't know. Relying on random pr_debug()-s that can be added or
-removed any time. oops backtrace should help with that. You are
-not going to add pr_debug() all over the kernel, are you?
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+Changes since V2:
+	- in compatible properties, group all the ones with the same
+	  fallback to a single 'items' list using enum for the first entry.
+---
+ .../devicetree/bindings/timer/fsl,imxgpt.txt       | 45 --------------
+ .../devicetree/bindings/timer/fsl,imxgpt.yaml      | 72 ++++++++++++++++++++++
+ 2 files changed, 72 insertions(+), 45 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/timer/fsl,imxgpt.txt
+ create mode 100644 Documentation/devicetree/bindings/timer/fsl,imxgpt.yaml
 
-	-ss
+diff --git a/Documentation/devicetree/bindings/timer/fsl,imxgpt.txt b/Documentation/devicetree/bindings/timer/fsl,imxgpt.txt
+deleted file mode 100644
+index 5d8fd5b..0000000
+--- a/Documentation/devicetree/bindings/timer/fsl,imxgpt.txt
++++ /dev/null
+@@ -1,45 +0,0 @@
+-Freescale i.MX General Purpose Timer (GPT)
+-
+-Required properties:
+-
+-- compatible : should be one of following:
+-  for i.MX1:
+-  - "fsl,imx1-gpt";
+-  for i.MX21:
+-  - "fsl,imx21-gpt";
+-  for i.MX27:
+-  - "fsl,imx27-gpt", "fsl,imx21-gpt";
+-  for i.MX31:
+-  - "fsl,imx31-gpt";
+-  for i.MX25:
+-  - "fsl,imx25-gpt", "fsl,imx31-gpt";
+-  for i.MX50:
+-  - "fsl,imx50-gpt", "fsl,imx31-gpt";
+-  for i.MX51:
+-  - "fsl,imx51-gpt", "fsl,imx31-gpt";
+-  for i.MX53:
+-  - "fsl,imx53-gpt", "fsl,imx31-gpt";
+-  for i.MX6Q:
+-  - "fsl,imx6q-gpt", "fsl,imx31-gpt";
+-  for i.MX6DL:
+-  - "fsl,imx6dl-gpt";
+-  for i.MX6SL:
+-  - "fsl,imx6sl-gpt", "fsl,imx6dl-gpt";
+-  for i.MX6SX:
+-  - "fsl,imx6sx-gpt", "fsl,imx6dl-gpt";
+-- reg : specifies base physical address and size of the registers.
+-- interrupts : should be the gpt interrupt.
+-- clocks : the clocks provided by the SoC to drive the timer, must contain
+-           an entry for each entry in clock-names.
+-- clock-names : must include "ipg" entry first, then "per" entry.
+-
+-Example:
+-
+-gpt1: timer@10003000 {
+-	compatible = "fsl,imx27-gpt", "fsl,imx21-gpt";
+-	reg = <0x10003000 0x1000>;
+-	interrupts = <26>;
+-	clocks = <&clks IMX27_CLK_GPT1_IPG_GATE>,
+-		 <&clks IMX27_CLK_PER1_GATE>;
+-	clock-names = "ipg", "per";
+-};
+diff --git a/Documentation/devicetree/bindings/timer/fsl,imxgpt.yaml b/Documentation/devicetree/bindings/timer/fsl,imxgpt.yaml
+new file mode 100644
+index 0000000..883f7f4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/timer/fsl,imxgpt.yaml
+@@ -0,0 +1,72 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/timer/fsl,imxgpt.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale i.MX General Purpose Timer (GPT)
++
++maintainers:
++  - Sascha Hauer <s.hauer@pengutronix.de>
++
++properties:
++  compatible:
++    oneOf:
++      - const: fsl,imx1-gpt
++      - const: fsl,imx21-gpt
++      - items:
++          - const: fsl,imx27-gpt
++          - const: fsl,imx21-gpt
++      - const: fsl,imx31-gpt
++      - items:
++          - enum:
++            - fsl,imx25-gpt
++            - fsl,imx50-gpt
++            - fsl,imx51-gpt
++            - fsl,imx53-gpt
++            - fsl,imx6q-gpt
++          - const: fsl,imx31-gpt
++      - const: fsl,imx6dl-gpt
++      - items:
++          - enum:
++            - fsl,imx6sl-gpt
++            - fsl,imx6sx-gpt
++          - const: fsl,imx6dl-gpt
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: SoC GPT ipg clock
++      - description: SoC GPT per clock
++
++  clock-names:
++    items:
++      - const: ipg
++      - const: per
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/imx27-clock.h>
++
++    timer@10003000 {
++        compatible = "fsl,imx27-gpt", "fsl,imx21-gpt";
++        reg = <0x10003000 0x1000>;
++        interrupts = <26>;
++        clocks = <&clks IMX27_CLK_GPT1_IPG_GATE>,
++                 <&clks IMX27_CLK_PER1_GATE>;
++        clock-names = "ipg", "per";
++    };
+-- 
+2.7.4
+
