@@ -2,116 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A211E8349
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 18:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43861E835F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 18:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726907AbgE2QLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 12:11:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:38950 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725601AbgE2QLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 12:11:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 56EAD55D;
-        Fri, 29 May 2020 09:11:11 -0700 (PDT)
-Received: from [192.168.0.14] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EB1183F718;
-        Fri, 29 May 2020 09:11:08 -0700 (PDT)
-Subject: Re: [PATCH v8 5/5] dt-bindings: chosen: Document
- linux,low-memory-range for arm64 kdump
-To:     Rob Herring <robh@kernel.org>, chenzhou <chenzhou10@huawei.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, dyoung@redhat.com,
-        Baoquan He <bhe@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        John.p.donnelly@oracle.com, pkushwaha@marvell.com,
-        Simon Horman <horms@verge.net.au>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>, devicetree@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kexec@lists.infradead.org
-References: <20200521093805.64398-1-chenzhou10@huawei.com>
- <20200521093805.64398-6-chenzhou10@huawei.com>
- <CAL_Jsq+EV02YBqEGoJrsJW8Y+g_GkB_LkTwWCxNCb3F+8MSdyw@mail.gmail.com>
- <a419602e-6a85-ca35-39de-b3c26d433199@huawei.com>
- <20200526211800.GA352001@bogus>
-From:   James Morse <james.morse@arm.com>
-Message-ID: <ff7c9f68-b578-3a1a-0815-e61c6f87bc4e@arm.com>
-Date:   Fri, 29 May 2020 17:11:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1727085AbgE2QPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 12:15:31 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:58682 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbgE2QPb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 12:15:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xKE4iU4tL+hNaGx/FSTJV5asiZmclaundn7b5eVYaJA=; b=V2vJfvPFWaLSd/C8i8efXx0Oae
+        8eabsyjI/uaqb/8MWLPjD2t7RHs6xqCboxmyOZvHENqIOnPQ9SITwT+8+nrq+etzD4SDYffWmv9uG
+        RBw6KKbt6WdM9PofbYUY1/XPERVENziT80bPAeONAW7O/EnmRvpDPjiQ0N9K/LkHWaQnn2EkfkLeF
+        VhGKawKxETn6Bk0ZOXhohHvuang7C6oCETIY7kIELtmWZh2HZhrYMeHn5c6OawEHV9NvFn8CjEnWP
+        1SnJlGWzCwlGglVUV/kJtIkWGnwmOQt8yOfx2qAvuP3zREApQz9oZm/lYFW7TMbJws6Bio4+zLwME
+        bIrqxtjg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jehct-0000rm-3K; Fri, 29 May 2020 16:12:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7A7AC30047A;
+        Fri, 29 May 2020 18:12:53 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 418422BABEA78; Fri, 29 May 2020 18:12:53 +0200 (CEST)
+Date:   Fri, 29 May 2020 18:12:53 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, broonie@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        viro@zeniv.linux.org.uk, x86@kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: mmotm 2020-05-13-20-30 uploaded (objtool warnings)
+Message-ID: <20200529161253.GD706460@hirez.programming.kicks-ass.net>
+References: <20200514033104.kRFL_ctMQ%akpm@linux-foundation.org>
+ <611fa14d-8d31-796f-b909-686d9ebf84a9@infradead.org>
+ <20200528172005.GP2483@worktop.programming.kicks-ass.net>
+ <20200529135750.GA1580@lst.de>
+ <20200529143556.GE706478@hirez.programming.kicks-ass.net>
+ <20200529145325.GB706518@hirez.programming.kicks-ass.net>
+ <20200529153336.GC706518@hirez.programming.kicks-ass.net>
+ <20200529160514.cyaytn33thphb3tz@treble>
 MIME-Version: 1.0
-In-Reply-To: <20200526211800.GA352001@bogus>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200529160514.cyaytn33thphb3tz@treble>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi guys,
+On Fri, May 29, 2020 at 11:05:14AM -0500, Josh Poimboeuf wrote:
 
-On 26/05/2020 22:18, Rob Herring wrote:
-> On Fri, May 22, 2020 at 11:24:11AM +0800, chenzhou wrote:
->> On 2020/5/21 21:29, Rob Herring wrote:
->>> On Thu, May 21, 2020 at 3:35 AM Chen Zhou <chenzhou10@huawei.com> wrote:
->>>> Add documentation for DT property used by arm64 kdump:
->>>> linux,low-memory-range.
->>>> "linux,low-memory-range" is an another memory region used for crash
->>>> dump kernel devices.
-
->>>> diff --git a/Documentation/devicetree/bindings/chosen.txt b/Documentation/devicetree/bindings/chosen.txt
->>>> index 45e79172a646..bfe6fb6976e6 100644
->>>> --- a/Documentation/devicetree/bindings/chosen.txt
->>>> +++ b/Documentation/devicetree/bindings/chosen.txt
-
->>>> +linux,low-memory-range
->>>> +----------------------
->>>> +This property (arm64 only) holds a base address and size, describing a
->>>> +limited region below 4G. Similar to "linux,usable-memory-range", it is
->>>> +an another memory range which may be considered available for use by the
->>>> +kernel.
-
->>> Why can't you just add a range to "linux,usable-memory-range"? It
->>> shouldn't be hard to figure out which part is below 4G.
-
->> The comments from James:
->> Won't this break if your kdump kernel doesn't know what the extra parameters are?
->> Or if it expects two ranges, but only gets one? These DT properties should be treated as
->> ABI between kernel versions, we can't really change it like this.
->>
->> I think the 'low' region is an optional-extra, that is never mapped by the first kernel. I
->> think the simplest thing to do is to add an 'linux,low-memory-range' that we
->> memblock_add() after memblock_cap_memory_range() has been called.
->> If its missing, or the new kernel doesn't know what its for, everything keeps working.
+> It looks to me like GCC is doing the right thing.  That likely()
+> translates to:
 > 
+> #  define likely(x)	(__branch_check__(x, 1, __builtin_constant_p(x)))
 > 
-> I don't think there's a compatibility issue here though. The current 
-> kernel doesn't care if the property is longer than 1 base+size. It only 
-> checks if the size is less than 1 base+size.
-
-Aha! I missed that.
-
-
-> And yes, we can rely on 
-> that implementation detail. It's only an ABI if an existing user 
-> notices.
+> which becomes:
 > 
-> Now, if the low memory is listed first, then an older kdump kernel 
-> would get a different memory range. If that's a problem, then define 
-> that low memory goes last. 
+> #define __branch_check__(x, expect, is_constant) ({			\
+> 			long ______r;					\
+> 			static struct ftrace_likely_data		\
+> 				__aligned(4)				\
+> 				__section(_ftrace_annotated_branch)	\
+> 				______f = {				\
+> 				.data.func = __func__,			\
+> 				.data.file = __FILE__,			\
+> 				.data.line = __LINE__,			\
+> 			};						\
+> 			______r = __builtin_expect(!!(x), expect);	\
+> 			ftrace_likely_update(&______f, ______r,		\
+> 					     expect, is_constant);	\
+> 			______r;					\
+> 		})
+> 
+> Here 'x' is the call to user_access_begin().  It evaluates 'x' -- and
+> thus calls user_access_begin() -- before the call to
+> ftrace_likely_update().
+> 
+> So it's working as designed, right?  The likely() just needs to be
+> changed to likely_notrace().
 
-This first entry would need to be the 'crashkernel' range where the kdump kernel is
-placed, otherwise an older kernel won't boot. The rest can be optional extras, as long as
-we are tolerant of it being missing...
+But if !x (ie we fail user_access_begin()), we should not pass STAC() on
+the way to out_err. OTOH if x, we should not be jumping to out_err.
 
-I'll try and look at the rest of this series on Monday,
-
-
-Thanks,
-
-James
+I'm most confused... must not stare at asm for a while.
