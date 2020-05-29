@@ -2,111 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 204B71E79F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 11:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E75C91E79F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 11:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726519AbgE2J6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 05:58:08 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:38449 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgE2J6E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 05:58:04 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jebm0-00055Y-M2; Fri, 29 May 2020 09:57:56 +0000
-Date:   Fri, 29 May 2020 11:57:55 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Sargun Dhillon <sargun@sargun.me>
-Cc:     keescook@chromium.org, containers@lists.linux-foundation.org,
-        cyphar@cyphar.com, jannh@google.com, jeffv@google.com,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        palmer@google.com, rsesek@google.com, tycho@tycho.ws,
-        Matt Denton <mpdenton@google.com>,
-        Kees Cook <keescook@google.com>
-Subject: Re: [PATCH v2 1/3] seccomp: Add find_notification helper
-Message-ID: <20200529095755.jv77m4qwtzr63do6@wittgenstein>
-References: <20200528110858.3265-1-sargun@sargun.me>
- <20200528110858.3265-2-sargun@sargun.me>
+        id S1726729AbgE2J6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 05:58:40 -0400
+Received: from ozlabs.org ([203.11.71.1]:40153 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725601AbgE2J6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 05:58:39 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49YKlJ0rqZz9sSm;
+        Fri, 29 May 2020 19:58:35 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1590746317;
+        bh=BLtw5zWwlgdDwY91og71zPcXFeb40B71+4+UqmVvzaw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ihz3oXOh0d03FDjIqnZ/pH4jPfTAarqkMWPblIWIQxncv7LIn25sPdx8u5Ib9CmEr
+         ctzsksAU6Tsl0fGeVBfNkne16Mic9paLg42fUjHpnhJxZY1LuE2Nms+7L+qLkrdwu6
+         CCFN5IBBU3H/NWEr5AcThs+fFp+6XHV3JlpV9SAN8XyFWFpuwJg0dGvq672W5rQ2NM
+         eIPD9BJ1ewcBAvjYavceWLEOph3alXCBIYK/mO9msZE/bpLejq6G4CuJSKUbgY1JZ7
+         lemFBTSj26P3CT958bqtJu2u1OEsCFhgipYA8yx6YlzWagycX/hCaEksCLMQl5ZlOG
+         sZsflIsT6PxFg==
+Date:   Fri, 29 May 2020 19:58:34 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Julia Cartwright <julia@ni.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: linux-next: manual merge of the akpm-current tree with the tip tree
+Message-ID: <20200529195834.168ccc1f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200528110858.3265-2-sargun@sargun.me>
+Content-Type: multipart/signed; boundary="Sig_/5uH3JGl/U/tTW8krx5/PCeh";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 04:08:56AM -0700, Sargun Dhillon wrote:
-> This adds a helper which can iterate through a seccomp_filter to
-> find a notification matching an ID. It removes several replicated
-> chunks of code.
-> 
-> Signed-off-by: Sargun Dhillon <sargun@sargun.me>
-> Cc: Matt Denton <mpdenton@google.com>
-> Cc: Kees Cook <keescook@google.com>,
-> Cc: Jann Horn <jannh@google.com>,
-> Cc: Robert Sesek <rsesek@google.com>,
-> Cc: Chris Palmer <palmer@google.com>
-> Cc: Christian Brauner <christian.brauner@ubuntu.com>
-> Cc: Tycho Andersen <tycho@tycho.ws>
-> ---
+--Sig_/5uH3JGl/U/tTW8krx5/PCeh
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-A single nit below otherwise:
+Hi all,
 
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
->  kernel/seccomp.c | 51 ++++++++++++++++++++++++------------------------
->  1 file changed, 25 insertions(+), 26 deletions(-)
-> 
-> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> index 55a6184f5990..94ae4c7502cc 100644
-> --- a/kernel/seccomp.c
-> +++ b/kernel/seccomp.c
-> @@ -1021,10 +1021,25 @@ static int seccomp_notify_release(struct inode *inode, struct file *file)
->  	return 0;
->  }
->  
-> +/* must be called with notif_lock held */
-> +static inline struct seccomp_knotif *
-> +find_notification(struct seccomp_filter *filter, u64 id)
-> +{
-> +	struct seccomp_knotif *cur;
-> +
-> +	list_for_each_entry(cur, &filter->notif->notifications, list) {
-> +		if (cur->id == id)
-> +			return cur;
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
-> +
->  static long seccomp_notify_recv(struct seccomp_filter *filter,
->  				void __user *buf)
->  {
-> -	struct seccomp_knotif *knotif = NULL, *cur;
-> +	struct seccomp_knotif *knotif, *cur;
->  	struct seccomp_notif unotif;
->  	ssize_t ret;
->  
-> @@ -1078,14 +1093,8 @@ static long seccomp_notify_recv(struct seccomp_filter *filter,
->  		 * may have died when we released the lock, so we need to make
->  		 * sure it's still around.
->  		 */
-> -		knotif = NULL;
->  		mutex_lock(&filter->notify_lock);
-> -		list_for_each_entry(cur, &filter->notif->notifications, list) {
-> -			if (cur->id == unotif.id) {
-> -				knotif = cur;
-> -				break;
-> -			}
-> -		}
-> +		knotif = find_notification(filter, unotif.id);
->  
->  		if (knotif) {
+  fs/squashfs/decompressor_multi_percpu.c
 
-Nit: additional \n which isn't present before any of the other new
-find_notification() invocations.
+between commit:
+
+  fd56200a16c7 ("squashfs: Make use of local lock in multi_cpu decompressor=
+")
+
+from the tip tree and commit:
+
+  5697b27554f3 ("squashfs-migrate-from-ll_rw_block-usage-to-bio-fix")
+
+from the akpm-current tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/squashfs/decompressor_multi_percpu.c
+index e206ebfe003c,d93e12d9b712..000000000000
+--- a/fs/squashfs/decompressor_multi_percpu.c
++++ b/fs/squashfs/decompressor_multi_percpu.c
+@@@ -75,19 -72,18 +75,18 @@@ void squashfs_decompressor_destroy(stru
+  	}
+  }
+ =20
+- int squashfs_decompress(struct squashfs_sb_info *msblk, struct buffer_hea=
+d **bh,
+- 	int b, int offset, int length, struct squashfs_page_actor *output)
++ int squashfs_decompress(struct squashfs_sb_info *msblk, struct bio *bio,
++ 	int offset, int length, struct squashfs_page_actor *output)
+  {
+ -	struct squashfs_stream __percpu *percpu;
+  	struct squashfs_stream *stream;
+  	int res;
+ =20
+ -	percpu =3D (struct squashfs_stream __percpu *)msblk->stream;
+ -	stream =3D get_cpu_ptr(percpu);
+ +	local_lock(&msblk->stream->lock);
+ +	stream =3D this_cpu_ptr(msblk->stream);
+ +
+- 	res =3D msblk->decompressor->decompress(msblk, stream->stream, bh, b,
+- 			offset, length, output);
+-=20
++ 	res =3D msblk->decompressor->decompress(msblk, stream->stream, bio,
++ 					      offset, length, output);
+ -	put_cpu_ptr(stream);
+ +	local_unlock(&msblk->stream->lock);
+ =20
+  	if (res < 0)
+  		ERROR("%s decompression failed, data probably corrupt\n",
+
+--Sig_/5uH3JGl/U/tTW8krx5/PCeh
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7Q3MoACgkQAVBC80lX
+0GwLdwf/bdV5Jnxj4ZZ9uaFc9511IzcivrZaAFI5TMYEUuguePYAvBKF21pA5FoT
+f9cLyfhrkySey5gXGrxN19SZRuegL/EK7/3rUrKEOLeTcsLCzOAqRLV3JhrFcYLC
+87vGx4p0Ji9o79/4NVYmZ79WUBedJwGmgk3JxTL1FG6wwCnh1OJ++72zaU5ydd7P
+WxRd5nQC1gAY7Gbfhztq3+zSh445oIhao/c/9gQdkrIUZFt/2GR8fT8g78Eo1DWj
+ppR1dFEVV1hZ0JCTNfX8q6fR0/QVGJJ5s8p5cEG3vtoNs15fbJRQt6514BmjIWk8
+b+rlK6B752B5MO5OYLsmdnIzEtnADw==
+=52rz
+-----END PGP SIGNATURE-----
+
+--Sig_/5uH3JGl/U/tTW8krx5/PCeh--
