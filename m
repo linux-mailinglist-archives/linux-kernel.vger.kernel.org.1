@@ -2,130 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D60A1E78A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4675A1E78A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 10:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726695AbgE2Iq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 04:46:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725928AbgE2IqY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 04:46:24 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E95C08C5C8
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 01:46:23 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t16so851210plo.7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 01:46:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=XiIwcIBaCjacNvQQiGLxskNtGMHCMoH6FbpJtFd+1bk=;
-        b=xeh7YBtNLEg/HSHajEUKqjg00CUU1WpaXmJGLNkGlhAEyBmFt0sUQ+SEm4iiDCg6Ap
-         4hiWdMIri0YvFdptKT236rPnFWAse7EO0mwSgX3dwsi41CIjD5XNM+TpZIXfU0wCkWEa
-         F4/S+lzMYxRF4Uvl31ZjzVoEpXMr4ml7Nyh4EKm/gpF2qlJtdNIfcv3d0zdx/eIm3Wyl
-         95Bh9PElu3SB0xXOKliink64R6ECiTuBIX4geW1ol4dHZyLEhMz8Bbv2EBwuhD886IHu
-         t3+Ovs+G1V6GSYC8sV89Fzj2PGmJ2Uocd19lpFoDNjaHWms+7zgLhy4LtR7JumPEGtTD
-         jWWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=XiIwcIBaCjacNvQQiGLxskNtGMHCMoH6FbpJtFd+1bk=;
-        b=n5LtImMTTLf/OQ7wTEZGCKwzbfS49sCeEBIhZ3iC3ndV2ocCLsys0puZtUsF8yJBm1
-         EU8BqqfXVHFKr7+iMLKXnycHn1/ioNzC0P9nNMaaKSMe5BRK2ufRfYCLC9syum+goYpN
-         t+g82pWDzdcmFQN6j/MUAADGasyRP5Xz/+n+74ROxJqwVtnhUPxKoA8AIlDGhpeDn9V3
-         pg2HR2wJb0e6c/GTWgkLNnNIeKW9RO3a3AlFTAfpFwW9dY8kAQydI93cyeAhuvl5GatE
-         mMT0HDl8nCkEwRP85BOvbB9NH8myTNWz5q+pqFqvyVZQZ0IlMn/3p7cJ5qBPSWrOcPxA
-         knMQ==
-X-Gm-Message-State: AOAM530qozTKJh+OKOqhFPj4emtOxnTRZItCRbYE92Fkf1L+Bboe+Wvg
-        SrbZ+CIkFOrCghMmWuIVdT/h0pt3pA==
-X-Google-Smtp-Source: ABdhPJw2IVsRy1qcylsIEgJDPGvIMlFPrIHQgr9qNQXu3NhWSVtIWrdCs97oISksqqFQyrjbCnIsZw==
-X-Received: by 2002:a17:902:8218:: with SMTP id x24mr7894288pln.150.1590741983196;
-        Fri, 29 May 2020 01:46:23 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:6417:1d6e:1408:1e13:b32e:6edf])
-        by smtp.gmail.com with ESMTPSA id i29sm6950738pfk.38.2020.05.29.01.46.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 29 May 2020 01:46:22 -0700 (PDT)
-Date:   Fri, 29 May 2020 14:16:14 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Chris Lew <clew@codeaurora.org>
-Cc:     davem@davemloft.net, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH] net: qrtr: Allocate workqueue before kernel_bind
-Message-ID: <20200529084613.GA23769@Mani-XPS-13-9360>
-References: <1590707126-16957-1-git-send-email-clew@codeaurora.org>
+        id S1726803AbgE2Iqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 04:46:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50812 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726410AbgE2Iqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 04:46:33 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE93B2072D;
+        Fri, 29 May 2020 08:46:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590741993;
+        bh=Di4VqZgHZxYw6J/QfTw3C2UqCzYNC8As7YmCYVytUqA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wlIOlPSE2j4HRlt7MMcJUUqCmsClnRZqJk4COCs+FucQ5QSz8LXy9o2oYn/inTizz
+         q+WgBTsvWdISV7kOwXeNDq8prWI5iFcoqIzeGX6i064MF/vn6gwChKHqImoUgW6L6L
+         N43fFcI8yZmqIZOFshDXpQ4H5MgIZPD7W3+O15uU=
+Received: by pali.im (Postfix)
+        id E30E3EB1; Fri, 29 May 2020 10:46:30 +0200 (CEST)
+Date:   Fri, 29 May 2020 10:46:30 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Ganapathi Bhat <ganapathi.bhat@nxp.com>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [EXT] mwifiex: Firmware name for W8997 sdio wifi chip
+Message-ID: <20200529084630.j7rpdypt6vycsedh@pali>
+References: <20200515132353.vfor7v4buzoddfmb@pali>
+ <VI1PR04MB4366625917BB57695BE454448FBA0@VI1PR04MB4366.eurprd04.prod.outlook.com>
+ <20200528103432.irmsaaz72x3xophg@pali>
+ <VI1PR04MB4366409B8E293A265851DA948F8F0@VI1PR04MB4366.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1590707126-16957-1-git-send-email-clew@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <VI1PR04MB4366409B8E293A265851DA948F8F0@VI1PR04MB4366.eurprd04.prod.outlook.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 04:05:26PM -0700, Chris Lew wrote:
-> A null pointer dereference in qrtr_ns_data_ready() is seen if a client
-> opens a qrtr socket before qrtr_ns_init() can bind to the control port.
-> When the control port is bound, the ENETRESET error will be broadcasted
-> and clients will close their sockets. This results in DEL_CLIENT
-> packets being sent to the ns and qrtr_ns_data_ready() being called
-> without the workqueue being allocated.
+On Friday 29 May 2020 08:43:56 Ganapathi Bhat wrote:
+> Hi Pali,
 > 
-> Allocate the workqueue before setting sk_data_ready and binding to the
-> control port. This ensures that the work and workqueue structs are
-> allocated and initialized before qrtr_ns_data_ready can be called.
+> > According to publicly available information, firmware for these W8xxx
+> > Marvell wifi chips is vulnerable to security issue CVE-2019-6496 [1].
+> > 
+> > Are you able to update firmwares to the last versions and give us some
+> > information which (old) firmware versions are affected by that security issue?
+> > 
+> > So Linux distribution would know if they are distributing older vulnerable
+> > firmwares and should push security fixes with new firmware versions.
+> > 
 > 
-> Fixes: 0c2204a4ad71 ("net: qrtr: Migrate nameservice to kernel from userspace")
-> Signed-off-by: Chris Lew <clew@codeaurora.org>
+> 88W8787, 88W8797, 88W8801, 88W8897, and 88W8997 models are all already updated, with one exception:
+> usb8897_uapsta.bin, which we will upstream soon;
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-Thanks,
-Mani
-
-> ---
->  net/qrtr/ns.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/net/qrtr/ns.c b/net/qrtr/ns.c
-> index e7d0fe3f4330..c5b3202a14ca 100644
-> --- a/net/qrtr/ns.c
-> +++ b/net/qrtr/ns.c
-> @@ -712,6 +712,10 @@ void qrtr_ns_init(void)
->  		goto err_sock;
->  	}
->  
-> +	qrtr_ns.workqueue = alloc_workqueue("qrtr_ns_handler", WQ_UNBOUND, 1);
-> +	if (!qrtr_ns.workqueue)
-> +		goto err_sock;
-> +
->  	qrtr_ns.sock->sk->sk_data_ready = qrtr_ns_data_ready;
->  
->  	sq.sq_port = QRTR_PORT_CTRL;
-> @@ -720,17 +724,13 @@ void qrtr_ns_init(void)
->  	ret = kernel_bind(qrtr_ns.sock, (struct sockaddr *)&sq, sizeof(sq));
->  	if (ret < 0) {
->  		pr_err("failed to bind to socket\n");
-> -		goto err_sock;
-> +		goto err_wq;
->  	}
->  
->  	qrtr_ns.bcast_sq.sq_family = AF_QIPCRTR;
->  	qrtr_ns.bcast_sq.sq_node = QRTR_NODE_BCAST;
->  	qrtr_ns.bcast_sq.sq_port = QRTR_PORT_CTRL;
->  
-> -	qrtr_ns.workqueue = alloc_workqueue("qrtr_ns_handler", WQ_UNBOUND, 1);
-> -	if (!qrtr_ns.workqueue)
-> -		goto err_sock;
-> -
->  	ret = say_hello(&qrtr_ns.bcast_sq);
->  	if (ret < 0)
->  		goto err_wq;
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+Hello Ganapathi! Thank you for information. Can you point me to git tree
+or location where are firmware files already updated?
