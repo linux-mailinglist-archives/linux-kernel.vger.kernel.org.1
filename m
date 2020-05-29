@@ -2,60 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A62351E8378
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 18:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B381E8369
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 18:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727812AbgE2QTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 12:19:06 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:58948 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727056AbgE2QTE (ORCPT
+        id S1726882AbgE2QRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 12:17:39 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:38043 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725681AbgE2QRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 12:19:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5ybXgUUvnJ5OVqyLh6pi2nJ1zfYcPDr1hIJqrcDCVeg=; b=R8wq3Vs4NI9Ph2F1lL/a0yf/14
-        TLpGeOnf1U57OJaHcy8N0dd7Z7/vWRUJUaU0tk+caNsacKB6MeFNxs1bFkhE5czosiT6QRlsMe0EK
-        7ldOcnOi8GrwfCy+0cG7XcWMdpbhrDwr9YQ3pihnujed8XLkBYQv0/ChqNKK7bOhHsdTV2oaBLNpL
-        Lj+d0AZJI6vJ7L/IA8qYOh5c3PwBvAC1vlf0RLt6BHsxqIB/xPZe4I1wntF1K+ol6DT6WMdOUfaGW
-        dr0QWrATOLhAt2ZKWE1nWJjJHEVlG+kjN4mhQoQDnH1FeChyVBGXkcbFpret13qP1cf7rIGqbBJqX
-        /cZCq5VQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jehge-0000wX-U3; Fri, 29 May 2020 16:16:49 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BD32D3012C3;
-        Fri, 29 May 2020 18:16:47 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id ABF8E2BB457CD; Fri, 29 May 2020 18:16:47 +0200 (CEST)
-Date:   Fri, 29 May 2020 18:16:47 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     mingo@kernel.org, will@kernel.org, tglx@linutronix.de
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        a.darwish@linutronix.de, rostedt@goodmis.org, bigeasy@linutronix.de
-Subject: Re: [PATCH v2 3/6] lockdep: Change hardirq{s_enabled,_context} to
- per-cpu variables
-Message-ID: <20200529161647.GE706460@hirez.programming.kicks-ass.net>
-References: <20200528140535.206916549@infradead.org>
- <20200528140946.831087909@infradead.org>
+        Fri, 29 May 2020 12:17:38 -0400
+Received: by mail-il1-f193.google.com with SMTP id q18so3044195ilm.5;
+        Fri, 29 May 2020 09:17:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1WA+w4gWKVFAKdOjyjOP/tEtWPocATjUQITVK+3DOw8=;
+        b=PDY+zC261G1ze5ju591N9UrtXa3empNkOHi/d6aSVDxgN1Nty79WfF68uWvE6OvPd3
+         6KjVsuHnHZ5l+WeShXbBux6sAI1SzOUdyLyko/06X8jXUiJf+MsEnxIO4RmJz0GZstSA
+         p4hel2i10k519xHSGNdCc+CZ2KMstaolJMaytNUe/NP0Ex50v+6Mn0kf2zPWwFE9U2NH
+         PT4NV9n0gaIc7uW+WeoPdm91L8GUQB8IoEr27oF+BX2X8WMqjOtF8mANaRDzcZv65tTO
+         ANQyaB4BEtjGXZP/yDzLeAaOIpYmFDaKP7smGZhZfol/6n2Lbu/ZI848LnWdHNn0YEY9
+         DtnA==
+X-Gm-Message-State: AOAM5322RZm09Iwx18hoiEXZ4aY962uhLi2+HVcJtIUukOuM/xqqFNQ6
+        NuJ9eJi/3TQlnWs/TqKGAg==
+X-Google-Smtp-Source: ABdhPJzaiMsri3Ce6ct811n/Nx3VT+C3nOOEcWn2ikVVXzQHkkLZAWZnsnOcN0C90jGOSCtG3QTx+Q==
+X-Received: by 2002:a92:9142:: with SMTP id t63mr6838165ild.191.1590769056769;
+        Fri, 29 May 2020 09:17:36 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id j63sm1083926ilg.50.2020.05.29.09.17.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2020 09:17:35 -0700 (PDT)
+Received: (nullmailer pid 2494095 invoked by uid 1000);
+        Fri, 29 May 2020 16:17:32 -0000
+Date:   Fri, 29 May 2020 10:17:32 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     dillon.minfei@gmail.com
+Cc:     robh+dt@kernel.org, alexandre.torgue@st.com, dillonhua@gmail.com,
+        daniel@ffwll.ch, linux-spi@vger.kernel.org,
+        mturquette@baylibre.com, linux-clk@vger.kernel.org,
+        sam@ravnborg.org, mcoquelin.stm32@gmail.com,
+        devicetree@vger.kernel.org, linus.walleij@linaro.org,
+        linux-arm-kernel@lists.infradead.org, thierry.reding@gmail.com,
+        sboyd@kernel.org, broonie@kernel.org, noralf@tronnes.org,
+        airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, andy.shevchenko@gmail.com,
+        p.zabel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH v6 4/9] dt-bindings: display: panel: Add ilitek ili9341
+ panel bindings
+Message-ID: <20200529161732.GA2493963@bogus>
+References: <1590564453-24499-1-git-send-email-dillon.minfei@gmail.com>
+ <1590564453-24499-5-git-send-email-dillon.minfei@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200528140946.831087909@infradead.org>
+In-Reply-To: <1590564453-24499-5-git-send-email-dillon.minfei@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 04:05:38PM +0200, Peter Zijlstra wrote:
-> +#include <asm/percpu.h>
-> +#include <asm/percpu.h>
+On Wed, 27 May 2020 15:27:28 +0800, dillon.minfei@gmail.com wrote:
+> From: dillon min <dillon.minfei@gmail.com>
+> 
+> Add documentation for "ilitek,ili9341" panel.
+> 
+> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> ---
+>  .../bindings/display/panel/ilitek,ili9341.yaml     | 69 ++++++++++++++++++++++
+>  1 file changed, 69 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml
+> 
 
-If we change those to <linux/percpu-defs.h>, in direct conflict with
-what the header says about itself, all builds seem to be good again.
-
-s390, sparc64, power64 all build again.
+Reviewed-by: Rob Herring <robh@kernel.org>
