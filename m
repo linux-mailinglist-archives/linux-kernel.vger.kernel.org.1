@@ -2,82 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A52A61E8578
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28AEC1E857B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 19:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727820AbgE2RoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 13:44:01 -0400
-Received: from bmailout2.hostsharing.net ([83.223.78.240]:54299 "EHLO
-        bmailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726555AbgE2RoB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 13:44:01 -0400
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+        id S1728001AbgE2Ro1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 13:44:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38604 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725913AbgE2Ro0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 13:44:26 -0400
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.4])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
-        by bmailout2.hostsharing.net (Postfix) with ESMTPS id E157C2800A291;
-        Fri, 29 May 2020 19:43:58 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id B102810D0CE; Fri, 29 May 2020 19:43:58 +0200 (CEST)
-Date:   Fri, 29 May 2020 19:43:58 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Martin Sperl <kernel@martin.sperl.org>,
-        linux-spi@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: bcm2835: Enable shared interrupt support
-Message-ID: <20200529174358.som3snunfxch6phi@wunner.de>
-References: <20200528185805.28991-1-nsaenzjulienne@suse.de>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56A1D2065C;
+        Fri, 29 May 2020 17:44:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590774266;
+        bh=+iDSBula8gNJyVxxpwCdOty3yDjVLuXbf0HVOUDxtZo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=xj1XqGvnpCNL8ezAbiUYngQH0gbL4h6d21XNiQ36NNNRQUYo9b/e20+FCU1Ub87RX
+         8skVWXVAa3YICNeCJZUw4BkxQ61AkjIy56q4lE2EKD5WArQfKMi2X7YBHOn241E6z9
+         hJ373EtCMTTy/SN6M1ZKiN/IcOKrFiee6VYtHbks=
+Date:   Fri, 29 May 2020 10:44:24 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Luo bin <luobin9@huawei.com>
+Cc:     <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <luoxianjun@huawei.com>,
+        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>
+Subject: Re: [PATCH net-next v2] hinic: add set_channels ethtool_ops support
+Message-ID: <20200529104424.58dd665a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20200528183633.6689-1-luobin9@huawei.com>
+References: <20200528183633.6689-1-luobin9@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200528185805.28991-1-nsaenzjulienne@suse.de>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 08:58:04PM +0200, Nicolas Saenz Julienne wrote:
-> --- a/drivers/spi/spi-bcm2835.c
-> +++ b/drivers/spi/spi-bcm2835.c
-> @@ -379,6 +379,10 @@ static irqreturn_t bcm2835_spi_interrupt(int irq, void *dev_id)
->  	if (bs->tx_len && cs & BCM2835_SPI_CS_DONE)
->  		bcm2835_wr_fifo_blind(bs, BCM2835_SPI_FIFO_SIZE);
->  
-> +	/* check if we got interrupt enabled */
-> +	if (!(bcm2835_rd(bs, BCM2835_SPI_CS) & BCM2835_SPI_CS_INTR))
-> +		return IRQ_NONE;
+On Thu, 28 May 2020 18:36:33 +0000 Luo bin wrote:
+> add support to change TX/RX queue number with ethtool -L
+> 
+> Signed-off-by: Luo bin <luobin9@huawei.com>
+
+Luo bin, your patches continue to come with Date: header being in the
+past. Also suspiciously no time zone offset. Can you address this?
+
+> +static int hinic_set_channels(struct net_device *netdev,
+> +			      struct ethtool_channels *channels)
+> +{
+> +	struct hinic_dev *nic_dev = netdev_priv(netdev);
+> +	unsigned int count = channels->combined_count;
+> +	int err;
 > +
->  	/* Read as many bytes as possible from FIFO */
->  	bcm2835_rd_fifo(bs);
->  	/* Write as many bytes as possible to FIFO */
+> +	if (!count) {
+> +		netif_err(nic_dev, drv, netdev,
+> +			  "Unsupported combined_count: 0\n");
+> +		return -EINVAL;
+> +	}
 
-This definitely looks wrong.  The check whether the interrupt is enabled
-should be moved *before* the conditional calls to bcm2835_rd_fifo_blind()
-and bcm2835_wr_fifo_blind(), i.e. to the top of the function.
+This check has been added to the core since the last version of you
+patch:
 
-Otherwise if an interrupt is raised by another SPI controller,
-this function may perform read/write accesses to the FIFO and
-interfere with an ongoing transfer in DMA or poll mode.
+	/* ensure there is at least one RX and one TX channel */
+	if (!channels.combined_count &&
+	    (!channels.rx_count || !channels.tx_count))
+		return -EINVAL;
 
-Also, instead of performing an MMIO read, just use the "cs" variable
-which was assigned at the top of the function.
+> +	netif_info(nic_dev, drv, netdev, "Set max combined queue number from %d to %d\n",
+> +		   hinic_hwdev_num_qps(nic_dev->hwdev), count);
+> +
+> +	if (netif_running(netdev)) {
+> +		netif_info(nic_dev, drv, netdev, "Restarting netdev\n");
+> +		hinic_close(netdev);
+> +
+> +		nic_dev->hwdev->nic_cap.num_qps = count;
+> +
+> +		err = hinic_open(netdev);
+> +		if (err) {
+> +			netif_err(nic_dev, drv, netdev,
+> +				  "Failed to open netdev\n");
+> +			return -EFAULT;
+> +		}
+> +	} else {
+> +		nic_dev->hwdev->nic_cap.num_qps = count;
+> +	}
+> +
+> +	return 0;
+>  }
 
-The code comment should explain that the check is necessary because the
-interrupt may be shared with other controllers on the BCM2711.
-
-Finally, it would be nice if the check would be optimized away when
-compiling for pre-RasPi4 products, maybe something like:
-
-+	if (IS_ENABLED(CONFIG_ARM_LPAE) && !(cs & BCM2835_SPI_CS_INTR))
-+		return IRQ_NONE;
-
-Thanks,
-
-Lukas
