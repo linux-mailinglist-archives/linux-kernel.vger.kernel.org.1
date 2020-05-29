@@ -2,313 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5174B1E8A21
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 23:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19AB11E8A11
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 23:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728496AbgE2VhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 17:37:25 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:54874 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728391AbgE2VhO (ORCPT
+        id S1728352AbgE2Vba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 17:31:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727947AbgE2Vb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 17:37:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=0fVkDmE9BDGztwoZGwZMrepjB5KkaGDhpYYh+FC7yAE=; b=HLboW+ITdd8Vc4mOgYXoFoLs0F
-        rWOC2Iy0YdWb6r+AQBtD7uZxJmYK41uQatI5EC97+ZNW7CM+8QxJts/ilW0Lg+XI7+tHwEhCQARZa
-        vW1Iw3NVtCq5XpxY3GmgZykS9d1D4e77PqzzdDAlIVsLGSEbOuKr30Owg/wZ5Bi44BW7TaZhcBzG/
-        L0YYEt4Ell9nZvKD5ZWOlvIbxjmEtn69p6d7+D3kB8wNZlUP06X1tDUumQCHJfQM6XmBqNqH7Wony
-        68NKMWuHynXXIUYZfJN0MVUmzlNAPZXA+onQieY2NOB1zDhGAgg7SRLHM8KVzIEew4NbAiSz1eRne
-        FfAlWjQw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jemeP-0007J4-VF; Fri, 29 May 2020 21:34:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0DE2E307875;
-        Fri, 29 May 2020 23:34:42 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 550D32B9B1BC6; Fri, 29 May 2020 23:34:41 +0200 (CEST)
-Message-ID: <20200529213321.528803619@infradead.org>
-User-Agent: quilt/0.66
-Date:   Fri, 29 May 2020 23:27:42 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     tglx@linutronix.de, luto@amacapital.net, peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        sean.j.christopherson@intel.com, andrew.cooper3@citrix.com,
-        daniel.thompson@linaro.org, a.darwish@linutronix.de,
-        rostedt@goodmis.org, bigeasy@linutronix.de
-Subject: [PATCH 14/14] x86/entry: Fix NMI vs IRQ state tracking
-References: <20200529212728.795169701@infradead.org>
+        Fri, 29 May 2020 17:31:29 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C56C03E969;
+        Fri, 29 May 2020 14:31:27 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id j32so3174356qte.10;
+        Fri, 29 May 2020 14:31:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xtz+8mLFx+CuTw1KPB8SkhWXd9L/hyK9MKQ9VWq/bH4=;
+        b=fJrgKbiWtWgygbhWfMUMUyarBmb8vR7GAXcXVuYBloMuhcse6IH4q8sVH9HGKXfH4j
+         QD20a+nq0657GfGXxv8KEh3Sgsmemt6duLHeljrVojEsbvoYuPVbw35QpG4yVMlbtQ42
+         CJTZ6r38zthEuWQ0hepOnJlVRc9F/oAzSZeghHxyhz6pD5zmqqi2OKUJTtLzejNkib6v
+         u4IkqPxvuiDIHOZM714NqzZ/rJt09RTag6GxhtychlH2Xx5WT66rKVuzZsSKma/EZIYg
+         qz8SlP4de5rVSoFfYFy9K86vwMJFQ/bhoDz3AwRewSEGHK2Dcw2NcXFG4Ts8TL5VdRv4
+         cNIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xtz+8mLFx+CuTw1KPB8SkhWXd9L/hyK9MKQ9VWq/bH4=;
+        b=XFrX4tk5Pgk+yKf1G5rT20ATtZUKEHLYGIuamae0+AsAWvZ/UFwhldBKZeQJkP1ujf
+         9pf/H3QJd1BtmnpSENKyYi5thA4B079bceY+6FP8NPY6ah4mwRFlDopmJ1SKj47gaWw6
+         WAMn1sQcdRmSLvIYc3qERf6ZfA68FnzBzIY0T5XM2IDoVcCIs285OJHJyFZGiauN3lv7
+         c0EYMbL40HLZeZRH3yh87V+vrkd2GR0rOBAvxtX+SxV8+QkwLE2HFIvilGGPRLVN1ZqP
+         9oi19zJkkndKO4iZ58OMt4vVUAuOetLqsXjusdnuk+K5hE8NkAEK89gJCOSfeqHZ7fT+
+         cVSw==
+X-Gm-Message-State: AOAM531Bed9fZUIDwRb0sECEqTHvsQv4mU+4uNvlPaUQ738ZpyZJTzi8
+        azaSbE4eMf+P62aQp6L9JaE=
+X-Google-Smtp-Source: ABdhPJwiiGuL+0rqVj/jO7RfqkKb4+Yuu0/c1U0fh7MTX/Zoc7IZSGg1kOS6jwUlL8zgtPmTEn9CVg==
+X-Received: by 2002:ac8:7683:: with SMTP id g3mr11215959qtr.240.1590787887111;
+        Fri, 29 May 2020 14:31:27 -0700 (PDT)
+Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
+        by smtp.gmail.com with ESMTPSA id 5sm8184842qko.14.2020.05.29.14.31.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2020 14:31:25 -0700 (PDT)
+Date:   Fri, 29 May 2020 17:31:11 -0400
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Syed Nayyar Waris <syednwaris@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 1/4] bitops: Introduce the the for_each_set_clump macro
+Message-ID: <20200529213111.GA25882@shinobu>
+References: <17cb2b080b9c4c36cf84436bc5690739590acc53.1590017578.git.syednwaris@gmail.com>
+ <202005242236.NtfLt1Ae%lkp@intel.com>
+ <CACG_h5oOsThkSfdN_adWHxHfAWfg=W72o5RM6JwHGVT=Zq9MiQ@mail.gmail.com>
+ <20200529183824.GW1634618@smile.fi.intel.com>
+ <CACG_h5pcd-3NWgE29enXAX8=zS-RWQZrh56wKaFbm8fLoCRiiw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xHFwDpU9dbj6ez1V"
+Content-Disposition: inline
+In-Reply-To: <CACG_h5pcd-3NWgE29enXAX8=zS-RWQZrh56wKaFbm8fLoCRiiw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While the nmi_enter() users did
-trace_hardirqs_{off_prepare,on_finish}() there was no matching
-lockdep_hardirqs_*() calls to complete the picture.
 
-Introduce idtentry_{enter,exit}_nmi() to enable proper IRQ state
-tracking across the NMIs.
+--xHFwDpU9dbj6ez1V
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/entry/common.c         |   42 ++++++++++++++++++++++++++++++++++++----
- arch/x86/include/asm/idtentry.h |    3 ++
- arch/x86/kernel/nmi.c           |    9 +++-----
- arch/x86/kernel/traps.c         |   20 ++++---------------
- include/linux/hardirq.h         |   28 ++++++++++++++++++--------
- 5 files changed, 69 insertions(+), 33 deletions(-)
+On Sat, May 30, 2020 at 01:32:44AM +0530, Syed Nayyar Waris wrote:
+> On Sat, May 30, 2020 at 12:08 AM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > On Fri, May 29, 2020 at 11:38:18PM +0530, Syed Nayyar Waris wrote:
+> > > On Sun, May 24, 2020 at 8:15 PM kbuild test robot <lkp@intel.com> wro=
+te:
+> >
+> > ...
+> >
+> > > >    579  static inline unsigned long bitmap_get_value(const unsigned=
+ long *map,
+> > > >    580                                                unsigned long=
+ start,
+> > > >    581                                                unsigned long=
+ nbits)
+> > > >    582  {
+> > > >    583          const size_t index =3D BIT_WORD(start);
+> > > >    584          const unsigned long offset =3D start % BITS_PER_LON=
+G;
+> > > >    585          const unsigned long ceiling =3D roundup(start + 1, =
+BITS_PER_LONG);
+> > > >    586          const unsigned long space =3D ceiling - start;
+> > > >    587          unsigned long value_low, value_high;
+> > > >    588
+> > > >    589          if (space >=3D nbits)
+> > > >  > 590                  return (map[index] >> offset) & GENMASK(nbi=
+ts - 1, 0);
+> > > >    591          else {
+> > > >    592                  value_low =3D map[index] & BITMAP_FIRST_WOR=
+D_MASK(start);
+> > > >    593                  value_high =3D map[index + 1] & BITMAP_LAST=
+_WORD_MASK(start + nbits);
+> > > >    594                  return (value_low >> offset) | (value_high =
+<< space);
+> > > >    595          }
+> > > >    596  }
+> >
+> > > Regarding the above compilation warnings. All the warnings are because
+> > > of GENMASK usage in my patch.
+> > > The warnings are coming because of sanity checks present for 'GENMASK'
+> > > macro in include/linux/bits.h.
+> > >
+> > > Taking the example statement (in my patch) where compilation warning
+> > > is getting reported:
+> > > return (map[index] >> offset) & GENMASK(nbits - 1, 0);
+> > >
+> > > 'nbits' is of type 'unsigned long'.
+> > > In above, the sanity check is comparing '0' with unsigned value. And
+> > > unsigned value can't be less than '0' ever, hence the warning.
+> > > But this warning will occur whenever there will be '0' as one of the
+> > > 'argument' and an unsigned variable as another 'argument' for GENMASK.
+> > >
+> > > This warning is getting cleared if I cast the 'nbits' to 'long'.
+> > >
+> > > Let me know if I should submit a next patch with the casts applied.
+> > > What do you guys think?
+> >
+> > Proper fix is to fix GENMASK(), but allowed workaround is to use
+> >         (BIT(nbits) - 1)
+> > instead.
+> >
+> > --
+> > With Best Regards,
+> > Andy Shevchenko
+> >
+>=20
+> Hi Andy. Thank You for your comment.
+>=20
+> When I used BIT macro (earlier), I had faced a problem. I want to tell
+> you about that.
+>=20
+> Inside functions 'bitmap_set_value' and 'bitmap_get_value' when nbits (or
+> clump size) is BITS_PER_LONG, unexpected calculation happens.
+>=20
+> Explanation:
+> Actually when nbits (clump size) is 64 (BITS_PER_LONG is 64 on my compute=
+r),
+> (BIT(nbits) - 1)
+> gives a value of zero and when this zero is ANDed with any value, it
+> makes it full zero. This is unexpected and incorrect calculation happenin=
+g.
+>=20
+> What actually happens is in the macro expansion of BIT(64), that is 1
+> << 64, the '1' overflows from leftmost bit position (most significant
+> bit) and re-enters at the rightmost bit position (least significant
+> bit), therefore 1 << 64 becomes '0x1', and when another '1' is
+> subtracted from this, the final result becomes 0.
+>=20
+> Since this macro is being used in both bitmap_get_value and
+> bitmap_set_value functions, it will give unexpected results when nbits or=
+ clump
+> size is BITS_PER_LONG (32 or 64 depending on arch).
+>=20
+> William also knows about this issue:
+>=20
+> "This is undefined behavior in the C standard (section 6.5.7 in the N1124=
+)"
+>=20
+> Andy, William,
+> Let me know what do you think ?
+>=20
+> Regards
+> Syed Nayyar Waris
 
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -550,7 +550,7 @@ SYSCALL_DEFINE0(ni_syscall)
-  * The return value must be fed into the rcu_exit argument of
-  * idtentry_exit_cond_rcu().
-  */
--bool noinstr idtentry_enter_cond_rcu(struct pt_regs *regs)
-+noinstr bool idtentry_enter_cond_rcu(struct pt_regs *regs)
- {
- 	if (user_mode(regs)) {
- 		enter_from_user_mode();
-@@ -619,7 +619,7 @@ static void idtentry_exit_cond_resched(s
-  * Counterpart to idtentry_enter_cond_rcu(). The return value of the entry
-  * function must be fed into the @rcu_exit argument.
-  */
--void noinstr idtentry_exit_cond_rcu(struct pt_regs *regs, bool rcu_exit)
-+noinstr void idtentry_exit_cond_rcu(struct pt_regs *regs, bool rcu_exit)
- {
- 	lockdep_assert_irqs_disabled();
- 
-@@ -663,7 +663,7 @@ void noinstr idtentry_exit_cond_rcu(stru
-  * Invokes enter_from_user_mode() to establish the proper context for
-  * NOHZ_FULL. Otherwise scheduling on exit would not be possible.
-  */
--void noinstr idtentry_enter_user(struct pt_regs *regs)
-+noinstr void idtentry_enter_user(struct pt_regs *regs)
- {
- 	enter_from_user_mode();
- }
-@@ -680,13 +680,47 @@ void noinstr idtentry_enter_user(struct
-  *
-  * Counterpart to idtentry_enter_user().
-  */
--void noinstr idtentry_exit_user(struct pt_regs *regs)
-+noinstr void idtentry_exit_user(struct pt_regs *regs)
- {
- 	lockdep_assert_irqs_disabled();
- 
- 	prepare_exit_to_usermode(regs);
- }
- 
-+noinstr bool idtentry_enter_nmi(struct pt_regs *regs)
-+{
-+	bool irq_state = lockdep_hardirqs_enabled(current);
-+
-+	__nmi_enter();
-+	lockdep_hardirqs_off(CALLER_ADDR0);
-+	lockdep_hardirq_enter();
-+	rcu_nmi_enter();
-+
-+	instrumentation_begin();
-+	trace_hardirqs_off_finish();
-+	ftrace_nmi_enter();
-+	instrumentation_end();
-+
-+	return irq_state;
-+}
-+
-+noinstr void idtentry_exit_nmi(struct pt_regs *regs, bool restore)
-+{
-+	instrumentation_begin();
-+	ftrace_nmi_exit();
-+	if (restore) {
-+		trace_hardirqs_on_prepare();
-+		lockdep_hardirqs_on_prepare(CALLER_ADDR0);
-+	}
-+	instrumentation_end();
-+
-+	rcu_nmi_exit();
-+	lockdep_hardirq_exit();
-+	if (restore)
-+		lockdep_hardirqs_on(CALLER_ADDR0);
-+	__nmi_exit();
-+}
-+
- #ifdef CONFIG_XEN_PV
- #ifndef CONFIG_PREEMPTION
- /*
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -16,6 +16,9 @@ void idtentry_exit_user(struct pt_regs *
- bool idtentry_enter_cond_rcu(struct pt_regs *regs);
- void idtentry_exit_cond_rcu(struct pt_regs *regs, bool rcu_exit);
- 
-+bool idtentry_enter_nmi(struct pt_regs *regs);
-+void idtentry_exit_nmi(struct pt_regs *regs, bool irq_state);
-+
- /**
-  * DECLARE_IDTENTRY - Declare functions for simple IDT entry points
-  *		      No error code pushed by hardware
---- a/arch/x86/kernel/nmi.c
-+++ b/arch/x86/kernel/nmi.c
-@@ -330,7 +330,6 @@ static noinstr void default_do_nmi(struc
- 	__this_cpu_write(last_nmi_rip, regs->ip);
- 
- 	instrumentation_begin();
--	trace_hardirqs_off_finish();
- 
- 	handled = nmi_handle(NMI_LOCAL, regs);
- 	__this_cpu_add(nmi_stats.normal, handled);
-@@ -417,8 +416,6 @@ static noinstr void default_do_nmi(struc
- 		unknown_nmi_error(reason, regs);
- 
- out:
--	if (regs->flags & X86_EFLAGS_IF)
--		trace_hardirqs_on_prepare();
- 	instrumentation_end();
- }
- 
-@@ -478,6 +475,8 @@ static DEFINE_PER_CPU(unsigned long, nmi
- 
- DEFINE_IDTENTRY_NMI(exc_nmi)
- {
-+	bool irq_state;
-+
- 	if (IS_ENABLED(CONFIG_SMP) && cpu_is_offline(smp_processor_id()))
- 		return;
- 
-@@ -491,14 +490,14 @@ DEFINE_IDTENTRY_NMI(exc_nmi)
- 
- 	this_cpu_write(nmi_dr7, local_db_save());
- 
--	nmi_enter();
-+	irq_state = idtentry_enter_nmi(regs);
- 
- 	inc_irq_stat(__nmi_count);
- 
- 	if (!ignore_nmis)
- 		default_do_nmi(regs);
- 
--	nmi_exit();
-+	idtentry_exit_nmi(regs, irq_state);
- 
- 	local_db_restore(this_cpu_read(nmi_dr7));
- 
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -387,7 +387,7 @@ DEFINE_IDTENTRY_DF(exc_double_fault)
- 	}
- #endif
- 
--	nmi_enter();
-+	idtentry_enter_nmi(regs);
- 	instrumentation_begin();
- 	notify_die(DIE_TRAP, str, regs, error_code, X86_TRAP_DF, SIGSEGV);
- 
-@@ -632,15 +632,12 @@ DEFINE_IDTENTRY_RAW(exc_int3)
- 		instrumentation_end();
- 		idtentry_exit_user(regs);
- 	} else {
--		nmi_enter();
-+		bool irq_state = idtentry_enter_nmi(regs);
- 		instrumentation_begin();
--		trace_hardirqs_off_finish();
- 		if (!do_int3(regs))
- 			die("int3", regs, 0);
--		if (regs->flags & X86_EFLAGS_IF)
--			trace_hardirqs_on_prepare();
- 		instrumentation_end();
--		nmi_exit();
-+		idtentry_exit_nmi(regs, irq_state);
- 	}
- }
- 
-@@ -831,10 +828,7 @@ static void noinstr handle_debug(struct
- static __always_inline void exc_debug_kernel(struct pt_regs *regs,
- 					     unsigned long dr6)
- {
--	nmi_enter();
--	instrumentation_begin();
--	trace_hardirqs_off_finish();
--	instrumentation_end();
-+	bool irq_state = idtentry_enter_nmi(regs);
- 
- 	/*
- 	 * The SDM says "The processor clears the BTF flag when it
-@@ -857,11 +851,7 @@ static __always_inline void exc_debug_ke
- 	if (dr6)
- 		handle_debug(regs, dr6, false);
- 
--	instrumentation_begin();
--	if (regs->flags & X86_EFLAGS_IF)
--		trace_hardirqs_on_prepare();
--	instrumentation_end();
--	nmi_exit();
-+	idtentry_exit_nmi(regs, irq_state);
- }
- 
- static __always_inline void exc_debug_user(struct pt_regs *regs,
---- a/include/linux/hardirq.h
-+++ b/include/linux/hardirq.h
-@@ -111,32 +111,42 @@ extern void rcu_nmi_exit(void);
- /*
-  * nmi_enter() can nest up to 15 times; see NMI_BITS.
-  */
--#define nmi_enter()						\
-+#define __nmi_enter()						\
- 	do {							\
-+		lockdep_off();					\
- 		arch_nmi_enter();				\
- 		printk_nmi_enter();				\
--		lockdep_off();					\
- 		BUG_ON(in_nmi() == NMI_MASK);			\
- 		__preempt_count_add(NMI_OFFSET + HARDIRQ_OFFSET);	\
--		rcu_nmi_enter();				\
-+	} while (0)
-+
-+#define nmi_enter()						\
-+	do {							\
-+		__nmi_enter();					\
- 		lockdep_hardirq_enter();			\
-+		rcu_nmi_enter();				\
- 		instrumentation_begin();			\
- 		ftrace_nmi_enter();				\
- 		instrumentation_end();				\
- 	} while (0)
- 
-+#define __nmi_exit()						\
-+	do {							\
-+		BUG_ON(!in_nmi());				\
-+		__preempt_count_sub(NMI_OFFSET + HARDIRQ_OFFSET);	\
-+		printk_nmi_exit();				\
-+		arch_nmi_exit();				\
-+		lockdep_on();					\
-+	} while (0)
-+
- #define nmi_exit()						\
- 	do {							\
- 		instrumentation_begin();			\
- 		ftrace_nmi_exit();				\
- 		instrumentation_end();				\
--		lockdep_hardirq_exit();				\
- 		rcu_nmi_exit();					\
--		BUG_ON(!in_nmi());				\
--		__preempt_count_sub(NMI_OFFSET + HARDIRQ_OFFSET);	\
--		lockdep_on();					\
--		printk_nmi_exit();				\
--		arch_nmi_exit();				\
-+		lockdep_hardirq_exit();				\
-+		__nmi_exit();					\
- 	} while (0)
- 
- #endif /* LINUX_HARDIRQ_H */
+We can't use BIT here because nbits could be equal to BITS_PER_LONG in
+some cases. Casting to long should be fine because the nbits will never
+be greater than BITS_PER_LONG, so long should be safe to use.
 
+However, I agree with Andy that the proper solution is to fix GENMASK so
+that this warning does not come up. What's the actual line of code in
+the GENMASK macro that is throwing this warning? I'd like to understand
+better the logic of this sanity check.
 
+William Breathitt Gray
+
+--xHFwDpU9dbj6ez1V
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl7RfwsACgkQhvpINdm7
+VJJhlw//e+7H6kFZycy9xd7K62j4lqCx7Afz2mOmeY3hJ7X2gZhYUZZFh1e8yXYM
+PRGOW738gyQWXWVdHyuhBSQvzfRmWYFxseBzXtOzxrZSUbUXCI1HPOoAP1SobKzW
+XhbYgG8r3GgWOnDtidmn1jEEPmzfsG+6AV6sJ5U8KtXAjrn+hSG7PQPAWbTkEHVU
+qX9FQsJez4GNARzxIFmOcZpJ8nhiOzhojRMdLrD4t2tdDXmd1ijdeG9FraiMqERw
+0M+FzNabBYrmh/rxsc3PG6Yq6QOe94L1jOjrdnRqzaSR6Y1zJ9aZuzwaozryUgke
+ZkoQVgn6QIvvTaBa7WtFNYw6LXFFH5Tx2tOv8YWjN52LamW6zTyOhzoQZCyjK+kD
+C1w3DMHGqi+V7AjB6EMNQOvCnJgtPw43y0LVxOGugM9S1D/BgcMmZAn0cV0+E7pS
+mFeCdBanWrJeZ8xE/dVm4+Y2jOIIsPH2iAr1il8sBgdZXvXqGeRrB4uoF7CJECNQ
+vsn2ExxWHDh4jiVWMaDkF7131sdg/ffJApkJkaIpkq2WJAS88RrOJY6yuyTPyhi/
+f8HUBq6XBQVQlnnRD+zhIf28oLHvePx6gqyIAtVdHJy9OKj0sSUfWxgZvb1xnwZ7
+rQ5lwovxRku8mCoi80TBsDTWMnBUjDLlSZHSLhVNKs2Raa01Akw=
+=vqfY
+-----END PGP SIGNATURE-----
+
+--xHFwDpU9dbj6ez1V--
