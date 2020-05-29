@@ -2,103 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770B31E7258
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBD61E725B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404462AbgE2CDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 22:03:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390805AbgE2CC6 (ORCPT
+        id S2404647AbgE2CDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 22:03:51 -0400
+Received: from smtprelay0060.hostedemail.com ([216.40.44.60]:49346 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2404525AbgE2CDt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 22:02:58 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 801C8C08C5C6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 19:02:58 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id mb16so483523ejb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 19:02:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zR58kZNkDITa3zkTRVIi9Vv+iIxtpv5vYAhOcit9LUI=;
-        b=S7nH/71Vpr+3SyllwwS7tZsIiGVMAwRxpn8tZQtlVVfv/+0pwrXniGDAQvL1xS3QGh
-         j6N9ySgl9oxTOxSVpeny4vGIA6onFpb515ACrcnkxQTqc1dqXG8z9eaOvZHmoWh0akmB
-         5U4Atvj08baUPGMWPrBO1BEvWLBUaVvbH0c1TeogyPJOl4K19F1bbpp1lQqcbTK0BYp/
-         Oh+u3eLTF8/bxle3ZJeAhloD3xA8CtaoFsz0QXeCFsyPlMH0XNAqAi3E4rEz6T8uqVYF
-         vDYPeTu4h1FukdrMd5O9hL8GDb10nzpEqwpXYBgmK2mm6HQ5YQTn2szUINiCvgaYbB0X
-         r4pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zR58kZNkDITa3zkTRVIi9Vv+iIxtpv5vYAhOcit9LUI=;
-        b=sEC+2PX4mzjh0OdExwO9dHFb9NeFm/u589Sywd+NfWZ0PhhQBYX07qIj9/rktRKfOg
-         00D0oF7sdxU+XSwlNXiHtvNbDHypWAVljfFpJLf4z/sgKEgnDaOBITB/ZLvlCmLQdei1
-         vPvDYocefRgoMDoo87/c/F9eWgmsf4SbCrABj+4yuQuGgTzB6LkFGXwEhbOTpdybDkwp
-         rZyaSoovZm64OjkKK9O7jExYN9tBS3xp+A9WtsWlzr1HZWMcRpRrTFxZj6B/fEaRWlSG
-         fLx31L8dDgS6AnsDn1nm5n4AWZIo3OhCWLY7MOHWLAcZ1sy8ntIAlw8Vpm1qbI0Eurvj
-         u6YA==
-X-Gm-Message-State: AOAM531juA9abCL6+sU/UxhV0UdRUyqd3pfRjVRdKJ1WBvjqr4ptNaz0
-        o25KTCQ4HSnCxZxnk1jXUi7ndyJFNrPPCpUZnGpISwPrupY=
-X-Google-Smtp-Source: ABdhPJwCHqfRwTsoKAcO4U64g1rHpI/UOlZrfwrpHlnqUK2gBOvZPVU1dHxRLKJPnEFuqYpl9g4tjOjUiq/dxLRQpJA=
-X-Received: by 2002:a17:906:fb0e:: with SMTP id lz14mr5481366ejb.237.1590717777003;
- Thu, 28 May 2020 19:02:57 -0700 (PDT)
+        Thu, 28 May 2020 22:03:49 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 61CF3182CED2A;
+        Fri, 29 May 2020 02:03:48 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:2899:3138:3139:3140:3141:3142:3150:3352:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:5007:7576:8660:9040:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12438:12740:12760:12895:13069:13095:13148:13230:13311:13357:13439:14181:14659:14721:21080:21212:21220:21433:21627:21660:21939:21990:30045:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: shirt64_1016be626d5f
+X-Filterd-Recvd-Size: 2475
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf14.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 29 May 2020 02:03:46 +0000 (UTC)
+Message-ID: <5418df56f217437bd33c4cb70098db29c177d5b3.camel@perches.com>
+Subject: Re: [PATCH] btrfs: Replace kmalloc with kzalloc in the error message
+From:   Joe Perches <joe@perches.com>
+To:     Yi Wang <wang.yi59@zte.com.cn>, clm@fb.com
+Cc:     josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xue.zhihong@zte.com.cn, wang.liang82@zte.com.cn,
+        Liao Pingfang <liao.pingfang@zte.com.cn>
+Date:   Thu, 28 May 2020 19:03:45 -0700
+In-Reply-To: <1590714057-15468-1-git-send-email-wang.yi59@zte.com.cn>
+References: <1590714057-15468-1-git-send-email-wang.yi59@zte.com.cn>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-References: <CAPM=9ty+Vyn8aSxNqWY+_KEnqj8nGZbp2PRJTvQLcV1iPhG7dA@mail.gmail.com>
- <CAHk-=wgo1HUhSj-kGO8u+iUCxp+QS+rNenbM8gywbF3pdQ_DQA@mail.gmail.com>
-In-Reply-To: <CAHk-=wgo1HUhSj-kGO8u+iUCxp+QS+rNenbM8gywbF3pdQ_DQA@mail.gmail.com>
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Fri, 29 May 2020 12:02:45 +1000
-Message-ID: <CAPM=9ty5ce2mm7Di6qvRKy2Jg2Tw-Cd8U6ypN=Abc2NCGmQWWQ@mail.gmail.com>
-Subject: Re: [git pull] drm fixes for 5.7-rc8/final
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 May 2020 at 11:49, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Thu, May 28, 2020 at 5:21 PM Dave Airlie <airlied@gmail.com> wrote:
-> >
-> > Seems to have wound down nicely, a couple of i915 fixes, amdgpu fixes
-> > and minor ingenic fixes.
->
-> Dave, this doesn't even build. WTF?
->
-> In drivers/gpu/drm/i915/gt/selftest_lrc.c, there's a
-> engine_heartbeat_disable() function that takes two arguments, but the
-> new "live_timeslice_nopreempt()" gives it only one.
->
-> I'd blame a merge problem, since the failure is in new code, but the
-> problem exists in your top-of-tree, not just my merge.
->
-> In fact, it's not even your merge of the i915 tree that is the source
-> of the problem (although the fact that you clearly didn't _test_ the
-> end result most definitely is _part_ of the problem!).
->
-> Because the problem exists in the commit that introduced that thing:
-> commit 1f65efb624c4 ("drm/i915/gt: Prevent timeslicing into
-> unpreemptable requests").
->
-> It's garbage, and never compiled.
+On Fri, 2020-05-29 at 09:00 +0800, Yi Wang wrote:
+> From: Liao Pingfang <liao.pingfang@zte.com.cn>
+> 
+> Use kzalloc instead of kmalloc in the error message according to
+> the previous kzalloc() call.
+[]
+> diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
+[]
+> @@ -632,7 +632,7 @@ static int btrfsic_process_superblock(struct btrfsic_state *state,
+>  
+>  	selected_super = kzalloc(sizeof(*selected_super), GFP_NOFS);
+>  	if (NULL == selected_super) {
+> -		pr_info("btrfsic: error, kmalloc failed!\n");
+> +		pr_info("btrfsic: error, kzalloc failed!\n");
 
-I thought I'd dropped the ball completely. but I see it's a selftest
-failure, I must not have selftests built in my config here, I don't do
-exhaustive builds randconfig
+As there is a dump_stack() done on memory allocation
+failures, these messages might as well be deleted instead.
 
-This has also been built by Intel, but I'm assuming they missed their
-selftest bits as well.
+>  		return -ENOMEM;
+>  	}
+>  
+> @@ -795,7 +795,7 @@ static int btrfsic_process_superblock_dev_mirror(
+>  	if (NULL == superblock_tmp) {
+>  		superblock_tmp = btrfsic_block_alloc();
+>  		if (NULL == superblock_tmp) {
+> -			pr_info("btrfsic: error, kmalloc failed!\n");
+> +			pr_info("btrfsic: error, kzalloc failed!\n");
 
-I'll revert that and resend.
+If these are really desired, it'd be likely be better
+to describe the function that failed instead of whatever
+internal memory allocation the function used.
 
-Sorry for the noise. I'll add self tests to my builds here for future ones.
-Dave.
+Another option would be to add __GFP_NOWARN to the
+allocation internal to btrfsic_block_alloc and then
+change this to something like
+
+		pr_info("btrfsic: error, btrfsic_block_alloc failed!\n");						}
+
+or move this reporting into the btrfsic_block_alloc
+function and remove the messages after each failure.
+
+etc...
+
+
