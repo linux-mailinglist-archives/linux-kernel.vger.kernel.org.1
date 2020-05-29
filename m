@@ -2,125 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D271E76C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 09:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7A81E76C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 09:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbgE2Hg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 03:36:58 -0400
-Received: from twhmllg4.macronix.com ([211.75.127.132]:24680 "EHLO
-        TWHMLLG4.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726701AbgE2Hg4 (ORCPT
+        id S1726593AbgE2Hgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 03:36:52 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:34096 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgE2Hgu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 03:36:56 -0400
-Received: from localhost.localdomain ([172.17.195.96])
-        by TWHMLLG4.macronix.com with ESMTP id 04T7aHq3067318;
-        Fri, 29 May 2020 15:36:23 +0800 (GMT-8)
-        (envelope-from masonccyang@mxic.com.tw)
-From:   Mason Yang <masonccyang@mxic.com.tw>
-To:     broonie@kernel.org, tudor.ambarus@microchip.com,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        boris.brezillon@collabora.com, matthias.bgg@gmail.com
-Cc:     p.yadav@ti.com, juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
-        Mason Yang <masonccyang@mxic.com.tw>
-Subject: [PATCH v4 7/7] mtd: spi-nor: macronix: Add Octal 8D-8D-8D supports for Macronix mx25uw51245g
-Date:   Fri, 29 May 2020 15:36:15 +0800
-Message-Id: <1590737775-4798-8-git-send-email-masonccyang@mxic.com.tw>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1590737775-4798-1-git-send-email-masonccyang@mxic.com.tw>
-References: <1590737775-4798-1-git-send-email-masonccyang@mxic.com.tw>
-X-MAIL: TWHMLLG4.macronix.com 04T7aHq3067318
+        Fri, 29 May 2020 03:36:50 -0400
+Received: by mail-pg1-f195.google.com with SMTP id m1so1028513pgk.1;
+        Fri, 29 May 2020 00:36:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=e/Dq53c8uDy6FXsZCkAfA0J4N/qAFegmUO6SfVHHBbk=;
+        b=sXitWiUD1nf2jHOY6KDectVpwrJMzz45xIsQdeVlc8SzI1WyaK1s77O+/9o9VYBePy
+         lhDw0s9Ck5hwXJLcfAb34bdX9YwqAVIz2uh259Ajj8TjN+TRMEn+nfTjQpWwNwTjwtp1
+         FPTCNRcdV7sZTqLW6lYZtzeL5SkAx1/9AILBoadmtbf/4QtFPjD+9JzseSsXOf5FXRiL
+         EeAKC5DdjfSB2fgZm8ZkFdeH5Dr0O31ZgOeK06RPQXuvOY7JkV22hQzSVR1wrk/KMjCB
+         YNAl/TDZPfCqk9XLtts6oiUgET+LAAW5WHA0ShU+tGkgmhiHE2tcpYbAl20H7357GNyk
+         IcYg==
+X-Gm-Message-State: AOAM530Y6I2I4Tzwx+DRfEQvY87k3uazKxrzBH4U7cOUyYXuMXW7rSQA
+        LAbyqY5dZGIEFRLHoqw4Sak=
+X-Google-Smtp-Source: ABdhPJzLyyoab/Jq8rDy/ilcEU+5Ad5PE/VwdJ24NfW+vJHD7/Lb+0gPTdYLr8bk8o9PYRtVGmsdoQ==
+X-Received: by 2002:a65:5206:: with SMTP id o6mr6779108pgp.16.1590737808812;
+        Fri, 29 May 2020 00:36:48 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id q100sm7136958pjc.11.2020.05.29.00.36.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2020 00:36:47 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id DA81940605; Fri, 29 May 2020 07:36:46 +0000 (UTC)
+Date:   Fri, 29 May 2020 07:36:46 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Xiaoming Ni <nixiaoming@huawei.com>
+Cc:     keescook@chromium.org, yzaikin@google.com, adobriyan@gmail.com,
+        mingo@kernel.org, gpiccoli@canonical.com, rdna@fb.com,
+        patrick.bellasi@arm.com, sfr@canb.auug.org.au,
+        akpm@linux-foundation.org, mhocko@suse.com,
+        penguin-kernel@i-love.sakura.ne.jp, vbabka@suse.cz,
+        tglx@linutronix.de, peterz@infradead.org,
+        Jisheng.Zhang@synaptics.com, khlebnikov@yandex-team.ru,
+        bigeasy@linutronix.de, pmladek@suse.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        wangle6@huawei.com, alex.huangjianhui@huawei.com
+Subject: Re: [PATCH v4 1/4] sysctl: Add register_sysctl_init() interface
+Message-ID: <20200529073646.GW11244@42.do-not-panic.com>
+References: <1589859071-25898-1-git-send-email-nixiaoming@huawei.com>
+ <1589859071-25898-2-git-send-email-nixiaoming@huawei.com>
+ <20200529070903.GV11244@42.do-not-panic.com>
+ <3d2d4b2e-db9e-aa91-dd29-e15d24028964@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3d2d4b2e-db9e-aa91-dd29-e15d24028964@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Macronix mx25uw51245g is a SPI NOR that supports 1-1-1/8-8-8 mode.
+On Fri, May 29, 2020 at 03:27:22PM +0800, Xiaoming Ni wrote:
+> On 2020/5/29 15:09, Luis Chamberlain wrote:
+> > On Tue, May 19, 2020 at 11:31:08AM +0800, Xiaoming Ni wrote:
+> > > --- a/kernel/sysctl.c
+> > > +++ b/kernel/sysctl.c
+> > > @@ -3358,6 +3358,25 @@ int __init sysctl_init(void)
+> > >   	kmemleak_not_leak(hdr);
+> > >   	return 0;
+> > >   }
+> > > +
+> > > +/*
+> > > + * The sysctl interface is used to modify the interface value,
+> > > + * but the feature interface has default values. Even if register_sysctl fails,
+> > > + * the feature body function can also run. At the same time, malloc small
+> > > + * fragment of memory during the system initialization phase, almost does
+> > > + * not fail. Therefore, the function return is designed as void
+> > > + */
+> > 
+> > Let's use kdoc while at it. Can you convert this to proper kdoc?
+> > 
+> Sorry, I do n’t know the format requirements of Kdoc, can you give me some
+> tips for writing?
 
-Correct the dummy cycles to device for various frequencies
-after xSPI profile 1.0 table parsed.
+Sure, include/net/mac80211.h is a good example.
 
-Enable mx25uw51245g to Octal DTR mode by executing the command sequences
-to change to octal DTR mode.
+> > > +void __init register_sysctl_init(const char *path, struct ctl_table *table,
+> > > +				 const char *table_name)
+> > > +{
+> > > +	struct ctl_table_header *hdr = register_sysctl(path, table);
+> > > +
+> > > +	if (unlikely(!hdr)) {
+> > > +		pr_err("failed when register_sysctl %s to %s\n", table_name, path);
+> > > +		return;
+> > 
+> > table_name is only used for this, however we can easily just make
+> > another _register_sysctl_init() helper first, and then use a macro
+> > which will concatenate this to something useful if you want to print
+> > a string. I see no point in the description for this, specially since
+> > the way it was used was not to be descriptive, but instead just a name
+> > followed by some underscore and something else.
+> > 
+> Good idea, I will fix and send the patch to you as soon as possible
 
-Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
----
- drivers/mtd/spi-nor/macronix.c | 55 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 55 insertions(+)
+No rush :)
 
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index 96735d8..6c9a24c 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -8,6 +8,57 @@
- 
- #include "core.h"
- 
-+#define MXIC_CR2_DUMMY_SET_ADDR 0x300
-+
-+/* Fixup the dummy cycles to device and setup octa_dtr_enable() */
-+static void mx25uw51245g_post_sfdp_fixups(struct spi_nor *nor)
-+{
-+	struct spi_nor_flash_parameter *params = nor->params;
-+	int ret;
-+	u8 rdc, wdc;
-+
-+	ret = spi_nor_read_cr2(nor, MXIC_CR2_DUMMY_SET_ADDR, &rdc);
-+	if (ret)
-+		return;
-+
-+	/* Refer to dummy cycle and frequency table(MHz) */
-+	switch (params->dummy_cycles) {
-+	case 10:	/* 10 dummy cycles for 104 MHz */
-+		wdc = 5;
-+		break;
-+	case 12:	/* 12 dummy cycles for 133 MHz */
-+		wdc = 4;
-+		break;
-+	case 16:	/* 16 dummy cycles for 166 MHz */
-+		wdc = 2;
-+		break;
-+	case 18:	/* 18 dummy cycles for 173 MHz */
-+		wdc = 1;
-+		break;
-+	case 20:	/* 20 dummy cycles for 200 MHz */
-+	default:
-+		wdc = 0;
-+	}
-+
-+	if (rdc != wdc)
-+		spi_nor_write_cr2(nor, MXIC_CR2_DUMMY_SET_ADDR, &wdc);
-+
-+	if (params->cmd_seq[0].len) {
-+		params->octal_dtr_enable = spi_nor_cmd_seq_octal_dtr;
-+		params->hwcaps.mask |= SNOR_HWCAPS_READ_8_8_8_DTR;
-+		params->hwcaps.mask |= SNOR_HWCAPS_PP_8_8_8_DTR;
-+
-+	} else {
-+		params->octal_dtr_enable = NULL;
-+		params->hwcaps.mask &= ~SNOR_HWCAPS_READ_8_8_8_DTR;
-+		params->hwcaps.mask &= ~SNOR_HWCAPS_PP_8_8_8_DTR;
-+	}
-+}
-+
-+static struct spi_nor_fixups mx25uw51245g_fixups = {
-+	.post_sfdp = mx25uw51245g_post_sfdp_fixups,
-+};
-+
- static int
- mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
- 			    const struct sfdp_parameter_header *bfpt_header,
-@@ -84,6 +135,10 @@
- 			      SPI_NOR_QUAD_READ) },
- 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048,
- 			      SPI_NOR_QUAD_READ) },
-+	{ "mx25uw51245g", INFO(0xc2813a, 0, 64 * 1024, 1024,
-+			      SECT_4K | SPI_NOR_4B_OPCODES |
-+			      SPI_NOR_OCTAL_DTR_READ)
-+			      .fixups = &mx25uw51245g_fixups },
- };
- 
- static void macronix_default_init(struct spi_nor *nor)
--- 
-1.9.1
+> > > +	}
+> > > +	kmemleak_not_leak(hdr);
+> > 
+> > Is it *wrong* to run kmemleak_not_leak() when hdr was not allocated?
+> > If so, can you fix the sysctl __init call itself?
+> I don't understand here, do you mean that register_sysctl_init () does not
+> need to call kmemleak_not_leak (hdr), or does it mean to add check hdr
+> before calling kmemleak_not_leak (hdr) in sysctl_init ()?
 
+I'm asking that the way you are adding it, you don't run
+kmemleak_not_leak(hdr) if the hdr allocation filed. If that is
+right then it seems that sysctl_init() might not be doing it
+right.
+
+Can that code be shared somehow?
+
+  Luis
