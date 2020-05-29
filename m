@@ -2,82 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA8A1E7C54
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 13:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F721E7C57
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 13:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgE2Lx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 07:53:56 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:40702 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725775AbgE2Lxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 07:53:55 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1jedYl-0004ub-1I; Fri, 29 May 2020 21:52:24 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 29 May 2020 21:52:22 +1000
-Date:   Fri, 29 May 2020 21:52:22 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     davem@davemloft.net, ebiggers@kernel.org, ebiggers@google.com,
-        pvanleeuwen@rambus.com, zohar@linux.ibm.com, gilad@benyossef.com,
-        jarkko.sakkinen@linux.intel.com, dmitry.kasatkin@intel.com,
-        nicstange@gmail.com, tadeusz.struk@intel.com, jmorris@namei.org,
-        serge@hallyn.com, zhang.jia@linux.alibaba.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] crpyto: introduce OSCCA certificate and SM2
- asymmetric algorithm
-Message-ID: <20200529115222.GB3573@gondor.apana.org.au>
-References: <20200402123504.84628-1-tianjia.zhang@linux.alibaba.com>
- <20200416060136.GA19149@gondor.apana.org.au>
- <fba669ef-b784-bdd9-d34e-a7726df7342c@linux.alibaba.com>
+        id S1726792AbgE2LyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 07:54:01 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:49964 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725775AbgE2Lx6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 07:53:58 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04TBqG6r143006;
+        Fri, 29 May 2020 11:53:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=Btj8TnsnvVtswy+efh0SNsqef1MHWBON7iyK08stdgk=;
+ b=S3Sr0pZeV8W2oX7blFHa/S4XEL7FNBaGuMflJ3Z47YrETokhco7nq4VJG4A+TGa56LTv
+ NZ76rVb12QqJv7Tya7n9abEsUFqVHa2Vn0I1GA9MfCPEp2sWYjahHMOZriOMiJPvRbbV
+ EUlMCoWkTG09clNRuwqMjmu2ZcxNA0FO7QI3hLNpT+32VDAnVBgFxXbI2pnbhmyrnmBv
+ ro1O/icBMJVnOOk9GV3X640Ix/JRsr1Xo6L5LhRyz/sEesmn3lgh6slftDS4Vk3A7Bpz
+ ZMEW8b3Vo1k1a4I1xfm0HI91k0NN+YVOckAAGatIGiVlva99wHqllWvtSRwwurespk5T bg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 318xe1sxhy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 29 May 2020 11:53:48 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04TBricA129324;
+        Fri, 29 May 2020 11:53:48 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 31a9ku4jqc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 29 May 2020 11:53:48 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04TBrkXw030487;
+        Fri, 29 May 2020 11:53:47 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 29 May 2020 04:53:46 -0700
+Date:   Fri, 29 May 2020 14:53:30 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, rspringer@google.com,
+        John Hubbard <jhubbard@nvidia.com>, toddpoynor@google.com
+Subject: Re: [PATCH] staging: gasket: Convert get_user_pages*() -->
+ pin_user_pages*()
+Message-ID: <20200529115330.GO30374@kadam>
+References: <1590613362-27495-1-git-send-email-jrdr.linux@gmail.com>
+ <20200528110408.GJ30374@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fba669ef-b784-bdd9-d34e-a7726df7342c@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200528110408.GJ30374@kadam>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9635 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 adultscore=0
+ mlxlogscore=999 malwarescore=0 spamscore=0 bulkscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005290096
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9635 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ adultscore=0 cotscore=-2147483648 mlxscore=0 bulkscore=0
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 malwarescore=0
+ clxscore=1015 impostorscore=0 suspectscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005290096
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 07:04:48PM +0800, Tianjia Zhang wrote:
-> 
-> On 2020/4/16 14:01, Herbert Xu wrote:
-> > On Thu, Apr 02, 2020 at 08:34:57PM +0800, Tianjia Zhang wrote:
-> > > Hello all,
-> > > 
-> > > This new module implement the OSCCA certificate and SM2 public key
-> > > algorithm. It was published by State Encryption Management Bureau, China.
-> > > List of specifications for OSCCA certificate and SM2 elliptic curve
-> > > public key cryptography:
-> > > 
-> > > * GM/T 0003.1-2012
-> > > * GM/T 0003.2-2012
-> > > * GM/T 0003.3-2012
-> > > * GM/T 0003.4-2012
-> > > * GM/T 0003.5-2012
-> > > * GM/T 0015-2012
-> > > * GM/T 0009-2012
-> > > 
-> > > IETF: https://tools.ietf.org/html/draft-shen-sm2-ecdsa-02
-> > > oscca: http://www.oscca.gov.cn/sca/xxgk/2010-12/17/content_1002386.shtml
-> > > scctc: http://www.gmbz.org.cn/main/bzlb.html
-> > > 
-> > > These patchs add the OID object identifier defined by OSCCA. The
-> > > x509 certificate supports sm2-with-sm3 type certificate parsing
-> > > and verification.
-> > 
-> > I don't have any objections to the crypto API bits, but obviously
-> > this is contingent on the x509 bits getting accepted since that's
-> > the only in-kernel user.  So can I see some acks on that please?
-> 
-> Any opinion on this series patches? Do I need to provide additional
-> information ?
+Anyway, can you resend with the commit message re-written.  To me the
+information that's most useful is from the lwn article:
 
-As I said I need acks for the patches outside of the crypto API.
+   "In short, if pages are being pinned for access to the data
+    contained within those pages, pin_user_pages() should be used. For
+    cases where the intent is to manipulate the page structures
+    corresponding to the pages rather than the data within them,
+    get_user_pages() is the correct interface."
 
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+What are the runtime implications of this patch?  I'm still not clear on
+that honestly.
+
+When I'm reviewing patches, I also want to know how a bug was
+introduced.  In this case the original author did everything correctly
+but we've just added some new features (cleanups.  whatever).
+
+I did skim the LWN article back in December but I don't remember the
+details so I really want all this stuff re-stated in each commit
+message.
+
+regards,
+dan carpenter
+
