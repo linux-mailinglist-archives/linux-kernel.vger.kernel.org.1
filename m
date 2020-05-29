@@ -2,111 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A8F1E7391
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 05:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7CC1E7395
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 05:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407317AbgE2DX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 23:23:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407083AbgE2DXz (ORCPT
+        id S2407572AbgE2DZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 23:25:24 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56592 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2388714AbgE2DZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 23:23:55 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9EBC08C5C6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 20:23:55 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id y18so527715pfl.9
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 20:23:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Upfqc1+C901bdB2ErdMTP32Txt/QBIC+Jzp9qFA0w9Q=;
-        b=fZjciYwIkVhkSVfHBvq6SE1SemAyaZX1Rs5sDzOSCRr2SN8jgLFZL8/1m+giO+zDx4
-         HarftfFLbfUjP58QwzYgo/J5qbRzU+uCQOzeqJKm1FxsNi3ZwXQHO0OvxuRBSUFDtBoN
-         h3ZrwSvgvIoXRWmpixf1/K8P346Coud+qvqGjZvtMt6T56wzhcNEb9QWJXpYVEQhxrCj
-         0uHNrErHisflXFgvzIHrIzr6qskkWla1SkPVxv+nxvOKYuDbHEL8HGKxmHIctTvsSBO+
-         6YbtmVIpiVQ+NAnX0/MSuPZZNlk/yWxjk/8FZKxaOLx4ITUxvDrgxghGvuMjbJ91MRY6
-         snfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Upfqc1+C901bdB2ErdMTP32Txt/QBIC+Jzp9qFA0w9Q=;
-        b=ew/DpM0aTLnlHtdEBIN5iKH0VAahmsMXU3ZevQwo0hmRHtX/S80oBvxKMpzAAjoNJ5
-         2Ap0Kjx+6wds0VMnaDx/WfTXRvBf+Z+W7AT9VpMdg5MveDUJOr0ViAZXwXru9STE1cxu
-         hx0/xXcCjNjBunbWOcBfStO1DE+OXqQQDQplfaK6wAIRNxftDr2nV0qCORa+mhthHG4j
-         GP7r8+VIfFZjtHs63IVO+8u9YywtBe7LzszM8aMS1LVqB+pi1D7GgZyelALQ9d3iHWKJ
-         UnlScARVT30wb4Q6tA62QUgQ48hZjKFZT0IRgyA9GqT/mHxr2GP/VlNOxjeodDFEZhyT
-         b60g==
-X-Gm-Message-State: AOAM530+CAJF4d7wLSX7iTs6C/IrezltkBfbzPdGPO1muaNNgRfHQcZm
-        THVPnGFrWhgD27gJkRGGyFGLag==
-X-Google-Smtp-Source: ABdhPJxJVeTzhxMoR4M0mlcvIQiOYVe6/YmLhRrrOeXZQke7CTmsuOJmYwgCNbkB5FRdxEugLkWmlw==
-X-Received: by 2002:a63:6f04:: with SMTP id k4mr6286671pgc.313.1590722634601;
-        Thu, 28 May 2020 20:23:54 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id m14sm5493103pgn.83.2020.05.28.20.23.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 20:23:53 -0700 (PDT)
-Date:   Thu, 28 May 2020 20:22:48 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: qcom: sm8250: use dt-bindings defines for
- clocks
-Message-ID: <20200529032248.GC279327@builder.lan>
-References: <20200523131213.18653-1-jonathan@marek.ca>
+        Thu, 28 May 2020 23:25:18 -0400
+Received: from callcc.thunk.org (pool-100-0-195-244.bstnma.fios.verizon.net [100.0.195.244])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 04T3P5xl028612
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 May 2020 23:25:06 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 6188C420304; Thu, 28 May 2020 23:25:05 -0400 (EDT)
+Date:   Thu, 28 May 2020 23:25:05 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     "Jan (janneke) Nieuwenhuizen" <janneke@gnu.org>
+Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Danny Milosavljevic <dannym@scratchpost.org>,
+        Samuel Thibault <samuel.thibault@gnu.org>
+Subject: Re: [PATCH v2] ext4: support xattr gnu.* namespace for the Hurd
+Message-ID: <20200529032505.GM228632@mit.edu>
+References: <20200525193940.878-1-janneke@gnu.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200523131213.18653-1-jonathan@marek.ca>
+In-Reply-To: <20200525193940.878-1-janneke@gnu.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 23 May 06:12 PDT 2020, Jonathan Marek wrote:
-
-> Use the dt-bindings defines for qupv3_id_1 node's clocks.
+On Mon, May 25, 2020 at 09:39:40PM +0200, Jan (janneke) Nieuwenhuizen wrote:
+> The Hurd gained[0] support for moving the translator and author
+> fields out of the inode and into the "gnu.*" xattr namespace.
 > 
-
-Applied
-
-Thanks,
-Bjorn
-
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
->  arch/arm64/boot/dts/qcom/sm8250.dtsi | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+> In anticipation of that, an xattr INDEX was reserved[1].  The Hurd has
+> now been brought into compliance[2] with that.
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> index 9c210fbac65e..04c9c215ffcd 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> @@ -292,7 +292,8 @@ qupv3_id_1: geniqup@ac0000 {
->  			compatible = "qcom,geni-se-qup";
->  			reg = <0x0 0x00ac0000 0x0 0x6000>;
->  			clock-names = "m-ahb", "s-ahb";
-> -			clocks = <&gcc 133>, <&gcc 134>;
-> +			clocks = <&gcc GCC_QUPV3_WRAP_1_M_AHB_CLK>,
-> +				 <&gcc GCC_QUPV3_WRAP_1_S_AHB_CLK>;
->  			#address-cells = <2>;
->  			#size-cells = <2>;
->  			ranges;
-> @@ -302,7 +303,7 @@ uart2: serial@a90000 {
->  				compatible = "qcom,geni-debug-uart";
->  				reg = <0x0 0x00a90000 0x0 0x4000>;
->  				clock-names = "se";
-> -				clocks = <&gcc 113>;
-> +				clocks = <&gcc GCC_QUPV3_WRAP1_S4_CLK>;
->  				interrupts = <GIC_SPI 357 IRQ_TYPE_LEVEL_HIGH>;
->  				status = "disabled";
->  			};
-> -- 
-> 2.26.1
+> This patch adds support for reading and writing such attributes from
+> Linux; you can now do something like
 > 
+>     mkdir -p hurd-root/servers/socket
+>     touch hurd-root/servers/socket/1
+>     setfattr --name=gnu.translator --value='"/hurd/pflocal\0"' \
+>         hurd-root/servers/socket/1
+>     getfattr --name=gnu.translator hurd-root/servers/socket/1
+>     # file: 1
+>     gnu.translator="/hurd/pflocal"
+> 
+> to setup a pipe translator, which is being used to create[3] a
+> vm-image for the Hurd from GNU Guix.
+> 
+> [0] https://summerofcode.withgoogle.com/projects/#5869799859027968
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3980bd3b406addb327d858aebd19e229ea340b9a
+> [2] https://git.savannah.gnu.org/cgit/hurd/hurd.git/commit/?id=a04c7bf83172faa7cb080fbe3b6c04a8415ca645
+> [3] https://git.savannah.gnu.org/cgit/guix.git/log/?h=wip-hurd-vm
+
+This patch is missing a Signed-off-by.  If you don't understand why
+this is really important, please read: 
+
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
+
+Can you resubmit with the DCO or confirm that it's OK for me to add your Signed-off-by?
+
+    		      	      	 	      - Ted
+					      
