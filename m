@@ -2,73 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83EF81E7693
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 09:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC90E1E7696
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 09:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725834AbgE2HZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 03:25:25 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:37756 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgE2HZY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 03:25:24 -0400
-Received: by mail-wr1-f66.google.com with SMTP id x13so2247575wrv.4;
-        Fri, 29 May 2020 00:25:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Cu9vzNZYc7Xw8z9bCnT/mNbRyFHSEb5aY4LsyXQDvtk=;
-        b=YrPWLBXp6/zcPwAl433ddMJ7NYhVyXgL7hx7q2+PkQyJcEjIwykx0J5O0wKQiMsWzz
-         Z9OBa2x8MopgAzXShlHXiGvdDJ9iIOU5tsWPvO/GtTmO7FW0fwVaFbLekwZdNjLWhuv7
-         vxRCrKfCYxDt4VS8OsTrVfUCYGYXRxlT7WtxtMn10gldf9mY6tuwNrFlgTNXhJwIOmut
-         Q0C8e0oEWmiJAPANZyr078oBooM9JjILHph2j2xTh6wu9qoTgkwInzgbtyIMd+Q5w6N4
-         Gn7ddi4jB+F97uHtSVlEVe0AYDfLY9eTKToAQPXkSMguUrDUEpTdAqP+PWujnvFbm2I2
-         essw==
-X-Gm-Message-State: AOAM531cY6wp2Cty1FqNSLPSGrR0fO9jb+tWB2qcAAkmm/71qtnYZoo2
-        X8iKfD6Rh0Z5ar3GrC1/7tw=
-X-Google-Smtp-Source: ABdhPJwf7DObSBiktuX8OHOA8HzkfiD7CcXiSTDiz9IrSF4MaH1zYmpZrK7vPF6TDC0tV1NJi4Yh7w==
-X-Received: by 2002:a5d:4484:: with SMTP id j4mr7133757wrq.325.1590737122925;
-        Fri, 29 May 2020 00:25:22 -0700 (PDT)
-Received: from localhost (ip-37-188-185-40.eurotel.cz. [37.188.185.40])
-        by smtp.gmail.com with ESMTPSA id b9sm8810619wrt.39.2020.05.29.00.25.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 00:25:21 -0700 (PDT)
-Date:   Fri, 29 May 2020 09:25:20 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Chris Down <chris@chrisdown.name>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH] mm, memcg: reclaim more aggressively before high
- allocator throttling
-Message-ID: <20200529072445.GD4406@dhcp22.suse.cz>
-References: <20200520143712.GA749486@chrisdown.name>
- <CALvZod7rSeAKXKq_V0SggZWn4aL8pYWJiej4NdRd8MmuwUzPEw@mail.gmail.com>
- <20200528194831.GA2017@chrisdown.name>
- <20200528202944.GA76514@cmpxchg.org>
+        id S1725913AbgE2H0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 03:26:40 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:37664 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725355AbgE2H0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 03:26:39 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 920E05587BB7B903D501;
+        Fri, 29 May 2020 15:26:37 +0800 (CST)
+Received: from [127.0.0.1] (10.67.103.119) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Fri, 29 May 2020
+ 15:26:30 +0800
+Subject: Re: [PATCH][next] RDMA/hns: remove duplicate assignment to pointer
+ raq
+To:     Colin King <colin.king@canonical.com>,
+        Wei Hu <huwei87@hisilicon.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>
+CC:     <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200528150427.420624-1-colin.king@canonical.com>
+From:   oulijun <oulijun@huawei.com>
+Message-ID: <7a803901-5405-4837-3fa8-d81e8bdfc067@huawei.com>
+Date:   Fri, 29 May 2020 15:26:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200528202944.GA76514@cmpxchg.org>
+In-Reply-To: <20200528150427.420624-1-colin.king@canonical.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.103.119]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 28-05-20 16:29:44, Johannes Weiner wrote:
-[...]
-> How about this:
+
+
+在 2020/5/28 23:04, Colin King 写道:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Reclaim memcg_nr_pages_over_high in the first iteration, then switch
-> to SWAP_CLUSTER_MAX in the retries.
+> The pointer raq is being assigned twice. Fix this by removing
+> one of the redundant assignments.
+> 
+> Fixes: 14ba87304bf9 ("RDMA/hns: Remove redundant type cast for general pointers")
+> Addressses-Coverity: ("Evaluation order violation")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>   drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+> index 8ff6b922b4d7..d02207cd30df 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+> @@ -1146,7 +1146,7 @@ static void hns_roce_db_free(struct hns_roce_dev *hr_dev)
+>   static int hns_roce_raq_init(struct hns_roce_dev *hr_dev)
+>   {
+>   	struct hns_roce_v1_priv *priv = hr_dev->priv;
+> -	struct hns_roce_raq_table *raq = raq = &priv->raq_table;
+> +	struct hns_roce_raq_table *raq = &priv->raq_table;
+>   	struct device *dev = &hr_dev->pdev->dev;
+>   	int raq_shift = 0;
+>   	dma_addr_t addr;
+> 
+thanks
 
-Yes, that makes much more sense to me.
-
--- 
-Michal Hocko
-SUSE Labs
