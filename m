@@ -2,95 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B501E72CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F051E72C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436546AbgE2CuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 22:50:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44676 "EHLO
+        id S2406899AbgE2Ctk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 22:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436466AbgE2Ct5 (ORCPT
+        with ESMTP id S2406751AbgE2Cth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 22:49:57 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52290C08C5C7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 19:49:57 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id x18so438528pll.6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 19:49:57 -0700 (PDT)
+        Thu, 28 May 2020 22:49:37 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6423C08C5C6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 19:49:37 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id c12so925557qkk.13
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 19:49:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=lca.pw; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=hPip9sj+gT94IHX91SMv58k+bcYoNsqlEOg/dBUQ/BY=;
-        b=pKc8no9EwMGl+SmmziguyIc8O2W2iMjna021zlfs9PD0U7z795t3f5ZCYmV5dwuGNy
-         lh41h5fLmXXbMbeaQCOuEsEBnmZXXwnBOw0KbjkXCHqCoAvc7wpNcMO304+OFcfVEaCc
-         9/3+FxOmMw0bksABX67lYX6HGpflgVgbHxaYIw1VZjh7BoVXTXVhfZdb3z5p67q8hY88
-         OxSVlliRWGD9FtYXQOiK0KWX/L1MR3QcRVtIxsOWPLHH8nWmlCAefY2+JMwEFIueMk/+
-         5WcbZe/9Nr1l0UdyKICRgLFH5iLHx6/OeFhs5ssf2f1xOLIl7UxB8r/bW2e0Sow+xQYN
-         k0gA==
+        bh=bOT31TWiypZmJObYsygEhpXLQD/+7tvvPPQzjH2iK+4=;
+        b=HfohxZ2GIu5+oSUPEPf/k32GpfCruq17SI6d356N61VFNYWJF7rv7vAleBaSQ4mpQz
+         Ez+myrFifwvsEUyqPFS2BmS3ZHET2Oal9C6dHhaizKRmKivLz8HDqglQi/8gIg1Qa0Vi
+         PLZ5HKzFMeGgpAswmoaxuf5dZz3ewOWmGEfqx1m2eP7NpoMk3FxEhwoohTqx3AXCMhzi
+         gjVHzD5vzaW7EBBXYK+HvqbmCrAqDTUpnrhsCKC9pi86zHKqgkeyWe7XzLBsIAc43swa
+         dTeWA7zG4yUzGm44EG+pcq1GGwdZBGdprgizT3/JEZ98hnCy4mnb4kauExl3LLefBGOE
+         2FYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=hPip9sj+gT94IHX91SMv58k+bcYoNsqlEOg/dBUQ/BY=;
-        b=MjGfBZswufU/+QxcDPSX3WoGsLFAX7uV67KJeRllv21rki+ZL6Us34WYu7P/JC3xd8
-         gCzfAhePx97aezocM56zE6mmaGkMR8ycoJ446YF56xKrvo/BdF8WQBfDCOLXOw96Zhax
-         WcnqQzoF/CKs9cmmU+Uvx/w1J+BBdJBndbRgS+4KB1rXxQjKM/z2XLnodWjimJdHcPZz
-         5S5PnLxmLmLRJ8gcqEEvCPvOekgeEaXwOA+DLQ15Ax4r1C7im/jmnL4qjcAjNdiDpQpi
-         4sI3wg+ijUkC1qHLkK6c70X68a0vBgVT3E2dQAj6uANc+qUThjV2KGbhbHp8BT1Nk76D
-         QnFw==
-X-Gm-Message-State: AOAM531THxyIK/yUY9H6pQ0ma+W6aOj4YXcPws/rKy/fBSw+E7PVKhHJ
-        UF5J1Grsm6iwrfVsQelLtFuDZg==
-X-Google-Smtp-Source: ABdhPJz09a79Fui6XxV+b6zrEokUmrQ2Q/jUgp2UxhnPU19f2ePwbMGzsXNI11Mg/LSXdryCF0u5hA==
-X-Received: by 2002:a17:902:848a:: with SMTP id c10mr6716560plo.124.1590720596694;
-        Thu, 28 May 2020 19:49:56 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id z23sm5445646pga.86.2020.05.28.19.49.55
+        bh=bOT31TWiypZmJObYsygEhpXLQD/+7tvvPPQzjH2iK+4=;
+        b=Sc/OXCHAHttZ84glc5VIquw4/nmjFXWwWn3LB7mHLuGnqArliTn4LCVQbKqSbs1Trx
+         zS1dJ+3VKwDnOzsQKjX2TBp2dg8ve+/VEUI08E+rTXGzrftlpDEjrnxm23WEDX/WA30Y
+         WHpxtyRfZDQw6xllVlXqRHDADJ4woEdyU/9AXOgPDN/OHqQXlLlGO8fAMM90EUw2BIYz
+         8CsKz1huACOL6Kl2S0UCp3zdN5rBbTkNUjUjGhC38DEpqlNBMDsD6Cmp8WiOMFnEMwhP
+         rrRR8JwFMGHsXPEh9J0Gzs8p93XtdhZ/FqkKotrSuNofU6J/QKxgqQbwoApc00Hp2U6K
+         RCcw==
+X-Gm-Message-State: AOAM533t0jm0Cs8pb5xjdrzkEE26duKr9+OYHpY/YAzT0JWHcDYWjyy0
+        1tD/XWnk9lr6ujG2cPAra74fKQ==
+X-Google-Smtp-Source: ABdhPJx2xge27p3v7EEKQbDhMTCGr7fnY6FaebGQuk8Xn7nGHqq0hgZ+nDqxhhRf3YEz8M9ySlW1OA==
+X-Received: by 2002:a37:688e:: with SMTP id d136mr5134004qkc.486.1590720576927;
+        Thu, 28 May 2020 19:49:36 -0700 (PDT)
+Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id a7sm6907664qth.61.2020.05.28.19.49.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 19:49:55 -0700 (PDT)
-Date:   Thu, 28 May 2020 19:48:50 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
-Subject: Re: [PATCH 2/6] arm64: dts: qcom: sm8250: add apps_smmu node
-Message-ID: <20200529024850.GU279327@builder.lan>
-References: <20200524023815.21789-1-jonathan@marek.ca>
- <20200524023815.21789-3-jonathan@marek.ca>
- <42f39eeb2af9c82a551a417c62ea21d7@codeaurora.org>
- <0f58e2fd-ef55-cf38-d403-4782662aa89e@marek.ca>
- <2a35f3b85d8311fb4298aaea82236967@codeaurora.org>
- <c9c21e4c-fc89-5a74-fa78-203e5fb64e27@marek.ca>
- <72d771390af9a68759d3f81cb79e46a6@codeaurora.org>
- <33b34a58-46d2-80ec-1d79-8e02aa5ae026@marek.ca>
- <1adedb96a999a08809afe62416e80075@codeaurora.org>
- <8f9a5750-7909-4be7-6780-198d8c242af3@marek.ca>
+        Thu, 28 May 2020 19:49:36 -0700 (PDT)
+Date:   Thu, 28 May 2020 22:49:28 -0400
+From:   Qian Cai <cai@lca.pw>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Kees Cook <keescook@chromium.org>, andi.kleen@intel.com,
+        tim.c.chen@intel.com, dave.hansen@intel.com, ying.huang@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Konstantin Khlebnikov <koct9i@gmail.com>
+Subject: Re: [PATCH v4 3/4] mm/util.c: remove the VM_WARN_ONCE for
+ vm_committed_as underflow check
+Message-ID: <20200529024928.GA4566@lca.pw>
+References: <1590714370-67182-1-git-send-email-feng.tang@intel.com>
+ <1590714370-67182-4-git-send-email-feng.tang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8f9a5750-7909-4be7-6780-198d8c242af3@marek.ca>
+In-Reply-To: <1590714370-67182-4-git-send-email-feng.tang@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 25 May 04:53 PDT 2020, Jonathan Marek wrote:
-[..]
-> I guess the commit message is ambiguous, that's not what I meant. Is "Now
-> that the kernel initializes the iommu, the bypass mappings set by the
-> bootloader are cleared. Adding the iommus property is required so that new
-> mappings are created for UFS." better?
+On Fri, May 29, 2020 at 09:06:09AM +0800, Feng Tang wrote:
+> As is explained by Michal Hocko:
 > 
+> : Looking at the history, this has been added by 82f71ae4a2b8
+> : ("mm: catch memory commitment underflow") to have a safety check
+> : for issues which have been fixed. There doesn't seem to be any bug
+> : reports mentioning this splat since then so it is likely just
+> : spending cycles for a hot path (yes many people run with DEBUG_VM)
+> : without a strong reason.
 
-This looks better, but it's actually not a bypass mapping that we
-inherit from the bootloader, it's the stream mapping pointing to a
-disabled (~ARM_SMMU_SCTLR_M) context bank. So when we wipe the stream
-mappings we will fault on the unmatched stream - which secure world
-"handles" for us...
+Hmm, it looks like the warning is still useful to catch issues in,
 
-As such, I think you should replace "bypass" with "stream".
+https://lore.kernel.org/linux-mm/20140624201606.18273.44270.stgit@zurg
+https://lore.kernel.org/linux-mm/54BB9A32.7080703@oracle.com/
 
-Regards,
-Bjorn
+After read the whole discussion in that thread, I actually disagree with
+Michal. In order to get ride of this existing warning, it is rather
+someone needs a strong reason that could prove the performance hit is
+noticeable with some data.
+
+> 
+> Signed-off-by: Feng Tang <feng.tang@intel.com>
+> Cc: Konstantin Khlebnikov <koct9i@gmail.com>
+> Cc: Qian Cai <cai@lca.pw>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Andi Kleen <andi.kleen@intel.com>
+> ---
+>  mm/util.c | 8 --------
+>  1 file changed, 8 deletions(-)
+> 
+> diff --git a/mm/util.c b/mm/util.c
+> index 3c7a08c..fe63271 100644
+> --- a/mm/util.c
+> +++ b/mm/util.c
+> @@ -814,14 +814,6 @@ int __vm_enough_memory(struct mm_struct *mm, long pages, int cap_sys_admin)
+>  {
+>  	long allowed;
+>  
+> -	/*
+> -	 * A transient decrease in the value is unlikely, so no need
+> -	 * READ_ONCE() for vm_committed_as.count.
+> -	 */
+> -	VM_WARN_ONCE(data_race(percpu_counter_read(&vm_committed_as) <
+> -			-(s64)vm_committed_as_batch * num_online_cpus()),
+> -			"memory commitment underflow");
+> -
+>  	vm_acct_memory(pages);
+>  
+>  	/*
+> -- 
+> 2.7.4
+> 
