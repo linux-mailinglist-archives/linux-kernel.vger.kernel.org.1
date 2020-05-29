@@ -2,110 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E191E75DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 08:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5096F1E75E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 08:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726235AbgE2GYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 02:24:09 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:43246 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725768AbgE2GYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 02:24:09 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id A8E095C7FBDDFB1A1C84;
-        Fri, 29 May 2020 14:24:06 +0800 (CST)
-Received: from [10.63.139.185] (10.63.139.185) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 29 May 2020 14:24:01 +0800
-Subject: Re: [PATCH] crypto: hisilicon/qm - allow smaller reads in debugfs
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-References: <20200528123703.GA1219412@mwanda>
-CC:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>
-From:   Zhou Wang <wangzhou1@hisilicon.com>
-Message-ID: <5ED0AA81.5080105@hisilicon.com>
-Date:   Fri, 29 May 2020 14:24:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.5.1
+        id S1725928AbgE2G1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 02:27:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725308AbgE2G1X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 02:27:23 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9674C03E969
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 23:27:22 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id c21so617526lfb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 23:27:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JcojLQqLi5jvXd4nH045/Izmj9iUf4RKThqP6RXkuIQ=;
+        b=TbZe0udnokxKRGkxiCJnwVNDkVOaQUM+btIee1mDmdIoyE80Oc8hwPJbeEdrloZdG9
+         AdTAE+Z1XPDS1txibwkIeWcJBxyjDUkD+Xz+mnSq+QwBO8ImVsbQPw9T15/nPwNkrBJS
+         PgXVeS61Kj0tAXhNbtA+sXw5kQyPI4oPLv9VviP0VkiEnqvZj/XZKdBAhCABkh7JiWYS
+         z7dhft9e4J4kkabHYZAWDik6po2L0Fmv+1xl6cF40wKqmcvYChgGJ0VipD8jQfGKUG+P
+         F638nAbFprF2f8ekVT1XdWHwuwjDmjR0eYx+TUn6HYPwBA2Ldvg0varG9SYqf976D3xU
+         evsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JcojLQqLi5jvXd4nH045/Izmj9iUf4RKThqP6RXkuIQ=;
+        b=gz0N4J2s6sh8JX+iGwADbUyayGGN1UJitCwZ7bvopkMN+1wl/3LUw8CnHrbbx0m/JV
+         5N0NdFAXR4D0lS4xis0/M4j27SWc1trbwRfphPI8o+NFuuHEq9EUoxNyCo2Ffvc04fHR
+         vRSHvYWqhZA8vS9QJZofNdQuiGz3YfG4ZR5gg8UHPjcoaW1J5knoFvo6dp/+vU6rvH7J
+         ceV7R3kjPSR9TVpFWkVOrckQxFNP1/gOek3TBfAuoFSUiAly2ktFtrcyXOgof7iEbU5X
+         IBH+lGQHvugh6Fzuzg/G2zAglVS8KSGQi8T4597RkoINsvUufJBNX+HL3pW6hPyOVbQQ
+         uHdg==
+X-Gm-Message-State: AOAM531Qvr4mP4pddtR6kiXSlWltYY9KBKfWzdHcLb2sDbb2ao3/lIbC
+        nl/QQavM5TXRe6iKh5YjICMwW8kZpu0NNl+eDE0=
+X-Google-Smtp-Source: ABdhPJw5hOyRGBO3EOfmnPeiZn6PVwVwAhymJAGVrKrF/Q3agWq4Q5PWrxJlXiqfNGqIqSHgjHXArh6NgMLdbyl1Tdc=
+X-Received: by 2002:a19:5d57:: with SMTP id p23mr3624412lfj.94.1590733641061;
+ Thu, 28 May 2020 23:27:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200528123703.GA1219412@mwanda>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.63.139.185]
-X-CFilter-Loop: Reflected
+References: <1590613362-27495-1-git-send-email-jrdr.linux@gmail.com>
+ <20200528110408.GJ30374@kadam> <CAFqt6zaKWBQTy9XfvxwVAvzGS+gz9Qv1gL8Bv1VxLq+THYf+Aw@mail.gmail.com>
+In-Reply-To: <CAFqt6zaKWBQTy9XfvxwVAvzGS+gz9Qv1gL8Bv1VxLq+THYf+Aw@mail.gmail.com>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Fri, 29 May 2020 11:57:09 +0530
+Message-ID: <CAFqt6zbtg0NWbAnDGPC0ZddEiTeohz=8JN+S_KxqM0bnnvar3g@mail.gmail.com>
+Subject: Re: [PATCH] staging: gasket: Convert get_user_pages*() --> pin_user_pages*()
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Cc:     Rob Springer <rspringer@google.com>,
+        Todd Poynor <toddpoynor@google.com>, benchan@chromium.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/5/28 20:37, Dan Carpenter wrote:
-> Originally this code rejected any read less than 256 bytes.  There
-> is no need for this artificial limit.
-> 
-> Also I have changed the snprintf() functions to scnprintf().  The
-> difference is that snprintf() returns the number of bytes which would
-> have been copied if there were enough space and scnprintf() returns the
-> number of bytes which were actually copied.  It doesn't matter here
-> because the strings are very short so they can't go over 256 bytes.
-> 
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+On Fri, May 29, 2020 at 11:46 AM Souptick Joarder <jrdr.linux@gmail.com> wrote:
+>
+> On Thu, May 28, 2020 at 4:34 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> >
+> > On Thu, May 28, 2020 at 02:32:42AM +0530, Souptick Joarder wrote:
+> > > This code was using get_user_pages_fast(), in a "Case 2" scenario
+> > > (DMA/RDMA), using the categorization from [1]. That means that it's
+> > > time to convert the get_user_pages_fast() + put_page() calls to
+> > > pin_user_pages_fast() + unpin_user_page() calls.
+> >
+> > You are saying that the page is used for DIO and not DMA, but it sure
+> > looks to me like it is used for DMA.
+>
+> No, I was referring to "Case 2" scenario in change log which means  it is
+> used for DMA, not DIO.
+>
+> >
+> >    503                          /* Map the page into DMA space. */
+> >    504                          ptes[i].dma_addr =
+> >    505                                  dma_map_page(pg_tbl->device, page, 0, PAGE_SIZE,
+> >    506                                               DMA_BIDIRECTIONAL);
+> >
+> > To be honest, that starting paragraph was confusing.  At first I thought
+> > you were saying gasket was an RDMA driver. :P  I shouldn't have to read
+> > a different document to understand the commit message.  It should be
+> > summarized enough and the other documentation is supplemental.
+> >
+> > "In 2019 we introduced pin_user_pages() and now we are converting
+> > get_user_pages() to the new API as appropriate".
+>
+> As all other similar conversion have similar change logs, so I was trying
+> to maintain the same. John might have a different opinion on this.
 
-Looks good to me, thanks!
-Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
+For example, I was referring to few recent similar commits for change logs.
 
-> ---
->  drivers/crypto/hisilicon/qm.c | 18 ++++++++----------
->  1 file changed, 8 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-> index a781c02251980..9c0c9f500d91d 100644
-> --- a/drivers/crypto/hisilicon/qm.c
-> +++ b/drivers/crypto/hisilicon/qm.c
-> @@ -1076,16 +1076,15 @@ static ssize_t qm_cmd_read(struct file *filp, char __user *buffer,
->  	if (*pos)
->  		return 0;
->  
-> -	if (count < QM_DBG_READ_LEN)
-> -		return -ENOSPC;
-> -
-> -	len = snprintf(buf, QM_DBG_READ_LEN, "%s\n",
-> +	len = scnprintf(buf, QM_DBG_READ_LEN, "%s\n",
->  		       "Please echo help to cmd to get help information");
->  
-> +	len = min_t(size_t, len, count);
->  	if (copy_to_user(buffer, buf, len))
->  		return -EFAULT;
->  
-> -	return (*pos = len);
-> +	*pos = len;
-> +	return len;
->  }
->  
->  static void *qm_ctx_alloc(struct hisi_qm *qm, size_t ctx_size,
-> @@ -2710,19 +2709,18 @@ static ssize_t qm_status_read(struct file *filp, char __user *buffer,
->  	if (*pos)
->  		return 0;
->  
-> -	if (count < QM_DBG_READ_LEN)
-> -		return -ENOSPC;
-> -
->  	val = atomic_read(&qm->status.flags);
-> -	len = snprintf(buf, QM_DBG_READ_LEN, "%s\n", qm_s[val]);
-> +	len = scnprintf(buf, QM_DBG_READ_LEN, "%s\n", qm_s[val]);
->  	if (!len)
->  		return -EFAULT;
->  
-> +	len = min_t(size_t, len, count);
->  	cp_len = copy_to_user(buffer, buf, len);
->  	if (cp_len)
->  		return -EFAULT;
->  
-> -	return (*pos = len);
-> +	*pos = len;
-> +	return len;
->  }
->  
->  static const struct file_operations qm_status_fops = {
-> 
+http://lkml.kernel.org/r/20200519002124.2025955-5-jhubbard@nvidia.com
+https://lore.kernel.org/r/20200518015237.1568940-1-jhubbard@nvidia.com
+
+
+>
+> John, Any further opinion ??
+>
+> >
+> > >
+> > > There is some helpful background in [2]: basically, this is a small
+> > > part of fixing a long-standing disconnect between pinning pages, and
+> > > file systems' use of those pages.
+> >
+> > What is the impact of this patch on runtime?
+>
+> I don't have the hardware to validate the runtime impact and will
+> wait if someone is going to validate it for runtime impact.
+>
+> >
+> > >
+> > > [1] Documentation/core-api/pin_user_pages.rst
+> > >
+> > > [2] "Explicit pinning of user-space pages":
+> > >       https://lwn.net/Articles/807108/
+> > >
+> > > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> > > Cc: John Hubbard <jhubbard@nvidia.com>
+> > >
+> > > Hi,
+> > >
+> > > I'm compile tested this, but unable to run-time test, so any testing
+> > > help is much appriciated.
+> > > ---
+> >
+> > The "Hi" part of patch should have been under the "---" cut off line so
+> > this will definitely need to be resent.
+>
+> Sorry about it.
+> Will wait for feedback from John before resend it :)
+>
+> >
+> > regards,
+> > dan carpenter
+> >
