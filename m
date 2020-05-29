@@ -2,156 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE561E7534
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 07:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFB01E753B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 07:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725852AbgE2FLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 01:11:44 -0400
-Received: from mag112.magazineer.net ([157.7.134.112]:60970 "EHLO
-        157.7.134.112" rhost-flags-OK-OK-FAIL-FAIL) by vger.kernel.org
-        with ESMTP id S1725768AbgE2FLn (ORCPT
+        id S1725859AbgE2FOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 01:14:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725775AbgE2FOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 01:11:43 -0400
-To:     <linux-kernel@vger.kernel.org>
-Subject: =?iso-2022-jp?B?GyRCSVQ2NyRLNi8kJDxSMnFKITtjO3Y2SCEhPzc1LDsyRn4lKiVzJWklJCVzJTslXyVKITwbKEI=?=
-From:   =?ISO-2022-JP?B?GyRCPFIycUohO2MlVyVtJTglJyUvJUgbKEI=?= 
-        <info@fukushi-service.work>
-Date:   Fri, 29 May 2020 14:11:42 +0900
-Reply-To: info@fukushi-service.work
-Message-Id: <20200429141142.27557@fukushi-service.work>
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
+        Fri, 29 May 2020 01:14:33 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A44C08C5C6;
+        Thu, 28 May 2020 22:14:33 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id b27so1182868qka.4;
+        Thu, 28 May 2020 22:14:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tg5+TcCm6QNV2OPAv532ciWBLdBm392xLd7vnlNNWYg=;
+        b=rkqmUI+qUByunzA1ZP1hJzA5a/3shMd9H6A8mlXNa7h5wPDtsVM01uYPl7A2deaxN4
+         pL60QomkW89QfHSMVq4yfJVp3x49WPKcb8IY6kPCMfJdt2KLOGvAJptl3t6RAyFJfzjR
+         HhFwVpVFoZVhfKVieixaMqHVFLqsLqtjjkIAsEbYWphRWhTVo+XsFJY6mRPwoIF8+ls1
+         m5ipphp573Qhi5OhFXeYRxnOz9dxNGxH8lL7LFiAjxvGSFRlIOKQF1+cELWYiMd6SaOa
+         LroA8JHxqPyuWeWMNA5bVSRvz6quKa9HJk+FeI4ieiCMQMD6MiCJxnN0ai3VFAFqLx7C
+         HUqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tg5+TcCm6QNV2OPAv532ciWBLdBm392xLd7vnlNNWYg=;
+        b=kXMlhxy3lofMOgjZA+G22xGPtTg/vFqWkTFM0195BzaJlPYfLyQFwhJcR/e+FkPvOM
+         R2pO4lbiZ9a7tL+6lDKvDOn90fG2F26CFGbf5pgSzMVTKfhi2ZTi8RU/4iifEXTlv+nX
+         UezHIttcNwHGxiQzDleT/wRec6wlSlMG9uUSlCUxG6UpIPZunF7Ev72VtxgJ9oTg0zOg
+         Ksh4CWFs1d0vRipCOscSUR1dzjbEmlKqOpnT136iIh+AAFWic58G0Ehw25XvA5dxv8tR
+         P5ABxj0VjvV7uLvCEHEUKreM9s1L1lV7lhfsbB6reIx9Pu4xNDp2dBw/8UhHOBvB8L8N
+         b5dw==
+X-Gm-Message-State: AOAM530LjTXZhaulUQgDjGX33fGVvkG8eiimcx0iG5y2xHjLa450PNnb
+        Uck4ZepZFg7eVKsBb5mYNcQx45+8yo9HZ/O4UEU=
+X-Google-Smtp-Source: ABdhPJxsz2Q98YaknWIgWYhmOvgRsuMnXDtm8aEBREL4WHnhJWqdasWcw2Z5aegERXwEZX2eQZmbgGkefPOkElF7EKg=
+X-Received: by 2002:a37:4595:: with SMTP id s143mr6768210qka.449.1590729272407;
+ Thu, 28 May 2020 22:14:32 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200522003850.GA32698@paulmck-ThinkPad-P72> <20200522094407.GK325280@hirez.programming.kicks-ass.net>
+ <20200522143201.GB32434@rowland.harvard.edu> <20200522174352.GJ2869@paulmck-ThinkPad-P72>
+ <006e2bc6-7516-1584-3d8c-e253211c157e@fb.com> <20200525112521.GD317569@hirez.programming.kicks-ass.net>
+ <20200525154730.GW2869@paulmck-ThinkPad-P72> <20200525170257.GA325280@hirez.programming.kicks-ass.net>
+ <20200525172154.GZ2869@paulmck-ThinkPad-P72> <20200528220047.GB211369@google.com>
+ <20200528221659.GS2483@worktop.programming.kicks-ass.net>
+In-Reply-To: <20200528221659.GS2483@worktop.programming.kicks-ass.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 28 May 2020 22:14:21 -0700
+Message-ID: <CAEf4BzYf6jjrStc08R1bDASFyEdKj6vYg_MOaipUJ3vbdqNrSg@mail.gmail.com>
+Subject: Re: Some -serious- BPF-related litmus tests
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alan Stern <stern@rowland.harvard.edu>, parri.andrea@gmail.com,
+        will@kernel.org, Boqun Feng <boqun.feng@gmail.com>,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, Akira Yokosawa <akiyks@gmail.com>,
+        dlustig@nvidia.com, open list <linux-kernel@vger.kernel.org>,
+        linux-arch@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-代表者様
+On Thu, May 28, 2020 at 3:17 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Thu, May 28, 2020 at 06:00:47PM -0400, Joel Fernandes wrote:
+>
+> > Any idea why this choice of locking-based ring buffer implementation in BPF?
+> > The ftrace ring buffer can support NMI interruptions as well for writes.
+> >
+> > Also, is it possible for BPF to reuse the ftrace ring buffer implementation
+> > or does it not meet the requirements?
+>
+> Both perf and ftrace are per-cpu, which, according to the patch
+> description is too much memory overhead for them. Neither have ever
+> considered anything else, atomic ops are expensive.
 
-社会福祉事業を応援するメディアを運営しております
-社会福祉プロジェクトと申します。
+Right, as mentioned in commit description to [0], desire to use shared
+ring buffer across multiple CPUs to save memory and absorb bigger
+spikes with overall lower memory use was one of main motivations.
+Ordered events was another one. Both perf buffer and ftrace buffer use
+strictly per-CPU buffers, which in practice makes a lot of developers
+make hard and non-obvious choice between using too much memory or
+losing too much events due to running out of space in a buffer.
 
-今、新規事業をお考えの経営者様を対象に
-社会福祉事業が大変注目されているのを
-ご存知でしょうか？
+  [0] https://patchwork.ozlabs.org/project/netdev/patch/20200526063255.1675186-2-andriin@fb.com/
 
+>
+> On top of that, they want multi-producer support. Yes, doing that gets
+> interesting really fast, but using spinlocks gets you a trainwreck like
+> this.
+>
+> This thing so readily wanting to drop data on the floor should worry
 
-今月複数回にわたって開催された
-社会福祉プロジェクトオンラインセミナーも
-大変な盛会のうちに終える事となりました。
+It's true that *in NMI context*, if spinlock is already taken,
+reservation will fail, so under high contention there will be
+potentially high number of drops. So for such cases perfbuf might be a
+better approach and BPF applications will have to deal with higher
+memory usage. In practice, though, most BPF programs are not running
+in NMI context, so there won't be any drop due to spinlock usage.
+Having both perfbuf and this new BPF ringbuf gives people choice and
+more options to tailor to their needs.
 
-社会福祉プロジェクトセミナーを少しのぞいてみる。
-https://fukushi-service.work/seminar/
+There is another cluster of applications which are unnecessarily more
+complicated just for the fact that there is no ordering between
+correlated events that happen on different CPUs. Per-CPU buffers are
+not well suited for such cases, unfortunately.
 
+> people, but apparently they've not spend enough time debugging stuff
+> with partial logs yet. Of course, bpf_prog_active already makes BPF
+> lossy, so maybe they went with that.
 
-実際にセミナーに参加された方からも
+Not sure which "partial logs" you mean, I'll assume dropped samples?
+All production BPF applications are already designed to handle data
+loss, because it could and does happen due to running out of buffer
+space. Of course, amount of such drops is minimized however possible,
+but applications still need to be able to handle that.
 
-「福祉総合企業というビジネスモデルが
-印象的でした。」
+Now, though, there will be more options. Now it's not just a question
+of whether to allocate a tiny 64KB per-CPU buffer on 80 core server
+and use reasonable 5MB for perfbuf overall, but suffer high and
+frequent data loss whenever a burst of incoming events happen. Or bump
+it up to, say, 256KB (or higher) and use 20MB+ now, which most of the
+time will be completely unused, but be able to absorb 4x more events.
+Now it might be more than enough to just allocate a single shared 5MB
+buffer and be able to absorb much higher spikes (of course, assuming
+not all CPUs will be spiking at the same time, in which case nothing
+can really help you much w.r.t. data loss).
 
-「リピート率が高い、高収益、貢献ビジネス。
-青山先生の熱意に感銘を受けました。」
+So many BPF users are acutely aware of data loss and care a lot, but
+there are other constraints that they have to take into account.
 
-「国を相手にする手堅いビジネスであること。
-実は同様の事を目立たずにやっている人達が
-いることが知れた。」
+As for expensiveness of spinlock and atomics, a lot of applications we
+are seeing do not require huge throughput that per-CPU data structures
+provide, so such overhead is acceptable. Even under high contention,
+BPF ringbuf performance is pretty reasonable and will satisfy a lot of
+applications, see [1].
 
-「労働時間に対して売り上げが高いことに
-驚きました。」
+  [1] https://patchwork.ozlabs.org/project/netdev/patch/20200526063255.1675186-5-andriin@fb.com/
 
+>
+> All reasons why I never bother with BPF, aside from it being more
+> difficult than hacking up a kernel in the first place.
 
-などなど
-
-ここでは全部紹介しきれませんが
-参加後のアンケートでも93.6%の方から
-大変満足の声をいただきました。
-
-社会福祉プロジェクトセミナーを少しのぞいてみる。
-https://fukushi-service.work/seminar/
-
-今月24日が最後のセミナー開催でしたが
-大変好評の声をいただいており
-
-もう一度この優れたビジネスモデルについて
-知っていただく機会を特別に設ける事にしました。
-
-この特別開催のお知らせを告知して早速申し込みの
-数も殺到しており、残り枠数も大変少なくなってきて
-おります。
-
-「やっぱりあの時話だけでも聞いておくべきだった。」
-と後から後悔するまえに
-
-まずは参加枠の確保をしていただく事を
-強くオススメ致します。
-
-
-社会福祉プロジェクトセミナーの残り席数と日程を確認する。
-https://fukushi-service.work/seminar/
-
-
-大切なお子様をお預かりする福祉事業
-を、ビジネスと呼ぶのは少し抵抗がありますが
-
-収益面でも充実しなければ、質の高い
-サービスを提供する事も困難になります。
-
-このセミナーでお伝えするのは
-
-福祉事業を通じた高い社会貢献の実現と、
-資産形成含め、効果実証済みのビジネスモデルを
-活用した安定した収益の確保。
-
-この２つを両立させ、物心両面を満たす
-再現性ある経営ノウハウについてです。
-
-社会福祉プロジェクトセミナーの残り席数と日程を確認する。
-https://fukushi-service.work/seminar/
-
-
-特に人一倍働いているのに、利益が
-なかなか伸びない。上がらない。
-
-自分が働けなくなったら、事業として
-成り立たない。
-
-人財がなかなか定着しない。育たない。
-
-
-そのような事でお悩みの経営者の方や
-事業主の方に、知っていただきたい内容です。
-
-次回セミナー開催の予定はございません。
-
-今回がラストチャンスとなるかもしれませんので
-少しでも興味がある方は
-
-この機を逃さず物心両面を満たすノウハウを
-手に入れて下さい。
-
-社会福祉プロジェクト最終セミナーの残り席数と日程を確認する。
-https://fukushi-service.work/seminar/
-
-
-それでは、当日お会いできる事を
-楽しみにしております。
-
-
-主催：社会福祉プロジェクト
-
------------------------------------------
-社会福祉プロジェクト
-
-info@fukushi-service.work
-https://fukushi-service.work/seminar/
-
-〒531-0072
-大阪府大阪市北区豊崎２丁目７−９いずみビル4F
-TEL : 06-7777-4030
------------------------------------------
-
-配信停止をご希望の方は下記ＵＲＬより
-ご登録いただくか、本メールにそのまま
-『配信停止』の旨を記載しご返信をお願いいたします。
-配信停止フォーム：https://form2dm.site/kaijo/
+It's not my goal to pitch BPF here, but for a lot of real-world use
+cases, hacking kernel is not an option at all, for many reasons. One
+of them is that kernel upgrades across huge fleet of servers take a
+long time, which teams can't afford to wait. In such cases, BPF is a
+perfect solution, which can't be beaten, as evidenced by a wide
+variety of BPF applications solving real problems.
