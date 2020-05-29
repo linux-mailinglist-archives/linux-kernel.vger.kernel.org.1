@@ -2,138 +2,412 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81AF1E725D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1BCB1E7262
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 04:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404730AbgE2CEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 May 2020 22:04:00 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:60268 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390805AbgE2CD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 May 2020 22:03:58 -0400
-Received: from [10.130.0.52] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxP2iKbdBeCYM6AA--.1603S3;
-        Fri, 29 May 2020 10:03:55 +0800 (CST)
-Subject: Re: [PATCH v4 1/2] clk: hisilicon: Use correct return value about
- hisi_reset_init()
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-References: <1590590362-11570-1-git-send-email-yangtiezhu@loongson.cn>
- <159060638492.88029.3855641102752089121@swboyd.mtv.corp.google.com>
- <51c21311-a301-1a55-3eb1-a11583e7df43@loongson.cn>
- <159070775347.69627.5841986835404441281@swboyd.mtv.corp.google.com>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <be070b91-4954-c66c-970c-a64f72eb54dc@loongson.cn>
-Date:   Fri, 29 May 2020 10:03:54 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S2404816AbgE2CFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 May 2020 22:05:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391547AbgE2CFY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 May 2020 22:05:24 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78006C08C5C6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 19:05:23 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id m7so390605plt.5
+        for <linux-kernel@vger.kernel.org>; Thu, 28 May 2020 19:05:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=scMPyp0Cd4obDzXIcULUzWcz6qsbcJHLwkXHbhN3T8s=;
+        b=IEnVHh6qMTtKRaskM5/V2ACzCO1WO6gXLfvZe+UT6aMUw4D30kUUTVM9Io0sPADR5E
+         OVt1aoy61cFPjhdF/d9iWl/PSRIpnxeOraTvRdYec4ts6W1A3TBbE8E0CrnJ+GgmYL1q
+         eoQ1MklVvW6xT5guC/wVGlanQvMvXiYeYOZosfzr0N41kOQkB7GqfoWf2rrcCjKm7IlL
+         dJ8zQodFqP20gPtyIOwbqdRmMffECbuco9aR8Dhpq7e89FFzL+CjIr1RhiuiWDxtYYDQ
+         KI4eSnrkpQTG7Ni72d2pQs+xDim8FiVl89EtvtbkLoakuHfDfihdzxf5SzjHoaa3cOpL
+         SkYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=scMPyp0Cd4obDzXIcULUzWcz6qsbcJHLwkXHbhN3T8s=;
+        b=I8B9uRH7lQ2BbROBWVLCT+M04pzQGsZr2g8EYDTAV1hTPcpX86+fTM9sQApS/KFNkD
+         7KrPun3euPDOKgyrNXmUm2oYw2f6WZ4rXBvODOqJva14b5YtFpi5aHafek67RFqrr+6E
+         DkDjUECwuw5/0g+XsKXpFRt2cyaziS2NAlZhajyp8E5tcBygy85xqakyzThsNjH6o2z+
+         XMIJlVcsWply3mYRFNJBBUe4iRH+7/fRNO8JUyacn3YzaMwqp6/wvVYjbACO1rphmWI1
+         OP7UFV3dfY+FemN0KWxp23D7cn8Eht2+AfUPEmdid3QvLmA3Bu5u36rzYDdU7BNAV5XN
+         JH2A==
+X-Gm-Message-State: AOAM5332HP4D1aJh4u2XDHO3vcKslOBGPC7SOodadA76uT9dbuE5c8eS
+        oASb8iGcZi+IduKFKR8gvTWInw==
+X-Google-Smtp-Source: ABdhPJyu/U/zFyc1Mj2/7NmzBqox/bFC5Paz7MNXaGMPwenYVkipIgKqQyDmgko+QzT+0liCcAVNqw==
+X-Received: by 2002:a17:902:a711:: with SMTP id w17mr6535954plq.173.1590717922705;
+        Thu, 28 May 2020 19:05:22 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id e21sm5312043pga.71.2020.05.28.19.05.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 19:05:22 -0700 (PDT)
+Date:   Thu, 28 May 2020 19:04:16 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     agross@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+        robh+dt@kernel.org, nishakumari@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org,
+        rnayak@codeaurora.org
+Subject: Re: [PATCH v3 4/5] regulator: qcom: Add labibb driver
+Message-ID: <20200529020416.GN279327@builder.lan>
+References: <20200528154625.17742-1-sumit.semwal@linaro.org>
+ <20200528154625.17742-5-sumit.semwal@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <159070775347.69627.5841986835404441281@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9DxP2iKbdBeCYM6AA--.1603S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxAw48WFy5Aw18ArWUtr47urg_yoW5GFyUpr
-        1xGayakr4F9r17X3y7AF45Aa43ZF1fKw4UJr1rXws3Aw15GrWkAr4rKa48urZ5urW7Gay5
-        tr4SkF4rZayqyaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvE14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxV
-        W8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xf
-        McIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7
-        v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xF
-        o4CEbIxvr21lc2xSY4AK67AK6r4UMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
-        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
-        b7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
-        vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1l
-        IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWI
-        evJa73UjIFyTuYvjfU0GYLUUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200528154625.17742-5-sumit.semwal@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/29/2020 07:15 AM, Stephen Boyd wrote:
-> Quoting Tiezhu Yang (2020-05-27 19:27:42)
->> On 05/28/2020 03:06 AM, Stephen Boyd wrote:
->>> Quoting Tiezhu Yang (2020-05-27 07:39:21)
->>>> The return value about hisi_reset_init() is not correct, fix it.
->>>>
->>>> Fixes: e9a2310fb689 ("reset: hisilicon: fix potential NULL pointer dereference")
->>> hisi_reset_init() returns NULL on error in that commit. This patch
->>> doesn't make sense.
->> Hi Stephen,
->>
->> The initial aim of this patch is to use correct return value about
->> hisi_reset_init(), maybe NULL is OK, but the return value in this
->> patch is more accurate.
-> The implementation of hisi_reset_init() that I see is this:
->
->
-> 	struct hisi_reset_controller *rstc;
->
-> 	rstc = devm_kmalloc(&pdev->dev, sizeof(*rstc), GFP_KERNEL);
-> 	if (!rstc)
-> 		return NULL;
->
-> 	rstc->membase = devm_platform_ioremap_resource(pdev, 0);
-> 	if (IS_ERR(rstc->membase))
-> 		return NULL;
->
-> 	spin_lock_init(&rstc->lock);
-> 	rstc->rcdev.owner = THIS_MODULE;
-> 	rstc->rcdev.ops = &hisi_reset_ops;
-> 	rstc->rcdev.of_node = pdev->dev.of_node;
-> 	rstc->rcdev.of_reset_n_cells = 2;
-> 	rstc->rcdev.of_xlate = hisi_reset_of_xlate;
-> 	reset_controller_register(&rstc->rcdev);
->
-> 	return rstc;
->
-> And that returns NULL on an error and a valid pointer on success.
-> Changing the code to check the return value of hisi_reset_init() for an
-> error pointer is simply wrong without updating hisi_reset_init() to
-> return an error pointer on error. Where is the patch that changes
-> hisi_reset_init() to return an error pointer?
+On Thu 28 May 08:46 PDT 2020, Sumit Semwal wrote:
 
-Hi Stephen,
+> From: Nisha Kumari <nishakumari@codeaurora.org>
+> 
+> Qualcomm platforms have LAB(LCD AMOLED Boost)/IBB(Inverting Buck Boost)
+> regulators, labibb for short, which are used as power supply for
+> LCD Mode displays.
+> 
+> This patch adds labibb regulator driver for pmi8998 PMIC, found on
+> SDM845 platforms.
+> 
+> Signed-off-by: Nisha Kumari <nishakumari@codeaurora.org>
+> Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
+> 
+> --
+> v2: sumits: reworked the driver for more common code, and addressed
+>      review comments from v1
+> v3: sumits: addressed review comments from v2; moved to use core
+>      regulator features like enable_time, off_on_delay, and the newly
+>      added poll_enabled_time. Moved the check_enabled functionality
+>      to core framework via poll_enabled_time.
+> 
+> ---
+>  drivers/regulator/Kconfig                 |  10 +
+>  drivers/regulator/Makefile                |   1 +
+>  drivers/regulator/qcom-labibb-regulator.c | 224 ++++++++++++++++++++++
+>  3 files changed, 235 insertions(+)
+>  create mode 100644 drivers/regulator/qcom-labibb-regulator.c
+> 
+> diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
+> index f4b72cb098ef..58704a9fd05d 100644
+> --- a/drivers/regulator/Kconfig
+> +++ b/drivers/regulator/Kconfig
+> @@ -1167,5 +1167,15 @@ config REGULATOR_WM8994
+>  	  This driver provides support for the voltage regulators on the
+>  	  WM8994 CODEC.
+>  
+> +config REGULATOR_QCOM_LABIBB
+> +	tristate "QCOM LAB/IBB regulator support"
+> +	depends on SPMI || COMPILE_TEST
+> +	help
+> +	  This driver supports Qualcomm's LAB/IBB regulators present on the
+> +	  Qualcomm's PMIC chip pmi8998. QCOM LAB and IBB are SPMI
+> +	  based PMIC implementations. LAB can be used as positive
+> +	  boost regulator and IBB can be used as a negative boost regulator
+> +	  for LCD display panel.
+> +
+>  endif
+>  
+> diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
+> index 6610ee001d9a..5b313786c0e8 100644
+> --- a/drivers/regulator/Makefile
+> +++ b/drivers/regulator/Makefile
+> @@ -87,6 +87,7 @@ obj-$(CONFIG_REGULATOR_MT6323)	+= mt6323-regulator.o
+>  obj-$(CONFIG_REGULATOR_MT6358)	+= mt6358-regulator.o
+>  obj-$(CONFIG_REGULATOR_MT6380)	+= mt6380-regulator.o
+>  obj-$(CONFIG_REGULATOR_MT6397)	+= mt6397-regulator.o
+> +obj-$(CONFIG_REGULATOR_QCOM_LABIBB) += qcom-labibb-regulator.o
+>  obj-$(CONFIG_REGULATOR_QCOM_RPM) += qcom_rpm-regulator.o
+>  obj-$(CONFIG_REGULATOR_QCOM_RPMH) += qcom-rpmh-regulator.o
+>  obj-$(CONFIG_REGULATOR_QCOM_SMD_RPM) += qcom_smd-regulator.o
+> diff --git a/drivers/regulator/qcom-labibb-regulator.c b/drivers/regulator/qcom-labibb-regulator.c
+> new file mode 100644
+> index 000000000000..634d08461c6e
+> --- /dev/null
+> +++ b/drivers/regulator/qcom-labibb-regulator.c
+> @@ -0,0 +1,225 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +// Copyright (c) 2020, The Linux Foundation. All rights reserved.
+> +
+> +#include <linux/module.h>
+> +#include <linux/of_irq.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/regulator/driver.h>
+> +#include <linux/regulator/of_regulator.h>
+> +
+> +#define REG_PERPH_TYPE                  0x04
+> +#define QCOM_LAB_TYPE			0x24
+> +#define QCOM_IBB_TYPE			0x20
+> +
+> +#define REG_LABIBB_STATUS1		0x08
+> +#define REG_LABIBB_ENABLE_CTL		0x46
+> +#define LABIBB_STATUS1_VREG_OK_BIT	BIT(7)
+> +#define LABIBB_CONTROL_ENABLE		BIT(7)
+> +
+> +#define LAB_ENABLE_CTL_MASK		BIT(7)
+> +#define IBB_ENABLE_CTL_MASK		(BIT(7) | BIT(6))
+> +
+> +#define LABIBB_ENABLE_TIME		1000
+> +#define LAB_POLL_ENABLED_TIME		(LABIBB_ENABLE_TIME * 2)
+> +#define IBB_POLL_ENABLED_TIME		(LABIBB_ENABLE_TIME * 10)
+> +#define LABIBB_OFF_ON_DELAY		(8200)
+> +
+> +struct labibb_regulator {
+> +	struct regulator_desc		desc;
+> +	struct device			*dev;
+> +	struct regmap			*regmap;
+> +	struct regulator_dev		*rdev;
+> +	u16				base;
+> +	u8				type;
+> +};
+> +
+> +struct labibb_regulator_data {
+> +	u16				base;
+> +	const char			*name;
+> +	u8				type;
+> +	unsigned int			poll_enabled_time;
+> +};
+> +
+> +static int qcom_labibb_regulator_is_enabled(struct regulator_dev *rdev)
+> +{
+> +	int ret;
+> +	unsigned int val;
+> +	struct labibb_regulator *reg = rdev_get_drvdata(rdev);
+> +
+> +	ret = regmap_read(reg->regmap, reg->base + REG_LABIBB_STATUS1, &val);
+> +	if (ret < 0) {
+> +		dev_err(reg->dev, "Read register failed ret = %d\n", ret);
+> +		return ret;
+> +	}
+> +	return !!(val & LABIBB_STATUS1_VREG_OK_BIT);
+> +}
+> +
+> +static int qcom_labibb_regulator_enable(struct regulator_dev *rdev)
+> +{
+> +	int ret;
+> +	struct labibb_regulator *reg = rdev_get_drvdata(rdev);
+> +
+> +	ret = regulator_enable_regmap(rdev);
+> +	if (ret < 0)
+> +		dev_err(reg->dev, "Write failed: enable %s regulator\n",
+> +			reg->desc.name);
 
-Do you mean the following changes?
+If you return a negative value the various callers of
+_regulator_do_enable() and _regulator_do_disable() will print an error
+message for you.
 
-diff --git a/drivers/clk/hisilicon/reset.c b/drivers/clk/hisilicon/reset.c
-index 93cee17..c733e2e 100644
---- a/drivers/clk/hisilicon/reset.c
-+++ b/drivers/clk/hisilicon/reset.c
-@@ -93,11 +93,11 @@  struct hisi_reset_controller *hisi_reset_init(struct platform_device *pdev)
-  
-  	rstc = devm_kmalloc(&pdev->dev, sizeof(*rstc), GFP_KERNEL);
-  	if (!rstc)
-- return NULL;
-+ return ERR_PTR(-ENOMEM);
-  
-  	rstc->membase = devm_platform_ioremap_resource(pdev, 0);
-  	if (IS_ERR(rstc->membase))
-- return NULL;
-+ return ERR_CAST(rstc->membase);
-  
-  	spin_lock_init(&rstc->lock);
-  	rstc->rcdev.owner = THIS_MODULE;
+As such you don't need these wrappers and should be able to just specify
+regulator_enable_regmap and regulator_disable_regmap as you enable and
+disable functions in qcom_labibb_ops directly.
+
+> +
+> +	return ret;
+> +}
+> +
+> +static int qcom_labibb_regulator_disable(struct regulator_dev *rdev)
+> +{
+> +	int ret = 0;
+> +	struct labibb_regulator *reg = rdev_get_drvdata(rdev);
+> +
+> +	ret = regulator_disable_regmap(rdev);
+> +	if (ret < 0)
+> +		dev_err(reg->dev, "Disable failed: disable %s\n",
+> +			reg->desc.name);
+> +
+> +	return ret;
+> +}
+> +
+> +static struct regulator_ops qcom_labibb_ops = {
+> +	.enable			= qcom_labibb_regulator_enable,
+> +	.disable		= qcom_labibb_regulator_disable,
+> +	.is_enabled		= qcom_labibb_regulator_is_enabled,
+> +};
+> +
+> +static int register_labibb_regulator(struct labibb_regulator *reg,
+> +				const struct labibb_regulator_data *reg_data,
+> +				struct device_node *of_node)
+> +{
+> +	struct regulator_config cfg = {};
+> +
+> +	reg->base = reg_data->base;
+> +	reg->type = reg_data->type;
+> +	reg->desc.enable_reg = reg->base + REG_LABIBB_ENABLE_CTL;
+> +	reg->desc.enable_val = LABIBB_CONTROL_ENABLE;
+> +	reg->desc.of_match = reg_data->name;
+> +	reg->desc.name = reg_data->name;
+> +	reg->desc.owner = THIS_MODULE;
+> +	reg->desc.type = REGULATOR_VOLTAGE;
+> +	reg->desc.ops = &qcom_labibb_ops;
+> +
+> +	reg->desc.enable_time = LABIBB_ENABLE_TIME;
+> +	reg->desc.poll_enabled_time = reg_data->poll_enabled_time;
+> +	reg->desc.off_on_delay = LABIBB_OFF_ON_DELAY;
+> +
+> +	cfg.dev = reg->dev;
+> +	cfg.driver_data = reg;
+> +	cfg.regmap = reg->regmap;
+> +	cfg.of_node = of_node;
+> +
+> +	reg->rdev = devm_regulator_register(reg->dev, &reg->desc, &cfg);
+> +	return PTR_ERR_OR_ZERO(reg->rdev);
+
+If you change the return type to struct regulator_dev *, you can clean
+this up by just:
+
+	return devm_regulator_register()
+
+And then if (IS_ERR()) that in the caller.
+
+> +}
+> +
+> +static const struct labibb_regulator_data pmi8998_labibb_data[] = {
+> +	{0xde00, "lab", QCOM_LAB_TYPE, LAB_POLL_ENABLED_TIME},
+> +	{0xdc00, "ibb", QCOM_IBB_TYPE, IBB_POLL_ENABLED_TIME},
+> +	{ },
+> +};
+> +
+> +static const struct of_device_id qcom_labibb_match[] = {
+> +	{ .compatible = "qcom,pmi8998-lab-ibb", .data = &pmi8998_labibb_data},
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(of, qcom_labibb_match);
+> +
+> +static int qcom_labibb_regulator_probe(struct platform_device *pdev)
+> +{
+> +	struct labibb_regulator *labibb_reg;
+> +	struct device *dev;
+> +	struct device_node *child;
+> +	const struct of_device_id *match;
+> +	const struct labibb_regulator_data *reg_data;
+> +	struct regmap *reg_regmap;
+> +	unsigned int type;
+> +	int ret;
+> +
+> +	reg_regmap = dev_get_regmap(pdev->dev.parent, NULL);
+> +	if (!reg_regmap) {
+> +		dev_err(&pdev->dev, "Couldn't get parent's regmap\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	dev = &pdev->dev;
+
+Do this as you declare "dev" above.
+
+> +
+> +	match = of_match_device(qcom_labibb_match, &pdev->dev);
+> +	if (!match)
+> +		return -ENODEV;
+> +
+> +	for (reg_data = match->data; reg_data->name; reg_data++) {
+> +		child = of_get_child_by_name(pdev->dev.of_node, reg_data->name);
+> +
+> +		/* TODO: This validates if the type of regulator is indeed
+> +		 * what's mentioned in DT.
+> +		 * I'm not sure if this is needed, but we'll keep it for now.
+> +		 */
+> +		ret = regmap_read(reg_regmap, reg_data->base + REG_PERPH_TYPE,
+> +				  &type);
+> +		if (ret < 0) {
+> +			dev_err(dev,
+> +				"Peripheral type read failed ret=%d\n",
+> +				ret);
+> +			return -EINVAL;
+> +		}
+> +
+> +		if ((type != QCOM_LAB_TYPE) && (type != QCOM_IBB_TYPE)) {
+
+Given that you don't actually validate the information in DT, but rather
+just check that the data in the pmi8998_labibb_data is accurate this is
+merely a sanity check during development. So I think you should reduce
+this to:
+
+		if (WARN_ON(type != reg_data->type))
+			return -EINVAL;
+
+You can thereby remove the TODO comment above as well.
 
 
-devm_platform_ioremap_resource()
-          devm_ioremap_resource()
-                  __devm_ioremap_resource()
+What you should do though is check that "child" is not NULL - to catch
+the case where the DT doesn't specify both lab and ibb.
 
-By the way, we can see the comment of devm_ioremap_resource():
+> +			dev_err(dev,
+> +				"qcom_labibb: unknown peripheral type\n");
+> +			return -EINVAL;
+> +		} else if (type != reg_data->type) {
+> +			dev_err(dev,
+> +				"qcom_labibb: type %x doesn't match DT %x\n",
+> +				type, reg_data->type);
+> +			return -EINVAL;
+> +		}
+> +
+> +		labibb_reg  = devm_kzalloc(&pdev->dev, sizeof(*labibb_reg),
+> +					   GFP_KERNEL);
+> +		if (!labibb_reg)
+> +			return -ENOMEM;
+> +
+> +		labibb_reg->regmap = reg_regmap;
+> +		labibb_reg->dev = dev;
+> +
+> +		switch (reg_data->type) {
+> +		case QCOM_LAB_TYPE:
+> +			labibb_reg->desc.enable_mask = LAB_ENABLE_CTL_MASK;
 
-Usage example:
+All other parts of labibb_reg->desc are filled out inside
+register_labibb_regulator(), pass the mask as an argument instead to
+consolidate the setup.
 
-          res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-          base = devm_ioremap_resource(&pdev->dev, res);
-          if (IS_ERR(base))
-                  return PTR_ERR(base);
+> +			break;
+> +
+> +		case QCOM_IBB_TYPE:
+> +			labibb_reg->desc.enable_mask = IBB_ENABLE_CTL_MASK;
+> +			break;
+> +		}
+> +
+> +		dev_info(dev, "Registering %s regulator\n", child->full_name);
+> +
+> +		ret = register_labibb_regulator(labibb_reg, reg_data, child);
+> +		if (ret < 0) {
+> +			dev_err(dev,
+> +				"qcom_labibb: error registering %s : %d\n",
+> +				child->full_name, ret);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static struct platform_driver qcom_labibb_regulator_driver = {
+> +	.driver		= {
+> +		.name		= "qcom-lab-ibb-regulator",
+> +		.of_match_table	= qcom_labibb_match,
+> +	},
+> +	.probe		= qcom_labibb_regulator_probe,
+> +};
 
+I think you should drop the tabs before the various = in this
+definition.
 
+Regards,
+Bjorn
+
+> +module_platform_driver(qcom_labibb_regulator_driver);
+> +
+> +MODULE_DESCRIPTION("Qualcomm labibb driver");
+> +MODULE_LICENSE("GPL v2");
+> -- 
+> 2.26.2
+> 
