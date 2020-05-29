@@ -2,51 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031FD1E7EAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 15:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 223031E7EB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 15:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726974AbgE2N2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 09:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59210 "EHLO
+        id S1727034AbgE2N3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 09:29:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726829AbgE2N2q (ORCPT
+        with ESMTP id S1726629AbgE2N3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 09:28:46 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2353CC03E969
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 06:28:46 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id F0E2A327; Fri, 29 May 2020 15:28:43 +0200 (CEST)
-Date:   Fri, 29 May 2020 15:28:42 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     wu000273@umn.edu
-Cc:     kjlu@umn.edu, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iommu: Fix reference count leak in iommu_group_alloc.
-Message-ID: <20200529132842.GG14598@8bytes.org>
-References: <20200527210020.6522-1-wu000273@umn.edu>
+        Fri, 29 May 2020 09:29:36 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42CB2C08C5C6
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 06:29:36 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id k22so1159714pls.10
+        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 06:29:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tycho-ws.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ul4bJ2hVr4eFMvgXcJJG3Lk5xnruexNhHNt3lbvkhgo=;
+        b=jomC+3YpX2h5ghollb7vstYdTLJfL89YS4x0N9EguV+ZadSoC1ELNk3f96zkiYdM/1
+         mLgRfCSD1tbUwhWS+AKmDyYxUDBTyZRmxc0uBjyPyxdHS5uBzFJf2U/C6ecPajFwLT2p
+         RnpGkCPBhOU5Y0RUVaqy0xBuJNiux9pSMfTkkYWWyYSNddeB9CgaV0fMUbEJ2xdL/nZn
+         bH+D2sziqdsrWhf038N8YliE8ILRdpborib0xHrXQJxSs2MiRqYkF4hmIeAOVjELL3sa
+         B7O8Jgi0DVvJPdV7E0GqPlE6sH37A/CkD+R36jyK4QXL0PpMgWvQEoVbTrIAwWvovVac
+         YUiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ul4bJ2hVr4eFMvgXcJJG3Lk5xnruexNhHNt3lbvkhgo=;
+        b=htOYS52J2aLcusJ5etqBnKISq0nON25S27d4w/PMvENRF3lT9be0KI8ysAlVxUJMdo
+         QHno7PIgH5HpFWUe5DIXqodIbGO1ojxiaiTHjKELCFHRec800k9Ce4SG/mpgDY8Yrnmc
+         shJ8Hzc8+2ch49XKFTzjrkSmE4Q9h0qfF6aHdQ8UTTUQGFH+UL3jxoSxqLOJMTO4S9he
+         XalMCYApTFV6nOyyz7PubdijBlPOVV2vQgP3JAUNytfJDwckCxF7PNoZLlPK50lwb1d7
+         Ag/uXIf1nZ8pqEYycieTPzlk1sOplfXWtlDbPXoBpZ8KclNhnmhPr0qFcPiplTHsUtsx
+         EL+g==
+X-Gm-Message-State: AOAM532eNfGJmPo4VHS0Q7IENlkbREZUXuoF28DXanUXncfTEszlv7gL
+        7v/cMGYE/FI0ixQMgN/tYBF/zQ==
+X-Google-Smtp-Source: ABdhPJzWUcGNYAE5d+Ki4BC7Frg6ET6VIpx8ewNw8j3EZhGR7t9AXrMEr9myfb2Q3Dhw4Gav7Y846A==
+X-Received: by 2002:a17:902:70c2:: with SMTP id l2mr2097683plt.237.1590758975603;
+        Fri, 29 May 2020 06:29:35 -0700 (PDT)
+Received: from cisco ([2001:420:c0c8:1002::476])
+        by smtp.gmail.com with ESMTPSA id n19sm7706925pjo.5.2020.05.29.06.29.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2020 06:29:34 -0700 (PDT)
+Date:   Fri, 29 May 2020 07:29:37 -0600
+From:   Tycho Andersen <tycho@tycho.ws>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Sargun Dhillon <sargun@sargun.me>, christian.brauner@ubuntu.com,
+        containers@lists.linux-foundation.org, cyphar@cyphar.com,
+        jannh@google.com, jeffv@google.com, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org, palmer@google.com, rsesek@google.com,
+        Matt Denton <mpdenton@google.com>
+Subject: Re: [PATCH v2 3/3] selftests/seccomp: Test SECCOMP_IOCTL_NOTIF_ADDFD
+Message-ID: <20200529132937.GD429721@cisco>
+References: <20200528110858.3265-1-sargun@sargun.me>
+ <20200528110858.3265-4-sargun@sargun.me>
+ <202005290036.3FEFFDA@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200527210020.6522-1-wu000273@umn.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <202005290036.3FEFFDA@keescook>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 27, 2020 at 04:00:19PM -0500, wu000273@umn.edu wrote:
-> From: Qiushi Wu <wu000273@umn.edu>
+On Fri, May 29, 2020 at 12:41:51AM -0700, Kees Cook wrote:
+> On Thu, May 28, 2020 at 04:08:58AM -0700, Sargun Dhillon wrote:
+> > +	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_SEND, &resp), 0);
+> > +
+> > +	nextid = req.id + 1;
+> > +
+> > +	/* Wait for getppid to be called for the second time */
+> > +	sleep(1);
 > 
-> kobject_init_and_add() takes reference even when it fails.
-> Thus, when kobject_init_and_add() returns an error,
-> kobject_put() must be called to properly clean up the kobject.
-> 
-> Fixes: d72e31c93746 ("iommu: IOMMU Groups")
-> Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-> ---
->  drivers/iommu/iommu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I always rebel at finding "sleep" in tests. ;) Is this needed? IIUC,
+> userspace will immediately see EINPROGRESS after the NOTIF_SEND
+> finishes, yes?
 
-Applied, thanks.
+Yes, I think we can just drop this, and I agree it's a good idea to do
+so :)
+
+Tycho
