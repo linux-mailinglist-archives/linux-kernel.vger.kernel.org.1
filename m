@@ -2,158 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAF11E887B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B51CD1E8880
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728170AbgE2UEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 16:04:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728077AbgE2UET (ORCPT
+        id S1728238AbgE2UFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 16:05:36 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:50797 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726926AbgE2UFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 16:04:19 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3DDC03E969
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 13:04:18 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id bg4so1672312plb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 13:04:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4+g7Oezu2RunpZeGCvY0b0s77w8UFoTcEBsYnh2aCmE=;
-        b=oIkV2IwxnKvjZgJ+qdLb8Jx8V/wvhITFMVzbJY5nzmFPezh71a7tDAioCbghNilrqs
-         yf84zuHV81ZntwYnrKWyOTM34RfkWDtvc91CAwfcOb5HwHt6B4JGIuGTCe/wMOHB291r
-         CTJHTLRbWq9I5PCPnqdJ53R1Y2qNC0FTlRUaecb83hWz+ZlkIRBlsB3o7WcIpN7t0ZN6
-         VFJHEH0lA2f4glK3hI6hWda5gKLsfuVoRvyNDt5Qf5nuhAhRM4Pyl8lucO5iZ2oOMKmZ
-         OpsQLoTKWgx/PG4/O3BnWMpiV0OLPhRPx3kbaB4J9OwG6eMdDqLVuPffUlG4qP0nvm++
-         bcvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4+g7Oezu2RunpZeGCvY0b0s77w8UFoTcEBsYnh2aCmE=;
-        b=EXQxkJyK+XuAjaKyNY+XqOHCMRepO6JHVQwk7btAlFn7eOGFvI7hEjlpqVXc5WDvDi
-         XMOX0HddJdbh13pONylTYFioZ5zGcFpn2ZeEZaqodQKEJ5GPXaNIp9V79JSJ9MoXhO/M
-         8NdGzQLJiaKojSXMkJbbuHYACcykNjm3gs3l8DAK1m7Ug6aZySrGIpxKXmi3OJcWa1cT
-         21cTIZiBUP9qYOzq0xdtwvi9qZkSahxZWvARN838sr4BcnXZ05hzlU7en8j0Zd68rmy0
-         THAemLDzQ+zGfwZP0qsiAdIQl2/bVv3nvs/EmtNeGinEOx/Kh6SLVDhqWo/UKLL7SCtY
-         kRiQ==
-X-Gm-Message-State: AOAM530g342Y2cIMSeUVbsjp7mqc2ii3MhbTFIbWJPFwwtuF/H3MzT/U
-        c9IE6JbF3XOp5YggkAd1bmpemm+DUFg2HL5iDnSNaA==
-X-Google-Smtp-Source: ABdhPJzajSAOEPn628sZLoiLTrRZedjCZBAQvwF+keg7C4ztulX0K1oUk7mF8ipVkXUUgKnRHQMl+6ln2r4LRdFYT5Q=
-X-Received: by 2002:a17:902:724a:: with SMTP id c10mr10068319pll.223.1590782657556;
- Fri, 29 May 2020 13:04:17 -0700 (PDT)
+        Fri, 29 May 2020 16:05:35 -0400
+Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1M2w0K-1ji3Z20ocG-003PJQ; Fri, 29 May 2020 22:04:36 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Keyon Jie <yang.jie@linux.intel.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: SOF: Intel: byt: fix unused-function warnings
+Date:   Fri, 29 May 2020 22:04:17 +0200
+Message-Id: <20200529200433.19068-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200529200031.4117841-1-arnd@arndb.de>
-In-Reply-To: <20200529200031.4117841-1-arnd@arndb.de>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 29 May 2020 13:04:05 -0700
-Message-ID: <CAKwvOdnND7XFgr7W9PvZAikJB1nKxB4K5N-oP0YrBT74oX_C9g@mail.gmail.com>
-Subject: Re: [PATCH 1/9] staging: media: atomisp: fix incorrect NULL pointer check
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <natechancellor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:jUReMJwwaY6kcLP8d5WAviKG5ZhIsqMuAyesMGtOt6TbqQ87Iry
+ /dlkch7Ztvq4+lIzXoPe+JZcvA4RWdudO1zp4JkU3ktEl47OROaHsjby1O7osP4W4PFHPg0
+ Z0wHJj852iT/cckPWhvLM0sJcrMjOw6OdjS/mCzFJ+l5Ad7dFZaFxRey7r23PGqXKd2Fvvf
+ zjRuHhYDVoYTm4Sxc29ow==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Y2JjzO58DcQ=:CcBshmwd0gDiOaTjoTIVio
+ cYoDJ7AS356b9uCyDbDo/LhroWRbaz1A/aztPCHPKDvUhXmg6P4GxWvZ9ELfEqknGp2+sqtDP
+ BEFqX3p2qu69HU0KWGbP67ycwwFYd4vPVf6iryxNhnIThfGosFWHBRHyCoZ9Tx3kCCtMKOeLu
+ G2pSWz4b/j73vk7hsWOVRMX8Ejm/2GEyuhQQrmKN7XGvVEw0Ep0UTPzs2triyvUN/JUts90Dm
+ GAkaWYdg+lbouIWCrxyN9BLnpJH4RQtd8Y24MsepID1Bmc+ownmXx0oC60bj6rJ2IyzdvWss8
+ BXgnd1h+elHw2259j/BusKGWwIaFBXeBHVupmQ7P0rMDQJSRLa2ZPBVWhFu9yhnV6q+MMjgeR
+ cRfoSSAK0deHw6Z9XuS2AwBjhTmc0lFJ/udBcqMkgVjwfvVUHVS1HK6KUQc1CMKZqmWdBWHKi
+ hfjCz5ghmk93tkMhhBUlVzV1A5T4rliw1ot81PXtk3TKxqqtYrjW0cCEJwyU5uupKLJqD2qYM
+ pkndx+Ym7skK6TRA/1krKSzlACmXeNpJ7nYifGEdWzCDJQoG/geJTD6ez1UZgKO/MoegriaR6
+ NGNnh5xmQ03ySybtGGbKJn6tGxYonmgD3SNQ/XhwjRuGhHRtmm4zHUFssoh9MA6/E1MO93N56
+ zRznCHbcYzoOmE8gQNWZYbYlaBEUr6I+Qf4HxU2XxvPic8lq035+sKpwmYL+c9HFCd7pFLQsf
+ RDBt68PnJAEr36AEbPcO+PHbefSXwX+7cRqz07OuJQR9jL8A24E+P2nIe0bftostOjzlTEd3m
+ PvZahy2dEOq46iv0CxnWJ3ktYHlXllBM/yQh1RqAfIKmWTN9cg=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-See also Nathan's 7 patch series.
-https://lore.kernel.org/lkml/20200527071150.3381228-1-natechancellor@gmail.com/
+Several functions in this driver are only referenced for baytrail-class
+configurations and building configurations with only merrifield enabled
+causes a warning:
 
-Might be some overlap between series?
+sound/soc/sof/intel/byt.c:447:12: error: unused function 'byt_suspend' [-Werror,-Wunused-function]
+static int byt_suspend(struct snd_sof_dev *sdev, u32 target_state)
+           ^
+sound/soc/sof/intel/byt.c:454:12: error: unused function 'byt_resume' [-Werror,-Wunused-function]
+static int byt_resume(struct snd_sof_dev *sdev)
+           ^
+sound/soc/sof/intel/byt.c:464:12: error: unused function 'byt_remove' [-Werror,-Wunused-function]
+static int byt_remove(struct snd_sof_dev *sdev)
 
-On Fri, May 29, 2020 at 1:00 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> Checking the pointer to a member of a struct against NULL
-> is pointless as clang points out:
->
-> drivers/staging/media/atomisp/pci/atomisp_cmd.c:4278:17: error: address of 'config->info' will always evaluate to 'true'
->
-> Check the original pointer instead, which may also be
-> unnecessary here, but makes a little more sense.
->
-> Fixes: 9d4fa1a16b28 ("media: atomisp: cleanup directory hierarchy")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/staging/media/atomisp/pci/atomisp_cmd.c | 2 +-
->  drivers/staging/media/atomisp/pci/sh_css.c      | 4 ++--
->  drivers/staging/media/atomisp/pci/sh_css_sp.c   | 4 ++--
->  3 files changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/staging/media/atomisp/pci/atomisp_cmd.c b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
-> index 5be690f876c1..342fc3b34fe0 100644
-> --- a/drivers/staging/media/atomisp/pci/atomisp_cmd.c
-> +++ b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
-> @@ -4275,7 +4275,7 @@ int atomisp_param(struct atomisp_sub_device *asd, int flag,
->                     atomisp_css_get_dvs_grid_info(
->                         &asd->params.curr_grid_info);
->
-> -               if (!&config->info) {
-> +               if (!config) {
->                         dev_err(isp->dev, "ERROR: NULL pointer in grid_info\n");
->                         return -EINVAL;
->                 }
-> diff --git a/drivers/staging/media/atomisp/pci/sh_css.c b/drivers/staging/media/atomisp/pci/sh_css.c
-> index d77432254a2c..e91c6029c651 100644
-> --- a/drivers/staging/media/atomisp/pci/sh_css.c
-> +++ b/drivers/staging/media/atomisp/pci/sh_css.c
-> @@ -8534,7 +8534,7 @@ ia_css_pipe_load_extension(struct ia_css_pipe *pipe,
->
->         if (firmware->info.isp.type == IA_CSS_ACC_OUTPUT)
->         {
-> -               if (&pipe->output_stage)
-> +               if (pipe)
->                         append_firmware(&pipe->output_stage, firmware);
->                 else {
->                         IA_CSS_LEAVE_ERR_PRIVATE(IA_CSS_ERR_INTERNAL_ERROR);
-> @@ -8542,7 +8542,7 @@ ia_css_pipe_load_extension(struct ia_css_pipe *pipe,
->                 }
->         } else if (firmware->info.isp.type == IA_CSS_ACC_VIEWFINDER)
->         {
-> -               if (&pipe->vf_stage)
-> +               if (pipe)
->                         append_firmware(&pipe->vf_stage, firmware);
->                 else {
->                         IA_CSS_LEAVE_ERR_PRIVATE(IA_CSS_ERR_INTERNAL_ERROR);
-> diff --git a/drivers/staging/media/atomisp/pci/sh_css_sp.c b/drivers/staging/media/atomisp/pci/sh_css_sp.c
-> index e574396ad0f4..c0e579c1705f 100644
-> --- a/drivers/staging/media/atomisp/pci/sh_css_sp.c
-> +++ b/drivers/staging/media/atomisp/pci/sh_css_sp.c
-> @@ -1022,7 +1022,7 @@ sh_css_sp_init_stage(struct ia_css_binary *binary,
->                 if (!pipe)
->                         return IA_CSS_ERR_INTERNAL_ERROR;
->                 ia_css_get_crop_offsets(pipe, &args->in_frame->info);
-> -       } else if (&binary->in_frame_info)
-> +       } else if (binary)
->         {
->                 pipe = find_pipe_by_num(sh_css_sp_group.pipe[thread_id].pipe_num);
->                 if (!pipe)
-> @@ -1036,7 +1036,7 @@ sh_css_sp_init_stage(struct ia_css_binary *binary,
->                         if (!pipe)
->                                 return IA_CSS_ERR_INTERNAL_ERROR;
->                         ia_css_get_crop_offsets(pipe, &args->in_frame->info);
-> -               } else if (&binary->in_frame_info) {
-> +               } else if (binary) {
->                         pipe = find_pipe_by_num(sh_css_sp_group.pipe[thread_id].pipe_num);
->                         if (!pipe)
->                                 return IA_CSS_ERR_INTERNAL_ERROR;
-> --
-> 2.26.2
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200529200031.4117841-1-arnd%40arndb.de.
+Move these into a corresponding #ifdef section.
 
+Fixes: c691f0c6e267 ("ASoC: SOF: Intel: BYT: add .remove op")
+Fixes: ddcccd543f5d ("ASoC: SOF: Intel: byt: Add PM callbacks")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ sound/soc/sof/intel/byt.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-
+diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
+index e6ba8382b1de..6ae62a8a9daf 100644
+--- a/sound/soc/sof/intel/byt.c
++++ b/sound/soc/sof/intel/byt.c
+@@ -432,6 +432,7 @@ static void byt_set_mach_params(const struct snd_soc_acpi_mach *mach,
+ 	mach_params->platform = dev_name(dev);
+ }
+ 
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
+ static void byt_reset_dsp_disable_int(struct snd_sof_dev *sdev)
+ {
+ 	/* Disable Interrupt from both sides */
+@@ -467,6 +468,7 @@ static int byt_remove(struct snd_sof_dev *sdev)
+ 
+ 	return 0;
+ }
++#endif
+ 
+ /* Baytrail DAIs */
+ static struct snd_soc_dai_driver byt_dai[] = {
 -- 
-Thanks,
-~Nick Desaulniers
+2.26.2
+
