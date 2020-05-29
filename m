@@ -2,109 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42CD61E879F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 21:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B88971E87A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 21:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728081AbgE2TT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 15:19:28 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:58936 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726866AbgE2TTZ (ORCPT
+        id S1728073AbgE2TVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 15:21:04 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:38782 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726751AbgE2TVD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 15:19:25 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04TJI2dv053359;
-        Fri, 29 May 2020 19:19:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=otyw0YZ9V4bNP7MKEHhgkJR24Ilms/TAyE06rglTaVw=;
- b=SBFCAXhe5o7UqD1c4n02OJe340CvZKWOODvizoXzF2lwgUE0OdKTGfhspnUPt5yS9oQo
- P3dRdk1e6Sw1BKCx2z/hVtZrbF95ezxGlgng/6RRvOLHadjc7dY9f3ADU9bZXQswms1F
- hOuo3/jSbMsvbnVaFNKi2M0GQDcL0GU/sWR3yGhqZRBoavW1uE6bdwgV+YqEg+jlJnc7
- akAoRD3SIFVpsrKbKILYHnZVtzh5d4v5Nz3IEhDDNQX1wUuMdPr2ezKaKWx2tJT/CklQ
- OktnWWTgVgjAwgmzrNUaTaQn9lL1TMbSls1J4WacU8CtsIAZfMREGh5kIv55xWedt0em og== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 318xbkc43q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 29 May 2020 19:19:15 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04TJJ1MS123231;
-        Fri, 29 May 2020 19:19:14 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 317ds4qcn4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 29 May 2020 19:19:14 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04TJJDQE019992;
-        Fri, 29 May 2020 19:19:13 GMT
-Received: from [10.74.105.211] (/10.74.105.211)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 29 May 2020 12:19:13 -0700
-Subject: Re: [PATCH v4 0/2] soc: ti: add k3 platforms chipid module driver
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     Santosh Shilimkar <ssantosh@kernel.org>,
-        Tero Kristo <t-kristo@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Dave Gerlach <d-gerlach@ti.com>, Sekhar Nori <nsekhar@ti.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nishanth Menon <nm@ti.com>
-References: <20200512123449.16517-1-grygorii.strashko@ti.com>
- <a132765e-f4e4-a1e8-fb43-239188fecf1b@ti.com>
- <CAK8P3a31DYOn1TyjxCYM7ebc9nL5EFKsNpSHkq55bG54Bns+MA@mail.gmail.com>
-From:   santosh.shilimkar@oracle.com
-Organization: Oracle Corporation
-Message-ID: <cb980673-d3ad-53b8-9351-196ff3f47c45@oracle.com>
-Date:   Fri, 29 May 2020 12:19:10 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.1
+        Fri, 29 May 2020 15:21:03 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04TJKqFb005913;
+        Fri, 29 May 2020 14:20:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1590780052;
+        bh=b75WU4NLq7IvAuVuX+BGqp8jzFKIDOQ2RHAKq2oynGM=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=o1xEJi5M+26Ei+rEYqwrnO9KWOjia3DvNdFZvrvV8kW11tk/LbGg6XbirtzdQh7SZ
+         uW3FqUfgCa8C8ZaNGFZUgwm/owp9yNlWxdeagAsTHMkLjJQ8pBBgFTMvB+c/6a2qB1
+         FInVZkH3ydXOIAqaFyJvJ8dETH7H2STxi9UN6UM4=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04TJKqsv086452;
+        Fri, 29 May 2020 14:20:52 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 29
+ May 2020 14:20:52 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 29 May 2020 14:20:52 -0500
+Received: from [10.250.65.13] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04TJKp7m028747;
+        Fri, 29 May 2020 14:20:51 -0500
+Subject: Re: [PATCH net-next v4 3/4] dt-bindings: net: Add RGMII internal
+ delay for DP83869
+To:     Rob Herring <robh@kernel.org>
+CC:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
+        <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+References: <20200527164934.28651-1-dmurphy@ti.com>
+ <20200527164934.28651-4-dmurphy@ti.com> <20200529190356.GA2758033@bogus>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <62ee3f8b-2b44-5836-a365-7367d6ce3cd4@ti.com>
+Date:   Fri, 29 May 2020 14:20:51 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a31DYOn1TyjxCYM7ebc9nL5EFKsNpSHkq55bG54Bns+MA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20200529190356.GA2758033@bogus>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9636 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
- mlxlogscore=999 adultscore=0 suspectscore=0 bulkscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005290145
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9636 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0 mlxscore=0
- lowpriorityscore=0 priorityscore=1501 phishscore=0 cotscore=-2147483648
- suspectscore=0 bulkscore=0 clxscore=1015 impostorscore=0 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2005290145
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/29/20 11:34 AM, Arnd Bergmann wrote:
-> On Fri, May 29, 2020 at 8:22 PM Grygorii Strashko
-> <grygorii.strashko@ti.com> wrote:
->> On 12/05/2020 15:34, Grygorii Strashko wrote:
-> 
->>>    .../bindings/soc/ti/k3-socinfo.yaml           |  40 +++++
->>>    drivers/soc/ti/Kconfig                        |  10 ++
->>>    drivers/soc/ti/Makefile                       |   1 +
->>>    drivers/soc/ti/k3-socinfo.c                   | 152 ++++++++++++++++++
->>>    4 files changed, 203 insertions(+)
->>>    create mode 100644 Documentation/devicetree/bindings/soc/ti/k3-socinfo.yaml
->>>    create mode 100644 drivers/soc/ti/k3-socinfo.c
->>>
->>
->> Any chances you can pick this up?
-> 
-> I merged a version of this driver from Santosh's pull request into the
-> arm/drviers tree yesterday.
-> 
-> Is there something missing?
-> 
-Nope. I was going to reply on the thread but missed it.
+Rob
 
-Regards,
-Santosh
+On 5/29/20 2:03 PM, Rob Herring wrote:
+> On Wed, May 27, 2020 at 11:49:33AM -0500, Dan Murphy wrote:
+>> Add the internal delay values into the header and update the binding
+>> with the internal delay properties.
+>>
+>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>> ---
+>>   .../devicetree/bindings/net/ti,dp83869.yaml      | 16 ++++++++++++++++
+>>   1 file changed, 16 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/net/ti,dp83869.yaml b/Documentation/devicetree/bindings/net/ti,dp83869.yaml
+>> index 5b69ef03bbf7..2971dd3fc039 100644
+>> --- a/Documentation/devicetree/bindings/net/ti,dp83869.yaml
+>> +++ b/Documentation/devicetree/bindings/net/ti,dp83869.yaml
+>> @@ -64,6 +64,20 @@ properties:
+>>          Operational mode for the PHY.  If this is not set then the operational
+>>          mode is set by the straps. see dt-bindings/net/ti-dp83869.h for values
+>>   
+>> +  rx-internal-delay-ps:
+>> +    $ref: "#/properties/rx-internal-delay-ps"
+> This just creates a circular reference which probably blows up.
+
+dt_binding_check did not have an issue with this.
+
+But I will remove it
+
+Dan
+
