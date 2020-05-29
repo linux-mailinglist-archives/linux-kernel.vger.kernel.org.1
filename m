@@ -2,52 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA11E1E7F68
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 15:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 462A31E7F70
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 15:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgE2N5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 09:57:55 -0400
-Received: from verein.lst.de ([213.95.11.211]:33136 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726849AbgE2N5y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 09:57:54 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 40A5D68B02; Fri, 29 May 2020 15:57:51 +0200 (CEST)
-Date:   Fri, 29 May 2020 15:57:51 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, broonie@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        viro@ZenIV.linux.org.uk, hch@lst.de, x86@kernel.org
-Subject: Re: mmotm 2020-05-13-20-30 uploaded (objtool warnings)
-Message-ID: <20200529135750.GA1580@lst.de>
-References: <20200514033104.kRFL_ctMQ%akpm@linux-foundation.org> <611fa14d-8d31-796f-b909-686d9ebf84a9@infradead.org> <20200528172005.GP2483@worktop.programming.kicks-ass.net>
+        id S1727068AbgE2N6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 09:58:36 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:14856 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726943AbgE2N6f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 09:58:35 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590760715; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=hhOcU0EHJxY1kOnhPXt5mTZ3KEnrZzRXFlaRDPFVDAY=; b=tKpy28OYvUViyMSTWiH5yjjvij0hly7TRLGgBW/BKKgGZMBlEmSwktlSzB7UFPQXxhKAdI/9
+ FzrtU4mxilbbcszm4Ko+WcDjmDcW7tiYX4+wvrIGk2yGuXv0vak8lqsMjoq/qx2QNj+nZvTN
+ LhSc6Ro8xjWrSPk7j/bejJpftzI=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5ed114f7b4f0a9ae22bf737a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 May 2020 13:58:15
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 11A43C433C6; Fri, 29 May 2020 13:58:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.253.15.221] (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: zijuhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C170EC433CA;
+        Fri, 29 May 2020 13:58:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C170EC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=zijuhu@codeaurora.org
+Subject: Re: [PATCH v1] Bluetooth: hci_qca: Fix qca6390 enable failure after
+ warm reboot
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
+        rjliao@codeaurora.org
+References: <1590719360-28257-1-git-send-email-zijuhu@codeaurora.org>
+ <6C68EF2F-7DEC-4CA4-A0E8-8C775B3CF62B@holtmann.org>
+From:   Zijun Hu <zijuhu@codeaurora.org>
+Message-ID: <7ef3637f-3d49-ab17-fba1-6d29ac6c069a@codeaurora.org>
+Date:   Fri, 29 May 2020 21:58:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200528172005.GP2483@worktop.programming.kicks-ass.net>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <6C68EF2F-7DEC-4CA4-A0E8-8C775B3CF62B@holtmann.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 07:20:05PM +0200, Peter Zijlstra wrote:
-> > on x86_64:
-> > 
-> > arch/x86/lib/csum-wrappers_64.o: warning: objtool: csum_and_copy_from_user()+0x2a4: call to memset() with UACCESS enabled
-> > arch/x86/lib/csum-wrappers_64.o: warning: objtool: csum_and_copy_to_user()+0x243: return with UACCESS enabled
-> 
-> Urgh, that's horrible code. That's got plain stac()/clac() calls on
-> instead of the regular uaccess APIs.
 
-Does it?  If this is from the code in linux-next, then the code does a
-user_access_begin/end in csum_and_copy_{from,to}_user, then uses
-unsafe_{get,put}_user inside those function itself.  But then they call
-csum_partial_copy_generic with the __user casted away, but without any
-comment on why this is safe.
+
+On 5/29/2020 7:45 PM, Marcel Holtmann wrote:
+> Hi Zijun,
+> 
+>> On May 29, 2020, at 04:29, Zijun Hu <zijuhu@codeaurora.org> wrote:
+>>
+>> Warm reboot can not reset controller qca6390 due to
+>> lack of controllable power supply, so causes firmware
+>> download failure during enable.
+>>
+>> Fixed by sending VSC EDL_SOC_RESET to reset qca6390
+>> within added device shutdown implementation.
+>>
+>> Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
+>> Tested-by: Zijun Hu <zijuhu@codeaurora.org>
+>> ---
+>> drivers/bluetooth/hci_qca.c | 33 +++++++++++++++++++++++++++++++++
+>> 1 file changed, 33 insertions(+)
+> 
+> patch does not apply to bluetooth-next tree, please rebase.
+> 
+rebased at v2
+> Regards
+> 
+> Marcel
+> 
