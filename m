@@ -2,155 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4791E887F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8231E88A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 22:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728224AbgE2UFP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 May 2020 16:05:15 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2258 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726926AbgE2UFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 16:05:13 -0400
-Received: from lhreml715-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id 9206CE851D406A4F47D9;
-        Fri, 29 May 2020 21:05:11 +0100 (IST)
-Received: from lhreml715-chm.china.huawei.com (10.201.108.66) by
- lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Fri, 29 May 2020 21:05:11 +0100
-Received: from lhreml715-chm.china.huawei.com ([10.201.108.66]) by
- lhreml715-chm.china.huawei.com ([10.201.108.66]) with mapi id 15.01.1913.007;
- Fri, 29 May 2020 21:05:11 +0100
-From:   Shiju Jose <shiju.jose@huawei.com>
-To:     "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "helgaas@kernel.org" <helgaas@kernel.org>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "zhangliguang@linux.alibaba.com" <zhangliguang@linux.alibaba.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>
-CC:     Linuxarm <linuxarm@huawei.com>, yangyicong <yangyicong@huawei.com>
-Subject: RE: [PATCH v8 0/2] ACPI / APEI: Add support to notify the vendor
- specific HW errors
-Thread-Topic: [PATCH v8 0/2] ACPI / APEI: Add support to notify the vendor
- specific HW errors
-Thread-Index: AQHWNeBR/m4tj2cJW0qFvUY6/34P2qi/fFmg
-Date:   Fri, 29 May 2020 20:05:10 +0000
-Message-ID: <78a6dfbe246b4dbbbdd9534f87638f86@huawei.com>
-References: <20200529173854.2521-1-shiju.jose@huawei.com>
-In-Reply-To: <20200529173854.2521-1-shiju.jose@huawei.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.91.30]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1728277AbgE2ULJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 16:11:09 -0400
+Received: from mail.ispras.ru ([83.149.199.45]:38116 "EHLO mail.ispras.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726866AbgE2ULJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 16:11:09 -0400
+Received: from localhost.localdomain (unknown [46.188.10.168])
+        by mail.ispras.ru (Postfix) with ESMTPSA id 3BDC8CD461;
+        Fri, 29 May 2020 23:11:06 +0300 (MSK)
+From:   Alexander Monakov <amonakov@ispras.ru>
+To:     linux-kernel@vger.kernel.org
+Cc:     Alexander Monakov <amonakov@ispras.ru>,
+        Joerg Roedel <joro@8bytes.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        iommu@lists.linux-foundation.org
+Subject: [PATCH] iommu/amd: Fix event counter availability check
+Date:   Fri, 29 May 2020 23:07:38 +0300
+Message-Id: <20200529200738.1923-1-amonakov@ispras.ru>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please ignore this patch set. Resending soon.
+The driver performs an extra check if the IOMMU's capabilities advertise
+presence of performance counters: it verifies that counters are writable
+by writing a hard-coded value to a counter and testing that reading that
+counter gives back the same value.
 
-Thanks,
-Shiju
+Unfortunately it does so quite early, even before pci_enable_device is
+called for the IOMMU, i.e. when accessing its MMIO space is not
+guaranteed to work. On Ryzen 4500U CPU, this actually breaks the test:
+the driver assumes the counters are not writable, and disables the
+functionality.
 
->-----Original Message-----
->From: Shiju Jose
->Sent: 29 May 2020 18:39
->To: linux-acpi@vger.kernel.org; linux-pci@vger.kernel.org; linux-
->kernel@vger.kernel.org; rjw@rjwysocki.net; bp@alien8.de;
->james.morse@arm.com; helgaas@kernel.org; lenb@kernel.org;
->tony.luck@intel.com; dan.carpenter@oracle.com;
->gregkh@linuxfoundation.org; zhangliguang@linux.alibaba.com;
->tglx@linutronix.de
->Cc: Shiju Jose <shiju.jose@huawei.com>; Linuxarm <linuxarm@huawei.com>;
->yangyicong <yangyicong@huawei.com>
->Subject: [PATCH v8 0/2] ACPI / APEI: Add support to notify the vendor
->specific HW errors
->
->Presently the vendor drivers are unable to do the recovery for the vendor
->specific recoverable HW errors because APEI driver does not support
->reporting the error to the vendor drivers.
->
->patch set
->1. add new interface to the APEI driver for reporting the
->   vendor specific non-fatal HW errors to the drivers.
->
->2. add driver to handle HiSilicon hip PCIe controller's errors.
->
->V8:
->1. Removed reporting the standard errors through the interface
->   because of the conflict with the changes in the
->   memory error handling path.
->2. Fix comments by Dan Carpenter.
->
->V7:
->1. Add changes in the APEI driver suggested by Borislav Petkov, for
->   queuing up all the non-fatal HW errors to the work queue and
->   notify the registered kernel drivers from the bottom half using
->   blocking notifier, common interface for both standard and
->   vendor-spcific errors.
->2. Fix for further feedbacks in v5 HIP PCIe error handler driver
->   by Bjorn Helgaas.
->
->V6:
->1. Fix few changes in the patch subject line suggested by Bjorn Helgaas.
->
->V5:
->1. Fix comments from James Morse.
->1.1 Changed the notification method to use the atomic_notifier_chain.
->1.2 Add the error handled status for the user space.
->
->V4:
->1. Fix for the following smatch warning in the PCIe error driver,
->   reported by kbuild test robot<lkp@intel.com>:
->   warn: should '((((1))) << (9 + i))' be a 64 bit type?
->   if (err->val_bits & BIT(HISI_PCIE_LOCAL_VALID_ERR_MISC + i))
->	^^^ This should be BIT_ULL() because it goes up to 9 + 32.
->
->V3:
->1. Fix the comments from Bjorn Helgaas.
->
->V2:
->1. Changes in the HiSilicon PCIe controller's error handling driver
->   for the comments from Bjorn Helgaas.
->
->2. Changes in the APEI interface to support reporting the vendor error
->   for module with multiple devices, but use the same section type.
->   In the error handler will use socket id/sub module id etc to distinguish
->   the device.
->
->V1:
->1. Fix comments from James Morse.
->
->2. add driver to handle HiSilicon hip08 PCIe controller's errors,
->   which is an application of the above interface.
->
->Shiju Jose (1):
->  ACPI / APEI: Add support to notify the vendor specific HW errors
->
->Yicong Yang (1):
->  PCI: hip: Add handling of HiSilicon HIP PCIe controller errors
->
-> drivers/acpi/apei/ghes.c                 | 126 ++++++++-
-> drivers/pci/controller/Kconfig           |   8 +
-> drivers/pci/controller/Makefile          |   1 +
-> drivers/pci/controller/pcie-hisi-error.c | 321 +++++++++++++++++++++++
-> include/acpi/ghes.h                      |  28 ++
-> 5 files changed, 483 insertions(+), 1 deletion(-)  create mode 100644
->drivers/pci/controller/pcie-hisi-error.c
->
->--
->2.17.1
->
+Moving init_iommu_perf_ctr just after iommu_flush_all_caches resolves
+the issue. This is the earliest point in amd_iommu_init_pci where the
+call succeeds on my laptop.
+
+Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Cc: iommu@lists.linux-foundation.org
+---
+
+PS. I'm seeing another hiccup with IOMMU probing on my system:
+pci 0000:00:00.2: can't derive routing for PCI INT A
+pci 0000:00:00.2: PCI INT A: not connected
+
+Hopefully I can figure it out, but I'd appreciate hints.
+
+ drivers/iommu/amd_iommu_init.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/iommu/amd_iommu_init.c b/drivers/iommu/amd_iommu_init.c
+index 5b81fd16f5fa..1b7ec6b6a282 100644
+--- a/drivers/iommu/amd_iommu_init.c
++++ b/drivers/iommu/amd_iommu_init.c
+@@ -1788,8 +1788,6 @@ static int __init iommu_init_pci(struct amd_iommu *iommu)
+ 	if (iommu->cap & (1UL << IOMMU_CAP_NPCACHE))
+ 		amd_iommu_np_cache = true;
+ 
+-	init_iommu_perf_ctr(iommu);
+-
+ 	if (is_rd890_iommu(iommu->dev)) {
+ 		int i, j;
+ 
+@@ -1891,8 +1889,10 @@ static int __init amd_iommu_init_pci(void)
+ 
+ 	init_device_table_dma();
+ 
+-	for_each_iommu(iommu)
++	for_each_iommu(iommu) {
+ 		iommu_flush_all_caches(iommu);
++		init_iommu_perf_ctr(iommu);
++	}
+ 
+ 	if (!ret)
+ 		print_iommu_info();
+
+base-commit: 75caf310d16cc5e2f851c048cd597f5437013368
+-- 
+2.26.2
 
