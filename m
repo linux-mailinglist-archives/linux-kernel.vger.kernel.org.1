@@ -2,54 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428BF1E8058
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 16:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C42321E8062
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 16:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727063AbgE2Og0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 10:36:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726838AbgE2OgZ (ORCPT
+        id S1727027AbgE2OhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 10:37:22 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:47086 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726838AbgE2OhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 10:36:25 -0400
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72EA0C03E969
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 07:36:25 -0700 (PDT)
+        Fri, 29 May 2020 10:37:20 -0400
+Received: by mail-ot1-f68.google.com with SMTP id g25so2039956otp.13;
+        Fri, 29 May 2020 07:37:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jj4mzsZRsuulNyYkFaO1ypi6y1uFCcozwvQiDRIxL5g=;
+        b=Z3036X0P1Du7BIsLa8sjZn3lc1hdGcXNxteyzhdcsMrC93ce0ZYZT+7LJEC07/4pxm
+         O6V8f9nzNDbP7ggkc/LyvVMKc0LKlNE+P5R/B8QekEGEeYmfHaovZY8ubdCdMG4qvBtK
+         ttbyzfDixpzjPAdgWrUOupqqzqKA/ji9HPasP7BOwnXpUvfjaudtBA6f8RGZ2mi1G41n
+         FRsi794fYIPffKqGAJqNIadC05MV9/Hz1zGyAgv7xiIWseOeFF+sGD9kIRVrwA5i8H//
+         npet4urc5FLPEJb6PzSttY3exalr0vji0LGpnwjdIDGGGPOfhWXlIYVfEc5/4jZZWCMy
+         yevA==
+X-Gm-Message-State: AOAM532XWlcHvI5X5xZXMkGW27ZjSA+k5yGx/HJvQ8D1u9MvPPT7WN8i
+        6/jk403htdFazWa9tFWcoR/uwWgFzOEGeZbnvfI=
+X-Google-Smtp-Source: ABdhPJw2pXqw5uoHxXylWsls/iOUECUt5BLseUa85DJo57fsATIt2sp7i3jvjAN/BW6n98bBGYolPwQBjnuy65KKT2o=
+X-Received: by 2002:a9d:7e92:: with SMTP id m18mr6155020otp.145.1590763034829;
+ Fri, 29 May 2020 07:37:14 -0700 (PDT)
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kl.wtf; s=default;
-        t=1590762982;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/xAl1ADflJmWJtGjhanry7967LG7bPD3eSpOhwdpC2M=;
-        b=DYbGBfuLbazDx2QUp6jGyqLat20shXYymXUFG0Zr8fj/cRI42MaTEYzzjYOdU9OFYyT1wc
-        4f0pkPjwoDbhOC7L/zvaCYLWaFZJGuuaUXsujb/ADBhq5U19D6/IzyS7eFujxgzgZU6YWM
-        iWAySGL5GFUQeEWhMgqrZvF2/ZESxqM=
-Date:   Fri, 29 May 2020 14:36:21 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   kl@kl.wtf
-Message-ID: <de074a35c727b8ba193477cb2508e1af@kl.wtf>
-Subject: Re: [PATCH] Input: evdev - per-client waitgroups
-To:     linux-input@vger.kernel.org
-Cc:     dmitry.torokhov@gmail.com, linux-kernel@vger.kernel.org
-In-Reply-To: <20200429184126.2155-1-kl@kl.wtf>
-References: <20200429184126.2155-1-kl@kl.wtf>
-X-Spam-Score: -0.10
+References: <1590611013-26029-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1590611013-26029-4-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1590611013-26029-4-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 29 May 2020 16:36:58 +0200
+Message-ID: <CAMuHMdU888FN+gGdh6F_4z-kDKWuhaMrG-UokVhU4TS_S3JsLw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] ARM: dts: r8a7742-iwg21d-q7: Sound DMA support via
+ DVC on DTS
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-April 29, 2020 8:41 PM, "Kenny Levinsen" <kl@kl.wtf> wrote:=0A=0A> All ev=
-dev clients share a common waitgroup. On new input events, this=0A> waitg=
-roup is woken once for every client that did not filter the events,=0A> l=
-eading to duplicated and unwanted wakeups.=0A> =0A> Split the shared wait=
-group into per-client waitgroups for more=0A> fine-grained wakeups.=0A> =
-=0A> Signed-off-by: Kenny Levinsen <kl@kl.wtf>=0A> ---=0A> drivers/input/=
-evdev.c | 19 +++++++++----------=0A> 1 file changed, 9 insertions(+), 10 =
-deletions(-)=0A=0AHere's a 1-month ping for lack of better idea. Apologie=
-s if that's not the right thing to do, just worried that things might hav=
-e been lost to the great inbox event horizon.
+On Wed, May 27, 2020 at 10:24 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Enable sound with DMA support on carrier board.
+>
+> DMA transfer uses DVC
+>
+>      DMA               DMApp
+> [MEM] -> [SRC] -> [DVC] -> [SSIU] -> [SSI]
+>
+>      DMA               DMApp
+> [MEM] <- [DVC] <- [SRC] <- [SSIU] <- [SSI]
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+
+To the best of my (limited) auto knowledge...
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.9.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
