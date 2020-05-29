@@ -2,82 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F761E835C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 18:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A62351E8378
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 18:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgE2QPW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 May 2020 12:15:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgE2QPV (ORCPT
+        id S1727812AbgE2QTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 12:19:06 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:58948 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727056AbgE2QTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 12:15:21 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 762A2C03E969;
-        Fri, 29 May 2020 09:15:21 -0700 (PDT)
-Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
-        (envelope-from <bigeasy@linutronix.de>)
-        id 1jehfC-0000nm-H5; Fri, 29 May 2020 18:15:18 +0200
-Date:   Fri, 29 May 2020 18:15:18 +0200
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Mark Marshall <markmarshall14@gmail.com>
-Cc:     linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Mark Marshall <mark.marshall@omicronenergy.com>,
-        thomas.graziadei@omicronenergy.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, rostedt@goodmis.org
-Subject: Re: Kernel crash due to memory corruption with v5.4.26-rt17 and
- PowerPC e500
-Message-ID: <20200529161518.svpxhkeljafbtdz2@linutronix.de>
-References: <CAD4b4WK9W+dNZZ_WPt-9ZNpSHvyxdwPW86Rtq4AKOONuvyR37A@mail.gmail.com>
- <20200529131452.pgj7mx7xaz7n4kz3@linutronix.de>
- <CAD4b4WLS36JKepz31m98Z3Ve05d63GnfBGsuuWRXpjXZqPoBrA@mail.gmail.com>
+        Fri, 29 May 2020 12:19:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5ybXgUUvnJ5OVqyLh6pi2nJ1zfYcPDr1hIJqrcDCVeg=; b=R8wq3Vs4NI9Ph2F1lL/a0yf/14
+        TLpGeOnf1U57OJaHcy8N0dd7Z7/vWRUJUaU0tk+caNsacKB6MeFNxs1bFkhE5czosiT6QRlsMe0EK
+        7ldOcnOi8GrwfCy+0cG7XcWMdpbhrDwr9YQ3pihnujed8XLkBYQv0/ChqNKK7bOhHsdTV2oaBLNpL
+        Lj+d0AZJI6vJ7L/IA8qYOh5c3PwBvAC1vlf0RLt6BHsxqIB/xPZe4I1wntF1K+ol6DT6WMdOUfaGW
+        dr0QWrATOLhAt2ZKWE1nWJjJHEVlG+kjN4mhQoQDnH1FeChyVBGXkcbFpret13qP1cf7rIGqbBJqX
+        /cZCq5VQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jehge-0000wX-U3; Fri, 29 May 2020 16:16:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BD32D3012C3;
+        Fri, 29 May 2020 18:16:47 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id ABF8E2BB457CD; Fri, 29 May 2020 18:16:47 +0200 (CEST)
+Date:   Fri, 29 May 2020 18:16:47 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     mingo@kernel.org, will@kernel.org, tglx@linutronix.de
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        a.darwish@linutronix.de, rostedt@goodmis.org, bigeasy@linutronix.de
+Subject: Re: [PATCH v2 3/6] lockdep: Change hardirq{s_enabled,_context} to
+ per-cpu variables
+Message-ID: <20200529161647.GE706460@hirez.programming.kicks-ass.net>
+References: <20200528140535.206916549@infradead.org>
+ <20200528140946.831087909@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <CAD4b4WLS36JKepz31m98Z3Ve05d63GnfBGsuuWRXpjXZqPoBrA@mail.gmail.com>
+In-Reply-To: <20200528140946.831087909@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-29 17:38:39 [+0200], Mark Marshall wrote:
-> Hi Sebastian & list,
-Hi,
+On Thu, May 28, 2020 at 04:05:38PM +0200, Peter Zijlstra wrote:
+> +#include <asm/percpu.h>
+> +#include <asm/percpu.h>
 
-> I had assumed that my e-mail had got lost or overlooked, I was meaning to
-> post a follow up message this week...
-> 
-> All I could find from the debugging and tracing that we added was that
-> something was going wrong with the mm data structures somewhere in the
-> exec code.  In the end I just spent a week or two pouring over the diffs
-> of this code between the versions that I new worked and didn't work.
-> 
-> I eventually found the culprit.  On the working kernel versions there is
-> a patch called "mm: Protect activate_mm() by preempt_[disable&enable]_rt()".
-> This is commit f0b4a9cb253a on the V4.19.82-rt30 branch, for instance.
-> Although the commit message talks about ARM, it seems that we need this for
-> PowerPC too (I guess, any PowerPC with the "nohash" MMU?).
+If we change those to <linux/percpu-defs.h>, in direct conflict with
+what the header says about itself, all builds seem to be good again.
 
-Could you drop me your config, please? I need to dig here a little and I
-should have seen this on qemu, right?
-
-> Could you please add this commit back to the RT branch?  I'm not sure how
-> to find out the history of this commit.  For instance, why has it been
-> removed from the RT patchset?  How are these things tracked, generally?
-
-I dropped that patch in v5.4.3-rt1. I couldn't reproduce the issue that
-was documented in the patch and the code that triggered the warning was
-removed / reworked in commit
-    b5466f8728527 ("ARM: mm: remove IPI broadcasting on ASID rollover")
-
-So it looked like no longer needed and then got dropped during the
-rebase.
-In order to get it back into the RT queue I need to understand why it is
-required. What exactly is it fixing. Let me stare at for a little…
-
-> Best regards,
-> Mark
-
-Sebastian
+s390, sparc64, power64 all build again.
