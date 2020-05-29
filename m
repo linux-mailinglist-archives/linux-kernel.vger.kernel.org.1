@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F551E8A44
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 23:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BBFB1E8A4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 May 2020 23:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728481AbgE2Vnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 17:43:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728293AbgE2Vnh (ORCPT
+        id S1728385AbgE2Vpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 17:45:54 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:55474 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726975AbgE2Vpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 17:43:37 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 462D6C03E969;
-        Fri, 29 May 2020 14:43:37 -0700 (PDT)
+        Fri, 29 May 2020 17:45:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=5rR1NJgZkMSAM5DsE3mS2iF8blmza8kjDJ/kqIILuBo=; b=OrNBw3CuPy/zbnEZhshCKupz6A
-        +zs4nSTw1Z5AmszLAASctKMALY+PXzHrBk5nQAPaC8HiehcIrV4kcF7bT3585u1Nv3eLN3qaxXXEB
-        EuYeZguCbqbpq6Y8iK6jZvEWcfmk8T+rha8XDekQDos53rT0xYsnWXQ4EI5Nk31uDDnH41aU0pt2D
-        ojNvDIxKvWCZyoAFEQKn6wtPsyMhLLo9pRXW7rX7G6OyG4vNtpdZ8bJxaboaQtQ0VySSf975xoD4A
-        BXBZU/dwPH3vlNZhl3sp1KmuTnR1sLFfAA8Sib3wgOyplwM8EWkEU/zdMQyqoYBik6W9eDTiYI4a0
-        igmT94JQ==;
+        bh=KH3+WKue09LOhKAEhCwMprCxbHbnHF4Fq/FH08Thxfg=; b=DkmPZP+maPD0g3GUtzRwC54YVT
+        7+6aOb09jDEMAKjJZDf9reHY3jx8d6NJ+gI4vXOFMBfeWpmtRZaMO5KHVMWkJiPqW+p8N8zU84vB+
+        IMlBXbqDp2vffdJihZ8AN7/Bmmss46YGDf3C0xg7Zez4tfaQxLeTrs6ImYCrP3L8LyvkeAkyuuBkb
+        VpRCboFoqimdQXFTUw+ecEVgFGkyOfl6eIY8C6N4eC/syDttJR8CDgsOzoVV8biBY7qsKRDu7kycL
+        NbfGdvlUhlrvhFKPQ7IaaAioAqCqvtxmNmMIoEPZxvmfu3T5StlSQm54Q7BrCNfIAu+E9TaIUg7D0
+        RLeDEFnw==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jemmK-0006Hs-1t; Fri, 29 May 2020 21:43:00 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jemmL-0007TK-CT; Fri, 29 May 2020 21:43:01 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 23EFB302814;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 24BB9306574;
         Fri, 29 May 2020 23:42:57 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id CE78E2021AF90; Fri, 29 May 2020 23:42:57 +0200 (CEST)
-Message-ID: <20200529214203.673108357@infradead.org>
+        id D222E2B9B1BC5; Fri, 29 May 2020 23:42:57 +0200 (CEST)
+Message-ID: <20200529214203.729797639@infradead.org>
 User-Agent: quilt/0.66
-Date:   Fri, 29 May 2020 23:35:51 +0200
+Date:   Fri, 29 May 2020 23:35:52 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     mingo@kernel.org, will@kernel.org, tglx@linutronix.de
 Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
@@ -46,7 +43,7 @@ Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
         sparclinux@vger.kernel.org, mpe@ellerman.id.au,
         linuxppc-dev@lists.ozlabs.org, heiko.carstens@de.ibm.com,
         linux-s390@vger.kernel.org
-Subject: [RFC][PATCH v3 1/5] sparc64: Fix asm/percpu.h build error
+Subject: [PATCH v3 2/5] powerpc64: Break asm/percpu.h vs spinlock_types.h dependency
 References: <20200529213550.683440625@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -55,32 +52,198 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to break a header dependency between lockdep and task_struct,
-I need per-cpu stuff from lockdep.
+In order to use <asm/percpu.h> in lockdep.h, we need to make sure
+asm/percpu.h does not itself depend on lockdep.
 
-Including <asm/percpu.h> from lockdep.h gives a build error, this
-patch cures that, but results in the following warning:
+The below seems to make that so and builds powerpc64-defconfig +
+PROVE_LOCKING.
 
-../arch/sparc/include/asm/percpu_64.h:7:24: warning: call-clobbered register used for global register variable
-register unsigned long __local_per_cpu_offset asm("g5");
-
-But i've no idea how to fix that :/ but it does build.
-
-Not-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/sparc/include/asm/trap_block.h |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/powerpc/include/asm/dtl.h         |   52 +++++++++++++++++++++++++++++++++
+ arch/powerpc/include/asm/lppaca.h      |   44 ---------------------------
+ arch/powerpc/kernel/time.c             |    1 
+ arch/powerpc/kvm/book3s_hv.c           |    1 
+ arch/powerpc/platforms/pseries/dtl.c   |    1 
+ arch/powerpc/platforms/pseries/lpar.c  |    1 
+ arch/powerpc/platforms/pseries/setup.c |    1 
+ arch/powerpc/platforms/pseries/svm.c   |    1 
+ 8 files changed, 58 insertions(+), 44 deletions(-)
 
---- a/arch/sparc/include/asm/trap_block.h
-+++ b/arch/sparc/include/asm/trap_block.h
-@@ -2,6 +2,8 @@
- #ifndef _SPARC_TRAP_BLOCK_H
- #define _SPARC_TRAP_BLOCK_H
- 
-+#include <linux/threads.h>
+--- /dev/null
++++ b/arch/powerpc/include/asm/dtl.h
+@@ -0,0 +1,52 @@
++#ifndef _ASM_POWERPC_DTL_H
++#define _ASM_POWERPC_DTL_H
 +
- #include <asm/hypervisor.h>
- #include <asm/asi.h>
++#include <asm/lppaca.h>
++#include <linux/spinlock_types.h>
++
++/*
++ * Layout of entries in the hypervisor's dispatch trace log buffer.
++ */
++struct dtl_entry {
++	u8	dispatch_reason;
++	u8	preempt_reason;
++	__be16	processor_id;
++	__be32	enqueue_to_dispatch_time;
++	__be32	ready_to_enqueue_time;
++	__be32	waiting_to_ready_time;
++	__be64	timebase;
++	__be64	fault_addr;
++	__be64	srr0;
++	__be64	srr1;
++};
++
++#define DISPATCH_LOG_BYTES	4096	/* bytes per cpu */
++#define N_DISPATCH_LOG		(DISPATCH_LOG_BYTES / sizeof(struct dtl_entry))
++
++/*
++ * Dispatch trace log event enable mask:
++ *   0x1: voluntary virtual processor waits
++ *   0x2: time-slice preempts
++ *   0x4: virtual partition memory page faults
++ */
++#define DTL_LOG_CEDE		0x1
++#define DTL_LOG_PREEMPT		0x2
++#define DTL_LOG_FAULT		0x4
++#define DTL_LOG_ALL		(DTL_LOG_CEDE | DTL_LOG_PREEMPT | DTL_LOG_FAULT)
++
++extern struct kmem_cache *dtl_cache;
++extern rwlock_t dtl_access_lock;
++
++/*
++ * When CONFIG_VIRT_CPU_ACCOUNTING_NATIVE = y, the cpu accounting code controls
++ * reading from the dispatch trace log.  If other code wants to consume
++ * DTL entries, it can set this pointer to a function that will get
++ * called once for each DTL entry that gets processed.
++ */
++extern void (*dtl_consumer)(struct dtl_entry *entry, u64 index);
++
++extern void register_dtl_buffer(int cpu);
++extern void alloc_dtl_buffers(unsigned long *time_limit);
++extern long hcall_vphn(unsigned long cpu, u64 flags, __be32 *associativity);
++
++#endif /* _ASM_POWERPC_DTL_H */
+--- a/arch/powerpc/include/asm/lppaca.h
++++ b/arch/powerpc/include/asm/lppaca.h
+@@ -42,7 +42,6 @@
+  */
+ #include <linux/cache.h>
+ #include <linux/threads.h>
+-#include <linux/spinlock_types.h>
+ #include <asm/types.h>
+ #include <asm/mmu.h>
+ #include <asm/firmware.h>
+@@ -146,49 +145,6 @@ struct slb_shadow {
+ 	} save_area[SLB_NUM_BOLTED];
+ } ____cacheline_aligned;
  
+-/*
+- * Layout of entries in the hypervisor's dispatch trace log buffer.
+- */
+-struct dtl_entry {
+-	u8	dispatch_reason;
+-	u8	preempt_reason;
+-	__be16	processor_id;
+-	__be32	enqueue_to_dispatch_time;
+-	__be32	ready_to_enqueue_time;
+-	__be32	waiting_to_ready_time;
+-	__be64	timebase;
+-	__be64	fault_addr;
+-	__be64	srr0;
+-	__be64	srr1;
+-};
+-
+-#define DISPATCH_LOG_BYTES	4096	/* bytes per cpu */
+-#define N_DISPATCH_LOG		(DISPATCH_LOG_BYTES / sizeof(struct dtl_entry))
+-
+-/*
+- * Dispatch trace log event enable mask:
+- *   0x1: voluntary virtual processor waits
+- *   0x2: time-slice preempts
+- *   0x4: virtual partition memory page faults
+- */
+-#define DTL_LOG_CEDE		0x1
+-#define DTL_LOG_PREEMPT		0x2
+-#define DTL_LOG_FAULT		0x4
+-#define DTL_LOG_ALL		(DTL_LOG_CEDE | DTL_LOG_PREEMPT | DTL_LOG_FAULT)
+-
+-extern struct kmem_cache *dtl_cache;
+-extern rwlock_t dtl_access_lock;
+-
+-/*
+- * When CONFIG_VIRT_CPU_ACCOUNTING_NATIVE = y, the cpu accounting code controls
+- * reading from the dispatch trace log.  If other code wants to consume
+- * DTL entries, it can set this pointer to a function that will get
+- * called once for each DTL entry that gets processed.
+- */
+-extern void (*dtl_consumer)(struct dtl_entry *entry, u64 index);
+-
+-extern void register_dtl_buffer(int cpu);
+-extern void alloc_dtl_buffers(unsigned long *time_limit);
+ extern long hcall_vphn(unsigned long cpu, u64 flags, __be32 *associativity);
+ 
+ #endif /* CONFIG_PPC_BOOK3S */
+--- a/arch/powerpc/kernel/time.c
++++ b/arch/powerpc/kernel/time.c
+@@ -69,6 +69,7 @@
+ #include <asm/vdso_datapage.h>
+ #include <asm/firmware.h>
+ #include <asm/asm-prototypes.h>
++#include <asm/dtl.h>
+ 
+ /* powerpc clocksource/clockevent code */
+ 
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -74,6 +74,7 @@
+ #include <asm/hw_breakpoint.h>
+ #include <asm/kvm_book3s_uvmem.h>
+ #include <asm/ultravisor.h>
++#include <asm/dtl.h>
+ 
+ #include "book3s.h"
+ 
+--- a/arch/powerpc/platforms/pseries/dtl.c
++++ b/arch/powerpc/platforms/pseries/dtl.c
+@@ -12,6 +12,7 @@
+ #include <asm/smp.h>
+ #include <linux/uaccess.h>
+ #include <asm/firmware.h>
++#include <asm/dtl.h>
+ #include <asm/lppaca.h>
+ #include <asm/debugfs.h>
+ #include <asm/plpar_wrappers.h>
+--- a/arch/powerpc/platforms/pseries/lpar.c
++++ b/arch/powerpc/platforms/pseries/lpar.c
+@@ -40,6 +40,7 @@
+ #include <asm/fadump.h>
+ #include <asm/asm-prototypes.h>
+ #include <asm/debugfs.h>
++#include <asm/dtl.h>
+ 
+ #include "pseries.h"
+ 
+--- a/arch/powerpc/platforms/pseries/setup.c
++++ b/arch/powerpc/platforms/pseries/setup.c
+@@ -70,6 +70,7 @@
+ #include <asm/asm-const.h>
+ #include <asm/swiotlb.h>
+ #include <asm/svm.h>
++#include <asm/dtl.h>
+ 
+ #include "pseries.h"
+ #include "../../../../drivers/pci/pci.h"
+--- a/arch/powerpc/platforms/pseries/svm.c
++++ b/arch/powerpc/platforms/pseries/svm.c
+@@ -11,6 +11,7 @@
+ #include <asm/svm.h>
+ #include <asm/swiotlb.h>
+ #include <asm/ultravisor.h>
++#include <asm/dtl.h>
+ 
+ static int __init init_svm(void)
+ {
 
 
