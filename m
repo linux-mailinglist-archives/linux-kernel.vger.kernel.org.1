@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3C31E9423
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 00:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC621E9425
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 00:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729386AbgE3WLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 18:11:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54098 "EHLO
+        id S1729421AbgE3WLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 18:11:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729083AbgE3WLk (ORCPT
+        with ESMTP id S1729391AbgE3WLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 18:11:40 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD42C03E969
-        for <linux-kernel@vger.kernel.org>; Sat, 30 May 2020 15:11:40 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id a14so5977840ilk.2
-        for <linux-kernel@vger.kernel.org>; Sat, 30 May 2020 15:11:40 -0700 (PDT)
+        Sat, 30 May 2020 18:11:42 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 806A8C03E969
+        for <linux-kernel@vger.kernel.org>; Sat, 30 May 2020 15:11:41 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id q18so5953563ilm.5
+        for <linux-kernel@vger.kernel.org>; Sat, 30 May 2020 15:11:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NXcAedOSwrxhkrQYcHCK2xCwI1oS7g32dLAN0Oi8AdQ=;
-        b=Of565f9XHR6akMVBVKeYCt0KqgsBPBOd8tPl9chf1LTHcHZHyMIMwVfqOsD9YiDB2g
-         BF621G1rjH5z+a2waS2qHNz/smsgukpCnWV1Hto0UywsiW7DtTcKP/33Z3RxvAMlSOkg
-         o2l2HMw7FLpJzpXAyApteISfXgwdHuodppWy2SBJPy6JCRUPa3toliwdpfqb0hXao+KT
-         Sf+k5WuX/57tGton3e0mXfR7NPR/kgW+dlU3UQIeURwHJWXRpaTwxEAAkRy7VqIYb6SO
-         Q55ETphUucl2yXZUg07oOcgCvcyQvSUmmZ82cVZC0vYTPvY7KUorwOXcenhVDKM5/5xi
-         7jTw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=2LXLtg2uPDVGwNw61GJ4ugRE8QvDMri3kJv2Q2gM5QA=;
+        b=jIBbFEvN+n4/jkf7n820inTZcD1n72w15iUCJJdgAom6YfokaKEd5kaqlsLwyWRdTh
+         Wk1gtWdLoT74+ZtcLOK5wZFZkEI7pVMdpcOyeinkoim1uqgJHGxKT8w/tKVBlG0j0KP0
+         5Nyw5sLRgf9n+azlf10usDdtImsbGwNs+uT6hjXQ5yVPQGfEjenB54IMOk57julrEv8R
+         DtsMcLZ/ykVJxB1iN/GBIEqThs/1HM5nG8M67rzNjzppnm4Yxvk1XOKQQeZIwskZeKi9
+         oDYpU8Vqr4DdjLc16VvmPuviG34j2f/ZKvCoDJP1bugU0cPCmNX054LRJvmPZYRCCis9
+         1NjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NXcAedOSwrxhkrQYcHCK2xCwI1oS7g32dLAN0Oi8AdQ=;
-        b=UXu5DLNljyAQWYFBO97NplVPbkfI8LAlXNKMvxYFrxQ/eGQzaBEretkbvy2OQjbivE
-         RL3HgHbKaE0MfLNFNpE18hz7o2SF2w9INYv1Mzsxli6rlcRkXF+apY67Cu74B7M2qnmk
-         PshTAPAZ4OTjv6xEjsk/XKe2FObCORj4XRhr8oWDOdnF0OGp7ivebI2/jMmtlPXCDNad
-         0efPYfmeu6bfsvr+y3K7Z3KYeW4PM2SowlPQ6qM8I4v7v6SpDp/ZNXd+XYPmY1Uj0pGy
-         ER4TiF/ySoGSg3pxSboQ0Zg7xlLeQqMxqmhLbyW048lnFuTVji+aTcvQt1Wqydo+y7sx
-         U1dQ==
-X-Gm-Message-State: AOAM530oJ0WydR91n/5mhWyLfTQy+DNDEMVzCebi6UsfJwBbIx7YEhvf
-        4cpSAL+VC7LNqHtLdPUH+Pd/yMlXWg==
-X-Google-Smtp-Source: ABdhPJzHer1EUcBGv4dFXYPRPGmCCr6cE0nKk+9S/IZchZU0nvcFqXL74g5+mZFErlPYbM630v/lcA==
-X-Received: by 2002:a92:4015:: with SMTP id n21mr14454647ila.137.1590876699825;
-        Sat, 30 May 2020 15:11:39 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=2LXLtg2uPDVGwNw61GJ4ugRE8QvDMri3kJv2Q2gM5QA=;
+        b=aQbROfoabvtKrLqsCLK0bBG4mTuoOlW816OSjWbW8U3DNynhy8MCxve01NzT6zuOfL
+         0IRDtm0udfjddj9fEGLZTHwSX28y6XzwybjOuWYbqq0snlng1lwx6nwjwpcoA3Ha/1l7
+         mMeW+JxaNFd13k7F3Qb8qCfT+k6jx6ZFUx/kanF7MicFFEK8SK7ZT0C28v5FyK+oWuFv
+         leCK6+vhnGY5K4nUY/qVr2DVyvH/wmQnxKUmLI6/4kGIv1DlMbUvPsf3jRum6suIrmwu
+         d+IHxHOg0XPzSc91uq22T7SwenvpJZWdPkMkXLbsG0MtOg0BsU2b/aExHXxKDL/fh0aR
+         cq1A==
+X-Gm-Message-State: AOAM532UsXMmp5vMqZjO7ftRhJwGTgZk/s8rc7cNxddgDXidt8R1IFoP
+        r4Vvxkz+MwO9UOuBAQdCv6ty4kg0tg==
+X-Google-Smtp-Source: ABdhPJw8+EhF/R4PKISho+JZT/qFvxvPNaR4tB3BDIZPePED3MPWej1ixrbODHmud7DWkJw8L6bT7Q==
+X-Received: by 2002:a05:6e02:68d:: with SMTP id o13mr14553675ils.230.1590876700756;
+        Sat, 30 May 2020 15:11:40 -0700 (PDT)
 Received: from localhost.localdomain (174-084-153-250.res.spectrum.com. [174.84.153.250])
-        by smtp.gmail.com with ESMTPSA id w78sm2735698ilk.14.2020.05.30.15.11.38
+        by smtp.gmail.com with ESMTPSA id w78sm2735698ilk.14.2020.05.30.15.11.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 May 2020 15:11:39 -0700 (PDT)
+        Sat, 30 May 2020 15:11:40 -0700 (PDT)
 From:   Brian Gerst <brgerst@gmail.com>
 To:     linux-kernel@vger.kernel.org, x86@kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -57,10 +57,12 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Brian Gerst <brgerst@gmail.com>
-Subject: [PATCH v2 00/10] x86: Clean up percpu operations
-Date:   Sat, 30 May 2020 18:11:17 -0400
-Message-Id: <20200530221127.459704-1-brgerst@gmail.com>
+Subject: [PATCH v2 01/10] x86/percpu: Introduce size abstraction macros
+Date:   Sat, 30 May 2020 18:11:18 -0400
+Message-Id: <20200530221127.459704-2-brgerst@gmail.com>
 X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20200530221127.459704-1-brgerst@gmail.com>
+References: <20200530221127.459704-1-brgerst@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -68,36 +70,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The core percpu operations already have a switch on the width of the
-data type, which resulted in an extra amount of dead code being
-generated with the x86 operations having another switch.  This patch set
-rewrites the x86 ops to remove the switch.  Additional cleanups are to
-use named assembly operands, and to cast variables to the width used in
-the assembly to make Clang happy.
+In preparation for cleaning up the percpu operations, define macros for
+abstraction based on the width of the operation.
 
-Changes from v1:
-- Add separate patch for XADD constraint fix
-- Fixed sparse truncation warning
-- Add cleanup of percpu_stable_op()
-- Add patch to Remove PER_CPU()
+Signed-off-by: Brian Gerst <brgerst@gmail.com>
+---
+ arch/x86/include/asm/percpu.h | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-Brian Gerst (10):
-  x86/percpu: Introduce size abstraction macros
-  x86/percpu: Clean up percpu_to_op()
-  x86/percpu: Clean up percpu_from_op()
-  x86/percpu: Clean up percpu_add_op()
-  x86/percpu: Remove "e" constraint from XADD
-  x86/percpu: Clean up percpu_add_return_op()
-  x86/percpu: Clean up percpu_xchg_op()
-  x86/percpu: Clean up percpu_cmpxchg_op()
-  x86/percpu: Clean up percpu_stable_op()
-  x86/percpu: Remove unused PER_CPU() macro
-
- arch/x86/include/asm/percpu.h | 510 ++++++++++++----------------------
- 1 file changed, 172 insertions(+), 338 deletions(-)
-
-
-base-commit: 229aaa8c059f2c908e0561453509f996f2b2d5c4
+diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
+index 2278797c769d..19838e4f7a8f 100644
+--- a/arch/x86/include/asm/percpu.h
++++ b/arch/x86/include/asm/percpu.h
+@@ -87,6 +87,36 @@
+  * don't give an lvalue though). */
+ extern void __bad_percpu_size(void);
+ 
++#define __pcpu_type_1 u8
++#define __pcpu_type_2 u16
++#define __pcpu_type_4 u32
++#define __pcpu_type_8 u64
++
++#define __pcpu_cast_1(val) ((u8)(((unsigned long) val) & 0xff))
++#define __pcpu_cast_2(val) ((u16)(((unsigned long) val) & 0xffff))
++#define __pcpu_cast_4(val) ((u32)(((unsigned long) val) & 0xffffffff))
++#define __pcpu_cast_8(val) ((u64)(val))
++
++#define __pcpu_op1_1(op, dst) op "b " dst
++#define __pcpu_op1_2(op, dst) op "w " dst
++#define __pcpu_op1_4(op, dst) op "l " dst
++#define __pcpu_op1_8(op, dst) op "q " dst
++
++#define __pcpu_op2_1(op, src, dst) op "b " src ", " dst
++#define __pcpu_op2_2(op, src, dst) op "w " src ", " dst
++#define __pcpu_op2_4(op, src, dst) op "l " src ", " dst
++#define __pcpu_op2_8(op, src, dst) op "q " src ", " dst
++
++#define __pcpu_reg_1(mod, x) mod "q" (x)
++#define __pcpu_reg_2(mod, x) mod "r" (x)
++#define __pcpu_reg_4(mod, x) mod "r" (x)
++#define __pcpu_reg_8(mod, x) mod "r" (x)
++
++#define __pcpu_reg_imm_1(x) "qi" (x)
++#define __pcpu_reg_imm_2(x) "ri" (x)
++#define __pcpu_reg_imm_4(x) "ri" (x)
++#define __pcpu_reg_imm_8(x) "re" (x)
++
+ #define percpu_to_op(qual, op, var, val)		\
+ do {							\
+ 	typedef typeof(var) pto_T__;			\
 -- 
 2.25.4
 
