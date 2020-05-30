@@ -2,115 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108E91E9082
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 12:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E4A1E9084
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 12:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728826AbgE3KYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 06:24:40 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:46334 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728769AbgE3KYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 06:24:37 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id D9A0AB18BFA3BD7B1064;
-        Sat, 30 May 2020 18:24:31 +0800 (CST)
-Received: from [127.0.0.1] (10.173.220.25) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Sat, 30 May 2020
- 18:24:23 +0800
-Subject: Re: [PATCH v2 5/6] mm: tlb: Provide flush_*_tlb_range wrappers
-To:     Catalin Marinas <catalin.marinas@arm.com>
-CC:     <peterz@infradead.org>, <mark.rutland@arm.com>, <will@kernel.org>,
-        <aneesh.kumar@linux.ibm.com>, <akpm@linux-foundation.org>,
-        <npiggin@gmail.com>, <arnd@arndb.de>, <rostedt@goodmis.org>,
-        <maz@kernel.org>, <suzuki.poulose@arm.com>, <tglx@linutronix.de>,
-        <yuzhao@google.com>, <Dave.Martin@arm.com>, <steven.price@arm.com>,
-        <broonie@kernel.org>, <guohanjun@huawei.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-mm@kvack.org>, <arm@kernel.org>, <xiexiangyou@huawei.com>,
-        <prime.zeng@hisilicon.com>, <zhangshaokun@hisilicon.com>,
-        <kuhn.chenqun@huawei.com>
-References: <20200423135656.2712-1-yezhenyu2@huawei.com>
- <20200423135656.2712-6-yezhenyu2@huawei.com> <20200522154254.GD26492@gaia>
- <ddba6d98-29b5-0748-ba74-ec022f509270@huawei.com>
- <20200526145244.GG17051@gaia>
-From:   Zhenyu Ye <yezhenyu2@huawei.com>
-Message-ID: <0c6f79e4-f29a-d373-2e43-c4f87cf78b49@huawei.com>
-Date:   Sat, 30 May 2020 18:24:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1728860AbgE3KZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 06:25:33 -0400
+Received: from mga12.intel.com ([192.55.52.136]:11758 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727947AbgE3KZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 May 2020 06:25:32 -0400
+IronPort-SDR: pkFcV3y/FYgQlIDGVVJcGfs1vp99SFDjoVOS6CCWIyLjqfSgAASyA3AE0UGKiMkNPFI5m+SmFC
+ TOk8AQhxLxDA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2020 03:25:32 -0700
+IronPort-SDR: wTiNQAItwI7OvYUUKMrrSbzgYuPEwwZQHZXWH5P3ZdlvnDiy3H/FqJDpCfXKXpUBGQCfetmiHP
+ 9fx6bxnMrbEg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,451,1583222400"; 
+   d="scan'208";a="267811284"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003.jf.intel.com with ESMTP; 30 May 2020 03:25:28 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jeygF-009nNa-3C; Sat, 30 May 2020 13:25:31 +0300
+Date:   Sat, 30 May 2020 13:25:31 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Wei Yang <richard.weiyang@gmail.com>
+Cc:     akpm@linux-foundation.org, christian.brauner@ubuntu.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] lib: make a test module with get_count_order/long
+Message-ID: <20200530102531.GA1634618@smile.fi.intel.com>
+References: <20200530004328.30530-1-richard.weiyang@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200526145244.GG17051@gaia>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.173.220.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200530004328.30530-1-richard.weiyang@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Catalin,
+On Sat, May 30, 2020 at 12:43:28AM +0000, Wei Yang wrote:
+> A test module to make sure get_count_order/long returns the correct result.
 
-Sorry for taking so long to reply to you.
+>  lib/Kconfig.debug                  | 13 ++++++
+>  lib/Makefile                       |  2 +
+>  lib/test_getorder.c                | 64 ++++++++++++++++++++++++++++++
 
-On 2020/5/26 22:52, Catalin Marinas wrote:
-> On Mon, May 25, 2020 at 03:19:42PM +0800, Zhenyu Ye wrote:
->>
->> tlb_flush_##_pxx##_range() is used to set tlb->cleared_*,
->> flush_##_pxx##_tlb_range() will actually flush the TLB entry.
->>
->> In arch64, tlb_flush_p?d_range() is defined as:
->>
->> 	#define flush_pmd_tlb_range(vma, addr, end)	flush_tlb_range(vma, addr, end)
->> 	#define flush_pud_tlb_range(vma, addr, end)	flush_tlb_range(vma, addr, end)
-> 
-> Currently, flush_p??_tlb_range() are generic and defined as above. I
-> think in the generic code they can remain an alias for
-> flush_tlb_range().
-> 
-> On arm64, we can redefine them as:
-> 
-> #define flush_pte_tlb_range(vma, addr, end)	__flush_tlb_range(vma, addr, end, 3)
-> #define flush_pmd_tlb_range(vma, addr, end)	__flush_tlb_range(vma, addr, end, 2)
-> #define flush_pud_tlb_range(vma, addr, end)	__flush_tlb_range(vma, addr, end, 1)
-> #define flush_p4d_tlb_range(vma, addr, end)	__flush_tlb_range(vma, addr, end, 0)
-> 
-> (unless the compiler optimises away all the mmu_gather stuff in your
-> macro above but they don't look trivial to me)
-> 
+I didn't get why it's not a part of test_bitops?
 
-I changed generic code before considering that other structures may also
-use this feature, such as Power9. And Peter may want to replace all
-flush_tlb_range() by tlb_flush() in the future, see [1] for details.
-
-If only enable this feature on aarch64, your codes are better.
-
-[1] https://lore.kernel.org/linux-arm-kernel/20200402163849.GM20713@hirez.programming.kicks-ass.net/
-
-> Also, I don't see the new flush_pte_* and flush_p4d_* macros used
-> anywhere and I don't think they are needed. The pte equivalent is
-> flush_tlb_page() (we need to make sure it's not used on a pmd in the
-> hugetlb context).
-> 
-
-flush_tlb_page() is used to flush only one page.  If we add the flush_pte_tlb_range(),
-then we can use it to flush a range of pages in the future.
-
-But flush_pte_* and flush_p4d_* macros are really not used anywhere.
-I will remove them in next version of series, and add them if someone needs.
-
->> So even if we know the level here, we can not pass the value to tlbi
->> instructions (flush_tlb_range() is a common kernel interface and retro-fit it
->> needs lots of changes), according to Peter's suggestion, I finally decide to
->> pass the value of TTL by the tlb_gather_* frame.[1]
-> 
-> My comment was about the generic implementation using mmu_gather as you
-> are proposing. We don't need to change the flush_tlb_range() interface,
-> nor do we need to rewrite flush_p??_tlb_range().
-> 
-
-Thanks,
-Zhenyu
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
