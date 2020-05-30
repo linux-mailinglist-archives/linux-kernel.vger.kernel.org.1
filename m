@@ -2,35 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626721E93B2
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 22:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9668C1E93B7
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 22:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729325AbgE3UuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 16:50:01 -0400
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:41763 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728741AbgE3UuB (ORCPT
+        id S1729336AbgE3UyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 16:54:09 -0400
+Received: from mail-lf1-f49.google.com ([209.85.167.49]:44798 "EHLO
+        mail-lf1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728741AbgE3UyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 16:50:01 -0400
-Received: from localhost.localdomain ([93.22.132.31])
-        by mwinf5d08 with ME
-        id l8px220060gnv2t038pxvb; Sat, 30 May 2020 22:49:59 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 30 May 2020 22:49:59 +0200
-X-ME-IP: 93.22.132.31
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     aisheng.dong@nxp.com, festevam@gmail.com, shawnguo@kernel.org,
-        stefan@agner.ch, kernel@pengutronix.de, linus.walleij@linaro.org,
-        s.hauer@pengutronix.de, linux-imx@nxp.com,
-        gary.bisson@boundarydevices.com
-Cc:     linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] pinctrl: freescale: imx: Fix an error handling path in 'imx_pinctrl_probe()'
-Date:   Sat, 30 May 2020 22:49:55 +0200
-Message-Id: <20200530204955.588962-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        Sat, 30 May 2020 16:54:08 -0400
+Received: by mail-lf1-f49.google.com with SMTP id w15so1689322lfe.11
+        for <linux-kernel@vger.kernel.org>; Sat, 30 May 2020 13:54:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xw605j63H08pFbKFHsgPllo2g2mBV5dsiKNt9j9qDLc=;
+        b=tmykBg+vWUucIWYEdM5Odrs2olSYNVnbUZZZDPGx/HjKdvAwC/BMu8sOMaqJhUnPif
+         8wsD5ZroVqGcM3B009JV8sk7Y8GBvqYuLRh6l/FIaBHokxyvak1YnJzmpySVOtt492Me
+         3fXq22wkACD6u21EW63/OIkJNgrNBbYxtzMIHHr58BACwQPIjrdgtEpOTZR20EiGmjB2
+         dqV9u5EZQwK8CYf3BoM34EbHwerGLS9wixVhuSDWP2APzNEzoUROl/Da5eEnxjsPdNBp
+         j2Mmwlu9JzYvXkTMlktaVDPJa8NwkjiRY8AOyVnY29iol6xHDpO7LL8M8OImHKJksjA8
+         tWMg==
+X-Gm-Message-State: AOAM531ZKAlxFcrUFr7PkgWUbQ4AQWiQcObBZGvi714UaaDzMEr+KZCc
+        y9O7rMTfmStVnB4FwPtMRMfFRC9o
+X-Google-Smtp-Source: ABdhPJzSEX8QyOMAA1V//YoNaGqRWRM7xSXsjtYzlT6TUuXeEa9s4HUs0M09UkMHrrAXbFMqG0jCJw==
+X-Received: by 2002:a19:be55:: with SMTP id o82mr7363818lff.168.1590872045818;
+        Sat, 30 May 2020 13:54:05 -0700 (PDT)
+Received: from localhost.localdomain ([213.87.147.196])
+        by smtp.googlemail.com with ESMTPSA id f6sm2816670ljn.91.2020.05.30.13.54.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 May 2020 13:54:05 -0700 (PDT)
+From:   Denis Efremov <efremov@linux.com>
+To:     Julia Lawall <Julia.Lawall@lip6.fr>, Joe Perches <joe@perches.com>
+Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] Update memdup_user.cocci
+Date:   Sat, 30 May 2020 23:53:46 +0300
+Message-Id: <20200530205348.5812-1-efremov@linux.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -38,65 +49,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'pinctrl_unregister()' should not be called to undo
-'devm_pinctrl_register_and_init()', it is already handled by the framework.
+Add GFP_USER to the allocation flags and handle vmemdup_user().
 
-This simplifies the error handling paths of the probe function.
-The 'imx_free_resources()' can be removed as well.
+Denis Efremov (2):
+  Coccinelle: extend memdup_user transformation with GFP_USER
+  Coccinelle: extend memdup_user rule with vmemdup_user()
 
-Fixes: a51c158bf0f7 ("pinctrl: imx: use radix trees for groups and functions")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/pinctrl/freescale/pinctrl-imx.c | 19 ++-----------------
- 1 file changed, 2 insertions(+), 17 deletions(-)
+ scripts/coccinelle/api/memdup_user.cocci | 53 ++++++++++++++++++++++--
+ 1 file changed, 49 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/pinctrl/freescale/pinctrl-imx.c b/drivers/pinctrl/freescale/pinctrl-imx.c
-index 9f42036c5fbb..1f81569c7ae3 100644
---- a/drivers/pinctrl/freescale/pinctrl-imx.c
-+++ b/drivers/pinctrl/freescale/pinctrl-imx.c
-@@ -774,16 +774,6 @@ static int imx_pinctrl_probe_dt(struct platform_device *pdev,
- 	return 0;
- }
- 
--/*
-- * imx_free_resources() - free memory used by this driver
-- * @info: info driver instance
-- */
--static void imx_free_resources(struct imx_pinctrl *ipctl)
--{
--	if (ipctl->pctl)
--		pinctrl_unregister(ipctl->pctl);
--}
--
- int imx_pinctrl_probe(struct platform_device *pdev,
- 		      const struct imx_pinctrl_soc_info *info)
- {
-@@ -874,23 +864,18 @@ int imx_pinctrl_probe(struct platform_device *pdev,
- 					     &ipctl->pctl);
- 	if (ret) {
- 		dev_err(&pdev->dev, "could not register IMX pinctrl driver\n");
--		goto free;
-+		return ret;
- 	}
- 
- 	ret = imx_pinctrl_probe_dt(pdev, ipctl);
- 	if (ret) {
- 		dev_err(&pdev->dev, "fail to probe dt properties\n");
--		goto free;
-+		return ret;
- 	}
- 
- 	dev_info(&pdev->dev, "initialized IMX pinctrl driver\n");
- 
- 	return pinctrl_enable(ipctl->pctl);
--
--free:
--	imx_free_resources(ipctl);
--
--	return ret;
- }
- 
- static int __maybe_unused imx_pinctrl_suspend(struct device *dev)
 -- 
-2.25.1
+2.26.2
 
