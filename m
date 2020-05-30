@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D01331E905F
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 11:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE5A1E904E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 11:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729081AbgE3J6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 05:58:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52918 "EHLO
+        id S1729048AbgE3J5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 05:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728724AbgE3J5Y (ORCPT
+        with ESMTP id S1729010AbgE3J5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 05:57:24 -0400
+        Sat, 30 May 2020 05:57:38 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE294C03E969;
-        Sat, 30 May 2020 02:57:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA501C03E969;
+        Sat, 30 May 2020 02:57:37 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jeyEz-0002ri-EM; Sat, 30 May 2020 11:57:21 +0200
+        id 1jeyF4-0002rb-3a; Sat, 30 May 2020 11:57:26 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 1AC871C032F;
-        Sat, 30 May 2020 11:57:21 +0200 (CEST)
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 9104D1C0093;
+        Sat, 30 May 2020 11:57:20 +0200 (CEST)
 Date:   Sat, 30 May 2020 09:57:20 -0000
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/entry, nmi: Disable #DB
+Subject: [tip: x86/entry] x86/entry, mce: Disallow #DB during #MC
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200529213321.069223695@infradead.org>
-References: <20200529213321.069223695@infradead.org>
+In-Reply-To: <20200529213321.131187767@infradead.org>
+References: <20200529213321.131187767@infradead.org>
 MIME-Version: 1.0
-Message-ID: <159083264093.17951.18261751071508007214.tip-bot2@tip-bot2>
+Message-ID: <159083264044.17951.13942038609089131962.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -50,108 +50,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/entry branch of tip:
 
-Commit-ID:     af87e4c4d65b2008709efcfb7657551f1c62a98b
-Gitweb:        https://git.kernel.org/tip/af87e4c4d65b2008709efcfb7657551f1c62a98b
+Commit-ID:     ff98610a03285516b578821549973f969118d6a3
+Gitweb:        https://git.kernel.org/tip/ff98610a03285516b578821549973f969118d6a3
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 29 May 2020 23:27:34 +02:00
+AuthorDate:    Fri, 29 May 2020 23:27:35 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sat, 30 May 2020 10:00:07 +02:00
+CommitterDate: Sat, 30 May 2020 10:00:08 +02:00
 
-x86/entry, nmi: Disable #DB
+x86/entry, mce: Disallow #DB during #MC
 
-Instead of playing stupid games with IST stacks, fully disallow #DB
-during NMIs. There is absolutely no reason to allow them, and killing
-this saves a heap of trouble.
-
-#DB is already forbidden on noinstr and CEA, so there can't be a #DB before
-this. Disabling it right after nmi_enter() ensures that the full NMI code
-is protected.
+#MC is fragile as heck, don't tempt fate.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/20200529213321.069223695@infradead.org
+Link: https://lkml.kernel.org/r/20200529213321.131187767@infradead.org
 
 ---
- arch/x86/kernel/nmi.c | 55 ++----------------------------------------
- 1 file changed, 3 insertions(+), 52 deletions(-)
+ arch/x86/kernel/cpu/mce/core.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/arch/x86/kernel/nmi.c b/arch/x86/kernel/nmi.c
-index 1c58454..52a708e 100644
---- a/arch/x86/kernel/nmi.c
-+++ b/arch/x86/kernel/nmi.c
-@@ -478,40 +478,7 @@ enum nmi_states {
- };
- static DEFINE_PER_CPU(enum nmi_states, nmi_state);
- static DEFINE_PER_CPU(unsigned long, nmi_cr2);
--
--#ifdef CONFIG_X86_64
--/*
-- * In x86_64, we need to handle breakpoint -> NMI -> breakpoint.  Without
-- * some care, the inner breakpoint will clobber the outer breakpoint's
-- * stack.
-- *
-- * If a breakpoint is being processed, and the debug stack is being
-- * used, if an NMI comes in and also hits a breakpoint, the stack
-- * pointer will be set to the same fixed address as the breakpoint that
-- * was interrupted, causing that stack to be corrupted. To handle this
-- * case, check if the stack that was interrupted is the debug stack, and
-- * if so, change the IDT so that new breakpoints will use the current
-- * stack and not switch to the fixed address. On return of the NMI,
-- * switch back to the original IDT.
-- */
--static DEFINE_PER_CPU(int, update_debug_stack);
--
--static noinstr bool is_debug_stack(unsigned long addr)
--{
--	struct cea_exception_stacks *cs = __this_cpu_read(cea_exception_stacks);
--	unsigned long top = CEA_ESTACK_TOP(cs, DB);
--	unsigned long bot = CEA_ESTACK_BOT(cs, DB1);
--
--	if (__this_cpu_read(debug_stack_usage))
--		return true;
--	/*
--	 * Note, this covers the guard page between DB and DB1 as well to
--	 * avoid two checks. But by all means @addr can never point into
--	 * the guard page.
--	 */
--	return addr >= bot && addr < top;
--}
--#endif
-+static DEFINE_PER_CPU(unsigned long, nmi_dr7);
- 
- DEFINE_IDTENTRY_NMI(exc_nmi)
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 068e6ca..be49926 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1943,22 +1943,34 @@ static __always_inline void exc_machine_check_user(struct pt_regs *regs)
+ /* MCE hit kernel mode */
+ DEFINE_IDTENTRY_MCE(exc_machine_check)
  {
-@@ -526,18 +493,7 @@ DEFINE_IDTENTRY_NMI(exc_nmi)
- 	this_cpu_write(nmi_cr2, read_cr2());
- nmi_restart:
++	unsigned long dr7;
++
++	dr7 = local_db_save();
+ 	exc_machine_check_kernel(regs);
++	local_db_restore(dr7);
+ }
  
--#ifdef CONFIG_X86_64
--	/*
--	 * If we interrupted a breakpoint, it is possible that
--	 * the nmi handler will have breakpoints too. We need to
--	 * change the IDT such that breakpoints that happen here
--	 * continue to use the NMI stack.
--	 */
--	if (unlikely(is_debug_stack(regs->sp))) {
--		debug_stack_set_zero();
--		this_cpu_write(update_debug_stack, 1);
--	}
--#endif
-+	this_cpu_write(nmi_dr7, local_db_save());
+ /* The user mode variant. */
+ DEFINE_IDTENTRY_MCE_USER(exc_machine_check)
+ {
++	unsigned long dr7;
++
++	dr7 = local_db_save();
+ 	exc_machine_check_user(regs);
++	local_db_restore(dr7);
+ }
+ #else
+ /* 32bit unified entry point */
+ DEFINE_IDTENTRY_MCE(exc_machine_check)
+ {
++	unsigned long dr7;
++
++	dr7 = local_db_save();
+ 	if (user_mode(regs))
+ 		exc_machine_check_user(regs);
+ 	else
+ 		exc_machine_check_kernel(regs);
++	local_db_restore(dr7);
+ }
+ #endif
  
- 	nmi_enter();
- 
-@@ -548,12 +504,7 @@ nmi_restart:
- 
- 	nmi_exit();
- 
--#ifdef CONFIG_X86_64
--	if (unlikely(this_cpu_read(update_debug_stack))) {
--		debug_stack_reset();
--		this_cpu_write(update_debug_stack, 0);
--	}
--#endif
-+	local_db_restore(this_cpu_read(nmi_dr7));
- 
- 	if (unlikely(this_cpu_read(nmi_cr2) != read_cr2()))
- 		write_cr2(this_cpu_read(nmi_cr2));
