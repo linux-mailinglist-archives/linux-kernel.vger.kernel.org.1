@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60D611E8F48
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 09:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D89C1E8F1E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 09:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729177AbgE3Hrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 03:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60810 "EHLO
+        id S1728904AbgE3Hqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 03:46:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728842AbgE3Hqf (ORCPT
+        with ESMTP id S1728888AbgE3Hqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 03:46:35 -0400
+        Sat, 30 May 2020 03:46:36 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5999C03E969;
-        Sat, 30 May 2020 00:46:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCC7C03E969;
+        Sat, 30 May 2020 00:46:36 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jewCO-0001pb-Kx; Sat, 30 May 2020 09:46:32 +0200
+        id 1jewCP-0001q9-Ie; Sat, 30 May 2020 09:46:33 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 4DF621C032F;
-        Sat, 30 May 2020 09:46:32 +0200 (CEST)
-Date:   Sat, 30 May 2020 07:46:32 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 300211C032F;
+        Sat, 30 May 2020 09:46:33 +0200 (CEST)
+Date:   Sat, 30 May 2020 07:46:33 -0000
 From:   "tip-bot2 for Jiaxun Yang" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] irqchip: Add Loongson PCH PIC controller
+Subject: [tip: irq/core] irqchip: Add Loongson HyperTransport Vector support
 Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Marc Zyngier <maz@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200528152757.1028711-4-jiaxun.yang@flygoat.com>
-References: <20200528152757.1028711-4-jiaxun.yang@flygoat.com>
+In-Reply-To: <20200528152757.1028711-2-jiaxun.yang@flygoat.com>
+References: <20200528152757.1028711-2-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Message-ID: <159082479219.17951.11998633686009610260.tip-bot2@tip-bot2>
+Message-ID: <159082479307.17951.4027089078248854057.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -50,74 +50,73 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     ef8c01eb64ca6719da449dab0aa9424e13c58bd0
-Gitweb:        https://git.kernel.org/tip/ef8c01eb64ca6719da449dab0aa9424e13c58bd0
+Commit-ID:     818e915fbac518e8c78e1877a0048d92d4965e5a
+Gitweb:        https://git.kernel.org/tip/818e915fbac518e8c78e1877a0048d92d4965e5a
 Author:        Jiaxun Yang <jiaxun.yang@flygoat.com>
-AuthorDate:    Thu, 28 May 2020 23:27:51 +08:00
+AuthorDate:    Thu, 28 May 2020 23:27:49 +08:00
 Committer:     Marc Zyngier <maz@kernel.org>
 CommitterDate: Fri, 29 May 2020 09:42:18 +01:00
 
-irqchip: Add Loongson PCH PIC controller
+irqchip: Add Loongson HyperTransport Vector support
 
-This controller appears on Loongson LS7A family of PCH to transform
-interrupts from devices into HyperTransport vectorized interrrupts
-and send them to procrssor's HT vector controller.
+This controller appears on Loongson-3 chips for receiving interrupt
+vectors from PCH's PIC and PCH's PCIe MSI interrupts.
 
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20200528152757.1028711-4-jiaxun.yang@flygoat.com
+Link: https://lore.kernel.org/r/20200528152757.1028711-2-jiaxun.yang@flygoat.com
 ---
- drivers/irqchip/Kconfig                |   9 +-
- drivers/irqchip/Makefile               |   1 +-
- drivers/irqchip/irq-loongson-pch-pic.c | 243 ++++++++++++++++++++++++-
- 3 files changed, 253 insertions(+)
- create mode 100644 drivers/irqchip/irq-loongson-pch-pic.c
+ drivers/irqchip/Kconfig              |   8 +-
+ drivers/irqchip/Makefile             |   1 +-
+ drivers/irqchip/irq-loongson-htvec.c | 214 ++++++++++++++++++++++++++-
+ 3 files changed, 223 insertions(+)
+ create mode 100644 drivers/irqchip/irq-loongson-htvec.c
 
 diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index de4564e..5524a62 100644
+index a85aada..de4564e 100644
 --- a/drivers/irqchip/Kconfig
 +++ b/drivers/irqchip/Kconfig
-@@ -540,4 +540,13 @@ config LOONGSON_HTVEC
+@@ -532,4 +532,12 @@ config LOONGSON_HTPIC
  	help
- 	  Support for the Loongson3 HyperTransport Interrupt Vector Controller.
+ 	  Support for the Loongson-3 HyperTransport PIC Controller.
  
-+config LOONGSON_PCH_PIC
-+	bool "Loongson PCH PIC Controller"
++config LOONGSON_HTVEC
++	bool "Loongson3 HyperTransport Interrupt Vector Controller"
 +	depends on MACH_LOONGSON64 || COMPILE_TEST
 +	default MACH_LOONGSON64
 +	select IRQ_DOMAIN_HIERARCHY
-+	select IRQ_FASTEOI_HIERARCHY_HANDLERS
 +	help
-+	  Support for the Loongson PCH PIC Controller.
++	  Support for the Loongson3 HyperTransport Interrupt Vector Controller.
 +
  endmenu
 diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index 7456187..acc7233 100644
+index 37bbe39..7456187 100644
 --- a/drivers/irqchip/Makefile
 +++ b/drivers/irqchip/Makefile
-@@ -108,3 +108,4 @@ obj-$(CONFIG_TI_SCI_INTA_IRQCHIP)	+= irq-ti-sci-inta.o
+@@ -107,3 +107,4 @@ obj-$(CONFIG_TI_SCI_INTR_IRQCHIP)	+= irq-ti-sci-intr.o
+ obj-$(CONFIG_TI_SCI_INTA_IRQCHIP)	+= irq-ti-sci-inta.o
  obj-$(CONFIG_LOONGSON_LIOINTC)		+= irq-loongson-liointc.o
  obj-$(CONFIG_LOONGSON_HTPIC)		+= irq-loongson-htpic.o
- obj-$(CONFIG_LOONGSON_HTVEC)		+= irq-loongson-htvec.o
-+obj-$(CONFIG_LOONGSON_PCH_PIC)		+= irq-loongson-pch-pic.o
-diff --git a/drivers/irqchip/irq-loongson-pch-pic.c b/drivers/irqchip/irq-loongson-pch-pic.c
++obj-$(CONFIG_LOONGSON_HTVEC)		+= irq-loongson-htvec.o
+diff --git a/drivers/irqchip/irq-loongson-htvec.c b/drivers/irqchip/irq-loongson-htvec.c
 new file mode 100644
-index 0000000..2a05b93
+index 0000000..1ece933
 --- /dev/null
-+++ b/drivers/irqchip/irq-loongson-pch-pic.c
-@@ -0,0 +1,243 @@
++++ b/drivers/irqchip/irq-loongson-htvec.c
+@@ -0,0 +1,214 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + *  Copyright (C) 2020, Jiaxun Yang <jiaxun.yang@flygoat.com>
-+ *  Loongson PCH PIC support
++ *  Loongson HyperTransport Interrupt Vector support
 + */
 +
-+#define pr_fmt(fmt) "pch-pic: " fmt
++#define pr_fmt(fmt) "htvec: " fmt
 +
 +#include <linux/interrupt.h>
 +#include <linux/irq.h>
 +#include <linux/irqchip.h>
 +#include <linux/irqdomain.h>
++#include <linux/irqchip/chained_irq.h>
 +#include <linux/kernel.h>
 +#include <linux/platform_device.h>
 +#include <linux/of_address.h>
@@ -125,218 +124,188 @@ index 0000000..2a05b93
 +#include <linux/of_platform.h>
 +
 +/* Registers */
-+#define PCH_PIC_MASK		0x20
-+#define PCH_PIC_HTMSI_EN	0x40
-+#define PCH_PIC_EDGE		0x60
-+#define PCH_PIC_CLR		0x80
-+#define PCH_PIC_AUTO0		0xc0
-+#define PCH_PIC_AUTO1		0xe0
-+#define PCH_INT_ROUTE(irq)	(0x100 + irq)
-+#define PCH_INT_HTVEC(irq)	(0x200 + irq)
-+#define PCH_PIC_POL		0x3e0
++#define HTVEC_EN_OFF		0x20
++#define HTVEC_MAX_PARENT_IRQ	4
 +
-+#define PIC_COUNT_PER_REG	32
-+#define PIC_REG_COUNT		2
-+#define PIC_COUNT		(PIC_COUNT_PER_REG * PIC_REG_COUNT)
-+#define PIC_REG_IDX(irq_id)	((irq_id) / PIC_COUNT_PER_REG)
-+#define PIC_REG_BIT(irq_id)	((irq_id) % PIC_COUNT_PER_REG)
++#define VEC_COUNT_PER_REG	32
++#define VEC_REG_COUNT		4
++#define VEC_COUNT		(VEC_COUNT_PER_REG * VEC_REG_COUNT)
++#define VEC_REG_IDX(irq_id)	((irq_id) / VEC_COUNT_PER_REG)
++#define VEC_REG_BIT(irq_id)	((irq_id) % VEC_COUNT_PER_REG)
 +
-+struct pch_pic {
++struct htvec {
 +	void __iomem		*base;
-+	struct irq_domain	*pic_domain;
-+	u32			ht_vec_base;
-+	raw_spinlock_t		pic_lock;
++	struct irq_domain	*htvec_domain;
++	raw_spinlock_t		htvec_lock;
 +};
 +
-+static void pch_pic_bitset(struct pch_pic *priv, int offset, int bit)
++static void htvec_irq_dispatch(struct irq_desc *desc)
 +{
-+	u32 reg;
-+	void __iomem *addr = priv->base + offset + PIC_REG_IDX(bit) * 4;
++	int i;
++	u32 pending;
++	bool handled = false;
++	struct irq_chip *chip = irq_desc_get_chip(desc);
++	struct htvec *priv = irq_desc_get_handler_data(desc);
 +
-+	raw_spin_lock(&priv->pic_lock);
-+	reg = readl(addr);
-+	reg |= BIT(PIC_REG_BIT(bit));
-+	writel(reg, addr);
-+	raw_spin_unlock(&priv->pic_lock);
-+}
++	chained_irq_enter(chip, desc);
 +
-+static void pch_pic_bitclr(struct pch_pic *priv, int offset, int bit)
-+{
-+	u32 reg;
-+	void __iomem *addr = priv->base + offset + PIC_REG_IDX(bit) * 4;
++	for (i = 0; i < VEC_REG_COUNT; i++) {
++		pending = readl(priv->base + 4 * i);
++		while (pending) {
++			int bit = __ffs(pending);
 +
-+	raw_spin_lock(&priv->pic_lock);
-+	reg = readl(addr);
-+	reg &= ~BIT(PIC_REG_BIT(bit));
-+	writel(reg, addr);
-+	raw_spin_unlock(&priv->pic_lock);
-+}
-+
-+static void pch_pic_eoi_irq(struct irq_data *d)
-+{
-+	u32 idx = PIC_REG_IDX(d->hwirq);
-+	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
-+
-+	writel(BIT(PIC_REG_BIT(d->hwirq)),
-+			priv->base + PCH_PIC_CLR + idx * 4);
-+}
-+
-+static void pch_pic_mask_irq(struct irq_data *d)
-+{
-+	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
-+
-+	pch_pic_bitset(priv, PCH_PIC_MASK, d->hwirq);
-+	irq_chip_mask_parent(d);
-+}
-+
-+static void pch_pic_unmask_irq(struct irq_data *d)
-+{
-+	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
-+
-+	irq_chip_unmask_parent(d);
-+	pch_pic_bitclr(priv, PCH_PIC_MASK, d->hwirq);
-+}
-+
-+static int pch_pic_set_type(struct irq_data *d, unsigned int type)
-+{
-+	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
-+	int ret = 0;
-+
-+	switch (type) {
-+	case IRQ_TYPE_EDGE_RISING:
-+		pch_pic_bitset(priv, PCH_PIC_EDGE, d->hwirq);
-+		pch_pic_bitclr(priv, PCH_PIC_POL, d->hwirq);
-+		break;
-+	case IRQ_TYPE_EDGE_FALLING:
-+		pch_pic_bitset(priv, PCH_PIC_EDGE, d->hwirq);
-+		pch_pic_bitset(priv, PCH_PIC_POL, d->hwirq);
-+		break;
-+	case IRQ_TYPE_LEVEL_HIGH:
-+		pch_pic_bitclr(priv, PCH_PIC_EDGE, d->hwirq);
-+		pch_pic_bitclr(priv, PCH_PIC_POL, d->hwirq);
-+		break;
-+	case IRQ_TYPE_LEVEL_LOW:
-+		pch_pic_bitclr(priv, PCH_PIC_EDGE, d->hwirq);
-+		pch_pic_bitset(priv, PCH_PIC_POL, d->hwirq);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
++			generic_handle_irq(irq_linear_revmap(priv->htvec_domain, bit +
++							     VEC_COUNT_PER_REG * i));
++			pending &= ~BIT(bit);
++			handled = true;
++		}
 +	}
 +
-+	return ret;
++	if (!handled)
++		spurious_interrupt();
++
++	chained_irq_exit(chip, desc);
 +}
 +
-+static struct irq_chip pch_pic_irq_chip = {
-+	.name			= "PCH PIC",
-+	.irq_mask		= pch_pic_mask_irq,
-+	.irq_unmask		= pch_pic_unmask_irq,
-+	.irq_ack		= irq_chip_ack_parent,
-+	.irq_eoi		= pch_pic_eoi_irq,
-+	.irq_set_affinity	= irq_chip_set_affinity_parent,
-+	.irq_set_type		= pch_pic_set_type,
++static void htvec_ack_irq(struct irq_data *d)
++{
++	struct htvec *priv = irq_data_get_irq_chip_data(d);
++
++	writel(BIT(VEC_REG_BIT(d->hwirq)),
++	       priv->base + VEC_REG_IDX(d->hwirq) * 4);
++}
++
++static void htvec_mask_irq(struct irq_data *d)
++{
++	u32 reg;
++	void __iomem *addr;
++	struct htvec *priv = irq_data_get_irq_chip_data(d);
++
++	raw_spin_lock(&priv->htvec_lock);
++	addr = priv->base + HTVEC_EN_OFF;
++	addr += VEC_REG_IDX(d->hwirq) * 4;
++	reg = readl(addr);
++	reg &= ~BIT(VEC_REG_BIT(d->hwirq));
++	writel(reg, addr);
++	raw_spin_unlock(&priv->htvec_lock);
++}
++
++static void htvec_unmask_irq(struct irq_data *d)
++{
++	u32 reg;
++	void __iomem *addr;
++	struct htvec *priv = irq_data_get_irq_chip_data(d);
++
++	raw_spin_lock(&priv->htvec_lock);
++	addr = priv->base + HTVEC_EN_OFF;
++	addr += VEC_REG_IDX(d->hwirq) * 4;
++	reg = readl(addr);
++	reg |= BIT(VEC_REG_BIT(d->hwirq));
++	writel(reg, addr);
++	raw_spin_unlock(&priv->htvec_lock);
++}
++
++static struct irq_chip htvec_irq_chip = {
++	.name			= "LOONGSON_HTVEC",
++	.irq_mask		= htvec_mask_irq,
++	.irq_unmask		= htvec_unmask_irq,
++	.irq_ack		= htvec_ack_irq,
 +};
 +
-+static int pch_pic_alloc(struct irq_domain *domain, unsigned int virq,
++static int htvec_domain_alloc(struct irq_domain *domain, unsigned int virq,
 +			      unsigned int nr_irqs, void *arg)
 +{
-+	int err;
-+	unsigned int type;
 +	unsigned long hwirq;
-+	struct irq_fwspec fwspec;
-+	struct pch_pic *priv = domain->host_data;
++	unsigned int type, i;
++	struct htvec *priv = domain->host_data;
 +
-+	irq_domain_translate_twocell(domain, arg, &hwirq, &type);
++	irq_domain_translate_onecell(domain, arg, &hwirq, &type);
 +
-+	fwspec.fwnode = domain->parent->fwnode;
-+	fwspec.param_count = 1;
-+	fwspec.param[0] = hwirq + priv->ht_vec_base;
-+
-+	err = irq_domain_alloc_irqs_parent(domain, virq, 1, &fwspec);
-+	if (err)
-+		return err;
-+
-+	irq_domain_set_info(domain, virq, hwirq,
-+			    &pch_pic_irq_chip, priv,
-+			    handle_fasteoi_ack_irq, NULL, NULL);
-+	irq_set_probe(virq);
++	for (i = 0; i < nr_irqs; i++) {
++		irq_domain_set_info(domain, virq + i, hwirq + i, &htvec_irq_chip,
++				    priv, handle_edge_irq, NULL, NULL);
++	}
 +
 +	return 0;
 +}
 +
-+static const struct irq_domain_ops pch_pic_domain_ops = {
-+	.translate	= irq_domain_translate_twocell,
-+	.alloc		= pch_pic_alloc,
-+	.free		= irq_domain_free_irqs_parent,
-+};
-+
-+static void pch_pic_reset(struct pch_pic *priv)
++static void htvec_domain_free(struct irq_domain *domain, unsigned int virq,
++				  unsigned int nr_irqs)
 +{
 +	int i;
 +
-+	for (i = 0; i < PIC_COUNT; i++) {
-+		/* Write vectore ID */
-+		writeb(priv->ht_vec_base + i, priv->base + PCH_INT_HTVEC(i));
-+		/* Hardcode route to HT0 Lo */
-+		writeb(1, priv->base + PCH_INT_ROUTE(i));
-+	}
++	for (i = 0; i < nr_irqs; i++) {
++		struct irq_data *d = irq_domain_get_irq_data(domain, virq + i);
 +
-+	for (i = 0; i < PIC_REG_COUNT; i++) {
-+		/* Clear IRQ cause registers, mask all interrupts */
-+		writel_relaxed(0xFFFFFFFF, priv->base + PCH_PIC_MASK + 4 * i);
-+		writel_relaxed(0xFFFFFFFF, priv->base + PCH_PIC_CLR + 4 * i);
-+		/* Clear auto bounce, we don't need that */
-+		writel_relaxed(0, priv->base + PCH_PIC_AUTO0 + 4 * i);
-+		writel_relaxed(0, priv->base + PCH_PIC_AUTO1 + 4 * i);
-+		/* Enable HTMSI transformer */
-+		writel_relaxed(0xFFFFFFFF, priv->base + PCH_PIC_HTMSI_EN + 4 * i);
++		irq_set_handler(virq + i, NULL);
++		irq_domain_reset_irq_data(d);
 +	}
 +}
 +
-+static int pch_pic_of_init(struct device_node *node,
++static const struct irq_domain_ops htvec_domain_ops = {
++	.translate	= irq_domain_translate_onecell,
++	.alloc		= htvec_domain_alloc,
++	.free		= htvec_domain_free,
++};
++
++static void htvec_reset(struct htvec *priv)
++{
++	u32 idx;
++
++	/* Clear IRQ cause registers, mask all interrupts */
++	for (idx = 0; idx < VEC_REG_COUNT; idx++) {
++		writel_relaxed(0x0, priv->base + HTVEC_EN_OFF + 4 * idx);
++		writel_relaxed(0xFFFFFFFF, priv->base);
++	}
++}
++
++static int htvec_of_init(struct device_node *node,
 +				struct device_node *parent)
 +{
-+	struct pch_pic *priv;
-+	struct irq_domain *parent_domain;
-+	int err;
++	struct htvec *priv;
++	int err, parent_irq[4], num_parents = 0, i;
 +
 +	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
 +	if (!priv)
 +		return -ENOMEM;
 +
-+	raw_spin_lock_init(&priv->pic_lock);
++	raw_spin_lock_init(&priv->htvec_lock);
 +	priv->base = of_iomap(node, 0);
 +	if (!priv->base) {
 +		err = -ENOMEM;
 +		goto free_priv;
 +	}
 +
-+	parent_domain = irq_find_host(parent);
-+	if (!parent_domain) {
-+		pr_err("Failed to find the parent domain\n");
-+		err = -ENXIO;
++	/* Interrupt may come from any of the 4 interrupt line */
++	for (i = 0; i < HTVEC_MAX_PARENT_IRQ; i++) {
++		parent_irq[i] = irq_of_parse_and_map(node, i);
++		if (parent_irq[i] <= 0)
++			break;
++
++		num_parents++;
++	}
++
++	if (!num_parents) {
++		pr_err("Failed to get parent irqs\n");
++		err = -ENODEV;
 +		goto iounmap_base;
 +	}
 +
-+	if (of_property_read_u32(node, "loongson,pic-base-vec",
-+				&priv->ht_vec_base)) {
-+		pr_err("Failed to determine pic-base-vec\n");
-+		err = -EINVAL;
-+		goto iounmap_base;
-+	}
-+
-+	priv->pic_domain = irq_domain_create_hierarchy(parent_domain, 0,
-+						       PIC_COUNT,
-+						       of_node_to_fwnode(node),
-+						       &pch_pic_domain_ops,
-+						       priv);
-+	if (!priv->pic_domain) {
++	priv->htvec_domain = irq_domain_create_linear(of_node_to_fwnode(node),
++						      VEC_COUNT,
++						      &htvec_domain_ops,
++						      priv);
++	if (!priv->htvec_domain) {
 +		pr_err("Failed to create IRQ domain\n");
 +		err = -ENOMEM;
 +		goto iounmap_base;
 +	}
 +
-+	pch_pic_reset(priv);
++	htvec_reset(priv);
++
++	for (i = 0; i < num_parents; i++)
++		irq_set_chained_handler_and_data(parent_irq[i],
++						 htvec_irq_dispatch, priv);
 +
 +	return 0;
 +
@@ -348,4 +317,4 @@ index 0000000..2a05b93
 +	return err;
 +}
 +
-+IRQCHIP_DECLARE(pch_pic, "loongson,pch-pic-1.0", pch_pic_of_init);
++IRQCHIP_DECLARE(htvec, "loongson,htvec-1.0", htvec_of_init);
