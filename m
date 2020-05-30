@@ -2,107 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D651E8D1C
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 04:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00BCD1E8D2B
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 04:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728695AbgE3CJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 22:09:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727876AbgE3CJo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 22:09:44 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF3DC03E969
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 19:09:44 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id r2so1405009ioo.4
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 19:09:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lqDi32x6iIYDJ5ilkXExUgzGIAaBDt88sozwNWhNmdU=;
-        b=RhfP+E6xLXMrOdhs7pGiXkUtf/Q2APSBbCzR7ENp2GV2Mhp7KfwjWWG5ewzaiSbaFZ
-         jcPK7ztClNkm+rHICrsvvj9amcs3/0JXNcMMIpevGuLPmv2Di6ulvNDz/pnBt69KM5vI
-         xUphgMdRTNzYYV1EXCoGtRVgnW9fH/TUmLrD86+ua23q1XZ4We0m+ONYM+Vh/T2SeRhF
-         D9EGIYpGRGbfjuWFdyNLwSQ0dbjsatuWyaj24ZLORdAL1os4zUHV/lHvxzmSMbghmG5X
-         E8n8IGK3fWKccK8dDw5l23TdC18Ex0rVE+0/Wv4vsU6o2mdxSBPVhLrqj3G6dHqhDkDk
-         QYng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lqDi32x6iIYDJ5ilkXExUgzGIAaBDt88sozwNWhNmdU=;
-        b=ehWybIuwTV5YqH6gf9vUcwtO4tbLlP/JnME+93AmUl2LDGSRvQmS4yE64NTF28lGqS
-         40sQXgXgmOdH+0Q5P1NDEkYybpvf5qUTpi07YmtVhJLpDAOKdxpoJy09/Z0u7roPZ+u6
-         vNSWpiwdfoj5tLJJBWq3gDoX5jPXCPt6uHoXzfFcoyBnIpipnGxOr1xqUcLlnFILkWNc
-         03rWPTMLX4tji8gn6/MtrRsRMw8BBhiFcfNyJxKyv5X6WLpeItrnL1rVMNtuvPPHZeKZ
-         Dd2pr80t0/0ZkHaGUtgX14V/bANwSej2dJILmW/1IDhUJsN7g4MLdIC/7zsA4o7U6gPH
-         GdLA==
-X-Gm-Message-State: AOAM532sV4Bn1Gi+EFXkYFi4ksb2eS77eoUrwzio+oWEjo5ElD+90AP8
-        3GCi+2P5C7B3u1pgHaP7fnR5O4876fI3ODZEbAEvhQ==
-X-Google-Smtp-Source: ABdhPJykXa7KkdUCgL/FbMksAxXmFiHP4XmgzhKapsn9lXwI/qbPb87Flz5ZHG3INWXxlR2pmR+O0in8fiyDOKt3Ubw=
-X-Received: by 2002:a6b:e311:: with SMTP id u17mr9073494ioc.51.1590804583872;
- Fri, 29 May 2020 19:09:43 -0700 (PDT)
+        id S1728688AbgE3CUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 22:20:31 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:57978 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727876AbgE3CUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 22:20:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=X9bkI2ilvEQW0erLexn/O2fz3158c1t2uQMV+b5J/gA=; b=FnWPc7sDhhjEGbZYaNBWQ0dcf9
+        /qowvyuJLOKGKdoyCmJ6HR8/tKxolRV/c9v4rrRMwD9Xi0LTcxq0qeHlxs/jKU0Xn0bHmfDxyG07H
+        BY/SS8sflVtlPY4XFCM1FdaQ9WkCbcC06eJSddaVWg6eOt40E459Dx1XkinQ85KmUFBI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jer6k-003hnC-Ff; Sat, 30 May 2020 04:20:22 +0200
+Date:   Sat, 30 May 2020 04:20:22 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vadym Kochan <vadym.kochan@plvision.eu>
+Cc:     David Miller <davem@davemloft.net>, kuba@kernel.org,
+        jiri@mellanox.com, idosch@mellanox.com,
+        oleksandr.mazur@plvision.eu, serhiy.boiko@plvision.eu,
+        serhiy.pshyk@plvision.eu, volodymyr.mytnyk@plvision.eu,
+        taras.chornyi@plvision.eu, andrii.savka@plvision.eu,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mickeyr@marvell.com
+Subject: Re: [net-next 1/6] net: marvell: prestera: Add driver for Prestera
+ family ASIC devices
+Message-ID: <20200530022022.GI877847@lunn.ch>
+References: <20200528151245.7592-1-vadym.kochan@plvision.eu>
+ <20200528151245.7592-2-vadym.kochan@plvision.eu>
+ <20200529.171839.213046818110655879.davem@davemloft.net>
+ <20200530004622.GA19411@plvision.eu>
 MIME-Version: 1.0
-References: <cover.1588711355.git.ashish.kalra@amd.com> <a70e7ea40c47116339f968b7d2d2bf120f452c1e.1588711355.git.ashish.kalra@amd.com>
-In-Reply-To: <a70e7ea40c47116339f968b7d2d2bf120f452c1e.1588711355.git.ashish.kalra@amd.com>
-From:   Steve Rutherford <srutherford@google.com>
-Date:   Fri, 29 May 2020 19:09:08 -0700
-Message-ID: <CABayD+eR7e7H_titvO6AVMK1Dv=wGLVvaTMOkhZfpAp=YQH8Sg@mail.gmail.com>
-Subject: Re: [PATCH v8 18/18] KVM: SVM: Enable SEV live migration feature
- implicitly on Incoming VM(s).
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Venu Busireddy <venu.busireddy@oracle.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200530004622.GA19411@plvision.eu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 2:22 PM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
->
-> From: Ashish Kalra <ashish.kalra@amd.com>
->
-> For source VM, live migration feature is enabled explicitly
-> when the guest is booting, for the incoming VM(s) it is implied.
-> This is required for handling A->B->C->... VM migrations case.
->
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> ---
->  arch/x86/kvm/svm/sev.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 6f69c3a47583..ba7c0ebfa1f3 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -1592,6 +1592,13 @@ int svm_set_page_enc_bitmap(struct kvm *kvm,
->         if (ret)
->                 goto unlock;
->
-> +       /*
-> +        * For source VM, live migration feature is enabled
-> +        * explicitly when the guest is booting, for the
-> +        * incoming VM(s) it is implied.
-> +        */
-> +       sev_update_migration_flags(kvm, KVM_SEV_LIVE_MIGRATION_ENABLED);
-> +
->         bitmap_copy(sev->page_enc_bmap + BIT_WORD(gfn_start), bitmap,
->                     (gfn_end - gfn_start));
->
-> --
-> 2.17.1
->
+On Sat, May 30, 2020 at 03:46:22AM +0300, Vadym Kochan wrote:
+> Hi David,
+> 
+> On Fri, May 29, 2020 at 05:18:39PM -0700, David Miller wrote:
+> > 
+> > Please remove all of the __packed attributes.
+> > 
+> > I looked at your data structures and all of them use fixed sized types
+> > and are multiples of 4 so the __packed attribute is completely
+> > unnecessary.
+> > 
+> > The alignment attribute is also unnecessary so please remove that too.
+> 
+> Some of the fields are u8, so I assume there might be holes added by
+> the compiler ? Also these attributes guarantee some ABI compatibility
+> with FW side, I will try to remove them and check but it sounds for me a bit
+> risky.
 
-Reviewed-by: Steve Rutherford <srutherford@google.com>
+Hi Vadym
+
+You might want to play with pahole(1).
+
+    Andrew
