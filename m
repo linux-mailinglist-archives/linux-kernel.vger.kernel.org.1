@@ -2,106 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F081E9474
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 01:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BFF01E947B
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 01:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729579AbgE3XUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 19:20:38 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51192 "EHLO
+        id S1729628AbgE3XUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 19:20:54 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51248 "EHLO
         kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729314AbgE3XUd (ORCPT
+        with ESMTP id S1729565AbgE3XUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 19:20:33 -0400
+        Sat, 30 May 2020 19:20:35 -0400
 Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id 5FCE927F1F; Sat, 30 May 2020 19:20:33 -0400 (EDT)
+        id A668428009; Sat, 30 May 2020 19:20:34 -0400 (EDT)
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
 Cc:     Joshua Thompson <funaho@jurai.org>,
-        linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Message-Id: <996f835d2f3d90baaaf9ee954e252d06e8886c6f.1590880623.git.fthain@telegraphics.com.au>
+        linux-m68k@lists.linux-m68k.org,
+        "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Message-Id: <0fb7fdcd99d7820bb27faf1f27f7f6f1923914ef.1590880623.git.fthain@telegraphics.com.au>
 In-Reply-To: <cover.1590880623.git.fthain@telegraphics.com.au>
 References: <cover.1590880623.git.fthain@telegraphics.com.au>
 From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 2/8] macintosh/adb-iop: Correct comment text
+Subject: [PATCH 8/8] macintosh/adb-iop: Implement SRQ autopolling
 Date:   Sun, 31 May 2020 09:17:03 +1000
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch improves comment style and corrects some misunderstandings
-in the text.
+The adb_driver.autopoll method is needed during ADB bus scan and device
+address assignment. Implement this method so that the IOP's list of
+device addresses can be updated. When the list is empty, disable SRQ
+autopolling.
 
 Cc: Joshua Thompson <funaho@jurai.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- drivers/macintosh/adb-iop.c | 29 +++++++++++++----------------
- 1 file changed, 13 insertions(+), 16 deletions(-)
+ arch/m68k/include/asm/adb_iop.h |  1 +
+ drivers/macintosh/adb-iop.c     | 32 ++++++++++++++++++++++++++------
+ 2 files changed, 27 insertions(+), 6 deletions(-)
 
+diff --git a/arch/m68k/include/asm/adb_iop.h b/arch/m68k/include/asm/adb_iop.h
+index 195d7fb1268c..6aecd020e2fc 100644
+--- a/arch/m68k/include/asm/adb_iop.h
++++ b/arch/m68k/include/asm/adb_iop.h
+@@ -29,6 +29,7 @@
+ 
+ #define ADB_IOP_EXPLICIT	0x80	/* nonzero if explicit command */
+ #define ADB_IOP_AUTOPOLL	0x40	/* auto/SRQ polling enabled    */
++#define ADB_IOP_SET_AUTOPOLL	0x20	/* set autopoll device list    */
+ #define ADB_IOP_SRQ		0x04	/* SRQ detected                */
+ #define ADB_IOP_TIMEOUT		0x02	/* nonzero if timeout          */
+ 
 diff --git a/drivers/macintosh/adb-iop.c b/drivers/macintosh/adb-iop.c
-index ce28ff40fb9c..ca3b411b0742 100644
+index 8594e4f9a830..f3d1a460fbce 100644
 --- a/drivers/macintosh/adb-iop.c
 +++ b/drivers/macintosh/adb-iop.c
-@@ -101,11 +101,10 @@ static void adb_iop_listen(struct iop_msg *msg)
+@@ -7,10 +7,6 @@
+  * 1999-07-01 (jmt) - First implementation for new driver architecture.
+  *
+  * 1999-07-31 (jmt) - First working version.
+- *
+- * TODO:
+- *
+- * o Implement SRQ handling.
+  */
  
- 	req = current_req;
+ #include <linux/types.h>
+@@ -28,6 +24,7 @@
  
--	/* Handle a timeout. Timeout packets seem to occur even after */
--	/* we've gotten a valid reply to a TALK, so I'm assuming that */
--	/* a "timeout" is actually more like an "end-of-data" signal. */
--	/* We need to send back a timeout packet to the IOP to shut   */
--	/* it up, plus complete the current request, if any.          */
-+	/* Handle a timeout. Timeout packets seem to occur even after
-+	 * we've gotten a valid reply to a TALK, presumably because of
-+	 * autopolling.
-+	 */
+ static struct adb_request *current_req;
+ static struct adb_request *last_req;
++static unsigned int autopoll_devs;
  
- 	if (amsg->flags & ADB_IOP_TIMEOUT) {
- 		msg->reply[0] = ADB_IOP_TIMEOUT | ADB_IOP_AUTOPOLL;
-@@ -115,9 +114,6 @@ static void adb_iop_listen(struct iop_msg *msg)
- 			adb_iop_end_req(req, idle);
- 		}
- 	} else {
--		/* TODO: is it possible for more than one chunk of data  */
--		/*       to arrive before the timeout? If so we need to */
--		/*       use reply_ptr here like the other drivers do.  */
- 		if ((adb_iop_state == awaiting_reply) &&
- 		    (amsg->flags & ADB_IOP_EXPLICIT)) {
- 			req->reply_len = amsg->count + 1;
-@@ -152,23 +148,24 @@ static void adb_iop_start(void)
+ static enum adb_iop_state {
+ 	idle,
+@@ -123,7 +120,7 @@ static void adb_iop_listen(struct iop_msg *msg)
+ 			  amsg->flags & ADB_IOP_AUTOPOLL);
+ 	}
  
- 	local_irq_save(flags);
+-	msg->reply[0] = ADB_IOP_AUTOPOLL;
++	msg->reply[0] = autopoll_devs ? ADB_IOP_AUTOPOLL : 0;
+ 	iop_complete_message(msg);
  
--	/* The IOP takes MacII-style packets, so */
--	/* strip the initial ADB_PACKET byte.    */
--
-+	/* The IOP takes MacII-style packets, so strip the initial
-+	 * ADB_PACKET byte.
-+	 */
- 	amsg.flags = ADB_IOP_EXPLICIT;
- 	amsg.count = req->nbytes - 2;
- 
--	/* amsg.data immediately follows amsg.cmd, effectively making */
--	/* amsg.cmd a pointer to the beginning of a full ADB packet.  */
-+	/* amsg.data immediately follows amsg.cmd, effectively making
-+	 * &amsg.cmd a pointer to the beginning of a full ADB packet.
-+	 */
- 	memcpy(&amsg.cmd, req->data + 1, req->nbytes - 1);
- 
- 	req->sent = 1;
- 	adb_iop_state = sending;
- 	local_irq_restore(flags);
- 
--	/* Now send it. The IOP manager will call adb_iop_complete */
--	/* when the packet has been sent.                          */
--
-+	/* Now send it. The IOP manager will call adb_iop_complete
-+	 * when the message has been sent.
-+	 */
- 	iop_send_message(ADB_IOP, ADB_CHAN, req, sizeof(amsg), (__u8 *)&amsg,
- 			 adb_iop_complete);
+ 	if (req_done)
+@@ -231,9 +228,32 @@ static int adb_iop_write(struct adb_request *req)
+ 	return 0;
  }
+ 
++static void adb_iop_set_ap_complete(struct iop_msg *msg)
++{
++	struct adb_iopmsg *amsg = (struct adb_iopmsg *)msg->message;
++
++	autopoll_devs = (amsg->data[1] << 8) | amsg->data[0];
++}
++
+ static int adb_iop_autopoll(int devs)
+ {
+-	/* TODO: how do we enable/disable autopoll? */
++	struct adb_iopmsg amsg;
++	unsigned long flags;
++	unsigned int mask = (unsigned int)devs & 0xFFFE;
++
++	local_irq_save(flags);
++
++	amsg.flags = ADB_IOP_SET_AUTOPOLL | (mask ? ADB_IOP_AUTOPOLL : 0);
++	amsg.count = 2;
++	amsg.cmd = 0;
++	amsg.data[0] = mask & 0xFF;
++	amsg.data[1] = (mask >> 8) & 0xFF;
++
++	iop_send_message(ADB_IOP, ADB_CHAN, NULL, sizeof(amsg), (__u8 *)&amsg,
++			 adb_iop_set_ap_complete);
++
++	local_irq_restore(flags);
++
+ 	return 0;
+ }
+ 
 -- 
 2.26.2
 
