@@ -2,101 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24111E9463
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 01:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACD31E946E
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 01:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729548AbgE3XKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 19:10:40 -0400
-Received: from smtprelay0197.hostedemail.com ([216.40.44.197]:39632 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729520AbgE3XKk (ORCPT
+        id S1729591AbgE3XQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 19:16:31 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51092 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729565AbgE3XQ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 19:10:40 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id F30E9181D3026;
-        Sat, 30 May 2020 23:10:38 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:4321:5007:6119:6120:6691:7903:8957:10004:10400:10848:11026:11232:11658:11914:12043:12297:12555:12740:12760:12895:12986:13069:13161:13229:13311:13357:13439:14181:14659:14721:21080:21221:21451:21627:30012:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: game74_0c0153226d70
-X-Filterd-Recvd-Size: 2434
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf09.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 30 May 2020 23:10:38 +0000 (UTC)
-Message-ID: <a8d399d956bff24382caeda9a37d85cf3581fa99.camel@perches.com>
-Subject: Re: [RFC PATCH] checkpatch: check for trivial sizeofs
-From:   Joe Perches <joe@perches.com>
-To:     Denis Efremov <efremov@linux.com>,
-        Andy Whitcroft <apw@canonical.com>
-Cc:     linux-kernel@vger.kernel.org
-Date:   Sat, 30 May 2020 16:10:37 -0700
-In-Reply-To: <20200530212129.7498-1-efremov@linux.com>
-References: <20200530212129.7498-1-efremov@linux.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Sat, 30 May 2020 19:16:29 -0400
+Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
+        id 0CE8A27F9B; Sat, 30 May 2020 19:16:28 -0400 (EDT)
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Joshua Thompson <funaho@jurai.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Message-Id: <317909d69244f06581973c5839382f5516cd9a1c.1590880333.git.fthain@telegraphics.com.au>
+In-Reply-To: <cover.1590880333.git.fthain@telegraphics.com.au>
+References: <cover.1590880333.git.fthain@telegraphics.com.au>
+From:   Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH 4/4] m68k/mac: Improve IOP debug messages
+Date:   Sun, 31 May 2020 09:12:13 +1000
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-05-31 at 00:21 +0300, Denis Efremov wrote:
-> sizeof(char) and its variations in most cases doesn't make code more clear.
-> It only makes code wordy.
+Always dump the full message and reply. Avoid printing partial lines
+as this output gets mixed up with the output from called functions.
+Don't output the state of idle channels.
 
-There are about 1000 of these uses in the kernel.
-
-Not sure I like this though as many/most of the uses
-seem _less_ readable with a 1 in their place.
-
-$ git grep -P 'sizeof\s*\(\s*(?:(?:unsigned\s+)?char\s*|(?:__)?u8|u?int8_t|[us]?byte(?:_t)?)\s*\)' | wc -l
-970
-
-Try the grep without the wc and see if you agree.
-
-And if this is actually going to be used, I'd prefer
-using a separate $typeChar for the search.
-
-Maybe something like:
+Cc: Joshua Thompson <funaho@jurai.org>
+Tested-by: Stan Johnson <userm57@yahoo.com>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- scripts/checkpatch.pl | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ arch/m68k/mac/iop.c | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index dd750241958b..de2e9242350b 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -466,6 +466,13 @@ our $typeTypedefs = qr{(?x:
- 	$typeKernelTypedefs\b
- )};
+diff --git a/arch/m68k/mac/iop.c b/arch/m68k/mac/iop.c
+index 8d6946edf2c8..373a74c99356 100644
+--- a/arch/m68k/mac/iop.c
++++ b/arch/m68k/mac/iop.c
+@@ -347,8 +347,8 @@ void iop_complete_message(struct iop_msg *msg)
+ 	int chan = msg->channel;
+ 	int i,offset;
  
-+our $typeChar = qr{(?x:
-+	(?:(?:un)?signed\s+)?char |
-+	(?:__)?u8 |
-+	(?:u_|u)?int8_t |
-+	[us]?byte(?:_t)?
-+)};
+-	iop_pr_debug("msg %p iop_num %d channel %d\n", msg, msg->iop_num,
+-	             msg->channel);
++	iop_pr_debug("iop_num %d chan %d reply %*ph\n",
++	             msg->iop_num, msg->channel, IOP_MSG_LEN, msg->reply);
+ 
+ 	offset = IOP_ADDR_RECV_MSG + (msg->channel * IOP_MSG_LEN);
+ 
+@@ -372,6 +372,9 @@ static void iop_do_send(struct iop_msg *msg)
+ 	volatile struct mac_iop *iop = iop_base[msg->iop_num];
+ 	int i,offset;
+ 
++	iop_pr_debug("iop_num %d chan %d message %*ph\n",
++	             msg->iop_num, msg->channel, IOP_MSG_LEN, msg->message);
 +
- our $zero_initializer = qr{(?:(?:0[xX])?0+$Int_type?|NULL|false)\b};
+ 	offset = IOP_ADDR_SEND_MSG + (msg->channel * IOP_MSG_LEN);
  
- our $logFunctions = qr{(?x:
-@@ -6106,6 +6113,16 @@ sub process {
+ 	for (i = 0 ; i < IOP_MSG_LEN ; i++, offset++) {
+@@ -394,8 +397,6 @@ static void iop_handle_send(uint iop_num, uint chan)
+ 	struct iop_msg *msg;
+ 	int i,offset;
+ 
+-	iop_pr_debug("iop_num %d chan %d\n", iop_num, chan);
+-
+ 	iop_writeb(iop, IOP_ADDR_SEND_STATE + chan, IOP_MSG_IDLE);
+ 
+ 	if (!(msg = iop_send_queue[iop_num][chan])) return;
+@@ -405,6 +406,9 @@ static void iop_handle_send(uint iop_num, uint chan)
+ 	for (i = 0 ; i < IOP_MSG_LEN ; i++, offset++) {
+ 		msg->reply[i] = iop_readb(iop, offset);
+ 	}
++	iop_pr_debug("iop_num %d chan %d reply %*ph\n",
++	             iop_num, chan, IOP_MSG_LEN, msg->reply);
++
+ 	if (msg->handler) (*msg->handler)(msg);
+ 	msg->status = IOP_MSGSTATUS_UNUSED;
+ 	msg = msg->next;
+@@ -424,8 +428,6 @@ static void iop_handle_recv(uint iop_num, uint chan)
+ 	int i,offset;
+ 	struct iop_msg *msg;
+ 
+-	iop_pr_debug("iop_num %d chan %d\n", iop_num, chan);
+-
+ 	msg = iop_get_unused_msg();
+ 	msg->iop_num = iop_num;
+ 	msg->channel = chan;
+@@ -437,6 +439,8 @@ static void iop_handle_recv(uint iop_num, uint chan)
+ 	for (i = 0 ; i < IOP_MSG_LEN ; i++, offset++) {
+ 		msg->message[i] = iop_readb(iop, offset);
+ 	}
++	iop_pr_debug("iop_num %d chan %d message %*ph\n",
++	             iop_num, chan, IOP_MSG_LEN, msg->message);
+ 
+ 	iop_writeb(iop, IOP_ADDR_RECV_STATE + chan, IOP_MSG_RCVD);
+ 
+@@ -446,9 +450,6 @@ static void iop_handle_recv(uint iop_num, uint chan)
+ 	if (msg->handler) {
+ 		(*msg->handler)(msg);
+ 	} else {
+-		iop_pr_debug("unclaimed message on iop_num %d chan %d\n",
+-		             iop_num, chan);
+-		iop_pr_debug("%*ph\n", IOP_MSG_LEN, msg->message);
+ 		memset(msg->reply, 0, IOP_MSG_LEN);
+ 		iop_complete_message(msg);
+ 	}
+@@ -559,35 +560,34 @@ irqreturn_t iop_ism_irq(int irq, void *dev_id)
+ 	int i,state;
+ 	u8 events = iop->status_ctrl & (IOP_INT0 | IOP_INT1);
+ 
+-	iop_pr_debug("status %02X\n", iop->status_ctrl);
+-
+ 	do {
++		iop_pr_debug("iop_num %d status %02X\n", iop_num,
++		             iop->status_ctrl);
++
+ 		/* INT0 indicates state change on an outgoing message channel */
+ 		if (events & IOP_INT0) {
+ 			iop->status_ctrl = IOP_INT0 | IOP_RUN | IOP_AUTOINC;
+-			iop_pr_debug("new status %02X, send states",
+-			             iop->status_ctrl);
+ 			for (i = 0; i < NUM_IOP_CHAN; i++) {
+ 				state = iop_readb(iop, IOP_ADDR_SEND_STATE + i);
+-				iop_pr_cont(" %02X", state);
+ 				if (state == IOP_MSG_COMPLETE)
+ 					iop_handle_send(iop_num, i);
++				else if (state != IOP_MSG_IDLE)
++					iop_pr_debug("chan %d send state %02X\n",
++					             i, state);
  			}
+-			iop_pr_cont("\n");
  		}
  
-+# check for trivial sizeof(char) == 1
-+		if ($line =~ /\bsizeof\s*\(\s*($typeChar)\s*\)/) {
-+			my $byte = $1;
-+			if (CHK("SIZEOF_CHAR",
-+				"sizeof($byte) could be the constant 1 instead\n" . $herecurr) &&
-+			    $fix) {
-+				$fixed[$fixlinenr] =~ s/sizeof\s*\(\s*\Q$byte\E\s*\)/1/;
-+			}
-+		}
-+
- # check for struct spinlock declarations
- 		if ($line =~ /^.\s*\bstruct\s+spinlock\s+\w+\s*;/) {
- 			WARN("USE_SPINLOCK_T",
-
+ 		/* INT1 for incoming messages */
+ 		if (events & IOP_INT1) {
+ 			iop->status_ctrl = IOP_INT1 | IOP_RUN | IOP_AUTOINC;
+-			iop_pr_debug("new status %02X, recv states",
+-			             iop->status_ctrl);
+ 			for (i = 0; i < NUM_IOP_CHAN; i++) {
+ 				state = iop_readb(iop, IOP_ADDR_RECV_STATE + i);
+-				iop_pr_cont(" %02X", state);
+ 				if (state == IOP_MSG_NEW)
+ 					iop_handle_recv(iop_num, i);
++				else if (state != IOP_MSG_IDLE)
++					iop_pr_debug("chan %d recv state %02X\n",
++					             i, state);
+ 			}
+-			iop_pr_cont("\n");
+ 		}
+ 
+ 		events = iop->status_ctrl & (IOP_INT0 | IOP_INT1);
+-- 
+2.26.2
 
