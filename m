@@ -2,127 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C151E900A
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 11:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA731E8FF4
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 11:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728692AbgE3J20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 05:28:26 -0400
-Received: from sender4-pp-o92.zoho.com ([136.143.188.92]:25214 "EHLO
-        sender4-pp-o92.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727947AbgE3J2Z (ORCPT
+        id S1728498AbgE3JR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 05:17:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725889AbgE3JR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 05:28:25 -0400
-X-Greylist: delayed 903 seconds by postgrey-1.27 at vger.kernel.org; Sat, 30 May 2020 05:28:24 EDT
-ARC-Seal: i=1; a=rsa-sha256; t=1590829994; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=PggdZzSuWvDLbJNw7atcX3+Vis4QfQyB5zHK60v/6V0wGFFt6QygPJGBwAOSXaPbiZcSDn1YJix5Xd5Qqmvj6Ywr0pdWYZd1Kt4SZHSHwiQRMbluVafI0gYO7bjbOtvHc2J7nDOQPRuSpDT57uZaDK/bIlwarV4JGypnWu+QPOU=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1590829994; h=Cc:Date:From:Message-ID:Subject:To; 
-        bh=XrokKC4/ImgUPNlyH2Qxcoogw6p4iOQ8UZ6MGI2SebE=; 
-        b=eQQeZ/7s2gUwLjvdbSrNaJnac6hXeLwCD6bxRTQW1BNfwNlPbJGQ45Yw0JYJCpwIUJFLZqcIdWGUW8RtMIfUGLoiuPuxm0MTA6LDgxvrGgkRVVFvY3RBgDVEqIfnASY3+QkH4U08XkfKlMLISnz7tFE1FYEjr74FLyU4DTw1MMA=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=zoho.com;
-        spf=pass  smtp.mailfrom=yehs2007@zoho.com;
-        dmarc=pass header.from=<yehs2007@zoho.com> header.from=<yehs2007@zoho.com>
-DomainKey-Signature: a=rsa-sha1; q=dns; c=nofws; 
-  s=zapps768; d=zoho.com; 
-  h=from:to:cc:subject:date:message-id; 
-  b=InSRFFHZIqX5BX2gNEKPbW6KoxBQbmgcqpQKevNkSbLk3Rp/XFOi4xHgQMXIFTpOVJSsXvYqF+w7
-    cCkb6XYMW+vTeqt0AdF5HHBhOC4uJZsDaLTpct4MtdqpwwAr0+LN  
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1590829994;
-        s=zm2020; d=zoho.com; i=yehs2007@zoho.com;
-        h=From:To:Cc:Subject:Date:Message-Id;
-        bh=XrokKC4/ImgUPNlyH2Qxcoogw6p4iOQ8UZ6MGI2SebE=;
-        b=kkINKxaS0BwMRbFunXXhCFrS000X9pH8wU9qXEsolDTTjx/1IXDixQVY7kXTJGDG
-        oYYcoZZ7XgLXW2pRhbmoIsmpnjfdBkjiF4siqcYvWpcctjUe/jfZOi6C+wuUZWmaVNL
-        q1HzwW10flfKE8xbVEqwAaNPqogbYwZwIRtghc7I=
-Received: from YEHS1XPF1D05WL.lenovo.com (111.197.250.66 [111.197.250.66]) by mx.zohomail.com
-        with SMTPS id 1590829993582376.40498152393263; Sat, 30 May 2020 02:13:13 -0700 (PDT)
-From:   Huaisheng Ye <yehs2007@zoho.com>
-To:     mpatocka@redhat.com, snitzer@redhat.com, agk@redhat.com
-Cc:     prarit@redhat.com, tyu1@lenovo.com, dm-devel@redhat.com,
-        linux-kernel@vger.kernel.org, Huaisheng Ye <yehs1@lenovo.com>
-Subject: [PATCH] dm writecache: reinitialize lru in writeback instead of endio
-Date:   Sat, 30 May 2020 17:12:50 +0800
-Message-Id: <20200530091250.58420-1-yehs2007@zoho.com>
-X-Mailer: git-send-email 2.17.0.windows.1
-X-ZohoMailClient: External
+        Sat, 30 May 2020 05:17:57 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B382C03E969;
+        Sat, 30 May 2020 02:17:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=cE8MTbFoUWS9Ive4o1EPrHjae27INCz3pcYF9s60ygo=; b=GdfMdgqTfRPRs+ihXRBuEHmXC
+        6zsxtE/BCgIAe/DA1SZimOG+K/xjAVz81WkdR31TDofvQcMGWNCv1nN5LRHQt1hf5wDhoup746fSS
+        DEy2DUPrJJzTlKZpL6O90rwiFBa7cRjKlVx1zMMy1JvMumSawg18gqZh++uqfqEPVoE+1MrwVh6HR
+        +P1b2b/F9Go6nOULygs0Il+6ZwR/pai1nrhZF/fYvp1zUYsxCSkmRGz61T5jtl97i81fedynvqaLy
+        lkHazbTj6j8eAzF8jNlNSpBrILjpK/p5bxJj2pN9twSeyu0a2zfT7GH77v2rSiKCOKSiAn+kp9pKE
+        EnMVRUJJw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38902)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jexck-0001pi-1C; Sat, 30 May 2020 10:17:50 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jexch-0000xE-Tw; Sat, 30 May 2020 10:17:47 +0100
+Date:   Sat, 30 May 2020 10:17:47 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: linux-next: manual merge of the arm tree with Linus' tree
+Message-ID: <20200530091747.GD1551@shell.armlinux.org.uk>
+References: <20200528090941.341ad93a@canb.auug.org.au>
+ <20200527232257.GS1551@shell.armlinux.org.uk>
+ <CAMj1kXHRi3zUq-j30ptqUifOs+sn_h8i4ic+8xT9q1SrC+rjsw@mail.gmail.com>
+ <20200530084103.GC1551@shell.armlinux.org.uk>
+ <CAMj1kXEBcH4eW9dL95mfwTTUArxZxmWdjcqmzVeXjUPzat0YeA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXEBcH4eW9dL95mfwTTUArxZxmWdjcqmzVeXjUPzat0YeA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huaisheng Ye <yehs1@lenovo.com>
+On Sat, May 30, 2020 at 10:51:32AM +0200, Ard Biesheuvel wrote:
+> On Sat, 30 May 2020 at 10:41, Russell King - ARM Linux admin
+> <linux@armlinux.org.uk> wrote:
+> >
+> > On Thu, May 28, 2020 at 09:01:55AM +0200, Ard Biesheuvel wrote:
+> > > On Thu, 28 May 2020 at 01:23, Russell King - ARM Linux admin
+> > > <linux@armlinux.org.uk> wrote:
+> > > >
+> > > > Ard,
+> > > >
+> > > > Please take a look.  Obviously, whatever the resolution is going to be
+> > > > needed when Linus opens the merge window.
+> > > >
+> > >
+> > > Sorry for that.
+> > >
+> > > I have pushed the signed tag below to resolve it. Those changes were
+> > > already in v5.7-rc2, so I wouldn't expect this to cause more trouble.
+> > > If you prefer, you could merge v5.7-rc2 into your tree directly
+> > > instead.
+> >
+> > In light of Stephen's report of a different conflict on the 29th, I
+> > haven't pulled this.  I don't know if that's a side effect of this
+> > change having been picked up by -next or not.
+> >
+> 
+> Fair enough. Both conflicts are unambiguous and self explanatory so I
+> don't think it should be a problem, right?
 
-When wc_entry has been removed from wbl->list in writeback, it will
-be not used again except waiting to be set free in writecache_free_entry.
+I don't know - I don't have a resolution for the first one, Stephen
+didn't provide a 3-way diff with his report, and I was expecting a
+3-way diff from you for it rather than another pull request.
 
-That is a little of annoying, it has to reinitialize lru of wc_entry
-in endio before calling writecache_free_entry.
+I now also don't know whether the conflict on the 28th still exists
+or not.
 
-Using list_del_init instead of list_del in writeback for simpler code.
+I'm completely confused, and I'm considering dropping the original
+EFI pull request on the grounds that the merge window opens tomorrow,
+and there isn't going to be another -next before that happens, so we
+don't know what's going to happen whatever action we take.
 
-Signed-off-by: Huaisheng Ye <yehs1@lenovo.com>
----
- drivers/md/dm-writecache.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/md/dm-writecache.c b/drivers/md/dm-writecache.c
-index 7bbc21b..66f3a3b 100644
---- a/drivers/md/dm-writecache.c
-+++ b/drivers/md/dm-writecache.c
-@@ -1519,7 +1519,6 @@ static void __writecache_endio_pmem(struct dm_writecache *wc, struct list_head *
- 			e = wb->wc_list[i];
- 			BUG_ON(!e->write_in_progress);
- 			e->write_in_progress = false;
--			INIT_LIST_HEAD(&e->lru);
- 			if (!writecache_has_error(wc))
- 				writecache_free_entry(wc, e);
- 			BUG_ON(!wc->writeback_size);
-@@ -1555,7 +1554,6 @@ static void __writecache_endio_ssd(struct dm_writecache *wc, struct list_head *l
- 		do {
- 			BUG_ON(!e->write_in_progress);
- 			e->write_in_progress = false;
--			INIT_LIST_HEAD(&e->lru);
- 			if (!writecache_has_error(wc))
- 				writecache_free_entry(wc, e);
- 
-@@ -1654,7 +1652,7 @@ static void __writecache_writeback_pmem(struct dm_writecache *wc, struct writeba
- 	while (wbl->size) {
- 		wbl->size--;
- 		e = container_of(wbl->list.prev, struct wc_entry, lru);
--		list_del(&e->lru);
-+		list_del_init(&e->lru);
- 
- 		max_pages = e->wc_list_contiguous;
- 
-@@ -1685,7 +1683,7 @@ static void __writecache_writeback_pmem(struct dm_writecache *wc, struct writeba
- 			if (!wc_add_block(wb, f, GFP_NOWAIT | __GFP_NOWARN))
- 				break;
- 			wbl->size--;
--			list_del(&f->lru);
-+			list_del_init(&f->lru);
- 			wb->wc_list[wb->wc_list_n++] = f;
- 			e = f;
- 		}
-@@ -1712,7 +1710,7 @@ static void __writecache_writeback_ssd(struct dm_writecache *wc, struct writebac
- 
- 		wbl->size--;
- 		e = container_of(wbl->list.prev, struct wc_entry, lru);
--		list_del(&e->lru);
-+		list_del_init(&e->lru);
- 
- 		n_sectors = e->wc_list_contiguous << (wc->block_size_bits - SECTOR_SHIFT);
- 
-@@ -1732,7 +1730,7 @@ static void __writecache_writeback_ssd(struct dm_writecache *wc, struct writebac
- 			wbl->size--;
- 			f = container_of(wbl->list.prev, struct wc_entry, lru);
- 			BUG_ON(f != e + 1);
--			list_del(&f->lru);
-+			list_del_init(&f->lru);
- 			e = f;
- 		}
- 
 -- 
-1.8.3.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC for 0.8m (est. 1762m) line in suburbia: sync at 13.1Mbps down 424kbps up
