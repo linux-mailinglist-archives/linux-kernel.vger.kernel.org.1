@@ -2,87 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A75691E9148
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 14:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B78FC1E9161
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 15:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729037AbgE3MrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 08:47:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43932 "EHLO mail.kernel.org"
+        id S1729013AbgE3NEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 09:04:05 -0400
+Received: from mga06.intel.com ([134.134.136.31]:52784 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728979AbgE3MrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 08:47:03 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B61920723;
-        Sat, 30 May 2020 12:47:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590842823;
-        bh=SNVHubkjqsXWme6MofNRkSL8I0AFskBuc7UccpcCAJ8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=qLwu1GqiJBYoskPR5lcmjmRlo0/0F7HCygZQ83uA87g5pk+ExOKdPuZJGNMzWJUy4
-         Hn3t4bdyKKxu2FzeuTj6+EWjrjUEGDg0oEZl4iCVEsrLBaimuOMGnpnp9NmHL4dOAC
-         0uSNVZjMsFbXbn46yfRkYWLqVNGHGUH/SbY3bGrs=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 2328D3522801; Sat, 30 May 2020 05:47:03 -0700 (PDT)
-Date:   Sat, 30 May 2020 05:47:03 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>, rcu@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] refperf: work around 64-bit division
-Message-ID: <20200530124703.GJ2869@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200529201600.493808-1-arnd@arndb.de>
- <20200530035230.GA2019114@ubuntu-s3-xlarge-x86>
- <CAK8P3a3UB2M7Wv8BZx3-ASbsvxD3KHbHCCQ_04xTLPwkEB6twQ@mail.gmail.com>
+        id S1728998AbgE3NEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 May 2020 09:04:00 -0400
+IronPort-SDR: vuuinOjozXFNAD6XRybi80IQrgEMuyJU+3K1jbGxVN13CchpsObykcuulFGed7VB2hBw9LMBBZ
+ eJgCm1E4p4Rg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2020 06:03:59 -0700
+IronPort-SDR: ZieiPcbQVgrkj8PLXTFCPg6f4e/uQNCLV/aic+Unk5Bg8OJ9l4SlyvjV/XsODs7MoNozXHpD7j
+ UYsotjDUpHqA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,451,1583222400"; 
+   d="scan'208";a="267835779"
+Received: from lkp-server01.sh.intel.com (HELO 9f9df8056aac) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 30 May 2020 06:03:58 -0700
+Received: from kbuild by 9f9df8056aac with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jf19Z-0000hN-At; Sat, 30 May 2020 13:03:57 +0000
+Date:   Sat, 30 May 2020 21:03:14 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "Jonathan, Bakker," <xc-racer2@live.ca>
+Cc:     kbuild-all@lists.01.org, Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH regulator] regulator: max8998:
+ max8998_set_current_limit() can be static
+Message-ID: <20200530130314.GA73557@d7d8dbfb64ff>
+References: <202005302128.HV9kPNGq%lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a3UB2M7Wv8BZx3-ASbsvxD3KHbHCCQ_04xTLPwkEB6twQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <202005302128.HV9kPNGq%lkp@intel.com>
+X-Patchwork-Hint: ignore
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 30, 2020 at 10:01:36AM +0200, Arnd Bergmann wrote:
-> On Sat, May 30, 2020 at 5:52 AM Nathan Chancellor
-> <natechancellor@gmail.com> wrote:
-> > On Fri, May 29, 2020 at 10:15:51PM +0200, Arnd Bergmann wrote:
-> > >       strcat(buf, "Threads\tTime(ns)\n");
-> > >
-> > >       for (exp = 0; exp < nruns; exp++) {
-> > > +             u64 avg;
-> > > +             u32 rem;
-> > > +
-> > >               if (errexit)
-> > >                       break;
-> > > -             sprintf(buf1, "%d\t%llu.%03d\n", exp + 1, result_avg[exp] / 1000, (int)(result_avg[exp] % 1000));
-> > > +
-> > > +             avg = div_s64_rem(result_avg[exp], 1000, &rem);
-> >
-> > Shouldn't this be div_u64_rem? result_avg is u64.
-> 
-> Yes, you are right. Actually that would be an important optimization
-> since div_u64_rem() optimizes for constant divisors while div_s64_rem
-> uses the slow path.
-> 
-> > > +             sprintf(buf1, "%d\t%llu.%03d\n", exp + 1, avg, rem);
-> >
-> > Would %03u be the better specifier since rem is u32?
-> 
-> Yes, though this makes no difference in practice.
-> 
-> Paul, should I send a fixup for these two, or do you prefer to just
-> edit it in place?
 
-I will apply it with Randy's Ack, thank you all!
+Fixes: 4ffea5e083f8 ("regulator: max8998: Add charger regulator")
+Signed-off-by: kbuild test robot <lkp@intel.com>
+---
+ max8998.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-							Thanx, Paul
+diff --git a/drivers/regulator/max8998.c b/drivers/regulator/max8998.c
+index 668ced0064179..340413bba0c5f 100644
+--- a/drivers/regulator/max8998.c
++++ b/drivers/regulator/max8998.c
+@@ -371,8 +371,8 @@ static int max8998_set_voltage_buck_time_sel(struct regulator_dev *rdev,
+ 	return 0;
+ }
+ 
+-int max8998_set_current_limit(struct regulator_dev *rdev,
+-			      int min_uA, int max_uA)
++static int max8998_set_current_limit(struct regulator_dev *rdev,
++				     int min_uA, int max_uA)
+ {
+ 	struct max8998_data *max8998 = rdev_get_drvdata(rdev);
+ 	struct i2c_client *i2c = max8998->iodev->i2c;
