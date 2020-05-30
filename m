@@ -2,257 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 460321E8FEF
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 11:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C151E900A
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 11:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728449AbgE3JKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 05:10:02 -0400
-Received: from mout.gmx.net ([212.227.15.18]:46645 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725889AbgE3JKB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 05:10:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1590829759;
-        bh=pbrG6w0w7nNvrUY2FZy0bHWEVivzVWnGVN71mAetFSo=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=HdLlBiLskbL8tRi7O2IEXnG7Hl+hP1gjafEnnB6usxNSZxdfki9caynYN3AS9fBgl
-         DxVTZiQ0ESk4W78gBSW4fabhB2FTZdghWlw1XM9Km7liXDB4m+rCfoygHYEgT1AUOl
-         gtue2VfPU20QVOWgrjMIqAdE3+HtIK7H2kt4FUyU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.229.196]) by mail.gmx.com
- (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1MwQT9-1ipkRm0akH-00sNLJ; Sat, 30 May 2020 11:09:19 +0200
-From:   Oscar Carter <oscar.carter@gmx.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc:     kernel-hardening@lists.openwall.com,
-        linux1394-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Oscar Carter <oscar.carter@gmx.com>
-Subject: [PATCH v3] firewire: Remove function callback casts
-Date:   Sat, 30 May 2020 11:08:39 +0200
-Message-Id: <20200530090839.7895-1-oscar.carter@gmx.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fVsyCVUWXyO4nX+jvehqta4m03FRys0QSfi+JfpgIUb/+1FFk35
- 01/lh+/L0yseb5P7TApLqfIegGQQ4Ma2eqP3aKAoBioZ/EMvMI0kfge86nYssr2v+JA5Ye7
- LMN23/mvvH99AYmCnoryK0hxcGs1e0h8wMaCAsLIOJPAAmFZN7GCu7C4aJDrE4dOs6MnjNp
- yF7JzFRjqm275sOv127uA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wK+LOJDdfVM=:0HjSIV9RIwUfRt1X7lLzFq
- bHfktVFbRQwlxG8nVGBy8Z8r7/TDkSFzS4go1WEP+NKSO82v/1iGr8+WtJnDZgzSmM/0XwoA+
- o1VQ1hh7rch4ajU1WwZlZC4+RQzzn2uUqSqCAXaSHIyerKBCCwESJIs07TGHH0fK4ltbMIsr7
- r6WD5feCB6dXd+RWk9XSzQjt/DsJXWr6bCTVCezO7miKEJmjPo8+B6oe8vKz78TcxjlzzQvR9
- 8116t4YcuOd9EgpkaepIgc2i1eBHCvBw36YsTNjB/gxfuFukIiEvsR10fZyge4glnsB8Ac26v
- NoYA7OBmdm48fN52pq0yth7VKmZIQmjaa0SQpJTrXSNBZnliWrGyJkFvpe13OJa/NpkykZ3kG
- c5fwed0fgIjbfSsYCvwDM3rxbViJyhfSkHDGraHifeDuYHC0/jnFiVHpc5xSpP0rywnAPBaDS
- FePX49dAtJNSAePybi/CyjpFRuIRlIXJeJLbc0zVeUjrd5s1dFKtZBboL2ekMxUDFji/hzkBU
- tQFokngaVjQ6aYGAQ+BKZ3x+kGEoiBUuHUDUpFgX51gwiv224QBMiBYzByBvG2d5XRTf3Lbhj
- UsztIeQoHNk7QoqjcIjA49sImGE3pzxKdvIGAKtUUMH9sgd56bts7+Jti46RqtWYlWzh4KjYm
- ie99VfH7QVaA7dxi/3h99hGgvZu5uu1JP1ZT4/6/cmuCjt5sXi19tZSEGKpbC+NwrrA26T6cH
- DBxFWeP1zWT/HaDpsWhmqv+WtGkEKgWVuvPyyCoR7Ah74TpLEdwwYhHl+D7HBa/oL4anfobmA
- JCtcRaLPK/qQDZjr3JFoyLRL9l1kUqcxzUQS4gOyUXuE0UPdEEVCTpmQ75X5vCeWOo7GWKm9s
- uK9idte0v07ZiWXUHMyP4+Z6sj6Voxd/MubY2ZcEn0Hb5uNmxATOo/Bt+tnz/Q4/vLxfzN31f
- 9/earCnr2/H6xd9rrbTPggIeNk9oLTNKnj6S3BrXaN8PfWyhnLhWh2P4xY6gFDX0UTr9DZIoG
- APVZRBxRv2XmLayRX+emux8eIDRD24khyYABTv1TX/VydcA7y7a1PEMDtgzD0u0hXTMLjgWc1
- fDn+UzON2OO3LxH7Z0tmUB+EmAY1XG+Bvt8kVK78w0jywGjTG/QZGRgk4nrogaF0HGGDXFmu9
- wX7vQ+AjuOGMGzydS8lJ6p4DnCcdhqJ9p8UCC2Y2J2pHUL4jxqH0qReHt/i0E3BiVrBA3Q1TN
- 7xH4f5uDHrwmgNdXe
+        id S1728692AbgE3J20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 05:28:26 -0400
+Received: from sender4-pp-o92.zoho.com ([136.143.188.92]:25214 "EHLO
+        sender4-pp-o92.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727947AbgE3J2Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 May 2020 05:28:25 -0400
+X-Greylist: delayed 903 seconds by postgrey-1.27 at vger.kernel.org; Sat, 30 May 2020 05:28:24 EDT
+ARC-Seal: i=1; a=rsa-sha256; t=1590829994; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=PggdZzSuWvDLbJNw7atcX3+Vis4QfQyB5zHK60v/6V0wGFFt6QygPJGBwAOSXaPbiZcSDn1YJix5Xd5Qqmvj6Ywr0pdWYZd1Kt4SZHSHwiQRMbluVafI0gYO7bjbOtvHc2J7nDOQPRuSpDT57uZaDK/bIlwarV4JGypnWu+QPOU=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1590829994; h=Cc:Date:From:Message-ID:Subject:To; 
+        bh=XrokKC4/ImgUPNlyH2Qxcoogw6p4iOQ8UZ6MGI2SebE=; 
+        b=eQQeZ/7s2gUwLjvdbSrNaJnac6hXeLwCD6bxRTQW1BNfwNlPbJGQ45Yw0JYJCpwIUJFLZqcIdWGUW8RtMIfUGLoiuPuxm0MTA6LDgxvrGgkRVVFvY3RBgDVEqIfnASY3+QkH4U08XkfKlMLISnz7tFE1FYEjr74FLyU4DTw1MMA=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=zoho.com;
+        spf=pass  smtp.mailfrom=yehs2007@zoho.com;
+        dmarc=pass header.from=<yehs2007@zoho.com> header.from=<yehs2007@zoho.com>
+DomainKey-Signature: a=rsa-sha1; q=dns; c=nofws; 
+  s=zapps768; d=zoho.com; 
+  h=from:to:cc:subject:date:message-id; 
+  b=InSRFFHZIqX5BX2gNEKPbW6KoxBQbmgcqpQKevNkSbLk3Rp/XFOi4xHgQMXIFTpOVJSsXvYqF+w7
+    cCkb6XYMW+vTeqt0AdF5HHBhOC4uJZsDaLTpct4MtdqpwwAr0+LN  
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1590829994;
+        s=zm2020; d=zoho.com; i=yehs2007@zoho.com;
+        h=From:To:Cc:Subject:Date:Message-Id;
+        bh=XrokKC4/ImgUPNlyH2Qxcoogw6p4iOQ8UZ6MGI2SebE=;
+        b=kkINKxaS0BwMRbFunXXhCFrS000X9pH8wU9qXEsolDTTjx/1IXDixQVY7kXTJGDG
+        oYYcoZZ7XgLXW2pRhbmoIsmpnjfdBkjiF4siqcYvWpcctjUe/jfZOi6C+wuUZWmaVNL
+        q1HzwW10flfKE8xbVEqwAaNPqogbYwZwIRtghc7I=
+Received: from YEHS1XPF1D05WL.lenovo.com (111.197.250.66 [111.197.250.66]) by mx.zohomail.com
+        with SMTPS id 1590829993582376.40498152393263; Sat, 30 May 2020 02:13:13 -0700 (PDT)
+From:   Huaisheng Ye <yehs2007@zoho.com>
+To:     mpatocka@redhat.com, snitzer@redhat.com, agk@redhat.com
+Cc:     prarit@redhat.com, tyu1@lenovo.com, dm-devel@redhat.com,
+        linux-kernel@vger.kernel.org, Huaisheng Ye <yehs1@lenovo.com>
+Subject: [PATCH] dm writecache: reinitialize lru in writeback instead of endio
+Date:   Sat, 30 May 2020 17:12:50 +0800
+Message-Id: <20200530091250.58420-1-yehs2007@zoho.com>
+X-Mailer: git-send-email 2.17.0.windows.1
+X-ZohoMailClient: External
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In 1394 OHCI specification, Isochronous Receive DMA context has several
-modes. One of mode is 'BufferFill' and Linux FireWire stack uses it to
-receive isochronous packets for multiple isochronous channel as
-FW_ISO_CONTEXT_RECEIVE_MULTICHANNEL.
+From: Huaisheng Ye <yehs1@lenovo.com>
 
-The mode is not used by in-kernel driver, while it's available for
-userspace. The character device driver in firewire-core includes
-cast of function callback for the mode since the type of callback
-function is different from the other modes. The case is inconvenient
-to effort of Control Flow Integrity builds due to
--Wcast-function-type warning.
+When wc_entry has been removed from wbl->list in writeback, it will
+be not used again except waiting to be set free in writecache_free_entry.
 
-This commit removes the cast. A static helper function is newly added
-to initialize isochronous context for the mode. The helper function
-arranges isochronous context to assign specific callback function
-after call of existent kernel API. It's noticeable that the number of
-isochronous channel, speed, and the size of header are not required for
-the mode. The helper function is used for the mode by character device
-driver instead of direct call of existent kernel API.
+That is a little of annoying, it has to reinitialize lru of wc_entry
+in endio before calling writecache_free_entry.
 
-The same goal can be achieved (in the ioctl_create_iso_context function)
-without this helper function as follows:
-- Call the fw_iso_context_create function passing NULL to the callback
-  parameter.
-- Then setting the context->callback.sc or context->callback.mc
-  variables based on the a->type value.
+Using list_del_init instead of list_del in writeback for simpler code.
 
-However using the helper function created in this patch makes code more
-clear and declarative. This way avoid the call to a function with one
-purpose to achieved another one.
+Signed-off-by: Huaisheng Ye <yehs1@lenovo.com>
+---
+ drivers/md/dm-writecache.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-Co-developed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Co-developed-by: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Signed-off-by: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
-=2D--
-Hi,
-
-this is another proposal to achieved the goal of remove function callback
-cast start by me with the first [1] and second [2] versions, and followed
-by the work of Takashi Sakamoto with his first [3] and second [4] versions=
-,
-and the code of Stefan Richter [5].
-
-The purpose of this third version is to put together all the work done
-until now following the comments of all reviewed patches.
-
-I've added the "Co-developed-by" and "Signed-off-by" tags to give credit t=
-o
-Takashi Sakamoto and Stefan Richter if there are no objections.
-
-Changelog v1->v2
--Set explicity to NULL the "ctx->callback.sc" variable and return an error
- code in "fw_iso_context_create" function if both callback parameters are
- NULL as Lev R. Oshvang suggested.
--Modify the commit changelog accordingly.
-
-Changelog v2->v3
--Put togeher all the work done in different patches by different authors.
--Modify the previous work following the comments in the reviewed patches.
-
-[1] https://lore.kernel.org/lkml/20200516173934.31527-1-oscar.carter@gmx.c=
-om/
-[2] https://lore.kernel.org/lkml/20200519173425.4724-1-oscar.carter@gmx.co=
-m/
-[3] https://lore.kernel.org/lkml/20200520064726.31838-1-o-takashi@sakamocc=
-hi.jp/
-[4] https://lore.kernel.org/lkml/20200524132048.243223-1-o-takashi@sakamoc=
-chi.jp/
-[5] https://lore.kernel.org/lkml/20200525015532.0055f9df@kant/
-
- drivers/firewire/core-cdev.c | 32 ++++++++++++++++++++++++++------
- include/linux/firewire.h     | 11 +++++++----
- 2 files changed, 33 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/firewire/core-cdev.c b/drivers/firewire/core-cdev.c
-index 6e291d8f3a27..f7212331f245 100644
-=2D-- a/drivers/firewire/core-cdev.c
-+++ b/drivers/firewire/core-cdev.c
-@@ -10,6 +10,7 @@
- #include <linux/delay.h>
- #include <linux/device.h>
- #include <linux/dma-mapping.h>
-+#include <linux/err.h>
- #include <linux/errno.h>
- #include <linux/firewire.h>
- #include <linux/firewire-cdev.h>
-@@ -953,11 +954,25 @@ static enum dma_data_direction iso_dma_direction(str=
-uct fw_iso_context *context)
- 			return DMA_FROM_DEVICE;
- }
-
-+static struct fw_iso_context *fw_iso_mc_context_create(struct fw_card *ca=
-rd,
-+						fw_iso_mc_callback_t callback,
-+						void *callback_data)
-+{
-+	struct fw_iso_context *ctx;
-+
-+	ctx =3D fw_iso_context_create(card, FW_ISO_CONTEXT_RECEIVE_MULTICHANNEL,
-+				    0, 0, 0, NULL, callback_data);
-+	if (!IS_ERR(ctx))
-+		ctx->callback.mc =3D callback;
-+
-+	return ctx;
-+}
-+
- static int ioctl_create_iso_context(struct client *client, union ioctl_ar=
-g *arg)
- {
- 	struct fw_cdev_create_iso_context *a =3D &arg->create_iso_context;
- 	struct fw_iso_context *context;
--	fw_iso_callback_t cb;
-+	union fw_iso_callback cb;
- 	int ret;
-
- 	BUILD_BUG_ON(FW_CDEV_ISO_CONTEXT_TRANSMIT !=3D FW_ISO_CONTEXT_TRANSMIT |=
-|
-@@ -970,7 +985,7 @@ static int ioctl_create_iso_context(struct client *cli=
-ent, union ioctl_arg *arg)
- 		if (a->speed > SCODE_3200 || a->channel > 63)
- 			return -EINVAL;
-
--		cb =3D iso_callback;
-+		cb.sc =3D iso_callback;
- 		break;
-
- 	case FW_ISO_CONTEXT_RECEIVE:
-@@ -978,19 +993,24 @@ static int ioctl_create_iso_context(struct client *c=
-lient, union ioctl_arg *arg)
- 		    a->channel > 63)
- 			return -EINVAL;
-
--		cb =3D iso_callback;
-+		cb.sc =3D iso_callback;
- 		break;
-
- 	case FW_ISO_CONTEXT_RECEIVE_MULTICHANNEL:
--		cb =3D (fw_iso_callback_t)iso_mc_callback;
-+		cb.mc =3D iso_mc_callback;
- 		break;
-
- 	default:
- 		return -EINVAL;
- 	}
-
--	context =3D fw_iso_context_create(client->device->card, a->type,
--			a->channel, a->speed, a->header_size, cb, client);
-+	if (a->type =3D=3D FW_ISO_CONTEXT_RECEIVE_MULTICHANNEL)
-+		context =3D fw_iso_mc_context_create(client->device->card, cb.mc,
-+						   client);
-+	else
-+		context =3D fw_iso_context_create(client->device->card, a->type,
-+						a->channel, a->speed,
-+						a->header_size, cb.sc, client);
- 	if (IS_ERR(context))
- 		return PTR_ERR(context);
- 	if (client->version < FW_CDEV_VERSION_AUTO_FLUSH_ISO_OVERFLOW)
-diff --git a/include/linux/firewire.h b/include/linux/firewire.h
-index aec8f30ab200..07967a450eaa 100644
-=2D-- a/include/linux/firewire.h
-+++ b/include/linux/firewire.h
-@@ -436,6 +436,12 @@ typedef void (*fw_iso_callback_t)(struct fw_iso_conte=
-xt *context,
- 				  void *header, void *data);
- typedef void (*fw_iso_mc_callback_t)(struct fw_iso_context *context,
- 				     dma_addr_t completed, void *data);
-+
-+union fw_iso_callback {
-+	fw_iso_callback_t sc;
-+	fw_iso_mc_callback_t mc;
-+};
-+
- struct fw_iso_context {
- 	struct fw_card *card;
- 	int type;
-@@ -443,10 +449,7 @@ struct fw_iso_context {
- 	int speed;
- 	bool drop_overflow_headers;
- 	size_t header_size;
--	union {
--		fw_iso_callback_t sc;
--		fw_iso_mc_callback_t mc;
--	} callback;
-+	union fw_iso_callback callback;
- 	void *callback_data;
- };
-
-=2D-
-2.20.1
+diff --git a/drivers/md/dm-writecache.c b/drivers/md/dm-writecache.c
+index 7bbc21b..66f3a3b 100644
+--- a/drivers/md/dm-writecache.c
++++ b/drivers/md/dm-writecache.c
+@@ -1519,7 +1519,6 @@ static void __writecache_endio_pmem(struct dm_writecache *wc, struct list_head *
+ 			e = wb->wc_list[i];
+ 			BUG_ON(!e->write_in_progress);
+ 			e->write_in_progress = false;
+-			INIT_LIST_HEAD(&e->lru);
+ 			if (!writecache_has_error(wc))
+ 				writecache_free_entry(wc, e);
+ 			BUG_ON(!wc->writeback_size);
+@@ -1555,7 +1554,6 @@ static void __writecache_endio_ssd(struct dm_writecache *wc, struct list_head *l
+ 		do {
+ 			BUG_ON(!e->write_in_progress);
+ 			e->write_in_progress = false;
+-			INIT_LIST_HEAD(&e->lru);
+ 			if (!writecache_has_error(wc))
+ 				writecache_free_entry(wc, e);
+ 
+@@ -1654,7 +1652,7 @@ static void __writecache_writeback_pmem(struct dm_writecache *wc, struct writeba
+ 	while (wbl->size) {
+ 		wbl->size--;
+ 		e = container_of(wbl->list.prev, struct wc_entry, lru);
+-		list_del(&e->lru);
++		list_del_init(&e->lru);
+ 
+ 		max_pages = e->wc_list_contiguous;
+ 
+@@ -1685,7 +1683,7 @@ static void __writecache_writeback_pmem(struct dm_writecache *wc, struct writeba
+ 			if (!wc_add_block(wb, f, GFP_NOWAIT | __GFP_NOWARN))
+ 				break;
+ 			wbl->size--;
+-			list_del(&f->lru);
++			list_del_init(&f->lru);
+ 			wb->wc_list[wb->wc_list_n++] = f;
+ 			e = f;
+ 		}
+@@ -1712,7 +1710,7 @@ static void __writecache_writeback_ssd(struct dm_writecache *wc, struct writebac
+ 
+ 		wbl->size--;
+ 		e = container_of(wbl->list.prev, struct wc_entry, lru);
+-		list_del(&e->lru);
++		list_del_init(&e->lru);
+ 
+ 		n_sectors = e->wc_list_contiguous << (wc->block_size_bits - SECTOR_SHIFT);
+ 
+@@ -1732,7 +1730,7 @@ static void __writecache_writeback_ssd(struct dm_writecache *wc, struct writebac
+ 			wbl->size--;
+ 			f = container_of(wbl->list.prev, struct wc_entry, lru);
+ 			BUG_ON(f != e + 1);
+-			list_del(&f->lru);
++			list_del_init(&f->lru);
+ 			e = f;
+ 		}
+ 
+-- 
+1.8.3.1
 
