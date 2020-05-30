@@ -2,111 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 436571E9278
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 18:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 087871E9286
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 18:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729154AbgE3QJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 12:09:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54438 "EHLO
+        id S1729086AbgE3QOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 12:14:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728927AbgE3QJy (ORCPT
+        with ESMTP id S1728797AbgE3QOx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 12:09:54 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23784C03E969
-        for <linux-kernel@vger.kernel.org>; Sat, 30 May 2020 09:09:54 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id d7so1445692lfi.12
-        for <linux-kernel@vger.kernel.org>; Sat, 30 May 2020 09:09:54 -0700 (PDT)
+        Sat, 30 May 2020 12:14:53 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E83AC03E969
+        for <linux-kernel@vger.kernel.org>; Sat, 30 May 2020 09:14:53 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id v24so411656plo.6
+        for <linux-kernel@vger.kernel.org>; Sat, 30 May 2020 09:14:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=jcWNLhxXeAvkc4wgCt6uZZ2cQT7mLb+ZTkL7JbfnJOo=;
-        b=raIEaPAE2S2scghaTHTDQBPXLWj9HRnjGJdiJYiGFrcZfZBGVxTYeCSL2pmkNbpc4P
-         Sg4bbxsYwj1xahomGTSIu0sz2XsPcQpjFYN7CgTr47x+GbbgvLHfQEDcvRKzUaJ1FoAU
-         eojvYkg8oOPZsnu86hAk3tQJeD+rSiYyeAAYs8ehGt2/sYDdrot3n/zzgTh4HkxXZzlL
-         3d/qygtoDCNEOdncZyAZoIux5iz5VS57NWYp+9kXUb9WAGlrtUixRDxsODm3DjRVEa8a
-         /FfGtATmj7Kfq3to8QgoyUIbJowQAcHKZH5tc+MnWusiuyPRum8abGm9XMn4tHu0bqFx
-         iSCw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1mMCBOJ9xlSs04aJtX5nG/zBArlwzRItgMFXRdNse4Q=;
+        b=Ldmbb0t/hm9FKTfMQcWfFbocbn/wE6YMJBSuHLGLExSNELGaIkXeKC0sMS5xIUJLue
+         FPUt2ivoeJSpEYqXEAwaf239OuUNgs8RqzdTV0PzY4K8St3W3XCXAGh4KTPBzFRAMWJu
+         2nHXFRpmCV7GliRyzRDdqLgwCTJhjsoaEv4BE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=jcWNLhxXeAvkc4wgCt6uZZ2cQT7mLb+ZTkL7JbfnJOo=;
-        b=H3J0+n4Ufqyyec9Oq3QZT2o4QtvVlIRv0QCz0QvAN90n0T06Xry3Ffwrs2sUslkhpq
-         SaRZ+fIXjYKAwRqpK7cpsXNlOuetEprml6eqFmuxc8/g0QYVhdyrkhq3U8i0SZfcqx1O
-         oeFbwWE+sZ6m5j4aTYSLw9mCsCfzCYfzQ51uWsjXLd1JtCxQqR+Tib2ZzscSqO0/eog6
-         09TmsJRLNLVtN4olHKNzvJwbIvHnIO7Twyh4WmWvllMQA4pGSBNpA2Go9+mS4AvXvwI0
-         fhCooD0UR+vPPkQKAfAPjpAb/pA8XTHOtxdBS0pchRMoerD/zSigq6JBMEv3KTtp3Zsb
-         mvLA==
-X-Gm-Message-State: AOAM531oWYjwe48qygcFPWbpsPwExsKIMHratXMi0AD3JlaLWz58V40K
-        fYl3lnkQCZtz/H6eIT2mzTrVrF9eJfkm3jhoAdASaOgVwDoP
-X-Google-Smtp-Source: ABdhPJzF2KTdwT1LfWzeauoCoCPCztCeRENL2gfimNB7GPgODpxAeYYY6GdPz4bnwFs9ncpHzYmmQKniTwFoJZ55DyY=
-X-Received: by 2002:a05:6512:104c:: with SMTP id c12mr7220411lfb.200.1590854992269;
- Sat, 30 May 2020 09:09:52 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1mMCBOJ9xlSs04aJtX5nG/zBArlwzRItgMFXRdNse4Q=;
+        b=rt3L4/rPw6w8pli6lbamV2a+WMxywOw7LECOttXBsmNGaXHD//NiAr5lvLncdbSBeh
+         T/kVGEN0/aVwmEnPWnl7GZOk/apGCLw7lOy0vP2pdblmd6kMLbVLJcph1kqjASWT70YL
+         RP/QMlxoS0xKdcs1cWy2KaNCzmdS7vmFKoeXKGGrv7LOLN+D4o/xgz6HLiZf6yflKtwx
+         9OhEn6k/Z0M4H7leTP2MupC4gJttwhoeDxlfBaJoYdv/jY7dpsYLaXaehkEwzojU/cUx
+         QhXL3nqf2JUY4swIZeE2aFl31ew+xOZqzuaAFKrjEWJRZGsu21Li5rgguWQIaLr4ZSjL
+         Q+8g==
+X-Gm-Message-State: AOAM533z/2fhClpPDgMW/eh/2MA1MGGD7umXQ06wLh5jKfsFAs/9xsfO
+        ZBgmd7dwNbrC+62eROZHO4y74A==
+X-Google-Smtp-Source: ABdhPJwjpc7g4uprc/EQZZudD+avWs8D2XrWZrO6loVOnWgAQmFsGL6QDGqkL4TIdwTwUyLQKt6YdQ==
+X-Received: by 2002:a17:90b:3650:: with SMTP id nh16mr15078357pjb.135.1590855292927;
+        Sat, 30 May 2020 09:14:52 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f6sm289949pfe.174.2020.05.30.09.14.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 May 2020 09:14:52 -0700 (PDT)
+Date:   Sat, 30 May 2020 09:14:50 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Sargun Dhillon <sargun@sargun.me>,
+        containers@lists.linux-foundation.org, cyphar@cyphar.com,
+        jannh@google.com, jeffv@google.com, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org, palmer@google.com, rsesek@google.com,
+        tycho@tycho.ws, Matt Denton <mpdenton@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH v2 2/3] seccomp: Introduce addfd ioctl to seccomp user
+ notifier
+Message-ID: <202005300911.AAE71F1955@keescook>
+References: <20200528110858.3265-1-sargun@sargun.me>
+ <20200528110858.3265-3-sargun@sargun.me>
+ <202005282345.573B917@keescook>
+ <20200530011054.GA14852@ircssh-2.c.rugged-nimbus-611.internal>
+ <202005291926.E9004B4@keescook>
+ <20200530035817.GA20457@ircssh-2.c.rugged-nimbus-611.internal>
+ <202005292223.1701AB31@keescook>
+ <20200530141329.tjrtrdy66jhqzojy@wittgenstein>
 MIME-Version: 1.0
-From:   Mahmood Naderan <mahmood.nt@gmail.com>
-Date:   Sat, 30 May 2020 20:39:41 +0430
-Message-ID: <CADa2P2VcBsJU5Z+e6-=frxXFOiBxMtVKJ_4=-k1P3cHh9nY17A@mail.gmail.com>
-Subject: Perf doesn't show build-id of the application itself
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200530141329.tjrtrdy66jhqzojy@wittgenstein>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I run the following perf command for collecting user data
+On Sat, May 30, 2020 at 04:13:29PM +0200, Christian Brauner wrote:
+> On Fri, May 29, 2020 at 10:47:12PM -0700, Kees Cook wrote:
+> > Oh hey! Look at scm_detach_fds_compat(). It needs this too. (And it's
+> > missing the cgroup tracking.) That would fix:
+> > 
+> > 48a87cc26c13 ("net: netprio: fd passed in SCM_RIGHTS datagram not set correctly")
+> > d84295067fc7 ("net: net_cls: fd passed in SCM_RIGHTS datagram not set correctly")
+> > 
+> > So, yes, let's get this fixed up. I'd say first fix the missing sock
+> > update in the compat path (so it can be CCed stable). Then fix the missing
+> 
+> send this patch to net.
+> 
+> > sock update in pidfd_getfd() (so it can be CCed stable), then write the
+> 
+> send this patch to me.
+> 
+> > helper with a refactoring of scm_detach_fds(), scm_detach_fds_compat(),
+> 
+> this would be net-next most likely.
+> 
+> > and pidfd_getfd(). And then add the addfd seccomp user_notif ioctl cmd.
+> 
+> If you do this first, I'd suggest you resend the series here after all
+> this has been merged. We're not in a rush since this won't make it for
+> the 5.8 merge window anyway. By the time the changes land Kees might've
+> applied my changes to his tree so you can rebase yours on top of it
+> relieving Kees from fixing up merge conflicts.
+> 
+> About your potential net and net-next changes. Just in case you don't
+> know - otherwise ignore this - please read and treat
+> https://www.kernel.org/doc/Documentation/networking/netdev-FAQ.txt
+> as the gospel. Also note, that after this Sunday - assuming Linus
+> releases - net-next will be closed until the merge window is closed,
+> i.e. for _at least_ 2 weeks. After the merge window closes you can check
+> http://vger.kernel.org/~davem/net-next.html
+> which either has a picture saying "Come In We're Open" or a sign saying
+> "Sorry, We're Closed". Only send when the first sign is up or the wrath
+> of Dave might hit you. :)
 
-$ perf record -e cycles:u -j any,u -a -o perf.data.user ./test
+Yeah, timing is awkward here. I was originally thinking it could all
+just land via seccomp (with appropriate Acks). Hmmm.
 
-The output of build-id checking is
-
-$ perf buildid-list -f -i perf.data.user
-dbd41c586ea6789f3b998ed28be6ff37134e917a /lib/modules/4.19.125/build/vmlinux
-b5381a457906d279073822a5ceb24c4bfef94ddb /lib/x86_64-linux-gnu/libc-2.23.so
-ce17e023542265fc11d9bc8f534bb4f070493d30
-/lib/x86_64-linux-gnu/libpthread-2.23.so
-5d7b6259552275a3c17bd4c3fd05f5a6bf40caa5 /lib/x86_64-linux-gnu/ld-2.23.so
-55a35b6df1526bf3d69586896785bf1df0bb4be6 [vdso]
-59081d88e819c2fd3bcd8e58bc0c858c0ee2c3a9 /home/mahmood/bin/perf
-8edd43fbf5a6d895172d205a7248a814e3b07bb2 /home/mahmood/kernel-4.19.125/test/test
-2c0a469e1700fdd0b2f670737dabafeb9c38f909 /opt/glibc-2.23-install/libc.so
-
-
-As you can see the /home/mahmood/kernel-4.19.125/test/test which is
-the binary has a build-id. That is fine. However, when I run
-
-$ perf record -e cycles:k -j any,k -a -o perf.data.kernel ./test
-
-I don't see the application's build-id in the same output
-
-$ perf buildid-list -f -i perf.data.kernel
-dbd41c586ea6789f3b998ed28be6ff37134e917a /lib/modules/4.19.125/build/vmlinux
-49b4a1a69bb9aebaca5147b9821e1a3a2ca759f3
-/lib/modules/4.19.125/kernel/net/ipv4/netfilter/iptable_filter.ko
-bb4e88298fe274b1bec7ba8ab24e6a9670b93d04
-/lib/modules/4.19.125/kernel/net/ipv4/netfilter/nf_nat_ipv4.ko
-ee37b9e0cc9b7be3ca543ecfeaa6bde28b77df7d
-/lib/modules/4.19.125/kernel/net/netfilter/nf_nat.ko
-2bc71fd8d0c750aa3427a31639ce75a16a3c288c
-/lib/modules/4.19.125/kernel/net/netfilter/nf_conntrack.ko
-e5dfa4829fe8f9ed3185b708225a5bab8d6d0afe
-/lib/modules/4.19.125/kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko
-5d52d35a5b99dd81fed002ba571a7afe32b26cbd
-/lib/modules/4.19.125/kernel/net/ipv4/netfilter/ip_tables.ko
-d19830cb5c697cb2583d327c28aa3961c945005d
-/lib/modules/4.19.125/kernel/drivers/gpu/drm/nouveau/nouveau.ko
-b816c95c09032342acd644128cf4d21251b3578a
-/lib/modules/4.19.125/kernel/drivers/net/ethernet/intel/igb/igb.ko
-da3d32f0230efe8329fae49f9de60ddaeddf48a9
-/lib/modules/4.19.125/kernel/drivers/ata/libahci.ko
-b5381a457906d279073822a5ceb24c4bfef94ddb /lib/x86_64-linux-gnu/libc-2.23.so
-55a35b6df1526bf3d69586896785bf1df0bb4be6 [vdso]
-
-Is there any reason for that? I ask that because my analyzer checks
-the build-ids and gives me an error regarding the missing
-8edd43fbf5a6d895172d205a7248a814e3b07bb2 which is my application
-itself. The analyzer has no problem with the former scenario.
-
-
-Regards,
-Mahmood
+-- 
+Kees Cook
