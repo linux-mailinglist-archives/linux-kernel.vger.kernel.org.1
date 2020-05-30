@@ -2,106 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555741E8F16
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 09:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05FFE1E8F21
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 09:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728896AbgE3Hjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 03:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59750 "EHLO
+        id S1728838AbgE3Hqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 03:46:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728841AbgE3Hjq (ORCPT
+        with ESMTP id S1728599AbgE3Hqf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 03:39:46 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B70BFC03E969;
-        Sat, 30 May 2020 00:39:46 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id w68so191369pfb.3;
-        Sat, 30 May 2020 00:39:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=FmATF7VIMFcPZn4icXB5YGmrCi8/Ak2vFV6cTnZtZnM=;
-        b=ZPSecb7+SPWbFMoFKyMVT/Buw0b5UsDBBNYMdw9++irJpVdQOLok9yQsh1IBhYiimK
-         0TmWrB2BrKmPjuN0J3ok+G2NHQGEypfnOnp/MSqqOSBts5OQP32QMro3xPe0PYlQVvoX
-         5ezWkVsKG9ZIZuLMdnoHSVJUuWd7vMWvT8c1j38g5+aPIT/ftXlOuxljskbQdkyLdC5x
-         J3NwObdbE5TD8etrwwz3IYXvPdh+6i5UtFrS2jmpESHu3uSqovHvRzWirnWpjZ24DOCl
-         +bSQp4PHatjBWC66Y0pNF0Orpzw0NF6SQHO1lVpUaej7u0X6TYYR4ZL56DYiZiZXpAoQ
-         uwgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=FmATF7VIMFcPZn4icXB5YGmrCi8/Ak2vFV6cTnZtZnM=;
-        b=Z/I0yONgStMhdVw+vlQDGWxuavRql+Og/qj5IDpMQzD4shQ+SvqXf0HnWtQygKwEtX
-         nrJvB7bIW1PiSscGf/Ppbf21/iaFA0rlQK/CRELCRdYyi5lFqSntwZTGLiZr1P2vxasI
-         ctNJ3OLZSJpyWMw8LitbHlKLrAvX4ArGalj76IYM4Kx6iHPRsWizxnvvD4IGt8A/qGPB
-         LkyMrZFYE7Hksrmt3fy5Rw60oXc9Q3V9TTKyDS9aTnz8G0wcgVYGa15prp5OdyNCrxpn
-         GPQULGxlv8En4wNZvi1aDwgkcGb9r3uVSeFFIuZvXOb9G+Sv1NayC77UNY/YnwBzI1DR
-         7lYw==
-X-Gm-Message-State: AOAM53052BFuMk1r3GikURuo+cCF3Irgav4PM0pGMSEG5BCMoLvW0YcO
-        BTt3p9Ja6kUzRU/TEsseuxlEP43L
-X-Google-Smtp-Source: ABdhPJyeWgsiG2xhhyfIygcXKBHc67sqd+XPQwXWqz4r6JSfnXCFuLJYGGqTne4QVW33wXmITGfDDw==
-X-Received: by 2002:a62:80cc:: with SMTP id j195mr5898006pfd.138.1590824386326;
-        Sat, 30 May 2020 00:39:46 -0700 (PDT)
-Received: from oslab.tsinghua.edu.cn ([166.111.139.172])
-        by smtp.gmail.com with ESMTPSA id b16sm6140536pfd.111.2020.05.30.00.39.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 May 2020 00:39:45 -0700 (PDT)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     dmitry.torokhov@gmail.com, johan@kernel.org, vdronov@redhat.com,
-        tglx@linutronix.de, gregkh@linuxfoundation.org
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] input: tablet: aiptek: fix possible buffer overflow caused by bad DMA value in aiptek_irq()
-Date:   Sat, 30 May 2020 15:39:35 +0800
-Message-Id: <20200530073935.17874-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Sat, 30 May 2020 03:46:35 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D212C03E969;
+        Sat, 30 May 2020 00:46:35 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jewCN-0001p0-Ba; Sat, 30 May 2020 09:46:31 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id EE6391C0093;
+        Sat, 30 May 2020 09:46:30 +0200 (CEST)
+Date:   Sat, 30 May 2020 07:46:30 -0000
+From:   "tip-bot2 for Jiaxun Yang" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] dt-bindings: interrupt-controller: Add Loongson PCH MSI
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200528152757.1028711-7-jiaxun.yang@flygoat.com>
+References: <20200528152757.1028711-7-jiaxun.yang@flygoat.com>
+MIME-Version: 1.0
+Message-ID: <159082479072.17951.7141736298495200150.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The value aiptek->data is stored in DMA memory, and it is assigned to
-data. Thus in the code:
-  macro = get_unaligned_le16(data + 1);
-The value of marco can be modified by malicious hardware.
-In this case, buffer overflow may occur when the code
-"macroKeyEvents[macro - 1]" and "macroKeyEvents[macro]" is executed.
+The following commit has been merged into the irq/core branch of tip:
 
-To fix these possible bugs, macro is checked before being used.
+Commit-ID:     da10a4b626657387845f32d37141fc7d48ebbdb3
+Gitweb:        https://git.kernel.org/tip/da10a4b626657387845f32d37141fc7d48ebbdb3
+Author:        Jiaxun Yang <jiaxun.yang@flygoat.com>
+AuthorDate:    Thu, 28 May 2020 23:27:54 +08:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Fri, 29 May 2020 09:42:19 +01:00
 
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+dt-bindings: interrupt-controller: Add Loongson PCH MSI
+
+Add binding for Loongson PCH MSI controller.
+
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20200528152757.1028711-7-jiaxun.yang@flygoat.com
 ---
- drivers/input/tablet/aiptek.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/interrupt-controller/loongson,pch-msi.yaml | 62 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 62 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/loongson,pch-msi.yaml
 
-diff --git a/drivers/input/tablet/aiptek.c b/drivers/input/tablet/aiptek.c
-index e08b0ef078e8..e353e538fb51 100644
---- a/drivers/input/tablet/aiptek.c
-+++ b/drivers/input/tablet/aiptek.c
-@@ -737,11 +737,11 @@ static void aiptek_irq(struct urb *urb)
- 	 */
- 	else if (data[0] == 6) {
- 		macro = get_unaligned_le16(data + 1);
--		if (macro > 0) {
-+		if (macro > 0 && macro < 34) {
- 			input_report_key(inputdev, macroKeyEvents[macro - 1],
- 					 0);
- 		}
--		if (macro < 25) {
-+		if (marco > 0 && macro < 25) {
- 			input_report_key(inputdev, macroKeyEvents[macro + 1],
- 					 0);
- 		}
-@@ -760,7 +760,8 @@ static void aiptek_irq(struct urb *urb)
- 				aiptek->curSetting.toolMode;
- 		}
- 
--		input_report_key(inputdev, macroKeyEvents[macro], 1);
-+		if (macro > 0 && macro < 33)
-+			input_report_key(inputdev, macroKeyEvents[macro], 1);
- 		input_report_abs(inputdev, ABS_MISC,
- 				 1 | AIPTEK_REPORT_TOOL_UNKNOWN);
- 		input_sync(inputdev);
--- 
-2.17.1
-
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongson,pch-msi.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,pch-msi.yaml
+new file mode 100644
+index 0000000..1a5ebbd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,pch-msi.yaml
+@@ -0,0 +1,62 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/interrupt-controller/loongson,pch-msi.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Loongson PCH MSI Controller
++
++maintainers:
++  - Jiaxun Yang <jiaxun.yang@flygoat.com>
++
++description:
++  This interrupt controller is found in the Loongson LS7A family of PCH for
++  transforming interrupts from PCIe MSI into HyperTransport vectorized
++  interrupts.
++
++properties:
++  compatible:
++    const: loongson,pch-msi-1.0
++
++  reg:
++    maxItems: 1
++
++  loongson,msi-base-vec:
++    description:
++      u32 value of the base of parent HyperTransport vector allocated
++      to PCH MSI.
++    allOf:
++      - $ref: "/schemas/types.yaml#/definitions/uint32"
++      - minimum: 0
++        maximum: 255
++
++  loongson,msi-num-vecs:
++    description:
++      u32 value of the number of parent HyperTransport vectors allocated
++      to PCH MSI.
++    allOf:
++      - $ref: "/schemas/types.yaml#/definitions/uint32"
++      - minimum: 1
++        maximum: 256
++
++  msi-controller: true
++
++required:
++  - compatible
++  - reg
++  - msi-controller
++  - loongson,msi-base-vec
++  - loongson,msi-num-vecs
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    msi: msi-controller@2ff00000 {
++      compatible = "loongson,pch-msi-1.0";
++      reg = <0x2ff00000 0x4>;
++      msi-controller;
++      loongson,msi-base-vec = <64>;
++      loongson,msi-num-vecs = <64>;
++      interrupt-parent = <&htvec>;
++    };
++...
