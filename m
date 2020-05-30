@@ -2,107 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B371E9200
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 16:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3D51E9209
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 16:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729143AbgE3ONi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 10:13:38 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:48690 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729006AbgE3ONh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 10:13:37 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jf2Es-0000wB-GV; Sat, 30 May 2020 14:13:30 +0000
-Date:   Sat, 30 May 2020 16:13:29 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Sargun Dhillon <sargun@sargun.me>,
-        containers@lists.linux-foundation.org, cyphar@cyphar.com,
-        jannh@google.com, jeffv@google.com, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org, palmer@google.com, rsesek@google.com,
-        tycho@tycho.ws, Matt Denton <mpdenton@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH v2 2/3] seccomp: Introduce addfd ioctl to seccomp user
- notifier
-Message-ID: <20200530141329.tjrtrdy66jhqzojy@wittgenstein>
-References: <20200528110858.3265-1-sargun@sargun.me>
- <20200528110858.3265-3-sargun@sargun.me>
- <202005282345.573B917@keescook>
- <20200530011054.GA14852@ircssh-2.c.rugged-nimbus-611.internal>
- <202005291926.E9004B4@keescook>
- <20200530035817.GA20457@ircssh-2.c.rugged-nimbus-611.internal>
- <202005292223.1701AB31@keescook>
+        id S1728769AbgE3OTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 10:19:09 -0400
+Received: from mout.gmx.net ([212.227.15.15]:54769 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729069AbgE3OTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 May 2020 10:19:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1590848325;
+        bh=vx9kwtXTwi3wRgMYRbmKGoNI6YGmyghJpf9MVlgEPlo=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=b1UF9B0YChZuW6q/eBn6HeM8/j0W1NrEtEVTpXm3gwOU8eTaKVQ2oGBiI5MYhA5Mc
+         2Cr3R4JOmbrCOST680/o0NVxfebshs4RgfYuynUSGcbr5wdw2qanPo0JgaKVut15LI
+         s4Mwju/78EOJUJGWFMAEzRjopaxb5conS9gi3UZo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ubuntu ([83.52.229.196]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MvK4Z-1ioaBx3OAD-00rDTN; Sat, 30
+ May 2020 16:18:45 +0200
+Date:   Sat, 30 May 2020 16:18:42 +0200
+From:   Oscar Carter <oscar.carter@gmx.com>
+To:     Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Cc:     Oscar Carter <oscar.carter@gmx.com>,
+        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v4 0/3] drivers/acpi: Remove function callback casts
+Message-ID: <20200530141842.GB29479@ubuntu>
+References: <20200530141218.4690-1-oscar.carter@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202005292223.1701AB31@keescook>
+In-Reply-To: <20200530141218.4690-1-oscar.carter@gmx.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Provags-ID: V03:K1:u629PpDXc+ztQh5Z5iHJpAjTMoWmzq6Njl+1xB0m7OWb4UR8ZoK
+ pf7UN6lmJMjuXU7CCsMQLvuSjg/A5rn6Ik/+bAeiSW1xfQYeugAh83iTOujOrS582GL9LKl
+ 8Tte2a0HzmLP2ySsM5c8HiEv8F4sypRl3Sl3I0aK3m1y/bGu3c3Q8Kk//f2hbppNTyKbc6c
+ nQjYDFY5kb+qjvdbr+sxg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:X3kz7Ce+Bkg=:blObYrqrW2xwBXhWyhq2n0
+ eoq+kC4POVZ3DCf3dnxulMcZnVxCU3NgWuJjDj10tHfQqkQXCmmo1FKfnTgIjC2AeLnd1GDVG
+ oeAefUY6asb9AA2vrxLRdMWsHpzcwLsf6/Zb3/RBR4W2VxOBFQKC6nMmvzmmGnnxH+mqpyZ/t
+ 910tgrOas6odBjzaZ4n8jeO5LUgJ27kcMU4SLpNTQ011EHG+kQOfeFPIFgIcmIqPI5QFitIJ6
+ Ld5P2jELp+Ai7kgmVDH/YovZK+JWVP8JGpspYq2Q9A0viqwb3QvmQr/Lr+6BHo3258Irqq9P/
+ YPr/u+fn2CbXizsaimuiTFcN8QcxrvC2QEiih/pXg5n6v3Bt6EyidUQO2X6iyifDS2npRVEN/
+ 7HADbTTY+rljCkBbolITPOxHXC4cuhoFWdE2KqW6RlWCg2NNSr+cFxXjI+BxyCgmZBmizgkps
+ uPDwdTwEnCqGld2OJFBXcRN5CVr/wsNRiaEbe5VIBVJP9W+W3z5YWFn5FE38dFMhkNiS04PcQ
+ k0CFSUw8yqqK7EPKfhsWcrBio50ZyA3H+LojeILwtQOQiWqMg8amN9XEQ8hKQfLn/0ZPBTUh3
+ zc42eEW+ZCvRTetB9H1Za/E5NeF7XyuzxNQ8n5OztuQKCtbO2APCh0TtiPHjU2vYWLVx+lPY1
+ s3mFQwGW5XwdMHiKyYVgLWQaeDT9j6bdTknKT5QCKy6/WyI8WTIsJoGvSNIzo1vIF/xJnT7ms
+ 7PkNLB86Volq/RIMGgAPqBMcz53ktgOqPjRi3ihRHmbtWO0h6ifAvy1mphCcYCclfRig8oaFW
+ 012B6zqacWW2hp6OyAJi8QfJkim3/7kMvwmE14DJFasTaqiGShuyt1NkYrsTf+t9U/79bHtFw
+ 4ff7WauhAAcAnzLY6XH6y+VWDb4Q2LN59BjK+Vdh5f2lZEnb4VXWufRqomMgMNfk5iC030T9z
+ rGobIZWts1WX/8Ej/KFTgZzaYESsGsJAcuk7EzB71o3iIL2fCL1xV8lsMiJ48HEe36bKNEDM1
+ EOAzp43WLAZMGC3QIU7qo9FGSFBZAA8s0BefkeXtv0sbhkankncht1MLpKbbqE3xrPbWYg5VF
+ uAecUVR65BDH8JN5mBEmSjg+pZDUKuUq+5sVLfwjic2D2fLRVY1Oo6YkolcAHb+68qZEEIeUL
+ /PeA5FwsdufLSg/tPpYDX49NmVMUkQNcgBgTh7NA+SjjOOFg/6X61tnob1MC5S8/Q3LdJ63T+
+ p+0a7yxvHptkGKZfV
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 10:47:12PM -0700, Kees Cook wrote:
-> On Sat, May 30, 2020 at 03:58:18AM +0000, Sargun Dhillon wrote:
-> > Isn't the "right" way to do this to allocate a bunch of file descriptors,
-> > and fill up the user buffer with them, and then install the files? This
-> > seems to like half-install the file descriptors and then error out.
-> > 
-> > I know that's the current behaviour, but that seems like a bad idea. Do
-> > we really want to perpetuate this half-broken state? I guess that some
-> > userspace programs could be depending on this -- and their recovery
-> > semantics could rely on this. I mean this is 10+ year old code.
-> 
-> Right -- my instincts on this are to leave the behavior as-is. I've
-> been burned by so many "nothing could possible rely on THIS" cases. ;)
-> 
-> It might be worth adding a comment (or commit log note) that describes
-> the alternative you suggest here. But I think building a common helper
-> that does all of the work (and will get used in three^Wfour places now)
-> is the correct way to refactor this.
+Hi,
+Drop this patch because it has errors. I will send a v5.
+Sorry.
 
-If you do this, then probably
-
-> 
-> Oh hey! Look at scm_detach_fds_compat(). It needs this too. (And it's
-> missing the cgroup tracking.) That would fix:
-> 
-> 48a87cc26c13 ("net: netprio: fd passed in SCM_RIGHTS datagram not set correctly")
-> d84295067fc7 ("net: net_cls: fd passed in SCM_RIGHTS datagram not set correctly")
-> 
-> So, yes, let's get this fixed up. I'd say first fix the missing sock
-> update in the compat path (so it can be CCed stable). Then fix the missing
-
-send this patch to net.
-
-> sock update in pidfd_getfd() (so it can be CCed stable), then write the
-
-send this patch to me.
-
-> helper with a refactoring of scm_detach_fds(), scm_detach_fds_compat(),
-
-this would be net-next most likely.
-
-> and pidfd_getfd(). And then add the addfd seccomp user_notif ioctl cmd.
-
-If you do this first, I'd suggest you resend the series here after all
-this has been merged. We're not in a rush since this won't make it for
-the 5.8 merge window anyway. By the time the changes land Kees might've
-applied my changes to his tree so you can rebase yours on top of it
-relieving Kees from fixing up merge conflicts.
-
-About your potential net and net-next changes. Just in case you don't
-know - otherwise ignore this - please read and treat
-https://www.kernel.org/doc/Documentation/networking/netdev-FAQ.txt
-as the gospel. Also note, that after this Sunday - assuming Linus
-releases - net-next will be closed until the merge window is closed,
-i.e. for _at least_ 2 weeks. After the merge window closes you can check
-http://vger.kernel.org/~davem/net-next.html
-which either has a picture saying "Come In We're Open" or a sign saying
-"Sorry, We're Closed". Only send when the first sign is up or the wrath
-of Dave might hit you. :)
-
-Christian
+Thanks,
+Oscar Carter
