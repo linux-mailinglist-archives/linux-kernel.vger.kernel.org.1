@@ -2,103 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB25B1E902D
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 11:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2A8B1E901A
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 11:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728817AbgE3Jmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 05:42:35 -0400
-Received: from fourecks.uuid.uk ([147.135.211.183]:52632 "EHLO
-        fourecks.uuid.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728071AbgE3Jme (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 05:42:34 -0400
-X-Greylist: delayed 557 seconds by postgrey-1.27 at vger.kernel.org; Sat, 30 May 2020 05:42:33 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
-        ; s=20180214; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=R+Mj1NapwFRkDC6Os7g4prlnOtUbWo7gfstXxip1zTs=; b=cqKXryyRarFHH+aA4FFILfD44s
-        Om3KpL7gbIyWG03jQ/tPgb4NP2KF1f3KMtvqe4U2OBhxmADKMbveYQvSMeVaZopipNvjJqx3/D8ZX
-        yAvlsTEWkwCS0A7cIcdt/bV+r4uJbQjnmOfmBqIGIJetsoU955r+RogqHWz155eAvM31emVXTfsyE
-        GhthUf6e+060RcL9mj/C/lsf9+/QG5mw9I8M32mdTM3NwGZrThKMTi8vpvBUMPheFQpyGxg6kU/ds
-        4mlLsL57zw+YhEvWDCUmBNkh5iYF0q85El+XBZ0PIFRxR5Vy8VXyP+pt63v5emNYyYEBMmsIxcf7S
-        AF9rtmiQ==;
-Received: by fourecks.uuid.uk with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <simon@octiron.net>)
-        id 1jexsG-000754-9y; Sat, 30 May 2020 10:33:53 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
-        ; s=20180214; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:References:Cc:To:From:Subject;
-        bh=R+Mj1NapwFRkDC6Os7g4prlnOtUbWo7gfstXxip1zTs=; b=pqY4m9TD9LoG00tLVe8vvNpzHe
-        GuaEPVlTRCxaxsks50/EQ6xRXW9dm+FK+nWU1ya7Eg9IVU9k29KuOzQdPP6JSZAHHldn/6Rv8cMld
-        e5wORrqg2ds5ocOV/irs8o7jS57/Rj+oLH83N6S3KW3Zlv16w7WuyWb2rOaFWHqQcssrW6ho7rTUi
-        kyZ/BWNdFfhJD4dvSQ2rrvESD17OoWVk2jmCubItJUfja/lQ7Z4vDPwHOLvwB9v1KaBWe0VYSEn+o
-        c1aFBcU1HMgshM/NXk8NtSeOnruV4Dv7a1hu7GFbaz5uuZKsp0LpZCrBbtDANO4aiiCTEiaPibnp6
-        D0/nUTyw==;
-Received: by tsort.uuid.uk with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <simon@octiron.net>)
-        id 1jexsE-0007HX-GJ; Sat, 30 May 2020 10:33:50 +0100
-Subject: [PATCH 2/2] scsi: sr: Fix sr_probe() missing deallocate of device
- minor
-From:   Simon Arlott <simon@octiron.net>
-To:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     linux-scsi@vger.kernel.org, Merlijn Wajer <merlijn@archive.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <0cb16d6f-098a-a8c3-09c3-273d02067ada@0882a8b5-c6c3-11e9-b005-00805fc181fe>
-Message-ID: <da1f6f28-cdd4-72da-703b-749aba3f27ef@0882a8b5-c6c3-11e9-b005-00805fc181fe>
-Date:   Sat, 30 May 2020 10:33:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728511AbgE3Je4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 05:34:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51476 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727947AbgE3Jez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 May 2020 05:34:55 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 399D420776;
+        Sat, 30 May 2020 09:34:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590831294;
+        bh=cnzA5tk70oUMN1xavPXuXqS1gyDfBDfKfmW9R6LENeU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=afSN9k+Pnz25M3k6V81ZfUhf+aa07mHbRs0ZOwQNgydwOI0qbGo+BG19nTp60pXxE
+         RoU9Uyf0O90HOI4P6/L+Q/O88mjI2amYWp2qK5fo1AzcK/qRZkIQIpnDR2yN20caIB
+         siiIVmR0CUTFH+Edx5VfoUxCArkPhJepzSJ0OfJM=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1jextE-00GTTu-5V; Sat, 30 May 2020 10:34:52 +0100
 MIME-Version: 1.0
-In-Reply-To: <0cb16d6f-098a-a8c3-09c3-273d02067ada@0882a8b5-c6c3-11e9-b005-00805fc181fe>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Sat, 30 May 2020 10:34:51 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Oscar Carter <oscar.carter@gmx.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] drivers/irqchip: Use new macro
+ ACPI_DECLARE_SUBTABLE_PROBE_ENTRY
+In-Reply-To: <20200529171847.10267-3-oscar.carter@gmx.com>
+References: <20200529171847.10267-1-oscar.carter@gmx.com>
+ <20200529171847.10267-3-oscar.carter@gmx.com>
+User-Agent: Roundcube Webmail/1.4.4
+Message-ID: <590725ccfadc6e6c84c777f69ee02a62@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: oscar.carter@gmx.com, keescook@chromium.org, tglx@linutronix.de, jason@lakedaemon.net, rjw@rjwysocki.net, lenb@kernel.org, kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the cdrom fails to be registered then the device minor should be
-deallocated.
+Hi Oscar,
 
-Signed-off-by: Simon Arlott <simon@octiron.net>
----
- drivers/scsi/sr.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+On 2020-05-29 18:18, Oscar Carter wrote:
+> In an effort to enable -Wcast-function-type in the top-level Makefile 
+> to
+> support Control Flow Integrity builds, there are the need to remove all
+> the function callback casts.
+> 
+> To do this, modify the IRQCHIP_ACPI_DECLARE macro to use the new 
+> defined
+> macro ACPI_DECLARE_SUBTABLE_PROBE_ENTRY instead of the macro
+> ACPI_DECLARE_PROBE_ENTRY. This is necessary to be able to initialize 
+> the
+> the acpi_probe_entry struct using the probe_subtbl field instead of the
+> probe_table field and avoid function cast mismatches.
+> 
+> Also, modify the prototype of the functions used by the invocation of 
+> the
+> IRQCHIP_ACPI_DECLARE macro to match all the parameters.
+> 
+> Co-developed-by: Marc Zyngier <maz@kernel.org>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
+> ---
+>  drivers/irqchip/irq-gic-v3.c | 2 +-
+>  drivers/irqchip/irq-gic.c    | 2 +-
+>  include/linux/irqchip.h      | 5 +++--
+>  3 files changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-gic-v3.c 
+> b/drivers/irqchip/irq-gic-v3.c
+> index d7006ef18a0d..3870e9d4d3a8 100644
+> --- a/drivers/irqchip/irq-gic-v3.c
+> +++ b/drivers/irqchip/irq-gic-v3.c
+> @@ -2117,7 +2117,7 @@ static void __init gic_acpi_setup_kvm_info(void)
+>  }
+> 
+>  static int __init
+> -gic_acpi_init(struct acpi_subtable_header *header, const unsigned long 
+> end)
+> +gic_acpi_init(union acpi_subtable_headers *header, const unsigned long 
+> end)
+>  {
+>  	struct acpi_madt_generic_distributor *dist;
+>  	struct fwnode_handle *domain_handle;
+> diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
+> index 30ab623343d3..fc431857ce90 100644
+> --- a/drivers/irqchip/irq-gic.c
+> +++ b/drivers/irqchip/irq-gic.c
+> @@ -1593,7 +1593,7 @@ static void __init gic_acpi_setup_kvm_info(void)
+>  	gic_set_kvm_info(&gic_v2_kvm_info);
+>  }
+> 
+> -static int __init gic_v2_acpi_init(struct acpi_subtable_header 
+> *header,
+> +static int __init gic_v2_acpi_init(union acpi_subtable_headers 
+> *header,
+>  				   const unsigned long end)
+>  {
+>  	struct acpi_madt_generic_distributor *dist;
+> diff --git a/include/linux/irqchip.h b/include/linux/irqchip.h
+> index 950e4b2458f0..447f22880a69 100644
+> --- a/include/linux/irqchip.h
+> +++ b/include647b532275bbe/linux/irqchip.h
+> @@ -39,8 +39,9 @@
+>   * @fn: initialization function
+>   */
+>  #define IRQCHIP_ACPI_DECLARE(name, subtable, validate, data, fn)	\
+> -	ACPI_DECLARE_PROBE_ENTRY(irqchip, name, ACPI_SIG_MADT, 		\
+> -				 subtable, validate, data, fn)
+> +	ACPI_DECLARE_SUBTABLE_PROBE_ENTRY(irqchip, name,		\
+> +					  ACPI_SIG_MADT, subtable,	\
+> +					  validate, data, fn)
+> 
+>  #ifdef CONFIG_IRQCHIP
+>  void irqchip_init(void);
+> --
+> 2.20.1
 
-diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
-index 8d062d4f3ce0..1e13c6a0f0ca 100644
---- a/drivers/scsi/sr.c
-+++ b/drivers/scsi/sr.c
-@@ -797,7 +797,7 @@ static int sr_probe(struct device *dev)
- 	cd->cdi.disk = disk;
- 
- 	if (register_cdrom(&cd->cdi))
--		goto fail_put;
-+		goto fail_minor;
- 
- 	/*
- 	 * Initialize block layer runtime PM stuffs before the
-@@ -815,6 +815,10 @@ static int sr_probe(struct device *dev)
- 
- 	return 0;
- 
-+fail_minor:
-+	spin_lock(&sr_index_lock);
-+	clear_bit(minor, sr_index_bits);
-+	spin_unlock(&sr_index_lock);
- fail_put:
- 	put_disk(disk);
- 	mutex_destroy(&cd->lock);
+I can't help but notice that you have left the cast in 
+ACPI_DECLARE_PROBE_ENTRY, which should definitely go. Probably worth a 
+third patch.
+
+Thanks,
+
+         M.
+
 -- 
-2.17.1
-
--- 
-Simon Arlott
+Jazz is not dead. It just smells funny...
