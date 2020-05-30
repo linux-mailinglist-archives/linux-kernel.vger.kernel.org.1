@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C674F1E8FAE
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 10:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0841E8FB1
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 10:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728811AbgE3IUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 04:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37948 "EHLO
+        id S1728861AbgE3IUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 04:20:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725813AbgE3IUi (ORCPT
+        with ESMTP id S1725813AbgE3IUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 04:20:38 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5605EC08C5C9
-        for <linux-kernel@vger.kernel.org>; Sat, 30 May 2020 01:20:38 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id y189so5977100ybc.14
-        for <linux-kernel@vger.kernel.org>; Sat, 30 May 2020 01:20:38 -0700 (PDT)
+        Sat, 30 May 2020 04:20:41 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52914C03E969
+        for <linux-kernel@vger.kernel.org>; Sat, 30 May 2020 01:20:40 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id v1so5875356ybo.23
+        for <linux-kernel@vger.kernel.org>; Sat, 30 May 2020 01:20:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=SSDWtclczDAnQ3izYJ36eT/zTxSHgQUYdQ4BNnNP5dw=;
-        b=SoZuqjk5wCdKvtt2ddSgwDKZis7gheSmPwJ7AOOh3BfSWl96OT2AGReCq+vKcRCx2o
-         nS2/ujfZTHHjjLmqXySF9YvjljROUkkQhVsYWFUXFXlsqcBzBF83mOAPdhq0eHwY1gqT
-         coP1er9OG7YnYuP6AXADx19U4g+5oBzkZF/lHTzUqy9E2E/uCD/PcYLBmMTm37oG24UH
-         T3f2n8SCgMfJ30pAwdxYtQ9mbR4aCV3hF8JZ3iKmk1WMqT9VF1tlFyL4JgounxepZ7o7
-         6YXUgettE4RUxDPkrBFoWL0ucGvjz7MMguEWAW4mJyhuD7hKgbdll7RhU34pPBJ17K/Z
-         yuWA==
+        bh=ULNDcMU2cPOuKjungjzNkW5is5uzXicsHUJwDCdcrQ0=;
+        b=oDiMO4OHlhHtX3cEYbV0VwadSP4yGmNf4HsbHS3LR2awH1AKRJNKO4dIA0yxwLZH9h
+         i5cWdpkdULms3BTyRXs+eaLYjOEeKRcM2r6CxpRjLGFrLt0ClSQWMj+t52+XpiSdEYE9
+         hZYE3YcxHsoYPJjrxeWU1Qb1rOW2oUsuxuSv0rrXCzag+hj9gX1ToasQSIWFyj/kAwLp
+         0cqHfRBUAmpakDPvgM7OaKxwyEEjTagRnEMHVXAOqGEoruNBKhxsFzcOFfnpyC8ENLK2
+         G4Q9XWil/FgJ9By/Q+qX9hhRpAxD+QdYP/TaKK1BvaQB/WARqwF7KepRTJCfZfa5FopY
+         7/tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=SSDWtclczDAnQ3izYJ36eT/zTxSHgQUYdQ4BNnNP5dw=;
-        b=Zzw9hHft1kGtGaKD0ksd1Onf6jfqDBSToXaBv59rME+EJW5IOkOF3qCSV90jgZfrZ6
-         1ZzuS7AGblZi15MuiItbHsazYgQfH5H7wOqVrWtK2omO9nbvd9sp2ACwPxaHCYnoXZtA
-         dcOe1AglgCUrkc8HpuefIVJgQD3EGWJTTiUCgmmmu73fXLbFaK3/Wju2Lk248NLaK0Bk
-         JcQKUrkqExXCCy7lvdH+aXYFWSJvwyZpEUH4jQxBbTVsiW6anc5Bp8S0DYI5tA1lGiUL
-         u1wNWt84+Ude/hO2SSH6As7V50AGP6d30vi6AbCQzb2CQSq4FQa6et5b56p8joAfJTXV
-         mVDA==
-X-Gm-Message-State: AOAM533uNln/fM6QpOrxSg1WR4amLVsYO99qnIBfJ9XIgaPTvek0/3Jk
-        WjfkqJ3awLw/PbWubpeluxGHt7IRpH+d
-X-Google-Smtp-Source: ABdhPJyknIKx/8oei4rFgCfB6/mK1DLhBeR7NpvGBRKxHJDwcvfouBhEWwYanp35pLkbRRpbzWq2cUZ56YQR
-X-Received: by 2002:a25:3f41:: with SMTP id m62mr18219047yba.455.1590826837446;
- Sat, 30 May 2020 01:20:37 -0700 (PDT)
-Date:   Sat, 30 May 2020 01:20:13 -0700
+        bh=ULNDcMU2cPOuKjungjzNkW5is5uzXicsHUJwDCdcrQ0=;
+        b=tY+3gvpcgHUJoqufofX4851Ngn4QoF6Qj2dmv4+dWJ/PfiigKujrrk5oLSgWy/adtW
+         gYyEfE/FZXn1GbrqX3ywPCJMzoSMoGGj8Jh4AvsaukVabiYeQ7DVqi4lJtVs73IV9hDd
+         W7Nave7JSodwoYJ+ZKwookJ20AogR9DsKYbL+nCMFfAI7RuPheG/e+kHfgOP4mtEQWsV
+         x/ZnyDSRBKR9UeeP3R7Wpuxbyj2pDu+4kTU9AtYfZYB04fIr1VZVit06hn/K+wG64Va9
+         mxu0ThFq+2qAVbSDSjgkBIvzpRRYZX+7HMfCA3YU7xNJaLMDi4bxKT/HB2LB+/bTdVjD
+         Ng7g==
+X-Gm-Message-State: AOAM531/p8GvM1A7pF2ABay2lnDj/Og6xr5He2VHszitXDTPbQoMtkHb
+        667cQ/heQ0qT951fAnB3ooCwTjeCTAZc
+X-Google-Smtp-Source: ABdhPJzQBzLQbWP/c4aT3uyK6bwS0+e/RrfnFmqrZpD6+dZog08w4njiDtVp9qMX98jOogjsPk3VXewxJxwP
+X-Received: by 2002:a25:80d0:: with SMTP id c16mr19278304ybm.98.1590826839536;
+ Sat, 30 May 2020 01:20:39 -0700 (PDT)
+Date:   Sat, 30 May 2020 01:20:14 -0700
 In-Reply-To: <20200530082015.39162-1-irogers@google.com>
-Message-Id: <20200530082015.39162-2-irogers@google.com>
+Message-Id: <20200530082015.39162-3-irogers@google.com>
 Mime-Version: 1.0
 References: <20200530082015.39162-1-irogers@google.com>
 X-Mailer: git-send-email 2.27.0.rc2.251.g90737beb825-goog
-Subject: [PATCH 1/3] tools compiler.h: Add attribute to disable tail calls
+Subject: [PATCH 2/3] perf tests: Don't tail call optimize in unwind test
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -71,49 +71,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tail call optimizations can remove stack frames that are used in
-unwinding tests. Add an attribute that can be used to disable the tail
-call optimization. Tested  on clang and GCC.
+The tail call optimization can unexpectedly make the stack smaller and
+cause the test to fail.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/include/linux/compiler-gcc.h | 8 ++++++++
- tools/include/linux/compiler.h     | 3 +++
- 2 files changed, 11 insertions(+)
+ tools/perf/tests/dwarf-unwind.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/tools/include/linux/compiler-gcc.h b/tools/include/linux/compiler-gcc.h
-index 95c072b70d0e..cda555b47d3d 100644
---- a/tools/include/linux/compiler-gcc.h
-+++ b/tools/include/linux/compiler-gcc.h
-@@ -27,6 +27,14 @@
- #define  __pure		__attribute__((pure))
- #endif
- #define  noinline	__attribute__((noinline))
-+#ifdef __has_attribute
-+#if __has_attribute(disable_tail_calls)
-+#define __no_tail_call	__attribute__((disable_tail_calls))
-+#endif
-+#endif
-+#ifndef __no_tail_call
-+#define __no_tail_call	__attribute__((optimize("no-optimize-sibling-calls")))
-+#endif
- #ifndef __packed
- #define __packed	__attribute__((packed))
- #endif
-diff --git a/tools/include/linux/compiler.h b/tools/include/linux/compiler.h
-index 180f7714a5f1..9f9002734e19 100644
---- a/tools/include/linux/compiler.h
-+++ b/tools/include/linux/compiler.h
-@@ -47,6 +47,9 @@
- #ifndef noinline
- #define noinline
- #endif
-+#ifndef __no_tail_call
-+#define __no_tail_call
-+#endif
+diff --git a/tools/perf/tests/dwarf-unwind.c b/tools/perf/tests/dwarf-unwind.c
+index 779ce280a0e9..2a0dac81f44c 100644
+--- a/tools/perf/tests/dwarf-unwind.c
++++ b/tools/perf/tests/dwarf-unwind.c
+@@ -94,7 +94,7 @@ static int unwind_entry(struct unwind_entry *entry, void *arg)
+ 	return strcmp((const char *) symbol, funcs[idx]);
+ }
  
- /* Are two types/vars the same type (ignoring qualifiers)? */
- #ifndef __same_type
+-noinline int test_dwarf_unwind__thread(struct thread *thread)
++__no_tail_call noinline int test_dwarf_unwind__thread(struct thread *thread)
+ {
+ 	struct perf_sample sample;
+ 	unsigned long cnt = 0;
+@@ -125,7 +125,7 @@ noinline int test_dwarf_unwind__thread(struct thread *thread)
+ 
+ static int global_unwind_retval = -INT_MAX;
+ 
+-noinline int test_dwarf_unwind__compare(void *p1, void *p2)
++__no_tail_call noinline int test_dwarf_unwind__compare(void *p1, void *p2)
+ {
+ 	/* Any possible value should be 'thread' */
+ 	struct thread *thread = *(struct thread **)p1;
+@@ -144,7 +144,7 @@ noinline int test_dwarf_unwind__compare(void *p1, void *p2)
+ 	return p1 - p2;
+ }
+ 
+-noinline int test_dwarf_unwind__krava_3(struct thread *thread)
++__no_tail_call noinline int test_dwarf_unwind__krava_3(struct thread *thread)
+ {
+ 	struct thread *array[2] = {thread, thread};
+ 	void *fp = &bsearch;
+@@ -163,12 +163,12 @@ noinline int test_dwarf_unwind__krava_3(struct thread *thread)
+ 	return global_unwind_retval;
+ }
+ 
+-noinline int test_dwarf_unwind__krava_2(struct thread *thread)
++__no_tail_call noinline int test_dwarf_unwind__krava_2(struct thread *thread)
+ {
+ 	return test_dwarf_unwind__krava_3(thread);
+ }
+ 
+-noinline int test_dwarf_unwind__krava_1(struct thread *thread)
++__no_tail_call noinline int test_dwarf_unwind__krava_1(struct thread *thread)
+ {
+ 	return test_dwarf_unwind__krava_2(thread);
+ }
 -- 
 2.27.0.rc2.251.g90737beb825-goog
 
