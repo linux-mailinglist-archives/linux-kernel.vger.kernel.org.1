@@ -2,121 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B82841E92C0
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 19:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E7791E92C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 19:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729163AbgE3RFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 13:05:16 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:44592 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728998AbgE3RFP (ORCPT
+        id S1729175AbgE3RNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 13:13:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728927AbgE3RNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 13:05:15 -0400
-Received: by mail-il1-f200.google.com with SMTP id b8so5071014ilr.11
-        for <linux-kernel@vger.kernel.org>; Sat, 30 May 2020 10:05:15 -0700 (PDT)
+        Sat, 30 May 2020 13:13:31 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8DFCC03E969;
+        Sat, 30 May 2020 10:13:26 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id b6so3114682ljj.1;
+        Sat, 30 May 2020 10:13:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=wTHHUoOK9LtynLNtMfwC1JSkdo0WV2HtB9sbt24MB0w=;
+        b=MKd9T0hsLjcFzFJL3H00K5UpfhG0vuV9FzffgVfcDHnswZiZFPT1P3MndDuWNz8s3H
+         CZ6FGCNJh5ebffTiGIKQBe1JIPfNYycY7wQ5mk4oXMGzvtjHoe4nyDhS231xmfhxvV0Y
+         tLDvzs/escssZRXOB2PIzL7wcEvc+sm3cN+6+NF5xyuu6S1DDvdINsptn73yWTJHZ5Gv
+         YYtdpTr5IUklbfeXEHtJIEut42UWhpDf7rSku0LHVSwTJe7oRapJcm4F03/6qiJ+A/h+
+         aHjW7dU4W95HPYOkwzzZqOq6RFRh2HcmINJBFI46FBsuZHi9S++DKuur/fL+TJtnm4k+
+         H22Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=/hsI8GvxQQtajApFw9zLytd5w2edfOHy7b6Mtyz48Fs=;
-        b=XomqxpfSub+9RuYvC8/myPSfn4HvybBzIjO1AxmCUGA2rKIY1SPp3LE5aRzfaih8HJ
-         JExnoElG9uo4kMV9TNAoKV6dhTP8kEKKJzw3Q/W3IH+jUhi2CyXh8hDr013EcOwwVXv5
-         AFDAJscNxZxNkgSa36D9Z33G+7N7jk5HHXaMXscAbTA1yiU/HlFmNYsE2hVB/O8CJ3Fi
-         mxWMBYdNZxaLzHeGfwj1UX/7V3xa0L3PfD/I9tq2TVZ9vQ7my82Y4pCA+ScsVnRE8yC5
-         TPrrdhRJrEwHMX6SpdKXJLLjppeumxsKwamEovDPJJ0gSLN70Wu4MibohLB/Y8aIiTIL
-         o8xw==
-X-Gm-Message-State: AOAM531ccSzW39cgs9DL5Xs/mj4PlzwgScWqTTd9IF//XMKm6x/ymQZI
-        cWVtW0ghmm5wpdON06QMuHUDDjAvvhvc4x3NjTRjz2KC7OAt
-X-Google-Smtp-Source: ABdhPJxf6uF+kPqDGcGxxcIYjKQjMkKHX68upb8GBSKpU5bXRmK1OXwefprV/2P/lBEc74dGsWoHyNQgWmJxvkbKNn63VGulRn9j
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=wTHHUoOK9LtynLNtMfwC1JSkdo0WV2HtB9sbt24MB0w=;
+        b=Wsv+xOB2n5RcRZatcBk4MvzZkOtER/V6xcW8bWy4P4MDeRVe8jm6BuR6Z0pMGJ9SqN
+         xshcrxScr9V1HyPAndNHOtJQp5Gw3ppf1suRF3iaIlgE4c9Ivf1IZjW6g2WfnqIGVJWX
+         YatHxDc6TAIhipG7WSTwAKwhH1+WFi/TQT0isU5Hs59hBe6hOBnkeOxgbsqSF0OqImGH
+         8eTgWoLFU5pX8vekEqTUyU6Vkn+dIQEBFmnkhf2iEOVMAMEkLrjNhRTG7zJUIf7amWcP
+         Ix6aMxPqPyhRg8GjgvGclNVoTsn7uSDV9bF+3tSCwizkD6OHHahJnlJ4C/MmoVxIXjwn
+         GzsA==
+X-Gm-Message-State: AOAM5301UkEZ02mesY9DgP2hWniZGoa/Qy61UtEdOTUJS150TsoMjsjS
+        4k6ZMzfiwD8hEj7VFslBpiPHYotoiq68OQ==
+X-Google-Smtp-Source: ABdhPJxyamokCEL/p9IltyFvDIH5FCNZsvvKjaHINHauYbTgSdiXMTtiqcL9y34U7NEax2P1gvL12Q==
+X-Received: by 2002:a05:651c:508:: with SMTP id o8mr3968765ljp.112.1590858804997;
+        Sat, 30 May 2020 10:13:24 -0700 (PDT)
+Received: from localhost (95-31-124-98.broadband.corbina.ru. [95.31.124.98])
+        by smtp.gmail.com with ESMTPSA id j5sm2732038ljg.78.2020.05.30.10.13.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 30 May 2020 10:13:24 -0700 (PDT)
+From:   Nickolai Kozachenko <daemongloom@gmail.com>
+To:     Alex Hung <alex.hung@canonical.com>
+Cc:     Nickolai Kozachenko <daemongloom@gmail.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] intel-hid: Expand DMI quirk to support HP Spectre X2 (2015)
+Date:   Sat, 30 May 2020 22:07:20 +0500
+Message-Id: <20200530170719.16923-1-daemongloom@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAHp75VdV4mAfAz5OZSW3FSzDwkvQiM7djBTH9rrAZYHJUp5jRA@mail.gmail.com>
+References: <20200530170648.16845-1-daemongloom@gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a5e:c318:: with SMTP id a24mr11646847iok.166.1590858314697;
- Sat, 30 May 2020 10:05:14 -0700 (PDT)
-Date:   Sat, 30 May 2020 10:05:14 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bc4fd705a6e090e2@google.com>
-Subject: kernel BUG at include/linux/swapops.h:LINE!
-From:   syzbot <syzbot+c48f34012b06c4ac67dd@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following crash on:
+HEBC method reports capabilities of 5 button array but HP Spectre X2 (2015)
+does not have this control method (the same was for Wacom MobileStudio
+Pro). Expand previous DMI quirk by Alex Hung to also enable 5 button array
+for this system.
 
-HEAD commit:    9cb1fd0e Linux 5.7-rc7
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1788a54a100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cca7550d53ffa599
-dashboard link: https://syzkaller.appspot.com/bug?extid=c48f34012b06c4ac67dd
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+c48f34012b06c4ac67dd@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-kernel BUG at include/linux/swapops.h:197!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 30075 Comm: syz-executor.0 Not tainted 5.7.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:migration_entry_to_page include/linux/swapops.h:197 [inline]
-RIP: 0010:migration_entry_to_page include/linux/swapops.h:190 [inline]
-RIP: 0010:pmd_migration_entry_wait+0x5b4/0x660 mm/migrate.c:368
-Code: 32 e8 10 9f c0 ff 48 c7 c6 e0 a4 35 88 4c 89 e7 e8 81 a1 ec ff 0f 0b e8 fa 9e c0 ff 4d 8d 66 ff e9 1c fe ff ff e8 ec 9e c0 ff <0f> 0b e8 e5 9e c0 ff 0f 0b e8 de 9e c0 ff 4c 8d 65 ff eb c3 48 89
-RSP: 0000:ffffc90015fffc70 EFLAGS: 00010293
-RAX: ffff8880544f4180 RBX: 0000000000000000 RCX: ffffffff81b29e18
-RDX: 0000000000000000 RSI: ffffffff81b29fc4 RDI: 0000000000000001
-RBP: ffffea0000d40080 R08: ffff8880544f4180 R09: fffff940001a8001
-R10: ffffea0000d40007 R11: fffff940001a8000 R12: ffffea0000d40000
-R13: 1ffff92002bfff90 R14: ffffea0001230f08 R15: ffff8880503e11e0
-FS:  00007fdb7a134700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000200001c0 CR3: 00000000a703c000 CR4: 00000000001406e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __handle_mm_fault+0x1c0e/0x3c90 mm/memory.c:4327
- handle_mm_fault+0x1a5/0x660 mm/memory.c:4382
- do_user_addr_fault arch/x86/mm/fault.c:1464 [inline]
- do_page_fault+0x55b/0x13da arch/x86/mm/fault.c:1535
- page_fault+0x39/0x40 arch/x86/entry/entry_64.S:1203
-RIP: 0033:0x45ca35
-Code: 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 48 3d 01 f0 ff ff 0f 83 db b6 fb ff <c3> 66 2e 0f 1f 84 00 00 00 00 00 48 85 ff 41 57 4d 89 cf 41 56 41
-RSP: 002b:00000000200001c0 EFLAGS: 00010217
-RAX: 0000000000000000 RBX: 00000000004dabc0 RCX: 000000000045ca29
-RDX: 0000000020000140 RSI: 00000000200001c0 RDI: 0000000000000000
-RBP: 000000000078bfa0 R08: 0000000020000300 R09: 0000000000000000
-R10: 00000000200002c0 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 0000000000000076 R14: 00000000004c331e R15: 00007fdb7a1346d4
-Modules linked in:
----[ end trace 5096692b6266afca ]---
-RIP: 0010:migration_entry_to_page include/linux/swapops.h:197 [inline]
-RIP: 0010:migration_entry_to_page include/linux/swapops.h:190 [inline]
-RIP: 0010:pmd_migration_entry_wait+0x5b4/0x660 mm/migrate.c:368
-Code: 32 e8 10 9f c0 ff 48 c7 c6 e0 a4 35 88 4c 89 e7 e8 81 a1 ec ff 0f 0b e8 fa 9e c0 ff 4d 8d 66 ff e9 1c fe ff ff e8 ec 9e c0 ff <0f> 0b e8 e5 9e c0 ff 0f 0b e8 de 9e c0 ff 4c 8d 65 ff eb c3 48 89
-RSP: 0000:ffffc90015fffc70 EFLAGS: 00010293
-RAX: ffff8880544f4180 RBX: 0000000000000000 RCX: ffffffff81b29e18
-RDX: 0000000000000000 RSI: ffffffff81b29fc4 RDI: 0000000000000001
-RBP: ffffea0000d40080 R08: ffff8880544f4180 R09: fffff940001a8001
-R10: ffffea0000d40007 R11: fffff940001a8000 R12: ffffea0000d40000
-R13: 1ffff92002bfff90 R14: ffffea0001230f08 R15: ffff8880503e11e0
-FS:  00007fdb7a134700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000200001c0 CR3: 00000000a703c000 CR4: 00000000001406e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
+Signed-off-by: Nickolai Kozachenko <daemongloom@gmail.com>
 ---
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Formatted patch with git
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+ drivers/platform/x86/intel-hid.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/platform/x86/intel-hid.c b/drivers/platform/x86/intel-hid.c
+index cc7dd4d87cce..9ee79b74311c 100644
+--- a/drivers/platform/x86/intel-hid.c
++++ b/drivers/platform/x86/intel-hid.c
+@@ -79,6 +79,13 @@ static const struct dmi_system_id button_array_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Wacom MobileStudio Pro 16"),
+ 		},
+ 	},
++	{
++		.ident = "HP Spectre x2 (2015)",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "HP Spectre x2 Detachable"),
++		},
++	},
+ 	{ }
+ };
+ 
+-- 
+2.25.1
+
