@@ -2,137 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3951C1E93A6
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 22:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 626721E93B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 22:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729364AbgE3Un0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 16:43:26 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:39689 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729351AbgE3Un0 (ORCPT
+        id S1729325AbgE3UuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 16:50:01 -0400
+Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:41763 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728741AbgE3UuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 16:43:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1590871406; x=1622407406;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=JSWXZ1asivqI/Bn+lwzUAb94SWA5UJ9jNigR3k+tsWY=;
-  b=pUIML+AjEwAERSB/o6fCpEPvGBoMuUx9hzpvApchTqjO2uwhhmTJ3WSv
-   Ds4ZyUp73cdMdPf/fQXwqiU+uHVr9ZpaS7Im2awjSWZTW2eu8LCijKRrf
-   P2Z5gz9poccBNCPiAWsQa0YEGtG2zaizUdyXPlJsJAUoHlA64V+FKtMYJ
-   bPAXNo2zS2/4HvF31mxRLcyEriaFOofusbSYpyHsc5+htYhH9SFQuICns
-   AB6y9d6OpWLbrtHycnOJgbz41+LIOi5IW/uM51kZ9zQclQeNu9Hbc+5RH
-   kw/78bRJSGJLKuv1TRIzNZ9siCs86qi7hyJ3+fYA14rtwfSBD2U6sN1FJ
-   w==;
-IronPort-SDR: JjzEGWZlt95Yz1k4vKfHIbrdCwQNsITk+U9gm5JokzFiAH9u8zvHHH/6Fipe6DXVp1abgmJ4gt
- AAsoOcAr9NU4y2NVgYmSnWXY0W0w4F2MWn2FKeFYUBASxPUUvtAucOOJIrP6u6CIrnIKnq6Gwj
- 47BP5F0W+nnOgEjwVp0Nvbl2f6suv7NAgWxK1ZUxWvCbaQQUVi1CcyDeeYTeHOW9iR/XdsxkBO
- k1sFdvrSWYfKDH2leOxIvVEgZIUDPtwFP5Z6UJ4Q/VgObtXrJkd/VeZUFR+U3vs1+96vM/tCk9
- F18=
-X-IronPort-AV: E=Sophos;i="5.73,454,1583164800"; 
-   d="scan'208";a="140285836"
-Received: from mail-sn1nam02lp2053.outbound.protection.outlook.com (HELO NAM02-SN1-obe.outbound.protection.outlook.com) ([104.47.36.53])
-  by ob1.hgst.iphmx.com with ESMTP; 31 May 2020 04:43:25 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EurVlIPeKY/ejD/cT8uCcQnc6tH7eBnQZVJCZprWDdPL0emeWoJ4bgOnKlb77oPNcMEqFbLSOSnvRTsQddnikYVN3IytgSlyURFW0VxqN7fc9bU+AytoVXxojXUZ88pArijpH7v14eYX5q7NtRw0GYMWtuLk2mDioNR08hAMkxqJjNI67JyfRxeOekLzbxfLJeZNWsl6gl3WjqS8cE3MBQ41nd8/xs256I6Uk16G4tXWZIZN3ZmWBq3u5tJ2/JfZPYPsAeaayE1Z90dbajMMYtRxNqKJuXcpcFg9jTn/cMCxTrTVekB0I89KAtnWpGx9SA1sMVEppLssoxzst1Ry8Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JSWXZ1asivqI/Bn+lwzUAb94SWA5UJ9jNigR3k+tsWY=;
- b=KUWax2Lq94ec9MVb8fubueuqWnO65z12gwOXUF92V67s4zJmprt2XzYpoE6Wr4Q5IR8LeaRmCrYDS+0EeG9rjE64V5pIORp1qtQK4muOSRLJFrYw3kg7tTaIcilFxFu/QrA4pj+7INBO+qlP9QEqxK9bFIItO1Xdxt/Ps9qVlPrjqVbPYgNvz2t4PNmIkP3cDmbgvbVRrh61HvtRUt6RBhF5xcabfq2ip+P1rdFOHk/EWiS0UHhkTyrEHL70iQOwHLTfAxxRcgvV+Q1WgMC6a8HDlfVSZGv6pyHewos3PHYqagNoPP+wQnLd4DaIazCtnE9veUfAXoaOKBAU7LmeOw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JSWXZ1asivqI/Bn+lwzUAb94SWA5UJ9jNigR3k+tsWY=;
- b=rrY+Y8Hw41SrfMlAbU+Qa9+46CD0hj6or3iNwoxg8mV683lVOo1fTMj4Ba62yH7nTIo0vkArwLW+3hmbKiAJqx1GYg3Zao8awl4fSk5Aw7p97jwefOv/jDQ4Q0/OD2WW1jN4jx0r3gZ7HYQXQgGwX1Tm6aQQI8U/d9URLJrn5PU=
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com (2603:10b6:805:a4::19)
- by SN6PR04MB5070.namprd04.prod.outlook.com (2603:10b6:805:9e::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.21; Sat, 30 May
- 2020 20:43:23 +0000
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::9cbe:995f:c25f:d288]) by SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::9cbe:995f:c25f:d288%6]) with mapi id 15.20.3045.022; Sat, 30 May 2020
- 20:43:23 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Stanley Chu <stanley.chu@mediatek.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>
-CC:     "beanhuo@micron.com" <beanhuo@micron.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
-        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
-        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
-        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
-        "cc.chou@mediatek.com" <cc.chou@mediatek.com>,
-        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>
-Subject: RE: [PATCH] scsi: ufs: Remove redundant urgent_bkop_lvl
- initialization
-Thread-Topic: [PATCH] scsi: ufs: Remove redundant urgent_bkop_lvl
- initialization
-Thread-Index: AQHWNoxVzZCnTk5hMEqJuDv2sCuWsKjBGI0w
-Date:   Sat, 30 May 2020 20:43:23 +0000
-Message-ID: <SN6PR04MB4640DB0A4B72E086B851D287FC8C0@SN6PR04MB4640.namprd04.prod.outlook.com>
-References: <20200530141200.4616-1-stanley.chu@mediatek.com>
-In-Reply-To: <20200530141200.4616-1-stanley.chu@mediatek.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: mediatek.com; dkim=none (message not signed)
- header.d=none;mediatek.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [77.138.4.172]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: e6978894-7656-4b2c-a1a6-08d804da1864
-x-ms-traffictypediagnostic: SN6PR04MB5070:
-x-microsoft-antispam-prvs: <SN6PR04MB50709CD858D22571EA6C611BFC8C0@SN6PR04MB5070.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:4303;
-x-forefront-prvs: 041963B986
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: u1472h3i3t1EqrcFSINRmohDAPXiqnycJUzkd/Lih8yoBxCqAzpr+2zU+1YrTBK71m2ObkxBmLoJaiLDI2fk9iMM6pRCMDHD8n807HMFEBxRTGAuQO7jrQAtSnIsl0i9NeaOOa8+uma9Cav4wabX+wxHjOS8UsIY0liq7O394dhQPQf3qXwlUwnsnV6vIebFhQCildSlsrLKyNJiIdZQHsWG+S3tgK0iPX6tVWDb0NNHt/rwfMJW2T5H9Utu6OT1zbydgHYaSh8XuFVqpq5AohRYqC6rSLDg8HtQkdLvDo4O4pTghU8PJnvRs9+V3ibT6zXg/c9S4lPNik0OFsWckQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR04MB4640.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(396003)(376002)(136003)(366004)(39860400002)(6506007)(64756008)(4326008)(2906002)(110136005)(8936002)(86362001)(316002)(52536014)(66556008)(7696005)(71200400001)(54906003)(66446008)(8676002)(83380400001)(9686003)(478600001)(55016002)(33656002)(5660300002)(66946007)(76116006)(4744005)(66476007)(7416002)(26005)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: vLnW+wdtxKNGnH52LF/moAv98ZCFY9DXLzTWeYyMPCx6u8lPHjYgN7QRmSa/+DpqRlGL5c7OzlcoAsMBmuBpaeu3xqsIsh77bNybOUwonh3+0oz7Zzlypj8qP/3t9iDeFJIKZGSmvTKtLZc/wKuNz5c5RXGSd6Kf9ziqGCUwy8oKdaMjGcy1ys3fqV6AKdOd1SS6TiWmfu7h5GwCWP2xnx+5ffS7QStcUn078pWQyXj8XELNff3YBjmW6QO9qOefI7lmo8Hz0C/6V1VNIhF6vgyJ2Y+1/qpI0zwYuyp23AwtPIJCcPWFXaTpzPl6fdtsmkQSNHcZVQO5uiQ1JRRUADxx9DpVvHhIH0Q5TQJKsp4A34/OZ9oda0y+xMze/wbgpye2lL3JkI8rWq0BzP5719ZAwCThDP/48Of2OgNereYWoerYvEtrSmUSHD+qR4yceUBP5vXsl+H8D2h/WfeKx3eiJW9IvV6O4+igKRMP/Lc=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Sat, 30 May 2020 16:50:01 -0400
+Received: from localhost.localdomain ([93.22.132.31])
+        by mwinf5d08 with ME
+        id l8px220060gnv2t038pxvb; Sat, 30 May 2020 22:49:59 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 30 May 2020 22:49:59 +0200
+X-ME-IP: 93.22.132.31
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     aisheng.dong@nxp.com, festevam@gmail.com, shawnguo@kernel.org,
+        stefan@agner.ch, kernel@pengutronix.de, linus.walleij@linaro.org,
+        s.hauer@pengutronix.de, linux-imx@nxp.com,
+        gary.bisson@boundarydevices.com
+Cc:     linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] pinctrl: freescale: imx: Fix an error handling path in 'imx_pinctrl_probe()'
+Date:   Sat, 30 May 2020 22:49:55 +0200
+Message-Id: <20200530204955.588962-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6978894-7656-4b2c-a1a6-08d804da1864
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 May 2020 20:43:23.0225
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: c3mFjrpBVXI3NdEJh1t3YhWxGt2pqDqZXI4HGq5SUznxkbN/TF8M4Wd+BF6P1XDedIZQa5PF5Wm1rHUNVlS69Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB5070
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=20
->=20
-> In ufshcd_probe_hba(), all BKOP SW tracking variables can be reset
-> together in ufshcd_force_reset_auto_bkops(), thus urgent_bkop_lvl
-> initialization in the beginning of ufshcd_probe_hba() can be merged
-> into ufshcd_force_reset_auto_bkops().
->=20
-> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
+'pinctrl_unregister()' should not be called to undo
+'devm_pinctrl_register_and_init()', it is already handled by the framework.
+
+This simplifies the error handling paths of the probe function.
+The 'imx_free_resources()' can be removed as well.
+
+Fixes: a51c158bf0f7 ("pinctrl: imx: use radix trees for groups and functions")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/pinctrl/freescale/pinctrl-imx.c | 19 ++-----------------
+ 1 file changed, 2 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/pinctrl/freescale/pinctrl-imx.c b/drivers/pinctrl/freescale/pinctrl-imx.c
+index 9f42036c5fbb..1f81569c7ae3 100644
+--- a/drivers/pinctrl/freescale/pinctrl-imx.c
++++ b/drivers/pinctrl/freescale/pinctrl-imx.c
+@@ -774,16 +774,6 @@ static int imx_pinctrl_probe_dt(struct platform_device *pdev,
+ 	return 0;
+ }
+ 
+-/*
+- * imx_free_resources() - free memory used by this driver
+- * @info: info driver instance
+- */
+-static void imx_free_resources(struct imx_pinctrl *ipctl)
+-{
+-	if (ipctl->pctl)
+-		pinctrl_unregister(ipctl->pctl);
+-}
+-
+ int imx_pinctrl_probe(struct platform_device *pdev,
+ 		      const struct imx_pinctrl_soc_info *info)
+ {
+@@ -874,23 +864,18 @@ int imx_pinctrl_probe(struct platform_device *pdev,
+ 					     &ipctl->pctl);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "could not register IMX pinctrl driver\n");
+-		goto free;
++		return ret;
+ 	}
+ 
+ 	ret = imx_pinctrl_probe_dt(pdev, ipctl);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "fail to probe dt properties\n");
+-		goto free;
++		return ret;
+ 	}
+ 
+ 	dev_info(&pdev->dev, "initialized IMX pinctrl driver\n");
+ 
+ 	return pinctrl_enable(ipctl->pctl);
+-
+-free:
+-	imx_free_resources(ipctl);
+-
+-	return ret;
+ }
+ 
+ static int __maybe_unused imx_pinctrl_suspend(struct device *dev)
+-- 
+2.25.1
+
