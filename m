@@ -2,69 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7628A1E9021
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 11:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9411E9038
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 11:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728762AbgE3Jkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 05:40:33 -0400
-Received: from mga04.intel.com ([192.55.52.120]:31957 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727947AbgE3Jkc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 05:40:32 -0400
-IronPort-SDR: jyfxuyR+0cVCPwgkHFqU112qIqYQvbJZmbp5x9kjJQjuvP7iAMcbn0JEIAB2014HynI5GZNvW/
- 0ktgjZXkjoBQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2020 02:40:32 -0700
-IronPort-SDR: IT5C/iOxEUZuk5iMsY7WpqDpqM8Lde/Rm23FhU9tQWWdYtl68yJR5poXALOHn9kFobofZDtH5N
- ElUzvOheL23g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,451,1583222400"; 
-   d="scan'208";a="271475662"
-Received: from lkp-server01.sh.intel.com (HELO 9f9df8056aac) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 30 May 2020 02:40:30 -0700
-Received: from kbuild by 9f9df8056aac with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1jexyf-0000eW-Tz; Sat, 30 May 2020 09:40:29 +0000
-Date:   Sat, 30 May 2020 17:39:52 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     "Jonathan, Bakker," <xc-racer2@live.ca>
-Cc:     kbuild-all@lists.01.org, Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH regulator] regulator: max8998:
- max8998_get_current_limit() can be static
-Message-ID: <20200530093952.GA95399@ff281034de1d>
-References: <202005301757.zXvAYTUt%lkp@intel.com>
+        id S1728854AbgE3Jnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 05:43:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728304AbgE3Jny (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 May 2020 05:43:54 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89DDC03E969;
+        Sat, 30 May 2020 02:43:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=73MMfueoWp3O9MARH/BR3+rDia4lZUeJmAGiQu0hBYs=; b=QY0CoQptM3vcN8m7QNDn4q6uK
+        gIPUOe6k+M3redoEf1Eg+mEiVYU9XhMNrsqV8EkLD6Z8fFGvlrL4GPacHBmMdxpDU74F+k2kcgvYY
+        E3bGXzsQ7FHq4yBDcTFzR68k3Vk0WDkRfza2j52e9m1EacfgSVrL4dnGdedYVcLcKpLN90JspKkDA
+        gX82xXcAYQ6Zo6DXBWf4ATMQWzUfyJMKPcUEA7tyZnqsFfrmmj3TPEoQDWjFB3jZbP/m8jzMsBq0X
+        rn865YQdWjw81vwxMoCOc8h+VYni2zQcn0Ig/skNsBdWGlrY/et/7wKy3ttK/IKFddLBXO2vVqQHJ
+        /fCMoFRNQ==;
+Received: from shell.armlinux.org.uk ([2002:4e20:1eda:1:5054:ff:fe00:4ec]:36466)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jey1k-0001rf-IR; Sat, 30 May 2020 10:43:40 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jey1i-0000yO-AE; Sat, 30 May 2020 10:43:38 +0100
+Date:   Sat, 30 May 2020 10:43:38 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-arm-kernel@lists.infradead.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] scsi: cumana_2: Fix different dev_id between
+ 'request_irq()' and 'free_irq()'
+Message-ID: <20200530094338.GE1551@shell.armlinux.org.uk>
+References: <20200530073555.577414-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202005301757.zXvAYTUt%lkp@intel.com>
-X-Patchwork-Hint: ignore
+In-Reply-To: <20200530073555.577414-1-christophe.jaillet@wanadoo.fr>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, May 30, 2020 at 09:35:55AM +0200, Christophe JAILLET wrote:
+> The dev_id used in 'request_irq()' and 'free_irq()' should match.
+> So use 'host' in both cases.
+> 
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Fixes: 4ffea5e083f8 ("regulator: max8998: Add charger regulator")
-Signed-off-by: kbuild test robot <lkp@intel.com>
----
- max8998.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This is itself wrong.  cumanascsi_2_intr() requires "info" as the devid.
+Either cumanascsi_2_intr() needs changing to use shost_priv(host) along
+with this change, or free_irq() needs changing to use "info".
 
-diff --git a/drivers/regulator/max8998.c b/drivers/regulator/max8998.c
-index 668ced0064179..ab16790a02068 100644
---- a/drivers/regulator/max8998.c
-+++ b/drivers/regulator/max8998.c
-@@ -415,7 +415,7 @@ int max8998_set_current_limit(struct regulator_dev *rdev,
- 				  sel, rdev->desc->csel_mask);
- }
- 
--int max8998_get_current_limit(struct regulator_dev *rdev)
-+static int max8998_get_current_limit(struct regulator_dev *rdev)
- {
- 	struct max8998_data *max8998 = rdev_get_drvdata(rdev);
- 	struct i2c_client *i2c = max8998->iodev->i2c;
+Likely the same for the other patches, I haven't looked.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC for 0.8m (est. 1762m) line in suburbia: sync at 13.1Mbps down 424kbps up
