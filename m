@@ -2,93 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B261E9367
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 21:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15B01E9373
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 21:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729330AbgE3TcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 15:32:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34412 "EHLO mail.kernel.org"
+        id S1729308AbgE3TfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 15:35:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729268AbgE3TcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 15:32:12 -0400
-Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C93B2074D;
-        Sat, 30 May 2020 19:32:11 +0000 (UTC)
+        id S1728999AbgE3TfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 May 2020 15:35:02 -0400
+Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.7-6 tag
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590867131;
-        bh=7cTkxXgRiO29IpoJV/L31iUYghUqHIk+zT/61X8nXHg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x25j37GIR0zDzDogC9mR5LgH744ECJoTi3FgRrMr/vfPOysZFGKBK5b3FzFujp3X4
-         c5zFybjcb+RCgApg1ul0tGG/wuPL36Qrp2nHA2lxixcZkFs7V4TTfqy3BMAH88qqZu
-         RK2RBFTsDHeiJ2WzioyGutcG7lVTMqncXWffXMqQ=
-Received: from mchehab by mail.kernel.org with local (Exim 4.93)
-        (envelope-from <mchehab@kernel.org>)
-        id 1jf7DF-003LJC-CW; Sat, 30 May 2020 21:32:09 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Media Mailing List <linux-media@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org
-Subject: [PATCH 2/2] media: atomisp: get rid of sh_css_pipe.c
-Date:   Sat, 30 May 2020 21:32:08 +0200
-Message-Id: <7d398a74c789941b36646d1b27cada97a8b58b06.1590866796.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1590866796.git.mchehab+huawei@kernel.org>
-References: <cover.1590866796.git.mchehab+huawei@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        s=default; t=1590867302;
+        bh=ng4f9RxzP/Ig0BQgTaS6OyObrPJMyf+7HgLX1sLIp6Y=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=dJJG5mseTFFXjgCcCtJ8ItTnyMqVDYOBIT/peUoA+St05YHa98ilcIXeQP7s5rjZa
+         q/LaDV70AqIUxZREYUfhTXfZMjg8dGOaKusGvSeF0jACnxdSOJqHQvadwBa0vRg3Ml
+         n1IGIX36cFeTKMXjrCIinoLhAUNuRYLR+fwzwBIg=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <87lfl9ikmp.fsf@mpe.ellerman.id.au>
+References: <87lfl9ikmp.fsf@mpe.ellerman.id.au>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <87lfl9ikmp.fsf@mpe.ellerman.id.au>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git
+ tags/powerpc-5.7-6
+X-PR-Tracked-Commit-Id: 2f26ed1764b42a8c40d9c48441c73a70d805decf
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: ffeb595d84811dde16a28b33d8a7cf26d51d51b3
+Message-Id: <159086730247.6123.12368301949308597060.pr-tracker-bot@kernel.org>
+Date:   Sat, 30 May 2020 19:35:02 +0000
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>, ajd@linux.ibm.com,
+        dja@axtens.net, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's nothing there, just comments.
+The pull request you sent on Sun, 31 May 2020 00:05:02 +1000:
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/staging/media/atomisp/Makefile          |  1 -
- drivers/staging/media/atomisp/pci/sh_css_pipe.c | 17 -----------------
- 2 files changed, 18 deletions(-)
- delete mode 100644 drivers/staging/media/atomisp/pci/sh_css_pipe.c
+> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.7-6
 
-diff --git a/drivers/staging/media/atomisp/Makefile b/drivers/staging/media/atomisp/Makefile
-index 0b62020f9b8b..9dc8072799e3 100644
---- a/drivers/staging/media/atomisp/Makefile
-+++ b/drivers/staging/media/atomisp/Makefile
-@@ -37,7 +37,6 @@ atomisp-objs += \
- 	pci/sh_css_param_dvs.o \
- 	pci/sh_css_param_shading.o \
- 	pci/sh_css_params.o \
--	pci/sh_css_pipe.o \
- 	pci/sh_css_properties.o \
- 	pci/sh_css_shading.o \
- 	pci/sh_css_sp.o \
-diff --git a/drivers/staging/media/atomisp/pci/sh_css_pipe.c b/drivers/staging/media/atomisp/pci/sh_css_pipe.c
-deleted file mode 100644
-index b6bd47d9b01c..000000000000
---- a/drivers/staging/media/atomisp/pci/sh_css_pipe.c
-+++ /dev/null
-@@ -1,17 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Support for Intel Camera Imaging ISP subsystem.
-- * Copyright (c) 2015, Intel Corporation.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms and conditions of the GNU General Public License,
-- * version 2, as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope it will be useful, but WITHOUT
-- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-- * more details.
-- */
--
--/* This file will contain the code to implement the functions declared in ia_css_pipe.h and ia_css_pipe_public.h
--   and associated helper functions */
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/ffeb595d84811dde16a28b33d8a7cf26d51d51b3
+
+Thank you!
+
 -- 
-2.26.2
-
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
