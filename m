@@ -2,82 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B831E926A
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 17:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E831E926E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 17:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729134AbgE3P6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 11:58:31 -0400
-Received: from smtprelay0009.hostedemail.com ([216.40.44.9]:60224 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729029AbgE3P6a (ORCPT
+        id S1729161AbgE3P72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 11:59:28 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:39239 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1729029AbgE3P72 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 11:58:30 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 9CCB74DD8;
-        Sat, 30 May 2020 15:58:29 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2894:3138:3139:3140:3141:3142:3352:3622:3865:3867:3870:3871:4321:4605:5007:7903:8603:10004:10400:10848:11026:11232:11658:11914:12043:12048:12296:12297:12438:12740:12760:12895:13069:13311:13357:13439:14096:14097:14181:14659:14721:21080:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
-X-HE-Tag: ink56_0c0299e26d6d
-X-Filterd-Recvd-Size: 2145
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf12.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 30 May 2020 15:58:28 +0000 (UTC)
-Message-ID: <0c00d96c46d34d69f5f459baebf3c89a507730fc.camel@perches.com>
-Subject: Re: [PATCH] KVM: Use previously computed array_size()
-From:   Joe Perches <joe@perches.com>
-To:     Denis Efremov <efremov@linux.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Sat, 30 May 2020 08:58:26 -0700
-In-Reply-To: <20200530143558.321449-1-efremov@linux.com>
-References: <20200530143558.321449-1-efremov@linux.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        Sat, 30 May 2020 11:59:28 -0400
+Received: (qmail 30265 invoked by uid 1000); 30 May 2020 11:59:27 -0400
+Date:   Sat, 30 May 2020 11:59:27 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Jia-Ju Bai <baijiaju@tsinghua.edu.cn>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        usb-storage@lists.one-eyed-alien.net, linux-kernel@vger.kernel.org,
+        Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: Re: [PATCH] usb: storage: alauda: fix possible buffer overflow
+ casued by bad DMA value in alauda_read_map()
+Message-ID: <20200530155927.GC29298@rowland.harvard.edu>
+References: <20200530144230.3550-1-baijiaju@tsinghua.edu.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200530144230.3550-1-baijiaju@tsinghua.edu.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-05-30 at 17:35 +0300, Denis Efremov wrote:
-> array_size() is used in alloc calls to compute the allocation
-> size. Next, "raw" multiplication is used to compute the size
-> for copy_from_user(). The patch removes duplicated computation
-> by saving the size in a var. No security concerns, just a small
-> optimization.
+On Sat, May 30, 2020 at 10:42:30PM +0800, Jia-Ju Bai wrote:
+> From: Jia-Ju Bai <baijiaju1990@gmail.com>
 > 
-> Signed-off-by: Denis Efremov <efremov@linux.com>
+> The value us->iobuf is stored in DMA memory, and it is assigned to data,
+> so data[6] and data[7] can be modified at anytime by malicious hardware.
+> In this case, data[6] ^ data[7] can be a quite large number, which may 
+> cause buffer overflow when the code "parity[data[6] ^ data[7]]" is
+> executed.
+> 
+> To fix this possible bug, data[6] ^ data[7] is assigned to a local
+> variable, and then this variable is checked before being used.
 
-Perhaps use vmemdup_user?
+There are much worse problems than this in the alauda driver.  For 
+example, alauda_get_redu_data() does I/O from a data buffer on the 
+stack; this is not allowed.  That's just the example I noticed; there 
+may very well be others.
 
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-[]
-> @@ -184,14 +184,13 @@ int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
->  		goto out;
->  	r = -ENOMEM;
->  	if (cpuid->nent) {
-> -		cpuid_entries =
-> -			vmalloc(array_size(sizeof(struct kvm_cpuid_entry),
-> -					   cpuid->nent));
-> +		const size_t size = array_size(sizeof(struct kvm_cpuid_entry),
-> +					       cpuid->nent);
-> +		cpuid_entries = vmalloc(size);
->  		if (!cpuid_entries)
->  			goto out;
->  		r = -EFAULT;
-> -		if (copy_from_user(cpuid_entries, entries,
-> -				   cpuid->nent * sizeof(struct kvm_cpuid_entry)))
-> +		if (copy_from_user(cpuid_entries, entries, size))
+If you want to fix something, fix that.
 
-		cpuid_entries = vmemdup_user(entries,
-					     array_size(sizeof(struct kvm_cpuid_entry), cpuid->nent));
-		if (IS_ERR(cpuid_entries))
-			...
+If you're still worried about malicious hardware, the way to fix the 
+problem is not to change this one location.  Instead, you should modify 
+the driver so that us->iobuf is not stored in DMA memory.
 
-etc...
-
-
+Alan Stern
