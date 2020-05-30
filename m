@@ -2,142 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B001E8CF6
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 03:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096BD1E8CDC
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 03:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728710AbgE3By3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 21:54:29 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:51808 "EHLO huawei.com"
+        id S1728617AbgE3BaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 21:30:15 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:58030 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728297AbgE3By0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 21:54:26 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 3FD574E7A090975C6F68;
-        Sat, 30 May 2020 09:54:23 +0800 (CST)
-Received: from localhost.localdomain (10.175.118.36) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 30 May 2020 09:54:13 +0800
-From:   Luo bin <luobin9@huawei.com>
-To:     <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <luoxianjun@huawei.com>, <luobin9@huawei.com>,
-        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>
-Subject: [PATCH net-next v3] hinic: add set_channels ethtool_ops support
-Date:   Fri, 29 May 2020 18:11:50 +0000
-Message-ID: <20200529181150.3183-1-luobin9@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727876AbgE3BaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 21:30:15 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 27B375CB4E9BE0AE5A1A;
+        Sat, 30 May 2020 09:30:13 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server (TLS) id 14.3.487.0; Sat, 30 May
+ 2020 09:30:11 +0800
+Subject: Re: [PATCH] Revert "f2fs: fix quota_sync failure due to f2fs_lock_op"
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
+References: <20200529092947.7890-1-yuchao0@huawei.com>
+ <20200529223426.GA249109@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <96ba756e-a354-1ee8-689e-211f63c294e6@huawei.com>
+Date:   Sat, 30 May 2020 09:30:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.118.36]
+In-Reply-To: <20200529223426.GA249109@google.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.134.22.195]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add support to change TX/RX queue number with ethtool -L ethx combined
+On 2020/5/30 6:34, Jaegeuk Kim wrote:
+> On 05/29, Chao Yu wrote:
+>> Under heavy fsstress, we may triggle panic while issuing discard,
+>> because __check_sit_bitmap() detects that discard command may earse
+>> valid data blocks, the root cause is as below race stack described,
+>> since we removed lock when flushing quota data, quota data writeback
+>> may race with write_checkpoint(), so that it causes inconsistency in
+>> between cached discard entry and segment bitmap.
+>>
+>> - f2fs_write_checkpoint
+>>  - block_operations
+>>   - set_sbi_flag(sbi, SBI_QUOTA_SKIP_FLUSH)
+>>  - f2fs_flush_sit_entries
+>>   - add_discard_addrs
+>>    - __set_bit_le(i, (void *)de->discard_map);
+>> 						- f2fs_write_data_pages
+>> 						 - f2fs_write_single_data_page
+>> 						   : inode is quota one, cp_rwsem won't be locked
+>> 						  - f2fs_do_write_data_page
+>> 						   - f2fs_allocate_data_block
+>> 						    - f2fs_wait_discard_bio
+>> 						      : discard entry has not been added yet.
+>> 						    - update_sit_entry
+>>  - f2fs_clear_prefree_segments
+>>   - f2fs_issue_discard
+>>   : add discard entry
+>>
+>> This patch fixes this issue by reverting 435cbab95e39 ("f2fs: fix quota_sync
+>> failure due to f2fs_lock_op").
+>>
+>> Fixes: 435cbab95e39 ("f2fs: fix quota_sync failure due to f2fs_lock_op")
+> 
+> The previous patch fixes quota_sync gets EAGAIN all the time.
+> How about this? It seems this works for fsstress test.
+> 
+> ---
+>  fs/f2fs/segment.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> index ebbadde6cbced..f67cffc38975e 100644
+> --- a/fs/f2fs/segment.c
+> +++ b/fs/f2fs/segment.c
+> @@ -3095,6 +3095,14 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
+>  	struct curseg_info *curseg = CURSEG_I(sbi, type);
+>  	bool put_pin_sem = false;
+>  
+> +	/*
+> +	 * We need to wait for node_write to avoid block allocation during
+> +	 * checkpoint. This can only happen to quota writes which can cause
+> +	 * the below discard race condition.
+> +	 */
+> +	if (IS_DATASEG(type))
 
-Signed-off-by: Luo bin <luobin9@huawei.com>
----
- .../net/ethernet/huawei/hinic/hinic_ethtool.c | 40 +++++++++++++++----
- .../net/ethernet/huawei/hinic/hinic_main.c    |  2 +-
- drivers/net/ethernet/huawei/hinic/hinic_tx.c  |  5 +++
- 3 files changed, 38 insertions(+), 9 deletions(-)
+type is CURSEG_COLD_DATA_PINNED, IS_DATASEG(CURSEG_COLD_DATA_PINNED) should be false,
+then node_write lock will not be held, later type will be updated to CURSEG_COLD_DATA,
+then we will try to release node_write.
 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-index ace18d258049..efb02e03e7da 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-@@ -619,14 +619,37 @@ static void hinic_get_channels(struct net_device *netdev,
- 	struct hinic_dev *nic_dev = netdev_priv(netdev);
- 	struct hinic_hwdev *hwdev = nic_dev->hwdev;
- 
--	channels->max_rx = hwdev->nic_cap.max_qps;
--	channels->max_tx = hwdev->nic_cap.max_qps;
--	channels->max_other = 0;
--	channels->max_combined = 0;
--	channels->rx_count = hinic_hwdev_num_qps(hwdev);
--	channels->tx_count = hinic_hwdev_num_qps(hwdev);
--	channels->other_count = 0;
--	channels->combined_count = 0;
-+	channels->max_combined = nic_dev->max_qps;
-+	channels->combined_count = hinic_hwdev_num_qps(hwdev);
-+}
-+
-+static int hinic_set_channels(struct net_device *netdev,
-+			      struct ethtool_channels *channels)
-+{
-+	struct hinic_dev *nic_dev = netdev_priv(netdev);
-+	unsigned int count = channels->combined_count;
-+	int err;
-+
-+	netif_info(nic_dev, drv, netdev, "Set max combined queue number from %d to %d\n",
-+		   hinic_hwdev_num_qps(nic_dev->hwdev), count);
-+
-+	if (netif_running(netdev)) {
-+		netif_info(nic_dev, drv, netdev, "Restarting netdev\n");
-+		hinic_close(netdev);
-+
-+		nic_dev->hwdev->nic_cap.num_qps = count;
-+
-+		err = hinic_open(netdev);
-+		if (err) {
-+			netif_err(nic_dev, drv, netdev,
-+				  "Failed to open netdev\n");
-+			return -EFAULT;
-+		}
-+	} else {
-+		nic_dev->hwdev->nic_cap.num_qps = count;
-+	}
-+
-+	return 0;
- }
- 
- static int hinic_get_rss_hash_opts(struct hinic_dev *nic_dev,
-@@ -1219,6 +1242,7 @@ static const struct ethtool_ops hinic_ethtool_ops = {
- 	.get_ringparam = hinic_get_ringparam,
- 	.set_ringparam = hinic_set_ringparam,
- 	.get_channels = hinic_get_channels,
-+	.set_channels = hinic_set_channels,
- 	.get_rxnfc = hinic_get_rxnfc,
- 	.set_rxnfc = hinic_set_rxnfc,
- 	.get_rxfh_key_size = hinic_get_rxfh_key_size,
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_main.c b/drivers/net/ethernet/huawei/hinic/hinic_main.c
-index c8ab129a7ae8..e9e6f4c9309a 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_main.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_main.c
-@@ -326,7 +326,6 @@ static void hinic_enable_rss(struct hinic_dev *nic_dev)
- 	int i, node, err = 0;
- 	u16 num_cpus = 0;
- 
--	nic_dev->max_qps = hinic_hwdev_max_num_qps(hwdev);
- 	if (nic_dev->max_qps <= 1) {
- 		nic_dev->flags &= ~HINIC_RSS_ENABLE;
- 		nic_dev->rss_limit = nic_dev->max_qps;
-@@ -1031,6 +1030,7 @@ static int nic_dev_init(struct pci_dev *pdev)
- 	nic_dev->rq_depth = HINIC_RQ_DEPTH;
- 	nic_dev->sriov_info.hwdev = hwdev;
- 	nic_dev->sriov_info.pdev = pdev;
-+	nic_dev->max_qps = num_qps;
- 
- 	sema_init(&nic_dev->mgmt_lock, 1);
- 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_tx.c b/drivers/net/ethernet/huawei/hinic/hinic_tx.c
-index 4c66a0bc1b28..6da761d7a6ef 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_tx.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_tx.c
-@@ -470,6 +470,11 @@ netdev_tx_t hinic_xmit_frame(struct sk_buff *skb, struct net_device *netdev)
- 	struct hinic_txq *txq;
- 	struct hinic_qp *qp;
- 
-+	if (unlikely(!netif_carrier_ok(netdev))) {
-+		dev_kfree_skb_any(skb);
-+		return NETDEV_TX_OK;
-+	}
-+
- 	txq = &nic_dev->txqs[q_id];
- 	qp = container_of(txq->sq, struct hinic_qp, sq);
- 
--- 
-2.17.1
+Thanks,
 
+> +		down_write(&sbi->node_write);
+> +
+>  	if (type == CURSEG_COLD_DATA) {
+>  		/* GC during CURSEG_COLD_DATA_PINNED allocation */
+>  		if (down_read_trylock(&sbi->pin_sem)) {
+> @@ -3174,6 +3182,9 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
+>  
+>  	if (put_pin_sem)
+>  		up_read(&sbi->pin_sem);
+> +
+> +	if (IS_DATASEG(type))
+> +		up_write(&sbi->node_write);
+>  }
+>  
+>  static void update_device_state(struct f2fs_io_info *fio)
+> 
