@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D94D61E9053
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 11:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D01331E905F
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 11:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728937AbgE3J5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 May 2020 05:57:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52914 "EHLO
+        id S1729081AbgE3J6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 May 2020 05:58:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728825AbgE3J5X (ORCPT
+        with ESMTP id S1728724AbgE3J5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 May 2020 05:57:23 -0400
+        Sat, 30 May 2020 05:57:24 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B628CC03E969;
-        Sat, 30 May 2020 02:57:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE294C03E969;
+        Sat, 30 May 2020 02:57:24 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jeyEy-0002qw-DA; Sat, 30 May 2020 11:57:20 +0200
+        id 1jeyEz-0002ri-EM; Sat, 30 May 2020 11:57:21 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 07F551C032F;
-        Sat, 30 May 2020 11:57:20 +0200 (CEST)
-Date:   Sat, 30 May 2020 09:57:19 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 1AC871C032F;
+        Sat, 30 May 2020 11:57:21 +0200 (CEST)
+Date:   Sat, 30 May 2020 09:57:20 -0000
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/entry: Optimize local_db_save() for virt
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+Subject: [tip: x86/entry] x86/entry, nmi: Disable #DB
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200529213321.187833200@infradead.org>
-References: <20200529213321.187833200@infradead.org>
+In-Reply-To: <20200529213321.069223695@infradead.org>
+References: <20200529213321.069223695@infradead.org>
 MIME-Version: 1.0
-Message-ID: <159083263988.17951.3760177189894827282.tip-bot2@tip-bot2>
+Message-ID: <159083264093.17951.18261751071508007214.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -51,129 +50,108 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/entry branch of tip:
 
-Commit-ID:     299a9a21bf913717c0f28ef4ae8b2f0668c7f00a
-Gitweb:        https://git.kernel.org/tip/299a9a21bf913717c0f28ef4ae8b2f0668c7f00a
+Commit-ID:     af87e4c4d65b2008709efcfb7657551f1c62a98b
+Gitweb:        https://git.kernel.org/tip/af87e4c4d65b2008709efcfb7657551f1c62a98b
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 29 May 2020 23:27:36 +02:00
+AuthorDate:    Fri, 29 May 2020 23:27:34 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sat, 30 May 2020 10:00:08 +02:00
+CommitterDate: Sat, 30 May 2020 10:00:07 +02:00
 
-x86/entry: Optimize local_db_save() for virt
+x86/entry, nmi: Disable #DB
 
-Because DRn access is 'difficult' with virt; but the DR7 read is cheaper
-than a cacheline miss on native, add a virt specific fast path to
-local_db_save(), such that when breakpoints are not in use to avoid
-touching DRn entirely.
+Instead of playing stupid games with IST stacks, fully disallow #DB
+during NMIs. There is absolutely no reason to allow them, and killing
+this saves a heap of trouble.
 
-Suggested-by: Andy Lutomirski <luto@kernel.org>
+#DB is already forbidden on noinstr and CEA, so there can't be a #DB before
+this. Disabling it right after nmi_enter() ensures that the full NMI code
+is protected.
+
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/20200529213321.187833200@infradead.org
+Link: https://lkml.kernel.org/r/20200529213321.069223695@infradead.org
 
 ---
- arch/x86/include/asm/debugreg.h |  5 ++++-
- arch/x86/kernel/hw_breakpoint.c | 26 ++++++++++++++++++++++----
- arch/x86/kvm/vmx/nested.c       |  2 +-
- 3 files changed, 27 insertions(+), 6 deletions(-)
+ arch/x86/kernel/nmi.c | 55 ++----------------------------------------
+ 1 file changed, 3 insertions(+), 52 deletions(-)
 
-diff --git a/arch/x86/include/asm/debugreg.h b/arch/x86/include/asm/debugreg.h
-index 4ef8690..3e1c502 100644
---- a/arch/x86/include/asm/debugreg.h
-+++ b/arch/x86/include/asm/debugreg.h
-@@ -85,7 +85,7 @@ static inline void hw_breakpoint_disable(void)
- 	set_debugreg(0UL, 3);
- }
+diff --git a/arch/x86/kernel/nmi.c b/arch/x86/kernel/nmi.c
+index 1c58454..52a708e 100644
+--- a/arch/x86/kernel/nmi.c
++++ b/arch/x86/kernel/nmi.c
+@@ -478,40 +478,7 @@ enum nmi_states {
+ };
+ static DEFINE_PER_CPU(enum nmi_states, nmi_state);
+ static DEFINE_PER_CPU(unsigned long, nmi_cr2);
+-
+-#ifdef CONFIG_X86_64
+-/*
+- * In x86_64, we need to handle breakpoint -> NMI -> breakpoint.  Without
+- * some care, the inner breakpoint will clobber the outer breakpoint's
+- * stack.
+- *
+- * If a breakpoint is being processed, and the debug stack is being
+- * used, if an NMI comes in and also hits a breakpoint, the stack
+- * pointer will be set to the same fixed address as the breakpoint that
+- * was interrupted, causing that stack to be corrupted. To handle this
+- * case, check if the stack that was interrupted is the debug stack, and
+- * if so, change the IDT so that new breakpoints will use the current
+- * stack and not switch to the fixed address. On return of the NMI,
+- * switch back to the original IDT.
+- */
+-static DEFINE_PER_CPU(int, update_debug_stack);
+-
+-static noinstr bool is_debug_stack(unsigned long addr)
+-{
+-	struct cea_exception_stacks *cs = __this_cpu_read(cea_exception_stacks);
+-	unsigned long top = CEA_ESTACK_TOP(cs, DB);
+-	unsigned long bot = CEA_ESTACK_BOT(cs, DB1);
+-
+-	if (__this_cpu_read(debug_stack_usage))
+-		return true;
+-	/*
+-	 * Note, this covers the guard page between DB and DB1 as well to
+-	 * avoid two checks. But by all means @addr can never point into
+-	 * the guard page.
+-	 */
+-	return addr >= bot && addr < top;
+-}
+-#endif
++static DEFINE_PER_CPU(unsigned long, nmi_dr7);
  
--static inline int hw_breakpoint_active(void)
-+static inline bool hw_breakpoint_active(void)
+ DEFINE_IDTENTRY_NMI(exc_nmi)
  {
- 	return __this_cpu_read(cpu_dr7) & DR_GLOBAL_ENABLE_MASK;
- }
-@@ -117,6 +117,9 @@ static __always_inline unsigned long local_db_save(void)
- {
- 	unsigned long dr7;
+@@ -526,18 +493,7 @@ DEFINE_IDTENTRY_NMI(exc_nmi)
+ 	this_cpu_write(nmi_cr2, read_cr2());
+ nmi_restart:
  
-+	if (static_cpu_has(X86_FEATURE_HYPERVISOR) && !hw_breakpoint_active())
-+		return 0;
-+
- 	get_debugreg(dr7, 7);
- 	dr7 &= ~0x400; /* architecturally set bit */
- 	if (dr7)
-diff --git a/arch/x86/kernel/hw_breakpoint.c b/arch/x86/kernel/hw_breakpoint.c
-index fc1743a..8cdf29f 100644
---- a/arch/x86/kernel/hw_breakpoint.c
-+++ b/arch/x86/kernel/hw_breakpoint.c
-@@ -99,6 +99,8 @@ int arch_install_hw_breakpoint(struct perf_event *bp)
- 	unsigned long *dr7;
- 	int i;
+-#ifdef CONFIG_X86_64
+-	/*
+-	 * If we interrupted a breakpoint, it is possible that
+-	 * the nmi handler will have breakpoints too. We need to
+-	 * change the IDT such that breakpoints that happen here
+-	 * continue to use the NMI stack.
+-	 */
+-	if (unlikely(is_debug_stack(regs->sp))) {
+-		debug_stack_set_zero();
+-		this_cpu_write(update_debug_stack, 1);
+-	}
+-#endif
++	this_cpu_write(nmi_dr7, local_db_save());
  
-+	lockdep_assert_irqs_disabled();
-+
- 	for (i = 0; i < HBP_NUM; i++) {
- 		struct perf_event **slot = this_cpu_ptr(&bp_per_reg[i]);
+ 	nmi_enter();
  
-@@ -117,6 +119,12 @@ int arch_install_hw_breakpoint(struct perf_event *bp)
- 	dr7 = this_cpu_ptr(&cpu_dr7);
- 	*dr7 |= encode_dr7(i, info->len, info->type);
+@@ -548,12 +504,7 @@ nmi_restart:
  
-+	/*
-+	 * Ensure we first write cpu_dr7 before we set the DR7 register.
-+	 * This ensures an NMI never see cpu_dr7 0 when DR7 is not.
-+	 */
-+	barrier();
-+
- 	set_debugreg(*dr7, 7);
- 	if (info->mask)
- 		set_dr_addr_mask(info->mask, i);
-@@ -136,9 +144,11 @@ int arch_install_hw_breakpoint(struct perf_event *bp)
- void arch_uninstall_hw_breakpoint(struct perf_event *bp)
- {
- 	struct arch_hw_breakpoint *info = counter_arch_bp(bp);
--	unsigned long *dr7;
-+	unsigned long dr7;
- 	int i;
+ 	nmi_exit();
  
-+	lockdep_assert_irqs_disabled();
-+
- 	for (i = 0; i < HBP_NUM; i++) {
- 		struct perf_event **slot = this_cpu_ptr(&bp_per_reg[i]);
+-#ifdef CONFIG_X86_64
+-	if (unlikely(this_cpu_read(update_debug_stack))) {
+-		debug_stack_reset();
+-		this_cpu_write(update_debug_stack, 0);
+-	}
+-#endif
++	local_db_restore(this_cpu_read(nmi_dr7));
  
-@@ -151,12 +161,20 @@ void arch_uninstall_hw_breakpoint(struct perf_event *bp)
- 	if (WARN_ONCE(i == HBP_NUM, "Can't find any breakpoint slot"))
- 		return;
- 
--	dr7 = this_cpu_ptr(&cpu_dr7);
--	*dr7 &= ~__encode_dr7(i, info->len, info->type);
-+	dr7 = this_cpu_read(cpu_dr7);
-+	dr7 &= ~__encode_dr7(i, info->len, info->type);
- 
--	set_debugreg(*dr7, 7);
-+	set_debugreg(dr7, 7);
- 	if (info->mask)
- 		set_dr_addr_mask(0, i);
-+
-+	/*
-+	 * Ensure the write to cpu_dr7 is after we've set the DR7 register.
-+	 * This ensures an NMI never see cpu_dr7 0 when DR7 is not.
-+	 */
-+	barrier();
-+
-+	this_cpu_write(cpu_dr7, dr7);
- }
- 
- static int arch_bp_generic_len(int x86_len)
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index e44f33c..9b40c6a 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -3028,9 +3028,9 @@ static int nested_vmx_check_vmentry_hw(struct kvm_vcpu *vcpu)
- 	/*
- 	 * VMExit clears RFLAGS.IF and DR7, even on a consistency check.
- 	 */
--	local_irq_enable();
- 	if (hw_breakpoint_active())
- 		set_debugreg(__this_cpu_read(cpu_dr7), 7);
-+	local_irq_enable();
- 	preempt_enable();
- 
- 	/*
+ 	if (unlikely(this_cpu_read(nmi_cr2) != read_cr2()))
+ 		write_cr2(this_cpu_read(nmi_cr2));
