@@ -2,164 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22FC21E8C99
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 02:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3BBA1E8CA0
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 02:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728631AbgE3Asl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 20:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728449AbgE3Asj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 20:48:39 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC75CC08C5CA
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 17:48:39 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id n24so3826591ejd.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 May 2020 17:48:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SnGa+sp06YGgurCULp59Dm5yJ72F3Q121M3j0Zokm2c=;
-        b=d/wcQy8elcjGFNAUc1MXBBI2fcayOPmE9V8XLfJsTJOqDasbkiEtu7xxWmrYwcBvXi
-         oGfybuS74o+QWL/KgFLhwviOMp6+xWBLNWfAQoLE10/bbsgA6S2eVuMrdXUSijKdCp83
-         T5ckrCWcEaST8oZHFwjxIkK0tOW3XYgvfzdgChJOBkjjlUa58r3VNREsyNUA28TUA+hJ
-         lrVOExkoWYhgTVW6l9LM0O8KizleAnyYv72I1mGIIvWQQ4Ki5ZdtieSpmhyOmfDZTIey
-         2NRgQpjjf58c5lwnLwPrkLMCbLSus1pm7PW6AAH/2PW1kq+NKcaAYZnl6R2TXFusg0+U
-         1chA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SnGa+sp06YGgurCULp59Dm5yJ72F3Q121M3j0Zokm2c=;
-        b=Tizk6ZzFosd5nCQfbAv0JBisYVfH/nD0usD8CDZFiBTTo5Fnzdxd1NfqwzuLcJ6t/j
-         SKJlemVuQgXtLfqGcQVuyjDkXhcw3sEg+SlfxrySm3ME5lDMRzQjBEzfA0r7M34AKTYZ
-         EHRKMv4BoZe05VmuARhXe/pow4jXUKcLFQ1vecEsuMsQEpP+SS22Pm3ZM5jERo6Xjcn4
-         cKT0+BJAbz8ZsmPCjh4bvNPX/zePEELQzpcQuc/oniK7yQSfHL3GTi47uNu+vL+GM0IT
-         QY5AQhtAAoQaqkfh1a0pv2ifIrVU8cghAeMT/3GLcBLiGLmzeDaQ1gsLG9NStePnqVcP
-         7wAQ==
-X-Gm-Message-State: AOAM532IWMzeNfGbo2La/dF22Sn0oTK+9gB5m/SFyauWFpoQ+WgBn4fI
-        JzNL2xqnzbGGlD3UxTCz3HwxEv6vt286xGdZhvv+sQ==
-X-Google-Smtp-Source: ABdhPJypD7frdxZN6b2D5S9ea/dW3yRBa9cd74/PY/29S9QEb0yzpgWJOBIooKyalj7pZk/Wxf6V2xzf6BqFCE7LQ3A=
-X-Received: by 2002:a17:906:dc2:: with SMTP id p2mr10002030eji.212.1590799717876;
- Fri, 29 May 2020 17:48:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200529195951.GA3767@dtor-ws> <CANMq1KDDa8jGwo9BNneJ=8y1HunM9hiRS2c0i5ASJ6+X4qvodw@mail.gmail.com>
-In-Reply-To: <CANMq1KDDa8jGwo9BNneJ=8y1HunM9hiRS2c0i5ASJ6+X4qvodw@mail.gmail.com>
-From:   Guenter Roeck <groeck@google.com>
-Date:   Fri, 29 May 2020 17:48:26 -0700
-Message-ID: <CABXOdTeTHUtWyutfQ3oO7c_g=q5GrDsdKZbSe1dwLWSeNFi-sQ@mail.gmail.com>
-Subject: Re: [PATCH] HID: usbhid: do not sleep when opening device
-To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Guenter Roeck <groeck@chromium.org>, linux-usb@vger.kernel.org,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728632AbgE3Awu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 20:52:50 -0400
+Received: from mga05.intel.com ([192.55.52.43]:45153 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728297AbgE3Aws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 20:52:48 -0400
+IronPort-SDR: mAoEuiZ7mqaUxz9GTWyUsh7gImQWFQlTGBd1tN95+Jx6sVenjeEtstLQOrnU8lXtY3sNUhmq9d
+ umcbcycueiPQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 May 2020 17:52:46 -0700
+IronPort-SDR: QQZo9JC8ZaizGm9OT7Ov3KDXJgnTjtNnrN8WskPsVbtbKPCEnzRDaHX7kPoZ3XqKpepabi/gQD
+ L1JBbahnA3Vg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,450,1583222400"; 
+   d="scan'208";a="285704845"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by orsmga002.jf.intel.com with ESMTP; 29 May 2020 17:52:41 -0700
+From:   "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, miquel.raynal@bootlin.com
+Cc:     richard@nod.at, vigneshr@ti.com, arnd@arndb.de,
+        brendanhiggins@google.com, tglx@linutronix.de,
+        boris.brezillon@collabora.com, anders.roxell@linaro.org,
+        masonccyang@mxic.com.tw, robh+dt@kernel.org,
+        linux-mips@vger.kernel.org, hauke.mehrtens@intel.com,
+        andriy.shevchenko@intel.com, qi-ming.wu@intel.com,
+        cheol.yong.kim@intel.com,
+        "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: [PATCH v11 0/2] mtd: rawnand: Add NAND controller support on Intel LGM SoC
+Date:   Sat, 30 May 2020 08:51:15 +0800
+Message-Id: <20200530005117.10986-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 4:50 PM Nicolas Boichat <drinkcat@chromium.org> wrote:
->
-> On Sat, May 30, 2020 at 3:59 AM Dmitry Torokhov
-> <dmitry.torokhov@gmail.com> wrote:
-> >
-> > usbhid tries to give the device 50 milliseconds to drain its queues
-> > when opening the device, but does it naively by simply sleeping in open
-> > handler, which slows down device probing (and thus may affect overall
-> > boot time).
-> >
-> > However we do not need to sleep as we can instead mark a point of time
-> > in the future when we should start processing the events.
-> >
-> > Reported-by: Nicolas Boichat <drinkcat@chromium.org>
-> > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> > ---
-> >  drivers/hid/usbhid/hid-core.c | 27 +++++++++++++++------------
-> >  drivers/hid/usbhid/usbhid.h   |  1 +
-> >  2 files changed, 16 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
-> > index c7bc9db5b192..e69992e945b2 100644
-> > --- a/drivers/hid/usbhid/hid-core.c
-> > +++ b/drivers/hid/usbhid/hid-core.c
-> > @@ -95,6 +95,19 @@ static int hid_start_in(struct hid_device *hid)
-> >                                 set_bit(HID_NO_BANDWIDTH, &usbhid->iofl);
-> >                 } else {
-> >                         clear_bit(HID_NO_BANDWIDTH, &usbhid->iofl);
-> > +
-> > +                       if (test_and_clear_bit(HID_RESUME_RUNNING,
-> > +                                              &usbhid->iofl)) {
-> > +                               /*
-> > +                                * In case events are generated while nobody was
-> > +                                * listening, some are released when the device
-> > +                                * is re-opened. Wait 50 msec for the queue to
-> > +                                * empty before allowing events to go through
-> > +                                * hid.
-> > +                                */
-> > +                               usbhid->input_start_time = jiffies +
-> > +                                                          msecs_to_jiffies(50);
-> > +                       }
-> >                 }
-> >         }
-> >         spin_unlock_irqrestore(&usbhid->lock, flags);
-> > @@ -280,7 +293,8 @@ static void hid_irq_in(struct urb *urb)
-> >                 if (!test_bit(HID_OPENED, &usbhid->iofl))
-> >                         break;
-> >                 usbhid_mark_busy(usbhid);
-> > -               if (!test_bit(HID_RESUME_RUNNING, &usbhid->iofl)) {
-> > +               if (!test_bit(HID_RESUME_RUNNING, &usbhid->iofl) &&
-> > +                   time_after(jiffies, usbhid->input_start_time)) {
->
-> Are we worried about jiffies overflowing (32-bit@1000Hz is "only" 49.7 days...)
->
+This patch adds the new IP of Nand Flash Controller(NFC) support
+on Intel's Lightning Mountain(LGM) SoC.
 
-time_after() is overflow-safe. That is why it is used and jiffies is
-not compared directly.
+DMA is used for burst data transfer operation, also DMA HW supports
+aligned 32bit memory address and aligned data access by default.
+DMA burst of 8 supported. Data register used to support the read/write
+operation from/to device.
 
-Guenter
+NAND controller also supports in-built HW ECC engine.
 
-> >                         hid_input_report(urb->context, HID_INPUT_REPORT,
-> >                                          urb->transfer_buffer,
-> >                                          urb->actual_length, 1);
-> > @@ -714,17 +728,6 @@ static int usbhid_open(struct hid_device *hid)
-> >         }
-> >
-> >         usb_autopm_put_interface(usbhid->intf);
-> > -
-> > -       /*
-> > -        * In case events are generated while nobody was listening,
-> > -        * some are released when the device is re-opened.
-> > -        * Wait 50 msec for the queue to empty before allowing events
-> > -        * to go through hid.
-> > -        */
-> > -       if (res == 0)
-> > -               msleep(50);
-> > -
-> > -       clear_bit(HID_RESUME_RUNNING, &usbhid->iofl);
-> >         return res;
-> >  }
-> >
-> > diff --git a/drivers/hid/usbhid/usbhid.h b/drivers/hid/usbhid/usbhid.h
-> > index 8620408bd7af..805949671b96 100644
-> > --- a/drivers/hid/usbhid/usbhid.h
-> > +++ b/drivers/hid/usbhid/usbhid.h
-> > @@ -82,6 +82,7 @@ struct usbhid_device {
-> >
-> >         spinlock_t lock;                                                /* fifo spinlock */
-> >         unsigned long iofl;                                             /* I/O flags (CTRL_RUNNING, OUT_RUNNING) */
-> > +       unsigned long input_start_time;                                 /* When to start handling input, in jiffies */
-> >         struct timer_list io_retry;                                     /* Retry timer */
-> >         unsigned long stop_retry;                                       /* Time to give up, in jiffies */
-> >         unsigned int retry_delay;                                       /* Delay length in ms */
-> > --
-> > 2.27.0.rc0.183.gde8f92d652-goog
-> >
-> >
-> > --
-> > Dmitry
+NAND controller driver implements ->exec_op() to replace legacy hooks,
+these specific call-back method to execute NAND operations.
+
+Thanks Boris, Andy, Arnd and Rob for the review comments and suggestions.
+---
+v11:
+  - No Change
+v10:
+  - No Change
+v9:
+  - No change
+v8:
+  - fix the kbuild bot warnings
+  - correct the typo's
+v7:
+  - indentation issue is fixed
+  - add error check for retrieve the resource from dt
+v6:
+  - update EBU_ADDR_SELx register base value build it from DT
+  - Add tabs in in Kconfig
+v5:
+  - replace by 'HSNAND_CLE_OFFS | HSNAND_CS_OFFS' to NAND_WRITE_CMD and NAND_WRITE_ADDR
+  - remove the unused macros
+  - update EBU_ADDR_MASK(x) macro
+  - update the EBU_ADDR_SELx register values to be written
+v4:
+  - add ebu_nand_cs structure for multiple-CS support
+  - mask/offset encoding for 0x51 value
+  - update macro HSNAND_CTL_ENABLE_ECC
+  - drop the op argument and un-used macros.
+  - updated the datatype and macros
+  - add function disable nand module
+  - remove ebu_host->dma_rx = NULL;
+  - rename MMIO address range variables to ebu and hsnand
+  - implement ->setup_data_interface()
+  - update label err_cleanup_nand and err_cleanup_dma
+  - add return value check in the nand_remove function
+  - add/remove tabs and spaces as per coding standard
+  - encoded CS ids by reg property
+v3:
+  - Add depends on MACRO in Kconfig
+  - file name update in Makefile
+  - file name update to intel-nand-controller
+  - modification of MACRO divided like EBU, HSNAND and NAND
+  - add NAND_ALE_OFFS, NAND_CLE_OFFS and NAND_CS_OFFS
+  - rename lgm_ to ebu_ and _va suffix is removed in the whole file
+  - rename structure and varaibles as per review comments.
+  - remove lgm_read_byte(), lgm_dev_ready() and cmd_ctrl() un-used function
+  - update in exec_op() as per review comments
+  - rename function lgm_dma_exit() by lgm_dma_cleanup()
+  - hardcoded magic value  for base and offset replaced by MACRO defined
+  - mtd_device_unregister() + nand_cleanup() instead of nand_release()
+v2:
+  - implement the ->exec_op() to replaces the legacy hook-up.
+  - update the commit message
+  - add MIPS maintainers and xway_nand driver author in CC
+
+v1:
+ - initial version
+ 
+dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
+---
+v11:
+  - Fixed the compatible issue with example
+10:
+  - fix bot errors
+v9:
+  - Rob's review comments address
+  - dual licensed
+  - compatible change
+  - add reg-names
+  - drop clock-names and clock-cells
+  - correct typo's
+v8:
+  No change
+v7:
+  - Rob's review comments addressed
+  - dt-schema build issue fixed with upgraded dt-schema
+v6:
+  - Rob's review comments addressed in YAML file
+  - add addr_sel0 and addr_sel1 reg-names in YAML example
+v5:
+  - add the example in YAML file
+v4:
+  - No change
+v3:
+  - No change
+v2:
+  YAML compatible string update to intel, lgm-nand-controller
+v1:
+  - initial version
+
+
+Ramuthevar Vadivel Murugan (2):
+  dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
+  mtd: rawnand: Add NAND controller support on Intel LGM SoC
+
+ .../devicetree/bindings/mtd/intel,lgm-nand.yaml    |  99 +++
+ drivers/mtd/nand/raw/Kconfig                       |   8 +
+ drivers/mtd/nand/raw/Makefile                      |   1 +
+ drivers/mtd/nand/raw/intel-nand-controller.c       | 747 +++++++++++++++++++++
+ 4 files changed, 855 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+ create mode 100644 drivers/mtd/nand/raw/intel-nand-controller.c
+
+-- 
+2.11.0
+
