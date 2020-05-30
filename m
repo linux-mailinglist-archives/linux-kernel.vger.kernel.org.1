@@ -2,127 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AFFA1E8C9C
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 02:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A71F21E8CAC
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 May 2020 03:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728586AbgE3Awp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 May 2020 20:52:45 -0400
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:35537 "EHLO
-        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728297AbgE3Awp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 May 2020 20:52:45 -0400
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Fri, 29 May 2020 17:52:40 -0700
-Received: from localhost (unknown [10.200.192.41])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id EF45440996;
-        Fri, 29 May 2020 17:52:44 -0700 (PDT)
-Date:   Fri, 29 May 2020 17:52:44 -0700
-From:   Matt Helsley <mhelsley@vmware.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Julien Thierry <jthierry@redhat.com>
-Subject: Re: [PATCH 1/2] objtool: Rename rela to reloc
-Message-ID: <20200530005244.GZ9040@rlwimi.vmware.com>
-Mail-Followup-To: Matt Helsley <mhelsley@vmware.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Julien Thierry <jthierry@redhat.com>
-References: <cover.1590785960.git.mhelsley@vmware.com>
- <39f183f3acec8a758939dcbede7908a7455be8b8.1590785960.git.mhelsley@vmware.com>
- <20200529232200.xhjaemclbg2uqrih@treble>
+        id S1728583AbgE3BAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 May 2020 21:00:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727876AbgE3BAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 May 2020 21:00:00 -0400
+Received: from [10.44.0.192] (unknown [103.48.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A80A620810;
+        Sat, 30 May 2020 00:59:58 +0000 (UTC)
+Subject: Re: [PATCH v2 0/2] fix missing handling of __user in nommu's
+ uaccess()
+To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+References: <20200529190218.36560-1-luc.vanoostenryck@gmail.com>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <fb352763-1ed1-2072-9cfa-bc12974892cd@linux-m68k.org>
+Date:   Sat, 30 May 2020 10:59:55 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200529232200.xhjaemclbg2uqrih@treble>
-Received-SPF: None (EX13-EDG-OU-001.vmware.com: mhelsley@vmware.com does not
- designate permitted sender hosts)
+In-Reply-To: <20200529190218.36560-1-luc.vanoostenryck@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 06:22:00PM -0500, Josh Poimboeuf wrote:
-> On Fri, May 29, 2020 at 02:01:13PM -0700, Matt Helsley wrote:
-> > Before supporting additional relocation types rename the relevant
-> > types and functions from "rela" to "reloc". This work be done with
-> > the following regex:
-> > 
-> > 	sed -i -e 's/struct rela/struct reloc/g' \
-> > 		-e 's/\([_\*]\)rela\(s\{0,1\}\)/\1reloc\2/g' \
-> > 		-e 's/tmprela\(s\{0,1\}\)/tmpreloc\1/g' \
-> > 		-e 's/relasec/relocsec/g' \
-> > 		-e 's/rela_list/reloc_list/g' \
-> > 		-e 's/rela_hash/reloc_hash/g' \
-> > 		-e 's/add_rela/add_reloc/g' \
-> > 		-e 's/rela->/reloc->/g' \
-> > 		-e '/rela[,\.]/{ s/\([^\.>]\)rela\([\.,]\)/\1reloc\2/g ; }' \
-> > 		-e 's/rela =/reloc =/g' \
-> > 		-e 's/relas =/relocs =/g' \
-> > 		-e 's/relas\[/relocs[/g' \
-> > 		-e 's/relaname =/relocname =/g' \
-> > 		-e 's/= rela\;/= reloc\;/g' \
-> > 		-e 's/= relas\;/= relocs\;/g' \
-> > 		-e 's/= relaname\;/= relocname\;/g' \
-> > 		-e 's/, rela)/, reloc)/g' \
-> > 		-e 's/, relaname/, relocname/g' \
-> > 		-e 's/sec->rela/sec->reloc/g' \
-> > 		-e 's/(\(!\{0,1\}\)rela/(\1reloc/g' \
-> > 		arch.h \
-> > 		arch/x86/decode.c  \
-> > 		check.c \
-> > 		check.h \
-> > 		elf.c \
-> > 		elf.h \
-> > 		orc_gen.c \
-> > 		special.c \
+Hi Luc,
+
+On 30/5/20 5:02 am, Luc Van Oostenryck wrote:
+> I received a bug report for an unrelated patch when used with m68k-nommu.
+> It appears that the origin of the problem is that __get_user() and
+> __put_user() doesn't handle correctly __user. These 2 patches fix this.
 > 
-> Holy regex!  Thanks for doing that :-)
+> Note: this is only minimaly tested but is quite straightforward and
+>        since this only change __user annotation it will not change the
+>        generated code.
+> 
+> 
+> Changes since v1:
+> * fix typo: s/plan/plain/
+> * appease checkpatch with better style: s/__force*/__force */
+> * avoid excessive line length caused by the added cast.
+> 
+> Luc Van Oostenryck (2):
+>    m68k,nommu: add missing __user in uaccess' __ptr() macro
+>    m68k,nommu: fix implicit cast from __user in __{get,put}_user_asm()
+> 
+>   arch/m68k/include/asm/uaccess_no.h | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
 
-So I was rebasing my future patches and I found a few spots where
-objtool warning strings and code comments weren't fixed-up to
-consistent. Here's the new, complete regex -- it includes the original
-changes and the missed bits (e.g. note the new substitution for @rela
-comments):
+Looks good, thanks for the fixup.
+Applied to the m68knommu git tree, for-next branch.
 
-sed -i -e 's/struct rela/struct reloc/g' \
-        -e 's/\([_\*]\)rela\(s\{0,1\}\)/\1reloc\2/g' \
-        -e 's/tmprela\(s\{0,1\}\)/tmpreloc\1/g' \
-        -e 's/relasec/relocsec/g' \
-        -e 's/rela_list/reloc_list/g' \
-        -e 's/rela_hash/reloc_hash/g' \
-        -e 's/add_rela/add_reloc/g' \
-        -e 's/rela->/reloc->/g' \
-        -e '/rela[,\.]/{ s/\([^\.>]\)rela\([\.,]\)/\1reloc\2/g ; }' \
-        -e 's/rela =/reloc =/g' \
-        -e 's/relas =/relocs =/g' \
-        -e 's/relas\[/relocs[/g' \
-        -e 's/relaname =/relocname =/g' \
-        -e 's/= rela\;/= reloc\;/g' \
-        -e 's/= relas\;/= relocs\;/g' \
-        -e 's/= relaname\;/= relocname\;/g' \
-        -e 's/, rela)/, reloc)/g' \
-        -e 's/\([ @]\)rela\([ "]\)/\1reloc\2/g' \
-        -e 's/ rela$/ reloc/g' \
-        -e 's/, relaname/, relocname/g' \
-        -e 's/sec->rela/sec->reloc/g' \
-        -e 's/(\(!\{0,1\}\)rela/(\1reloc/g' \
-        arch.h \
-        arch/x86/decode.c  \
-        check.c \
-        check.h \
-        elf.c \
-        elf.h \
-        orc_gen.c \
-        special.c
+Regards
+Greg
 
-If you want to fixup this commit you could just re-run the regex after
-applying it but before applying the next commit.
-
-Cheers,
-	-Matt Helsley
-
+  
