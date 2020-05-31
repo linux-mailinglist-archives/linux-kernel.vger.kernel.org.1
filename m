@@ -2,126 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A55B91E972D
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 13:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8251E9737
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 13:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729684AbgEaLBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 07:01:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726020AbgEaLBv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 07:01:51 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24179C061A0E
-        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 04:01:51 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id z13so4559601ljn.7
-        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 04:01:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4ZeH+3Xs1eLtvVZLC2Ghqmx2t9Qj5bzcPEiLkSrbQKo=;
-        b=V/u7sKIVbzwoHQ9wVIOeSooJyWzb2QQiXYzSXNcQSYKkQGygOrAZ4WD8l4SMuhA0T4
-         iwgXniwTuKtDnd7H/mys4Oc2Es3xUMpCC5L5yIZUz9diJzpsx+DjBpNQ/hScwgLaJNBD
-         +vR8fOTzeRAOyM7BNUz9LKKeXiGnYLWxmBBwHIjuY3pSYh7C6r8EwdBcf4nngl19VVmz
-         IoXxH7YaLF3t/DfJksXz2H6oHRujIn5wcM6Rpnx7Uf6vmbXzAptpfI7d1oM16lq9HwQz
-         mhOfSibt2JaZeaz6DEyCLiWD3bS3WDdgbUzuaB9krSODilv42Nc+ghMFbsi3JbkjHflp
-         +2Ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4ZeH+3Xs1eLtvVZLC2Ghqmx2t9Qj5bzcPEiLkSrbQKo=;
-        b=opVB1LpGh7B15BrikARZ1mI28bOBJhqHyUjy9m1m1DS1hCVK6I65Qv/L2Ip8P7lrbc
-         TX36Cj9HBah9Ry2T0cX4+dlLcnZuCtmP4D7JJx+7sn9xMawjbRL2hjensoggaGUA6CUj
-         ZNT65bVPiRSXi03LZPdtxB5+ZTt8xse5zTmPmEAJT9sZDmXvV9ytSmS1jLY8Of3LFLcA
-         TtlFH4haPKKqwXkFShrXzfDYsOZKq32U2gvmfCAG7yaTXbgZYUrW7YhNXPUKXpzdJvAs
-         bWaDaxPf3Mar1O6/BnHDfPIleSKNWJD+/2lR9PEjonCn/b6aYQPw/zplQ61ozycjzsv/
-         FG+A==
-X-Gm-Message-State: AOAM531C5b8sv1J1Puw9bu+PMvLrba3T1rMLgYbac0r9/j8tMuUzODM5
-        O7xFwq1TL0njBEaNAabKxPE=
-X-Google-Smtp-Source: ABdhPJygGsmq6Jk3FZc9+rIZXhBtmE1ah0pzyVZVjtfXWDp8SR5j9Io1znGSGbdOOIvoCYKLqaRNaw==
-X-Received: by 2002:a05:651c:205b:: with SMTP id t27mr8251413ljo.456.1590922909639;
-        Sun, 31 May 2020 04:01:49 -0700 (PDT)
-Received: from alpha (84.188.smarthome.spb.ru. [80.249.188.84])
-        by smtp.gmail.com with ESMTPSA id z5sm3148776ljm.64.2020.05.31.04.01.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 May 2020 04:01:49 -0700 (PDT)
-Received: (nullmailer pid 9364 invoked by uid 1000);
-        Sun, 31 May 2020 11:06:18 -0000
-From:   Ivan Safonov <insafonov@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nishka Dasgupta <nishkadg.linux@gmail.com>,
-        Cristiane Naves <cristianenavescardoso09@gmail.com>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Merwin Trever Ferrao <merwintf@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Straube <straube.linux@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Ivan Safonov <insafonov@gmail.com>
-Subject: [PATCH] staging:rtl8712: avoid skb_clone after skb allocation fail
-Date:   Sun, 31 May 2020 14:05:47 +0300
-Message-Id: <20200531110548.9318-1-insafonov@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S1728102AbgEaLJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 07:09:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725898AbgEaLJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 May 2020 07:09:27 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0BEEE20707;
+        Sun, 31 May 2020 11:09:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590923367;
+        bh=FghhYqKlaTRbFKgAaP4e9YXbKVNDOMp4WqJZfCrcChs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=IHCvLUpDo9Kbt6tA3zFV3vp8NAoz76KPjQ8F7BlWIh0dpViN44diK8Z5tTHo7SyX8
+         wl59oa+ZSyaRFiEDkUkV9aVTYm2IASUFOwcAMrLA8nTZAStkJe6DVCYAzNPSuiWF3U
+         Wf7NtM0vQDCwpmaW74YoLFmoBmnD3bPKUYi44Zd8=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1jfLqH-00Gg3Y-Fm; Sun, 31 May 2020 12:09:25 +0100
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Date:   Sun, 31 May 2020 12:09:25 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     "Saidi, Ali" <alisaidi@amazon.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        "Herrenschmidt, Benjamin" <benh@amazon.com>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "Zilberman, Zeev" <zeev@amazon.com>,
+        "Machulsky, Zorik" <zorik@amazon.com>
+Subject: Re: [PATCH] irqchip/gic-v3-its: Don't try to move a disabled irq
+In-Reply-To: <20200530174929.7bf6d5d7@why>
+References: <20200529015501.15771-1-alisaidi@amazon.com>
+ <8c3be990888ecfb7cca9503853dc4aac@kernel.org>
+ <2C4F431F-8140-4C82-B4BD-E51DE618FC08@amazon.com>
+ <20200530174929.7bf6d5d7@why>
+User-Agent: Roundcube Webmail/1.4.4
+Message-ID: <eed907d48de84c96e3ceb27c1ed6f622@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: alisaidi@amazon.com, tglx@linutronix.de, jason@lakedaemon.net, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, benh@amazon.com, dwmw@amazon.co.uk, zeev@amazon.com, zorik@amazon.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The skb allocated when out of memory is likely to be discarded
-during subsequent processing.
+On 2020-05-30 17:49, Marc Zyngier wrote:
+> Hi Ali,
+> 
+> On Fri, 29 May 2020 12:36:42 +0000
+> "Saidi, Ali" <alisaidi@amazon.com> wrote:
+> 
+>> Hi Marc,
+>> 
+>> > On May 29, 2020, at 3:33 AM, Marc Zyngier <maz@kernel.org> wrote:
+>> >
+>> > Hi Ali,
+>> >
+>> >> On 2020-05-29 02:55, Ali Saidi wrote:
+>> >> If an interrupt is disabled the ITS driver has sent a discard removing
+>> >> the DeviceID and EventID from the ITT. After this occurs it can't be
+>> >> moved to another collection with a MOVI and a command error occurs if
+>> >> attempted. Before issuing the MOVI command make sure that the IRQ isn't
+>> >> disabled and change the activate code to try and use the previous
+>> >> affinity.
+>> >>
+>> >> Signed-off-by: Ali Saidi <alisaidi@amazon.com>
+>> >> ---
+>> >> drivers/irqchip/irq-gic-v3-its.c | 18 +++++++++++++++---
+>> >> 1 file changed, 15 insertions(+), 3 deletions(-)
+>> >>
+>> >> diff --git a/drivers/irqchip/irq-gic-v3-its.c
+>> >> b/drivers/irqchip/irq-gic-v3-its.c
+>> >> index 124251b0ccba..1235dd9a2fb2 100644
+>> >> --- a/drivers/irqchip/irq-gic-v3-its.c
+>> >> +++ b/drivers/irqchip/irq-gic-v3-its.c
+>> >> @@ -1540,7 +1540,11 @@ static int its_set_affinity(struct irq_data *d,
+>> >> const struct cpumask *mask_val,
+>> >>      /* don't set the affinity when the target cpu is same as current one
+>> >> */
+>> >>      if (cpu != its_dev->event_map.col_map[id]) {
+>> >>              target_col = &its_dev->its->collections[cpu];
+>> >> -             its_send_movi(its_dev, target_col, id);
+>> >> +
+>> >> +             /* If the IRQ is disabled a discard was sent so don't move */
+>> >> +             if (!irqd_irq_disabled(d))
+>> >> +                     its_send_movi(its_dev, target_col, id);
+>> >> +
+>> >
+>> > This looks wrong. What you are testing here is whether the interrupt
+>> > is masked, not that there isn't a valid translation.
+>> I’m not exactly sure the correct condition, but what I’m looking for
+>> is interrupts which are deactivated and we have thus sent a discard.
+> 
+> That looks like IRQD_IRQ_STARTED not being set in this case.
+> 
+>> >
+>> > In the commit message, you're saying that we've issued a discard.
+>> > This hints at doing a set_affinity on an interrupt that has been
+>> > deactivated (mapping removed). Is that actually the case? If so,
+>> > why was it deactivated
+>> > the first place?
+>> This is the case. If we down a NIC, that interface’s MSIs will be
+>> deactivated but remain allocated until the device is unbound from the
+>> driver or the NIC is brought up.
+>> 
+>> While stressing down/up a device I’ve found that irqbalance can move
+>> interrupts and you end up with the situation described. The device is
+>> downed, the interrupts are deactivated but still present and then
+>> trying to move one results in sending a MOVI after the DISCARD which
+>> is an error per the GIC spec.
+> 
+> Not great indeed. But this is not, as far as I can tell, a GIC
+> driver problem.
+> 
+> The semantic of activate/deactivate (which maps to started/shutdown
+> in the IRQ code) is that the HW resources for a given interrupt are
+> only committed when the interrupt is activated. Trying to perform
+> actions involving the HW on an interrupt that isn't active cannot be
+> guaranteed to take effect.
+> 
+> I'd rather address it in the core code, by preventing set_affinity (and
+> potentially others) to take place when the interrupt is not in the
+> STARTED state. Userspace would get an error, which is perfectly
+> legitimate, and which it already has to deal with it for plenty of 
+> other
+> reasons.
 
-Signed-off-by: Ivan Safonov <insafonov@gmail.com>
----
- drivers/staging/rtl8712/rtl8712_recv.c | 29 ++++++++++----------------
- 1 file changed, 11 insertions(+), 18 deletions(-)
+How about this:
 
-diff --git a/drivers/staging/rtl8712/rtl8712_recv.c b/drivers/staging/rtl8712/rtl8712_recv.c
-index 116773943a2e..570030be3077 100644
---- a/drivers/staging/rtl8712/rtl8712_recv.c
-+++ b/drivers/staging/rtl8712/rtl8712_recv.c
-@@ -1037,24 +1037,17 @@ static void recvbuf2recvframe(struct _adapter *padapter, struct sk_buff *pskb)
- 		 */
- 		alloc_sz += 6;
- 		pkt_copy = netdev_alloc_skb(padapter->pnetdev, alloc_sz);
--		if (pkt_copy) {
--			precvframe->u.hdr.pkt = pkt_copy;
--			skb_reserve(pkt_copy, 4 - ((addr_t)(pkt_copy->data)
--				    % 4));
--			skb_reserve(pkt_copy, shift_sz);
--			memcpy(pkt_copy->data, pbuf, tmp_len);
--			precvframe->u.hdr.rx_head = precvframe->u.hdr.rx_data =
--				 precvframe->u.hdr.rx_tail = pkt_copy->data;
--			precvframe->u.hdr.rx_end = pkt_copy->data + alloc_sz;
--		} else {
--			precvframe->u.hdr.pkt = skb_clone(pskb, GFP_ATOMIC);
--			if (!precvframe->u.hdr.pkt)
--				return;
--			precvframe->u.hdr.rx_head = pbuf;
--			precvframe->u.hdr.rx_data = pbuf;
--			precvframe->u.hdr.rx_tail = pbuf;
--			precvframe->u.hdr.rx_end = pbuf + alloc_sz;
--		}
-+		if (!pkt_copy)
-+			return;
-+
-+		precvframe->u.hdr.pkt = pkt_copy;
-+		skb_reserve(pkt_copy, 4 - ((addr_t)(pkt_copy->data) % 4));
-+		skb_reserve(pkt_copy, shift_sz);
-+		memcpy(pkt_copy->data, pbuf, tmp_len);
-+		precvframe->u.hdr.rx_head = precvframe->u.hdr.rx_data =
-+			precvframe->u.hdr.rx_tail = pkt_copy->data;
-+		precvframe->u.hdr.rx_end = pkt_copy->data + alloc_sz;
-+
- 		recvframe_put(precvframe, tmp_len);
- 		recvframe_pull(precvframe, drvinfo_sz + RXDESC_SIZE);
- 		/* because the endian issue, driver avoid reference to the
+diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+index 453a8a0f4804..1a2ac1392c0f 100644
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -147,7 +147,8 @@ cpumask_var_t irq_default_affinity;
+  static bool __irq_can_set_affinity(struct irq_desc *desc)
+  {
+  	if (!desc || !irqd_can_balance(&desc->irq_data) ||
+-	    !desc->irq_data.chip || !desc->irq_data.chip->irq_set_affinity)
++	    !desc->irq_data.chip || !desc->irq_data.chip->irq_set_affinity ||
++	    !irqd_is_started(&desc->irq_data))
+  		return false;
+  	return true;
+  }
+
+Thanks,
+
+         M.
 -- 
-2.26.2
-
+Jazz is not dead. It just smells funny...
