@@ -2,113 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0512F1E99AA
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 19:48:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4742D1E9994
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 19:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728400AbgEaRrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 13:47:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37478 "EHLO
+        id S1728282AbgEaRod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 13:44:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728356AbgEaRrP (ORCPT
+        with ESMTP id S1728251AbgEaRod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 13:47:15 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C766C061A0E;
-        Sun, 31 May 2020 10:47:14 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id k26so9144534wmi.4;
-        Sun, 31 May 2020 10:47:14 -0700 (PDT)
+        Sun, 31 May 2020 13:44:33 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD2EC061A0E
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 10:44:32 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id q2so5267720ljm.10
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 10:44:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=74PNAAD3pBvnsCVGDyDbZgcDCGsmspG3CPBBtpSlgDc=;
-        b=TC43dJcKvEj9zljBOZ2LvawBD/1PjvVsaYKhjg2MJAMqJXvFocJwoi7a+ZIV0kHvvd
-         wysTvyYujn9wbVrkDKNfdKczjNFqKxth04Jt0ldcMxL99cZIjkgyHXuin8HY2H8pW/vn
-         cl7z2IjqN02JXH58MwBPewxY2/2BcnGgrq1Ey/MEzTX6vQ/FvcJ2o2k50qlfh5TNn9BI
-         ofgpN7rxaGgqDbO6tuDgUL5RdFtxZ2J8121e+Szoh7PAdY2XFXQkZnzpoAUrbn4Qz5LB
-         FBJYYtbcPF34KK8gj+GJTsRcV07fPZVV2mE8BBF4ZYiqygU0ouGfvSB0oabz7LrlNl+t
-         rK1w==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2RMIV7m/Lpx/3Cc5jgcmhOCjHtYKoVJK72f4lQdlYTE=;
+        b=qVzRun+Gv8KCaQjsJR4wIt57gzuhGj6TiqE5gakAl/pLFcwKNrCO4We/EAwcRPGYT5
+         ZXEa/vsTlJzY7i2PmOOMDPASffsTfz1o8Y2EO5Kj7OYqafl4RMzGr0EZmnALMWaRrrix
+         x4B3BKpYZUUc6SqEwOpMf3fEHCquetz9FN5eyl2igdTs+IpcF9pKXy8whjxOX69WiRMR
+         SbZLl8hnQA+msMxFIcZwORvg/lIZbnM4O4ubIo3V9rAjVsbtuZ/JIUW/LuDqT/YEtDvu
+         A8jwG1CHoC09UJ67a40SwL11xWShTPFFh6KqLQHbEVk7nsmzesIyijcjQDh0Y0KOWuWj
+         KmQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=74PNAAD3pBvnsCVGDyDbZgcDCGsmspG3CPBBtpSlgDc=;
-        b=c320RstXt1oIMmPBd/LJC8OggwPKX+a4Aw/tmejFp5H52pvvFcwM3PwOnUk/er85jI
-         evc2/XjPgHPrlVpa/JRVsLtmn1xlQy8ZvKdayuyaC6pXm0R19bcQ9+qPZTzLCeDcex4U
-         i3Qo8aYDDsletfiTil/CCEQOBLd1r66ssPWzTi1KePnSQaihUXDnk/VKnHiZ3wCrMKCl
-         6eSLoM0nve654rTylsviwVje27MrFG9o6LCKaTKncuJXTtbcCalhzwCXInL5ESuDYyRS
-         ounG7aGgJMNHrEGNSz2yuO+c1c9OpZkEl3DA2/N8axTTrpb+utpx7VjK5m4iot/USoJY
-         4oYg==
-X-Gm-Message-State: AOAM532i20Psr0l/j18hKLJmDILvR8FIlSDcPfoGP5kcVPkYmplymJXa
-        5uMaei9EQ+zXvnjWx3qepkM=
-X-Google-Smtp-Source: ABdhPJw20cPOBuAzZh+bpYUBVoYgh/nEYQ4URWcQ4Da3bpGglKd7mqhxEZWgQEGhwcnR6atjiMNVdw==
-X-Received: by 2002:a1c:e20a:: with SMTP id z10mr16860159wmg.63.1590947233131;
-        Sun, 31 May 2020 10:47:13 -0700 (PDT)
-Received: from localhost.localdomain (abad130.neoplus.adsl.tpnet.pl. [83.6.167.130])
-        by smtp.googlemail.com with ESMTPSA id x186sm9716494wmg.8.2020.05.31.10.47.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 May 2020 10:47:12 -0700 (PDT)
-From:   Konrad Dybcio <konradybcio@gmail.com>
-Cc:     Konrad Dybcio <konradybcio@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] driver: clk: Add msm8992 GCC Kconfig and Makefile entries
-Date:   Sun, 31 May 2020 19:46:10 +0200
-Message-Id: <20200531174612.260113-5-konradybcio@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200531174612.260113-1-konradybcio@gmail.com>
-References: <20200531174612.260113-1-konradybcio@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2RMIV7m/Lpx/3Cc5jgcmhOCjHtYKoVJK72f4lQdlYTE=;
+        b=h0QI+cT38dEZh9oQaSXegS3pqGqZ4IO67qB700l4M2lCxcXSLBlbwgKRTGhJZAY4CF
+         yptxOzhf2G8W8dqqEPgCb2dL8HRP+iXYalS9GVk6jffcejmZm11nADV+qFWbUugvy4IE
+         56PYicUPPaPvkJM5KyBMAyVbPMLtilrSUv3nv2YqgHOHj5W9/UvnN2yxEWKnnQWA6yzZ
+         P1KvPfDEknUqe7dWSTq94k16G/qpYOExB5BRCoOIbObi/OvGEKqfa7ngrdgfjpeJ8RRd
+         X6DdUGcuTtD8nLMRJ9UWDtSXCIuOGATpzSnFni0N73u9ibw4XIzy/EvfZDhyRPiRNYlL
+         /Umw==
+X-Gm-Message-State: AOAM5304bRBn5ntTg/iENHANhYKG7BAGI7yKtj1U8rKnR3Jg8xF8gIkf
+        X2Jnk7xd1OO3mZeZ4KhnSPNlga7p
+X-Google-Smtp-Source: ABdhPJy7wkS5uf1TLRX/OePMnJFbEiewbjOPz+hQoSkXkJhj2uLJnjJDT6a6H0BcEj9vrTV9sAre8Q==
+X-Received: by 2002:a2e:8782:: with SMTP id n2mr1630941lji.171.1590947070585;
+        Sun, 31 May 2020 10:44:30 -0700 (PDT)
+Received: from [192.168.0.160] (84.188.smarthome.spb.ru. [80.249.188.84])
+        by smtp.gmail.com with ESMTPSA id 22sm1610110lju.5.2020.05.31.10.44.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 May 2020 10:44:29 -0700 (PDT)
+Subject: Re: [PATCH] staging:r8723bs: remove wrappers around skb_clone()
+To:     Joe Perches <joe@perches.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Nishka Dasgupta <nishkadg.linux@gmail.com>,
+        Lukasz Szczesny <luk@wybcz.pl>, R Veera Kumar <vkor@vkten.in>,
+        Hariprasad Kelam <hariprasad.kelam@gmail.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Shobhit Kukreti <shobhitkukreti@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Pascal Terjan <pterjan@google.com>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+References: <20200531160843.39120-1-insafonov@gmail.com>
+ <7bf8612d3708b811e026daec5c7a1486c5954905.camel@perches.com>
+ <8e4df253-e021-6c29-96ab-24eed9b61eb2@gmail.com>
+ <24e0f572511724ea338f8802fde2ad3a359ea8d5.camel@perches.com>
+From:   Ivan Safonov <insafonov@gmail.com>
+Message-ID: <1803e5d8-2629-adf3-6638-0ad843273a02@gmail.com>
+Date:   Sun, 31 May 2020 20:49:22 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <24e0f572511724ea338f8802fde2ad3a359ea8d5.camel@perches.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
----
- drivers/clk/qcom/Kconfig  | 8 ++++++++
- drivers/clk/qcom/Makefile | 1 +
- 2 files changed, 9 insertions(+)
+On 5/31/20 8:36 PM, Joe Perches wrote:
+> On Sun, 2020-05-31 at 20:28 +0300, Ivan Safonov wrote:
+>> On 5/31/20 7:15 PM, Joe Perches wrote:
+>>> On Sun, 2020-05-31 at 19:08 +0300, Ivan Safonov wrote:
+>>>> Wrappers around skb_clone() do not simplify the driver code.
+>>> []
+>>>> -inline struct sk_buff *_rtw_skb_clone(struct sk_buff *skb)
+>>>> -{
+>>>> -	return skb_clone(skb, in_interrupt() ? GFP_ATOMIC : GFP_KERNEL);
+>>>> -}
+>>>> -
+>>> []
+>>>> diff --git a/drivers/staging/rtl8723bs/os_dep/recv_linux.c b/drivers/staging/rtl8723bs/os_dep/recv_linux.c
+>>> []
+>>>> @@ -110,7 +110,7 @@ void rtw_os_recv_indicate_pkt(struct adapter *padapter, _pkt *pkt, struct rx_pkt
+>>>>    			if (memcmp(pattrib->dst, myid(&padapter->eeprompriv), ETH_ALEN)) {
+>>>>    				if (bmcast) {
+>>>>    					psta = rtw_get_bcmc_stainfo(padapter);
+>>>> -					pskb2 = rtw_skb_clone(pkt);
+>>>> +					pskb2 = skb_clone(pkt, GFP_ATOMIC);
+>>>
+>>> Why make every clone allocation GFP_ATOMIC ?
+>>
+>> The rtw_os_recv_indicate_pkt() is always called from an interrupt handler.
+> 
+> It'd be better to indicate you know that in the changelog
+> as the subject and changelog just shows removing wrappers
+> and the patch code does not agree with that.
 
-diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
-index 11ec6f466467..d102b4015289 100644
---- a/drivers/clk/qcom/Kconfig
-+++ b/drivers/clk/qcom/Kconfig
-@@ -197,6 +197,14 @@ config MSM_MMCC_8974
- 	  Say Y if you want to support multimedia devices such as display,
- 	  graphics, video encode/decode, camera, etc.
- 
-+config MSM_GCC_8992
-+	tristate "MSM8992 Global Clock Controller"
-+	select QCOM_GDSC
-+	help
-+	  Support for the global clock controller on msm8992 devices.
-+	  Say Y if you want to use peripheral devices such as UART, SPI,
-+	  i2c, USB, SD/eMMC, PCIe, etc.
-+
- config MSM_GCC_8994
- 	tristate "MSM8994 Global Clock Controller"
- 	help
-diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
-index 691efbf7e81f..4d931562c42f 100644
---- a/drivers/clk/qcom/Makefile
-+++ b/drivers/clk/qcom/Makefile
-@@ -30,6 +30,7 @@ obj-$(CONFIG_MSM_GCC_8660) += gcc-msm8660.o
- obj-$(CONFIG_MSM_GCC_8916) += gcc-msm8916.o
- obj-$(CONFIG_MSM_GCC_8960) += gcc-msm8960.o
- obj-$(CONFIG_MSM_GCC_8974) += gcc-msm8974.o
-+obj-$(CONFIG_MSM_GCC_8992) += gcc-msm8992.o
- obj-$(CONFIG_MSM_GCC_8994) += gcc-msm8994.o
- obj-$(CONFIG_MSM_GCC_8996) += gcc-msm8996.o
- obj-$(CONFIG_MSM_LCC_8960) += lcc-msm8960.o
--- 
-2.26.2
-
+Yes, it's right.
