@@ -2,76 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF881E993F
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 19:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 155F91E9972
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 19:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728224AbgEaRXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 13:23:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33818 "EHLO
+        id S1728336AbgEaRbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 13:31:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726193AbgEaRXc (ORCPT
+        with ESMTP id S1726193AbgEaRbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 13:23:32 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B35EC061A0E
-        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 10:23:31 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id x27so2554993lfg.9
-        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 10:23:30 -0700 (PDT)
+        Sun, 31 May 2020 13:31:01 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FFB1C03E969
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 10:31:00 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id z6so5220561ljm.13
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 10:31:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Gan8Hs5cLhd2R8PjllgAUBiWMj838r9OJwwYSGGCD8k=;
-        b=dDBuriuXusck1paeyAvVZbqTUhubuee/TOwISJbBrCcoICtysuO5DR8/1bQrKiRpVq
-         WxTXJo4D/6APNYU0c0DhTcIZMxxFuRkXl7rL55sFGkx5UcpzGbWbQHCBC8OGZVbz2Rwz
-         YJJzysWpOdQmvmQq94I23nDyXl2zrNN2InUoulU3G4aqg0x5al5GqkVqEpBVc/MjkZk8
-         IO6g6fZ0JuAqcu1IskHfeeh28i71CgAEIcOo5j0yy3g3Tjstd3kKvOVZPdW3tQnhH2Lr
-         OPfD6eswxlH3ZgW8rCS/G51Ex91m5OM3hQIatPid4uQIns8UJGjqfom0/7SpExs72p7s
-         KBJQ==
+        bh=U+ftINrOA+kmRvsJhkTq7rpVSC1yiTvQH2y0M6Ic020=;
+        b=XW8nHadCLasGtn40h3x+RxOuS/L2eMigg025to20Lrh4YVe0x/QjdYgzxbFodsb8M+
+         LtYYs9404sul2rB9C1pu9+26Cl6fabsQN7NI/eXdemYjED+zBbOe0XKyOqWAJsUrBxHr
+         o+fFxK8GD5/evtb6aHhIurC3nne8xVE3uw/WA0SP/0L6czDoNvheQxIRzBzInB+rb1GV
+         XaW57QtQX6GuOCDkyPlS5J1XqESTn86dG2Gc6QsNcqkHQ4rtgf8uuDXYgDFHtZi82z3o
+         Eoy4qSkce2YiETr5qaUtZFUnE9rHeON8IQ/6Qf/leYR/2dTXlQz27K2uOuFPsMEe2xF+
+         W6yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Gan8Hs5cLhd2R8PjllgAUBiWMj838r9OJwwYSGGCD8k=;
-        b=jfqQCr56N2sNF0zyndHVmcFEG79u4TdDxO8zmA0FVVnxvgZg89EYz5WJ2RPupW6gfh
-         qVFYd5yVpGJqFmMnBVzWzxI6+januJC6Q6CxDBYPbNZnDHwdlGjyTxs6KnxWL2QxRHEP
-         EkDN2e0ZcBOuwJ6M5TEu4y0QPSpZdHNOr3oiuyKIQGs2snau5D2n/FYhCWqCGr7tMBGg
-         4ZvRMbM0jvxu5dw0Xg4cotj6MfjxPlOcgU267heYtwKHR257zmEREnLj21KOi/bw0cNd
-         dp2Q9QT3/vUH+HMymJMk789GF7IFP2hgmDd2uUzkfG6pGHf6xjzAwD7JvuHzZcWSdT5r
-         ckPA==
-X-Gm-Message-State: AOAM533uNXS+AFAu9HQomHHgl5nj1mkYoyALtfT08hrDMTZ8ihcoOeF6
-        eaVKj1WEBau86RPJXAVLeRzL2eJK
-X-Google-Smtp-Source: ABdhPJwhgVcXUg6sMnXYxPyIr1PDPj4hJk7IJi78gsp/fFui98Ztizd+IjRh3XdVQrQGGzrDhhxkbA==
-X-Received: by 2002:a19:356:: with SMTP id 83mr9470602lfd.179.1590945808848;
-        Sun, 31 May 2020 10:23:28 -0700 (PDT)
-Received: from [192.168.0.160] (84.188.smarthome.spb.ru. [80.249.188.84])
-        by smtp.gmail.com with ESMTPSA id p68sm3927319lfa.71.2020.05.31.10.23.27
+        bh=U+ftINrOA+kmRvsJhkTq7rpVSC1yiTvQH2y0M6Ic020=;
+        b=SHAH/CmQ4GV/C3cR7eII/AAEWX+TX3YcaOnQ94IVhVULpbRQSgoS5AIQkwgNUwtQu0
+         mBoPYEY7i4CJkLbO4vlbUsZEaNSzLDU3hvVkXyLxSAMrPWRVEgYc7LNP3Zvf69IpJ75L
+         AEro4vagBqZeoNNErLw2IoP3TFYWXR9cXDgbLc6FIRz9VecDqLOqZxwfNcwYrIrb7L0V
+         xzhZsOl6GtrOeQVf+TbwKb9ktJ2goaYjIbBVFc0jfzsrYmcRIbJJvs75ZgDfdQjlWQjR
+         ozSLYbch2wD7FdcB4QTT2fqXv1hUYbTGdJDWNrBiI7Ux5pNB9g72UbkLZcm7oBf9Dw81
+         Y8gQ==
+X-Gm-Message-State: AOAM532P9K+HPk9eBU6qdnPXNQUOF1dEnU+NO0rhnRNTro57KK9iE1jI
+        nIk1sFCjPS9NZTjENjR049GH2CtskCQ=
+X-Google-Smtp-Source: ABdhPJz15zNFvak8GH+qaTWNpCKCnljnfH92jm9W8Tui8N9B95Hzb1w4z4wURHT8DM/WtWLzttH/hA==
+X-Received: by 2002:a2e:8e64:: with SMTP id t4mr7401704ljk.414.1590946258520;
+        Sun, 31 May 2020 10:30:58 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:623:2775:c819:56c9:e22:a1f6? ([2a00:1fa0:623:2775:c819:56c9:e22:a1f6])
+        by smtp.gmail.com with ESMTPSA id t5sm3930633lff.39.2020.05.31.10.30.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 May 2020 10:23:28 -0700 (PDT)
-Subject: Re: [PATCH] staging:r8723bs: remove wrappers around skb_clone()
-To:     Joe Perches <joe@perches.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Nishka Dasgupta <nishkadg.linux@gmail.com>,
-        Lukasz Szczesny <luk@wybcz.pl>, R Veera Kumar <vkor@vkten.in>,
-        Hariprasad Kelam <hariprasad.kelam@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Shobhit Kukreti <shobhitkukreti@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Pascal Terjan <pterjan@google.com>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-References: <20200531160843.39120-1-insafonov@gmail.com>
- <7bf8612d3708b811e026daec5c7a1486c5954905.camel@perches.com>
-From:   Ivan Safonov <insafonov@gmail.com>
-Message-ID: <8e4df253-e021-6c29-96ab-24eed9b61eb2@gmail.com>
-Date:   Sun, 31 May 2020 20:28:10 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        Sun, 31 May 2020 10:30:57 -0700 (PDT)
+Subject: Re: [PATCH RFT] ravb: Mask PHY mode to avoid inserting delays twice
+To:     David Miller <davem@davemloft.net>, geert+renesas@glider.be
+Cc:     kuba@kernel.org, andrew@lunn.ch, linux@rempel-privat.de,
+        philippe.schenker@toradex.com, f.fainelli@gmail.com,
+        hkallweit1@gmail.com, linux@armlinux.org.uk,
+        kazuya.mizuguchi.ks@renesas.com, grygorii.strashko@ti.com,
+        wsa+renesas@sang-engineering.com, netdev@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200529122540.31368-1-geert+renesas@glider.be>
+ <20200530.215102.921642191346859546.davem@davemloft.net>
+From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Message-ID: <ca3b597d-7593-0459-b7be-101f868317cf@cogentembedded.com>
+Date:   Sun, 31 May 2020 20:30:55 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.1
 MIME-Version: 1.0
-In-Reply-To: <7bf8612d3708b811e026daec5c7a1486c5954905.camel@perches.com>
+In-Reply-To: <20200530.215102.921642191346859546.davem@davemloft.net>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -80,25 +74,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/31/20 7:15 PM, Joe Perches wrote:
-> On Sun, 2020-05-31 at 19:08 +0300, Ivan Safonov wrote:
->> Wrappers around skb_clone() do not simplify the driver code.
-> []
->> -inline struct sk_buff *_rtw_skb_clone(struct sk_buff *skb)
->> -{
->> -	return skb_clone(skb, in_interrupt() ? GFP_ATOMIC : GFP_KERNEL);
->> -}
->> -
-> []
->> diff --git a/drivers/staging/rtl8723bs/os_dep/recv_linux.c b/drivers/staging/rtl8723bs/os_dep/recv_linux.c
-> []
->> @@ -110,7 +110,7 @@ void rtw_os_recv_indicate_pkt(struct adapter *padapter, _pkt *pkt, struct rx_pkt
->>   			if (memcmp(pattrib->dst, myid(&padapter->eeprompriv), ETH_ALEN)) {
->>   				if (bmcast) {
->>   					psta = rtw_get_bcmc_stainfo(padapter);
->> -					pskb2 = rtw_skb_clone(pkt);
->> +					pskb2 = skb_clone(pkt, GFP_ATOMIC);
-> 
-> Why make every clone allocation GFP_ATOMIC ?
+Hello!
 
-The rtw_os_recv_indicate_pkt() is always called from an interrupt handler.
+On 31.05.2020 7:51, David Miller wrote:
+
+>> Until recently, the Micrel KSZ9031 PHY driver ignored any PHY mode
+>> ("RGMII-*ID") settings, but used the hardware defaults, augmented by
+>> explicit configuration of individual skew values using the "*-skew-ps"
+>> DT properties.  The lack of PHY mode support was compensated by the
+>> EtherAVB MAC driver, which configures TX and/or RX internal delay
+>> itself, based on the PHY mode.
+>>
+>> However, now the KSZ9031 driver has gained PHY mode support, delays may
+>> be configured twice, causing regressions.  E.g. on the Renesas
+>> Salvator-X board with R-Car M3-W ES1.0, TX performance dropped from ca.
+>> 400 Mbps to 0.1-0.3 Mbps, as measured by nuttcp.
+>>
+>> As internal delay configuration supported by the KSZ9031 PHY is too
+>> limited for some use cases, the ability to configure MAC internal delay
+>> is deemed useful and necessary.  Hence a proper fix would involve
+>> splitting internal delay configuration in two parts, one for the PHY,
+>> and one for the MAC.  However, this would require adding new DT
+>> properties, thus breaking DTB backwards-compatibility.
+>>
+>> Hence fix the regression in a backwards-compatibility way, by letting
+>> the EtherAVB driver mask the PHY mode when it has inserted a delay, to
+>> avoid the PHY driver adding a second delay.  This also fixes messages
+>> like:
+>>
+>>      Micrel KSZ9031 Gigabit PHY e6800000.ethernet-ffffffff:00: *-skew-ps values should be used only with phy-mode = "rgmii"
+>>
+>> as the PHY no longer sees the original RGMII-*ID mode.
+>>
+>> Solving the issue by splitting configuration in two parts can be handled
+>> in future patches, and would require retaining a backwards-compatibility
+>> mode anyway.
+>>
+>> Fixes: bcf3440c6dd78bfe ("net: phy: micrel: add phy-mode support for the KSZ9031 PHY")
+>> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> 
+> Applied to net-next, thank you.
+
+    Why not to net.git? It's a fix after all...
+
+MBR, Sergei
