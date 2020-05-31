@@ -2,171 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBA51E974E
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 13:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 425531E975B
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 13:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728706AbgEaLgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 07:36:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725898AbgEaLgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 07:36:16 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB7E420671;
-        Sun, 31 May 2020 11:36:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590924976;
-        bh=Rv/7V6ux7Uy8b3nh+5x7UlhqkHYK1bQnCpnuxjo3nxk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZqHAPhyjHF2l+Z7E9FojBBpdxFgTAfTVO+Y2mj8CyIeP3cW6uczGE4kZp1FkFRNMb
-         018bPK4G3YLHzAgfb5eqvipWmSNuxI6jcJqaEijbwKG8ypJngHKOXxCiBiOpUaoHlX
-         xDPwD+lcPzq9neKB8XROxHuOX4nV0O5j+b3AuuGg=
-Date:   Sun, 31 May 2020 12:36:11 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
-Cc:     robh+dt@kernel.org, robh@kernel.org, mchehab+huawei@kernel.org,
-        davem@davemloft.net, gregkh@linuxfoundation.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 02/12] iio: imu: inv_icm42600: add I2C driver for
- inv_icm42600 driver
-Message-ID: <20200531123611.794883c4@archlinux>
-In-Reply-To: <20200527185711.21331-3-jmaneyrol@invensense.com>
-References: <20200527185711.21331-1-jmaneyrol@invensense.com>
-        <20200527185711.21331-3-jmaneyrol@invensense.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728191AbgEaLwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 07:52:14 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:42746 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727875AbgEaLwO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 May 2020 07:52:14 -0400
+Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein.fritz.box)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jfMVe-0006jt-NC; Sun, 31 May 2020 11:52:10 +0000
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Cc:     Andy Lutomirski <luto@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
+        Matt Denton <mpdenton@google.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Robert Sesek <rsesek@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: [PATCH v3 1/4] seccomp: rename "usage" to "refs" and document
+Date:   Sun, 31 May 2020 13:50:28 +0200
+Message-Id: <20200531115031.391515-1-christian.brauner@ubuntu.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 May 2020 20:57:01 +0200
-Jean-Baptiste Maneyrol <jmaneyrol@invensense.com> wrote:
+Naming the lifetime counter of a seccomp filter "usage" suggests a
+little too strongly that its about tasks that are using this filter
+while it also tracks other references such as the user notifier or
+ptrace. This also updates the documentation to note this fact.
 
-> Add I2C driver for InvenSense ICM-426xxx devices.
-> 
-> Configure bus signal slew rates as indicated in the datasheet.
-> 
-> Signed-off-by: Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
+We'll be introducing an actual usage counter in a follow-up patch.
 
-Looks fine to me.
+Cc: Tycho Andersen <tycho@tycho.ws>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Matt Denton <mpdenton@google.com>
+Cc: Sargun Dhillon <sargun@sargun.me>
+Cc: Jann Horn <jannh@google.com>
+Cc: Chris Palmer <palmer@google.com>
+Cc: Aleksa Sarai <cyphar@cyphar.com>
+Cc: Robert Sesek <rsesek@google.com>
+Cc: Jeffrey Vander Stoep <jeffv@google.com>
+Cc: Linux Containers <containers@lists.linux-foundation.org>
+Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+---
+/* v2 */
+patch not present
 
-J
+/* v3 */
+patch introduced
+---
+ kernel/seccomp.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-> ---
->  .../iio/imu/inv_icm42600/inv_icm42600_i2c.c   | 100 ++++++++++++++++++
->  1 file changed, 100 insertions(+)
->  create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_i2c.c
-> 
-> diff --git a/drivers/iio/imu/inv_icm42600/inv_icm42600_i2c.c b/drivers/iio/imu/inv_icm42600/inv_icm42600_i2c.c
-> new file mode 100644
-> index 000000000000..4789cead23b3
-> --- /dev/null
-> +++ b/drivers/iio/imu/inv_icm42600/inv_icm42600_i2c.c
-> @@ -0,0 +1,100 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2020 InvenSense, Inc.
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/device.h>
-> +#include <linux/module.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/i2c.h>
-> +#include <linux/regmap.h>
-> +#include <linux/property.h>
-> +
-> +#include "inv_icm42600.h"
-> +
-> +static int inv_icm42600_i2c_bus_setup(struct inv_icm42600_state *st)
-> +{
-> +	unsigned int mask, val;
-> +	int ret;
-> +
-> +	/* setup interface registers */
-> +	ret = regmap_update_bits(st->map, INV_ICM42600_REG_INTF_CONFIG6,
-> +				 INV_ICM42600_INTF_CONFIG6_MASK,
-> +				 INV_ICM42600_INTF_CONFIG6_I3C_EN);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = regmap_update_bits(st->map, INV_ICM42600_REG_INTF_CONFIG4,
-> +				 INV_ICM42600_INTF_CONFIG4_I3C_BUS_ONLY, 0);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* set slew rates for I2C and SPI */
-> +	mask = INV_ICM42600_DRIVE_CONFIG_I2C_MASK |
-> +	       INV_ICM42600_DRIVE_CONFIG_SPI_MASK;
-> +	val = INV_ICM42600_DRIVE_CONFIG_I2C(INV_ICM42600_SLEW_RATE_12_36NS) |
-> +	      INV_ICM42600_DRIVE_CONFIG_SPI(INV_ICM42600_SLEW_RATE_12_36NS);
-> +	ret = regmap_update_bits(st->map, INV_ICM42600_REG_DRIVE_CONFIG,
-> +				 mask, val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* disable SPI bus */
-> +	return regmap_update_bits(st->map, INV_ICM42600_REG_INTF_CONFIG0,
-> +				  INV_ICM42600_INTF_CONFIG0_UI_SIFS_CFG_MASK,
-> +				  INV_ICM42600_INTF_CONFIG0_UI_SIFS_CFG_SPI_DIS);
-> +}
-> +
-> +static int inv_icm42600_probe(struct i2c_client *client)
-> +{
-> +	const void *match;
-> +	enum inv_icm42600_chip chip;
-> +	struct regmap *regmap;
-> +
-> +	if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_I2C_BLOCK))
-> +		return -ENOTSUPP;
-> +
-> +	match = device_get_match_data(&client->dev);
-> +	if (!match)
-> +		return -EINVAL;
-> +	chip = (enum inv_icm42600_chip)match;
-> +
-> +	regmap = devm_regmap_init_i2c(client, &inv_icm42600_regmap_config);
-> +	if (IS_ERR(regmap))
-> +		return PTR_ERR(regmap);
-> +
-> +	return inv_icm42600_core_probe(regmap, chip, inv_icm42600_i2c_bus_setup);
-> +}
-> +
-> +static const struct of_device_id inv_icm42600_of_matches[] = {
-> +	{
-> +		.compatible = "invensense,icm42600",
-> +		.data = (void *)INV_CHIP_ICM42600,
-> +	}, {
-> +		.compatible = "invensense,icm42602",
-> +		.data = (void *)INV_CHIP_ICM42602,
-> +	}, {
-> +		.compatible = "invensense,icm42605",
-> +		.data = (void *)INV_CHIP_ICM42605,
-> +	}, {
-> +		.compatible = "invensense,icm42622",
-> +		.data = (void *)INV_CHIP_ICM42622,
-> +	},
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, inv_icm42600_of_matches);
-> +
-> +static struct i2c_driver inv_icm42600_driver = {
-> +	.driver = {
-> +		.name = "inv-icm42600-i2c",
-> +		.of_match_table = inv_icm42600_of_matches,
-> +		.pm = &inv_icm42600_pm_ops,
-> +	},
-> +	.probe_new = inv_icm42600_probe,
-> +};
-> +module_i2c_driver(inv_icm42600_driver);
-> +
-> +MODULE_AUTHOR("InvenSense, Inc.");
-> +MODULE_DESCRIPTION("InvenSense ICM-426xx I2C driver");
-> +MODULE_LICENSE("GPL");
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 55a6184f5990..0ba2d6d0800f 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -106,10 +106,11 @@ struct notification {
+ /**
+  * struct seccomp_filter - container for seccomp BPF programs
+  *
+- * @usage: reference count to manage the object lifetime.
+- *         get/put helpers should be used when accessing an instance
+- *         outside of a lifetime-guarded section.  In general, this
+- *         is only needed for handling filters shared across tasks.
++ * @refs: Reference count to manage the object lifetime.
++ *	  A filter's reference count is incremented for each directly
++ *	  attached task, once for the dependent filter, and if
++ *	  requested for the user notifier. When @refs reaches zero,
++ *	  the filter can be freed.
+  * @log: true if all actions except for SECCOMP_RET_ALLOW should be logged
+  * @prev: points to a previously installed, or inherited, filter
+  * @prog: the BPF program to evaluate
+@@ -124,10 +125,10 @@ struct notification {
+  * how namespaces work.
+  *
+  * seccomp_filter objects should never be modified after being attached
+- * to a task_struct (other than @usage).
++ * to a task_struct (other than @refs).
+  */
+ struct seccomp_filter {
+-	refcount_t usage;
++	refcount_t refs;
+ 	bool log;
+ 	struct seccomp_filter *prev;
+ 	struct bpf_prog *prog;
+@@ -461,7 +462,7 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
+ 		return ERR_PTR(ret);
+ 	}
+ 
+-	refcount_set(&sfilter->usage, 1);
++	refcount_set(&sfilter->refs, 1);
+ 
+ 	return sfilter;
+ }
+@@ -554,7 +555,7 @@ static long seccomp_attach_filter(unsigned int flags,
+ 
+ static void __get_seccomp_filter(struct seccomp_filter *filter)
+ {
+-	refcount_inc(&filter->usage);
++	refcount_inc(&filter->refs);
+ }
+ 
+ /* get_seccomp_filter - increments the reference count of the filter on @tsk */
+@@ -577,7 +578,7 @@ static inline void seccomp_filter_free(struct seccomp_filter *filter)
+ static void __put_seccomp_filter(struct seccomp_filter *orig)
+ {
+ 	/* Clean up single-reference branches iteratively. */
+-	while (orig && refcount_dec_and_test(&orig->usage)) {
++	while (orig && refcount_dec_and_test(&orig->refs)) {
+ 		struct seccomp_filter *freeme = orig;
+ 		orig = orig->prev;
+ 		seccomp_filter_free(freeme);
+
+base-commit: b9bbe6ed63b2b9f2c9ee5cbd0f2c946a2723f4ce
+-- 
+2.26.2
 
