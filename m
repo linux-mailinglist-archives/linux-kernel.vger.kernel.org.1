@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 425531E975B
+	by mail.lfdr.de (Postfix) with ESMTP id B09851E975C
 	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 13:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728191AbgEaLwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 07:52:14 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:42746 "EHLO
+        id S1728261AbgEaLwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 07:52:15 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:42745 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727875AbgEaLwO (ORCPT
+        with ESMTP id S1725912AbgEaLwO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 31 May 2020 07:52:14 -0400
 Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein.fritz.box)
         by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jfMVe-0006jt-NC; Sun, 31 May 2020 11:52:10 +0000
+        id 1jfMVf-0006jt-LR; Sun, 31 May 2020 11:52:11 +0000
 From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
 Cc:     Andy Lutomirski <luto@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
@@ -28,10 +28,12 @@ Cc:     Andy Lutomirski <luto@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
         Jeffrey Vander Stoep <jeffv@google.com>,
         Linux Containers <containers@lists.linux-foundation.org>,
         Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH v3 1/4] seccomp: rename "usage" to "refs" and document
-Date:   Sun, 31 May 2020 13:50:28 +0200
-Message-Id: <20200531115031.391515-1-christian.brauner@ubuntu.com>
+Subject: [PATCH v3 2/4] seccomp: release filter after task is fully dead
+Date:   Sun, 31 May 2020 13:50:29 +0200
+Message-Id: <20200531115031.391515-2-christian.brauner@ubuntu.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200531115031.391515-1-christian.brauner@ubuntu.com>
+References: <20200531115031.391515-1-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -39,12 +41,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Naming the lifetime counter of a seccomp filter "usage" suggests a
-little too strongly that its about tasks that are using this filter
-while it also tracks other references such as the user notifier or
-ptrace. This also updates the documentation to note this fact.
+The seccomp filter used to be released in free_task() which is called
+asynchronously via call_rcu() and assorted mechanisms. Since we need
+to inform tasks waiting on the seccomp notifier when a filter goes empty
+we will notify them as soon as a task has been marked fully dead in
+release_task(). To not split seccomp cleanup into two parts, move
+filter release out of free_task() and into release_task() after we've
+unhashed struct task from struct pid, exited signals, and unlinked it
+from the threadgroups' thread list. We'll put the empty filter
+notification infrastructure into it in a follow up patch.
 
-We'll be introducing an actual usage counter in a follow-up patch.
+This also renames put_seccomp_filter() to seccomp_filter_release() which
+is a more descriptive name of what we're doing here especially once
+we've added the empty filter notification mechanism in there.
+
+We're also NULL-ing the task's filter tree entrypoint which seems
+cleaner than leaving a dangling pointer in there. Note that this shouldn't
+need any memory barriers since we're calling this when the task is in
+release_task() which means it's EXIT_DEAD. So it can't modify it's seccomp
+filters anymore. You can also see this from the point where we're calling
+seccomp_filter_release(). It's after __exit_signal() and at this point,
+tsk->sighand will already have been NULLed which is required for
+thread-sync and filter installation alike.
 
 Cc: Tycho Andersen <tycho@tycho.ws>
 Cc: Kees Cook <keescook@chromium.org>
@@ -64,71 +82,138 @@ patch not present
 /* v3 */
 patch introduced
 ---
- kernel/seccomp.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ include/linux/seccomp.h |  4 +--
+ kernel/exit.c           |  1 +
+ kernel/fork.c           |  1 -
+ kernel/seccomp.c        | 60 ++++++++++++++++++++++++-----------------
+ 4 files changed, 38 insertions(+), 28 deletions(-)
 
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 55a6184f5990..0ba2d6d0800f 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -106,10 +106,11 @@ struct notification {
- /**
-  * struct seccomp_filter - container for seccomp BPF programs
-  *
-- * @usage: reference count to manage the object lifetime.
-- *         get/put helpers should be used when accessing an instance
-- *         outside of a lifetime-guarded section.  In general, this
-- *         is only needed for handling filters shared across tasks.
-+ * @refs: Reference count to manage the object lifetime.
-+ *	  A filter's reference count is incremented for each directly
-+ *	  attached task, once for the dependent filter, and if
-+ *	  requested for the user notifier. When @refs reaches zero,
-+ *	  the filter can be freed.
-  * @log: true if all actions except for SECCOMP_RET_ALLOW should be logged
-  * @prev: points to a previously installed, or inherited, filter
-  * @prog: the BPF program to evaluate
-@@ -124,10 +125,10 @@ struct notification {
-  * how namespaces work.
-  *
-  * seccomp_filter objects should never be modified after being attached
-- * to a task_struct (other than @usage).
-+ * to a task_struct (other than @refs).
-  */
- struct seccomp_filter {
--	refcount_t usage;
-+	refcount_t refs;
- 	bool log;
- 	struct seccomp_filter *prev;
- 	struct bpf_prog *prog;
-@@ -461,7 +462,7 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
- 		return ERR_PTR(ret);
+diff --git a/include/linux/seccomp.h b/include/linux/seccomp.h
+index 4192369b8418..1644922af19a 100644
+--- a/include/linux/seccomp.h
++++ b/include/linux/seccomp.h
+@@ -82,10 +82,10 @@ static inline int seccomp_mode(struct seccomp *s)
+ #endif /* CONFIG_SECCOMP */
+ 
+ #ifdef CONFIG_SECCOMP_FILTER
+-extern void put_seccomp_filter(struct task_struct *tsk);
++extern void seccomp_filter_release(struct task_struct *tsk);
+ extern void get_seccomp_filter(struct task_struct *tsk);
+ #else  /* CONFIG_SECCOMP_FILTER */
+-static inline void put_seccomp_filter(struct task_struct *tsk)
++static inline void seccomp_filter_release(struct task_struct *tsk)
+ {
+ 	return;
+ }
+diff --git a/kernel/exit.c b/kernel/exit.c
+index ce2a75bc0ade..5490cc04f436 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -218,6 +218,7 @@ void release_task(struct task_struct *p)
  	}
  
--	refcount_set(&sfilter->usage, 1);
-+	refcount_set(&sfilter->refs, 1);
- 
- 	return sfilter;
+ 	write_unlock_irq(&tasklist_lock);
++	seccomp_filter_release(p);
+ 	proc_flush_pid(thread_pid);
+ 	put_pid(thread_pid);
+ 	release_thread(p);
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 48ed22774efa..b948a14da94f 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -471,7 +471,6 @@ void free_task(struct task_struct *tsk)
+ #endif
+ 	rt_mutex_debug_task_free(tsk);
+ 	ftrace_graph_exit_task(tsk);
+-	put_seccomp_filter(tsk);
+ 	arch_release_task_struct(tsk);
+ 	if (tsk->flags & PF_KTHREAD)
+ 		free_kthread_struct(tsk);
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 0ba2d6d0800f..55251b1fe03f 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -367,6 +367,40 @@ static inline pid_t seccomp_can_sync_threads(void)
+ 	return 0;
  }
-@@ -554,7 +555,7 @@ static long seccomp_attach_filter(unsigned int flags,
  
- static void __get_seccomp_filter(struct seccomp_filter *filter)
- {
--	refcount_inc(&filter->usage);
-+	refcount_inc(&filter->refs);
- }
- 
- /* get_seccomp_filter - increments the reference count of the filter on @tsk */
-@@ -577,7 +578,7 @@ static inline void seccomp_filter_free(struct seccomp_filter *filter)
- static void __put_seccomp_filter(struct seccomp_filter *orig)
- {
- 	/* Clean up single-reference branches iteratively. */
--	while (orig && refcount_dec_and_test(&orig->usage)) {
++static inline void seccomp_filter_free(struct seccomp_filter *filter)
++{
++	if (filter) {
++		bpf_prog_destroy(filter->prog);
++		kfree(filter);
++	}
++}
++
++static void __put_seccomp_filter(struct seccomp_filter *orig)
++{
++	/* Clean up single-reference branches iteratively. */
 +	while (orig && refcount_dec_and_test(&orig->refs)) {
- 		struct seccomp_filter *freeme = orig;
- 		orig = orig->prev;
- 		seccomp_filter_free(freeme);
-
-base-commit: b9bbe6ed63b2b9f2c9ee5cbd0f2c946a2723f4ce
++		struct seccomp_filter *freeme = orig;
++		orig = orig->prev;
++		seccomp_filter_free(freeme);
++	}
++}
++
++/**
++ * seccomp_filter_release - Detach the task from its filter tree
++ *			    and drop its reference count during
++ *			    exit.
++ *
++ * This function should only be called when the task is exiting as
++ * it detaches it from its filter tree.
++ */
++void seccomp_filter_release(struct task_struct *tsk)
++{
++	struct seccomp_filter *cur = tsk->seccomp.filter;
++
++	tsk->seccomp.filter = NULL;
++	__put_seccomp_filter(cur);
++}
++
+ /**
+  * seccomp_sync_threads: sets all threads to use current's filter
+  *
+@@ -396,7 +430,7 @@ static inline void seccomp_sync_threads(unsigned long flags)
+ 		 * current's path will hold a reference.  (This also
+ 		 * allows a put before the assignment.)
+ 		 */
+-		put_seccomp_filter(thread);
++		__put_seccomp_filter(thread->seccomp.filter);
+ 		smp_store_release(&thread->seccomp.filter,
+ 				  caller->seccomp.filter);
+ 
+@@ -567,30 +601,6 @@ void get_seccomp_filter(struct task_struct *tsk)
+ 	__get_seccomp_filter(orig);
+ }
+ 
+-static inline void seccomp_filter_free(struct seccomp_filter *filter)
+-{
+-	if (filter) {
+-		bpf_prog_destroy(filter->prog);
+-		kfree(filter);
+-	}
+-}
+-
+-static void __put_seccomp_filter(struct seccomp_filter *orig)
+-{
+-	/* Clean up single-reference branches iteratively. */
+-	while (orig && refcount_dec_and_test(&orig->refs)) {
+-		struct seccomp_filter *freeme = orig;
+-		orig = orig->prev;
+-		seccomp_filter_free(freeme);
+-	}
+-}
+-
+-/* put_seccomp_filter - decrements the ref count of tsk->seccomp.filter */
+-void put_seccomp_filter(struct task_struct *tsk)
+-{
+-	__put_seccomp_filter(tsk->seccomp.filter);
+-}
+-
+ static void seccomp_init_siginfo(kernel_siginfo_t *info, int syscall, int reason)
+ {
+ 	clear_siginfo(info);
 -- 
 2.26.2
 
