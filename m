@@ -2,71 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1EC91E9621
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 09:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C42A71E9625
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 09:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727030AbgEaHUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 03:20:08 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:60458 "EHLO zju.edu.cn"
+        id S1727068AbgEaHWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 03:22:10 -0400
+Received: from winnie.ispras.ru ([83.149.199.91]:29532 "EHLO smtp.ispras.ru"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726803AbgEaHUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 03:20:08 -0400
-Received: by ajax-webmail-mail-app4 (Coremail) ; Sun, 31 May 2020 15:19:51
- +0800 (GMT+08:00)
-X-Originating-IP: [10.192.85.18]
-Date:   Sun, 31 May 2020 15:19:51 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Markus Elfring" <Markus.Elfring@web.de>
-Cc:     kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org,
-        linux-i2c@vger.kernel.org, linux-imx@nxp.com,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Dong Aisheng" <aisheng.dong@nxp.com>,
-        "Fabio Estevam" <festevam@gmail.com>, "Kangjie Lu" <kjlu@umn.edu>,
-        "Sascha Hauer" <s.hauer@pengutronix.de>,
-        "Shawn Guo" <shawnguo@kernel.org>
-Subject: Re: Re: [PATCH v2] i2c: imx-lpi2c: Fix runtime PM imbalance on
- error in lpi2c_imx_master_enable()
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190906(84e8bf8f)
- Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
-In-Reply-To: <845a11a9-51ed-cc7c-350f-b319111f32ee@web.de>
-References: <845a11a9-51ed-cc7c-350f-b319111f32ee@web.de>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        id S1726751AbgEaHWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 May 2020 03:22:10 -0400
+Received: from monopod.intra.ispras.ru (monopod.intra.ispras.ru [10.10.3.121])
+        by smtp.ispras.ru (Postfix) with ESMTP id C439E203BF;
+        Sun, 31 May 2020 10:22:04 +0300 (MSK)
+Date:   Sun, 31 May 2020 10:22:04 +0300 (MSK)
+From:   Alexander Monakov <amonakov@ispras.ru>
+To:     linux-kernel@vger.kernel.org
+cc:     Joerg Roedel <joro@8bytes.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        iommu@lists.linux-foundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH] iommu/amd: Fix event counter availability check
+In-Reply-To: <20200529200738.1923-1-amonakov@ispras.ru>
+Message-ID: <alpine.LNX.2.20.13.2005311014450.16067@monopod.intra.ispras.ru>
+References: <20200529200738.1923-1-amonakov@ispras.ru>
+User-Agent: Alpine 2.20.13 (LNX 116 2015-12-14)
 MIME-Version: 1.0
-Message-ID: <1f6c3bbb.db553.1726999de41.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cS_KCgC3WeSXWtNeXepiAA--.9453W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0OBlZdtOWM2gAhsq
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbA0S07vEb7Iv0x
-        C_Cr1lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
-        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
-        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
-        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWlV2xY628EF7xvwVC2z280aVAFwI0_Gc
-        CE3s1lV2xY628EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wCS07vEe2I262IYc4CY6c8I
-        j28IcVAaY2xG8wCS07vE5I8CrVACY4xI64kE6c02F40Ex7xfMIAIbVAv7VC0I7IYx2IY67
-        AKxVWUJVWUGwCS07vEYx0Ex4A2jsIE14v26r1j6r4UMIAIbVAm72CE4IkC6x0Yz7v_Jr0_
-        Gr1lV2xY64IIrI8v6xkF7I0E8cxan2IY04v7MIAIbVCjxxvEw4WlV2xY6xkI7II2jI8vz4
-        vEwIxGrwCS07vE42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMIAIbVCF72vE77IF4wCS07vE
-        4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lV2xY6I8I3I0E5I8CrVAFwI0_Jr0_Jr4lV2xY6I8I3I
-        0E7480Y4vE14v26r106r1rMIAIbVC2zVAF1VAY17CE14v26r1q6r43MIAIbVCI42IY6xII
-        jxv20xvE14v26r1j6r1xMIAIbVCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lV2xY6I
-        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIAIbVCI42IY6I8E87Iv67AKxVWUJVW8JwCS
-        07vEIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUU==
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CkhpLCBNYXJrdXMsIAoKPiAqIEhvdyBkbyB5b3UgdGhpbmsgYWJvdXQgdG8gcmVwbGFjZSB0aGUg
-d29yZCDigJxwYWlyaW5n4oCdIGJ5IOKAnGNvcnJlc3BvbmRpbmfigJ0/Cj4gCj4gKiBXaWxsIGl0
-IGJlIGhlbHBmdWwgdG8gYWRkIGFuIGltcGVyYXRpdmUgd29yZGluZz8KPiAgIGh0dHBzOi8vZ2l0
-Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdC90
-cmVlL0RvY3VtZW50YXRpb24vcHJvY2Vzcy9zdWJtaXR0aW5nLXBhdGNoZXMucnN0P2lkPWZmZWI1
-OTVkODQ4MTFkZGUxNmEyOGIzM2Q4YTdjZjI2ZDUxZDUxYjMjbjE1MQo+IAo+ICogV291bGQgeW91
-IGxpa2UgdG8gYWRkIHRoZSB0YWcg4oCcRml4ZXPigJ0gdG8gdGhlIGNvbW1pdCBtZXNzYWdlPwo+
-IAo+ICogQXJlIHlvdSBnb2luZyB0byB0YWtlIHN1Y2ggcG9zc2liaWxpdGllcyBpbnRvIGFjY291
-bnQgZm9yIGFueSBtb3JlIHBhdGNoZXM/Cj4gCgpUaGFuayB5b3UgZm9yIHlvdXIgYWR2aWNlISBJ
-IHdpbGwgZml4IHRoZW0gc29vbiBpbiB0aGUgbmV4dCB2ZXJzaW9uIG9mIHBhdGNoLgoKUmVnYXJk
-cywKRGluZ2hhbw==
+Hi,
+
+Adding Shuah Khan to Cc: I've noticed you've seen this issue on Ryzen 2400GE;
+can you have a look at the patch? Would be nice to know if it fixes the
+problem for you too.
+
+Thanks.
+Alexander
+
+On Fri, 29 May 2020, Alexander Monakov wrote:
+
+> The driver performs an extra check if the IOMMU's capabilities advertise
+> presence of performance counters: it verifies that counters are writable
+> by writing a hard-coded value to a counter and testing that reading that
+> counter gives back the same value.
+> 
+> Unfortunately it does so quite early, even before pci_enable_device is
+> called for the IOMMU, i.e. when accessing its MMIO space is not
+> guaranteed to work. On Ryzen 4500U CPU, this actually breaks the test:
+> the driver assumes the counters are not writable, and disables the
+> functionality.
+> 
+> Moving init_iommu_perf_ctr just after iommu_flush_all_caches resolves
+> the issue. This is the earliest point in amd_iommu_init_pci where the
+> call succeeds on my laptop.
+> 
+> Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+> Cc: iommu@lists.linux-foundation.org
+> ---
+> 
+> PS. I'm seeing another hiccup with IOMMU probing on my system:
+> pci 0000:00:00.2: can't derive routing for PCI INT A
+> pci 0000:00:00.2: PCI INT A: not connected
+> 
+> Hopefully I can figure it out, but I'd appreciate hints.
+> 
+>  drivers/iommu/amd_iommu_init.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iommu/amd_iommu_init.c b/drivers/iommu/amd_iommu_init.c
+> index 5b81fd16f5fa..1b7ec6b6a282 100644
+> --- a/drivers/iommu/amd_iommu_init.c
+> +++ b/drivers/iommu/amd_iommu_init.c
+> @@ -1788,8 +1788,6 @@ static int __init iommu_init_pci(struct amd_iommu *iommu)
+>  	if (iommu->cap & (1UL << IOMMU_CAP_NPCACHE))
+>  		amd_iommu_np_cache = true;
+>  
+> -	init_iommu_perf_ctr(iommu);
+> -
+>  	if (is_rd890_iommu(iommu->dev)) {
+>  		int i, j;
+>  
+> @@ -1891,8 +1889,10 @@ static int __init amd_iommu_init_pci(void)
+>  
+>  	init_device_table_dma();
+>  
+> -	for_each_iommu(iommu)
+> +	for_each_iommu(iommu) {
+>  		iommu_flush_all_caches(iommu);
+> +		init_iommu_perf_ctr(iommu);
+> +	}
+>  
+>  	if (!ret)
+>  		print_iommu_info();
+> 
+> base-commit: 75caf310d16cc5e2f851c048cd597f5437013368
+> 
