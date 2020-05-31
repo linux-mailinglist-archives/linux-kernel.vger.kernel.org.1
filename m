@@ -2,71 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57BF11E9681
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 11:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 477A21E9686
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 11:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727900AbgEaJPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 05:15:40 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:8724 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725813AbgEaJPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 05:15:39 -0400
-Received: by ajax-webmail-mail-app4 (Coremail) ; Sun, 31 May 2020 17:15:27
- +0800 (GMT+08:00)
-X-Originating-IP: [10.192.85.18]
-Date:   Sun, 31 May 2020 17:15:27 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Markus Elfring" <Markus.Elfring@web.de>
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Ben Skeggs" <bskeggs@redhat.com>,
-        "David Airlie" <airlied@linux.ie>, "Kangjie Lu" <kjlu@umn.edu>
-Subject: Re: Re: drm/nouveau/clk/gm20b: Fix memory leak in gm20b_clk_new()
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190906(84e8bf8f)
- Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
-In-Reply-To: <5a073b2b-5102-adec-84dd-b62dc48c7451@web.de>
-References: <dd729c13-fbc8-22e7-7d8e-e3e126f66943@web.de>
- <40d8fb01.db721.17269d3d620.Coremail.dinghao.liu@zju.edu.cn>
- <74977dc6-7ace-6ef7-4fcd-3f6c89a3eb5f@web.de>
- <286858ff.db7e3.17269ee5f3f.Coremail.dinghao.liu@zju.edu.cn>
- <5a073b2b-5102-adec-84dd-b62dc48c7451@web.de>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
-MIME-Version: 1.0
-Message-ID: <1c5b64dc.db888.1726a03b710.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cS_KCgC3WeSvddNeYbtjAA--.9579W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAggRBlZdtOY77QABsT
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbLIS07vEb7Iv0x
-        C_Cr1lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
-        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
-        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
-        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIAIbVA2z4x0Y4vEx4A2jsIE14v26r
-        xl6s0DMIAIbVA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1lV2xY62AIxVAIcxkEcVAq
-        07x20xvEncxIr21lV2xY6c02F40EFcxC0VAKzVAqx4xG6I80ewCS07vEYx0E2Ix0cI8IcV
-        AFwI0_Jr0_Jr4lV2xY6cIj6I8E87Iv67AKxVWUJVW8JwCS07vEOx8S6xCaFVCjc4AY6r1j
-        6r4UMIAIbVCjxxvEw4WlV2xY6xkI7II2jI8vz4vEwIxGrwCS07vE42xK82IY6x8ErcxFaV
-        Av8VW8uw4UJr1UMIAIbVCF72vE77IF4wCS07vE4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lV2xY
-        6I8I3I0E5I8CrVAFwI0_Jr0_Jr4lV2xY6I8I3I0E7480Y4vE14v26r106r1rMIAIbVC2zV
-        AF1VAY17CE14v26r1q6r43MIAIbVCI42IY6xIIjxv20xvE14v26r1j6r1xMIAIbVCI42IY
-        6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lV2xY6IIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WF
-        yUJwCS07vEIxAIcVC2z280aVAFwI0_Jr0_Gr1lV2xY6IIF0xvEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UYxBIdaVFxhVjvjDU=
+        id S1727951AbgEaJTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 05:19:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbgEaJS7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 May 2020 05:18:59 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B6DC061A0E
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 02:18:58 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id u26so9905776wmn.1
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 02:18:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=3LV+Def1c7T48ZEneRWvSMkP3WD/su3mbckNwtB8Qdo=;
+        b=EAvigIBGYEjOeLH0Mzn2G2eCzmfNfnX+Vvk0fDFDMdDXude50AJxuihlltZ6i0Hb/T
+         EtUPDbYvZiWDVoAmuLyEYRMrhd10C/rs1Xd8VUs7lx78Isfdsxk7TP2xlUuF/XGxAquQ
+         Ru58g/HdDAIhsr5WPzTWHc4LRcIwTwbOiHkg6KDmjU5UiySXtZ1y0xH43Jw1bobyqGU4
+         TPgTCI+p9VNEItkwHB6t93SQVcwJ4KIpykcAVOBV+LsrMZxrL7wUdAphN1zj3f+NFu4+
+         p6zhcGeUTnMiH6PTGG9adfyHW6hIieDd/CobJxs0gGxGHNmJYN23tbbHCvThQepxyIyH
+         eHIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=3LV+Def1c7T48ZEneRWvSMkP3WD/su3mbckNwtB8Qdo=;
+        b=idzUryLbyZ6eA+67V5ksgs8di0ofbP4d7CWtTdl02ss5YdxOktAeFF/+1SL1r3ySHW
+         7ko1XVSFafHTq5s1sQtcU7JV4JSGbqhaEUfvF2V+oBq+8s6drzK34oEvP3QdRIIKykep
+         IqquEoHnR3CP4+7A1BREW7nW1mb4QQlcTS9m0UWIxwFDk2QdvciXMGvWpPn4eP5i7IgD
+         JWo//8cI+lNVmEGMtVVSVFAKcSexRYvM5ycYeXtPxkv78e5bEl6sUQuiBAtSumbzgZBI
+         e3oJO69ka3/zy9Zp3mHg5NbGpcenzIcmt9hoPcRFeqUcWcWSi483v/kWjWCUMIwpGGzy
+         WG4w==
+X-Gm-Message-State: AOAM531DA74CD73UOi8Cd4dwRwQzgPsW4ahU9zWk6uOSrHNgD05syrdV
+        DEiQ6M5GEwoqeWUwp0dIDJrD1I2W
+X-Google-Smtp-Source: ABdhPJzcSk2OgYt3PYr5ORjPjX+8GKPq8Jw9faIgurfMidgxFiP9ULcIHK6aRPtT3omnTPJMRU7iNw==
+X-Received: by 2002:a1c:3281:: with SMTP id y123mr16565627wmy.30.1590916736523;
+        Sun, 31 May 2020 02:18:56 -0700 (PDT)
+Received: from ogabbay-VM.habana-labs.com ([31.154.190.6])
+        by smtp.gmail.com with ESMTPSA id s2sm6411867wmh.11.2020.05.31.02.18.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 May 2020 02:18:55 -0700 (PDT)
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
+Cc:     gregkh@linuxfoundation.org
+Subject: [PATCH] habanalabs: correctly cast u64 to void*
+Date:   Sun, 31 May 2020 12:15:47 +0300
+Message-Id: <20200531091547.6868-1-oded.gabbay@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+IEkganVzdCBmb3VuZCB0aGF0IGNsayBpcyByZWZlcmVuY2VkIGJ5IHBjbGsgaW4gdGhpcyBm
-dW5jdGlvbi4gV2hlbiBjbGsgaXMgZnJlZWQsCj4gPiBwY2xrIHdpbGwgYmUgYWxsb2NhdGVkIGlu
-IGdtMjBiX2Nsa19uZXdfc3BlZWRvMCgpLiBUaHVzIHdlIHNob3VsZCBub3QgcmVsZWFzZSBjbGsK
-PiA+IGluIHRoaXMgZnVuY3Rpb24gYW5kIHRoZXJlIGlzIG5vIGJ1ZyBoZXJlLgo+IAo+IENhbiB0
-aGVyZSBiZSBhIG5lZWQgdG8gcmVsZWFzZSBhIGNsb2NrIG9iamVjdCBhZnRlciBhIGZhaWxlZCBn
-azIwYV9jbGtfY3RvcigpIGNhbGw/Cj4gCgpJIHRoaW5rIHRoaXMgbWFpbmx5IGRlcGVuZHMgb24g
-cGNsayBwb2ludGVyLiBJdCBzZWVtcyB0aGF0IHRoZSBjYWxsZXIgb2YgCmdtMjBiX2Nsa19uZXco
-KSBhbHdheXMgZXhwZWN0cyBwY2xrIHRvIGJlIGFsbG9jYXRlZCB1bmxlc3MgaXQgcmV0dXJucyAt
-RU5PTUVNLAp3aGljaCBtZWFucyBremFsbG9jKCkgZmFpbGVkLiBJZiBnazIwYV9jbGtfY3Rvcigp
-IG5ldmVyIHJldHVybnMgc3VjaCBhbiBlcnJvciAKY29kZSwgd2UgbWF5IG5lZWQgbm90IHRvIHJl
-bGVhc2UgdGhpcyBjbG9jayBvYmplY3QuCgpSZWdhcmRzLApEaW5naGFv
+Use the u64_to_user_ptr(x) kernel macro to correctly cast u64 to void*
+
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+---
+ drivers/misc/habanalabs/command_submission.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/misc/habanalabs/command_submission.c b/drivers/misc/habanalabs/command_submission.c
+index 75d8302352e5..f82974a916c3 100644
+--- a/drivers/misc/habanalabs/command_submission.c
++++ b/drivers/misc/habanalabs/command_submission.c
+@@ -789,7 +789,7 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 		size_to_copy = chunk->num_signal_seq_arr *
+ 				sizeof(*signal_seq_arr);
+ 		if (copy_from_user(signal_seq_arr,
+-					(void __user *) chunk->signal_seq_arr,
++					u64_to_user_ptr(chunk->signal_seq_arr),
+ 					size_to_copy)) {
+ 			dev_err(hdev->dev,
+ 				"Failed to copy signal seq array from user\n");
+-- 
+2.17.1
+
