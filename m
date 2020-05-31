@@ -2,60 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1AF91E9699
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 11:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E05961E969E
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 11:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728081AbgEaJek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 05:34:40 -0400
-Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:40352 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727866AbgEaJek (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 05:34:40 -0400
-Received: from localhost.localdomain ([93.23.14.245])
-        by mwinf5d05 with ME
-        id lMaZ220075HDzGl03MaZai; Sun, 31 May 2020 11:34:38 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 31 May 2020 11:34:38 +0200
-X-ME-IP: 93.23.14.245
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     linux@armlinux.org.uk
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] ARM: riscpc: mark a function as __init to save some memory
-Date:   Sun, 31 May 2020 11:34:29 +0200
-Message-Id: <20200531093429.596642-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        id S1727953AbgEaJkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 05:40:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725898AbgEaJkp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 May 2020 05:40:45 -0400
+Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E38D2070B;
+        Sun, 31 May 2020 09:40:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590918045;
+        bh=498vV3wFsLFm1truFcBU/hb44KJqgkDqO1OJZpZhwO0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=vTE/pctZJiP0BK3oSI5gmXRtWxiNpS3upSMpObABHMVnfF/RuKfg2k9zGk4Fsvxqv
+         m1/ZiKP7vipEMdKioCMEr87vKGjyZWB9VeYc7Cr5j9d8Z1eq4dOj/qYWX9WOca75yU
+         oJkjX+jSaSk83Mp1njR9q8yclR2CbRQvOIfvNwoY=
+Received: from mchehab by mail.kernel.org with local (Exim 4.93)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jfKSQ-003TMW-AP; Sun, 31 May 2020 11:40:42 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, kbuild test robot <lkp@intel.com>
+Subject: [PATCH 1/2] media: atomisp: get rid of a left-over wrapper function
+Date:   Sun, 31 May 2020 11:40:40 +0200
+Message-Id: <1e056919536d65daf06091345a62523f827fde7a.1590918032.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'ecard_bus_init()' is only called via 'postcore_initcall'.
-It can be marked as __init to save a few bytes of memory.
+The abstraction layer for kvfree() was removed, but there
+is still a left-over code there.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- arch/arm/mach-rpc/ecard.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/media/atomisp/pci/sh_css.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/arch/arm/mach-rpc/ecard.c b/arch/arm/mach-rpc/ecard.c
-index 75cfad2cb143..9f4e7106efb9 100644
---- a/arch/arm/mach-rpc/ecard.c
-+++ b/arch/arm/mach-rpc/ecard.c
-@@ -1135,7 +1135,7 @@ struct bus_type ecard_bus_type = {
- 	.shutdown	= ecard_drv_shutdown,
- };
- 
--static int ecard_bus_init(void)
-+static int __init ecard_bus_init(void)
- {
- 	return bus_register(&ecard_bus_type);
+diff --git a/drivers/staging/media/atomisp/pci/sh_css.c b/drivers/staging/media/atomisp/pci/sh_css.c
+index 9c754e29fa00..9f3e421cd717 100644
+--- a/drivers/staging/media/atomisp/pci/sh_css.c
++++ b/drivers/staging/media/atomisp/pci/sh_css.c
+@@ -1861,14 +1861,6 @@ ia_css_enable_isys_event_queue(bool enable) {
+ 	return 0;
  }
+ 
+-void sh_css_free(void *ptr)
+-{
+-	if (is_vmalloc_addr(ptr))
+-		vfree(ptr);
+-	else
+-		kfree(ptr);
+-}
+-
+ /* For Acceleration API: Flush FW (shared buffer pointer) arguments */
+ void
+ sh_css_flush(struct ia_css_acc_fw *fw)
 -- 
-2.25.1
+2.26.2
 
