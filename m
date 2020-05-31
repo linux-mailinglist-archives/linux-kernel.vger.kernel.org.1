@@ -2,105 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2361E965B
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 10:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C59BD1E965E
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 10:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727803AbgEaIhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 04:37:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725898AbgEaIhG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 04:37:06 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34186C061A0E
-        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 01:37:06 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id y18so3551037ybb.3
-        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 01:37:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=XYTtWcqohsgiBSt92FZ9EFsD017ojXHAAEEmBFsJP9g=;
-        b=LNsSM3HoYj3xSf6zZIELc8foeoXPSp4c4cUbwNbdzBWpK3lzb+bPaX+izlNZCOscqo
-         btlWjAWsKNQSlb4Ybi7RzQ/M1gmFqZh1T/fo1ncBF/nNVIJHI4uzi+UIQ2Zkgec9PuiE
-         UvWMlUqiWKFVNrwkcmhyYe1sXT5aShHxpxBY5jpOy+Ueg7+U5lmwHr7sTJ9sCPkJDIPd
-         cRKgTd9LQhlPaybWSnQ7NrnsYI122Qi8hHiQsM4rqFL0qt4ZjZeRlEkDZsN4U2d+rAqq
-         +tBgZNuK6o5t68SS5g89ofMytv6vPNQvpcRtS44JO6oz/fcf1sBOLKdV131OgewW/pgQ
-         xC1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=XYTtWcqohsgiBSt92FZ9EFsD017ojXHAAEEmBFsJP9g=;
-        b=tbycmwjD8VQSdUV8R42afR/Hn0bzGorR1GWvesdoJhj2clQZn+xtwsoglZ+6QlZfdm
-         va0FFrQ2r2S+ON/m1LyCIOEqmN6goJDa2ThbS1q3gtRMCJPR4W3psMqNug5PrkTZKzlr
-         OKXSco1ucp3dwDhzLG6nVmHW/3oOh8HnYhu+cyqr3kDrSZJAxp4MmheHVXYu4L5Z2Uow
-         1BFBhUQl+M+pCInWs/QQd5F/QTkJ9IPNXO0pYG3CIpUAuvCTZm45vIpW9JD4QQFKENfR
-         IsYkzW6Tw3YpJcmzu9fWqotkwqtuzoD4BQOg52n66z5f0flBoVE4kwi9x/FrTPsyK18S
-         u8Ug==
-X-Gm-Message-State: AOAM53203h5hb/anfeX+s/BJD49063aBdyC7qAgJ5YDVCo5g5yaH2dPI
-        56cPj+634W+iuLyeOeiLJPGAY0yxmoGso9WiEYc=
-X-Google-Smtp-Source: ABdhPJzNtHw8xS7Zdo1JyQsYdAJiwKfJ38X9EDpiOARofXHW3/KvgQ0gS0hRUdqUkzh8c0P/e7zgNpz/M7DM9bwMA0s=
-X-Received: by 2002:a25:c606:: with SMTP id k6mr14264350ybf.10.1590914225391;
- Sun, 31 May 2020 01:37:05 -0700 (PDT)
+        id S1727894AbgEaIi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 04:38:26 -0400
+Received: from mout.web.de ([217.72.192.78]:59983 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725898AbgEaIiZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 May 2020 04:38:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1590914285;
+        bh=qcluvF288V7xnocU4TEm/CGh6CM8v94eGnBDCTNmS30=;
+        h=X-UI-Sender-Class:Subject:Cc:References:To:From:Date:In-Reply-To;
+        b=MM4UEzDmv1DUpgN4HkOL3CqwDEK3KekI0UOCgfc4U9m+BbosKoT3sjEwVjPcfUeCm
+         6Xe7gmUZbOInY0WctGkk57WRfoxc0yFhyZbRTPeK1U5CdiqkYpotIkHSGGDRpID7cD
+         /xKSt0qql62kz9vxCPs7rjX1Sg31B2BOVrSnLZ34=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.131.19.10]) by smtp.web.de (mrweb101
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0MQedF-1jZQIa14UX-00U2i2; Sun, 31
+ May 2020 10:38:05 +0200
+Subject: Re: drm/nouveau/clk/gm20b: Fix memory leak in gm20b_clk_new()
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>, Kangjie Lu <kjlu@umn.edu>
+References: <dd729c13-fbc8-22e7-7d8e-e3e126f66943@web.de>
+ <40d8fb01.db721.17269d3d620.Coremail.dinghao.liu@zju.edu.cn>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <74977dc6-7ace-6ef7-4fcd-3f6c89a3eb5f@web.de>
+Date:   Sun, 31 May 2020 10:38:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Received: by 2002:a25:7143:0:0:0:0:0 with HTTP; Sun, 31 May 2020 01:37:04
- -0700 (PDT)
-Reply-To: ebrimsegun@yandex.com
-From:   Olusegun Ebrima <simolusegun@gmail.com>
-Date:   Sun, 31 May 2020 02:37:04 -0600
-Message-ID: <CAN2g1gkXEDge2usemsqV7fnEh-euqXbLSHEcW21nTSnkTsE_tA@mail.gmail.com>
-Subject: Re: The invitation need your response
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <40d8fb01.db721.17269d3d620.Coremail.dinghao.liu@zju.edu.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+X-Provags-ID: V03:K1:y1LJYPs1Iq18L+/DAFeD2LDUvWpuxmckDphyA08FWMyUA+fuBN9
+ K5qx6q+Olg7M0ajYWgZMW5z2kJ+Cuo5G6ugqlorglO7y9ivn8A/0/npYd4Hn8rgZp1/cVXK
+ OfQZsRYZz9FsiV6zPCRFEdbqaMe/S+jRgt7iiQYuvx+4puln7sSZie6KghoFicBxiRUOj7h
+ cvpbKyhLklnhABV1Zwv9A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LNBjC4PMbDs=:zUez5xyZYSjv/YGQOBDmCg
+ mIq/MNdx+X19JCc4kZvcoEdy2DGLFDd4HXBJiAIMS5tvhTCUCe6j3C9mLMZJ4moPPdmUnWRLe
+ m0jjRcE3DSWIGhE/gt5Oi4BQf55QVU0UYH1d22R5OZNN9tSZQebYe1r86G9DLbnN8n/rWev1w
+ 9ucfnYUsGkeDX/++7mplW0K8LVulTqJmEhReWvwMG+YhIVkPupkEZmB+hk2M7uNU9wZ4zGEy7
+ TZ8mDbHco5JERAPsGA2U7bkkmcmx1a25bSk5MMmvaEfUXgxZkTildRaS/H5n8LmPll5GyCOLL
+ 0X9j8BbgcTDvzJ+HqTZ5T3MOQYLHWpMi5wEzNi02vavWy0ODFNVUdtw4ylccLiSXvbL7wtG/Y
+ y68VZStMDNntaEvMdF/VvZgv5mBliW6qaoN/lvp4cVV2vJel/MlHT+vlricD4a1g55QIS8yX6
+ Ry8FBPZJHZ9FsnvQYUtJwdVeNPbAKn8H9Vb9leGLneUA6Rj9VmgeGlQfHb1FHRzZFER+L41y0
+ 6LVDyUfyEVmlYD5TQP4W+1s+sUMr91lgLRcwVHX4wofKPr8/ssTTb3WVwL0CLUf6CRjblDtzW
+ puOLouLIln9nJkvWDihpsCBUX8K0QgsN86o+jeoLdylLEczMqr7gSubtrK3TOdWUpPjsqfgC0
+ 4Y+gBpSfzQ4AeuWmKBCaNgK7RYFOfuxlJWcwz0ywDhrLhtGyPnZEVxueRqRhwh0gPq5bIu0lt
+ z25aWqlMHfKgc1/GvcAGYfUdn6ZK8YMPY14HIeZ5U8R9SNm7TxcUntM+idcHlH8AGDTgcq5EF
+ Jko3fV3mxKdjIkATgQQVOz1FU9Iqymj2IeBg+zj2metYHCXgiy3g5okutYJJe449hM3SxJVmd
+ ezIy1MQePb9oGqFgLmEpiO7Bv2p7WbYSwTbGAxtOugTCJ1zm474xrw3xydvMw8B9IugR/ddSO
+ ii3F0AjaPCADmqJWJm0y/RXfuQDF72PLImd988hy18mlAisscP7Q1FyNxDWhysYXKMWce9C0b
+ ZMr0hASueX9vn/R2uV5+vzCNPPdu68rqw7fIy67NVcPB4+EB7cqBh0/f4m7qcL9I6d8e06+BU
+ TM7xMMO/5ddqm/m6uBXyIdYONNEq6R9EI6IriOOtFsfuaXaTskmhih/0IIp0He2lTBu+4HAwB
+ CFfxKVYjxUSk6NrYEmm2bkOlS0mFENQcSZxc3PVheySViiADJg8iYNbQy45bo/5tz1Zqa6hH1
+ X15vPxMJke/IekFMR
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
+> It's possible that we expect an usable clk pointer, though I could not find
+> the exact usage yet.
 
-With due respect to your personality and much sincerity of this
-purpose, I make this contact with you believing that you can be of
-great assistance to me. I'm Mr. Olusegun Ebrima, from Burkina Faso,
-I'm the Chairman of FOREIGN PAYMENTS CONTRACT AWARD COMMITTEE and also
-I currently hold the post of Internal Audit Manager of our bank in
-Ouagadougou Branch, Please see this as a confidential message and do
-not reveal it to another person because it=E2=80=99s a top secret.
-
-We are imposition to reclaim and inherit the sum of US $(38,850,000
-Million ) without any trouble, from a dormant account which remains
-unclaimed since 7 years the owner died. This is a U.S Dollars account
-and the beneficiary died without trace of his family to claim the
-fund.
-
-Upon my personal audit investigation into the details of the account,
-I find out that the deceased is a foreigner, which makes it possible
-for you as a foreigner no matter your country to lay claim on the
-balance as the Foreign Business Partner or Extended Relative to the
-deceased, provided you are not from here.
-
-Your integrity and trustworthiness will make us succeed without any
-risk. Please if you think that the amount is too much to be
-transferred into your account, you have the right to ask our bank to
-transfer the fund into your account bit by bit after approval or you
-double the account. Once this fund is transferred into your account,
-we will share the fund accordingly. 45%, for you, 45%, for me, 5%, had
-been mapped out for the expense made in this transaction, 5% as a free
-will donation to charity and motherless babies homes in both our
-countries as sign of breakthrough and more blessings.
+I am curious if another developer would like to add helpful background information.
 
 
-If you are interested to help without disappointment or breach of
-trust, reply me, so that I will guide you on the proper banking
-guidelines to follow for the claim. After the transfer, I will fly to
-your country for sharing of funds according to our agreement.
-Assurance: Note that this transaction will never in any way harm or
-foiled your good post or reputation in your country, because
-everything will follow legal process.
+> For security, I will release this pointer only on error paths in this function.
 
-I am looking forward to hear from you soonest.
-Yours faithfully,
-Mr Olusegun Ebrima
+Do you tend to release objects (which are referenced by pointers)?
+
+Regards,
+Markus
