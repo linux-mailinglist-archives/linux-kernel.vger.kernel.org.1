@@ -2,82 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792421E9BDF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 04:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7ACD1E9BF9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 05:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728173AbgFAC7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 22:59:32 -0400
-Received: from kernel.crashing.org ([76.164.61.194]:53932 "EHLO
-        kernel.crashing.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727820AbgFAC7c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 22:59:32 -0400
-Received: from localhost (gate.crashing.org [63.228.1.57])
-        (authenticated bits=0)
-        by kernel.crashing.org (8.14.7/8.14.7) with ESMTP id 0512xBhh003181
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Sun, 31 May 2020 21:59:15 -0500
-Message-ID: <ea25810cbd43974b75934f9cfb6ca3f007339dce.camel@kernel.crashing.org>
-Subject: Re: [PATCH v3 02/18] nitro_enclaves: Define the PCI device interface
-From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Anthony Liguori <aliguori@amazon.com>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Frank van der Linden <fllinden@amazon.com>,
-        Alexander Graf <graf@amazon.de>,
-        Martin Pohlack <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        Uwe Dannowski <uwed@amazon.de>, kvm@vger.kernel.org,
-        ne-devel-upstream@amazon.com
-Date:   Mon, 01 Jun 2020 12:59:10 +1000
-In-Reply-To: <20200526222109.GB179549@kroah.com>
-References: <20200525221334.62966-1-andraprs@amazon.com>
-         <20200525221334.62966-3-andraprs@amazon.com>
-         <20200526064455.GA2580530@kroah.com>
-         <bd25183c-3b2d-7671-f699-78988a39a633@amazon.com>
-         <20200526222109.GB179549@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1727820AbgFADMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 23:12:47 -0400
+Received: from mga01.intel.com ([192.55.52.88]:62416 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726860AbgFADMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 May 2020 23:12:46 -0400
+IronPort-SDR: CLYH+o7AGxFahnGaBkR02WoPqg7pjAkc6y5GIs6v5qVqGpkccJEPtuAwKzwTyDrGn8wKuPiUJt
+ ucy8DKNfMOAQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2020 20:12:46 -0700
+IronPort-SDR: NW4Fbl4SM5gX2PDB1WKlalXclQeVn0a5hiPCQUpJPcwYF75cIYEdWt4/+e7D+w/x8zNY4DSELw
+ pTz84bSS3R1Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,459,1583222400"; 
+   d="scan'208";a="293041317"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+  by fmsmga004.fm.intel.com with ESMTP; 31 May 2020 20:12:42 -0700
+From:   Bard Liao <yung-chuan.liao@linux.intel.com>
+To:     alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
+        broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com,
+        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        slawomir.blauciak@intel.com, mengdong.lin@intel.com,
+        bard.liao@intel.com
+Subject: [PATCH] soundwire: bus: clock_stop: don't deal with UNATTACHED Slave devices
+Date:   Sun, 31 May 2020 23:18:06 +0800
+Message-Id: <20200531151806.25951-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-05-27 at 00:21 +0200, Greg KH wrote:
-> > There are a couple of data structures with more than one member and multiple
-> > field sizes. And for the ones that are not, gathered as feedback from
-> > previous rounds of review that should consider adding a "flags" field in
-> > there for further extensibility.
-> 
-> Please do not do that in ioctls.  Just create new calls instead of
-> trying to "extend" existing ones.  It's always much easier.
-> 
-> > I can modify to have "__packed" instead of the attribute callout.
-> 
-> Make sure you even need that, as I don't think you do for structures
-> like the above one, right?
+We don't need to do anything for the slave if it is unattached during
+clock stop prepare and exit sequences.
 
-Hrm, my impression (granted I only just started to look at this code)
-is that these are protocol messages with the PCI devices, not strictly
-just ioctl arguments (though they do get conveyed via such ioctls).
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ drivers/soundwire/bus.c | 23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
 
-Andra-Irina, did I get that right ? :-)
-
-That said, I still think that by carefully ordering the fields and
-using explicit padding, we can avoid the need of the packed attributed.
-
-Cheers,
-Ben.
-
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 2289c2ac8c5a..405335fb790a 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -863,13 +863,13 @@ int sdw_bus_prep_clk_stop(struct sdw_bus *bus)
+ 		if (!slave->dev_num)
+ 			continue;
+ 
+-		/* Identify if Slave(s) are available on Bus */
+-		is_slave = true;
+-
+ 		if (slave->status != SDW_SLAVE_ATTACHED &&
+ 		    slave->status != SDW_SLAVE_ALERT)
+ 			continue;
+ 
++		/* Identify if Slave(s) are available on Bus */
++		is_slave = true;
++
+ 		slave_mode = sdw_get_clk_stop_mode(slave);
+ 		slave->curr_clk_stop_mode = slave_mode;
+ 
+@@ -900,6 +900,10 @@ int sdw_bus_prep_clk_stop(struct sdw_bus *bus)
+ 			return ret;
+ 	}
+ 
++	/* Don't need to inform slaves if there is no slave attached */
++	if (!is_slave)
++		return ret;
++
+ 	/* Inform slaves that prep is done */
+ 	list_for_each_entry(slave, &bus->slaves, node) {
+ 		if (!slave->dev_num)
+@@ -985,13 +989,13 @@ int sdw_bus_exit_clk_stop(struct sdw_bus *bus)
+ 		if (!slave->dev_num)
+ 			continue;
+ 
+-		/* Identify if Slave(s) are available on Bus */
+-		is_slave = true;
+-
+ 		if (slave->status != SDW_SLAVE_ATTACHED &&
+ 		    slave->status != SDW_SLAVE_ALERT)
+ 			continue;
+ 
++		/* Identify if Slave(s) are available on Bus */
++		is_slave = true;
++
+ 		mode = slave->curr_clk_stop_mode;
+ 
+ 		if (mode == SDW_CLK_STOP_MODE1) {
+@@ -1016,6 +1020,13 @@ int sdw_bus_exit_clk_stop(struct sdw_bus *bus)
+ 	if (is_slave && !simple_clk_stop)
+ 		sdw_bus_wait_for_clk_prep_deprep(bus, SDW_BROADCAST_DEV_NUM);
+ 
++	/*
++	 * Don't need to call slave callback function if there is no slave
++	 * attached
++	 */
++	if (!is_slave)
++		return 0;
++
+ 	list_for_each_entry(slave, &bus->slaves, node) {
+ 		if (!slave->dev_num)
+ 			continue;
+-- 
+2.17.1
 
