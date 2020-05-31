@@ -2,117 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497091E9AD7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 01:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D341B1E9ADF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 02:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728463AbgEaXlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 19:41:37 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:6010 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726803AbgEaXlf (ORCPT
+        id S1728414AbgFAAAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 20:00:03 -0400
+Received: from ts18-13.vcr.istar.ca ([204.191.154.188]:51846 "EHLO
+        ale.deltatee.com" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbgFAAAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 19:41:35 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ed440a00000>; Sun, 31 May 2020 16:41:22 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Sun, 31 May 2020 16:41:34 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Sun, 31 May 2020 16:41:34 -0700
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 31 May
- 2020 23:41:32 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Sun, 31 May 2020 23:41:32 +0000
-Received: from sandstorm.nvidia.com (Not Verified[10.2.56.10]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5ed440ac0002>; Sun, 31 May 2020 16:41:32 -0700
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     David Hildenbrand <david@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH v2 2/2] mm/gup: frame_vector: convert get_user_pages() --> pin_user_pages()
-Date:   Sun, 31 May 2020 16:41:31 -0700
-Message-ID: <20200531234131.770697-3-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200531234131.770697-1-jhubbard@nvidia.com>
-References: <20200531234131.770697-1-jhubbard@nvidia.com>
+        Sun, 31 May 2020 20:00:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
+        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Z74uNfK0Ym5ZqaEdxADt4Ndt6oocQxYkHvKwmfAtpGM=; b=NKIPuOb+LvM8rpEjsEOiK041Cu
+        445U05kGiuR7JUzKp+H5+FIxHgNaRyp8p/1eKU9a4KJzE4ngE45HB2I5JuZBGQgFJ6uAa9DjTDJfK
+        fB6q8LSZTU9mtUBbkqn2ACUE/Hp6hhvLvg4mt0ignezSakcCUl9aRci/DR1ZpQ+3aAJ09evntX3L7
+        qSLhN3dI79mbPh0v+oXwhAgwHy4FHJppNH3xUfe8bzVtskDtgmiDRlqpQ3tHtcKlgwFSfUm602maO
+        CPctl8xBNxaL8k4yPXv1H+cuOkUT2EqnwHXznWdcrZU0k71tRSD3QzwkeiK6Sw6PAvbWDYEo7DPvK
+        oPXHB8OQ==;
+Received: from s0106602ad0811846.cg.shawcable.net ([68.147.191.165] helo=[192.168.0.12])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1jfXrx-0002hO-0D; Sun, 31 May 2020 18:00:01 -0600
+To:     Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>
+References: <20200528054043.621510-1-hch@lst.de>
+ <20200528054043.621510-10-hch@lst.de>
+ <CAHk-=wgpnR9sBeie_z0xA3mYzG50Oiw1jZjyHt0eLX6p45ARvQ@mail.gmail.com>
+ <20200529123239.GA28608@lst.de>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <02497609-e0cf-1aca-eaab-030becf57152@deltatee.com>
+Date:   Sun, 31 May 2020 17:59:53 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1590968482; bh=u/IEFLNJA/oJfZri/00pv0J+slptUmIo4kllStA2qdc=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=q8Kn7uZFM5Id08VQ3w3dIyZSEygIqJHBl6vzO0TGPwOBlQMwgWSnb2p2Jluf+HHi3
-         Iw1Sduery5c2/ZpgjcS9j5WyD3v2ZutYj+MgbQMZbzEEIU4YJ+v6NNV01Jqe8PWCgJ
-         S4z1GKS0Rqnw9PumwuYRU6w1iUq/AGu0zN2hhycBtiCwa5oo+9xmc2D9/oNpfJKGq4
-         yWaadM4v1srPD6LgAX2ANnqujMTixF1T6vhRvZF1RaQUGZRTnyKuRXoOkML4hacBqj
-         rjLcugy0c1Hkk3XDhq/D1kW7s7C5f4KU/56ts1rMCccYW10HN91wgQEUO4E/VuBK1h
-         ZdyBfw5SnGp4w==
+In-Reply-To: <20200529123239.GA28608@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 68.147.191.165
+X-SA-Exim-Rcpt-To: netfilter-devel@vger.kernel.org, linux-security-module@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, dhowells@redhat.com, raven@themaw.net, viro@zeniv.linux.org.uk, torvalds@linux-foundation.org, hch@lst.de
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.2
+Subject: Re: Re: [PATCH 09/14] fs: don't change the address limit for
+ ->write_iter in __kernel_write
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This code was using get_user_pages*(), and all of the callers so far
-were in a "Case 2" scenario (DMA/RDMA), using the categorization
-from [1]. That means that it's time to convert the get_user_pages*() +
-put_page() calls to pin_user_pages*() + unpin_user_pages() calls.
 
-There is some helpful background in [2]: basically, this is a small
-part of fixing a long-standing disconnect between pinning pages, and
-file systems' use of those pages.
 
-[1] Documentation/core-api/pin_user_pages.rst
+On 2020-05-29 6:32 a.m., Christoph Hellwig wrote:
+> On Thu, May 28, 2020 at 11:43:13AM -0700, Linus Torvalds wrote:
+>> On Wed, May 27, 2020 at 10:41 PM Christoph Hellwig <hch@lst.de> wrote:
+>>>
+>>> -ssize_t __kernel_write(struct file *file, const void *buf, size_t count, loff_t *pos)
+>>> +ssize_t __kernel_write(struct file *file, const void *buf, size_t count,
+>>> +               loff_t *pos)
+>>
+>> Please don't do these kinds of pointless whitespace changes.
+>>
+>> If you have an actual 80x25 vt100 sitting in a corner, it's not really
+>> conducive to kernel development any more.
+> 
+> I have real 80x25 xterms, as that allows me to comfortably fit 4 of
+> them onto my latop screen.
 
-[2] "Explicit pinning of user-space pages":
-    https://lwn.net/Articles/807108/
+I second this. Doing work on a compact laptop is a legitimate use case
+and we can't all lug around big monitors with our laptops. I also find
+more terminals on a screen to be more productive.
 
-Cc: David Hildenbrand <david@redhat.com>
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
- mm/frame_vector.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+I'd also like to make the point that I never thought the width limit was
+all that related to the hardware. It's been widely accepted for ages
+that it's easier to read narrower blocks of text (try reading a book on
+a landscape tablet: it's very difficult and causes eye strain). This is
+why newspapers and magazines have always laid out their text in columns
+and professional websites limit the width of their content. They have
+the hardware to write much longer lines but chose not to for
+readability. (Sadly, the *one* news source that I respect that doesn't
+do this is LWN and I have to resort to reader view in Firefox to make it
+readable.)
 
-diff --git a/mm/frame_vector.c b/mm/frame_vector.c
-index c431ca81dad5..4107dbca0056 100644
---- a/mm/frame_vector.c
-+++ b/mm/frame_vector.c
-@@ -72,7 +72,7 @@ int get_vaddr_frames(unsigned long start, unsigned int nr=
-_frames,
- 	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP))) {
- 		vec->got_ref =3D true;
- 		vec->is_pfns =3D false;
--		ret =3D get_user_pages_locked(start, nr_frames,
-+		ret =3D pin_user_pages_locked(start, nr_frames,
- 			gup_flags, (struct page **)(vec->ptrs), &locked);
- 		goto out;
- 	}
-@@ -122,7 +122,6 @@ EXPORT_SYMBOL(get_vaddr_frames);
-  */
- void put_vaddr_frames(struct frame_vector *vec)
- {
--	int i;
- 	struct page **pages;
-=20
- 	if (!vec->got_ref)
-@@ -135,8 +134,8 @@ void put_vaddr_frames(struct frame_vector *vec)
- 	 */
- 	if (WARN_ON(IS_ERR(pages)))
- 		goto out;
--	for (i =3D 0; i < vec->nr_frames; i++)
--		put_page(pages[i]);
-+
-+	unpin_user_pages(pages, vec->nr_frames);
- 	vec->got_ref =3D false;
- out:
- 	vec->nr_frames =3D 0;
---=20
-2.26.2
+Furthermore, I find enforcing a line length limit on newer coders is one
+of the easiest ways to improve the readability of their code. Without
+it, I've seen developers generate lines of code that don't even fit in
+the full width of a standard monitor. Putting in a little extra effort
+to try to be clear in a shorter line (or adding more lines) usually pays
+off in spades for readability. Or, it at least gets them to start
+thinking about readability as an important concern. 90% of the time it
+is better to refactor code that doesn't fit comfortably within the line
+length limit than it is to violate it.
 
+I personally set my terminal size to 80 chars because I believe it helps
+the readability of the code I write. It has nothing to do with the width
+of my monitor or the amount of characters I could theoretically fit
+across my screen.
+
+Logan
