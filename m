@@ -2,66 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8E41E9667
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 10:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22FC41E9670
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 11:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727842AbgEaIwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 04:52:19 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:7340 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726803AbgEaIwS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 04:52:18 -0400
-Received: by ajax-webmail-mail-app4 (Coremail) ; Sun, 31 May 2020 16:52:09
- +0800 (GMT+08:00)
-X-Originating-IP: [10.192.85.18]
-Date:   Sun, 31 May 2020 16:52:09 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Markus Elfring" <Markus.Elfring@web.de>
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Ben Skeggs" <bskeggs@redhat.com>,
-        "David Airlie" <airlied@linux.ie>, "Kangjie Lu" <kjlu@umn.edu>
-Subject: Re: Re: drm/nouveau/clk/gm20b: Fix memory leak in gm20b_clk_new()
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190906(84e8bf8f)
- Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
-In-Reply-To: <74977dc6-7ace-6ef7-4fcd-3f6c89a3eb5f@web.de>
-References: <dd729c13-fbc8-22e7-7d8e-e3e126f66943@web.de>
- <40d8fb01.db721.17269d3d620.Coremail.dinghao.liu@zju.edu.cn>
- <74977dc6-7ace-6ef7-4fcd-3f6c89a3eb5f@web.de>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        id S1727890AbgEaJBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 05:01:52 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:35340 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725898AbgEaJBw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 May 2020 05:01:52 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04V8w74n170107;
+        Sun, 31 May 2020 09:01:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=eYl+QXZgp6KQvHo6m8I5J+jGCIJ1MNQ7U+G+5K9bfRo=;
+ b=SJxejmmsPgEo0kH+bi1wqQ2Jp/p1qXNSP9V8dkcABU/Yo7daEd1N2p1XmUmpBd6lZduo
+ D+q/ApJfsmWGc/n1ISsxFaAHk8yKNSNkFFNGryOjuyWJpGInjN++5PIr1bd23cK9sLs3
+ t6AmZIPsMY5zpa0wRkB5j8bnPZhiVXMqQA84LP3SvBTuqgpTUwVwvCUc6fliKjYIK96u
+ F0xBRCYeiDg0nqYmnIWhbAFXBgvYDhnMffLf5vHep9Juw/xNjJwB5jSYgH9V6XoEkBga
+ 1V4tkmGMwNxCe8yril9gPmEcLvd29sLIFSbdThDCpzMircYM3ubg4GsAc2rhGllq5VIv sw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 31bg4mtwev-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 31 May 2020 09:01:42 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04V8r5FT111385;
+        Sun, 31 May 2020 08:59:42 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 31c1dtwahc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 31 May 2020 08:59:42 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04V8xdP6022671;
+        Sun, 31 May 2020 08:59:40 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 31 May 2020 01:59:39 -0700
+Date:   Sun, 31 May 2020 11:59:32 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     rspringer@google.com, toddpoynor@google.com, benchan@chromium.org,
+        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        John Hubbard <jhubbard@nvidia.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: gasket: Convert get_user_pages*() -->
+ pin_user_pages*()
+Message-ID: <20200531085932.GP30374@kadam>
+References: <1590909791-3871-1-git-send-email-jrdr.linux@gmail.com>
 MIME-Version: 1.0
-Message-ID: <286858ff.db7e3.17269ee5f3f.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cS_KCgC3WeQ5cNNecIxjAA--.9546W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgsRBlZdtOY6yQAAs0
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbL0S07vEb7Iv0x
-        C_Cr1lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
-        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
-        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
-        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWlV2xY628EF7xvwVC2z280aVAFwI0_Gc
-        CE3s1lV2xY628EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wCS07vEe2I262IYc4CY6c8I
-        j28IcVAaY2xG8wCS07vE5I8CrVACY4xI64kE6c02F40Ex7xfMIAIbVAv7VC0I7IYx2IY67
-        AKxVWUJVWUGwCS07vEYx0Ex4A2jsIE14v26r1j6r4UMIAIbVAm72CE4IkC6x0Yz7v_Jr0_
-        Gr1lV2xY6x02cVAKzwCS07vEc2IjII80xcxEwVAKI48JMIAIbVCF04k20xvE74AGY7Cv6c
-        x26r4fKr1UJr1lV2xY6xCjnVCjjxCrMIAIbVCFx2IqxVCFs4IE7xkEbVWUJVW8JwCS07vE
-        x2IqxVAqx4xG67AKxVWUJVWUGwCS07vEx2IqxVCjr7xvwVAFwI0_JrI_JrWlV2xY6I8E67
-        AF67kF1VAFwI0_Jw0_GFylV2xY6IIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lV2xY6IIF0xvE
-        2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCS07vEIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr
-        1UMIAIbVCI42IY6I8E87Iv67AKxVWUJVW8JwCS07vEIxAIcVC2z280aVCY1x0267AKxVW8
-        JVW8JrUvcSsGvfC2KfnxnUU==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1590909791-3871-1-git-send-email-jrdr.linux@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9637 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
+ spamscore=0 bulkscore=0 adultscore=4 suspectscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005310071
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9637 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 lowpriorityscore=0
+ malwarescore=0 phishscore=0 suspectscore=0 priorityscore=1501 adultscore=1
+ mlxlogscore=999 cotscore=-2147483648 bulkscore=0 mlxscore=0
+ impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005310071
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAKPiA+IEZvciBzZWN1cml0eSwgSSB3aWxsIHJlbGVhc2UgdGhpcyBwb2ludGVyIG9ubHkgb24g
-ZXJyb3IgcGF0aHMgaW4gdGhpcyBmdW5jdGlvbi4KPiAKPiBEbyB5b3UgdGVuZCB0byByZWxlYXNl
-IG9iamVjdHMgKHdoaWNoIGFyZSByZWZlcmVuY2VkIGJ5IHBvaW50ZXJzKT8KPiAKCkkganVzdCBm
-b3VuZCB0aGF0IGNsayBpcyByZWZlcmVuY2VkIGJ5IHBjbGsgaW4gdGhpcyBmdW5jdGlvbi4gV2hl
-biBjbGsgaXMgZnJlZWQsIApwY2xrIHdpbGwgYmUgYWxsb2NhdGVkIGluIGdtMjBiX2Nsa19uZXdf
-c3BlZWRvMCgpLiBUaHVzIHdlIHNob3VsZCBub3QgcmVsZWFzZSBjbGsKaW4gdGhpcyBmdW5jdGlv
-biBhbmQgdGhlcmUgaXMgbm8gYnVnIGhlcmUuIFRoYW5rIHlvdSBmb3IgcmVtaW5kaW5nIG1lIQoK
-UmVnYXJkcywKRGluZ2hhbw==
+On Sun, May 31, 2020 at 12:53:11PM +0530, Souptick Joarder wrote:
+> In 2019, we introduced pin_user_pages*() and now we are converting
+> get_user_pages*() to the new API as appropriate. [1] & [2] could
+> be referred for more information.
+> 
+> [1] Documentation/core-api/pin_user_pages.rst
+> 
+> [2] "Explicit pinning of user-space pages":
+> 	https://lwn.net/Articles/807108/
+> 
+> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+
+Acked-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+regards,
+dan carpenter
+
+
