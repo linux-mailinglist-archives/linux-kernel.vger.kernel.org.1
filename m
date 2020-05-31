@@ -2,81 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE291E99DE
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 20:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 019C91E99E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 20:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728388AbgEaS00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 14:26:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52428 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726008AbgEaS0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 14:26:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 07973AD5B;
-        Sun, 31 May 2020 18:26:16 +0000 (UTC)
-From:   Giovanni Gherdovich <ggherdovich@suse.cz>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@suse.de>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Cc:     x86@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>
-Subject: [PATCH v2 3/3] x86, sched: Bail out of frequency invariance if turbo_freq/base_freq gives 0
-Date:   Sun, 31 May 2020 20:24:53 +0200
-Message-Id: <20200531182453.15254-4-ggherdovich@suse.cz>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200531182453.15254-1-ggherdovich@suse.cz>
-References: <20200531182453.15254-1-ggherdovich@suse.cz>
+        id S1728269AbgEaSb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 14:31:57 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:29407 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726008AbgEaSb4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 May 2020 14:31:56 -0400
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 04VIVgsd020467;
+        Mon, 1 Jun 2020 03:31:43 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 04VIVgsd020467
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1590949903;
+        bh=4apCpancfdbtJzkndUTVnQUyykbzGPT5KHtojqows0M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IgvaKPBh3yEcofvQ45bsQD/xyUBWo942awBwFmUBGu6ABYuMQIRxeBzihW/+B0Xft
+         IDW4jrIqvj1YgCK7+fEeRKjsDB8nR3GjkEoQCYtETUyrYndwWEg4SeyOfOXc9RMbhK
+         zVvUNPd8l7RiM7jcSTeZ/J3dXMpckb2+CYniHRNWG+kWy20/R84lXyTqkbiD+15iEo
+         9EGEuyx/8a3inMuylmyb/f5nle9LXumrcOPO2eQcH1J7nJKrhFMR21N/Mjs4z/g889
+         i+A4ow1S9fynKOmp/43MIgaL5osb4KKCpNJTJ0qtusPsxZmsummSNKbh/5VpKm6bPc
+         oZAKfsy7QHuzQ==
+X-Nifty-SrcIP: [209.85.222.51]
+Received: by mail-ua1-f51.google.com with SMTP id d8so2572405uam.12;
+        Sun, 31 May 2020 11:31:43 -0700 (PDT)
+X-Gm-Message-State: AOAM531TeN0GfzSVnNfLhZr9ohMvGM1LlJl8BDJvwihBFGFLF9SsOmeL
+        H6gMydubCE3435gfiCwgzsLXf/U9TA5wvIAnALo=
+X-Google-Smtp-Source: ABdhPJx2sV0Ko8biWYjWBupgz6CqxRWQ2fmPKivw+cLRgc2BvaLssKRWGZAKY6uFGnbmo7eDn+pWKMNFBSkNTuTY2RI=
+X-Received: by 2002:ab0:264f:: with SMTP id q15mr11201526uao.109.1590949902065;
+ Sun, 31 May 2020 11:31:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200524154235.380482-1-masahiroy@kernel.org> <20200524154235.380482-10-masahiroy@kernel.org>
+In-Reply-To: <20200524154235.380482-10-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 1 Jun 2020 03:31:05 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARYdPsu9feYR4N+rvNhn2J73jf5VwcV7U5Pi=jFzePddw@mail.gmail.com>
+Message-ID: <CAK7LNARYdPsu9feYR4N+rvNhn2J73jf5VwcV7U5Pi=jFzePddw@mail.gmail.com>
+Subject: Re: [PATCH v2 09/29] kbuild: disallow multi-word in M= or KBUILD_EXTMOD
+To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Be defensive against the case where the processor reports a base_freq
-larger than turbo_freq (the ratio would be zero).
+On Mon, May 25, 2020 at 12:43 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> $(firstword ...) in scripts/Makefile.modpost was added by commit
+> 3f3fd3c05585 ("[PATCH] kbuild: allow multi-word $M in Makefile.modpost")
+> to build multiple external module directories.
+>
+> It was a solution to resolve symbol dependencies when an external
+> module depends on another external module.
+>
+> Commit 0d96fb20b7ed ("kbuild: Add new Kbuild variable
+> KBUILD_EXTRA_SYMBOLS") introduced another solution by passing symbol
+> info via KBUILD_EXTRA_SYMBOLS, then broke the multi-word M= support.
+>
+>   include $(if $(wildcard $(KBUILD_EXTMOD)/Kbuild), \
+>                $(KBUILD_EXTMOD)/Kbuild, $(KBUILD_EXTMOD)/Makefile)
+>
+> ... does not work if KBUILD_EXTMOD contains multiple words.
+>
+> This feature has been broken for more than a decade. Remove the
+> bitrotten code, and stop parsing if M or KBUILD_EXTMOD contains
+> multiple words.
+>
+> As Documentation/kbuild/modules.rst explains, if your module depends
+> on another one, there are two solutions:
+>   - add a common top-level Kbuild file
+>   - use KBUILD_EXTRA_SYMBOLS
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Fixes: 1567c3e3467c ("x86, sched: Add support for frequency invariance")
----
- arch/x86/kernel/smpboot.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+This patch, applied to linux-kbuild.
 
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index fe154c8226ba..f619007f46cf 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1976,6 +1976,7 @@ static bool core_set_max_freq_ratio(u64 *base_freq, u64 *turbo_freq)
- static bool intel_set_max_freq_ratio(void)
- {
- 	u64 base_freq, turbo_freq;
-+	u64 turbo_ratio;
- 
- 	if (slv_set_max_freq_ratio(&base_freq, &turbo_freq))
- 		goto out;
-@@ -2009,9 +2010,15 @@ static bool intel_set_max_freq_ratio(void)
- 		return false;
- 	}
- 
--	arch_turbo_freq_ratio = div_u64(turbo_freq * SCHED_CAPACITY_SCALE,
--					base_freq);
-+	turbo_ratio = div_u64(turbo_freq * SCHED_CAPACITY_SCALE, base_freq);
-+	if (!turbo_ratio) {
-+		pr_debug("Non-zero turbo and base frequencies led to a 0 ratio.\n");
-+		return false;
-+	}
-+
-+	arch_turbo_freq_ratio = turbo_ratio;
- 	arch_set_max_freq_ratio(turbo_disabled());
-+
- 	return true;
- }
- 
+
+
+> ---
+>
+> Changes in v2:
+>   - Add more commit log
+>
+>  Makefile                 | 3 +++
+>  scripts/Makefile.modpost | 2 +-
+>  2 files changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/Makefile b/Makefile
+> index 72eb55a36545..48a2dfaf3bf3 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -218,6 +218,9 @@ ifeq ("$(origin M)", "command line")
+>    KBUILD_EXTMOD := $(M)
+>  endif
+>
+> +$(if $(word 2, $(KBUILD_EXTMOD)), \
+> +       $(error building multiple external modules is not supported))
+> +
+>  export KBUILD_CHECKSRC KBUILD_EXTMOD
+>
+>  extmod-prefix = $(if $(KBUILD_EXTMOD),$(KBUILD_EXTMOD)/)
+> diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
+> index 957eed6a17a5..b79bf0e30d32 100644
+> --- a/scripts/Makefile.modpost
+> +++ b/scripts/Makefile.modpost
+> @@ -44,7 +44,7 @@ include include/config/auto.conf
+>  include scripts/Kbuild.include
+>
+>  kernelsymfile := $(objtree)/Module.symvers
+> -modulesymfile := $(firstword $(KBUILD_EXTMOD))/Module.symvers
+> +modulesymfile := $(KBUILD_EXTMOD)/Module.symvers
+>
+>  MODPOST = scripts/mod/modpost                                                          \
+>         $(if $(CONFIG_MODVERSIONS),-m)                                                  \
+> --
+> 2.25.1
+>
+
+
 -- 
-2.16.4
-
+Best Regards
+Masahiro Yamada
