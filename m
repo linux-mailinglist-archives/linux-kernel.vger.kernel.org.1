@@ -2,333 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED711E9614
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 09:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FEAF1E95FE
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 09:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729687AbgEaHNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 03:13:33 -0400
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:12644 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728411AbgEaHNd (ORCPT
+        id S1729674AbgEaHFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 03:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729618AbgEaHFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 03:13:33 -0400
-Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04V7CfCw011509;
-        Sun, 31 May 2020 00:13:27 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=proofpoint;
- bh=pULOn66Q1RwhbilaMJYQxajY6i0dVIMkT4Mj//eyClA=;
- b=Pagymx2xQIxTMGsVKuruwmOIbWtf8G/CjKBK38bfdpsf53b3a/jJ0R2muccHCYU3x8d0
- Nk1rIQjlW+Qmlzz79mn8eGunb29rGUIXIl6LwYhsn9gNhjMno1cQkgyBb7P1j/kWogoH
- 7HrZ/xlwRI0WmWKhJDmbMkOznYrehtN2XdKFzY34RT/jDvP3DK7rTn45NjLGKxomuTxO
- 4jyxKEaDh8LxW2mE6YfICzHiKpJghzkderousVLDDcTZcuimbmj3COal9lNYVhTkzTOF
- n2TGlX9Uu1JqsaFJmMrAuE+4z/lOTeUYg1QmOYnCP9L7A3UMIP0P21lHQQeP3Lb9/6Zd 9A== 
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2046.outbound.protection.outlook.com [104.47.66.46])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 31bm1wjfvk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 31 May 2020 00:13:27 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n+ebMjjvB/nNENTiNL+hfMNuIbUT5U9Ir14334Bc8WTN9qZi90NVpjwrtj0Fk01atUD/W1W/OmDLr1AubFxzOst8vRpBOyx6OLX5MYT42b4lrW70UiPLBK3/mb8KldRbNNDSllGBRc8FcX6uUI5Xcf/j2jRGSxYFDC4T80oMa88bnKdVzWidM7LzE6STX6kFrAVkqgytdTREHwg1l85117KQBnd0YAlvEClQoGgYzHcGB/Ph4nEDsPqir922Nk5qKwlQ+HB0MJAqN/CGf1OvDKhr2/OD7EA9fjdFrKyUAhpF0f1AbN+7tFA25ZE0s4zWFWJKpKrbdAxu+Bi6/3TZgA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pULOn66Q1RwhbilaMJYQxajY6i0dVIMkT4Mj//eyClA=;
- b=iCs6NVBZAFn2ZgfMqjEvDCMJm/0jcrC1tWg+RZ3n6MJYbi9uzfaLXstQYpK4crpGPvWdBYmCZTiQVck6JThwPDH7RztpMLCLfDwh72uURsfiOWgO3ZtdDnfvcVyjckWHf9aMNcQsAJX/M+sIUQS134IG+mzcU52dPgVIzche2D0scOQ8FAticuJZURHdqvz8P31aBOtWxGHc9z49T1YJCFDqehZAhE4buQQpCNWJkfV7+wBYdlKaaY3++msLD2gDlwpQpM05/w9GfigV678GMnzQuJ22tw3KRMOhH37+TThGoKCHZ+WH8sOIKyuOGUtwQ9OxQTJFodn2bXYKQAIy9g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 199.43.4.23) smtp.rcpttodomain=synopsys.com smtp.mailfrom=cadence.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pULOn66Q1RwhbilaMJYQxajY6i0dVIMkT4Mj//eyClA=;
- b=6bDoapnUXzsHOus/TsSRvS59YovLPNIdGOmHxsjkFQu1+GkKvMY8cu+M/+R/KfKAygWoyS2c8xuVPDC1zUlBYmceTo3oyZYyRyR24p9IFk2KB4pXG8GkZzyI/XbHUeGj8yFyRQazsI2AP2GYTQbcDSoWTIMOB4/1laRJDOVBzM4=
-Received: from DM6PR02CA0108.namprd02.prod.outlook.com (2603:10b6:5:1f4::49)
- by BN7PR07MB5169.namprd07.prod.outlook.com (2603:10b6:408:25::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19; Sun, 31 May
- 2020 07:13:25 +0000
-Received: from DM6NAM12FT054.eop-nam12.prod.protection.outlook.com
- (2603:10b6:5:1f4:cafe::ae) by DM6PR02CA0108.outlook.office365.com
- (2603:10b6:5:1f4::49) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19 via Frontend
- Transport; Sun, 31 May 2020 07:13:25 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 199.43.4.23)
- smtp.mailfrom=cadence.com; synopsys.com; dkim=none (message not signed)
- header.d=none;synopsys.com; dmarc=pass action=none header.from=cadence.com;
-Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 199.43.4.23 as permitted sender) receiver=protection.outlook.com;
- client-ip=199.43.4.23; helo=rmmaillnx1.cadence.com;
-Received: from rmmaillnx1.cadence.com (199.43.4.23) by
- DM6NAM12FT054.mail.protection.outlook.com (10.13.178.109) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3066.8 via Frontend Transport; Sun, 31 May 2020 07:13:24 +0000
-Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by rmmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 04V7DJvO003454
-        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
-        Sun, 31 May 2020 03:13:21 -0400
-X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
-Received: from maileu3.global.cadence.com (10.160.88.99) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3; Sun, 31 May 2020 09:13:19 +0200
-Received: from vleu-orange.cadence.com (10.160.88.83) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Sun, 31 May 2020 09:13:19 +0200
-Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 04V7DJcV006692;
-        Sun, 31 May 2020 09:13:19 +0200
-Received: (from pthombar@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 04V7DJ6D006691;
-        Sun, 31 May 2020 09:13:19 +0200
-From:   Parshuram Thombare <pthombar@cadence.com>
-To:     <bbrezillon@kernel.org>, <vitor.soares@synopsys.com>
-CC:     <pgaj@cadence.com>, <linux-i3c@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <mparab@cadence.com>,
-        <praneeth@ti.com>, Parshuram Thombare <pthombar@cadence.com>
-Subject: [PATCH v8 3/7] i3c: master: add i3c_secondary_master_register
-Date:   Sun, 31 May 2020 09:13:18 +0200
-Message-ID: <1590909198-6650-1-git-send-email-pthombar@cadence.com>
-X-Mailer: git-send-email 2.2.2
-In-Reply-To: <1590909063-6013-1-git-send-email-pthombar@cadence.com>
-References: <1590909063-6013-1-git-send-email-pthombar@cadence.com>
+        Sun, 31 May 2020 03:05:16 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB5DC05BD43
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 00:05:16 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id h188so2095465lfd.7
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 00:05:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eZQNtJ99m5kQqODdsifS/JxQkSLWec/LxM/meZdb8vU=;
+        b=JIMTVbyNNdao524HnT4WD+PzP6sTUKiUgb+k68kVVGkvCNL2aEOT/wMHr345wiqdI9
+         +RPbLKKAhxj/2c5x2PVrBgdvu4up6NHSi+/ZV3LSngU/yS0j6O1I7K2WJwVs1+kuQGWV
+         z0OKQcEMPAFIIbtXqnQwx/xUMJXXHPOAYuzl2QlmWrGs045nACeIalj6/zMBJlSfTupn
+         UATzzqXDaB7MmLpPbobD/dNrNtLNvrbO7O9KX5NjCOWZtiUZ5TZ96qXGUmyOVVl/SyWm
+         5EIpMI5qTDnHYu3/gBO0CO8cm1HS+CvVb5yJ6jj++1jQsd/ulNnSDfbNiW86EIPqQ0cU
+         Wp8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eZQNtJ99m5kQqODdsifS/JxQkSLWec/LxM/meZdb8vU=;
+        b=VvZmwMlN5zZSeJTEdam7AweFQRmGJTLXTNwrVVSNSeAJyG/msr81imR5d34xldIFur
+         5BkPEPes7UYON1TrrWOl8frIjUkF9/1Cwd9AQeTjqolVBD/DdHOGHo7/G+I/Fsx6wCOz
+         l7r6yQzayq9TEsCg+/EYcP+C4174X8cdDOgAbWwStaMwsj6Rsx5jFgRNud2M+prvwVxt
+         lW//XEo0us2+FUw4wreXhoB+0V8GpUsITSiaCzi3M0ZCf7FP6FZcyrAgXU2EtOKHnsh5
+         BcJ+V/Xf1MetxH2RJxV6dElc8w6Z+xiPhBs7p6xWA7LS/up8Y+i5YMU1nnNNCUabgnrw
+         uR1w==
+X-Gm-Message-State: AOAM533WUQm5ASyG66rQhfD+qsvfWw19AgeLGjiMAuNG955gGJfLe38Y
+        GVj3bbg+n1OVpT9zhqf702KbSbziqW8L/OcREzq3oJ4joxk=
+X-Google-Smtp-Source: ABdhPJyairki+0H3QhXGPYH+WHxOAMixdpy5xpwbxZA83QboKU7UfoIjl3v8IkYjJaK4xER6VbFVc9SkU9Y7/3uhwSI=
+X-Received: by 2002:a19:2250:: with SMTP id i77mr8582463lfi.133.1590908714696;
+ Sun, 31 May 2020 00:05:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-OrganizationHeadersPreserved: maileu3.global.cadence.com
-X-EOPAttributedMessage: 0
-X-Forefront-Antispam-Report: CIP:199.43.4.23;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:rmmaillnx1.cadence.com;PTR:InfoDomainNonexistent;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(39850400004)(136003)(396003)(36092001)(46966005)(70586007)(8676002)(70206006)(42186006)(478600001)(2906002)(186003)(36906005)(316002)(83380400001)(86362001)(54906003)(110136005)(107886003)(426003)(8936002)(47076004)(82740400003)(82310400002)(5660300002)(336012)(2616005)(26005)(4326008)(356005)(81166007)(36756003);DIR:OUT;SFP:1101;
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 878af091-bbeb-430a-9a71-08d805321bbd
-X-MS-TrafficTypeDiagnostic: BN7PR07MB5169:
-X-Microsoft-Antispam-PRVS: <BN7PR07MB5169B5C65182F5967D01EB9DC18D0@BN7PR07MB5169.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-Forefront-PRVS: 0420213CCD
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xbsEGlgSgWsCAAABM8JUEko1POW0nQs/T6vtglQ4Mx9pLGcBofHYO5wdHGvM/ieKldsGR9p897LhdalEaLpqPpgg1Ld7dGC85JNxwnj+HGl4d/GzuLjdPMU9AoxcF4iIFQYwCyjKhxFKnp6ujIYmh2sR5qeZY7m7CU/q5ugwGphLwkZanBRCrj3koGVi9PnbQPDbung7UqkHRQ0FhlRBJmtxQ6NfJXs9O2mbT3zIfiqvxmAGG+1WEn2ixYetzCdVNP6qxLdQKkO4sDfUVrZfC+Gk5XxBNRtJ1XEBwXcqAJ1KgGtc6SiAQ9wLazDypVqSioi3ayBFJIsab9t+sRCYkbplROuta05cmx2t1IK5g3ogAdkUZ0W7W37/PFUJjeq4+D4tLPGv73KV8S083CMYf7Ha+Hd0ZDMZkzLMuwLvco4=
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 May 2020 07:13:24.4099
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 878af091-bbeb-430a-9a71-08d805321bbd
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[199.43.4.23];Helo=[rmmaillnx1.cadence.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR07MB5169
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-05-31_01:2020-05-28,2020-05-31 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 malwarescore=0
- mlxlogscore=999 suspectscore=2 phishscore=0 adultscore=0
- cotscore=-2147483648 spamscore=0 priorityscore=1501 bulkscore=0 mlxscore=0
- clxscore=1015 lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005310057
+References: <20200527223243.884385-1-jhubbard@nvidia.com> <20200527223243.884385-2-jhubbard@nvidia.com>
+ <CAFqt6zZr9rUZaXEpjwmtmicdNP9KhJ8UrjPPjk4bMHJ20VsVsg@mail.gmail.com>
+In-Reply-To: <CAFqt6zZr9rUZaXEpjwmtmicdNP9KhJ8UrjPPjk4bMHJ20VsVsg@mail.gmail.com>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Sun, 31 May 2020 12:43:23 +0530
+Message-ID: <CAFqt6zaz21GQZYSGZ5Md0hCrPv8UFQ7gQMiV_oBzX0zSTZ16-A@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm/gup: introduce pin_user_pages_locked()
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add i3c_secondary_master_register which is used
-to register secondary masters.
+On Sun, May 31, 2020 at 12:34 PM Souptick Joarder <jrdr.linux@gmail.com> wrote:
+>
+> On Thu, May 28, 2020 at 4:02 AM John Hubbard <jhubbard@nvidia.com> wrote:
+> >
+> > Introduce pin_user_pages_locked(), which is nearly identical to
+> > get_user_pages_locked() except that it sets FOLL_PIN and rejects
+> > FOLL_GET.
 
-Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
----
- drivers/i3c/master.c       | 154 ++++++++++++++++++++++++++++++++++++-
- include/linux/i3c/master.h |   3 +
- 2 files changed, 156 insertions(+), 1 deletion(-)
+Forget to ask, is it fine to add this new pin_user_pages_locked() in
+Documentation/core-api/pin_user_pages.rst ?
 
-diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
-index 574c3603db38..62f39997a6db 100644
---- a/drivers/i3c/master.c
-+++ b/drivers/i3c/master.c
-@@ -1768,6 +1768,90 @@ static int i3c_primary_master_bus_init(struct i3c_master_controller *master)
- 	return ret;
- }
- 
-+/**
-+ * i3c_secondary_master_bus_init() - initialize an I3C bus for secondary
-+ * master
-+ * @master: secondary master initializing the bus
-+ *
-+ * This function does
-+ *
-+ * 1. Attach I2C devs to the master
-+ *
-+ * 2. Call &i3c_master_controller_ops->bus_init() method to initialize
-+ *    the master controller. That's usually where the bus mode is selected
-+ *    (pure bus or mixed fast/slow bus)
-+ *
-+ * Once this is done, I2C devices should be usable.
-+ *
-+ * Return: a 0 in case of success, an negative error code otherwise.
-+ */
-+static int i3c_secondary_master_bus_init(struct i3c_master_controller *master)
-+{
-+	enum i3c_addr_slot_status status;
-+	struct i2c_dev_boardinfo *i2cboardinfo;
-+	struct i2c_dev_desc *i2cdev;
-+	int ret;
-+
-+	/*
-+	 * First attach all devices with static definitions provided by the
-+	 * FW.
-+	 */
-+	list_for_each_entry(i2cboardinfo, &master->boardinfo.i2c, node) {
-+		status = i3c_bus_get_addr_slot_status(&master->bus,
-+						      i2cboardinfo->base.addr);
-+		if (status != I3C_ADDR_SLOT_FREE) {
-+			ret = -EBUSY;
-+			goto err_detach_devs;
-+		}
-+
-+		i3c_bus_set_addr_slot_status(&master->bus,
-+					     i2cboardinfo->base.addr,
-+					     I3C_ADDR_SLOT_I2C_DEV);
-+
-+		i2cdev = i3c_master_alloc_i2c_dev(master, i2cboardinfo);
-+		if (IS_ERR(i2cdev)) {
-+			ret = PTR_ERR(i2cdev);
-+			goto err_detach_devs;
-+		}
-+
-+		ret = i3c_master_attach_i2c_dev(master, i2cdev);
-+		if (ret) {
-+			i3c_master_free_i2c_dev(i2cdev);
-+			goto err_detach_devs;
-+		}
-+	}
-+
-+	/*
-+	 * Now execute the controller specific ->bus_init() routine, which
-+	 * might configure its internal logic to match the bus limitations.
-+	 */
-+	ret = master->ops->bus_init(master);
-+	if (ret)
-+		goto err_detach_devs;
-+
-+	/*
-+	 * The master device should have been instantiated in ->bus_init(),
-+	 * complain if this was not the case.
-+	 */
-+	if (!master->this) {
-+		dev_err(&master->dev,
-+			"master_set_info() was not called in ->bus_init()\n");
-+		ret = -EINVAL;
-+		goto err_bus_cleanup;
-+	}
-+
-+	return 0;
-+
-+err_bus_cleanup:
-+	if (master->ops->bus_cleanup)
-+		master->ops->bus_cleanup(master);
-+
-+err_detach_devs:
-+	i3c_master_detach_free_devs(master);
-+
-+	return ret;
-+}
-+
- static void i3c_master_bus_cleanup(struct i3c_master_controller *master)
- {
- 	if (master->ops->bus_cleanup)
-@@ -2457,7 +2541,10 @@ static int i3c_master_init(struct i3c_master_controller *master,
- 		goto err_put_dev;
- 	}
- 
--	ret = i3c_primary_master_bus_init(master);
-+	if (secondary)
-+		ret = i3c_secondary_master_bus_init(master);
-+	else
-+		ret = i3c_primary_master_bus_init(master);
- 	if (ret)
- 		goto err_put_dev;
- 
-@@ -2532,6 +2619,71 @@ int i3c_primary_master_register(struct i3c_master_controller *master,
- }
- EXPORT_SYMBOL_GPL(i3c_primary_master_register);
- 
-+/**
-+ * i3c_secondary_master_register() - register an I3C secondary master
-+ * @master: master used to send frames on the bus
-+ * @parent: the parent device (the one that provides this I3C master
-+ *	    controller)
-+ * @ops: the master controller operations
-+ *
-+ * This function does minimal required initialization for secondary
-+ * master, rest functionality like creating and registering I2C
-+ * and I3C devices is done in defslvs processing.
-+ *
-+ *  i3c_secondary_master_register() does following things -
-+ * - creates and initializes the I3C bus
-+ * - populates the bus with static I2C devs if @parent->of_node is not
-+ *   NULL
-+ *   initialization
-+ * - allocate memory for defslvs_data.devs, which is used to receive
-+ *   defslvs list
-+ * - create I3C device representing this master
-+ * - registers the I2C adapter and all I2C devices
-+ *
-+ * Return: 0 in case of success, a negative error code otherwise.
-+ */
-+int i3c_secondary_master_register(struct i3c_master_controller *master,
-+				  struct device *parent,
-+				  const struct i3c_master_controller_ops *ops)
-+{
-+	int ret;
-+
-+	ret = i3c_master_init(master, parent, ops, true);
-+	if (ret)
-+		return ret;
-+
-+	ret = device_add(&master->dev);
-+	if (ret)
-+		goto err_cleanup_bus;
-+
-+	/*
-+	 * Expose our I3C bus as an I2C adapter so that I2C devices are exposed
-+	 * through the I2C subsystem.
-+	 */
-+	ret = i3c_master_i2c_adapter_init(master);
-+	if (ret)
-+		goto err_del_dev;
-+
-+	/*
-+	 * We're done initializing the bus and the controller, we can now
-+	 * register I3C devices from defslvs list.
-+	 */
-+	master->init_done = true;
-+
-+	return 0;
-+
-+err_del_dev:
-+	device_del(&master->dev);
-+
-+err_cleanup_bus:
-+	i3c_master_bus_cleanup(master);
-+
-+	put_device(&master->dev);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(i3c_secondary_master_register);
-+
- /**
-  * i3c_master_unregister() - unregister an I3C master
-  * @master: master used to send frames on the bus
-diff --git a/include/linux/i3c/master.h b/include/linux/i3c/master.h
-index a19d0ad4de8a..c3d05f66fceb 100644
---- a/include/linux/i3c/master.h
-+++ b/include/linux/i3c/master.h
-@@ -534,6 +534,9 @@ int i3c_master_set_info(struct i3c_master_controller *master,
- int i3c_primary_master_register(struct i3c_master_controller *master,
- 				struct device *parent,
- 				const struct i3c_master_controller_ops *ops);
-+int i3c_secondary_master_register(struct i3c_master_controller *master,
-+				  struct device *parent,
-+				  const struct i3c_master_controller_ops *ops);
- int i3c_master_unregister(struct i3c_master_controller *master);
- 
- /**
--- 
-2.17.1
-
+> >
+> > Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> > ---
+> >  include/linux/mm.h |  2 ++
+> >  mm/gup.c           | 30 ++++++++++++++++++++++++++++++
+> >  2 files changed, 32 insertions(+)
+> >
+> > diff --git a/include/linux/mm.h b/include/linux/mm.h
+> > index 98be7289d7e9..d16951087c93 100644
+> > --- a/include/linux/mm.h
+> > +++ b/include/linux/mm.h
+> > @@ -1700,6 +1700,8 @@ long pin_user_pages(unsigned long start, unsigned long nr_pages,
+> >                     struct vm_area_struct **vmas);
+> >  long get_user_pages_locked(unsigned long start, unsigned long nr_pages,
+> >                     unsigned int gup_flags, struct page **pages, int *locked);
+> > +long pin_user_pages_locked(unsigned long start, unsigned long nr_pages,
+> > +                   unsigned int gup_flags, struct page **pages, int *locked);
+> >  long get_user_pages_unlocked(unsigned long start, unsigned long nr_pages,
+> >                     struct page **pages, unsigned int gup_flags);
+> >  long pin_user_pages_unlocked(unsigned long start, unsigned long nr_pages,
+> > diff --git a/mm/gup.c b/mm/gup.c
+> > index 2f0a0b497c23..17418a949067 100644
+> > --- a/mm/gup.c
+> > +++ b/mm/gup.c
+> > @@ -2992,3 +2992,33 @@ long pin_user_pages_unlocked(unsigned long start, unsigned long nr_pages,
+> >         return get_user_pages_unlocked(start, nr_pages, pages, gup_flags);
+> >  }
+> >  EXPORT_SYMBOL(pin_user_pages_unlocked);
+> > +
+> > +/*
+> > + * pin_user_pages_locked() is the FOLL_PIN variant of get_user_pages_locked().
+> > + * Behavior is the same, except that this one sets FOLL_PIN and rejects
+> > + * FOLL_GET.
+> > + */
+> > +long pin_user_pages_locked(unsigned long start, unsigned long nr_pages,
+> > +                          unsigned int gup_flags, struct page **pages,
+> > +                          int *locked)
+> > +{
+> > +       /*
+> > +        * FIXME: Current FOLL_LONGTERM behavior is incompatible with
+> > +        * FAULT_FLAG_ALLOW_RETRY because of the FS DAX check requirement on
+> > +        * vmas.  As there are no users of this flag in this call we simply
+> > +        * disallow this option for now.
+> > +        */
+> > +       if (WARN_ON_ONCE(gup_flags & FOLL_LONGTERM))
+> > +               return -EINVAL;
+> > +
+> > +       /* FOLL_GET and FOLL_PIN are mutually exclusive. */
+> > +       if (WARN_ON_ONCE(gup_flags & FOLL_GET))
+> > +               return -EINVAL;
+> > +
+> > +       gup_flags |= FOLL_PIN;
+>
+> Right now get_user_pages_locked() doesn't have similar check for FOLL_PIN
+> and also not setting FOLL_GET internally irrespective of gup_flags
+> passed by user.
+> Do we need to add the same in get_user_pages_locked() ?
+>
+> > +       return __get_user_pages_locked(current, current->mm, start, nr_pages,
+> > +                                      pages, NULL, locked,
+> > +                                      gup_flags | FOLL_TOUCH);
+> > +}
+> > +EXPORT_SYMBOL(pin_user_pages_locked);
+> > +
+> > --
+> > 2.26.2
+> >
+> >
