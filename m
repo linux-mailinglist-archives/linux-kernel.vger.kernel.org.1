@@ -2,120 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3051E9AD1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 01:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637FE1E9AD5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 01:41:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728374AbgEaXeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 19:34:03 -0400
-Received: from mail.codeweavers.com ([50.203.203.244]:50890 "EHLO
-        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgEaXeC (ORCPT
+        id S1728395AbgEaXld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 19:41:33 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18543 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbgEaXlc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 19:34:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=codeweavers.com; s=6377696661; h=To:References:Message-Id:
-        Content-Transfer-Encoding:Cc:Date:In-Reply-To:From:Subject:Mime-Version:
-        Content-Type:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=eXFt9y6Z2WBjRWaJgmza57dN3Egt/onllf0rZRMlIAQ=; b=YQm8mBng3LzrqoRSrXxyXIfgl
-        72rE/fI48T/f0Gq1j2tApc+bv1Mog1xrrGKNAF/NwpUg6l8ovnJMNljA0l+nirvXA3P0/i5u0WsMW
-        BIlpuvyEDzcqS5CZBHNWGjsH0mRndEK4e5Vt5vcF2OQgXDIM9fazzkT5h+m1+HQX7O11k=;
-Received: from cpe-107-184-2-226.socal.res.rr.com ([107.184.2.226] helo=[192.168.2.144])
-        by mail.codeweavers.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <bshanks@codeweavers.com>)
-        id 1jfXSn-0005yd-4N; Sun, 31 May 2020 18:33:59 -0500
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.14\))
-Subject: Re: [PATCH RFC] seccomp: Implement syscall isolation based on memory
- areas
-From:   Brendan Shanks <bshanks@codeweavers.com>
-In-Reply-To: <CALCETrV+rYnUnve09=n+Zb8BR8mDBq6txX9LmEw7r8tAA7d+2Q@mail.gmail.com>
-Date:   Sun, 31 May 2020 16:33:54 -0700
-Cc:     Paul Gofman <gofmanp@gmail.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@collabora.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Zebediah Figura <zfigura@codeweavers.com>
+        Sun, 31 May 2020 19:41:32 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ed440560000>; Sun, 31 May 2020 16:40:06 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Sun, 31 May 2020 16:41:32 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Sun, 31 May 2020 16:41:32 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 31 May
+ 2020 23:41:32 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Sun, 31 May 2020 23:41:32 +0000
+Received: from sandstorm.nvidia.com (Not Verified[10.2.56.10]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5ed440ac0000>; Sun, 31 May 2020 16:41:32 -0700
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     David Hildenbrand <david@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH v2 0/2] mm/gup: introduce pin_user_pages_locked(), use it in frame_vector.c
+Date:   Sun, 31 May 2020 16:41:29 -0700
+Message-ID: <20200531234131.770697-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+X-NVConfidentiality: public
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <8DF2868F-E756-4B33-A7AE-C61F4AB9ABB9@codeweavers.com>
-References: <85367hkl06.fsf@collabora.com>
- <079539BF-F301-47BA-AEAD-AED23275FEA1@amacapital.net>
- <50a9e680-6be1-ff50-5c82-1bf54c7484a9@gmail.com>
- <CALCETrX+CEN7Sq=ROP33MAGn2dTX=w0JHWb6f4KAr-E9FE4YPQ@mail.gmail.com>
- <a14be8b0-a9a2-cf96-939e-cedf7e0e669a@gmail.com>
- <CALCETrV+rYnUnve09=n+Zb8BR8mDBq6txX9LmEw7r8tAA7d+2Q@mail.gmail.com>
-To:     Andy Lutomirski <luto@kernel.org>
-X-Mailer: Apple Mail (2.3445.104.14)
-X-Spam-Score: -25.8
-X-Spam-Report: Spam detection software, running on the system "mail.codeweavers.com",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  > On May 31, 2020, at 11:57 AM, Andy Lutomirski <luto@kernel.org>
-    wrote: > > Using SECCOMP_RET_USER_NOTIF is likely to be considerably more
-    > expensive than my scheme. On a non-PTI system, my approach [...] 
- Content analysis details:   (-25.8 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
-  -20 USER_IN_WHITELIST      From: address is in the user's white-list
- -6.0 ALL_TRUSTED            Passed through trusted hosts only via SMTP
- -0.5 BAYES_00               BODY: Bayes spam probability is 0 to 1%
-                             [score: 0.0000]
-  0.7 AWL                    AWL: Adjusted score from AWL reputation of From: address
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1590968406; bh=otv8+odmL4zqFWhReTZfBsIuJx61Pus8PEKMQhr3NGQ=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=qvcNTreaeJlaPtVQX+5z+UEvX4qGJRgm04x9GbLMVMPdT1+zsY8ZVjMH4nW40Qynw
+         1meQhyZcd4kLqSzjBprxutBiRZT7QyGL8X9i/rtyNzrRQf22rphaT+/lu87S7dI+bZ
+         z8LrnUHmzVRwfs4V5Kat6F57ZuEEznY+mUt2oY3JUg4rjbjA614/u83TLUp+WykQCi
+         oTddrOJ7zljI5IOehDP5N3g97qyEf9O0WHr2l4MqOcM8UsbXo+/zFSNhKv3aQDQvDa
+         s2xdCzezH0KrSmZgd58NTBv1MKzxYeRk+t8VGFe4yrTL4T3OAPfFa9LySs9AxVunt9
+         gdSq7h5vVGKwQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-> On May 31, 2020, at 11:57 AM, Andy Lutomirski <luto@kernel.org> wrote:
->=20
-> Using SECCOMP_RET_USER_NOTIF is likely to be considerably more
-> expensive than my scheme.  On a non-PTI system, my approach will add a
-> few tens of ns to each syscall.  On a PTI system, it will be worse.
-> But using any kind of notifier for all syscalls will cause a context
-> switch to a different user program for each syscall, and that will be
-> much slower.
+Changes since v1:
 
-There=E2=80=99s also no way (at least to my understanding) to modify =
-register state from SECCOMP_RET_USER_NOTIF, which is how the existing =
--staging SIGSYS handler works:
+* added an assert-and-return to the corresponding
+get_user_pages_locked() call, to keep out any externally set FOLL_PIN flag,
+thanks to Souptick Joarder's review for spotting that.
 
-=
-<https://github.com/wine-staging/wine-staging/blob/master/patches/ntdll-Sy=
-scall_Emulation/0001-ntdll-Support-x86_64-syscall-emulation.patch#L62>
-
-> I think that the implementation may well want to live in seccomp, but
-> doing this as a seccomp filter isn't quite right.  It's not a security
-> thing -- it's an emulation thing.  Seccomp is all about making
-> inescapable sandboxes, but that's not what you're doing at all, and
-> the fact that seccomp filters are preserved across execve() sounds
-> like it'll be annoying for you.
-
-Definitely. Regardless of what approach is taken, we don=E2=80=99t want =
-it to persist across execve.
-
-> What if there was a special filter type that ran a BPF program on each
-> syscall, and the program was allowed to access user memory to make its
-> decisions, e.g. to look at some list of memory addresses.  But this
-> would explicitly *not* be a security feature -- execve() would remove
-> the filter, and the filter's outcome would be one of redirecting
-> execution or allowing the syscall.  If the "allow" outcome occurs,
-> then regular seccomp filters run.  Obviously the exact semantics here
-> would need some care.
-
-Although if that=E2=80=99s running a BPF filter on every syscall, =
-wouldn=E2=80=99t it also incur the ~10% overhead that Paul and Gabriel =
-have seen with existing seccomp?
+* Added Acked-by and Reviewed by tags from David and Pakaj
 
 
-Brendan Shanks
-CodeWeavers=
+John Hubbard (2):
+  mm/gup: introduce pin_user_pages_locked()
+  mm/gup: frame_vector: convert get_user_pages() --> pin_user_pages()
+
+ include/linux/mm.h |  2 ++
+ mm/frame_vector.c  |  7 +++----
+ mm/gup.c           | 36 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 41 insertions(+), 4 deletions(-)
+
+
+base-commit: bdc48fa11e46f867ea4d75fa59ee87a7f48be144
+--=20
+2.26.2
+
