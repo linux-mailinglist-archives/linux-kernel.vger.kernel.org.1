@@ -2,246 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 895261E9ABE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 00:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BFD41E9AC6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 01:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728445AbgEaWsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 18:48:33 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:4854 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727915AbgEaWsb (ORCPT
+        id S1728390AbgEaXLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 19:11:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728144AbgEaXLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 18:48:31 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ed434320000>; Sun, 31 May 2020 15:48:18 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Sun, 31 May 2020 15:48:30 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Sun, 31 May 2020 15:48:30 -0700
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 31 May
- 2020 22:48:29 +0000
-Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Sun, 31 May 2020 22:48:29 +0000
-Received: from sandstorm.nvidia.com (Not Verified[10.2.56.10]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5ed4343d0001>; Sun, 31 May 2020 15:48:29 -0700
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Andy Walls <awalls@md.metrocast.net>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        <linux-media@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH v2 2/2] ivtv: convert get_user_pages() --> pin_user_pages()
-Date:   Sun, 31 May 2020 15:48:27 -0700
-Message-ID: <20200531224827.769427-3-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200531224827.769427-1-jhubbard@nvidia.com>
-References: <20200531224827.769427-1-jhubbard@nvidia.com>
-MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1590965298; bh=xH5C6dG4bePEiW5mi0F4Wccp6bZO0ppe4EGiUHwyKL4=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=EPYECVgKWlvBx7tKYa81xMDO35Ip6n41Q8Q3Db4HXLPfCm3EYZO9rz9Ob/ieJmp6/
-         66OnusV+qlnv37ZNAoFdRqkxNjXZFwGwQKABQwbRECaPIjmHCsCX5ojsM3NP5CzFkq
-         lKxje8mwJugXFM1noM0aFme0oWXvHLn0rd5q1sQ8nxAsBive1ELKTDydUYE0QRnEae
-         QrD5CXPO2SYEaISjKo96Ac3D+gpJC0cOweclCpoXKzocWoKFiRWcqn5lz27hh+EAJD
-         wQYUUQSISX3zPOpM3IglFGGImq9pfCTItPHlqlR6gcfviCjfsH+4wLRgVhKjKY3xVx
-         vgw5Jpq02Iazg==
+        Sun, 31 May 2020 19:11:42 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D21C061A0E
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 16:11:40 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id x13so9676442wrv.4
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 16:11:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=foundries-io.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=8HYqyHOxjN4Nup1GjMKGmfT9jPZpf5PtQ+Cg+oD267o=;
+        b=e0NU98U9YquA/QzL6UpPiczODl19Rie3PpB6ztd9+TK0w/U+tqcWUy9ycQQUWDzn9i
+         vXhcAzNpQSevyrgqGvKJwdCTHXp1t6/wdZ/6wNwRjyYYQJ9mrepwKp5MoYFaefAcVjK5
+         XiXDU8vRo5Lojt6Bx2jdpdt/yShtRzzlIr/6vAl7oy1SyjHyWzBUt0D+ygqTE69Z23Hf
+         K6kyfD/mby7T58tRJ2B0Z5fYJHby9OV0Pi0LVuMzffNd8bBIVmqtjECY/44zf/UdCBIr
+         ypuq/w5mxD533ZkHQ6XPYp9YYx09Z40e2c3qSyfkshZESjT6YHMJ4KU4AA9iPCLIlaBU
+         4CfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=8HYqyHOxjN4Nup1GjMKGmfT9jPZpf5PtQ+Cg+oD267o=;
+        b=rg1/mindbWL3/383bpMLx7pyVQ+6EjmyArZe1s9bJz5ppU1gdbCBvbdCocoDCkaif5
+         kEWSQcYRFs9D5y2NiglNimaCPpKqUNi1lCRi0sGz88RRDP9txfkcpB0GssbpjSh5+3zI
+         4T/jT8ECLQHn6YLqkbhswQQPMdCOr1WpkfSPreeCQJ/QTTYJ0dleiYu4+PLJF8a97QFJ
+         RgOL9zlUM026HCyCz4F2gJTYt/uMJYUnHxnDsZxL3byZM+F+lbfVF6TPq7Fd8r+TLAc1
+         Zb2g7X1OLzWzGZpCjFlqvu6VlI7hkjBfABGSr6FfWekZLb3Vcte1wIIyNeXjbBhK43LF
+         wI1Q==
+X-Gm-Message-State: AOAM5301+pKeJawU6RugeFxpuEM/WdvkBuGPDTvOt6jqP6nlflLvZLri
+        Ltww3hOIQ2iTStFKGi4R0JdEmw==
+X-Google-Smtp-Source: ABdhPJyCyZ0QBAB8PWCi2LwcJy4yuZ0aOYlibvTdZksSdP4GN6qK/IT1GGOmN80HWUhkJlgCiF85EQ==
+X-Received: by 2002:adf:e648:: with SMTP id b8mr19790350wrn.386.1590966699375;
+        Sun, 31 May 2020 16:11:39 -0700 (PDT)
+Received: from localhost.localdomain (108.red-83-34-185.dynamicip.rima-tde.net. [83.34.185.108])
+        by smtp.gmail.com with ESMTPSA id o8sm9159845wmb.20.2020.05.31.16.11.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 May 2020 16:11:38 -0700 (PDT)
+From:   Jorge Ramirez-Ortiz <jorge@foundries.io>
+To:     jorge@foundries.io, jens.wiklander@linaro.org
+Cc:     tee-dev@lists.linaro.org, linux-kernel@vger.kernel.org,
+        ricardo@foundries.io, mike@foundries.io
+Subject: [PATCH v2] drivers: optee: allow op-tee to access devices on the i2c bus
+Date:   Mon,  1 Jun 2020 01:11:35 +0200
+Message-Id: <20200531231135.12670-1-jorge@foundries.io>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This code was using get_user_pages*(), in a "Case 2" scenario
-(DMA/RDMA), using the categorization from [1]. That means that it's
-time to convert the get_user_pages*() + put_page() calls to
-pin_user_pages*() + unpin_user_pages() calls.
+Some secure elements like NXP's SE050 sit on I2C buses. For OP-TEE to
+control this type of cryptographic devices it needs coordinated access
+to the bus, so collisions and RUNTIME_PM dont get in the way.
 
-There is some helpful background in [2]: basically, this is a small
-part of fixing a long-standing disconnect between pinning pages, and
-file systems' use of those pages.
+This trampoline driver allow OP-TEE to access them.
 
-[1] Documentation/core-api/pin_user_pages.rst
-
-[2] "Explicit pinning of user-space pages":
-    https://lwn.net/Articles/807108/
-
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
 ---
- drivers/media/pci/ivtv/ivtv-udma.c | 19 ++++++-------------
- drivers/media/pci/ivtv/ivtv-yuv.c  | 17 ++++++-----------
- drivers/media/pci/ivtv/ivtvfb.c    |  4 ++--
- 3 files changed, 14 insertions(+), 26 deletions(-)
+ drivers/tee/optee/optee_msg.h | 18 +++++++++++
+ drivers/tee/optee/rpc.c       | 57 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 75 insertions(+)
 
-diff --git a/drivers/media/pci/ivtv/ivtv-udma.c b/drivers/media/pci/ivtv/iv=
-tv-udma.c
-index 5f8883031c9c..0d8372cc364a 100644
---- a/drivers/media/pci/ivtv/ivtv-udma.c
-+++ b/drivers/media/pci/ivtv/ivtv-udma.c
-@@ -92,7 +92,7 @@ int ivtv_udma_setup(struct ivtv *itv, unsigned long ivtv_=
-dest_addr,
- {
- 	struct ivtv_dma_page_info user_dma;
- 	struct ivtv_user_dma *dma =3D &itv->udma;
--	int i, err;
-+	int err;
-=20
- 	IVTV_DEBUG_DMA("ivtv_udma_setup, dst: 0x%08x\n", (unsigned int)ivtv_dest_=
-addr);
-=20
-@@ -111,16 +111,15 @@ int ivtv_udma_setup(struct ivtv *itv, unsigned long i=
-vtv_dest_addr,
- 		return -EINVAL;
- 	}
-=20
--	/* Get user pages for DMA Xfer */
--	err =3D get_user_pages_unlocked(user_dma.uaddr, user_dma.page_count,
-+	/* Pin user pages for DMA Xfer */
-+	err =3D pin_user_pages_unlocked(user_dma.uaddr, user_dma.page_count,
- 			dma->map, FOLL_FORCE);
-=20
- 	if (user_dma.page_count !=3D err) {
- 		IVTV_DEBUG_WARN("failed to map user pages, returned %d instead of %d\n",
- 			   err, user_dma.page_count);
- 		if (err >=3D 0) {
--			for (i =3D 0; i < err; i++)
--				put_page(dma->map[i]);
-+			unpin_user_pages(dma->map, err);
- 			return -EINVAL;
- 		}
- 		return err;
-@@ -130,9 +129,7 @@ int ivtv_udma_setup(struct ivtv *itv, unsigned long ivt=
-v_dest_addr,
-=20
- 	/* Fill SG List with new values */
- 	if (ivtv_udma_fill_sg_list(dma, &user_dma, 0) < 0) {
--		for (i =3D 0; i < dma->page_count; i++) {
--			put_page(dma->map[i]);
--		}
-+		unpin_user_pages(dma->map, dma->page_count);
- 		dma->page_count =3D 0;
- 		return -ENOMEM;
- 	}
-@@ -153,7 +150,6 @@ int ivtv_udma_setup(struct ivtv *itv, unsigned long ivt=
-v_dest_addr,
- void ivtv_udma_unmap(struct ivtv *itv)
- {
- 	struct ivtv_user_dma *dma =3D &itv->udma;
--	int i;
-=20
- 	IVTV_DEBUG_INFO("ivtv_unmap_user_dma\n");
-=20
-@@ -169,10 +165,7 @@ void ivtv_udma_unmap(struct ivtv *itv)
- 	/* sync DMA */
- 	ivtv_udma_sync_for_cpu(itv);
-=20
--	/* Release User Pages */
--	for (i =3D 0; i < dma->page_count; i++) {
--		put_page(dma->map[i]);
--	}
-+	unpin_user_pages(dma->map, dma->page_count);
- 	dma->page_count =3D 0;
+diff --git a/drivers/tee/optee/optee_msg.h b/drivers/tee/optee/optee_msg.h
+index 795bc19ae17a..b6cc964fdeea 100644
+--- a/drivers/tee/optee/optee_msg.h
++++ b/drivers/tee/optee/optee_msg.h
+@@ -419,4 +419,22 @@ struct optee_msg_arg {
+  */
+ #define OPTEE_MSG_RPC_CMD_SHM_FREE	7
+ 
++/*
++ * Access a device on an i2c bus
++ *
++ * [in]  param[0].u.value.a		mode: RD(0), WR(1)
++ * [in]  param[0].u.value.b		i2c adapter
++ * [in]  param[0].u.value.c		i2c chip
++ *
++ * [io]  param[1].u.tmem.buf_ptr	physical address
++ * [io]  param[1].u.tmem.size		transfer size in bytes
++ * [io]  param[1].u.tmem.shm_ref	shared memory reference
++ *
++ * [out]  param[0].u.value.a		bytes transferred
++ *
++ */
++#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER 8
++#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD 0
++#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR 1
++
+ #endif /* _OPTEE_MSG_H */
+diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
+index b4ade54d1f28..21d452805c6f 100644
+--- a/drivers/tee/optee/rpc.c
++++ b/drivers/tee/optee/rpc.c
+@@ -9,6 +9,7 @@
+ #include <linux/device.h>
+ #include <linux/slab.h>
+ #include <linux/tee_drv.h>
++#include <linux/i2c.h>
+ #include "optee_private.h"
+ #include "optee_smc.h"
+ 
+@@ -48,6 +49,59 @@ static void handle_rpc_func_cmd_get_time(struct optee_msg_arg *arg)
+ bad:
+ 	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
  }
-=20
-diff --git a/drivers/media/pci/ivtv/ivtv-yuv.c b/drivers/media/pci/ivtv/ivt=
-v-yuv.c
-index cd2fe2d444c0..5f7dc9771f8d 100644
---- a/drivers/media/pci/ivtv/ivtv-yuv.c
-+++ b/drivers/media/pci/ivtv/ivtv-yuv.c
-@@ -30,7 +30,6 @@ static int ivtv_yuv_prep_user_dma(struct ivtv *itv, struc=
-t ivtv_user_dma *dma,
- 	struct yuv_playback_info *yi =3D &itv->yuv_info;
- 	u8 frame =3D yi->draw_frame;
- 	struct yuv_frame_info *f =3D &yi->new_frame_info[frame];
--	int i;
- 	int y_pages, uv_pages;
- 	unsigned long y_buffer_offset, uv_buffer_offset;
- 	int y_decode_height, uv_decode_height, y_size;
-@@ -62,12 +61,12 @@ static int ivtv_yuv_prep_user_dma(struct ivtv *itv, str=
-uct ivtv_user_dma *dma,
- 	ivtv_udma_get_page_info (&y_dma, (unsigned long)args->y_source, 720 * y_d=
-ecode_height);
- 	ivtv_udma_get_page_info (&uv_dma, (unsigned long)args->uv_source, 360 * u=
-v_decode_height);
-=20
--	/* Get user pages for DMA Xfer */
--	y_pages =3D get_user_pages_unlocked(y_dma.uaddr,
-+	/* Pin user pages for DMA Xfer */
-+	y_pages =3D pin_user_pages_unlocked(y_dma.uaddr,
- 			y_dma.page_count, &dma->map[0], FOLL_FORCE);
- 	uv_pages =3D 0; /* silence gcc. value is set and consumed only if: */
- 	if (y_pages =3D=3D y_dma.page_count) {
--		uv_pages =3D get_user_pages_unlocked(uv_dma.uaddr,
-+		uv_pages =3D pin_user_pages_unlocked(uv_dma.uaddr,
- 				uv_dma.page_count, &dma->map[y_pages],
- 				FOLL_FORCE);
++static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
++					     struct optee_msg_arg *arg)
++{
++	struct i2c_client client;
++	struct tee_shm *shm;
++	int i, ret;
++	char *buf;
++	uint32_t attr[] = {
++		OPTEE_MSG_ATTR_TYPE_VALUE_INPUT,
++		OPTEE_MSG_ATTR_TYPE_TMEM_INOUT,
++		OPTEE_MSG_ATTR_TYPE_VALUE_OUTPUT,
++	};
++
++	if (arg->num_params != ARRAY_SIZE(attr))
++		goto bad;
++
++	for (i = 0; i < ARRAY_SIZE(attr); i++)
++		if ((arg->params[i].attr & OPTEE_MSG_ATTR_TYPE_MASK) != attr[i])
++			goto bad;
++
++	shm = (struct tee_shm *)(unsigned long)arg->params[1].u.tmem.shm_ref;
++	buf = (char *)shm->kaddr;
++
++	client.addr = arg->params[0].u.value.c;
++	client.adapter = i2c_get_adapter(arg->params[0].u.value.b);
++	if (!client.adapter)
++		goto bad;
++
++	snprintf(client.name, I2C_NAME_SIZE, "i2c%d", client.adapter->nr);
++
++	switch (arg->params[0].u.value.a) {
++	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD:
++		ret = i2c_master_recv(&client, buf, arg->params[1].u.tmem.size);
++		break;
++	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR:
++		ret = i2c_master_send(&client, buf, arg->params[1].u.tmem.size);
++		break;
++	default:
++		i2c_put_adapter(client.adapter);
++		goto bad;
++	}
++
++	if (ret >= 0) {
++		arg->params[2].u.value.a = ret;
++		arg->ret = TEEC_SUCCESS;
++	} else
++		arg->ret = TEEC_ERROR_COMMUNICATION;
++
++	i2c_put_adapter(client.adapter);
++	return;
++bad:
++	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
++}
+ 
+ static struct wq_entry *wq_entry_get(struct optee_wait_queue *wq, u32 key)
+ {
+@@ -382,6 +436,9 @@ static void handle_rpc_func_cmd(struct tee_context *ctx, struct optee *optee,
+ 	case OPTEE_MSG_RPC_CMD_SHM_FREE:
+ 		handle_rpc_func_cmd_shm_free(ctx, arg);
+ 		break;
++	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER:
++		handle_rpc_func_cmd_i2c_transfer(ctx, arg);
++		break;
+ 	default:
+ 		handle_rpc_supp_cmd(ctx, arg);
  	}
-@@ -81,8 +80,7 @@ static int ivtv_yuv_prep_user_dma(struct ivtv *itv, struc=
-t ivtv_user_dma *dma,
- 				 uv_pages, uv_dma.page_count);
-=20
- 			if (uv_pages >=3D 0) {
--				for (i =3D 0; i < uv_pages; i++)
--					put_page(dma->map[y_pages + i]);
-+				unpin_user_pages(&dma->map[y_pages], uv_pages);
- 				rc =3D -EFAULT;
- 			} else {
- 				rc =3D uv_pages;
-@@ -93,8 +91,7 @@ static int ivtv_yuv_prep_user_dma(struct ivtv *itv, struc=
-t ivtv_user_dma *dma,
- 				 y_pages, y_dma.page_count);
- 		}
- 		if (y_pages >=3D 0) {
--			for (i =3D 0; i < y_pages; i++)
--				put_page(dma->map[i]);
-+			unpin_user_pages(dma->map, y_pages);
- 			/*
- 			 * Inherit the -EFAULT from rc's
- 			 * initialization, but allow it to be
-@@ -112,9 +109,7 @@ static int ivtv_yuv_prep_user_dma(struct ivtv *itv, str=
-uct ivtv_user_dma *dma,
- 	/* Fill & map SG List */
- 	if (ivtv_udma_fill_sg_list (dma, &uv_dma, ivtv_udma_fill_sg_list (dma, &y=
-_dma, 0)) < 0) {
- 		IVTV_DEBUG_WARN("could not allocate bounce buffers for highmem userspace=
- buffers\n");
--		for (i =3D 0; i < dma->page_count; i++) {
--			put_page(dma->map[i]);
--		}
-+		unpin_user_pages(dma->map, dma->page_count);
- 		dma->page_count =3D 0;
- 		return -ENOMEM;
- 	}
-diff --git a/drivers/media/pci/ivtv/ivtvfb.c b/drivers/media/pci/ivtv/ivtvf=
-b.c
-index 0c2859844081..e2d56dca5be4 100644
---- a/drivers/media/pci/ivtv/ivtvfb.c
-+++ b/drivers/media/pci/ivtv/ivtvfb.c
-@@ -281,10 +281,10 @@ static int ivtvfb_prep_dec_dma_to_device(struct ivtv =
-*itv,
- 	/* Map User DMA */
- 	if (ivtv_udma_setup(itv, ivtv_dest_addr, userbuf, size_in_bytes) <=3D 0) =
-{
- 		mutex_unlock(&itv->udma.lock);
--		IVTVFB_WARN("ivtvfb_prep_dec_dma_to_device, Error with get_user_pages: %=
-d bytes, %d pages returned\n",
-+		IVTVFB_WARN("ivtvfb_prep_dec_dma_to_device, Error with pin_user_pages: %=
-d bytes, %d pages returned\n",
- 			       size_in_bytes, itv->udma.page_count);
-=20
--		/* get_user_pages must have failed completely */
-+		/* pin_user_pages must have failed completely */
- 		return -EIO;
- 	}
-=20
---=20
-2.26.2
+-- 
+2.17.1
 
