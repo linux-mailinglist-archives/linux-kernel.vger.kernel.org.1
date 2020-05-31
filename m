@@ -2,103 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42A71E9625
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 09:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2EAD1E9619
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 09:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727068AbgEaHWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 03:22:10 -0400
-Received: from winnie.ispras.ru ([83.149.199.91]:29532 "EHLO smtp.ispras.ru"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726751AbgEaHWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 03:22:10 -0400
-Received: from monopod.intra.ispras.ru (monopod.intra.ispras.ru [10.10.3.121])
-        by smtp.ispras.ru (Postfix) with ESMTP id C439E203BF;
-        Sun, 31 May 2020 10:22:04 +0300 (MSK)
-Date:   Sun, 31 May 2020 10:22:04 +0300 (MSK)
-From:   Alexander Monakov <amonakov@ispras.ru>
-To:     linux-kernel@vger.kernel.org
-cc:     Joerg Roedel <joro@8bytes.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        iommu@lists.linux-foundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH] iommu/amd: Fix event counter availability check
-In-Reply-To: <20200529200738.1923-1-amonakov@ispras.ru>
-Message-ID: <alpine.LNX.2.20.13.2005311014450.16067@monopod.intra.ispras.ru>
-References: <20200529200738.1923-1-amonakov@ispras.ru>
-User-Agent: Alpine 2.20.13 (LNX 116 2015-12-14)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1729656AbgEaHPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 03:15:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728411AbgEaHPN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 May 2020 03:15:13 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB0AC05BD43
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 00:15:12 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id p21so2031673pgm.13
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 00:15:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Ux7WUcgWZimk6zm8mqRWJU5+TgqCpZUYOAeG6vLMXrg=;
+        b=qTsNxywe68ZI/fz9ywvs8SvNYEGP6hCyiYMHw4H/up9vXWrOr9BO57k/U0oQrZHXFE
+         hl7jg0BxW4qfz3g6fF1GheNAKv9Fx7O648M0mIxWBAtFS77HzFjQudfRCv6P+F/aM6tF
+         qENHSb+XztaNpHjDD0/vFzIO/nN1MpOlPhk7+sbn5e1dpOA0Dg/XXBUfOsSGZb+dN0kC
+         xIOoG3RcP7lKSjmcmBSuYP+eul7MrkOr7XYa3XZ/UIk3K4u7cnIsOYxzS+yhwCKcUq7b
+         ZmvScUTVTdPn/431M+mlzNaqvip4u/C1qlK0aeUHHSX+DUNg3oJFwqsBVqJ2ys7xJakp
+         JI7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Ux7WUcgWZimk6zm8mqRWJU5+TgqCpZUYOAeG6vLMXrg=;
+        b=th9kzIIGRbTcGXh5a2BDU6qJtP0JYBMM0zdtXs/RUkXCiMhDdFaknU5mA6APq9CSV/
+         GiUc0j3p4cKSvELcKm2pxqOxu3S0sQEcSNBMJT4HnTNuz3lL5pkjXAYZ5rgSFFEm7LDf
+         JLEN4lt9y0hKZIQIzyO3GPa5Hluk3wnI2FQ39VCMgVJxEukjDXl9baQHZr3nD4l+7eym
+         hkqEVi90luLMjk1UTnyhZK+t5SaVsyhzcpe3io306eLKuNRviZAvY6EQGtY26YFKlN4M
+         U+HxIvWCDEyYDgBxRiqThxzuPoBGOen/TeCvEkEYq1dVFnYRhZCJOtn6Y66o54hfPpeD
+         o1Rg==
+X-Gm-Message-State: AOAM531y7gpHYsZtsV5naHsmHQMtrwJ/rk7THLVcCX/fCGAAtqIka/ix
+        aaVuLs70bf3ho78icUl+GfQ=
+X-Google-Smtp-Source: ABdhPJx1j6Ob8NR+KMVwnkpfmsxyNVDmQks6gE8lWHM4X0A71Zoh/5T0aKRIqSr+NIWhJeOqfgGeAw==
+X-Received: by 2002:a63:c109:: with SMTP id w9mr8591855pgf.203.1590909312419;
+        Sun, 31 May 2020 00:15:12 -0700 (PDT)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([122.182.225.191])
+        by smtp.gmail.com with ESMTPSA id m2sm3925943pjk.52.2020.05.31.00.15.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 31 May 2020 00:15:11 -0700 (PDT)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     rspringer@google.com, toddpoynor@google.com, benchan@chromium.org,
+        gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] staging: gasket: Convert get_user_pages*() --> pin_user_pages*()
+Date:   Sun, 31 May 2020 12:53:11 +0530
+Message-Id: <1590909791-3871-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In 2019, we introduced pin_user_pages*() and now we are converting
+get_user_pages*() to the new API as appropriate. [1] & [2] could
+be referred for more information.
+
+[1] Documentation/core-api/pin_user_pages.rst
+
+[2] "Explicit pinning of user-space pages":
+	https://lwn.net/Articles/807108/
+
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+
+---
 Hi,
 
-Adding Shuah Khan to Cc: I've noticed you've seen this issue on Ryzen 2400GE;
-can you have a look at the patch? Would be nice to know if it fixes the
-problem for you too.
+I'm compile tested this, but unable to run-time test, so any testing
+help is much appriciated.
 
-Thanks.
-Alexander
+ drivers/staging/gasket/gasket_page_table.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-On Fri, 29 May 2020, Alexander Monakov wrote:
+diff --git a/drivers/staging/gasket/gasket_page_table.c b/drivers/staging/gasket/gasket_page_table.c
+index f6d7157..d712ad4 100644
+--- a/drivers/staging/gasket/gasket_page_table.c
++++ b/drivers/staging/gasket/gasket_page_table.c
+@@ -449,7 +449,7 @@ static bool gasket_release_page(struct page *page)
+ 
+ 	if (!PageReserved(page))
+ 		SetPageDirty(page);
+-	put_page(page);
++	unpin_user_page(page);
+ 
+ 	return true;
+ }
+@@ -486,12 +486,12 @@ static int gasket_perform_mapping(struct gasket_page_table *pg_tbl,
+ 			ptes[i].dma_addr = pg_tbl->coherent_pages[0].paddr +
+ 					   off + i * PAGE_SIZE;
+ 		} else {
+-			ret = get_user_pages_fast(page_addr - offset, 1,
++			ret = pin_user_pages_fast(page_addr - offset, 1,
+ 						  FOLL_WRITE, &page);
+ 
+ 			if (ret <= 0) {
+ 				dev_err(pg_tbl->device,
+-					"get user pages failed for addr=0x%lx, offset=0x%lx [ret=%d]\n",
++					"pin user pages failed for addr=0x%lx, offset=0x%lx [ret=%d]\n",
+ 					page_addr, offset, ret);
+ 				return ret ? ret : -ENOMEM;
+ 			}
+-- 
+1.9.1
 
-> The driver performs an extra check if the IOMMU's capabilities advertise
-> presence of performance counters: it verifies that counters are writable
-> by writing a hard-coded value to a counter and testing that reading that
-> counter gives back the same value.
-> 
-> Unfortunately it does so quite early, even before pci_enable_device is
-> called for the IOMMU, i.e. when accessing its MMIO space is not
-> guaranteed to work. On Ryzen 4500U CPU, this actually breaks the test:
-> the driver assumes the counters are not writable, and disables the
-> functionality.
-> 
-> Moving init_iommu_perf_ctr just after iommu_flush_all_caches resolves
-> the issue. This is the earliest point in amd_iommu_init_pci where the
-> call succeeds on my laptop.
-> 
-> Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-> Cc: iommu@lists.linux-foundation.org
-> ---
-> 
-> PS. I'm seeing another hiccup with IOMMU probing on my system:
-> pci 0000:00:00.2: can't derive routing for PCI INT A
-> pci 0000:00:00.2: PCI INT A: not connected
-> 
-> Hopefully I can figure it out, but I'd appreciate hints.
-> 
->  drivers/iommu/amd_iommu_init.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/iommu/amd_iommu_init.c b/drivers/iommu/amd_iommu_init.c
-> index 5b81fd16f5fa..1b7ec6b6a282 100644
-> --- a/drivers/iommu/amd_iommu_init.c
-> +++ b/drivers/iommu/amd_iommu_init.c
-> @@ -1788,8 +1788,6 @@ static int __init iommu_init_pci(struct amd_iommu *iommu)
->  	if (iommu->cap & (1UL << IOMMU_CAP_NPCACHE))
->  		amd_iommu_np_cache = true;
->  
-> -	init_iommu_perf_ctr(iommu);
-> -
->  	if (is_rd890_iommu(iommu->dev)) {
->  		int i, j;
->  
-> @@ -1891,8 +1889,10 @@ static int __init amd_iommu_init_pci(void)
->  
->  	init_device_table_dma();
->  
-> -	for_each_iommu(iommu)
-> +	for_each_iommu(iommu) {
->  		iommu_flush_all_caches(iommu);
-> +		init_iommu_perf_ctr(iommu);
-> +	}
->  
->  	if (!ret)
->  		print_iommu_info();
-> 
-> base-commit: 75caf310d16cc5e2f851c048cd597f5437013368
-> 
