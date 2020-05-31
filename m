@@ -2,80 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B03B91E9A03
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 21:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F0E1E9A06
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 21:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728294AbgEaTG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 15:06:28 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:33996 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726008AbgEaTG1 (ORCPT
+        id S1728369AbgEaTHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 15:07:09 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:45952 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726008AbgEaTHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 15:06:27 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id D46641C0BD2; Sun, 31 May 2020 21:06:25 +0200 (CEST)
-Date:   Sun, 31 May 2020 21:06:25 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     jacek.anaszewski@gmail.com, robh@kernel.org,
-        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v25 03/16] dt: bindings: lp50xx: Introduce the lp50xx
- family of RGB drivers
-Message-ID: <20200531190625.GA30537@duo.ucw.cz>
-References: <20200526164652.2331-1-dmurphy@ti.com>
- <20200526164652.2331-4-dmurphy@ti.com>
- <20200527135848.GB5011@amd>
- <d22658c2-07e2-74e6-dc2b-4b64fd9789dd@ti.com>
+        Sun, 31 May 2020 15:07:08 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id E97B18030866;
+        Sun, 31 May 2020 19:07:05 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Y9PNAVpwnQW7; Sun, 31 May 2020 22:07:05 +0300 (MSK)
+Date:   Sun, 31 May 2020 22:07:04 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Wolfram Sang <wsa@the-dreams.de>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        <devicetree-compiler@vger.kernel.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] check: Add 10bit/slave i2c reg flags support
+Message-ID: <20200531190704.2kluwj3nipvdfccs@mobilestation>
+References: <20200527122525.6929-1-Sergey.Semin@baikalelectronics.ru>
+ <20200527141517.22677-1-Sergey.Semin@baikalelectronics.ru>
+ <20200530093152.GA1038@ninjato>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="0F1p//8PRICkK4MW"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <d22658c2-07e2-74e6-dc2b-4b64fd9789dd@ti.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200530093152.GA1038@ninjato>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, May 30, 2020 at 11:31:52AM +0200, Wolfram Sang wrote:
+> 
+> > +	addr = reg & 0x3FFFFFFFU;
+> > +	snprintf(unit_addr, sizeof(unit_addr), "%x", addr);
+> 
+> Hmm, this hardcoded value will not work if we ever need to add another
+> bit. I hope this will never happen, though.
+> 
+> > +		if ((reg & (1U << 31)) && addr > 0x3ff)
+> 
+> Same here with bit 31.
 
---0F1p//8PRICkK4MW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'd be glad to use a macro or some helper here, but alas there is no
+ready-to-use i2c-related one in the dtc code. See, there are hard-coded
+literals in the PCI nodes checkers (check_pci_device_reg(),
+check_pci_device_bus_num()) and the hard-coded literals've been in the
+i2c-nodes checkers even before this patch.
 
-Hi!
+> I haven't checked DTC but can't we import the
+> header with the defines into the project? Or is this then a circular
+> dependency?
+> 
 
-> > > +          There can only be one instance of the ti,led-bank
-> > > +          property for each device node.  This is a required node is=
- the LED
-> > > +          modules are to be backed.
-> > I don't understand the second sentence. Pretty sure it is not valid
-> > english.
->=20
->=20
-> If I make these changes is this still viable for 5.8 or would you then go
-> into 5.9?
+I guess importing header would be much better than the hard-coded values
+currently used. What do the code maintainers say about that? Any idea how it
+is supposed to be implemented?
 
-It really depends if we get -rc8 or not, and if you'll need to do any
-changes to C code or not...
-
-Best regards,
-
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---0F1p//8PRICkK4MW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iFwEABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXtQAMQAKCRAw5/Bqldv6
-8mQ5AKCI6rJP7GSF+oHRZ4o+yuS6YCo22wCYnf0LlvVWugPqDe1HSeX9u2IF6Q==
-=LIhM
------END PGP SIGNATURE-----
-
---0F1p//8PRICkK4MW--
+-Sergey
