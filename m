@@ -2,144 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B1A1E99DF
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 20:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB6B1E99D1
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 20:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728405AbgEaS0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 14:26:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726008AbgEaS02 (ORCPT
+        id S1728282AbgEaSTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 14:19:13 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:35071 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726008AbgEaSTN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 14:26:28 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B7BC061A0E
-        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 11:26:26 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id c11so5408764ljn.2
-        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 11:26:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LhUKdkxEft6nfXa1bSZjn8ZV2z/LvCOdEDYS/DQ0vVs=;
-        b=L5wYfa5jjbO3UasXEK47PX2DzUNEb/iXxOA1wo11xyBqd+YwfEFz1YQKpmevBRqrrQ
-         H+9I2EWB5kF8Q3wkorqFNuCGL6Xnn8ACBEhShq6f4LoaYhotoq38vQxyQZ6s1/4JAgce
-         FahBshoFpH2ttRXvhXVPtQlRpnQz32VvJLzslGS/uASlenPlzKnyjsJfMiLoPxW2kXfJ
-         nS8LQrxFgBmY28W1i44Jm/Kk4Ogc4nICy1Iz5nRFiPADUOUWfoLI7F3qD3RsLbz6d1dp
-         99uHVNFhDMRnB0a/A0jpqSAo/LCIW+6ZUdpsy0SaGoELyGtG8CicbqlXpO653QWdtdyb
-         SanA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LhUKdkxEft6nfXa1bSZjn8ZV2z/LvCOdEDYS/DQ0vVs=;
-        b=XDHn7CkgD3NBfqIYkB+j7DCSBfVt6NQGdfo2V+pWsnf1yIO+38Z5WceKLa2KPZF+gD
-         1BH88rD7b1nwj2iZUKGyw24UwJ+o0Xxc2KtLauLfTiHJqzIQ5/1veDE1DtL0BbwDTZso
-         nc9PWqpRJiSv4O791PWpgNaSTa6uXbDmmR/8/5sfUKuDjKJadqWwSvk3Nu3IBDuy4UgY
-         Lzz8GN13NEp/NHz+1wgBvud9XcUFdsGMNcL0G+ffvenSy18xcoEeAstsQd4qcY0AY7GV
-         TaDsHCElTCGBf/Sq4vsnvDRSXBZYI1GV90LZl8/X0HtEbeTOFKs/FbTYXq/pSTpQMM04
-         b1Eg==
-X-Gm-Message-State: AOAM5306dvKOyxD3zjF8EDhkkovKlKUA0mG4jnlqfKqIoE1oAC1UakX3
-        7udN7L2ZF8RMinID9CHpIaA=
-X-Google-Smtp-Source: ABdhPJz0rUAOzlz9y9LZbKi8Su6ICT/PIqmYq6NxSCagYLO4x0cgipgUTrymIwWMLEWcKltLeRUcIw==
-X-Received: by 2002:a2e:b550:: with SMTP id a16mr6854221ljn.345.1590949584594;
-        Sun, 31 May 2020 11:26:24 -0700 (PDT)
-Received: from alpha (84.188.smarthome.spb.ru. [80.249.188.84])
-        by smtp.gmail.com with ESMTPSA id a8sm3396969ljp.102.2020.05.31.11.26.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 May 2020 11:26:23 -0700 (PDT)
-Received: (nullmailer pid 42072 invoked by uid 1000);
-        Sun, 31 May 2020 18:31:11 -0000
-From:   Ivan Safonov <insafonov@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Nishka Dasgupta <nishkadg.linux@gmail.com>,
-        Lukasz Szczesny <luk@wybcz.pl>, R Veera Kumar <vkor@vkten.in>,
-        Hariprasad Kelam <hariprasad.kelam@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Shobhit Kukreti <shobhitkukreti@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Pascal Terjan <pterjan@google.com>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, Ivan Safonov <insafonov@gmail.com>
-Subject: [PATCH v2] staging:r8723bs: remove wrappers around skb_clone() and remove unnecessary in_interrupt() call
-Date:   Sun, 31 May 2020 21:17:52 +0300
-Message-Id: <20200531181751.41830-1-insafonov@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Sun, 31 May 2020 14:19:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590949151;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H5l2+GA2OjPwaydxfjF7lz64I5jkXo+Zpuxtapskr0s=;
+        b=crE08jZXf48Es8K8Q/rWo2VlZaGgsjWfO4TUH8zsUF279YrjTgzREysgvavCYp867Kx2v8
+        E/8V+rOHKCQlADvpx9nrzvlu3KSEGNX5DmdQ/wObYM7gKGbv6IVQ2aub3xx2q9O1SoTi9i
+        dGNffrl7w7N0BgljmemUriUkyCFTq08=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-376--LOextQ6OU2IdSEVQS_5uw-1; Sun, 31 May 2020 14:19:09 -0400
+X-MC-Unique: -LOextQ6OU2IdSEVQS_5uw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 816FF107ACCA;
+        Sun, 31 May 2020 18:19:08 +0000 (UTC)
+Received: from krava (unknown [10.40.192.36])
+        by smtp.corp.redhat.com (Postfix) with SMTP id BDA2A5C1D0;
+        Sun, 31 May 2020 18:19:06 +0000 (UTC)
+Date:   Sun, 31 May 2020 20:19:05 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 04/10] perf stat: factor out event handling loop into
+ a function
+Message-ID: <20200531181905.GB881900@krava>
+References: <653fe5f3-c986-a841-1ed8-0a7d2fa24c00@linux.intel.com>
+ <5f42c6c5-c301-accd-928e-4304fb1c15d0@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5f42c6c5-c301-accd-928e-4304fb1c15d0@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wrappers around skb_clone() do not simplify the driver code.
+On Mon, May 25, 2020 at 05:19:45PM +0300, Alexey Budankov wrote:
 
-The skb_clone() is always called from an interrupt handler,
-so use GFP_ATOMIC allocation only.
+SNIP
 
-Signed-off-by: Ivan Safonov <insafonov@gmail.com>
----
-Changes in v2:
-  - in_interrupt() removal has been described.
+> @@ -544,12 +598,10 @@ static enum counter_recovery stat_handle_error(struct evsel *counter)
+>  static int __run_perf_stat(int argc, const char **argv, int run_idx)
+>  {
+>  	int interval = stat_config.interval;
+> -	int times = stat_config.times;
+>  	int timeout = stat_config.timeout;
+>  	char msg[BUFSIZ];
+>  	unsigned long long t0, t1;
+>  	struct evsel *counter;
+> -	struct timespec ts;
+>  	size_t l;
+>  	int status = 0;
+>  	const bool forks = (argc > 0);
+> @@ -558,17 +610,6 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+>  	int i, cpu;
+>  	bool second_pass = false;
+>  
+> -	if (interval) {
+> -		ts.tv_sec  = interval / USEC_PER_MSEC;
+> -		ts.tv_nsec = (interval % USEC_PER_MSEC) * NSEC_PER_MSEC;
+> -	} else if (timeout) {
+> -		ts.tv_sec  = timeout / USEC_PER_MSEC;
+> -		ts.tv_nsec = (timeout % USEC_PER_MSEC) * NSEC_PER_MSEC;
+> -	} else {
+> -		ts.tv_sec  = 1;
+> -		ts.tv_nsec = 0;
+> -	}
+> -
+>  	if (forks) {
+>  		if (perf_evlist__prepare_workload(evsel_list, &target, argv, is_pipe,
+>  						  workload_exec_failed_signal) < 0) {
+> @@ -725,16 +766,9 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+>  		perf_evlist__start_workload(evsel_list);
+>  		enable_counters();
+>  
+> -		if (interval || timeout) {
+> -			while (!waitpid(child_pid, &status, WNOHANG)) {
+> -				nanosleep(&ts, NULL);
+> -				if (timeout)
+> -					break;
+> -				process_interval();
+> -				if (interval_count && !(--times))
+> -					break;
+> -			}
+> -		}
+> +		if (interval || timeout)
+> +			dispatch_events(child_pid, &stat_config);
+> +
+>  		if (child_pid != -1) {
+>  			if (timeout)
+>  				kill(child_pid, SIGTERM);
+> @@ -751,18 +785,7 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+>  			psignal(WTERMSIG(status), argv[0]);
+>  	} else {
+>  		enable_counters();
+> -		while (!done) {
+> -			nanosleep(&ts, NULL);
+> -			if (!is_target_alive(&target, evsel_list->core.threads))
+> -				break;
+> -			if (timeout)
+> -				break;
+> -			if (interval) {
+> -				process_interval();
+> -				if (interval_count && !(--times))
+> -					break;
+> -			}
+> -		}
+> +		dispatch_events(-1, &stat_config);
 
- drivers/staging/rtl8723bs/include/osdep_service.h | 3 ---
- drivers/staging/rtl8723bs/os_dep/osdep_service.c  | 5 -----
- drivers/staging/rtl8723bs/os_dep/recv_linux.c     | 2 +-
- 3 files changed, 1 insertion(+), 9 deletions(-)
+hum, from the discussion we had on v3  I expected more smaller patches
+with easy changes, so the change is more transparent and easy to review
 
-diff --git a/drivers/staging/rtl8723bs/include/osdep_service.h b/drivers/staging/rtl8723bs/include/osdep_service.h
-index 5f681899bbec..be34e279670b 100644
---- a/drivers/staging/rtl8723bs/include/osdep_service.h
-+++ b/drivers/staging/rtl8723bs/include/osdep_service.h
-@@ -94,7 +94,6 @@ void _kfree(u8 *pbuf, u32 sz);
- 
- struct sk_buff *_rtw_skb_alloc(u32 sz);
- struct sk_buff *_rtw_skb_copy(const struct sk_buff *skb);
--struct sk_buff *_rtw_skb_clone(struct sk_buff *skb);
- int _rtw_netif_rx(_nic_hdl ndev, struct sk_buff *skb);
- 
- #define rtw_malloc(sz)			_rtw_malloc((sz))
-@@ -103,9 +102,7 @@ int _rtw_netif_rx(_nic_hdl ndev, struct sk_buff *skb);
- #define rtw_skb_alloc(size) _rtw_skb_alloc((size))
- #define rtw_skb_alloc_f(size, mstat_f)	_rtw_skb_alloc((size))
- #define rtw_skb_copy(skb)	_rtw_skb_copy((skb))
--#define rtw_skb_clone(skb)	_rtw_skb_clone((skb))
- #define rtw_skb_copy_f(skb, mstat_f)	_rtw_skb_copy((skb))
--#define rtw_skb_clone_f(skb, mstat_f)	_rtw_skb_clone((skb))
- #define rtw_netif_rx(ndev, skb) _rtw_netif_rx(ndev, skb)
- 
- extern void _rtw_init_queue(struct __queue	*pqueue);
-diff --git a/drivers/staging/rtl8723bs/os_dep/osdep_service.c b/drivers/staging/rtl8723bs/os_dep/osdep_service.c
-index 4238209ec175..6d443197a0cf 100644
---- a/drivers/staging/rtl8723bs/os_dep/osdep_service.c
-+++ b/drivers/staging/rtl8723bs/os_dep/osdep_service.c
-@@ -47,11 +47,6 @@ inline struct sk_buff *_rtw_skb_copy(const struct sk_buff *skb)
- 	return skb_copy(skb, in_interrupt() ? GFP_ATOMIC : GFP_KERNEL);
- }
- 
--inline struct sk_buff *_rtw_skb_clone(struct sk_buff *skb)
--{
--	return skb_clone(skb, in_interrupt() ? GFP_ATOMIC : GFP_KERNEL);
--}
--
- inline int _rtw_netif_rx(_nic_hdl ndev, struct sk_buff *skb)
- {
- 	skb->dev = ndev;
-diff --git a/drivers/staging/rtl8723bs/os_dep/recv_linux.c b/drivers/staging/rtl8723bs/os_dep/recv_linux.c
-index eb4d1c3008fe..b2a1bbb30df6 100644
---- a/drivers/staging/rtl8723bs/os_dep/recv_linux.c
-+++ b/drivers/staging/rtl8723bs/os_dep/recv_linux.c
-@@ -110,7 +110,7 @@ void rtw_os_recv_indicate_pkt(struct adapter *padapter, _pkt *pkt, struct rx_pkt
- 			if (memcmp(pattrib->dst, myid(&padapter->eeprompriv), ETH_ALEN)) {
- 				if (bmcast) {
- 					psta = rtw_get_bcmc_stainfo(padapter);
--					pskb2 = rtw_skb_clone(pkt);
-+					pskb2 = skb_clone(pkt, GFP_ATOMIC);
- 				} else {
- 					psta = rtw_get_stainfo(pstapriv, pattrib->dst);
- 				}
--- 
-2.26.2
+as I said before this part really makes me worried and needs to be as clear
+as possible.. please introdce the new function first and replace the factored
+places separately, also more verbose changelog would help ;-)
+
+thanks,
+jirka
+
+
+>  	}
+>  
+>  	disable_counters();
+> -- 
+> 2.24.1
+> 
 
