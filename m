@@ -2,138 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1B51E98B8
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 18:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8C41E98C3
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 May 2020 18:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728031AbgEaQED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 12:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49826 "EHLO
+        id S1728073AbgEaQNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 12:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgEaQEC (ORCPT
+        with ESMTP id S1726193AbgEaQNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 12:04:02 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ACF2C061A0E
-        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 09:04:02 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id z13so5091067ljn.7
-        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 09:04:02 -0700 (PDT)
+        Sun, 31 May 2020 12:13:54 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5EDC061A0E
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 09:13:54 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id c8so4441185iob.6
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 09:13:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/jWa79zjp43R39+MRgzum8emlYhe6zDNSyhVpmFy1UM=;
-        b=m12KnDSmpBchSpW8O7NIpxxcXDYX30r/lGOgLTRij+5Bjlywkszb/9+4yyx7SC9oOk
-         q8USkg8z2klLfxe/wXbn9ST8N66ESi4x2eJ+O2DVkcuybgKqL1frhFwFRBGYtBMaObLA
-         mDQMwikzSAewO6l2vRJggLfJJ34q2X+e86XobZc9EpuGuBDDfU5oTHJe3LIJ4+nkM3zq
-         LZOU2/LYijae6tH20nxcy076CAif8Md7/YJaokMfaagg5NwVnv53ed/SZgHIVqo5eAsJ
-         yIVsY0eJSJLWoTfLatzPWVA8bI2BVFikueanAgNjXKgVGfmgnc4dr4z6xtKPmS25l1p4
-         GBuw==
+        d=juliacomputing-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qDcDX99D7ZANOd7Hfxd9CsLkN0llgnSPxO8kSVRHg5A=;
+        b=0NrOYjs83qN/UOFMEjcddPRGfiWhC3QNA2KlKhk/2EaDJh0asjZoU9RUUIk3nnnkMj
+         cGP/zgRQqDj1o9N406w+mZf7XGZ3fb7k4nGhEYMVXldcj3TfVrMyp/thU5snJvHeLQpF
+         BZcDGDzxkJR71o+bx+Jzclz63EJ0NGpzAIDGIxuJ0xRxVKBzeHzVh8RpRlXzUMoGanP7
+         OkAGs5UdPMsdp3yn1Km90QMWr/fKkLsnZa61FGazDrthn17N3Jbs1eTkH8YYxC18iSyC
+         a2a9yL6yjSP7TQZY101dPf7st1N0wr+AzkyVL8Cb13yiQZvGbZuPQdHv5y8bfn8Ubs/R
+         40Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/jWa79zjp43R39+MRgzum8emlYhe6zDNSyhVpmFy1UM=;
-        b=pfMCx5ogcrxUSrt/8YetW3aog4e7XRZzbmtc4mjp+d2wTNekfjRtQrwPsxEpJLdT/+
-         SjhKLeipFtFlBFVxMh1la6KGONTesUQ+jGtKXUjaI5ZPdSEB6L6t0DCUkhEafGlMwVRx
-         Tflx2jyoUpS15VHHegv3kS0vJibiZerQ2IWPuh4MXXun3xvOLh6Hh7w4wKD9/NBoZaAN
-         2Fx12r7SDs6iZsReYuT0ayXapyjwuwBtX0SstRUFs3a5NOCzdg4tuOR/SFb/tV4GtaSF
-         tfxKO4fMvCvPG55UMSsobqCweatf8p4OeKuYQ+DSip4YUigCQgdjuSwhMQx3T4pcHPMu
-         BO/g==
-X-Gm-Message-State: AOAM531CxeCMxIETC/01sa51mcpnAyQ/ucDE5y5kapWtXvS32k+Uuaxt
-        2/NI9sj77qxfQXgeJD28SIw=
-X-Google-Smtp-Source: ABdhPJzC+JjHrT0Z33ulGBSRaEIOUqabc6uh9g7UQ6cn2amrY9fSWX6wLgtic+EvPYUAXiiRCSO3iw==
-X-Received: by 2002:a05:651c:311:: with SMTP id a17mr3538745ljp.322.1590941040184;
-        Sun, 31 May 2020 09:04:00 -0700 (PDT)
-Received: from alpha (84.188.smarthome.spb.ru. [80.249.188.84])
-        by smtp.gmail.com with ESMTPSA id 6sm3329265ljq.115.2020.05.31.09.03.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 May 2020 09:03:59 -0700 (PDT)
-Received: (nullmailer pid 39166 invoked by uid 1000);
-        Sun, 31 May 2020 16:08:52 -0000
-From:   Ivan Safonov <insafonov@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Nishka Dasgupta <nishkadg.linux@gmail.com>,
-        Lukasz Szczesny <luk@wybcz.pl>, R Veera Kumar <vkor@vkten.in>,
-        Hariprasad Kelam <hariprasad.kelam@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Shobhit Kukreti <shobhitkukreti@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Pascal Terjan <pterjan@google.com>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, Ivan Safonov <insafonov@gmail.com>
-Subject: [PATCH] staging:r8723bs: remove wrappers around skb_clone()
-Date:   Sun, 31 May 2020 19:08:43 +0300
-Message-Id: <20200531160843.39120-1-insafonov@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qDcDX99D7ZANOd7Hfxd9CsLkN0llgnSPxO8kSVRHg5A=;
+        b=LtLsoNX60nKgZB35XxDUmr5vV1d+DUkRp/0RMXbvUkiJCQlwRB+keP/M3F8aq8MVBX
+         mlTZiAyPDsOV7YMXjwcBwDDMdZmwQuGqll/yv+AHRoecFBtNnfvfvsvDcxeburdLg7uX
+         G9M4/pAzDiO5rAWWDuY+PdoSj4MLBK+HQhDWuLMjecarBvn1n4CQY+R4f6ZAj8wmvKfW
+         Z4bFN/+GEV1eyh5kmZ2GUrW2DwSkvZsI0yKqUnxJUtBE1hq9TyTzta9QgTVTPBCMFo/V
+         BX+EohFfdQHXB6xlNJ8lVxmfVcwsqLxz1hrFYMtLpaMJCGCTLWH+52mxowWI/duk5nzm
+         J2Bw==
+X-Gm-Message-State: AOAM533SpbOdvLuHkbsF4eFlR/BTN5obAor1rtsfqFt1HPLXY9XFA+jG
+        rKzgV4tG0yYAjMIo5lzPsAMiEdmSjj/FzRtNZN/0DWA7
+X-Google-Smtp-Source: ABdhPJyE5v1llWMoFwhdQL/ba2iAnwmju7I539rDRBzkQsXwXkHb6dGdI+r21DnNhF4FonkVmHnG2iPG5GXcAjc6t+c=
+X-Received: by 2002:a05:6602:80b:: with SMTP id z11mr15367394iow.109.1590941633982;
+ Sun, 31 May 2020 09:13:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CABV8kRz0mKSc=u1LeonQSLroKJLOKWOWktCoGji2nvEBc=e7=w@mail.gmail.com>
+ <20200519081551.GA9980@willie-the-truck> <CABV8kRzYzBrdzC1_opmmdpW63N2htfOsAUZ+RjiSDsy=SJW6Yg@mail.gmail.com>
+ <20200520174149.GB27629@willie-the-truck> <CABV8kRzjCCsjVeRsBD7U_Lo0==sBw9EKm=1z7g=60KyJvJLZBQ@mail.gmail.com>
+ <CABV8kRxfet2RXXNcUoTKwfVzFWEQfxAkXUX4M5XhkP3nc-0+rQ@mail.gmail.com>
+ <20200527095528.GC11111@willie-the-truck> <20200527101929.GT5031@arm.com> <20200531093320.GA30204@willie-the-truck>
+In-Reply-To: <20200531093320.GA30204@willie-the-truck>
+From:   Keno Fischer <keno@juliacomputing.com>
+Date:   Sun, 31 May 2020 12:13:18 -0400
+Message-ID: <CABV8kRyHo+EAWaMUzGA220z=HJRBCpH6UWiYGb84uSL3h8HQHw@mail.gmail.com>
+Subject: Re: arm64: Register modification during syscall entry/exit stop
+To:     Will Deacon <will@kernel.org>
+Cc:     Dave Martin <Dave.Martin@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Kyle Huey <khuey@pernos.co>, Oleg Nesterov <oleg@redhat.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wrappers around skb_clone() do not simplify the driver code.
+> Keno -- are you planning to send out a patch? You previously spoke about
+> implementing this using PTRACE_SETOPTIONS.
 
-Signed-off-by: Ivan Safonov <insafonov@gmail.com>
----
- drivers/staging/rtl8723bs/include/osdep_service.h | 3 ---
- drivers/staging/rtl8723bs/os_dep/osdep_service.c  | 5 -----
- drivers/staging/rtl8723bs/os_dep/recv_linux.c     | 2 +-
- 3 files changed, 1 insertion(+), 9 deletions(-)
+Yes, I'll have a patch for you. Though I've come to the conclusion
+that introducing a new regset is probably a better way to solve it.
+We can then also expose orig_x0 at the same time and give it sane semantics
+(there's some problems with the way it works currently - I'll write it up
+together with the patch).
 
-diff --git a/drivers/staging/rtl8723bs/include/osdep_service.h b/drivers/staging/rtl8723bs/include/osdep_service.h
-index 5f681899bbec..be34e279670b 100644
---- a/drivers/staging/rtl8723bs/include/osdep_service.h
-+++ b/drivers/staging/rtl8723bs/include/osdep_service.h
-@@ -94,7 +94,6 @@ void _kfree(u8 *pbuf, u32 sz);
- 
- struct sk_buff *_rtw_skb_alloc(u32 sz);
- struct sk_buff *_rtw_skb_copy(const struct sk_buff *skb);
--struct sk_buff *_rtw_skb_clone(struct sk_buff *skb);
- int _rtw_netif_rx(_nic_hdl ndev, struct sk_buff *skb);
- 
- #define rtw_malloc(sz)			_rtw_malloc((sz))
-@@ -103,9 +102,7 @@ int _rtw_netif_rx(_nic_hdl ndev, struct sk_buff *skb);
- #define rtw_skb_alloc(size) _rtw_skb_alloc((size))
- #define rtw_skb_alloc_f(size, mstat_f)	_rtw_skb_alloc((size))
- #define rtw_skb_copy(skb)	_rtw_skb_copy((skb))
--#define rtw_skb_clone(skb)	_rtw_skb_clone((skb))
- #define rtw_skb_copy_f(skb, mstat_f)	_rtw_skb_copy((skb))
--#define rtw_skb_clone_f(skb, mstat_f)	_rtw_skb_clone((skb))
- #define rtw_netif_rx(ndev, skb) _rtw_netif_rx(ndev, skb)
- 
- extern void _rtw_init_queue(struct __queue	*pqueue);
-diff --git a/drivers/staging/rtl8723bs/os_dep/osdep_service.c b/drivers/staging/rtl8723bs/os_dep/osdep_service.c
-index 4238209ec175..6d443197a0cf 100644
---- a/drivers/staging/rtl8723bs/os_dep/osdep_service.c
-+++ b/drivers/staging/rtl8723bs/os_dep/osdep_service.c
-@@ -47,11 +47,6 @@ inline struct sk_buff *_rtw_skb_copy(const struct sk_buff *skb)
- 	return skb_copy(skb, in_interrupt() ? GFP_ATOMIC : GFP_KERNEL);
- }
- 
--inline struct sk_buff *_rtw_skb_clone(struct sk_buff *skb)
--{
--	return skb_clone(skb, in_interrupt() ? GFP_ATOMIC : GFP_KERNEL);
--}
--
- inline int _rtw_netif_rx(_nic_hdl ndev, struct sk_buff *skb)
- {
- 	skb->dev = ndev;
-diff --git a/drivers/staging/rtl8723bs/os_dep/recv_linux.c b/drivers/staging/rtl8723bs/os_dep/recv_linux.c
-index eb4d1c3008fe..b2a1bbb30df6 100644
---- a/drivers/staging/rtl8723bs/os_dep/recv_linux.c
-+++ b/drivers/staging/rtl8723bs/os_dep/recv_linux.c
-@@ -110,7 +110,7 @@ void rtw_os_recv_indicate_pkt(struct adapter *padapter, _pkt *pkt, struct rx_pkt
- 			if (memcmp(pattrib->dst, myid(&padapter->eeprompriv), ETH_ALEN)) {
- 				if (bmcast) {
- 					psta = rtw_get_bcmc_stainfo(padapter);
--					pskb2 = rtw_skb_clone(pkt);
-+					pskb2 = skb_clone(pkt, GFP_ATOMIC);
- 				} else {
- 					psta = rtw_get_stainfo(pstapriv, pattrib->dst);
- 				}
--- 
-2.26.2
 
+Keno
