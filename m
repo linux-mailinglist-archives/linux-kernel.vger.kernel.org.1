@@ -2,67 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53EEE1E9AC9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 01:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A7A1E9ACD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 01:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728458AbgEaXMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 19:12:39 -0400
-Received: from mga17.intel.com ([192.55.52.151]:40271 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728255AbgEaXMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 19:12:39 -0400
-IronPort-SDR: gGjzBsu4San1pLzDhPZbIigeaePMMoW8oLqIhiNux+WfelH2jXttStnqqz0WmeSy8eboLe5bHd
- eeWPLfVlGKwQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2020 16:12:38 -0700
-IronPort-SDR: U/BX8FEyI0at2h6lSS3YaPcvQOiM4l3ZkffvFnD6V+dbok1zaKVgXVKnFWz6G7DVeNumuzz/VF
- IRx77a6JJD6Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,458,1583222400"; 
-   d="scan'208";a="415608645"
-Received: from hbetts-mobl.ger.corp.intel.com (HELO localhost) ([10.252.59.178])
-  by orsmga004.jf.intel.com with ESMTP; 31 May 2020 16:12:29 -0700
-Date:   Mon, 1 Jun 2020 02:12:27 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-sgx@vger.kernel.org, akpm@linux-foundation.org,
-        sean.j.christopherson@intel.com, nhorman@redhat.com,
-        npmccallum@redhat.com, haitao.huang@intel.com,
-        andriy.shevchenko@linux.intel.com, tglx@linutronix.de,
-        kai.svahn@intel.com, bp@alien8.de, josh@joshtriplett.org,
-        luto@kernel.org, kai.huang@intel.com, rientjes@google.com,
-        cedric.xing@intel.com, puiterwijk@redhat.com,
-        Jethro Beekman <jethro@fortanix.com>
-Subject: Re: [PATCH v30 09/20] mm: Introduce vm_ops->may_mprotect()
-Message-ID: <20200531231227.GA236202@linux.intel.com>
-References: <20200515004410.723949-1-jarkko.sakkinen@linux.intel.com>
- <20200515004410.723949-10-jarkko.sakkinen@linux.intel.com>
- <66a227f2-8056-6318-111e-3b0abd5d94c3@intel.com>
+        id S1728480AbgEaXPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 19:15:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726081AbgEaXPh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 May 2020 19:15:37 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD592C061A0E;
+        Sun, 31 May 2020 16:15:36 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id x13so9680883wrv.4;
+        Sun, 31 May 2020 16:15:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vIearGxk3ZqXd39XhTqhmtb9TyeaDJW1sODG6p1nwS4=;
+        b=O0IcU9Q2IOyOCqVJhLxIldhe+aBNEd8HnT5bHIcVSmcrJp3a3D5jUm+NhzGa6K70uY
+         fI8QggY0IHt/xMqv6ZbnVbLNPDd0orewS5ke2i9+fl8gdv/EyZZB0Zg6jYuCx+Zfo+ou
+         NA4dkiPZ3ibMWz6txHAuxZAIn6nUl8nQFh1Sz9Z6v/E71W4Jb9lCQGvp9D+4ofJ18BEs
+         av922/+wYoBElM8L+1pdy13mw6ysMzVIm33lWsXiCCKsWy0eM6cWC0foLYtbhyDWdcis
+         hTPd02D7lGcnd9EjUlifTax9EJNIZa8byobvwWHH8aW520xTdnk/yEXjyk8oKF/JBbL8
+         BATg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vIearGxk3ZqXd39XhTqhmtb9TyeaDJW1sODG6p1nwS4=;
+        b=bnn/z9g0MiJV+9JDp0aUwQ0ULKRH4Bo/MxJ5sK7iQHqZeE0hplbp4VNYn0dVC7lIGe
+         rQblJWSwJEhfokocjH9A08kkTGXeopdgpXPpc6nl6ZgybAEyZ+jzSC9Ru9jSmylVoU2D
+         zrKjdv0V1X/qjZzjNhjYbjNf8TjUCZF9kBpfWWawo6aCBy6XL/oo9Pbob/Y1vE/6ETRh
+         gVcUj5BFm+MvxFtX9yaZ4GkIOwmeKGfxQEqi+zjm4SKCzNpf18Cy6zxFmmpgU3H9bG+G
+         AsDJw57p7SaHIux225eyJy5F5scXOW+f4sR3UNb4qtQffPDfj9h9oEwVTedylJdzU28O
+         gHOg==
+X-Gm-Message-State: AOAM533y1jcb2I3vBBRtI7xOjRr35fhJfTR0Du/20LHn1rSCyFpmyTPA
+        RBI356ViKx1sCvYKn43w/69pHzmwcmU=
+X-Google-Smtp-Source: ABdhPJyA5gLKCjjEL9PDOrZp8rzWThxY9Io+fG4mRBA1RofhhCbqvEdT7P1k9zLtJYrtp7/ZkPW0fQ==
+X-Received: by 2002:a5d:4ec3:: with SMTP id s3mr20516784wrv.103.1590966935448;
+        Sun, 31 May 2020 16:15:35 -0700 (PDT)
+Received: from localhost.localdomain ([46.114.110.83])
+        by smtp.gmail.com with ESMTPSA id i74sm18588878wri.49.2020.05.31.16.15.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 May 2020 16:15:34 -0700 (PDT)
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vitaly Wool <vitaly.wool@konsulko.com>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>
+Subject: [PATCH] mm/zswap.c: Fix typo accept_threshold_percent in Documentation/vm/zswap.rst
+Date:   Mon,  1 Jun 2020 01:15:25 +0200
+Message-Id: <20200531231525.10180-1-sedat.dilek@gmail.com>
+X-Mailer: git-send-email 2.27.0.rc2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <66a227f2-8056-6318-111e-3b0abd5d94c3@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 11:28:56AM -0700, Dave Hansen wrote:
-> On 5/14/20 5:43 PM, Jarkko Sakkinen wrote:
-> > From: Sean Christopherson <sean.j.christopherson@intel.com>
-> > 
-> > Add vm_ops()->may_mprotect() to check additional constrains set by a
-> > subsystem for a mprotect() call.
-> 
-> This changelog needs some more detail about why this is needed.  It
-> would also be nice to include thought about what else it could get used
-> for and what subsystems can expect by doing this and what the mm core is
-> expected to do.
+Recently, I switched over from swap-file to zramswap.
 
-Point taken. I added a description on how it is used.
+When reading the Documentation/vm/zswap.rst file I fell over this typo.
 
-/Jarkko
+The parameter is called accept_threshold_percent not accept_threhsold_percent
+in /sys/module/zswap/parameters/ directory.
+
+Fixes: 45190f01dd402 ("mm/zswap.c: add allocation hysteresis if pool limit is hit")
+Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
+---
+ Documentation/vm/zswap.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/vm/zswap.rst b/Documentation/vm/zswap.rst
+index f8c6a79d7c70..d8d9fa4a1f0d 100644
+--- a/Documentation/vm/zswap.rst
++++ b/Documentation/vm/zswap.rst
+@@ -140,10 +140,10 @@ without any real benefit but with a performance drop for the system), a
+ special parameter has been introduced to implement a sort of hysteresis to
+ refuse taking pages into zswap pool until it has sufficient space if the limit
+ has been hit. To set the threshold at which zswap would start accepting pages
+-again after it became full, use the sysfs ``accept_threhsold_percent``
++again after it became full, use the sysfs ``accept_threshold_percent``
+ attribute, e. g.::
+ 
+-	echo 80 > /sys/module/zswap/parameters/accept_threhsold_percent
++	echo 80 > /sys/module/zswap/parameters/accept_threshold_percent
+ 
+ Setting this parameter to 100 will disable the hysteresis.
+ 
+-- 
+2.27.0.rc2
+
