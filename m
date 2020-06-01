@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F711EAD50
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 934F61EAC38
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730436AbgFASoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:44:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57648 "EHLO mail.kernel.org"
+        id S1731440AbgFASQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:16:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729784AbgFASKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:10:40 -0400
+        id S1729636AbgFASQv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:16:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 73E542068D;
-        Mon,  1 Jun 2020 18:10:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67526206E2;
+        Mon,  1 Jun 2020 18:16:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035039;
-        bh=p9mgQPRfyqYbnCnnbEX16xQy+tQEDM8VkugbbjCuN+U=;
+        s=default; t=1591035410;
+        bh=scFyBVGxOQAg+8KJ2WS1VhCtq2bkXd2MitdF3sJ9Agc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EelJObQ/87lVHB6s5LzIGN2iGRvou9drC40i2qCCMauZb5Wt9rRRnq6dklDZWGwV/
-         arOmQYH179yP6k3CoR496gmUuXWAZGzF2GqJ3OLwj4jMPLpFEYHVu2ehlLGpMKvfOc
-         eLN/If+Rp2DNMhBoPT1/yxE8kuQ8j7HdnhIk36Iw=
+        b=UBc6UpTqmG7W41frGrbCLbhYRzI2MyXizgd2aIqzHtbSKdu9BRYUtVLlyt93CJaPF
+         +knuIrBuM3GSGHQ6OQRdrT2updmsBr1njS0AnVrr6kmdSufsLP8dZbMQ+dY+VgWIdy
+         cFhSppk7IHTR2wkc38CZg/bdlvmj9AEQGKWYj8G8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 5.4 125/142] netfilter: nf_conntrack_pptp: prevent buffer overflows in debug code
-Date:   Mon,  1 Jun 2020 19:54:43 +0200
-Message-Id: <20200601174050.746293040@linuxfoundation.org>
+        stable@vger.kernel.org, Sabrina Dubroca <sd@queasysnail.net>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Subject: [PATCH 5.6 147/177] xfrm: espintcp: save and call old ->sk_destruct
+Date:   Mon,  1 Jun 2020 19:54:45 +0200
+Message-Id: <20200601174100.713180516@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,201 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Sabrina Dubroca <sd@queasysnail.net>
 
-commit 4c559f15efcc43b996f4da528cd7f9483aaca36d upstream.
+commit 9f0cadc32d738f0f0c8e30be83be7087c7b85ee5 upstream.
 
-Dan Carpenter says: "Smatch complains that the value for "cmd" comes
-from the network and can't be trusted."
+When ESP encapsulation is enabled on a TCP socket, I'm replacing the
+existing ->sk_destruct callback with espintcp_destruct. We still need to
+call the old callback to perform the other cleanups when the socket is
+destroyed. Save the old callback, and call it from espintcp_destruct.
 
-Add pptp_msg_name() helper function that checks for the array boundary.
-
-Fixes: f09943fefe6b ("[NETFILTER]: nf_conntrack/nf_nat: add PPTP helper port")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: e27cca96cd68 ("xfrm: add espintcp (RFC 8229)")
+Signed-off-by: Sabrina Dubroca <sd@queasysnail.net>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/linux/netfilter/nf_conntrack_pptp.h |    2 
- net/ipv4/netfilter/nf_nat_pptp.c            |    7 ---
- net/netfilter/nf_conntrack_pptp.c           |   62 +++++++++++++++-------------
- 3 files changed, 38 insertions(+), 33 deletions(-)
+ include/net/espintcp.h |    1 +
+ net/xfrm/espintcp.c    |    2 ++
+ 2 files changed, 3 insertions(+)
 
---- a/include/linux/netfilter/nf_conntrack_pptp.h
-+++ b/include/linux/netfilter/nf_conntrack_pptp.h
-@@ -10,7 +10,7 @@
- #include <net/netfilter/nf_conntrack_expect.h>
- #include <uapi/linux/netfilter/nf_conntrack_tuple_common.h>
- 
--extern const char *const pptp_msg_name[];
-+extern const char *const pptp_msg_name(u_int16_t msg);
- 
- /* state of the control session */
- enum pptp_ctrlsess_state {
---- a/net/ipv4/netfilter/nf_nat_pptp.c
-+++ b/net/ipv4/netfilter/nf_nat_pptp.c
-@@ -166,8 +166,7 @@ pptp_outbound_pkt(struct sk_buff *skb,
- 		break;
- 	default:
- 		pr_debug("unknown outbound packet 0x%04x:%s\n", msg,
--			 msg <= PPTP_MSG_MAX ? pptp_msg_name[msg] :
--					       pptp_msg_name[0]);
-+			 pptp_msg_name(msg));
- 		/* fall through */
- 	case PPTP_SET_LINK_INFO:
- 		/* only need to NAT in case PAC is behind NAT box */
-@@ -268,9 +267,7 @@ pptp_inbound_pkt(struct sk_buff *skb,
- 		pcid_off = offsetof(union pptp_ctrl_union, setlink.peersCallID);
- 		break;
- 	default:
--		pr_debug("unknown inbound packet %s\n",
--			 msg <= PPTP_MSG_MAX ? pptp_msg_name[msg] :
--					       pptp_msg_name[0]);
-+		pr_debug("unknown inbound packet %s\n", pptp_msg_name(msg));
- 		/* fall through */
- 	case PPTP_START_SESSION_REQUEST:
- 	case PPTP_START_SESSION_REPLY:
---- a/net/netfilter/nf_conntrack_pptp.c
-+++ b/net/netfilter/nf_conntrack_pptp.c
-@@ -72,24 +72,32 @@ EXPORT_SYMBOL_GPL(nf_nat_pptp_hook_expec
- 
- #if defined(DEBUG) || defined(CONFIG_DYNAMIC_DEBUG)
- /* PptpControlMessageType names */
--const char *const pptp_msg_name[] = {
--	"UNKNOWN_MESSAGE",
--	"START_SESSION_REQUEST",
--	"START_SESSION_REPLY",
--	"STOP_SESSION_REQUEST",
--	"STOP_SESSION_REPLY",
--	"ECHO_REQUEST",
--	"ECHO_REPLY",
--	"OUT_CALL_REQUEST",
--	"OUT_CALL_REPLY",
--	"IN_CALL_REQUEST",
--	"IN_CALL_REPLY",
--	"IN_CALL_CONNECT",
--	"CALL_CLEAR_REQUEST",
--	"CALL_DISCONNECT_NOTIFY",
--	"WAN_ERROR_NOTIFY",
--	"SET_LINK_INFO"
-+static const char *const pptp_msg_name_array[PPTP_MSG_MAX + 1] = {
-+	[0]				= "UNKNOWN_MESSAGE",
-+	[PPTP_START_SESSION_REQUEST]	= "START_SESSION_REQUEST",
-+	[PPTP_START_SESSION_REPLY]	= "START_SESSION_REPLY",
-+	[PPTP_STOP_SESSION_REQUEST]	= "STOP_SESSION_REQUEST",
-+	[PPTP_STOP_SESSION_REPLY]	= "STOP_SESSION_REPLY",
-+	[PPTP_ECHO_REQUEST]		= "ECHO_REQUEST",
-+	[PPTP_ECHO_REPLY]		= "ECHO_REPLY",
-+	[PPTP_OUT_CALL_REQUEST]		= "OUT_CALL_REQUEST",
-+	[PPTP_OUT_CALL_REPLY]		= "OUT_CALL_REPLY",
-+	[PPTP_IN_CALL_REQUEST]		= "IN_CALL_REQUEST",
-+	[PPTP_IN_CALL_REPLY]		= "IN_CALL_REPLY",
-+	[PPTP_IN_CALL_CONNECT]		= "IN_CALL_CONNECT",
-+	[PPTP_CALL_CLEAR_REQUEST]	= "CALL_CLEAR_REQUEST",
-+	[PPTP_CALL_DISCONNECT_NOTIFY]	= "CALL_DISCONNECT_NOTIFY",
-+	[PPTP_WAN_ERROR_NOTIFY]		= "WAN_ERROR_NOTIFY",
-+	[PPTP_SET_LINK_INFO]		= "SET_LINK_INFO"
+--- a/include/net/espintcp.h
++++ b/include/net/espintcp.h
+@@ -25,6 +25,7 @@ struct espintcp_ctx {
+ 	struct espintcp_msg partial;
+ 	void (*saved_data_ready)(struct sock *sk);
+ 	void (*saved_write_space)(struct sock *sk);
++	void (*saved_destruct)(struct sock *sk);
+ 	struct work_struct work;
+ 	bool tx_running;
  };
-+
-+const char *const pptp_msg_name(u_int16_t msg)
-+{
-+	if (msg > PPTP_MSG_MAX)
-+		return pptp_msg_name_array[0];
-+
-+	return pptp_msg_name_array[msg];
-+}
- EXPORT_SYMBOL(pptp_msg_name);
- #endif
+--- a/net/xfrm/espintcp.c
++++ b/net/xfrm/espintcp.c
+@@ -379,6 +379,7 @@ static void espintcp_destruct(struct soc
+ {
+ 	struct espintcp_ctx *ctx = espintcp_getctx(sk);
  
-@@ -276,7 +284,7 @@ pptp_inbound_pkt(struct sk_buff *skb, un
- 	typeof(nf_nat_pptp_hook_inbound) nf_nat_pptp_inbound;
++	ctx->saved_destruct(sk);
+ 	kfree(ctx);
+ }
  
- 	msg = ntohs(ctlh->messageType);
--	pr_debug("inbound control message %s\n", pptp_msg_name[msg]);
-+	pr_debug("inbound control message %s\n", pptp_msg_name(msg));
- 
- 	switch (msg) {
- 	case PPTP_START_SESSION_REPLY:
-@@ -311,7 +319,7 @@ pptp_inbound_pkt(struct sk_buff *skb, un
- 		pcid = pptpReq->ocack.peersCallID;
- 		if (info->pns_call_id != pcid)
- 			goto invalid;
--		pr_debug("%s, CID=%X, PCID=%X\n", pptp_msg_name[msg],
-+		pr_debug("%s, CID=%X, PCID=%X\n", pptp_msg_name(msg),
- 			 ntohs(cid), ntohs(pcid));
- 
- 		if (pptpReq->ocack.resultCode == PPTP_OUTCALL_CONNECT) {
-@@ -328,7 +336,7 @@ pptp_inbound_pkt(struct sk_buff *skb, un
- 			goto invalid;
- 
- 		cid = pptpReq->icreq.callID;
--		pr_debug("%s, CID=%X\n", pptp_msg_name[msg], ntohs(cid));
-+		pr_debug("%s, CID=%X\n", pptp_msg_name(msg), ntohs(cid));
- 		info->cstate = PPTP_CALL_IN_REQ;
- 		info->pac_call_id = cid;
- 		break;
-@@ -347,7 +355,7 @@ pptp_inbound_pkt(struct sk_buff *skb, un
- 		if (info->pns_call_id != pcid)
- 			goto invalid;
- 
--		pr_debug("%s, PCID=%X\n", pptp_msg_name[msg], ntohs(pcid));
-+		pr_debug("%s, PCID=%X\n", pptp_msg_name(msg), ntohs(pcid));
- 		info->cstate = PPTP_CALL_IN_CONF;
- 
- 		/* we expect a GRE connection from PAC to PNS */
-@@ -357,7 +365,7 @@ pptp_inbound_pkt(struct sk_buff *skb, un
- 	case PPTP_CALL_DISCONNECT_NOTIFY:
- 		/* server confirms disconnect */
- 		cid = pptpReq->disc.callID;
--		pr_debug("%s, CID=%X\n", pptp_msg_name[msg], ntohs(cid));
-+		pr_debug("%s, CID=%X\n", pptp_msg_name(msg), ntohs(cid));
- 		info->cstate = PPTP_CALL_NONE;
- 
- 		/* untrack this call id, unexpect GRE packets */
-@@ -384,7 +392,7 @@ pptp_inbound_pkt(struct sk_buff *skb, un
- invalid:
- 	pr_debug("invalid %s: type=%d cid=%u pcid=%u "
- 		 "cstate=%d sstate=%d pns_cid=%u pac_cid=%u\n",
--		 msg <= PPTP_MSG_MAX ? pptp_msg_name[msg] : pptp_msg_name[0],
-+		 pptp_msg_name(msg),
- 		 msg, ntohs(cid), ntohs(pcid),  info->cstate, info->sstate,
- 		 ntohs(info->pns_call_id), ntohs(info->pac_call_id));
- 	return NF_ACCEPT;
-@@ -404,7 +412,7 @@ pptp_outbound_pkt(struct sk_buff *skb, u
- 	typeof(nf_nat_pptp_hook_outbound) nf_nat_pptp_outbound;
- 
- 	msg = ntohs(ctlh->messageType);
--	pr_debug("outbound control message %s\n", pptp_msg_name[msg]);
-+	pr_debug("outbound control message %s\n", pptp_msg_name(msg));
- 
- 	switch (msg) {
- 	case PPTP_START_SESSION_REQUEST:
-@@ -426,7 +434,7 @@ pptp_outbound_pkt(struct sk_buff *skb, u
- 		info->cstate = PPTP_CALL_OUT_REQ;
- 		/* track PNS call id */
- 		cid = pptpReq->ocreq.callID;
--		pr_debug("%s, CID=%X\n", pptp_msg_name[msg], ntohs(cid));
-+		pr_debug("%s, CID=%X\n", pptp_msg_name(msg), ntohs(cid));
- 		info->pns_call_id = cid;
- 		break;
- 
-@@ -440,7 +448,7 @@ pptp_outbound_pkt(struct sk_buff *skb, u
- 		pcid = pptpReq->icack.peersCallID;
- 		if (info->pac_call_id != pcid)
- 			goto invalid;
--		pr_debug("%s, CID=%X PCID=%X\n", pptp_msg_name[msg],
-+		pr_debug("%s, CID=%X PCID=%X\n", pptp_msg_name(msg),
- 			 ntohs(cid), ntohs(pcid));
- 
- 		if (pptpReq->icack.resultCode == PPTP_INCALL_ACCEPT) {
-@@ -480,7 +488,7 @@ pptp_outbound_pkt(struct sk_buff *skb, u
- invalid:
- 	pr_debug("invalid %s: type=%d cid=%u pcid=%u "
- 		 "cstate=%d sstate=%d pns_cid=%u pac_cid=%u\n",
--		 msg <= PPTP_MSG_MAX ? pptp_msg_name[msg] : pptp_msg_name[0],
-+		 pptp_msg_name(msg),
- 		 msg, ntohs(cid), ntohs(pcid),  info->cstate, info->sstate,
- 		 ntohs(info->pns_call_id), ntohs(info->pac_call_id));
- 	return NF_ACCEPT;
+@@ -419,6 +420,7 @@ static int espintcp_init_sk(struct sock
+ 	sk->sk_socket->ops = &espintcp_ops;
+ 	ctx->saved_data_ready = sk->sk_data_ready;
+ 	ctx->saved_write_space = sk->sk_write_space;
++	ctx->saved_destruct = sk->sk_destruct;
+ 	sk->sk_data_ready = espintcp_data_ready;
+ 	sk->sk_write_space = espintcp_write_space;
+ 	sk->sk_destruct = espintcp_destruct;
 
 
