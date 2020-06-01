@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DAF11EAC73
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6B0A1EAE19
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728500AbgFASgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:36:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36584 "EHLO mail.kernel.org"
+        id S1730456AbgFASu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:50:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731368AbgFASQC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:16:02 -0400
+        id S1730324AbgFASF0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:05:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B980B2068D;
-        Mon,  1 Jun 2020 18:16:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE889206E2;
+        Mon,  1 Jun 2020 18:05:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035361;
-        bh=gS+ITyncI+2CVGcZehbzZOHbOogfLFM1ova1qvsnAU8=;
+        s=default; t=1591034725;
+        bh=nDPx907IiAgKo62mVevumnODl8p64fK6WNMF6tym8/I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r5PeBKWry2tXqPHrqp5M1vKo/+XMbyiO7R2WmVAX3EKB4Dw5wAjpax0vD9CvK1AXr
-         lCfqqds0NeChBUdaKhwKPCrBj55xIKl4BfpKQRcj4aEGYV0Y2sCJB3QtUUzWKzPRy1
-         pDapVP27Fbj4rRIvTQW8r1IrFgJ9PETyFc0RoKr0=
+        b=srIBiIqTfgc+/CJEAIBwG/C2fRHYtYvbBEXBcZHKv+kSmkG1imtnSCwRyM6IHzomT
+         b2Pw4b78fwKg0v4L7UGwhvVmcKYKeVVFQf8Gop8/4rENpk7qAzBt2/8FYMrjfeq6P1
+         4ZyJC5qFNeMdhb8sG+/3qV6oeNLfDY5HXYsXmYJw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maor Gottlieb <maorg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 123/177] RDMA/core: Fix double destruction of uobject
-Date:   Mon,  1 Jun 2020 19:54:21 +0200
-Message-Id: <20200601174058.821431517@linuxfoundation.org>
+        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Subject: [PATCH 4.19 82/95] ip_vti: receive ipip packet by calling ip_tunnel_rcv
+Date:   Mon,  1 Jun 2020 19:54:22 +0200
+Message-Id: <20200601174033.068987049@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
+References: <20200601174020.759151073@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,148 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit c85f4abe66bea0b5db8d28d55da760c4fe0a0301 ]
+commit 976eba8ab596bab94b9714cd46d38d5c6a2c660d upstream.
 
-Fix use after free when user user space request uobject concurrently for
-the same object, within the RCU grace period.
+In Commit dd9ee3444014 ("vti4: Fix a ipip packet processing bug in
+'IPCOMP' virtual tunnel"), it tries to receive IPIP packets in vti
+by calling xfrm_input(). This case happens when a small packet or
+frag sent by peer is too small to get compressed.
 
-In that case, remove_handle_idr_uobject() is called twice and we will have
-an extra put on the uobject which cause use after free.  Fix it by leaving
-the uobject write locked after it was removed from the idr.
+However, xfrm_input() will still get to the IPCOMP path where skb
+sec_path is set, but never dropped while it should have been done
+in vti_ipcomp4_protocol.cb_handler(vti_rcv_cb), as it's not an
+ipcomp4 packet. This will cause that the packet can never pass
+xfrm4_policy_check() in the upper protocol rcv functions.
 
-Call to rdma_lookup_put_uobject with UVERBS_LOOKUP_DESTROY instead of
-UVERBS_LOOKUP_WRITE will do the work.
+So this patch is to call ip_tunnel_rcv() to process IPIP packets
+instead.
 
-  refcount_t: underflow; use-after-free.
-  WARNING: CPU: 0 PID: 1381 at lib/refcount.c:28 refcount_warn_saturate+0xfe/0x1a0
-  Kernel panic - not syncing: panic_on_warn set ...
-  CPU: 0 PID: 1381 Comm: syz-executor.0 Not tainted 5.5.0-rc3 #8
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
-  Call Trace:
-   dump_stack+0x94/0xce
-   panic+0x234/0x56f
-   __warn+0x1cc/0x1e1
-   report_bug+0x200/0x310
-   fixup_bug.part.11+0x32/0x80
-   do_error_trap+0xd3/0x100
-   do_invalid_op+0x31/0x40
-   invalid_op+0x1e/0x30
-  RIP: 0010:refcount_warn_saturate+0xfe/0x1a0
-  Code: 0f 0b eb 9b e8 23 f6 6d ff 80 3d 6c d4 19 03 00 75 8d e8 15 f6 6d ff 48 c7 c7 c0 02 55 bd c6 05 57 d4 19 03 01 e8 a2 58 49 ff <0f> 0b e9 6e ff ff ff e8 f6 f5 6d ff 80 3d 42 d4 19 03 00 0f 85 5c
-  RSP: 0018:ffffc90002df7b98 EFLAGS: 00010282
-  RAX: 0000000000000000 RBX: ffff88810f6a193c RCX: ffffffffba649009
-  RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffff88811b0283cc
-  RBP: 0000000000000003 R08: ffffed10236060e3 R09: ffffed10236060e3
-  R10: 0000000000000001 R11: ffffed10236060e2 R12: ffff88810f6a193c
-  R13: ffffc90002df7d60 R14: 0000000000000000 R15: ffff888116ae6a08
-   uverbs_uobject_put+0xfd/0x140
-   __uobj_perform_destroy+0x3d/0x60
-   ib_uverbs_close_xrcd+0x148/0x170
-   ib_uverbs_write+0xaa5/0xdf0
-   __vfs_write+0x7c/0x100
-   vfs_write+0x168/0x4a0
-   ksys_write+0xc8/0x200
-   do_syscall_64+0x9c/0x390
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-  RIP: 0033:0x465b49
-  Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-  RSP: 002b:00007f759d122c58 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-  RAX: ffffffffffffffda RBX: 000000000073bfa8 RCX: 0000000000465b49
-  RDX: 000000000000000c RSI: 0000000020000080 RDI: 0000000000000003
-  RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-  R10: 0000000000000000 R11: 0000000000000246 R12: 00007f759d1236bc
-  R13: 00000000004ca27c R14: 000000000070de40 R15: 00000000ffffffff
-  Dumping ftrace buffer:
-     (ftrace buffer empty)
-  Kernel Offset: 0x39400000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+Fixes: dd9ee3444014 ("vti4: Fix a ipip packet processing bug in 'IPCOMP' virtual tunnel")
+Reported-by: Xiumei Mu <xmu@redhat.com>
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: 7452a3c745a2 ("IB/uverbs: Allow RDMA_REMOVE_DESTROY to work concurrently with disassociate")
-Link: https://lore.kernel.org/r/20200527135534.482279-1-leon@kernel.org
-Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/rdma_core.c | 20 +++++++++++++-------
- include/rdma/uverbs_std_types.h     |  2 +-
- 2 files changed, 14 insertions(+), 8 deletions(-)
+ net/ipv4/ip_vti.c |   23 ++++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
-index bf8e149d3191..e0a5e897e4b1 100644
---- a/drivers/infiniband/core/rdma_core.c
-+++ b/drivers/infiniband/core/rdma_core.c
-@@ -153,9 +153,9 @@ static int uverbs_destroy_uobject(struct ib_uobject *uobj,
- 	uobj->context = NULL;
+--- a/net/ipv4/ip_vti.c
++++ b/net/ipv4/ip_vti.c
+@@ -98,7 +98,28 @@ static int vti_rcv_proto(struct sk_buff
  
- 	/*
--	 * For DESTROY the usecnt is held write locked, the caller is expected
--	 * to put it unlock and put the object when done with it. Only DESTROY
--	 * can remove the IDR handle.
-+	 * For DESTROY the usecnt is not changed, the caller is expected to
-+	 * manage it via uobj_put_destroy(). Only DESTROY can remove the IDR
-+	 * handle.
- 	 */
- 	if (reason != RDMA_REMOVE_DESTROY)
- 		atomic_set(&uobj->usecnt, 0);
-@@ -187,7 +187,7 @@ static int uverbs_destroy_uobject(struct ib_uobject *uobj,
- /*
-  * This calls uverbs_destroy_uobject() using the RDMA_REMOVE_DESTROY
-  * sequence. It should only be used from command callbacks. On success the
-- * caller must pair this with rdma_lookup_put_uobject(LOOKUP_WRITE). This
-+ * caller must pair this with uobj_put_destroy(). This
-  * version requires the caller to have already obtained an
-  * LOOKUP_DESTROY uobject kref.
-  */
-@@ -198,6 +198,13 @@ int uobj_destroy(struct ib_uobject *uobj, struct uverbs_attr_bundle *attrs)
- 
- 	down_read(&ufile->hw_destroy_rwsem);
- 
-+	/*
-+	 * Once the uobject is destroyed by RDMA_REMOVE_DESTROY then it is left
-+	 * write locked as the callers put it back with UVERBS_LOOKUP_DESTROY.
-+	 * This is because any other concurrent thread can still see the object
-+	 * in the xarray due to RCU. Leaving it locked ensures nothing else will
-+	 * touch it.
-+	 */
- 	ret = uverbs_try_lock_object(uobj, UVERBS_LOOKUP_WRITE);
- 	if (ret)
- 		goto out_unlock;
-@@ -216,7 +223,7 @@ out_unlock:
- /*
-  * uobj_get_destroy destroys the HW object and returns a handle to the uobj
-  * with a NULL object pointer. The caller must pair this with
-- * uverbs_put_destroy.
-+ * uobj_put_destroy().
-  */
- struct ib_uobject *__uobj_get_destroy(const struct uverbs_api_object *obj,
- 				      u32 id, struct uverbs_attr_bundle *attrs)
-@@ -250,8 +257,7 @@ int __uobj_perform_destroy(const struct uverbs_api_object *obj, u32 id,
- 	uobj = __uobj_get_destroy(obj, id, attrs);
- 	if (IS_ERR(uobj))
- 		return PTR_ERR(uobj);
--
--	rdma_lookup_put_uobject(uobj, UVERBS_LOOKUP_WRITE);
-+	uobj_put_destroy(uobj);
- 	return 0;
- }
- 
-diff --git a/include/rdma/uverbs_std_types.h b/include/rdma/uverbs_std_types.h
-index 1b28ce1aba07..325fdaa3bb66 100644
---- a/include/rdma/uverbs_std_types.h
-+++ b/include/rdma/uverbs_std_types.h
-@@ -88,7 +88,7 @@ struct ib_uobject *__uobj_get_destroy(const struct uverbs_api_object *obj,
- 
- static inline void uobj_put_destroy(struct ib_uobject *uobj)
+ static int vti_rcv_tunnel(struct sk_buff *skb)
  {
--	rdma_lookup_put_uobject(uobj, UVERBS_LOOKUP_WRITE);
-+	rdma_lookup_put_uobject(uobj, UVERBS_LOOKUP_DESTROY);
+-	return vti_rcv(skb, ip_hdr(skb)->saddr, true);
++	struct ip_tunnel_net *itn = net_generic(dev_net(skb->dev), vti_net_id);
++	const struct iphdr *iph = ip_hdr(skb);
++	struct ip_tunnel *tunnel;
++
++	tunnel = ip_tunnel_lookup(itn, skb->dev->ifindex, TUNNEL_NO_KEY,
++				  iph->saddr, iph->daddr, 0);
++	if (tunnel) {
++		struct tnl_ptk_info tpi = {
++			.proto = htons(ETH_P_IP),
++		};
++
++		if (!xfrm4_policy_check(NULL, XFRM_POLICY_IN, skb))
++			goto drop;
++		if (iptunnel_pull_header(skb, 0, tpi.proto, false))
++			goto drop;
++		return ip_tunnel_rcv(tunnel, skb, &tpi, NULL, false);
++	}
++
++	return -EINVAL;
++drop:
++	kfree_skb(skb);
++	return 0;
  }
  
- static inline void uobj_put_read(struct ib_uobject *uobj)
--- 
-2.25.1
-
+ static int vti_rcv_cb(struct sk_buff *skb, int err)
 
 
