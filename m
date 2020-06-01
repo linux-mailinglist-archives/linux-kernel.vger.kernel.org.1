@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E6D1EAB2B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A43BB1EAA86
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731533AbgFASO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:14:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34750 "EHLO mail.kernel.org"
+        id S1730790AbgFASIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:08:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731513AbgFASOu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:14:50 -0400
+        id S1730770AbgFASIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:08:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DF6A2068D;
-        Mon,  1 Jun 2020 18:14:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B3EF92068D;
+        Mon,  1 Jun 2020 18:08:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035289;
-        bh=8YG6uJRXinW5ioAzi4kbKMYdOmSpe9DCn4FxOPufuvc=;
+        s=default; t=1591034926;
+        bh=3mXHuIbUAn2ZlS3EHaOUlbTu8JdHRMn00oCcVfkK2NQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vFmnX13For9v6+ylEFfd3CoDEaJJ8/GIb8JuwcKEupTUjBSWpzc6VGlkfvBNhUaGp
-         CQZ4SQFZP9ooJKhtTxiClxseIL635bF/KXe0EoYhbzmSDZah1V3GRna8FJc2p8yFx7
-         XVaCGsw1taS4HMdHap7ePQ8f9eD7REqcCGLaATBQ=
+        b=VUdEAOhwG0sittEl/ivrRw3AVsjIx8WYnvx0ixPkTPEyKXAAtdk5o5o3sIlmMa46t
+         fFBxAAnS8lAJ0vQ80opl6mwIpXNC1HSvH/rfJZLvjFbJNnXdbJZs4+CvcE3u6tsBwY
+         eTSehGxah3IORDn0GGr0fVWyP0JAvuqtSkLHhGd8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 094/177] ARM: uaccess: consolidate uaccess asm to asm/uaccess-asm.h
-Date:   Mon,  1 Jun 2020 19:53:52 +0200
-Message-Id: <20200601174056.619675194@linuxfoundation.org>
+Subject: [PATCH 5.4 075/142] gpio: exar: Fix bad handling for ida_simple_get error path
+Date:   Mon,  1 Jun 2020 19:53:53 +0200
+Message-Id: <20200601174045.626573803@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,300 +44,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russell King <rmk+kernel@armlinux.org.uk>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 747ffc2fcf969eff9309d7f2d1d61cb8b9e1bb40 ]
+[ Upstream commit 333830aa149a87cabeb5d30fbcf12eecc8040d2c ]
 
-Consolidate the user access assembly code to asm/uaccess-asm.h.  This
-moves the csdb, check_uaccess, uaccess_mask_range_ptr, uaccess_enable,
-uaccess_disable, uaccess_save, uaccess_restore macros, and creates two
-new ones for exception entry and exit - uaccess_entry and uaccess_exit.
+The commit 7ecced0934e5 ("gpio: exar: add a check for the return value
+of ida_simple_get fails") added a goto jump to the common error
+handler for ida_simple_get() error, but this is wrong in two ways:
+it doesn't set the proper return code and, more badly, it invokes
+ida_simple_remove() with a negative index that shall lead to a kernel
+panic via BUG_ON().
 
-This makes the uaccess_save and uaccess_restore macros private to
-asm/uaccess-asm.h.
+This patch addresses those two issues.
 
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Fixes: 7ecced0934e5 ("gpio: exar: add a check for the return value of ida_simple_get fails")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/include/asm/assembler.h   |  75 +-------------------
- arch/arm/include/asm/uaccess-asm.h | 106 +++++++++++++++++++++++++++++
- arch/arm/kernel/entry-armv.S       |  11 +--
- arch/arm/kernel/entry-header.S     |   9 +--
- 4 files changed, 112 insertions(+), 89 deletions(-)
- create mode 100644 arch/arm/include/asm/uaccess-asm.h
+ drivers/gpio/gpio-exar.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/include/asm/assembler.h b/arch/arm/include/asm/assembler.h
-index 99929122dad7..3546d294d55f 100644
---- a/arch/arm/include/asm/assembler.h
-+++ b/arch/arm/include/asm/assembler.h
-@@ -18,11 +18,11 @@
- #endif
+diff --git a/drivers/gpio/gpio-exar.c b/drivers/gpio/gpio-exar.c
+index fae327d5b06e..6890d32d9f25 100644
+--- a/drivers/gpio/gpio-exar.c
++++ b/drivers/gpio/gpio-exar.c
+@@ -145,8 +145,10 @@ static int gpio_exar_probe(struct platform_device *pdev)
+ 	mutex_init(&exar_gpio->lock);
  
- #include <asm/ptrace.h>
--#include <asm/domain.h>
- #include <asm/opcodes-virt.h>
- #include <asm/asm-offsets.h>
- #include <asm/page.h>
- #include <asm/thread_info.h>
-+#include <asm/uaccess-asm.h>
+ 	index = ida_simple_get(&ida_index, 0, 0, GFP_KERNEL);
+-	if (index < 0)
+-		goto err_destroy;
++	if (index < 0) {
++		ret = index;
++		goto err_mutex_destroy;
++	}
  
- #define IOMEM(x)	(x)
+ 	sprintf(exar_gpio->name, "exar_gpio%d", index);
+ 	exar_gpio->gpio_chip.label = exar_gpio->name;
+@@ -173,6 +175,7 @@ static int gpio_exar_probe(struct platform_device *pdev)
  
-@@ -446,79 +446,6 @@ THUMB(	orr	\reg , \reg , #PSR_T_BIT	)
- 	.size \name , . - \name
- 	.endm
- 
--	.macro	csdb
--#ifdef CONFIG_THUMB2_KERNEL
--	.inst.w	0xf3af8014
--#else
--	.inst	0xe320f014
--#endif
--	.endm
--
--	.macro check_uaccess, addr:req, size:req, limit:req, tmp:req, bad:req
--#ifndef CONFIG_CPU_USE_DOMAINS
--	adds	\tmp, \addr, #\size - 1
--	sbcscc	\tmp, \tmp, \limit
--	bcs	\bad
--#ifdef CONFIG_CPU_SPECTRE
--	movcs	\addr, #0
--	csdb
--#endif
--#endif
--	.endm
--
--	.macro uaccess_mask_range_ptr, addr:req, size:req, limit:req, tmp:req
--#ifdef CONFIG_CPU_SPECTRE
--	sub	\tmp, \limit, #1
--	subs	\tmp, \tmp, \addr	@ tmp = limit - 1 - addr
--	addhs	\tmp, \tmp, #1		@ if (tmp >= 0) {
--	subshs	\tmp, \tmp, \size	@ tmp = limit - (addr + size) }
--	movlo	\addr, #0		@ if (tmp < 0) addr = NULL
--	csdb
--#endif
--	.endm
--
--	.macro	uaccess_disable, tmp, isb=1
--#ifdef CONFIG_CPU_SW_DOMAIN_PAN
--	/*
--	 * Whenever we re-enter userspace, the domains should always be
--	 * set appropriately.
--	 */
--	mov	\tmp, #DACR_UACCESS_DISABLE
--	mcr	p15, 0, \tmp, c3, c0, 0		@ Set domain register
--	.if	\isb
--	instr_sync
--	.endif
--#endif
--	.endm
--
--	.macro	uaccess_enable, tmp, isb=1
--#ifdef CONFIG_CPU_SW_DOMAIN_PAN
--	/*
--	 * Whenever we re-enter userspace, the domains should always be
--	 * set appropriately.
--	 */
--	mov	\tmp, #DACR_UACCESS_ENABLE
--	mcr	p15, 0, \tmp, c3, c0, 0
--	.if	\isb
--	instr_sync
--	.endif
--#endif
--	.endm
--
--	.macro	uaccess_save, tmp
--#ifdef CONFIG_CPU_SW_DOMAIN_PAN
--	mrc	p15, 0, \tmp, c3, c0, 0
--	str	\tmp, [sp, #SVC_DACR]
--#endif
--	.endm
--
--	.macro	uaccess_restore
--#ifdef CONFIG_CPU_SW_DOMAIN_PAN
--	ldr	r0, [sp, #SVC_DACR]
--	mcr	p15, 0, r0, c3, c0, 0
--#endif
--	.endm
--
- 	.irp	c,,eq,ne,cs,cc,mi,pl,vs,vc,hi,ls,ge,lt,gt,le,hs,lo
- 	.macro	ret\c, reg
- #if __LINUX_ARM_ARCH__ < 6
-diff --git a/arch/arm/include/asm/uaccess-asm.h b/arch/arm/include/asm/uaccess-asm.h
-new file mode 100644
-index 000000000000..d475e3e8145d
---- /dev/null
-+++ b/arch/arm/include/asm/uaccess-asm.h
-@@ -0,0 +1,106 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+#ifndef __ASM_UACCESS_ASM_H__
-+#define __ASM_UACCESS_ASM_H__
-+
-+#include <asm/asm-offsets.h>
-+#include <asm/domain.h>
-+#include <asm/memory.h>
-+#include <asm/thread_info.h>
-+
-+	.macro	csdb
-+#ifdef CONFIG_THUMB2_KERNEL
-+	.inst.w	0xf3af8014
-+#else
-+	.inst	0xe320f014
-+#endif
-+	.endm
-+
-+	.macro check_uaccess, addr:req, size:req, limit:req, tmp:req, bad:req
-+#ifndef CONFIG_CPU_USE_DOMAINS
-+	adds	\tmp, \addr, #\size - 1
-+	sbcscc	\tmp, \tmp, \limit
-+	bcs	\bad
-+#ifdef CONFIG_CPU_SPECTRE
-+	movcs	\addr, #0
-+	csdb
-+#endif
-+#endif
-+	.endm
-+
-+	.macro uaccess_mask_range_ptr, addr:req, size:req, limit:req, tmp:req
-+#ifdef CONFIG_CPU_SPECTRE
-+	sub	\tmp, \limit, #1
-+	subs	\tmp, \tmp, \addr	@ tmp = limit - 1 - addr
-+	addhs	\tmp, \tmp, #1		@ if (tmp >= 0) {
-+	subshs	\tmp, \tmp, \size	@ tmp = limit - (addr + size) }
-+	movlo	\addr, #0		@ if (tmp < 0) addr = NULL
-+	csdb
-+#endif
-+	.endm
-+
-+	.macro	uaccess_disable, tmp, isb=1
-+#ifdef CONFIG_CPU_SW_DOMAIN_PAN
-+	/*
-+	 * Whenever we re-enter userspace, the domains should always be
-+	 * set appropriately.
-+	 */
-+	mov	\tmp, #DACR_UACCESS_DISABLE
-+	mcr	p15, 0, \tmp, c3, c0, 0		@ Set domain register
-+	.if	\isb
-+	instr_sync
-+	.endif
-+#endif
-+	.endm
-+
-+	.macro	uaccess_enable, tmp, isb=1
-+#ifdef CONFIG_CPU_SW_DOMAIN_PAN
-+	/*
-+	 * Whenever we re-enter userspace, the domains should always be
-+	 * set appropriately.
-+	 */
-+	mov	\tmp, #DACR_UACCESS_ENABLE
-+	mcr	p15, 0, \tmp, c3, c0, 0
-+	.if	\isb
-+	instr_sync
-+	.endif
-+#endif
-+	.endm
-+
-+	.macro	uaccess_save, tmp
-+#ifdef CONFIG_CPU_SW_DOMAIN_PAN
-+	mrc	p15, 0, \tmp, c3, c0, 0
-+	str	\tmp, [sp, #SVC_DACR]
-+#endif
-+	.endm
-+
-+	.macro	uaccess_restore
-+#ifdef CONFIG_CPU_SW_DOMAIN_PAN
-+	ldr	r0, [sp, #SVC_DACR]
-+	mcr	p15, 0, r0, c3, c0, 0
-+#endif
-+	.endm
-+
-+	/*
-+	 * Save the address limit on entry to a privileged exception and
-+	 * if using PAN, save and disable usermode access.
-+	 */
-+	.macro	uaccess_entry, tsk, tmp0, tmp1, tmp2, disable
-+	ldr	\tmp0, [\tsk, #TI_ADDR_LIMIT]
-+	mov	\tmp1, #TASK_SIZE
-+	str	\tmp1, [\tsk, #TI_ADDR_LIMIT]
-+	str	\tmp0, [sp, #SVC_ADDR_LIMIT]
-+	uaccess_save \tmp0
-+	.if \disable
-+	uaccess_disable \tmp0
-+	.endif
-+	.endm
-+
-+	/* Restore the user access state previously saved by uaccess_entry */
-+	.macro	uaccess_exit, tsk, tmp0, tmp1
-+	ldr	\tmp1, [sp, #SVC_ADDR_LIMIT]
-+	uaccess_restore
-+	str	\tmp1, [\tsk, #TI_ADDR_LIMIT]
-+	.endm
-+
-+#endif /* __ASM_UACCESS_ASM_H__ */
-diff --git a/arch/arm/kernel/entry-armv.S b/arch/arm/kernel/entry-armv.S
-index 77f54830554c..55a47df04773 100644
---- a/arch/arm/kernel/entry-armv.S
-+++ b/arch/arm/kernel/entry-armv.S
-@@ -27,6 +27,7 @@
- #include <asm/unistd.h>
- #include <asm/tls.h>
- #include <asm/system_info.h>
-+#include <asm/uaccess-asm.h>
- 
- #include "entry-header.S"
- #include <asm/entry-macro-multi.S>
-@@ -179,15 +180,7 @@ ENDPROC(__und_invalid)
- 	stmia	r7, {r2 - r6}
- 
- 	get_thread_info tsk
--	ldr	r0, [tsk, #TI_ADDR_LIMIT]
--	mov	r1, #TASK_SIZE
--	str	r1, [tsk, #TI_ADDR_LIMIT]
--	str	r0, [sp, #SVC_ADDR_LIMIT]
--
--	uaccess_save r0
--	.if \uaccess
--	uaccess_disable r0
--	.endif
-+	uaccess_entry tsk, r0, r1, r2, \uaccess
- 
- 	.if \trace
- #ifdef CONFIG_TRACE_IRQFLAGS
-diff --git a/arch/arm/kernel/entry-header.S b/arch/arm/kernel/entry-header.S
-index 32051ec5b33f..40db0f9188b6 100644
---- a/arch/arm/kernel/entry-header.S
-+++ b/arch/arm/kernel/entry-header.S
-@@ -6,6 +6,7 @@
- #include <asm/asm-offsets.h>
- #include <asm/errno.h>
- #include <asm/thread_info.h>
-+#include <asm/uaccess-asm.h>
- #include <asm/v7m.h>
- 
- @ Bad Abort numbers
-@@ -217,9 +218,7 @@
- 	blne	trace_hardirqs_off
- #endif
- 	.endif
--	ldr	r1, [sp, #SVC_ADDR_LIMIT]
--	uaccess_restore
--	str	r1, [tsk, #TI_ADDR_LIMIT]
-+	uaccess_exit tsk, r0, r1
- 
- #ifndef CONFIG_THUMB2_KERNEL
- 	@ ARM mode SVC restore
-@@ -263,9 +262,7 @@
- 	@ on the stack remains correct).
- 	@
- 	.macro  svc_exit_via_fiq
--	ldr	r1, [sp, #SVC_ADDR_LIMIT]
--	uaccess_restore
--	str	r1, [tsk, #TI_ADDR_LIMIT]
-+	uaccess_exit tsk, r0, r1
- #ifndef CONFIG_THUMB2_KERNEL
- 	@ ARM mode restore
- 	mov	r0, sp
+ err_destroy:
+ 	ida_simple_remove(&ida_index, index);
++err_mutex_destroy:
+ 	mutex_destroy(&exar_gpio->lock);
+ 	return ret;
+ }
 -- 
 2.25.1
 
