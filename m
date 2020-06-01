@@ -2,108 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C63A1EA81B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 133E21EA821
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727875AbgFARFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:05:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727803AbgFARFE (ORCPT
+        id S1728071AbgFARFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:05:34 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:41044 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727803AbgFARFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:05:04 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D90C4C05BD43
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 10:05:03 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id l11so604101wru.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 10:05:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=ELtOegSxIG1w6Oelk1/XRv03+HLjNR/T5/bIqJu8LXE=;
-        b=R+OjFU4Lw71CcYolij94VBGfCxmo+R1aB16gdW8MonKhVVcGFGG6dHXRg7ZCrv/kjd
-         WEGRL588Gd5hxkR+rc0vJBF/S2FKfPFG7j4H7EvqvTzJonybjGqOx+3Tviz3n6ZA30VP
-         mf+RO+RXE2F7CrcKZJs4m7oTHhAEGItd37NJaJL369NbE6GD1lJ2jrOS4ViXoHibzj8w
-         1Cj1R9fWr9jZvwRL36BI664C/Wo2QrLIl+CPeiaDlBplEa4EzCsfD43XuSa9udnRl13j
-         k6YoDsN5OnN4kZwI5ny5zETMs7P0xRV0Sq2Y4QKju2Gya9yGkvHL1hUlvaIgrw9lowEz
-         TgUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=ELtOegSxIG1w6Oelk1/XRv03+HLjNR/T5/bIqJu8LXE=;
-        b=OPF/nMnGyzbFunijIkXFgyE+eCYGJqPjzPwOAAB9xUGXbWj8T7hJG3vaveoWSD0kYN
-         x/MNIPaCURfUfAUfVTJgKHlCRT1uTiFNdlV4mrhVCKBqE55TmntHdK8+NOO1lGRKkZ2P
-         ouB2fbcyclHhfVTp44eQ6ztrQ/LcOMdKyZkuYR9p+Q5YjvXHPQDbvFImpE+j6Lh/D9zG
-         H0d0uyrGOo8cGfImPpM4dtgN9HuppnrEn53T6MnwCfc96Htf7dTtAtg7x3laWyB55Lce
-         RZte5m2bAQn7vwscIkbfpv2oLXcgfgtJ0yiSsw83SNW/G7eIFqc43kfbMg6zNwvTGWBN
-         W9EQ==
-X-Gm-Message-State: AOAM531i7n0h6zsB6GCh0C+q0YFYNUcKzchC6ophMbNrg486SXANY/s0
-        pCP02Ab2LaSeEhNS78OIzLk=
-X-Google-Smtp-Source: ABdhPJzMOB27YalD30ZwA3WdDv7p1NAHWJUCw887SuMhUqSXUzgVP2S9PoH70DPOpNLvC0QnPq82/g==
-X-Received: by 2002:adf:f446:: with SMTP id f6mr22569508wrp.59.1591031102656;
-        Mon, 01 Jun 2020 10:05:02 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id a1sm288816wmd.28.2020.06.01.10.05.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jun 2020 10:05:02 -0700 (PDT)
-Date:   Mon, 1 Jun 2020 19:05:00 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] x86/platform updates for v5.8
-Message-ID: <20200601170500.GA1392237@gmail.com>
+        Mon, 1 Jun 2020 13:05:33 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id B61BB2A23F8
+Received: by earth.universe (Postfix, from userid 1000)
+        id 4E7143C08C7; Mon,  1 Jun 2020 19:05:28 +0200 (CEST)
+Date:   Mon, 1 Jun 2020 19:05:28 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com,
+        'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>
+Subject: Re: [PATCHv1 00/19] Improve SBS battery support
+Message-ID: <20200601170528.r5w3aeijny3v5yx3@earth.universe>
+References: <20200513185615.508236-1-sebastian.reichel@collabora.com>
+ <CGME20200601104027eucas1p2b076ee860520d709e8178c41550653f7@eucas1p2.samsung.com>
+ <15933a91-dd89-1f94-c2f2-79be4395f4c1@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pptq4mcmy2xywbfv"
 Content-Disposition: inline
+In-Reply-To: <15933a91-dd89-1f94-c2f2-79be4395f4c1@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
 
-Please pull the latest x86/platform git tree from:
+--pptq4mcmy2xywbfv
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-platform-2020-06-01
+Hi Marek,
 
-   # HEAD: 33649bf4494c1feaf1956a84895fcc0621aafd90 x86/apic/uv: Remove code for unused distributed GRU mode
+On Mon, Jun 01, 2020 at 12:40:27PM +0200, Marek Szyprowski wrote:
+> On 13.05.2020 20:55, Sebastian Reichel wrote:
+> > This patchset improves support for SBS compliant batteries. Due to
+> > the changes, the battery now exposes 32 power supply properties and
+> > (un)plugging it generates a backtrace containing the following message
+> > without the first patch in this series:
+> >
+> > ---------------------------
+> > WARNING: CPU: 0 PID: 20 at lib/kobject_uevent.c:659 add_uevent_var+0xd4=
+/0x104
+> > add_uevent_var: too many keys
+> > ---------------------------
+> >
+> > For references this is what an SBS battery status looks like after
+> > the patch series has been applied:
+> >
+> > cat /sys/class/power_supply/sbs-0-000b/uevent
+> > POWER_SUPPLY_NAME=3Dsbs-0-000b
+> > POWER_SUPPLY_TYPE=3DBattery
+> > POWER_SUPPLY_STATUS=3DDischarging
+> > POWER_SUPPLY_CAPACITY_LEVEL=3DNormal
+> > POWER_SUPPLY_HEALTH=3DGood
+> > POWER_SUPPLY_PRESENT=3D1
+> > POWER_SUPPLY_TECHNOLOGY=3DLi-ion
+> > POWER_SUPPLY_CYCLE_COUNT=3D12
+> > POWER_SUPPLY_VOLTAGE_NOW=3D11441000
+> > POWER_SUPPLY_CURRENT_NOW=3D-26000
+> > POWER_SUPPLY_CURRENT_AVG=3D-24000
+> > POWER_SUPPLY_CAPACITY=3D76
+> > POWER_SUPPLY_CAPACITY_ERROR_MARGIN=3D1
+> > POWER_SUPPLY_TEMP=3D198
+> > POWER_SUPPLY_TIME_TO_EMPTY_AVG=3D438600
+> > POWER_SUPPLY_TIME_TO_FULL_AVG=3D3932100
+> > POWER_SUPPLY_SERIAL_NUMBER=3D0000
+> > POWER_SUPPLY_VOLTAGE_MIN_DESIGN=3D10800000
+> > POWER_SUPPLY_VOLTAGE_MAX_DESIGN=3D10800000
+> > POWER_SUPPLY_ENERGY_NOW=3D31090000
+> > POWER_SUPPLY_ENERGY_FULL=3D42450000
+> > POWER_SUPPLY_ENERGY_FULL_DESIGN=3D41040000
+> > POWER_SUPPLY_CHARGE_NOW=3D2924000
+> > POWER_SUPPLY_CHARGE_FULL=3D3898000
+> > POWER_SUPPLY_CHARGE_FULL_DESIGN=3D3800000
+> > POWER_SUPPLY_CONSTANT_CHARGE_CURRENT_MAX=3D3000000
+> > POWER_SUPPLY_CONSTANT_CHARGE_VOLTAGE_MAX=3D12300000
+> > POWER_SUPPLY_MANUFACTURE_YEAR=3D2017
+> > POWER_SUPPLY_MANUFACTURE_MONTH=3D7
+> > POWER_SUPPLY_MANUFACTURE_DAY=3D3
+> > POWER_SUPPLY_MANUFACTURER=3DUR18650A
+> > POWER_SUPPLY_MODEL_NAME=3DGEHC
+>=20
+> This patch landed in linux-next dated 20200529. Sadly it causes a=20
+> regression on Samsung Exynos-based Chromebooks (Exynos5250 Snow,=20
+> Exynos5420 Peach-Pi and Exynos5800 Peach-Pit). System boots to=20
+> userspace, but then, when udev populates /dev, booting hangs:
+>=20
+> [=A0=A0=A0 4.435167] VFS: Mounted root (ext4 filesystem) readonly on devi=
+ce=20
+> 179:51.
+> [=A0=A0=A0 4.457477] devtmpfs: mounted
+> [=A0=A0=A0 4.460235] Freeing unused kernel memory: 1024K
+> [=A0=A0=A0 4.464022] Run /sbin/init as init process
+> INIT: version 2.88 booting
+> [info] Using makefile-style concurrent boot in runlevel S.
+> [=A0=A0=A0 5.102096] random: crng init done
+> [....] Starting the hotplug events dispatcher: systemd-udevdstarting=20
+> version 236
+> [ ok .
+> [....] Synthesizing the initial hotplug events...[ ok done.
+> [....] Waiting for /dev to be fully populated...[=A0=A0 34.409914]=20
+> TPS65090_RAILSDCDC1: disabling
+> [=A0=A0 34.412977] TPS65090_RAILSDCDC2: disabling
+> [=A0=A0 34.417021] TPS65090_RAILSDCDC3: disabling
+> [=A0=A0 34.423848] TPS65090_RAILSLDO1: disabling
+> [=A0=A0 34.429068] TPS65090_RAILSLDO2: disabling
 
-This tree cleans up various aspects of the UV platform support code,
-it removes unnecessary functions and cleans up the rest.
+:(
 
- Thanks,
+log does not look useful either.
 
-	Ingo
+> Bisect between v5.7-rc1 and next-20200529 pointed me to the first bad=20
+> commit: [c4b12a2f3f3de670f6be5e96092a2cab0b877f1a] power: supply:=20
+> sbs-battery: simplify read_read_string_data.
 
------------------->
-Christoph Hellwig (11):
-      x86/platform/uv: Mark uv_bios_call() and uv_bios_call_irqsave() static
-      x86/platform/uv: Remove the uv_partition_coherence_id() macro
-      x86/platform/uv: Unexport sn_coherency_id
-      x86/platform/uv: Unexport symbols only used by x2apic_uv_x.c
-      x86/platform/uv: Remove the UV*_HUB_IS_SUPPORTED macros
-      x86/platform/uv: Mark is_uv_hubless() static
-      x86/platform/uv: Mark uv_min_hub_revision_id static
-      x86/platform/uv: Simplify uv_send_IPI_one()
-      x86/platform/uv: Remove _uv_hub_info_check()
-      x86/platform/uv: Unexport uv_apicid_hibits
-      x86/platform/uv: Remove the unused _uv_cpu_blade_processor_id() macro
+ok. I tested this on an to-be-upstreamed i.MX6 based system
+and arch/arm/boot/dts/imx53-ppd.dts. I think the difference
+is, that i2c-exynos5 does not expose I2C_FUNC_SMBUS_READ_BLOCK_DATA.
+I hoped all systems using SBS battery support this, but now
+I see I2C_FUNC_SMBUS_EMUL only supports writing block data.
+Looks like I need to add another patch implementing that
+using the old code with added PEC support.
 
-Steve Wahl (1):
-      x86/apic/uv: Remove code for unused distributed GRU mode
+In any case that should only return -ENODEV for the property
+(and uevent), but not break boot. So something fishy is going
+on.
 
+> However reverting it in linux-next doesn't fix the issue, so the
+> next commits are also relevant to this issue.
 
- arch/x86/include/asm/uv/bios.h     |  7 ---
- arch/x86/include/asm/uv/uv.h       |  2 -
- arch/x86/include/asm/uv/uv_hub.h   | 54 ----------------------
- arch/x86/include/asm/uv/uv_mmrs.h  |  7 ---
- arch/x86/kernel/apic/x2apic_uv_x.c | 91 +++++++-------------------------------
- arch/x86/platform/uv/bios_uv.c     | 16 ++-----
- arch/x86/platform/uv/uv_sysfs.c    |  2 +-
- 7 files changed, 22 insertions(+), 157 deletions(-)
+The next patch, which adds PEC support depends on the simplification
+of sbs_read_string_data. The old, open coded variant will result in
+PEC failure for string properties (which should not stop boot either
+of course). Can you try reverting both?
 
+If that helps I will revert those two instead of dropping the whole
+series for this merge window.
+
+> Let me know how can I help debugging it.
+
+I suspect, that this is userspace endlessly retrying reading the
+battery uevent when an error is returned. Could you check this?
+Should be easy to see by adding some printfs.
+
+That would mean a faulty battery could stall complete boot without
+a useful error message, which is bad and needs to be fixed.
+
+Sorry for the inconvience and thanks for your report,
+
+-- Sebastian
+
+--pptq4mcmy2xywbfv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl7VNVEACgkQ2O7X88g7
++prs4Q/+Oog/pqXDuQrwMX2D8/43npxQGz7VEb2GI/wiyim6Oq9Kw1XgTjJnUpfG
+adWleKQhPYlj07KHSC7ZibvRre4k0y1SCvfsHE2U5Twkgr1N77oyarxshhNuhR2n
+DqpLKb5iFq0k0uP6AIgUnBQBX597AY9OGzVDjTw7GuFMtjBtLLSl8p9sh1CfkL/s
+yhsVNwptOTcYZsHS+VeKrT7vtzJjwF0h8X01eKfUPBeMd1usKZOsQbkHjilObQ4g
+JQW04ozLEuEkMn8rqEJ127bHz8IPHYnXfxpPYMY5oA8XqZ3cRFsfTQKt7Yh/EzJH
+hIYmqc2MMjcshv9jpAyCW1blyy9gXhjOEjIXQGkGC/yvZw8EFw0oE5ve44LC2+uQ
+4t54P0Ae39O+ZO2l/z86EXDSuYzFWhGv48/Gn+xYUS4KPfs/SoqwVK6BP1XJCibA
+EkW6V0n8Jd1ee5jTQlApBTqzWoGSntoqP7LnHQeWdq+54JDAGY3Pfydq8HxaIM4+
+QvxfcGY6+Xc+SMuWFpMdBuVP+Z11Sq4rk8nA7LY546n/+E81eU7zFCOAnZfXewIH
+4s9xyNV8pjCvqIhsyiw5mLTxx5/ZNmJa5aqcZeh/sSScaOUl4PsoZvXo7ahDHJz6
+2PPUheRmlUz8fQXdlCrpDzcM/HH+wYMJiQTq13cQZ4WYY5XauZk=
+=s38G
+-----END PGP SIGNATURE-----
+
+--pptq4mcmy2xywbfv--
