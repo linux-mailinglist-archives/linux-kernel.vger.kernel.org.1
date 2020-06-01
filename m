@@ -2,39 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569CA1EA9DA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7D61EA920
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729980AbgFASCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:02:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45976 "EHLO mail.kernel.org"
+        id S1729177AbgFAR6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:58:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729965AbgFASCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:02:44 -0400
+        id S1729156AbgFAR6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:58:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7084B2065C;
-        Mon,  1 Jun 2020 18:02:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 34745206E2;
+        Mon,  1 Jun 2020 17:58:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034563;
-        bh=ohgHCoXnqjkR1LxSbvAxL5/wdzT6FIc09ykVLQTK/wM=;
+        s=default; t=1591034297;
+        bh=pXx2nQRRYIisgFvTzM9Z2xuVQCuuWS9hRnBOw/IVgOU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H8Lfc3oVXTTY46MPU2Dk7xIhtS7AKxXy8rT+vTXlRgT9UZDCEdMKRQ9+cOfJHOHI9
-         RYQUsSKeaeOLPm0edZBZsqvSYqQiaVmumZS3dJGT0Ka3kkAaVS//AS3YzXBfiAsgnx
-         xv6FJiT7/mN+/X95awO853t9c/pevL9YrTBTaozk=
+        b=sqT1r6iesGfDdkiszZZndHmIen1tOr+VqUHspyl8K0T9xMd8TeJ7Y7TshC4aYcx1r
+         GtUg+O8IJfd8PX6hl1b005LeOsQqXwoX9U3MWnCJEr7jfyG68gxWYUuIs4L32cYvH6
+         /xQtOHT6StNh/sFl0+fx/YvdG2mKfW51TplYYJ0g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jamal Hadi Salim <jhs@mojatatu.com>,
-        Roman Mashak <mrv@mojatatu.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 10/95] net sched: fix reporting the first-time use timestamp
+        stable@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Jiong Wang <jiongwang@huawei.com>,
+        Yuqi Jin <jinyuqi@huawei.com>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>
+Subject: [PATCH 4.9 03/61] net: revert "net: get rid of an signed integer overflow in ip_idents_reserve()"
 Date:   Mon,  1 Jun 2020 19:53:10 +0200
-Message-Id: <20200601174022.499707903@linuxfoundation.org>
+Message-Id: <20200601174012.043632287@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
-References: <20200601174020.759151073@linuxfoundation.org>
+In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
+References: <20200601174010.316778377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +52,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roman Mashak <mrv@mojatatu.com>
+From: Yuqi Jin <jinyuqi@huawei.com>
 
-[ Upstream commit b15e62631c5f19fea9895f7632dae9c1b27fe0cd ]
+[ Upstream commit a6211caa634da39d861a47437ffcda8b38ef421b ]
 
-When a new action is installed, firstuse field of 'tcf_t' is explicitly set
-to 0. Value of zero means "new action, not yet used"; as a packet hits the
-action, 'firstuse' is stamped with the current jiffies value.
+Commit adb03115f459 ("net: get rid of an signed integer overflow in ip_idents_reserve()")
+used atomic_cmpxchg to replace "atomic_add_return" inside the function
+"ip_idents_reserve". The reason was to avoid UBSAN warning.
+However, this change has caused performance degrade and in GCC-8,
+fno-strict-overflow is now mapped to -fwrapv -fwrapv-pointer
+and signed integer overflow is now undefined by default at all
+optimization levels[1]. Moreover, it was a bug in UBSAN vs -fwrapv
+/-fno-strict-overflow, so Let's revert it safely.
 
-tcf_tm_dump() should return 0 for firstuse if action has not yet been hit.
+[1] https://gcc.gnu.org/gcc-8/changes.html
 
-Fixes: 48d8ee1694dd ("net sched actions: aggregate dumping of actions timeinfo")
-Cc: Jamal Hadi Salim <jhs@mojatatu.com>
-Signed-off-by: Roman Mashak <mrv@mojatatu.com>
-Acked-by: Jamal Hadi Salim <jhs@mojatatu.com>
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>
+Cc: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Jiri Pirko <jiri@resnulli.us>
+Cc: Arvind Sankar <nivedita@alum.mit.edu>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jiong Wang <jiongwang@huawei.com>
+Signed-off-by: Yuqi Jin <jinyuqi@huawei.com>
+Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/act_api.h |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/ipv4/route.c |   14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
---- a/include/net/act_api.h
-+++ b/include/net/act_api.h
-@@ -67,7 +67,8 @@ static inline void tcf_tm_dump(struct tc
- {
- 	dtm->install = jiffies_to_clock_t(jiffies - stm->install);
- 	dtm->lastuse = jiffies_to_clock_t(jiffies - stm->lastuse);
--	dtm->firstuse = jiffies_to_clock_t(jiffies - stm->firstuse);
-+	dtm->firstuse = stm->firstuse ?
-+		jiffies_to_clock_t(jiffies - stm->firstuse) : 0;
- 	dtm->expires = jiffies_to_clock_t(stm->expires);
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -477,18 +477,16 @@ u32 ip_idents_reserve(u32 hash, int segs
+ 	atomic_t *p_id = ip_idents + hash % IP_IDENTS_SZ;
+ 	u32 old = ACCESS_ONCE(*p_tstamp);
+ 	u32 now = (u32)jiffies;
+-	u32 new, delta = 0;
++	u32 delta = 0;
+ 
+ 	if (old != now && cmpxchg(p_tstamp, old, now) == old)
+ 		delta = prandom_u32_max(now - old);
+ 
+-	/* Do not use atomic_add_return() as it makes UBSAN unhappy */
+-	do {
+-		old = (u32)atomic_read(p_id);
+-		new = old + delta + segs;
+-	} while (atomic_cmpxchg(p_id, old, new) != old);
+-
+-	return new - segs;
++	/* If UBSAN reports an error there, please make sure your compiler
++	 * supports -fno-strict-overflow before reporting it that was a bug
++	 * in UBSAN, and it has been fixed in GCC-8.
++	 */
++	return atomic_add_return(segs + delta, p_id) - segs;
  }
+ EXPORT_SYMBOL(ip_idents_reserve);
  
 
 
