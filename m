@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9027E1EA941
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BD11EAA90
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729523AbgFAR7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:59:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41554 "EHLO mail.kernel.org"
+        id S1730850AbgFASJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:09:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728616AbgFAR7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:59:11 -0400
+        id S1730099AbgFASJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:09:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 05C862073B;
-        Mon,  1 Jun 2020 17:59:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3184E206E2;
+        Mon,  1 Jun 2020 18:09:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034351;
-        bh=xe0N+7sYbFtwojUydJ8S15eOlZCR8+wuTi/LeGmYtAE=;
+        s=default; t=1591034948;
+        bh=fbp5eN4Hnuv3+bR/hO5F+wm3gfMFLymjiWDBZD1oZEU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nqmIbwNsxzvRy4C9ZXu+ggoLFqmxb5WnkraBWCxf3nGFNU7Eo84HQMcAx/UP1Z1AJ
-         Kro7A0cIx4js4g9dpJbLQ/RjhDU1/CHqu86oLUJHNJWYH8dUbmYL2iWtT0xOqk7OQ2
-         CDDCIHUnXoD+FQah89Bgi4447ytE5r6PTBXwNLWE=
+        b=N2ESWlGWhEl3PFf0bWyCp8f618knM9Dse3VG/XP6rAkGdrwG6BuYNCAYKZrjZUS/N
+         qjoIj3IdnAIsy1vQScgpTgK+Hb2dgSJKmRpnKWyU33xZ/cpv/snHQUqf8Ym3Ub74Si
+         Rj9gzDaZOg5DqU/wrhLYMI40/263TbXriy7s/HnQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Subject: [PATCH 4.9 55/61] Revert "Input: i8042 - add ThinkPad S230u to i8042 nomux list"
+        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 084/142] gpio: pxa: Fix return value of pxa_gpio_probe()
 Date:   Mon,  1 Jun 2020 19:54:02 +0200
-Message-Id: <20200601174021.781700955@linuxfoundation.org>
+Message-Id: <20200601174046.636051642@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
-References: <20200601174010.316778377@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-commit f4dec2d6160976b14e54be9c3950ce0f52385741 upstream.
+[ Upstream commit 558ab2e8155e5f42ca0a6407957cd4173dc166cc ]
 
-This reverts commit 18931506465a762ffd3f4803d36a18d336a67da9. From Kevin
-Locke:
+When call function devm_platform_ioremap_resource(), we should use IS_ERR()
+to check the return value and return PTR_ERR() if failed.
 
-"... nomux only appeared to fix the issue because the controller
-continued working after warm reboots. After more thorough testing from
-both warm and cold start, I now believe the entry should be added to
-i8042_dmi_reset_table rather than i8042_dmi_nomux_table as i8042.reset=1
-alone is sufficient to avoid the issue from both states while
-i8042.nomux is not."
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 542c25b7a209 ("drivers: gpio: pxa: use devm_platform_ioremap_resource()")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/serio/i8042-x86ia64io.h |    7 -------
- 1 file changed, 7 deletions(-)
+ drivers/gpio/gpio-pxa.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -545,13 +545,6 @@ static const struct dmi_system_id __init
- 			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire 5738"),
- 		},
- 	},
--	{
--		/* Lenovo ThinkPad Twist S230u */
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
--			DMI_MATCH(DMI_PRODUCT_NAME, "33474HU"),
--		},
--	},
- 	{ }
- };
+diff --git a/drivers/gpio/gpio-pxa.c b/drivers/gpio/gpio-pxa.c
+index 9888b62f37af..432c487f77b4 100644
+--- a/drivers/gpio/gpio-pxa.c
++++ b/drivers/gpio/gpio-pxa.c
+@@ -663,8 +663,8 @@ static int pxa_gpio_probe(struct platform_device *pdev)
+ 	pchip->irq1 = irq1;
  
+ 	gpio_reg_base = devm_platform_ioremap_resource(pdev, 0);
+-	if (!gpio_reg_base)
+-		return -EINVAL;
++	if (IS_ERR(gpio_reg_base))
++		return PTR_ERR(gpio_reg_base);
+ 
+ 	clk = clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(clk)) {
+-- 
+2.25.1
+
 
 
