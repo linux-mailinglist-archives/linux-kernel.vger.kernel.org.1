@@ -2,164 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E791EA89C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70AF81EA8A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728207AbgFARv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:51:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728153AbgFARvv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:51:51 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A5FC08C5D1
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 10:51:51 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id t7so262004plr.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 10:51:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pqpjieqWzPdW4kzMNpwF5pnX0DXNGRCF4a9MybtJdT0=;
-        b=xV8yuXtwUh++8lV8BVnmVOMFKn53SmBmnp2YNZxGf8Trj+639nR8oSYo80GhJ9HoEM
-         Cyxq9yEixuV9BAacNnNlsgDlyNdb7ep1rEknCXcA6JL18jGHKKllU3mWDIOz5Q+QWLPR
-         CqcqTdHCs2ddxMFa+7kjz4tDJB7JBC/D9LbnPDLUh5+KBLCkz/birKGLRY4fyLXQaC+2
-         e0BzZyj+uFckAtUW4EPOfaiLudrq5/5K8qaepd4twB6/4f+pKxeUSQGYe9kXTlo5ZxSM
-         GoPCUnixn2Ad9tWPZYRUExGsMKJ1vQRnkwQJrz1avpfJRh5s6o8Lhi9VENgDu9QQy7Ls
-         fO4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pqpjieqWzPdW4kzMNpwF5pnX0DXNGRCF4a9MybtJdT0=;
-        b=dTGCnJo9btaezvFe+5KUnPnlmfcGPF6QWqi6KntrRP48y49QGkYVJVVoGio4JCmpVi
-         YS7lE1IsDByMu30ZBFHqFY3Tvx8DppnJF29G2CIClhqM76++sSU/Bk3hJKhMUDC1UX2/
-         gCTCZ5ACZgE1bRduIAefHk83Pr1zHmfEBffrqlh/x6OKJcBpN+IoHyumSyIequcmit6+
-         sQZEt9q+RZC6ym1EAZKWf0xCO3a4llJBfFmy8UPfX0mRzCnSHt6OJvfdA5k3JENDkkwG
-         liYzH48CBfElT/JHYLOJiCmcZ7y7nUr3E67syLs6lj2xrub/IuHXOHe9KM1Hh/jVWyiN
-         9gWw==
-X-Gm-Message-State: AOAM532yy6tbBiEvnuUunfXGrSFmhPm6g6/iUbzh702krg2mdPxJN76v
-        9R8rdsqPulE4CAMhj5m3px9OVA==
-X-Google-Smtp-Source: ABdhPJzUdnArY7LUm+Nti3l1o/PEa4bBNpE6E6cm6T4db8FdE0WHvO5lbq7oqp2iucgX6qWRh5QGkA==
-X-Received: by 2002:a17:90b:3651:: with SMTP id nh17mr629350pjb.4.1591033910795;
-        Mon, 01 Jun 2020 10:51:50 -0700 (PDT)
-Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id k12sm58219pfg.177.2020.06.01.10.51.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jun 2020 10:51:50 -0700 (PDT)
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     bjorn.andersson@linaro.org, ohad@wizery.com
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        loic.pallardy@st.com, arnaud.pouliquen@st.com, s-anna@ti.com
-Subject: [PATCH v4 9/9] remoteproc: Properly handle firmware name when attaching
-Date:   Mon,  1 Jun 2020 11:51:39 -0600
-Message-Id: <20200601175139.22097-10-mathieu.poirier@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200601175139.22097-1-mathieu.poirier@linaro.org>
-References: <20200601175139.22097-1-mathieu.poirier@linaro.org>
+        id S1728327AbgFARwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:52:21 -0400
+Received: from mga04.intel.com ([192.55.52.120]:58724 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728285AbgFARwP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:52:15 -0400
+IronPort-SDR: fgvXVHzLb9N09xmOtP9/w6/ELrok4UuGD+66MbISmKZkzkGgYBwgGNQazpoXuf5LXmLrKUg6GY
+ cMtbXH7d1TYw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2020 10:52:15 -0700
+IronPort-SDR: jMkn93Sv5D/WENoEXZ3Pda2jZBfAVhbyS2d6aCaLNDVWccIiYIIIFB8ge9hnwn8qYfZMdjF0Jn
+ wjZSL9/gxO8A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,461,1583222400"; 
+   d="scan'208";a="303713789"
+Received: from lkp-server01.sh.intel.com (HELO 78d03bb9d680) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 01 Jun 2020 10:52:14 -0700
+Received: from kbuild by 78d03bb9d680 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jfobd-00007c-EA; Mon, 01 Jun 2020 17:52:13 +0000
+Date:   Tue, 02 Jun 2020 01:52:09 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:core/rcu] BUILD SUCCESS
+ cb3cb6733fbd8fd8d2c716095fdca42dadba2063
+Message-ID: <5ed54049.eGk4Kms1fpi1bloZ%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch prevents the firmware image name from being displayed when
-the remoteproc core is attaching to a remote processor. This is needed
-needed since there is no guarantee about the nature of the firmware
-image that is loaded by the external entity.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  core/rcu
+branch HEAD: cb3cb6733fbd8fd8d2c716095fdca42dadba2063  Merge branch 'WIP.core/rcu' into core/rcu, to pick up two x86/entry dependencies
 
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+elapsed time: 481m
+
+configs tested: 99
+configs skipped: 4
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+powerpc                    mvme5100_defconfig
+mips                        maltaup_defconfig
+arm                       multi_v4t_defconfig
+powerpc                        cell_defconfig
+openrisc                 simple_smp_defconfig
+nds32                            alldefconfig
+mips                         tb0287_defconfig
+sh                         microdev_defconfig
+powerpc                       holly_defconfig
+powerpc                mpc7448_hpc2_defconfig
+nios2                            alldefconfig
+nds32                               defconfig
+mips                      pic32mzda_defconfig
+xtensa                          iss_defconfig
+powerpc                     mpc83xx_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+x86_64               randconfig-a002-20200601
+x86_64               randconfig-a006-20200601
+x86_64               randconfig-a001-20200601
+x86_64               randconfig-a003-20200601
+x86_64               randconfig-a004-20200601
+x86_64               randconfig-a005-20200601
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc                            allyesconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                                allnoconfig
+um                                  defconfig
+um                               allyesconfig
+um                               allmodconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
 ---
- drivers/remoteproc/remoteproc_core.c  | 18 ++++++++++++++++++
- drivers/remoteproc/remoteproc_sysfs.c | 16 ++++++++++++++--
- include/linux/remoteproc.h            |  2 ++
- 3 files changed, 34 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index 0e23284fbd25..a8adc712e7f6 100644
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -1642,6 +1642,14 @@ static int rproc_stop(struct rproc *rproc, bool crashed)
- 
- 	rproc->state = RPROC_OFFLINE;
- 
-+	/*
-+	 * The remote processor has been stopped and is now offline, which means
-+	 * that the next time it is brought back online the remoteproc core will
-+	 * be responsible to load its firmware.  As such it is no longer
-+	 * autonomous.
-+	 */
-+	rproc->autonomous = false;
-+
- 	dev_info(dev, "stopped remote processor %s\n", rproc->name);
- 
- 	return 0;
-@@ -2166,6 +2174,16 @@ int rproc_add(struct rproc *rproc)
- 	/* create debugfs entries */
- 	rproc_create_debug_dir(rproc);
- 
-+	/*
-+	 * Remind ourselves the remote processor has been attached to rather
-+	 * than booted by the remoteproc core.  This is important because the
-+	 * RPROC_DETACHED state will be lost as soon as the remote processor
-+	 * has been attached to.  Used in firmware_show() and reset in
-+	 * rproc_stop().
-+	 */
-+	if (rproc->state == RPROC_DETACHED)
-+		rproc->autonomous = true;
-+
- 	/* if rproc is marked always-on, request it to boot */
- 	if (rproc->auto_boot) {
- 		ret = rproc_trigger_auto_boot(rproc);
-diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
-index 8b462c501465..4ee158431f67 100644
---- a/drivers/remoteproc/remoteproc_sysfs.c
-+++ b/drivers/remoteproc/remoteproc_sysfs.c
-@@ -14,8 +14,20 @@ static ssize_t firmware_show(struct device *dev, struct device_attribute *attr,
- 			  char *buf)
- {
- 	struct rproc *rproc = to_rproc(dev);
--
--	return sprintf(buf, "%s\n", rproc->firmware);
-+	const char *firmware = rproc->firmware;
-+
-+	/*
-+	 * If the remote processor has been started by an external
-+	 * entity we have no idea of what image it is running.  As such
-+	 * simply display a generic string rather then rproc->firmware.
-+	 *
-+	 * Here we rely on the autonomous flag because a remote processor
-+	 * may have been attached to and currently in a running state.
-+	 */
-+	if (rproc->autonomous)
-+		firmware = "unknown";
-+
-+	return sprintf(buf, "%s\n", firmware);
- }
- 
- /* Change firmware name via sysfs */
-diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
-index bf6a310ba870..cf5e31556780 100644
---- a/include/linux/remoteproc.h
-+++ b/include/linux/remoteproc.h
-@@ -491,6 +491,7 @@ struct rproc_dump_segment {
-  * @table_sz: size of @cached_table
-  * @has_iommu: flag to indicate if remote processor is behind an MMU
-  * @auto_boot: flag to indicate if remote processor should be auto-started
-+ * @autonomous: true if an external entity has booted the remote processor
-  * @dump_segments: list of segments in the firmware
-  * @nb_vdev: number of vdev currently handled by rproc
-  */
-@@ -524,6 +525,7 @@ struct rproc {
- 	size_t table_sz;
- 	bool has_iommu;
- 	bool auto_boot;
-+	bool autonomous;
- 	struct list_head dump_segments;
- 	int nb_vdev;
- 	u8 elf_class;
--- 
-2.20.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
