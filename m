@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6E91EAB0D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BFFA1EA9EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728987AbgFASN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:13:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33480 "EHLO mail.kernel.org"
+        id S1729113AbgFASD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:03:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731394AbgFASNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:13:51 -0400
+        id S1730074AbgFASDW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:03:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2DE72065C;
-        Mon,  1 Jun 2020 18:13:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 692D02077D;
+        Mon,  1 Jun 2020 18:03:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035231;
-        bh=pqPXEdtzPBPf0WWCLi1AJBRZpqfhU60G1WugGDK/wGU=;
+        s=default; t=1591034601;
+        bh=TG+9HF2alshZxc1Ns252ZMmuUWyXitjY2aWNEIsHztk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OzuXQDDalc7lvnyDgvNpRDggv0j0R9fHf4F9ZYxdwHNRnId9XzRHkQggE3GzLNmEq
-         eeV7JQx9dGVn8DQ5JHEdzCCgP0UBLsDIvkfgf/MM0WLdPyj/up9uWy5sPx7O9Uxxrc
-         BKnswLD7WErspXgqQsSSDjZrOlbqyMABk9/l8YRA=
+        b=EEUCW80m1t+CJ4h3Rp5jpeAQArxSpnp35yvoFjzLlD0ORC7N/BKzIg5eXlw5IasNY
+         i6+wWW8WE3oUBLKtzXrNoH15uX+JbzfiQPiUCFKoW30OfitLBbJVVzKurrIsRXiSCw
+         hFNt7pR1jnpU31X326ArVD6m2y2n1YXuTdGjtzvE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 067/177] net: freescale: select CONFIG_FIXED_PHY where needed
-Date:   Mon,  1 Jun 2020 19:53:25 +0200
-Message-Id: <20200601174054.503032826@linuxfoundation.org>
+Subject: [PATCH 4.19 26/95] net: microchip: encx24j600: add missed kthread_stop
+Date:   Mon,  1 Jun 2020 19:53:26 +0200
+Message-Id: <20200601174025.043920185@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
+References: <20200601174020.759151073@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,64 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-[ Upstream commit 99352c79af3e5f2e4724abf37fa5a2a3299b1c81 ]
+[ Upstream commit ff8ce319e9c25e920d994cc35236f0bb32dfc8f3 ]
 
-I ran into a randconfig build failure with CONFIG_FIXED_PHY=m
-and CONFIG_GIANFAR=y:
+This driver calls kthread_run() in probe, but forgets to call
+kthread_stop() in probe failure and remove.
+Add the missed kthread_stop() to fix it.
 
-x86_64-linux-ld: drivers/net/ethernet/freescale/gianfar.o:(.rodata+0x418): undefined reference to `fixed_phy_change_carrier'
-
-It seems the same thing can happen with dpaa and ucc_geth, so change
-all three to do an explicit 'select FIXED_PHY'.
-
-The fixed-phy driver actually has an alternative stub function that
-theoretically allows building network drivers when fixed-phy is
-disabled, but I don't see how that would help here, as the drivers
-presumably would not work then.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/Kconfig      | 2 ++
- drivers/net/ethernet/freescale/dpaa/Kconfig | 1 +
- 2 files changed, 3 insertions(+)
+ drivers/net/ethernet/microchip/encx24j600.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/freescale/Kconfig b/drivers/net/ethernet/freescale/Kconfig
-index 2bd7ace0a953..bfc6bfe94d0a 100644
---- a/drivers/net/ethernet/freescale/Kconfig
-+++ b/drivers/net/ethernet/freescale/Kconfig
-@@ -77,6 +77,7 @@ config UCC_GETH
- 	depends on QUICC_ENGINE && PPC32
- 	select FSL_PQ_MDIO
- 	select PHYLIB
-+	select FIXED_PHY
- 	---help---
- 	  This driver supports the Gigabit Ethernet mode of the QUICC Engine,
- 	  which is available on some Freescale SOCs.
-@@ -90,6 +91,7 @@ config GIANFAR
- 	depends on HAS_DMA
- 	select FSL_PQ_MDIO
- 	select PHYLIB
-+	select FIXED_PHY
- 	select CRC32
- 	---help---
- 	  This driver supports the Gigabit TSEC on the MPC83xx, MPC85xx,
-diff --git a/drivers/net/ethernet/freescale/dpaa/Kconfig b/drivers/net/ethernet/freescale/dpaa/Kconfig
-index 3b325733a4f8..0a54c7e0e4ae 100644
---- a/drivers/net/ethernet/freescale/dpaa/Kconfig
-+++ b/drivers/net/ethernet/freescale/dpaa/Kconfig
-@@ -3,6 +3,7 @@ menuconfig FSL_DPAA_ETH
- 	tristate "DPAA Ethernet"
- 	depends on FSL_DPAA && FSL_FMAN
- 	select PHYLIB
-+	select FIXED_PHY
- 	select FSL_FMAN_MAC
- 	---help---
- 	  Data Path Acceleration Architecture Ethernet driver,
+diff --git a/drivers/net/ethernet/microchip/encx24j600.c b/drivers/net/ethernet/microchip/encx24j600.c
+index f831238d9793..84b6ad76f5bc 100644
+--- a/drivers/net/ethernet/microchip/encx24j600.c
++++ b/drivers/net/ethernet/microchip/encx24j600.c
+@@ -1075,7 +1075,7 @@ static int encx24j600_spi_probe(struct spi_device *spi)
+ 	if (unlikely(ret)) {
+ 		netif_err(priv, probe, ndev, "Error %d initializing card encx24j600 card\n",
+ 			  ret);
+-		goto out_free;
++		goto out_stop;
+ 	}
+ 
+ 	eidled = encx24j600_read_reg(priv, EIDLED);
+@@ -1093,6 +1093,8 @@ static int encx24j600_spi_probe(struct spi_device *spi)
+ 
+ out_unregister:
+ 	unregister_netdev(priv->ndev);
++out_stop:
++	kthread_stop(priv->kworker_task);
+ out_free:
+ 	free_netdev(ndev);
+ 
+@@ -1105,6 +1107,7 @@ static int encx24j600_spi_remove(struct spi_device *spi)
+ 	struct encx24j600_priv *priv = dev_get_drvdata(&spi->dev);
+ 
+ 	unregister_netdev(priv->ndev);
++	kthread_stop(priv->kworker_task);
+ 
+ 	free_netdev(priv->ndev);
+ 
 -- 
 2.25.1
 
