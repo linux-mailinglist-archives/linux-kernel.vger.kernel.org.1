@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4371EACB7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E311EAE7A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731809AbgFASio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:38:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49450 "EHLO mail.kernel.org"
+        id S1730255AbgFASy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:54:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731586AbgFASih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:38:37 -0400
+        id S1726901AbgFASCB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:02:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4F582074B;
-        Mon,  1 Jun 2020 18:33:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D24FA2065C;
+        Mon,  1 Jun 2020 18:02:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591036419;
-        bh=qqYvGaidwfg4zvFMt8jOwZD5KqkfullPtDDFDko273A=;
+        s=default; t=1591034521;
+        bh=xC9hJYuRSl5pnTM9TMOSwz7SgPWF7neADVLAEPjyJ74=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qVJKIijzyzGRpGzCLLAUITptTuR+bjLvtTz+VO6ijadSfOqU/fdTLC1LchMO19OyV
-         B/4U29h3XSdjBwIflvuLxS6wU6RbadyFVJWAapKz9879yF2Ez9biVqZwfIm1JRJAcM
-         6y8aCwInHu++XA4IO/y1SznegAB7M2Rct41DyIPw=
+        b=XuAu44y8IVszvTeCx4kOTQGMRXVqS0W5QxvY0/jLrB6okRSb91G+8tYaMxKuix0NI
+         aeivGFMSm/zFyyNyGB9q/g7TPydx667mgM8dlBmZwV5Z8s2Ca662jWVLe4jXIFlsCQ
+         Z6z+s62vG794RavSCPrg/wQKqNl/2y8aa/6JAgFE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Yan, Zheng" <zyan@redhat.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>,
-        =?UTF-8?q?Andrej=20Filip=C4=8Di=C4=8D?= <andrej.filipcic@ijs.si>
-Subject: [PATCH 5.4 095/142] ceph: flush release queue when handling caps for unknown inode
-Date:   Mon,  1 Jun 2020 19:54:13 +0200
-Message-Id: <20200601174047.815799572@linuxfoundation.org>
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        Jay Vosburgh <jay.vosburgh@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 69/77] bonding: Fix reference count leak in bond_sysfs_slave_add.
+Date:   Mon,  1 Jun 2020 19:54:14 +0200
+Message-Id: <20200601174028.225991942@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
+References: <20200601174016.396817032@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,45 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit fb33c114d3ed5bdac230716f5b0a93b56b92a90d ]
+commit a068aab42258e25094bc2c159948d263ed7d7a77 upstream.
 
-It's possible for the VFS to completely forget about an inode, but for
-it to still be sitting on the cap release queue. If the MDS sends the
-client a cap message for such an inode, it just ignores it today, which
-can lead to a stall of up to 5s until the cap release queue is flushed.
+kobject_init_and_add() takes reference even when it fails.
+If this function returns an error, kobject_put() must be called to
+properly clean up the memory associated with the object. Previous
+commit "b8eb718348b8" fixed a similar problem.
 
-If we get a cap message for an inode that can't be located, then go
-ahead and flush the cap release queue.
+Fixes: 07699f9a7c8d ("bonding: add sysfs /slave dir for bond slave devices.")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Acked-by: Jay Vosburgh <jay.vosburgh@canonical.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Cc: stable@vger.kernel.org
-URL: https://tracker.ceph.com/issues/45532
-Fixes: 1e9c2eb6811e ("ceph: delete stale dentry when last reference is dropped")
-Reported-and-Tested-by: Andrej Filipčič <andrej.filipcic@ijs.si>
-Suggested-by: Yan, Zheng <zyan@redhat.com>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ceph/caps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/bonding/bond_sysfs_slave.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
-index 2d602c2b0ff6..b2695919435e 100644
---- a/fs/ceph/caps.c
-+++ b/fs/ceph/caps.c
-@@ -3938,7 +3938,7 @@ void ceph_handle_caps(struct ceph_mds_session *session,
- 			__ceph_queue_cap_release(session, cap);
- 			spin_unlock(&session->s_cap_lock);
- 		}
--		goto done;
-+		goto flush_cap_releases;
- 	}
+--- a/drivers/net/bonding/bond_sysfs_slave.c
++++ b/drivers/net/bonding/bond_sysfs_slave.c
+@@ -153,8 +153,10 @@ int bond_sysfs_slave_add(struct slave *s
  
- 	/* these will work even if we don't have a cap yet */
--- 
-2.25.1
-
+ 	err = kobject_init_and_add(&slave->kobj, &slave_ktype,
+ 				   &(slave->dev->dev.kobj), "bonding_slave");
+-	if (err)
++	if (err) {
++		kobject_put(&slave->kobj);
+ 		return err;
++	}
+ 
+ 	for (a = slave_attrs; *a; ++a) {
+ 		err = sysfs_create_file(&slave->kobj, &((*a)->attr));
 
 
