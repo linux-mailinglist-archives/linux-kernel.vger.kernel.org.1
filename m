@@ -2,186 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3CC1EA2A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 13:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B56CD1EA303
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 13:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726232AbgFALaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 07:30:21 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:42466 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725838AbgFALaQ (ORCPT
+        id S1726159AbgFALlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 07:41:03 -0400
+Received: from mail.codeweavers.com ([50.203.203.244]:50976 "EHLO
+        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726113AbgFALlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 07:30:16 -0400
-Received: by mail-il1-f200.google.com with SMTP id j71so8660673ilg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 04:30:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=76PgSi7ResbwYMoKhrS40AD0iAVzBpr5sDnEwLJNnTo=;
-        b=q5Or42QqY0M8jXUtDBCwo6j3HB+RwEzq3sohmzyatku3JP2VXLYiz3ZXm7U2s4Wlip
-         tgCI37L81wxfRfFptESMu9T3+132ePaXGrusKLZ/ceRn9v0K7jO3WqKBOXEUiSDTMTx6
-         FxFchL45BxAlxqGu0KrkviE9jFjTj0g+NQzg81P3IySWXVmlVT+ZLtyHNURp513C3g5q
-         ScQHsuY1JPBQWv6MwM5WK2xxKQd8sqgBWeWEQ0roG//2qshL0p3nyifVkw7If+IA+E+j
-         6nZp/l83ShFyEVDzRuD2h7XZR1CCLbimcxOUoBA+coqUPOZG0URxECZ65yfi8ROYQqId
-         8Xnw==
-X-Gm-Message-State: AOAM533JmBk39cOnV+sJOFotbT2C1gvZ4qhWOQdt6K+mLgx4pjDzZut3
-        81VYaOwTXaOaZr7dHda1AB43aZq4duVK+9dLSyejz/rfSG6C
-X-Google-Smtp-Source: ABdhPJyMgiZwLMzTP7ETQx/N6ZG11Lld0kQLasITnalB2IjInuV1ea3mw0JD+y+B2rshyB5xvx0ErBq8LfZ010fdRISNmjkVV3f1
+        Mon, 1 Jun 2020 07:41:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=a/spLsCiFDfU8EwYTvsOCLW+Xq83nQJNL4ueRZd7Xao=; b=l8uyyoK+uw02KhozaPLGkqyXMf
+        9fvB79hLN754jK4Qw9H/W39bAh56Wh1KZ23icRx//iaK84C8yR8rSNYj+Z1TxrCRFQ8o6ib3o4MtC
+        6DPTJbkUMu3GCFFLE0pamH34H30wxXdo4fgMvxHb9LacEj4tGCz31YPMx6ZsC5O5uj9Q=;
+Received: from lfbn-mar-1-909-138.w90-73.abo.wanadoo.fr ([90.73.224.138] helo=xps9380.mn.codeweavers.com)
+        by mail.codeweavers.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <rbernon@codeweavers.com>)
+        id 1jfiWr-0004nS-5a; Mon, 01 Jun 2020 06:22:54 -0500
+From:   =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
+To:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
+Subject: [RFC PATCH 0/2] Add basic support for PE binary format
+Date:   Mon,  1 Jun 2020 13:19:13 +0200
+Message-Id: <20200601111915.114974-1-rbernon@codeweavers.com>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:9a1a:: with SMTP id t26mr7096774ili.8.1591011013489;
- Mon, 01 Jun 2020 04:30:13 -0700 (PDT)
-Date:   Mon, 01 Jun 2020 04:30:13 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004afcae05a7041e98@google.com>
-Subject: INFO: task hung in corrupted (2)
-From:   syzbot <syzbot+6921abfb75d6fc79c0eb@syzkaller.appspotmail.com>
-To:     amir73il@gmail.com, andreyknvl@google.com, balbi@kernel.org,
-        davem@davemloft.net, gregkh@linuxfoundation.org, jack@suse.cz,
-        kuba@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mathew.j.martineau@linux.intel.com,
-        matthieu.baerts@tessares.net, mptcp@lists.01.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -25.9
+X-Spam-Report: Spam detection software, running on the system "mail.codeweavers.com",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  Hi, I'm currently trying to improve compatibility between
+   Wine and perf, and I would like to have you opinion on this approach. The
+   main problem is that Wine uses PE binary format for most of its code (and
+   of course the Windows application it runs are also using PE binary format),
+    and perf is currently unable to parse them to [...] 
+ Content analysis details:   (-25.9 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+  -20 USER_IN_WHITELIST      From: address is in the user's white-list
+ -6.0 ALL_TRUSTED            Passed through trusted hosts only via SMTP
+ -0.5 BAYES_00               BODY: Bayes spam probability is 0 to 1%
+                             [score: 0.0000]
+  0.6 AWL                    AWL: Adjusted score from AWL reputation of From: address
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-syzbot found the following crash on:
+I'm currently trying to improve compatibility between Wine and perf, and
+I would like to have you opinion on this approach.
 
-HEAD commit:    b0c3ba31 Merge tag 'fsnotify_for_v5.7-rc8' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14089eee100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ce116858301bc2ea
-dashboard link: https://syzkaller.appspot.com/bug?extid=6921abfb75d6fc79c0eb
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14947d26100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=172726d2100000
+The main problem is that Wine uses PE binary format for most of its code
+(and of course the Windows application it runs are also using PE binary
+format), and perf is currently unable to parse them to get the symbol
+table or even to find the debug file location from build_id or
+.gnu_debuglink section.
 
-The bug was bisected to:
+I know that there's the possibility to use a perfmap file to map address
+ranges to symbols, but it requires the runtime to generate it. And in
+this case the information is already there in the PE files, just not in
+a format that perf supports.
 
-commit f2c2e717642c66f7fe7e5dd69b2e8ff5849f4d10
-Author: Andrey Konovalov <andreyknvl@google.com>
-Date:   Mon Feb 24 16:13:03 2020 +0000
+I also have some alternate ways to make it work, using perf-specific
+tweaks in Wine for instance. But I believe that having better support of
+PE binary format in perf could be generally useful, although for now
+Wine is the only use-case I know.
 
-    usb: gadget: add raw-gadget interface
+This first starts using libbfd to parse the build_id and .gnu_debuglink
+section, to make sure perf gets the debug file location even if the code
+modules are in PE binary format.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=119e4702100000
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=139e4702100000
-console output: https://syzkaller.appspot.com/x/log.txt?x=159e4702100000
+Then, as Wine also generates debug files in PE or PDB format by default,
+it also tries to use libbfd to parse the symbol table from the debug
+file if libelf failed.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+6921abfb75d6fc79c0eb@syzkaller.appspotmail.com
-Fixes: f2c2e717642c ("usb: gadget: add raw-gadget interface")
+Of course, advanced features will still lack, but this makes it possible
+to have perf report symbols and source-level annotations for any Windows
+code running in Wine, assuming the modules aren't stripped.
 
-INFO: task syz-executor610:7072 blocked for more than 143 seconds.
-      Not tainted 5.7.0-rc7-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-syz-executor610 D24336  7072   7071 0x80004002
-Call Trace:
- context_switch kernel/sched/core.c:3367 [inline]
- __schedule+0x805/0xc90 kernel/sched/core.c:4083
+Cheers,
 
-Showing all locks held in the system:
-1 lock held by khungtaskd/1134:
- #0: ffffffff892e85d0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0x0/0x30 net/mptcp/pm_netlink.c:860
-1 lock held by in:imklog/6715:
- #0: ffff8880a441e6b0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0x25d/0x2f0 fs/file.c:826
-6 locks held by kworker/1:0/7064:
-1 lock held by syz-executor610/7072:
- #0: ffffffff892eab20 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:290 [inline]
- #0: ffffffff892eab20 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x1bd/0x5b0 kernel/rcu/tree_exp.h:856
-4 locks held by systemd-udevd/7099:
- #0: ffff8880a7fdcc70 (&p->lock){+.+.}-{3:3}, at: seq_read+0x60/0xce0 fs/seq_file.c:153
- #1: ffff888096486888 (&of->mutex){+.+.}-{3:3}, at: kernfs_seq_start+0x50/0x3b0 fs/kernfs/file.c:111
- #2: ffff88809fc0d660 (kn->count#78){.+.+}-{0:0}, at: kernfs_seq_start+0x6f/0x3b0 fs/kernfs/file.c:112
- #3: ffff8880a1df7218 (&dev->mutex){....}-{3:3}, at: device_lock_interruptible include/linux/device.h:773 [inline]
- #3: ffff8880a1df7218 (&dev->mutex){....}-{3:3}, at: serial_show+0x22/0xa0 drivers/usb/core/sysfs.c:142
+Rémi Bernon (2):
+  perf dso: Use libbfd to read build_id and .gnu_debuglink section
+  perf symbols: Try reading the symbol table with libbfd
 
-=============================================
+ tools/perf/util/symbol-elf.c |  65 +++++++++++++++++-
+ tools/perf/util/symbol.c     | 124 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 186 insertions(+), 3 deletions(-)
 
-NMI backtrace for cpu 0
-CPU: 0 PID: 1134 Comm: khungtaskd Not tainted 5.7.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1e9/0x30e lib/dump_stack.c:118
- nmi_cpu_backtrace+0x9f/0x180 lib/nmi_backtrace.c:101
- nmi_trigger_cpumask_backtrace+0x16a/0x280 lib/nmi_backtrace.c:62
- check_hung_uninterruptible_tasks kernel/hung_task.c:205 [inline]
- watchdog+0xd2a/0xd40 kernel/hung_task.c:289
- kthread+0x353/0x380 kernel/kthread.c:268
- ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:351
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 7064 Comm: kworker/1:0 Not tainted 5.7.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-RIP: 0010:__sanitizer_cov_trace_const_cmp4+0x0/0x90 kernel/kcov.c:275
-Code: 4c f2 08 48 c1 e0 03 48 83 c8 18 49 89 14 02 4d 89 44 f2 18 49 ff c1 4d 89 0a c3 0f 1f 44 00 00 66 2e 0f 1f 84 00 00 00 00 00 <4c> 8b 04 24 65 48 8b 04 25 40 1e 02 00 65 8b 0d 78 96 8e 7e f7 c1
-RSP: 0018:ffffc90001676cf0 EFLAGS: 00000246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff88809fb9e240
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000ffffffff
-RBP: ffff888092d24a04 R08: ffffffff86034f3b R09: ffffc900016790cc
-R10: 0000000000000004 R11: 0000000000000000 R12: ffff888092d24a00
-R13: 0000000000000000 R14: dffffc0000000000 R15: ffff888092d24a00
-FS:  0000000000000000(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000004c6e68 CR3: 0000000092d41000 CR4: 00000000001406e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- hid_apply_multiplier drivers/hid/hid-core.c:1106 [inline]
- hid_setup_resolution_multiplier+0x2ab/0xbe0 drivers/hid/hid-core.c:1163
- hid_open_report+0xab2/0xdd0 drivers/hid/hid-core.c:1274
- hid_parse include/linux/hid.h:1017 [inline]
- ms_probe+0x12f/0x3f0 drivers/hid/hid-microsoft.c:388
- hid_device_probe+0x26c/0x410 drivers/hid/hid-core.c:2263
- really_probe+0x704/0xf60 drivers/base/dd.c:520
- driver_probe_device+0xe6/0x230 drivers/base/dd.c:697
- bus_for_each_drv+0x108/0x170 drivers/base/bus.c:431
- __device_attach+0x20c/0x3a0 drivers/base/dd.c:870
- bus_probe_device+0xb8/0x1f0 drivers/base/bus.c:491
- device_add+0x1828/0x1ba0 drivers/base/core.c:2557
- hid_add_device+0xa2a/0xef0 drivers/hid/hid-core.c:2419
- usbhid_probe+0x9bd/0xd10 drivers/hid/usbhid/hid-core.c:1407
- usb_probe_interface+0x614/0xac0 drivers/usb/core/driver.c:374
- really_probe+0x761/0xf60 drivers/base/dd.c:524
- driver_probe_device+0xe6/0x230 drivers/base/dd.c:697
- bus_for_each_drv+0x108/0x170 drivers/base/bus.c:431
- __device_attach+0x20c/0x3a0 drivers/base/dd.c:870
- bus_probe_device+0xb8/0x1f0 drivers/base/bus.c:491
- device_add+0x1828/0x1ba0 drivers/base/core.c:2557
- usb_set_configuration+0x19d2/0x1f20 drivers/usb/core/message.c:2032
- usb_generic_driver_probe+0x82/0x140 drivers/usb/core/generic.c:241
- usb_probe_device+0x12d/0x1d0 drivers/usb/core/driver.c:272
- really_probe+0x761/0xf60 drivers/base/dd.c:524
- driver_probe_device+0xe6/0x230 drivers/base/dd.c:697
- bus_for_each_drv+0x108/0x170 drivers/base/bus.c:431
- __device_attach+0x20c/0x3a0 drivers/base/dd.c:870
- bus_probe_device+0xb8/0x1f0 drivers/base/bus.c:491
- device_add+0x1828/0x1ba0 drivers/base/core.c:2557
- usb_new_device+0xcc3/0x1650 drivers/usb/core/hub.c:2554
- hub_port_connect drivers/usb/core/hub.c:5208 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
- port_event drivers/usb/core/hub.c:5494 [inline]
- hub_event+0x2823/0x4cb0 drivers/usb/core/hub.c:5576
- process_one_work+0x76e/0xfd0 kernel/workqueue.c:2268
- worker_thread+0xa7f/0x1450 kernel/workqueue.c:2414
- kthread+0x353/0x380 kernel/kthread.c:268
- ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:351
+-- 
+2.26.1
 
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
