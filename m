@@ -2,71 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E721EA085
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 11:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BCFF1EA088
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 11:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725977AbgFAJJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 05:09:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35866 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725778AbgFAJJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 05:09:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id BFFBEAC51;
-        Mon,  1 Jun 2020 09:09:34 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 56AF61E0948; Mon,  1 Jun 2020 11:09:31 +0200 (CEST)
-Date:   Mon, 1 Jun 2020 11:09:31 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Martijn Coenen <maco@android.com>
-Cc:     Jan Kara <jack@suse.cz>, Jaegeuk Kim <jaegeuk@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, miklos@szeredi.hu, tj@kernel.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        kernel-team@android.com
-Subject: Re: Writeback bug causing writeback stalls
-Message-ID: <20200601090931.GA3960@quack2.suse.cz>
-References: <CAB0TPYGCOZmixbzrV80132X=V5TcyQwD6V7x-8PKg_BqCva8Og@mail.gmail.com>
- <20200522144100.GE14199@quack2.suse.cz>
- <CAB0TPYF+Nqd63Xf_JkuepSJV7CzndBw6_MUqcnjusy4ztX24hQ@mail.gmail.com>
- <20200522153615.GF14199@quack2.suse.cz>
- <CAB0TPYGJ6WkaKLoqQhsxa2FQ4s-jYKkDe1BDJ89CE_QUM_aBVw@mail.gmail.com>
- <20200525073140.GI14199@quack2.suse.cz>
- <CAB0TPYHVfkYyFYqp96-PfcP60PKRX6VqrfMHJPkG=UT2956EqQ@mail.gmail.com>
- <20200529152036.GA22885@quack2.suse.cz>
- <CAB0TPYFuT7Gp=8qBCGBKa3O0=hkUMTZsmhn3VqZuoKYM4bZOSw@mail.gmail.com>
+        id S1726067AbgFAJLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 05:11:10 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5318 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725778AbgFAJLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 05:11:08 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 80EC4818D4072B2359A9;
+        Mon,  1 Jun 2020 17:11:06 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Mon, 1 Jun 2020
+ 17:10:58 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC:     <richard@nod.at>, <yi.zhang@huawei.com>
+Subject: [PATCH 1/2] ubifs: xattr: Fix some potential memory leaks while iterating entries
+Date:   Mon, 1 Jun 2020 17:10:36 +0800
+Message-ID: <20200601091037.3794172-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAB0TPYFuT7Gp=8qBCGBKa3O0=hkUMTZsmhn3VqZuoKYM4bZOSw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 29-05-20 21:37:50, Martijn Coenen wrote:
-> Hi Jan,
-> 
-> On Fri, May 29, 2020 at 5:20 PM Jan Kara <jack@suse.cz> wrote:
-> > I understand. I have written a fix (attached). Currently its under testing
-> > together with other cleanups. If everything works fine, I plan to submit
-> > the patches on Monday.
-> 
-> Thanks a lot for the quick fix! I ran my usual way to reproduce the
-> problem, and did not see it, so that's good! I do observe write speed
-> dips - eg we usually sustain 180 MB/s on this device, but now it
-> regularly dips down to 10 MB/s, then jumps back up again. That might
-> be unrelated to your patch though, I will run more tests over the
-> weekend and report back!
+Fix some potential memory leaks in error handling branches while
+iterating xattr entries. For example, function ubifs_tnc_remove_ino()
+forgets to free pxent if it exists. Similar problems also exist in
+ubifs_purge_xattrs(), ubifs_add_orphan() and ubifs_jnl_write_inode().
 
-Thanks for testing! My test run has completed fine so I'll submit patches
-for review. But I'm curious what's causing the dips in throughput in your
-test...
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Cc: <Stable@vger.kernel.org>
+Fixes: 1e51764a3c2ac05a2 ("UBIFS: add new flash file system")
+---
+ fs/ubifs/journal.c | 2 ++
+ fs/ubifs/orphan.c  | 2 ++
+ fs/ubifs/tnc.c     | 3 +++
+ fs/ubifs/xattr.c   | 2 ++
+ 4 files changed, 9 insertions(+)
 
-								Honza
-
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index e5ec1afe1c66..0b4b94b079a6 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -893,6 +893,7 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, const struct inode *inode)
+ 				if (err == -ENOENT)
+ 					break;
+ 
++				kfree(pxent);
+ 				goto out_release;
+ 			}
+ 
+@@ -905,6 +906,7 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, const struct inode *inode)
+ 				ubifs_err(c, "dead directory entry '%s', error %d",
+ 					  xent->name, err);
+ 				ubifs_ro_mode(c, err);
++				kfree(pxent);
+ 				kfree(xent);
+ 				goto out_release;
+ 			}
+diff --git a/fs/ubifs/orphan.c b/fs/ubifs/orphan.c
+index 283f9eb48410..b0117878b3a0 100644
+--- a/fs/ubifs/orphan.c
++++ b/fs/ubifs/orphan.c
+@@ -173,6 +173,7 @@ int ubifs_add_orphan(struct ubifs_info *c, ino_t inum)
+ 			err = PTR_ERR(xent);
+ 			if (err == -ENOENT)
+ 				break;
++			kfree(pxent);
+ 			return err;
+ 		}
+ 
+@@ -182,6 +183,7 @@ int ubifs_add_orphan(struct ubifs_info *c, ino_t inum)
+ 
+ 		xattr_orphan = orphan_add(c, xattr_inum, orphan);
+ 		if (IS_ERR(xattr_orphan)) {
++			kfree(pxent);
+ 			kfree(xent);
+ 			return PTR_ERR(xattr_orphan);
+ 		}
+diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
+index e8e7b0e9532e..33742ee3945b 100644
+--- a/fs/ubifs/tnc.c
++++ b/fs/ubifs/tnc.c
+@@ -2885,6 +2885,7 @@ int ubifs_tnc_remove_ino(struct ubifs_info *c, ino_t inum)
+ 			err = PTR_ERR(xent);
+ 			if (err == -ENOENT)
+ 				break;
++			kfree(pxent);
+ 			return err;
+ 		}
+ 
+@@ -2898,6 +2899,7 @@ int ubifs_tnc_remove_ino(struct ubifs_info *c, ino_t inum)
+ 		fname_len(&nm) = le16_to_cpu(xent->nlen);
+ 		err = ubifs_tnc_remove_nm(c, &key1, &nm);
+ 		if (err) {
++			kfree(pxent);
+ 			kfree(xent);
+ 			return err;
+ 		}
+@@ -2906,6 +2908,7 @@ int ubifs_tnc_remove_ino(struct ubifs_info *c, ino_t inum)
+ 		highest_ino_key(c, &key2, xattr_inum);
+ 		err = ubifs_tnc_remove_range(c, &key1, &key2);
+ 		if (err) {
++			kfree(pxent);
+ 			kfree(xent);
+ 			return err;
+ 		}
+diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+index 9aefbb60074f..a0b9b349efe6 100644
+--- a/fs/ubifs/xattr.c
++++ b/fs/ubifs/xattr.c
+@@ -522,6 +522,7 @@ int ubifs_purge_xattrs(struct inode *host)
+ 				  xent->name, err);
+ 			ubifs_ro_mode(c, err);
+ 			kfree(pxent);
++			kfree(xent);
+ 			return err;
+ 		}
+ 
+@@ -531,6 +532,7 @@ int ubifs_purge_xattrs(struct inode *host)
+ 		err = remove_xattr(c, host, xino, &nm);
+ 		if (err) {
+ 			kfree(pxent);
++			kfree(xent);
+ 			iput(xino);
+ 			ubifs_err(c, "cannot remove xattr, error %d", err);
+ 			return err;
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.25.4
+
