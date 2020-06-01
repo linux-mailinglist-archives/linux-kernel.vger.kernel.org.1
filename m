@@ -2,169 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE601EA47D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 15:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F75D1EA4B9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 15:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728147AbgFANMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 09:12:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727983AbgFANL5 (ORCPT
+        id S1726340AbgFANPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 09:15:00 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:34543 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgFANO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 09:11:57 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F8AC061A0E;
-        Mon,  1 Jun 2020 06:11:57 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jfkEN-0007B8-Hb; Mon, 01 Jun 2020 15:11:55 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id D72D11C0494;
-        Mon,  1 Jun 2020 15:11:50 +0200 (CEST)
-Date:   Mon, 01 Jun 2020 13:11:50 -0000
-From:   "tip-bot2 for Christophe JAILLET" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] clocksource/drivers/davinci: Avoid trailing '\n'
- hidden in pr_fmt()
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200409092543.14727-1-christophe.jaillet@wanadoo.fr>
-References: <20200409092543.14727-1-christophe.jaillet@wanadoo.fr>
+        Mon, 1 Jun 2020 09:14:59 -0400
+Received: by mail-pf1-f193.google.com with SMTP id z64so3467135pfb.1;
+        Mon, 01 Jun 2020 06:14:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=gddyfQ3Neo3DcmxiCVDRf3EtQDq1cuUh0cXICGe8cf4=;
+        b=DRtxPfx79yuZ/UoKVQAKA2A3GE6R7B4daQVUA0Oshg5BBHRM3fAyvp2roe6dOAIRh8
+         eu4jcoQb+S7/pR2Y/XvNaZnvah/wpCn/Ywvhv8XS779Q519150mzB7chvFYSVwpnA3mx
+         NOlXD7/rMwXhglsQhwnPJP3jzXY/N9ho5GfmzPweYKk6QmHOAivWCAAjBaaAWogZ52jb
+         LDQFUjLtfsVgo1EIdhfJScrdlaibQBCktr1wyF89C+2goqwPDIH8kU9A/hMgzYdBaX47
+         jGkEWTGvZ7oq2ccPkF0ea9kKDC34FKZSCxKdNyfqiH5slCADBjAirnHl2cCchJL9WCA4
+         1Gmg==
+X-Gm-Message-State: AOAM53006dljZ2GK2F0PSVV3Blewb763dc2CCAKEKEWGXPuKSC2J30Ge
+        37esfFGnHjWqAVptuArcHyw=
+X-Google-Smtp-Source: ABdhPJyhvFhgDaLemeHJdh4LjmALhxP/lWWjg5b16MtVVLSWXkc4Gw0ALvIpNp0MVDxjYQTNYW5nmA==
+X-Received: by 2002:a62:e219:: with SMTP id a25mr20476293pfi.303.1591017297644;
+        Mon, 01 Jun 2020 06:14:57 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id 124sm14359923pfb.15.2020.06.01.06.14.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jun 2020 06:14:55 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id A911640251; Mon,  1 Jun 2020 13:14:54 +0000 (UTC)
+Date:   Mon, 1 Jun 2020 13:14:54 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <shuah@kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>
+Subject: Re: [PATCH 2/4] lib: Make test_sysctl initialized as module
+Message-ID: <20200601131454.GG11244@42.do-not-panic.com>
+References: <159067751438.229397.6746886115540895104.stgit@devnote2>
+ <159067753624.229397.13771427935697541820.stgit@devnote2>
 MIME-Version: 1.0
-Message-ID: <159101711070.17951.1604091400808299360.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <159067753624.229397.13771427935697541820.stgit@devnote2>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+On Thu, May 28, 2020 at 11:52:16PM +0900, Masami Hiramatsu wrote:
+> test_sysctl.c is expected to be used as a module, but since
+> it does not use module_init(), it never be registered as
+> a module and not appeared under /sys/module/.
+> In the result, the selftests/sysctl/sysctl.sh always fails
+> to find the test module and is skipped.
+> 
+> This makes test_sysctl.c initialized as a module by module_init()
+> and allow sysctl.sh to find the test module is loaded.
+> 
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-Commit-ID:     bdf8783c0dae9d3d8fc1c4078fe849ab8aa8b583
-Gitweb:        https://git.kernel.org/tip/bdf8783c0dae9d3d8fc1c4078fe849ab8aa8b583
-Author:        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-AuthorDate:    Thu, 09 Apr 2020 11:25:43 +02:00
-Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
-CommitterDate: Thu, 09 Apr 2020 11:41:20 +02:00
+Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
 
-clocksource/drivers/davinci: Avoid trailing '\n' hidden in pr_fmt()
-
-pr_xxx() functions usually have '\n' at the end of the logging message.
-Here, this '\n' is added via the 'pr_fmt' macro.
-
-In order to be more consistent with other files, use a more standard
-convention and put these '\n' back in the messages themselves and remove it
-from the pr_fmt macro.
-
-While at it, remove a useless message in case of 'kzalloc' failure,
-especially with a __GFP_NOFAIL flag.
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20200409092543.14727-1-christophe.jaillet@wanadoo.fr
----
- drivers/clocksource/timer-davinci.c | 22 ++++++++++------------
- 1 file changed, 10 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/clocksource/timer-davinci.c b/drivers/clocksource/timer-davinci.c
-index e421946..aae9383 100644
---- a/drivers/clocksource/timer-davinci.c
-+++ b/drivers/clocksource/timer-davinci.c
-@@ -18,7 +18,7 @@
- #include <clocksource/timer-davinci.h>
- 
- #undef pr_fmt
--#define pr_fmt(fmt) "%s: " fmt "\n", __func__
-+#define pr_fmt(fmt) "%s: " fmt, __func__
- 
- #define DAVINCI_TIMER_REG_TIM12			0x10
- #define DAVINCI_TIMER_REG_TIM34			0x14
-@@ -250,20 +250,20 @@ int __init davinci_timer_register(struct clk *clk,
- 
- 	rv = clk_prepare_enable(clk);
- 	if (rv) {
--		pr_err("Unable to prepare and enable the timer clock");
-+		pr_err("Unable to prepare and enable the timer clock\n");
- 		return rv;
- 	}
- 
- 	if (!request_mem_region(timer_cfg->reg.start,
- 				resource_size(&timer_cfg->reg),
- 				"davinci-timer")) {
--		pr_err("Unable to request memory region");
-+		pr_err("Unable to request memory region\n");
- 		return -EBUSY;
- 	}
- 
- 	base = ioremap(timer_cfg->reg.start, resource_size(&timer_cfg->reg));
- 	if (!base) {
--		pr_err("Unable to map the register range");
-+		pr_err("Unable to map the register range\n");
- 		return -ENOMEM;
- 	}
- 
-@@ -271,10 +271,8 @@ int __init davinci_timer_register(struct clk *clk,
- 	tick_rate = clk_get_rate(clk);
- 
- 	clockevent = kzalloc(sizeof(*clockevent), GFP_KERNEL | __GFP_NOFAIL);
--	if (!clockevent) {
--		pr_err("Error allocating memory for clockevent data");
-+	if (!clockevent)
- 		return -ENOMEM;
--	}
- 
- 	clockevent->dev.name = "tim12";
- 	clockevent->dev.features = CLOCK_EVT_FEAT_ONESHOT;
-@@ -298,7 +296,7 @@ int __init davinci_timer_register(struct clk *clk,
- 			 davinci_timer_irq_timer, IRQF_TIMER,
- 			 "clockevent/tim12", clockevent);
- 	if (rv) {
--		pr_err("Unable to request the clockevent interrupt");
-+		pr_err("Unable to request the clockevent interrupt\n");
- 		return rv;
- 	}
- 
-@@ -325,7 +323,7 @@ int __init davinci_timer_register(struct clk *clk,
- 
- 	rv = clocksource_register_hz(&davinci_clocksource.dev, tick_rate);
- 	if (rv) {
--		pr_err("Unable to register clocksource");
-+		pr_err("Unable to register clocksource\n");
- 		return rv;
- 	}
- 
-@@ -343,20 +341,20 @@ static int __init of_davinci_timer_register(struct device_node *np)
- 
- 	rv = of_address_to_resource(np, 0, &timer_cfg.reg);
- 	if (rv) {
--		pr_err("Unable to get the register range for timer");
-+		pr_err("Unable to get the register range for timer\n");
- 		return rv;
- 	}
- 
- 	rv = of_irq_to_resource_table(np, timer_cfg.irq,
- 				      DAVINCI_TIMER_NUM_IRQS);
- 	if (rv != DAVINCI_TIMER_NUM_IRQS) {
--		pr_err("Unable to get the interrupts for timer");
-+		pr_err("Unable to get the interrupts for timer\n");
- 		return rv;
- 	}
- 
- 	clk = of_clk_get(np, 0);
- 	if (IS_ERR(clk)) {
--		pr_err("Unable to get the timer clock");
-+		pr_err("Unable to get the timer clock\n");
- 		return PTR_ERR(clk);
- 	}
- 
+  Luis
