@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5108E1EADEE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 631501EAD02
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729032AbgFAStx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:49:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52368 "EHLO mail.kernel.org"
+        id S1731233AbgFASM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:12:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730473AbgFASGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:06:40 -0400
+        id S1731205AbgFASMT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:12:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 56ED62068D;
-        Mon,  1 Jun 2020 18:06:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 73975207D0;
+        Mon,  1 Jun 2020 18:12:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034799;
-        bh=M0fabt7unVU5QF8l4HkRxEV7twQQuRiqHuedoJ3zhjY=;
+        s=default; t=1591035138;
+        bh=0P0f2uWiBY7wYHUj9mF4lF2+aflS/pEr08cxh52VTUc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uAUQ17+2F85fxe/7SCHsG75UWMEFinD/cOntpFIqSM06O5wHNXaicRRgHunu6iNKm
-         BrEJeadUzqZQOWHxnzuSJdSLPW7kTrn2iddlLkrzNCgp6ur3k2l1i7cFXKfAq4dDnM
-         +P8aoCIuEKB99nkVwY07zqJrmki7CqvDVT93303o=
+        b=rMHrOXsY0wj1T+DZMvLX9KvFzumOTIF4GFNrAwUHisExoAZs5P6YHvzl8nAo5ZYBs
+         4u2B3RX8WUPXdlK3GOUu0MLlD0aJjUN8pF9Zh0BDA0lSlVkuRqcVy5tnAyigvwLqI5
+         LmmDVuTCYWRGEUj/VDqo2rCprpbF9vWMtpZSE2bA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 005/142] net: ethernet: ti: cpsw: fix ASSERT_RTNL() warning during suspend
-Date:   Mon,  1 Jun 2020 19:52:43 +0200
-Message-Id: <20200601174038.612777995@linuxfoundation.org>
+        stable@vger.kernel.org, Moshe Shemesh <moshe@mellanox.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>
+Subject: [PATCH 5.6 026/177] net/mlx5e: Update netdev txq on completions during closure
+Date:   Mon,  1 Jun 2020 19:52:44 +0200
+Message-Id: <20200601174051.013234568@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,47 +44,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grygorii Strashko <grygorii.strashko@ti.com>
+From: Moshe Shemesh <moshe@mellanox.com>
 
-[ Upstream commit 4c64b83d03f4aafcdf710caad994cbc855802e74 ]
+[ Upstream commit 5e911e2c06bd8c17df29147a5e2d4b17fafda024 ]
 
-vlan_for_each() are required to be called with rtnl_lock taken, otherwise
-ASSERT_RTNL() warning will be triggered - which happens now during System
-resume from suspend:
-  cpsw_suspend()
-  |- cpsw_ndo_stop()
-    |- __hw_addr_ref_unsync_dev()
-      |- cpsw_purge_all_mc()
-         |- vlan_for_each()
-            |- ASSERT_RTNL();
+On sq closure when we free its descriptors, we should also update netdev
+txq on completions which would not arrive. Otherwise if we reopen sqs
+and attach them back, for example on fw fatal recovery flow, we may get
+tx timeout.
 
-Hence, fix it by surrounding cpsw_ndo_stop() by rtnl_lock/unlock() calls.
-
-Fixes: 15180eca569b ("net: ethernet: ti: cpsw: fix vlan mcast")
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 29429f3300a3 ("net/mlx5e: Timeout if SQ doesn't flush during close")
+Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+Reviewed-by: Tariq Toukan <tariqt@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/ti/cpsw.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/en_tx.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/ti/cpsw.c
-+++ b/drivers/net/ethernet/ti/cpsw.c
-@@ -2999,11 +2999,15 @@ static int cpsw_suspend(struct device *d
- 	struct cpsw_common *cpsw = dev_get_drvdata(dev);
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
+@@ -538,10 +538,9 @@ bool mlx5e_poll_tx_cq(struct mlx5e_cq *c
+ void mlx5e_free_txqsq_descs(struct mlx5e_txqsq *sq)
+ {
+ 	struct mlx5e_tx_wqe_info *wi;
++	u32 dma_fifo_cc, nbytes = 0;
++	u16 ci, sqcc, npkts = 0;
+ 	struct sk_buff *skb;
+-	u32 dma_fifo_cc;
+-	u16 sqcc;
+-	u16 ci;
  	int i;
  
-+	rtnl_lock();
-+
- 	for (i = 0; i < cpsw->data.slaves; i++)
- 		if (cpsw->slaves[i].ndev)
- 			if (netif_running(cpsw->slaves[i].ndev))
- 				cpsw_ndo_stop(cpsw->slaves[i].ndev);
+ 	sqcc = sq->cc;
+@@ -566,11 +565,15 @@ void mlx5e_free_txqsq_descs(struct mlx5e
+ 		}
  
-+	rtnl_unlock();
-+
- 	/* Select sleep pin state */
- 	pinctrl_pm_select_sleep_state(dev);
+ 		dev_kfree_skb_any(skb);
++		npkts++;
++		nbytes += wi->num_bytes;
+ 		sqcc += wi->num_wqebbs;
+ 	}
  
+ 	sq->dma_fifo_cc = dma_fifo_cc;
+ 	sq->cc = sqcc;
++
++	netdev_tx_completed_queue(sq->txq, npkts, nbytes);
+ }
+ 
+ #ifdef CONFIG_MLX5_CORE_IPOIB
 
 
