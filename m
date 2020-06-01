@@ -2,147 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ACD71EA7DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 18:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 712831EA7DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 18:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727906AbgFAQe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 12:34:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726124AbgFAQeY (ORCPT
+        id S1727924AbgFAQfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 12:35:30 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:26332 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726017AbgFAQf3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 12:34:24 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6E8C05BD43
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 09:34:22 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id f185so153480wmf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 09:34:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=5s6oGg+lK9xAHbxDWCV+jDGI3+fgOjIVtvP8VYehpeI=;
-        b=ALjfKh0bkpkZp/6AhqqFqBGc5OYA+fNXtxvhx8UgT98k1dQZJQ4bTlv95+zCDMi8/s
-         0F+2fadJ2ahpzmK3RO7dka0Byq/yIg8sDuAdqnWgv5AYa0heni6Q+8MV9zAOzPnMu8KA
-         AxqoZghOm3zDdU6z3joDLbnnpBcj/Ul+C+7lTK+es2eg2OLH/qoc4DYNHk1Uuor3cLY0
-         0gXVLfqLdkDoBPyLLjhvYOxgcnaNoB9Blfu4ZbF3dUC5fMoEm5bCRxG0qe0bK/vcr+Oi
-         SvArY2IlUyofh+e13T3Wc1MDukgjbUK5s8zTknWh/KWityMIW+HaMO+meAJjLkiA2zW+
-         XpBQ==
+        Mon, 1 Jun 2020 12:35:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591029327;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zc9wyn742yLh7B24rM+A2xhouSXE07FcUGUaBsY67qY=;
+        b=ITiF6Qjya9d8Dxk3YZ4KUxm9PqjYlw1AUnjmIIPxzeCtUGvFhgIoplFsFtt0fw2VmFe5Xi
+        vynmJWBzm4tTsKFckw3JeyCafEsXnKUV8wWotutlS9dgj1XkrHzqB+A17RD9tSlRxYAcaa
+        yZ8KUhOFeq8yqXJ00x/g8i2duF4I2zs=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-262-Siizjmm1Ppylx5XvFmsfcA-1; Mon, 01 Jun 2020 12:35:26 -0400
+X-MC-Unique: Siizjmm1Ppylx5XvFmsfcA-1
+Received: by mail-wm1-f69.google.com with SMTP id x6so13398wmj.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 09:35:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=5s6oGg+lK9xAHbxDWCV+jDGI3+fgOjIVtvP8VYehpeI=;
-        b=WvWERghvx39Wf06YhPj525e9Z93ANKz1wqhSeVQ6MC2NY1xzhDg6EdF5MHT2s6tXTu
-         KSi4rujdulcTcEGKLzgfiNMd3Em99Xjfq9M3m/S+G+4Qvz+c0W49nBuke7zAA8FjrEXR
-         V1xZbN81ZzjrgUvUi1uZ53RZPKdiRhmqSYPeBTJB3OSYws+lJ+BBTeaMifWlO/dZZmbQ
-         WUN3AVPJR8Y7UBiBGBjuuA+1va2pywBjHlhq7KuQ3GJMc1heoMXoAspBsv8/S+TMYRJ+
-         9dEx0v6jcL3WF+D4IvbluTgnu3FAbi7w55z/xoGTzWoorxZN1SyXFijDidRUGQPQPCgl
-         B+HQ==
-X-Gm-Message-State: AOAM531H1GsYZ+iLhv2LYi3HjsnsHWqR77M93gpcZmMbo5SjKp3dw4+5
-        dLbLtF4lQufBqvg5+y78oA8=
-X-Google-Smtp-Source: ABdhPJx5t5UOuIdizH3eRJXAQDMZfTnBZxjF4IUgmjKDemKnyF9s6NWwuaGLGY22lkB7u/hSzur2Fg==
-X-Received: by 2002:a1c:4b18:: with SMTP id y24mr179214wma.102.1591029261417;
-        Mon, 01 Jun 2020 09:34:21 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id t14sm22670446wrb.94.2020.06.01.09.34.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jun 2020 09:34:20 -0700 (PDT)
-Date:   Mon, 1 Jun 2020 18:34:18 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] x86/cleanups for v5.8
-Message-ID: <20200601163418.GA1220330@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zc9wyn742yLh7B24rM+A2xhouSXE07FcUGUaBsY67qY=;
+        b=AF1+aOcBx+GpUZEkG/zOfdAx7Xml6fSSnJzrCt3QFCLxkmN0h95LFzhlGqpuiyGzFS
+         J5k2KpT3TXp4PFk4tRyXZPhQTGq9OeJyxSwnbMHaAndJzC/Dq6d494hmNBI3JxS+FCgu
+         HBjKCAIhqesZv72fBJTI4Ff4VCA56I4ABBUxQQT+ridJpQ2ybogpMg37dkCPG3SNGgMX
+         NNv1w35H1Ds+f8Pj5wIvkwii3tgh24MMn761iqTaNZeEsftRFy5X6Rqr+BF7/9urkLGo
+         ls4zSTnbTwOlOaglq5FYqrcW6hKbRkv9CvPk/7i08Wr80WjVKwd8zeqeLPHS2kcprFWg
+         zc0g==
+X-Gm-Message-State: AOAM530y/WJIRGWjd+tynM+5+Glc8gZHOHVpioT2Je0TwMx3hGZUotuj
+        C3rHfbrCiOWRSWapUy20WiZg33kzE6eJ4ykwOcrU6GW4hpq7OsLUSKPhAh1kUpRIvbzo5aeNdKH
+        nCxQdE572FqdPEvb/qs7VA1HC
+X-Received: by 2002:a1c:3585:: with SMTP id c127mr186486wma.34.1591029324727;
+        Mon, 01 Jun 2020 09:35:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx9UvBpHprFyqkB9INncZbq9Zh/UjdnJcRudmhYbCdzWCCop0k8OMkWVXIN62P1rQ5lrNmQZw==
+X-Received: by 2002:a1c:3585:: with SMTP id c127mr186466wma.34.1591029324534;
+        Mon, 01 Jun 2020 09:35:24 -0700 (PDT)
+Received: from [192.168.10.150] ([93.56.170.5])
+        by smtp.gmail.com with ESMTPSA id 138sm194273wma.23.2020.06.01.09.35.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Jun 2020 09:35:23 -0700 (PDT)
+Subject: Re: [RFC 06/16] KVM: Use GUP instead of copy_from/to_user() to access
+ guest memory
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <20200522125214.31348-1-kirill.shutemov@linux.intel.com>
+ <20200522125214.31348-7-kirill.shutemov@linux.intel.com>
+ <87a71w832c.fsf@vitty.brq.redhat.com> <20200525151755.yzbmemtrii455s6k@box>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <a5acc4c8-2ee6-9e5d-c0a5-2a6f7c54c059@redhat.com>
+Date:   Mon, 1 Jun 2020 18:35:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20200525151755.yzbmemtrii455s6k@box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On 25/05/20 17:17, Kirill A. Shutemov wrote:
+>> Personally, I would've just added 'struct kvm' pointer to 'struct
+>> kvm_memory_slot' to be able to extract 'mem_protected' info when
+>> needed. This will make the patch much smaller.
+> Okay, can do.
+> 
+> Other thing I tried is to have per-slot flag to indicate that it's
+> protected. But Sean pointed that it's all-or-nothing feature and having
+> the flag in the slot would be misleading.
+> 
 
-Please pull the latest x86/cleanups git tree from:
+Perhaps it would be misleading, but it's an optimization.  Saving a
+pointer dereference can be worth it, also because there are some places
+where we just pass around a memslot and we don't have the struct kvm*.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-cleanups-2020-06-01
+Also, it's an all-or-nothing feature _now_.  It doesn't have to remain
+that way.
 
-   # HEAD: 2ca41f555e857ec5beef6063bfa43a17ee76d7ec x86/spinlock: Remove obsolete ticket spinlock macros and types
+Paolo
 
-Misc cleanups, with an emphasis on removing obsolete/dead code.
-
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-
-  out-of-topic modifications in x86/cleanups:
-  ---------------------------------------------
-  fs/proc/task_mmu.c                 # 66648766ef38: mm: Remove MPX leftovers
-  include/linux/crash_dump.h         # 4c5b566c2193: crash_dump: Remove no longer
-  include/linux/mm.h                 # 66648766ef38: mm: Remove MPX leftovers
-  kernel/crash_dump.c                # 4c5b566c2193: crash_dump: Remove no longer
-
- Thanks,
-
-	Ingo
-
------------------->
-Andy Shevchenko (1):
-      x86/early_printk: Remove unused includes
-
-Arvind Sankar (1):
-      x86/mm: Stop printing BRK addresses
-
-Benjamin Thiel (2):
-      x86/mm/mmap: Fix -Wmissing-prototypes warnings
-      x86/audit: Fix a -Wmissing-prototypes warning for ia32_classify_syscall()
-
-Borislav Petkov (2):
-      x86/smpboot: Remove the last ICPU() macro
-      x86/nmi: Remove edac.h include leftover
-
-Jimmy Assarsson (1):
-      mm: Remove MPX leftovers
-
-Johan Hovold (2):
-      x86/apb_timer: Drop unused TSC calibration
-      x86/apb_timer: Drop unused declaration and macro
-
-Kairui Song (1):
-      crash_dump: Remove no longer used saved_max_pfn
-
-Mike Rapoport (1):
-      x86/mm: Drop deprecated DISCONTIGMEM support for 32-bit
-
-Waiman Long (1):
-      x86/spinlock: Remove obsolete ticket spinlock macros and types
-
-YueHaibing (1):
-      x86/io_apic: Remove unused function mp_init_irq_at_boot()
-
-
- arch/x86/Kconfig                      |  9 ------
- arch/x86/ia32/audit.c                 |  1 +
- arch/x86/include/asm/apb_timer.h      |  5 ----
- arch/x86/include/asm/audit.h          |  7 +++++
- arch/x86/include/asm/mmzone_32.h      | 39 --------------------------
- arch/x86/include/asm/pgtable_32.h     |  3 +-
- arch/x86/include/asm/spinlock_types.h | 22 ---------------
- arch/x86/kernel/apb_timer.c           | 53 -----------------------------------
- arch/x86/kernel/apic/io_apic.c        | 13 ---------
- arch/x86/kernel/audit_64.c            |  2 +-
- arch/x86/kernel/e820.c                |  8 ------
- arch/x86/kernel/early_printk.c        |  3 --
- arch/x86/kernel/nmi.c                 |  4 ---
- arch/x86/kernel/smpboot.c             | 17 +++++------
- arch/x86/mm/init.c                    |  2 --
- arch/x86/mm/mmap.c                    |  2 ++
- arch/x86/mm/numa_32.c                 | 34 ----------------------
- fs/proc/task_mmu.c                    |  3 --
- include/linux/crash_dump.h            |  2 --
- include/linux/mm.h                    |  7 -----
- kernel/crash_dump.c                   |  6 ----
- 21 files changed, 21 insertions(+), 221 deletions(-)
- create mode 100644 arch/x86/include/asm/audit.h
