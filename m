@@ -2,253 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2001A1E9F04
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 09:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096DC1E9F07
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 09:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728084AbgFAHWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 03:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725935AbgFAHWo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 03:22:44 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9CFC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 00:22:43 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id p123so4716364yba.6
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 00:22:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o/XvLHb8CHrJeV+FPAoynu3y1sILbtELE3G5INRsehY=;
-        b=LdtK86j5E4y6Dexk17tQq2m+DrfykpMRw/LhyEJbEjjU9xidNFdtk4Y6mwLhflm5Rq
-         fV+lDnDzH36qYIjkdqsJNOGsNxLQWUvNEATjxQ1RYOcDcmNTbyQef992jRsj/SPAMby1
-         Yg3EWpy5LMY2sGSWt2qLlaTvOT2FrK26mLn11Up5c3YX/6jWWGf65EcY2FONO+DrEviP
-         lTX2mqaFIWX62hphlGgjp8Ah1zVrlpCL29fjGKhyzfjSD7w3cMcDvSW8aeL2uy9CCcKd
-         ht0/aWKW3YtLvoOEEV+w91sb3zqHb3wVoNUbJY//QUrC1X7qrHR1weWJ4tugTnB5ktfv
-         RdYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o/XvLHb8CHrJeV+FPAoynu3y1sILbtELE3G5INRsehY=;
-        b=pQqm9Cir8XYZ3Q7b0eeQtS1SVDTuv8puKbZdndkMLFtzY2Ui7WxBI5Km27hxfRTsUw
-         QfamEU9ipZM+9Q4RNEeXJXgEYD890P8xXKwZdhUIoOPCc7HuvP7KHLM3dJ+iDR3jqUSs
-         mQmIrrTot2BDnYNVGDVSrJo/Hr8/COG++0gnqrvLiSfVYFc+ZNxRsMjs0yW8cBDebdbN
-         H349F39qS1cvVZV09OQOotftCDdJ1ZTn7w0V9RLOBPlCDoMlE6FhS9oWIR6sKnNsZBL9
-         2xzdFLP88VZC1TOlcplaSkGj5Exy7N0BgpF7AETbWisF8xTs1nbUhsjldH7z8j3WpQjW
-         qFMA==
-X-Gm-Message-State: AOAM531nrNu6bITx8Ldag0vCl69P5Es2qK5m1p0SB73lMgE9Nkzpf7zL
-        0as9lZbxjSq4UIwYgRopLMCRX2d3usVB9lYEnVOkWA==
-X-Google-Smtp-Source: ABdhPJz+PNJIPlFcdLcs66b83B5qm6YeAT/PhXW8gEasbY1NmeqpHXvtYB4kEZCl5F3E6cJRk3GwZ0Q8q3RUvdtNc/M=
-X-Received: by 2002:a25:c08b:: with SMTP id c133mr32167741ybf.286.1590996162326;
- Mon, 01 Jun 2020 00:22:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200524224219.234847-1-jolsa@kernel.org> <20200524224219.234847-5-jolsa@kernel.org>
-In-Reply-To: <20200524224219.234847-5-jolsa@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 1 Jun 2020 00:22:30 -0700
-Message-ID: <CAP-5=fV0Q3Y0wmZd6jeO3VFw-OJMp81zPoEts0S_Ai82VzWEOw@mail.gmail.com>
-Subject: Re: [PATCH 04/14] perf tools: Add fake pmu support
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
+        id S1727959AbgFAHYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 03:24:39 -0400
+Received: from mga11.intel.com ([192.55.52.93]:17749 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725283AbgFAHYj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 03:24:39 -0400
+IronPort-SDR: qlbn9Pj+vQ6h61MTl/hcku8t03IiIospiLnc8ehoMKaaW0OQ61B+Z31ASTvorQgZS8VWnXg13p
+ OZT8WsyIAR/g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2020 00:24:37 -0700
+IronPort-SDR: h2vSqTd8LK0bbOXqeq0SpRO4Q/fOWr8basEmm0llG5fQ7NVLkTzyJkz7ToU0ZsFvLZFvd5G91V
+ oC9iC0AOfZeQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,459,1583222400"; 
+   d="scan'208";a="415716184"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.157]) ([10.237.72.157])
+  by orsmga004.jf.intel.com with ESMTP; 01 Jun 2020 00:24:32 -0700
+Subject: Re: [PATCH v8 2/3] perf auxtrace: Add four itrace options
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Will Deacon <will@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Al Grant <al.grant@arm.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>
+Cc:     Tan Xiaojun <tanxiaojun@huawei.com>
+References: <20200530122442.490-1-leo.yan@linaro.org>
+ <20200530122442.490-3-leo.yan@linaro.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <aaacf3f6-daab-098e-d1fb-1509e1cf9c84@intel.com>
+Date:   Mon, 1 Jun 2020 10:24:00 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200530122442.490-3-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 24, 2020 at 3:42 PM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Adding the way to create pmu event without the actual
-> PMU being in place. This way we can test metrics defined
-> for any processors.
->
-> The interface is to define fake_pmu in struct parse_events_state
-> data. It will be used only in tests via special interface
-> function added in following changes.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+On 30/05/20 3:24 pm, Leo Yan wrote:
+> From: Tan Xiaojun <tanxiaojun@huawei.com>
+> 
+> This patch is to add four options to synthesize events which are
+> described as below:
+> 
+>  'f': synthesize first level cache events
+>  'm': synthesize last level cache events
+>  't': synthesize TLB events
+>  'a': synthesize remote access events
+> 
+> This four options will be used by ARM SPE as their first consumer.
+> 
+> Signed-off-by: Tan Xiaojun <tanxiaojun@huawei.com>
+> Signed-off-by: James Clark <james.clark@arm.com>
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> Tested-by: James Clark <james.clark@arm.com>
+
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+
 > ---
->  tools/perf/util/parse-events.c | 14 ++++++++++---
->  tools/perf/util/parse-events.h |  3 ++-
->  tools/perf/util/parse-events.l |  8 ++++++--
->  tools/perf/util/parse-events.y | 37 ++++++++++++++++++++++++++++++++--
->  4 files changed, 54 insertions(+), 8 deletions(-)
->
-> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> index 27b8e49d690e..8304f9b6e6be 100644
-> --- a/tools/perf/util/parse-events.c
-> +++ b/tools/perf/util/parse-events.c
-> @@ -1415,6 +1415,7 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
->                          bool auto_merge_stats,
->                          bool use_alias)
->  {
-> +       bool is_fake = parse_state->fake_pmu;
->         struct perf_event_attr attr;
->         struct perf_pmu_info info;
->         struct perf_pmu *pmu;
-> @@ -1436,7 +1437,14 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
->                 fprintf(stderr, "' that may result in non-fatal errors\n");
->         }
->
-> -       pmu = perf_pmu__find(name);
-> +       if (is_fake) {
-> +               static struct perf_pmu fake_pmu = { };
+>  tools/perf/Documentation/itrace.txt |  6 +++++-
+>  tools/perf/util/auxtrace.c          | 17 +++++++++++++++++
+>  tools/perf/util/auxtrace.h          | 15 ++++++++++++++-
+>  3 files changed, 36 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/Documentation/itrace.txt b/tools/perf/Documentation/itrace.txt
+> index 271484754fee..e817179c5027 100644
+> --- a/tools/perf/Documentation/itrace.txt
+> +++ b/tools/perf/Documentation/itrace.txt
+> @@ -1,5 +1,5 @@
+>  		i	synthesize instructions events
+> -		b	synthesize branches events
+> +		b	synthesize branches events (branch misses for Arm SPE)
+>  		c	synthesize branches events (calls only)
+>  		r	synthesize branches events (returns only)
+>  		x	synthesize transactions events
+> @@ -9,6 +9,10 @@
+>  			of aux-output (refer to perf record)
+>  		e	synthesize error events
+>  		d	create a debug log
+> +		f	synthesize first level cache events
+> +		m	synthesize last level cache events
+> +		t	synthesize TLB events
+> +		a	synthesize remote access events
+>  		g	synthesize a call chain (use with i or x)
+>  		G	synthesize a call chain on existing event records
+>  		l	synthesize last branch entries (use with i or x)
+> diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
+> index 8cf7d405ee67..fe76a056a179 100644
+> --- a/tools/perf/util/auxtrace.c
+> +++ b/tools/perf/util/auxtrace.c
+> @@ -1331,6 +1331,11 @@ void itrace_synth_opts__set_default(struct itrace_synth_opts *synth_opts,
+>  	synth_opts->pwr_events = true;
+>  	synth_opts->other_events = true;
+>  	synth_opts->errors = true;
+> +	synth_opts->flc = true;
+> +	synth_opts->llc = true;
+> +	synth_opts->tlb = true;
+> +	synth_opts->remote_access = true;
 > +
-> +               pmu = &fake_pmu;
-> +       } else {
-> +               pmu = perf_pmu__find(name);
-> +       }
-> +
->         if (!pmu) {
->                 char *err_str;
->
-> @@ -1469,7 +1477,7 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
->                 }
->         }
->
-> -       if (perf_pmu__check_alias(pmu, head_config, &info))
-> +       if (!is_fake && perf_pmu__check_alias(pmu, head_config, &info))
->                 return -EINVAL;
->
->         if (verbose > 1) {
-> @@ -1502,7 +1510,7 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
->         if (pmu->default_config && get_config_chgs(pmu, head_config, &config_terms))
->                 return -ENOMEM;
->
-> -       if (perf_pmu__config(pmu, &attr, head_config, parse_state->error)) {
-> +       if (!is_fake && perf_pmu__config(pmu, &attr, head_config, parse_state->error)) {
->                 struct evsel_config_term *pos, *tmp;
->
->                 list_for_each_entry_safe(pos, tmp, &config_terms, list) {
-> diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
-> index d60510e0609f..963b0ea6c448 100644
-> --- a/tools/perf/util/parse-events.h
-> +++ b/tools/perf/util/parse-events.h
-> @@ -126,9 +126,10 @@ struct parse_events_state {
->         int                        idx;
->         int                        nr_groups;
->         struct parse_events_error *error;
-> -       struct evlist     *evlist;
-> +       struct evlist             *evlist;
->         struct list_head          *terms;
->         int                        stoken;
-> +       bool                       fake_pmu;
->  };
->
->  void parse_events__handle_error(struct parse_events_error *err, int idx,
-> diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
-> index 002802e17059..56912c9641f5 100644
-> --- a/tools/perf/util/parse-events.l
-> +++ b/tools/perf/util/parse-events.l
-> @@ -129,12 +129,16 @@ do {                                                              \
->         yyless(0);                                              \
->  } while (0)
->
-> -static int pmu_str_check(yyscan_t scanner)
-> +static int pmu_str_check(yyscan_t scanner, struct parse_events_state *parse_state)
->  {
->         YYSTYPE *yylval = parse_events_get_lval(scanner);
->         char *text = parse_events_get_text(scanner);
->
->         yylval->str = strdup(text);
-> +
-> +       if (parse_state->fake_pmu)
-> +               return PE_PMU_EVENT_FAKE;
-> +
->         switch (perf_pmu__parse_check(text)) {
->                 case PMU_EVENT_SYMBOL_PREFIX:
->                         return PE_PMU_EVENT_PRE;
-> @@ -376,7 +380,7 @@ r{num_raw_hex}              { return raw(yyscanner); }
->  {modifier_event}       { return str(yyscanner, PE_MODIFIER_EVENT); }
->  {bpf_object}           { if (!isbpf(yyscanner)) { USER_REJECT }; return str(yyscanner, PE_BPF_OBJECT); }
->  {bpf_source}           { if (!isbpf(yyscanner)) { USER_REJECT }; return str(yyscanner, PE_BPF_SOURCE); }
-> -{name}                 { return pmu_str_check(yyscanner); }
-> +{name}                 { return pmu_str_check(yyscanner, _parse_state); }
->  {name_tag}             { return str(yyscanner, PE_NAME); }
->  "/"                    { BEGIN(config); return '/'; }
->  -                      { return '-'; }
-> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-> index c4ca932d092d..d1b04b8d81ea 100644
-> --- a/tools/perf/util/parse-events.y
-> +++ b/tools/perf/util/parse-events.y
-> @@ -69,7 +69,7 @@ static void inc_group_count(struct list_head *list,
->  %token PE_NAME_CACHE_TYPE PE_NAME_CACHE_OP_RESULT
->  %token PE_PREFIX_MEM PE_PREFIX_RAW PE_PREFIX_GROUP
->  %token PE_ERROR
-> -%token PE_PMU_EVENT_PRE PE_PMU_EVENT_SUF PE_KERNEL_PMU_EVENT
-> +%token PE_PMU_EVENT_PRE PE_PMU_EVENT_SUF PE_KERNEL_PMU_EVENT PE_PMU_EVENT_FAKE
->  %token PE_ARRAY_ALL PE_ARRAY_RANGE
->  %token PE_DRV_CFG_TERM
->  %type <num> PE_VALUE
-> @@ -87,7 +87,7 @@ static void inc_group_count(struct list_head *list,
->  %type <str> PE_MODIFIER_EVENT
->  %type <str> PE_MODIFIER_BP
->  %type <str> PE_EVENT_NAME
-> -%type <str> PE_PMU_EVENT_PRE PE_PMU_EVENT_SUF PE_KERNEL_PMU_EVENT
-> +%type <str> PE_PMU_EVENT_PRE PE_PMU_EVENT_SUF PE_KERNEL_PMU_EVENT PE_PMU_EVENT_FAKE
->  %type <str> PE_DRV_CFG_TERM
->  %destructor { free ($$); } <str>
->  %type <term> event_term
-> @@ -356,6 +356,39 @@ PE_PMU_EVENT_PRE '-' PE_PMU_EVENT_SUF sep_dc
->                 YYABORT;
->         $$ = list;
->  }
-> +|
-> +PE_PMU_EVENT_FAKE sep_dc
-> +{
-> +       struct list_head *list;
-> +       int err;
-> +
-> +       list = alloc_list();
-> +       if (!list)
-> +               YYABORT;
-> +
-> +       err = parse_events_add_pmu(_parse_state, list, $1, NULL, false, false);
-> +       free($1);
-> +       if (err < 0)
+>  	if (no_sample) {
+>  		synth_opts->period_type = PERF_ITRACE_PERIOD_INSTRUCTIONS;
+>  		synth_opts->period = 1;
+> @@ -1491,6 +1496,18 @@ int itrace_parse_synth_opts(const struct option *opt, const char *str,
+>  				goto out_err;
+>  			p = endptr;
+>  			break;
+> +		case 'f':
+> +			synth_opts->flc = true;
+> +			break;
+> +		case 'm':
+> +			synth_opts->llc = true;
+> +			break;
+> +		case 't':
+> +			synth_opts->tlb = true;
+> +			break;
+> +		case 'a':
+> +			synth_opts->remote_access = true;
+> +			break;
+>  		case ' ':
+>  		case ',':
+>  			break;
+> diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
+> index 0220a2e86c16..142ccf7d34df 100644
+> --- a/tools/perf/util/auxtrace.h
+> +++ b/tools/perf/util/auxtrace.h
+> @@ -63,6 +63,7 @@ enum itrace_period_type {
+>   *          because 'perf inject' will write it out
+>   * @instructions: whether to synthesize 'instructions' events
+>   * @branches: whether to synthesize 'branches' events
+> + *            (branch misses only for Arm SPE)
+>   * @transactions: whether to synthesize events for transactions
+>   * @ptwrites: whether to synthesize events for ptwrites
+>   * @pwr_events: whether to synthesize power events
+> @@ -78,6 +79,10 @@ enum itrace_period_type {
+>   * @thread_stack: feed branches to the thread_stack
+>   * @last_branch: add branch context to 'instruction' events
+>   * @add_last_branch: add branch context to existing event records
+> + * @flc: whether to synthesize first level cache events
+> + * @llc: whether to synthesize last level cache events
+> + * @tlb: whether to synthesize TLB events
+> + * @remote_access: whether to synthesize remote access events
+>   * @callchain_sz: maximum callchain size
+>   * @last_branch_sz: branch context size
+>   * @period: 'instructions' events period
+> @@ -107,6 +112,10 @@ struct itrace_synth_opts {
+>  	bool			thread_stack;
+>  	bool			last_branch;
+>  	bool			add_last_branch;
+> +	bool			flc;
+> +	bool			llc;
+> +	bool			tlb;
+> +	bool			remote_access;
+>  	unsigned int		callchain_sz;
+>  	unsigned int		last_branch_sz;
+>  	unsigned long long	period;
+> @@ -596,7 +605,7 @@ bool auxtrace__evsel_is_auxtrace(struct perf_session *session,
+>  
+>  #define ITRACE_HELP \
+>  "				i:	    		synthesize instructions events\n"		\
+> -"				b:	    		synthesize branches events\n"		\
+> +"				b:	    		synthesize branches events (branch misses for Arm SPE)\n" \
+>  "				c:	    		synthesize branches events (calls only)\n"	\
+>  "				r:	    		synthesize branches events (returns only)\n" \
+>  "				x:	    		synthesize transactions events\n"		\
+> @@ -604,6 +613,10 @@ bool auxtrace__evsel_is_auxtrace(struct perf_session *session,
+>  "				p:	    		synthesize power events\n"			\
+>  "				e:	    		synthesize error events\n"			\
+>  "				d:	    		create a debug log\n"			\
+> +"				f:	    		synthesize first level cache events\n" \
+> +"				m:	    		synthesize last level cache events\n" \
+> +"				t:	    		synthesize TLB events\n" \
+> +"				a:	    		synthesize remote access events\n" \
+>  "				g[len]:     		synthesize a call chain (use with i or x)\n" \
+>  "				l[len]:     		synthesize last branch entries (use with i or x)\n" \
+>  "				sNUMBER:    		skip initial number of events\n"		\
+> 
 
-nit: on error this needs:
-free(list);
-otherwise something like fuzz testing could go down the error path and
-complain about memory leaks.
-
-Thanks,
-Ian
-
-> +               YYABORT;
-> +       $$ = list;
-> +}
-> +|
-> +PE_PMU_EVENT_FAKE opt_pmu_config
-> +{
-> +       struct list_head *list;
-> +       int err;
-> +
-> +       list = alloc_list();
-> +       if (!list)
-> +               YYABORT;
-> +
-> +       err = parse_events_add_pmu(_parse_state, list, $1, $2, false, false);
-> +       free($1);
-> +       parse_events_terms__delete($2);
-> +       if (err < 0)
-> +               YYABORT;
-> +       $$ = list;
-> +}
->
->  value_sym:
->  PE_VALUE_SYM_HW
-> --
-> 2.25.4
->
