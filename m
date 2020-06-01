@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6545A1EAEC8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6459E1EADDC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730642AbgFAS47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:56:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43024 "EHLO mail.kernel.org"
+        id S1730300AbgFAStB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:49:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728877AbgFASAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:00:19 -0400
+        id S1730564AbgFASHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:07:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 46531206E2;
-        Mon,  1 Jun 2020 18:00:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93CFF21501;
+        Mon,  1 Jun 2020 18:07:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034418;
-        bh=2kWCVXZYXUw1sPg7WO9hPr23Qd/vPlm0bq90WakJSmw=;
+        s=default; t=1591034836;
+        bh=RXpBZvAf8tWQvaArUagbRvUq9c28m3SZV6o+muKSNDA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GDnZXFVIPFZwDfgiQmlJ6hvoGTgkvOiuYH7Dp9GFnKLMa2AcPHWyxF6cvXNp4BGRG
-         eEDWc74NsFWVpz1kGCoR88DJiqjYTy0PeYjGT+d+ZpHd11RktlVz8o/2Q34H93zyNa
-         INbziuxQJVzIiRUhi6NM2WaWE55Kw953SWOHIbj8=
+        b=JhUsjhN7RYKxAX4IcQkWTaoTcoeT3yb32AFUezpaPSU/eMnPjZM1W+SrpgjZUUCkb
+         iU817tqfgwkv+ncPV5+JyJgCwRGwcpWQgrCv62XOouBRK7MQAJCsAO0caUcIu8a+5K
+         LcdKXyQP55zihfOJwlZ3gwNwe0lH9dQA8dLlPO/Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Moshe Shemesh <moshe@mellanox.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Subject: [PATCH 4.14 08/77] net/mlx5e: Update netdev txq on completions during closure
+        stable@vger.kernel.org, Johan Jonker <jbx6244@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 035/142] arm64: dts: rockchip: swap interrupts interrupt-names rk3399 gpu node
 Date:   Mon,  1 Jun 2020 19:53:13 +0200
-Message-Id: <20200601174017.905106006@linuxfoundation.org>
+Message-Id: <20200601174041.622464619@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
-References: <20200601174016.396817032@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Moshe Shemesh <moshe@mellanox.com>
+From: Johan Jonker <jbx6244@gmail.com>
 
-[ Upstream commit 5e911e2c06bd8c17df29147a5e2d4b17fafda024 ]
+[ Upstream commit c604fd810bda667bdc20b2c041917baa7803e0fb ]
 
-On sq closure when we free its descriptors, we should also update netdev
-txq on completions which would not arrive. Otherwise if we reopen sqs
-and attach them back, for example on fw fatal recovery flow, we may get
-tx timeout.
+Dts files with Rockchip rk3399 'gpu' nodes were manually verified.
+In order to automate this process arm,mali-midgard.txt
+has been converted to yaml. In the new setup dtbs_check with
+arm,mali-midgard.yaml expects interrupts and interrupt-names values
+in the same order. Fix this for rk3399.
 
-Fixes: 29429f3300a3 ("net/mlx5e: Timeout if SQ doesn't flush during close")
-Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
-Reviewed-by: Tariq Toukan <tariqt@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+make ARCH=arm64 dtbs_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/gpu/
+arm,mali-midgard.yaml
+
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Link: https://lore.kernel.org/r/20200425143837.18706-1-jbx6244@gmail.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_tx.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-@@ -496,8 +496,9 @@ bool mlx5e_poll_tx_cq(struct mlx5e_cq *c
- void mlx5e_free_txqsq_descs(struct mlx5e_txqsq *sq)
- {
- 	struct mlx5e_tx_wqe_info *wi;
-+	u32 nbytes = 0;
-+	u16 ci, npkts = 0;
- 	struct sk_buff *skb;
--	u16 ci;
- 	int i;
- 
- 	while (sq->cc != sq->pc) {
-@@ -518,8 +519,11 @@ void mlx5e_free_txqsq_descs(struct mlx5e
- 		}
- 
- 		dev_kfree_skb_any(skb);
-+		npkts++;
-+		nbytes += wi->num_bytes;
- 		sq->cc += wi->num_wqebbs;
- 	}
-+	netdev_tx_completed_queue(sq->txq, npkts, nbytes);
- }
- 
- #ifdef CONFIG_MLX5_CORE_IPOIB
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index cd97016b7c18..c5d8d1c58291 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -1881,10 +1881,10 @@
+ 	gpu: gpu@ff9a0000 {
+ 		compatible = "rockchip,rk3399-mali", "arm,mali-t860";
+ 		reg = <0x0 0xff9a0000 0x0 0x10000>;
+-		interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH 0>,
+-			     <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH 0>,
+-			     <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH 0>;
+-		interrupt-names = "gpu", "job", "mmu";
++		interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH 0>,
++			     <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH 0>,
++			     <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH 0>;
++		interrupt-names = "job", "mmu", "gpu";
+ 		clocks = <&cru ACLK_GPU>;
+ 		power-domains = <&power RK3399_PD_GPU>;
+ 		status = "disabled";
+-- 
+2.25.1
+
 
 
