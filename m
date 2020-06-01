@@ -2,276 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B75C11EA21B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 12:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E181F1EA238
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 12:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726225AbgFAKqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 06:46:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725847AbgFAKqH (ORCPT
+        id S1727828AbgFAKr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 06:47:56 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:29099 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726113AbgFAKq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 06:46:07 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC0DC03E96F
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 03:46:07 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id x22so3646698lfd.4
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 03:46:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JjhmAPEKNow7E1vW8s3ASEs0uGQtIO9UoGk5GAxoJ48=;
-        b=Mod4ncWfP0u3c9DVUfv0x5U7NxZj4ctI1Zutm0PEe9JCAjok93XNX1N88SQ20xWLU+
-         2ZJilDZ7kW/91hV4FSWulFzF2TuqLJznMbjcOYqp6GJf/Na9gcftf8IX8u5ZJgWMxJAY
-         2sfh1CDLU+mbGuMUW15FOy224F8LEHACUOS4wsw6O1HJN+nb0TDh2ZvshdVuB4+MnOCK
-         dkoWnL1CSx882omRa1xxe85IalpJgZm3tuczHlG8kjtX8Zx+LsTLxxDu7ByVyrxg9ovU
-         qHudTXnjrLU4IXgBWuf1t1Tutif0lZZxEFXQ9LmpXl81aK+yoA/MD0KoGettgDxPi1FE
-         PANg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JjhmAPEKNow7E1vW8s3ASEs0uGQtIO9UoGk5GAxoJ48=;
-        b=egiKtfMQFhjKCu5Vj+e6okYC05IsRxo2OV9QuDglYadr0+PcA2BjBqIdYNu8o+arXH
-         LuhwwYgzV9SVWC3TShLpCRJ22Fnq2cy/veDlkO1aNjKxvdtdqH4J+PzXE0+nlrSPLOlH
-         1M1++qllcFK6ZRQfbIrRbGqJfkFhRviGdELlI6td1mIG02aRG9QY9WiUxPm1v2UOFqBg
-         KVmNCusUT3K8AQmMecg4JCmytjuDr/nmcswbD5bvmUV5l4k+PqtYp8NfD1k/zoaqda3B
-         wTvRAMrtb0rb1lla5O32wUp/XLc2nBXSXHP2A4DR4ItGCfVLj+CTQIkKilSOlhxG6zDE
-         SbRA==
-X-Gm-Message-State: AOAM533x1UUymV2lOjt44pmf+mvoqyD0BnVx8xLzMrjYeVWc/ZNaGXxz
-        3bud2he589V+ieqn6r9moUKA2jhFiirAU0VikGoPnw==
-X-Google-Smtp-Source: ABdhPJzC8ARUtRKcCeGMzGx9R8piBFDgHvxT1yEWYNe6pCqFfY5ck8AQhTqj2ZcKnel00mrL2z1oZBjL1EaaY6rE7Wc=
-X-Received: by 2002:ac2:44bb:: with SMTP id c27mr11290775lfm.59.1591008365696;
- Mon, 01 Jun 2020 03:46:05 -0700 (PDT)
+        Mon, 1 Jun 2020 06:46:56 -0400
+X-UUID: 17e55ee0386d4a59ae9ee73598f5e7d8-20200601
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=3tcqnbR/zIlPdKV8ncXNBaptfuExNkU2Wwoy2vi6+Dg=;
+        b=LYxPH7Ikoi/Ep5KfZFnE4VbGq89skg7OuL7PkHeAAdH8JvcX47b/hyEtQXI8alTKMCCex5fG8bka+/ou4tgYDPVEdzZog7vcVJOMZLL3iO1+dIVz29ctRK+Jvp+fzZPtVvzWHMIURh4MDphjUMmCpxQR6RbqkC5kTSik3yXKzaA=;
+X-UUID: 17e55ee0386d4a59ae9ee73598f5e7d8-20200601
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1830363407; Mon, 01 Jun 2020 18:46:48 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 1 Jun 2020 18:46:45 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 1 Jun 2020 18:46:45 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>
+CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
+        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
+        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <cc.chou@mediatek.com>,
+        <chaotian.jing@mediatek.com>,
+        Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v3 0/5] scsi: ufs-mediatek: Fix clk-gating and introduce low-power mode for vccq2
+Date:   Mon, 1 Jun 2020 18:46:41 +0800
+Message-ID: <20200601104646.15436-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <20200529082701.13457-1-maxim.uvarov@linaro.org> <20200529082701.13457-2-maxim.uvarov@linaro.org>
-In-Reply-To: <20200529082701.13457-2-maxim.uvarov@linaro.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Mon, 1 Jun 2020 16:15:53 +0530
-Message-ID: <CAFA6WYOoZMUMVJbUrxRyYZKPPD-tfaioWqaCkuFs4+g7jmhY5Q@mail.gmail.com>
-Subject: Re: [PATCHv5 1/3] optee: do drivers initialization before and after
- tee-supplicant run
-To:     Maxim Uvarov <maxim.uvarov@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>,
-        peterhuewe@gmx.de,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        linux-integrity@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 May 2020 at 13:57, Maxim Uvarov <maxim.uvarov@linaro.org> wrote:
->
-> Some drivers (like ftpm) can operate only after tee-supplicant
-> runs because of tee-supplicant provides things like storage
-> services.  This patch splits probe of non tee-supplicant dependable
-> drivers to the early stage, and after tee-supplicant run probe other
-> drivers.
->
-> Signed-off-by: Maxim Uvarov <maxim.uvarov@linaro.org>
-> Suggested-by: Sumit Garg <sumit.garg@linaro.org>
-> Suggested-by: Arnd Bergmann <arnd@linaro.org>
-> ---
->  drivers/tee/optee/core.c          | 24 +++++++++++++++++++++---
->  drivers/tee/optee/device.c        | 17 +++++++++++------
->  drivers/tee/optee/optee_private.h | 10 +++++++++-
->  3 files changed, 41 insertions(+), 10 deletions(-)
->
+SGksDQpUaGlzIHNlcmllcyBmaXhlcyBjbGstZ2F0aW5nIGlzc3VlcyBhbmQgaW50cm9kdWNlcyBs
+b3ctcG93ZXIgbW9kZSBmb3IgdmNjcTIgaW4gTWVkaWFUZWsgcGxhdGZvcm1zLg0KDQp2MiAtPiB2
+MzoNCiAgLSBGaXggKGFkZCBiYWNrKSBsaW5rb2ZmIHN1cHBvcnQgaW4gcGF0Y2ggWzRdIHNpbmNl
+IHByZXZpb3VzIHZlcnNpb24gaW5jb3JyZWN0bHkgcmVtb3ZlZCBsaW5rb2ZmIHN1cHBvcnQNCg0K
+djEgLT4gdjI6DQogIC0gQWRkIHBhdGNoIFs0XSBhbmQgWzVdDQoNClN0YW5sZXkgQ2h1ICg1KToN
+CiAgc2NzaTogdWZzLW1lZGlhdGVrOiBGaXggaW1wcmVjaXNlIHdhaXRpbmcgdGltZSBmb3IgcmVm
+LWNsayBjb250cm9sDQogIHNjc2k6IHVmcy1tZWRpYXRlazogRG8gbm90IGdhdGUgY2xvY2tzIGlm
+IGF1dG8taGliZXJuOCBpcyBub3QgZW50ZXJlZA0KICAgIHlldA0KICBzY3NpOiB1ZnMtbWVkaWF0
+ZWs6IEludHJvZHVjZSBsb3ctcG93ZXIgbW9kZSBmb3IgZGV2aWNlIHBvd2VyIHN1cHBseQ0KICBz
+Y3NpOiB1ZnMtbWVkaWF0ZWs6IEZpeCB1bmJhbGFuY2VkIGNsb2NrIG9uL29mZg0KICBzY3NpOiB1
+ZnMtbWVkaWF0ZWs6IEFsbG93IHVuYm91bmQgbXBoeQ0KDQogZHJpdmVycy9zY3NpL3Vmcy91ZnMt
+bWVkaWF0ZWsuYyB8IDExNiArKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLQ0KIGRyaXZl
+cnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLmggfCAgIDMgKy0NCiAyIGZpbGVzIGNoYW5nZWQsIDkw
+IGluc2VydGlvbnMoKyksIDI5IGRlbGV0aW9ucygtKQ0KDQotLSANCjIuMTguMA0K
 
-Commit subject sounds a little vague, so how about:
-
-====
-optee: enable support for multi-stage bus enumeration
-====
-
-Then in the commit description, you can elaborate on what it actually means.
-
-> diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> index 99698b8a3a74..bf0851fdf108 100644
-> --- a/drivers/tee/optee/core.c
-> +++ b/drivers/tee/optee/core.c
-> @@ -17,6 +17,7 @@
->  #include <linux/tee_drv.h>
->  #include <linux/types.h>
->  #include <linux/uaccess.h>
-> +#include <linux/workqueue.h>
->  #include "optee_private.h"
->  #include "optee_smc.h"
->  #include "shm_pool.h"
-> @@ -218,6 +219,11 @@ static void optee_get_version(struct tee_device *teedev,
->         *vers = v;
->  }
->
-> +static void optee_bus_scan(struct work_struct *work)
-> +{
-> +       WARN_ON(optee_enumerate_devices(PTA_CMD_GET_DEVICES_SUPP));
-> +}
-> +
->  static int optee_open(struct tee_context *ctx)
->  {
->         struct optee_context_data *ctxdata;
-> @@ -241,8 +247,18 @@ static int optee_open(struct tee_context *ctx)
->                         kfree(ctxdata);
->                         return -EBUSY;
->                 }
-> -       }
->
-> +               if (!optee->scan_bus_done) {
-> +                       INIT_WORK(&optee->scan_bus_work, optee_bus_scan);
-> +                       optee->scan_bus_wq = create_workqueue("optee_bus_scan");
-> +                       if (!optee->scan_bus_wq) {
-> +                               kfree(ctxdata);
-> +                               return -ECHILD;
-> +                       }
-> +                       queue_work(optee->scan_bus_wq, &optee->scan_bus_work);
-> +                       optee->scan_bus_done = true;
-> +               }
-> +       }
->         mutex_init(&ctxdata->mutex);
->         INIT_LIST_HEAD(&ctxdata->sess_list);
->
-> @@ -296,8 +312,10 @@ static void optee_release(struct tee_context *ctx)
->
->         ctx->data = NULL;
->
-> -       if (teedev == optee->supp_teedev)
-> +       if (teedev == optee->supp_teedev) {
-> +               destroy_workqueue(optee->scan_bus_wq);
-
-Doesn't it deserve a prior check "if(optee->scan_bus_wq)" as we only
-allocate it once during multiple tee-supplicant instances?
-
->                 optee_supp_release(&optee->supp);
-> +       }
->  }
->
->  static const struct tee_driver_ops optee_ops = {
-> @@ -675,7 +693,7 @@ static int optee_probe(struct platform_device *pdev)
->
->         platform_set_drvdata(pdev, optee);
->
-> -       rc = optee_enumerate_devices();
-> +       rc = optee_enumerate_devices(PTA_CMD_GET_DEVICES);
->         if (rc) {
->                 optee_remove(pdev);
->                 return rc;
-> diff --git a/drivers/tee/optee/device.c b/drivers/tee/optee/device.c
-> index e3a148521ec1..d4931dad07aa 100644
-> --- a/drivers/tee/optee/device.c
-> +++ b/drivers/tee/optee/device.c
-> @@ -21,7 +21,6 @@
->   * TEE_ERROR_BAD_PARAMETERS - Incorrect input param
->   * TEE_ERROR_SHORT_BUFFER - Output buffer size less than required
->   */
-
-This comment needs to be moved as well.
-
-> -#define PTA_CMD_GET_DEVICES            0x0
->
->  static int optee_ctx_match(struct tee_ioctl_version_data *ver, const void *data)
->  {
-> @@ -32,7 +31,8 @@ static int optee_ctx_match(struct tee_ioctl_version_data *ver, const void *data)
->  }
->
->  static int get_devices(struct tee_context *ctx, u32 session,
-> -                      struct tee_shm *device_shm, u32 *shm_size)
-> +                      struct tee_shm *device_shm, u32 *shm_size,
-> +                      u32 func)
->  {
->         int ret = 0;
->         struct tee_ioctl_invoke_arg inv_arg;
-> @@ -42,7 +42,7 @@ static int get_devices(struct tee_context *ctx, u32 session,
->         memset(&param, 0, sizeof(param));
->
->         /* Invoke PTA_CMD_GET_DEVICES function */
-
-You can get rid of this comment.
-
--Sumit
-
-> -       inv_arg.func = PTA_CMD_GET_DEVICES;
-> +       inv_arg.func = func;
->         inv_arg.session = session;
->         inv_arg.num_params = 4;
->
-> @@ -87,7 +87,7 @@ static int optee_register_device(const uuid_t *device_uuid, u32 device_id)
->         return rc;
->  }
->
-> -int optee_enumerate_devices(void)
-> +static int __optee_enumerate_devices(u32 func)
->  {
->         const uuid_t pta_uuid =
->                 UUID_INIT(0x7011a688, 0xddde, 0x4053,
-> @@ -118,7 +118,7 @@ int optee_enumerate_devices(void)
->                 goto out_ctx;
->         }
->
-> -       rc = get_devices(ctx, sess_arg.session, NULL, &shm_size);
-> +       rc = get_devices(ctx, sess_arg.session, NULL, &shm_size, func);
->         if (rc < 0 || !shm_size)
->                 goto out_sess;
->
-> @@ -130,7 +130,7 @@ int optee_enumerate_devices(void)
->                 goto out_sess;
->         }
->
-> -       rc = get_devices(ctx, sess_arg.session, device_shm, &shm_size);
-> +       rc = get_devices(ctx, sess_arg.session, device_shm, &shm_size, func);
->         if (rc < 0)
->                 goto out_shm;
->
-> @@ -158,3 +158,8 @@ int optee_enumerate_devices(void)
->
->         return rc;
->  }
-> +
-> +int optee_enumerate_devices(u32 func)
-> +{
-> +       return  __optee_enumerate_devices(func);
-> +}
-> diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
-> index d9c5037b4e03..8b71839a357e 100644
-> --- a/drivers/tee/optee/optee_private.h
-> +++ b/drivers/tee/optee/optee_private.h
-> @@ -78,6 +78,9 @@ struct optee_supp {
->   * @memremaped_shm     virtual address of memory in shared memory pool
->   * @sec_caps:          secure world capabilities defined by
->   *                     OPTEE_SMC_SEC_CAP_* in optee_smc.h
-> + * @scan_bus_done      flag if device registation was already done.
-> + * @scan_bus_wq                workqueue to scan optee bus and register optee drivers
-> + * @scan_bus_work      workq to scan optee bus and register optee drivers
->   */
->  struct optee {
->         struct tee_device *supp_teedev;
-> @@ -89,6 +92,9 @@ struct optee {
->         struct tee_shm_pool *pool;
->         void *memremaped_shm;
->         u32 sec_caps;
-> +       bool   scan_bus_done;
-> +       struct workqueue_struct *scan_bus_wq;
-> +       struct work_struct scan_bus_work;
->  };
->
->  struct optee_session {
-> @@ -173,7 +179,9 @@ void optee_free_pages_list(void *array, size_t num_entries);
->  void optee_fill_pages_list(u64 *dst, struct page **pages, int num_pages,
->                            size_t page_offset);
->
-> -int optee_enumerate_devices(void);
-> +#define PTA_CMD_GET_DEVICES            0x0
-> +#define PTA_CMD_GET_DEVICES_SUPP       0x1
-> +int optee_enumerate_devices(u32 func);
->
->  /*
->   * Small helpers
-> --
-> 2.17.1
->
