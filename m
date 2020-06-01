@@ -2,387 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134531EB03D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 22:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BF081EAFE5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 22:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728584AbgFAU3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 16:29:50 -0400
-Received: from mail-ve1eur02hn2208.outbound.protection.outlook.com ([52.100.10.208]:41954
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727096AbgFAU3t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 16:29:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JkL6K199weMsz11bCFH1sSwFZIHnGeUPiyWYyoVydu9DZKX3RSIPswQV1oKcY0aPJwW164UfS5jIw+RtgNuPHxREUofHwHS0hJo9LWclF3YO8LIn3KLE+DXUF9F97MyYmQ6soumEfkyI3ICsjfM63wQ73fy+UybvkJUBjAYCqItsg+myXPKapXFpRu2ou11LrwfmquZlNZSh771HrILni6lIm/a48/e3uVSKFlbA5tdI/skDOzkyVaDuvHFpz4a7lPOvLNkjyVCc1xeMJOD27FWvYA4I/0TcKQoNB21XWjycv7pgNt9dTQbTMTySCFSOu8fksgsXO4lMf+SGcBwNPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P98AxuA238ck8FmM+g+MmiMc9CbnOmaoD8MOmMmXuhc=;
- b=V+GBF3LoFaLmAHMg53hAVycmb5zkk/EAElMuzqyED0+0UTtVqKi3E3BVyLH/YYeO818rdrIw7NL6VZbgJF0aIk7lHc6FW7T8NWZlW+bDqQTJ3Op9H5DObeAQ0zNUp3fxaSlYNyqPZsTnltuYgzbNRqQey+4eVZMC7/lE4rk5j0xblPd1PR2eAgliszTwO2hoeCL3Vdp8htb+XWdLkkizjKkuMQ5qvqoyad1kWifLfpczDMfE5UANBfSYSZ0CB0YaS5aLYLoNQQVkVXMfRUt0eGvMH0qNZqefGfIcJFG+IqvP0jGIv0Up0weI4Ar4ZLvL96N9lKa/ie17wtvvqQT7+g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=silexinsight.com; dmarc=pass action=none
- header.from=silexinsight.com; dkim=pass header.d=silexinsight.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=silexinside.onmicrosoft.com; s=selector2-silexinside-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P98AxuA238ck8FmM+g+MmiMc9CbnOmaoD8MOmMmXuhc=;
- b=fzxoueadIebmEBqYfmM//hK09DWoiENocR0Lmy7aRUavZlHrxybtppm7kisMhbs3WJKslYllYF0bZV5cj/v/lzXU5UQtUqpi9qYS1hEZok47Zl0D+OQKmmlkYux2WGeNGyM9FAMePN+wDjOwLwwkGz+IoS2iwAWVqIdF5rCu3Hc=
-Authentication-Results: selenic.com; dkim=none (message not signed)
- header.d=none;selenic.com; dmarc=none action=none
- header.from=silexinsight.com;
-Received: from AM7PR09MB3621.eurprd09.prod.outlook.com (2603:10a6:20b:10d::15)
- by AM7PR09MB3957.eurprd09.prod.outlook.com (2603:10a6:20b:11f::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17; Mon, 1 Jun
- 2020 20:28:04 +0000
-Received: from AM7PR09MB3621.eurprd09.prod.outlook.com
- ([fe80::e902:acdf:8750:e9e2]) by AM7PR09MB3621.eurprd09.prod.outlook.com
- ([fe80::e902:acdf:8750:e9e2%8]) with mapi id 15.20.3045.024; Mon, 1 Jun 2020
- 20:28:04 +0000
-From:   Olivier Sobrie <olivier.sobrie@silexinsight.com>
-To:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Olivier Sobrie <olivier.sobrie@silexinsight.com>,
-        Waleed Ziad <waleed94ziad@gmail.com>,
-        sebastien.rabou@silexinsight.com
-Subject: [PATCH v2 2/2] hwrng: ba431-rng: add support for BA431 hwrng
-Date:   Mon,  1 Jun 2020 16:27:40 +0200
-Message-Id: <20200601142740.443548-3-olivier.sobrie@silexinsight.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601142740.443548-1-olivier.sobrie@silexinsight.com>
-References: <20200601142740.443548-1-olivier.sobrie@silexinsight.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: AM4PR0902CA0004.eurprd09.prod.outlook.com
- (2603:10a6:200:9b::14) To AM7PR09MB3621.eurprd09.prod.outlook.com
- (2603:10a6:20b:10d::15)
+        id S1728056AbgFAUBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 16:01:40 -0400
+Received: from mga14.intel.com ([192.55.52.115]:7435 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726667AbgFAUBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 16:01:40 -0400
+IronPort-SDR: sKw7fo8sqLhrame7GiESRqdcku2MCIci820Hc+V4Egr7wgJ/xvKXfVdGPxxuu9DItLi+leV5Gq
+ q8FWMh/LAf6Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2020 13:01:38 -0700
+IronPort-SDR: vzKUIMMGr9TjGBVw99zcKlRECpZfcZJ5Ua2oCwVJDL46TeFlWYBlpAey7gl3egoGXnNjM500Md
+ hgyMu2utr3Tw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,462,1583222400"; 
+   d="scan'208";a="415919114"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga004.jf.intel.com with ESMTP; 01 Jun 2020 13:01:38 -0700
+Received: from [10.249.230.65] (abudanko-mobl.ccr.corp.intel.com [10.249.230.65])
+        by linux.intel.com (Postfix) with ESMTP id 96C4C58002E;
+        Mon,  1 Jun 2020 13:01:35 -0700 (PDT)
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+Subject: [PATCH v6 00/13] perf: support enable and disable commands in stat
+ and record modes
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Organization: Intel Corp.
+Message-ID: <f8e3a714-d9b1-4647-e1d2-9981cbaa83ec@linux.intel.com>
+Date:   Mon, 1 Jun 2020 23:01:34 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (2a02:a03f:a7df:f300:3173:2902:9670:18b) by AM4PR0902CA0004.eurprd09.prod.outlook.com (2603:10a6:200:9b::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17 via Frontend Transport; Mon, 1 Jun 2020 20:28:04 +0000
-X-Mailer: git-send-email 2.26.2
-X-Originating-IP: [2a02:a03f:a7df:f300:3173:2902:9670:18b]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fb4e32b0-b204-42dd-a0a5-08d8066a49cf
-X-MS-TrafficTypeDiagnostic: AM7PR09MB3957:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM7PR09MB3957237DAEF0AFCCFE010443F48A0@AM7PR09MB3957.eurprd09.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-Forefront-PRVS: 0421BF7135
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: o3wiO/n7YuKj+4tKryltFKOp1J39yjj38WvhvyQZtHd8mKGcyi5ZEnFX7Ss9Pisb5fYyY0jqgo1KlG/CnSDbEPCiejQabDEu6wYHCdOAI5oJIPcjLtbEJs2sY4CS7ObdA62xYOsmExFo3czK/CQE4w+QJENkttQB8397rwTQJtCtZQXK1f/thnriaqw+QR+6FqhD2UxN0XBukA/PRKgCAkgBKzqGYxThBiy8Ra+aOuEJmv+XpiN+Biz47NYlEBd5ayWz0o0jTsZWeqIrpJhvLZz0IeOmLIrGwKCoreo5TrDQ+NUgsiUT4j526hHts5nptj7Mbl0rmB3jBrXKEUvVvrzq+hmoPYISknw9Flk5DWaJOtx/kjPWG4XO++3EY7CYmcVdj+rAHQvBKkENXR2BQZiN7FPJbQAugivKmSyAriFbkVgLEvR/JQTjWQQdguhSLDWU55bV5jTtlXIZhjSwi7E3GGSzEvVGLdvw4rwzB0vciWU/r3JCZqtHVf/BJcthC9HnX92QQNHmN/V5m3vmLll4Ld6XFn0niV4q2mwqarDFJTB4zMwG3Hhq1hL7NFxV2I7u82art0J84dK6ovhwDBo3EXkmHSqt5Ky3Svbeb52+67PBPJtqriqWNE2urdS/Ti7cjAPqF8mWTtGsgU89z29eGbLEhHYUboItuVheFlucGBqgLvFKn4BqTiuXvaz3
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:5;SRV:;IPV:NLI;SFV:SPM;H:AM7PR09MB3621.eurprd09.prod.outlook.com;PTR:;CAT:OSPM;SFTY:;SFS:(366004)(396003)(346002)(136003)(39830400003)(376002)(5660300002)(36756003)(6496006)(52116002)(66556008)(8936002)(1076003)(86362001)(16526019)(186003)(66476007)(66946007)(2616005)(8676002)(44832011)(107886003)(4326008)(508600001)(2906002)(316002)(6486002)(110136005)(54906003)(6666004)(23200700001);DIR:OUT;SFP:1501;
-X-MS-Exchange-AntiSpam-MessageData: BNJVU7FZDWWJ+7LfnwI1zoV1CZy4L2qt9VWexIlnU4z9CP5BFzbuO8AoYC4AGDhOgbdKQMlkSwj1HyU0wjySGI2uz6rnj4eOQWifxkWLgB/AOI947EhunYvbdVbYgj1taDTN4+nPV0FeCZgBCFkrXJV+52YypKKTgMnoG+Ynhz0MljyttkABo4/0w7nImVpl2hdkhqUww7s09jBhEkisulBLoPplWwe+6DTr+BFFfcn4hjLL1WA85/WxsJc/ew+gCBkBWNfslmV0qf8M5gFuY0vtHhFt2Vm2LSRjvZxUcTdlQLHTvf9fVB9FFrXWM2qoant1FbCsagPkHX4EClPimvGrBlH8T+jcYoD01Y+mSIxeQEhvKgTsqDfYlw4DlVv5EM8ZSkYGyC9gT4DkPTMglmDG0dz2EmFANmcBhLrSAviSA+G6eiOM/CFAjatjmN1cuor7ugBYnE/Nmdm09Itna+m0Fo8WfsntLInDJQNcwWxlD2xjXv8gZ/XENOiFQLWa3qF+HKyPSutLUepHqgR7btxvdyQGspovIXkxn7OkHNA=
-X-OriginatorOrg: silexinsight.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb4e32b0-b204-42dd-a0a5-08d8066a49cf
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2020 20:28:04.8465
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a02f6f9b-0f64-4420-b881-fca545d421d8
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: D6v3div4q3RIO+GYUiGoXTLVzGVVKHkTv2y39Riv5tfbmwbxQc459LGgcE/c1RoaRYx0DcfTzhtrd4t7QvaeAw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR09MB3957
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Silex insight BA431 is an IP designed to generate random numbers that
-can be integrated in various FPGA.
-This driver adds support for it through the hwrng interface.
 
-This driver is used in Silex Insight Viper OEM boards.
+Changes in v6:
+- split re-factoring of events handling loops for stat mode
+  into smaller incremental parts
+- added parts missing at v5
+- corrected v5 runtime issues
 
-Signed-off-by: Olivier Sobrie <olivier.sobrie@silexinsight.com>
-Signed-off-by: Waleed Ziad <waleed94ziad@gmail.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+v5: https://lore.kernel.org/lkml/e5cac8dd-7aa4-ec7c-671c-07756907acba@linux.intel.com/
+
+Changes in v5:
+- split re-factoring of events handling loops for stat mode
+  into smaller incremental parts
+
+v4: https://lore.kernel.org/lkml/653fe5f3-c986-a841-1ed8-0a7d2fa24c00@linux.intel.com/
+
+Changes in v4:
+- made checking of ctlfd state unconditional in record trace streaming loop
+- introduced static poll fds to keep evlist__filter_pollfd() unaffected
+- handled ret code of evlist__initialize_ctlfd() where need
+- renamed and structured handle_events() function
+- applied anonymous structs where needed
+
+v3: https://lore.kernel.org/lkml/eb38e9e5-754f-d410-1d9b-e26b702d51b7@linux.intel.com/
+
+Changes in v3:
+- renamed functions and types from perf_evlist_ to evlist_ to avoid
+  clash with libperf code;
+- extended commands to be strings of variable length consisting of
+  command name and also possibly including command specific data;
+- merged docs update with the code changes;
+- updated docs for -D,--delay=-1 option for stat and record modes;
+
+v2: https://lore.kernel.org/lkml/d582cc3d-2302-c7e2-70d3-bc7ab6f628c3@linux.intel.com/
+
+Changes in v2:
+- renamed resume and pause commands to enable and disable ones, renamed
+  CTL_CMD_RESUME and CTL_CMD_PAUSE to CTL_CMD_ENABLE and CTL_CMD_DISABLE
+  to fit to the appropriate ioctls and avoid mixing up with PAUSE_OUTPUT
+  ioctl;
+- factored out event handling loop into a handle_events() for stat mode;
+- separated -D,--delay=-1 into separate patches for stat and record modes;
+
+v1: https://lore.kernel.org/lkml/825a5132-b58d-c0b6-b050-5a6040386ec7@linux.intel.com/
+
+repo: tip of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git perf/core
+
+The patch set implements handling of 'start disabled', 'enable' and 'disable'
+external control commands which can be provided for stat and record modes
+of the tool from an external controlling process. 'start disabled' command
+can be used to postpone enabling of events in the beginning of a monitoring
+session. 'enable' and 'disable' commands can be used to enable and disable
+events correspondingly any time after the start of the session.
+
+The 'start disabled', 'enable' and 'disable' external control commands can be
+used to focus measurement on specially selected time intervals of workload
+execution. Focused measurement reduces tool intrusion and influence on
+workload behavior, reduces distortion and amount of collected and stored
+data, mitigates data accuracy loss because measurement and data capturing
+happen only during intervals of interest.
+
+A controlling process can be a bash shell script [1], native executable or
+any other language program that can directly work with file descriptors,
+e.g. pipes [2], and spawn a process, specially the tool one.
+
+-D,--delay <val> option is extended with -1 value to skip events enabling
+in the beginning of a monitoring session ('start disabled' command).
+--ctl-fd and --ctl-fd-ack command line options are introduced to provide the
+tool with a pair of file descriptors to listen to control commands and reply
+to the controlling process on the completion of received commands.
+
+The tool reads control command message from ctl-fd descriptor, handles the
+command and optionally replies acknowledgement message to fd-ack descriptor,
+if it is specified on the command line. 'enable' command is recognized as
+'enable' string message and 'disable' command is recognized as 'disable'
+string message both received from ctl-fd descriptor. Completion message is
+'ack\n' and sent to fd-ack descriptor.
+
+Example bash script demonstrating simple use case follows:
+
+#!/bin/bash
+
+ctl_dir=/tmp/
+
+ctl_fifo=${ctl_dir}perf_ctl.fifo
+test -p ${ctl_fifo} && unlink ${ctl_fifo}
+mkfifo ${ctl_fifo} && exec {ctl_fd}<>${ctl_fifo}
+
+ctl_ack_fifo=${ctl_dir}perf_ctl_ack.fifo
+test -p ${ctl_ack_fifo} && unlink ${ctl_ack_fifo}
+mkfifo ${ctl_ack_fifo} && exec {ctl_fd_ack}<>${ctl_ack_fifo}
+
+perf stat -D -1 -e cpu-cycles -a -I 1000                \
+          --ctl-fd ${ctl_fd} --ctl-fd-ack ${ctl_fd_ack} \
+          -- sleep 40 &
+perf_pid=$!
+
+sleep 5  && echo 'enable' >&${ctl_fd} && read -u ${ctl_fd_ack} e1 && echo "enabled(${e1})"
+sleep 10 && echo 'disable' >&${ctl_fd} && read -u ${ctl_fd_ack} d1 && echo "disabled(${d1})"
+sleep 5  && echo 'enable' >&${ctl_fd} && read -u ${ctl_fd_ack} e2 && echo "enabled(${e2})"
+sleep 10 && echo 'disable' >&${ctl_fd} && read -u ${ctl_fd_ack} d2 && echo "disabled(${d2})"
+
+exec {ctl_fd_ack}>&- && unlink ${ctl_ack_fifo}
+exec {ctl_fd}>&- && unlink ${ctl_fifo}
+
+wait -n ${perf_pid}
+exit $?
+
+
+Script output:
+
+[root@host dir] example
+Events disabled
+#           time             counts unit events
+     1.001101062      <not counted>      cpu-cycles                                                  
+     2.002994944      <not counted>      cpu-cycles                                                  
+     3.004864340      <not counted>      cpu-cycles                                                  
+     4.006727177      <not counted>      cpu-cycles                                                  
+Events enabled
+enabled(ack)
+     4.993808464          3,124,246      cpu-cycles                                                  
+     5.008597004          3,325,624      cpu-cycles                                                  
+     6.010387483         83,472,992      cpu-cycles                                                  
+     7.012266598         55,877,621      cpu-cycles                                                  
+     8.014175695         97,892,729      cpu-cycles                                                  
+     9.016056093         68,461,242      cpu-cycles                                                  
+    10.017937507         55,449,643      cpu-cycles                                                  
+    11.019830154         68,938,167      cpu-cycles                                                  
+    12.021719952         55,164,101      cpu-cycles                                                  
+    13.023627550         70,535,720      cpu-cycles                                                  
+    14.025580995         53,240,125      cpu-cycles                                                  
+disabled(ack)
+    14.997518260         53,558,068      cpu-cycles                                                  
+Events disabled
+    15.027216416      <not counted>      cpu-cycles                                                  
+    16.029052729      <not counted>      cpu-cycles                                                  
+    17.030904762      <not counted>      cpu-cycles                                                  
+    18.032073424      <not counted>      cpu-cycles                                                  
+    19.033805074      <not counted>      cpu-cycles                                                  
+Events enabled
+enabled(ack)
+    20.001279097          3,021,022      cpu-cycles                                                  
+    20.035044381          6,434,367      cpu-cycles                                                  
+    21.036923813         89,358,251      cpu-cycles                                                  
+    22.038825169         72,516,351      cpu-cycles                                                  
+#           time             counts unit events
+    23.040715596         55,046,157      cpu-cycles                                                  
+    24.042643757         78,128,649      cpu-cycles                                                  
+    25.044558535         61,052,428      cpu-cycles                                                  
+    26.046452785         62,142,806      cpu-cycles                                                  
+    27.048353021         74,477,971      cpu-cycles                                                  
+    28.050241286         61,001,623      cpu-cycles                                                  
+    29.052149961         61,653,502      cpu-cycles                                                  
+disabled(ack)
+    30.004980264         82,729,640      cpu-cycles                                                  
+Events disabled
+    30.053516176      <not counted>      cpu-cycles                                                  
+    31.055348366      <not counted>      cpu-cycles                                                  
+    32.057202097      <not counted>      cpu-cycles                                                  
+    33.059040702      <not counted>      cpu-cycles                                                  
+    34.060843288      <not counted>      cpu-cycles                                                  
+    35.000888624      <not counted>      cpu-cycles                                                  
+[root@host dir]# 
+
+[1] http://man7.org/linux/man-pages/man1/bash.1.html
+[2] http://man7.org/linux/man-pages/man2/pipe.2.html
+
 ---
- drivers/char/hw_random/Kconfig     |  12 ++
- drivers/char/hw_random/Makefile    |   1 +
- drivers/char/hw_random/ba431-rng.c | 234 +++++++++++++++++++++++++++++
- 3 files changed, 247 insertions(+)
- create mode 100644 drivers/char/hw_random/ba431-rng.c
+Alexey Budankov (13):
+  tools/libperf: introduce notion of static polled file descriptors
+  perf evlist: introduce control file descriptors
+  perf evlist: implement control command handling functions
+  perf stat: factor out body of event handling loop for system wide
+  perf stat: move target check to loop control statement
+  perf stat: factor out body of event handling loop for fork case
+  perf stat: factor out event handling loop into dispatch_events()
+  perf stat: extend -D,--delay option with -1 value
+  perf stat: implement control commands handling
+  perf stat: introduce --ctl-fd[-ack] options
+  perf record: extend -D,--delay option with -1 value
+  perf record: implement control commands handling
+  perf record: introduce --ctl-fd[-ack] options
 
-diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-index 9bc46da8d77a8..4f50ee02c639e 100644
---- a/drivers/char/hw_random/Kconfig
-+++ b/drivers/char/hw_random/Kconfig
-@@ -74,6 +74,18 @@ config HW_RANDOM_ATMEL
- 
- 	  If unsure, say Y.
- 
-+config HW_RANDOM_BA431
-+	tristate "Silex Insight BA431 Random Number Generator support"
-+	default HW_RANDOM
-+	help
-+	  This driver provides kernel-side support for the Random Number
-+	  Generator hardware based on Silex Insight BA431 IP.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called ba431-rng.
-+
-+	  If unsure, say Y.
-+
- config HW_RANDOM_BCM2835
- 	tristate "Broadcom BCM2835/BCM63xx Random Number Generator support"
- 	depends on ARCH_BCM2835 || ARCH_BCM_NSP || ARCH_BCM_5301X || \
-diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
-index a7801b49ce6c0..02ccadafcca99 100644
---- a/drivers/char/hw_random/Makefile
-+++ b/drivers/char/hw_random/Makefile
-@@ -9,6 +9,7 @@ obj-$(CONFIG_HW_RANDOM_TIMERIOMEM) += timeriomem-rng.o
- obj-$(CONFIG_HW_RANDOM_INTEL) += intel-rng.o
- obj-$(CONFIG_HW_RANDOM_AMD) += amd-rng.o
- obj-$(CONFIG_HW_RANDOM_ATMEL) += atmel-rng.o
-+obj-$(CONFIG_HW_RANDOM_BA431) += ba431-rng.o
- obj-$(CONFIG_HW_RANDOM_GEODE) += geode-rng.o
- obj-$(CONFIG_HW_RANDOM_N2RNG) += n2-rng.o
- n2-rng-y := n2-drv.o n2-asm.o
-diff --git a/drivers/char/hw_random/ba431-rng.c b/drivers/char/hw_random/ba431-rng.c
-new file mode 100644
-index 0000000000000..a39e3abf50b94
---- /dev/null
-+++ b/drivers/char/hw_random/ba431-rng.c
-@@ -0,0 +1,234 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Silex Insight
-+
-+#include <linux/delay.h>
-+#include <linux/hw_random.h>
-+#include <linux/io.h>
-+#include <linux/iopoll.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/workqueue.h>
-+
-+#define BA431_RESET_DELAY			1 /* usec */
-+#define BA431_RESET_READ_STATUS_TIMEOUT		1000 /* usec */
-+#define BA431_RESET_READ_STATUS_INTERVAL	10 /* usec */
-+#define BA431_READ_RETRY_INTERVAL		1 /* usec */
-+
-+#define BA431_REG_CTRL				0x00
-+#define BA431_REG_FIFO_LEVEL			0x04
-+#define BA431_REG_STATUS			0x30
-+#define BA431_REG_FIFODATA			0x80
-+
-+#define BA431_CTRL_ENABLE			BIT(0)
-+#define BA431_CTRL_SOFTRESET			BIT(8)
-+
-+#define BA431_STATUS_STATE_MASK			(BIT(1) | BIT(2) | BIT(3))
-+#define BA431_STATUS_STATE_OFFSET		1
-+
-+enum ba431_state {
-+	BA431_STATE_RESET,
-+	BA431_STATE_STARTUP,
-+	BA431_STATE_FIFOFULLON,
-+	BA431_STATE_FIFOFULLOFF,
-+	BA431_STATE_RUNNING,
-+	BA431_STATE_ERROR
-+};
-+
-+struct ba431_trng {
-+	struct device *dev;
-+	void __iomem *base;
-+	struct hwrng rng;
-+	atomic_t reset_pending;
-+	struct work_struct reset_work;
-+};
-+
-+static inline u32 ba431_trng_read_reg(struct ba431_trng *ba431, u32 reg)
-+{
-+	return ioread32(ba431->base + reg);
-+}
-+
-+static inline void ba431_trng_write_reg(struct ba431_trng *ba431, u32 reg,
-+					u32 val)
-+{
-+	iowrite32(val, ba431->base + reg);
-+}
-+
-+static inline enum ba431_state ba431_trng_get_state(struct ba431_trng *ba431)
-+{
-+	u32 status = ba431_trng_read_reg(ba431, BA431_REG_STATUS);
-+
-+	return (status & BA431_STATUS_STATE_MASK) >> BA431_STATUS_STATE_OFFSET;
-+}
-+
-+static int ba431_trng_is_in_error(struct ba431_trng *ba431)
-+{
-+	enum ba431_state state = ba431_trng_get_state(ba431);
-+
-+	if ((state < BA431_STATE_STARTUP) ||
-+	    (state >= BA431_STATE_ERROR))
-+		return 1;
-+
-+	return 0;
-+}
-+
-+static int ba431_trng_reset(struct ba431_trng *ba431)
-+{
-+	int ret;
-+
-+	/* Disable interrupts, random generation and enable the softreset */
-+	ba431_trng_write_reg(ba431, BA431_REG_CTRL, BA431_CTRL_SOFTRESET);
-+	udelay(BA431_RESET_DELAY);
-+	ba431_trng_write_reg(ba431, BA431_REG_CTRL, BA431_CTRL_ENABLE);
-+
-+	/* Wait until the state changed */
-+	if (readx_poll_timeout(ba431_trng_is_in_error, ba431, ret, !ret,
-+			       BA431_RESET_READ_STATUS_INTERVAL,
-+			       BA431_RESET_READ_STATUS_TIMEOUT)) {
-+		dev_err(ba431->dev, "reset failed (state: %d)\n",
-+			ba431_trng_get_state(ba431));
-+		return -ETIMEDOUT;
-+	}
-+
-+	dev_info(ba431->dev, "reset done\n");
-+
-+	return 0;
-+}
-+
-+static void ba431_trng_reset_work(struct work_struct *work)
-+{
-+	struct ba431_trng *ba431 = container_of(work, struct ba431_trng,
-+						reset_work);
-+	ba431_trng_reset(ba431);
-+	atomic_set(&ba431->reset_pending, 0);
-+}
-+
-+static void ba431_trng_schedule_reset(struct ba431_trng *ba431)
-+{
-+	if (atomic_cmpxchg(&ba431->reset_pending, 0, 1))
-+		return;
-+
-+	schedule_work(&ba431->reset_work);
-+}
-+
-+static int ba431_trng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
-+{
-+	struct ba431_trng *ba431 = container_of(rng, struct ba431_trng, rng);
-+	u32 *data = buf;
-+	unsigned int level, i;
-+	int n = 0;
-+
-+	while (max > 0) {
-+		level = ba431_trng_read_reg(ba431, BA431_REG_FIFO_LEVEL);
-+		if (!level) {
-+			if (ba431_trng_is_in_error(ba431)) {
-+				ba431_trng_schedule_reset(ba431);
-+				break;
-+			}
-+
-+			if (!wait)
-+				break;
-+
-+			udelay(BA431_READ_RETRY_INTERVAL);
-+			continue;
-+		}
-+
-+		i = level;
-+		do {
-+			data[n++] = ba431_trng_read_reg(ba431,
-+							BA431_REG_FIFODATA);
-+			max -= sizeof(*data);
-+		} while (--i && (max > 0));
-+
-+		if (ba431_trng_is_in_error(ba431)) {
-+			n -= (level - i);
-+			ba431_trng_schedule_reset(ba431);
-+			break;
-+		}
-+	}
-+
-+	n *= sizeof(data);
-+	return (n || !wait) ? n : -EIO;
-+}
-+
-+static void ba431_trng_cleanup(struct hwrng *rng)
-+{
-+	struct ba431_trng *ba431 = container_of(rng, struct ba431_trng, rng);
-+
-+	ba431_trng_write_reg(ba431, BA431_REG_CTRL, 0);
-+	cancel_work_sync(&ba431->reset_work);
-+}
-+
-+static int ba431_trng_init(struct hwrng *rng)
-+{
-+	struct ba431_trng *ba431 = container_of(rng, struct ba431_trng, rng);
-+
-+	return ba431_trng_reset(ba431);
-+}
-+
-+static int ba431_trng_probe(struct platform_device *pdev)
-+{
-+	struct ba431_trng *ba431;
-+	struct resource *res;
-+	int ret;
-+
-+	ba431 = devm_kzalloc(&pdev->dev, sizeof(*ba431), GFP_KERNEL);
-+	if (!ba431)
-+		return -ENOMEM;
-+
-+	ba431->dev = &pdev->dev;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	ba431->base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(ba431->base))
-+		return PTR_ERR(ba431->base);
-+
-+	atomic_set(&ba431->reset_pending, 0);
-+	INIT_WORK(&ba431->reset_work, ba431_trng_reset_work);
-+	ba431->rng.name = pdev->name;
-+	ba431->rng.init = ba431_trng_init;
-+	ba431->rng.cleanup = ba431_trng_cleanup;
-+	ba431->rng.read = ba431_trng_read;
-+
-+	platform_set_drvdata(pdev, ba431);
-+
-+	ret = hwrng_register(&ba431->rng);
-+	if (ret) {
-+		dev_err(&pdev->dev, "BA431 registration failed (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	dev_info(&pdev->dev, "BA431 TRNG registered\n");
-+
-+	return 0;
-+}
-+
-+static int ba431_trng_remove(struct platform_device *pdev)
-+{
-+	struct ba431_trng *ba431 = platform_get_drvdata(pdev);
-+
-+	hwrng_unregister(&ba431->rng);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id ba431_trng_dt_ids[] = {
-+	{ .compatible = "silex-insight,ba431-rng", .data = NULL },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, ba431_trng_dt_ids);
-+
-+static struct platform_driver ba431_trng_driver = {
-+	.driver = {
-+		.name = "ba431-rng",
-+		.of_match_table = ba431_trng_dt_ids,
-+	},
-+	.probe = ba431_trng_probe,
-+	.remove = ba431_trng_remove,
-+};
-+
-+module_platform_driver(ba431_trng_driver);
-+
-+MODULE_AUTHOR("Olivier Sobrie <olivier@sobrie.be>");
-+MODULE_DESCRIPTION("TRNG driver for Silex Insight BA431");
-+MODULE_LICENSE("GPL");
+ tools/lib/api/fd/array.c                 |  42 ++++++-
+ tools/lib/api/fd/array.h                 |   7 ++
+ tools/lib/perf/evlist.c                  |  11 ++
+ tools/lib/perf/include/internal/evlist.h |   2 +
+ tools/perf/Documentation/perf-record.txt |   5 +-
+ tools/perf/Documentation/perf-stat.txt   |  45 ++++++-
+ tools/perf/builtin-record.c              |  38 +++++-
+ tools/perf/builtin-stat.c                | 149 +++++++++++++++++------
+ tools/perf/builtin-trace.c               |   2 +-
+ tools/perf/util/evlist.c                 | 131 ++++++++++++++++++++
+ tools/perf/util/evlist.h                 |  25 ++++
+ tools/perf/util/record.h                 |   4 +-
+ tools/perf/util/stat.h                   |   4 +-
+ 13 files changed, 415 insertions(+), 50 deletions(-)
+
 -- 
-2.26.2
+2.24.1
 
