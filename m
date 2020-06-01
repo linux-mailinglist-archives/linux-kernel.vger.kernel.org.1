@@ -2,41 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D421EA95E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E26E1EA92A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729755AbgFASBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:01:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43792 "EHLO mail.kernel.org"
+        id S1729283AbgFAR6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:58:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729721AbgFASA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:00:59 -0400
+        id S1729215AbgFAR6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:58:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6EA7A206E2;
-        Mon,  1 Jun 2020 18:00:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FBC72076B;
+        Mon,  1 Jun 2020 17:58:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034458;
-        bh=mLNn3yn5BCIPZ460pohBxEcmBo7jmel2BEb77JX38QU=;
+        s=default; t=1591034317;
+        bh=hTc5StCoTsWrEq2VXmWQuAp2PNJxWYeixSkxoRBz6FA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G6LsCPynrE7lWoKRMRg3Uq9fI8v3HQkYUP2Klh+bSwbTkt8gK73omAnF4Jgryor/v
-         1pJPNF+mvM+ANgcrMlEZlmPdmb1+A13OZqu7639361n9aJq9GL+GEft7s2RNWbqrHo
-         mXP6kPltBGr+YTBShw/pMr4RwgtQEH+u8rYfkSVQ=
+        b=gV0rMVSZBHhIaL1t5kb5H82bzP1vdpEOsaUCeLsoMquO4AqbuXME25SazjcSuKpsr
+         eSWJLR0EnOCXLRctFpZ+gBSXOO5iCWfSvJRgjJRm6w+zafeQLnvCv/gKYHh2UkTxHx
+         TXCE9mf2HijWemp2lrdLBttzcw0Z2uMXEgzaTUk0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Rientjes <rientjes@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 40/77] ARM: dts: bcm2835-rpi-zero-w: Fix led polarity
+Subject: [PATCH 4.9 38/61] mm: remove VM_BUG_ON(PageSlab()) from page_mapcount()
 Date:   Mon,  1 Jun 2020 19:53:45 +0200
-Message-Id: <20200601174023.622966561@linuxfoundation.org>
+Message-Id: <20200601174018.784749172@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
-References: <20200601174016.396817032@linuxfoundation.org>
+In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
+References: <20200601174010.316778377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,41 +50,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Stehlé <vincent.stehle@laposte.net>
+From: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
 
-[ Upstream commit 58bb90ab415562eededb932455046924e65df342 ]
+[ Upstream commit 6988f31d558aa8c744464a7f6d91d34ada48ad12 ]
 
-The status "ACT" led on the Raspberry Pi Zero W is on when GPIO 47 is low.
+Replace superfluous VM_BUG_ON() with comment about correct usage.
 
-This has been verified on a board and somewhat confirmed by both the GPIO
-name ("STATUS_LED_N") and the reduced schematics [1].
+Technically reverts commit 1d148e218a0d ("mm: add VM_BUG_ON_PAGE() to
+page_mapcount()"), but context lines have changed.
 
-[1]: https://www.raspberrypi.org/documentation/hardware/raspberrypi/schematics/rpi_SCH_ZeroW_1p1_reduced.pdf
+Function isolate_migratepages_block() runs some checks out of lru_lock
+when choose pages for migration.  After checking PageLRU() it checks
+extra page references by comparing page_count() and page_mapcount().
+Between these two checks page could be removed from lru, freed and taken
+by slab.
 
-Fixes: 2c7c040c73e9 ("ARM: dts: bcm2835: Add Raspberry Pi Zero W")
-Signed-off-by: Vincent Stehlé <vincent.stehle@laposte.net>
-Cc: Stefan Wahren <stefan.wahren@i2se.com>
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+As a result this race triggers VM_BUG_ON(PageSlab()) in page_mapcount().
+Race window is tiny.  For certain workload this happens around once a
+year.
+
+    page:ffffea0105ca9380 count:1 mapcount:0 mapping:ffff88ff7712c180 index:0x0 compound_mapcount: 0
+    flags: 0x500000000008100(slab|head)
+    raw: 0500000000008100 dead000000000100 dead000000000200 ffff88ff7712c180
+    raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
+    page dumped because: VM_BUG_ON_PAGE(PageSlab(page))
+    ------------[ cut here ]------------
+    kernel BUG at ./include/linux/mm.h:628!
+    invalid opcode: 0000 [#1] SMP NOPTI
+    CPU: 77 PID: 504 Comm: kcompactd1 Tainted: G        W         4.19.109-27 #1
+    Hardware name: Yandex T175-N41-Y3N/MY81-EX0-Y3N, BIOS R05 06/20/2019
+    RIP: 0010:isolate_migratepages_block+0x986/0x9b0
+
+The code in isolate_migratepages_block() was added in commit
+119d6d59dcc0 ("mm, compaction: avoid isolating pinned pages") before
+adding VM_BUG_ON into page_mapcount().
+
+This race has been predicted in 2015 by Vlastimil Babka (see link
+below).
+
+[akpm@linux-foundation.org: comment tweaks, per Hugh]
+Fixes: 1d148e218a0d ("mm: add VM_BUG_ON_PAGE() to page_mapcount()")
+Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Hugh Dickins <hughd@google.com>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: David Rientjes <rientjes@google.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/159032779896.957378.7852761411265662220.stgit@buzz
+Link: https://lore.kernel.org/lkml/557710E1.6060103@suse.cz/
+Link: https://lore.kernel.org/linux-mm/158937872515.474360.5066096871639561424.stgit@buzz/T/ (v1)
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/bcm2835-rpi-zero-w.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/mm.h | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/bcm2835-rpi-zero-w.dts b/arch/arm/boot/dts/bcm2835-rpi-zero-w.dts
-index e5f2cca86f04..120776d45441 100644
---- a/arch/arm/boot/dts/bcm2835-rpi-zero-w.dts
-+++ b/arch/arm/boot/dts/bcm2835-rpi-zero-w.dts
-@@ -25,7 +25,7 @@
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index ca6f213fa4f0..7a4c035b187f 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -504,6 +504,11 @@ static inline int is_vmalloc_or_module_addr(const void *x)
  
- 	leds {
- 		act {
--			gpios = <&gpio 47 GPIO_ACTIVE_HIGH>;
-+			gpios = <&gpio 47 GPIO_ACTIVE_LOW>;
- 		};
- 	};
+ extern void kvfree(const void *addr);
  
++/*
++ * Mapcount of compound page as a whole, does not include mapped sub-pages.
++ *
++ * Must be called only for compound pages or any their tail sub-pages.
++ */
+ static inline int compound_mapcount(struct page *page)
+ {
+ 	VM_BUG_ON_PAGE(!PageCompound(page), page);
+@@ -523,10 +528,16 @@ static inline void page_mapcount_reset(struct page *page)
+ 
+ int __page_mapcount(struct page *page);
+ 
++/*
++ * Mapcount of 0-order page; when compound sub-page, includes
++ * compound_mapcount().
++ *
++ * Result is undefined for pages which cannot be mapped into userspace.
++ * For example SLAB or special types of pages. See function page_has_type().
++ * They use this place in struct page differently.
++ */
+ static inline int page_mapcount(struct page *page)
+ {
+-	VM_BUG_ON_PAGE(PageSlab(page), page);
+-
+ 	if (unlikely(PageCompound(page)))
+ 		return __page_mapcount(page);
+ 	return atomic_read(&page->_mapcount) + 1;
 -- 
 2.25.1
 
