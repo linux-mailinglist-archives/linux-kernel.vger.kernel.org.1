@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C992E1EA8E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B484B1EA8E9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728813AbgFAR5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:57:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37876 "EHLO mail.kernel.org"
+        id S1728834AbgFAR5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:57:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728791AbgFAR46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:56:58 -0400
+        id S1728807AbgFAR5B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:57:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D84F207DA;
-        Mon,  1 Jun 2020 17:56:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A9A92085B;
+        Mon,  1 Jun 2020 17:57:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034218;
-        bh=Tny3VTVURpEgeM+9w0M0n1RNAkfCIp6+8DfMnH6Z1FY=;
+        s=default; t=1591034220;
+        bh=GpWa1GaeAr8n5dw6/FOWbgmhDIEAfSTzn9TttsI97NU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HUljWw7akgkmxwALXjPSpy9WoN0pLTj9l7TCww2O7ufO3VR5wOQphLWDVaFU9jcFc
-         YLfYeSUZ5cFimVCfTZXHrl3LwbbNkgp88a+6jUFtfwf3VZN/gIyRTVLhspgZicREIu
-         Z06X5xN1Zl/5rzjuDVM7QQV6xY72v2T4hoTMIeOo=
+        b=M4cjncXs7tfJHLzJ/TLpwFjiJKY23roo9u355OhhIo+mO4yzD8Kh0EBk/aoo6nam2
+         58vK105ts6o8xpyCJQ/0s12BgJ2d5sznSrv4bFOOkQXohEtoNSRwgl170N5G2ML3K9
+         Q7XC4pZQAf2rNuFx/Jiu+iku2kUJqUCI56qbBRLc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liviu Dudau <liviu@dudau.co.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chintan Pandya <cpandya@codeaurora.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.4 45/48] mm/vmalloc.c: dont dereference possible NULL pointer in __vunmap()
-Date:   Mon,  1 Jun 2020 19:53:55 +0200
-Message-Id: <20200601174004.957880557@linuxfoundation.org>
+        stable@vger.kernel.org, Adam Borowski <kilobyte@angband.pl>,
+        Michal Marek <mmarek@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Borislav Petkov <bp@alien8.de>
+Subject: [PATCH 4.4 46/48] asm-prototypes: Clear any CPP defines before declaring the functions
+Date:   Mon,  1 Jun 2020 19:53:56 +0200
+Message-Id: <20200601174005.209348116@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200601173952.175939894@linuxfoundation.org>
 References: <20200601173952.175939894@linuxfoundation.org>
@@ -47,40 +45,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liviu Dudau <liviu@dudau.co.uk>
+From: Michal Marek <mmarek@suse.com>
 
-commit 6ade20327dbb808882888ed8ccded71e93067cf9 upstream.
+commit c7858bf16c0b2cc62f475f31e6df28c3a68da1d6 upstream.
 
-find_vmap_area() can return a NULL pointer and we're going to
-dereference it without checking it first.  Use the existing
-find_vm_area() function which does exactly what we want and checks for
-the NULL pointer.
+The asm-prototypes.h file is used to provide dummy function declarations
+for genksyms, when processing asm files with EXPORT_SYMBOL. Make sure
+that any architecture defines get out of our way. x86 currently has an
+issue with memcpy on 64bit with CONFIG_KMEMCHECK=y and with
+memset/__memset on 32bit:
 
-Link: http://lkml.kernel.org/r/20181228171009.22269-1-liviu@dudau.co.uk
-Fixes: f3c01d2f3ade ("mm: vmalloc: avoid racy handling of debugobjects in vunmap")
-Signed-off-by: Liviu Dudau <liviu@dudau.co.uk>
-Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Chintan Pandya <cpandya@codeaurora.org>
-Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+	$ cat init/test.c
+	#include <asm/asm-prototypes.h>
+	$ make -s init/test.o
+	In file included from ./arch/x86/include/asm/string.h:4:0,
+			 from ./include/linux/string.h:18,
+			 from ./include/linux/bitmap.h:8,
+			 from ./include/linux/cpumask.h:11,
+			 from ./arch/x86/include/asm/cpumask.h:4,
+			 from ./arch/x86/include/asm/msr.h:10,
+			 from ./arch/x86/include/asm/processor.h:20,
+			 from ./arch/x86/include/asm/cpufeature.h:4,
+			 from ./arch/x86/include/asm/thread_info.h:52,
+			 from ./include/linux/thread_info.h:25,
+			 from ./arch/x86/include/asm/preempt.h:6,
+			 from ./include/linux/preempt.h:59,
+			 from ./include/linux/spinlock.h:50,
+			 from ./include/linux/seqlock.h:35,
+			 from ./include/linux/time.h:5,
+			 from ./include/uapi/linux/timex.h:56,
+			 from ./include/linux/timex.h:56,
+			 from ./include/linux/sched.h:19,
+			 from ./include/linux/uaccess.h:4,
+			 from ./arch/x86/include/asm/asm-prototypes.h:2,
+			 from init/test.c:1:
+	./arch/x86/include/asm/string_64.h:52:47: error: expected declaration specifiers or ‘...’ before ‘(’ token
+	 #define memcpy(dst, src, len) __inline_memcpy((dst), (src), (len))
+	 ./include/asm-generic/asm-prototypes.h:6:14: note: in expansion of macro ‘memcpy’
+	  extern void *memcpy(void *, const void *, __kernel_size_t);
+
+						       ^
+	...
+
+During real build, this manifests itself by genksyms segfaulting.
+
+Fixes: 334bb7738764 ("x86/kbuild: enable modversions for symbols exported from asm")
+Reported-and-tested-by: Borislav Petkov <bp@alien8.de>
+Cc: Adam Borowski <kilobyte@angband.pl>
+Signed-off-by: Michal Marek <mmarek@suse.com>
 Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- mm/vmalloc.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/asm-generic/asm-prototypes.h |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -1464,7 +1464,7 @@ static void __vunmap(const void *addr, i
- 			addr))
- 		return;
- 
--	area = find_vmap_area((unsigned long)addr)->vm;
-+	area = find_vm_area(addr);
- 	if (unlikely(!area)) {
- 		WARN(1, KERN_ERR "Trying to vfree() nonexistent vm area (%p)\n",
- 				addr);
+--- a/include/asm-generic/asm-prototypes.h
++++ b/include/asm-generic/asm-prototypes.h
+@@ -1,7 +1,13 @@
+ #include <linux/bitops.h>
++#undef __memset
+ extern void *__memset(void *, int, __kernel_size_t);
++#undef __memcpy
+ extern void *__memcpy(void *, const void *, __kernel_size_t);
++#undef __memmove
+ extern void *__memmove(void *, const void *, __kernel_size_t);
++#undef memset
+ extern void *memset(void *, int, __kernel_size_t);
++#undef memcpy
+ extern void *memcpy(void *, const void *, __kernel_size_t);
++#undef memmove
+ extern void *memmove(void *, const void *, __kernel_size_t);
 
 
