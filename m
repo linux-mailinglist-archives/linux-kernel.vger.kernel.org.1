@@ -2,272 +2,378 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BC21EA35E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 14:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEAAC1EA36C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 14:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726176AbgFAMDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 08:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725925AbgFAMDC (ORCPT
+        id S1726232AbgFAMFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 08:05:24 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:32625 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725886AbgFAMFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 08:03:02 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE145C061A0E;
-        Mon,  1 Jun 2020 05:03:01 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id j198so11930508wmj.0;
-        Mon, 01 Jun 2020 05:03:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sZjVNIjGP/Bx51vzpDlzDTMKkVd60HFTo8keDsMxiJw=;
-        b=JKFU3FthowzwRxaiuvzjLOQw6xJuKeRX1pIe2uSalbgE5w8vqN0XSAsFXsmdYAcPoz
-         HyBuG7yoD8SIAVhMuFcAFAL2X7xSmkziVDsXoNcH8OvB6O4DrsI92aU8CVqx5zBDoJtk
-         KtoaXrG/fsVwYo4nv2VVo0eifmbVYcApuPcnX5zJ240Q2h0G0MM6oQkqupmSt0OOaDK5
-         3k5vhigwXpi64lSvOEvDfNEHOTw9r9ToWpL8PQZGDHq23/jZaxEEuQ8hu/z4OToQELrV
-         MSM5uzFtEhk3KKQNskK8WMGCe7fU3skKyF9xlJrIHrZHjDrdmlBw6R0bGfBu3ZiZDl/N
-         PBZw==
+        Mon, 1 Jun 2020 08:05:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591013121;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vKeCR9+cL43wCy4RWIKpTJuz/y7+TuGSoSgIpZKbL6k=;
+        b=eXN5T62KA+xT4mJBmLnMlAi5etmdRxx3wNqIOhyZb6mfo/adoDA9y/qA8XSPZfnlFSi05r
+        yBcM39/EWuNjfqDoRnkVZ/AMhGkaq/VNmnGuKnsQbvQdPqBFGS6mdUOLTWGfS0WAR5kHuM
+        O6a7uHDY4+wkyOrWdmiUvyHnzXw0u7I=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-485-dbgE2gWVNxyhodD42lZcFA-1; Mon, 01 Jun 2020 08:05:16 -0400
+X-MC-Unique: dbgE2gWVNxyhodD42lZcFA-1
+Received: by mail-qt1-f200.google.com with SMTP id h49so7482772qtk.10
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 05:05:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sZjVNIjGP/Bx51vzpDlzDTMKkVd60HFTo8keDsMxiJw=;
-        b=qi3/iex2Hkr0JdEH7kGDc/IIzIea+RG3p/YSaBygHyaLISwUUk41gQnJpsh6SQ+93H
-         1JRrxS+CNyx6Nvdd4Nvj8+pnk7Vj794Mo2eCOeANTD8SBQ0kcUUWc0A0/yg1ADzNqf3n
-         VGiKz8w/czg/Go5JWOVoxhPpK7aLLJ8AKNW+nFAp3ZTfMeFyQgs/jHzLSiVDXNrtzsri
-         RT3txchxPEAxcKZ1odPeOvfLWJglMKr/M0AeNsyrs5MZuF0WctS2w7UCEV/Io+HWvp8p
-         JgT4s6Ymq3J4N0dMgEPSMXtuM4zZRCxRLBh8j7l9igglG1KKsk69nFQJx56PRGvCxIP/
-         9clg==
-X-Gm-Message-State: AOAM531Z66gWLQLgE21bhm36pUpCSu+X+0fcFk5mxgcXavfECXEDIDZI
-        A7mJxRmaQQp2YtYG3uBT3i1QS2qwFeJfZPSGe1U=
-X-Google-Smtp-Source: ABdhPJyD5FLC1UsAbK64ioTyzbnK7EkqGeH/L72vXQ2811vm0QyOeaErtoSCzdwkSLfY12Tse/LurC3Z+xnGaLZNCXw=
-X-Received: by 2002:a1c:5a82:: with SMTP id o124mr21011494wmb.188.1591012980371;
- Mon, 01 Jun 2020 05:03:00 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=vKeCR9+cL43wCy4RWIKpTJuz/y7+TuGSoSgIpZKbL6k=;
+        b=FxGs3ETDEHJnCFBZel908Mqo0txKP/gmdK6q2hfA1l788pgU8Xd12F7k0UYCoLwVwE
+         WUDBw/ok0uI5DbLCSycNmKzB9iUnEPlRGm1B7t97IWi79PFiTEbPgh5irrkvoBSHelwu
+         xZJ3BNev6W70dV62JU+haRGkaAwbm4wT8qfs2hcmJnCgbqReOqTKln9x3Gj52dx3PTaC
+         HL34QI4+omzLPO8csxfCax+6W/qPbpcbHQqkRZNR8Qe/B+Nb3NAI/SlVoQ43XiqSP2Be
+         IzS9xG+fynmnQYUMxl3mtN/Q4z2qBXQ64AQ18oETXfxXoqzadHC1pxSr0w2lqubq8cje
+         7Efg==
+X-Gm-Message-State: AOAM531Do8e/0GZBnGkWbGBxPntg56QDWmGAPBw6pg+cbDWiFgNGuP/k
+        QDO2TbjCFdI/PAPAO2IowzyH20oPDJw+rVSvwdMxsM8VZKgpVKy3GLN6K6/HTr6z+yJhC6jqks5
+        Rci66h5IyJiogWnx1hgjtXV0X
+X-Received: by 2002:a05:620a:22f5:: with SMTP id p21mr18313814qki.241.1591013115169;
+        Mon, 01 Jun 2020 05:05:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxr3aMFZnLNkaWuDOcZU3jW4uXYzAJ+uq5jioY/vYWc+E6ZBTR7Ph0lPqL8VtFQXBdQRnizKg==
+X-Received: by 2002:a05:620a:22f5:: with SMTP id p21mr18313752qki.241.1591013114552;
+        Mon, 01 Jun 2020 05:05:14 -0700 (PDT)
+Received: from xz-x1.redhat.com ([2607:9880:19c0:32::2])
+        by smtp.gmail.com with ESMTPSA id x43sm12479600qtk.70.2020.06.01.05.05.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jun 2020 05:05:13 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Peter Xu <peterx@redhat.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Kevin Tian <kevin.tian@intel.com>
+Subject: [PATCH v10 13/14] KVM: selftests: Let dirty_log_test async for dirty ring test
+Date:   Mon,  1 Jun 2020 08:05:11 -0400
+Message-Id: <20200601120511.1581760-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200601115957.1581250-1-peterx@redhat.com>
+References: <20200601115957.1581250-1-peterx@redhat.com>
 MIME-Version: 1.0
-References: <20200521093805.64398-1-chenzhou10@huawei.com>
-In-Reply-To: <20200521093805.64398-1-chenzhou10@huawei.com>
-From:   Prabhakar Kushwaha <prabhakar.pkin@gmail.com>
-Date:   Mon, 1 Jun 2020 17:32:24 +0530
-Message-ID: <CAJ2QiJ+1Hj2OQzpR5CfvLGMfTTbXAST94hsbfm0VcDmJKV3WTw@mail.gmail.com>
-Subject: Re: [PATCH v8 0/5] support reserving crashkernel above 4G on arm64 kdump
-To:     Chen Zhou <chenzhou10@huawei.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, dyoung@redhat.com,
-        bhe@redhat.com, robh+dt@kernel.org,
-        John Donnelly <John.p.donnelly@oracle.com>, arnd@arndb.de,
-        devicetree@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        horms@verge.net.au, guohanjun@huawei.com,
-        Prabhakar Kushwaha <pkushwaha@marvell.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chen,
+Previously the dirty ring test was working in synchronous way, because
+only with a vmexit (with that it was the ring full event) we'll know
+the hardware dirty bits will be flushed to the dirty ring.
 
-On Thu, May 21, 2020 at 3:05 PM Chen Zhou <chenzhou10@huawei.com> wrote:
->
-> This patch series enable reserving crashkernel above 4G in arm64.
->
-> There are following issues in arm64 kdump:
-> 1. We use crashkernel=X to reserve crashkernel below 4G, which will fail
-> when there is no enough low memory.
-> 2. Currently, crashkernel=Y@X can be used to reserve crashkernel above 4G,
-> in this case, if swiotlb or DMA buffers are required, crash dump kernel
-> will boot failure because there is no low memory available for allocation.
->
-> To solve these issues, introduce crashkernel=X,low to reserve specified
-> size low memory.
-> Crashkernel=X tries to reserve memory for the crash dump kernel under
-> 4G. If crashkernel=Y,low is specified simultaneously, reserve spcified
-> size low memory for crash kdump kernel devices firstly and then reserve
-> memory above 4G.
->
-> When crashkernel is reserved above 4G in memory, that is, crashkernel=X,low
-> is specified simultaneously, kernel should reserve specified size low memory
-> for crash dump kernel devices. So there may be two crash kernel regions, one
-> is below 4G, the other is above 4G.
-> In order to distinct from the high region and make no effect to the use of
-> kexec-tools, rename the low region as "Crash kernel (low)", and add DT property
-> "linux,low-memory-range" to crash dump kernel's dtb to pass the low region.
->
-> Besides, we need to modify kexec-tools:
-> arm64: kdump: add another DT property to crash dump kernel's dtb(see [1])
->
-> The previous changes and discussions can be retrieved from:
->
-> Changes since [v7]
-> - Move x86 CRASH_ALIGN to 2M
-> Suggested by Dave and do some test, move x86 CRASH_ALIGN to 2M.
-> - Update Documentation/devicetree/bindings/chosen.txt
-> Add corresponding documentation to Documentation/devicetree/bindings/chosen.txt suggested by Arnd.
-> - Add Tested-by from Jhon and pk
->
-> Changes since [v6]
-> - Fix build errors reported by kbuild test robot.
->
-> Changes since [v5]
-> - Move reserve_crashkernel_low() into kernel/crash_core.c.
-> - Delete crashkernel=X,high.
-> - Modify crashkernel=X,low.
-> If crashkernel=X,low is specified simultaneously, reserve spcified size low
-> memory for crash kdump kernel devices firstly and then reserve memory above 4G.
-> In addition, rename crashk_low_res as "Crash kernel (low)" for arm64, and then
-> pass to crash dump kernel by DT property "linux,low-memory-range".
-> - Update Documentation/admin-guide/kdump/kdump.rst.
->
-> Changes since [v4]
-> - Reimplement memblock_cap_memory_ranges for multiple ranges by Mike.
->
-> Changes since [v3]
-> - Add memblock_cap_memory_ranges back for multiple ranges.
-> - Fix some compiling warnings.
->
-> Changes since [v2]
-> - Split patch "arm64: kdump: support reserving crashkernel above 4G" as
-> two. Put "move reserve_crashkernel_low() into kexec_core.c" in a separate
-> patch.
->
-> Changes since [v1]:
-> - Move common reserve_crashkernel_low() code into kernel/kexec_core.c.
-> - Remove memblock_cap_memory_ranges() i added in v1 and implement that
-> in fdt_enforce_memory_region().
-> There are at most two crash kernel regions, for two crash kernel regions
-> case, we cap the memory range [min(regs[*].start), max(regs[*].end)]
-> and then remove the memory range in the middle.
->
-> [1]: http://lists.infradead.org/pipermail/kexec/2020-May/025128.html
-> [v1]: https://lkml.org/lkml/2019/4/2/1174
-> [v2]: https://lkml.org/lkml/2019/4/9/86
-> [v3]: https://lkml.org/lkml/2019/4/9/306
-> [v4]: https://lkml.org/lkml/2019/4/15/273
-> [v5]: https://lkml.org/lkml/2019/5/6/1360
-> [v6]: https://lkml.org/lkml/2019/8/30/142
-> [v7]: https://lkml.org/lkml/2019/12/23/411
->
-> Chen Zhou (5):
->   x86: kdump: move reserve_crashkernel_low() into crash_core.c
->   arm64: kdump: reserve crashkenel above 4G for crash dump kernel
->   arm64: kdump: add memory for devices by DT property, low-memory-range
->   kdump: update Documentation about crashkernel on arm64
->   dt-bindings: chosen: Document linux,low-memory-range for arm64 kdump
->
+With this patch we first introduced the vcpu kick mechanism by using
+SIGUSR1, meanwhile we can have a guarantee of vmexit and also the
+flushing of hardware dirty bits.  With all these, we can keep the vcpu
+dirty work asynchronous of the whole collection procedure now.  Still,
+we need to be very careful that we can only do it async if the vcpu is
+not reaching soft limit (no KVM_EXIT_DIRTY_RING_FULL).  Otherwise we
+must collect the dirty bits before continuing the vcpu.
 
-We are getting "warn_alloc" [1] warning during boot of kdump kernel
-with bootargs as [2] of primary kernel.
-This error observed on ThunderX2  ARM64 platform.
+Further increase the dirty ring size to current maximum to make sure
+we torture more on the no-ring-full case, which should be the major
+scenario when the hypervisors like QEMU would like to use this feature.
 
-It is observed with latest upstream tag (v5.7-rc3) with this patch set
- and https://lists.infradead.org/pipermail/kexec/2020-May/025128.html
-Also **without** this patch-set
-"https://www.spinics.net/lists/arm-kernel/msg806882.html"
+Reviewed-by: Andrew Jones <drjones@redhat.com>
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ tools/testing/selftests/kvm/dirty_log_test.c  | 126 +++++++++++++-----
+ .../testing/selftests/kvm/include/kvm_util.h  |   1 +
+ tools/testing/selftests/kvm/lib/kvm_util.c    |   9 ++
+ 3 files changed, 106 insertions(+), 30 deletions(-)
 
-This issue comes whenever crashkernel memory is reserved after 0xc000_0000.
-More details discussed earlier in
-https://www.spinics.net/lists/arm-kernel/msg806882.html without any
-solution
+diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
+index 531431cff4fc..4b404dfdc2f9 100644
+--- a/tools/testing/selftests/kvm/dirty_log_test.c
++++ b/tools/testing/selftests/kvm/dirty_log_test.c
+@@ -13,6 +13,9 @@
+ #include <time.h>
+ #include <pthread.h>
+ #include <semaphore.h>
++#include <sys/types.h>
++#include <signal.h>
++#include <errno.h>
+ #include <linux/bitmap.h>
+ #include <linux/bitops.h>
+ #include <asm/barrier.h>
+@@ -59,7 +62,9 @@
+ # define test_and_clear_bit_le	test_and_clear_bit
+ #endif
+ 
+-#define TEST_DIRTY_RING_COUNT		1024
++#define TEST_DIRTY_RING_COUNT		65536
++
++#define SIG_IPI SIGUSR1
+ 
+ /*
+  * Guest/Host shared variables. Ensure addr_gva2hva() and/or
+@@ -135,6 +140,12 @@ static uint64_t host_track_next_count;
+ /* Whether dirty ring reset is requested, or finished */
+ static sem_t dirty_ring_vcpu_stop;
+ static sem_t dirty_ring_vcpu_cont;
++/*
++ * This is updated by the vcpu thread to tell the host whether it's a
++ * ring-full event.  It should only be read until a sem_wait() of
++ * dirty_ring_vcpu_stop and before vcpu continues to run.
++ */
++static bool dirty_ring_vcpu_ring_full;
+ 
+ enum log_mode_t {
+ 	/* Only use KVM_GET_DIRTY_LOG for logging */
+@@ -156,6 +167,33 @@ enum log_mode_t {
+ static enum log_mode_t host_log_mode_option = LOG_MODE_ALL;
+ /* Logging mode for current run */
+ static enum log_mode_t host_log_mode;
++static pthread_t vcpu_thread;
++
++/* Only way to pass this to the signal handler */
++static struct kvm_vm *current_vm;
++
++static void vcpu_sig_handler(int sig)
++{
++	TEST_ASSERT(sig == SIG_IPI, "unknown signal: %d", sig);
++}
++
++static void vcpu_kick(void)
++{
++	pthread_kill(vcpu_thread, SIG_IPI);
++}
++
++/*
++ * In our test we do signal tricks, let's use a better version of
++ * sem_wait to avoid signal interrupts
++ */
++static void sem_wait_until(sem_t *sem)
++{
++	int ret;
++
++	do
++		ret = sem_wait(sem);
++	while (ret == -1 && errno == EINTR);
++}
+ 
+ static bool clear_log_supported(void)
+ {
+@@ -189,10 +227,13 @@ static void clear_log_collect_dirty_pages(struct kvm_vm *vm, int slot,
+ 	kvm_vm_clear_dirty_log(vm, slot, bitmap, 0, num_pages);
+ }
+ 
+-static void default_after_vcpu_run(struct kvm_vm *vm)
++static void default_after_vcpu_run(struct kvm_vm *vm, int ret, int err)
+ {
+ 	struct kvm_run *run = vcpu_state(vm, VCPU_ID);
+ 
++	TEST_ASSERT(ret == 0 || (ret == -1 && err == EINTR),
++		    "vcpu run failed: errno=%d", err);
++
+ 	TEST_ASSERT(get_ucall(vm, VCPU_ID, NULL) == UCALL_SYNC,
+ 		    "Invalid guest sync status: exit_reason=%s\n",
+ 		    exit_reason_str(run->exit_reason));
+@@ -248,27 +289,37 @@ static uint32_t dirty_ring_collect_one(struct kvm_dirty_gfn *dirty_gfns,
+ 	return count;
+ }
+ 
++static void dirty_ring_wait_vcpu(void)
++{
++	/* This makes sure that hardware PML cache flushed */
++	vcpu_kick();
++	sem_wait_until(&dirty_ring_vcpu_stop);
++}
++
++static void dirty_ring_continue_vcpu(void)
++{
++	pr_info("Notifying vcpu to continue\n");
++	sem_post(&dirty_ring_vcpu_cont);
++}
++
+ static void dirty_ring_collect_dirty_pages(struct kvm_vm *vm, int slot,
+ 					   void *bitmap, uint32_t num_pages)
+ {
+ 	/* We only have one vcpu */
+ 	static uint32_t fetch_index = 0;
+ 	uint32_t count = 0, cleared;
++	bool continued_vcpu = false;
+ 
+-	/*
+-	 * Before fetching the dirty pages, we need a vmexit of the
+-	 * worker vcpu to make sure the hardware dirty buffers were
+-	 * flushed.  This is not needed for dirty-log/clear-log tests
+-	 * because get dirty log will natually do so.
+-	 *
+-	 * For now we do it in the simple way - we simply wait until
+-	 * the vcpu uses up the soft dirty ring, then it'll always
+-	 * do a vmexit to make sure that PML buffers will be flushed.
+-	 * In real hypervisors, we probably need a vcpu kick or to
+-	 * stop the vcpus (before the final sync) to make sure we'll
+-	 * get all the existing dirty PFNs even cached in hardware.
+-	 */
+-	sem_wait(&dirty_ring_vcpu_stop);
++	dirty_ring_wait_vcpu();
++
++	if (!dirty_ring_vcpu_ring_full) {
++		/*
++		 * This is not a ring-full event, it's safe to allow
++		 * vcpu to continue
++		 */
++		dirty_ring_continue_vcpu();
++		continued_vcpu = true;
++	}
+ 
+ 	/* Only have one vcpu */
+ 	count = dirty_ring_collect_one(vcpu_map_dirty_ring(vm, VCPU_ID),
+@@ -280,13 +331,16 @@ static void dirty_ring_collect_dirty_pages(struct kvm_vm *vm, int slot,
+ 	TEST_ASSERT(cleared == count, "Reset dirty pages (%u) mismatch "
+ 		    "with collected (%u)", cleared, count);
+ 
+-	pr_info("Notifying vcpu to continue\n");
+-	sem_post(&dirty_ring_vcpu_cont);
++	if (!continued_vcpu) {
++		TEST_ASSERT(dirty_ring_vcpu_ring_full,
++			    "Didn't continue vcpu even without ring full");
++		dirty_ring_continue_vcpu();
++	}
+ 
+ 	pr_info("Iteration %ld collected %u pages\n", iteration, count);
+ }
+ 
+-static void dirty_ring_after_vcpu_run(struct kvm_vm *vm)
++static void dirty_ring_after_vcpu_run(struct kvm_vm *vm, int ret, int err)
+ {
+ 	struct kvm_run *run = vcpu_state(vm, VCPU_ID);
+ 
+@@ -294,10 +348,16 @@ static void dirty_ring_after_vcpu_run(struct kvm_vm *vm)
+ 	if (get_ucall(vm, VCPU_ID, NULL) == UCALL_SYNC) {
+ 		/* We should allow this to continue */
+ 		;
+-	} else if (run->exit_reason == KVM_EXIT_DIRTY_RING_FULL) {
++	} else if (run->exit_reason == KVM_EXIT_DIRTY_RING_FULL ||
++		   (ret == -1 && err == EINTR)) {
++		/* Update the flag first before pause */
++		WRITE_ONCE(dirty_ring_vcpu_ring_full,
++			   run->exit_reason == KVM_EXIT_DIRTY_RING_FULL);
+ 		sem_post(&dirty_ring_vcpu_stop);
+-		pr_info("vcpu stops because dirty ring full...\n");
+-		sem_wait(&dirty_ring_vcpu_cont);
++		pr_info("vcpu stops because %s...\n",
++			dirty_ring_vcpu_ring_full ?
++			"dirty ring is full" : "vcpu is kicked out");
++		sem_wait_until(&dirty_ring_vcpu_cont);
+ 		pr_info("vcpu continues now.\n");
+ 	} else {
+ 		TEST_ASSERT(false, "Invalid guest sync status: "
+@@ -322,7 +382,7 @@ struct log_mode {
+ 	void (*collect_dirty_pages) (struct kvm_vm *vm, int slot,
+ 				     void *bitmap, uint32_t num_pages);
+ 	/* Hook to call when after each vcpu run */
+-	void (*after_vcpu_run)(struct kvm_vm *vm);
++	void (*after_vcpu_run)(struct kvm_vm *vm, int ret, int err);
+ 	void (*before_vcpu_join) (void);
+ } log_modes[LOG_MODE_NUM] = {
+ 	{
+@@ -394,12 +454,12 @@ static void log_mode_collect_dirty_pages(struct kvm_vm *vm, int slot,
+ 	mode->collect_dirty_pages(vm, slot, bitmap, num_pages);
+ }
+ 
+-static void log_mode_after_vcpu_run(struct kvm_vm *vm)
++static void log_mode_after_vcpu_run(struct kvm_vm *vm, int ret, int err)
+ {
+ 	struct log_mode *mode = &log_modes[host_log_mode];
+ 
+ 	if (mode->after_vcpu_run)
+-		mode->after_vcpu_run(vm);
++		mode->after_vcpu_run(vm, ret, err);
+ }
+ 
+ static void log_mode_before_vcpu_join(void)
+@@ -420,20 +480,27 @@ static void generate_random_array(uint64_t *guest_array, uint64_t size)
+ 
+ static void *vcpu_worker(void *data)
+ {
+-	int ret;
++	int ret, vcpu_fd;
+ 	struct kvm_vm *vm = data;
+ 	uint64_t *guest_array;
+ 	uint64_t pages_count = 0;
++	struct sigaction sigact;
++
++	current_vm = vm;
++	vcpu_fd = vcpu_get_fd(vm, VCPU_ID);
++	memset(&sigact, 0, sizeof(sigact));
++	sigact.sa_handler = vcpu_sig_handler;
++	sigaction(SIG_IPI, &sigact, NULL);
+ 
+ 	guest_array = addr_gva2hva(vm, (vm_vaddr_t)random_array);
+ 
+ 	while (!READ_ONCE(host_quit)) {
++		/* Clear any existing kick signals */
+ 		generate_random_array(guest_array, TEST_PAGES_PER_LOOP);
+ 		pages_count += TEST_PAGES_PER_LOOP;
+ 		/* Let the guest dirty the random pages */
+-		ret = _vcpu_run(vm, VCPU_ID);
+-		TEST_ASSERT(ret == 0, "vcpu_run failed: %d\n", ret);
+-		log_mode_after_vcpu_run(vm);
++		ret = ioctl(vcpu_fd, KVM_RUN, NULL);
++		log_mode_after_vcpu_run(vm, ret, errno);
+ 	}
+ 
+ 	pr_info("Dirtied %"PRIu64" pages\n", pages_count);
+@@ -583,7 +650,6 @@ static struct kvm_vm *create_vm(enum vm_guest_mode mode, uint32_t vcpuid,
+ static void run_test(enum vm_guest_mode mode, unsigned long iterations,
+ 		     unsigned long interval, uint64_t phys_offset)
+ {
+-	pthread_t vcpu_thread;
+ 	struct kvm_vm *vm;
+ 	unsigned long *bmap;
+ 
+diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
+index 554fdb294bef..62254375ec50 100644
+--- a/tools/testing/selftests/kvm/include/kvm_util.h
++++ b/tools/testing/selftests/kvm/include/kvm_util.h
+@@ -144,6 +144,7 @@ vm_paddr_t addr_gva2gpa(struct kvm_vm *vm, vm_vaddr_t gva);
+ struct kvm_run *vcpu_state(struct kvm_vm *vm, uint32_t vcpuid);
+ void vcpu_run(struct kvm_vm *vm, uint32_t vcpuid);
+ int _vcpu_run(struct kvm_vm *vm, uint32_t vcpuid);
++int vcpu_get_fd(struct kvm_vm *vm, uint32_t vcpuid);
+ void vcpu_run_complete_io(struct kvm_vm *vm, uint32_t vcpuid);
+ void vcpu_set_mp_state(struct kvm_vm *vm, uint32_t vcpuid,
+ 		       struct kvm_mp_state *mp_state);
+diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+index e632d1f4a112..0e79bde7a2a8 100644
+--- a/tools/testing/selftests/kvm/lib/kvm_util.c
++++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+@@ -1207,6 +1207,15 @@ int _vcpu_run(struct kvm_vm *vm, uint32_t vcpuid)
+ 	return rc;
+ }
+ 
++int vcpu_get_fd(struct kvm_vm *vm, uint32_t vcpuid)
++{
++	struct vcpu *vcpu = vcpu_find(vm, vcpuid);
++
++	TEST_ASSERT(vcpu != NULL, "vcpu not found, vcpuid: %u", vcpuid);
++
++	return vcpu->fd;
++}
++
+ void vcpu_run_complete_io(struct kvm_vm *vm, uint32_t vcpuid)
+ {
+ 	struct vcpu *vcpu = vcpu_find(vm, vcpuid);
+-- 
+2.26.2
 
-This patch-set is expected to solve similar kind of issue.
-i.e. low memory is only targeted for DMA, swiotlb; So above mentioned
-observation should be considered/fixed. .
-
---pk
-
-[1]
-[   30.366695] DMI: Cavium Inc. Saber/Saber, BIOS
-TX2-FW-Release-3.1-build_01-2803-g74253a541a mm/dd/yyyy
-[   30.367696] NET: Registered protocol family 16
-[   30.369973] swapper/0: page allocation failure: order:6,
-mode:0x1(GFP_DMA), nodemask=(null),cpuset=/,mems_allowed=0
-[   30.369980] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.7.0-rc3+ #121
-[   30.369981] Hardware name: Cavium Inc. Saber/Saber, BIOS
-TX2-FW-Release-3.1-build_01-2803-g74253a541a mm/dd/yyyy
-[   30.369984] Call trace:
-[   30.369989]  dump_backtrace+0x0/0x1f8
-[   30.369991]  show_stack+0x20/0x30
-[   30.369997]  dump_stack+0xc0/0x10c
-[   30.370001]  warn_alloc+0x10c/0x178
-[   30.370004]  __alloc_pages_slowpath.constprop.111+0xb10/0xb50
-[   30.370006]  __alloc_pages_nodemask+0x2b4/0x300
-[   30.370008]  alloc_page_interleave+0x24/0x98
-[   30.370011]  alloc_pages_current+0xe4/0x108
-[   30.370017]  dma_atomic_pool_init+0x44/0x1a4
-[   30.370020]  do_one_initcall+0x54/0x228
-[   30.370027]  kernel_init_freeable+0x228/0x2cc
-[   30.370031]  kernel_init+0x1c/0x110
-[   30.370034]  ret_from_fork+0x10/0x18
-[   30.370036] Mem-Info:
-[   30.370064] active_anon:0 inactive_anon:0 isolated_anon:0
-[   30.370064]  active_file:0 inactive_file:0 isolated_file:0
-[   30.370064]  unevictable:0 dirty:0 writeback:0 unstable:0
-[   30.370064]  slab_reclaimable:34 slab_unreclaimable:4438
-[   30.370064]  mapped:0 shmem:0 pagetables:14 bounce:0
-[   30.370064]  free:1537719 free_pcp:219 free_cma:0
-[   30.370070] Node 0 active_anon:0kB inactive_anon:0kB
-active_file:0kB inactive_file:0kB unevictable:0kB isolated(anon):0kB
-isolated(file):0kB mapped:0kB dirty:0kB writeback:0kB shmem:0kB
-shmem_thp: 0kB shmem_pmdmapped: 0kB anon_thp: 0kB writeback_tmp:0kB
-unstable:0kB all_unreclaimable? no
-[   30.370073] Node 1 active_anon:0kB inactive_anon:0kB
-active_file:0kB inactive_file:0kB unevictable:0kB isolated(anon):0kB
-isolated(file):0kB mapped:0kB dirty:0kB writeback:0kB shmem:0kB
-shmem_thp: 0kB shmem_pmdmapped: 0kB anon_thp: 0kB writeback_tmp:0kB
-unstable:0kB all_unreclaimable? no
-[   30.370079] Node 0 DMA free:0kB min:0kB low:0kB high:0kB
-reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
-active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB
-present:128kB managed:0kB mlocked:0kB kernel_stack:0kB pagetables:0kB
-bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-[   30.370084] lowmem_reserve[]: 0 250 6063 6063
-[   30.370090] Node 0 DMA32 free:256000kB min:408kB low:664kB
-high:920kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
-active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB
-present:269700kB managed:256000kB mlocked:0kB kernel_stack:0kB
-pagetables:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-[   30.370094] lowmem_reserve[]: 0 0 5813 5813
-[   30.370100] Node 0 Normal free:5894876kB min:9552kB low:15504kB
-high:21456kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
-active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB
-present:8388608kB managed:5953112kB mlocked:0kB kernel_stack:21672kB
-pagetables:56kB bounce:0kB free_pcp:876kB local_pcp:176kB free_cma:0kB
-[   30.370104] lowmem_reserve[]: 0 0 0 0
-[   30.370107] Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB
-0*256kB 0*512kB 0*1024kB 0*2048kB 0*4096kB = 0kB
-[   30.370113] Node 0 DMA32: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB
-0*256kB 0*512kB 0*1024kB 1*2048kB (M) 62*4096kB (M) = 256000kB
-[   30.370119] Node 0 Normal: 2*4kB (M) 3*8kB (ME) 2*16kB (UE) 3*32kB
-(UM) 1*64kB (U) 2*128kB (M) 2*256kB (ME) 3*512kB (ME) 3*1024kB (ME)
-3*2048kB (UME) 1436*4096kB (M) = 5893600kB
-[   30.370129] Node 0 hugepages_total=0 hugepages_free=0
-hugepages_surp=0 hugepages_size=1048576kB
-[   30.370130] 0 total pagecache pages
-[   30.370132] 0 pages in swap cache
-[   30.370134] Swap cache stats: add 0, delete 0, find 0/0
-[   30.370135] Free swap  = 0kB
-[   30.370136] Total swap = 0kB
-[   30.370137] 2164609 pages RAM
-[   30.370139] 0 pages HighMem/MovableOnly
-[   30.370140] 612331 pages reserved
-[   30.370141] 0 pages hwpoisoned
-[   30.370143] DMA: failed to allocate 256 KiB pool for atomic
-coherent allocation
-
-[2]
-root@localhost$ dmesg | grep crash
-[    0.000000] Reserving 250MB of low memory at 3724MB for crashkernel
-(System low RAM: 2029MB)
-[    0.000000] crashkernel reserved: 0x0000000e00000000 -
-0x0000001000000000 (8192 MB)
-[    0.000000] Kernel command line:
-BOOT_IMAGE=(hd11,gpt2)/vmlinuz-5.7.0-rc3+
-root=UUID=e5c34f86-6727-4668-81f9-f41433555df6 ro crashkernel=250M,low
-crashkernel=8G nowatchdog console=ttyAMA0 default_hugepagesz=1G
-hugepagesz=1G hugepages=2
-[   44.019393]     crashkernel=8G
