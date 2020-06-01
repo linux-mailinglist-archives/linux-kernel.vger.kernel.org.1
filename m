@@ -2,183 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B841E9FF4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 10:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 563AF1EA00C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 10:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728145AbgFAITt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 04:19:49 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:59059 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgFAITs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 04:19:48 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200601081947euoutp0148eae0efe2bc2be9ea219013a8d14ee3~UXbIEX1iX0273702737euoutp01F
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 08:19:47 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200601081947euoutp0148eae0efe2bc2be9ea219013a8d14ee3~UXbIEX1iX0273702737euoutp01F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1590999587;
-        bh=s3Ec/lKFroeeFCLe2u/iYci4hhYxXJEs5l6GyVdbeD4=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=Y94+MSvJceWl2X5Ixbl/oIvGj5FJsateM4dOqfXKqF7G9Sj5kt3cPYpes+l/Troi2
-         72+23bFyg6A0HaZkIqg4HmFqJ9DfHHrTw0mjyJ5EyO4qkdeclW/jzEClIioMFrtKSj
-         6Eqyd1+Qg4nMBcflmOStczyGOaz5mpPfX/cY0FZw=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200601081947eucas1p16dc2db3eb04fa508f3a1be2f7cd67bb2~UXbHuG69y1270012700eucas1p15;
-        Mon,  1 Jun 2020 08:19:47 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 90.C2.60698.32AB4DE5; Mon,  1
-        Jun 2020 09:19:47 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200601081946eucas1p208442218e510398cacb83e4e08217bef~UXbHa-Fuq3257432574eucas1p2E;
-        Mon,  1 Jun 2020 08:19:46 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200601081946eusmtrp1593276250b5abf23051607514e822098~UXbHaMPla2264822648eusmtrp1W;
-        Mon,  1 Jun 2020 08:19:46 +0000 (GMT)
-X-AuditID: cbfec7f5-a0fff7000001ed1a-73-5ed4ba235d7f
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id ED.B4.07950.22AB4DE5; Mon,  1
-        Jun 2020 09:19:46 +0100 (BST)
-Received: from [106.210.123.115] (unknown [106.210.123.115]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200601081945eusmtip25475d48146a4203d6398e2ca580244df~UXbGSU20M2280122801eusmtip2Y;
-        Mon,  1 Jun 2020 08:19:45 +0000 (GMT)
-Subject: Re: [RFC PATCH v5 1/6] dt-bindings: exynos-bus: Add documentation
- for interconnect properties
-To:     georgi.djakov@linaro.org, cw00.choi@samsung.com, krzk@kernel.org
-Cc:     a.swigon@samsung.com, myungjoo.ham@samsung.com,
-        inki.dae@samsung.com, sw0312.kim@samsung.com,
-        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <e8e00988-af5d-7022-f66d-89a2cb0f74cf@samsung.com>
-Date:   Mon, 1 Jun 2020 10:19:45 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.8.1
+        id S1728099AbgFAIad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 04:30:33 -0400
+Received: from mail-db8eur05on2059.outbound.protection.outlook.com ([40.107.20.59]:40929
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726056AbgFAIac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 04:30:32 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=et/CgP0vvit/4K5QHC7a3kVtWo89l+bhl3P+Cd+EujRbYcTMC0pytnSjgvgz+R4BpqNKWdVzRMKXO+jnlXlixQypdHTjZP7Jux8XR3ROR+Mzhbjf3XvI5TXv7gOnjfjLqmfiM2xj/gMMP++JGflg5xDtopQly14sYz/WmlzezCewITdrS8y6PBoY+RPafR/4Wy48IEZsxL3f8qEzTjOQezlvqfQHZ5S3bnvHoXl3Ebn1ONKzOSPfgw/s78CRU0bttCLH7+3UCFyXg2YmbSxaaltEu7Y3mGzpXXj1KTmWKltCwi15xDNIBeoUehUAD1DiJpgJlgu6HsAd/daumG8i1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GCXjcUUfJ7czmbLLXnms0PX5EcniiddCa/TUREnIW68=;
+ b=R1qfnUT2gKmCS3EcQEbSPS/jK9/F8SvPQDllQ2smf10buGpN/Ft10WBYp43BOhDk5Fu5dC/txtpdzqVtu0/cpXJTNCZME5NyihHtgPu7v37cT4meSHAjEAsPCpa61MjlBDublOTHx7ZBWDR7ol7F7dAS9jnQyOD5k66IlxU+vbW//DJ27IQqr5YQ7YFVAJFDSN/J5g4LEFGhOCEJopwWsKIgcYm7Bu2l2+ofL+PIbd0MNgEE6m7rd5ol10U3vI1uTlqJ2ZKnwz1VMQGvyqP06E6uXRR+rw46PocHMR+2SYdhWYavGyT+A+tMtrpot7/EPd14pJBnQf8neYE3fRwKJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GCXjcUUfJ7czmbLLXnms0PX5EcniiddCa/TUREnIW68=;
+ b=IuHkb+cC+l+VY5MvJgtegrkb2lgFDOXPhb8EByr7R0xz0WMayHViVRhuA1FSyyWrS3ZqHl78YTeX8cv4D99+bjyM3v+iWcTHF2ySzxvhZQxBcMFTEa8MOwxq541SOntJeMg8ttTZgbvMDe07nHtX6pDM/wcVydGrzh3RhdoBYO0=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB6PR0402MB2728.eurprd04.prod.outlook.com (2603:10a6:4:97::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.22; Mon, 1 Jun
+ 2020 08:30:29 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::d17b:d767:19c3:b871]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::d17b:d767:19c3:b871%6]) with mapi id 15.20.3045.022; Mon, 1 Jun 2020
+ 08:30:28 +0000
+From:   peng.fan@nxp.com
+To:     shawnguo@kernel.org, fabio.estevam@nxp.com, kernel@pengutronix.de,
+        aisheng.dong@nxp.com, robh+dt@kernel.org, sboyd@kernel.org,
+        linux@rempel-privat.de, jaswinder.singh@linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com, leonard.crestez@nxp.com, daniel.baluta@nxp.com,
+        l.stach@pengutronix.de, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH V3 0/3] imx8m: add mu support
+Date:   Mon,  1 Jun 2020 16:19:59 +0800
+Message-Id: <1590999602-29482-1-git-send-email-peng.fan@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR02CA0044.apcprd02.prod.outlook.com
+ (2603:1096:3:18::32) To DB6PR0402MB2760.eurprd04.prod.outlook.com
+ (2603:10a6:4:a1::14)
 MIME-Version: 1.0
-In-Reply-To: <20200529163200.18031-2-s.nawrocki@samsung.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRiA+XbOzo6j2XFavpiZTYtU8oL9OJCsFINhGP0KstRmHqbmpmxe
-        Wn9SRDNvmEreSrvMFDUvc4nM1FJLcl5AxTSNVS5FRULUxGaW2zHy3/O+7/PxXvhITDjJdSJj
-        FUmMUiGNFxF8vP391uhpN/1EhG+JhksbqzIR3VrWzKU/ri9w6er+ES49sfGDoEu7tARdZCzE
-        6dHRFh6tnZvk0uP6RwRdNtrNoV/2f+bRM+l1BJ3Z1c+jy4oXifMHJdr6+4RkdvI1ITHmDnAk
-        bZq7kgJdPZKsaV0uE2H8gGgmPjaFUfqIb/BjJsfbUWLr4dvpi9koDTUIcxBJAnUGhnVeOciG
-        FFJ1CBamnHMQf5fXEcxVt/HYYA3BdpqOY7EsD4ZqSzhsoRbBG/MmxgarCEZqx3CLZU/FQMfX
-        fMzCDlQwZH2vwi0SRn3jwE5jJddSICg/yH9XgCwsoMSQ93zc2gKn3GFDu2PlQ1Q45BmXMNax
-        gw/lJmsDGyoAmpcNVgejHOGTqXqPj0HGq0qMHXWLB/MaV5aDYbry6V7eHpYGdDyWncFQnGcd
-        DqgMBHmdMzw2KERgHHiCWOsszI78IiwXwygPaNb7sOlAME01cdhD2sLUih07gy0UtZdibFoA
-        2VlC1nYHc33p3hWdINf0By9Eoop9m1Xs26Zi3zYV//s+QXg9cmSSVXIZo/JXMKneKqlclayQ
-        ed9MkGvR7m8z7AxsdKDu7aheRJFIdEBwamw8QsiVpqjU8l4EJCZyEAQNGyKEgmip+g6jTIhU
-        Jsczql50hMRFjgL/Z4vhQkomTWJuMUwio/xX5ZA2Tmko0skUd84DCtUnfFKvBEWsttXyq7x+
-        Rg369JUf737g2s1s9vXKltoeuptP1vjKWnKuumQ0fbnXM6SueWwOGV4jyFJF57pmTd0Y7/l7
-        8yLdM5bMM4vdXJqv6Ru8+6+HwkZJWE+I2KBemb80zakRv0WJofKs+cEXRcvyC0cDM+JEuCpG
-        6ueJKVXSv0Jw6cppAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBIsWRmVeSWpSXmKPExsVy+t/xe7pKu67EGSw6aWBxf14ro8XGGetZ
-        La5/ec5qMf/IOVaLK1/fs1lM37uJzWLS/QksFufPb2C32PT4GqvF5V1z2CxmnN/HZLH2yF12
-        i9uNK9gsWvceYbeYMfklmwO/x6ZVnWwed67tYfO4332cyWPzknqPvi2rGD0+b5ILYIvSsynK
-        Ly1JVcjILy6xVYo2tDDSM7S00DMysdQzNDaPtTIyVdK3s0lJzcksSy3St0vQy7h2eRtjwUax
-        isaXHYwNjKuFuhg5OSQETCTOLJ/CBGILCSxllDj/LKqLkQMoLiUxv0UJokRY4s+1LjaIkveM
-        EgcXqoLYwgIZEj17D4PFRQRcJNqezmPpYuTiYBZ4xCSxtKmPGcQREjjIKPH2yCV2kCo2AUOJ
-        3qN9jCA2r4CdRM/iy2CLWQRUJL5u+gdmiwrESnQv/sEOUSMocXLmExYQm1PARmL969NgNcwC
-        6hJ/5l1ihrDFJW49mQ8Vl5do3jqbeQKj0Cwk7bOQtMxC0jILScsCRpZVjCKppcW56bnFRnrF
-        ibnFpXnpesn5uZsYgbG87djPLTsYu94FH2IU4GBU4uG9cP5ynBBrYllxZe4hRgkOZiURXqez
-        p+OEeFMSK6tSi/Lji0pzUosPMZoCPTeRWUo0OR+YZvJK4g1NDc0tLA3Njc2NzSyUxHk7BA7G
-        CAmkJ5akZqemFqQWwfQxcXBKNTDW9PwIOPPpYPHDh/u2sc6YdfTX6lzNWwYrPm6NnrprHdM9
-        fhsGTptTrx9HOTg93rmg8F/V/az4NZOTqr727q2oU9gyZ8/uc+YrNfOFlhhoxb5sEMtVvWz6
-        qunA39TJL6+73XFq/CPwdsqKhTderayV/mghEmgY9Z7l/AJHq7brUV4PRO/eYE/dq8RSnJFo
-        qMVcVJwIAIa1OQb7AgAA
-X-CMS-MailID: 20200601081946eucas1p208442218e510398cacb83e4e08217bef
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200529163219eucas1p2d127fe3936921f53f6fe7902e7d14a3e
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200529163219eucas1p2d127fe3936921f53f6fe7902e7d14a3e
-References: <20200529163200.18031-1-s.nawrocki@samsung.com>
-        <CGME20200529163219eucas1p2d127fe3936921f53f6fe7902e7d14a3e@eucas1p2.samsung.com>
-        <20200529163200.18031-2-s.nawrocki@samsung.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by SG2PR02CA0044.apcprd02.prod.outlook.com (2603:1096:3:18::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3021.27 via Frontend Transport; Mon, 1 Jun 2020 08:30:23 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [119.31.174.66]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 64103976-5a14-4568-d09a-08d806060a3b
+X-MS-TrafficTypeDiagnostic: DB6PR0402MB2728:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB6PR0402MB27281A9EC82B2956A2EB7107888A0@DB6PR0402MB2728.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1284;
+X-Forefront-PRVS: 0421BF7135
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Zq8eK4p+9mcbCSqKbyukUgXwlAy+pA37qJOTNhajh4I+gIOOblCxhYzPjDwT2LYmOvW89LO/KrTFrh6pLjahwbjl7XApyf9H+WbwLVpqLEiyvChxY3VPUPvLumTwzFS1u3+KoqBrbQUIEkWfvD2jqMb98eKgwAoIgVnxCgCjPj/TkHKwGX3jvTyLkyOMglJqL6iqRjpw7aSjmYvk0NMwdzIxXb+VsUwOG+CSGg41Ig0wf9cRMDuNjq4/AKzThpEyTCdQ5xZ+xNQuyaOMayDez0jaelO6vx0Xhj8nvdVcKeYOLO/PzMvRN1p/iRrx0XXbECoapJ3Hq9rIPk23UohgPUoW5ZDAG+8jat59PcOzKbC8UUpaFszc44dreqOdy9zeKhRhY0Mchh/wjyAVGUXnRfbP1pAKvddWO0ZuhdBqV8w=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(366004)(136003)(39860400002)(346002)(396003)(316002)(36756003)(6486002)(6666004)(478600001)(86362001)(8676002)(4326008)(2906002)(83380400001)(69590400007)(66556008)(26005)(2616005)(6512007)(66476007)(4744005)(8936002)(956004)(16526019)(5660300002)(66946007)(52116002)(9686003)(7416002)(6506007)(186003)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: eO/K6wXSTfXHPvniGCbIGenGB3+ZITVGImdhg+k8TMYvmqLjC9QBH89LCCOYBmiZ0NahVLaFFZiWJrIWbaIKEwET2n0Lbh8ieW2wXm7DkTxUpamKG1swSe1/m+osD3IqyvOyYo1O++ESEYinBlWE6kj0NJdh7as+U5EBSBRKJaZD5U5cQoyFf7GiUvPQ7JbAah5u4Cbdnd41J+NzB8kBN78aPbDLzs8LqWLX4zuUfWkzXDUhUo3CC2XcCABOg9Pk+OOTxpecXhsbdWlAZoTb6bxoz+5ibwuYGH10dshgaSUHr+sIwe9pwuGqUKvXywONf/tLQJl9IuivvFIBoPNnc4K010Jcfo6pY7PiGcCM3168rV8C7P+ADdlxUsRTqJ0CyZydgv3FA2Utt0zuBdxUVGhbKdxEgyZZJu1EIhKiHOrGCrsC/zl075Quwr5gqtFokqsTla+ajxoZgtfjbARQjSdLb8ilT8qtSCYofRgxkgHKUYziC4hzudzUhxPXM19G
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 64103976-5a14-4568-d09a-08d806060a3b
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2020 08:30:28.8475
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YmfKmEJqcvS95mg3ZirauY+n5j5ZD8uZ5ZI7mGZ31/rpa1IB6RicX66awuyg5TcgY+3E/MhAwdUIscDDcL7cUA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2728
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc: Rob, devicetree ML
+From: Peng Fan <peng.fan@nxp.com>
 
-On 29.05.2020 18:31, Sylwester Nawrocki wrote:
-> Add documentation for new optional properties in the exynos bus nodes:
-> samsung,interconnect-parent, #interconnect-cells.
-> These properties allow to specify the SoC interconnect structure which
-> then allows the interconnect consumer devices to request specific
-> bandwidth requirements.
-> 
-> Signed-off-by: Artur Świgoń <a.swigon@samsung.com>
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
-> Changes for v5:
->  - exynos,interconnect-parent-node renamed to samsung,interconnect-parent
-> ---
->  Documentation/devicetree/bindings/devfreq/exynos-bus.txt | 15 +++++++++++++--
->  1 file changed, 13 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/devfreq/exynos-bus.txt b/Documentation/devicetree/bindings/devfreq/exynos-bus.txt
-> index e71f752..e0d2daa 100644
-> --- a/Documentation/devicetree/bindings/devfreq/exynos-bus.txt
-> +++ b/Documentation/devicetree/bindings/devfreq/exynos-bus.txt
-> @@ -51,6 +51,11 @@ Optional properties only for parent bus device:
->  - exynos,saturation-ratio: the percentage value which is used to calibrate
->  			the performance count against total cycle count.
-> 
-> +Optional properties for interconnect functionality (QoS frequency constraints):
-> +- samsung,interconnect-parent: phandle to the parent interconnect node; for
-> +  passive devices should point to same node as the exynos,parent-bus property.
-> +- #interconnect-cells: should be 0
-> +
->  Detailed correlation between sub-blocks and power line according to Exynos SoC:
->  - In case of Exynos3250, there are two power line as following:
->  	VDD_MIF |--- DMC
-> @@ -185,8 +190,9 @@ Example1:
->  	----------------------------------------------------------
-> 
->  Example2 :
-> -	The bus of DMC (Dynamic Memory Controller) block in exynos3250.dtsi
-> -	is listed below:
-> +	The bus of DMC (Dynamic Memory Controller) block in exynos3250.dtsi is
-> +	listed below. An interconnect path "bus_lcd0 -- bus_leftbus -- bus_dmc"
-> +	is defined for demonstration purposes.
-> 
->  	bus_dmc: bus_dmc {
->  		compatible = "samsung,exynos-bus";
-> @@ -376,12 +382,15 @@ Example2 :
->  	&bus_dmc {
->  		devfreq-events = <&ppmu_dmc0_3>, <&ppmu_dmc1_3>;
->  		vdd-supply = <&buck1_reg>;	/* VDD_MIF */
-> +		#interconnect-cells = <0>;
->  		status = "okay";
->  	};
-> 
->  	&bus_leftbus {
->  		devfreq-events = <&ppmu_leftbus_3>, <&ppmu_rightbus_3>;
->  		vdd-supply = <&buck3_reg>;
-> +		samsung,interconnect-parent = <&bus_dmc>;
-> +		#interconnect-cells = <0>;
->  		status = "okay";
->  	};
-> 
-> @@ -392,6 +401,8 @@ Example2 :
-> 
->  	&bus_lcd0 {
->  		devfreq = <&bus_leftbus>;
-> +		samsung,interconnect-parent = <&bus_leftbus>;
-> +		#interconnect-cells = <0>;
->  		status = "okay";
->  	};
-> 
-> --
-> 2.7.4
+V3:
+ Add R-b tag
+ Remove undocumented property
+
+V2:
+ Add dt-bindings
+ Merge dts changes into one patch, since all is to add mu node
+
+Add mu dt bindings
+Add mu node
+Add i.MX8MP mu root clk
+
+Peng Fan (3):
+  dt-bindings: mailbox: imx-mu: support i.MX8M
+  arm64: dts: imx8m: add mu node
+  clk: imx8mp: add mu root clk
+
+ Documentation/devicetree/bindings/mailbox/fsl,mu.txt | 3 ++-
+ arch/arm64/boot/dts/freescale/imx8mm.dtsi            | 8 ++++++++
+ arch/arm64/boot/dts/freescale/imx8mn.dtsi            | 8 ++++++++
+ arch/arm64/boot/dts/freescale/imx8mp.dtsi            | 8 ++++++++
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi            | 8 ++++++++
+ drivers/clk/imx/clk-imx8mp.c                         | 1 +
+ 6 files changed, 35 insertions(+), 1 deletion(-)
+
+-- 
+2.16.4
+
