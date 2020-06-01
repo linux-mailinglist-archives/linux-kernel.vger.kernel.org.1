@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8BE1EAEFA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89BE51EAEB7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728087AbgFAR6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:58:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40144 "EHLO mail.kernel.org"
+        id S1729885AbgFAS4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:56:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729166AbgFAR6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:58:20 -0400
+        id S1729677AbgFASAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:00:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D5D42077D;
-        Mon,  1 Jun 2020 17:58:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 53BAD2065C;
+        Mon,  1 Jun 2020 18:00:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034299;
-        bh=6LefHzvUIAUrbqMU+zrcftUJaKiEVuC7+lGsCMX0KfQ=;
+        s=default; t=1591034438;
+        bh=Uu427Pif+dmGwUKTeKrRVMNQQRMF0AAQYGAbly+3Wr4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1NAu9NG0RFs/+2b45MuLXb0oU/Wl+R8xZqp4v4FU644GCo+p8otA4rUbKPyPP3lX6
-         DMvg6Uau+BaF/zRuhQMVey5InSaCk75GyG5eB6yi5jvZAH+SuU1gXkCvlKizn9CIpA
-         8rFGdhUIzPUX4TeX3IMdCer7mc+zUyuJEvBenorA=
+        b=pZTPdaz7Mzrqk2x/u2vYAKTWvaTux0Whxmw+lXw34MzCKXzYyAQ0OkDBxJBQml2oP
+         yfT6Z6IYXXYhdlsxAHhcUlMap2/C6zqMy1RM7JxWspdJTBFV0nxPyZk8+fKTgjUsGj
+         PIBhnqz6647OVXohg62wEBMZ5va+Zd7issAA2iwA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lin Yi <teroincn@gmail.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
+        stable@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
+        Nicolas Pitre <nico@linaro.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 30/61] IB/qib: Call kobject_put() when kobject_init_and_add() fails
+Subject: [PATCH 4.14 32/77] ARM: 8843/1: use unified assembler in headers
 Date:   Mon,  1 Jun 2020 19:53:37 +0200
-Message-Id: <20200601174017.385450957@linuxfoundation.org>
+Message-Id: <20200601174022.344327002@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
-References: <20200601174010.316778377@linuxfoundation.org>
+In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
+References: <20200601174016.396817032@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,80 +45,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaike Wan <kaike.wan@intel.com>
+From: Stefan Agner <stefan@agner.ch>
 
-[ Upstream commit a35cd6447effd5c239b564c80fa109d05ff3d114 ]
+[ Upstream commit c001899a5d6c2d7a0f3b75b2307ddef137fb46a6 ]
 
-When kobject_init_and_add() returns an error in the function
-qib_create_port_files(), the function kobject_put() is not called for the
-corresponding kobject, which potentially leads to memory leak.
+Use unified assembler syntax (UAL) in headers. Divided syntax is
+considered deprecated. This will also allow to build the kernel
+using LLVM's integrated assembler.
 
-This patch fixes the issue by calling kobject_put() even if
-kobject_init_and_add() fails. In addition, the ppd->diagc_kobj is released
-along with other kobjects when the sysfs is unregistered.
-
-Fixes: f931551bafe1 ("IB/qib: Add new qib driver for QLogic PCIe InfiniBand adapters")
-Link: https://lore.kernel.org/r/20200512031328.189865.48627.stgit@awfm-01.aw.intel.com
-Cc: <stable@vger.kernel.org>
-Suggested-by: Lin Yi <teroincn@gmail.com>
-Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Signed-off-by: Kaike Wan <kaike.wan@intel.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+Acked-by: Nicolas Pitre <nico@linaro.org>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/qib/qib_sysfs.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ arch/arm/include/asm/assembler.h | 12 ++++++------
+ arch/arm/include/asm/vfpmacros.h |  8 ++++----
+ arch/arm/lib/bitops.h            |  8 ++++----
+ 3 files changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/infiniband/hw/qib/qib_sysfs.c b/drivers/infiniband/hw/qib/qib_sysfs.c
-index 8ce0f6eef89e..b9d653afff8b 100644
---- a/drivers/infiniband/hw/qib/qib_sysfs.c
-+++ b/drivers/infiniband/hw/qib/qib_sysfs.c
-@@ -756,7 +756,7 @@ int qib_create_port_files(struct ib_device *ibdev, u8 port_num,
- 		qib_dev_err(dd,
- 			"Skipping linkcontrol sysfs info, (err %d) port %u\n",
- 			ret, port_num);
--		goto bail;
-+		goto bail_link;
- 	}
- 	kobject_uevent(&ppd->pport_kobj, KOBJ_ADD);
- 
-@@ -766,7 +766,7 @@ int qib_create_port_files(struct ib_device *ibdev, u8 port_num,
- 		qib_dev_err(dd,
- 			"Skipping sl2vl sysfs info, (err %d) port %u\n",
- 			ret, port_num);
--		goto bail_link;
-+		goto bail_sl;
- 	}
- 	kobject_uevent(&ppd->sl2vl_kobj, KOBJ_ADD);
- 
-@@ -776,7 +776,7 @@ int qib_create_port_files(struct ib_device *ibdev, u8 port_num,
- 		qib_dev_err(dd,
- 			"Skipping diag_counters sysfs info, (err %d) port %u\n",
- 			ret, port_num);
--		goto bail_sl;
-+		goto bail_diagc;
- 	}
- 	kobject_uevent(&ppd->diagc_kobj, KOBJ_ADD);
- 
-@@ -789,7 +789,7 @@ int qib_create_port_files(struct ib_device *ibdev, u8 port_num,
- 		qib_dev_err(dd,
- 		 "Skipping Congestion Control sysfs info, (err %d) port %u\n",
- 		 ret, port_num);
--		goto bail_diagc;
-+		goto bail_cc;
- 	}
- 
- 	kobject_uevent(&ppd->pport_cc_kobj, KOBJ_ADD);
-@@ -871,6 +871,7 @@ void qib_verbs_unregister_sysfs(struct qib_devdata *dd)
- 				&cc_table_bin_attr);
- 			kobject_put(&ppd->pport_cc_kobj);
- 		}
-+		kobject_put(&ppd->diagc_kobj);
- 		kobject_put(&ppd->sl2vl_kobj);
- 		kobject_put(&ppd->pport_kobj);
- 	}
+diff --git a/arch/arm/include/asm/assembler.h b/arch/arm/include/asm/assembler.h
+index 88286dd483ff..965224d14e6c 100644
+--- a/arch/arm/include/asm/assembler.h
++++ b/arch/arm/include/asm/assembler.h
+@@ -374,9 +374,9 @@ THUMB(	orr	\reg , \reg , #PSR_T_BIT	)
+ 	.macro	usraccoff, instr, reg, ptr, inc, off, cond, abort, t=TUSER()
+ 9999:
+ 	.if	\inc == 1
+-	\instr\cond\()b\()\t\().w \reg, [\ptr, #\off]
++	\instr\()b\t\cond\().w \reg, [\ptr, #\off]
+ 	.elseif	\inc == 4
+-	\instr\cond\()\t\().w \reg, [\ptr, #\off]
++	\instr\t\cond\().w \reg, [\ptr, #\off]
+ 	.else
+ 	.error	"Unsupported inc macro argument"
+ 	.endif
+@@ -415,9 +415,9 @@ THUMB(	orr	\reg , \reg , #PSR_T_BIT	)
+ 	.rept	\rept
+ 9999:
+ 	.if	\inc == 1
+-	\instr\cond\()b\()\t \reg, [\ptr], #\inc
++	\instr\()b\t\cond \reg, [\ptr], #\inc
+ 	.elseif	\inc == 4
+-	\instr\cond\()\t \reg, [\ptr], #\inc
++	\instr\t\cond \reg, [\ptr], #\inc
+ 	.else
+ 	.error	"Unsupported inc macro argument"
+ 	.endif
+@@ -458,7 +458,7 @@ THUMB(	orr	\reg , \reg , #PSR_T_BIT	)
+ 	.macro check_uaccess, addr:req, size:req, limit:req, tmp:req, bad:req
+ #ifndef CONFIG_CPU_USE_DOMAINS
+ 	adds	\tmp, \addr, #\size - 1
+-	sbcccs	\tmp, \tmp, \limit
++	sbcscc	\tmp, \tmp, \limit
+ 	bcs	\bad
+ #ifdef CONFIG_CPU_SPECTRE
+ 	movcs	\addr, #0
+@@ -472,7 +472,7 @@ THUMB(	orr	\reg , \reg , #PSR_T_BIT	)
+ 	sub	\tmp, \limit, #1
+ 	subs	\tmp, \tmp, \addr	@ tmp = limit - 1 - addr
+ 	addhs	\tmp, \tmp, #1		@ if (tmp >= 0) {
+-	subhss	\tmp, \tmp, \size	@ tmp = limit - (addr + size) }
++	subshs	\tmp, \tmp, \size	@ tmp = limit - (addr + size) }
+ 	movlo	\addr, #0		@ if (tmp < 0) addr = NULL
+ 	csdb
+ #endif
+diff --git a/arch/arm/include/asm/vfpmacros.h b/arch/arm/include/asm/vfpmacros.h
+index ef5dfedacd8d..628c336e8e3b 100644
+--- a/arch/arm/include/asm/vfpmacros.h
++++ b/arch/arm/include/asm/vfpmacros.h
+@@ -29,13 +29,13 @@
+ 	ldr	\tmp, =elf_hwcap		    @ may not have MVFR regs
+ 	ldr	\tmp, [\tmp, #0]
+ 	tst	\tmp, #HWCAP_VFPD32
+-	ldcnel	p11, cr0, [\base],#32*4		    @ FLDMIAD \base!, {d16-d31}
++	ldclne	p11, cr0, [\base],#32*4		    @ FLDMIAD \base!, {d16-d31}
+ 	addeq	\base, \base, #32*4		    @ step over unused register space
+ #else
+ 	VFPFMRX	\tmp, MVFR0			    @ Media and VFP Feature Register 0
+ 	and	\tmp, \tmp, #MVFR0_A_SIMD_MASK	    @ A_SIMD field
+ 	cmp	\tmp, #2			    @ 32 x 64bit registers?
+-	ldceql	p11, cr0, [\base],#32*4		    @ FLDMIAD \base!, {d16-d31}
++	ldcleq	p11, cr0, [\base],#32*4		    @ FLDMIAD \base!, {d16-d31}
+ 	addne	\base, \base, #32*4		    @ step over unused register space
+ #endif
+ #endif
+@@ -53,13 +53,13 @@
+ 	ldr	\tmp, =elf_hwcap		    @ may not have MVFR regs
+ 	ldr	\tmp, [\tmp, #0]
+ 	tst	\tmp, #HWCAP_VFPD32
+-	stcnel	p11, cr0, [\base],#32*4		    @ FSTMIAD \base!, {d16-d31}
++	stclne	p11, cr0, [\base],#32*4		    @ FSTMIAD \base!, {d16-d31}
+ 	addeq	\base, \base, #32*4		    @ step over unused register space
+ #else
+ 	VFPFMRX	\tmp, MVFR0			    @ Media and VFP Feature Register 0
+ 	and	\tmp, \tmp, #MVFR0_A_SIMD_MASK	    @ A_SIMD field
+ 	cmp	\tmp, #2			    @ 32 x 64bit registers?
+-	stceql	p11, cr0, [\base],#32*4		    @ FSTMIAD \base!, {d16-d31}
++	stcleq	p11, cr0, [\base],#32*4		    @ FSTMIAD \base!, {d16-d31}
+ 	addne	\base, \base, #32*4		    @ step over unused register space
+ #endif
+ #endif
+diff --git a/arch/arm/lib/bitops.h b/arch/arm/lib/bitops.h
+index 93cddab73072..95bd35991288 100644
+--- a/arch/arm/lib/bitops.h
++++ b/arch/arm/lib/bitops.h
+@@ -7,7 +7,7 @@
+ ENTRY(	\name		)
+ UNWIND(	.fnstart	)
+ 	ands	ip, r1, #3
+-	strneb	r1, [ip]		@ assert word-aligned
++	strbne	r1, [ip]		@ assert word-aligned
+ 	mov	r2, #1
+ 	and	r3, r0, #31		@ Get bit offset
+ 	mov	r0, r0, lsr #5
+@@ -32,7 +32,7 @@ ENDPROC(\name		)
+ ENTRY(	\name		)
+ UNWIND(	.fnstart	)
+ 	ands	ip, r1, #3
+-	strneb	r1, [ip]		@ assert word-aligned
++	strbne	r1, [ip]		@ assert word-aligned
+ 	mov	r2, #1
+ 	and	r3, r0, #31		@ Get bit offset
+ 	mov	r0, r0, lsr #5
+@@ -62,7 +62,7 @@ ENDPROC(\name		)
+ ENTRY(	\name		)
+ UNWIND(	.fnstart	)
+ 	ands	ip, r1, #3
+-	strneb	r1, [ip]		@ assert word-aligned
++	strbne	r1, [ip]		@ assert word-aligned
+ 	and	r2, r0, #31
+ 	mov	r0, r0, lsr #5
+ 	mov	r3, #1
+@@ -89,7 +89,7 @@ ENDPROC(\name		)
+ ENTRY(	\name		)
+ UNWIND(	.fnstart	)
+ 	ands	ip, r1, #3
+-	strneb	r1, [ip]		@ assert word-aligned
++	strbne	r1, [ip]		@ assert word-aligned
+ 	and	r3, r0, #31
+ 	mov	r0, r0, lsr #5
+ 	save_and_disable_irqs ip
 -- 
 2.25.1
 
