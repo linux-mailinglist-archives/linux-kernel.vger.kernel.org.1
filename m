@@ -2,260 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7721EA0B3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 11:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA511EA0AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 11:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbgFAJPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 05:15:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725955AbgFAJPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 05:15:11 -0400
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A8A76207BC
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 09:15:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591002910;
-        bh=t4iJuc7lKTqRKb4YRQcfc6Zcc+0aiSP0tDeFpyVwAk8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HKFgbB9eKN6FHWyXv4WYSJgzDYUynL1c6V7nW+EZ4sm7vWmFlA+pmtrg07jeOPNE2
-         xnJxAxkIMMN8IogoTTUCfPoMu3tFLxhhsmfSKPK0wNaF53wAdruwNYEA12Hnj6427C
-         T+S1NPqiz5WsDeMGQz8sDWAQacg3EuqFC5KWd4n0=
-Received: by mail-lf1-f45.google.com with SMTP id x22so3506786lfd.4
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 02:15:09 -0700 (PDT)
-X-Gm-Message-State: AOAM533lILca3DWEoFplq5i0WDKscF8lrsJJUs4x3lnY4TSuMKS5uUEZ
-        aYTxPCfEqacd1cd8Mczuj1iu2MI6yVoGYdbEPzQ=
-X-Google-Smtp-Source: ABdhPJwyjnB2fm8dJBftZwzvtw+TL8eONFwas/ivCwyNJ++u9Y2LwhmZJJfTORveeAUOg1prXhytHPWy6qX6xQnYRfs=
-X-Received: by 2002:a05:6512:3111:: with SMTP id n17mr10661419lfb.137.1591002907869;
- Mon, 01 Jun 2020 02:15:07 -0700 (PDT)
+        id S1727779AbgFAJOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 05:14:04 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:36560 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727068AbgFAJOB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 05:14:01 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: aratiu)
+        with ESMTPSA id 52E552A1629
+From:   Adrian Ratiu <adrian.ratiu@collabora.com>
+To:     Philippe CORNU <philippe.cornu@st.com>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-rockchip@lists.infradead.org" 
+        <linux-rockchip@lists.infradead.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Adrian Pop <pop.adrian61@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        "linux-imx@nxp.com" <linux-imx@nxp.com>,
+        "kernel@collabora.com" <kernel@collabora.com>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Arnaud Ferraris <arnaud.ferraris@collabora.com>,
+        Yannick FERTRE <yannick.fertre@st.com>,
+        Benjamin GAIGNARD <benjamin.gaignard@st.com>
+Subject: Re: [Linux-stm32] [PATCH v8 08/10] drm: stm: dw-mipi-dsi: let the
+ bridge handle the HW version check
+In-Reply-To: <4acc09e8-0610-01f6-b18d-3ffc390c45a3@st.com>
+References: <20200427081952.3536741-1-adrian.ratiu@collabora.com>
+ <20200427081952.3536741-9-adrian.ratiu@collabora.com>
+ <4acc09e8-0610-01f6-b18d-3ffc390c45a3@st.com>
+Date:   Mon, 01 Jun 2020 12:15:02 +0300
+Message-ID: <87blm387vt.fsf@iwork.i-did-not-set--mail-host-address--so-tickle-me>
 MIME-Version: 1.0
-References: <cover.1590474856.git.greentime.hu@sifive.com> <fa27814191feb2498b396758447ac2b745fd1121.1590474856.git.greentime.hu@sifive.com>
-In-Reply-To: <fa27814191feb2498b396758447ac2b745fd1121.1590474856.git.greentime.hu@sifive.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Mon, 1 Jun 2020 17:14:56 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTT-2SKJ08oDCPcBqA9gYL_WZZHdWGBFuWS9NkOuwFc3gw@mail.gmail.com>
-Message-ID: <CAJF2gTT-2SKJ08oDCPcBqA9gYL_WZZHdWGBFuWS9NkOuwFc3gw@mail.gmail.com>
-Subject: Re: [RFC PATCH v4 11/13] riscv: Add ptrace vector support
-To:     Greentime Hu <greentime.hu@sifive.com>
-Cc:     Guo Ren <guoren@linux.alibaba.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; format=flowed
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since it has been redesigned with new version spec, please change the
-first-author :)
+On Fri, 29 May 2020, Philippe CORNU <philippe.cornu@st.com> wrote:
+> Hi Adrian, and thank you very much for the patchset.  Thank you 
+> also for having tested it on STM32F769 and STM32MP1.  Sorry for 
+> the late response, Yannick and I will review it as soon as 
+> possible and we will keep you posted.  Note: Do not hesitate to 
+> put us in copy for the next version  (philippe.cornu@st.com, 
+> yannick.fertre@st.com) Regards, Philippe :-) 
 
-And add me as Co-developed.
+Hi Philippe,
 
-On Tue, May 26, 2020 at 3:03 PM Greentime Hu <greentime.hu@sifive.com> wrote:
->
-> From: Guo Ren <guoren@linux.alibaba.com>
->
-> This patch adds ptrace support for riscv vector. The vector registers will
-> be saved in datap pointer of __riscv_v_state. This pointer will be set
-> right after the __riscv_v_state data structure then it will be put in ubuf
-> for ptrace system call to get or set. It will check if the datap got from
-> ubuf is set to the correct address or not when the ptrace system call is
-> trying to set the vector registers.
->
-> [greentime.hu@sifive.com: add support for dynamic vlen, fix vtype not
-> saved bug]
-> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> ---
->  arch/riscv/include/uapi/asm/elf.h |   1 +
->  arch/riscv/kernel/ptrace.c        | 114 ++++++++++++++++++++++++++++++
->  include/uapi/linux/elf.h          |   1 +
->  3 files changed, 116 insertions(+)
->
-> diff --git a/arch/riscv/include/uapi/asm/elf.h b/arch/riscv/include/uapi/asm/elf.h
-> index d696d6610231..099434d075a7 100644
-> --- a/arch/riscv/include/uapi/asm/elf.h
-> +++ b/arch/riscv/include/uapi/asm/elf.h
-> @@ -23,6 +23,7 @@ typedef struct user_regs_struct elf_gregset_t;
->  typedef __u64 elf_fpreg_t;
->  typedef union __riscv_fp_state elf_fpregset_t;
->  #define ELF_NFPREG (sizeof(struct __riscv_d_ext_state) / sizeof(elf_fpreg_t))
-> +#define ELF_NVREG  (sizeof(struct __riscv_v_state) / sizeof(elf_greg_t))
->
->  #if __riscv_xlen == 64
->  #define ELF_RISCV_R_SYM(r_info)                ELF64_R_SYM(r_info)
-> diff --git a/arch/riscv/kernel/ptrace.c b/arch/riscv/kernel/ptrace.c
-> index 444dc7b0fd78..9b9bd1c02362 100644
-> --- a/arch/riscv/kernel/ptrace.c
-> +++ b/arch/riscv/kernel/ptrace.c
-> @@ -10,6 +10,7 @@
->  #include <asm/ptrace.h>
->  #include <asm/syscall.h>
->  #include <asm/thread_info.h>
-> +#include <asm/switch_to.h>
->  #include <linux/audit.h>
->  #include <linux/ptrace.h>
->  #include <linux/elf.h>
-> @@ -26,6 +27,9 @@ enum riscv_regset {
->  #ifdef CONFIG_FPU
->         REGSET_F,
->  #endif
-> +#ifdef CONFIG_VECTOR
-> +       REGSET_V,
-> +#endif
->  };
->
->  static int riscv_gpr_get(struct task_struct *target,
-> @@ -92,6 +96,107 @@ static int riscv_fpr_set(struct task_struct *target,
->  }
->  #endif
->
-> +#ifdef CONFIG_VECTOR
-> +static int riscv_vr_get(struct task_struct *target,
-> +                        const struct user_regset *regset,
-> +                        unsigned int pos, unsigned int count,
-> +                        void *kbuf, void __user *ubuf)
-> +{
-> +       int ret, size;
-> +       struct __riscv_v_state *vstate = &target->thread.vstate;
-> +       /* Set the datap right after the address of vstate. */
-> +       void *datap = ubuf + sizeof(struct __riscv_v_state);
-> +       u32 magic = RVV_MAGIC;
-> +
-> +       /* Copy the magic number. */
-> +       ret = user_regset_copyout(&pos, &count, &kbuf, &ubuf, &magic, 0,
-> +                                 sizeof(u32));
-> +       if (unlikely(ret))
-> +               return ret;
-> +
-> +       /* Copy rest of vstate except datap. */
-> +       ret = user_regset_copyout(&pos, &count, &kbuf, &ubuf, vstate, 0,
-> +                                 RISCV_V_STATE_DATAP);
-> +       if (unlikely(ret))
-> +               return ret;
-> +
-> +       /* Copy the pointer datap itself. */
-> +       pos = 0;
-> +       ret = user_regset_copyout(&pos, &count, &kbuf, &ubuf, &datap, 0,
-> +                                 sizeof(vstate->datap));
-> +       if (unlikely(ret))
-> +               return ret;
-> +
-> +#if __riscv_xlen == 32
-> +       /* Skip copy _padding. */
-> +       size = sizeof(vstate->__padding);
-> +       count -= size;
-> +       ubuf += size;
-> +#endif
-> +
-> +       /* Copy all the vector registers. */
-> +       pos = 0;
-> +       ret = user_regset_copyout(&pos, &count, &kbuf, &ubuf,
-> +                                 vstate->datap, 0, vstate->size);
-> +       return ret;
-> +}
-> +
-> +static int riscv_vr_set(struct task_struct *target,
-> +                        const struct user_regset *regset,
-> +                        unsigned int pos, unsigned int count,
-> +                        const void *kbuf, const void __user *ubuf)
-> +{
-> +       int ret, size;
-> +       struct __riscv_v_state *vstate = &target->thread.vstate;
-> +       const void *datap = ubuf + sizeof(struct __riscv_v_state);
-> +       const void *datap_addr = ubuf + RISCV_V_STATE_DATAP;
-> +       long val_datap;
-> +
-> +       /* Skip copy magic because kernel doesn't need to use it. */
-> +       size = sizeof(vstate->magic);
-> +       pos += size;
-> +       count -= size;
-> +       ubuf += size;
-> +
-> +       /* Copy rest of the vstate except datap and __padding. */
-> +       ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf, vstate, 0,
-> +                                RISCV_V_STATE_DATAP);
-> +       if (unlikely(ret))
-> +               return ret;
-> +
-> +       /* Check if the datap is correct address of ubuf. */
-> +       __get_user(val_datap, (long *)datap_addr);
-> +       if (val_datap != (long)datap)
-> +               return -EFAULT;
-> +
-> +       /* Skip copy datap. */
-> +       size = sizeof(vstate->datap);
-> +       count -= size;
-> +       ubuf += size;
-> +
-> +#if __riscv_xlen == 32
-> +       /* Skip copy _padding. */
-> +       size = sizeof(vstate->__padding);
-> +       count -= size;
-> +       ubuf += size;
-> +#endif
-> +
-> +       /* Copy all the vector registers. */
-> +       pos = 0;
-> +       ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf, vstate->datap,
-> +                                0, vstate->size);
-> +       return ret;
-> +}
-> +static unsigned int riscv_vr_get_size(struct task_struct *target,
-> +                                     const struct user_regset *regset)
-> +{
-> +       if (!has_vector)
-> +               return 0;
-> +
-> +       return sizeof(struct __riscv_v_state) + riscv_vsize;
-> +}
-> +#endif
-> +
->  static const struct user_regset riscv_user_regset[] = {
->         [REGSET_X] = {
->                 .core_note_type = NT_PRSTATUS,
-> @@ -111,6 +216,15 @@ static const struct user_regset riscv_user_regset[] = {
->                 .set = &riscv_fpr_set,
->         },
->  #endif
-> +#ifdef CONFIG_VECTOR
-> +       [REGSET_V] = {
-> +               .core_note_type = NT_RISCV_VECTOR,
-> +               .align = 16,
-> +               .get = riscv_vr_get,
-> +               .set = riscv_vr_set,
-> +               .get_size = riscv_vr_get_size,
-> +       },
-> +#endif
->  };
->
->  static const struct user_regset_view riscv_user_native_view = {
-> diff --git a/include/uapi/linux/elf.h b/include/uapi/linux/elf.h
-> index 34c02e4290fe..e428f9e8710a 100644
-> --- a/include/uapi/linux/elf.h
-> +++ b/include/uapi/linux/elf.h
-> @@ -428,6 +428,7 @@ typedef struct elf64_shdr {
->  #define NT_MIPS_DSP    0x800           /* MIPS DSP ASE registers */
->  #define NT_MIPS_FP_MODE        0x801           /* MIPS floating-point mode */
->  #define NT_MIPS_MSA    0x802           /* MIPS SIMD registers */
-> +#define NT_RISCV_VECTOR        0x900           /* RISC-V vector registers */
->
->  /* Note header in a PT_NOTE section */
->  typedef struct elf32_note {
-> --
-> 2.26.2
->
->
+Thank you very much for your previous and future STM testing, 
+really appreciate it! I've CC'd Yannick until now but I'll also CC 
+you sure :)
 
+It's been over a month since I posted v8 and I was just gearing up 
+to address all feedback, rebase & retest to prepare v9 but I'll 
+wait a little longer, no problem, it's no rush.
 
--- 
-Best Regards
- Guo Ren
+Have an awesome day,
+Adrian
 
-ML: https://lore.kernel.org/linux-csky/
+>
+>
+> On 4/27/20 10:19 AM, Adrian Ratiu wrote:
+>> The stm mipi-dsi platform driver added a version test in
+>> commit fa6251a747b7 ("drm/stm: dsi: check hardware version")
+>> so that HW revisions other than v1.3x get rejected. The rockchip
+>> driver had no such check and just assumed register layouts are
+>> v1.3x compatible.
+>> 
+>> Having such tests was a good idea because only v130/v131 layouts
+>> were supported at the time, however since adding multiple layout
+>> support in the bridge, the version is automatically checked for
+>> all drivers, compatible layouts get picked and unsupported HW is
+>> automatically rejected by the bridge, so there's no use keeping
+>> the test in the stm driver.
+>> 
+>> The main reason prompting this change is that the stm driver
+>> test immediately disabled the peripheral clock after reading
+>> the version, making the bridge read version 0x0 immediately
+>> after in its own probe(), so we move the clock disabling after
+>> the bridge does the version test.
+>> 
+>> Tested on STM32F769 and STM32MP1.
+>> 
+>> Cc: linux-stm32@st-md-mailman.stormreply.com
+>> Reported-by: Adrian Pop <pop.adrian61@gmail.com>
+>> Tested-by: Adrian Pop <pop.adrian61@gmail.com>
+>> Tested-by: Arnaud Ferraris <arnaud.ferraris@collabora.com>
+>> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+>> ---
+>> New in v6.
+>> ---
+>>   drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 12 +++---------
+>>   1 file changed, 3 insertions(+), 9 deletions(-)
+>> 
+>> diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
+>> index 2e1f2664495d0..7218e405d7e2b 100644
+>> --- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
+>> +++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
+>> @@ -402,15 +402,6 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+>>   		goto err_dsi_probe;
+>>   	}
+>>   
+>> -	dsi->hw_version = dsi_read(dsi, DSI_VERSION) & VERSION;
+>> -	clk_disable_unprepare(pclk);
+>> -
+>> -	if (dsi->hw_version != HWVER_130 && dsi->hw_version != HWVER_131) {
+>> -		ret = -ENODEV;
+>> -		DRM_ERROR("bad dsi hardware version\n");
+>> -		goto err_dsi_probe;
+>> -	}
+>> -
+>>   	dw_mipi_dsi_stm_plat_data.base = dsi->base;
+>>   	dw_mipi_dsi_stm_plat_data.priv_data = dsi;
+>>   
+>> @@ -423,6 +414,9 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+>>   		goto err_dsi_probe;
+>>   	}
+>>   
+>> +	dsi->hw_version = dsi_read(dsi, DSI_VERSION) & VERSION;
+>> +	clk_disable_unprepare(pclk);
+>> +
+>>   	return 0;
+>>   
+>>   err_dsi_probe:
+>> 
