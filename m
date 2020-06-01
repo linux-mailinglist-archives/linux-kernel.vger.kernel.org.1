@@ -2,104 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE1E1EA7AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 18:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 807201EA776
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 18:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgFAQSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 12:18:35 -0400
-Received: from sender4-of-o54.zoho.com ([136.143.188.54]:21454 "EHLO
-        sender4-of-o54.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726067AbgFAQSf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 12:18:35 -0400
-X-Greylist: delayed 901 seconds by postgrey-1.27 at vger.kernel.org; Mon, 01 Jun 2020 12:18:34 EDT
-ARC-Seal: i=1; a=rsa-sha256; t=1591027399; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=RGaLXN/0pJQ5XCpiTzGmASIWJhTFJXXIXV/O1eLEdA2rLNHxMVeLht0It/PGpEvZGmkFjvj1q7yIHh1d0GaHo0dz88zDGHEaOKvfyaqiaAKbX0oKqC+7NyyNLbnsgrFk8NcMzuT1Rs8NWCayydZTBaXg89XtQH6KcQlKozIM3RI=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1591027399; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
-        bh=X+xeA4Yaz4db9RbtSMm/UfrZwbfOwJ48gdi78Ynycyw=; 
-        b=D7I0zvMgfrUt12RwL0dFJQxBNF98M5NHbbHdBZgaTWabcJh2IxPJDJI9XRHZnY4Ui9zOmz2WE4hC5wjaT9sBSXpEED7h+6PJHhHCX1Nosu0g4IPJYsDWm6sDQGqCSHK5Zvg2ixoIHxf4sZS1KmSMwNvNjk46YCEbjctVXmCVKZc=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=tmsp.io;
-        spf=pass  smtp.mailfrom=dorian.stoll@tmsp.io;
-        dmarc=pass header.from=<dorian.stoll@tmsp.io> header.from=<dorian.stoll@tmsp.io>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1591027399;
-        s=zoho; d=tmsp.io; i=dorian.stoll@tmsp.io;
-        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        bh=X+xeA4Yaz4db9RbtSMm/UfrZwbfOwJ48gdi78Ynycyw=;
-        b=DHQLFHturLtWn+Wj70zqYtCKE3xCLl1PTjC2A7oq3uGC48uBSfSoVmlwrb5NXWOu
-        MrIKyAsm8fE9xLsAbyjnjHESy6Lo/cy9rEGeDz6lxcFT6gWyaYj7KhOaUhDypbADkFn
-        5WIXuCmGMYOyoqDIRhxrpBgawsdLEq4/OYDKk6xE=
-Received: from desktop.fritz.box (79.140.114.1 [79.140.114.1]) by mx.zohomail.com
-        with SMTPS id 1591027397737977.2859413189593; Mon, 1 Jun 2020 09:03:17 -0700 (PDT)
-From:   Dorian Stoll <dorian.stoll@tmsp.io>
-To:     Tomas Winkler <tomas.winkler@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Dorian Stoll <dorian.stoll@tmsp.io>
-Message-ID: <20200601155954.764558-1-dorian.stoll@tmsp.io>
-Subject: [PATCH] mei: me: Add itouch device IDs for SPT / ICP
-Date:   Mon,  1 Jun 2020 17:59:54 +0200
-X-Mailer: git-send-email 2.26.2
+        id S1726218AbgFAQC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 12:02:28 -0400
+Received: from mga18.intel.com ([134.134.136.126]:51420 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726073AbgFAQC1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 12:02:27 -0400
+IronPort-SDR: kmZrGz3F3xg3ZrHLyfOb31Wb+tVSSd5y7vnxBxitFt7TesIGC4HKEY8g8FWyY4A2PZlL3j5ou2
+ JHYYivwyCMng==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2020 09:02:26 -0700
+IronPort-SDR: CXfXPbkQpfUGG0JOiAj9OzZw9kuXPkyZ/boG4eL6gI9ZQ75vKRM0YqnzGmcNTxKxxPW071cbBT
+ YftGqYuBYPLw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,461,1583222400"; 
+   d="scan'208";a="256818326"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga007.fm.intel.com with ESMTP; 01 Jun 2020 09:02:25 -0700
+Received: from [10.249.230.65] (abudanko-mobl.ccr.corp.intel.com [10.249.230.65])
+        by linux.intel.com (Postfix) with ESMTP id A3BC8580646;
+        Mon,  1 Jun 2020 09:02:23 -0700 (PDT)
+Subject: [PATCH v5 09/13] perf stat: implement control commands handling
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <e5cac8dd-7aa4-ec7c-671c-07756907acba@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <732e7374-3080-8c8f-eab2-855a2974d695@linux.intel.com>
+Date:   Mon, 1 Jun 2020 19:02:22 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-ZohoMailClient: External
-Content-Type: text/plain; charset=utf8
+In-Reply-To: <e5cac8dd-7aa4-ec7c-671c-07756907acba@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These device IDs can be found on Microsoft Surface devices.
 
-Signed-off-by: Dorian Stoll <dorian.stoll@tmsp.io>
+Implement handling of 'enable' and 'disable' control commands
+coming from control file descriptor. process_evlist() functions
+checks for events on static fd and makes required operations.
+If poll event splits initiated timeout interval then the reminder
+is calculated and waited in the following poll() syscall.
+
+Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 ---
- drivers/misc/mei/hw-me-regs.h | 2 ++
- drivers/misc/mei/pci-me.c     | 2 ++
- 2 files changed, 4 insertions(+)
+ tools/perf/builtin-stat.c | 69 +++++++++++++++++++++++++++++----------
+ 1 file changed, 51 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/misc/mei/hw-me-regs.h b/drivers/misc/mei/hw-me-regs.h
-index 9392934e3a06..90e7d3020fa5 100644
---- a/drivers/misc/mei/hw-me-regs.h
-+++ b/drivers/misc/mei/hw-me-regs.h
-@@ -59,6 +59,7 @@
-=20
- #define MEI_DEV_ID_SPT        0x9D3A  /* Sunrise Point */
- #define MEI_DEV_ID_SPT_2      0x9D3B  /* Sunrise Point 2 */
-+#define MEI_DEV_ID_SPT_4      0x9D3E  /* Sunrise Point 4 (iTouch) */
- #define MEI_DEV_ID_SPT_H      0xA13A  /* Sunrise Point H */
- #define MEI_DEV_ID_SPT_H_2    0xA13B  /* Sunrise Point H 2 */
-=20
-@@ -90,6 +91,7 @@
- #define MEI_DEV_ID_CDF        0x18D3  /* Cedar Fork */
-=20
- #define MEI_DEV_ID_ICP_LP     0x34E0  /* Ice Lake Point LP */
-+#define MEI_DEV_ID_ICP_LP_4   0x34E4  /* Ice Lake Point LP 4 (iTouch) */
-=20
- #define MEI_DEV_ID_JSP_N      0x4DE0  /* Jasper Lake Point N */
-=20
-diff --git a/drivers/misc/mei/pci-me.c b/drivers/misc/mei/pci-me.c
-index a1ed375fed37..5e621e90d8d4 100644
---- a/drivers/misc/mei/pci-me.c
-+++ b/drivers/misc/mei/pci-me.c
-@@ -68,6 +68,7 @@ static const struct pci_device_id mei_me_pci_tbl[] =3D {
-=20
- =09{MEI_PCI_DEVICE(MEI_DEV_ID_SPT, MEI_ME_PCH8_CFG)},
- =09{MEI_PCI_DEVICE(MEI_DEV_ID_SPT_2, MEI_ME_PCH8_CFG)},
-+=09{MEI_PCI_DEVICE(MEI_DEV_ID_SPT_4, MEI_ME_PCH8_CFG)},
- =09{MEI_PCI_DEVICE(MEI_DEV_ID_SPT_H, MEI_ME_PCH8_SPS_CFG)},
- =09{MEI_PCI_DEVICE(MEI_DEV_ID_SPT_H_2, MEI_ME_PCH8_SPS_CFG)},
- =09{MEI_PCI_DEVICE(MEI_DEV_ID_LBG, MEI_ME_PCH12_SPS_CFG)},
-@@ -94,6 +95,7 @@ static const struct pci_device_id mei_me_pci_tbl[] =3D {
- =09{MEI_PCI_DEVICE(MEI_DEV_ID_CMP_H_3, MEI_ME_PCH8_CFG)},
-=20
- =09{MEI_PCI_DEVICE(MEI_DEV_ID_ICP_LP, MEI_ME_PCH12_CFG)},
-+=09{MEI_PCI_DEVICE(MEI_DEV_ID_ICP_LP_4, MEI_ME_PCH12_CFG)},
-=20
- =09{MEI_PCI_DEVICE(MEI_DEV_ID_TGP_LP, MEI_ME_PCH15_CFG)},
-=20
---=20
-2.26.2
-
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index d0ddaa5fac96..7fb08454b343 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -439,6 +439,31 @@ static bool process_timeout(bool timeout, unsigned int interval, int *times)
+ 	return print_interval(interval, times);
+ }
+ 
++static bool process_evlist(struct evlist *evlist, unsigned int interval, int *times)
++{
++	bool stop = false;
++	enum evlist_ctl_cmd cmd = EVLIST_CTL_CMD_UNSUPPORTED;
++
++	if (evlist__ctlfd_process(evlist, &cmd) > 0) {
++		switch (cmd) {
++		case EVLIST_CTL_CMD_ENABLE:
++			pr_info(EVLIST_ENABLED_MSG);
++			stop = print_interval(interval, times);
++			break;
++		case EVLIST_CTL_CMD_DISABLE:
++			stop = print_interval(interval, times);
++			pr_info(EVLIST_DISABLED_MSG);
++			break;
++		case EVLIST_CTL_CMD_ACK:
++		case EVLIST_CTL_CMD_UNSUPPORTED:
++		default:
++			break;
++		}
++	}
++
++	return stop;
++}
++
+ static void enable_counters(void)
+ {
+ 	if (stat_config.initial_delay < 0) {
+@@ -514,10 +539,21 @@ static bool is_target_alive(struct target *_target,
+ 	return false;
+ }
+ 
+-static int dispatch_events(pid_t pid, bool timeout, int interval, int *times, struct timespec *ts)
++static int dispatch_events(pid_t pid, bool timeout, int interval, int *times)
+ {
+ 	bool stop = false;
+ 	int child = 0, status = 0;
++	int time_to_sleep, sleep_time;
++	struct timespec time_start, time_stop, time_diff;
++
++	if (interval)
++		sleep_time = interval;
++	else if (timeout)
++		sleep_time = timeout;
++	else
++		sleep_time = 1000;
++
++	time_to_sleep = sleep_time;
+ 
+ 	while (1) {
+ 		if (pid != -1)
+@@ -528,9 +564,18 @@ static int dispatch_events(pid_t pid, bool timeout, int interval, int *times, st
+ 		if (done || stop || child)
+ 			break;
+ 
+-		nanosleep(ts, NULL);
+-		stop = process_timeout(timeout, interval, times);
+-	}
++		clock_gettime(CLOCK_MONOTONIC, &time_start);
++		if (!(evlist__poll(evsel_list, time_to_sleep) > 0)) { /* poll timeout or EINTR */
++			stop = process_timeout(timeout, interval, times);
++			time_to_sleep = sleep_time;
++		} else { /* fd revent */
++			stop = process_evlist(evsel_list, interval, times);
++			clock_gettime(CLOCK_MONOTONIC, &time_stop);
++			diff_timespec(&time_diff, &time_stop, &time_start);
++			time_to_sleep -= time_diff.tv_sec * MSEC_PER_SEC +
++					time_diff.tv_nsec / NSEC_PER_MSEC;
++		}
++	} while (1);
+ 
+ 	return status;
+ }
+@@ -598,7 +643,6 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+ 	char msg[BUFSIZ];
+ 	unsigned long long t0, t1;
+ 	struct evsel *counter;
+-	struct timespec ts;
+ 	size_t l;
+ 	int status = 0;
+ 	const bool forks = (argc > 0);
+@@ -607,17 +651,6 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+ 	int i, cpu;
+ 	bool second_pass = false;
+ 
+-	if (interval) {
+-		ts.tv_sec  = interval / USEC_PER_MSEC;
+-		ts.tv_nsec = (interval % USEC_PER_MSEC) * NSEC_PER_MSEC;
+-	} else if (timeout) {
+-		ts.tv_sec  = timeout / USEC_PER_MSEC;
+-		ts.tv_nsec = (timeout % USEC_PER_MSEC) * NSEC_PER_MSEC;
+-	} else {
+-		ts.tv_sec  = 1;
+-		ts.tv_nsec = 0;
+-	}
+-
+ 	if (forks) {
+ 		if (perf_evlist__prepare_workload(evsel_list, &target, argv, is_pipe,
+ 						  workload_exec_failed_signal) < 0) {
+@@ -775,7 +808,7 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+ 		enable_counters();
+ 
+ 		if (interval || timeout)
+-			status = dispatch_events(child_pid, timeout, interval, &times, &ts);
++			status = dispatch_events(child_pid, timeout, interval, &times);
+ 		if (child_pid != -1) {
+ 			if (timeout)
+ 				kill(child_pid, SIGTERM);
+@@ -792,7 +825,7 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+ 			psignal(WTERMSIG(status), argv[0]);
+ 	} else {
+ 		enable_counters();
+-		dispatch_events(-1, timeout, interval, &times, &ts);
++		dispatch_events(-1, timeout, interval, &times);
+ 	}
+ 
+ 	disable_counters();
+-- 
+2.24.1
 
