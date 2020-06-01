@@ -2,138 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E941EB1CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 00:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CE41EB1E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 00:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728404AbgFAWl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 18:41:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725800AbgFAWl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 18:41:56 -0400
-Received: from localhost (mobile-166-175-190-200.mycingular.net [166.175.190.200])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E6EB2054F;
-        Mon,  1 Jun 2020 22:41:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591051315;
-        bh=4F8oMtoJEn7cRi6K3anCXx2Ba1M2zTlRhq8VCfHkgS8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=PIcYkU+hKADLakAdTD5EGrqWronIlkWSQYseQF8lkznESRa/sMQp2J7tSWyPHQDtF
-         5ITmAKC7jI8iHZbv4hQwD45BAYuto93jMqe3IHV7vdGdI9aL/AVhNlmR1UhB+DxjOX
-         99LfJlJAAKgfsrp5J5gyM2us3+OVHENxJOvmOiII=
-Date:   Mon, 1 Jun 2020 17:41:54 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     "Raj, Ashok" <ashok.raj@intel.com>, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Darrel Goeddel <DGoeddel@forcepoint.com>,
-        Mark Scott <mscott@forcepoint.com>,
-        Romil Sharma <rsharma@forcepoint.com>
-Subject: Re: [PATCH] PCI: Relax ACS requirement for Intel RCiEP devices.
-Message-ID: <20200601224154.GA769388@bjorn-Precision-5520>
+        id S1728742AbgFAWwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 18:52:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725766AbgFAWwQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 18:52:16 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C321EC05BD43
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 15:52:15 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id r9so1054209wmh.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 15:52:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=XqDBJ7HNiDNNZGgyc51P8jxOS0QlkoJQOsugIayCn2o=;
+        b=ELVkIWJpEFw9xOmhKTe40+CQr52T8e002hs+DErPwBDW+3iF9V8Y3ipknzBK5wMKqc
+         jsfBAO5fLEEyi1qZxmSTQ40Vt+dKtInPcbU6HonGJy21VUUYwuLYI/rhl2+cpWGctMV0
+         juLiRzHe6AhAFSxQ9jw6NoBehIcrC9YjcpRYRznWqYe6dhS0ncnrieHrYO9Yl6WCIKzo
+         V+xtoYA1QDbS7zwMKkgKBGweIU5D0jo2JSxsMe63HY+0R7+/SinWo5W5M7Q+NIuIWpxI
+         o/YUPUCz4/7gUtkt0YczKR1tPVg0xkvUawc0mgKeSHmwstIUt7w5pTw9+6ltvT3tnkKb
+         L62Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=XqDBJ7HNiDNNZGgyc51P8jxOS0QlkoJQOsugIayCn2o=;
+        b=Te15xM21o9l1/BtdlQGr9sLSGcsUNyid1caFgYcn8BdgN/H1eM/Rr00pz1iICGA2cO
+         R6Nx9K8yeT456ZaU25Rzws/3fqe9jm6EjPDdnGEX91K3lYNVREGNPDNUsGDOh+E/mI+F
+         ELzgoHSGir32RlYnibsMJOmWAA2hy65VtnrLoyIuKOBTJcbo3LNrNwHoUdXVt5XFwTYN
+         lrGgKTFgbtqQZNh991JBvSKFJSy/uobjpfzzd8s9WHVxDIc9fxfm0soQFICuS0z3II1z
+         v5A1cMo5Xh00lWfzMIFD9unY1faBo6RXORhNT5gwSkEyR0Vi0+TD+YfNbfuNwk/0Zg90
+         PEiw==
+X-Gm-Message-State: AOAM533B1rTyJtbSwA8CikK+LmlPm/LsiUaEsQraGFPEz0pc8+6ColBu
+        Qqj/bErmrZKSfXqXhFCpNvjY4WpPtJwbTciW1sT7Tegk2KM=
+X-Google-Smtp-Source: ABdhPJwqIJwmyDmwRvdGfp7P5QdvXpQEr6+3jnUxclTGB3SIHmf8J/3PeA7clHOujCF21kc/2weyF846NaDWIjGUgk0=
+X-Received: by 2002:a7b:c951:: with SMTP id i17mr1303533wml.44.1591051933716;
+ Mon, 01 Jun 2020 15:52:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200601155655.1519bc86@x1.home>
+From:   Philip Schwartz <philquadra@gmail.com>
+Date:   Mon, 1 Jun 2020 17:52:00 -0500
+Message-ID: <CACYmiSfM00o864c5pxxWEQNZsgFMkNwJePCGvae6P7o31NXMyw@mail.gmail.com>
+Subject: Bug in your kernel since version 5.2
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 01, 2020 at 03:56:55PM -0600, Alex Williamson wrote:
-> On Mon, 1 Jun 2020 14:40:23 -0700
-> "Raj, Ashok" <ashok.raj@intel.com> wrote:
-> 
-> > On Mon, Jun 01, 2020 at 04:25:19PM -0500, Bjorn Helgaas wrote:
-> > > On Thu, May 28, 2020 at 01:57:42PM -0700, Ashok Raj wrote:  
-> > > > All Intel platforms guarantee that all root complex implementations
-> > > > must send transactions up to IOMMU for address translations. Hence for
-> > > > RCiEP devices that are Vendor ID Intel, can claim exception for lack of
-> > > > ACS support.
-> > > > 
-> > > > 
-> > > > 3.16 Root-Complex Peer to Peer Considerations
-> > > > When DMA remapping is enabled, peer-to-peer requests through the
-> > > > Root-Complex must be handled
-> > > > as follows:
-> > > > • The input address in the request is translated (through first-level,
-> > > >   second-level or nested translation) to a host physical address (HPA).
-> > > >   The address decoding for peer addresses must be done only on the
-> > > >   translated HPA. Hardware implementations are free to further limit
-> > > >   peer-to-peer accesses to specific host physical address regions
-> > > >   (or to completely disallow peer-forwarding of translated requests).
-> > > > • Since address translation changes the contents (address field) of
-> > > >   the PCI Express Transaction Layer Packet (TLP), for PCI Express
-> > > >   peer-to-peer requests with ECRC, the Root-Complex hardware must use
-> > > >   the new ECRC (re-computed with the translated address) if it
-> > > >   decides to forward the TLP as a peer request.
-> > > > • Root-ports, and multi-function root-complex integrated endpoints, may
-> > > >   support additional peerto-peer control features by supporting PCI Express
-> > > >   Access Control Services (ACS) capability. Refer to ACS capability in
-> > > >   PCI Express specifications for details.
-> > > > 
-> > > > Since Linux didn't give special treatment to allow this exception, certain
-> > > > RCiEP MFD devices are getting grouped in a single iommu group. This
-> > > > doesn't permit a single device to be assigned to a guest for instance.
-> > > > 
-> > > > In one vendor system: Device 14.x were grouped in a single IOMMU group.
-> > > > 
-> > > > /sys/kernel/iommu_groups/5/devices/0000:00:14.0
-> > > > /sys/kernel/iommu_groups/5/devices/0000:00:14.2
-> > > > /sys/kernel/iommu_groups/5/devices/0000:00:14.3
-> > > > 
-> > > > After the patch:
-> > > > /sys/kernel/iommu_groups/5/devices/0000:00:14.0
-> > > > /sys/kernel/iommu_groups/5/devices/0000:00:14.2
-> > > > /sys/kernel/iommu_groups/6/devices/0000:00:14.3 <<< new group
-> > > > 
-> > > > 14.0 and 14.2 are integrated devices, but legacy end points.
-> > > > Whereas 14.3 was a PCIe compliant RCiEP.
-> > > > 
-> > > > 00:14.3 Network controller: Intel Corporation Device 9df0 (rev 30)
-> > > > Capabilities: [40] Express (v2) Root Complex Integrated Endpoint, MSI 00
-> > > > 
-> > > > This permits assigning this device to a guest VM.
-> > > > 
-> > > > Fixes: f096c061f552 ("iommu: Rework iommu_group_get_for_pci_dev()")
-> > > > Signed-off-by: Ashok Raj <ashok.raj@intel.com>
-> > > > To: Joerg Roedel <joro@8bytes.org>
-> > > > To: Bjorn Helgaas <bhelgaas@google.com>
-> > > > Cc: linux-kernel@vger.kernel.org
-> > > > Cc: iommu@lists.linux-foundation.org
-> > > > Cc: Lu Baolu <baolu.lu@linux.intel.com>
-> > > > Cc: Alex Williamson <alex.williamson@redhat.com>
-> > > > Cc: Darrel Goeddel <DGoeddel@forcepoint.com>
-> > > > Cc: Mark Scott <mscott@forcepoint.com>,
-> > > > Cc: Romil Sharma <rsharma@forcepoint.com>
-> > > > Cc: Ashok Raj <ashok.raj@intel.com>  
-> > > 
-> > > Tentatively applied to pci/virtualization for v5.8, thanks!
-> > > 
-> > > The spec says this handling must apply "when DMA remapping is
-> > > enabled".  The patch does not check whether DMA remapping is enabled.
-> > > 
-> > > Is there any case where DMA remapping is *not* enabled, and we rely on
-> > > this patch to tell us whether the device is isolated?  It sounds like
-> > > it may give the wrong answer in such a case?
-> > > 
-> > > Can you confirm that I don't need to worry about this?    
-> > 
-> > I think all of this makes sense only when DMA remapping is enabled.
-> > Otherwise there is no enforcement for isolation. 
-> 
-> Yep, without an IOMMU all devices operate in the same IOVA space and we
-> have no isolation.  We only enable ACS when an IOMMU driver requests it
-> and it's only used by IOMMU code to determine IOMMU grouping of
-> devices.  Thanks,
+This is my sixth attempt to send a bug report.
 
-Thanks, Ashok and Alex.  I wish it were more obvious from the code,
-but I am reassured.
+The first time you didn't like my email address.
+The second time you didn't like that I copied the whole url.
+The third time you didn't like that the part of the url that I copied
+looked a bit like a url.
+The fourth time you complained that "The message contains HTML
+subpart,therefore we consider it SPAM"
+The fifth time you didn't like ?????????.
 
-I also added a stable tag to help get this backported.
+Kernel dot org Bugzilla       I D equals  204003
+
+
+I look forward to your email rejection message.
