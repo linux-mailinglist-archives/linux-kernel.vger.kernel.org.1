@@ -2,67 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8561EA6EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 17:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7061EA6F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 17:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbgFAPep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 11:34:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42154 "EHLO
+        id S1727875AbgFAPg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 11:36:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726075AbgFAPeo (ORCPT
+        with ESMTP id S1727779AbgFAPgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 11:34:44 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A912C05BD43;
-        Mon,  1 Jun 2020 08:34:44 -0700 (PDT)
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id B294537B;
-        Mon,  1 Jun 2020 15:34:43 +0000 (UTC)
-Date:   Mon, 1 Jun 2020 09:34:42 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] zswap: docs/vm: Fix typo accept_threshold_percent in
- zswap.rst
-Message-ID: <20200601093442.584b7eca@lwn.net>
-In-Reply-To: <20200601005911.31222-1-sedat.dilek@gmail.com>
-References: <20200601005911.31222-1-sedat.dilek@gmail.com>
-Organization: LWN.net
+        Mon, 1 Jun 2020 11:36:23 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34FCCC05BD43
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 08:36:22 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id f7so9613547ejq.6
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 08:36:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cOzQOgAom9rQmo+hpj4LfsaeGdzJ+MyyfqV630jExfM=;
+        b=1bLBHx5st11CPvmuw1qF7oVF/nb1PuAaZA7ttMfQ1MyvrYzkm731V4kRUPXILYRKKC
+         5NfkPsUADXF2HPIdvyN28mwZHEQ3nkTSzZ27V9iZfWAg3XHOTa8X1xQKMwkp695Y13QH
+         2Smu4mVJhZfsHtwSuZdYRIodJIL2rpekpi2dmEPabrOH4CEXK1t8wOQpPx1b0hBeeAlN
+         GdfGYBuvJsHSqhwnh1IeBNk8DE0JNHtSdANFWsawCCWEJR4E6mSVMwtOQXq2ogwqLmYU
+         8mxDCg/gb3jy7hx4Drrn5SS1O996fBKfw3Jnr9pl6C4Qir45umMDXsYcrNsXHv03m2mL
+         SvbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cOzQOgAom9rQmo+hpj4LfsaeGdzJ+MyyfqV630jExfM=;
+        b=l7a0IphmIqJp9IbKd93idaiSK7h6NQq23duH3qxz24LM0/9FZxp+IUrCOaS7pr2VZi
+         P0sI5vLabkiEKa1WqrVDnezMSev8TRpdLzMX0XawilxBm1oxScDhO7CIND1YCqx+oJ87
+         wHeDmGtYyJ63DjwONXu9PHkkoQkbAUOHGJSJhXEkvta91e7L8Vz8K6g7HJ9ffKe9gnew
+         CwzCBFq0CbfmjS2jPbZcqulsN93E4ircGy11QoelNpKbUfCd3woImMItOfEXBYJhqyS8
+         MbZh/1uE3eh9TP3RA2YBy4ifRliYZgudyDaz0CGkOWRh/R/KRZs/Kj46yVbQEG3OkWtv
+         0jsA==
+X-Gm-Message-State: AOAM5304yuOBHRUs6qkcM+UCQvdrSZdIZ73m1d2AXiB9QrM1d7ZWc+ae
+        4WSUMztc2ojg7mFGdAqcuxlzxweX0CmMUpRenBKi
+X-Google-Smtp-Source: ABdhPJxVaLECnW5ysWNl7aGrxxD3Sa6GGI54d7azZ3A9R39oQ9z6eiacAbvYKZ6DiQ+k7L+7xyOd2//IcuQOaHPJrQo=
+X-Received: by 2002:a17:906:f1ca:: with SMTP id gx10mr2336087ejb.542.1591025780793;
+ Mon, 01 Jun 2020 08:36:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+References: <20200524205238.GA17576@embeddedor>
+In-Reply-To: <20200524205238.GA17576@embeddedor>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 1 Jun 2020 11:36:09 -0400
+Message-ID: <CAHC9VhRcpqs6TGoqK_soTz8Jo5BCDfhq1kqKGGJeJpbXhWZRsg@mail.gmail.com>
+Subject: Re: [PATCH] audit: Use struct_size() helper in alloc_chunk
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  1 Jun 2020 02:59:11 +0200
-Sedat Dilek <sedat.dilek@gmail.com> wrote:
+On Sun, May 24, 2020 at 4:47 PM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
+> One of the more common cases of allocation size calculations is finding
+> the size of a structure that has a zero-sized array at the end, along
+> with memory for some number of elements for that array. For example:
+>
+> struct audit_chunk {
+>         ...
+>         struct node {
+>                 struct list_head list;
+>                 struct audit_tree *owner;
+>                 unsigned index;         /* index; upper bit indicates 'will prune' */
+>         } owners[];
+> };
+>
+> Make use of the struct_size() helper instead of an open-coded version
+> in order to avoid any potential type mistakes.
+>
+> So, replace the following form:
+>
+> offsetof(struct audit_chunk, owners) + count * sizeof(struct node);
+>
+> with:
+>
+> struct_size(chunk, owners, count)
+>
+> This code was detected with the help of Coccinelle.
+>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  kernel/audit_tree.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 
-> Recently, I switched over from swap-file to zramswap.
-> 
-> When reading the Documentation/vm/zswap.rst file I fell over this typo.
-> 
-> The parameter is called accept_threshold_percent not accept_threhsold_percent
-> in /sys/module/zswap/parameters/ directory.
-> 
-> Fixes: 45190f01dd402 ("mm/zswap.c: add allocation hysteresis if pool limit is hit")
-> Cc: Vitaly Wool <vitaly.wool@konsulko.com>
-> Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
+Thanks, this looks reasonable to me, but it came in too late for the
+v5.8 merge window (I dislike taking changes past -rc5/6 unless
+critical).  Once the merge window closes I'll merge this into
+audit/next.
 
-Applied, thanks.
-
-> Changes v1->v2:
-> - Changed subject line
-> - Resend to LKML with correct email-address
-
-When you make a v2 like this, it's helpful if you mark it as "[PATCH v2]".
-I had three versions of this in my inbox and had to figure out what was
-going on...
-
-jon
+-- 
+paul moore
+www.paul-moore.com
