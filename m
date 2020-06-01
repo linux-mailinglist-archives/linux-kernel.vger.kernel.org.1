@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C961EAD59
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E33C61EAC35
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730846AbgFASop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:44:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57234 "EHLO mail.kernel.org"
+        id S1731723AbgFASQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:16:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729730AbgFASKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:10:24 -0400
+        id S1731712AbgFASQd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:16:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C77AA2065C;
-        Mon,  1 Jun 2020 18:10:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6C6232068D;
+        Mon,  1 Jun 2020 18:16:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035024;
-        bh=rcGXyxVBSk7HlozhEm2slr0mzTvuHZEvCmq80wwX4hc=;
+        s=default; t=1591035392;
+        bh=DTZXf56xoqkdM1pDwpE3oN8ES3/B1f9WROuREZ/xyew=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LX2iilVGQlHRXGv5q7/Usjfzv081/ibTK39zCnk+wbH4UfrpAcUFldigGpcIHUVGm
-         /dEeMeHhVvMH9RREHoj/tmQXJopdl7KzsHiktU64As8Jcx7gQhDh4f+3sdQM/G7jsG
-         Bl0bKkTdaCa8JjNB5b3QHcIvRM3Ckn35CZpYEoW4=
+        b=FS8PEp23eKTSr+aCV19zfRnp3AcpQ0EbIodSdw60y7q8ipEh1wOKzan/WH7F7T3Os
+         AqggVpQK5ol0I06MtT15SGW8qh95LJAAsCee7zx9cF1qjOY/Snpn2pYcWWwqyfB4G3
+         DJ3FBJPPVc81Btne1M8aueOGwTFEzDA70GiUs/qg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antony Antony <antony@phenome.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Subject: [PATCH 5.4 119/142] xfrm: fix error in comment
-Date:   Mon,  1 Jun 2020 19:54:37 +0200
-Message-Id: <20200601174050.163798394@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+fd5332e429401bf42d18@syzkaller.appspotmail.com,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 5.6 140/177] cfg80211: fix debugfs rename crash
+Date:   Mon,  1 Jun 2020 19:54:38 +0200
+Message-Id: <20200601174100.213877366@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,31 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antony Antony <antony@phenome.org>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit 29e4276667e24ee6b91d9f91064d8fda9a210ea1 upstream.
+commit 0bbab5f0301587cad4e923ccc49bb910db86162c upstream.
 
-s/xfrm_state_offload/xfrm_user_offload/
+Removing the "if (IS_ERR(dir)) dir = NULL;" check only works
+if we adjust the remaining code to not rely on it being NULL.
+Check IS_ERR_OR_NULL() before attempting to dereference it.
 
-Fixes: d77e38e612a ("xfrm: Add an IPsec hardware offloading API")
-Signed-off-by: Antony Antony <antony@phenome.org>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+I'm not actually entirely sure this fixes the syzbot crash as
+the kernel config indicates that they do have DEBUG_FS in the
+kernel, but this is what I found when looking there.
+
+Cc: stable@vger.kernel.org
+Fixes: d82574a8e5a4 ("cfg80211: no need to check return value of debugfs_create functions")
+Reported-by: syzbot+fd5332e429401bf42d18@syzkaller.appspotmail.com
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20200525113816.fc4da3ec3d4b.Ica63a110679819eaa9fb3bc1b7437d96b1fd187d@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/uapi/linux/xfrm.h |    2 +-
+ net/wireless/core.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/uapi/linux/xfrm.h
-+++ b/include/uapi/linux/xfrm.h
-@@ -304,7 +304,7 @@ enum xfrm_attr_type_t {
- 	XFRMA_PROTO,		/* __u8 */
- 	XFRMA_ADDRESS_FILTER,	/* struct xfrm_address_filter */
- 	XFRMA_PAD,
--	XFRMA_OFFLOAD_DEV,	/* struct xfrm_state_offload */
-+	XFRMA_OFFLOAD_DEV,	/* struct xfrm_user_offload */
- 	XFRMA_SET_MARK,		/* __u32 */
- 	XFRMA_SET_MARK_MASK,	/* __u32 */
- 	XFRMA_IF_ID,		/* __u32 */
+--- a/net/wireless/core.c
++++ b/net/wireless/core.c
+@@ -142,7 +142,7 @@ int cfg80211_dev_rename(struct cfg80211_
+ 	if (result)
+ 		return result;
+ 
+-	if (rdev->wiphy.debugfsdir)
++	if (!IS_ERR_OR_NULL(rdev->wiphy.debugfsdir))
+ 		debugfs_rename(rdev->wiphy.debugfsdir->d_parent,
+ 			       rdev->wiphy.debugfsdir,
+ 			       rdev->wiphy.debugfsdir->d_parent, newname);
 
 
