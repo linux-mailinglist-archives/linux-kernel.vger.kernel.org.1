@@ -2,158 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70AF81EA8A4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 483E71EA8F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728327AbgFARwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:52:21 -0400
-Received: from mga04.intel.com ([192.55.52.120]:58724 "EHLO mga04.intel.com"
+        id S1728943AbgFAR5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:57:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728285AbgFARwP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:52:15 -0400
-IronPort-SDR: fgvXVHzLb9N09xmOtP9/w6/ELrok4UuGD+66MbISmKZkzkGgYBwgGNQazpoXuf5LXmLrKUg6GY
- cMtbXH7d1TYw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2020 10:52:15 -0700
-IronPort-SDR: jMkn93Sv5D/WENoEXZ3Pda2jZBfAVhbyS2d6aCaLNDVWccIiYIIIFB8ge9hnwn8qYfZMdjF0Jn
- wjZSL9/gxO8A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,461,1583222400"; 
-   d="scan'208";a="303713789"
-Received: from lkp-server01.sh.intel.com (HELO 78d03bb9d680) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 01 Jun 2020 10:52:14 -0700
-Received: from kbuild by 78d03bb9d680 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1jfobd-00007c-EA; Mon, 01 Jun 2020 17:52:13 +0000
-Date:   Tue, 02 Jun 2020 01:52:09 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:core/rcu] BUILD SUCCESS
- cb3cb6733fbd8fd8d2c716095fdca42dadba2063
-Message-ID: <5ed54049.eGk4Kms1fpi1bloZ%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1728923AbgFAR52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:57:28 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6686C2073B;
+        Mon,  1 Jun 2020 17:57:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591034247;
+        bh=DzJrUQPfMBVUiRLlKKTNb8UOXiHkjT0DSgcontszJIY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=2Kh7SAh9G1QsC3npoDA2b0DWzXiyURLt2VXWKNSYT6vNEyxOvdgoyWar/QYhDp1jT
+         P4YEKDHTRqW9VjTmvDMJzRJiWSpyPSnehNKxop28PCvOmuQfyr4aSfe3J1cahnfWnZ
+         Pb+I2V4WvcqfEVPpqALaYUgow1vbidCOfy6hVn6s=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 01/61] ax25: fix setsockopt(SO_BINDTODEVICE)
+Date:   Mon,  1 Jun 2020 19:53:08 +0200
+Message-Id: <20200601174011.068198856@linuxfoundation.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
+References: <20200601174010.316778377@linuxfoundation.org>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  core/rcu
-branch HEAD: cb3cb6733fbd8fd8d2c716095fdca42dadba2063  Merge branch 'WIP.core/rcu' into core/rcu, to pick up two x86/entry dependencies
+From: Eric Dumazet <edumazet@google.com>
 
-elapsed time: 481m
+[ Upstream commit 687775cec056b38a4c8f3291e0dd7a9145f7b667 ]
 
-configs tested: 99
-configs skipped: 4
+syzbot was able to trigger this trace [1], probably by using
+a zero optlen.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+While we are at it, cap optlen to IFNAMSIZ - 1 instead of IFNAMSIZ.
 
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-powerpc                    mvme5100_defconfig
-mips                        maltaup_defconfig
-arm                       multi_v4t_defconfig
-powerpc                        cell_defconfig
-openrisc                 simple_smp_defconfig
-nds32                            alldefconfig
-mips                         tb0287_defconfig
-sh                         microdev_defconfig
-powerpc                       holly_defconfig
-powerpc                mpc7448_hpc2_defconfig
-nios2                            alldefconfig
-nds32                               defconfig
-mips                      pic32mzda_defconfig
-xtensa                          iss_defconfig
-powerpc                     mpc83xx_defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-x86_64               randconfig-a002-20200601
-x86_64               randconfig-a006-20200601
-x86_64               randconfig-a001-20200601
-x86_64               randconfig-a003-20200601
-x86_64               randconfig-a004-20200601
-x86_64               randconfig-a005-20200601
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc                            allyesconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                                allnoconfig
-um                                  defconfig
-um                               allyesconfig
-um                               allmodconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
+[1]
+BUG: KMSAN: uninit-value in strnlen+0xf9/0x170 lib/string.c:569
+CPU: 0 PID: 8807 Comm: syz-executor483 Not tainted 5.7.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1c9/0x220 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
+ strnlen+0xf9/0x170 lib/string.c:569
+ dev_name_hash net/core/dev.c:207 [inline]
+ netdev_name_node_lookup net/core/dev.c:277 [inline]
+ __dev_get_by_name+0x75/0x2b0 net/core/dev.c:778
+ ax25_setsockopt+0xfa3/0x1170 net/ax25/af_ax25.c:654
+ __compat_sys_setsockopt+0x4ed/0x910 net/compat.c:403
+ __do_compat_sys_setsockopt net/compat.c:413 [inline]
+ __se_compat_sys_setsockopt+0xdd/0x100 net/compat.c:410
+ __ia32_compat_sys_setsockopt+0x62/0x80 net/compat.c:410
+ do_syscall_32_irqs_on arch/x86/entry/common.c:339 [inline]
+ do_fast_syscall_32+0x3bf/0x6d0 arch/x86/entry/common.c:398
+ entry_SYSENTER_compat+0x68/0x77 arch/x86/entry/entry_64_compat.S:139
+RIP: 0023:0xf7f57dd9
+Code: 90 e8 0b 00 00 00 f3 90 0f ae e8 eb f9 8d 74 26 00 89 3c 24 c3 90 90 90 90 90 90 90 90 90 90 90 90 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 002b:00000000ffae8c1c EFLAGS: 00000217 ORIG_RAX: 000000000000016e
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000000101
+RDX: 0000000000000019 RSI: 0000000020000000 RDI: 0000000000000004
+RBP: 0000000000000012 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
 
+Local variable ----devname@ax25_setsockopt created at:
+ ax25_setsockopt+0xe6/0x1170 net/ax25/af_ax25.c:536
+ ax25_setsockopt+0xe6/0x1170 net/ax25/af_ax25.c:536
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ net/ax25/af_ax25.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+--- a/net/ax25/af_ax25.c
++++ b/net/ax25/af_ax25.c
+@@ -639,8 +639,10 @@ static int ax25_setsockopt(struct socket
+ 		break;
+ 
+ 	case SO_BINDTODEVICE:
+-		if (optlen > IFNAMSIZ)
+-			optlen = IFNAMSIZ;
++		if (optlen > IFNAMSIZ - 1)
++			optlen = IFNAMSIZ - 1;
++
++		memset(devname, 0, sizeof(devname));
+ 
+ 		if (copy_from_user(devname, optval, optlen)) {
+ 			res = -EFAULT;
+
+
