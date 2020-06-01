@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8AE1EA9FB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E79C01EA924
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730164AbgFASEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:04:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48210 "EHLO mail.kernel.org"
+        id S1727795AbgFAR6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:58:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730147AbgFASD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:03:56 -0400
+        id S1729189AbgFAR6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:58:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 44E592074B;
-        Mon,  1 Jun 2020 18:03:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A32C32076B;
+        Mon,  1 Jun 2020 17:58:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034635;
-        bh=fdjg3WSVYtxBn3QT4as0cSFEN35TCejYjnX3bfS/FLU=;
+        s=default; t=1591034311;
+        bh=cChF2ARnFROjgWHvgMtMTnu9IVOOALLdq4gw/5/d9GY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KJl6W8XyQ66JxUZOBdPmy6idK39KxQe77e85gYs1w4WjMbcxZtIa2rJQ/UP5+Rn/C
-         hu4uYbRaTylJ2vMeukAYgt7d/0yG1NEnaUJjpExKRAjrvGb5kl1y7k0Cge17CeOZK+
-         klmH8DsDh74zNO/HrqYp7gomqLLEOyuMUIu4TPEE=
+        b=e5JTFwShQyrKocWYrNceErygGgJmEvbIwC9mi0RZ4WSvFPg5gImMB+X9pUb7VCfVO
+         lXeVgF82ptD39ITPVaJq/hIcqev3Np+TMuEmHpU25zZAPL+4Xp087uLMMdbO2JNmY/
+         ztEm0iG3kUcPciUw+yavhe6P8g8dJcFIlKrVmAmU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kevin Locke <kevin@kevinlocke.name>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 42/95] Input: i8042 - add ThinkPad S230u to i8042 reset list
+        stable@vger.kernel.org, Chris Chiu <chiu@endlessm.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 35/61] ALSA: usb-audio: mixer: volume quirk for ESS Technology Asus USB DAC
 Date:   Mon,  1 Jun 2020 19:53:42 +0200
-Message-Id: <20200601174027.494148369@linuxfoundation.org>
+Message-Id: <20200601174018.213700943@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
-References: <20200601174020.759151073@linuxfoundation.org>
+In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
+References: <20200601174010.316778377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kevin Locke <kevin@kevinlocke.name>
+From: Chris Chiu <chiu@endlessm.com>
 
-[ Upstream commit 2712c91a54a1058d55c284152b4d93c979b67be6 ]
+[ Upstream commit 4020d1ccbe55bdf67b31d718d2400506eaf4b43f ]
 
-On the Lenovo ThinkPad Twist S230u (3347-4HU) with BIOS version
-"GDETC1WW (1.81 ) 06/27/2019", the keyboard, Synaptics TouchPad, and
-TrackPoint either do not function or stop functioning a few minutes
-after boot.  This problem has been noted before, perhaps only occurring
-with BIOS 1.57 and later.[1][2][3][4][5]
+The Asus USB DAC is a USB type-C audio dongle for connecting to
+the headset and headphone. The volume minimum value -23040 which
+is 0xa600 in hexadecimal with the resolution value 1 indicates
+this should be endianness issue caused by the firmware bug. Add
+a volume quirk to fix the volume control problem.
 
-Odds of a BIOS fix appear to be low: 1.57 was released over 6 years ago
-and although the [BIOS changelog] notes "Fixed an issue of UEFI
-touchpad/trackpoint/keyboard/touchscreen" in 1.58, it appears to be
-insufficient.
+Also fixes this warning:
+  Warning! Unlikely big volume range (=23040), cval->res is probably wrong.
+  [5] FU [Headset Capture Volume] ch = 1, val = -23040/0/1
+  Warning! Unlikely big volume range (=23040), cval->res is probably wrong.
+  [7] FU [Headset Playback Volume] ch = 1, val = -23040/0/1
 
-Setting i8042.reset=1 or adding 33474HU to the reset list avoids the
-issue on my system from either warm or cold boot.
-
-[1]: https://bugs.launchpad.net/bugs/1210748
-[2]: https://bbs.archlinux.org/viewtopic.php?pid=1360425
-[3]: https://forums.linuxmint.com/viewtopic.php?f=46&t=41200
-[4]: https://forums.linuxmint.com/viewtopic.php?f=49&t=157115
-[5]: https://forums.lenovo.com/topic/findpost/27/1337119
-[BIOS changelog]: https://download.lenovo.com/pccbbs/mobiles/gduj33uc.txt
-
-Signed-off-by: Kevin Locke <kevin@kevinlocke.name>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/94f384b0f75f90f71425d7dce7ac82c59ddb87a8.1587702636.git.kevin@kevinlocke.name
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Chris Chiu <chiu@endlessm.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200526062613.55401-1-chiu@endlessm.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/serio/i8042-x86ia64io.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/usb/mixer.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/input/serio/i8042-x86ia64io.h b/drivers/input/serio/i8042-x86ia64io.h
-index 8bf38eded1ef..ad357f79c7d6 100644
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -673,6 +673,13 @@ static const struct dmi_system_id __initconst i8042_dmi_reset_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "P65xRP"),
- 		},
- 	},
-+	{
-+		/* Lenovo ThinkPad Twist S230u */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "33474HU"),
-+		},
-+	},
- 	{ }
- };
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index e2f62362a0b0..024864ce3f76 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -980,6 +980,14 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
+ 			cval->res = 384;
+ 		}
+ 		break;
++	case USB_ID(0x0495, 0x3042): /* ESS Technology Asus USB DAC */
++		if ((strstr(kctl->id.name, "Playback Volume") != NULL) ||
++			strstr(kctl->id.name, "Capture Volume") != NULL) {
++			cval->min >>= 8;
++			cval->max = 0;
++			cval->res = 1;
++		}
++		break;
+ 	}
+ }
  
 -- 
 2.25.1
