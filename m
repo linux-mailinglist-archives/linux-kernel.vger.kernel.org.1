@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE3C1EADA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BABF1EADB7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730707AbgFASIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:08:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54028 "EHLO mail.kernel.org"
+        id S1730678AbgFASrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:47:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730658AbgFASIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:08:01 -0400
+        id S1729793AbgFASIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:08:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2491206E2;
-        Mon,  1 Jun 2020 18:08:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E66432077D;
+        Mon,  1 Jun 2020 18:08:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034881;
-        bh=SSr626oosF3ax4S4mvuIs1Z3CkLSI8JeRhlwsAREDNo=;
+        s=default; t=1591034883;
+        bh=J2jIe6HbveuMkncJ1bisbe9ib21+twXrpFHhdmfVG6s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fxhHEtyQs4scqm7Pb4Bv8qADLXRh+wbJrx55azA4RYo4GYr8rV7ENBC9o1BDXOMek
-         RH/nYphoGB6p1WJvFkWUOSXPPQXZGUt424P2teQ6EZ65LmjpJCOuHMKSZXb5Y75kG+
-         V48qtQeEcZtfd0CwU13SdjSGN9c1ls78Q3vyl9dM=
+        b=OfuMWwCXvD7qBRdPl9eOsyGeebrI+f+uZEMPuYJfmL+eR3FXy0Smkr3cdAAGiTRHi
+         Ho8dAB0GNhia2H1R3BNwiYeOrvM11bN1syty0oAq72LFfdhgQWgFRoV0PjSKpq37Pm
+         JYQTiEwJ5K+zv3YFPowxe86D4VxnK1/dSjB6dFOk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
+        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
+        Tero Kristo <t-kristo@ti.com>, Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 053/142] riscv: stacktrace: Fix undefined reference to `walk_stackframe
-Date:   Mon,  1 Jun 2020 19:53:31 +0200
-Message-Id: <20200601174043.309752393@linuxfoundation.org>
+Subject: [PATCH 5.4 054/142] clk: ti: am33xx: fix RTC clock parent
+Date:   Mon,  1 Jun 2020 19:53:32 +0200
+Message-Id: <20200601174043.395331588@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
 References: <20200601174037.904070960@linuxfoundation.org>
@@ -45,35 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
+From: Tero Kristo <t-kristo@ti.com>
 
-[ Upstream commit 0502bee37cdef755d63eee60236562e5605e2480 ]
+[ Upstream commit dc6dbd51009fc412729c307161f442c0a08618f4 ]
 
-Drop static declaration to fix following build error if FRAME_POINTER disabled,
-  riscv64-linux-ld: arch/riscv/kernel/perf_callchain.o: in function `.L0':
-  perf_callchain.c:(.text+0x2b8): undefined reference to `walk_stackframe'
+Right now, trying to use RTC purely with the ti-sysc / clkctrl framework
+fails to enable the RTC module properly. Based on experimentation, this
+appears to be because RTC is sourced from the clkdiv32k optional clock.
+TRM is not very clear on this topic, but fix the RTC to use the proper
+source clock nevertheless.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Reported-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Tero Kristo <t-kristo@ti.com>
+Link: https://lkml.kernel.org/r/20200424152301.4018-1-t-kristo@ti.com
+Acked-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/kernel/stacktrace.c | 2 +-
+ drivers/clk/ti/clk-33xx.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
-index 0940681d2f68..19e46f4160cc 100644
---- a/arch/riscv/kernel/stacktrace.c
-+++ b/arch/riscv/kernel/stacktrace.c
-@@ -63,7 +63,7 @@ void notrace walk_stackframe(struct task_struct *task, struct pt_regs *regs,
+diff --git a/drivers/clk/ti/clk-33xx.c b/drivers/clk/ti/clk-33xx.c
+index a360d3109555..73f567d8022f 100644
+--- a/drivers/clk/ti/clk-33xx.c
++++ b/drivers/clk/ti/clk-33xx.c
+@@ -212,7 +212,7 @@ static const struct omap_clkctrl_reg_data am3_mpu_clkctrl_regs[] __initconst = {
+ };
  
- #else /* !CONFIG_FRAME_POINTER */
+ static const struct omap_clkctrl_reg_data am3_l4_rtc_clkctrl_regs[] __initconst = {
+-	{ AM3_L4_RTC_RTC_CLKCTRL, NULL, CLKF_SW_SUP, "clk_32768_ck" },
++	{ AM3_L4_RTC_RTC_CLKCTRL, NULL, CLKF_SW_SUP, "clk-24mhz-clkctrl:0000:0" },
+ 	{ 0 },
+ };
  
--static void notrace walk_stackframe(struct task_struct *task,
-+void notrace walk_stackframe(struct task_struct *task,
- 	struct pt_regs *regs, bool (*fn)(unsigned long, void *), void *arg)
- {
- 	unsigned long sp, pc;
 -- 
 2.25.1
 
