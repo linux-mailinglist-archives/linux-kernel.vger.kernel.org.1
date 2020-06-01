@@ -2,143 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5A61EA0C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 11:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2911EA0BE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 11:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727900AbgFAJQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 05:16:40 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:48651 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727810AbgFAJQg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 05:16:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1591002996; x=1622538996;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=rwodEWhO07nN9+WYg7XaEo9/JfXjRNV+hU6q5mSAkec=;
-  b=NWWTXPxxVowM5WSHeoK6K7Sl2VkcKvRuXDKhjCJxxQddUd5K6+ao1nXn
-   piXc6MK8xJFNvuV0AmexFOIQ86oG8pyn+kn0uNJvICmqKIn1RtDd87STS
-   oQM2ykY7GY2bxk1vUJiXNznCqwMy86+qY1zLzf5NyVuGw7zhreGSX7PXB
-   KkEh7hWn0duzTExMe3V9nN9PH9jYMFvm/Zhgm8ksztffGLRFelGrOEA3w
-   YZludLRHJXguXy+ffCYBM14fixzibn/I0wgVS6gySyDB5mnuj9UL88qFb
-   33MbsEarYLHetQvKRXUVhIvmLiH4yW9RWI2R/AuLcLIHVofmJ7WpibAXr
-   w==;
-IronPort-SDR: 81/HHQet/c1POuQh0iNWMGpjOdLAfdxqqjbueF3+PPqdwg3viNj5Plz0mbmzCd6OEXkpNom3Yg
- Q6KADR+Xp8BcYaQV4wQo1tYZBn3OMHPej9tRMI2x42JzghVX/6crBA/ilr2JUXAccLqMeD3Mb1
- uH3E/3LCCWLbgxI4vIYM/8DNaYFz596UhprvEeMV7OviFUzy9yDIAD8YpeFsf/vG2dh32FJOYf
- ZExLv8VY8AgTkznVI5O783fK7HyFWoAYw4ZzgKr1XuSIPhLM6kcarcEryHBK80PpO1rXjzF3dR
- 1NY=
-X-IronPort-AV: E=Sophos;i="5.73,460,1583164800"; 
-   d="scan'208";a="139258663"
-Received: from mail-sn1nam04lp2053.outbound.protection.outlook.com (HELO NAM04-SN1-obe.outbound.protection.outlook.com) ([104.47.44.53])
-  by ob1.hgst.iphmx.com with ESMTP; 01 Jun 2020 17:16:35 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ggQ+NvjRrT//jAYSH7HUSpluIuztJCjNKkycGsxMdOMcvT1k2uSADmNnGO3fFIjU7AJQjl9dM5ghoi7cH/C4RcM+DShgL3tephKL8Nonn2r38iar+c02ILruacyjBeqSjNB8rt3qxui1bo4/3cXfvLUBRqukPkmaRpr0GEIihdv28/H3KdPvOilsrqPz20gefn/D2FQtjvXO7WXo6sKkXNfIkxnriMAWM/QFeu3348fQCh6OQNpGczF1eAkM0RJA59ZAxNAA26+SoIvopaPPrh71mMnrAGouSCXhmJ7QxB+c48tLfPPn1CQBTfPbFgoGubZ0UJ4Sa/Tq3oFyAi1Yeg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YlnEz0/qfGdSSIBe4X+trDq3j196LxWuDxb5JfIl4Wk=;
- b=aydGh1Qr4cdAvX7iDDBLpYyWTES5+joe/KjVA6q1We5cqx7B5LyhmRhUqOsc9RAggqoO769PN3UGKId0OISwfME9h7b0lm3ZXMlerwtCRJSfbAlLSrPQeSt81KgTP8cW2sgz1bRFGuu40dXOsClG/EfwWRkxZn8j3V3SpS0ziqzvZWz7uT7q0qqeE0S6F/epz78NY1QjqbC/1ETJwMSggVNRVkqAFph3PjELBOOzeKMqxo8nnPIGZCVota28tIxHpeIvjY7pRM2IPDzxfGr+Pd3mXX+7/LdZlNMmvTi7WDlP7Zsi8OWxRqkk+FQVqKSlZpGfyc+a9Ne9pF40+SseDA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YlnEz0/qfGdSSIBe4X+trDq3j196LxWuDxb5JfIl4Wk=;
- b=FrgSpl8SB7QXPS3t2YHdwgCQposil/nh6KyIbV+99IxCPPRxjj7UhvWmfvxnAhlk9QnQi4cykCAHSmamhEgXc9K90qSqdG5SOvvv6LIYK1pj5pbfvCV63+rdRb2CtX1kejHZYFTy5YKOpLxIbcEJYwhobiFHf5kpSe+IhEWOSq8=
-Authentication-Results: dabbelt.com; dkim=none (message not signed)
- header.d=none;dabbelt.com; dmarc=none action=none header.from=wdc.com;
-Received: from DM6PR04MB6201.namprd04.prod.outlook.com (2603:10b6:5:127::32)
- by DM6PR04MB6955.namprd04.prod.outlook.com (2603:10b6:5:240::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19; Mon, 1 Jun
- 2020 09:16:34 +0000
-Received: from DM6PR04MB6201.namprd04.prod.outlook.com
- ([fe80::f8b3:c124:482b:52e0]) by DM6PR04MB6201.namprd04.prod.outlook.com
- ([fe80::f8b3:c124:482b:52e0%5]) with mapi id 15.20.3045.022; Mon, 1 Jun 2020
- 09:16:34 +0000
-From:   Anup Patel <anup.patel@wdc.com>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Anup Patel <anup.patel@wdc.com>
-Subject: [PATCH v7 6/6] RISC-V: Force select RISCV_INTC for CONFIG_RISCV
-Date:   Mon,  1 Jun 2020 14:45:43 +0530
-Message-Id: <20200601091543.943678-7-anup.patel@wdc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200601091543.943678-1-anup.patel@wdc.com>
-References: <20200601091543.943678-1-anup.patel@wdc.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MA1PR0101CA0016.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:21::26) To DM6PR04MB6201.namprd04.prod.outlook.com
- (2603:10b6:5:127::32)
+        id S1726860AbgFAJQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 05:16:29 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:62461 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726060AbgFAJQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 05:16:26 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1591002984; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=Z1DEgGAFeyjkj2r68HTxRbGMmwFPf9VSMnCHwAuxjok=; b=rqDBhjOawrL722Wt3kEa59ZQNNMMeA/13SPsCN8GQo9n2hUl6b7jNFeeeDwcsy418s0Y3wv4
+ PwRwMP+r+uH2eSHmnR4tQVGefW5A/KN8eHVpDcQdoE5lkUiPczrduhjPP3P4aPq23ykLwVNP
+ EJt/O+nCg0e/jUXPv+CEiTehyZc=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5ed4c7645086732481222e38 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Jun 2020 09:16:20
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CCA3BC43387; Mon,  1 Jun 2020 09:16:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.0
+Received: from codeaurora.org (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: stummala)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 57644C433CA;
+        Mon,  1 Jun 2020 09:16:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 57644C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=stummala@codeaurora.org
+Date:   Mon, 1 Jun 2020 14:45:50 +0530
+From:   Sahitya Tummala <stummala@codeaurora.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     Chao Yu <yuchao0@huawei.com>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, stummala@codeaurora.org
+Subject: Re: [f2fs-dev] [PATCH] f2fs: fix retry logic in
+ f2fs_write_cache_pages()
+Message-ID: <20200601091549.GG20234@codeaurora.org>
+References: <1590546056-17871-1-git-send-email-stummala@codeaurora.org>
+ <1d54379e-35c7-76e0-0c8a-d89bfcecb935@huawei.com>
+ <78d2f29b-3ec0-39bc-46cf-88e82f1970c9@huawei.com>
+ <20200528191839.GA180586@google.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from wdc.com (106.51.23.166) by MA1PR0101CA0016.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:21::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19 via Frontend Transport; Mon, 1 Jun 2020 09:16:29 +0000
-X-Mailer: git-send-email 2.25.1
-X-Originating-IP: [106.51.23.166]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: ab77ed26-49d6-4e1c-3131-08d8060c7a63
-X-MS-TrafficTypeDiagnostic: DM6PR04MB6955:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR04MB6955202286CE284CDB41524E8D8A0@DM6PR04MB6955.namprd04.prod.outlook.com>
-WDCIPOUTBOUND: EOP-TRUE
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-Forefront-PRVS: 0421BF7135
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eUQJ+syZX8y2ppbDm7wBc1+nYLVj3FJb7Fgq0w4eZnYie4OdQ1TN9Vq0YwILGKVUN/IDsew+zLea6MVejQiF12P0V75G4jjJm5TzjpzwvASDMurE3a8KHPqiOejo5jocprN1iuMxqKKMkj9FBuH+ssGdCA+/hfqy515WjR0jT/XgsfKHawikkBB08ISOIJ5NBe6USmulvlVQ5NX+KHRAciZ/w0qSNFtx9LxqRITk+ivphYtOpZNAyJjmMXFFob+/CnL498V9U4BT9fTSdBge/0UyAI5HKLk3+E8vKvod9uENgNJ8bajFt8TLbFzl5U9g
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6201.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(39860400002)(136003)(396003)(346002)(376002)(4744005)(2906002)(8676002)(5660300002)(956004)(2616005)(44832011)(7416002)(1076003)(55236004)(16526019)(55016002)(86362001)(186003)(66476007)(66556008)(66946007)(8936002)(26005)(6666004)(7696005)(4326008)(110136005)(1006002)(316002)(8886007)(478600001)(36756003)(52116002)(54906003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: rHtpfbmgG4xPLpeB1K90zby1flta0bVua//NqcOZvLIvhS1vnpasGvxxafQFFqsLRvSY6dwd0w7HMbu35lUjV+DxaidYNqiWDd7K1XH9snhj85AZnYsJWrk+0Hc3Faoi+LRe2TpwxDur86kAGumwbzuQDA5j8XYWiEdMweDvDjb5RsdH5bFRmhlXAFGRV3WGJGn0nL8JErfsn3GFHXDrYymFvaPXznKU9gSQ2mlJg5LwNfl6TeSMF2CmOHfLbQqXHryDDrkWge2kDc36aqufJ1Oa0l9+F+H2dd7QGm4H6Vps62k8BIeVOc/xAgASTQdEdigYHe4omgCeqNZai8mKjH3656YIs4zyyBQazGa+UzzuxyJgaF+IMqInK9sgaJfENDs06sLnmyuPm8cUEP0lRTHl3QVNRgcua56WxY9mY5QNOE7KZbMqwswotUf1cVaIU2wzIileNqu/KJLxssUsQvKdZYVLzBIYVLR9KpDXE7w=
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ab77ed26-49d6-4e1c-3131-08d8060c7a63
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2020 09:16:33.9957
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4V4rtjLNj75EeIWP8v2g6dS+NXZunLuM4fSx9gsf1qdUvWsGv9+6jYoPc4cQXuFls9StS6jk8giERFl1pzYdsQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6955
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200528191839.GA180586@google.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RISC-V per-HART local interrupt controller driver is mandatory
-for all RISC-V system (with/without MMU) hence we force select it
-for CONFIG_RISCV (just like RISCV_TIMER).
+Hi Chao,
 
-Signed-off-by: Anup Patel <anup.patel@wdc.com>
-Reviewed-by: Atish Patra <atish.patra@wdc.com>
----
- arch/riscv/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Can you please help review below diff given by Jaegeuk?
+If it looks good, I can send a v2.
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 822cb0e1a380..2cf0c83c1a47 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -51,6 +51,7 @@ config RISCV
- 	select THREAD_INFO_IN_TASK
- 	select PCI_DOMAINS_GENERIC if PCI
- 	select PCI_MSI if PCI
-+	select RISCV_INTC
- 	select RISCV_TIMER
- 	select GENERIC_IRQ_MULTI_HANDLER
- 	select GENERIC_ARCH_TOPOLOGY if SMP
+Thanks,
+
+On Thu, May 28, 2020 at 12:18:39PM -0700, Jaegeuk Kim wrote:
+> On 05/28, Chao Yu wrote:
+> > On 2020/5/28 10:45, Chao Yu wrote:
+> > > On 2020/5/27 10:20, Sahitya Tummala wrote:
+> > >> In case a compressed file is getting overwritten, the current retry
+> > >> logic doesn't include the current page to be retried now as it sets
+> > >> the new start index as 0 and new end index as writeback_index - 1.
+> > >> This causes the corresponding cluster to be uncompressed and written
+> > >> as normal pages without compression. Fix this by allowing writeback to
+> > >> be retried for the current page as well (in case of compressed page
+> > >> getting retried due to index mismatch with cluster index). So that
+> > >> this cluster can be written compressed in case of overwrite.
+> > >>
+> > >> Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
+> > >> ---
+> > >>  fs/f2fs/data.c | 2 +-
+> > >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >>
+> > >> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> > >> index 4af5fcd..bfd1df4 100644
+> > >> --- a/fs/f2fs/data.c
+> > >> +++ b/fs/f2fs/data.c
+> > >> @@ -3024,7 +3024,7 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
+> > >>  	if ((!cycled && !done) || retry) {
+> > > 
+> > > IMO, we add retry logic in wrong place, you can see that cycled value is
+> > > zero only if wbc->range_cyclic is true, in that case writeback_index is valid.
+> > > 
+> > > However if retry is true and wbc->range_cyclic is false, then writeback_index
+> > > would be uninitialized variable.
+> > > 
+> > > Thoughts?
+> > > 
+> > > Thanks,
+> > > 
+> > >>  		cycled = 1;
+> > >>  		index = 0;
+> > >> -		end = writeback_index - 1;
+> > 
+> > BTW, I notice that range_cyclic writeback flow was refactored in below commit,
+> > and skeleton of f2fs.writepages was copied from mm/page-writeback.c::write_cache_pages(),
+> > I guess we need follow that change.
+> > 
+> > 64081362e8ff ("mm/page-writeback.c: fix range_cyclic writeback vs writepages deadlock")
+> 
+> Is that something like this?
+> 
+> ---
+>  fs/f2fs/data.c | 11 ++---------
+>  1 file changed, 2 insertions(+), 9 deletions(-)
+> 
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index 48a622b95b76e..28fcdf0d4dcb9 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -2861,7 +2861,6 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
+>  	pgoff_t index;
+>  	pgoff_t end;		/* Inclusive */
+>  	pgoff_t done_index;
+> -	int cycled;
+>  	int range_whole = 0;
+>  	xa_mark_t tag;
+>  	int nwritten = 0;
+> @@ -2879,17 +2878,12 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
+>  	if (wbc->range_cyclic) {
+>  		writeback_index = mapping->writeback_index; /* prev offset */
+>  		index = writeback_index;
+> -		if (index == 0)
+> -			cycled = 1;
+> -		else
+> -			cycled = 0;
+>  		end = -1;
+>  	} else {
+>  		index = wbc->range_start >> PAGE_SHIFT;
+>  		end = wbc->range_end >> PAGE_SHIFT;
+>  		if (wbc->range_start == 0 && wbc->range_end == LLONG_MAX)
+>  			range_whole = 1;
+> -		cycled = 1; /* ignore range_cyclic tests */
+>  	}
+>  	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
+>  		tag = PAGECACHE_TAG_TOWRITE;
+> @@ -3054,10 +3048,9 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
+>  		}
+>  	}
+>  #endif
+> -	if ((!cycled && !done) || retry) {
+> -		cycled = 1;
+> +	if (retry) {
+>  		index = 0;
+> -		end = writeback_index - 1;
+> +		end = -1;
+>  		goto retry;
+>  	}
+>  	if (wbc->range_cyclic || (range_whole && wbc->nr_to_write > 0))
+> -- 
+> 2.27.0.rc0.183.gde8f92d652-goog
+> 
+
 -- 
-2.25.1
-
+--
+Sent by a consultant of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
