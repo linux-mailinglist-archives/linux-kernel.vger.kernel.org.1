@@ -2,183 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE321E9B59
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 03:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE941E9B6A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 03:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727803AbgFABkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 21:40:20 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:26908 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727069AbgFABkS (ORCPT
+        id S1727826AbgFABpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 21:45:00 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:10064 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726860AbgFABpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 21:40:18 -0400
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200601014014epoutp010d336e0d027e1a0fe3229f02c119ea6f~UR_RsB6Dq2782827828epoutp01-
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 01:40:14 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200601014014epoutp010d336e0d027e1a0fe3229f02c119ea6f~UR_RsB6Dq2782827828epoutp01-
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1590975614;
-        bh=Oz/eN6ROANE+moyw0xbK/zgG+HDyKrdVR2f7wS3es2U=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=vbCZ5fTwEVizSKlNYeXev53wXvQ6Vg5Rskk0ykkzFvgLKErnrQxuoXK0smLf1MaOz
-         LqmGS8y+76Q/u3+A/bhrgxYdNgD0l2+ahprMg98cqrgnxfsq0iOtIT04VeRYB0DyFV
-         uFp7FYasmblqsHInzUrXJLv8ATJQM72IdQlVbd3Q=
-Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20200601014013epcas5p33698a7aec4da4f1b51905fefebd46804~UR_QvOTPI0181401814epcas5p3G;
-        Mon,  1 Jun 2020 01:40:13 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C2.08.09475.D7C54DE5; Mon,  1 Jun 2020 10:40:13 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200601014011epcas5p425ea6d0152aab103a6d37783b22733e8~UR_OvVJY52874728747epcas5p4f;
-        Mon,  1 Jun 2020 01:40:11 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200601014011epsmtrp27b7408b47e0ac78bf07fb381873c2dbc~UR_Ot0a3E2725527255epsmtrp2G;
-        Mon,  1 Jun 2020 01:40:11 +0000 (GMT)
-X-AuditID: b6c32a4b-389ff70000002503-76-5ed45c7d2157
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B5.E5.08382.B7C54DE5; Mon,  1 Jun 2020 10:40:11 +0900 (KST)
-Received: from alimakhtar02 (unknown [107.108.234.165]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200601014008epsmtip1ff611f53d6b4ce855f4a98e2e18a608c~UR_LoysjC2883728837epsmtip1O;
-        Mon,  1 Jun 2020 01:40:08 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     <martin.petersen@oracle.com>,
-        "'Kishon Vijay Abraham I'" <kishon@ti.com>
-Cc:     <devicetree@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <krzk@kernel.org>, <avri.altman@wdc.com>, <kwmad.kim@samsung.com>,
-        <stanley.chu@mediatek.com>, <cang@codeaurora.org>,
-        <linux-samsung-soc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <robh@kernel.org>
-In-Reply-To: <20200528011658.71590-1-alim.akhtar@samsung.com>
-Subject: RE: [PATCH v10 00/10] exynos-ufs: Add support for UFS HCI
-Date:   Mon, 1 Jun 2020 07:10:06 +0530
-Message-ID: <000101d637b5$96b08f50$c411adf0$@samsung.com>
+        Sun, 31 May 2020 21:45:00 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ed45d900000>; Sun, 31 May 2020 18:44:48 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Sun, 31 May 2020 18:45:00 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Sun, 31 May 2020 18:45:00 -0700
+Received: from [10.2.56.10] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 1 Jun
+ 2020 01:44:59 +0000
+Subject: Re: [PATCH] staging: kpc2000: kpc_dma: Convert get_user_pages() -->
+ pin_user_pages()
+To:     Souptick Joarder <jrdr.linux@gmail.com>,
+        <gregkh@linuxfoundation.org>, <jane.pnx9@gmail.com>,
+        <simon@nikanor.nu>, <harshjain32@gmail.com>,
+        <linux.bhar@gmail.com>, <festevam@gmail.com>, <jeremy@azazel.net>
+CC:     <devel@driverdev.osuosl.org>, <linux-kernel@vger.kernel.org>,
+        Bharath Vedartham <linux.bhar@gmail.com>
+References: <1590947491-11194-1-git-send-email-jrdr.linux@gmail.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <7e725dd0-7423-b85b-ff56-9705419d13b9@nvidia.com>
+Date:   Sun, 31 May 2020 18:44:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQNA14zZ9KpC6NxovY65uGX80LQ4kgIpylB3pdxr7FA=
-Content-Language: en-in
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrHKsWRmVeSWpSXmKPExsWy7bCmum5tzJU4gznTNSxe/rzKZvFp/TJW
-        i/lHzrFaXHjaw2Zx/vwGdoubW46yWGx6fI3V4vKuOWwWM87vY7Lovr6DzWL58X9MFv/37GC3
-        WLr1JqMDr8flvl4mj02rOtk8Ni+p92g5uZ/F4+PTWywefVtWMXocv7GdyePzJjmP9gPdTAGc
-        UVw2Kak5mWWpRfp2CVwZG2f+ZS/YK1HRd/YFawPjP6EuRk4OCQETiS0L2pi6GLk4hAR2M0pc
-        f7mGDcL5xChx+NRdFgjnG6PEpAeP2GBaHrRuYYRI7AVq6fgE5bxhlDi/ehkTSBWbgK7EjsVt
-        YB0iAj4Sv98eBFvCLLCHSWL62w1Aczk4OAVsJfZOcACpERZwkni9Yg9YL4uAisTuGZ2MIDav
-        gKXErnVLWCFsQYmTM5+wgNjMAtoSyxa+Zoa4SEHi59NlrBC7rCQ+XOpmhqgRlzj6sweq5gGH
-        xPfJhRC2i8S3I6tZIWxhiVfHt7BD2FISn9/tZQM5TUIgW6JnlzFEuEZi6bxjLBC2vcSBK3PA
-        rmcW0JRYv0sfYhOfRO/vJ0wQnbwSHW3Q0FWVaH53FapTWmJidzcrRImHRF+T6ARGxVlI3pqF
-        5K1ZSM6fhbBrASPLKkbJ1ILi3PTUYtMC47zUcr3ixNzi0rx0veT83E2M4CSn5b2D8dGDD3qH
-        GJk4GA8xSnAwK4nwTla/FCfEm5JYWZValB9fVJqTWnyIUZqDRUmcV+nHmTghgfTEktTs1NSC
-        1CKYLBMHp1QD0+klSWcV8nccCmO7bK2/acehzJt32/72CYo6RM31FbCZZqQ7pVk3dFO6ZPrp
-        dfOKhRbfffihe1vg7C8+/fy8sge+Cnp85FguMlnUfd29QzNUlT/evj6XpfPBA+Y041McC5Pu
-        PVOLDJLcoXr6hPOHht6Sw89nxCovX3DlxRXTFpVDO5jYlzLH7U7tPHtPu+Zu6a+AWeIpMs8/
-        sWsrWC07Jb5gSWEs93otpaJZNa/faK7gOt0n8udSybbPbEFe30I7SvrjPKavs4/YdFGy/uke
-        s7jGp2J/910ONvTftMBittKEY2fKI+77C/Zr8kw9xXbsNVO3+r125fNPxDo+Ne8u9wm+8cDz
-        Zlkvg84CyaJF3kosxRmJhlrMRcWJALmKRZnhAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKIsWRmVeSWpSXmKPExsWy7bCSnG51zJU4g+mbZS1e/rzKZvFp/TJW
-        i/lHzrFaXHjaw2Zx/vwGdoubW46yWGx6fI3V4vKuOWwWM87vY7Lovr6DzWL58X9MFv/37GC3
-        WLr1JqMDr8flvl4mj02rOtk8Ni+p92g5uZ/F4+PTWywefVtWMXocv7GdyePzJjmP9gPdTAGc
-        UVw2Kak5mWWpRfp2CVwZR2+tZyv4K15xur2XtYFxl1AXIyeHhICJxIPWLYxdjFwcQgK7GSU2
-        fGtgh0hIS1zfOAHKFpZY+e85O0TRK0aJJy8PM4Ek2AR0JXYsbmMDsUUE/CS+nfjNClLELHCC
-        SeLho4tMEB19jBJ7H61i6WLk4OAUsJXYO8EBpEFYwEni9Yo9YINYBFQkds/oZASxeQUsJXat
-        W8IKYQtKnJz5hAXEZhbQlnh68ymcvWzha2aI6xQkfj5dxgpxhJXEh0vdzBA14hJHf/YwT2AU
-        noVk1Cwko2YhGTULScsCRpZVjJKpBcW56bnFhgWGeanlesWJucWleel6yfm5mxjBMauluYNx
-        +6oPeocYmTgYDzFKcDArifBOVr8UJ8SbklhZlVqUH19UmpNafIhRmoNFSZz3RuHCOCGB9MSS
-        1OzU1ILUIpgsEwenVAOT4o/TdY+7OL5u7s4rklxo6+Fbnlk0W8tgX+yLJV15av73TXvvpz3M
-        9WPiECpNYr4g285waJ7LtJNCX6ed9k0/MkuJ6+h5DnUlt8dKm05e8t857/RRr/uXrkc1sWrL
-        XtPauHep9KuKTKZE8XtFcWVrtIUqTusXvVq/92BpieKdA3MUznxI1tm3tGWV471ZprJsOie/
-        NKb/Orvi4/o9rIJm909d4JDfy6Jfm7RDaOGsbwvl92ivEldaeU6nLsyN6cKjwrQwtmXbfuQe
-        1Ztxomax2ILpn6YKlN9aeUVS9MWNY6f6G+6Xy3w/Z8XwM+zEi/Cg1/OnKV0SX7mrruToiuPz
-        xTK7qrKNHnra8gt+CWnXU2Ipzkg01GIuKk4EAFcrDkBIAwAA
-X-CMS-MailID: 20200601014011epcas5p425ea6d0152aab103a6d37783b22733e8
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20200528013223epcas5p2be85fa8803326b49a905fb7225992cad
-References: <CGME20200528013223epcas5p2be85fa8803326b49a905fb7225992cad@epcas5p2.samsung.com>
-        <20200528011658.71590-1-alim.akhtar@samsung.com>
+In-Reply-To: <1590947491-11194-1-git-send-email-jrdr.linux@gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1590975888; bh=M9GV6xaLkhJBGouXIJ6CG5x618w3wdb5bnBANGmrS34=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=RqVc/4sWSPLbUnPHouSnYX03vGKdECFMGfPXTg7jZzoHLrTTtR9MDAbwGEwbgGwsz
+         8SNOMrS4VofywfYqKgRPwEGyPVfVbGL+SyvlUXI45d8SV0EyFBRskvWLlhC5Zf+1J/
+         H8qR5ryZgO1jTbAWr9Zqe2/zJmA/S+sJoZjp7d4F7hvp+mUKJxFNCnUbSWZV9yyxU4
+         0l/hlTk5U6xBQ1p/WFtSPwJ9UHh2l0xyKCNI6+1FJL9pwUdfyDFR7crAbuLL1ap6ZU
+         FniGMIQX98aFFB6WuRwHQ/NZ13ehbZ9U8MKED3nWCqhvYcQXqS9ms+LB6WKVp8KMqe
+         eUp8U1Ds7e/Eg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-05-31 10:51, Souptick Joarder wrote:
+> In 2019, we introduced pin_user_pages*() and now we are converting
+> get_user_pages*() to the new API as appropriate. [1] & [2] could
+> be referred for more information.
+> 
+> When pin_user_pages() returns numbers of partially mapped pages,
+> those pages were not unpinned as part of error handling. Fixed
+> it as part of this patch.
+> 
+
+Hi Souptick,
+
+btw, Bharath (+cc) attempted to do the "put" side of this, last year.
+That got as far as a v4 patch [1], and then I asked him to let me put
+it into my tree. But then it didn't directly apply anymore after the
+whole design moved to pin+unpin, and so here we are now.
 
 
-> -----Original Message-----
-> From: Alim Akhtar <alim.akhtar=40samsung.com>
-> Sent: 28 May 2020 06:47
-> To: robh=40kernel.org
-> Cc: devicetree=40vger.kernel.org; linux-scsi=40vger.kernel.org; krzk=40ke=
-rnel.org;
-> avri.altman=40wdc.com; martin.petersen=40oracle.com;
-> kwmad.kim=40samsung.com; stanley.chu=40mediatek.com;
-> cang=40codeaurora.org; linux-samsung-soc=40vger.kernel.org; linux-arm-
-> kernel=40lists.infradead.org; linux-kernel=40vger.kernel.org; Alim Akhtar
-> <alim.akhtar=40samsung.com>
-> Subject: =5BPATCH v10 00/10=5D exynos-ufs: Add support for UFS HCI
->=20
-> This patch-set introduces UFS (Universal Flash Storage) host controller s=
-upport
-> for Samsung family SoC. Mostly, it consists of UFS PHY and host specific =
-driver.
->=20
-=2E
-=2E
-=2E
-> Alim Akhtar (9):
->   scsi: ufs: add quirk to fix mishandling utrlclr/utmrlclr
->   scsi: ufs: add quirk to disallow reset of interrupt aggregation
->   scsi: ufs: add quirk to enable host controller without hce
->   scsi: ufs: introduce UFSHCD_QUIRK_PRDT_BYTE_GRAN quirk
->   dt-bindings: phy: Document Samsung UFS PHY bindings
->   phy: samsung-ufs: add UFS PHY driver for samsung SoC
->   dt-bindings: ufs: Add bindings for Samsung ufs host
->   scsi: ufs-exynos: add UFS host support for Exynos SoCs
->   arm64: dts: Add node for ufs exynos7
->=20
-> Kiwoong Kim (1):
->   scsi: ufs: add quirk to fix abnormal ocs fatal error
->=20
->  .../bindings/phy/samsung,ufs-phy.yaml         =7C   75 +
->  .../bindings/ufs/samsung,exynos-ufs.yaml      =7C   89 ++
->  .../boot/dts/exynos/exynos7-espresso.dts      =7C    4 +
->  arch/arm64/boot/dts/exynos/exynos7.dtsi       =7C   43 +-
->  drivers/phy/samsung/Kconfig                   =7C    9 +
->  drivers/phy/samsung/Makefile                  =7C    1 +
->  drivers/phy/samsung/phy-exynos7-ufs.h         =7C   86 ++
->  drivers/phy/samsung/phy-samsung-ufs.c         =7C  380 +++++
->  drivers/phy/samsung/phy-samsung-ufs.h         =7C  143 ++
->  drivers/scsi/ufs/Kconfig                      =7C   12 +
->  drivers/scsi/ufs/Makefile                     =7C    1 +
->  drivers/scsi/ufs/ufs-exynos.c                 =7C 1292 +++++++++++++++++
->  drivers/scsi/ufs/ufs-exynos.h                 =7C  287 ++++
->  drivers/scsi/ufs/ufshcd.c                     =7C  126 +-
->  drivers/scsi/ufs/ufshcd.h                     =7C   29 +
->  drivers/scsi/ufs/unipro.h                     =7C   33 +
->  16 files changed, 2596 insertions(+), 14 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/phy/samsung,ufs-
-> phy.yaml
->  create mode 100644 Documentation/devicetree/bindings/ufs/samsung,exynos-
-> ufs.yaml
->  create mode 100644 drivers/phy/samsung/phy-exynos7-ufs.h
->  create mode 100644 drivers/phy/samsung/phy-samsung-ufs.c
->  create mode 100644 drivers/phy/samsung/phy-samsung-ufs.h
->  create mode 100644 drivers/scsi/ufs/ufs-exynos.c
->  create mode 100644 drivers/scsi/ufs/ufs-exynos.h
->=20
-Hi Martin and Kishon,
-Can you please take the patches into your respective trees?
-Thanks,
+If Bharath is still doing kernel work, you might offer him a Co-Developed-by:
+tag (see https://www.kernel.org/doc/html/v4.17/process/submitting-patches.html).
 
->=20
-> base-commit: 0e698dfa282211e414076f9dc7e83c1c288314fd
-> --
-> 2.17.1
+Anyway, I'd recommend splitting the bug fix(es) into it at least one
+separate patch. That's a "best practice", and I don't see any reason
+not to do it here, even though the bugs are not huge.
+
+Also I think there may be more than one bug to fix, because I just
+noticed that the pre-existing code is doing set_page_dirty(), when
+it should be doing set_page_dirty_lock(). See below.
 
 
+> [1] Documentation/core-api/pin_user_pages.rst
+> 
+> [2] "Explicit pinning of user-space pages":
+>          https://lwn.net/Articles/807108/
+> 
+> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> ---
+> Hi,
+> 
+> I'm compile tested this, but unable to run-time test, so any testing
+> help is much appriciated.
+> 
+>   drivers/staging/kpc2000/kpc_dma/fileops.c | 15 ++++++++-------
+>   1 file changed, 8 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/staging/kpc2000/kpc_dma/fileops.c b/drivers/staging/kpc2000/kpc_dma/fileops.c
+> index 8975346..29bab13 100644
+> --- a/drivers/staging/kpc2000/kpc_dma/fileops.c
+> +++ b/drivers/staging/kpc2000/kpc_dma/fileops.c
+> @@ -48,6 +48,7 @@ static int kpc_dma_transfer(struct dev_private_data *priv,
+>   	u64 card_addr;
+>   	u64 dma_addr;
+>   	u64 user_ctl;
+> +	int nr_pages = 0;
+
+Probably best to correct the "rv" type as well: it should be an int, rather
+than a long.
+
+>   
+>   	ldev = priv->ldev;
+>   
+> @@ -76,13 +77,15 @@ static int kpc_dma_transfer(struct dev_private_data *priv,
+>   
+>   	// Lock the user buffer pages in memory, and hold on to the page pointers (for the sglist)
+>   	mmap_read_lock(current->mm);      /*  get memory map semaphore */
+> -	rv = get_user_pages(iov_base, acd->page_count, FOLL_TOUCH | FOLL_WRITE | FOLL_GET, acd->user_pages, NULL);
+> +	rv = pin_user_pages(iov_base, acd->page_count, FOLL_TOUCH | FOLL_WRITE, acd->user_pages, NULL);
+>   	mmap_read_unlock(current->mm);        /*  release the semaphore */
+>   	if (rv != acd->page_count) {
+> -		dev_err(&priv->ldev->pldev->dev, "Couldn't get_user_pages (%ld)\n", rv);
+> +		dev_err(&priv->ldev->pldev->dev, "Couldn't pin_user_pages (%ld)\n", rv);
+> +		nr_pages = rv;
+>   		goto err_get_user_pages;
+>   	}
+>   
+> +	nr_pages = acd->page_count;
+>   	// Allocate and setup the sg_table (scatterlist entries)
+>   	rv = sg_alloc_table_from_pages(&acd->sgt, acd->user_pages, acd->page_count, iov_base & (PAGE_SIZE - 1), iov_len, GFP_KERNEL);
+>   	if (rv) {
+> @@ -189,10 +192,9 @@ static int kpc_dma_transfer(struct dev_private_data *priv,
+>   	sg_free_table(&acd->sgt);
+>    err_dma_map_sg:
+>    err_alloc_sg_table:
+
+So now we end up with two unnecessary labels. Probably best to delete two of these
+three and name the remaining one appropriately:
+
+  err_dma_map_sg:
+  err_alloc_sg_table:
+  err_get_user_pages:
+
+> -	for (i = 0 ; i < acd->page_count ; i++)
+> -		put_page(acd->user_pages[i]);
+> -
+>    err_get_user_pages:
+> +	if (nr_pages > 0)
+> +		unpin_user_pages(acd->user_pages, nr_pages);
+>   	kfree(acd->user_pages);
+>    err_alloc_userpages:
+>   	kfree(acd);
+> @@ -217,8 +219,7 @@ void  transfer_complete_cb(struct aio_cb_data *acd, size_t xfr_count, u32 flags)
+>   
+
+There is code up here (not shown in this diff), that does a set_page_dirty().
+First of all, that should be set_page_dirty_lock(), and second, maybe (or maybe not)
+it can all be done after the dma_unmap_sg(), at the same time as the unpin, via
+unpin_user_pages_dirty_lock(). In fact, it's misleading at best to leave those
+pages mapped, because there is an interval in there after set_page_dirty() and
+before put_page(), in which the device could be running and setting pages dirty.
+(Remember that writeback attempts can be happening concurrently with all of this,
+and writeback is deeply involved with page dirtiness.)
+
+I remember Bharath wrestled with this in an earlier conversion attempt (back when
+we were only converting the "put_page" side of things), let me see if I can dig up
+that email thread for some guidance...OK, in [1] it appears that everyone
+finally settled on keeping the PageReserved check, but OK to move everything below
+the dma_unmap_sg() call.
+
+[1] https://lore.kernel.org/r/20190720173214.GA4250@bharath12345-Inspiron-5559
+
+
+>   	dma_unmap_sg(&acd->ldev->pldev->dev, acd->sgt.sgl, acd->sgt.nents, acd->ldev->dir);
+>   
+> -	for (i = 0 ; i < acd->page_count ; i++)
+> -		put_page(acd->user_pages[i]);
+> +	unpin_user_pages(acd->user_pages, acd->page_count);
+>   
+>   	sg_free_table(&acd->sgt);
+>   
+> 
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
