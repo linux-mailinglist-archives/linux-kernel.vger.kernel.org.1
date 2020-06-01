@@ -2,89 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDAD61EA1D1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 12:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5091EA1D8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 12:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726078AbgFAKYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 06:24:45 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:39460 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725788AbgFAKYo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 06:24:44 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1591007084; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=7kmkBXE1s/B1uijytzBWtDNlmhyb/oC4LuZ3LKjjazI=;
- b=a9j18/ynDSgJsTPHcCl29n4tXP+eUGLUdH7C8lPOzXMyKtPixT+cL6LAs8W9ePv7MxMGEWtU
- JLdJOreeU+PdcLBOo588kGBsRvF4rn/BZAmn8X2c2e0Zgzrf2Mi/Ce0btKk4+FfT0RCa7+j3
- diUj87xtJZOZeVxY3bqwFXZy4e4=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
- 5ed4d76942288e951fb11653 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Jun 2020 10:24:41
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4DAD1C433C9; Mon,  1 Jun 2020 10:24:41 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7C06BC433C6;
-        Mon,  1 Jun 2020 10:24:40 +0000 (UTC)
+        id S1726128AbgFAK2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 06:28:01 -0400
+Received: from mail-eopbgr00091.outbound.protection.outlook.com ([40.107.0.91]:55031
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725788AbgFAK2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 06:28:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dPIMQKSmAoGuaerUv4DXDLpRcsmdplBp6/qBo+OWHn1DROMNzUjjdOzOQWRWtirdMPkL5PQnN/oLcO3h4I9jLznLJwCFaztUGAB+1taRTn+hoWCg4y4Cuo2p0oUtXxZ+CyihsFDmhsLR4SCP+b3Xpgg6ifsBbO/oNmKhAzaicr/p0c6xZl1Il6AsnuFFio5UXvEZNXtXHs6gGfi6C0AAYaRq+qbhJgqwhZHa7F6hUilxswSzvcWZdStSVYQ7PleigojzTFplDLOLT3jcfeQf3FIGT+5TJNaeNtzk+dcdWVDdnQkCBUM+Hs4gq0LgLh6tWk42PnrvTAqHKSR2QJAJaw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3ZQF1M/ff9GQFpDDf9A1M3VK62c8+OePROKKdgbgOaA=;
+ b=Ku5iJXW3Fuz8n9WG9+qq7AqZLDZG649ezmbt289FHRQ8bTxr9URnVuXxLEiLxi+e/56rz9R7Vhv8H60rW1GJU3CvD63T0J77AhPaEfxlFe53RIj+grWUPXrdPWs3GcLmZsymQwddIi7UC1wp3krBMYXaMuiEuQLgEVmT/wYa8d8ZDdkoeBJzachMpDU5e8ZRfyWQtYVOixsWugnkk2dLPszT3y6vLvxe3npMCME6x3k2RQKKXnthnUk1Ql+onSqlrGtvI/z3K6XqPLbfQJJRCpSN0ZwQRmr922Rj5PlupJzFxWj46q4GoBxyzV1UeQ+/eOZCE93/9D5Pxt+lXstkng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3ZQF1M/ff9GQFpDDf9A1M3VK62c8+OePROKKdgbgOaA=;
+ b=kD62Apu6ipgP8Ixxp9NdjacROLVinDiSUe1CHaz1Dg2Tx3jr96SCi1xN9C82/kTYK/jMkdJR5c7RrY+xFo9e99XLuBcDDPYMUpPn1CuOyOUzaAnCBXIq2MCDBrI69g94h7r6c6SqARX9seeKLDaY/qH+P6glrDFNuRh8c2n07Ok=
+Authentication-Results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=plvision.eu;
+Received: from VI1P190MB0399.EURP190.PROD.OUTLOOK.COM (2603:10a6:802:35::10)
+ by VI1P190MB0512.EURP190.PROD.OUTLOOK.COM (2603:10a6:802:2f::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.21; Mon, 1 Jun
+ 2020 10:27:57 +0000
+Received: from VI1P190MB0399.EURP190.PROD.OUTLOOK.COM
+ ([fe80::8149:8652:3746:574f]) by VI1P190MB0399.EURP190.PROD.OUTLOOK.COM
+ ([fe80::8149:8652:3746:574f%7]) with mapi id 15.20.3045.022; Mon, 1 Jun 2020
+ 10:27:57 +0000
+Date:   Mon, 1 Jun 2020 13:27:49 +0300
+From:   Vadym Kochan <vadym.kochan@plvision.eu>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Taras Chornyi <taras.chornyi@plvision.eu>
+Subject: Re: [PATCH v2 2/2] nvmem: add ONIE NVMEM cells support
+Message-ID: <20200601102749.GA25323@plvision.eu>
+References: <20200529230451.21337-1-vadym.kochan@plvision.eu>
+ <20200529230451.21337-3-vadym.kochan@plvision.eu>
+ <8a8653c5-b112-4042-cbdf-8498e38d14ee@linaro.org>
+ <20200601090300.GA21928@plvision.eu>
+ <0d664272-4ef9-fe2c-02f4-60e9ecb41e20@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0d664272-4ef9-fe2c-02f4-60e9ecb41e20@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: AM6PR04CA0007.eurprd04.prod.outlook.com
+ (2603:10a6:20b:92::20) To VI1P190MB0399.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:802:35::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 01 Jun 2020 15:54:40 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     sboyd@kernel.org, georgi.djakov@linaro.org, nm@ti.com,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, saravanak@google.com, mka@chromium.org,
-        smasetty@codeaurora.org, linux-arm-msm-owner@vger.kernel.org,
-        linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH] OPP: Check for bandwidth values before creating icc paths
-In-Reply-To: <20200601101528.vcauy5fm5tmzgahs@vireshk-i7>
-References: <20200527192418.20169-1-sibis@codeaurora.org>
- <20200529052031.n2nvzxdsifwmthfv@vireshk-i7>
- <0205034b0ece173a7152a43b016985a7@codeaurora.org>
- <20200601040742.3a4cmhrwgh2ueksy@vireshk-i7>
- <ee51e55bdf518832e4ecb2faf98c6b58@codeaurora.org>
- <20200601071349.gbuyfaasdu27a3bd@vireshk-i7>
- <4258c6b122fa352a6b5cccb07a9b1203@codeaurora.org>
- <20200601101528.vcauy5fm5tmzgahs@vireshk-i7>
-Message-ID: <a6ef554ca033444dac80de40ecbd40f7@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from plvision.eu (217.20.186.93) by AM6PR04CA0007.eurprd04.prod.outlook.com (2603:10a6:20b:92::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17 via Frontend Transport; Mon, 1 Jun 2020 10:27:56 +0000
+X-Originating-IP: [217.20.186.93]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 043f6f2e-5d06-40bd-45b1-08d80616738e
+X-MS-TrafficTypeDiagnostic: VI1P190MB0512:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1P190MB0512C4460180ABF1019123C5958A0@VI1P190MB0512.EURP190.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Forefront-PRVS: 0421BF7135
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uBhufkZSc+l1dgEvzM7ynpbDl564jzmKp8pQScw2E6veqMzvmgJbYFDdCPllUpC6cifHwfivGQ2oYwdEXe0eK09ohoUGJB5PQYIEwWoq9S5FYsEvjNHGKx1mjyBa7iw1WZmA0zscDEuunJ5gYdJsH2SjuyF4YM3A1CcSk3VK9y4MQ8CwZmvufbFz4R9Z7OB8/uQEGWjRJ0Hd9DohbfgO1KLh1nmyoQrV7wZ3WTE4cM24r1Q7rt0JtIXjMPcoxlXG4LgRp41ZHJ2XOcaN9HvzNF1SrY8ALBNToB4s5lvJAjVejoMF5ib2m9DpDssCmQA832mDFgubloU9qz7NC1EGMA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1P190MB0399.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(376002)(366004)(136003)(39830400003)(346002)(396003)(36756003)(55016002)(83380400001)(33656002)(8936002)(44832011)(86362001)(2616005)(107886003)(4326008)(956004)(508600001)(6916009)(26005)(54906003)(2906002)(53546011)(66556008)(8886007)(66476007)(186003)(66946007)(16526019)(6666004)(5660300002)(7696005)(316002)(52116002)(8676002)(1076003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 4aWhOWEqms7Z2XAW1/H+tMoCM8WY1GTKUWbGgo5YifYLSUMdlZG+ICcXizSYBTmjuxJ3xtrukylixLjbXONv51jHY25DYN+CTyHakUNTxm7o0N/CMZH5jdlI8gM8gcHD8IRZjgBdrNwA9FfQWFhJ3NRsu+q5bSE3NwOdE1iQRDVhOYR0ENrso5b+xsQwTyfmJurhFAGaY1oHwwgWbXiLWQyIJvxLh4S1GZXBh8z7gcl/bP+KArjmYQZlsIbFKRmpJSetbVdZQGyt/Khn7bDiL4wWiMnh3dFVUs8uO6phqk7eUx+XrnjE01DBT/HMwxdx3YAug/F2y6IDS5ArvCvt41T8YAH0z8552j9drlVMymqQ6P0skwubNLulfEotxfc6EtQhayywbbm+UCw9yTjvaa9Ua8DmNmcUjH0YcpRaeV/tzcQGBK786Lmedk8Zqx4Dgy7wcunyqG/jId73pHAk9XluIGWTfKphKraZghCPnuM=
+X-OriginatorOrg: plvision.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: 043f6f2e-5d06-40bd-45b1-08d80616738e
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2020 10:27:57.2694
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vXoEU9P1mg23VfO3MCAVUsKOAjTjRLs7hH7WtrR6Rr+lODA5salQ+gGXlG2toa50PthXsxqNLIlEvwwqzKCNn+m2uKfxhLu2WdDAe/7XIXA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1P190MB0512
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-01 15:45, Viresh Kumar wrote:
-> On 01-06-20, 15:30, Sibi Sankar wrote:
->> Yeah dev_pm_opp_add/dev_pm_opp_set_clkname
->> or pretty much any api doing a
->> dev_pm_opp_get_opp_table without
->> a opp_table node associated with
->> it will run into this issue.
+On Mon, Jun 01, 2020 at 10:13:05AM +0100, Srinivas Kandagatla wrote:
 > 
-> Not sure if what you wrote now is correct, the problem shouldn't
-> happen from within dev_pm_opp_set_clkname() but only when we try to do
-> bw thing.
 > 
-> Anyway, I have pushed the change already.
+> On 01/06/2020 10:03, Vadym Kochan wrote:
+> > > > +
+> > > > +	nvmem = of_nvmem_device_get(np, NULL);
+> > > > +	if (IS_ERR(nvmem))
+> > > > +		return PTR_ERR(nvmem);
+> > > > +
+> > > TBH, this looks completely incorrect way to do this and misuse of nvmem
+> > > consumer interface.
+> > > 
+> > > Ideally nvmem provider driver should populate "cells" in struct nvmem_config
+> > > after decoding them and then register nvmem provider.
+> > > 
+> > > That should just work!
+> > > 
+> > > 
+> > > --srini
+> > But this is not nvmem provider but just describes the cells for any
+> > nvmem device, because ONIE uses special TLV structure on the nvmem
+> > device. So from the nvmem device point it is a consumer but provides the cells
+> > for the given device.
+> 
+> That still falls under nvmem providers responsibility to parse these cells
+> before registering it.
+OK, I thought that it is legal to have separate nvmem driver which
+provides access to the device itself, and other driver which describes the
+layout of the cells which might be applicable to any nvmem.
 
-cool, thanks!
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+> 
+> BTW, where is the provider driver for this in kernel ?
+> 
+> 
+> --srini
+> 
+> > 
+One of the example is atmel eeprom (at24), but there might be different
+devices.
+
+But can you please explain what is the technical/conceptual issue with
+this approach ?
+
+Thanks,
