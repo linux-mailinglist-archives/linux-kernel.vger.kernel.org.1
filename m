@@ -2,48 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14FB31E9B78
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 03:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1E31E9B7C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 03:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgFABuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 21:50:03 -0400
-Received: from sonic316-12.consmr.mail.bf2.yahoo.com ([74.6.130.122]:46745
-        "EHLO sonic316-12.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726555AbgFABuC (ORCPT
+        id S1727056AbgFABvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 21:51:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726555AbgFABvp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 21:50:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1590976201; bh=+NKq2YP/4c3bLm2HmGhxa/KCZOXr0NIUKHs/ECuC0yk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=td04MW1zDZ5aZv6oW0XO4z75o1E8LajujZdjgezD9pZFBwf7PC39amS3mWOzquKxFdXJ7Sy99s0BGCHc2k7AehtbiLdzk8Y2O41QNBU4kmacan+TQD64aBu9PHDQrUUwekxJO4CoYbhrci+CmHvLUZZrH7WFjOv2Vnkn3rPohUTu6CDR2pXUjpK0EOYbNf0x1PARQDYWNECCfWWuObZo0YMy7Qocpr+RP+5cHbPtkWlWE3LpJDK1kWNJfu9nufMf/V7lKaT7KC755rvLBIUkmaEvSVpzmAvilA1Hq9jtmxggw0ttn2htQPO2gwl03nlXLbdCrp29nfswMXRHrLVQGg==
-X-YMail-OSG: mfQ07w8VM1mG2_TuDjSBJaK1UTSJiLkKe2Zd8yhaYocgorlpYFkupLS5RMdmo2R
- SmaGmZNQ84gYe3GjvRD_nfCBpK2d4PA02PSqMH.jrRe_BaWqyOsltHWRleDkh5N9mDy893Ty7svV
- z1KtbpgJOQWqikkN9EumYdO4qtfX1PY7FR0QitciU96KT0LhWFzTeh8PRrfjRHqeuppu3G8MePfu
- wMreOTCixmIZcnutU5l4tW.HEWiYZ_aEzkyAolW_EE07huYbXELsBTKjoB63WAGDA3M6Lgv5rZpw
- Ey7PIuILRNuJAhkAxQSBK_JME.q1HpdyvcWNdeqk58k2EpoFb3HUY1edXNqVsG61Zuc8lsSplCHk
- 4ah5C9AZvcTqpPwff4BTOb6hJ_1Th1E.1A0e67kFbDzWa67coOFl6k3Kwo7YcV0M9UFGpDa6QX4Z
- 847teyianmobFzKYuFzeAuPt34Ijdxq4.SYJx5QkPhqNOUeQBZMHBPHWU9JnxhpAwqEiS3BEAf1z
- 0EidG57Ub2BlZjz2d1zsV9JSX3G8vHWzkTRDl5NYIHzKycuPge6anrLP2OFtHhnyhPlm8FEeSn0a
- DdxoU0JkOGS4Dap1SLNb8n9AxD3iLGodF9DXN6j9f6c8.TitrwWQJmZcRMcIz_OBrnN1O8PiesdK
- mPwjDNh41drZJta8o5OiGWF1NqZtEzlVTY1gXVT_jcDPNh3z6NkgioIHGJPuZn4VBUSHSAk3lpl9
- 0Qpw.uEccY54P1iHp1psUStRft_X0XA98IUfg4EJoO8APeW2KAQNpdnHl3nqJJaiwvW6NI0CvvRV
- fr9wok4u7b8Kz9qu7RXZNpNB19iQmjyJYKoE1b.2.3ErIFmhez9eIY1x4jQ74bsGrBX3fHMTdNVF
- Ru3RB.kVM1wR_WnsfagtrpRLcfxGyoQKrKa2mGUZKe88pvFYmBFB8fil6dMnFjVvL118BbN.pcyW
- YDuLIRFpxZf6kGF2E2erd_uS.S5oyIkTCj94v6wx49rpW_u2ZbEC3Nc9syxhvyHaem1xcpJAdwj7
- q3JoQjQiuoq9dvzm9J8iO9ssTbFMYdJfH5xfrcFQ9Y1e9DIgi4_UeJQvysujAGl4jQjxOMEJWyKg
- .4GTLsGYYmaVij6IqSbaLZW9CYwPuRDxM32RFAVUEV9en2ye3rk1IYxy0X2SESzOO1Zynv8bKPAN
- ZnP7RS.mkvVd468i3Ew8ihPP_snFTFKgi19w4EJei5LQ23abcPWYgBxb7p2N3XSm2SA6HF_M6wRg
- a.Le4nh1NcGDTqGYj.USp23I357Z48zxGhQbAQNZ4W.Ngub7GjQOOXHrHxMuA61gsrT00h5p4vgM
- -
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.bf2.yahoo.com with HTTP; Mon, 1 Jun 2020 01:50:01 +0000
-Date:   Mon, 1 Jun 2020 01:49:57 +0000 (UTC)
-From:   "Mrs. Mina A. Brunel" <mrsminaabrunelm@gmail.com>
-Reply-To: mrs.minaa.brunel703@gmail.com
-Message-ID: <322617381.430449.1590976197161@mail.yahoo.com>
-Subject: My Dear in the lord
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        Sun, 31 May 2020 21:51:45 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA63FC061A0E
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 18:51:44 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id t8so4228865pju.3
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 18:51:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=9dXvtk/r9WWB0K0puzQusMZ/JsqoKiWxqlF1sGJrjWc=;
+        b=pP05YEqIkQxAyG4vYCDW80FpHLOizHA6onXy4Gwo4itfkUonGPoNe26IGRJawn+vDB
+         6xm/XLtQIvd+VQShZDf/Lv3ABN0+/LsR6M7s+H96gvXg+EBop8epLWjtsuYq46KvOk6n
+         0QAYtfeNxq8zpoHHI7TeM6HMKXRoigU3xvB/McCFShyraP6f0r1ISOFaKqh0YNZGtdjZ
+         wZczeBqxjU0vErzv+Iy4JsQ6XPGHLgIBBCvsRaezOCahPeBHGKTOcN05q8++ARzlZQb0
+         TTj9wruO2IrFSTpw5CM/mz1LXI0BqFCN0aI6is75wz/0plhkA6m5LDVZG0hXUAIt518h
+         bmMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=9dXvtk/r9WWB0K0puzQusMZ/JsqoKiWxqlF1sGJrjWc=;
+        b=X7aT3y9XU85OKLYbF/Ot/2T1BEn0juLg6fJV/p/K527OuBJDqiKcQM3jyiP0gE068P
+         t8jm3qv9iWjgAZ3/DuX8YWxZk+i/i5fJoiVefYOMV9Ivrz2tAnqUA/Vlp9dmoirb1cuz
+         +vIX4+v9XprUE45rI7L5Ck2PEnYiad8cG3WO5xFrXTh9vafcQN0kAIPOQcdQDg2RKfaJ
+         fj9sA0UphkJhxvI/gD/YsyHfmhHyjCsU1VKBUzH2J1fghyUUQZWDfJG3nls/gEowsETL
+         FPstQ+kRErsxTmE+7n+4TszvZ2dxOZ6hGqJNLA68tY+W62CGG9jDzZkMLHef9RKabuEO
+         PfEA==
+X-Gm-Message-State: AOAM532JTxuCVRkba5Ecig+MkVq4kaUpiV8tRMxoZOwTQ+d8i4nikP/A
+        TD83Ilt4cnGWIRdZLt63AMhATQ==
+X-Google-Smtp-Source: ABdhPJyKdBvCLHLO/yUYp1MwzbdySIcglCWzDBtFYs8Uw6OMa2V55Q7KwEVOfGOGHmAQaeQTvnAfvg==
+X-Received: by 2002:a17:902:e903:: with SMTP id k3mr17628008pld.317.1590976303529;
+        Sun, 31 May 2020 18:51:43 -0700 (PDT)
+Received: from ?IPv6:2601:646:c200:1ef2:1d33:1e7d:661b:bcd4? ([2601:646:c200:1ef2:1d33:1e7d:661b:bcd4])
+        by smtp.gmail.com with ESMTPSA id q28sm12946145pfg.180.2020.05.31.18.51.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 May 2020 18:51:42 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-References: <322617381.430449.1590976197161.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16037 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:76.0) Gecko/20100101 Firefox/76.0
-To:     unlisted-recipients:; (no To-header on input)
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH RFC] seccomp: Implement syscall isolation based on memory areas
+Date:   Sun, 31 May 2020 18:51:40 -0700
+Message-Id: <53C0BD81-A942-4BB3-8538-D5107E84C5CD@amacapital.net>
+References: <8DF2868F-E756-4B33-A7AE-C61F4AB9ABB9@codeweavers.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, Paul Gofman <gofmanp@gmail.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel@collabora.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Zebediah Figura <zfigura@codeweavers.com>
+In-Reply-To: <8DF2868F-E756-4B33-A7AE-C61F4AB9ABB9@codeweavers.com>
+To:     Brendan Shanks <bshanks@codeweavers.com>
+X-Mailer: iPhone Mail (17E262)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -51,47 +75,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-My Dear in the lord
+> On May 31, 2020, at 4:50 PM, Brendan Shanks <bshanks@codeweavers.com> wrot=
+e:
+>=20
+> =EF=BB=BF
+>> On May 31, 2020, at 11:57 AM, Andy Lutomirski <luto@kernel.org> wrote:
+>>=20
+>> Using SECCOMP_RET_USER_NOTIF is likely to be considerably more
+>> expensive than my scheme.  On a non-PTI system, my approach will add a
+>> few tens of ns to each syscall.  On a PTI system, it will be worse.
+>> But using any kind of notifier for all syscalls will cause a context
+>> switch to a different user program for each syscall, and that will be
+>> much slower.
+>=20
+> There=E2=80=99s also no way (at least to my understanding) to modify regis=
+ter state from SECCOMP_RET_USER_NOTIF, which is how the existing -staging SI=
+GSYS handler works:
+>=20
+> <https://github.com/wine-staging/wine-staging/blob/master/patches/ntdll-Sy=
+scall_Emulation/0001-ntdll-Support-x86_64-syscall-emulation.patch#L62>
+>=20
+>> I think that the implementation may well want to live in seccomp, but
+>> doing this as a seccomp filter isn't quite right.  It's not a security
+>> thing -- it's an emulation thing.  Seccomp is all about making
+>> inescapable sandboxes, but that's not what you're doing at all, and
+>> the fact that seccomp filters are preserved across execve() sounds
+>> like it'll be annoying for you.
+>=20
+> Definitely. Regardless of what approach is taken, we don=E2=80=99t want it=
+ to persist across execve.
+>=20
+>> What if there was a special filter type that ran a BPF program on each
+>> syscall, and the program was allowed to access user memory to make its
+>> decisions, e.g. to look at some list of memory addresses.  But this
+>> would explicitly *not* be a security feature -- execve() would remove
+>> the filter, and the filter's outcome would be one of redirecting
+>> execution or allowing the syscall.  If the "allow" outcome occurs,
+>> then regular seccomp filters run.  Obviously the exact semantics here
+>> would need some care.
+>=20
+> Although if that=E2=80=99s running a BPF filter on every syscall, wouldn=E2=
+=80=99t it also incur the ~10% overhead that Paul and Gabriel have seen with=
+ existing seccomp?
+>=20
+>=20
 
+Unlikely. Some benchmarking is needed, but the seccomp ptrace overhead is li=
+kely *huge* compared to the overhead of just a filter.
 
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
-gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
-February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
-llion Euro) Eight million, Five hundred thousand Euros in a bank in Ouagado=
-ugou the capital city of Burkina Faso in West Africa. The money was from th=
-e sale of his company and death benefits payment and entitlements of my dec=
-eased husband by his company.
+As wild guess numbers on made up modern hardware, cache hot:
 
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
+Empty syscall: 50ns, or 300ns with PTI
 
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
+Empty syscall accepted by simple seccomp filter: 10ns more than an empty sys=
+call without seccomp
 
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
+Seccomp ptrace round trip: 6 us  Worse with PTI
 
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
+Seccomp user notif round trip: 4 us
 
-Thanks
-Mrs. Mina A. Brunel
+Syscall hypothetically redirected back to same process: about the same as an=
+ empty filtered accepted syscall, plus however long it takes to run the hand=
+ler. Add 900ns if using SIGSYS instead of plain redirection. Add an extra 50=
+0ns on current kernels because signal delivery sucks, but I can fix this.
+
+Take these numbers with a huge grain of salt.  But the point is that the BPF=
+ part is the least of your worries.=
