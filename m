@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86841EA909
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11CFD1EA8D8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729131AbgFAR6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:58:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39750 "EHLO mail.kernel.org"
+        id S1728305AbgFAR4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:56:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729115AbgFAR6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:58:04 -0400
+        id S1728504AbgFAR4J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:56:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ABBE22073B;
-        Mon,  1 Jun 2020 17:58:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B1732076B;
+        Mon,  1 Jun 2020 17:56:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034284;
-        bh=09YqrVPRrABEq7REe5UqOCDei7Su3HzEdO6ElVdZj6c=;
+        s=default; t=1591034169;
+        bh=8rLRduYBr4uj8gPkqhFl1/b3CdN/SHvNXzbfGXSTM0w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rnwqCdNZpNbcQ7+1d+tfM/WZg4BNiIfV3Y6iDokAMS/35CD4f12YjtISTVRU90jl4
-         aIU40biB3EHQhLuIqfys8dLJtyXEyyGD7vq/WLvxww8oJjcqzH+9IZfUunYw3i0BOq
-         H8x6IQfsCe9WiQc+iZb4yEsRJD092B0zTrtTqcYY=
+        b=zO6HngxsgBYXQiCt8PEIxmcMYAuH2i5+/t4I7eQgusaXXmNpbpe+KGFQOjZXIiZsg
+         MHA3qRI5GY3Sg7NlyUB/32e4g7jgRXJ5KVxGLqRSkhMODTjhXaV1xJTUSsQGUrHYeb
+         Zjy0vgyQovIxtimmzhik6Pd1lAwsH2YfxjSv5qQo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kevin Locke <kevin@kevinlocke.name>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, sam <sunhaoyl@outlook.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 24/61] Input: i8042 - add ThinkPad S230u to i8042 reset list
-Date:   Mon,  1 Jun 2020 19:53:31 +0200
-Message-Id: <20200601174016.327408605@linuxfoundation.org>
+Subject: [PATCH 4.4 22/48] fs/binfmt_elf.c: allocate initialized memory in fill_thread_core_info()
+Date:   Mon,  1 Jun 2020 19:53:32 +0200
+Message-Id: <20200601173959.002445559@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
-References: <20200601174010.316778377@linuxfoundation.org>
+In-Reply-To: <20200601173952.175939894@linuxfoundation.org>
+References: <20200601173952.175939894@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,58 +49,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kevin Locke <kevin@kevinlocke.name>
+From: Alexander Potapenko <glider@google.com>
 
-[ Upstream commit 2712c91a54a1058d55c284152b4d93c979b67be6 ]
+[ Upstream commit 1d605416fb7175e1adf094251466caa52093b413 ]
 
-On the Lenovo ThinkPad Twist S230u (3347-4HU) with BIOS version
-"GDETC1WW (1.81 ) 06/27/2019", the keyboard, Synaptics TouchPad, and
-TrackPoint either do not function or stop functioning a few minutes
-after boot.  This problem has been noted before, perhaps only occurring
-with BIOS 1.57 and later.[1][2][3][4][5]
+KMSAN reported uninitialized data being written to disk when dumping
+core.  As a result, several kilobytes of kmalloc memory may be written
+to the core file and then read by a non-privileged user.
 
-Odds of a BIOS fix appear to be low: 1.57 was released over 6 years ago
-and although the [BIOS changelog] notes "Fixed an issue of UEFI
-touchpad/trackpoint/keyboard/touchscreen" in 1.58, it appears to be
-insufficient.
-
-Setting i8042.reset=1 or adding 33474HU to the reset list avoids the
-issue on my system from either warm or cold boot.
-
-[1]: https://bugs.launchpad.net/bugs/1210748
-[2]: https://bbs.archlinux.org/viewtopic.php?pid=1360425
-[3]: https://forums.linuxmint.com/viewtopic.php?f=46&t=41200
-[4]: https://forums.linuxmint.com/viewtopic.php?f=49&t=157115
-[5]: https://forums.lenovo.com/topic/findpost/27/1337119
-[BIOS changelog]: https://download.lenovo.com/pccbbs/mobiles/gduj33uc.txt
-
-Signed-off-by: Kevin Locke <kevin@kevinlocke.name>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/94f384b0f75f90f71425d7dce7ac82c59ddb87a8.1587702636.git.kevin@kevinlocke.name
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Reported-by: sam <sunhaoyl@outlook.com>
+Signed-off-by: Alexander Potapenko <glider@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Kees Cook <keescook@chromium.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200419100848.63472-1-glider@google.com
+Link: https://github.com/google/kmsan/issues/76
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/serio/i8042-x86ia64io.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ fs/binfmt_elf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/input/serio/i8042-x86ia64io.h b/drivers/input/serio/i8042-x86ia64io.h
-index 42330024da2f..d15fd73dbd80 100644
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -745,6 +745,13 @@ static const struct dmi_system_id __initconst i8042_dmi_reset_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "P65xRP"),
- 		},
- 	},
-+	{
-+		/* Lenovo ThinkPad Twist S230u */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "33474HU"),
-+		},
-+	},
- 	{ }
- };
- 
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index 164e5fedd7b6..eddf5746cf51 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -1726,7 +1726,7 @@ static int fill_thread_core_info(struct elf_thread_core_info *t,
+ 		    (!regset->active || regset->active(t->task, regset) > 0)) {
+ 			int ret;
+ 			size_t size = regset->n * regset->size;
+-			void *data = kmalloc(size, GFP_KERNEL);
++			void *data = kzalloc(size, GFP_KERNEL);
+ 			if (unlikely(!data))
+ 				return 0;
+ 			ret = regset->get(t->task, regset,
 -- 
 2.25.1
 
