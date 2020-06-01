@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7E51EAA8E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B4ED1EAA17
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730833AbgFASJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:09:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55292 "EHLO mail.kernel.org"
+        id S1730269AbgFASEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:04:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728839AbgFASJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:09:00 -0400
+        id S1730224AbgFASEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:04:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3BB442068D;
-        Mon,  1 Jun 2020 18:08:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4AE72077D;
+        Mon,  1 Jun 2020 18:04:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034939;
-        bh=8LJc41QcyHQrn0teuEmx2Q/YGdsOXZ7Go3DE8eV8WUA=;
+        s=default; t=1591034678;
+        bh=BIjX25o2Nl0UvKQ3OSYhwQrEQgiMKAAjhR6p4MIRU/s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N1WHo/OvKue9gVQfHxA3+DXQOMK2O6+R0qH4fuAJZOIJJSs0Fy+/L/35c5FYqKKOE
-         4qEh27sBGo/8Ni+lsM5wq6MxkixYcWpucbSg63iIUz9UWLjQ3OH4PVrxGtjUeKspy6
-         PUl3f1vcxr9lFeO/tsxfDmR7itafrva8n7PFbGRk=
+        b=awun5tBQffU4Jvt+H4CzBsbzUcY7PYD5FT0gzlacn5Pr0NnxD7PV3Lmvw+T+p+0ow
+         2F61fO4QPvg62M6RqYHUHNGhyciNUFdWC1OBCKknTqmRFUdeYqfcVFStBVzj50T7pj
+         AYGKtNbNB5Uzm79iWEgPYDYRlMmazeFuKhUuQQeU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robert Beckett <bob.beckett@collabora.com>,
-        Ian Ray <ian.ray@ge.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 080/142] ARM: dts/imx6q-bx50v3: Set display interface clock parents
-Date:   Mon,  1 Jun 2020 19:53:58 +0200
-Message-Id: <20200601174046.270288356@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Chiu <chiu@endlessm.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 59/95] ALSA: usb-audio: mixer: volume quirk for ESS Technology Asus USB DAC
+Date:   Mon,  1 Jun 2020 19:53:59 +0200
+Message-Id: <20200601174030.474392946@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
+References: <20200601174020.759151073@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,120 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Beckett <bob.beckett@collabora.com>
+From: Chris Chiu <chiu@endlessm.com>
 
-[ Upstream commit 665e7c73a7724a393b4ec92d1ae1e029925ef2b7 ]
+[ Upstream commit 4020d1ccbe55bdf67b31d718d2400506eaf4b43f ]
 
-Avoid LDB and IPU DI clocks both using the same parent. LDB requires
-pasthrough clock to avoid breaking timing while IPU DI does not.
+The Asus USB DAC is a USB type-C audio dongle for connecting to
+the headset and headphone. The volume minimum value -23040 which
+is 0xa600 in hexadecimal with the resolution value 1 indicates
+this should be endianness issue caused by the firmware bug. Add
+a volume quirk to fix the volume control problem.
 
-Force IPU DI clocks to use IMX6QDL_CLK_PLL2_PFD0_352M as parent
-and LDB to use IMX6QDL_CLK_PLL5_VIDEO_DIV.
+Also fixes this warning:
+  Warning! Unlikely big volume range (=23040), cval->res is probably wrong.
+  [5] FU [Headset Capture Volume] ch = 1, val = -23040/0/1
+  Warning! Unlikely big volume range (=23040), cval->res is probably wrong.
+  [7] FU [Headset Playback Volume] ch = 1, val = -23040/0/1
 
-This fixes an issue where attempting atomic modeset while using
-HDMI and display port at the same time causes LDB clock programming
-to destroy the programming of HDMI that was done during the same
-modeset.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
-[Use IMX6QDL_CLK_PLL2_PFD0_352M instead of IMX6QDL_CLK_PLL2_PFD2_396M
- originally chosen by Robert Beckett to avoid affecting eMMC clock
- by DRM atomic updates]
-Signed-off-by: Ian Ray <ian.ray@ge.com>
-[Squash Robert's and Ian's commits for bisectability, update patch
- description and add stable tag]
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Chris Chiu <chiu@endlessm.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200526062613.55401-1-chiu@endlessm.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx6q-b450v3.dts  |  7 -------
- arch/arm/boot/dts/imx6q-b650v3.dts  |  7 -------
- arch/arm/boot/dts/imx6q-b850v3.dts  | 11 -----------
- arch/arm/boot/dts/imx6q-bx50v3.dtsi | 15 +++++++++++++++
- 4 files changed, 15 insertions(+), 25 deletions(-)
+ sound/usb/mixer.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm/boot/dts/imx6q-b450v3.dts b/arch/arm/boot/dts/imx6q-b450v3.dts
-index 95b8f2d71821..fb0980190aa0 100644
---- a/arch/arm/boot/dts/imx6q-b450v3.dts
-+++ b/arch/arm/boot/dts/imx6q-b450v3.dts
-@@ -65,13 +65,6 @@
- 	};
- };
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 7a5c665cf4e4..8a0211131fc6 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1186,6 +1186,14 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
+ 			cval->res = 384;
+ 		}
+ 		break;
++	case USB_ID(0x0495, 0x3042): /* ESS Technology Asus USB DAC */
++		if ((strstr(kctl->id.name, "Playback Volume") != NULL) ||
++			strstr(kctl->id.name, "Capture Volume") != NULL) {
++			cval->min >>= 8;
++			cval->max = 0;
++			cval->res = 1;
++		}
++		break;
+ 	}
+ }
  
--&clks {
--	assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>,
--			  <&clks IMX6QDL_CLK_LDB_DI1_SEL>;
--	assigned-clock-parents = <&clks IMX6QDL_CLK_PLL3_USB_OTG>,
--				 <&clks IMX6QDL_CLK_PLL3_USB_OTG>;
--};
--
- &ldb {
- 	status = "okay";
- 
-diff --git a/arch/arm/boot/dts/imx6q-b650v3.dts b/arch/arm/boot/dts/imx6q-b650v3.dts
-index 611cb7ae7e55..8f762d9c5ae9 100644
---- a/arch/arm/boot/dts/imx6q-b650v3.dts
-+++ b/arch/arm/boot/dts/imx6q-b650v3.dts
-@@ -65,13 +65,6 @@
- 	};
- };
- 
--&clks {
--	assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>,
--			  <&clks IMX6QDL_CLK_LDB_DI1_SEL>;
--	assigned-clock-parents = <&clks IMX6QDL_CLK_PLL3_USB_OTG>,
--				 <&clks IMX6QDL_CLK_PLL3_USB_OTG>;
--};
--
- &ldb {
- 	status = "okay";
- 
-diff --git a/arch/arm/boot/dts/imx6q-b850v3.dts b/arch/arm/boot/dts/imx6q-b850v3.dts
-index e4cb118f88c6..1ea64ecf4291 100644
---- a/arch/arm/boot/dts/imx6q-b850v3.dts
-+++ b/arch/arm/boot/dts/imx6q-b850v3.dts
-@@ -53,17 +53,6 @@
- 	};
- };
- 
--&clks {
--	assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>,
--			  <&clks IMX6QDL_CLK_LDB_DI1_SEL>,
--			  <&clks IMX6QDL_CLK_IPU1_DI0_PRE_SEL>,
--			  <&clks IMX6QDL_CLK_IPU2_DI0_PRE_SEL>;
--	assigned-clock-parents = <&clks IMX6QDL_CLK_PLL5_VIDEO_DIV>,
--				 <&clks IMX6QDL_CLK_PLL5_VIDEO_DIV>,
--				 <&clks IMX6QDL_CLK_PLL2_PFD2_396M>,
--				 <&clks IMX6QDL_CLK_PLL2_PFD2_396M>;
--};
--
- &ldb {
- 	fsl,dual-channel;
- 	status = "okay";
-diff --git a/arch/arm/boot/dts/imx6q-bx50v3.dtsi b/arch/arm/boot/dts/imx6q-bx50v3.dtsi
-index fa27dcdf06f1..1938b04199c4 100644
---- a/arch/arm/boot/dts/imx6q-bx50v3.dtsi
-+++ b/arch/arm/boot/dts/imx6q-bx50v3.dtsi
-@@ -377,3 +377,18 @@
- 		#interrupt-cells = <1>;
- 	};
- };
-+
-+&clks {
-+	assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>,
-+			  <&clks IMX6QDL_CLK_LDB_DI1_SEL>,
-+			  <&clks IMX6QDL_CLK_IPU1_DI0_PRE_SEL>,
-+			  <&clks IMX6QDL_CLK_IPU1_DI1_PRE_SEL>,
-+			  <&clks IMX6QDL_CLK_IPU2_DI0_PRE_SEL>,
-+			  <&clks IMX6QDL_CLK_IPU2_DI1_PRE_SEL>;
-+	assigned-clock-parents = <&clks IMX6QDL_CLK_PLL5_VIDEO_DIV>,
-+				 <&clks IMX6QDL_CLK_PLL5_VIDEO_DIV>,
-+				 <&clks IMX6QDL_CLK_PLL2_PFD0_352M>,
-+				 <&clks IMX6QDL_CLK_PLL2_PFD0_352M>,
-+				 <&clks IMX6QDL_CLK_PLL2_PFD0_352M>,
-+				 <&clks IMX6QDL_CLK_PLL2_PFD0_352M>;
-+};
 -- 
 2.25.1
 
