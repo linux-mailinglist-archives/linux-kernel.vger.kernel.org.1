@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8837D1EAB66
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB231EAAC2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731779AbgFASRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:17:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37946 "EHLO mail.kernel.org"
+        id S1731072AbgFASLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:11:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731186AbgFASRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:17:00 -0400
+        id S1730308AbgFASKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:10:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5DACB2065C;
-        Mon,  1 Jun 2020 18:16:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E40F4206E2;
+        Mon,  1 Jun 2020 18:10:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035419;
-        bh=xr+cNPrIdf1C12cNTU1/aKdibL4caOdZ0UILFHZY4a0=;
+        s=default; t=1591035053;
+        bh=S2SI/ZGiBbnJng5OesmlFF79jiK584W1YvWabB6Yq4A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kk2wXM7xFtkyG2nObhCTe5qhbhKp+1J63uoYMjHLgPOc9XMO7zk/txLE0u4J4w73/
-         iuI8ldppJpoPbNr7f4M/Psw1//v5OtPXd8gvAuVmEapxER7n36DHpCk9LrRx+/PD/2
-         n5UOwZVXQeBN6eaKULvyjpXsewM0xE90eCKXPCWg=
+        b=XjLwQXFHG9yPLCjdO+p57UYueBtoX1XHuuXCI1fczi6mmjetS68r1Lk4cPDQXs9up
+         sjnRaeumZ1OYzv9U5lqorBhU2mJDSEP6mMtriECUIhfxobMVEXGB2MNs2GM0qe4epx
+         ufn6Wbmymq8kHNTCC52CVnt4orzSkyBGLVNcht5g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Subject: [PATCH 5.6 151/177] xfrm: fix a NULL-ptr deref in xfrm_local_error
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 131/142] crypto: chelsio/chtls: properly set tp->lsndtime
 Date:   Mon,  1 Jun 2020 19:54:49 +0200
-Message-Id: <20200601174100.997886917@linuxfoundation.org>
+Message-Id: <20200601174051.334241879@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,65 +45,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit f6a23d85d078c2ffde79c66ca81d0a1dde451649 upstream.
+commit a4976a3ef844c510ae9120290b23e9f3f47d6bce upstream.
 
-This patch is to fix a crash:
+TCP tp->lsndtime unit/base is tcp_jiffies32, not tcp_time_stamp()
 
-  [ ] kasan: GPF could be caused by NULL-ptr deref or user memory access
-  [ ] general protection fault: 0000 [#1] SMP KASAN PTI
-  [ ] RIP: 0010:ipv6_local_error+0xac/0x7a0
-  [ ] Call Trace:
-  [ ]  xfrm6_local_error+0x1eb/0x300
-  [ ]  xfrm_local_error+0x95/0x130
-  [ ]  __xfrm6_output+0x65f/0xb50
-  [ ]  xfrm6_output+0x106/0x46f
-  [ ]  udp_tunnel6_xmit_skb+0x618/0xbf0 [ip6_udp_tunnel]
-  [ ]  vxlan_xmit_one+0xbc6/0x2c60 [vxlan]
-  [ ]  vxlan_xmit+0x6a0/0x4276 [vxlan]
-  [ ]  dev_hard_start_xmit+0x165/0x820
-  [ ]  __dev_queue_xmit+0x1ff0/0x2b90
-  [ ]  ip_finish_output2+0xd3e/0x1480
-  [ ]  ip_do_fragment+0x182d/0x2210
-  [ ]  ip_output+0x1d0/0x510
-  [ ]  ip_send_skb+0x37/0xa0
-  [ ]  raw_sendmsg+0x1b4c/0x2b80
-  [ ]  sock_sendmsg+0xc0/0x110
-
-This occurred when sending a v4 skb over vxlan6 over ipsec, in which case
-skb->protocol == htons(ETH_P_IPV6) while skb->sk->sk_family == AF_INET in
-xfrm_local_error(). Then it will go to xfrm6_local_error() where it tries
-to get ipv6 info from a ipv4 sk.
-
-This issue was actually fixed by Commit 628e341f319f ("xfrm: make local
-error reporting more robust"), but brought back by Commit 844d48746e4b
-("xfrm: choose protocol family by skb protocol").
-
-So to fix it, we should call xfrm6_local_error() only when skb->protocol
-is htons(ETH_P_IPV6) and skb->sk->sk_family is AF_INET6.
-
-Fixes: 844d48746e4b ("xfrm: choose protocol family by skb protocol")
-Reported-by: Xiumei Mu <xmu@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Fixes: 36bedb3f2e5b ("crypto: chtls - Inline TLS record Tx")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Ayush Sawal <ayush.sawal@chelsio.com>
+Cc: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/xfrm/xfrm_output.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/crypto/chelsio/chtls/chtls_io.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/xfrm/xfrm_output.c
-+++ b/net/xfrm/xfrm_output.c
-@@ -642,7 +642,8 @@ void xfrm_local_error(struct sk_buff *sk
- 
- 	if (skb->protocol == htons(ETH_P_IP))
- 		proto = AF_INET;
--	else if (skb->protocol == htons(ETH_P_IPV6))
-+	else if (skb->protocol == htons(ETH_P_IPV6) &&
-+		 skb->sk->sk_family == AF_INET6)
- 		proto = AF_INET6;
- 	else
- 		return;
+--- a/drivers/crypto/chelsio/chtls/chtls_io.c
++++ b/drivers/crypto/chelsio/chtls/chtls_io.c
+@@ -682,7 +682,7 @@ int chtls_push_frames(struct chtls_sock
+ 				make_tx_data_wr(sk, skb, immdlen, len,
+ 						credits_needed, completion);
+ 			tp->snd_nxt += len;
+-			tp->lsndtime = tcp_time_stamp(tp);
++			tp->lsndtime = tcp_jiffies32;
+ 			if (completion)
+ 				ULP_SKB_CB(skb)->flags &= ~ULPCB_FLAG_NEED_HDR;
+ 		} else {
 
 
