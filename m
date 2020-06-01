@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B9C1EAD01
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5108E1EADEE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730643AbgFASMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:12:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59616 "EHLO mail.kernel.org"
+        id S1729032AbgFAStx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:49:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731173AbgFASMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:12:17 -0400
+        id S1730473AbgFASGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:06:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D4FF2065C;
-        Mon,  1 Jun 2020 18:12:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56ED62068D;
+        Mon,  1 Jun 2020 18:06:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035136;
-        bh=N/W/8g3PtuuoC034RzeB9JObwXv0drfERwy505VPvqE=;
+        s=default; t=1591034799;
+        bh=M0fabt7unVU5QF8l4HkRxEV7twQQuRiqHuedoJ3zhjY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mTWJdtlm2eCK/lxKc1L+EXQHmxxLlk2pOOjxeKFOEI29fISg+EDlvJlWmtZsOKDje
-         sDQGYH2jJRQQK6Clu1zF2FMXscYLJ2mukZ1BxY0uVBenIYlGRMQJvU+8LUwjHhoDn+
-         ywM6PeJyXgoiASIElLUCvKQRco0N8fNcOfUGuZD8=
+        b=uAUQ17+2F85fxe/7SCHsG75UWMEFinD/cOntpFIqSM06O5wHNXaicRRgHunu6iNKm
+         BrEJeadUzqZQOWHxnzuSJdSLPW7kTrn2iddlLkrzNCgp6ur3k2l1i7cFXKfAq4dDnM
+         +P8aoCIuEKB99nkVwY07zqJrmki7CqvDVT93303o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Moshe Shemesh <moshe@mellanox.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Subject: [PATCH 5.6 025/177] net/mlx5: Fix memory leak in mlx5_events_init
+        stable@vger.kernel.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 005/142] net: ethernet: ti: cpsw: fix ASSERT_RTNL() warning during suspend
 Date:   Mon,  1 Jun 2020 19:52:43 +0200
-Message-Id: <20200601174050.884588189@linuxfoundation.org>
+Message-Id: <20200601174038.612777995@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Moshe Shemesh <moshe@mellanox.com>
+From: Grygorii Strashko <grygorii.strashko@ti.com>
 
-[ Upstream commit df14ad1eccb04a4a28c90389214dbacab085b244 ]
+[ Upstream commit 4c64b83d03f4aafcdf710caad994cbc855802e74 ]
 
-Fix memory leak in mlx5_events_init(), in case
-create_single_thread_workqueue() fails, events
-struct should be freed.
+vlan_for_each() are required to be called with rtnl_lock taken, otherwise
+ASSERT_RTNL() warning will be triggered - which happens now during System
+resume from suspend:
+  cpsw_suspend()
+  |- cpsw_ndo_stop()
+    |- __hw_addr_ref_unsync_dev()
+      |- cpsw_purge_all_mc()
+         |- vlan_for_each()
+            |- ASSERT_RTNL();
 
-Fixes: 5d3c537f9070 ("net/mlx5: Handle event of power detection in the PCIE slot")
-Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
-Reviewed-by: Tariq Toukan <tariqt@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Hence, fix it by surrounding cpsw_ndo_stop() by rtnl_lock/unlock() calls.
+
+Fixes: 15180eca569b ("net: ethernet: ti: cpsw: fix vlan mcast")
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/events.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/ti/cpsw.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/events.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/events.c
-@@ -346,8 +346,10 @@ int mlx5_events_init(struct mlx5_core_de
- 	events->dev = dev;
- 	dev->priv.events = events;
- 	events->wq = create_singlethread_workqueue("mlx5_events");
--	if (!events->wq)
-+	if (!events->wq) {
-+		kfree(events);
- 		return -ENOMEM;
-+	}
- 	INIT_WORK(&events->pcie_core_work, mlx5_pcie_event);
+--- a/drivers/net/ethernet/ti/cpsw.c
++++ b/drivers/net/ethernet/ti/cpsw.c
+@@ -2999,11 +2999,15 @@ static int cpsw_suspend(struct device *d
+ 	struct cpsw_common *cpsw = dev_get_drvdata(dev);
+ 	int i;
  
- 	return 0;
++	rtnl_lock();
++
+ 	for (i = 0; i < cpsw->data.slaves; i++)
+ 		if (cpsw->slaves[i].ndev)
+ 			if (netif_running(cpsw->slaves[i].ndev))
+ 				cpsw_ndo_stop(cpsw->slaves[i].ndev);
+ 
++	rtnl_unlock();
++
+ 	/* Select sleep pin state */
+ 	pinctrl_pm_select_sleep_state(dev);
+ 
 
 
