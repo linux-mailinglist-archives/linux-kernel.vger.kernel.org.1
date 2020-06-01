@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA841EAF3A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 21:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 899BF1EAF32
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 21:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730285AbgFATAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 15:00:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37148 "EHLO mail.kernel.org"
+        id S1728695AbgFAR4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:56:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728619AbgFAR4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:56:36 -0400
+        id S1728097AbgFAR4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:56:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D3E0206E2;
-        Mon,  1 Jun 2020 17:56:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2BAE5206E2;
+        Mon,  1 Jun 2020 17:56:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034196;
-        bh=1Pm6gaFiAxl5+Jo1O7iSY7cXigm9jLrMs2GVPLwkq48=;
+        s=default; t=1591034200;
+        bh=3XN0dCs4ELVpk+KvkOC2xhVH8DurHvnfoxL0UtPiEI0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pgILq50OjFhayT3FL+AEO7MBBrAMncYTcSVj0zMvUekO/gkiYOihYqo90Iov5FPox
-         sg1G3jcxQgLkhKHZpiKQtg+oypvGvRdH22TBduTc54Hjnel3aCEw5SrOf0Em43lPDm
-         Z93T05ioI0vCn8PZnJtqDolLcmMV2kmGVoPaNLmo=
+        b=DlRneOVurlUwxOfrm355sT7/bCLbPGApf+onh7pR62zkjwd9lAm4H21NCoOj8w2mM
+         +Rsn3ogOXXaGuA9bZhh9lbDj/Thiq+NC0Z4LUbzBX7a6oTTcs68GqSVT1O14xUiPp5
+         ds5VTYLjsi7WOxH6ZOmOjB0ExdimLXx4HRq+a7KI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Dmitry V. Levin" <ldv@altlinux.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Asbjoern Sloth Toennesen <asbjorn@asbjorn.st>
-Subject: [PATCH 4.4 07/48] uapi: fix linux/if_pppol2tp.h userspace compilation errors
-Date:   Mon,  1 Jun 2020 19:53:17 +0200
-Message-Id: <20200601173954.188258319@linuxfoundation.org>
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 09/48] gfs2: dont call quota_unhold if quotas are not locked
+Date:   Mon,  1 Jun 2020 19:53:19 +0200
+Message-Id: <20200601173954.907703774@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200601173952.175939894@linuxfoundation.org>
 References: <20200601173952.175939894@linuxfoundation.org>
@@ -44,55 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry V. Levin <ldv@altlinux.org>
+From: Bob Peterson <rpeterso@redhat.com>
 
-commit a725eb15db80643a160310ed6bcfd6c5a6c907f2 upstream.
+[ Upstream commit c9cb9e381985bbbe8acd2695bbe6bd24bf06b81c ]
 
-Because of <linux/libc-compat.h> interface limitations, <netinet/in.h>
-provided by libc cannot be included after <linux/in.h>, therefore any
-header that includes <netinet/in.h> cannot be included after <linux/in.h>.
+Before this patch, function gfs2_quota_unlock checked if quotas are
+turned off, and if so, it branched to label out, which called
+gfs2_quota_unhold. With the new system of gfs2_qa_get and put, we
+no longer want to call gfs2_quota_unhold or we won't balance our
+gets and puts.
 
-Change uapi/linux/l2tp.h, the last uapi header that includes
-<netinet/in.h>, to include <linux/in.h> and <linux/in6.h> instead of
-<netinet/in.h> and use __SOCK_SIZE__ instead of sizeof(struct sockaddr)
-the same way as uapi/linux/in.h does, to fix linux/if_pppol2tp.h userspace
-compilation errors like this:
-
-In file included from /usr/include/linux/l2tp.h:12:0,
-                 from /usr/include/linux/if_pppol2tp.h:21,
-/usr/include/netinet/in.h:31:8: error: redefinition of 'struct in_addr'
-
-Fixes: 47c3e7783be4 ("net: l2tp: deprecate PPPOL2TP_MSG_* in favour of L2TP_MSG_*")
-Signed-off-by: Dmitry V. Levin <ldv@altlinux.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Asbjoern Sloth Toennesen <asbjorn@asbjorn.st>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/uapi/linux/l2tp.h |    7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ fs/gfs2/quota.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/include/uapi/linux/l2tp.h
-+++ b/include/uapi/linux/l2tp.h
-@@ -9,9 +9,8 @@
+diff --git a/fs/gfs2/quota.c b/fs/gfs2/quota.c
+index 3a31226531ea..4af00ed4960a 100644
+--- a/fs/gfs2/quota.c
++++ b/fs/gfs2/quota.c
+@@ -1080,7 +1080,7 @@ void gfs2_quota_unlock(struct gfs2_inode *ip)
+ 	int found;
  
- #include <linux/types.h>
- #include <linux/socket.h>
--#ifndef __KERNEL__
--#include <netinet/in.h>
--#endif
-+#include <linux/in.h>
-+#include <linux/in6.h>
+ 	if (!test_and_clear_bit(GIF_QD_LOCKED, &ip->i_flags))
+-		goto out;
++		return;
  
- #define IPPROTO_L2TP		115
+ 	for (x = 0; x < ip->i_res->rs_qa_qd_num; x++) {
+ 		struct gfs2_quota_data *qd;
+@@ -1117,7 +1117,6 @@ void gfs2_quota_unlock(struct gfs2_inode *ip)
+ 			qd_unlock(qda[x]);
+ 	}
  
-@@ -31,7 +30,7 @@ struct sockaddr_l2tpip {
- 	__u32		l2tp_conn_id;	/* Connection ID of tunnel */
+-out:
+ 	gfs2_quota_unhold(ip);
+ }
  
- 	/* Pad to size of `struct sockaddr'. */
--	unsigned char	__pad[sizeof(struct sockaddr) -
-+	unsigned char	__pad[__SOCK_SIZE__ -
- 			      sizeof(__kernel_sa_family_t) -
- 			      sizeof(__be16) - sizeof(struct in_addr) -
- 			      sizeof(__u32)];
+-- 
+2.25.1
+
 
 
