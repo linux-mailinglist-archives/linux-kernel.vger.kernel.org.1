@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FFEA1EA9F0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F251EAAFA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730120AbgFASDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:03:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47700 "EHLO mail.kernel.org"
+        id S1731316AbgFASNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:13:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730112AbgFASDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:03:40 -0400
+        id S1731311AbgFASNL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:13:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 625172077D;
-        Mon,  1 Jun 2020 18:03:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D43C2065C;
+        Mon,  1 Jun 2020 18:13:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034619;
-        bh=IXAB/ugYIs1Tg1t4omVyrfXiW4pxa2jvUd3vyyQBZXI=;
+        s=default; t=1591035191;
+        bh=PShjP4JqEu7VciJj/G3J2Xnl9GwcIQlCD+Du0aKEP3E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CtolpuvMlEMTM/U7a7XDbFv53aiNg7NQvyKKRT7yweueS/q/yFF1DRC8Pis9S7xry
-         yfa2vv+QQsAXd5r9L098FPXHSNd7d8w+nEjEmF8kBVU7VnbZG62AeRi8XA/ag82j4k
-         /ulZIxxsOmjqKKLkswinPOcm4zj8+NB++hKjDJGg=
+        b=Fxuuq2sbO0giFVd0GBJkJokAnbaJaV2igQaScZo1mMplTNnnJW5i8IUqBWaxdDqhA
+         bw6YNIBzmbkC2cQlV6CaZjauEjHN//QinWEgRqygsAODJMFUtUe5qGZjDGl5El/Fhk
+         g15SBcQ7OnVbTlnAGpObNW/XG8JQ+Hh7PcWfLy1I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kbuild test robot <lkp@intel.com>,
-        Julia Lawall <julia.lawall@lip6.fr>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 08/95] net: qrtr: Fix passing invalid reference to qrtr_local_enqueue()
+        stable@vger.kernel.org, Johan Jonker <jbx6244@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 050/177] ARM: dts: rockchip: fix pinctrl sub nodename for spi in rk322x.dtsi
 Date:   Mon,  1 Jun 2020 19:53:08 +0200
-Message-Id: <20200601174022.201744015@linuxfoundation.org>
+Message-Id: <20200601174053.210648022@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
-References: <20200601174020.759151073@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,38 +44,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+From: Johan Jonker <jbx6244@gmail.com>
 
-[ Upstream commit d28ea1fbbf437054ef339afec241019f2c4e2bb6 ]
+[ Upstream commit 855bdca1781c79eb661f89c8944c4a719ce720e8 ]
 
-Once the traversal of the list is completed with list_for_each_entry(),
-the iterator (node) will point to an invalid object. So passing this to
-qrtr_local_enqueue() which is outside of the iterator block is erroneous
-eventhough the object is not used.
+A test with the command below gives these errors:
 
-So fix this by passing NULL to qrtr_local_enqueue().
+arch/arm/boot/dts/rk3229-evb.dt.yaml: spi-0:
+'#address-cells' is a required property
+arch/arm/boot/dts/rk3229-evb.dt.yaml: spi-1:
+'#address-cells' is a required property
+arch/arm/boot/dts/rk3229-xms6.dt.yaml: spi-0:
+'#address-cells' is a required property
+arch/arm/boot/dts/rk3229-xms6.dt.yaml: spi-1:
+'#address-cells' is a required property
 
-Fixes: bdabad3e363d ("net: Add Qualcomm IPC router")
-Reported-by: kbuild test robot <lkp@intel.com>
-Reported-by: Julia Lawall <julia.lawall@lip6.fr>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The $nodename pattern for spi nodes is
+"^spi(@.*|-[0-9a-f])*$". To prevent warnings rename
+'spi-0' and 'spi-1' pinctrl sub nodenames to
+'spi0' and 'spi1' in 'rk322x.dtsi'.
+
+make ARCH=arm dtbs_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/spi-controller.yaml
+
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Link: https://lore.kernel.org/r/20200424123923.8192-1-jbx6244@gmail.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/qrtr/qrtr.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/rk322x.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/net/qrtr/qrtr.c
-+++ b/net/qrtr/qrtr.c
-@@ -718,7 +718,7 @@ static int qrtr_bcast_enqueue(struct qrt
- 	}
- 	mutex_unlock(&qrtr_node_lock);
+diff --git a/arch/arm/boot/dts/rk322x.dtsi b/arch/arm/boot/dts/rk322x.dtsi
+index 729119952c68..a83f65486ad4 100644
+--- a/arch/arm/boot/dts/rk322x.dtsi
++++ b/arch/arm/boot/dts/rk322x.dtsi
+@@ -1033,7 +1033,7 @@
+ 			};
+ 		};
  
--	qrtr_local_enqueue(node, skb, type, from, to);
-+	qrtr_local_enqueue(NULL, skb, type, from, to);
+-		spi-0 {
++		spi0 {
+ 			spi0_clk: spi0-clk {
+ 				rockchip,pins = <0 RK_PB1 2 &pcfg_pull_up>;
+ 			};
+@@ -1051,7 +1051,7 @@
+ 			};
+ 		};
  
- 	return 0;
- }
+-		spi-1 {
++		spi1 {
+ 			spi1_clk: spi1-clk {
+ 				rockchip,pins = <0 RK_PC7 2 &pcfg_pull_up>;
+ 			};
+-- 
+2.25.1
+
 
 
