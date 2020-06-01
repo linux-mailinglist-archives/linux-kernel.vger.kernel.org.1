@@ -2,121 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 138A61E9DF1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 08:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BFAE1E9E09
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 08:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727849AbgFAGRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 02:17:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:33578 "EHLO foss.arm.com"
+        id S1725970AbgFAGXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 02:23:20 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:48572 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725778AbgFAGRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 02:17:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C8BA55D;
-        Sun, 31 May 2020 23:17:30 -0700 (PDT)
-Received: from A010555 (A010555.Arm.com [10.169.38.93])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1E4E73F52E;
-        Sun, 31 May 2020 23:17:25 -0700 (PDT)
-References: <1590544271-125795-1-git-send-email-steve.maclean@linux.microsoft.com> <CAP-5=fXGXqkTbSwKv7eq9UkPvVqRJXDm3E-XNxD8+5fmQk3bpg@mail.gmail.com> <MN2PR21MB15185419971A29EF52B8138FF7B10@MN2PR21MB1518.namprd21.prod.outlook.com> <CAP-5=fVHo262Lo_Re31wM8Bt0soJ-m51J7MEnwvdTg5P8J6e6A@mail.gmail.com> <CAP-5=fV7F4u66388HC-q8btOYWKxtb1gTTi4LK_Besb-zE25Rw@mail.gmail.com>
-User-agent: mu4e 1.4.5; emacs 26.3
-From:   Nick Gasson <nick.gasson@arm.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Steve MacLean <Steve.MacLean@microsoft.com>,
-        Steve MacLean <steve.maclean@linux.microsoft.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [EXTERNAL] Re: [PATCH v4] perf inject --jit: Remove //anon mmap events
-In-reply-to: <CAP-5=fV7F4u66388HC-q8btOYWKxtb1gTTi4LK_Besb-zE25Rw@mail.gmail.com>
-Date:   Mon, 01 Jun 2020 14:17:23 +0800
-Message-ID: <xgl9tuzvz4wc.fsf@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1725283AbgFAGXS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 02:23:18 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 57FE22004CA;
+        Mon,  1 Jun 2020 08:23:16 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 90AAA200480;
+        Mon,  1 Jun 2020 08:23:10 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 60F9D40280;
+        Mon,  1 Jun 2020 14:23:03 +0800 (SGT)
+From:   sandor.yu@nxp.com
+To:     a.hajda@samsung.com, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, heiko@sntech.de, hjc@rock-chips.com,
+        Sandor.yu@nxp.com, dkos@cadence.com,
+        dri-devel@lists.freedesktop.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-imx@nxp.com
+Subject: [PATCH 0/7] Initial support for Cadence MHDP(HDMI/DP)
+Date:   Mon,  1 Jun 2020 14:17:30 +0800
+Message-Id: <cover.1590982881.git.Sandor.yu@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/28/20 17:32 PM, Ian Rogers wrote:
->
-> So on tip/perf/core with:
-> 1c0cd2dbb993 perf jvmti: Fix jitdump for methods without debug info
-> 3ce17c1e52f4 perf jvmti: remove redundant jitdump line table entries
->
-> I've been trying variants of:
->
-> Before:
-> /tmp/perf/perf record -k 1 -e cycles:u -o /tmp/perf.data java
-> -agentpath:/tmp/perf/libperf-jvmti.so -XX:+PreserveFramePointer
-> -XX:InitialCodeCacheSize=20M -XX:ReservedCodeCacheSize=1G -jar
-> dacapo-9.12-bach.jar jython
-> /tmp/perf/perf inject -i /tmp/perf.data -o /tmp/perf-jit.data -j
-> /tmp/perf/perf report -i /tmp/perf-jit.data |grep class\ |wc -l
-> 578
-> /tmp/perf/perf report -i /tmp/perf-jit.data |grep unknown |wc -l
-> 6
->
-> After:
-> /tmp/perf/perf record -k 1 -e cycles:u -o /tmp/perf.data java
-> -agentpath:/tmp/perf/libperf-jvmti.so -XX:+PreserveFramePointer
-> -XX:InitialCodeCacheSize=20M -XX:ReservedCodeCacheSize=1G -jar
-> dacapo-9.12-bach.jar jython
-> /tmp/perf/perf inject -i /tmp/perf.data -o /tmp/perf-jit.data -j
-> /tmp/perf/perf report -i /tmp/perf-jit.data |grep class\ |wc -l
-> 589
-> /tmp/perf/perf report -i /tmp/perf-jit.data |grep unknown |wc -l
-> 60
->
-> So maybe the jit cache isn't behaving the way that the patch cures,
-> the uptick in unknowns appears consistent in my testing though. I
-> expect user error, is there an obvious explanation I'm missing?
->
+From: Sandor Yu <Sandor.yu@nxp.com>
 
-Hi Ian,
+The patch set initial support for Cadence MHDP(HDMI/DP) drm bridge
+driver and iMX8MQ HDMI/DP.
 
-I tried this as well with latest perf/core. The difference is that
-unresolved addresses currently look like:
+The first patch drm/rockchip: prepare common code for cdns and rk dpi/dp driver
+is from the link https://patchwork.kernel.org/patch/10788309/
+that still in reviewing.
 
-     0.00%  java             [JIT] tid 221782       [.] 0x0000ffff451499a4
-     0.00%  java             [JIT] tid 221782       [.] 0x0000ffff4514f3e8
-     0.00%  java             [JIT] tid 221782       [.] 0x0000ffff45149394
+Files in drm/bridge/cadence compose with serveral parties,
+drm bridge driver, Audio and API functions.
+ -cdns-dp-core.c: Displayport bridge driver
+ -cdns-hdmi-core.c: HDMI bridge driver 
+ -cdns-mhdp-audio.c: DP/HDMI Audio
+ -cdns-mhdp-common.c: MHDP common API functions
+ -cdns-mhdp-dp.c: MHDP DP API functions
+ -cdns-mhdp-hdmi.c: MHDP HDMI API functions
 
-But after Steve's patch this becomes:
+Sandor Yu (7):
+  drm/rockchip: prepare common code for cdns and rk dpi/dp driver
+  drm: bridge: cadence: Create cadence fold
+  drm: bridge: cadence: initial support for MHDP DP bridge driver
+  drm: imx: mhdp: initial support for i.MX8MQ MHDP Displayport
+  drm: bridge: cadence: Initial support for MHDP HDMI bridge driver
+  drm: imx: mhdp: Initial support for i.MX8MQ MHDP HDMI
+  dt-bindings: display: Document Cadence MHDP HDMI/DP bindings
 
-     0.00%  java             [unknown]              [.] 0x0000ffff58557d14
-     0.00%  java             [unknown]              [.] 0x0000ffff785c03b4
-     0.00%  java             [unknown]              [.] 0x0000ffff58386520
+ .../bindings/display/bridge/cdns,mhdp.yaml    |  46 +
+ .../devicetree/bindings/display/imx/mhdp.yaml |  59 ++
+ drivers/gpu/drm/bridge/Kconfig                |   2 +
+ drivers/gpu/drm/bridge/Makefile               |   1 +
+ drivers/gpu/drm/bridge/cadence/Kconfig        |  15 +
+ drivers/gpu/drm/bridge/cadence/Makefile       |   5 +
+ drivers/gpu/drm/bridge/cadence/cdns-dp-core.c | 530 ++++++++++
+ .../gpu/drm/bridge/cadence/cdns-hdmi-core.c   | 600 +++++++++++
+ .../gpu/drm/bridge/cadence/cdns-mhdp-audio.c  | 298 ++++++
+ .../gpu/drm/bridge/cadence/cdns-mhdp-common.c | 682 +++++++++++++
+ .../gpu/drm/bridge/cadence/cdns-mhdp-common.h |  40 +
+ drivers/gpu/drm/bridge/cadence/cdns-mhdp-dp.c | 206 ++++
+ .../gpu/drm/bridge/cadence/cdns-mhdp-hdmi.c   | 330 ++++++
+ drivers/gpu/drm/imx/Kconfig                   |   1 +
+ drivers/gpu/drm/imx/Makefile                  |   1 +
+ drivers/gpu/drm/imx/mhdp/Kconfig              |   9 +
+ drivers/gpu/drm/imx/mhdp/Makefile             |   4 +
+ drivers/gpu/drm/imx/mhdp/cdns-mhdp-dp-phy.c   | 390 +++++++
+ drivers/gpu/drm/imx/mhdp/cdns-mhdp-hdmi-phy.c | 588 +++++++++++
+ drivers/gpu/drm/imx/mhdp/cdns-mhdp-imxdrv.c   | 142 +++
+ drivers/gpu/drm/imx/mhdp/cdns-mhdp-phy.h      | 148 +++
+ drivers/gpu/drm/rockchip/Kconfig              |   1 +
+ drivers/gpu/drm/rockchip/Makefile             |   2 +-
+ drivers/gpu/drm/rockchip/cdn-dp-core.c        | 247 ++---
+ drivers/gpu/drm/rockchip/cdn-dp-core.h        |  44 +-
+ drivers/gpu/drm/rockchip/cdn-dp-reg.c         | 960 ------------------
+ .../drm/bridge/cdns-mhdp.h                    | 257 ++++-
+ 27 files changed, 4464 insertions(+), 1144 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/cdns,mhdp.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/imx/mhdp.yaml
+ create mode 100644 drivers/gpu/drm/bridge/cadence/Kconfig
+ create mode 100644 drivers/gpu/drm/bridge/cadence/Makefile
+ create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-dp-core.c
+ create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-hdmi-core.c
+ create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp-audio.c
+ create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp-common.c
+ create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp-common.h
+ create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp-dp.c
+ create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp-hdmi.c
+ create mode 100644 drivers/gpu/drm/imx/mhdp/Kconfig
+ create mode 100644 drivers/gpu/drm/imx/mhdp/Makefile
+ create mode 100644 drivers/gpu/drm/imx/mhdp/cdns-mhdp-dp-phy.c
+ create mode 100644 drivers/gpu/drm/imx/mhdp/cdns-mhdp-hdmi-phy.c
+ create mode 100644 drivers/gpu/drm/imx/mhdp/cdns-mhdp-imxdrv.c
+ create mode 100644 drivers/gpu/drm/imx/mhdp/cdns-mhdp-phy.h
+ delete mode 100644 drivers/gpu/drm/rockchip/cdn-dp-reg.c
+ rename drivers/gpu/drm/rockchip/cdn-dp-reg.h => include/drm/bridge/cdns-mhdp.h (64%)
 
-I couldn't see any events that were symbolised before but are no longer
-symbolised after this patch.
-
-I think most of these unknown events are caused by the asynchronous
-nature of the JVMTI event handling. After an nmethod is compiled the
-JVMTI event is posted to the Service Thread (*). So there can be a delay
-between the time the compiled code starts executing and the time the
-plugin receives the compiled code load event.
-
-Here's an edited down example:
-
-            java 215881 750014.947873:    1289634 cycles:u:      ffff7856ad10 [unknown] ([unknown])
-  Service Thread 215895 750014.947971: PERF_RECORD_MMAP2 215879/215895: [0xffff785694c0(0x640) @ 0x40 fd:01 121010091 1]:
-            java 215881 750014.948665:    1295994 cycles:u:      ffff7856ad10 org.python.core.__builtin__.range(org.python
-
-The plugin receives the event ~100us after the first sample inside that
-method. Ideally we would use the timestamp when the method was actually
-compiled, but I can't see any way to extract this information.
-
-However I also saw a few recurring [unknown] addresses that never have a
-corresponding code load event. I'm not sure where these come from.
-
-(*) http://hg.openjdk.java.net/jdk/jdk/file/50fe8727ed79/src/hotspot/share/code/nmethod.cpp#l1591
-
---
-Nick
+-- 
+2.17.1
 
