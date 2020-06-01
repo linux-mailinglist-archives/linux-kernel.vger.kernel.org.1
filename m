@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD171EAA95
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 752BA1EAB3B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730231AbgFASJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:09:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55662 "EHLO mail.kernel.org"
+        id S1730574AbgFASP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:15:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730344AbgFASJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:09:18 -0400
+        id S1730497AbgFASPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:15:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 324832068D;
-        Mon,  1 Jun 2020 18:09:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E6AC82073B;
+        Mon,  1 Jun 2020 18:15:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034957;
-        bh=R7kL94VI8Tkpahhk2BgW3LuYBB5R/iSbsjwnD+sxvLE=;
+        s=default; t=1591035323;
+        bh=SqG4whJ1VEAEkNByq572cqCP5htHqrxHUkMAtyTWFuc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DEykqKR/gkgiHEh3vVfW/JqrXO3JHoxz8b7kYJPOaRS/K6OPJJxTBHM+NUIOwoXtM
-         ap09AoL/jUnEz1Gj/ZtMrm5XQvVDH2nKfPsND6OMfM7xnWu8WVvFxCX+JgZEhVNkN4
-         bwkydKtydGd0WN29aah+Mey/tCFToG7rKqmIENW0=
+        b=ik69irgXtgwVWR89oDnRi2sBTKPY7POU/+qPmGQHKx+TDPkhaaX7Z6LQUcoNKSvJr
+         bbR0HgpFj2xxnBpohlDf/qx1UOsUIS+vw6WwRNFMrnt/LtK6weq7hNhCu3WvOGomd6
+         KEE8pEDINq3f7HDL7CbRgOTi18qZji6k1RiHDSK8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 088/142] ALSA: hda/realtek - Add a model for Thinkpad T570 without DAC workaround
+        stable@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>,
+        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 108/177] ARM: dts: mmp3: Drop usb-nop-xceiv from HSIC phy
 Date:   Mon,  1 Jun 2020 19:54:06 +0200
-Message-Id: <20200601174047.019942891@linuxfoundation.org>
+Message-Id: <20200601174057.607240412@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,121 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Lubomir Rintel <lkundrak@v3.sk>
 
-[ Upstream commit 399c01aa49e548c82d40f8161915a5941dd3c60e ]
+[ Upstream commit 24cf6eef79a7e85cfd2ef9dea52f769c9192fc6e ]
 
-We fixed the regression of the speaker volume for some Thinkpad models
-(e.g. T570) by the commit 54947cd64c1b ("ALSA: hda/realtek - Fix
-speaker output regression on Thinkpad T570").  Essentially it fixes
-the DAC / pin pairing by a static table.  It was confirmed and merged
-to stable kernel later.
+"usb-nop-xceiv" is good enough if we don't lose the configuration done
+by the firmware, but we'd really prefer a real driver.
 
-Now, interestingly, we got another regression report for the very same
-model (T570) about the similar problem, and the commit above was the
-culprit.  That is, by some reason, there are devices that prefer the
-DAC1, and another device DAC2!
+Unfortunately, the PHY core is odd in that when the node is compatible
+with "usb-nop-xceiv", it ignores the other compatible strings. Let's
+just remove it.
 
-Unfortunately those have the same ID and we have no idea what can
-differentiate, in this patch, a new fixup model "tpt470-dock-fix" is
-provided, so that users with such a machine can apply it manually.
-When model=tpt470-dock-fix option is passed to snd-hda-intel module,
-it avoids the fixed DAC pairing and the DAC1 is assigned to the
-speaker like the earlier versions.
-
-Fixes: 54947cd64c1b ("ALSA: hda/realtek - Fix speaker output regression on Thinkpad T570")
-BugLink: https://apibugzilla.suse.com/show_bug.cgi?id=1172017
+Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200526062406.9799-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c | 36 +++++++++++++++++++++++++----------
- 1 file changed, 26 insertions(+), 10 deletions(-)
+ arch/arm/boot/dts/mmp3.dtsi | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index c5bec191e003..743e2dcccb8b 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5484,18 +5484,9 @@ static void alc_fixup_tpt470_dock(struct hda_codec *codec,
- 		{ 0x19, 0x21a11010 }, /* dock mic */
- 		{ }
- 	};
--	/* Assure the speaker pin to be coupled with DAC NID 0x03; otherwise
--	 * the speaker output becomes too low by some reason on Thinkpads with
--	 * ALC298 codec
--	 */
--	static const hda_nid_t preferred_pairs[] = {
--		0x14, 0x03, 0x17, 0x02, 0x21, 0x02,
--		0
--	};
- 	struct alc_spec *spec = codec->spec;
+diff --git a/arch/arm/boot/dts/mmp3.dtsi b/arch/arm/boot/dts/mmp3.dtsi
+index 3e28f0dc9df4..1e25bf998ab5 100644
+--- a/arch/arm/boot/dts/mmp3.dtsi
++++ b/arch/arm/boot/dts/mmp3.dtsi
+@@ -202,8 +202,7 @@
+ 			};
  
- 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
--		spec->gen.preferred_dacs = preferred_pairs;
- 		spec->parse_flags = HDA_PINCFG_NO_HP_FIXUP;
- 		snd_hda_apply_pincfgs(codec, pincfgs);
- 	} else if (action == HDA_FIXUP_ACT_INIT) {
-@@ -5508,6 +5499,23 @@ static void alc_fixup_tpt470_dock(struct hda_codec *codec,
- 	}
- }
+ 			hsic_phy0: hsic-phy@f0001800 {
+-				compatible = "marvell,mmp3-hsic-phy",
+-					     "usb-nop-xceiv";
++				compatible = "marvell,mmp3-hsic-phy";
+ 				reg = <0xf0001800 0x40>;
+ 				#phy-cells = <0>;
+ 				status = "disabled";
+@@ -224,8 +223,7 @@
+ 			};
  
-+static void alc_fixup_tpt470_dacs(struct hda_codec *codec,
-+				  const struct hda_fixup *fix, int action)
-+{
-+	/* Assure the speaker pin to be coupled with DAC NID 0x03; otherwise
-+	 * the speaker output becomes too low by some reason on Thinkpads with
-+	 * ALC298 codec
-+	 */
-+	static const hda_nid_t preferred_pairs[] = {
-+		0x14, 0x03, 0x17, 0x02, 0x21, 0x02,
-+		0
-+	};
-+	struct alc_spec *spec = codec->spec;
-+
-+	if (action == HDA_FIXUP_ACT_PRE_PROBE)
-+		spec->gen.preferred_dacs = preferred_pairs;
-+}
-+
- static void alc_shutup_dell_xps13(struct hda_codec *codec)
- {
- 	struct alc_spec *spec = codec->spec;
-@@ -6063,6 +6071,7 @@ enum {
- 	ALC700_FIXUP_INTEL_REFERENCE,
- 	ALC274_FIXUP_DELL_BIND_DACS,
- 	ALC274_FIXUP_DELL_AIO_LINEOUT_VERB,
-+	ALC298_FIXUP_TPT470_DOCK_FIX,
- 	ALC298_FIXUP_TPT470_DOCK,
- 	ALC255_FIXUP_DUMMY_LINEOUT_VERB,
- 	ALC255_FIXUP_DELL_HEADSET_MIC,
-@@ -6994,12 +7003,18 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC274_FIXUP_DELL_BIND_DACS
- 	},
--	[ALC298_FIXUP_TPT470_DOCK] = {
-+	[ALC298_FIXUP_TPT470_DOCK_FIX] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc_fixup_tpt470_dock,
- 		.chained = true,
- 		.chain_id = ALC293_FIXUP_LENOVO_SPK_NOISE
- 	},
-+	[ALC298_FIXUP_TPT470_DOCK] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_tpt470_dacs,
-+		.chained = true,
-+		.chain_id = ALC298_FIXUP_TPT470_DOCK_FIX
-+	},
- 	[ALC255_FIXUP_DUMMY_LINEOUT_VERB] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = (const struct hda_pintbl[]) {
-@@ -7638,6 +7653,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
- 	{.id = ALC292_FIXUP_TPT440_DOCK, .name = "tpt440-dock"},
- 	{.id = ALC292_FIXUP_TPT440, .name = "tpt440"},
- 	{.id = ALC292_FIXUP_TPT460, .name = "tpt460"},
-+	{.id = ALC298_FIXUP_TPT470_DOCK_FIX, .name = "tpt470-dock-fix"},
- 	{.id = ALC298_FIXUP_TPT470_DOCK, .name = "tpt470-dock"},
- 	{.id = ALC233_FIXUP_LENOVO_MULTI_CODECS, .name = "dual-codecs"},
- 	{.id = ALC700_FIXUP_INTEL_REFERENCE, .name = "alc700-ref"},
+ 			hsic_phy1: hsic-phy@f0002800 {
+-				compatible = "marvell,mmp3-hsic-phy",
+-					     "usb-nop-xceiv";
++				compatible = "marvell,mmp3-hsic-phy";
+ 				reg = <0xf0002800 0x40>;
+ 				#phy-cells = <0>;
+ 				status = "disabled";
 -- 
 2.25.1
 
