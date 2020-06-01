@@ -2,200 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E98CD1EA1FB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 12:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4010C1EA23B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 12:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725974AbgFAKhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 06:37:07 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:44171 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726200AbgFAKhD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 06:37:03 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200601103701euoutp01e8515837620945d212deff817db1aafd~UZS8pU8gw1753017530euoutp01H
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 10:37:01 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200601103701euoutp01e8515837620945d212deff817db1aafd~UZS8pU8gw1753017530euoutp01H
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1591007821;
-        bh=/UMQHqTtHM5ikbtFOx1j0wz3rCuvK7jc3hS7HWS+nGw=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=PSn/8IHcqu3IsJ7YUfJJyej7KsEFkbG/mltjXdz5vefOnn0woatdpo3N8LadrAPm4
-         QdCUW0SxL8YlzYtK6CkNIwN+vohgCm6FxQHO8g8/jXDOwUg/XahydHH6ZN8DJu4J76
-         rNOLhIJUJ4vcUGMmBbvKaBuQtGX9D1xGyWtdDduM=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200601103701eucas1p155db4406e6f64904c8d6e3c0bc42ec32~UZS8VXS9q0313703137eucas1p1F;
-        Mon,  1 Jun 2020 10:37:01 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 5F.70.61286.D4AD4DE5; Mon,  1
-        Jun 2020 11:37:01 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200601103700eucas1p29e06d187f744d086ac2cc3f4b37a8399~UZS79iiX-0485304853eucas1p2q;
-        Mon,  1 Jun 2020 10:37:00 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200601103700eusmtrp1160fd800fdab63e14532ee97e815564c~UZS785TOA1200712007eusmtrp1W;
-        Mon,  1 Jun 2020 10:37:00 +0000 (GMT)
-X-AuditID: cbfec7f2-ef1ff7000001ef66-af-5ed4da4d8437
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 2A.1A.08375.C4AD4DE5; Mon,  1
-        Jun 2020 11:37:00 +0100 (BST)
-Received: from [106.120.51.71] (unknown [106.120.51.71]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200601103700eusmtip1cf1797686670af94334216824ff56af5~UZS7lGa420450104501eusmtip1J;
-        Mon,  1 Jun 2020 10:37:00 +0000 (GMT)
-Subject: Re: [PATCH] video: uvesafb: use true,false for bool variables
-To:     Jason Yan <yanaijie@huawei.com>, Sam Ravnborg <sam@ravnborg.org>
-Cc:     spock@gentoo.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-From:   Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Message-ID: <4b460d82-b23c-f6ce-6593-735a726e4d8a@samsung.com>
-Date:   Mon, 1 Jun 2020 12:37:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
-        Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200422071845.403-1-yanaijie@huawei.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrGKsWRmVeSWpSXmKPExsWy7djP87q+t67EGay/xW1x5et7NosTfR9Y
-        LS7vmsNmseLnVkaLKR+PM1ss2tPJ7MDmcfn7G2aPliNvWT3udx9n8lgy7Sqbx+dNcgGsUVw2
-        Kak5mWWpRfp2CVwZbcteshZ0SFfsnfOIqYHxl2gXIyeHhICJxJ0Z/xm7GLk4hARWMEosO3Ge
-        CSQhJPCFUWLtlWqIxGdGif3nJjPCdEx6cpYdIrGcUeLUuT2sEM5bRokJt5+DtQsLuEnM6/sH
-        1iEi4CJxa+8zsDizQJFE342HrCA2m4CVxMT2VWA1vAJ2Eu1LJ4DFWQRUJO48fQtmiwpESHx6
-        cJgVokZQ4uTMJywgNqeAucTb4x+ZIWaKS9x6Mh9qvrzE9rdzmEEOkhBYxy4xZ8IOdoizXSQa
-        v7cyQ9jCEq+Ob4GKy0icntzDAtXAKPG34wVU93ZGieWT/7FBVFlL3Dn3C8jmAFqhKbF+lz5E
-        2FHi/IHNYGEJAT6JG28FIY7gk5i0bTozRJhXoqNNCKJaTWLDsg1sMGu7dq5knsCoNAvJa7OQ
-        vDMLyTuzEPYuYGRZxSieWlqcm55abJiXWq5XnJhbXJqXrpecn7uJEZh6Tv87/mkH49dLSYcY
-        BTgYlXh4NS5djhNiTSwrrsw9xCjBwawkwut09nScEG9KYmVValF+fFFpTmrxIUZpDhYlcV7j
-        RS9jhQTSE0tSs1NTC1KLYLJMHJxSDYxix3QDtuppcsVyKT3VvMN5c51n0o9AR8Wgg6p536q/
-        V/9b97tySpX8/wWlJdHJWVwqKx9mfDymEL05aY5IiXFuo67PVcFlX67Mb56T69rY5T3nQsNK
-        K59vdbe+m7ibVIi7yXSyMfBH7pdt4p/PzpjxrX3+2lRey6cCU/SeG98/fdU5fz5boRJLcUai
-        oRZzUXEiANKSy9I5AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrGIsWRmVeSWpSXmKPExsVy+t/xu7o+t67EGTxcbmxx5et7NosTfR9Y
-        LS7vmsNmseLnVkaLKR+PM1ss2tPJ7MDmcfn7G2aPliNvWT3udx9n8lgy7Sqbx+dNcgGsUXo2
-        RfmlJakKGfnFJbZK0YYWRnqGlhZ6RiaWeobG5rFWRqZK+nY2Kak5mWWpRfp2CXoZbcteshZ0
-        SFfsnfOIqYHxl2gXIyeHhICJxKQnZ9m7GLk4hASWMko0/N/N2MXIAZSQkTi+vgyiRljiz7Uu
-        NhBbSOA1o8ST54ogtrCAm8S8vn+MILaIgIvErb3PmCDmdDFKvLp3lA1kDrNAkcSjg6ogNWwC
-        VhIT21eB1fMK2Em0L53ACmKzCKhI3Hn6FswWFYiQOLxjFlSNoMTJmU9YQGxOAXOJt8c/MoPY
-        zALqEn/mXYKyxSVuPZnPBGHLS2x/O4d5AqPQLCTts5C0zELSMgtJywJGllWMIqmlxbnpucWG
-        esWJucWleel6yfm5mxiBcbbt2M/NOxgvbQw+xCjAwajEw3vh/OU4IdbEsuLK3EOMEhzMSiK8
-        TmdPxwnxpiRWVqUW5ccXleakFh9iNAV6biKzlGhyPjAF5JXEG5oamltYGpobmxubWSiJ83YI
-        HIwREkhPLEnNTk0tSC2C6WPi4JRqYGxs9XVf0fO/etVeU81I1a7r+kEdL4+nly9cXJZw2SHh
-        r9XGv7J5d0rKgud6TSrUfDhFYsbX1lKv9FP32eVcTW2//jISNv7lcL2c3f4Wq/2+eXNtmus+
-        sDspH/KavPmlTleN+pprLbIi11YZqPy56VxxdWl5Uf+ZuxZ6mztSFZUqxE97RFxMVmIpzkg0
-        1GIuKk4EAJAGurPJAgAA
-X-CMS-MailID: 20200601103700eucas1p29e06d187f744d086ac2cc3f4b37a8399
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200422071952eucas1p219bc9ef0a74220149966ecb03688681c
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200422071952eucas1p219bc9ef0a74220149966ecb03688681c
-References: <CGME20200422071952eucas1p219bc9ef0a74220149966ecb03688681c@eucas1p2.samsung.com>
-        <20200422071845.403-1-yanaijie@huawei.com>
+        id S1727921AbgFAKsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 06:48:10 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:45672 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725886AbgFAKsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 06:48:09 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 5EA832006EC;
+        Mon,  1 Jun 2020 12:48:06 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 612AC2006E5;
+        Mon,  1 Jun 2020 12:48:02 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 4198340280;
+        Mon,  1 Jun 2020 18:47:57 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     robh+dt@kernel.org, linux@rempel-privat.de, peng.fan@nxp.com,
+        jaswinder.singh@linaro.org, hongxing.zhu@nxp.com,
+        aisheng.dong@nxp.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH] dt-bindings: mailbox: Convert imx mu to json-schema
+Date:   Mon,  1 Jun 2020 18:37:44 +0800
+Message-Id: <1591007864-30267-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Convert the i.MX MU binding to DT schema format using json-schema
 
-Hi,
-
-On 4/22/20 9:18 AM, Jason Yan wrote:
-> Fix the following coccicheck warning:
-> 
-> drivers/video/fbdev/uvesafb.c:48:12-17: WARNING: Assignment of 0/1 to
-> bool variable
-> drivers/video/fbdev/uvesafb.c:1827:3-13: WARNING: Assignment of 0/1 to
-> bool variable
-> drivers/video/fbdev/uvesafb.c:1829:3-13: WARNING: Assignment of 0/1 to
-> bool variable
-> drivers/video/fbdev/uvesafb.c:1835:3-9: WARNING: Assignment of 0/1 to
-> bool variable
-> drivers/video/fbdev/uvesafb.c:1837:3-9: WARNING: Assignment of 0/1 to
-> bool variable
-> drivers/video/fbdev/uvesafb.c:1839:3-8: WARNING: Assignment of 0/1 to
-> bool variable
-> 
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
-> ---
->  drivers/video/fbdev/uvesafb.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/video/fbdev/uvesafb.c b/drivers/video/fbdev/uvesafb.c
-> index 1b385cf76110..bee29aadc646 100644
-> --- a/drivers/video/fbdev/uvesafb.c
-> +++ b/drivers/video/fbdev/uvesafb.c
-> @@ -45,7 +45,7 @@ static const struct fb_fix_screeninfo uvesafb_fix = {
->  };
->  
->  static int mtrr		= 3;	/* enable mtrr by default */
-> -static bool blank	= 1;	/* enable blanking by default */
-> +static bool blank	= true;	/* enable blanking by default */
->  static int ypan		= 1;	/* 0: scroll, 1: ypan, 2: ywrap */
->  static bool pmi_setpal	= true; /* use PMI for palette changes */
->  static bool nocrtc;		/* ignore CRTC settings */
-> @@ -1824,19 +1824,19 @@ static int uvesafb_setup(char *options)
->  		else if (!strcmp(this_opt, "ywrap"))
->  			ypan = 2;
->  		else if (!strcmp(this_opt, "vgapal"))
-> -			pmi_setpal = 0;
-> +			pmi_setpal = false;
->  		else if (!strcmp(this_opt, "pmipal"))
-> -			pmi_setpal = 1;
-> +			pmi_setpal = true;
->  		else if (!strncmp(this_opt, "mtrr:", 5))
->  			mtrr = simple_strtoul(this_opt+5, NULL, 0);
->  		else if (!strcmp(this_opt, "nomtrr"))
->  			mtrr = 0;
->  		else if (!strcmp(this_opt, "nocrtc"))
-> -			nocrtc = 1;
-> +			nocrtc = true;
->  		else if (!strcmp(this_opt, "noedid"))
-> -			noedid = 1;
-> +			noedid = true;
->  		else if (!strcmp(this_opt, "noblank"))
-> -			blank = 0;
-> +			blank = true;
-
-The above conversion is incorrect.
-
-The follow-up fix is included below (the original patch has been
-already applied).
-
-Best regards,
---
-Bartlomiej Zolnierkiewicz
-Samsung R&D Institute Poland
-Samsung Electronics
-
-
-From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: [PATCH] video: fbdev: uvesafb: fix "noblank" option handling
-
-Fix the recent regression.
-
-Fixes: dbc7ece12a38 ("video: uvesafb: use true,false for bool variables")
-Cc: Jason Yan <yanaijie@huawei.com>
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Cc: Michal Januszewski <spock@gentoo.org>
-Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 ---
- drivers/video/fbdev/uvesafb.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/mailbox/fsl,mu.txt         | 58 --------------
+ .../devicetree/bindings/mailbox/fsl,mu.yaml        | 89 ++++++++++++++++++++++
+ 2 files changed, 89 insertions(+), 58 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mailbox/fsl,mu.txt
+ create mode 100644 Documentation/devicetree/bindings/mailbox/fsl,mu.yaml
 
-Index: b/drivers/video/fbdev/uvesafb.c
-===================================================================
---- a/drivers/video/fbdev/uvesafb.c
-+++ b/drivers/video/fbdev/uvesafb.c
-@@ -1836,7 +1836,7 @@ static int uvesafb_setup(char *options)
- 		else if (!strcmp(this_opt, "noedid"))
- 			noedid = true;
- 		else if (!strcmp(this_opt, "noblank"))
--			blank = true;
-+			blank = false;
- 		else if (!strncmp(this_opt, "vtotal:", 7))
- 			vram_total = simple_strtoul(this_opt + 7, NULL, 0);
- 		else if (!strncmp(this_opt, "vremap:", 7))
+diff --git a/Documentation/devicetree/bindings/mailbox/fsl,mu.txt b/Documentation/devicetree/bindings/mailbox/fsl,mu.txt
+deleted file mode 100644
+index 26b7a88..0000000
+--- a/Documentation/devicetree/bindings/mailbox/fsl,mu.txt
++++ /dev/null
+@@ -1,58 +0,0 @@
+-NXP i.MX Messaging Unit (MU)
+---------------------------------------------------------------------
+-
+-The Messaging Unit module enables two processors within the SoC to
+-communicate and coordinate by passing messages (e.g. data, status
+-and control) through the MU interface. The MU also provides the ability
+-for one processor to signal the other processor using interrupts.
+-
+-Because the MU manages the messaging between processors, the MU uses
+-different clocks (from each side of the different peripheral buses).
+-Therefore, the MU must synchronize the accesses from one side to the
+-other. The MU accomplishes synchronization using two sets of matching
+-registers (Processor A-facing, Processor B-facing).
+-
+-Messaging Unit Device Node:
+-=============================
+-
+-Required properties:
+--------------------
+-- compatible :	should be "fsl,<chip>-mu", the supported chips include
+-		imx6sx, imx7s, imx8qxp, imx8qm.
+-		The "fsl,imx6sx-mu" compatible is seen as generic and should
+-		be included together with SoC specific compatible.
+-		There is a version 1.0 MU on imx7ulp, use "fsl,imx7ulp-mu"
+-		compatible to support it.
+-		To communicate with i.MX8 SCU, "fsl,imx8-mu-scu" could be
+-		used for fast IPC
+-- reg :		Should contain the registers location and length
+-- interrupts :	Interrupt number. The interrupt specifier format depends
+-		on the interrupt controller parent.
+-- #mbox-cells:  Must be 2.
+-			  <&phandle type channel>
+-			    phandle   : Label name of controller
+-			    type      : Channel type
+-			    channel   : Channel number
+-
+-		This MU support 4 type of unidirectional channels, each type
+-		has 4 channels. A total of 16 channels. Following types are
+-		supported:
+-		0 - TX channel with 32bit transmit register and IRQ transmit
+-		acknowledgment support.
+-		1 - RX channel with 32bit receive register and IRQ support
+-		2 - TX doorbell channel. Without own register and no ACK support.
+-		3 - RX doorbell channel.
+-
+-Optional properties:
+--------------------
+-- clocks :	phandle to the input clock.
+-- fsl,mu-side-b : Should be set for side B MU.
+-
+-Examples:
+---------
+-lsio_mu0: mailbox@5d1b0000 {
+-	compatible = "fsl,imx8qxp-mu", "fsl,imx6sx-mu";
+-	reg = <0x0 0x5d1b0000 0x0 0x10000>;
+-	interrupts = <GIC_SPI 176 IRQ_TYPE_LEVEL_HIGH>;
+-	#mbox-cells = <2>;
+-};
+diff --git a/Documentation/devicetree/bindings/mailbox/fsl,mu.yaml b/Documentation/devicetree/bindings/mailbox/fsl,mu.yaml
+new file mode 100644
+index 0000000..93db996
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mailbox/fsl,mu.yaml
+@@ -0,0 +1,89 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mailbox/fsl,mu.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP i.MX Messaging Unit (MU)
++
++maintainers:
++  - Dong Aisheng <aisheng.dong@nxp.com>
++
++description: |
++  The Messaging Unit module enables two processors within the SoC to
++  communicate and coordinate by passing messages (e.g. data, status
++  and control) through the MU interface. The MU also provides the ability
++  for one processor to signal the other processor using interrupts.
++
++  Because the MU manages the messaging between processors, the MU uses
++  different clocks (from each side of the different peripheral buses).
++  Therefore, the MU must synchronize the accesses from one side to the
++  other. The MU accomplishes synchronization using two sets of matching
++  registers (Processor A-facing, Processor B-facing).
++
++properties:
++  compatible:
++    oneOf:
++      - const: fsl,imx6sx-mu
++      - const: fsl,imx7ulp-mu
++      - const: fsl,imx8-mu-scu
++      - items:
++          - enum:
++            - fsl,imx7s-mu
++            - fsl,imx8mq-mu
++            - fsl,imx8mm-mu
++            - fsl,imx8mn-mu
++            - fsl,imx8mp-mu
++            - fsl,imx8qxp-mu
++          - const: fsl,imx6sx-mu
++      - description: To communicate with i.MX8 SCU with fast IPC
++        items:
++          - const: fsl,imx8qxp-mu
++          - const: fsl,imx8-mu-scu
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  "#mbox-cells":
++    description: |
++      <&phandle type channel>
++      phandle   : Label name of controller
++      type      : Channel type
++      channel   : Channel number
++
++      This MU support 4 type of unidirectional channels, each type
++      has 4 channels. A total of 16 channels. Following types are
++      supported:
++      0 - TX channel with 32bit transmit register and IRQ transmit
++          acknowledgment support.
++      1 - RX channel with 32bit receive register and IRQ support
++      2 - TX doorbell channel. Without own register and no ACK support.
++      3 - RX doorbell channel.
++    const: 2
++
++  clocks:
++    maxItems: 1
++
++  fsl,mu-side-b:
++    description: boolean, if present, means it is for side B MU.
++    type: boolean
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - "#mbox-cells"
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    mailbox@5d1b0000 {
++        compatible = "fsl,imx8qxp-mu", "fsl,imx6sx-mu";
++        reg = <0x0 0x5d1b0000 0x0 0x10000>;
++        interrupts = <GIC_SPI 176 IRQ_TYPE_LEVEL_HIGH>;
++        #mbox-cells = <2>;
++    };
+-- 
+2.7.4
+
