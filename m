@@ -2,41 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79EA61EA953
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EEB21EAB03
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729684AbgFASAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:00:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43044 "EHLO mail.kernel.org"
+        id S1731347AbgFASNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:13:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729058AbgFASAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:00:21 -0400
+        id S1729979AbgFASNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:13:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 803F92074B;
-        Mon,  1 Jun 2020 18:00:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D223F2065C;
+        Mon,  1 Jun 2020 18:13:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034421;
-        bh=v0C1Z9ww9x+pvRa/lCYtmJtx83bS0uWaaBktRdlhRdI=;
+        s=default; t=1591035204;
+        bh=oqZ+NsD3VxSpXbZh521LmVgD1/qZripK/UNHLLtpTDY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aHEaCYMPpkivbTgB8kmKug7PQPF9AMQKGAZM+9gUK2TGxmJtMT9C3D4BmHduYnCE0
-         N6pJtgnOCvEiFk8uBOQn+dW2dzZ4bxulPeNATP7sDfuOHCZFwLlDEnWFbgWI0yV4hU
-         BJhlHQuuRG+E3oLU0TLPpCggQt1awZdysSeEEGck=
+        b=LArHRnFLTKcGwWn2k/QhrvnBkIYL5W24MY6bHz+t80ucuglBYYvA0z4ws++9Z85tA
+         HpyhsnoJIuxfzZ0doQKduc7jcgpGO2ZDmI3jDbcimImKT0+WE0uSJsI0TBwmtPy2mA
+         pfbyDrvziyRUipz7G/5dw6ZEBzwaJDr4sL4NT+xM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kbuild test robot <lkp@intel.com>,
-        Julia Lawall <julia.lawall@lip6.fr>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 09/77] net: qrtr: Fix passing invalid reference to qrtr_local_enqueue()
+        stable@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Brian Starkey <brian.starkey@arm.com>,
+        Laura Abbott <labbott@redhat.com>,
+        "Andrew F. Davis" <afd@ti.com>, linux-kselftest@vger.kernel.org,
+        John Stultz <john.stultz@linaro.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 056/177] kselftests: dmabuf-heaps: Fix confused return value on expected error testing
 Date:   Mon,  1 Jun 2020 19:53:14 +0200
-Message-Id: <20200601174018.099237527@linuxfoundation.org>
+Message-Id: <20200601174053.677670993@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
-References: <20200601174016.396817032@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,38 +50,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+From: John Stultz <john.stultz@linaro.org>
 
-[ Upstream commit d28ea1fbbf437054ef339afec241019f2c4e2bb6 ]
+[ Upstream commit 4bb9d46d47b105a774f9dca642f5271375bca4b2 ]
 
-Once the traversal of the list is completed with list_for_each_entry(),
-the iterator (node) will point to an invalid object. So passing this to
-qrtr_local_enqueue() which is outside of the iterator block is erroneous
-eventhough the object is not used.
+When I added the expected error testing, I forgot I need to set
+the return to zero when we successfully see an error.
 
-So fix this by passing NULL to qrtr_local_enqueue().
+Without this change we only end up testing a single heap
+before the test quits.
 
-Fixes: bdabad3e363d ("net: Add Qualcomm IPC router")
-Reported-by: kbuild test robot <lkp@intel.com>
-Reported-by: Julia Lawall <julia.lawall@lip6.fr>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>
+Cc: Brian Starkey <brian.starkey@arm.com>
+Cc: Laura Abbott <labbott@redhat.com>
+Cc: "Andrew F. Davis" <afd@ti.com>
+Cc: linux-kselftest@vger.kernel.org
+Signed-off-by: John Stultz <john.stultz@linaro.org>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/qrtr/qrtr.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/qrtr/qrtr.c
-+++ b/net/qrtr/qrtr.c
-@@ -660,7 +660,7 @@ static int qrtr_bcast_enqueue(struct qrt
+diff --git a/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c b/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
+index cd5e1f602ac9..909da9cdda97 100644
+--- a/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
++++ b/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
+@@ -351,6 +351,7 @@ static int test_alloc_errors(char *heap_name)
  	}
- 	mutex_unlock(&qrtr_node_lock);
  
--	qrtr_local_enqueue(node, skb);
-+	qrtr_local_enqueue(NULL, skb);
- 
- 	return 0;
- }
+ 	printf("Expected error checking passed\n");
++	ret = 0;
+ out:
+ 	if (dmabuf_fd >= 0)
+ 		close(dmabuf_fd);
+-- 
+2.25.1
+
 
 
