@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1FC1EAB4A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE021EAA4B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731020AbgFASQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:16:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36378 "EHLO mail.kernel.org"
+        id S1730480AbgFASGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:06:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731626AbgFASPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:15:53 -0400
+        id S1730406AbgFASGG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:06:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 478282068D;
-        Mon,  1 Jun 2020 18:15:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 728262077D;
+        Mon,  1 Jun 2020 18:06:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035352;
-        bh=yelJ21b3v0Rc7rYz3Zzu5h2wxtT86ub0XQvVeh7D2zE=;
+        s=default; t=1591034765;
+        bh=vYJ88IOr9lCJ7TOKGhDRbgzmqwaPfFpnB+z7vlTJgaA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1qzNMHLh2yjz48RH6vDpURu5s4riXiev68v+LVzlGM1FgnYaqSwoGDEn+E+tyLUfp
-         ZLEwPUd0Lj/hWfnrMruhHTRSdYwAz66f1NY4JJRka2fOCtr+M1rrYE+AP/7oMPYgxd
-         GyvBX/WAYLWj8ROfQl71R7aHyAjyojV1AeDC4DHM=
+        b=JlvuEwre7XK2S3yVoG5W+6rrduktuIT4XfAERNHDnkUHc6G+0rdqd7SIJEg4BH33h
+         4cR1rgPagGJc12WgxQfksYMuXctPF4soYLPhFNQEsPP3OmKT/2NSGAF4JhnXVroJJu
+         fXfmlpDqNBn3IzEI1sr72PzAv6a7o9AYnJTT2cKc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 120/177] ALSA: hda/realtek - Add new codec supported for ALC287
+        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Subject: [PATCH 4.19 78/95] xfrm: fix a warning in xfrm_policy_insert_list
 Date:   Mon,  1 Jun 2020 19:54:18 +0200
-Message-Id: <20200601174058.592719111@linuxfoundation.org>
+Message-Id: <20200601174032.649451988@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
+References: <20200601174020.759151073@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,51 +44,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kailang Yang <kailang@realtek.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit 630e36126e420e1756378b3427b42711ce0b9ddd ]
+commit ed17b8d377eaf6b4a01d46942b4c647378a79bdd upstream.
 
-Enable new codec supported for ALC287.
+This waring can be triggered simply by:
 
-Signed-off-by: Kailang Yang <kailang@realtek.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/dcf5ce5507104d0589a917cbb71dc3c6@realtek.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  # ip xfrm policy update src 192.168.1.1/24 dst 192.168.1.2/24 dir in \
+    priority 1 mark 0 mask 0x10  #[1]
+  # ip xfrm policy update src 192.168.1.1/24 dst 192.168.1.2/24 dir in \
+    priority 2 mark 0 mask 0x1   #[2]
+  # ip xfrm policy update src 192.168.1.1/24 dst 192.168.1.2/24 dir in \
+    priority 2 mark 0 mask 0x10  #[3]
+
+Then dmesg shows:
+
+  [ ] WARNING: CPU: 1 PID: 7265 at net/xfrm/xfrm_policy.c:1548
+  [ ] RIP: 0010:xfrm_policy_insert_list+0x2f2/0x1030
+  [ ] Call Trace:
+  [ ]  xfrm_policy_inexact_insert+0x85/0xe50
+  [ ]  xfrm_policy_insert+0x4ba/0x680
+  [ ]  xfrm_add_policy+0x246/0x4d0
+  [ ]  xfrm_user_rcv_msg+0x331/0x5c0
+  [ ]  netlink_rcv_skb+0x121/0x350
+  [ ]  xfrm_netlink_rcv+0x66/0x80
+  [ ]  netlink_unicast+0x439/0x630
+  [ ]  netlink_sendmsg+0x714/0xbf0
+  [ ]  sock_sendmsg+0xe2/0x110
+
+The issue was introduced by Commit 7cb8a93968e3 ("xfrm: Allow inserting
+policies with matching mark and different priorities"). After that, the
+policies [1] and [2] would be able to be added with different priorities.
+
+However, policy [3] will actually match both [1] and [2]. Policy [1]
+was matched due to the 1st 'return true' in xfrm_policy_mark_match(),
+and policy [2] was matched due to the 2nd 'return true' in there. It
+caused WARN_ON() in xfrm_policy_insert_list().
+
+This patch is to fix it by only (the same value and priority) as the
+same policy in xfrm_policy_mark_match().
+
+Thanks to Yuehaibing, we could make this fix better.
+
+v1->v2:
+  - check policy->mark.v == pol->mark.v only without mask.
+
+Fixes: 7cb8a93968e3 ("xfrm: Allow inserting policies with matching mark and different priorities")
+Reported-by: Xiumei Mu <xmu@redhat.com>
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- sound/pci/hda/patch_realtek.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/xfrm/xfrm_policy.c |    7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 92c6e58c3862..e62d58872b6e 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -384,6 +384,7 @@ static void alc_fill_eapd_coef(struct hda_codec *codec)
- 	case 0x10ec0282:
- 	case 0x10ec0283:
- 	case 0x10ec0286:
-+	case 0x10ec0287:
- 	case 0x10ec0288:
- 	case 0x10ec0285:
- 	case 0x10ec0298:
-@@ -8292,6 +8293,7 @@ static int patch_alc269(struct hda_codec *codec)
- 	case 0x10ec0215:
- 	case 0x10ec0245:
- 	case 0x10ec0285:
-+	case 0x10ec0287:
- 	case 0x10ec0289:
- 		spec->codec_variant = ALC269_TYPE_ALC215;
- 		spec->shutup = alc225_shutup;
-@@ -9570,6 +9572,7 @@ static const struct hda_device_id snd_hda_id_realtek[] = {
- 	HDA_CODEC_ENTRY(0x10ec0284, "ALC284", patch_alc269),
- 	HDA_CODEC_ENTRY(0x10ec0285, "ALC285", patch_alc269),
- 	HDA_CODEC_ENTRY(0x10ec0286, "ALC286", patch_alc269),
-+	HDA_CODEC_ENTRY(0x10ec0287, "ALC287", patch_alc269),
- 	HDA_CODEC_ENTRY(0x10ec0288, "ALC288", patch_alc269),
- 	HDA_CODEC_ENTRY(0x10ec0289, "ALC289", patch_alc269),
- 	HDA_CODEC_ENTRY(0x10ec0290, "ALC290", patch_alc269),
--- 
-2.25.1
-
+--- a/net/xfrm/xfrm_policy.c
++++ b/net/xfrm/xfrm_policy.c
+@@ -730,12 +730,7 @@ static void xfrm_policy_requeue(struct x
+ static bool xfrm_policy_mark_match(struct xfrm_policy *policy,
+ 				   struct xfrm_policy *pol)
+ {
+-	u32 mark = policy->mark.v & policy->mark.m;
+-
+-	if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
+-		return true;
+-
+-	if ((mark & pol->mark.m) == pol->mark.v &&
++	if (policy->mark.v == pol->mark.v &&
+ 	    policy->priority == pol->priority)
+ 		return true;
+ 
 
 
