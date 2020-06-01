@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C651EAA2D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C01B91EAA37
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729294AbgFASFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:05:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50654 "EHLO mail.kernel.org"
+        id S1730384AbgFASFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:05:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730334AbgFASFa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:05:30 -0400
+        id S1729118AbgFASFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:05:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 591B5206E2;
-        Mon,  1 Jun 2020 18:05:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93F042068D;
+        Mon,  1 Jun 2020 18:05:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034729;
-        bh=Of3fqiecESA3nrJWs136IKqMDHI6y6z4dDM7k8vLphw=;
+        s=default; t=1591034732;
+        bh=yfUCa8pG+oMetMxHeFh42pzFCHPZVmGxtgRQxs1EHs0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c8+/qxxG8Np8MNzzYK/v6jexRgaAwrBG0YNVaDpWhQNeMB0GiJvJ7yqrxhb85dt2M
-         PSHJqxLUvndZfxCorCtEJPenEVm+qVLrIuKEoIZrDPjDTX92QF7aYoP19tpZ4JsPmB
-         5owRrZNNeRgnVjiaMyYcuL3VNNmPXRzCfzUx3ssw=
+        b=I4Wi1ZiobJA2w5l1Xmo3LM+fB/YZzGCc9TA4SWFTWUQJBgCwcwx6LXgHXSoNe7Z6L
+         ln06yjL4uyLg7hffR5adZ8C1H0yGMNjNFn32FN+Xo+ITmAY30sz6J6ETCRRzhrjsBn
+         2ZleE86V4X7FE8b3poglo3iXKH7dCdmlNbdAXecg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Phil Sutter <phil@nwl.cc>,
+        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
         Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 4.19 84/95] netfilter: ipset: Fix subcounter update skip
-Date:   Mon,  1 Jun 2020 19:54:24 +0200
-Message-Id: <20200601174033.274817487@linuxfoundation.org>
+Subject: [PATCH 4.19 85/95] netfilter: nfnetlink_cthelper: unbreak userspace helper support
+Date:   Mon,  1 Jun 2020 19:54:25 +0200
+Message-Id: <20200601174033.436137301@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
 References: <20200601174020.759151073@linuxfoundation.org>
@@ -43,33 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phil Sutter <phil@nwl.cc>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-commit a164b95ad6055c50612795882f35e0efda1f1390 upstream.
+commit 703acd70f2496537457186211c2f03e792409e68 upstream.
 
-If IPSET_FLAG_SKIP_SUBCOUNTER_UPDATE is set, user requested to not
-update counters in sub sets. Therefore IPSET_FLAG_SKIP_COUNTER_UPDATE
-must be set, not unset.
+Restore helper data size initialization and fix memcopy of the helper
+data size.
 
-Fixes: 6e01781d1c80e ("netfilter: ipset: set match: add support to match the counters")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+Fixes: 157ffffeb5dc ("netfilter: nfnetlink_cthelper: reject too large userspace allocation requests")
+Reviewed-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/netfilter/ipset/ip_set_list_set.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/nfnetlink_cthelper.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/netfilter/ipset/ip_set_list_set.c
-+++ b/net/netfilter/ipset/ip_set_list_set.c
-@@ -63,7 +63,7 @@ list_set_ktest(struct ip_set *set, const
- 	/* Don't lookup sub-counters at all */
- 	opt->cmdflags &= ~IPSET_FLAG_MATCH_COUNTERS;
- 	if (opt->cmdflags & IPSET_FLAG_SKIP_SUBCOUNTER_UPDATE)
--		opt->cmdflags &= ~IPSET_FLAG_SKIP_COUNTER_UPDATE;
-+		opt->cmdflags |= IPSET_FLAG_SKIP_COUNTER_UPDATE;
- 	list_for_each_entry_rcu(e, &map->members, list) {
- 		ret = ip_set_test(e->id, skb, par, opt);
- 		if (ret <= 0)
+--- a/net/netfilter/nfnetlink_cthelper.c
++++ b/net/netfilter/nfnetlink_cthelper.c
+@@ -106,7 +106,7 @@ nfnl_cthelper_from_nlattr(struct nlattr
+ 	if (help->helper->data_len == 0)
+ 		return -EINVAL;
+ 
+-	nla_memcpy(help->data, nla_data(attr), sizeof(help->data));
++	nla_memcpy(help->data, attr, sizeof(help->data));
+ 	return 0;
+ }
+ 
+@@ -242,6 +242,7 @@ nfnl_cthelper_create(const struct nlattr
+ 		ret = -ENOMEM;
+ 		goto err2;
+ 	}
++	helper->data_len = size;
+ 
+ 	helper->flags |= NF_CT_HELPER_F_USERSPACE;
+ 	memcpy(&helper->tuple, tuple, sizeof(struct nf_conntrack_tuple));
 
 
