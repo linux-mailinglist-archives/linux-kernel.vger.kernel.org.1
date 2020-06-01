@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D953F1EAD6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9B71EAE67
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730889AbgFASJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:09:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55976 "EHLO mail.kernel.org"
+        id S1728901AbgFASxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:53:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726232AbgFASJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:09:31 -0400
+        id S1728153AbgFASCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:02:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9AE92077D;
-        Mon,  1 Jun 2020 18:09:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8583B2065C;
+        Mon,  1 Jun 2020 18:02:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034971;
-        bh=scSZu/KUv7sOVjSirY3qyCFHznzNz/jQ8jBlk32U8pY=;
+        s=default; t=1591034555;
+        bh=gVlM85lAfJZ6wDZrOwqCY+DymGscbAQxro//HxDRrkY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YBfk8IHyuhLEehRphMlAKPelwRDXjVTwK7WVeF97/Vy0u9w3bN30ouG+7vyZLXRkJ
-         TwZEuYSVsOLFAqUJjqb7TiVBxZj0f+TqH8+QZW6vAAs2f6SpPQjukZXFnybZw1Y3wE
-         q1n1IKOolJQxukEdHpiLBT2vDmY5u1LYphAdFI5o=
+        b=JkFPnGN0Jkv6mui7old0UXfKNNu6nEJSvCeTt07hx/qMyxSR5zrsd5JXGsGuHKREy
+         qpT2QD2GsLdic9U4T4sXWEN7Tx/FRBkbf4zhbgU23QVCcsvF8J/jLFWSIp3ylu/WVn
+         bCyAhFQ6gdEwpFl5DJe4oBsBVqRkhUZ6GMJBd6c4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 093/142] ALSA: hda/realtek - Add new codec supported for ALC287
-Date:   Mon,  1 Jun 2020 19:54:11 +0200
-Message-Id: <20200601174047.602763432@linuxfoundation.org>
+        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Subject: [PATCH 4.14 67/77] esp6: get the right proto for transport mode in esp6_gso_encap
+Date:   Mon,  1 Jun 2020 19:54:12 +0200
+Message-Id: <20200601174027.900174373@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
+References: <20200601174016.396817032@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,51 +43,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kailang Yang <kailang@realtek.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit 630e36126e420e1756378b3427b42711ce0b9ddd ]
+commit 3c96ec56828922e3fe5477f75eb3fc02f98f98b5 upstream.
 
-Enable new codec supported for ALC287.
+For transport mode, when ipv6 nexthdr is set, the packet format might
+be like:
 
-Signed-off-by: Kailang Yang <kailang@realtek.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/dcf5ce5507104d0589a917cbb71dc3c6@realtek.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+    ----------------------------------------------------
+    |        | dest |     |     |      |  ESP    | ESP |
+    | IP6 hdr| opts.| ESP | TCP | Data | Trailer | ICV |
+    ----------------------------------------------------
+
+What it wants to get for x-proto in esp6_gso_encap() is the proto that
+will be set in ESP nexthdr. So it should skip all ipv6 nexthdrs and
+get the real transport protocol. Othersize, the wrong proto number
+will be set into ESP nexthdr.
+
+This patch is to skip all ipv6 nexthdrs by calling ipv6_skip_exthdr()
+in esp6_gso_encap().
+
+Fixes: 7862b4058b9f ("esp: Add gso handlers for esp4 and esp6")
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- sound/pci/hda/patch_realtek.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/ipv6/esp6_offload.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 743e2dcccb8b..da4d21445e80 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -384,6 +384,7 @@ static void alc_fill_eapd_coef(struct hda_codec *codec)
- 	case 0x10ec0282:
- 	case 0x10ec0283:
- 	case 0x10ec0286:
-+	case 0x10ec0287:
- 	case 0x10ec0288:
- 	case 0x10ec0285:
- 	case 0x10ec0298:
-@@ -8321,6 +8322,7 @@ static int patch_alc269(struct hda_codec *codec)
- 	case 0x10ec0215:
- 	case 0x10ec0245:
- 	case 0x10ec0285:
-+	case 0x10ec0287:
- 	case 0x10ec0289:
- 		spec->codec_variant = ALC269_TYPE_ALC215;
- 		spec->shutup = alc225_shutup;
-@@ -9599,6 +9601,7 @@ static const struct hda_device_id snd_hda_id_realtek[] = {
- 	HDA_CODEC_ENTRY(0x10ec0284, "ALC284", patch_alc269),
- 	HDA_CODEC_ENTRY(0x10ec0285, "ALC285", patch_alc269),
- 	HDA_CODEC_ENTRY(0x10ec0286, "ALC286", patch_alc269),
-+	HDA_CODEC_ENTRY(0x10ec0287, "ALC287", patch_alc269),
- 	HDA_CODEC_ENTRY(0x10ec0288, "ALC288", patch_alc269),
- 	HDA_CODEC_ENTRY(0x10ec0289, "ALC289", patch_alc269),
- 	HDA_CODEC_ENTRY(0x10ec0290, "ALC290", patch_alc269),
--- 
-2.25.1
-
+--- a/net/ipv6/esp6_offload.c
++++ b/net/ipv6/esp6_offload.c
+@@ -121,9 +121,16 @@ static void esp6_gso_encap(struct xfrm_s
+ 	struct ip_esp_hdr *esph;
+ 	struct ipv6hdr *iph = ipv6_hdr(skb);
+ 	struct xfrm_offload *xo = xfrm_offload(skb);
+-	int proto = iph->nexthdr;
++	u8 proto = iph->nexthdr;
+ 
+ 	skb_push(skb, -skb_network_offset(skb));
++
++	if (x->outer_mode->encap == XFRM_MODE_TRANSPORT) {
++		__be16 frag;
++
++		ipv6_skip_exthdr(skb, sizeof(struct ipv6hdr), &proto, &frag);
++	}
++
+ 	esph = ip_esp_hdr(skb);
+ 	*skb_mac_header(skb) = IPPROTO_ESP;
+ 
 
 
