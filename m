@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094141EA9EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3111EA963
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730081AbgFASDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:03:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47136 "EHLO mail.kernel.org"
+        id S1729782AbgFASBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:01:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728205AbgFASDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:03:20 -0400
+        id S1729759AbgFASBP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:01:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 274362074B;
-        Mon,  1 Jun 2020 18:03:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0397E206E2;
+        Mon,  1 Jun 2020 18:01:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034599;
-        bh=yO9kSLV/CLczlfa7d6GaWt1Hhi9GOygxQZuKLBBXTPw=;
+        s=default; t=1591034474;
+        bh=CuBTDqU7i9gT/BrbieKiGX7Ca/D8uLOthjeVO9EfLPY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q+7kCeRgXt45aJGcZmGOFPD8Q3XYn+W77qtp5AbAYSh8tyThdjQ4eNq8zXcJhacNb
-         KcaNKQeewQ5t1L+YZAmeYVEq7i0gl/eZP57VjZspJFrwDDW6Q1IRnVhAKvDUOQsQlm
-         /Y/5qfChcvfR2cOE4shZyN08co2x2hXv/GGHm2o0=
+        b=TzvSCgrvLhpGYLMWL4TcgxvQqVcJjfZ7cagvnVT7f/Xvhu1mXF3rD//+i2JLlsdg4
+         JCNBiJnuyAc09pNjFZhMDmwpSrjIUaCK6LdbHL0yU35gLz3Y8juwNth4DHdJ3i46pu
+         xL96iLVrDUgOiZycVza73IxoTbfcxE/H7+icMclQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Oakley <andrew@adoakley.name>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 25/95] ALSA: usb-audio: add mapping for ASRock TRX40 Creator
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        kbuild test robot <lkp@intel.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 20/77] usb: gadget: legacy: fix redundant initialization warnings
 Date:   Mon,  1 Jun 2020 19:53:25 +0200
-Message-Id: <20200601174024.821643213@linuxfoundation.org>
+Message-Id: <20200601174020.054553107@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
-References: <20200601174020.759151073@linuxfoundation.org>
+In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
+References: <20200601174016.396817032@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,58 +46,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Oakley <andrew@adoakley.name>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-[ Upstream commit da7a8f1a8fc3e14c6dcc52b4098bddb8f20390be ]
+[ Upstream commit d13cce757954fa663c69845611957396843ed87a ]
 
-This is another TRX40 based motherboard with ALC1220-VB USB-audio
-that requires a static mapping table.
+Fix the following cppcheck warnings:
 
-This motherboard also has a PCI device which advertises no codecs.  The
-PCI ID is 1022:1487 and PCI SSID is 1022:d102.  As this is using the AMD
-vendor ID, don't blacklist for now in case other boards have a working
-audio device with the same ssid.
+drivers/usb/gadget/legacy/inode.c:1364:8: style: Redundant initialization for 'value'. The initialized value is overwritten$
+ value = -EOPNOTSUPP;
+       ^
+drivers/usb/gadget/legacy/inode.c:1331:15: note: value is initialized
+ int    value = -EOPNOTSUPP;
+              ^
+drivers/usb/gadget/legacy/inode.c:1364:8: note: value is overwritten
+ value = -EOPNOTSUPP;
+       ^
+drivers/usb/gadget/legacy/inode.c:1817:8: style: Redundant initialization for 'value'. The initialized value is overwritten$
+ value = -EINVAL;
+       ^
+drivers/usb/gadget/legacy/inode.c:1787:18: note: value is initialized
+ ssize_t   value = len, length = len;
+                 ^
+drivers/usb/gadget/legacy/inode.c:1817:8: note: value is overwritten
+ value = -EINVAL;
+       ^
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 
-alsa-info.sh report for this board:
-http://alsa-project.org/db/?f=0a742f89066527497b77ce16bca486daccf8a70c
-
-Signed-off-by: Andrew Oakley <andrew@adoakley.name>
-Link: https://lore.kernel.org/r/20200503141639.35519-1-andrew@adoakley.name
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/mixer_maps.c   | 5 +++++
- sound/usb/quirks-table.h | 1 +
- 2 files changed, 6 insertions(+)
+ drivers/usb/gadget/legacy/inode.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
-index 1689e4f242df..d7a8b23b335b 100644
---- a/sound/usb/mixer_maps.c
-+++ b/sound/usb/mixer_maps.c
-@@ -543,6 +543,11 @@ static struct usbmix_ctl_map usbmix_ctl_maps[] = {
- 		.map = trx40_mobo_map,
- 		.connector_map = trx40_mobo_connector_map,
- 	},
-+	{	/* Asrock TRX40 Creator */
-+		.id = USB_ID(0x26ce, 0x0a01),
-+		.map = trx40_mobo_map,
-+		.connector_map = trx40_mobo_connector_map,
-+	},
- 	{ 0 } /* terminator */
- };
+diff --git a/drivers/usb/gadget/legacy/inode.c b/drivers/usb/gadget/legacy/inode.c
+index 5c28bee327e1..e431a8bc3a9d 100644
+--- a/drivers/usb/gadget/legacy/inode.c
++++ b/drivers/usb/gadget/legacy/inode.c
+@@ -1364,7 +1364,6 @@ gadgetfs_setup (struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
  
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 774aeedde071..4f8a2b98e090 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -3412,6 +3412,7 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
- ALC1220_VB_DESKTOP(0x0414, 0xa002), /* Gigabyte TRX40 Aorus Pro WiFi */
- ALC1220_VB_DESKTOP(0x0db0, 0x0d64), /* MSI TRX40 Creator */
- ALC1220_VB_DESKTOP(0x0db0, 0x543d), /* MSI TRX40 */
-+ALC1220_VB_DESKTOP(0x26ce, 0x0a01), /* Asrock TRX40 Creator */
- #undef ALC1220_VB_DESKTOP
+ 	req->buf = dev->rbuf;
+ 	req->context = NULL;
+-	value = -EOPNOTSUPP;
+ 	switch (ctrl->bRequest) {
  
- #undef USB_DEVICE_VENDOR_SPEC
+ 	case USB_REQ_GET_DESCRIPTOR:
+@@ -1788,7 +1787,7 @@ static ssize_t
+ dev_config (struct file *fd, const char __user *buf, size_t len, loff_t *ptr)
+ {
+ 	struct dev_data		*dev = fd->private_data;
+-	ssize_t			value = len, length = len;
++	ssize_t			value, length = len;
+ 	unsigned		total;
+ 	u32			tag;
+ 	char			*kbuf;
 -- 
 2.25.1
 
