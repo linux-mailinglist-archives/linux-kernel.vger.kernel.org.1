@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0AA81EAA4A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBA31EAA9D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729746AbgFASGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:06:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51310 "EHLO mail.kernel.org"
+        id S1730912AbgFASJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:09:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728917AbgFASF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:05:59 -0400
+        id S1729780AbgFASJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:09:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A394B2068D;
-        Mon,  1 Jun 2020 18:05:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 42D9E20878;
+        Mon,  1 Jun 2020 18:09:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034759;
-        bh=ZfqJp4gyR15/mAdUfYhrfTdhy2Q5mz4t1torbO/J/fE=;
+        s=default; t=1591034979;
+        bh=XcJCaocnbcFzg/CZToSt2mcfEKngfheOLdLfr44sCOc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OkVwMu9YTLT+W+exdKNYtUoKJ6Cs/5L2DkV/g6oBsINTpRdRaFrR+SxcFJSMZlRUz
-         fRWi7AiEcAdfFS0BQDgeCUq6J3qIQ5pwy35wG5YF/rvcLhf8l5uHRTFgsegMnKVlHW
-         HQ9ghyGb1Ojcq9hIKANlwOi9qVGaFEOtwCPaUOQU=
+        b=JEmLb8CE+VQGhtQyf4j7Pws76b6Vxo79cVE5iFdub1hrh470vx648bnk4H57wJjYD
+         UcDelFYqXSe/ghi474PTTcXcxkqV7OqnuLmjJaO+NurVPccDyWxkTIvG6XbF/Vbap/
+         iY8eUZIoMK28ly1FIli8YMpb/WHoFSjqwJOkHkCg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Subject: [PATCH 4.19 75/95] xfrm: allow to accept packets with ipv6 NEXTHDR_HOP in xfrm_input
+        stable@vger.kernel.org, Simon Ser <contact@emersion.fr>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 097/142] drm/amd/display: drop cursor position check in atomic test
 Date:   Mon,  1 Jun 2020 19:54:15 +0200
-Message-Id: <20200601174032.371107737@linuxfoundation.org>
+Message-Id: <20200601174048.021929909@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
-References: <20200601174020.759151073@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,45 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Simon Ser <contact@emersion.fr>
 
-commit afcaf61be9d1dbdee5ec186d1dcc67b6b692180f upstream.
+[ Upstream commit f7d5991b92ff824798693ddf231cf814c9d5a88b ]
 
-For beet mode, when it's ipv6 inner address with nexthdrs set,
-the packet format might be:
+get_cursor_position already handles the case where the cursor has
+negative off-screen coordinates by not setting
+dc_cursor_position.enabled.
 
-    ----------------------------------------------------
-    | outer  |     | dest |     |      |  ESP    | ESP |
-    | IP hdr | ESP | opts.| TCP | Data | Trailer | ICV |
-    ----------------------------------------------------
-
-The nexthdr from ESP could be NEXTHDR_HOP(0), so it should
-continue processing the packet when nexthdr returns 0 in
-xfrm_input(). Otherwise, when ipv6 nexthdr is set, the
-packet will be dropped.
-
-I don't see any error cases that nexthdr may return 0. So
-fix it by removing the check for nexthdr == 0.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Simon Ser <contact@emersion.fr>
+Fixes: 626bf90fe03f ("drm/amd/display: add basic atomic check for cursor plane")
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_input.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
---- a/net/xfrm/xfrm_input.c
-+++ b/net/xfrm/xfrm_input.c
-@@ -407,7 +407,7 @@ resume:
- 		dev_put(skb->dev);
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 9f30343262f3..9fd12e108a70 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -6951,13 +6951,6 @@ static int dm_update_plane_state(struct dc *dc,
+ 			return -EINVAL;
+ 		}
  
- 		spin_lock(&x->lock);
--		if (nexthdr <= 0) {
-+		if (nexthdr < 0) {
- 			if (nexthdr == -EBADMSG) {
- 				xfrm_audit_state_icvfail(x, skb,
- 							 x->type->proto);
+-		if (new_plane_state->crtc_x <= -new_acrtc->max_cursor_width ||
+-			new_plane_state->crtc_y <= -new_acrtc->max_cursor_height) {
+-			DRM_DEBUG_ATOMIC("Bad cursor position %d, %d\n",
+-							 new_plane_state->crtc_x, new_plane_state->crtc_y);
+-			return -EINVAL;
+-		}
+-
+ 		return 0;
+ 	}
+ 
+-- 
+2.25.1
+
 
 
