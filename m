@@ -2,115 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE6011EA26D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 13:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3CFA1EA26E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 13:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726094AbgFALJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 07:09:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48246 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725788AbgFALJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 07:09:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id CA4F2AAC7;
-        Mon,  1 Jun 2020 11:09:40 +0000 (UTC)
-Message-ID: <9aea19124817a3d9fa004ec495ea6d1036d2dc8d.camel@suse.de>
-Subject: Re: [PATCH v3 0/2] usb: xhci: Load Raspberry Pi 4 VL805's firmware
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Marek Vasut <marex@denx.de>, mbrugger@suse.com,
-        u-boot@lists.denx.de, bmeng.cn@gmail.com,
-        linux-kernel@vger.kernel.org
-Cc:     sjg@chromium.org, m.szyprowski@samsung.com, s.nawrocki@samsung.com,
-        mark.kettenis@xs4all.nl
-Date:   Mon, 01 Jun 2020 13:09:37 +0200
-In-Reply-To: <bf73b73e-c251-7ac8-c245-a3b3d2be2420@denx.de>
-References: <20200505162607.334-1-nsaenzjulienne@suse.de>
-         <2a8f0190c9d418cee89451c7dc3a227b9d0b5f45.camel@suse.de>
-         <bf73b73e-c251-7ac8-c245-a3b3d2be2420@denx.de>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-Nn5vb/UM3fX7gE/kCMj2"
-User-Agent: Evolution 3.36.2 
+        id S1726149AbgFALKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 07:10:42 -0400
+Received: from sonic312-25.consmr.mail.ir2.yahoo.com ([77.238.178.96]:45673
+        "EHLO sonic312-25.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725972AbgFALKl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 07:10:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1591009839; bh=H3gKHl4RqMwoj7KbFbTKtC1J07KnzNVMHzHGUcEuEkU=; h=Date:From:Reply-To:Subject:References:From:Subject; b=LEyLsdqZu4+XXzj/A9cYPefQMw+uZXERsHyJ08WYBKjAD+QLAgURi9HlpT7TseHZGtohKn1j8J7cu1PH1Q+hFu868/q4nhDGdPbxLFwuTmu5aDv3BGu+zo4fWnUrkJ8RvC8nBy2/6z1yo2r+Opx46m0b7/T1K2X8lMThZ2t91FMB8vra2BcVgXk886dpipRf5PveKRoKa7idqT9UUW9R/b3Mr29DeFoAxQdzoI75EGJXhCvyHPFVJ6X0tcfNYmtGzBVXRiymtGQyA2b6M0DUmqQCNJAalg2mgoXvCjMGMbNdSrSvKK38oFLbV1pTWX9/satbPi0SJkQtnCmPJMuwmg==
+X-YMail-OSG: HJlSgmsVM1m7vDmdqkb8cJ2PHimOJhBWlU1m35wBK5_koad3hnjz4WXqSs1Aqmp
+ Z6JaeVUb6RZfkopUcWEelBSXKJ__kZn39Typ1fFvMyz4JvfjoZk3tTC85msTFnRhqprW_45YhqIB
+ Sk0NaSXeVTowKTe57g9ymqyZLX2pR.qfBrEhpgtWeZuS4tGY9rkAhbO_vCLTsPhx_rX5otKbWRER
+ BOo8wrGpTnmCPVOHIjxGw6vOGwHiehToggyqH0M_JcVoSydLN2C.fEoBjc5Fe9kzWb2HuL3Q5OZC
+ UEeM109c3gnV1qRyyOgmViZPdZesODRoKC3OZkjUIqcWaOUGSRq84dM.JsgYL1WzegGgW0IfWVW3
+ sX8KhmGbe1SUx6kJNKX9z9rRuV32a2v_gAPemrcQLeAcfVuG4aV9OpEzN.R6koTtRJOIdgVDf0kC
+ ihigwHytqhAr4UL.wPX61zR5xoQ8WaJTMVdOGO.zCNLyQDZ85tB20yoqciC_o2YCCSBKEWnBQIzH
+ cv6fJepaOUsW0NUFXCbqdhMDa50XV_BbNzZz_f7gULxrmpplhn3PdI1gbCa_BDE0vcSUlFHPjnlu
+ 2fIEqsI9D2TDL4f27n9UzI86epXtmfCsp5oUmdF5Tz9JBqhhQMKpqAK4ryr7ILMz5OTcbZ49BaLO
+ fR5dCTAkd4TYxh0au80.z5vtWjT6WiuJUxsX3zjaqRfsebXN_OfoQF5DFolw9sqz2Qn8GTgGHTlK
+ ZKdisPUUx0.w_Ai49QDCMi6rh4WLHsE9DNo2xTq1Z3GAPjg5AnoUzmuVRqcY3qbYbXWfFX2qrLDw
+ nvg3HcDk6zE2lerT.XlBrq9ia04CIxHDbDWnXpFDnHuJBdkQMiMVKkfbrlA2fvjlhoL0a5L0c9T5
+ oS2Z60RR7_CdLfn0Vxy4dxGvKajWGXIXfS40lUIMMF0IMkzNDbrxzZTDd73xTuJ_0hBUCx6ir9fT
+ TfvNZUD8yNrGZpHwJNExtvjkzM8YdpZzSglcn_mnW35trQTcJ1GbsxJaJm5BCrqXwrbp5BeSHd28
+ Eu318UxGgBQfXcISIpgeHrxaVqCLcxNJuI4MLwWiW2LvPcoEx3lToiex6KE4ROqKhTv5EOiFMgeW
+ Fz.yk0RokkQfqd2lhCM7Jdpr2VLZCUE9AmMxIosmA_yJxgDiAObuVpfQgaLyFqmuz7_IvSZMrN3J
+ 4DPsmT18_NNJSnsC7qs9ZlUO3zHvIR99nddeqfKW7jdppiRNxYij1fipxtuqqNpxXK2FWEVJD7hd
+ DG7SOS5OO8XeYPSkfJLfpFBvxqiNe1V4z9jpAya5280yAewxLtrUNOsfzxfTyOmgirmOBWj.ZRmg
+ -
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.ir2.yahoo.com with HTTP; Mon, 1 Jun 2020 11:10:39 +0000
+Date:   Mon, 1 Jun 2020 11:10:36 +0000 (UTC)
+From:   farah Yusif <farah.yusif@aol.com>
+Reply-To: farah.yusif@aol.com
+Message-ID: <753488893.1341323.1591009836344@mail.yahoo.com>
+Subject: Nice to meet you
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <753488893.1341323.1591009836344.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16037 YMailNodin Mozilla/5.0 (Windows NT 6.1; ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---=-Nn5vb/UM3fX7gE/kCMj2
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2020-06-01 at 12:53 +0200, Marek Vasut wrote:
-> On 6/1/20 12:47 PM, Nicolas Saenz Julienne wrote:
-> > On Tue, 2020-05-05 at 18:26 +0200, Nicolas Saenz Julienne wrote:
-> > > Newer revisions of the RPi4 need their xHCI chip, VL805, firmware to =
-be
-> > > loaded explicitly. Earlier versions didn't need that as they where us=
-ing
-> > > an EEPROM for that purpose. This series takes care of setting up the
-> > > relevant infrastructure and run the firmware loading routine at the
-> > > right moment.
-> > >=20
-> > > Note that this builds on top of Sylwester Nawrocki's "USB host suppor=
-t
-> > > for Raspberry Pi 4 board" series.
-> > >=20
-> > > ---
-> >=20
-> > Please don't forget about this series. The new 8GB RPi4 contains this H=
-W
-> > design
-> > change and USB will not work without it. See this discussion on the
-> > downstream
-> > kernel github, where other OS/bootloaders are hitting the issue:
-> >=20
-> > https://github.com/raspberrypi/firmware/issues/1402
-> >=20
-> > Otherwise, the Linux version of this is already in linux-next:
-> >=20
-> >=20
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/=
-drivers/usb/host/pci-quirks.c?h=3Dnext-20200529&id=3Dc65822fef4adc0ba40c37a=
-47337376ce75f7a7bc
->=20
-> We're already at 2020.07-rc3 , so unless this is a bugfix (does not look
-> that way), this will have to wait for next release cycle.
+Nice to meet you
 
-Of course. As long as it eventually gets in I'm happy (not implying this
-specific series is flawless, but the overall mechanism). I'm just worried t=
-his
-gets lost.
+With warm heart, I offer my friendship and greetings, I hope this message meet you in good time. However, Mine names are Farah Yusif i am a female of 24 years old. I have sent you mail twice but you never replied any of them , i have been wondering if the messages ever gets to your inbox. I humbly ask that you reply this message, to enable me disclose the reason I have been trying to reach out to you. I do apologize for infringing on your privacy.
 
-> Also, it seems
-> there was a lengthy ongoing discussion, is that already sorted out ?
-
-Well, there was some discussion on how to incorporate the platform specific
-callback into XCHI's code. Which this revision of the series addresses. But=
-,
-IIRC, that's pretty much it as far as discussion is concerned.
-
-Regards,
-Nicolas
-
-
---=-Nn5vb/UM3fX7gE/kCMj2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl7U4fEACgkQlfZmHno8
-x/5GMgf+I/o1/RHDqKU7lDAoEnd3xBVgyQAL8OOTe/VP7gd2qFz6+X2+n4AZEaJc
-F5AAIPX8EQI8xqhrNvVeuHo+BG81++PENDKtd4QUtUmqjSIByY2D4MlCQSAQ//9k
-5RES2GIIjUFED2qEK2RviVXfJE27Zhx0FUzxw+eb0OScHcoihZYcENVKkgLnsc3e
-X9zMyBv7ptEqoL3WOHbHSVtOQbDqYrxLfHDWR+wIBwOMKabzrhy7TFJhuO1Ity9F
-3EO/+b3fXW49obCBXdDVOxRgsMfW685s1s5kOBCC2scd3osoNNSH/damYDkxOhhb
-PZ+SqvTGfeKO9vG813uu4Pt8iajKcg==
-=MLl3
------END PGP SIGNATURE-----
-
---=-Nn5vb/UM3fX7gE/kCMj2--
-
+Greetings from Farah Yusif
