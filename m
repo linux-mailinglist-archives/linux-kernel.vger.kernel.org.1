@@ -2,39 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566F81EAECE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3231EAE3A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729590AbgFAS5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:57:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42748 "EHLO mail.kernel.org"
+        id S1730150AbgFASEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:04:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729348AbgFASAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:00:08 -0400
+        id S1730114AbgFASDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:03:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36DFB206E2;
-        Mon,  1 Jun 2020 18:00:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 778E82145D;
+        Mon,  1 Jun 2020 18:03:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034407;
-        bh=bXhmT5JSgw40BSmqIKK9SDY+7RQrg67+gt0ZvANBrbM=;
+        s=default; t=1591034622;
+        bh=duO5M/CsRuhz+6hecweWxBtOx3P38JpU0WIlPK7/iJ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2HhLVtozkWGhGzMwsU+mbQZeyEZ8pdYgRValmTNq8MgRdEYPPCCis//0ZdhFNQ4Ls
-         UF2JQ3zxLsu4aSeGmfibgR65UUIplsGNFB/n4wfVv1Q+3vNMUtUDeWrgu0FXmEGu+T
-         uBRREWSQjt8oerPqG68Gf9moOzOy1+VMv4ggiBSU=
+        b=RHc/6xHIH+WfopNoAXOuimgqIUYHqj9OT2S7VGcrXfO4LRdXzwwh2XF/JCIN+rCnx
+         xMoNWi4IGfrLCS7OcVUSeLngKhCtLX7mssA0OJl51dpjHaoJku9vt5IKnQ78mKgdDP
+         dL0eMDzW5Aqd/J2KRd+ny+g2yN94X7/eWBEiSIn4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Moshe Shemesh <moshe@mellanox.com>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Subject: [PATCH 4.14 03/77] net/mlx5: Add command entry handling completion
-Date:   Mon,  1 Jun 2020 19:53:08 +0200
-Message-Id: <20200601174017.045494130@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Jiong Wang <jiongwang@huawei.com>,
+        Yuqi Jin <jinyuqi@huawei.com>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>
+Subject: [PATCH 4.19 09/95] net: revert "net: get rid of an signed integer overflow in ip_idents_reserve()"
+Date:   Mon,  1 Jun 2020 19:53:09 +0200
+Message-Id: <20200601174022.341648940@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
-References: <20200601174016.396817032@linuxfoundation.org>
+In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
+References: <20200601174020.759151073@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,96 +52,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Moshe Shemesh <moshe@mellanox.com>
+From: Yuqi Jin <jinyuqi@huawei.com>
 
-[ Upstream commit 17d00e839d3b592da9659c1977d45f85b77f986a ]
+[ Upstream commit a6211caa634da39d861a47437ffcda8b38ef421b ]
 
-When FW response to commands is very slow and all command entries in
-use are waiting for completion we can have a race where commands can get
-timeout before they get out of the queue and handled. Timeout
-completion on uninitialized command will cause releasing command's
-buffers before accessing it for initialization and then we will get NULL
-pointer exception while trying access it. It may also cause releasing
-buffers of another command since we may have timeout completion before
-even allocating entry index for this command.
-Add entry handling completion to avoid this race.
+Commit adb03115f459 ("net: get rid of an signed integer overflow in ip_idents_reserve()")
+used atomic_cmpxchg to replace "atomic_add_return" inside the function
+"ip_idents_reserve". The reason was to avoid UBSAN warning.
+However, this change has caused performance degrade and in GCC-8,
+fno-strict-overflow is now mapped to -fwrapv -fwrapv-pointer
+and signed integer overflow is now undefined by default at all
+optimization levels[1]. Moreover, it was a bug in UBSAN vs -fwrapv
+/-fno-strict-overflow, so Let's revert it safely.
 
-Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
-Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
-Signed-off-by: Eran Ben Elisha <eranbe@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+[1] https://gcc.gnu.org/gcc-8/changes.html
+
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>
+Cc: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Jiri Pirko <jiri@resnulli.us>
+Cc: Arvind Sankar <nivedita@alum.mit.edu>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jiong Wang <jiongwang@huawei.com>
+Signed-off-by: Yuqi Jin <jinyuqi@huawei.com>
+Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/cmd.c |   14 ++++++++++++++
- include/linux/mlx5/driver.h                   |    1 +
- 2 files changed, 15 insertions(+)
+ net/ipv4/route.c |   14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-@@ -804,6 +804,7 @@ static void cmd_work_handler(struct work
- 	int alloc_ret;
- 	int cmd_mode;
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -484,18 +484,16 @@ u32 ip_idents_reserve(u32 hash, int segs
+ 	atomic_t *p_id = ip_idents + hash % IP_IDENTS_SZ;
+ 	u32 old = READ_ONCE(*p_tstamp);
+ 	u32 now = (u32)jiffies;
+-	u32 new, delta = 0;
++	u32 delta = 0;
  
-+	complete(&ent->handling);
- 	sem = ent->page_queue ? &cmd->pages_sem : &cmd->sem;
- 	down(sem);
- 	if (!ent->page_queue) {
-@@ -922,6 +923,11 @@ static int wait_func(struct mlx5_core_de
- 	struct mlx5_cmd *cmd = &dev->cmd;
- 	int err;
+ 	if (old != now && cmpxchg(p_tstamp, old, now) == old)
+ 		delta = prandom_u32_max(now - old);
  
-+	if (!wait_for_completion_timeout(&ent->handling, timeout) &&
-+	    cancel_work_sync(&ent->work)) {
-+		ent->ret = -ECANCELED;
-+		goto out_err;
-+	}
- 	if (cmd->mode == CMD_MODE_POLLING || ent->polling) {
- 		wait_for_completion(&ent->done);
- 	} else if (!wait_for_completion_timeout(&ent->done, timeout)) {
-@@ -929,12 +935,17 @@ static int wait_func(struct mlx5_core_de
- 		mlx5_cmd_comp_handler(dev, 1UL << ent->idx, true);
- 	}
+-	/* Do not use atomic_add_return() as it makes UBSAN unhappy */
+-	do {
+-		old = (u32)atomic_read(p_id);
+-		new = old + delta + segs;
+-	} while (atomic_cmpxchg(p_id, old, new) != old);
+-
+-	return new - segs;
++	/* If UBSAN reports an error there, please make sure your compiler
++	 * supports -fno-strict-overflow before reporting it that was a bug
++	 * in UBSAN, and it has been fixed in GCC-8.
++	 */
++	return atomic_add_return(segs + delta, p_id) - segs;
+ }
+ EXPORT_SYMBOL(ip_idents_reserve);
  
-+out_err:
- 	err = ent->ret;
- 
- 	if (err == -ETIMEDOUT) {
- 		mlx5_core_warn(dev, "%s(0x%x) timeout. Will cause a leak of a command resource\n",
- 			       mlx5_command_str(msg_to_opcode(ent->in)),
- 			       msg_to_opcode(ent->in));
-+	} else if (err == -ECANCELED) {
-+		mlx5_core_warn(dev, "%s(0x%x) canceled on out of queue timeout.\n",
-+			       mlx5_command_str(msg_to_opcode(ent->in)),
-+			       msg_to_opcode(ent->in));
- 	}
- 	mlx5_core_dbg(dev, "err %d, delivery status %s(%d)\n",
- 		      err, deliv_status_to_str(ent->status), ent->status);
-@@ -970,6 +981,7 @@ static int mlx5_cmd_invoke(struct mlx5_c
- 	ent->token = token;
- 	ent->polling = force_polling;
- 
-+	init_completion(&ent->handling);
- 	if (!callback)
- 		init_completion(&ent->done);
- 
-@@ -989,6 +1001,8 @@ static int mlx5_cmd_invoke(struct mlx5_c
- 	err = wait_func(dev, ent);
- 	if (err == -ETIMEDOUT)
- 		goto out;
-+	if (err == -ECANCELED)
-+		goto out_free;
- 
- 	ds = ent->ts2 - ent->ts1;
- 	op = MLX5_GET(mbox_in, in->first.data, opcode);
---- a/include/linux/mlx5/driver.h
-+++ b/include/linux/mlx5/driver.h
-@@ -841,6 +841,7 @@ struct mlx5_cmd_work_ent {
- 	struct delayed_work	cb_timeout_work;
- 	void		       *context;
- 	int			idx;
-+	struct completion	handling;
- 	struct completion	done;
- 	struct mlx5_cmd        *cmd;
- 	struct work_struct	work;
 
 
