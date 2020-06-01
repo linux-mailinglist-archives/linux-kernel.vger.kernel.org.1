@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 418AB1EAAA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F471EA928
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730406AbgFASKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:10:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56486 "EHLO mail.kernel.org"
+        id S1728382AbgFAR6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:58:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730945AbgFASJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:09:56 -0400
+        id S1728576AbgFAR6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:58:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CBEC720872;
-        Mon,  1 Jun 2020 18:09:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F6012077D;
+        Mon,  1 Jun 2020 17:58:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034995;
-        bh=eh0C+0x9mVrpmssuTcn3nRjVa4S+T2umUEJ6R35Nwt4=;
+        s=default; t=1591034315;
+        bh=DqGTROlF+JGpGO0Wg0primTgD15YHMdxdYCdxQV2pJ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TkRS+VKrcq54r6POyT5IfRVcLUIbe8apYsMs5Y0GDRNn2dYYRObAYWa9VVZpwo8je
-         70IlTjH/cz80PsPlw/quJGZJQO3BsGaLxqwZT38aZf5U/yK1OL37Cs+atZnIG4zIxC
-         FwmeMorbQ5h9P2fSEGFmqhjrUMsALqPaPDf3+FS0=
+        b=cqRh9O3CuenJpyhKn+trjPEQ0g5lHnDdSkjkPBgyTnJN957Vv5OGc+AaC99QyBm9n
+         lwMikcozlTQXRqLMmKFrLPGfi5zuCUDbjIs4vxE+CCTBawPoNkGBGw4Zsh8nfVIQty
+         3vfijYppkCPPdIJ6uF6h6Zd2anQjLI4Qa6vqhons=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mathieu Maret <mathieu.maret@gmail.com>,
-        Brendan Shanks <bshanks@codeweavers.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Jerry Lee <leisurelysw24@gmail.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 065/142] Input: evdev - call input_flush_device() on release(), not flush()
-Date:   Mon,  1 Jun 2020 19:53:43 +0200
-Message-Id: <20200601174044.622686044@linuxfoundation.org>
+Subject: [PATCH 4.9 37/61] libceph: ignore pool overlay and cache logic on redirects
+Date:   Mon,  1 Jun 2020 19:53:44 +0200
+Message-Id: <20200601174018.662057915@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
+References: <20200601174010.316778377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,73 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brendan Shanks <bshanks@codeweavers.com>
+From: Jerry Lee <leisurelysw24@gmail.com>
 
-[ Upstream commit 09264098ff153f60866039d60b31d39b66f55a31 ]
+[ Upstream commit 890bd0f8997ae6ac0a367dd5146154a3963306dd ]
 
-input_flush_device() should only be called once the struct file is being
-released and no open descriptors remain, but evdev_flush() was calling
-it whenever a file descriptor was closed.
+OSD client should ignore cache/overlay flag if got redirect reply.
+Otherwise, the client hangs when the cache tier is in forward mode.
 
-This caused uploaded force-feedback effects to be erased when a process
-did a dup()/close() on the event FD, called system(), etc.
+[ idryomov: Redirects are effectively deprecated and no longer
+  used or tested.  The original tiering modes based on redirects
+  are inherently flawed because redirects can race and reorder,
+  potentially resulting in data corruption.  The new proxy and
+  readproxy tiering modes should be used instead of forward and
+  readforward.  Still marking for stable as obviously correct,
+  though. ]
 
-Call input_flush_device() from evdev_release() instead.
-
-Reported-by: Mathieu Maret <mathieu.maret@gmail.com>
-Signed-off-by: Brendan Shanks <bshanks@codeweavers.com>
-Link: https://lore.kernel.org/r/20200421231003.7935-1-bshanks@codeweavers.com
 Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+URL: https://tracker.ceph.com/issues/23296
+URL: https://tracker.ceph.com/issues/36406
+Signed-off-by: Jerry Lee <leisurelysw24@gmail.com>
+Reviewed-by: Ilya Dryomov <idryomov@gmail.com>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/evdev.c | 19 ++++---------------
- 1 file changed, 4 insertions(+), 15 deletions(-)
+ net/ceph/osd_client.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/input/evdev.c b/drivers/input/evdev.c
-index cb6e3a5f509c..0d57e51b8ba1 100644
---- a/drivers/input/evdev.c
-+++ b/drivers/input/evdev.c
-@@ -326,20 +326,6 @@ static int evdev_fasync(int fd, struct file *file, int on)
- 	return fasync_helper(fd, file, on, &client->fasync);
- }
- 
--static int evdev_flush(struct file *file, fl_owner_t id)
--{
--	struct evdev_client *client = file->private_data;
--	struct evdev *evdev = client->evdev;
--
--	mutex_lock(&evdev->mutex);
--
--	if (evdev->exist && !client->revoked)
--		input_flush_device(&evdev->handle, file);
--
--	mutex_unlock(&evdev->mutex);
--	return 0;
--}
--
- static void evdev_free(struct device *dev)
- {
- 	struct evdev *evdev = container_of(dev, struct evdev, dev);
-@@ -453,6 +439,10 @@ static int evdev_release(struct inode *inode, struct file *file)
- 	unsigned int i;
- 
- 	mutex_lock(&evdev->mutex);
-+
-+	if (evdev->exist && !client->revoked)
-+		input_flush_device(&evdev->handle, file);
-+
- 	evdev_ungrab(evdev, client);
- 	mutex_unlock(&evdev->mutex);
- 
-@@ -1310,7 +1300,6 @@ static const struct file_operations evdev_fops = {
- 	.compat_ioctl	= evdev_ioctl_compat,
- #endif
- 	.fasync		= evdev_fasync,
--	.flush		= evdev_flush,
- 	.llseek		= no_llseek,
- };
- 
+diff --git a/net/ceph/osd_client.c b/net/ceph/osd_client.c
+index 70ccb0716fc5..4fd679b30b19 100644
+--- a/net/ceph/osd_client.c
++++ b/net/ceph/osd_client.c
+@@ -2879,7 +2879,9 @@ static void handle_reply(struct ceph_osd *osd, struct ceph_msg *msg)
+ 		 * supported.
+ 		 */
+ 		req->r_t.target_oloc.pool = m.redirect.oloc.pool;
+-		req->r_flags |= CEPH_OSD_FLAG_REDIRECTED;
++		req->r_flags |= CEPH_OSD_FLAG_REDIRECTED |
++				CEPH_OSD_FLAG_IGNORE_OVERLAY |
++				CEPH_OSD_FLAG_IGNORE_CACHE;
+ 		req->r_tid = 0;
+ 		__submit_request(req, false);
+ 		goto out_unlock_osdc;
 -- 
 2.25.1
 
