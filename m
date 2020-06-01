@@ -2,134 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1ABE1E9E4D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 08:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 325BA1E9E60
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 08:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726778AbgFAGdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 02:33:00 -0400
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:30111 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgFAGc7 (ORCPT
+        id S1727808AbgFAGkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 02:40:49 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:51824 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727769AbgFAGks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 02:32:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1590993180; x=1622529180;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=guoAwMs0t+w5Tvr10uAVLqast3VNGue3oJY/iT+cRMM=;
-  b=h2lKVu80oMHv4n7bw8KwrJG128duNTnmHbHkHIniA3YZBqU+8LHbfYNS
-   3v6RK43vJKaK6kI9eDVnuQlSTzoO6uHadon/ETy3DteGKZbt/6lQhFEkD
-   vGdGzmQAM/FjY0SK++MxZ3Q7u6sS2vbSODVqKvTc/pjlOJwyVG1VdqW1m
-   XLY0HVijGCxU7dJ1i3VZVhLnRycgzCWdVX945kthqH9QvSce0OR5Imx+A
-   nK5MvXaZLpV8W9ALWXI8m1JQptGIB0JpnAIB/vV5sJFKrENd9wcc0CfyG
-   +R46jeBvwUtA4OOXl1XCTXXuUeQb/uvFiCIeANmwZ0T06WklUP6YBG0EI
-   A==;
-IronPort-SDR: Ofv5p26C5ikpoJTeZKpbS7Rfh22Zfr6guErnNg7oW9mN8eqDWxRs5Q8xBjsx/I1UcsXSrIvZDC
- /yjzfsAEMdDE0dotzYrkUNJVkx5mNJtMiaPU1RtLGQJT7Zd+u+LCMQw5ionJwZDu8vFDKYGe2U
- lRy1L/2aVb2sXCLGFAp50xPYEZdNcScd6il36P0gkS9sRWuLzkvEhvS8CHd/jXxh0keLF4PlnP
- +d0PXj9b2PE/zFerGSx5gzw1pujeAVn6U5zvHd7qL5tVLpG44788VzvicrC9LtxPqtN1Kn6kDy
- KUs=
-X-IronPort-AV: E=Sophos;i="5.73,459,1583218800"; 
-   d="scan'208";a="77715081"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 31 May 2020 23:32:59 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sun, 31 May 2020 23:32:58 -0700
-Received: from NAM04-SN1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Sun, 31 May 2020 23:32:58 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SW/LvjvvuB0HtTgbzr45lteiTu+O4hjWsUsAHa2h1fZVbvFd0HuG+gyQNJezLmaFbgftzJ5A6BrD3ggT6LurSnpq2nCSy+9sH3cr7hxN7pf+Yh/JAkH/Zhjvi/KS6BALg5fXrn2OAlFDcGiJ7zdAuaXE+QlXm4DYmGmOpT1mTctMlav80+r7G6PAwhvA+vXFogfiCFWxYC3pHBRh3ZfDBDPa9nOdGa9jjDbDtoFbVTaQcD6DrySFIldTJ/vWjDbdt4ykYqnD7StYNaWy2zIKLn0tqg3bScZMUelzbXLXoD6Rfxkooc1HDNg+2p6pFJjRO+4TiWYC2huL44iS5omcPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=034Y0sOXeM50/TwbWIBqmTzcKBKr+MfhMUB6zCanFwk=;
- b=abz02A88Sz7hl1yeJy1KYzE2F4hMnbFS5KY2YE2BlRJG16iCDZNeE6fXkcdBpxD+rzKSDBdLJjy35bZ2mWP6+RV9yb5shkKw5n9cQQ8bTp95d5rn6i6WPBeh7Zt7UQs3PpEqI2wXMTi3mA4Ms84VEZ+1f24rPt4Og00C8OCyfRSkBfjX/YGZSSs9VbIB6zCnbivu/CVB56SQ8GH9ZXoiDsrrZQWrHHLi60dww/gRY+i1ZbZ84cHj9MlcFfjoew1Cgsv5d6LYZaiDXD5nfjcOGdEKDZMmRsZ1TebSij1HpClCtOG4nQDYmr4i0TGQsn6eIFdUnmM3qzga3k5DJAvP2g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=034Y0sOXeM50/TwbWIBqmTzcKBKr+MfhMUB6zCanFwk=;
- b=RaCBeqP6WKDXoN+JyUNJ3jRCPZKB8KP+VYOgSLVvYI5ZXrvPIsALFtOmgOHFpEDLT11OElIosKjXywgwWMhEWr36PC2hhV5b315p1+pD33ggI2HisuvLtpupyyMgZ59gfNRoi/6gZM45Lw4Er+HIX96iabj4ueMrloLhuVguZpg=
-Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
- by BY5PR11MB4482.namprd11.prod.outlook.com (2603:10b6:a03:1ca::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.22; Mon, 1 Jun
- 2020 06:32:57 +0000
-Received: from BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.3045.022; Mon, 1 Jun 2020
- 06:32:57 +0000
-From:   <Tudor.Ambarus@microchip.com>
-To:     <vigneshr@ti.com>
-CC:     <broonie@kernel.org>, <bbrezillon@kernel.org>,
-        <vadivel.muruganx.ramuthevar@linux.intel.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <simon.k.r.goldschmidt@gmail.com>,
-        <dinguyen@kernel.org>, <marex@denx.de>
-Subject: Re: [PATCH v3 6/8] mtd: spi-nor: cadence-quadspi: Drop redundant WREN
- in erase path
-Thread-Topic: [PATCH v3 6/8] mtd: spi-nor: cadence-quadspi: Drop redundant
- WREN in erase path
-Thread-Index: AQHWN9hM5WpDI+1VPEm3aMfh5OsD3KjDTUcA
-Date:   Mon, 1 Jun 2020 06:32:57 +0000
-Message-ID: <132637749.oe9tJpQIbN@192.168.0.120>
-References: <20200601054725.2060-1-vigneshr@ti.com>
- <20200601054725.2060-7-vigneshr@ti.com>
-In-Reply-To: <20200601054725.2060-7-vigneshr@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [94.177.32.156]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 85afb1e5-ab68-4f7e-3a43-08d805f59f63
-x-ms-traffictypediagnostic: BY5PR11MB4482:
-x-microsoft-antispam-prvs: <BY5PR11MB44820296895FADEA713F2C9AF08A0@BY5PR11MB4482.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:568;
-x-forefront-prvs: 0421BF7135
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AHH75T4UCeOfjy03vnTTCKlCMp6NFz1tiZ1NQxQPSFVzbjKlUIPiPLVseSktYK+zrSRYGzELR/8IcYbJnipIRcPouLNieQiP1MDBkxSCKD1jHpRK5AViPidHADEx8YWtuFIratA7PNf1pKilgy7mbyvnYYXVduw8Dekc8jLc7goDYig4OBHon3/48x2Ueqn8RVDMLFnDJ10NFkZrABvG4PUxhJDX3KCnPTR5YS5LJch/j8je0TNvPTt8oI5XfzEd8SczkYGtRIGdOMG25NI89x0jElL9fcLaMnzmteDYzaCCL0VliQ4Pe3TmPmE5u8CIY21iTMR/la6nE/z49/PlCX/X5qs+vuzsvRY6tBPggz57xtDpSvqiO0SgR4BGXhGp
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4419.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(366004)(396003)(346002)(136003)(39860400002)(66446008)(64756008)(66476007)(66556008)(66946007)(86362001)(6512007)(5660300002)(6486002)(9686003)(186003)(4326008)(14286002)(91956017)(316002)(478600001)(76116006)(54906003)(6916009)(4744005)(8676002)(83380400001)(8936002)(26005)(2906002)(6506007)(7416002)(71200400001)(53546011)(39026012);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: M3D4xOdLDhWJiybhNyCkzuHmCFfOdpTyJDmarVDCkPE8/jR3QhRUI6SKUmQdGoclwXgs/64IoXbyT4/vov8zgEZctWFey5Y3yeYfmSeOOFMktSzOi02lfHFgg8jFvjY6GNeHINmStrpsew2B6+sKudiGtYhJ2NJU0Yd5CYNT3CFEN3pzti9QW1JjjSDSTRNWbV/NkjhZiVkSRJDot/0mqbmLgzuUsl48t84SxJtonpy8RwUNDSfYUFwV5fWgvDIUTfIJEaatzSmWqCBBQdQ3m5+xzBO0luX0nAMPTHbPlrMnm6HMpMUDH3Rmh+G1X1LXEdFsEI6qaPHJI8J4EqMTaljMl8pdAipJl9aCzGVObFGSC4Z2IfkQAUGpzEcGFVhb/+83yeCvYJGveEFcZQHzDmSpw+8/RVAZgEP3zPVj3vW/WWsXps3pLeFPLVP1yHqpd7gHcRenTBzdUVUUCVDaIWdbqFDHFaQmaCbMRyXB/VE=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <BAD3164096CD034686935C47F1361CB4@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Mon, 1 Jun 2020 02:40:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590993648; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=YtJ2S+9psNBeqGeDytjznv3JiSw14UxOHqXehmhxIMk=;
+ b=OQhLRlEw5mPOge9KxjuMMD7pAu07X7B76QnjNDB/NArZl8Bfr/6/QL74Qil9XDGwrFtWCXqt
+ bUVppyoGODHQLU62iRDIZmFMwe9nmkyrpqerQD69KawvLyBv1a57iwSGWc6oEgSgtN95pnoj
+ EtSqH+Ryq451rASAMEZaNr2rfys=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5ed4a2aecb0458693399d804 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Jun 2020 06:39:42
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 65138C43391; Mon,  1 Jun 2020 06:39:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C6FEEC433C6;
+        Mon,  1 Jun 2020 06:39:40 +0000 (UTC)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85afb1e5-ab68-4f7e-3a43-08d805f59f63
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jun 2020 06:32:57.0632
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: irYGBKQsmNrqUdcLGEGqWxj5ltiXz942U88SLU526Ism9BHPcnStHHM12nESqqEMMGWSaxqScglcdhWKktiFYOuxOeoVPFW/++IHNiCPZaU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4482
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 01 Jun 2020 12:09:40 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     sboyd@kernel.org, georgi.djakov@linaro.org, nm@ti.com,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, saravanak@google.com, mka@chromium.org,
+        smasetty@codeaurora.org, linux-arm-msm-owner@vger.kernel.org,
+        linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH] OPP: Check for bandwidth values before creating icc paths
+In-Reply-To: <20200601040742.3a4cmhrwgh2ueksy@vireshk-i7>
+References: <20200527192418.20169-1-sibis@codeaurora.org>
+ <20200529052031.n2nvzxdsifwmthfv@vireshk-i7>
+ <0205034b0ece173a7152a43b016985a7@codeaurora.org>
+ <20200601040742.3a4cmhrwgh2ueksy@vireshk-i7>
+Message-ID: <ee51e55bdf518832e4ecb2faf98c6b58@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, June 1, 2020 8:47:23 AM EEST Vignesh Raghavendra wrote:
-> Drop redundant WREN command in cqspi_erase() as SPI NOR core takes care
-> of sending WREN command before sending erase command.
->=20
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> ---
->  drivers/mtd/spi-nor/controllers/cadence-quadspi.c | 5 -----
->  1 file changed, 5 deletions(-)
+On 2020-06-01 09:37, Viresh Kumar wrote:
+> On 29-05-20, 19:47, Sibi Sankar wrote:
+>> opp_np needs to be subjected
+>> to NULL check as well.
+> 
+> No, it isn't. It should already be valid and is set by the OPP core.
+> Actually we don't need to do of_node_get(opp_table->np) and just use
+> np, I did that to not have a special case while putting the resource.
+> 
 
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+I should have phrased it differently.
+opp_np needs to be checked to deal
+with cases where devices don't have
+"operating-points-v2" associated with
+it.
 
+diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+index a5d87ca0ab571..06976d14e6ccb 100644
+--- a/drivers/opp/of.c
++++ b/drivers/opp/of.c
+@@ -344,14 +344,14 @@ static int _bandwidth_supported(struct device 
+*dev, struct opp_table *opp_table)
+
+                 opp_np = _opp_of_get_opp_desc_node(np, 0);
+                 of_node_put(np);
+-
+-               /* Lets not fail in case we are parsing opp-v1 bindings 
+*/
+-               if (!opp_np)
+-                       return 0;
+         } else {
+                 opp_np = of_node_get(opp_table->np);
+         }
+
++       /* Lets not fail in case we are parsing opp-v1 bindings */
++       if (!opp_np)
++               return 0;
++
+
+sdhci_msm 7c4000.sdhci: OPP table empty
+sdhci_msm 7c4000.sdhci: _allocate_opp_table: Error finding interconnect 
+paths: -22
+
+I see the following errors without
+the check.
+
+
+>> Tested-by: Sibi Sankar <sibis@codeaurora.org>
+>> Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
+> 
+> Thanks.
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
