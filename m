@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFEE1EAE3C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C4C1EAEE1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728923AbgFASv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:51:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49240 "EHLO mail.kernel.org"
+        id S1730867AbgFAS5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:57:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729735AbgFASEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:04:31 -0400
+        id S1728965AbgFAR7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:59:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04DF7206E2;
-        Mon,  1 Jun 2020 18:04:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D69002074B;
+        Mon,  1 Jun 2020 17:59:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034671;
-        bh=G//XOzUJ0Xz0SRGApteYh963dc2gtUMjNDCmrwGsjoU=;
+        s=default; t=1591034378;
+        bh=cYxn46v7Fp+VUDknXWc2HELPE8i0Sn7JqZLgXwySOm0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JwjQqk0oeyp08+gQYndAiAYF+0RJKeMZk9FrEE7p0lNTZ7toIY5IDHuU15U+QNmIH
-         iUdjQJkMurbUuf2bBDgZTtKU9Xfy368maKNGLCrtdvoLuoQoMsHzsZXGC0h6B8n+Y5
-         xKwcW1ivr5wiBaU7zhPcb8p0LAPIHRnyO4rqNV8E=
+        b=YZ2YOW9HS9aBnRFt6I2ow0P6KavStr1Er+zBDKv3MXJFw6HYbIsNnHVDZIaw1mEhd
+         EqQvHhEwmEKTfMRhy1kL5/4u1IW+tX7NnCaDe3lOwAL4Mc+gA4SBxtBhcfwcIarDgg
+         TfQYklJBMfBTkCwTHb2AYg/+7f0bmoYpq2QcSjsA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Changming Liu <liu.changm@northeastern.edu>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 57/95] ALSA: hwdep: fix a left shifting 1 by 31 UB bug
+        stable@vger.kernel.org, Michael Braun <michael-dev@fami-braun.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 4.9 50/61] netfilter: nft_reject_bridge: enable reject with bridge vlan
 Date:   Mon,  1 Jun 2020 19:53:57 +0200
-Message-Id: <20200601174030.222878432@linuxfoundation.org>
+Message-Id: <20200601174020.710706353@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
-References: <20200601174020.759151073@linuxfoundation.org>
+In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
+References: <20200601174010.316778377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changming Liu <liu.changm@northeastern.edu>
+From: Michael Braun <michael-dev@fami-braun.de>
 
-[ Upstream commit fb8cd6481ffd126f35e9e146a0dcf0c4e8899f2e ]
+commit e9c284ec4b41c827f4369973d2792992849e4fa5 upstream.
 
-The "info.index" variable can be 31 in "1 << info.index".
-This might trigger an undefined behavior since 1 is signed.
+Currently, using the bridge reject target with tagged packets
+results in untagged packets being sent back.
 
-Fix this by casting 1 to 1u just to be sure "1u << 31" is defined.
+Fix this by mirroring the vlan id as well.
 
-Signed-off-by: Changming Liu <liu.changm@northeastern.edu>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/BL0PR06MB4548170B842CB055C9AF695DE5B00@BL0PR06MB4548.namprd06.prod.outlook.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 85f5b3086a04 ("netfilter: bridge: add reject support")
+Signed-off-by: Michael Braun <michael-dev@fami-braun.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- sound/core/hwdep.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/bridge/netfilter/nft_reject_bridge.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/core/hwdep.c b/sound/core/hwdep.c
-index 26e71cf05f1e..600ab2eb1b50 100644
---- a/sound/core/hwdep.c
-+++ b/sound/core/hwdep.c
-@@ -231,12 +231,12 @@ static int snd_hwdep_dsp_load(struct snd_hwdep *hw,
- 	if (info.index >= 32)
- 		return -EINVAL;
- 	/* check whether the dsp was already loaded */
--	if (hw->dsp_loaded & (1 << info.index))
-+	if (hw->dsp_loaded & (1u << info.index))
- 		return -EBUSY;
- 	err = hw->ops.dsp_load(hw, &info);
- 	if (err < 0)
- 		return err;
--	hw->dsp_loaded |= (1 << info.index);
-+	hw->dsp_loaded |= (1u << info.index);
- 	return 0;
+--- a/net/bridge/netfilter/nft_reject_bridge.c
++++ b/net/bridge/netfilter/nft_reject_bridge.c
+@@ -34,6 +34,12 @@ static void nft_reject_br_push_etherhdr(
+ 	ether_addr_copy(eth->h_dest, eth_hdr(oldskb)->h_source);
+ 	eth->h_proto = eth_hdr(oldskb)->h_proto;
+ 	skb_pull(nskb, ETH_HLEN);
++
++	if (skb_vlan_tag_present(oldskb)) {
++		u16 vid = skb_vlan_tag_get(oldskb);
++
++		__vlan_hwaccel_put_tag(nskb, oldskb->vlan_proto, vid);
++	}
  }
  
--- 
-2.25.1
-
+ static int nft_bridge_iphdr_validate(struct sk_buff *skb)
 
 
