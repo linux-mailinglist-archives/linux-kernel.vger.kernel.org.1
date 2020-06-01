@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAEE1EACD3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1152F1EAEB6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729966AbgFASkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:40:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60964 "EHLO mail.kernel.org"
+        id S1728918AbgFASAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:00:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729378AbgFASNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:13:18 -0400
+        id S1729606AbgFASAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:00:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3A86920776;
-        Mon,  1 Jun 2020 18:13:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B7CF3206E2;
+        Mon,  1 Jun 2020 18:00:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035197;
-        bh=d07kKZJF85G6WmyNuDRY5D8ZQiahqedqqafcMO5l6EY=;
+        s=default; t=1591034414;
+        bh=lEs7O1rZBUCuzb/jSCMrxt3jnkduhVK1kGNYfbO8NQY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tdneYINCpIz2/Wdha7RnF/rO8KxUS93NuakYbV7xSa4T9xVIMCa9h66OeEtZcf2yj
-         I3nC8woCJKpS+1B5GrR1nvzWNQ9LPmOTX3AkiplD91AHkWFz6NikJSRUW3U17bXmV6
-         gJH3zK3lFwN69QlFYpxjxKZf7DVILABt8McHsFII=
+        b=ayWs9azZVJejB2X7ASSvKqHHR2dpB3V2buTe7Rg3IL7400lNB2sk/DluBAebi6Rsx
+         JKDJL34oOBWjsAHK3VOThjayHX1RZqkApuvbarDf426zp+4LjLzlO0D2nyOIrw8jdD
+         2n5+kf1j8yNOysaMZKtzPXSEa9cUGORZfyUJxgmA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 053/177] ARM: dts: omap4-droid4: Fix flakey wlan by disabling internal pull for gpio
+        stable@vger.kernel.org, Marc Payne <marc.payne@mdpsys.co.uk>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 06/77] r8152: support additional Microsoft Surface Ethernet Adapter variant
 Date:   Mon,  1 Jun 2020 19:53:11 +0200
-Message-Id: <20200601174053.463124568@linuxfoundation.org>
+Message-Id: <20200601174017.556921943@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
+References: <20200601174016.396817032@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,79 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Marc Payne <marc.payne@mdpsys.co.uk>
 
-[ Upstream commit 30fa60c678eaa27b8f2a531920d77f7184658f73 ]
+[ Upstream commit c27a204383616efba5a4194075e90819961ff66a ]
 
-The wlan on droid4 is flakey on some devices, and experiments have shown this
-gets fixed if we disable the internal pull for wlan gpio interrupt line.
+Device id 0927 is the RTL8153B-based component of the 'Surface USB-C to
+Ethernet and USB Adapter' and may be used as a component of other devices
+in future. Tested and working with the r8152 driver.
 
-The symptoms are that the wlan connection is very slow and almost useless
-with lots of wlcore firmware reboot warnings in the dmesg.
+Update the cdc_ether blacklist due to the RTL8153 'network jam on suspend'
+issue which this device will cause (personally confirmed).
 
-In addition to configuring the wlan gpio pulls, let's also configure the rest
-of the wlan sd pins. We have not configured those eariler as we're booting
-using kexec.
-
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Marc Payne <marc.payne@mdpsys.co.uk>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- .../boot/dts/motorola-mapphone-common.dtsi    | 33 +++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ drivers/net/usb/cdc_ether.c |   11 +++++++++--
+ drivers/net/usb/r8152.c     |    1 +
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/motorola-mapphone-common.dtsi b/arch/arm/boot/dts/motorola-mapphone-common.dtsi
-index 9067e0ef4240..01ea9a1e2c86 100644
---- a/arch/arm/boot/dts/motorola-mapphone-common.dtsi
-+++ b/arch/arm/boot/dts/motorola-mapphone-common.dtsi
-@@ -367,6 +367,8 @@
- };
+--- a/drivers/net/usb/cdc_ether.c
++++ b/drivers/net/usb/cdc_ether.c
+@@ -821,14 +821,21 @@ static const struct usb_device_id	produc
+ 	.driver_info = 0,
+ },
  
- &mmc3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mmc3_pins>;
- 	vmmc-supply = <&wl12xx_vmmc>;
- 	/* uart2_tx.sdmmc3_dat1 pad as wakeirq */
- 	interrupts-extended = <&wakeupgen GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH
-@@ -472,6 +474,37 @@
- 		>;
- 	};
+-/* Microsoft Surface 3 dock (based on Realtek RTL8153) */
++/* Microsoft Surface Ethernet Adapter (based on Realtek RTL8153) */
+ {
+ 	USB_DEVICE_AND_INTERFACE_INFO(MICROSOFT_VENDOR_ID, 0x07c6, USB_CLASS_COMM,
+ 			USB_CDC_SUBCLASS_ETHERNET, USB_CDC_PROTO_NONE),
+ 	.driver_info = 0,
+ },
  
-+	/*
-+	 * Android uses PIN_OFF_INPUT_PULLDOWN | PIN_INPUT_PULLUP | MUX_MODE3
-+	 * for gpio_100, but the internal pull makes wlan flakey on some
-+	 * devices. Off mode value should be tested if we have off mode working
-+	 * later on.
-+	 */
-+	mmc3_pins: pinmux_mmc3_pins {
-+		pinctrl-single,pins = <
-+		/* 0x4a10008e gpmc_wait2.gpio_100 d23 */
-+		OMAP4_IOPAD(0x08e, PIN_INPUT | MUX_MODE3)
+-	/* TP-LINK UE300 USB 3.0 Ethernet Adapters (based on Realtek RTL8153) */
++/* Microsoft Surface Ethernet Adapter (based on Realtek RTL8153B) */
++{
++	USB_DEVICE_AND_INTERFACE_INFO(MICROSOFT_VENDOR_ID, 0x0927, USB_CLASS_COMM,
++			USB_CDC_SUBCLASS_ETHERNET, USB_CDC_PROTO_NONE),
++	.driver_info = 0,
++},
 +
-+		/* 0x4a100102 abe_mcbsp1_dx.sdmmc3_dat2 ab25 */
-+		OMAP4_IOPAD(0x102, PIN_INPUT_PULLUP | MUX_MODE1)
-+
-+		/* 0x4a100104 abe_mcbsp1_fsx.sdmmc3_dat3 ac27 */
-+		OMAP4_IOPAD(0x104, PIN_INPUT_PULLUP | MUX_MODE1)
-+
-+		/* 0x4a100118 uart2_cts.sdmmc3_clk ab26 */
-+		OMAP4_IOPAD(0x118, PIN_INPUT | MUX_MODE1)
-+
-+		/* 0x4a10011a uart2_rts.sdmmc3_cmd ab27 */
-+		OMAP4_IOPAD(0x11a, PIN_INPUT_PULLUP | MUX_MODE1)
-+
-+		/* 0x4a10011c uart2_rx.sdmmc3_dat0 aa25 */
-+		OMAP4_IOPAD(0x11c, PIN_INPUT_PULLUP | MUX_MODE1)
-+
-+		/* 0x4a10011e uart2_tx.sdmmc3_dat1 aa26 */
-+		OMAP4_IOPAD(0x11e, PIN_INPUT_PULLUP | MUX_MODE1)
-+		>;
-+	};
-+
- 	/* gpmc_ncs0.gpio_50 */
- 	poweroff_gpio: pinmux_poweroff_pins {
- 		pinctrl-single,pins = <
--- 
-2.25.1
-
++/* TP-LINK UE300 USB 3.0 Ethernet Adapters (based on Realtek RTL8153) */
+ {
+ 	USB_DEVICE_AND_INTERFACE_INFO(TPLINK_VENDOR_ID, 0x0601, USB_CLASS_COMM,
+ 			USB_CDC_SUBCLASS_ETHERNET, USB_CDC_PROTO_NONE),
+--- a/drivers/net/usb/r8152.c
++++ b/drivers/net/usb/r8152.c
+@@ -5329,6 +5329,7 @@ static const struct usb_device_id rtl815
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_REALTEK, 0x8153)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_MICROSOFT, 0x07ab)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_MICROSOFT, 0x07c6)},
++	{REALTEK_USB_DEVICE(VENDOR_ID_MICROSOFT, 0x0927)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_SAMSUNG, 0xa101)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_LENOVO,  0x304f)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_LENOVO,  0x3062)},
 
 
