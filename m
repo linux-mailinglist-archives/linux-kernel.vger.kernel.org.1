@@ -2,142 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1E31E9B7C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 03:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1AB1E9B61
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 03:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727056AbgFABvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 21:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726555AbgFABvp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 21:51:45 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA63FC061A0E
-        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 18:51:44 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id t8so4228865pju.3
-        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 18:51:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=9dXvtk/r9WWB0K0puzQusMZ/JsqoKiWxqlF1sGJrjWc=;
-        b=pP05YEqIkQxAyG4vYCDW80FpHLOizHA6onXy4Gwo4itfkUonGPoNe26IGRJawn+vDB
-         6xm/XLtQIvd+VQShZDf/Lv3ABN0+/LsR6M7s+H96gvXg+EBop8epLWjtsuYq46KvOk6n
-         0QAYtfeNxq8zpoHHI7TeM6HMKXRoigU3xvB/McCFShyraP6f0r1ISOFaKqh0YNZGtdjZ
-         wZczeBqxjU0vErzv+Iy4JsQ6XPGHLgIBBCvsRaezOCahPeBHGKTOcN05q8++ARzlZQb0
-         TTj9wruO2IrFSTpw5CM/mz1LXI0BqFCN0aI6is75wz/0plhkA6m5LDVZG0hXUAIt518h
-         bmMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=9dXvtk/r9WWB0K0puzQusMZ/JsqoKiWxqlF1sGJrjWc=;
-        b=X7aT3y9XU85OKLYbF/Ot/2T1BEn0juLg6fJV/p/K527OuBJDqiKcQM3jyiP0gE068P
-         t8jm3qv9iWjgAZ3/DuX8YWxZk+i/i5fJoiVefYOMV9Ivrz2tAnqUA/Vlp9dmoirb1cuz
-         +vIX4+v9XprUE45rI7L5Ck2PEnYiad8cG3WO5xFrXTh9vafcQN0kAIPOQcdQDg2RKfaJ
-         fj9sA0UphkJhxvI/gD/YsyHfmhHyjCsU1VKBUzH2J1fghyUUQZWDfJG3nls/gEowsETL
-         FPstQ+kRErsxTmE+7n+4TszvZ2dxOZ6hGqJNLA68tY+W62CGG9jDzZkMLHef9RKabuEO
-         PfEA==
-X-Gm-Message-State: AOAM532JTxuCVRkba5Ecig+MkVq4kaUpiV8tRMxoZOwTQ+d8i4nikP/A
-        TD83Ilt4cnGWIRdZLt63AMhATQ==
-X-Google-Smtp-Source: ABdhPJyKdBvCLHLO/yUYp1MwzbdySIcglCWzDBtFYs8Uw6OMa2V55Q7KwEVOfGOGHmAQaeQTvnAfvg==
-X-Received: by 2002:a17:902:e903:: with SMTP id k3mr17628008pld.317.1590976303529;
-        Sun, 31 May 2020 18:51:43 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:1d33:1e7d:661b:bcd4? ([2601:646:c200:1ef2:1d33:1e7d:661b:bcd4])
-        by smtp.gmail.com with ESMTPSA id q28sm12946145pfg.180.2020.05.31.18.51.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 May 2020 18:51:42 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH RFC] seccomp: Implement syscall isolation based on memory areas
-Date:   Sun, 31 May 2020 18:51:40 -0700
-Message-Id: <53C0BD81-A942-4BB3-8538-D5107E84C5CD@amacapital.net>
-References: <8DF2868F-E756-4B33-A7AE-C61F4AB9ABB9@codeweavers.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, Paul Gofman <gofmanp@gmail.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@collabora.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Zebediah Figura <zfigura@codeweavers.com>
-In-Reply-To: <8DF2868F-E756-4B33-A7AE-C61F4AB9ABB9@codeweavers.com>
-To:     Brendan Shanks <bshanks@codeweavers.com>
-X-Mailer: iPhone Mail (17E262)
+        id S1727808AbgFABm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 21:42:29 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:51878 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726555AbgFABm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 May 2020 21:42:29 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id BD284578D53846DD7C27;
+        Mon,  1 Jun 2020 09:42:26 +0800 (CST)
+Received: from localhost.localdomain (10.175.118.36) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 1 Jun 2020 09:42:18 +0800
+From:   Luo bin <luobin9@huawei.com>
+To:     <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <luoxianjun@huawei.com>, <luobin9@huawei.com>,
+        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>
+Subject: [PATCH net-next v4] hinic: add set_channels ethtool_ops support
+Date:   Mon, 1 Jun 2020 09:42:06 +0000
+Message-ID: <20200601094206.20785-1-luobin9@huawei.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.118.36]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+add support to change TX/RX queue number with ethtool -L ethx combined
 
+Signed-off-by: Luo bin <luobin9@huawei.com>
+---
+ .../net/ethernet/huawei/hinic/hinic_ethtool.c | 40 +++++++++++++++----
+ .../net/ethernet/huawei/hinic/hinic_main.c    |  2 +-
+ drivers/net/ethernet/huawei/hinic/hinic_tx.c  |  5 +++
+ 3 files changed, 38 insertions(+), 9 deletions(-)
 
-> On May 31, 2020, at 4:50 PM, Brendan Shanks <bshanks@codeweavers.com> wrot=
-e:
->=20
-> =EF=BB=BF
->> On May 31, 2020, at 11:57 AM, Andy Lutomirski <luto@kernel.org> wrote:
->>=20
->> Using SECCOMP_RET_USER_NOTIF is likely to be considerably more
->> expensive than my scheme.  On a non-PTI system, my approach will add a
->> few tens of ns to each syscall.  On a PTI system, it will be worse.
->> But using any kind of notifier for all syscalls will cause a context
->> switch to a different user program for each syscall, and that will be
->> much slower.
->=20
-> There=E2=80=99s also no way (at least to my understanding) to modify regis=
-ter state from SECCOMP_RET_USER_NOTIF, which is how the existing -staging SI=
-GSYS handler works:
->=20
-> <https://github.com/wine-staging/wine-staging/blob/master/patches/ntdll-Sy=
-scall_Emulation/0001-ntdll-Support-x86_64-syscall-emulation.patch#L62>
->=20
->> I think that the implementation may well want to live in seccomp, but
->> doing this as a seccomp filter isn't quite right.  It's not a security
->> thing -- it's an emulation thing.  Seccomp is all about making
->> inescapable sandboxes, but that's not what you're doing at all, and
->> the fact that seccomp filters are preserved across execve() sounds
->> like it'll be annoying for you.
->=20
-> Definitely. Regardless of what approach is taken, we don=E2=80=99t want it=
- to persist across execve.
->=20
->> What if there was a special filter type that ran a BPF program on each
->> syscall, and the program was allowed to access user memory to make its
->> decisions, e.g. to look at some list of memory addresses.  But this
->> would explicitly *not* be a security feature -- execve() would remove
->> the filter, and the filter's outcome would be one of redirecting
->> execution or allowing the syscall.  If the "allow" outcome occurs,
->> then regular seccomp filters run.  Obviously the exact semantics here
->> would need some care.
->=20
-> Although if that=E2=80=99s running a BPF filter on every syscall, wouldn=E2=
-=80=99t it also incur the ~10% overhead that Paul and Gabriel have seen with=
- existing seccomp?
->=20
->=20
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
+index ace18d258049..efb02e03e7da 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
+@@ -619,14 +619,37 @@ static void hinic_get_channels(struct net_device *netdev,
+ 	struct hinic_dev *nic_dev = netdev_priv(netdev);
+ 	struct hinic_hwdev *hwdev = nic_dev->hwdev;
+ 
+-	channels->max_rx = hwdev->nic_cap.max_qps;
+-	channels->max_tx = hwdev->nic_cap.max_qps;
+-	channels->max_other = 0;
+-	channels->max_combined = 0;
+-	channels->rx_count = hinic_hwdev_num_qps(hwdev);
+-	channels->tx_count = hinic_hwdev_num_qps(hwdev);
+-	channels->other_count = 0;
+-	channels->combined_count = 0;
++	channels->max_combined = nic_dev->max_qps;
++	channels->combined_count = hinic_hwdev_num_qps(hwdev);
++}
++
++static int hinic_set_channels(struct net_device *netdev,
++			      struct ethtool_channels *channels)
++{
++	struct hinic_dev *nic_dev = netdev_priv(netdev);
++	unsigned int count = channels->combined_count;
++	int err;
++
++	netif_info(nic_dev, drv, netdev, "Set max combined queue number from %d to %d\n",
++		   hinic_hwdev_num_qps(nic_dev->hwdev), count);
++
++	if (netif_running(netdev)) {
++		netif_info(nic_dev, drv, netdev, "Restarting netdev\n");
++		hinic_close(netdev);
++
++		nic_dev->hwdev->nic_cap.num_qps = count;
++
++		err = hinic_open(netdev);
++		if (err) {
++			netif_err(nic_dev, drv, netdev,
++				  "Failed to open netdev\n");
++			return -EFAULT;
++		}
++	} else {
++		nic_dev->hwdev->nic_cap.num_qps = count;
++	}
++
++	return 0;
+ }
+ 
+ static int hinic_get_rss_hash_opts(struct hinic_dev *nic_dev,
+@@ -1219,6 +1242,7 @@ static const struct ethtool_ops hinic_ethtool_ops = {
+ 	.get_ringparam = hinic_get_ringparam,
+ 	.set_ringparam = hinic_set_ringparam,
+ 	.get_channels = hinic_get_channels,
++	.set_channels = hinic_set_channels,
+ 	.get_rxnfc = hinic_get_rxnfc,
+ 	.set_rxnfc = hinic_set_rxnfc,
+ 	.get_rxfh_key_size = hinic_get_rxfh_key_size,
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_main.c b/drivers/net/ethernet/huawei/hinic/hinic_main.c
+index c8ab129a7ae8..e9e6f4c9309a 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_main.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_main.c
+@@ -326,7 +326,6 @@ static void hinic_enable_rss(struct hinic_dev *nic_dev)
+ 	int i, node, err = 0;
+ 	u16 num_cpus = 0;
+ 
+-	nic_dev->max_qps = hinic_hwdev_max_num_qps(hwdev);
+ 	if (nic_dev->max_qps <= 1) {
+ 		nic_dev->flags &= ~HINIC_RSS_ENABLE;
+ 		nic_dev->rss_limit = nic_dev->max_qps;
+@@ -1031,6 +1030,7 @@ static int nic_dev_init(struct pci_dev *pdev)
+ 	nic_dev->rq_depth = HINIC_RQ_DEPTH;
+ 	nic_dev->sriov_info.hwdev = hwdev;
+ 	nic_dev->sriov_info.pdev = pdev;
++	nic_dev->max_qps = num_qps;
+ 
+ 	sema_init(&nic_dev->mgmt_lock, 1);
+ 
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_tx.c b/drivers/net/ethernet/huawei/hinic/hinic_tx.c
+index 4c66a0bc1b28..6da761d7a6ef 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_tx.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_tx.c
+@@ -470,6 +470,11 @@ netdev_tx_t hinic_xmit_frame(struct sk_buff *skb, struct net_device *netdev)
+ 	struct hinic_txq *txq;
+ 	struct hinic_qp *qp;
+ 
++	if (unlikely(!netif_carrier_ok(netdev))) {
++		dev_kfree_skb_any(skb);
++		return NETDEV_TX_OK;
++	}
++
+ 	txq = &nic_dev->txqs[q_id];
+ 	qp = container_of(txq->sq, struct hinic_qp, sq);
+ 
+-- 
+2.17.1
 
-Unlikely. Some benchmarking is needed, but the seccomp ptrace overhead is li=
-kely *huge* compared to the overhead of just a filter.
-
-As wild guess numbers on made up modern hardware, cache hot:
-
-Empty syscall: 50ns, or 300ns with PTI
-
-Empty syscall accepted by simple seccomp filter: 10ns more than an empty sys=
-call without seccomp
-
-Seccomp ptrace round trip: 6 us  Worse with PTI
-
-Seccomp user notif round trip: 4 us
-
-Syscall hypothetically redirected back to same process: about the same as an=
- empty filtered accepted syscall, plus however long it takes to run the hand=
-ler. Add 900ns if using SIGSYS instead of plain redirection. Add an extra 50=
-0ns on current kernels because signal delivery sucks, but I can fix this.
-
-Take these numbers with a huge grain of salt.  But the point is that the BPF=
- part is the least of your worries.=
