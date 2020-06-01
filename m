@@ -2,39 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7111EA9D7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25DC51EA944
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729970AbgFASCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:02:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45854 "EHLO mail.kernel.org"
+        id S1729552AbgFAR7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:59:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729053AbgFASCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:02:40 -0400
+        id S1729316AbgFAR7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:59:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 09A542065C;
-        Mon,  1 Jun 2020 18:02:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 500502074B;
+        Mon,  1 Jun 2020 17:59:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034559;
-        bh=X/+DY4Lx5dQmu+HjNKoBEhFQXVgclPibyLNP+u5Ksn0=;
+        s=default; t=1591034355;
+        bh=UZ0b/1dhfSmKu3YbKGmGF2l4TWOhPsCnIdcMrqj1pyo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BMYZBhRIzcp0KEdyXb24m/ePHUiERAPMvtJcNR4gF/DRyvw8fr2G0cST+2tIlCQlD
-         JtOG60AJTrGR7G1coHAohCa2qZlh9rJOAYpmDuS5baUVBn/q5o1TLsNTotaMIsSAQ5
-         8KR2R4Vt4XDqK/PapoRp7crcS+VuXtKfpQ/+T1Cw=
+        b=N9XVgkZ5ClvIIlXJTxFjNJPeasvm0k/e1aUTY1zhAM19ywV23QVNhi2h6YIlu4ezH
+         nuwB8Rh8fwTou4yy/9kFKZVwQYky3ddVuVOtGe0hxQQdevD/PNX+NXAAVGELNzVXVO
+         j8nbDihXxgkM4n60vspD8HTAmiOGZK+GnYJDCIbo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Subject: [PATCH 4.14 59/77] xfrm: fix a NULL-ptr deref in xfrm_local_error
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Song Liu <songliubraving@fb.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Song Liu <liu.song.a23@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Mike Travis <mike.travis@hpe.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.9 57/61] genirq/generic_pending: Do not lose pending affinity update
 Date:   Mon,  1 Jun 2020 19:54:04 +0200
-Message-Id: <20200601174026.670418735@linuxfoundation.org>
+Message-Id: <20200601174022.064805766@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
-References: <20200601174016.396817032@linuxfoundation.org>
+In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
+References: <20200601174010.316778377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,65 +51,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-commit f6a23d85d078c2ffde79c66ca81d0a1dde451649 upstream.
+commit a33a5d2d16cb84bea8d5f5510f3a41aa48b5c467 upstream.
 
-This patch is to fix a crash:
+The generic pending interrupt mechanism moves interrupts from the interrupt
+handler on the original target CPU to the new destination CPU. This is
+required for x86 and ia64 due to the way the interrupt delivery and
+acknowledge works if the interrupts are not remapped.
 
-  [ ] kasan: GPF could be caused by NULL-ptr deref or user memory access
-  [ ] general protection fault: 0000 [#1] SMP KASAN PTI
-  [ ] RIP: 0010:ipv6_local_error+0xac/0x7a0
-  [ ] Call Trace:
-  [ ]  xfrm6_local_error+0x1eb/0x300
-  [ ]  xfrm_local_error+0x95/0x130
-  [ ]  __xfrm6_output+0x65f/0xb50
-  [ ]  xfrm6_output+0x106/0x46f
-  [ ]  udp_tunnel6_xmit_skb+0x618/0xbf0 [ip6_udp_tunnel]
-  [ ]  vxlan_xmit_one+0xbc6/0x2c60 [vxlan]
-  [ ]  vxlan_xmit+0x6a0/0x4276 [vxlan]
-  [ ]  dev_hard_start_xmit+0x165/0x820
-  [ ]  __dev_queue_xmit+0x1ff0/0x2b90
-  [ ]  ip_finish_output2+0xd3e/0x1480
-  [ ]  ip_do_fragment+0x182d/0x2210
-  [ ]  ip_output+0x1d0/0x510
-  [ ]  ip_send_skb+0x37/0xa0
-  [ ]  raw_sendmsg+0x1b4c/0x2b80
-  [ ]  sock_sendmsg+0xc0/0x110
+However that update can fail for various reasons. Some of them are valid
+reasons to discard the pending update, but the case, when the previous move
+has not been fully cleaned up is not a legit reason to fail.
 
-This occurred when sending a v4 skb over vxlan6 over ipsec, in which case
-skb->protocol == htons(ETH_P_IPV6) while skb->sk->sk_family == AF_INET in
-xfrm_local_error(). Then it will go to xfrm6_local_error() where it tries
-to get ipv6 info from a ipv4 sk.
+Check the return value of irq_do_set_affinity() for -EBUSY, which indicates
+a pending cleanup, and rearm the pending move in the irq dexcriptor so it's
+tried again when the next interrupt arrives.
 
-This issue was actually fixed by Commit 628e341f319f ("xfrm: make local
-error reporting more robust"), but brought back by Commit 844d48746e4b
-("xfrm: choose protocol family by skb protocol").
-
-So to fix it, we should call xfrm6_local_error() only when skb->protocol
-is htons(ETH_P_IPV6) and skb->sk->sk_family is AF_INET6.
-
-Fixes: 844d48746e4b ("xfrm: choose protocol family by skb protocol")
-Reported-by: Xiumei Mu <xmu@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Fixes: 996c591227d9 ("x86/irq: Plug vector cleanup race")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Song Liu <songliubraving@fb.com>
+Cc: Joerg Roedel <jroedel@suse.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Song Liu <liu.song.a23@gmail.com>
+Cc: Dmitry Safonov <0x7f454c46@gmail.com>
+Cc: stable@vger.kernel.org
+Cc: Mike Travis <mike.travis@hpe.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Tariq Toukan <tariqt@mellanox.com>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Link: https://lkml.kernel.org/r/20180604162224.386544292@linutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/xfrm/xfrm_output.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/irq/migration.c |   24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
 
---- a/net/xfrm/xfrm_output.c
-+++ b/net/xfrm/xfrm_output.c
-@@ -286,7 +286,8 @@ void xfrm_local_error(struct sk_buff *sk
+--- a/kernel/irq/migration.c
++++ b/kernel/irq/migration.c
+@@ -7,17 +7,18 @@
+ void irq_move_masked_irq(struct irq_data *idata)
+ {
+ 	struct irq_desc *desc = irq_data_to_desc(idata);
+-	struct irq_chip *chip = desc->irq_data.chip;
++	struct irq_data *data = &desc->irq_data;
++	struct irq_chip *chip = data->chip;
  
- 	if (skb->protocol == htons(ETH_P_IP))
- 		proto = AF_INET;
--	else if (skb->protocol == htons(ETH_P_IPV6))
-+	else if (skb->protocol == htons(ETH_P_IPV6) &&
-+		 skb->sk->sk_family == AF_INET6)
- 		proto = AF_INET6;
- 	else
+-	if (likely(!irqd_is_setaffinity_pending(&desc->irq_data)))
++	if (likely(!irqd_is_setaffinity_pending(data)))
  		return;
+ 
+-	irqd_clr_move_pending(&desc->irq_data);
++	irqd_clr_move_pending(data);
+ 
+ 	/*
+ 	 * Paranoia: cpu-local interrupts shouldn't be calling in here anyway.
+ 	 */
+-	if (irqd_is_per_cpu(&desc->irq_data)) {
++	if (irqd_is_per_cpu(data)) {
+ 		WARN_ON(1);
+ 		return;
+ 	}
+@@ -42,9 +43,20 @@ void irq_move_masked_irq(struct irq_data
+ 	 * For correct operation this depends on the caller
+ 	 * masking the irqs.
+ 	 */
+-	if (cpumask_any_and(desc->pending_mask, cpu_online_mask) < nr_cpu_ids)
+-		irq_do_set_affinity(&desc->irq_data, desc->pending_mask, false);
++	if (cpumask_any_and(desc->pending_mask, cpu_online_mask) < nr_cpu_ids) {
++		int ret;
+ 
++		ret = irq_do_set_affinity(data, desc->pending_mask, false);
++		/*
++		 * If the there is a cleanup pending in the underlying
++		 * vector management, reschedule the move for the next
++		 * interrupt. Leave desc->pending_mask intact.
++		 */
++		if (ret == -EBUSY) {
++			irqd_set_move_pending(data);
++			return;
++		}
++	}
+ 	cpumask_clear(desc->pending_mask);
+ }
+ 
 
 
