@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF7C1EAD05
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B94051EADE3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729611AbgFASld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:41:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59874 "EHLO mail.kernel.org"
+        id S1730522AbgFASHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:07:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731236AbgFASMc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:12:32 -0400
+        id S1730444AbgFASGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:06:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0BDF2077D;
-        Mon,  1 Jun 2020 18:12:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 066072158C;
+        Mon,  1 Jun 2020 18:06:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035150;
-        bh=y8YrRo5P8xbD7mNuxF8jL9dU7qLjxNwUSLTKRrllbl0=;
+        s=default; t=1591034779;
+        bh=gfwq4jtvjfPPrMtp1kE8x+i6cf+MPMHd+vZlmkqtiJM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nkF4Sx1CMd0zOzpdzz53NL/A1+Ce8Y2p/NbMMvTNFIogLK/0eQPL/K3Q+Zkhl05SL
-         Y3FGiSsMwDVk65sGf59qSyEl57AeozmWmPi4uwVShroZkBUcrhdCPxzmdAyr+D4zwp
-         OUlljNiPAjd/VIPH6MXcR5DM6GcpQXqrfDo0wbXk=
+        b=isSj/FiY7Mh+DY+yQP+K+sFe9bX6h2J3E6cDWdnYUGA/fIviTgX9n/jB9lGB6DWKr
+         iGjJD+L17bj3wMsoWWLs6uTXpLo0o5KV8Qg5tiqSpmLhgULUYON2ZwWqb2LkFnACXP
+         +3Q+uIG/JeBvCX/ZfZYhMpvUBe4qmQCcpSvUQAl0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        stable@vger.kernel.org, Matteo Croce <mcroce@redhat.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 030/177] wireguard: noise: separate receive counter from send counter
+Subject: [PATCH 5.4 010/142] net: mvpp2: fix RX hashing for non-10G ports
 Date:   Mon,  1 Jun 2020 19:52:48 +0200
-Message-Id: <20200601174051.378419904@linuxfoundation.org>
+Message-Id: <20200601174039.067520489@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,332 +44,187 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+From: Russell King <rmk+kernel@armlinux.org.uk>
 
-[ Upstream commit a9e90d9931f3a474f04bab782ccd9d77904941e9 ]
+[ Upstream commit 3138a07ce219acde4c0d7ea0b6d54ba64153328b ]
 
-In "wireguard: queueing: preserve flow hash across packet scrubbing", we
-were required to slightly increase the size of the receive replay
-counter to something still fairly small, but an increase nonetheless.
-It turns out that we can recoup some of the additional memory overhead
-by splitting up the prior union type into two distinct types. Before, we
-used the same "noise_counter" union for both sending and receiving, with
-sending just using a simple atomic64_t, while receiving used the full
-replay counter checker. This meant that most of the memory being
-allocated for the sending counter was being wasted. Since the old
-"noise_counter" type increased in size in the prior commit, now is a
-good time to split up that union type into a distinct "noise_replay_
-counter" for receiving and a boring atomic64_t for sending, each using
-neither more nor less memory than required.
+When rxhash is enabled on any ethernet port except the first in each CP
+block, traffic flow is prevented.  The analysis is below:
 
-Also, since sometimes the replay counter is accessed without
-necessitating additional accesses to the bitmap, we can reduce cache
-misses by hoisting the always-necessary lock above the bitmap in the
-struct layout. We also change a "noise_replay_counter" stack allocation
-to kmalloc in a -DDEBUG selftest so that KASAN doesn't trigger a stack
-frame warning.
+I've been investigating this afternoon, and what I've found, comparing
+a kernel without 895586d5dc32 and with 895586d5dc32 applied is:
 
-All and all, removing a bit of abstraction in this commit makes the code
-simpler and smaller, in addition to the motivating memory usage
-recuperation. For example, passing around raw "noise_symmetric_key"
-structs is something that really only makes sense within noise.c, in the
-one place where the sending and receiving keys can safely be thought of
-as the same type of object; subsequent to that, it's important that we
-uniformly access these through keypair->{sending,receiving}, where their
-distinct roles are always made explicit. So this patch allows us to draw
-that distinction clearly as well.
+- The table programmed into the hardware via mvpp22_rss_fill_table()
+  appears to be identical with or without the commit.
 
-Fixes: e7096c131e51 ("net: WireGuard secure network tunnel")
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+- When rxhash is enabled on eth2, mvpp2_rss_port_c2_enable() reports
+  that c2.attr[0] and c2.attr[2] are written back containing:
+
+   - with 895586d5dc32, failing:    00200000 40000000
+   - without 895586d5dc32, working: 04000000 40000000
+
+- When disabling rxhash, c2.attr[0] and c2.attr[2] are written back as:
+
+   04000000 00000000
+
+The second value represents the MVPP22_CLS_C2_ATTR2_RSS_EN bit, the
+first value is the queue number, which comprises two fields. The high
+5 bits are 24:29 and the low three are 21:23 inclusive. This comes
+from:
+
+       c2.attr[0] = MVPP22_CLS_C2_ATTR0_QHIGH(qh) |
+                     MVPP22_CLS_C2_ATTR0_QLOW(ql);
+
+So, the working case gives eth2 a queue id of 4.0, or 32 as per
+port->first_rxq, and the non-working case a queue id of 0.1, or 1.
+The allocation of queue IDs seems to be in mvpp2_port_probe():
+
+        if (priv->hw_version == MVPP21)
+                port->first_rxq = port->id * port->nrxqs;
+        else
+                port->first_rxq = port->id * priv->max_port_rxqs;
+
+Where:
+
+        if (priv->hw_version == MVPP21)
+                priv->max_port_rxqs = 8;
+        else
+                priv->max_port_rxqs = 32;
+
+Making the port 0 (eth0 / eth1) have port->first_rxq = 0, and port 1
+(eth2) be 32. It seems the idea is that the first 32 queues belong to
+port 0, the second 32 queues belong to port 1, etc.
+
+mvpp2_rss_port_c2_enable() gets the queue number from it's parameter,
+'ctx', which comes from mvpp22_rss_ctx(port, 0). This returns
+port->rss_ctx[0].
+
+mvpp22_rss_context_create() is responsible for allocating that, which
+it does by looking for an unallocated priv->rss_tables[] pointer. This
+table is shared amongst all ports on the CP silicon.
+
+When we write the tables in mvpp22_rss_fill_table(), the RSS table
+entry is defined by:
+
+                u32 sel = MVPP22_RSS_INDEX_TABLE(rss_ctx) |
+                          MVPP22_RSS_INDEX_TABLE_ENTRY(i);
+
+where rss_ctx is the context ID (queue number) and i is the index in
+the table.
+
+If we look at what is written:
+
+- The first table to be written has "sel" values of 00000000..0000001f,
+  containing values 0..3. This appears to be for eth1. This is table 0,
+  RX queue number 0.
+- The second table has "sel" values of 00000100..0000011f, and appears
+  to be for eth2.  These contain values 0x20..0x23. This is table 1,
+  RX queue number 0.
+- The third table has "sel" values of 00000200..0000021f, and appears
+  to be for eth3.  These contain values 0x40..0x43. This is table 2,
+  RX queue number 0.
+
+How do queue numbers translate to the RSS table?  There is another
+table - the RXQ2RSS table, indexed by the MVPP22_RSS_INDEX_QUEUE field
+of MVPP22_RSS_INDEX and accessed through the MVPP22_RXQ2RSS_TABLE
+register. Before 895586d5dc32, it was:
+
+       mvpp2_write(priv, MVPP22_RSS_INDEX,
+                   MVPP22_RSS_INDEX_QUEUE(port->first_rxq));
+       mvpp2_write(priv, MVPP22_RXQ2RSS_TABLE,
+                   MVPP22_RSS_TABLE_POINTER(port->id));
+
+and after:
+
+       mvpp2_write(priv, MVPP22_RSS_INDEX, MVPP22_RSS_INDEX_QUEUE(ctx));
+       mvpp2_write(priv, MVPP22_RXQ2RSS_TABLE, MVPP22_RSS_TABLE_POINTER(ctx));
+
+Before the commit, for eth2, that would've contained '32' for the
+index and '1' for the table pointer - mapping queue 32 to table 1.
+Remember that this is queue-high.queue-low of 4.0.
+
+After the commit, we appear to map queue 1 to table 1. That again
+looks fine on the face of it.
+
+Section 9.3.1 of the A8040 manual seems indicate the reason that the
+queue number is separated. queue-low seems to always come from the
+classifier, whereas queue-high can be from the ingress physical port
+number or the classifier depending on the MVPP2_CLS_SWFWD_PCTRL_REG.
+
+We set the port bit in MVPP2_CLS_SWFWD_PCTRL_REG, meaning that queue-high
+comes from the MVPP2_CLS_SWFWD_P2HQ_REG() register... and this seems to
+be where our bug comes from.
+
+mvpp2_cls_oversize_rxq_set() sets this up as:
+
+        mvpp2_write(port->priv, MVPP2_CLS_SWFWD_P2HQ_REG(port->id),
+                    (port->first_rxq >> MVPP2_CLS_OVERSIZE_RXQ_LOW_BITS));
+
+        val = mvpp2_read(port->priv, MVPP2_CLS_SWFWD_PCTRL_REG);
+        val |= MVPP2_CLS_SWFWD_PCTRL_MASK(port->id);
+        mvpp2_write(port->priv, MVPP2_CLS_SWFWD_PCTRL_REG, val);
+
+Setting the MVPP2_CLS_SWFWD_PCTRL_MASK bit means that the queue-high
+for eth2 is _always_ 4, so only queues 32 through 39 inclusive are
+available to eth2. Yet, we're trying to tell the classifier to set
+queue-high, which will be ignored, to zero. Hence, the queue-high
+field (MVPP22_CLS_C2_ATTR0_QHIGH()) from the classifier will be
+ignored.
+
+This means we end up directing traffic from eth2 not to queue 1, but
+to queue 33, and then we tell it to look up queue 33 in the RSS table.
+However, RSS table has not been programmed for queue 33, and so it ends
+up (presumably) dropping the packets.
+
+It seems that mvpp22_rss_context_create() doesn't take account of the
+fact that the upper 5 bits of the queue ID can't actually be changed
+due to the settings in mvpp2_cls_oversize_rxq_set(), _or_ it seems that
+mvpp2_cls_oversize_rxq_set() has been missed in this commit. Either
+way, these two functions mutually disagree with what queue number
+should be used.
+
+Looking deeper into what mvpp2_cls_oversize_rxq_set() and the MTU
+validation is doing, it seems that MVPP2_CLS_SWFWD_P2HQ_REG() is used
+for over-sized packets attempting to egress through this port. With
+the classifier having had RSS enabled and directing eth2 traffic to
+queue 1, we may still have packets appearing on queue 32 for this port.
+
+However, the only way we may end up with over-sized packets attempting
+to egress through eth2 - is if the A8040 forwards frames between its
+ports. From what I can see, we don't support that feature, and the
+kernel restricts the egress packet size to the MTU. In any case, if we
+were to attempt to transmit an oversized packet, we have no support in
+the kernel to deal with that appearing in the port's receive queue.
+
+So, this patch attempts to solve the issue by clearing the
+MVPP2_CLS_SWFWD_PCTRL_MASK() bit, allowing MVPP22_CLS_C2_ATTR0_QHIGH()
+from the classifier to define the queue-high field of the queue number.
+
+My testing seems to confirm my findings above - clearing this bit
+means that if I enable rxhash on eth2, the interface can then pass
+traffic, as we are now directing traffic to RX queue 1 rather than
+queue 33. Traffic still seems to work with rxhash off as well.
+
+Reported-by: Matteo Croce <mcroce@redhat.com>
+Tested-by: Matteo Croce <mcroce@redhat.com>
+Fixes: 895586d5dc32 ("net: mvpp2: cls: Use RSS contexts to handle RSS tables")
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireguard/noise.c            |   16 ++---------
- drivers/net/wireguard/noise.h            |   14 ++++------
- drivers/net/wireguard/receive.c          |   42 +++++++++++++++----------------
- drivers/net/wireguard/selftest/counter.c |   17 ++++++++----
- drivers/net/wireguard/send.c             |   12 +++-----
- 5 files changed, 48 insertions(+), 53 deletions(-)
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/wireguard/noise.c
-+++ b/drivers/net/wireguard/noise.c
-@@ -104,6 +104,7 @@ static struct noise_keypair *keypair_cre
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.c
+@@ -1070,7 +1070,7 @@ void mvpp2_cls_oversize_rxq_set(struct m
+ 		    (port->first_rxq >> MVPP2_CLS_OVERSIZE_RXQ_LOW_BITS));
  
- 	if (unlikely(!keypair))
- 		return NULL;
-+	spin_lock_init(&keypair->receiving_counter.lock);
- 	keypair->internal_id = atomic64_inc_return(&keypair_counter);
- 	keypair->entry.type = INDEX_HASHTABLE_KEYPAIR;
- 	keypair->entry.peer = peer;
-@@ -358,25 +359,16 @@ out:
- 	memzero_explicit(output, BLAKE2S_HASH_SIZE + 1);
+ 	val = mvpp2_read(port->priv, MVPP2_CLS_SWFWD_PCTRL_REG);
+-	val |= MVPP2_CLS_SWFWD_PCTRL_MASK(port->id);
++	val &= ~MVPP2_CLS_SWFWD_PCTRL_MASK(port->id);
+ 	mvpp2_write(port->priv, MVPP2_CLS_SWFWD_PCTRL_REG, val);
  }
- 
--static void symmetric_key_init(struct noise_symmetric_key *key)
--{
--	spin_lock_init(&key->counter.receive.lock);
--	atomic64_set(&key->counter.counter, 0);
--	memset(key->counter.receive.backtrack, 0,
--	       sizeof(key->counter.receive.backtrack));
--	key->birthdate = ktime_get_coarse_boottime_ns();
--	key->is_valid = true;
--}
--
- static void derive_keys(struct noise_symmetric_key *first_dst,
- 			struct noise_symmetric_key *second_dst,
- 			const u8 chaining_key[NOISE_HASH_LEN])
- {
-+	u64 birthdate = ktime_get_coarse_boottime_ns();
- 	kdf(first_dst->key, second_dst->key, NULL, NULL,
- 	    NOISE_SYMMETRIC_KEY_LEN, NOISE_SYMMETRIC_KEY_LEN, 0, 0,
- 	    chaining_key);
--	symmetric_key_init(first_dst);
--	symmetric_key_init(second_dst);
-+	first_dst->birthdate = second_dst->birthdate = birthdate;
-+	first_dst->is_valid = second_dst->is_valid = true;
- }
- 
- static bool __must_check mix_dh(u8 chaining_key[NOISE_HASH_LEN],
---- a/drivers/net/wireguard/noise.h
-+++ b/drivers/net/wireguard/noise.h
-@@ -15,18 +15,14 @@
- #include <linux/mutex.h>
- #include <linux/kref.h>
- 
--union noise_counter {
--	struct {
--		u64 counter;
--		unsigned long backtrack[COUNTER_BITS_TOTAL / BITS_PER_LONG];
--		spinlock_t lock;
--	} receive;
--	atomic64_t counter;
-+struct noise_replay_counter {
-+	u64 counter;
-+	spinlock_t lock;
-+	unsigned long backtrack[COUNTER_BITS_TOTAL / BITS_PER_LONG];
- };
- 
- struct noise_symmetric_key {
- 	u8 key[NOISE_SYMMETRIC_KEY_LEN];
--	union noise_counter counter;
- 	u64 birthdate;
- 	bool is_valid;
- };
-@@ -34,7 +30,9 @@ struct noise_symmetric_key {
- struct noise_keypair {
- 	struct index_hashtable_entry entry;
- 	struct noise_symmetric_key sending;
-+	atomic64_t sending_counter;
- 	struct noise_symmetric_key receiving;
-+	struct noise_replay_counter receiving_counter;
- 	__le32 remote_index;
- 	bool i_am_the_initiator;
- 	struct kref refcount;
---- a/drivers/net/wireguard/receive.c
-+++ b/drivers/net/wireguard/receive.c
-@@ -246,20 +246,20 @@ static void keep_key_fresh(struct wg_pee
- 	}
- }
- 
--static bool decrypt_packet(struct sk_buff *skb, struct noise_symmetric_key *key)
-+static bool decrypt_packet(struct sk_buff *skb, struct noise_keypair *keypair)
- {
- 	struct scatterlist sg[MAX_SKB_FRAGS + 8];
- 	struct sk_buff *trailer;
- 	unsigned int offset;
- 	int num_frags;
- 
--	if (unlikely(!key))
-+	if (unlikely(!keypair))
- 		return false;
- 
--	if (unlikely(!READ_ONCE(key->is_valid) ||
--		  wg_birthdate_has_expired(key->birthdate, REJECT_AFTER_TIME) ||
--		  key->counter.receive.counter >= REJECT_AFTER_MESSAGES)) {
--		WRITE_ONCE(key->is_valid, false);
-+	if (unlikely(!READ_ONCE(keypair->receiving.is_valid) ||
-+		  wg_birthdate_has_expired(keypair->receiving.birthdate, REJECT_AFTER_TIME) ||
-+		  keypair->receiving_counter.counter >= REJECT_AFTER_MESSAGES)) {
-+		WRITE_ONCE(keypair->receiving.is_valid, false);
- 		return false;
- 	}
- 
-@@ -284,7 +284,7 @@ static bool decrypt_packet(struct sk_buf
- 
- 	if (!chacha20poly1305_decrypt_sg_inplace(sg, skb->len, NULL, 0,
- 					         PACKET_CB(skb)->nonce,
--						 key->key))
-+						 keypair->receiving.key))
- 		return false;
- 
- 	/* Another ugly situation of pushing and pulling the header so as to
-@@ -299,41 +299,41 @@ static bool decrypt_packet(struct sk_buf
- }
- 
- /* This is RFC6479, a replay detection bitmap algorithm that avoids bitshifts */
--static bool counter_validate(union noise_counter *counter, u64 their_counter)
-+static bool counter_validate(struct noise_replay_counter *counter, u64 their_counter)
- {
- 	unsigned long index, index_current, top, i;
- 	bool ret = false;
- 
--	spin_lock_bh(&counter->receive.lock);
-+	spin_lock_bh(&counter->lock);
- 
--	if (unlikely(counter->receive.counter >= REJECT_AFTER_MESSAGES + 1 ||
-+	if (unlikely(counter->counter >= REJECT_AFTER_MESSAGES + 1 ||
- 		     their_counter >= REJECT_AFTER_MESSAGES))
- 		goto out;
- 
- 	++their_counter;
- 
- 	if (unlikely((COUNTER_WINDOW_SIZE + their_counter) <
--		     counter->receive.counter))
-+		     counter->counter))
- 		goto out;
- 
- 	index = their_counter >> ilog2(BITS_PER_LONG);
- 
--	if (likely(their_counter > counter->receive.counter)) {
--		index_current = counter->receive.counter >> ilog2(BITS_PER_LONG);
-+	if (likely(their_counter > counter->counter)) {
-+		index_current = counter->counter >> ilog2(BITS_PER_LONG);
- 		top = min_t(unsigned long, index - index_current,
- 			    COUNTER_BITS_TOTAL / BITS_PER_LONG);
- 		for (i = 1; i <= top; ++i)
--			counter->receive.backtrack[(i + index_current) &
-+			counter->backtrack[(i + index_current) &
- 				((COUNTER_BITS_TOTAL / BITS_PER_LONG) - 1)] = 0;
--		counter->receive.counter = their_counter;
-+		counter->counter = their_counter;
- 	}
- 
- 	index &= (COUNTER_BITS_TOTAL / BITS_PER_LONG) - 1;
- 	ret = !test_and_set_bit(their_counter & (BITS_PER_LONG - 1),
--				&counter->receive.backtrack[index]);
-+				&counter->backtrack[index]);
- 
- out:
--	spin_unlock_bh(&counter->receive.lock);
-+	spin_unlock_bh(&counter->lock);
- 	return ret;
- }
- 
-@@ -473,12 +473,12 @@ int wg_packet_rx_poll(struct napi_struct
- 		if (unlikely(state != PACKET_STATE_CRYPTED))
- 			goto next;
- 
--		if (unlikely(!counter_validate(&keypair->receiving.counter,
-+		if (unlikely(!counter_validate(&keypair->receiving_counter,
- 					       PACKET_CB(skb)->nonce))) {
- 			net_dbg_ratelimited("%s: Packet has invalid nonce %llu (max %llu)\n",
- 					    peer->device->dev->name,
- 					    PACKET_CB(skb)->nonce,
--					    keypair->receiving.counter.receive.counter);
-+					    keypair->receiving_counter.counter);
- 			goto next;
- 		}
- 
-@@ -512,8 +512,8 @@ void wg_packet_decrypt_worker(struct wor
- 	struct sk_buff *skb;
- 
- 	while ((skb = ptr_ring_consume_bh(&queue->ring)) != NULL) {
--		enum packet_state state = likely(decrypt_packet(skb,
--				&PACKET_CB(skb)->keypair->receiving)) ?
-+		enum packet_state state =
-+			likely(decrypt_packet(skb, PACKET_CB(skb)->keypair)) ?
- 				PACKET_STATE_CRYPTED : PACKET_STATE_DEAD;
- 		wg_queue_enqueue_per_peer_napi(skb, state);
- 		if (need_resched())
---- a/drivers/net/wireguard/selftest/counter.c
-+++ b/drivers/net/wireguard/selftest/counter.c
-@@ -6,18 +6,24 @@
- #ifdef DEBUG
- bool __init wg_packet_counter_selftest(void)
- {
-+	struct noise_replay_counter *counter;
- 	unsigned int test_num = 0, i;
--	union noise_counter counter;
- 	bool success = true;
- 
--#define T_INIT do {                                               \
--		memset(&counter, 0, sizeof(union noise_counter)); \
--		spin_lock_init(&counter.receive.lock);            \
-+	counter = kmalloc(sizeof(*counter), GFP_KERNEL);
-+	if (unlikely(!counter)) {
-+		pr_err("nonce counter self-test malloc: FAIL\n");
-+		return false;
-+	}
-+
-+#define T_INIT do {                                    \
-+		memset(counter, 0, sizeof(*counter));  \
-+		spin_lock_init(&counter->lock);        \
- 	} while (0)
- #define T_LIM (COUNTER_WINDOW_SIZE + 1)
- #define T(n, v) do {                                                  \
- 		++test_num;                                           \
--		if (counter_validate(&counter, n) != (v)) {           \
-+		if (counter_validate(counter, n) != (v)) {            \
- 			pr_err("nonce counter self-test %u: FAIL\n",  \
- 			       test_num);                             \
- 			success = false;                              \
-@@ -99,6 +105,7 @@ bool __init wg_packet_counter_selftest(v
- 
- 	if (success)
- 		pr_info("nonce counter self-tests: pass\n");
-+	kfree(counter);
- 	return success;
- }
- #endif
---- a/drivers/net/wireguard/send.c
-+++ b/drivers/net/wireguard/send.c
-@@ -129,7 +129,7 @@ static void keep_key_fresh(struct wg_pee
- 	rcu_read_lock_bh();
- 	keypair = rcu_dereference_bh(peer->keypairs.current_keypair);
- 	if (likely(keypair && READ_ONCE(keypair->sending.is_valid)) &&
--	    (unlikely(atomic64_read(&keypair->sending.counter.counter) >
-+	    (unlikely(atomic64_read(&keypair->sending_counter) >
- 		      REKEY_AFTER_MESSAGES) ||
- 	     (keypair->i_am_the_initiator &&
- 	      unlikely(wg_birthdate_has_expired(keypair->sending.birthdate,
-@@ -353,7 +353,6 @@ void wg_packet_purge_staged_packets(stru
- 
- void wg_packet_send_staged_packets(struct wg_peer *peer)
- {
--	struct noise_symmetric_key *key;
- 	struct noise_keypair *keypair;
- 	struct sk_buff_head packets;
- 	struct sk_buff *skb;
-@@ -373,10 +372,9 @@ void wg_packet_send_staged_packets(struc
- 	rcu_read_unlock_bh();
- 	if (unlikely(!keypair))
- 		goto out_nokey;
--	key = &keypair->sending;
--	if (unlikely(!READ_ONCE(key->is_valid)))
-+	if (unlikely(!READ_ONCE(keypair->sending.is_valid)))
- 		goto out_nokey;
--	if (unlikely(wg_birthdate_has_expired(key->birthdate,
-+	if (unlikely(wg_birthdate_has_expired(keypair->sending.birthdate,
- 					      REJECT_AFTER_TIME)))
- 		goto out_invalid;
- 
-@@ -391,7 +389,7 @@ void wg_packet_send_staged_packets(struc
- 		 */
- 		PACKET_CB(skb)->ds = ip_tunnel_ecn_encap(0, ip_hdr(skb), skb);
- 		PACKET_CB(skb)->nonce =
--				atomic64_inc_return(&key->counter.counter) - 1;
-+				atomic64_inc_return(&keypair->sending_counter) - 1;
- 		if (unlikely(PACKET_CB(skb)->nonce >= REJECT_AFTER_MESSAGES))
- 			goto out_invalid;
- 	}
-@@ -403,7 +401,7 @@ void wg_packet_send_staged_packets(struc
- 	return;
- 
- out_invalid:
--	WRITE_ONCE(key->is_valid, false);
-+	WRITE_ONCE(keypair->sending.is_valid, false);
- out_nokey:
- 	wg_noise_keypair_put(keypair, false);
  
 
 
