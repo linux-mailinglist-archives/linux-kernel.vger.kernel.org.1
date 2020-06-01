@@ -2,73 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1AD1EA8AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5394A1EA8DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728338AbgFARxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:53:17 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:41466 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726113AbgFARxR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:53:17 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 7A1252A2519
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Paul Gofman <gofmanp@gmail.com>, Kees Cook <keescook@chromium.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        linux-security-module@vger.kernel.org,
-        Zebediah Figura <zfigura@codeweavers.com>
-Subject: Re: [PATCH RFC] seccomp: Implement syscall isolation based on memory areas
-Organization: Collabora
-References: <20200530055953.817666-1-krisman@collabora.com>
-        <202005300923.B245392C@keescook> <851rn0ejg9.fsf@collabora.com>
-        <9a512096-7707-3fc6-34ba-22f969c0f964@gmail.com>
-        <20200531164938.GF19604@bombadil.infradead.org>
-Date:   Mon, 01 Jun 2020 13:53:11 -0400
-In-Reply-To: <20200531164938.GF19604@bombadil.infradead.org> (Matthew Wilcox's
-        message of "Sun, 31 May 2020 09:49:38 -0700")
-Message-ID: <857dwq7jw8.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S1728663AbgFAR4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:56:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37088 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728639AbgFAR4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:56:34 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E99B2074B;
+        Mon,  1 Jun 2020 17:56:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591034193;
+        bh=8X9HU6b1c4jo32TsWzW6l8edB1iW46dxxPn50t0tRjE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ZHJ8N6CMpjHgRfiVG4avVeClI4OUSg0HZlpBjfaLDdROp1tt57Bo1fa3L17KVzvtJ
+         7lbTmlXCga6TeTbMB8psO8vQ+YFw/6foScOVvZs1Xnl7REsUTLAliTxmxg9ATBTyiv
+         /m0h/DtqNFndJyUiNjQkW4WiIoLJL3dZLVxNgk7M=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.4 06/48] net/mlx4_core: fix a memory leak bug.
+Date:   Mon,  1 Jun 2020 19:53:16 +0200
+Message-Id: <20200601173953.870589538@linuxfoundation.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200601173952.175939894@linuxfoundation.org>
+References: <20200601173952.175939894@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> writes:
+From: Qiushi Wu <wu000273@umn.edu>
 
-> On Sun, May 31, 2020 at 03:39:33PM +0300, Paul Gofman wrote:
->> > Paul (cc'ed) is the wine expert, but my understanding is that memory
->> > allocation and initial program load of the emulated binary will go
->> > through wine.  It does the allocation and mark the vma accordingly
->> > before returning the allocated range to the windows application.
->> Yes, exactly. Pretty much any memory allocation which Wine does needs
->> syscalls (if those are ever encountered later during executing code from
->> those areas) to be trapped by Wine and passed to Wine's implementation
->> of the corresponding Windows API function. Linux native libraries
->> loading and memory allocations performed by them go outside of Wine control.
->
-> I don't like Gabriel's approach very much.  Could we do something like
+commit febfd9d3c7f74063e8e630b15413ca91b567f963 upstream.
 
-Hi Matthew,
+In function mlx4_opreq_action(), pointer "mailbox" is not released,
+when mlx4_cmd_box() return and error, causing a memory leak bug.
+Fix this issue by going to "out" label, mlx4_free_cmd_mailbox() can
+free this pointer.
 
-I don't oppose your suggestion, as Paul said, it should be enough for
-us.  But could you elaborate on the problems you see in the original
-approach, even if only for my own education?
+Fixes: fe6f700d6cbb ("net/mlx4_core: Respond to operation request by firmware")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-> issue a syscall before executing a Windows region and then issue another
-> syscall when exiting?  If so, we could switch the syscall entry point (ie
-> change MSR_LSTAR).  I'm thinking something like a personality() syscall.
-> But maybe that would be too high an overhead.
->
+---
+ drivers/net/ethernet/mellanox/mlx4/fw.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--- 
-Gabriel Krisman Bertazi
+--- a/drivers/net/ethernet/mellanox/mlx4/fw.c
++++ b/drivers/net/ethernet/mellanox/mlx4/fw.c
+@@ -2522,7 +2522,7 @@ void mlx4_opreq_action(struct work_struc
+ 		if (err) {
+ 			mlx4_err(dev, "Failed to retrieve required operation: %d\n",
+ 				 err);
+-			return;
++			goto out;
+ 		}
+ 		MLX4_GET(modifier, outbox, GET_OP_REQ_MODIFIER_OFFSET);
+ 		MLX4_GET(token, outbox, GET_OP_REQ_TOKEN_OFFSET);
+
+
