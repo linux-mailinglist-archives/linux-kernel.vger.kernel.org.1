@@ -2,96 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B52FD1EA16E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 11:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F321EA176
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 12:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726225AbgFAJ73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 05:59:29 -0400
-Received: from foss.arm.com ([217.140.110.172]:35832 "EHLO foss.arm.com"
+        id S1726287AbgFAKBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 06:01:06 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:29237 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725788AbgFAJ73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 05:59:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 956831FB;
-        Mon,  1 Jun 2020 02:59:28 -0700 (PDT)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 799EB3F305;
-        Mon,  1 Jun 2020 02:59:27 -0700 (PDT)
-Date:   Mon, 1 Jun 2020 10:59:25 +0100
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     Keno Fischer <keno@juliacomputing.com>
-Cc:     Kyle Huey <khuey@pernos.co>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: arm64: Register modification during syscall entry/exit stop
-Message-ID: <20200601095925.GZ5031@arm.com>
-References: <20200519081551.GA9980@willie-the-truck>
- <CABV8kRzYzBrdzC1_opmmdpW63N2htfOsAUZ+RjiSDsy=SJW6Yg@mail.gmail.com>
- <20200520174149.GB27629@willie-the-truck>
- <CABV8kRzjCCsjVeRsBD7U_Lo0==sBw9EKm=1z7g=60KyJvJLZBQ@mail.gmail.com>
- <CABV8kRxfet2RXXNcUoTKwfVzFWEQfxAkXUX4M5XhkP3nc-0+rQ@mail.gmail.com>
- <20200527095528.GC11111@willie-the-truck>
- <20200527101929.GT5031@arm.com>
- <CABV8kRwhsPhhqUXS46Rwh-xDEDY2q=KSd-xz1W-pu4Gy4KVp8Q@mail.gmail.com>
- <20200601092329.GX5031@arm.com>
- <CABV8kRzkLiVuqxT3+8c1o8m_OuROtXgfowQcrMVnrxu=CiGB=w@mail.gmail.com>
+        id S1725788AbgFAKBF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 06:01:05 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1591005665; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=VZgW0yWmZWnfdGXGSRXAEISoIkntsyNDe6/pKlJFF58=;
+ b=FD3lBGHr4y0lniaw91ng/R1CGe70mZnASstqcdhuPRwNkZI3Usrdlb5dhqraatamdj67m2HK
+ Bhz/y7U5aBrzi13GGU3/AkLLDOu4hddAC/q1TSX2+qwrYmTJGvALm0k5siUfrmnxr57sYhez
+ h50tL4u8eS/bei47Tlkdr+LS5vk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5ed4d1b8c0031c71c2434c94 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Jun 2020 10:00:24
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BE642C43391; Mon,  1 Jun 2020 10:00:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2CD57C433C6;
+        Mon,  1 Jun 2020 10:00:23 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABV8kRzkLiVuqxT3+8c1o8m_OuROtXgfowQcrMVnrxu=CiGB=w@mail.gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 01 Jun 2020 15:30:23 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     sboyd@kernel.org, georgi.djakov@linaro.org, nm@ti.com,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, saravanak@google.com, mka@chromium.org,
+        smasetty@codeaurora.org, linux-arm-msm-owner@vger.kernel.org,
+        linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH] OPP: Check for bandwidth values before creating icc paths
+In-Reply-To: <20200601071349.gbuyfaasdu27a3bd@vireshk-i7>
+References: <20200527192418.20169-1-sibis@codeaurora.org>
+ <20200529052031.n2nvzxdsifwmthfv@vireshk-i7>
+ <0205034b0ece173a7152a43b016985a7@codeaurora.org>
+ <20200601040742.3a4cmhrwgh2ueksy@vireshk-i7>
+ <ee51e55bdf518832e4ecb2faf98c6b58@codeaurora.org>
+ <20200601071349.gbuyfaasdu27a3bd@vireshk-i7>
+Message-ID: <4258c6b122fa352a6b5cccb07a9b1203@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 01, 2020 at 05:40:28AM -0400, Keno Fischer wrote:
-> On Mon, Jun 1, 2020 at 5:23 AM Dave Martin <Dave.Martin@arm.com> wrote:
-> > > > Can't PTRACE_SYSEMU be emulated by using PTRACE_SYSCALL, cancelling the
-> > > > syscall at the syscall enter stop, then modifying the regs at the
-> > > > syscall exit stop?
-> > >
-> > > Yes, it can. The idea behind SYSEMU is to be able to save half the
-> > > ptrace traps that would require, in theory making the ptracer
-> > > a decent amount faster. That said, the x7 issue is orthogonal to
-> > > SYSEMU, you'd have the same issues if you used PTRACE_SYSCALL.
-> >
-> > Right, I just wondered whether there was some deeper difference between
-> > the two approaches.
+On 2020-06-01 12:43, Viresh Kumar wrote:
+> On 01-06-20, 12:09, Sibi Sankar wrote:
+>> On 2020-06-01 09:37, Viresh Kumar wrote:
+>> > On 29-05-20, 19:47, Sibi Sankar wrote:
+>> > > opp_np needs to be subjected
+>> > > to NULL check as well.
+>> >
+>> > No, it isn't. It should already be valid and is set by the OPP core.
+>> > Actually we don't need to do of_node_get(opp_table->np) and just use
+>> > np, I did that to not have a special case while putting the resource.
+>> >
+>> 
+>> I should have phrased it differently.
+>> opp_np needs to be checked to deal
+>> with cases where devices don't have
+>> "operating-points-v2" associated with
+>> it.
+>> 
+>> diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+>> index a5d87ca0ab571..06976d14e6ccb 100644
+>> --- a/drivers/opp/of.c
+>> +++ b/drivers/opp/of.c
+>> @@ -344,14 +344,14 @@ static int _bandwidth_supported(struct device 
+>> *dev,
+>> struct opp_table *opp_table)
+>> 
+>>                 opp_np = _opp_of_get_opp_desc_node(np, 0);
+>>                 of_node_put(np);
+>> -
+>> -               /* Lets not fail in case we are parsing opp-v1 
+>> bindings */
+>> -               if (!opp_np)
+>> -                       return 0;
+>>         } else {
+>>                 opp_np = of_node_get(opp_table->np);
+>>         }
+>> 
+>> +       /* Lets not fail in case we are parsing opp-v1 bindings */
+>> +       if (!opp_np)
+>> +               return 0;
+>> +
+>> 
+>> sdhci_msm 7c4000.sdhci: OPP table empty
+>> sdhci_msm 7c4000.sdhci: _allocate_opp_table: Error finding 
+>> interconnect
+>> paths: -22
+>> 
+>> I see the following errors without
+>> the check.
 > 
-> You're asking about a new regset vs trying to do it via ptrace option?
+> My reply unfortunately only considered the case where this routine was
+> called from within the opp table. Are you testing it for the case
+> where you are adding OPPs dynamically from the code ?
 
-I meant SYSEMU versus SYSCALL + cancellation and emulating the syscall
-at the syscall exit stop.
+Yeah dev_pm_opp_add/dev_pm_opp_set_clkname
+or pretty much any api doing a
+dev_pm_opp_get_opp_table without
+a opp_table node associated with
+it will run into this issue.
 
-i.e., I was trying to understand whether SYSEMU is just a convenience,
-or does some magic that can't be reproduced by other means.
-
-> I don't think there's anything a ptrace option can do that a new regset
-> that replicates the same registers (I'm gonna propose adding orig_x0,
-> while we're at it and changing the x0 semantics a bit, will have
-> those details with the patch) wouldn't be able to do . The reason I
-> originally thought it might have to be a ptrace option is because
-> the register modification currently gets applied in the syscall entry
-> code to the actual regs struct, so I thought you might have to know
-> to preserve those registers. However, then I realized that you could
-> just change the regset accessors to emulate the old behavior, since
-> we do already store all the required information (what kind of stop
-> we're currently at) in order to be able to answer the ptrace
-> informational queries. So doing that it probably just all around
-> easier. I guess NT_PRSTATUS might also rot, but I guess strace
-> doesn't really have to stop using it, since it doesn't care about
-> the x7 value nor does it need to modify it.
-
-I think NT_PRSTATUS probably doesn't need to change.
-
-Having a duplicate regset feels like a worse outcome that having a new
-ptrace option.  Undocumentedly different things already happen to the
-regs depending on how the tracee stopped, so adding a new special case
-doesn't seem to justify creating a new regset.
-
-Cheers
----Dave
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
