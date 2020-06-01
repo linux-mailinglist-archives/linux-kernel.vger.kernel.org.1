@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC531EAD82
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9183E1EAE8A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730783AbgFASIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:08:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55042 "EHLO mail.kernel.org"
+        id S1729139AbgFASBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:01:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729873AbgFASIt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:08:49 -0400
+        id S1729773AbgFASBV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:01:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0686A2068D;
-        Mon,  1 Jun 2020 18:08:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D8BE2073B;
+        Mon,  1 Jun 2020 18:01:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034928;
-        bh=kqof40ecBX80pUsHJ6pC97CnbYA97VwGgQaoy9LYEf8=;
+        s=default; t=1591034481;
+        bh=x2n0GBJABHTyVwikWnyH2EjoffCVAN1cgWuLIQr/lf8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bSNlwatmJHT48Hi/Cv6dC5vdHy02QMFvBWagA+lCFavJ9YusVlNcBIkz8tgzqUaT2
-         G/R2Nok1eH22RWrSUh0lGG4B014xTc7ZOrXHXui/4BkMLSy0li0dnHcLIHmK47CZQr
-         fnsGDT/sQ1M7m7lGxdZ2zh/tWqXESb6+PVttwYNg=
+        b=fEalxY50hmnph/WhcCjwzBHF5VoW6/Dwg/uh9Pmx/+76Tyas/SzEtqAnLTyKiX4lM
+         6aPnYwZ8FllKLEmjulF4Tb+5dX+Wg0UdepQZoy6FOWnX2CEdFvcugK0Gno1y7rtl9+
+         ij5IgClPFjurgtci2VKC6/fWGrBiMoMDGGh2hhWg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hsin-Yi Wang <hsinyi@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
+        stable@vger.kernel.org, sam <sunhaoyl@outlook.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 076/142] arm64: dts: mt8173: fix vcodec-enc clock
+Subject: [PATCH 4.14 49/77] fs/binfmt_elf.c: allocate initialized memory in fill_thread_core_info()
 Date:   Mon,  1 Jun 2020 19:53:54 +0200
-Message-Id: <20200601174045.806029181@linuxfoundation.org>
+Message-Id: <20200601174025.118566627@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
+References: <20200601174016.396817032@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,52 +49,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hsin-Yi Wang <hsinyi@chromium.org>
+From: Alexander Potapenko <glider@google.com>
 
-[ Upstream commit 3b1f6c5e4dfaf767f6f2f120cd93b347b5a9f1aa ]
+[ Upstream commit 1d605416fb7175e1adf094251466caa52093b413 ]
 
-Fix the assigned-clock-parents to higher frequency clock to avoid h264
-encode timeout:
+KMSAN reported uninitialized data being written to disk when dumping
+core.  As a result, several kilobytes of kmalloc memory may be written
+to the core file and then read by a non-privileged user.
 
-[  134.763465] mtk_vpu 10020000.vpu: vpu ipi 4 ack time out !
-[  134.769008] [MTK_VCODEC][ERROR][18]: vpu_enc_send_msg() vpu_ipi_send msg_id c002 len 32 fail -5
-[  134.777707] [MTK_VCODEC][ERROR][18]: vpu_enc_encode() AP_IPIMSG_ENC_ENCODE 0 fail
-
-venc_sel is the clock used by h264 encoder, and venclt_sel is the clock
-used by vp8 encoder. Assign venc_sel to vcodecpll_ck and venclt_sel to
-vcodecpll_370p5.
-
-    vcodecpll                         1482000000
-       vcodecpll_ck                    494000000
-          venc_sel                     494000000
-...
-       vcodecpll_370p5                 370500000
-          venclt_sel                   370500000
-
-Fixes: fbbad0287cec ("arm64: dts: Using standard CCF interface to set vcodec clk")
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Link: https://lore.kernel.org/r/20200504124442.208004-1-hsinyi@chromium.org
-Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
+Reported-by: sam <sunhaoyl@outlook.com>
+Signed-off-by: Alexander Potapenko <glider@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Kees Cook <keescook@chromium.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200419100848.63472-1-glider@google.com
+Link: https://github.com/google/kmsan/issues/76
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/mediatek/mt8173.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/binfmt_elf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-index 15f1842f6df3..5891b7151432 100644
---- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-@@ -1397,8 +1397,8 @@
- 				      "venc_lt_sel";
- 			assigned-clocks = <&topckgen CLK_TOP_VENC_SEL>,
- 					  <&topckgen CLK_TOP_VENC_LT_SEL>;
--			assigned-clock-parents = <&topckgen CLK_TOP_VENCPLL_D2>,
--						 <&topckgen CLK_TOP_UNIVPLL1_D2>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_VCODECPLL>,
-+						 <&topckgen CLK_TOP_VCODECPLL_370P5>;
- 		};
- 
- 		vencltsys: clock-controller@19000000 {
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index 166846a40078..2c433c95adb5 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -1740,7 +1740,7 @@ static int fill_thread_core_info(struct elf_thread_core_info *t,
+ 		    (!regset->active || regset->active(t->task, regset) > 0)) {
+ 			int ret;
+ 			size_t size = regset->n * regset->size;
+-			void *data = kmalloc(size, GFP_KERNEL);
++			void *data = kzalloc(size, GFP_KERNEL);
+ 			if (unlikely(!data))
+ 				return 0;
+ 			ret = regset->get(t->task, regset,
 -- 
 2.25.1
 
