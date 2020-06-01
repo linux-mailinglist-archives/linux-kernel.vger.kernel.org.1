@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 975E01EAE4E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7F41EADBD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731015AbgFASw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:52:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47230 "EHLO mail.kernel.org"
+        id S1730652AbgFASsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:48:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728205AbgFASDZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:03:25 -0400
+        id S1730638AbgFASHw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:07:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4E4C207D0;
-        Mon,  1 Jun 2020 18:03:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AEB34206E2;
+        Mon,  1 Jun 2020 18:07:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034604;
-        bh=vvAn8EDpPr9ZfwBzIstG1rQ4gCyXCXUholFYEgR/AA0=;
+        s=default; t=1591034872;
+        bh=uB/nrNTc33V1p9MjKZ2UT3WMBnL+IeRKZpIjZGkr7aQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R960K3uy2b1rK+ITgTP/33VhFEO1kVXrkI7Lc/fjTtfK3ZZ30Iy+UonEquWwHjPxC
-         05sbnZCYZVzolBtwFCKdj917Xt9DdrFxbv0ahCHtlz38xuVDoTchuv0PhVzk0ADitz
-         w1c3wY7HNll8/h99pGd1f063FEyXZCEBx3UfFoZE=
+        b=Jugvma84d9hBxTQmNUa9msUuXw9WWFWA0Bc/K4Pp/xCaED8aIHgXAjJyWIuPU6xwj
+         A2PiwUBS9pwZcY5KMhKOSSBszhGg9bIkk0CqwzrBwH3MbiGMEX6Uyk0wEyZttCNJ76
+         mt5/WF3N/GuaGAOqjMs7GKuUBmVzeafWoKiNsjhE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Felipe Balbi <balbi@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 27/95] gfs2: move privileged user check to gfs2_quota_lock_check
+Subject: [PATCH 5.4 049/142] usb: phy: twl6030-usb: Fix a resource leak in an error handling path in twl6030_usb_probe()
 Date:   Mon,  1 Jun 2020 19:53:27 +0200
-Message-Id: <20200601174025.164815490@linuxfoundation.org>
+Message-Id: <20200601174042.900048690@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
-References: <20200601174020.759151073@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,55 +45,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 4ed0c30811cb4d30ef89850b787a53a84d5d2bcb ]
+[ Upstream commit f058764d19000d98aef72010468db1f69faf9fa0 ]
 
-Before this patch, function gfs2_quota_lock checked if it was called
-from a privileged user, and if so, it bypassed the quota check:
-superuser can operate outside the quotas.
-That's the wrong place for the check because the lock/unlock functions
-are separate from the lock_check function, and you can do lock and
-unlock without actually checking the quotas.
+A call to 'regulator_get()' is hidden in 'twl6030_usb_ldo_init()'. A
+corresponding put must be performed in the error handling path, as
+already done in the remove function.
 
-This patch moves the check to gfs2_quota_lock_check.
+While at it, also move a 'free_irq()' call in the error handling path in
+order to be consistent.
 
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/quota.c | 3 +--
- fs/gfs2/quota.h | 3 ++-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/usb/phy/phy-twl6030-usb.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/fs/gfs2/quota.c b/fs/gfs2/quota.c
-index 0efae7a0ee80..dd0f9bc13164 100644
---- a/fs/gfs2/quota.c
-+++ b/fs/gfs2/quota.c
-@@ -1043,8 +1043,7 @@ int gfs2_quota_lock(struct gfs2_inode *ip, kuid_t uid, kgid_t gid)
- 	u32 x;
- 	int error = 0;
+diff --git a/drivers/usb/phy/phy-twl6030-usb.c b/drivers/usb/phy/phy-twl6030-usb.c
+index bfebf1f2e991..9a7e655d5280 100644
+--- a/drivers/usb/phy/phy-twl6030-usb.c
++++ b/drivers/usb/phy/phy-twl6030-usb.c
+@@ -377,7 +377,7 @@ static int twl6030_usb_probe(struct platform_device *pdev)
+ 	if (status < 0) {
+ 		dev_err(&pdev->dev, "can't get IRQ %d, err %d\n",
+ 			twl->irq1, status);
+-		return status;
++		goto err_put_regulator;
+ 	}
  
--	if (capable(CAP_SYS_RESOURCE) ||
--	    sdp->sd_args.ar_quota != GFS2_QUOTA_ON)
-+	if (sdp->sd_args.ar_quota != GFS2_QUOTA_ON)
- 		return 0;
+ 	status = request_threaded_irq(twl->irq2, NULL, twl6030_usb_irq,
+@@ -386,8 +386,7 @@ static int twl6030_usb_probe(struct platform_device *pdev)
+ 	if (status < 0) {
+ 		dev_err(&pdev->dev, "can't get IRQ %d, err %d\n",
+ 			twl->irq2, status);
+-		free_irq(twl->irq1, twl);
+-		return status;
++		goto err_free_irq1;
+ 	}
  
- 	error = gfs2_quota_hold(ip, uid, gid);
-diff --git a/fs/gfs2/quota.h b/fs/gfs2/quota.h
-index 836f29480be6..e3a6e2404d11 100644
---- a/fs/gfs2/quota.h
-+++ b/fs/gfs2/quota.h
-@@ -47,7 +47,8 @@ static inline int gfs2_quota_lock_check(struct gfs2_inode *ip,
- 	int ret;
+ 	twl->asleep = 0;
+@@ -396,6 +395,13 @@ static int twl6030_usb_probe(struct platform_device *pdev)
+ 	dev_info(&pdev->dev, "Initialized TWL6030 USB module\n");
  
- 	ap->allowed = UINT_MAX; /* Assume we are permitted a whole lot */
--	if (sdp->sd_args.ar_quota == GFS2_QUOTA_OFF)
-+	if (capable(CAP_SYS_RESOURCE) ||
-+	    sdp->sd_args.ar_quota == GFS2_QUOTA_OFF)
- 		return 0;
- 	ret = gfs2_quota_lock(ip, NO_UID_QUOTA_CHANGE, NO_GID_QUOTA_CHANGE);
- 	if (ret)
+ 	return 0;
++
++err_free_irq1:
++	free_irq(twl->irq1, twl);
++err_put_regulator:
++	regulator_put(twl->usb3v3);
++
++	return status;
+ }
+ 
+ static int twl6030_usb_remove(struct platform_device *pdev)
 -- 
 2.25.1
 
