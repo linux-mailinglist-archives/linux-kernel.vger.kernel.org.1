@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 899BF1EAF32
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 21:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A9B1EAF65
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 21:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728695AbgFAR4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:56:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37286 "EHLO mail.kernel.org"
+        id S1729788AbgFATBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 15:01:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728097AbgFAR4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:56:41 -0400
+        id S1728219AbgFARzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:55:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2BAE5206E2;
-        Mon,  1 Jun 2020 17:56:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31C662073B;
+        Mon,  1 Jun 2020 17:55:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034200;
-        bh=3XN0dCs4ELVpk+KvkOC2xhVH8DurHvnfoxL0UtPiEI0=;
+        s=default; t=1591034144;
+        bh=GXXj6hQz+sGwSms1JwSKF7z36WZ+ep/aZfuObAE5nbM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DlRneOVurlUwxOfrm355sT7/bCLbPGApf+onh7pR62zkjwd9lAm4H21NCoOj8w2mM
-         +Rsn3ogOXXaGuA9bZhh9lbDj/Thiq+NC0Z4LUbzBX7a6oTTcs68GqSVT1O14xUiPp5
-         ds5VTYLjsi7WOxH6ZOmOjB0ExdimLXx4HRq+a7KI=
+        b=edbsCx5slbT73ZOxYmrMCtu9+JLNUUW4Yr6N4bGxFf2lK6aks5MJEm3l5JNS3cA8K
+         0zEBxOztlR5FcgBBPccWHkE36iPYs8R2riIvLuI70prM0aLwCmtb0nO5RMXOiTN0c6
+         IzPTMZITeWfVLVe3jqvd3dianrpte7VyxJSZ/eSI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
+        stable@vger.kernel.org, Coverity <scan-admin@coverity.com>,
+        Steve French <stfrench@microsoft.com>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 09/48] gfs2: dont call quota_unhold if quotas are not locked
-Date:   Mon,  1 Jun 2020 19:53:19 +0200
-Message-Id: <20200601173954.907703774@linuxfoundation.org>
+Subject: [PATCH 4.4 12/48] cifs: Fix null pointer check in cifs_read
+Date:   Mon,  1 Jun 2020 19:53:22 +0200
+Message-Id: <20200601173955.878992498@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200601173952.175939894@linuxfoundation.org>
 References: <20200601173952.175939894@linuxfoundation.org>
@@ -44,44 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Steve French <stfrench@microsoft.com>
 
-[ Upstream commit c9cb9e381985bbbe8acd2695bbe6bd24bf06b81c ]
+[ Upstream commit 9bd21d4b1a767c3abebec203342f3820dcb84662 ]
 
-Before this patch, function gfs2_quota_unlock checked if quotas are
-turned off, and if so, it branched to label out, which called
-gfs2_quota_unhold. With the new system of gfs2_qa_get and put, we
-no longer want to call gfs2_quota_unhold or we won't balance our
-gets and puts.
+Coverity scan noted a redundant null check
 
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Coverity-id: 728517
+Reported-by: Coverity <scan-admin@coverity.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
+Reviewed-by: Shyam Prasad N <nspmangalore@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/quota.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/cifs/file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/gfs2/quota.c b/fs/gfs2/quota.c
-index 3a31226531ea..4af00ed4960a 100644
---- a/fs/gfs2/quota.c
-+++ b/fs/gfs2/quota.c
-@@ -1080,7 +1080,7 @@ void gfs2_quota_unlock(struct gfs2_inode *ip)
- 	int found;
- 
- 	if (!test_and_clear_bit(GIF_QD_LOCKED, &ip->i_flags))
--		goto out;
-+		return;
- 
- 	for (x = 0; x < ip->i_res->rs_qa_qd_num; x++) {
- 		struct gfs2_quota_data *qd;
-@@ -1117,7 +1117,6 @@ void gfs2_quota_unlock(struct gfs2_inode *ip)
- 			qd_unlock(qda[x]);
- 	}
- 
--out:
- 	gfs2_quota_unhold(ip);
- }
- 
+diff --git a/fs/cifs/file.c b/fs/cifs/file.c
+index 2ffdaedca7e9..b5a05092f862 100644
+--- a/fs/cifs/file.c
++++ b/fs/cifs/file.c
+@@ -3230,7 +3230,7 @@ cifs_read(struct file *file, char *read_data, size_t read_size, loff_t *offset)
+ 			 * than it negotiated since it will refuse the read
+ 			 * then.
+ 			 */
+-			if ((tcon->ses) && !(tcon->ses->capabilities &
++			if (!(tcon->ses->capabilities &
+ 				tcon->ses->server->vals->cap_large_files)) {
+ 				current_read_size = min_t(uint,
+ 					current_read_size, CIFSMaxBufSize);
 -- 
 2.25.1
 
