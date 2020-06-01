@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7CE1EA908
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985FD1EA8D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729117AbgFAR6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:58:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39678 "EHLO mail.kernel.org"
+        id S1728585AbgFAR4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:56:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729102AbgFAR6C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:58:02 -0400
+        id S1728480AbgFAR4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:56:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D7E3206E2;
-        Mon,  1 Jun 2020 17:58:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 65AAC2073B;
+        Mon,  1 Jun 2020 17:56:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034281;
-        bh=cefI0ZFCKQibzgsWiyF43o4I/K11S3pa1wEiuKrRIpY=;
+        s=default; t=1591034166;
+        bh=v5U3mBbn3YdGBHEeSmql6qdA7BvIvIIiq7B/D57Y0Qk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZTxe0rFifNT0DhN8IgXCXfNQk5unBcLMbDZe30XFPxp7KXOpM1+ca82NqFptCEyJ9
-         MK79sWpnFu9qFcnFS0W1OWSlvjzFgjXPX6z2JeW/nAcrksHBokfOlKa/FqiNa9IcMg
-         QDWWCGTfmfcms80gNwaeyzl8CLxtk4B/68D2Y3qk=
+        b=0ve9FbZnY8lJhPm+KuyCmj9rQzfJjVVAmLvkscZX1SuIJnX4miQiaT0BvxIacO53H
+         vDxAy01NFgKhLRxFGAbKS6wLdwznePsw6z7Lu0ddgQ7lDdkuDBojCDo8iPiNUa9Dia
+         mUtmJJscbIB+J+uLXUo05U3W29tFIt3E4AMtfkJc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?=C5=81ukasz=20Patron?= <priv.luk@gmail.com>,
-        Cameron Gutman <aicommander@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 23/61] Input: xpad - add custom init packet for Xbox One S controllers
-Date:   Mon,  1 Jun 2020 19:53:30 +0200
-Message-Id: <20200601174016.160258926@linuxfoundation.org>
+Subject: [PATCH 4.4 21/48] exec: Always set cap_ambient in cap_bprm_set_creds
+Date:   Mon,  1 Jun 2020 19:53:31 +0200
+Message-Id: <20200601173958.705938704@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
-References: <20200601174010.316778377@linuxfoundation.org>
+In-Reply-To: <20200601173952.175939894@linuxfoundation.org>
+References: <20200601173952.175939894@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,54 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Łukasz Patron <priv.luk@gmail.com>
+From: Eric W. Biederman <ebiederm@xmission.com>
 
-[ Upstream commit 764f7f911bf72450c51eb74cbb262ad9933741d8 ]
+[ Upstream commit a4ae32c71fe90794127b32d26d7ad795813b502e ]
 
-Sending [ 0x05, 0x20, 0x00, 0x0f, 0x06 ] packet for Xbox One S controllers
-fixes an issue where controller is stuck in Bluetooth mode and not sending
-any inputs.
+An invariant of cap_bprm_set_creds is that every field in the new cred
+structure that cap_bprm_set_creds might set, needs to be set every
+time to ensure the fields does not get a stale value.
 
-Signed-off-by: Łukasz Patron <priv.luk@gmail.com>
-Reviewed-by: Cameron Gutman <aicommander@gmail.com>
+The field cap_ambient is not set every time cap_bprm_set_creds is
+called, which means that if there is a suid or sgid script with an
+interpreter that has neither the suid nor the sgid bits set the
+interpreter should be able to accept ambient credentials.
+Unfortuantely because cap_ambient is not reset to it's original value
+the interpreter can not accept ambient credentials.
+
+Given that the ambient capability set is expected to be controlled by
+the caller, I don't think this is particularly serious.  But it is
+definitely worth fixing so the code works correctly.
+
+I have tested to verify my reading of the code is correct and the
+interpreter of a sgid can receive ambient capabilities with this
+change and cannot receive ambient capabilities without this change.
+
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200422075206.18229-1-priv.luk@gmail.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Fixes: 58319057b784 ("capabilities: ambient capabilities")
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/joystick/xpad.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ security/commoncap.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
-index 26476a64e663..54a6691d7d87 100644
---- a/drivers/input/joystick/xpad.c
-+++ b/drivers/input/joystick/xpad.c
-@@ -475,6 +475,16 @@ static const u8 xboxone_fw2015_init[] = {
- 	0x05, 0x20, 0x00, 0x01, 0x00
- };
+diff --git a/security/commoncap.c b/security/commoncap.c
+index 48071ed7c445..b62f97d83fd8 100644
+--- a/security/commoncap.c
++++ b/security/commoncap.c
+@@ -494,6 +494,7 @@ int cap_bprm_set_creds(struct linux_binprm *bprm)
+ 	int ret;
+ 	kuid_t root_uid;
  
-+/*
-+ * This packet is required for Xbox One S (0x045e:0x02ea)
-+ * and Xbox One Elite Series 2 (0x045e:0x0b00) pads to
-+ * initialize the controller that was previously used in
-+ * Bluetooth mode.
-+ */
-+static const u8 xboxone_s_init[] = {
-+	0x05, 0x20, 0x00, 0x0f, 0x06
-+};
-+
- /*
-  * This packet is required for the Titanfall 2 Xbox One pads
-  * (0x0e6f:0x0165) to finish initialization and for Hori pads
-@@ -533,6 +543,8 @@ static const struct xboxone_init_packet xboxone_init_packets[] = {
- 	XBOXONE_INIT_PKT(0x0e6f, 0x0165, xboxone_hori_init),
- 	XBOXONE_INIT_PKT(0x0f0d, 0x0067, xboxone_hori_init),
- 	XBOXONE_INIT_PKT(0x0000, 0x0000, xboxone_fw2015_init),
-+	XBOXONE_INIT_PKT(0x045e, 0x02ea, xboxone_s_init),
-+	XBOXONE_INIT_PKT(0x045e, 0x0b00, xboxone_s_init),
- 	XBOXONE_INIT_PKT(0x0e6f, 0x0000, xboxone_pdp_init1),
- 	XBOXONE_INIT_PKT(0x0e6f, 0x0000, xboxone_pdp_init2),
- 	XBOXONE_INIT_PKT(0x24c6, 0x541a, xboxone_rumblebegin_init),
++	new->cap_ambient = old->cap_ambient;
+ 	if (WARN_ON(!cap_ambient_invariant_ok(old)))
+ 		return -EPERM;
+ 
 -- 
 2.25.1
 
