@@ -2,68 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81BF41EAC85
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8211EAD2E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729694AbgFAShq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:37:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
+        id S1731337AbgFASnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:43:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728887AbgFAShm (ORCPT
+        with ESMTP id S1731415AbgFASmm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:37:42 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081B3C00863A;
-        Mon,  1 Jun 2020 11:32:08 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 86D1511D53F8B;
-        Mon,  1 Jun 2020 11:32:07 -0700 (PDT)
-Date:   Mon, 01 Jun 2020 11:32:06 -0700 (PDT)
-Message-Id: <20200601.113206.2297277969426428314.davem@davemloft.net>
-To:     hexie3605@gmail.com
-Cc:     kuba@kernel.org, madhuparnabhowmik04@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers/net/wan/lapbether.c: Fixed kernel panic when
- used with AF_PACKET sockets
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200528032134.13752-1-hexie3605@gmail.com>
-References: <20200528032134.13752-1-hexie3605@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 01 Jun 2020 11:32:07 -0700 (PDT)
+        Mon, 1 Jun 2020 14:42:42 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89ABC00863B
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 11:33:39 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id y17so285288plb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 11:33:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EIL54tsN/ayDunKEmeYsCGlcywdHCKj045U3CdpH9ek=;
+        b=jOxFQL+A2MHB3MmYXIfp5bt//vP9QMt4cukvW3gYDoxx//QLK387ou4V+W6qUZSUV1
+         /l0n4kgQjss2PX0sS8FBQNXyuxSqG+2gitU3EQHQodFBp5IsJb6qM+Eju2aaI8qlMNna
+         92Zj43RlWcilhzfkFJRTW4I4P+Jh5b3K9Wp0Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EIL54tsN/ayDunKEmeYsCGlcywdHCKj045U3CdpH9ek=;
+        b=qFxWUyLOW6Ufd/GsOQLJ67DtuBnXF5/jBD7WPHnNZ8/c7LyUmdwBZydqMVdGAYhstI
+         jmlE3Gu0HsOYVFeOpwDnakRccZjfHT7hwmpSU2y20cB2B5HzPC8tz6Ei+/G4tjNUX747
+         CdSSTHyFdKu+0DAsDNbQJdQ5F+ZKKQ6Ikwd52Mz4+hLUVQpAksL/vimcVPISPVnjeVYa
+         RK5f2eP+l/0S8S0nTDIKFbqUoZN8M93yiyORsF2hLpduqnVPjjuVApWjY6Li4aFFyuBh
+         9M1/1l7DbSOxEtLwEpegP9Q4xwiVoitMBMZiw+SeAuqaSAqciGeufkiVRhhpjT+TCgfc
+         QQ3Q==
+X-Gm-Message-State: AOAM532Hnh0zzayJ+lJPLI/55Dtrfjax1ZrjK3cjJYjMQh0zQZzPydpJ
+        52d9B9uNwoM2eIlbHr9ABvbNTQ==
+X-Google-Smtp-Source: ABdhPJzAJRWsupYp6piUM3gjsyTomoOnz1Ou5O8IYQ8kz+KAgZt03gQm3IhXp8yi8oUcv1YZqCT+Ww==
+X-Received: by 2002:a17:90b:3d4:: with SMTP id go20mr840756pjb.208.1591036418912;
+        Mon, 01 Jun 2020 11:33:38 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u1sm171288pgf.28.2020.06.01.11.33.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jun 2020 11:33:38 -0700 (PDT)
+Date:   Mon, 1 Jun 2020 11:33:37 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Tycho Andersen <tycho@tycho.ws>,
+        Matt Denton <mpdenton@google.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Robert Sesek <rsesek@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Linux Containers <containers@lists.linux-foundation.org>
+Subject: Re: [PATCH v3 1/4] seccomp: rename "usage" to "refs" and document
+Message-ID: <202006011133.543C6A8@keescook>
+References: <20200531115031.391515-1-christian.brauner@ubuntu.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200531115031.391515-1-christian.brauner@ubuntu.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <hexie3605@gmail.com>
-Date: Wed, 27 May 2020 20:21:33 -0700
-
-> When we use "AF_PACKET" sockets to send data directly over LAPB over
-> Ethernet using this driver, the kernel will panic because of
-> insufficient header space allocated in the "sk_buff" struct.
+On Sun, May 31, 2020 at 01:50:28PM +0200, Christian Brauner wrote:
+> Naming the lifetime counter of a seccomp filter "usage" suggests a
+> little too strongly that its about tasks that are using this filter
+> while it also tracks other references such as the user notifier or
+> ptrace. This also updates the documentation to note this fact.
 > 
-> The header space needs 18 bytes because:
->   the lapbether driver will remove a pseudo header of 1 byte;
->   the lapb module will prepend the LAPB header of 2 or 3 bytes;
->   the lapbether driver will prepend a length field of 2 bytes and the
-> Ethernet header of 14 bytes.
+> We'll be introducing an actual usage counter in a follow-up patch.
 > 
-> So -1 + 3 + 16 = 18.
-> 
-> Signed-off-by: Xie He <hexie3605@gmail.com>
+> Cc: Tycho Andersen <tycho@tycho.ws>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Matt Denton <mpdenton@google.com>
+> Cc: Sargun Dhillon <sargun@sargun.me>
+> Cc: Jann Horn <jannh@google.com>
+> Cc: Chris Palmer <palmer@google.com>
+> Cc: Aleksa Sarai <cyphar@cyphar.com>
+> Cc: Robert Sesek <rsesek@google.com>
+> Cc: Jeffrey Vander Stoep <jeffv@google.com>
+> Cc: Linux Containers <containers@lists.linux-foundation.org>
+> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 
-This is not the real problem.
+Thanks! Applied to for-next/seccomp.
 
-The real problem is that this is a stacked, layered, device and the
-lapbether driver does not take the inner device's header length into
-consideration.  It should take this from the child device's netdev
-structure rather than use constants.
-
-Your test case will still fail when lapbether is stacked on top of a
-VLAN device or similar, even with your changes.
+-- 
+Kees Cook
