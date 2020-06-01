@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E42781EA9EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 231E81EAA66
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730113AbgFASDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:03:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47544 "EHLO mail.kernel.org"
+        id S1730612AbgFASHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:07:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730098AbgFASDf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:03:35 -0400
+        id S1730524AbgFASHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:07:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD5722077D;
-        Mon,  1 Jun 2020 18:03:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B60532068D;
+        Mon,  1 Jun 2020 18:06:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034615;
-        bh=p5Ivg2Y9Ngh2RYD9AbZRVypIHScyMu3J9hzghra5llY=;
+        s=default; t=1591034820;
+        bh=/1aoE7TQlcktPcUnXVgbfRYbQl0UDGuNM3KVfIf8iV8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h+7wr0duMZfUrjCEb8wbOmUpG+teflp25QdBEI5OYziBKAQHhFpwTDXnKdKMGXCzI
-         MyrdjV30/0iW9LO06i5f3PirM4GxigefOIRix1cf61TKwdfW5FJS4M3gotXZqX14Y6
-         gwL1i4hqMdEo349HrnD9+ACFIi8zqzOCKYQMhE2I=
+        b=qTvFn2gQLrOBxgNdGcmxVcTcjjfJunH089MRZJjBbhVR/MZ1XkcP8qc3pZ8lZWrNg
+         p9GQftAQ7EKnV3IVOt92RpckWYTLPqu6pQXg7Pgp3iIROGmoXRxCtvWZaaTMKLDBJa
+         89BGgg3lmI1A87J6siVD4vh7sWJ2hgi74CscsuiE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Vadim Fedorenko <vfedorenko@novek.ru>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 06/95] net: ipip: fix wrong address family in init error path
+Subject: [PATCH 5.4 028/142] net/tls: free record only on encryption error
 Date:   Mon,  1 Jun 2020 19:53:06 +0200
-Message-Id: <20200601174021.904485238@linuxfoundation.org>
+Message-Id: <20200601174040.824690106@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
-References: <20200601174020.759151073@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,29 +45,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vadim Fedorenko <vfedorenko@novek.ru>
 
-[ Upstream commit 57ebc8f08504f176eb0f25b3e0fde517dec61a4f ]
+commit 635d9398178659d8ddba79dd061f9451cec0b4d1 upstream.
 
-In case of error with MPLS support the code is misusing AF_INET
-instead of AF_MPLS.
+We cannot free record on any transient error because it leads to
+losing previos data. Check socket error to know whether record must
+be freed or not.
 
-Fixes: 1b69e7e6c4da ("ipip: support MPLS over IPv4")
+Fixes: d10523d0b3d7 ("net/tls: free the record on encryption error")
 Signed-off-by: Vadim Fedorenko <vfedorenko@novek.ru>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/ipv4/ipip.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/ipv4/ipip.c
-+++ b/net/ipv4/ipip.c
-@@ -704,7 +704,7 @@ out:
- 
- rtnl_link_failed:
- #if IS_ENABLED(CONFIG_MPLS)
--	xfrm4_tunnel_deregister(&mplsip_handler, AF_INET);
-+	xfrm4_tunnel_deregister(&mplsip_handler, AF_MPLS);
- xfrm_tunnel_mplsip_failed:
- 
- #endif
+---
+ net/tls/tls_sw.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+--- a/net/tls/tls_sw.c
++++ b/net/tls/tls_sw.c
+@@ -797,9 +797,10 @@ static int bpf_exec_tx_verdict(struct sk
+ 	psock = sk_psock_get(sk);
+ 	if (!psock || !policy) {
+ 		err = tls_push_record(sk, flags, record_type);
+-		if (err && err != -EINPROGRESS) {
++		if (err && sk->sk_err == EBADMSG) {
+ 			*copied -= sk_msg_free(sk, msg);
+ 			tls_free_open_rec(sk);
++			err = -sk->sk_err;
+ 		}
+ 		if (psock)
+ 			sk_psock_put(sk, psock);
+@@ -825,9 +826,10 @@ more_data:
+ 	switch (psock->eval) {
+ 	case __SK_PASS:
+ 		err = tls_push_record(sk, flags, record_type);
+-		if (err && err != -EINPROGRESS) {
++		if (err && sk->sk_err == EBADMSG) {
+ 			*copied -= sk_msg_free(sk, msg);
+ 			tls_free_open_rec(sk);
++			err = -sk->sk_err;
+ 			goto out_err;
+ 		}
+ 		break;
 
 
