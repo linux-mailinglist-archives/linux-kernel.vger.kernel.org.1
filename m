@@ -2,183 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6A61EA24F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 12:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 026FC1EA257
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 12:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726073AbgFAK4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 06:56:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725788AbgFAK4l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 06:56:41 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD70C061A0E;
-        Mon,  1 Jun 2020 03:56:40 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id n9so1006567plk.1;
-        Mon, 01 Jun 2020 03:56:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=WvtTQ9EHafgZQreyIYmWntetDMEcUBIjpiRzw8PhfhI=;
-        b=hn+RZvKpABbnnC6PcU+q6x+LcvCPjZjjscpctJdGLpafU5Rkb9xre5LUsdHM9v2qxA
-         ejNWGO1R3zcQqpFAW6/GgYK+51z98T3GcSoxUxx6/P3PVsrgfZy9MpTC+Amp1zYFyxg6
-         /Z2Z5RhWpy+1xX+0snzkayKRMsGvfn6m4MNMsgwIz1TECqICBMq1s6iwTSDrsGbmP3Ni
-         vqj+cuslRIHKfP6syX6KT3c0to97e90s2IWIaqKa14RLkW4STKe4DXNzL5E9dxpf+zBu
-         y3r6Tqpzhjf53jOvgTeCgJM0Hl1w4Cf4WYXFYGqpYIN0xgDrlwo7cKCQI/Z/jlN58ZJ5
-         NmZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=WvtTQ9EHafgZQreyIYmWntetDMEcUBIjpiRzw8PhfhI=;
-        b=Pf+xZMRTHaa4d6xH7KrwONvJgbw+0Z3fKLYu8GF1R5mlAtsIRbZFdk7c/r2Mzbgyhh
-         gap6XJlmuWgMp0Phu+M8zIWkr5HncyN3AipUdgjErNBbE5L9aSqRn9qFEu+3TeWq4msc
-         HoqSGAusSQ1IAvRPuj3AI7nO+HjXxxioVqTBGh1w8jtyiaB1d+XWtcokfSVGZcZJGiMf
-         5af/RWDgkK+nQaOA0dEzpbGIE/5t6ULwYcSnFCWoUcUucuz4ZSk2sQqdAS4BVHZ0jfiU
-         7foyncRrA9JO6OCuA0r6p5HS0oOqkawUEExC/m/QCY0ul/DcL80K6RpSc9XKVjLOhCFP
-         fegA==
-X-Gm-Message-State: AOAM533OU7qf346GiPCgH5LJ7T2gYeIfF/p2vsginSZFocW2c/Ddptjs
-        OF8/RoijXAr7EaE52HhlFUDNYrEqAw4GSY2HdmE=
-X-Google-Smtp-Source: ABdhPJxu4ndB0FsVY1ZLDhib/EQ7SOjv/zHeqrIMIV5B2+LFhdXC1lD8zyl8tkWijQn90wLdVwTc1Hn58Ognz5QpTUg=
-X-Received: by 2002:a17:902:6b09:: with SMTP id o9mr20325820plk.100.1591009000110;
- Mon, 01 Jun 2020 03:56:40 -0700 (PDT)
+        id S1725974AbgFAK7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 06:59:15 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5832 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726094AbgFAK7M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 06:59:12 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 6B1E04F4E01298E3E784;
+        Mon,  1 Jun 2020 18:59:09 +0800 (CST)
+Received: from localhost.localdomain (10.175.118.36) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 1 Jun 2020 18:59:02 +0800
+From:   Luo bin <luobin9@huawei.com>
+To:     <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <luoxianjun@huawei.com>, <luobin9@huawei.com>,
+        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>
+Subject: [PATCH net-next v5] hinic: add set_channels ethtool_ops support
+Date:   Mon, 1 Jun 2020 18:57:48 +0800
+Message-ID: <20200601105748.27511-1-luobin9@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20200525100054.17700-1-gengcixi@gmail.com> <917da283-5f1e-3fdb-13bb-4251312dc77a@linux.ibm.com>
-In-Reply-To: <917da283-5f1e-3fdb-13bb-4251312dc77a@linux.ibm.com>
-From:   Cixi Geng <gengcixi@gmail.com>
-Date:   Mon, 1 Jun 2020 18:56:04 +0800
-Message-ID: <CAF12kFvz-QEt7_xQ8ufXQdsNUBUCUw_i4gdXQ=D4h2OgNcmCOg@mail.gmail.com>
-Subject: Re: [RFC PATCH v4] GCOV: profile by modules
-To:     Peter Oberparleiter <oberpar@linux.ibm.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, jslaby@suse.com,
-        linux-serial@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>, zhang.lyra@gmail.com,
-        Cixi Geng <cixi.geng1@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [10.175.118.36]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Oberparleiter <oberpar@linux.ibm.com> =E4=BA=8E2020=E5=B9=B45=E6=9C=
-=8828=E6=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=8810:47=E5=86=99=E9=81=93=
-=EF=BC=9A
->
-> On 25.05.2020 12:00, gengcixi@gmail.com wrote:
-> > From: Cixi Geng <cixi.geng1@unisoc.com>
-> >
-> > The CONFIG_GCOV_PROFILE_ALL will compile kernel by profiling entire
-> > kernel which will lead to kernel run slower.Use GCOV_PROFILE_PREREQS
-> > to control part of the kernel modules to open gcov.
->
-> Maybe rephrase the commit message to make the intention more obvious:
->
-> Introduce new configuration option GCOV_PROFILE_PREREQS that can be used
-> to check whether the prerequisites for enabling gcov profiling for
-> specific files and directories are met.
->
-> >
-> > Only add SERIAL_GCOV for an example.
-> >
-> > Signed-off-by: Cixi Geng <cixi.geng1@unisoc.com>
-> > ---
-> >  drivers/tty/serial/Kconfig  |  7 +++++++
-> >  drivers/tty/serial/Makefile |  1 +
-> >  kernel/gcov/Kconfig         | 14 ++++++++++++++
-> >  3 files changed, 22 insertions(+)
-> >
-> > diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-> > index adf9e80e7dc9..6df002370f18 100644
-> > --- a/drivers/tty/serial/Kconfig
-> > +++ b/drivers/tty/serial/Kconfig
-> > @@ -1566,3 +1566,10 @@ endmenu
-> >
-> >  config SERIAL_MCTRL_GPIO
-> >       tristate
-> > +
-> > +config SERIAL_GCOV
-> > +     bool "Enable profile gcov for serial directory"
-> > +     depends on GCOV_PROFILE_PREREQS
-> > +     help
-> > +       The SERIAL_GCOV will add Gcov profiling flags when kernel compi=
-les.
-> > +       Say 'Y' here if you want the gcov data for the serial directory=
-,
-> > diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
-> > index d056ee6cca33..17272733db95 100644
-> > --- a/drivers/tty/serial/Makefile
-> > +++ b/drivers/tty/serial/Makefile
-> > @@ -3,6 +3,7 @@
-> >  # Makefile for the kernel serial device drivers.
-> >  #
-> >
-> > +GCOV_PROFILE :=3D $(CONFIG_SERIAL_GCOV)
-> >  obj-$(CONFIG_SERIAL_CORE) +=3D serial_core.o
-> >
-> >  obj-$(CONFIG_SERIAL_EARLYCON) +=3D earlycon.o
-> > diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
-> > index 3941a9c48f83..ea8b514f5676 100644
-> > --- a/kernel/gcov/Kconfig
-> > +++ b/kernel/gcov/Kconfig
-> > @@ -51,6 +51,20 @@ config GCOV_PROFILE_ALL
-> >       larger and run slower. Also be sure to exclude files from profili=
-ng
-> >       which are not linked to the kernel image to prevent linker errors=
-.
-> >
-> > +config GCOV_PROFILE_PREREQS
-> > +     bool "Profile Kernel subsytem"
-> > +     depends on !COMPILE_TEST
-> > +     depends on GCOV_KERNEL
-> > +     depends on !GCOV_PROFILE_ALL
-> > +     help
-> > +       This options activates profiling for the specified kernel modul=
-es.
-> > +
-> > +       When some modules need Gcov data, enable this config, then conf=
-igure
-> > +       with gcov on the corresponding modules,The directories or files=
- of
-> > +       these modules will be added profiling flags after kernel compil=
-e.
-> > +
-> > +       If unsure, say N.
->
-> This is not quite what I had in mind. A user still needs to manually
-> select GCOV_PROFILE, then GCOV_PROFILE_PREREQS, then SERIAL_GCOV.
->
-> My though was that you could provide an automatic config option that is
-> invisible in the configuration dialog, and that is automatically
-> selected when all prereqs for enabling GCOV in a module directory are met=
-.
->
-> Something like the following:
->
-> config GCOV_PROFILE_PREREQS
->         bool
->         default y if GCOV_KERNEL && !COMPILE_TEST
->         default n
->
-> There's no need to add GCOV_KERNEL_ALL here since that is about a user
-> choice ("I want all code compiled with profiling") vs. this new symbol
-> which is about an ability ("all prereqs for enabling profiling in
-> specific directories are met).
->
-As far as I'm concerned, The GCOV_KERNEL_ALL will conflict with
-GCOV_PROFILE_PREREQS=EF=BC=8Csince the GCOV_KERNEL_ALL will profing all
-code which contain the new config.
->
-> > +
-> >  choice
-> >       prompt "Specify GCOV format"
-> >       depends on GCOV_KERNEL
-> >
->
->
-> --
-> Peter Oberparleiter
-> Linux on Z Development - IBM Germany
+add support to change TX/RX queue number with "ethtool -L combined".
+
+V4 -> V5: change time zone in patch header
+V4 -> V3: update date in patch header
+V3 -> V2: remove check for zero channels->combined_count
+V1 -> V2: update commit message("ethtool -L" to "ethtool -L combined")
+V0 -> V1: remove check for channels->tx_count/rx_count/other_count
+
+Signed-off-by: Luo bin <luobin9@huawei.com>
+---
+ .../net/ethernet/huawei/hinic/hinic_ethtool.c | 40 +++++++++++++++----
+ .../net/ethernet/huawei/hinic/hinic_main.c    |  2 +-
+ drivers/net/ethernet/huawei/hinic/hinic_tx.c  |  5 +++
+ 3 files changed, 38 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
+index ace18d258049..efb02e03e7da 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
+@@ -619,14 +619,37 @@ static void hinic_get_channels(struct net_device *netdev,
+ 	struct hinic_dev *nic_dev = netdev_priv(netdev);
+ 	struct hinic_hwdev *hwdev = nic_dev->hwdev;
+ 
+-	channels->max_rx = hwdev->nic_cap.max_qps;
+-	channels->max_tx = hwdev->nic_cap.max_qps;
+-	channels->max_other = 0;
+-	channels->max_combined = 0;
+-	channels->rx_count = hinic_hwdev_num_qps(hwdev);
+-	channels->tx_count = hinic_hwdev_num_qps(hwdev);
+-	channels->other_count = 0;
+-	channels->combined_count = 0;
++	channels->max_combined = nic_dev->max_qps;
++	channels->combined_count = hinic_hwdev_num_qps(hwdev);
++}
++
++static int hinic_set_channels(struct net_device *netdev,
++			      struct ethtool_channels *channels)
++{
++	struct hinic_dev *nic_dev = netdev_priv(netdev);
++	unsigned int count = channels->combined_count;
++	int err;
++
++	netif_info(nic_dev, drv, netdev, "Set max combined queue number from %d to %d\n",
++		   hinic_hwdev_num_qps(nic_dev->hwdev), count);
++
++	if (netif_running(netdev)) {
++		netif_info(nic_dev, drv, netdev, "Restarting netdev\n");
++		hinic_close(netdev);
++
++		nic_dev->hwdev->nic_cap.num_qps = count;
++
++		err = hinic_open(netdev);
++		if (err) {
++			netif_err(nic_dev, drv, netdev,
++				  "Failed to open netdev\n");
++			return -EFAULT;
++		}
++	} else {
++		nic_dev->hwdev->nic_cap.num_qps = count;
++	}
++
++	return 0;
+ }
+ 
+ static int hinic_get_rss_hash_opts(struct hinic_dev *nic_dev,
+@@ -1219,6 +1242,7 @@ static const struct ethtool_ops hinic_ethtool_ops = {
+ 	.get_ringparam = hinic_get_ringparam,
+ 	.set_ringparam = hinic_set_ringparam,
+ 	.get_channels = hinic_get_channels,
++	.set_channels = hinic_set_channels,
+ 	.get_rxnfc = hinic_get_rxnfc,
+ 	.set_rxnfc = hinic_set_rxnfc,
+ 	.get_rxfh_key_size = hinic_get_rxfh_key_size,
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_main.c b/drivers/net/ethernet/huawei/hinic/hinic_main.c
+index c8ab129a7ae8..e9e6f4c9309a 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_main.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_main.c
+@@ -326,7 +326,6 @@ static void hinic_enable_rss(struct hinic_dev *nic_dev)
+ 	int i, node, err = 0;
+ 	u16 num_cpus = 0;
+ 
+-	nic_dev->max_qps = hinic_hwdev_max_num_qps(hwdev);
+ 	if (nic_dev->max_qps <= 1) {
+ 		nic_dev->flags &= ~HINIC_RSS_ENABLE;
+ 		nic_dev->rss_limit = nic_dev->max_qps;
+@@ -1031,6 +1030,7 @@ static int nic_dev_init(struct pci_dev *pdev)
+ 	nic_dev->rq_depth = HINIC_RQ_DEPTH;
+ 	nic_dev->sriov_info.hwdev = hwdev;
+ 	nic_dev->sriov_info.pdev = pdev;
++	nic_dev->max_qps = num_qps;
+ 
+ 	sema_init(&nic_dev->mgmt_lock, 1);
+ 
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_tx.c b/drivers/net/ethernet/huawei/hinic/hinic_tx.c
+index 4c66a0bc1b28..6da761d7a6ef 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_tx.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_tx.c
+@@ -470,6 +470,11 @@ netdev_tx_t hinic_xmit_frame(struct sk_buff *skb, struct net_device *netdev)
+ 	struct hinic_txq *txq;
+ 	struct hinic_qp *qp;
+ 
++	if (unlikely(!netif_carrier_ok(netdev))) {
++		dev_kfree_skb_any(skb);
++		return NETDEV_TX_OK;
++	}
++
+ 	txq = &nic_dev->txqs[q_id];
+ 	qp = container_of(txq->sq, struct hinic_qp, sq);
+ 
+-- 
+2.17.1
+
