@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B6E1EA8D4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C011EA8D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728550AbgFAR4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:56:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35836 "EHLO
+        id S1728570AbgFAR4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:56:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728452AbgFAR4D (ORCPT
+        with ESMTP id S1728489AbgFAR4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:56:03 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7041C08C5C0
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 10:56:02 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id s88so160509pjb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 10:56:02 -0700 (PDT)
+        Mon, 1 Jun 2020 13:56:07 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE8DEC05BD43
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 10:56:07 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id fs4so145434pjb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 10:56:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=UjRIi2EJxbL5MBHfOKyrAGQUtxoKwiBe/CM48DHAMvM=;
-        b=XtiuiNP724RWlnK84qm9/l1Ohi6G22E5lgTFSt4VRQFtx4jQQi5z8CziOfBSHWV7ae
-         X7tjiaz1jgwd13ysS5MS2pOV7lNtEofx5PURxUVko8WUZzwtgojiMJT6CnqCYUYM+b3z
-         unMjjSsTMU6AOj8+YcFmkpy57FoXzTwuEgaIQHmPGmq3ooZNZPmuSSzOwaJnOQCXCLV1
-         w9c2kcoXlePiTbsAx3Kwdm8btVOuETPx9FFjf9T8hvEgrrHFLmtS59XaQCC1h+d98LgV
-         9OZkPnhaiseYjnLZt/GGkIZMAUOzyumOlm595fNYngpxtwk2K1tZJ0qCyzunV9fn9Nl9
-         m8kg==
+        bh=89+h/plDTY4mDzCs1rYHBGU3MZW5Lf4AJft/Geveaac=;
+        b=UJW1vl1f7dpO7gbFKlkA2zgpME8H2E23tNzkiGS91xT++xLFPjRvKMz/e7Fk6+RiEZ
+         SZ/u7rWEuTf5R3lmi0b3QFLZFAPKNAk7QXHlk+frMOiFY3rCKSGekRtMnNnXBlCifqtP
+         NDmXSKfTtFPGKM2RnN5jwWvCVdKJHG6QuX2wubSS+lZ1QSDbwpgqa1dlTDoRi7YoU9Eo
+         /HJMIhJ+m7oDHSnT9WXZb8NfUvTw8JncNjwxf3jr5Gb4RNaGBAihbRDEFwfQ3/zvtgmM
+         wtKgJUJkaxxQk1MX+XnoMHlfFlNc1yadikx5AC9P4nzS9lTncTJpR8CWq3KMEvdz9wmg
+         5SYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=UjRIi2EJxbL5MBHfOKyrAGQUtxoKwiBe/CM48DHAMvM=;
-        b=IZfn8cqVVcqwsYh1pu2us+XY81c5f9RwxGd4K8YDh9HO2SGeFNX2+OQ5XPRIlbFuSZ
-         8DR0uVQ5DWjXmvlPzg2b2jjwzdhB9dyuMTcOmw5vdQr9kMysjwrbXsGtwXTFJPpanhP8
-         R4wkTm4etKariMWQLAwRS05TpUWgphpYARhQ06+hTzTH6PdnO0zCqXyoI4222xTmo3gt
-         ExeAr+BUI2Po7tUR3rHO6XuoraxvTWkAwtPBanqvIEHwiA45kFv79eWUqTe/bi8NKoWH
-         M7oFywzt4Eyy0bm2OXiAgrN84rQlhvjgtGTgOQmFaRO57cjsQxHDvLauzPZ3/Qu5EQHP
-         921Q==
-X-Gm-Message-State: AOAM533t86gNiRtoQNyBKL9z8iiMp5veg+vpF+4BLdlNgjkqlDIZenB7
-        ZVB1h2SZGYkX7kp1TPC5ZCzcOBTy7mE=
-X-Google-Smtp-Source: ABdhPJy5nT7+CY/1aFdlTpP4oiTag5rh3vPEE5Tw3v78GbxlhWqMZA7DHmoAbLMSI6xhzJOof+CiwA==
-X-Received: by 2002:a17:902:7e41:: with SMTP id a1mr20962820pln.72.1591034162457;
-        Mon, 01 Jun 2020 10:56:02 -0700 (PDT)
+        bh=89+h/plDTY4mDzCs1rYHBGU3MZW5Lf4AJft/Geveaac=;
+        b=pflA6p30cjy11d5ETbxwUEhndKWOeR3ecYbpDCvOofoAgdjCcXnHZ83n3CmYISxXo/
+         NZk0hxOK/xg7q2lsWKp1T7lJEffd9sip/S7ElgCQ6YM/Pns2AXvDLdsgWaP/guLgvpjD
+         QIKEoWnDAEk0xjM14gpZ0aD9dA204RhGjzmTRjzyPhzMTTgpv2mA3Yi7xKfbAa7w+hO8
+         9tVYq55mfVef+mQIfoRIQR7i/NvL44jWmJz/QdHWYWpZ3Q0mzs23aP82L5DEhYhunE+m
+         lBrH8dH1W0k6OkuVKVKa5QRsyL1ugrOmNhNGs5+eZEaaErE6OEaZvRmNnkgr6eg9OmFG
+         ZKhg==
+X-Gm-Message-State: AOAM533N3JTTCD23PvPThM5PiL0acgVLxZsQigTar7EPKMGI920qLGKI
+        bIB0PTuc1FphzU9HaqzmuqKOXQ==
+X-Google-Smtp-Source: ABdhPJypHYDsLPAIbS0JYVfQMOvatKvrrQns1EzAP3MAD0yNOfhUMy3DV32cG6rH3piOQuj4WeHadw==
+X-Received: by 2002:a17:90b:693:: with SMTP id m19mr590592pjz.125.1591034167244;
+        Mon, 01 Jun 2020 10:56:07 -0700 (PDT)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id p7sm64771pfq.184.2020.06.01.10.56.01
+        by smtp.gmail.com with ESMTPSA id p7sm64771pfq.184.2020.06.01.10.56.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jun 2020 10:56:02 -0700 (PDT)
+        Mon, 01 Jun 2020 10:56:06 -0700 (PDT)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     bjorn.andersson@linaro.org, ohad@wizery.com,
         mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
@@ -55,9 +55,9 @@ Cc:     loic.pallardy@st.com, arnaud.pouliquen@st.com,
         linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v4 06/11] remoteproc: stm32: Properly set co-processor state when attaching
-Date:   Mon,  1 Jun 2020 11:55:47 -0600
-Message-Id: <20200601175552.22286-7-mathieu.poirier@linaro.org>
+Subject: [PATCH v4 10/11] remoteproc: stm32: Introduce new attach() operation
+Date:   Mon,  1 Jun 2020 11:55:51 -0600
+Message-Id: <20200601175552.22286-11-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200601175552.22286-1-mathieu.poirier@linaro.org>
 References: <20200601175552.22286-1-mathieu.poirier@linaro.org>
@@ -68,9 +68,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce the required mechanic to set the state of the M4 in order
-to properly deal with scenarios where the co-processor has been
-stated by another entity.
+Introduce new attach function to be used when attaching to a
+remote processor.
 
 Mainly based on the work published by Arnaud Pouliquen [1].
 
@@ -78,72 +77,35 @@ Mainly based on the work published by Arnaud Pouliquen [1].
 
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- drivers/remoteproc/stm32_rproc.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ drivers/remoteproc/stm32_rproc.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index 80fd8fd831da..2154c8b90a2a 100644
+index 7c8789164af7..77a20a638e0c 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
-@@ -38,6 +38,13 @@
- #define STM32_MBX_VQ1_ID	1
- #define STM32_MBX_SHUTDOWN	"shutdown"
- 
-+#define M4_STATE_OFF		0
-+#define M4_STATE_INI		1
-+#define M4_STATE_CRUN		2
-+#define M4_STATE_CSTOP		3
-+#define M4_STATE_STANDBY	4
-+#define M4_STATE_CRASH		5
-+
- struct stm32_syscon {
- 	struct regmap *map;
- 	u32 reg;
-@@ -635,12 +642,30 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev,
- 	return 0;
+@@ -459,6 +459,13 @@ static int stm32_rproc_start(struct rproc *rproc)
+ 	return stm32_rproc_set_hold_boot(rproc, true);
  }
  
-+static int stm32_rproc_get_m4_status(struct stm32_rproc *ddata,
-+				     unsigned int *state)
++static int stm32_rproc_attach(struct rproc *rproc)
 +{
-+	/* See stm32_rproc_parse_dt() */
-+	if (!ddata->m4_state.map) {
-+		/*
-+		 * We couldn't get the coprocessor's state, assume
-+		 * it is not running.
-+		 */
-+		state = M4_STATE_OFF;
-+		return 0;
-+	}
++	stm32_rproc_add_coredump_trace(rproc);
 +
-+	return regmap_read(ddata->m4_state.map, ddata->m4_state.reg, state);
++	return stm32_rproc_set_hold_boot(rproc, true);
 +}
 +
-+
- static int stm32_rproc_probe(struct platform_device *pdev)
+ static int stm32_rproc_stop(struct rproc *rproc)
  {
- 	struct device *dev = &pdev->dev;
- 	struct stm32_rproc *ddata;
- 	struct device_node *np = dev->of_node;
- 	struct rproc *rproc;
-+	unsigned int state;
- 	int ret;
- 
- 	ret = dma_coerce_mask_and_coherent(dev, DMA_BIT_MASK(32));
-@@ -663,6 +688,13 @@ static int stm32_rproc_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto free_rproc;
- 
-+	ret = stm32_rproc_get_m4_status(ddata, &state);
-+	if (ret)
-+		goto free_rproc;
-+
-+	if (state == M4_STATE_CRUN)
-+		rproc->state = RPROC_DETACHED;
-+
- 	rproc->has_iommu = false;
- 	ddata->workqueue = create_workqueue(dev_name(dev));
- 	if (!ddata->workqueue) {
+ 	struct stm32_rproc *ddata = rproc->priv;
+@@ -524,6 +531,7 @@ static void stm32_rproc_kick(struct rproc *rproc, int vqid)
+ static struct rproc_ops st_rproc_ops = {
+ 	.start		= stm32_rproc_start,
+ 	.stop		= stm32_rproc_stop,
++	.attach		= stm32_rproc_attach,
+ 	.kick		= stm32_rproc_kick,
+ 	.load		= rproc_elf_load_segments,
+ 	.parse_fw	= stm32_rproc_parse_fw,
 -- 
 2.20.1
 
