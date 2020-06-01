@@ -2,44 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9286A1EAB7E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A0A1EAAAE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731875AbgFASRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:17:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39070 "EHLO mail.kernel.org"
+        id S1730543AbgFASK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:10:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731611AbgFASRp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:17:45 -0400
+        id S1730486AbgFASKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:10:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A5852068D;
-        Mon,  1 Jun 2020 18:17:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 864C52068D;
+        Mon,  1 Jun 2020 18:10:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035464;
-        bh=GZhhrHGz8Ys3XjEkj3lsFSGFyE1jA+X30Q4yoTtdXjo=;
+        s=default; t=1591035011;
+        bh=UKca6Vmt0hmdfqCKi6/7uixcWxyqVdBAMMZHI2WyIZY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=04Fm+2rpQxX/RRws0amOsjQDBkMOcCArIT4rNBu8L6nbgexFZmtfa63YBc/d2Nqc+
-         fAHacQtMdNvdSkaZVSWONipf8BH2F7vy17nD8jxPC+MVaiBgmftEqofpUKCeHsmJxd
-         vxYiHlD7tdmir0+QfeszvuZn+SXRucV7SUDInI0s=
+        b=IV1cZC0FShJFHCjrjys1RJe05FZaDQNuFTuTNklnYcBueW9WUFcEacLDG665/ulcA
+         LW2T5BWWIw/gLci4oafn5ahkV5L3vtgq5iO71jYAGFZavESqccdNHhYODU8UBNzz6v
+         AXtDQq4hRQtroDipMq6SoK2qm6oGkXL1RretgPOQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Song Liu <songliubraving@fb.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Rik van Riel <riel@surriel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 132/177] mm,thp: stop leaking unreleased file pages
-Date:   Mon,  1 Jun 2020 19:54:30 +0200
-Message-Id: <20200601174059.501360844@linuxfoundation.org>
+        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Subject: [PATCH 5.4 113/142] xfrm: do pskb_pull properly in __xfrm_transport_prep
+Date:   Mon,  1 Jun 2020 19:54:31 +0200
+Message-Id: <20200601174049.610662064@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,44 +43,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugh Dickins <hughd@google.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit 2f33a706027c94cd4f70fcd3e3f4a17c1ce4ea4b ]
+commit 06a0afcfe2f551ff755849ea2549b0d8409fd9a0 upstream.
 
-When collapse_file() calls try_to_release_page(), it has already isolated
-the page: so if releasing buffers happens to fail (as it sometimes does),
-remember to putback_lru_page(): otherwise that page is left unreclaimable
-and unfreeable, and the file extent uncollapsible.
+For transport mode, when ipv6 nexthdr is set, the packet format might
+be like:
 
-Fixes: 99cb0dbd47a1 ("mm,thp: add read-only THP support for (non-shmem) FS")
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Song Liu <songliubraving@fb.com>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Rik van Riel <riel@surriel.com>
-Cc: <stable@vger.kernel.org>	[5.4+]
-Link: http://lkml.kernel.org/r/alpine.LSU.2.11.2005231837500.1766@eggly.anvils
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+    ----------------------------------------------------
+    |        | dest |     |     |      |  ESP    | ESP |
+    | IP6 hdr| opts.| ESP | TCP | Data | Trailer | ICV |
+    ----------------------------------------------------
+
+and in __xfrm_transport_prep():
+
+  pskb_pull(skb, skb->mac_len + sizeof(ip6hdr) + x->props.header_len);
+
+it will pull the data pointer to the wrong position, as it missed the
+nexthdrs/dest opts.
+
+This patch is to fix it by using:
+
+  pskb_pull(skb, skb_transport_offset(skb) + x->props.header_len);
+
+as we can be sure transport_header points to ESP header at that moment.
+
+It also fixes a panic when packets with ipv6 nexthdr are sent over
+esp6 transport mode:
+
+  [  100.473845] kernel BUG at net/core/skbuff.c:4325!
+  [  100.478517] RIP: 0010:__skb_to_sgvec+0x252/0x260
+  [  100.494355] Call Trace:
+  [  100.494829]  skb_to_sgvec+0x11/0x40
+  [  100.495492]  esp6_output_tail+0x12e/0x550 [esp6]
+  [  100.496358]  esp6_xmit+0x1d5/0x260 [esp6_offload]
+  [  100.498029]  validate_xmit_xfrm+0x22f/0x2e0
+  [  100.499604]  __dev_queue_xmit+0x589/0x910
+  [  100.502928]  ip6_finish_output2+0x2a5/0x5a0
+  [  100.503718]  ip6_output+0x6c/0x120
+  [  100.505198]  xfrm_output_resume+0x4bf/0x530
+  [  100.508683]  xfrm6_output+0x3a/0xc0
+  [  100.513446]  inet6_csk_xmit+0xa1/0xf0
+  [  100.517335]  tcp_sendmsg+0x27/0x40
+  [  100.517977]  sock_sendmsg+0x3e/0x60
+  [  100.518648]  __sys_sendto+0xee/0x160
+
+Fixes: c35fe4106b92 ("xfrm: Add mode handlers for IPsec on layer 2")
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- mm/khugepaged.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/xfrm/xfrm_device.c |    8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index b679908743cb..ba059e68cf50 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -1673,6 +1673,7 @@ static void collapse_file(struct mm_struct *mm,
- 		if (page_has_private(page) &&
- 		    !try_to_release_page(page, GFP_KERNEL)) {
- 			result = SCAN_PAGE_HAS_PRIVATE;
-+			putback_lru_page(page);
- 			goto out_unlock;
- 		}
+--- a/net/xfrm/xfrm_device.c
++++ b/net/xfrm/xfrm_device.c
+@@ -25,12 +25,10 @@ static void __xfrm_transport_prep(struct
+ 	struct xfrm_offload *xo = xfrm_offload(skb);
  
--- 
-2.25.1
-
+ 	skb_reset_mac_len(skb);
+-	pskb_pull(skb, skb->mac_len + hsize + x->props.header_len);
+-
+-	if (xo->flags & XFRM_GSO_SEGMENT) {
+-		skb_reset_transport_header(skb);
++	if (xo->flags & XFRM_GSO_SEGMENT)
+ 		skb->transport_header -= x->props.header_len;
+-	}
++
++	pskb_pull(skb, skb_transport_offset(skb) + x->props.header_len);
+ }
+ 
+ static void __xfrm_mode_tunnel_prep(struct xfrm_state *x, struct sk_buff *skb,
 
 
