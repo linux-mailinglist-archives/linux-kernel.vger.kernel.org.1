@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 844781EAED8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E42B1EAE61
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730713AbgFAS5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:57:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42402 "EHLO mail.kernel.org"
+        id S1730030AbgFASDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:03:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729555AbgFAR7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:59:52 -0400
+        id S1730014AbgFASC5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:02:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 73E46206E2;
-        Mon,  1 Jun 2020 17:59:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D7EE6208A7;
+        Mon,  1 Jun 2020 18:02:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034391;
-        bh=RHYFlKGmv3ZEU4RWy/4On0Pa7vSBAT0uv4j1Gh7M49Y=;
+        s=default; t=1591034577;
+        bh=d6n1lfALiOuqf6hD6qY0ykkceo3UeXoajd4//MCBJ98=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZMFCEthxgUwpLrI/RLaLZJkAE0lfStHCr+wvRhTEFtkAEEFuk1PASHliweIJCTm23
-         RjpDdqB5pWxVanSYkuzM4O+rWmUBj7tUgX08W1ME2li+cTZ2rUpqWrdpU54L0o6o1p
-         lpCS3nzO9iKo9x0wmU+xCVcb/Ymrf34N6aciz5xo=
+        b=I6sG4itobfsO4lWbOU7cWo+FDFhWO2qDAJw1obGEQTs8e4Kz1C9/VJBvY7iowgx7T
+         6pfmpCR5vUIwYy6izrnQBOjqChrAcqmw0GvMKZe5+TohiinQO+EAa331RGp7I9fWOx
+         PTg29tzxMwPCGdIuhXtPTCW+NCeN5xyL4NjFIM6U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 11/77] net/mlx4_core: fix a memory leak bug.
+Subject: [PATCH 4.19 16/95] net: sun: fix missing release regions in cas_init_one().
 Date:   Mon,  1 Jun 2020 19:53:16 +0200
-Message-Id: <20200601174018.557560240@linuxfoundation.org>
+Message-Id: <20200601174023.444074465@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
-References: <20200601174016.396817032@linuxfoundation.org>
+In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
+References: <20200601174020.759151073@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,32 +45,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Qiushi Wu <wu000273@umn.edu>
 
-commit febfd9d3c7f74063e8e630b15413ca91b567f963 upstream.
+commit 5a730153984dd13f82ffae93d7170d76eba204e9 upstream.
 
-In function mlx4_opreq_action(), pointer "mailbox" is not released,
-when mlx4_cmd_box() return and error, causing a memory leak bug.
-Fix this issue by going to "out" label, mlx4_free_cmd_mailbox() can
-free this pointer.
+In cas_init_one(), "pdev" is requested by "pci_request_regions", but it
+was not released after a call of the function “pci_write_config_byte”
+failed. Thus replace the jump target “err_write_cacheline” by
+"err_out_free_res".
 
-Fixes: fe6f700d6cbb ("net/mlx4_core: Respond to operation request by firmware")
+Fixes: 1f26dac32057 ("[NET]: Add Sun Cassini driver.")
 Signed-off-by: Qiushi Wu <wu000273@umn.edu>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/ethernet/mellanox/mlx4/fw.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/sun/cassini.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlx4/fw.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/fw.c
-@@ -2715,7 +2715,7 @@ void mlx4_opreq_action(struct work_struc
- 		if (err) {
- 			mlx4_err(dev, "Failed to retrieve required operation: %d\n",
- 				 err);
--			return;
-+			goto out;
+--- a/drivers/net/ethernet/sun/cassini.c
++++ b/drivers/net/ethernet/sun/cassini.c
+@@ -4971,7 +4971,7 @@ static int cas_init_one(struct pci_dev *
+ 					  cas_cacheline_size)) {
+ 			dev_err(&pdev->dev, "Could not set PCI cache "
+ 			       "line size\n");
+-			goto err_write_cacheline;
++			goto err_out_free_res;
  		}
- 		MLX4_GET(modifier, outbox, GET_OP_REQ_MODIFIER_OFFSET);
- 		MLX4_GET(token, outbox, GET_OP_REQ_TOKEN_OFFSET);
+ 	}
+ #endif
+@@ -5144,7 +5144,6 @@ err_out_iounmap:
+ err_out_free_res:
+ 	pci_release_regions(pdev);
+ 
+-err_write_cacheline:
+ 	/* Try to restore it in case the error occurred after we
+ 	 * set it.
+ 	 */
 
 
