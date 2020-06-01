@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 843691EAEBD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D371EADB1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730616AbgFAS4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:56:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43230 "EHLO mail.kernel.org"
+        id S1730535AbgFASra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:47:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729646AbgFASAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:00:32 -0400
+        id S1730693AbgFASIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:08:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C8C7206E2;
-        Mon,  1 Jun 2020 18:00:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E47EB2077D;
+        Mon,  1 Jun 2020 18:08:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034432;
-        bh=fdjg3WSVYtxBn3QT4as0cSFEN35TCejYjnX3bfS/FLU=;
+        s=default; t=1591034892;
+        bh=gMXF4fl4Dkfvmlk//jveDXjQXmPi/EG1P1zpQCrRKb4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x+z9bGKUN7JVmTtLmoMs3B77CCRVkulFcjo36maPte9h9FANUXgdpVfxd9x5icPd4
-         UINiy3pHsagHXJc9YReJxGMjmLmDfZ74zUL+GFMaxpdv4+q8IO1iRwy9okTcqa+r/I
-         vEH9t+tx7qCFgPUbHO+mwVzPVe9+pDd61YqDU/sg=
+        b=masTlWTpVAAIP7fNw0JIOry7/Dq2Uf5hEXDgWtr/nbyC8ZjAhnKpkCQSQeqe0K+Sm
+         chaKKbAnHjTqASfWHZ7tXqeEsA/w+v23FyH88pRdv80CAUcaB3bFYzVBwLYhyHvfjk
+         zqKf8sRkFiJHISzvGLwG8JplG7xvGfQkL8ZWiTQE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kevin Locke <kevin@kevinlocke.name>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Liu Yibin <jiulong@linux.alibaba.com>,
+        Guo Ren <guoren@linux.alibaba.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 29/77] Input: i8042 - add ThinkPad S230u to i8042 reset list
-Date:   Mon,  1 Jun 2020 19:53:34 +0200
-Message-Id: <20200601174021.837550551@linuxfoundation.org>
+Subject: [PATCH 5.4 057/142] csky: Fixup remove duplicate irq_disable
+Date:   Mon,  1 Jun 2020 19:53:35 +0200
+Message-Id: <20200601174043.854249061@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
-References: <20200601174016.396817032@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kevin Locke <kevin@kevinlocke.name>
+From: Liu Yibin <jiulong@linux.alibaba.com>
 
-[ Upstream commit 2712c91a54a1058d55c284152b4d93c979b67be6 ]
+[ Upstream commit 6633a5aa8eb6bda70eb3a9837efd28a67ccc6e0a ]
 
-On the Lenovo ThinkPad Twist S230u (3347-4HU) with BIOS version
-"GDETC1WW (1.81 ) 06/27/2019", the keyboard, Synaptics TouchPad, and
-TrackPoint either do not function or stop functioning a few minutes
-after boot.  This problem has been noted before, perhaps only occurring
-with BIOS 1.57 and later.[1][2][3][4][5]
+Interrupt has been disabled in __schedule() with local_irq_disable()
+and enabled in finish_task_switch->finish_lock_switch() with
+local_irq_enabled(), So needn't to disable irq here.
 
-Odds of a BIOS fix appear to be low: 1.57 was released over 6 years ago
-and although the [BIOS changelog] notes "Fixed an issue of UEFI
-touchpad/trackpoint/keyboard/touchscreen" in 1.58, it appears to be
-insufficient.
-
-Setting i8042.reset=1 or adding 33474HU to the reset list avoids the
-issue on my system from either warm or cold boot.
-
-[1]: https://bugs.launchpad.net/bugs/1210748
-[2]: https://bbs.archlinux.org/viewtopic.php?pid=1360425
-[3]: https://forums.linuxmint.com/viewtopic.php?f=46&t=41200
-[4]: https://forums.linuxmint.com/viewtopic.php?f=49&t=157115
-[5]: https://forums.lenovo.com/topic/findpost/27/1337119
-[BIOS changelog]: https://download.lenovo.com/pccbbs/mobiles/gduj33uc.txt
-
-Signed-off-by: Kevin Locke <kevin@kevinlocke.name>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/94f384b0f75f90f71425d7dce7ac82c59ddb87a8.1587702636.git.kevin@kevinlocke.name
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Liu Yibin <jiulong@linux.alibaba.com>
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/serio/i8042-x86ia64io.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/csky/kernel/entry.S | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/input/serio/i8042-x86ia64io.h b/drivers/input/serio/i8042-x86ia64io.h
-index 8bf38eded1ef..ad357f79c7d6 100644
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -673,6 +673,13 @@ static const struct dmi_system_id __initconst i8042_dmi_reset_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "P65xRP"),
- 		},
- 	},
-+	{
-+		/* Lenovo ThinkPad Twist S230u */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "33474HU"),
-+		},
-+	},
- 	{ }
- };
+diff --git a/arch/csky/kernel/entry.S b/arch/csky/kernel/entry.S
+index a7a5b67df898..65c55f22532a 100644
+--- a/arch/csky/kernel/entry.S
++++ b/arch/csky/kernel/entry.S
+@@ -318,8 +318,6 @@ ENTRY(__switch_to)
+ 
+ 	mfcr	a2, psr			/* Save PSR value */
+ 	stw	a2, (a3, THREAD_SR)	/* Save PSR in task struct */
+-	bclri	a2, 6			/* Disable interrupts */
+-	mtcr	a2, psr
+ 
+ 	SAVE_SWITCH_STACK
  
 -- 
 2.25.1
