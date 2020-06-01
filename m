@@ -2,162 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 553A71EA8B2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 672FE1EA8CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728090AbgFARzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:55:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35696 "EHLO
+        id S1728454AbgFAR4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:56:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726176AbgFARzT (ORCPT
+        with ESMTP id S1728390AbgFARz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:55:19 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0670BC05BD43
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 10:55:19 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id a45so176140pje.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 10:55:19 -0700 (PDT)
+        Mon, 1 Jun 2020 13:55:56 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3065C08C5C0
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 10:55:55 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id v24so252087plo.6
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 10:55:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=TmGom53SZQSrKvwXINTQU0o5hFoM+HRNDvC2pYiq5Wc=;
-        b=LA9cO1QE8Wq2gx3uj8BPAZL6Kf+mdnR06sTaLe8Jrx7DVvxZinQmcNHUi9+R94OpA2
-         468ryRQ1sc0FuNSuk+a2YoxEoJVBfxBawiclmT1oQiCrR3dwavYyQza0PRH/OOJJlWIT
-         B8I1Ryxw/ahgye6QwKVRd8ujjuS6mFQvyFuKkdAtJC6KNzb5SYADMPPgR5G1mgg8l3Rv
-         qPT46qO27y21yCHjtA7KTGrDeVksyV+pb6KoLhU4kqJ4skH0FEcbTLL2KC+3cPzhiAyX
-         ogkeypoynayRDK+pukt+8xyJVMk9Bw7fQ6a2VORUPr7yXKe6j2CWDFEgxNU5tF/6NUFj
-         vMmQ==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=aiaQOah0tkVij5o2XB19f+57g9nxyi9Dr0rKn4GNNWo=;
+        b=JAL0xv+J0eDQvIWE9P08dNSkHM11snhLNWBIKigP5OWrAyaQOl2aH7kIY4OQZ65Itw
+         txVqAp3KExHzk+qIz30vM58NovUzH03bOLTvfdSdeZlodE/khP02rrMkEZV/eLl56XP0
+         1NmD1KVXjuzjkrg/5zNfF9BUTz9vJVkkIJcRJ5XVGjMtsm7XbrBbP/3YKn+m3N++ZtM3
+         6yuvhHwsQm8LyueSGhn9P6nyA9bjiWn+eLsYNJUy7rGTqTRKPZ2zV+RMt02baecdKX9m
+         KJtzqPdFRzaB/xlrbKEl8YVhHRy1h+XuYLzDOLBNycDzgSiN/BJE7J8TWnyJCGWzuX7p
+         TIkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=TmGom53SZQSrKvwXINTQU0o5hFoM+HRNDvC2pYiq5Wc=;
-        b=PdfLrn/4jjuzoXrtteOd7BZeb1LRsGjcnW3xV9C+ye5p8jnJe+UiYoumBnjwbfqn4o
-         iKdjbibGutmFNTEnExyox427F1uOuB9MoiLuOU+J83Hx3VlngiL1McwE1joViNhjNAeC
-         bfkkYHTEsxzfemi/vqN2FK65fYtXTY6x6apvWA4UzOez18w3iY54j6FnWyIlLLARr+dL
-         L6RzBZ7FCUQhAff2gu1YyUFqjUYplF4kFksxAxFT2vTp0AlgtildRZ2zCNCQfGpUImt5
-         UrNNYDUZrCFwiy23kvRJLGX+NizfBiCoXXsYTNz+GGq7xJNdu5SOnuAa8ov7ecUi0bs/
-         ukZQ==
-X-Gm-Message-State: AOAM530sSoMqn2Uz9XKG+Bgb8HQsCqNsfkvoIqkp2q6NkjqdBt3kPGol
-        hK+YXam3ALULEga4Ia4Hf7sey8WEKSwO5w==
-X-Google-Smtp-Source: ABdhPJypz3d4j4B4HEuE5flI851EOzUZUHyWL2j4FWfMxrXaBlT2jUWTtFEETPhatuFKOIwrZw60gA==
-X-Received: by 2002:a17:902:d70a:: with SMTP id w10mr21552690ply.256.1591034117939;
-        Mon, 01 Jun 2020 10:55:17 -0700 (PDT)
-Received: from [192.168.1.188] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id h11sm103888pjk.20.2020.06.01.10.55.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Jun 2020 10:55:17 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [GIT PULL] io_uring updates for 5.8-rc1
-Message-ID: <dacd50ff-f674-956b-18cd-9d30e2221b09@kernel.dk>
-Date:   Mon, 1 Jun 2020 11:55:15 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=aiaQOah0tkVij5o2XB19f+57g9nxyi9Dr0rKn4GNNWo=;
+        b=TDvlpfb7Go6+MOuZMaBsSdjlWZYxBRz9SgYj55Z8Sd2ZKdxNv3fpVKnPUf19F832m9
+         sTMaldCVbxggAuWzRumvR9gk2oI5Gl75Ss6UCPUOj3i2bpySurpTJH7SUWfCvsGUX9Qr
+         Y45uZ8MI/w3UVZ2aZp/5UiQEXhwRS31MQUzkyhqDxj3SwUjxCZFv+JCklNBnzod5U0ND
+         49cJgYSiBIxFB2j4rbhXbO4JwHrInJoouCi0z/iPfjC3sQvQFG9DbgGrgVFDSFgj5+bT
+         rA7TKUga6u1fY/H1usdkQLmSw8eWNG3YmNOGh8UphetiCVfCVgkYHxzRN+aQy6wMuk4k
+         ZXsw==
+X-Gm-Message-State: AOAM532wf03C5I9jWHu4B6qNnqRgi7HDPx6DPK02S9Z9DTYTqK1DZAD4
+        W2ZyKJ3UIFYsQNoV+lqY4Zwt5w==
+X-Google-Smtp-Source: ABdhPJwCeQOCr89X+QwuX83o1+B8wMZb1kqOYTtx1WnyqkdzZeWW1Be4A4m7ZXhsCX7hyj9yIQeS8w==
+X-Received: by 2002:a17:90a:6706:: with SMTP id n6mr621042pjj.13.1591034155457;
+        Mon, 01 Jun 2020 10:55:55 -0700 (PDT)
+Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id p7sm64771pfq.184.2020.06.01.10.55.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jun 2020 10:55:55 -0700 (PDT)
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     bjorn.andersson@linaro.org, ohad@wizery.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
+Cc:     loic.pallardy@st.com, arnaud.pouliquen@st.com,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v4 01/11] remoteproc: stm32: Decouple rproc from memory translation
+Date:   Mon,  1 Jun 2020 11:55:42 -0600
+Message-Id: <20200601175552.22286-2-mathieu.poirier@linaro.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200601175552.22286-1-mathieu.poirier@linaro.org>
+References: <20200601175552.22286-1-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Remove the remote processor from the process of parsing the memory
+ranges since there is no correlation between them.
 
-A relatively quiet round, mostly just fixes and code improvements. In
-particular:
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Reviewed-by: Loic Pallardy <loic.pallardy@st.com>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ drivers/remoteproc/stm32_rproc.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-- Make statx just use the generic statx handler, instead of open coding
-  it. We don't need that anymore, as we always call it async safe
-  (Bijan)
-
-- Enable closing of the ring itself. Also fixes O_PATH closure (me)
-
-- Properly name completion members (me)
-
-- Batch reap of dead file registrations (me)
-
-- Allow IORING_OP_POLL with double waitqueues (me)
-
-- Add tee(2) support (Pavel)
-
-- Remove double off read (Pavel)
-
-- Fix overflow cancellations (Pavel)
-
-- Improve CQ timeouts (Pavel)
-
-- Async defer drain fixes (Pavel)
-
-- Add support for enabling/disabling notifications on a registered
-  eventfd (Stefano)
-
-- Remove dead state parameter (Xiaoguang)
-
-- Disable SQPOLL submit on dying ctx (Xiaoguang)
-
-- Various code cleanups
-
-Please pull!
-
-
-  git://git.kernel.dk/linux-block.git for-5.8/io_uring-2020-06-01
-
-
-----------------------------------------------------------------
-Bijan Mottahedeh (4):
-      io_uring: add io_statx structure
-      statx: allow system call to be invoked from io_uring
-      io_uring: call statx directly
-      statx: hide interfaces no longer used by io_uring
-
-Jens Axboe (7):
-      io_uring: remove 'fd is io_uring' from close path
-      io_uring: name sq thread and ref completions
-      io_uring: batch reap of dead file registrations
-      io_uring: allow POLL_ADD with double poll_wait() users
-      io_uring: file registration list and lock optimization
-      io_uring: cleanup io_poll_remove_one() logic
-      io_uring: async task poll trigger cleanup
-
-Pavel Begunkov (13):
-      io_uring: remove req->needs_fixed_files
-      io_uring: rename io_file_put()
-      io_uring: don't repeat valid flag list
-      splice: export do_tee()
-      io_uring: add tee(2) support
-      io_uring: fix flush req->refs underflow
-      io_uring: simplify io_timeout locking
-      io_uring: don't re-read sqe->off in timeout_prep()
-      io_uring: separate DRAIN flushing into a cold path
-      io_uring: get rid of manual punting in io_close
-      io_uring: move timeouts flushing to a helper
-      io_uring: off timeouts based only on completions
-      io_uring: fix overflowed reqs cancellation
-
-Stefano Garzarella (2):
-      io_uring: add 'cq_flags' field for the CQ ring
-      io_uring: add IORING_CQ_EVENTFD_DISABLED to the CQ ring flags
-
-Xiaoguang Wang (2):
-      io_uring: remove obsolete 'state' parameter
-      io_uring: don't submit sqes when ctx->refs is dying
-
-Xiaoming Ni (1):
-      io_uring: remove duplicate semicolon at the end of line
-
- fs/internal.h                 |   4 +-
- fs/io_uring.c                 | 752 +++++++++++++++++++++++-------------------
- fs/splice.c                   |   3 +-
- fs/stat.c                     |  37 ++-
- include/linux/splice.h        |   3 +
- include/uapi/linux/io_uring.h |  12 +-
- 6 files changed, 447 insertions(+), 364 deletions(-)
-
+diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+index f45b8d597da0..a80733fb08e7 100644
+--- a/drivers/remoteproc/stm32_rproc.c
++++ b/drivers/remoteproc/stm32_rproc.c
+@@ -127,10 +127,10 @@ static int stm32_rproc_mem_release(struct rproc *rproc,
+ 	return 0;
+ }
+ 
+-static int stm32_rproc_of_memory_translations(struct rproc *rproc)
++static int stm32_rproc_of_memory_translations(struct platform_device *pdev,
++					      struct stm32_rproc *ddata)
+ {
+-	struct device *parent, *dev = rproc->dev.parent;
+-	struct stm32_rproc *ddata = rproc->priv;
++	struct device *parent, *dev = &pdev->dev;
+ 	struct device_node *np;
+ 	struct stm32_rproc_mem *p_mems;
+ 	struct stm32_rproc_mem_ranges *mem_range;
+@@ -606,7 +606,7 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev)
+ 
+ 	rproc->auto_boot = of_property_read_bool(np, "st,auto-boot");
+ 
+-	return stm32_rproc_of_memory_translations(rproc);
++	return stm32_rproc_of_memory_translations(pdev, ddata);
+ }
+ 
+ static int stm32_rproc_probe(struct platform_device *pdev)
 -- 
-Jens Axboe
+2.20.1
 
