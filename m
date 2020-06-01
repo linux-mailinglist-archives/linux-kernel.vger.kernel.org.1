@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2319D1EAA94
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AAC81EAB39
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730863AbgFASJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:09:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55628 "EHLO mail.kernel.org"
+        id S1728402AbgFASPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:15:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729952AbgFASJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:09:15 -0400
+        id S1730821AbgFASPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:15:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E1BD82068D;
-        Mon,  1 Jun 2020 18:09:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE4962065C;
+        Mon,  1 Jun 2020 18:15:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034955;
-        bh=xtOu0BkIPNelKFK0gXCMhqXoqae2xudnbZ6hnlXt4CI=;
+        s=default; t=1591035321;
+        bh=tR7RK7u1PGceJn84JzgZk7L5t73iEGiPhrwtVcLgVsQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VPT3/G+pH+ubYEFsb2L8qyMvdrfGWN7w7gkKYXcwFqm94qEDVTvFgtJkrZ5Gz2tA1
-         gY4F/SHnJkBpzLX+UYN525MQ9dWcgt3Hg5WZtDJ89M0fKhAls1LO/xIpTgIH3y5y0u
-         GIgiJ0zyK/qk7gGmteX+QFAxxcwJfwKvTLlD6sh8=
+        b=rvh5biuD82Tmt29KFjN3pCz6wU+LwIYBaSxgEM4EBaStdytieNkN8N/9su8vab77V
+         EPyo+InO5YyWK96y4FF32kS+WJCz9uWOV7rTAMzU88rxjfMLcQfF693H2wYy1R2Aqv
+         dAw0DhdqO0Lv0EOFC+bpkniaoaUXIuVt6hGsTues=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Changming Liu <liu.changm@northeastern.edu>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 087/142] ALSA: hwdep: fix a left shifting 1 by 31 UB bug
+        stable@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>,
+        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 107/177] ARM: dts: mmp3-dell-ariel: Fix the SPI devices
 Date:   Mon,  1 Jun 2020 19:54:05 +0200
-Message-Id: <20200601174046.921061890@linuxfoundation.org>
+Message-Id: <20200601174057.533284548@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changming Liu <liu.changm@northeastern.edu>
+From: Lubomir Rintel <lkundrak@v3.sk>
 
-[ Upstream commit fb8cd6481ffd126f35e9e146a0dcf0c4e8899f2e ]
+[ Upstream commit 233cbffaa0b9ca874731efee67a11f005da1f87c ]
 
-The "info.index" variable can be 31 in "1 << info.index".
-This might trigger an undefined behavior since 1 is signed.
+I've managed to get about everything wrong while digging these out of
+OEM's board file.
 
-Fix this by casting 1 to 1u just to be sure "1u << 31" is defined.
+Correct the bus numbers, the exact model of the NOR flash, polarity of
+the chip selects and align the SPI frequency with the data sheet.
 
-Signed-off-by: Changming Liu <liu.changm@northeastern.edu>
+Tested that it works now, with a slight fix to the PXA SSP driver.
+
+Link: https://lore.kernel.org/r/20200419171157.672999-16-lkundrak@v3.sk
+Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/BL0PR06MB4548170B842CB055C9AF695DE5B00@BL0PR06MB4548.namprd06.prod.outlook.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/hwdep.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/mmp3-dell-ariel.dts | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/core/hwdep.c b/sound/core/hwdep.c
-index 00cb5aed10a9..28bec15b0959 100644
---- a/sound/core/hwdep.c
-+++ b/sound/core/hwdep.c
-@@ -216,12 +216,12 @@ static int snd_hwdep_dsp_load(struct snd_hwdep *hw,
- 	if (info.index >= 32)
- 		return -EINVAL;
- 	/* check whether the dsp was already loaded */
--	if (hw->dsp_loaded & (1 << info.index))
-+	if (hw->dsp_loaded & (1u << info.index))
- 		return -EBUSY;
- 	err = hw->ops.dsp_load(hw, &info);
- 	if (err < 0)
- 		return err;
--	hw->dsp_loaded |= (1 << info.index);
-+	hw->dsp_loaded |= (1u << info.index);
- 	return 0;
- }
+diff --git a/arch/arm/boot/dts/mmp3-dell-ariel.dts b/arch/arm/boot/dts/mmp3-dell-ariel.dts
+index 15449c72c042..b0ec14c42164 100644
+--- a/arch/arm/boot/dts/mmp3-dell-ariel.dts
++++ b/arch/arm/boot/dts/mmp3-dell-ariel.dts
+@@ -98,19 +98,19 @@
+ 	status = "okay";
+ };
  
+-&ssp3 {
++&ssp1 {
+ 	status = "okay";
+-	cs-gpios = <&gpio 46 GPIO_ACTIVE_HIGH>;
++	cs-gpios = <&gpio 46 GPIO_ACTIVE_LOW>;
+ 
+ 	firmware-flash@0 {
+-		compatible = "st,m25p80", "jedec,spi-nor";
++		compatible = "winbond,w25q32", "jedec,spi-nor";
+ 		reg = <0>;
+-		spi-max-frequency = <40000000>;
++		spi-max-frequency = <104000000>;
+ 		m25p,fast-read;
+ 	};
+ };
+ 
+-&ssp4 {
+-	cs-gpios = <&gpio 56 GPIO_ACTIVE_HIGH>;
++&ssp2 {
++	cs-gpios = <&gpio 56 GPIO_ACTIVE_LOW>;
+ 	status = "okay";
+ };
 -- 
 2.25.1
 
