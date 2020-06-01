@@ -2,148 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 800331EA0EC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 11:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B551EA0F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 11:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbgFAJWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 05:22:23 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:35100 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725838AbgFAJWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 05:22:22 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 1631E9C89EA068D77DAA;
-        Mon,  1 Jun 2020 17:22:20 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Mon, 1 Jun 2020
- 17:22:11 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <linux-afs@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <dhowells@redhat.com>, <yi.zhang@huawei.com>
-Subject: [PATCH] afs: Fix memory leak in afs_put_sysnames()
-Date:   Mon, 1 Jun 2020 17:21:50 +0800
-Message-ID: <20200601092150.3798343-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S1726159AbgFAJXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 05:23:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725290AbgFAJXi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 05:23:38 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F96C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 02:23:37 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id a14so8749622ilk.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 02:23:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=juliacomputing-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zqbM69/6RW5Btr+W+KHpVhDzS+R37L39EP+X3OHdumA=;
+        b=WiZjnsTn7t6HATVqWNwzrCyf5T8xkwd5HR2j4Vvo5xu7w7JgxRYRSp3N+/3ZQSnoOb
+         G9J2tzfRzki+NXd/XEXaSwFPmIQjAQJJwCaCdEfYlyM2w9N2XBtKo8Rk93FyrWCtAyw5
+         v5q8CNwHVBzDU33yYausjqJpHWIr64asf8+CGUYhILKyPE+W6rW44HXy1MYFVCUpCicA
+         fi7D19giO5H/WMBwqp57oXR0Wgm3MeQuFbuORUi97EMIZ7sIMgf+iiKMfSScH+rSiCI0
+         mX2x6df2Ucdyv6UajdPE0/ybpMpfkTVgloVKE1pe9dVQeVSWYsyIi+PlHsLyckT41XYy
+         fIUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zqbM69/6RW5Btr+W+KHpVhDzS+R37L39EP+X3OHdumA=;
+        b=cQ9NK9tmnByZsktNOHFQ5xnWzzHKTSWT9BTmMM+G2c0tU1VjqZHQIsDh+SSgkZvuDK
+         urQBtmUDEwsbqFv4GmnKGr5O+Z3hMY68Lll/ItsEmltp2TrBNYRcj07uNtwe+AD7hZoz
+         FNK1Dy8MRkOfKRPMuCTPibGXaRTp/sCQ4t35IB7srH+6xrbKgqEUN1Xp9Nit9Rdf46No
+         9uMljJQziBU7Uk4EWkUB0u9VLJKMzlDFZP+5ArlFZ2VFKLExfC57J43dcx4NR/EwmoWg
+         huAtd6SrMiNlsPJeFpkmV5LIDEYhwQIh98ygbLatFuoWY2gAcBOx3K5p+FZqAK4abCMh
+         89pg==
+X-Gm-Message-State: AOAM531uTsOEtF/Ph2CQsSAd/veX0/yu4b2vSR5ULy6Hjr5jp4msR5KO
+        +xwsn2XxcvzLVKpBinmtOa9vWh73qlBog6DD2mYdIA==
+X-Google-Smtp-Source: ABdhPJzNfGfNdBgl/JJpnGyRowW9LBmQ/5RldTpIc35wpQR9xtvWpjDFGb9F6X7IvF1goJw4p1ikZSe4SvzOYC9hJ40=
+X-Received: by 2002:a92:d3c2:: with SMTP id c2mr5456378ilh.181.1591003416905;
+ Mon, 01 Jun 2020 02:23:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+References: <CABV8kRz0mKSc=u1LeonQSLroKJLOKWOWktCoGji2nvEBc=e7=w@mail.gmail.com>
+ <20200519081551.GA9980@willie-the-truck> <CABV8kRzYzBrdzC1_opmmdpW63N2htfOsAUZ+RjiSDsy=SJW6Yg@mail.gmail.com>
+ <20200520174149.GB27629@willie-the-truck> <CABV8kRzjCCsjVeRsBD7U_Lo0==sBw9EKm=1z7g=60KyJvJLZBQ@mail.gmail.com>
+ <CABV8kRxfet2RXXNcUoTKwfVzFWEQfxAkXUX4M5XhkP3nc-0+rQ@mail.gmail.com>
+ <20200527095528.GC11111@willie-the-truck> <20200527101929.GT5031@arm.com>
+ <20200531093320.GA30204@willie-the-truck> <CABV8kRyHo+EAWaMUzGA220z=HJRBCpH6UWiYGb84uSL3h8HQHw@mail.gmail.com>
+ <20200601091441.GW5031@arm.com>
+In-Reply-To: <20200601091441.GW5031@arm.com>
+From:   Keno Fischer <keno@juliacomputing.com>
+Date:   Mon, 1 Jun 2020 05:23:01 -0400
+Message-ID: <CABV8kRz2ineTcLS29Lh=BW_kJB_X7PoqY-MaMj_pUUziOxrYCw@mail.gmail.com>
+Subject: Re: arm64: Register modification during syscall entry/exit stop
+To:     Dave Martin <Dave.Martin@arm.com>
+Cc:     Will Deacon <will@kernel.org>, Kyle Huey <khuey@pernos.co>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sysnames should be freed after refcnt being decreased to zero in
-afs_put_sysnames(). Besides, it would be better set net->sysnames
-to 'NULL' after net->sysnames being released if afs_put_sysnames()
-aims on an afs_sysnames object.
+On Mon, Jun 1, 2020 at 5:14 AM Dave Martin <Dave.Martin@arm.com> wrote:
+> Can you explain why userspace would write a changed value for x7
+> but at the same time need that new to be thrown away?
 
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: <Stable@vger.kernel.org> # v4.17+
-Fixes: 6f8880d8e681557 ("afs: Implement @sys substitution handling")
----
- fs/afs/dir.c      |  2 +-
- fs/afs/internal.h |  2 ++
- fs/afs/main.c     |  4 ++--
- fs/afs/proc.c     | 25 ++++++++++++++++++++-----
- 4 files changed, 25 insertions(+), 8 deletions(-)
+The discarding behavior is the primary reason things aren't completely
+broken at the moment. If it read the wrong x7 value and didn't know about
+the Aarch64 quirk, it's often just trying to write that same wrong
+value back during the next stop, so if that's just ignored,
+that's probably fine in 99% of cases, since the value in the
+tracee will be undisturbed.
 
-diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-index d1e1caa23c8b..cb9d8aa91048 100644
---- a/fs/afs/dir.c
-+++ b/fs/afs/dir.c
-@@ -894,7 +894,7 @@ static struct dentry *afs_lookup_atsys(struct inode *dir, struct dentry *dentry,
- 	 */
- 	ret = NULL;
- out_s:
--	afs_put_sysnames(subs);
-+	afs_put_sysnames_and_null(net);
- 	kfree(buf);
- out_p:
- 	key_put(key);
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index 80255513e230..615dd5f9ad6f 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -1093,12 +1093,14 @@ extern void __net_exit afs_proc_cleanup(struct afs_net *);
- extern int afs_proc_cell_setup(struct afs_cell *);
- extern void afs_proc_cell_remove(struct afs_cell *);
- extern void afs_put_sysnames(struct afs_sysnames *);
-+extern void afs_put_sysnames_and_null(struct afs_net *);
- #else
- static inline int afs_proc_init(struct afs_net *net) { return 0; }
- static inline void afs_proc_cleanup(struct afs_net *net) {}
- static inline int afs_proc_cell_setup(struct afs_cell *cell) { return 0; }
- static inline void afs_proc_cell_remove(struct afs_cell *cell) {}
- static inline void afs_put_sysnames(struct afs_sysnames *sysnames) {}
-+static inline void afs_put_sysnames_and_null(struct afs_net *net) {}
- #endif
- 
- /*
-diff --git a/fs/afs/main.c b/fs/afs/main.c
-index c9c45d7078bd..6bf73fc65fb5 100644
---- a/fs/afs/main.c
-+++ b/fs/afs/main.c
-@@ -132,7 +132,7 @@ static int __net_init afs_net_init(struct net *net_ns)
- 	net->live = false;
- 	afs_proc_cleanup(net);
- error_proc:
--	afs_put_sysnames(net->sysnames);
-+	afs_put_sysnames_and_null(net);
- error_sysnames:
- 	net->live = false;
- 	return ret;
-@@ -150,7 +150,7 @@ static void __net_exit afs_net_exit(struct net *net_ns)
- 	afs_purge_servers(net);
- 	afs_close_socket(net);
- 	afs_proc_cleanup(net);
--	afs_put_sysnames(net->sysnames);
-+	afs_put_sysnames_and_null(net);
- }
- 
- static struct pernet_operations afs_net_ops = {
-diff --git a/fs/afs/proc.c b/fs/afs/proc.c
-index 468e1713bce1..26e1e73281a6 100644
---- a/fs/afs/proc.c
-+++ b/fs/afs/proc.c
-@@ -554,15 +554,30 @@ static int afs_proc_sysname_write(struct file *file, char *buf, size_t size)
- 	goto out;
- }
- 
--void afs_put_sysnames(struct afs_sysnames *sysnames)
-+static void afs_free_sysnames(struct afs_sysnames *sysnames)
- {
- 	int i;
- 
-+	for (i = 0; i < sysnames->nr; i++)
-+		if (sysnames->subs[i] != afs_init_sysname &&
-+		    sysnames->subs[i] != sysnames->blank)
-+			kfree(sysnames->subs[i]);
-+	kfree(sysnames);
-+}
-+
-+void afs_put_sysnames(struct afs_sysnames *sysnames)
-+{
-+	if (sysnames && refcount_dec_and_test(&sysnames->usage))
-+		afs_free_sysnames(sysnames);
-+}
-+
-+void afs_put_sysnames_and_null(struct afs_net *net)
-+{
-+	struct afs_sysnames *sysnames = net->sysnames;
-+
- 	if (sysnames && refcount_dec_and_test(&sysnames->usage)) {
--		for (i = 0; i < sysnames->nr; i++)
--			if (sysnames->subs[i] != afs_init_sysname &&
--			    sysnames->subs[i] != sysnames->blank)
--				kfree(sysnames->subs[i]);
-+		afs_free_sysnames(sysnames);
-+		net->sysnames = NULL;
- 	}
- }
- 
--- 
-2.25.4
+I don't think there's a sane way to change the aarch64 NT_PRSTATUS
+semantics without just completely removing the x7 behavior, but of course
+people may be relying on that (I think somebody said upthread that strace does?)
 
+Keno
