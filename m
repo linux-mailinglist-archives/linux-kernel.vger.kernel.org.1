@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E685B1EA96A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10021EAA1A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729175AbgFASBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:01:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44614 "EHLO mail.kernel.org"
+        id S1729632AbgFASFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:05:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728688AbgFASBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:01:37 -0400
+        id S1729100AbgFASEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:04:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 309962077D;
-        Mon,  1 Jun 2020 18:01:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 92ED520872;
+        Mon,  1 Jun 2020 18:04:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034496;
-        bh=icln9GYrwczbeL9oIDaFajP22+KfqMbesbbmd5dp2K4=;
+        s=default; t=1591034685;
+        bh=x0hlXFmg6Wp3yDXIZw18ArQWevAcBwdk6vX7FKgCuko=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FzFdAckMKMnJ6aJvdkV96ih5X3N+pHnRcPGmZyE+B93TVtoiwIZOtpXM//K4wgAL4
-         GkZi+2GrMGEzuxDYSHRY9RKXXrkElxMPm8u1qsFWD3elfTYLlbAxL15ln+QXimBv5L
-         N+1vzsyTEZB9gOVjJwnISqZuONstEksb3T0XXqJA=
+        b=beWN3r5DZuKvyR7PcOb/K6b0hvNmTtiiaJmuImKw1/HibSV3cicQZEJPaUE9NFyBn
+         PxCOie9vmXX5Br2+Ciepca85JpH5SofWw3wT4/amRNhJ7i/sexBYgoLrmQ7fIqQbU/
+         vnxnsS883VajlA4gSqxyqd6XMcQjPHlv+Bx486HM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Subject: [PATCH 4.14 56/77] xfrm: allow to accept packets with ipv6 NEXTHDR_HOP in xfrm_input
-Date:   Mon,  1 Jun 2020 19:54:01 +0200
-Message-Id: <20200601174026.129111172@linuxfoundation.org>
+        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 62/95] ALSA: hda/realtek - Add new codec supported for ALC287
+Date:   Mon,  1 Jun 2020 19:54:02 +0200
+Message-Id: <20200601174030.894866009@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
-References: <20200601174016.396817032@linuxfoundation.org>
+In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
+References: <20200601174020.759151073@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,45 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Kailang Yang <kailang@realtek.com>
 
-commit afcaf61be9d1dbdee5ec186d1dcc67b6b692180f upstream.
+[ Upstream commit 630e36126e420e1756378b3427b42711ce0b9ddd ]
 
-For beet mode, when it's ipv6 inner address with nexthdrs set,
-the packet format might be:
+Enable new codec supported for ALC287.
 
-    ----------------------------------------------------
-    | outer  |     | dest |     |      |  ESP    | ESP |
-    | IP hdr | ESP | opts.| TCP | Data | Trailer | ICV |
-    ----------------------------------------------------
-
-The nexthdr from ESP could be NEXTHDR_HOP(0), so it should
-continue processing the packet when nexthdr returns 0 in
-xfrm_input(). Otherwise, when ipv6 nexthdr is set, the
-packet will be dropped.
-
-I don't see any error cases that nexthdr may return 0. So
-fix it by removing the check for nexthdr == 0.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Kailang Yang <kailang@realtek.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/dcf5ce5507104d0589a917cbb71dc3c6@realtek.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_input.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/net/xfrm/xfrm_input.c
-+++ b/net/xfrm/xfrm_input.c
-@@ -402,7 +402,7 @@ resume:
- 		dev_put(skb->dev);
- 
- 		spin_lock(&x->lock);
--		if (nexthdr <= 0) {
-+		if (nexthdr < 0) {
- 			if (nexthdr == -EBADMSG) {
- 				xfrm_audit_state_icvfail(x, skb,
- 							 x->type->proto);
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 34cda0accbd8..b06f7d52faad 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -387,6 +387,7 @@ static void alc_fill_eapd_coef(struct hda_codec *codec)
+ 	case 0x10ec0282:
+ 	case 0x10ec0283:
+ 	case 0x10ec0286:
++	case 0x10ec0287:
+ 	case 0x10ec0288:
+ 	case 0x10ec0285:
+ 	case 0x10ec0298:
+@@ -7840,6 +7841,7 @@ static int patch_alc269(struct hda_codec *codec)
+ 	case 0x10ec0215:
+ 	case 0x10ec0245:
+ 	case 0x10ec0285:
++	case 0x10ec0287:
+ 	case 0x10ec0289:
+ 		spec->codec_variant = ALC269_TYPE_ALC215;
+ 		spec->shutup = alc225_shutup;
+@@ -8978,6 +8980,7 @@ static const struct hda_device_id snd_hda_id_realtek[] = {
+ 	HDA_CODEC_ENTRY(0x10ec0284, "ALC284", patch_alc269),
+ 	HDA_CODEC_ENTRY(0x10ec0285, "ALC285", patch_alc269),
+ 	HDA_CODEC_ENTRY(0x10ec0286, "ALC286", patch_alc269),
++	HDA_CODEC_ENTRY(0x10ec0287, "ALC287", patch_alc269),
+ 	HDA_CODEC_ENTRY(0x10ec0288, "ALC288", patch_alc269),
+ 	HDA_CODEC_ENTRY(0x10ec0289, "ALC289", patch_alc269),
+ 	HDA_CODEC_ENTRY(0x10ec0290, "ALC290", patch_alc269),
+-- 
+2.25.1
+
 
 
