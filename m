@@ -2,211 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6AB21E9EDB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 09:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 109AD1E9EB3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 09:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728225AbgFAHH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 03:07:27 -0400
-Received: from mga04.intel.com ([192.55.52.120]:2159 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726142AbgFAHH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 03:07:26 -0400
-IronPort-SDR: vB+CrvNFpPZVWdLcEM7K8fg9qQveLd5zUlJGVguKqc3g7Dl7LlzDpDOaCiqe0ble5EGu29ck2e
- P/seCS2ovSSA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2020 00:07:24 -0700
-IronPort-SDR: zcCluIYtSPT8CcjgyuJRrV45SlK49+qBGDDhY+zCfhWm0aszxImrNQa4U+GjBxDqA2M6x4dmno
- T9rgKhp83LiQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,459,1583222400"; 
-   d="scan'208";a="346947035"
-Received: from joy-optiplex-7040.sh.intel.com (HELO joy-OptiPlex-7040) ([10.239.13.16])
-  by orsmga001.jf.intel.com with ESMTP; 01 Jun 2020 00:07:21 -0700
-Date:   Mon, 1 Jun 2020 02:57:26 -0400
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cohuck@redhat.com, zhenyuw@linux.intel.com, zhi.a.wang@intel.com,
-        kevin.tian@intel.com, shaopeng.he@intel.com, yi.l.liu@intel.com,
-        xin.zeng@intel.com, hang.yuan@intel.com
-Subject: Re: [RFC PATCH v4 07/10] vfio/pci: introduce a new irq type
- VFIO_IRQ_TYPE_REMAP_BAR_REGION
-Message-ID: <20200601065726.GA5906@joy-OptiPlex-7040>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20200518024202.13996-1-yan.y.zhao@intel.com>
- <20200518025245.14425-1-yan.y.zhao@intel.com>
- <20200529154547.19a6685f@x1.home>
+        id S1727998AbgFAHBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 03:01:33 -0400
+Received: from esa4.microchip.iphmx.com ([68.232.154.123]:2963 "EHLO
+        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726142AbgFAHBb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 03:01:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1590994890; x=1622530890;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=0+8FUMEi9BKsHiSzup5nhdSrUqN3fXVb5O3Z7TcXTis=;
+  b=DFZ7oNwvclvhxMdFUImNejSmSN5tEO1hriSSXwrrC30+KLbDY2fhRTQg
+   6wD1AhAPgcOz4iIqUnUsO/v7QUR6x6sx792G/h4LkbanEM1rdMylImoF6
+   nUFm/GgUc5Mo/jgjNYpMSPqXQZw8cl6HLqlr9QCMBIXS6OauiGyHwjocs
+   krVe4SXnK0ZtVTvvnTaO12CV3EzAn8gN/e0ZJOUYf4tLJGcjnC3yE/Tx8
+   NvJCTjJGKEF3heBvnuJXIKgxeoMCUcs4o/de8uEh3j79jwj/QnrzxD7pl
+   C5EGYnKg/Y1DeP/CMgY49mteGRfZrYW1CRrq2Xxn325tzuztQJ3xKBw0d
+   Q==;
+IronPort-SDR: qPVaH21Q75YRwodv2ScwzwoXjla2AmfBMHJWB9SL1Qb0afIHBO758CpJuNO6oVjIjNwajBFySa
+ n77CdbPhwnNEa5xm+MJo8RPDS3zc6Slxn7Gl6PFq49isH49oBGHcmLLYswPacX3Xikf26X6LPd
+ 5N49zifKKGbBZN24it/b6VDiz27e7mJI29SkmVcmoRd3EoouLuAkoXlL4MAcOR0lRHH6ppNAHe
+ K/AzQU8Z6uvkAZhef2GbDK16303vSCMfX4UBv1egBklI7gmCgVNAPCKvDdPVsEgVkA1Q0njfjr
+ AdI=
+X-IronPort-AV: E=Sophos;i="5.73,459,1583218800"; 
+   d="scan'208";a="75061190"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Jun 2020 00:00:39 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 1 Jun 2020 00:00:42 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
+ Transport; Mon, 1 Jun 2020 00:00:27 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Gx6PXI+/2AmN3UioC/AmTxMLG0/dbDWbuXpslmBVYeMkMzB4fKBPdY0x+nv9HhsEpdB7kjB9Ml0E0dswrRFDnm1DYsYyysth0Zj1E/ThLab/uE9onHuphkykRdupE7leJF5Rxdda3Bi8nqml8VAviGS+wCIlYDa9jBmB5f2kHHsu1i3tuzfTeDyGAUN1/aXYyxTNOjBcHosJNKkfVHtb9D+uTmHbj2Uy/e3i8MhFMc4/HdEydxiVm4NJ2C1m3aQmCOPQMjsEz0FGqpGG3r8ARbgWRIHPkvLELJd/NWAEVob3Tpuw4iw8eL6Egn8noKYe+3h8MOFvoXBY873if4bKXQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wRqymHqnXLNNfYboxhQ9KzTlcCKG7jnFiZHI2jbJDlA=;
+ b=BRM4Wc/kdlJ5eZxK+xEYHroDuu9EJMO352B3xDa3NwYIROIy9i7If/5rSfPRLAlsAAYRdtQv383kCEc6EQIL+o/7YDn1hP80/iFg1c4RcGJP+8wCvxKiJds0AhLaSb8VvYEDu5oOCgMPfz4gIWbYB7Bq4sxCDLO6oQ1KBD6hUYcAL7oAPRkGeGpYfzx6zKdR6fvYBFSOhOhhtM1ipZt8xCTE7cvQm6vaF1WU8TfiLnRWwgqm415MQZGmwFUWlZx0uTUKp/qrCsngJPPMIwx5ipLl4tQ6KZa/spBaPKAL8K+P+W1ZgnHAK73jr3UTkPuEme8Lr1rNZ9lR2DBeHIxtYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wRqymHqnXLNNfYboxhQ9KzTlcCKG7jnFiZHI2jbJDlA=;
+ b=UwXrLoleYFXq3JY/AugJ0sorHYOLtMeqSIYhacaYNN8X8L8Of4rxQFO8UIOeq6iBLQ5k3ZNRHlnjltWuy0jpYl+Bb/2HbY5C5f2rUjBbc/Q0InkTZnqqVuTYXO6XeCmy6j+H2otNo0/owrp4wXtN6ad3YZNVtfAvF87K4Ni1h1A=
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
+ by BY5PR11MB4168.namprd11.prod.outlook.com (2603:10b6:a03:181::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17; Mon, 1 Jun
+ 2020 07:00:34 +0000
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.3045.022; Mon, 1 Jun 2020
+ 07:00:34 +0000
+From:   <Tudor.Ambarus@microchip.com>
+To:     <vigneshr@ti.com>, <broonie@kernel.org>
+CC:     <bbrezillon@kernel.org>,
+        <vadivel.muruganx.ramuthevar@linux.intel.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <simon.k.r.goldschmidt@gmail.com>,
+        <dinguyen@kernel.org>, <marex@denx.de>
+Subject: Re: [PATCH v3 8/8] spi: Move cadence-quadspi driver to drivers/spi/
+Thread-Topic: [PATCH v3 8/8] spi: Move cadence-quadspi driver to drivers/spi/
+Thread-Index: AQHWN+JYwTPU7GcYXEOZEVBVNroLHg==
+Date:   Mon, 1 Jun 2020 07:00:34 +0000
+Message-ID: <2051214.IORyQiarUF@192.168.0.120>
+References: <20200601054725.2060-1-vigneshr@ti.com>
+ <20200601054725.2060-9-vigneshr@ti.com>
+In-Reply-To: <20200601054725.2060-9-vigneshr@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: aa2c79d9-69e7-42ff-1cce-08d805f97b2e
+x-ms-traffictypediagnostic: BY5PR11MB4168:
+x-microsoft-antispam-prvs: <BY5PR11MB4168848F8DD36D0336AD6A58F08A0@BY5PR11MB4168.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:4125;
+x-forefront-prvs: 0421BF7135
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: XEvPcbc3EUMX4heYQH+dKBSQET416vgTrXS845XA3DUmp3HAdMYGYs1QUO20AT4nDi9ntAGicxJdudcKyQaQIU7oOj6EgNeEfim7On3Di0DLxL+MoY1ITq1zmVvXV2qCmBwH097GJWny4BNs4QFfmH/eQgK7WNu47Y9GgzhFBs15jk+Rpko8VTHEVmO4aelcp4aIBBw074dbPiBRsInWV+8hQqqitV3/LS5c1bG5SCkdyHBM2pkEtcCuoavR/93/0uD8e6plzlexwAzAhAvD7Nhilvyr8iHRVDVqguN8KFmL68D9YnbzRmgR2SfMEuW20iYyibNxo1mFBaP5ACg1hw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4419.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(346002)(396003)(39860400002)(136003)(366004)(316002)(5660300002)(83380400001)(26005)(14286002)(4326008)(7416002)(91956017)(86362001)(66446008)(66476007)(76116006)(64756008)(66556008)(186003)(71200400001)(54906003)(110136005)(66946007)(53546011)(6486002)(9686003)(6512007)(478600001)(2906002)(8936002)(6506007)(8676002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: X/p395m+m514Rtw1pgw9/XG4mDtrpVJFBVJSZywZh+DQVx9owpRh94hO/Ag18GnKj4WjGBpGSun5DnLEX66uMk8kC7LWY/oUybJNsiHNrGi3HlHXPGXFShU2mlqyIgcFLVOIxxX0IVPU30i/AFRqQHvXxBbrE6gZ31VXQnC99tU0jZm4n43AuPoOOpL1Q5eLxwE6Ih2cET+tu6Ru+SMaACrzkDVwZx7C5AcP5Xnn7RPC4ogakaAYKxG4YzLHG4MJAgJf8/3zEjvvmc9fzPdC18WYB70EYOHm+QbR8H47yeVGnhKa0ZviMnXrlHwe1QIo3oDsr6qZ9KJtnYG1mQ1tEe2ZDZbf5Fb7YdXYBN2VMnFlDurWmw70CF/1p490PctFedTsSWhFXYt2oPDhhTwi8bkjXED4ATn5Pk9HnpuHzZNkajSyXhrMuItAx7mNv7zJ3acjrrcx5NQXf3SJWUw9iw9VzXimDwz/39abEOi+vu8=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <969BD4A2FE8FEA43B671AF2D528936C2@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200529154547.19a6685f@x1.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-MS-Exchange-CrossTenant-Network-Message-Id: aa2c79d9-69e7-42ff-1cce-08d805f97b2e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jun 2020 07:00:34.3221
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: VI5FwlPOX7RtQ63H7J0ilDxjFB1SR2VxwrA0SKfgPu4HctwU4sXuougSfwNVvNm2LkPAFFJnG5nBsZhx8d5+VUq9ULZxGicNzACjxw/X3aA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4168
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 03:45:47PM -0600, Alex Williamson wrote:
-> On Sun, 17 May 2020 22:52:45 -0400
-> Yan Zhao <yan.y.zhao@intel.com> wrote:
-> 
-> > This is a virtual irq type.
-> > vendor driver triggers this irq when it wants to notify userspace to
-> > remap PCI BARs.
-> > 
-> > 1. vendor driver triggers this irq and packs the target bar number in
-> >    the ctx count. i.e. "1 << bar_number".
-> >    if a bit is set, the corresponding bar is to be remapped.
-> > 
-> > 2. userspace requery the specified PCI BAR from kernel and if flags of
-> > the bar regions are changed, it removes the old subregions and attaches
-> > subregions according to the new flags.
-> > 
-> > 3. userspace notifies back to kernel by writing one to the eventfd of
-> > this irq.
-> > 
-> > Please check the corresponding qemu implementation from the reply of this
-> > patch, and a sample usage in vendor driver in patch [10/10].
-> > 
-> > Cc: Kevin Tian <kevin.tian@intel.com>
-> > Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
-> > ---
-> >  include/uapi/linux/vfio.h | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> > 
-> > diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> > index 2d0d85c7c4d4..55895f75d720 100644
-> > --- a/include/uapi/linux/vfio.h
-> > +++ b/include/uapi/linux/vfio.h
-> > @@ -704,6 +704,17 @@ struct vfio_irq_info_cap_type {
-> >  	__u32 subtype;  /* type specific */
-> >  };
-> >  
-> > +/* Bar Region Query IRQ TYPE */
-> > +#define VFIO_IRQ_TYPE_REMAP_BAR_REGION			(1)
-> > +
-> > +/* sub-types for VFIO_IRQ_TYPE_REMAP_BAR_REGION */
-> > +/*
-> > + * This irq notifies userspace to re-query BAR region and remaps the
-> > + * subregions.
-> > + */
-> > +#define VFIO_IRQ_SUBTYPE_REMAP_BAR_REGION	(0)
-> 
-> Hi Yan,
-> 
-> How do we do this in a way that's backwards compatible?  Or maybe, how
-> do we perform a handshake between the vendor driver and userspace to
-> indicate this support?
-hi Alex
-thank you for your thoughtful review!
+Hi, Mark,
 
-do you think below sequence can provide enough backwards compatibility?
+On Monday, June 1, 2020 8:47:25 AM EEST Vignesh Raghavendra wrote:
+> From: Ramuthevar Vadivel Murugan
+> <vadivel.muruganx.ramuthevar@linux.intel.com>
+>=20
+> Now that cadence-quadspi has been converted to use spi-mem framework,
+> move it under drivers/spi/
+>=20
+> Update license header to match SPI subsystem style
+>=20
+> Signed-off-by: Ramuthevar Vadivel Murugan
+> <vadivel.muruganx.ramuthevar@linux.intel.com> Signed-off-by: Vignesh
+> Raghavendra <vigneshr@ti.com>
+> ---
+>  drivers/mtd/spi-nor/controllers/Kconfig            | 11 -----------
+>  drivers/mtd/spi-nor/controllers/Makefile           |  1 -
+>  drivers/spi/Kconfig                                | 11 +++++++++++
+>  drivers/spi/Makefile                               |  1 +
+>  .../spi-cadence-quadspi.c}                         | 14 +++++++-------
+>  5 files changed, 19 insertions(+), 19 deletions(-)
+>  rename drivers/{mtd/spi-nor/controllers/cadence-quadspi.c =3D>
+> spi/spi-cadence-quadspi.c} (99%)
 
-- on vendor driver opening, it registers an irq of type
-  VFIO_IRQ_TYPE_REMAP_BAR_REGION, and reports to driver vfio-pci there's
-  1 vendor irq.
+If this patch set looks good to you, would you take it through the SPI tree=
+?=20
+If so, I would need an immutable tag, so I can merge back in spi-nor/next i=
+n=20
+order to fix a small conflict that will appear in drivers/mtd/spi-nor/
+controllers/Kconfig. Vignesh would have to respin this patch on top of v5.7=
+-
+rc1. With this addressed:
 
-- after userspace detects the irq of type VFIO_IRQ_TYPE_REMAP_BAR_REGION
-  it enables it by signaling ACTION_TRIGGER.
-  
-- on receiving this ACTION_TRIGGER, vendor driver will try to setup a
-  virqfd to monitor file write to the fd of this irq, enable this irq
-  and return its enabling status to userspace.
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-
-> Would the vendor driver refuse to change
-> device_state in the migration region if the user has not enabled this
-> IRQ?
-yes, vendor driver can refuse to change device_state if the irq
-VFIO_IRQ_TYPE_REMAP_BAR_REGION is not enabled.
-in my sample i40e_vf driver (patch 10/10), it implemented this logic
-like below:
-
-i40e_vf_set_device_state
-    |-> case VFIO_DEVICE_STATE_SAVING | VFIO_DEVICE_STATE_RUNNING:
-    |          ret = i40e_vf_prepare_dirty_track(i40e_vf_dev);
-                              |->ret = i40e_vf_remap_bars(i40e_vf_dev, true);
-			                     |->if (!i40e_vf_dev->remap_irq_ctx.init)
-                                                    return -ENODEV;
-
-
-(i40e_vf_dev->remap_irq_ctx.init is set in below path)
-i40e_vf_ioctl(cmd==VFIO_DEVICE_SET_IRQS)
-    |->i40e_vf_set_irq_remap_bars
-       |->i40e_vf_enable_remap_bars_irq
-           |-> vf_dev->remap_irq_ctx.init = true;
-
-> 
-> Everything you've described in the commit log needs to be in this
-> header, we can't have the usage protocol buried in a commit log.  It
-got it! I'll move all descriptions in commit logs to this header so that
-readers can understand the whole picture here.
-
-> also seems like this is unnecessarily PCI specific.  Can't the count
-> bitmap simply indicate the region index to re-evaluate?  Maybe you were
-yes, it is possible. but what prevented me from doing it is that it's not
-easy to write an irq handler in qemu to remap other regions dynamically.
-
-for BAR regions, there're 3 layers as below.
-1. bar->mr  -->bottom layer
-2. bar->region.mem --> slow path
-3. bar->region->mmaps[i].mem  --> fast path
-so, bar remap irq handler can simply re-revaluate the region and
-remove/re-generate the layer 3 (fast path) without losing track of any
-guest accesses to the bar regions.
-
-actually so far, the bar remap irq handler in qemu only supports remap
-mmap'd subregions (layout of mmap'd subregions are re-queried) and
-not supports updating the whole bar region size.
-(do you think updating bar region size is a must?)
-
-however, there are no such fast path and slow path in other regions, so
-remap handlers for them are region specific.
-
-> worried about running out of bits in the ctx count?  An IRQ per region
-yes. that's also possible :) 
-but current ctx count is 64bit, so it can support regions of index up to 63.
-if we don't need to remap dev regions, seems it's enough?
-
-> could resolve that, but maybe we could also just add another IRQ for
-> the next bitmap of regions.  I assume that the bitmap can indicate
-> multiple regions to re-evaluate, but that should be documented.
-hmm. would you mind elaborating more about it?
-
-> 
-> Also, what sort of service requirements does this imply?  Would the
-> vendor driver send this IRQ when the user tries to set the device_state
-> to _SAVING and therefore we'd require the user to accept, implement the
-> mapping change, and acknowledge the IRQ all while waiting for the write
-> to device_state to return?  That implies quite a lot of asynchronous
-> support in the userspace driver.  Thanks,
-yes.
-(1) when user sets device_state to _SAVING, the vendor driver notifies this
-IRQ, waits until user IRQ ack is received.
-(2) in IRQ handler, user decodes and sends IRQ ack to vendor driver.
-
-if a wait is required in (1) returns, it demands the qemu_mutex_iothread is
-not locked in migration thread when device_state is set in (1), as before
-entering (2), acquiring of this mutex is required.
-
-Currently, this lock is not hold in vfio_migration_set_state() at
-save_setup stage but is hold in stop and copy stage. so we wait in
-kernel in save_setup stage and not wait in stop stage.
-it can be fixed by calling qemu_mutex_unlock_iothread() on entering
-vfio_migration_set_state() and qemu_mutex_lock_iothread() on leaving
-vfio_migration_set_state() in qemu.
-
-do you think it's acceptable?
-
-Thanks
-Yan
-> 
-> 
-> > +
-> > +
-> >  /**
-> >   * VFIO_DEVICE_SET_IRQS - _IOW(VFIO_TYPE, VFIO_BASE + 10, struct vfio_irq_set)
-> >   *
-> 
