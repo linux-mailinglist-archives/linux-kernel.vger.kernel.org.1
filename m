@@ -2,82 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F093C1EACC3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DD51EACCF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731754AbgFASjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:39:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42632 "EHLO
+        id S1730890AbgFASkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:40:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731722AbgFASjZ (ORCPT
+        with ESMTP id S1731300AbgFASkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:39:25 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BDFC008630
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 11:39:25 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id u10so8187826ljj.9
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 11:39:25 -0700 (PDT)
+        Mon, 1 Jun 2020 14:40:16 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7737EC008630
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 11:40:16 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id p30so3882732pgl.11
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 11:40:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OQI83XnTUpCYBOZaAbAv+Cb5Uoct40fY5tumECPOkoE=;
-        b=G4XxvEfJ3uyBljRWLUv6ciQWBngwkPYJSSnhCt/HrGYHq8cB1vfKRYnv5BXMA/f8x7
-         V9tX6tl4Nspup5rVZvhh1MWLoYUj0/kFkWHvUZWbPzedpCF6S1GUQRBOYo5GS7ag3l7h
-         tSSv3TGgEIr8C3cowP2U/R/z2d9p+uPonS3LM=
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZSR8304cXHhSD6xXUkH5QV8FNg4zYtslwe34m2r8ft0=;
+        b=lvZ06IwlVqCiv/4C3u/mxFApnFV6CACMMokvsQy/v9BKmpjCPMvhJ7V6KtweROJGKW
+         GQCT+1x0ZOdk0dGTHFlMfv8+MGt17/BhWw60goOQ8NLo3NFrC7RtGvN3S6hFhPWZw6p4
+         xV8xrVlX5ZN3IgisUKlPZnUmUXpv1Yr/6jGbQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OQI83XnTUpCYBOZaAbAv+Cb5Uoct40fY5tumECPOkoE=;
-        b=VlV/xZ4nH7HO1D0J2ahgli+IU58Rc4zzQJ/fFqTmUuexd2eSnkE9hYTRyEzL1dWf+0
-         Y+YasNW8EzP3q7Kt2AaeaN4xtJdSAjV10agBRcvZJ0frr9FZZ0jCVUQcUK494rRjOeJ/
-         3eNBctTxn2cnEZAcLjC0GB5NEETWXmFZJ5YMJ0oi/JNufdAntpn/kbhmJQH7evuvsNle
-         IqIIX2iNnjeNor97XexZPeU5GF80wufmFzzVqgr0evAi9sPuJj4MvSmVO2y7cj+dSMHS
-         bN2CgXBGQywF00P/Bmc/jI0jy3Ew5PXruatpWrUbX/HjUoTZFG/tZDBL8zOSWpGxmmmT
-         C7/g==
-X-Gm-Message-State: AOAM532jV0DIvCFCdTY3/nCIV7L77wQvmoiTTAJS34rOk9CY415YXzIm
-        BlaX40sUT2CzEsZqSJy64dV9ZuXSgjE=
-X-Google-Smtp-Source: ABdhPJzzE25hV+agfcbrASXkEaBP+rD7qdmiOj50K/txLIMEmx8SJYvq+qqWx9eAY8KElP9xQ1K3xA==
-X-Received: by 2002:a2e:80d1:: with SMTP id r17mr11153717ljg.439.1591036763041;
-        Mon, 01 Jun 2020 11:39:23 -0700 (PDT)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id i22sm69062ljb.21.2020.06.01.11.39.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Jun 2020 11:39:22 -0700 (PDT)
-Received: by mail-lf1-f52.google.com with SMTP id h188so4531100lfd.7
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 11:39:21 -0700 (PDT)
-X-Received: by 2002:a05:6512:62:: with SMTP id i2mr11740327lfo.152.1591036761565;
- Mon, 01 Jun 2020 11:39:21 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZSR8304cXHhSD6xXUkH5QV8FNg4zYtslwe34m2r8ft0=;
+        b=t8wJI7AiqU9uXgk6C2JClGSVPNQQWjWoBt9HGjjmKaxo22Kh9z7bHuLJoe1QGjrEe4
+         PqF7ezJR9F9rIgtPyTJSlOJ/pieYG4g+PVV1KnWPek80P+8lF6hVzk7f2jLuqdGtngHV
+         c0EV1SGnzj6yd5VAP9wv/KVXzkUi/kum7oxkbUqoUL/iPMQeEjB22BaT6q3U1DeS7uw+
+         dTnD0Nos3pv/S1tbINMbSVmWaujoJLFfnyjtRvkZN5iJKcZKGVdGQJwBK2W6+GSKFdTq
+         Uex49wQHooP6u2pGBg3eNvyKAwftuYzcojo2YrU49wp7q6mn2kOxPYzjncCnduPKOj52
+         YHhg==
+X-Gm-Message-State: AOAM532b2WTBmsxumq9eLdMls7sRmrp7X+Ur1kYV7rG2sVOqZ7jOQ6K/
+        DTMI1n8Oqnxuhm8MMImpE5gZCA==
+X-Google-Smtp-Source: ABdhPJwfoGwgqvWVVMjRxcaL3453ZHmKQEaM7nggH3+WpJzfIxn6+ectiUjSGSQlsvFginiEpZ2uNw==
+X-Received: by 2002:a65:6247:: with SMTP id q7mr12721181pgv.353.1591036816050;
+        Mon, 01 Jun 2020 11:40:16 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f136sm132780pfa.59.2020.06.01.11.40.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jun 2020 11:40:15 -0700 (PDT)
+Date:   Mon, 1 Jun 2020 11:40:14 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Tycho Andersen <tycho@tycho.ws>,
+        Matt Denton <mpdenton@google.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Robert Sesek <rsesek@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Linux Containers <containers@lists.linux-foundation.org>
+Subject: Re: [PATCH v3 2/4] seccomp: release filter after task is fully dead
+Message-ID: <202006011139.BB51C671@keescook>
+References: <20200531115031.391515-1-christian.brauner@ubuntu.com>
+ <20200531115031.391515-2-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
-References: <20200601095423.00ffb5e1@collabora.com>
-In-Reply-To: <20200601095423.00ffb5e1@collabora.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 1 Jun 2020 11:39:05 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whW82ewxKJjaFq=96eEpCMN0=DtaZxX9ZGBH7BTgTkEfQ@mail.gmail.com>
-Message-ID: <CAHk-=whW82ewxKJjaFq=96eEpCMN0=DtaZxX9ZGBH7BTgTkEfQ@mail.gmail.com>
-Subject: Re: [GIT PULL] i3c: Changes for 5.8
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     linux-i3c <linux-i3c@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200531115031.391515-2-christian.brauner@ubuntu.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 1, 2020 at 12:54 AM Boris Brezillon
-<boris.brezillon@collabora.com> wrote:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/i3c/linux.git i3c/for-5.8
+On Sun, May 31, 2020 at 01:50:29PM +0200, Christian Brauner wrote:
+> The seccomp filter used to be released in free_task() which is called
+> asynchronously via call_rcu() and assorted mechanisms. Since we need
+> to inform tasks waiting on the seccomp notifier when a filter goes empty
+> we will notify them as soon as a task has been marked fully dead in
+> release_task(). To not split seccomp cleanup into two parts, move
+> filter release out of free_task() and into release_task() after we've
+> unhashed struct task from struct pid, exited signals, and unlinked it
+> from the threadgroups' thread list. We'll put the empty filter
+> notification infrastructure into it in a follow up patch.
+> 
+> This also renames put_seccomp_filter() to seccomp_filter_release() which
+> is a more descriptive name of what we're doing here especially once
+> we've added the empty filter notification mechanism in there.
+> 
+> We're also NULL-ing the task's filter tree entrypoint which seems
+> cleaner than leaving a dangling pointer in there. Note that this shouldn't
+> need any memory barriers since we're calling this when the task is in
+> release_task() which means it's EXIT_DEAD. So it can't modify it's seccomp
+> filters anymore. You can also see this from the point where we're calling
+> seccomp_filter_release(). It's after __exit_signal() and at this point,
+> tsk->sighand will already have been NULLed which is required for
+> thread-sync and filter installation alike.
+> 
+> Cc: Tycho Andersen <tycho@tycho.ws>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Matt Denton <mpdenton@google.com>
+> Cc: Sargun Dhillon <sargun@sargun.me>
+> Cc: Jann Horn <jannh@google.com>
+> Cc: Chris Palmer <palmer@google.com>
+> Cc: Aleksa Sarai <cyphar@cyphar.com>
+> Cc: Robert Sesek <rsesek@google.com>
+> Cc: Jeffrey Vander Stoep <jeffv@google.com>
+> Cc: Linux Containers <containers@lists.linux-foundation.org>
+> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 
-Hmm. No such ref..
+Thanks! Applied with typo fixes to the commit log, a slightly expanded
+comment on seccomp_filter_release() to just drive home the reason we
+don't need barriers, and a variable renaming to avoid some needless
+churn in the coming patches...
 
-I see the "i3c/next" branch that has that top commit, but I don't see
-the signed tag.
-
-Forgot to push? "git request-pull" _should_ have warned about the
-remote side missing..
-
-              Linus
+-- 
+Kees Cook
