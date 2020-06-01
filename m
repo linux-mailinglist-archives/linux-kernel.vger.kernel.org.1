@@ -2,138 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED621EAF36
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 21:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0BE1EAF53
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 21:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729776AbgFAS76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:59:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728344AbgFAR4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:56:51 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 102342076B;
-        Mon,  1 Jun 2020 17:56:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034209;
-        bh=UZ0b/1dhfSmKu3YbKGmGF2l4TWOhPsCnIdcMrqj1pyo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mvcClYmUy/FuE067n+bVLmh1TzAqK6mf0HTDCam6kUcOi1nHVTL0HRgxz8rNRqacZ
-         hph5Tje4hZibEYU2k0ZB2OshG+FfdQkrCNT4Z2qhQGcOBqQRy/dTh0cL8aRxlEadE9
-         Af5nlKj2bi6CTG561BQsEkBjfcfoeTCgVq98s9VU=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Song Liu <songliubraving@fb.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <liu.song.a23@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Mike Travis <mike.travis@hpe.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.4 41/48] genirq/generic_pending: Do not lose pending affinity update
-Date:   Mon,  1 Jun 2020 19:53:51 +0200
-Message-Id: <20200601174003.729212520@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601173952.175939894@linuxfoundation.org>
-References: <20200601173952.175939894@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1728318AbgFAR4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728378AbgFARzz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:55:55 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB9FC08C5C0
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 10:55:54 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id z64so3836986pfb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 10:55:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zACkuhg/77H3zeO+PGHNh+9yMlSwDDWi/x5X1ISMcog=;
+        b=PLoEnhnypIxdDYglWjZWdbmVY9O/3d/FXn7/fOGLX1J0QDbcyq5yORuXvRPyf69GmH
+         bPmuZpFDZjpxs3BNlZhAHlyAgGtEMEaGUOkeX2GeG6uWEGH6IiHYN5iv6fgkoia729ic
+         ukbV9fvbH6EccxPGYp4IcT2N++qdipIqSfWyHPUiwWylioQAnUx6SmnS0U5wt9sn7I2r
+         UgI/3DvCL6guNdStmxOeftLH3GgBU0iz+2AdiElVirEa8e3vyBspGCr1Bhs4voehcJiU
+         uexyoOA9cpespFyQz8k1bf0tB1pWLksPQnbJGucIYnyTYj7SR+jT1oVyu66oYWuZi+iR
+         NJAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zACkuhg/77H3zeO+PGHNh+9yMlSwDDWi/x5X1ISMcog=;
+        b=raJslVnIT1/V6Chu94/X2fRi1FA7bwX7wXTDC2P5z9SOez8IbK7Zo5y3vPnJvqcjmq
+         2sQie47E+7hDtMEEraIsk2R2BS3CP1jal/6BIKaGQzrJIP5yeW+SaO3Erx/zuUMnIBNm
+         PSfPqe9xfiQpcSbejTMuE+dV4sk0/hXrt5p+4i8I7q8FrWyNvHBNYrvfi18LOWCtTuic
+         5y2KPMWW3PAb1qQKyZzxU9ZXbehu43YBTE5nR57DT5WmdNkLJtXbVOVKQFvEAxhTci7Q
+         xWi6RGf+Mr8orp3/d37CmFTo57e0gBWuNygOJMEnnSyJNcqsK2qtZWf+NfY0zp5dLJKo
+         cqBQ==
+X-Gm-Message-State: AOAM5310ytODzyS58ZupuM14+7ZZihlNkr2Z3S/9TXPBinVpONIssYjS
+        0L2NaNgKaAq0Yv0NCha0FUznIg==
+X-Google-Smtp-Source: ABdhPJx7mm5a3eTp+VHkriv3BjsSxvd0F8RrxXaATmZINzJsX7X4HNjbdTel9tb4XVNDl4GzAM/86Q==
+X-Received: by 2002:a62:1681:: with SMTP id 123mr20422249pfw.306.1591034154312;
+        Mon, 01 Jun 2020 10:55:54 -0700 (PDT)
+Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id p7sm64771pfq.184.2020.06.01.10.55.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jun 2020 10:55:53 -0700 (PDT)
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     bjorn.andersson@linaro.org, ohad@wizery.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
+Cc:     loic.pallardy@st.com, arnaud.pouliquen@st.com,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v4 00/11] remoteproc: stm32: Add support for attaching to M4  
+Date:   Mon,  1 Jun 2020 11:55:41 -0600
+Message-Id: <20200601175552.22286-1-mathieu.poirier@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+This set applies on top of [1] and refactors the STM32 platform code in
+order to attach to the M4 remote processor when it has been started by the
+boot loader.
 
-commit a33a5d2d16cb84bea8d5f5510f3a41aa48b5c467 upstream.
+It carries the same functionatlity as the previeous revision but account
+for changes in the remoteproc core to support attaching scenarios.  More
+specifically patches 6 to 10 should be given special consideration.
 
-The generic pending interrupt mechanism moves interrupts from the interrupt
-handler on the original target CPU to the new destination CPU. This is
-required for x86 and ia64 due to the way the interrupt delivery and
-acknowledge works if the interrupts are not remapped.
+Note that I skipped over v3 and went directly to v4 in order to synchronise
+with the remoterproc core patchset[1] that is set at v4.
 
-However that update can fail for various reasons. Some of them are valid
-reasons to discard the pending update, but the case, when the previous move
-has not been fully cleaned up is not a legit reason to fail.
+Tested on ST's mp157c development board.
 
-Check the return value of irq_do_set_affinity() for -EBUSY, which indicates
-a pending cleanup, and rearm the pending move in the irq dexcriptor so it's
-tried again when the next interrupt arrives.
+Thanks,
+Mathieu
 
-Fixes: 996c591227d9 ("x86/irq: Plug vector cleanup race")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Song Liu <songliubraving@fb.com>
-Cc: Joerg Roedel <jroedel@suse.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Song Liu <liu.song.a23@gmail.com>
-Cc: Dmitry Safonov <0x7f454c46@gmail.com>
-Cc: stable@vger.kernel.org
-Cc: Mike Travis <mike.travis@hpe.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Tariq Toukan <tariqt@mellanox.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Link: https://lkml.kernel.org/r/20180604162224.386544292@linutronix.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[1]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=296713
 
----
- kernel/irq/migration.c |   24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+Mathieu Poirier (11):
+  remoteproc: stm32: Decouple rproc from memory translation
+  remoteproc: stm32: Request IRQ with platform device
+  remoteproc: stm32: Decouple rproc from DT parsing
+  remoteproc: stm32: Remove memory translation from DT parsing
+  remoteproc: stm32: Parse syscon that will manage M4 synchronisation
+  remoteproc: stm32: Properly set co-processor state when attaching
+  remoteproc: Make function rproc_resource_cleanup() public
+  remoteproc: stm32: Split function stm32_rproc_parse_fw()
+  remoteproc: stm32: Properly handle the resource table when attaching
+  remoteproc: stm32: Introduce new attach() operation
+  remoteproc: stm32: Update M4 state in stm32_rproc_stop()
 
---- a/kernel/irq/migration.c
-+++ b/kernel/irq/migration.c
-@@ -7,17 +7,18 @@
- void irq_move_masked_irq(struct irq_data *idata)
- {
- 	struct irq_desc *desc = irq_data_to_desc(idata);
--	struct irq_chip *chip = desc->irq_data.chip;
-+	struct irq_data *data = &desc->irq_data;
-+	struct irq_chip *chip = data->chip;
- 
--	if (likely(!irqd_is_setaffinity_pending(&desc->irq_data)))
-+	if (likely(!irqd_is_setaffinity_pending(data)))
- 		return;
- 
--	irqd_clr_move_pending(&desc->irq_data);
-+	irqd_clr_move_pending(data);
- 
- 	/*
- 	 * Paranoia: cpu-local interrupts shouldn't be calling in here anyway.
- 	 */
--	if (irqd_is_per_cpu(&desc->irq_data)) {
-+	if (irqd_is_per_cpu(data)) {
- 		WARN_ON(1);
- 		return;
- 	}
-@@ -42,9 +43,20 @@ void irq_move_masked_irq(struct irq_data
- 	 * For correct operation this depends on the caller
- 	 * masking the irqs.
- 	 */
--	if (cpumask_any_and(desc->pending_mask, cpu_online_mask) < nr_cpu_ids)
--		irq_do_set_affinity(&desc->irq_data, desc->pending_mask, false);
-+	if (cpumask_any_and(desc->pending_mask, cpu_online_mask) < nr_cpu_ids) {
-+		int ret;
- 
-+		ret = irq_do_set_affinity(data, desc->pending_mask, false);
-+		/*
-+		 * If the there is a cleanup pending in the underlying
-+		 * vector management, reschedule the move for the next
-+		 * interrupt. Leave desc->pending_mask intact.
-+		 */
-+		if (ret == -EBUSY) {
-+			irqd_set_move_pending(data);
-+			return;
-+		}
-+	}
- 	cpumask_clear(desc->pending_mask);
- }
- 
+ drivers/remoteproc/remoteproc_core.c |   3 +-
+ drivers/remoteproc/stm32_rproc.c     | 214 ++++++++++++++++++++++++---
+ include/linux/remoteproc.h           |   1 +
+ 3 files changed, 198 insertions(+), 20 deletions(-)
 
+-- 
+2.20.1
 
