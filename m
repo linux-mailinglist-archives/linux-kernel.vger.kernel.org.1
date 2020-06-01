@@ -2,113 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8F71E9C34
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 05:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECEDE1E9C23
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 05:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727068AbgFADyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 23:54:07 -0400
-Received: from mail-am6eur05on2087.outbound.protection.outlook.com ([40.107.22.87]:13703
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727050AbgFADyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 23:54:05 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X+Nrigny+0wZxFD55mfWlC19UugyLVrWTRbDsaWQZNgDBu8ktKlaZmnD2DWRAb9mymzgQGj1cpDJIfPMSytb7xSmduwJOKXyru3FzYzXS6eE6e+vSs3JcGvW5D1Y+EHrDBMzW3nk7fILBZwoc0Mp4WUfTRWwNbb9xbhYOeST841KAlxVRhCz34OeFy3gcuGm37EFjJ7t3T1xgPP5S5bUrb/kGpOgvtu7NX/up0AcEmIg/vpNw3E7vprQjIWTqKtM8aUg+T+tCLZCvIC23/mUAHOCW7JyO1/w986TbU8B5tIbD4BDlnstKx4/xoIK3HlMafr3DjSDrdHg2P0/gLw/ew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZvpJmM62ji+KohxQ8u/BkIjRnZ7++RLYseC9Eit9cfQ=;
- b=d5S5ScYNjL33+i1kbrb4naQfDFNki5WiCpO54aHVTC5vtxfEJWY/UUO+fkxpcg/8rPiPailVkLClucIGiIqMvWaEzs8otPYqY+DAknzPOSifT7OTjx0POYsrmzjulzudReud8HfZ/xJ7HjFCF0k8JM2aL680e2Fife53pA5TjAPEmTsnoi2Bymb+zTGIQs5bGj7kAMnvcJMYgLQsoJKWlVVuXW1UP55Ax+YG0kqNwhESJXkFd5OblXSolmcrGjXBun8Q6gzZ0zhBBSH3crwmPdj4hITe4i1L3KZhXMX+NJohdsigdIfpIKI7f9VpxW3JVOyBhrlVmCQB1B+G1ppvjw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZvpJmM62ji+KohxQ8u/BkIjRnZ7++RLYseC9Eit9cfQ=;
- b=bs5r+W2JIDpd8SjujiK5aKqIiZJw+cRx5NqisURxB1mi1YV9XKzV8dbAvyh37KiuSGT6+Th+qy7jtaC4SpLeUyo+RJXzIypvsI5k9Y+CzZoKbxk1D61SLlemU9sb/EKJuHJxRJW6tO6GhX6aqSqPUd0vgC5QQuUEJZCCAi0onVQ=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB6PR0402MB2920.eurprd04.prod.outlook.com (2603:10a6:4:9d::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19; Mon, 1 Jun
- 2020 03:54:01 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d17b:d767:19c3:b871]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d17b:d767:19c3:b871%6]) with mapi id 15.20.3045.022; Mon, 1 Jun 2020
- 03:54:01 +0000
-From:   peng.fan@nxp.com
-To:     shawnguo@kernel.org, fabio.estevam@nxp.com, kernel@pengutronix.de,
-        aisheng.dong@nxp.com, robh+dt@kernel.org, sboyd@kernel.org,
-        linux@rempel-privat.de, jaswinder.singh@linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com, leonard.crestez@nxp.com, daniel.baluta@nxp.com,
-        l.stach@pengutronix.de, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH V2 3/3] clk: imx8mp: add mu root clk
-Date:   Mon,  1 Jun 2020 11:43:19 +0800
-Message-Id: <1590982999-7149-4-git-send-email-peng.fan@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1590982999-7149-1-git-send-email-peng.fan@nxp.com>
-References: <1590982999-7149-1-git-send-email-peng.fan@nxp.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR03CA0096.apcprd03.prod.outlook.com
- (2603:1096:4:7c::24) To DB6PR0402MB2760.eurprd04.prod.outlook.com
- (2603:10a6:4:a1::14)
+        id S1727120AbgFADpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 23:45:55 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:12612 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726002AbgFADpz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 May 2020 23:45:55 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 49b1Kn0gCmz5Y;
+        Mon,  1 Jun 2020 05:45:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1590983152; bh=pndK1FjAmFq0047oc3zSn4GkaXw9CpwjFxLaj77UgdE=;
+        h=Date:From:Subject:To:Cc:From;
+        b=o7DdYqEd4GUixVvSOrNrzZ2bHeU3/zAx4a9D11aQnZZdwYuQbIz69ifVRrCznbUKj
+         GedeU9z/s5zMyfk+UQ0FpH53JtIh6ATUEHh8TryM6us92ncaETH0PyrYpKCha03ywH
+         EGSA7CrnlsjT13sq+eNEMyoZXBIkj1pqeugPUkArTNcj1OvYdmxgPlwzilJ+X/lN6I
+         PC6vabPd48+S+TqkluikcHeRakVoLhu37DOWiJs4MpK22/XiBmd2TSNXuQME9llTna
+         KqW4Sf2hx94O2qh1OxmFEAr8CXF1JfnuvG1zRQA2Dn6TgfxDbh76o3KCbGgXgV0Hh0
+         M/tYiCqtqeRYQ==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+Date:   Mon, 01 Jun 2020 05:45:48 +0200
+Message-Id: <c18a68b3b7c25593c9b6db4bcea1d53de469f6e0.1590983023.git.mirq-linux@rere.qmqm.pl>
+From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Subject: [PATCH] misc: atmel-ssc: lock with mutex instead of spinlock
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2PR03CA0096.apcprd03.prod.outlook.com (2603:1096:4:7c::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3066.7 via Frontend Transport; Mon, 1 Jun 2020 03:53:55 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [119.31.174.66]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 562a2846-ead5-47c7-6de8-08d805df6b63
-X-MS-TrafficTypeDiagnostic: DB6PR0402MB2920:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB6PR0402MB29208A0C73C8DA66F3DDA307888A0@DB6PR0402MB2920.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1079;
-X-Forefront-PRVS: 0421BF7135
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HI9Cfxls5qWDdr7H3UDW+xiMlwwP1xq+ibYfO4QtDtE852s3vKmF84PlANAQm8JWWmQ6ytXvvr+GsI53hJEIH6pyn5UMImdFqAojxSID3jtNyU35FEIbltfkdrQPmIcoCk1ucDcaIrN9b/RIlq5B4WHX+xMmi95dGJS6GLVJe3OB4WC/2ZL+Vov8QYyIi3H/RsuICKx8ctKA55dcX3KnVMbC/jrPpAUf0w+3tKBRR5JYF+GfEgmPknCr4D0ubj+fW2d/xAxBWSbfdyaq+P5p4o6uhKla4d8ejb/BmY9nPiDnx42TqrdrT1rfw4lMLynMGEHCmX1TfifXTVLzxoiKarAnUBRjZJyQHsabFiHvqJr6vLjnYw63sIxkigkgOqvlBtFsPigdEfZ5H8TJvyAwsNwYf2gUySRKeQyIyeN9v8s=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(396003)(136003)(346002)(39860400002)(376002)(36756003)(4326008)(6486002)(8936002)(6666004)(8676002)(7416002)(6506007)(9686003)(6512007)(478600001)(69590400007)(16526019)(26005)(316002)(52116002)(5660300002)(66946007)(66476007)(2906002)(66556008)(86362001)(186003)(956004)(83380400001)(2616005)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: d5WnHW6qRhBlBidB+S3xyhI7ZMURk9tV0mInehdcPrN7g5Ud/ey5Cq6TK4SKwx5tPe76uQcY0Lofy1UaE1XMxAxu90p+hn1YqaCdmG743gYU6w5EMwCd7MpY+4RePZZhBppAlW8gxdwPTANajm2REbGczYaQr/bgb6fx+lEGp7ajFj4TP/pbndC5ATFu2mlHixeMeQWU+91NrD3ynOhJ8nvhSgUa6NPvTJ72jZFwYk1SKci/HYLsgAdKJh60vbBquQBUuwEHZKeg6fJOaKa2hRX5Oy4PlL/jJ8cBeszb1unsy+P8M7ERPL8ppE6X4Z+Syeo6Wo/U8H7u137R3XVGOdLnvjVfUCJRddi6CBdcIjm7vYF9EEPBndNEE2vkMwH7wv0OBhq1y2EgJ9A7NRPKu+1ChQVU5LXnigO/QYVqOAmFBOe1wNaRMV5pbTObmXWPfZE4blXJT6UwKNpPXyC8WG+9ZOmte9Iw93+JT20cj23by5MFSn3YE3bownfekzMX
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 562a2846-ead5-47c7-6de8-08d805df6b63
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2020 03:54:01.4347
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: f8C6ojl56knBrSUTokC3sP1kyCZz2oAZBm160NvXtv9/AI58nhRCTAhDfeLWzK+mEO6R3PUedMNIBbx7fdBCFA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2920
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+To:     Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+Uninterruptible context is not needed in the driver and causes lockdep
+warning because of mutex taken in of_alias_get_id(). Convert the lock to
+mutex to avoid the issue.
 
-Add mu root clk for mu mailbox usage.
-
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
-Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
- drivers/clk/imx/clk-imx8mp.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/misc/atmel-ssc.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/clk/imx/clk-imx8mp.c b/drivers/clk/imx/clk-imx8mp.c
-index b4d9db9d5bf1..ca747712400f 100644
---- a/drivers/clk/imx/clk-imx8mp.c
-+++ b/drivers/clk/imx/clk-imx8mp.c
-@@ -680,6 +680,7 @@ static int imx8mp_clocks_probe(struct platform_device *pdev)
- 	hws[IMX8MP_CLK_I2C2_ROOT] = imx_clk_hw_gate4("i2c2_root_clk", "i2c2", ccm_base + 0x4180, 0);
- 	hws[IMX8MP_CLK_I2C3_ROOT] = imx_clk_hw_gate4("i2c3_root_clk", "i2c3", ccm_base + 0x4190, 0);
- 	hws[IMX8MP_CLK_I2C4_ROOT] = imx_clk_hw_gate4("i2c4_root_clk", "i2c4", ccm_base + 0x41a0, 0);
-+	hws[IMX8MP_CLK_MU_ROOT] = imx_clk_hw_gate4("mu_root_clk", "ipg_root", ccm_base + 0x4210, 0);
- 	hws[IMX8MP_CLK_OCOTP_ROOT] = imx_clk_hw_gate4("ocotp_root_clk", "ipg_root", ccm_base + 0x4220, 0);
- 	hws[IMX8MP_CLK_PCIE_ROOT] = imx_clk_hw_gate4("pcie_root_clk", "pcie_aux", ccm_base + 0x4250, 0);
- 	hws[IMX8MP_CLK_PWM1_ROOT] = imx_clk_hw_gate4("pwm1_root_clk", "pwm1", ccm_base + 0x4280, 0);
+diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
+index 1322e29bc37a..5cc032097476 100644
+--- a/drivers/misc/atmel-ssc.c
++++ b/drivers/misc/atmel-ssc.c
+@@ -10,7 +10,7 @@
+ #include <linux/clk.h>
+ #include <linux/err.h>
+ #include <linux/io.h>
+-#include <linux/spinlock.h>
++#include <linux/mutex.h>
+ #include <linux/atmel-ssc.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
+@@ -20,7 +20,7 @@
+ #include "../../sound/soc/atmel/atmel_ssc_dai.h"
+ 
+ /* Serialize access to ssc_list and user count */
+-static DEFINE_SPINLOCK(user_lock);
++static DEFINE_MUTEX(user_lock);
+ static LIST_HEAD(ssc_list);
+ 
+ struct ssc_device *ssc_request(unsigned int ssc_num)
+@@ -28,7 +28,7 @@ struct ssc_device *ssc_request(unsigned int ssc_num)
+ 	int ssc_valid = 0;
+ 	struct ssc_device *ssc;
+ 
+-	spin_lock(&user_lock);
++	mutex_lock(&user_lock);
+ 	list_for_each_entry(ssc, &ssc_list, list) {
+ 		if (ssc->pdev->dev.of_node) {
+ 			if (of_alias_get_id(ssc->pdev->dev.of_node, "ssc")
+@@ -44,18 +44,18 @@ struct ssc_device *ssc_request(unsigned int ssc_num)
+ 	}
+ 
+ 	if (!ssc_valid) {
+-		spin_unlock(&user_lock);
++		mutex_unlock(&user_lock);
+ 		pr_err("ssc: ssc%d platform device is missing\n", ssc_num);
+ 		return ERR_PTR(-ENODEV);
+ 	}
+ 
+ 	if (ssc->user) {
+-		spin_unlock(&user_lock);
++		mutex_unlock(&user_lock);
+ 		dev_dbg(&ssc->pdev->dev, "module busy\n");
+ 		return ERR_PTR(-EBUSY);
+ 	}
+ 	ssc->user++;
+-	spin_unlock(&user_lock);
++	mutex_unlock(&user_lock);
+ 
+ 	clk_prepare(ssc->clk);
+ 
+@@ -67,14 +67,14 @@ void ssc_free(struct ssc_device *ssc)
+ {
+ 	bool disable_clk = true;
+ 
+-	spin_lock(&user_lock);
++	mutex_lock(&user_lock);
+ 	if (ssc->user)
+ 		ssc->user--;
+ 	else {
+ 		disable_clk = false;
+ 		dev_dbg(&ssc->pdev->dev, "device already free\n");
+ 	}
+-	spin_unlock(&user_lock);
++	mutex_unlock(&user_lock);
+ 
+ 	if (disable_clk)
+ 		clk_unprepare(ssc->clk);
+@@ -246,9 +246,9 @@ static int ssc_probe(struct platform_device *pdev)
+ 		return -ENXIO;
+ 	}
+ 
+-	spin_lock(&user_lock);
++	mutex_lock(&user_lock);
+ 	list_add_tail(&ssc->list, &ssc_list);
+-	spin_unlock(&user_lock);
++	mutex_unlock(&user_lock);
+ 
+ 	platform_set_drvdata(pdev, ssc);
+ 
+@@ -267,9 +267,9 @@ static int ssc_remove(struct platform_device *pdev)
+ 
+ 	ssc_sound_dai_remove(ssc);
+ 
+-	spin_lock(&user_lock);
++	mutex_lock(&user_lock);
+ 	list_del(&ssc->list);
+-	spin_unlock(&user_lock);
++	mutex_unlock(&user_lock);
+ 
+ 	return 0;
+ }
 -- 
-2.16.4
+2.20.1
 
