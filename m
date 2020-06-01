@@ -2,116 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 563AF1EA00C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 10:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 779241E9FF8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 10:20:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728099AbgFAIad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 04:30:33 -0400
-Received: from mail-db8eur05on2059.outbound.protection.outlook.com ([40.107.20.59]:40929
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726056AbgFAIac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 04:30:32 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=et/CgP0vvit/4K5QHC7a3kVtWo89l+bhl3P+Cd+EujRbYcTMC0pytnSjgvgz+R4BpqNKWdVzRMKXO+jnlXlixQypdHTjZP7Jux8XR3ROR+Mzhbjf3XvI5TXv7gOnjfjLqmfiM2xj/gMMP++JGflg5xDtopQly14sYz/WmlzezCewITdrS8y6PBoY+RPafR/4Wy48IEZsxL3f8qEzTjOQezlvqfQHZ5S3bnvHoXl3Ebn1ONKzOSPfgw/s78CRU0bttCLH7+3UCFyXg2YmbSxaaltEu7Y3mGzpXXj1KTmWKltCwi15xDNIBeoUehUAD1DiJpgJlgu6HsAd/daumG8i1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GCXjcUUfJ7czmbLLXnms0PX5EcniiddCa/TUREnIW68=;
- b=R1qfnUT2gKmCS3EcQEbSPS/jK9/F8SvPQDllQ2smf10buGpN/Ft10WBYp43BOhDk5Fu5dC/txtpdzqVtu0/cpXJTNCZME5NyihHtgPu7v37cT4meSHAjEAsPCpa61MjlBDublOTHx7ZBWDR7ol7F7dAS9jnQyOD5k66IlxU+vbW//DJ27IQqr5YQ7YFVAJFDSN/J5g4LEFGhOCEJopwWsKIgcYm7Bu2l2+ofL+PIbd0MNgEE6m7rd5ol10U3vI1uTlqJ2ZKnwz1VMQGvyqP06E6uXRR+rw46PocHMR+2SYdhWYavGyT+A+tMtrpot7/EPd14pJBnQf8neYE3fRwKJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GCXjcUUfJ7czmbLLXnms0PX5EcniiddCa/TUREnIW68=;
- b=IuHkb+cC+l+VY5MvJgtegrkb2lgFDOXPhb8EByr7R0xz0WMayHViVRhuA1FSyyWrS3ZqHl78YTeX8cv4D99+bjyM3v+iWcTHF2ySzxvhZQxBcMFTEa8MOwxq541SOntJeMg8ttTZgbvMDe07nHtX6pDM/wcVydGrzh3RhdoBYO0=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB6PR0402MB2728.eurprd04.prod.outlook.com (2603:10a6:4:97::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.22; Mon, 1 Jun
- 2020 08:30:29 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d17b:d767:19c3:b871]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d17b:d767:19c3:b871%6]) with mapi id 15.20.3045.022; Mon, 1 Jun 2020
- 08:30:28 +0000
-From:   peng.fan@nxp.com
-To:     shawnguo@kernel.org, fabio.estevam@nxp.com, kernel@pengutronix.de,
-        aisheng.dong@nxp.com, robh+dt@kernel.org, sboyd@kernel.org,
-        linux@rempel-privat.de, jaswinder.singh@linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com, leonard.crestez@nxp.com, daniel.baluta@nxp.com,
-        l.stach@pengutronix.de, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH V3 0/3] imx8m: add mu support
-Date:   Mon,  1 Jun 2020 16:19:59 +0800
-Message-Id: <1590999602-29482-1-git-send-email-peng.fan@nxp.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0044.apcprd02.prod.outlook.com
- (2603:1096:3:18::32) To DB6PR0402MB2760.eurprd04.prod.outlook.com
- (2603:10a6:4:a1::14)
+        id S1728214AbgFAIUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 04:20:38 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:56038 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726005AbgFAIUh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 04:20:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590999636;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rK/uAal5XUN1e0HkqV2baeLoovsmHTsFDGP7o7CPx54=;
+        b=ULnVV/OScHve4by9EEeUhHTc3OEBIlyGrPjGffiH6uXWtBFeUEACqdrTTzM24w7MzARbwz
+        rEPCt6QR4EEakUv/nezFSxk+WZOsY1BDzGknRCmlMjbyQi4TgNFE9teX02EAmUcgkorIdk
+        N7FIoSp1i+Hgc6kL2Ph82XMrL5DaYn4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-103-gGYMXbP6P1iGOzCblbs9Qg-1; Mon, 01 Jun 2020 04:20:33 -0400
+X-MC-Unique: gGYMXbP6P1iGOzCblbs9Qg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E51A3107ACCD;
+        Mon,  1 Jun 2020 08:20:31 +0000 (UTC)
+Received: from krava (unknown [10.40.192.36])
+        by smtp.corp.redhat.com (Postfix) with SMTP id E537E5D9CA;
+        Mon,  1 Jun 2020 08:20:28 +0000 (UTC)
+Date:   Mon, 1 Jun 2020 10:20:27 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>
+Subject: [PATCHv2] perf stat: Ensure group is defined on top of the same cpu
+ mask
+Message-ID: <20200601082027.GF881900@krava>
+References: <20200531162206.911168-1-jolsa@kernel.org>
+ <CAP-5=fUk97P-ECojBya1CRE4SQoX2erNgFujEJFvSgOk6e6pdQ@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2PR02CA0044.apcprd02.prod.outlook.com (2603:1096:3:18::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3021.27 via Frontend Transport; Mon, 1 Jun 2020 08:30:23 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [119.31.174.66]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 64103976-5a14-4568-d09a-08d806060a3b
-X-MS-TrafficTypeDiagnostic: DB6PR0402MB2728:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB6PR0402MB27281A9EC82B2956A2EB7107888A0@DB6PR0402MB2728.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1284;
-X-Forefront-PRVS: 0421BF7135
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Zq8eK4p+9mcbCSqKbyukUgXwlAy+pA37qJOTNhajh4I+gIOOblCxhYzPjDwT2LYmOvW89LO/KrTFrh6pLjahwbjl7XApyf9H+WbwLVpqLEiyvChxY3VPUPvLumTwzFS1u3+KoqBrbQUIEkWfvD2jqMb98eKgwAoIgVnxCgCjPj/TkHKwGX3jvTyLkyOMglJqL6iqRjpw7aSjmYvk0NMwdzIxXb+VsUwOG+CSGg41Ig0wf9cRMDuNjq4/AKzThpEyTCdQ5xZ+xNQuyaOMayDez0jaelO6vx0Xhj8nvdVcKeYOLO/PzMvRN1p/iRrx0XXbECoapJ3Hq9rIPk23UohgPUoW5ZDAG+8jat59PcOzKbC8UUpaFszc44dreqOdy9zeKhRhY0Mchh/wjyAVGUXnRfbP1pAKvddWO0ZuhdBqV8w=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(366004)(136003)(39860400002)(346002)(396003)(316002)(36756003)(6486002)(6666004)(478600001)(86362001)(8676002)(4326008)(2906002)(83380400001)(69590400007)(66556008)(26005)(2616005)(6512007)(66476007)(4744005)(8936002)(956004)(16526019)(5660300002)(66946007)(52116002)(9686003)(7416002)(6506007)(186003)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: eO/K6wXSTfXHPvniGCbIGenGB3+ZITVGImdhg+k8TMYvmqLjC9QBH89LCCOYBmiZ0NahVLaFFZiWJrIWbaIKEwET2n0Lbh8ieW2wXm7DkTxUpamKG1swSe1/m+osD3IqyvOyYo1O++ESEYinBlWE6kj0NJdh7as+U5EBSBRKJaZD5U5cQoyFf7GiUvPQ7JbAah5u4Cbdnd41J+NzB8kBN78aPbDLzs8LqWLX4zuUfWkzXDUhUo3CC2XcCABOg9Pk+OOTxpecXhsbdWlAZoTb6bxoz+5ibwuYGH10dshgaSUHr+sIwe9pwuGqUKvXywONf/tLQJl9IuivvFIBoPNnc4K010Jcfo6pY7PiGcCM3168rV8C7P+ADdlxUsRTqJ0CyZydgv3FA2Utt0zuBdxUVGhbKdxEgyZZJu1EIhKiHOrGCrsC/zl075Quwr5gqtFokqsTla+ajxoZgtfjbARQjSdLb8ilT8qtSCYofRgxkgHKUYziC4hzudzUhxPXM19G
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 64103976-5a14-4568-d09a-08d806060a3b
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2020 08:30:28.8475
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YmfKmEJqcvS95mg3ZirauY+n5j5ZD8uZ5ZI7mGZ31/rpa1IB6RicX66awuyg5TcgY+3E/MhAwdUIscDDcL7cUA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2728
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fUk97P-ECojBya1CRE4SQoX2erNgFujEJFvSgOk6e6pdQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+Jin Yao reported the issue (and posted first versions of this change)
+with groups being defined over events with different cpu mask.
 
-V3:
- Add R-b tag
- Remove undocumented property
+This causes assert aborts in get_group_fd, like:
 
-V2:
- Add dt-bindings
- Merge dts changes into one patch, since all is to add mu node
+  # perf stat -M "C2_Pkg_Residency" -a -- sleep 1
+  perf: util/evsel.c:1464: get_group_fd: Assertion `!(fd == -1)' failed.
+  Aborted
 
-Add mu dt bindings
-Add mu node
-Add i.MX8MP mu root clk
+All the events in the group have to be defined over the same
+cpus so the group_fd can be found for every leader/member pair.
 
-Peng Fan (3):
-  dt-bindings: mailbox: imx-mu: support i.MX8M
-  arm64: dts: imx8m: add mu node
-  clk: imx8mp: add mu root clk
+Adding check to ensure this condition is met and removing the
+group (with warning) if we detect mixed cpus, like:
 
- Documentation/devicetree/bindings/mailbox/fsl,mu.txt | 3 ++-
- arch/arm64/boot/dts/freescale/imx8mm.dtsi            | 8 ++++++++
- arch/arm64/boot/dts/freescale/imx8mn.dtsi            | 8 ++++++++
- arch/arm64/boot/dts/freescale/imx8mp.dtsi            | 8 ++++++++
- arch/arm64/boot/dts/freescale/imx8mq.dtsi            | 8 ++++++++
- drivers/clk/imx/clk-imx8mp.c                         | 1 +
- 6 files changed, 35 insertions(+), 1 deletion(-)
+  $ sudo perf stat -e '{power/energy-cores/,cycles},{instructions,power/energy-cores/}'
+  WARNING: event cpu maps do not match, disabling group:
+    anon group { power/energy-cores/, cycles }
+    anon group { instructions, power/energy-cores/ }
 
+Ian asked also for cpu maps details, it's displayed in verbose mode:
+
+  $ sudo perf stat -e '{cycles,power/energy-cores/}' -v
+  WARNING: group events cpu maps do not match, disabling group:
+    anon group { power/energy-cores/, cycles }
+       power/energy-cores/: 0
+       cycles: 0-7
+    anon group { instructions, power/energy-cores/ }
+       instructions: 0-7
+       power/energy-cores/: 0
+
+Fixes: 6a4bb04caacc8 ("perf tools: Enable grouping logic for parsed events")
+Co-developed-by: Jin Yao <yao.jin@linux.intel.com>
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ tools/perf/builtin-stat.c | 58 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 58 insertions(+)
+
+v2 changes:
+  - display mixed events maps in verbose mode
+
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index b2b79aa161dd..dda60b9dbc63 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -190,6 +190,62 @@ static struct perf_stat_config stat_config = {
+ 	.big_num		= true,
+ };
+ 
++static bool cpus_map_matched(struct evsel *a, struct evsel *b)
++{
++	if (!a->core.cpus && !b->core.cpus)
++		return true;
++
++	if (!a->core.cpus || !b->core.cpus)
++		return false;
++
++	if (a->core.cpus->nr != b->core.cpus->nr)
++		return false;
++
++	for (int i = 0; i < a->core.cpus->nr; i++) {
++		if (a->core.cpus->map[i] != b->core.cpus->map[i])
++			return false;
++	}
++
++	return true;
++}
++
++static void evlist__check_cpu_maps(struct evlist *evlist)
++{
++	struct evsel *evsel, *pos, *leader;
++	char buf[1024];
++
++	evlist__for_each_entry(evlist, evsel) {
++		leader = evsel->leader;
++
++		/* Check that leader matches cpus with each member. */
++		if (leader == evsel)
++			continue;
++		if (cpus_map_matched(leader, evsel))
++			continue;
++
++		/*
++		 * If there's mismatch display dismantle the
++		 * group and warn user.
++		 */
++		WARN_ONCE(1, "WARNING: group events cpu maps do not match, disabling group:\n");
++		evsel__group_desc(leader, buf, sizeof(buf));
++		pr_warning("  %s\n", buf);
++
++		if (verbose) {
++			cpu_map__snprint(leader->core.cpus, buf, sizeof(buf));
++			pr_warning("     %s: %s\n", leader->name, buf);
++			cpu_map__snprint(evsel->core.cpus, buf, sizeof(buf));
++			pr_warning("     %s: %s\n", evsel->name, buf);
++		}
++
++		for_each_group_evsel(pos, leader) {
++			pos->leader = pos;
++			pos->core.nr_members = 0;
++		}
++		evsel->leader->core.nr_members = 0;
++	}
++}
++
+ static inline void diff_timespec(struct timespec *r, struct timespec *a,
+ 				 struct timespec *b)
+ {
+@@ -2113,6 +2169,8 @@ int cmd_stat(int argc, const char **argv)
+ 		goto out;
+ 	}
+ 
++	evlist__check_cpu_maps(evsel_list);
++
+ 	/*
+ 	 * Initialize thread_map with comm names,
+ 	 * so we could print it out on output.
 -- 
-2.16.4
+2.25.4
 
