@@ -2,156 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4761E9FCA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 10:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B3A1E9FE5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 10:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728156AbgFAIGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 04:06:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726056AbgFAIGO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 04:06:14 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB67C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 01:06:14 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id n123so4744829ybf.11
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 01:06:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d59FlMXkZZoVBeLzdnN0v1/ojzLIURQn/Bd884+qmDQ=;
-        b=ULsalHO0uqDfPINCiy70pX46VaQZMMn8knrqTo9BoOv/xI/f43NGcatb6Ws+r3H7eu
-         q1e5LA33Z4AEnxa/PwE80tZXRegVVz9JQSHlXa8JVIpFHq1JnqaIu2AqyWv96EKtfUpu
-         1Zb6fkwZVkRgSkZoqY9DCF7wHzpjtL35M/KFjaaaCfMxBP3CbZnl3shLUQqsXwOmDYxV
-         FQfRZ5++bxd3SpgnKZaTpvl4hZQzcZWW7GobRBfNqf5wdwVzRHkBBYkrlSCelae3tnGX
-         JAoqVVASWYqY6f/AnihnyKwVPjspfyUDwGQqTTiqaRUttyCQN0FRpgN/pVOXChIxyMWM
-         PYkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d59FlMXkZZoVBeLzdnN0v1/ojzLIURQn/Bd884+qmDQ=;
-        b=fPKaMEA/fYyxxwFoH7aJkXf2OQItiHFgQhWUPNyNVt0gVC+t9dFhUNg3lLlJ1lhy4s
-         qfGseERe1yrqOIOokFaUXu9ULKg+jVHo11E6DTa27DY+g7zPRaSVbaOpdTeuXSedqI2F
-         nrABYpZ7aKNRuJUaazoTZld0MNSVP0J11F+R1wA9h9Tc7nm5k7yN5ck1cY2k72c5ucwW
-         wWpR1kYwNvixWs4FBsy7wkwUrRZdR45mH5lij/7149yplufl3naPen+0IACev37oUjOO
-         pcHTQUKLjFrmLUbsWCx43Ufwob1HhU9Yx6tMnSDXpauNVBegntX18zGPqXjJYQMYMx95
-         O+0A==
-X-Gm-Message-State: AOAM530nIsOIJEk8iJITp6EvaG5ktkd8pLR1XJ1snoMwe72TnZkAYBC7
-        A8mvKP3VrgwOHhsiMj0Fwbra7tsH5+7Wm0KyQxsDGNxi
-X-Google-Smtp-Source: ABdhPJwgZvW04nPk4Jca7z69BxIY/ygIogrqLw2npBLnkocgPKpWir9r+zbAsL9C9DPHUFbnbmZEQLDozCp4sZQ4awI=
-X-Received: by 2002:a5b:ec1:: with SMTP id a1mr7817315ybs.41.1590998773488;
- Mon, 01 Jun 2020 01:06:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200524224219.234847-1-jolsa@kernel.org> <20200524224219.234847-15-jolsa@kernel.org>
-In-Reply-To: <20200524224219.234847-15-jolsa@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 1 Jun 2020 01:06:01 -0700
-Message-ID: <CAP-5=fWz9=RhSmWgv1cH4MPXcq49xrqx=9A2P=NK80qvjgn6TA@mail.gmail.com>
-Subject: Re: [PATCH 14/14] perf tests: Add parse metric test for frontend metric
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728207AbgFAIRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 04:17:12 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:55084 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725886AbgFAIRL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 04:17:11 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 7B15E1A0661;
+        Mon,  1 Jun 2020 10:17:08 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B04B51A0675;
+        Mon,  1 Jun 2020 10:17:02 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 72F1A40280;
+        Mon,  1 Jun 2020 16:16:55 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, ulf.hansson@linaro.org,
+        sboyd@kernel.org, krzk@kernel.org, p.zabel@pengutronix.de,
+        andrew.smirnov@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH 1/2] dt-bindings: power: Convert imx gpc to json-schema
+Date:   Mon,  1 Jun 2020 16:06:42 +0800
+Message-Id: <1590998803-29191-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 24, 2020 at 3:43 PM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Adding new metri test for frontend metric. It's stolen
+Convert the i.MX GPC binding to DT schema format using json-schema
 
-s/metri/metric/
+From latest reference manual, there is actually ONLY 1 interrupt for
+GPC, so the additional GPC interrupt is removed.
 
-> from x86 pmu events.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Consumer's example is also removed since it is NOT that useful.
 
-Acked-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+ .../devicetree/bindings/power/fsl,imx-gpc.txt      |  91 ---------------
+ .../devicetree/bindings/power/fsl,imx-gpc.yaml     | 124 +++++++++++++++++++++
+ 2 files changed, 124 insertions(+), 91 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/power/fsl,imx-gpc.txt
+ create mode 100644 Documentation/devicetree/bindings/power/fsl,imx-gpc.yaml
 
-Thanks,
-Ian
+diff --git a/Documentation/devicetree/bindings/power/fsl,imx-gpc.txt b/Documentation/devicetree/bindings/power/fsl,imx-gpc.txt
+deleted file mode 100644
+index f0f5553..0000000
+--- a/Documentation/devicetree/bindings/power/fsl,imx-gpc.txt
++++ /dev/null
+@@ -1,91 +0,0 @@
+-Freescale i.MX General Power Controller
+-=======================================
+-
+-The i.MX6 General Power Control (GPC) block contains DVFS load tracking
+-counters and Power Gating Control (PGC).
+-
+-Required properties:
+-- compatible: Should be one of the following:
+-  - fsl,imx6q-gpc
+-  - fsl,imx6qp-gpc
+-  - fsl,imx6sl-gpc
+-  - fsl,imx6sx-gpc
+-- reg: should be register base and length as documented in the
+-  datasheet
+-- interrupts: Should contain one interrupt specifier for the GPC interrupt
+-- clocks: Must contain an entry for each entry in clock-names.
+-  See Documentation/devicetree/bindings/clock/clock-bindings.txt for details.
+-- clock-names: Must include the following entries:
+-  - ipg
+-
+-The power domains are generic power domain providers as documented in
+-Documentation/devicetree/bindings/power/power-domain.yaml. They are described as
+-subnodes of the power gating controller 'pgc' node of the GPC and should
+-contain the following:
+-
+-Required properties:
+-- reg: Must contain the DOMAIN_INDEX of this power domain
+-  The following DOMAIN_INDEX values are valid for i.MX6Q:
+-  ARM_DOMAIN     0
+-  PU_DOMAIN      1
+-  The following additional DOMAIN_INDEX value is valid for i.MX6SL:
+-  DISPLAY_DOMAIN 2
+-  The following additional DOMAIN_INDEX value is valid for i.MX6SX:
+-  PCI_DOMAIN     3
+-
+-- #power-domain-cells: Should be 0
+-
+-Optional properties:
+-- clocks: a number of phandles to clocks that need to be enabled during domain
+-  power-up sequencing to ensure reset propagation into devices located inside
+-  this power domain
+-- power-supply: a phandle to the regulator powering this domain
+-
+-Example:
+-
+-	gpc: gpc@20dc000 {
+-		compatible = "fsl,imx6q-gpc";
+-		reg = <0x020dc000 0x4000>;
+-		interrupts = <0 89 IRQ_TYPE_LEVEL_HIGH>,
+-			     <0 90 IRQ_TYPE_LEVEL_HIGH>;
+-		clocks = <&clks IMX6QDL_CLK_IPG>;
+-		clock-names = "ipg";
+-
+-		pgc {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-
+-			power-domain@0 {
+-				reg = <0>;
+-				#power-domain-cells = <0>;
+-			};
+-
+-			pd_pu: power-domain@1 {
+-				reg = <1>;
+-				#power-domain-cells = <0>;
+-				power-supply = <&reg_pu>;
+-				clocks = <&clks IMX6QDL_CLK_GPU3D_CORE>,
+-				         <&clks IMX6QDL_CLK_GPU3D_SHADER>,
+-				         <&clks IMX6QDL_CLK_GPU2D_CORE>,
+-				         <&clks IMX6QDL_CLK_GPU2D_AXI>,
+-				         <&clks IMX6QDL_CLK_OPENVG_AXI>,
+-				         <&clks IMX6QDL_CLK_VPU_AXI>;
+-			};
+-		};
+-	};
+-
+-
+-Specifying power domain for IP modules
+-======================================
+-
+-IP cores belonging to a power domain should contain a 'power-domains' property
+-that is a phandle pointing to the power domain the device belongs to.
+-
+-Example of a device that is part of the PU power domain:
+-
+-	vpu: vpu@2040000 {
+-		reg = <0x02040000 0x3c000>;
+-		/* ... */
+-		power-domains = <&pd_pu>;
+-		/* ... */
+-	};
+diff --git a/Documentation/devicetree/bindings/power/fsl,imx-gpc.yaml b/Documentation/devicetree/bindings/power/fsl,imx-gpc.yaml
+new file mode 100644
+index 0000000..a055b3e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/power/fsl,imx-gpc.yaml
+@@ -0,0 +1,124 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/power/fsl,imx-gpc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale i.MX General Power Controller
++
++maintainers:
++  - Philipp Zabel <p.zabel@pengutronix.de>
++
++description: |
++  The i.MX6 General Power Control (GPC) block contains DVFS load tracking
++  counters and Power Gating Control (PGC).
++
++  The power domains are generic power domain providers as documented in
++  Documentation/devicetree/bindings/power/power-domain.yaml. They are
++  described as subnodes of the power gating controller 'pgc' node of the GPC.
++
++  IP cores belonging to a power domain should contain a 'power-domains'
++  property that is a phandle pointing to the power domain the device belongs
++  to.
++
++properties:
++  compatible:
++    enum:
++      - fsl,imx6q-gpc
++      - fsl,imx6qp-gpc
++      - fsl,imx6sl-gpc
++      - fsl,imx6sx-gpc
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    const: ipg
++
++  pgc:
++    type: object
++    description: list of power domains provided by this controller.
++
++    patternProperties:
++      "power-domain@[0-9]$":
++        type: object
++        properties:
++
++          '#power-domain-cells':
++            const: 0
++
++          reg:
++            description: |
++              The following DOMAIN_INDEX values are valid for i.MX6Q:
++                ARM_DOMAIN     0
++                PU_DOMAIN      1
++              The following additional DOMAIN_INDEX value is valid for i.MX6SL:
++                DISPLAY_DOMAIN 2
++              The following additional DOMAIN_INDEX value is valid for i.MX6SX:
++                PCI_DOMAIN     3
++            maxItems: 1
++
++          clocks:
++            description: |
++              A number of phandles to clocks that need to be enabled during domain
++              power-up sequencing to ensure reset propagation into devices located
++              inside this power domain.
++            minItems: 1
++            maxItems: 7
++
++          power-supply: true
++
++        required:
++          - '#power-domain-cells'
++          - reg
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - pgc
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/imx6qdl-clock.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    gpc@20dc000 {
++        compatible = "fsl,imx6q-gpc";
++        reg = <0x020dc000 0x4000>;
++        interrupts = <0 89 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&clks IMX6QDL_CLK_IPG>;
++        clock-names = "ipg";
++
++        pgc {
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            power-domain@0 {
++                reg = <0>;
++                #power-domain-cells = <0>;
++            };
++
++            pd_pu: power-domain@1 {
++                reg = <1>;
++                #power-domain-cells = <0>;
++                power-supply = <&reg_pu>;
++                clocks = <&clks IMX6QDL_CLK_GPU3D_CORE>,
++                         <&clks IMX6QDL_CLK_GPU3D_SHADER>,
++                         <&clks IMX6QDL_CLK_GPU2D_CORE>,
++                         <&clks IMX6QDL_CLK_GPU2D_AXI>,
++                         <&clks IMX6QDL_CLK_OPENVG_AXI>,
++                         <&clks IMX6QDL_CLK_VPU_AXI>;
++            };
++        };
++    };
+-- 
+2.7.4
 
-> ---
->  tools/perf/tests/parse-metric.c | 46 +++++++++++++++++++++++++++++++++
->  1 file changed, 46 insertions(+)
->
-> diff --git a/tools/perf/tests/parse-metric.c b/tools/perf/tests/parse-metric.c
-> index 3005d27c5c48..38f20850bba3 100644
-> --- a/tools/perf/tests/parse-metric.c
-> +++ b/tools/perf/tests/parse-metric.c
-> @@ -15,6 +15,11 @@ static struct pmu_event pme_test[] = {
->         .metric_expr    = "inst_retired.any / cpu_clk_unhalted.thread",
->         .metric_name    = "IPC",
->  },
-> +{
-> +       .metric_expr    = "idq_uops_not_delivered.core / (4 * (( ( cpu_clk_unhalted.thread / 2 ) * "
-> +                         "( 1 + cpu_clk_unhalted.one_thread_active / cpu_clk_unhalted.ref_xclk ) )))",
-> +       .metric_name    = "Frontend_Bound_SMT",
-> +},
->  };
->
->  static struct pmu_events_map map = {
-> @@ -110,8 +115,49 @@ static int test_ipc(void)
->         return 0;
->  }
->
-> +static int test_frontend(void)
-> +{
-> +       double ratio;
-> +       struct rblist metric_events = { 0 };
-> +       struct evlist *evlist;
-> +       struct evsel *evsel;
-> +       struct value vals[] = {
-> +               { .event = "idq_uops_not_delivered.core",        .val = 300 },
-> +               { .event = "cpu_clk_unhalted.thread",            .val = 200 },
-> +               { .event = "cpu_clk_unhalted.one_thread_active", .val = 400 },
-> +               { .event = "cpu_clk_unhalted.ref_xclk",          .val = 600 },
-> +               { 0 },
-> +       };
-> +       struct runtime_stat st;
-> +       int err;
-> +
-> +       evlist = evlist__new();
-> +       if (!evlist)
-> +               return -1;
-> +
-> +       err = metricgroup__parse_groups_test(evlist, &map,
-> +                                            "Frontend_Bound_SMT",
-> +                                            false, false,
-> +                                            &metric_events);
-> +
-> +       TEST_ASSERT_VAL("failed to parse metrics", err == 0);
-> +
-> +       runtime_stat__init(&st);
-> +       load_runtime_stat(&st, evlist, vals);
-> +
-> +       evsel = evlist__first(evlist);
-> +       ratio = compute_single(&metric_events, evsel, &st);
-> +
-> +       TEST_ASSERT_VAL("Frontend_Bound_SMT failed, wrong ratio", ratio == 0.45);
-> +
-> +       runtime_stat__exit(&st);
-> +       evlist__delete(evlist);
-> +       return 0;
-> +}
-> +
->  int test__parse_metric(struct test *test __maybe_unused, int subtest __maybe_unused)
->  {
->         TEST_ASSERT_VAL("IPC failed", test_ipc() == 0);
-> +       TEST_ASSERT_VAL("frontend failed", test_frontend() == 0);
->         return 0;
->  }
-> --
-> 2.25.4
->
