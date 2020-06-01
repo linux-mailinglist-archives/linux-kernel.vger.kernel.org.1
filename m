@@ -2,131 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB4A1EA34B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 14:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C28331EA360
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 14:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728160AbgFAMBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 08:01:15 -0400
-Received: from mout.web.de ([212.227.15.3]:34827 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728120AbgFAMBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 08:01:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1591012849;
-        bh=4P9phAQrmp3CfuNQy4CzvA97WVA/AJly2WoCFPFsn7Q=;
-        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
-        b=Z+1WmXpdDPE20i9iV0SQGzopuEoWCFvYKOB82PG6H7V9DhhYmL4l9KqZ3A8OUfplw
-         aEaJVrGtHeYuA4pumgv/X4/1i6rWdNyuxtBW0a0N/FtEUhXGjy6/0iYQXyB+SOlu8c
-         tzSbBAp3JkOgyJPxnPx9cqXrT2x1VkHPJ5jCW4Gk=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([78.49.133.32]) by smtp.web.de (mrweb002
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0LkhUq-1j5HqH24AO-00aVVF; Mon, 01
- Jun 2020 14:00:49 +0200
-To:     Zhihao Cheng <chengzhihao1@huawei.com>,
-        linux-mtd@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Richard Weinberger <richard@nod.at>,
-        Yi Zhang <yi.zhang@huawei.com>
-Subject: Re: [PATCH 1/2] ubifs: Fix potential memory leaks while iterating
- entries
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <2bec05b7-78d3-fa36-134a-efbe977933e3@web.de>
-Date:   Mon, 1 Jun 2020 14:00:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1727776AbgFAMDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 08:03:08 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49458 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725925AbgFAMDD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 08:03:03 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 051C21KT085887;
+        Mon, 1 Jun 2020 08:02:08 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31d0ns97xd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Jun 2020 08:02:07 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 051C22SM085957;
+        Mon, 1 Jun 2020 08:02:02 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31d0ns97q6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Jun 2020 08:02:02 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 051C0aQe025954;
+        Mon, 1 Jun 2020 12:01:41 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma05fra.de.ibm.com with ESMTP id 31bf481m2n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Jun 2020 12:01:40 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 051C0OoI54853974
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 1 Jun 2020 12:00:24 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7BFE7A406D;
+        Mon,  1 Jun 2020 12:01:38 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DB21FA4057;
+        Mon,  1 Jun 2020 12:01:32 +0000 (GMT)
+Received: from vajain21-in-ibm-com (unknown [9.85.104.164])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Mon,  1 Jun 2020 12:01:32 +0000 (GMT)
+Received: by vajain21-in-ibm-com (sSMTP sendmail emulation); Mon, 01 Jun 2020 17:31:31 +0530
+From:   Vaibhav Jain <vaibhav@linux.ibm.com>
+To:     Christoph Hellwig <hch@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Santosh Sivaraj <santosh@fossix.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Piotr Maziarz <piotrx.maziarz@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, linuxppc-dev@lists.ozlabs.org,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 2/5] seq_buf: Export seq_buf_printf
+In-Reply-To: <20200527041244.37821-3-vaibhav@linux.ibm.com>
+References: <20200527041244.37821-1-vaibhav@linux.ibm.com> <20200527041244.37821-3-vaibhav@linux.ibm.com>
+Date:   Mon, 01 Jun 2020 17:31:31 +0530
+Message-ID: <87367f9eqs.fsf@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:IdpEoYDvQsuZM/z5K/PT5aNV6CLdkHGds5NdmMmoNSqRhgO7mKo
- Yez3oKJzi5xpMdj6007Tx3ykOi8B3QZrBryvzIKnwnqIFXYaqkaduU0WmRj55QVyanBVfQ2
- ZR0XVLhzWPSoZ4RoBNecPAuAN25K3mlKOYhDD/L6/7Bk+drZED/SCwzyA70zOGk2HVUfdiW
- oHOjKbvSXZ6AlafmEnUkQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:RBsBHSN+pz0=:oDzhTP+wNVUdtrNGQuiIxV
- u58mTQGk6XdFcclvzo7Wu3/VjSZJukZWrSfX7IhKBIHzhJJww2a7SZtDPB8o4O8WS4XiC4q9F
- QM83eEuV6BR8SFZ3NNZJ5BWgO2PiWLBAIngDQr9qdtHm0qwEyQyAza07TbC3G49z8da8hhUz6
- JJoDHIGKhqRj/FxZkXWwwMNaycLGKKfoby28wY8SGzJ+eKbWSdZBtoi6BN1xCCsasME6LLc/z
- Sna5eutgBEoUodOV8JDdqge9H6wYbJ2say2WtVnSKYItUh9WZMljkXN4ZmZDSACdiEpXXu6bi
- xJZPL60ZLRBHq1P3cDP2r1fd0Q/GMq2usyGcsOF7bZyXSos+qZ0L+NqCVtQv8XuTRmqtwUE4S
- MRXlIz9OTkVcuPj2lMZjUlxmUTR9+rV1pkUQxK8VefRXuP5I5lehEFmYB21lXrBStpmxROghg
- C5QiSEtSZEW7YJ50nhKbxfi8Zsr1Pv/mcKQHc3X8pdNmWtHe2DYanTe3OAOjDMie1rXFc1Akm
- XWYyXRvEi2Poa/Pj1nage8/xEtfa/C+glamte9wkOm/nxH4JBXHZUmjB5Yo2iaw6zjLEAA0QH
- UFhHD2h/tM/NG/UPucp6+KxALxbpJaioys/lAPz8PjrE5aKDqQBh+y0/tbG3N3MAehHvH5EOt
- wXVNJnuqFvADYY/kqAE046eGT5yXs1/Cc7t0Cxph7syWTPQSDD64JavQiueYpWi6cMM+3qV8K
- Ep3pZj7y9eK9MAfL2yFzou9UF1MjbhjwPkfm837GRd9OjD6+4+GFnQp2Ztrvx6iqbAtiXZZJ2
- WFaTvMwKLWAG4vs3pGhvJqUzCXG5zuFXChv/lrLT3YneU8TjLf2PvIkrRFCBOZZSjZgri3uxe
- ctGMTiWtwB8xJCQldbdxECayz7UXfEyOA/LJI9aVj2eVRif9CS9XJWPN/xGQNxEqOpMROFPoP
- nRpkZvD8JDkKOWfYipA/icO7PCEf7fnT5iZ6rTGzIPW2W7qtH5h0TOXpAxHG5pSWj1GDpHmim
- bk5rX512Dn3ANEfTpbfnDTHc3yI2SbcSbtntt9xWuycxb9hnijIjKMXFYWRPfhahyqp0DEWQ4
- a4WmYQhdiiE/G1mRGAfkbtzr4RRcUUVPuopDh+pqdYhXLvRWzJPpyVBdud4Bdmx6wvdYpEDAs
- Uh4yxhSLLskYNpV/2QO+F4djLdmv3wbFlu4GyXQybv0WFnhbh8IW7EQBdZO7pYxZsL9EBPA0a
- 0WLXibkIv1ADtLLrb
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-01_07:2020-06-01,2020-06-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ adultscore=0 clxscore=1015 cotscore=-2147483648 malwarescore=0
+ mlxlogscore=999 bulkscore=0 priorityscore=1501 impostorscore=0
+ lowpriorityscore=0 phishscore=0 suspectscore=1 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006010087
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Fix some potential memory leaks in error handling branches while
-> iterating xattr entries.
 
-Such information is useful.
+Hi Christoph and Steven,
 
+Have addressed your review comment to update the patch description and
+title for this patch. Can you please provide your ack to this patch.
 
-> For example, function ubifs_tnc_remove_ino()
-> forgets to free pxent if it exists. Similar problems also exist in
-> ubifs_purge_xattrs(), ubifs_add_orphan() and ubifs_jnl_write_inode().
+Thanks,
+~ Vaibhav
 
-Can an other wording variant be a bit nicer?
+Vaibhav Jain <vaibhav@linux.ibm.com> writes:
 
-
-I suggest to avoid the specification of duplicate function calls
-(also for the desired exception handling).
-Will it be helpful to add a few jump targets?
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/coding-style.rst?id=3d77e6a8804abcc0504c904bd6e5cdf3a5cf8162#n455
-
-Regards,
-Markus
+> 'seq_buf' provides a very useful abstraction for writing to a string
+> buffer without needing to worry about it over-flowing. However even
+> though the API has been stable for couple of years now its still not
+> exported to kernel loadable modules limiting its usage.
+>
+> Hence this patch proposes update to 'seq_buf.c' to mark
+> seq_buf_printf() which is part of the seq_buf API to be exported to
+> kernel loadable GPL modules. This symbol will be used in later parts
+> of this patch-set to simplify content creation for a sysfs attribute.
+>
+> Cc: Piotr Maziarz <piotrx.maziarz@linux.intel.com>
+> Cc: Cezary Rojewski <cezary.rojewski@intel.com>
+> Cc: Christoph Hellwig <hch@infradead.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
+> ---
+> Changelog:
+>
+> v7..v8:
+> * Updated the patch title [ Christoph Hellwig ]
+> * Updated patch description to replace confusing term 'external kernel
+>   modules' to 'kernel lodable modules'.
+>
+> Resend:
+> * Added ack from Steven Rostedt
+>
+> v6..v7:
+> * New patch in the series
+> ---
+>  lib/seq_buf.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/lib/seq_buf.c b/lib/seq_buf.c
+> index 4e865d42ab03..707453f5d58e 100644
+> --- a/lib/seq_buf.c
+> +++ b/lib/seq_buf.c
+> @@ -91,6 +91,7 @@ int seq_buf_printf(struct seq_buf *s, const char *fmt, ...)
+>  
+>  	return ret;
+>  }
+> +EXPORT_SYMBOL_GPL(seq_buf_printf);
+>  
+>  #ifdef CONFIG_BINARY_PRINTF
+>  /**
+> -- 
+> 2.26.2
+>
+-- 
