@@ -2,94 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8211EAD2E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20FB81EAC80
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731337AbgFASnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:43:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731415AbgFASmm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:42:42 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89ABC00863B
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 11:33:39 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id y17so285288plb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 11:33:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EIL54tsN/ayDunKEmeYsCGlcywdHCKj045U3CdpH9ek=;
-        b=jOxFQL+A2MHB3MmYXIfp5bt//vP9QMt4cukvW3gYDoxx//QLK387ou4V+W6qUZSUV1
-         /l0n4kgQjss2PX0sS8FBQNXyuxSqG+2gitU3EQHQodFBp5IsJb6qM+Eju2aaI8qlMNna
-         92Zj43RlWcilhzfkFJRTW4I4P+Jh5b3K9Wp0Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EIL54tsN/ayDunKEmeYsCGlcywdHCKj045U3CdpH9ek=;
-        b=qFxWUyLOW6Ufd/GsOQLJ67DtuBnXF5/jBD7WPHnNZ8/c7LyUmdwBZydqMVdGAYhstI
-         jmlE3Gu0HsOYVFeOpwDnakRccZjfHT7hwmpSU2y20cB2B5HzPC8tz6Ei+/G4tjNUX747
-         CdSSTHyFdKu+0DAsDNbQJdQ5F+ZKKQ6Ikwd52Mz4+hLUVQpAksL/vimcVPISPVnjeVYa
-         RK5f2eP+l/0S8S0nTDIKFbqUoZN8M93yiyORsF2hLpduqnVPjjuVApWjY6Li4aFFyuBh
-         9M1/1l7DbSOxEtLwEpegP9Q4xwiVoitMBMZiw+SeAuqaSAqciGeufkiVRhhpjT+TCgfc
-         QQ3Q==
-X-Gm-Message-State: AOAM532Hnh0zzayJ+lJPLI/55Dtrfjax1ZrjK3cjJYjMQh0zQZzPydpJ
-        52d9B9uNwoM2eIlbHr9ABvbNTQ==
-X-Google-Smtp-Source: ABdhPJzAJRWsupYp6piUM3gjsyTomoOnz1Ou5O8IYQ8kz+KAgZt03gQm3IhXp8yi8oUcv1YZqCT+Ww==
-X-Received: by 2002:a17:90b:3d4:: with SMTP id go20mr840756pjb.208.1591036418912;
-        Mon, 01 Jun 2020 11:33:38 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id u1sm171288pgf.28.2020.06.01.11.33.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jun 2020 11:33:38 -0700 (PDT)
-Date:   Mon, 1 Jun 2020 11:33:37 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Matt Denton <mpdenton@google.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Robert Sesek <rsesek@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Linux Containers <containers@lists.linux-foundation.org>
-Subject: Re: [PATCH v3 1/4] seccomp: rename "usage" to "refs" and document
-Message-ID: <202006011133.543C6A8@keescook>
-References: <20200531115031.391515-1-christian.brauner@ubuntu.com>
+        id S1730425AbgFAShf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:37:35 -0400
+Received: from mga17.intel.com ([192.55.52.151]:62295 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728584AbgFASh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:37:29 -0400
+IronPort-SDR: xgjKQrhBLtFMh2dc1kr0gkdtsSab+h/eJA3efLcRFIuOkDhXn0r9IWfSDLMNp04eunjKLBDi78
+ U8m9MUtzWr9w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2020 11:34:27 -0700
+IronPort-SDR: 357mRLmvo9vNL2eNUVl2JsMOgYr47ynBFDW1Ji8ivkTrqWsDaYfvfYUrejsj+LWDaU5VrQAST2
+ AksCeoc8Jcfw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,461,1583222400"; 
+   d="scan'208";a="470412783"
+Received: from lkp-server01.sh.intel.com (HELO 78d03bb9d680) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 01 Jun 2020 11:34:25 -0700
+Received: from kbuild by 78d03bb9d680 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jfpGT-00008g-27; Mon, 01 Jun 2020 18:34:25 +0000
+Date:   Tue, 2 Jun 2020 02:33:41 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Kent Gibson <warthog618@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, bgolaszewski@baylibre.com,
+        linus.walleij@linaro.org
+Cc:     kbuild-all@lists.01.org, Kent Gibson <warthog618@gmail.com>
+Subject: Re: [PATCH] gpiolib: split character device into gpiolib-cdev
+Message-ID: <202006020221.C4AD44rR%lkp@intel.com>
+References: <20200527154005.6827-1-warthog618@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200531115031.391515-1-christian.brauner@ubuntu.com>
+In-Reply-To: <20200527154005.6827-1-warthog618@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 31, 2020 at 01:50:28PM +0200, Christian Brauner wrote:
-> Naming the lifetime counter of a seccomp filter "usage" suggests a
-> little too strongly that its about tasks that are using this filter
-> while it also tracks other references such as the user notifier or
-> ptrace. This also updates the documentation to note this fact.
-> 
-> We'll be introducing an actual usage counter in a follow-up patch.
-> 
-> Cc: Tycho Andersen <tycho@tycho.ws>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Matt Denton <mpdenton@google.com>
-> Cc: Sargun Dhillon <sargun@sargun.me>
-> Cc: Jann Horn <jannh@google.com>
-> Cc: Chris Palmer <palmer@google.com>
-> Cc: Aleksa Sarai <cyphar@cyphar.com>
-> Cc: Robert Sesek <rsesek@google.com>
-> Cc: Jeffrey Vander Stoep <jeffv@google.com>
-> Cc: Linux Containers <containers@lists.linux-foundation.org>
-> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+Hi Kent,
 
-Thanks! Applied to for-next/seccomp.
+Thank you for the patch! Perhaps something to improve:
 
--- 
-Kees Cook
+[auto build test WARNING on v5.7-rc5]
+[cannot apply to gpio/for-next linus/master linux/master v5.7-rc7 v5.7-rc6 next-20200529]
+[if your patch is applied to the wrong git tree, please drop us a note to help
+improve the system. BTW, we also suggest to use '--base' option to specify the
+base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+
+url:    https://github.com/0day-ci/linux/commits/Kent-Gibson/gpiolib-split-character-device-into-gpiolib-cdev/20200528-000035
+base:    2ef96a5bb12be62ef75b5828c0aab838ebb29cb8
+compiler: gcc-9 (Debian 9.3.0-13) 9.3.0
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kbuild test robot <lkp@intel.com>
+
+
+cppcheck warnings: (new ones prefixed by >>)
+
+>> drivers/gpio/gpiolib-cdev.c:1035:6: warning: Variable 'ret' is reassigned a value before the old one has been used. [redundantAssignment]
+    ret = atomic_notifier_chain_register(&gdev->notifier,
+        ^
+   drivers/gpio/gpiolib-cdev.c:1016:0: note: Variable 'ret' is reassigned a value before the old one has been used.
+    int ret = -ENOMEM;
+   ^
+   drivers/gpio/gpiolib-cdev.c:1035:6: note: Variable 'ret' is reassigned a value before the old one has been used.
+    ret = atomic_notifier_chain_register(&gdev->notifier,
+        ^
+
+vim +/ret +1035 drivers/gpio/gpiolib-cdev.c
+
+  1004	
+  1005	/**
+  1006	 * gpio_chrdev_open() - open the chardev for ioctl operations
+  1007	 * @inode: inode for this chardev
+  1008	 * @filp: file struct for storing private data
+  1009	 * Returns 0 on success
+  1010	 */
+  1011	static int gpio_chrdev_open(struct inode *inode, struct file *filp)
+  1012	{
+  1013		struct gpio_device *gdev = container_of(inode->i_cdev,
+  1014						      struct gpio_device, chrdev);
+  1015		struct gpio_chardev_data *priv;
+  1016		int ret = -ENOMEM;
+  1017	
+  1018		/* Fail on open if the backing gpiochip is gone */
+  1019		if (!gdev->chip)
+  1020			return -ENODEV;
+  1021	
+  1022		priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+  1023		if (!priv)
+  1024			return -ENOMEM;
+  1025	
+  1026		priv->watched_lines = bitmap_zalloc(gdev->chip->ngpio, GFP_KERNEL);
+  1027		if (!priv->watched_lines)
+  1028			goto out_free_priv;
+  1029	
+  1030		init_waitqueue_head(&priv->wait);
+  1031		INIT_KFIFO(priv->events);
+  1032		priv->gdev = gdev;
+  1033	
+  1034		priv->lineinfo_changed_nb.notifier_call = lineinfo_changed_notify;
+> 1035		ret = atomic_notifier_chain_register(&gdev->notifier,
+  1036						     &priv->lineinfo_changed_nb);
+  1037		if (ret)
+  1038			goto out_free_bitmap;
+  1039	
+  1040		get_device(&gdev->dev);
+  1041		filp->private_data = priv;
+  1042	
+  1043		ret = nonseekable_open(inode, filp);
+  1044		if (ret)
+  1045			goto out_unregister_notifier;
+  1046	
+  1047		return ret;
+  1048	
+  1049	out_unregister_notifier:
+  1050		atomic_notifier_chain_unregister(&gdev->notifier,
+  1051						 &priv->lineinfo_changed_nb);
+  1052	out_free_bitmap:
+  1053		bitmap_free(priv->watched_lines);
+  1054	out_free_priv:
+  1055		kfree(priv);
+  1056		return ret;
+  1057	}
+  1058	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
