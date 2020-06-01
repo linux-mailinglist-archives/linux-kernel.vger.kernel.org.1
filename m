@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08EE1EAA6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B72C51EA93D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730650AbgFASH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:07:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53298 "EHLO mail.kernel.org"
+        id S1728317AbgFAR7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:59:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730582AbgFASHZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:07:25 -0400
+        id S1729213AbgFAR7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:59:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B21ED2077D;
-        Mon,  1 Jun 2020 18:07:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E60B92074B;
+        Mon,  1 Jun 2020 17:58:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034845;
-        bh=kDllSztfZKlfNu9g1yBHYHaBq64UTXWIu8Dp188I4qU=;
+        s=default; t=1591034340;
+        bh=lmk8LyOLdJPxSVoQ8onp72CpMj+B/OZETC0PxqrDAMw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nQWJd3gJiQS1qOgtxbGHEbHplTVyo1utpSpEFxCQ8jk5+ys1fRU0uqGgjIYjbyRBS
-         sevOmNFrDrQGAAvmFckWbTn3IyJOmhTXAjcaTdpp42udxK77G1kWbjgrEnTjrOLlTD
-         8qwDHlsX3GG1q1E0zcGV/nIEfkBirnxlDESODj7U=
+        b=0WeRjIHoOx1SUXFL7uJkR1VyMchi5Z6c9kT9KEcKI+lX0ox0KFv1GWSd9abapuaby
+         CMB1pzWIc7IqIQdZB1gEcItI/r9XxN78X+jlHD5U8XLse+qcaKFoPEHLTZiUZmfT2k
+         7p6Q1RP1buTvGw+wMJmUKjouEbIUzVkqWI6hrsik=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephen Warren <swarren@nvidia.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 038/142] gpio: tegra: mask GPIO IRQs during IRQ shutdown
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 09/61] net: sun: fix missing release regions in cas_init_one().
 Date:   Mon,  1 Jun 2020 19:53:16 +0200
-Message-Id: <20200601174041.930454932@linuxfoundation.org>
+Message-Id: <20200601174013.428194099@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
+References: <20200601174010.316778377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Warren <swarren@nvidia.com>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit 0cf253eed5d2bdf7bb3152457b38f39b012955f7 ]
+commit 5a730153984dd13f82ffae93d7170d76eba204e9 upstream.
 
-The driver currently leaves GPIO IRQs unmasked even when the GPIO IRQ
-client has released the GPIO IRQ. This allows the HW to raise IRQs, and
-SW to process them, after shutdown. Fix this by masking the IRQ when it's
-shut down. This is usually taken care of by the irqchip core, but since
-this driver has a custom irq_shutdown implementation, it must do this
-explicitly itself.
+In cas_init_one(), "pdev" is requested by "pci_request_regions", but it
+was not released after a call of the function “pci_write_config_byte”
+failed. Thus replace the jump target “err_write_cacheline” by
+"err_out_free_res".
 
-Signed-off-by: Stephen Warren <swarren@nvidia.com>
-Link: https://lore.kernel.org/r/20200427232605.11608-1-swarren@wwwdotorg.org
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 1f26dac32057 ("[NET]: Add Sun Cassini driver.")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpio/gpio-tegra.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/sun/cassini.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/gpio/gpio-tegra.c b/drivers/gpio/gpio-tegra.c
-index 8a01d3694b28..cecde5440a39 100644
---- a/drivers/gpio/gpio-tegra.c
-+++ b/drivers/gpio/gpio-tegra.c
-@@ -365,6 +365,7 @@ static void tegra_gpio_irq_shutdown(struct irq_data *d)
- 	struct tegra_gpio_info *tgi = bank->tgi;
- 	unsigned int gpio = d->hwirq;
+--- a/drivers/net/ethernet/sun/cassini.c
++++ b/drivers/net/ethernet/sun/cassini.c
+@@ -4980,7 +4980,7 @@ static int cas_init_one(struct pci_dev *
+ 					  cas_cacheline_size)) {
+ 			dev_err(&pdev->dev, "Could not set PCI cache "
+ 			       "line size\n");
+-			goto err_write_cacheline;
++			goto err_out_free_res;
+ 		}
+ 	}
+ #endif
+@@ -5151,7 +5151,6 @@ err_out_iounmap:
+ err_out_free_res:
+ 	pci_release_regions(pdev);
  
-+	tegra_gpio_irq_mask(d);
- 	gpiochip_unlock_as_irq(&tgi->gc, gpio);
- }
- 
--- 
-2.25.1
-
+-err_write_cacheline:
+ 	/* Try to restore it in case the error occurred after we
+ 	 * set it.
+ 	 */
 
 
