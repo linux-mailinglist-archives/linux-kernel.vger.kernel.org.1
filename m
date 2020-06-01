@@ -2,144 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2231EB037
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 22:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A79B51EB052
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 22:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728545AbgFAU3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 16:29:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60166 "EHLO
+        id S1728272AbgFAUiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 16:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727875AbgFAU3q (ORCPT
+        with ESMTP id S1727096AbgFAUix (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 16:29:46 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2EB7C061A0E;
-        Mon,  1 Jun 2020 13:29:45 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id c12so8788570qtq.11;
-        Mon, 01 Jun 2020 13:29:45 -0700 (PDT)
+        Mon, 1 Jun 2020 16:38:53 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B972C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 13:38:53 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id c11so9875965ljn.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 13:38:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HAs9Kw635YW+HDXvo0zhakrzZhJRnpKHS/Rqz6u5QVM=;
-        b=cayfLfklNNt8EmT631CpwrTFKbLubWMnfHX9UAcGmVVpB72JZ5N7bSspIsqetgItMu
-         hyhsMUWDhHRi/LKEkkvhL3ie9JmTTqzMlrL6BG90PzpHtJVQ+JJnwRZ2yxcusbPhKvWq
-         oTDeYcoDcrQxGU5SwaOMdK7HnAQOaeI4WrzqaJYlSTHCjaoaPoOilMYjzDiAP5gNl2o0
-         bFMx02zEd8/P4nImlfX12mrOSG/0zWG+GXKschLlTLXoYkgyjDO+NlLN5+FjUAE3IO0c
-         3MGeLBcyeSuyeifbU82DPV+bAuLqgddgmU6jywwPnhakMlBhaFn6YIbJJIgd1tMWTTWT
-         +D3g==
+        bh=nf7HBjwUzpI0BG3TK8UhCa6At+505mS9uRIJWAKfxDA=;
+        b=F3VHsqXbNW9iFxvMXCLyx8+e6Yn/j8nLrZw8JFBwTIrgsVLldkPbQbhsl/lZXps0A2
+         EarG5+MP31L8mWZOjBXjz22IHw2WJUH+KERSyEKnkLPypEZkwQm3gomp+coqwxQjSCJL
+         zUEGU2BRDjR//KmVHhsHtCk5XODgrKESUBF58=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HAs9Kw635YW+HDXvo0zhakrzZhJRnpKHS/Rqz6u5QVM=;
-        b=MYUCl8TzN94TdCeM5BiQMzPpNpHSjdWGbjzlu3jS5tOpLtulLZoXFC8etNF9xP702j
-         knM4yec1F3v53Fc3/ENkLQewelrQHQDHWpwRy8xBF94eP6tJ+CcN0ZT0eYGib/4783aK
-         uBA3wvmKnIF6FHJCG9V3fqCCY3xSv8ZPPbIvbRrUWTvuAoP/pL/7WN+EfAHk/NC4wZNZ
-         kHp/EAPtiSmCvN8JffRKLksaoGaWqwJ9lXbRKSkXlHDZOSzc8NSvOobQ9FDhMubClSlj
-         stUmM4Bh4NvuGf0UMA7fqZBXpFSMvtW/IJObTqVpM1yxptTl/6oVYrJ/hOatKXLmqro5
-         CT2Q==
-X-Gm-Message-State: AOAM530h64EhQcbK4rfzZL4A17vVix4BY7dL41YYalYyavhfskhrQH7Q
-        /kiM7AzA5DEp7V+B2hwBE87wvulwIe08IjuNGKRaG8JF
-X-Google-Smtp-Source: ABdhPJyFqi2sy1XpNUtKnyJCkuPklMuovTOzVIZJEpTDi6XMDFRLM77wlqBxWlNBC9o8/kQn1VsjhpYUIoUmWKs47Fg=
-X-Received: by 2002:ac8:2dc3:: with SMTP id q3mr23123105qta.141.1591043384218;
- Mon, 01 Jun 2020 13:29:44 -0700 (PDT)
+        bh=nf7HBjwUzpI0BG3TK8UhCa6At+505mS9uRIJWAKfxDA=;
+        b=IpZHbWbqckUK9S6AWP37ackaHjpC30jrGeExZJpJtZM9mAdX89qi91alghdqQPtatC
+         GT+FnWrPOxiq39mToc8SNIP8QAnkkz78Uji99Yzwxzh0OJjXtzIfhnVIAezlvYnfLCLI
+         wl1xyiCAmVrg6TDz3ufd6dOpKIkXiKyPJfwDL4xnlBrKDODrI6v5e+Yiu3Tajf22oCfK
+         lnnxY9peGJ23xa6Sc8Nf8f0ekomQQC/cZFf8J7K/002dBPtejov9VzrRp0jKLWwYh89W
+         M0CN6XhK/706zILKKMsVEnjECW8gj4g7qpr8XH4TiLfmH9zrzhUPGIbp6fEBNxWQmWKa
+         CwFw==
+X-Gm-Message-State: AOAM530EUMs1PsQ3Fi3G3lF1viUj/tZfmB3yoWV+TqKIuzc6t+Kzsxj8
+        DuVZs9pYHOmoJe95X6+TEuAKMuK6kjM=
+X-Google-Smtp-Source: ABdhPJyi1R+zNxQnwE7AzStpEBrwlhdzpJCTTMdgKV9YvXzlI5wuo89U+3ezk2z9MhLnwn0rJtedKg==
+X-Received: by 2002:a2e:974a:: with SMTP id f10mr5761543ljj.283.1591043930771;
+        Mon, 01 Jun 2020 13:38:50 -0700 (PDT)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id h25sm121890lji.105.2020.06.01.13.38.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Jun 2020 13:38:49 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id a25so9880341ljp.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 13:38:49 -0700 (PDT)
+X-Received: by 2002:a2e:8991:: with SMTP id c17mr1167647lji.421.1591043929161;
+ Mon, 01 Jun 2020 13:38:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200526163336.63653-1-kpsingh@chromium.org> <20200526163336.63653-5-kpsingh@chromium.org>
-In-Reply-To: <20200526163336.63653-5-kpsingh@chromium.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 1 Jun 2020 13:29:33 -0700
-Message-ID: <CAEf4BzY0=Hh3O6qeD=2sMWpQRpHpizxH+nEA0hD0khPf3VAbhA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/4] bpf: Add selftests for local_storage
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        linux-security-module@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Florent Revest <revest@chromium.org>
+References: <20200601132443.GA796373@gmail.com> <CAMj1kXEH+M6j0W8GbwmJ6B2g1Kxoj01XW0P2a5_1OBVFoiF7ZA@mail.gmail.com>
+In-Reply-To: <CAMj1kXEH+M6j0W8GbwmJ6B2g1Kxoj01XW0P2a5_1OBVFoiF7ZA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 1 Jun 2020 13:38:32 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjt9O8JReJbSTLTSeZoD3X9KkQiMhQfgRyqjA1FyQXgRw@mail.gmail.com>
+Message-ID: <CAHk-=wjt9O8JReJbSTLTSeZoD3X9KkQiMhQfgRyqjA1FyQXgRw@mail.gmail.com>
+Subject: Re: [GIT PULL] EFI changes for v5.8
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Andrew Morton <akpm@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 9:34 AM KP Singh <kpsingh@chromium.org> wrote:
+On Mon, Jun 1, 2020 at 7:42 AM Ard Biesheuvel <ardb@kernel.org> wrote:
 >
-> From: KP Singh <kpsingh@google.com>
->
-> inode_local_storage:
->
-> * Hook to the file_open and inode_unlink LSM hooks.
-> * Create and unlink a temporary file.
-> * Store some information in the inode's bpf_local_storage during
->   file_open.
-> * Verify that this information exists when the file is unlinked.
->
-> sk_local_storage:
->
-> * Hook to the socket_post_create and socket_bind LSM hooks.
-> * Open and bind a socket and set the sk_storage in the
->   socket_post_create hook using the start_server helper.
-> * Verify if the information is set in the socket_bind hook.
->
-> Signed-off-by: KP Singh <kpsingh@google.com>
-> ---
->  .../bpf/prog_tests/test_local_storage.c       |  60 ++++++++
->  .../selftests/bpf/progs/local_storage.c       | 139 ++++++++++++++++++
->  2 files changed, 199 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_local_storage.c
->  create mode 100644 tools/testing/selftests/bpf/progs/local_storage.c
->
+> Please note that Stephen reported a conflict with the ARM32 tree, due
+> to the replacement of all instances of pr_efi_err() with efi_err(),
+> including a couple in some ARM code that is being modified.
 
-[...]
+Ok, I'll try to remember, but I probably won't. So it would be lovely
+to be reminded when I get the arm pull.
 
-> +struct dummy_storage {
-> +       __u32 value;
-> +};
-> +
-> +struct {
-> +       __uint(type, BPF_MAP_TYPE_INODE_STORAGE);
-> +       __uint(map_flags, BPF_F_NO_PREALLOC);
-> +       __type(key, int);
-> +       __type(value, struct dummy_storage);
-> +} inode_storage_map SEC(".maps");
-> +
-> +struct {
-> +       __uint(type, BPF_MAP_TYPE_SK_STORAGE);
-> +       __uint(map_flags, BPF_F_NO_PREALLOC | BPF_F_CLONE);
-> +       __type(key, int);
-> +       __type(value, struct dummy_storage);
-> +} sk_storage_map SEC(".maps");
-> +
-> +/* Using vmlinux.h causes the generated BTF to be so big that the object
-> + * load fails at btf__load.
-> + */
+That said, if it's just outright conflicts, that's not a big deal and
+the resolution looks trivial. But if there are actual semantic
+conflicts that don't show up during the merge like Ingo implies, I
+would indeed not notice due to me not doing any cross-builds.
 
-That's first time I hear about such issue. Do you have an error log
-from verifier?
-
-Clang is smart enough to trim down used types to only those that are
-actually necessary, so too big BTF shouldn't be a thing. But let's try
-to dig into this and fix whatever issue it is, before giving up :)
-
-> +struct sock {} __attribute__((preserve_access_index));
-> +struct sockaddr {} __attribute__((preserve_access_index));
-> +struct socket {
-> +       struct sock *sk;
-> +} __attribute__((preserve_access_index));
-> +
-> +struct inode {} __attribute__((preserve_access_index));
-> +struct dentry {
-> +       struct inode *d_inode;
-> +} __attribute__((preserve_access_index));
-> +struct file {
-> +       struct inode *f_inode;
-> +} __attribute__((preserve_access_index));
-> +
-> +
-
-[...]
+                    Linus
