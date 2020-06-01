@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1A91EAE58
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA1981EACA7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731021AbgFASxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:53:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46564 "EHLO mail.kernel.org"
+        id S1731503AbgFASOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:14:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729062AbgFASDG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:03:06 -0400
+        id S1730453AbgFASOe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:14:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C092B2074B;
-        Mon,  1 Jun 2020 18:03:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 679B2206E2;
+        Mon,  1 Jun 2020 18:14:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034586;
-        bh=9mTzwb6ITrEXvq3pKVxauQx+x7h5QVXjyJbXmtuQiXE=;
+        s=default; t=1591035273;
+        bh=rgoYLS+WMEIn3HQPScbZElKfuAs0VrEeOrN4VJIZ2TQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hiw9M4qj20GVFgNJbCIo3hkMlc081Hk97b7cYspuVacbbWeYXxLxj6SCTPLnenIvC
-         LQtxd66ywyP3bJAJmdWf2IF+lAVgcQ7eRMjB0g94dRbIhW0vXFz1lONnTHDjm6Fay4
-         NBb8EBYkC9ObadigCTSLGiYpTmYmeczjc6AWAv38=
+        b=xcntPZVZRjqos1xnr7FDwuqwe5yAW46VSCvHKrNavc9WdnZOoanIQ+PWnz93I3Owg
+         9xyCX9b/Ebnt/Z17iaIMLRe7+HY3sTpX34QjWtH2oDpP8q512CTesLoyLoxQjcgYGe
+         mZU2t4VxCe8V2RjMVmYtXk/Zg1lcDpsELHdLNe1Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 02/95] dpaa_eth: fix usage as DSA master, try 3
-Date:   Mon,  1 Jun 2020 19:53:02 +0200
-Message-Id: <20200601174021.192048437@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Jonker <jbx6244@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 045/177] ARM: dts: rockchip: fix phy nodename for rk3228-evb
+Date:   Mon,  1 Jun 2020 19:53:03 +0200
+Message-Id: <20200601174052.790962959@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
-References: <20200601174020.759151073@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,73 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Johan Jonker <jbx6244@gmail.com>
 
-[ Upstream commit 5d14c304bfc14b4fd052dc83d5224376b48f52f0 ]
+[ Upstream commit 287e0d538fcec2f6e8eb1e565bf0749f3b90186d ]
 
-The dpaa-eth driver probes on compatible string for the MAC node, and
-the fman/mac.c driver allocates a dpaa-ethernet platform device that
-triggers the probing of the dpaa-eth net device driver.
+A test with the command below gives for example this error:
 
-All of this is fine, but the problem is that the struct device of the
-dpaa_eth net_device is 2 parents away from the MAC which can be
-referenced via of_node. So of_find_net_device_by_node can't find it, and
-DSA switches won't be able to probe on top of FMan ports.
+arch/arm/boot/dts/rk3228-evb.dt.yaml: phy@0:
+'#phy-cells' is a required property
 
-It would be a bit silly to modify a core function
-(of_find_net_device_by_node) to look for dev->parent->parent->of_node
-just for one driver. We're just 1 step away from implementing full
-recursion.
+The phy nodename is normally used by a phy-handle.
+This node is however compatible with
+"ethernet-phy-id1234.d400", "ethernet-phy-ieee802.3-c22"
+which is just been added to 'ethernet-phy.yaml'.
+So change nodename to 'ethernet-phy' for which '#phy-cells'
+is not a required property
 
-Actually there have already been at least 2 previous attempts to make
-this work:
-- Commit a1a50c8e4c24 ("fsl/man: Inherit parent device and of_node")
-- One or more of the patches in "[v3,0/6] adapt DPAA drivers for DSA":
-  https://patchwork.ozlabs.org/project/netdev/cover/1508178970-28945-1-git-send-email-madalin.bucur@nxp.com/
-  (I couldn't really figure out which one was supposed to solve the
-  problem and how).
+make ARCH=arm dtbs_check
+DT_SCHEMA_FILES=~/.local/lib/python3.5/site-packages/dtschema/schemas/
+phy/phy-provider.yaml
 
-Point being, it looks like this is still pretty much a problem today.
-On T1040, the /sys/class/net/eth0 symlink currently points to
-
-../../devices/platform/ffe000000.soc/ffe400000.fman/ffe4e6000.ethernet/dpaa-ethernet.0/net/eth0
-
-which pretty much illustrates the problem. The closest of_node we've got
-is the "fsl,fman-memac" at /soc@ffe000000/fman@400000/ethernet@e6000,
-which is what we'd like to be able to reference from DSA as host port.
-
-For of_find_net_device_by_node to find the eth0 port, we would need the
-parent of the eth0 net_device to not be the "dpaa-ethernet" platform
-device, but to point 1 level higher, aka the "fsl,fman-memac" node
-directly. The new sysfs path would look like this:
-
-../../devices/platform/ffe000000.soc/ffe400000.fman/ffe4e6000.ethernet/net/eth0
-
-And this is exactly what SET_NETDEV_DEV does. It sets the parent of the
-net_device. The new parent has an of_node associated with it, and
-of_dev_node_match already checks for the of_node of the device or of its
-parent.
-
-Fixes: a1a50c8e4c24 ("fsl/man: Inherit parent device and of_node")
-Fixes: c6e26ea8c893 ("dpaa_eth: change device used")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://lore.kernel.org/r/20200416170321.4216-1-jbx6244@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/dpaa/dpaa_eth.c |    2 +-
+ arch/arm/boot/dts/rk3228-evb.dts | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-+++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-@@ -2796,7 +2796,7 @@ static int dpaa_eth_probe(struct platfor
- 	}
+diff --git a/arch/arm/boot/dts/rk3228-evb.dts b/arch/arm/boot/dts/rk3228-evb.dts
+index 5670b33fd1bd..aed879db6c15 100644
+--- a/arch/arm/boot/dts/rk3228-evb.dts
++++ b/arch/arm/boot/dts/rk3228-evb.dts
+@@ -46,7 +46,7 @@
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
  
- 	/* Do this here, so we can be verbose early */
--	SET_NETDEV_DEV(net_dev, dev);
-+	SET_NETDEV_DEV(net_dev, dev->parent);
- 	dev_set_drvdata(dev, net_dev);
- 
- 	priv = netdev_priv(net_dev);
+-		phy: phy@0 {
++		phy: ethernet-phy@0 {
+ 			compatible = "ethernet-phy-id1234.d400", "ethernet-phy-ieee802.3-c22";
+ 			reg = <0>;
+ 			clocks = <&cru SCLK_MAC_PHY>;
+-- 
+2.25.1
+
 
 
