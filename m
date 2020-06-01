@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894351EAB06
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2651EA94E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730512AbgFASNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:13:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33110 "EHLO mail.kernel.org"
+        id S1728645AbgFASA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:00:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731364AbgFASNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:13:34 -0400
+        id S1729562AbgFAR7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:59:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D9E322068D;
-        Mon,  1 Jun 2020 18:13:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B8CB72073B;
+        Mon,  1 Jun 2020 17:59:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035213;
-        bh=7bdL3LfbgQTpB6p9+mW/YgtWkBdHWnz5N5/nrRUeYB0=;
+        s=default; t=1591034394;
+        bh=S6zO8hcbVdBVN8LkvQ/sj8dlQ3udIQF1260iBKxwIvA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NfmTIud1f3isIkAy6XwlMWJCJLFAa7L2LCmkfPoPBkqB+VhcobtMXruSYBVZgP2eS
-         YLtvKCAYHnaxgbTB581/MmS4ArWYZKxidIQbYPaG7ypCxCOy5T2267w3VQScKSu4+x
-         bJRI4AlSRKG584F3qVLco+bd4enjfY9tdwOn3NqI=
+        b=H4WLhDGoYtCUu28M3DRUniXB9JgQBy2ZIK0n4npgoYmwt3qre+HRn3wklopEG+RL/
+         eWzAEmccEsk8P4xh8hoRfNCGXxxvuzebBya9URg7NQwueTfpJOZF6uBQrY/NXnH+Hn
+         nOXGZszz6HiLc61/7Z57FET3AfXYLkTPOW9MDcdw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andreas Gruenbacher <agruenba@redhat.com>,
-        Bob Peterson <rpeterso@redhat.com>,
+        stable@vger.kernel.org, Johan Jonker <jbx6244@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 059/177] gfs2: Grab glock reference sooner in gfs2_add_revoke
+Subject: [PATCH 4.14 12/77] ARM: dts: rockchip: fix phy nodename for rk3228-evb
 Date:   Mon,  1 Jun 2020 19:53:17 +0200
-Message-Id: <20200601174053.896138963@linuxfoundation.org>
+Message-Id: <20200601174018.744107832@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
+References: <20200601174016.396817032@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,42 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Gruenbacher <agruenba@redhat.com>
+From: Johan Jonker <jbx6244@gmail.com>
 
-[ Upstream commit f4e2f5e1a527ce58fc9f85145b03704779a3123e ]
+[ Upstream commit 287e0d538fcec2f6e8eb1e565bf0749f3b90186d ]
 
-This patch rearranges gfs2_add_revoke so that the extra glock
-reference is added earlier on in the function to avoid races in which
-the glock is freed before the new reference is taken.
+A test with the command below gives for example this error:
 
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+arch/arm/boot/dts/rk3228-evb.dt.yaml: phy@0:
+'#phy-cells' is a required property
+
+The phy nodename is normally used by a phy-handle.
+This node is however compatible with
+"ethernet-phy-id1234.d400", "ethernet-phy-ieee802.3-c22"
+which is just been added to 'ethernet-phy.yaml'.
+So change nodename to 'ethernet-phy' for which '#phy-cells'
+is not a required property
+
+make ARCH=arm dtbs_check
+DT_SCHEMA_FILES=~/.local/lib/python3.5/site-packages/dtschema/schemas/
+phy/phy-provider.yaml
+
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://lore.kernel.org/r/20200416170321.4216-1-jbx6244@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/log.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/rk3228-evb.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/gfs2/log.c b/fs/gfs2/log.c
-index 60d911e293e6..2674feda1d7a 100644
---- a/fs/gfs2/log.c
-+++ b/fs/gfs2/log.c
-@@ -603,13 +603,13 @@ void gfs2_add_revoke(struct gfs2_sbd *sdp, struct gfs2_bufdata *bd)
- 	struct buffer_head *bh = bd->bd_bh;
- 	struct gfs2_glock *gl = bd->bd_gl;
+diff --git a/arch/arm/boot/dts/rk3228-evb.dts b/arch/arm/boot/dts/rk3228-evb.dts
+index 1be9daacc4f9..b69c842d8306 100644
+--- a/arch/arm/boot/dts/rk3228-evb.dts
++++ b/arch/arm/boot/dts/rk3228-evb.dts
+@@ -84,7 +84,7 @@
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
  
-+	sdp->sd_log_num_revoke++;
-+	if (atomic_inc_return(&gl->gl_revokes) == 1)
-+		gfs2_glock_hold(gl);
- 	bh->b_private = NULL;
- 	bd->bd_blkno = bh->b_blocknr;
- 	gfs2_remove_from_ail(bd); /* drops ref on bh */
- 	bd->bd_bh = NULL;
--	sdp->sd_log_num_revoke++;
--	if (atomic_inc_return(&gl->gl_revokes) == 1)
--		gfs2_glock_hold(gl);
- 	set_bit(GLF_LFLUSH, &gl->gl_flags);
- 	list_add(&bd->bd_list, &sdp->sd_log_revokes);
- }
+-		phy: phy@0 {
++		phy: ethernet-phy@0 {
+ 			compatible = "ethernet-phy-id1234.d400", "ethernet-phy-ieee802.3-c22";
+ 			reg = <0>;
+ 			clocks = <&cru SCLK_MAC_PHY>;
 -- 
 2.25.1
 
