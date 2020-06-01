@@ -2,76 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6D601E9BDA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 04:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 673341E9BDD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 04:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727815AbgFACzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 22:55:23 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:36532 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727119AbgFACzV (ORCPT
+        id S1727983AbgFAC53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 22:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727050AbgFAC52 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 22:55:21 -0400
-Date:   Sun, 31 May 2020 22:55:15 -0400
-From:   Rich Felker <dalias@libc.org>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Rob Landley <rob@landley.net>,
-        Christoph Hellwig <hch@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-sh@vger.kernel.org,
-        ysato@users.sourceforge.jp, linux-kernel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [GIT PULL] sh: remove sh5 support
-Message-ID: <20200601025514.GS1079@brightrain.aerifal.cx>
-References: <20200424221948.1120587-1-arnd@arndb.de>
- <20200507143552.GA28683@infradead.org>
- <20200528054600.GA29717@infradead.org>
- <20200528161416.GY1079@brightrain.aerifal.cx>
- <20200529143059.GA25475@infradead.org>
- <20200529175335.GK1079@brightrain.aerifal.cx>
- <e86e1d78-9597-811a-da0e-42a910b0c9fe@physik.fu-berlin.de>
- <8b4ff7fe-c10c-fc8e-72bc-88ef69bdb2b4@landley.net>
- <eea4f39c-23d4-d435-a770-652d71268f34@physik.fu-berlin.de>
+        Sun, 31 May 2020 22:57:28 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93510C061A0E
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 19:57:28 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id y18so1851348plr.4
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 19:57:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=66uFmRriptB2u4UNdZzl7BDSBQpk4OJmv3zSYXSsu3U=;
+        b=PtXGiI8TKztHXLe60Xd8IO/ZcCK5mcNv5KGV5+WM/LDhjuhOpueURMa+TpUgVr9Mdi
+         EAb8e8XKcM8w1N5Hdx8eDc+vpj9spi2wtDnPXJ4Aw9ibNNQjqp+GN6ctutJxH+jemUch
+         TMFX94/gKqCYAelOvJhwVxFx613HcmOFMCHN0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=66uFmRriptB2u4UNdZzl7BDSBQpk4OJmv3zSYXSsu3U=;
+        b=uXStvFq/All+xCxSqdv7uB0T9I0p+gZeW4Yz+v0d0EWUOLS0IsHpMcrwzjkbxu3a3C
+         wybuNB1yKv8NVkqnxwR08a9Yp9qlcFbtAjZl6msIU7oMU/G7kmdAbmljIDKdZfs0VmSB
+         iLD3K4r5Y8Hf2irBZMoABNlVfx3oj6VcyaSG27tLwX/HM07y5LbXMT+REsZcXD09IrAm
+         5Zr1XYR+PxVBmCbGNUCC5wa8eoguB1n1fcd+l93eLsP+MmgAg74icrL6rrYq0fv2yX2T
+         yttADJuuw58A+qDHCcYBUKj7YpC4KwXsfxMELQreE5n+3r6btgm0bq/VWnF+fnoiuCD2
+         yzlA==
+X-Gm-Message-State: AOAM5300jJJi3ffxXjjXOLY1XrRXoNjyPVVg37H4EsMki9+94YRl5VPH
+        6vgdlbf0khumk94JznI6pZH/9g==
+X-Google-Smtp-Source: ABdhPJxH75OsLbnQYtM4ldoZTN7zkFdA/IoYSgIrJ+hS3eQAXYTPguoWBnG0yeDOu62MMaeEaYvotw==
+X-Received: by 2002:a17:902:7088:: with SMTP id z8mr15693664plk.71.1590980248061;
+        Sun, 31 May 2020 19:57:28 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id s6sm166116pgi.26.2020.05.31.19.57.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 May 2020 19:57:26 -0700 (PDT)
+Date:   Sun, 31 May 2020 19:57:25 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Colin Ian King <colin.king@canonical.com>,
+        Luis Henriques <lhenriques@suse.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        WeiXiong Liao <liaoweixiong@allwinnertech.com>
+Subject: [GIT PULL] pstore updates for v5.8-rc1
+Message-ID: <202005311953.13A77CF20@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <eea4f39c-23d4-d435-a770-652d71268f34@physik.fu-berlin.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 31, 2020 at 10:03:13AM +0200, John Paul Adrian Glaubitz wrote:
-> On 5/31/20 5:20 AM, Rob Landley wrote:
-> > On 5/30/20 3:08 AM, John Paul Adrian Glaubitz wrote:
-> >> On 5/29/20 7:53 PM, Rich Felker wrote:
-> >>> Frustratingly, I _still_ don't have an official tree on kernel.org for
-> >>> the purpose of being the canonical place for linux-next to pull from,
-> >>> due to policies around pgp keys and nobody following up on signing
-> >>> mine. This is all really silly since there are ridiculously many
-> >>> independent channels I could cryptographically validate identity
-> >>> through with vanishing probability that they're all compromised. For
-> >>> the time being I'll reactivate my repo on git.musl-libc.org.
-> >>
-> >> May I suggest to pick up these patches, for example? There might be
-> >> more I missed, but getting these merged should already help a lot with
-> >> the clean-up of arch/sh.
-> > 
-> > Does that include the 2 fixes to build with current binutils I made puppy eyes
-> > about last -rc7 (in march)?
-> > 
-> > https://marc.info/?l=linux-sh&m=158544749818664&w=2
-> Yes, listed as "[PATCH 1/2] arch/sh: vmlinux.scr".
-> 
-> @Rich: Do you think you can merge all those fixes in your local tree within
->        the next days and send a PR to Linus?
-> 
-> Otherwise, I can volunteer to become a third maintainer for arch/sh as I have
-> the hardware for testing and can accept patches and send PRs.
-> 
-> We shouldn't let contributors to arch/sh wait for too long.
+Hi Linus,
 
-Yes, I'll try to get my tree ready for next/PR use tomorrow.
+Please pull these pstore updates for v5.8-rc1. This is a pretty big set
+of changes (relative to past pstore pulls), but they've lived in -next
+for a while. The biggest change here is the ability to support a block
+device as a pstore backend, which has been desired for a while. A lot of
+additional fixes and refactorings are also included, mostly in support
+of the new features.
 
-Rich
+Thanks!
+
+-Kees
+
+The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
+
+  Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/pstore-v5.8-rc1
+
+for you to fetch changes up to 78c08247b9d3e03192f8b359aa079024e805a948:
+
+  mtd: Support kmsg dumper based on pstore/blk (2020-05-31 19:49:01 -0700)
+
+----------------------------------------------------------------
+Fixes and new features for pstore
+
+- refactor pstore locking for safer module unloading (Kees Cook)
+- remove orphaned records from pstorefs when backend unloaded (Kees Cook)
+- refactor dump_oops parameter into max_reason (Pavel Tatashin)
+- introduce pstore/zone for common code for contiguous storage (WeiXiong Liao)
+- introduce pstore/blk for block device backend (WeiXiong Liao)
+- introduce mtd backend (WeiXiong Liao)
+
+----------------------------------------------------------------
+Kees Cook (22):
+      pstore: Drop useless try_module_get() for backend
+      pstore: Rename "pstore_lock" to "psinfo_lock"
+      pstore: Convert "psinfo" locking to mutex
+      pstore: Rename "allpstore" to "records_list"
+      pstore: Convert "records_list" locking to mutex
+      pstore: Add proper unregister lock checking
+      pstore: Refactor pstorefs record list removal
+      pstore: Add locking around superblock changes
+      pstore: Do not leave timer disabled for next backend
+      pstore: Remove filesystem records when backend is unregistered
+      pstore: Make sure console capturing will restart
+      pstore/platform: Switch pstore_info::name to const
+      pstore/platform: Use backend name for console registration
+      pstore/platform: Move module params after declarations
+      pstore/ram: Adjust module param permissions to reflect reality
+      pstore/ram: Refactor DT size parsing
+      pstore/ram: Refactor ftrace buffer merging
+      pstore/ftrace: Provide ftrace log merging routine
+      printk: Collapse shutdown types into a single dump reason
+      printk: Introduce kmsg_dump_reason_str()
+      pstore/ram: Introduce max_reason and convert dump_oops
+      pstore/blk: Introduce "best_effort" mode
+
+Pavel Tatashin (3):
+      printk: honor the max_reason field in kmsg_dumper
+      pstore/platform: Pass max_reason to kmesg dump
+      ramoops: Add "max-reason" optional field to ramoops DT node
+
+WeiXiong Liao (10):
+      pstore/zone: Introduce common layer to manage storage zones
+      pstore/blk: Introduce backend for block devices
+      pstore/zone,blk: Add support for pmsg frontend
+      pstore/zone,blk: Add console frontend support
+      pstore/zone,blk: Add ftrace frontend support
+      Documentation: Add details for pstore/blk
+      pstore/zone: Provide way to skip "broken" zone for MTD devices
+      pstore/blk: Provide way to query pstore configuration
+      pstore/blk: Support non-block storage devices
+      mtd: Support kmsg dumper based on pstore/blk
+
+ Documentation/admin-guide/pstore-blk.rst           |  243 ++++
+ Documentation/admin-guide/ramoops.rst              |   14 +-
+ .../bindings/reserved-memory/ramoops.txt           |   13 +-
+ MAINTAINERS                                        |    1 +
+ arch/powerpc/kernel/nvram_64.c                     |    4 +-
+ drivers/mtd/Kconfig                                |   10 +
+ drivers/mtd/Makefile                               |    1 +
+ drivers/mtd/mtdpstore.c                            |  578 ++++++++
+ drivers/platform/chrome/chromeos_pstore.c          |    2 +-
+ fs/pstore/Kconfig                                  |  109 ++
+ fs/pstore/Makefile                                 |    6 +
+ fs/pstore/blk.c                                    |  517 +++++++
+ fs/pstore/ftrace.c                                 |   54 +
+ fs/pstore/inode.c                                  |  129 +-
+ fs/pstore/internal.h                               |   11 +-
+ fs/pstore/platform.c                               |  117 +-
+ fs/pstore/ram.c                                    |  155 +--
+ fs/pstore/zone.c                                   | 1465 ++++++++++++++++++++
+ include/linux/kmsg_dump.h                          |   12 +-
+ include/linux/pstore.h                             |    9 +-
+ include/linux/pstore_blk.h                         |  118 ++
+ include/linux/pstore_ram.h                         |    2 +-
+ include/linux/pstore_zone.h                        |   60 +
+ kernel/printk/printk.c                             |   32 +-
+ kernel/reboot.c                                    |    6 +-
+ tools/testing/selftests/pstore/pstore_tests        |    2 +-
+ 26 files changed, 3464 insertions(+), 206 deletions(-)
+ create mode 100644 Documentation/admin-guide/pstore-blk.rst
+ create mode 100644 drivers/mtd/mtdpstore.c
+ create mode 100644 fs/pstore/blk.c
+ create mode 100644 fs/pstore/zone.c
+ create mode 100644 include/linux/pstore_blk.h
+ create mode 100644 include/linux/pstore_zone.h
+
+-- 
+Kees Cook
