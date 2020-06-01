@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE4E1EA93F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B14C1EAA83
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729385AbgFAR7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:59:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41398 "EHLO mail.kernel.org"
+        id S1730767AbgFASIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:08:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729298AbgFAR7G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:59:06 -0400
+        id S1730023AbgFASIm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:08:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A0D12073B;
-        Mon,  1 Jun 2020 17:59:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3CF582068D;
+        Mon,  1 Jun 2020 18:08:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034344;
-        bh=16yhCeybFa9voEegXBLnbz8WkBZ0IGi5Ct0ZVHsiUMg=;
+        s=default; t=1591034921;
+        bh=4MGp3GhSPRW69gWgo1kGqYevai5ODOUvvSzkzf6cRa4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j1JknxeaRouQl6Rpb+o8jnCssSbHVOVVNLhS9C11l4STUphLFXy92N25VD3aHsvmW
-         3JN1Jc3SvNGFoGRGh+ix4z5plA2+3eY39qkCZqjxctDVDcT5Ow0Jga37nUFbB3IzWq
-         bS6tHDyRf//aTT3WSqJexyjySPpmjsOMDlwGlrrw=
+        b=BvT+uvH0sU7CP6T+oOTULhSDiHYk+AAEN5eHkPpb3cTyQU+KKUViMulVKqQjpgu+Z
+         oa58k4tEuCC0wJqAE+pJW6xQQki5AjnOuAYx3gPA/GJNyrKDSZ0NEnnLHCwLJIHLzy
+         MJi5oUpG18IX/dhEzc6oA4u0v7T4YCb1d+f9UIF8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alan Jenkins <alan.christopher.jenkins@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Alexander Dahl <post@lespocky.de>, Borislav Petkov <bp@suse.de>
-Subject: [PATCH 4.9 44/61] x86/dma: Fix max PFN arithmetic overflow on 32 bit systems
+        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 073/142] ARM: uaccess: integrate uaccess_save and uaccess_restore
 Date:   Mon,  1 Jun 2020 19:53:51 +0200
-Message-Id: <20200601174019.735903176@linuxfoundation.org>
+Message-Id: <20200601174045.365951621@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
-References: <20200601174010.316778377@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,105 +43,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Dahl <post@lespocky.de>
+From: Russell King <rmk+kernel@armlinux.org.uk>
 
-commit 88743470668ef5eb6b7ba9e0f99888e5999bf172 upstream.
+[ Upstream commit 8ede890b0bcebe8c760aacfe20e934d98c3dc6aa ]
 
-The intermediate result of the old term (4UL * 1024 * 1024 * 1024) is
-4 294 967 296 or 0x100000000 which is no problem on 64 bit systems.
-The patch does not change the later overall result of 0x100000 for
-MAX_DMA32_PFN (after it has been shifted by PAGE_SHIFT). The new
-calculation yields the same result, but does not require 64 bit
-arithmetic.
+Integrate uaccess_save / uaccess_restore macros into the new
+uaccess_entry / uaccess_exit macros respectively.
 
-On 32 bit systems the old calculation suffers from an arithmetic
-overflow in that intermediate term in braces: 4UL aka unsigned long int
-is 4 byte wide and an arithmetic overflow happens (the 0x100000000 does
-not fit in 4 bytes), the in braces result is truncated to zero, the
-following right shift does not alter that, so MAX_DMA32_PFN evaluates to
-0 on 32 bit systems.
-
-That wrong value is a problem in a comparision against MAX_DMA32_PFN in
-the init code for swiotlb in pci_swiotlb_detect_4gb() to decide if
-swiotlb should be active.  That comparison yields the opposite result,
-when compiling on 32 bit systems.
-
-This was not possible before
-
-  1b7e03ef7570 ("x86, NUMA: Enable emulation on 32bit too")
-
-when that MAX_DMA32_PFN was first made visible to x86_32 (and which
-landed in v3.0).
-
-In practice this wasn't a problem, unless CONFIG_SWIOTLB is active on
-x86-32.
-
-However if one has set CONFIG_IOMMU_INTEL, since
-
-  c5a5dc4cbbf4 ("iommu/vt-d: Don't switch off swiotlb if bounce page is used")
-
-there's a dependency on CONFIG_SWIOTLB, which was not necessarily
-active before. That landed in v5.4, where we noticed it in the fli4l
-Linux distribution. We have CONFIG_IOMMU_INTEL active on both 32 and 64
-bit kernel configs there (I could not find out why, so let's just say
-historical reasons).
-
-The effect is at boot time 64 MiB (default size) were allocated for
-bounce buffers now, which is a noticeable amount of memory on small
-systems like pcengines ALIX 2D3 with 256 MiB memory, which are still
-frequently used as home routers.
-
-We noticed this effect when migrating from kernel v4.19 (LTS) to v5.4
-(LTS) in fli4l and got that kernel messages for example:
-
-  Linux version 5.4.22 (buildroot@buildroot) (gcc version 7.3.0 (Buildroot 2018.02.8)) #1 SMP Mon Nov 26 23:40:00 CET 2018
-  …
-  Memory: 183484K/261756K available (4594K kernel code, 393K rwdata, 1660K rodata, 536K init, 456K bss , 78272K reserved, 0K cma-reserved, 0K highmem)
-  …
-  PCI-DMA: Using software bounce buffering for IO (SWIOTLB)
-  software IO TLB: mapped [mem 0x0bb78000-0x0fb78000] (64MB)
-
-The initial analysis and the suggested fix was done by user 'sourcejedi'
-at stackoverflow and explicitly marked as GPLv2 for inclusion in the
-Linux kernel:
-
-  https://unix.stackexchange.com/a/520525/50007
-
-The new calculation, which does not suffer from that overflow, is the
-same as for arch/mips now as suggested by Robin Murphy.
-
-The fix was tested by fli4l users on round about two dozen different
-systems, including both 32 and 64 bit archs, bare metal and virtualized
-machines.
-
- [ bp: Massage commit message. ]
-
-Fixes: 1b7e03ef7570 ("x86, NUMA: Enable emulation on 32bit too")
-Reported-by: Alan Jenkins <alan.christopher.jenkins@gmail.com>
-Suggested-by: Robin Murphy <robin.murphy@arm.com>
-Signed-off-by: Alexander Dahl <post@lespocky.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org
-Link: https://unix.stackexchange.com/q/520065/50007
-Link: https://web.nettworks.org/bugs/browse/FFL-2560
-Link: https://lkml.kernel.org/r/20200526175749.20742-1-post@lespocky.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/dma.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/include/asm/uaccess-asm.h | 30 +++++++++++++-----------------
+ 1 file changed, 13 insertions(+), 17 deletions(-)
 
---- a/arch/x86/include/asm/dma.h
-+++ b/arch/x86/include/asm/dma.h
-@@ -73,7 +73,7 @@
- #define MAX_DMA_PFN   ((16UL * 1024 * 1024) >> PAGE_SHIFT)
+diff --git a/arch/arm/include/asm/uaccess-asm.h b/arch/arm/include/asm/uaccess-asm.h
+index d475e3e8145d..e46468b91eaa 100644
+--- a/arch/arm/include/asm/uaccess-asm.h
++++ b/arch/arm/include/asm/uaccess-asm.h
+@@ -67,30 +67,23 @@
+ #endif
+ 	.endm
  
- /* 4GB broken PCI/AGP hardware bus master zone */
--#define MAX_DMA32_PFN ((4UL * 1024 * 1024 * 1024) >> PAGE_SHIFT)
-+#define MAX_DMA32_PFN (1UL << (32 - PAGE_SHIFT))
+-	.macro	uaccess_save, tmp
+ #ifdef CONFIG_CPU_SW_DOMAIN_PAN
+-	mrc	p15, 0, \tmp, c3, c0, 0
+-	str	\tmp, [sp, #SVC_DACR]
+-#endif
+-	.endm
+-
+-	.macro	uaccess_restore
+-#ifdef CONFIG_CPU_SW_DOMAIN_PAN
+-	ldr	r0, [sp, #SVC_DACR]
+-	mcr	p15, 0, r0, c3, c0, 0
++#define DACR(x...)	x
++#else
++#define DACR(x...)
+ #endif
+-	.endm
  
- #ifdef CONFIG_X86_32
- /* The maximum address that we can perform a DMA transfer to on this platform */
+ 	/*
+ 	 * Save the address limit on entry to a privileged exception and
+ 	 * if using PAN, save and disable usermode access.
+ 	 */
+ 	.macro	uaccess_entry, tsk, tmp0, tmp1, tmp2, disable
+-	ldr	\tmp0, [\tsk, #TI_ADDR_LIMIT]
+-	mov	\tmp1, #TASK_SIZE
+-	str	\tmp1, [\tsk, #TI_ADDR_LIMIT]
+-	str	\tmp0, [sp, #SVC_ADDR_LIMIT]
+-	uaccess_save \tmp0
++	ldr	\tmp1, [\tsk, #TI_ADDR_LIMIT]
++	mov	\tmp2, #TASK_SIZE
++	str	\tmp2, [\tsk, #TI_ADDR_LIMIT]
++ DACR(	mrc	p15, 0, \tmp0, c3, c0, 0)
++ DACR(	str	\tmp0, [sp, #SVC_DACR])
++	str	\tmp1, [sp, #SVC_ADDR_LIMIT]
+ 	.if \disable
+ 	uaccess_disable \tmp0
+ 	.endif
+@@ -99,8 +92,11 @@
+ 	/* Restore the user access state previously saved by uaccess_entry */
+ 	.macro	uaccess_exit, tsk, tmp0, tmp1
+ 	ldr	\tmp1, [sp, #SVC_ADDR_LIMIT]
+-	uaccess_restore
++ DACR(	ldr	\tmp0, [sp, #SVC_DACR])
+ 	str	\tmp1, [\tsk, #TI_ADDR_LIMIT]
++ DACR(	mcr	p15, 0, \tmp0, c3, c0, 0)
+ 	.endm
+ 
++#undef DACR
++
+ #endif /* __ASM_UACCESS_ASM_H__ */
+-- 
+2.25.1
+
 
 
