@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF8F1EAB20
+	by mail.lfdr.de (Postfix) with ESMTP id EA40E1EAB21
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731479AbgFASOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:14:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34076 "EHLO mail.kernel.org"
+        id S1731488AbgFASOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:14:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731467AbgFASOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:14:18 -0400
+        id S1731126AbgFASOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:14:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC5FF2068D;
-        Mon,  1 Jun 2020 18:14:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 294C2207DF;
+        Mon,  1 Jun 2020 18:14:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035258;
-        bh=hu3+Cu1mobOMU0osGTqGMIyMafxT7FTy0kESiJ1M/lw=;
+        s=default; t=1591035262;
+        bh=MWITYB0vR5lA3KxxO0iN6yDsjvP8KH/f4rd52IxEzSg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GDo5RK5q768jawu4KETQ0JxHqvTzoltoc87PCI/b1mkgReFXk427ign34Ue3JBMd4
-         cGsepx+ujR6Y5dGLMbCS9kyC6vZL4broPUpZARYZ9MnO3Da4VZwHe5baO/vfXPvh2z
-         rXRcYATA2jtVHKBPMkaI9f0IpqXWHxKUHIF5se3U=
+        b=gX85oL9NL4cXuSgCGogE1bQS6n5AEehN7464kXe7xkcmjCLDACwyPdxNXHedsn6g7
+         X4LzEpwCoZlUbhCJDGm1otk46Lg+F3cZN1xcz332sgC67BiHdC9D6gMj3dmJnGsix3
+         LFkhcQ21k+aG178Wp2m7NKalfbOziVQeOY8ShGwM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amy Shih <amy.shih@advantech.com.tw>,
-        Guenter Roeck <linux@roeck-us.net>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 078/177] hwmon: (nct7904) Fix incorrect range of temperature limit registers
-Date:   Mon,  1 Jun 2020 19:53:36 +0200
-Message-Id: <20200601174055.390545696@linuxfoundation.org>
+Subject: [PATCH 5.6 079/177] riscv: pgtable: Fix __kernel_map_pages build error if NOMMU
+Date:   Mon,  1 Jun 2020 19:53:37 +0200
+Message-Id: <20200601174055.484767292@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
 References: <20200601174048.468952319@linuxfoundation.org>
@@ -44,44 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amy Shih <amy.shih@advantech.com.tw>
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
 
-[ Upstream commit 7b2fd270af27edaf02acb41a7babe805a9441914 ]
+[ Upstream commit 9a6630aef93394ac54494c7e273e9bc026509375 ]
 
-The format of temperature limitation registers are 8-bit 2's complement
-and the range is -128~127.
-Converts the reading value to signed char to fix the incorrect range
-of temperature limitation registers.
+riscv64-none-linux-gnu-ld: mm/page_alloc.o: in function `.L0 ':
+page_alloc.c:(.text+0xd34): undefined reference to `__kernel_map_pages'
+riscv64-none-linux-gnu-ld: page_alloc.c:(.text+0x104a): undefined reference to `__kernel_map_pages'
+riscv64-none-linux-gnu-ld: mm/page_alloc.o: in function `__pageblock_pfn_to_page':
+page_alloc.c:(.text+0x145e): undefined reference to `__kernel_map_pages'
 
-Signed-off-by: Amy Shih <amy.shih@advantech.com.tw>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/nct7904.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/riscv/include/asm/pgtable.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/hwmon/nct7904.c b/drivers/hwmon/nct7904.c
-index 281c81edabc6..dfb122b5e1b7 100644
---- a/drivers/hwmon/nct7904.c
-+++ b/drivers/hwmon/nct7904.c
-@@ -356,6 +356,7 @@ static int nct7904_read_temp(struct device *dev, u32 attr, int channel,
- 	struct nct7904_data *data = dev_get_drvdata(dev);
- 	int ret, temp;
- 	unsigned int reg1, reg2, reg3;
-+	s8 temps;
+diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+index 05b92987f500..31d912944d8d 100644
+--- a/arch/riscv/include/asm/pgtable.h
++++ b/arch/riscv/include/asm/pgtable.h
+@@ -467,6 +467,8 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
  
- 	switch (attr) {
- 	case hwmon_temp_input:
-@@ -461,7 +462,8 @@ static int nct7904_read_temp(struct device *dev, u32 attr, int channel,
+ #define TASK_SIZE 0xffffffffUL
  
- 	if (ret < 0)
- 		return ret;
--	*val = ret * 1000;
-+	temps = ret;
-+	*val = temps * 1000;
- 	return 0;
- }
++static inline void __kernel_map_pages(struct page *page, int numpages, int enable) {}
++
+ #endif /* !CONFIG_MMU */
  
+ #define kern_addr_valid(addr)   (1) /* FIXME */
 -- 
 2.25.1
 
