@@ -2,112 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C7B1EA63D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 16:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE5C81EA638
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 16:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727841AbgFAOrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 10:47:00 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34486 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726017AbgFAOrA (ORCPT
+        id S1727099AbgFAOqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 10:46:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgFAOqj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 10:47:00 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 051Ek2bB135572;
-        Mon, 1 Jun 2020 10:46:20 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31bm15jwv7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Jun 2020 10:46:20 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 051EkETP136822;
-        Mon, 1 Jun 2020 10:46:19 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31bm15jwu1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Jun 2020 10:46:19 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 051Edxwd013432;
-        Mon, 1 Jun 2020 14:46:17 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 31bf47v92e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Jun 2020 14:46:17 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 051EkEBu56819942
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 1 Jun 2020 14:46:15 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C58164C046;
-        Mon,  1 Jun 2020 14:46:14 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 52DFD4C04A;
-        Mon,  1 Jun 2020 14:46:10 +0000 (GMT)
-Received: from vajain21-in-ibm-com (unknown [9.199.63.9])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Mon,  1 Jun 2020 14:46:10 +0000 (GMT)
-Received: by vajain21-in-ibm-com (sSMTP sendmail emulation); Mon, 01 Jun 2020 20:16:08 +0530
-From:   Vaibhav Jain <vaibhav@linux.ibm.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Santosh Sivaraj <santosh@fossix.org>, linux-nvdimm@lists.01.org,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Piotr Maziarz <piotrx.maziarz@linux.intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 2/5] seq_buf: Export seq_buf_printf
-In-Reply-To: <20200601094842.3cd0cab6@gandalf.local.home>
-References: <20200527041244.37821-1-vaibhav@linux.ibm.com> <20200527041244.37821-3-vaibhav@linux.ibm.com> <87367f9eqs.fsf@linux.ibm.com> <20200601094842.3cd0cab6@gandalf.local.home>
-Date:   Mon, 01 Jun 2020 20:16:08 +0530
-Message-ID: <87zh9m974f.fsf@linux.ibm.com>
+        Mon, 1 Jun 2020 10:46:39 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6A9C03E96F
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 07:46:39 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id s88so4656784pjb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 07:46:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PJv6mD+yHUR+Vq/e8xKUWkbuEu0YctS5xT5X44k6oTo=;
+        b=Om+p2SKXwpHoqkI7QRrOtvHf52TeMgu//ne7X47C76RYZhF2dx6vUVrsvsuMKUYYiz
+         JVwtEgmWL2gkMt+Fh0caZ++5jORUSDQtdWdKC01rl+MryRE8Cu7AwvcNOuYioSmB2rHN
+         77GyRlgW3dejh95iQS6rWA/p3DOwH8R04Q9IDlab0nT9Is6XXphmg5I27E5G1pEE4bR/
+         5GnudhgNla9manTS8V7AvESciXfrOJGZdsbt0vZcBvM1hsuiI20ePbgbnpa7GEyI0ooT
+         YKM5BtlUSAdIRckTguVbGeVFYChUvumADSQVhPtjv7Ywm3T1Jwc9GUKuZICrgnUrnHXn
+         g7Uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PJv6mD+yHUR+Vq/e8xKUWkbuEu0YctS5xT5X44k6oTo=;
+        b=kXqoXcqpE1zrt63sMkmmcAH7jjbfwd8Jf5PcgZnYuG6orgONovtKayzwEvQdKbu0Bs
+         6BCKCQx2bD2dskehoCXy0MZUG2ISqLFSGR5YW7+A4bKfP7Vi7nsOFyLMiRQLkyQMp0YV
+         8qpca7HdJiqxWkPho9ajM2A0VA6S6cDELwzAAu0OLwEidTx5jTiNkqmHplaX2W609p1p
+         GhU5kEfnIGshviZMNIPphh5j3X2jxfxON9KJxZdtRbuCGEuSfXAEUtYBCVCHRJcsmF4d
+         rP0YNhtCi2dURnT88qvzereZpWOnUQpAa0cRNdRRqpUA1MYj+GVu/XnSZaN/lq7JjeGC
+         1cNA==
+X-Gm-Message-State: AOAM530sLaU45EXLCPb0IZyRh31Q5yQkPbY7sv9HTiHG2NSL49UfDsTX
+        CNIT8DD29dzSO7lC65m63SOm0kND2G8UvA==
+X-Google-Smtp-Source: ABdhPJw/hsIt3L+CFQ9MXoRriiqusGFuvmvNIsT3yTbURUwDJ/jeBgruCjvHske5O3WWhR0OThOjnw==
+X-Received: by 2002:a17:90b:3d4:: with SMTP id go20mr25678281pjb.208.1591022799024;
+        Mon, 01 Jun 2020 07:46:39 -0700 (PDT)
+Received: from [192.168.1.188] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id z1sm6096066pfr.88.2020.06.01.07.46.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Jun 2020 07:46:38 -0700 (PDT)
+Subject: Re: [PATCHSET v5 0/12] Add support for async buffered reads
+To:     sedat.dilek@gmail.com
+Cc:     io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org
+References: <20200526195123.29053-1-axboe@kernel.dk>
+ <CA+icZUWfX+QmroE6j74C7o-BdfMF5=6PdYrA=5W_JCKddqkJgQ@mail.gmail.com>
+ <bab2d6f8-4c65-be21-6a8e-29b76c06807d@kernel.dk>
+ <CA+icZUUgazqLRwnbQgFPhCa5vAsAvJhjCGMYs7KYBZgA04mSyw@mail.gmail.com>
+ <CA+icZUUwz5TPpT_zS=P4MZBDzzrAcFvZMUce8mJu8M1C7KNO5A@mail.gmail.com>
+ <CA+icZUVJT8X3zyafrgbkJppsp4nJEKaLjYNs1kX8H+aY1Y10Qw@mail.gmail.com>
+ <CA+icZUWHOYcGUpw4gfT7xP2Twr15YbyXiWA_=Mc+f7NgzZCETw@mail.gmail.com>
+ <230d3380-0269-d113-2c32-6e4fb94b79b8@kernel.dk>
+ <CA+icZUXxmOA-5+dukCgxfSp4eVHB+QaAHO6tsgq0iioQs3Af-w@mail.gmail.com>
+ <CA+icZUV4iSjL8=wLA3qd1c5OQHX2s1M5VKj2CmJoy2rHmzSVbQ@mail.gmail.com>
+ <CA+icZUXkWG=08rz9Lp1-ZaRCs+GMTwEiUaFLze9xpL2SpZbdsQ@mail.gmail.com>
+ <cdb3ac15-0c41-6147-35f1-41b2a3be1c33@kernel.dk>
+ <CA+icZUUfxAc9LaWSzSNV4tidW2KFeVLkDhU30OWbQP-=2bYFHw@mail.gmail.com>
+ <b24101f1-c468-8f6b-9dcb-6dc59d0cd4b9@kernel.dk>
+ <455dd2c1-7346-2d43-4266-1367c368cee1@kernel.dk>
+ <CA+icZUVVL4W46Df5=eQVsb8S6A=_A0ho0jFVf3mde1wpx7kynQ@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <412ec6a7-90c9-5856-bafe-12c8fe2135e7@kernel.dk>
+Date:   Mon, 1 Jun 2020 08:46:36 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-01_10:2020-06-01,2020-06-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- suspectscore=0 cotscore=-2147483648 mlxlogscore=999 phishscore=0
- lowpriorityscore=0 clxscore=1015 bulkscore=0 spamscore=0 adultscore=0
- malwarescore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006010103
+In-Reply-To: <CA+icZUVVL4W46Df5=eQVsb8S6A=_A0ho0jFVf3mde1wpx7kynQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Steven Rostedt <rostedt@goodmis.org> writes:
+On 6/1/20 8:43 AM, Sedat Dilek wrote:
+> On Mon, Jun 1, 2020 at 4:35 PM Jens Axboe <axboe@kernel.dk> wrote:
+>>
+>> On 6/1/20 8:14 AM, Jens Axboe wrote:
+>>> On 6/1/20 8:13 AM, Sedat Dilek wrote:
+>>>> On Mon, Jun 1, 2020 at 4:04 PM Jens Axboe <axboe@kernel.dk> wrote:
+>>>>>
+>>>>> On 6/1/20 7:35 AM, Sedat Dilek wrote:
+>>>>>> Hi Jens,
+>>>>>>
+>>>>>> with Linux v5.7 final I switched to linux-block.git/for-next and reverted...
+>>>>>>
+>>>>>> "block: read-ahead submission should imply no-wait as well"
+>>>>>>
+>>>>>> ...and see no boot-slowdowns.
+>>>>>
+>>>>> Can you try with these patches applied instead? Or pull my async-readahead
+>>>>> branch from the same location.
+>>>>>
+>>>>
+>>>> Yes, I can do that.
+>>>> I pulled from linux-block.git#async-readahead and will report later.
+>>>>
+>>>> Any specific testing desired by you?
+>>>
+>>> Just do your boot timing test and see if it works, thanks.
+>>
+>> Actually, can you just re-test with the current async-buffered.6 branch?
+>> I think the major surgery should wait for 5.9, we can do this a bit
+>> easier without having to touch everything around us.
+>>
+> 
+> With linux-block.git#async-readahead:
+> 
+>   mycompiler -Wp,-MD,kernel/.sys.o.d -nostdinc -isystem
+> /home/dileks/src/llvm-toolchain/install/lib/clang/10.0.1rc1/include
+> -I./arch/x86/include -I./arch/x86/include/generated  -I./include
+> -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi
+> -I./include/uapi -I./include/generated/uapi -include
+> ./include/linux/kconfig.h -include ./include/linux/compiler_types.h
+> -D__KERNEL__ -Qunused-arguments -Wall -Wundef
+> -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing
+> -fno-common -fshort-wchar -fno-PIE
+> -Werror=implicit-function-declaration -Werror=implicit-int
+> -Wno-format-security -std=gnu89 -no-integrated-as
+> -Werror=unknown-warning-option -mno-sse -mno-mmx -mno-sse2 -mno-3dnow
+> -mno-avx -m64 -mno-80387 -mstack-alignment=8 -mtune=generic
+> -mno-red-zone -mcmodel=kernel -Wno-sign-compare
+> -fno-asynchronous-unwind-tables -mretpoline-external-thunk
+> -fno-delete-null-pointer-checks -Wno-address-of-packed-member -O2
+> -Wframe-larger-than=2048 -fstack-protector-strong
+> -Wno-format-invalid-specifier -Wno-gnu -mno-global-merge
+> -Wno-unused-const-variable -g -gz=zlib -pg -mfentry -DCC_USING_FENTRY
+> -Wdeclaration-after-statement -Wvla -Wno-pointer-sign
+> -Wno-array-bounds -fno-strict-overflow -fno-merge-all-constants
+> -fno-stack-check -Werror=date-time -Werror=incompatible-pointer-types
+> -fmacro-prefix-map=./= -fcf-protection=none -Wno-initializer-overrides
+> -Wno-format -Wno-sign-compare -Wno-format-zero-length
+> -Wno-tautological-constant-out-of-range-compare
+> -DKBUILD_MODFILE='"kernel/sys"' -DKBUILD_BASENAME='"sys"'
+> -DKBUILD_MODNAME='"sys"' -c -o kernel/sys.o kernel/sys.c
+> fs/9p/vfs_addr.c:112:4: error: use of undeclared identifier 'filp'
+>                         filp->private_data);
+>                         ^
+> 1 error generated.
+> make[5]: *** [scripts/Makefile.build:267: fs/9p/vfs_addr.o] Error 1
+> make[4]: *** [scripts/Makefile.build:488: fs/9p] Error 2
+> make[3]: *** [Makefile:1735: fs] Error 2
+> make[3]: *** Waiting for unfinished jobs....
+> 
+> I guess block.git#async-buffered.6 needs the same revert of "block:
+> read-ahead submission should imply no-wait as well".
 
-> On Mon, 01 Jun 2020 17:31:31 +0530
-> Vaibhav Jain <vaibhav@linux.ibm.com> wrote:
->
->> Hi Christoph and Steven,
->> 
->> Have addressed your review comment to update the patch description and
->> title for this patch. Can you please provide your ack to this patch.
->> 
->> 
->
-> I thought I already did, but it appears it was a reply to a private email
-> you sent to me. I didn't realize it was off list.
->
-> Anyway:
->
->  Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Sorry, forgot to push out the updated version. But as per previous
+email, I think that major work should wait. Just try the updated
+async-buffered.6 branch instead.
 
-Thanks Steven,
+-- 
+Jens Axboe
 
-Had added your ack to Resend-v7 of this patch at [1] on which Christoph
-Hellwig requested an update of patch title. Hence needed your re-ack for
-this version of the patch
-
-[1] : https://lore.kernel.org/linux-nvdimm/20200519190058.257981-3-vaibhav@linux.ibm.com/
-
->
-> -- Steve
-
-Cheers
-~ Vaibhav
