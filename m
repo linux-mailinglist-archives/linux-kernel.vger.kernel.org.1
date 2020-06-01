@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4581EAD9F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF4F1EAEA1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730312AbgFASrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:47:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54750 "EHLO mail.kernel.org"
+        id S1730438AbgFASzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:55:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730743AbgFASIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:08:35 -0400
+        id S1729147AbgFASBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:01:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6EE74207D0;
-        Mon,  1 Jun 2020 18:08:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F4F52065C;
+        Mon,  1 Jun 2020 18:01:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034914;
-        bh=kMZ8z483ON/zTTVEyFoP7XJhnrafJFQO56c/L6OUIsY=;
+        s=default; t=1591034465;
+        bh=lYfWziiWkn5jLrFvpyipxsyoD5WcN1/v/djhZEq/Zl0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nGpVh3ZrHDk5HNFjAYqpj+Fc2Osvmn4Jax7XNCScxuwvgQsaPsFIH9TP2D5kNpfkx
-         Rf8UDxDsmJ4Sh+q+LwZnRjhUMlY09gw+N6WaNn3uP4PCgCdkeBoD9o+O+y/k2vLR4D
-         CKO9Nd7rmmBq8CRNqw1VYMqhg09C8gF4lOZBRryk=
+        b=EzqgcdamKkP89RxeOdvxFrKv02bkkrhwGCafGpzWrNCWaNftu5U3x4h7mUKH3jX6G
+         NyWi5MK++RxEpglaJ+Etwx8qHQBClUPbGUtAKBdNZ9Z1m/fx7QQ/2yaawsWLdu5C0j
+         m3pmunmWJmVcFkcbpHQrRgmfsgaxtdJgwiZoC9Yc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wei Yongjun <weiyongjun1@huawei.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 070/142] Input: synaptics-rmi4 - fix error return code in rmi_driver_probe()
+        stable@vger.kernel.org,
+        Changming Liu <liu.changm@northeastern.edu>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 43/77] ALSA: hwdep: fix a left shifting 1 by 31 UB bug
 Date:   Mon,  1 Jun 2020 19:53:48 +0200
-Message-Id: <20200601174045.073010822@linuxfoundation.org>
+Message-Id: <20200601174024.147973386@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
+References: <20200601174016.396817032@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Changming Liu <liu.changm@northeastern.edu>
 
-[ Upstream commit 5caab2da63207d6d631007f592f5219459e3454d ]
+[ Upstream commit fb8cd6481ffd126f35e9e146a0dcf0c4e8899f2e ]
 
-Fix to return a negative error code from the input_register_device()
-error handling case instead of 0, as done elsewhere in this function.
+The "info.index" variable can be 31 in "1 << info.index".
+This might trigger an undefined behavior since 1 is signed.
 
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Link: https://lore.kernel.org/r/20200428134948.78343-1-weiyongjun1@huawei.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fix this by casting 1 to 1u just to be sure "1u << 31" is defined.
+
+Signed-off-by: Changming Liu <liu.changm@northeastern.edu>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/BL0PR06MB4548170B842CB055C9AF695DE5B00@BL0PR06MB4548.namprd06.prod.outlook.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/rmi4/rmi_driver.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/core/hwdep.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/rmi4/rmi_driver.c b/drivers/input/rmi4/rmi_driver.c
-index c18e1a25bca6..258d5fe3d395 100644
---- a/drivers/input/rmi4/rmi_driver.c
-+++ b/drivers/input/rmi4/rmi_driver.c
-@@ -1210,7 +1210,8 @@ static int rmi_driver_probe(struct device *dev)
- 	if (data->input) {
- 		rmi_driver_set_input_name(rmi_dev, data->input);
- 		if (!rmi_dev->xport->input) {
--			if (input_register_device(data->input)) {
-+			retval = input_register_device(data->input);
-+			if (retval) {
- 				dev_err(dev, "%s: Failed to register input device.\n",
- 					__func__);
- 				goto err_destroy_functions;
+diff --git a/sound/core/hwdep.c b/sound/core/hwdep.c
+index a73baa1242be..727219f40201 100644
+--- a/sound/core/hwdep.c
++++ b/sound/core/hwdep.c
+@@ -229,14 +229,14 @@ static int snd_hwdep_dsp_load(struct snd_hwdep *hw,
+ 	if (copy_from_user(&info, _info, sizeof(info)))
+ 		return -EFAULT;
+ 	/* check whether the dsp was already loaded */
+-	if (hw->dsp_loaded & (1 << info.index))
++	if (hw->dsp_loaded & (1u << info.index))
+ 		return -EBUSY;
+ 	if (!access_ok(VERIFY_READ, info.image, info.length))
+ 		return -EFAULT;
+ 	err = hw->ops.dsp_load(hw, &info);
+ 	if (err < 0)
+ 		return err;
+-	hw->dsp_loaded |= (1 << info.index);
++	hw->dsp_loaded |= (1u << info.index);
+ 	return 0;
+ }
+ 
 -- 
 2.25.1
 
