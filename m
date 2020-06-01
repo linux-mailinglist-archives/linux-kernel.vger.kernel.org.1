@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C2E1EAF1F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BBCF1EAE2B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728799AbgFAR5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:57:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37824 "EHLO mail.kernel.org"
+        id S1729767AbgFASEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:04:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728739AbgFAR44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:56:56 -0400
+        id S1730177AbgFASE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:04:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2ADE2074B;
-        Mon,  1 Jun 2020 17:56:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 805B9207D0;
+        Mon,  1 Jun 2020 18:04:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034216;
-        bh=mSzzVs0ISvJewz8D+bFmYMyXw5XU/Wy5slLZ24po0nI=;
+        s=default; t=1591034667;
+        bh=M1Fe7yGsnThBEbaLs1mNNRD4/sdQ9gHFLRjOaS6lX5o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ng89Nfd1HRERQjIb9bUSJ9LNGC1fY71YpzfqnTmiDvLDdzjzx8L1sQiwnrbc4sAVd
-         AFHM+3birm82AMDXbOiIhSTavKYmYBY3UYU5vrLp0Fvm2VMIIPp/zS8zDM0VUzhBUH
-         cypa01H0CIeOhPrKoOBD1xH6h0z+/n66CGs2XcPQ=
+        b=F4pG9Aqq8SvGnFn5fiqch5XLN6ToltUl+pFZNefHGGaKBSRgow+jRsSRL3dDeG1mB
+         TXr1ZNBhlp9dJK+8B64Q8HF5XAkSOGCb6Gj2PYCNDEkhtubS1Ny/OnosJHNPTICzHT
+         ilSmUTtq/K5Djv2LyyQ2r4q94TAQ9IvCHw/3Oa9U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liam mcbirnie <liam.mcbirnie@boeing.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.4 44/48] net: rtnl_configure_link: fix dev flags changes arg to __dev_notify_flags
-Date:   Mon,  1 Jun 2020 19:53:54 +0200
-Message-Id: <20200601174004.785945749@linuxfoundation.org>
+        stable@vger.kernel.org, Peng Hao <richard.peng@oppo.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 55/95] mmc: block: Fix use-after-free issue for rpmb
+Date:   Mon,  1 Jun 2020 19:53:55 +0200
+Message-Id: <20200601174029.980447276@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601173952.175939894@linuxfoundation.org>
-References: <20200601173952.175939894@linuxfoundation.org>
+In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
+References: <20200601174020.759151073@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roopa Prabhu <roopa@cumulusnetworks.com>
+From: Peng Hao <richard.peng@oppo.com>
 
-commit 56a49d7048703f5ffdb84d3a0ee034108fba6850 upstream.
+[ Upstream commit 202500d21654874aa03243e91f96de153ec61860 ]
 
-This fix addresses https://bugzilla.kernel.org/show_bug.cgi?id=201071
+The data structure member “rpmb->md” was passed to a call of the function
+“mmc_blk_put” after a call of the function “put_device”. Reorder these
+function calls to keep the data accesses consistent.
 
-Commit 5025f7f7d506 wrongly relied on __dev_change_flags to notify users of
-dev flag changes in the case when dev->rtnl_link_state = RTNL_LINK_INITIALIZED.
-Fix it by indicating flag changes explicitly to __dev_notify_flags.
-
-Fixes: 5025f7f7d506 ("rtnetlink: add rtnl_link_state check in rtnl_configure_link")
-Reported-By: Liam mcbirnie <liam.mcbirnie@boeing.com>
-Signed-off-by: Roopa Prabhu <roopa@cumulusnetworks.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 1c87f7357849 ("mmc: block: Fix bug when removing RPMB chardev ")
+Signed-off-by: Peng Hao <richard.peng@oppo.com>
+Cc: stable@vger.kernel.org
+[Uffe: Fixed up mangled patch and updated commit message]
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/rtnetlink.c |    2 +-
+ drivers/mmc/core/block.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/core/rtnetlink.c
-+++ b/net/core/rtnetlink.c
-@@ -2105,7 +2105,7 @@ int rtnl_configure_link(struct net_devic
- 	}
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index 23bcdbba0cab..c723a1e54b18 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -2485,8 +2485,8 @@ static int mmc_rpmb_chrdev_release(struct inode *inode, struct file *filp)
+ 	struct mmc_rpmb_data *rpmb = container_of(inode->i_cdev,
+ 						  struct mmc_rpmb_data, chrdev);
  
- 	if (dev->rtnl_link_state == RTNL_LINK_INITIALIZED) {
--		__dev_notify_flags(dev, old_flags, 0U);
-+		__dev_notify_flags(dev, old_flags, (old_flags ^ dev->flags));
- 	} else {
- 		dev->rtnl_link_state = RTNL_LINK_INITIALIZED;
- 		__dev_notify_flags(dev, old_flags, ~0U);
+-	put_device(&rpmb->dev);
+ 	mmc_blk_put(rpmb->md);
++	put_device(&rpmb->dev);
+ 
+ 	return 0;
+ }
+-- 
+2.25.1
+
 
 
