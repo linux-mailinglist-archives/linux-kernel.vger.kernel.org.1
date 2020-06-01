@@ -2,151 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECEDE1E9C23
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 05:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8150C1E9C41
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 05:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727120AbgFADpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 23:45:55 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:12612 "EHLO rere.qmqm.pl"
+        id S1727063AbgFAD5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 23:57:50 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:34702 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726002AbgFADpz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 23:45:55 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 49b1Kn0gCmz5Y;
-        Mon,  1 Jun 2020 05:45:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1590983152; bh=pndK1FjAmFq0047oc3zSn4GkaXw9CpwjFxLaj77UgdE=;
-        h=Date:From:Subject:To:Cc:From;
-        b=o7DdYqEd4GUixVvSOrNrzZ2bHeU3/zAx4a9D11aQnZZdwYuQbIz69ifVRrCznbUKj
-         GedeU9z/s5zMyfk+UQ0FpH53JtIh6ATUEHh8TryM6us92ncaETH0PyrYpKCha03ywH
-         EGSA7CrnlsjT13sq+eNEMyoZXBIkj1pqeugPUkArTNcj1OvYdmxgPlwzilJ+X/lN6I
-         PC6vabPd48+S+TqkluikcHeRakVoLhu37DOWiJs4MpK22/XiBmd2TSNXuQME9llTna
-         KqW4Sf2hx94O2qh1OxmFEAr8CXF1JfnuvG1zRQA2Dn6TgfxDbh76o3KCbGgXgV0Hh0
-         M/tYiCqtqeRYQ==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-Date:   Mon, 01 Jun 2020 05:45:48 +0200
-Message-Id: <c18a68b3b7c25593c9b6db4bcea1d53de469f6e0.1590983023.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH] misc: atmel-ssc: lock with mutex instead of spinlock
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+        id S1726002AbgFAD5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 May 2020 23:57:49 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BEDF320043F;
+        Mon,  1 Jun 2020 05:57:47 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4FEA32001B8;
+        Mon,  1 Jun 2020 05:57:44 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 9EC89402A7;
+        Mon,  1 Jun 2020 11:57:39 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     jassisinghbrar@gmail.com, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V2] mailbox: imx: Add context save/restore for suspend/resume
+Date:   Mon,  1 Jun 2020 11:47:28 +0800
+Message-Id: <1590983248-7203-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Uninterruptible context is not needed in the driver and causes lockdep
-warning because of mutex taken in of_alias_get_id(). Convert the lock to
-mutex to avoid the issue.
+From: Dong Aisheng <aisheng.dong@nxp.com>
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+For "mem" mode suspend on i.MX8 SoCs, MU settings could be
+lost because its power is off, so save/restore is needed
+for MU settings during suspend/resume. However, the restore
+can ONLY be done when MU settings are actually lost, for the
+scenario of settings NOT lost in "freeze" mode suspend, since
+there could be still IPC going on multiple CPUs, restoring the
+MU settings could overwrite the TIE by mistake and cause system
+freeze, so need to make sure ONLY restore the MU settings when
+it is powered off, Anson fixes this by checking whether restore
+is actually needed when resume.
+
+Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 ---
- drivers/misc/atmel-ssc.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+Changes since V1:
+	- change the author and add more fix note in commit log.
+---
+ drivers/mailbox/imx-mailbox.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
-index 1322e29bc37a..5cc032097476 100644
---- a/drivers/misc/atmel-ssc.c
-+++ b/drivers/misc/atmel-ssc.c
-@@ -10,7 +10,7 @@
- #include <linux/clk.h>
- #include <linux/err.h>
- #include <linux/io.h>
--#include <linux/spinlock.h>
-+#include <linux/mutex.h>
- #include <linux/atmel-ssc.h>
- #include <linux/slab.h>
- #include <linux/module.h>
-@@ -20,7 +20,7 @@
- #include "../../sound/soc/atmel/atmel_ssc_dai.h"
+diff --git a/drivers/mailbox/imx-mailbox.c b/drivers/mailbox/imx-mailbox.c
+index 97bf0ac..b53cf63 100644
+--- a/drivers/mailbox/imx-mailbox.c
++++ b/drivers/mailbox/imx-mailbox.c
+@@ -67,6 +67,8 @@ struct imx_mu_priv {
+ 	struct clk		*clk;
+ 	int			irq;
  
- /* Serialize access to ssc_list and user count */
--static DEFINE_SPINLOCK(user_lock);
-+static DEFINE_MUTEX(user_lock);
- static LIST_HEAD(ssc_list);
++	u32 xcr;
++
+ 	bool			side_b;
+ };
  
- struct ssc_device *ssc_request(unsigned int ssc_num)
-@@ -28,7 +28,7 @@ struct ssc_device *ssc_request(unsigned int ssc_num)
- 	int ssc_valid = 0;
- 	struct ssc_device *ssc;
+@@ -583,12 +585,45 @@ static const struct of_device_id imx_mu_dt_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(of, imx_mu_dt_ids);
  
--	spin_lock(&user_lock);
-+	mutex_lock(&user_lock);
- 	list_for_each_entry(ssc, &ssc_list, list) {
- 		if (ssc->pdev->dev.of_node) {
- 			if (of_alias_get_id(ssc->pdev->dev.of_node, "ssc")
-@@ -44,18 +44,18 @@ struct ssc_device *ssc_request(unsigned int ssc_num)
- 	}
- 
- 	if (!ssc_valid) {
--		spin_unlock(&user_lock);
-+		mutex_unlock(&user_lock);
- 		pr_err("ssc: ssc%d platform device is missing\n", ssc_num);
- 		return ERR_PTR(-ENODEV);
- 	}
- 
- 	if (ssc->user) {
--		spin_unlock(&user_lock);
-+		mutex_unlock(&user_lock);
- 		dev_dbg(&ssc->pdev->dev, "module busy\n");
- 		return ERR_PTR(-EBUSY);
- 	}
- 	ssc->user++;
--	spin_unlock(&user_lock);
-+	mutex_unlock(&user_lock);
- 
- 	clk_prepare(ssc->clk);
- 
-@@ -67,14 +67,14 @@ void ssc_free(struct ssc_device *ssc)
- {
- 	bool disable_clk = true;
- 
--	spin_lock(&user_lock);
-+	mutex_lock(&user_lock);
- 	if (ssc->user)
- 		ssc->user--;
- 	else {
- 		disable_clk = false;
- 		dev_dbg(&ssc->pdev->dev, "device already free\n");
- 	}
--	spin_unlock(&user_lock);
-+	mutex_unlock(&user_lock);
- 
- 	if (disable_clk)
- 		clk_unprepare(ssc->clk);
-@@ -246,9 +246,9 @@ static int ssc_probe(struct platform_device *pdev)
- 		return -ENXIO;
- 	}
- 
--	spin_lock(&user_lock);
-+	mutex_lock(&user_lock);
- 	list_add_tail(&ssc->list, &ssc_list);
--	spin_unlock(&user_lock);
-+	mutex_unlock(&user_lock);
- 
- 	platform_set_drvdata(pdev, ssc);
- 
-@@ -267,9 +267,9 @@ static int ssc_remove(struct platform_device *pdev)
- 
- 	ssc_sound_dai_remove(ssc);
- 
--	spin_lock(&user_lock);
-+	mutex_lock(&user_lock);
- 	list_del(&ssc->list);
--	spin_unlock(&user_lock);
-+	mutex_unlock(&user_lock);
- 
- 	return 0;
- }
++static int imx_mu_suspend_noirq(struct device *dev)
++{
++	struct imx_mu_priv *priv = dev_get_drvdata(dev);
++
++	priv->xcr = imx_mu_read(priv, priv->dcfg->xCR);
++
++	return 0;
++}
++
++static int imx_mu_resume_noirq(struct device *dev)
++{
++	struct imx_mu_priv *priv = dev_get_drvdata(dev);
++
++	/*
++	 * ONLY restore MU when context lost, the TIE could
++	 * be set during noirq resume as there is MU data
++	 * communication going on, and restore the saved
++	 * value will overwrite the TIE and cause MU data
++	 * send failed, may lead to system freeze. This issue
++	 * is observed by testing freeze mode suspend.
++	 */
++	if (!imx_mu_read(priv, priv->dcfg->xCR))
++		imx_mu_write(priv, priv->xcr, priv->dcfg->xCR);
++
++	return 0;
++}
++
++static const struct dev_pm_ops imx_mu_pm_ops = {
++	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(imx_mu_suspend_noirq,
++				      imx_mu_resume_noirq)
++};
++
+ static struct platform_driver imx_mu_driver = {
+ 	.probe		= imx_mu_probe,
+ 	.remove		= imx_mu_remove,
+ 	.driver = {
+ 		.name	= "imx_mu",
+ 		.of_match_table = imx_mu_dt_ids,
++		.pm = &imx_mu_pm_ops,
+ 	},
+ };
+ module_platform_driver(imx_mu_driver);
 -- 
-2.20.1
+2.7.4
 
