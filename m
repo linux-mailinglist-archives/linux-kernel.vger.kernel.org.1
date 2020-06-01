@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E311EAE7A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD4B1EAE78
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730255AbgFASy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:54:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45090 "EHLO mail.kernel.org"
+        id S1730154AbgFASyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:54:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726901AbgFASCB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:02:01 -0400
+        id S1729859AbgFASCD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:02:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D24FA2065C;
-        Mon,  1 Jun 2020 18:02:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 16DE22073B;
+        Mon,  1 Jun 2020 18:02:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034521;
-        bh=xC9hJYuRSl5pnTM9TMOSwz7SgPWF7neADVLAEPjyJ74=;
+        s=default; t=1591034523;
+        bh=xe0N+7sYbFtwojUydJ8S15eOlZCR8+wuTi/LeGmYtAE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XuAu44y8IVszvTeCx4kOTQGMRXVqS0W5QxvY0/jLrB6okRSb91G+8tYaMxKuix0NI
-         aeivGFMSm/zFyyNyGB9q/g7TPydx667mgM8dlBmZwV5Z8s2Ca662jWVLe4jXIFlsCQ
-         Z6z+s62vG794RavSCPrg/wQKqNl/2y8aa/6JAgFE=
+        b=CjysNHPzD1od84g/BjFGnbnl6fsLDkLSuz9R5P3sKlO7rfcG7z4DQPQi19juzCULc
+         q96BO7zUwsuyjL9kd1AKcgOVPpyvGLrVNnqjcCjmZMu6y5SaY2YbuC/A4H6/aLp1Sb
+         cvcIFZJ9s58SgzLuiwU4IwfxDLOdZuW5YdfiSBCU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        Jay Vosburgh <jay.vosburgh@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 69/77] bonding: Fix reference count leak in bond_sysfs_slave_add.
-Date:   Mon,  1 Jun 2020 19:54:14 +0200
-Message-Id: <20200601174028.225991942@linuxfoundation.org>
+        stable@vger.kernel.org
+Subject: [PATCH 4.14 70/77] Revert "Input: i8042 - add ThinkPad S230u to i8042 nomux list"
+Date:   Mon,  1 Jun 2020 19:54:15 +0200
+Message-Id: <20200601174028.390129668@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
 References: <20200601174016.396817032@linuxfoundation.org>
@@ -44,38 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-commit a068aab42258e25094bc2c159948d263ed7d7a77 upstream.
+commit f4dec2d6160976b14e54be9c3950ce0f52385741 upstream.
 
-kobject_init_and_add() takes reference even when it fails.
-If this function returns an error, kobject_put() must be called to
-properly clean up the memory associated with the object. Previous
-commit "b8eb718348b8" fixed a similar problem.
+This reverts commit 18931506465a762ffd3f4803d36a18d336a67da9. From Kevin
+Locke:
 
-Fixes: 07699f9a7c8d ("bonding: add sysfs /slave dir for bond slave devices.")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Acked-by: Jay Vosburgh <jay.vosburgh@canonical.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+"... nomux only appeared to fix the issue because the controller
+continued working after warm reboots. After more thorough testing from
+both warm and cold start, I now believe the entry should be added to
+i8042_dmi_reset_table rather than i8042_dmi_nomux_table as i8042.reset=1
+alone is sufficient to avoid the issue from both states while
+i8042.nomux is not."
+
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/bonding/bond_sysfs_slave.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/input/serio/i8042-x86ia64io.h |    7 -------
+ 1 file changed, 7 deletions(-)
 
---- a/drivers/net/bonding/bond_sysfs_slave.c
-+++ b/drivers/net/bonding/bond_sysfs_slave.c
-@@ -153,8 +153,10 @@ int bond_sysfs_slave_add(struct slave *s
+--- a/drivers/input/serio/i8042-x86ia64io.h
++++ b/drivers/input/serio/i8042-x86ia64io.h
+@@ -545,13 +545,6 @@ static const struct dmi_system_id __init
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire 5738"),
+ 		},
+ 	},
+-	{
+-		/* Lenovo ThinkPad Twist S230u */
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "33474HU"),
+-		},
+-	},
+ 	{ }
+ };
  
- 	err = kobject_init_and_add(&slave->kobj, &slave_ktype,
- 				   &(slave->dev->dev.kobj), "bonding_slave");
--	if (err)
-+	if (err) {
-+		kobject_put(&slave->kobj);
- 		return err;
-+	}
- 
- 	for (a = slave_attrs; *a; ++a) {
- 		err = sysfs_create_file(&slave->kobj, &((*a)->attr));
 
 
