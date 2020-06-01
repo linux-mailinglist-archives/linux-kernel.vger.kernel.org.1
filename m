@@ -2,80 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2511EA255
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 12:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6473A1EA25F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 13:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726101AbgFAK7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 06:59:11 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:45310 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725788AbgFAK7I (ORCPT
+        id S1726102AbgFALBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 07:01:55 -0400
+Received: from esa6.hc3370-68.iphmx.com ([216.71.155.175]:36067 "EHLO
+        esa6.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725925AbgFALBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 06:59:08 -0400
-Received: by mail-oi1-f194.google.com with SMTP id p70so3852985oic.12;
-        Mon, 01 Jun 2020 03:59:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=keLV8Gd9C9GRlhQTmWInhDyaWAHDTSmesa5VJ61KhzA=;
-        b=Iwq0U5l30/QISPgqe5GgmwukfMZiUgKOx6QnPCciJLeHfI5t5pkzsj2MILdFG8y+Y3
-         kkNfug1Tu7luwVu8YfCRM7lZ03gO+BMHt1vBFgwyg87IyojB+r9dgam2/aCTlkx2H19e
-         FOubFxgYacwt72eUbiUGbhPRUz/iQ5a8EsgdULygvpnlwxm/wTMlHplO8Ny046QNlR3l
-         mahvNtJwus0jRp7D6oueE5+RRFYb0z2UDxA7yOnmllAg31ZP8AJTMuZ2+H0B3sJInnSd
-         Eu3kfLB5YGDu/7AmHjagNsxv/b470hIEz9rYtEvDeV8B//NL+a7CvOui1GfEAZpZ2FMu
-         wo0A==
-X-Gm-Message-State: AOAM532B49EQaSMBbuYmjq0jo8ow+E+ojP7gHoACIXgSadHtqq0UmTFH
-        zxPVrA+uQQu13xApH1jvJM9/bWMycOMjxPKmmng=
-X-Google-Smtp-Source: ABdhPJxKFI0X2eb7fOqmhHgAFLbKDxQT1bWtfSLhpslRIxFwL6VsL7FmOTE2aXhPfb3zKacj1e952K5zvKHjWjsWsjI=
-X-Received: by 2002:a05:6808:486:: with SMTP id z6mr14374613oid.103.1591009146050;
- Mon, 01 Jun 2020 03:59:06 -0700 (PDT)
+        Mon, 1 Jun 2020 07:01:54 -0400
+X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Mon, 01 Jun 2020 07:01:53 EDT
+Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: dE4OJlvFGeDUUtAzk3Pi5zV28ZQIW5UOP7UQrOT5lcQFU2YWh+Xc0k4Dbio1M5jzIQRGIdcbgX
+ T0UA6G1hW8qVM0IXQuYrEA++MNqKuY+BQHzK8tdGNAXiBGrCA+PzIKy+tFZB/X5eMboLe8OBRi
+ W/yT9uFgzTE+mD8IurFET4SeUBhqARgj1gOIEfCdjngudjQ7bEGpkuIoJXc0yVJffNpn7AyqoH
+ Ac5ZSqvawoklGR18qCojrS7GFT73+YeKkHaDVpPE0iJZTpsNv82xn7a5GQ7gS4FqVLy6QkZWmH
+ zDk=
+X-SBRS: 2.7
+X-MesageID: 19251855
+X-Ironport-Server: esa6.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.73,460,1583211600"; 
+   d="scan'208";a="19251855"
+Date:   Mon, 1 Jun 2020 12:54:37 +0200
+From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To:     Daniel Kiper <daniel.kiper@oracle.com>
+CC:     <grub-devel@gnu.org>, <linux-kernel@vger.kernel.org>,
+        <trenchboot-devel@googlegroups.com>, <x86@kernel.org>,
+        <xen-devel@lists.xenproject.org>, <michal.zygowski@3mdeb.com>,
+        <eric.snowberg@oracle.com>, <mtottenh@akamai.com>,
+        <ard.biesheuvel@linaro.org>, <dpsmith@apertussolutions.com>,
+        <andrew.cooper3@citrix.com>, <konrad.wilk@oracle.com>,
+        <phcoder@gmail.com>, <javierm@redhat.com>, <mjg59@google.com>,
+        <alexander.burmashev@oracle.com>, <krystian.hebel@3mdeb.com>,
+        <kanth.ghatraju@oracle.com>, <lukasz.hawrylko@linux.intel.com>,
+        <ross.philipson@oracle.com>, <hpa@zytor.com>, <leif@nuviainc.com>,
+        <pjones@redhat.com>, <alec.brown@oracle.com>,
+        <piotr.krol@3mdeb.com>
+Subject: Re: [BOOTLOADER SPECIFICATION RFC] The bootloader log format for
+ TrenchBoot and others
+Message-ID: <20200601105437.GS1195@Air-de-Roger>
+References: <20200529112735.qln44ds6z7djheof@tomti.i.net-space.pl>
 MIME-Version: 1.0
-References: <bdc33be8-1db6-b147-cbc4-90fa0dc3d999@gmail.com>
- <20200529202135.GA461617@bjorn-Precision-5520> <20200529205900.whx3mxuvt6ijlqwg@srcf.ucam.org>
- <824d63d8-668c-22c8-a303-b44e30e805e1@gmail.com> <20200529225801.szl4obsas6ndilz4@srcf.ucam.org>
- <7c8cab08-e2d4-1952-1923-aa023ea67657@gmail.com> <20200530071434.vjkqxfmgo7xpls6j@srcf.ucam.org>
- <20200530113344.GA2834@infradead.org>
-In-Reply-To: <20200530113344.GA2834@infradead.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 1 Jun 2020 12:58:49 +0200
-Message-ID: <CAJZ5v0gxntUoxu70jpzsEHbytXwKC=EBsFD3y=0H6E0hLytybw@mail.gmail.com>
-Subject: Re: Lost PCIe PME after a914ff2d78ce ("PCI/ASPM: Don't select
- CONFIG_PCIEASPM by default")
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Matthew Garrett <mjg59@srcf.ucam.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20200529112735.qln44ds6z7djheof@tomti.i.net-space.pl>
+X-ClientProxiedBy: AMSPEX02CAS02.citrite.net (10.69.22.113) To
+ AMSPEX02CL02.citrite.net (10.69.22.126)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 30, 2020 at 1:34 PM Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Sat, May 30, 2020 at 08:14:34AM +0100, Matthew Garrett wrote:
-> > On Sat, May 30, 2020 at 08:33:50AM +0200, Heiner Kallweit wrote:
-> >
-> > > It *was* default y. This changed with a914ff2d78ce ("PCI/ASPM: Don't
-> > > select CONFIG_PCIEASPM by default") and that's what triggered the
-> > > problem. If there's no easy solution, then maybe it's best to revert
-> > > the change for now.
-> >
-> > Oh, sorry, I was looking at mainline. CONFIG_PCIEASPM should
-> > *definitely* be enabled by default - platforms expect the OS to support
-> > it. If we want to get rid of default y then I think it'd make more sense
-> > to have a CONFIG_DISABLE_PCIEASPM that's under EXPERT, and people who
-> > really want to disable the code can do so.
->
-> I think the fact that the EXPERT didn't get removed in the above bug
-> is a defintive bug.  But I'd go further and think the CONFIG_PCIEASPM
-> option should be removed entirely.  There is absolutely no good reason
-> to not build this small amount of code if PCIe support is enabled.
+On Fri, May 29, 2020 at 01:27:35PM +0200, Daniel Kiper wrote:
+> Hey,
+> 
+> Below you can find my rough idea of the bootloader log format which is
+> generic thing but initially will be used for TrenchBoot work. I discussed
+> this proposal with Ross and Daniel S. So, the idea went through initial
+> sanitization. Now I would like to take feedback from other folks too.
+> So, please take a look and complain...
+> 
+> In general we want to pass the messages produced by the bootloader to the OS
+> kernel and finally to the userspace for further processing and analysis. Below
+> is the description of the structures which will be used for this thing.
+> 
+>   struct bootloader_log_msgs
+>   {
+>     grub_uint32_t level;
+>     grub_uint32_t facility;
 
-Well stated, thanks!
+Nit: if this is aimed at cross-OS and cross-bootloader compatibility
+uint32_t should be used here instead of a grub specific alias.
+
+>     char type[];
+>     char msg[];
+
+I think you want char * here instead? Or are the above arrays expected
+to have a fixed size in the final spec?
+
+>   }
+> 
+>   struct bootloader_log
+>   {
+>     grub_uint32_t version;
+>     grub_uint32_t producer;
+>     grub_uint32_t size;
+>     grub_uint32_t next_off;
+>     bootloader_log_msgs msgs[];
+
+As I understand it this is not a pointer to an array of
+bootloader_log_msgs but rather in-place?
+
+>   }
+> 
+> The members of struct bootloader_log:
+>   - version: the bootloader log format version number, 1 for now,
+>   - producer: the producer/bootloader type; we can steal some values from
+>     linux/Documentation/x86/boot.rst:type_of_loader,
+>   - size: total size of the log buffer including the bootloader_log struct,
+>   - next_off: offset in bytes, from start of the bootloader_log struct,
+>     of the next byte after the last log message in the msgs[];
+>     i.e. the offset of the next available log message slot,
+
+So this will be a memory area that's shared between the OS and the
+bootloader and needs to be updated at runtime?
+
+If this is something that's created by the bootloader during loading
+and passed to the OS for consumption (but it's not further updated), I
+don't see much point in the next_off field. The size field could be
+updated to reflect the actual size of the produced messages?
+
+Roger.
