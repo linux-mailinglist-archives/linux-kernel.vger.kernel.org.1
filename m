@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F441EA932
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E65861EAA80
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729300AbgFAR7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:59:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40880 "EHLO mail.kernel.org"
+        id S1730759AbgFASIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:08:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729189AbgFAR6p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:58:45 -0400
+        id S1729123AbgFASId (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:08:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2CFD2206E2;
-        Mon,  1 Jun 2020 17:58:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32DED2068D;
+        Mon,  1 Jun 2020 18:08:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034324;
-        bh=HFNk47jELaw7uwMh7fkT5nlGQFTfz2GICQHMXpjGHI4=;
+        s=default; t=1591034912;
+        bh=9/zpqtvcvi/aDsfbxPRxBceob0fFvjcGLgPlCn/Du6Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oZW1fGsYgaZO2kHJtV4b+PLrqXyhgfiAVLsMr/+f2kmnTJaxoABg8/dXHF1MnYPvp
-         dyrHz0XL74nQ4bL1M8EXL8MGO6mvRS8gtK3PF2YyK+29lLe9e6ivnvzUMkXMCIaegd
-         w0K5gRGQo+Tieu0km77Vj74cr/KaMU7UDmk20V0g=
+        b=wvBbhTa09a2V8w/cAgE63CFw8OZP9cUrPMn698A48kt2Ylg8cleNStfbdv8uyyGSj
+         Povifxa2Wpvp7EMpSSPQGm0FzBlzbBJy+mv8X4AHNT4opdofPahCg0CKK6nY6UfsQ4
+         9vqDNyNyxX5uB0JUQpC2fMRVe9TW2LBoR8M8p/sg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Evan Green <evgreen@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 40/61] include/asm-generic/topology.h: guard cpumask_of_node() macro argument
+Subject: [PATCH 5.4 069/142] Input: synaptics-rmi4 - really fix attn_data use-after-free
 Date:   Mon,  1 Jun 2020 19:53:47 +0200
-Message-Id: <20200601174019.073804380@linuxfoundation.org>
+Message-Id: <20200601174044.968778830@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
-References: <20200601174010.316778377@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,45 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Evan Green <evgreen@chromium.org>
 
-[ Upstream commit 4377748c7b5187c3342a60fa2ceb60c8a57a8488 ]
+[ Upstream commit d5a5e5b5fa7b86c05bf073acc0ba98fa280174ec ]
 
-drivers/hwmon/amd_energy.c:195:15: error: invalid operands to binary expression ('void' and 'int')
-                                        (channel - data->nr_cpus));
-                                        ~~~~~~~~~^~~~~~~~~~~~~~~~~
-include/asm-generic/topology.h:51:42: note: expanded from macro 'cpumask_of_node'
-    #define cpumask_of_node(node)       ((void)node, cpu_online_mask)
-                                               ^~~~
-include/linux/cpumask.h:618:72: note: expanded from macro 'cpumask_first_and'
- #define cpumask_first_and(src1p, src2p) cpumask_next_and(-1, (src1p), (src2p))
-                                                                       ^~~~~
+Fix a use-after-free noticed by running with KASAN enabled. If
+rmi_irq_fn() is run twice in a row, then rmi_f11_attention() (among
+others) will end up reading from drvdata->attn_data.data, which was
+freed and left dangling in rmi_irq_fn().
 
-Fixes: f0b848ce6fe9 ("cpumask: Introduce cpumask_of_{node,pcibus} to replace {node,pcibus}_to_cpumask")
-Fixes: 8abee9566b7e ("hwmon: Add amd_energy driver to report energy counters")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Guenter Roeck <linux@roeck-us.net>
-Link: http://lkml.kernel.org/r/20200527134623.930247-1-arnd@arndb.de
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Commit 55edde9fff1a ("Input: synaptics-rmi4 - prevent UAF reported by
+KASAN") correctly identified and analyzed this bug. However the attempted
+fix only NULLed out a local variable, missing the fact that
+drvdata->attn_data is a struct, not a pointer.
+
+NULL out the correct pointer in the driver data to prevent the attention
+functions from copying from it.
+
+Fixes: 55edde9fff1a ("Input: synaptics-rmi4 - prevent UAF reported by KASAN")
+Fixes: b908d3cd812a ("Input: synaptics-rmi4 - allow to add attention data")
+Signed-off-by: Evan Green <evgreen@chromium.org>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200427145537.1.Ic8f898e0147beeee2c005ee7b20f1aebdef1e7eb@changeid
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/asm-generic/topology.h | 2 +-
+ drivers/input/rmi4/rmi_driver.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/asm-generic/topology.h b/include/asm-generic/topology.h
-index 5d2add1a6c96..864fcfa1df41 100644
---- a/include/asm-generic/topology.h
-+++ b/include/asm-generic/topology.h
-@@ -51,7 +51,7 @@
-   #ifdef CONFIG_NEED_MULTIPLE_NODES
-     #define cpumask_of_node(node)	((node) == 0 ? cpu_online_mask : cpu_none_mask)
-   #else
--    #define cpumask_of_node(node)	((void)node, cpu_online_mask)
-+    #define cpumask_of_node(node)	((void)(node), cpu_online_mask)
-   #endif
- #endif
- #ifndef pcibus_to_node
+diff --git a/drivers/input/rmi4/rmi_driver.c b/drivers/input/rmi4/rmi_driver.c
+index 190b9974526b..c18e1a25bca6 100644
+--- a/drivers/input/rmi4/rmi_driver.c
++++ b/drivers/input/rmi4/rmi_driver.c
+@@ -205,7 +205,7 @@ static irqreturn_t rmi_irq_fn(int irq, void *dev_id)
+ 
+ 	if (count) {
+ 		kfree(attn_data.data);
+-		attn_data.data = NULL;
++		drvdata->attn_data.data = NULL;
+ 	}
+ 
+ 	if (!kfifo_is_empty(&drvdata->attn_fifo))
 -- 
 2.25.1
 
