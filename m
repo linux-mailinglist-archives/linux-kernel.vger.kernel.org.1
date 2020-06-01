@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 713BB1EADA8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324EA1EAE25
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730711AbgFASIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:08:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54130 "EHLO mail.kernel.org"
+        id S1730891AbgFASv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:51:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730663AbgFASIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:08:06 -0400
+        id S1730285AbgFASFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:05:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F4C62077D;
-        Mon,  1 Jun 2020 18:08:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 278E52074B;
+        Mon,  1 Jun 2020 18:05:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034885;
-        bh=dFnDNSHS2+OAHO0LGMtY8LKC5e1OPYAD0D0Dw5/i9t8=;
+        s=default; t=1591034700;
+        bh=TAM4tGPq/YhfvDya+ZSgxRp27AgrPktBJJ+BABLW18c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jus+oXUD+gTS/Snrd9e28ZVERG0Mx/Fv3Xu4ypf2DoubahGrxC88NTY9tRJiFP2QQ
-         adqxcggeP3LvujXyWNf9eCaeuT9lRU+uoc72mVnhVJAmuEK+hBGKwI9InGijcHwmaO
-         mn4jVJmdEeU+LsGakQcVRH9nLxpIQyPlnelkU6yw=
+        b=Q0UyGQM+kUbOPnh2mLR/cohO7JZ4d+OdqubotvT1Vgu8alYFJ13CE1MrCX/5KWI88
+         6OFXqyrAL8ZLkbv/oN0pWMvIbCxlCF+XJMo8Ue+6hoYxUO6TdFINLEChM7knUZUZHB
+         Wnc+eLySWzlw7GX1XjImEQzMy1NDZX6BGOdDye+A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liu Yibin <jiulong@linux.alibaba.com>,
-        Guo Ren <guoren@linux.alibaba.com>,
+        stable@vger.kernel.org, "Denis V. Lunev" <den@openvz.org>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 055/142] csky: Fixup msa highest 3 bits mask
+Subject: [PATCH 4.19 33/95] IB/i40iw: Remove bogus call to netdev_master_upper_dev_get()
 Date:   Mon,  1 Jun 2020 19:53:33 +0200
-Message-Id: <20200601174043.652111539@linuxfoundation.org>
+Message-Id: <20200601174026.031845729@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
+References: <20200601174020.759151073@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,56 +45,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liu Yibin <jiulong@linux.alibaba.com>
+From: Denis V. Lunev <den@openvz.org>
 
-[ Upstream commit 165f2d2858013253042809df082b8df7e34e86d7 ]
+[ Upstream commit 856ec7f64688387b100b7083cdf480ce3ac41227 ]
 
-Just as comment mentioned, the msa format:
+Local variable netdev is not used in these calls.
 
- cr<30/31, 15> MSA register format:
- 31 - 29 | 28 - 9 | 8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
-   BA     Reserved  SH  WA  B   SO SEC  C   D   V
+It should be noted, that this change is required to work in bonded mode.
+Otherwise we would get the following assert:
 
-So we should shift 29 bits not 28 bits for mask
+ "RTNL: assertion failed at net/core/dev.c (5665)"
 
-Signed-off-by: Liu Yibin <jiulong@linux.alibaba.com>
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+With the calltrace as follows:
+	dump_stack+0x19/0x1b
+	netdev_master_upper_dev_get+0x61/0x70
+	i40iw_addr_resolve_neigh+0x1e8/0x220
+	i40iw_make_cm_node+0x296/0x700
+	? i40iw_find_listener.isra.10+0xcc/0x110
+	i40iw_receive_ilq+0x3d4/0x810
+	i40iw_puda_poll_completion+0x341/0x420
+	i40iw_process_ceq+0xa5/0x280
+	i40iw_ceq_dpc+0x1e/0x40
+	tasklet_action+0x83/0x140
+	__do_softirq+0x125/0x2bb
+	call_softirq+0x1c/0x30
+	do_softirq+0x65/0xa0
+	irq_exit+0x105/0x110
+	do_IRQ+0x56/0xf0
+	common_interrupt+0x16a/0x16a
+	? cpuidle_enter_state+0x57/0xd0
+	cpuidle_idle_call+0xde/0x230
+	arch_cpu_idle+0xe/0xc0
+	cpu_startup_entry+0x14a/0x1e0
+	start_secondary+0x1f7/0x270
+	start_cpu+0x5/0x14
+
+Link: https://lore.kernel.org/r/20200428131511.11049-1-den@openvz.org
+Signed-off-by: Denis V. Lunev <den@openvz.org>
+Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/csky/abiv1/inc/abi/entry.h | 4 ++--
- arch/csky/abiv2/inc/abi/entry.h | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/infiniband/hw/i40iw/i40iw_cm.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/arch/csky/abiv1/inc/abi/entry.h b/arch/csky/abiv1/inc/abi/entry.h
-index 5056ebb902d1..61d94ec7dd16 100644
---- a/arch/csky/abiv1/inc/abi/entry.h
-+++ b/arch/csky/abiv1/inc/abi/entry.h
-@@ -167,8 +167,8 @@
- 	 *   BA     Reserved  C   D   V
- 	 */
- 	cprcr	r6, cpcr30
--	lsri	r6, 28
--	lsli	r6, 28
-+	lsri	r6, 29
-+	lsli	r6, 29
- 	addi	r6, 0xe
- 	cpwcr	r6, cpcr30
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_cm.c b/drivers/infiniband/hw/i40iw/i40iw_cm.c
+index 771eb6bd0785..4321b9e3dbb4 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_cm.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_cm.c
+@@ -1984,7 +1984,6 @@ static int i40iw_addr_resolve_neigh(struct i40iw_device *iwdev,
+ 	struct rtable *rt;
+ 	struct neighbour *neigh;
+ 	int rc = arpindex;
+-	struct net_device *netdev = iwdev->netdev;
+ 	__be32 dst_ipaddr = htonl(dst_ip);
+ 	__be32 src_ipaddr = htonl(src_ip);
  
-diff --git a/arch/csky/abiv2/inc/abi/entry.h b/arch/csky/abiv2/inc/abi/entry.h
-index 111973c6c713..9023828ede97 100644
---- a/arch/csky/abiv2/inc/abi/entry.h
-+++ b/arch/csky/abiv2/inc/abi/entry.h
-@@ -225,8 +225,8 @@
- 	 */
- 	mfcr	r6, cr<30, 15> /* Get MSA0 */
- 2:
--	lsri	r6, 28
--	lsli	r6, 28
-+	lsri	r6, 29
-+	lsli	r6, 29
- 	addi	r6, 0x1ce
- 	mtcr	r6, cr<30, 15> /* Set MSA0 */
+@@ -1994,9 +1993,6 @@ static int i40iw_addr_resolve_neigh(struct i40iw_device *iwdev,
+ 		return rc;
+ 	}
  
+-	if (netif_is_bond_slave(netdev))
+-		netdev = netdev_master_upper_dev_get(netdev);
+-
+ 	neigh = dst_neigh_lookup(&rt->dst, &dst_ipaddr);
+ 
+ 	rcu_read_lock();
+@@ -2062,7 +2058,6 @@ static int i40iw_addr_resolve_neigh_ipv6(struct i40iw_device *iwdev,
+ {
+ 	struct neighbour *neigh;
+ 	int rc = arpindex;
+-	struct net_device *netdev = iwdev->netdev;
+ 	struct dst_entry *dst;
+ 	struct sockaddr_in6 dst_addr;
+ 	struct sockaddr_in6 src_addr;
+@@ -2083,9 +2078,6 @@ static int i40iw_addr_resolve_neigh_ipv6(struct i40iw_device *iwdev,
+ 		return rc;
+ 	}
+ 
+-	if (netif_is_bond_slave(netdev))
+-		netdev = netdev_master_upper_dev_get(netdev);
+-
+ 	neigh = dst_neigh_lookup(dst, dst_addr.sin6_addr.in6_u.u6_addr32);
+ 
+ 	rcu_read_lock();
 -- 
 2.25.1
 
