@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7B31EAE8E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 975E01EAE4E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730331AbgFASzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:55:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44782 "EHLO mail.kernel.org"
+        id S1731015AbgFASw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:52:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729163AbgFASBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:01:45 -0400
+        id S1728205AbgFASDZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:03:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21D642065C;
-        Mon,  1 Jun 2020 18:01:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A4E4C207D0;
+        Mon,  1 Jun 2020 18:03:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034505;
-        bh=bHFNpJmKmHKprftzIGOaRHADYjg7o8+IY4OvdCrstTs=;
+        s=default; t=1591034604;
+        bh=vvAn8EDpPr9ZfwBzIstG1rQ4gCyXCXUholFYEgR/AA0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fiK0A6pg0bna6z8UxG3q1wPUDFDS1cooWsQZCEmw5DrUuhrrvnOVXnqfg4dV3FusC
-         i94Tm1MY+/J59hMXmE2Nn3fgrEtEGVvo/NhbEY/HFQUTZN1UwXKxUrf44etmIO5O81
-         ikgys2oBeWW3RXXMJ01M1rqtk6tG7rxnQq1mtws4=
+        b=R960K3uy2b1rK+ITgTP/33VhFEO1kVXrkI7Lc/fjTtfK3ZZ30Iy+UonEquWwHjPxC
+         05sbnZCYZVzolBtwFCKdj917Xt9DdrFxbv0ahCHtlz38xuVDoTchuv0PhVzk0ADitz
+         w1c3wY7HNll8/h99pGd1f063FEyXZCEBx3UfFoZE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Coverity <scan-admin@coverity.com>,
-        Steve French <stfrench@microsoft.com>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 22/77] cifs: Fix null pointer check in cifs_read
+Subject: [PATCH 4.19 27/95] gfs2: move privileged user check to gfs2_quota_lock_check
 Date:   Mon,  1 Jun 2020 19:53:27 +0200
-Message-Id: <20200601174020.389413239@linuxfoundation.org>
+Message-Id: <20200601174025.164815490@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
-References: <20200601174016.396817032@linuxfoundation.org>
+In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
+References: <20200601174020.759151073@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,34 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+From: Bob Peterson <rpeterso@redhat.com>
 
-[ Upstream commit 9bd21d4b1a767c3abebec203342f3820dcb84662 ]
+[ Upstream commit 4ed0c30811cb4d30ef89850b787a53a84d5d2bcb ]
 
-Coverity scan noted a redundant null check
+Before this patch, function gfs2_quota_lock checked if it was called
+from a privileged user, and if so, it bypassed the quota check:
+superuser can operate outside the quotas.
+That's the wrong place for the check because the lock/unlock functions
+are separate from the lock_check function, and you can do lock and
+unlock without actually checking the quotas.
 
-Coverity-id: 728517
-Reported-by: Coverity <scan-admin@coverity.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Reviewed-by: Shyam Prasad N <nspmangalore@gmail.com>
+This patch moves the check to gfs2_quota_lock_check.
+
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/file.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/gfs2/quota.c | 3 +--
+ fs/gfs2/quota.h | 3 ++-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/cifs/file.c b/fs/cifs/file.c
-index 662977b8d6ae..72e7cbfb325a 100644
---- a/fs/cifs/file.c
-+++ b/fs/cifs/file.c
-@@ -3496,7 +3496,7 @@ cifs_read(struct file *file, char *read_data, size_t read_size, loff_t *offset)
- 			 * than it negotiated since it will refuse the read
- 			 * then.
- 			 */
--			if ((tcon->ses) && !(tcon->ses->capabilities &
-+			if (!(tcon->ses->capabilities &
- 				tcon->ses->server->vals->cap_large_files)) {
- 				current_read_size = min_t(uint,
- 					current_read_size, CIFSMaxBufSize);
+diff --git a/fs/gfs2/quota.c b/fs/gfs2/quota.c
+index 0efae7a0ee80..dd0f9bc13164 100644
+--- a/fs/gfs2/quota.c
++++ b/fs/gfs2/quota.c
+@@ -1043,8 +1043,7 @@ int gfs2_quota_lock(struct gfs2_inode *ip, kuid_t uid, kgid_t gid)
+ 	u32 x;
+ 	int error = 0;
+ 
+-	if (capable(CAP_SYS_RESOURCE) ||
+-	    sdp->sd_args.ar_quota != GFS2_QUOTA_ON)
++	if (sdp->sd_args.ar_quota != GFS2_QUOTA_ON)
+ 		return 0;
+ 
+ 	error = gfs2_quota_hold(ip, uid, gid);
+diff --git a/fs/gfs2/quota.h b/fs/gfs2/quota.h
+index 836f29480be6..e3a6e2404d11 100644
+--- a/fs/gfs2/quota.h
++++ b/fs/gfs2/quota.h
+@@ -47,7 +47,8 @@ static inline int gfs2_quota_lock_check(struct gfs2_inode *ip,
+ 	int ret;
+ 
+ 	ap->allowed = UINT_MAX; /* Assume we are permitted a whole lot */
+-	if (sdp->sd_args.ar_quota == GFS2_QUOTA_OFF)
++	if (capable(CAP_SYS_RESOURCE) ||
++	    sdp->sd_args.ar_quota == GFS2_QUOTA_OFF)
+ 		return 0;
+ 	ret = gfs2_quota_lock(ip, NO_UID_QUOTA_CHANGE, NO_GID_QUOTA_CHANGE);
+ 	if (ret)
 -- 
 2.25.1
 
