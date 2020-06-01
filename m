@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7531EA91A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 970151EAB1E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729152AbgFAR6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:58:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39934 "EHLO mail.kernel.org"
+        id S1730646AbgFASOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:14:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728247AbgFAR6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:58:11 -0400
+        id S1731461AbgFASOQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:14:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82784206E2;
-        Mon,  1 Jun 2020 17:58:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7380D2065C;
+        Mon,  1 Jun 2020 18:14:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034291;
-        bh=GkUxA68F6L+uQlg0eH/R3a4vyXA938LD41iQOgVsjp8=;
+        s=default; t=1591035255;
+        bh=g3sscGhPq9hLVmx658tAsrUj80UrMHlDSMwYPWU6Ecw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cxscBJecbLLQv2AN3uyvIcGAf9b9mrHbATHsGDHX9Ae1vJEEoh9LM872dm5kzscqR
-         ioSn/jD5yDGMqcwPDzaxtsO+tgBDJBY1fGB4nPyESacjaREZ6++ouLnYgZ+cIjiF6U
-         f/G78CIOThkELIJvir5usXvCeXyOvtN+XEVZkFPI=
+        b=hxzp8X6/Hmn1J3kTndPqK1bTasA5uib86X4/KHPRYKDla9AXGRhuxVwMpDNmd+kRm
+         aP8IbmOuF2Hjw6W8d2V6DVEMSINv7vbh9lhfgw/PRdPQ59Z4naXWAk4sZMn01LZXYC
+         u2cVSy7YYagqMrHkOssN3aZmot7ujx//+5WUhChY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
+        stable@vger.kernel.org, Bernard Zhao <bernard@vivo.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 27/61] ARM: uaccess: consolidate uaccess asm to asm/uaccess-asm.h
-Date:   Mon,  1 Jun 2020 19:53:34 +0200
-Message-Id: <20200601174016.904271256@linuxfoundation.org>
+Subject: [PATCH 5.6 077/177] drm/meson: pm resume add return errno branch
+Date:   Mon,  1 Jun 2020 19:53:35 +0200
+Message-Id: <20200601174055.311142505@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
-References: <20200601174010.316778377@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,300 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russell King <rmk+kernel@armlinux.org.uk>
+From: Bernard Zhao <bernard@vivo.com>
 
-[ Upstream commit 747ffc2fcf969eff9309d7f2d1d61cb8b9e1bb40 ]
+[ Upstream commit c54a8f1f329197d83d941ad84c4aa38bf282cbbd ]
 
-Consolidate the user access assembly code to asm/uaccess-asm.h.  This
-moves the csdb, check_uaccess, uaccess_mask_range_ptr, uaccess_enable,
-uaccess_disable, uaccess_save, uaccess_restore macros, and creates two
-new ones for exception entry and exit - uaccess_entry and uaccess_exit.
+pm_resump api did not handle drm_mode_config_helper_resume error.
+This change add handle to return drm_mode_config_helper_resume`s
+error number. This code logic is aligned with api pm_suspend.
+After this change, the code maybe a bit readable.
 
-This makes the uaccess_save and uaccess_restore macros private to
-asm/uaccess-asm.h.
-
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200428131747.2099-1-bernard@vivo.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/include/asm/assembler.h   |  75 +-------------------
- arch/arm/include/asm/uaccess-asm.h | 106 +++++++++++++++++++++++++++++
- arch/arm/kernel/entry-armv.S       |  11 +--
- arch/arm/kernel/entry-header.S     |   9 +--
- 4 files changed, 112 insertions(+), 89 deletions(-)
- create mode 100644 arch/arm/include/asm/uaccess-asm.h
+ drivers/gpu/drm/meson/meson_drv.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/arm/include/asm/assembler.h b/arch/arm/include/asm/assembler.h
-index c9ed0b0e0737..1cd39b1229eb 100644
---- a/arch/arm/include/asm/assembler.h
-+++ b/arch/arm/include/asm/assembler.h
-@@ -21,11 +21,11 @@
- #endif
+diff --git a/drivers/gpu/drm/meson/meson_drv.c b/drivers/gpu/drm/meson/meson_drv.c
+index b5f5eb7b4bb9..8c2e1b47e81a 100644
+--- a/drivers/gpu/drm/meson/meson_drv.c
++++ b/drivers/gpu/drm/meson/meson_drv.c
+@@ -412,9 +412,7 @@ static int __maybe_unused meson_drv_pm_resume(struct device *dev)
+ 	if (priv->afbcd.ops)
+ 		priv->afbcd.ops->init(priv);
  
- #include <asm/ptrace.h>
--#include <asm/domain.h>
- #include <asm/opcodes-virt.h>
- #include <asm/asm-offsets.h>
- #include <asm/page.h>
- #include <asm/thread_info.h>
-+#include <asm/uaccess-asm.h>
- 
- #define IOMEM(x)	(x)
- 
-@@ -445,79 +445,6 @@ THUMB(	orr	\reg , \reg , #PSR_T_BIT	)
- 	.size \name , . - \name
- 	.endm
- 
--	.macro	csdb
--#ifdef CONFIG_THUMB2_KERNEL
--	.inst.w	0xf3af8014
--#else
--	.inst	0xe320f014
--#endif
--	.endm
+-	drm_mode_config_helper_resume(priv->drm);
 -
--	.macro check_uaccess, addr:req, size:req, limit:req, tmp:req, bad:req
--#ifndef CONFIG_CPU_USE_DOMAINS
--	adds	\tmp, \addr, #\size - 1
--	sbcscc	\tmp, \tmp, \limit
--	bcs	\bad
--#ifdef CONFIG_CPU_SPECTRE
--	movcs	\addr, #0
--	csdb
--#endif
--#endif
--	.endm
--
--	.macro uaccess_mask_range_ptr, addr:req, size:req, limit:req, tmp:req
--#ifdef CONFIG_CPU_SPECTRE
--	sub	\tmp, \limit, #1
--	subs	\tmp, \tmp, \addr	@ tmp = limit - 1 - addr
--	addhs	\tmp, \tmp, #1		@ if (tmp >= 0) {
--	subshs	\tmp, \tmp, \size	@ tmp = limit - (addr + size) }
--	movlo	\addr, #0		@ if (tmp < 0) addr = NULL
--	csdb
--#endif
--	.endm
--
--	.macro	uaccess_disable, tmp, isb=1
--#ifdef CONFIG_CPU_SW_DOMAIN_PAN
--	/*
--	 * Whenever we re-enter userspace, the domains should always be
--	 * set appropriately.
--	 */
--	mov	\tmp, #DACR_UACCESS_DISABLE
--	mcr	p15, 0, \tmp, c3, c0, 0		@ Set domain register
--	.if	\isb
--	instr_sync
--	.endif
--#endif
--	.endm
--
--	.macro	uaccess_enable, tmp, isb=1
--#ifdef CONFIG_CPU_SW_DOMAIN_PAN
--	/*
--	 * Whenever we re-enter userspace, the domains should always be
--	 * set appropriately.
--	 */
--	mov	\tmp, #DACR_UACCESS_ENABLE
--	mcr	p15, 0, \tmp, c3, c0, 0
--	.if	\isb
--	instr_sync
--	.endif
--#endif
--	.endm
--
--	.macro	uaccess_save, tmp
--#ifdef CONFIG_CPU_SW_DOMAIN_PAN
--	mrc	p15, 0, \tmp, c3, c0, 0
--	str	\tmp, [sp, #SVC_DACR]
--#endif
--	.endm
--
--	.macro	uaccess_restore
--#ifdef CONFIG_CPU_SW_DOMAIN_PAN
--	ldr	r0, [sp, #SVC_DACR]
--	mcr	p15, 0, r0, c3, c0, 0
--#endif
--	.endm
--
- 	.irp	c,,eq,ne,cs,cc,mi,pl,vs,vc,hi,ls,ge,lt,gt,le,hs,lo
- 	.macro	ret\c, reg
- #if __LINUX_ARM_ARCH__ < 6
-diff --git a/arch/arm/include/asm/uaccess-asm.h b/arch/arm/include/asm/uaccess-asm.h
-new file mode 100644
-index 000000000000..d475e3e8145d
---- /dev/null
-+++ b/arch/arm/include/asm/uaccess-asm.h
-@@ -0,0 +1,106 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+#ifndef __ASM_UACCESS_ASM_H__
-+#define __ASM_UACCESS_ASM_H__
-+
-+#include <asm/asm-offsets.h>
-+#include <asm/domain.h>
-+#include <asm/memory.h>
-+#include <asm/thread_info.h>
-+
-+	.macro	csdb
-+#ifdef CONFIG_THUMB2_KERNEL
-+	.inst.w	0xf3af8014
-+#else
-+	.inst	0xe320f014
-+#endif
-+	.endm
-+
-+	.macro check_uaccess, addr:req, size:req, limit:req, tmp:req, bad:req
-+#ifndef CONFIG_CPU_USE_DOMAINS
-+	adds	\tmp, \addr, #\size - 1
-+	sbcscc	\tmp, \tmp, \limit
-+	bcs	\bad
-+#ifdef CONFIG_CPU_SPECTRE
-+	movcs	\addr, #0
-+	csdb
-+#endif
-+#endif
-+	.endm
-+
-+	.macro uaccess_mask_range_ptr, addr:req, size:req, limit:req, tmp:req
-+#ifdef CONFIG_CPU_SPECTRE
-+	sub	\tmp, \limit, #1
-+	subs	\tmp, \tmp, \addr	@ tmp = limit - 1 - addr
-+	addhs	\tmp, \tmp, #1		@ if (tmp >= 0) {
-+	subshs	\tmp, \tmp, \size	@ tmp = limit - (addr + size) }
-+	movlo	\addr, #0		@ if (tmp < 0) addr = NULL
-+	csdb
-+#endif
-+	.endm
-+
-+	.macro	uaccess_disable, tmp, isb=1
-+#ifdef CONFIG_CPU_SW_DOMAIN_PAN
-+	/*
-+	 * Whenever we re-enter userspace, the domains should always be
-+	 * set appropriately.
-+	 */
-+	mov	\tmp, #DACR_UACCESS_DISABLE
-+	mcr	p15, 0, \tmp, c3, c0, 0		@ Set domain register
-+	.if	\isb
-+	instr_sync
-+	.endif
-+#endif
-+	.endm
-+
-+	.macro	uaccess_enable, tmp, isb=1
-+#ifdef CONFIG_CPU_SW_DOMAIN_PAN
-+	/*
-+	 * Whenever we re-enter userspace, the domains should always be
-+	 * set appropriately.
-+	 */
-+	mov	\tmp, #DACR_UACCESS_ENABLE
-+	mcr	p15, 0, \tmp, c3, c0, 0
-+	.if	\isb
-+	instr_sync
-+	.endif
-+#endif
-+	.endm
-+
-+	.macro	uaccess_save, tmp
-+#ifdef CONFIG_CPU_SW_DOMAIN_PAN
-+	mrc	p15, 0, \tmp, c3, c0, 0
-+	str	\tmp, [sp, #SVC_DACR]
-+#endif
-+	.endm
-+
-+	.macro	uaccess_restore
-+#ifdef CONFIG_CPU_SW_DOMAIN_PAN
-+	ldr	r0, [sp, #SVC_DACR]
-+	mcr	p15, 0, r0, c3, c0, 0
-+#endif
-+	.endm
-+
-+	/*
-+	 * Save the address limit on entry to a privileged exception and
-+	 * if using PAN, save and disable usermode access.
-+	 */
-+	.macro	uaccess_entry, tsk, tmp0, tmp1, tmp2, disable
-+	ldr	\tmp0, [\tsk, #TI_ADDR_LIMIT]
-+	mov	\tmp1, #TASK_SIZE
-+	str	\tmp1, [\tsk, #TI_ADDR_LIMIT]
-+	str	\tmp0, [sp, #SVC_ADDR_LIMIT]
-+	uaccess_save \tmp0
-+	.if \disable
-+	uaccess_disable \tmp0
-+	.endif
-+	.endm
-+
-+	/* Restore the user access state previously saved by uaccess_entry */
-+	.macro	uaccess_exit, tsk, tmp0, tmp1
-+	ldr	\tmp1, [sp, #SVC_ADDR_LIMIT]
-+	uaccess_restore
-+	str	\tmp1, [\tsk, #TI_ADDR_LIMIT]
-+	.endm
-+
-+#endif /* __ASM_UACCESS_ASM_H__ */
-diff --git a/arch/arm/kernel/entry-armv.S b/arch/arm/kernel/entry-armv.S
-index 9f157e7c51e7..efffca3c66e7 100644
---- a/arch/arm/kernel/entry-armv.S
-+++ b/arch/arm/kernel/entry-armv.S
-@@ -30,6 +30,7 @@
- #include <asm/unistd.h>
- #include <asm/tls.h>
- #include <asm/system_info.h>
-+#include <asm/uaccess-asm.h>
+-	return 0;
++	return drm_mode_config_helper_resume(priv->drm);
+ }
  
- #include "entry-header.S"
- #include <asm/entry-macro-multi.S>
-@@ -186,15 +187,7 @@ ENDPROC(__und_invalid)
- 	stmia	r7, {r2 - r6}
- 
- 	get_thread_info tsk
--	ldr	r0, [tsk, #TI_ADDR_LIMIT]
--	mov	r1, #TASK_SIZE
--	str	r1, [tsk, #TI_ADDR_LIMIT]
--	str	r0, [sp, #SVC_ADDR_LIMIT]
--
--	uaccess_save r0
--	.if \uaccess
--	uaccess_disable r0
--	.endif
-+	uaccess_entry tsk, r0, r1, r2, \uaccess
- 
- 	.if \trace
- #ifdef CONFIG_TRACE_IRQFLAGS
-diff --git a/arch/arm/kernel/entry-header.S b/arch/arm/kernel/entry-header.S
-index fa7c6e5c17e7..f9287e65722e 100644
---- a/arch/arm/kernel/entry-header.S
-+++ b/arch/arm/kernel/entry-header.S
-@@ -5,6 +5,7 @@
- #include <asm/asm-offsets.h>
- #include <asm/errno.h>
- #include <asm/thread_info.h>
-+#include <asm/uaccess-asm.h>
- #include <asm/v7m.h>
- 
- @ Bad Abort numbers
-@@ -215,9 +216,7 @@
- 	blne	trace_hardirqs_off
- #endif
- 	.endif
--	ldr	r1, [sp, #SVC_ADDR_LIMIT]
--	uaccess_restore
--	str	r1, [tsk, #TI_ADDR_LIMIT]
-+	uaccess_exit tsk, r0, r1
- 
- #ifndef CONFIG_THUMB2_KERNEL
- 	@ ARM mode SVC restore
-@@ -261,9 +260,7 @@
- 	@ on the stack remains correct).
- 	@
- 	.macro  svc_exit_via_fiq
--	ldr	r1, [sp, #SVC_ADDR_LIMIT]
--	uaccess_restore
--	str	r1, [tsk, #TI_ADDR_LIMIT]
-+	uaccess_exit tsk, r0, r1
- #ifndef CONFIG_THUMB2_KERNEL
- 	@ ARM mode restore
- 	mov	r0, sp
+ static int compare_of(struct device *dev, void *data)
 -- 
 2.25.1
 
