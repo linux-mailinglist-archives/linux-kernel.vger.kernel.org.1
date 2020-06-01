@@ -2,155 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAAE71E9BF7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 05:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F141E9C00
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 05:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727119AbgFADLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 23:11:30 -0400
-Received: from mail-eopbgr1320072.outbound.protection.outlook.com ([40.107.132.72]:62880
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726555AbgFADL3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 23:11:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ntcriyG11iqMSVWRq1Ajnb5GlTordOJPHIbFYCXWCcldvp17Zoc4Eh1SLRCzlKuLghzpP7KOQv+MfIOte09jRVKWrHqvaHWv6GoZp59gG/CxcZjAiW2C+qo0SkUieWggK4aXDUXSNPe5dcSYZ70YmUkW4qi8YMi+ybchx+2fFp62t4ewmabfjDZJYs/OiYBORDsV9dCQaz9Tp6GVDJBHpXfVjMMrr4k7qTOK8XOrQn97XDEh1cvUF5gV+F2Vbubkic/si5SMOqP79mud/omdbkSd5k+2ff6odhRVso5UPQiWVjmkSfXNkUyAms3SQxg3Ep2GeYMJNZ6vgUcYsBYoYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yGZucJK5RqUImKCOtmtgEQxJi9L2O+Dod7IzRMqU5nI=;
- b=RsX/pv1CmKGsaL68UAD7Fa3y6PFnTvaEFQJzl8aJmhTN/HUMaYBOFzX4KC5FNSXDZQbFOH8ymR7PcBHmM7RIjSxQW6vrB45o1NXPffpfjhOSPDrCLK5rmGkLPLqwuUK7ydV5lqoS0Kvdr4FsAOLIKJnvqwjGappW7dhLL75KIkjC71vgHl18c9+Nl4tFALNmyX9qOJlnJm2OqXUWnwJtdghzqGGdl49KYaPAASkuT8xjRgwB/ilEqRoPqDNO2aRmYptc2HFm//vOaS24DH8Pg+TGPn3cjxJ1wJeJgKrs04jaQczdbhibzLv/Hhl6zvPWaLQrp7uyXnf20hy67m9JCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
- header.d=nec.com; arc=none
+        id S1727772AbgFADWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 23:22:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726860AbgFADWI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 May 2020 23:22:08 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B355C08C5C0
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 20:22:08 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id b135so11228763yba.11
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 20:22:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=necglobal.onmicrosoft.com; s=selector1-necglobal-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yGZucJK5RqUImKCOtmtgEQxJi9L2O+Dod7IzRMqU5nI=;
- b=WXlyULUgDmMasOpD1yrOVLmQnUMgN6h9NNE98KM+JEteonuql4jezTE3vQGHioE3UrHJawEiWS5RochHsNzP8Rhp54Aj4GFbY2h3WSp1pK+4PKKdloIIP1NmXwZEtm7MXzLpNy0db0iFvauFV2uuEZoehPV6L4dugGG7pP2+BoY=
-Received: from TY2PR01MB3210.jpnprd01.prod.outlook.com (2603:1096:404:74::14)
- by TY2PR01MB4041.jpnprd01.prod.outlook.com (2603:1096:404:df::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.21; Mon, 1 Jun
- 2020 03:11:25 +0000
-Received: from TY2PR01MB3210.jpnprd01.prod.outlook.com
- ([fe80::3841:ec9f:5cdf:f58]) by TY2PR01MB3210.jpnprd01.prod.outlook.com
- ([fe80::3841:ec9f:5cdf:f58%5]) with mapi id 15.20.3045.022; Mon, 1 Jun 2020
- 03:11:25 +0000
-From:   =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
-        <naoya.horiguchi@nec.com>
-To:     Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-CC:     Wetp Zhang <wetp.zy@linux.alibaba.com>,
-        "n-horiguchi@ah.jp.nec.com" <n-horiguchi@ah.jp.nec.com>,
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=cAL9AzTlR3/rckuz0QiBMeDp6G7+Z3C8GGU0gCN+rUE=;
+        b=O2UdUjD8EOczgn/SjK0fKFL0Zv4xhbEPuhxmDtj5bVx0uGLy+65C/pgAov0drvlu5M
+         fdLUJ/cY4PDDSlFxpcj4jNB3caWX6tsvWf6ngrtryjT9djpEPqg+03CSUjtgoEO0EN/T
+         NqGNPho1JQhBF4XnSu8EP9J3RQyUAq9KXt5g2A58syxbm05Ic99xDyeHy0TdH3uQIWqO
+         rCA8ga3goyC1hhi5tJkkkTLdlamubwNf+kBTaNZD0XWCYwLIjGRu4BxaY70vwQs9+Tk8
+         0WQnOERJvOdvExMPdmRHUF409YX3M5mCiIR27/VEip1u3T74GRPX7zWl1jCUCsco2iTt
+         n70Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=cAL9AzTlR3/rckuz0QiBMeDp6G7+Z3C8GGU0gCN+rUE=;
+        b=PmgO+EjNXhTsX+DW235P9aEcKUYp0DF2hBXUiXfHx6yczvP2re7Tlqdf9AvGa9SpZI
+         v517jYMoh15hgsUsrZAmKNs0fDXV0YQ8upmH6ayU2gAwpan4fRHzqj78teWyQguPT0Xo
+         yWwGdeBzYjaZL85Sonev926BpIxJ5R4H1RFmo0ZPPx75EnK0OvqDFZ7aV0WcJ9LLF5w2
+         oB+QlYtLYEcGVpEWBv+CIqrmHyVrvpwEKHdHo+GneXo33lGlDg/gFodvKx+AJgC4o08C
+         BQAywPkJEJXLTpMZNn1m799YRsagT4MXQhAXIATBuKcDwQYxRHfgJm4/lY35siga/RRf
+         Wpsw==
+X-Gm-Message-State: AOAM530mO1yKRIoLa3y0KXpH613LOUApXKcQel1vNYeyEpiBNG3FOo0g
+        AMvfK6DD9H2ybSbOh8kqyRTyIne36QXe
+X-Google-Smtp-Source: ABdhPJyiQN0OxMj6OkJD/8I4N+N1aiQSXh9A8vYaaHWG0D4IYmq0xioXXLwVDT7cexpNePzq0XmE9Oq4X5qi
+X-Received: by 2002:a25:3203:: with SMTP id y3mr20025143yby.77.1590981727300;
+ Sun, 31 May 2020 20:22:07 -0700 (PDT)
+Date:   Sun, 31 May 2020 20:22:04 -0700
+Message-Id: <20200601032204.124624-1-gthelen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.rc0.183.gde8f92d652-goog
+Subject: [PATCH] shmem, memcg: enable memcg aware shrinker
+From:   Greg Thelen <gthelen@google.com>
+To:     Hugh Dickins <hughd@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V2] mm, memory_failure: don't send BUS_MCEERR_AO for
- action required error
-Thread-Topic: [PATCH V2] mm, memory_failure: don't send BUS_MCEERR_AO for
- action required error
-Thread-Index: AQHWNkTpD4yFFGEaokaMUIMyuwXASKjANcSAgALiWwA=
-Date:   Mon, 1 Jun 2020 03:11:25 +0000
-Message-ID: <20200601031124.GA5418@hori.linux.bs1.fc.nec.co.jp>
-References: <1590817116-21281-1-git-send-email-wetp.zy@linux.alibaba.com>
- <CAM9Jb+jWnAPUYpJ-QrUR1oBCj+RwdAZMLyO4GCmAq=8V76VQTw@mail.gmail.com>
-In-Reply-To: <CAM9Jb+jWnAPUYpJ-QrUR1oBCj+RwdAZMLyO4GCmAq=8V76VQTw@mail.gmail.com>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nec.com;
-x-originating-ip: [165.225.110.205]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b9aeb5c6-553d-4016-a0c8-08d805d97811
-x-ms-traffictypediagnostic: TY2PR01MB4041:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TY2PR01MB40416CFCABB56592D720DEABE78A0@TY2PR01MB4041.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2150;
-x-forefront-prvs: 0421BF7135
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: yZcYTZi1hA4RC6jsuv9TwEWjCU7nrqitgEbFEmpP1P3/bpFhuJr46TksStIDpzPyEsbSpgji8TUkies2MR4gHDDaoFej6XMEbjxzWEArgRYGUeYrjnBnDaAX7hd678kK6K4b0dOuJjuBYinAGjh8uEifNuOnQ9576AnvsxD188JBTN2yN/PSU1b4SN1doaEvGSVN/le/ln/ksgzoX/GuldPJTkCiBIuT4jgv/n9KwUgfcigjKBcReNl7eMw83eAt7+9AxgolvRaBAUt1z2IihIMmvoSwtDWfE4JkaAz0QJwumGdhw+s27G5MmTq28WA/
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3210.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(39860400002)(366004)(346002)(136003)(376002)(1076003)(33656002)(86362001)(6916009)(54906003)(8936002)(5660300002)(9686003)(6512007)(66556008)(66946007)(85182001)(478600001)(186003)(64756008)(66446008)(66476007)(2906002)(6486002)(76116006)(6506007)(55236004)(26005)(71200400001)(83380400001)(316002)(4326008)(8676002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: PU2ukoISlZQimHKD/E/f5cLIoXCFh8qpP/fwj+A9kFYT/EfPbDkawQEx3EcgMPoe3IFpT1h9407rpOWLrRwXt0zfRtNwMyhzMK4zbo0ZPVWVA8u9vU+SX3KooEnymxjlHrmBigQsFNP4eN3KRxg1DSO/hw/5FEx0+du/nEk9O9sXC0rHogsy9nlVDsJSy1CdqcseQcimGqTf7xXss7otugz8v6WayFkPdt5Ye2KnJRUuMlYvL9HE/kH12Ae8FCmKaVV3SGXr5Vwj8/CciPhqe6uW8rvz8DdMyP9YiHVwUzRdtGaiOoqH7IPRAxJytDR0SD2lOyxX4AiyUjiB3pMWR5lAikV13nsRtS0dwaQOug5DyGuo+wKc101jwwWEDbaKGZo73vgBb9gWPBTJ/+ovKgjGQsrpCJcWBPP0oSlgs3xolbQX5ZZNwS3H2cRJiS9Cl53nCtIT0iUqIlr2QQy5HEviCNHUSGhXOfrEz5xIKaQrahsafzXiRYRcZ28yLtBC
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-ID: <D904765FF01F1D44AB15687C82A06DD2@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: nec.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b9aeb5c6-553d-4016-a0c8-08d805d97811
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jun 2020 03:11:25.3108
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QR7dD4J2rRRdayv3E0xQ/j29KtKPhkiLoBjou91xrYjahfDaeEXdXasShbDdiFj012C6JXTnEwSdTAPwP6HP0g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB4041
+        Kirill Tkhai <ktkhai@virtuozzo.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Greg Thelen <gthelen@google.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 30, 2020 at 09:08:43AM +0200, Pankaj Gupta wrote:
-> > Some processes dont't want to be killed early, but in "Action Required"
-> > case, those also may be killed by BUS_MCEERR_AO when sharing memory
-> > with other which is accessing the fail memory.
-> > And sending SIGBUS with BUS_MCEERR_AO for action required error is
-> > strange, so ignore the non-current processes here.
-> >
-> > Suggested-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> > Signed-off-by: Wetp Zhang <wetp.zy@linux.alibaba.com>
-> > ---
-> >  mm/memory-failure.c | 15 +++++++++------
-> >  1 file changed, 9 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> > index a96364be8ab4..dd3862fcf2e9 100644
-> > --- a/mm/memory-failure.c
-> > +++ b/mm/memory-failure.c
-> > @@ -210,14 +210,17 @@ static int kill_proc(struct to_kill *tk, unsigned=
- long pfn, int flags)
-> >  {
-> >         struct task_struct *t =3D tk->tsk;
-> >         short addr_lsb =3D tk->size_shift;
-> > -       int ret;
-> > +       int ret =3D 0;
-> >
-> > -       pr_err("Memory failure: %#lx: Sending SIGBUS to %s:%d due to ha=
-rdware memory corruption\n",
-> > -               pfn, t->comm, t->pid);
-> > +       if ((t->mm =3D=3D current->mm) || !(flags & MF_ACTION_REQUIRED)=
-)
-> > +               pr_err("Memory failure: %#lx: Sending SIGBUS to %s:%d d=
-ue to hardware memory corruption\n",
-> > +                       pfn, t->comm, t->pid);
->=20
-> Maybe we can generalize the message condition for better readability.
-> Thought a bit but did not get any other idea.
+Since v4.19 commit b0dedc49a2da ("mm/vmscan.c: iterate only over charged
+shrinkers during memcg shrink_slab()") a memcg aware shrinker is only
+called when the per-memcg per-node shrinker_map indicates that the
+shrinker may have objects to release to the memcg and node.
 
-This odd condition might imply that we could have better fix in
-task_early_kill(), but that should come after fixing priority issue of
-early-kill flag, so let's go with this fix for now.
+shmem_unused_huge_count and shmem_unused_huge_scan support the per-tmpfs
+shrinker which advertises per memcg and numa awareness.  The shmem
+shrinker releases memory by splitting hugepages that extend beyond
+i_size.
 
-> >
-> > -       if ((flags & MF_ACTION_REQUIRED) && t->mm =3D=3D current->mm) {
-> > -               ret =3D force_sig_mceerr(BUS_MCEERR_AR, (void __user *)=
-tk->addr,
-> > -                                      addr_lsb);
-> > +       if (flags & MF_ACTION_REQUIRED) {
-> > +               if (t->mm =3D=3D current->mm)
-> > +                       ret =3D force_sig_mceerr(BUS_MCEERR_AR,
-> > +                                        (void __user *)tk->addr, addr_=
-lsb);
-> > +               /* send no signal to non-current processes */
-> >         } else {
-> >                 /*
-> >                  * Don't use force here, it's convenient if the signal
-> > --
->=20
-> Looks good to me.
-> Acked-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Shmem does not currently set bits in shrinker_map.  So, starting with
+b0dedc49a2da, memcg reclaim avoids calling the shmem shrinker under
+pressure.  This leads to undeserved memcg OOM kills.
+Example that reliably sees memcg OOM kill in unpatched kernel:
+  FS=/tmp/fs
+  CONTAINER=/cgroup/memory/tmpfs_shrinker
+  mkdir -p $FS
+  mount -t tmpfs -o huge=always nodev $FS
+  # Create 1000 MB container, which shouldn't suffer OOM.
+  mkdir $CONTAINER
+  echo 1000M > $CONTAINER/memory.limit_in_bytes
+  echo $BASHPID >> $CONTAINER/cgroup.procs
+  # Create 4000 files.  Ideally each file uses 4k data page + a little
+  # metadata.  Assume 8k total per-file, 32MB (4000*8k) should easily
+  # fit within container's 1000 MB.  But if data pages use 2MB
+  # hugepages (due to aggressive huge=always) then files consume 8GB,
+  # which hits memcg 1000 MB limit.
+  for i in {1..4000}; do
+    echo . > $FS/$i
+  done
 
-Thanks!
+v5.4 commit 87eaceb3faa5 ("mm: thp: make deferred split shrinker memcg
+aware") maintains the per-node per-memcg shrinker bitmap for THP
+shrinker.  But there's no such logic in shmem.  Make shmem set the
+per-memcg per-node shrinker bits when it modifies inodes to have
+shrinkable pages.
 
-Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>=
+Fixes: b0dedc49a2da ("mm/vmscan.c: iterate only over charged shrinkers during memcg shrink_slab()")
+Cc: <stable@vger.kernel.org> # 4.19+
+Signed-off-by: Greg Thelen <gthelen@google.com>
+---
+ mm/shmem.c | 61 +++++++++++++++++++++++++++++++-----------------------
+ 1 file changed, 35 insertions(+), 26 deletions(-)
+
+diff --git a/mm/shmem.c b/mm/shmem.c
+index bd8840082c94..e11090f78cb5 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -1002,6 +1002,33 @@ static int shmem_getattr(const struct path *path, struct kstat *stat,
+ 	return 0;
+ }
+ 
++/*
++ * Expose inode and optional page to shrinker as having a possibly splittable
++ * hugepage that reaches beyond i_size.
++ */
++static void shmem_shrinker_add(struct shmem_sb_info *sbinfo,
++			       struct inode *inode, struct page *page)
++{
++	struct shmem_inode_info *info = SHMEM_I(inode);
++
++	spin_lock(&sbinfo->shrinklist_lock);
++	/*
++	 * _careful to defend against unlocked access to ->shrink_list in
++	 * shmem_unused_huge_shrink()
++	 */
++	if (list_empty_careful(&info->shrinklist)) {
++		list_add_tail(&info->shrinklist, &sbinfo->shrinklist);
++		sbinfo->shrinklist_len++;
++	}
++	spin_unlock(&sbinfo->shrinklist_lock);
++
++#ifdef CONFIG_MEMCG
++	if (page && PageTransHuge(page))
++		memcg_set_shrinker_bit(page->mem_cgroup, page_to_nid(page),
++				       inode->i_sb->s_shrink.id);
++#endif
++}
++
+ static int shmem_setattr(struct dentry *dentry, struct iattr *attr)
+ {
+ 	struct inode *inode = d_inode(dentry);
+@@ -1048,17 +1075,13 @@ static int shmem_setattr(struct dentry *dentry, struct iattr *attr)
+ 			 * to shrink under memory pressure.
+ 			 */
+ 			if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
+-				spin_lock(&sbinfo->shrinklist_lock);
+-				/*
+-				 * _careful to defend against unlocked access to
+-				 * ->shrink_list in shmem_unused_huge_shrink()
+-				 */
+-				if (list_empty_careful(&info->shrinklist)) {
+-					list_add_tail(&info->shrinklist,
+-							&sbinfo->shrinklist);
+-					sbinfo->shrinklist_len++;
+-				}
+-				spin_unlock(&sbinfo->shrinklist_lock);
++				struct page *page;
++
++				page = find_get_page(inode->i_mapping,
++					(newsize & HPAGE_PMD_MASK) >> PAGE_SHIFT);
++				shmem_shrinker_add(sbinfo, inode, page);
++				if (page)
++					put_page(page);
+ 			}
+ 		}
+ 	}
+@@ -1889,21 +1912,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+ 	if (PageTransHuge(page) &&
+ 	    DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE) <
+ 			hindex + HPAGE_PMD_NR - 1) {
+-		/*
+-		 * Part of the huge page is beyond i_size: subject
+-		 * to shrink under memory pressure.
+-		 */
+-		spin_lock(&sbinfo->shrinklist_lock);
+-		/*
+-		 * _careful to defend against unlocked access to
+-		 * ->shrink_list in shmem_unused_huge_shrink()
+-		 */
+-		if (list_empty_careful(&info->shrinklist)) {
+-			list_add_tail(&info->shrinklist,
+-				      &sbinfo->shrinklist);
+-			sbinfo->shrinklist_len++;
+-		}
+-		spin_unlock(&sbinfo->shrinklist_lock);
++		shmem_shrinker_add(sbinfo, inode, page);
+ 	}
+ 
+ 	/*
+-- 
+2.27.0.rc0.183.gde8f92d652-goog
+
