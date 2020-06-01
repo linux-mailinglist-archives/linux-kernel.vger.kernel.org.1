@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F1DD1EA31E
+	by mail.lfdr.de (Postfix) with ESMTP id EC7181EA31F
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 13:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725935AbgFALyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 07:54:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36244 "EHLO mail.kernel.org"
+        id S1726825AbgFALyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 07:54:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725838AbgFALyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 07:54:02 -0400
+        id S1725838AbgFALyH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 07:54:07 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 434B2206E2;
-        Mon,  1 Jun 2020 11:54:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A75E2074B;
+        Mon,  1 Jun 2020 11:54:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591012441;
-        bh=Z6/HOwnszRThPkaov002ejmLJMmfDqRW3FNyjto3D7w=;
+        s=default; t=1591012447;
+        bh=f1z5/uW7OBRBVZllAkVJhq6872SeGT8gUyZERTleOAw=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=zIASx6a7HZJKj6StIQ4R7Q5vrMSaU2sIw+dylGl5/xl53crAkUR6pgzdKjQBffvXg
-         3m/4eXHtzGa6aAXgnRLgBOy34pS6AI4o5scaoN1hFBNPw6ljL7yXUb9B6Zcl1R94a0
-         hJGHkCUWPO9ZLKZGCnTQjF8N0qatVRY5QppnEGv8=
-Date:   Mon, 01 Jun 2020 12:53:59 +0100
+        b=Iof3SXVW4E4gSSv7uKiW7WUxkCPa8vWNEgAYIFFP1pG/EwCnf9IHr6uFCOSc5eiSd
+         cswU0T3EQUGOH6jA5t9Y+lZa4fXPRpUcbXI4zRlpDXGGLJnZaoFDaollQCRkfyAQML
+         CFx1gtQuQRdIhUyUF3JknQRdqcNL4cym/Hal2VSQ=
+Date:   Mon, 01 Jun 2020 12:54:04 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Jens Thoms Toerring <jt@toerring.de>
-Cc:     linux-kernel@vger.kernel.org
-In-Reply-To: <20200531095300.GA27570@toerring.de>
-References: <20200531095300.GA27570@toerring.de>
-Subject: Re: [PATCH v4] regmap: fix alignment issue
-Message-Id: <159101243960.15463.7213725042081680986.b4-ty@kernel.org>
+To:     Jens Thoms Toerring <jt@toerring.de>, linux-kernel@vger.kernel.org
+In-Reply-To: <20200529192538.GA28402@toerring.de>
+References: <20200529192538.GA28402@toerring.de>
+Subject: Re: [PATCH v3] regmap: fix alignment issue
+Message-Id: <159101243960.15463.1377112309975182507.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 31 May 2020 11:53:00 +0200, Jens Thoms Toerring wrote:
-> The assembly and disassembly of data to be sent to or received from
-> a device invoke functions regmap_format_XX() and regmap_parse_XX()
+On Fri, 29 May 2020 21:25:38 +0200, Jens Thoms Toerring wrote:
+> The assembly and disassembly of data to be sent to or received from a
+> device invoke functions (regmap_format_XXX() and regmap_parse_XXX())
 > that extract or insert data items from or into a buffer, using
-> assignments. In some cases the functions are called with a buffer
-> pointer with an odd address. On architectures with strict alignment
-> requirements this can result in a kernel crash. The assignments
-> have been replaced by functions that take alignment into account.
+> assignments. In some cases those functions are called with buffer
+> pointers with odd addresses. On architectures with strict alignment
+> requirements this results in a kernel crash for u16 and u32 values.
+> The assignments have been replaced by methods that take alignment
+> into consideration.
 
 Applied to
 
