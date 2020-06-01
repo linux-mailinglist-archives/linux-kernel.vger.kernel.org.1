@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 324EA1EAE25
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1CF21EADB3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730891AbgFASv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:51:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49980 "EHLO mail.kernel.org"
+        id S1730738AbgFASrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:47:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730285AbgFASFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:05:01 -0400
+        id S1730687AbgFASIK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:08:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 278E52074B;
-        Mon,  1 Jun 2020 18:05:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A0487206E2;
+        Mon,  1 Jun 2020 18:08:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034700;
-        bh=TAM4tGPq/YhfvDya+ZSgxRp27AgrPktBJJ+BABLW18c=;
+        s=default; t=1591034890;
+        bh=y+OpidB/SxRmVMvmFkNAKPuLpPMPNyxElUHB7xdoPvY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q0UyGQM+kUbOPnh2mLR/cohO7JZ4d+OdqubotvT1Vgu8alYFJ13CE1MrCX/5KWI88
-         6OFXqyrAL8ZLkbv/oN0pWMvIbCxlCF+XJMo8Ue+6hoYxUO6TdFINLEChM7knUZUZHB
-         Wnc+eLySWzlw7GX1XjImEQzMy1NDZX6BGOdDye+A=
+        b=En2dE9HU0IssPSrHtHi3fx4GSCebmzh8A+gX6zrD+Xo1HY9GTOJmvDPUyZQk4qH0R
+         4oVLHRDPmFHghbzh2ABQu2XTlf100EBHMl7lYHDSSr/GRaqwHxC5l/fp3TX74lT4dA
+         kcm1BL++lSDcGGgz3aP/hYm9kNpxDfjRuPzgtf2g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Denis V. Lunev" <den@openvz.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
+        stable@vger.kernel.org, Mao Han <han_mao@linux.alibaba.com>,
+        Guo Ren <guoren@linux.alibaba.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 33/95] IB/i40iw: Remove bogus call to netdev_master_upper_dev_get()
-Date:   Mon,  1 Jun 2020 19:53:33 +0200
-Message-Id: <20200601174026.031845729@linuxfoundation.org>
+Subject: [PATCH 5.4 056/142] csky: Fixup perf callchain unwind
+Date:   Mon,  1 Jun 2020 19:53:34 +0200
+Message-Id: <20200601174043.785813180@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
-References: <20200601174020.759151073@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,90 +44,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Denis V. Lunev <den@openvz.org>
+From: Mao Han <han_mao@linux.alibaba.com>
 
-[ Upstream commit 856ec7f64688387b100b7083cdf480ce3ac41227 ]
+[ Upstream commit 229a0ddee1108a3f82a873e6cbbe35c92c540444 ]
 
-Local variable netdev is not used in these calls.
+ [ 5221.974084] Unable to handle kernel paging request at virtual address 0xfffff000, pc: 0x8002c18e
+ [ 5221.985929] Oops: 00000000
+ [ 5221.989488]
+ [ 5221.989488] CURRENT PROCESS:
+ [ 5221.989488]
+ [ 5221.992877] COMM=callchain_test PID=11962
+ [ 5221.995213] TEXT=00008000-000087e0 DATA=00009f1c-0000a018 BSS=0000a018-0000b000
+ [ 5221.999037] USER-STACK=7fc18e20  KERNEL-STACK=be204680
+ [ 5221.999037]
+ [ 5222.003292] PC: 0x8002c18e (perf_callchain_kernel+0x3e/0xd4)
+ [ 5222.007957] LR: 0x8002c198 (perf_callchain_kernel+0x48/0xd4)
+ [ 5222.074873] Call Trace:
+ [ 5222.074873] [<800a248e>] get_perf_callchain+0x20a/0x29c
+ [ 5222.074873] [<8009d964>] perf_callchain+0x64/0x80
+ [ 5222.074873] [<8009dc1c>] perf_prepare_sample+0x29c/0x4b8
+ [ 5222.074873] [<8009de6e>] perf_event_output_forward+0x36/0x98
+ [ 5222.074873] [<800497e0>] search_exception_tables+0x20/0x44
+ [ 5222.074873] [<8002cbb6>] do_page_fault+0x92/0x378
+ [ 5222.074873] [<80098608>] __perf_event_overflow+0x54/0xdc
+ [ 5222.074873] [<80098778>] perf_swevent_hrtimer+0xe8/0x164
+ [ 5222.074873] [<8002ddd0>] update_mmu_cache+0x0/0xd8
+ [ 5222.074873] [<8002c014>] user_backtrace+0x58/0xc4
+ [ 5222.074873] [<8002c0b4>] perf_callchain_user+0x34/0xd0
+ [ 5222.074873] [<800a2442>] get_perf_callchain+0x1be/0x29c
+ [ 5222.074873] [<8009d964>] perf_callchain+0x64/0x80
+ [ 5222.074873] [<8009d834>] perf_output_sample+0x78c/0x858
+ [ 5222.074873] [<8009dc1c>] perf_prepare_sample+0x29c/0x4b8
+ [ 5222.074873] [<8009de94>] perf_event_output_forward+0x5c/0x98
+ [ 5222.097846]
+ [ 5222.097846] [<800a0300>] perf_event_exit_task+0x58/0x43c
+ [ 5222.097846] [<8006c874>] hrtimer_interrupt+0x104/0x2ec
+ [ 5222.097846] [<800a0300>] perf_event_exit_task+0x58/0x43c
+ [ 5222.097846] [<80437bb6>] dw_apb_clockevent_irq+0x2a/0x4c
+ [ 5222.097846] [<8006c770>] hrtimer_interrupt+0x0/0x2ec
+ [ 5222.097846] [<8005f2e4>] __handle_irq_event_percpu+0xac/0x19c
+ [ 5222.097846] [<80437bb6>] dw_apb_clockevent_irq+0x2a/0x4c
+ [ 5222.097846] [<8005f408>] handle_irq_event_percpu+0x34/0x88
+ [ 5222.097846] [<8005f480>] handle_irq_event+0x24/0x64
+ [ 5222.097846] [<8006218c>] handle_level_irq+0x68/0xdc
+ [ 5222.097846] [<8005ec76>] __handle_domain_irq+0x56/0xa8
+ [ 5222.097846] [<80450e90>] ck_irq_handler+0xac/0xe4
+ [ 5222.097846] [<80029012>] csky_do_IRQ+0x12/0x24
+ [ 5222.097846] [<8002a3a0>] csky_irq+0x70/0x80
+ [ 5222.097846] [<800ca612>] alloc_set_pte+0xd2/0x238
+ [ 5222.097846] [<8002ddd0>] update_mmu_cache+0x0/0xd8
+ [ 5222.097846] [<800a0340>] perf_event_exit_task+0x98/0x43c
 
-It should be noted, that this change is required to work in bonded mode.
-Otherwise we would get the following assert:
+The original fp check doesn't base on the real kernal stack region.
+Invalid fp address may cause kernel panic.
 
- "RTNL: assertion failed at net/core/dev.c (5665)"
-
-With the calltrace as follows:
-	dump_stack+0x19/0x1b
-	netdev_master_upper_dev_get+0x61/0x70
-	i40iw_addr_resolve_neigh+0x1e8/0x220
-	i40iw_make_cm_node+0x296/0x700
-	? i40iw_find_listener.isra.10+0xcc/0x110
-	i40iw_receive_ilq+0x3d4/0x810
-	i40iw_puda_poll_completion+0x341/0x420
-	i40iw_process_ceq+0xa5/0x280
-	i40iw_ceq_dpc+0x1e/0x40
-	tasklet_action+0x83/0x140
-	__do_softirq+0x125/0x2bb
-	call_softirq+0x1c/0x30
-	do_softirq+0x65/0xa0
-	irq_exit+0x105/0x110
-	do_IRQ+0x56/0xf0
-	common_interrupt+0x16a/0x16a
-	? cpuidle_enter_state+0x57/0xd0
-	cpuidle_idle_call+0xde/0x230
-	arch_cpu_idle+0xe/0xc0
-	cpu_startup_entry+0x14a/0x1e0
-	start_secondary+0x1f7/0x270
-	start_cpu+0x5/0x14
-
-Link: https://lore.kernel.org/r/20200428131511.11049-1-den@openvz.org
-Signed-off-by: Denis V. Lunev <den@openvz.org>
-Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Mao Han <han_mao@linux.alibaba.com>
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/i40iw/i40iw_cm.c | 8 --------
- 1 file changed, 8 deletions(-)
+ arch/csky/kernel/perf_callchain.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_cm.c b/drivers/infiniband/hw/i40iw/i40iw_cm.c
-index 771eb6bd0785..4321b9e3dbb4 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_cm.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_cm.c
-@@ -1984,7 +1984,6 @@ static int i40iw_addr_resolve_neigh(struct i40iw_device *iwdev,
- 	struct rtable *rt;
- 	struct neighbour *neigh;
- 	int rc = arpindex;
--	struct net_device *netdev = iwdev->netdev;
- 	__be32 dst_ipaddr = htonl(dst_ip);
- 	__be32 src_ipaddr = htonl(src_ip);
+diff --git a/arch/csky/kernel/perf_callchain.c b/arch/csky/kernel/perf_callchain.c
+index e68ff375c8f8..ab55e98ee8f6 100644
+--- a/arch/csky/kernel/perf_callchain.c
++++ b/arch/csky/kernel/perf_callchain.c
+@@ -12,12 +12,17 @@ struct stackframe {
  
-@@ -1994,9 +1993,6 @@ static int i40iw_addr_resolve_neigh(struct i40iw_device *iwdev,
- 		return rc;
- 	}
- 
--	if (netif_is_bond_slave(netdev))
--		netdev = netdev_master_upper_dev_get(netdev);
--
- 	neigh = dst_neigh_lookup(&rt->dst, &dst_ipaddr);
- 
- 	rcu_read_lock();
-@@ -2062,7 +2058,6 @@ static int i40iw_addr_resolve_neigh_ipv6(struct i40iw_device *iwdev,
+ static int unwind_frame_kernel(struct stackframe *frame)
  {
- 	struct neighbour *neigh;
- 	int rc = arpindex;
--	struct net_device *netdev = iwdev->netdev;
- 	struct dst_entry *dst;
- 	struct sockaddr_in6 dst_addr;
- 	struct sockaddr_in6 src_addr;
-@@ -2083,9 +2078,6 @@ static int i40iw_addr_resolve_neigh_ipv6(struct i40iw_device *iwdev,
- 		return rc;
- 	}
+-	if (kstack_end((void *)frame->fp))
++	unsigned long low = (unsigned long)task_stack_page(current);
++	unsigned long high = low + THREAD_SIZE;
++
++	if (unlikely(frame->fp < low || frame->fp > high))
+ 		return -EPERM;
+-	if (frame->fp & 0x3 || frame->fp < TASK_SIZE)
++
++	if (kstack_end((void *)frame->fp) || frame->fp & 0x3)
+ 		return -EPERM;
  
--	if (netif_is_bond_slave(netdev))
--		netdev = netdev_master_upper_dev_get(netdev);
--
- 	neigh = dst_neigh_lookup(dst, dst_addr.sin6_addr.in6_u.u6_addr32);
+ 	*frame = *(struct stackframe *)frame->fp;
++
+ 	if (__kernel_text_address(frame->lr)) {
+ 		int graph = 0;
  
- 	rcu_read_lock();
 -- 
 2.25.1
 
