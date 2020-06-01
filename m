@@ -2,99 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379D71E9E01
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 08:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C531E9E16
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 08:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727089AbgFAGTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 02:19:34 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15498 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725778AbgFAGTc (ORCPT
+        id S1728002AbgFAGYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 02:24:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727963AbgFAGYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 02:19:32 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ed49d950000>; Sun, 31 May 2020 23:17:57 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Sun, 31 May 2020 23:19:32 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Sun, 31 May 2020 23:19:32 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 1 Jun
- 2020 06:19:31 +0000
-Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Mon, 1 Jun 2020 06:19:31 +0000
-Received: from sandipan-pc.nvidia.com (Not Verified[10.24.42.163]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5ed49def0000>; Sun, 31 May 2020 23:19:30 -0700
-From:   Sandipan Patra <spatra@nvidia.com>
-To:     <treding@nvidia.com>, <jonathanh@nvidia.com>, <linux@roeck-us.net>,
-        <kamil@wypas.org>, <jdelvare@suse.com>, <robh+dt@kernel.org>,
-        <u.kleine-koenig@pengutronix.de>
-CC:     <bbasu@nvidia.com>, <bbiswas@nvidia.com>, <kyarlagadda@nvidia.com>,
-        <linux-pwm@vger.kernel.org>, <linux-hwmon@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Sandipan Patra <spatra@nvidia.com>
-Subject: [PATCH V2 2/2] arm64: tegra: Add pwm-fan profile settings
-Date:   Mon, 1 Jun 2020 11:49:14 +0530
-Message-ID: <1590992354-12623-2-git-send-email-spatra@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1590992354-12623-1-git-send-email-spatra@nvidia.com>
-References: <1590992354-12623-1-git-send-email-spatra@nvidia.com>
-X-NVConfidentiality: public
+        Mon, 1 Jun 2020 02:24:20 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2793C061A0E
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 23:24:19 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id j198so11319786wmj.0
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 23:24:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QFIV7FGtYRTpt76SqFuSWbwzzSofsQgm4fQkOksNz2Y=;
+        b=Ry72V/R5DRVGyD4SfTF1+CHsDIt3+4Yac6GqlWhZD2jyd7uP+ffC05i0S1qdJCPw/I
+         cG1KMAJni/PI8hdxw+Hd+5LxlmCJ3mJ0L3h4DG8rLt5yY6t6a2q/msh7cXIdhcWjKEj6
+         u8iRO7m22VCZ+hdcXG67dh1thaJYdzWGKwUt3XXqYg14TOIFHhkhHwFNLQL3wDM/Y7lo
+         PjdRsUncjg4bzQkP0WAbb7pV1lEUKKby6UgQ7bFjm3T1KY3KAwtoDmyQInYrfidOxzqi
+         APm3zHTjLllq4iVOCerws+uJ0RMQ6iY7/jHX8pNsS5TtNXQZzWakWieOdW4Hs57MTQMy
+         lVlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QFIV7FGtYRTpt76SqFuSWbwzzSofsQgm4fQkOksNz2Y=;
+        b=IBX4q+QHb97vxaCZ5uWvVVLJP0ymvDSyHqPn6X7OY98GTRLGA1UeeZ9zk4sEuLdtp2
+         sFJRFzCmQM74XCyh9sGBzTPI5GV8Zui0BwdiF2RJI5chdHiq0nGbvz62b7co26HMQPkA
+         o7oc124Hee1Jm7a5YoV32rt4pG9RI99Lt+tjJDt4zid4sp+HCdy6EvMMKBayeKzxHSqx
+         NNQTPeVAm2W6hsX6Akp2uslwzID7owkuNgvJ0g9rasx9gpOQxYXjxuJiT6YBsdGdZu8s
+         WSgbb27m6qMeNbdWqu7LiFTOHirDMoio2ip5IpKddY8/M0jWbzYN8xxAsIsZwKScaeqY
+         WiRw==
+X-Gm-Message-State: AOAM5327YwIPnUb6r55V0CMPFivld7WKYu/aS+vkXFcMk7JDW0yxJmhk
+        89gDP4yhpW1bxjPLOQ1IUNNgrg==
+X-Google-Smtp-Source: ABdhPJxPAMktkArwOxO/D5xc06ea2EMUEyTwCwxF1daPKDkxBjGrA9lQKdiGPFzbdM4DPIKrQHbg6A==
+X-Received: by 2002:a1c:e355:: with SMTP id a82mr19574219wmh.1.1590992658649;
+        Sun, 31 May 2020 23:24:18 -0700 (PDT)
+Received: from localhost (ip-78-102-58-167.net.upcbroadband.cz. [78.102.58.167])
+        by smtp.gmail.com with ESMTPSA id 5sm9698264wmz.16.2020.05.31.23.24.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 May 2020 23:24:18 -0700 (PDT)
+Date:   Mon, 1 Jun 2020 08:24:17 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Ido Schimmel <idosch@idosch.org>
+Cc:     Vadym Kochan <vadym.kochan@plvision.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Ido Schimmel <idosch@mellanox.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
+        Serhiy Boiko <serhiy.boiko@plvision.eu>,
+        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
+        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
+        Taras Chornyi <taras.chornyi@plvision.eu>,
+        Andrii Savka <andrii.savka@plvision.eu>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mickey Rachamim <mickeyr@marvell.com>
+Subject: Re: [net-next 0/6] net: marvell: prestera: Add Switchdev driver for
+ Prestera family ASIC device 98DX326x (AC3x)
+Message-ID: <20200601062417.GC2282@nanopsycho>
+References: <20200528151245.7592-1-vadym.kochan@plvision.eu>
+ <20200530142928.GA1624759@splinter>
+ <20200530145231.GB19411@plvision.eu>
+ <20200530155429.GA1639307@splinter>
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1590992277; bh=XQiGWOGFzg3l+QIfS45QIJAE9J403LC3AAuTqpFbPj4=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:X-NVConfidentiality:MIME-Version:
-         Content-Type;
-        b=E2H7DwhZ8czbHI8kpSXdx31IRjXsW6J9CtPBiwNCeT65M5QkeJeL9q6ge6Z5olR0W
-         VkOvlOsgrUn7FjD5pvddKUxPvvI8xTfLS+W71crSKiJwrnE6tvz61sH+x43srNooBe
-         qnq2S+yMwjUfoHpQXcOMBetK7AHWaeZdDjps3Iy4iHrh0Zvz0eLDzfyNVN/RUrO37n
-         ZcgeumjtRq8mfhoc9C/lWX5314jvioGVI/2ouX1w/YVTVyJesKO2PniWNi80e0YC7v
-         6ECyRsaL86cRT6UoKELdn+CUOZlIr0MNdj9oqDcKomqold55vhRo7zwmkZ6js9IUj+
-         kyPgFpqoiA3Gg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200530155429.GA1639307@splinter>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for profiles in device tree to allow
-different fan settings for trip point temp/hyst/pwm.
+Sat, May 30, 2020 at 05:54:29PM CEST, idosch@idosch.org wrote:
+>On Sat, May 30, 2020 at 05:52:31PM +0300, Vadym Kochan wrote:
 
-Signed-off-by: Sandipan Patra <spatra@nvidia.com>
----
- arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+[...]
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts b/arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts
-index e15d1ea..ff2b980 100644
---- a/arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts
-+++ b/arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts
-@@ -219,10 +219,19 @@
- 
- 	fan: fan {
- 		compatible = "pwm-fan";
--		pwms = <&pwm4 0 45334>;
--
--		cooling-levels = <0 64 128 255>;
- 		#cooling-cells = <2>;
-+		pwms = <&pwm4 0 45334>;
-+		profiles {
-+			default = "quiet";
-+			quiet {
-+				state_cap = <4>;
-+				cooling-levels = <0 77 120 160 255 255 255 255 255 255>;
-+			};
-+			cool {
-+				state_cap = <4>;
-+				cooling-levels = <0 77 120 160 255 255 255 255 255 255>;
-+			};
-+		};
- 	};
- 
- 	gpio-keys {
--- 
-2.7.4
 
+>> > WARNING: do not add new typedefs
+>> > #1064: FILE: drivers/net/ethernet/marvell/prestera/prestera_hw.h:32:
+>> > +typedef void (*prestera_event_cb_t)
+>> I may be wrong, as I remember Jiri suggested it and looks like
+>> it makes sense. I really don't have strong opinion about this.
+>
+>OK, so I'll let Jiri comment when he is back at work.
+
+I was not aware of this warning, but for function callbacks, I think it
+is very handy to have them as typedef instead of repeating the prototype
+over and over. For that, I don't think this warning makes sense.
+
+[...]
