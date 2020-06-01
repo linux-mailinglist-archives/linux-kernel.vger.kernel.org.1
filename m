@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0B91EAAFC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A69C1EAA68
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730949AbgFASNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:13:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60710 "EHLO mail.kernel.org"
+        id S1730168AbgFASHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:07:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731305AbgFASNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:13:09 -0400
+        id S1730533AbgFASHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:07:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3FB332068D;
-        Mon,  1 Jun 2020 18:13:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 01BF2206E2;
+        Mon,  1 Jun 2020 18:07:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035188;
-        bh=ANJLV3hUN0eVoqgiZj7BF9PIdjzd9Cn33TUSH8PQwo4=;
+        s=default; t=1591034822;
+        bh=d6n1lfALiOuqf6hD6qY0ykkceo3UeXoajd4//MCBJ98=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WI8C1Qx/oJnS572uKg8/K/VBlvUqDHaU2wGEFn0naIGyURdFnkfsk57IS0AY2i4BK
-         CrehjE6FibNKmt9iGqw/qsDHIkBtaPK0HE8hWb+ZzWbyrRzZmy3Dj6JxWd8BWZJhWW
-         juWrcb1+CRIiZgxjx/TIS9Ctwezrc2/uLE8kd0OI=
+        b=B4dSwDDgwL3l2nt78msaX17Zo3T7ntT120EgkYm7kZaGSc5E/xCiv6+ZMaofFK2EE
+         vy0EopfXNqHaHrKOcgOY/WWDSnjtOKwYQpT1772ETaJXAP6y/styr3iDUIKx6oCQrE
+         TA8e3q0zGr889vwR+ntfPgP0iWIdajrx2TCx7G5g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Jonker <jbx6244@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 049/177] ARM: dts: rockchip: swap clock-names of gpu nodes
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 029/142] net: sun: fix missing release regions in cas_init_one().
 Date:   Mon,  1 Jun 2020 19:53:07 +0200
-Message-Id: <20200601174053.130677414@linuxfoundation.org>
+Message-Id: <20200601174040.917626256@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,67 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Jonker <jbx6244@gmail.com>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit b14f3898d2c25a9b47a61fb879d0b1f3af92c59b ]
+commit 5a730153984dd13f82ffae93d7170d76eba204e9 upstream.
 
-Dts files with Rockchip 'gpu' nodes were manually verified.
-In order to automate this process arm,mali-utgard.txt
-has been converted to yaml. In the new setup dtbs_check with
-arm,mali-utgard.yaml expects clock-names values
-in the same order, so fix that.
+In cas_init_one(), "pdev" is requested by "pci_request_regions", but it
+was not released after a call of the function “pci_write_config_byte”
+failed. Thus replace the jump target “err_write_cacheline” by
+"err_out_free_res".
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-Link: https://lore.kernel.org/r/20200425192500.1808-1-jbx6244@gmail.com
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 1f26dac32057 ("[NET]: Add Sun Cassini driver.")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arm/boot/dts/rk3036.dtsi | 2 +-
- arch/arm/boot/dts/rk322x.dtsi | 2 +-
- arch/arm/boot/dts/rk3xxx.dtsi | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/sun/cassini.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/rk3036.dtsi b/arch/arm/boot/dts/rk3036.dtsi
-index cf36e25195b4..8c4b8f56c9e0 100644
---- a/arch/arm/boot/dts/rk3036.dtsi
-+++ b/arch/arm/boot/dts/rk3036.dtsi
-@@ -128,7 +128,7 @@
- 		assigned-clocks = <&cru SCLK_GPU>;
- 		assigned-clock-rates = <100000000>;
- 		clocks = <&cru SCLK_GPU>, <&cru SCLK_GPU>;
--		clock-names = "core", "bus";
-+		clock-names = "bus", "core";
- 		resets = <&cru SRST_GPU>;
- 		status = "disabled";
- 	};
-diff --git a/arch/arm/boot/dts/rk322x.dtsi b/arch/arm/boot/dts/rk322x.dtsi
-index 4e90efdc9630..729119952c68 100644
---- a/arch/arm/boot/dts/rk322x.dtsi
-+++ b/arch/arm/boot/dts/rk322x.dtsi
-@@ -561,7 +561,7 @@
- 				  "pp1",
- 				  "ppmmu1";
- 		clocks = <&cru ACLK_GPU>, <&cru ACLK_GPU>;
--		clock-names = "core", "bus";
-+		clock-names = "bus", "core";
- 		resets = <&cru SRST_GPU_A>;
- 		status = "disabled";
- 	};
-diff --git a/arch/arm/boot/dts/rk3xxx.dtsi b/arch/arm/boot/dts/rk3xxx.dtsi
-index 241f43e29c77..bb5ff10b9110 100644
---- a/arch/arm/boot/dts/rk3xxx.dtsi
-+++ b/arch/arm/boot/dts/rk3xxx.dtsi
-@@ -84,7 +84,7 @@
- 		compatible = "arm,mali-400";
- 		reg = <0x10090000 0x10000>;
- 		clocks = <&cru ACLK_GPU>, <&cru ACLK_GPU>;
--		clock-names = "core", "bus";
-+		clock-names = "bus", "core";
- 		assigned-clocks = <&cru ACLK_GPU>;
- 		assigned-clock-rates = <100000000>;
- 		resets = <&cru SRST_GPU>;
--- 
-2.25.1
-
+--- a/drivers/net/ethernet/sun/cassini.c
++++ b/drivers/net/ethernet/sun/cassini.c
+@@ -4971,7 +4971,7 @@ static int cas_init_one(struct pci_dev *
+ 					  cas_cacheline_size)) {
+ 			dev_err(&pdev->dev, "Could not set PCI cache "
+ 			       "line size\n");
+-			goto err_write_cacheline;
++			goto err_out_free_res;
+ 		}
+ 	}
+ #endif
+@@ -5144,7 +5144,6 @@ err_out_iounmap:
+ err_out_free_res:
+ 	pci_release_regions(pdev);
+ 
+-err_write_cacheline:
+ 	/* Try to restore it in case the error occurred after we
+ 	 * set it.
+ 	 */
 
 
