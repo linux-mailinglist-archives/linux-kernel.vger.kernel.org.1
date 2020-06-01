@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453231EAB6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3881EAACB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730562AbgFASRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:17:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38418 "EHLO mail.kernel.org"
+        id S1731106AbgFASL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:11:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731566AbgFASRU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:17:20 -0400
+        id S1729108AbgFASLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:11:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 819B82068D;
-        Mon,  1 Jun 2020 18:17:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6790B206E2;
+        Mon,  1 Jun 2020 18:11:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035440;
-        bh=H7naidMd5Qa0u04rOXvuNj7VG6ToA776KEDM8xBVLYI=;
+        s=default; t=1591035075;
+        bh=9zuuffeI7sKuAZyAqKZVUFU8nDeJiIG7ehz5hVmqyOo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WkMPaAUxZhd3pj9/PslDSpFHHXskTRyyNyryXqEcRpd1WYEYBGJpI9SZEJ8ZQQssT
-         aQb3Dnq6j89Bb+tN6YzEmVn0SmQGxoNarzaOJ7wGhQBGfVOa+5V4XWP/poX1wji8C+
-         ZDAAaAmi01NSlK5hNYaDM9zfWGW6QGdbY2sYY4MA=
+        b=LMeEMaNxUU3SjMARFpBYq7p2m/gbCVGQwDCJaZOjqHqA71DpwNmqCu3kjdEFYS5Mp
+         WTRQBmfpysybDCHVwb6+X2YMLw9+4xfYwVTcLWlNbrjhU0FO6/Sw7hMbDHXonW3wVS
+         gxsaMytkJIqx7rY1W5phknmBPlyPKAzNKtvWUnhY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Subject: [PATCH 5.6 159/177] esp6: get the right proto for transport mode in esp6_gso_encap
-Date:   Mon,  1 Jun 2020 19:54:57 +0200
-Message-Id: <20200601174101.549788863@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 5.4 140/142] netfilter: conntrack: Pass value of ctinfo to __nf_conntrack_update
+Date:   Mon,  1 Jun 2020 19:54:58 +0200
+Message-Id: <20200601174052.199090805@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,54 +44,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-commit 3c96ec56828922e3fe5477f75eb3fc02f98f98b5 upstream.
+commit 46c1e0621a72e0469ec4edfdb6ed4d387ec34f8a upstream.
 
-For transport mode, when ipv6 nexthdr is set, the packet format might
-be like:
+Clang warns:
 
-    ----------------------------------------------------
-    |        | dest |     |     |      |  ESP    | ESP |
-    | IP6 hdr| opts.| ESP | TCP | Data | Trailer | ICV |
-    ----------------------------------------------------
+net/netfilter/nf_conntrack_core.c:2068:21: warning: variable 'ctinfo' is
+uninitialized when used here [-Wuninitialized]
+        nf_ct_set(skb, ct, ctinfo);
+                           ^~~~~~
+net/netfilter/nf_conntrack_core.c:2024:2: note: variable 'ctinfo' is
+declared here
+        enum ip_conntrack_info ctinfo;
+        ^
+1 warning generated.
 
-What it wants to get for x-proto in esp6_gso_encap() is the proto that
-will be set in ESP nexthdr. So it should skip all ipv6 nexthdrs and
-get the real transport protocol. Othersize, the wrong proto number
-will be set into ESP nexthdr.
+nf_conntrack_update was split up into nf_conntrack_update and
+__nf_conntrack_update, where the assignment of ctinfo is in
+nf_conntrack_update but it is used in __nf_conntrack_update.
 
-This patch is to skip all ipv6 nexthdrs by calling ipv6_skip_exthdr()
-in esp6_gso_encap().
+Pass the value of ctinfo from nf_conntrack_update to
+__nf_conntrack_update so that uninitialized memory is not used
+and everything works properly.
 
-Fixes: 7862b4058b9f ("esp: Add gso handlers for esp4 and esp6")
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Fixes: ee04805ff54a ("netfilter: conntrack: make conntrack userspace helpers work again")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1039
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/ipv6/esp6_offload.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ net/netfilter/nf_conntrack_core.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/net/ipv6/esp6_offload.c
-+++ b/net/ipv6/esp6_offload.c
-@@ -121,9 +121,16 @@ static void esp6_gso_encap(struct xfrm_s
- 	struct ip_esp_hdr *esph;
- 	struct ipv6hdr *iph = ipv6_hdr(skb);
- 	struct xfrm_offload *xo = xfrm_offload(skb);
--	int proto = iph->nexthdr;
-+	u8 proto = iph->nexthdr;
+--- a/net/netfilter/nf_conntrack_core.c
++++ b/net/netfilter/nf_conntrack_core.c
+@@ -1880,11 +1880,11 @@ static void nf_conntrack_attach(struct s
+ }
  
- 	skb_push(skb, -skb_network_offset(skb));
-+
-+	if (x->outer_mode.encap == XFRM_MODE_TRANSPORT) {
-+		__be16 frag;
-+
-+		ipv6_skip_exthdr(skb, sizeof(struct ipv6hdr), &proto, &frag);
-+	}
-+
- 	esph = ip_esp_hdr(skb);
- 	*skb_mac_header(skb) = IPPROTO_ESP;
+ static int __nf_conntrack_update(struct net *net, struct sk_buff *skb,
+-				 struct nf_conn *ct)
++				 struct nf_conn *ct,
++				 enum ip_conntrack_info ctinfo)
+ {
+ 	struct nf_conntrack_tuple_hash *h;
+ 	struct nf_conntrack_tuple tuple;
+-	enum ip_conntrack_info ctinfo;
+ 	struct nf_nat_hook *nat_hook;
+ 	unsigned int status;
+ 	int dataoff;
+@@ -2009,7 +2009,7 @@ static int nf_conntrack_update(struct ne
+ 		return 0;
  
+ 	if (!nf_ct_is_confirmed(ct)) {
+-		err = __nf_conntrack_update(net, skb, ct);
++		err = __nf_conntrack_update(net, skb, ct, ctinfo);
+ 		if (err < 0)
+ 			return err;
+ 	}
 
 
