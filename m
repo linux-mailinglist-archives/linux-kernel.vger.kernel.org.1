@@ -2,135 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 260D51EA766
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 17:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 294E01EA76C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 17:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727924AbgFAP4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 11:56:37 -0400
-Received: from mga04.intel.com ([192.55.52.120]:44386 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726149AbgFAP4h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 11:56:37 -0400
-IronPort-SDR: nOeT2MOAVWRhSKuRoKBKvKlV2Xa8P9uRzD2jN8omSMvZ4Dz8PBvVFGDsCkylZN09zLKQ4wdarn
- JIDkldfMw8Kw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2020 08:56:36 -0700
-IronPort-SDR: Gs6lUyHRcMWpVloe4FJyoNOZ3Lco3qWhrHa9aVKNERuTZlSz7/eBcscZrC0u3C8jO6cSqvNvTH
- kiSfBH6XsLPw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,461,1583222400"; 
-   d="scan'208";a="444335590"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga005.jf.intel.com with ESMTP; 01 Jun 2020 08:56:36 -0700
-Received: from [10.249.230.65] (abudanko-mobl.ccr.corp.intel.com [10.249.230.65])
-        by linux.intel.com (Postfix) with ESMTP id 4FA25580378;
-        Mon,  1 Jun 2020 08:56:34 -0700 (PDT)
-Subject: [PATCH v5 07/13] perf stat: factor out event handling loop into
- dispatch_events()
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <e5cac8dd-7aa4-ec7c-671c-07756907acba@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <7f200782-c0ad-16f2-e000-bb4743ea976d@linux.intel.com>
-Date:   Mon, 1 Jun 2020 18:56:33 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1727056AbgFAP5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 11:57:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726110AbgFAP5k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 11:57:40 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAC1C05BD43
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 08:57:40 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id j198so294015wmj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 08:57:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=trNZBbz3zJJbyAjn3/he6DtdhTM/y9W04rrvoCnUZ74=;
+        b=gTY9Q51xv7pfrQuLRtJRS+I1OgkWNWrTh1dnu9hz25eUPPOv7Ay3QR4ZPd2VzCJQVg
+         cLmhE6PWpYM5CT3/uGljsX/j+IoiKrEsiFH3jiE6TDvHmDx9J+KAvS8hL2R2KchUfVV/
+         P1RiF91WrCgu1ywuka7pUw7ZOLOParfIOacWCSWst4ss4OCKanyAoZYc1UuEy2isAh4v
+         UdGvIV83iTUspLnbT4oyPqGJjBpaBXDewibwj6rwq9xhF5qcSfXSKXZMw6lkJNdL27fU
+         CWfRB+wQahbDZ3xmsnmif7RGulIN+MN2lsLojN2FBHxp8cQ/X3czd9BYpZIGlRUIDS3V
+         wWLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=trNZBbz3zJJbyAjn3/he6DtdhTM/y9W04rrvoCnUZ74=;
+        b=YAKgRZ5tZCYSfe2w4xTyRRUZQgbG25s7VFGQ+Bnxbz0aONkdMbfgykd7VQph3WLQEJ
+         ZMs3Sh0Rupc6/Xjn1BJGxIopAuQ7aBtl8RAVeNmMxFsFzdGrU2nd8x6viAoJAQdlKzqX
+         iagDi4huFadAFHAyZw03/GCnhAw45cvA+iHOhCUQuJCRpOOPRSRvJ4hBxj2tKHNk2xd7
+         ipMFSt32GCWAHsa9TR+BLYVp20h6NpH9zVPdrrMgxU8akFUOjTdadlq5lBHbc5+Uo47U
+         Ut4sQB8Z5zD+EhHGLkPL+W2VtE0vMi1onryDu8rco1N1q3bpoVEVYJXnCIl1m3VZ+yMN
+         XkWg==
+X-Gm-Message-State: AOAM533f+03j27jXu6ZJVdWA1oDzAtvSFM5c3V1EYhFKYO2nltDpWfrV
+        zbWpRX//YfPmL3Avckh7hc6drywI
+X-Google-Smtp-Source: ABdhPJxRvjz/C1WKq8vFhNyPU2qLtrTpj3R+9u6VZuJz9LJ+38j9lNdGn2V5Ut4OBqmQsATAIS+1Iw==
+X-Received: by 2002:a1c:2e16:: with SMTP id u22mr37127wmu.168.1591027059072;
+        Mon, 01 Jun 2020 08:57:39 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id d5sm22089081wrb.14.2020.06.01.08.57.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jun 2020 08:57:38 -0700 (PDT)
+Date:   Mon, 1 Jun 2020 17:57:36 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] EFI changes for v5.8
+Message-ID: <20200601155736.GA1698764@gmail.com>
+References: <20200601132443.GA796373@gmail.com>
+ <CAMj1kXEH+M6j0W8GbwmJ6B2g1Kxoj01XW0P2a5_1OBVFoiF7ZA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <e5cac8dd-7aa4-ec7c-671c-07756907acba@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXEH+M6j0W8GbwmJ6B2g1Kxoj01XW0P2a5_1OBVFoiF7ZA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Consolidate event dispatching loops for launch, attach and system wide
-monitoring use cases into common dispatch_events() function. If passed
-pid contains valid pid i.e. doesn't equal to -1 then the function returns
-pid process exit status in case the process terminates during monitoring.
+* Ard Biesheuvel <ardb@kernel.org> wrote:
 
-Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
----
- tools/perf/builtin-stat.c | 35 ++++++++++++++++++++++++-----------
- 1 file changed, 24 insertions(+), 11 deletions(-)
+> On Mon, 1 Jun 2020 at 15:24, Ingo Molnar <mingo@kernel.org> wrote:
+> >
+> > Linus,
+> >
+> > Please pull the latest efi/core git tree from:
+> >
+> >    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git efi-core-2020-06-01
+> >
+> >    # HEAD: e9524fb97ab5b41b85e1d3408f8e513433798f3c efi/x86: Don't blow away existing initrd
+> >
+> > The EFI changes for this cycle are:
+> >
+> >  - preliminary changes for RISC-V
+> >  - Add support for setting the resolution on the EFI framebuffer
+> >  - Simplify kernel image loading for arm64
+> >  - Move .bss into .data via the linker script instead of relying on symbol
+> >    annotations.
+> >  - Get rid of __pure getters to access global variables
+> >  - Clean up the config table matching arrays
+> >  - Rename pr_efi/pr_efi_err to efi_info/efi_err, and use them consistently
+> >  - Simplify and unify initrd loading
+> >  - Parse the builtin command line on x86 (if provided)
+> >  - Implement printk() support, including support for wide character strings
+> >  - Simplify GDT handling in early mixed mode thunking code
+> >  - Some other minor fixes and cleanups
+> >
+> >  Thanks,
+> >
+> >         Ingo
+> >
+> 
+> Please note that Stephen reported a conflict with the ARM32 tree, due
+> to the replacement of all instances of pr_efi_err() with efi_err(),
+> including a couple in some ARM code that is being modified.
+> 
+> https://lore.kernel.org/linux-next/20200529152907.2205a298@canb.auug.org.au/
 
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index dc7506be8bbd..8eeaf92912d8 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -504,6 +504,27 @@ static bool is_target_alive(struct target *_target,
- 	return false;
- }
- 
-+static int dispatch_events(pid_t pid, bool timeout, int interval, int *times, struct timespec *ts)
-+{
-+	bool stop = false;
-+	int child = 0, status = 0;
-+
-+	while (1) {
-+		if (pid != -1)
-+			child = waitpid(pid, &status, WNOHANG);
-+		else
-+			child = is_target_alive(&target, evsel_list->core.threads) == false ? 1 : 0;
-+
-+		if (done || stop || child)
-+			break;
-+
-+		nanosleep(ts, NULL);
-+		stop = process_timeout(timeout, interval, times);
-+	}
-+
-+	return status;
-+}
-+
- enum counter_recovery {
- 	COUNTER_SKIP,
- 	COUNTER_RETRY,
-@@ -575,7 +596,6 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 	struct affinity affinity;
- 	int i, cpu;
- 	bool second_pass = false;
--	bool stop = false;
- 
- 	if (interval) {
- 		ts.tv_sec  = interval / USEC_PER_MSEC;
-@@ -744,12 +764,8 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 		perf_evlist__start_workload(evsel_list);
- 		enable_counters();
- 
--		if (interval || timeout) {
--			while (!stop && !waitpid(child_pid, &status, WNOHANG)) {
--				nanosleep(&ts, NULL);
--				stop = process_timeout(timeout, interval, &times);
--			}
--		}
-+		if (interval || timeout)
-+			status = dispatch_events(child_pid, timeout, interval, &times, &ts);
- 		if (child_pid != -1) {
- 			if (timeout)
- 				kill(child_pid, SIGTERM);
-@@ -766,10 +782,7 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 			psignal(WTERMSIG(status), argv[0]);
- 	} else {
- 		enable_counters();
--		while (!done && !stop && is_target_alive(&target, evsel_list->core.threads)) {
--			nanosleep(&ts, NULL);
--			stop = process_timeout(timeout, interval, &times);
--		}
-+		dispatch_events(-1, timeout, interval, &times, &ts);
- 	}
- 
- 	disable_counters();
--- 
-2.24.1
+Indeed!
 
+Since these semantic conflicts and build failures would not trigger on 
+Linus's test builds normally, it might make sense to double check that 
+this comes up empty after both the EFI and the arm32 merge:
+
+  thule:~/tip> git grep -w pr_efi_err
+  thule:~/tip> 
+
+Thanks,
+
+	Ingo
