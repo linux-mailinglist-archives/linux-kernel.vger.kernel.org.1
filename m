@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C131EAAC0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8837D1EAB66
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730609AbgFASLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:11:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57840 "EHLO mail.kernel.org"
+        id S1731779AbgFASRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:17:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731021AbgFASKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:10:51 -0400
+        id S1731186AbgFASRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:17:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A72C6206E2;
-        Mon,  1 Jun 2020 18:10:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5DACB2065C;
+        Mon,  1 Jun 2020 18:16:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035051;
-        bh=dQc44FXRcZQH53kZ/owf42VQFSBXyilgkJ8iIMxNE/k=;
+        s=default; t=1591035419;
+        bh=xr+cNPrIdf1C12cNTU1/aKdibL4caOdZ0UILFHZY4a0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=czxOs6e6vr4GGkdEblicafH61sw3h6XU8f0A0M55yj5amOU+iZ62WQLVnZO5+or2Z
-         YjMowVmW9b6AydF+FSBu7QrmiDR9vJBJLCCSrXwRE946UyEVeXzUb9wcqjzF1LG9Tf
-         pDI8SyGAU4s3DATRbh1OH4aLbBRP4oyloUHiT2vE=
+        b=kk2wXM7xFtkyG2nObhCTe5qhbhKp+1J63uoYMjHLgPOc9XMO7zk/txLE0u4J4w73/
+         iuI8ldppJpoPbNr7f4M/Psw1//v5OtPXd8gvAuVmEapxER7n36DHpCk9LrRx+/PD/2
+         n5UOwZVXQeBN6eaKULvyjpXsewM0xE90eCKXPCWg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 130/142] qlcnic: fix missing release in qlcnic_83xx_interrupt_test.
-Date:   Mon,  1 Jun 2020 19:54:48 +0200
-Message-Id: <20200601174051.231753206@linuxfoundation.org>
+        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Subject: [PATCH 5.6 151/177] xfrm: fix a NULL-ptr deref in xfrm_local_error
+Date:   Mon,  1 Jun 2020 19:54:49 +0200
+Message-Id: <20200601174100.997886917@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,45 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Xin Long <lucien.xin@gmail.com>
 
-commit 15c973858903009e995b2037683de29dfe968621 upstream.
+commit f6a23d85d078c2ffde79c66ca81d0a1dde451649 upstream.
 
-In function qlcnic_83xx_interrupt_test(), function
-qlcnic_83xx_diag_alloc_res() is not handled by function
-qlcnic_83xx_diag_free_res() after a call of the function
-qlcnic_alloc_mbx_args() failed. Fix this issue by adding
-a jump target "fail_mbx_args", and jump to this new target
-when qlcnic_alloc_mbx_args() failed.
+This patch is to fix a crash:
 
-Fixes: b6b4316c8b2f ("qlcnic: Handle qlcnic_alloc_mbx_args() failure")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+  [ ] kasan: GPF could be caused by NULL-ptr deref or user memory access
+  [ ] general protection fault: 0000 [#1] SMP KASAN PTI
+  [ ] RIP: 0010:ipv6_local_error+0xac/0x7a0
+  [ ] Call Trace:
+  [ ]  xfrm6_local_error+0x1eb/0x300
+  [ ]  xfrm_local_error+0x95/0x130
+  [ ]  __xfrm6_output+0x65f/0xb50
+  [ ]  xfrm6_output+0x106/0x46f
+  [ ]  udp_tunnel6_xmit_skb+0x618/0xbf0 [ip6_udp_tunnel]
+  [ ]  vxlan_xmit_one+0xbc6/0x2c60 [vxlan]
+  [ ]  vxlan_xmit+0x6a0/0x4276 [vxlan]
+  [ ]  dev_hard_start_xmit+0x165/0x820
+  [ ]  __dev_queue_xmit+0x1ff0/0x2b90
+  [ ]  ip_finish_output2+0xd3e/0x1480
+  [ ]  ip_do_fragment+0x182d/0x2210
+  [ ]  ip_output+0x1d0/0x510
+  [ ]  ip_send_skb+0x37/0xa0
+  [ ]  raw_sendmsg+0x1b4c/0x2b80
+  [ ]  sock_sendmsg+0xc0/0x110
+
+This occurred when sending a v4 skb over vxlan6 over ipsec, in which case
+skb->protocol == htons(ETH_P_IPV6) while skb->sk->sk_family == AF_INET in
+xfrm_local_error(). Then it will go to xfrm6_local_error() where it tries
+to get ipv6 info from a ipv4 sk.
+
+This issue was actually fixed by Commit 628e341f319f ("xfrm: make local
+error reporting more robust"), but brought back by Commit 844d48746e4b
+("xfrm: choose protocol family by skb protocol").
+
+So to fix it, we should call xfrm6_local_error() only when skb->protocol
+is htons(ETH_P_IPV6) and skb->sk->sk_family is AF_INET6.
+
+Fixes: 844d48746e4b ("xfrm: choose protocol family by skb protocol")
+Reported-by: Xiumei Mu <xmu@redhat.com>
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/xfrm/xfrm_output.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c
-@@ -3651,7 +3651,7 @@ int qlcnic_83xx_interrupt_test(struct ne
- 	ahw->diag_cnt = 0;
- 	ret = qlcnic_alloc_mbx_args(&cmd, adapter, QLCNIC_CMD_INTRPT_TEST);
- 	if (ret)
--		goto fail_diag_irq;
-+		goto fail_mbx_args;
+--- a/net/xfrm/xfrm_output.c
++++ b/net/xfrm/xfrm_output.c
+@@ -642,7 +642,8 @@ void xfrm_local_error(struct sk_buff *sk
  
- 	if (adapter->flags & QLCNIC_MSIX_ENABLED)
- 		intrpt_id = ahw->intr_tbl[0].id;
-@@ -3681,6 +3681,8 @@ int qlcnic_83xx_interrupt_test(struct ne
- 
- done:
- 	qlcnic_free_mbx_args(&cmd);
-+
-+fail_mbx_args:
- 	qlcnic_83xx_diag_free_res(netdev, drv_sds_rings);
- 
- fail_diag_irq:
+ 	if (skb->protocol == htons(ETH_P_IP))
+ 		proto = AF_INET;
+-	else if (skb->protocol == htons(ETH_P_IPV6))
++	else if (skb->protocol == htons(ETH_P_IPV6) &&
++		 skb->sk->sk_family == AF_INET6)
+ 		proto = AF_INET6;
+ 	else
+ 		return;
 
 
