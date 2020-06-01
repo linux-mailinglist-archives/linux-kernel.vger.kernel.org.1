@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0E81EAE76
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B24961EACB6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730187AbgFASyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:54:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45366 "EHLO mail.kernel.org"
+        id S1731587AbgFASil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:38:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729907AbgFASCP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:02:15 -0400
+        id S1729439AbgFASig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:38:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 647D9207D0;
-        Mon,  1 Jun 2020 18:02:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0758F20776;
+        Mon,  1 Jun 2020 18:33:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034534;
-        bh=xDqOcDPxgEtN8yP3ZDnF8X43wyViTPb3+SglNOHmTUg=;
+        s=default; t=1591036421;
+        bh=g2lKDiPLDujWPW0RzLGJ93VyCybYHzEJD2bPGoE6DsU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RYg0eVU8MPi04EsobwPQyhTQduT5K4TXAYvoq+xroqWsOBiWgLT58Ego5H0u1S+7U
-         trm7jmk7XaYoXKW/3H01cYpeJS7z28vh6uFkYiE6x1aoVBIqMePV9x6Vi7k3anTHnH
-         9mWyNLjk055oAqqSrNVUU3YBfKz7IFnjlcLXLgP4=
+        b=XuRusajlYp4JDLnAPfUc2aR3sp1+xPM2j/e0pVkCGKkl75Tr7D0SENIoZ/6062N/b
+         nygdMF7M0JfovUlwHvceVboHTDJmQmgUaZIlHbaLKZA63iv7aUlNaoGegHwDRVHuJF
+         KsvhU1cw7IJu/GbBSvlQUGSW0aP8TInKrHAEh5mA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gerhard Wiesinger <redhat@wiesinger.com>,
-        Jim Mattson <jmattson@google.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.14 75/77] KVM: VMX: check for existence of secondary exec controls before accessing
+        stable@vger.kernel.org, "Yan, Zheng" <zyan@redhat.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Sasha Levin <sashal@kernel.org>,
+        =?UTF-8?q?Andrej=20Filip=C4=8Di=C4=8D?= <andrej.filipcic@ijs.si>
+Subject: [PATCH 5.6 122/177] ceph: flush release queue when handling caps for unknown inode
 Date:   Mon,  1 Jun 2020 19:54:20 +0200
-Message-Id: <20200601174029.419790717@linuxfoundation.org>
+Message-Id: <20200601174058.743301144@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
-References: <20200601174016.396817032@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,54 +46,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+From: Jeff Layton <jlayton@kernel.org>
 
-commit fd6b6d9b82f97a851fb0078201ddc38fe9728cda upstream.
+[ Upstream commit fb33c114d3ed5bdac230716f5b0a93b56b92a90d ]
 
-Return early from vmx_set_virtual_apic_mode() if the processor doesn't
-support VIRTUALIZE_APIC_ACCESSES or VIRTUALIZE_X2APIC_MODE, both of
-which reside in SECONDARY_VM_EXEC_CONTROL.  This eliminates warnings
-due to VMWRITEs to SECONDARY_VM_EXEC_CONTROL (VMCS field 401e) failing
-on processors without secondary exec controls.
+It's possible for the VFS to completely forget about an inode, but for
+it to still be sitting on the cap release queue. If the MDS sends the
+client a cap message for such an inode, it just ignores it today, which
+can lead to a stall of up to 5s until the cap release queue is flushed.
 
-Remove the similar check for TPR shadowing as it is incorporated in the
-flexpriority_enabled check and the APIC-related code in
-vmx_update_msr_bitmap() is further gated by VIRTUALIZE_X2APIC_MODE.
+If we get a cap message for an inode that can't be located, then go
+ahead and flush the cap release queue.
 
-Reported-by: Gerhard Wiesinger <redhat@wiesinger.com>
-Fixes: 8d860bbeedef ("kvm: vmx: Basic APIC virtualization controls have three settings")
-Cc: Jim Mattson <jmattson@google.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+URL: https://tracker.ceph.com/issues/45532
+Fixes: 1e9c2eb6811e ("ceph: delete stale dentry when last reference is dropped")
+Reported-and-Tested-by: Andrej Filipčič <andrej.filipcic@ijs.si>
+Suggested-by: Yan, Zheng <zyan@redhat.com>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/vmx.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ fs/ceph/caps.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/kvm/vmx.c
-+++ b/arch/x86/kvm/vmx.c
-@@ -9280,15 +9280,16 @@ static void vmx_set_virtual_apic_mode(st
- 	if (!lapic_in_kernel(vcpu))
- 		return;
- 
-+	if (!flexpriority_enabled &&
-+	    !cpu_has_vmx_virtualize_x2apic_mode())
-+		return;
-+
- 	/* Postpone execution until vmcs01 is the current VMCS. */
- 	if (is_guest_mode(vcpu)) {
- 		to_vmx(vcpu)->nested.change_vmcs01_virtual_apic_mode = true;
- 		return;
+diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
+index f50204380a65..3ae88ca03ccd 100644
+--- a/fs/ceph/caps.c
++++ b/fs/ceph/caps.c
+@@ -3952,7 +3952,7 @@ void ceph_handle_caps(struct ceph_mds_session *session,
+ 			__ceph_queue_cap_release(session, cap);
+ 			spin_unlock(&session->s_cap_lock);
+ 		}
+-		goto done;
++		goto flush_cap_releases;
  	}
  
--	if (!cpu_need_tpr_shadow(vcpu))
--		return;
--
- 	sec_exec_control = vmcs_read32(SECONDARY_VM_EXEC_CONTROL);
- 	sec_exec_control &= ~(SECONDARY_EXEC_VIRTUALIZE_APIC_ACCESSES |
- 			      SECONDARY_EXEC_VIRTUALIZE_X2APIC_MODE);
+ 	/* these will work even if we don't have a cap yet */
+-- 
+2.25.1
+
 
 
