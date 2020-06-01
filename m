@@ -2,75 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11AE81E9D3B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 07:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E66A41E9D42
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 07:25:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726102AbgFAFVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 01:21:42 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:17738 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725847AbgFAFVl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 01:21:41 -0400
-Received: by ajax-webmail-mail-app4 (Coremail) ; Mon, 1 Jun 2020 13:21:27
- +0800 (GMT+08:00)
-X-Originating-IP: [222.205.72.4]
-Date:   Mon, 1 Jun 2020 13:21:27 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Ben Skeggs" <skeggsb@gmail.com>
-Cc:     kjlu@umn.edu, "David Airlie" <airlied@linux.ie>,
-        "ML nouveau" <nouveau@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "ML dri-devel" <dri-devel@lists.freedesktop.org>,
-        "Ben Skeggs" <bskeggs@redhat.com>, Markus.Elfring@web.de
-Subject: Re: Re: Re: [PATCH] drm/nouveau/clk/gm20b: Fix memory leak in
- gm20b_clk_new
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190906(84e8bf8f)
- Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
-In-Reply-To: <CACAvsv5t2gWDae_8b0-fH9e8fzgmxfiUtZTPeFuhmKXDFAmvGw@mail.gmail.com>
-References: <20200529080042.6082-1-dinghao.liu@zju.edu.cn>
- <CACAvsv73wZK_pKk4TDHaTeBUqxYHvK0KhLQBgPC8Be_VviY2jg@mail.gmail.com>
- <6a65a5b1.dd4b7.1726deaea0a.Coremail.dinghao.liu@zju.edu.cn>
- <CACAvsv5kcUC_kOfMPxqY-irSAexmhm=WKO8Vk=wTZWdsbaartw@mail.gmail.com>
- <CACAvsv5t2gWDae_8b0-fH9e8fzgmxfiUtZTPeFuhmKXDFAmvGw@mail.gmail.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        id S1725977AbgFAFYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 01:24:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725778AbgFAFYj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 01:24:39 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D2CC061A0E
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 22:24:39 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id d128so10055491wmc.1
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 22:24:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=6ZL8Ph/G4JgUrG27yx5jOAVsjITYufkbj9OoG3EiYg8=;
+        b=dA2CB31sQ3Af0qUnmPd1S0YDJqELMRRu+gA7/hUSep7Gkrb1fo/neGae7TZlSgmco4
+         HuxnDn48VwRNdoJ4L4uznitZuO9+exNsJ1l42htH3amQN9vybXbGG124lC0jd1xEVUuf
+         eilKDyn8QzkVREVQgOffBb5rn7EA+xEt5rVQBeRE9rrW+5ErUH4IkiUf7nZzE85UeLjx
+         wMl+bwp5zYT7i2PB+V7kmz8U8UVkoyPrAC8EDZ51yPG8DcTDCH6OYvZKreMNQATXxb2s
+         6friPAu8HN+1J1eniSAR69g+bQgojly4qQfVzIHoiU9eaCNF2yAH49QNbpivLxONxzfR
+         vQBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6ZL8Ph/G4JgUrG27yx5jOAVsjITYufkbj9OoG3EiYg8=;
+        b=rgLeOyFM8vEX0wLdzKncpJJ36YHWnYdwosjQCf8pb6FVFGJuKZXXmTpN0tM1mDvp0I
+         pFhJESwlHh3NOtfYn4tB8wZQB8seE75k3wnI9LqRO/YGU0I1RUOTws7OITQAQm/+cBPg
+         IB8pSUInaiATLcG0RJWeycBbFHqcMHu9TSiwO3TwW/WGv0XsjdWOtaPUv1pOK5MjHEEk
+         sLAkUuffxnngh9ny816qU2PWiqIYkxiwMf3lEmTg4/nPVmR7YTFYjmU4iacZHeT9bo2B
+         CWMc6M3Mf5uDMx5GoTMsUPUfrRHlj3zVo4lXUu+4XqNPZ1ErP6U/7qwj/lFK5V0mgJt8
+         X5Vg==
+X-Gm-Message-State: AOAM533epY9Eykf3TKmI2wBO0ED/ABabKfj43iNT/P5ZJdJM6ee7O0qh
+        l6Tth6P4UzKi9r0AeZPQylBW/2oVcUY=
+X-Google-Smtp-Source: ABdhPJxhx9/WQeqXLPdXyUP/V3m+hF0vRniSFumysbnrVtMqhxlQzfSXBPMnW0DCYiw90xvl8UL1fQ==
+X-Received: by 2002:a1c:2e41:: with SMTP id u62mr21047004wmu.91.1590989075882;
+        Sun, 31 May 2020 22:24:35 -0700 (PDT)
+Received: from dell ([95.147.198.92])
+        by smtp.gmail.com with ESMTPSA id k12sm17543313wrn.42.2020.05.31.22.24.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 May 2020 22:24:35 -0700 (PDT)
+Date:   Mon, 1 Jun 2020 06:24:33 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     s.nawrocki@samsung.com, linux-kernel@vger.kernel.org,
+        patches@opensource.cirrus.com
+Subject: Re: [PATCH 2/3] mfd: madera: Fix minor formatting issues
+Message-ID: <20200601052433.GA3714@dell>
+References: <20200529155742.18399-1-ckeepax@opensource.cirrus.com>
+ <20200529155742.18399-2-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
-Message-ID: <b3db4d2.ddd1e.1726e53d54b.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cS_KCgCHIARXkNRe+6VsAA--.10702W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUSBlZdtOZozQABsu
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbX0S07vEb7Iv0x
-        C_Cr1lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
-        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
-        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
-        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWlV2xY628EF7xvwVC2z280aVAFwI0_Gc
-        CE3s1lV2xY628EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wCS07vEe2I262IYc4CY6c8I
-        j28IcVAaY2xG8wCS07vE5I8CrVACY4xI64kE6c02F40Ex7xfMIAIbVAv7VC0I7IYx2IY67
-        AKxVWUJVWUGwCS07vEYx0Ex4A2jsIE14v26r1j6r4UMIAIbVAm72CE4IkC6x0Yz7v_Jr0_
-        Gr1lV2xY6x02cVAKzwCS07vEc2xSY4AK67AK6r4rMIAIbVCY0x0Ix7I2Y4AK64vIr41lV2
-        xY6xAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCS07vE4x8a6x804xWlV2xY6xC20s026xCa
-        FVCjc4AY6r1j6r4UMIAIbVC20s026c02F40E14v26r1j6r18MIAIbVC20s026x8GjcxK67
-        AKxVWUGVWUWwCS07vEx4CE17CEb7AF67AKxVWUtVW8ZwCS07vEIxAIcVC0I7IYx2IY67AK
-        xVWUJVWUCwCS07vEIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIAIbVCI42IY6xAIw2
-        0EY4v20xvaj40_WFyUJVCq3wCS07vEIxAIcVC2z280aVAFwI0_Jr0_Gr1lV2xY6IIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200529155742.18399-2-ckeepax@opensource.cirrus.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+IElmIHRoZXJlJ3MgKmFueSogZXJyb3IsIGl0J2xsIGNoZWNrIHRoZSBwb2ludGVyLCBpZiBp
-dCdzIG5vbi1OVUxMLAo+ID4gaXQnbGwgY2FsbCB0aGUgZGVzdHJ1Y3Rvci4gIElmIGt6YWxsb2Mo
-KSBmYWlscywgdGhlIHBvaW50ZXIgd2lsbCBiZQo+ID4gTlVMTCwgdGhlcmUncyBubyBkb3VibGUt
-ZnJlZSBidWcuICAqZXZlcnkqIHN1YmRldiBpcyB3cml0dGVuIHRoaXMgd2F5Cj4gPiB0byBhdm9p
-ZCBkdXBsaWNhdGluZyBjbGVhbnVwIGxvZ2ljLgo+IEFjdHVhbGx5LCBnbTIwYl9jbGtfbmV3X3Nw
-ZWVkbzAoKSBtYXkgaGF2ZSBhIGJ1ZyBoZXJlIGlmIGt6YWxsb2MoKQo+IGZhaWxzIGFzIGl0IGRv
-ZXNuJ3Qgb3ZlcndyaXRlIHRoZSBwcmV2aW91cyBwb2ludGVyIGZyb20KPiBnbTIwYl9jbGtfbmV3
-KCkuICBUaGF0IHdob2xlIGN0b3IoKSBzZXF1ZW5jZSBpcyB3cml0dGVuIGEgbGl0dGxlCj4gc3Ry
-YW5nZWx5Lgo+IAoKSXQncyBjbGVhciB0byBtZSwgdGhhbmsgeW91ciBmb3IgeW91ciBleHBsYW5h
-dGlvbiEgQXMgZm9yIApnbTIwYl9jbGtfbmV3X3NwZWVkbzAoKSwgSSB0aGluayBpdHMgYnVnIHBh
-dHRlcm4gaXMgbm90IHZlcnkgCmNsZWFyLiBNYXliZSB3ZSBzaG91bGQga2VlcCBpdCB1bnRpbCB3
-ZSBmaW5kIGFuIHVzZSBjaGFpbiB0aGF0CmNvdWxkIGxlYWQgdG8gYSBidWcuCgpSZWdhcmRzLApE
-aW5naGFvCg==
+On Fri, 29 May 2020, Charles Keepax wrote:
+
+Still needs a commit log.
+
+> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> ---
+>  drivers/mfd/madera-core.c        | 12 ++++++------
+>  drivers/mfd/madera-i2c.c         |  1 -
+>  include/linux/mfd/madera/pdata.h |  1 -
+>  3 files changed, 6 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/mfd/madera-core.c b/drivers/mfd/madera-core.c
+> index 7e0835cb062b1..4724c1a01a39f 100644
+> --- a/drivers/mfd/madera-core.c
+> +++ b/drivers/mfd/madera-core.c
+> @@ -44,7 +44,7 @@ static const char * const madera_core_supplies[] = {
+>  };
+>  
+>  static const struct mfd_cell madera_ldo1_devs[] = {
+> -	{ .name = "madera-ldo1" },
+> +	{ .name = "madera-ldo1", },
+
+What issue does this solve?
+
+Why are ','s a requirement, even for single entries?
+
+>  };
+>  
+>  static const char * const cs47l15_supplies[] = {
+> @@ -55,8 +55,8 @@ static const char * const cs47l15_supplies[] = {
+>  
+>  static const struct mfd_cell cs47l15_devs[] = {
+>  	{ .name = "madera-pinctrl", },
+> -	{ .name = "madera-irq" },
+> -	{ .name = "madera-gpio" },
+> +	{ .name = "madera-irq", },
+> +	{ .name = "madera-gpio", },
+>  	{
+>  		.name = "madera-extcon",
+>  		.parent_supplies = cs47l15_supplies,
+> @@ -108,7 +108,7 @@ static const char * const cs47l85_supplies[] = {
+>  static const struct mfd_cell cs47l85_devs[] = {
+>  	{ .name = "madera-pinctrl", },
+>  	{ .name = "madera-irq", },
+> -	{ .name = "madera-micsupp" },
+> +	{ .name = "madera-micsupp", },
+>  	{ .name = "madera-gpio", },
+>  	{
+>  		.name = "madera-extcon",
+> @@ -155,10 +155,10 @@ static const char * const cs47l92_supplies[] = {
+>  };
+>  
+>  static const struct mfd_cell cs47l92_devs[] = {
+> -	{ .name = "madera-pinctrl" },
+> +	{ .name = "madera-pinctrl", },
+>  	{ .name = "madera-irq", },
+>  	{ .name = "madera-micsupp", },
+> -	{ .name = "madera-gpio" },
+> +	{ .name = "madera-gpio", },
+>  	{
+>  		.name = "madera-extcon",
+>  		.parent_supplies = cs47l92_supplies,
+> diff --git a/drivers/mfd/madera-i2c.c b/drivers/mfd/madera-i2c.c
+> index 6b965eb034b6c..7df5b9ba58554 100644
+> --- a/drivers/mfd/madera-i2c.c
+> +++ b/drivers/mfd/madera-i2c.c
+> @@ -88,7 +88,6 @@ static int madera_i2c_probe(struct i2c_client *i2c,
+>  	if (!madera)
+>  		return -ENOMEM;
+>  
+> -
+>  	madera->regmap = devm_regmap_init_i2c(i2c, regmap_16bit_config);
+>  	if (IS_ERR(madera->regmap)) {
+>  		ret = PTR_ERR(madera->regmap);
+> diff --git a/include/linux/mfd/madera/pdata.h b/include/linux/mfd/madera/pdata.h
+> index fa9595dd42ba5..601cbbc10370c 100644
+> --- a/include/linux/mfd/madera/pdata.h
+> +++ b/include/linux/mfd/madera/pdata.h
+> @@ -21,7 +21,6 @@
+>  
+>  struct gpio_desc;
+>  struct pinctrl_map;
+> -struct madera_codec_pdata;
+
+This is not a formatting issue.
+
+>  /**
+>   * struct madera_pdata - Configuration data for Madera devices
+
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
