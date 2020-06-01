@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53141EA92F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE4F71EA9DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728906AbgFAR7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:59:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40802 "EHLO mail.kernel.org"
+        id S1729337AbgFASCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:02:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728202AbgFAR6m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:58:42 -0400
+        id S1729973AbgFASCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:02:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E28DA2076B;
-        Mon,  1 Jun 2020 17:58:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A9CD52065C;
+        Mon,  1 Jun 2020 18:02:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034322;
-        bh=/5kicnZVDq8sN3yiXqwn4vjSktVMba+QyaOXUAnja/E=;
+        s=default; t=1591034566;
+        bh=f0dcE6W115T5VxT/KN7MkC4LUM/7jojD1bWJ0yqovdc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aNh3ZF32IbI2hN9VOcApCPbn2yRC4aavX3zzN7cR5BnnXjthWSSvNo9PKLb1gybjx
-         y6OAkqB1VP7ql9I7TEaWep6widGO3rDo+rDON8rKmzD9LABAH5gXxmFs1t4aeJpTt0
-         xN59TTxZLc5m1nVyoJ30Xbx3tFaWnvwFQqcptODc=
+        b=2t0UgWvln2t8UzJJazTffGyqXAFI9FnkSskFxNNqwH7tJlrPig9KzZbgrd9i4TDWj
+         4dy4bpEs9XqxYrux3pNEJgow6dE2QI5A7C32MCs2Q/KHrbbSZGIvHdsRhga0eEXPxI
+         UUEWXx8c8w+Wkc8XXecViEOkVu/HfJR0RBDLGyVg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jamal Hadi Salim <jhs@mojatatu.com>,
-        Roman Mashak <mrv@mojatatu.com>,
+        stable@vger.kernel.org, Marc Payne <marc.payne@mdpsys.co.uk>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 04/61] net sched: fix reporting the first-time use timestamp
+Subject: [PATCH 4.19 11/95] r8152: support additional Microsoft Surface Ethernet Adapter variant
 Date:   Mon,  1 Jun 2020 19:53:11 +0200
-Message-Id: <20200601174012.179925644@linuxfoundation.org>
+Message-Id: <20200601174022.649608320@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
-References: <20200601174010.316778377@linuxfoundation.org>
+In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
+References: <20200601174020.759151073@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roman Mashak <mrv@mojatatu.com>
+From: Marc Payne <marc.payne@mdpsys.co.uk>
 
-[ Upstream commit b15e62631c5f19fea9895f7632dae9c1b27fe0cd ]
+[ Upstream commit c27a204383616efba5a4194075e90819961ff66a ]
 
-When a new action is installed, firstuse field of 'tcf_t' is explicitly set
-to 0. Value of zero means "new action, not yet used"; as a packet hits the
-action, 'firstuse' is stamped with the current jiffies value.
+Device id 0927 is the RTL8153B-based component of the 'Surface USB-C to
+Ethernet and USB Adapter' and may be used as a component of other devices
+in future. Tested and working with the r8152 driver.
 
-tcf_tm_dump() should return 0 for firstuse if action has not yet been hit.
+Update the cdc_ether blacklist due to the RTL8153 'network jam on suspend'
+issue which this device will cause (personally confirmed).
 
-Fixes: 48d8ee1694dd ("net sched actions: aggregate dumping of actions timeinfo")
-Cc: Jamal Hadi Salim <jhs@mojatatu.com>
-Signed-off-by: Roman Mashak <mrv@mojatatu.com>
-Acked-by: Jamal Hadi Salim <jhs@mojatatu.com>
+Signed-off-by: Marc Payne <marc.payne@mdpsys.co.uk>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/act_api.h |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/usb/cdc_ether.c |   11 +++++++++--
+ drivers/net/usb/r8152.c     |    1 +
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
---- a/include/net/act_api.h
-+++ b/include/net/act_api.h
-@@ -94,7 +94,8 @@ static inline void tcf_tm_dump(struct tc
- {
- 	dtm->install = jiffies_to_clock_t(jiffies - stm->install);
- 	dtm->lastuse = jiffies_to_clock_t(jiffies - stm->lastuse);
--	dtm->firstuse = jiffies_to_clock_t(jiffies - stm->firstuse);
-+	dtm->firstuse = stm->firstuse ?
-+		jiffies_to_clock_t(jiffies - stm->firstuse) : 0;
- 	dtm->expires = jiffies_to_clock_t(stm->expires);
- }
+--- a/drivers/net/usb/cdc_ether.c
++++ b/drivers/net/usb/cdc_ether.c
+@@ -821,14 +821,21 @@ static const struct usb_device_id	produc
+ 	.driver_info = 0,
+ },
  
+-/* Microsoft Surface 3 dock (based on Realtek RTL8153) */
++/* Microsoft Surface Ethernet Adapter (based on Realtek RTL8153) */
+ {
+ 	USB_DEVICE_AND_INTERFACE_INFO(MICROSOFT_VENDOR_ID, 0x07c6, USB_CLASS_COMM,
+ 			USB_CDC_SUBCLASS_ETHERNET, USB_CDC_PROTO_NONE),
+ 	.driver_info = 0,
+ },
+ 
+-	/* TP-LINK UE300 USB 3.0 Ethernet Adapters (based on Realtek RTL8153) */
++/* Microsoft Surface Ethernet Adapter (based on Realtek RTL8153B) */
++{
++	USB_DEVICE_AND_INTERFACE_INFO(MICROSOFT_VENDOR_ID, 0x0927, USB_CLASS_COMM,
++			USB_CDC_SUBCLASS_ETHERNET, USB_CDC_PROTO_NONE),
++	.driver_info = 0,
++},
++
++/* TP-LINK UE300 USB 3.0 Ethernet Adapters (based on Realtek RTL8153) */
+ {
+ 	USB_DEVICE_AND_INTERFACE_INFO(TPLINK_VENDOR_ID, 0x0601, USB_CLASS_COMM,
+ 			USB_CDC_SUBCLASS_ETHERNET, USB_CDC_PROTO_NONE),
+--- a/drivers/net/usb/r8152.c
++++ b/drivers/net/usb/r8152.c
+@@ -5344,6 +5344,7 @@ static const struct usb_device_id rtl815
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_REALTEK, 0x8153)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_MICROSOFT, 0x07ab)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_MICROSOFT, 0x07c6)},
++	{REALTEK_USB_DEVICE(VENDOR_ID_MICROSOFT, 0x0927)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_SAMSUNG, 0xa101)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_LENOVO,  0x304f)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_LENOVO,  0x3062)},
 
 
