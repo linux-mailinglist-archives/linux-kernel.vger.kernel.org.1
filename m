@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D371EA8C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA731EA8FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728259AbgFARzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:55:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35670 "EHLO mail.kernel.org"
+        id S1728974AbgFAR5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:57:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728194AbgFARzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:55:43 -0400
+        id S1728939AbgFAR5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:57:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EC02E206E2;
-        Mon,  1 Jun 2020 17:55:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A9D5E206E2;
+        Mon,  1 Jun 2020 17:57:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034142;
-        bh=rRFUb/wbJRkRGlyUCAj7rEc44u/e82cJaNwDolypntk=;
+        s=default; t=1591034259;
+        bh=zh+hjr+eJIQBo26ohfepRYxTdhIc+nP1ysNKviD1wAQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wrb8hdet3SsrQ1wqXQ4PLsPsKHsaKN5iXQKoVkOxUvjF+cfxo4xpYsq80AXJ4ibMn
-         cnMMaTXl8cyXSL9mjLki+MoefMLc51LdUZ7E4ust7QyG9mh8N5tu5hNr3QP6OC1ysP
-         7hNGBrGQN7FYf8G1mBWvsoravNcWAPyZbrK1ygas=
+        b=N0wa0LyftWV2cXIOEKm5KKMOSkZ+V85MluG02irU7d1ZSWD7h2iqNJ2EsQLRxpKop
+         3klqzteKEAVcefR/8+tqIMrFTXRGsnEf0XbWKnaZ8MJ2BazLdJBXa9XmRyfM78CCGU
+         lcl5g+cCzPaX8JH/g65eZjtTgYdpllSSX8Sk8f8Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        kbuild test robot <lkp@intel.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
+        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 11/48] usb: gadget: legacy: fix redundant initialization warnings
+Subject: [PATCH 4.9 14/61] net: microchip: encx24j600: add missed kthread_stop
 Date:   Mon,  1 Jun 2020 19:53:21 +0200
-Message-Id: <20200601173955.702134868@linuxfoundation.org>
+Message-Id: <20200601174014.377647504@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601173952.175939894@linuxfoundation.org>
-References: <20200601173952.175939894@linuxfoundation.org>
+In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
+References: <20200601174010.316778377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,61 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-[ Upstream commit d13cce757954fa663c69845611957396843ed87a ]
+[ Upstream commit ff8ce319e9c25e920d994cc35236f0bb32dfc8f3 ]
 
-Fix the following cppcheck warnings:
+This driver calls kthread_run() in probe, but forgets to call
+kthread_stop() in probe failure and remove.
+Add the missed kthread_stop() to fix it.
 
-drivers/usb/gadget/legacy/inode.c:1364:8: style: Redundant initialization for 'value'. The initialized value is overwritten$
- value = -EOPNOTSUPP;
-       ^
-drivers/usb/gadget/legacy/inode.c:1331:15: note: value is initialized
- int    value = -EOPNOTSUPP;
-              ^
-drivers/usb/gadget/legacy/inode.c:1364:8: note: value is overwritten
- value = -EOPNOTSUPP;
-       ^
-drivers/usb/gadget/legacy/inode.c:1817:8: style: Redundant initialization for 'value'. The initialized value is overwritten$
- value = -EINVAL;
-       ^
-drivers/usb/gadget/legacy/inode.c:1787:18: note: value is initialized
- ssize_t   value = len, length = len;
-                 ^
-drivers/usb/gadget/legacy/inode.c:1817:8: note: value is overwritten
- value = -EINVAL;
-       ^
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
-
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/legacy/inode.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/microchip/encx24j600.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/legacy/inode.c b/drivers/usb/gadget/legacy/inode.c
-index 81f3c9cb333c..b95900168a6b 100644
---- a/drivers/usb/gadget/legacy/inode.c
-+++ b/drivers/usb/gadget/legacy/inode.c
-@@ -1360,7 +1360,6 @@ gadgetfs_setup (struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
+diff --git a/drivers/net/ethernet/microchip/encx24j600.c b/drivers/net/ethernet/microchip/encx24j600.c
+index b14f0305aa31..ad661d1979c7 100644
+--- a/drivers/net/ethernet/microchip/encx24j600.c
++++ b/drivers/net/ethernet/microchip/encx24j600.c
+@@ -1058,7 +1058,7 @@ static int encx24j600_spi_probe(struct spi_device *spi)
+ 	if (unlikely(ret)) {
+ 		netif_err(priv, probe, ndev, "Error %d initializing card encx24j600 card\n",
+ 			  ret);
+-		goto out_free;
++		goto out_stop;
+ 	}
  
- 	req->buf = dev->rbuf;
- 	req->context = NULL;
--	value = -EOPNOTSUPP;
- 	switch (ctrl->bRequest) {
+ 	eidled = encx24j600_read_reg(priv, EIDLED);
+@@ -1076,6 +1076,8 @@ static int encx24j600_spi_probe(struct spi_device *spi)
  
- 	case USB_REQ_GET_DESCRIPTOR:
-@@ -1806,7 +1805,7 @@ static ssize_t
- dev_config (struct file *fd, const char __user *buf, size_t len, loff_t *ptr)
- {
- 	struct dev_data		*dev = fd->private_data;
--	ssize_t			value = len, length = len;
-+	ssize_t			value, length = len;
- 	unsigned		total;
- 	u32			tag;
- 	char			*kbuf;
+ out_unregister:
+ 	unregister_netdev(priv->ndev);
++out_stop:
++	kthread_stop(priv->kworker_task);
+ out_free:
+ 	free_netdev(ndev);
+ 
+@@ -1088,6 +1090,7 @@ static int encx24j600_spi_remove(struct spi_device *spi)
+ 	struct encx24j600_priv *priv = dev_get_drvdata(&spi->dev);
+ 
+ 	unregister_netdev(priv->ndev);
++	kthread_stop(priv->kworker_task);
+ 
+ 	free_netdev(priv->ndev);
+ 
 -- 
 2.25.1
 
