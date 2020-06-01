@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D361E9D14
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 07:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D27921E9D07
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 07:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbgFAFQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 01:16:46 -0400
-Received: from mga02.intel.com ([134.134.136.20]:52982 "EHLO mga02.intel.com"
+        id S1726098AbgFAFQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 01:16:35 -0400
+Received: from mga18.intel.com ([134.134.136.126]:47457 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725838AbgFAFQo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 01:16:44 -0400
-IronPort-SDR: G0TlxgQd0CS9ApUmVp4fQxvTfmCTn+IcgrNIKpmOOxKMbI59FmvdYpahX2UXbE1GLpDdTxhox8
- z+5l9vh/QJ9w==
+        id S1725778AbgFAFQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 01:16:34 -0400
+IronPort-SDR: A2Zv2cEvQnDpBFDegYj4cEq2/6wJVnhrorfPZP3QZiVFLaaMA4BZOhTHpW7RGltNxuuA3ndg3J
+ rcpRzo4RTSoQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2020 22:16:39 -0700
-IronPort-SDR: h4xW8H1267bA9Dp0QB3B69rv2I3vwrm/1UZONJv5YPqnprp+1HZn7OgtrEwyUWidA1Ci3uRReF
- iqrfZSJddH7w==
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2020 22:16:33 -0700
+IronPort-SDR: G/cgBB8coZEVmJhH4shnTWgrdzxQo3rFMXGu6loKBN4DJiH0hYv5DEovgtcg6c+h55g42dspn5
+ biY8VJx7czjg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,459,1583222400"; 
-   d="scan'208";a="470195024"
+   d="scan'208";a="286162829"
 Received: from lkp-server01.sh.intel.com (HELO 49d03d9b0ee7) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 31 May 2020 22:16:38 -0700
+  by orsmga002.jf.intel.com with ESMTP; 31 May 2020 22:16:32 -0700
 Received: from kbuild by 49d03d9b0ee7 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1jfcoP-0000Cz-Gh; Mon, 01 Jun 2020 05:16:37 +0000
-Date:   Mon, 01 Jun 2020 13:15:23 +0800
+        id 1jfcoK-0000CG-1R; Mon, 01 Jun 2020 05:16:32 +0000
+Date:   Mon, 01 Jun 2020 13:15:27 +0800
 From:   kbuild test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2020.05.29a] BUILD SUCCESS
- f088eeb5bd99e97a2e8cea15279bbab273f2d7c8
-Message-ID: <5ed48eeb.FXMuxvu7RSaXTR3m%lkp@intel.com>
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ aa61b7bb00f7c0738823237a06161d568442b93c
+Message-ID: <5ed48eef.Rmq9LxsW6zOChLan%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,127 +43,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.05.29a
-branch HEAD: f088eeb5bd99e97a2e8cea15279bbab273f2d7c8  refperf: Work around 64-bit division
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
+branch HEAD: aa61b7bb00f7c0738823237a06161d568442b93c  Merge branch 'fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs into x86/urgent
 
 i386-tinyconfig vmlinux size:
 
-========================================================================================================================================
- TOTAL  TEXT  arch/x86/events/zhaoxin/built-in.*  built-in.*                                                                            
-========================================================================================================================================
-  -233  -233                                                  8747b07d1944 Merge branch 'kcsan-dev.2020.04.13c' into HEAD               
-     0     0                                                  03e8e094dad9 Merge branch 'lkmm-dev.2020.05.16a' into HEAD                
-     0     0                                                  17e0ee2a3ec9 torture:  Remove qemu dependency on EFI firmware             
-     0     0                                                  c58148777978 torture: Add script to smoke-test commits in a branch        
-   +38   +38                                                  396a79cc6818 fork: Annotate a data race in vm_area_dup()                  
-     0     0                                                  8035e0fc710a x86/mm/pat: Mark an intentional data race                    
-     0     0                                                  d7a51c24ee4b rculist: Add ASSERT_EXCLUSIVE_ACCESS() to __list_splice_init 
-     0     0                                                  e5efa2f1b7b6 locktorture: Use true and false to assign to bool variables  
-     0     0                                                  7514d7f181ab srcu: Fix a typo in comment "amoritized"->"amortized"        
-     0     0                                                  9dbd776542e3 rcu: Simplify the calculation of rcu_state.ncpus             
-     0     0                                                  df12d657bcc0 docs: RCU: Convert checklist.txt to ReST                     
-     0     0                                                  fdfeb779e1bd docs: RCU: Convert lockdep-splat.txt to ReST                 
-     0     0                                                  68b5951f7eb2 docs: RCU: Convert lockdep.txt to ReST                       
-     0     0                                                  ce9edc0c8a82 docs: RCU: Convert rculist_nulls.txt to ReST                 
-     0     0                                                  1bee818b03c7 docs: RCU: Convert torture.txt to ReST                       
-     0     0                                                  9100131711bc docs: RCU: Convert rcuref.txt to ReST                        
-     0     0                                                  080f194cfa87 docs: RCU: Convert stallwarn.txt to ReST                     
-     0     0                                                  6999f47d8456 docs: RCU: Don't duplicate chapter names in rculist_nulls.rs 
-     0     0                                                  55ce2e8178f2 rcutorture: Add races with task-exit processing              
-     0     0                                                  1c60a5e52538 torture: Set configfile variable to current scenario         
-     0     0                                                  9969401f1706 rcutorture: Handle non-statistic bang-string error messages  
-     0     0                                                  6f099e1b362b rcutorture: NULL rcu_torture_current earlier in cleanup code 
-     0     0                                                  6816417616c4 kcsan: Add test suite                                        
-     0     0                                                  848d16e04f52 doc: Timer problems can cause RCU CPU stall warnings         
-     0     0                                                  2364a9f967ec rcu: Add callbacks-invoked counters                          
-     0     0                                                  2775724beeef rcu: Add comment documenting rcu_callback_map's purpose      
-     0     0                                         +138684  bfd78bca7bdf Revert b8c17e6664c4 ("rcu: Maintain special bits at bottom o 
-    +1     0                                         -138684  8903088434e7 rcu/tree: Add better tracing for dyntick-idle                
-    -1     0                                                  c0601bb42994 rcu/tree: Clean up dynticks counter usage                    
-     0     0                                                  3f3baaf3ac07 rcu/tree: Remove dynticks_nmi_nesting counter                
-    +1     0                                                  725e4ad9e020 trace: events: rcu: Change description of rcu_dyntick trace  
-     0     0                                                  a9b73fda34ec torture: Remove whitespace from identify_qemu_vcpus output   
-    -1     0                                         +138684  6267bacdff81 torture: Add --allcpus argument to the kvm.sh script         
-    +1     0                                         -138684  5c6aa32472cb rcu: Grace-period-kthread related sleeps to idle priority    
-    -1     0                                         +138684  f334f4fee6e2 rcu: Priority-boost-related sleeps to idle priority          
-     0     0                                               0  d49cb59f19b6 rcu: No-CBs-related sleeps to idle priority                  
-    +1     0                                         -138684  4cc4ce9b67ec rcu: Expedited grace-period sleeps to idle priority          
-    -1     0                                         +138684  cef0575caddb rcu-tasks: Convert sleeps to idle priority                   
-     0     0                                               0  988aef3524e2 fs/btrfs: Add cond_resched() for try_release_extent_mapping( 
-     0     0                                         -138684  70ca490c7ab3 locking/osq_lock: Annotate a data race in osq_lock           
-    +1     0                                                  80fa4f7b355d doc: Tasks RCU must protect instructions before trampoline   
-    -1     0                                         +138684  1b397c884f7a doc: Update comment from rsp->rcu_gp_seq to rsp->gp_seq      
-     0     0                                         -138684  dedad0a2118a tick/nohz: Narrow down noise while setting current task's ti 
-     0     0                                         +138684  3055759634b2 rcu: fix some kernel-doc warnings                            
-    +1     0                                         -138684  cf10e7d90417 rcu: Remove initialized but unused rnp from check_slow_task( 
-    -1     0                                         +138684  af17eef88571 rcu: Mark rcu_nmi_enter() call to rcu_cleanup_after_idle() n 
-     0     0                                         -138684  55f712e9bd7b rcuperf: Remove useless while loops around wait_event        
-     0     0                                                  751538451328 refperf: Add a test to measure performance of read-side sync 
-     0     0                                                  8e4ee950aec1 rcuperf: Add comments explaining the high reader overhead    
-     0     0                                                  c040f712e88e torture: Add refperf to the rcutorture scripting             
-     0     0                                                  008a24414803 refperf: Add holdoff parameter to allow CPUs to come online  
-     0     0                                                  dab324f75926 refperf: Hoist function-pointer calls out of the loop        
-     0     0                                +136              5574336c4be5 refperf: Allow decimal nanoseconds                           
-     0     0                                   0              aeb173765756 refperf: Convert nreaders to a module parameter              
-     0     0                                   0              dae3d17446a5 refperf: Provide module parameter to specify number of exper 
-     0     0                                   0              a9390c56b7ae refperf: Dynamically allocate experiment-summary output buff 
-     0     0                                   0              e927b546c872 refperf: Dynamically allocate thread-summary output buffer   
-     0     0                                   0              95c9ce2c76af srcu: Avoid local_irq_save() before acquiring spinlock_t     
-     0     0                                   0              7632b364c6c4 refperf: Make functions static                               
-     0     0                                   0              42bb09b5dc6f refperf: Tune reader measurement interval                    
-     0     0                                   0              cc8e6d748b0e refperf: Convert reader_task structure's "start" field to in 
-     0     0                                   0              e4826529a741 refperf: More closely synchronize reader start times         
-     0     0                                   0              6cd8f57628a1 rcuperf: Fix kfree_mult to match printk() format             
-     0     0                                   0              3e7ad35e5240 refperf: Add warmup and cooldown processing phases           
-     0     0                                   0              f37e98a2f76a refperf: Label experiment-number column "Runs"               
-     0     0                                   0              1cb4d7f83ea9 refperf: Output per-experiment data points                   
-     0     0                                   0              8762898c1a2f refperf: Simplify initialization-time wakeup protocol        
-     0     0                                   0              34c77200c071 lockdep: Complain only once about RCU in extended quiescent  
-     0     0                                   0              64e6613bef8b refperf: Add read-side delay module parameter                
-     0     0                                   0              b47663597c1b rcu-tasks: Make rcu_tasks_postscan() be static               
-     0     0                                   0              623dcb8f7f70 rcu-tasks: Add #include of rcupdate_trace.h to update.c      
-     0     0                                   0              e5c48d7e7118 rcu-tasks: Conditionally compile show_rcu_tasks_gp_kthreads( 
-     0     0                                   0              9eef91d82769 refperf: Adjust refperf.loop default value                   
-     0     0                                   0              043a9513b559 doc: Document rcuperf's module parameters                    
-     0     0                                   0              f088eeb5bd99 refperf: Work around 64-bit division                         
-  -189  -189                                +136              b1fcf9b83c41..f088eeb5bd99 (ALL COMMITS)                                  
-========================================================================================================================================
+==============================================================================================================================
+ TOTAL  TEXT  copy_xstate_to_kernel()  copy_part()                                                                            
+==============================================================================================================================
+  +204  +205                     +109          +96  aa61b7bb00f7 Merge branch 'fixes' of git://git.kernel.org/pub/scm/linux/k 
+  +204  +205                     +109          +96  4bfe6cce133c..aa61b7bb00f7 (ALL COMMITS)                                  
+==============================================================================================================================
 
-elapsed time: 548m
+elapsed time: 3621m
 
-configs tested: 98
-configs skipped: 7
+configs tested: 131
+configs skipped: 114
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
 
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
 arm64                            allyesconfig
 arm64                               defconfig
 arm64                            allmodconfig
 arm64                             allnoconfig
-arm                         shannon_defconfig
-powerpc                      ppc6xx_defconfig
-powerpc64                        alldefconfig
-microblaze                    nommu_defconfig
-arm                       mainstone_defconfig
-arm                            hisi_defconfig
-powerpc                     mpc83xx_defconfig
-m68k                          multi_defconfig
-arm                            dove_defconfig
-h8300                            alldefconfig
-c6x                         dsk6455_defconfig
-riscv                    nommu_virt_defconfig
-sh                        apsh4ad0a_defconfig
-sh                           se7343_defconfig
-powerpc                      tqm8xx_defconfig
-sh                           se7750_defconfig
-xtensa                         virt_defconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm                          pxa3xx_defconfig
+arm                         palmz72_defconfig
 sh                            shmin_defconfig
-arm                        multi_v5_defconfig
+ia64                            zx1_defconfig
+riscv                          rv32_defconfig
+powerpc                      pasemi_defconfig
+sparc                       sparc64_defconfig
+mips                  decstation_64_defconfig
+mips                          ath79_defconfig
+sh                        sh7763rdp_defconfig
+s390                              allnoconfig
+mips                         tb0226_defconfig
+m68k                          multi_defconfig
+h8300                            allyesconfig
+sh                             sh03_defconfig
+sh                           se7343_defconfig
+arm                          badge4_defconfig
+sh                           se7780_defconfig
+sh                          rsk7269_defconfig
+ia64                        generic_defconfig
+mips                             allyesconfig
+xtensa                           allyesconfig
+sh                          sdk7780_defconfig
+mips                        jmr3927_defconfig
+riscv                               defconfig
+sh                           cayman_defconfig
+arm                         ebsa110_defconfig
+arm                            lart_defconfig
+sh                         microdev_defconfig
+x86_64                              defconfig
+arm                        oxnas_v6_defconfig
+arc                          axs101_defconfig
+powerpc                       maple_defconfig
+nds32                             allnoconfig
+sh                               allmodconfig
+arm                            qcom_defconfig
+powerpc                    amigaone_defconfig
+nios2                         10m50_defconfig
+arm                         s3c6400_defconfig
+openrisc                            defconfig
+s390                       zfcpdump_defconfig
+s390                             allyesconfig
+arm                       cns3420vb_defconfig
+arm                        spear3xx_defconfig
 i386                              allnoconfig
 i386                             allyesconfig
 i386                                defconfig
@@ -177,28 +128,22 @@ m68k                              allnoconfig
 m68k                           sun3_defconfig
 m68k                                defconfig
 m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
 nds32                               defconfig
-nds32                             allnoconfig
 csky                             allyesconfig
 csky                                defconfig
 alpha                               defconfig
 alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
 h8300                            allmodconfig
 xtensa                              defconfig
+nios2                               defconfig
+nios2                            allyesconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
 arc                                 defconfig
 arc                              allyesconfig
-sh                               allmodconfig
 sh                                allnoconfig
 microblaze                        allnoconfig
-mips                             allyesconfig
 mips                              allnoconfig
 mips                             allmodconfig
 parisc                            allnoconfig
@@ -209,13 +154,27 @@ powerpc                          allyesconfig
 powerpc                          rhel-kconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
-powerpc                             defconfig
+i386                 randconfig-a004-20200529
+i386                 randconfig-a001-20200529
+i386                 randconfig-a002-20200529
+i386                 randconfig-a006-20200529
+i386                 randconfig-a003-20200529
+i386                 randconfig-a005-20200529
+i386                 randconfig-a013-20200529
+i386                 randconfig-a011-20200529
+i386                 randconfig-a012-20200529
+i386                 randconfig-a015-20200529
+i386                 randconfig-a016-20200529
+i386                 randconfig-a014-20200529
+x86_64               randconfig-a002-20200529
+x86_64               randconfig-a006-20200529
+x86_64               randconfig-a005-20200529
+x86_64               randconfig-a001-20200529
+x86_64               randconfig-a004-20200529
+x86_64               randconfig-a003-20200529
 riscv                            allyesconfig
 riscv                             allnoconfig
-riscv                               defconfig
 riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
 s390                             allmodconfig
 s390                                defconfig
 sparc                            allyesconfig
@@ -226,8 +185,8 @@ sparc64                          allyesconfig
 sparc64                          allmodconfig
 um                               allmodconfig
 um                                allnoconfig
-um                               allyesconfig
 um                                  defconfig
+um                               allyesconfig
 x86_64                                   rhel
 x86_64                               rhel-7.6
 x86_64                    rhel-7.6-kselftests
