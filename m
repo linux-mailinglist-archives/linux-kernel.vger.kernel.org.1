@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2701EAED3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B1E1EAE74
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729564AbgFAR7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:59:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41698 "EHLO mail.kernel.org"
+        id S1730216AbgFASyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:54:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729323AbgFAR7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:59:19 -0400
+        id S1728814AbgFASCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:02:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C6782073B;
-        Mon,  1 Jun 2020 17:59:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 20F39207DF;
+        Mon,  1 Jun 2020 18:02:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034358;
-        bh=bEjTjiyU5WTV/mXwc9K1fjyai0srvW0UVwCf1vDtwTA=;
+        s=default; t=1591034541;
+        bh=Tdpp/+dYbiO4vm7xdnj/GaOsTl9Eltxb1StFT0s7nHo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lM0bvLXy8InupwOsARN0s7TyibpXnSE2cKOXjvriWodP0K3reXQKlNZagsOqLFpR3
-         kiIYZgNVdQlw1FyEWmduQzK/wbSNGh4VTOuZeO+JZfic7Fdlcoc65zJFKLmJxF7gE+
-         MfR4p9Mbcsv5xqQMUuMv8GodZ8MN8klgcN/5FBXM=
+        b=ZJK8UltiZQwzqYXy4LvmIVzv2MwmdqBztWyZRqpoyJ8Y7RxkeIiG65F8Trr9nAhor
+         nIf0g0ZUEvOf3GJ3FbOnapmpaap1gFzp53DYqnXhCC36JbywoNvcVqDOvbFfv1eDFz
+         isyVQzoL4YbNcfwdda+Iv2zCxpslRB8FBU/wl1+I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liam mcbirnie <liam.mcbirnie@boeing.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.9 58/61] net: rtnl_configure_link: fix dev flags changes arg to __dev_notify_flags
-Date:   Mon,  1 Jun 2020 19:54:05 +0200
-Message-Id: <20200601174022.259672575@linuxfoundation.org>
+        stable@vger.kernel.org, Jeremy Sowden <jeremy@azazel.net>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Subject: [PATCH 4.14 61/77] vti4: eliminated some duplicate code.
+Date:   Mon,  1 Jun 2020 19:54:06 +0200
+Message-Id: <20200601174026.969332041@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
-References: <20200601174010.316778377@linuxfoundation.org>
+In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
+References: <20200601174016.396817032@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +43,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roopa Prabhu <roopa@cumulusnetworks.com>
+From: Jeremy Sowden <jeremy@azazel.net>
 
-commit 56a49d7048703f5ffdb84d3a0ee034108fba6850 upstream.
+commit f981c57ffd2d7cf2dd4b6d6f8fcb3965df42f54c upstream.
 
-This fix addresses https://bugzilla.kernel.org/show_bug.cgi?id=201071
+The ipip tunnel introduced in commit dd9ee3444014 ("vti4: Fix a ipip
+packet processing bug in 'IPCOMP' virtual tunnel") largely duplicated
+the existing vti_input and vti_recv functions.  Refactored to
+deduplicate the common code.
 
-Commit 5025f7f7d506 wrongly relied on __dev_change_flags to notify users of
-dev flag changes in the case when dev->rtnl_link_state = RTNL_LINK_INITIALIZED.
-Fix it by indicating flag changes explicitly to __dev_notify_flags.
-
-Fixes: 5025f7f7d506 ("rtnetlink: add rtnl_link_state check in rtnl_configure_link")
-Reported-By: Liam mcbirnie <liam.mcbirnie@boeing.com>
-Signed-off-by: Roopa Prabhu <roopa@cumulusnetworks.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Cc: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/core/rtnetlink.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv4/ip_vti.c |   60 +++++++++++++++++++-----------------------------------
+ 1 file changed, 22 insertions(+), 38 deletions(-)
 
---- a/net/core/rtnetlink.c
-+++ b/net/core/rtnetlink.c
-@@ -2361,7 +2361,7 @@ int rtnl_configure_link(struct net_devic
+--- a/net/ipv4/ip_vti.c
++++ b/net/ipv4/ip_vti.c
+@@ -50,7 +50,7 @@ static unsigned int vti_net_id __read_mo
+ static int vti_tunnel_init(struct net_device *dev);
+ 
+ static int vti_input(struct sk_buff *skb, int nexthdr, __be32 spi,
+-		     int encap_type)
++		     int encap_type, bool update_skb_dev)
+ {
+ 	struct ip_tunnel *tunnel;
+ 	const struct iphdr *iph = ip_hdr(skb);
+@@ -65,6 +65,9 @@ static int vti_input(struct sk_buff *skb
+ 
+ 		XFRM_TUNNEL_SKB_CB(skb)->tunnel.ip4 = tunnel;
+ 
++		if (update_skb_dev)
++			skb->dev = tunnel->dev;
++
+ 		return xfrm_input(skb, nexthdr, spi, encap_type);
  	}
  
- 	if (dev->rtnl_link_state == RTNL_LINK_INITIALIZED) {
--		__dev_notify_flags(dev, old_flags, 0U);
-+		__dev_notify_flags(dev, old_flags, (old_flags ^ dev->flags));
- 	} else {
- 		dev->rtnl_link_state = RTNL_LINK_INITIALIZED;
- 		__dev_notify_flags(dev, old_flags, ~0U);
+@@ -74,47 +77,28 @@ drop:
+ 	return 0;
+ }
+ 
+-static int vti_input_ipip(struct sk_buff *skb, int nexthdr, __be32 spi,
+-		     int encap_type)
++static int vti_input_proto(struct sk_buff *skb, int nexthdr, __be32 spi,
++			   int encap_type)
+ {
+-	struct ip_tunnel *tunnel;
+-	const struct iphdr *iph = ip_hdr(skb);
+-	struct net *net = dev_net(skb->dev);
+-	struct ip_tunnel_net *itn = net_generic(net, vti_net_id);
+-
+-	tunnel = ip_tunnel_lookup(itn, skb->dev->ifindex, TUNNEL_NO_KEY,
+-				  iph->saddr, iph->daddr, 0);
+-	if (tunnel) {
+-		if (!xfrm4_policy_check(NULL, XFRM_POLICY_IN, skb))
+-			goto drop;
+-
+-		XFRM_TUNNEL_SKB_CB(skb)->tunnel.ip4 = tunnel;
+-
+-		skb->dev = tunnel->dev;
+-
+-		return xfrm_input(skb, nexthdr, spi, encap_type);
+-	}
+-
+-	return -EINVAL;
+-drop:
+-	kfree_skb(skb);
+-	return 0;
++	return vti_input(skb, nexthdr, spi, encap_type, false);
+ }
+ 
+-static int vti_rcv(struct sk_buff *skb)
++static int vti_rcv(struct sk_buff *skb, __be32 spi, bool update_skb_dev)
+ {
+ 	XFRM_SPI_SKB_CB(skb)->family = AF_INET;
+ 	XFRM_SPI_SKB_CB(skb)->daddroff = offsetof(struct iphdr, daddr);
+ 
+-	return vti_input(skb, ip_hdr(skb)->protocol, 0, 0);
++	return vti_input(skb, ip_hdr(skb)->protocol, spi, 0, update_skb_dev);
+ }
+ 
+-static int vti_rcv_ipip(struct sk_buff *skb)
++static int vti_rcv_proto(struct sk_buff *skb)
+ {
+-	XFRM_SPI_SKB_CB(skb)->family = AF_INET;
+-	XFRM_SPI_SKB_CB(skb)->daddroff = offsetof(struct iphdr, daddr);
++	return vti_rcv(skb, 0, false);
++}
+ 
+-	return vti_input_ipip(skb, ip_hdr(skb)->protocol, ip_hdr(skb)->saddr, 0);
++static int vti_rcv_tunnel(struct sk_buff *skb)
++{
++	return vti_rcv(skb, ip_hdr(skb)->saddr, true);
+ }
+ 
+ static int vti_rcv_cb(struct sk_buff *skb, int err)
+@@ -482,31 +466,31 @@ static void __net_init vti_fb_tunnel_ini
+ }
+ 
+ static struct xfrm4_protocol vti_esp4_protocol __read_mostly = {
+-	.handler	=	vti_rcv,
+-	.input_handler	=	vti_input,
++	.handler	=	vti_rcv_proto,
++	.input_handler	=	vti_input_proto,
+ 	.cb_handler	=	vti_rcv_cb,
+ 	.err_handler	=	vti4_err,
+ 	.priority	=	100,
+ };
+ 
+ static struct xfrm4_protocol vti_ah4_protocol __read_mostly = {
+-	.handler	=	vti_rcv,
+-	.input_handler	=	vti_input,
++	.handler	=	vti_rcv_proto,
++	.input_handler	=	vti_input_proto,
+ 	.cb_handler	=	vti_rcv_cb,
+ 	.err_handler	=	vti4_err,
+ 	.priority	=	100,
+ };
+ 
+ static struct xfrm4_protocol vti_ipcomp4_protocol __read_mostly = {
+-	.handler	=	vti_rcv,
+-	.input_handler	=	vti_input,
++	.handler	=	vti_rcv_proto,
++	.input_handler	=	vti_input_proto,
+ 	.cb_handler	=	vti_rcv_cb,
+ 	.err_handler	=	vti4_err,
+ 	.priority	=	100,
+ };
+ 
+ static struct xfrm_tunnel ipip_handler __read_mostly = {
+-	.handler	=	vti_rcv_ipip,
++	.handler	=	vti_rcv_tunnel,
+ 	.err_handler	=	vti4_err,
+ 	.priority	=	0,
+ };
 
 
