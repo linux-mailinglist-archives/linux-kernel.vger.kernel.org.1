@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 049621EAC2F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 668371EAF18
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731683AbgFASQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:16:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36834 "EHLO mail.kernel.org"
+        id S1730307AbgFAS7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:59:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730592AbgFASQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:16:12 -0400
+        id S1728358AbgFAR5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:57:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D4A42065C;
-        Mon,  1 Jun 2020 18:16:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC4CD206E2;
+        Mon,  1 Jun 2020 17:57:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035372;
-        bh=+HWOD6oJo8RJaqpjSPos9B12MMF2A7CC0NCmDCWJuE0=;
+        s=default; t=1591034241;
+        bh=6fU6roTFzC+TA+Ol0XxJWSS2BpufeCtqNSOpSiz+trk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VzaPtMLEgKL7QXbZLmK0v5sdlPL/ip6AVywtUg4x+ZUqc1aZQF9HqyZRFZXeRrKZP
-         u4ggpHBdlU55DlOcKWvcqic/E6oqazHjJujDgk+QC0q3qPA6DVw3VcxGJuwizec9Yi
-         ZJAvxIO+WUs+lG4oFZgISy4bj8v4Za3i2cTam+98=
+        b=TLrTJ8U/ZVn0J7wsM8hHSxBtTUtndeWYwqPBpf/vye7FsfdqpKTdEZZJk/0Wpn+RQ
+         RehXDlkCtoch2obZSM2c118XILB90riNszmUQM6vcclB/psbFoYQstsHeeAqMRVbue
+         sJbdB3Nc5P2pNLpLDZrOAxqNMNQSoPWlfDY14hYI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kevin Locke <kevin@kevinlocke.name>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 090/177] Input: i8042 - add ThinkPad S230u to i8042 reset list
+        stable@vger.kernel.org, kbuild test robot <lkp@intel.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 4.4 38/48] netfilter: nf_conntrack_pptp: fix compilation warning with W=1 build
 Date:   Mon,  1 Jun 2020 19:53:48 +0200
-Message-Id: <20200601174056.348002124@linuxfoundation.org>
+Message-Id: <20200601174003.198014582@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601173952.175939894@linuxfoundation.org>
+References: <20200601173952.175939894@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,60 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kevin Locke <kevin@kevinlocke.name>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit 2712c91a54a1058d55c284152b4d93c979b67be6 ]
+commit 4946ea5c1237036155c3b3a24f049fd5f849f8f6 upstream.
 
-On the Lenovo ThinkPad Twist S230u (3347-4HU) with BIOS version
-"GDETC1WW (1.81 ) 06/27/2019", the keyboard, Synaptics TouchPad, and
-TrackPoint either do not function or stop functioning a few minutes
-after boot.  This problem has been noted before, perhaps only occurring
-with BIOS 1.57 and later.[1][2][3][4][5]
+>> include/linux/netfilter/nf_conntrack_pptp.h:13:20: warning: 'const' type qualifier on return type has no effect [-Wignored-qualifiers]
+extern const char *const pptp_msg_name(u_int16_t msg);
+^~~~~~
 
-Odds of a BIOS fix appear to be low: 1.57 was released over 6 years ago
-and although the [BIOS changelog] notes "Fixed an issue of UEFI
-touchpad/trackpoint/keyboard/touchscreen" in 1.58, it appears to be
-insufficient.
+Reported-by: kbuild test robot <lkp@intel.com>
+Fixes: 4c559f15efcc ("netfilter: nf_conntrack_pptp: prevent buffer overflows in debug code")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Setting i8042.reset=1 or adding 33474HU to the reset list avoids the
-issue on my system from either warm or cold boot.
-
-[1]: https://bugs.launchpad.net/bugs/1210748
-[2]: https://bbs.archlinux.org/viewtopic.php?pid=1360425
-[3]: https://forums.linuxmint.com/viewtopic.php?f=46&t=41200
-[4]: https://forums.linuxmint.com/viewtopic.php?f=49&t=157115
-[5]: https://forums.lenovo.com/topic/findpost/27/1337119
-[BIOS changelog]: https://download.lenovo.com/pccbbs/mobiles/gduj33uc.txt
-
-Signed-off-by: Kevin Locke <kevin@kevinlocke.name>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/94f384b0f75f90f71425d7dce7ac82c59ddb87a8.1587702636.git.kevin@kevinlocke.name
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/serio/i8042-x86ia64io.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ include/linux/netfilter/nf_conntrack_pptp.h |    2 +-
+ net/netfilter/nf_conntrack_pptp.c           |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/serio/i8042-x86ia64io.h b/drivers/input/serio/i8042-x86ia64io.h
-index 5bbc9152731d..c47800176534 100644
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -669,6 +669,13 @@ static const struct dmi_system_id __initconst i8042_dmi_reset_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "P65xRP"),
- 		},
- 	},
-+	{
-+		/* Lenovo ThinkPad Twist S230u */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "33474HU"),
-+		},
-+	},
- 	{ }
+--- a/include/linux/netfilter/nf_conntrack_pptp.h
++++ b/include/linux/netfilter/nf_conntrack_pptp.h
+@@ -4,7 +4,7 @@
+ 
+ #include <linux/netfilter/nf_conntrack_common.h>
+ 
+-extern const char *const pptp_msg_name(u_int16_t msg);
++const char *pptp_msg_name(u_int16_t msg);
+ 
+ /* state of the control session */
+ enum pptp_ctrlsess_state {
+--- a/net/netfilter/nf_conntrack_pptp.c
++++ b/net/netfilter/nf_conntrack_pptp.c
+@@ -90,7 +90,7 @@ static const char *const pptp_msg_name_a
+ 	[PPTP_SET_LINK_INFO]		= "SET_LINK_INFO"
  };
  
--- 
-2.25.1
-
+-const char *const pptp_msg_name(u_int16_t msg)
++const char *pptp_msg_name(u_int16_t msg)
+ {
+ 	if (msg > PPTP_MSG_MAX)
+ 		return pptp_msg_name_array[0];
 
 
