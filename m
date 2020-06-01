@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 470061EAB3F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9CE1EA9D0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731600AbgFASPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:15:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35834 "EHLO mail.kernel.org"
+        id S1729950AbgFASCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:02:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730497AbgFASPa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:15:30 -0400
+        id S1729941AbgFASCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:02:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A872F2068D;
-        Mon,  1 Jun 2020 18:15:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 15CAE206E2;
+        Mon,  1 Jun 2020 18:02:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035330;
-        bh=fbp5eN4Hnuv3+bR/hO5F+wm3gfMFLymjiWDBZD1oZEU=;
+        s=default; t=1591034550;
+        bh=5aO1MkiPsoZHL3Mh8v38hTldgDEBiyOrhHeqKbC4kKI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ELI+eDlvB+oBZetjBl1RI9/HvA6ij2ejP2aRsL/CqFeQ0MdYKIYcgW//vf2TEwyXS
-         viit+sOYd08U8odtmjMyWz8HZ1PLmpFXpNAA1n3qu/BOIXjGP80GbrGU752Iwp81Kn
-         NZeZWuWKo+G8lbkUTnH8DXyx8LXFDiAq1xQOC6t0=
+        b=o4sc1TBDkzEijOqgXQxM7pZr8zY1MZjU1DrHB6Xhpn7LYsC1uwhoVtKfnRAnB+cU1
+         VBDuOPppVVDCcA+OS9x6NUnR8jAcWP8cyG/jI8hejCZ1gYtrRU9HUr+XE7jJHBaKt2
+         3mDS7/IrUZwiX4vqUIViYG38kz6F55BEwHx107vU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 111/177] gpio: pxa: Fix return value of pxa_gpio_probe()
-Date:   Mon,  1 Jun 2020 19:54:09 +0200
-Message-Id: <20200601174057.876910842@linuxfoundation.org>
+        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 4.14 65/77] netfilter: nfnetlink_cthelper: unbreak userspace helper support
+Date:   Mon,  1 Jun 2020 19:54:10 +0200
+Message-Id: <20200601174027.589761257@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
+References: <20200601174016.396817032@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,38 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit 558ab2e8155e5f42ca0a6407957cd4173dc166cc ]
+commit 703acd70f2496537457186211c2f03e792409e68 upstream.
 
-When call function devm_platform_ioremap_resource(), we should use IS_ERR()
-to check the return value and return PTR_ERR() if failed.
+Restore helper data size initialization and fix memcopy of the helper
+data size.
 
-Fixes: 542c25b7a209 ("drivers: gpio: pxa: use devm_platform_ioremap_resource()")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 157ffffeb5dc ("netfilter: nfnetlink_cthelper: reject too large userspace allocation requests")
+Reviewed-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpio/gpio-pxa.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/netfilter/nfnetlink_cthelper.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpio/gpio-pxa.c b/drivers/gpio/gpio-pxa.c
-index 9888b62f37af..432c487f77b4 100644
---- a/drivers/gpio/gpio-pxa.c
-+++ b/drivers/gpio/gpio-pxa.c
-@@ -663,8 +663,8 @@ static int pxa_gpio_probe(struct platform_device *pdev)
- 	pchip->irq1 = irq1;
+--- a/net/netfilter/nfnetlink_cthelper.c
++++ b/net/netfilter/nfnetlink_cthelper.c
+@@ -106,7 +106,7 @@ nfnl_cthelper_from_nlattr(struct nlattr
+ 	if (help->helper->data_len == 0)
+ 		return -EINVAL;
  
- 	gpio_reg_base = devm_platform_ioremap_resource(pdev, 0);
--	if (!gpio_reg_base)
--		return -EINVAL;
-+	if (IS_ERR(gpio_reg_base))
-+		return PTR_ERR(gpio_reg_base);
+-	nla_memcpy(help->data, nla_data(attr), sizeof(help->data));
++	nla_memcpy(help->data, attr, sizeof(help->data));
+ 	return 0;
+ }
  
- 	clk = clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(clk)) {
--- 
-2.25.1
-
+@@ -240,6 +240,7 @@ nfnl_cthelper_create(const struct nlattr
+ 		ret = -ENOMEM;
+ 		goto err2;
+ 	}
++	helper->data_len = size;
+ 
+ 	helper->flags |= NF_CT_HELPER_F_USERSPACE;
+ 	memcpy(&helper->tuple, tuple, sizeof(struct nf_conntrack_tuple));
 
 
