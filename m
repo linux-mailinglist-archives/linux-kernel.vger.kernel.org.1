@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B8E1EAE4D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFEED1EADBB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730072AbgFASwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:52:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47318 "EHLO mail.kernel.org"
+        id S1730823AbgFASsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:48:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730083AbgFASD1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:03:27 -0400
+        id S1728865AbgFASHz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:07:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E213221508;
-        Mon,  1 Jun 2020 18:03:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EAD6B2077D;
+        Mon,  1 Jun 2020 18:07:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034606;
-        bh=dvNwFUQLA7XkqwikiPeWnYFINmZeMemPe3n7Hv43UeI=;
+        s=default; t=1591034874;
+        bh=vN3bm/W5eDb1TaNYXCarzKAed2YV4sq1ytDMwUyY3ec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lbIHA37zyfSEizG38JMmlxXpSVJWYqBiFUyjWsAXMXw88K+SZYGm7zcWCFXYHDHPd
-         zl+kQHPCsGePlIbS7xdS7G4SybR/i/uLmjS/oy/0HlfCx1JxsIBNVk1sdA62bnsE3K
-         rtqRlTpD0wQLbthFqQkaG6bmkmRUbFMOP6uhn0KU=
+        b=XO7gHS2n3OvNcIQVJzsNHq3i2Gn7YicGFVjFwVen2suMOtYxtWx0wad2lsSsha9WH
+         jYBSqC0FRnF+Lrrt0fztrc5/tuhgKSbtr8uOdRAtbo+3BIM3Phe/nkMdLV4skmsCM3
+         U6Wyl1gZ42rx/qu/2TKT5ZPw4T1Jpc4+E2oTAGWU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        kbuild test robot <lkp@intel.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 28/95] gfs2: dont call quota_unhold if quotas are not locked
+Subject: [PATCH 5.4 050/142] usb: gadget: legacy: fix redundant initialization warnings
 Date:   Mon,  1 Jun 2020 19:53:28 +0200
-Message-Id: <20200601174025.297113760@linuxfoundation.org>
+Message-Id: <20200601174042.985173771@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
-References: <20200601174020.759151073@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +46,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-[ Upstream commit c9cb9e381985bbbe8acd2695bbe6bd24bf06b81c ]
+[ Upstream commit d13cce757954fa663c69845611957396843ed87a ]
 
-Before this patch, function gfs2_quota_unlock checked if quotas are
-turned off, and if so, it branched to label out, which called
-gfs2_quota_unhold. With the new system of gfs2_qa_get and put, we
-no longer want to call gfs2_quota_unhold or we won't balance our
-gets and puts.
+Fix the following cppcheck warnings:
 
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+drivers/usb/gadget/legacy/inode.c:1364:8: style: Redundant initialization for 'value'. The initialized value is overwritten$
+ value = -EOPNOTSUPP;
+       ^
+drivers/usb/gadget/legacy/inode.c:1331:15: note: value is initialized
+ int    value = -EOPNOTSUPP;
+              ^
+drivers/usb/gadget/legacy/inode.c:1364:8: note: value is overwritten
+ value = -EOPNOTSUPP;
+       ^
+drivers/usb/gadget/legacy/inode.c:1817:8: style: Redundant initialization for 'value'. The initialized value is overwritten$
+ value = -EINVAL;
+       ^
+drivers/usb/gadget/legacy/inode.c:1787:18: note: value is initialized
+ ssize_t   value = len, length = len;
+                 ^
+drivers/usb/gadget/legacy/inode.c:1817:8: note: value is overwritten
+ value = -EINVAL;
+       ^
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
+
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/quota.c | 3 +--
+ drivers/usb/gadget/legacy/inode.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/fs/gfs2/quota.c b/fs/gfs2/quota.c
-index dd0f9bc13164..ce47c8233612 100644
---- a/fs/gfs2/quota.c
-+++ b/fs/gfs2/quota.c
-@@ -1116,7 +1116,7 @@ void gfs2_quota_unlock(struct gfs2_inode *ip)
- 	int found;
+diff --git a/drivers/usb/gadget/legacy/inode.c b/drivers/usb/gadget/legacy/inode.c
+index b47938dff1a2..238f555fe494 100644
+--- a/drivers/usb/gadget/legacy/inode.c
++++ b/drivers/usb/gadget/legacy/inode.c
+@@ -1361,7 +1361,6 @@ gadgetfs_setup (struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
  
- 	if (!test_and_clear_bit(GIF_QD_LOCKED, &ip->i_flags))
--		goto out;
-+		return;
+ 	req->buf = dev->rbuf;
+ 	req->context = NULL;
+-	value = -EOPNOTSUPP;
+ 	switch (ctrl->bRequest) {
  
- 	for (x = 0; x < ip->i_qadata->qa_qd_num; x++) {
- 		struct gfs2_quota_data *qd;
-@@ -1153,7 +1153,6 @@ void gfs2_quota_unlock(struct gfs2_inode *ip)
- 			qd_unlock(qda[x]);
- 	}
- 
--out:
- 	gfs2_quota_unhold(ip);
- }
- 
+ 	case USB_REQ_GET_DESCRIPTOR:
+@@ -1784,7 +1783,7 @@ static ssize_t
+ dev_config (struct file *fd, const char __user *buf, size_t len, loff_t *ptr)
+ {
+ 	struct dev_data		*dev = fd->private_data;
+-	ssize_t			value = len, length = len;
++	ssize_t			value, length = len;
+ 	unsigned		total;
+ 	u32			tag;
+ 	char			*kbuf;
 -- 
 2.25.1
 
