@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8411EAAF2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBBDD1EAA61
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731290AbgFASM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:12:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60158 "EHLO mail.kernel.org"
+        id S1729645AbgFASHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:07:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731269AbgFASMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:12:46 -0400
+        id S1730505AbgFASGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:06:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7EF792065C;
-        Mon,  1 Jun 2020 18:12:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F9242158C;
+        Mon,  1 Jun 2020 18:06:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035166;
-        bh=riI0q0s+shorWdUH/0kPggQ54F7P5D5VhDVxIlf0IvU=;
+        s=default; t=1591034813;
+        bh=pfcGmj5nONLg8d3yahc7JfKten971wfqBGm95XtwZMs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CeJ/iwLZLXHs4b3pvrg3nSZiZNm76h8Df6k58vH2ZFj7em/dJ4gm8oB/eJRCglN1b
-         AfTcW7vmpoqW92l1N3PFXrr04UY6qjjIv8h4Xbi7uAH8JX2zZu2wAIs7dMlU9AKQ1t
-         NmPPZjeBJvb3qZMb9ZATSwbTYwQclh16WtseAcqk=
+        b=DzSERNyA06Wv22FpV7EuYWhV3jrQUcwLjL3jnKRpwrPSOGixD0I35y/JcCAUa5FOD
+         ZXaB1Nz0A8M3AqCr6+u0E0N/YxHM6u+cjb6ciipO9v5OdpZFCMYPSTtX7/0CVx97oz
+         kZdjb57oj3dqoDAG+TSPa3ZohnqZJ0SfzDydVe0k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vadim Fedorenko <vfedorenko@novek.ru>,
+        stable@vger.kernel.org, Marc Payne <marc.payne@mdpsys.co.uk>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 037/177] net/tls: fix encryption error checking
+Subject: [PATCH 5.4 017/142] r8152: support additional Microsoft Surface Ethernet Adapter variant
 Date:   Mon,  1 Jun 2020 19:52:55 +0200
-Message-Id: <20200601174052.044096015@linuxfoundation.org>
+Message-Id: <20200601174039.675289427@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,72 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadim Fedorenko <vfedorenko@novek.ru>
+From: Marc Payne <marc.payne@mdpsys.co.uk>
 
-commit a7bff11f6f9afa87c25711db8050c9b5324db0e2 upstream.
+[ Upstream commit c27a204383616efba5a4194075e90819961ff66a ]
 
-bpf_exec_tx_verdict() can return negative value for copied
-variable. In that case this value will be pushed back to caller
-and the real error code will be lost. Fix it using signed type and
-checking for positive value.
+Device id 0927 is the RTL8153B-based component of the 'Surface USB-C to
+Ethernet and USB Adapter' and may be used as a component of other devices
+in future. Tested and working with the r8152 driver.
 
-Fixes: d10523d0b3d7 ("net/tls: free the record on encryption error")
-Fixes: d3b18ad31f93 ("tls: add bpf support to sk_msg handling")
-Signed-off-by: Vadim Fedorenko <vfedorenko@novek.ru>
+Update the cdc_ether blacklist due to the RTL8153 'network jam on suspend'
+issue which this device will cause (personally confirmed).
+
+Signed-off-by: Marc Payne <marc.payne@mdpsys.co.uk>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- net/tls/tls_sw.c |   11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/net/usb/cdc_ether.c |   11 +++++++++--
+ drivers/net/usb/r8152.c     |    1 +
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
---- a/net/tls/tls_sw.c
-+++ b/net/tls/tls_sw.c
-@@ -784,7 +784,7 @@ static int tls_push_record(struct sock *
+--- a/drivers/net/usb/cdc_ether.c
++++ b/drivers/net/usb/cdc_ether.c
+@@ -808,14 +808,21 @@ static const struct usb_device_id	produc
+ 	.driver_info = 0,
+ },
  
- static int bpf_exec_tx_verdict(struct sk_msg *msg, struct sock *sk,
- 			       bool full_record, u8 record_type,
--			       size_t *copied, int flags)
-+			       ssize_t *copied, int flags)
+-/* Microsoft Surface 3 dock (based on Realtek RTL8153) */
++/* Microsoft Surface Ethernet Adapter (based on Realtek RTL8153) */
  {
- 	struct tls_context *tls_ctx = tls_get_ctx(sk);
- 	struct tls_sw_context_tx *ctx = tls_sw_ctx_tx(tls_ctx);
-@@ -920,7 +920,8 @@ int tls_sw_sendmsg(struct sock *sk, stru
- 	unsigned char record_type = TLS_RECORD_TYPE_DATA;
- 	bool is_kvec = iov_iter_is_kvec(&msg->msg_iter);
- 	bool eor = !(msg->msg_flags & MSG_MORE);
--	size_t try_to_copy, copied = 0;
-+	size_t try_to_copy;
-+	ssize_t copied = 0;
- 	struct sk_msg *msg_pl, *msg_en;
- 	struct tls_rec *rec;
- 	int required_size;
-@@ -1129,7 +1130,7 @@ send_end:
+ 	USB_DEVICE_AND_INTERFACE_INFO(MICROSOFT_VENDOR_ID, 0x07c6, USB_CLASS_COMM,
+ 			USB_CDC_SUBCLASS_ETHERNET, USB_CDC_PROTO_NONE),
+ 	.driver_info = 0,
+ },
  
- 	release_sock(sk);
- 	mutex_unlock(&tls_ctx->tx_lock);
--	return copied ? copied : ret;
-+	return copied > 0 ? copied : ret;
- }
- 
- static int tls_sw_do_sendpage(struct sock *sk, struct page *page,
-@@ -1143,7 +1144,7 @@ static int tls_sw_do_sendpage(struct soc
- 	struct sk_msg *msg_pl;
- 	struct tls_rec *rec;
- 	int num_async = 0;
--	size_t copied = 0;
-+	ssize_t copied = 0;
- 	bool full_record;
- 	int record_room;
- 	int ret = 0;
-@@ -1245,7 +1246,7 @@ wait_for_memory:
- 	}
- sendpage_end:
- 	ret = sk_stream_error(sk, flags, ret);
--	return copied ? copied : ret;
-+	return copied > 0 ? copied : ret;
- }
- 
- int tls_sw_sendpage_locked(struct sock *sk, struct page *page,
+-	/* TP-LINK UE300 USB 3.0 Ethernet Adapters (based on Realtek RTL8153) */
++/* Microsoft Surface Ethernet Adapter (based on Realtek RTL8153B) */
++{
++	USB_DEVICE_AND_INTERFACE_INFO(MICROSOFT_VENDOR_ID, 0x0927, USB_CLASS_COMM,
++			USB_CDC_SUBCLASS_ETHERNET, USB_CDC_PROTO_NONE),
++	.driver_info = 0,
++},
++
++/* TP-LINK UE300 USB 3.0 Ethernet Adapters (based on Realtek RTL8153) */
+ {
+ 	USB_DEVICE_AND_INTERFACE_INFO(TPLINK_VENDOR_ID, 0x0601, USB_CLASS_COMM,
+ 			USB_CDC_SUBCLASS_ETHERNET, USB_CDC_PROTO_NONE),
+--- a/drivers/net/usb/r8152.c
++++ b/drivers/net/usb/r8152.c
+@@ -5837,6 +5837,7 @@ static const struct usb_device_id rtl815
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_REALTEK, 0x8153)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_MICROSOFT, 0x07ab)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_MICROSOFT, 0x07c6)},
++	{REALTEK_USB_DEVICE(VENDOR_ID_MICROSOFT, 0x0927)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_SAMSUNG, 0xa101)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_LENOVO,  0x304f)},
+ 	{REALTEK_USB_DEVICE(VENDOR_ID_LENOVO,  0x3062)},
 
 
