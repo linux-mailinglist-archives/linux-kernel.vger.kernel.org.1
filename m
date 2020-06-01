@@ -2,161 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995D21EA19E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 12:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D679D1EA1A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 12:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726022AbgFAKN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 06:13:27 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:37140 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725788AbgFAKN0 (ORCPT
+        id S1726152AbgFAKOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 06:14:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725788AbgFAKOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 06:13:26 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200601101324euoutp0168d59c5d5ecaf47d720c22ab5c9a59d4~UY_U54yGL3128631286euoutp015
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 10:13:24 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200601101324euoutp0168d59c5d5ecaf47d720c22ab5c9a59d4~UY_U54yGL3128631286euoutp015
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1591006404;
-        bh=OHPpvFiZE34wyuaajTiViUqmeZXVmXg2EsQc6ds9wOQ=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=mv9J7U/d73ZUz19tReRboQNpB/izF7iF9yw4kTGhXwdzUCvgYQtNAVGmLkG/Lj8/d
-         EL25ZRDfA4uwGOESzba2VOxCvIBUHbLmdy2cKAIpPJ+PLIyMEhozreU59VWUSM3w8B
-         G+p/9ZdH2xPPdjkocXWeoijkTQooIENhGPfoQZgQ=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200601101324eucas1p2ae7ab4c7b9378ec6e04f1f7a3359a371~UY_U1BqEt2675526755eucas1p27;
-        Mon,  1 Jun 2020 10:13:24 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 02.80.60698.4C4D4DE5; Mon,  1
-        Jun 2020 11:13:24 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200601101324eucas1p16837835ff355d5b42c8099c29270722d~UY_UhvFxF2001920019eucas1p1J;
-        Mon,  1 Jun 2020 10:13:24 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200601101324eusmtrp263c67fd0180586027f1ce6e6b16fc016~UY_UhLpRQ2432024320eusmtrp2K;
-        Mon,  1 Jun 2020 10:13:24 +0000 (GMT)
-X-AuditID: cbfec7f5-a29ff7000001ed1a-e2-5ed4d4c44590
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 31.51.07950.4C4D4DE5; Mon,  1
-        Jun 2020 11:13:24 +0100 (BST)
-Received: from [106.120.51.71] (unknown [106.120.51.71]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200601101323eusmtip182101ceb7f0eb212baafb1a6e4a21fe5~UY_UN6HOb1231112311eusmtip1d;
-        Mon,  1 Jun 2020 10:13:23 +0000 (GMT)
-Subject: Re: [PATCH] ata: omit superfluous error message
-To:     Tang Bin <tangbin@cmss.chinamobile.com>
-Cc:     axboe@kernel.dk, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-From:   Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Message-ID: <7c2974bd-5aa5-b423-ebb4-2fdf8a41f6ca@samsung.com>
-Date:   Mon, 1 Jun 2020 12:13:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
-        Thunderbird/60.8.0
+        Mon, 1 Jun 2020 06:14:16 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F6CC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 03:14:15 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id 1so5261913vsl.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 03:14:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=dteu7F2HW9maWHh219okMdcIHh48ZidMoXpjcQhbbjmtnz8ulNF3GTzDfBxdibuzXE
+         tPnKiyASN+ys7B3Y/XolGNjc364m48bxnVtrmDIz9Pznm5cEIXkYMpqNF7seUKP0Ezkg
+         VO9rXztLxTLtrFoJCfhuUXGdWuRKjUBhwGYg+HW7XxslwhIRMdi0jBPbYqXG2trQGxHJ
+         R4w8Okmn6f/U1Tyb8qH/i5I2G4ly3jmjm7ZEy0yRpKg7hAGKAiO0EavtBgvoMwD/Th5u
+         GWMGEuBmw46t+UTT13f/ituEiY5xqzA+3AM53jnG5ELIwyxVO9Lu8OuuiBkGfN4e99YU
+         h9Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=bAViPJDzVTQcWzsOrO2gZS2UIzZiNgL1ARnNXwC5QVXCPIuHhSWsnYFyqfQhfjfSXx
+         xFUoOOiOa7MzIfZnz+wKzr5245IVDJ+QFQ+rAwudRWQ56/cx05TeqD8QyAOoDG07xvNY
+         ym1ArDPTXN5tbH+1mfntPml34YcI5WtYfrsxtALM1MNZmzy07yFM55efGLHicmUNeqm9
+         V6UTmTsEjMoEXPpewRuEdY1Zultr/uTiSw2f5fdM7E5Y1JLKxHy1eT9zlXhYet25m+Kr
+         Dh1mjTK9DsEDPwj1tbnwkG2+518LQn1aU2BCM8u7c5mmvZEQubxuqPx8ogq7UJ8Z5Eox
+         qTmw==
+X-Gm-Message-State: AOAM533VcfrDhtS0Ubr9/e4d9qveMfSBqOtMwPdDwEcFm5RZFv2KnJPE
+        EBoF9vySq6f/YPoCFab/R4QLWOMHUZGSQeB76Ao=
+X-Google-Smtp-Source: ABdhPJxe97ruq9nFerkxXo6qonckXmPkwVREKjg94f9QaEXpXRXHqWwSI7e+mn0RDEVYoQG90yQ6tlTLSRem0hZbV0A=
+X-Received: by 2002:a67:e9d3:: with SMTP id q19mr13038102vso.220.1591006454373;
+ Mon, 01 Jun 2020 03:14:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200420135342.11984-1-tangbin@cmss.chinamobile.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEKsWRmVeSWpSXmKPExsWy7djP87pHrlyJM/jWI26x+m4/m8WxHY+Y
-        LC7vmsNm8fF/M7MDi8f56b1sHpfPlnp83iQXwBzFZZOSmpNZllqkb5fAlfG2Zw1TwQW+iqXX
-        ZjI2ML7m7mLk5JAQMJG483EBexcjF4eQwApGiXezzrJCOF8YJfa92sUM4XxmlFi3bAMLTMvV
-        5nNQieWMEocfTmKCcN4ySjxYPpUNpEpYwELiwcPZzCC2iIC2xOZJEN3MAj4SJ+Z3M4LYbAJW
-        EhPbV4HZvAJ2EtcvbgWrYRFQkfi9rZsJxBYViJD49OAwK0SNoMTJmU/AajgFnCROTN3FDjFT
-        XOLWk/lMELa8xPa3c8CukxDoZpdo2f2AEeJsF4kbnZOgXhCWeHV8CzuELSPxf+d8JoiGdYwS
-        fzteQHVvZ5RYPvkfG0SVtcSdc7+AbA6gFZoS63fpQ4QdJX7PWMoKEpYQ4JO48VYQ4gg+iUnb
-        pjNDhHklOtqEIKrVJDYs28AGs7Zr50rmCYxKs5C8NgvJO7OQvDMLYe8CRpZVjOKppcW56anF
-        xnmp5XrFibnFpXnpesn5uZsYgSnl9L/jX3cw7vuTdIhRgINRiYdX49LlOCHWxLLiytxDjBIc
-        zEoivE5nT8cJ8aYkVlalFuXHF5XmpBYfYpTmYFES5zVe9DJWSCA9sSQ1OzW1ILUIJsvEwSnV
-        wGgjEJ6xOy/06qsLxzL7z7WsEdu88/xxGaZkw/6b/S/cl06aaqC1e8aftBccO5m+JJkFaWhL
-        zUiYHf1o8tE7ccL26z6q/zn64GnmhMAJm9qZShgEz7JaLervfSb53uUV29UdksfE93/vVJar
-        9F94t3Dr/rjvHuvmOi1k37p8/kT+1/K/s7kWRxUrsRRnJBpqMRcVJwIAPqV8sCUDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrMIsWRmVeSWpSXmKPExsVy+t/xu7pHrlyJM3i1ksVi9d1+NotjOx4x
-        WVzeNYfN4uP/ZmYHFo/z03vZPC6fLfX4vEkugDlKz6Yov7QkVSEjv7jEVina0MJIz9DSQs/I
-        xFLP0Ng81srIVEnfziYlNSezLLVI3y5BL+Ntzxqmggt8FUuvzWRsYHzN3cXIySEhYCJxtfkc
-        cxcjF4eQwFJGiUUzfwA5HEAJGYnj68sgaoQl/lzrYoOoec0o8WLfFVaQhLCAhcSDh7OZQWwR
-        AW2JzZM2sIDYzAI+EifmdzNCNExllFh36hNYA5uAlcTE9lWMIDavgJ3E9YtbwRpYBFQkfm/r
-        ZgKxRQUiJA7vmAVVIyhxcuYTsBpOASeJE1N3sUMsUJf4M+8SM4QtLnHryXwmCFteYvvbOcwT
-        GIVmIWmfhaRlFpKWWUhaFjCyrGIUSS0tzk3PLTbSK07MLS7NS9dLzs/dxAiMoG3Hfm7Zwdj1
-        LvgQowAHoxIP74Xzl+OEWBPLiitzDzFKcDArifA6nT0dJ8SbklhZlVqUH19UmpNafIjRFOi5
-        icxSosn5wOjOK4k3NDU0t7A0NDc2NzazUBLn7RA4GCMkkJ5YkpqdmlqQWgTTx8TBKdXAyH55
-        WfWrOS+tni1uCl8QscjiYerrzslFyyJDJml+nfkn7dS3m8FNRxN/imqc7dCJLrLuUgycsPDa
-        BJv6d2JbHXWDX2w57vIm88PWqRan175SenhZj9v+MLd44tOIXR2fqwUCtUJaTFpfvwl72BWU
-        8yJ2WdKBqT9Vvxie0OreaBtleOiO6CvGuUosxRmJhlrMRcWJAGmP0wG2AgAA
-X-CMS-MailID: 20200601101324eucas1p16837835ff355d5b42c8099c29270722d
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200420135215eucas1p2f807c43a232564804dc864db55bd09a8
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200420135215eucas1p2f807c43a232564804dc864db55bd09a8
-References: <CGME20200420135215eucas1p2f807c43a232564804dc864db55bd09a8@eucas1p2.samsung.com>
-        <20200420135342.11984-1-tangbin@cmss.chinamobile.com>
+Received: by 2002:a67:7c09:0:0:0:0:0 with HTTP; Mon, 1 Jun 2020 03:14:11 -0700 (PDT)
+Reply-To: robertandersonhappy1@gmail.com
+From:   robert <ohehehe3055@gmail.com>
+Date:   Mon, 1 Jun 2020 03:14:11 -0700
+Message-ID: <CADYWKHxGE=Qhukb22bSKPvMNF_0CZ4+UtO=c5miCDN4-YAQmdA@mail.gmail.com>
+Subject: =?UTF-8?B?0JTQvtGA0L7Qs9C+0Lkg0LTRgNGD0LMsINCc0LXQvdGPINC30L7QstGD0YIg0JHQsNGA?=
+        =?UTF-8?B?0YDQvtCx0LXRgNGCINCQ0L3QtNC10YDRgdC+0L0uINCvINCw0LTQstC+0LrQsNGCINC4INGH0LDRgdGC?=
+        =?UTF-8?B?0L3Ri9C5INC80LXQvdC10LTQttC10YAg0L/QviDRgNCw0LHQvtGC0LUg0YEg0LrQu9C40LXQvdGC0LA=?=
+        =?UTF-8?B?0LzQuCDQv9C+0LrQvtC50L3QvtC80YMg0LrQu9C40LXQvdGC0YMuINCSIDIwMTUg0LPQvtC00YMg0Lw=?=
+        =?UTF-8?B?0L7QuSDQutC70LjQtdC90YIg0L/QviDQuNC80LXQvdC4INCc0LjRgdGC0LXRgCDQmtCw0YDQu9C+0YEs?=
+        =?UTF-8?B?INGB0LrQvtC90YfQsNC70YHRjywg0L/RgNC40YfQuNC90LAsINC/0L4g0LrQvtGC0L7RgNC+0Lkg0Y8g?=
+        =?UTF-8?B?0YHQstGP0LfQsNC70YHRjyDRgSDQstCw0LzQuCwg0L/QvtGC0L7QvNGDINGH0YLQviDQstGLINC90L4=?=
+        =?UTF-8?B?0YHQuNGC0LUg0YLRgyDQttC1INGE0LDQvNC40LvQuNGOINGBINGD0LzQtdGA0YjQuNC8LCDQuCDRjyA=?=
+        =?UTF-8?B?0LzQvtCz0YMg0L/RgNC10LTRgdGC0LDQstC40YLRjCDQstCw0YEg0LrQsNC6INCx0LXQvdC10YTQuNGG?=
+        =?UTF-8?B?0LjQsNGA0LAg0Lgg0LHQu9C40LbQsNC50YjQuNGFINGA0L7QtNGB0YLQstC10L3QvdC40LrQvtCyINCy?=
+        =?UTF-8?B?INC80L7QuCDRgdGA0LXQtNGB0YLQstCwINC/0L7QutC+0LnQvdC+0LPQviDQutC70LjQtdC90YLQsCwg?=
+        =?UTF-8?B?0YLQviDQstGLINCx0YPQtNC10YLQtSDRgdGC0L7Rj9GC0Ywg0LrQsNC6INC10LPQviDQsdC70LjQttCw?=
+        =?UTF-8?B?0LnRiNC40LUg0YDQvtC00YHRgtCy0LXQvdC90LjQutC4INC4INGC0YDQtdCx0L7QstCw0YLRjCDRgdGA?=
+        =?UTF-8?B?0LXQtNGB0YLQstCwLiDQvtGB0YLQsNCy0LjQsiDQtNC10L3RjNCz0Lgg0L3QsNGB0LvQtdC00YHRgtCy?=
+        =?UTF-8?B?0L4g0YHQtdC80Lgg0LzQuNC70LvQuNC+0L3QvtCyINC/0Y/RgtC40YHQvtGCINGC0YvRgdGP0Ycg0LQ=?=
+        =?UTF-8?B?0L7Qu9C70LDRgNC+0LIg0KHQqNCQINCU0L7Qu9C70LDRgNGLICg3LDUwMCwwMDAsMDAg0LTQvtC70Ls=?=
+        =?UTF-8?B?0LDRgNC+0LIg0KHQqNCQKS4g0JzQvtC5INC/0L7QutC+0LnQvdGL0Lkg0LrQu9C40LXQve+/vQ==?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi,
-
-On 4/20/20 3:53 PM, Tang Bin wrote:
-> In the probe function, when get irq failed, the function
-> platform_get_irq() logs an error message, so remove
-> redundant message here.
-
-platform_get_irq() doesn't log an error message for -EPROBE_DEFER
-case so the conversion shouldn't be done automatically for device
-drivers which don't support deferred probing (i.e. pata_rb532_cf &
-sata_highbank).
-
-Unless there is a proof that -PROBE_DEFER can't happen for these
-two drivers this patch shouldn't be applied.
-
-Best regards,
---
-Bartlomiej Zolnierkiewicz
-Samsung R&D Institute Poland
-Samsung Electronics
-
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-> ---
->  drivers/ata/pata_rb532_cf.c | 4 +---
->  drivers/ata/sata_highbank.c | 4 +---
->  2 files changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/ata/pata_rb532_cf.c b/drivers/ata/pata_rb532_cf.c
-> index 479c4b29b..dcde84f57 100644
-> --- a/drivers/ata/pata_rb532_cf.c
-> +++ b/drivers/ata/pata_rb532_cf.c
-> @@ -115,10 +115,8 @@ static int rb532_pata_driver_probe(struct platform_device *pdev)
->  	}
->  
->  	irq = platform_get_irq(pdev, 0);
-> -	if (irq <= 0) {
-> -		dev_err(&pdev->dev, "no IRQ resource found\n");
-> +	if (irq <= 0)
->  		return -ENOENT;
-> -	}
->  
->  	gpiod = devm_gpiod_get(&pdev->dev, NULL, GPIOD_IN);
->  	if (IS_ERR(gpiod)) {
-> diff --git a/drivers/ata/sata_highbank.c b/drivers/ata/sata_highbank.c
-> index ad3893c62..efd1925a9 100644
-> --- a/drivers/ata/sata_highbank.c
-> +++ b/drivers/ata/sata_highbank.c
-> @@ -469,10 +469,8 @@ static int ahci_highbank_probe(struct platform_device *pdev)
->  	}
->  
->  	irq = platform_get_irq(pdev, 0);
-> -	if (irq <= 0) {
-> -		dev_err(dev, "no irq\n");
-> +	if (irq <= 0)
->  		return -EINVAL;
-> -	}
->  
->  	hpriv = devm_kzalloc(dev, sizeof(*hpriv), GFP_KERNEL);
->  	if (!hpriv) {
-> 
 
