@@ -2,39 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE021EAA4B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0CB11EAAA2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730480AbgFASGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:06:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51456 "EHLO mail.kernel.org"
+        id S1730948AbgFASJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:09:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730406AbgFASGG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:06:06 -0400
+        id S1730379AbgFASJt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:09:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 728262077D;
-        Mon,  1 Jun 2020 18:06:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1897A2077D;
+        Mon,  1 Jun 2020 18:09:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034765;
-        bh=vYJ88IOr9lCJ7TOKGhDRbgzmqwaPfFpnB+z7vlTJgaA=;
+        s=default; t=1591034988;
+        bh=s+yeWGQSX+7m0ap12fJwIoI2VzAPXjgTPoBM4nfbr80=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JlvuEwre7XK2S3yVoG5W+6rrduktuIT4XfAERNHDnkUHc6G+0rdqd7SIJEg4BH33h
-         4cR1rgPagGJc12WgxQfksYMuXctPF4soYLPhFNQEsPP3OmKT/2NSGAF4JhnXVroJJu
-         fXfmlpDqNBn3IzEI1sr72PzAv6a7o9AYnJTT2cKc=
+        b=vMSXFyASL52njei35IMcoLQVaEkyVM3Bf3/Oz6mE67T8Nj2cu541G2NyLqERifH7C
+         O84qUuUZwFCrqWAT9RzOFuZikYkJTPxZ87sXT/66ce0L0I82UrWVbWVXv03ghuWKm0
+         JphRCyXueQ9UqW58UBJ5Pt8/A3X8v/78TDvXf8Iw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Subject: [PATCH 4.19 78/95] xfrm: fix a warning in xfrm_policy_insert_list
+        stable@vger.kernel.org,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Rientjes <rientjes@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 100/142] mm: remove VM_BUG_ON(PageSlab()) from page_mapcount()
 Date:   Mon,  1 Jun 2020 19:54:18 +0200
-Message-Id: <20200601174032.649451988@linuxfoundation.org>
+Message-Id: <20200601174048.343329685@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
-References: <20200601174020.759151073@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,76 +50,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
 
-commit ed17b8d377eaf6b4a01d46942b4c647378a79bdd upstream.
+[ Upstream commit 6988f31d558aa8c744464a7f6d91d34ada48ad12 ]
 
-This waring can be triggered simply by:
+Replace superfluous VM_BUG_ON() with comment about correct usage.
 
-  # ip xfrm policy update src 192.168.1.1/24 dst 192.168.1.2/24 dir in \
-    priority 1 mark 0 mask 0x10  #[1]
-  # ip xfrm policy update src 192.168.1.1/24 dst 192.168.1.2/24 dir in \
-    priority 2 mark 0 mask 0x1   #[2]
-  # ip xfrm policy update src 192.168.1.1/24 dst 192.168.1.2/24 dir in \
-    priority 2 mark 0 mask 0x10  #[3]
+Technically reverts commit 1d148e218a0d ("mm: add VM_BUG_ON_PAGE() to
+page_mapcount()"), but context lines have changed.
 
-Then dmesg shows:
+Function isolate_migratepages_block() runs some checks out of lru_lock
+when choose pages for migration.  After checking PageLRU() it checks
+extra page references by comparing page_count() and page_mapcount().
+Between these two checks page could be removed from lru, freed and taken
+by slab.
 
-  [ ] WARNING: CPU: 1 PID: 7265 at net/xfrm/xfrm_policy.c:1548
-  [ ] RIP: 0010:xfrm_policy_insert_list+0x2f2/0x1030
-  [ ] Call Trace:
-  [ ]  xfrm_policy_inexact_insert+0x85/0xe50
-  [ ]  xfrm_policy_insert+0x4ba/0x680
-  [ ]  xfrm_add_policy+0x246/0x4d0
-  [ ]  xfrm_user_rcv_msg+0x331/0x5c0
-  [ ]  netlink_rcv_skb+0x121/0x350
-  [ ]  xfrm_netlink_rcv+0x66/0x80
-  [ ]  netlink_unicast+0x439/0x630
-  [ ]  netlink_sendmsg+0x714/0xbf0
-  [ ]  sock_sendmsg+0xe2/0x110
+As a result this race triggers VM_BUG_ON(PageSlab()) in page_mapcount().
+Race window is tiny.  For certain workload this happens around once a
+year.
 
-The issue was introduced by Commit 7cb8a93968e3 ("xfrm: Allow inserting
-policies with matching mark and different priorities"). After that, the
-policies [1] and [2] would be able to be added with different priorities.
+    page:ffffea0105ca9380 count:1 mapcount:0 mapping:ffff88ff7712c180 index:0x0 compound_mapcount: 0
+    flags: 0x500000000008100(slab|head)
+    raw: 0500000000008100 dead000000000100 dead000000000200 ffff88ff7712c180
+    raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
+    page dumped because: VM_BUG_ON_PAGE(PageSlab(page))
+    ------------[ cut here ]------------
+    kernel BUG at ./include/linux/mm.h:628!
+    invalid opcode: 0000 [#1] SMP NOPTI
+    CPU: 77 PID: 504 Comm: kcompactd1 Tainted: G        W         4.19.109-27 #1
+    Hardware name: Yandex T175-N41-Y3N/MY81-EX0-Y3N, BIOS R05 06/20/2019
+    RIP: 0010:isolate_migratepages_block+0x986/0x9b0
 
-However, policy [3] will actually match both [1] and [2]. Policy [1]
-was matched due to the 1st 'return true' in xfrm_policy_mark_match(),
-and policy [2] was matched due to the 2nd 'return true' in there. It
-caused WARN_ON() in xfrm_policy_insert_list().
+The code in isolate_migratepages_block() was added in commit
+119d6d59dcc0 ("mm, compaction: avoid isolating pinned pages") before
+adding VM_BUG_ON into page_mapcount().
 
-This patch is to fix it by only (the same value and priority) as the
-same policy in xfrm_policy_mark_match().
+This race has been predicted in 2015 by Vlastimil Babka (see link
+below).
 
-Thanks to Yuehaibing, we could make this fix better.
-
-v1->v2:
-  - check policy->mark.v == pol->mark.v only without mask.
-
-Fixes: 7cb8a93968e3 ("xfrm: Allow inserting policies with matching mark and different priorities")
-Reported-by: Xiumei Mu <xmu@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+[akpm@linux-foundation.org: comment tweaks, per Hugh]
+Fixes: 1d148e218a0d ("mm: add VM_BUG_ON_PAGE() to page_mapcount()")
+Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Hugh Dickins <hughd@google.com>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: David Rientjes <rientjes@google.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/159032779896.957378.7852761411265662220.stgit@buzz
+Link: https://lore.kernel.org/lkml/557710E1.6060103@suse.cz/
+Link: https://lore.kernel.org/linux-mm/158937872515.474360.5066096871639561424.stgit@buzz/T/ (v1)
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_policy.c |    7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ include/linux/mm.h | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
---- a/net/xfrm/xfrm_policy.c
-+++ b/net/xfrm/xfrm_policy.c
-@@ -730,12 +730,7 @@ static void xfrm_policy_requeue(struct x
- static bool xfrm_policy_mark_match(struct xfrm_policy *policy,
- 				   struct xfrm_policy *pol)
- {
--	u32 mark = policy->mark.v & policy->mark.m;
--
--	if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
--		return true;
--
--	if ((mark & pol->mark.m) == pol->mark.v &&
-+	if (policy->mark.v == pol->mark.v &&
- 	    policy->priority == pol->priority)
- 		return true;
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index afa77b683a04..53bad834adf5 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -695,6 +695,11 @@ static inline void *kvcalloc(size_t n, size_t size, gfp_t flags)
  
+ extern void kvfree(const void *addr);
+ 
++/*
++ * Mapcount of compound page as a whole, does not include mapped sub-pages.
++ *
++ * Must be called only for compound pages or any their tail sub-pages.
++ */
+ static inline int compound_mapcount(struct page *page)
+ {
+ 	VM_BUG_ON_PAGE(!PageCompound(page), page);
+@@ -714,10 +719,16 @@ static inline void page_mapcount_reset(struct page *page)
+ 
+ int __page_mapcount(struct page *page);
+ 
++/*
++ * Mapcount of 0-order page; when compound sub-page, includes
++ * compound_mapcount().
++ *
++ * Result is undefined for pages which cannot be mapped into userspace.
++ * For example SLAB or special types of pages. See function page_has_type().
++ * They use this place in struct page differently.
++ */
+ static inline int page_mapcount(struct page *page)
+ {
+-	VM_BUG_ON_PAGE(PageSlab(page), page);
+-
+ 	if (unlikely(PageCompound(page)))
+ 		return __page_mapcount(page);
+ 	return atomic_read(&page->_mapcount) + 1;
+-- 
+2.25.1
+
 
 
