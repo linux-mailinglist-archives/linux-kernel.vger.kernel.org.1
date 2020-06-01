@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B84521EAA18
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEAAE1EAB35
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729794AbgFASE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:04:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49480 "EHLO mail.kernel.org"
+        id S1731567AbgFASPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:15:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730225AbgFASEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:04:40 -0400
+        id S1731554AbgFASPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:15:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02AEC207D0;
-        Mon,  1 Jun 2020 18:04:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 36512206E2;
+        Mon,  1 Jun 2020 18:15:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034680;
-        bh=8ED9f8RfPMvqHAIDO6KdI7cE/AXFJZIijMa7zpdwGmc=;
+        s=default; t=1591035307;
+        bh=XO+oMWgl804ly3oZq6jef/75wIN+ikeQHz5cht/6Jlk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eTE8R/BtDPUbCgYZP0dYtVkWG7nss+JttTTjSmt7ARhq+lLPA1xSYxL67SDciWY5q
-         VFNqe0DadnN+/b0EOCIUhpOca/dcbmzVSTt6DzPq7I18dD/OQWz+Evl2V5rEhkjrcJ
-         BHYO5ySOp7nBFXe/SDVeDR2YDI2eDa+4Gy5bEsJg=
+        b=nPHMn7JsW2PUjX1CXz72YCjUVdQAzeAwwbEn3t3V1m2yyQpjk7zTNYqOHt4RkNv7y
+         0d7dy9gbCYBE2mPLB/kxUlRY5AjIxyafFx5GtwmOhf+tq0HKIYVfZRUZt+xdO8fuK/
+         Mzn0me/0ST8+sIB+blywgIwKp7jQxjpiG1/qncJc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
+        stable@vger.kernel.org, Lin Yi <teroincn@gmail.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Kaike Wan <kaike.wan@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 60/95] exec: Always set cap_ambient in cap_bprm_set_creds
+Subject: [PATCH 5.6 102/177] IB/qib: Call kobject_put() when kobject_init_and_add() fails
 Date:   Mon,  1 Jun 2020 19:54:00 +0200
-Message-Id: <20200601174030.642925102@linuxfoundation.org>
+Message-Id: <20200601174057.150899506@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
-References: <20200601174020.759151073@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,50 +48,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric W. Biederman <ebiederm@xmission.com>
+From: Kaike Wan <kaike.wan@intel.com>
 
-[ Upstream commit a4ae32c71fe90794127b32d26d7ad795813b502e ]
+[ Upstream commit a35cd6447effd5c239b564c80fa109d05ff3d114 ]
 
-An invariant of cap_bprm_set_creds is that every field in the new cred
-structure that cap_bprm_set_creds might set, needs to be set every
-time to ensure the fields does not get a stale value.
+When kobject_init_and_add() returns an error in the function
+qib_create_port_files(), the function kobject_put() is not called for the
+corresponding kobject, which potentially leads to memory leak.
 
-The field cap_ambient is not set every time cap_bprm_set_creds is
-called, which means that if there is a suid or sgid script with an
-interpreter that has neither the suid nor the sgid bits set the
-interpreter should be able to accept ambient credentials.
-Unfortuantely because cap_ambient is not reset to it's original value
-the interpreter can not accept ambient credentials.
+This patch fixes the issue by calling kobject_put() even if
+kobject_init_and_add() fails. In addition, the ppd->diagc_kobj is released
+along with other kobjects when the sysfs is unregistered.
 
-Given that the ambient capability set is expected to be controlled by
-the caller, I don't think this is particularly serious.  But it is
-definitely worth fixing so the code works correctly.
-
-I have tested to verify my reading of the code is correct and the
-interpreter of a sgid can receive ambient capabilities with this
-change and cannot receive ambient capabilities without this change.
-
-Cc: stable@vger.kernel.org
-Cc: Andy Lutomirski <luto@kernel.org>
-Fixes: 58319057b784 ("capabilities: ambient capabilities")
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Fixes: f931551bafe1 ("IB/qib: Add new qib driver for QLogic PCIe InfiniBand adapters")
+Link: https://lore.kernel.org/r/20200512031328.189865.48627.stgit@awfm-01.aw.intel.com
+Cc: <stable@vger.kernel.org>
+Suggested-by: Lin Yi <teroincn@gmail.com>
+Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Signed-off-by: Kaike Wan <kaike.wan@intel.com>
+Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/commoncap.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/hw/qib/qib_sysfs.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/security/commoncap.c b/security/commoncap.c
-index 3023b4ad38a7..f86557a8e43f 100644
---- a/security/commoncap.c
-+++ b/security/commoncap.c
-@@ -819,6 +819,7 @@ int cap_bprm_set_creds(struct linux_binprm *bprm)
- 	int ret;
- 	kuid_t root_uid;
+diff --git a/drivers/infiniband/hw/qib/qib_sysfs.c b/drivers/infiniband/hw/qib/qib_sysfs.c
+index 568b21eb6ea1..021df0654ba7 100644
+--- a/drivers/infiniband/hw/qib/qib_sysfs.c
++++ b/drivers/infiniband/hw/qib/qib_sysfs.c
+@@ -760,7 +760,7 @@ int qib_create_port_files(struct ib_device *ibdev, u8 port_num,
+ 		qib_dev_err(dd,
+ 			"Skipping linkcontrol sysfs info, (err %d) port %u\n",
+ 			ret, port_num);
+-		goto bail;
++		goto bail_link;
+ 	}
+ 	kobject_uevent(&ppd->pport_kobj, KOBJ_ADD);
  
-+	new->cap_ambient = old->cap_ambient;
- 	if (WARN_ON(!cap_ambient_invariant_ok(old)))
- 		return -EPERM;
+@@ -770,7 +770,7 @@ int qib_create_port_files(struct ib_device *ibdev, u8 port_num,
+ 		qib_dev_err(dd,
+ 			"Skipping sl2vl sysfs info, (err %d) port %u\n",
+ 			ret, port_num);
+-		goto bail_link;
++		goto bail_sl;
+ 	}
+ 	kobject_uevent(&ppd->sl2vl_kobj, KOBJ_ADD);
  
+@@ -780,7 +780,7 @@ int qib_create_port_files(struct ib_device *ibdev, u8 port_num,
+ 		qib_dev_err(dd,
+ 			"Skipping diag_counters sysfs info, (err %d) port %u\n",
+ 			ret, port_num);
+-		goto bail_sl;
++		goto bail_diagc;
+ 	}
+ 	kobject_uevent(&ppd->diagc_kobj, KOBJ_ADD);
+ 
+@@ -793,7 +793,7 @@ int qib_create_port_files(struct ib_device *ibdev, u8 port_num,
+ 		qib_dev_err(dd,
+ 		 "Skipping Congestion Control sysfs info, (err %d) port %u\n",
+ 		 ret, port_num);
+-		goto bail_diagc;
++		goto bail_cc;
+ 	}
+ 
+ 	kobject_uevent(&ppd->pport_cc_kobj, KOBJ_ADD);
+@@ -854,6 +854,7 @@ void qib_verbs_unregister_sysfs(struct qib_devdata *dd)
+ 				&cc_table_bin_attr);
+ 			kobject_put(&ppd->pport_cc_kobj);
+ 		}
++		kobject_put(&ppd->diagc_kobj);
+ 		kobject_put(&ppd->sl2vl_kobj);
+ 		kobject_put(&ppd->pport_kobj);
+ 	}
 -- 
 2.25.1
 
