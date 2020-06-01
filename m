@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA171EA95B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 418AB1EAAA7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729751AbgFASBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:01:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43690 "EHLO mail.kernel.org"
+        id S1730406AbgFASKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:10:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729027AbgFASAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:00:54 -0400
+        id S1730945AbgFASJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:09:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F14F3206E2;
-        Mon,  1 Jun 2020 18:00:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CBEC720872;
+        Mon,  1 Jun 2020 18:09:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034454;
-        bh=66iuDiF/gA+232VOa28AdKQaZlJM8eguxmtMywYIR5A=;
+        s=default; t=1591034995;
+        bh=eh0C+0x9mVrpmssuTcn3nRjVa4S+T2umUEJ6R35Nwt4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1Un63yAKmW6eM+RISCog3uANBrnvuh94E9qLxEcoKmsANrzwTZQgqSXqPSZT7Pp6e
-         X2kf9gM6WBFJgUODsM7SZx0eu1xWbeiNXY0MibPn2yz6VoQMNDqEP9ta/ohT7M9abN
-         pV9/fGfZw+UzVgNo2Iw62pCwFz7s5lAb9GXsaHQo=
+        b=TkRS+VKrcq54r6POyT5IfRVcLUIbe8apYsMs5Y0GDRNn2dYYRObAYWa9VVZpwo8je
+         70IlTjH/cz80PsPlw/quJGZJQO3BsGaLxqwZT38aZf5U/yK1OL37Cs+atZnIG4zIxC
+         FwmeMorbQ5h9P2fSEGFmqhjrUMsALqPaPDf3+FS0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.co.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Mathieu Maret <mathieu.maret@gmail.com>,
+        Brendan Shanks <bshanks@codeweavers.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 38/77] ARM: dts: imx6q-bx50v3: Add internal switch
+Subject: [PATCH 5.4 065/142] Input: evdev - call input_flush_device() on release(), not flush()
 Date:   Mon,  1 Jun 2020 19:53:43 +0200
-Message-Id: <20200601174023.316856026@linuxfoundation.org>
+Message-Id: <20200601174044.622686044@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
-References: <20200601174016.396817032@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,100 +45,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+From: Brendan Shanks <bshanks@codeweavers.com>
 
-[ Upstream commit e26dead442689a861358f33126210b0f8de615a9 ]
+[ Upstream commit 09264098ff153f60866039d60b31d39b66f55a31 ]
 
-B850v3, B650v3 and B450v3 all have a GPIO bit banged MDIO bus to
-communicate with a Marvell switch. On all devices the switch is
-connected to a PCI based network card, which needs to be referenced
-by DT, so this also adds the common PCI root node.
+input_flush_device() should only be called once the struct file is being
+released and no open descriptors remain, but evdev_flush() was calling
+it whenever a file descriptor was closed.
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+This caused uploaded force-feedback effects to be erased when a process
+did a dup()/close() on the event FD, called system(), etc.
+
+Call input_flush_device() from evdev_release() instead.
+
+Reported-by: Mathieu Maret <mathieu.maret@gmail.com>
+Signed-off-by: Brendan Shanks <bshanks@codeweavers.com>
+Link: https://lore.kernel.org/r/20200421231003.7935-1-bshanks@codeweavers.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx6q-bx50v3.dtsi | 62 +++++++++++++++++++++++++++++
- 1 file changed, 62 insertions(+)
+ drivers/input/evdev.c | 19 ++++---------------
+ 1 file changed, 4 insertions(+), 15 deletions(-)
 
-diff --git a/arch/arm/boot/dts/imx6q-bx50v3.dtsi b/arch/arm/boot/dts/imx6q-bx50v3.dtsi
-index 1015e55ca8f7..8420378d095d 100644
---- a/arch/arm/boot/dts/imx6q-bx50v3.dtsi
-+++ b/arch/arm/boot/dts/imx6q-bx50v3.dtsi
-@@ -92,6 +92,56 @@
- 		mux-int-port = <1>;
- 		mux-ext-port = <4>;
- 	};
+diff --git a/drivers/input/evdev.c b/drivers/input/evdev.c
+index cb6e3a5f509c..0d57e51b8ba1 100644
+--- a/drivers/input/evdev.c
++++ b/drivers/input/evdev.c
+@@ -326,20 +326,6 @@ static int evdev_fasync(int fd, struct file *file, int on)
+ 	return fasync_helper(fd, file, on, &client->fasync);
+ }
+ 
+-static int evdev_flush(struct file *file, fl_owner_t id)
+-{
+-	struct evdev_client *client = file->private_data;
+-	struct evdev *evdev = client->evdev;
+-
+-	mutex_lock(&evdev->mutex);
+-
+-	if (evdev->exist && !client->revoked)
+-		input_flush_device(&evdev->handle, file);
+-
+-	mutex_unlock(&evdev->mutex);
+-	return 0;
+-}
+-
+ static void evdev_free(struct device *dev)
+ {
+ 	struct evdev *evdev = container_of(dev, struct evdev, dev);
+@@ -453,6 +439,10 @@ static int evdev_release(struct inode *inode, struct file *file)
+ 	unsigned int i;
+ 
+ 	mutex_lock(&evdev->mutex);
 +
-+	aliases {
-+		mdio-gpio0 = &mdio0;
-+	};
++	if (evdev->exist && !client->revoked)
++		input_flush_device(&evdev->handle, file);
 +
-+	mdio0: mdio-gpio {
-+		compatible = "virtual,mdio-gpio";
-+		gpios = <&gpio2 5 GPIO_ACTIVE_HIGH>, /* mdc */
-+			<&gpio2 7 GPIO_ACTIVE_HIGH>; /* mdio */
-+
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		switch@0 {
-+			compatible = "marvell,mv88e6085"; /* 88e6240*/
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+
-+			switch_ports: ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+
-+			mdio {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				switchphy0: switchphy@0 {
-+					reg = <0>;
-+				};
-+
-+				switchphy1: switchphy@1 {
-+					reg = <1>;
-+				};
-+
-+				switchphy2: switchphy@2 {
-+					reg = <2>;
-+				};
-+
-+				switchphy3: switchphy@3 {
-+					reg = <3>;
-+				};
-+
-+				switchphy4: switchphy@4 {
-+					reg = <4>;
-+				};
-+			};
-+		};
-+	};
+ 	evdev_ungrab(evdev, client);
+ 	mutex_unlock(&evdev->mutex);
+ 
+@@ -1310,7 +1300,6 @@ static const struct file_operations evdev_fops = {
+ 	.compat_ioctl	= evdev_ioctl_compat,
+ #endif
+ 	.fasync		= evdev_fasync,
+-	.flush		= evdev_flush,
+ 	.llseek		= no_llseek,
  };
  
- &ecspi5 {
-@@ -326,3 +376,15 @@
- 		tcxo-clock-frequency = <26000000>;
- 	};
- };
-+
-+&pcie {
-+	/* Synopsys, Inc. Device */
-+	pci_root: root@0,0 {
-+		compatible = "pci16c3,abcd";
-+		reg = <0x00000000 0 0 0 0>;
-+
-+		#address-cells = <3>;
-+		#size-cells = <2>;
-+		#interrupt-cells = <1>;
-+	};
-+};
 -- 
 2.25.1
 
