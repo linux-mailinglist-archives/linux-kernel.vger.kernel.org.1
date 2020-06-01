@@ -2,107 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D66F1EA8EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1821EA8B0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728844AbgFAR5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:57:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38040 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728825AbgFAR5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:57:06 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EAA28207DF;
-        Mon,  1 Jun 2020 17:57:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034225;
-        bh=Sv50GhNdNfAEmQPgwJon282Ryl8sV1jtnma2waxrDZg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LU+cS3QUqRQpaI0Y5Hk8AewS74OppJJIiEiLkbTqs1NpaiJ2pyNjnr1EALHf1pmqX
-         yue6ZvXKJHCx7F+RoojtaSLIE3yF1jb+rl0xJBZLA+IjXxpecGirJOs1EJAklLMJFo
-         2v0OkfR4k5JRy2H3DevylOSfYrOhuQATXt8BpVj8=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.4 48/48] drm/msm: Fix possible null dereference on failure of get_pages()
-Date:   Mon,  1 Jun 2020 19:53:58 +0200
-Message-Id: <20200601174005.784720752@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601173952.175939894@linuxfoundation.org>
-References: <20200601173952.175939894@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1728076AbgFARy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:54:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726113AbgFARy0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:54:26 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D66AEC05BD43;
+        Mon,  1 Jun 2020 10:54:25 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 7267D2A2519
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Paul Gofman <gofmanp@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        linux-security-module@vger.kernel.org,
+        Zebediah Figura <zfigura@codeweavers.com>
+Subject: Re: [PATCH RFC] seccomp: Implement syscall isolation based on memory areas
+Organization: Collabora
+References: <20200530055953.817666-1-krisman@collabora.com>
+        <202005300923.B245392C@keescook> <851rn0ejg9.fsf@collabora.com>
+        <9a512096-7707-3fc6-34ba-22f969c0f964@gmail.com>
+        <20200531164938.GF19604@bombadil.infradead.org>
+        <c007e3e9-e915-16f3-de31-c811ad37c44c@gmail.com>
+        <20200531173157.GG19604@bombadil.infradead.org>
+        <9c1f9db8-5680-cd1a-37aa-5f494b034825@gmail.com>
+Date:   Mon, 01 Jun 2020 13:54:19 -0400
+In-Reply-To: <9c1f9db8-5680-cd1a-37aa-5f494b034825@gmail.com> (Paul Gofman's
+        message of "Sun, 31 May 2020 21:01:46 +0300")
+Message-ID: <85367e7juc.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Paul Gofman <gofmanp@gmail.com> writes:
 
-commit 3976626ea3d2011f8fd3f3a47070a8b792018253 upstream.
+> On 5/31/20 20:31, Matthew Wilcox wrote:
+>> If it's the cost of the syscall that's the problem, there are ways
+>> around that.  We'd still want a personality() call to indicate that
+>> the syscall handler should look (somewhere) to determine the current
+>> personality, but that could be issued at the start of execution rather
+>> than when we switch between Windows & Linux code.
+>
+> Sure, we can call personality() at start and specify the location to
+> look at, the only thing is that the location should be thread specific,
+> that is, based on fs: or gs: or whatever else which would allow us to
+> have different threads in different "personality" state. If anything
+> needs to be set up at thread start we can do that also of course.
+>
+> If there will be any proof of concept solution I will be happy to make a
+> proof of concept Wine patch using that and do some testing.
 
-Commit 62e3a3e342af changed get_pages() to initialise
-msm_gem_object::pages before trying to initialise msm_gem_object::sgt,
-so that put_pages() would properly clean up pages in the failure
-case.
+Let me give that a try and share the patches with you, so we can look at
+how this implementation would look like.
 
-However, this means that put_pages() now needs to check that
-msm_gem_object::sgt is not null before trying to clean it up, and
-this check was only applied to part of the cleanup code.  Move
-it all into the conditional block.  (Strictly speaking we don't
-need to make the kfree() conditional, but since we can't avoid
-checking for null ourselves we may as well do so.)
-
-Fixes: 62e3a3e342af ("drm/msm: fix leak in failed get_pages")
-Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
-Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
-Signed-off-by: Rob Clark <robdclark@gmail.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/gpu/drm/msm/msm_gem.c |   20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
-
---- a/drivers/gpu/drm/msm/msm_gem.c
-+++ b/drivers/gpu/drm/msm/msm_gem.c
-@@ -116,17 +116,19 @@ static void put_pages(struct drm_gem_obj
- 	struct msm_gem_object *msm_obj = to_msm_bo(obj);
- 
- 	if (msm_obj->pages) {
--		/* For non-cached buffers, ensure the new pages are clean
--		 * because display controller, GPU, etc. are not coherent:
--		 */
--		if (msm_obj->flags & (MSM_BO_WC|MSM_BO_UNCACHED))
--			dma_unmap_sg(obj->dev->dev, msm_obj->sgt->sgl,
--					msm_obj->sgt->nents, DMA_BIDIRECTIONAL);
-+		if (msm_obj->sgt) {
-+			/* For non-cached buffers, ensure the new
-+			 * pages are clean because display controller,
-+			 * GPU, etc. are not coherent:
-+			 */
-+			if (msm_obj->flags & (MSM_BO_WC|MSM_BO_UNCACHED))
-+				dma_unmap_sg(obj->dev->dev, msm_obj->sgt->sgl,
-+					     msm_obj->sgt->nents,
-+					     DMA_BIDIRECTIONAL);
- 
--		if (msm_obj->sgt)
- 			sg_free_table(msm_obj->sgt);
--
--		kfree(msm_obj->sgt);
-+			kfree(msm_obj->sgt);
-+		}
- 
- 		if (use_pages(obj))
- 			drm_gem_put_pages(obj, msm_obj->pages, true, false);
-
-
+-- 
+Gabriel Krisman Bertazi
