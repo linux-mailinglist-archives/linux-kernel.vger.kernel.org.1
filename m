@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B0D1EAD60
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55CDB1EAEAD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730163AbgFASpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:45:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56578 "EHLO mail.kernel.org"
+        id S1730263AbgFAS4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:56:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730954AbgFASKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:10:00 -0400
+        id S1729727AbgFASBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:01:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4CFDC2077D;
-        Mon,  1 Jun 2020 18:09:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B8CC02065C;
+        Mon,  1 Jun 2020 18:01:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034999;
-        bh=/7RX4q6YYNqEWB3Wt5oaa6aB5Yf3G9syPTpSwvuEWRA=;
+        s=default; t=1591034461;
+        bh=34qFoiIdx3EASLYtjJ8hDED8J4SS7nLVvZXR6s/rHWs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lO+vk7X+0R5/gomios/VesFvh++k86gEmXxzniojcXDME3fvfoLeLbPAFkI6FIvnq
-         VG7Tb2LLi27M16Uh9/tpibTzKBHfVUhv4YgQlXBeSwYLABkF6PNLf5tt+JvoNZ4WYm
-         tOY6mX/UhTPFT8Z6gnCrDpOI7rlNtH1YPcqx96Do=
+        b=OWRIEJFisv/Eq0+3JC+0dwrEDbOeX57CRRWye4Jdm9YNCoWzPTn9MH/om0PXe0+ME
+         N5awOnkgPykJ8rTbxTFfbsXrVOy74fK7hRr361VHIX3E7DPzzeKcsx6kkHdRKG5lou
+         80D/tBj360s7CDVKw+QPJZXQRRbTE9Ctpw5saTIc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Peng Hao <richard.peng@oppo.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 067/142] Input: dlink-dir685-touchkeys - fix a typo in driver name
-Date:   Mon,  1 Jun 2020 19:53:45 +0200
-Message-Id: <20200601174044.791468418@linuxfoundation.org>
+Subject: [PATCH 4.14 41/77] mmc: block: Fix use-after-free issue for rpmb
+Date:   Mon,  1 Jun 2020 19:53:46 +0200
+Message-Id: <20200601174023.793334810@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
+References: <20200601174016.396817032@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,36 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Peng Hao <richard.peng@oppo.com>
 
-[ Upstream commit 38347374ae3f1ec4df56dd688bd603a64e79a0ed ]
+[ Upstream commit 202500d21654874aa03243e91f96de153ec61860 ]
 
-According to the file name and Kconfig, a 'k' is missing in this driver
-name. It should be "dlink-dir685-touchkeys".
+The data structure member “rpmb->md” was passed to a call of the function
+“mmc_blk_put” after a call of the function “put_device”. Reorder these
+function calls to keep the data accesses consistent.
 
-Fixes: 131b3de7016b ("Input: add D-Link DIR-685 touchkeys driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/r/20200412213937.5287-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: 1c87f7357849 ("mmc: block: Fix bug when removing RPMB chardev ")
+Signed-off-by: Peng Hao <richard.peng@oppo.com>
+Cc: stable@vger.kernel.org
+[Uffe: Fixed up mangled patch and updated commit message]
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/keyboard/dlink-dir685-touchkeys.c | 2 +-
+ drivers/mmc/core/block.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/input/keyboard/dlink-dir685-touchkeys.c b/drivers/input/keyboard/dlink-dir685-touchkeys.c
-index b0ead7199c40..a69dcc3bd30c 100644
---- a/drivers/input/keyboard/dlink-dir685-touchkeys.c
-+++ b/drivers/input/keyboard/dlink-dir685-touchkeys.c
-@@ -143,7 +143,7 @@ MODULE_DEVICE_TABLE(of, dir685_tk_of_match);
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index 916b88ee2de4..cbb72b460755 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -2333,8 +2333,8 @@ static int mmc_rpmb_chrdev_release(struct inode *inode, struct file *filp)
+ 	struct mmc_rpmb_data *rpmb = container_of(inode->i_cdev,
+ 						  struct mmc_rpmb_data, chrdev);
  
- static struct i2c_driver dir685_tk_i2c_driver = {
- 	.driver = {
--		.name	= "dlin-dir685-touchkeys",
-+		.name	= "dlink-dir685-touchkeys",
- 		.of_match_table = of_match_ptr(dir685_tk_of_match),
- 	},
- 	.probe		= dir685_tk_probe,
+-	put_device(&rpmb->dev);
+ 	mmc_blk_put(rpmb->md);
++	put_device(&rpmb->dev);
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
