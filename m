@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F801EAAB5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F27F1EAB59
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730122AbgFASKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:10:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57160 "EHLO mail.kernel.org"
+        id S1731731AbgFASQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:16:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730990AbgFASKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:10:23 -0400
+        id S1731435AbgFASQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:16:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E76E2077D;
-        Mon,  1 Jun 2020 18:10:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 337D32065C;
+        Mon,  1 Jun 2020 18:16:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035022;
-        bh=mSY6GPV+wUi0r7Ri6uN32T0DfG/wRgeooF1ikJq+pIk=;
+        s=default; t=1591035390;
+        bh=ql1s1rFt1jSoZR7TJO52leYHluhHEVDvF8PNzmGWNRs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rMaetlvgNtPDBSndyGg15M6bfbj4hIdKSDN351c76IXK01lDyNDS9iASNFhAyNj6+
-         Bdurz2JTWJ2+CkblOm9IER+OpMqG+JBv7i+hEI0ZQWxdGGKlqibfSZop9Q+I/CbHeK
-         xtW2akv1zo/w45bYkZ+kxj5rMGufE3ZrxD9RuXGY=
+        b=1IeMbX25cBGQVpRTI/Tx2ad+oXsfsZHkA+4fEVf5Fbxxg82CFzM3ZuVt+CPel3JXB
+         cdjMWtE8y7n3ec6+1PKoEANpcatdAkF47R6vQSAcLNn0BbSLD9xQiZ5qnUt3ci3pxm
+         JOS+uUcO5NFOuhkH8y39jtpTIt0v5gUUzfuVzlHA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Subject: [PATCH 5.4 118/142] xfrm: fix a NULL-ptr deref in xfrm_local_error
-Date:   Mon,  1 Jun 2020 19:54:36 +0200
-Message-Id: <20200601174050.079724026@linuxfoundation.org>
+        stable@vger.kernel.org, Helge Deller <deller@gmx.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 139/177] parisc: Fix kernel panic in mem_init()
+Date:   Mon,  1 Jun 2020 19:54:37 +0200
+Message-Id: <20200601174059.973087668@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,65 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Helge Deller <deller@gmx.de>
 
-commit f6a23d85d078c2ffde79c66ca81d0a1dde451649 upstream.
+[ Upstream commit bf71bc16e02162388808949b179d59d0b571b965 ]
 
-This patch is to fix a crash:
+The Debian kernel v5.6 triggers this kernel panic:
 
-  [ ] kasan: GPF could be caused by NULL-ptr deref or user memory access
-  [ ] general protection fault: 0000 [#1] SMP KASAN PTI
-  [ ] RIP: 0010:ipv6_local_error+0xac/0x7a0
-  [ ] Call Trace:
-  [ ]  xfrm6_local_error+0x1eb/0x300
-  [ ]  xfrm_local_error+0x95/0x130
-  [ ]  __xfrm6_output+0x65f/0xb50
-  [ ]  xfrm6_output+0x106/0x46f
-  [ ]  udp_tunnel6_xmit_skb+0x618/0xbf0 [ip6_udp_tunnel]
-  [ ]  vxlan_xmit_one+0xbc6/0x2c60 [vxlan]
-  [ ]  vxlan_xmit+0x6a0/0x4276 [vxlan]
-  [ ]  dev_hard_start_xmit+0x165/0x820
-  [ ]  __dev_queue_xmit+0x1ff0/0x2b90
-  [ ]  ip_finish_output2+0xd3e/0x1480
-  [ ]  ip_do_fragment+0x182d/0x2210
-  [ ]  ip_output+0x1d0/0x510
-  [ ]  ip_send_skb+0x37/0xa0
-  [ ]  raw_sendmsg+0x1b4c/0x2b80
-  [ ]  sock_sendmsg+0xc0/0x110
+ Kernel panic - not syncing: Bad Address (null pointer deref?)
+ Bad Address (null pointer deref?): Code=26 (Data memory access rights trap) at addr 0000000000000000
+ CPU: 0 PID: 0 Comm: swapper Not tainted 5.6.0-2-parisc64 #1 Debian 5.6.14-1
+  IAOQ[0]: mem_init+0xb0/0x150
+  IAOQ[1]: mem_init+0xb4/0x150
+  RP(r2): start_kernel+0x6c8/0x1190
+ Backtrace:
+  [<0000000040101ab4>] start_kernel+0x6c8/0x1190
+  [<0000000040108574>] start_parisc+0x158/0x1b8
 
-This occurred when sending a v4 skb over vxlan6 over ipsec, in which case
-skb->protocol == htons(ETH_P_IPV6) while skb->sk->sk_family == AF_INET in
-xfrm_local_error(). Then it will go to xfrm6_local_error() where it tries
-to get ipv6 info from a ipv4 sk.
+on a HP-PARISC rp3440 machine with this memory layout:
+ Memory Ranges:
+  0) Start 0x0000000000000000 End 0x000000003fffffff Size   1024 MB
+  1) Start 0x0000004040000000 End 0x00000040ffdfffff Size   3070 MB
 
-This issue was actually fixed by Commit 628e341f319f ("xfrm: make local
-error reporting more robust"), but brought back by Commit 844d48746e4b
-("xfrm: choose protocol family by skb protocol").
+Fix the crash by avoiding virt_to_page() and similar functions in
+mem_init() until the memory zones have been fully set up.
 
-So to fix it, we should call xfrm6_local_error() only when skb->protocol
-is htons(ETH_P_IPV6) and skb->sk->sk_family is AF_INET6.
-
-Fixes: 844d48746e4b ("xfrm: choose protocol family by skb protocol")
-Reported-by: Xiumei Mu <xmu@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: stable@vger.kernel.org # v5.0+
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_output.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/parisc/mm/init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/xfrm/xfrm_output.c
-+++ b/net/xfrm/xfrm_output.c
-@@ -645,7 +645,8 @@ void xfrm_local_error(struct sk_buff *sk
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index 5224fb38d766..01d7071b23f7 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -562,7 +562,7 @@ void __init mem_init(void)
+ 			> BITS_PER_LONG);
  
- 	if (skb->protocol == htons(ETH_P_IP))
- 		proto = AF_INET;
--	else if (skb->protocol == htons(ETH_P_IPV6))
-+	else if (skb->protocol == htons(ETH_P_IPV6) &&
-+		 skb->sk->sk_family == AF_INET6)
- 		proto = AF_INET6;
- 	else
- 		return;
+ 	high_memory = __va((max_pfn << PAGE_SHIFT));
+-	set_max_mapnr(page_to_pfn(virt_to_page(high_memory - 1)) + 1);
++	set_max_mapnr(max_low_pfn);
+ 	memblock_free_all();
+ 
+ #ifdef CONFIG_PA11
+-- 
+2.25.1
+
 
 
