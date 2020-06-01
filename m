@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA731EA8FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B571EA8C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728974AbgFAR5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:57:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38988 "EHLO mail.kernel.org"
+        id S1728337AbgFARzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:55:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728939AbgFAR5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:57:39 -0400
+        id S1728194AbgFARzs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:55:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A9D5E206E2;
-        Mon,  1 Jun 2020 17:57:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 73895206E2;
+        Mon,  1 Jun 2020 17:55:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034259;
-        bh=zh+hjr+eJIQBo26ohfepRYxTdhIc+nP1ysNKviD1wAQ=;
+        s=default; t=1591034146;
+        bh=aW1gOOs4HbyBdM6yTnX+lhvxry2Uif7eLZDEZKmV2NQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N0wa0LyftWV2cXIOEKm5KKMOSkZ+V85MluG02irU7d1ZSWD7h2iqNJ2EsQLRxpKop
-         3klqzteKEAVcefR/8+tqIMrFTXRGsnEf0XbWKnaZ8MJ2BazLdJBXa9XmRyfM78CCGU
-         lcl5g+cCzPaX8JH/g65eZjtTgYdpllSSX8Sk8f8Y=
+        b=ViJUkXgtVfIOl7c0UTJmZ+uspd+HnLvRby2Wfc3F/Tas5C+cu8K5FQrQM3eO7vUmC
+         pUbvG8zEuLrg3rVCnQb7jmO6168bXBunpVk0M8dLNcrlDOo9L7PhttISMdsEQpQLtK
+         /txGCkzYd84HxLanbj7F761j5QyIK2ep2O6Gpr80=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 14/61] net: microchip: encx24j600: add missed kthread_stop
-Date:   Mon,  1 Jun 2020 19:53:21 +0200
-Message-Id: <20200601174014.377647504@linuxfoundation.org>
+Subject: [PATCH 4.4 13/48] Input: usbtouchscreen - add support for BonXeon TP
+Date:   Mon,  1 Jun 2020 19:53:23 +0200
+Message-Id: <20200601173956.075852789@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
-References: <20200601174010.316778377@linuxfoundation.org>
+In-Reply-To: <20200601173952.175939894@linuxfoundation.org>
+References: <20200601173952.175939894@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuhong Yuan <hslester96@gmail.com>
+From: James Hilliard <james.hilliard1@gmail.com>
 
-[ Upstream commit ff8ce319e9c25e920d994cc35236f0bb32dfc8f3 ]
+[ Upstream commit e3b4f94ef52ae1592cbe199bd38dbdc0d58b2217 ]
 
-This driver calls kthread_run() in probe, but forgets to call
-kthread_stop() in probe failure and remove.
-Add the missed kthread_stop() to fix it.
+Based on available information this uses the singletouch irtouch
+protocol. This is tested and confirmed to be fully functional on
+the BonXeon TP hardware I have.
 
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+Link: https://lore.kernel.org/r/20200413184217.55700-1-james.hilliard1@gmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/microchip/encx24j600.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/input/touchscreen/usbtouchscreen.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/microchip/encx24j600.c b/drivers/net/ethernet/microchip/encx24j600.c
-index b14f0305aa31..ad661d1979c7 100644
---- a/drivers/net/ethernet/microchip/encx24j600.c
-+++ b/drivers/net/ethernet/microchip/encx24j600.c
-@@ -1058,7 +1058,7 @@ static int encx24j600_spi_probe(struct spi_device *spi)
- 	if (unlikely(ret)) {
- 		netif_err(priv, probe, ndev, "Error %d initializing card encx24j600 card\n",
- 			  ret);
--		goto out_free;
-+		goto out_stop;
- 	}
+diff --git a/drivers/input/touchscreen/usbtouchscreen.c b/drivers/input/touchscreen/usbtouchscreen.c
+index 2c41107240de..499402a975b3 100644
+--- a/drivers/input/touchscreen/usbtouchscreen.c
++++ b/drivers/input/touchscreen/usbtouchscreen.c
+@@ -197,6 +197,7 @@ static const struct usb_device_id usbtouch_devices[] = {
+ #endif
  
- 	eidled = encx24j600_read_reg(priv, EIDLED);
-@@ -1076,6 +1076,8 @@ static int encx24j600_spi_probe(struct spi_device *spi)
- 
- out_unregister:
- 	unregister_netdev(priv->ndev);
-+out_stop:
-+	kthread_stop(priv->kworker_task);
- out_free:
- 	free_netdev(ndev);
- 
-@@ -1088,6 +1090,7 @@ static int encx24j600_spi_remove(struct spi_device *spi)
- 	struct encx24j600_priv *priv = dev_get_drvdata(&spi->dev);
- 
- 	unregister_netdev(priv->ndev);
-+	kthread_stop(priv->kworker_task);
- 
- 	free_netdev(priv->ndev);
- 
+ #ifdef CONFIG_TOUCHSCREEN_USB_IRTOUCH
++	{USB_DEVICE(0x255e, 0x0001), .driver_info = DEVTYPE_IRTOUCH},
+ 	{USB_DEVICE(0x595a, 0x0001), .driver_info = DEVTYPE_IRTOUCH},
+ 	{USB_DEVICE(0x6615, 0x0001), .driver_info = DEVTYPE_IRTOUCH},
+ 	{USB_DEVICE(0x6615, 0x0012), .driver_info = DEVTYPE_IRTOUCH_HIRES},
 -- 
 2.25.1
 
