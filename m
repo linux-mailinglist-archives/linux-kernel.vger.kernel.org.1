@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD4B1EAE78
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2EF21EAC79
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730154AbgFASyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:54:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45130 "EHLO mail.kernel.org"
+        id S1730145AbgFAShI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:37:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729859AbgFASCD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:02:03 -0400
+        id S1731030AbgFASPq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:15:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 16DE22073B;
-        Mon,  1 Jun 2020 18:02:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D45C2065C;
+        Mon,  1 Jun 2020 18:15:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034523;
-        bh=xe0N+7sYbFtwojUydJ8S15eOlZCR8+wuTi/LeGmYtAE=;
+        s=default; t=1591035345;
+        bh=aYhFCPraAuuhSNT615HvbyUmvG8NskDq5ppqHhOLMQY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CjysNHPzD1od84g/BjFGnbnl6fsLDkLSuz9R5P3sKlO7rfcG7z4DQPQi19juzCULc
-         q96BO7zUwsuyjL9kd1AKcgOVPpyvGLrVNnqjcCjmZMu6y5SaY2YbuC/A4H6/aLp1Sb
-         cvcIFZJ9s58SgzLuiwU4IwfxDLOdZuW5YdfiSBCU=
+        b=0GidEXhKmH8QgkrtO4pA88a+zDmgJQRMaHUfKN4NRqJexfqfkDUAVCDIhw5sfFP60
+         kq1FGD5Vd+mA665uUIGhUCpbcIeoW/4gcKDV3yF6SPRhyMb3fmg24XaAQwYM2Wkqea
+         njMmCFQ9mBa3lmHv0RJLjWDaD4HnSUnDC+lGcPWc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Subject: [PATCH 4.14 70/77] Revert "Input: i8042 - add ThinkPad S230u to i8042 nomux list"
+        stable@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 117/177] exec: Always set cap_ambient in cap_bprm_set_creds
 Date:   Mon,  1 Jun 2020 19:54:15 +0200
-Message-Id: <20200601174028.390129668@linuxfoundation.org>
+Message-Id: <20200601174058.367455771@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
-References: <20200601174016.396817032@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+From: Eric W. Biederman <ebiederm@xmission.com>
 
-commit f4dec2d6160976b14e54be9c3950ce0f52385741 upstream.
+[ Upstream commit a4ae32c71fe90794127b32d26d7ad795813b502e ]
 
-This reverts commit 18931506465a762ffd3f4803d36a18d336a67da9. From Kevin
-Locke:
+An invariant of cap_bprm_set_creds is that every field in the new cred
+structure that cap_bprm_set_creds might set, needs to be set every
+time to ensure the fields does not get a stale value.
 
-"... nomux only appeared to fix the issue because the controller
-continued working after warm reboots. After more thorough testing from
-both warm and cold start, I now believe the entry should be added to
-i8042_dmi_reset_table rather than i8042_dmi_nomux_table as i8042.reset=1
-alone is sufficient to avoid the issue from both states while
-i8042.nomux is not."
+The field cap_ambient is not set every time cap_bprm_set_creds is
+called, which means that if there is a suid or sgid script with an
+interpreter that has neither the suid nor the sgid bits set the
+interpreter should be able to accept ambient credentials.
+Unfortuantely because cap_ambient is not reset to it's original value
+the interpreter can not accept ambient credentials.
 
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Given that the ambient capability set is expected to be controlled by
+the caller, I don't think this is particularly serious.  But it is
+definitely worth fixing so the code works correctly.
 
+I have tested to verify my reading of the code is correct and the
+interpreter of a sgid can receive ambient capabilities with this
+change and cannot receive ambient capabilities without this change.
+
+Cc: stable@vger.kernel.org
+Cc: Andy Lutomirski <luto@kernel.org>
+Fixes: 58319057b784 ("capabilities: ambient capabilities")
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/serio/i8042-x86ia64io.h |    7 -------
- 1 file changed, 7 deletions(-)
+ security/commoncap.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -545,13 +545,6 @@ static const struct dmi_system_id __init
- 			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire 5738"),
- 		},
- 	},
--	{
--		/* Lenovo ThinkPad Twist S230u */
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
--			DMI_MATCH(DMI_PRODUCT_NAME, "33474HU"),
--		},
--	},
- 	{ }
- };
+diff --git a/security/commoncap.c b/security/commoncap.c
+index f4ee0ae106b2..0ca31c8bc0b1 100644
+--- a/security/commoncap.c
++++ b/security/commoncap.c
+@@ -812,6 +812,7 @@ int cap_bprm_set_creds(struct linux_binprm *bprm)
+ 	int ret;
+ 	kuid_t root_uid;
  
++	new->cap_ambient = old->cap_ambient;
+ 	if (WARN_ON(!cap_ambient_invariant_ok(old)))
+ 		return -EPERM;
+ 
+-- 
+2.25.1
+
 
 
