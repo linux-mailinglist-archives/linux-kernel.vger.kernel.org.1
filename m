@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0261EACA0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 085751EADC5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731406AbgFASNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:13:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33444 "EHLO mail.kernel.org"
+        id S1730860AbgFASsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:48:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731385AbgFASNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:13:49 -0400
+        id S1730545AbgFASHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:07:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F83D2065C;
-        Mon,  1 Jun 2020 18:13:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 618E2206E2;
+        Mon,  1 Jun 2020 18:07:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035229;
-        bh=vN3bm/W5eDb1TaNYXCarzKAed2YV4sq1ytDMwUyY3ec=;
+        s=default; t=1591034869;
+        bh=wCEJW245dxBO726etQLlIpRtTbaTWQv+YPDCCDn2mbo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L7MrOBkMK0cE9ZbG2sXNIacyjgPKxbHJ7y0t1Rv4G3xBgeq3/PpIduX8MM+mKSOWe
-         85bcMwj1CHHXebPy7jOa4RiTlBHh+uYWd+z5Muf4ZM1+XpmoJC1uvaXFwB911e3htg
-         PV7mKZNpCPsKCXELEbHFse5reb+d9PaTnhIQsHIg=
+        b=YmPHRcuKUVp+UAalKa5UmVBP0/MFfTKL20u2a7nkHUwZcwzCJdpSovRrg3MGTBcL2
+         xa3cVmzVH6eKiV32BLYC0tV4sf0KzkXsLnz7puBwcyKDnvebLECxMP7oTRwX9pejTP
+         SjPEBC15CaJfLCo81dVQNYWKtUcK+ppLv8NsRXps=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        kbuild test robot <lkp@intel.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Felipe Balbi <balbi@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 066/177] usb: gadget: legacy: fix redundant initialization warnings
-Date:   Mon,  1 Jun 2020 19:53:24 +0200
-Message-Id: <20200601174054.427300852@linuxfoundation.org>
+Subject: [PATCH 5.4 048/142] usb: dwc3: pci: Enable extcon driver for Intel Merrifield
+Date:   Mon,  1 Jun 2020 19:53:26 +0200
+Message-Id: <20200601174042.817955302@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,61 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit d13cce757954fa663c69845611957396843ed87a ]
+[ Upstream commit 066c09593454e89bc605ffdff1c9810061f9b1e1 ]
 
-Fix the following cppcheck warnings:
+Intel Merrifield provides a DR support via PMIC which has its own
+extcon driver.
 
-drivers/usb/gadget/legacy/inode.c:1364:8: style: Redundant initialization for 'value'. The initialized value is overwritten$
- value = -EOPNOTSUPP;
-       ^
-drivers/usb/gadget/legacy/inode.c:1331:15: note: value is initialized
- int    value = -EOPNOTSUPP;
-              ^
-drivers/usb/gadget/legacy/inode.c:1364:8: note: value is overwritten
- value = -EOPNOTSUPP;
-       ^
-drivers/usb/gadget/legacy/inode.c:1817:8: style: Redundant initialization for 'value'. The initialized value is overwritten$
- value = -EINVAL;
-       ^
-drivers/usb/gadget/legacy/inode.c:1787:18: note: value is initialized
- ssize_t   value = len, length = len;
-                 ^
-drivers/usb/gadget/legacy/inode.c:1817:8: note: value is overwritten
- value = -EINVAL;
-       ^
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Add a property string to link to that driver.
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Felipe Balbi <balbi@kernel.org>
-
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/legacy/inode.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/usb/dwc3/dwc3-pci.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/usb/gadget/legacy/inode.c b/drivers/usb/gadget/legacy/inode.c
-index b47938dff1a2..238f555fe494 100644
---- a/drivers/usb/gadget/legacy/inode.c
-+++ b/drivers/usb/gadget/legacy/inode.c
-@@ -1361,7 +1361,6 @@ gadgetfs_setup (struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
+diff --git a/drivers/usb/dwc3/dwc3-pci.c b/drivers/usb/dwc3/dwc3-pci.c
+index 7051611229c9..b67372737dc9 100644
+--- a/drivers/usb/dwc3/dwc3-pci.c
++++ b/drivers/usb/dwc3/dwc3-pci.c
+@@ -114,6 +114,7 @@ static const struct property_entry dwc3_pci_intel_properties[] = {
  
- 	req->buf = dev->rbuf;
- 	req->context = NULL;
--	value = -EOPNOTSUPP;
- 	switch (ctrl->bRequest) {
- 
- 	case USB_REQ_GET_DESCRIPTOR:
-@@ -1784,7 +1783,7 @@ static ssize_t
- dev_config (struct file *fd, const char __user *buf, size_t len, loff_t *ptr)
- {
- 	struct dev_data		*dev = fd->private_data;
--	ssize_t			value = len, length = len;
-+	ssize_t			value, length = len;
- 	unsigned		total;
- 	u32			tag;
- 	char			*kbuf;
+ static const struct property_entry dwc3_pci_mrfld_properties[] = {
+ 	PROPERTY_ENTRY_STRING("dr_mode", "otg"),
++	PROPERTY_ENTRY_STRING("linux,extcon-name", "mrfld_bcove_pwrsrc"),
+ 	PROPERTY_ENTRY_BOOL("linux,sysdev_is_parent"),
+ 	{}
+ };
 -- 
 2.25.1
 
