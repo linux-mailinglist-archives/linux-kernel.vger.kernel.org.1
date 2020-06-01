@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BBA31EAA9D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E36D61EA9C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730912AbgFASJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:09:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56140 "EHLO mail.kernel.org"
+        id S1729892AbgFASCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:02:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729780AbgFASJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:09:40 -0400
+        id S1729877AbgFASCG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:02:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 42D9E20878;
-        Mon,  1 Jun 2020 18:09:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5991F2065C;
+        Mon,  1 Jun 2020 18:02:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034979;
-        bh=XcJCaocnbcFzg/CZToSt2mcfEKngfheOLdLfr44sCOc=;
+        s=default; t=1591034525;
+        bh=G5znw6b3xcWoE98cHwMwBHm1ZG+kgcYl3ptVUaPg7Kk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JEmLb8CE+VQGhtQyf4j7Pws76b6Vxo79cVE5iFdub1hrh470vx648bnk4H57wJjYD
-         UcDelFYqXSe/ghi474PTTcXcxkqV7OqnuLmjJaO+NurVPccDyWxkTIvG6XbF/Vbap/
-         iY8eUZIoMK28ly1FIli8YMpb/WHoFSjqwJOkHkCg=
+        b=y5B6qpEOOaqxtJ5qzdK6+uJOwhjSRXHI6CeJrCvuljpzJavOTi/ds/NSvivZAYc1V
+         sbOYkb07UPR9QUILCOEXtiR37ejV9De0Ih1b1WAgNAlKJ84rq9pGSn8hpnhle+lIoM
+         1VORon99t0Fls/bR6IFvevkXNjvizSFGOT4GgrJc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Simon Ser <contact@emersion.fr>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 097/142] drm/amd/display: drop cursor position check in atomic test
-Date:   Mon,  1 Jun 2020 19:54:15 +0200
-Message-Id: <20200601174048.021929909@linuxfoundation.org>
+        stable@vger.kernel.org, kbuild test robot <lkp@intel.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 4.14 71/77] netfilter: nf_conntrack_pptp: fix compilation warning with W=1 build
+Date:   Mon,  1 Jun 2020 19:54:16 +0200
+Message-Id: <20200601174028.556205769@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
+References: <20200601174016.396817032@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,45 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Simon Ser <contact@emersion.fr>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit f7d5991b92ff824798693ddf231cf814c9d5a88b ]
+commit 4946ea5c1237036155c3b3a24f049fd5f849f8f6 upstream.
 
-get_cursor_position already handles the case where the cursor has
-negative off-screen coordinates by not setting
-dc_cursor_position.enabled.
+>> include/linux/netfilter/nf_conntrack_pptp.h:13:20: warning: 'const' type qualifier on return type has no effect [-Wignored-qualifiers]
+extern const char *const pptp_msg_name(u_int16_t msg);
+^~~~~~
 
-Signed-off-by: Simon Ser <contact@emersion.fr>
-Fixes: 626bf90fe03f ("drm/amd/display: add basic atomic check for cursor plane")
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: kbuild test robot <lkp@intel.com>
+Fixes: 4c559f15efcc ("netfilter: nf_conntrack_pptp: prevent buffer overflows in debug code")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 7 -------
- 1 file changed, 7 deletions(-)
+ include/linux/netfilter/nf_conntrack_pptp.h |    2 +-
+ net/netfilter/nf_conntrack_pptp.c           |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 9f30343262f3..9fd12e108a70 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -6951,13 +6951,6 @@ static int dm_update_plane_state(struct dc *dc,
- 			return -EINVAL;
- 		}
+--- a/include/linux/netfilter/nf_conntrack_pptp.h
++++ b/include/linux/netfilter/nf_conntrack_pptp.h
+@@ -5,7 +5,7 @@
  
--		if (new_plane_state->crtc_x <= -new_acrtc->max_cursor_width ||
--			new_plane_state->crtc_y <= -new_acrtc->max_cursor_height) {
--			DRM_DEBUG_ATOMIC("Bad cursor position %d, %d\n",
--							 new_plane_state->crtc_x, new_plane_state->crtc_y);
--			return -EINVAL;
--		}
--
- 		return 0;
- 	}
+ #include <linux/netfilter/nf_conntrack_common.h>
  
--- 
-2.25.1
-
+-extern const char *const pptp_msg_name(u_int16_t msg);
++const char *pptp_msg_name(u_int16_t msg);
+ 
+ /* state of the control session */
+ enum pptp_ctrlsess_state {
+--- a/net/netfilter/nf_conntrack_pptp.c
++++ b/net/netfilter/nf_conntrack_pptp.c
+@@ -90,7 +90,7 @@ static const char *const pptp_msg_name_a
+ 	[PPTP_SET_LINK_INFO]		= "SET_LINK_INFO"
+ };
+ 
+-const char *const pptp_msg_name(u_int16_t msg)
++const char *pptp_msg_name(u_int16_t msg)
+ {
+ 	if (msg > PPTP_MSG_MAX)
+ 		return pptp_msg_name_array[0];
 
 
