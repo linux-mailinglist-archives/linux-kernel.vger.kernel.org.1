@@ -2,201 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC9F1EAFDA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 21:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2EE1EAFDC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 21:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728118AbgFAT4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 15:56:20 -0400
-Received: from mga18.intel.com ([134.134.136.126]:57277 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726176AbgFAT4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 15:56:19 -0400
-IronPort-SDR: NbOBXrz8k7Dum5hWyl0MviT63QRaWbNmstWkSll5yp3yJAHP/ZLXaLkAnQqWvVo9WIp074qu0H
- Z+SxTmwJcmhA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2020 12:56:17 -0700
-IronPort-SDR: 6uJS/LVhJgWFuf565jK0Jbi8pJ4sWIcgKu/ww8CiO2p0+U2ZaPMYZq1R8KRSOnx8j76nuhxtyl
- ZT2qLVdY2lOw==
-X-IronPort-AV: E=Sophos;i="5.73,462,1583222400"; 
-   d="scan'208";a="293307084"
-Received: from tzanussi-mobl4.amr.corp.intel.com (HELO [10.213.167.214]) ([10.213.167.214])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2020 12:56:16 -0700
-Subject: Re: [PATCH 0/7] selftsts/ftrace: Add requires list for each test case
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <shuah@kernel.org>
-References: <159102252279.31199.12855129586058455119.stgit@devnote2>
-From:   "Zanussi, Tom" <tom.zanussi@linux.intel.com>
-Message-ID: <3de208f9-8dd1-3b3a-55e8-134de30fa851@linux.intel.com>
-Date:   Mon, 1 Jun 2020 14:56:16 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1728059AbgFAT50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 15:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726176AbgFAT5Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 15:57:25 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28256C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 12:57:24 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id g5so3952926pfm.10
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 12:57:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=FLEAsLhjK/2hb4HFLEKI6DMEhCblk7HEBjLYOBIeBTw=;
+        b=Co6eWZJK4juq/S3/5rSBLiInygTXWg2N1TVrHIZLB4RjM/5kCo8RASKYy790rnz4NT
+         eF9DXuVf+oszm+h3QFeS8CVxNqPU7NrCF1GLMXOBr3urHcf9sXbVWVA1ueoiESPX++NP
+         HtfI+rizevq1M98SEIz5OQIrk+TNyttfyIu7iYKKbvdz/IGQQ0yvwNL9PvWnjNYWDorM
+         4l7HMdoXBFhXRS4GZKhgDqSv+ehawdCynz0Z1XmjdnXBnk1nSSuMCrHppD9ZY/4LBfVe
+         m3TjfjOsrlgowJi4aYiEezy1QNKWUBh+R8BsHmC8LTJDU+mdNhSB5hf/IlLXwj1VFjrv
+         ZhFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=FLEAsLhjK/2hb4HFLEKI6DMEhCblk7HEBjLYOBIeBTw=;
+        b=K2/OI9HZuJEynrqhsW8n0DGu4MTcMTOZq4Km2HDoycEaXX3pJJDY1lIwTNnyXY28MR
+         /6YqObOqltQbD9AOnAFbiwocL+9gjZ913fvxvIhvLhIams5XvMeoX7XsLsEhzpdL3S9C
+         0L3B19/aaU77iTTHM0XiP1UDIiyJ7hWKTqsvIsxs8AE2MZDsSIrVHSSPbcwkCa9ri+jb
+         MdgfmkUs3cu6Bzs1OEJKhcEhbbObWyXikatYI8Xy7nq17UAQP5P9dTA06Dpz5M42L/MY
+         niRhI8JYB0esPmgxkdWghoQfy7FB/DTI+qLQ9Y08XAWg6h+oIfh9fOl6ZwVf0pR8zg2v
+         5QHA==
+X-Gm-Message-State: AOAM531KPgb+bYepdxcT/R4KfgpX+nihQsnMLDg4dUE2yMiFcKLAo3Ca
+        Nx/Daas8o1CmPRQzd4+sY6L2uewWQIQ=
+X-Google-Smtp-Source: ABdhPJyhP8CT45x2yvEQdksfe+mUip6xv7jWRC4LXiGyjVE7VPAuR+ovH/pKTvjqweMhjmMeOhb5wA==
+X-Received: by 2002:a63:f601:: with SMTP id m1mr20263315pgh.205.1591041443570;
+        Mon, 01 Jun 2020 12:57:23 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id j17sm273209pjy.22.2020.06.01.12.57.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jun 2020 12:57:23 -0700 (PDT)
+Date:   Mon, 1 Jun 2020 13:57:21 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Subject: Re: [PATCH v1] coresight: Drop double check for ACPI companion device
+Message-ID: <20200601195721.GA24287@xps15>
+References: <20200529133210.20566-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <159102252279.31199.12855129586058455119.stgit@devnote2>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200529133210.20566-1-andriy.shevchenko@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masami,
+Hi Andy,
 
-On 6/1/2020 9:42 AM, Masami Hiramatsu wrote:
-> Hi,
+On Fri, May 29, 2020 at 04:32:10PM +0300, Andy Shevchenko wrote:
+> acpi_dev_get_resources() does perform the NULL pointer check against
+> ACPI companion device which is given as function parameter. Thus,
+> there is no need to duplicate this check in the caller.
 > 
-> Here is a series for adding "requires:" list for simplifying and
-> unifying requirement checks for each test case.
-> This series also includes the description line fix and
-> unresolved -> unsupported change ([1/7] and [2/7]).
-> 
-> Currently, we have many similar requirement checker to find
-> unconfigured or unsupported (in older kernels) feature in
-> each test case. I think it is a good time to unify those similar
-> checks.
-> 
-> As same as "description:" or "flags:" line, this series introduces
-> new "requires:" line, and convert current checking code intor the
-> "requires:" line.
-> This requires line gives some good effects, not only simplyfies
-> the code, but also unifies the reason message, and because it checks
-> the requirements before running the testc ase, it skips unneeded
-> ftrace initialization.
-> 
-> The requires line supports following checks
->   - tracefs interface check: Check whether the given file or directory
->     in the tracefs. (No suffix) [3/7],[4/7],[5/7]
->   - available tracer check: Check whether the given tracer is available
->     (":tracer" suffix) [6/7]
->   - README feature check: Check whether the given string is in the
->     README (":README" suffix) [7/7]
-> 
-> Note that since the requires line returns UNSUPPORTED error,
-> the requirements must be one of ftrace feature, but not the
-> user-space environmental requirement. If there is some issue
-> in user-space (e.g. lack of the command, modules, etc) it must
-> report UNRESOLVED error.
-> 
-> Since this series depends on following 2 commits,
-> 
-> commit 619ee76f5c9f ("selftests/ftrace: Return unsupported if no
->   error_log file") on Shuah's Kselftest tree
-> commit bea24f766efc ("selftests/ftrace: Distinguish between hist
->   and synthetic event checks") on Steven's Tracing tree
-> 
-> This can be applied on the tree which merged both of them.
-> Also, you can get the series from the following.
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git ftracetest-requires-v1
-> 
-> 
-> Thank you,
-
-Very nice, thanks for doing this.
-
-Reviewed-by: Tom Zanussi <zanussi@kernel.org>
-
-
-> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
+>  drivers/hwtracing/coresight/coresight-stm.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> Masami Hiramatsu (7):
->        selftests/ftrace: Allow ":" in description
->        selftests/ftrace: Return unsupported for the unconfigured features
->        selftests/ftrace: Add "requires:" list support
->        selftests/ftrace: Convert required interface checks into requires list
->        selftests/ftrace: Convert check_filter_file() with requires list
->        selftests/ftrace: Support ":tracer" suffix for requires
->        selftests/ftrace: Support ":README" suffix for requires
-> 
-> 
->   tools/testing/selftests/ftrace/ftracetest          |   11 ++++++-
->   .../selftests/ftrace/test.d/00basic/snapshot.tc    |    3 +-
->   .../selftests/ftrace/test.d/00basic/trace_pipe.tc  |    3 +-
->   .../ftrace/test.d/direct/kprobe-direct.tc          |    6 +---
->   .../ftrace/test.d/dynevent/add_remove_kprobe.tc    |    6 +---
->   .../ftrace/test.d/dynevent/add_remove_synth.tc     |    5 +--
->   .../ftrace/test.d/dynevent/clear_select_events.tc  |   11 +------
->   .../ftrace/test.d/dynevent/generic_clear_event.tc  |    8 +----
->   .../selftests/ftrace/test.d/event/event-enable.tc  |    6 +---
->   .../selftests/ftrace/test.d/event/event-no-pid.tc  |   11 +------
->   .../selftests/ftrace/test.d/event/event-pid.tc     |   11 +------
->   .../ftrace/test.d/event/subsystem-enable.tc        |    6 +---
->   .../ftrace/test.d/event/toplevel-enable.tc         |    6 +---
->   .../ftrace/test.d/ftrace/fgraph-filter-stack.tc    |   14 +--------
->   .../ftrace/test.d/ftrace/fgraph-filter.tc          |    8 +----
->   .../ftrace/test.d/ftrace/func-filter-glob.tc       |    8 +----
->   .../test.d/ftrace/func-filter-notrace-pid.tc       |   13 +-------
->   .../ftrace/test.d/ftrace/func-filter-pid.tc        |   13 +-------
->   .../ftrace/test.d/ftrace/func-filter-stacktrace.tc |    3 +-
->   .../selftests/ftrace/test.d/ftrace/func_cpumask.tc |    6 +---
->   .../ftrace/test.d/ftrace/func_event_triggers.tc    |    7 ++---
->   .../ftrace/test.d/ftrace/func_mod_trace.tc         |    3 +-
->   .../ftrace/test.d/ftrace/func_profile_stat.tc      |    3 +-
->   .../ftrace/test.d/ftrace/func_profiler.tc          |   12 +-------
->   .../ftrace/test.d/ftrace/func_set_ftrace_file.tc   |    6 ++--
->   .../ftrace/test.d/ftrace/func_stack_tracer.tc      |    8 +----
->   .../test.d/ftrace/func_traceonoff_triggers.tc      |    6 ++--
->   .../ftrace/test.d/ftrace/tracing-error-log.tc      |   12 ++------
->   tools/testing/selftests/ftrace/test.d/functions    |   28 ++++++++++++++----
->   .../ftrace/test.d/instances/instance-event.tc      |    6 +---
->   .../selftests/ftrace/test.d/instances/instance.tc  |    6 +---
->   .../ftrace/test.d/kprobe/add_and_remove.tc         |    3 +-
->   .../selftests/ftrace/test.d/kprobe/busy_check.tc   |    3 +-
->   .../selftests/ftrace/test.d/kprobe/kprobe_args.tc  |    3 +-
->   .../ftrace/test.d/kprobe/kprobe_args_comm.tc       |    3 +-
->   .../ftrace/test.d/kprobe/kprobe_args_string.tc     |    3 +-
->   .../ftrace/test.d/kprobe/kprobe_args_symbol.tc     |    3 +-
->   .../ftrace/test.d/kprobe/kprobe_args_syntax.tc     |    5 +--
->   .../ftrace/test.d/kprobe/kprobe_args_type.tc       |    5 +--
->   .../ftrace/test.d/kprobe/kprobe_args_user.tc       |    5 +--
->   .../ftrace/test.d/kprobe/kprobe_eventname.tc       |    3 +-
->   .../ftrace/test.d/kprobe/kprobe_ftrace.tc          |    6 +---
->   .../ftrace/test.d/kprobe/kprobe_module.tc          |    3 +-
->   .../ftrace/test.d/kprobe/kprobe_multiprobe.tc      |    5 +--
->   .../ftrace/test.d/kprobe/kprobe_syntax_errors.tc   |    5 +--
->   .../ftrace/test.d/kprobe/kretprobe_args.tc         |    3 +-
->   .../ftrace/test.d/kprobe/kretprobe_maxactive.tc    |    4 +--
->   .../ftrace/test.d/kprobe/multiple_kprobes.tc       |    3 +-
->   .../selftests/ftrace/test.d/kprobe/probepoint.tc   |    3 +-
->   .../selftests/ftrace/test.d/kprobe/profile.tc      |    3 +-
->   .../ftrace/test.d/kprobe/uprobe_syntax_errors.tc   |    5 +--
->   .../ftrace/test.d/preemptirq/irqsoff_tracer.tc     |    4 +--
->   tools/testing/selftests/ftrace/test.d/template     |    4 +++
->   .../selftests/ftrace/test.d/tracer/wakeup.tc       |    6 +---
->   .../selftests/ftrace/test.d/tracer/wakeup_rt.tc    |    6 +---
->   .../inter-event/trigger-action-hist-xfail.tc       |   13 +-------
->   .../inter-event/trigger-field-variable-support.tc  |   16 +---------
->   .../trigger-inter-event-combined-hist.tc           |   16 +---------
->   .../inter-event/trigger-multi-actions-accept.tc    |   16 +---------
->   .../inter-event/trigger-onchange-action-hist.tc    |    8 +----
->   .../inter-event/trigger-onmatch-action-hist.tc     |   16 +---------
->   .../trigger-onmatch-onmax-action-hist.tc           |   16 +---------
->   .../inter-event/trigger-onmax-action-hist.tc       |   16 +---------
->   .../inter-event/trigger-snapshot-action-hist.tc    |   20 +------------
->   .../trigger-synthetic-event-createremove.tc        |   11 +------
->   .../inter-event/trigger-synthetic-event-syntax.tc  |   11 +------
->   .../inter-event/trigger-trace-action-hist.tc       |   18 +-----------
->   .../ftrace/test.d/trigger/trigger-eventonoff.tc    |   11 +------
->   .../ftrace/test.d/trigger/trigger-filter.tc        |   11 +------
->   .../ftrace/test.d/trigger/trigger-hist-mod.tc      |   16 +---------
->   .../test.d/trigger/trigger-hist-syntax-errors.tc   |   18 +-----------
->   .../ftrace/test.d/trigger/trigger-hist.tc          |   16 +---------
->   .../ftrace/test.d/trigger/trigger-multihist.tc     |   16 +---------
->   .../ftrace/test.d/trigger/trigger-snapshot.tc      |   16 +---------
->   .../ftrace/test.d/trigger/trigger-stacktrace.tc    |   11 +------
->   .../test.d/trigger/trigger-trace-marker-hist.tc    |   21 +-------------
->   .../trigger/trigger-trace-marker-snapshot.tc       |   21 +-------------
->   .../trigger-trace-marker-synthetic-kernel.tc       |   31 +-------------------
->   .../trigger/trigger-trace-marker-synthetic.tc      |   26 +----------------
->   .../ftrace/test.d/trigger/trigger-traceonoff.tc    |   11 +------
->   80 files changed, 120 insertions(+), 633 deletions(-)
-> 
-> --
-> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+> diff --git a/drivers/hwtracing/coresight/coresight-stm.c b/drivers/hwtracing/coresight/coresight-stm.c
+> index b908ca104645..673d2f56ed1e 100644
+> --- a/drivers/hwtracing/coresight/coresight-stm.c
+> +++ b/drivers/hwtracing/coresight/coresight-stm.c
+> @@ -727,8 +727,6 @@ static int acpi_stm_get_stimulus_area(struct device *dev, struct resource *res)
+>  
+>  	struct acpi_device *adev = ACPI_COMPANION(dev);
+>  
+> -	if (!adev)
+> -		return -ENODEV;
+>  	rc = acpi_dev_get_resources(adev, &res_list, NULL, NULL);
+>  	if (rc < 0)
+>  		return rc;
+
+I have applied your patch.
+
+Thanks,
+Mathieu
+
+> -- 
+> 2.26.2
 > 
