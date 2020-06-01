@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02DDD1EAA0E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6BD1EA947
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730221AbgFASEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:04:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48894 "EHLO mail.kernel.org"
+        id S1729019AbgFASAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:00:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728869AbgFASEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:04:21 -0400
+        id S1729341AbgFAR71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:59:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D35C1206E2;
-        Mon,  1 Jun 2020 18:04:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 949D620776;
+        Mon,  1 Jun 2020 17:59:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034660;
-        bh=3jPdlcInTFh+EvDJW8n9OfnWGq4Fb6IVg+4HS2nVxB8=;
+        s=default; t=1591034367;
+        bh=zJ0jXzsufwpVdl/701EtTcgJlQ+FB3kNEcZGbeLScFU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lbjUa0HuFDazbCAYsYeslyvPKr/eCr4aCUoW+znSgcjZAimZV99aBRMnXddQwZI99
-         DdG88Vd0dzyWwVtkhrLRNOz5aROacmRkMBhCSxd4U2U/9cEE0FT5m1+XOwe1sDTVnc
-         Hp5ZilCbfOeB4BFvlf5hLQBMCZEsFW22+3sXLu5I=
+        b=UyEvSQO5/MMjFh/bS4Ja+bMDmws1Xj0RJuIS5ZpZIeTCHq+dLyRdm2FTYErfbOS9H
+         04I8llz8E1OBxVUCKHmBogdhk2lE4lTAuZfKI46cfxrzpTihPPwhTeO9TqBXI9P6HW
+         Hg2xvwb0uHdZBSIRYAoxriuB7RBnX6cC6U0ApAIU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robert Beckett <bob.beckett@collabora.com>,
-        Ian Ray <ian.ray@ge.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 52/95] ARM: dts/imx6q-bx50v3: Set display interface clock parents
+        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Subject: [PATCH 4.9 45/61] xfrm: allow to accept packets with ipv6 NEXTHDR_HOP in xfrm_input
 Date:   Mon,  1 Jun 2020 19:53:52 +0200
-Message-Id: <20200601174029.499300512@linuxfoundation.org>
+Message-Id: <20200601174019.893085605@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
-References: <20200601174020.759151073@linuxfoundation.org>
+In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
+References: <20200601174010.316778377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,122 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Beckett <bob.beckett@collabora.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit 665e7c73a7724a393b4ec92d1ae1e029925ef2b7 ]
+commit afcaf61be9d1dbdee5ec186d1dcc67b6b692180f upstream.
 
-Avoid LDB and IPU DI clocks both using the same parent. LDB requires
-pasthrough clock to avoid breaking timing while IPU DI does not.
+For beet mode, when it's ipv6 inner address with nexthdrs set,
+the packet format might be:
 
-Force IPU DI clocks to use IMX6QDL_CLK_PLL2_PFD0_352M as parent
-and LDB to use IMX6QDL_CLK_PLL5_VIDEO_DIV.
+    ----------------------------------------------------
+    | outer  |     | dest |     |      |  ESP    | ESP |
+    | IP hdr | ESP | opts.| TCP | Data | Trailer | ICV |
+    ----------------------------------------------------
 
-This fixes an issue where attempting atomic modeset while using
-HDMI and display port at the same time causes LDB clock programming
-to destroy the programming of HDMI that was done during the same
-modeset.
+The nexthdr from ESP could be NEXTHDR_HOP(0), so it should
+continue processing the packet when nexthdr returns 0 in
+xfrm_input(). Otherwise, when ipv6 nexthdr is set, the
+packet will be dropped.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
-[Use IMX6QDL_CLK_PLL2_PFD0_352M instead of IMX6QDL_CLK_PLL2_PFD2_396M
- originally chosen by Robert Beckett to avoid affecting eMMC clock
- by DRM atomic updates]
-Signed-off-by: Ian Ray <ian.ray@ge.com>
-[Squash Robert's and Ian's commits for bisectability, update patch
- description and add stable tag]
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+I don't see any error cases that nexthdr may return 0. So
+fix it by removing the check for nexthdr == 0.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arm/boot/dts/imx6q-b450v3.dts  |  7 -------
- arch/arm/boot/dts/imx6q-b650v3.dts  |  7 -------
- arch/arm/boot/dts/imx6q-b850v3.dts  | 11 -----------
- arch/arm/boot/dts/imx6q-bx50v3.dtsi | 15 +++++++++++++++
- 4 files changed, 15 insertions(+), 25 deletions(-)
+ net/xfrm/xfrm_input.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/imx6q-b450v3.dts b/arch/arm/boot/dts/imx6q-b450v3.dts
-index 3ec58500e9c2..25bf45659737 100644
---- a/arch/arm/boot/dts/imx6q-b450v3.dts
-+++ b/arch/arm/boot/dts/imx6q-b450v3.dts
-@@ -65,13 +65,6 @@
- 	};
- };
+--- a/net/xfrm/xfrm_input.c
++++ b/net/xfrm/xfrm_input.c
+@@ -302,7 +302,7 @@ resume:
+ 		dev_put(skb->dev);
  
--&clks {
--	assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>,
--			  <&clks IMX6QDL_CLK_LDB_DI1_SEL>;
--	assigned-clock-parents = <&clks IMX6QDL_CLK_PLL3_USB_OTG>,
--				 <&clks IMX6QDL_CLK_PLL3_USB_OTG>;
--};
--
- &ldb {
- 	status = "okay";
- 
-diff --git a/arch/arm/boot/dts/imx6q-b650v3.dts b/arch/arm/boot/dts/imx6q-b650v3.dts
-index 5650a9b11091..0326711a8700 100644
---- a/arch/arm/boot/dts/imx6q-b650v3.dts
-+++ b/arch/arm/boot/dts/imx6q-b650v3.dts
-@@ -65,13 +65,6 @@
- 	};
- };
- 
--&clks {
--	assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>,
--			  <&clks IMX6QDL_CLK_LDB_DI1_SEL>;
--	assigned-clock-parents = <&clks IMX6QDL_CLK_PLL3_USB_OTG>,
--				 <&clks IMX6QDL_CLK_PLL3_USB_OTG>;
--};
--
- &ldb {
- 	status = "okay";
- 
-diff --git a/arch/arm/boot/dts/imx6q-b850v3.dts b/arch/arm/boot/dts/imx6q-b850v3.dts
-index 044a5bebe1c5..612f782ddaaa 100644
---- a/arch/arm/boot/dts/imx6q-b850v3.dts
-+++ b/arch/arm/boot/dts/imx6q-b850v3.dts
-@@ -53,17 +53,6 @@
- 	};
- };
- 
--&clks {
--	assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>,
--			  <&clks IMX6QDL_CLK_LDB_DI1_SEL>,
--			  <&clks IMX6QDL_CLK_IPU1_DI0_PRE_SEL>,
--			  <&clks IMX6QDL_CLK_IPU2_DI0_PRE_SEL>;
--	assigned-clock-parents = <&clks IMX6QDL_CLK_PLL5_VIDEO_DIV>,
--				 <&clks IMX6QDL_CLK_PLL5_VIDEO_DIV>,
--				 <&clks IMX6QDL_CLK_PLL2_PFD2_396M>,
--				 <&clks IMX6QDL_CLK_PLL2_PFD2_396M>;
--};
--
- &ldb {
- 	fsl,dual-channel;
- 	status = "okay";
-diff --git a/arch/arm/boot/dts/imx6q-bx50v3.dtsi b/arch/arm/boot/dts/imx6q-bx50v3.dtsi
-index d3cba09be0cb..c1f554348187 100644
---- a/arch/arm/boot/dts/imx6q-bx50v3.dtsi
-+++ b/arch/arm/boot/dts/imx6q-bx50v3.dtsi
-@@ -391,3 +391,18 @@
- 		#interrupt-cells = <1>;
- 	};
- };
-+
-+&clks {
-+	assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>,
-+			  <&clks IMX6QDL_CLK_LDB_DI1_SEL>,
-+			  <&clks IMX6QDL_CLK_IPU1_DI0_PRE_SEL>,
-+			  <&clks IMX6QDL_CLK_IPU1_DI1_PRE_SEL>,
-+			  <&clks IMX6QDL_CLK_IPU2_DI0_PRE_SEL>,
-+			  <&clks IMX6QDL_CLK_IPU2_DI1_PRE_SEL>;
-+	assigned-clock-parents = <&clks IMX6QDL_CLK_PLL5_VIDEO_DIV>,
-+				 <&clks IMX6QDL_CLK_PLL5_VIDEO_DIV>,
-+				 <&clks IMX6QDL_CLK_PLL2_PFD0_352M>,
-+				 <&clks IMX6QDL_CLK_PLL2_PFD0_352M>,
-+				 <&clks IMX6QDL_CLK_PLL2_PFD0_352M>,
-+				 <&clks IMX6QDL_CLK_PLL2_PFD0_352M>;
-+};
--- 
-2.25.1
-
+ 		spin_lock(&x->lock);
+-		if (nexthdr <= 0) {
++		if (nexthdr < 0) {
+ 			if (nexthdr == -EBADMSG) {
+ 				xfrm_audit_state_icvfail(x, skb,
+ 							 x->type->proto);
 
 
