@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2831EAABD
+	by mail.lfdr.de (Postfix) with ESMTP id A9F491EAABE
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731046AbgFASK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:10:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57678 "EHLO mail.kernel.org"
+        id S1731054AbgFASLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:11:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731012AbgFASKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:10:43 -0400
+        id S1731017AbgFASKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:10:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2053206E2;
-        Mon,  1 Jun 2020 18:10:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB26F2065C;
+        Mon,  1 Jun 2020 18:10:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035042;
-        bh=H7naidMd5Qa0u04rOXvuNj7VG6ToA776KEDM8xBVLYI=;
+        s=default; t=1591035044;
+        bh=LMa7nr4zO0zeZVtYMjtumHTenenqBEXAoybZsjOD7wk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P+MDhmO/PbA39SKoyuYBQGOCKCYhIKN5WvJpAIbZvtl+5xEpo/Zk4bUZ7ttFTUe9b
-         hKCfY/jA3HKMNO1ipS5G9qb00VBjXzHQagZk49UgXkxhv1AR4yzXt32Lrjf0JxCJqS
-         n2NeGUSte516/Om3YPfStCMWxQy13FS4SJMWLDT0=
+        b=a1LdZibt0kAsVsWjN9d38bmCdjnu6SeVC7aGfCYuHaMaHIP8Z6Q/Oz/GhP1/q7o3J
+         Pr2637GkVqaYBlwUGSazUxaNwwI6JpKSh11EyMRFfsD6G2YDT6r0Uf9ih2ztnNQfY6
+         CGz2ZA2Y4IMkT9+EvsLoMjoWqsaBmZYbxnRZwB7Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Subject: [PATCH 5.4 126/142] esp6: get the right proto for transport mode in esp6_gso_encap
-Date:   Mon,  1 Jun 2020 19:54:44 +0200
-Message-Id: <20200601174050.848248627@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Vijayendra Suman <vijayendra.suman@oracle.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 127/142] bnxt_en: Fix accumulation of bp->net_stats_prev.
+Date:   Mon,  1 Jun 2020 19:54:45 +0200
+Message-Id: <20200601174050.940067130@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
 References: <20200601174037.904070960@linuxfoundation.org>
@@ -43,54 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Michael Chan <michael.chan@broadcom.com>
 
-commit 3c96ec56828922e3fe5477f75eb3fc02f98f98b5 upstream.
+commit b8056e8434b037fdab08158fea99ed7bc8ef3a74 upstream.
 
-For transport mode, when ipv6 nexthdr is set, the packet format might
-be like:
+We have logic to maintain network counters across resets by storing
+the counters in bp->net_stats_prev before reset.  But not all resets
+will clear the counters.  Certain resets that don't need to change
+the number of rings do not clear the counters.  The current logic
+accumulates the counters before all resets, causing big jumps in
+the counters after some resets, such as ethtool -G.
 
-    ----------------------------------------------------
-    |        | dest |     |     |      |  ESP    | ESP |
-    | IP6 hdr| opts.| ESP | TCP | Data | Trailer | ICV |
-    ----------------------------------------------------
+Fix it by only accumulating the counters during reset if the irq_re_init
+parameter is set.  The parameter signifies that all rings and interrupts
+will be reset and that means that the counters will also be reset.
 
-What it wants to get for x-proto in esp6_gso_encap() is the proto that
-will be set in ESP nexthdr. So it should skip all ipv6 nexthdrs and
-get the real transport protocol. Othersize, the wrong proto number
-will be set into ESP nexthdr.
-
-This patch is to skip all ipv6 nexthdrs by calling ipv6_skip_exthdr()
-in esp6_gso_encap().
-
-Fixes: 7862b4058b9f ("esp: Add gso handlers for esp4 and esp6")
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Reported-by: Vijayendra Suman <vijayendra.suman@oracle.com>
+Fixes: b8875ca356f1 ("bnxt_en: Save ring statistics before reset.")
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/ipv6/esp6_offload.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/ipv6/esp6_offload.c
-+++ b/net/ipv6/esp6_offload.c
-@@ -121,9 +121,16 @@ static void esp6_gso_encap(struct xfrm_s
- 	struct ip_esp_hdr *esph;
- 	struct ipv6hdr *iph = ipv6_hdr(skb);
- 	struct xfrm_offload *xo = xfrm_offload(skb);
--	int proto = iph->nexthdr;
-+	u8 proto = iph->nexthdr;
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -9285,7 +9285,7 @@ static void __bnxt_close_nic(struct bnxt
+ 	bnxt_free_skbs(bp);
  
- 	skb_push(skb, -skb_network_offset(skb));
-+
-+	if (x->outer_mode.encap == XFRM_MODE_TRANSPORT) {
-+		__be16 frag;
-+
-+		ipv6_skip_exthdr(skb, sizeof(struct ipv6hdr), &proto, &frag);
-+	}
-+
- 	esph = ip_esp_hdr(skb);
- 	*skb_mac_header(skb) = IPPROTO_ESP;
- 
+ 	/* Save ring stats before shutdown */
+-	if (bp->bnapi)
++	if (bp->bnapi && irq_re_init)
+ 		bnxt_get_ring_stats(bp, &bp->net_stats_prev);
+ 	if (irq_re_init) {
+ 		bnxt_free_irq(bp);
 
 
