@@ -2,72 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C7F1EA699
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 17:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE9F1EA674
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 17:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727056AbgFAPOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 11:14:08 -0400
-Received: from mail-smtp-prod.cs.v-eagle.myacc.net ([24.233.167.173]:44512
-        "EHLO mail-smtp-prod.cs.v-eagle.myacc.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726017AbgFAPOI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 11:14:08 -0400
-X-Greylist: delayed 677 seconds by postgrey-1.27 at vger.kernel.org; Mon, 01 Jun 2020 11:14:07 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mail-smtp-prod.cs.v-eagle.myacc.net (Postfix) with ESMTP id CD3752462154;
-        Mon,  1 Jun 2020 11:02:48 -0400 (EDT)
-X-Virus-Scanned: amavisd-new at myacc.net
-Received: from mail-smtp-prod.cs.v-eagle.myacc.net ([127.0.0.1])
-        by localhost (mail-smtp-prod.cs.v-eagle.myacc.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id NrsSgnSDjqLr; Mon,  1 Jun 2020 11:02:48 -0400 (EDT)
-Received: from webmail.myacc.net (unknown [10.128.51.79])
-        by mail-smtp-prod.cs.v-eagle.myacc.net (Postfix) with ESMTP id 9DD1024616DD;
-        Mon,  1 Jun 2020 11:02:47 -0400 (EDT)
-Received: from 10.128.51.78 (proxying for 197.239.81.21)
-        (SquirrelMail authenticated user guigomez@myacc.net)
-        by webmail.myacc.net with HTTP;
-        Mon, 1 Jun 2020 11:02:47 -0400
-Message-ID: <e32e97b8b991bfe40aaf1b9e26527cd1.squirrel@webmail.myacc.net>
-Date:   Mon, 1 Jun 2020 11:02:47 -0400
-Subject: Greetings
-From:   "Ezequiel Lindberg" <guigomez@myacc.net>
-Reply-To: lindberg@iiiha.com
-User-Agent: SquirrelMail/1.4.22
+        id S1726176AbgFAPEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 11:04:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726017AbgFAPEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 11:04:31 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A92C12065C;
+        Mon,  1 Jun 2020 15:04:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591023871;
+        bh=IpTx7nnx1mp8ehJgM+gN6VFNSO8KbEMfp595a0amc9Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2ABpnLOJqaEkBP846oPPEM0vc3pFwA/t8MlhH1EBDukU9BRl5JHZFfLJpRRw7kLxo
+         QCIbvot+MtNS7Cgq5FXHAmhek6fqMw54Cgw74diTR7n160io8+55k5yHTgNeQv/kT/
+         JBXupq3LNSiF8crTY56wYgvrOHy1IjMJnab1QvaA=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D533940AFD; Mon,  1 Jun 2020 12:04:28 -0300 (-03)
+Date:   Mon, 1 Jun 2020 12:04:28 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>
+Subject: Re: [PATCH 05/14] perf tools: Add parse_events_fake interface
+Message-ID: <20200601150428.GJ31795@kernel.org>
+References: <20200524224219.234847-1-jolsa@kernel.org>
+ <20200524224219.234847-6-jolsa@kernel.org>
+ <CAP-5=fXaRv3rbjUYoTJUgc+GfnLku--O5LiHrM1W3ofaFz28rQ@mail.gmail.com>
+ <20200601090850.GI881900@krava>
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Priority: 3 (Normal)
-Importance: Normal
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200601090850.GI881900@krava>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear,
+Em Mon, Jun 01, 2020 at 11:08:50AM +0200, Jiri Olsa escreveu:
+> On Mon, Jun 01, 2020 at 12:28:31AM -0700, Ian Rogers wrote:
+> > On Sun, May 24, 2020 at 3:42 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> > >
+> > > Adding parse_events_fake interface to parse events
+> > > and use fake pmu event in case pmu event is parsed.
+> > >
+> > > This way it's possible to parse events from PMUs
+> > > which are not present in the system. It's available
+> > > only for testing purposes coming in following
+> > > changes.
+> > >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > 
+> > Acked-by: Ian Rogers <irogers@google.com>
+> > 
+> > Alternatively fake_pmu could be an argument to parse_events.
+> 
+> yea I checked that and I was surprised how many parse_events calls
+> we have in perf, so I went this way.. but I haven't really tried it,
+> so it might look actually etter despite the many places we need to change,
+> I'll try
 
- I am the project director of Svenska Petroleum Exploration AB (Sweden) I
-am seeking your assistance for the transfer of Fifty Two million
-(US$52,000,000.00) to your account for private investment purpose.
+Thanks! My admitedly unchecked thinking is that most places will just
+pass NULL, only the test case will pass it, right?
 
-I look forward to your response.
+- Arnaldo
+ 
+> thanks,
+> jirka
+> 
+> > 
+> > Thanks,
+> > Ian
+> > 
+> > > ---
+> > >  tools/perf/util/parse-events.c | 48 +++++++++++++++++++++++++---------
+> > >  tools/perf/util/parse-events.h |  2 ++
+> > >  2 files changed, 37 insertions(+), 13 deletions(-)
+> > >
+> > > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> > > index 8304f9b6e6be..89239695a728 100644
+> > > --- a/tools/perf/util/parse-events.c
+> > > +++ b/tools/perf/util/parse-events.c
+> > > @@ -2082,22 +2082,15 @@ int parse_events_terms(struct list_head *terms, const char *str)
+> > >         return ret;
+> > >  }
+> > >
+> > > -int parse_events(struct evlist *evlist, const char *str,
+> > > -                struct parse_events_error *err)
+> > > +static int parse_events_state(struct parse_events_state *parse_state,
+> > > +                             struct evlist *evlist, const char *str)
+> > >  {
+> > > -       struct parse_events_state parse_state = {
+> > > -               .list   = LIST_HEAD_INIT(parse_state.list),
+> > > -               .idx    = evlist->core.nr_entries,
+> > > -               .error  = err,
+> > > -               .evlist = evlist,
+> > > -               .stoken = PE_START_EVENTS,
+> > > -       };
+> > >         int ret;
+> > >
+> > > -       ret = parse_events__scanner(str, &parse_state);
+> > > +       ret = parse_events__scanner(str, parse_state);
+> > >         perf_pmu__parse_cleanup();
+> > >
+> > > -       if (!ret && list_empty(&parse_state.list)) {
+> > > +       if (!ret && list_empty(&parse_state->list)) {
+> > >                 WARN_ONCE(true, "WARNING: event parser found nothing\n");
+> > >                 return -1;
+> > >         }
+> > > @@ -2105,12 +2098,12 @@ int parse_events(struct evlist *evlist, const char *str,
+> > >         /*
+> > >          * Add list to the evlist even with errors to allow callers to clean up.
+> > >          */
+> > > -       perf_evlist__splice_list_tail(evlist, &parse_state.list);
+> > > +       perf_evlist__splice_list_tail(evlist, &parse_state->list);
+> > >
+> > >         if (!ret) {
+> > >                 struct evsel *last;
+> > >
+> > > -               evlist->nr_groups += parse_state.nr_groups;
+> > > +               evlist->nr_groups += parse_state->nr_groups;
+> > >                 last = evlist__last(evlist);
+> > >                 last->cmdline_group_boundary = true;
+> > >
+> > > @@ -2125,6 +2118,35 @@ int parse_events(struct evlist *evlist, const char *str,
+> > >         return ret;
+> > >  }
+> > >
+> > > +int parse_events(struct evlist *evlist, const char *str,
+> > > +                struct parse_events_error *err)
+> > > +{
+> > > +       struct parse_events_state parse_state = {
+> > > +               .list   = LIST_HEAD_INIT(parse_state.list),
+> > > +               .idx    = evlist->core.nr_entries,
+> > > +               .error  = err,
+> > > +               .evlist = evlist,
+> > > +               .stoken = PE_START_EVENTS,
+> > > +       };
+> > > +
+> > > +       return parse_events_state(&parse_state, evlist, str);
+> > > +}
+> > > +
+> > > +int parse_events_fake(struct evlist *evlist, const char *str,
+> > > +                     struct parse_events_error *err)
+> > > +{
+> > > +       struct parse_events_state parse_state = {
+> > > +               .list     = LIST_HEAD_INIT(parse_state.list),
+> > > +               .idx      = evlist->core.nr_entries,
+> > > +               .error    = err,
+> > > +               .evlist   = evlist,
+> > > +               .stoken   = PE_START_EVENTS,
+> > > +               .fake_pmu = true,
+> > > +       };
+> > > +
+> > > +       return parse_events_state(&parse_state, evlist, str);
+> > > +}
+> > > +
+> > >  #define MAX_WIDTH 1000
+> > >  static int get_term_width(void)
+> > >  {
+> > > diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
+> > > index 963b0ea6c448..4a23b6cd9924 100644
+> > > --- a/tools/perf/util/parse-events.h
+> > > +++ b/tools/perf/util/parse-events.h
+> > > @@ -34,6 +34,8 @@ int parse_events_option(const struct option *opt, const char *str, int unset);
+> > >  int parse_events_option_new_evlist(const struct option *opt, const char *str, int unset);
+> > >  int parse_events(struct evlist *evlist, const char *str,
+> > >                  struct parse_events_error *error);
+> > > +int parse_events_fake(struct evlist *evlist, const char *str,
+> > > +                     struct parse_events_error *error);
+> > >  int parse_events_terms(struct list_head *terms, const char *str);
+> > >  int parse_filter(const struct option *opt, const char *str, int unset);
+> > >  int exclude_perf(const struct option *opt, const char *arg, int unset);
+> > > --
+> > > 2.25.4
+> > >
+> > 
+> 
 
-Regards
-Ezequiel Lindberg
+-- 
 
-
-E-mail address: ezq@engineer.com
-SE-115 93 Stockholm, Sweden
-Visiting address: Biblioteksgatan 29
-SE-114 35  Stockholm,  Sweden
-
-
-
-
-
-
-
-
-
-
-
+- Arnaldo
