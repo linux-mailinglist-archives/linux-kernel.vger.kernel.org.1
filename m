@@ -2,106 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E911EB218
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 01:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C341EB221
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 01:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728523AbgFAXSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 19:18:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726099AbgFAXSm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 19:18:42 -0400
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1728917AbgFAXUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 19:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726181AbgFAXUq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 19:20:46 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C48C05BD43;
+        Mon,  1 Jun 2020 16:20:46 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EBB55207BB
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 23:18:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591053521;
-        bh=vG7dpOcajSi/mt4/We78ONhQ6W10E0sko1pNjj1dhKo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=L3qZgGCD1KwPW+AzHVpCLxbtFMIbF8YoDBXINYIN9StTf6HaAHbtZYUevfjha89GT
-         P4SXM5QubUZ7cE7/FYz9/lp6VGJohG7ThZqriBrgsA5x6aZQ7dmbKCmUMCL7/mTr2i
-         gwuBMglfxUU18LuGxEbZ0DAhZL3Wc7Y2BHOtUXKw=
-Received: by mail-wr1-f45.google.com with SMTP id h5so1467735wrc.7
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 16:18:40 -0700 (PDT)
-X-Gm-Message-State: AOAM5327qk8uENiABX3Wxx5KvkWSfGeRTvk4GwkXaIDa/TYi8ldrU4Cd
-        T2y0FRQtwJu2oh+IlYC79kjB+DB9j5F/CU1hzSSmYw==
-X-Google-Smtp-Source: ABdhPJwcrV44K9KnQPiete8Q8IGAa4fv5gTnd/zkm7UMyds9Aoe3lJR00gDthiHYjn5UnatttJZS0INS+BA4D1pJlvY=
-X-Received: by 2002:adf:ea11:: with SMTP id q17mr23050302wrm.75.1591053519479;
- Mon, 01 Jun 2020 16:18:39 -0700 (PDT)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49bWPP5qRFzB3sy;
+        Tue,  2 Jun 2020 09:20:41 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1591053643;
+        bh=lshRSFsN3HPLbDT6RUh9tV90UDfa8ShqrsJXN34ckpA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JLEN+joPC2hx4lO4TW6IEqyMGllrWCbdUNdYrTO7XleF6AoyHEkyRcsGOC5ncRdLz
+         FEdiJZ7+iE6K2zAKuUJxQF8nDZ7Eo1iNaRGBR1/T+LndROhzvzi9NVWSnzfkBYG6Ce
+         EQZyxLwHJIiJD0Yr0fDM/7sNUVNxt10O4jvSYmolukFgL/vH2y5d7/a4KbOVqjVnJq
+         nywGHykmwxBTXWlrQP8f2i61KqScRDhofcpOh0oXgxy4gkUepmTQAD4uFkQCsPMKdz
+         P/HLduw3zLENmIs/3jQbgzv2ZKeGWrR/aq0KEyTCvhQtOKTr/LMngq/6jINy06Ih3O
+         qJYUcuDIgJn2A==
+Date:   Tue, 2 Jun 2020 09:20:40 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Ahern <dsahern@gmail.com>,
+        Florian Westphal <fw@strlen.de>
+Subject: Re: linux-next: manual merge of the ipsec-next tree with Linus'
+ tree
+Message-ID: <20200602092040.5ef52300@canb.auug.org.au>
+In-Reply-To: <20200511130015.37103884@canb.auug.org.au>
+References: <20200511130015.37103884@canb.auug.org.au>
 MIME-Version: 1.0
-References: <85367hkl06.fsf@collabora.com> <079539BF-F301-47BA-AEAD-AED23275FEA1@amacapital.net>
- <50a9e680-6be1-ff50-5c82-1bf54c7484a9@gmail.com> <CALCETrX+CEN7Sq=ROP33MAGn2dTX=w0JHWb6f4KAr-E9FE4YPQ@mail.gmail.com>
- <a14be8b0-a9a2-cf96-939e-cedf7e0e669a@gmail.com> <CALCETrV+rYnUnve09=n+Zb8BR8mDBq6txX9LmEw7r8tAA7d+2Q@mail.gmail.com>
- <CALCETrWr_B-quNckFksTP1W-Ww71uQgCrR-o9QWdQ-Gi8p1r9A@mail.gmail.com> <202006011306.2E31FDED@keescook>
-In-Reply-To: <202006011306.2E31FDED@keescook>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 1 Jun 2020 16:18:27 -0700
-X-Gmail-Original-Message-ID: <CALCETrW9R7YyxkervbsH2NZDUtYzag23ewD=--poeH54nc-yiQ@mail.gmail.com>
-Message-ID: <CALCETrW9R7YyxkervbsH2NZDUtYzag23ewD=--poeH54nc-yiQ@mail.gmail.com>
-Subject: Re: [PATCH RFC] seccomp: Implement syscall isolation based on memory areas
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andy Lutomirski <luto@kernel.org>, Paul Gofman <gofmanp@gmail.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@collabora.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Drewry <wad@chromium.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Zebediah Figura <zfigura@codeweavers.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/TkH89WJytnR288K=Gm+4mTy";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 1, 2020 at 1:08 PM Kees Cook <keescook@chromium.org> wrote:
+--Sig_/TkH89WJytnR288K=Gm+4mTy
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi Dave,
+
+On Mon, 11 May 2020 13:00:15 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
 >
-> On Sun, May 31, 2020 at 02:03:48PM -0700, Andy Lutomirski wrote:
-> > On Sun, May 31, 2020 at 11:57 AM Andy Lutomirski <luto@kernel.org> wrote:
-> > >
-> > >
-> > > What if there was a special filter type that ran a BPF program on each
-> > > syscall, and the program was allowed to access user memory to make its
-> > > decisions, e.g. to look at some list of memory addresses.  But this
-> > > would explicitly *not* be a security feature -- execve() would remove
-> > > the filter, and the filter's outcome would be one of redirecting
-> > > execution or allowing the syscall.  If the "allow" outcome occurs,
-> > > then regular seccomp filters run.  Obviously the exact semantics here
-> > > would need some care.
-> >
-> > Let me try to flesh this out a little.
-> >
-> > A task could install a syscall emulation filter (maybe using the
-> > seccomp() syscall, maybe using something else).  There would be at
-> > most one such filter per process.  Upon doing a syscall, the kernel
-> > will first do initial syscall fixups (e.g. SYSENTER/SYSCALL32 magic
-> > argument translation) and would then invoke the filter.  The filter is
-> > an eBPF program (sorry Kees) and, as input, it gets access to the
->
-> FWIW, I agree: something like this needs to use eBPF -- this isn't
-> being designed as a security boundary. It's more like eBPF ptrace.
+> Today's linux-next merge of the ipsec-next tree got conflicts in:
+>=20
+>   net/ipv4/xfrm4_output.c
+>   net/ipv6/xfrm6_output.c
+>=20
+> between commit:
+>=20
+>   0c922a4850eb ("xfrm: Always set XFRM_TRANSFORMED in xfrm{4,6}_output_fi=
+nish")
+>=20
+> from Linus' tree and commit:
+>=20
+>   2ab6096db2f1 ("xfrm: remove output_finish indirection from xfrm_state_a=
+finfo")
+>=20
+> from the ipsec-next tree.
+>=20
+> I fixed it up (I used the latter versions of these files and then added
+> the following patch) and can carry the fix as necessary. This is now fixed
+> as far as linux-next is concerned, but any non trivial conflicts should
+> be mentioned to your upstream maintainer when your tree is submitted for
+> merging.  You may also want to consider cooperating with the maintainer
+> of the conflicting tree to minimise any particularly complex conflicts.
+>=20
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Mon, 11 May 2020 12:57:24 +1000
+> Subject: [PATCH] xfrm: merge fixup for "remove output_finish indirection =
+from xfrm_state_afinfo"
+>=20
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  net/xfrm/xfrm_output.c | 4 ----
+>  1 file changed, 4 deletions(-)
+>=20
+> diff --git a/net/xfrm/xfrm_output.c b/net/xfrm/xfrm_output.c
+> index 886a9b284b3a..0f4b3a5e02ba 100644
+> --- a/net/xfrm/xfrm_output.c
+> +++ b/net/xfrm/xfrm_output.c
+> @@ -574,16 +574,12 @@ int xfrm_output(struct sock *sk, struct sk_buff *sk=
+b)
+>  	switch (x->outer_mode.family) {
+>  	case AF_INET:
+>  		memset(IPCB(skb), 0, sizeof(*IPCB(skb)));
+> -#ifdef CONFIG_NETFILTER
+>  		IPCB(skb)->flags |=3D IPSKB_XFRM_TRANSFORMED;
+> -#endif
+>  		break;
+>  	case AF_INET6:
+>  		memset(IP6CB(skb), 0, sizeof(*IP6CB(skb)));
+> =20
+> -#ifdef CONFIG_NETFILTER
+>  		IP6CB(skb)->flags |=3D IP6SKB_XFRM_TRANSFORMED;
+> -#endif
+>  		break;
+>  	}
+> =20
 
-On a bit more consideration, I think that I have the model a bit
-wrong.  We shouldn't think of this as a *syscall* filter but as a
-filter for architectural privilege transitions in general.  After all,
-there is no particular guarantee that any given emulated program has a
-syscall ABI that is even remotely compatible with Linux.  So maybe the
-filter is fed events like SYSCALL64, SYSCALL32, SYSENTER, #GP, #PF
-(the bad kind that would otherwise get a signal), #UD, etc.  And the
-filter can examine process state and take some reasonable action.
-Think if it as a personality scheme that's programmable by user code.
-I imagine that even schemes like NaCl could make some use of this.
+It looks like this merge resolution fix up was missed when the
+ipsec-next tree was merged into the net-next tree.
 
-This allows all kinds of interesting things.  For example, it should
-give Wine a much nicer emulation of Windows SEH and vectored signals.
-And maybe it could finally allow Linux userspace to have some sensible
-equivalent of those Windows features -- being able to write library
-code that could sanely handle, say, math errors would be quite handy.
+--=20
+Cheers,
+Stephen Rothwell
 
-This could be mocked up with cBPF, but I think a cBPF version will
-struggle to be a performant solution for Wine because it will have a
-hard time distinguishing between Windows and Linux syscalls.
+--Sig_/TkH89WJytnR288K=Gm+4mTy
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
---Andy
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7VjUgACgkQAVBC80lX
+0GxFUgf7BVP8TUGqwFITcohFkSvSY2BCjRPAirE2bJHgWC23rDFlNDUBQprmEbF+
+7jJEe+X9lggKAp94xG/w2oBqKbHGOhe5e4ZakSNaCL6WccU+SjO8F2WppOgCeBgM
+rOYYVVzS7QYmM7YP4hJzSU+yCT9ouc446zp2AxltRkWrhg4uXmFwZZIpl6MgeNOD
+alAmkjLl12qisgY5n9aGP05srEwiHMKJsVpxB3+NLlghjGkjLSPRAv3jLr9dfGlN
+2raQn/Qj1C2Y1oD/AsaBIcRxpNgyhe6UdAwahQ/7B/yDzObJiHlRsI60r+l1pqpZ
+DUVSPe/dDEyTGmOlpiimnBbO2WlaCA==
+=xNkS
+-----END PGP SIGNATURE-----
+
+--Sig_/TkH89WJytnR288K=Gm+4mTy--
