@@ -2,178 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 641F31E9ED4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 09:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7751E9EB9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 09:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728202AbgFAHGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 03:06:14 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:55166 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgFAHGN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 03:06:13 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 051763kb075970;
-        Mon, 1 Jun 2020 02:06:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1590995163;
-        bh=gb/ZdRsG7eTmfVWNkjfMu+1xZcT174un93NZRN/8uuM=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=aNWzBiNHRB5FfnwwhTXgboikuHZjYVAmaLvykAyMMXhneeZYgotoHNv5UnoN7//hv
-         0CXsyE73lRuICfQC0fz0bFG9RETFkMR51UhB/DmbD1geDJVNGHU77yMk8oQy++Liji
-         Lo1W4mvqWRUVVPL6rkaw0QNvCQdjNqNiuxprQv0E=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 051763hk017628
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 1 Jun 2020 02:06:03 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 1 Jun
- 2020 02:06:02 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 1 Jun 2020 02:06:02 -0500
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 051758sA016257;
-        Mon, 1 Jun 2020 02:05:58 -0500
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Mark Brown <broonie@kernel.org>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Ramuthevar Vadivel Murugan 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <simon.k.r.goldschmidt@gmail.com>,
-        <dinguyen@kernel.org>, <marex@denx.de>
-Subject: [RESEND PATCH v3 8/8] spi: Move cadence-quadspi driver to drivers/spi/
-Date:   Mon, 1 Jun 2020 12:34:44 +0530
-Message-ID: <20200601070444.16923-9-vigneshr@ti.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601070444.16923-1-vigneshr@ti.com>
-References: <20200601070444.16923-1-vigneshr@ti.com>
+        id S1727875AbgFAHFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 03:05:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53986 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725283AbgFAHFF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 03:05:05 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0CF902074B;
+        Mon,  1 Jun 2020 07:05:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590995104;
+        bh=B3QD6jug+ogOzxUlyPb4F6UTjlIKD4f4RQZhFem4HJQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DIyZxKIpBbX7KMO6KiPQO8iHUlmr2rCiXeSPsi/nsD/csVbFUjQ511WD0pco/4587
+         4sxuBII1LQxSbg7P7vjRRQTfbTTV7rGT4RWxO6CPi6Jsn8WiSZ0wC+Qvf6/sERpgRJ
+         4NTHny9OIWYq+pWEtJihbcpITPmOXeAVlOC4FgxA=
+Date:   Mon, 1 Jun 2020 08:05:00 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     guohanjun@huawei.com, rjw@rjwysocki.net,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, ndesaulniers@google.com
+Subject: Re: arm64/acpi: NULL dereference reports from UBSAN at boot
+Message-ID: <20200601070459.GB8601@willie-the-truck>
+References: <20200521100952.GA5360@willie-the-truck>
+ <20200521173738.GA29590@e121166-lin.cambridge.arm.com>
+ <20200526202157.GE2206@willie-the-truck>
+ <20200527134104.GA16115@e121166-lin.cambridge.arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200527134104.GA16115@e121166-lin.cambridge.arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+On Wed, May 27, 2020 at 02:41:04PM +0100, Lorenzo Pieralisi wrote:
+> On Tue, May 26, 2020 at 09:21:57PM +0100, Will Deacon wrote:
+> > Hi Lorenzo, Hanjun, [+Nick]
+> > 
+> > On Thu, May 21, 2020 at 06:37:38PM +0100, Lorenzo Pieralisi wrote:
+> > > On Thu, May 21, 2020 at 11:09:53AM +0100, Will Deacon wrote:
+> > > > Hi folks,
+> > > > 
+> > > > I just tried booting the arm64 for-kernelci branch under QEMU (version
+> > > > 4.2.50 (v4.2.0-779-g4354edb6dcc7)) with UBSAN enabled, and I see a
+> > > > couple of NULL pointer dereferences reported at boot. I think they're
+> > > > both GIC related (log below). I don't see a panic with UBSAN disabled,
+> > > > so something's fishy here.
+> > > 
+> > > May I ask you the QEMU command line please - just to make sure I can
+> > > replicate it.
+> > 
+> > As it turns out, I'm only able to reproduce this when building with Clang,
+> > but I don't know whether that's because GCC is missing something of Clang
+> > is signalling a false positive. You also don't need all of those whacky
+> > fuzzing options enabled.
+> > 
+> > Anyway, to reproduce:
+> > 
+> >  $ git checkout for-next/kernelci
+> >  $ make ARCH=arm64  CC=clang CROSS_COMPILE=aarch64-linux-gnu- defconfig
+> >  <then do a menuconfig and enable UBSAN>
+> >  $ make ARCH=arm64  CC=clang CROSS_COMPILE=aarch64-linux-gnu- Image
+> > 
+> > I throw that at QEMU using:
+> > 
+> > qemu-system-aarch64 -M virt -machine virtualization=true \
+> > 	-machine virt,gic-version=3 \
+> > 	-cpu max,sve=off -smp 2 -m 4096 \
+> > 	-drive if=pflash,format=raw,file=efi.img,readonly \
+> > 	-drive if=pflash,format=raw,file=varstore.img \
+> > 	-drive if=virtio,format=raw,file=disk.img \
+> > 	-device virtio-scsi-pci,id=scsi0 \
+> > 	-device virtio-rng-pci \
+> > 	-device virtio-net-pci,netdev=net0 \
+> > 	-netdev user,id=net0,hostfwd=tcp::8222-:22 \
+> > 	-nographic \
+> > 	-kernel ~/work/linux/arch/arm64/boot/Image \
+> > 	-append "earlycon root=/dev/vda2"
+> > 
+> > I built QEMU a while ago according to:
+> > 
+> > https://mirrors.edge.kernel.org/pub/linux/kernel/people/will/docs/qemu/qemu-arm64-howto.html
+> > 
+> > and its version 4.2.50 (v4.2.0-779-g4354edb6dcc7).
+> > 
+> > My clang is version 11.0.1.
+> 
+> Thanks a lot Will.
+> 
+> I *think* I was right - it is the ACPI_OFFSET() macro:
+> 
+> #define ACPI_OFFSET(d, f)  ACPI_PTR_DIFF (&(((d *) 0)->f), (void *) 0)
+> 
+> that triggers the warnings (I suspected it because at least in one of
+> the warnings I could not see any dereference of any dynamically
+> allocated data).
 
-Now that cadence-quadspi has been converted to use spi-mem framework,
-move it under drivers/spi/
+Cheers, Lorenzo.
 
-Update license header to match SPI subsystem style
+> Now on what to do with it - thoughts welcome.
 
-Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
- drivers/mtd/spi-nor/controllers/Kconfig            | 11 -----------
- drivers/mtd/spi-nor/controllers/Makefile           |  1 -
- drivers/spi/Kconfig                                | 11 +++++++++++
- drivers/spi/Makefile                               |  1 +
- .../spi-cadence-quadspi.c}                         | 14 +++++++-------
- 5 files changed, 19 insertions(+), 19 deletions(-)
- rename drivers/{mtd/spi-nor/controllers/cadence-quadspi.c => spi/spi-cadence-quadspi.c} (99%)
+Nick -- any idea what to do about the above? The '#define' pasted by
+Lorenzo is causing a couple of spurious UBSAN splats when compiling with
+clang 11.
 
-diff --git a/drivers/mtd/spi-nor/controllers/Kconfig b/drivers/mtd/spi-nor/controllers/Kconfig
-index 10b86660b8214..95fcd4b435be5 100644
---- a/drivers/mtd/spi-nor/controllers/Kconfig
-+++ b/drivers/mtd/spi-nor/controllers/Kconfig
-@@ -9,17 +9,6 @@ config SPI_ASPEED_SMC
- 	  and support for the SPI flash memory controller (SPI) for
- 	  the host firmware. The implementation only supports SPI NOR.
- 
--config SPI_CADENCE_QUADSPI
--	tristate "Cadence Quad SPI controller"
--	depends on OF && (ARM || ARM64 || COMPILE_TEST)
--	help
--	  Enable support for the Cadence Quad SPI Flash controller.
--
--	  Cadence QSPI is a specialized controller for connecting an SPI
--	  Flash over 1/2/4-bit wide bus. Enable this option if you have a
--	  device with a Cadence QSPI controller and want to access the
--	  Flash as an MTD device.
--
- config SPI_HISI_SFC
- 	tristate "Hisilicon FMC SPI-NOR Flash Controller(SFC)"
- 	depends on ARCH_HISI || COMPILE_TEST
-diff --git a/drivers/mtd/spi-nor/controllers/Makefile b/drivers/mtd/spi-nor/controllers/Makefile
-index 46e6fbe586e34..e7abba491d983 100644
---- a/drivers/mtd/spi-nor/controllers/Makefile
-+++ b/drivers/mtd/spi-nor/controllers/Makefile
-@@ -1,6 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_SPI_ASPEED_SMC)	+= aspeed-smc.o
--obj-$(CONFIG_SPI_CADENCE_QUADSPI)	+= cadence-quadspi.o
- obj-$(CONFIG_SPI_HISI_SFC)	+= hisi-sfc.o
- obj-$(CONFIG_SPI_NXP_SPIFI)	+= nxp-spifi.o
- obj-$(CONFIG_SPI_INTEL_SPI)	+= intel-spi.o
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 741b9140992a8..a4f65d956fa0a 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -200,6 +200,17 @@ config SPI_CADENCE
- 	  This selects the Cadence SPI controller master driver
- 	  used by Xilinx Zynq and ZynqMP.
- 
-+config SPI_CADENCE_QUADSPI
-+	tristate "Cadence Quad SPI controller"
-+	depends on OF && (ARM || ARM64 || COMPILE_TEST)
-+	help
-+	  Enable support for the Cadence Quad SPI Flash controller.
-+
-+	  Cadence QSPI is a specialized controller for connecting an SPI
-+	  Flash over 1/2/4-bit wide bus. Enable this option if you have a
-+	  device with a Cadence QSPI controller and want to access the
-+	  Flash as an MTD device.
-+
- config SPI_CLPS711X
- 	tristate "CLPS711X host SPI controller"
- 	depends on ARCH_CLPS711X || COMPILE_TEST
-diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
-index 28f601327f8c7..c02caeeb99b85 100644
---- a/drivers/spi/Makefile
-+++ b/drivers/spi/Makefile
-@@ -31,6 +31,7 @@ obj-$(CONFIG_SPI_BCM_QSPI)		+= spi-iproc-qspi.o spi-brcmstb-qspi.o spi-bcm-qspi.
- obj-$(CONFIG_SPI_BITBANG)		+= spi-bitbang.o
- obj-$(CONFIG_SPI_BUTTERFLY)		+= spi-butterfly.o
- obj-$(CONFIG_SPI_CADENCE)		+= spi-cadence.o
-+obj-$(CONFIG_SPI_CADENCE_QUADSPI)	+= spi-cadence-quadspi.o
- obj-$(CONFIG_SPI_CLPS711X)		+= spi-clps711x.o
- obj-$(CONFIG_SPI_COLDFIRE_QSPI)		+= spi-coldfire-qspi.o
- obj-$(CONFIG_SPI_DAVINCI)		+= spi-davinci.o
-diff --git a/drivers/mtd/spi-nor/controllers/cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-similarity index 99%
-rename from drivers/mtd/spi-nor/controllers/cadence-quadspi.c
-rename to drivers/spi/spi-cadence-quadspi.c
-index c12a1c0191b92..1c1a9d17eec0d 100644
---- a/drivers/mtd/spi-nor/controllers/cadence-quadspi.c
-+++ b/drivers/spi/spi-cadence-quadspi.c
-@@ -1,11 +1,11 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/*
-- * Driver for Cadence QSPI Controller
-- *
-- * Copyright Altera Corporation (C) 2012-2014. All rights reserved.
-- * Copyright Intel Corporation (C) 2019-2020. All rights reserved.
-- * Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com
-- */
-+//
-+// Driver for Cadence QSPI Controller
-+//
-+// Copyright Altera Corporation (C) 2012-2014. All rights reserved.
-+// Copyright Intel Corporation (C) 2019-2020. All rights reserved.
-+// Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com
-+
- #include <linux/clk.h>
- #include <linux/completion.h>
- #include <linux/delay.h>
--- 
-2.26.2
+Cheers,
 
+Will
