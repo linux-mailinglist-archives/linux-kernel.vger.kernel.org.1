@@ -2,313 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18EE81EA3AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 14:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 299F91EA3C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 14:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726340AbgFAMUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 08:20:34 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:27947 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725976AbgFAMUc (ORCPT
+        id S1726901AbgFAMV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 08:21:57 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:50040 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727089AbgFAMVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 08:20:32 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200601122028epoutp0416a20005d52ecfd0d233faee46ee6c9e~UatReW_2i0829608296epoutp046
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 12:20:28 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200601122028epoutp0416a20005d52ecfd0d233faee46ee6c9e~UatReW_2i0829608296epoutp046
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1591014028;
-        bh=dy69MGQgELlHLL4nuipB9eWH9vUU1X+psE1Q1svnC+Q=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=DIR8jNmzag2Gz8ba1mv5pnQv5a/+JiNXxZZGt7ZSef7RxYZ8hV4LNZlkHqm4LHYlW
-         J8x5RY/zbIdfU+jx6PpQ7jE6XZYAoXgLgUnw9h4F5cpHV+d6zcy4UEVwPokkZku+l7
-         PVnMuJJMyhXmUQ1FmPWWR4bvomaEQsX+QCUXFonk=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200601122028epcas1p2ff39bf4111e69ee6d9ff974427e1727f~UatQ65CSS2504625046epcas1p2x;
-        Mon,  1 Jun 2020 12:20:28 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.161]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 49bDlb1mvkzMqYkb; Mon,  1 Jun
-        2020 12:20:27 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        04.CB.28581.B82F4DE5; Mon,  1 Jun 2020 21:20:27 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200601122026epcas1p22567fb0e0b9aeae89556e59a6f50ef67~UatPgBfk92949729497epcas1p2T;
-        Mon,  1 Jun 2020 12:20:26 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200601122026epsmtrp15694e23b5327fe306dd7ddf83f8cf11e~UatPfbEEn1178611786epsmtrp1U;
-        Mon,  1 Jun 2020 12:20:26 +0000 (GMT)
-X-AuditID: b6c32a38-2cdff70000006fa5-94-5ed4f28bff21
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        33.A3.08382.A82F4DE5; Mon,  1 Jun 2020 21:20:26 +0900 (KST)
-Received: from W10PB11329 (unknown [10.253.152.129]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20200601122026epsmtip21ea8f739fab07ad4f07e5273a9aa9a43~UatPTUecf0351003510epsmtip2W;
-        Mon,  1 Jun 2020 12:20:26 +0000 (GMT)
-From:   "Sungjong Seo" <sj1557.seo@samsung.com>
-To:     "'Tetsuhiro Kohada'" <kohada.t2@gmail.com>
-Cc:     <kohada.tetsuhiro@dc.mitsubishielectric.co.jp>,
-        <mori.takahiro@ab.mitsubishielectric.co.jp>,
-        <motai.hirotaka@aj.mitsubishielectric.co.jp>,
-        "'Namjae Jeon'" <namjae.jeon@samsung.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200529101459.8546-4-kohada.t2@gmail.com>
-Subject: RE: [PATCH 4/4 v3] exfat: standardize checksum calculation
-Date:   Mon, 1 Jun 2020 21:20:26 +0900
-Message-ID: <1fff01d6380f$07fdd970$17f98c50$@samsung.com>
+        Mon, 1 Jun 2020 08:21:37 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 030D98030808;
+        Mon,  1 Jun 2020 12:21:30 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 3XDs3NR03KWe; Mon,  1 Jun 2020 15:21:28 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paul.burton@imgtec.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        James Hogan <jhogan@kernel.org>, <linux-mips@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH RESEND v2 0/6] mips: Add DT bindings for MIPS CDMM and MIPS GIC
+Date:   Mon, 1 Jun 2020 15:21:15 +0300
+Message-ID: <20200601122121.15809-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQECpNOBCAKs/TRXObwEq14CKUeHvgGnqJluAgpaxnmqTUQv4A==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHJsWRmVeSWpSXmKPExsWy7bCmnm73pytxBp8O81j8mHubxeLNyaks
-        Fnv2nmSxuLxrDpvF5f+fWCyWfZnMYvFjer0Du8eXOcfZPdom/2P3aD62ks1j56y77B59W1Yx
-        enzeJBfAFpVjk5GamJJapJCal5yfkpmXbqvkHRzvHG9qZmCoa2hpYa6kkJeYm2qr5OIToOuW
-        mQN0ipJCWWJOKVAoILG4WEnfzqYov7QkVSEjv7jEVim1ICWnwNCgQK84Mbe4NC9dLzk/18rQ
-        wMDIFKgyISfjT0sXW8Eus4rtnT0sDYy3tLoYOTkkBEwkZpxcyNTFyMUhJLCDUaJ5/kMWCOcT
-        o8Sla//ZIZxvjBLvZ89kg2l5t385G0RiL6PE5FsvWSGcl4wSM84/ZAapYhPQlXhy4yeYLSKg
-        J3Hy5HWwbmaBRiaJEy+zQWxOAQuJTS0NYDXCAs4SByY+ZgKxWQRUJOaf/QcW5xWwlPgz/wmU
-        LShxcuYTFog58hLb385hhrhIQWL3p6OsELucJDq2foWqEZGY3dnGDHKchMBCDonW9m1QL7hI
-        TDu7gwXCFpZ4dXwLO4QtJfGyvw3KbmaU6LvrCdHcwiixakcTVLOxxKfPnxm7GDmANmhKrN+l
-        DxFWlNj5ey4jxGI+iXdfe1hBSiQEeCU62oQgSlQkvn/YyQKz6sqPq0wTGJVmIXltFpLXZiF5
-        YRbCsgWMLKsYxVILinPTU4sNC0yQo3sTIzihalnsYJz79oPeIUYmDsZDjBIczEoivJPVL8UJ
-        8aYkVlalFuXHF5XmpBYfYjQFBvZEZinR5HxgSs8riTc0NTI2NrYwMTM3MzVWEuc9aXUhTkgg
-        PbEkNTs1tSC1CKaPiYNTqoGpSuR8fi/bMn/5qquL3QRU2Ba2cZ1zf/dgzgxLhwmcM4LuGml2
-        eX2yvdbR9lJCpMfEUebuik+P30eZp+2+/oTN5qAE9+09M2Y2dlbrHNtarb3C7NASs6OPbbO+
-        PqwzMJslauiyuyr1ZU/okrxG59MvH93w617DcT/ZLGO50zKp2hamN6YTzNaEbLzZG7foNVul
-        2eSPMZPfOjC9V7TamCWYv37XF3sH2cth5/rFZu9/Ffuu5juv3rFVH/bO47p1SPnoXf6b2ol2
-        n+fxJr//cId5yx17maC1DzX+7+i7vtXfttO9IWqWnAZ75QSlmr68Sxb26VFThHviVe8dTmEU
-        4nRm+HV8r2iq4YLPFunT/HiUWIozEg21mIuKEwFyrTSLMQQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmphkeLIzCtJLcpLzFFi42LZdlhJXrfr05U4g0MrZS1+zL3NYvHm5FQW
-        iz17T7JYXN41h83i8v9PLBbLvkxmsfgxvd6B3ePLnOPsHm2T/7F7NB9byeaxc9Zddo++LasY
-        PT5vkgtgi+KySUnNySxLLdK3S+DK+NPSxVawy6xie2cPSwPjLa0uRk4OCQETiXf7l7N1MXJx
-        CAnsZpS4OWMBcxcjB1BCSuLgPk0IU1ji8OFiiJLnjBKbLhxmBullE9CVeHLjJ5gtIqAncfLk
-        dbA5zALNTBKtX5qZQBJCAlsZJT4u4AWxOQUsJDa1NIA1CAs4SxyY+BishkVARWL+2X9gcV4B
-        S4k/859A2YISJ2c+YQE5ghloQdtGRpAws4C8xPa3c5gh7leQ2P3pKCvEDU4SHVu/skDUiEjM
-        7mxjnsAoPAvJpFkIk2YhmTQLSccCRpZVjJKpBcW56bnFhgWGeanlesWJucWleel6yfm5mxjB
-        EaWluYNx+6oPeocYmTgYDzFKcDArifBOVr8UJ8SbklhZlVqUH19UmpNafIhRmoNFSZz3RuHC
-        OCGB9MSS1OzU1ILUIpgsEwenVAOTUuW8J8yHjh+LYf9duTaUv4w/5UZT9H2Bbq+3S/seWn/J
-        vpN4UuQC44cZPxZxLz+96NQtzlkHZA/cfXlbv2jfIcZAsT9nDNKLZy3WNvaLf83BWTjJ5tGv
-        KX1f+gWF7zE9CnE8vUzss4GYVNrb8EdiFvvqns9h/sXxu/ig1b7E58d3hfd/nRD99JrSgoBu
-        beepq0OKltr46DbzX14w8eqOr8mXV39+XX16c9bxvZtqT5c+fHaEO0xAMX07g6jRhs6zujyF
-        5dtObNTcufrPBIuCgFsv3139G8DI/b/a/NqrSRuZHk5NvRUjcMuz92DZ07CWieJ7vHIrhG59
-        UQ/RnyT54p6D9LOShRZGdTaHww6uDlJiKc5INNRiLipOBABEZTelFwMAAA==
-X-CMS-MailID: 20200601122026epcas1p22567fb0e0b9aeae89556e59a6f50ef67
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200529101637epcas1p24499ced02928374f9140d59dc7c1e99c
-References: <20200529101459.8546-1-kohada.t2@gmail.com>
-        <CGME20200529101637epcas1p24499ced02928374f9140d59dc7c1e99c@epcas1p2.samsung.com>
-        <20200529101459.8546-4-kohada.t2@gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> To clarify that it is a 16-bit checksum, the parts related to the 16-bit
-> checksum are renamed and change type to u16.
-> Furthermore, replace checksum calculation in exfat_load_upcase_table()
-> with exfat_calc_checksum32().
-> 
-> Signed-off-by: Tetsuhiro Kohada <kohada.t2@gmail.com>
+Folks, the code and DT-related patches here have been mostly reviewed.
+Please consider merge the series in or at least give me a feedback to
+update the series, since merge window is getting opened tomorrow and I
+would really appreciate to see the leftover being merged in.
 
-Reviewed-by: Sungjong Seo <sj1557.seo@samsung.com>
+Regarding this patchset origin. Recently I've submitted a series of
+patchset's which provided multiple fixes for the MIPS arch subsystem and
+the MIPS GIC and DW APB Timer drivers, which were required for the
+Baikal-T1 SoC correctly working with those drivers. Mostly those patchsets
+have been already merged into the corresponding subsystems, but several
+patches have been left floating since noone really responded for review
+except Rob provided his approval regarding DT bindings. Thus in this
+patchset I've collected all the leftovers so not to loose them in a pale
+of the maintainers email logs.
 
-> ---
-> Changes in v2:
->  - rebase with patch 'optimize dir-cache' applied Changes in v3:
->  - based on '[PATCH 2/4 v3] exfat: separate the boot sector analysis'
-> 
->  fs/exfat/dir.c      | 12 ++++++------
->  fs/exfat/exfat_fs.h |  5 ++---
->  fs/exfat/misc.c     | 10 ++++------
->  fs/exfat/nls.c      | 19 +++++++------------
->  4 files changed, 19 insertions(+), 27 deletions(-)
-> 
-> diff --git a/fs/exfat/dir.c b/fs/exfat/dir.c index
-> 2902d285bf20..de43534aa299 100644
-> --- a/fs/exfat/dir.c
-> +++ b/fs/exfat/dir.c
-> @@ -491,7 +491,7 @@ int exfat_update_dir_chksum(struct inode *inode,
-> struct exfat_chain *p_dir,
->  	int ret = 0;
->  	int i, num_entries;
->  	sector_t sector;
-> -	unsigned short chksum;
-> +	u16 chksum;
->  	struct exfat_dentry *ep, *fep;
->  	struct buffer_head *fbh, *bh;
-> 
-> @@ -500,7 +500,7 @@ int exfat_update_dir_chksum(struct inode *inode,
-> struct exfat_chain *p_dir,
->  		return -EIO;
-> 
->  	num_entries = fep->dentry.file.num_ext + 1;
-> -	chksum = exfat_calc_chksum_2byte(fep, DENTRY_SIZE, 0, CS_DIR_ENTRY);
-> +	chksum = exfat_calc_chksum16(fep, DENTRY_SIZE, 0, CS_DIR_ENTRY);
-> 
->  	for (i = 1; i < num_entries; i++) {
->  		ep = exfat_get_dentry(sb, p_dir, entry + i, &bh, NULL); @@ -
-> 508,7 +508,7 @@ int exfat_update_dir_chksum(struct inode *inode, struct
-> exfat_chain *p_dir,
->  			ret = -EIO;
->  			goto release_fbh;
->  		}
-> -		chksum = exfat_calc_chksum_2byte(ep, DENTRY_SIZE, chksum,
-> +		chksum = exfat_calc_chksum16(ep, DENTRY_SIZE, chksum,
->  				CS_DEFAULT);
->  		brelse(bh);
->  	}
-> @@ -593,8 +593,8 @@ void exfat_update_dir_chksum_with_entry_set(struct
-> exfat_entry_set_cache *es)
-> 
->  	for (i = 0; i < es->num_entries; i++) {
->  		ep = exfat_get_dentry_cached(es, i);
-> -		chksum = exfat_calc_chksum_2byte(ep, DENTRY_SIZE, chksum,
-> -						 chksum_type);
-> +		chksum = exfat_calc_chksum16(ep, DENTRY_SIZE, chksum,
-> +					     chksum_type);
->  		chksum_type = CS_DEFAULT;
->  	}
->  	ep = exfat_get_dentry_cached(es, 0);
-> @@ -1000,7 +1000,7 @@ int exfat_find_dir_entry(struct super_block *sb,
-> struct exfat_inode_info *ei,
->  			}
-> 
->  			if (entry_type == TYPE_STREAM) {
-> -				unsigned short name_hash;
-> +				u16 name_hash;
-> 
->  				if (step != DIRENT_STEP_STRM) {
->  					step = DIRENT_STEP_FILE;
-> diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h index
-> eebbe5a84b2b..9188985694f0 100644
-> --- a/fs/exfat/exfat_fs.h
-> +++ b/fs/exfat/exfat_fs.h
-> @@ -137,7 +137,7 @@ struct exfat_dentry_namebuf {  struct exfat_uni_name {
->  	/* +3 for null and for converting */
->  	unsigned short name[MAX_NAME_LENGTH + 3];
-> -	unsigned short name_hash;
-> +	u16 name_hash;
->  	unsigned char name_len;
->  };
-> 
-> @@ -512,8 +512,7 @@ void exfat_get_entry_time(struct exfat_sb_info *sbi,
-> struct timespec64 *ts,  void exfat_truncate_atime(struct timespec64 *ts);
-> void exfat_set_entry_time(struct exfat_sb_info *sbi, struct timespec64
-*ts,
->  		u8 *tz, __le16 *time, __le16 *date, u8 *time_cs); -unsigned
-> short exfat_calc_chksum_2byte(void *data, int len,
-> -		unsigned short chksum, int type);
-> +u16 exfat_calc_chksum16(void *data, int len, u16 chksum, int type);
->  u32 exfat_calc_chksum32(void *data, int len, u32 chksum, int type);  void
-> exfat_update_bh(struct super_block *sb, struct buffer_head *bh, int sync);
-> void exfat_chain_set(struct exfat_chain *ec, unsigned int dir, diff --git
-> a/fs/exfat/misc.c b/fs/exfat/misc.c index b82d2dd5bd7c..17d41f3d3709
-> 100644
-> --- a/fs/exfat/misc.c
-> +++ b/fs/exfat/misc.c
-> @@ -136,17 +136,15 @@ void exfat_truncate_atime(struct timespec64 *ts)
->  	ts->tv_nsec = 0;
->  }
-> 
-> -unsigned short exfat_calc_chksum_2byte(void *data, int len,
-> -		unsigned short chksum, int type)
-> +u16 exfat_calc_chksum16(void *data, int len, u16 chksum, int type)
->  {
->  	int i;
-> -	unsigned char *c = (unsigned char *)data;
-> +	u8 *c = (u8 *)data;
-> 
->  	for (i = 0; i < len; i++, c++) {
-> -		if (((i == 2) || (i == 3)) && (type == CS_DIR_ENTRY))
-> +		if (unlikely(type == CS_DIR_ENTRY && (i == 2 || i == 3)))
->  			continue;
-> -		chksum = (((chksum & 1) << 15) | ((chksum & 0xFFFE) >> 1)) +
-> -			(unsigned short)*c;
-> +		chksum = ((chksum << 15) | (chksum >> 1)) + *c;
->  	}
->  	return chksum;
->  }
-> diff --git a/fs/exfat/nls.c b/fs/exfat/nls.c index
-> 1ebda90cbdd7..19321773dd07 100644
-> --- a/fs/exfat/nls.c
-> +++ b/fs/exfat/nls.c
-> @@ -527,7 +527,7 @@ static int exfat_utf8_to_utf16(struct super_block *sb,
-> 
->  	*uniname = '\0';
->  	p_uniname->name_len = unilen;
-> -	p_uniname->name_hash = exfat_calc_chksum_2byte(upname, unilen << 1,
-> 0,
-> +	p_uniname->name_hash = exfat_calc_chksum16(upname, unilen << 1, 0,
->  			CS_DEFAULT);
-> 
->  	if (p_lossy)
-> @@ -623,7 +623,7 @@ static int exfat_nls_to_ucs2(struct super_block *sb,
-> 
->  	*uniname = '\0';
->  	p_uniname->name_len = unilen;
-> -	p_uniname->name_hash = exfat_calc_chksum_2byte(upname, unilen << 1,
-> 0,
-> +	p_uniname->name_hash = exfat_calc_chksum16(upname, unilen << 1, 0,
->  			CS_DEFAULT);
-> 
->  	if (p_lossy)
-> @@ -655,7 +655,8 @@ static int exfat_load_upcase_table(struct super_block
-> *sb,  {
->  	struct exfat_sb_info *sbi = EXFAT_SB(sb);
->  	unsigned int sect_size = sb->s_blocksize;
-> -	unsigned int i, index = 0, checksum = 0;
-> +	unsigned int i, index = 0;
-> +	u32 chksum = 0;
->  	int ret;
->  	unsigned char skip = false;
->  	unsigned short *upcase_table;
-> @@ -681,13 +682,6 @@ static int exfat_load_upcase_table(struct super_block
-> *sb,
->  		for (i = 0; i < sect_size && index <= 0xFFFF; i += 2) {
->  			unsigned short uni = get_unaligned_le16(bh->b_data +
-> i);
-> 
-> -			checksum = ((checksum & 1) ? 0x80000000 : 0) +
-> -				(checksum >> 1) +
-> -				*(((unsigned char *)bh->b_data) + i);
-> -			checksum = ((checksum & 1) ? 0x80000000 : 0) +
-> -				(checksum >> 1) +
-> -				*(((unsigned char *)bh->b_data) + (i + 1));
-> -
->  			if (skip) {
->  				index += uni;
->  				skip = false;
-> @@ -701,13 +695,14 @@ static int exfat_load_upcase_table(struct
-> super_block *sb,
->  			}
->  		}
->  		brelse(bh);
-> +		chksum = exfat_calc_chksum32(bh->b_data, i, chksum,
-> CS_DEFAULT);
->  	}
-> 
-> -	if (index >= 0xFFFF && utbl_checksum == checksum)
-> +	if (index >= 0xFFFF && utbl_checksum == chksum)
->  		return 0;
-> 
->  	exfat_err(sb, "failed to load upcase table (idx : 0x%08x, chksum :
-> 0x%08x, utbl_chksum : 0x%08x)",
-> -		  index, checksum, utbl_checksum);
-> +		  index, chksum, utbl_checksum);
->  	ret = -EINVAL;
->  free_table:
->  	exfat_free_upcase_table(sbi);
-> --
-> 2.25.1
+The patchset includes the following updates: MIPS CPC and GIC DT bindings
+legacy text-based file are converted to the DT schema (Rob has already
+reviewed them), add MIPS CDMM DT node support to place the CDMM block at
+the platform-specific MMIO range, make sure MIPS CDMM is available for
+MIPS_R5 CPUs.
 
+Seeing the series concerns the MIPS-related drivers it's better to merge
+it in through the MIPS repository:
+https://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/
+
+This patchset is rebased and tested on the mainline Linux kernel 5.7-rc4:
+base-commit: 0e698dfa2822 ("Linux 5.7-rc4")
+tag: v5.7-rc4
+
+Suggestion.
+Since Paul isn't looking after the MIPS arch code anymore, Ralf hasn't
+been seen maintaining MIPS for a long time, Thomas is only responsible
+for the next part of it:
+	F:      Documentation/devicetree/bindings/mips/
+	F:      Documentation/mips/
+	F:      arch/mips/
+	F:      drivers/platform/mips/
+the MIPS-specific drivers like:
+	F:	drivers/bus/mips_cdmm.c
+	F:	drivers/irqchip/irq-mips-cpu.c
+	F:	drivers/irqchip/irq-mips-gic.c
+	F:	drivers/clocksource/mips-gic-timer.c
+	F:	drivers/cpuidle/cpuidle-cps.c
+seem to be left for the subsystems maintainers to support. So if you don't
+mind or unless there is a better alternative, I can help with looking
+after them to ease the maintainers review burden and since I'll be working
+on our MIPS-based SoC drivers integrating into the mainline kernel repo
+anyway. If you don't like this idea, please just decline the last
+patch in the series.
+
+Previous patchsets:
+mips: Prepare MIPS-arch code for Baikal-T1 SoC support:
+Link: https://lore.kernel.org/linux-mips/20200306124807.3596F80307C2@mail.baikalelectronics.ru
+Link: https://lore.kernel.org/linux-mips/20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru
+Link: https://lore.kernel.org/linux-mips/20200521140725.29571-1-Sergey.Semin@baikalelectronics.ru
+
+clocksource: Fix MIPS GIC and DW APB Timer for Baikal-T1 SoC support:
+Link: https://lore.kernel.org/linux-rtc/20200324174325.14213-1-Sergey.Semin@baikalelectronics.ru
+Link: https://lore.kernel.org/linux-rtc/20200506214107.25956-1-Sergey.Semin@baikalelectronics.ru
+Link: https://lore.kernel.org/linux-rtc/20200521005321.12129-1-Sergey.Semin@baikalelectronics.ru
+
+Changelog prev:
+- Add yaml-based bindings file for MIPS CDMM dt-node.
+- Convert mti,mips-cpc to DT schema.
+- Use a shorter summary describing the bindings modification patches.
+- Rearrange the SoBs with adding Alexey' co-development tag.
+- Lowercase the hex numbers in the dt-bindings.
+
+Changelog v2:
+- Resend.
+
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Paul Burton <paul.burton@imgtec.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Jason Cooper <jason@lakedaemon.net>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: James Hogan <jhogan@kernel.org>
+Cc: linux-mips@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (6):
+  dt-bindings: power: Convert mti,mips-cpc to DT schema
+  dt-bindings: interrupt-controller: Convert mti,gic to DT schema
+  dt-bindings: bus: Add MIPS CDMM controller
+  mips: cdmm: Add mti,mips-cdmm dtb node support
+  bus: cdmm: Add MIPS R5 arch support
+  MAINTAINERS: Add maintainers for MIPS core drivers
+
+ .../bindings/bus/mti,mips-cdmm.yaml           |  35 +++++
+ .../interrupt-controller/mips-gic.txt         |  67 --------
+ .../interrupt-controller/mti,gic.yaml         | 148 ++++++++++++++++++
+ .../bindings/power/mti,mips-cpc.txt           |   8 -
+ .../bindings/power/mti,mips-cpc.yaml          |  35 +++++
+ MAINTAINERS                                   |  10 ++
+ drivers/bus/Kconfig                           |   2 +-
+ drivers/bus/mips_cdmm.c                       |  15 ++
+ 8 files changed, 244 insertions(+), 76 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/bus/mti,mips-cdmm.yaml
+ delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/mips-gic.txt
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/mti,gic.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/mti,mips-cpc.txt
+ create mode 100644 Documentation/devicetree/bindings/power/mti,mips-cpc.yaml
+
+-- 
+2.26.2
 
