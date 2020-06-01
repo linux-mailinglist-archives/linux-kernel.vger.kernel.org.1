@@ -2,87 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1A51EB20B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 01:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5C01EB21F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Jun 2020 01:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728776AbgFAXMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 19:12:54 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:60325 "EHLO ozlabs.org"
+        id S1728865AbgFAXUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 19:20:17 -0400
+Received: from mga05.intel.com ([192.55.52.43]:20602 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726007AbgFAXMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 19:12:53 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49bWDL5vz6z9sVl;
-        Tue,  2 Jun 2020 09:12:50 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1591053171;
-        bh=LzS7nuY8BJQmxYHS+02GTVSxFCtHF4MXmeusRwGayMk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=UYb0Cmt+OCZxL46OZ0a5NL4zEBC2t4kv/bmaP5c/H2AyGtxaE1dXbjjDrlJbJQIzP
-         KlHtpKnPFEsUUSJeFsMF5IRLJMmEf/P96uKNh8FmzxgtH6YssuVbs+8oufS5XG8eiI
-         bT2cDaWzCpmjo0gtNvdEtxdjlRRbbfjMQYtCv322plNtPqz6+dIM8MiQsci5hk77YB
-         T7iwWoSXlIUxOqcPsRbPssv4g+wUnWTG+D2Ev0dL9n/z5PbD5zoCrqOM5rBjKWUZEt
-         9uIgSY4n92bPFrvJHH5ZBDWeUTgyoMNOPBAiq8BguzQdmLaiecGX6ECzycPhFY6BEj
-         8Jn7edXDS4VvA==
-Date:   Tue, 2 Jun 2020 09:12:49 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>
-Subject: linux-next: Fixes tag needs some work in the net-next tree
-Message-ID: <20200602091249.66601c4c@canb.auug.org.au>
+        id S1726181AbgFAXUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 19:20:16 -0400
+IronPort-SDR: il7mEYymC2psy/qNQk8u/dtN1WPUyQspWQ94PnXbc0teJQNPydOqThwKSnRHvLdCeL0Z3KWsdu
+ 4TdWrYZO11Pg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2020 16:20:15 -0700
+IronPort-SDR: hQbV32JOyjOGeuv1Q2ujjMc5qE5l9DREIL4uxk9IfntVO/uJuHc/R3pmYZg2c3JGkkmIfxg4ig
+ Vk416qdU8nMg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,462,1583222400"; 
+   d="scan'208";a="293360328"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by fmsmga004.fm.intel.com with ESMTP; 01 Jun 2020 16:20:10 -0700
+Cc:     baolu.lu@linux.intel.com
+Subject: Re: [PATCH v2 00/33] iommu: Move iommu_group setup to IOMMU core code
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        linux-s390@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-rockchip@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        linux-mediatek@lists.infradead.org, linux-tegra@vger.kernel.org
+References: <20200414131542.25608-1-joro@8bytes.org>
+ <20200529221623.qc6twmpzryh7nkvb@cantor>
+ <20200601104240.7f5xhz7gooqhaq4n@cantor>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <47711845-98ee-95b8-aa95-423a36ed9741@linux.intel.com>
+Date:   Tue, 2 Jun 2020 07:16:22 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/2Ibb4YXMdSz33=52mhBDgso";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20200601104240.7f5xhz7gooqhaq4n@cantor>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/2Ibb4YXMdSz33=52mhBDgso
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Jerry,
 
-Hi all,
+On 6/1/20 6:42 PM, Jerry Snitselaar wrote:
+>>
+>> Hi Joerg,
+>>
+>> With this patchset, I have an epyc system where if I boot with
+>> iommu=nopt and force a dump I will see some io page faults for a nic
+>> on the system. The vmcore is harvested and the system reboots. I
+>> haven't reproduced it on other systems yet, but without the patchset I
+>> don't see the io page faults during the kdump.
+>>
+>> Regards,
+>> Jerry
+> 
+> I just hit an issue on a separate intel based system (kdump iommu=nopt),
+> where it panics in during intel_iommu_attach_device, in is_aux_domain,
+> due to device_domain_info being DEFER_DEVICE_DOMAIN_INFO. That doesn't
+> get set to a valid address until the domain_add_dev_info call.
+> 
+> Is it as simple as the following?
 
-In commit
+I guess you won't hit this issue if you use iommu/next branch of Joerg's
+tree. We've changed to use a generic helper to retrieve the valid per
+device iommu data or NULL (if there's no).
 
-  055be6865dea ("Crypto/chcr: Fixes a coccinile check error")
+Best regards,
+baolu
 
-Fixes tag
-
-  Fixes: 567be3a5d227 ("crypto:
-
-has these problem(s):
-
-  - Subject has leading but no trailing parentheses
-  - Subject has leading but no trailing quotes
-
-Please do not split Fixes tags over more than one line.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/2Ibb4YXMdSz33=52mhBDgso
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7Vi3EACgkQAVBC80lX
-0GzU+ggAhEH96xVlcyX5yFI48YhPi26kZU6W85Q0lkFlcF/nQHDNaILsmW3DKure
-PqG7vsGgdURPP5kBFPWqZBsFONbLVPcpIKUAUNTXUuwZPZpxxq+Pa8kEpymod+Z+
-6qPGgS311eguAw2gg+FAe4B1bH4bNoHebsZks4/3eadqHc/MubvnTs7f4CvhH4v1
-JuyQiaU4n+j8/3pOWEasRiHWMoYpgrRhYaKlDNKlPhssKEzrPHnCSkC8wYHXq0RV
-iYfkDNiqt0MoQYk1Y4GPVyTVrzasC1Qg4Hmw66bPqjMoMTZoPpSGZtfNgd5M5ZwI
-o5o2N9CZB24SbM3gWAnZgJF9qQiagA==
-=pFce
------END PGP SIGNATURE-----
-
---Sig_/2Ibb4YXMdSz33=52mhBDgso--
+> 
+> diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
+> index 29d3940847d3..f1bbeed46a4c 100644
+> --- a/drivers/iommu/intel-iommu.c
+> +++ b/drivers/iommu/intel-iommu.c
+> @@ -5053,8 +5053,8 @@ is_aux_domain(struct device *dev, struct 
+> iommu_domain *domain)
+>   {
+>          struct device_domain_info *info = dev->archdata.iommu;
+> 
+> -       return info && info->auxd_enabled &&
+> -                       domain->type == IOMMU_DOMAIN_UNMANAGED;
+> +       return info && info != DEFER_DEVICE_DOMAIN_INFO &&
+> +               info->auxd_enabled && domain->type == 
+> IOMMU_DOMAIN_UNMANAGED;
+>   }
+> 
+>   static void auxiliary_link_device(struct dmar_domain *domain,
+> 
+> 
+> Regards,
+> Jerry
