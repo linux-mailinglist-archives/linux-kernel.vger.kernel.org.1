@@ -2,74 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 737091EA3E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 14:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E71761EA3E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 14:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727957AbgFAM2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 08:28:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37236 "EHLO mail.kernel.org"
+        id S1728145AbgFAM3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 08:29:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726667AbgFAM2N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 08:28:13 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1726201AbgFAM3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 08:29:01 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF29C20897;
-        Mon,  1 Jun 2020 12:28:09 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.93)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1jfjY0-00279u-Ur; Mon, 01 Jun 2020 08:28:08 -0400
-Message-ID: <20200601122808.839838080@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Mon, 01 Jun 2020 08:27:41 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [for-next][PATCH 12/12] tracing: Add a trace print when traceoff_on_warning is triggered
-References: <20200601122729.727113609@goodmis.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 871202077D;
+        Mon,  1 Jun 2020 12:28:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591014540;
+        bh=xSWsBHkDqWQ80T1sU5xrLXTVIUlqUCziDAPCIYxDRvU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q60mwGHZYfj6pZuVQzKQS6CzxKfVhPejFWkWENd55kMRGtzASbjhC2y9kg+WjWHRB
+         kr47+9ROFNCruoQ7cP23bQKsKdij5AyojfJxscgiMiJA7RDz722wb7XgTmiSghRWn6
+         46jGVOIMaPYI5HPVBwbwzL6u/CaYZA/ve7L3Kt5I=
+Date:   Mon, 1 Jun 2020 14:28:58 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     syzbot <syzbot+5f1d24c49c1d2c427497@syzkaller.appspotmail.com>,
+        Felipe Balbi <balbi@kernel.org>, ingrassia@epigenesys.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: WARNING in snd_usbmidi_submit_urb/usb_submit_urb
+Message-ID: <20200601122858.GA390561@kroah.com>
+References: <000000000000bbd09005a6fdc6cc@google.com>
+ <000000000000f0261a05a700adf5@google.com>
+ <20200601084335.GA1667318@kroah.com>
+ <CAAeHK+zKLBX62D1MVAkBe7Q__32-K-4FewsfvF3Z_P8SK=oAHQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAeHK+zKLBX62D1MVAkBe7Q__32-K-4FewsfvF3Z_P8SK=oAHQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Mon, Jun 01, 2020 at 02:22:40PM +0200, Andrey Konovalov wrote:
+> On Mon, Jun 1, 2020 at 10:43 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Mon, Jun 01, 2020 at 12:24:03AM -0700, syzbot wrote:
+> > > syzbot has bisected this bug to:
+> > >
+> > > commit f2c2e717642c66f7fe7e5dd69b2e8ff5849f4d10
+> > > Author: Andrey Konovalov <andreyknvl@google.com>
+> > > Date:   Mon Feb 24 16:13:03 2020 +0000
+> > >
+> > >     usb: gadget: add raw-gadget interface
+> > >
+> > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=164afcf2100000
+> > > start commit:   bdc48fa1 checkpatch/coding-style: deprecate 80-column warn..
+> > > git tree:       upstream
+> > > final crash:    https://syzkaller.appspot.com/x/report.txt?x=154afcf2100000
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=114afcf2100000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=129ea1e5950835e5
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=5f1d24c49c1d2c427497
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12d70cf2100000
+> > >
+> > > Reported-by: syzbot+5f1d24c49c1d2c427497@syzkaller.appspotmail.com
+> > > Fixes: f2c2e717642c ("usb: gadget: add raw-gadget interface")
+> > >
+> > > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> >
+> > So the tool that was used to create the bug has bisected the problem to
+> > the patch that adds the tool to the kernel to test for the issue?
+> >
+> > This feels wrong...
+> 
+> That's the expected result of bisection with the way it's intended to
+> work. We'll be getting more bisection results pointing to that commit
+> for old USB bugs. For new ones (that are introduced after raw-gadget),
+> the bisection should point to proper commits.
 
-When "traceoff_on_warning" is enabled and a warning happens, there can still
-be many trace events happening on other CPUs between the time the warning
-occurred and the last trace event on that same CPU. This can cause confusion
-in examining the trace, as it may not be obvious where the warning happened.
-By adding a trace print into the trace just before disabling tracing, it
-makes it obvious where the warning occurred, and the developer doesn't have
-to look at other means to see what CPU it occurred on.
+Ok, can you then mute any bisection emails that are about to get sent
+out that resolve to this commit to save us the effort of just ignoring
+the thing on our end?
 
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/trace.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+thanks,
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 29615f15a820..760fd102dbe2 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -1299,8 +1299,11 @@ EXPORT_SYMBOL_GPL(tracing_off);
- 
- void disable_trace_on_warning(void)
- {
--	if (__disable_trace_on_warning)
-+	if (__disable_trace_on_warning) {
-+		trace_array_printk_buf(global_trace.array_buffer.buffer, _THIS_IP_,
-+			"Disabling tracing due to warning\n");
- 		tracing_off();
-+	}
- }
- 
- /**
--- 
-2.26.2
-
-
+greg k-h
