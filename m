@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355F91EAB0E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF7B1EA96B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731421AbgFASN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:13:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33526 "EHLO mail.kernel.org"
+        id S1729841AbgFASBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:01:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730992AbgFASNy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:13:54 -0400
+        id S1729818AbgFASBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:01:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1A72206E2;
-        Mon,  1 Jun 2020 18:13:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 673C3207DF;
+        Mon,  1 Jun 2020 18:01:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035233;
-        bh=NdnPmtsS3tWnrdzORWnRxa8zNY3r7zHEa+3nzOiybw8=;
+        s=default; t=1591034498;
+        bh=aVWBkr/MbZ67KkqkDZdoxyT8qvaVzqO3nHWvC9kgK+w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kGI8uW/UTMz+oRhYxdDZ79gg6RqVBMxh2hkEPQ0/TSedAqM52NMmPYfDX5KlbWBoS
-         jpe+Sp9aK3Q34IS+9b1Is36+CNvOaQLLKOgoSYg7eHAoj81soqHoN/sJvas6lPvZkI
-         wG6RRANFC1JWS+NS8MDaCRbNsbnwxXQEryswxjhM=
+        b=A3wK4xJGUXRFTP+sxdgb49iPn1NAxql8pjKghMz4CShd0aliB4LUcC6RvUOy1MzDl
+         0yrNw7jWevjpUtMZD61UtxuXy5dvvDI6pTD/XFh1J4q9XV7tFE+XTe1JmRDkg5GrMp
+         JZ9lHbCx1Gic4rcKYg86ozkK9+Y9SMkaZHZm5jpc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Harry Wentland <harry.wentland@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        "Leo (Hanghong) Ma" <hanghong.ma@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 068/177] drm/amd/amdgpu: Update update_config() logic
+Subject: [PATCH 4.14 21/77] net: freescale: select CONFIG_FIXED_PHY where needed
 Date:   Mon,  1 Jun 2020 19:53:26 +0200
-Message-Id: <20200601174054.581376739@linuxfoundation.org>
+Message-Id: <20200601174020.202776499@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
+References: <20200601174016.396817032@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,52 +45,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leo (Hanghong) Ma <hanghong.ma@amd.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 650e723cecf2738dee828564396f3239829aba83 ]
+[ Upstream commit 99352c79af3e5f2e4724abf37fa5a2a3299b1c81 ]
 
-[Why]
-For MST case: when update_config is called to disable a stream,
-this clears the settings for all the streams on that link.
-We should only clear the settings for the stream that was disabled.
+I ran into a randconfig build failure with CONFIG_FIXED_PHY=m
+and CONFIG_GIANFAR=y:
 
-[How]
-Clear the settings after the call to remove display is called.
+x86_64-linux-ld: drivers/net/ethernet/freescale/gianfar.o:(.rodata+0x418): undefined reference to `fixed_phy_change_carrier'
 
-Reviewed-by: Harry Wentland <harry.wentland@amd.com>
-Reviewed-by: Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>
-Signed-off-by: Leo (Hanghong) Ma <hanghong.ma@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+It seems the same thing can happen with dpaa and ucc_geth, so change
+all three to do an explicit 'select FIXED_PHY'.
+
+The fixed-phy driver actually has an alternative stub function that
+theoretically allows building network drivers when fixed-phy is
+disabled, but I don't see how that would help here, as the drivers
+presumably would not work then.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_hdcp.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/freescale/Kconfig      | 2 ++
+ drivers/net/ethernet/freescale/dpaa/Kconfig | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_hdcp.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_hdcp.c
-index 3abeff7722e3..e80371542622 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_hdcp.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_hdcp.c
-@@ -316,15 +316,15 @@ static void update_config(void *handle, struct cp_psp_stream_config *config)
- 	struct mod_hdcp_display *display = &hdcp_work[link_index].display;
- 	struct mod_hdcp_link *link = &hdcp_work[link_index].link;
- 
--	memset(display, 0, sizeof(*display));
--	memset(link, 0, sizeof(*link));
--
--	display->index = aconnector->base.index;
--
- 	if (config->dpms_off) {
- 		hdcp_remove_display(hdcp_work, link_index, aconnector);
- 		return;
- 	}
-+
-+	memset(display, 0, sizeof(*display));
-+	memset(link, 0, sizeof(*link));
-+
-+	display->index = aconnector->base.index;
- 	display->state = MOD_HDCP_DISPLAY_ACTIVE;
- 
- 	if (aconnector->dc_sink != NULL)
+diff --git a/drivers/net/ethernet/freescale/Kconfig b/drivers/net/ethernet/freescale/Kconfig
+index 6e490fd2345d..71f0640200bc 100644
+--- a/drivers/net/ethernet/freescale/Kconfig
++++ b/drivers/net/ethernet/freescale/Kconfig
+@@ -76,6 +76,7 @@ config UCC_GETH
+ 	depends on QUICC_ENGINE
+ 	select FSL_PQ_MDIO
+ 	select PHYLIB
++	select FIXED_PHY
+ 	---help---
+ 	  This driver supports the Gigabit Ethernet mode of the QUICC Engine,
+ 	  which is available on some Freescale SOCs.
+@@ -89,6 +90,7 @@ config GIANFAR
+ 	depends on HAS_DMA
+ 	select FSL_PQ_MDIO
+ 	select PHYLIB
++	select FIXED_PHY
+ 	select CRC32
+ 	---help---
+ 	  This driver supports the Gigabit TSEC on the MPC83xx, MPC85xx,
+diff --git a/drivers/net/ethernet/freescale/dpaa/Kconfig b/drivers/net/ethernet/freescale/dpaa/Kconfig
+index a654736237a9..8fec41e57178 100644
+--- a/drivers/net/ethernet/freescale/dpaa/Kconfig
++++ b/drivers/net/ethernet/freescale/dpaa/Kconfig
+@@ -2,6 +2,7 @@ menuconfig FSL_DPAA_ETH
+ 	tristate "DPAA Ethernet"
+ 	depends on FSL_DPAA && FSL_FMAN
+ 	select PHYLIB
++	select FIXED_PHY
+ 	select FSL_FMAN_MAC
+ 	---help---
+ 	  Data Path Acceleration Architecture Ethernet driver,
 -- 
 2.25.1
 
