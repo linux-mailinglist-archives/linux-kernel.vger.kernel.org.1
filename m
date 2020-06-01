@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5D51EAA12
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E531EAB31
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730237AbgFASEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:04:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49042 "EHLO mail.kernel.org"
+        id S1731546AbgFASPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:15:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730202AbgFASEZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:04:25 -0400
+        id S1731528AbgFASO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:14:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4C07B206E2;
-        Mon,  1 Jun 2020 18:04:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E7710206E2;
+        Mon,  1 Jun 2020 18:14:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034664;
-        bh=tYmwVOSA6P8UA7Rl8tWN9Wd0c22hBbEuWZ33UxNLNhc=;
+        s=default; t=1591035296;
+        bh=fI0DzAU9GLVa8esFFM30UHEYhA2aD0DBiWdQTB/DY1k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yL9O4JfiC5VlgcjjPtx31G6ujenYflPOBGqycY4YD/v5zTwI0UNErl9IX9fOXySh5
-         6Cqsmam5W2Uw1O5pKVXf40uMiW6db/79OAQy/UUCDs69F3TmcU88+yxPpmWC/ON9NL
-         joZKAIM6wmaqXILJaZWEoNdH2zseLoeAV0ZnwiZ8=
+        b=G13eyUgq2pNo+Nlg10YOWaCive8ABZcHuTvqaWpHWR96r7Jn8XeJEGcL/Ja3szPh7
+         uCS+VNnjgTquMvLRKKce3x9UwVEM3tHryVbIlEy2vdQ5egDkWVz8A2ITxU46TqHeID
+         bm578pzwG3+Dr3QDyh8tAa0GYYxh75C+FX+eH/6Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Hamish Martin <hamish.martin@alliedtelesis.co.nz>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 54/95] ARM: dts: bcm: HR2: Fix PPI interrupt types
-Date:   Mon,  1 Jun 2020 19:53:54 +0200
-Message-Id: <20200601174029.846154458@linuxfoundation.org>
+Subject: [PATCH 5.6 097/177] gpio: exar: Fix bad handling for ida_simple_get error path
+Date:   Mon,  1 Jun 2020 19:53:55 +0200
+Message-Id: <20200601174056.819818306@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
-References: <20200601174020.759151073@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,60 +44,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit be0ec060b54f0481fb95d59086c1484a949c903c ]
+[ Upstream commit 333830aa149a87cabeb5d30fbcf12eecc8040d2c ]
 
-These error messages are output when booting on a BCM HR2 system:
-    GIC: PPI11 is secure or misconfigured
-    GIC: PPI13 is secure or misconfigured
+The commit 7ecced0934e5 ("gpio: exar: add a check for the return value
+of ida_simple_get fails") added a goto jump to the common error
+handler for ida_simple_get() error, but this is wrong in two ways:
+it doesn't set the proper return code and, more badly, it invokes
+ida_simple_remove() with a negative index that shall lead to a kernel
+panic via BUG_ON().
 
-Per ARM documentation these interrupts are triggered on a rising edge.
-See ARM Cortex A-9 MPCore Technical Reference Manual, Revision r4p1,
-Section 3.3.8 Interrupt Configuration Registers.
+This patch addresses those two issues.
 
-The same issue was resolved for NSP systems in commit 5f1aa51c7a1e
-("ARM: dts: NSP: Fix PPI interrupt types").
-
-Fixes: b9099ec754b5 ("ARM: dts: Add Broadcom Hurricane 2 DTS include file")
-Signed-off-by: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Fixes: 7ecced0934e5 ("gpio: exar: add a check for the return value of ida_simple_get fails")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/bcm-hr2.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpio/gpio-exar.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/bcm-hr2.dtsi b/arch/arm/boot/dts/bcm-hr2.dtsi
-index e4d49731287f..e35398cc60a0 100644
---- a/arch/arm/boot/dts/bcm-hr2.dtsi
-+++ b/arch/arm/boot/dts/bcm-hr2.dtsi
-@@ -75,7 +75,7 @@
- 		timer@20200 {
- 			compatible = "arm,cortex-a9-global-timer";
- 			reg = <0x20200 0x100>;
--			interrupts = <GIC_PPI 11 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupts = <GIC_PPI 11 IRQ_TYPE_EDGE_RISING>;
- 			clocks = <&periph_clk>;
- 		};
+diff --git a/drivers/gpio/gpio-exar.c b/drivers/gpio/gpio-exar.c
+index da1ef0b1c291..b1accfba017d 100644
+--- a/drivers/gpio/gpio-exar.c
++++ b/drivers/gpio/gpio-exar.c
+@@ -148,8 +148,10 @@ static int gpio_exar_probe(struct platform_device *pdev)
+ 	mutex_init(&exar_gpio->lock);
  
-@@ -83,7 +83,7 @@
- 			compatible = "arm,cortex-a9-twd-timer";
- 			reg = <0x20600 0x20>;
- 			interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(1) |
--						  IRQ_TYPE_LEVEL_HIGH)>;
-+						  IRQ_TYPE_EDGE_RISING)>;
- 			clocks = <&periph_clk>;
- 		};
+ 	index = ida_simple_get(&ida_index, 0, 0, GFP_KERNEL);
+-	if (index < 0)
+-		goto err_destroy;
++	if (index < 0) {
++		ret = index;
++		goto err_mutex_destroy;
++	}
  
-@@ -91,7 +91,7 @@
- 			compatible = "arm,cortex-a9-twd-wdt";
- 			reg = <0x20620 0x20>;
- 			interrupts = <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(1) |
--						  IRQ_TYPE_LEVEL_HIGH)>;
-+						  IRQ_TYPE_EDGE_RISING)>;
- 			clocks = <&periph_clk>;
- 		};
+ 	sprintf(exar_gpio->name, "exar_gpio%d", index);
+ 	exar_gpio->gpio_chip.label = exar_gpio->name;
+@@ -176,6 +178,7 @@ static int gpio_exar_probe(struct platform_device *pdev)
  
+ err_destroy:
+ 	ida_simple_remove(&ida_index, index);
++err_mutex_destroy:
+ 	mutex_destroy(&exar_gpio->lock);
+ 	return ret;
+ }
 -- 
 2.25.1
 
