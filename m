@@ -2,89 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C921EA80B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 18:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A951EA81D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgFAQ5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 12:57:33 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:48504 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgFAQ5d (ORCPT
+        id S1727959AbgFARFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:05:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727803AbgFARFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 12:57:33 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 051GlssD165590;
-        Mon, 1 Jun 2020 16:57:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=if3Zz9VtQB2CrSuPmMraBpB3vDqCLb13ncvOUi5ei/c=;
- b=Fmebebk4d0w9qmYHB+aKDRuh464LuFtU984tT+TwpFLdHR6AgbrXWzQIcRDBgJqGesGr
- czeYD8pDiuO0xgWGgIHmFMvEbP/ulK2loWP0EEbTPd31hggAinj+AASvxFX08jCsjizz
- /xcW3qmT1ruAbgFBR+/+WXc4k8G76CT2+BxGK9I8VUsr2Fe7JQr7SFMbl7eKcjbxkTTk
- WP6L2um9TolXpqShvuwEmcwqyHqldoUwpyif96FTqC9XRxH91ky+b/8v7sxSDte9zOwh
- kquHT2EzcxRlzBBVcnBFsXQokhg45StDQ2tgPvY/N0C0mRup/iR+a1sVbh7V5W1vfyle rg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 31bewqqut3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 01 Jun 2020 16:57:18 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 051GrOSC069215;
-        Mon, 1 Jun 2020 16:57:18 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 31c12msrcv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Jun 2020 16:57:18 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 051GvGlJ009610;
-        Mon, 1 Jun 2020 16:57:16 GMT
-Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 01 Jun 2020 09:57:16 -0700
-Date:   Mon, 1 Jun 2020 12:57:36 -0400
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mm@kvack.org, hughd@google.com,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Zi Yan <ziy@nvidia.com>, John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/vmstat: Add events for PMD based THP migration
- without split
-Message-ID: <20200601165736.qw5kwwknxltk7bv6@ca-dmjordan1.us.oracle.com>
-References: <1590118444-21601-1-git-send-email-anshuman.khandual@arm.com>
+        Mon, 1 Jun 2020 13:05:12 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D48C05BD43
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 10:05:10 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id m2so101759pjv.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 10:05:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sargun.me; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RCNZoB5OxQ7hnqTLfie1dXM/QF4pMxzLCuwCLG5Qfss=;
+        b=vegupm7j++bcQ7i5qomamK4/m4XhO1MABSaGH10ckRBmWq+grPaIgDahZjbqzvDWYc
+         3yf8QRVv7J4Y+Ud2phWybNxSOCMB67r+b6JJeBn8xlqsCQQZEVUmM5tSdFhJirSL/hOc
+         Z8jCKNVR1wYBwqZACg2XqcaZOwqyEKYiJ6nls=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RCNZoB5OxQ7hnqTLfie1dXM/QF4pMxzLCuwCLG5Qfss=;
+        b=XSqJeLmOJRjjrS8W1ewu8sek+2Jfk7lYrYZ50rwAUqTnMBomNqCdWVLgS2EWcm3wW8
+         LTfR8fCoplS5rOAHINrEWJ75QwN9AVbUCi9p52ZK1b4q7y/Au5h041ZDHqveNPIBndvy
+         x1yjngmwycm/3hWYM29BsSjVafmT7/qkTvswMPaeP8qgRYISEcT3c6trb4gEShnA/WBA
+         aqkqsoc9C0/i5gFSsWlaeSCckBUs+Zowed29tXG8hi2Bh2eOtaNZ/vulUVLZSVtxKOGZ
+         YC+S3FCl97wEfv5jIwbiUsVKJq4k6US/WMoK8qTkc/gi8s6/7M9UN9ldWWlehyWztyuE
+         SLNQ==
+X-Gm-Message-State: AOAM532LHYE8y4EOVgiKoaTlUOppDTBVF/q7zmCFjYrgPAoBoOvlZlRf
+        9B+CFDKrPP152hA+F+eGTLo6gg==
+X-Google-Smtp-Source: ABdhPJznLtUa4LZ7g35GyCI7/xjwaHcB435LJsAY3C3ioqnx7kNkFoy3Z7n3o6gr2EPy9nrmnWQAvA==
+X-Received: by 2002:a17:90b:806:: with SMTP id bk6mr425484pjb.122.1591031109833;
+        Mon, 01 Jun 2020 10:05:09 -0700 (PDT)
+Received: from ubuntu.netflix.com (203.20.25.136.in-addr.arpa. [136.25.20.203])
+        by smtp.gmail.com with ESMTPSA id m5sm12080pjn.56.2020.06.01.10.05.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jun 2020 10:05:09 -0700 (PDT)
+From:   Sargun Dhillon <sargun@sargun.me>
+To:     containers@lists.linux-foundation.org, keescook@chromium.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Sargun Dhillon <sargun@sargun.me>, viro@zeniv.linux.org.uk,
+        christian.brauner@ubuntu.com, cyphar@cyphar.com, jannh@google.com,
+        jeffv@google.com, palmer@google.com, rsesek@google.com,
+        tycho@tycho.ws, Matt Denton <mpdenton@google.com>,
+        Kees Cook <keescook@google.com>
+Subject: [PATCH v3] seccomp: Add find_notification helper
+Date:   Mon,  1 Jun 2020 04:25:32 -0700
+Message-Id: <20200601112532.150158-1-sargun@sargun.me>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1590118444-21601-1-git-send-email-anshuman.khandual@arm.com>
-User-Agent: NeoMutt/20180716
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 malwarescore=0
- adultscore=0 suspectscore=0 spamscore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006010125
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 bulkscore=0
- phishscore=0 suspectscore=0 impostorscore=0 cotscore=-2147483648
- lowpriorityscore=0 mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=999
- malwarescore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006010124
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anshuman,
+This adds a helper which can iterate through a seccomp_filter to
+find a notification matching an ID. It removes several replicated
+chunks of code.
 
-On Fri, May 22, 2020 at 09:04:04AM +0530, Anshuman Khandual wrote:
-> This adds the following two new VM events which will help in validating PMD
-> based THP migration without split. Statistics reported through these events
-> will help in performance debugging.
-> 
-> 1. THP_PMD_MIGRATION_SUCCESS
-> 2. THP_PMD_MIGRATION_FAILURE
+Signed-off-by: Sargun Dhillon <sargun@sargun.me>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Reviewed-by: Tycho Andersen <tycho@tycho.ws>
+Cc: Matt Denton <mpdenton@google.com>
+Cc: Kees Cook <keescook@google.com>,
+Cc: Jann Horn <jannh@google.com>,
+Cc: Robert Sesek <rsesek@google.com>,
+Cc: Chris Palmer <palmer@google.com>
+Cc: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: Tycho Andersen <tycho@tycho.ws>
+---
+ kernel/seccomp.c | 55 ++++++++++++++++++++++++------------------------
+ 1 file changed, 28 insertions(+), 27 deletions(-)
 
-The names suggest a binary event similar to the existing
-pgmigrate_success/fail, but FAILURE only tracks one kind of migration error,
-and then only when the thp is successfully split, so shouldn't it be called
-SPLIT instead?
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 55a6184f5990..cc6b47173a95 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -41,6 +41,7 @@
+ #include <linux/tracehook.h>
+ #include <linux/uaccess.h>
+ #include <linux/anon_inodes.h>
++#include <linux/lockdep.h>
+ 
+ enum notify_state {
+ 	SECCOMP_NOTIFY_INIT,
+@@ -1021,10 +1022,27 @@ static int seccomp_notify_release(struct inode *inode, struct file *file)
+ 	return 0;
+ }
+ 
++/* must be called with notif_lock held */
++static inline struct seccomp_knotif *
++find_notification(struct seccomp_filter *filter, u64 id)
++{
++	struct seccomp_knotif *cur;
++
++	lockdep_assert_held(&filter->notify_lock);
++
++	list_for_each_entry(cur, &filter->notif->notifications, list) {
++		if (cur->id == id)
++			return cur;
++	}
++
++	return NULL;
++}
++
++
+ static long seccomp_notify_recv(struct seccomp_filter *filter,
+ 				void __user *buf)
+ {
+-	struct seccomp_knotif *knotif = NULL, *cur;
++	struct seccomp_knotif *knotif, *cur;
+ 	struct seccomp_notif unotif;
+ 	ssize_t ret;
+ 
+@@ -1078,15 +1096,8 @@ static long seccomp_notify_recv(struct seccomp_filter *filter,
+ 		 * may have died when we released the lock, so we need to make
+ 		 * sure it's still around.
+ 		 */
+-		knotif = NULL;
+ 		mutex_lock(&filter->notify_lock);
+-		list_for_each_entry(cur, &filter->notif->notifications, list) {
+-			if (cur->id == unotif.id) {
+-				knotif = cur;
+-				break;
+-			}
+-		}
+-
++		knotif = find_notification(filter, unotif.id);
+ 		if (knotif) {
+ 			knotif->state = SECCOMP_NOTIFY_INIT;
+ 			up(&filter->notif->request);
+@@ -1101,7 +1112,7 @@ static long seccomp_notify_send(struct seccomp_filter *filter,
+ 				void __user *buf)
+ {
+ 	struct seccomp_notif_resp resp = {};
+-	struct seccomp_knotif *knotif = NULL, *cur;
++	struct seccomp_knotif *knotif;
+ 	long ret;
+ 
+ 	if (copy_from_user(&resp, buf, sizeof(resp)))
+@@ -1118,13 +1129,7 @@ static long seccomp_notify_send(struct seccomp_filter *filter,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	list_for_each_entry(cur, &filter->notif->notifications, list) {
+-		if (cur->id == resp.id) {
+-			knotif = cur;
+-			break;
+-		}
+-	}
+-
++	knotif = find_notification(filter, resp.id);
+ 	if (!knotif) {
+ 		ret = -ENOENT;
+ 		goto out;
+@@ -1150,7 +1155,7 @@ static long seccomp_notify_send(struct seccomp_filter *filter,
+ static long seccomp_notify_id_valid(struct seccomp_filter *filter,
+ 				    void __user *buf)
+ {
+-	struct seccomp_knotif *knotif = NULL;
++	struct seccomp_knotif *knotif;
+ 	u64 id;
+ 	long ret;
+ 
+@@ -1161,16 +1166,12 @@ static long seccomp_notify_id_valid(struct seccomp_filter *filter,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = -ENOENT;
+-	list_for_each_entry(knotif, &filter->notif->notifications, list) {
+-		if (knotif->id == id) {
+-			if (knotif->state == SECCOMP_NOTIFY_SENT)
+-				ret = 0;
+-			goto out;
+-		}
+-	}
++	knotif = find_notification(filter, id);
++	if (knotif && knotif->state == SECCOMP_NOTIFY_SENT)
++		ret = 0;
++	else
++		ret = -ENOENT;
+ 
+-out:
+ 	mutex_unlock(&filter->notify_lock);
+ 	return ret;
+ }
+-- 
+2.25.1
+
