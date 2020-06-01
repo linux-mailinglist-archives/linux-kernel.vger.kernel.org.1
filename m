@@ -2,38 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 277731EAD5D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 519341EAC42
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726232AbgFASo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:44:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56752 "EHLO mail.kernel.org"
+        id S1731353AbgFASR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:17:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729756AbgFASKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:10:09 -0400
+        id S1731866AbgFASRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:17:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4AB912077D;
-        Mon,  1 Jun 2020 18:10:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 684DB2065C;
+        Mon,  1 Jun 2020 18:17:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035008;
-        bh=tlxiqtfrQReI1ncjMVh9fm/GnQJePtH5+QfFOr4cCYk=;
+        s=default; t=1591035466;
+        bh=0BF0Lk+H1PXCCe5Cg0aXgjRhQYNfh7boNZDK32hbnHw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H7LlLjLS0/WlBPr//9ALOOovXmknPof8Q/08tbpSwABxvHkfcQank3LTIGA6BDLiP
-         697qWlMZ6+52Jlaotl/TLPg/jrMxdoM/Ea5bwj3lOKnEmgVDdeT6mbUL6NIevBORTu
-         Q2C5hjkQmYFa7NX41jgsKX2yx8igqITuZ7STYQPY=
+        b=ht2DuS2a6g4Na+GOrS4tiC2tWYef1CF3FUWAe9LAAPV0I54ESwmnPkEPec2Yq/XEO
+         5XG2I25PT0UTA/jf9qUEUSsfeD3T1OZLqpYWTf9wpjwnS9+URiPgipZE0fANptNtKR
+         TKRz/rZ/lQC4J2G1307iechhdu7g66c0dqK8NlUc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Subject: [PATCH 5.4 112/142] xfrm: allow to accept packets with ipv6 NEXTHDR_HOP in xfrm_input
-Date:   Mon,  1 Jun 2020 19:54:30 +0200
-Message-Id: <20200601174049.513408526@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Rientjes <rientjes@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 133/177] mm: remove VM_BUG_ON(PageSlab()) from page_mapcount()
+Date:   Mon,  1 Jun 2020 19:54:31 +0200
+Message-Id: <20200601174059.569234607@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,45 +50,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
 
-commit afcaf61be9d1dbdee5ec186d1dcc67b6b692180f upstream.
+[ Upstream commit 6988f31d558aa8c744464a7f6d91d34ada48ad12 ]
 
-For beet mode, when it's ipv6 inner address with nexthdrs set,
-the packet format might be:
+Replace superfluous VM_BUG_ON() with comment about correct usage.
 
-    ----------------------------------------------------
-    | outer  |     | dest |     |      |  ESP    | ESP |
-    | IP hdr | ESP | opts.| TCP | Data | Trailer | ICV |
-    ----------------------------------------------------
+Technically reverts commit 1d148e218a0d ("mm: add VM_BUG_ON_PAGE() to
+page_mapcount()"), but context lines have changed.
 
-The nexthdr from ESP could be NEXTHDR_HOP(0), so it should
-continue processing the packet when nexthdr returns 0 in
-xfrm_input(). Otherwise, when ipv6 nexthdr is set, the
-packet will be dropped.
+Function isolate_migratepages_block() runs some checks out of lru_lock
+when choose pages for migration.  After checking PageLRU() it checks
+extra page references by comparing page_count() and page_mapcount().
+Between these two checks page could be removed from lru, freed and taken
+by slab.
 
-I don't see any error cases that nexthdr may return 0. So
-fix it by removing the check for nexthdr == 0.
+As a result this race triggers VM_BUG_ON(PageSlab()) in page_mapcount().
+Race window is tiny.  For certain workload this happens around once a
+year.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    page:ffffea0105ca9380 count:1 mapcount:0 mapping:ffff88ff7712c180 index:0x0 compound_mapcount: 0
+    flags: 0x500000000008100(slab|head)
+    raw: 0500000000008100 dead000000000100 dead000000000200 ffff88ff7712c180
+    raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
+    page dumped because: VM_BUG_ON_PAGE(PageSlab(page))
+    ------------[ cut here ]------------
+    kernel BUG at ./include/linux/mm.h:628!
+    invalid opcode: 0000 [#1] SMP NOPTI
+    CPU: 77 PID: 504 Comm: kcompactd1 Tainted: G        W         4.19.109-27 #1
+    Hardware name: Yandex T175-N41-Y3N/MY81-EX0-Y3N, BIOS R05 06/20/2019
+    RIP: 0010:isolate_migratepages_block+0x986/0x9b0
 
+The code in isolate_migratepages_block() was added in commit
+119d6d59dcc0 ("mm, compaction: avoid isolating pinned pages") before
+adding VM_BUG_ON into page_mapcount().
+
+This race has been predicted in 2015 by Vlastimil Babka (see link
+below).
+
+[akpm@linux-foundation.org: comment tweaks, per Hugh]
+Fixes: 1d148e218a0d ("mm: add VM_BUG_ON_PAGE() to page_mapcount()")
+Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Hugh Dickins <hughd@google.com>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: David Rientjes <rientjes@google.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/159032779896.957378.7852761411265662220.stgit@buzz
+Link: https://lore.kernel.org/lkml/557710E1.6060103@suse.cz/
+Link: https://lore.kernel.org/linux-mm/158937872515.474360.5066096871639561424.stgit@buzz/T/ (v1)
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_input.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/mm.h | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
---- a/net/xfrm/xfrm_input.c
-+++ b/net/xfrm/xfrm_input.c
-@@ -643,7 +643,7 @@ resume:
- 		dev_put(skb->dev);
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index c54fb96cb1e6..96deeecd9179 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -670,6 +670,11 @@ static inline void *kvcalloc(size_t n, size_t size, gfp_t flags)
  
- 		spin_lock(&x->lock);
--		if (nexthdr <= 0) {
-+		if (nexthdr < 0) {
- 			if (nexthdr == -EBADMSG) {
- 				xfrm_audit_state_icvfail(x, skb,
- 							 x->type->proto);
+ extern void kvfree(const void *addr);
+ 
++/*
++ * Mapcount of compound page as a whole, does not include mapped sub-pages.
++ *
++ * Must be called only for compound pages or any their tail sub-pages.
++ */
+ static inline int compound_mapcount(struct page *page)
+ {
+ 	VM_BUG_ON_PAGE(!PageCompound(page), page);
+@@ -689,10 +694,16 @@ static inline void page_mapcount_reset(struct page *page)
+ 
+ int __page_mapcount(struct page *page);
+ 
++/*
++ * Mapcount of 0-order page; when compound sub-page, includes
++ * compound_mapcount().
++ *
++ * Result is undefined for pages which cannot be mapped into userspace.
++ * For example SLAB or special types of pages. See function page_has_type().
++ * They use this place in struct page differently.
++ */
+ static inline int page_mapcount(struct page *page)
+ {
+-	VM_BUG_ON_PAGE(PageSlab(page), page);
+-
+ 	if (unlikely(PageCompound(page)))
+ 		return __page_mapcount(page);
+ 	return atomic_read(&page->_mapcount) + 1;
+-- 
+2.25.1
+
 
 
