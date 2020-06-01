@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108971EA895
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4741EA8A2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728002AbgFARvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35126 "EHLO
+        id S1728310AbgFARwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:52:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727113AbgFARvo (ORCPT
+        with ESMTP id S1728071AbgFARvr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:51:44 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB75C08C5C0
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 10:51:44 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t16so245729plo.7
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 10:51:44 -0700 (PDT)
+        Mon, 1 Jun 2020 13:51:47 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6AA6C05BD43
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 10:51:45 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id a127so1795915pfa.12
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 10:51:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=FItOKgdj0uldhq4ThGfwK1TNrUS2A/jMnQRmSCeHCgM=;
-        b=lg+3hcJ4uWV77YK1218h714AN6E1Y48qGMiFQ6RgI3YGMxx4yf+DSbsdjFIU6DI4VB
-         v2uks0KMjYfjzc+VGgdeGxpwmNX9fbhjtG9jG5nUzbfYx6BO5uHZtMxpT9JgBEvYf0Yd
-         zbOgym5mr+oJMp7CFoj8jTWHWJfbavzYE3HjDvsorp5GVn5UXh7tx6+pRHxB5/rhGT+3
-         8uVl5Yl8xjf+s518G/KLq5Gvmbf5NUDn3wcERtZLIzDCkzTpMPFI4qwAkdpCTpNTpEmk
-         KQpZeGsEjcBAL8I5qmGUzKSn2wYhdkcVN9allh6etYaUUM62K0v1e1bQUdUfCa+QxpcL
-         O4iA==
+        bh=95EWc68nYSQ/9MObgW9pgJNxpvrSjDNtZ8lwnmoabNI=;
+        b=efnU2p08BqycqkIC+/it/z8qsI4D9aw7hkyuo9zzFXED+ybHh99HDWDw94cqh+v4vS
+         krELd4kmJ7hhpMsAkY4zHemblrWZVSEDSds6JLHWkic8k1mG5YBMtwEj8DITFkaopGcT
+         QRjvlKvFmc5DCV02ynFCokL6DPKP6v+yiGBkJrUdfm1pLaup0mrvnV+FbHsIjF0INsU+
+         IitAagIxRMdfi1ND0oRHpfgMgpJ9cUT+Fmk55Qs5vTMxFis728kV+4lbantjqfG3sRQj
+         RwnIwtojv+TqGsLrSHrs9QdSR8GAeAExdMm6tYckRsz7UXyg7igpQ5uGN8Ld4UuM3SJE
+         tepQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FItOKgdj0uldhq4ThGfwK1TNrUS2A/jMnQRmSCeHCgM=;
-        b=ixhr51PSSDuRyywVc3RRdA6UtCtE8NoG2KWIFVZmXqmDKYq4ma53Ut2B+jAkmKgnvo
-         ccTN3SEEFD9/9LQlbQe35sXnBZBQgg9zAvOsOt5z6AQImzXdYu8/kLY8qujpA876QqsC
-         fZ2K2CWiMvvCUD7JjGc2KKbOvJts5FuMWJV9R+y+dnYOXVJ1izPxncbWlvsMy50St6PO
-         bIBijCTv42y98sJFv3nGQ2bQTJvkvWrSOr8YTm9+LsWV2d6sYKKwmgdI3qvIpVmOYO/X
-         OwHAFbpFpDdq2HtpzinLXEs4fbz9ebgdWCCRR3F4Hs2boQr4yG7J27oIN4jHJagEV6/J
-         GskQ==
-X-Gm-Message-State: AOAM532x6SXIF/q39L2EwTm9IA8XawxF+4g7YWADEbodGMA2MYJxKtvd
-        f+VNOKoY39Tm2RzLaKTMhouF6Q==
-X-Google-Smtp-Source: ABdhPJytXJC13MoeIXNHI+CzrFwM69Q2/+HS7YEgvViTh3vSIhNXtLzF9YHtK5en9do1wF3fsWE31Q==
-X-Received: by 2002:a17:902:b484:: with SMTP id y4mr21539701plr.21.1591033904237;
-        Mon, 01 Jun 2020 10:51:44 -0700 (PDT)
+        bh=95EWc68nYSQ/9MObgW9pgJNxpvrSjDNtZ8lwnmoabNI=;
+        b=cHYT5M/4Lb1suJ8+0Q/mjhxYugHMrSlAT/gSCTiOQn0dVPA6d7gFO6fBlKhti0yzn8
+         +g2kePgX9YhcY3aCfL7dTzTbbMUEDW8yO3pCywpYsVOwlrXDMEelmMPqP7uEQqJCa/je
+         w5bGUC8nuNEX4On8I6uoefX/H8pKTGKHAKIv0mJT0tfRTEMPqThDsB0cai0omAnkp244
+         5RGNGE7ISXd2FoUDIp2z1QAwCobZekVaTZ1sgHVD6Xih2SYcGTQLwGGpPFtVmF6tlhfv
+         5neUKvdwcZyex7/DO1ahoIBHsvVYnHw1UCicnv4YJcUCxkblOMPEl1/e/thSRnqS7u+t
+         j8ww==
+X-Gm-Message-State: AOAM532lP/Zy9V+1gvjAQc5nbAsbZY6/6oiu7rZlyNN9TInF7hQb8uBB
+        7Fw0nGyn0HcABRV/K6YqmcO4xSvo2QM=
+X-Google-Smtp-Source: ABdhPJzO9KDg1cvTMWlJ7X3FLWugqoAab26LXHV5AeczKSEmLVpsQI1Q3xgOrMrZ9SS7uubJ8I8xQQ==
+X-Received: by 2002:aa7:9488:: with SMTP id z8mr10280347pfk.157.1591033905381;
+        Mon, 01 Jun 2020 10:51:45 -0700 (PDT)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id k12sm58219pfg.177.2020.06.01.10.51.43
+        by smtp.gmail.com with ESMTPSA id k12sm58219pfg.177.2020.06.01.10.51.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jun 2020 10:51:43 -0700 (PDT)
+        Mon, 01 Jun 2020 10:51:44 -0700 (PDT)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     bjorn.andersson@linaro.org, ohad@wizery.com
 Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
         loic.pallardy@st.com, arnaud.pouliquen@st.com, s-anna@ti.com
-Subject: [PATCH v4 3/9] remoteproc: Introducing function rproc_attach()
-Date:   Mon,  1 Jun 2020 11:51:33 -0600
-Message-Id: <20200601175139.22097-4-mathieu.poirier@linaro.org>
+Subject: [PATCH v4 4/9] remoteproc: Introducing function rproc_actuate()
+Date:   Mon,  1 Jun 2020 11:51:34 -0600
+Message-Id: <20200601175139.22097-5-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200601175139.22097-1-mathieu.poirier@linaro.org>
 References: <20200601175139.22097-1-mathieu.poirier@linaro.org>
@@ -65,70 +65,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introducing function rproc_attach() to enact the same actions as
-rproc_start(), but without the steps related to the handling of
-a firmware image.  That way we can properly deal with scenarios
-where the remoteproc core needs to attach with a remote processsor
-that has been booted by another entity.
+Introduce function rproc_actuate() that provides the same
+functionatlity as rproc_fw_boot(), but without the steps that
+involve interaction with the firmware image.  That way we can
+deal with scenarios where the remoteproc core is attaching
+to a remote processor that has already been started by another
+entity.
 
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- drivers/remoteproc/remoteproc_core.c | 42 ++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ drivers/remoteproc/remoteproc_core.c | 68 +++++++++++++++++++++++++++-
+ 1 file changed, 67 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index 9f04c30c4aaf..0b323f6b554b 100644
+index 0b323f6b554b..c70fa0372d07 100644
 --- a/drivers/remoteproc/remoteproc_core.c
 +++ b/drivers/remoteproc/remoteproc_core.c
-@@ -1370,6 +1370,48 @@ static int rproc_start(struct rproc *rproc, const struct firmware *fw)
+@@ -1370,7 +1370,7 @@ static int rproc_start(struct rproc *rproc, const struct firmware *fw)
  	return ret;
  }
  
-+static int __maybe_unused rproc_attach(struct rproc *rproc)
+-static int __maybe_unused rproc_attach(struct rproc *rproc)
++static int rproc_attach(struct rproc *rproc)
+ {
+ 	struct device *dev = &rproc->dev;
+ 	int ret;
+@@ -1499,6 +1499,72 @@ static int rproc_fw_boot(struct rproc *rproc, const struct firmware *fw)
+ 	return ret;
+ }
+ 
++/*
++ * Attach to remote processor - similar to rproc_fw_boot() but without
++ * the steps that deal with the firmware image.
++ */
++static int __maybe_unused rproc_actuate(struct rproc *rproc)
 +{
 +	struct device *dev = &rproc->dev;
 +	int ret;
 +
-+	ret = rproc_prepare_subdevices(rproc);
-+	if (ret) {
-+		dev_err(dev, "failed to prepare subdevices for %s: %d\n",
-+			rproc->name, ret);
-+		goto out;
++	/* Tell the PM runtime core we need to keep this device powered */
++	ret = pm_runtime_get_sync(dev);
++	if (ret < 0) {
++		dev_err(dev, "pm_runtime_get_sync failed: %d\n", ret);
++		return ret;
 +	}
 +
-+	/* Attach to the remote processor */
-+	ret = rproc_attach_device(rproc);
++	/*
++	 * if enabling an IOMMU isn't relevant for this rproc, this is
++	 * just a nop
++	 */
++	ret = rproc_enable_iommu(rproc);
 +	if (ret) {
-+		dev_err(dev, "can't attach to rproc %s: %d\n",
-+			rproc->name, ret);
-+		goto unprepare_subdevices;
++		dev_err(dev, "can't enable iommu: %d\n", ret);
++		goto put_pm_runtime;
 +	}
 +
-+	/* Start any subdevices for the remote processor */
-+	ret = rproc_start_subdevices(rproc);
++	/* reset max_notifyid */
++	rproc->max_notifyid = -1;
++
++	/* reset handled vdev */
++	rproc->nb_vdev = 0;
++
++	/*
++	 * Handle firmware resources required to attach to a remote processor.
++	 * Because we are attaching rather than booting the remote processor,
++	 * we expect the platform driver to properly set rproc->table_ptr.
++	 */
++	ret = rproc_handle_resources(rproc, rproc_loading_handlers);
 +	if (ret) {
-+		dev_err(dev, "failed to probe subdevices for %s: %d\n",
-+			rproc->name, ret);
-+		goto stop_rproc;
++		dev_err(dev, "Failed to process resources: %d\n", ret);
++		goto disable_iommu;
 +	}
 +
-+	rproc->state = RPROC_RUNNING;
++	/* Allocate carveout resources associated to rproc */
++	ret = rproc_alloc_registered_carveouts(rproc);
++	if (ret) {
++		dev_err(dev, "Failed to allocate associated carveouts: %d\n",
++			ret);
++		goto clean_up_resources;
++	}
 +
-+	dev_info(dev, "remote processor %s is now attached\n", rproc->name);
++	ret = rproc_attach(rproc);
++	if (ret)
++		goto clean_up_resources;
 +
 +	return 0;
 +
-+stop_rproc:
-+	rproc->ops->stop(rproc);
-+unprepare_subdevices:
-+	rproc_unprepare_subdevices(rproc);
-+out:
++clean_up_resources:
++	rproc_resource_cleanup(rproc);
++disable_iommu:
++	rproc_disable_iommu(rproc);
++put_pm_runtime:
++	pm_runtime_put(dev);
 +	return ret;
 +}
 +
  /*
-  * take a firmware and boot a remote processor with it.
-  */
+  * take a firmware and boot it up.
+  *
 -- 
 2.20.1
 
