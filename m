@@ -2,118 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B351EB07E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 22:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 510031EB076
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 22:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728554AbgFAUzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 16:55:31 -0400
-Received: from static-27.netfusion.at ([83.215.238.27]:55874 "EHLO
-        mail.inliniac.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728212AbgFAUza (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 16:55:30 -0400
-X-Greylist: delayed 318 seconds by postgrey-1.27 at vger.kernel.org; Mon, 01 Jun 2020 16:55:29 EDT
-Received: by mail.inliniac.net (Postfix, from userid 108)
-        id 0E40A80C; Mon,  1 Jun 2020 22:52:20 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on tulpe.vuurmuur.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        SURBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.2
-Received: from z440.inliniac.lan (a80-127-179-75.adsl.xs4all.nl [80.127.179.75])
-        (Authenticated sender: victor)
-        by mail.inliniac.net (Postfix) with ESMTPSA id 3F64410C;
-        Mon,  1 Jun 2020 22:52:11 +0200 (CEST)
-From:   Victor Julien <victor@inliniac.net>
-To:     netdev@vger.kernel.org
-Cc:     victor@inliniac.net, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Mao Wenan <maowenan@huawei.com>, Arnd Bergmann <arnd@arndb.de>,
-        Neil Horman <nhorman@tuxdriver.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] af-packet: new flag to indicate all csums are good
-Date:   Mon,  1 Jun 2020 22:49:37 +0200
-Message-Id: <20200601204938.13302-1-victor@inliniac.net>
-X-Mailer: git-send-email 2.17.1
+        id S1728583AbgFAUuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 16:50:16 -0400
+Received: from mga02.intel.com ([134.134.136.20]:50292 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727875AbgFAUuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 16:50:16 -0400
+IronPort-SDR: Y1BfYK2eGHKEuwF9EWLh1bxyveMaa7LG1tXn84uESszps7e23NsnnZCa46FDQonlOCtSah6oat
+ BBV7zcum+joA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2020 13:50:15 -0700
+IronPort-SDR: bTUm3amk7QMCFwB2VTG76Lhz3xQiMTgOilKl0Norwi6VrvskLOxHpyrYURhD4p2u+PkUzLd+uh
+ I0r78hlFKpHw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,462,1583222400"; 
+   d="scan'208";a="257376265"
+Received: from fwong2-mobl.amr.corp.intel.com (HELO [10.251.12.107]) ([10.251.12.107])
+  by orsmga007.jf.intel.com with ESMTP; 01 Jun 2020 13:50:14 -0700
+Subject: Re: [PATCH] soundwire: clarify SPDX use of GPL-2.0
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, vinod.koul@linaro.org, tiwai@suse.de,
+        mengdong.lin@intel.com, linux-kernel@vger.kernel.org,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        vkoul@kernel.org, broonie@kernel.org,
+        srinivas.kandagatla@linaro.org, jank@cadence.com,
+        slawomir.blauciak@intel.com, sanyog.r.kale@intel.com,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+References: <20200531172807.27042-1-yung-chuan.liao@linux.intel.com>
+ <20200601053809.GA1420218@kroah.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <686345af-4fda-4bc1-c3bf-da31406e806b@linux.intel.com>
+Date:   Mon, 1 Jun 2020 15:50:13 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200601053809.GA1420218@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a new flag (TP_STATUS_CSUM_UNNECESSARY) to indicate
-that the driver has completely validated the checksums in the packet.
 
-The flag differs from TP_STATUS_CSUM_VALID in that it will only
-be set if all the layers are valid, while TP_STATUS_CSUM_VALID is
-set as well if only the IP layer is valid.
 
-The name is derived from the skb->ip_summed setting CHECKSUM_UNNECESSARY.
+On 6/1/20 12:38 AM, Greg KH wrote:
+> On Mon, Jun 01, 2020 at 01:28:07AM +0800, Bard Liao wrote:
+>> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>
+>> Change SPDX from GPL-2.0 to GPL-2.0-only for Intel-contributed
+>> code. This was explicit before the transition to SPDX and lost in
+>> translation.
+> 
+> It is also explicit in the "GPL-2.0" lines as well, did you read the
+> LICENSES/preferred/GPL-2.0 file for the allowed tags to be used for this
+> license?
+> 
+> So this doesn't change anything, and we are trying to cut down on this
+> type of churn until, maybe, after the whole kernel has proper SPDX
+> lines.
 
-Security tools such as Suricata, Snort, Zeek/Bro need to know not
-only that a packet has not been corrupted, but also that the
-checksums are correct. Without this an attacker could send a packet,
-for example a TCP RST packet, that would be accepted by the
-security tool, but rejected by the end host.
+My commit message was misleading, sorry. For SoundWire, we recently 
+added new files with GPL-2.0-only (master + sysfs), as recommended since 
+the short GPL-2.0 identifier is deprecated 
+(https://spdx.org/licenses/GPL-2.0.html https://spdx.org/licenses/).
 
-To avoid this scenario tools will have to (re)calcultate/validate
-the checksum as well.
+Intel does not mind if we delay this change, you are right that this 
+doesn't change anything license-wise. I just felt it was a good time to 
+align old and new contributions to avoid having half of the files with 
+GPL-2.0 and half with GPL-2.0-only.
 
-This patch has been tested with Suricata with the virtio driver,
-where it reduced the ammount of time spent in the Suricata TCP
-checksum validation to about half.
+We still have quite a few patches for SoundWire (~80 coming w/ 7k lines 
+changed), so those changes are really minimal in comparison with the 
+actual 'churn' to fix programming sequences, power management, 
+multi-link management and bit allocation.
 
-Signed-off-by: Victor Julien <victor@inliniac.net>
----
- Documentation/networking/packet_mmap.rst | 6 ++++++
- include/uapi/linux/if_packet.h           | 1 +
- net/packet/af_packet.c                   | 3 +++
- 3 files changed, 10 insertions(+)
+Oh and this was not intended to be added to 5.8 btw or pulled as a fix, 
+really nothing to do with the merge window.
 
-diff --git a/Documentation/networking/packet_mmap.rst b/Documentation/networking/packet_mmap.rst
-index 6c009ceb1183..f670292e6d95 100644
---- a/Documentation/networking/packet_mmap.rst
-+++ b/Documentation/networking/packet_mmap.rst
-@@ -472,6 +472,12 @@ TP_STATUS_CSUM_VALID	This flag indicates that at least the transport
- 			validated on the kernel side. If the flag is not set
- 			then we are free to check the checksum by ourselves
- 			provided that TP_STATUS_CSUMNOTREADY is also not set.
-+TP_STATUS_CSUM_UNNECESSARY  This flag indicates that the driver validated all
-+                        the packets csums. If it is not set it might be that
-+                        the driver doesn't support this, or that one of the
-+                        layers csums is bad. TP_STATUS_CSUM_VALID may still
-+                        be set if the transport layer csum is correct or
-+                        if the driver supports only this mode.
- ======================  =======================================================
- 
- for convenience there are also the following defines::
-diff --git a/include/uapi/linux/if_packet.h b/include/uapi/linux/if_packet.h
-index 3d884d68eb30..76a5c762e2e0 100644
---- a/include/uapi/linux/if_packet.h
-+++ b/include/uapi/linux/if_packet.h
-@@ -113,6 +113,7 @@ struct tpacket_auxdata {
- #define TP_STATUS_BLK_TMO		(1 << 5)
- #define TP_STATUS_VLAN_TPID_VALID	(1 << 6) /* auxdata has valid tp_vlan_tpid */
- #define TP_STATUS_CSUM_VALID		(1 << 7)
-+#define TP_STATUS_CSUM_UNNECESSARY	(1 << 8)
- 
- /* Tx ring - header status */
- #define TP_STATUS_AVAILABLE	      0
-diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-index 29bd405adbbd..5dd8bad9bc23 100644
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -2215,6 +2215,9 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
- 
- 	if (skb->ip_summed == CHECKSUM_PARTIAL)
- 		status |= TP_STATUS_CSUMNOTREADY;
-+	else if (skb->pkt_type != PACKET_OUTGOING &&
-+		 skb->ip_summed == CHECKSUM_UNNECESSARY)
-+		status |= (TP_STATUS_CSUM_UNNECESSARY | TP_STATUS_CSUM_VALID);
- 	else if (skb->pkt_type != PACKET_OUTGOING &&
- 		 (skb->ip_summed == CHECKSUM_COMPLETE ||
- 		  skb_csum_unnecessary(skb)))
--- 
-2.17.1
+If you prefer us to keep this change on the back burner, that's fine, 
+the only intent was to keep all SoundWire-related files consistent.
+
 
