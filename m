@@ -2,94 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F701EB0BE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 23:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A261EB0BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 23:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728674AbgFAVLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 17:11:40 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:51217 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727983AbgFAVLj (ORCPT
+        id S1728747AbgFAVL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 17:11:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728182AbgFAVL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 17:11:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591045898;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DbRzhG2LzWApjj8c+cePRghjnkrYYRcNMFSCvsXUZ8I=;
-        b=AralpmOjEWIyTB9navhbDg72jp4sNdjC6SWkDhw0Hr+ftL0cNIpz35lIEwWTrv2gZTzykQ
-        ehojKqW8rNQS7v8Hvb/8ycTv5cnM1pcuUL+5FQA9BL73xzj+s4DvjEpA2olwlWbOSJQcCy
-        CB5yxm4k7Ksdribn6y4Gtgxx6icPkKQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-443-w1E6bmOQPuerdajZZdA_Yw-1; Mon, 01 Jun 2020 17:11:31 -0400
-X-MC-Unique: w1E6bmOQPuerdajZZdA_Yw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EE1D11883603;
-        Mon,  1 Jun 2020 21:11:29 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-138.rdu2.redhat.com [10.10.112.138])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2C9D6D01EB;
-        Mon,  1 Jun 2020 21:11:28 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <3cc663a5-088d-4d26-34cd-c96e362c1eb2@web.de>
-References: <3cc663a5-088d-4d26-34cd-c96e362c1eb2@web.de>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: afs: Improve exception handling in afs_net_init()
+        Mon, 1 Jun 2020 17:11:56 -0400
+Received: from valentin-vidic.from.hr (valentin-vidic.from.hr [IPv6:2001:470:1f0b:3b7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B7DC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 14:11:55 -0700 (PDT)
+X-Virus-Scanned: Debian amavisd-new at valentin-vidic.from.hr
+Received: by valentin-vidic.from.hr (Postfix, from userid 1000)
+        id 3F5D62AC1; Mon,  1 Jun 2020 23:11:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=valentin-vidic.from.hr; s=2020; t=1591045910;
+        bh=ZhGVdNkernqcQZbK4EYb5Wz0ZGp5PK1Gdi2mdPWfiJ4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Xvr3oVMmhZ9J7FCsmvt6ntMHFoIaZsAbK9avhc3ejzSCfkiXy9aQdMpfyLM1EEKQx
+         RFyQiKNM+IiPgiIlW5WQoLZdy8Qbgp06D3aPf6cqHhCgjbHFLB8+ySdZ1aDHw4cxgm
+         qAjRJoFlPFJUblzZ1JbfZQbQtzpwl4ippEXdni4PSVvbzNjWMylMC4Z8QBw89FALIS
+         1lJJnDWGcSN14KpVPTsg6+dlAPqQoxoWH9oo5BTBmcwKmh8nghmPCHndECzgPOJm1C
+         S9MRYSgAMCYOGFyjR4NV2wyBfjCoH3lgNjWBaBcx4FMItk1JbCUO+6vSPG5KuaEaRb
+         /hwjTOI2NIIlU3+4WNAcLvyfD86uwSLFEh6sT82EogQGv6NheIcvRPHdZnwx/PQDyN
+         anRCodidWHQQHn/Zm2PSrXvGlj66PpZJ83sTkYeK/YUOFro8jIjHWqCsor7E5N+nyF
+         /wHMMVmCeOhRkG4wiAkWZ1FbcmfnOd+afOkueFipvFHJFMQ5c62+WhDB9yMrq1IxjB
+         wTNBvsssRTcg1+FH2UjfLw+iTWI0at8kbSNNxKlPHZFl5oLKZ2GGEVaDrO4SJhsVkg
+         rEEiiKOO6TBkHGTWN/RLsS6cpVRu3CxMTg0AOp6YOIXRW73zML1KB9Id6M8LOJ1Tay
+         gW7BswTl/zdrqBnpmzlM6oI0=
+From:   Valentin Vidic <vvidic@valentin-vidic.from.hr>
+To:     Joe Perches <joe@perches.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Valentin Vidic <vvidic@valentin-vidic.from.hr>
+Subject: [PATCH] coding-style.rst: cleanup new text
+Date:   Mon,  1 Jun 2020 23:11:45 +0200
+Message-Id: <20200601211145.27808-1-vvidic@valentin-vidic.from.hr>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1376358.1591045888.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Mon, 01 Jun 2020 22:11:28 +0100
-Message-ID: <1376359.1591045888@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Markus Elfring <Markus.Elfring@web.de> wrote:
+Remove doubled word: "...than the parent and are are placed..."
 
-> I have accidentally taken another look at the implementation of
-> the function "afs_net_init".
-> I noticed that the statement "net->live =3D false;" was specified three =
-times
-> for exception handling at the end.
-> https://elixir.bootlin.com/linux/v5.7/source/fs/afs/main.c#L127
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/=
-fs/afs/main.c?id=3D9bf9511e3d9f328c03f6f79bfb741c3d18f2f2c0#n127
-> =
+Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
+---
+ Documentation/process/coding-style.rst | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> Can it be that two of these assignments are redundant then?
-
-Kind of yes, but no.
-
-I want to set "net->live =3D false" as soon as an error occurs because the=
-re are
-various async mechanisms that check for it and abort their operation if th=
-ey
-see it, but there are multiple error labels.
-
-So it needs to be cleared before afs_cell_purge() or afs_purge_servers() i=
-s
-called and it used to be required for something else as well, but that's n=
-ow
-gone.
-
-In the afs_net_init() function, it now probably only needs to be cleared a=
-fter
-"error_open_socket:".  I'm a bit leary of removing the clearances in case =
-I
-add a new dependency on it later.
-
-David
+diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
+index 17a8e584f15f..bd73e1b5c111 100644
+--- a/Documentation/process/coding-style.rst
++++ b/Documentation/process/coding-style.rst
+@@ -90,9 +90,9 @@ Statements longer than 80 columns should be broken into sensible chunks,
+ unless exceeding 80 columns significantly increases readability and does
+ not hide information.
+ 
+-Descendants are always substantially shorter than the parent and are
+-are placed substantially to the right.  A very commonly used style
+-is to align descendants to a function open parenthesis.
++Descendants are always substantially shorter than the parent and are placed
++substantially to the right.  A very commonly used style is to align descendants
++to a function open parenthesis.
+ 
+ These same rules are applied to function headers with a long argument list.
+ 
+-- 
+2.20.1
 
