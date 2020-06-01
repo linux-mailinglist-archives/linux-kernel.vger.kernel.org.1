@@ -2,244 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 648DC1EA744
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 17:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EFFB1EA74B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 17:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727875AbgFAPqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 11:46:22 -0400
-Received: from mga01.intel.com ([192.55.52.88]:55843 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726075AbgFAPqV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 11:46:21 -0400
-IronPort-SDR: kSBYer6VYk43SLbql/Aexw4QEXzhRPwy+60x8KhMHsrKG1A9UDgccJRG8U15rLJx4mX369Gu2H
- 3ifN6Z7ByaPA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2020 08:46:21 -0700
-IronPort-SDR: ppbQw57/TgfMes3U4N8EKV6/1oYZf/Tmhh/Rbf8UHFyka7O/EL2Q72GXtAVAZTsJd3SS0EM1Mt
- uXmAVwrJ5yWg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,461,1583222400"; 
-   d="scan'208";a="257296414"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga007.jf.intel.com with ESMTP; 01 Jun 2020 08:46:20 -0700
-Received: from [10.249.230.65] (abudanko-mobl.ccr.corp.intel.com [10.249.230.65])
-        by linux.intel.com (Postfix) with ESMTP id 8D305580646;
-        Mon,  1 Jun 2020 08:46:18 -0700 (PDT)
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-Subject: [PATCH v5 00/13] perf: support enable and disable commands in stat
- and record modes
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Organization: Intel Corp.
-Message-ID: <e5cac8dd-7aa4-ec7c-671c-07756907acba@linux.intel.com>
-Date:   Mon, 1 Jun 2020 18:46:17 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1727875AbgFAPsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 11:48:41 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:45246 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726113AbgFAPsk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 11:48:40 -0400
+Received: by mail-ot1-f47.google.com with SMTP id m2so6408228otr.12;
+        Mon, 01 Jun 2020 08:48:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=L8PsFQqnomG7bdjqwPjrkcnVbdsA106edRu4RBLE2vw=;
+        b=HTF4icqYh71tmz2IhqMTAA4B3YHnJ4yxjOMM0ARtfGo66Qeo+SsbIRfSnlsFISG7ef
+         lNlG1yoKdF1TxSeBYiYHsgnmwEdbG7lhQ3FI+RP1FRUeLk2lLQrUEY8q8lM7adjUMg6e
+         p8C5TbL/VDWTDk97zu45G0zZqzMTyFzHA01TJoT8yKAYVf0967HvIYc1N6Izxj1qcmh+
+         I1QIQ/kMZt8EiJVZWWwF3nRyEeo/zqtrtG6h/F68NJUMvkUkqHn+cazBnj0B/sLc9XLq
+         j5lV2rpT7nQTbTMT5mO+87weSeyccu93yAIn2YiooquYkCiz48Tfmf920MI1W4MlK7RV
+         79Cg==
+X-Gm-Message-State: AOAM532dU3N7C+GBaOnIQn5ITdscG2fzkLc/v3nrmPTDGiEfMdyvtVp/
+        6ehUVGMKsuenDcHyCx/YT4/QjVYaSP2pwVa7hlv1eLoG
+X-Google-Smtp-Source: ABdhPJzakiNnTBW4UV4CYQbmEtQ3FuagYw2FxxX0gcmg4h99YWh4kawQDn28YOSdZyZ9DbPqIU9bXX/dYALeL1/SoNc=
+X-Received: by 2002:a05:6830:20d1:: with SMTP id z17mr14918566otq.167.1591026518220;
+ Mon, 01 Jun 2020 08:48:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 1 Jun 2020 17:48:27 +0200
+Message-ID: <CAJZ5v0gV2T9BUBGT8TOt+kdO6+T_WwmcO1PPonWu76REGkoorQ@mail.gmail.com>
+Subject: [GIT PULL] Power management updates for v5.8-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
-Changes in v5:
-- split re-factoring of events handling loops for stat mode
-  into smaller incremental parts
+Please pull from the tag
 
-v4: https://lore.kernel.org/lkml/653fe5f3-c986-a841-1ed8-0a7d2fa24c00@linux.intel.com/
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pm-5.8-rc1
 
-Changes in v4:
-- made checking of ctlfd state unconditional in record trace streaming loop
-- introduced static poll fds to keep evlist__filter_pollfd() unaffected
-- handled ret code of evlist__initialize_ctlfd() where need
-- renamed and structured handle_events() function
-- applied anonymous structs where needed
+with top-most commit a34024d98eeaa78e2cd22017180df778800b83fc
 
-v3: https://lore.kernel.org/lkml/eb38e9e5-754f-d410-1d9b-e26b702d51b7@linux.intel.com/
+ Merge branches 'pm-devfreq', 'powercap', 'pm-docs' and 'pm-tools'
 
-Changes in v3:
-- renamed functions and types from perf_evlist_ to evlist_ to avoid
-  clash with libperf code;
-- extended commands to be strings of variable length consisting of
-  command name and also possibly including command specific data;
-- merged docs update with the code changes;
-- updated docs for -D,--delay=-1 option for stat and record modes;
+on top of commit 9cb1fd0efd195590b828b9b865421ad345a4a145
 
-v2: https://lore.kernel.org/lkml/d582cc3d-2302-c7e2-70d3-bc7ab6f628c3@linux.intel.com/
+ Linux 5.7-rc7
 
-Changes in v2:
-- renamed resume and pause commands to enable and disable ones, renamed
-  CTL_CMD_RESUME and CTL_CMD_PAUSE to CTL_CMD_ENABLE and CTL_CMD_DISABLE
-  to fit to the appropriate ioctls and avoid mixing up with PAUSE_OUTPUT
-  ioctl;
-- factored out event handling loop into a handle_events() for stat mode;
-- separated -D,--delay=-1 into separate patches for stat and record modes;
+to receive power management updates for 5.8-rc1.
 
-v1: https://lore.kernel.org/lkml/825a5132-b58d-c0b6-b050-5a6040386ec7@linux.intel.com/
+These rework the system-wide PM driver flags, make runtime switching
+of cpuidle governors easier, improve the user space hibernation
+interface code, add intel-speed-select interface documentation,
+add more debug messages to the ACPI code handling suspend to idle,
+update the cpufreq core and drivers, fix a minor issue in the
+cpuidle core and update two cpuidle drivers, improve the PM-runtime
+framework, update the Intel RAPL power capping driver, update devfreq
+core and drivers, and clean up the cpupower utility.
 
-repo: tip of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git perf/core
+Specifics:
 
-The patch set implements handling of 'start disabled', 'enable' and 'disable'
-external control commands which can be provided for stat and record modes
-of the tool from an external controlling process. 'start disabled' command
-can be used to postpone enabling of events in the beginning of a monitoring
-session. 'enable' and 'disable' commands can be used to enable and disable
-events correspondingly any time after the start of the session.
+ - Rework the system-wide PM driver flags to make them easier to
+   understand and use and update their documentation (Rafael Wysocki,
+   Alan Stern).
 
-The 'start disabled', 'enable' and 'disable' external control commands can be
-used to focus measurement on specially selected time intervals of workload
-execution. Focused measurement reduces tool intrusion and influence on
-workload behavior, reduces distortion and amount of collected and stored
-data, mitigates data accuracy loss because measurement and data capturing
-happen only during intervals of interest.
+ - Allow cpuidle governors to be switched at run time regardless of
+   the kernel configuration and update the related documentation
+   accordingly (Hanjun Guo).
 
-A controlling process can be a bash shell script [1], native executable or
-any other language program that can directly work with file descriptors,
-e.g. pipes [2], and spawn a process, specially the tool one.
+ - Improve the resume device handling in the user space hibernation
+   interface code (Domenico Andreoli).
 
--D,--delay <val> option is extended with -1 value to skip events enabling
-in the beginning of a monitoring session ('start disabled' command).
---ctl-fd and --ctl-fd-ack command line options are introduced to provide the
-tool with a pair of file descriptors to listen to control commands and reply
-to the controlling process on the completion of received commands.
+ - Document the intel-speed-select sysfs interface (Srinivas
+   Pandruvada).
 
-The tool reads control command message from ctl-fd descriptor, handles the
-command and optionally replies acknowledgement message to fd-ack descriptor,
-if it is specified on the command line. 'enable' command is recognized as
-'enable' string message and 'disable' command is recognized as 'disable'
-string message both received from ctl-fd descriptor. Completion message is
-'ack\n' and sent to fd-ack descriptor.
+ - Make the ACPI code handing suspend to idle print more debug
+   messages to help diagnose issues with it (Rafael Wysocki).
 
-Example bash script demonstrating simple use case follows:
+ - Fix a helper routine in the cpufreq core and correct a typo in
+   the struct cpufreq_driver kerneldoc comment (Rafael Wysocki, Wang
+   Wenhu).
 
-#!/bin/bash
+ - Update cpufreq drivers:
 
-ctl_dir=/tmp/
+   * Make the intel_pstate driver start in the passive mode by
+     default on systems without HWP (Rafael Wysocki).
 
-ctl_fifo=${ctl_dir}perf_ctl.fifo
-test -p ${ctl_fifo} && unlink ${ctl_fifo}
-mkfifo ${ctl_fifo} && exec {ctl_fd}<>${ctl_fifo}
+   * Add i.MX7ULP support to the imx-cpufreq-dt driver and add
+     i.MX7ULP to the cpufreq-dt-platdev blacklist (Peng Fan).
 
-ctl_ack_fifo=${ctl_dir}perf_ctl_ack.fifo
-test -p ${ctl_ack_fifo} && unlink ${ctl_ack_fifo}
-mkfifo ${ctl_ack_fifo} && exec {ctl_fd_ack}<>${ctl_ack_fifo}
+   * Convert the qoriq cpufreq driver to a platform one, make the
+     platform code create a suitable device object for it and add
+     platform dependencies to it (Mian Yousaf Kaukab, Geert
+     Uytterhoeven).
 
-perf stat -D -1 -e cpu-cycles -a -I 1000                \
-          --ctl-fd ${ctl_fd} --ctl-fd-ack ${ctl_fd_ack} \
-          -- sleep 40 &
-perf_pid=$!
+   * Fix wrong compatible binding in the qcom driver (Ansuel Smith).
 
-sleep 5  && echo 'enable' >&${ctl_fd} && read -u ${ctl_fd_ack} e1 && echo "enabled(${e1})"
-sleep 10 && echo 'disable' >&${ctl_fd} && read -u ${ctl_fd_ack} d1 && echo "disabled(${d1})"
-sleep 5  && echo 'enable' >&${ctl_fd} && read -u ${ctl_fd_ack} e2 && echo "enabled(${e2})"
-sleep 10 && echo 'disable' >&${ctl_fd} && read -u ${ctl_fd_ack} d2 && echo "disabled(${d2})"
+   * Build the omap driver by default for ARCH_OMAP2PLUS (Anders
+     Roxell).
 
-exec {ctl_fd_ack}>&- && unlink ${ctl_ack_fifo}
-exec {ctl_fd}>&- && unlink ${ctl_fifo}
+   * Add r8a7742 SoC support to the dt cpufreq driver (Lad Prabhakar).
 
-wait -n ${perf_pid}
-exit $?
+ - Update cpuidle core and drivers:
+
+   * Fix three reference count leaks in error code paths in the
+     cpuidle core (Qiushi Wu).
+
+   * Convert Qualcomm SPM to a generic cpuidle driver (Stephan
+     Gerhold).
+
+   * Fix up the execution order when entering a domain idle state in
+     the PSCI driver (Ulf Hansson).
+
+ - Fix a reference counting issue related to clock management and
+   clean up two oddities in the PM-runtime framework (Rafael Wysocki,
+   Andy Shevchenko).
+
+ - Add ElkhartLake support to the Intel RAPL power capping driver
+   and remove an unused local MSR definition from it (Jacob Pan,
+   Sumeet Pawnikar).
+
+ - Update devfreq core and drivers:
+
+   * Replace strncpy() with strscpy() in the devfreq core and use
+     lockdep asserts instead of manual checks for a locked mutex in
+     it (Dmitry Osipenko, Krzysztof Kozlowski).
+
+   * Add a generic imx bus scaling driver and make it register an
+     interconnect device (Leonard Crestez, Gustavo A. R. Silva).
+
+   * Make the cpufreq notifier in the tegra30 driver take boosting
+     into account and delete an unuseful error message from that
+     driver (Dmitry Osipenko, Markus Elfring).
+
+ - Remove unneeded semicolon from the cpupower code (Zou Wei).
+
+There is a merge conflict between this update and the drm tree which
+was addressed in linux-next by applying the appended diff.
+
+Thanks!
 
 
-Script output:
+---------------
 
-[root@host dir] example
-Events disabled
-#           time             counts unit events
-     1.001101062      <not counted>      cpu-cycles                                                  
-     2.002994944      <not counted>      cpu-cycles                                                  
-     3.004864340      <not counted>      cpu-cycles                                                  
-     4.006727177      <not counted>      cpu-cycles                                                  
-Events enabled
-enabled(ack)
-     4.993808464          3,124,246      cpu-cycles                                                  
-     5.008597004          3,325,624      cpu-cycles                                                  
-     6.010387483         83,472,992      cpu-cycles                                                  
-     7.012266598         55,877,621      cpu-cycles                                                  
-     8.014175695         97,892,729      cpu-cycles                                                  
-     9.016056093         68,461,242      cpu-cycles                                                  
-    10.017937507         55,449,643      cpu-cycles                                                  
-    11.019830154         68,938,167      cpu-cycles                                                  
-    12.021719952         55,164,101      cpu-cycles                                                  
-    13.023627550         70,535,720      cpu-cycles                                                  
-    14.025580995         53,240,125      cpu-cycles                                                  
-disabled(ack)
-    14.997518260         53,558,068      cpu-cycles                                                  
-Events disabled
-    15.027216416      <not counted>      cpu-cycles                                                  
-    16.029052729      <not counted>      cpu-cycles                                                  
-    17.030904762      <not counted>      cpu-cycles                                                  
-    18.032073424      <not counted>      cpu-cycles                                                  
-    19.033805074      <not counted>      cpu-cycles                                                  
-Events enabled
-enabled(ack)
-    20.001279097          3,021,022      cpu-cycles                                                  
-    20.035044381          6,434,367      cpu-cycles                                                  
-    21.036923813         89,358,251      cpu-cycles                                                  
-    22.038825169         72,516,351      cpu-cycles                                                  
-#           time             counts unit events
-    23.040715596         55,046,157      cpu-cycles                                                  
-    24.042643757         78,128,649      cpu-cycles                                                  
-    25.044558535         61,052,428      cpu-cycles                                                  
-    26.046452785         62,142,806      cpu-cycles                                                  
-    27.048353021         74,477,971      cpu-cycles                                                  
-    28.050241286         61,001,623      cpu-cycles                                                  
-    29.052149961         61,653,502      cpu-cycles                                                  
-disabled(ack)
-    30.004980264         82,729,640      cpu-cycles                                                  
-Events disabled
-    30.053516176      <not counted>      cpu-cycles                                                  
-    31.055348366      <not counted>      cpu-cycles                                                  
-    32.057202097      <not counted>      cpu-cycles                                                  
-    33.059040702      <not counted>      cpu-cycles                                                  
-    34.060843288      <not counted>      cpu-cycles                                                  
-    35.000888624      <not counted>      cpu-cycles                                                  
-[root@host dir]# 
+Alan Stern (1):
+      PM: sleep: Helpful edits for devices.rst documentation
 
-[1] http://man7.org/linux/man-pages/man1/bash.1.html
-[2] http://man7.org/linux/man-pages/man2/pipe.2.html
+Anders Roxell (1):
+      cpufreq: omap: Build driver by default for ARCH_OMAP2PLUS
 
----
-Alexey Budankov (13):
-  tools/libperf: introduce static poll file descriptors
-  perf evlist: introduce control file descriptors
-  perf evlist: implement control command handling functions
-  perf stat: factor out body of event handling loop for system wide
-  perf stat: move target check to loop control statement
-  perf stat: factor out body of event handling loop for launch case
-  perf stat: factor out event handling loop into dispatch_events()
-  perf stat: extend -D,--delay option with -1 value
-  perf stat: implement control commands handling
-  perf stat: introduce --ctl-fd[-ack] options
-  perf record: extend -D,--delay option with -1 value
-  perf record: implement control commands handling
-  perf record: introduce --ctl-fd[-ack] options
+Andy Shevchenko (1):
+      PM: runtime: Make clear what we do when conditions are wrong in
+rpm_suspend()
 
- tools/lib/api/fd/array.c                 |  42 ++++++-
- tools/lib/api/fd/array.h                 |   7 ++
- tools/lib/perf/evlist.c                  |  11 ++
- tools/lib/perf/include/internal/evlist.h |   2 +
- tools/perf/Documentation/perf-record.txt |   5 +-
- tools/perf/Documentation/perf-stat.txt   |  45 ++++++-
- tools/perf/builtin-record.c              |  34 +++++-
- tools/perf/builtin-stat.c                | 145 +++++++++++++++++------
- tools/perf/builtin-trace.c               |   2 +-
- tools/perf/util/evlist.c                 | 131 ++++++++++++++++++++
- tools/perf/util/evlist.h                 |  25 ++++
- tools/perf/util/record.h                 |   4 +-
- tools/perf/util/stat.h                   |   4 +-
- 13 files changed, 407 insertions(+), 50 deletions(-)
+Ansuel Smith (1):
+      cpufreq: qcom: fix wrong compatible binding
 
--- 
-2.24.1
+Dmitry Osipenko (2):
+      PM / devfreq: tegra30: Make CPUFreq notifier to take into account boosting
+      PM / devfreq: Replace strncpy with strscpy
 
+Domenico Andreoli (3):
+      PM: hibernate: Incorporate concurrency handling
+      PM: hibernate: Split off snapshot dev option
+      PM: hibernate: Restrict writes to the resume device
+
+Geert Uytterhoeven (1):
+      cpufreq: qoriq: Add platform dependencies
+
+Gustavo A. R. Silva (1):
+      PM / devfreq: imx-bus: Fix inconsistent IS_ERR and PTR_ERR
+
+Hanjun Guo (8):
+      cpuidle: sysfs: Remove the unused define_one_r(o/w) macros
+      cpuidle: sysfs: Minor coding style corrections
+      cpuidle: sysfs: Fix the overlap for showing available governors
+      cpuidle: sysfs: Accept governor name with 15 characters
+      cpuidle: Make cpuidle governor switchable to be the default behaviour
+      cpuidle: sysfs: Remove sysfs_switch and switch attributes
+      Documentation: cpuidle: update the document
+      Documentation: ABI: make current_governer_ro as a candidate for removal
+
+Jacob Pan (1):
+      powercap/intel_rapl: add support for ElkhartLake
+
+Krzysztof Kozlowski (1):
+      PM / devfreq: Use lockdep asserts instead of manual checks for
+locked mutex
+
+Lad Prabhakar (1):
+      cpufreq: dt: Add support for r8a7742
+
+Leonard Crestez (2):
+      PM / devfreq: Add generic imx bus scaling driver
+      PM / devfreq: imx: Register interconnect device
+
+Markus Elfring (1):
+      PM / devfreq: tegra30: Delete an error message in tegra_devfreq_probe()
+
+Mian Yousaf Kaukab (2):
+      cpufreq: qoriq: convert to a platform driver
+      clk: qoriq: add cpufreq platform device
+
+Peng Fan (2):
+      cpufreq: Add i.MX7ULP to cpufreq-dt-platdev blacklist
+      cpufreq: imx-cpufreq-dt: support i.MX7ULP
+
+Qiushi Wu (1):
+      cpuidle: Fix three reference count leaks
+
+Rafael J. Wysocki (15):
+      cpufreq: intel_pstate: Use passive mode by default without HWP
+      PM: sleep: core: Simplify the SMART_SUSPEND flag handling
+      PM: sleep: core: Fold functions into their callers
+      PM: sleep: core: Do not skip callbacks in the resume phase
+      PM: sleep: core: Rework the power.may_skip_resume handling
+      PM: sleep: core: Rename dev_pm_may_skip_resume()
+      PM: sleep: core: Rename dev_pm_smart_suspend_and_suspended()
+      PM: sleep: core: Rename DPM_FLAG_NEVER_SKIP
+      PM: sleep: core: Rename DPM_FLAG_LEAVE_SUSPENDED
+      Documentation: PM: sleep: Update driver flags documentation
+      cpufreq: Fix up cpufreq_boost_set_sw()
+      ACPI: PM: s2idle: Print type of wakeup debug messages
+      ACPI: EC: PM: s2idle: Extend GPE dispatching debug message
+      PM: runtime: clk: Fix clk_pm_runtime_get() error path
+      PM: runtime: Replace pm_runtime_callbacks_present()
+
+Srinivas Pandruvada (1):
+      Documentation: admin-guide: pm: Document intel-speed-select
+
+Stephan Gerhold (1):
+      cpuidle: Convert Qualcomm SPM driver to a generic CPUidle driver
+
+Sumeet Pawnikar (1):
+      powercap: RAPL: remove unused local MSR define
+
+Ulf Hansson (1):
+      cpuidle: psci: Fixup execution order when entering a domain idle state
+
+Wang Wenhu (1):
+      cpufreq: fix minor typo in struct cpufreq_driver doc comment
+
+Zou Wei (1):
+      cpupower: Remove unneeded semicolon
+
+---------------
+
+ Documentation/ABI/obsolete/sysfs-cpuidle           |   9 +
+ Documentation/ABI/testing/sysfs-devices-system-cpu |  24 +-
+ Documentation/admin-guide/pm/cpuidle.rst           |  20 +-
+ .../admin-guide/pm/intel-speed-select.rst          | 917 +++++++++++++++++++++
+ Documentation/admin-guide/pm/intel_pstate.rst      |  32 +-
+ Documentation/admin-guide/pm/working-state.rst     |   1 +
+ Documentation/driver-api/pm/cpuidle.rst            |   5 +-
+ Documentation/driver-api/pm/devices.rst            | 199 +++--
+ Documentation/power/pci.rst                        |  58 +-
+ MAINTAINERS                                        |   1 +
+ drivers/acpi/acpi_lpss.c                           |  14 +-
+ drivers/acpi/acpi_tad.c                            |   2 +-
+ drivers/acpi/device_pm.c                           |  31 +-
+ drivers/acpi/ec.c                                  |   2 +-
+ drivers/acpi/sleep.c                               |  20 +-
+ drivers/base/power/main.c                          | 348 +++-----
+ drivers/base/power/runtime.c                       |   6 +-
+ drivers/base/power/sysfs.c                         |   4 +-
+ drivers/clk/clk-qoriq.c                            |  30 +-
+ drivers/clk/clk.c                                  |   6 +-
+ drivers/cpufreq/Kconfig                            |   3 +-
+ drivers/cpufreq/Kconfig.arm                        |   1 +
+ drivers/cpufreq/cpufreq-dt-platdev.c               |   2 +
+ drivers/cpufreq/cpufreq.c                          |  11 +-
+ drivers/cpufreq/imx-cpufreq-dt.c                   |  84 +-
+ drivers/cpufreq/intel_pstate.c                     |   3 +-
+ drivers/cpufreq/qcom-cpufreq-nvmem.c               |   2 +-
+ drivers/cpufreq/qoriq-cpufreq.c                    |  76 +-
+ drivers/cpuidle/Kconfig.arm                        |  13 +
+ drivers/cpuidle/Makefile                           |   1 +
+ drivers/cpuidle/cpuidle-psci.c                     |   8 +-
+ .../{soc/qcom/spm.c => cpuidle/cpuidle-qcom-spm.c} | 138 ++--
+ drivers/cpuidle/sysfs.c                            |  73 +-
+ drivers/devfreq/Kconfig                            |   8 +
+ drivers/devfreq/Makefile                           |   1 +
+ drivers/devfreq/devfreq.c                          |  19 +-
+ drivers/devfreq/imx-bus.c                          | 179 ++++
+ drivers/devfreq/tegra30-devfreq.c                  |   7 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c            |   2 +-
+ drivers/gpu/drm/i915/intel_runtime_pm.c            |   2 +-
+ drivers/gpu/drm/radeon/radeon_kms.c                |   2 +-
+ drivers/i2c/busses/i2c-designware-platdrv.c        |   4 +-
+ drivers/misc/mei/pci-me.c                          |   2 +-
+ drivers/misc/mei/pci-txe.c                         |   2 +-
+ drivers/net/ethernet/intel/e1000e/netdev.c         |   2 +-
+ drivers/net/ethernet/intel/igb/igb_main.c          |   2 +-
+ drivers/net/ethernet/intel/igc/igc_main.c          |   2 +-
+ drivers/pci/hotplug/pciehp_core.c                  |   2 +-
+ drivers/pci/pci-driver.c                           |  34 +-
+ drivers/pci/pcie/portdrv_pci.c                     |   2 +-
+ drivers/powercap/intel_rapl_common.c               |   4 +-
+ drivers/soc/qcom/Kconfig                           |  10 -
+ drivers/soc/qcom/Makefile                          |   1 -
+ fs/block_dev.c                                     |   3 +-
+ include/linux/cpufreq.h                            |   2 +-
+ include/linux/pm.h                                 |  34 +-
+ include/linux/pm_runtime.h                         |   4 +-
+ include/linux/suspend.h                            |   6 +
+ kernel/power/Kconfig                               |  12 +
+ kernel/power/Makefile                              |   3 +-
+ kernel/power/hibernate.c                           |  20 +-
+ kernel/power/power.h                               |   4 +-
+ kernel/power/user.c                                |  22 +-
+ tools/power/cpupower/utils/cpupower-info.c         |   2 +-
+ tools/power/cpupower/utils/cpupower-set.c          |   2 +-
+ .../cpupower/utils/idle_monitor/amd_fam14h_idle.c  |   2 +-
+ .../cpupower/utils/idle_monitor/cpuidle_sysfs.c    |   6 +-
+ .../cpupower/utils/idle_monitor/hsw_ext_idle.c     |   2 +-
+ tools/power/cpupower/utils/idle_monitor/nhm_idle.c |   2 +-
+ tools/power/cpupower/utils/idle_monitor/snb_idle.c |   2 +-
+ 70 files changed, 1831 insertions(+), 728 deletions(-)
+
+---------------
+
+diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+index c201bc827389,4e4c9550dcf8..000000000000
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+@@@ -189,10 -188,12 +188,12 @@@ int amdgpu_driver_load_kms(struct drm_d
+          dev_dbg(&dev->pdev->dev, "Error during ACPI methods call\n");
+
+      if (adev->runpm) {
+-         dev_pm_set_driver_flags(dev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
++         /* only need to skip on ATPX */
++         if (amdgpu_device_supports_boco(dev) &&
++             !amdgpu_is_atpx_hybrid())
+ -            dev_pm_set_driver_flags(dev->dev, DPM_FLAG_NEVER_SKIP);
+++            dev_pm_set_driver_flags(dev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
+          pm_runtime_use_autosuspend(dev->dev);
+          pm_runtime_set_autosuspend_delay(dev->dev, 5000);
+-         pm_runtime_set_active(dev->dev);
+          pm_runtime_allow(dev->dev);
+          pm_runtime_mark_last_busy(dev->dev);
+          pm_runtime_put_autosuspend(dev->dev);
