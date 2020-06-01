@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A69C1EAA68
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FFEA1EA9F0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730168AbgFASHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:07:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52832 "EHLO mail.kernel.org"
+        id S1730120AbgFASDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:03:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730533AbgFASHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:07:02 -0400
+        id S1730112AbgFASDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:03:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 01BF2206E2;
-        Mon,  1 Jun 2020 18:07:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 625172077D;
+        Mon,  1 Jun 2020 18:03:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034822;
-        bh=d6n1lfALiOuqf6hD6qY0ykkceo3UeXoajd4//MCBJ98=;
+        s=default; t=1591034619;
+        bh=IXAB/ugYIs1Tg1t4omVyrfXiW4pxa2jvUd3vyyQBZXI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B4dSwDDgwL3l2nt78msaX17Zo3T7ntT120EgkYm7kZaGSc5E/xCiv6+ZMaofFK2EE
-         vy0EopfXNqHaHrKOcgOY/WWDSnjtOKwYQpT1772ETaJXAP6y/styr3iDUIKx6oCQrE
-         TA8e3q0zGr889vwR+ntfPgP0iWIdajrx2TCx7G5g=
+        b=CtolpuvMlEMTM/U7a7XDbFv53aiNg7NQvyKKRT7yweueS/q/yFF1DRC8Pis9S7xry
+         yfa2vv+QQsAXd5r9L098FPXHSNd7d8w+nEjEmF8kBVU7VnbZG62AeRi8XA/ag82j4k
+         /ulZIxxsOmjqKKLkswinPOcm4zj8+NB++hKjDJGg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        stable@vger.kernel.org, kbuild test robot <lkp@intel.com>,
+        Julia Lawall <julia.lawall@lip6.fr>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 029/142] net: sun: fix missing release regions in cas_init_one().
-Date:   Mon,  1 Jun 2020 19:53:07 +0200
-Message-Id: <20200601174040.917626256@linuxfoundation.org>
+Subject: [PATCH 4.19 08/95] net: qrtr: Fix passing invalid reference to qrtr_local_enqueue()
+Date:   Mon,  1 Jun 2020 19:53:08 +0200
+Message-Id: <20200601174022.201744015@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
+References: <20200601174020.759151073@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,42 +46,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-commit 5a730153984dd13f82ffae93d7170d76eba204e9 upstream.
+[ Upstream commit d28ea1fbbf437054ef339afec241019f2c4e2bb6 ]
 
-In cas_init_one(), "pdev" is requested by "pci_request_regions", but it
-was not released after a call of the function “pci_write_config_byte”
-failed. Thus replace the jump target “err_write_cacheline” by
-"err_out_free_res".
+Once the traversal of the list is completed with list_for_each_entry(),
+the iterator (node) will point to an invalid object. So passing this to
+qrtr_local_enqueue() which is outside of the iterator block is erroneous
+eventhough the object is not used.
 
-Fixes: 1f26dac32057 ("[NET]: Add Sun Cassini driver.")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+So fix this by passing NULL to qrtr_local_enqueue().
+
+Fixes: bdabad3e363d ("net: Add Qualcomm IPC router")
+Reported-by: kbuild test robot <lkp@intel.com>
+Reported-by: Julia Lawall <julia.lawall@lip6.fr>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/net/ethernet/sun/cassini.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ net/qrtr/qrtr.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/sun/cassini.c
-+++ b/drivers/net/ethernet/sun/cassini.c
-@@ -4971,7 +4971,7 @@ static int cas_init_one(struct pci_dev *
- 					  cas_cacheline_size)) {
- 			dev_err(&pdev->dev, "Could not set PCI cache "
- 			       "line size\n");
--			goto err_write_cacheline;
-+			goto err_out_free_res;
- 		}
+--- a/net/qrtr/qrtr.c
++++ b/net/qrtr/qrtr.c
+@@ -718,7 +718,7 @@ static int qrtr_bcast_enqueue(struct qrt
  	}
- #endif
-@@ -5144,7 +5144,6 @@ err_out_iounmap:
- err_out_free_res:
- 	pci_release_regions(pdev);
+ 	mutex_unlock(&qrtr_node_lock);
  
--err_write_cacheline:
- 	/* Try to restore it in case the error occurred after we
- 	 * set it.
- 	 */
+-	qrtr_local_enqueue(node, skb, type, from, to);
++	qrtr_local_enqueue(NULL, skb, type, from, to);
+ 
+ 	return 0;
+ }
 
 
