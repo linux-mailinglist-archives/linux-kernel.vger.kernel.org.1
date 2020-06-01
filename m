@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E622A1EADAD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:48:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C60F21EACC9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729781AbgFASrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:47:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54420 "EHLO mail.kernel.org"
+        id S1728782AbgFASjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:39:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730709AbgFASIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:08:19 -0400
+        id S1731413AbgFASN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:13:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F45A2077D;
-        Mon,  1 Jun 2020 18:08:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 399512065C;
+        Mon,  1 Jun 2020 18:13:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034899;
-        bh=QEcdAKO+MfXEphtOo8eGm7CXuXPTEhxYTzS1cp5+PN4=;
+        s=default; t=1591035235;
+        bh=TbUnrRXi26dB7smFp/673rblPOcWFH2xsFK3ja0smjI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=agbVy4Kkk7YQ1KDSS8HOy0ITBpWpAXQ6aJhrJKWo6/1e2yNHe+/9c/OsBG5bmvq3K
-         BRQehCPaDX/utGIeixQU6vjTfKWxgEi94lhltItUwlu23PEF8UdMe3jvsc+4RzbUIi
-         Q5oFiUxGOE/XhB0pAcGL0g+zT0eGqi7cs9nex6j8=
+        b=IidMh/GTYJUzXUz4S8fXLgyi5L3W/DYvUBeH5FupCoDmGLkm1XSVp2qkoN/1DppF3
+         fww3R+6StsCAb+HyjObmA8NmnIieIUPyfWwas25gSwIB0nL5uOlQCjATYJJu85sVJW
+         4wQgMlOhX7j0ZRAJYv6ZcsISacXkljqxpiIGO4kk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roi Dayan <roid@mellanox.com>,
-        Vlad Buslov <vladbu@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Subject: [PATCH 5.4 022/142] net/mlx5e: Fix inner tirs handling
+        stable@vger.kernel.org, Danielle Ratson <danieller@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Ido Schimmel <idosch@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.6 042/177] mlxsw: spectrum: Fix use-after-free of split/unsplit/type_set in case reload fails
 Date:   Mon,  1 Jun 2020 19:53:00 +0200
-Message-Id: <20200601174040.143713118@linuxfoundation.org>
+Message-Id: <20200601174052.528845717@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,129 +45,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roi Dayan <roid@mellanox.com>
+From: Jiri Pirko <jiri@mellanox.com>
 
-[ Upstream commit a16b8e0dcf7043bee46174bed0553cc9e36b63a5 ]
+commit 4340f42f207eacb81e7a6b6bb1e3b6afad9a2e26 upstream.
 
-In the cited commit inner_tirs argument was added to create and destroy
-inner tirs, and no indication was added to mlx5e_modify_tirs_hash()
-function. In order to have a consistent handling, use
-inner_indir_tir[0].tirn in tirs destroy/modify function as an indication
-to whether inner tirs are created.
-Inner tirs are not created for representors and before this commit,
-a call to mlx5e_modify_tirs_hash() was sending HW commands to
-modify non-existent inner tirs.
+In case of reload fail, the mlxsw_sp->ports contains a pointer to a
+freed memory (either by reload_down() or reload_up() error path).
+Fix this by initializing the pointer to NULL and checking it before
+dereferencing in split/unsplit/type_set callpaths.
 
-Fixes: 46dc933cee82 ("net/mlx5e: Provide explicit directive if to create inner indirect tirs")
-Signed-off-by: Roi Dayan <roid@mellanox.com>
-Reviewed-by: Vlad Buslov <vladbu@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Fixes: 24cc68ad6c46 ("mlxsw: core: Add support for reload")
+Reported-by: Danielle Ratson <danieller@mellanox.com>
+Signed-off-by: Jiri Pirko <jiri@mellanox.com>
+Signed-off-by: Ido Schimmel <idosch@mellanox.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/mellanox/mlx5/core/en.h          |    2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c     |   12 +++++++-----
- drivers/net/ethernet/mellanox/mlx5/core/en_rep.c      |    4 ++--
- drivers/net/ethernet/mellanox/mlx5/core/ipoib/ipoib.c |    4 ++--
- 4 files changed, 12 insertions(+), 10 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-@@ -1103,7 +1103,7 @@ void mlx5e_close_drop_rq(struct mlx5e_rq
- int mlx5e_create_indirect_rqt(struct mlx5e_priv *priv);
+---
+ drivers/net/ethernet/mellanox/mlxsw/spectrum.c |   14 ++++++++++++--
+ drivers/net/ethernet/mellanox/mlxsw/switchx2.c |    8 ++++++++
+ 2 files changed, 20 insertions(+), 2 deletions(-)
+
+--- a/drivers/net/ethernet/mellanox/mlxsw/spectrum.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum.c
+@@ -4043,6 +4043,7 @@ static void mlxsw_sp_ports_remove(struct
+ 			mlxsw_sp_port_remove(mlxsw_sp, i);
+ 	mlxsw_sp_cpu_port_remove(mlxsw_sp);
+ 	kfree(mlxsw_sp->ports);
++	mlxsw_sp->ports = NULL;
+ }
  
- int mlx5e_create_indirect_tirs(struct mlx5e_priv *priv, bool inner_ttc);
--void mlx5e_destroy_indirect_tirs(struct mlx5e_priv *priv, bool inner_ttc);
-+void mlx5e_destroy_indirect_tirs(struct mlx5e_priv *priv);
- 
- int mlx5e_create_direct_rqts(struct mlx5e_priv *priv, struct mlx5e_tir *tirs);
- void mlx5e_destroy_direct_rqts(struct mlx5e_priv *priv, struct mlx5e_tir *tirs);
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -2758,7 +2758,8 @@ void mlx5e_modify_tirs_hash(struct mlx5e
- 		mlx5_core_modify_tir(mdev, priv->indir_tir[tt].tirn, in, inlen);
- 	}
- 
--	if (!mlx5e_tunnel_inner_ft_supported(priv->mdev))
-+	/* Verify inner tirs resources allocated */
-+	if (!priv->inner_indir_tir[0].tirn)
- 		return;
- 
- 	for (tt = 0; tt < MLX5E_NUM_INDIR_TIRS; tt++) {
-@@ -3405,14 +3406,15 @@ out:
+ static int mlxsw_sp_ports_create(struct mlxsw_sp *mlxsw_sp)
+@@ -4079,6 +4080,7 @@ err_port_create:
+ 	mlxsw_sp_cpu_port_remove(mlxsw_sp);
+ err_cpu_port_create:
+ 	kfree(mlxsw_sp->ports);
++	mlxsw_sp->ports = NULL;
  	return err;
  }
  
--void mlx5e_destroy_indirect_tirs(struct mlx5e_priv *priv, bool inner_ttc)
-+void mlx5e_destroy_indirect_tirs(struct mlx5e_priv *priv)
- {
+@@ -4200,6 +4202,14 @@ static int mlxsw_sp_local_ports_offset(s
+ 	return mlxsw_core_res_get(mlxsw_core, local_ports_in_x_res_id);
+ }
+ 
++static struct mlxsw_sp_port *
++mlxsw_sp_port_get_by_local_port(struct mlxsw_sp *mlxsw_sp, u8 local_port)
++{
++	if (mlxsw_sp->ports && mlxsw_sp->ports[local_port])
++		return mlxsw_sp->ports[local_port];
++	return NULL;
++}
++
+ static int mlxsw_sp_port_split(struct mlxsw_core *mlxsw_core, u8 local_port,
+ 			       unsigned int count,
+ 			       struct netlink_ext_ack *extack)
+@@ -4213,7 +4223,7 @@ static int mlxsw_sp_port_split(struct ml
+ 	int i;
+ 	int err;
+ 
+-	mlxsw_sp_port = mlxsw_sp->ports[local_port];
++	mlxsw_sp_port = mlxsw_sp_port_get_by_local_port(mlxsw_sp, local_port);
+ 	if (!mlxsw_sp_port) {
+ 		dev_err(mlxsw_sp->bus_info->dev, "Port number \"%d\" does not exist\n",
+ 			local_port);
+@@ -4308,7 +4318,7 @@ static int mlxsw_sp_port_unsplit(struct
+ 	int offset;
  	int i;
  
- 	for (i = 0; i < MLX5E_NUM_INDIR_TIRS; i++)
- 		mlx5e_destroy_tir(priv->mdev, &priv->indir_tir[i]);
+-	mlxsw_sp_port = mlxsw_sp->ports[local_port];
++	mlxsw_sp_port = mlxsw_sp_port_get_by_local_port(mlxsw_sp, local_port);
+ 	if (!mlxsw_sp_port) {
+ 		dev_err(mlxsw_sp->bus_info->dev, "Port number \"%d\" does not exist\n",
+ 			local_port);
+--- a/drivers/net/ethernet/mellanox/mlxsw/switchx2.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/switchx2.c
+@@ -1259,6 +1259,7 @@ static void mlxsw_sx_ports_remove(struct
+ 		if (mlxsw_sx_port_created(mlxsw_sx, i))
+ 			mlxsw_sx_port_remove(mlxsw_sx, i);
+ 	kfree(mlxsw_sx->ports);
++	mlxsw_sx->ports = NULL;
+ }
  
--	if (!inner_ttc || !mlx5e_tunnel_inner_ft_supported(priv->mdev))
-+	/* Verify inner tirs resources allocated */
-+	if (!priv->inner_indir_tir[0].tirn)
- 		return;
+ static int mlxsw_sx_ports_create(struct mlxsw_sx *mlxsw_sx)
+@@ -1293,6 +1294,7 @@ err_port_module_info_get:
+ 		if (mlxsw_sx_port_created(mlxsw_sx, i))
+ 			mlxsw_sx_port_remove(mlxsw_sx, i);
+ 	kfree(mlxsw_sx->ports);
++	mlxsw_sx->ports = NULL;
+ 	return err;
+ }
  
- 	for (i = 0; i < MLX5E_NUM_INDIR_TIRS; i++)
-@@ -5119,7 +5121,7 @@ err_destroy_xsk_rqts:
- err_destroy_direct_tirs:
- 	mlx5e_destroy_direct_tirs(priv, priv->direct_tir);
- err_destroy_indirect_tirs:
--	mlx5e_destroy_indirect_tirs(priv, true);
-+	mlx5e_destroy_indirect_tirs(priv);
- err_destroy_direct_rqts:
- 	mlx5e_destroy_direct_rqts(priv, priv->direct_tir);
- err_destroy_indirect_rqts:
-@@ -5138,7 +5140,7 @@ static void mlx5e_cleanup_nic_rx(struct
- 	mlx5e_destroy_direct_tirs(priv, priv->xsk_tir);
- 	mlx5e_destroy_direct_rqts(priv, priv->xsk_tir);
- 	mlx5e_destroy_direct_tirs(priv, priv->direct_tir);
--	mlx5e_destroy_indirect_tirs(priv, true);
-+	mlx5e_destroy_indirect_tirs(priv);
- 	mlx5e_destroy_direct_rqts(priv, priv->direct_tir);
- 	mlx5e_destroy_rqt(priv, &priv->indir_rqt);
- 	mlx5e_close_drop_rq(&priv->drop_rq);
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-@@ -1597,7 +1597,7 @@ err_destroy_ttc_table:
- err_destroy_direct_tirs:
- 	mlx5e_destroy_direct_tirs(priv, priv->direct_tir);
- err_destroy_indirect_tirs:
--	mlx5e_destroy_indirect_tirs(priv, false);
-+	mlx5e_destroy_indirect_tirs(priv);
- err_destroy_direct_rqts:
- 	mlx5e_destroy_direct_rqts(priv, priv->direct_tir);
- err_destroy_indirect_rqts:
-@@ -1614,7 +1614,7 @@ static void mlx5e_cleanup_rep_rx(struct
- 	mlx5_del_flow_rules(rpriv->vport_rx_rule);
- 	mlx5e_destroy_ttc_table(priv, &priv->fs.ttc);
- 	mlx5e_destroy_direct_tirs(priv, priv->direct_tir);
--	mlx5e_destroy_indirect_tirs(priv, false);
-+	mlx5e_destroy_indirect_tirs(priv);
- 	mlx5e_destroy_direct_rqts(priv, priv->direct_tir);
- 	mlx5e_destroy_rqt(priv, &priv->indir_rqt);
- 	mlx5e_close_drop_rq(&priv->drop_rq);
---- a/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ipoib.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ipoib.c
-@@ -396,7 +396,7 @@ static int mlx5i_init_rx(struct mlx5e_pr
- err_destroy_direct_tirs:
- 	mlx5e_destroy_direct_tirs(priv, priv->direct_tir);
- err_destroy_indirect_tirs:
--	mlx5e_destroy_indirect_tirs(priv, true);
-+	mlx5e_destroy_indirect_tirs(priv);
- err_destroy_direct_rqts:
- 	mlx5e_destroy_direct_rqts(priv, priv->direct_tir);
- err_destroy_indirect_rqts:
-@@ -412,7 +412,7 @@ static void mlx5i_cleanup_rx(struct mlx5
- {
- 	mlx5i_destroy_flow_steering(priv);
- 	mlx5e_destroy_direct_tirs(priv, priv->direct_tir);
--	mlx5e_destroy_indirect_tirs(priv, true);
-+	mlx5e_destroy_indirect_tirs(priv);
- 	mlx5e_destroy_direct_rqts(priv, priv->direct_tir);
- 	mlx5e_destroy_rqt(priv, &priv->indir_rqt);
- 	mlx5e_close_drop_rq(&priv->drop_rq);
+@@ -1376,6 +1378,12 @@ static int mlxsw_sx_port_type_set(struct
+ 	u8 module, width;
+ 	int err;
+ 
++	if (!mlxsw_sx->ports || !mlxsw_sx->ports[local_port]) {
++		dev_err(mlxsw_sx->bus_info->dev, "Port number \"%d\" does not exist\n",
++			local_port);
++		return -EINVAL;
++	}
++
+ 	if (new_type == DEVLINK_PORT_TYPE_AUTO)
+ 		return -EOPNOTSUPP;
+ 
 
 
