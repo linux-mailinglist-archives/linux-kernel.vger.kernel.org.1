@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CFAD1EA8E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:57:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CE11EA8EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727769AbgFAR4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:56:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37422 "EHLO mail.kernel.org"
+        id S1728859AbgFAR5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:57:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728710AbgFAR4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:56:45 -0400
+        id S1728841AbgFAR5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:57:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD523206E2;
-        Mon,  1 Jun 2020 17:56:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3603A2076B;
+        Mon,  1 Jun 2020 17:57:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034205;
-        bh=TN8/J+KS8OaAxt0HQk59vONqZA/Y2/WNw/CL3FuuG00=;
+        s=default; t=1591034227;
+        bh=ehOoFKpAgqAUWFOKBYLRoV4KD26jKHw9qA5kmd73qLs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qx0ZRXsOIFNHXYqsLOsUeoTiScMWhHBlXHtgJREcFiTcR/OEgPw0rsTtQh3dMYx0H
-         CbHwh4uDPoSxtxtbrVIaeHbSUMlXexQFMZi6qwyfwAJrKjD+1nBnHmw8w8rPvU2nMn
-         EuN3mDpIjXTZN6/kSYaILRyUCXf4ucRDLX4lkdLw=
+        b=0Un4upDz/zXwkd3/k0gWutBD26xiOF0QPcpcXvzUztA1Vc0owe6u75z52BOZTD36L
+         cpfhPl4jPK0zvGuMdB92vJk5fYKID3zWq0on2Bk6+iFsrxOV6bha+0MMKZQppW5UtC
+         NLitvWiyPRPaWWHDOMq07o28CxsKv0iJhJCY3mJ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Subject: [PATCH 4.4 31/48] ip_vti: receive ipip packet by calling ip_tunnel_rcv
-Date:   Mon,  1 Jun 2020 19:53:41 +0200
-Message-Id: <20200601174001.696274292@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Braun <michael-dev@fami-braun.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 4.4 32/48] netfilter: nft_reject_bridge: enable reject with bridge vlan
+Date:   Mon,  1 Jun 2020 19:53:42 +0200
+Message-Id: <20200601174002.056829859@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200601173952.175939894@linuxfoundation.org>
 References: <20200601173952.175939894@linuxfoundation.org>
@@ -44,65 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Michael Braun <michael-dev@fami-braun.de>
 
-commit 976eba8ab596bab94b9714cd46d38d5c6a2c660d upstream.
+commit e9c284ec4b41c827f4369973d2792992849e4fa5 upstream.
 
-In Commit dd9ee3444014 ("vti4: Fix a ipip packet processing bug in
-'IPCOMP' virtual tunnel"), it tries to receive IPIP packets in vti
-by calling xfrm_input(). This case happens when a small packet or
-frag sent by peer is too small to get compressed.
+Currently, using the bridge reject target with tagged packets
+results in untagged packets being sent back.
 
-However, xfrm_input() will still get to the IPCOMP path where skb
-sec_path is set, but never dropped while it should have been done
-in vti_ipcomp4_protocol.cb_handler(vti_rcv_cb), as it's not an
-ipcomp4 packet. This will cause that the packet can never pass
-xfrm4_policy_check() in the upper protocol rcv functions.
+Fix this by mirroring the vlan id as well.
 
-So this patch is to call ip_tunnel_rcv() to process IPIP packets
-instead.
-
-Fixes: dd9ee3444014 ("vti4: Fix a ipip packet processing bug in 'IPCOMP' virtual tunnel")
-Reported-by: Xiumei Mu <xmu@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Fixes: 85f5b3086a04 ("netfilter: bridge: add reject support")
+Signed-off-by: Michael Braun <michael-dev@fami-braun.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/ipv4/ip_vti.c |   23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+ net/bridge/netfilter/nft_reject_bridge.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/net/ipv4/ip_vti.c
-+++ b/net/ipv4/ip_vti.c
-@@ -99,7 +99,28 @@ static int vti_rcv_proto(struct sk_buff
- 
- static int vti_rcv_tunnel(struct sk_buff *skb)
- {
--	return vti_rcv(skb, ip_hdr(skb)->saddr, true);
-+	struct ip_tunnel_net *itn = net_generic(dev_net(skb->dev), vti_net_id);
-+	const struct iphdr *iph = ip_hdr(skb);
-+	struct ip_tunnel *tunnel;
+--- a/net/bridge/netfilter/nft_reject_bridge.c
++++ b/net/bridge/netfilter/nft_reject_bridge.c
+@@ -35,6 +35,12 @@ static void nft_reject_br_push_etherhdr(
+ 	ether_addr_copy(eth->h_dest, eth_hdr(oldskb)->h_source);
+ 	eth->h_proto = eth_hdr(oldskb)->h_proto;
+ 	skb_pull(nskb, ETH_HLEN);
 +
-+	tunnel = ip_tunnel_lookup(itn, skb->dev->ifindex, TUNNEL_NO_KEY,
-+				  iph->saddr, iph->daddr, 0);
-+	if (tunnel) {
-+		struct tnl_ptk_info tpi = {
-+			.proto = htons(ETH_P_IP),
-+		};
++	if (skb_vlan_tag_present(oldskb)) {
++		u16 vid = skb_vlan_tag_get(oldskb);
 +
-+		if (!xfrm4_policy_check(NULL, XFRM_POLICY_IN, skb))
-+			goto drop;
-+		if (iptunnel_pull_header(skb, 0, tpi.proto))
-+			goto drop;
-+		return ip_tunnel_rcv(tunnel, skb, &tpi, NULL, false);
++		__vlan_hwaccel_put_tag(nskb, oldskb->vlan_proto, vid);
 +	}
-+
-+	return -EINVAL;
-+drop:
-+	kfree_skb(skb);
-+	return 0;
  }
  
- static int vti_rcv_cb(struct sk_buff *skb, int err)
+ /* We cannot use oldskb->dev, it can be either bridge device (NF_BRIDGE INPUT)
 
 
