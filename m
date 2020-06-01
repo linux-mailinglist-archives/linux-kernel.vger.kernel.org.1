@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184891EAF09
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D388E1EACA3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729096AbgFAR6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:58:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39578 "EHLO mail.kernel.org"
+        id S1731438AbgFASOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:14:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729022AbgFAR56 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:57:58 -0400
+        id S1731426AbgFASOB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:14:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D51D2206E2;
-        Mon,  1 Jun 2020 17:57:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3DEA2065C;
+        Mon,  1 Jun 2020 18:13:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034277;
-        bh=wdV/IuvII1riB0RS77i6n9DRIo5lDhGG/ZJgulUt8/w=;
+        s=default; t=1591035240;
+        bh=tVHUbJrmSj5WwA+U33l2RkVyEQK1iFhc957Equ35Qzc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g0hQvs7gkNvxAn1pfhwor3lUOdfX2RTSk4Vj79ImkIlRLCOoTE8qrI9oTnKYdXpjX
-         Em0jCb6CNYvgjga9Ks39ZFbXMgcDbfmxUocnM9NQ5RK/UG4ThPk/8w9Fz54ShFdKTx
-         vSZTTFWndVprVVzpbuvNm4WDkzZyCwR2PY5jykxs=
+        b=sXr1Ib1Lc7QpJ6mPFMUy7KEB2L08+Zh2NPOsA4/TWgP9blEm6uWzmUENma2M7EpW6
+         Z5+v25T9VrIzW4Lg6/++2/BNL5Cgq3oed/+PwbuXoeQ5SRCdkXd+mqY4SdsbJHveJo
+         GL8FOYnAKX8gtOUGN1E7MDHC9PIlR5ZarEFR/P2Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kevin Locke <kevin@kevinlocke.name>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 21/61] Input: i8042 - add ThinkPad S230u to i8042 nomux list
+Subject: [PATCH 5.6 070/177] riscv: Fix unmet direct dependencies built based on SOC_VIRT
 Date:   Mon,  1 Jun 2020 19:53:28 +0200
-Message-Id: <20200601174015.606736225@linuxfoundation.org>
+Message-Id: <20200601174054.751640954@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
-References: <20200601174010.316778377@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,61 +45,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kevin Locke <kevin@kevinlocke.name>
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
 
-[ Upstream commit 18931506465a762ffd3f4803d36a18d336a67da9 ]
+[ Upstream commit ab7fbad0c7d7a4f9b320a059a171a92a34b6d409 ]
 
-On the Lenovo ThinkPad Twist S230u (3347-4HU) with BIOS version
-"GDETC1WW (1.81 ) 06/27/2019", whether booted in UEFI or Legacy/CSM mode
-the keyboard, Synaptics TouchPad, and TrackPoint either do not function
-or stop functioning a few minutes after boot.  This problem has been
-noted before, perhaps only occurring on BIOS 1.57 and
-later.[1][2][3][4][5]
+Fix unmet direct dependencies Warning and fix Kconfig indent.
 
-This model does not have an external PS/2 port, so mux does not appear
-to be useful.
+WARNING: unmet direct dependencies detected for POWER_RESET_SYSCON
+  Depends on [n]: POWER_RESET [=n] && OF [=y] && HAS_IOMEM [=y]
+  Selected by [y]:
+  - SOC_VIRT [=y]
 
-Odds of a BIOS fix appear to be low: 1.57 was released over 6 years ago
-and although the [BIOS changelog] notes "Fixed an issue of UEFI
-touchpad/trackpoint/keyboard/touchscreen" in 1.58, it appears to be
-insufficient.
+WARNING: unmet direct dependencies detected for POWER_RESET_SYSCON_POWEROFF
+  Depends on [n]: POWER_RESET [=n] && OF [=y] && HAS_IOMEM [=y]
+  Selected by [y]:
+  - SOC_VIRT [=y]
 
-Adding 33474HU to the nomux list avoids the issue on my system.
+WARNING: unmet direct dependencies detected for RTC_DRV_GOLDFISH
+  Depends on [n]: RTC_CLASS [=n] && OF [=y] && HAS_IOMEM [=y] && (GOLDFISH [=y] || COMPILE_TEST [=n])
+  Selected by [y]:
+  - SOC_VIRT [=y]
 
-[1]: https://bugs.launchpad.net/bugs/1210748
-[2]: https://bbs.archlinux.org/viewtopic.php?pid=1360425
-[3]: https://forums.linuxmint.com/viewtopic.php?f=46&t=41200
-[4]: https://forums.linuxmint.com/viewtopic.php?f=49&t=157115
-[5]: https://forums.lenovo.com/topic/findpost/27/1337119
-[BIOS changelog]: https://download.lenovo.com/pccbbs/mobiles/gduj33uc.txt
-
-Signed-off-by: Kevin Locke <kevin@kevinlocke.name>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/feb8a8339a67025dab3850e6377eb6f3a0e782ba.1587400635.git.kevin@kevinlocke.name
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/serio/i8042-x86ia64io.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/riscv/Kconfig.socs | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/input/serio/i8042-x86ia64io.h b/drivers/input/serio/i8042-x86ia64io.h
-index a4e76084a2af..42330024da2f 100644
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -545,6 +545,13 @@ static const struct dmi_system_id __initconst i8042_dmi_nomux_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire 5738"),
- 		},
- 	},
-+	{
-+		/* Lenovo ThinkPad Twist S230u */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "33474HU"),
-+		},
-+	},
- 	{ }
- };
+diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+index a131174a0a77..f310ad8ffcf7 100644
+--- a/arch/riscv/Kconfig.socs
++++ b/arch/riscv/Kconfig.socs
+@@ -11,13 +11,14 @@ config SOC_SIFIVE
+ 	  This enables support for SiFive SoC platform hardware.
  
+ config SOC_VIRT
+-       bool "QEMU Virt Machine"
+-       select POWER_RESET_SYSCON
+-       select POWER_RESET_SYSCON_POWEROFF
+-       select GOLDFISH
+-       select RTC_DRV_GOLDFISH
+-       select SIFIVE_PLIC
+-       help
+-         This enables support for QEMU Virt Machine.
++	bool "QEMU Virt Machine"
++	select POWER_RESET
++	select POWER_RESET_SYSCON
++	select POWER_RESET_SYSCON_POWEROFF
++	select GOLDFISH
++	select RTC_DRV_GOLDFISH if RTC_CLASS
++	select SIFIVE_PLIC
++	help
++	  This enables support for QEMU Virt Machine.
+ 
+ endmenu
 -- 
 2.25.1
 
