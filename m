@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B1E1EAE74
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD661EAEEC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730216AbgFASyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:54:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45482 "EHLO mail.kernel.org"
+        id S1730388AbgFAS6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:58:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728814AbgFASCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:02:22 -0400
+        id S1729325AbgFAR7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:59:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 20F39207DF;
-        Mon,  1 Jun 2020 18:02:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD2632076B;
+        Mon,  1 Jun 2020 17:59:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034541;
-        bh=Tdpp/+dYbiO4vm7xdnj/GaOsTl9Eltxb1StFT0s7nHo=;
+        s=default; t=1591034360;
+        bh=2nbYkoHGHDeWm117cRo145SBRUcKKDtsBNqmmUFHlfo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZJK8UltiZQwzqYXy4LvmIVzv2MwmdqBztWyZRqpoyJ8Y7RxkeIiG65F8Trr9nAhor
-         nIf0g0ZUEvOf3GJ3FbOnapmpaap1gFzp53DYqnXhCC36JbywoNvcVqDOvbFfv1eDFz
-         isyVQzoL4YbNcfwdda+Iv2zCxpslRB8FBU/wl1+I=
+        b=TcsUf/NRXjd+MevWhK9GquwmcTmELeaWSK2tO8ML2li3YHttggWfDHZe3+H20hg4T
+         S897E3iA5nPeyLlTK55yTU5wI2FyPfAHHbILINWIinJnN8ZymAesuL/nk7Gop1in6O
+         TZOFS4Njz0IsZgqAruQ5bHiLdYygcoyXRPYXvdsY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeremy Sowden <jeremy@azazel.net>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Subject: [PATCH 4.14 61/77] vti4: eliminated some duplicate code.
+        stable@vger.kernel.org, Liviu Dudau <liviu@dudau.co.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chintan Pandya <cpandya@codeaurora.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.9 59/61] mm/vmalloc.c: dont dereference possible NULL pointer in __vunmap()
 Date:   Mon,  1 Jun 2020 19:54:06 +0200
-Message-Id: <20200601174026.969332041@linuxfoundation.org>
+Message-Id: <20200601174022.410196971@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
-References: <20200601174016.396817032@linuxfoundation.org>
+In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
+References: <20200601174010.316778377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,141 +47,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeremy Sowden <jeremy@azazel.net>
+From: Liviu Dudau <liviu@dudau.co.uk>
 
-commit f981c57ffd2d7cf2dd4b6d6f8fcb3965df42f54c upstream.
+commit 6ade20327dbb808882888ed8ccded71e93067cf9 upstream.
 
-The ipip tunnel introduced in commit dd9ee3444014 ("vti4: Fix a ipip
-packet processing bug in 'IPCOMP' virtual tunnel") largely duplicated
-the existing vti_input and vti_recv functions.  Refactored to
-deduplicate the common code.
+find_vmap_area() can return a NULL pointer and we're going to
+dereference it without checking it first.  Use the existing
+find_vm_area() function which does exactly what we want and checks for
+the NULL pointer.
 
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Link: http://lkml.kernel.org/r/20181228171009.22269-1-liviu@dudau.co.uk
+Fixes: f3c01d2f3ade ("mm: vmalloc: avoid racy handling of debugobjects in vunmap")
+Signed-off-by: Liviu Dudau <liviu@dudau.co.uk>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Chintan Pandya <cpandya@codeaurora.org>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/ipv4/ip_vti.c |   60 +++++++++++++++++++-----------------------------------
- 1 file changed, 22 insertions(+), 38 deletions(-)
+ mm/vmalloc.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/ipv4/ip_vti.c
-+++ b/net/ipv4/ip_vti.c
-@@ -50,7 +50,7 @@ static unsigned int vti_net_id __read_mo
- static int vti_tunnel_init(struct net_device *dev);
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -1499,7 +1499,7 @@ static void __vunmap(const void *addr, i
+ 			addr))
+ 		return;
  
- static int vti_input(struct sk_buff *skb, int nexthdr, __be32 spi,
--		     int encap_type)
-+		     int encap_type, bool update_skb_dev)
- {
- 	struct ip_tunnel *tunnel;
- 	const struct iphdr *iph = ip_hdr(skb);
-@@ -65,6 +65,9 @@ static int vti_input(struct sk_buff *skb
- 
- 		XFRM_TUNNEL_SKB_CB(skb)->tunnel.ip4 = tunnel;
- 
-+		if (update_skb_dev)
-+			skb->dev = tunnel->dev;
-+
- 		return xfrm_input(skb, nexthdr, spi, encap_type);
- 	}
- 
-@@ -74,47 +77,28 @@ drop:
- 	return 0;
- }
- 
--static int vti_input_ipip(struct sk_buff *skb, int nexthdr, __be32 spi,
--		     int encap_type)
-+static int vti_input_proto(struct sk_buff *skb, int nexthdr, __be32 spi,
-+			   int encap_type)
- {
--	struct ip_tunnel *tunnel;
--	const struct iphdr *iph = ip_hdr(skb);
--	struct net *net = dev_net(skb->dev);
--	struct ip_tunnel_net *itn = net_generic(net, vti_net_id);
--
--	tunnel = ip_tunnel_lookup(itn, skb->dev->ifindex, TUNNEL_NO_KEY,
--				  iph->saddr, iph->daddr, 0);
--	if (tunnel) {
--		if (!xfrm4_policy_check(NULL, XFRM_POLICY_IN, skb))
--			goto drop;
--
--		XFRM_TUNNEL_SKB_CB(skb)->tunnel.ip4 = tunnel;
--
--		skb->dev = tunnel->dev;
--
--		return xfrm_input(skb, nexthdr, spi, encap_type);
--	}
--
--	return -EINVAL;
--drop:
--	kfree_skb(skb);
--	return 0;
-+	return vti_input(skb, nexthdr, spi, encap_type, false);
- }
- 
--static int vti_rcv(struct sk_buff *skb)
-+static int vti_rcv(struct sk_buff *skb, __be32 spi, bool update_skb_dev)
- {
- 	XFRM_SPI_SKB_CB(skb)->family = AF_INET;
- 	XFRM_SPI_SKB_CB(skb)->daddroff = offsetof(struct iphdr, daddr);
- 
--	return vti_input(skb, ip_hdr(skb)->protocol, 0, 0);
-+	return vti_input(skb, ip_hdr(skb)->protocol, spi, 0, update_skb_dev);
- }
- 
--static int vti_rcv_ipip(struct sk_buff *skb)
-+static int vti_rcv_proto(struct sk_buff *skb)
- {
--	XFRM_SPI_SKB_CB(skb)->family = AF_INET;
--	XFRM_SPI_SKB_CB(skb)->daddroff = offsetof(struct iphdr, daddr);
-+	return vti_rcv(skb, 0, false);
-+}
- 
--	return vti_input_ipip(skb, ip_hdr(skb)->protocol, ip_hdr(skb)->saddr, 0);
-+static int vti_rcv_tunnel(struct sk_buff *skb)
-+{
-+	return vti_rcv(skb, ip_hdr(skb)->saddr, true);
- }
- 
- static int vti_rcv_cb(struct sk_buff *skb, int err)
-@@ -482,31 +466,31 @@ static void __net_init vti_fb_tunnel_ini
- }
- 
- static struct xfrm4_protocol vti_esp4_protocol __read_mostly = {
--	.handler	=	vti_rcv,
--	.input_handler	=	vti_input,
-+	.handler	=	vti_rcv_proto,
-+	.input_handler	=	vti_input_proto,
- 	.cb_handler	=	vti_rcv_cb,
- 	.err_handler	=	vti4_err,
- 	.priority	=	100,
- };
- 
- static struct xfrm4_protocol vti_ah4_protocol __read_mostly = {
--	.handler	=	vti_rcv,
--	.input_handler	=	vti_input,
-+	.handler	=	vti_rcv_proto,
-+	.input_handler	=	vti_input_proto,
- 	.cb_handler	=	vti_rcv_cb,
- 	.err_handler	=	vti4_err,
- 	.priority	=	100,
- };
- 
- static struct xfrm4_protocol vti_ipcomp4_protocol __read_mostly = {
--	.handler	=	vti_rcv,
--	.input_handler	=	vti_input,
-+	.handler	=	vti_rcv_proto,
-+	.input_handler	=	vti_input_proto,
- 	.cb_handler	=	vti_rcv_cb,
- 	.err_handler	=	vti4_err,
- 	.priority	=	100,
- };
- 
- static struct xfrm_tunnel ipip_handler __read_mostly = {
--	.handler	=	vti_rcv_ipip,
-+	.handler	=	vti_rcv_tunnel,
- 	.err_handler	=	vti4_err,
- 	.priority	=	0,
- };
+-	area = find_vmap_area((unsigned long)addr)->vm;
++	area = find_vm_area(addr);
+ 	if (unlikely(!area)) {
+ 		WARN(1, KERN_ERR "Trying to vfree() nonexistent vm area (%p)\n",
+ 				addr);
 
 
