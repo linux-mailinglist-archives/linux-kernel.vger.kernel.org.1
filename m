@@ -2,64 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0BF1EAD97
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3929A1EAD94
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730552AbgFASqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:46:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43740 "EHLO
+        id S1729316AbgFASqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:46:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729021AbgFASqP (ORCPT
+        with ESMTP id S1730228AbgFASqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:46:15 -0400
+        Mon, 1 Jun 2020 14:46:16 -0400
 Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B74C03E96F;
-        Mon,  1 Jun 2020 11:46:14 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id v19so519000wmj.0;
-        Mon, 01 Jun 2020 11:46:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECDBFC03E96B
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 11:46:15 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id f5so563986wmh.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 11:46:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=hJp2ZjtOYUiPR+RzNNoJ5Ibq8AZ/CLg09w6+zqv3O4s=;
-        b=Dg3D+wHocJvZsHivriwfg0RRFtY7NI35fI2KR5NyR9JxiOu0SNmfDKsUdwiEwqHbiX
-         c9tDt8rNdM6LGJecc9awddOyKIATMHJg7GVQ3Pni/8/qoSHoNT5skwdpDVtDkQFGhqWq
-         aVssyRd60yeWEMTXIaZ3zuMur0b8ztAbtYXg46N07/6jjrspfKmGx4uFxa3dZUS2Y8S1
-         adBadO6+BDs+iNcDTUf7vIVnkfA+JQVUHdXpoWV/285PMRNbwSXf1YbAhuHqoJM/JfZx
-         nNUF30k8jzLhDslPNAxDHAlXu2KPr2/uQjB4itgCsgY7+G0GWKk8Kt8OisFxx1qGNKBj
-         gJGw==
+        bh=WpZyj796ryAXOy5jG9QU2yR5Ej+vR4ZGFFVDCYg9LOs=;
+        b=hzo7RFznw6P4fV7/+dxSJ16wEpI7L5zZ8rska4xe7o0vhife9k7JzwqaqQNwIJN+ZS
+         9M/h57JJi3FKMApsvFEok8PAniX17hi76Op9oGATsgnFm3aIkng6gRUCasQVcsFJM9nh
+         MNOzhFRNZoNGhI684Xoey38LdlBoex0yF4TNQML6+nKeFA2XvGhsloa8A/fykHf1nrKG
+         SSslbeKRRvAqBt2mcRo/dyKcsqhpr97lj/6xXFNkvY9TV8koGH6pkAEHom6a8wdx9OJa
+         9HclkizEh6jkU1qNr+kPUxuuW8BcX0hr8GtkyB2wkZbGU9T6Dl/5pjyRHcuzyPsnHDYt
+         vHag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=hJp2ZjtOYUiPR+RzNNoJ5Ibq8AZ/CLg09w6+zqv3O4s=;
-        b=dbpzeZodnjY/FZELKAEQmnFObX1vNU4EQwmTIdH27NJQPn8m+flvE5NgXZOLTEK9yi
-         hc390Du+ByLS8aJHQIyJMxdyNYjxDmMC+83Ig1YMNEEy3Qmf0VU/WWiFOUHjch2fqpbz
-         XJt2yy/oF04nksjI/S3ItkPQZfm9fnjqFA43Rad7HjCzbclXxGO30uLEXuSBCNg5E0Gw
-         9tXYhZ4MvD7QDV0f+DpYlznBd4bkIa5SoSZGcvydWaongnKS0KoUU3Z6Xk3zq2F/DObz
-         4ybUDDxi7rFK14izKoAdIy8/uVB3Azvs7Cb0YZETpDfyavSSF0uvnLcK4jZ3+9Nr9ybA
-         YObA==
-X-Gm-Message-State: AOAM532DacG+0iS50bLrk4rlUARqjtqnJObbU1NoxAmHNG5HC5i8cf2d
-        fc8Q51RNb9b6pQp/qrbMjsqZ/VQ6VQ/4
-X-Google-Smtp-Source: ABdhPJy5Tf+kWCTOUilgIKj5/UCgCVwphb0tSKUwSZOuDsIQLq/Isy+3f1imXqdG/EdvMAnbpemHgw==
-X-Received: by 2002:a1c:c908:: with SMTP id f8mr606567wmb.150.1591037173064;
-        Mon, 01 Jun 2020 11:46:13 -0700 (PDT)
+        bh=WpZyj796ryAXOy5jG9QU2yR5Ej+vR4ZGFFVDCYg9LOs=;
+        b=fd5HneIzOBs3q3j3/+elv2h9qi6zROt7mq95MiYFMxam9btOU4e5JumgP2QL3axvRn
+         Yk4SgPtfQept5KXVOmpuIblplPOxAISPzB4Hi5tjPbHsrOO6F53G+hhWPKsZYQob5KUY
+         UWwLLgrnUCz6BM+BcOX9rW9apxP/W8K32zMnxnDusDpqrQKbc7kceaf0twf7QkLTYoWb
+         edwqTxstiK2EZ8ZfjgH1wMoRoOPpBxSXYQg72KVga6pQac7v9grwAT+pPmMIIlqHFxhr
+         9hZ45JxNfhib/xs6E4Svru7vj9WphJFl8hPD45SrIUX8nSd4YVFWQ263ijyCvOXMs7Sb
+         NzBQ==
+X-Gm-Message-State: AOAM533oDyVOm5sNwu5Z6m/Iq0V92dUnM67tqjl7SM51j55lVmuKmfeu
+        szdYu5R8oCslhbqqsty1GDMN0FPz6++v
+X-Google-Smtp-Source: ABdhPJwngaL14/ZqlySoQUEbCGnaaf4IUJq4TE71jfy5AXv8gmPfPoEjUPK4lc6mZMeheododQzFGQ==
+X-Received: by 2002:a1c:b155:: with SMTP id a82mr595760wmf.46.1591037174401;
+        Mon, 01 Jun 2020 11:46:14 -0700 (PDT)
 Received: from earth3.lan (host-92-15-172-76.as43234.net. [92.15.172.76])
-        by smtp.googlemail.com with ESMTPSA id 23sm302229wmg.10.2020.06.01.11.46.12
+        by smtp.googlemail.com with ESMTPSA id 23sm302229wmg.10.2020.06.01.11.46.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jun 2020 11:46:12 -0700 (PDT)
+        Mon, 01 Jun 2020 11:46:13 -0700 (PDT)
 From:   Jules Irenge <jbi.octave@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     tglx@linutronix.de, paulmck@kernel.org, mingo@redhat.com,
         boqun.feng@gmail.com, Jules Irenge <jbi.octave@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        rcu@vger.kernel.org (open list:READ-COPY UPDATE (RCU))
-Subject: [PATCH 3/5] rcu: replace + with |
-Date:   Mon,  1 Jun 2020 19:45:50 +0100
-Message-Id: <20200601184552.23128-4-jbi.octave@gmail.com>
+        Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH 4/5] x86/ftrace: Add annotations for ftrace_arch_code_modify_prepare() and ftrace_arch_code_modify_post_process()
+Date:   Mon,  1 Jun 2020 19:45:51 +0100
+Message-Id: <20200601184552.23128-5-jbi.octave@gmail.com>
 X-Mailer: git-send-email 2.18.2
 In-Reply-To: <20200601184552.23128-1-jbi.octave@gmail.com>
 References: <20200601184552.23128-1-jbi.octave@gmail.com>
@@ -68,73 +66,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Coccinelle reports warnings at rcu_preempt_ctxt_queue()
+Sparse reports warnings
 
-WARNING: sum of probable bitmasks, consider |
+warning: context imbalance in ftrace_arch_code_modify_prepare()
+	- wrong count at exit
+warning: context imbalance in ftrace_arch_code_modify_post_process()
+	- wrong count at exit
 
-The root cause is the use of addition operator + for bitmask defined macros variables
-Replacing + with | fixes the issue.
+The root cause is that even if
+ the annotations on the function are correct,
+mutex do not support annotation
+This makes Sparse to complain.
+To fix this,
+__acquire(&text_mutex) and
+ __release(&text_mutex) annotations are added
+inside ftrace_arch_code_modify_prepare()
+and ftrace_arch_code_modify_post_process()
+respectively.
 
 Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
 ---
- kernel/rcu/tree_plugin.h | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ arch/x86/kernel/ftrace.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 097635c41135..a20135ece06a 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -153,9 +153,9 @@ static void rcu_preempt_ctxt_queue(struct rcu_node *rnp, struct rcu_data *rdp)
- 	switch (blkd_state) {
- 	case 0:
- 	case                RCU_EXP_TASKS:
--	case                RCU_EXP_TASKS + RCU_GP_BLKD:
-+	case                RCU_EXP_TASKS | RCU_GP_BLKD:
- 	case RCU_GP_TASKS:
--	case RCU_GP_TASKS + RCU_EXP_TASKS:
-+	case RCU_GP_TASKS | RCU_EXP_TASKS:
+diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
+index 37a0aeaf89e7..737c07ab2e07 100644
+--- a/arch/x86/kernel/ftrace.c
++++ b/arch/x86/kernel/ftrace.c
+@@ -46,6 +46,7 @@ int ftrace_arch_code_modify_prepare(void)
+ 	 * ftrace has it set to "read/write".
+ 	 */
+ 	mutex_lock(&text_mutex);
++	__acquire(&text_mutex);
+ 	ftrace_poke_late = 1;
+ 	return 0;
+ }
+@@ -61,6 +62,7 @@ int ftrace_arch_code_modify_post_process(void)
+ 	text_poke_finish();
+ 	ftrace_poke_late = 0;
+ 	mutex_unlock(&text_mutex);
++	__release(&text_mutex);
+ 	return 0;
+ }
  
- 		/*
- 		 * Blocking neither GP, or first task blocking the normal
-@@ -168,10 +168,10 @@ static void rcu_preempt_ctxt_queue(struct rcu_node *rnp, struct rcu_data *rdp)
- 
- 	case                                              RCU_EXP_BLKD:
- 	case                                RCU_GP_BLKD:
--	case                                RCU_GP_BLKD + RCU_EXP_BLKD:
--	case RCU_GP_TASKS +                               RCU_EXP_BLKD:
--	case RCU_GP_TASKS +                 RCU_GP_BLKD + RCU_EXP_BLKD:
--	case RCU_GP_TASKS + RCU_EXP_TASKS + RCU_GP_BLKD + RCU_EXP_BLKD:
-+	case                                RCU_GP_BLKD | RCU_EXP_BLKD:
-+	case RCU_GP_TASKS |                               RCU_EXP_BLKD:
-+	case RCU_GP_TASKS |                 RCU_GP_BLKD | RCU_EXP_BLKD:
-+	case RCU_GP_TASKS | RCU_EXP_TASKS | RCU_GP_BLKD | RCU_EXP_BLKD:
- 
- 		/*
- 		 * First task arriving that blocks either GP, or first task
-@@ -184,9 +184,9 @@ static void rcu_preempt_ctxt_queue(struct rcu_node *rnp, struct rcu_data *rdp)
- 		list_add_tail(&t->rcu_node_entry, &rnp->blkd_tasks);
- 		break;
- 
--	case                RCU_EXP_TASKS +               RCU_EXP_BLKD:
--	case                RCU_EXP_TASKS + RCU_GP_BLKD + RCU_EXP_BLKD:
--	case RCU_GP_TASKS + RCU_EXP_TASKS +               RCU_EXP_BLKD:
-+	case                RCU_EXP_TASKS |               RCU_EXP_BLKD:
-+	case                RCU_EXP_TASKS | RCU_GP_BLKD | RCU_EXP_BLKD:
-+	case RCU_GP_TASKS | RCU_EXP_TASKS |               RCU_EXP_BLKD:
- 
- 		/*
- 		 * Second or subsequent task blocking the expedited GP.
-@@ -197,8 +197,8 @@ static void rcu_preempt_ctxt_queue(struct rcu_node *rnp, struct rcu_data *rdp)
- 		list_add(&t->rcu_node_entry, rnp->exp_tasks);
- 		break;
- 
--	case RCU_GP_TASKS +                 RCU_GP_BLKD:
--	case RCU_GP_TASKS + RCU_EXP_TASKS + RCU_GP_BLKD:
-+	case RCU_GP_TASKS |                 RCU_GP_BLKD:
-+	case RCU_GP_TASKS | RCU_EXP_TASKS | RCU_GP_BLKD:
- 
- 		/*
- 		 * Second or subsequent task blocking the normal GP.
 -- 
 2.18.2
 
