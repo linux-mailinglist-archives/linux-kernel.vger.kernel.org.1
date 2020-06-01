@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09EFA1EAA89
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3901EAA88
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729024AbgFASI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:08:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55106 "EHLO mail.kernel.org"
+        id S1730798AbgFASIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:08:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730785AbgFASIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:08:51 -0400
+        id S1728782AbgFASIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:08:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 258AB2068D;
-        Mon,  1 Jun 2020 18:08:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 668CC20872;
+        Mon,  1 Jun 2020 18:08:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034930;
-        bh=gM9YRzn3kuFgPVGpApvzadERLBeSrMqro91MQy0ovP8=;
+        s=default; t=1591034932;
+        bh=X4x75h3oHXMkeOrIher/65hlTtP64x+5i4tluufMDaA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PPdWigsVNB1gOQzXmk0yxrFbuC4fNV3KaNLbMQ/h7eJeZxFGFPfx1GZP3YFQH2SnF
-         JE3wR6W90i/FVf4MHG7lJU7BheBgQTDaa5GS75X3O5f0cBZ99MrT65x42se4l5aXZe
-         HBSYoKvX4EL3nt911NkgsrGFX0PuI/eZ6XeYumXI=
+        b=KZYQ8oZQalgh2U6M1t6hF2SZ+Zo5FlY4kH16QBxAE021wxfTwxww5HiGXj4LwYnG9
+         nW69+K4gUyqC7mgkQbHl0lj5d30gmm0mBwMn8XASQmd0tfMzR2Afme62SWh8Cu4kLM
+         7/NDLhlLeOasAZ4FeyRPjmKbvFBK9FK1pN3lp3AM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        CK Hu <ck.hu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 077/142] soc: mediatek: cmdq: return send msg error code
-Date:   Mon,  1 Jun 2020 19:53:55 +0200
-Message-Id: <20200601174046.007180577@linuxfoundation.org>
+Subject: [PATCH 5.4 078/142] gpu/drm: Ingenic: Fix opaque pointer casted to wrong type
+Date:   Mon,  1 Jun 2020 19:53:56 +0200
+Message-Id: <20200601174046.115405710@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
 References: <20200601174037.904070960@linuxfoundation.org>
@@ -46,38 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>
+From: Paul Cercueil <paul@crapouillou.net>
 
-[ Upstream commit 34c4e4072603ff5c174df73b973896abb76cbb51 ]
+[ Upstream commit abf56fadf0e208abfb13ad1ac0094416058da0ad ]
 
-Return error code to client if send message fail,
-so that client has chance to error handling.
+The opaque pointer passed to the IRQ handler is a pointer to the
+drm_device, not a pointer to our ingenic_drm structure.
 
-Fixes: 576f1b4bc802 ("soc: mediatek: Add Mediatek CMDQ helper")
-Signed-off-by: Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>
-Reviewed-by: CK Hu <ck.hu@mediatek.com>
-Link: https://lore.kernel.org/r/1583664775-19382-6-git-send-email-dennis-yc.hsieh@mediatek.com
-Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
+It still worked, because our ingenic_drm structure contains the
+drm_device as its first field, so the pointer received had the same
+value, but this was not semantically correct.
+
+Cc: stable@vger.kernel.org # v5.3
+Fixes: 90b86fcc47b4 ("DRM: Add KMS driver for the Ingenic JZ47xx SoCs")
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200516215057.392609-5-paul@crapouillou.net
+Acked-by: Sam Ravnborg <sam@ravnborg.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/mediatek/mtk-cmdq-helper.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/ingenic/ingenic-drm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soc/mediatek/mtk-cmdq-helper.c b/drivers/soc/mediatek/mtk-cmdq-helper.c
-index 73a852b2f417..34eec26b0c1f 100644
---- a/drivers/soc/mediatek/mtk-cmdq-helper.c
-+++ b/drivers/soc/mediatek/mtk-cmdq-helper.c
-@@ -258,7 +258,9 @@ int cmdq_pkt_flush_async(struct cmdq_pkt *pkt, cmdq_async_flush_cb cb,
- 		spin_unlock_irqrestore(&client->lock, flags);
- 	}
+diff --git a/drivers/gpu/drm/ingenic/ingenic-drm.c b/drivers/gpu/drm/ingenic/ingenic-drm.c
+index 9e95f6fd5406..376fca6ca9f4 100644
+--- a/drivers/gpu/drm/ingenic/ingenic-drm.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm.c
+@@ -467,7 +467,7 @@ static int ingenic_drm_encoder_atomic_check(struct drm_encoder *encoder,
  
--	mbox_send_message(client->chan, pkt);
-+	err = mbox_send_message(client->chan, pkt);
-+	if (err < 0)
-+		return err;
- 	/* We can send next packet immediately, so just call txdone. */
- 	mbox_client_txdone(client->chan, 0);
+ static irqreturn_t ingenic_drm_irq_handler(int irq, void *arg)
+ {
+-	struct ingenic_drm *priv = arg;
++	struct ingenic_drm *priv = drm_device_get_priv(arg);
+ 	unsigned int state;
  
+ 	regmap_read(priv->map, JZ_REG_LCD_STATE, &state);
 -- 
 2.25.1
 
