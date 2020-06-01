@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA361EAE90
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6671EAEDC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730359AbgFASzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:55:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44568 "EHLO mail.kernel.org"
+        id S1729425AbgFAR7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:59:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729814AbgFASBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:01:35 -0400
+        id S1728653AbgFAR7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:59:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E75EB20776;
-        Mon,  1 Jun 2020 18:01:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 87D442074B;
+        Mon,  1 Jun 2020 17:59:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034494;
-        bh=zSDmvYYRnv1+LlKvRo10Y1i8mPchkOobWDngou8BWwQ=;
+        s=default; t=1591034347;
+        bh=/LHi48Jzg9u+qUGJhHbvi5DEX0wia9V0xt4LksAJCT4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EoO3rpa93i/bz5AcS4/7ohiD4ALCnaVx8jkNGe/ghBIVKd7gTLh/YdOi4V4IeFBHd
-         YTUDeQ/FEGcTJm2xZD/fbL8yhoNssa74ya/QHqMHbrwZra7HSTl/Foz2CEdj7zYVoI
-         9WkCHe/qUB+boo5E7Q5aQkUOh5db7DO8gm22KHPM=
+        b=gKwbRgumLIepY22XqzR4hSKDT5P5wVoucikBYI61gIRH9TgdP7ON5G6ZMopFZvtDL
+         pKjpScelj+XWqYvD/B8QXLSybfF018l8BCWopMLquiKMtuVsaEa/1L9dNyNjbpM6fA
+         hM7j10uAwUsWFsBIOP777vjPILhCznZwBGnF1/v8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        Alexander Potapenko <glider@google.com>,
-        Borislav Petkov <bp@suse.de>, Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 4.14 55/77] copy_xstate_to_kernel(): dont leave parts of destination uninitialized
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 53/61] qlcnic: fix missing release in qlcnic_83xx_interrupt_test.
 Date:   Mon,  1 Jun 2020 19:54:00 +0200
-Message-Id: <20200601174025.927328180@linuxfoundation.org>
+Message-Id: <20200601174021.314704907@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
-References: <20200601174016.396817032@linuxfoundation.org>
+In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
+References: <20200601174010.316778377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,146 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Qiushi Wu <wu000273@umn.edu>
 
-commit 9e4636545933131de15e1ecd06733538ae939b2f upstream.
+commit 15c973858903009e995b2037683de29dfe968621 upstream.
 
-copy the corresponding pieces of init_fpstate into the gaps instead.
+In function qlcnic_83xx_interrupt_test(), function
+qlcnic_83xx_diag_alloc_res() is not handled by function
+qlcnic_83xx_diag_free_res() after a call of the function
+qlcnic_alloc_mbx_args() failed. Fix this issue by adding
+a jump target "fail_mbx_args", and jump to this new target
+when qlcnic_alloc_mbx_args() failed.
 
-Cc: stable@kernel.org
-Tested-by: Alexander Potapenko <glider@google.com>
-Acked-by: Borislav Petkov <bp@suse.de>
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Fixes: b6b4316c8b2f ("qlcnic: Handle qlcnic_alloc_mbx_args() failure")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kernel/fpu/xstate.c |   86 ++++++++++++++++++++++++-------------------
- 1 file changed, 48 insertions(+), 38 deletions(-)
+ drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -964,18 +964,31 @@ static inline bool xfeatures_mxcsr_quirk
- 	return true;
- }
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c
+@@ -3610,7 +3610,7 @@ int qlcnic_83xx_interrupt_test(struct ne
+ 	ahw->diag_cnt = 0;
+ 	ret = qlcnic_alloc_mbx_args(&cmd, adapter, QLCNIC_CMD_INTRPT_TEST);
+ 	if (ret)
+-		goto fail_diag_irq;
++		goto fail_mbx_args;
  
--/*
-- * This is similar to user_regset_copyout(), but will not add offset to
-- * the source data pointer or increment pos, count, kbuf, and ubuf.
-- */
--static inline void
--__copy_xstate_to_kernel(void *kbuf, const void *data,
--			unsigned int offset, unsigned int size, unsigned int size_total)
-+static void fill_gap(unsigned to, void **kbuf, unsigned *pos, unsigned *count)
- {
--	if (offset < size_total) {
--		unsigned int copy = min(size, size_total - offset);
-+	if (*pos < to) {
-+		unsigned size = to - *pos;
+ 	if (adapter->flags & QLCNIC_MSIX_ENABLED)
+ 		intrpt_id = ahw->intr_tbl[0].id;
+@@ -3640,6 +3640,8 @@ int qlcnic_83xx_interrupt_test(struct ne
+ 
+ done:
+ 	qlcnic_free_mbx_args(&cmd);
 +
-+		if (size > *count)
-+			size = *count;
-+		memcpy(*kbuf, (void *)&init_fpstate.xsave + *pos, size);
-+		*kbuf += size;
-+		*pos += size;
-+		*count -= size;
-+	}
-+}
++fail_mbx_args:
+ 	qlcnic_83xx_diag_free_res(netdev, drv_sds_rings);
  
--		memcpy(kbuf + offset, data, copy);
-+static void copy_part(unsigned offset, unsigned size, void *from,
-+			void **kbuf, unsigned *pos, unsigned *count)
-+{
-+	fill_gap(offset, kbuf, pos, count);
-+	if (size > *count)
-+		size = *count;
-+	if (size) {
-+		memcpy(*kbuf, from, size);
-+		*kbuf += size;
-+		*pos += size;
-+		*count -= size;
- 	}
- }
- 
-@@ -988,8 +1001,9 @@ __copy_xstate_to_kernel(void *kbuf, cons
-  */
- int copy_xstate_to_kernel(void *kbuf, struct xregs_state *xsave, unsigned int offset_start, unsigned int size_total)
- {
--	unsigned int offset, size;
- 	struct xstate_header header;
-+	const unsigned off_mxcsr = offsetof(struct fxregs_state, mxcsr);
-+	unsigned count = size_total;
- 	int i;
- 
- 	/*
-@@ -1005,46 +1019,42 @@ int copy_xstate_to_kernel(void *kbuf, st
- 	header.xfeatures = xsave->header.xfeatures;
- 	header.xfeatures &= ~XFEATURE_MASK_SUPERVISOR;
- 
-+	if (header.xfeatures & XFEATURE_MASK_FP)
-+		copy_part(0, off_mxcsr,
-+			  &xsave->i387, &kbuf, &offset_start, &count);
-+	if (header.xfeatures & (XFEATURE_MASK_SSE | XFEATURE_MASK_YMM))
-+		copy_part(off_mxcsr, MXCSR_AND_FLAGS_SIZE,
-+			  &xsave->i387.mxcsr, &kbuf, &offset_start, &count);
-+	if (header.xfeatures & XFEATURE_MASK_FP)
-+		copy_part(offsetof(struct fxregs_state, st_space), 128,
-+			  &xsave->i387.st_space, &kbuf, &offset_start, &count);
-+	if (header.xfeatures & XFEATURE_MASK_SSE)
-+		copy_part(xstate_offsets[XFEATURE_MASK_SSE], 256,
-+			  &xsave->i387.xmm_space, &kbuf, &offset_start, &count);
-+	/*
-+	 * Fill xsave->i387.sw_reserved value for ptrace frame:
-+	 */
-+	copy_part(offsetof(struct fxregs_state, sw_reserved), 48,
-+		  xstate_fx_sw_bytes, &kbuf, &offset_start, &count);
- 	/*
- 	 * Copy xregs_state->header:
- 	 */
--	offset = offsetof(struct xregs_state, header);
--	size = sizeof(header);
--
--	__copy_xstate_to_kernel(kbuf, &header, offset, size, size_total);
-+	copy_part(offsetof(struct xregs_state, header), sizeof(header),
-+		  &header, &kbuf, &offset_start, &count);
- 
--	for (i = 0; i < XFEATURE_MAX; i++) {
-+	for (i = FIRST_EXTENDED_XFEATURE; i < XFEATURE_MAX; i++) {
- 		/*
- 		 * Copy only in-use xstates:
- 		 */
- 		if ((header.xfeatures >> i) & 1) {
- 			void *src = __raw_xsave_addr(xsave, 1 << i);
- 
--			offset = xstate_offsets[i];
--			size = xstate_sizes[i];
--
--			/* The next component has to fit fully into the output buffer: */
--			if (offset + size > size_total)
--				break;
--
--			__copy_xstate_to_kernel(kbuf, src, offset, size, size_total);
-+			copy_part(xstate_offsets[i], xstate_sizes[i],
-+				  src, &kbuf, &offset_start, &count);
- 		}
- 
- 	}
--
--	if (xfeatures_mxcsr_quirk(header.xfeatures)) {
--		offset = offsetof(struct fxregs_state, mxcsr);
--		size = MXCSR_AND_FLAGS_SIZE;
--		__copy_xstate_to_kernel(kbuf, &xsave->i387.mxcsr, offset, size, size_total);
--	}
--
--	/*
--	 * Fill xsave->i387.sw_reserved value for ptrace frame:
--	 */
--	offset = offsetof(struct fxregs_state, sw_reserved);
--	size = sizeof(xstate_fx_sw_bytes);
--
--	__copy_xstate_to_kernel(kbuf, xstate_fx_sw_bytes, offset, size, size_total);
-+	fill_gap(size_total, &kbuf, &offset_start, &count);
- 
- 	return 0;
- }
+ fail_diag_irq:
 
 
