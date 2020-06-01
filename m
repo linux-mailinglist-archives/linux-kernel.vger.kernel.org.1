@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC051EA946
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09AF31EAA96
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729576AbgFAR75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:59:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41810 "EHLO mail.kernel.org"
+        id S1730876AbgFASJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:09:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729328AbgFAR7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:59:23 -0400
+        id S1730865AbgFASJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:09:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 10941206E2;
-        Mon,  1 Jun 2020 17:59:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB1EE206E2;
+        Mon,  1 Jun 2020 18:09:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034362;
-        bh=GKjC3/h/lwlH+z1jIr6atLxUKz3N0b9GwGORPMkIunw=;
+        s=default; t=1591034962;
+        bh=+6bZ9Mkw1jQO3JY54rRwoY2tSTxwuSwPISEmZT38gt0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=njI/dVlLDji9jxlPGCIaRuNjaGA1a6Mo4XFelt0gv5Y2IsAUyIKHeJrIkEIKGJRDk
-         kOky25sSnB1w5LbEY++qzO4W1gM+fY1kBYziFuiiZpnaO5r+4hEf+ONbYAP5WGYneU
-         UOs+8JJp3QSJvgf0lcUZSxL4uilOsGfj/XD7sn/o=
+        b=nQ462uzKLXx/atVPXtQB/21SdoKwQEI686DydUNjUjJk+rs0mm7d10/j359tqMfsQ
+         rEaNGDeRztA1Os7r6wVLiH9flaMfWmaENjo5sRqJb92rinS9Om5rnjRRY83mJu9e79
+         EYdYZcSybTvQNe+YgxWXzWB25K2QcwNIiGqizpH0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guoqing Jiang <gqjiang@suse.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.9 60/61] sc16is7xx: move label err_spi to correct section
+        stable@vger.kernel.org, Chris Chiu <chiu@endlessm.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 089/142] ALSA: usb-audio: mixer: volume quirk for ESS Technology Asus USB DAC
 Date:   Mon,  1 Jun 2020 19:54:07 +0200
-Message-Id: <20200601174022.575861683@linuxfoundation.org>
+Message-Id: <20200601174047.147346516@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
-References: <20200601174010.316778377@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,42 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guoqing Jiang <gqjiang@suse.com>
+From: Chris Chiu <chiu@endlessm.com>
 
-commit e00164a0f000de893944981f41a568c981aca658 upstream.
+[ Upstream commit 4020d1ccbe55bdf67b31d718d2400506eaf4b43f ]
 
-err_spi is used when SERIAL_SC16IS7XX_SPI is enabled, so make
-the label only available under SERIAL_SC16IS7XX_SPI option.
-Otherwise, the below warning appears.
+The Asus USB DAC is a USB type-C audio dongle for connecting to
+the headset and headphone. The volume minimum value -23040 which
+is 0xa600 in hexadecimal with the resolution value 1 indicates
+this should be endianness issue caused by the firmware bug. Add
+a volume quirk to fix the volume control problem.
 
-drivers/tty/serial/sc16is7xx.c:1523:1: warning: label ‘err_spi’ defined but not used [-Wunused-label]
- err_spi:
-  ^~~~~~~
+Also fixes this warning:
+  Warning! Unlikely big volume range (=23040), cval->res is probably wrong.
+  [5] FU [Headset Capture Volume] ch = 1, val = -23040/0/1
+  Warning! Unlikely big volume range (=23040), cval->res is probably wrong.
+  [7] FU [Headset Playback Volume] ch = 1, val = -23040/0/1
 
-Signed-off-by: Guoqing Jiang <gqjiang@suse.com>
-Fixes: ac0cdb3d9901 ("sc16is7xx: missing unregister/delete driver on error in sc16is7xx_init()")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Chris Chiu <chiu@endlessm.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200526062613.55401-1-chiu@endlessm.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/sc16is7xx.c |    2 ++
- 1 file changed, 2 insertions(+)
+ sound/usb/mixer.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/drivers/tty/serial/sc16is7xx.c
-+++ b/drivers/tty/serial/sc16is7xx.c
-@@ -1523,10 +1523,12 @@ static int __init sc16is7xx_init(void)
- #endif
- 	return ret;
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 583edacc9fe8..f55afe3a98e3 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1171,6 +1171,14 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
+ 			cval->res = 384;
+ 		}
+ 		break;
++	case USB_ID(0x0495, 0x3042): /* ESS Technology Asus USB DAC */
++		if ((strstr(kctl->id.name, "Playback Volume") != NULL) ||
++			strstr(kctl->id.name, "Capture Volume") != NULL) {
++			cval->min >>= 8;
++			cval->max = 0;
++			cval->res = 1;
++		}
++		break;
+ 	}
+ }
  
-+#ifdef CONFIG_SERIAL_SC16IS7XX_SPI
- err_spi:
- #ifdef CONFIG_SERIAL_SC16IS7XX_I2C
- 	i2c_del_driver(&sc16is7xx_i2c_uart_driver);
- #endif
-+#endif
- err_i2c:
- 	uart_unregister_driver(&sc16is7xx_uart);
- 	return ret;
+-- 
+2.25.1
+
 
 
