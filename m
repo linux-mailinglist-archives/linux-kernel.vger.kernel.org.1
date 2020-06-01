@@ -2,68 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D34D1EA427
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 14:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE651EA412
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 14:39:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726073AbgFAMo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 08:44:29 -0400
-Received: from freki.datenkhaos.de ([81.7.17.101]:56964 "EHLO
-        freki.datenkhaos.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725838AbgFAMo2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 08:44:28 -0400
-X-Greylist: delayed 327 seconds by postgrey-1.27 at vger.kernel.org; Mon, 01 Jun 2020 08:44:27 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by freki.datenkhaos.de (Postfix) with ESMTP id EABFD2B86B87;
-        Mon,  1 Jun 2020 14:38:58 +0200 (CEST)
-Received: from freki.datenkhaos.de ([127.0.0.1])
-        by localhost (freki.datenkhaos.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id NULsTUv70MaJ; Mon,  1 Jun 2020 14:38:56 +0200 (CEST)
-Received: from latitude (vpn150.rz.tu-ilmenau.de [141.24.172.150])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by freki.datenkhaos.de (Postfix) with ESMTPSA;
-        Mon,  1 Jun 2020 14:38:56 +0200 (CEST)
-Date:   Mon, 1 Jun 2020 14:38:50 +0200
-From:   Johannes Hirte <johannes.hirte@datenkhaos.de>
-To:     Stephane Eranian <eranian@google.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, mingo@elte.hu,
-        irogers@google.com, kim.phillips@amd.com, jolsa@redhat.com
-Subject: Re: [PATCH v2 1/5] perf/x86/rapl: move RAPL support to common x86
- code
-Message-ID: <20200601123850.GA213137@latitude>
-References: <20200527224659.206129-1-eranian@google.com>
- <20200527224659.206129-2-eranian@google.com>
+        id S1726132AbgFAMjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 08:39:25 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5321 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725838AbgFAMjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 08:39:24 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 7252BF6B52CED81A3185;
+        Mon,  1 Jun 2020 20:39:22 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Mon, 1 Jun 2020
+ 20:39:14 +0800
+From:   yu kuai <yukuai3@huawei.com>
+To:     <axboe@kernel.dk>, <ming.lei@redhat.com>,
+        <martin.petersen@oracle.com>, <wenwen@cs.uga.edu>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH] block/bio-integrity: don't free 'buf' if bio_integrity_add_page() failed
+Date:   Mon, 1 Jun 2020 20:38:56 +0800
+Message-ID: <20200601123856.3895734-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200527224659.206129-2-eranian@google.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020 Mai 27, Stephane Eranian wrote:
+commit e7bf90e5afe3 ("block/bio-integrity: fix a memory leak bug") add a
+kree() for 'buf' if bio_integrity_add_page() return '0'. However, the
+object will be freed in bio_integrity_free() since 'bio->bi_opf' and
+'bio->bi_integrity' was set previousy in bio_integrity_alloc().
 
-...
-> diff --git a/arch/x86/events/Makefile b/arch/x86/events/Makefile
-> index 6f1d1fde8b2de..12c42eba77ec3 100644
-> --- a/arch/x86/events/Makefile
-> +++ b/arch/x86/events/Makefile
-> @@ -1,5 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  obj-y					+= core.o probe.o
-> +obj-$(PERF_EVENTS_INTEL_RAPL)		+= rapl.o
->  obj-y					+= amd/
->  obj-$(CONFIG_X86_LOCAL_APIC)            += msr.o
->  obj-$(CONFIG_CPU_SUP_INTEL)		+= intel/
+Fixes: commit e7bf90e5afe3 ("block/bio-integrity: fix a memory leak bug")
+Signed-off-by: yu kuai <yukuai3@huawei.com>
+---
+ block/bio-integrity.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-With this change, rapl won't be build. Must be:
-
-obj-$(CONFIG_PERF_EVENTS_INTEL_RAPL)                += rapl.o
-
+diff --git a/block/bio-integrity.c b/block/bio-integrity.c
+index bf62c25cde8f..ae07dd78e951 100644
+--- a/block/bio-integrity.c
++++ b/block/bio-integrity.c
+@@ -278,7 +278,6 @@ bool bio_integrity_prep(struct bio *bio)
+ 
+ 		if (ret == 0) {
+ 			printk(KERN_ERR "could not attach integrity payload\n");
+-			kfree(buf);
+ 			status = BLK_STS_RESOURCE;
+ 			goto err_end_io;
+ 		}
 -- 
-Regards,
-  Johannes Hirte
+2.25.4
 
