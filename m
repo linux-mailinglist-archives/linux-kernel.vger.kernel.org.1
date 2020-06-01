@@ -2,60 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C86A51E9DD7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 08:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432F31E9DE0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 08:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726151AbgFAGGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 02:06:10 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:47655 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725952AbgFAGGK (ORCPT
+        id S1726133AbgFAGIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 02:08:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725972AbgFAGIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 02:06:10 -0400
-Received: from marcel-macbook.fritz.box (p5b3d2638.dip0.t-ipconnect.de [91.61.38.56])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 08EB0CED01;
-        Mon,  1 Jun 2020 08:15:56 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH v1] Bluetooth: btmtkuart: Use serdev_device_write_buf()
- instead of serdev_device_write()
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <1590767936-21907-1-git-send-email-zijuhu@codeaurora.org>
-Date:   Mon, 1 Jun 2020 08:06:08 +0200
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:BLUETOOTH DRIVERS" <linux-bluetooth@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, mka@chromium.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <E9312CE8-DEA4-4F63-97AE-B8A9FF338F61@holtmann.org>
-References: <1590767936-21907-1-git-send-email-zijuhu@codeaurora.org>
-To:     Zijun Hu <zijuhu@codeaurora.org>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        Mon, 1 Jun 2020 02:08:32 -0400
+Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE44C05BD43
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 23:08:32 -0700 (PDT)
+Received: by mail-vk1-xa2d.google.com with SMTP id u15so1780342vkk.6
+        for <linux-kernel@vger.kernel.org>; Sun, 31 May 2020 23:08:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QkmSio6UgYEwUD2SM8rAy/RIFijHP9divvcJZFzKfTA=;
+        b=Ue1eDUAQymiljRlFA3oApYNxcyFCrmEwh752ztED+rE0vtnA1EgfxpjRH9ijf5dp2w
+         7SoAAFunru/w/k0nwRajS8uwDXR45eFdtoh2owusugMDswollTsnUx3Afm7SSVuMN8Kf
+         Nb9Sk0q+tD8GdHSIDFp+BqztLFmoS617kynUBIPeamU43WPkw/lAfQMvc1nquOueLwFV
+         xiDFHXh/V7XSaIG+qDzKow2eLflBju8ZRSiSIntrf/9tn+cS3L07bmJC/1HyktoUyZTR
+         NM/St+D0DSJ+DaCgbZKfLjapqIuA1hpkvUjdNkiTFXR2IwWoLAiHGghYihO3RbLbeACt
+         rOcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QkmSio6UgYEwUD2SM8rAy/RIFijHP9divvcJZFzKfTA=;
+        b=WR9skQlBfzQsqOY4VVPfIsY8S0uHH6TLixoedrz1YTbpBT7I4vg91iNwlgUdj1CFJm
+         FzI6RjJT1TJSPmXOn/F3PEMQPiLPNcP99TUKnmNEq/5V0DvTo+ua+A6dglidi6sV9XCi
+         fj7wQJypqma1oUH8XeoKiJpBAwjohdhurzwCiBsXd6/M2FE42x4UZZr5Ro3VLyYhslfw
+         Ld3K4IxCAYTjXOLF1bG7lHlL+rzTNipRzh/c8P3Mb7DwjK3QfJa0ETHyknWGBv4r1oRF
+         v6QByMhk2VuEoKFgWxtRwX5EFwNQzSqkcD8hE5YzQhrI6difJQOqgSNHGiejvc1ieeEb
+         RHYg==
+X-Gm-Message-State: AOAM531/M3kdWzhXD877T8fNC8ydZR+HJ7//oiLP17ZmdsgpaPCYkmqy
+        vv3MznlAJzt2GHxcvg6KzIhm2n0uO0F4ukdRcZcD3zTSQTM=
+X-Google-Smtp-Source: ABdhPJyuPjNqhHOp0uHEqICQDEH190vhJmliPr9HWavME5pHMwm7rpvSf/xMwZSCN53vg1xB/069+QfzSagWH2U4l2M=
+X-Received: by 2002:ac5:cc44:: with SMTP id l4mr4878591vkm.43.1590991710866;
+ Sun, 31 May 2020 23:08:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200529221631.6057872e@canb.auug.org.au>
+In-Reply-To: <20200529221631.6057872e@canb.auug.org.au>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 1 Jun 2020 08:07:54 +0200
+Message-ID: <CAPDyKFo7036hqm9nTzT5ov2HGir5ThMfuorMUeS2hM7utGVqvw@mail.gmail.com>
+Subject: Re: linux-next: Fixes tag needs some work in the mmc tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zijun,
+On Fri, 29 May 2020 at 14:16, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> In commit
+>
+>   7b16993c2bb2 ("mmc: sdhci-msm: Clear tuning done flag while hs400 tuning")
+>
+> Fixes tag
+>
+>   Fixes: ff06ce4 ("mmc: sdhci-msm: Add HS400 platform support")
+>
+> has these problem(s):
+>
+>   - SHA1 should be at least 12 digits long
+>     Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+>     or later) just making sure it is not set (or set to "auto").
 
-> serdev_device_write() is not appropriate at here because
-> serdev_device_write_wakeup() is not used to release completion hold
-> by the former at @write_wakeup member of struct serdev_device_ops.
-> 
-> Fix by using serdev_device_write_buf() instead of serdev_device_write().
-> 
-> Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
-> ---
-> drivers/bluetooth/btmtkuart.c | 3 +--
-> 1 file changed, 1 insertion(+), 2 deletions(-)
+Stephen, thanks for the notification, patch amended!
 
-patch has been applied to bluetooth-next tree.
-
-Regards
-
-Marcel
-
+Kind regards
+Uffe
