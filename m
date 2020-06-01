@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2E661EAE7B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FF11EAD79
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729850AbgFASBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:01:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44696 "EHLO mail.kernel.org"
+        id S1730851AbgFASJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:09:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728369AbgFASBm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:01:42 -0400
+        id S1730847AbgFASJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:09:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A18BF2065C;
-        Mon,  1 Jun 2020 18:01:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6DA8C2068D;
+        Mon,  1 Jun 2020 18:09:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034501;
-        bh=YPYcDMnw4j/RYGH/xC9DxTYgb2x7HZqcUJnTpea8X38=;
+        s=default; t=1591034950;
+        bh=Pl1HXmRAUPMbGEu7xe/itWFl+FoRVHBaaAfEczm5H2M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1cV3kBVVyQ9WdsyC3zB7ycA6zSx5ZrKLtRxaheLFSHMl1y1t/WCzmjETt3My/rBps
-         E80uBkjkfaaJ7gN8/Qn3Fmn3cOm0kUlcbnHQeiM68U+hpHjxkfVXtIeIVWaVKz5qHb
-         kW8tynj9RQGnxIvSso6sW7HgqF0Q+Bhp6yCS3A2w=
+        b=x0O973vcB0gXqhnqm8F9lcB5OZdVIZRUR4q1SQa1jQOFsHA6bbxc5UGU/qManobnF
+         QyipDvxp/azRkQgFXHjHXm0jNkIZXhRoMEyAtTgH2QjVffh3LMEzW8yn1G+cgSsO7I
+         b3oRTj1+PmimbPn3NFT50CuT97IkpRTwBwqmJf2A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Subject: [PATCH 4.14 57/77] xfrm: call xfrm_output_gso when inner_protocol is set in xfrm_output
-Date:   Mon,  1 Jun 2020 19:54:02 +0200
-Message-Id: <20200601174026.334314756@linuxfoundation.org>
+        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 085/142] gpio: bcm-kona: Fix return value of bcm_kona_gpio_probe()
+Date:   Mon,  1 Jun 2020 19:54:03 +0200
+Message-Id: <20200601174046.724051115@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
-References: <20200601174016.396817032@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,97 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-commit a204aef9fd77dce1efd9066ca4e44eede99cd858 upstream.
+[ Upstream commit 98f7d1b15e87c84488b30ecc4ec753b0690b9dbf ]
 
-An use-after-free crash can be triggered when sending big packets over
-vxlan over esp with esp offload enabled:
+Propagate the error code returned by devm_platform_ioremap_resource()
+out of probe() instead of overwriting it.
 
-  [] BUG: KASAN: use-after-free in ipv6_gso_pull_exthdrs.part.8+0x32c/0x4e0
-  [] Call Trace:
-  []  dump_stack+0x75/0xa0
-  []  kasan_report+0x37/0x50
-  []  ipv6_gso_pull_exthdrs.part.8+0x32c/0x4e0
-  []  ipv6_gso_segment+0x2c8/0x13c0
-  []  skb_mac_gso_segment+0x1cb/0x420
-  []  skb_udp_tunnel_segment+0x6b5/0x1c90
-  []  inet_gso_segment+0x440/0x1380
-  []  skb_mac_gso_segment+0x1cb/0x420
-  []  esp4_gso_segment+0xae8/0x1709 [esp4_offload]
-  []  inet_gso_segment+0x440/0x1380
-  []  skb_mac_gso_segment+0x1cb/0x420
-  []  __skb_gso_segment+0x2d7/0x5f0
-  []  validate_xmit_skb+0x527/0xb10
-  []  __dev_queue_xmit+0x10f8/0x2320 <---
-  []  ip_finish_output2+0xa2e/0x1b50
-  []  ip_output+0x1a8/0x2f0
-  []  xfrm_output_resume+0x110e/0x15f0
-  []  __xfrm4_output+0xe1/0x1b0
-  []  xfrm4_output+0xa0/0x200
-  []  iptunnel_xmit+0x5a7/0x920
-  []  vxlan_xmit_one+0x1658/0x37a0 [vxlan]
-  []  vxlan_xmit+0x5e4/0x3ec8 [vxlan]
-  []  dev_hard_start_xmit+0x125/0x540
-  []  __dev_queue_xmit+0x17bd/0x2320  <---
-  []  ip6_finish_output2+0xb20/0x1b80
-  []  ip6_output+0x1b3/0x390
-  []  ip6_xmit+0xb82/0x17e0
-  []  inet6_csk_xmit+0x225/0x3d0
-  []  __tcp_transmit_skb+0x1763/0x3520
-  []  tcp_write_xmit+0xd64/0x5fe0
-  []  __tcp_push_pending_frames+0x8c/0x320
-  []  tcp_sendmsg_locked+0x2245/0x3500
-  []  tcp_sendmsg+0x27/0x40
-
-As on the tx path of vxlan over esp, skb->inner_network_header would be
-set on vxlan_xmit() and xfrm4_tunnel_encap_add(), and the later one can
-overwrite the former one. It causes skb_udp_tunnel_segment() to use a
-wrong skb->inner_network_header, then the issue occurs.
-
-This patch is to fix it by calling xfrm_output_gso() instead when the
-inner_protocol is set, in which gso_segment of inner_protocol will be
-done first.
-
-While at it, also improve some code around.
-
-Fixes: 7862b4058b9f ("esp: Add gso handlers for esp4 and esp6")
-Reported-by: Xiumei Mu <xmu@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 72d8cb715477 ("drivers: gpio: bcm-kona: use devm_platform_ioremap_resource()")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+[Bartosz: tweaked the commit message]
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_output.c |   12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ drivers/gpio/gpio-bcm-kona.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/xfrm/xfrm_output.c
-+++ b/net/xfrm/xfrm_output.c
-@@ -236,18 +236,20 @@ int xfrm_output(struct sock *sk, struct
- 		xfrm_state_hold(x);
+diff --git a/drivers/gpio/gpio-bcm-kona.c b/drivers/gpio/gpio-bcm-kona.c
+index 9fa6d3a967d2..100575973e1f 100644
+--- a/drivers/gpio/gpio-bcm-kona.c
++++ b/drivers/gpio/gpio-bcm-kona.c
+@@ -619,7 +619,7 @@ static int bcm_kona_gpio_probe(struct platform_device *pdev)
  
- 		if (skb_is_gso(skb)) {
--			skb_shinfo(skb)->gso_type |= SKB_GSO_ESP;
-+			if (skb->inner_protocol)
-+				return xfrm_output_gso(net, sk, skb);
- 
--			return xfrm_output2(net, sk, skb);
-+			skb_shinfo(skb)->gso_type |= SKB_GSO_ESP;
-+			goto out;
- 		}
- 
- 		if (x->xso.dev && x->xso.dev->features & NETIF_F_HW_ESP_TX_CSUM)
- 			goto out;
-+	} else {
-+		if (skb_is_gso(skb))
-+			return xfrm_output_gso(net, sk, skb);
+ 	kona_gpio->reg_base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(kona_gpio->reg_base)) {
+-		ret = -ENXIO;
++		ret = PTR_ERR(kona_gpio->reg_base);
+ 		goto err_irq_domain;
  	}
  
--	if (skb_is_gso(skb))
--		return xfrm_output_gso(net, sk, skb);
--
- 	if (skb->ip_summed == CHECKSUM_PARTIAL) {
- 		err = skb_checksum_help(skb);
- 		if (err) {
+-- 
+2.25.1
+
 
 
