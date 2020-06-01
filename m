@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F471EA928
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A80F1EAAA9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728382AbgFAR6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:58:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40638 "EHLO mail.kernel.org"
+        id S1730969AbgFASKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:10:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728576AbgFAR6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:58:36 -0400
+        id S1730949AbgFASJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:09:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F6012077D;
-        Mon,  1 Jun 2020 17:58:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 140D62068D;
+        Mon,  1 Jun 2020 18:09:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034315;
-        bh=DqGTROlF+JGpGO0Wg0primTgD15YHMdxdYCdxQV2pJ0=;
+        s=default; t=1591034997;
+        bh=YJG+QxHdfvDN+V1qYF4g92kefyTXuZGoqW+2ecbTQKo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cqRh9O3CuenJpyhKn+trjPEQ0g5lHnDdSkjkPBgyTnJN957Vv5OGc+AaC99QyBm9n
-         lwMikcozlTQXRqLMmKFrLPGfi5zuCUDbjIs4vxE+CCTBawPoNkGBGw4Zsh8nfVIQty
-         3vfijYppkCPPdIJ6uF6h6Zd2anQjLI4Qa6vqhons=
+        b=cdDr5OI7et7uxgFWVm7bMalFpwO0JDvXc7uf7+ktEzXqo1yCnYJRcbDEgUtM8TW1v
+         6IAZEbYfJV7xsLXTU2gHSU8AjJVZZSNovraBHEmnNEXAGbLnv7ffFnBYpI6GghddaV
+         tpCa6ssOb9AYsqMorxffbQHxyGE7u5HAAY6Qs380=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jerry Lee <leisurelysw24@gmail.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?=C5=81ukasz=20Patron?= <priv.luk@gmail.com>,
+        Cameron Gutman <aicommander@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 37/61] libceph: ignore pool overlay and cache logic on redirects
+Subject: [PATCH 5.4 066/142] Input: xpad - add custom init packet for Xbox One S controllers
 Date:   Mon,  1 Jun 2020 19:53:44 +0200
-Message-Id: <20200601174018.662057915@linuxfoundation.org>
+Message-Id: <20200601174044.710260005@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
-References: <20200601174010.316778377@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,47 +46,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jerry Lee <leisurelysw24@gmail.com>
+From: Łukasz Patron <priv.luk@gmail.com>
 
-[ Upstream commit 890bd0f8997ae6ac0a367dd5146154a3963306dd ]
+[ Upstream commit 764f7f911bf72450c51eb74cbb262ad9933741d8 ]
 
-OSD client should ignore cache/overlay flag if got redirect reply.
-Otherwise, the client hangs when the cache tier is in forward mode.
+Sending [ 0x05, 0x20, 0x00, 0x0f, 0x06 ] packet for Xbox One S controllers
+fixes an issue where controller is stuck in Bluetooth mode and not sending
+any inputs.
 
-[ idryomov: Redirects are effectively deprecated and no longer
-  used or tested.  The original tiering modes based on redirects
-  are inherently flawed because redirects can race and reorder,
-  potentially resulting in data corruption.  The new proxy and
-  readproxy tiering modes should be used instead of forward and
-  readforward.  Still marking for stable as obviously correct,
-  though. ]
-
+Signed-off-by: Łukasz Patron <priv.luk@gmail.com>
+Reviewed-by: Cameron Gutman <aicommander@gmail.com>
 Cc: stable@vger.kernel.org
-URL: https://tracker.ceph.com/issues/23296
-URL: https://tracker.ceph.com/issues/36406
-Signed-off-by: Jerry Lee <leisurelysw24@gmail.com>
-Reviewed-by: Ilya Dryomov <idryomov@gmail.com>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Link: https://lore.kernel.org/r/20200422075206.18229-1-priv.luk@gmail.com
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ceph/osd_client.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/input/joystick/xpad.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/net/ceph/osd_client.c b/net/ceph/osd_client.c
-index 70ccb0716fc5..4fd679b30b19 100644
---- a/net/ceph/osd_client.c
-+++ b/net/ceph/osd_client.c
-@@ -2879,7 +2879,9 @@ static void handle_reply(struct ceph_osd *osd, struct ceph_msg *msg)
- 		 * supported.
- 		 */
- 		req->r_t.target_oloc.pool = m.redirect.oloc.pool;
--		req->r_flags |= CEPH_OSD_FLAG_REDIRECTED;
-+		req->r_flags |= CEPH_OSD_FLAG_REDIRECTED |
-+				CEPH_OSD_FLAG_IGNORE_OVERLAY |
-+				CEPH_OSD_FLAG_IGNORE_CACHE;
- 		req->r_tid = 0;
- 		__submit_request(req, false);
- 		goto out_unlock_osdc;
+diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
+index 6b40a1c68f9f..c77cdb3b62b5 100644
+--- a/drivers/input/joystick/xpad.c
++++ b/drivers/input/joystick/xpad.c
+@@ -458,6 +458,16 @@ static const u8 xboxone_fw2015_init[] = {
+ 	0x05, 0x20, 0x00, 0x01, 0x00
+ };
+ 
++/*
++ * This packet is required for Xbox One S (0x045e:0x02ea)
++ * and Xbox One Elite Series 2 (0x045e:0x0b00) pads to
++ * initialize the controller that was previously used in
++ * Bluetooth mode.
++ */
++static const u8 xboxone_s_init[] = {
++	0x05, 0x20, 0x00, 0x0f, 0x06
++};
++
+ /*
+  * This packet is required for the Titanfall 2 Xbox One pads
+  * (0x0e6f:0x0165) to finish initialization and for Hori pads
+@@ -516,6 +526,8 @@ static const struct xboxone_init_packet xboxone_init_packets[] = {
+ 	XBOXONE_INIT_PKT(0x0e6f, 0x0165, xboxone_hori_init),
+ 	XBOXONE_INIT_PKT(0x0f0d, 0x0067, xboxone_hori_init),
+ 	XBOXONE_INIT_PKT(0x0000, 0x0000, xboxone_fw2015_init),
++	XBOXONE_INIT_PKT(0x045e, 0x02ea, xboxone_s_init),
++	XBOXONE_INIT_PKT(0x045e, 0x0b00, xboxone_s_init),
+ 	XBOXONE_INIT_PKT(0x0e6f, 0x0000, xboxone_pdp_init1),
+ 	XBOXONE_INIT_PKT(0x0e6f, 0x0000, xboxone_pdp_init2),
+ 	XBOXONE_INIT_PKT(0x24c6, 0x541a, xboxone_rumblebegin_init),
 -- 
 2.25.1
 
