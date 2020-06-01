@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46BA91EA8F3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8645B1EA8E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728920AbgFAR51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:57:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38574 "EHLO mail.kernel.org"
+        id S1728735AbgFAR4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:56:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728903AbgFAR5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:57:24 -0400
+        id S1728718AbgFAR4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:56:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E5B662073B;
-        Mon,  1 Jun 2020 17:57:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E8C4220776;
+        Mon,  1 Jun 2020 17:56:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034243;
-        bh=YYkXeT0qG5PVYrGeJGIoToGBNE1ZhrA2NGX8vI6bL6I=;
+        s=default; t=1591034207;
+        bh=dc9czzCLAvBGNJXwWXxQ6EERhg0N39WPZaP1WBZlugQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pWmGAjDB9UV7ybE3yoLIsFAcyAjhP8Z7jUUpxfu+EaRg4zwqvUrJuQZCO9HSKx2Hj
-         1PYdRWiMJKmGgdGR/2W0R30BYccd2i8TypnJXZ4JxlpJewuVZgzdHRvOsOXOwhvb98
-         dDRPtlMy+p3R8fg0fqiUFWOBNKW9VOcxK6M9BKmY=
+        b=Sx0aZs0Fsx+MyWASjB1g/i7m5HKiq98jCI4SSxjAvWxnOQvNGLdy0vZuwiB09Dtss
+         MHKon7qotHht8u0cWwYRcUnYvsv6Roh9Wc2h+dwvw6R84XVmECjly+ismlneSIkJsX
+         psv+wiRV6VwHzD0FrrW9b6q7L6/Ogw4yFtmAQ560=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Rientjes <rientjes@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.4 39/48] mm: remove VM_BUG_ON(PageSlab()) from page_mapcount()
-Date:   Mon,  1 Jun 2020 19:53:49 +0200
-Message-Id: <20200601174003.327414437@linuxfoundation.org>
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        Xuebing Chen <chenxb_99091@126.com>
+Subject: [PATCH 4.4 40/48] drm/fb-helper: Use proper plane mask for fb cleanup
+Date:   Mon,  1 Jun 2020 19:53:50 +0200
+Message-Id: <20200601174003.543518078@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200601173952.175939894@linuxfoundation.org>
 References: <20200601173952.175939894@linuxfoundation.org>
@@ -49,72 +46,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+From: Matt Roper <matthew.d.roper@intel.com>
 
-commit 6988f31d558aa8c744464a7f6d91d34ada48ad12 upstream.
+commit 7118fd9bd975a9f3093239d4c0f4e15356b57fab upstream.
 
-Replace superfluous VM_BUG_ON() with comment about correct usage.
+pan_display_atomic() calls drm_atomic_clean_old_fb() to sanitize the
+legacy FB fields (plane->fb and plane->old_fb).  However it was building
+the plane mask to pass to this function incorrectly (the bitwise OR was
+using plane indices rather than plane masks).  The end result was that
+sometimes the legacy pointers would become out of sync with the atomic
+pointers.  If another operation tried to re-set the same FB onto the
+plane, we might end up with the pointers back in sync, but improper
+reference counts, which would eventually lead to system crashes when we
+accessed a pointer to a prematurely-destroyed FB.
 
-Technically reverts commit 1d148e218a0d ("mm: add VM_BUG_ON_PAGE() to
-page_mapcount()"), but context lines have changed.
+The cause here was a very subtle bug introduced in commit:
 
-Function isolate_migratepages_block() runs some checks out of lru_lock
-when choose pages for migration.  After checking PageLRU() it checks
-extra page references by comparing page_count() and page_mapcount().
-Between these two checks page could be removed from lru, freed and taken
-by slab.
+        commit 07d3bad6c1210bd21e85d084807ef4ee4ac43a78
+        Author: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+        Date:   Wed Nov 11 11:29:11 2015 +0100
 
-As a result this race triggers VM_BUG_ON(PageSlab()) in page_mapcount().
-Race window is tiny.  For certain workload this happens around once a
-year.
+            drm/core: Fix old_fb handling in pan_display_atomic.
 
-    page:ffffea0105ca9380 count:1 mapcount:0 mapping:ffff88ff7712c180 index:0x0 compound_mapcount: 0
-    flags: 0x500000000008100(slab|head)
-    raw: 0500000000008100 dead000000000100 dead000000000200 ffff88ff7712c180
-    raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
-    page dumped because: VM_BUG_ON_PAGE(PageSlab(page))
-    ------------[ cut here ]------------
-    kernel BUG at ./include/linux/mm.h:628!
-    invalid opcode: 0000 [#1] SMP NOPTI
-    CPU: 77 PID: 504 Comm: kcompactd1 Tainted: G        W         4.19.109-27 #1
-    Hardware name: Yandex T175-N41-Y3N/MY81-EX0-Y3N, BIOS R05 06/20/2019
-    RIP: 0010:isolate_migratepages_block+0x986/0x9b0
+I found the crashes were most easily reproduced (on i915 at least) by
+starting X and then VT switching to a VT that wasn't running a console
+instance...the sequence of vt/fbcon entries that happen in that case
+trigger a reference count mismatch and crash the system.
 
-The code in isolate_migratepages_block() was added in commit
-119d6d59dcc0 ("mm, compaction: avoid isolating pinned pages") before
-adding VM_BUG_ON into page_mapcount().
-
-This race has been predicted in 2015 by Vlastimil Babka (see link
-below).
-
-[akpm@linux-foundation.org: comment tweaks, per Hugh]
-Fixes: 1d148e218a0d ("mm: add VM_BUG_ON_PAGE() to page_mapcount()")
-Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Hugh Dickins <hughd@google.com>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Cc: David Rientjes <rientjes@google.com>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/159032779896.957378.7852761411265662220.stgit@buzz
-Link: https://lore.kernel.org/lkml/557710E1.6060103@suse.cz/
-Link: https://lore.kernel.org/linux-mm/158937872515.474360.5066096871639561424.stgit@buzz/T/ (v1)
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=93313
+Signed-off-by: Matt Roper <matthew.d.roper@intel.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Signed-off-by: Xuebing Chen <chenxb_99091@126.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/linux/mm.h |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/gpu/drm/drm_fb_helper.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -446,7 +446,6 @@ static inline void page_mapcount_reset(s
+--- a/drivers/gpu/drm/drm_fb_helper.c
++++ b/drivers/gpu/drm/drm_fb_helper.c
+@@ -1256,7 +1256,7 @@ retry:
+ 			goto fail;
  
- static inline int page_mapcount(struct page *page)
- {
--	VM_BUG_ON_PAGE(PageSlab(page), page);
- 	return atomic_read(&page->_mapcount) + 1;
- }
+ 		plane = mode_set->crtc->primary;
+-		plane_mask |= drm_plane_index(plane);
++		plane_mask |= (1 << drm_plane_index(plane));
+ 		plane->old_fb = plane->fb;
+ 	}
  
 
 
