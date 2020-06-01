@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F5C1EA949
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAEB91EAA10
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729596AbgFASAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:00:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41912 "EHLO mail.kernel.org"
+        id S1730229AbgFASEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:04:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729348AbgFAR73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:59:29 -0400
+        id S1730197AbgFASEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:04:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3ED8207D0;
-        Mon,  1 Jun 2020 17:59:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 147AC207D0;
+        Mon,  1 Jun 2020 18:04:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034369;
-        bh=33bvOVDSUwXLbvH5MeWHPlEukOq8n7BbPWyhko3vO4o=;
+        s=default; t=1591034662;
+        bh=xh++Q2c68oFOs5csXY6QWz3/3kKklg1Fea7GlH9mvXQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uCMhcIBDX7yWniqQSCaHzTR/WtqHQOHAirJ7HoZy7dBq/2ecOB0vgPKr10Bp/8ieN
-         LKCVP8UhkofqQ2fMDjd4NiyDt1ivPYHD52LmFs7bM6VI56+3CycqOdZHmqakRqQiKj
-         w41QqVImCqZUtvmRHwTlSfheOGCvc0eFvvZfNLRI=
+        b=d1EgDuGSgUmgvEWafe/vKw2/rMYKpKYPsI1uw7R91zFjgbxMGQOUapnOBPhS7VJXW
+         ojedJDF9dki5yV3MnSmqEraqBFzRzGXhwuthqBKbKrcz0SAPspGZRgkBXp/oaq+6zu
+         yJ5XRlJRpWK5UN2AH99y5x7qP4lrTyTZrzFUeCKY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Subject: [PATCH 4.9 46/61] xfrm: fix a warning in xfrm_policy_insert_list
+        stable@vger.kernel.org,
+        =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 53/95] ARM: dts: bcm2835-rpi-zero-w: Fix led polarity
 Date:   Mon,  1 Jun 2020 19:53:53 +0200
-Message-Id: <20200601174020.045122720@linuxfoundation.org>
+Message-Id: <20200601174029.712170513@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
-References: <20200601174010.316778377@linuxfoundation.org>
+In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
+References: <20200601174020.759151073@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,76 +46,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Vincent Stehlé <vincent.stehle@laposte.net>
 
-commit ed17b8d377eaf6b4a01d46942b4c647378a79bdd upstream.
+[ Upstream commit 58bb90ab415562eededb932455046924e65df342 ]
 
-This waring can be triggered simply by:
+The status "ACT" led on the Raspberry Pi Zero W is on when GPIO 47 is low.
 
-  # ip xfrm policy update src 192.168.1.1/24 dst 192.168.1.2/24 dir in \
-    priority 1 mark 0 mask 0x10  #[1]
-  # ip xfrm policy update src 192.168.1.1/24 dst 192.168.1.2/24 dir in \
-    priority 2 mark 0 mask 0x1   #[2]
-  # ip xfrm policy update src 192.168.1.1/24 dst 192.168.1.2/24 dir in \
-    priority 2 mark 0 mask 0x10  #[3]
+This has been verified on a board and somewhat confirmed by both the GPIO
+name ("STATUS_LED_N") and the reduced schematics [1].
 
-Then dmesg shows:
+[1]: https://www.raspberrypi.org/documentation/hardware/raspberrypi/schematics/rpi_SCH_ZeroW_1p1_reduced.pdf
 
-  [ ] WARNING: CPU: 1 PID: 7265 at net/xfrm/xfrm_policy.c:1548
-  [ ] RIP: 0010:xfrm_policy_insert_list+0x2f2/0x1030
-  [ ] Call Trace:
-  [ ]  xfrm_policy_inexact_insert+0x85/0xe50
-  [ ]  xfrm_policy_insert+0x4ba/0x680
-  [ ]  xfrm_add_policy+0x246/0x4d0
-  [ ]  xfrm_user_rcv_msg+0x331/0x5c0
-  [ ]  netlink_rcv_skb+0x121/0x350
-  [ ]  xfrm_netlink_rcv+0x66/0x80
-  [ ]  netlink_unicast+0x439/0x630
-  [ ]  netlink_sendmsg+0x714/0xbf0
-  [ ]  sock_sendmsg+0xe2/0x110
-
-The issue was introduced by Commit 7cb8a93968e3 ("xfrm: Allow inserting
-policies with matching mark and different priorities"). After that, the
-policies [1] and [2] would be able to be added with different priorities.
-
-However, policy [3] will actually match both [1] and [2]. Policy [1]
-was matched due to the 1st 'return true' in xfrm_policy_mark_match(),
-and policy [2] was matched due to the 2nd 'return true' in there. It
-caused WARN_ON() in xfrm_policy_insert_list().
-
-This patch is to fix it by only (the same value and priority) as the
-same policy in xfrm_policy_mark_match().
-
-Thanks to Yuehaibing, we could make this fix better.
-
-v1->v2:
-  - check policy->mark.v == pol->mark.v only without mask.
-
-Fixes: 7cb8a93968e3 ("xfrm: Allow inserting policies with matching mark and different priorities")
-Reported-by: Xiumei Mu <xmu@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 2c7c040c73e9 ("ARM: dts: bcm2835: Add Raspberry Pi Zero W")
+Signed-off-by: Vincent Stehlé <vincent.stehle@laposte.net>
+Cc: Stefan Wahren <stefan.wahren@i2se.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_policy.c |    7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ arch/arm/boot/dts/bcm2835-rpi-zero-w.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/xfrm/xfrm_policy.c
-+++ b/net/xfrm/xfrm_policy.c
-@@ -757,12 +757,7 @@ static void xfrm_policy_requeue(struct x
- static bool xfrm_policy_mark_match(struct xfrm_policy *policy,
- 				   struct xfrm_policy *pol)
- {
--	u32 mark = policy->mark.v & policy->mark.m;
--
--	if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
--		return true;
--
--	if ((mark & pol->mark.m) == pol->mark.v &&
-+	if (policy->mark.v == pol->mark.v &&
- 	    policy->priority == pol->priority)
- 		return true;
+diff --git a/arch/arm/boot/dts/bcm2835-rpi-zero-w.dts b/arch/arm/boot/dts/bcm2835-rpi-zero-w.dts
+index 5fcadb9cf992..9f7145b1cc5e 100644
+--- a/arch/arm/boot/dts/bcm2835-rpi-zero-w.dts
++++ b/arch/arm/boot/dts/bcm2835-rpi-zero-w.dts
+@@ -25,7 +25,7 @@
  
+ 	leds {
+ 		act {
+-			gpios = <&gpio 47 GPIO_ACTIVE_HIGH>;
++			gpios = <&gpio 47 GPIO_ACTIVE_LOW>;
+ 		};
+ 	};
+ 
+-- 
+2.25.1
+
 
 
