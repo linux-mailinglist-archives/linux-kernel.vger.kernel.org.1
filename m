@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 982971EA95A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0641EAA76
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729736AbgFASBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:01:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43616 "EHLO mail.kernel.org"
+        id S1729284AbgFASIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:08:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729706AbgFASAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:00:50 -0400
+        id S1730628AbgFASHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:07:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E12C207DF;
-        Mon,  1 Jun 2020 18:00:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4793820E65;
+        Mon,  1 Jun 2020 18:07:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034450;
-        bh=dgSSEQAkK9qAD0L2RT7SkaWn64DsyKwI6WQr/ioLUYY=;
+        s=default; t=1591034867;
+        bh=pmeOm4DiY82BXXrfgxWB1khpemV4WYpFdghwFx6yf30=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YCuSHI8uwF/LOwXp1CTkcniosa0G3HyzBr9Og1SWTA9/OE7Ea5FhNYejCSfkNk4RT
-         AmMfE3HiGmpssiRf9ZJAmcY0ht4AAOyadI8uNNgzdipN4VaPEFRu2D4HMA9IIKGcsy
-         3OXMHSxOmjodwUUc3HLgkVCOtiZ8jdfg1lJGOxo4=
+        b=iGs7XLr3Yxw/+a8WfM6ByquRT2JRBL9lCCRheSIPG95G7liwypTKfif2gK/2YWkNH
+         3apQqJRJhSrVlEzygl2OR6rasdp8Zyks1rDRKksq5YsySQqJNfM0j4jeMR5dnvj68E
+         BLeyasnOo/OcRenEd1XUOqEDtUEqkGnfIEWigZUU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Dave Wysochanski <dwysocha@redhat.com>,
         David Howells <dhowells@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 19/77] cachefiles: Fix race between read_waiter and read_copier involving op->to_do
-Date:   Mon,  1 Jun 2020 19:53:24 +0200
-Message-Id: <20200601174019.894338974@linuxfoundation.org>
+Subject: [PATCH 5.4 047/142] cachefiles: Fix race between read_waiter and read_copier involving op->to_do
+Date:   Mon,  1 Jun 2020 19:53:25 +0200
+Message-Id: <20200601174042.726403754@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
-References: <20200601174016.396817032@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -148,10 +148,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/fs/cachefiles/rdwr.c b/fs/cachefiles/rdwr.c
-index 5e9176ec0d3a..c073a0f680fd 100644
+index 44a3ce1e4ce4..ad057ed2b30b 100644
 --- a/fs/cachefiles/rdwr.c
 +++ b/fs/cachefiles/rdwr.c
-@@ -64,9 +64,9 @@ static int cachefiles_read_waiter(wait_queue_entry_t *wait, unsigned mode,
+@@ -60,9 +60,9 @@ static int cachefiles_read_waiter(wait_queue_entry_t *wait, unsigned mode,
  	object = container_of(op->op.object, struct cachefiles_object, fscache);
  	spin_lock(&object->work_lock);
  	list_add_tail(&monitor->op_link, &op->to_do);
