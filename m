@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED7F1EAA56
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6531EAAEF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730531AbgFASHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:07:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51908 "EHLO mail.kernel.org"
+        id S1731276AbgFASMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:12:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730375AbgFASGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:06:22 -0400
+        id S1731254AbgFASMf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:12:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40A172068D;
-        Mon,  1 Jun 2020 18:06:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 450C02065C;
+        Mon,  1 Jun 2020 18:12:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034781;
-        bh=WAsG+IIqP7u/cqze4JqjHv7AUTAdOv9GCNnX9aDnj1o=;
+        s=default; t=1591035154;
+        bh=n7ggVRg8Ev4nEuVBzNVX2QT3/uwX3CFNNKuRVWnICb8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cz1AOCh7uLz/RfMj7GK3kM/7+BM1PidW+gBlKqxS7092dap8DAwK85eRv0+tZ5Joe
-         O+z1AxMofWPD27WBVrTe8vtUdysv37/DNrzY2Axlb3iM2RLl0HdWTEu3O87tRTkzvh
-         n9v0+WcMVYFGzDlJ2882r/N6LCRwH4at2OXk3ny0=
+        b=Kra9kvgEOnWtZ1PuydDekr9D3s83NFi9Eo0wJ/tWqaogQAdNm1OX6CU4LJRwTFQDd
+         OliOpQaOacPj+jmOL2cGxc83XoRbpFESebjwRRIDzlOoiHWqKZ7/S2c/VpAY5Zm9af
+         KJc1Alr8e7ef7AF6u6UZ1i2bc8QTWR323tWvlMHg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Stephen Worley <sworley@cumulusnetworks.com>,
-        David Ahern <dsahern@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 011/142] net: nlmsg_cancel() if put fails for nhmsg
-Date:   Mon,  1 Jun 2020 19:52:49 +0200
-Message-Id: <20200601174039.149209956@linuxfoundation.org>
+        stable@vger.kernel.org, Eran Ben Elisha <eranbe@mellanox.com>,
+        Moshe Shemesh <moshe@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>
+Subject: [PATCH 5.6 032/177] net/mlx5: Fix a race when moving command interface to events mode
+Date:   Mon,  1 Jun 2020 19:52:50 +0200
+Message-Id: <20200601174051.566087378@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,195 +44,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Worley <sworley@cumulusnetworks.com>
+From: Eran Ben Elisha <eranbe@mellanox.com>
 
-[ Upstream commit d69100b8eee27c2d60ee52df76e0b80a8d492d34 ]
+[ Upstream commit d43b7007dbd1195a5b6b83213e49b1516aaf6f5e ]
 
-Fixes data remnant seen when we fail to reserve space for a
-nexthop group during a larger dump.
+After driver creates (via FW command) an EQ for commands, the driver will
+be informed on new commands completion by EQE. However, due to a race in
+driver's internal command mode metadata update, some new commands will
+still be miss-handled by driver as if we are in polling mode. Such commands
+can get two non forced completion, leading to already freed command entry
+access.
 
-If we fail the reservation, we goto nla_put_failure and
-cancel the message.
+CREATE_EQ command, that maps EQ to the command queue must be posted to the
+command queue while it is empty and no other command should be posted.
 
-Reproduce with the following iproute2 commands:
-=====================
-ip link add dummy1 type dummy
-ip link add dummy2 type dummy
-ip link add dummy3 type dummy
-ip link add dummy4 type dummy
-ip link add dummy5 type dummy
-ip link add dummy6 type dummy
-ip link add dummy7 type dummy
-ip link add dummy8 type dummy
-ip link add dummy9 type dummy
-ip link add dummy10 type dummy
-ip link add dummy11 type dummy
-ip link add dummy12 type dummy
-ip link add dummy13 type dummy
-ip link add dummy14 type dummy
-ip link add dummy15 type dummy
-ip link add dummy16 type dummy
-ip link add dummy17 type dummy
-ip link add dummy18 type dummy
-ip link add dummy19 type dummy
-ip link add dummy20 type dummy
-ip link add dummy21 type dummy
-ip link add dummy22 type dummy
-ip link add dummy23 type dummy
-ip link add dummy24 type dummy
-ip link add dummy25 type dummy
-ip link add dummy26 type dummy
-ip link add dummy27 type dummy
-ip link add dummy28 type dummy
-ip link add dummy29 type dummy
-ip link add dummy30 type dummy
-ip link add dummy31 type dummy
-ip link add dummy32 type dummy
+Add SW mechanism that once the CREATE_EQ command is about to be executed,
+all other commands will return error without being sent to the FW. Allow
+sending other commands only after successfully changing the driver's
+internal command mode metadata.
+We can safely return error to all other commands while creating the command
+EQ, as all other commands might be sent from the user/application during
+driver load. Application can rerun them later after driver's load was
+finished.
 
-ip link set dummy1 up
-ip link set dummy2 up
-ip link set dummy3 up
-ip link set dummy4 up
-ip link set dummy5 up
-ip link set dummy6 up
-ip link set dummy7 up
-ip link set dummy8 up
-ip link set dummy9 up
-ip link set dummy10 up
-ip link set dummy11 up
-ip link set dummy12 up
-ip link set dummy13 up
-ip link set dummy14 up
-ip link set dummy15 up
-ip link set dummy16 up
-ip link set dummy17 up
-ip link set dummy18 up
-ip link set dummy19 up
-ip link set dummy20 up
-ip link set dummy21 up
-ip link set dummy22 up
-ip link set dummy23 up
-ip link set dummy24 up
-ip link set dummy25 up
-ip link set dummy26 up
-ip link set dummy27 up
-ip link set dummy28 up
-ip link set dummy29 up
-ip link set dummy30 up
-ip link set dummy31 up
-ip link set dummy32 up
-
-ip link set dummy33 up
-ip link set dummy34 up
-
-ip link set vrf-red up
-ip link set vrf-blue up
-
-ip link set dummyVRFred up
-ip link set dummyVRFblue up
-
-ip ro add 1.1.1.1/32 dev dummy1
-ip ro add 1.1.1.2/32 dev dummy2
-ip ro add 1.1.1.3/32 dev dummy3
-ip ro add 1.1.1.4/32 dev dummy4
-ip ro add 1.1.1.5/32 dev dummy5
-ip ro add 1.1.1.6/32 dev dummy6
-ip ro add 1.1.1.7/32 dev dummy7
-ip ro add 1.1.1.8/32 dev dummy8
-ip ro add 1.1.1.9/32 dev dummy9
-ip ro add 1.1.1.10/32 dev dummy10
-ip ro add 1.1.1.11/32 dev dummy11
-ip ro add 1.1.1.12/32 dev dummy12
-ip ro add 1.1.1.13/32 dev dummy13
-ip ro add 1.1.1.14/32 dev dummy14
-ip ro add 1.1.1.15/32 dev dummy15
-ip ro add 1.1.1.16/32 dev dummy16
-ip ro add 1.1.1.17/32 dev dummy17
-ip ro add 1.1.1.18/32 dev dummy18
-ip ro add 1.1.1.19/32 dev dummy19
-ip ro add 1.1.1.20/32 dev dummy20
-ip ro add 1.1.1.21/32 dev dummy21
-ip ro add 1.1.1.22/32 dev dummy22
-ip ro add 1.1.1.23/32 dev dummy23
-ip ro add 1.1.1.24/32 dev dummy24
-ip ro add 1.1.1.25/32 dev dummy25
-ip ro add 1.1.1.26/32 dev dummy26
-ip ro add 1.1.1.27/32 dev dummy27
-ip ro add 1.1.1.28/32 dev dummy28
-ip ro add 1.1.1.29/32 dev dummy29
-ip ro add 1.1.1.30/32 dev dummy30
-ip ro add 1.1.1.31/32 dev dummy31
-ip ro add 1.1.1.32/32 dev dummy32
-
-ip next add id 1 via 1.1.1.1 dev dummy1
-ip next add id 2 via 1.1.1.2 dev dummy2
-ip next add id 3 via 1.1.1.3 dev dummy3
-ip next add id 4 via 1.1.1.4 dev dummy4
-ip next add id 5 via 1.1.1.5 dev dummy5
-ip next add id 6 via 1.1.1.6 dev dummy6
-ip next add id 7 via 1.1.1.7 dev dummy7
-ip next add id 8 via 1.1.1.8 dev dummy8
-ip next add id 9 via 1.1.1.9 dev dummy9
-ip next add id 10 via 1.1.1.10 dev dummy10
-ip next add id 11 via 1.1.1.11 dev dummy11
-ip next add id 12 via 1.1.1.12 dev dummy12
-ip next add id 13 via 1.1.1.13 dev dummy13
-ip next add id 14 via 1.1.1.14 dev dummy14
-ip next add id 15 via 1.1.1.15 dev dummy15
-ip next add id 16 via 1.1.1.16 dev dummy16
-ip next add id 17 via 1.1.1.17 dev dummy17
-ip next add id 18 via 1.1.1.18 dev dummy18
-ip next add id 19 via 1.1.1.19 dev dummy19
-ip next add id 20 via 1.1.1.20 dev dummy20
-ip next add id 21 via 1.1.1.21 dev dummy21
-ip next add id 22 via 1.1.1.22 dev dummy22
-ip next add id 23 via 1.1.1.23 dev dummy23
-ip next add id 24 via 1.1.1.24 dev dummy24
-ip next add id 25 via 1.1.1.25 dev dummy25
-ip next add id 26 via 1.1.1.26 dev dummy26
-ip next add id 27 via 1.1.1.27 dev dummy27
-ip next add id 28 via 1.1.1.28 dev dummy28
-ip next add id 29 via 1.1.1.29 dev dummy29
-ip next add id 30 via 1.1.1.30 dev dummy30
-ip next add id 31 via 1.1.1.31 dev dummy31
-ip next add id 32 via 1.1.1.32 dev dummy32
-
-i=100
-
-while [ $i -le 200 ]
-do
-ip next add id $i group 1/2/3/4/5/6/7/8/9/10/11/12/13/14/15/16/17/18/19
-
-	echo $i
-
-	((i++))
-
-done
-
-ip next add id 999 group 1/2/3/4/5/6
-
-ip next ls
-
-========================
-
-Fixes: ab84be7e54fc ("net: Initial nexthop code")
-Signed-off-by: Stephen Worley <sworley@cumulusnetworks.com>
-Reviewed-by: David Ahern <dsahern@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
+Signed-off-by: Eran Ben Elisha <eranbe@mellanox.com>
+Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/nexthop.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c |   35 +++++++++++++++++++++++---
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c  |    3 ++
+ include/linux/mlx5/driver.h                   |    6 ++++
+ 3 files changed, 40 insertions(+), 4 deletions(-)
 
---- a/net/ipv4/nexthop.c
-+++ b/net/ipv4/nexthop.c
-@@ -277,6 +277,7 @@ out:
- 	return 0;
+--- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+@@ -848,6 +848,14 @@ static void free_msg(struct mlx5_core_de
+ static void mlx5_free_cmd_msg(struct mlx5_core_dev *dev,
+ 			      struct mlx5_cmd_msg *msg);
  
- nla_put_failure:
-+	nlmsg_cancel(skb, nlh);
- 	return -EMSGSIZE;
++static bool opcode_allowed(struct mlx5_cmd *cmd, u16 opcode)
++{
++	if (cmd->allowed_opcode == CMD_ALLOWED_OPCODE_ALL)
++		return true;
++
++	return cmd->allowed_opcode == opcode;
++}
++
+ static void cmd_work_handler(struct work_struct *work)
+ {
+ 	struct mlx5_cmd_work_ent *ent = container_of(work, struct mlx5_cmd_work_ent, work);
+@@ -914,7 +922,8 @@ static void cmd_work_handler(struct work
+ 
+ 	/* Skip sending command to fw if internal error */
+ 	if (pci_channel_offline(dev->pdev) ||
+-	    dev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR) {
++	    dev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR ||
++	    !opcode_allowed(&dev->cmd, ent->op)) {
+ 		u8 status = 0;
+ 		u32 drv_synd;
+ 
+@@ -1405,6 +1414,22 @@ static void create_debugfs_files(struct
+ 	mlx5_cmdif_debugfs_init(dev);
  }
  
++void mlx5_cmd_allowed_opcode(struct mlx5_core_dev *dev, u16 opcode)
++{
++	struct mlx5_cmd *cmd = &dev->cmd;
++	int i;
++
++	for (i = 0; i < cmd->max_reg_cmds; i++)
++		down(&cmd->sem);
++	down(&cmd->pages_sem);
++
++	cmd->allowed_opcode = opcode;
++
++	up(&cmd->pages_sem);
++	for (i = 0; i < cmd->max_reg_cmds; i++)
++		up(&cmd->sem);
++}
++
+ static void mlx5_cmd_change_mod(struct mlx5_core_dev *dev, int mode)
+ {
+ 	struct mlx5_cmd *cmd = &dev->cmd;
+@@ -1681,12 +1706,13 @@ static int cmd_exec(struct mlx5_core_dev
+ 	int err;
+ 	u8 status = 0;
+ 	u32 drv_synd;
++	u16 opcode;
+ 	u8 token;
+ 
++	opcode = MLX5_GET(mbox_in, in, opcode);
+ 	if (pci_channel_offline(dev->pdev) ||
+-	    dev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR) {
+-		u16 opcode = MLX5_GET(mbox_in, in, opcode);
+-
++	    dev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR ||
++	    !opcode_allowed(&dev->cmd, opcode)) {
+ 		err = mlx5_internal_err_ret_value(dev, opcode, &drv_synd, &status);
+ 		MLX5_SET(mbox_out, out, status, status);
+ 		MLX5_SET(mbox_out, out, syndrome, drv_synd);
+@@ -1988,6 +2014,7 @@ int mlx5_cmd_init(struct mlx5_core_dev *
+ 	mlx5_core_dbg(dev, "descriptor at dma 0x%llx\n", (unsigned long long)(cmd->dma));
+ 
+ 	cmd->mode = CMD_MODE_POLLING;
++	cmd->allowed_opcode = CMD_ALLOWED_OPCODE_ALL;
+ 
+ 	create_msg_cache(dev);
+ 
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+@@ -611,11 +611,13 @@ static int create_async_eqs(struct mlx5_
+ 		.nent = MLX5_NUM_CMD_EQE,
+ 		.mask[0] = 1ull << MLX5_EVENT_TYPE_CMD,
+ 	};
++	mlx5_cmd_allowed_opcode(dev, MLX5_CMD_OP_CREATE_EQ);
+ 	err = setup_async_eq(dev, &table->cmd_eq, &param, "cmd");
+ 	if (err)
+ 		goto err1;
+ 
+ 	mlx5_cmd_use_events(dev);
++	mlx5_cmd_allowed_opcode(dev, CMD_ALLOWED_OPCODE_ALL);
+ 
+ 	param = (struct mlx5_eq_param) {
+ 		.irq_index = 0,
+@@ -645,6 +647,7 @@ err2:
+ 	mlx5_cmd_use_polling(dev);
+ 	cleanup_async_eq(dev, &table->cmd_eq, "cmd");
+ err1:
++	mlx5_cmd_allowed_opcode(dev, CMD_ALLOWED_OPCODE_ALL);
+ 	mlx5_eq_notifier_unregister(dev, &table->cq_err_nb);
+ 	return err;
+ }
+--- a/include/linux/mlx5/driver.h
++++ b/include/linux/mlx5/driver.h
+@@ -301,6 +301,7 @@ struct mlx5_cmd {
+ 	struct semaphore sem;
+ 	struct semaphore pages_sem;
+ 	int	mode;
++	u16     allowed_opcode;
+ 	struct mlx5_cmd_work_ent *ent_arr[MLX5_MAX_COMMANDS];
+ 	struct dma_pool *pool;
+ 	struct mlx5_cmd_debug dbg;
+@@ -893,10 +894,15 @@ mlx5_frag_buf_get_idx_last_contig_stride
+ 	return min_t(u32, last_frag_stride_idx - fbc->strides_offset, fbc->sz_m1);
+ }
+ 
++enum {
++	CMD_ALLOWED_OPCODE_ALL,
++};
++
+ int mlx5_cmd_init(struct mlx5_core_dev *dev);
+ void mlx5_cmd_cleanup(struct mlx5_core_dev *dev);
+ void mlx5_cmd_use_events(struct mlx5_core_dev *dev);
+ void mlx5_cmd_use_polling(struct mlx5_core_dev *dev);
++void mlx5_cmd_allowed_opcode(struct mlx5_core_dev *dev, u16 opcode);
+ 
+ struct mlx5_async_ctx {
+ 	struct mlx5_core_dev *dev;
 
 
