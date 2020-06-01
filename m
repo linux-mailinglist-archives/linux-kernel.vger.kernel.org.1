@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 752BA1EAB3B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5961EA9CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730574AbgFASP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:15:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35678 "EHLO mail.kernel.org"
+        id S1728285AbgFASC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:02:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730497AbgFASPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:15:23 -0400
+        id S1728598AbgFASCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:02:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E6AC82073B;
-        Mon,  1 Jun 2020 18:15:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D53D207DA;
+        Mon,  1 Jun 2020 18:02:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035323;
-        bh=SqG4whJ1VEAEkNByq572cqCP5htHqrxHUkMAtyTWFuc=;
+        s=default; t=1591034543;
+        bh=nDPx907IiAgKo62mVevumnODl8p64fK6WNMF6tym8/I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ik69irgXtgwVWR89oDnRi2sBTKPY7POU/+qPmGQHKx+TDPkhaaX7Z6LQUcoNKSvJr
-         bbR0HgpFj2xxnBpohlDf/qx1UOsUIS+vw6WwRNFMrnt/LtK6weq7hNhCu3WvOGomd6
-         KEE8pEDINq3f7HDL7CbRgOTi18qZji6k1RiHDSK8=
+        b=YyhTygTPt0q2JqpkrE/3yurSDteOSBgD9xWwqaqRXj6yS3YnzKBakbzleTLkoyYhs
+         rPmwpKhXa9bMoTd2R4jadZxKbVkxAORVX9PMF/tc2IIPHngiaKc0v9BPCHwvGq/KRb
+         leDDFeUo3J+4h6u8ydQnW4d8VgV/S4XQWzffvZNE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>,
-        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 108/177] ARM: dts: mmp3: Drop usb-nop-xceiv from HSIC phy
-Date:   Mon,  1 Jun 2020 19:54:06 +0200
-Message-Id: <20200601174057.607240412@linuxfoundation.org>
+        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Subject: [PATCH 4.14 62/77] ip_vti: receive ipip packet by calling ip_tunnel_rcv
+Date:   Mon,  1 Jun 2020 19:54:07 +0200
+Message-Id: <20200601174027.104407992@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
+References: <20200601174016.396817032@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,51 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lubomir Rintel <lkundrak@v3.sk>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit 24cf6eef79a7e85cfd2ef9dea52f769c9192fc6e ]
+commit 976eba8ab596bab94b9714cd46d38d5c6a2c660d upstream.
 
-"usb-nop-xceiv" is good enough if we don't lose the configuration done
-by the firmware, but we'd really prefer a real driver.
+In Commit dd9ee3444014 ("vti4: Fix a ipip packet processing bug in
+'IPCOMP' virtual tunnel"), it tries to receive IPIP packets in vti
+by calling xfrm_input(). This case happens when a small packet or
+frag sent by peer is too small to get compressed.
 
-Unfortunately, the PHY core is odd in that when the node is compatible
-with "usb-nop-xceiv", it ignores the other compatible strings. Let's
-just remove it.
+However, xfrm_input() will still get to the IPCOMP path where skb
+sec_path is set, but never dropped while it should have been done
+in vti_ipcomp4_protocol.cb_handler(vti_rcv_cb), as it's not an
+ipcomp4 packet. This will cause that the packet can never pass
+xfrm4_policy_check() in the upper protocol rcv functions.
 
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+So this patch is to call ip_tunnel_rcv() to process IPIP packets
+instead.
+
+Fixes: dd9ee3444014 ("vti4: Fix a ipip packet processing bug in 'IPCOMP' virtual tunnel")
+Reported-by: Xiumei Mu <xmu@redhat.com>
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arm/boot/dts/mmp3.dtsi | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ net/ipv4/ip_vti.c |   23 ++++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/mmp3.dtsi b/arch/arm/boot/dts/mmp3.dtsi
-index 3e28f0dc9df4..1e25bf998ab5 100644
---- a/arch/arm/boot/dts/mmp3.dtsi
-+++ b/arch/arm/boot/dts/mmp3.dtsi
-@@ -202,8 +202,7 @@
- 			};
+--- a/net/ipv4/ip_vti.c
++++ b/net/ipv4/ip_vti.c
+@@ -98,7 +98,28 @@ static int vti_rcv_proto(struct sk_buff
  
- 			hsic_phy0: hsic-phy@f0001800 {
--				compatible = "marvell,mmp3-hsic-phy",
--					     "usb-nop-xceiv";
-+				compatible = "marvell,mmp3-hsic-phy";
- 				reg = <0xf0001800 0x40>;
- 				#phy-cells = <0>;
- 				status = "disabled";
-@@ -224,8 +223,7 @@
- 			};
+ static int vti_rcv_tunnel(struct sk_buff *skb)
+ {
+-	return vti_rcv(skb, ip_hdr(skb)->saddr, true);
++	struct ip_tunnel_net *itn = net_generic(dev_net(skb->dev), vti_net_id);
++	const struct iphdr *iph = ip_hdr(skb);
++	struct ip_tunnel *tunnel;
++
++	tunnel = ip_tunnel_lookup(itn, skb->dev->ifindex, TUNNEL_NO_KEY,
++				  iph->saddr, iph->daddr, 0);
++	if (tunnel) {
++		struct tnl_ptk_info tpi = {
++			.proto = htons(ETH_P_IP),
++		};
++
++		if (!xfrm4_policy_check(NULL, XFRM_POLICY_IN, skb))
++			goto drop;
++		if (iptunnel_pull_header(skb, 0, tpi.proto, false))
++			goto drop;
++		return ip_tunnel_rcv(tunnel, skb, &tpi, NULL, false);
++	}
++
++	return -EINVAL;
++drop:
++	kfree_skb(skb);
++	return 0;
+ }
  
- 			hsic_phy1: hsic-phy@f0002800 {
--				compatible = "marvell,mmp3-hsic-phy",
--					     "usb-nop-xceiv";
-+				compatible = "marvell,mmp3-hsic-phy";
- 				reg = <0xf0002800 0x40>;
- 				#phy-cells = <0>;
- 				status = "disabled";
--- 
-2.25.1
-
+ static int vti_rcv_cb(struct sk_buff *skb, int err)
 
 
