@@ -2,216 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4C31E9B89
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 04:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C871E9B9B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 04:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727119AbgFACDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 May 2020 22:03:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726555AbgFACDb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 May 2020 22:03:31 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03372C061A0E;
-        Sun, 31 May 2020 19:03:29 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id s10so2780956pgm.0;
-        Sun, 31 May 2020 19:03:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id;
-        bh=fnte9zCNQnBgZL4ODRWYE0WufaBRHwVciP2Wh+TB8HE=;
-        b=S4CHPPsr9HNz3H/JcvEbrAKfz42d0VgBvfHlyYj5vZfaI61DMId+aEQf1CTaY/Nco7
-         MU0ETDPcAHpy8WmAv6CmYrwuos9gsk/DzF+OgPreXXXAfan8JAknvn0PPXrOe8m04LJi
-         N+GoF9ZmVWe1sqwgzczOoZJQdwvZPxis5aJbvfTejUwN1L6/B1KFG+Jul1S5BdW5n0+o
-         iYbeAtVkuRvMPdhe7M1QV6Bn8ETQRoPCqcsBu2OwJCMtD7XmRQTaNyQukmnApH/HAbwO
-         RpGmMhNR0lDfAMMn4URTOhA1m9jLnbLy4uRFEXbC3jCdpcZTX7/eT7LBY7P2tWpXP5mD
-         qTKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
-        bh=fnte9zCNQnBgZL4ODRWYE0WufaBRHwVciP2Wh+TB8HE=;
-        b=O45TcEEMxQkOInNkNzMHJNVXcsGn+XxmO4bMLb8eE0Q0l0U3jg0d8NRuW2E0DDsbeT
-         kyExDY/n57L009xdL+4tVKrlyetzDbAz2QvdU5/zGKXJkYrW28l8pPWE7X7OtiYwVWoK
-         11ESEXdiDru30jO4ugkEPo8WFMblkL3m/J8KLwG7oVPlYtnwHLXKiJbvITW5OfT886hM
-         eTxZeRA3sl5TTc3UrJwtW80R9RVAbYqYsyXOfLflNTEggJjt+HVZMEsD42YGVQDfpIqU
-         F6+9Qb4ExdpBkt3Nm5wT94C4vuXLN/zwfvm9DwWILeUQ3DladYnxEyC51awnYxBtjgHy
-         G2fg==
-X-Gm-Message-State: AOAM533OmH8QaBB+ja0vkVOrXO9nLOArZlwFGYndmu6fRxNAAnjZ+atT
-        f+VCVkA+lNYPWdAtaFDLDItkwtDv
-X-Google-Smtp-Source: ABdhPJyuEPIN3Lrooxz6VUSgFq07+VwiCFZiAYjG4wFK5HIQzRJ6gyyw+Dy3xGFdI5EMRMjAJWjUug==
-X-Received: by 2002:aa7:9ae3:: with SMTP id y3mr3748752pfp.224.1590977009393;
-        Sun, 31 May 2020 19:03:29 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l67sm12681043pfl.81.2020.05.31.19.03.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 31 May 2020 19:03:28 -0700 (PDT)
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] hwmon updates for v5.8
-Date:   Sun, 31 May 2020 19:03:27 -0700
-Message-Id: <20200601020327.246402-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.17.1
+        id S1727056AbgFACQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 May 2020 22:16:57 -0400
+Received: from mail-eopbgr30084.outbound.protection.outlook.com ([40.107.3.84]:29413
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726218AbgFACQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 May 2020 22:16:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aaBC2KHnO0at449N3rMSMUK7TB1lC846m3Ke870kSFMUHLYN7Xp6toWeayj097+v1z4H9WOB9X6ZbewzS13GeKgIBIPkeDkK5qrGX1KC/iVG3l3Qach37Nq9+2qa4GUEqLrtT3E4fGl/PkpN6uIPLCoUYp5CRhdMBnNvIC3H+6+K+2w5DUVSi28F8dD2E+M+YTKQg9eV5Friq3ipnMjErkLfBBMnUNAq35aVRCRVKtcw1wV14o5dQCTwuG23kx604kS1DxR8rUzrBoNgfgLDSaQI2GHAODrGtk1Yylq5GfzqpS7bDNbhshueXNeIJZpqGJF4EgHMNG5TLJrbnFBjZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YJMPA9QMAzEYk6cEERdf4JbmBymwZMKNaMK8ZPolpXA=;
+ b=DWNjShN57c7DJjgND/U/C2naMTkSkoBtGR9IY4J1O8LaQhyMv6V4UuK+3BYspJT0nngnhld9BgXUYz3mp9lZiX/0L55P33Eim/thf7nUBeCEpVfh9OYbk7LVdc3+/lt4A8K4c9pd3DiA+CJqdkj6H+3UpwWbdJV56OvnkF8K97F8yGuHx0QwT+QnfUbEd7aV0AZjpvt0asVngPb3T1B7ckgimrF1XaFumnqjDo9ed8LD31WOgwNmHVg7rdX8GeEhXyBIkrssdbNtxdHBS93nGuTktCEXUxUtyUsRRenHLDscaHJ8Glz/U8oUyfsjB99hvtf5XaVFoO2Fu1MZoHJ8vg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YJMPA9QMAzEYk6cEERdf4JbmBymwZMKNaMK8ZPolpXA=;
+ b=GwvGw0xDUDTCqAiCo3FzUQnRUxbN7sgo6ZuyO2EeYdFvaa1tt99Eq7PdHJiun9cS/OGawcnAzy3lbFt99c835+PUSD6se0W0J5tiw6o0Bi+h8V7ygq2j9rJim6PXpyM8hKtYpQiw3UIhiXvebfLkFqzdyH8PFNef7qAwOFrLW3Q=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB6PR0402MB2744.eurprd04.prod.outlook.com (2603:10a6:4:94::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.21; Mon, 1 Jun
+ 2020 02:16:52 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::d17b:d767:19c3:b871]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::d17b:d767:19c3:b871%6]) with mapi id 15.20.3045.022; Mon, 1 Jun 2020
+ 02:16:52 +0000
+From:   peng.fan@nxp.com
+To:     shawnguo@kernel.org, fabio.estevam@nxp.com, kernel@pengutronix.de,
+        aisheng.dong@nxp.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com, leonard.crestez@nxp.com, daniel.baluta@nxp.com,
+        l.stach@pengutronix.de, devicetree@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH 0/3] arm64: dts: imx8qxp: dtb aliases fix/update
+Date:   Mon,  1 Jun 2020 10:06:17 +0800
+Message-Id: <1590977180-9957-1-git-send-email-peng.fan@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR06CA0157.apcprd06.prod.outlook.com
+ (2603:1096:1:1e::11) To DB6PR0402MB2760.eurprd04.prod.outlook.com
+ (2603:10a6:4:a1::14)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by SG2PR06CA0157.apcprd06.prod.outlook.com (2603:1096:1:1e::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3045.17 via Frontend Transport; Mon, 1 Jun 2020 02:16:47 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [119.31.174.66]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 4f5f4314-6cda-402f-7106-08d805d1d8b9
+X-MS-TrafficTypeDiagnostic: DB6PR0402MB2744:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB6PR0402MB2744EA3997227438FA9B2AB7888A0@DB6PR0402MB2744.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2276;
+X-Forefront-PRVS: 0421BF7135
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SNW+8ZcU7rEi+HJrlt/ZRjMJuduSsvD1k8qb+1jZlesmzBIn+dcfWn4ulG2otXLy24WUMAkeAQulQN96kXeQ6rpP6CfDrxMCdRrzKgfvsxptsqRExSVOGHXdOjPbVG9guaDzewx8oPMQIoh6MhN1KrCcglJneqYYTj4rg39g6fbbqrZASQvnFSpqqNxqx34xIQQ23CVYKgprhLcmOlKtFQLl5jPK3ipibU4nfVh+YbemfJBelexUt/IHMEQfsYU92SjnluDHQnTVDHyPO6NTvN5t37qUaiEvYBWrhUce+qjgGJ9AR7rlA2awTIXnw1DJtUSxF58+md/Z99kDW0Dx7QEwfEC1olMljj4MgLrXa8tiUZfwA67ksPFMXJ4tQl99AKb588xHkNHxbxo9DBANMQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(376002)(136003)(346002)(396003)(39860400002)(26005)(316002)(52116002)(6666004)(186003)(16526019)(6506007)(8676002)(6512007)(9686003)(478600001)(6486002)(15650500001)(8936002)(4326008)(69590400007)(2906002)(36756003)(66946007)(66476007)(66556008)(2616005)(956004)(86362001)(83380400001)(4744005)(5660300002)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: gEeajkaOR4nYJKvmNv7Bi+xlpBIygq0hLhTbftUNJuQCVdlfqDKNK4QI4npUhOFC9tpS77gonDcHSohJQRKsLOoI+EOQ2xKB9DcvdHON5gGHYeADgVwHXfQTeJ0TYE7n9z8DBzbXEt+WjDJbIilaB1EGx9Z/bciAG3uogSSNIpvDAI9PYTYADOiDACziIo6cX6+YQI0dmvBZJ2ufb4zIbI87RShJPqNuEa1h6yaVqZgzJy8MB3g9Dqv3YSbBgRP0r91MHzztiSt1xxk0Mn8WxG9/f9X9pkcVOnz2zN34zNLgSFCIA+MxGAXj4gnR88tr76gnhLj0oYA/q49WLeJjdBAva+1WyVXvKfe49Opy8QFVBC4zRP482kzcl6acRVB+jXuuyFKmkgAsKF5L3vkHr++GRKzJVJ7iIDrp4WHF2XHDmvNchU1vSZEIdN1U9X//Sh9B2jLKsv2Vq4nkK4LKJSWhhCCvPbYtXi17I7DHSv0=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4f5f4314-6cda-402f-7106-08d805d1d8b9
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2020 02:16:52.0788
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ed3m5laOHHgGpJCV4SJ4PXJJ3DFljW/OSLLA8+kSnHm8h2DWvuEmpuVg/rLx64pusiubKxYzlhqXNIDkj6zYXQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2744
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+From: Peng Fan <peng.fan@nxp.com>
 
-Please pull hwmon updates for Linux v5.8 from signed tag:
+Minor patchset to fix and update alias for i.MX8QXP
 
-    git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v5.8
+Peng Fan (3):
+  arm64: dts: imx8qxp: add alias for lsio MU
+  arm64: dts: imx8qxp: add i2c aliases
+  arm64: dts: imx8qxp: Add ethernet alias
 
-Thanks,
-Guenter
-------
+ arch/arm64/boot/dts/freescale/imx8qxp.dtsi | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-The following changes since commit b9bbe6ed63b2b9f2c9ee5cbd0f2c946a2723f4ce:
+-- 
+2.16.4
 
-  Linux 5.7-rc6 (2020-05-17 16:48:37 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git tags/hwmon-for-v5.8
-
-for you to fetch changes up to 87976ce2825d9f1ca2e70ee7d38dec490ad5a6e2:
-
-  hwmon: Add Baikal-T1 PVT sensor driver (2020-05-28 07:59:45 -0700)
-
-----------------------------------------------------------------
-hwmon updates for v5.8
-
-Infrastructure
-- Add notification support
-
-New drivers
-- Baikal-T1 PVT sensor driver
-- amd_energy driver to report energy counters
-- Driver for Maxim MAX16601
-- Gateworks System Controller
-
-Various
-- applesmc: avoid overlong udelay()
-- dell-smm: Use one DMI match for all XPS models
-- ina2xx: Implement alert functions
-- lm70: Add support for ACPI
-- lm75: Fix coding-style warnings
-- lm90: Add max6654 support to lm90 driver
-- nct7802: Replace container_of() API
-- nct7904: Set default timeout
-- nct7904: Add watchdog function
-- pmbus: Improve initialization of 'currpage' and 'currphase'
-
-----------------------------------------------------------------
-Akinobu Mita (1):
-      hwmon: Reduce indentation level in __hwmon_device_register()
-
-Alex Qiu (1):
-      hwmon: (ina2xx) Implement alert functions
-
-Andrej Picej (1):
-      hwmon: (lm70) Add support for ACPI
-
-Arnd Bergmann (1):
-      hwmon: (applesmc) avoid overlong udelay()
-
-Guenter Roeck (4):
-      hwmon: (pmbus) Improve initialization of 'currpage' and 'currphase'
-      hwmon: (pmbus) Driver for Maxim MAX16601
-      Merge tag 'ib-mfd-hwmon-v5.8' into hwmon-next
-      hwmon: Add notification support
-
-Josh Lehan (1):
-      hwmon: (lm90) Add max6654 support to lm90 driver
-
-Michal Orzel (1):
-      hwmon: (lm75) Fix all coding-style warnings on lm75 driver
-
-Naveen Krishna Chatradhi (3):
-      hwmon: Add amd_energy driver to report energy counters
-      hwmon: (amd_energy) Add documentation
-      MAINTAINERS: add entry for AMD energy driver
-
-Serge Semin (2):
-      dt-bindings: hwmon: Add Baikal-T1 PVT sensor binding
-      hwmon: Add Baikal-T1 PVT sensor driver
-
-Thomas Hebb (1):
-      hwmon: (dell-smm) Use one DMI match for all XPS models
-
-Tim Harvey (3):
-      dt-bindings: mfd: Add Gateworks System Controller bindings
-      mfd: Add Gateworks System Controller core driver
-      hwmon: Add Gateworks System Controller support
-
-Wei Yongjun (1):
-      hwmon: (amd_energy) Missing platform_driver_unregister() on error in amd_energy_init()
-
-Wolfram Sang (1):
-      hwmon: (adt7411) update contact email
-
-Yuechao Zhao (2):
-      hwmon: (nct7904) Add watchdog function
-      hwmon: (nct7904) Set default timeout
-
-hailizheng (1):
-      hwmon: (nct7802) Replace container_of() API
-
-zhouchuangao (1):
-      hwmon : (nct6775) Use kobj_to_dev() API
-
- .../devicetree/bindings/hwmon/baikal,bt1-pvt.yaml  |  107 ++
- .../devicetree/bindings/mfd/gateworks-gsc.yaml     |  196 ++++
- Documentation/hwmon/amd_energy.rst                 |  109 ++
- Documentation/hwmon/bt1-pvt.rst                    |  117 ++
- Documentation/hwmon/gsc-hwmon.rst                  |   53 +
- Documentation/hwmon/ina2xx.rst                     |   19 +
- Documentation/hwmon/index.rst                      |    4 +
- Documentation/hwmon/lm90.rst                       |   23 +-
- Documentation/hwmon/max16601.rst                   |  159 +++
- MAINTAINERS                                        |   18 +
- drivers/hwmon/Kconfig                              |   59 +-
- drivers/hwmon/Makefile                             |    3 +
- drivers/hwmon/adt7411.c                            |    3 +-
- drivers/hwmon/amd_energy.c                         |  408 +++++++
- drivers/hwmon/applesmc.c                           |   12 +-
- drivers/hwmon/bt1-pvt.c                            | 1146 ++++++++++++++++++++
- drivers/hwmon/bt1-pvt.h                            |  244 +++++
- drivers/hwmon/dell-smm-hwmon.c                     |   26 +-
- drivers/hwmon/gsc-hwmon.c                          |  390 +++++++
- drivers/hwmon/hwmon.c                              |  136 ++-
- drivers/hwmon/ina2xx.c                             |  183 ++++
- drivers/hwmon/lm70.c                               |   47 +-
- drivers/hwmon/lm75.c                               |    8 +-
- drivers/hwmon/lm75.h                               |   31 +-
- drivers/hwmon/lm90.c                               |   45 +-
- drivers/hwmon/nct6775.c                            |   10 +-
- drivers/hwmon/nct7802.c                            |    6 +-
- drivers/hwmon/nct7904.c                            |  138 ++-
- drivers/hwmon/pmbus/Kconfig                        |    9 +
- drivers/hwmon/pmbus/Makefile                       |    1 +
- drivers/hwmon/pmbus/max16601.c                     |  314 ++++++
- drivers/hwmon/pmbus/pmbus_core.c                   |    8 +-
- drivers/mfd/Kconfig                                |   15 +
- drivers/mfd/Makefile                               |    1 +
- drivers/mfd/gateworks-gsc.c                        |  277 +++++
- include/linux/hwmon.h                              |    3 +
- include/linux/mfd/gsc.h                            |   76 ++
- include/linux/platform_data/gsc_hwmon.h            |   44 +
- 38 files changed, 4342 insertions(+), 106 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/hwmon/baikal,bt1-pvt.yaml
- create mode 100644 Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml
- create mode 100644 Documentation/hwmon/amd_energy.rst
- create mode 100644 Documentation/hwmon/bt1-pvt.rst
- create mode 100644 Documentation/hwmon/gsc-hwmon.rst
- create mode 100644 Documentation/hwmon/max16601.rst
- create mode 100644 drivers/hwmon/amd_energy.c
- create mode 100644 drivers/hwmon/bt1-pvt.c
- create mode 100644 drivers/hwmon/bt1-pvt.h
- create mode 100644 drivers/hwmon/gsc-hwmon.c
- create mode 100644 drivers/hwmon/pmbus/max16601.c
- create mode 100644 drivers/mfd/gateworks-gsc.c
- create mode 100644 include/linux/mfd/gsc.h
- create mode 100644 include/linux/platform_data/gsc_hwmon.h
