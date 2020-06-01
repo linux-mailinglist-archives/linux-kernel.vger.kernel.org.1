@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D761EAF4C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 21:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D53551EAF48
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 21:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729943AbgFATBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 15:01:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36208 "EHLO mail.kernel.org"
+        id S1730990AbgFATA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 15:00:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728467AbgFAR4F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:56:05 -0400
+        id S1728522AbgFAR4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:56:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C139207BB;
-        Mon,  1 Jun 2020 17:56:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5AD2207BB;
+        Mon,  1 Jun 2020 17:56:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034164;
-        bh=gTOUMFkpdm0Z/lU3SAmaaDcHe9k6MTlfvEDDxfKc/j8=;
+        s=default; t=1591034171;
+        bh=HFNk47jELaw7uwMh7fkT5nlGQFTfz2GICQHMXpjGHI4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1IKEXtuGoKxp1lprTP6CR1AFElryjx/fN3uyPoiQw8yyapRJ3PC6un5Aq9Wpa2jx4
-         aPGTVyOTK35CdvYjbR4O428RqmZCAs0r776r5t0LoRKGXzufhPwmB4T5NhauMba6Xf
-         pzA7sTdsBIZtsyYjqBOqjgS2a/aBJvxEGyXyM/Ms=
+        b=TyH1yFl/X3Rd0lw+uOJl0m6UqBUP2kTzqpt8iPOn+D+FcRV4b4Eh/f10v+WtPDESr
+         iyURWIUbRZ944MzzhiEY86CKKLNxRW7iqN3cxuPXh+hWLbfD4mszmyGuKEU9mifaYP
+         1OtMJHH0EXqZZYtU5cEOou/ezUIQk4UDA8f5eyVs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Chiu <chiu@endlessm.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 20/48] ALSA: usb-audio: mixer: volume quirk for ESS Technology Asus USB DAC
-Date:   Mon,  1 Jun 2020 19:53:30 +0200
-Message-Id: <20200601173958.447364995@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 23/48] include/asm-generic/topology.h: guard cpumask_of_node() macro argument
+Date:   Mon,  1 Jun 2020 19:53:33 +0200
+Message-Id: <20200601173959.220441677@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200601173952.175939894@linuxfoundation.org>
 References: <20200601173952.175939894@linuxfoundation.org>
@@ -43,50 +46,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Chiu <chiu@endlessm.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 4020d1ccbe55bdf67b31d718d2400506eaf4b43f ]
+[ Upstream commit 4377748c7b5187c3342a60fa2ceb60c8a57a8488 ]
 
-The Asus USB DAC is a USB type-C audio dongle for connecting to
-the headset and headphone. The volume minimum value -23040 which
-is 0xa600 in hexadecimal with the resolution value 1 indicates
-this should be endianness issue caused by the firmware bug. Add
-a volume quirk to fix the volume control problem.
+drivers/hwmon/amd_energy.c:195:15: error: invalid operands to binary expression ('void' and 'int')
+                                        (channel - data->nr_cpus));
+                                        ~~~~~~~~~^~~~~~~~~~~~~~~~~
+include/asm-generic/topology.h:51:42: note: expanded from macro 'cpumask_of_node'
+    #define cpumask_of_node(node)       ((void)node, cpu_online_mask)
+                                               ^~~~
+include/linux/cpumask.h:618:72: note: expanded from macro 'cpumask_first_and'
+ #define cpumask_first_and(src1p, src2p) cpumask_next_and(-1, (src1p), (src2p))
+                                                                       ^~~~~
 
-Also fixes this warning:
-  Warning! Unlikely big volume range (=23040), cval->res is probably wrong.
-  [5] FU [Headset Capture Volume] ch = 1, val = -23040/0/1
-  Warning! Unlikely big volume range (=23040), cval->res is probably wrong.
-  [7] FU [Headset Playback Volume] ch = 1, val = -23040/0/1
-
-Signed-off-by: Chris Chiu <chiu@endlessm.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200526062613.55401-1-chiu@endlessm.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: f0b848ce6fe9 ("cpumask: Introduce cpumask_of_{node,pcibus} to replace {node,pcibus}_to_cpumask")
+Fixes: 8abee9566b7e ("hwmon: Add amd_energy driver to report energy counters")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Guenter Roeck <linux@roeck-us.net>
+Link: http://lkml.kernel.org/r/20200527134623.930247-1-arnd@arndb.de
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/mixer.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ include/asm-generic/topology.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index f191f4a3cf3b..9bbe84ce7d07 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -979,6 +979,14 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
- 			cval->res = 384;
- 		}
- 		break;
-+	case USB_ID(0x0495, 0x3042): /* ESS Technology Asus USB DAC */
-+		if ((strstr(kctl->id.name, "Playback Volume") != NULL) ||
-+			strstr(kctl->id.name, "Capture Volume") != NULL) {
-+			cval->min >>= 8;
-+			cval->max = 0;
-+			cval->res = 1;
-+		}
-+		break;
- 	}
- }
- 
+diff --git a/include/asm-generic/topology.h b/include/asm-generic/topology.h
+index 5d2add1a6c96..864fcfa1df41 100644
+--- a/include/asm-generic/topology.h
++++ b/include/asm-generic/topology.h
+@@ -51,7 +51,7 @@
+   #ifdef CONFIG_NEED_MULTIPLE_NODES
+     #define cpumask_of_node(node)	((node) == 0 ? cpu_online_mask : cpu_none_mask)
+   #else
+-    #define cpumask_of_node(node)	((void)node, cpu_online_mask)
++    #define cpumask_of_node(node)	((void)(node), cpu_online_mask)
+   #endif
+ #endif
+ #ifndef pcibus_to_node
 -- 
 2.25.1
 
