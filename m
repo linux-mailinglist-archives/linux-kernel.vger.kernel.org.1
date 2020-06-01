@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D232E1EA9C6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 828891EAA74
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729872AbgFASCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:02:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45014 "EHLO mail.kernel.org"
+        id S1730684AbgFASIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:08:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729859AbgFASB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:01:57 -0400
+        id S1728944AbgFASHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:07:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 519372065C;
-        Mon,  1 Jun 2020 18:01:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 92AE620872;
+        Mon,  1 Jun 2020 18:07:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034516;
-        bh=vcXZuq2+yMbWGoBhZSGMws23faRimjlbcAkjvX3KKms=;
+        s=default; t=1591034861;
+        bh=VZJ0swokq0Z7+2sCy6hkjXMh45bZApnh6Xb3qmgCXog=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eBiAXwzt+quaXT4T+/eEg1McxuGiLnEQhbRhroDZnX1T3o86F/W2L4109rGh+M+xD
-         T4kQp0GyHibcgA77NEe9rFnl4+ldOSHS68eLHiAHOLYJIrOkLHlFmkWBabYf3vm3wh
-         gTf5VzKaQmAYBDSCntD696U/6QnnNvQAM3gfNI6o=
+        b=wG79nHYOwra4Rc4XDp6lzpcztMKrWwXaMXXqBwQ25+pFktvuIi6Ysd4WYdfcPK6Xm
+         tjzfIinEvIzT71un6pRF6uVLOvZgxqDFhpnFLheVpNWIw4jK+RR4NfdzsqINcgsc9+
+         wblQIXDwnzDyoWaUVz/mMNjV+H04SwdUm2aFLVi8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
+        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 17/77] gfs2: move privileged user check to gfs2_quota_lock_check
-Date:   Mon,  1 Jun 2020 19:53:22 +0200
-Message-Id: <20200601174019.531321220@linuxfoundation.org>
+Subject: [PATCH 5.4 045/142] drm/amd/powerplay: perform PG ungate prior to CG ungate
+Date:   Mon,  1 Jun 2020 19:53:23 +0200
+Message-Id: <20200601174042.557293613@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
-References: <20200601174016.396817032@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,55 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Evan Quan <evan.quan@amd.com>
 
-[ Upstream commit 4ed0c30811cb4d30ef89850b787a53a84d5d2bcb ]
+[ Upstream commit f4fcfa4282c1a1bf51475ebb0ffda623eebf1191 ]
 
-Before this patch, function gfs2_quota_lock checked if it was called
-from a privileged user, and if so, it bypassed the quota check:
-superuser can operate outside the quotas.
-That's the wrong place for the check because the lock/unlock functions
-are separate from the lock_check function, and you can do lock and
-unlock without actually checking the quotas.
+Since gfxoff should be disabled first before trying to access those
+GC registers.
 
-This patch moves the check to gfs2_quota_lock_check.
-
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Signed-off-by: Evan Quan <evan.quan@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/quota.c | 3 +--
- fs/gfs2/quota.h | 3 ++-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/powerplay/amd_powerplay.c | 6 +++---
+ drivers/gpu/drm/amd/powerplay/amdgpu_smu.c    | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/fs/gfs2/quota.c b/fs/gfs2/quota.c
-index e700fb162664..a833e2e07167 100644
---- a/fs/gfs2/quota.c
-+++ b/fs/gfs2/quota.c
-@@ -1039,8 +1039,7 @@ int gfs2_quota_lock(struct gfs2_inode *ip, kuid_t uid, kgid_t gid)
- 	u32 x;
- 	int error = 0;
- 
--	if (capable(CAP_SYS_RESOURCE) ||
--	    sdp->sd_args.ar_quota != GFS2_QUOTA_ON)
-+	if (sdp->sd_args.ar_quota != GFS2_QUOTA_ON)
- 		return 0;
- 
- 	error = gfs2_quota_hold(ip, uid, gid);
-diff --git a/fs/gfs2/quota.h b/fs/gfs2/quota.h
-index 836f29480be6..e3a6e2404d11 100644
---- a/fs/gfs2/quota.h
-+++ b/fs/gfs2/quota.h
-@@ -47,7 +47,8 @@ static inline int gfs2_quota_lock_check(struct gfs2_inode *ip,
- 	int ret;
- 
- 	ap->allowed = UINT_MAX; /* Assume we are permitted a whole lot */
--	if (sdp->sd_args.ar_quota == GFS2_QUOTA_OFF)
-+	if (capable(CAP_SYS_RESOURCE) ||
-+	    sdp->sd_args.ar_quota == GFS2_QUOTA_OFF)
- 		return 0;
- 	ret = gfs2_quota_lock(ip, NO_UID_QUOTA_CHANGE, NO_GID_QUOTA_CHANGE);
- 	if (ret)
+diff --git a/drivers/gpu/drm/amd/powerplay/amd_powerplay.c b/drivers/gpu/drm/amd/powerplay/amd_powerplay.c
+index 8bb5fbef7de0..9eb3a0dcd1f2 100644
+--- a/drivers/gpu/drm/amd/powerplay/amd_powerplay.c
++++ b/drivers/gpu/drm/amd/powerplay/amd_powerplay.c
+@@ -320,12 +320,12 @@ static void pp_dpm_en_umd_pstate(struct pp_hwmgr  *hwmgr,
+ 		if (*level & profile_mode_mask) {
+ 			hwmgr->saved_dpm_level = hwmgr->dpm_level;
+ 			hwmgr->en_umd_pstate = true;
+-			amdgpu_device_ip_set_clockgating_state(hwmgr->adev,
+-						AMD_IP_BLOCK_TYPE_GFX,
+-						AMD_CG_STATE_UNGATE);
+ 			amdgpu_device_ip_set_powergating_state(hwmgr->adev,
+ 					AMD_IP_BLOCK_TYPE_GFX,
+ 					AMD_PG_STATE_UNGATE);
++			amdgpu_device_ip_set_clockgating_state(hwmgr->adev,
++						AMD_IP_BLOCK_TYPE_GFX,
++						AMD_CG_STATE_UNGATE);
+ 		}
+ 	} else {
+ 		/* exit umd pstate, restore level, enable gfx cg*/
+diff --git a/drivers/gpu/drm/amd/powerplay/amdgpu_smu.c b/drivers/gpu/drm/amd/powerplay/amdgpu_smu.c
+index a066e9297777..b51a124e505a 100644
+--- a/drivers/gpu/drm/amd/powerplay/amdgpu_smu.c
++++ b/drivers/gpu/drm/amd/powerplay/amdgpu_smu.c
+@@ -1541,12 +1541,12 @@ static int smu_enable_umd_pstate(void *handle,
+ 		if (*level & profile_mode_mask) {
+ 			smu_dpm_ctx->saved_dpm_level = smu_dpm_ctx->dpm_level;
+ 			smu_dpm_ctx->enable_umd_pstate = true;
+-			amdgpu_device_ip_set_clockgating_state(smu->adev,
+-							       AMD_IP_BLOCK_TYPE_GFX,
+-							       AMD_CG_STATE_UNGATE);
+ 			amdgpu_device_ip_set_powergating_state(smu->adev,
+ 							       AMD_IP_BLOCK_TYPE_GFX,
+ 							       AMD_PG_STATE_UNGATE);
++			amdgpu_device_ip_set_clockgating_state(smu->adev,
++							       AMD_IP_BLOCK_TYPE_GFX,
++							       AMD_CG_STATE_UNGATE);
+ 		}
+ 	} else {
+ 		/* exit umd pstate, restore level, enable gfx cg*/
 -- 
 2.25.1
 
