@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C5D1EADD0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF7C1EAD05
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730578AbgFASHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:07:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52534 "EHLO mail.kernel.org"
+        id S1729611AbgFASld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:41:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730496AbgFASGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:06:49 -0400
+        id S1731236AbgFASMc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:12:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7633D2068D;
-        Mon,  1 Jun 2020 18:06:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0BDF2077D;
+        Mon,  1 Jun 2020 18:12:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034808;
-        bh=ambusvve4PtBxJnzxj5h6RempnRnRW92w6VEnBVIJnE=;
+        s=default; t=1591035150;
+        bh=y8YrRo5P8xbD7mNuxF8jL9dU7qLjxNwUSLTKRrllbl0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D0whhk+VDYoOIEAWBZDAOMdR5oJ0AATKyBeLDUNZH2s21WeDsCZ5ArM3vc9nB/4pQ
-         c0Z2FgVnyhhSH2JtZI7sZxLgdz4xyM1+kLlu0e3ic6NqySnCO8Pl70pX1CvRg1Sdpa
-         L/FGdCLHp4ooD7Hawus/xOM6vJaZTIPKH528w2VA=
+        b=nkF4Sx1CMd0zOzpdzz53NL/A1+Ce8Y2p/NbMMvTNFIogLK/0eQPL/K3Q+Zkhl05SL
+         Y3FGiSsMwDVk65sGf59qSyEl57AeozmWmPi4uwVShroZkBUcrhdCPxzmdAyr+D4zwp
+         OUlljNiPAjd/VIPH6MXcR5DM6GcpQXqrfDo0wbXk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Moshe Shemesh <moshe@mellanox.com>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Subject: [PATCH 5.4 009/142] net/mlx5: Add command entry handling completion
-Date:   Mon,  1 Jun 2020 19:52:47 +0200
-Message-Id: <20200601174038.975067779@linuxfoundation.org>
+        stable@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.6 030/177] wireguard: noise: separate receive counter from send counter
+Date:   Mon,  1 Jun 2020 19:52:48 +0200
+Message-Id: <20200601174051.378419904@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,96 +43,332 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Moshe Shemesh <moshe@mellanox.com>
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
 
-[ Upstream commit 17d00e839d3b592da9659c1977d45f85b77f986a ]
+[ Upstream commit a9e90d9931f3a474f04bab782ccd9d77904941e9 ]
 
-When FW response to commands is very slow and all command entries in
-use are waiting for completion we can have a race where commands can get
-timeout before they get out of the queue and handled. Timeout
-completion on uninitialized command will cause releasing command's
-buffers before accessing it for initialization and then we will get NULL
-pointer exception while trying access it. It may also cause releasing
-buffers of another command since we may have timeout completion before
-even allocating entry index for this command.
-Add entry handling completion to avoid this race.
+In "wireguard: queueing: preserve flow hash across packet scrubbing", we
+were required to slightly increase the size of the receive replay
+counter to something still fairly small, but an increase nonetheless.
+It turns out that we can recoup some of the additional memory overhead
+by splitting up the prior union type into two distinct types. Before, we
+used the same "noise_counter" union for both sending and receiving, with
+sending just using a simple atomic64_t, while receiving used the full
+replay counter checker. This meant that most of the memory being
+allocated for the sending counter was being wasted. Since the old
+"noise_counter" type increased in size in the prior commit, now is a
+good time to split up that union type into a distinct "noise_replay_
+counter" for receiving and a boring atomic64_t for sending, each using
+neither more nor less memory than required.
 
-Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
-Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
-Signed-off-by: Eran Ben Elisha <eranbe@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Also, since sometimes the replay counter is accessed without
+necessitating additional accesses to the bitmap, we can reduce cache
+misses by hoisting the always-necessary lock above the bitmap in the
+struct layout. We also change a "noise_replay_counter" stack allocation
+to kmalloc in a -DDEBUG selftest so that KASAN doesn't trigger a stack
+frame warning.
+
+All and all, removing a bit of abstraction in this commit makes the code
+simpler and smaller, in addition to the motivating memory usage
+recuperation. For example, passing around raw "noise_symmetric_key"
+structs is something that really only makes sense within noise.c, in the
+one place where the sending and receiving keys can safely be thought of
+as the same type of object; subsequent to that, it's important that we
+uniformly access these through keypair->{sending,receiving}, where their
+distinct roles are always made explicit. So this patch allows us to draw
+that distinction clearly as well.
+
+Fixes: e7096c131e51 ("net: WireGuard secure network tunnel")
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/cmd.c |   14 ++++++++++++++
- include/linux/mlx5/driver.h                   |    1 +
- 2 files changed, 15 insertions(+)
+ drivers/net/wireguard/noise.c            |   16 ++---------
+ drivers/net/wireguard/noise.h            |   14 ++++------
+ drivers/net/wireguard/receive.c          |   42 +++++++++++++++----------------
+ drivers/net/wireguard/selftest/counter.c |   17 ++++++++----
+ drivers/net/wireguard/send.c             |   12 +++-----
+ 5 files changed, 48 insertions(+), 53 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-@@ -861,6 +861,7 @@ static void cmd_work_handler(struct work
- 	int alloc_ret;
- 	int cmd_mode;
+--- a/drivers/net/wireguard/noise.c
++++ b/drivers/net/wireguard/noise.c
+@@ -104,6 +104,7 @@ static struct noise_keypair *keypair_cre
  
-+	complete(&ent->handling);
- 	sem = ent->page_queue ? &cmd->pages_sem : &cmd->sem;
- 	down(sem);
- 	if (!ent->page_queue) {
-@@ -978,6 +979,11 @@ static int wait_func(struct mlx5_core_de
- 	struct mlx5_cmd *cmd = &dev->cmd;
- 	int err;
+ 	if (unlikely(!keypair))
+ 		return NULL;
++	spin_lock_init(&keypair->receiving_counter.lock);
+ 	keypair->internal_id = atomic64_inc_return(&keypair_counter);
+ 	keypair->entry.type = INDEX_HASHTABLE_KEYPAIR;
+ 	keypair->entry.peer = peer;
+@@ -358,25 +359,16 @@ out:
+ 	memzero_explicit(output, BLAKE2S_HASH_SIZE + 1);
+ }
  
-+	if (!wait_for_completion_timeout(&ent->handling, timeout) &&
-+	    cancel_work_sync(&ent->work)) {
-+		ent->ret = -ECANCELED;
-+		goto out_err;
-+	}
- 	if (cmd->mode == CMD_MODE_POLLING || ent->polling) {
- 		wait_for_completion(&ent->done);
- 	} else if (!wait_for_completion_timeout(&ent->done, timeout)) {
-@@ -985,12 +991,17 @@ static int wait_func(struct mlx5_core_de
- 		mlx5_cmd_comp_handler(dev, 1UL << ent->idx, true);
+-static void symmetric_key_init(struct noise_symmetric_key *key)
+-{
+-	spin_lock_init(&key->counter.receive.lock);
+-	atomic64_set(&key->counter.counter, 0);
+-	memset(key->counter.receive.backtrack, 0,
+-	       sizeof(key->counter.receive.backtrack));
+-	key->birthdate = ktime_get_coarse_boottime_ns();
+-	key->is_valid = true;
+-}
+-
+ static void derive_keys(struct noise_symmetric_key *first_dst,
+ 			struct noise_symmetric_key *second_dst,
+ 			const u8 chaining_key[NOISE_HASH_LEN])
+ {
++	u64 birthdate = ktime_get_coarse_boottime_ns();
+ 	kdf(first_dst->key, second_dst->key, NULL, NULL,
+ 	    NOISE_SYMMETRIC_KEY_LEN, NOISE_SYMMETRIC_KEY_LEN, 0, 0,
+ 	    chaining_key);
+-	symmetric_key_init(first_dst);
+-	symmetric_key_init(second_dst);
++	first_dst->birthdate = second_dst->birthdate = birthdate;
++	first_dst->is_valid = second_dst->is_valid = true;
+ }
+ 
+ static bool __must_check mix_dh(u8 chaining_key[NOISE_HASH_LEN],
+--- a/drivers/net/wireguard/noise.h
++++ b/drivers/net/wireguard/noise.h
+@@ -15,18 +15,14 @@
+ #include <linux/mutex.h>
+ #include <linux/kref.h>
+ 
+-union noise_counter {
+-	struct {
+-		u64 counter;
+-		unsigned long backtrack[COUNTER_BITS_TOTAL / BITS_PER_LONG];
+-		spinlock_t lock;
+-	} receive;
+-	atomic64_t counter;
++struct noise_replay_counter {
++	u64 counter;
++	spinlock_t lock;
++	unsigned long backtrack[COUNTER_BITS_TOTAL / BITS_PER_LONG];
+ };
+ 
+ struct noise_symmetric_key {
+ 	u8 key[NOISE_SYMMETRIC_KEY_LEN];
+-	union noise_counter counter;
+ 	u64 birthdate;
+ 	bool is_valid;
+ };
+@@ -34,7 +30,9 @@ struct noise_symmetric_key {
+ struct noise_keypair {
+ 	struct index_hashtable_entry entry;
+ 	struct noise_symmetric_key sending;
++	atomic64_t sending_counter;
+ 	struct noise_symmetric_key receiving;
++	struct noise_replay_counter receiving_counter;
+ 	__le32 remote_index;
+ 	bool i_am_the_initiator;
+ 	struct kref refcount;
+--- a/drivers/net/wireguard/receive.c
++++ b/drivers/net/wireguard/receive.c
+@@ -246,20 +246,20 @@ static void keep_key_fresh(struct wg_pee
+ 	}
+ }
+ 
+-static bool decrypt_packet(struct sk_buff *skb, struct noise_symmetric_key *key)
++static bool decrypt_packet(struct sk_buff *skb, struct noise_keypair *keypair)
+ {
+ 	struct scatterlist sg[MAX_SKB_FRAGS + 8];
+ 	struct sk_buff *trailer;
+ 	unsigned int offset;
+ 	int num_frags;
+ 
+-	if (unlikely(!key))
++	if (unlikely(!keypair))
+ 		return false;
+ 
+-	if (unlikely(!READ_ONCE(key->is_valid) ||
+-		  wg_birthdate_has_expired(key->birthdate, REJECT_AFTER_TIME) ||
+-		  key->counter.receive.counter >= REJECT_AFTER_MESSAGES)) {
+-		WRITE_ONCE(key->is_valid, false);
++	if (unlikely(!READ_ONCE(keypair->receiving.is_valid) ||
++		  wg_birthdate_has_expired(keypair->receiving.birthdate, REJECT_AFTER_TIME) ||
++		  keypair->receiving_counter.counter >= REJECT_AFTER_MESSAGES)) {
++		WRITE_ONCE(keypair->receiving.is_valid, false);
+ 		return false;
  	}
  
-+out_err:
- 	err = ent->ret;
+@@ -284,7 +284,7 @@ static bool decrypt_packet(struct sk_buf
  
- 	if (err == -ETIMEDOUT) {
- 		mlx5_core_warn(dev, "%s(0x%x) timeout. Will cause a leak of a command resource\n",
- 			       mlx5_command_str(msg_to_opcode(ent->in)),
- 			       msg_to_opcode(ent->in));
-+	} else if (err == -ECANCELED) {
-+		mlx5_core_warn(dev, "%s(0x%x) canceled on out of queue timeout.\n",
-+			       mlx5_command_str(msg_to_opcode(ent->in)),
-+			       msg_to_opcode(ent->in));
- 	}
- 	mlx5_core_dbg(dev, "err %d, delivery status %s(%d)\n",
- 		      err, deliv_status_to_str(ent->status), ent->status);
-@@ -1026,6 +1037,7 @@ static int mlx5_cmd_invoke(struct mlx5_c
- 	ent->token = token;
- 	ent->polling = force_polling;
+ 	if (!chacha20poly1305_decrypt_sg_inplace(sg, skb->len, NULL, 0,
+ 					         PACKET_CB(skb)->nonce,
+-						 key->key))
++						 keypair->receiving.key))
+ 		return false;
  
-+	init_completion(&ent->handling);
- 	if (!callback)
- 		init_completion(&ent->done);
+ 	/* Another ugly situation of pushing and pulling the header so as to
+@@ -299,41 +299,41 @@ static bool decrypt_packet(struct sk_buf
+ }
  
-@@ -1045,6 +1057,8 @@ static int mlx5_cmd_invoke(struct mlx5_c
- 	err = wait_func(dev, ent);
- 	if (err == -ETIMEDOUT)
+ /* This is RFC6479, a replay detection bitmap algorithm that avoids bitshifts */
+-static bool counter_validate(union noise_counter *counter, u64 their_counter)
++static bool counter_validate(struct noise_replay_counter *counter, u64 their_counter)
+ {
+ 	unsigned long index, index_current, top, i;
+ 	bool ret = false;
+ 
+-	spin_lock_bh(&counter->receive.lock);
++	spin_lock_bh(&counter->lock);
+ 
+-	if (unlikely(counter->receive.counter >= REJECT_AFTER_MESSAGES + 1 ||
++	if (unlikely(counter->counter >= REJECT_AFTER_MESSAGES + 1 ||
+ 		     their_counter >= REJECT_AFTER_MESSAGES))
  		goto out;
-+	if (err == -ECANCELED)
-+		goto out_free;
  
- 	ds = ent->ts2 - ent->ts1;
- 	op = MLX5_GET(mbox_in, in->first.data, opcode);
---- a/include/linux/mlx5/driver.h
-+++ b/include/linux/mlx5/driver.h
-@@ -756,6 +756,7 @@ struct mlx5_cmd_work_ent {
- 	struct delayed_work	cb_timeout_work;
- 	void		       *context;
- 	int			idx;
-+	struct completion	handling;
- 	struct completion	done;
- 	struct mlx5_cmd        *cmd;
- 	struct work_struct	work;
+ 	++their_counter;
+ 
+ 	if (unlikely((COUNTER_WINDOW_SIZE + their_counter) <
+-		     counter->receive.counter))
++		     counter->counter))
+ 		goto out;
+ 
+ 	index = their_counter >> ilog2(BITS_PER_LONG);
+ 
+-	if (likely(their_counter > counter->receive.counter)) {
+-		index_current = counter->receive.counter >> ilog2(BITS_PER_LONG);
++	if (likely(their_counter > counter->counter)) {
++		index_current = counter->counter >> ilog2(BITS_PER_LONG);
+ 		top = min_t(unsigned long, index - index_current,
+ 			    COUNTER_BITS_TOTAL / BITS_PER_LONG);
+ 		for (i = 1; i <= top; ++i)
+-			counter->receive.backtrack[(i + index_current) &
++			counter->backtrack[(i + index_current) &
+ 				((COUNTER_BITS_TOTAL / BITS_PER_LONG) - 1)] = 0;
+-		counter->receive.counter = their_counter;
++		counter->counter = their_counter;
+ 	}
+ 
+ 	index &= (COUNTER_BITS_TOTAL / BITS_PER_LONG) - 1;
+ 	ret = !test_and_set_bit(their_counter & (BITS_PER_LONG - 1),
+-				&counter->receive.backtrack[index]);
++				&counter->backtrack[index]);
+ 
+ out:
+-	spin_unlock_bh(&counter->receive.lock);
++	spin_unlock_bh(&counter->lock);
+ 	return ret;
+ }
+ 
+@@ -473,12 +473,12 @@ int wg_packet_rx_poll(struct napi_struct
+ 		if (unlikely(state != PACKET_STATE_CRYPTED))
+ 			goto next;
+ 
+-		if (unlikely(!counter_validate(&keypair->receiving.counter,
++		if (unlikely(!counter_validate(&keypair->receiving_counter,
+ 					       PACKET_CB(skb)->nonce))) {
+ 			net_dbg_ratelimited("%s: Packet has invalid nonce %llu (max %llu)\n",
+ 					    peer->device->dev->name,
+ 					    PACKET_CB(skb)->nonce,
+-					    keypair->receiving.counter.receive.counter);
++					    keypair->receiving_counter.counter);
+ 			goto next;
+ 		}
+ 
+@@ -512,8 +512,8 @@ void wg_packet_decrypt_worker(struct wor
+ 	struct sk_buff *skb;
+ 
+ 	while ((skb = ptr_ring_consume_bh(&queue->ring)) != NULL) {
+-		enum packet_state state = likely(decrypt_packet(skb,
+-				&PACKET_CB(skb)->keypair->receiving)) ?
++		enum packet_state state =
++			likely(decrypt_packet(skb, PACKET_CB(skb)->keypair)) ?
+ 				PACKET_STATE_CRYPTED : PACKET_STATE_DEAD;
+ 		wg_queue_enqueue_per_peer_napi(skb, state);
+ 		if (need_resched())
+--- a/drivers/net/wireguard/selftest/counter.c
++++ b/drivers/net/wireguard/selftest/counter.c
+@@ -6,18 +6,24 @@
+ #ifdef DEBUG
+ bool __init wg_packet_counter_selftest(void)
+ {
++	struct noise_replay_counter *counter;
+ 	unsigned int test_num = 0, i;
+-	union noise_counter counter;
+ 	bool success = true;
+ 
+-#define T_INIT do {                                               \
+-		memset(&counter, 0, sizeof(union noise_counter)); \
+-		spin_lock_init(&counter.receive.lock);            \
++	counter = kmalloc(sizeof(*counter), GFP_KERNEL);
++	if (unlikely(!counter)) {
++		pr_err("nonce counter self-test malloc: FAIL\n");
++		return false;
++	}
++
++#define T_INIT do {                                    \
++		memset(counter, 0, sizeof(*counter));  \
++		spin_lock_init(&counter->lock);        \
+ 	} while (0)
+ #define T_LIM (COUNTER_WINDOW_SIZE + 1)
+ #define T(n, v) do {                                                  \
+ 		++test_num;                                           \
+-		if (counter_validate(&counter, n) != (v)) {           \
++		if (counter_validate(counter, n) != (v)) {            \
+ 			pr_err("nonce counter self-test %u: FAIL\n",  \
+ 			       test_num);                             \
+ 			success = false;                              \
+@@ -99,6 +105,7 @@ bool __init wg_packet_counter_selftest(v
+ 
+ 	if (success)
+ 		pr_info("nonce counter self-tests: pass\n");
++	kfree(counter);
+ 	return success;
+ }
+ #endif
+--- a/drivers/net/wireguard/send.c
++++ b/drivers/net/wireguard/send.c
+@@ -129,7 +129,7 @@ static void keep_key_fresh(struct wg_pee
+ 	rcu_read_lock_bh();
+ 	keypair = rcu_dereference_bh(peer->keypairs.current_keypair);
+ 	if (likely(keypair && READ_ONCE(keypair->sending.is_valid)) &&
+-	    (unlikely(atomic64_read(&keypair->sending.counter.counter) >
++	    (unlikely(atomic64_read(&keypair->sending_counter) >
+ 		      REKEY_AFTER_MESSAGES) ||
+ 	     (keypair->i_am_the_initiator &&
+ 	      unlikely(wg_birthdate_has_expired(keypair->sending.birthdate,
+@@ -353,7 +353,6 @@ void wg_packet_purge_staged_packets(stru
+ 
+ void wg_packet_send_staged_packets(struct wg_peer *peer)
+ {
+-	struct noise_symmetric_key *key;
+ 	struct noise_keypair *keypair;
+ 	struct sk_buff_head packets;
+ 	struct sk_buff *skb;
+@@ -373,10 +372,9 @@ void wg_packet_send_staged_packets(struc
+ 	rcu_read_unlock_bh();
+ 	if (unlikely(!keypair))
+ 		goto out_nokey;
+-	key = &keypair->sending;
+-	if (unlikely(!READ_ONCE(key->is_valid)))
++	if (unlikely(!READ_ONCE(keypair->sending.is_valid)))
+ 		goto out_nokey;
+-	if (unlikely(wg_birthdate_has_expired(key->birthdate,
++	if (unlikely(wg_birthdate_has_expired(keypair->sending.birthdate,
+ 					      REJECT_AFTER_TIME)))
+ 		goto out_invalid;
+ 
+@@ -391,7 +389,7 @@ void wg_packet_send_staged_packets(struc
+ 		 */
+ 		PACKET_CB(skb)->ds = ip_tunnel_ecn_encap(0, ip_hdr(skb), skb);
+ 		PACKET_CB(skb)->nonce =
+-				atomic64_inc_return(&key->counter.counter) - 1;
++				atomic64_inc_return(&keypair->sending_counter) - 1;
+ 		if (unlikely(PACKET_CB(skb)->nonce >= REJECT_AFTER_MESSAGES))
+ 			goto out_invalid;
+ 	}
+@@ -403,7 +401,7 @@ void wg_packet_send_staged_packets(struc
+ 	return;
+ 
+ out_invalid:
+-	WRITE_ONCE(key->is_valid, false);
++	WRITE_ONCE(keypair->sending.is_valid, false);
+ out_nokey:
+ 	wg_noise_keypair_put(keypair, false);
+ 
 
 
