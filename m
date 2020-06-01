@@ -2,108 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6714A1EA003
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 10:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F09E1EA00E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 10:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728212AbgFAI1N convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 1 Jun 2020 04:27:13 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:26364 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728106AbgFAI1M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 04:27:12 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id uk-mta-4-qyf_xz7jMHaz2OtF4B_ISQ-1;
- Mon, 01 Jun 2020 09:27:08 +0100
-X-MC-Unique: qyf_xz7jMHaz2OtF4B_ISQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 1 Jun 2020 09:27:08 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 1 Jun 2020 09:27:08 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Marcelo Ricardo Leitner' <marcelo.leitner@gmail.com>,
-        Christoph Hellwig <hch@lst.de>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        "linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: RE: [PATCH 2/4] sctp: refactor sctp_setsockopt_bindx
-Thread-Topic: [PATCH 2/4] sctp: refactor sctp_setsockopt_bindx
-Thread-Index: AQHWNdMG2Q0k5UY/FEi3sQ5al/OVkajDcLLw
-Date:   Mon, 1 Jun 2020 08:27:08 +0000
-Message-ID: <ef0754831c294934b67f89fd8c5e1b5b@AcuMS.aculab.com>
-References: <20200529120943.101454-1-hch@lst.de>
- <20200529120943.101454-3-hch@lst.de>
- <20200529160544.GI2491@localhost.localdomain>
-In-Reply-To: <20200529160544.GI2491@localhost.localdomain>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1728205AbgFAIai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 04:30:38 -0400
+Received: from mail-db8eur05on2060.outbound.protection.outlook.com ([40.107.20.60]:20832
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725999AbgFAIah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 04:30:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O4fdpVFx+IwIh8BQu/aXSeKmbFB7J49e5TsZIB/vb/0tyPvTe9l37G+zVo4yRvyeUM22E+uOnM/EKv5gZJO9pn6CkglCrpbeKY7NGuVOOzuBAIEQU07JASh+wKed4KxPlOZHWjTfJJ2JrDuch+bWJLDERw7Xg0bmVNfLXKK26NMRDcqsn7XwfWL6t9th4QuH/tyUExudoDRurOz+ceB7IXHr2vEIeO8hX7VRTvqTUMfWN2mrs3yyLkSFxwKMGjmHwEisZt1tMFDPsUHfFm1zaZxqnVUq1rqY+8bbzfHpikZF6EhCkr7ZzzNm82JhZdm4Cp+zdy/rdH1Mwzh+6ab3IQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S0WWSRyqY1GNfMcjDj7fbIkoFDBf127/I4OYgLWzXXs=;
+ b=FDyNTLRLFTfXKtpIMjpxv1s3TV5w9T2WE/jbcEzqlo8HHU4ATSyXPu8/iawLgp9ehrV4P3TShL8agHu56uIOls8k/5XmxjyhCe/8+Y5ezXIyXLUjBDCpBtAw68m1UDpLtZ8DkQp9aedKkNmUcN97Ensy1uVtg5GQWbFJebfM3jyz/fhhTBAzpXcGV5vJ7viIokZJD6GSSxUk+D+vWVBTxkkrLbsgocZpaXAQcfmqalklXnUPtiWbjVpzVlAZGrTOAjFGEjsG3NCOED3ZLCuQFj581uNYKrbf7ke1yAT4v5lpC/HnyHCxY0yHQ5gJRMsajZexmV0M6A/Ih93qeyoKwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S0WWSRyqY1GNfMcjDj7fbIkoFDBf127/I4OYgLWzXXs=;
+ b=rOhrAMwVL0cv3oWTQa4dQUFRqxcBzHIHdPH8TMVmOWJVSZN5vtNv6Enlki+JnJcgLMbganM1yZGBB7k+7WqVHPdQxfkhApTrULgVVKQiR/fgruz/2SYeWWE8aNUKOlc7nh1imMXYB30yG2mZZyU2CWrpte7yDNWh9X68kXmWe30=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB6PR0402MB2728.eurprd04.prod.outlook.com (2603:10a6:4:97::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.22; Mon, 1 Jun
+ 2020 08:30:34 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::d17b:d767:19c3:b871]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::d17b:d767:19c3:b871%6]) with mapi id 15.20.3045.022; Mon, 1 Jun 2020
+ 08:30:34 +0000
+From:   peng.fan@nxp.com
+To:     shawnguo@kernel.org, fabio.estevam@nxp.com, kernel@pengutronix.de,
+        aisheng.dong@nxp.com, robh+dt@kernel.org, sboyd@kernel.org,
+        linux@rempel-privat.de, jaswinder.singh@linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com, leonard.crestez@nxp.com, daniel.baluta@nxp.com,
+        l.stach@pengutronix.de, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH V3 1/3] dt-bindings: mailbox: imx-mu: support i.MX8M
+Date:   Mon,  1 Jun 2020 16:20:00 +0800
+Message-Id: <1590999602-29482-2-git-send-email-peng.fan@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1590999602-29482-1-git-send-email-peng.fan@nxp.com>
+References: <1590999602-29482-1-git-send-email-peng.fan@nxp.com>
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR02CA0044.apcprd02.prod.outlook.com
+ (2603:1096:3:18::32) To DB6PR0402MB2760.eurprd04.prod.outlook.com
+ (2603:10a6:4:a1::14)
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by SG2PR02CA0044.apcprd02.prod.outlook.com (2603:1096:3:18::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3021.27 via Frontend Transport; Mon, 1 Jun 2020 08:30:29 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [119.31.174.66]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: d8916943-98f8-4040-961c-08d806060d71
+X-MS-TrafficTypeDiagnostic: DB6PR0402MB2728:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB6PR0402MB2728F0D645136B93E32FDEEC888A0@DB6PR0402MB2728.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1247;
+X-Forefront-PRVS: 0421BF7135
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RXkxen9tb44n9vZier3+MjpogY5EFbNoBjrhlV1EI3ZyPMeI5SV2OaXcdyZHYnSJn6QEFcRuEmXsre0LZFElFXuMq/Q7xW7Ueq/+eyzxWDz6shPqZKGr0rpbxEwFHXiR9oDUeele/3yDee7dN4QIwUw9Fy7H7K33iEXzttnzoersItJdGEwwCaPmvOsFNIo8PjGLy5DfEt+jYHpnp9A4GoWiCZuYg+/MHNfXXyqaLcj86b8mZ6BtLjTNuS2eIfrtjrHHoCwBHvRPKJ5FZ7OtLOjrEG37VzpEbCeeCxErldJAtutk/cGNOaeBWVJeZvFMxvCbgXiSumgyWpMxs2M0YY/gI+M+cxZQmG2xrwBOkzUm0uOCbGc0F9sBggFX7qNhOtISdEfcz2mnF0QiKJey+HTMNy+Hso06eFBdl/F/+1M=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(366004)(136003)(39860400002)(346002)(396003)(316002)(36756003)(6486002)(6666004)(15650500001)(478600001)(86362001)(8676002)(4326008)(2906002)(83380400001)(69590400007)(66556008)(26005)(2616005)(6512007)(66476007)(8936002)(956004)(16526019)(5660300002)(66946007)(52116002)(9686003)(7416002)(6506007)(186003)(15585785002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: tHLmOc4P9QQJNO/ctJO8+J/HJslCeTWcl1XnfCWdyYTLLGs4iPC4BVjtrozc6bSVMpUfXzzqBlLMV3PNVkxLV3hm6pUcB58RbAfLwPXG1bVsLDhgyFs9AmQsA4xeJsEVmBX1L4smVpF6zG6Wdi9lFCuaJoEgr9QB1w/IqaADVGx6ZJ++k3StrYQIlxb0RlUcVcK4XznopjGR0RNd6SnBBWUAlMUj++aStIOdbncdipKIxwNUSDPNM/SyHoxpFBV/VoHl/vmOpNzIctxvhkTx76yzfFZfWu5TGyStdq9oHVRDB2hFp/Buf/UtKfcyRa2Gk4yAXmTImpaHtgsZbjW3pquQzMQ6SGRsNvv7dPaD9lSXaPU06d8lyOc04s9tG93srnK7+7MotLjGcnHHw0PRtULzH4kxhiudjnvRzlYU19cfD7NyYuugEQrBIBLNz2CHC39vIcNH3iEb/nODXZ6FyUHLQjuqpLxKKDuP7IZxbRaOmqtmnPXBZthDnHDct1xo
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8916943-98f8-4040-961c-08d806060d71
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2020 08:30:34.1961
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aCHAdkZq8chLf81n2TM3Mahp3Xqqepzlddvr4CvKu502DuNPhyBaP7Taih9/20Pbz8CPQ/g9IYOCgmhrOdEMCw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2728
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcelo Ricardo Leitner
-> Sent: 29 May 2020 17:06
-> On Fri, May 29, 2020 at 02:09:41PM +0200, Christoph Hellwig wrote:
-> > Split out a sctp_setsockopt_bindx_kernel that takes a kernel pointer
-> > to the sockaddr and make sctp_setsockopt_bindx a small wrapper around
-> > it.  This prepares for adding a new bind_add proto op.
-> >
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> 
-> Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-> 
-> > ---
-> >  net/sctp/socket.c | 61 ++++++++++++++++++++++-------------------------
-> >  1 file changed, 28 insertions(+), 33 deletions(-)
-> >
-> > diff --git a/net/sctp/socket.c b/net/sctp/socket.c
-> > index 827a9903ee288..6e745ac3c4a59 100644
-> > --- a/net/sctp/socket.c
-> > +++ b/net/sctp/socket.c
-> > @@ -972,23 +972,22 @@ int sctp_asconf_mgmt(struct sctp_sock *sp, struct sctp_sockaddr_entry *addrw)
-> >   * it.
-> >   *
-> >   * sk        The sk of the socket
-> > - * addrs     The pointer to the addresses in user land
-> > + * addrs     The pointer to the addresses
-> >   * addrssize Size of the addrs buffer
-> >   * op        Operation to perform (add or remove, see the flags of
-> >   *           sctp_bindx)
-> >   *
-> >   * Returns 0 if ok, <0 errno code on error.
-> >   */
-> > -static int sctp_setsockopt_bindx(struct sock *sk,
-> > -				 struct sockaddr __user *addrs,
-> > -				 int addrs_size, int op)
-> > +static int sctp_setsockopt_bindx_kernel(struct sock *sk,
-                        const
-> > +					struct sockaddr *addrs, int addrs_size,
-> > +					int op)
+From: Peng Fan <peng.fan@nxp.com>
 
-The list of addresses ought to be 'const'.
+Add i.MX8MQ/M/N/P compatible string to support i.MX8M SoCs
 
-IIRC that requires the test for 'port == 0' be moved down  a few layers.
+Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+---
+ Documentation/devicetree/bindings/mailbox/fsl,mu.txt | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+diff --git a/Documentation/devicetree/bindings/mailbox/fsl,mu.txt b/Documentation/devicetree/bindings/mailbox/fsl,mu.txt
+index 26b7a88c2fea..906377acf2cd 100644
+--- a/Documentation/devicetree/bindings/mailbox/fsl,mu.txt
++++ b/Documentation/devicetree/bindings/mailbox/fsl,mu.txt
+@@ -18,7 +18,8 @@ Messaging Unit Device Node:
+ Required properties:
+ -------------------
+ - compatible :	should be "fsl,<chip>-mu", the supported chips include
+-		imx6sx, imx7s, imx8qxp, imx8qm.
++		imx6sx, imx7s, imx8qxp, imx8qm, imx8mq, imx8mm, imx8mn,
++		imx8mp.
+ 		The "fsl,imx6sx-mu" compatible is seen as generic and should
+ 		be included together with SoC specific compatible.
+ 		There is a version 1.0 MU on imx7ulp, use "fsl,imx7ulp-mu"
+-- 
+2.16.4
 
