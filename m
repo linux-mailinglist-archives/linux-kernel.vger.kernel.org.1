@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455951EA957
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB7D1EAA77
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729712AbgFASAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:00:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43302 "EHLO mail.kernel.org"
+        id S1730719AbgFASIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:08:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729118AbgFASAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:00:35 -0400
+        id S1730241AbgFASIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:08:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C609B2065C;
-        Mon,  1 Jun 2020 18:00:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B3BA207D0;
+        Mon,  1 Jun 2020 18:08:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034434;
-        bh=fBZvDbLjHpbUJL2gKLdLwRD4VPHSZY8vhp3Jox947ek=;
+        s=default; t=1591034894;
+        bh=hu3+Cu1mobOMU0osGTqGMIyMafxT7FTy0kESiJ1M/lw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=txeKoefR3HBvGZfXS/xjSn/S1jlIeAjA34pWUcX0+yOR1z6HAW4VZOlc6j2Q1+bB9
-         Jf80Jj1eC3XCmR71cEGOuMU7wqlp36okopjORffULK951Do2um3JweVSZdS+PZeZVd
-         Z7GptCi9rug3SeJfVfxzlYuPLFKuXZEKCm6JFbxM=
+        b=CHvPhv8LQc1JnRZdSmvCzPDFJsDhbZ6Tijf3cY7WrckPgyZUR+UcfubNoKUHziQZn
+         gypFLxwzJlR+5rkf8QMGj5ADRMELRy6y5ep8iupzKmrwGkpt0pKy1BL4Pm0wNM61Y+
+         Od3aBOBSu/4VwfvH7Dwc5jKBMCNw9+Tv6boUkI/E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Green <evgreen@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Amy Shih <amy.shih@advantech.com.tw>,
+        Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 30/77] Input: synaptics-rmi4 - really fix attn_data use-after-free
-Date:   Mon,  1 Jun 2020 19:53:35 +0200
-Message-Id: <20200601174022.046583793@linuxfoundation.org>
+Subject: [PATCH 5.4 058/142] hwmon: (nct7904) Fix incorrect range of temperature limit registers
+Date:   Mon,  1 Jun 2020 19:53:36 +0200
+Message-Id: <20200601174043.933164252@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174016.396817032@linuxfoundation.org>
-References: <20200601174016.396817032@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,47 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evan Green <evgreen@chromium.org>
+From: Amy Shih <amy.shih@advantech.com.tw>
 
-[ Upstream commit d5a5e5b5fa7b86c05bf073acc0ba98fa280174ec ]
+[ Upstream commit 7b2fd270af27edaf02acb41a7babe805a9441914 ]
 
-Fix a use-after-free noticed by running with KASAN enabled. If
-rmi_irq_fn() is run twice in a row, then rmi_f11_attention() (among
-others) will end up reading from drvdata->attn_data.data, which was
-freed and left dangling in rmi_irq_fn().
+The format of temperature limitation registers are 8-bit 2's complement
+and the range is -128~127.
+Converts the reading value to signed char to fix the incorrect range
+of temperature limitation registers.
 
-Commit 55edde9fff1a ("Input: synaptics-rmi4 - prevent UAF reported by
-KASAN") correctly identified and analyzed this bug. However the attempted
-fix only NULLed out a local variable, missing the fact that
-drvdata->attn_data is a struct, not a pointer.
-
-NULL out the correct pointer in the driver data to prevent the attention
-functions from copying from it.
-
-Fixes: 55edde9fff1a ("Input: synaptics-rmi4 - prevent UAF reported by KASAN")
-Fixes: b908d3cd812a ("Input: synaptics-rmi4 - allow to add attention data")
-Signed-off-by: Evan Green <evgreen@chromium.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200427145537.1.Ic8f898e0147beeee2c005ee7b20f1aebdef1e7eb@changeid
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Amy Shih <amy.shih@advantech.com.tw>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/rmi4/rmi_driver.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hwmon/nct7904.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/input/rmi4/rmi_driver.c b/drivers/input/rmi4/rmi_driver.c
-index 997ccae7ee05..633fd0d660c1 100644
---- a/drivers/input/rmi4/rmi_driver.c
-+++ b/drivers/input/rmi4/rmi_driver.c
-@@ -232,7 +232,7 @@ static irqreturn_t rmi_irq_fn(int irq, void *dev_id)
+diff --git a/drivers/hwmon/nct7904.c b/drivers/hwmon/nct7904.c
+index 281c81edabc6..dfb122b5e1b7 100644
+--- a/drivers/hwmon/nct7904.c
++++ b/drivers/hwmon/nct7904.c
+@@ -356,6 +356,7 @@ static int nct7904_read_temp(struct device *dev, u32 attr, int channel,
+ 	struct nct7904_data *data = dev_get_drvdata(dev);
+ 	int ret, temp;
+ 	unsigned int reg1, reg2, reg3;
++	s8 temps;
  
- 	if (count) {
- 		kfree(attn_data.data);
--		attn_data.data = NULL;
-+		drvdata->attn_data.data = NULL;
- 	}
+ 	switch (attr) {
+ 	case hwmon_temp_input:
+@@ -461,7 +462,8 @@ static int nct7904_read_temp(struct device *dev, u32 attr, int channel,
  
- 	if (!kfifo_is_empty(&drvdata->attn_fifo))
+ 	if (ret < 0)
+ 		return ret;
+-	*val = ret * 1000;
++	temps = ret;
++	*val = temps * 1000;
+ 	return 0;
+ }
+ 
 -- 
 2.25.1
 
