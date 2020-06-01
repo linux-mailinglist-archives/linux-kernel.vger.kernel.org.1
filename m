@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB7D1EAA77
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF8F1EAB20
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730719AbgFASIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:08:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54352 "EHLO mail.kernel.org"
+        id S1731479AbgFASOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:14:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730241AbgFASIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:08:15 -0400
+        id S1731467AbgFASOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:14:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B3BA207D0;
-        Mon,  1 Jun 2020 18:08:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC5FF2068D;
+        Mon,  1 Jun 2020 18:14:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034894;
+        s=default; t=1591035258;
         bh=hu3+Cu1mobOMU0osGTqGMIyMafxT7FTy0kESiJ1M/lw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CHvPhv8LQc1JnRZdSmvCzPDFJsDhbZ6Tijf3cY7WrckPgyZUR+UcfubNoKUHziQZn
-         gypFLxwzJlR+5rkf8QMGj5ADRMELRy6y5ep8iupzKmrwGkpt0pKy1BL4Pm0wNM61Y+
-         Od3aBOBSu/4VwfvH7Dwc5jKBMCNw9+Tv6boUkI/E=
+        b=GDo5RK5q768jawu4KETQ0JxHqvTzoltoc87PCI/b1mkgReFXk427ign34Ue3JBMd4
+         cGsepx+ujR6Y5dGLMbCS9kyC6vZL4broPUpZARYZ9MnO3Da4VZwHe5baO/vfXPvh2z
+         rXRcYATA2jtVHKBPMkaI9f0IpqXWHxKUHIF5se3U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Amy Shih <amy.shih@advantech.com.tw>,
         Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 058/142] hwmon: (nct7904) Fix incorrect range of temperature limit registers
+Subject: [PATCH 5.6 078/177] hwmon: (nct7904) Fix incorrect range of temperature limit registers
 Date:   Mon,  1 Jun 2020 19:53:36 +0200
-Message-Id: <20200601174043.933164252@linuxfoundation.org>
+Message-Id: <20200601174055.390545696@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
