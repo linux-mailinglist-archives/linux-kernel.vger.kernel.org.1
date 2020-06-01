@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7652A1EA902
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F4B1EA905
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729031AbgFAR5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:57:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39234 "EHLO mail.kernel.org"
+        id S1729071AbgFAR55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:57:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729018AbgFAR5s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:57:48 -0400
+        id S1729022AbgFAR5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:57:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE058206E2;
-        Mon,  1 Jun 2020 17:57:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C0372073B;
+        Mon,  1 Jun 2020 17:57:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034268;
-        bh=w7DJnZMmhCocz2csBVNNPUMzJF7l7UZPIEyYgpL5EQY=;
+        s=default; t=1591034270;
+        bh=SsLiBfPUfwRMO5zOAfXQpcBzfExWYne2KkXaGffZrCQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oSoDgPWeBef4fArJ7DylQcmyVNyqM2OoX7Lo636NuAfTeRiwYpFfu+CjeSSy+aUWW
-         sAgeHyBt5OYdMjRrPMhBoChe3Wi4DHaqLYZggMlzoDsbtk5dPUcMetd6P1zm3f6yCg
-         Y1TEhuhc4nX5rhEiNWfshpKrMmBvV4a7nU2F2gCI=
+        b=BB8FW0PtFQssryoHpVvvPjyHjRqphFwxg4qmQxDzCNpZxUq+ka5ChWlYX5wTMOx7p
+         FSoq5osHlxVb4vE3pAcChdYX9yIK5oMNX4rDn+nA24rIVMVMmOV++RPEsQzzsxE7Dv
+         AxT08sEiIdh9Diey4dB9MMBNYXldx36hd/vt3MAY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        kbuild test robot <lkp@intel.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
+        stable@vger.kernel.org, Coverity <scan-admin@coverity.com>,
+        Steve French <stfrench@microsoft.com>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 18/61] usb: gadget: legacy: fix redundant initialization warnings
-Date:   Mon,  1 Jun 2020 19:53:25 +0200
-Message-Id: <20200601174015.089331120@linuxfoundation.org>
+Subject: [PATCH 4.9 19/61] cifs: Fix null pointer check in cifs_read
+Date:   Mon,  1 Jun 2020 19:53:26 +0200
+Message-Id: <20200601174015.342675377@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
 References: <20200601174010.316778377@linuxfoundation.org>
@@ -46,61 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Steve French <stfrench@microsoft.com>
 
-[ Upstream commit d13cce757954fa663c69845611957396843ed87a ]
+[ Upstream commit 9bd21d4b1a767c3abebec203342f3820dcb84662 ]
 
-Fix the following cppcheck warnings:
+Coverity scan noted a redundant null check
 
-drivers/usb/gadget/legacy/inode.c:1364:8: style: Redundant initialization for 'value'. The initialized value is overwritten$
- value = -EOPNOTSUPP;
-       ^
-drivers/usb/gadget/legacy/inode.c:1331:15: note: value is initialized
- int    value = -EOPNOTSUPP;
-              ^
-drivers/usb/gadget/legacy/inode.c:1364:8: note: value is overwritten
- value = -EOPNOTSUPP;
-       ^
-drivers/usb/gadget/legacy/inode.c:1817:8: style: Redundant initialization for 'value'. The initialized value is overwritten$
- value = -EINVAL;
-       ^
-drivers/usb/gadget/legacy/inode.c:1787:18: note: value is initialized
- ssize_t   value = len, length = len;
-                 ^
-drivers/usb/gadget/legacy/inode.c:1817:8: note: value is overwritten
- value = -EINVAL;
-       ^
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
-
+Coverity-id: 728517
+Reported-by: Coverity <scan-admin@coverity.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
+Reviewed-by: Shyam Prasad N <nspmangalore@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/legacy/inode.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/cifs/file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/legacy/inode.c b/drivers/usb/gadget/legacy/inode.c
-index b8534d3f8bb0..cb02e9ecd8e7 100644
---- a/drivers/usb/gadget/legacy/inode.c
-+++ b/drivers/usb/gadget/legacy/inode.c
-@@ -1364,7 +1364,6 @@ gadgetfs_setup (struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
- 
- 	req->buf = dev->rbuf;
- 	req->context = NULL;
--	value = -EOPNOTSUPP;
- 	switch (ctrl->bRequest) {
- 
- 	case USB_REQ_GET_DESCRIPTOR:
-@@ -1788,7 +1787,7 @@ static ssize_t
- dev_config (struct file *fd, const char __user *buf, size_t len, loff_t *ptr)
- {
- 	struct dev_data		*dev = fd->private_data;
--	ssize_t			value = len, length = len;
-+	ssize_t			value, length = len;
- 	unsigned		total;
- 	u32			tag;
- 	char			*kbuf;
+diff --git a/fs/cifs/file.c b/fs/cifs/file.c
+index 09d83275c20b..b2919166855f 100644
+--- a/fs/cifs/file.c
++++ b/fs/cifs/file.c
+@@ -3293,7 +3293,7 @@ cifs_read(struct file *file, char *read_data, size_t read_size, loff_t *offset)
+ 			 * than it negotiated since it will refuse the read
+ 			 * then.
+ 			 */
+-			if ((tcon->ses) && !(tcon->ses->capabilities &
++			if (!(tcon->ses->capabilities &
+ 				tcon->ses->server->vals->cap_large_files)) {
+ 				current_read_size = min_t(uint,
+ 					current_read_size, CIFSMaxBufSize);
 -- 
 2.25.1
 
