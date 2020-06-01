@@ -2,47 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3231EAE3A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FAEE1EACD3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730150AbgFASEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:04:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47794 "EHLO mail.kernel.org"
+        id S1729966AbgFASkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:40:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730114AbgFASDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:03:43 -0400
+        id S1729378AbgFASNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:13:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 778E82145D;
-        Mon,  1 Jun 2020 18:03:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A86920776;
+        Mon,  1 Jun 2020 18:13:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034622;
-        bh=duO5M/CsRuhz+6hecweWxBtOx3P38JpU0WIlPK7/iJ0=;
+        s=default; t=1591035197;
+        bh=d07kKZJF85G6WmyNuDRY5D8ZQiahqedqqafcMO5l6EY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RHc/6xHIH+WfopNoAXOuimgqIUYHqj9OT2S7VGcrXfO4LRdXzwwh2XF/JCIN+rCnx
-         xMoNWi4IGfrLCS7OcVUSeLngKhCtLX7mssA0OJl51dpjHaoJku9vt5IKnQ78mKgdDP
-         dL0eMDzW5Aqd/J2KRd+ny+g2yN94X7/eWBEiSIn4=
+        b=tdneYINCpIz2/Wdha7RnF/rO8KxUS93NuakYbV7xSa4T9xVIMCa9h66OeEtZcf2yj
+         I3nC8woCJKpS+1B5GrR1nvzWNQ9LPmOTX3AkiplD91AHkWFz6NikJSRUW3U17bXmV6
+         gJH3zK3lFwN69QlFYpxjxKZf7DVILABt8McHsFII=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Jiong Wang <jiongwang@huawei.com>,
-        Yuqi Jin <jinyuqi@huawei.com>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>
-Subject: [PATCH 4.19 09/95] net: revert "net: get rid of an signed integer overflow in ip_idents_reserve()"
-Date:   Mon,  1 Jun 2020 19:53:09 +0200
-Message-Id: <20200601174022.341648940@linuxfoundation.org>
+        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 053/177] ARM: dts: omap4-droid4: Fix flakey wlan by disabling internal pull for gpio
+Date:   Mon,  1 Jun 2020 19:53:11 +0200
+Message-Id: <20200601174053.463124568@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
-References: <20200601174020.759151073@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,66 +43,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuqi Jin <jinyuqi@huawei.com>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit a6211caa634da39d861a47437ffcda8b38ef421b ]
+[ Upstream commit 30fa60c678eaa27b8f2a531920d77f7184658f73 ]
 
-Commit adb03115f459 ("net: get rid of an signed integer overflow in ip_idents_reserve()")
-used atomic_cmpxchg to replace "atomic_add_return" inside the function
-"ip_idents_reserve". The reason was to avoid UBSAN warning.
-However, this change has caused performance degrade and in GCC-8,
-fno-strict-overflow is now mapped to -fwrapv -fwrapv-pointer
-and signed integer overflow is now undefined by default at all
-optimization levels[1]. Moreover, it was a bug in UBSAN vs -fwrapv
-/-fno-strict-overflow, so Let's revert it safely.
+The wlan on droid4 is flakey on some devices, and experiments have shown this
+gets fixed if we disable the internal pull for wlan gpio interrupt line.
 
-[1] https://gcc.gnu.org/gcc-8/changes.html
+The symptoms are that the wlan connection is very slow and almost useless
+with lots of wlcore firmware reboot warnings in the dmesg.
 
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Suggested-by: Eric Dumazet <edumazet@google.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>
-Cc: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Jiri Pirko <jiri@resnulli.us>
-Cc: Arvind Sankar <nivedita@alum.mit.edu>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jiong Wang <jiongwang@huawei.com>
-Signed-off-by: Yuqi Jin <jinyuqi@huawei.com>
-Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+In addition to configuring the wlan gpio pulls, let's also configure the rest
+of the wlan sd pins. We have not configured those eariler as we're booting
+using kexec.
+
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/route.c |   14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ .../boot/dts/motorola-mapphone-common.dtsi    | 33 +++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -484,18 +484,16 @@ u32 ip_idents_reserve(u32 hash, int segs
- 	atomic_t *p_id = ip_idents + hash % IP_IDENTS_SZ;
- 	u32 old = READ_ONCE(*p_tstamp);
- 	u32 now = (u32)jiffies;
--	u32 new, delta = 0;
-+	u32 delta = 0;
+diff --git a/arch/arm/boot/dts/motorola-mapphone-common.dtsi b/arch/arm/boot/dts/motorola-mapphone-common.dtsi
+index 9067e0ef4240..01ea9a1e2c86 100644
+--- a/arch/arm/boot/dts/motorola-mapphone-common.dtsi
++++ b/arch/arm/boot/dts/motorola-mapphone-common.dtsi
+@@ -367,6 +367,8 @@
+ };
  
- 	if (old != now && cmpxchg(p_tstamp, old, now) == old)
- 		delta = prandom_u32_max(now - old);
+ &mmc3 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&mmc3_pins>;
+ 	vmmc-supply = <&wl12xx_vmmc>;
+ 	/* uart2_tx.sdmmc3_dat1 pad as wakeirq */
+ 	interrupts-extended = <&wakeupgen GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH
+@@ -472,6 +474,37 @@
+ 		>;
+ 	};
  
--	/* Do not use atomic_add_return() as it makes UBSAN unhappy */
--	do {
--		old = (u32)atomic_read(p_id);
--		new = old + delta + segs;
--	} while (atomic_cmpxchg(p_id, old, new) != old);
--
--	return new - segs;
-+	/* If UBSAN reports an error there, please make sure your compiler
-+	 * supports -fno-strict-overflow before reporting it that was a bug
-+	 * in UBSAN, and it has been fixed in GCC-8.
++	/*
++	 * Android uses PIN_OFF_INPUT_PULLDOWN | PIN_INPUT_PULLUP | MUX_MODE3
++	 * for gpio_100, but the internal pull makes wlan flakey on some
++	 * devices. Off mode value should be tested if we have off mode working
++	 * later on.
 +	 */
-+	return atomic_add_return(segs + delta, p_id) - segs;
- }
- EXPORT_SYMBOL(ip_idents_reserve);
- 
++	mmc3_pins: pinmux_mmc3_pins {
++		pinctrl-single,pins = <
++		/* 0x4a10008e gpmc_wait2.gpio_100 d23 */
++		OMAP4_IOPAD(0x08e, PIN_INPUT | MUX_MODE3)
++
++		/* 0x4a100102 abe_mcbsp1_dx.sdmmc3_dat2 ab25 */
++		OMAP4_IOPAD(0x102, PIN_INPUT_PULLUP | MUX_MODE1)
++
++		/* 0x4a100104 abe_mcbsp1_fsx.sdmmc3_dat3 ac27 */
++		OMAP4_IOPAD(0x104, PIN_INPUT_PULLUP | MUX_MODE1)
++
++		/* 0x4a100118 uart2_cts.sdmmc3_clk ab26 */
++		OMAP4_IOPAD(0x118, PIN_INPUT | MUX_MODE1)
++
++		/* 0x4a10011a uart2_rts.sdmmc3_cmd ab27 */
++		OMAP4_IOPAD(0x11a, PIN_INPUT_PULLUP | MUX_MODE1)
++
++		/* 0x4a10011c uart2_rx.sdmmc3_dat0 aa25 */
++		OMAP4_IOPAD(0x11c, PIN_INPUT_PULLUP | MUX_MODE1)
++
++		/* 0x4a10011e uart2_tx.sdmmc3_dat1 aa26 */
++		OMAP4_IOPAD(0x11e, PIN_INPUT_PULLUP | MUX_MODE1)
++		>;
++	};
++
+ 	/* gpmc_ncs0.gpio_50 */
+ 	poweroff_gpio: pinmux_poweroff_pins {
+ 		pinctrl-single,pins = <
+-- 
+2.25.1
+
 
 
