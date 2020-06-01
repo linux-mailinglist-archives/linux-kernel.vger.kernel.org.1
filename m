@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828891EAA74
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1932A1EA9E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730684AbgFASIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:08:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53636 "EHLO mail.kernel.org"
+        id S1730067AbgFASDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:03:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728944AbgFASHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:07:41 -0400
+        id S1729551AbgFASDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:03:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 92AE620872;
-        Mon,  1 Jun 2020 18:07:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C2F72074B;
+        Mon,  1 Jun 2020 18:03:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034861;
-        bh=VZJ0swokq0Z7+2sCy6hkjXMh45bZApnh6Xb3qmgCXog=;
+        s=default; t=1591034595;
+        bh=AXktdaq6qusCwkIlE8IbXlzDBcusFAALLlJY+OqpiM0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wG79nHYOwra4Rc4XDp6lzpcztMKrWwXaMXXqBwQ25+pFktvuIi6Ysd4WYdfcPK6Xm
-         tjzfIinEvIzT71un6pRF6uVLOvZgxqDFhpnFLheVpNWIw4jK+RR4NfdzsqINcgsc9+
-         wblQIXDwnzDyoWaUVz/mMNjV+H04SwdUm2aFLVi8=
+        b=e3L3gXmZppgjv5g2E+4VDNllmILbvJIF/dV4HcNKokurWd3swEnX8K748qddwsIht
+         hE4FnDrDSTzakdN5nLZQXFqyL9+vtdamkphM3S8Dr4pGh5O/ZIayGIHBFgnzoyYSlK
+         jsPzUWGPhL3bNK6N7/VXLD7MXdGpIFIYIJ2xbmzw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Johan Jonker <jbx6244@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 045/142] drm/amd/powerplay: perform PG ungate prior to CG ungate
+Subject: [PATCH 4.19 23/95] ARM: dts: rockchip: fix pinctrl sub nodename for spi in rk322x.dtsi
 Date:   Mon,  1 Jun 2020 19:53:23 +0200
-Message-Id: <20200601174042.557293613@linuxfoundation.org>
+Message-Id: <20200601174024.547077490@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
+References: <20200601174020.759151073@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,62 +44,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evan Quan <evan.quan@amd.com>
+From: Johan Jonker <jbx6244@gmail.com>
 
-[ Upstream commit f4fcfa4282c1a1bf51475ebb0ffda623eebf1191 ]
+[ Upstream commit 855bdca1781c79eb661f89c8944c4a719ce720e8 ]
 
-Since gfxoff should be disabled first before trying to access those
-GC registers.
+A test with the command below gives these errors:
 
-Signed-off-by: Evan Quan <evan.quan@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+arch/arm/boot/dts/rk3229-evb.dt.yaml: spi-0:
+'#address-cells' is a required property
+arch/arm/boot/dts/rk3229-evb.dt.yaml: spi-1:
+'#address-cells' is a required property
+arch/arm/boot/dts/rk3229-xms6.dt.yaml: spi-0:
+'#address-cells' is a required property
+arch/arm/boot/dts/rk3229-xms6.dt.yaml: spi-1:
+'#address-cells' is a required property
+
+The $nodename pattern for spi nodes is
+"^spi(@.*|-[0-9a-f])*$". To prevent warnings rename
+'spi-0' and 'spi-1' pinctrl sub nodenames to
+'spi0' and 'spi1' in 'rk322x.dtsi'.
+
+make ARCH=arm dtbs_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/spi-controller.yaml
+
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Link: https://lore.kernel.org/r/20200424123923.8192-1-jbx6244@gmail.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/powerplay/amd_powerplay.c | 6 +++---
- drivers/gpu/drm/amd/powerplay/amdgpu_smu.c    | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ arch/arm/boot/dts/rk322x.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/powerplay/amd_powerplay.c b/drivers/gpu/drm/amd/powerplay/amd_powerplay.c
-index 8bb5fbef7de0..9eb3a0dcd1f2 100644
---- a/drivers/gpu/drm/amd/powerplay/amd_powerplay.c
-+++ b/drivers/gpu/drm/amd/powerplay/amd_powerplay.c
-@@ -320,12 +320,12 @@ static void pp_dpm_en_umd_pstate(struct pp_hwmgr  *hwmgr,
- 		if (*level & profile_mode_mask) {
- 			hwmgr->saved_dpm_level = hwmgr->dpm_level;
- 			hwmgr->en_umd_pstate = true;
--			amdgpu_device_ip_set_clockgating_state(hwmgr->adev,
--						AMD_IP_BLOCK_TYPE_GFX,
--						AMD_CG_STATE_UNGATE);
- 			amdgpu_device_ip_set_powergating_state(hwmgr->adev,
- 					AMD_IP_BLOCK_TYPE_GFX,
- 					AMD_PG_STATE_UNGATE);
-+			amdgpu_device_ip_set_clockgating_state(hwmgr->adev,
-+						AMD_IP_BLOCK_TYPE_GFX,
-+						AMD_CG_STATE_UNGATE);
- 		}
- 	} else {
- 		/* exit umd pstate, restore level, enable gfx cg*/
-diff --git a/drivers/gpu/drm/amd/powerplay/amdgpu_smu.c b/drivers/gpu/drm/amd/powerplay/amdgpu_smu.c
-index a066e9297777..b51a124e505a 100644
---- a/drivers/gpu/drm/amd/powerplay/amdgpu_smu.c
-+++ b/drivers/gpu/drm/amd/powerplay/amdgpu_smu.c
-@@ -1541,12 +1541,12 @@ static int smu_enable_umd_pstate(void *handle,
- 		if (*level & profile_mode_mask) {
- 			smu_dpm_ctx->saved_dpm_level = smu_dpm_ctx->dpm_level;
- 			smu_dpm_ctx->enable_umd_pstate = true;
--			amdgpu_device_ip_set_clockgating_state(smu->adev,
--							       AMD_IP_BLOCK_TYPE_GFX,
--							       AMD_CG_STATE_UNGATE);
- 			amdgpu_device_ip_set_powergating_state(smu->adev,
- 							       AMD_IP_BLOCK_TYPE_GFX,
- 							       AMD_PG_STATE_UNGATE);
-+			amdgpu_device_ip_set_clockgating_state(smu->adev,
-+							       AMD_IP_BLOCK_TYPE_GFX,
-+							       AMD_CG_STATE_UNGATE);
- 		}
- 	} else {
- 		/* exit umd pstate, restore level, enable gfx cg*/
+diff --git a/arch/arm/boot/dts/rk322x.dtsi b/arch/arm/boot/dts/rk322x.dtsi
+index bada942ef38d..2aa74267ae51 100644
+--- a/arch/arm/boot/dts/rk322x.dtsi
++++ b/arch/arm/boot/dts/rk322x.dtsi
+@@ -944,7 +944,7 @@
+ 			};
+ 		};
+ 
+-		spi-0 {
++		spi0 {
+ 			spi0_clk: spi0-clk {
+ 				rockchip,pins = <0 9 RK_FUNC_2 &pcfg_pull_up>;
+ 			};
+@@ -962,7 +962,7 @@
+ 			};
+ 		};
+ 
+-		spi-1 {
++		spi1 {
+ 			spi1_clk: spi1-clk {
+ 				rockchip,pins = <0 23 RK_FUNC_2 &pcfg_pull_up>;
+ 			};
 -- 
 2.25.1
 
