@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF511EAF27
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 21:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D301EAF59
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 21:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728498AbgFAR4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:56:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35808 "EHLO
+        id S1728386AbgFATBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 15:01:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728402AbgFARz5 (ORCPT
+        with ESMTP id S1728434AbgFAR4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:55:57 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F534C05BD43
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 10:55:57 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id u5so3851388pgn.5
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 10:55:57 -0700 (PDT)
+        Mon, 1 Jun 2020 13:56:00 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D2BC05BD43
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 10:56:00 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id z64so3837068pfb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 10:56:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ly/+lULxncE0Hv/XKPdsdbKvQX3A5UmakKCmLALYjq0=;
-        b=dkI7qDJyx89vpnpMR9RvXRcPeeBf1zFWx/8GgGMnZHyTtL5pipzTvNVHo3FGncZVYp
-         Q7Y9OGgwFDlGDkHj7dXap5cwa0mPWzPieIeTTIoUzGl+fW7h3aF95HXddQjs0fsROJrA
-         P528DEuQDIA7QACQVabOPNA0v632XS/lQMgR4b1qXKrkSqaKCYcMKk5J05O3srOpFIXY
-         dUrHzjzEx2EkUO7RCMrWu181kDtXBfkA0iO0u59DOUweyH/+HKER5DQSaT4lrzGdRhMa
-         gyt9sn5ZugY43f4OnB3ZlAL/eKeILEk7u/Tb+l7MBh0tkjdiYM99wXTLXsnK0qC4sIJM
-         qzOA==
+        bh=i5BZPTZAmXxklJpoMRb5vD0GYMFXpjrq4/dihvCieGA=;
+        b=oGDezAuwIcD3h/JVFiFkScpwzDR7DBlQ3K82qjR89+nwgkSaq0E5YppwnXKytVSlas
+         dl/hRrPjMDN0njFWBVSKAVG8aR6rmRXgaxqwVvmhmdk2DKf6XYFQIaf9Eavl3reRURgG
+         4VEQIvfKLORMIIs35V5Mm8PL7qzFCVvr+tQ1uxZG6vBedJTKCkDSH6rRJC6hMMaRqZEO
+         Y1YAuNKI1gQ3YObz3ty3IXa5OyI1bnIprq3f84lh9LlQnL03m3dce8SwO14bW/NuHYM3
+         5FXETrADg+UOjJ5EoctZZ4Ix7VbLhchbCdEu3YuYtK8CejO9iOCwSu3PY5LVK5LaBEhj
+         yPkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ly/+lULxncE0Hv/XKPdsdbKvQX3A5UmakKCmLALYjq0=;
-        b=Hpp+mbATIHHytgYsJXZEw0w0fIBiZyuz6IY4QEDDIAUurq24Di7dbEjpt7tuSXfIbB
-         tNfRBjHF+jHtE45jlLL/R8Gmtml3i65l2sEZMdhjXeqXrtEkHU7wx0kH+pS4w2Y7Gi0d
-         pxZAMi0ORAl/KjtURp++nnGruBgY9VYY9hVkri6DS1PPyiIirh9YjdL9mkEKhh+9l7uz
-         UNAVIKeWiXgGLbp5jzG0+7Mi7adzuRpXSNEuRehf7s+6h4qPw0z2EEDFrEf9KliScX7r
-         iDkFnrU3v3YlVvLfocfxKVMTB+ca81BNC8CotUKaH1tM2Luvadu6EnRosynQmHO3cKbu
-         4ZGQ==
-X-Gm-Message-State: AOAM530hl1/yzflVz+PDuTQXrI7/SIfFV+hjiugHw1EwkWY/94YwdFeE
-        KqKX6INmHcepzexNbIzI8sgwVg==
-X-Google-Smtp-Source: ABdhPJyfHXNxc1V3Yc+P6I77d41jXD45DyYRGH8UfzswQ1/Fjb0Q/j2fYXA57kZwWD2pF4ngIEehYg==
-X-Received: by 2002:a05:6a00:148c:: with SMTP id v12mr21200684pfu.171.1591034156896;
-        Mon, 01 Jun 2020 10:55:56 -0700 (PDT)
+        bh=i5BZPTZAmXxklJpoMRb5vD0GYMFXpjrq4/dihvCieGA=;
+        b=Co570YDfv6Y2XUYTRIbQ6oNOJLdYr7ahcgnblgTpMco+Wk3k4N1vavvwMYWN9zaYFE
+         ksonNqlJoZUh9WTS80zbvPVuKUnMEWZUzwvaMZpdn8P4rPggAzZ39i5SxD/5Hz5T7Ttn
+         hhF3//Li7MnKZw1+dhdt+cZVCEWS++UQ84HkuGmN2kWw2WL1snrnenfTh3DmmrrKgaCk
+         KedH2gXEdwCdJWTStWeWYxnTxxQrs2jSWkQokByTfNqMgPjA94DwAauAOOm3xBq0/Rgn
+         Lmo8u/eZS5LkC+Nqw5YZOyMidOlU4whRJ9CTF23jG8Rke6UTQTa4aloMV1K1WbEaI1Vx
+         e7Xg==
+X-Gm-Message-State: AOAM531sR17UlIdjWVyS+WgODK9UKejY1y9Ns0vjB5m7Nb+8iTTjeixD
+        wb1Uyw1MkXscArooA7B90JFQUA==
+X-Google-Smtp-Source: ABdhPJxrhPzy4O3NyPsLmeg5/fP9w0+e83//FkVHlGYJSYKm29+DOBd/ogwZCnOjBob1eTm4pfRdqw==
+X-Received: by 2002:a63:3c11:: with SMTP id j17mr20781628pga.70.1591034160056;
+        Mon, 01 Jun 2020 10:56:00 -0700 (PDT)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id p7sm64771pfq.184.2020.06.01.10.55.55
+        by smtp.gmail.com with ESMTPSA id p7sm64771pfq.184.2020.06.01.10.55.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jun 2020 10:55:56 -0700 (PDT)
+        Mon, 01 Jun 2020 10:55:59 -0700 (PDT)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     bjorn.andersson@linaro.org, ohad@wizery.com,
         mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
@@ -55,9 +55,9 @@ Cc:     loic.pallardy@st.com, arnaud.pouliquen@st.com,
         linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v4 02/11] remoteproc: stm32: Request IRQ with platform device
-Date:   Mon,  1 Jun 2020 11:55:43 -0600
-Message-Id: <20200601175552.22286-3-mathieu.poirier@linaro.org>
+Subject: [PATCH v4 04/11] remoteproc: stm32: Remove memory translation from DT parsing
+Date:   Mon,  1 Jun 2020 11:55:45 -0600
+Message-Id: <20200601175552.22286-5-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200601175552.22286-1-mathieu.poirier@linaro.org>
 References: <20200601175552.22286-1-mathieu.poirier@linaro.org>
@@ -68,40 +68,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Request IRQ with platform device rather than remote proc in order to
-call stm32_rproc_parse_dt() before rproc_alloc().  That way we can
-know whether we need to synchronise with the MCU or not.
+Other than one has to be done after the other, there is no correlation
+between memory translation and DT parsing.  As such move function
+stm32_rproc_of_memory_translations() to stm32_rproc_probe() so that
+stm32_rproc_parse_dt() can be extended to look for attach bindings
+in a clean way.
 
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 Reviewed-by: Loic Pallardy <loic.pallardy@st.com>
 Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
- drivers/remoteproc/stm32_rproc.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/remoteproc/stm32_rproc.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index a80733fb08e7..94fd687fb5b2 100644
+index 1e512ddf2591..3e3b199a02c1 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
-@@ -261,7 +261,8 @@ static int stm32_rproc_parse_fw(struct rproc *rproc, const struct firmware *fw)
+@@ -606,7 +606,7 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev,
  
- static irqreturn_t stm32_rproc_wdg(int irq, void *data)
- {
--	struct rproc *rproc = data;
-+	struct platform_device *pdev = data;
-+	struct rproc *rproc = platform_get_drvdata(pdev);
+ 	*auto_boot = of_property_read_bool(np, "st,auto-boot");
  
- 	rproc_report_crash(rproc, RPROC_WATCHDOG);
+-	return stm32_rproc_of_memory_translations(pdev, ddata);
++	return 0;
+ }
  
-@@ -553,7 +554,7 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev)
+ static int stm32_rproc_probe(struct platform_device *pdev)
+@@ -633,6 +633,10 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto free_rproc;
  
- 	if (irq > 0) {
- 		err = devm_request_irq(dev, irq, stm32_rproc_wdg, 0,
--				       dev_name(dev), rproc);
-+				       dev_name(dev), pdev);
- 		if (err) {
- 			dev_err(dev, "failed to request wdg irq\n");
- 			return err;
++	ret = stm32_rproc_of_memory_translations(pdev, ddata);
++	if (ret)
++		goto free_rproc;
++
+ 	rproc->has_iommu = false;
+ 	ddata->workqueue = create_workqueue(dev_name(dev));
+ 	if (!ddata->workqueue) {
 -- 
 2.20.1
 
