@@ -2,211 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F3E1EA185
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 12:05:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F45D1EA1A0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 12:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726218AbgFAKE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 06:04:58 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:34118 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgFAKE5 (ORCPT
+        id S1726110AbgFAKNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 06:13:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725788AbgFAKN3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 06:04:57 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200601100455euoutp0130b7c5b6e1cd690053ad7a546f74a331~UY266iGRg2582125821euoutp01I
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 10:04:55 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200601100455euoutp0130b7c5b6e1cd690053ad7a546f74a331~UY266iGRg2582125821euoutp01I
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1591005895;
-        bh=CgeOOg8l1+lFHJgZGFt7jxgyRNwPoTigkymvXCh8EMw=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=P0JMFrnAZzYvc2OhZOQhqRbbnrUuHBjvH5/xj8LxDZ0HreUsxtYZqqLXtqr9n6Ksn
-         n4baDK2Mj8S1Xy6c4gp9WMiS6WuTcdJNE7Cd1BHAEaUrwHZzM4Wmkik+0JgDp4mB7f
-         Jc/BGJMf71rvncfm6knp0uK4m350uZBRIdz0a9SY=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200601100455eucas1p23dd2f70c3e31ee7ffa60bc23b638652c~UY26bJrvF3216432164eucas1p2P;
-        Mon,  1 Jun 2020 10:04:55 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 7D.7F.60698.6C2D4DE5; Mon,  1
-        Jun 2020 11:04:55 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200601100454eucas1p1b7aaa6f04b6bc51e0fbd4b51d248b217~UY26FsQBH0989109891eucas1p1f;
-        Mon,  1 Jun 2020 10:04:54 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200601100454eusmtrp1b57feacee2e3849770ee74e65ddbf649~UY26E09Jh2405824058eusmtrp1B;
-        Mon,  1 Jun 2020 10:04:54 +0000 (GMT)
-X-AuditID: cbfec7f5-a29ff7000001ed1a-b1-5ed4d2c62288
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 26.40.07950.6C2D4DE5; Mon,  1
-        Jun 2020 11:04:54 +0100 (BST)
-Received: from [106.210.123.115] (unknown [106.210.123.115]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200601100453eusmtip1513aa3d67c5574c6ef2fc1a93595396f~UY24sI_oJ1722217222eusmtip1d;
-        Mon,  1 Jun 2020 10:04:53 +0000 (GMT)
-Subject: Re: [RFC PATCH v5 3/6] PM / devfreq: exynos-bus: Add registration
- of interconnect child device
-To:     Chanwoo Choi <chanwoo@kernel.org>
-Cc:     Georgi Djakov <georgi.djakov@linaro.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        =?UTF-8?B?QXJ0dXIgxZp3aWdvxYQ=?= <a.swigon@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>, inki.dae@samsung.com,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <8a977716-9e0e-5daf-fb22-32d943da42e5@samsung.com>
-Date:   Mon, 1 Jun 2020 12:04:52 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.8.1
+        Mon, 1 Jun 2020 06:13:29 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6BE9C061A0E;
+        Mon,  1 Jun 2020 03:13:28 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id a25so1483791ejg.5;
+        Mon, 01 Jun 2020 03:13:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yqNUR4MSIicJxwTqODWkb4nWYD+Gqo3yaTC/YrSgY/0=;
+        b=kEsmvL3l8qAXlCshnoFKub+/k14frs+Or7UVObjs02NciMlf4ttW8sCYpDnBb5/yvS
+         F5Ds+SSQOQatY0eT/p/1DjG0iGizMlwcsGoUQ7OPcNq5lbReTw92VCcWCAjVOaE6y21X
+         vWovueUYHKyS7pLps57cpaOJm0bn1QedBHAahtv6gr7SRRPgiUPrje06HXcDjdhmEpN3
+         E6HMxSoBptXzQvquBH7rXD4uljs0M+M9S8ywi2GuMxXc1jHkYk7yAqRBQwjFRMssuqJa
+         19+G0pgWtB9h15VHTJylKzLnRAE48u9+IGrbNUJJ4G/yBm7B7ZU5f1SFKS3ugI97XdhW
+         twGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yqNUR4MSIicJxwTqODWkb4nWYD+Gqo3yaTC/YrSgY/0=;
+        b=gO1p+YjJ5mOxL4jYQnT+tSgR7bzwpQs0z3gsRHf91GlDUDSRegucYe9O99u9U/KnCx
+         yi03yTaq3aul0YAw3Js/92B8Q1dZA+n2mH1ZJBSyL+lNKNTG8tZ9Q4vMzqpcUGK2ifsb
+         strHolG2Lml1bvVY5u1ThzACdqmsz4hbkTBAYE+zaaq9QD3ZdsyB2Br/xyU8UtDgZfOu
+         pEqVM1g62AsvFM7GrJUwDHOqAfl8fH1D+Qx5HZENZkAZza22686YbH/NAhGyixr0sP1S
+         qWkfGO+xGYVIWIZ6aJaGuYFs4Xy/B5zIfmpeSQoHlv195iIo0z1tHg4pk4Sbb0+ATCPh
+         5KiQ==
+X-Gm-Message-State: AOAM531dE3TZOOZwSzA+A6BneNpU8wKG0kKhvkqQf2ubZIknZC7mxDZe
+        eeNBDahQEkD7Y1c5VTNczKolvAheJF9P1Qe3vmU=
+X-Google-Smtp-Source: ABdhPJyr/p3kIEUH9CTjnMMnEFMFj6ZcOeiUQGXAUKlOKgg3JtX4ZI7CWVx4TkOCbfJV1wzv9ChAQyU1KmE4tDXGMPY=
+X-Received: by 2002:a17:906:2e50:: with SMTP id r16mr18249609eji.305.1591006407219;
+ Mon, 01 Jun 2020 03:13:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAGTfZH1KC=jpQ5GXNtEf1cn7+WqXJdqbbVKmpxr8Snh4GEy8bA@mail.gmail.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SaUhUURTHu2+bpzb2HE0PGgWDQgppYh8eVFbSMkWQ0YdA0Zr05ZKOMuOS
-        kegQWi7JuICTmopo2rSoo2i4gTI56JjGuGQuzYeGYgwzN1omLJ/PyG+/c/7/e8/5Xy6NS2ZI
-        TzpOkcIpFfIEKeVIdAz+HDtkNE9EHi4ax1hLdQ5iW7XNJFs8PUGw79Y+k2yNYZRkJ9aXKLa8
-        V0+xJRYNwY6NtYhY/ccpkh3vqqJY7Vgfxr4wzIvYWXUTxeb0GkSsttRGnWRkel0eJZub6qFk
-        lgIjJmurz5IVteuQbFW/P5QKczwWzSXEpXHKgODrjrH2J9/J5EKv23NlWlE2WnbNRzQNzBHQ
-        NDjlI0dawjQhsDeYyXzksFmsIXjbTAjCKgJD8XvEC/yB5aeLlCA0ItAvfcKEYhmBrauf4l2u
-        TBwYTfUint0YH2hZGSR5E840kDCUa926imIC4eHroi0WM8Ewoy8jeCYYb5h8psV43stEQKFl
-        ARc8LjD0yErwezswl6FSE8i3ccYDZqw1mMAHoHOxChc2VdNgHXcS+DR86WndTuAKC8Z2kcD7
-        wFRauBUTmHsICrtnRUKhQWAx1m6fOApzo78ofjDO+EJzV4DQPgUT9kZKeEdnmF50EXZwhpKO
-        clxoi+FBrkRwe4NdV44J7AkF1j+EBkkrdgSr2JGmYkeaiv9zaxGhQx5cqioxhlMFKbh0f5U8
-        UZWqiPGPSkrUo80fZ9owrr9Cfb9vDCCGRtLd4oPm8UgJKU9TZSQOIKBxqZs45I0pUiKOlmfc
-        4ZRJ15SpCZxqAHnRhNRDHFRni5AwMfIU7hbHJXPKfypGO3hmo7vHw20bF6wlKQry/MuRqqXM
-        VV/3EEitu3fxW8oJJVE3FDp/xe+M+XEUZVZkeiw5mCtP9o8qJFfXT6l7V8LPLX7d85yyroZh
-        LpN998F2892wZGFYba+W/YjSmeorjbl58SHx6V5kp6GT6Nb41AVd8jOrg2I2skbccbrt7K4P
-        UkIVKw/0w5Uq+V+3x83HbQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrHIsWRmVeSWpSXmKPExsVy+t/xu7rHLl2JMzg/R93i/rxWRouNM9az
-        Wky8cYXF4vqX56wW84+cY7W48vU9m8X0vZvYLCbdn8Bicf78BnaLTY+vsVpc3jWHzWLG+X1M
-        FmuP3GW3uN24gs2ide8RdosZk1+yOQh4bFrVyeZx59oeNo/73ceZPDYvqffo27KK0ePzJrkA
-        tig9m6L80pJUhYz84hJbpWhDCyM9Q0sLPSMTSz1DY/NYKyNTJX07m5TUnMyy1CJ9uwS9jN/L
-        vrMW9EhX3Jkyg72B8aNwFyMnh4SAicTHlW/Zuhi5OIQEljJK/Lr6k72LkQMoISUxv0UJokZY
-        4s+1Lqia90A1q6awgSSEBTIlXnY8YQWxRQRUJTZ8OsYKUsQssJxV4tih9VAdHUwSr1qOsoNU
-        sQkYSvQe7WMEsXkF7CRubZrCAmKzCKhIXF09gwnEFhWIlehe/IMdokZQ4uTMJywgF3EKBErM
-        nmAIEmYWUJf4M+8SM4QtLnHryXwmCFteYvvbOcwTGIVmIemehaRlFpKWWUhaFjCyrGIUSS0t
-        zk3PLTbSK07MLS7NS9dLzs/dxAiM623Hfm7Zwdj1LvgQowAHoxIP74Xzl+OEWBPLiitzDzFK
-        cDArifA6nT0dJ8SbklhZlVqUH19UmpNafIjRFOi3icxSosn5wJSTVxJvaGpobmFpaG5sbmxm
-        oSTO2yFwMEZIID2xJDU7NbUgtQimj4mDU6qB8dwmthDF531bGn7IT1/+9Pby5Iaizc7/Fy+Y
-        5qG+pzL+tMmZ1gccMx6kTDG9JipXst8mJPB1E5t/W17qhsupLAenPF9bynlC6sbHYhMFfwHn
-        AvXdPWuOLvrOoNTs8S5d9PZTrq0HQyZ+Vn/sYZBR3XT+mGOJ9/dqnbd84Ysf8d88sOdwaM2a
-        PiWW4oxEQy3mouJEAABzid8BAwAA
-X-CMS-MailID: 20200601100454eucas1p1b7aaa6f04b6bc51e0fbd4b51d248b217
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200529163225eucas1p1cfb2233c869dcc3dab84b754bbce17b6
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200529163225eucas1p1cfb2233c869dcc3dab84b754bbce17b6
-References: <CGME20200529163225eucas1p1cfb2233c869dcc3dab84b754bbce17b6@eucas1p1.samsung.com>
-        <20200529163200.18031-1-s.nawrocki@samsung.com>
-        <20200529163200.18031-4-s.nawrocki@samsung.com>
-        <CAGTfZH1KC=jpQ5GXNtEf1cn7+WqXJdqbbVKmpxr8Snh4GEy8bA@mail.gmail.com>
+References: <20200601095826.1757621-1-olteanv@gmail.com> <20200601100441.GA1845725@kroah.com>
+In-Reply-To: <20200601100441.GA1845725@kroah.com>
+From:   Vladimir Oltean <olteanv@gmail.com>
+Date:   Mon, 1 Jun 2020 13:13:16 +0300
+Message-ID: <CA+h21hp2UmMqE_=Ky5J=B=X-ZdU78Fp52zb=vWEPGw9CbcjjVw@mail.gmail.com>
+Subject: Re: [PATCH v3] devres: keep both device name and resource name in
+ pretty name
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        sergei.shtylyov@cogentembedded.com, bgolaszewski@baylibre.com,
+        mika.westerberg@linux.intel.com, efremov@linux.com,
+        ztuowen@gmail.com, lkml <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc: Rob, devicetree ML
+Hi Greg,
 
-On 31.05.2020 01:57, Chanwoo Choi wrote:
-> On Sat, May 30, 2020 at 1:33 AM Sylwester Nawrocki
-> <s.nawrocki@samsung.com> wrote:
->>
->> This patch adds registration of a child platform device for the exynos
->> interconnect driver. It is assumed that the interconnect provider will
->> only be needed when #interconnect-cells property is present in the bus
->> DT node, hence the child device will be created only when such a property
->> is present.
->>
->> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
->>
->> Changes for v5:
->>  - new patch.
->> ---
->>  drivers/devfreq/exynos-bus.c | 17 +++++++++++++++++
->>  1 file changed, 17 insertions(+)
->>
->> diff --git a/drivers/devfreq/exynos-bus.c b/drivers/devfreq/exynos-bus.c
->> index 8fa8eb5..856e37d 100644
->> --- a/drivers/devfreq/exynos-bus.c
->> +++ b/drivers/devfreq/exynos-bus.c
->> @@ -24,6 +24,7 @@
->>
->>  struct exynos_bus {
->>         struct device *dev;
->> +       struct platform_device *icc_pdev;
->>
->>         struct devfreq *devfreq;
->>         struct devfreq_event_dev **edev;
->> @@ -156,6 +157,8 @@ static void exynos_bus_exit(struct device *dev)
->>         if (ret < 0)
->>                 dev_warn(dev, "failed to disable the devfreq-event devices\n");
->>
->> +       platform_device_unregister(bus->icc_pdev);
->> +
->>         dev_pm_opp_of_remove_table(dev);
->>         clk_disable_unprepare(bus->clk);
->>         if (bus->opp_table) {
->> @@ -168,6 +171,8 @@ static void exynos_bus_passive_exit(struct device *dev)
->>  {
->>         struct exynos_bus *bus = dev_get_drvdata(dev);
->>
->> +       platform_device_unregister(bus->icc_pdev);
->> +
->>         dev_pm_opp_of_remove_table(dev);
->>         clk_disable_unprepare(bus->clk);
->>  }
->> @@ -431,6 +436,18 @@ static int exynos_bus_probe(struct platform_device *pdev)
->>         if (ret < 0)
->>                 goto err;
->>
->> +       /* Create child platform device for the interconnect provider */
->> +       if (of_get_property(dev->of_node, "#interconnect-cells", NULL)) {
->> +                   bus->icc_pdev = platform_device_register_data(
->> +                                               dev, "exynos-generic-icc",
->> +                                               PLATFORM_DEVID_AUTO, NULL, 0);
->> +
->> +                   if (IS_ERR(bus->icc_pdev)) {
->> +                           ret = PTR_ERR(bus->icc_pdev);
->> +                           goto err;
->> +                   }
->> +       }
->> +
->>         max_state = bus->devfreq->profile->max_state;
->>         min_freq = (bus->devfreq->profile->freq_table[0] / 1000);
->>         max_freq = (bus->devfreq->profile->freq_table[max_state - 1] / 1000);
->> --
->> 2.7.4
->>
-> 
-> It looks like very similar like the registering the interconnect
-> device of imx-bus.c
-> and I already reviewed and agreed this approach.
-> 
-> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-> 
-> nitpick: IMHO, I think that 'exynos-icc' is proper and simple without
-> 'generic' word.
-> If we need to add new icc compatible int the future, we will add
-> 'exynosXXXX-icc' new compatible.
-> But, I'm not forcing it. just opinion. Anyway, I agree this approach.
+On Mon, 1 Jun 2020 at 13:04, Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Mon, Jun 01, 2020 at 12:58:26PM +0300, Vladimir Oltean wrote:
+> > From: Vladimir Oltean <vladimir.oltean@nxp.com>
+> >
+> > Sometimes debugging a device is easiest using devmem on its register
+> > map, and that can be seen with /proc/iomem. But some device drivers have
+> > many memory regions. Take for example a networking switch. Its memory
+> > map used to look like this in /proc/iomem:
+> >
+> > 1fc000000-1fc3fffff : pcie@1f0000000
+> >   1fc000000-1fc3fffff : 0000:00:00.5
+> >     1fc010000-1fc01ffff : sys
+> >     1fc030000-1fc03ffff : rew
+> >     1fc060000-1fc0603ff : s2
+> >     1fc070000-1fc0701ff : devcpu_gcb
+> >     1fc080000-1fc0800ff : qs
+> >     1fc090000-1fc0900cb : ptp
+> >     1fc100000-1fc10ffff : port0
+> >     1fc110000-1fc11ffff : port1
+> >     1fc120000-1fc12ffff : port2
+> >     1fc130000-1fc13ffff : port3
+> >     1fc140000-1fc14ffff : port4
+> >     1fc150000-1fc15ffff : port5
+> >     1fc200000-1fc21ffff : qsys
+> >     1fc280000-1fc28ffff : ana
+> >
+> > But after the patch in Fixes: was applied, the information is now
+> > presented in a much more opaque way:
+> >
+> > 1fc000000-1fc3fffff : pcie@1f0000000
+> >   1fc000000-1fc3fffff : 0000:00:00.5
+> >     1fc010000-1fc01ffff : 0000:00:00.5
+> >     1fc030000-1fc03ffff : 0000:00:00.5
+> >     1fc060000-1fc0603ff : 0000:00:00.5
+> >     1fc070000-1fc0701ff : 0000:00:00.5
+> >     1fc080000-1fc0800ff : 0000:00:00.5
+> >     1fc090000-1fc0900cb : 0000:00:00.5
+> >     1fc100000-1fc10ffff : 0000:00:00.5
+> >     1fc110000-1fc11ffff : 0000:00:00.5
+> >     1fc120000-1fc12ffff : 0000:00:00.5
+> >     1fc130000-1fc13ffff : 0000:00:00.5
+> >     1fc140000-1fc14ffff : 0000:00:00.5
+> >     1fc150000-1fc15ffff : 0000:00:00.5
+> >     1fc200000-1fc21ffff : 0000:00:00.5
+> >     1fc280000-1fc28ffff : 0000:00:00.5
+> >
+> > That patch made a fair comment that /proc/iomem might be confusing when
+> > it shows resources without an associated device, but we can do better
+> > than just hide the resource name altogether. Namely, we can print the
+> > device name _and_ the resource name. Like this:
+> >
+> > 1fc000000-1fc3fffff : pcie@1f0000000
+> >   1fc000000-1fc3fffff : 0000:00:00.5
+> >     1fc010000-1fc01ffff : 0000:00:00.5 sys
+> >     1fc030000-1fc03ffff : 0000:00:00.5 rew
+> >     1fc060000-1fc0603ff : 0000:00:00.5 s2
+> >     1fc070000-1fc0701ff : 0000:00:00.5 devcpu_gcb
+> >     1fc080000-1fc0800ff : 0000:00:00.5 qs
+> >     1fc090000-1fc0900cb : 0000:00:00.5 ptp
+> >     1fc100000-1fc10ffff : 0000:00:00.5 port0
+> >     1fc110000-1fc11ffff : 0000:00:00.5 port1
+> >     1fc120000-1fc12ffff : 0000:00:00.5 port2
+> >     1fc130000-1fc13ffff : 0000:00:00.5 port3
+> >     1fc140000-1fc14ffff : 0000:00:00.5 port4
+> >     1fc150000-1fc15ffff : 0000:00:00.5 port5
+> >     1fc200000-1fc21ffff : 0000:00:00.5 qsys
+> >     1fc280000-1fc28ffff : 0000:00:00.5 ana
+>
+> As this is changing the format of a user-visable file, what tools just
+> broke that are used to parsing the old format?
+>
 
-Thanks for review. I will change the name to exynos-icc in next version, 
-as I commented at other patch, it is not part of any DT binding, 
-it is just for device/driver matching between devfreq and interconnect.
+All the same tools that broke after 8d84b18f5678 was merged. I am not
+entirely sure why the 'stable ABI' argument was not brought up there
+as well.
 
+> And are you sure about this?  That's not how my system looks at all, I
+> have fun things like:
+>
+>    ac000000-da0fffff : PCI Bus 0000:03
+>     ac000000-da0fffff : PCI Bus 0000:04
+>       ac000000-c3efffff : PCI Bus 0000:06
+>       c3f00000-c3ffffff : PCI Bus 0000:39
+>         c3f00000-c3f0ffff : 0000:39:00.0
+>           c3f00000-c3f0ffff : xhci-hcd
+>       c4000000-d9ffffff : PCI Bus 0000:3a
+>         c4000000-d9ffffff : PCI Bus 0000:3b
+>           c4000000-c40fffff : PCI Bus 0000:3c
+>           c4000000-c400ffff : 0000:3c:00.0
+>           c4000000-c400ffff : xhci-hcd
+>           c4010000-c4010fff : 0000:3c:00.0
+>           c4011000-c4011fff : 0000:3c:00.0
+>           c4100000-c41fffff : PCI Bus 0000:3d
+>           c4100000-c410ffff : 0000:3d:00.0
+>           c4100000-c410ffff : xhci-hcd
+>           c4110000-c4110fff : 0000:3d:00.0
+>           c4111000-c4111fff : 0000:3d:00.0
+>           c4200000-c42fffff : PCI Bus 0000:3e
+>           c4200000-c4207fff : 0000:3e:00.0
+>           c4200000-c4207fff : xhci-hcd
+>           c4300000-c43fffff : PCI Bus 0000:3f
+>           c4300000-c437ffff : 0000:3f:00.0
+>           c4380000-c4383fff : 0000:3f:00.0
+>           c4400000-d9ffffff : PCI Bus 0000:40
+>       da000000-da0fffff : PCI Bus 0000:05
+>         da000000-da03ffff : 0000:05:00.0
+>         da040000-da040fff : 0000:05:00.0
+>
+>
+> which is a mix of the resources in some places, and just driver names in
+> others.
+>
+> But, that does imply that your change will not break anything as the
+> parsing of this mess is probably just "anything after the ':'
+> character...
+>
+> thanks,
+>
+> greg k-h
 
---
-Thanks, 
-Sylwester
+With this patch you'll just have more (potentially redundant)
+information. I'm not really sure how to satisfy everyone here. I was
+completely fine with pre-8d84b18f5678 behavior.
+
+Thanks,
+-Vladimir
