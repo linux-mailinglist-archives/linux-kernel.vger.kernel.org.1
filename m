@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C1F1EA935
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 608331EAA81
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729303AbgFAR7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:59:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40922 "EHLO mail.kernel.org"
+        id S1730309AbgFASIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:08:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728479AbgFAR6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:58:47 -0400
+        id S1730755AbgFASIh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:08:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 771A22073B;
-        Mon,  1 Jun 2020 17:58:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B54372068D;
+        Mon,  1 Jun 2020 18:08:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034326;
-        bh=H9HKOb5hlPICO/Ao4mgediwtfvQ/lbpga1cROabH/L0=;
+        s=default; t=1591034917;
+        bh=QxLNTLoFkVAQRZFL6FP0AaYyx28XvLeBWZ3LvlBhJ8E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fU+HrLfazSmjeOGHOHorD+UZi9iHp3IzS9zAFqpAD+7TnBl217m48pd+lc9ICih0d
-         oqp5pSNyPB5mPeXXwKxsliNxjCyarls8VxomMV8+1kJFzsWOrKenhu7H+/6egEFPaW
-         aT/kxKOaYoc8ahTvbydp+CftCokKHwpC9sfiU3R8=
+        b=qO8MVkz5v6Ukh4NZYlXSKiFLLflmUWcSlNg9kW6zrWuvstvKRlfmH23C8wS/Vdgjp
+         U5e4ikUcwBtp8iZDegmaiIm0Lf36KpIqDk3saXCnGEk2uWYG8s7kYNL6u/p6gX+ZNd
+         //a+nR7JWM+3yPRqNOhvMnLrMDm9YL+h2SEKnXSU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 41/61] iommu: Fix reference count leak in iommu_group_alloc.
-Date:   Mon,  1 Jun 2020 19:53:48 +0200
-Message-Id: <20200601174019.243904766@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 071/142] ARM: 8970/1: decompressor: increase tag size
+Date:   Mon,  1 Jun 2020 19:53:49 +0200
+Message-Id: <20200601174045.181137601@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
-References: <20200601174010.316778377@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Łukasz Stelmach <l.stelmach@samsung.com>
 
-[ Upstream commit 7cc31613734c4870ae32f5265d576ef296621343 ]
+[ Upstream commit 2c962369d72f286659e6446919f88d69b943cb4d ]
 
-kobject_init_and_add() takes reference even when it fails.
-Thus, when kobject_init_and_add() returns an error,
-kobject_put() must be called to properly clean up the kobject.
+The size field of the tag header structure is supposed to be set to the
+size of a tag structure including the header.
 
-Fixes: d72e31c93746 ("iommu: IOMMU Groups")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Link: https://lore.kernel.org/r/20200527210020.6522-1-wu000273@umn.edu
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Fixes: c772568788b5f0 ("ARM: add additional table to compressed kernel")
+Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/iommu.c |    2 +-
+ arch/arm/boot/compressed/vmlinux.lds.S | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -195,7 +195,7 @@ struct iommu_group *iommu_group_alloc(vo
- 				   NULL, "%d", group->id);
- 	if (ret) {
- 		ida_simple_remove(&iommu_group_ida, group->id);
--		kfree(group);
-+		kobject_put(&group->kobj);
- 		return ERR_PTR(ret);
- 	}
- 
+diff --git a/arch/arm/boot/compressed/vmlinux.lds.S b/arch/arm/boot/compressed/vmlinux.lds.S
+index fc7ed03d8b93..51b078604978 100644
+--- a/arch/arm/boot/compressed/vmlinux.lds.S
++++ b/arch/arm/boot/compressed/vmlinux.lds.S
+@@ -43,7 +43,7 @@ SECTIONS
+   }
+   .table : ALIGN(4) {
+     _table_start = .;
+-    LONG(ZIMAGE_MAGIC(2))
++    LONG(ZIMAGE_MAGIC(4))
+     LONG(ZIMAGE_MAGIC(0x5a534c4b))
+     LONG(ZIMAGE_MAGIC(__piggy_size_addr - _start))
+     LONG(ZIMAGE_MAGIC(_kernel_bss_size))
+-- 
+2.25.1
+
 
 
