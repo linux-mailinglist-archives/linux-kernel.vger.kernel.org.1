@@ -2,58 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EFEC1E9CB7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 06:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE20B1E9CC1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 06:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725943AbgFAEZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 00:25:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725818AbgFAEZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 00:25:36 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7289206C3;
-        Mon,  1 Jun 2020 04:25:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590985536;
-        bh=j5jBspOPRRyK89NladxWTeYhp7KqBe+iA6sF8n3bGvY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ctMK8DU8Kes5cmCcdUsbGl5ssqIeYxk+5Cq1f6NFLGnPQTEd9MHfLRZxkfLmwV023
-         M63vU7FyJB0FuaA89xohVD9RGEjfAjqn3xQF7+RgolQqN0jvhJOQVWSqiYkDMTaMsw
-         Ujcx/KjXOULn2HAbD7SZIMecHa7x94ZvU+S2cRpo=
-Date:   Mon, 1 Jun 2020 07:25:32 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Lijun Ou <oulijun@huawei.com>, Xi Wang <wangxi11@huawei.com>,
-        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] RDMA/hns: Uninitialized variable in
- modify_qp_init_to_rtr()
-Message-ID: <20200601042532.GB34024@unreal>
-References: <20200529083918.GA1298465@mwanda>
+        id S1725931AbgFAEkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 00:40:06 -0400
+Received: from hs-162.6.buanalintas.co.id ([223.165.6.162]:38232 "EHLO
+        mx.bestprofit-futures.co.id" rhost-flags-OK-FAIL-OK-OK)
+        by vger.kernel.org with ESMTP id S1725290AbgFAEkF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 00:40:05 -0400
+X-Greylist: delayed 11719 seconds by postgrey-1.27 at vger.kernel.org; Mon, 01 Jun 2020 00:40:05 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mx.bestprofit-futures.co.id (Postfix) with ESMTP id 9E2F152556E;
+        Mon,  1 Jun 2020 07:42:11 +0700 (WIB)
+Received: from mx.bestprofit-futures.co.id ([127.0.0.1])
+        by localhost (mx.bestprofit-futures.co.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id hNCmi7HFPN8j; Mon,  1 Jun 2020 07:42:11 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mx.bestprofit-futures.co.id (Postfix) with ESMTP id 0B32852553B;
+        Mon,  1 Jun 2020 07:42:11 +0700 (WIB)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mx.bestprofit-futures.co.id 0B32852553B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bestprofit-futures.co.id; s=4D3D1390-5211-11EA-8C0C-8C41A122B001;
+        t=1590972131; bh=zLTonXbKn6LYrnOZVETw9C2bepTvRzI70GQOlIiRCC0=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=oK8YdNdqkNxxIACz0JaR9pjOPd6Vr5kKzfpJee0eDJvQtpD6wZ8v9Q5CDz0fZA4l4
+         M4PtDwCEQtm84YwxPIX28mdI2BKi7sWBtSW9VKaXJJ1SJCaGZUVOlv2NdzokKp2KXE
+         LHoa9rOhtKmdtzgWwNzNyxQQEKw3ugVar4KKc8Bp8+Cs97SYjDarBtuhVv0cTjFqzK
+         fr/TY5y5yZPkU3Z2dmR3cRUYpPFN2+H9Encczh4i85eIpg6kl6+PJ9FgsbQOgNhWlr
+         2WfRBqVgfDcM3GeleZId6SEbH/LBF6+lWBIUdeZEcNefF9eTBuzAVyJkgufUUfOipd
+         XmQ5hao/45STA==
+X-Virus-Scanned: amavisd-new at mx.bestprofit-futures.co.id
+Received: from mx.bestprofit-futures.co.id ([127.0.0.1])
+        by localhost (mx.bestprofit-futures.co.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id q4TN2adHSbnI; Mon,  1 Jun 2020 07:42:10 +0700 (WIB)
+Received: from [10.81.249.6] (unknown [105.8.6.41])
+        by mx.bestprofit-futures.co.id (Postfix) with ESMTPSA id 37F27525477;
+        Mon,  1 Jun 2020 07:42:02 +0700 (WIB)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200529083918.GA1298465@mwanda>
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: =?utf-8?q?Wohlt=C3=A4tigkeitsspende_von_2=2E000=2E000_Millionen_Euro?=
+To:     Recipients <yoshi@bestprofit-futures.co.id>
+From:   ''Tayeb Souami'' <yoshi@bestprofit-futures.co.id>
+Date:   Mon, 01 Jun 2020 02:41:55 +0200
+Reply-To: Tayebsouam.spende@gmail.com
+Message-Id: <20200601004203.37F27525477@mx.bestprofit-futures.co.id>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 11:39:18AM +0300, Dan Carpenter wrote:
-> The "dmac" variable is used before it is initialized.
->
-> Fixes: 494c3b312255 ("RDMA/hns: Refactor the QP context filling process related to WQE buffer configure")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
+Lieber Freund,
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+Ich bin Herr Tayeb Souami, New Jersey, Vereinigte Staaten von Amerika, der =
+Mega-Gewinner von $ 315million In Mega Millions Jackpot, spende ich an 5 zu=
+f=C3=A4llige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Ma=
+il nach einem Spinball ausgew=C3=A4hlt.Ich habe den gr=C3=B6=C3=9Ften Teil =
+meines Verm=C3=B6gens auf eine Reihe von Wohlt=C3=A4tigkeitsorganisationen =
+und Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die =
+Summe von =E2=82=AC 2.000.000,00 an Sie als eine der ausgew=C3=A4hlten 5 zu=
+ spenden, um meine Gewinne zu =C3=BCberpr=C3=BCfen, sehen Sie bitte meine Y=
+ou Tube Seite unten.
+
+UHR MICH HIER: https://www.youtube.com/watch?v=3DZ6ui8ZDQ6Ks
+
+
+Das ist dein Spendencode: [TS530342018]
+
+
+Antworten Sie mit dem SPENDE-CODE an diese
+
+ E-Mail:Tayebsouam.spende@gmail.com
+
+Ich hoffe, Sie und Ihre Familie gl=C3=BCcklich zu machen.
+
+Gr=C3=BC=C3=9Fe
+Herr Tayeb Souami
