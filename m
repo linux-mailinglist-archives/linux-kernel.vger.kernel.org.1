@@ -2,128 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 038DE1EB072
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 22:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B351EB07E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 22:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728574AbgFAUs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 16:48:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726124AbgFAUs7 (ORCPT
+        id S1728554AbgFAUzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 16:55:31 -0400
+Received: from static-27.netfusion.at ([83.215.238.27]:55874 "EHLO
+        mail.inliniac.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728212AbgFAUza (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 16:48:59 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F78C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 13:48:57 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t7so429303plr.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 13:48:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zwK0hDI3RT0Fw5Fv7d7S4iGl7fGYafR6/uYcldSg7to=;
-        b=chgEHp564d1oXgmJvE7dCSuplvb1FNO60K+dX0GdC3soF7/UPx89q3gnoich+mTGEV
-         OKWnIGqA9xOMKAPTVQUT5MHLAuhXlE4mqDIh1ScVV/sOPEFyufpJqIdI0HIIajNcwYBt
-         j77gruEEg+QPaWU6HS83jgb6uBXP7n/YKWfOWpIz+zQoQCvEU2E8o4zCsBLvapf7qRGv
-         JT4H47tQQGmnyxDqxNrEpNY/FX+JvFMwNe4YxTlhHE70vbwdBOtVnUgn0HjqmDhtHtT7
-         GoTdY6nY7qjpvxxyaBPeQud+bgu1NToAbxDEn0f8mgbgWtHgSmauc+RBG+pm1lk+ow2f
-         yq4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zwK0hDI3RT0Fw5Fv7d7S4iGl7fGYafR6/uYcldSg7to=;
-        b=nISST64Z75H84CfsPxiA18ISpghPAAclwlDzFplxm9uff6AGmFwnAo+21xvr84yjPn
-         e/reA802rCo/sOwO/eVz3yR3C7GoA4cL14ngPPV8hDi2UvLqrRkgLEkoV92ntGf1pATi
-         upG4aY2Agf6n39yOehA4YTlFIgj/nietanenr70PH/57CV9a8qLceUekPb+FeGIPEBVY
-         eX6PiK2f0f8t+oPWsxLnvY3G3L6M+DjGdR/3m+/hG6tB0dhG/lhyBgKqCsKIZmZpJg8n
-         9JN8tELpQYH3p6xEWB0AwRRfPImP865aI2jiOYOfH3w6hLv80tTRnY5OOp3c0qhMl1WH
-         ZsFw==
-X-Gm-Message-State: AOAM530k8c5KcBd9jXnz0WbbPN2klN4JkSJ7RXMCmMHxb3W4f5cDNA1G
-        9qzNaKa3DiIsSWJ0t/Jwt/6hLKe9/HJhnPlBQxODO7RK
-X-Google-Smtp-Source: ABdhPJx/tOoqtOJK5yO0lxFBAeSUZPMMsOAXhYTRptexVH9C3DVhrtvEnDva+HtWWrX58bhkXy0n2Zyk1fcYYkUIPhc=
-X-Received: by 2002:a17:902:341:: with SMTP id 59mr20657863pld.119.1591044537188;
- Mon, 01 Jun 2020 13:48:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200530221127.459704-1-brgerst@gmail.com> <20200530221127.459704-2-brgerst@gmail.com>
-In-Reply-To: <20200530221127.459704-2-brgerst@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 1 Jun 2020 13:48:45 -0700
-Message-ID: <CAKwvOd=vf9J8PFcNod49Gh=2N-UGJrRo_OdgTfGa2Dh-H74=xw@mail.gmail.com>
-Subject: Re: [PATCH v2 01/10] x86/percpu: Introduce size abstraction macros
-To:     Brian Gerst <brgerst@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 1 Jun 2020 16:55:30 -0400
+X-Greylist: delayed 318 seconds by postgrey-1.27 at vger.kernel.org; Mon, 01 Jun 2020 16:55:29 EDT
+Received: by mail.inliniac.net (Postfix, from userid 108)
+        id 0E40A80C; Mon,  1 Jun 2020 22:52:20 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on tulpe.vuurmuur.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        SURBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.2
+Received: from z440.inliniac.lan (a80-127-179-75.adsl.xs4all.nl [80.127.179.75])
+        (Authenticated sender: victor)
+        by mail.inliniac.net (Postfix) with ESMTPSA id 3F64410C;
+        Mon,  1 Jun 2020 22:52:11 +0200 (CEST)
+From:   Victor Julien <victor@inliniac.net>
+To:     netdev@vger.kernel.org
+Cc:     victor@inliniac.net, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Mao Wenan <maowenan@huawei.com>, Arnd Bergmann <arnd@arndb.de>,
+        Neil Horman <nhorman@tuxdriver.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] af-packet: new flag to indicate all csums are good
+Date:   Mon,  1 Jun 2020 22:49:37 +0200
+Message-Id: <20200601204938.13302-1-victor@inliniac.net>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 30, 2020 at 3:11 PM Brian Gerst <brgerst@gmail.com> wrote:
->
-> In preparation for cleaning up the percpu operations, define macros for
-> abstraction based on the width of the operation.
->
-> Signed-off-by: Brian Gerst <brgerst@gmail.com>
+Introduce a new flag (TP_STATUS_CSUM_UNNECESSARY) to indicate
+that the driver has completely validated the checksums in the packet.
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+The flag differs from TP_STATUS_CSUM_VALID in that it will only
+be set if all the layers are valid, while TP_STATUS_CSUM_VALID is
+set as well if only the IP layer is valid.
 
-> ---
->  arch/x86/include/asm/percpu.h | 30 ++++++++++++++++++++++++++++++
->  1 file changed, 30 insertions(+)
->
-> diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
-> index 2278797c769d..19838e4f7a8f 100644
-> --- a/arch/x86/include/asm/percpu.h
-> +++ b/arch/x86/include/asm/percpu.h
-> @@ -87,6 +87,36 @@
->   * don't give an lvalue though). */
->  extern void __bad_percpu_size(void);
->
-> +#define __pcpu_type_1 u8
-> +#define __pcpu_type_2 u16
-> +#define __pcpu_type_4 u32
-> +#define __pcpu_type_8 u64
-> +
-> +#define __pcpu_cast_1(val) ((u8)(((unsigned long) val) & 0xff))
-> +#define __pcpu_cast_2(val) ((u16)(((unsigned long) val) & 0xffff))
-> +#define __pcpu_cast_4(val) ((u32)(((unsigned long) val) & 0xffffffff))
-> +#define __pcpu_cast_8(val) ((u64)(val))
-> +
-> +#define __pcpu_op1_1(op, dst) op "b " dst
-> +#define __pcpu_op1_2(op, dst) op "w " dst
-> +#define __pcpu_op1_4(op, dst) op "l " dst
-> +#define __pcpu_op1_8(op, dst) op "q " dst
-> +
-> +#define __pcpu_op2_1(op, src, dst) op "b " src ", " dst
-> +#define __pcpu_op2_2(op, src, dst) op "w " src ", " dst
-> +#define __pcpu_op2_4(op, src, dst) op "l " src ", " dst
-> +#define __pcpu_op2_8(op, src, dst) op "q " src ", " dst
-> +
-> +#define __pcpu_reg_1(mod, x) mod "q" (x)
-> +#define __pcpu_reg_2(mod, x) mod "r" (x)
-> +#define __pcpu_reg_4(mod, x) mod "r" (x)
-> +#define __pcpu_reg_8(mod, x) mod "r" (x)
-> +
-> +#define __pcpu_reg_imm_1(x) "qi" (x)
-> +#define __pcpu_reg_imm_2(x) "ri" (x)
-> +#define __pcpu_reg_imm_4(x) "ri" (x)
-> +#define __pcpu_reg_imm_8(x) "re" (x)
-> +
->  #define percpu_to_op(qual, op, var, val)               \
->  do {                                                   \
->         typedef typeof(var) pto_T__;                    \
-> --
-> 2.25.4
->
+The name is derived from the skb->ip_summed setting CHECKSUM_UNNECESSARY.
 
+Security tools such as Suricata, Snort, Zeek/Bro need to know not
+only that a packet has not been corrupted, but also that the
+checksums are correct. Without this an attacker could send a packet,
+for example a TCP RST packet, that would be accepted by the
+security tool, but rejected by the end host.
 
+To avoid this scenario tools will have to (re)calcultate/validate
+the checksum as well.
+
+This patch has been tested with Suricata with the virtio driver,
+where it reduced the ammount of time spent in the Suricata TCP
+checksum validation to about half.
+
+Signed-off-by: Victor Julien <victor@inliniac.net>
+---
+ Documentation/networking/packet_mmap.rst | 6 ++++++
+ include/uapi/linux/if_packet.h           | 1 +
+ net/packet/af_packet.c                   | 3 +++
+ 3 files changed, 10 insertions(+)
+
+diff --git a/Documentation/networking/packet_mmap.rst b/Documentation/networking/packet_mmap.rst
+index 6c009ceb1183..f670292e6d95 100644
+--- a/Documentation/networking/packet_mmap.rst
++++ b/Documentation/networking/packet_mmap.rst
+@@ -472,6 +472,12 @@ TP_STATUS_CSUM_VALID	This flag indicates that at least the transport
+ 			validated on the kernel side. If the flag is not set
+ 			then we are free to check the checksum by ourselves
+ 			provided that TP_STATUS_CSUMNOTREADY is also not set.
++TP_STATUS_CSUM_UNNECESSARY  This flag indicates that the driver validated all
++                        the packets csums. If it is not set it might be that
++                        the driver doesn't support this, or that one of the
++                        layers csums is bad. TP_STATUS_CSUM_VALID may still
++                        be set if the transport layer csum is correct or
++                        if the driver supports only this mode.
+ ======================  =======================================================
+ 
+ for convenience there are also the following defines::
+diff --git a/include/uapi/linux/if_packet.h b/include/uapi/linux/if_packet.h
+index 3d884d68eb30..76a5c762e2e0 100644
+--- a/include/uapi/linux/if_packet.h
++++ b/include/uapi/linux/if_packet.h
+@@ -113,6 +113,7 @@ struct tpacket_auxdata {
+ #define TP_STATUS_BLK_TMO		(1 << 5)
+ #define TP_STATUS_VLAN_TPID_VALID	(1 << 6) /* auxdata has valid tp_vlan_tpid */
+ #define TP_STATUS_CSUM_VALID		(1 << 7)
++#define TP_STATUS_CSUM_UNNECESSARY	(1 << 8)
+ 
+ /* Tx ring - header status */
+ #define TP_STATUS_AVAILABLE	      0
+diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+index 29bd405adbbd..5dd8bad9bc23 100644
+--- a/net/packet/af_packet.c
++++ b/net/packet/af_packet.c
+@@ -2215,6 +2215,9 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
+ 
+ 	if (skb->ip_summed == CHECKSUM_PARTIAL)
+ 		status |= TP_STATUS_CSUMNOTREADY;
++	else if (skb->pkt_type != PACKET_OUTGOING &&
++		 skb->ip_summed == CHECKSUM_UNNECESSARY)
++		status |= (TP_STATUS_CSUM_UNNECESSARY | TP_STATUS_CSUM_VALID);
+ 	else if (skb->pkt_type != PACKET_OUTGOING &&
+ 		 (skb->ip_summed == CHECKSUM_COMPLETE ||
+ 		  skb_csum_unnecessary(skb)))
 -- 
-Thanks,
-~Nick Desaulniers
+2.17.1
+
