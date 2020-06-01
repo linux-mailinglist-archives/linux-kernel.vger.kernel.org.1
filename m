@@ -2,116 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC16F1EA292
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 13:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32BD71EA2A0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 13:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726075AbgFALSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 07:18:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725976AbgFALS1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 07:18:27 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2976AC03E96F
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 04:18:26 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id c71so10283438wmd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 04:18:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cumulusnetworks.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=g0VCdWKmiQwqzeZ1145Q+jD/a6zqNIWdbNoYho8IUD0=;
-        b=FJP0TzjycG35j8tltdqEefozgArLWxJRNm/8pejgk3vi+YrzWYohveIo+Wv32u9RyO
-         ZM81uVxshoCGVU+k2TohNajLp6bVNA2XU23gRT9SZOTgTTbAt2+A+iMYZcjvWWJ8mzlQ
-         zfNvKWd2clOWM8C3xpLHdyLROXd0Q8POb8TqU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=g0VCdWKmiQwqzeZ1145Q+jD/a6zqNIWdbNoYho8IUD0=;
-        b=kM5Jr/JHcUGAJw2FtvJskhXzYnGq8f4b7W37hsOkR1nEDsNcYpySZHgPzHDdMmdNwt
-         e5zx3Bv9rp0cZ0ZRIywRRWwKGA52v50fGqOWRP1TIqY9nL50zqN0HOxzs4UyucUnAGKC
-         6xE47evxgcrfrsbC1pOv8xKMLLVmmvJbeLB07rYPCi4YbmMltE0lWtq8GcmkF6CBhT/n
-         mRr82fWMVQI55JSds/QhzsOLVxUfbz2ANwVvC3Hz7H8GiCLT9gI9QHzH5nslI701XMCi
-         LWW3eYVBHjnzMyWBCUAC591IIunqZ45DEnNMjMHI8lz5MwwjCRzUR1pHSssOF2Q2ciE5
-         LF/g==
-X-Gm-Message-State: AOAM5318aC5CaWisUoNo5Ei5Ato8tEv33xHvdJpdSst5Ef4n9arhawB4
-        n4ss7qUOo3G4MFYzbVLbHs4nPGTsz+I=
-X-Google-Smtp-Source: ABdhPJwdYJu0zMaWhn84ZbnLMJkV5ivwehiW6NRByLBq2FJYb+LNL4BsdrTKY6NK2+rut3Dk64b2Qg==
-X-Received: by 2002:a1c:6244:: with SMTP id w65mr19535960wmb.82.1591010304464;
-        Mon, 01 Jun 2020 04:18:24 -0700 (PDT)
-Received: from [192.168.0.109] (84-238-136-197.ip.btc-net.bg. [84.238.136.197])
-        by smtp.gmail.com with ESMTPSA id a1sm13861812wmd.28.2020.06.01.04.18.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Jun 2020 04:18:23 -0700 (PDT)
-Subject: Re: [PATCH] ipv4: nexthop: Fix deadcode issue by performing a proper
- NULL check
-To:     patrickeigensatz@gmail.com, David Ahern <dsahern@kernel.org>
-Cc:     Coverity <scan-admin@coverity.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200601111201.64124-1-patrick.eigensatz@gmail.com>
-From:   Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-Message-ID: <a4fc3fdc-48c2-3af9-95fc-342c1e87ed62@cumulusnetworks.com>
-Date:   Mon, 1 Jun 2020 14:18:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726089AbgFALaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 07:30:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54268 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725838AbgFALaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 07:30:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id ED343AC7D;
+        Mon,  1 Jun 2020 11:30:02 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 43BC21E0948; Mon,  1 Jun 2020 13:30:00 +0200 (CEST)
+Date:   Mon, 1 Jun 2020 13:30:00 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>, Dave Chinner <david@fromorbit.com>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
+Subject: Re: [PATCH 2/2] vhost: convert get_user_pages() --> pin_user_pages()
+Message-ID: <20200601113000.GE3960@quack2.suse.cz>
+References: <20200529234309.484480-1-jhubbard@nvidia.com>
+ <20200529234309.484480-3-jhubbard@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20200601111201.64124-1-patrick.eigensatz@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200529234309.484480-3-jhubbard@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/06/2020 14:12, patrickeigensatz@gmail.com wrote:
-> From: Patrick Eigensatz <patrickeigensatz@gmail.com>
+On Fri 29-05-20 16:43:09, John Hubbard wrote:
+> This code was using get_user_pages*(), in approximately a "Case 5"
+> scenario (accessing the data within a page), using the categorization
+> from [1]. That means that it's time to convert the get_user_pages*() +
+> put_page() calls to pin_user_pages*() + unpin_user_pages() calls.
 > 
-> After allocating the spare nexthop group it should be tested for kzalloc()
-> returning NULL, instead the already used nexthop group (which cannot be
-> NULL at this point) had been tested so far.
+> There is some helpful background in [2]: basically, this is a small
+> part of fixing a long-standing disconnect between pinning pages, and
+> file systems' use of those pages.
 > 
-> Additionally, if kzalloc() fails, return ERR_PTR(-ENOMEM) instead of NULL.
+> [1] Documentation/core-api/pin_user_pages.rst
 > 
-> Coverity-id: 1463885
-> Reported-by: Coverity <scan-admin@coverity.com>
-> Signed-off-by: Patrick Eigensatz <patrickeigensatz@gmail.com>
+> [2] "Explicit pinning of user-space pages":
+>     https://lwn.net/Articles/807108/
+> 
+> Cc: Michael S. Tsirkin <mst@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: kvm@vger.kernel.org
+> Cc: virtualization@lists.linux-foundation.org
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+
+Looks good to me. You can add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
 > ---
->  net/ipv4/nexthop.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  drivers/vhost/vhost.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
-> diff --git a/net/ipv4/nexthop.c b/net/ipv4/nexthop.c
-> index 563f71bcb2d7..cb9412cd5e4b 100644
-> --- a/net/ipv4/nexthop.c
-> +++ b/net/ipv4/nexthop.c
-> @@ -1118,10 +1118,10 @@ static struct nexthop *nexthop_create_group(struct net *net,
+> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+> index 21a59b598ed8..596132a96cd5 100644
+> --- a/drivers/vhost/vhost.c
+> +++ b/drivers/vhost/vhost.c
+> @@ -1762,15 +1762,14 @@ static int set_bit_to_user(int nr, void __user *addr)
+>  	int bit = nr + (log % PAGE_SIZE) * 8;
+>  	int r;
 >  
->  	/* spare group used for removals */
->  	nhg->spare = nexthop_grp_alloc(num_nh);
-> -	if (!nhg) {
-> +	if (!nhg->spare) {
->  		kfree(nhg);
->  		kfree(nh);
-> -		return NULL;
-> +		return ERR_PTR(-ENOMEM);
->  	}
->  	nhg->spare->spare = nhg;
+> -	r = get_user_pages_fast(log, 1, FOLL_WRITE, &page);
+> +	r = pin_user_pages_fast(log, 1, FOLL_WRITE, &page);
+>  	if (r < 0)
+>  		return r;
+>  	BUG_ON(r != 1);
+>  	base = kmap_atomic(page);
+>  	set_bit(bit, base);
+>  	kunmap_atomic(base);
+> -	set_page_dirty_lock(page);
+> -	put_page(page);
+> +	unpin_user_pages_dirty_lock(&page, 1, true);
+>  	return 0;
+>  }
 >  
+> -- 
+> 2.26.2
 > 
-
-As Colin's similar patch[1] was rejected recently, this one also fixes the issue.
-This is targeted at -net.
-
-Fixes: 90f33bffa382 ("nexthops: don't modify published nexthop groups")
-Acked-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-
-Thanks!
-
-[1] https://lkml.org/lkml/2020/5/28/909
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
