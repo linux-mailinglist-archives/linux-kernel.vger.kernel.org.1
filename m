@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 749141EAC3C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9507D1EAD1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731811AbgFASRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:17:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38218 "EHLO mail.kernel.org"
+        id S1729817AbgFASmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:42:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730753AbgFASRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:17:13 -0400
+        id S1731119AbgFASLc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:11:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8DFF8206E2;
-        Mon,  1 Jun 2020 18:17:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 314C62065C;
+        Mon,  1 Jun 2020 18:11:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035431;
-        bh=G7pXJ7gjYCbsGDybjXy2ttQC5CykFVlMMwk7hZpNo30=;
+        s=default; t=1591035091;
+        bh=N0l1RPeo1SlGImHH28ykJupX+PqrhocXisBt8WWswmY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gTSzNvY7+2qxDN2toWJqvsWGEkl+a6rT/64lnw/bZeZOvoVit8aLhepj9jgn8S+jQ
-         mAN5fEt/CcvMd6JiKflEzd+OnuuufhavBaHTIqhzVACSUWSl8Zyy0E8+l5Gexy2Tdq
-         LpQLyngSbfxkcJkqzFT+bc6eTgs0NGvToJwHaC+8=
+        b=ESlMMDwG59zYqQNI6XfhP/zdCqyBunuY23gsrgfP9dA2onk22ucPOw+E3M1YLu6zd
+         A4wIvph07RiHzSCzCRYMZRy/uQ7lEq70oLgmcQfvLh4z3jM5Dz4l/GdFfIHFmW1o/I
+         DGWToGdcVtdF2k9PtTkx2R6Iy7x/FjXFeXOi2yAE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Aric Cyr <Aric.Cyr@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 129/177] drm/amd/display: Defer cursor lock until after VUPDATE
-Date:   Mon,  1 Jun 2020 19:54:27 +0200
-Message-Id: <20200601174059.291380865@linuxfoundation.org>
+        Alan Jenkins <alan.christopher.jenkins@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Alexander Dahl <post@lespocky.de>, Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.4 110/142] x86/dma: Fix max PFN arithmetic overflow on 32 bit systems
+Date:   Mon,  1 Jun 2020 19:54:28 +0200
+Message-Id: <20200601174049.319622345@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,222 +45,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+From: Alexander Dahl <post@lespocky.de>
 
-[ Upstream commit 31ecebee9c36d5e5e113a357a655d993fa916174 ]
+commit 88743470668ef5eb6b7ba9e0f99888e5999bf172 upstream.
 
-[Why]
-We dropped the delay after changed the cursor functions locking the
-entire pipe to locking just the CURSOR registers to fix page flip
-stuttering - this introduced cursor stuttering instead, and an underflow
-issue.
+The intermediate result of the old term (4UL * 1024 * 1024 * 1024) is
+4 294 967 296 or 0x100000000 which is no problem on 64 bit systems.
+The patch does not change the later overall result of 0x100000 for
+MAX_DMA32_PFN (after it has been shifted by PAGE_SHIFT). The new
+calculation yields the same result, but does not require 64 bit
+arithmetic.
 
-The cursor update can be delayed indefinitely if the cursor update
-repeatedly happens right around VUPDATE.
+On 32 bit systems the old calculation suffers from an arithmetic
+overflow in that intermediate term in braces: 4UL aka unsigned long int
+is 4 byte wide and an arithmetic overflow happens (the 0x100000000 does
+not fit in 4 bytes), the in braces result is truncated to zero, the
+following right shift does not alter that, so MAX_DMA32_PFN evaluates to
+0 on 32 bit systems.
 
-The underflow issue can happen if we do a viewport update on a pipe
-on the same frame where a cursor update happens around VUPDATE - the
-old cursor registers are retained which can be in an invalid position.
+That wrong value is a problem in a comparision against MAX_DMA32_PFN in
+the init code for swiotlb in pci_swiotlb_detect_4gb() to decide if
+swiotlb should be active.  That comparison yields the opposite result,
+when compiling on 32 bit systems.
 
-This can cause a pipe hang and indefinite underflow.
+This was not possible before
 
-[How]
-The complex, ideal solution to the problem would be a software
-triple buffering mechanism from the DM layer to program only one cursor
-update per frame just before VUPDATE.
+  1b7e03ef7570 ("x86, NUMA: Enable emulation on 32bit too")
 
-The simple workaround until we have that infrastructure in place is
-this change - bring back the delay until VUPDATE before locking, but
-with some corrections to the calculations.
+when that MAX_DMA32_PFN was first made visible to x86_32 (and which
+landed in v3.0).
 
-This didn't work for all timings before because the calculation for
-VUPDATE was wrong - it was using the offset from VSTARTUP instead and
-didn't correctly handle the case where VUPDATE could be in the back
-porch.
+In practice this wasn't a problem, unless CONFIG_SWIOTLB is active on
+x86-32.
 
-Add a new hardware sequencer function to use the existing helper to
-calculate the real VUPDATE start and VUPDATE end - VUPDATE can last
-multiple lines after all.
+However if one has set CONFIG_IOMMU_INTEL, since
 
-Change the udelay to incorporate the width of VUPDATE as well.
+  c5a5dc4cbbf4 ("iommu/vt-d: Don't switch off swiotlb if bounce page is used")
 
-Signed-off-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Reviewed-by: Aric Cyr <Aric.Cyr@amd.com>
-Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+there's a dependency on CONFIG_SWIOTLB, which was not necessarily
+active before. That landed in v5.4, where we noticed it in the fli4l
+Linux distribution. We have CONFIG_IOMMU_INTEL active on both 32 and 64
+bit kernel configs there (I could not find out why, so let's just say
+historical reasons).
+
+The effect is at boot time 64 MiB (default size) were allocated for
+bounce buffers now, which is a noticeable amount of memory on small
+systems like pcengines ALIX 2D3 with 256 MiB memory, which are still
+frequently used as home routers.
+
+We noticed this effect when migrating from kernel v4.19 (LTS) to v5.4
+(LTS) in fli4l and got that kernel messages for example:
+
+  Linux version 5.4.22 (buildroot@buildroot) (gcc version 7.3.0 (Buildroot 2018.02.8)) #1 SMP Mon Nov 26 23:40:00 CET 2018
+  …
+  Memory: 183484K/261756K available (4594K kernel code, 393K rwdata, 1660K rodata, 536K init, 456K bss , 78272K reserved, 0K cma-reserved, 0K highmem)
+  …
+  PCI-DMA: Using software bounce buffering for IO (SWIOTLB)
+  software IO TLB: mapped [mem 0x0bb78000-0x0fb78000] (64MB)
+
+The initial analysis and the suggested fix was done by user 'sourcejedi'
+at stackoverflow and explicitly marked as GPLv2 for inclusion in the
+Linux kernel:
+
+  https://unix.stackexchange.com/a/520525/50007
+
+The new calculation, which does not suffer from that overflow, is the
+same as for arch/mips now as suggested by Robin Murphy.
+
+The fix was tested by fli4l users on round about two dozen different
+systems, including both 32 and 64 bit archs, bare metal and virtualized
+machines.
+
+ [ bp: Massage commit message. ]
+
+Fixes: 1b7e03ef7570 ("x86, NUMA: Enable emulation on 32bit too")
+Reported-by: Alan Jenkins <alan.christopher.jenkins@gmail.com>
+Suggested-by: Robin Murphy <robin.murphy@arm.com>
+Signed-off-by: Alexander Dahl <post@lespocky.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org
+Link: https://unix.stackexchange.com/q/520065/50007
+Link: https://web.nettworks.org/bugs/browse/FFL-2560
+Link: https://lkml.kernel.org/r/20200526175749.20742-1-post@lespocky.de
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- .../amd/display/dc/dcn10/dcn10_hw_sequencer.c | 69 ++++++++++++++++++-
- .../amd/display/dc/dcn10/dcn10_hw_sequencer.h |  5 ++
- .../gpu/drm/amd/display/dc/dcn10/dcn10_init.c |  1 +
- .../gpu/drm/amd/display/dc/dcn20/dcn20_init.c |  1 +
- .../gpu/drm/amd/display/dc/dcn21/dcn21_init.c |  1 +
- .../gpu/drm/amd/display/dc/inc/hw_sequencer.h |  5 ++
- 6 files changed, 81 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/dma.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
-index 97a820b90541..60cea910759b 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
-@@ -1592,12 +1592,79 @@ void dcn10_pipe_control_lock(
- 		hws->funcs.verify_allow_pstate_change_high(dc);
- }
+--- a/arch/x86/include/asm/dma.h
++++ b/arch/x86/include/asm/dma.h
+@@ -74,7 +74,7 @@
+ #define MAX_DMA_PFN   ((16UL * 1024 * 1024) >> PAGE_SHIFT)
  
-+/**
-+ * delay_cursor_until_vupdate() - Delay cursor update if too close to VUPDATE.
-+ *
-+ * Software keepout workaround to prevent cursor update locking from stalling
-+ * out cursor updates indefinitely or from old values from being retained in
-+ * the case where the viewport changes in the same frame as the cursor.
-+ *
-+ * The idea is to calculate the remaining time from VPOS to VUPDATE. If it's
-+ * too close to VUPDATE, then stall out until VUPDATE finishes.
-+ *
-+ * TODO: Optimize cursor programming to be once per frame before VUPDATE
-+ *       to avoid the need for this workaround.
-+ */
-+static void delay_cursor_until_vupdate(struct dc *dc, struct pipe_ctx *pipe_ctx)
-+{
-+	struct dc_stream_state *stream = pipe_ctx->stream;
-+	struct crtc_position position;
-+	uint32_t vupdate_start, vupdate_end;
-+	unsigned int lines_to_vupdate, us_to_vupdate, vpos;
-+	unsigned int us_per_line, us_vupdate;
-+
-+	if (!dc->hwss.calc_vupdate_position || !dc->hwss.get_position)
-+		return;
-+
-+	if (!pipe_ctx->stream_res.stream_enc || !pipe_ctx->stream_res.tg)
-+		return;
-+
-+	dc->hwss.calc_vupdate_position(dc, pipe_ctx, &vupdate_start,
-+				       &vupdate_end);
-+
-+	dc->hwss.get_position(&pipe_ctx, 1, &position);
-+	vpos = position.vertical_count;
-+
-+	/* Avoid wraparound calculation issues */
-+	vupdate_start += stream->timing.v_total;
-+	vupdate_end += stream->timing.v_total;
-+	vpos += stream->timing.v_total;
-+
-+	if (vpos <= vupdate_start) {
-+		/* VPOS is in VACTIVE or back porch. */
-+		lines_to_vupdate = vupdate_start - vpos;
-+	} else if (vpos > vupdate_end) {
-+		/* VPOS is in the front porch. */
-+		return;
-+	} else {
-+		/* VPOS is in VUPDATE. */
-+		lines_to_vupdate = 0;
-+	}
-+
-+	/* Calculate time until VUPDATE in microseconds. */
-+	us_per_line =
-+		stream->timing.h_total * 10000u / stream->timing.pix_clk_100hz;
-+	us_to_vupdate = lines_to_vupdate * us_per_line;
-+
-+	/* 70 us is a conservative estimate of cursor update time*/
-+	if (us_to_vupdate > 70)
-+		return;
-+
-+	/* Stall out until the cursor update completes. */
-+	us_vupdate = (vupdate_end - vupdate_start + 1) * us_per_line;
-+	udelay(us_to_vupdate + us_vupdate);
-+}
-+
- void dcn10_cursor_lock(struct dc *dc, struct pipe_ctx *pipe, bool lock)
- {
- 	/* cursor lock is per MPCC tree, so only need to lock one pipe per stream */
- 	if (!pipe || pipe->top_pipe)
- 		return;
+ /* 4GB broken PCI/AGP hardware bus master zone */
+-#define MAX_DMA32_PFN ((4UL * 1024 * 1024 * 1024) >> PAGE_SHIFT)
++#define MAX_DMA32_PFN (1UL << (32 - PAGE_SHIFT))
  
-+	/* Prevent cursor lock from stalling out cursor updates. */
-+	if (lock)
-+		delay_cursor_until_vupdate(dc, pipe);
-+
- 	dc->res_pool->mpc->funcs->cursor_lock(dc->res_pool->mpc,
- 			pipe->stream_res.opp->inst, lock);
- }
-@@ -3142,7 +3209,7 @@ int dcn10_get_vupdate_offset_from_vsync(struct pipe_ctx *pipe_ctx)
- 	return vertical_line_start;
- }
- 
--static void dcn10_calc_vupdate_position(
-+void dcn10_calc_vupdate_position(
- 		struct dc *dc,
- 		struct pipe_ctx *pipe_ctx,
- 		uint32_t *start_line,
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.h b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.h
-index af51424315d5..42b6e016d71e 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.h
-+++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.h
-@@ -34,6 +34,11 @@ struct dc;
- void dcn10_hw_sequencer_construct(struct dc *dc);
- 
- int dcn10_get_vupdate_offset_from_vsync(struct pipe_ctx *pipe_ctx);
-+void dcn10_calc_vupdate_position(
-+		struct dc *dc,
-+		struct pipe_ctx *pipe_ctx,
-+		uint32_t *start_line,
-+		uint32_t *end_line);
- void dcn10_setup_vupdate_interrupt(struct dc *dc, struct pipe_ctx *pipe_ctx);
- enum dc_status dcn10_enable_stream_timing(
- 		struct pipe_ctx *pipe_ctx,
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_init.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_init.c
-index 4a8e4b797bea..0900c861204f 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_init.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_init.c
-@@ -72,6 +72,7 @@ static const struct hw_sequencer_funcs dcn10_funcs = {
- 	.set_clock = dcn10_set_clock,
- 	.get_clock = dcn10_get_clock,
- 	.get_vupdate_offset_from_vsync = dcn10_get_vupdate_offset_from_vsync,
-+	.calc_vupdate_position = dcn10_calc_vupdate_position,
- };
- 
- static const struct hwseq_private_funcs dcn10_private_funcs = {
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_init.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_init.c
-index 0cae0c2f84c4..71bfde2cf646 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_init.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_init.c
-@@ -83,6 +83,7 @@ static const struct hw_sequencer_funcs dcn20_funcs = {
- 	.init_vm_ctx = dcn20_init_vm_ctx,
- 	.set_flip_control_gsl = dcn20_set_flip_control_gsl,
- 	.get_vupdate_offset_from_vsync = dcn10_get_vupdate_offset_from_vsync,
-+	.calc_vupdate_position = dcn10_calc_vupdate_position,
- };
- 
- static const struct hwseq_private_funcs dcn20_private_funcs = {
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_init.c b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_init.c
-index 8fe8ec7c0882..7f53bf724fce 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_init.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_init.c
-@@ -86,6 +86,7 @@ static const struct hw_sequencer_funcs dcn21_funcs = {
- 	.optimize_pwr_state = dcn21_optimize_pwr_state,
- 	.exit_optimized_pwr_state = dcn21_exit_optimized_pwr_state,
- 	.get_vupdate_offset_from_vsync = dcn10_get_vupdate_offset_from_vsync,
-+	.calc_vupdate_position = dcn10_calc_vupdate_position,
- 	.set_cursor_position = dcn10_set_cursor_position,
- 	.set_cursor_attribute = dcn10_set_cursor_attribute,
- 	.set_cursor_sdr_white_level = dcn10_set_cursor_sdr_white_level,
-diff --git a/drivers/gpu/drm/amd/display/dc/inc/hw_sequencer.h b/drivers/gpu/drm/amd/display/dc/inc/hw_sequencer.h
-index e57467d99d66..08307f3796e3 100644
---- a/drivers/gpu/drm/amd/display/dc/inc/hw_sequencer.h
-+++ b/drivers/gpu/drm/amd/display/dc/inc/hw_sequencer.h
-@@ -92,6 +92,11 @@ struct hw_sequencer_funcs {
- 	void (*get_position)(struct pipe_ctx **pipe_ctx, int num_pipes,
- 			struct crtc_position *position);
- 	int (*get_vupdate_offset_from_vsync)(struct pipe_ctx *pipe_ctx);
-+	void (*calc_vupdate_position)(
-+			struct dc *dc,
-+			struct pipe_ctx *pipe_ctx,
-+			uint32_t *start_line,
-+			uint32_t *end_line);
- 	void (*enable_per_frame_crtc_position_reset)(struct dc *dc,
- 			int group_size, struct pipe_ctx *grouped_pipes[]);
- 	void (*enable_timing_synchronization)(struct dc *dc,
--- 
-2.25.1
-
+ #ifdef CONFIG_X86_32
+ /* The maximum address that we can perform a DMA transfer to on this platform */
 
 
