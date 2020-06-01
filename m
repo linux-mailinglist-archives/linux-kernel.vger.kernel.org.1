@@ -2,146 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B86A1EA093
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 11:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D31761EA099
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 11:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726124AbgFAJM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 05:12:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56776 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725831AbgFAJM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 05:12:28 -0400
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BCDD320734
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 09:12:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591002747;
-        bh=XaBczYYm0dgNg26+7OPpYAKLtWaTtsU2jNmMocGEg+U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=zPG/R4YQGgMcVD1vDVWgtCV6QgaMzR7FnaRYsF325VamsGjd6hUptzQFJ5t+J9v6t
-         A4jgXaEWazhwka1vJ93/bzXgMABKduro30GhnDn4XmcykSuTx6Z0uyFoD07N2YrIrc
-         ILfCZYzXqFrw4NYe+aRK6RFOVRbSOpCiEkfbe6QM=
-Received: by mail-lj1-f174.google.com with SMTP id z6so7146691ljm.13
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 02:12:26 -0700 (PDT)
-X-Gm-Message-State: AOAM532sQ61JioB496KCQluir0hsTOen0TTL4qMXqrwVNjLGsR47N6X9
-        SDCN/5zQuN3wr/EVCBoOX6UEVzY/+GiqyO+oYws=
-X-Google-Smtp-Source: ABdhPJwNN0gMX/urhnLnrniACiL2yZ/7oMTw3RyS/24I8Z1lmMyfh4PcjnoeMU6EeZpM2LSQDbPzd3egOk/2x79mNUo=
-X-Received: by 2002:a2e:9c95:: with SMTP id x21mr10387218lji.441.1591002745078;
- Mon, 01 Jun 2020 02:12:25 -0700 (PDT)
+        id S1726200AbgFAJNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 05:13:01 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5320 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725831AbgFAJNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 05:13:01 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 67979171002AB7AD6DC3;
+        Mon,  1 Jun 2020 17:12:59 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Mon, 1 Jun 2020
+ 17:12:52 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC:     <richard@nod.at>, <yi.zhang@huawei.com>
+Subject: [PATCH] ubi: check kthread_should_stop() after the setting of task state
+Date:   Mon, 1 Jun 2020 17:12:31 +0800
+Message-ID: <20200601091231.3794350-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <cover.1590474856.git.greentime.hu@sifive.com> <1f20f778318bf18e47eace08e54983fed23ba019.1590474856.git.greentime.hu@sifive.com>
-In-Reply-To: <1f20f778318bf18e47eace08e54983fed23ba019.1590474856.git.greentime.hu@sifive.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Mon, 1 Jun 2020 17:12:13 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRu63t7Ftv_V1ZLAEu4Vi57Q6uvp+sZjYBROkuJXX0=mg@mail.gmail.com>
-Message-ID: <CAJF2gTRu63t7Ftv_V1ZLAEu4Vi57Q6uvp+sZjYBROkuJXX0=mg@mail.gmail.com>
-Subject: Re: [RFC PATCH v4 09/13] riscv: Add vector struct and assembler definitions
-To:     Greentime Hu <greentime.hu@sifive.com>
-Cc:     Guo Ren <guoren@linux.alibaba.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since it has been redesigned with new version spec, please change the
-first-author :)
+A detach hung is possible when a race occurs between the detach process
+and the ubi background thread. The following sequences outline the race:
 
-And add me as Co-developed.
+  ubi thread: if (list_empty(&ubi->works)...
 
-On Tue, May 26, 2020 at 3:03 PM Greentime Hu <greentime.hu@sifive.com> wrote:
->
-> From: Guo Ren <guoren@linux.alibaba.com>
->
-> Add vector state context struct in struct thread and asm-offsets.c
-> definitions.
->
-> The vector registers will be saved in datap pointer of __riscv_v_state. It
-> will be dynamically allocated in kernel space. It will be put right after
-> the __riscv_v_state data structure in user space.
->
-> [greentime.hu@sifive.com: add support for dynamic vlen, add vcsr and remove
-> vxsat, vxrm because these data can be get in vcsr, add new macros for
-> _riscv_v_state elements offset and remove unused ones]
-> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> ---
->  arch/riscv/include/asm/processor.h   |  1 +
->  arch/riscv/include/uapi/asm/ptrace.h | 13 +++++++++++++
->  arch/riscv/kernel/asm-offsets.c      |  8 ++++++++
->  3 files changed, 22 insertions(+)
->
-> diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
-> index 3ddb798264f1..217273375cfb 100644
-> --- a/arch/riscv/include/asm/processor.h
-> +++ b/arch/riscv/include/asm/processor.h
-> @@ -32,6 +32,7 @@ struct thread_struct {
->         unsigned long sp;       /* Kernel mode stack */
->         unsigned long s[12];    /* s[0]: frame pointer */
->         struct __riscv_d_ext_state fstate;
-> +       struct __riscv_v_state vstate;
->  };
->
->  #define INIT_THREAD {                                  \
-> diff --git a/arch/riscv/include/uapi/asm/ptrace.h b/arch/riscv/include/uapi/asm/ptrace.h
-> index 882547f6bd5c..661b0466b850 100644
-> --- a/arch/riscv/include/uapi/asm/ptrace.h
-> +++ b/arch/riscv/include/uapi/asm/ptrace.h
-> @@ -77,6 +77,19 @@ union __riscv_fp_state {
->         struct __riscv_q_ext_state q;
->  };
->
-> +struct __riscv_v_state {
-> +       __u32 magic;
-> +       __u32 size;
-> +       unsigned long vstart;
-> +       unsigned long vl;
-> +       unsigned long vtype;
-> +       unsigned long vcsr;
-> +       void *datap;
-> +#if __riscv_xlen == 32
-> +       __u32 __padding;
-> +#endif
-> +} __attribute__((aligned(16)));
-> +
->  #endif /* __ASSEMBLY__ */
->
->  #endif /* _UAPI_ASM_RISCV_PTRACE_H */
-> diff --git a/arch/riscv/kernel/asm-offsets.c b/arch/riscv/kernel/asm-offsets.c
-> index 07cb9c10de4e..6627fde230b2 100644
-> --- a/arch/riscv/kernel/asm-offsets.c
-> +++ b/arch/riscv/kernel/asm-offsets.c
-> @@ -70,6 +70,14 @@ void asm_offsets(void)
->         OFFSET(TASK_THREAD_F31, task_struct, thread.fstate.f[31]);
->         OFFSET(TASK_THREAD_FCSR, task_struct, thread.fstate.fcsr);
->
-> +       OFFSET(RISCV_V_STATE_MAGIC, __riscv_v_state, magic);
-> +       OFFSET(RISCV_V_STATE_SIZE, __riscv_v_state, size);
-> +       OFFSET(RISCV_V_STATE_VSTART, __riscv_v_state, vstart);
-> +       OFFSET(RISCV_V_STATE_VL, __riscv_v_state, vl);
-> +       OFFSET(RISCV_V_STATE_VTYPE, __riscv_v_state, vtype);
-> +       OFFSET(RISCV_V_STATE_VCSR, __riscv_v_state, vcsr);
-> +       OFFSET(RISCV_V_STATE_DATAP, __riscv_v_state, datap);
-> +
->         DEFINE(PT_SIZE, sizeof(struct pt_regs));
->         OFFSET(PT_EPC, pt_regs, epc);
->         OFFSET(PT_RA, pt_regs, ra);
-> --
-> 2.26.2
->
->
+  ubi detach: set_bit(KTHREAD_SHOULD_STOP, &kthread->flags)
+              => by kthread_stop()
+              wake_up_process()
+              => ubi thread is still running, so 0 is returned
 
+  ubi thread: set_current_state(TASK_INTERRUPTIBLE)
+              schedule()
+              => ubi thread will never be scheduled again
 
+  ubi detach: wait_for_completion()
+              => hung task!
+
+To fix that, we need to check kthread_should_stop() after we set the
+task state, so the ubi thread will either see the stop bit and exit or
+the task state is reset to runnable such that it isn't scheduled out
+indefinitely.
+
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Cc: <Stable@vger.kernel.org>
+Fixes: 801c135ce73d5df1ca ("UBI: Unsorted Block Images")
+Reported-by: syzbot+853639d0cb16c31c7a14@syzkaller.appspotmail.com
+---
+ drivers/mtd/ubi/wl.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 5146cce5fe32..a4d4343053d7 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -1628,6 +1628,19 @@ int ubi_thread(void *u)
+ 		    !ubi->thread_enabled || ubi_dbg_is_bgt_disabled(ubi)) {
+ 			set_current_state(TASK_INTERRUPTIBLE);
+ 			spin_unlock(&ubi->wl_lock);
++
++			/*
++			 * Check kthread_should_stop() after we set the task
++			 * state to guarantee that we either see the stop bit
++			 * and exit or the task state is reset to runnable such
++			 * that it's not scheduled out indefinitely and detects
++			 * the stop bit at kthread_should_stop().
++			 */
++			if (kthread_should_stop()) {
++				set_current_state(TASK_RUNNING);
++				break;
++			}
++
+ 			schedule();
+ 			continue;
+ 		}
 -- 
-Best Regards
- Guo Ren
+2.25.4
 
-ML: https://lore.kernel.org/linux-csky/
