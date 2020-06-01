@@ -2,154 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B17541EACDF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE931EAD2D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730403AbgFASlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:41:04 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:37866 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731299AbgFASNB (ORCPT
+        id S1731621AbgFASnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:43:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731408AbgFASmm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:13:01 -0400
-Date:   Mon, 1 Jun 2020 14:13:00 -0400
-From:   Rich Felker <dalias@libc.org>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-sh@vger.kernel.org,
-        ysato@users.sourceforge.jp, linux-kernel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, Rob Landley <rob@landley.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [GIT PULL] sh: remove sh5 support
-Message-ID: <20200601181259.GV1079@brightrain.aerifal.cx>
-References: <20200424221948.1120587-1-arnd@arndb.de>
- <20200507143552.GA28683@infradead.org>
- <20200528054600.GA29717@infradead.org>
- <20200528161416.GY1079@brightrain.aerifal.cx>
- <20200529143059.GA25475@infradead.org>
- <20200529175335.GK1079@brightrain.aerifal.cx>
- <e86e1d78-9597-811a-da0e-42a910b0c9fe@physik.fu-berlin.de>
+        Mon, 1 Jun 2020 14:42:42 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F555C03E96F;
+        Mon,  1 Jun 2020 11:22:48 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
+        id 1jfp5B-001X6g-S9; Mon, 01 Jun 2020 18:22:46 +0000
+Date:   Mon, 1 Jun 2020 19:22:45 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: [git pull] uaccess csum
+Message-ID: <20200601182245.GA23230@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e86e1d78-9597-811a-da0e-42a910b0c9fe@physik.fu-berlin.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 30, 2020 at 10:08:09AM +0200, John Paul Adrian Glaubitz wrote:
-> On 5/29/20 7:53 PM, Rich Felker wrote:
-> > Frustratingly, I _still_ don't have an official tree on kernel.org for
-> > the purpose of being the canonical place for linux-next to pull from,
-> > due to policies around pgp keys and nobody following up on signing
-> > mine. This is all really silly since there are ridiculously many
-> > independent channels I could cryptographically validate identity
-> > through with vanishing probability that they're all compromised. For
-> > the time being I'll reactivate my repo on git.musl-libc.org.
-> 
-> May I suggest to pick up these patches, for example? There might be
-> more I missed, but getting these merged should already help a lot with
-> the clean-up of arch/sh.
+	Regularize the sitation with uaccess checksum primitives, fold
+csum_partial_... into csum_and_copy_..._user(), on x86 collapse several
+access_ok()/stac()/clac() into user_access_begin()/user_access_end()
 
-This was really helpful, but one thing that would make it easier if
-you have any more to list is including message-ids rather than (or in
-addition to) marc.info links. I had to go through and reverse them all
-to message-ids (or at least subjects) to find the patches from my
-mailbox to git-am.
+The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
 
-> > [RESEND PATCH v2] sh: sh4a: Bring back tmu3_device early device
-> > https://marc.info/?l=linux-sh&m=159061283109675&w=2
+  Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
 
-OK.
+are available in the git repository at:
 
-> > [PATCH] sh: Drop CONFIG_MTD_M25P80 in sh7757lcr_defconfig
-> > https://marc.info/?l=linux-sh&m=158839364811658&w=2
-> 
-> > [PATCH v2] sh: Replace CONFIG_MTD_M25P80 with CONFIG_MTD_SPI_NOR in sh7757lcr_defconfig
-> > https://marc.info/?l=linux-sh&m=158841749817761&w=2
+  git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git uaccess.csum
 
-Doesn't the second one here replace the first?
+for you to fetch changes up to 001c1a655f0a4e4ebe5d9beb47466dc5c6ab4871:
 
-> > [PATCH 1/1] sh: remove sh5 support
-> > https://marc.info/?l=linux-sh&m=158776683125080&w=2
+  default csum_and_copy_to_user(): don't bother with access_ok() (2020-05-29 16:11:50 -0400)
 
-I'm trying to figure out how to apply this since it was generated with
--D and git-am maliciously rejects it for that reason with an arcane
-error message.
+----------------------------------------------------------------
+Al Viro (15):
+      get rid of csum_partial_copy_to_user()
+      x86_64: csum_..._copy_..._user(): switch to unsafe_..._user()
+      x86: switch both 32bit and 64bit to providing csum_and_copy_from_user()
+      x86: switch 32bit csum_and_copy_to_user() to user_access_{begin,end}()
+      ia64: csum_partial_copy_nocheck(): don't abuse csum_partial_copy_from_user()
+      ia64: turn csum_partial_copy_from_user() into csum_and_copy_from_user()
+      alpha: turn csum_partial_copy_from_user() into csum_and_copy_from_user()
+      parisc: turn csum_partial_copy_from_user() into csum_and_copy_from_user()
+      sparc: switch to providing csum_and_copy_from_user()
+      xtensa: switch to providing csum_and_copy_from_user()
+      m68k: convert to csum_and_copy_from_user()
+      sh32: convert to csum_and_copy_from_user()
+      arm: switch to csum_and_copy_from_user()
+      take the dummy csum_and_copy_from_user() into net/checksum.h
+      default csum_and_copy_to_user(): don't bother with access_ok()
 
-> > sh/mm: Fix a build failure via adding a missing bracket
-> > https://marc.info/?l=linux-sh&m=158736532105299&w=2
-
-Already upstream.
-
-> > [PATCH 1/2] arch/sh: vmlinux.scr
-> > https://marc.info/?l=linux-sh&m=158429470120959&w=2
-
-OK.
-
-> > [PATCH] sh: configs: Cleanup old Kconfig IO scheduler options
-> > https://marc.info/?l=linux-sh&m=158195850120215&w=2
-
-OK.
-
-> > [PATCH resend 0/3] SH: compile fixup patches
-> > https://marc.info/?l=linux-renesas-soc&m=157948330821790&w=2
-> > https://marc.info/?l=linux-sh&m=157852970316892&w=2
-> > https://marc.info/?l=linux-sh&m=157852984016938&w=2
-
-OK.
-
-> > [PATCH][repost] sh: clkfwk: remove r8/r16/r32
-> > https://marc.info/?l=linux-renesas-soc&m=157852973916903&w=2
-
-This one had objections by Geert that called for a v2, and was
-teplaced by:
-
-> > [PATCH] sh: clk: Fix discarding const qualifier warning
-> > https://marc.info/?l=linux-sh&m=157839999010776&w=2
-
-But this still had objections that the definitions on all archs should
-be fixed for const correctness. It looks like that patch series is
-still bouncing around; should I apply the SH part of it now?
-
-> > [PATCH next] sh: remove call to memset after dma_alloc_coherent
-> > https://marc.info/?l=linux-sh&m=157793031102356&w=2
-
-Can anyone confirm that this is correct/safe?
-
-> > [PATCH] sh: use generic strncpy()
-> > https://marc.info/?l=linux-renesas-soc&m=157664657013309&w=2
-
-Can you fill me in on the status of this? It looks like you were
-following it. The subject says "use generic strncpy" but it's updating
-the asm, and I think there are problems with the proposed asm.
-
-> > [PATCH v2] SH: Convert ins[bwl]/outs[bwl] macros to inline functions
-> > https://marc.info/?l=linux-sh&m=157656907716201&w=2
-
-OK.
-
-> > [PATCH v2] SH: Convert iounmap() macros to inline functions
-> > https://marc.info/?l=linux-sh&m=157656903716172&w=2
-
-OK.
-
-> > [PATCH v2] sh: add missing DECLARE_EXPORT() for __ashiftrt_r4_xx
-> > https://marc.info/?l=linux-sh&m=157619891030685&w=2
-
-OK.
-
-> > [PATCH] sh: add missing EXPORT_SYMBOL() for __delay
-> > https://marc.info/?l=linux-kernel&m=157611811927852&w=2
-
-OK.
-
-> > [PATCH] sh: kgdb: Mark expected switch fall-throughs
-> > https://marc.info/?l=linux-sh&m=157241987926081&w=2
-
-This is already upstream.
-
-Rich
+ arch/alpha/include/asm/checksum.h    |  3 ++-
+ arch/alpha/lib/csum_partial_copy.c   |  6 +++---
+ arch/arm/include/asm/checksum.h      | 14 ++++++++++++++
+ arch/c6x/lib/checksum.c              | 22 ----------------------
+ arch/ia64/include/asm/checksum.h     | 10 ----------
+ arch/ia64/lib/csum_partial_copy.c    | 32 ++------------------------------
+ arch/m68k/include/asm/checksum.h     |  3 ++-
+ arch/m68k/lib/checksum.c             |  4 ++--
+ arch/nios2/include/asm/checksum.h    |  2 --
+ arch/parisc/include/asm/checksum.h   |  7 -------
+ arch/parisc/lib/checksum.c           | 20 --------------------
+ arch/s390/include/asm/checksum.h     | 19 -------------------
+ arch/sh/include/asm/checksum_32.h    |  9 +++++++--
+ arch/sparc/include/asm/checksum.h    |  1 +
+ arch/sparc/include/asm/checksum_32.h | 15 ++++++++++-----
+ arch/sparc/include/asm/checksum_64.h |  2 +-
+ arch/x86/include/asm/checksum.h      |  2 ++
+ arch/x86/include/asm/checksum_32.h   | 21 +++++++++++----------
+ arch/x86/include/asm/checksum_64.h   | 12 ++----------
+ arch/x86/lib/csum-wrappers_64.c      | 35 ++++++++++++++++++-----------------
+ arch/x86/um/asm/checksum.h           | 20 --------------------
+ arch/xtensa/include/asm/checksum.h   | 11 +++++++----
+ include/asm-generic/checksum.h       |  9 ---------
+ include/net/checksum.h               | 14 ++++----------
+ lib/checksum.c                       | 20 --------------------
+ 25 files changed, 88 insertions(+), 225 deletions(-)
