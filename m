@@ -2,138 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A311EA52C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 15:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772231EA539
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 15:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727815AbgFANki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 09:40:38 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:37226 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727000AbgFANka (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 09:40:30 -0400
-Received: by mail-lf1-f68.google.com with SMTP id x22so3948401lfd.4;
-        Mon, 01 Jun 2020 06:40:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XXr2KRE+Dnzze8XZks0Gj4qAjbaI/MHBmKKUHBBJn5M=;
-        b=OwWqE9i0Xg0Nn5+PKXk+i/MW49F7ruVdUbsA5y+nBJrspVe4JDOliM8WxoMryOY43n
-         Ow/1yddRqr3GiEZ3D2uGQYyT09qGKiYjPJrzAnm/ok+CpsDQGTYQ50sCWm3zMGroMGVo
-         Mim2oGQH5qGIiGmO0vhZHzohNNcSDoZQy4+QBt6JBnK3oalT3VG2XHqZDr4ypCOVx0Y0
-         s3P8W/Xz+U4fdghvDqVRtBfFbsLtwWZzEA0dcboPXEu0emtOs+TBPpQoJOgOTx29KQ4S
-         6bv11PuQ3X6jjLxDt+yqaTzGlDbwhoLFbILJvHXja7W9FJjs0it4NGUM9dmi+FXpBQGX
-         ctMQ==
-X-Gm-Message-State: AOAM5315ny7arMkTiPtV0yqjuDA5dnrfE8SOJaFy0KXLk3C5+6r9LKHG
-        axtgrPW673GJAGtxkilBGek=
-X-Google-Smtp-Source: ABdhPJwDPr96Ap3HzoIE25YN2bfCtabka+qXKDmUD01Vx75YFQ8IFMIwXwFdpcfVgcZioQhkK8v1+g==
-X-Received: by 2002:a19:500e:: with SMTP id e14mr11199694lfb.88.1591018827510;
-        Mon, 01 Jun 2020 06:40:27 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id v2sm4079883ljj.96.2020.06.01.06.40.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jun 2020 06:40:25 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@xi.terra>)
-        id 1jfkfp-0003G3-HS; Mon, 01 Jun 2020 15:40:17 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>
-Cc:     Dan Murphy <dmurphy@ti.com>,
-        Amitoj Kaur Chawla <amitoj1606@gmail.com>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 6/6] leds: drop redundant struct-device pointer casts
-Date:   Mon,  1 Jun 2020 15:39:50 +0200
-Message-Id: <20200601133950.12420-7-johan@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601133950.12420-1-johan@kernel.org>
-References: <20200601133950.12420-1-johan@kernel.org>
+        id S1727095AbgFANmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 09:42:03 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2264 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725974AbgFANmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 09:42:03 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id 5D2CA80A4B98C2E3164F;
+        Mon,  1 Jun 2020 14:42:01 +0100 (IST)
+Received: from localhost (10.47.94.81) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 1 Jun 2020
+ 14:42:00 +0100
+Date:   Mon, 1 Jun 2020 14:41:20 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Tomasz Duszynski <tomasz.duszynski@octakon.com>
+CC:     Jonathan Cameron <jic23@kernel.org>, <linux-iio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <robh+dt@kernel.org>, <andy.shevchenko@gmail.com>,
+        <pmeerw@pmeerw.net>
+Subject: Re: [PATCH v2 1/4] iio: chemical: scd30: add core driver
+Message-ID: <20200601144120.000038ba@Huawei.com>
+In-Reply-To: <20200601113006.GA28560@arch>
+References: <20200530213630.87159-1-tomasz.duszynski@octakon.com>
+        <20200530213630.87159-2-tomasz.duszynski@octakon.com>
+        <20200531105840.27e17f3d@archlinux>
+        <20200531192152.GC27246@arch>
+        <20200601113604.00002d70@Huawei.com>
+        <20200601113006.GA28560@arch>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.94.81]
+X-ClientProxiedBy: lhreml742-chm.china.huawei.com (10.201.108.192) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the pointless and needlessly confusing casts of struct-device
-pointers.
+...
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/leds/leds-lm355x.c | 9 +++------
- drivers/leds/leds-lm3642.c | 9 +++------
- 2 files changed, 6 insertions(+), 12 deletions(-)
+> > > > > +
+> > > > > +	return ret;
+> > > > > +}
+> > > > > +
+> > > > > +int scd30_probe(struct device *dev, int irq, const char *name, void *priv,
+> > > > > +		scd30_command_t command)
+> > > > > +{
+> > > > > +	static const unsigned long scd30_scan_masks[] = { 0x07, 0x00 };
+> > > > > +	struct scd30_state *state;
+> > > > > +	struct iio_dev *indio_dev;
+> > > > > +	int ret;
+> > > > > +	u16 val;
+> > > > > +
+> > > > > +	indio_dev = devm_iio_device_alloc(dev, sizeof(*state));
+> > > > > +	if (!indio_dev)
+> > > > > +		return -ENOMEM;
+> > > > > +
+> > > > > +	state = iio_priv(indio_dev);
+> > > > > +	state->dev = dev;  
+> > > >
+> > > > Doesn't seem to be used.
+> > > >  
+> > > > > +	state->priv = priv;  
+> > > >
+> > > > What's this for?  At least at first glance I can't find it being used
+> > > > anywhere.
+> > > >  
+> > > > > +	state->irq = irq;
+> > > > > +	state->pressure_comp = SCD30_PRESSURE_COMP_DEFAULT;
+> > > > > +	state->meas_interval = SCD30_MEAS_INTERVAL_DEFAULT;
+> > > > > +	state->command = command;
+> > > > > +	mutex_init(&state->lock);
+> > > > > +	init_completion(&state->meas_ready);
+> > > > > +
+> > > > > +	dev_set_drvdata(dev, indio_dev);
+> > > > > +
+> > > > > +	indio_dev->dev.parent = dev;  
+> > > >
+> > > > Side note that there is a series moving this into the core under revision at
+> > > > the moment.  Hopefully I'll remember to fix this up when applying your patch
+> > > > if that one has gone in ahead of it.
+> > > >  
+> > > > > +	indio_dev->info = &scd30_info;
+> > > > > +	indio_dev->name = name;
+> > > > > +	indio_dev->channels = scd30_channels;
+> > > > > +	indio_dev->num_channels = ARRAY_SIZE(scd30_channels);
+> > > > > +	indio_dev->modes = INDIO_DIRECT_MODE;
+> > > > > +	indio_dev->available_scan_masks = scd30_scan_masks;
+> > > > > +
+> > > > > +	state->vdd = devm_regulator_get(dev, "vdd");
+> > > > > +	if (IS_ERR(state->vdd)) {
+> > > > > +		if (PTR_ERR(state->vdd) == -EPROBE_DEFER)
+> > > > > +			return -EPROBE_DEFER;
+> > > > > +
+> > > > > +		dev_err(dev, "failed to get regulator\n");
+> > > > > +		return PTR_ERR(state->vdd);
+> > > > > +	}
+> > > > > +
+> > > > > +	ret = regulator_enable(state->vdd);
+> > > > > +	if (ret)
+> > > > > +		return ret;
+> > > > > +
+> > > > > +	ret = devm_add_action_or_reset(dev, scd30_disable_regulator, state);
+> > > > > +	if (ret)
+> > > > > +		return ret;
+> > > > > +  
+> > > >
+> > > > A comment here on why it makes sense to register this here.  What
+> > > > started mesurement? It seems that happens well below here so
+> > > > we should really call this after that start all.
+> > > >  
+> > >
+> > > Sensor after being powered up starts in mode it was left in.
+> > > Chances are it was continuous mode and we want to shut it down.  
+> >
+> > That's fine.  The question is why 'here' as opposed to after the below where you
+> > put it into continuous mode.
+> >  
+> 
+> Let's suppose sensor got energized and started measuring. Then without
+> registering action which stops measurement we jump to device reset etc.
+> 
+> Now if reset failed for whatever reason (same applies to everything
+> below reset) devm will gracefully unwind previous actions but sensor
+> will continue doing his job. But there's no point. Better to save some
+> milliaps for later.
 
-diff --git a/drivers/leds/leds-lm355x.c b/drivers/leds/leds-lm355x.c
-index a5abb499574b..c690eafe2746 100644
---- a/drivers/leds/leds-lm355x.c
-+++ b/drivers/leds/leds-lm355x.c
-@@ -453,8 +453,7 @@ static int lm355x_probe(struct i2c_client *client,
- 	chip->cdev_flash.max_brightness = 16;
- 	chip->cdev_flash.brightness_set_blocking = lm355x_strobe_brightness_set;
- 	chip->cdev_flash.default_trigger = "flash";
--	err = led_classdev_register((struct device *)
--				    &client->dev, &chip->cdev_flash);
-+	err = led_classdev_register(&client->dev, &chip->cdev_flash);
- 	if (err < 0)
- 		goto err_out;
- 	/* torch */
-@@ -462,8 +461,7 @@ static int lm355x_probe(struct i2c_client *client,
- 	chip->cdev_torch.max_brightness = 8;
- 	chip->cdev_torch.brightness_set_blocking = lm355x_torch_brightness_set;
- 	chip->cdev_torch.default_trigger = "torch";
--	err = led_classdev_register((struct device *)
--				    &client->dev, &chip->cdev_torch);
-+	err = led_classdev_register(&client->dev, &chip->cdev_torch);
- 	if (err < 0)
- 		goto err_create_torch_file;
- 	/* indicator */
-@@ -477,8 +475,7 @@ static int lm355x_probe(struct i2c_client *client,
- 	/* indicator pattern control only for LM3556 */
- 	if (id->driver_data == CHIP_LM3556)
- 		chip->cdev_indicator.groups = lm355x_indicator_groups;
--	err = led_classdev_register((struct device *)
--				    &client->dev, &chip->cdev_indicator);
-+	err = led_classdev_register(&client->dev, &chip->cdev_indicator);
- 	if (err < 0)
- 		goto err_create_indicator_file;
- 
-diff --git a/drivers/leds/leds-lm3642.c b/drivers/leds/leds-lm3642.c
-index 4232906fcb75..62c14872caf7 100644
---- a/drivers/leds/leds-lm3642.c
-+++ b/drivers/leds/leds-lm3642.c
-@@ -340,8 +340,7 @@ static int lm3642_probe(struct i2c_client *client,
- 	chip->cdev_flash.brightness_set_blocking = lm3642_strobe_brightness_set;
- 	chip->cdev_flash.default_trigger = "flash";
- 	chip->cdev_flash.groups = lm3642_flash_groups,
--	err = led_classdev_register((struct device *)
--				    &client->dev, &chip->cdev_flash);
-+	err = led_classdev_register(&client->dev, &chip->cdev_flash);
- 	if (err < 0) {
- 		dev_err(chip->dev, "failed to register flash\n");
- 		goto err_out;
-@@ -353,8 +352,7 @@ static int lm3642_probe(struct i2c_client *client,
- 	chip->cdev_torch.brightness_set_blocking = lm3642_torch_brightness_set;
- 	chip->cdev_torch.default_trigger = "torch";
- 	chip->cdev_torch.groups = lm3642_torch_groups,
--	err = led_classdev_register((struct device *)
--				    &client->dev, &chip->cdev_torch);
-+	err = led_classdev_register(&client->dev, &chip->cdev_torch);
- 	if (err < 0) {
- 		dev_err(chip->dev, "failed to register torch\n");
- 		goto err_create_torch_file;
-@@ -365,8 +363,7 @@ static int lm3642_probe(struct i2c_client *client,
- 	chip->cdev_indicator.max_brightness = 8;
- 	chip->cdev_indicator.brightness_set_blocking =
- 						lm3642_indicator_brightness_set;
--	err = led_classdev_register((struct device *)
--				    &client->dev, &chip->cdev_indicator);
-+	err = led_classdev_register(&client->dev, &chip->cdev_indicator);
- 	if (err < 0) {
- 		dev_err(chip->dev, "failed to register indicator\n");
- 		goto err_create_indicator_file;
--- 
-2.26.2
+I'm not convinced. Note that in your example, the sensor was already on.
+If we never loaded the driver it would stay on.  We should
+deal with only problems we have potentially created.
+
+If reset fails, it shouldn't 'enable' the sensor hence we are just in
+the same state as if the driver hadn't loaded at all.  Also if reset
+fails the chance of a disable succeeding is very low.
+
+The code is much more logical with this being done immediately after
+the action to enable thing we are disabling.  So please put it down
+there.
+
+
+
+> 
+> In case we have real regulator then there's no real issue because
+> power gets cut off during cleanup.
+> 
+> Quite often though there's only a dummy one which does nothing useful
+> except making regulator framework happy.
+> 
+> So my thinking here is that we're slightly better off registering
+> scd30_stop_meas() action earlier to prevent such scenario from happening.
+> 
+> > >  
+> > > > > +	ret = devm_add_action_or_reset(dev, scd30_stop_meas, state);
+> > > > > +	if (ret)
+> > > > > +		return ret;
+> > > > > +
+> > > > > +	ret = scd30_reset(state);
+> > > > > +	if (ret) {
+> > > > > +		dev_err(dev, "failed to reset device: %d\n", ret);
+> > > > > +		return ret;
+> > > > > +	}
+> > > > > +
+> > > > > +	if (state->irq > 0) {
+> > > > > +		ret = scd30_setup_trigger(indio_dev);
+> > > > > +		if (ret) {
+> > > > > +			dev_err(dev, "failed to setup trigger: %d\n", ret);
+> > > > > +			return ret;
+> > > > > +		}
+> > > > > +	}
+> > > > > +
+> > > > > +	ret = devm_iio_triggered_buffer_setup(dev, indio_dev, NULL,
+> > > > > +					      scd30_trigger_handler, NULL);
+> > > > > +	if (ret)
+> > > > > +		return ret;
+> > > > > +
+> > > > > +	ret = scd30_command_read(state, CMD_FW_VERSION, &val);
+> > > > > +	if (ret) {
+> > > > > +		dev_err(dev, "failed to read firmware version: %d\n", ret);
+> > > > > +		return ret;
+> > > > > +	}
+> > > > > +	dev_info(dev, "firmware version: %d.%d\n", val >> 8, (char)val);
+> > > > > +
+> > > > > +	ret = scd30_command_write(state, CMD_MEAS_INTERVAL,
+> > > > > +				  state->meas_interval);
+> > > > > +	if (ret) {
+> > > > > +		dev_err(dev, "failed to set measurement interval: %d\n", ret);
+> > > > > +		return ret;
+> > > > > +	}
+> > > > > +
+> > > > > +	ret = scd30_command_write(state, CMD_START_MEAS, state->pressure_comp);
+> > > > > +	if (ret) {
+> > > > > +		dev_err(dev, "failed to start measurement: %d\n", ret);
+> > > > > +		return ret;
+> > > > > +	}
+Here is where we should register that cleanup handler.
+
+Jonathan
+
+> > > > > +
+> > > > > +	return devm_iio_device_register(dev, indio_dev);
+> > > > > +}
+> > > > > +EXPORT_SYMBOL(scd30_probe);
+> > > > > +
+> > > > > +MODULE_AUTHOR("Tomasz Duszynski <tomasz.duszynski@octakon.com>");
+> > > > > +MODULE_DESCRIPTION("Sensirion SCD30 carbon dioxide sensor core driver");
+> > > > > +MODULE_LICENSE("GPL v2");
+> > > > > --
+> > > > > 2.26.2
+> > > > >  
+> > > >  
+> >
+> >  
+
 
