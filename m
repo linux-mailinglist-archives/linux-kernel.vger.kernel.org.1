@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08191EAC5C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8541EAD5B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731506AbgFASSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:18:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39176 "EHLO mail.kernel.org"
+        id S1730131AbgFASox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:44:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731867AbgFASRt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:17:49 -0400
+        id S1730003AbgFASKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:10:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC9222068D;
-        Mon,  1 Jun 2020 18:17:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F2DCB2065C;
+        Mon,  1 Jun 2020 18:10:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035469;
-        bh=aexeHzFZY3dDYnzsMQURdXHuOFnSZu5SudkXvPqznI8=;
+        s=default; t=1591035015;
+        bh=o6nInxDd17OW8/qD7D+T4eEGbgAg6MKJFX5koWYdtjc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xkz8jd1zxYHEe0OXYnIKHKhQEZ9Hm4zUGYYJlOAb+49fy74sO1WvVISwK0NsQH3rD
-         L5AS57YqC7VdNrnzX36ixcNKPu5+3v6mO4sEtctU686wNLZP8CHzzNuS6NWlI6NShQ
-         iQFjcRg6a6aOepOeWgT5805iDTeOq93hsonQP8yc=
+        b=K4kYBN4Mtlb2buzulXA5+Atqg5MFiVLESGLciWPmRk6I+85uRaf74PrHimn/dlpRD
+         WSMoioY+UUQO6IrTnXx0ZG6Eh2S3/L1NhWC8sb+L2M1CdxRRwJfcrnAA4Q2yKTe4ZB
+         V2ZBKAuYRNz1aY6yGKCFfqLQsvMmiYpEVDSM4QgY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, sam <sunhaoyl@outlook.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 134/177] fs/binfmt_elf.c: allocate initialized memory in fill_thread_core_info()
-Date:   Mon,  1 Jun 2020 19:54:32 +0200
-Message-Id: <20200601174059.636308949@linuxfoundation.org>
+        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Subject: [PATCH 5.4 115/142] xfrm: call xfrm_output_gso when inner_protocol is set in xfrm_output
+Date:   Mon,  1 Jun 2020 19:54:33 +0200
+Message-Id: <20200601174049.789343024@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,44 +44,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Potapenko <glider@google.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit 1d605416fb7175e1adf094251466caa52093b413 ]
+commit a204aef9fd77dce1efd9066ca4e44eede99cd858 upstream.
 
-KMSAN reported uninitialized data being written to disk when dumping
-core.  As a result, several kilobytes of kmalloc memory may be written
-to the core file and then read by a non-privileged user.
+An use-after-free crash can be triggered when sending big packets over
+vxlan over esp with esp offload enabled:
 
-Reported-by: sam <sunhaoyl@outlook.com>
-Signed-off-by: Alexander Potapenko <glider@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Kees Cook <keescook@chromium.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/20200419100848.63472-1-glider@google.com
-Link: https://github.com/google/kmsan/issues/76
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  [] BUG: KASAN: use-after-free in ipv6_gso_pull_exthdrs.part.8+0x32c/0x4e0
+  [] Call Trace:
+  []  dump_stack+0x75/0xa0
+  []  kasan_report+0x37/0x50
+  []  ipv6_gso_pull_exthdrs.part.8+0x32c/0x4e0
+  []  ipv6_gso_segment+0x2c8/0x13c0
+  []  skb_mac_gso_segment+0x1cb/0x420
+  []  skb_udp_tunnel_segment+0x6b5/0x1c90
+  []  inet_gso_segment+0x440/0x1380
+  []  skb_mac_gso_segment+0x1cb/0x420
+  []  esp4_gso_segment+0xae8/0x1709 [esp4_offload]
+  []  inet_gso_segment+0x440/0x1380
+  []  skb_mac_gso_segment+0x1cb/0x420
+  []  __skb_gso_segment+0x2d7/0x5f0
+  []  validate_xmit_skb+0x527/0xb10
+  []  __dev_queue_xmit+0x10f8/0x2320 <---
+  []  ip_finish_output2+0xa2e/0x1b50
+  []  ip_output+0x1a8/0x2f0
+  []  xfrm_output_resume+0x110e/0x15f0
+  []  __xfrm4_output+0xe1/0x1b0
+  []  xfrm4_output+0xa0/0x200
+  []  iptunnel_xmit+0x5a7/0x920
+  []  vxlan_xmit_one+0x1658/0x37a0 [vxlan]
+  []  vxlan_xmit+0x5e4/0x3ec8 [vxlan]
+  []  dev_hard_start_xmit+0x125/0x540
+  []  __dev_queue_xmit+0x17bd/0x2320  <---
+  []  ip6_finish_output2+0xb20/0x1b80
+  []  ip6_output+0x1b3/0x390
+  []  ip6_xmit+0xb82/0x17e0
+  []  inet6_csk_xmit+0x225/0x3d0
+  []  __tcp_transmit_skb+0x1763/0x3520
+  []  tcp_write_xmit+0xd64/0x5fe0
+  []  __tcp_push_pending_frames+0x8c/0x320
+  []  tcp_sendmsg_locked+0x2245/0x3500
+  []  tcp_sendmsg+0x27/0x40
+
+As on the tx path of vxlan over esp, skb->inner_network_header would be
+set on vxlan_xmit() and xfrm4_tunnel_encap_add(), and the later one can
+overwrite the former one. It causes skb_udp_tunnel_segment() to use a
+wrong skb->inner_network_header, then the issue occurs.
+
+This patch is to fix it by calling xfrm_output_gso() instead when the
+inner_protocol is set, in which gso_segment of inner_protocol will be
+done first.
+
+While at it, also improve some code around.
+
+Fixes: 7862b4058b9f ("esp: Add gso handlers for esp4 and esp6")
+Reported-by: Xiumei Mu <xmu@redhat.com>
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/binfmt_elf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/xfrm/xfrm_output.c |   12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index f4713ea76e82..54f888ddb8cc 100644
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -1733,7 +1733,7 @@ static int fill_thread_core_info(struct elf_thread_core_info *t,
- 		    (!regset->active || regset->active(t->task, regset) > 0)) {
- 			int ret;
- 			size_t size = regset_size(t->task, regset);
--			void *data = kmalloc(size, GFP_KERNEL);
-+			void *data = kzalloc(size, GFP_KERNEL);
- 			if (unlikely(!data))
- 				return 0;
- 			ret = regset->get(t->task, regset,
--- 
-2.25.1
-
+--- a/net/xfrm/xfrm_output.c
++++ b/net/xfrm/xfrm_output.c
+@@ -586,18 +586,20 @@ int xfrm_output(struct sock *sk, struct
+ 		xfrm_state_hold(x);
+ 
+ 		if (skb_is_gso(skb)) {
+-			skb_shinfo(skb)->gso_type |= SKB_GSO_ESP;
++			if (skb->inner_protocol)
++				return xfrm_output_gso(net, sk, skb);
+ 
+-			return xfrm_output2(net, sk, skb);
++			skb_shinfo(skb)->gso_type |= SKB_GSO_ESP;
++			goto out;
+ 		}
+ 
+ 		if (x->xso.dev && x->xso.dev->features & NETIF_F_HW_ESP_TX_CSUM)
+ 			goto out;
++	} else {
++		if (skb_is_gso(skb))
++			return xfrm_output_gso(net, sk, skb);
+ 	}
+ 
+-	if (skb_is_gso(skb))
+-		return xfrm_output_gso(net, sk, skb);
+-
+ 	if (skb->ip_summed == CHECKSUM_PARTIAL) {
+ 		err = skb_checksum_help(skb);
+ 		if (err) {
 
 
