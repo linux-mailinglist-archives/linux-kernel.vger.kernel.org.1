@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3901EAA88
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E06C1EAB32
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730798AbgFASIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:08:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55158 "EHLO mail.kernel.org"
+        id S1730769AbgFASPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:15:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728782AbgFASIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:08:53 -0400
+        id S1731536AbgFASO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:14:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 668CC20872;
-        Mon,  1 Jun 2020 18:08:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2BE682065C;
+        Mon,  1 Jun 2020 18:14:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034932;
-        bh=X4x75h3oHXMkeOrIher/65hlTtP64x+5i4tluufMDaA=;
+        s=default; t=1591035298;
+        bh=rzrYpD4H3USNARFfpfftSd3ujezBAAJ8O2kT9Cc2uUQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KZYQ8oZQalgh2U6M1t6hF2SZ+Zo5FlY4kH16QBxAE021wxfTwxww5HiGXj4LwYnG9
-         nW69+K4gUyqC7mgkQbHl0lj5d30gmm0mBwMn8XASQmd0tfMzR2Afme62SWh8Cu4kLM
-         7/NDLhlLeOasAZ4FeyRPjmKbvFBK9FK1pN3lp3AM=
+        b=k/8vXWEvrPVY86msqNFdxbQ6H9pR+itBCe0S4+PYR+MuoJO1+5e9yJ0EcingNeL0r
+         wvjvPkq2zaqWckoWMguTNozRC8bG0zakRrLFV10irFTdBkEA9NaBvlV74Cd3QC0bPQ
+         uuPDemkAK3Hd7we3kDzwgx3b0Q/z/2NJLrFjSNmE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
+        stable@vger.kernel.org, Hsin-Yi Wang <hsinyi@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 078/142] gpu/drm: Ingenic: Fix opaque pointer casted to wrong type
+Subject: [PATCH 5.6 098/177] arm64: dts: mt8173: fix vcodec-enc clock
 Date:   Mon,  1 Jun 2020 19:53:56 +0200
-Message-Id: <20200601174046.115405710@linuxfoundation.org>
+Message-Id: <20200601174056.885023125@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Cercueil <paul@crapouillou.net>
+From: Hsin-Yi Wang <hsinyi@chromium.org>
 
-[ Upstream commit abf56fadf0e208abfb13ad1ac0094416058da0ad ]
+[ Upstream commit 3b1f6c5e4dfaf767f6f2f120cd93b347b5a9f1aa ]
 
-The opaque pointer passed to the IRQ handler is a pointer to the
-drm_device, not a pointer to our ingenic_drm structure.
+Fix the assigned-clock-parents to higher frequency clock to avoid h264
+encode timeout:
 
-It still worked, because our ingenic_drm structure contains the
-drm_device as its first field, so the pointer received had the same
-value, but this was not semantically correct.
+[  134.763465] mtk_vpu 10020000.vpu: vpu ipi 4 ack time out !
+[  134.769008] [MTK_VCODEC][ERROR][18]: vpu_enc_send_msg() vpu_ipi_send msg_id c002 len 32 fail -5
+[  134.777707] [MTK_VCODEC][ERROR][18]: vpu_enc_encode() AP_IPIMSG_ENC_ENCODE 0 fail
 
-Cc: stable@vger.kernel.org # v5.3
-Fixes: 90b86fcc47b4 ("DRM: Add KMS driver for the Ingenic JZ47xx SoCs")
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200516215057.392609-5-paul@crapouillou.net
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
+venc_sel is the clock used by h264 encoder, and venclt_sel is the clock
+used by vp8 encoder. Assign venc_sel to vcodecpll_ck and venclt_sel to
+vcodecpll_370p5.
+
+    vcodecpll                         1482000000
+       vcodecpll_ck                    494000000
+          venc_sel                     494000000
+...
+       vcodecpll_370p5                 370500000
+          venclt_sel                   370500000
+
+Fixes: fbbad0287cec ("arm64: dts: Using standard CCF interface to set vcodec clk")
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Link: https://lore.kernel.org/r/20200504124442.208004-1-hsinyi@chromium.org
+Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/ingenic/ingenic-drm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/ingenic/ingenic-drm.c b/drivers/gpu/drm/ingenic/ingenic-drm.c
-index 9e95f6fd5406..376fca6ca9f4 100644
---- a/drivers/gpu/drm/ingenic/ingenic-drm.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm.c
-@@ -467,7 +467,7 @@ static int ingenic_drm_encoder_atomic_check(struct drm_encoder *encoder,
+diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+index 8b4e806d5119..125c78321ab4 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+@@ -1401,8 +1401,8 @@
+ 				      "venc_lt_sel";
+ 			assigned-clocks = <&topckgen CLK_TOP_VENC_SEL>,
+ 					  <&topckgen CLK_TOP_VENC_LT_SEL>;
+-			assigned-clock-parents = <&topckgen CLK_TOP_VENCPLL_D2>,
+-						 <&topckgen CLK_TOP_UNIVPLL1_D2>;
++			assigned-clock-parents = <&topckgen CLK_TOP_VCODECPLL>,
++						 <&topckgen CLK_TOP_VCODECPLL_370P5>;
+ 		};
  
- static irqreturn_t ingenic_drm_irq_handler(int irq, void *arg)
- {
--	struct ingenic_drm *priv = arg;
-+	struct ingenic_drm *priv = drm_device_get_priv(arg);
- 	unsigned int state;
- 
- 	regmap_read(priv->map, JZ_REG_LCD_STATE, &state);
+ 		jpegdec: jpegdec@18004000 {
 -- 
 2.25.1
 
