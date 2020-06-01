@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 695251EAB15
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59CDF1EA918
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730788AbgFASOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:14:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33838 "EHLO mail.kernel.org"
+        id S1728307AbgFAR6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:58:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730688AbgFASOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:14:09 -0400
+        id S1729130AbgFAR6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:58:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D0EB92068D;
-        Mon,  1 Jun 2020 18:14:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 038812085B;
+        Mon,  1 Jun 2020 17:58:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035249;
-        bh=dFnDNSHS2+OAHO0LGMtY8LKC5e1OPYAD0D0Dw5/i9t8=;
+        s=default; t=1591034286;
+        bh=KlvviamtZlLWaLfvlNXom9/owKaKsXrEsTDyBdhk6Uw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2lXi9rUYlId7cMtbgRT9vL6C/ne8rvgIt3EmlYGEDCiXG9eReWJgAK8fewV9e3qck
-         LhuCb2SrS4in4TPrMm8R7tim1LhHdajT2elQfHnx6KteLb0bqWQLoj+bU1yX01pcA3
-         Lex869doj+fbFppcwgpm2MzyiADVdtpZc478n2Wg=
+        b=zj/Lbyq3sh4ybEC0kKMuCZuM65MeQsGbLYs6CWo1t80/UDiYAS1OIDsuNzlUt2ruc
+         zNDoEiCUXxXxuN8Poyye/QQWx1m+l/wuwLIYW87vqwdZ0nJjDjqvruD1wLcxWGEBN6
+         J2HjpRzUMtbQ1BhCDFbAXlSJqFAwmoGmwTCcoE/A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liu Yibin <jiulong@linux.alibaba.com>,
-        Guo Ren <guoren@linux.alibaba.com>,
+        stable@vger.kernel.org, Wei Yongjun <weiyongjun1@huawei.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 074/177] csky: Fixup msa highest 3 bits mask
+Subject: [PATCH 4.9 25/61] Input: synaptics-rmi4 - fix error return code in rmi_driver_probe()
 Date:   Mon,  1 Jun 2020 19:53:32 +0200
-Message-Id: <20200601174055.064441442@linuxfoundation.org>
+Message-Id: <20200601174016.474501315@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
+References: <20200601174010.316778377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,56 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liu Yibin <jiulong@linux.alibaba.com>
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-[ Upstream commit 165f2d2858013253042809df082b8df7e34e86d7 ]
+[ Upstream commit 5caab2da63207d6d631007f592f5219459e3454d ]
 
-Just as comment mentioned, the msa format:
+Fix to return a negative error code from the input_register_device()
+error handling case instead of 0, as done elsewhere in this function.
 
- cr<30/31, 15> MSA register format:
- 31 - 29 | 28 - 9 | 8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
-   BA     Reserved  SH  WA  B   SO SEC  C   D   V
-
-So we should shift 29 bits not 28 bits for mask
-
-Signed-off-by: Liu Yibin <jiulong@linux.alibaba.com>
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Link: https://lore.kernel.org/r/20200428134948.78343-1-weiyongjun1@huawei.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/csky/abiv1/inc/abi/entry.h | 4 ++--
- arch/csky/abiv2/inc/abi/entry.h | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/input/rmi4/rmi_driver.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/csky/abiv1/inc/abi/entry.h b/arch/csky/abiv1/inc/abi/entry.h
-index 5056ebb902d1..61d94ec7dd16 100644
---- a/arch/csky/abiv1/inc/abi/entry.h
-+++ b/arch/csky/abiv1/inc/abi/entry.h
-@@ -167,8 +167,8 @@
- 	 *   BA     Reserved  C   D   V
- 	 */
- 	cprcr	r6, cpcr30
--	lsri	r6, 28
--	lsli	r6, 28
-+	lsri	r6, 29
-+	lsli	r6, 29
- 	addi	r6, 0xe
- 	cpwcr	r6, cpcr30
- 
-diff --git a/arch/csky/abiv2/inc/abi/entry.h b/arch/csky/abiv2/inc/abi/entry.h
-index 111973c6c713..9023828ede97 100644
---- a/arch/csky/abiv2/inc/abi/entry.h
-+++ b/arch/csky/abiv2/inc/abi/entry.h
-@@ -225,8 +225,8 @@
- 	 */
- 	mfcr	r6, cr<30, 15> /* Get MSA0 */
- 2:
--	lsri	r6, 28
--	lsli	r6, 28
-+	lsri	r6, 29
-+	lsli	r6, 29
- 	addi	r6, 0x1ce
- 	mtcr	r6, cr<30, 15> /* Set MSA0 */
- 
+diff --git a/drivers/input/rmi4/rmi_driver.c b/drivers/input/rmi4/rmi_driver.c
+index 65038dcc7613..677edbf870a7 100644
+--- a/drivers/input/rmi4/rmi_driver.c
++++ b/drivers/input/rmi4/rmi_driver.c
+@@ -991,7 +991,8 @@ static int rmi_driver_probe(struct device *dev)
+ 	if (data->input) {
+ 		rmi_driver_set_input_name(rmi_dev, data->input);
+ 		if (!rmi_dev->xport->input) {
+-			if (input_register_device(data->input)) {
++			retval = input_register_device(data->input);
++			if (retval) {
+ 				dev_err(dev, "%s: Failed to register input device.\n",
+ 					__func__);
+ 				goto err_destroy_functions;
 -- 
 2.25.1
 
