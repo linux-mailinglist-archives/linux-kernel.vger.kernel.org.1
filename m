@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B484B1EA8E9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D66F1EA8EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728834AbgFAR5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:57:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37946 "EHLO mail.kernel.org"
+        id S1728844AbgFAR5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:57:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728807AbgFAR5B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:57:01 -0400
+        id S1728825AbgFAR5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:57:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A9A92085B;
-        Mon,  1 Jun 2020 17:57:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EAA28207DF;
+        Mon,  1 Jun 2020 17:57:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034220;
-        bh=GpWa1GaeAr8n5dw6/FOWbgmhDIEAfSTzn9TttsI97NU=;
+        s=default; t=1591034225;
+        bh=Sv50GhNdNfAEmQPgwJon282Ryl8sV1jtnma2waxrDZg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M4cjncXs7tfJHLzJ/TLpwFjiJKY23roo9u355OhhIo+mO4yzD8Kh0EBk/aoo6nam2
-         58vK105ts6o8xpyCJQ/0s12BgJ2d5sznSrv4bFOOkQXohEtoNSRwgl170N5G2ML3K9
-         Q7XC4pZQAf2rNuFx/Jiu+iku2kUJqUCI56qbBRLc=
+        b=LU+cS3QUqRQpaI0Y5Hk8AewS74OppJJIiEiLkbTqs1NpaiJ2pyNjnr1EALHf1pmqX
+         yue6ZvXKJHCx7F+RoojtaSLIE3yF1jb+rl0xJBZLA+IjXxpecGirJOs1EJAklLMJFo
+         2v0OkfR4k5JRy2H3DevylOSfYrOhuQATXt8BpVj8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adam Borowski <kilobyte@angband.pl>,
-        Michal Marek <mmarek@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Borislav Petkov <bp@alien8.de>
-Subject: [PATCH 4.4 46/48] asm-prototypes: Clear any CPP defines before declaring the functions
-Date:   Mon,  1 Jun 2020 19:53:56 +0200
-Message-Id: <20200601174005.209348116@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.4 48/48] drm/msm: Fix possible null dereference on failure of get_pages()
+Date:   Mon,  1 Jun 2020 19:53:58 +0200
+Message-Id: <20200601174005.784720752@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200601173952.175939894@linuxfoundation.org>
 References: <20200601173952.175939894@linuxfoundation.org>
@@ -45,76 +46,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Marek <mmarek@suse.com>
+From: Ben Hutchings <ben.hutchings@codethink.co.uk>
 
-commit c7858bf16c0b2cc62f475f31e6df28c3a68da1d6 upstream.
+commit 3976626ea3d2011f8fd3f3a47070a8b792018253 upstream.
 
-The asm-prototypes.h file is used to provide dummy function declarations
-for genksyms, when processing asm files with EXPORT_SYMBOL. Make sure
-that any architecture defines get out of our way. x86 currently has an
-issue with memcpy on 64bit with CONFIG_KMEMCHECK=y and with
-memset/__memset on 32bit:
+Commit 62e3a3e342af changed get_pages() to initialise
+msm_gem_object::pages before trying to initialise msm_gem_object::sgt,
+so that put_pages() would properly clean up pages in the failure
+case.
 
-	$ cat init/test.c
-	#include <asm/asm-prototypes.h>
-	$ make -s init/test.o
-	In file included from ./arch/x86/include/asm/string.h:4:0,
-			 from ./include/linux/string.h:18,
-			 from ./include/linux/bitmap.h:8,
-			 from ./include/linux/cpumask.h:11,
-			 from ./arch/x86/include/asm/cpumask.h:4,
-			 from ./arch/x86/include/asm/msr.h:10,
-			 from ./arch/x86/include/asm/processor.h:20,
-			 from ./arch/x86/include/asm/cpufeature.h:4,
-			 from ./arch/x86/include/asm/thread_info.h:52,
-			 from ./include/linux/thread_info.h:25,
-			 from ./arch/x86/include/asm/preempt.h:6,
-			 from ./include/linux/preempt.h:59,
-			 from ./include/linux/spinlock.h:50,
-			 from ./include/linux/seqlock.h:35,
-			 from ./include/linux/time.h:5,
-			 from ./include/uapi/linux/timex.h:56,
-			 from ./include/linux/timex.h:56,
-			 from ./include/linux/sched.h:19,
-			 from ./include/linux/uaccess.h:4,
-			 from ./arch/x86/include/asm/asm-prototypes.h:2,
-			 from init/test.c:1:
-	./arch/x86/include/asm/string_64.h:52:47: error: expected declaration specifiers or ‘...’ before ‘(’ token
-	 #define memcpy(dst, src, len) __inline_memcpy((dst), (src), (len))
-	 ./include/asm-generic/asm-prototypes.h:6:14: note: in expansion of macro ‘memcpy’
-	  extern void *memcpy(void *, const void *, __kernel_size_t);
+However, this means that put_pages() now needs to check that
+msm_gem_object::sgt is not null before trying to clean it up, and
+this check was only applied to part of the cleanup code.  Move
+it all into the conditional block.  (Strictly speaking we don't
+need to make the kfree() conditional, but since we can't avoid
+checking for null ourselves we may as well do so.)
 
-						       ^
-	...
-
-During real build, this manifests itself by genksyms segfaulting.
-
-Fixes: 334bb7738764 ("x86/kbuild: enable modversions for symbols exported from asm")
-Reported-and-tested-by: Borislav Petkov <bp@alien8.de>
-Cc: Adam Borowski <kilobyte@angband.pl>
-Signed-off-by: Michal Marek <mmarek@suse.com>
+Fixes: 62e3a3e342af ("drm/msm: fix leak in failed get_pages")
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
+Signed-off-by: Rob Clark <robdclark@gmail.com>
 Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/asm-generic/asm-prototypes.h |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/gpu/drm/msm/msm_gem.c |   20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
---- a/include/asm-generic/asm-prototypes.h
-+++ b/include/asm-generic/asm-prototypes.h
-@@ -1,7 +1,13 @@
- #include <linux/bitops.h>
-+#undef __memset
- extern void *__memset(void *, int, __kernel_size_t);
-+#undef __memcpy
- extern void *__memcpy(void *, const void *, __kernel_size_t);
-+#undef __memmove
- extern void *__memmove(void *, const void *, __kernel_size_t);
-+#undef memset
- extern void *memset(void *, int, __kernel_size_t);
-+#undef memcpy
- extern void *memcpy(void *, const void *, __kernel_size_t);
-+#undef memmove
- extern void *memmove(void *, const void *, __kernel_size_t);
+--- a/drivers/gpu/drm/msm/msm_gem.c
++++ b/drivers/gpu/drm/msm/msm_gem.c
+@@ -116,17 +116,19 @@ static void put_pages(struct drm_gem_obj
+ 	struct msm_gem_object *msm_obj = to_msm_bo(obj);
+ 
+ 	if (msm_obj->pages) {
+-		/* For non-cached buffers, ensure the new pages are clean
+-		 * because display controller, GPU, etc. are not coherent:
+-		 */
+-		if (msm_obj->flags & (MSM_BO_WC|MSM_BO_UNCACHED))
+-			dma_unmap_sg(obj->dev->dev, msm_obj->sgt->sgl,
+-					msm_obj->sgt->nents, DMA_BIDIRECTIONAL);
++		if (msm_obj->sgt) {
++			/* For non-cached buffers, ensure the new
++			 * pages are clean because display controller,
++			 * GPU, etc. are not coherent:
++			 */
++			if (msm_obj->flags & (MSM_BO_WC|MSM_BO_UNCACHED))
++				dma_unmap_sg(obj->dev->dev, msm_obj->sgt->sgl,
++					     msm_obj->sgt->nents,
++					     DMA_BIDIRECTIONAL);
+ 
+-		if (msm_obj->sgt)
+ 			sg_free_table(msm_obj->sgt);
+-
+-		kfree(msm_obj->sgt);
++			kfree(msm_obj->sgt);
++		}
+ 
+ 		if (use_pages(obj))
+ 			drm_gem_put_pages(obj, msm_obj->pages, true, false);
 
 
