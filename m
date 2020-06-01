@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F251EAAFA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9EA71EAA6A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731316AbgFASNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:13:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60780 "EHLO mail.kernel.org"
+        id S1730622AbgFASHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:07:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731311AbgFASNL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:13:11 -0400
+        id S1729801AbgFASHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:07:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D43C2065C;
-        Mon,  1 Jun 2020 18:13:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3FC6D2068D;
+        Mon,  1 Jun 2020 18:07:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035191;
-        bh=PShjP4JqEu7VciJj/G3J2Xnl9GwcIQlCD+Du0aKEP3E=;
+        s=default; t=1591034824;
+        bh=OWscbb58LV3wYU2t0kpPZcQFKkJCIC9E+3xuGSvNeqg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fxuuq2sbO0giFVd0GBJkJokAnbaJaV2igQaScZo1mMplTNnnJW5i8IUqBWaxdDqhA
-         bw6YNIBzmbkC2cQlV6CaZjauEjHN//QinWEgRqygsAODJMFUtUe5qGZjDGl5El/Fhk
-         g15SBcQ7OnVbTlnAGpObNW/XG8JQ+Hh7PcWfLy1I=
+        b=GLdWq50xnqdNmGMPcXMzHSlTvYWz8D8+/Gp8ttVE+2cTLL8laczVrMW8mHJ7IUVgW
+         SmY7SftryYBYtPc74E9ELlpjd8wiDTGQiYqnZuuBXSujdCDeLpmyX/Ul3eypBqirs6
+         4FZaemNAFh5RHuDhwap/ji4ZvOzgsOFAbeTM9ILI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Jonker <jbx6244@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 050/177] ARM: dts: rockchip: fix pinctrl sub nodename for spi in rk322x.dtsi
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 030/142] net/mlx4_core: fix a memory leak bug.
 Date:   Mon,  1 Jun 2020 19:53:08 +0200
-Message-Id: <20200601174053.210648022@linuxfoundation.org>
+Message-Id: <20200601174041.020658881@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
-References: <20200601174048.468952319@linuxfoundation.org>
+In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
+References: <20200601174037.904070960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,61 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Jonker <jbx6244@gmail.com>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit 855bdca1781c79eb661f89c8944c4a719ce720e8 ]
+commit febfd9d3c7f74063e8e630b15413ca91b567f963 upstream.
 
-A test with the command below gives these errors:
+In function mlx4_opreq_action(), pointer "mailbox" is not released,
+when mlx4_cmd_box() return and error, causing a memory leak bug.
+Fix this issue by going to "out" label, mlx4_free_cmd_mailbox() can
+free this pointer.
 
-arch/arm/boot/dts/rk3229-evb.dt.yaml: spi-0:
-'#address-cells' is a required property
-arch/arm/boot/dts/rk3229-evb.dt.yaml: spi-1:
-'#address-cells' is a required property
-arch/arm/boot/dts/rk3229-xms6.dt.yaml: spi-0:
-'#address-cells' is a required property
-arch/arm/boot/dts/rk3229-xms6.dt.yaml: spi-1:
-'#address-cells' is a required property
+Fixes: fe6f700d6cbb ("net/mlx4_core: Respond to operation request by firmware")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-The $nodename pattern for spi nodes is
-"^spi(@.*|-[0-9a-f])*$". To prevent warnings rename
-'spi-0' and 'spi-1' pinctrl sub nodenames to
-'spi0' and 'spi1' in 'rk322x.dtsi'.
-
-make ARCH=arm dtbs_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/spi-controller.yaml
-
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-Link: https://lore.kernel.org/r/20200424123923.8192-1-jbx6244@gmail.com
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/rk322x.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/mellanox/mlx4/fw.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/rk322x.dtsi b/arch/arm/boot/dts/rk322x.dtsi
-index 729119952c68..a83f65486ad4 100644
---- a/arch/arm/boot/dts/rk322x.dtsi
-+++ b/arch/arm/boot/dts/rk322x.dtsi
-@@ -1033,7 +1033,7 @@
- 			};
- 		};
- 
--		spi-0 {
-+		spi0 {
- 			spi0_clk: spi0-clk {
- 				rockchip,pins = <0 RK_PB1 2 &pcfg_pull_up>;
- 			};
-@@ -1051,7 +1051,7 @@
- 			};
- 		};
- 
--		spi-1 {
-+		spi1 {
- 			spi1_clk: spi1-clk {
- 				rockchip,pins = <0 RK_PC7 2 &pcfg_pull_up>;
- 			};
--- 
-2.25.1
-
+--- a/drivers/net/ethernet/mellanox/mlx4/fw.c
++++ b/drivers/net/ethernet/mellanox/mlx4/fw.c
+@@ -2734,7 +2734,7 @@ void mlx4_opreq_action(struct work_struc
+ 		if (err) {
+ 			mlx4_err(dev, "Failed to retrieve required operation: %d\n",
+ 				 err);
+-			return;
++			goto out;
+ 		}
+ 		MLX4_GET(modifier, outbox, GET_OP_REQ_MODIFIER_OFFSET);
+ 		MLX4_GET(token, outbox, GET_OP_REQ_TOKEN_OFFSET);
 
 
