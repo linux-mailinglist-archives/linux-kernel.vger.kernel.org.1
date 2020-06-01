@@ -2,132 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE55A1EB056
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 22:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D5D1EB05B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 22:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728451AbgFAUjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 16:39:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33802 "EHLO
+        id S1728485AbgFAUmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 16:42:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727096AbgFAUjo (ORCPT
+        with ESMTP id S1726124AbgFAUmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 16:39:44 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFBDC03E97C
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 13:39:43 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id g5so8618874otg.6
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 13:39:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RPgsvmsceQElv0ozLEaWZZlkfQr9AeVv/O9Th10daWE=;
-        b=DWcC0fQiZp6+ZInLSwjYUS0CFltBHeRF68tsMCxpE7l8uOSzDXpY+MKIkKky/Ds9iB
-         igQ4g16lBhKmBAZWc3+1r3DtsyegD+6933LoY9y0wnwH2YgVK1tKerG9q9TdU2u0VA0k
-         z5oh6A7txCJ1YE34ZSNx+PyL0rNsqNBnm4nbW285GUY/gHUXCq1bPNc+eMKgIgsO3Lpc
-         eikymAtPmfq/O/1H7uWesqJeQleLIXdNkSa5IWDveiAn4tOTqJ0cGL0vWEDU2dJ3RYrA
-         m46y3vQYwOPSLd9LXVsqGv5QA736J72baUvZ1A8vHdQLAIB06ND0N1APRULKgncAac5R
-         DRfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RPgsvmsceQElv0ozLEaWZZlkfQr9AeVv/O9Th10daWE=;
-        b=qLqN/yCMjTrLz13Fr59wIbTIAf6hUYcyOR1Fk48kInftVpLfwwG0j++2uauwNBxFVK
-         i0dxZknN4lRKrrF+7KHShzL4RLkzSnO8Hy8eBtbmCcEv0fYjdiMWs6DMph6ODfXjV3Bw
-         +sgK1FziL+K5gq2iZFVEWUrNFuFHNwWsbNWk8l5HIoFMlyHXf6BWQqMg+u+dOVvYUfRz
-         p7G8gqCQBtzZ6bEusDmB2UeVRlL3i7hkg9F1iDNGKWGYpj9ulD9LEQoPuoZAXdAsSeoX
-         j3GaogfWo0XWkMSZ/py39t/klkpELVFaRWePMjzZ1HykdgVlUXPaN/mS4JPny3HF6sn9
-         upnA==
-X-Gm-Message-State: AOAM532S8XYLhrESOlIUknSzzU/xiNYNbfmSvKyBxogZiJGEgck3DFWK
-        D0fkmAbFbv3PO4fY0LBUBbJUkYWQP+VZkiufy7YT8Lw6
-X-Google-Smtp-Source: ABdhPJyCPfMySEQtxJpkDiWwL2wlJS292G6oePG9DQUdgHs/FDEzPxFGSieFMMrsfRcZNonrrROnPncpVF/C9cwQrds=
-X-Received: by 2002:a9d:62cb:: with SMTP id z11mr19097563otk.102.1591043981750;
- Mon, 01 Jun 2020 13:39:41 -0700 (PDT)
+        Mon, 1 Jun 2020 16:42:00 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A025C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 13:42:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=umNH2IL374QzFan0BCFcUz4Yz1dQZIoKe9xkPK7BB8s=; b=B9o5hLZiZ1dPkxYLQykjzopdu
+        GHX4LxcCtCvEGM3Etjy9cC/j67bI6OG7DXbk0FL3NMs4GZPx3NMDcxHGu3AhZgoQfMRYa5T/fklLd
+        bQCadn2i3BcPIvBWj5CYlGe+NVeD+Iqwq5oR+Un9UgUzM7efNQbclkYVxmA1vrd4bg6oxwZAbG+aD
+        ZOV2yspeu/h0j4c8lr2P52OlKgu8GVA2XqaVq+HSjhtnbubUjqs98lgJN3Ml6vPnD22gho5e+Ntxh
+        kvqtycKCARRli2besSBD53t/GNcT3V3NK7tGXYyioK0xIldo9fhgWMcI4HYTljt0NHPKx9Tte0zh4
+        553jyL+pQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:40102)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jfrFa-0001Eq-Lu; Mon, 01 Jun 2020 21:41:38 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jfrFQ-0003e1-2I; Mon, 01 Jun 2020 21:41:28 +0100
+Date:   Mon, 1 Jun 2020 21:41:28 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Lukasz Stelmach <l.stelmach@samsung.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Enrico Weigelt <info@metux.net>,
+        Kees Cook <keescook@chromium.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ben Dooks <ben-linux@fluff.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH 3/5] arm: decompressor: define a new zImage tag
+Message-ID: <20200601204127.GS1551@shell.armlinux.org.uk>
+References: <20200601182555.GP1551@shell.armlinux.org.uk>
+ <CGME20200601202757eucas1p11d380be9e0b2fe912a358d21e2d8dc2a@eucas1p1.samsung.com>
+ <dleftj8sh6sf9a.fsf%l.stelmach@samsung.com>
 MIME-Version: 1.0
-References: <20200530040157.31038-1-john.stultz@linaro.org> <CAKgpwJXU9uuT6C0NMGhZRYQMxZ9b_cCZ8=8=Yb8DwQn7aZcV7g@mail.gmail.com>
-In-Reply-To: <CAKgpwJXU9uuT6C0NMGhZRYQMxZ9b_cCZ8=8=Yb8DwQn7aZcV7g@mail.gmail.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Mon, 1 Jun 2020 13:39:31 -0700
-Message-ID: <CALAqxLXmOjHvP2yB0nie8o7nCyT0xhVU+0+6DGiVaoDHwRr=ig@mail.gmail.com>
-Subject: Re: [RFC][PATCH] usb: typec: tcpci_rt1711h: Try to avoid screaming
- irq causing boot hangs
-To:     Jun Li <lijun.kernel@gmail.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        YongQin Liu <yongqin.liu@linaro.org>,
-        Linux USB List <linux-usb@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <dleftj8sh6sf9a.fsf%l.stelmach@samsung.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 30, 2020 at 3:30 AM Jun Li <lijun.kernel@gmail.com> wrote:
->
-> Hi John,
->
-> John Stultz <john.stultz@linaro.org> =E4=BA=8E2020=E5=B9=B45=E6=9C=8830=
-=E6=97=A5=E5=91=A8=E5=85=AD =E4=B8=8B=E5=8D=8812:02=E5=86=99=E9=81=93=EF=BC=
-=9A
+On Mon, Jun 01, 2020 at 10:27:45PM +0200, Lukasz Stelmach wrote:
+> It was <2020-06-01 pon 19:25>, when Russell King - ARM Linux admin wrote:
+> > On Mon, Jun 01, 2020 at 06:19:52PM +0200, Lukasz Stelmach wrote:
+> >> It was <2020-06-01 pon 15:55>, when Russell King - ARM Linux admin wrote:
+> >> > On Mon, Jun 01, 2020 at 04:27:52PM +0200, Łukasz Stelmach wrote:
+> >> >> Add DCSZ tag which holds dynamic memory (stack, bss, malloc pool)
+> >> >> requirements of the decompressor code.
+> >> >
+> >> > Why do we need to know the stack and BSS size, when the userspace
+> >> > kexec tool doesn't need to know this to perform the same function.
+> >> 
+> >> 
+> >> kexec-tools load zImage as low in DRAM as possible and rely on two
+> >> assumptions:
+> >> 
+> >>     + the zImage will copy itself to make enough room for the kernel,
+> >>     + sizeof(zImage+mem) < sizeof(kernel+mem), which is true because
+> >>       of compression.
+> >> 
+> >>        DRAM start
+> >>        + 0x8000
+> >> 
+> >> zImage    |-----------|-----|-------|
+> >>             text+data   bss   stack 
+> >> 
+> >>                  text+data           bss   
+> >> kernel    |---------------------|-------------------|
+> >> 
+> >> 
+> >> initrd                                              |-initrd-|-dtb-|
 > >
-> > I've recently (since 5.7-rc1) started noticing very rare hangs
-> > pretty early in bootup on my HiKey960 board.
-> >
-> > They have been particularly difficult to debug, as the system
-> > seems to not respond at all to sysrq- commands. However, the
-> > system is alive as I'll occaionally see firmware loading timeout
-> > errors after awhile. Adding changes like initcall_debug and
-> > lockdep weren't informative, as it tended to cause the problem
-> > to hide.
-> >
-> > I finally tried to dig in a bit more on this today, and noticed
-> > that the last dmesg output before the hang was usually:
-> >   "random: crng init done"
-> >
-> > So I dumped the stack at that point, and saw it was being called
-> > from the pl061 gpio irq, and the hang always occurred when the
-> > crng init finished on cpu 0. Instrumenting that more I could see
-> > that when the issue triggered, we were getting a stream of irqs.
-> >
-> > Chasing further, I found the screaming irq was for the rt1711h,
-> > and narrowed down that we were hitting the !chip->tcpci check
-> > which immediately returns IRQ_HANDLED, but does not stop the
-> > irq from triggering immediately afterwards.
-> >
-> > This patch slightly reworks the logic, so if we hit the irq
-> > before the chip->tcpci has been assigned, we still read and
-> > write the alert register, but just skip calling tcpci_irq().
-> >
-> > With this change, I haven't managed to trip over the problem
-> > (though it hasn't been super long - but I did confirm I hit
-> > the error case and it didn't hang the system).
-> >
-> > I still have some concern that I don't know why this cropped
-> > up since 5.7-rc, as there haven't been any changes to the
-> > driver since 5.4 (or before). It may just be the initialization
-> > timing has changed due to something else, and its just exposed
-> > this issue? I'm not sure, and that's not super re-assuring.
-> >
-> > Anyway, I'd love to hear your thoughts if this looks like a sane
-> > fix or not.
->
-> I think a better solution may be move the irq request after port register=
-,
-> we should fire the irq after everything is setup.
-> does below change works for you?
+> > This is actually incorrect, because the decompressor will self-
+> > relocate itself to avoid the area that it is going to decompress
+> > into.
+> 
+> I described the state right after kexec(8) invocation.
 
-Unfortunately the patch didn't seem to apply, but I recreated it by
-hand. I agree this looks like it should address the issue and I've not
-managed to trigger the problem in my (admittedly somewhat brief)
-attempts at testing.
+Actually, you haven't, because this is _not_ how kexec(8) lays it
+out, as I attempted to detail further down in my reply.
 
-Thanks for sending it out. Do you want to submit the patch and I'll
-provide a Tested-by tag, or would it help for me to submit your
-suggested change?
+> > So, while the decompressor runs, in the above situation it
+> > ends up as:
+> >
+> >
+> > ram    |------------------------------------------------------...
+> >                  text+data           bss   
+> > kernel    |---------------------|-------------------|
+> > zImage                          |-----------|-----|-------|
+> >                                   text+data   bss   stack+malloc
 
-thanks
--john
+Note here - if the initrd was placed as _you_ describe at the end
+of where the zImage ends up including its BSS, it would be
+corrupted by the stack and malloc space of the decompressor while
+running.  Ergo, your description of how kexec(8) lays stuff out
+is incorrect.
+
+> > Where "text+data" is actually smaller than the image size that
+> > was loaded - the part of the image that performs the relocation
+> > is discarded (the first chunk of code up to "restart" - 200
+> > bytes.)  The BSS is typically smaller than 200 bytes, so we've
+> > been able to get away without knowing the actual BSS size so
+> > far.
+> >
+> >
+> > ram    |--|-----------------------------------------|---------...
+> >        |<>| TEXT_OFFSET
+> > kernel    |---------------------|-------------------|
+> >           |<----edata_size----->|<-----bss_size---->|
+> >           |<---------------kernel_size------------->|
+> > zImage                          |-----------|-----|-------|
+> >                                 |<-------len------->| (initial)
+> > 				|<----------len------------>| (final)
+> >
+> > The "final" len value is what the decompressor prints as the "zImage
+> > requires" debugging value.
+> >
+> > Hence, the size that the decompressed kernel requires is kernel_size.
+> >
+> > The size that the decompressor requires is edata_size + len(final).
+> >
+> > Now, if you intend to load the kernel to ram + TEXT_OFFSET + edata_size
+> > then it isn't going to lose the first 200 bytes of code, so as you
+> > correctly point out, we need to know the BSS size.
+> 
+> Formal note: can we keep using terms zImage and kernel as separate,
+> where zImage is what is loaded with kexec and kernel is the decompressed
+> code loaded at TEXT_OFFSET. I believe, it will help us avoid mistakes.
+> 
+> >> >> +struct arm_zimage_tag_dc {
+> >> >> +	struct tag_header hdr;
+> >> >> +	union {
+> >> >> +#define ZIMAGE_TAG_DECOMP_SIZE ARM_ZIMAGE_MAGIC4
+> >> >> +		struct zimage_decomp_size {
+> >> >> +			__le32 bss_size;
+> >> >> +			__le32 stack_size;
+> >> >> +			__le32 malloc_size;
+> >> >> +		} decomp_size;
+> >
+> > You certainly don't need to know all this.  All you need to know is
+> > how much space the decompressor requires after the end of the image,
+> > encompassing the BSS size, stack size and malloc size, which is one
+> > value.
+> 
+> I agree. However, since we are not fighting here for every single byte,
+> I'd rather add them as separate values and make the tag, even if only
+> slightly, more future-proof.
+
+It doesn't make it more future-proof.  What happens if we add something
+else, do we need to list it separately, and then change the kernel to
+accept the new value and maybe also kexec(8)?  Or do we just say "the
+decompressor needs X many bytes after the image" and be done with it?
+The latter sounds way more future-proof to me.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC for 0.8m (est. 1762m) line in suburbia: sync at 13.1Mbps down 424kbps up
