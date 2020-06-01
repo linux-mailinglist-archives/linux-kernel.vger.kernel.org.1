@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569361EAAC6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC9E1EAB6A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731091AbgFASLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:11:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58112 "EHLO mail.kernel.org"
+        id S1730844AbgFASRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:17:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730157AbgFASLD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:11:03 -0400
+        id S1731787AbgFASRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:17:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F01872065C;
-        Mon,  1 Jun 2020 18:11:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 523B52065C;
+        Mon,  1 Jun 2020 18:17:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035062;
-        bh=/ueERacqKCvBCeDX7uFQVBAHO7WaNeHHjAAedKNnKy0=;
+        s=default; t=1591035428;
+        bh=50HIzBlE5cgtkzhTklOb2NH4NEGz76WiwXFCARxAil4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NHfp623QL68eCP9ZvpVcRmERESZnIj+En0Z/SmfaLme8udD8q9+tq4s1EqsdN1qS0
-         ENSklH2IdBw1LUoe7eNP9xnNr3ycS0Ca7PWp7ixHpwB20j3Ig3lCvrBky9hy3icBIn
-         nmaCBtuyVqzxqyuUXlxgiubF9XtGaxbWkx9rBMTc=
+        b=y02DxiCFrrWjdBKsQe0rMNZ/VXn4NHRC/U2DIN24wPUdBZ8epcYZAGwAsc+QQRHHA
+         z0JJy07opCW3p8zkhrToOPV4wIKhif+0GfchV5M4kMQVjVSpJahoLKXXOEtieUdbGG
+         kuZoMkQ+0gg5iJkeYz6+0sgvDW6hSas/SDUK09gE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Ahern <dsahern@gmail.com>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 134/142] nexthop: Expand nexthop_is_multipath in a few places
-Date:   Mon,  1 Jun 2020 19:54:52 +0200
-Message-Id: <20200601174051.606199324@linuxfoundation.org>
+        stable@vger.kernel.org, Phil Sutter <phil@nwl.cc>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 5.6 155/177] netfilter: ipset: Fix subcounter update skip
+Date:   Mon,  1 Jun 2020 19:54:53 +0200
+Message-Id: <20200601174101.281925022@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
+References: <20200601174048.468952319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,111 +43,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Ahern <dsahern@gmail.com>
+From: Phil Sutter <phil@nwl.cc>
 
-commit 0b5e2e39739e861fa5fc84ab27a35dbe62a15330 upstream.
+commit a164b95ad6055c50612795882f35e0efda1f1390 upstream.
 
-I got too fancy consolidating checks on multipath type. The result
-is that path lookups can access 2 different nh_grp structs as exposed
-by Nik's torture tests. Expand nexthop_is_multipath within nexthop.h to
-avoid multiple, nh_grp dereferences and make decisions based on the
-consistent struct.
+If IPSET_FLAG_SKIP_SUBCOUNTER_UPDATE is set, user requested to not
+update counters in sub sets. Therefore IPSET_FLAG_SKIP_COUNTER_UPDATE
+must be set, not unset.
 
-Only 2 places left using nexthop_is_multipath are within IPv6, both
-only check that the nexthop is a multipath for a branching decision
-which are acceptable.
-
-Fixes: 430a049190de ("nexthop: Add support for nexthop groups")
-Signed-off-by: David Ahern <dsahern@gmail.com>
-Acked-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 6e01781d1c80e ("netfilter: ipset: set match: add support to match the counters")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/net/nexthop.h |   41 +++++++++++++++++++++++++----------------
- 1 file changed, 25 insertions(+), 16 deletions(-)
+ net/netfilter/ipset/ip_set_list_set.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/net/nexthop.h
-+++ b/include/net/nexthop.h
-@@ -137,21 +137,20 @@ static inline unsigned int nexthop_num_p
- {
- 	unsigned int rc = 1;
- 
--	if (nexthop_is_multipath(nh)) {
-+	if (nh->is_group) {
- 		struct nh_group *nh_grp;
- 
- 		nh_grp = rcu_dereference_rtnl(nh->nh_grp);
--		rc = nh_grp->num_nh;
-+		if (nh_grp->mpath)
-+			rc = nh_grp->num_nh;
- 	}
- 
- 	return rc;
- }
- 
- static inline
--struct nexthop *nexthop_mpath_select(const struct nexthop *nh, int nhsel)
-+struct nexthop *nexthop_mpath_select(const struct nh_group *nhg, int nhsel)
- {
--	const struct nh_group *nhg = rcu_dereference_rtnl(nh->nh_grp);
--
- 	/* for_nexthops macros in fib_semantics.c grabs a pointer to
- 	 * the nexthop before checking nhsel
- 	 */
-@@ -186,12 +185,14 @@ static inline bool nexthop_is_blackhole(
- {
- 	const struct nh_info *nhi;
- 
--	if (nexthop_is_multipath(nh)) {
--		if (nexthop_num_path(nh) > 1)
--			return false;
--		nh = nexthop_mpath_select(nh, 0);
--		if (!nh)
-+	if (nh->is_group) {
-+		struct nh_group *nh_grp;
-+
-+		nh_grp = rcu_dereference_rtnl(nh->nh_grp);
-+		if (nh_grp->num_nh > 1)
- 			return false;
-+
-+		nh = nh_grp->nh_entries[0].nh;
- 	}
- 
- 	nhi = rcu_dereference_rtnl(nh->nh_info);
-@@ -217,10 +218,15 @@ struct fib_nh_common *nexthop_fib_nhc(st
- 	BUILD_BUG_ON(offsetof(struct fib_nh, nh_common) != 0);
- 	BUILD_BUG_ON(offsetof(struct fib6_nh, nh_common) != 0);
- 
--	if (nexthop_is_multipath(nh)) {
--		nh = nexthop_mpath_select(nh, nhsel);
--		if (!nh)
--			return NULL;
-+	if (nh->is_group) {
-+		struct nh_group *nh_grp;
-+
-+		nh_grp = rcu_dereference_rtnl(nh->nh_grp);
-+		if (nh_grp->mpath) {
-+			nh = nexthop_mpath_select(nh_grp, nhsel);
-+			if (!nh)
-+				return NULL;
-+		}
- 	}
- 
- 	nhi = rcu_dereference_rtnl(nh->nh_info);
-@@ -264,8 +270,11 @@ static inline struct fib6_nh *nexthop_fi
- {
- 	struct nh_info *nhi;
- 
--	if (nexthop_is_multipath(nh)) {
--		nh = nexthop_mpath_select(nh, 0);
-+	if (nh->is_group) {
-+		struct nh_group *nh_grp;
-+
-+		nh_grp = rcu_dereference_rtnl(nh->nh_grp);
-+		nh = nexthop_mpath_select(nh_grp, 0);
- 		if (!nh)
- 			return NULL;
- 	}
+--- a/net/netfilter/ipset/ip_set_list_set.c
++++ b/net/netfilter/ipset/ip_set_list_set.c
+@@ -59,7 +59,7 @@ list_set_ktest(struct ip_set *set, const
+ 	/* Don't lookup sub-counters at all */
+ 	opt->cmdflags &= ~IPSET_FLAG_MATCH_COUNTERS;
+ 	if (opt->cmdflags & IPSET_FLAG_SKIP_SUBCOUNTER_UPDATE)
+-		opt->cmdflags &= ~IPSET_FLAG_SKIP_COUNTER_UPDATE;
++		opt->cmdflags |= IPSET_FLAG_SKIP_COUNTER_UPDATE;
+ 	list_for_each_entry_rcu(e, &map->members, list) {
+ 		ret = ip_set_test(e->id, skb, par, opt);
+ 		if (ret <= 0)
 
 
