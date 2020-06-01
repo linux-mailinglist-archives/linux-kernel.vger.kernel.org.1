@@ -2,135 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A67B01EAA41
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C06691EAA5B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730439AbgFASGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:06:18 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:43391 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730370AbgFASFv (ORCPT
+        id S1730560AbgFASHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:07:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729750AbgFASGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:05:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591034749;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=osjdztueMuaAwG61qi79PUuaa4pVp/qOeP56bfj88L4=;
-        b=XWHuT2rApHW2jLm8wOesofWZh+6w5A1BNR4c6B+T0VB5j4sBMF0n0yilJfj6FdkFX2fQRK
-        NUW85ydYkemkbMc0V1FS4wcKDHGF9MGHvi2VIUCX4NVHFPkmQr21sbEKnT0xpYuX6OwGKl
-        vfMaLTq7sl/HBGtyhBpBr0XIdA9AxTg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-1-ayfnyAN1PO6nfg34SZesjA-1; Mon, 01 Jun 2020 14:05:47 -0400
-X-MC-Unique: ayfnyAN1PO6nfg34SZesjA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8DF86107B266;
-        Mon,  1 Jun 2020 18:05:45 +0000 (UTC)
-Received: from treble (ovpn-116-170.rdu2.redhat.com [10.10.116.170])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D44F11002394;
-        Mon,  1 Jun 2020 18:05:40 +0000 (UTC)
-Date:   Mon, 1 Jun 2020 13:05:38 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>
-Cc:     huawei.libin@huawei.com, xiexiuqi@huawei.com,
-        cj.chengjian@huawei.com, mingo@redhat.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org, live-patching@vger.kernel.org,
-        mbenes@suse.cz, devel@etsukata.com, viro@zeniv.linux.org.uk,
-        esyr@redhat.com
-Subject: Re: Question: livepatch failed for new fork() task stack unreliable
-Message-ID: <20200601180538.o5agg5trbdssqken@treble>
-References: <20200529101059.39885-1-bobo.shaobowang@huawei.com>
- <20200529174433.wpkknhypx2bmjika@treble>
- <a9ed9157-f3cf-7d2c-7a8e-56150a2a114e@huawei.com>
+        Mon, 1 Jun 2020 14:06:35 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFBE7C05BD43
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 11:06:35 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 3AFDB2A2AF4
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Paul Gofman <gofmanp@gmail.com>, Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel@collabora.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Zebediah Figura <zfigura@codeweavers.com>
+Subject: Re: [PATCH RFC] seccomp: Implement syscall isolation based on memory areas
+Organization: Collabora
+References: <85367hkl06.fsf@collabora.com>
+        <079539BF-F301-47BA-AEAD-AED23275FEA1@amacapital.net>
+        <50a9e680-6be1-ff50-5c82-1bf54c7484a9@gmail.com>
+        <CALCETrX+CEN7Sq=ROP33MAGn2dTX=w0JHWb6f4KAr-E9FE4YPQ@mail.gmail.com>
+        <a14be8b0-a9a2-cf96-939e-cedf7e0e669a@gmail.com>
+        <CALCETrV+rYnUnve09=n+Zb8BR8mDBq6txX9LmEw7r8tAA7d+2Q@mail.gmail.com>
+        <CALCETrWr_B-quNckFksTP1W-Ww71uQgCrR-o9QWdQ-Gi8p1r9A@mail.gmail.com>
+Date:   Mon, 01 Jun 2020 14:06:30 -0400
+In-Reply-To: <CALCETrWr_B-quNckFksTP1W-Ww71uQgCrR-o9QWdQ-Gi8p1r9A@mail.gmail.com>
+        (Andy Lutomirski's message of "Sun, 31 May 2020 14:03:48 -0700")
+Message-ID: <85y2p664pl.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a9ed9157-f3cf-7d2c-7a8e-56150a2a114e@huawei.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 30, 2020 at 10:21:19AM +0800, Wangshaobo (bobo) wrote:
-> 1) when a user mode task just fork start excuting ret_from_fork() till
-> schedule_tail, unwind_next_frame found
-> 
-> orc->sp_reg is ORC_REG_UNDEFINED but orc->end not equals zero, this time
-> arch_stack_walk_reliable()
-> 
-> terminates it's backtracing loop for unwind_done() return true. then 'if
-> (!(task->flags & (PF_KTHREAD | PF_IDLE)))'
-> 
-> in arch_stack_walk_reliable() true and return -EINVAL after.
-> 
-> * The stack trace looks like that:
-> 
-> ret_from_fork
-> 
->       -=> UNWIND_HINT_EMPTY
-> 
->       -=> schedule_tail             /* schedule out */
-> 
->       ...
-> 
->       -=> UNWIND_HINT_REGS      /*  UNDO */
+Andy Lutomirski <luto@kernel.org> writes:
 
-Yes, makes sense.
+> On Sun, May 31, 2020 at 11:57 AM Andy Lutomirski <luto@kernel.org> wrote:
+>>
+>>
+>> What if there was a special filter type that ran a BPF program on each
+>> syscall, and the program was allowed to access user memory to make its
+>> decisions, e.g. to look at some list of memory addresses.  But this
+>> would explicitly *not* be a security feature -- execve() would remove
+>> the filter, and the filter's outcome would be one of redirecting
+>> execution or allowing the syscall.  If the "allow" outcome occurs,
+>> then regular seccomp filters run.  Obviously the exact semantics here
+>> would need some care.
+>
+> Let me try to flesh this out a little.
+>
+> A task could install a syscall emulation filter (maybe using the
+> seccomp() syscall, maybe using something else).  There would be at
+> most one such filter per process.  Upon doing a syscall, the kernel
+> will first do initial syscall fixups (e.g. SYSENTER/SYSCALL32 magic
+> argument translation) and would then invoke the filter.  The filter is
+> an eBPF program (sorry Kees) and, as input, it gets access to the
+> task's register state and to an indication of which type of syscall
+> entry this was.  This will inherently be rather architecture specific
+> -- x86 choices could be int80, int80(translated), and syscall64.  (We
+> could expose SYSCALL32 separately, I suppose, but SYSENTER is such a
+> mess that I'm not sure this would be productive.)  The program can
+> access user memory, and it returns one of two results: allow the
+> syscall or send SIGSYS.  If the program tries to access user memory
+> and faults, the result is SIGSYS.
+>
+> (I would love to do this with cBPF, but I'm not sure how to pull this
+> off.  Accessing user memory is handy for making the lookup flexible
+> enough to detect Windows vs Linux.  It would be *really* nice to
+> finally settle the unprivileged eBPF subset discussion so that we can
+> figure out how to make eBPF work here.)
+>
+> execve() clears the filter.  clone() copies the filter.
+>
+> Does this seem reasonable?  Is the implementation complexity small
+> enough?  Is the eBPF thing going to be a showstopper?
+>
+> Using a signal instead of a bespoke thunk simplifies a lot of thorny
+> details but is also enough slower that catching all syscalls might be
+> a performance problem.
 
-> 2) when using call_usermodehelper_exec_async() to create a user mode task,
-> ret_from_fork() still not exec whereas
-> 
-> the task has been scheduled in __schedule(), at this time, orc->sp_reg is
-> ORC_REG_UNDEFINED but orc->end equals zero,
-> 
-> unwind_error() return true and also terminates arch_stack_walk_reliable()'s
-> backtracing loop, end up return from
-> 
-> 'if (unwind_error())' branch.
-> 
-> * The stack trace looks like that:
-> 
-> -=> call_usermodehelper_exec
-> 
->                  -=> do_exec
-> 
->                            -=> search_binary_handler
-> 
->                                       -=> load_elf_binary
-> 
->                                                 -=> elf_map
-> 
->                                                          -=> vm_mmap_pgoff
-> 
-> -=> down_write_killable
-> 
-> -=> _cond_resched
-> 
->              -=> __schedule           /* scheduled to work */
-> 
-> -=> ret_from_fork       /* UNDO */
+If we can have something close to the numbers you shared, it seems to be
+good for us.  Using the thunk instead of a signal seems very interesting
+for performance.
 
-I don't quite follow the stacktrace, but it sounds like the issue is the
-same as the first one you originally reported:
+Though, I'm not convinced about this not being part of seccomp just
+because it is not security.  The suggestion from Kees to convert
+seccomp to eBPF filters and stack them would provide similar semantics
+and reuse the infrastructure.
 
-> 1) The task was not actually scheduled to excute, at this time
-> UNWIND_HINT_EMPTY in ret_from_fork() has not reset unwind_hint, it's
-> sp_reg and end field remain default value and end up throwing an error
-> in unwind_next_frame() when called by arch_stack_walk_reliable();
-
-Or am I misunderstanding?
-
-And to reiterate, these are not "livepatch failures", right?  Livepatch
-doesn't fail when stack_trace_save_tsk_reliable() returns an error.  It
-recovers gracefully and tries again later.
+Finnaly, as you said, I'm afraid that eBPF will be a show stopper,
+unless unpriviledged eBPF becomes a thing. Wine cannot count on
+CAP_SYS_ADMIN.
 
 -- 
-Josh
-
+Gabriel Krisman Bertazi
