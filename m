@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 334C81EA353
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 14:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 868C31EA350
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 14:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728214AbgFAMBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 08:01:37 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43063 "EHLO
+        id S1728178AbgFAMB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 08:01:27 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:51500 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725847AbgFAMAI (ORCPT
+        with ESMTP id S1727089AbgFAMAT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 08:00:08 -0400
+        Mon, 1 Jun 2020 08:00:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591012805;
+        s=mimecast20190719; t=1591012817;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=b4s9WcgqlVxtr+9EizXh9/KmNnkbCqzI2Fd20X5rtec=;
-        b=E4lTj60VCfvFENKYHNbMhltG83sJ0CsdFx9FCTqKSo31r0uK3jEoBYAzIlh6v5gqhU1n//
-        gDugAEjYkh9PgmVLMffIuDCWk2/anOqnigutexJKUynA+si3/+mSe+0F+yEwKR5tk8dFsG
-        fjzD0IeGaWgZ/xQGEPLsGNhxTwsScCA=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-501-mweA88uQNTeioEPKpm2m3g-1; Mon, 01 Jun 2020 08:00:02 -0400
-X-MC-Unique: mweA88uQNTeioEPKpm2m3g-1
-Received: by mail-qt1-f200.google.com with SMTP id o11so9662591qti.23
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 05:00:02 -0700 (PDT)
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lGajJ5Jhq7kYf/eZuYHImU8+LqdZSurBYGpeS7xJD9M=;
+        b=DJfuZbE5Kx8tutTEeWLgeyDuZp3bxertji4zqm+RnDdFQeqx3683LQOEoMgmwyWPjyUCYd
+        PpTSOgOIVeZoqHwXuay/PcyzTjFKCc3ip1pYqUp/BPHn6/Nync+paUkVGpbqruHNmZK7ix
+        zsVWTJeYaTgbeWako4ghTjtwf2hLLTg=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-377-V0Eh2qBsO4SQdaB2imZGvA-1; Mon, 01 Jun 2020 08:00:16 -0400
+X-MC-Unique: V0Eh2qBsO4SQdaB2imZGvA-1
+Received: by mail-qk1-f198.google.com with SMTP id p7so7770777qkf.21
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 05:00:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=b4s9WcgqlVxtr+9EizXh9/KmNnkbCqzI2Fd20X5rtec=;
-        b=ichdk2RpVItcfmmckeQreubsX1vl4EgSrBq+XsOSzm2WSfoeJ8LBN+gWuOLGf1aRAw
-         GNo9l23EwpApIaVdM5/djgG8XxEC8mDo/zWwunwYJ1oheArs6vt2GlmMAfcYzox6wWxE
-         4nzSYdcwy7s+qrmzR/iZ7erkAtmQaCia0+hkpcj74hUik/gqf49jGtnU37x3hs5NHk53
-         A78HfctnozKjvGT2bIVWc6cKA8fMtMz1e4F1Xv7/lBXyNo642eCk99g7GI72hTvn/RjA
-         kQM3POYBxCMHuGDheZf7/Ov7GSrPfZ/mpx+ne7Fi5+zar3y7Yh7IuNQU7rGmhj+xFWGn
-         XHJQ==
-X-Gm-Message-State: AOAM530GtTBuY9JkBjsKXH9LRmTehFyYJYkpiL999mHQxABWnsPxCgo2
-        EWmrHBMGkVDjnOPwM8Q+JYDt1wp+njqhhiYCix278K62zrn3j4ofJEPgdKTPP2wGnOv8XDk04FQ
-        iNkrAJjkibKoYVYNPWmVWs7jO
-X-Received: by 2002:a0c:83a6:: with SMTP id k35mr20592087qva.251.1591012801713;
-        Mon, 01 Jun 2020 05:00:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxYHGa+3xkcUnrLNND3SShHOHA9YhMl/arSqtVWMF5nPsi24AE2ZzB/PLX4748dqxh9lXeNdg==
-X-Received: by 2002:a0c:83a6:: with SMTP id k35mr20592052qva.251.1591012801332;
-        Mon, 01 Jun 2020 05:00:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=lGajJ5Jhq7kYf/eZuYHImU8+LqdZSurBYGpeS7xJD9M=;
+        b=gBKNCRdg92bw5R3p21rqDL4ugNH/piIkUl45beo/Qk2oUx3Oc056GifgW5evkaY23y
+         bjQrJgn6X27z/NXQwMDe3hC5lS8goU+RHCrh5wQR6rExHGR2G/eIFlnH1pivRe7Oh9ZK
+         WFg2yn/2Y/U1OKzspyLrw34OcuHo++117Z0umuk+G+Yu5HeY5Vmwy4KXsMQzDk0reZ0H
+         q0oNt2AjqMb4SVbiGg0j5UkpLLokZW50Nb5sYUJU5OxxgjaSYp5CWmd6mfCu1qac4ckv
+         djTYuT/HPRJ9MjFWjv3t+YjhX8l4rqyWu8LQQPBiRniS3Ca2k2+i5BCI0lFUxGyn5bEa
+         DzeA==
+X-Gm-Message-State: AOAM533Syp2t8A4wrraDacfQrmDOZZ4hJl3FaTi8d6OBREECplHnJ5UU
+        URBqycJxsmgbPuol5EvOzNHdPsEVRi84RIoJqsxVpsepDTId+tCvTFQeUsP/3JcRylP2SDLLrzc
+        dPpVUSM1y34SVgoF2Llr9VZlS
+X-Received: by 2002:a05:6214:1327:: with SMTP id c7mr4839257qvv.64.1591012810988;
+        Mon, 01 Jun 2020 05:00:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxfwG4VilarcZ7ofIuLPm101PRmQqP/s5nNg/J67fBC9dE9zwCWxU2HIoh+FON/P0+yNA+/XQ==
+X-Received: by 2002:a05:6214:1327:: with SMTP id c7mr4839099qvv.64.1591012808967;
+        Mon, 01 Jun 2020 05:00:08 -0700 (PDT)
 Received: from xz-x1.redhat.com ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id l9sm14474185qki.90.2020.06.01.04.59.58
+        by smtp.gmail.com with ESMTPSA id l9sm14474185qki.90.2020.06.01.05.00.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jun 2020 05:00:00 -0700 (PDT)
+        Mon, 01 Jun 2020 05:00:08 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
@@ -60,10 +61,12 @@ Cc:     "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
         Jason Wang <jasowang@redhat.com>, peterx@redhat.com,
         Sean Christopherson <sean.j.christopherson@intel.com>,
         Kevin Tian <kevin.tian@intel.com>
-Subject: [PATCH v10 00/14] KVM: Dirty ring interface
-Date:   Mon,  1 Jun 2020 07:59:43 -0400
-Message-Id: <20200601115957.1581250-1-peterx@redhat.com>
+Subject: [PATCH v10 04/14] KVM: Pass in kvm pointer into mark_page_dirty_in_slot()
+Date:   Mon,  1 Jun 2020 07:59:47 -0400
+Message-Id: <20200601115957.1581250-5-peterx@redhat.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200601115957.1581250-1-peterx@redhat.com>
+References: <20200601115957.1581250-1-peterx@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -71,174 +74,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KVM branch:
-  https://github.com/xzpeter/linux/tree/kvm-dirty-ring
+The context will be needed to implement the kvm dirty ring.
 
-QEMU branch for testing:
-  https://github.com/xzpeter/qemu/tree/kvm-dirty-ring
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ virt/kvm/kvm_main.c | 33 +++++++++++++++++++--------------
+ 1 file changed, 19 insertions(+), 14 deletions(-)
 
-v10:
-- remove unused identity_map_pfn in init_rmode_identity_map [syzbot]
-- add "static" to kvm_dirty_ring_full [syzbot]
-- kvm_page_in_dirty_ring() use "#if" macros for KVM_DIRTY_LOG_PAGE_OFFSET to
-  quiesce syzbot [syzbot]
-- s/false/null/ in gfn_to_memslot_dirty_bitmap() [syzbot]
-
-v9:
-- patch 3: __x86_set_memory_region: squash another trivial change to return
-  (0xdeadull << 48) always for slot removal [Sean]
-- pick r-bs for Drew
-
-v8:
-- rebase to kvm/next
-- fix test bisection issues [Drew]
-- reword comment for __x86_set_memory_region [Sean]
-- document fixup on "mutual exclusive", etc. [Sean]
-
-For previous versions, please refer to:
-
-V1: https://lore.kernel.org/kvm/20191129213505.18472-1-peterx@redhat.com
-V2: https://lore.kernel.org/kvm/20191221014938.58831-1-peterx@redhat.com
-V3: https://lore.kernel.org/kvm/20200109145729.32898-1-peterx@redhat.com
-V4: https://lore.kernel.org/kvm/20200205025105.367213-1-peterx@redhat.com
-V5: https://lore.kernel.org/kvm/20200304174947.69595-1-peterx@redhat.com
-V6: https://lore.kernel.org/kvm/20200309214424.330363-1-peterx@redhat.com
-V7: https://lore.kernel.org/kvm/20200318163720.93929-1-peterx@redhat.com
-V8: https://lore.kernel.org/kvm/20200331190000.659614-1-peterx@redhat.com
-V9: https://lore.kernel.org/kvm/20200523225659.1027044-1-peterx@redhat.com
-
-Overview
-============
-
-This is a continued work from Lei Cao <lei.cao@stratus.com> and Paolo
-Bonzini on the KVM dirty ring interface.
-
-The new dirty ring interface is another way to collect dirty pages for
-the virtual machines. It is different from the existing dirty logging
-interface in a few ways, majorly:
-
-  - Data format: The dirty data was in a ring format rather than a
-    bitmap format, so dirty bits to sync for dirty logging does not
-    depend on the size of guest memory any more, but speed of
-    dirtying.  Also, the dirty ring is per-vcpu, while the dirty
-    bitmap is per-vm.
-
-  - Data copy: The sync of dirty pages does not need data copy any more,
-    but instead the ring is shared between the userspace and kernel by
-    page sharings (mmap() on vcpu fd)
-
-  - Interface: Instead of using the old KVM_GET_DIRTY_LOG,
-    KVM_CLEAR_DIRTY_LOG interfaces, the new ring uses the new
-    KVM_RESET_DIRTY_RINGS ioctl when we want to reset the collected
-    dirty pages to protected mode again (works like
-    KVM_CLEAR_DIRTY_LOG, but ring based).  To collecting dirty bits,
-    we only need to read the ring data, no ioctl is needed.
-
-Ring Layout
-===========
-
-KVM dirty ring is per-vcpu.  Each ring is an array of kvm_dirty_gfn
-defined as:
-
-struct kvm_dirty_gfn {
-        __u32 flags;
-        __u32 slot; /* as_id | slot_id */
-        __u64 offset;
-};
-
-Each GFN is a state machine itself.  The state is embeded in the flags
-field, as defined in the uapi header:
-
-/*
- * KVM dirty GFN flags, defined as:
- *
- * |---------------+---------------+--------------|
- * | bit 1 (reset) | bit 0 (dirty) | Status       |
- * |---------------+---------------+--------------|
- * |             0 |             0 | Invalid GFN  |
- * |             0 |             1 | Dirty GFN    |
- * |             1 |             X | GFN to reset |
- * |---------------+---------------+--------------|
- *
- * Lifecycle of a dirty GFN goes like:
- *
- *      dirtied         collected        reset
- * 00 -----------> 01 -------------> 1X -------+
- *  ^                                          |
- *  |                                          |
- *  +------------------------------------------+
- *
- * The userspace program is only responsible for the 01->1X state
- * conversion (to collect dirty bits).  Also, it must not skip any
- * dirty bits so that dirty bits are always collected in sequence.
- */
-
-Testing
-=======
-
-This series provided both the implementation of the KVM dirty ring and
-the test case.  Also I've implemented the QEMU counterpart that can
-run with the new KVM, link can be found at the top of the cover
-letter.  However that's still a very initial version which is prone to
-change and future optimizations.
-
-I did some measurement with the new method with 24G guest running some
-dirty workload, I don't see any speedup so far, even in some heavy
-dirty load it'll be slower (e.g., when 800MB/s random dirty rate, kvm
-dirty ring takes average of ~73s to complete migration while dirty
-logging only needs average of ~55s).  However that's understandable
-because 24G guest means only 1M dirty bitmap, that's still a suitable
-case for dirty logging.  Meanwhile heavier workload means worst case
-for dirty ring.
-
-More tests are welcomed if there's bigger host/guest, especially on
-COLO-like workload.
-
-Please review, thanks.
-
-Peter Xu (14):
-  KVM: X86: Change parameter for fast_page_fault tracepoint
-  KVM: Cache as_id in kvm_memory_slot
-  KVM: X86: Don't track dirty for KVM_SET_[TSS_ADDR|IDENTITY_MAP_ADDR]
-  KVM: Pass in kvm pointer into mark_page_dirty_in_slot()
-  KVM: X86: Implement ring-based dirty memory tracking
-  KVM: Make dirty ring exclusive to dirty bitmap log
-  KVM: Don't allocate dirty bitmap if dirty ring is enabled
-  KVM: selftests: Always clear dirty bitmap after iteration
-  KVM: selftests: Sync uapi/linux/kvm.h to tools/
-  KVM: selftests: Use a single binary for dirty/clear log test
-  KVM: selftests: Introduce after_vcpu_run hook for dirty log test
-  KVM: selftests: Add dirty ring buffer test
-  KVM: selftests: Let dirty_log_test async for dirty ring test
-  KVM: selftests: Add "-c" parameter to dirty log test
-
- Documentation/virt/kvm/api.rst                | 123 +++++
- arch/x86/include/asm/kvm_host.h               |   6 +-
- arch/x86/include/uapi/asm/kvm.h               |   1 +
- arch/x86/kvm/Makefile                         |   3 +-
- arch/x86/kvm/mmu/mmu.c                        |  10 +-
- arch/x86/kvm/mmutrace.h                       |   9 +-
- arch/x86/kvm/svm/avic.c                       |  11 +-
- arch/x86/kvm/vmx/vmx.c                        |  92 ++--
- arch/x86/kvm/x86.c                            |  53 +-
- include/linux/kvm_dirty_ring.h                | 103 ++++
- include/linux/kvm_host.h                      |  19 +
- include/trace/events/kvm.h                    |  78 +++
- include/uapi/linux/kvm.h                      |  53 ++
- tools/include/uapi/linux/kvm.h                |  53 ++
- tools/testing/selftests/kvm/Makefile          |   2 -
- .../selftests/kvm/clear_dirty_log_test.c      |   6 -
- tools/testing/selftests/kvm/dirty_log_test.c  | 505 ++++++++++++++++--
- .../testing/selftests/kvm/include/kvm_util.h  |   4 +
- tools/testing/selftests/kvm/lib/kvm_util.c    |  68 +++
- .../selftests/kvm/lib/kvm_util_internal.h     |   4 +
- virt/kvm/dirty_ring.c                         | 197 +++++++
- virt/kvm/kvm_main.c                           | 163 +++++-
- 22 files changed, 1423 insertions(+), 140 deletions(-)
- create mode 100644 include/linux/kvm_dirty_ring.h
- delete mode 100644 tools/testing/selftests/kvm/clear_dirty_log_test.c
- create mode 100644 virt/kvm/dirty_ring.c
-
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index ebdd98a30e82..a7460e93d457 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -144,7 +144,9 @@ static void hardware_disable_all(void);
+ 
+ static void kvm_io_bus_destroy(struct kvm_io_bus *bus);
+ 
+-static void mark_page_dirty_in_slot(struct kvm_memory_slot *memslot, gfn_t gfn);
++static void mark_page_dirty_in_slot(struct kvm *kvm,
++				    struct kvm_memory_slot *memslot,
++				    gfn_t gfn);
+ 
+ __visible bool kvm_rebooting;
+ EXPORT_SYMBOL_GPL(kvm_rebooting);
+@@ -2120,7 +2122,8 @@ int kvm_vcpu_map(struct kvm_vcpu *vcpu, gfn_t gfn, struct kvm_host_map *map)
+ }
+ EXPORT_SYMBOL_GPL(kvm_vcpu_map);
+ 
+-static void __kvm_unmap_gfn(struct kvm_memory_slot *memslot,
++static void __kvm_unmap_gfn(struct kvm *kvm,
++			struct kvm_memory_slot *memslot,
+ 			struct kvm_host_map *map,
+ 			struct gfn_to_pfn_cache *cache,
+ 			bool dirty, bool atomic)
+@@ -2145,7 +2148,7 @@ static void __kvm_unmap_gfn(struct kvm_memory_slot *memslot,
+ #endif
+ 
+ 	if (dirty)
+-		mark_page_dirty_in_slot(memslot, map->gfn);
++		mark_page_dirty_in_slot(kvm, memslot, map->gfn);
+ 
+ 	if (cache)
+ 		cache->dirty |= dirty;
+@@ -2159,7 +2162,7 @@ static void __kvm_unmap_gfn(struct kvm_memory_slot *memslot,
+ int kvm_unmap_gfn(struct kvm_vcpu *vcpu, struct kvm_host_map *map, 
+ 		  struct gfn_to_pfn_cache *cache, bool dirty, bool atomic)
+ {
+-	__kvm_unmap_gfn(gfn_to_memslot(vcpu->kvm, map->gfn), map,
++	__kvm_unmap_gfn(vcpu->kvm, gfn_to_memslot(vcpu->kvm, map->gfn), map,
+ 			cache, dirty, atomic);
+ 	return 0;
+ }
+@@ -2167,8 +2170,8 @@ EXPORT_SYMBOL_GPL(kvm_unmap_gfn);
+ 
+ void kvm_vcpu_unmap(struct kvm_vcpu *vcpu, struct kvm_host_map *map, bool dirty)
+ {
+-	__kvm_unmap_gfn(kvm_vcpu_gfn_to_memslot(vcpu, map->gfn), map, NULL,
+-			dirty, false);
++	__kvm_unmap_gfn(vcpu->kvm, kvm_vcpu_gfn_to_memslot(vcpu, map->gfn),
++			map, NULL, dirty, false);
+ }
+ EXPORT_SYMBOL_GPL(kvm_vcpu_unmap);
+ 
+@@ -2342,7 +2345,8 @@ int kvm_vcpu_read_guest_atomic(struct kvm_vcpu *vcpu, gpa_t gpa,
+ }
+ EXPORT_SYMBOL_GPL(kvm_vcpu_read_guest_atomic);
+ 
+-static int __kvm_write_guest_page(struct kvm_memory_slot *memslot, gfn_t gfn,
++static int __kvm_write_guest_page(struct kvm *kvm,
++				  struct kvm_memory_slot *memslot, gfn_t gfn,
+ 			          const void *data, int offset, int len)
+ {
+ 	int r;
+@@ -2354,7 +2358,7 @@ static int __kvm_write_guest_page(struct kvm_memory_slot *memslot, gfn_t gfn,
+ 	r = __copy_to_user((void __user *)addr + offset, data, len);
+ 	if (r)
+ 		return -EFAULT;
+-	mark_page_dirty_in_slot(memslot, gfn);
++	mark_page_dirty_in_slot(kvm, memslot, gfn);
+ 	return 0;
+ }
+ 
+@@ -2363,7 +2367,7 @@ int kvm_write_guest_page(struct kvm *kvm, gfn_t gfn,
+ {
+ 	struct kvm_memory_slot *slot = gfn_to_memslot(kvm, gfn);
+ 
+-	return __kvm_write_guest_page(slot, gfn, data, offset, len);
++	return __kvm_write_guest_page(kvm, slot, gfn, data, offset, len);
+ }
+ EXPORT_SYMBOL_GPL(kvm_write_guest_page);
+ 
+@@ -2372,7 +2376,7 @@ int kvm_vcpu_write_guest_page(struct kvm_vcpu *vcpu, gfn_t gfn,
+ {
+ 	struct kvm_memory_slot *slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
+ 
+-	return __kvm_write_guest_page(slot, gfn, data, offset, len);
++	return __kvm_write_guest_page(vcpu->kvm, slot, gfn, data, offset, len);
+ }
+ EXPORT_SYMBOL_GPL(kvm_vcpu_write_guest_page);
+ 
+@@ -2491,7 +2495,7 @@ int kvm_write_guest_offset_cached(struct kvm *kvm, struct gfn_to_hva_cache *ghc,
+ 	r = __copy_to_user((void __user *)ghc->hva + offset, data, len);
+ 	if (r)
+ 		return -EFAULT;
+-	mark_page_dirty_in_slot(ghc->memslot, gpa >> PAGE_SHIFT);
++	mark_page_dirty_in_slot(kvm, ghc->memslot, gpa >> PAGE_SHIFT);
+ 
+ 	return 0;
+ }
+@@ -2558,7 +2562,8 @@ int kvm_clear_guest(struct kvm *kvm, gpa_t gpa, unsigned long len)
+ }
+ EXPORT_SYMBOL_GPL(kvm_clear_guest);
+ 
+-static void mark_page_dirty_in_slot(struct kvm_memory_slot *memslot,
++static void mark_page_dirty_in_slot(struct kvm *kvm,
++				    struct kvm_memory_slot *memslot,
+ 				    gfn_t gfn)
+ {
+ 	if (memslot && memslot->dirty_bitmap) {
+@@ -2573,7 +2578,7 @@ void mark_page_dirty(struct kvm *kvm, gfn_t gfn)
+ 	struct kvm_memory_slot *memslot;
+ 
+ 	memslot = gfn_to_memslot(kvm, gfn);
+-	mark_page_dirty_in_slot(memslot, gfn);
++	mark_page_dirty_in_slot(kvm, memslot, gfn);
+ }
+ EXPORT_SYMBOL_GPL(mark_page_dirty);
+ 
+@@ -2582,7 +2587,7 @@ void kvm_vcpu_mark_page_dirty(struct kvm_vcpu *vcpu, gfn_t gfn)
+ 	struct kvm_memory_slot *memslot;
+ 
+ 	memslot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
+-	mark_page_dirty_in_slot(memslot, gfn);
++	mark_page_dirty_in_slot(vcpu->kvm, memslot, gfn);
+ }
+ EXPORT_SYMBOL_GPL(kvm_vcpu_mark_page_dirty);
+ 
 -- 
 2.26.2
 
