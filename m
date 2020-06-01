@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD9D1EAAF4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2331EAB27
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731297AbgFASNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:13:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60210 "EHLO mail.kernel.org"
+        id S1731518AbgFASOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:14:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731274AbgFASMs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:12:48 -0400
+        id S1731502AbgFASOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:14:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C72EF2068D;
-        Mon,  1 Jun 2020 18:12:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F7F72065C;
+        Mon,  1 Jun 2020 18:14:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035168;
-        bh=+6uWsY7u/0ao6fwktwEQt/Lkr+S2jHqRI6sY4YA+hgg=;
+        s=default; t=1591035282;
+        bh=d6n1lfALiOuqf6hD6qY0ykkceo3UeXoajd4//MCBJ98=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pGAAOVetQGrgDJnFjR59dKL+gXxnHqymD+lcTUVd5u0zXR54edbp4MvdDt6J+wi5K
-         utHqvforjarYeak4aPrW/tLDz0tAndw1lu0TTSpeneAlz26WkrL7sh4sGrRttDJcWM
-         T9cihtjz5HXIVDyK4XdWZ9dYUjbH82zScm0X8Q1k=
+        b=M3MiFfrp1EJnR56gjz+cjQhHwNkbfKbCxUluP6fmZEzHDbLzTrbtonNADWX9RGffX
+         RpguuB7fi6fLuR1w+ruXL0rgAw2O7yYdbB5hwJ97nB2zaLRQig67DJBJUCv2Ti6dir
+         /6hsvPh/OAUTXjCOLa3xZUxP+RDn+QO2s9AQHLyk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vadim Fedorenko <vfedorenko@novek.ru>,
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 038/177] net/tls: free record only on encryption error
-Date:   Mon,  1 Jun 2020 19:52:56 +0200
-Message-Id: <20200601174052.161084901@linuxfoundation.org>
+Subject: [PATCH 5.6 039/177] net: sun: fix missing release regions in cas_init_one().
+Date:   Mon,  1 Jun 2020 19:52:57 +0200
+Message-Id: <20200601174052.241276206@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
 References: <20200601174048.468952319@linuxfoundation.org>
@@ -43,48 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadim Fedorenko <vfedorenko@novek.ru>
+From: Qiushi Wu <wu000273@umn.edu>
 
-commit 635d9398178659d8ddba79dd061f9451cec0b4d1 upstream.
+commit 5a730153984dd13f82ffae93d7170d76eba204e9 upstream.
 
-We cannot free record on any transient error because it leads to
-losing previos data. Check socket error to know whether record must
-be freed or not.
+In cas_init_one(), "pdev" is requested by "pci_request_regions", but it
+was not released after a call of the function “pci_write_config_byte”
+failed. Thus replace the jump target “err_write_cacheline” by
+"err_out_free_res".
 
-Fixes: d10523d0b3d7 ("net/tls: free the record on encryption error")
-Signed-off-by: Vadim Fedorenko <vfedorenko@novek.ru>
+Fixes: 1f26dac32057 ("[NET]: Add Sun Cassini driver.")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/tls/tls_sw.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/sun/cassini.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/net/tls/tls_sw.c
-+++ b/net/tls/tls_sw.c
-@@ -800,9 +800,10 @@ static int bpf_exec_tx_verdict(struct sk
- 	psock = sk_psock_get(sk);
- 	if (!psock || !policy) {
- 		err = tls_push_record(sk, flags, record_type);
--		if (err && err != -EINPROGRESS) {
-+		if (err && sk->sk_err == EBADMSG) {
- 			*copied -= sk_msg_free(sk, msg);
- 			tls_free_open_rec(sk);
-+			err = -sk->sk_err;
+--- a/drivers/net/ethernet/sun/cassini.c
++++ b/drivers/net/ethernet/sun/cassini.c
+@@ -4971,7 +4971,7 @@ static int cas_init_one(struct pci_dev *
+ 					  cas_cacheline_size)) {
+ 			dev_err(&pdev->dev, "Could not set PCI cache "
+ 			       "line size\n");
+-			goto err_write_cacheline;
++			goto err_out_free_res;
  		}
- 		if (psock)
- 			sk_psock_put(sk, psock);
-@@ -828,9 +829,10 @@ more_data:
- 	switch (psock->eval) {
- 	case __SK_PASS:
- 		err = tls_push_record(sk, flags, record_type);
--		if (err && err != -EINPROGRESS) {
-+		if (err && sk->sk_err == EBADMSG) {
- 			*copied -= sk_msg_free(sk, msg);
- 			tls_free_open_rec(sk);
-+			err = -sk->sk_err;
- 			goto out_err;
- 		}
- 		break;
+ 	}
+ #endif
+@@ -5144,7 +5144,6 @@ err_out_iounmap:
+ err_out_free_res:
+ 	pci_release_regions(pdev);
+ 
+-err_write_cacheline:
+ 	/* Try to restore it in case the error occurred after we
+ 	 * set it.
+ 	 */
 
 
