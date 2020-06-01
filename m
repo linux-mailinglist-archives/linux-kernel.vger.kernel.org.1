@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F11CE1EAD81
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4221EAEDA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729053AbgFASpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:45:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55400 "EHLO mail.kernel.org"
+        id S1729463AbgFAR7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:59:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730087AbgFASJE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:09:04 -0400
+        id S1728503AbgFAR7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:59:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B959C2077D;
-        Mon,  1 Jun 2020 18:09:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF2AC2074B;
+        Mon,  1 Jun 2020 17:59:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034944;
-        bh=tYmwVOSA6P8UA7Rl8tWN9Wd0c22hBbEuWZ33UxNLNhc=;
+        s=default; t=1591034349;
+        bh=xC9hJYuRSl5pnTM9TMOSwz7SgPWF7neADVLAEPjyJ74=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ow8jBV8+UcJ4Er3fyM8dUMRQ2vz2/68upxWUk2SN8ur5uQAgxtLjxWnNtTrWnuo+e
-         vtnhoGzjbPrvktQSUOEICof/KWoYBym7Ih2SPAOTAjc3+GzD1Ud/uPeIJ0VtFAuZ74
-         dnsCBIGU9JheR9Q3ofM459bFjYV3S8y5qxjF9NiY=
+        b=Yz/bcbfskZANeqYhjYtEL92ee6jG2hyLp4YMBCcTv6Tc6WAOvibXxlgR04p6lsCgu
+         93UPm+0C8meGsivWvjFJ7h0uEhbakiQfKxqj30UtwuRbSgShe/uKW/9M1yNsW+/GTq
+         DoQWYOMvhMIj2qBFz+odj/n1psTfhMqSj1vD+4So=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Hamish Martin <hamish.martin@alliedtelesis.co.nz>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 082/142] ARM: dts: bcm: HR2: Fix PPI interrupt types
-Date:   Mon,  1 Jun 2020 19:54:00 +0200
-Message-Id: <20200601174046.451718773@linuxfoundation.org>
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        Jay Vosburgh <jay.vosburgh@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 54/61] bonding: Fix reference count leak in bond_sysfs_slave_add.
+Date:   Mon,  1 Jun 2020 19:54:01 +0200
+Message-Id: <20200601174021.571162466@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
+References: <20200601174010.316778377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,62 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit be0ec060b54f0481fb95d59086c1484a949c903c ]
+commit a068aab42258e25094bc2c159948d263ed7d7a77 upstream.
 
-These error messages are output when booting on a BCM HR2 system:
-    GIC: PPI11 is secure or misconfigured
-    GIC: PPI13 is secure or misconfigured
+kobject_init_and_add() takes reference even when it fails.
+If this function returns an error, kobject_put() must be called to
+properly clean up the memory associated with the object. Previous
+commit "b8eb718348b8" fixed a similar problem.
 
-Per ARM documentation these interrupts are triggered on a rising edge.
-See ARM Cortex A-9 MPCore Technical Reference Manual, Revision r4p1,
-Section 3.3.8 Interrupt Configuration Registers.
+Fixes: 07699f9a7c8d ("bonding: add sysfs /slave dir for bond slave devices.")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Acked-by: Jay Vosburgh <jay.vosburgh@canonical.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-The same issue was resolved for NSP systems in commit 5f1aa51c7a1e
-("ARM: dts: NSP: Fix PPI interrupt types").
-
-Fixes: b9099ec754b5 ("ARM: dts: Add Broadcom Hurricane 2 DTS include file")
-Signed-off-by: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/bcm-hr2.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/bonding/bond_sysfs_slave.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/bcm-hr2.dtsi b/arch/arm/boot/dts/bcm-hr2.dtsi
-index e4d49731287f..e35398cc60a0 100644
---- a/arch/arm/boot/dts/bcm-hr2.dtsi
-+++ b/arch/arm/boot/dts/bcm-hr2.dtsi
-@@ -75,7 +75,7 @@
- 		timer@20200 {
- 			compatible = "arm,cortex-a9-global-timer";
- 			reg = <0x20200 0x100>;
--			interrupts = <GIC_PPI 11 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupts = <GIC_PPI 11 IRQ_TYPE_EDGE_RISING>;
- 			clocks = <&periph_clk>;
- 		};
+--- a/drivers/net/bonding/bond_sysfs_slave.c
++++ b/drivers/net/bonding/bond_sysfs_slave.c
+@@ -153,8 +153,10 @@ int bond_sysfs_slave_add(struct slave *s
  
-@@ -83,7 +83,7 @@
- 			compatible = "arm,cortex-a9-twd-timer";
- 			reg = <0x20600 0x20>;
- 			interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(1) |
--						  IRQ_TYPE_LEVEL_HIGH)>;
-+						  IRQ_TYPE_EDGE_RISING)>;
- 			clocks = <&periph_clk>;
- 		};
+ 	err = kobject_init_and_add(&slave->kobj, &slave_ktype,
+ 				   &(slave->dev->dev.kobj), "bonding_slave");
+-	if (err)
++	if (err) {
++		kobject_put(&slave->kobj);
+ 		return err;
++	}
  
-@@ -91,7 +91,7 @@
- 			compatible = "arm,cortex-a9-twd-wdt";
- 			reg = <0x20620 0x20>;
- 			interrupts = <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(1) |
--						  IRQ_TYPE_LEVEL_HIGH)>;
-+						  IRQ_TYPE_EDGE_RISING)>;
- 			clocks = <&periph_clk>;
- 		};
- 
--- 
-2.25.1
-
+ 	for (a = slave_attrs; *a; ++a) {
+ 		err = sysfs_create_file(&slave->kobj, &((*a)->attr));
 
 
