@@ -2,84 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 834031E9F0A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 09:24:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F7D1E9EF5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 09:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728101AbgFAHYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 03:24:43 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:34320 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725283AbgFAHYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 03:24:42 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 8017C1A0677;
-        Mon,  1 Jun 2020 09:24:40 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id C0BCE1A0655;
-        Mon,  1 Jun 2020 09:24:37 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 630EA40280;
-        Mon,  1 Jun 2020 15:24:34 +0800 (SGT)
-From:   Ran Wang <ran.wang_1@nxp.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Li Biwen <biwen.li@nxp.com>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ran Wang <ran.wang_1@nxp.com>
-Subject: [PATCH v2] rtc: fsl-ftm-alarm: fix freeze(s2idle) failed to wake
-Date:   Mon,  1 Jun 2020 15:19:14 +0800
-Message-Id: <20200601071914.36444-1-ran.wang_1@nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1727056AbgFAHUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 03:20:38 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:65023 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgFAHUh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 03:20:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1590996037; x=1622532037;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=hQASGLU2Qp68wJMFjT6/GjP8eU7Wfp1GPuYXep3bfpQ=;
+  b=P98YoLhUobHgnsIwDH/vBpTn8M1kiaQC67k82ba9kztPSs0uBfGzc6+M
+   xO2M8aWFwnQVEHpjXQHAsHgOEnbE9TUxfuFjpWvzLPT206sHI3YrUx4T6
+   ToziZ+Pgh0YIsqOsY3AVsMxqN2F7i0iHxqby+0h97/tiOwo7MCxM47wqu
+   U=;
+IronPort-SDR: YcOPAN0qfLaoBD+0f+iGEaNjFWuvytSoBhSirDa4zJeZ3pdbULkR9ZkBH5mTIW+GAax7jJbP64
+ QEeAOMyZmJcA==
+X-IronPort-AV: E=Sophos;i="5.73,459,1583193600"; 
+   d="scan'208";a="40309876"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-f273de60.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 01 Jun 2020 07:20:35 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1d-f273de60.us-east-1.amazon.com (Postfix) with ESMTPS id 37D59A28A3;
+        Mon,  1 Jun 2020 07:20:32 +0000 (UTC)
+Received: from EX13D16EUB003.ant.amazon.com (10.43.166.99) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 1 Jun 2020 07:20:32 +0000
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.109) by
+ EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 1 Jun 2020 07:20:23 +0000
+Subject: Re: [PATCH v3 01/18] nitro_enclaves: Add ioctl interface definition
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Stefan Hajnoczi <stefanha@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        Anthony Liguori <aliguori@amazon.com>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        Alexander Graf <graf@amazon.de>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>, <kvm@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>
+References: <20200525221334.62966-1-andraprs@amazon.com>
+ <20200525221334.62966-2-andraprs@amazon.com>
+ <20200527084959.GA29137@stefanha-x1.localdomain>
+ <a95de3ee4b722d418fd6cf662233cb024928804e.camel@kernel.crashing.org>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <d639afa5-cca6-3707-4c80-40ee1bf5bcb5@amazon.com>
+Date:   Mon, 1 Jun 2020 10:20:18 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.1
+MIME-Version: 1.0
+In-Reply-To: <a95de3ee4b722d418fd6cf662233cb024928804e.camel@kernel.crashing.org>
+Content-Language: en-US
+X-Originating-IP: [10.43.162.109]
+X-ClientProxiedBy: EX13D42UWB001.ant.amazon.com (10.43.161.35) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use dev_pm_set_wake_irq() instead of flag IRQF_NO_SUSPEND to enable
-wakeup system feature for both freeze(s2idle) and mem(deep).
-
-Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
----
-Change in v2:
- - Remove wakeup-source control since the irq should be able to wakeup.
-   And this is not the case that RTC interrupt line is not connected
-   directly to SoC.
-
- drivers/rtc/rtc-fsl-ftm-alarm.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/rtc/rtc-fsl-ftm-alarm.c b/drivers/rtc/rtc-fsl-ftm-alarm.c
-index 756af62..6775205 100644
---- a/drivers/rtc/rtc-fsl-ftm-alarm.c
-+++ b/drivers/rtc/rtc-fsl-ftm-alarm.c
-@@ -21,6 +21,7 @@
- #include <linux/rtc.h>
- #include <linux/time.h>
- #include <linux/acpi.h>
-+#include <linux/pm_wakeirq.h>
- 
- #define FTM_SC_CLK(c)		((c) << FTM_SC_CLK_MASK_SHIFT)
- 
-@@ -274,7 +275,7 @@ static int ftm_rtc_probe(struct platform_device *pdev)
- 	}
- 
- 	ret = devm_request_irq(&pdev->dev, irq, ftm_rtc_alarm_interrupt,
--			       IRQF_NO_SUSPEND, dev_name(&pdev->dev), rtc);
-+			       0, dev_name(&pdev->dev), rtc);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "failed to request irq\n");
- 		return ret;
-@@ -287,6 +288,9 @@ static int ftm_rtc_probe(struct platform_device *pdev)
- 	rtc->rtc_dev->ops = &ftm_rtc_ops;
- 
- 	device_init_wakeup(&pdev->dev, true);
-+	ret = dev_pm_set_wake_irq(&pdev->dev, irq);
-+	if (ret)
-+		dev_err(&pdev->dev, "failed to enable irq wake\n");
- 
- 	ret = rtc_register_device(rtc->rtc_dev);
- 	if (ret) {
--- 
-2.7.4
+CgpPbiAwMS8wNi8yMDIwIDA2OjAyLCBCZW5qYW1pbiBIZXJyZW5zY2htaWR0IHdyb3RlOgo+IE9u
+IFdlZCwgMjAyMC0wNS0yNyBhdCAwOTo0OSArMDEwMCwgU3RlZmFuIEhham5vY3ppIHdyb3RlOgo+
+PiBXaGF0IGFib3V0IGZlYXR1cmUgYml0cyBvciBhIEFQSSB2ZXJzaW9uIG51bWJlciBmaWVsZD8g
+SWYgeW91IGFkZAo+PiBmZWF0dXJlcyB0byB0aGUgTkUgZHJpdmVyLCBob3cgd2lsbCB1c2Vyc3Bh
+Y2UgZGV0ZWN0IHRoZW0/Cj4+Cj4+IEV2ZW4gaWYgeW91IGludGVuZCB0byBhbHdheXMgY29tcGls
+ZSB1c2Vyc3BhY2UgYWdhaW5zdCB0aGUgZXhhY3Qga2VybmVsCj4+IGhlYWRlcnMgdGhhdCB0aGUg
+cHJvZ3JhbSB3aWxsIHJ1biBvbiwgaXQgY2FuIHN0aWxsIGJlIHVzZWZ1bCB0byBoYXZlIGFuCj4+
+IEFQSSB2ZXJzaW9uIGZvciBpbmZvcm1hdGlvbmFsIHB1cnBvc2VzIGFuZCB0byBlYXNpbHkgcHJl
+dmVudCB1c2VyCj4+IGVycm9ycyAocnVubmluZyBhIG5ldyB1c2Vyc3BhY2UgYmluYXJ5IG9uIGFu
+IG9sZCBrZXJuZWwgd2hlcmUgdGhlIEFQSSBpcwo+PiBkaWZmZXJlbnQpLgo+Pgo+PiBGaW5hbGx5
+LCByZXNlcnZlZCBzdHJ1Y3QgZmllbGRzIG1heSBjb21lIGluIGhhbmR5IGluIHRoZSBmdXR1cmUu
+IFRoYXQKPj4gd2F5IHVzZXJzcGFjZSBhbmQgdGhlIGtlcm5lbCBkb24ndCBuZWVkIHRvIGV4cGxp
+Y2l0bHkgaGFuZGxlIG11bHRpcGxlCj4+IHN0cnVjdCBzaXplcy4KPiBCZXdhcmUsIEdyZWcgbWln
+aHQgZGlzYWdyZWUgOikKPgo+IFRoYXQgc2FpZCwgeWVzLCBhdCBsZWFzdCBhIHdheSB0byBxdWVy
+eSB0aGUgQVBJIHZlcnNpb24gd291bGQgYmUKPiB1c2VmdWwuCgpJIHNlZSB0aGVyZSBhcmUgc2V2
+ZXJhbCB0aG91Z2h0cyB3aXRoIHJlZ2FyZCB0byBleHRlbnNpb25zIHBvc3NpYmlsaXRpZXMuIDop
+CgpJIGFkZGVkIGFuIGlvY3RsIGZvciBnZXR0aW5nIHRoZSBBUEkgdmVyc2lvbiwgd2UgaGF2ZSBu
+b3cgYSB3YXkgdG8gcXVlcnkgCnRoYXQgaW5mby4gQWxzbywgSSB1cGRhdGVkIHRoZSBzYW1wbGUg
+aW4gdGhpcyBwYXRjaCBzZXJpZXMgdG8gY2hlY2sgZm9yIAp0aGUgQVBJIHZlcnNpb24uCgpUaGFu
+a3MsCkFuZHJhCgoKCkFtYXpvbiBEZXZlbG9wbWVudCBDZW50ZXIgKFJvbWFuaWEpIFMuUi5MLiBy
+ZWdpc3RlcmVkIG9mZmljZTogMjdBIFNmLiBMYXphciBTdHJlZXQsIFVCQzUsIGZsb29yIDIsIElh
+c2ksIElhc2kgQ291bnR5LCA3MDAwNDUsIFJvbWFuaWEuIFJlZ2lzdGVyZWQgaW4gUm9tYW5pYS4g
+UmVnaXN0cmF0aW9uIG51bWJlciBKMjIvMjYyMS8yMDA1Lgo=
 
