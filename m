@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D31B1EA8DF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:57:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7D71EA8FD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728711AbgFAR4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:56:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37208 "EHLO mail.kernel.org"
+        id S1728984AbgFAR5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:57:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728670AbgFAR4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:56:39 -0400
+        id S1727924AbgFAR5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:57:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DDADB2074B;
-        Mon,  1 Jun 2020 17:56:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D0332074B;
+        Mon,  1 Jun 2020 17:57:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034198;
-        bh=jJlvg5Icn2RSmfrA3Oj+7GiZzqZOSE+7heMsTdczNG4=;
+        s=default; t=1591034254;
+        bh=M/qD2bSLMro1+y1z/qphHFNwZ6JthlbwfLtVxqnMl/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yLMjDxX5TzqeFSc8TQ2a0SVItUGfzKUKRUXz6nGDCGPu1KxM+yVaViO79tasAjp58
-         Q3+6/D1FhdPqd/b4XN3iF9rWdC5xxVq9q3WyVmHG6UKqIefud1/ekPmgBABy4LqICM
-         YiXlYLzwIXvZDsvqydQV8I3Ip6dLyYp3x8xizRq8=
+        b=CQU2mr1gG6u4DG8MFzoAhf1eaXvD1pCJiOpp+9ux4juaLOTygYxz1Kl+GLubeOVSP
+         voj8MO3+ve0Aqedfywk4L+okptqJs/cmYwOpgANnbdZcn8dEMRIcpVFlEOpATk2YeP
+         yidxX4UyUF5CXqgSXDWRVfkAvtSfHeZ7KUwwNyvQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -31,12 +31,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Ariel Elior <Ariel.Elior@cavium.com>,
         Doug Ledford <dledford@redhat.com>,
         Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.4 08/48] IB/cma: Fix reference count leak when no ipv4 addresses are set
-Date:   Mon,  1 Jun 2020 19:53:18 +0200
-Message-Id: <20200601173954.755172639@linuxfoundation.org>
+Subject: [PATCH 4.9 12/61] IB/cma: Fix reference count leak when no ipv4 addresses are set
+Date:   Mon,  1 Jun 2020 19:53:19 +0200
+Message-Id: <20200601174013.911117659@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601173952.175939894@linuxfoundation.org>
-References: <20200601173952.175939894@linuxfoundation.org>
+In-Reply-To: <20200601174010.316778377@linuxfoundation.org>
+References: <20200601174010.316778377@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -72,7 +72,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/include/rdma/ib_addr.h
 +++ b/include/rdma/ib_addr.h
-@@ -200,11 +200,13 @@ static inline void iboe_addr_get_sgid(st
+@@ -208,11 +208,13 @@ static inline void iboe_addr_get_sgid(st
  	dev = dev_get_by_index(&init_net, dev_addr->bound_dev_if);
  	if (dev) {
  		ip4 = in_dev_get(dev);
