@@ -2,117 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6473A1EA25F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 13:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA6C1EA25E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 13:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726102AbgFALBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 07:01:55 -0400
-Received: from esa6.hc3370-68.iphmx.com ([216.71.155.175]:36067 "EHLO
-        esa6.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725925AbgFALBy (ORCPT
+        id S1726035AbgFALBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 07:01:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725925AbgFALBV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 07:01:54 -0400
-X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Mon, 01 Jun 2020 07:01:53 EDT
-Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: dE4OJlvFGeDUUtAzk3Pi5zV28ZQIW5UOP7UQrOT5lcQFU2YWh+Xc0k4Dbio1M5jzIQRGIdcbgX
- T0UA6G1hW8qVM0IXQuYrEA++MNqKuY+BQHzK8tdGNAXiBGrCA+PzIKy+tFZB/X5eMboLe8OBRi
- W/yT9uFgzTE+mD8IurFET4SeUBhqARgj1gOIEfCdjngudjQ7bEGpkuIoJXc0yVJffNpn7AyqoH
- Ac5ZSqvawoklGR18qCojrS7GFT73+YeKkHaDVpPE0iJZTpsNv82xn7a5GQ7gS4FqVLy6QkZWmH
- zDk=
-X-SBRS: 2.7
-X-MesageID: 19251855
-X-Ironport-Server: esa6.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.73,460,1583211600"; 
-   d="scan'208";a="19251855"
-Date:   Mon, 1 Jun 2020 12:54:37 +0200
-From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To:     Daniel Kiper <daniel.kiper@oracle.com>
-CC:     <grub-devel@gnu.org>, <linux-kernel@vger.kernel.org>,
-        <trenchboot-devel@googlegroups.com>, <x86@kernel.org>,
-        <xen-devel@lists.xenproject.org>, <michal.zygowski@3mdeb.com>,
-        <eric.snowberg@oracle.com>, <mtottenh@akamai.com>,
-        <ard.biesheuvel@linaro.org>, <dpsmith@apertussolutions.com>,
-        <andrew.cooper3@citrix.com>, <konrad.wilk@oracle.com>,
-        <phcoder@gmail.com>, <javierm@redhat.com>, <mjg59@google.com>,
-        <alexander.burmashev@oracle.com>, <krystian.hebel@3mdeb.com>,
-        <kanth.ghatraju@oracle.com>, <lukasz.hawrylko@linux.intel.com>,
-        <ross.philipson@oracle.com>, <hpa@zytor.com>, <leif@nuviainc.com>,
-        <pjones@redhat.com>, <alec.brown@oracle.com>,
-        <piotr.krol@3mdeb.com>
-Subject: Re: [BOOTLOADER SPECIFICATION RFC] The bootloader log format for
- TrenchBoot and others
-Message-ID: <20200601105437.GS1195@Air-de-Roger>
-References: <20200529112735.qln44ds6z7djheof@tomti.i.net-space.pl>
+        Mon, 1 Jun 2020 07:01:21 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F90C03E97C
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 04:01:19 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id m7so4156590plt.5
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 04:01:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=vSd1F9IWmylmdRhuAnkzZkcm/vhp0PvuDBF/lEkmWYM=;
+        b=t/Z7/edJ+cZ8JjeZehSfuBXZPJJtj7/nryWGlIAR6tVr3jRy92L52wK2yPqqcJ6hUZ
+         Zw2fDUxXjK4GLKozfv5U2FexgQOI+tiIvUmSfh1QP1fnlNvOPAvorTf8bJW2IhNr031a
+         9mzjkAzrQzmmZI9NTUnAAol0UsJ66onm5nIy/+U9tIly5mu4YgSKOoZ38lPxfHTMsJBp
+         qGTj1qfgCNvY4LEI5xJQ85EIUn522vjEXAjRPHdrhTwnpV5ZUzNoQ1f8+27fU31yAvte
+         fWfrQ7Ne16RjH7nH35WeQs/F3bLDRAj8OeO2Xl3cRiGS9zL1FCTppOHUjx96V4Hywxmc
+         cXfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vSd1F9IWmylmdRhuAnkzZkcm/vhp0PvuDBF/lEkmWYM=;
+        b=T/00lzs/RvRaIwXnPpU6xbLV25qiuHLR2XyjtMbfzB6YzsjIwm8R1oFYPhZFDWCqUE
+         ySYNI1GjH+UujAfrI4ziQth7+uDiqSB/MM/F4YwPOKWZhPoXKxTIbvmnb+ZFqwoRnBYf
+         EkEksu4uhJWxusUSUM2Oqup/YC/AIofc7hzfszDxTMfjPKBvZlZBVm9LvuGTRmdI9sVf
+         n4DCRf30+XQKcdggyz0tfiyWNuyxZ3bocD2z9Dk+HZowVXKXMsfkopSSxQ6BFRhYWrMO
+         wH59v8zKFPQswmNo/qzxLH8/hw/xLLM2TPMVScaFOFvJpSAGSIMZTotBIhEkgdDYYEox
+         0DAA==
+X-Gm-Message-State: AOAM531Hext820IAlkw5TgfQlT45n8L5PnepTFk+R17iFQIlcbXRCYAd
+        rraFXD2PF9Wq+iYHach3OeasYw==
+X-Google-Smtp-Source: ABdhPJwAVadiEigs3N3Sh4nG5ncaSZnIPjxqEIMNOmDBbJC05+jH/KHIkzRncLVURZ5nRvvxZzCKTw==
+X-Received: by 2002:a17:90a:f508:: with SMTP id cs8mr5446247pjb.16.1591009278922;
+        Mon, 01 Jun 2020 04:01:18 -0700 (PDT)
+Received: from localhost ([122.172.62.209])
+        by smtp.gmail.com with ESMTPSA id q5sm14121925pfl.199.2020.06.01.04.01.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Jun 2020 04:01:17 -0700 (PDT)
+Date:   Mon, 1 Jun 2020 16:31:16 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     sboyd@kernel.org, georgi.djakov@linaro.org, saravanak@google.com,
+        mka@chromium.org, nm@ti.com, bjorn.andersson@linaro.org,
+        agross@kernel.org, rjw@rjwysocki.net,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, dianders@chromium.org,
+        vincent.guittot@linaro.org, amit.kucheria@linaro.org,
+        lukasz.luba@arm.com, sudeep.holla@arm.com, smasetty@codeaurora.org,
+        linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [PATCH v5 4/5] cpufreq: qcom: Update the bandwidth levels on
+ frequency change
+Message-ID: <20200601110116.jteoalg3yjhsbkpw@vireshk-i7>
+References: <20200527202153.11659-1-sibis@codeaurora.org>
+ <20200527202153.11659-5-sibis@codeaurora.org>
+ <20200529100028.2wz2iqi5vqji2heb@vireshk-i7>
+ <a90bce2d52f7cdb726e8b799e3512fad@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200529112735.qln44ds6z7djheof@tomti.i.net-space.pl>
-X-ClientProxiedBy: AMSPEX02CAS02.citrite.net (10.69.22.113) To
- AMSPEX02CL02.citrite.net (10.69.22.126)
+In-Reply-To: <a90bce2d52f7cdb726e8b799e3512fad@codeaurora.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 01:27:35PM +0200, Daniel Kiper wrote:
-> Hey,
+On 29-05-20, 17:00, Sibi Sankar wrote:
+> > > +static int qcom_cpufreq_update_opp(struct device *cpu_dev,
+> > > +				   unsigned long freq_khz,
+> > > +				   unsigned long volt)
+> > > +{
+> > > +	unsigned long freq_hz = freq_khz * 1000;
+> > > +
+> > > +	if (dev_pm_opp_adjust_voltage(cpu_dev, freq_hz, volt, volt, volt))
+> > > +		return dev_pm_opp_add(cpu_dev, freq_hz, volt);
+> > 
+> > What's going on here ? Why add OPP here ?
 > 
-> Below you can find my rough idea of the bootloader log format which is
-> generic thing but initially will be used for TrenchBoot work. I discussed
-> this proposal with Ross and Daniel S. So, the idea went through initial
-> sanitization. Now I would like to take feedback from other folks too.
-> So, please take a look and complain...
-> 
-> In general we want to pass the messages produced by the bootloader to the OS
-> kernel and finally to the userspace for further processing and analysis. Below
-> is the description of the structures which will be used for this thing.
-> 
->   struct bootloader_log_msgs
->   {
->     grub_uint32_t level;
->     grub_uint32_t facility;
+> We update the voltage if opp were
+> initially added as part of
+> dev_pm_opp_of_add_table. However
+> if the cpu node does not have an
+> opp table associated with it, we
+> do a opp_add_v1 instead.
 
-Nit: if this is aimed at cross-OS and cross-bootloader compatibility
-uint32_t should be used here instead of a grub specific alias.
+Instead of depending on the failure of dev_pm_opp_adjust_voltage(),
+pass a flag to qcom_cpufreq_update_opp() which will decide if we want
+to adjust voltage or add an opp.
 
->     char type[];
->     char msg[];
-
-I think you want char * here instead? Or are the above arrays expected
-to have a fixed size in the final spec?
-
->   }
-> 
->   struct bootloader_log
->   {
->     grub_uint32_t version;
->     grub_uint32_t producer;
->     grub_uint32_t size;
->     grub_uint32_t next_off;
->     bootloader_log_msgs msgs[];
-
-As I understand it this is not a pointer to an array of
-bootloader_log_msgs but rather in-place?
-
->   }
-> 
-> The members of struct bootloader_log:
->   - version: the bootloader log format version number, 1 for now,
->   - producer: the producer/bootloader type; we can steal some values from
->     linux/Documentation/x86/boot.rst:type_of_loader,
->   - size: total size of the log buffer including the bootloader_log struct,
->   - next_off: offset in bytes, from start of the bootloader_log struct,
->     of the next byte after the last log message in the msgs[];
->     i.e. the offset of the next available log message slot,
-
-So this will be a memory area that's shared between the OS and the
-bootloader and needs to be updated at runtime?
-
-If this is something that's created by the bootloader during loading
-and passed to the OS for consumption (but it's not further updated), I
-don't see much point in the next_off field. The size field could be
-updated to reflect the actual size of the produced messages?
-
-Roger.
+-- 
+viresh
