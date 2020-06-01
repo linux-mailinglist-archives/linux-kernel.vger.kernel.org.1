@@ -2,154 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 672F61EA76D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 17:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE1E1EA7AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 18:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgFAP6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 11:58:25 -0400
-Received: from mga01.intel.com ([192.55.52.88]:57197 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726110AbgFAP6Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 11:58:25 -0400
-IronPort-SDR: nKnL9GXgNdV7y1eR79tXKRO4yaLnrkVrYkmDWmke23NxWzkpwXo3N6yMK/gGonyo/BMl8c272k
- XrQ4rZdPwBgg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2020 08:58:24 -0700
-IronPort-SDR: MjXikgx+FgiPhATo4dDoBGA/8PaAOvSGuW8QPX9BBFThLnLJb83rY9OTd8ZMdHdz0hatxNby7j
- n0yb0XyI8yrA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,461,1583222400"; 
-   d="scan'208";a="347081992"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga001.jf.intel.com with ESMTP; 01 Jun 2020 08:58:24 -0700
-Received: from [10.249.230.65] (abudanko-mobl.ccr.corp.intel.com [10.249.230.65])
-        by linux.intel.com (Postfix) with ESMTP id 81706580646;
-        Mon,  1 Jun 2020 08:58:22 -0700 (PDT)
-Subject: [PATCH v5 08/13] perf stat: extend -D,--delay option with -1 value
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <e5cac8dd-7aa4-ec7c-671c-07756907acba@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <9a0ef5c9-e66c-bd64-5f9d-ef3d4a135e66@linux.intel.com>
-Date:   Mon, 1 Jun 2020 18:58:21 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1727776AbgFAQSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 12:18:35 -0400
+Received: from sender4-of-o54.zoho.com ([136.143.188.54]:21454 "EHLO
+        sender4-of-o54.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726067AbgFAQSf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 12:18:35 -0400
+X-Greylist: delayed 901 seconds by postgrey-1.27 at vger.kernel.org; Mon, 01 Jun 2020 12:18:34 EDT
+ARC-Seal: i=1; a=rsa-sha256; t=1591027399; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=RGaLXN/0pJQ5XCpiTzGmASIWJhTFJXXIXV/O1eLEdA2rLNHxMVeLht0It/PGpEvZGmkFjvj1q7yIHh1d0GaHo0dz88zDGHEaOKvfyaqiaAKbX0oKqC+7NyyNLbnsgrFk8NcMzuT1Rs8NWCayydZTBaXg89XtQH6KcQlKozIM3RI=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1591027399; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=X+xeA4Yaz4db9RbtSMm/UfrZwbfOwJ48gdi78Ynycyw=; 
+        b=D7I0zvMgfrUt12RwL0dFJQxBNF98M5NHbbHdBZgaTWabcJh2IxPJDJI9XRHZnY4Ui9zOmz2WE4hC5wjaT9sBSXpEED7h+6PJHhHCX1Nosu0g4IPJYsDWm6sDQGqCSHK5Zvg2ixoIHxf4sZS1KmSMwNvNjk46YCEbjctVXmCVKZc=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=tmsp.io;
+        spf=pass  smtp.mailfrom=dorian.stoll@tmsp.io;
+        dmarc=pass header.from=<dorian.stoll@tmsp.io> header.from=<dorian.stoll@tmsp.io>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1591027399;
+        s=zoho; d=tmsp.io; i=dorian.stoll@tmsp.io;
+        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        bh=X+xeA4Yaz4db9RbtSMm/UfrZwbfOwJ48gdi78Ynycyw=;
+        b=DHQLFHturLtWn+Wj70zqYtCKE3xCLl1PTjC2A7oq3uGC48uBSfSoVmlwrb5NXWOu
+        MrIKyAsm8fE9xLsAbyjnjHESy6Lo/cy9rEGeDz6lxcFT6gWyaYj7KhOaUhDypbADkFn
+        5WIXuCmGMYOyoqDIRhxrpBgawsdLEq4/OYDKk6xE=
+Received: from desktop.fritz.box (79.140.114.1 [79.140.114.1]) by mx.zohomail.com
+        with SMTPS id 1591027397737977.2859413189593; Mon, 1 Jun 2020 09:03:17 -0700 (PDT)
+From:   Dorian Stoll <dorian.stoll@tmsp.io>
+To:     Tomas Winkler <tomas.winkler@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Dorian Stoll <dorian.stoll@tmsp.io>
+Message-ID: <20200601155954.764558-1-dorian.stoll@tmsp.io>
+Subject: [PATCH] mei: me: Add itouch device IDs for SPT / ICP
+Date:   Mon,  1 Jun 2020 17:59:54 +0200
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <e5cac8dd-7aa4-ec7c-671c-07756907acba@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-ZohoMailClient: External
+Content-Type: text/plain; charset=utf8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+These device IDs can be found on Microsoft Surface devices.
 
-Extend -D,--delay option with -1 value to start monitoring with
-events disabled to be enabled later by enable command provided
-via control file descriptor.
-
-Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+Signed-off-by: Dorian Stoll <dorian.stoll@tmsp.io>
 ---
- tools/perf/Documentation/perf-stat.txt |  5 +++--
- tools/perf/builtin-stat.c              | 18 ++++++++++++++----
- tools/perf/util/evlist.h               |  3 +++
- tools/perf/util/stat.h                 |  2 +-
- 4 files changed, 21 insertions(+), 7 deletions(-)
+ drivers/misc/mei/hw-me-regs.h | 2 ++
+ drivers/misc/mei/pci-me.c     | 2 ++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
-index b029ee728a0b..9f32f6cd558d 100644
---- a/tools/perf/Documentation/perf-stat.txt
-+++ b/tools/perf/Documentation/perf-stat.txt
-@@ -238,8 +238,9 @@ mode, use --per-node in addition to -a. (system-wide).
- 
- -D msecs::
- --delay msecs::
--After starting the program, wait msecs before measuring. This is useful to
--filter out the startup phase of the program, which is often very different.
-+After starting the program, wait msecs before measuring (-1: start with events
-+disabled). This is useful to filter out the startup phase of the program,
-+which is often very different.
- 
- -T::
- --transaction::
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 8eeaf92912d8..d0ddaa5fac96 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -441,16 +441,26 @@ static bool process_timeout(bool timeout, unsigned int interval, int *times)
- 
- static void enable_counters(void)
- {
--	if (stat_config.initial_delay)
-+	if (stat_config.initial_delay < 0) {
-+		pr_info(EVLIST_DISABLED_MSG);
-+		return;
-+	}
-+
-+	if (stat_config.initial_delay > 0) {
-+		pr_info(EVLIST_DISABLED_MSG);
- 		usleep(stat_config.initial_delay * USEC_PER_MSEC);
-+	}
- 
- 	/*
- 	 * We need to enable counters only if:
- 	 * - we don't have tracee (attaching to task or cpu)
- 	 * - we have initial delay configured
- 	 */
--	if (!target__none(&target) || stat_config.initial_delay)
-+	if (!target__none(&target) || stat_config.initial_delay) {
- 		evlist__enable(evsel_list);
-+		if (stat_config.initial_delay > 0)
-+			pr_info(EVLIST_ENABLED_MSG);
-+	}
- }
- 
- static void disable_counters(void)
-@@ -1007,8 +1017,8 @@ static struct option stat_options[] = {
- 		     "aggregate counts per thread", AGGR_THREAD),
- 	OPT_SET_UINT(0, "per-node", &stat_config.aggr_mode,
- 		     "aggregate counts per numa node", AGGR_NODE),
--	OPT_UINTEGER('D', "delay", &stat_config.initial_delay,
--		     "ms to wait before starting measurement after program start"),
-+	OPT_INTEGER('D', "delay", &stat_config.initial_delay,
-+		    "ms to wait before starting measurement after program start (-1: start with events disabled)"),
- 	OPT_CALLBACK_NOOPT(0, "metric-only", &stat_config.metric_only, NULL,
- 			"Only print computed metrics. No raw values", enable_metric_only),
- 	OPT_BOOLEAN(0, "metric-no-group", &stat_config.metric_no_group,
-diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-index bccf0a970371..7c3726a685f5 100644
---- a/tools/perf/util/evlist.h
-+++ b/tools/perf/util/evlist.h
-@@ -377,4 +377,7 @@ int evlist__initialize_ctlfd(struct evlist *evlist, int ctl_fd, int ctl_fd_ack);
- int evlist__finalize_ctlfd(struct evlist *evlist);
- int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd);
- 
-+#define EVLIST_ENABLED_MSG "Events enabled\n"
-+#define EVLIST_DISABLED_MSG "Events disabled\n"
-+
- #endif /* __PERF_EVLIST_H */
-diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
-index f75ae679eb28..626421ef35c2 100644
---- a/tools/perf/util/stat.h
-+++ b/tools/perf/util/stat.h
-@@ -116,7 +116,7 @@ struct perf_stat_config {
- 	FILE			*output;
- 	unsigned int		 interval;
- 	unsigned int		 timeout;
--	unsigned int		 initial_delay;
-+	int			 initial_delay;
- 	unsigned int		 unit_width;
- 	unsigned int		 metric_only_len;
- 	int			 times;
--- 
-2.24.1
+diff --git a/drivers/misc/mei/hw-me-regs.h b/drivers/misc/mei/hw-me-regs.h
+index 9392934e3a06..90e7d3020fa5 100644
+--- a/drivers/misc/mei/hw-me-regs.h
++++ b/drivers/misc/mei/hw-me-regs.h
+@@ -59,6 +59,7 @@
+=20
+ #define MEI_DEV_ID_SPT        0x9D3A  /* Sunrise Point */
+ #define MEI_DEV_ID_SPT_2      0x9D3B  /* Sunrise Point 2 */
++#define MEI_DEV_ID_SPT_4      0x9D3E  /* Sunrise Point 4 (iTouch) */
+ #define MEI_DEV_ID_SPT_H      0xA13A  /* Sunrise Point H */
+ #define MEI_DEV_ID_SPT_H_2    0xA13B  /* Sunrise Point H 2 */
+=20
+@@ -90,6 +91,7 @@
+ #define MEI_DEV_ID_CDF        0x18D3  /* Cedar Fork */
+=20
+ #define MEI_DEV_ID_ICP_LP     0x34E0  /* Ice Lake Point LP */
++#define MEI_DEV_ID_ICP_LP_4   0x34E4  /* Ice Lake Point LP 4 (iTouch) */
+=20
+ #define MEI_DEV_ID_JSP_N      0x4DE0  /* Jasper Lake Point N */
+=20
+diff --git a/drivers/misc/mei/pci-me.c b/drivers/misc/mei/pci-me.c
+index a1ed375fed37..5e621e90d8d4 100644
+--- a/drivers/misc/mei/pci-me.c
++++ b/drivers/misc/mei/pci-me.c
+@@ -68,6 +68,7 @@ static const struct pci_device_id mei_me_pci_tbl[] =3D {
+=20
+ =09{MEI_PCI_DEVICE(MEI_DEV_ID_SPT, MEI_ME_PCH8_CFG)},
+ =09{MEI_PCI_DEVICE(MEI_DEV_ID_SPT_2, MEI_ME_PCH8_CFG)},
++=09{MEI_PCI_DEVICE(MEI_DEV_ID_SPT_4, MEI_ME_PCH8_CFG)},
+ =09{MEI_PCI_DEVICE(MEI_DEV_ID_SPT_H, MEI_ME_PCH8_SPS_CFG)},
+ =09{MEI_PCI_DEVICE(MEI_DEV_ID_SPT_H_2, MEI_ME_PCH8_SPS_CFG)},
+ =09{MEI_PCI_DEVICE(MEI_DEV_ID_LBG, MEI_ME_PCH12_SPS_CFG)},
+@@ -94,6 +95,7 @@ static const struct pci_device_id mei_me_pci_tbl[] =3D {
+ =09{MEI_PCI_DEVICE(MEI_DEV_ID_CMP_H_3, MEI_ME_PCH8_CFG)},
+=20
+ =09{MEI_PCI_DEVICE(MEI_DEV_ID_ICP_LP, MEI_ME_PCH12_CFG)},
++=09{MEI_PCI_DEVICE(MEI_DEV_ID_ICP_LP_4, MEI_ME_PCH12_CFG)},
+=20
+ =09{MEI_PCI_DEVICE(MEI_DEV_ID_TGP_LP, MEI_ME_PCH15_CFG)},
+=20
+--=20
+2.26.2
+
 
