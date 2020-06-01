@@ -2,199 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A951EA81D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C981EA811
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727959AbgFARFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:05:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56188 "EHLO
+        id S1726017AbgFARBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:01:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727803AbgFARFM (ORCPT
+        with ESMTP id S1726067AbgFARBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:05:12 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D48C05BD43
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 10:05:10 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id m2so101759pjv.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 10:05:10 -0700 (PDT)
+        Mon, 1 Jun 2020 13:01:06 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C075C05BD43
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 10:01:06 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id e1so560086wrt.5
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Jun 2020 10:01:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RCNZoB5OxQ7hnqTLfie1dXM/QF4pMxzLCuwCLG5Qfss=;
-        b=vegupm7j++bcQ7i5qomamK4/m4XhO1MABSaGH10ckRBmWq+grPaIgDahZjbqzvDWYc
-         3yf8QRVv7J4Y+Ud2phWybNxSOCMB67r+b6JJeBn8xlqsCQQZEVUmM5tSdFhJirSL/hOc
-         Z8jCKNVR1wYBwqZACg2XqcaZOwqyEKYiJ6nls=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=dMJI99syFcDXnjlLWeh/ATxeuHMh9xNyI+PPoM1IAi0=;
+        b=bxVXpvxXM7v51hN4+KvcomayuLpjGzsMTzP9Ais7BLwBcjrGpluccUup6Zob5fYOhx
+         I6vyaCPpUfT6WosIqMM/P7vdrvrHFB8FHOq6dH1QV9UovgTrKKmjsV3IVYpeXumLIGrP
+         VOZP+ygYOHbROIvQ7rse1XAmrpEmkWVal5Yaf5ND3XjbSB5Hua551hkebxMwcppssy2d
+         jkGkrjidOJcuVCH3hlqOBiSWZEtfGFeWBWCKxFgdtGepPvOHEJe5wcntpsbolWmtw2Qs
+         +mf3NT+f8VJAdzDASAwSu+qG4/TsuFP0SJRgb5SSHTagvDxciebvsPtKCD7zyws8+n+T
+         AJ5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RCNZoB5OxQ7hnqTLfie1dXM/QF4pMxzLCuwCLG5Qfss=;
-        b=XSqJeLmOJRjjrS8W1ewu8sek+2Jfk7lYrYZ50rwAUqTnMBomNqCdWVLgS2EWcm3wW8
-         LTfR8fCoplS5rOAHINrEWJ75QwN9AVbUCi9p52ZK1b4q7y/Au5h041ZDHqveNPIBndvy
-         x1yjngmwycm/3hWYM29BsSjVafmT7/qkTvswMPaeP8qgRYISEcT3c6trb4gEShnA/WBA
-         aqkqsoc9C0/i5gFSsWlaeSCckBUs+Zowed29tXG8hi2Bh2eOtaNZ/vulUVLZSVtxKOGZ
-         YC+S3FCl97wEfv5jIwbiUsVKJq4k6US/WMoK8qTkc/gi8s6/7M9UN9ldWWlehyWztyuE
-         SLNQ==
-X-Gm-Message-State: AOAM532LHYE8y4EOVgiKoaTlUOppDTBVF/q7zmCFjYrgPAoBoOvlZlRf
-        9B+CFDKrPP152hA+F+eGTLo6gg==
-X-Google-Smtp-Source: ABdhPJznLtUa4LZ7g35GyCI7/xjwaHcB435LJsAY3C3ioqnx7kNkFoy3Z7n3o6gr2EPy9nrmnWQAvA==
-X-Received: by 2002:a17:90b:806:: with SMTP id bk6mr425484pjb.122.1591031109833;
-        Mon, 01 Jun 2020 10:05:09 -0700 (PDT)
-Received: from ubuntu.netflix.com (203.20.25.136.in-addr.arpa. [136.25.20.203])
-        by smtp.gmail.com with ESMTPSA id m5sm12080pjn.56.2020.06.01.10.05.08
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=dMJI99syFcDXnjlLWeh/ATxeuHMh9xNyI+PPoM1IAi0=;
+        b=CdbyFUcTZTiF23KCrdO7sEb3DNKYruD9SlH99IOI4HnAQMIhBmQGfs/yx37J6hDVCS
+         hzciX1dvOjF2VhqB+f9PYVdC4JNAIz1HdpDTSAuZSbTMJlkGzsitF1IGOJk6sTcFKxtG
+         aQBuyo8ESxalfCYsHeJAlVg69WAdKLsUGLoknGHQugaB26uvVKFzxYubkAqYWGZAYK0l
+         ZQoqS5E5yNyYkHbgvRTxixIkCReUzdVvE9Abu4aYHZ0azWfa4miazRUX43fj3codVPhy
+         r4lvjRkcaMoILzlrYYsHCQnOBeV3J/2vLXcBgJ/Yl70tKNFfYm79nPaYOBTTEg7XRmij
+         0wdQ==
+X-Gm-Message-State: AOAM532HNQ7bOMdUjE5kY8LE3YhJ03ndx0qzMGM7ibGmPES+zqCT2bPo
+        3+vSw/TLrJr6dBzioBpHg1k=
+X-Google-Smtp-Source: ABdhPJxvImQzPOQfAIp/i9SaxT7L1MKXmYriPHJ18WHZ20i4Iw21/gSPrS6IX1H12y3V/aAA3SSHcQ==
+X-Received: by 2002:adf:f183:: with SMTP id h3mr24542629wro.403.1591030864930;
+        Mon, 01 Jun 2020 10:01:04 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id p16sm69088wru.27.2020.06.01.10.01.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jun 2020 10:05:09 -0700 (PDT)
-From:   Sargun Dhillon <sargun@sargun.me>
-To:     containers@lists.linux-foundation.org, keescook@chromium.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Sargun Dhillon <sargun@sargun.me>, viro@zeniv.linux.org.uk,
-        christian.brauner@ubuntu.com, cyphar@cyphar.com, jannh@google.com,
-        jeffv@google.com, palmer@google.com, rsesek@google.com,
-        tycho@tycho.ws, Matt Denton <mpdenton@google.com>,
-        Kees Cook <keescook@google.com>
-Subject: [PATCH v3] seccomp: Add find_notification helper
-Date:   Mon,  1 Jun 2020 04:25:32 -0700
-Message-Id: <20200601112532.150158-1-sargun@sargun.me>
-X-Mailer: git-send-email 2.25.1
+        Mon, 01 Jun 2020 10:01:04 -0700 (PDT)
+Date:   Mon, 1 Jun 2020 19:01:02 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [GIT PULL] x86/mm changes for v5.8
+Message-ID: <20200601170102.GA1346815@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds a helper which can iterate through a seccomp_filter to
-find a notification matching an ID. It removes several replicated
-chunks of code.
+Linus,
 
-Signed-off-by: Sargun Dhillon <sargun@sargun.me>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-Reviewed-by: Tycho Andersen <tycho@tycho.ws>
-Cc: Matt Denton <mpdenton@google.com>
-Cc: Kees Cook <keescook@google.com>,
-Cc: Jann Horn <jannh@google.com>,
-Cc: Robert Sesek <rsesek@google.com>,
-Cc: Chris Palmer <palmer@google.com>
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Tycho Andersen <tycho@tycho.ws>
----
- kernel/seccomp.c | 55 ++++++++++++++++++++++++------------------------
- 1 file changed, 28 insertions(+), 27 deletions(-)
+Please pull the latest x86/mm git tree from:
 
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 55a6184f5990..cc6b47173a95 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -41,6 +41,7 @@
- #include <linux/tracehook.h>
- #include <linux/uaccess.h>
- #include <linux/anon_inodes.h>
-+#include <linux/lockdep.h>
- 
- enum notify_state {
- 	SECCOMP_NOTIFY_INIT,
-@@ -1021,10 +1022,27 @@ static int seccomp_notify_release(struct inode *inode, struct file *file)
- 	return 0;
- }
- 
-+/* must be called with notif_lock held */
-+static inline struct seccomp_knotif *
-+find_notification(struct seccomp_filter *filter, u64 id)
-+{
-+	struct seccomp_knotif *cur;
-+
-+	lockdep_assert_held(&filter->notify_lock);
-+
-+	list_for_each_entry(cur, &filter->notif->notifications, list) {
-+		if (cur->id == id)
-+			return cur;
-+	}
-+
-+	return NULL;
-+}
-+
-+
- static long seccomp_notify_recv(struct seccomp_filter *filter,
- 				void __user *buf)
- {
--	struct seccomp_knotif *knotif = NULL, *cur;
-+	struct seccomp_knotif *knotif, *cur;
- 	struct seccomp_notif unotif;
- 	ssize_t ret;
- 
-@@ -1078,15 +1096,8 @@ static long seccomp_notify_recv(struct seccomp_filter *filter,
- 		 * may have died when we released the lock, so we need to make
- 		 * sure it's still around.
- 		 */
--		knotif = NULL;
- 		mutex_lock(&filter->notify_lock);
--		list_for_each_entry(cur, &filter->notif->notifications, list) {
--			if (cur->id == unotif.id) {
--				knotif = cur;
--				break;
--			}
--		}
--
-+		knotif = find_notification(filter, unotif.id);
- 		if (knotif) {
- 			knotif->state = SECCOMP_NOTIFY_INIT;
- 			up(&filter->notif->request);
-@@ -1101,7 +1112,7 @@ static long seccomp_notify_send(struct seccomp_filter *filter,
- 				void __user *buf)
- {
- 	struct seccomp_notif_resp resp = {};
--	struct seccomp_knotif *knotif = NULL, *cur;
-+	struct seccomp_knotif *knotif;
- 	long ret;
- 
- 	if (copy_from_user(&resp, buf, sizeof(resp)))
-@@ -1118,13 +1129,7 @@ static long seccomp_notify_send(struct seccomp_filter *filter,
- 	if (ret < 0)
- 		return ret;
- 
--	list_for_each_entry(cur, &filter->notif->notifications, list) {
--		if (cur->id == resp.id) {
--			knotif = cur;
--			break;
--		}
--	}
--
-+	knotif = find_notification(filter, resp.id);
- 	if (!knotif) {
- 		ret = -ENOENT;
- 		goto out;
-@@ -1150,7 +1155,7 @@ static long seccomp_notify_send(struct seccomp_filter *filter,
- static long seccomp_notify_id_valid(struct seccomp_filter *filter,
- 				    void __user *buf)
- {
--	struct seccomp_knotif *knotif = NULL;
-+	struct seccomp_knotif *knotif;
- 	u64 id;
- 	long ret;
- 
-@@ -1161,16 +1166,12 @@ static long seccomp_notify_id_valid(struct seccomp_filter *filter,
- 	if (ret < 0)
- 		return ret;
- 
--	ret = -ENOENT;
--	list_for_each_entry(knotif, &filter->notif->notifications, list) {
--		if (knotif->id == id) {
--			if (knotif->state == SECCOMP_NOTIFY_SENT)
--				ret = 0;
--			goto out;
--		}
--	}
-+	knotif = find_notification(filter, id);
-+	if (knotif && knotif->state == SECCOMP_NOTIFY_SENT)
-+		ret = 0;
-+	else
-+		ret = -ENOENT;
- 
--out:
- 	mutex_unlock(&filter->notify_lock);
- 	return ret;
- }
--- 
-2.25.1
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-mm-2020-06-01
 
+   # HEAD: 0fcfdf55db9e1ecf85edd6aa8d0bc78a448cb96a Documentation: Add L1D flushing Documentation
+
+Misc changes:
+
+ - Unexport various PAT primitives
+
+ - Unexport per-CPU tlbstate
+
+ - Provide an opt-in (prctl driven) mechanism to flush the L1D cache on context switch.
+   The goal is to allow tasks that are paranoid due to the recent snoop assisted data
+   sampling vulnerabilites, to flush their L1D on being switched out.
+   This protects their data from being snooped or leaked via side channels
+   after the task has context switched out.
+
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+
+  out-of-topic modifications in x86/mm:
+  ---------------------------------------
+  include/uapi/linux/prctl.h         # edf7ce0b231c: prctl: Hook L1D flushing in 
+
+ Thanks,
+
+	Ingo
+
+------------------>
+Balbir Singh (7):
+      x86/kvm: Refactor L1D flush page management
+      x86/kvm: Refactor L1D flush operations
+      x86/mm: Refactor cond_ibpb() to support other use cases
+      x86/kvm: Refactor L1D flushing
+      x86/mm: Optionally flush L1D on context switch
+      prctl: Hook L1D flushing in via prctl
+      Documentation: Add L1D flushing Documentation
+
+Borislav Petkov (1):
+      x86/tlb/uv: Add a forward declaration for struct flush_tlb_info
+
+Christoph Hellwig (5):
+      x86/mm: Add a x86_has_pat_wp() helper
+      x86/mm: Move pgprot2cachemode out of line
+      x86/mm: Cleanup pgprot_4k_2_large() and pgprot_large_2_4k()
+      x86/mm: Unexport __cachemode2pte_tbl
+      x86/mm: Use pgprotval_t in protval_4k_2_large() and protval_large_2_4k()
+
+Thomas Gleixner (17):
+      x86/tlb: Uninline __get_current_cr3_fast()
+      x86/cpu: Uninline CR4 accessors
+      x86/cr4: Sanitize CR4.PCE update
+      x86/alternatives: Move temporary_mm helpers into C
+      x86/tlb: Move __flush_tlb() out of line
+      x86/tlb: Move __flush_tlb_global() out of line
+      x86/tlb: Move __flush_tlb_one_user() out of line
+      x86/tlb: Move __flush_tlb_one_kernel() out of line
+      x86/tlb: Move flush_tlb_others() out of line
+      x86/tlb: Move __flush_tlb_all() out of line
+      x86/tlb: Move paravirt_tlb_remove_table() to the usage site
+      x86/tlb: Move cr4_set_bits_and_update_boot() to the usage site
+      x86/tlb: Uninline nmi_uaccess_okay()
+      x86/tlb: Move PCID helpers where they are used
+      xen/privcmd: Remove unneeded asm/tlb.h include
+      x86/tlb: Restrict access to tlbstate
+      x86/cpu: Export native_write_cr4() only when CONFIG_LKTDM=m
+
+
+ Documentation/admin-guide/hw-vuln/index.rst     |   1 +
+ Documentation/admin-guide/hw-vuln/l1d_flush.rst |  51 +++
+ Documentation/userspace-api/spec_ctrl.rst       |   7 +
+ arch/x86/events/core.c                          |  11 +-
+ arch/x86/include/asm/cacheflush.h               |   8 +
+ arch/x86/include/asm/memtype.h                  |   3 +
+ arch/x86/include/asm/mmu_context.h              |  88 +----
+ arch/x86/include/asm/paravirt.h                 |  12 +-
+ arch/x86/include/asm/pgtable_32.h               |   2 +-
+ arch/x86/include/asm/pgtable_types.h            |  44 +--
+ arch/x86/include/asm/thread_info.h              |   9 +-
+ arch/x86/include/asm/tlbflush.h                 | 443 +++-------------------
+ arch/x86/include/asm/uv/uv.h                    |   1 +
+ arch/x86/kernel/Makefile                        |   1 +
+ arch/x86/kernel/alternative.c                   |  55 +++
+ arch/x86/kernel/cpu/bugs.c                      |  28 ++
+ arch/x86/kernel/cpu/common.c                    |  25 +-
+ arch/x86/kernel/cpu/mtrr/generic.c              |   4 +-
+ arch/x86/kernel/l1d_flush.c                     | 120 ++++++
+ arch/x86/kernel/paravirt.c                      |  21 +-
+ arch/x86/kernel/process.c                       |  11 +
+ arch/x86/kvm/vmx/vmx.c                          |  62 +---
+ arch/x86/mm/init.c                              |  44 ++-
+ arch/x86/mm/init_64.c                           |   4 +-
+ arch/x86/mm/ioremap.c                           |  10 +-
+ arch/x86/mm/kmmio.c                             |   2 +-
+ arch/x86/mm/mem_encrypt.c                       |   2 +-
+ arch/x86/mm/pat/set_memory.c                    |   7 +-
+ arch/x86/mm/pgtable.c                           |  16 +-
+ arch/x86/mm/pgtable_32.c                        |   2 +-
+ arch/x86/mm/tlb.c                               | 471 ++++++++++++++++++++++--
+ arch/x86/platform/uv/tlb_uv.c                   |   4 +-
+ drivers/xen/privcmd.c                           |   1 -
+ include/uapi/linux/prctl.h                      |   1 +
+ 34 files changed, 899 insertions(+), 672 deletions(-)
+ create mode 100644 Documentation/admin-guide/hw-vuln/l1d_flush.rst
+ create mode 100644 arch/x86/kernel/l1d_flush.c
