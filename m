@@ -2,53 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8291EAFA9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 21:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7228F1EAFB7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 21:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729550AbgFATfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 15:35:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57666 "EHLO mail.kernel.org"
+        id S1729796AbgFATfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 15:35:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729308AbgFATfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 15:35:03 -0400
-Subject: Re: [GIT PULL] fsverity updates for 5.8
+        id S1729558AbgFATfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 15:35:07 -0400
+Subject: Re: [GIT PULL] Crypto Update for 5.8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591040103;
-        bh=FG5YZrumuxu+SUe9tE67sVQlsmLyNC7e800RwFody5U=;
+        s=default; t=1591040106;
+        bh=J+cEF6NlV6FTuCyw4GSWHJsgj40PG61Pe/1hieAYRtk=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=KeExiaz9m5h879IZ1BEQl3nEkk8hevGPTuX/HTBMuE2abZI2ifbmaB5R/CNVUeKdW
-         Zy0uNXJWso9ocrLXtq6DWF3YggXoBfGdMb0/UA5DY/dnhFAeX+EgV/wRrplS8o/GUO
-         WFI1fbrkwDNfuAwAhSlYazDURGbqszfUUDgf6SE0=
+        b=YKlgJNTSYsSxtqkyL+YTAfnOx9cPHu4nJApU4V8hGb2k73aVgVHgInrwuFRWE2svc
+         er1c8QtpaS5UyiiGskbtdih3b0ml0+VtkrkwH/Kuntea0QG9XK4F4NxNeLJynb5rkB
+         JJ9oSYvHaBxNWFfzIXTcam5cZUfVVW1l8sG93umM=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200601063150.GB11054@sol.localdomain>
-References: <20200601063150.GB11054@sol.localdomain>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200601063150.GB11054@sol.localdomain>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git
- tags/fsverity-for-linus
-X-PR-Tracked-Commit-Id: 9cd6b593cfc9eaa476c9a3fa768b08bca73213d0
+In-Reply-To: <20200601024533.GA18937@gondor.apana.org.au>
+References: <20190916084901.GA20338@gondor.apana.org.au>
+ <20191125034536.wlgw25gpgn7y7vni@gondor.apana.org.au>
+ <20200128050326.x3cfjz3rj7ep6xr2@gondor.apana.org.au>
+ <20200401042720.GA12178@gondor.apana.org.au>
+ <20200601024533.GA18937@gondor.apana.org.au>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200601024533.GA18937@gondor.apana.org.au>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
+X-PR-Tracked-Commit-Id: 58ca0060ec4e51208d2eee12198fc55fd9e4feb3
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4d67829e11863072aec7cd1dd2939b1fd3eda17b
-Message-Id: <159104010315.18844.6258170183596402649.pr-tracker-bot@kernel.org>
-Date:   Mon, 01 Jun 2020 19:35:03 +0000
-To:     Eric Biggers <ebiggers@kernel.org>
+X-PR-Merge-Commit-Id: 81e8c10dac62c427b25f6bbb07936806e4dd9e8a
+Message-Id: <159104010689.18844.9017176619965025932.pr-tracker-bot@kernel.org>
+Date:   Mon, 01 Jun 2020 19:35:06 +0000
+To:     Herbert Xu <herbert@gondor.apana.org.au>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 31 May 2020 23:31:50 -0700:
+The pull request you sent on Mon, 1 Jun 2020 12:45:33 +1000:
 
-> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fsverity-for-linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4d67829e11863072aec7cd1dd2939b1fd3eda17b
+https://git.kernel.org/torvalds/c/81e8c10dac62c427b25f6bbb07936806e4dd9e8a
 
 Thank you!
 
