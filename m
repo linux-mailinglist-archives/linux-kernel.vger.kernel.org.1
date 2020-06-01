@@ -2,39 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29FF11EAD79
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A601EAE13
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730851AbgFASJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:09:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55538 "EHLO mail.kernel.org"
+        id S1729536AbgFASFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:05:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730847AbgFASJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:09:11 -0400
+        id S1730261AbgFASEx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:04:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6DA8C2068D;
-        Mon,  1 Jun 2020 18:09:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B07F206E2;
+        Mon,  1 Jun 2020 18:04:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034950;
-        bh=Pl1HXmRAUPMbGEu7xe/itWFl+FoRVHBaaAfEczm5H2M=;
+        s=default; t=1591034691;
+        bh=HfDsW7E7FnbB8ARdUvhq0rfqvewORS1KytEwONRTS0c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x0O973vcB0gXqhnqm8F9lcB5OZdVIZRUR4q1SQa1jQOFsHA6bbxc5UGU/qManobnF
-         QyipDvxp/azRkQgFXHjHXm0jNkIZXhRoMEyAtTgH2QjVffh3LMEzW8yn1G+cgSsO7I
-         b3oRTj1+PmimbPn3NFT50CuT97IkpRTwBwqmJf2A=
+        b=067COvTN8iDmDJ0VssX8yX1O1cmihJ0swps9A5Oec+lcDqMlyf8DFt4x82JHB8MAf
+         MrkATZqyjqQ1v1jFqAEHxYs/wVTuG3hI7jK4l62jGeDxLyGtsW6IHtQbwT8ndQA95H
+         azyd07XUMyPa3qrF3Zw2JMDnUALZE4eC/d6aBJvM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        stable@vger.kernel.org,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Rientjes <rientjes@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 085/142] gpio: bcm-kona: Fix return value of bcm_kona_gpio_probe()
-Date:   Mon,  1 Jun 2020 19:54:03 +0200
-Message-Id: <20200601174046.724051115@linuxfoundation.org>
+Subject: [PATCH 4.19 65/95] mm: remove VM_BUG_ON(PageSlab()) from page_mapcount()
+Date:   Mon,  1 Jun 2020 19:54:05 +0200
+Message-Id: <20200601174031.285173461@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601174037.904070960@linuxfoundation.org>
-References: <20200601174037.904070960@linuxfoundation.org>
+In-Reply-To: <20200601174020.759151073@linuxfoundation.org>
+References: <20200601174020.759151073@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +50,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
+From: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
 
-[ Upstream commit 98f7d1b15e87c84488b30ecc4ec753b0690b9dbf ]
+[ Upstream commit 6988f31d558aa8c744464a7f6d91d34ada48ad12 ]
 
-Propagate the error code returned by devm_platform_ioremap_resource()
-out of probe() instead of overwriting it.
+Replace superfluous VM_BUG_ON() with comment about correct usage.
 
-Fixes: 72d8cb715477 ("drivers: gpio: bcm-kona: use devm_platform_ioremap_resource()")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-[Bartosz: tweaked the commit message]
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Technically reverts commit 1d148e218a0d ("mm: add VM_BUG_ON_PAGE() to
+page_mapcount()"), but context lines have changed.
+
+Function isolate_migratepages_block() runs some checks out of lru_lock
+when choose pages for migration.  After checking PageLRU() it checks
+extra page references by comparing page_count() and page_mapcount().
+Between these two checks page could be removed from lru, freed and taken
+by slab.
+
+As a result this race triggers VM_BUG_ON(PageSlab()) in page_mapcount().
+Race window is tiny.  For certain workload this happens around once a
+year.
+
+    page:ffffea0105ca9380 count:1 mapcount:0 mapping:ffff88ff7712c180 index:0x0 compound_mapcount: 0
+    flags: 0x500000000008100(slab|head)
+    raw: 0500000000008100 dead000000000100 dead000000000200 ffff88ff7712c180
+    raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
+    page dumped because: VM_BUG_ON_PAGE(PageSlab(page))
+    ------------[ cut here ]------------
+    kernel BUG at ./include/linux/mm.h:628!
+    invalid opcode: 0000 [#1] SMP NOPTI
+    CPU: 77 PID: 504 Comm: kcompactd1 Tainted: G        W         4.19.109-27 #1
+    Hardware name: Yandex T175-N41-Y3N/MY81-EX0-Y3N, BIOS R05 06/20/2019
+    RIP: 0010:isolate_migratepages_block+0x986/0x9b0
+
+The code in isolate_migratepages_block() was added in commit
+119d6d59dcc0 ("mm, compaction: avoid isolating pinned pages") before
+adding VM_BUG_ON into page_mapcount().
+
+This race has been predicted in 2015 by Vlastimil Babka (see link
+below).
+
+[akpm@linux-foundation.org: comment tweaks, per Hugh]
+Fixes: 1d148e218a0d ("mm: add VM_BUG_ON_PAGE() to page_mapcount()")
+Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Hugh Dickins <hughd@google.com>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: David Rientjes <rientjes@google.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/159032779896.957378.7852761411265662220.stgit@buzz
+Link: https://lore.kernel.org/lkml/557710E1.6060103@suse.cz/
+Link: https://lore.kernel.org/linux-mm/158937872515.474360.5066096871639561424.stgit@buzz/T/ (v1)
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpio-bcm-kona.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/mm.h | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpio/gpio-bcm-kona.c b/drivers/gpio/gpio-bcm-kona.c
-index 9fa6d3a967d2..100575973e1f 100644
---- a/drivers/gpio/gpio-bcm-kona.c
-+++ b/drivers/gpio/gpio-bcm-kona.c
-@@ -619,7 +619,7 @@ static int bcm_kona_gpio_probe(struct platform_device *pdev)
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 45f10f5896b7..b1092046ebef 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -602,6 +602,11 @@ static inline void *kvcalloc(size_t n, size_t size, gfp_t flags)
  
- 	kona_gpio->reg_base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(kona_gpio->reg_base)) {
--		ret = -ENXIO;
-+		ret = PTR_ERR(kona_gpio->reg_base);
- 		goto err_irq_domain;
- 	}
+ extern void kvfree(const void *addr);
  
++/*
++ * Mapcount of compound page as a whole, does not include mapped sub-pages.
++ *
++ * Must be called only for compound pages or any their tail sub-pages.
++ */
+ static inline int compound_mapcount(struct page *page)
+ {
+ 	VM_BUG_ON_PAGE(!PageCompound(page), page);
+@@ -621,10 +626,16 @@ static inline void page_mapcount_reset(struct page *page)
+ 
+ int __page_mapcount(struct page *page);
+ 
++/*
++ * Mapcount of 0-order page; when compound sub-page, includes
++ * compound_mapcount().
++ *
++ * Result is undefined for pages which cannot be mapped into userspace.
++ * For example SLAB or special types of pages. See function page_has_type().
++ * They use this place in struct page differently.
++ */
+ static inline int page_mapcount(struct page *page)
+ {
+-	VM_BUG_ON_PAGE(PageSlab(page), page);
+-
+ 	if (unlikely(PageCompound(page)))
+ 		return __page_mapcount(page);
+ 	return atomic_read(&page->_mapcount) + 1;
 -- 
 2.25.1
 
