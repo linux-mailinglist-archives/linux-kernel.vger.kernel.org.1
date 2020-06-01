@@ -2,85 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94601EA142
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 11:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9B51EA154
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 11:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726022AbgFAJwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 05:52:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:35746 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726078AbgFAJw1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 05:52:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6CD871FB;
-        Mon,  1 Jun 2020 02:52:26 -0700 (PDT)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 512B33F305;
-        Mon,  1 Jun 2020 02:52:25 -0700 (PDT)
-Date:   Mon, 1 Jun 2020 10:52:23 +0100
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     Keno Fischer <keno@juliacomputing.com>
-Cc:     Kyle Huey <khuey@pernos.co>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: arm64: Register modification during syscall entry/exit stop
-Message-ID: <20200601095222.GY5031@arm.com>
-References: <CABV8kRzYzBrdzC1_opmmdpW63N2htfOsAUZ+RjiSDsy=SJW6Yg@mail.gmail.com>
- <20200520174149.GB27629@willie-the-truck>
- <CABV8kRzjCCsjVeRsBD7U_Lo0==sBw9EKm=1z7g=60KyJvJLZBQ@mail.gmail.com>
- <CABV8kRxfet2RXXNcUoTKwfVzFWEQfxAkXUX4M5XhkP3nc-0+rQ@mail.gmail.com>
- <20200527095528.GC11111@willie-the-truck>
- <20200527101929.GT5031@arm.com>
- <20200531093320.GA30204@willie-the-truck>
- <CABV8kRyHo+EAWaMUzGA220z=HJRBCpH6UWiYGb84uSL3h8HQHw@mail.gmail.com>
- <20200601091441.GW5031@arm.com>
- <CABV8kRz2ineTcLS29Lh=BW_kJB_X7PoqY-MaMj_pUUziOxrYCw@mail.gmail.com>
+        id S1728002AbgFAJxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 05:53:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726389AbgFAJwf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 05:52:35 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15ADEC061A0E;
+        Mon,  1 Jun 2020 02:52:35 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jfh7P-0003hh-4G; Mon, 01 Jun 2020 11:52:31 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id C637B1C0244;
+        Mon,  1 Jun 2020 11:52:30 +0200 (CEST)
+Date:   Mon, 01 Jun 2020 09:52:30 -0000
+From:   "tip-bot2 for Mike Galbraith" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] zram: Use local lock to protect per-CPU data
+Cc:     Mike Galbraith <umgwanakikbuti@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200527201119.1692513-8-bigeasy@linutronix.de>
+References: <20200527201119.1692513-8-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABV8kRz2ineTcLS29Lh=BW_kJB_X7PoqY-MaMj_pUUziOxrYCw@mail.gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Message-ID: <159100515059.17951.4923007968333025082.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 01, 2020 at 05:23:01AM -0400, Keno Fischer wrote:
-> On Mon, Jun 1, 2020 at 5:14 AM Dave Martin <Dave.Martin@arm.com> wrote:
-> > Can you explain why userspace would write a changed value for x7
-> > but at the same time need that new to be thrown away?
-> 
-> The discarding behavior is the primary reason things aren't completely
-> broken at the moment. If it read the wrong x7 value and didn't know about
-> the Aarch64 quirk, it's often just trying to write that same wrong
-> value back during the next stop, so if that's just ignored,
-> that's probably fine in 99% of cases, since the value in the
-> tracee will be undisturbed.
+The following commit has been merged into the locking/core branch of tip:
 
-I guess that's my question: when is x7 "disturbed".
+Commit-ID:     19f545b6e07f753c4dc639c2f0ab52345733b6a8
+Gitweb:        https://git.kernel.org/tip/19f545b6e07f753c4dc639c2f0ab52345733b6a8
+Author:        Mike Galbraith <umgwanakikbuti@gmail.com>
+AuthorDate:    Wed, 27 May 2020 22:11:19 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 28 May 2020 10:31:10 +02:00
 
-Other than sigreturn, I can't think of a case.
+zram: Use local lock to protect per-CPU data
 
-I'm likely missing some aspect of what you're trying to do.
+The zcomp driver uses per-CPU compression. The per-CPU data pointer is
+acquired with get_cpu_ptr() which implicitly disables preemption.
+It allocates memory inside the preempt disabled region which conflicts
+with the PREEMPT_RT semantics.
 
-> I don't think there's a sane way to change the aarch64 NT_PRSTATUS
-> semantics without just completely removing the x7 behavior, but of course
-> people may be relying on that (I think somebody said upthread that strace does?)
+Replace the implicit preemption control with an explicit local lock.
+This allows RT kernels to substitute it with a real per CPU lock, which
+serializes the access but keeps the code section preemptible. On non RT
+kernels this maps to preempt_disable() as before, i.e. no functional
+change.
 
-Since rt_sigreturn emulation was always broken, can we just say
-that the effect of updating any reg other than x0 is unspecified in this
-case?
+[bigeasy: Use local_lock(), description, drop reordering]
 
-Even fixing the x7 issue won't magically teach your tracer how to
-deal with unrecognised data in the signal frame, so new hardware or
-a new kernel could cause your tracer to become subtly broken.  Would you
-be better off tweaking the real signal frame as desired and doing a real
-rt_sigreturn for example, instead of attempting to emulate it?
+Signed-off-by: Mike Galbraith <umgwanakikbuti@gmail.com>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Peter Zijlstra <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20200527201119.1692513-8-bigeasy@linutronix.de
+---
+ drivers/block/zram/zcomp.c | 7 +++++--
+ drivers/block/zram/zcomp.h | 3 +++
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
-
-I'm somewhat playing devil's advocate here...
-
-Cheers
----Dave
+diff --git a/drivers/block/zram/zcomp.c b/drivers/block/zram/zcomp.c
+index 912e3e6..5ee8e3f 100644
+--- a/drivers/block/zram/zcomp.c
++++ b/drivers/block/zram/zcomp.c
+@@ -110,12 +110,13 @@ ssize_t zcomp_available_show(const char *comp, char *buf)
+ 
+ struct zcomp_strm *zcomp_stream_get(struct zcomp *comp)
+ {
+-	return get_cpu_ptr(comp->stream);
++	local_lock(&comp->stream->lock);
++	return this_cpu_ptr(comp->stream);
+ }
+ 
+ void zcomp_stream_put(struct zcomp *comp)
+ {
+-	put_cpu_ptr(comp->stream);
++	local_unlock(&comp->stream->lock);
+ }
+ 
+ int zcomp_compress(struct zcomp_strm *zstrm,
+@@ -159,6 +160,8 @@ int zcomp_cpu_up_prepare(unsigned int cpu, struct hlist_node *node)
+ 	int ret;
+ 
+ 	zstrm = per_cpu_ptr(comp->stream, cpu);
++	local_lock_init(&zstrm->lock);
++
+ 	ret = zcomp_strm_init(zstrm, comp);
+ 	if (ret)
+ 		pr_err("Can't allocate a compression stream\n");
+diff --git a/drivers/block/zram/zcomp.h b/drivers/block/zram/zcomp.h
+index 72c2ee4..40f6420 100644
+--- a/drivers/block/zram/zcomp.h
++++ b/drivers/block/zram/zcomp.h
+@@ -5,8 +5,11 @@
+ 
+ #ifndef _ZCOMP_H_
+ #define _ZCOMP_H_
++#include <linux/local_lock.h>
+ 
+ struct zcomp_strm {
++	/* The members ->buffer and ->tfm are protected by ->lock. */
++	local_lock_t lock;
+ 	/* compression/decompression buffer */
+ 	void *buffer;
+ 	struct crypto_comp *tfm;
