@@ -2,95 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0E71EA69C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 17:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB481EA6A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 17:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727121AbgFAPOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 11:14:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39060 "EHLO
+        id S1727900AbgFAPPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 11:15:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726125AbgFAPOo (ORCPT
+        with ESMTP id S1726128AbgFAPPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 11:14:44 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 247B7C05BD43
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Jun 2020 08:14:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=PIZ+lVLQagv2LzCpnL+lQMbd+eEgTlAiMx0920iCwH8=; b=nb3XuYt6KaS3K6JXq4mom4OUv
-        A3TZiLSUAVxInYU6nTJGb47CBbnklOEMIiFr+NDU9Ywxd7l0yBkgbvoZv+38IXLERUzeeY5G1gW4q
-        0m4tT5oOe+EX/3o0hk3XhPCw9QGjNy2C10NZ+mstc4kHKgw+y3mKHUqW17S3E4gxwY7wf0smuFY0V
-        435MAU8Ebyy+9cyEiZnZWAiexKALkh1wJ3KJe+UjKbXRcbPoA3MXeKay55kExTNPJfYskmhvy8U51
-        TKUl+WYkhcYkE7+n/ozNKZkwRq6y532LhTz8wx/GvrHTI18cuzGIWW7YWrlcE1tjr2Dw6jnCZaqBL
-        qYakL7EXw==;
-Received: from shell.armlinux.org.uk ([2001:4d48:ad52:3201:5054:ff:fe00:4ec]:48060)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jfm94-0000df-3d; Mon, 01 Jun 2020 16:14:34 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jfm91-0003QH-Sw; Mon, 01 Jun 2020 16:14:31 +0100
-Date:   Mon, 1 Jun 2020 16:14:31 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org,
-        AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Ben Dooks <ben-linux@fluff.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Enrico Weigelt <info@metux.net>,
-        Ingo Molnar <mingo@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH 5/5] arm: kexec_file: load zImage or uImage, initrd and
- dtb
-Message-ID: <20200601151431.GN1551@shell.armlinux.org.uk>
-References: <20200601142754.26139-1-l.stelmach@samsung.com>
- <CGME20200601142811eucas1p1604c8e6ca06c09f1ec821ea5e1918c53@eucas1p1.samsung.com>
- <20200601142754.26139-6-l.stelmach@samsung.com>
- <20200601150745.GL1551@shell.armlinux.org.uk>
+        Mon, 1 Jun 2020 11:15:08 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115AEC05BD43;
+        Mon,  1 Jun 2020 08:15:08 -0700 (PDT)
+Received: from ni.home (unknown [IPv6:2a01:cb19:8092:cf00:aaa1:59ff:fe08:91d5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: myjosserand)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E6E0E2A2000;
+        Mon,  1 Jun 2020 16:15:05 +0100 (BST)
+From:   =?UTF-8?q?Myl=C3=A8ne=20Josserand?= 
+        <mylene.josserand@collabora.com>
+To:     mturquette@baylibre.com, sboyd@kernel.org, heiko@sntech.de
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mylene.josserand@collabora.com, kever.yang@rock-chips.com,
+        geert@linux-m68k.org, kernel@collabora.com
+Subject: [PATCH v3 0/1] ARM: Add Rockchip rk3288w support
+Date:   Mon,  1 Jun 2020 17:14:41 +0200
+Message-Id: <20200601151442.156184-1-mylene.josserand@collabora.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200601150745.GL1551@shell.armlinux.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 01, 2020 at 04:07:45PM +0100, Russell King - ARM Linux admin wrote:
-> On Mon, Jun 01, 2020 at 04:27:54PM +0200, Łukasz Stelmach wrote:
-> > diff --git a/arch/arm/kernel/kexec_zimage.c b/arch/arm/kernel/kexec_zimage.c
-> > new file mode 100644
-> > index 000000000000..d09795fc9072
-> > --- /dev/null
-> > +++ b/arch/arm/kernel/kexec_zimage.c
-> > @@ -0,0 +1,199 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Kexec zImage loader
-> > + *
-> > + * Copyright (C) 2020 Samsung Electronics
-> > + * Author: Łukasz Stelmach <l.stelmach@samsung.com>
-> 
-> Please credit me as part author of this - you have taken some of my
-> code from the userspace kexec tool (such as the contents of
-> find_extension_tag()) and copied it in here, so this is not all your
-> own work.
+Hello everyone,
 
-It would also be a very good idea to indicate _where_ you copied some
-of this code from.
+Context
+-------
+
+Here is my V3 of my patches that add the support for the Rockchip
+RK3288w which is a revision of the RK3288. It is mostly the same SOC
+except for, at least, one clock tree which is different.
+This difference is only known by looking at the BSP kernel [1].
+
+Currently, the mainline kernel will not hang on rk3288w but it is
+probably by "chance" because we got an issue on a lower kernel version.
+
+According to Rockchip's U-Boot [2], the rk3288w can be detected using
+the HDMI revision number (= 0x1A) in this version of the SOC.
+
+Changelog
+---------
+
+In this V3, the revision's detection is not done in the kernel anymore.
+This patch will handle the rk3288w clock tree according to a new
+compatible "rockchip,rk3288w-cru" that must be provided by bootloaders.
+
+Changes since v2:
+   - Remove all codes about revision detection, let's handle that by
+   Bootloaders
+
+Best regards,
+Mylène Josserand
+
+[1] https://github.com/rockchip-linux/kernel/blob/develop-4.4/drivers/clk/rockchip/clk-rk3288.c#L960..L964
+[2] https://github.com/rockchip-linux/u-boot/blob/next-dev/arch/arm/mach-rockchip/rk3288/rk3288.c#L378..L388
+
+Mylène Josserand (1):
+  clk: rockchip: rk3288: Handle clock tree for rk3288w
+
+ drivers/clk/rockchip/clk-rk3288.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC for 0.8m (est. 1762m) line in suburbia: sync at 13.1Mbps down 424kbps up
+2.26.2
+
