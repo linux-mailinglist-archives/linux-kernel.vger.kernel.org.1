@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33C61EAC35
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3B71EAC6C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 20:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731723AbgFASQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 14:16:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37276 "EHLO mail.kernel.org"
+        id S1731783AbgFASTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 14:19:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731712AbgFASQd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 14:16:33 -0400
+        id S1731727AbgFASQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:16:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C6232068D;
-        Mon,  1 Jun 2020 18:16:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E6E1B2068D;
+        Mon,  1 Jun 2020 18:16:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591035392;
-        bh=DTZXf56xoqkdM1pDwpE3oN8ES3/B1f9WROuREZ/xyew=;
+        s=default; t=1591035397;
+        bh=N0l1RPeo1SlGImHH28ykJupX+PqrhocXisBt8WWswmY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FS8PEp23eKTSr+aCV19zfRnp3AcpQ0EbIodSdw60y7q8ipEh1wOKzan/WH7F7T3Os
-         AqggVpQK5ol0I06MtT15SGW8qh95LJAAsCee7zx9cF1qjOY/Snpn2pYcWWwqyfB4G3
-         DJ3FBJPPVc81Btne1M8aueOGwTFEzDA70GiUs/qg=
+        b=g8srST7n5+wKipmKIdlU9o8ESY7voNATuq+VoECX/eNjTVAis+v9IYz7iVKCuUySg
+         14veadBI20DchzU4ZuhItpXA+i1LB4C5NWpKs4z0tl8sI0Sp+ySoAVfVxeBq6RgMtz
+         aYRyqtzwXIRVlUAxvvxoIcQjMR0he4HiUD4ywovs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+fd5332e429401bf42d18@syzkaller.appspotmail.com,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.6 140/177] cfg80211: fix debugfs rename crash
-Date:   Mon,  1 Jun 2020 19:54:38 +0200
-Message-Id: <20200601174100.213877366@linuxfoundation.org>
+        Alan Jenkins <alan.christopher.jenkins@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Alexander Dahl <post@lespocky.de>, Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.6 142/177] x86/dma: Fix max PFN arithmetic overflow on 32 bit systems
+Date:   Mon,  1 Jun 2020 19:54:40 +0200
+Message-Id: <20200601174100.359249969@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200601174048.468952319@linuxfoundation.org>
 References: <20200601174048.468952319@linuxfoundation.org>
@@ -44,40 +45,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Alexander Dahl <post@lespocky.de>
 
-commit 0bbab5f0301587cad4e923ccc49bb910db86162c upstream.
+commit 88743470668ef5eb6b7ba9e0f99888e5999bf172 upstream.
 
-Removing the "if (IS_ERR(dir)) dir = NULL;" check only works
-if we adjust the remaining code to not rely on it being NULL.
-Check IS_ERR_OR_NULL() before attempting to dereference it.
+The intermediate result of the old term (4UL * 1024 * 1024 * 1024) is
+4 294 967 296 or 0x100000000 which is no problem on 64 bit systems.
+The patch does not change the later overall result of 0x100000 for
+MAX_DMA32_PFN (after it has been shifted by PAGE_SHIFT). The new
+calculation yields the same result, but does not require 64 bit
+arithmetic.
 
-I'm not actually entirely sure this fixes the syzbot crash as
-the kernel config indicates that they do have DEBUG_FS in the
-kernel, but this is what I found when looking there.
+On 32 bit systems the old calculation suffers from an arithmetic
+overflow in that intermediate term in braces: 4UL aka unsigned long int
+is 4 byte wide and an arithmetic overflow happens (the 0x100000000 does
+not fit in 4 bytes), the in braces result is truncated to zero, the
+following right shift does not alter that, so MAX_DMA32_PFN evaluates to
+0 on 32 bit systems.
 
-Cc: stable@vger.kernel.org
-Fixes: d82574a8e5a4 ("cfg80211: no need to check return value of debugfs_create functions")
-Reported-by: syzbot+fd5332e429401bf42d18@syzkaller.appspotmail.com
+That wrong value is a problem in a comparision against MAX_DMA32_PFN in
+the init code for swiotlb in pci_swiotlb_detect_4gb() to decide if
+swiotlb should be active.  That comparison yields the opposite result,
+when compiling on 32 bit systems.
+
+This was not possible before
+
+  1b7e03ef7570 ("x86, NUMA: Enable emulation on 32bit too")
+
+when that MAX_DMA32_PFN was first made visible to x86_32 (and which
+landed in v3.0).
+
+In practice this wasn't a problem, unless CONFIG_SWIOTLB is active on
+x86-32.
+
+However if one has set CONFIG_IOMMU_INTEL, since
+
+  c5a5dc4cbbf4 ("iommu/vt-d: Don't switch off swiotlb if bounce page is used")
+
+there's a dependency on CONFIG_SWIOTLB, which was not necessarily
+active before. That landed in v5.4, where we noticed it in the fli4l
+Linux distribution. We have CONFIG_IOMMU_INTEL active on both 32 and 64
+bit kernel configs there (I could not find out why, so let's just say
+historical reasons).
+
+The effect is at boot time 64 MiB (default size) were allocated for
+bounce buffers now, which is a noticeable amount of memory on small
+systems like pcengines ALIX 2D3 with 256 MiB memory, which are still
+frequently used as home routers.
+
+We noticed this effect when migrating from kernel v4.19 (LTS) to v5.4
+(LTS) in fli4l and got that kernel messages for example:
+
+  Linux version 5.4.22 (buildroot@buildroot) (gcc version 7.3.0 (Buildroot 2018.02.8)) #1 SMP Mon Nov 26 23:40:00 CET 2018
+  …
+  Memory: 183484K/261756K available (4594K kernel code, 393K rwdata, 1660K rodata, 536K init, 456K bss , 78272K reserved, 0K cma-reserved, 0K highmem)
+  …
+  PCI-DMA: Using software bounce buffering for IO (SWIOTLB)
+  software IO TLB: mapped [mem 0x0bb78000-0x0fb78000] (64MB)
+
+The initial analysis and the suggested fix was done by user 'sourcejedi'
+at stackoverflow and explicitly marked as GPLv2 for inclusion in the
+Linux kernel:
+
+  https://unix.stackexchange.com/a/520525/50007
+
+The new calculation, which does not suffer from that overflow, is the
+same as for arch/mips now as suggested by Robin Murphy.
+
+The fix was tested by fli4l users on round about two dozen different
+systems, including both 32 and 64 bit archs, bare metal and virtualized
+machines.
+
+ [ bp: Massage commit message. ]
+
+Fixes: 1b7e03ef7570 ("x86, NUMA: Enable emulation on 32bit too")
+Reported-by: Alan Jenkins <alan.christopher.jenkins@gmail.com>
+Suggested-by: Robin Murphy <robin.murphy@arm.com>
+Signed-off-by: Alexander Dahl <post@lespocky.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
 Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Link: https://lore.kernel.org/r/20200525113816.fc4da3ec3d4b.Ica63a110679819eaa9fb3bc1b7437d96b1fd187d@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Cc: stable@vger.kernel.org
+Link: https://unix.stackexchange.com/q/520065/50007
+Link: https://web.nettworks.org/bugs/browse/FFL-2560
+Link: https://lkml.kernel.org/r/20200526175749.20742-1-post@lespocky.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/wireless/core.c |    2 +-
+ arch/x86/include/asm/dma.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/wireless/core.c
-+++ b/net/wireless/core.c
-@@ -142,7 +142,7 @@ int cfg80211_dev_rename(struct cfg80211_
- 	if (result)
- 		return result;
+--- a/arch/x86/include/asm/dma.h
++++ b/arch/x86/include/asm/dma.h
+@@ -74,7 +74,7 @@
+ #define MAX_DMA_PFN   ((16UL * 1024 * 1024) >> PAGE_SHIFT)
  
--	if (rdev->wiphy.debugfsdir)
-+	if (!IS_ERR_OR_NULL(rdev->wiphy.debugfsdir))
- 		debugfs_rename(rdev->wiphy.debugfsdir->d_parent,
- 			       rdev->wiphy.debugfsdir,
- 			       rdev->wiphy.debugfsdir->d_parent, newname);
+ /* 4GB broken PCI/AGP hardware bus master zone */
+-#define MAX_DMA32_PFN ((4UL * 1024 * 1024 * 1024) >> PAGE_SHIFT)
++#define MAX_DMA32_PFN (1UL << (32 - PAGE_SHIFT))
+ 
+ #ifdef CONFIG_X86_32
+ /* The maximum address that we can perform a DMA transfer to on this platform */
 
 
