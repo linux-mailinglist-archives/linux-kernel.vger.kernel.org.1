@@ -2,116 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2BAE1EA8B4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B1AD1EA8AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Jun 2020 19:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728129AbgFARzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Jun 2020 13:55:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35574 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726128AbgFARzj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:55:39 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 62A3A206E2;
-        Mon,  1 Jun 2020 17:55:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591034137;
-        bh=DzJrUQPfMBVUiRLlKKTNb8UOXiHkjT0DSgcontszJIY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iV/jUDqrniDbH5zYY5SoFz0NM8gsb4I+b4b5/QcpmYR1OqtnmwRID4hr3D4dQ9gD+
-         qk0vBo3UleLOvL3oi3XKTOPzTQeZHNl+fTLPvRuoWOr7L+5uBkTH6E4yd8l5b8+BPr
-         YGi/eHXY5oIE3PDfQYK6zdwZZostQDAg3k38kjsg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 01/48] ax25: fix setsockopt(SO_BINDTODEVICE)
-Date:   Mon,  1 Jun 2020 19:53:11 +0200
-Message-Id: <20200601173952.614489581@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200601173952.175939894@linuxfoundation.org>
-References: <20200601173952.175939894@linuxfoundation.org>
-User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
+        id S1728338AbgFARxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Jun 2020 13:53:17 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:41466 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726113AbgFARxR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Jun 2020 13:53:17 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 7A1252A2519
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Paul Gofman <gofmanp@gmail.com>, Kees Cook <keescook@chromium.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        linux-security-module@vger.kernel.org,
+        Zebediah Figura <zfigura@codeweavers.com>
+Subject: Re: [PATCH RFC] seccomp: Implement syscall isolation based on memory areas
+Organization: Collabora
+References: <20200530055953.817666-1-krisman@collabora.com>
+        <202005300923.B245392C@keescook> <851rn0ejg9.fsf@collabora.com>
+        <9a512096-7707-3fc6-34ba-22f969c0f964@gmail.com>
+        <20200531164938.GF19604@bombadil.infradead.org>
+Date:   Mon, 01 Jun 2020 13:53:11 -0400
+In-Reply-To: <20200531164938.GF19604@bombadil.infradead.org> (Matthew Wilcox's
+        message of "Sun, 31 May 2020 09:49:38 -0700")
+Message-ID: <857dwq7jw8.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+Matthew Wilcox <willy@infradead.org> writes:
 
-[ Upstream commit 687775cec056b38a4c8f3291e0dd7a9145f7b667 ]
+> On Sun, May 31, 2020 at 03:39:33PM +0300, Paul Gofman wrote:
+>> > Paul (cc'ed) is the wine expert, but my understanding is that memory
+>> > allocation and initial program load of the emulated binary will go
+>> > through wine.  It does the allocation and mark the vma accordingly
+>> > before returning the allocated range to the windows application.
+>> Yes, exactly. Pretty much any memory allocation which Wine does needs
+>> syscalls (if those are ever encountered later during executing code from
+>> those areas) to be trapped by Wine and passed to Wine's implementation
+>> of the corresponding Windows API function. Linux native libraries
+>> loading and memory allocations performed by them go outside of Wine control.
+>
+> I don't like Gabriel's approach very much.  Could we do something like
 
-syzbot was able to trigger this trace [1], probably by using
-a zero optlen.
+Hi Matthew,
 
-While we are at it, cap optlen to IFNAMSIZ - 1 instead of IFNAMSIZ.
+I don't oppose your suggestion, as Paul said, it should be enough for
+us.  But could you elaborate on the problems you see in the original
+approach, even if only for my own education?
 
-[1]
-BUG: KMSAN: uninit-value in strnlen+0xf9/0x170 lib/string.c:569
-CPU: 0 PID: 8807 Comm: syz-executor483 Not tainted 5.7.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1c9/0x220 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
- strnlen+0xf9/0x170 lib/string.c:569
- dev_name_hash net/core/dev.c:207 [inline]
- netdev_name_node_lookup net/core/dev.c:277 [inline]
- __dev_get_by_name+0x75/0x2b0 net/core/dev.c:778
- ax25_setsockopt+0xfa3/0x1170 net/ax25/af_ax25.c:654
- __compat_sys_setsockopt+0x4ed/0x910 net/compat.c:403
- __do_compat_sys_setsockopt net/compat.c:413 [inline]
- __se_compat_sys_setsockopt+0xdd/0x100 net/compat.c:410
- __ia32_compat_sys_setsockopt+0x62/0x80 net/compat.c:410
- do_syscall_32_irqs_on arch/x86/entry/common.c:339 [inline]
- do_fast_syscall_32+0x3bf/0x6d0 arch/x86/entry/common.c:398
- entry_SYSENTER_compat+0x68/0x77 arch/x86/entry/entry_64_compat.S:139
-RIP: 0023:0xf7f57dd9
-Code: 90 e8 0b 00 00 00 f3 90 0f ae e8 eb f9 8d 74 26 00 89 3c 24 c3 90 90 90 90 90 90 90 90 90 90 90 90 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 002b:00000000ffae8c1c EFLAGS: 00000217 ORIG_RAX: 000000000000016e
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000000101
-RDX: 0000000000000019 RSI: 0000000020000000 RDI: 0000000000000004
-RBP: 0000000000000012 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> issue a syscall before executing a Windows region and then issue another
+> syscall when exiting?  If so, we could switch the syscall entry point (ie
+> change MSR_LSTAR).  I'm thinking something like a personality() syscall.
+> But maybe that would be too high an overhead.
+>
 
-Local variable ----devname@ax25_setsockopt created at:
- ax25_setsockopt+0xe6/0x1170 net/ax25/af_ax25.c:536
- ax25_setsockopt+0xe6/0x1170 net/ax25/af_ax25.c:536
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/ax25/af_ax25.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
---- a/net/ax25/af_ax25.c
-+++ b/net/ax25/af_ax25.c
-@@ -639,8 +639,10 @@ static int ax25_setsockopt(struct socket
- 		break;
- 
- 	case SO_BINDTODEVICE:
--		if (optlen > IFNAMSIZ)
--			optlen = IFNAMSIZ;
-+		if (optlen > IFNAMSIZ - 1)
-+			optlen = IFNAMSIZ - 1;
-+
-+		memset(devname, 0, sizeof(devname));
- 
- 		if (copy_from_user(devname, optval, optlen)) {
- 			res = -EFAULT;
-
-
+-- 
+Gabriel Krisman Bertazi
